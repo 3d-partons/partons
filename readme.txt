@@ -1,11 +1,11 @@
-- For x64 architecture
+# For x64 architecture
 
 Right click on project -> properties -> C/C++ Build
 Switch Configuration to All
 GCC C++ Compiler -> Miscellaneous
 check -fPIC
 
-- Configure Include and Libraries path (Unix example)
+# Configure Include and Libraries path (Unix example)
 
 Switch Configuration to All
 
