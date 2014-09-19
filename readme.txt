@@ -7,6 +7,7 @@ check -fPIC
 
 # Configure Include and Libraries path (Unix example)
 
+Right click on project -> properties -> C/C++ General -> Paths and Symbols
 Switch Configuration to All
 
 Includes -> GNU C++
