@@ -21,8 +21,6 @@
 #include "GPDModule.h"
 #include "models/GPDComputeType.h"
 
-class LoggerManager;
-
 class GPDOutputData;
 
 class GK11Model: public GPDModule {
@@ -51,7 +49,7 @@ public:
      */
     virtual GPDOutputData* compute(const double &_x, const double &_xi,
             const double &_t, const double &_MuF, const double &_MuR,
-            GPDComputeType::Type _gpdComputeType);
+            GPDComputeType::Type _gpdComputeType = GPDComputeType::ALL);
 
 private:
 
@@ -156,8 +154,6 @@ private:
     void computeE(const double &_x, const double &_xi, const double &_t); ///< Compute GPD E at considered kinematics
     void computeHt(const double &_x, const double &_xi, const double &_t); ///< Compute GPD Ht at considered kinematics
     void computeEt(const double &_x, const double &_xi, const double &_t); ///< Compute GPD Et at considered kinematics
-
-    LoggerManager* m_pLoggerManager;
 };
 
 #endif /* GK11_MODEL_H */

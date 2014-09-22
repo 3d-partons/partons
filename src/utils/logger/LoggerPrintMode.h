@@ -9,11 +9,13 @@
  *
  * Last update : 05 September 2014
  *
- * @class LoggerPrintMode
+ * @struct LoggerPrintMode
  * @brief
  */
 
 #include <string>
+
+#include "../stringUtils/StringUtils.h"
 
 struct LoggerPrintMode {
     //prevent automatic conversion for any other built-in types such as bool, int, etc
@@ -51,7 +53,8 @@ public:
         }
     }
 
-    static LoggerPrintMode fromString(const std::string &printMode) {
+    static LoggerPrintMode fromString(std::string printMode) {
+        StringUtils::to_upperCase(printMode);
         if (printMode == "COUT") {
             return COUT;
         } else if (printMode == "FILE") {
@@ -62,6 +65,7 @@ public:
 
         return DEFAULT;
     }
+
 };
 
 #endif /* LOGGER_PRINT_MODE_H */

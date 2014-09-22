@@ -18,15 +18,11 @@
 
 #include "BaseModule.h"
 
+struct QCDOrderType;
+class GPDModule;
 class GPDService;
 
 class CFFModule: public BaseModule {
-    //TODO expliquer pourquoi CFF en a besoin
-    /**
-     * A pointer to GPDService.
-     */
-    GPDService* pGPDService;
-
 public:
     /**
      * Default constructor
@@ -50,9 +46,27 @@ public:
      *
      * @return Return a pair of two double values. Real and Imaginary parts of CFF.
      */
-    virtual std::pair<double, double> compute(const double &_xi,
-            const double &_t, const double Q2, const double &_MuF,
-            const double &_MuR) = 0;
+    virtual std::pair<double, double> compute(const double &xB,
+            const double &t, const double Q2, const double &MuF,
+            const double &MuR, const QCDOrderType &qcdOrderType) = 0;
+
+    // ##### GETTERS & SETTERS #####
+
+    void setGPDModule(GPDModule* gpdModule);
+    void setQCDOrderType(QCDOrderType* qcdOrderType);
+
+protected:
+    //TODO expliquer pourquoi CFF en a besoin
+    /**
+     * A pointer to GPDService.
+     */
+    GPDService* m_pGPDService;
+
+    GPDModule* m_pGPDModule;
+    QCDOrderType* m_qcdOrderType;
+
+private:
+
 };
 
 #endif /* CFF_MODULE_H */

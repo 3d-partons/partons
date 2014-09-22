@@ -5,37 +5,47 @@
  * @file GPDInputData.h
  * @author: Bryan BERTHOU (CEA Saclay)
  * @date 28 juil. 2014
- * @version 1.0
+ * Last update : 15 September 2014
+ * @version 2.0
  */
 
+#include <string>
+
 #include "GenericData.h"
-#include "QCDOrderType.h"
 
 class GK11Model;
 class GPDGenericModel;
 
 class CFFInputData: public GenericData {
-    //GPDGenericModel* pGPDGenericModel;
-
-    double beanId;
-    double xi;
-    double t;
-    double Q2;
-    double MuF;
-    double MuR;
-    QCDOrderType qcdOrderType;
-
 public:
-    CFFInputData(double _xi, double _t, double _Q2, double _MuF, double _MuR,
-            QCDOrderType _qcdOrderType);
-//    CFFInputData(GPDGenericModel* _pGPDGenericModel, double _Q2,
-//            QCDOrderType _QCDOrderType);
 
+    CFFInputData(double xB, double t, double Q2);
+    CFFInputData(unsigned int binId, double xB, double t, double Q2);
     virtual ~CFFInputData();
 
-    //GPDGenericModel* getGpdGenericModel() const;
+    std::string toString();
+
+    // ##### GETTERS & SETTERS #####
+
     double getQ2() const;
-    QCDOrderType getQcdOrderType() const;
+    void setQ2(double q2);
+    double getT() const;
+    void setT(double t);
+    double getXB() const;
+    void setXB(double xB);
+    unsigned int getBinId() const;
+    void setBinId(unsigned int binId);
+
+private:
+    unsigned int m_binId;
+    double m_xB;
+    double m_t;
+    double m_Q2;
+
+    //double xi;
+    //double MuF;
+    //double MuR;
+    //QCDOrderType qcdOrderType;
 };
 
 #endif /* CFF_INPUT_DATA_H */

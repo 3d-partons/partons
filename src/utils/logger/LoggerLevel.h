@@ -15,6 +15,8 @@
 
 #include <string>
 
+#include "../stringUtils/StringUtils.h"
+
 struct LoggerLevel {
     //prevent automatic conversion for any other built-in types such as bool, int, etc
     template<typename T>
@@ -54,7 +56,8 @@ public:
         }
     }
 
-    static LoggerLevel fromString(const std::string &level) {
+    static LoggerLevel fromString(std::string level) {
+        StringUtils::to_upperCase(level);
         if (level == "DEBUG") {
             return DEBUG;
         } else if (level == "INFO") {
@@ -69,6 +72,7 @@ public:
 
         return NONE;
     }
+
 };
 
 #endif /* LOGGER_LEVEL_H */

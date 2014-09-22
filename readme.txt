@@ -1,3 +1,10 @@
+#
+# Author: Bryan BERTHOU (CEA Saclay)
+# Date : 19 September 2014
+# 
+# A readme file to help project's configuration
+#
+
 # For x64 architecture
 
 Right click on project -> properties -> C/C++ Build

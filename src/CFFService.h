@@ -1,7 +1,15 @@
-class GPDModule;
+#include <map>
+#include <string>
+#include <utility>
+#include <vector>
 
-class CFFInputData;
-class CFFOutputData;
+#include "BaseObject.h"
+#include "models/CFFInputData.h"
+#include "models/CFFOutputData.h"
+#include "models/QCDOrderType.h"
+
+class CFFModule;
+class GPDModule;
 
 /**
  * @file CFFService.h
@@ -9,24 +17,13 @@ class CFFOutputData;
  * @date 07 Août 2014
  * @version 1.0
  *
- * Last update : 21 Aout 2014
+ * Last update : 16 September 2014
  *
  * @class CFFService
  * @brief \<singleton\> Use for handle and compute some pre-configured CFF modules.
  */
 
-class CFFService {
-
-    /**
-     * Private pointer of this class for a unique instance
-     */
-    static CFFService* pInstance;
-
-    /**
-     * Private default constructor for a unique instance
-     */
-    CFFService();
-
+class CFFService: BaseObject {
 public:
     /**
      * Share a unique pointer of this class
@@ -37,13 +34,29 @@ public:
      */
     ~CFFService();
 
-    /**
-     *
-     * @param _pCFFInputData
-     * @return
-     */
-    CFFOutputData* compute(CFFInputData* _pCFFInputData,
-            GPDModule* _pGPDModule);
+    std::pair<double, double> compute(CFFModule* cffModule,
+            CFFInputData* _pCFFInputData, GPDModule* _pGPDModule, double MuF,
+            double MuR, QCDOrderType qcdOrderType);
 
-    void configure();
+    std::vector<CFFOutputData> compute(
+            std::vector<CFFInputData> ListOfCFFInputData,
+            GPDModule* _pGPDModule, double MuF, double MuR,
+            QCDOrderType qcdOrderType);
+
+    std::map<unsigned int, CFFInputData> getMapOfCFFInputDataFromFile(
+            const std::string & filePath);
+
+    std::vector<CFFInputData> getListOfCFFInputDataFromFile(
+            const std::string & filePath);
+
+private:
+    /**
+     * Private pointer of this class for a unique instance
+     */
+    static CFFService* m_pInstance;
+
+    /**
+     * Private default constructor for a unique instance
+     */
+    CFFService();
 };

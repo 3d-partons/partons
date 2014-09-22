@@ -5,8 +5,6 @@
 #include <cln/floatformat.h>
 #include <cln/real.h>
 #include <cmath>
-#include <iostream>
-#include <sstream>
 
 #include "BaseModuleFactory.h"
 #include "models/FundamentalPhysicalConstants.h"
@@ -15,9 +13,9 @@
 #include "models/GPDResultData.h"
 #include "models/QuarkFlavor.h"
 #include "utils/logger/LoggerManager.h"
+#include "utils/stringUtils/Formatter.h"
 
 // Initialise GK11GPDModule::ID with a unique name.
-//const std::string GK11Model::className = "GK11Model";
 const std::string GK11Model::moduleID = "GK11Model";
 
 // Define a useless static boolean variable to enable registerModule() to be executed before the main() function.
@@ -55,8 +53,6 @@ void GK11Model::init() {
     Etdval1tab = std::vector<double>(4, 0.);
     Etuval1mtab = std::vector<double>(4, 0.);
     Etdval1mtab = std::vector<double>(4, 0.);
-
-    m_pLoggerManager = LoggerManager::getInstance();
 }
 
 GK11Model::~GK11Model() {
@@ -67,26 +63,13 @@ void GK11Model::updateVariables(const double &_MuF) {
     fMuF2 = _MuF * _MuF;
     fL = log(fMuF2 / fQ0); // Logarithmic dependence on the scale
 
-    if (m_pLoggerManager->isDebug()) {
-        std::ostringstream os;
+    m_pLoggerManager->debug(getClassName(), __func__,
+            Formatter() << "fMuF2 = " << fMuF2 << " fL = " << fL);
 
-        os << "fMuF2 = " << fMuF2 << " fL = " << fL;
-        m_pLoggerManager->debug(getClassName(), __func__, os.str());
-    }
-
-    if (m_pLoggerManager->isWarn()) {
-        std::ostringstream os;
-
-        os << "test WARN level logger.cfg";
-        m_pLoggerManager->warn(getClassName(), __func__, os.str());
-    }
-
-    if (m_pLoggerManager->isInfo()) {
-            std::ostringstream os;
-
-        os << "test INFO level logger.cfg";
-        m_pLoggerManager->info(getClassName(), __func__, os.str());
-        }
+    //if (m_pLoggerManager->isDebug(getClassName(), __func__)) {
+    m_pLoggerManager->debug(getClassName(), __func__,
+            Formatter() << "fMuF2 = " << fMuF2 << " fL = " << fL);
+    //    }
 }
 
 GPDOutputData* GK11Model::compute(const double &_x, const double &_xi,
@@ -270,15 +253,7 @@ void GK11Model::computeH(const double &_x, const double &_xi,
 void GK11Model::computeHt(const double &_x, const double &_xi,
         const double &_t) {
 
-    if (m_pLoggerManager->isWarn()) {
-        m_pLoggerManager->warn(getClassName(), __func__,
-                "test multiple warn filter");
-    }
-
-    if (m_pLoggerManager->isInfo()) {
-        m_pLoggerManager->info(getClassName(), __func__,
-                "Entered function ...");
-    }
+    m_pLoggerManager->info(getClassName(), __func__, "Entered function ...");
 
     GPDComputeType* pGPDComputeType = new GPDComputeType(GPDComputeType::Ht);
 
@@ -307,12 +282,9 @@ void GK11Model::computeHt(const double &_x, const double &_xi,
                     * (c1 * Hti1tab.at(0) + c2 * Hti1tab.at(1)
                             + c3 * Hti1tab.at(2)));
 
-    if (m_pLoggerManager->isDebug()) {
-        std::ostringstream os;
-        os << "c1 = " << c1 << ", c2 = " << c2 << ", c3 = " << c3 << ", b0 = "
-                << b0;
-        m_pLoggerManager->debug(getClassName(), __func__, os.str());
-    }
+    m_pLoggerManager->debug(getClassName(), __func__,
+            Formatter() << "c1 = " << c1 << ", c2 = " << c2 << ", c3 = " << c3
+                    << ", b0 = " << b0);
 
     // s quark,  Ht_sea = 0 for GK
 
@@ -334,13 +306,10 @@ void GK11Model::computeHt(const double &_x, const double &_xi,
                             / (5. - delta));
     //      +  c4 * (3.-delta) * (2.-delta) * (1-delta)/(7.-delta)/(6.-delta)/(5.-delta) ) ;
 
-    if (m_pLoggerManager->isDebug()) {
-        std::ostringstream os;
-        os << "c1 = " << c1 << ", c2 = " << c2 << ", c3 = " << c3 << ", b0 = "
-                << b0 << ", etau = " << etau << ", delta = " << delta
-                << ", Nu = " << Nu;
-        m_pLoggerManager->debug(getClassName(), __func__, os.str());
-    }
+    m_pLoggerManager->debug(getClassName(), __func__,
+            Formatter() << "c1 = " << c1 << ", c2 = " << c2 << ", c3 = " << c3
+                    << ", b0 = " << b0 << ", etau = " << etau << ", delta = "
+                    << delta << ", Nu = " << Nu);
 
     pGPDQuark_u->setValence(
             etau / Nu * exp(b0 * _t)
@@ -365,12 +334,10 @@ void GK11Model::computeHt(const double &_x, const double &_xi,
 
     b0 = 0;
 
-    if (m_pLoggerManager->isDebug()) {
-        std::ostringstream os;
-        os << "c1 = " << c1 << ", c2 = " << c2 << ", c3 = " << c3 << ", b0 = "
-                << b0 << ", etad = " << etad << ", Nd = " << Nd;
-        m_pLoggerManager->debug(getClassName(), __func__, os.str());
-    }
+    m_pLoggerManager->debug(getClassName(), __func__,
+            Formatter() << "c1 = " << c1 << ", c2 = " << c2 << ", c3 = " << c3
+                    << ", b0 = " << b0 << ", etad = " << etad << ", Nd = "
+                    << Nd);
 
     pGPDQuark_d->setValence(
             etad / Nd * exp(b0 * _t)
@@ -791,12 +758,9 @@ double GK11Model::Hs1(const double &_xi, double x, double i, double k) {
                                                 3. + i - k)));
     }
 
-    if (m_pLoggerManager->isDebug()) {
-        std::ostringstream os;
-        os << "[GK11Model::Hs1](x=" << x << ", xi=" << _xi << ", i=" << i
-                << ", k=" << k << ") dummy = " << dummy;
-        m_pLoggerManager->debug(getClassName(), __func__, os.str());
-    }
+    m_pLoggerManager->debug(getClassName(), __func__,
+            Formatter() << "(x=" << x << ", xi=" << _xi << ", i=" << i << ", k="
+                    << k << ") dummy = " << dummy);
 
     return dummy;
 }
@@ -906,8 +870,6 @@ double GK11Model::Hs1_alt(const double &_xi, double x, double i, double k) {
     }
     dummy = double_approx(dummya);
 
-    std::cout << "Hs1_alt = " << dummy << std::endl;
-
     return dummy;
 }
 
@@ -997,12 +959,9 @@ double GK11Model::Hval1(const double &_xi, double x, double i, double k) {
                                                 (2. + i - k))));
     }
 
-    if (m_pLoggerManager->isDebug()) {
-        std::ostringstream os;
-        os << "(x=" << x << ", xi=" << _xi << ", i=" << i << ", k=" << k
-                << ") dummy = " << dummy;
-        m_pLoggerManager->debug(getClassName(), __func__, os.str());
-    }
+    m_pLoggerManager->debug(getClassName(), __func__,
+            Formatter() << "(x=" << x << ", xi=" << _xi << ", i=" << i << ", k="
+                    << k << ") dummy = " << dummy);
 
     return dummy;
 }
@@ -1053,12 +1012,9 @@ double GK11Model::Hval1_alt(const double &_xi, double x, double i, double k) {
 
     dummy = double_approx(dummya);
 
-    if (m_pLoggerManager->isDebug()) {
-        std::ostringstream os;
-        os << "[GK11Model::Hval1_alt](x=" << x << ", xi=" << _xi << ", i=" << i
-                << ", k=" << k << ") dummy = " << dummy;
-        m_pLoggerManager->debug(getClassName(), __func__, os.str());
-    }
+    m_pLoggerManager->debug(getClassName(), __func__,
+            Formatter() << "(x=" << x << ", xi=" << _xi << ", i=" << i << ", k="
+                    << k << ") dummy = " << dummy);
 
     return dummy;
 }
@@ -1100,12 +1056,9 @@ void GK11Model::calculateHtCoefs(const double &_x, const double &_xi,
 
 // No sea Ht for GK.
 
-    if (m_pLoggerManager->isDebug()) {
-        std::ostringstream os;
-
-        os << "slow_sea = " << slow_sea << " slow_val = " << slow_val;
-        m_pLoggerManager->debug(getClassName(), __func__, os.str());
-    }
+    m_pLoggerManager->debug(getClassName(), __func__,
+            Formatter() << "slow_sea = " << slow_sea << " slow_val = "
+                    << slow_val);
 
 //TODO permuter les conditions
 
@@ -1184,13 +1137,10 @@ void GK11Model::calculateHtKas(const double &_t) {
 
     kHtdval = kHtuval;
 
-    if (m_pLoggerManager->isDebug()) {
-        std::ostringstream os;
-        os << "(t=" << _t << ") kHtgluon=" << kHtgluon << " kHtsea=" << kHtsea
-                << " kHtuval=" << kHtuval << " kHtdval=" << kHtdval;
-        m_pLoggerManager->debug(getClassName(), __func__, os.str());
-    }
-
+    m_pLoggerManager->debug(getClassName(), __func__,
+            Formatter() << "(t=" << _t << ") kHtgluon=" << kHtgluon
+                    << " kHtsea=" << kHtsea << " kHtuval=" << kHtuval
+                    << " kHtdval=" << kHtdval);
 }
 
 /*!
@@ -1282,12 +1232,9 @@ double GK11Model::Hti1_alt(const double &_xi, double x, double i, double k) {
     }
     dummy = double_approx(dummya);
 
-    if (m_pLoggerManager->isDebug()) {
-        std::ostringstream os;
-        os << "(x=" << x << ", xi=" << _xi << ", i=" << i << ", k=" << k
-                << ") dummy = " << dummy;
-        m_pLoggerManager->debug(getClassName(), __func__, os.str());
-    }
+    m_pLoggerManager->debug(getClassName(), __func__,
+            Formatter() << "(x=" << x << ", xi=" << _xi << ", i=" << i << ", k="
+                    << k << ") dummy = " << dummy);
 
     return dummy;
 }

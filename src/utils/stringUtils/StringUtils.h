@@ -7,13 +7,13 @@
  * \author Bryan BERTHOU
  * \version 0.1
  * \date Creation : 28/04/2009
- * \date Derniere maj : 08/09/2014
+ * \date Derniere maj : /09/2014
  */
 
 #include <string>
 #include <vector>
 
-//TODO uniformiser le fichier, corriger les parametres des fonctions (const, &, ...)
+//TODO uniformiser le fichier, corriger les parametres des fonctions (const, &, ...) refaire la documentation
 
 /*!
  * \class StringUtils
@@ -25,21 +25,21 @@ public:
     static std::string EMPTY;
 
     /*!
-     * \fn static bool is_empty( std::string _chaine )
+     * \fn static bool isEmpty(const std::string & str)
      * \brief Test si la chaine de caracteres cible est NULL ou vide ""
      * \param _chaine : chaine de caracteres a tester
      * \return bool
      */
-    static bool is_empty(std::string* chaine);
+    static bool isEmpty(const std::string & str);
 
     /*!
-     * \fn static bool equals( std::string _chaine1, std::string _chaine2 )
+     * \fn static bool equals(const std::string & str, const std::string & str2)
      * \brief Applique une comparaison entre la chaine 1 et 2 en tenant compte de la casse
      * \param _chaine1 : chaine de caracteres a comparer
      * \param _chaine2 : chaine de caracteres a comparer
      * \return bool : true si les deux chaines de caracteres sont egales
      */
-    static bool equals(std::string* chaine, std::string* chaine2);
+    static bool equals(const std::string & str, const std::string & str2);
 
     /*!
      * \fn static bool equalsIgnoreCase( std::string _chaine1, std::string _chaine2, bool toUpperCase )
@@ -51,13 +51,13 @@ public:
     static bool equalsIgnoreCase(const std::string &chaine,
             const std::string &chaine2, const bool &toUpperCase = true);
 
-    /*!
-     * \fn static std::string fromIntToString( int _nombre )
-     * \brief Convertie un nombre en chaine de caracteres
-     * \param _nombre : nombre a convertir en chaine de caracteres
-     * \return std::string
-     */
-    static std::string fromIntToString(int number);
+//    /*!
+//     * \fn static std::string fromIntToString( int _nombre )
+//     * \brief Convertie un nombre en chaine de caracteres
+//     * \param _nombre : nombre a convertir en chaine de caracteres
+//     * \return std::string
+//     */
+//    static std::string fromIntToString(int number);
 
     /*!
      * \fn static int fromStringToInt( std::string _chaine )
@@ -67,20 +67,25 @@ public:
      */
     static int fromStringToInt(std::string chaine);
 
+    //static unsigned int fromStringToUnsignedInt(const std::string & chaine);
+
     static float fromStringToFloat(std::string chaine);
 
+    static double fromStringToDouble(const std::string & str);
+
     template<typename T>
-    static std::string toString(T valeur);
+    static std::string toString(const T & value);
 
     static bool fromStringToBool(std::string chaine);
 
-    static bool contains(std::string* chaine, std::string* searchString);
+    static bool contains(const std::string & str,
+            const std::string & searchString);
 
     static bool containsIgnoreCase(std::string* chaine,
             std::string* searchString, bool toUpperCase);
 
-    static void replaceAll(std::string* chaine, std::string* searchString,
-            std::string* replaceString);
+    static void replaceAll(std::string & str, const std::string & searchString,
+            const std::string & replaceString);
 
     static void replaceAllIgnoreCase(std::string* chaine,
             std::string* searchString, std::string* replaceString,
@@ -89,7 +94,8 @@ public:
     // Remove leading and trailing spaces from a string
     static void trim(std::string &str, const std::string& whitespace = " \t");
 
-    static int count(std::string* chaine, std::string* searchString);
+    static unsigned int count(std::string str,
+            const std::string & searchString);
 
     /*!
      * \fn static std::vector<std::string> stringToVector( std::string _chaine, char splitCharacter )

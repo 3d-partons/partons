@@ -3,14 +3,23 @@
 #include "GPDService.h"
 
 CFFModule::CFFModule(std::string _ID) :
-        BaseModule(_ID), pGPDService(GPDService::getInstance()) {
+        BaseModule(_ID), m_pGPDService(GPDService::getInstance()), m_pGPDModule(
+                0), m_qcdOrderType(0) {
 
 }
 
 CFFModule::~CFFModule() {
     //TODO a verifier
-    if (pGPDService != 0) {
-        delete pGPDService;
-        pGPDService = 0;
+    if (m_pGPDService != 0) {
+        delete m_pGPDService;
+        m_pGPDService = 0;
     }
+}
+
+void CFFModule::setGPDModule(GPDModule* gpdModule) {
+    m_pGPDModule = gpdModule;
+}
+
+void CFFModule::setQCDOrderType(QCDOrderType* qcdOrderType) {
+    m_qcdOrderType = qcdOrderType;
 }

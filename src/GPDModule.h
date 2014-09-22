@@ -50,7 +50,7 @@ public:
      */
     virtual GPDOutputData* compute(const double &_x, const double &_xi,
             const double &_t, const double &_MuF, const double &_MuR,
-            GPDComputeType::Type _gpdComputeType) = 0;
+            GPDComputeType::Type _gpdComputeType = GPDComputeType::ALL) = 0;
 };
 
 #endif /* GPD_MODULE_H */

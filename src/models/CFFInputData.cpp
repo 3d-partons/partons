@@ -1,33 +1,50 @@
 #include "CFFInputData.h"
 
-CFFInputData::CFFInputData(double _xi, double _t, double _Q2, double _MuF,
-        double _MuR, QCDOrderType _qcdOrderType) :
-        xi(_xi), t(_t), Q2(_Q2), MuF(_MuF), MuR(_MuR), qcdOrderType(
-                _qcdOrderType) {
+CFFInputData::CFFInputData(double xB, double t, double Q2) :
+        m_binId(0), m_xB(xB), m_t(t), m_Q2(Q2) {
 }
 
-//CFFInputData::CFFInputData(GPDGenericModel* _pGPDGenericModel, double _Q2,
-//        QCDOrderType _QCDOrderType) :
-//        pGPDGenericModel(_pGPDGenericModel), Q2(_Q2), qcdOrderType(
-//                _QCDOrderType) {
-//
-//}
+CFFInputData::CFFInputData(unsigned int binId, double xB, double t, double Q2) :
+        m_binId(binId), m_xB(xB), m_t(t), m_Q2(Q2) {
+}
 
 CFFInputData::~CFFInputData() {
-//    if (pGPDGenericModel != 0) {
-//        delete pGPDGenericModel;
-//        pGPDGenericModel = 0;
-//    }
+
 }
 
-//GPDGenericModel* CFFInputData::getGpdGenericModel() const {
-//    return pGPDGenericModel;
-//}
+std::string CFFInputData::toString() {
+    //TODO implement
+    return "";
+}
 
 double CFFInputData::getQ2() const {
-    return Q2;
+    return m_Q2;
 }
 
-QCDOrderType CFFInputData::getQcdOrderType() const {
-    return qcdOrderType;
+void CFFInputData::setQ2(double q2) {
+    m_Q2 = q2;
+}
+
+double CFFInputData::getT() const {
+    return m_t;
+}
+
+void CFFInputData::setT(double t) {
+    m_t = t;
+}
+
+double CFFInputData::getXB() const {
+    return m_xB;
+}
+
+void CFFInputData::setXB(double xB) {
+    m_xB = xB;
+}
+
+unsigned int CFFInputData::getBinId() const {
+    return m_binId;
+}
+
+void CFFInputData::setBinId(unsigned int binId) {
+    m_binId = binId;
 }

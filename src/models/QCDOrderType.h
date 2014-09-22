@@ -8,25 +8,19 @@
 
 #include <string>
 
-struct QCDOrderType {
-    //prevent automatic conversion for any other built-in types such as bool, int, etc
-    template<typename T>
-    operator T() const;
+class QCDOrderType {
 
 public:
     enum Type {
         LO, NLO, NNLO
     };
-    Type t_;
-    QCDOrderType(Type t) :
-            t_(t) {
-    }
-    operator Type() const {
-        return t_;
+
+    QCDOrderType(Type type) :
+            m_type(type) {
     }
 
     std::string toString() {
-        switch (t_) {
+        switch (m_type) {
         case LO:
             return "LO";
             break;
@@ -40,6 +34,21 @@ public:
             return "";
         }
     }
+
+    QCDOrderType::Type getType() const {
+        return m_type;
+    }
+
+    void setType(Type type) {
+        m_type = type;
+    }
+
+private:
+    QCDOrderType::Type m_type;
 };
+
+//inline bool operator==(const QCDOrderType& lhs, const QCDOrderType& rhs) {
+//    return (lhs.t_ == rhs.t_) ? true : false;
+//}
 
 #endif /* QCD_ORDER_TYPE_H */

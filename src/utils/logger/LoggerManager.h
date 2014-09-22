@@ -5,9 +5,9 @@
  * @file LoggerManager.h
  * @author Bryan BERTHOU (CEA Saclay)
  * @date 05 September 2014
- * @version 1.0
+ * @version 2.0
  *
- * Last update : 12 September 2014
+ * Last update : 22 September 2014
  *
  * @class LoggerManager
  * @brief \<singleton\> Use for handle logs.
@@ -18,7 +18,6 @@
 #include <queue>
 #include <string>
 
-#include "../ini/ParserIniFile.h"
 #include "LoggerClassLevel.h"
 #include "LoggerLevel.h"
 #include "LoggerMessage.h"
@@ -37,6 +36,8 @@ public:
     static LoggerManager* getInstance();
     ~LoggerManager();
 
+    void init(const std::string & configFilePath);
+
     void terminate();
 
     void defineLevel(LoggerLevel loggerLevel);
@@ -47,23 +48,20 @@ public:
 
     void* run();
 
-    bool isDebug();
-    bool isInfo();
-    bool isWarn();
-    bool isError();
-
-    void debug(std::string className, std::string functionName,
-            std::string message);
-    void info(std::string className, std::string functionName,
-            std::string message);
-    void warn(std::string className, std::string functionName,
-            std::string message);
-    void error(std::string className, std::string functionName,
-            std::string message);
+    void debug(const std::string & className, const std::string & functionName,
+            const std::string & message);
+    void info(const std::string & className, const std::string & functionName,
+            const std::string & message);
+    void warn(const std::string & className, const std::string & functionName,
+            const std::string & message);
+    void error(const std::string & className, const std::string & functionName,
+            const std::string & message);
 
     bool isLoggableMessage(LoggerLevel loggerLevel);
 
     void addMessageToQueue(LoggerMessage loggerMessage);
+
+    std::string toString();
 
 private:
     /**
@@ -86,8 +84,6 @@ private:
 
     std::queue<LoggerMessage> m_messageQueue;
 
-    ParserIniFile m_parserIni;
-
     bool m_active;
 
     void parseConfigurationFile();
@@ -98,7 +94,6 @@ private:
 
     std::string formatDate(time_t time);
 
-    bool isLoggable(LoggerLevel parentLevel, LoggerLevel childLevel);
     bool isLoggable(LoggerMessage loggerMessage);
 };
 

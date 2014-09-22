@@ -4,18 +4,17 @@
 #include <utility>
 #include <vector>
 
-#include "../StringUtils.h"
+#include "../ini/IniFileParser.h"
+#include "../stringUtils/Formatter.h"
+#include "../stringUtils/StringUtils.h"
 
 // Global static pointer used to ensure a single instance of the class.
 LoggerManager* LoggerManager::m_pInstance = 0;
 
 //TODO remplacer le path du fichier qui est en dur
 LoggerManager::LoggerManager() :
-        m_configFilePath(
-                "/home/bryan/Documents/workspace/PARTONS/data/logger.cfg"), m_outputFilePath(
-                "default.log"), m_defaultLevel(LoggerLevel::INFO), m_printMode(
+        m_outputFilePath("default.log"), m_defaultLevel(LoggerLevel::INFO), m_printMode(
                 LoggerPrintMode::COUT), m_active(true) {
-    parseConfigurationFile();
 }
 
 LoggerManager* LoggerManager::getInstance() {
@@ -34,38 +33,41 @@ LoggerManager::~LoggerManager() {
     }
 }
 
+void LoggerManager::init(const std::string & configFilePath) {
+    m_configFilePath = configFilePath;
+
+    parseConfigurationFile();
+}
+
 //TODO ameliorer le parsing du fichier de config et les erreurs
 void LoggerManager::parseConfigurationFile() {
-    vectorIni data = m_parserIni.parse_ini_file(m_configFilePath);
+    IniFileParser iniFileParser(m_configFilePath);
+    iniFileParser.parse();
 
-    for (unsigned i = 0; i != data.size(); i++) {
-        if (StringUtils::equalsIgnoreCase(data[i].first, ENABLE_NAME)) {
-            m_active = StringUtils::fromStringToBool(data[i].second);
+    std::map<std::string, std::string> data = iniFileParser.getValues();
+    std::map<std::string, std::string>::iterator it;
+
+    for (it = data.begin(); it != data.end(); it++) {
+        if (StringUtils::equalsIgnoreCase(it->first, ENABLE_NAME)) {
+            m_active = StringUtils::fromStringToBool(it->second);
         }
         // retrieve default level value
-        else if (StringUtils::equalsIgnoreCase(data[i].first,
-                DEFAULT_LEVEL_NAME)) {
-            std::string defaultLevel = data[i].second;
+        else if (StringUtils::equalsIgnoreCase(it->first, DEFAULT_LEVEL_NAME)) {
+            std::string defaultLevel = it->second;
             StringUtils::to_upperCase(defaultLevel);
             m_defaultLevel = LoggerLevel::fromString(defaultLevel);
         }
         // retrieve print mode
-        else if (StringUtils::equalsIgnoreCase(data[i].first,
-                PRINT_MODE_NAME)) {
-            std::string printMode = data[i].second;
-            StringUtils::to_upperCase(printMode);
-            m_printMode = LoggerPrintMode::fromString(printMode);
+        else if (StringUtils::equalsIgnoreCase(it->first, PRINT_MODE_NAME)) {
+            m_printMode = LoggerPrintMode::fromString(it->second);
         }
         // handle custom level
         else {
-            std::vector<std::string> cache = StringUtils::split(data[i].first,
-                    '.');
+            std::vector<std::string> cache = StringUtils::split(it->first, '.');
             if (cache.size() > 1 && cache[0] == "logger") {
                 std::string className = cache[1];
                 std::string funcName = "";
-                std::string tempLevel = data[i].second;
-                StringUtils::to_upperCase(tempLevel);
-                LoggerLevel customLevel = LoggerLevel::fromString(tempLevel);
+                LoggerLevel customLevel = LoggerLevel::fromString(it->second);
 
                 switch (cache.size()) {
                 case 2: {
@@ -101,14 +103,6 @@ void LoggerManager::parseConfigurationFile() {
             }
         }
     }
-
-//    for (m_it = m_customClassLevels.begin(); m_it != m_customClassLevels.end();
-//            m_it++) {
-//        std::cerr << "className = " << (m_it->second)->getClassName()
-//                << " defaultPolicy = "
-//                << (m_it->second)->getDefaultClassLevel().toString()
-//                << std::endl;
-//    }
 }
 
 void LoggerManager::terminate() {
@@ -130,76 +124,48 @@ void LoggerManager::update() {
     std::cout << "[LoggerManager] terminated ..." << std::endl;
 }
 
-bool LoggerManager::isLoggable(LoggerLevel parentLevel,
-        LoggerLevel childLevel) {
-    return (childLevel.t_ <= parentLevel.t_) ? true : false;
-}
-
 bool LoggerManager::isLoggable(LoggerMessage loggerMessage) {
     bool result = true;
 
-//    // find if there is some custom policy for the desired class
-//    m_it = m_customClassLevels.find(loggerMessage.getClassNameSource());
-//    // if we find a result
-//    if (m_it != m_customClassLevels.end()) {
-//        // and default class's policy equals DEBUG
-//        if ((m_it->second)->getDefaultClassLevel().t_ == LoggerLevel::DEBUG) {
-//            // log all message from this class
-//            result = true;
-//        }
-//        // else
-//        else {
-//            // we retrieve the custom policy for the desired class's function
-//            LoggerLevel funcLevel = (m_it->second)->find(
-//                    loggerMessage.getFunctionNameSource());
-//            // if function's policy equals DEBUG
-//            if (funcLevel.t_ == LoggerLevel::DEBUG) {
-//                result = true;
-//            } else if (isLoggable((m_it->second)->getDefaultClassLevel(),
-//                    funcLevel)) {
-//                result = true;
-//            }
-//        }
-//    }
-
-// ONLY FOR FILTER CLASS POLICY
-
-// find if there is some custom policy for the desired class
+    // find if there is some custom policy for the desired class
     m_it = m_customClassLevels.find(loggerMessage.getClassNameSource());
     // if we find a result
     if (m_it != m_customClassLevels.end()) {
+        LoggerLevel funcLevel = (m_it->second)->find(
+                loggerMessage.getFunctionNameSource());
+        // check if there is some custom policy for the desired function
+        if (funcLevel.t_ != LoggerLevel::NONE) {
+            if (loggerMessage.getLevel().t_
+                    < (m_it->second)->find(
+                            loggerMessage.getFunctionNameSource()).t_) {
+                result = false;
+            }
+        }
+        // else check if there is a custom default policy for the class
+        else if ((m_it->second)->getDefaultClassLevel().t_
+                != LoggerLevel::NONE) {
+            if (loggerMessage.getLevel().t_
+                    < (m_it->second)->getDefaultClassLevel().t_) {
+                // if true then don't log message
+                result = false;
+            }
 
-        // check if message's policy < class's policy
-        LoggerLevel classLevel = (m_it->second)->getDefaultClassLevel();
-        if (loggerMessage.getLevel().t_ < classLevel.t_) {
-            // if true then don't log message
+        }
+        // if there is no default policy for the class use global policy
+        else if (loggerMessage.getLevel().t_ < m_defaultLevel.t_) {
             result = false;
         }
+    }
+    // else use global policy for the test
+    else if (loggerMessage.getLevel().t_ < m_defaultLevel.t_) {
+        result = false;
 
-//        // looking for function's policy
-//        LoggerLevel funcLevel = (m_it->second)->find(
-//                loggerMessage.getFunctionNameSource());
-//
-//        // if NONE
-//        if (funcLevel.t_ == LoggerLevel::NONE) {
-//            // retrieve class's policy
-//            LoggerLevel classLevel = (m_it->second)->getDefaultClassLevel();
-//
-//            if (classLevel.t_ != LoggerLevel::NONE) {
-//                // if message's policy < class's default level
-//                if (loggerMessage.getLevel().t_ < classLevel.t_) {
-//                    // don't log message
-//                    result = false;
-//                }
-//            }
-//
-//            // else keep logging message
-//        }
     }
 
     return result;
 }
 
+//TODO implementer les autres sorties de logging
 void LoggerManager::handleMessage(LoggerMessage loggerMessage) {
 
     if (isLoggable(loggerMessage)) {
@@ -264,64 +230,50 @@ bool LoggerManager::isLoggableMessage(LoggerLevel loggerLevel) {
     return (loggerLevel.t_ >= m_defaultLevel.t_) ? true : false;
 }
 
-void LoggerManager::debug(std::string className, std::string functionName,
-        std::string message) {
+void LoggerManager::debug(const std::string & className,
+        const std::string & functionName, const std::string & message) {
     addMessageToQueue(
             LoggerMessage(LoggerLevel::DEBUG, className, functionName,
                     message));
 
 }
-void LoggerManager::info(std::string className, std::string functionName,
-        std::string message) {
+void LoggerManager::info(const std::string & className,
+        const std::string & functionName, const std::string & message) {
     addMessageToQueue(
             LoggerMessage(LoggerLevel::INFO, className, functionName, message));
 
 }
-void LoggerManager::warn(std::string className, std::string functionName,
-        std::string message) {
+void LoggerManager::warn(const std::string & className,
+        const std::string & functionName, const std::string & message) {
     addMessageToQueue(
             LoggerMessage(LoggerLevel::WARN, className, functionName, message));
 }
-void LoggerManager::error(std::string className, std::string functionName,
-        std::string message) {
+void LoggerManager::error(const std::string & className,
+        const std::string & functionName, const std::string & message) {
     addMessageToQueue(
             LoggerMessage(LoggerLevel::ERROR, className, functionName,
                     message));
 }
 
+//TODO remettre en place les mutex
 void LoggerManager::addMessageToQueue(LoggerMessage loggerMessage) {
 //m_mutex.lock();
     m_messageQueue.push(loggerMessage);
 //m_mutex.unlock();
 }
 
-bool LoggerManager::isDebug() {
-    if (isActive()) {
-        return isLoggableMessage(LoggerLevel::DEBUG);
+std::string LoggerManager::toString() {
+    Formatter formatter;
+    formatter << "ConfigFilePath = " << m_configFilePath << "\n";
+    formatter << "DefaultLevel = " << m_defaultLevel.toString() << "\n";
+    formatter << "PrintMode = " << m_printMode.toString() << "\n";
+
+    for (m_it = m_customClassLevels.begin(); m_it != m_customClassLevels.end();
+            m_it++) {
+        formatter << m_it->first << " = "
+                << (m_it->second)->getDefaultClassLevel().toString() << "\n";
     }
-    return false;
-}
 
-bool LoggerManager::isInfo() {
-    if (isActive()) {
-        return isLoggableMessage(LoggerLevel::INFO);
-    }
-    return false;
-}
-
-bool LoggerManager::isWarn() {
-    if (isActive()) {
-        return isLoggableMessage(LoggerLevel::WARN);
-    }
-    return false;
-
-}
-
-bool LoggerManager::isError() {
-    if (isActive()) {
-        return isLoggableMessage(LoggerLevel::ERROR);
-    }
-    return false;
-
+    return formatter;
 }
 
