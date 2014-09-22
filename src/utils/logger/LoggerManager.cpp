@@ -14,7 +14,7 @@ LoggerManager* LoggerManager::m_pInstance = 0;
 //TODO remplacer le path du fichier qui est en dur
 LoggerManager::LoggerManager() :
         m_outputFilePath("default.log"), m_defaultLevel(LoggerLevel::INFO), m_printMode(
-                LoggerPrintMode::COUT), m_active(true) {
+                LoggerPrintMode::COUT), m_active(false) {
 }
 
 LoggerManager* LoggerManager::getInstance() {
@@ -235,7 +235,6 @@ void LoggerManager::debug(const std::string & className,
     addMessageToQueue(
             LoggerMessage(LoggerLevel::DEBUG, className, functionName,
                     message));
-
 }
 void LoggerManager::info(const std::string & className,
         const std::string & functionName, const std::string & message) {
@@ -258,7 +257,9 @@ void LoggerManager::error(const std::string & className,
 //TODO remettre en place les mutex
 void LoggerManager::addMessageToQueue(LoggerMessage loggerMessage) {
 //m_mutex.lock();
-    m_messageQueue.push(loggerMessage);
+    if (m_active == true) {
+        m_messageQueue.push(loggerMessage);
+    }
 //m_mutex.unlock();
 }
 

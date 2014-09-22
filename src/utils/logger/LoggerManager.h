@@ -28,6 +28,8 @@ const std::string ENABLE_NAME = "enable";
 const std::string DEFAULT_LEVEL_NAME = "default.level";
 const std::string PRINT_MODE_NAME = "print.mode";
 
+//TODO relatif folder for configFile
+
 class LoggerManager: public Thread {
 public:
     /**
