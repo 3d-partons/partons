@@ -7,7 +7,7 @@
  * @date 05 September 2014
  * @version 1.0
  *
- * Last update : 05 September 2014
+ * Last update : 22 September 2014
  *
  * @struct LoggerPrintMode
  * @brief
@@ -17,25 +17,18 @@
 
 #include "../stringUtils/StringUtils.h"
 
-struct LoggerPrintMode {
-    //prevent automatic conversion for any other built-in types such as bool, int, etc
-    template<typename T>
-    operator T() const;
-
+class LoggerPrintMode {
 public:
     enum Type {
         COUT, FILE, BOTH, DEFAULT
     };
-    Type t_;
-    LoggerPrintMode(Type t) :
-            t_(t) {
-    }
-    operator Type() const {
-        return t_;
+
+    LoggerPrintMode(Type type) :
+            m_type(type) {
     }
 
     std::string toString() {
-        switch (t_) {
+        switch (m_type) {
         case COUT:
             return "COUT";
             break;
@@ -66,6 +59,16 @@ public:
         return DEFAULT;
     }
 
+    LoggerPrintMode::Type getType() const {
+        return m_type;
+    }
+
+    void setType(Type type) {
+        m_type = type;
+    }
+
+private:
+    LoggerPrintMode::Type m_type;
 };
 
 #endif /* LOGGER_PRINT_MODE_H */

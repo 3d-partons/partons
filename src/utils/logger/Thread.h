@@ -17,6 +17,7 @@ public:
     int start();
     virtual void* run() = 0;
 
+    pthread_t getThreadId();
 private:
 
     pthread_t m_tid;

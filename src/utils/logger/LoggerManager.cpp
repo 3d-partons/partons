@@ -1,5 +1,7 @@
 #include "LoggerManager.h"
 
+#include <pthread.h>
+#include <unistd.h>
 #include <iostream>
 #include <utility>
 #include <vector>
@@ -30,6 +32,11 @@ LoggerManager::~LoggerManager() {
     for (m_it = m_customClassLevels.begin(); m_it != m_customClassLevels.end();
             m_it++) {
         delete (m_it->second);
+    }
+
+    if (m_pInstance != 0) {
+        delete m_pInstance;
+        m_pInstance = 0;
     }
 }
 
@@ -105,7 +112,7 @@ void LoggerManager::parseConfigurationFile() {
     }
 }
 
-void LoggerManager::terminate() {
+void LoggerManager::stop() {
     m_active = false;
 }
 
@@ -114,11 +121,14 @@ void LoggerManager::defineLevel(LoggerLevel loggerLevel) {
 }
 
 void LoggerManager::update() {
-    while (isActive()) {
+    while (isActive() || !m_messageQueue.empty()) {
         while (!m_messageQueue.empty()) {
             handleMessage(m_messageQueue.front());
             m_messageQueue.pop();
         }
+
+        //TODO Implementations of sleep or usleep with SIGALRM are non-conformant, per POSIX
+        usleep(30);
     }
 
     std::cout << "[LoggerManager] terminated ..." << std::endl;
@@ -169,7 +179,7 @@ bool LoggerManager::isLoggable(LoggerMessage loggerMessage) {
 void LoggerManager::handleMessage(LoggerMessage loggerMessage) {
 
     if (isLoggable(loggerMessage)) {
-        switch (m_printMode.t_) {
+        switch (m_printMode.getType()) {
         case LoggerPrintMode::COUT: {
             writeConsole(loggerMessage);
             break;
@@ -217,8 +227,9 @@ void LoggerManager::writeConsole(LoggerMessage loggerMessage) {
 }
 
 void* LoggerManager::run() {
+    // Wait for the thread before terminate the main function
+    pthread_join(getThreadId(), 0);
     update();
-
     return 0;
 }
 

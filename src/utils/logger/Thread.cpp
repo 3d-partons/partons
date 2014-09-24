@@ -26,3 +26,7 @@ int Thread::start() {
     }
     return result;
 }
+
+pthread_t Thread::getThreadId() {
+    return m_tid;
+}

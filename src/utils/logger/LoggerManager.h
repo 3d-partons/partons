@@ -40,7 +40,7 @@ public:
 
     void init(const std::string & configFilePath);
 
-    void terminate();
+    void stop();
 
     void defineLevel(LoggerLevel loggerLevel);
 
