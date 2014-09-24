@@ -3,9 +3,9 @@
 
 #include <vector>
 
-#include "../gpd/GPDComputeType.h"
-#include "../gpd/GPDInputData.h"
-#include "../gpd/GPDModule.h"
+#include "../beans/gpd/GPDComputeType.h"
+#include "../beans/gpd/GPDInputData.h"
+#include "../modules/GPDModule.h"
 
 class ListGPDOutputData;
 

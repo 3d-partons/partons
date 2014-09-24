@@ -18,7 +18,7 @@
 #include <map>
 #include <string>
 
-#include "../ModuleObject.h"
+#include "../modules/ModuleObject.h"
 
 class CFFModule;
 class GPDModule;

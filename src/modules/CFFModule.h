@@ -16,8 +16,8 @@
 #include <complex>
 #include <string>
 
-#include "../ModuleObject.h"
-#include "../QCDOrderType.h"
+#include "../beans/QCDOrderType.h"
+#include "ModuleObject.h"
 
 class GPDModule;
 class GPDService;

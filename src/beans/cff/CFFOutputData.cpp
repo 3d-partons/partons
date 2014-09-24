@@ -1,6 +1,6 @@
 #include "CFFOutputData.h"
 
-#include "../utils/stringUtils/Formatter.h"
+#include "../../utils/stringUtils/Formatter.h"
 
 CFFOutputData::CFFOutputData(CFFInputData cffInputData) :
         m_cff(0., 0.), m_cffInputData(cffInputData) {

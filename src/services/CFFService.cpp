@@ -4,7 +4,7 @@
 #include <stdexcept>
 #include <utility>
 
-#include "../cff/CFFModule.h"
+#include "../modules/CFFModule.h"
 #include "../utils/fileUtils/FileExceptionType.h"
 #include "../utils/fileUtils/FileUtils.h"
 #include "../utils/logger/LoggerManager.h"

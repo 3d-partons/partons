@@ -1,6 +1,6 @@
 #include "BaseObject.h"
 
-#include <iostream>
+//#include <iostream>
 
 #include "utils/logger/LoggerManager.h"
 
@@ -12,8 +12,6 @@ BaseObject::BaseObject(std::string className) :
 BaseObject::BaseObject(const BaseObject& other) {
     m_className = other.getClassName();
     m_pLoggerManager = LoggerManager::getInstance();
-
-    std::cerr << "[BaseObject] copy" << std::endl;
 }
 BaseObject* BaseObject::clone() const {
     return new BaseObject(*this);

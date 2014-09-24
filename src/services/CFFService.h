@@ -2,10 +2,10 @@
 #include <string>
 #include <vector>
 
+#include "../beans/cff/CFFInputData.h"
+#include "../beans/cff/CFFOutputData.h"
+#include "../beans/QCDOrderType.h"
 #include "../BaseObject.h"
-#include "../cff/CFFInputData.h"
-#include "../cff/CFFOutputData.h"
-#include "../QCDOrderType.h"
 
 class CFFModule;
 class GPDModule;

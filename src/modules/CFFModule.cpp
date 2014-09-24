@@ -15,10 +15,10 @@ CFFModule::CFFModule(const CFFModule &other) :
 
 CFFModule::~CFFModule() {
     //TODO a verifier
-    if (m_pGPDService != 0) {
-        delete m_pGPDService;
-        m_pGPDService = 0;
-    }
+//    if (m_pGPDService != 0) {
+//        delete m_pGPDService;
+//        m_pGPDService = 0;
+//    }
 }
 
 void CFFModule::setGPDModule(GPDModule* gpdModule) {

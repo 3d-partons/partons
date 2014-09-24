@@ -7,14 +7,14 @@
 #include <cmath>
 #include <iostream>
 
-#include "../FundamentalPhysicalConstants.h"
-#include "../services/ModuleObjectFactory.h"
-#include "../utils/logger/LoggerManager.h"
-#include "../utils/stringUtils/Formatter.h"
-#include "GPDOutputData.h"
-#include "GPDQuarkFlavorData.h"
-#include "GPDResultData.h"
-#include "QuarkFlavor.h"
+#include "../../beans/gpd/GPDOutputData.h"
+#include "../../beans/gpd/GPDQuarkFlavorData.h"
+#include "../../beans/gpd/GPDResultData.h"
+#include "../../beans/QuarkFlavor.h"
+#include "../../FundamentalPhysicalConstants.h"
+#include "../../services/ModuleObjectFactory.h"
+#include "../../utils/logger/LoggerManager.h"
+#include "../../utils/stringUtils/Formatter.h"
 
 // Initialise GK11GPDModule::ID with a unique name.
 const std::string GK11Model::moduleID = "GK11Model";

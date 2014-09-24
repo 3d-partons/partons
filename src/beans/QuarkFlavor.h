@@ -8,25 +8,21 @@
 
 #include <string>
 
-struct QuarkFlavor {
-    //prevent automatic conversion for any other built-in types such as bool, int, etc
-    template<typename T>
-    operator T() const;
-
+class QuarkFlavor {
 public:
     enum Type {
         UP, DOWN, STRANGE, CHARM, BOTTOM, TOP
     };
-    Type t_;
-    QuarkFlavor(Type t) :
-            t_(t) {
+
+    QuarkFlavor(Type type) :
+            m_type(type) {
     }
     operator Type() const {
-        return t_;
+        return m_type;
     }
 
     std::string toString() {
-        switch (t_) {
+        switch (m_type) {
         case UP:
             return "UP";
             break;
@@ -51,7 +47,7 @@ public:
     }
 
     std::string getShortName() {
-        switch (t_) {
+        switch (m_type) {
         case UP:
             return "u";
             break;
@@ -74,6 +70,17 @@ public:
             return "default";
         }
     }
+
+    QuarkFlavor::Type getType() const {
+        return m_type;
+    }
+
+    void setType(Type type) {
+        m_type = type;
+    }
+
+private:
+    QuarkFlavor::Type m_type;
 };
 
 #endif /* QUARK_FLAVOR_H */

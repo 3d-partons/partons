@@ -2,8 +2,7 @@
 
 #include <sstream>
 
-//#include "GPDComputeType.h"
-//#include "QuarkFlavor.h"
+#include "../QuarkFlavor.h"
 
 GPDQuarkFlavorData::GPDQuarkFlavorData(GPDComputeType &_gpdComputeType,
         QuarkFlavor::Type _quarkFlavorType) :

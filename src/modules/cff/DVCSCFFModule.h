@@ -9,8 +9,8 @@
 #include <complex>
 #include <string>
 
-#include "../QCDOrderType.h"
-#include "CFFModule.h"
+#include "../../beans/QCDOrderType.h"
+#include "../CFFModule.h"
 
 //TODO In Progress
 

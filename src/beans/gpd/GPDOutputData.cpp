@@ -13,7 +13,8 @@ GPDOutputData::~GPDOutputData() {
 void GPDOutputData::addGPDResultData(GPDResultData gpdResultData) {
     gpdResults.insert(
             std::pair<GPDComputeType::Type, GPDResultData>(
-                    gpdResultData.getGpdComputeType()->getType(), gpdResultData));
+                    gpdResultData.getGpdComputeType()->getType(),
+                    gpdResultData));
 }
 
 GPDResultData* GPDOutputData::getGPDResultData(

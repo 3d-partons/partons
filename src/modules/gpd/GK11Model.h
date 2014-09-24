@@ -18,8 +18,8 @@
 #include <string>
 #include <vector>
 
-#include "GPDComputeType.h"
-#include "GPDModule.h"
+#include "../../beans/gpd/GPDComputeType.h"
+#include "../GPDModule.h"
 
 class GPDOutputData;
 class GPDResultData;

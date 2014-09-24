@@ -3,8 +3,8 @@
 #include <sstream>
 #include <utility>
 
-#include "../cff/CFFModule.h"
-#include "../gpd/GPDModule.h"
+#include "../modules/CFFModule.h"
+#include "../modules/GPDModule.h"
 
 // Global static pointer used to ensure a single instance of the class.
 ModuleObjectFactory* ModuleObjectFactory::m_pInstance = 0;

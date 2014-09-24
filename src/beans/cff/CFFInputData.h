@@ -13,9 +13,6 @@
 
 #include "../GenericData.h"
 
-class GK11Model;
-class GPDGenericModel;
-
 class CFFInputData: public GenericData {
 public:
 

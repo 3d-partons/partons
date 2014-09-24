@@ -1,6 +1,6 @@
 #include "ModuleObject.h"
 
-#include <iostream>
+//#include <iostream>
 
 unsigned int ModuleObject::m_uniqueID = 0;
 
@@ -13,8 +13,6 @@ ModuleObject::ModuleObject(const ModuleObject &other) :
 
     m_parameters = other.getParameters();
     m_moduleID = other.getModuleID();
-
-    std::cerr << "[BaseModule] copy" << std::endl;
 }
 
 ModuleObject* ModuleObject::clone() const {

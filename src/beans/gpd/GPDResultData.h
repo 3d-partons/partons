@@ -15,11 +15,9 @@
 #include <vector>
 
 #include "../GenericData.h"
+#include "../QuarkFlavor.h"
 #include "GPDComputeType.h"
 #include "GPDQuarkFlavorData.h"
-#include "QuarkFlavor.h"
-
-struct GPDComputeType;
 
 class GPDResultData: public GenericData {
 public:

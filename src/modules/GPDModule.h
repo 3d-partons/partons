@@ -15,9 +15,10 @@
 
 #include <string>
 
-#include "../ModuleObject.h"
-#include "GPDComputeType.h"
-#include "GPDOutputData.h"
+#include "../beans/gpd/GPDComputeType.h"
+#include "ModuleObject.h"
+
+class GPDOutputData;
 
 class GPDModule: public ModuleObject {
 

@@ -3,7 +3,7 @@
 #include <sstream>
 #include <utility>
 
-//#include "GPDComputeType.h"
+#include "../QuarkFlavor.h"
 
 GPDResultData::GPDResultData(GPDComputeType &_gpdComputeType) :
         m_gpdComputeType(_gpdComputeType), /*squareChargeAveraged(0.),*/m_gluon(
@@ -18,7 +18,7 @@ void GPDResultData::addGPDQuarkFlavorData(
         GPDQuarkFlavorData &_gpdQuarkFlavorData) {
     m_gpdQuarkFlavorData.insert(
             std::pair<QuarkFlavor::Type, GPDQuarkFlavorData>(
-                    _gpdQuarkFlavorData.getQuarkFlavor()->t_,
+                    _gpdQuarkFlavorData.getQuarkFlavor()->getType(),
                     _gpdQuarkFlavorData));
 }
 

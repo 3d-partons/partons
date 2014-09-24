@@ -10,8 +10,8 @@
 
 #include <string>
 
+#include "../QuarkFlavor.h"
 #include "GPDComputeType.h"
-#include "QuarkFlavor.h"
 
 class GPDQuarkFlavorData {
     GPDComputeType m_gpdComputeType;

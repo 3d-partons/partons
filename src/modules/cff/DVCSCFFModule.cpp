@@ -4,14 +4,14 @@
 #include <cmath>
 #include <stdexcept>
 
-#include "../FundamentalPhysicalConstants.h"
-#include "../gpd/GPDComputeType.h"
-#include "../gpd/GPDModule.h"
-#include "../gpd/GPDOutputData.h"
-#include "../gpd/GPDResultData.h"
-#include "../services/ModuleObjectFactory.h"
-#include "../utils/stringUtils/Formatter.h"
-#include "RunningAlphaStrong.h"
+#include "../../beans/gpd/GPDComputeType.h"
+#include "../../beans/gpd/GPDOutputData.h"
+#include "../../beans/gpd/GPDResultData.h"
+#include "../../FundamentalPhysicalConstants.h"
+#include "../../services/ModuleObjectFactory.h"
+#include "../../utils/stringUtils/Formatter.h"
+#include "../alphaS/RunningAlphaStrong.h"
+#include "../GPDModule.h"
 
 // Initialise GK11GPDModule::ID with a unique name.
 const std::string DVCSCFFModule::moduleID = "DVCSCFFModule";

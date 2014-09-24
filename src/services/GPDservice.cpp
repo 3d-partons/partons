@@ -1,10 +1,11 @@
 #include <stddef.h>
 #include <vector>
 
-#include "../gpd/GPDComputeType.h"
-#include "../gpd/GPDInputData.h"
-#include "../gpd/GPDModule.h"
-#include "../gpd/ListGPDOutputData.h"
+#include "../beans/gpd/GPDComputeType.h"
+#include "../beans/gpd/GPDInputData.h"
+#include "../beans/gpd/GPDOutputData.h"
+#include "../beans/gpd/ListGPDOutputData.h"
+#include "../modules/GPDModule.h"
 #include "GPDService.h"
 
 // Global static pointer used to ensure a single instance of the class.
@@ -63,8 +64,7 @@ ListGPDOutputData GPDService::compute(GPDInputData &_gpdInputData,
 }
 
 ListGPDOutputData GPDService::compute(
-        std::vector<GPDInputData> _listOfGPDInputData,
-        GPDModule* _pGPDModule) {
+        std::vector<GPDInputData> _listOfGPDInputData, GPDModule* _pGPDModule) {
     ListGPDOutputData results = ListGPDOutputData();
 
     // compute GPDModule for each inputData

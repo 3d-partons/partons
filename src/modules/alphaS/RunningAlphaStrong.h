@@ -46,7 +46,7 @@
 #ifndef RUNNING_ALPHA_STRONG_H
 #define RUNNING_ALPHA_STRONG_H
 
-#include "../FundamentalPhysicalConstants.h"
+#include "../../FundamentalPhysicalConstants.h"
 
 /*-------------------------------- Includes ----------------------------------*/
 

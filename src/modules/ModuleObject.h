@@ -20,7 +20,7 @@
 #include <string>
 #include <vector>
 
-#include "BaseObject.h"
+#include "../BaseObject.h"
 
 class ModuleObject: public BaseObject {
 public:
@@ -53,7 +53,6 @@ public:
     void setParameters(const std::vector<double>& parameters);
     const std::string& getModuleID() const;
     unsigned int getId() const;
-
 
 private:
     static unsigned int m_uniqueID;
