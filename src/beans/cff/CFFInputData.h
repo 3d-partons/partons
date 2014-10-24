@@ -16,8 +16,15 @@
 class CFFInputData: public GenericData {
 public:
 
-    CFFInputData(double xB, double t, double Q2);
-    CFFInputData(unsigned int binId, double xB, double t, double Q2);
+    CFFInputData(const double &xB, const double &t, const double &Q2);
+    CFFInputData(const unsigned int &binId, const double &xB, const double &t,
+            const double &Q2);
+    /**
+     * Copy constructor
+     *
+     * @param other
+     */
+    CFFInputData(const CFFInputData &other);
     virtual ~CFFInputData();
 
     std::string toString();

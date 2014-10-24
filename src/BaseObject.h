@@ -4,7 +4,6 @@
 /**
  * @author Bryan BERTHOU (CEA Saclay)
  * @date 09 September 2014
- * Last update : 23 September 2014
  */
 
 #include <string>
@@ -13,35 +12,51 @@ class LoggerManager;
 
 class BaseObject {
 public:
-    BaseObject(std::string className);
-    /**
-     * Copy constructor
-     *
-     * @param other
-     */
-    BaseObject(const BaseObject& other);
+	/**
+	 * Constructor
+	 *
+	 * @param className
+	 */
+	BaseObject(std::string className);
 
-    /**
-     * Default destructor
-     */
-    ~BaseObject();
+	/**
+	 * Default destructor
+	 */
+	virtual ~BaseObject();
 
-    /**
-     * Virtual clone function to allow factory to copy all derived members
-     * @return
-     */
-    virtual BaseObject* clone() const;
+	/**
+	 * Virtual clone function to allow factory to copy all derived members
+	 * @return
+	 */
+	virtual BaseObject* clone() const;
 
-    // ##### GETTERS & SETTERS #####
+	//TODO voir si on en a besoin pour gérer la durée de vie des pointeurs membres des sous classes
+	//virtual void destroy() = 0;
 
-    const std::string& getClassName() const;
-    void setClassName(const std::string& className);
+	// ##### GETTERS & SETTERS #####
+
+	unsigned int getObjectId() const;
+	void setObjectId(unsigned int objectId);
+	const std::string& getClassName() const;
+	void setClassName(const std::string& className);
 
 protected:
-    LoggerManager* m_pLoggerManager; ///< Logger's pointer
+	LoggerManager* m_pLoggerManager; ///< Logger's pointer
+
+	/**
+	 * Copy constructor
+	 *
+	 * @param other
+	 */
+	BaseObject(const BaseObject& other);
 
 private:
-    std::string m_className; ///< String that represents name of child class used by the logger for know the source of the trace
+	static unsigned int uniqueID;
+
+	unsigned int m_objectId;
+	std::string m_className; ///< String that represents class's name used by the logger for know the source of the trace
+
+	unsigned int getUniqueID();
 };
 
 #endif /* BASE_OBJECT_H */

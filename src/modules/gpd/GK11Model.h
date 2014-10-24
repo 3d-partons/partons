@@ -21,6 +21,8 @@
 #include "../../beans/gpd/GPDComputeType.h"
 #include "../GPDModule.h"
 
+class GPDQuarkFlavorData;
+
 class GPDOutputData;
 class GPDResultData;
 
@@ -36,8 +38,6 @@ public:
      * Default constructor
      */
     GK11Model();
-
-    GK11Model(const GK11Model& other);
 
     /**
      * Default destructor
@@ -58,7 +58,7 @@ public:
      */
     virtual GPDOutputData compute(const double &_x, const double &_xi,
             const double &_t, const double &_MuF, const double &_MuR,
-            GPDComputeType::Type _gpdComputeType);
+            GPDComputeType::Type gpdComputeType);
 
     // ##### GETTERS & SETTERS #####
 
@@ -120,9 +120,21 @@ public:
     double getHtsea() const;
     double getHtuval() const;
     double getHuval() const;
+    unsigned int getNbOfQuarkFlavor() const;
+
+protected:
+    /**
+     * Copy constructor
+     *
+     * Use by the factory
+     *
+     * @param other
+     */
+    GK11Model(const GK11Model& other);
 
 private:
 
+    unsigned int m_nbOfQuarkFlavor;
     double c1, c2, c3, c4, c5, c6, c7, c8; // Coefficients of the expansion of CTEQ PDF in terms of half-integer powers of beta (eq. (26))
     double b0; // Exponential t-dependence (eq. (22))
     double kappa_s; // Flavour symmetry breaking factor, eq. (36)
@@ -184,50 +196,51 @@ private:
     std::vector<double> Etuval1mtab; ///< Etval1(i=0,1,2,3) for valence u for -xb
     std::vector<double> Etdval1mtab; ///< Etval1(i=0,1,2,3) for valence d for -xb
 
-    void calculateHCoefs(const double &_x, const double &_xi, const double &_t);
-    void calculateECoefs(const double &_x, const double &_xi, const double &_t);
-    void calculateHtCoefs(const double &_x, const double &_xi,
-            const double &_t);
-    void calculateEtCoefs(const double &_x, const double &_xi,
-            const double &_t);
+    void calculateHCoefs();
+    void calculateECoefs();
+    void calculateHtCoefs();
+    void calculateEtCoefs();
 
-    void calculateHKas(const double &_t);
-    void calculateEKas(const double &_t);
-    void calculateHtKas(const double &_t);
-    void calculateEtKas(const double &_t);
+    void calculateHKas();
+    void calculateEKas();
+    void calculateHtKas();
+    void calculateEtKas();
 
-    double Et_pole(const double &_xi, const double &_t, double x); ///< Pion pole contribution to Et
+    double Et_pole(double x); ///< Pion pole contribution to Et
 
-    double Hi1(const double &_xi, double x, double i, double k);
-    double Hs1(const double &_xi, double x, double i, double k);
-    double Hval1(const double &_xi, double x, double i, double k);
-    double Ei1(const double &_xi, double x, double i, double k);
-    double Es1(const double &_xi, double x, double i, double k);
-    double Eval1(const double &_xi, double x, double i, double k);
-    double Hti1(const double &_xi, double x, double i, double k);
-    double Htval1(const double &_xi, double x, double i, double k);
-    double Etval1(const double &_xi, double x, double i, double k);
+    double Hi1(double x, double i, double k);
+    double Hs1(double x, double i, double k);
+    double Hval1(double x, double i, double k);
+    double Ei1(double x, double i, double k);
+    double Es1(double x, double i, double k);
+    double Eval1(double x, double i, double k);
+    double Hti1(double x, double i, double k);
+    double Htval1(double x, double i, double k);
+    double Etval1(double x, double i, double k);
 
-    double Hi1_alt(const double &_xi, double x, double i, double k);
-    double Hs1_alt(const double &_xi, double x, double i, double k);
-    double Hval1_alt(const double &_xi, double x, double i, double k);
-    double Ei1_alt(const double &_xi, double x, double i, double k);
-    double Es1_alt(const double &_xi, double x, double i, double k);
-    double Eval1_alt(const double &_xi, double x, double i, double k);
-    double Hti1_alt(const double &_xi, double x, double i, double k);
-    double Htval1_alt(const double &_xi, double x, double i, double k);
-    double Etval1_alt(const double &_xi, double x, double i, double k);
+    double Hi1_alt(double x, double i, double k);
+    double Hs1_alt(double x, double i, double k);
+    double Hval1_alt(double x, double i, double k);
+    double Ei1_alt(double x, double i, double k);
+    double Es1_alt(double x, double i, double k);
+    double Eval1_alt(double x, double i, double k);
+    double Hti1_alt(double x, double i, double k);
+    double Htval1_alt(double x, double i, double k);
+    double Etval1_alt(double x, double i, double k);
 
-    void updateVariables(const double &_MuF);
+    virtual void isModuleConfigured();
+    virtual void updateVariables();
 
-    GPDResultData computeH(const double &_x, const double &_xi,
-            const double &_t); ///< Compute GPD H at considered kinematics
-    GPDResultData computeE(const double &_x, const double &_xi,
-            const double &_t); ///< Compute GPD E at considered kinematics
-    GPDResultData computeHt(const double &_x, const double &_xi,
-            const double &_t); ///< Compute GPD Ht at considered kinematics
-    GPDResultData computeEt(const double &_x, const double &_xi,
-            const double &_t); ///< Compute GPD Et at considered kinematics
+    //GPDResultData compute(GPDComputeType gpdComputeType);
+
+    virtual GPDResultData computeH(); ///< Compute GPD H at considered kinematics
+    virtual GPDResultData computeE(); ///< Compute GPD E at considered kinematics
+    virtual GPDResultData computeHt(); ///< Compute GPD Ht at considered kinematics
+    virtual GPDResultData computeEt(); ///< Compute GPD Et at considered kinematics
+
+    double computeSinglet(const GPDQuarkFlavorData &quark_u,
+            const GPDQuarkFlavorData &quark_d,
+            const GPDQuarkFlavorData &quark_s);
 };
 
 #endif /* GK11_MODEL_H */

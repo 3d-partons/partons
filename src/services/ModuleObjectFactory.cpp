@@ -60,7 +60,8 @@ std::string ModuleObjectFactory::toString() {
     os << "[BaseModuleFactory]" << std::endl;
     for (m_it = m_moduleRegistry.begin(); m_it != m_moduleRegistry.end();
             m_it++) {
-        os << m_it->first << " - id = " << m_it->second->getId() << std::endl;
+        os << m_it->first << " - id = " << m_it->second->getObjectId()
+                << std::endl;
     }
 
     return os.str();

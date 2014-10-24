@@ -24,47 +24,44 @@
 
 class ModuleObject: public BaseObject {
 public:
-    /**
-     * Default constructor
-     */
-    ModuleObject(const std::string & moduleID);
+	/**
+	 * Default constructor
+	 */
+	ModuleObject(const std::string & moduleID);
 
-    /***
-     * Copy constructor
-     * @param other
-     */
-    ModuleObject(const ModuleObject &other);
+	/**
+	 * Default destructor
+	 */
+	virtual ~ModuleObject();
 
-    /**
-     * Default destructor
-     */
-    virtual ~ModuleObject();
+	/**
+	 * Return the number of current parameters used for configure this module.
+	 */
+	size_t getNbOfParameters();
 
-    /**
-     * Return the number of current parameters used for configure this module.
-     */
-    size_t getNbOfParameters();
-
-    virtual ModuleObject* clone() const;
+	virtual ModuleObject* clone() const;
 
 // ################   GETTERS & SETTERS   ################
 
-    const std::vector<double>& getParameters() const;
-    void setParameters(const std::vector<double>& parameters);
-    const std::string& getModuleID() const;
-    unsigned int getId() const;
+	const std::vector<double>& getParameters() const;
+	void setParameters(const std::vector<double>& parameters);
+	const std::string& getModuleID() const;
+protected:
+	/***
+	 * Copy constructor
+	 * @param other
+	 */
+	ModuleObject(const ModuleObject &other);
 
 private:
-    static unsigned int m_uniqueID;
-    unsigned int m_id;
 
-    std::vector<double> m_parameters; ///< parameters used for configure this module.
+	std::vector<double> m_parameters; ///< parameters used for configure this module.
 
-    //TODO redondance avec className dans la classe fille
-    std::string m_moduleID;
+	//TODO redondance avec className dans la classe fille
+	std::string m_moduleID;
 
-    unsigned int getUniqueID();
-
+	virtual void isModuleConfigured();
+	virtual void updateVariables();
 };
 
 #endif /* BASE_MODULE_H */

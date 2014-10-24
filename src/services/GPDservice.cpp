@@ -49,7 +49,7 @@ ListGPDOutputData GPDService::compute(GPDInputData &_gpdInputData,
 
 ListGPDOutputData GPDService::compute(GPDInputData &_gpdInputData,
         std::vector<GPDModule*> _listOfGPDToCompute,
-        GPDComputeType::Type _gpdComputeType) {
+        GPDComputeType _gpdComputeType) {
     ListGPDOutputData results = ListGPDOutputData();
 
     // compute inputData for each GPDModule

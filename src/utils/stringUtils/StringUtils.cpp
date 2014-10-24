@@ -68,11 +68,6 @@ double StringUtils::fromStringToDouble(const std::string & str) {
     return atof(str.c_str());
 }
 
-template<typename T>
-std::string StringUtils::toString(const T & value) {
-    return Formatter() << value;
-}
-
 bool StringUtils::fromStringToBool(std::string chaine) {
     to_upperCase(chaine);
     return (chaine == "TRUE") ? true : false;

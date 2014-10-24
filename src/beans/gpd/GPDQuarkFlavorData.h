@@ -13,43 +13,61 @@
 #include "../QuarkFlavor.h"
 #include "GPDComputeType.h"
 
+//TODO GPD -> PartonDistributionQuarkFlavorData
 class GPDQuarkFlavorData {
-    GPDComputeType m_gpdComputeType;
-    QuarkFlavor m_quarkFlavor;
-
-    //TODO changer le nom de cette variable
-    double Hq;          ///< GPD(q), flavour singlet
-    double valence;     ///< GPD(q), valence part
-    double sea;         ///< GPD(q), sea part
-    double singlet;     ///< GPD(q), charge singlet part
 
 public:
-    GPDQuarkFlavorData(GPDComputeType &_gpdComputeType,
-            QuarkFlavor::Type _quarkFlavorType);
+	GPDQuarkFlavorData(GPDComputeType &_gpdComputeType,
+			QuarkFlavor::Type _quarkFlavorType);
 
-    virtual ~GPDQuarkFlavorData();
+	virtual ~GPDQuarkFlavorData();
 
-    std::string toString();
+	std::string toString();
 
-    double getHq() const;
+	double getHq() const;
 
-    void setHq(double hq);
+	void setHq(double hq);
 
-    double getSea() const;
+	double getSea() const;
 
-    void setSea(double hqSea);
+	void setSea(double hqSea);
 
-    double getSinglet() const;
+	double getSinglet() const;
 
-    void setSinglet(double hqSinglet);
+	void setSinglet(double hqSinglet);
 
-    double getValence() const;
+	double getValence() const;
 
-    void setValence(double hqVal);
+	void setValence(double hqVal);
 
-    QuarkFlavor* getQuarkFlavor();
+	QuarkFlavor* getQuarkFlavor();
 
-    void setQuarkFlavor(QuarkFlavor &_quarkFlavor);
+	void setQuarkFlavor(QuarkFlavor &_quarkFlavor);
+
+	double getPartonDistributionMinus() const;
+	void setPartonDistributionMinus(double partonDistributionMinus);
+	double getPartonDistributionPlus() const;
+	void setPartonDistributionPlus(double partonDistributionPlus);
+
+private:
+	GPDComputeType m_gpdComputeType;
+	QuarkFlavor m_quarkFlavor;
+
+	//TODO changer le nom de cette variable; Hq -> partonDistribution
+	double Hq;          ///< GPD(q), flavour singlet
+	double valence;     ///< GPD(q), valence part
+	double sea;         ///< GPD(q), sea part
+
+	//TODO singlet -> devient pdPlus
+	double pdSinglet;     ///< GPD(q), charge singlet part
+
+	//TODO faire référence à la revue paraph 3.3.2 de Markus Diehl
+	double m_partonDistributionPlus;		///<
+	double m_partonDistributionMinus;		///<
+
+	//TODO a voir
+	double quark;
+	double antiQuark;
 };
 
 #endif /* GPD_QUARK_FLAVOR_DATA */

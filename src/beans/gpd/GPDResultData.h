@@ -19,9 +19,11 @@
 #include "GPDComputeType.h"
 #include "GPDQuarkFlavorData.h"
 
+//TODO PartonDistributionResultData
 class GPDResultData: public GenericData {
 public:
 
+    GPDResultData();
     GPDResultData(GPDComputeType &_gpdComputeType);
     ~GPDResultData();
 
@@ -41,6 +43,8 @@ public:
     double getGluon() const;
 //    double getSquareChargeAveraged() const;
 //    void setSquareChargeAveraged(double squareChargeAveraged);
+    std::vector<GPDQuarkFlavorData> getListOfQuarkFlavorData();
+    size_t sizeOfListOfQuarkFlavorData();
 
 private:
     std::map<QuarkFlavor::Type, GPDQuarkFlavorData> m_gpdQuarkFlavorData;

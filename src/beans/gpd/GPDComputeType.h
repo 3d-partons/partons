@@ -13,12 +13,25 @@ class GPDComputeType {
 
 public:
     enum Type {
-        ALL, H, Ht, E, Et
+        UNDEFINED, ALL, H, Ht, E, Et, HTrans
     };
+
+    GPDComputeType() :
+            m_type(GPDComputeType::UNDEFINED) {
+    }
 
     GPDComputeType(Type type) :
             m_type(type) {
     }
+
+    /**
+     * Copy constructor
+     * @param other
+     */
+    GPDComputeType(const GPDComputeType &other) {
+        m_type = other.m_type;
+    }
+
     operator Type() const {
         return m_type;
     }
@@ -38,7 +51,7 @@ public:
             return "Et";
             break;
         default:
-            return "default";
+            return "UNDEFINED";
         }
     }
 

@@ -11,8 +11,12 @@
 class QuarkFlavor {
 public:
     enum Type {
-        UP, DOWN, STRANGE, CHARM, BOTTOM, TOP
+        UNDEFINED, UP, DOWN, STRANGE, CHARM, BOTTOM, TOP
     };
+
+    QuarkFlavor() :
+            m_type(QuarkFlavor::UNDEFINED) {
+    }
 
     QuarkFlavor(Type type) :
             m_type(type) {
@@ -42,7 +46,7 @@ public:
             return "TOP";
             break;
         default:
-            return "default";
+            return "UNDEFINED";
         }
     }
 
@@ -67,7 +71,7 @@ public:
             return "t";
             break;
         default:
-            return "default";
+            return "UNDEFINED";
         }
     }
 

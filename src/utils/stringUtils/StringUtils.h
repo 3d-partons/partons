@@ -73,9 +73,6 @@ public:
 
     static double fromStringToDouble(const std::string & str);
 
-    template<typename T>
-    static std::string toString(const T & value);
-
     static bool fromStringToBool(std::string chaine);
 
     static bool contains(const std::string & str,

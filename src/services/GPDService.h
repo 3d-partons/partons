@@ -56,7 +56,7 @@ public:
 
     ListGPDOutputData compute(GPDInputData &_gpdInputData,
             std::vector<GPDModule*> _listOfGPDToCompute,
-            GPDComputeType::Type _gpdComputeType);
+            GPDComputeType _gpdComputeType);
 
     ListGPDOutputData compute(std::vector<GPDInputData> _listOfGPDInputData,
             GPDModule* _pGPDModule);

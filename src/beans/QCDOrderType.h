@@ -12,8 +12,12 @@ class QCDOrderType {
 
 public:
     enum Type {
-        LO, NLO, NNLO
+        UNDEFINED, LO, NLO, NNLO
     };
+
+    QCDOrderType() :
+            m_type(QCDOrderType::UNDEFINED) {
+    }
 
     QCDOrderType(Type type) :
             m_type(type) {
@@ -31,7 +35,7 @@ public:
             return "NNLO";
             break;
         default:
-            return "";
+            return "UNDEFINED";
         }
     }
 
