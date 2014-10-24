@@ -63,20 +63,26 @@ protected:
 	double m_gluon;
 
 	int m_nfEvol;
-	unsigned int m_nfMin;		///< nf_min donne la taille de la matrice
+	int m_nfMin;		///< nf_min donne la taille de la matrice
 	double m_epsilon;
 	double m_alpha;
 
 	GPDResultData m_gpdResultData;
 
-	MatrixD m_currentMatrix;
-	std::vector<double> m_vectorOfUnknownData;
+	MatrixD m_currentConvertMatrix;
+	MatrixD m_currentInvertMatrix;
+
+	std::vector<double> m_vectorOfGPDCombination;
 	//Matrix<double> m_matrixOfUnknownPartonDistribution; ///< HuPlus, HuMinus, ...
 
-	void preCompute(const GPDResultData &gpdResultData);
+	void preCompute(const double &x, const double &xi,
+			const double &t, const double &MuF, const double &MuR,
+			const GPDResultData &gpdResultData);
 
 	virtual void convertBasis();
 	virtual void invertBasis();
+
+	GPDResultData makeGPDResultData();
 
 private:
 	static MatrixD conversionMatrix1;
@@ -89,11 +95,11 @@ private:
 	bool isRelativeTest(const double &MuF, const double &MuF_ref);
 	bool isAbsoluteTest(const double &MuF, const double &MuF_ref);
 
-	virtual void isModuleConfigured();
+	virtual void initModule();
+	virtual void isModuleWellConfigured();
 
-	virtual void updateVariables();
-	void updateNfMin();
-	void updateMatrixValue();
+	void initNfMin();
+	void initMatrixValue();
 	void initVectorOfGPDCombinations();
 };
 

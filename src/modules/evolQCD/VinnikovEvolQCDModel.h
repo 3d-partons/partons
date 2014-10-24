@@ -31,11 +31,10 @@ protected:
 
 private:
 
-	virtual void isModuleConfigured();
-	virtual void updateVariables();
+	virtual void isModuleWellConfigured();
+	virtual void initModule();
 
 	void evolution();
-	GPDResultData makeGPDResultData();
 };
 
 #endif /* VINNIKOV_EVOL_QCD_H */

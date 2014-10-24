@@ -3,7 +3,7 @@
 #include "../../services/ModuleObjectFactory.h"
 
 // Initialise GK11GPDModule::moduleID with a unique name.
-const std::string VinnikovEvolQCDModel::moduleID = "VinnikovEvolQCD";
+const std::string VinnikovEvolQCDModel::moduleID = "VinnikovEvolQCDModel";
 
 // Define a useless static boolean variable to enable registerModule() to be executed before the main() function.
 // Because global variables have program scope, and are initialised before main() is called.
@@ -31,23 +31,17 @@ VinnikovEvolQCDModel* VinnikovEvolQCDModel::clone() const {
 }
 
 //TODO implementer
-void VinnikovEvolQCDModel::isModuleConfigured() {
+void VinnikovEvolQCDModel::isModuleWellConfigured() {
 }
 
-void VinnikovEvolQCDModel::updateVariables() {
+void VinnikovEvolQCDModel::initModule() {
 
 }
 
 GPDResultData VinnikovEvolQCDModel::compute(const double &x, const double &xi,
 		const double &t, const double &MuF, const double &MuR,
 		const GPDResultData &gpdResultData) {
-	m_x = x;
-	m_xi = xi;
-	m_t = t;
-	m_MuF = MuF;
-	m_MuR = MuR;
-
-	EvolQCDModule::preCompute(gpdResultData);
+	EvolQCDModule::preCompute(x, xi, t, MuF, MuR, gpdResultData);
 
 	EvolQCDModule::convertBasis();
 
@@ -55,13 +49,9 @@ GPDResultData VinnikovEvolQCDModel::compute(const double &x, const double &xi,
 
 	EvolQCDModule::invertBasis();
 
-	return makeGPDResultData();
+	return EvolQCDModule::makeGPDResultData();
 }
 
 void VinnikovEvolQCDModel::evolution() {
 
-}
-
-GPDResultData VinnikovEvolQCDModel::makeGPDResultData() {
-	return GPDResultData();
 }
