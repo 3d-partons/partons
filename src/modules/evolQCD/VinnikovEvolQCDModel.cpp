@@ -50,14 +50,11 @@ GPDResultData VinnikovEvolQCDModel::compute(const double &x, const double &xi,
 
 	isModuleWellConfigured();
 
-	std::cerr << std::endl << m_currentConvertMatrix.toString() << std::endl << std::endl;
-	std::cerr << m_currentInvertMatrix.toString() << std::endl << std::endl;
-
-	EvolQCDModule::convertBasis();
+	m_vectorOfGPDCombination = EvolQCDModule::convertBasis(m_vectorOfGPDCombination);
 
 	evolution();
 
-	EvolQCDModule::invertBasis();
+	m_vectorOfGPDCombination = EvolQCDModule::invertBasis(m_vectorOfGPDCombination);
 
 	return EvolQCDModule::makeGPDResultData();
 }

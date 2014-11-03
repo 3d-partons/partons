@@ -319,38 +319,17 @@ void EvolQCDModule::preCompute(const double &x, const double &xi,
 //	EvolQCDModule::isModuleWellConfigured();
 }
 
-//TODO faire valider le calcul par Hervé
 //TODO ajouter les commentaires qui vont bien et les références au papier
-void EvolQCDModule::convertBasis() {
-	std::cerr << "[convert - before]" << std::endl;
-	for (unsigned int i = 0; i < m_vectorOfGPDCombination.size(); i++) {
-		std::cerr << m_vectorOfGPDCombination[i] << std::endl;
-	}
-
-	std::vector<double> tempVector = m_currentConvertMatrix
-			* m_vectorOfGPDCombination;
-	m_vectorOfGPDCombination = tempVector;
-
-	std::cerr << "[convert - after]" << std::endl;
-	for (unsigned int i = 0; i < m_vectorOfGPDCombination.size(); i++) {
-		std::cerr << m_vectorOfGPDCombination[i] << std::endl;
-	}
+std::vector<double> EvolQCDModule::convertBasis(
+		std::vector<double> vectorToConvert) {
+	std::vector<double> tempVector = m_currentConvertMatrix * vectorToConvert;
+	return tempVector;
 }
 
-void EvolQCDModule::invertBasis() {
-	std::cerr << "[invert - berfore]" << std::endl;
-	for (unsigned int i = 0; i < m_vectorOfGPDCombination.size(); i++) {
-		std::cerr << m_vectorOfGPDCombination[i] << std::endl;
-	}
-
-	std::vector<double> tempVector = m_currentInvertMatrix
-			* m_vectorOfGPDCombination;
-	m_vectorOfGPDCombination = tempVector;
-
-	std::cerr << "[invert - after]" << std::endl;
-	for (unsigned int i = 0; i < m_vectorOfGPDCombination.size(); i++) {
-		std::cerr << m_vectorOfGPDCombination[i] << std::endl;
-	}
+std::vector<double> EvolQCDModule::invertBasis(
+		std::vector<double> vectorToInvert) {
+	std::vector<double> tempVector = m_currentInvertMatrix * vectorToInvert;
+	return tempVector;
 }
 
 //TODO automatiser les setters

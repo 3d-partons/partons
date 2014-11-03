@@ -42,20 +42,6 @@ public:
 	QCDOrderType::Type getQcdOrderType() const;
 	void setQcdOrderType(QCDOrderType::Type qcdOrderType);
 
-	static MatrixD conversionMatrix1;
-		static MatrixD conversionMatrix2;
-		static MatrixD conversionMatrix3;
-		static MatrixD conversionMatrix4;
-		static MatrixD conversionMatrix5;
-		static MatrixD conversionMatrix6;
-
-		static MatrixD invertMatrix1;
-		static MatrixD invertMatrix2;
-		static MatrixD invertMatrix3;
-		static MatrixD invertMatrix4;
-		static MatrixD invertMatrix5;
-		static MatrixD invertMatrix6;
-
 protected:
 	/**
 	 * Copy constructor
@@ -94,13 +80,13 @@ protected:
 	virtual void initModule();
 	virtual void isModuleWellConfigured();
 
-	virtual void convertBasis();
-	virtual void invertBasis();
+	virtual std::vector<double> convertBasis(
+			std::vector<double> vectorToConvert);
+	virtual std::vector<double> invertBasis(std::vector<double> vectorToInvert);
 
 	GPDResultData makeGPDResultData();
 
 private:
-	/*
 	static MatrixD conversionMatrix1;
 	static MatrixD conversionMatrix2;
 	static MatrixD conversionMatrix3;
@@ -114,7 +100,6 @@ private:
 	static MatrixD invertMatrix4;
 	static MatrixD invertMatrix5;
 	static MatrixD invertMatrix6;
-	*/
 
 	bool isRelativeTest(const double &MuF, const double &MuF_ref);
 	bool isAbsoluteTest(const double &MuF, const double &MuF_ref);
