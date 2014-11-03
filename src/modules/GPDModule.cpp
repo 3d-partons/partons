@@ -19,12 +19,13 @@ GPDModule::GPDModule(const GPDModule &other) :
 
 	m_MuF_ref = other.m_MuF_ref;
 
-	(m_pEvolQCDModule != 0) ? m_pEvolQCDModule =
-										other.m_pEvolQCDModule->clone() :
-								m_pEvolQCDModule = 0;
+	if (other.m_pEvolQCDModule != 0) {
+		m_pEvolQCDModule = other.m_pEvolQCDModule->clone();
+	}
 
-//	(m_pPDFModule != 0) ?
-//			m_pPDFModule = other.m_pPDFModule->clone() : m_pPDFModule = 0;
+//		if (other.m_pPDFModule != 0) {
+//			m_pPDFModule = other.m_pPDFModule->clone();
+//		}
 }
 
 GPDModule::~GPDModule() {
@@ -36,4 +37,12 @@ double GPDModule::getNf() const {
 
 void GPDModule::setNf(double nf) {
 	m_nf = nf;
+}
+
+const EvolQCDModule* GPDModule::getEvolQcdModule() const {
+	return m_pEvolQCDModule;
+}
+
+void GPDModule::setEvolQcdModule(EvolQCDModule* pEvolQcdModule) {
+	m_pEvolQCDModule = pEvolQcdModule;
 }

@@ -73,6 +73,8 @@ public:
 
 	double getNf() const;
 	void setNf(double nf);
+	const EvolQCDModule* getEvolQcdModule() const;
+	void setEvolQcdModule(EvolQCDModule* pEvolQcdModule);
 
 protected:
 	/**

@@ -91,7 +91,6 @@ public:
     double getHuValMx() const;
     double getL() const;
     double getMuF2() const;
-    double getQ0() const;
     const std::vector<double>& getHdval1mtab() const;
     const std::vector<double>& getHdval1tab() const;
     const std::vector<double>& getHi1tab() const;
@@ -139,8 +138,8 @@ private:
     double b0; // Exponential t-dependence (eq. (22))
     double kappa_s; // Flavour symmetry breaking factor, eq. (36)
     double fL;
-    double fQ0;
     double fMuF2;
+    double m_MuF2_ref;
 
     double fHuValMx;                                          ///< HuVal( - fx )
     double fHdValMx;                                          ///< HdVal( - fx )
@@ -228,8 +227,8 @@ private:
     double Htval1_alt(double x, double i, double k);
     double Etval1_alt(double x, double i, double k);
 
-    virtual void isModuleConfigured();
-    virtual void updateVariables();
+    virtual void isModuleWellConfigured();
+    virtual void initModule();
 
     //GPDResultData compute(GPDComputeType gpdComputeType);
 

@@ -10,7 +10,14 @@ GPDResultData::GPDResultData() :
 				0.), m_singlet(0.) {
 }
 
-GPDResultData::GPDResultData(GPDComputeType &_gpdComputeType) :
+GPDResultData::GPDResultData(const GPDResultData & other) {
+	m_gpdComputeType = other.m_gpdComputeType;
+	m_gluon = other.m_gluon;
+	m_singlet = other.m_singlet;
+	m_gpdQuarkFlavorData = other.m_gpdQuarkFlavorData;
+}
+
+GPDResultData::GPDResultData(GPDComputeType::Type _gpdComputeType) :
 		m_gpdComputeType(_gpdComputeType), /*squareChargeAveraged(0.),*/m_gluon(
 				0.), m_singlet(0.) {
 }
@@ -55,7 +62,7 @@ std::string GPDResultData::toString() {
 	if (m_gpdQuarkFlavorData.size() != 0) {
 		for (m_it = m_gpdQuarkFlavorData.begin();
 				m_it != m_gpdQuarkFlavorData.end(); ++m_it) {
-			os << (m_it->second).toString() << std::endl;
+			os << (m_it->second).toStringGeneric() << std::endl;
 		}
 	}
 

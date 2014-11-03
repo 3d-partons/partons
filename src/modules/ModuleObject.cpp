@@ -11,19 +11,7 @@ ModuleObject::ModuleObject(const ModuleObject &other) :
 	m_moduleID = other.m_moduleID;
 }
 
-ModuleObject* ModuleObject::clone() const {
-	return new ModuleObject(*this);
-}
-
 ModuleObject::~ModuleObject() {
-}
-
-void ModuleObject::isModuleConfigured() {
-	//do nothing; the definition is just mandatory for enable the use of the clone function
-}
-
-void ModuleObject::updateVariables() {
-	//do nothing; the definition is just mandatory for enable the use of the clone function
 }
 
 size_t ModuleObject::getNbOfParameters() {

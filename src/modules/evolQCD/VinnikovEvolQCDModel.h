@@ -29,11 +29,10 @@ protected:
 	 */
 	VinnikovEvolQCDModel(const VinnikovEvolQCDModel &other);
 
-private:
-
 	virtual void isModuleWellConfigured();
 	virtual void initModule();
 
+private:
 	void evolution();
 };
 

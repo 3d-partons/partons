@@ -17,24 +17,17 @@
 class GPDQuarkFlavorData {
 
 public:
-	GPDQuarkFlavorData(GPDComputeType &_gpdComputeType,
+	GPDQuarkFlavorData(GPDComputeType::Type _gpdComputeType,
 			QuarkFlavor::Type _quarkFlavorType);
 
 	virtual ~GPDQuarkFlavorData();
 
 	std::string toString();
-
-	double getHq() const;
-
-	void setHq(double hq);
+	std::string toStringGeneric();
 
 	double getSea() const;
 
 	void setSea(double hqSea);
-
-	double getSinglet() const;
-
-	void setSinglet(double hqSinglet);
 
 	double getValence() const;
 
@@ -48,22 +41,25 @@ public:
 	void setPartonDistributionMinus(double partonDistributionMinus);
 	double getPartonDistributionPlus() const;
 	void setPartonDistributionPlus(double partonDistributionPlus);
+	double getPartonDistribution() const;
+	void setPartonDistribution(double partonDistribution);
+	double getPartonDistributionSinglet() const;
+	void setPartonDistributionSinglet(double partonDistributionSinglet);
 
 private:
 	GPDComputeType m_gpdComputeType;
 	QuarkFlavor m_quarkFlavor;
 
-	//TODO changer le nom de cette variable; Hq -> partonDistribution
-	double Hq;          ///< GPD(q), flavour singlet
-	double valence;     ///< GPD(q), valence part
-	double sea;         ///< GPD(q), sea part
+	double m_partonDistribution;          ///< GPD(q), flavour singlet
+	//TODO faire référence à la revue paraph 3.3.2 de Markus Diehl
+	double m_partonDistributionMinus;		///<
+	double m_partonDistributionPlus;		///<
+
+	double valence;     				///< GPD(q), valence part
+	double sea;         				///< GPD(q), sea part
 
 	//TODO singlet -> devient pdPlus
-	double pdSinglet;     ///< GPD(q), charge singlet part
-
-	//TODO faire référence à la revue paraph 3.3.2 de Markus Diehl
-	double m_partonDistributionPlus;		///<
-	double m_partonDistributionMinus;		///<
+	double m_partonDistributionSinglet;     ///< GPD(q), charge singlet part
 
 	//TODO a voir
 	double quark;

@@ -2,6 +2,8 @@
 
 #include "../../services/ModuleObjectFactory.h"
 
+#include <iostream>
+
 // Initialise GK11GPDModule::moduleID with a unique name.
 const std::string VinnikovEvolQCDModel::moduleID = "VinnikovEvolQCDModel";
 
@@ -30,18 +32,26 @@ VinnikovEvolQCDModel* VinnikovEvolQCDModel::clone() const {
 	return new VinnikovEvolQCDModel(*this);
 }
 
-//TODO implementer
-void VinnikovEvolQCDModel::isModuleWellConfigured() {
+void VinnikovEvolQCDModel::initModule() {
+	EvolQCDModule::initModule();
 }
 
-void VinnikovEvolQCDModel::initModule() {
-
+//TODO implementer
+void VinnikovEvolQCDModel::isModuleWellConfigured() {
+	EvolQCDModule::isModuleWellConfigured();
 }
 
 GPDResultData VinnikovEvolQCDModel::compute(const double &x, const double &xi,
 		const double &t, const double &MuF, const double &MuR,
 		const GPDResultData &gpdResultData) {
 	EvolQCDModule::preCompute(x, xi, t, MuF, MuR, gpdResultData);
+
+	initModule();
+
+	isModuleWellConfigured();
+
+	std::cerr << std::endl << m_currentConvertMatrix.toString() << std::endl << std::endl;
+	std::cerr << m_currentInvertMatrix.toString() << std::endl << std::endl;
 
 	EvolQCDModule::convertBasis();
 

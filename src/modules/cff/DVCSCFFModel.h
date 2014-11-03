@@ -79,8 +79,8 @@ private:
 	double ConvolReKernelGluon2A(double* x, double* Parameters = NULL); ///< eq. (9), real part of amplitude, \int_zeta^1
 	double ConvolImKernelGluonA(double* x, double* Parameters = NULL); ///< eq. (9), imaginary part of amplitude
 
-	void isModuleConfigured();
-	void updateVariables();
+	void isModuleWellConfigured();
+	void initModule();
 
 	virtual std::complex<double> computeUnpolarized();
 	virtual std::complex<double> computePolarized();

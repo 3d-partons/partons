@@ -48,7 +48,7 @@ GK11Model::GK11Model(const GK11Model& other) :
 	b0 = other.getB0();
 	kappa_s = other.getKappaS();
 	fL = other.getL();
-	fQ0 = other.getQ0();
+	m_MuF2_ref = other.m_MuF2_ref;
 	fMuF2 = other.getMuF2();
 	fHuValMx = other.getHuValMx();
 	fHdValMx = other.getHdValMx();
@@ -104,7 +104,8 @@ GK11Model* GK11Model::clone() const {
 void GK11Model::init() {
 	m_nbOfQuarkFlavor = 3;
 	fL = 0.;
-	fQ0 = 4.;
+	m_MuF2_ref = 4.;
+	m_MuF_ref = sqrt(m_MuF2_ref);
 	Huval1tab = std::vector<double>(3, 0.);
 	Hdval1tab = std::vector<double>(3, 0.);
 	Huval1mtab = std::vector<double>(3, 0.);
@@ -141,14 +142,14 @@ GK11Model::~GK11Model() {
 }
 
 //TODO implement
-void GK11Model::isModuleConfigured() {
+void GK11Model::isModuleWellConfigured() {
 
 }
 
-void GK11Model::updateVariables() {
+void GK11Model::initModule() {
 
 	fMuF2 = m_MuF * m_MuF;
-	fL = log(fMuF2 / fQ0); // Logarithmic dependence on the scale
+	fL = log(fMuF2 / m_MuF2_ref); // Logarithmic dependence on the scale
 
 	m_pLoggerManager->debug(getClassName(), __func__,
 			Formatter() << "fMuF2 = " << fMuF2 << " fL = " << fL);
@@ -163,10 +164,10 @@ GPDOutputData GK11Model::compute(const double &_x, const double &_xi,
 	m_MuF = _MuF;
 	m_MuR = _MuR;
 
-	isModuleConfigured();
+	isModuleWellConfigured();
 
 	// And after, update GK11 variables before computing
-	updateVariables();
+	initModule();
 
 	GPDOutputData gpdOutputData;
 
@@ -177,7 +178,8 @@ GPDOutputData GK11Model::compute(const double &_x, const double &_xi,
 			GPDResultData gpdResultData = ((*this).*(m_it->second))();
 
 			if (m_pEvolQCDModule != 0
-					&& m_pEvolQCDModule->isRunnable(_MuF, m_MuF_ref, EvolQCDModule::RELATIVE)) {
+			/*&& m_pEvolQCDModule->isRunnable(_MuF, m_MuF_ref,
+			 EvolQCDModule::RELATIVE)*/) {
 				gpdResultData = m_pEvolQCDModule->compute(m_x, m_xi, m_t, m_MuF,
 						m_MuR, gpdResultData);
 			}
@@ -189,7 +191,16 @@ GPDOutputData GK11Model::compute(const double &_x, const double &_xi,
 	default: {
 		m_it = listGPDComputeTypeAvailable.find(gpdComputeType);
 		if (m_it != listGPDComputeTypeAvailable.end()) {
-			gpdOutputData.addGPDResultData(((*this).*(m_it->second))());
+			GPDResultData gpdResultData = ((*this).*(m_it->second))();
+
+			if (m_pEvolQCDModule != 0
+			/*&& m_pEvolQCDModule->isRunnable(_MuF, m_MuF_ref,
+			 EvolQCDModule::RELATIVE)*/) {
+				gpdResultData = m_pEvolQCDModule->compute(m_x, m_xi, m_t, m_MuF,
+						m_MuR, gpdResultData);
+			}
+
+			gpdOutputData.addGPDResultData(gpdResultData);
 		} else {
 			//TODO remplacer par une exception
 			std::cerr << "[GK11Model::compute] GPDComputeType not available !"
@@ -237,7 +248,7 @@ GPDResultData GK11Model::computeH() {
 	c4 = -0.486 + 0.038 * fL; // See table 1 p. 12
 	b0 = 2.58 + 0.25 * log(0.880354 / (0.880354 + fMuF2)); // See eq. (39) p. 14
 
-	gpdQuarkFlavorData_s.setHq(
+	gpdQuarkFlavorData_s.setPartonDistribution(
 			exp(b0 * m_t)
 					* (c1 * Hs1tab.at(0) + c2 * Hs1tab.at(1) + c3 * Hs1tab.at(2)
 							+ c4 * Hs1tab.at(3))); // See eq. (27)
@@ -271,35 +282,39 @@ GPDResultData GK11Model::computeH() {
 			exp(b0 * m_t)
 					* (c1 * Hdval1tab.at(0) + c2 * Hdval1tab.at(1)
 							+ c3 * Hdval1tab.at(2))); // See eq. (27)
+
+	// C'est HqVal (-x)
 	fHdValMx = exp(b0 * m_t)
 			* (c1 * Hdval1mtab.at(0) + c2 * Hdval1mtab.at(1)
 					+ c3 * Hdval1mtab.at(2)); // See eq. (27)
 
 // u and d quarks, sea part
 
-	kappa_s = 1. + 0.68 / (1. + 0.52 * log(fMuF2 / fQ0)); // See eq. (36)
+	kappa_s = 1. + 0.68 / (1. + 0.52 * log(fMuF2 / m_MuF2_ref)); // See eq. (36)
 
-	gpdQuarkFlavorData_u.setSea(kappa_s * gpdQuarkFlavorData_s.getHq()); // See eq. (35)
+	gpdQuarkFlavorData_u.setSea(
+			kappa_s * gpdQuarkFlavorData_s.getPartonDistribution()); // See eq. (35)
 	gpdQuarkFlavorData_d.setSea(gpdQuarkFlavorData_u.getSea());
 
 // u and d quarks, valence + sea parts
 
 	if (m_x > 0.) {
 
-		gpdQuarkFlavorData_u.setHq(
+		gpdQuarkFlavorData_u.setPartonDistribution(
 				gpdQuarkFlavorData_u.getValence()
 						+ gpdQuarkFlavorData_u.getSea());
-		gpdQuarkFlavorData_d.setHq(
+		gpdQuarkFlavorData_d.setPartonDistribution(
 				gpdQuarkFlavorData_d.getValence()
 						+ gpdQuarkFlavorData_d.getSea());
 
 	} else {
 
-		gpdQuarkFlavorData_u.setHq(-gpdQuarkFlavorData_u.getSea());
-		gpdQuarkFlavorData_d.setHq(-gpdQuarkFlavorData_d.getSea());
+		gpdQuarkFlavorData_u.setPartonDistribution(
+				-gpdQuarkFlavorData_u.getSea());
+		gpdQuarkFlavorData_d.setPartonDistribution(
+				-gpdQuarkFlavorData_d.getSea());
 
 	}
-
 
 // H, charge singlet
 
@@ -312,19 +327,48 @@ GPDResultData GK11Model::computeH() {
 //                                    + pGPDQuarkFlavorData_d->getValence())
 //                    + S2_ELEC_CHARGE * pGPDQuarkFlavorData_s->getHq());
 
-	gpdQuarkFlavorData_u.setSinglet(
+	gpdQuarkFlavorData_u.setPartonDistributionSinglet(
 			gpdQuarkFlavorData_u.getValence() - fHuValMx
 					+ 2. * gpdQuarkFlavorData_u.getSea());
 
-	gpdQuarkFlavorData_d.setSinglet(
+	gpdQuarkFlavorData_d.setPartonDistributionSinglet(
 			gpdQuarkFlavorData_d.getValence() - fHdValMx
 					+ 2. * gpdQuarkFlavorData_d.getSea());
 
-	gpdQuarkFlavorData_s.setSinglet(2. * gpdQuarkFlavorData_s.getHq());
+	gpdQuarkFlavorData_s.setPartonDistributionSinglet(
+			2. * gpdQuarkFlavorData_s.getPartonDistribution());
 
 	GPD_H.setSinglet(
 			computeSinglet(gpdQuarkFlavorData_u, gpdQuarkFlavorData_d,
 					gpdQuarkFlavorData_s));
+
+	// Set Hq(+), Hq(-)
+	// u quark
+	gpdQuarkFlavorData_u.setPartonDistributionPlus(
+			gpdQuarkFlavorData_u.getValence() - fHuValMx
+					+ 2. * gpdQuarkFlavorData_u.getSea());
+
+	gpdQuarkFlavorData_u.setPartonDistributionMinus(
+			gpdQuarkFlavorData_u.getValence() + fHuValMx);
+
+	// d quark
+	gpdQuarkFlavorData_d.setPartonDistributionPlus(
+			gpdQuarkFlavorData_d.getValence() - fHdValMx
+					+ 2. * gpdQuarkFlavorData_d.getSea());
+
+	gpdQuarkFlavorData_d.setPartonDistributionMinus(
+			gpdQuarkFlavorData_d.getValence() + fHdValMx);
+
+	// TODO s quark
+//	gpdQuarkFlavorData_s.setPartonDistributionPlus(
+//			gpdQuarkFlavorData_s.getValence() - fHsValMx
+//					+ 2. * gpdQuarkFlavorData_s.getSea());
+//
+//	gpdQuarkFlavorData_s.setPartonDistributionMinus(
+//			gpdQuarkFlavorData_s.getValence() + fHsValMx);
+
+	gpdQuarkFlavorData_s.setPartonDistributionPlus(0.);
+	gpdQuarkFlavorData_s.setPartonDistributionMinus(0.);
 
 	GPD_H.addGPDQuarkFlavorData(gpdQuarkFlavorData_u);
 	GPD_H.addGPDQuarkFlavorData(gpdQuarkFlavorData_d);
@@ -367,7 +411,7 @@ GPDResultData GK11Model::computeHt() {
 
 // s quark,  Ht_sea = 0 for GK
 
-	gpdQuark_s.setHq(0.);
+	gpdQuark_s.setPartonDistribution(0.);
 
 // u quark, valence part
 
@@ -434,18 +478,22 @@ GPDResultData GK11Model::computeHt() {
 // u and d quarks, valence + sea parts
 
 	if (m_x > 0.) {
-		gpdQuark_u.setHq(gpdQuark_u.getValence() + gpdQuark_u.getSea());
-		gpdQuark_d.setHq(gpdQuark_d.getValence() + gpdQuark_d.getSea());
+		gpdQuark_u.setPartonDistribution(
+				gpdQuark_u.getValence() + gpdQuark_u.getSea());
+		gpdQuark_d.setPartonDistribution(
+				gpdQuark_d.getValence() + gpdQuark_d.getSea());
 	} else {
-		gpdQuark_u.setHq(-gpdQuark_u.getSea());
-		gpdQuark_d.setHq(-gpdQuark_d.getSea());
+		gpdQuark_u.setPartonDistribution(-gpdQuark_u.getSea());
+		gpdQuark_d.setPartonDistribution(-gpdQuark_d.getSea());
 	}
 
 // Ht, charge singlet
 
-	gpdQuark_u.setSinglet(gpdQuark_u.getValence() + fHtuValMx);
-	gpdQuark_d.setSinglet(gpdQuark_d.getValence() + fHtdValMx);
-	gpdQuark_s.setSinglet(0.);
+	gpdQuark_u.setPartonDistributionSinglet(
+			gpdQuark_u.getValence() + fHtuValMx);
+	gpdQuark_d.setPartonDistributionSinglet(
+			gpdQuark_d.getValence() + fHtdValMx);
+	gpdQuark_s.setPartonDistributionSinglet(0.);
 
 	GPD_Ht.setSinglet(computeSinglet(gpdQuark_u, gpdQuark_d, gpdQuark_s));
 
@@ -464,8 +512,9 @@ double GK11Model::computeSinglet(const GPDQuarkFlavorData &quark_u,
 				"[GK11Model::computeSinglet] divided by ZERO !");
 	}
 
-	double result = quark_u.getSinglet() + quark_d.getSinglet()
-			+ quark_s.getSinglet();
+	double result = quark_u.getPartonDistributionSinglet()
+			+ quark_d.getPartonDistributionSinglet()
+			+ quark_s.getPartonDistributionSinglet();
 	result *= (1 / (2 * m_nbOfQuarkFlavor));
 
 	return result;
@@ -498,7 +547,7 @@ GPDResultData GK11Model::computeE() {
 	c3 = c1;
 	b0 = 2.58 + 0.25 * log(0.880354 / (0.880354 + fMuF2));
 
-	gpdQuarkFlavorData_s.setHq(
+	gpdQuarkFlavorData_s.setPartonDistribution(
 			exp(b0 * m_t)
 					* (c1 * Es1tab.at(0) + c2 * Es1tab.at(1) + c3 * Es1tab.at(2)));
 
@@ -541,40 +590,43 @@ GPDResultData GK11Model::computeE() {
 // u and d quarks, sea part
 
 //EuSea = Es
-	gpdQuarkFlavorData_u.setSea(gpdQuarkFlavorData_s.getHq());
+	gpdQuarkFlavorData_u.setSea(gpdQuarkFlavorData_s.getPartonDistribution());
 //EdSea = Es
-	gpdQuarkFlavorData_d.setSea(gpdQuarkFlavorData_s.getHq());
+	gpdQuarkFlavorData_d.setSea(gpdQuarkFlavorData_s.getPartonDistribution());
 
 // u and d quarks, valence + sea parts
 
 	if (m_x > 0.) {
 		//Eu = EuVal + EuSea
-		gpdQuarkFlavorData_u.setHq(
+		gpdQuarkFlavorData_u.setPartonDistribution(
 				gpdQuarkFlavorData_u.getValence()
 						+ gpdQuarkFlavorData_u.getSea());
 		//Ed = EdVal + EdSea
-		gpdQuarkFlavorData_d.setHq(
+		gpdQuarkFlavorData_d.setPartonDistribution(
 				gpdQuarkFlavorData_d.getValence()
 						+ gpdQuarkFlavorData_d.getSea());
 	} else {
 		//Eu = -EuSea
-		gpdQuarkFlavorData_u.setHq(-gpdQuarkFlavorData_u.getSea());
+		gpdQuarkFlavorData_u.setPartonDistribution(
+				-gpdQuarkFlavorData_u.getSea());
 		//Ed = -EdSea
-		gpdQuarkFlavorData_d.setHq(-gpdQuarkFlavorData_d.getSea());
+		gpdQuarkFlavorData_d.setPartonDistribution(
+				-gpdQuarkFlavorData_d.getSea());
 	}
 
 // E, charge singlet
 
 // EuSinglet = EuVal - EuValMx + 2. * EuSea
-	gpdQuarkFlavorData_u.setSinglet(
+	gpdQuarkFlavorData_u.setPartonDistributionSinglet(
 			gpdQuarkFlavorData_u.getValence() - fEuValMx
 					+ 2. * gpdQuarkFlavorData_u.getSea());
 // EdSinglet = EdVal - EdValMx + 2. * EdSea
-	gpdQuarkFlavorData_d.setSinglet(
+	gpdQuarkFlavorData_d.setPartonDistributionSinglet(
 			gpdQuarkFlavorData_d.getValence() - fEdValMx
 					+ 2. * gpdQuarkFlavorData_d.getSea());
 // EsSinglet = 2. * Es;
-	gpdQuarkFlavorData_s.setSinglet(2. * gpdQuarkFlavorData_s.getHq());
+	gpdQuarkFlavorData_s.setPartonDistributionSinglet(
+			2. * gpdQuarkFlavorData_s.getPartonDistribution());
 
 	GPD_E.setSinglet(
 			computeSinglet(gpdQuarkFlavorData_u, gpdQuarkFlavorData_d,
@@ -611,7 +663,7 @@ GPDResultData GK11Model::computeEt() {
 
 // s quark,  Et_sea = 0 for GK
 
-	gpdQuarkFlavorData_s.setHq(0.);
+	gpdQuarkFlavorData_s.setPartonDistribution(0.);
 
 // u quark, valence part
 
@@ -659,30 +711,32 @@ GPDResultData GK11Model::computeEt() {
 
 	if (m_x > 0.) {
 		// Etu = EtuVal + EtuSea;
-		gpdQuarkFlavorData_u.setHq(
+		gpdQuarkFlavorData_u.setPartonDistribution(
 				gpdQuarkFlavorData_u.getValence()
 						+ gpdQuarkFlavorData_u.getSea());
 		// Etd = EtdVal + EtdSea;
-		gpdQuarkFlavorData_d.setHq(
+		gpdQuarkFlavorData_d.setPartonDistribution(
 				gpdQuarkFlavorData_d.getValence()
 						+ gpdQuarkFlavorData_d.getSea());
 	} else {
 		// Etu = -EtuSea;
-		gpdQuarkFlavorData_u.setHq(-gpdQuarkFlavorData_u.getSea());
+		gpdQuarkFlavorData_u.setPartonDistribution(
+				-gpdQuarkFlavorData_u.getSea());
 		// Etd = -EtdSea;
-		gpdQuarkFlavorData_d.setHq(-gpdQuarkFlavorData_d.getSea());
+		gpdQuarkFlavorData_d.setPartonDistribution(
+				-gpdQuarkFlavorData_d.getSea());
 	}
 
 // Et, charge singlet part
 
 // EtuSinglet = EtuVal + EtuValMx;
-	gpdQuarkFlavorData_u.setSinglet(
+	gpdQuarkFlavorData_u.setPartonDistributionSinglet(
 			gpdQuarkFlavorData_u.getValence() + fEtuValMx);
 // EtdSinglet = EtdVal + EtdValMx;
-	gpdQuarkFlavorData_d.setSinglet(
+	gpdQuarkFlavorData_d.setPartonDistributionSinglet(
 			gpdQuarkFlavorData_d.getValence() + fEtdValMx);
 // EtsSinglet = 0.;
-	gpdQuarkFlavorData_s.setSinglet(0.);
+	gpdQuarkFlavorData_s.setPartonDistributionSinglet(0.);
 
 	GPD_Et.setSinglet(
 			computeSinglet(gpdQuarkFlavorData_u, gpdQuarkFlavorData_d,
@@ -1843,10 +1897,6 @@ double GK11Model::getL() const {
 
 double GK11Model::getMuF2() const {
 	return fMuF2;
-}
-
-double GK11Model::getQ0() const {
-	return fQ0;
 }
 
 const std::vector<double>& GK11Model::getHdval1mtab() const {

@@ -39,7 +39,7 @@ public:
 	 */
 	size_t getNbOfParameters();
 
-	virtual ModuleObject* clone() const;
+	virtual ModuleObject* clone() const = 0;
 
 // ################   GETTERS & SETTERS   ################
 
@@ -53,15 +53,15 @@ protected:
 	 */
 	ModuleObject(const ModuleObject &other);
 
+	virtual void isModuleWellConfigured() = 0;
+	virtual void initModule() = 0;
+
 private:
 
 	std::vector<double> m_parameters; ///< parameters used for configure this module.
 
 	//TODO redondance avec className dans la classe fille
 	std::string m_moduleID;
-
-	virtual void isModuleConfigured();
-	virtual void updateVariables();
 };
 
 #endif /* BASE_MODULE_H */

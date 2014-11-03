@@ -5,6 +5,7 @@
 
 #include "../modules/CFFModule.h"
 #include "../modules/GPDModule.h"
+#include "../modules/EvolQCDModule.h"
 
 // Global static pointer used to ensure a single instance of the class.
 ModuleObjectFactory* ModuleObjectFactory::m_pInstance = 0;
@@ -40,8 +41,6 @@ bool ModuleObjectFactory::registerModule(ModuleObject * pModuleObject) {
     return true;
 }
 
-//TODO travailler avec les références
-
 ModuleObject* ModuleObjectFactory::getModule(const std::string & ID) {
     return m_moduleRegistry[ID]->clone();
 }
@@ -53,6 +52,11 @@ GPDModule* ModuleObjectFactory::getGPDModule(const std::string & ID) {
 
 CFFModule* ModuleObjectFactory::getCFFModule(const std::string & ID) {
     return static_cast<CFFModule*>(getModule(ID));
+}
+
+EvolQCDModule* ModuleObjectFactory::getEvolQCDModule(const std::string & ID)
+{
+	return static_cast<EvolQCDModule*>(getModule(ID));
 }
 
 std::string ModuleObjectFactory::toString() {

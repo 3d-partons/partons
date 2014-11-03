@@ -75,7 +75,7 @@ DVCSCFFModel::~DVCSCFFModel() {
 
 }
 
-void DVCSCFFModel::updateVariables() {
+void DVCSCFFModel::initModule() {
 	m_xi = m_xB / (2 - m_xB);
 	m_Q = sqrt(m_Q2);
 	m_Zeta = 2. * m_xi / (1 + m_xi);
@@ -88,7 +88,7 @@ void DVCSCFFModel::updateVariables() {
 	delete Alpha;
 }
 
-void DVCSCFFModel::isModuleConfigured() {
+void DVCSCFFModel::isModuleWellConfigured() {
 	if (m_pGPDModule == 0) {
 		throw std::runtime_error("[DVCSCFFModel] GPDModule* is NULL");
 	}
@@ -110,9 +110,9 @@ CFFOutputData DVCSCFFModel::compute(const double &xB, const double &t,
 	m_MuF = MuF;
 	m_MuR = MuR;
 
-	isModuleConfigured();
+	isModuleWellConfigured();
 
-	updateVariables();
+	initModule();
 
 	switch (gpdComputeType) {
 	case GPDComputeType::ALL: {
@@ -180,13 +180,13 @@ double DVCSCFFModel::computeSquareChargeAveragedGPD(
 	GPDResultData* gpdResultData = gpdOutputData.getGPDResultData(
 			m_currentGPDComputeType);
 	result +=
-			gpdResultData->getGPDQuarkFlavorData(QuarkFlavor::UP)->getSinglet()
+			gpdResultData->getGPDQuarkFlavorData(QuarkFlavor::UP)->getPartonDistributionSinglet()
 					* U2_ELEC_CHARGE;
 	result +=
-			gpdResultData->getGPDQuarkFlavorData(QuarkFlavor::DOWN)->getSinglet()
+			gpdResultData->getGPDQuarkFlavorData(QuarkFlavor::DOWN)->getPartonDistributionSinglet()
 					* D2_ELEC_CHARGE;
 	result +=
-			gpdResultData->getGPDQuarkFlavorData(QuarkFlavor::STRANGE)->getSinglet()
+			gpdResultData->getGPDQuarkFlavorData(QuarkFlavor::STRANGE)->getPartonDistributionSinglet()
 					* S2_ELEC_CHARGE;
 
 //    std::vector<> = gpdResultData.listQuarkTypeComputed()

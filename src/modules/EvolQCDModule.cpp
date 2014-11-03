@@ -2,6 +2,7 @@
 
 #include <stdexcept>
 #include <math.h>
+#include <iostream>
 
 #include "GPDModule.h"
 #include "../utils/stringUtils/Formatter.h"
@@ -44,8 +45,52 @@ MatrixD EvolQCDModule::conversionMatrix6(13, 13, 1., 0., 0., 0., 0., 0., 0., 0.,
 		1., 0., 1., 0., 1., 0., 1., 0., -5., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
 		0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1.);
 
+MatrixD EvolQCDModule::invertMatrix1(3, 3, 1., 0., 0., 0., 0., 0., 0., 0., 1.);
+
+MatrixD EvolQCDModule::invertMatrix2(5, 5, 1., 0., 0., 0., 0., 0., 0., 1. / 2.,
+		0., 0., 0., 1., 0., 0., 0., 0., 0., -1. / 2., 0., 0., 0., 0., 0., 0.,
+		1.);
+
+MatrixD EvolQCDModule::invertMatrix3(7, 7, 1., 0., 0., 0., 0., 0., 0., 0., 0.,
+		0., 1. / 2., 1. / 6., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0.,
+		-1. / 2., 1. / 6., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0.,
+		-1. / 3., 0., 0., 0., 0., 0., 0., 0., 0., 1.);
+
+MatrixD EvolQCDModule::invertMatrix4(9, 9, 1., 0., 0., 0., 0., 0., 0., 0., 0.,
+		0., 0., 0., 0., 1. / 2., 1. / 6., 1. / 12., 0., 0., 0., 1., 0., 0., 0.,
+		0., 0., 0., 0., 0., 0., 0., 0., -1. / 2., 1. / 6., 1. / 12., 0., 0., 0.,
+		0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., -1. / 3., 1. / 12.,
+		0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+		-1. / 4., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1.);
+
+MatrixD EvolQCDModule::invertMatrix5(11, 11, 1., 0., 0., 0., 0., 0., 0., 0., 0.,
+		0., 0., 0., 0., 0., 0., 0., 1. / 2., 1. / 6., 1. / 12., 1. / 20., 0.,
+		0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+		-1. / 2., 1. / 6., 1. / 12., 1. / 20., 0., 0., 0., 0., 1., 0., 0., 0.,
+		0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., -1. / 3., 1. / 12.,
+		1. / 20., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+		0., 0., 0., 0., 0., -1. / 4., 1. / 20., 0., 0., 0., 0., 0., 0., 1., 0.,
+		0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0, 0., -1. / 5., 0., 0., 0.,
+		0., 0., 0., 0., 0., 0., 0., 0., 0., 1.);
+
+MatrixD EvolQCDModule::invertMatrix6(13, 13, 1., 0., 0., 0., 0., 0., 0., 0., 0.,
+		0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1. / 2., 1. / 6., 1. / 12.,
+		1. / 20., 1. / 30., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+		0., 0., 0., 0., 0., 0., 0., 0., -1. / 2., 1. / 6., 1. / 12., 1. / 20.,
+		1. / 30., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+		0., 0., 0., 0., 0., 0., 0., -1. / 3., 1. / 12., 1. / 20., 1. / 30., 0.,
+		0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+		0., 0., 0., 0., -1. / 4., 1. / 20., 1. / 30., 0., 0., 0., 0., 0., 0.,
+		1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0, 0., 0.,
+		-1. / 5., 1. / 30., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0.,
+		0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., -1. / 6., 0., 0., 0.,
+		0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1.);
+
+//TODO quelles sont les valeurs par défauts lors de l'initialisation ?
 EvolQCDModule::EvolQCDModule(const std::string &moduleID) :
-		ModuleObject(moduleID), m_nfEvol(-1), m_nfMin(-1) {
+		ModuleObject(moduleID), m_x(0), m_xi(0), m_t(0), m_MuF(0), m_MuR(0), m_alphaS(
+				0), m_scaleDistinction(0), m_nfEvol(-1), m_nfMin(-1), m_epsilon(
+				0), m_alpha(0), m_qcdOrderType(QCDOrderType::UNDEFINED) {
 }
 
 EvolQCDModule::EvolQCDModule(const EvolQCDModule &other) :
@@ -66,26 +111,17 @@ EvolQCDModule::EvolQCDModule(const EvolQCDModule &other) :
 	m_alphaS = other.m_alphaS;
 	m_scaleDistinction = other.m_scaleDistinction;
 
-	m_singletQuark = other.m_singletQuark;
-	m_gluon = other.m_gluon;
+	//TODO clone ou surcharger l'opérateur =
+	//m_gpdResultData = other.m_gpdResultData;
+	//m_gpdResultData = other.m_gpdResultData->clone();
 
-	//TODO comment cloner ça
-	if (m_pGPDModule != 0) {
+	m_currentConvertMatrix = other.m_currentConvertMatrix;
+	m_currentInvertMatrix = other.m_currentInvertMatrix;
 
-	}
+	m_vectorOfGPDCombination = other.m_vectorOfGPDCombination;
 }
 
 EvolQCDModule::~EvolQCDModule() {
-}
-
-//TODO ajouter les tests manquants
-void EvolQCDModule::isModuleWellConfigured() {
-	if (m_pGPDModule == 0) {
-		throw std::runtime_error("[EvolQCDModule] GPDModule* is NULL");
-	}
-	if (m_qcdOrderType == QCDOrderType::UNDEFINED) {
-		throw std::runtime_error("[EvolQCDModule] QCDOrderType is UNDEFINED");
-	}
 }
 
 void EvolQCDModule::initModule() {
@@ -97,6 +133,13 @@ void EvolQCDModule::initModule() {
 	initVectorOfGPDCombinations();
 }
 
+//TODO ajouter les tests manquants
+void EvolQCDModule::isModuleWellConfigured() {
+	if (m_qcdOrderType == QCDOrderType::UNDEFINED) {
+		throw std::runtime_error("[EvolQCDModule] QCDOrderType is UNDEFINED");
+	}
+}
+
 void EvolQCDModule::initNfMin() {
 
 	size_t nfGPDModel = m_gpdResultData.sizeOfListOfQuarkFlavorData();
@@ -104,6 +147,7 @@ void EvolQCDModule::initNfMin() {
 	// si nf_evol = -1 alors nf_evol = nf_gpd
 	if (m_nfEvol == -1) {
 		m_nfEvol = nfGPDModel;
+		m_nfMin = nfGPDModel;
 		// si nf_evol < nf_gpd alors nf_min = nf_evol
 	} else if (m_nfEvol < nfGPDModel) {
 		m_nfMin = m_nfEvol;
@@ -121,48 +165,92 @@ void EvolQCDModule::initNfMin() {
 }
 
 void EvolQCDModule::initMatrixValue() {
-	double missingCoef = 1. / (2. * m_nfEvol);
+	double missingCoef = 1. / (2. * (double) m_nfEvol);
+	double missingInvertCoef = 0.;
 
 	switch (m_nfMin) {
 	case 1:
-		m_currentConvertMatrix = conversionMatrix1;
+		m_currentConvertMatrix = EvolQCDModule::conversionMatrix1;
 		m_currentConvertMatrix.update(1, 1, missingCoef);
+
+		m_currentInvertMatrix = EvolQCDModule::invertMatrix1;
+		m_currentInvertMatrix.update(1, 1, 2. * m_nfEvol);
 		break;
+
 	case 2:
-		m_currentConvertMatrix = conversionMatrix2;
-		m_currentConvertMatrix.update(1, 3, missingCoef);
+		m_currentConvertMatrix = EvolQCDModule::conversionMatrix2;
+		m_currentConvertMatrix.update(3, 1, missingCoef);
 		m_currentConvertMatrix.update(3, 3, missingCoef);
+
+		m_currentInvertMatrix = EvolQCDModule::invertMatrix2;
+		m_currentInvertMatrix.update(1, 3, m_nfEvol);
+		m_currentInvertMatrix.update(3, 3, m_nfEvol);
 		break;
+
 	case 3:
-		m_currentConvertMatrix = conversionMatrix3;
-		m_currentConvertMatrix.update(1, 5, missingCoef);
-		m_currentConvertMatrix.update(3, 5, missingCoef);
+		m_currentConvertMatrix = EvolQCDModule::conversionMatrix3;
+		m_currentConvertMatrix.update(5, 1, missingCoef);
+		m_currentConvertMatrix.update(5, 3, missingCoef);
 		m_currentConvertMatrix.update(5, 5, missingCoef);
+
+		missingInvertCoef = (2. * m_nfEvol) / 3.;
+		m_currentInvertMatrix = EvolQCDModule::invertMatrix3;
+		m_currentInvertMatrix.update(1, 5, missingInvertCoef);
+		m_currentInvertMatrix.update(3, 5, missingInvertCoef);
+		m_currentInvertMatrix.update(5, 5, missingInvertCoef);
 		break;
+
 	case 4:
-		m_currentConvertMatrix = conversionMatrix4;
-		m_currentConvertMatrix.update(1, 7, missingCoef);
-		m_currentConvertMatrix.update(3, 7, missingCoef);
-		m_currentConvertMatrix.update(5, 7, missingCoef);
+		m_currentConvertMatrix = EvolQCDModule::conversionMatrix4;
+		m_currentConvertMatrix.update(7, 1, missingCoef);
+		m_currentConvertMatrix.update(7, 3, missingCoef);
+		m_currentConvertMatrix.update(7, 5, missingCoef);
 		m_currentConvertMatrix.update(7, 7, missingCoef);
+
+		missingInvertCoef = m_nfEvol / 2.;
+		m_currentInvertMatrix = EvolQCDModule::invertMatrix4;
+		m_currentInvertMatrix.update(1, 7, missingInvertCoef);
+		m_currentInvertMatrix.update(3, 7, missingInvertCoef);
+		m_currentInvertMatrix.update(5, 7, missingInvertCoef);
+		m_currentInvertMatrix.update(7, 7, missingInvertCoef);
 		break;
+
 	case 5:
-		m_currentConvertMatrix = conversionMatrix5;
-		m_currentConvertMatrix.update(1, 9, missingCoef);
-		m_currentConvertMatrix.update(3, 9, missingCoef);
-		m_currentConvertMatrix.update(5, 9, missingCoef);
-		m_currentConvertMatrix.update(7, 9, missingCoef);
+		m_currentConvertMatrix = EvolQCDModule::conversionMatrix5;
+		m_currentConvertMatrix.update(9, 1, missingCoef);
+		m_currentConvertMatrix.update(9, 3, missingCoef);
+		m_currentConvertMatrix.update(9, 5, missingCoef);
+		m_currentConvertMatrix.update(9, 7, missingCoef);
 		m_currentConvertMatrix.update(9, 9, missingCoef);
+
+		missingInvertCoef = (2. * m_nfEvol) / 5.;
+		m_currentInvertMatrix = EvolQCDModule::invertMatrix5;
+		m_currentInvertMatrix.update(1, 9, missingInvertCoef);
+		m_currentInvertMatrix.update(3, 9, missingInvertCoef);
+		m_currentInvertMatrix.update(5, 9, missingInvertCoef);
+		m_currentInvertMatrix.update(7, 9, missingInvertCoef);
+		m_currentInvertMatrix.update(9, 9, missingInvertCoef);
 		break;
+
 	case 6:
-		m_currentConvertMatrix = conversionMatrix6;
-		m_currentConvertMatrix.update(1, 11, missingCoef);
-		m_currentConvertMatrix.update(3, 11, missingCoef);
-		m_currentConvertMatrix.update(5, 11, missingCoef);
-		m_currentConvertMatrix.update(7, 11, missingCoef);
-		m_currentConvertMatrix.update(9, 11, missingCoef);
+		m_currentConvertMatrix = EvolQCDModule::conversionMatrix6;
+		m_currentConvertMatrix.update(11, 1, missingCoef);
+		m_currentConvertMatrix.update(11, 3, missingCoef);
+		m_currentConvertMatrix.update(11, 5, missingCoef);
+		m_currentConvertMatrix.update(11, 7, missingCoef);
+		m_currentConvertMatrix.update(11, 9, missingCoef);
 		m_currentConvertMatrix.update(11, 11, missingCoef);
+
+		missingInvertCoef = m_nfEvol / 3.;
+		m_currentInvertMatrix = EvolQCDModule::invertMatrix6;
+		m_currentInvertMatrix.update(1, 11, missingInvertCoef);
+		m_currentInvertMatrix.update(3, 11, missingInvertCoef);
+		m_currentInvertMatrix.update(5, 11, missingInvertCoef);
+		m_currentInvertMatrix.update(7, 11, missingInvertCoef);
+		m_currentInvertMatrix.update(9, 11, missingInvertCoef);
+		m_currentInvertMatrix.update(11, 11, missingInvertCoef);
 		break;
+
 	default:
 		break;
 	}
@@ -175,7 +263,7 @@ void EvolQCDModule::initVectorOfGPDCombinations() {
 	//TODO creation en fonction de nfMin pour tronquer ce qui doit l'être
 
 	// q+ et q- (HNonSinglet) pour chaque saveur de quark, HSinglet et Hg
-	m_vectorOfGPDCombination.resize(listOfQuarkFlavorData.size() * 2 + 1);
+	//m_vectorOfGPDCombination.resize(listOfQuarkFlavorData.size() * 2 + 1);
 
 	for (unsigned int i = 0; i != m_nfMin; i++) {
 		m_vectorOfGPDCombination.push_back(
@@ -227,33 +315,128 @@ void EvolQCDModule::preCompute(const double &x, const double &xi,
 	m_MuR = MuR;
 	m_gpdResultData = gpdResultData;
 
-	initModule();
-	isModuleWellConfigured();
+//	EvolQCDModule::initModule();
+//	EvolQCDModule::isModuleWellConfigured();
 }
 
 //TODO faire valider le calcul par Hervé
 //TODO ajouter les commentaires qui vont bien et les références au papier
 void EvolQCDModule::convertBasis() {
+	std::cerr << "[convert - before]" << std::endl;
+	for (unsigned int i = 0; i < m_vectorOfGPDCombination.size(); i++) {
+		std::cerr << m_vectorOfGPDCombination[i] << std::endl;
+	}
+
 	std::vector<double> tempVector = m_currentConvertMatrix
 			* m_vectorOfGPDCombination;
 	m_vectorOfGPDCombination = tempVector;
+
+	std::cerr << "[convert - after]" << std::endl;
+	for (unsigned int i = 0; i < m_vectorOfGPDCombination.size(); i++) {
+		std::cerr << m_vectorOfGPDCombination[i] << std::endl;
+	}
 }
 
 void EvolQCDModule::invertBasis() {
+	std::cerr << "[invert - berfore]" << std::endl;
+	for (unsigned int i = 0; i < m_vectorOfGPDCombination.size(); i++) {
+		std::cerr << m_vectorOfGPDCombination[i] << std::endl;
+	}
+
 	std::vector<double> tempVector = m_currentInvertMatrix
 			* m_vectorOfGPDCombination;
 	m_vectorOfGPDCombination = tempVector;
+
+	std::cerr << "[invert - after]" << std::endl;
+	for (unsigned int i = 0; i < m_vectorOfGPDCombination.size(); i++) {
+		std::cerr << m_vectorOfGPDCombination[i] << std::endl;
+	}
 }
 
+//TODO automatiser les setters
 GPDResultData EvolQCDModule::makeGPDResultData() {
+	GPDResultData gpdResultData(GPDComputeType::H);
 
-	//TODO vérifier comment construire par copie
-	GPDResultData gpdResultData(m_gpdResultData);
-
+	// set gluon
 	gpdResultData.setGluon(
 			m_vectorOfGPDCombination[m_vectorOfGPDCombination.size() - 1]);
 
+	GPDQuarkFlavorData quarkFlavorData(GPDComputeType::H,
+			QuarkFlavor::UNDEFINED);
 
+	// TODO documenter le calcul si contre
+	switch ((m_vectorOfGPDCombination.size() - 1) / 2) {
+	case 6:
+		quarkFlavorData = GPDQuarkFlavorData(GPDComputeType::H,
+				QuarkFlavor::TOP);
+		quarkFlavorData.setPartonDistributionMinus(
+				m_vectorOfGPDCombination[10]);
+		quarkFlavorData.setPartonDistributionPlus(m_vectorOfGPDCombination[11]);
+		quarkFlavorData.setPartonDistribution(
+				calculateFq(m_vectorOfGPDCombination[10],
+						m_vectorOfGPDCombination[11]));
+		gpdResultData.addGPDQuarkFlavorData(quarkFlavorData);
+	case 5:
+		quarkFlavorData = GPDQuarkFlavorData(GPDComputeType::H,
+				QuarkFlavor::BOTTOM);
+		quarkFlavorData.setPartonDistributionMinus(m_vectorOfGPDCombination[8]);
+		quarkFlavorData.setPartonDistributionPlus(m_vectorOfGPDCombination[9]);
+		quarkFlavorData.setPartonDistribution(
+				calculateFq(m_vectorOfGPDCombination[8],
+						m_vectorOfGPDCombination[9]));
+		gpdResultData.addGPDQuarkFlavorData(quarkFlavorData);
+	case 4:
+		quarkFlavorData = GPDQuarkFlavorData(GPDComputeType::H,
+				QuarkFlavor::CHARM);
+		quarkFlavorData.setPartonDistributionMinus(m_vectorOfGPDCombination[6]);
+		quarkFlavorData.setPartonDistributionPlus(m_vectorOfGPDCombination[7]);
+		quarkFlavorData.setPartonDistribution(
+				calculateFq(m_vectorOfGPDCombination[6],
+						m_vectorOfGPDCombination[7]));
+		gpdResultData.addGPDQuarkFlavorData(quarkFlavorData);
+	case 3:
+		quarkFlavorData = GPDQuarkFlavorData(GPDComputeType::H,
+				QuarkFlavor::STRANGE);
+		quarkFlavorData.setPartonDistributionMinus(m_vectorOfGPDCombination[4]);
+		quarkFlavorData.setPartonDistributionPlus(m_vectorOfGPDCombination[5]);
+		quarkFlavorData.setPartonDistribution(
+				calculateFq(m_vectorOfGPDCombination[4],
+						m_vectorOfGPDCombination[5]));
+		gpdResultData.addGPDQuarkFlavorData(quarkFlavorData);
+	case 2:
+		quarkFlavorData = GPDQuarkFlavorData(GPDComputeType::H,
+				QuarkFlavor::DOWN);
+		quarkFlavorData.setPartonDistributionMinus(m_vectorOfGPDCombination[2]);
+		quarkFlavorData.setPartonDistributionPlus(m_vectorOfGPDCombination[3]);
+		quarkFlavorData.setPartonDistribution(
+				calculateFq(m_vectorOfGPDCombination[2],
+						m_vectorOfGPDCombination[3]));
+		gpdResultData.addGPDQuarkFlavorData(quarkFlavorData);
+	case 1:
+		quarkFlavorData = GPDQuarkFlavorData(GPDComputeType::H,
+				QuarkFlavor::UP);
+		quarkFlavorData.setPartonDistributionMinus(m_vectorOfGPDCombination[0]);
+		quarkFlavorData.setPartonDistributionPlus(m_vectorOfGPDCombination[1]);
+		quarkFlavorData.setPartonDistribution(
+				calculateFq(m_vectorOfGPDCombination[0],
+						m_vectorOfGPDCombination[1]));
+		gpdResultData.addGPDQuarkFlavorData(quarkFlavorData);
+		break;
+	default:
+		break;
+	}
 
-	return GPDResultData();
+	return gpdResultData;
+}
+
+double EvolQCDModule::calculateFq(double FMinus, double FPlus) {
+	return (FPlus + FMinus) / 2.;
+}
+
+QCDOrderType::Type EvolQCDModule::getQcdOrderType() const {
+	return m_qcdOrderType;
+}
+
+void EvolQCDModule::setQcdOrderType(QCDOrderType::Type qcdOrderType) {
+	m_qcdOrderType = qcdOrderType;
 }

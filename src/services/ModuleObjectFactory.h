@@ -22,6 +22,7 @@
 
 class CFFModule;
 class GPDModule;
+class EvolQCDModule;
 
 class ModuleObjectFactory {
 public:
@@ -46,6 +47,7 @@ public:
     ModuleObject* getModule(const std::string & ID);
     GPDModule* getGPDModule(const std::string & ID);
     CFFModule* getCFFModule(const std::string & ID);
+    EvolQCDModule* getEvolQCDModule(const std::string & ID);
 
     std::string toString();
 

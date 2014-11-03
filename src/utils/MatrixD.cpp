@@ -39,8 +39,8 @@ std::vector<double> MatrixD::operator*(const std::vector<double>& rhs) {
 	// test vector's size and matrix's size
 	if (rhs.size() != m_rows) {
 		throw std::runtime_error(
-				Formatter()
-						<< "[MatrixD::operator*] Vector's size does not match matrix size = "
+				Formatter() << "[MatrixD::operator*] Vector's size = "
+						<< rhs.size() << " does not match matrix size = "
 						<< m_rows);
 	}
 

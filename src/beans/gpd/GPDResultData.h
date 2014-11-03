@@ -24,7 +24,8 @@ class GPDResultData: public GenericData {
 public:
 
     GPDResultData();
-    GPDResultData(GPDComputeType &_gpdComputeType);
+    GPDResultData(const GPDResultData & other);
+    GPDResultData(GPDComputeType::Type _gpdComputeType);
     ~GPDResultData();
 
     void addGPDQuarkFlavorData(GPDQuarkFlavorData &_gpdQuarkFlavorData);
