@@ -138,6 +138,13 @@ void EvolQCDModule::isModuleWellConfigured() {
 	if (m_qcdOrderType == QCDOrderType::UNDEFINED) {
 		throw std::runtime_error("[EvolQCDModule] QCDOrderType is UNDEFINED");
 	}
+
+	// test contrainte sur les bornes du nf_evol
+	if (m_nfEvol < 1 || m_nfEvol > 6) {
+		throw std::runtime_error(
+				Formatter()
+						<< "[EvolQCDModule] nfEvol is out of range ; a good value is between [1 : 6]");
+	}
 }
 
 void EvolQCDModule::initNfMin() {
@@ -155,16 +162,10 @@ void EvolQCDModule::initNfMin() {
 	} else {
 		m_nfMin = nfGPDModel;
 	}
-
-	// test contrainte sur les bornes du nf_evol
-	if (m_nfEvol < 1 || m_nfEvol > 6) {
-		throw std::runtime_error(
-				Formatter()
-						<< "[EvolQCDModule] nfEvol is out of range ; a good value is between [1 : 6]");
-	}
 }
 
 void EvolQCDModule::initMatrixValue() {
+	// care about m_nfEvol = 0 ; divided by ZERO
 	double missingCoef = 1. / (2. * (double) m_nfEvol);
 	double missingInvertCoef = 0.;
 
