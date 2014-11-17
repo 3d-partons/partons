@@ -4,8 +4,8 @@
 #include <math.h>
 #include <iostream>
 
-#include "GPDModule.h"
 #include "../utils/stringUtils/Formatter.h"
+#include "../utils/logger/LoggerManager.h"
 
 MatrixD EvolQCDModule::conversionMatrix1(3, 3, 1., 0., 0., 0., 0., 0., 0., 0.,
 		1.);
@@ -88,9 +88,11 @@ MatrixD EvolQCDModule::invertMatrix6(13, 13, 1., 0., 0., 0., 0., 0., 0., 0., 0.,
 
 //TODO quelles sont les valeurs par défauts lors de l'initialisation ?
 EvolQCDModule::EvolQCDModule(const std::string &moduleID) :
-		ModuleObject(moduleID), m_x(0), m_xi(0), m_t(0), m_MuF(0), m_MuR(0), m_alphaS(
-				0), m_scaleDistinction(0), m_nfEvol(-1), m_nfMin(-1), m_epsilon(
-				0), m_alpha(0), m_qcdOrderType(QCDOrderType::UNDEFINED) {
+		ModuleObject(moduleID), m_x(0), m_xi(0), m_t(0), m_MuF(0), m_MuR(0),
+		m_MuF_ref(0), m_pGPDModule(0), m_currentGPDComputeType(GPDComputeType::H),
+		m_alphaS(0), m_scaleDistinction(0), m_nfEvol(-1), m_nfMin(-1),
+		m_nbXPoints(20), m_nbMuFPoints(1), m_epsilon(0.01),
+		m_alpha(0.1), m_qcdOrderType(QCDOrderType::UNDEFINED) {
 }
 
 EvolQCDModule::EvolQCDModule(const EvolQCDModule &other) :
@@ -100,9 +102,12 @@ EvolQCDModule::EvolQCDModule(const EvolQCDModule &other) :
 	m_t = other.m_t;
 	m_MuF = other.m_MuF;
 	m_MuR = other.m_MuR;
+	m_MuF_ref = other.m_MuF_ref;
 
 	m_nfMin = other.m_nfMin;
 	m_nfEvol = other.m_nfEvol;
+	m_nbXPoints = other.m_nbXPoints;
+	m_nbMuFPoints = other.m_nbMuFPoints;
 	m_epsilon = other.m_epsilon;
 	m_alpha = other.m_alpha;
 
@@ -110,6 +115,14 @@ EvolQCDModule::EvolQCDModule(const EvolQCDModule &other) :
 	//m_runningAlphaS = other.m_runningAlphaS;
 	m_alphaS = other.m_alphaS;
 	m_scaleDistinction = other.m_scaleDistinction;
+
+	m_currentGPDComputeType = other.m_currentGPDComputeType;
+	m_qcdOrderType = other.m_qcdOrderType;
+
+	if (other.m_pGPDModule != 0) {
+		// GPDModule is an abstract class, so it's impossible to use copy constructor to get a new instance of the object
+		m_pGPDModule = (other.m_pGPDModule)->clone();
+	}
 
 	//TODO clone ou surcharger l'opérateur =
 	//m_gpdResultData = other.m_gpdResultData;
@@ -131,10 +144,21 @@ void EvolQCDModule::initModule() {
 	initNfMin();
 	initMatrixValue();
 	initVectorOfGPDCombinations();
+
+	m_pLoggerManager->debug(getClassName(), __func__,
+			Formatter() << "NfMin = " << m_nfMin);
+	m_pLoggerManager->debug(getClassName(), __func__,
+			Formatter() << "Convert Matrix = "<< m_currentConvertMatrix.toString());
+	m_pLoggerManager->debug(getClassName(), __func__,
+			Formatter() << "Invert Matrix = " << m_currentInvertMatrix.toString());
 }
 
 //TODO ajouter les tests manquants
 void EvolQCDModule::isModuleWellConfigured() {
+	if (m_pGPDModule == 0) {
+		throw std::runtime_error("[EvolQCDModule] GPDModule* is NULL");
+	}
+
 	if (m_qcdOrderType == QCDOrderType::UNDEFINED) {
 		throw std::runtime_error("[EvolQCDModule] QCDOrderType is UNDEFINED");
 	}
@@ -144,6 +168,22 @@ void EvolQCDModule::isModuleWellConfigured() {
 		throw std::runtime_error(
 				Formatter()
 						<< "[EvolQCDModule] nfEvol is out of range ; a good value is between [1 : 6]");
+	}
+
+	// Test range in MuF and MuF_ref
+	if (m_MuF <= 0.) {
+		throw std::runtime_error(
+				Formatter()
+						<< "[EvolQCDModule] m_MuF is out of range ;"
+						<< "m_MuF should be >0. Here m_MuF = " << m_MuF);
+	}
+
+	// Test range in MuF and MuF_ref
+	if (m_MuF_ref <= 0.) {
+		throw std::runtime_error(
+				Formatter()
+						<< "[EvolQCDModule] m_MuF_ref is out of range ;"
+						<< "m_MuF_ref should be >0. Here m_MuF_ref = " << m_MuF_ref);
 	}
 }
 
@@ -258,22 +298,7 @@ void EvolQCDModule::initMatrixValue() {
 }
 
 void EvolQCDModule::initVectorOfGPDCombinations() {
-	std::vector<GPDQuarkFlavorData> listOfQuarkFlavorData =
-			m_gpdResultData.getListOfQuarkFlavorData();
-
-	//TODO creation en fonction de nfMin pour tronquer ce qui doit l'être
-
-	// q+ et q- (HNonSinglet) pour chaque saveur de quark, HSinglet et Hg
-	//m_vectorOfGPDCombination.resize(listOfQuarkFlavorData.size() * 2 + 1);
-
-	for (unsigned int i = 0; i != m_nfMin; i++) {
-		m_vectorOfGPDCombination.push_back(
-				listOfQuarkFlavorData[i].getPartonDistributionMinus());
-		m_vectorOfGPDCombination.push_back(
-				listOfQuarkFlavorData[i].getPartonDistributionPlus());
-	}
-
-	m_vectorOfGPDCombination.push_back(m_gpdResultData.getGluon());
+	m_vectorOfGPDCombination = MakeVectorOfGPDCombinations(m_gpdResultData);
 }
 
 //TODO implement
@@ -299,11 +324,11 @@ bool EvolQCDModule::isRunnable(const double &MuF, const double &MuF_ref,
 }
 
 bool EvolQCDModule::isRelativeTest(const double &MuF, const double &MuF_ref) {
-	return (fabs(MuF - MuF_ref) < (m_epsilon * MuF_ref)) ? true : false;
+	return (fabs(MuF - MuF_ref) > (m_epsilon * MuF_ref)) ? true : false;
 }
 
 bool EvolQCDModule::isAbsoluteTest(const double &MuF, const double &MuF_ref) {
-	return (fabs(MuF - MuF_ref) < m_alpha) ? true : false;
+	return (fabs(MuF - MuF_ref) > m_alpha) ? true : false;
 }
 
 void EvolQCDModule::preCompute(const double &x, const double &xi,
@@ -315,6 +340,10 @@ void EvolQCDModule::preCompute(const double &x, const double &xi,
 	m_MuF = MuF;
 	m_MuR = MuR;
 	m_gpdResultData = gpdResultData;
+
+	m_pLoggerManager->debug(getClassName(), __func__,
+			Formatter() << "x = " << x << "    xi = " << xi << "    t = " << t
+			<< " GeV2    MuF = " << MuF << " GeV    MuR = " << MuR << " GeV");
 
 //	EvolQCDModule::initModule();
 //	EvolQCDModule::isModuleWellConfigured();
@@ -335,19 +364,19 @@ std::vector<double> EvolQCDModule::invertBasis(
 
 //TODO automatiser les setters
 GPDResultData EvolQCDModule::makeGPDResultData() {
-	GPDResultData gpdResultData(GPDComputeType::H);
+	GPDResultData gpdResultData(m_currentGPDComputeType);
 
 	// set gluon
 	gpdResultData.setGluon(
 			m_vectorOfGPDCombination[m_vectorOfGPDCombination.size() - 1]);
 
-	GPDQuarkFlavorData quarkFlavorData(GPDComputeType::H,
+	GPDQuarkFlavorData quarkFlavorData(m_currentGPDComputeType,
 			QuarkFlavor::UNDEFINED);
 
 	// TODO documenter le calcul si contre
 	switch ((m_vectorOfGPDCombination.size() - 1) / 2) {
 	case 6:
-		quarkFlavorData = GPDQuarkFlavorData(GPDComputeType::H,
+		quarkFlavorData = GPDQuarkFlavorData(m_currentGPDComputeType,
 				QuarkFlavor::TOP);
 		quarkFlavorData.setPartonDistributionMinus(
 				m_vectorOfGPDCombination[10]);
@@ -357,7 +386,7 @@ GPDResultData EvolQCDModule::makeGPDResultData() {
 						m_vectorOfGPDCombination[11]));
 		gpdResultData.addGPDQuarkFlavorData(quarkFlavorData);
 	case 5:
-		quarkFlavorData = GPDQuarkFlavorData(GPDComputeType::H,
+		quarkFlavorData = GPDQuarkFlavorData(m_currentGPDComputeType,
 				QuarkFlavor::BOTTOM);
 		quarkFlavorData.setPartonDistributionMinus(m_vectorOfGPDCombination[8]);
 		quarkFlavorData.setPartonDistributionPlus(m_vectorOfGPDCombination[9]);
@@ -366,7 +395,7 @@ GPDResultData EvolQCDModule::makeGPDResultData() {
 						m_vectorOfGPDCombination[9]));
 		gpdResultData.addGPDQuarkFlavorData(quarkFlavorData);
 	case 4:
-		quarkFlavorData = GPDQuarkFlavorData(GPDComputeType::H,
+		quarkFlavorData = GPDQuarkFlavorData(m_currentGPDComputeType,
 				QuarkFlavor::CHARM);
 		quarkFlavorData.setPartonDistributionMinus(m_vectorOfGPDCombination[6]);
 		quarkFlavorData.setPartonDistributionPlus(m_vectorOfGPDCombination[7]);
@@ -375,7 +404,7 @@ GPDResultData EvolQCDModule::makeGPDResultData() {
 						m_vectorOfGPDCombination[7]));
 		gpdResultData.addGPDQuarkFlavorData(quarkFlavorData);
 	case 3:
-		quarkFlavorData = GPDQuarkFlavorData(GPDComputeType::H,
+		quarkFlavorData = GPDQuarkFlavorData(m_currentGPDComputeType,
 				QuarkFlavor::STRANGE);
 		quarkFlavorData.setPartonDistributionMinus(m_vectorOfGPDCombination[4]);
 		quarkFlavorData.setPartonDistributionPlus(m_vectorOfGPDCombination[5]);
@@ -384,7 +413,7 @@ GPDResultData EvolQCDModule::makeGPDResultData() {
 						m_vectorOfGPDCombination[5]));
 		gpdResultData.addGPDQuarkFlavorData(quarkFlavorData);
 	case 2:
-		quarkFlavorData = GPDQuarkFlavorData(GPDComputeType::H,
+		quarkFlavorData = GPDQuarkFlavorData(m_currentGPDComputeType,
 				QuarkFlavor::DOWN);
 		quarkFlavorData.setPartonDistributionMinus(m_vectorOfGPDCombination[2]);
 		quarkFlavorData.setPartonDistributionPlus(m_vectorOfGPDCombination[3]);
@@ -393,7 +422,7 @@ GPDResultData EvolQCDModule::makeGPDResultData() {
 						m_vectorOfGPDCombination[3]));
 		gpdResultData.addGPDQuarkFlavorData(quarkFlavorData);
 	case 1:
-		quarkFlavorData = GPDQuarkFlavorData(GPDComputeType::H,
+		quarkFlavorData = GPDQuarkFlavorData(m_currentGPDComputeType,
 				QuarkFlavor::UP);
 		quarkFlavorData.setPartonDistributionMinus(m_vectorOfGPDCombination[0]);
 		quarkFlavorData.setPartonDistributionPlus(m_vectorOfGPDCombination[1]);
@@ -419,4 +448,59 @@ QCDOrderType::Type EvolQCDModule::getQcdOrderType() const {
 
 void EvolQCDModule::setQcdOrderType(QCDOrderType::Type qcdOrderType) {
 	m_qcdOrderType = qcdOrderType;
+}
+
+std::vector<double> EvolQCDModule::MakeVectorOfGPDCombinations(
+		GPDResultData gpdResultData) {
+	std::vector<GPDQuarkFlavorData> listOfQuarkFlavorData =
+			gpdResultData.getListOfQuarkFlavorData();
+
+	//TODO creation en fonction de nfMin pour tronquer ce qui doit l'être
+
+	// q+ et q- (HNonSinglet) pour chaque saveur de quark, HSinglet et Hg
+	//m_vectorOfGPDCombination.resize(listOfQuarkFlavorData.size() * 2 + 1);
+
+	std::vector<double> vectorOfGPDCombination;
+
+	for (unsigned int i = 0; i != m_nfMin; i++) {
+		vectorOfGPDCombination.push_back(
+				listOfQuarkFlavorData[i].getPartonDistributionMinus());
+		vectorOfGPDCombination.push_back(
+				listOfQuarkFlavorData[i].getPartonDistributionPlus());
+	}
+
+	vectorOfGPDCombination.push_back(m_gpdResultData.getGluon());
+
+	return vectorOfGPDCombination;
+}
+
+const GPDModule* EvolQCDModule::getGpdModule() const {
+	return m_pGPDModule;
+}
+
+void EvolQCDModule::setGpdModule(GPDModule* gpdModule) {
+	m_pGPDModule = gpdModule;
+	m_MuF_ref = m_pGPDModule->getMuFRef();
+
+	m_pLoggerManager->debug(getClassName(), __func__,
+			Formatter() << "GPDModule = " << m_pGPDModule->getClassName());
+
+	m_pLoggerManager->debug(getClassName(), __func__,
+			Formatter() << "MuF_ref = " << m_MuF_ref << " GeV");
+}
+
+int EvolQCDModule::getEvolutionActiveFlavors() const {
+	return m_nfEvol;
+}
+
+void EvolQCDModule::setEvolutionActiveFlavors(int nfEvol) {
+	m_nfEvol = nfEvol;
+}
+
+unsigned int EvolQCDModule::getNbMuFPoints() const {
+	return m_nbMuFPoints;
+}
+
+unsigned int EvolQCDModule::getNbXPoints() const {
+	return m_nbXPoints;
 }

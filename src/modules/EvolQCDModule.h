@@ -3,7 +3,7 @@
 
 /**
  * @file EvolQCDModule.h
- * @author Bryan BERTHOU (CEA Saclay)
+ * @author Bryan BERTHOU and H. MOUTARDE (CEA Saclay)
  * @date 21 October 2014
  *
  * @class EvolQCDModule
@@ -14,6 +14,7 @@
 //#include "alphaS/RunningAlphaStrong.h"
 #include "../beans/gpd/GPDResultData.h"
 #include "../utils/MatrixD.h"
+#include "GPDModule.h"
 
 class GPDModule;
 
@@ -39,8 +40,16 @@ public:
 
 	// ##### GETTERS & SETTERS #####
 
+	const GPDModule* getGpdModule() const;
+	void setGpdModule(GPDModule* gpdModule);
 	QCDOrderType::Type getQcdOrderType() const;
 	void setQcdOrderType(QCDOrderType::Type qcdOrderType);
+	int getEvolutionActiveFlavors() const;
+	void setEvolutionActiveFlavors(int nfEvol);
+	unsigned int getNbMuFPoints() const;
+	virtual void setNbMuFPoints(unsigned int nbMuFPoints) = 0;
+	unsigned int getNbXPoints() const;
+	virtual void setNbXPoints(unsigned int nbXPoints) = 0;
 
 protected:
 	/**
@@ -53,6 +62,12 @@ protected:
 	double m_t;
 	double m_MuF;
 	double m_MuR;
+	double m_MuF_ref;
+
+	GPDModule* m_pGPDModule;
+
+	QCDOrderType::Type m_qcdOrderType;
+	GPDComputeType::Type m_currentGPDComputeType;
 
 	//RunningAlphaStrong m_runningAlphaS;
 	double m_alphaS;
@@ -60,10 +75,10 @@ protected:
 
 	int m_nfEvol;
 	int m_nfMin;		///< nf_min donne la taille de la matrice
+    unsigned int m_nbXPoints;	///< Max of points if adaptative method,
+    unsigned int m_nbMuFPoints;	///< fixed otherwise
 	double m_epsilon;
 	double m_alpha;
-
-	QCDOrderType::Type m_qcdOrderType;
 
 	GPDResultData m_gpdResultData;
 
@@ -80,11 +95,12 @@ protected:
 	virtual void initModule();
 	virtual void isModuleWellConfigured();
 
-	virtual std::vector<double> convertBasis(
-			std::vector<double> vectorToConvert);
-	virtual std::vector<double> invertBasis(std::vector<double> vectorToInvert);
+	std::vector<double> convertBasis(std::vector<double> vectorToConvert);
+	std::vector<double> invertBasis(std::vector<double> vectorToInvert);
 
 	GPDResultData makeGPDResultData();
+	std::vector<double> MakeVectorOfGPDCombinations(
+			GPDResultData gpdResultData);
 
 private:
 	static MatrixD conversionMatrix1;

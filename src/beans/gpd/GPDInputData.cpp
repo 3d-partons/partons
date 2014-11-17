@@ -20,9 +20,9 @@ std::string GPDInputData::toString() {
     os << "#[GPDInputData]" << std::endl;
     os << "x = " << x << std::endl;
     os << "xi = " << xi << std::endl;
-    os << "t = " << t << " Gev2" << std::endl;
-    os << "MuF = " << MuF << " Gev2" << std::endl;
-    os << "MuR = " << MuR << " Gev2" << std::endl;
+    os << "t = " << t << " GeV2" << std::endl;
+    os << "MuF = " << MuF << " GeV" << std::endl;
+    os << "MuR = " << MuR << " GeV" << std::endl;
     os << std::endl;
 
     return os.str();
@@ -46,4 +46,24 @@ double GPDInputData::getX() const {
 
 double GPDInputData::getXi() const {
     return xi;
+}
+
+void GPDInputData::setMuF(double muF) {
+	MuF = muF;
+}
+
+void GPDInputData::setMuR(double muR) {
+	MuR = muR;
+}
+
+void GPDInputData::setT(double t) {
+	this->t = t;
+}
+
+void GPDInputData::setX(double x) {
+	this->x = x;
+}
+
+void GPDInputData::setXi(double xi) {
+	this->xi = xi;
 }

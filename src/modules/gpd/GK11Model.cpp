@@ -164,10 +164,20 @@ GPDOutputData GK11Model::compute(const double &_x, const double &_xi,
 	m_MuF = _MuF;
 	m_MuR = _MuR;
 
+	m_pLoggerManager->debug(getClassName(), __func__,
+			Formatter() << "x = " << m_x << "    xi = " << m_xi << "    t = " << m_t
+			<< " GeV2    MuF = " << m_MuF << " GeV    MuR = " << m_MuR << " GeV");
+
 	isModuleWellConfigured();
 
 	// And after, update GK11 variables before computing
 	initModule();
+
+	if (m_pEvolQCDModule != 0 ) {
+		m_pLoggerManager->debug(getClassName(), __func__,
+			Formatter() << "isRunnable = " << m_pEvolQCDModule->isRunnable(_MuF,
+					m_MuF_ref, EvolQCDModule::RELATIVE));
+	}
 
 	GPDOutputData gpdOutputData;
 
@@ -178,8 +188,8 @@ GPDOutputData GK11Model::compute(const double &_x, const double &_xi,
 			GPDResultData gpdResultData = ((*this).*(m_it->second))();
 
 			if (m_pEvolQCDModule != 0
-			/*&& m_pEvolQCDModule->isRunnable(_MuF, m_MuF_ref,
-			 EvolQCDModule::RELATIVE)*/) {
+					&& m_pEvolQCDModule->isRunnable(_MuF, m_MuF_ref,
+			 EvolQCDModule::RELATIVE)) {
 				gpdResultData = m_pEvolQCDModule->compute(m_x, m_xi, m_t, m_MuF,
 						m_MuR, gpdResultData);
 			}
@@ -194,8 +204,8 @@ GPDOutputData GK11Model::compute(const double &_x, const double &_xi,
 			GPDResultData gpdResultData = ((*this).*(m_it->second))();
 
 			if (m_pEvolQCDModule != 0
-			/*&& m_pEvolQCDModule->isRunnable(_MuF, m_MuF_ref,
-			 EvolQCDModule::RELATIVE)*/) {
+			&& m_pEvolQCDModule->isRunnable(_MuF, m_MuF_ref,
+			 EvolQCDModule::RELATIVE)) {
 				gpdResultData = m_pEvolQCDModule->compute(m_x, m_xi, m_t, m_MuF,
 						m_MuR, gpdResultData);
 			}
@@ -753,38 +763,61 @@ void GK11Model::calculateHCoefs() {
 	int slow_sea = 0; // by default,  fast
 	int slow_val = 0; // if  =  1 : slow (full calculation with cln )
 
-	if (log10(m_xi) < (4. / 2.5) * log10(m_x)) {
+	if (log10(m_xi) < (4. / 2.5) * log10(fabs(m_x))) {
 		slow_sea = 1;
 	}
 
 // For valence
 
-	if ((m_xi < 0.01) && (log10(m_xi) < ((-4. / log10(0.6)) * log10(m_x)))) {
+	if ((m_xi < 0.01) && (log10(m_xi) < ((-4. / log10(0.6)) * log10(fabs(m_x))))) {
 		slow_val = 1;
 	}
 
 	calculateHKas(); // comes up with kHgluon,  kHsea,  kHuval,  kHdval
 
 	if (!slow_sea) {
-		Hs1tab.at(0) = Hs1(m_x, 0., kHsea);
-		Hs1tab.at(1) = Hs1(m_x, 0.5, kHsea);
-		Hs1tab.at(2) = Hs1(m_x, 1., kHsea);
-		Hs1tab.at(3) = Hs1(m_x, 1.5, kHsea);
+		if( m_x >= 0 ) {
+			Hs1tab.at(0) = Hs1(m_x, 0., kHsea);
+			Hs1tab.at(1) = Hs1(m_x, 0.5, kHsea);
+			Hs1tab.at(2) = Hs1(m_x, 1., kHsea);
+			Hs1tab.at(3) = Hs1(m_x, 1.5, kHsea);
 
-		Hi1tab.at(0) = Hi1(m_x, 0., kHgluon);
-		Hi1tab.at(1) = Hi1(m_x, 0.5, kHgluon);
-		Hi1tab.at(2) = Hi1(m_x, 1., kHgluon);
-		Hi1tab.at(3) = Hi1(m_x, 1.5, kHgluon);
+			Hi1tab.at(0) = Hi1(m_x, 0., kHgluon);
+			Hi1tab.at(1) = Hi1(m_x, 0.5, kHgluon);
+			Hi1tab.at(2) = Hi1(m_x, 1., kHgluon);
+		} else {
+			Hs1tab.at(0) = - Hs1(-m_x, 0., kHsea);
+			Hs1tab.at(1) = - Hs1(-m_x, 0.5, kHsea);
+			Hs1tab.at(2) = - Hs1(-m_x, 1., kHsea);
+			Hs1tab.at(3) = - Hs1(-m_x, 1.5, kHsea);
+
+			Hi1tab.at(0) = - Hi1(-m_x, 0., kHgluon);
+			Hi1tab.at(1) = - Hi1(-m_x, 0.5, kHgluon);
+			Hi1tab.at(2) = - Hi1(-m_x, 1., kHgluon);
+			Hi1tab.at(3) = - Hi1(-m_x, 1.5, kHgluon);
+		}
 	} else {
-		Hs1tab.at(0) = Hs1_alt(m_x, 0., kHsea);
-		Hs1tab.at(1) = Hs1_alt(m_x, 0.5, kHsea);
-		Hs1tab.at(2) = Hs1_alt(m_x, 1., kHsea);
-		Hs1tab.at(3) = Hs1_alt(m_x, 1.5, kHsea);
+		if( m_x >= 0 ) {
+			Hs1tab.at(0) = Hs1_alt(m_x, 0., kHsea);
+			Hs1tab.at(1) = Hs1_alt(m_x, 0.5, kHsea);
+			Hs1tab.at(2) = Hs1_alt(m_x, 1., kHsea);
+			Hs1tab.at(3) = Hs1_alt(m_x, 1.5, kHsea);
 
-		Hi1tab.at(0) = Hi1_alt(m_x, 0., kHgluon);
-		Hi1tab.at(1) = Hi1_alt(m_x, 0.5, kHgluon);
-		Hi1tab.at(2) = Hi1_alt(m_x, 1., kHgluon);
-		Hi1tab.at(3) = Hi1_alt(m_x, 1.5, kHgluon);
+			Hi1tab.at(0) = Hi1_alt(m_x, 0., kHgluon);
+			Hi1tab.at(1) = Hi1_alt(m_x, 0.5, kHgluon);
+			Hi1tab.at(2) = Hi1_alt(m_x, 1., kHgluon);
+			Hi1tab.at(3) = Hi1_alt(m_x, 1.5, kHgluon);
+		} else {
+			Hs1tab.at(0) = - Hs1_alt(-m_x, 0., kHsea);
+			Hs1tab.at(1) = - Hs1_alt(-m_x, 0.5, kHsea);
+			Hs1tab.at(2) = - Hs1_alt(-m_x, 1., kHsea);
+			Hs1tab.at(3) = - Hs1_alt(-m_x, 1.5, kHsea);
+
+			Hi1tab.at(0) = - Hi1_alt(-m_x, 0., kHgluon);
+			Hi1tab.at(1) = - Hi1_alt(-m_x, 0.5, kHgluon);
+			Hi1tab.at(2) = - Hi1_alt(-m_x, 1., kHgluon);
+			Hi1tab.at(3) = - Hi1_alt(-m_x, 1.5, kHgluon);
+		}
 	}
 
 	if (!slow_val) {

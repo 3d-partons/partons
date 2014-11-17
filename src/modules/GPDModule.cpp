@@ -45,4 +45,9 @@ const EvolQCDModule* GPDModule::getEvolQcdModule() const {
 
 void GPDModule::setEvolQcdModule(EvolQCDModule* pEvolQcdModule) {
 	m_pEvolQCDModule = pEvolQcdModule;
+	if (m_pEvolQCDModule != 0) m_pEvolQCDModule->setGpdModule(this);
+}
+
+double GPDModule::getMuFRef() const {
+	return m_MuF_ref;
 }

@@ -75,6 +75,7 @@ public:
 	void setNf(double nf);
 	const EvolQCDModule* getEvolQcdModule() const;
 	void setEvolQcdModule(EvolQCDModule* pEvolQcdModule);
+	double getMuFRef() const;
 
 protected:
 	/**

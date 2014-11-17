@@ -13,6 +13,7 @@
 #include "../GenericData.h"
 
 class GPDInputData: public GenericData {
+	// TODO Use same coding conventions everywhere. Make member private ?
     double x;       ///< Bjorken variable
     double xi;      ///< longitudinal momentum
     double t;       ///< momentum transfer (Mandelstam variable)
@@ -30,6 +31,11 @@ public:
     double getT() const;
     double getX() const;
     double getXi() const;
+	void setMuF(double muF);
+	void setMuR(double muR);
+	void setT(double t);
+	void setX(double x);
+	void setXi(double xi);
 };
 
 #endif /* GPD_INPUT_DATA_H */
