@@ -8,17 +8,18 @@
 #include "GPDOutputData.h"
 
 class ListGPDOutputData {
-    std::map<std::string, GPDOutputData> m_gpdOutputDataList;
-
 public:
-    ListGPDOutputData();
-    virtual ~ListGPDOutputData();
+	ListGPDOutputData();
+	virtual ~ListGPDOutputData();
 
-    void add(std::string _GPDModuleID, GPDOutputData _gpdOutputData);
-    GPDOutputData* get(std::string _GPDModuleID);
+	void add(std::string _GPDModuleID, GPDOutputData _gpdOutputData);
+	GPDOutputData* get(std::string _GPDModuleID);
 
-    size_t getSize();
-    GPDOutputData* getUniqueResult();
+	size_t getSize();
+	GPDOutputData* getUniqueResult();
+
+private:
+	std::map<std::string, GPDOutputData> m_gpdOutputDataList;
 };
 
 #endif /* LIST_GPD_OUTPUT_DATA_H */

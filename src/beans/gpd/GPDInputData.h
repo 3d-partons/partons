@@ -13,29 +13,29 @@
 #include "../GenericData.h"
 
 class GPDInputData: public GenericData {
-	// TODO Use same coding conventions everywhere. Make member private ?
-    double x;       ///< Bjorken variable
-    double xi;      ///< longitudinal momentum
-    double t;       ///< momentum transfer (Mandelstam variable)
-    double MuF;     ///< Factorisation
-    double MuR;     ///< Re-normalisation
-
 public:
 
-    GPDInputData(double _x, double _xi, double _t, double _MuF, double _MuR);
+	GPDInputData(double _x, double _xi, double _t, double _MuF, double _MuR);
 
-    std::string toString();
+	std::string toString();
 
-    double getMuF() const;
-    double getMuR() const;
-    double getT() const;
-    double getX() const;
-    double getXi() const;
+	double getMuF() const;
+	double getMuR() const;
+	double getT() const;
+	double getX() const;
+	double getXi() const;
 	void setMuF(double muF);
 	void setMuR(double muR);
 	void setT(double t);
 	void setX(double x);
 	void setXi(double xi);
+
+private:
+	double m_x;       ///< Bjorken variable
+	double m_xi;      ///< longitudinal momentum
+	double m_t;       ///< momentum transfer (Mandelstam variable)
+	double m_MuF;     ///< Factorisation
+	double m_MuR;     ///< Re-normalisation
 };
 
 #endif /* GPD_INPUT_DATA_H */

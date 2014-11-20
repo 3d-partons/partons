@@ -1,69 +1,62 @@
-/*
- * GPDData.cpp
- *
- *  Created on: 24 juil. 2014
- *      Author: bryan
- */
-
 #include "GPDInputData.h"
 
 #include <sstream>
 
 GPDInputData::GPDInputData(double _x, double _xi, double _t, double _MuF,
-        double _MuR) :
-        x(_x), xi(_xi), t(_t), MuF(_MuF), MuR(_MuR) {
+		double _MuR) :
+		m_x(_x), m_xi(_xi), m_t(_t), m_MuF(_MuF), m_MuR(_MuR) {
 }
 
 std::string GPDInputData::toString() {
-    std::ostringstream os;
+	std::ostringstream os;
 
-    os << "#[GPDInputData]" << std::endl;
-    os << "x = " << x << std::endl;
-    os << "xi = " << xi << std::endl;
-    os << "t = " << t << " GeV2" << std::endl;
-    os << "MuF = " << MuF << " GeV" << std::endl;
-    os << "MuR = " << MuR << " GeV" << std::endl;
-    os << std::endl;
+	os << "#[GPDInputData]" << std::endl;
+	os << "x = " << m_x << std::endl;
+	os << "xi = " << m_xi << std::endl;
+	os << "t = " << m_t << " GeV2" << std::endl;
+	os << "MuF = " << m_MuF << " GeV" << std::endl;
+	os << "MuR = " << m_MuR << " GeV" << std::endl;
+	os << std::endl;
 
-    return os.str();
+	return os.str();
 }
 
 double GPDInputData::getMuF() const {
-    return MuF;
+	return m_MuF;
 }
 
 double GPDInputData::getMuR() const {
-    return MuR;
+	return m_MuR;
 }
 
 double GPDInputData::getT() const {
-    return t;
+	return m_t;
 }
 
 double GPDInputData::getX() const {
-    return x;
+	return m_x;
 }
 
 double GPDInputData::getXi() const {
-    return xi;
+	return m_xi;
 }
 
 void GPDInputData::setMuF(double muF) {
-	MuF = muF;
+	m_MuF = muF;
 }
 
 void GPDInputData::setMuR(double muR) {
-	MuR = muR;
+	m_MuR = muR;
 }
 
 void GPDInputData::setT(double t) {
-	this->t = t;
+	this->m_t = t;
 }
 
 void GPDInputData::setX(double x) {
-	this->x = x;
+	this->m_x = x;
 }
 
 void GPDInputData::setXi(double xi) {
-	this->xi = xi;
+	this->m_xi = xi;
 }
