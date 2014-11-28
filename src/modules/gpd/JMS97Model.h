@@ -67,16 +67,16 @@ public:
 
     // ##### GETTERS & SETTERS #####
 
-	void SetParameters( Double_t R, Double_t eta );                ///<  Initialisation of kinematics-independent quantities
+	void SetParameters( double R, double eta );                ///<  Initialisation of kinematics-independent quantities
 
 	void Print_GPD ();		///< Screen print of GPD values
 	void Print_CFF ();		///< Screen print of CFF values
 	void Print_FF ();		///< Screen print of FF values
 	void Print_Params ();	///< Screen print of current parameters values
 
-	void GetGPD( Double_t tab_GPD[], Double_t x, Double_t xi, Double_t t ); ///< Bag model GPDs for u and d quarks
-	void GetCFF( Double_t tab_CFF[], Double_t xi, Double_t t ); ///< Corresponding real and imaginary parts of Compton Form Factors
-	void GetFF( Double_t tab_FF[], Double_t xi, Double_t t ); 	///< Corresponding (flavour contributions to) form factors
+	void GetGPD( double tab_GPD[], double x, double xi, double t ); ///< Bag model GPDs for u and d quarks
+	void GetCFF( double tab_CFF[], double xi, double t ); ///< Corresponding real and imaginary parts of Compton Form Factors
+	void GetFF( double tab_FF[], double xi, double t ); 	///< Corresponding (flavour contributions to) form factors
 
     double getEdValMx() const;
     double getEtdValMx() const;
@@ -118,7 +118,7 @@ private:
 
     // Limits of integration domains
 
-	Double_t kper_max;          ///<    Upper limit (definition, integration) for \f$ k_{\perp} \f$
+	double kper_max;          ///<    Upper limit (definition, integration) for \f$ k_{\perp} \f$
 
 
 	// Bag model parameters
@@ -152,12 +152,12 @@ private:
 
 	// Misc.
 
-    Double_t fA;             ///< 	Coefficient of E in eq. (27)
-    Double_t fB;             ///< 	Coefficient of \f$ \tilde{H} \f$ in eq. (30)
-    Double_t fC;             ///< 	Coefficient of \f$ \tilde{E} \f$ in eq. (30)
-    Double_t fD;             ///< 	Coefficient of \f$ \tilde{H} \f$ in eq. (31)
-    Double_t fE;             ///< 	Coefficient of \f$ \tilde{E} \f$ in eq. (31)
-    Double_t fD2;            ///< 	Determinant of the 2x2 linear system defined by eq. (30) and (31) (\f$=fB*fE-fC*fD\f$)
+    double fA;             ///< 	Coefficient of E in eq. (27)
+    double fB;             ///< 	Coefficient of \f$ \tilde{H} \f$ in eq. (30)
+    double fC;             ///< 	Coefficient of \f$ \tilde{E} \f$ in eq. (30)
+    double fD;             ///< 	Coefficient of \f$ \tilde{H} \f$ in eq. (31)
+    double fE;             ///< 	Coefficient of \f$ \tilde{E} \f$ in eq. (31)
+    double fD2;            ///< 	Determinant of the 2x2 linear system defined by eq. (30) and (31) (\f$=fB*fE-fC*fD\f$)
 
 
     // 3-vectors
@@ -167,37 +167,37 @@ private:
 
     // Reals
 
-    Double_t fZ2;           ///<    Contribution of spectator quarks. Square of rhs of eq. (28)
+    double fZ2;           ///<    Contribution of spectator quarks. Square of rhs of eq. (28)
 
-    Double_t integFF1;      ///<    x-integration of rhs of eq. (27) for u and d quarks
-    Double_t integFF2;      ///<    x-integration of rhs of eq. (29) for u and d quarks
-    Double_t integFF3;      ///<    x-integration of rhs of eq. (30) for u and d quarks
-    Double_t integFF4;      ///<    x-integration of rhs of eq. (31) for u and d quarks
+    double integFF1;      ///<    x-integration of rhs of eq. (27) for u and d quarks
+    double integFF2;      ///<    x-integration of rhs of eq. (29) for u and d quarks
+    double integFF3;      ///<    x-integration of rhs of eq. (30) for u and d quarks
+    double integFF4;      ///<    x-integration of rhs of eq. (31) for u and d quarks
 
-    Double_t ValInteg1;     ///<    rhs of eq. (27) for u and d quarks
-    Double_t ValInteg2;     ///<    rhs of eq. (29) for u and d quarks
-    Double_t ValInteg3;     ///<    rhs of eq. (30) for u and d quarks
-    Double_t ValInteg4;     ///<    rhs of eq. (31) for u and d quarks
+    double ValInteg1;     ///<    rhs of eq. (27) for u and d quarks
+    double ValInteg2;     ///<    rhs of eq. (29) for u and d quarks
+    double ValInteg3;     ///<    rhs of eq. (30) for u and d quarks
+    double ValInteg4;     ///<    rhs of eq. (31) for u and d quarks
 
-    Double_t RecalInteg1a;  ///<    Complex analysis x-integration of [eq (27) /(x-xi)]
-    Double_t RecalInteg2a;  ///<    Complex analysis x-integration of [eq (29) /(x-xi)]
-    Double_t RecalInteg3a;  ///<    Complex analysis x-integration of [eq (30) /(x-xi)]
-    Double_t RecalInteg4a;  ///<    Complex analysis x-integration of [eq (31) /(x-xi)]
+    double RecalInteg1a;  ///<    Complex analysis x-integration of [eq (27) /(x-xi)]
+    double RecalInteg2a;  ///<    Complex analysis x-integration of [eq (29) /(x-xi)]
+    double RecalInteg3a;  ///<    Complex analysis x-integration of [eq (30) /(x-xi)]
+    double RecalInteg4a;  ///<    Complex analysis x-integration of [eq (31) /(x-xi)]
 
-    Double_t RecalInteg1b;  ///<    Integration of [eq (27) /(x+xi)]
-    Double_t RecalInteg2b;  ///<    Integration of [eq (29) /(x+xi)]
-    Double_t RecalInteg3b;  ///<    Integration of [eq (30) /(x+xi)]
-    Double_t RecalInteg4b;  ///<    Integration of [eq (31) /(x+xi)]
+    double RecalInteg1b;  ///<    Integration of [eq (27) /(x+xi)]
+    double RecalInteg2b;  ///<    Integration of [eq (29) /(x+xi)]
+    double RecalInteg3b;  ///<    Integration of [eq (30) /(x+xi)]
+    double RecalInteg4b;  ///<    Integration of [eq (31) /(x+xi)]
 
-    Double_t RecalInteg1;   ///<    RecalInteg1a - RecalInteg1b. See supra
-    Double_t RecalInteg2;   ///<    RecalInteg2a - RecalInteg2b. See supra
-    Double_t RecalInteg3;   ///<    RecalInteg3a + RecalInteg3b. See supra
-    Double_t RecalInteg4;   ///<    RecalInteg4a + RecalInteg4b. See supra
+    double RecalInteg1;   ///<    RecalInteg1a - RecalInteg1b. See supra
+    double RecalInteg2;   ///<    RecalInteg2a - RecalInteg2b. See supra
+    double RecalInteg3;   ///<    RecalInteg3a + RecalInteg3b. See supra
+    double RecalInteg4;   ///<    RecalInteg4a + RecalInteg4b. See supra
 
-    Double_t ImcalInteg1;   ///<    rhs of eq. (27) for u and d quarks for x = xi
-    Double_t ImcalInteg2;   ///<    rhs of eq. (29) for u and d quarks for x = xi
-    Double_t ImcalInteg3;   ///<    rhs of eq. (30) for u and d quarks for x = xi
-    Double_t ImcalInteg4;   ///<    rhs of eq. (31) for u and d quarks for x = xi
+    double ImcalInteg1;   ///<    rhs of eq. (27) for u and d quarks for x = xi
+    double ImcalInteg2;   ///<    rhs of eq. (29) for u and d quarks for x = xi
+    double ImcalInteg3;   ///<    rhs of eq. (30) for u and d quarks for x = xi
+    double ImcalInteg4;   ///<    rhs of eq. (31) for u and d quarks for x = xi
 
 
 
@@ -205,18 +205,18 @@ private:
 
 	// Printouts
 
-	Bool_t fVerbose;			///<	Screen prints from TBag
+	bool fVerbose;			///<	Screen prints from TBag
 
 
 	// Initialisation flags
 
-    Bool_t Parameters_init;     ///<    Confirms parameters initialisation
-    Bool_t kin_init;            ///<    Confirms initialisation of kinematics dependent quantities
+    bool Parameters_init;     ///<    Confirms parameters initialisation
+    bool kin_init;            ///<    Confirms initialisation of kinematics dependent quantities
 
 
 	// Check flags
 
-    Bool_t Flag_RecalInteg;     ///<    Confirms computation of linear combinations of integrals to evaluate CFF
+    bool Flag_RecalInteg;     ///<    Confirms computation of linear combinations of integrals to evaluate CFF
 
 
 
@@ -229,14 +229,14 @@ private:
     TComplex T0 (TComplex norme_k, TComplex R); //  (Proportional to) 3D Fourier transform of J0
     TComplex T1 (TComplex norme_k, TComplex R); //  (Proportional to) 3D Fourier transform of J1
 
-    Double_t TermeIntegreZ ( Double_t *var, Double_t *par ) ;
+    double TermeIntegreZ ( double *var, double *par ) ;
     void Cal_IntegreZ ();
 
     TComplex PSComplex ( TComplex u[3], TComplex v[3]);
     TComplex NormComplex ( TComplex u[3]);
 
     TComplex FuncIntermed1 ( TComplex xi, TComplex t, TComplex kprime[3], TComplex k[3], TComplex delta[3], TComplex R);
-    TComplex FuncIntermed2 ( TComplex xi, Double_t eta, TComplex k[3], TComplex kprime[3], TComplex delta[3], TComplex R );
+    TComplex FuncIntermed2 ( TComplex xi, double eta, TComplex k[3], TComplex kprime[3], TComplex delta[3], TComplex R );
     TComplex FuncIntermed3 ( TComplex xi, TComplex t, TComplex k[3], TComplex kprime[3], TComplex delta[3], TComplex R);
     TComplex FuncIntermed4 ( TComplex k[3], TComplex kprime[3], TComplex delta[3], TComplex R);
     TComplex FuncIntermed5 ( TComplex k[3], TComplex kprime[3], TComplex delta[3], TComplex R);
@@ -249,45 +249,45 @@ private:
     TComplex CombLin3 (TComplex kper, TComplex phi, TComplex x, TComplex xi, TComplex t, TComplex eta, TComplex R);     ///< rhs of eq. (30) up to a multiplication by Z2
     TComplex CombLin4 (TComplex kper, TComplex phi, TComplex x, TComplex xi, TComplex t, TComplex eta, TComplex R);     ///< rhs of eq. (31) up to a multiplication by Z2
 
-    TComplex CombLin1Contourplus (Double_t *var, Double_t *par);  ///< CombLin1 for x = 0.5 + 0.5 * exp(i * theta)
-    TComplex CombLin2Contourplus (Double_t *var, Double_t *par);  ///< CombLin2 for x = 0.5 + 0.5 * exp(i * theta)
-    TComplex CombLin3Contourplus (Double_t *var, Double_t *par);  ///< CombLin3 for x = 0.5 + 0.5 * exp(i * theta)
-    TComplex CombLin4Contourplus (Double_t *var, Double_t *par);  ///< CombLin4 for x = 0.5 + 0.5 * exp(i * theta)
+    TComplex CombLin1Contourplus (double *var, double *par);  ///< CombLin1 for x = 0.5 + 0.5 * exp(i * theta)
+    TComplex CombLin2Contourplus (double *var, double *par);  ///< CombLin2 for x = 0.5 + 0.5 * exp(i * theta)
+    TComplex CombLin3Contourplus (double *var, double *par);  ///< CombLin3 for x = 0.5 + 0.5 * exp(i * theta)
+    TComplex CombLin4Contourplus (double *var, double *par);  ///< CombLin4 for x = 0.5 + 0.5 * exp(i * theta)
 
-    TComplex CombLin1Contourmoins (Double_t *var, Double_t *par); ///< CombLin1 for x = - 0.5 - 0.5 * exp(i * theta)
-    TComplex CombLin2Contourmoins (Double_t *var, Double_t *par); ///< CombLin2 for x = - 0.5 - 0.5 * exp(i * theta)
-    TComplex CombLin3Contourmoins (Double_t *var, Double_t *par); ///< CombLin3 for x = - 0.5 - 0.5 * exp(i * theta)
-    TComplex CombLin4Contourmoins (Double_t *var, Double_t *par); ///< CombLin4 for x = - 0.5 - 0.5 * exp(i * theta)
+    TComplex CombLin1Contourmoins (double *var, double *par); ///< CombLin1 for x = - 0.5 - 0.5 * exp(i * theta)
+    TComplex CombLin2Contourmoins (double *var, double *par); ///< CombLin2 for x = - 0.5 - 0.5 * exp(i * theta)
+    TComplex CombLin3Contourmoins (double *var, double *par); ///< CombLin3 for x = - 0.5 - 0.5 * exp(i * theta)
+    TComplex CombLin4Contourmoins (double *var, double *par); ///< CombLin4 for x = - 0.5 - 0.5 * exp(i * theta)
 
-    TComplex CombLin1plus(Double_t *var, Double_t *par);    ///< CombLin1Contourplus - CombLin1Contourmoins
-    TComplex CombLin2plus(Double_t *var, Double_t *par);  	///< CombLin2Contourplus - CombLin2Contourmoins
-    TComplex CombLin3plus(Double_t *var, Double_t *par);    ///< CombLin3Contourplus + CombLin3Contourmoins
-    TComplex CombLin4plus(Double_t *var, Double_t *par);  	///< CombLin4Contourplus + CombLin4Contourmoins
+    TComplex CombLin1plus(double *var, double *par);    ///< CombLin1Contourplus - CombLin1Contourmoins
+    TComplex CombLin2plus(double *var, double *par);  	///< CombLin2Contourplus - CombLin2Contourmoins
+    TComplex CombLin3plus(double *var, double *par);    ///< CombLin3Contourplus + CombLin3Contourmoins
+    TComplex CombLin4plus(double *var, double *par);  	///< CombLin4Contourplus + CombLin4Contourmoins
 
-    Double_t RecalCombLin1Contour (Double_t *var, Double_t *par); ///< x-integral kernel of [rhs of eq. (27)/(x-xi)]
-    Double_t RecalCombLin2Contour (Double_t *var, Double_t *par); ///< x-integral kernel of [rhs of eq. (29)/(x-xi)]
-    Double_t RecalCombLin3Contour (Double_t *var, Double_t *par); ///< x-integral kernel of [rhs of eq. (30)/(x-xi)]
-    Double_t RecalCombLin4Contour (Double_t *var, Double_t *par); ///< x-integral kernel of [rhs of eq. (31)/(x-xi)]
+    double RecalCombLin1Contour (double *var, double *par); ///< x-integral kernel of [rhs of eq. (27)/(x-xi)]
+    double RecalCombLin2Contour (double *var, double *par); ///< x-integral kernel of [rhs of eq. (29)/(x-xi)]
+    double RecalCombLin3Contour (double *var, double *par); ///< x-integral kernel of [rhs of eq. (30)/(x-xi)]
+    double RecalCombLin4Contour (double *var, double *par); ///< x-integral kernel of [rhs of eq. (31)/(x-xi)]
 
-    Double_t RecalCombLin1axeR (Double_t *var, Double_t *par); ///< x-integral kernel of [rhs of eq. (27)/(x+xi)]
-    Double_t RecalCombLin2axeR (Double_t *var, Double_t *par); ///< x-integral kernel of [rhs of eq. (29)/(x+xi)]
-    Double_t RecalCombLin3axeR (Double_t *var, Double_t *par); ///< x-integral kernel of [rhs of eq. (30)/(x+xi)]
-    Double_t RecalCombLin4axeR (Double_t *var, Double_t *par); ///< x-integral kernel of [rhs of eq. (31)/(x+xi)]
+    double RecalCombLin1axeR (double *var, double *par); ///< x-integral kernel of [rhs of eq. (27)/(x+xi)]
+    double RecalCombLin2axeR (double *var, double *par); ///< x-integral kernel of [rhs of eq. (29)/(x+xi)]
+    double RecalCombLin3axeR (double *var, double *par); ///< x-integral kernel of [rhs of eq. (30)/(x+xi)]
+    double RecalCombLin4axeR (double *var, double *par); ///< x-integral kernel of [rhs of eq. (31)/(x+xi)]
 
-    Double_t ImcalCombLin1axeR (Double_t *var, Double_t *par);
-    Double_t ImcalCombLin2axeR (Double_t *var, Double_t *par);
-    Double_t ImcalCombLin3axeR (Double_t *var, Double_t *par);
-    Double_t ImcalCombLin4axeR (Double_t *var, Double_t *par);
+    double ImcalCombLin1axeR (double *var, double *par);
+    double ImcalCombLin2axeR (double *var, double *par);
+    double ImcalCombLin3axeR (double *var, double *par);
+    double ImcalCombLin4axeR (double *var, double *par);
 
-    Double_t functionintegFF1 (Double_t *var, Double_t *par);  	///< x-integral kernel of [rhs of eq. (27)]
-    Double_t functionintegFF2 (Double_t *var, Double_t *par);  	///< x-integral kernel of [rhs of eq. (29)]
-    Double_t functionintegFF3 (Double_t *var, Double_t *par);  	///< x-integral kernel of [rhs of eq. (30)]
-    Double_t functionintegFF4 (Double_t *var, Double_t *par);  	///< x-integral kernel of [rhs of eq. (31)]
+    double functionintegFF1 (double *var, double *par);  	///< x-integral kernel of [rhs of eq. (27)]
+    double functionintegFF2 (double *var, double *par);  	///< x-integral kernel of [rhs of eq. (29)]
+    double functionintegFF3 (double *var, double *par);  	///< x-integral kernel of [rhs of eq. (30)]
+    double functionintegFF4 (double *var, double *par);  	///< x-integral kernel of [rhs of eq. (31)]
 
-    Double_t Integ1( Double_t *var, Double_t *par);	///< rho and phi-integral kernel of [rhs of eq. (27)]
-    Double_t Integ2( Double_t *var, Double_t *par);	///< rho and phi-integral kernel of [rhs of eq. (29)]
-    Double_t Integ3( Double_t *var, Double_t *par);	///< rho and phi-integral kernel of [rhs of eq. (30)]
-    Double_t Integ4( Double_t *var, Double_t *par);	///< rho and phi-integral kernel of [rhs of eq. (31)]
+    double Integ1( double *var, double *par);	///< rho and phi-integral kernel of [rhs of eq. (27)]
+    double Integ2( double *var, double *par);	///< rho and phi-integral kernel of [rhs of eq. (29)]
+    double Integ3( double *var, double *par);	///< rho and phi-integral kernel of [rhs of eq. (30)]
+    double Integ4( double *var, double *par);	///< rho and phi-integral kernel of [rhs of eq. (31)]
 
     void Cal_Integ1(); 	///< Evaluates the integral of the function Integ1
     void Cal_Integ2(); 	///< Evaluates the integral of the function Integ2
@@ -314,18 +314,18 @@ private:
     void Cal_ImcalInteg4 ();
     void Cal_integFF4 ();
 
-    Double_t IminterInteg1( Double_t *var, Double_t *par);
-    Double_t IminterInteg2( Double_t *var, Double_t *par);
-    Double_t IminterInteg3( Double_t *var, Double_t *par);
-    Double_t IminterInteg4( Double_t *var, Double_t *par);
+    double IminterInteg1( double *var, double *par);
+    double IminterInteg2( double *var, double *par);
+    double IminterInteg3( double *var, double *par);
+    double IminterInteg4( double *var, double *par);
 
     void Cal_RecalInteg ();
 
-	void SetKinematics( Double_t x, Double_t xi, Double_t t );     ///<  Initialisation of kinematics-dependent quantities
+	void SetKinematics( double x, double xi, double t );     ///<  Initialisation of kinematics-dependent quantities
 
-    void FillGPD (Double_t *TabGPD, Int_t flavor);	///< Fills an array with the Bag model values of GPDs
-    void FillCFF ( Double_t *Tab_Re_CFF, Double_t *Tab_Im_CFF, Int_t flavor );	///< Fills an array with the Bag model values of CFFs
-    void FillFF (Double_t *TabFF, Int_t flavor);	///< Fills an array with the Bag model values of FFs
+    void FillGPD (double *TabGPD, Int_t flavor);	///< Fills an array with the Bag model values of GPDs
+    void FillCFF ( double *Tab_Re_CFF, double *Tab_Im_CFF, Int_t flavor );	///< Fills an array with the Bag model values of CFFs
+    void FillFF (double *TabFF, Int_t flavor);	///< Fills an array with the Bag model values of FFs
 
     void updateVariables(const double &_MuF);
 

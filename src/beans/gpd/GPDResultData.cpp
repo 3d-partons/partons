@@ -3,99 +3,97 @@
 #include <sstream>
 #include <utility>
 
-//#include "../QuarkFlavor.h"
-
-GPDResultData::GPDResultData() :
-		m_gpdComputeType(GPDComputeType::UNDEFINED), /*squareChargeAveraged(0.),*/m_gluon(
-				0.), m_singlet(0.) {
+GPDResultData::GPDResultData()
+        : m_gpdComputeType(GPDComputeType::UNDEFINED), /*squareChargeAveraged(0.),*/m_gluon(
+                0.), m_singlet(0.) {
 }
 
 GPDResultData::GPDResultData(const GPDResultData & other) {
-	m_gpdComputeType = other.m_gpdComputeType;
-	m_gluon = other.m_gluon;
-	m_singlet = other.m_singlet;
-	m_gpdQuarkFlavorData = other.m_gpdQuarkFlavorData;
+    m_gpdComputeType = other.m_gpdComputeType;
+    m_gluon = other.m_gluon;
+    m_singlet = other.m_singlet;
+    m_gpdQuarkFlavorData = other.m_gpdQuarkFlavorData;
 }
 
-GPDResultData::GPDResultData(GPDComputeType::Type _gpdComputeType) :
-		m_gpdComputeType(_gpdComputeType), /*squareChargeAveraged(0.),*/m_gluon(
-				0.), m_singlet(0.) {
+GPDResultData::GPDResultData(GPDComputeType::Type _gpdComputeType)
+        : m_gpdComputeType(_gpdComputeType), /*squareChargeAveraged(0.),*/m_gluon(
+                0.), m_singlet(0.) {
 }
 
 GPDResultData::~GPDResultData() {
-	m_gpdQuarkFlavorData.clear();
+    m_gpdQuarkFlavorData.clear();
 }
 
 void GPDResultData::addGPDQuarkFlavorData(
-		GPDQuarkFlavorData &_gpdQuarkFlavorData) {
-	m_gpdQuarkFlavorData.insert(
-			std::pair<QuarkFlavor::Type, GPDQuarkFlavorData>(
-					_gpdQuarkFlavorData.getQuarkFlavor()->getType(),
-					_gpdQuarkFlavorData));
+        GPDQuarkFlavorData &_gpdQuarkFlavorData) {
+    m_gpdQuarkFlavorData.insert(
+            std::pair<QuarkFlavor::Type, GPDQuarkFlavorData>(
+                    _gpdQuarkFlavorData.getQuarkFlavor()->getType(),
+                    _gpdQuarkFlavorData));
 }
 
 GPDQuarkFlavorData* GPDResultData::getGPDQuarkFlavorData(
-		QuarkFlavor::Type quarkFlavorType) {
-	m_it = m_gpdQuarkFlavorData.find(quarkFlavorType);
-	return (m_it != m_gpdQuarkFlavorData.end()) ? &(m_it->second) : 0;
+        QuarkFlavor::Type quarkFlavorType) {
+    m_it = m_gpdQuarkFlavorData.find(quarkFlavorType);
+    return (m_it != m_gpdQuarkFlavorData.end()) ? &(m_it->second) : 0;
 }
 
 //TODO tester cette méthode
 std::vector<QuarkFlavor> GPDResultData::listQuarkTypeComputed() {
-	std::vector<QuarkFlavor> list;
+    std::vector<QuarkFlavor> list;
 
-	if (m_gpdQuarkFlavorData.size() != 0) {
+    if (m_gpdQuarkFlavorData.size() != 0) {
 
-		for (m_it = m_gpdQuarkFlavorData.begin();
-				m_it != m_gpdQuarkFlavorData.end(); ++m_it) {
-			list.push_back(m_it->first);
-		}
-	}
+        for (m_it = m_gpdQuarkFlavorData.begin();
+                m_it != m_gpdQuarkFlavorData.end(); ++m_it) {
+            list.push_back(m_it->first);
+        }
+    }
 
-	return list;
+    return list;
 }
 
 std::string GPDResultData::toString() {
 
-	std::ostringstream os;
+    std::ostringstream os;
 
-	if (m_gpdQuarkFlavorData.size() != 0) {
-		for (m_it = m_gpdQuarkFlavorData.begin();
-				m_it != m_gpdQuarkFlavorData.end(); ++m_it) {
-			os << (m_it->second).toStringGeneric() << std::endl;
-		}
-	}
+    if (m_gpdQuarkFlavorData.size() != 0) {
+        for (m_it = m_gpdQuarkFlavorData.begin();
+                m_it != m_gpdQuarkFlavorData.end(); ++m_it) {
+            os << (m_it->second).toStringGeneric() << std::endl;
+        }
+    }
 
 //    os << pGPDComputeType->toString() << " = " << squareChargeAveraged
 //            << std::endl;
-	os << m_gpdComputeType.toString() << "g = " << m_gluon << std::endl;
-	os << m_gpdComputeType.toString() << "Singlet = " << m_singlet << std::endl;
+    os << m_gpdComputeType.toString() << "g = " << m_gluon << std::endl;
+    os << m_gpdComputeType.toString() << "Singlet = " << m_singlet << std::endl;
 
-	return os.str();
+    return os.str();
 }
 
 GPDComputeType* GPDResultData::getGpdComputeType() {
-	return &m_gpdComputeType;
+    return &m_gpdComputeType;
 }
 
 void GPDResultData::setGpdComputeType(GPDComputeType &_gpdComputeType) {
-	m_gpdComputeType = _gpdComputeType;
+    m_gpdComputeType = _gpdComputeType;
 }
 
 void GPDResultData::setGluon(double gluon) {
-	m_gluon = gluon;
+    m_gluon = gluon;
 }
 
 double GPDResultData::getSinglet() const {
-	return m_singlet;
+    return m_singlet;
 }
 
 void GPDResultData::setSinglet(double hsinglet) {
-	m_singlet = hsinglet;
+    m_singlet = hsinglet;
 }
 
 double GPDResultData::getGluon() const {
-	return m_gluon;
+    return m_gluon;
 }
 
 //double GPDResultData::getSquareChargeAveraged() const {
@@ -107,16 +105,16 @@ double GPDResultData::getGluon() const {
 //}
 
 std::vector<GPDQuarkFlavorData> GPDResultData::getListOfQuarkFlavorData() {
-	std::vector<GPDQuarkFlavorData> result;
+    std::vector<GPDQuarkFlavorData> result;
 
-	for (m_it = m_gpdQuarkFlavorData.begin();
-			m_it != m_gpdQuarkFlavorData.end(); m_it++) {
-		result.push_back(m_it->second);
-	}
+    for (m_it = m_gpdQuarkFlavorData.begin();
+            m_it != m_gpdQuarkFlavorData.end(); m_it++) {
+        result.push_back(m_it->second);
+    }
 
-	return result;
+    return result;
 }
 
 size_t GPDResultData::sizeOfListOfQuarkFlavorData() {
-	return m_gpdQuarkFlavorData.size();
+    return m_gpdQuarkFlavorData.size();
 }

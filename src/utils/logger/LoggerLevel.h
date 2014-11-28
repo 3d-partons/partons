@@ -7,8 +7,6 @@
  * @date 05 September 2014
  * @version 1.0
  *
- * Last update : 12 September 2014
- *
  * @class LoggerLevel
  * @brief
  */
@@ -17,25 +15,18 @@
 
 #include "../stringUtils/StringUtils.h"
 
-struct LoggerLevel {
-    //prevent automatic conversion for any other built-in types such as bool, int, etc
-    template<typename T>
-    operator T() const;
-
+class LoggerLevel {
 public:
     enum Type {
         DEBUG = 0, INFO = 1, WARN = 2, ERROR = 3, OFF = 4, NONE = 5
     };
-    Type t_;
-    LoggerLevel(Type t) :
-            t_(t) {
-    }
-    operator Type() const {
-        return t_;
+
+    LoggerLevel(Type t)
+            : m_type(t) {
     }
 
     std::string toString() {
-        switch (t_) {
+        switch (m_type) {
         case DEBUG:
             return "DEBUG";
             break;
@@ -73,6 +64,16 @@ public:
         return NONE;
     }
 
+    LoggerLevel::Type getType() const {
+        return m_type;
+    }
+
+    void setType(Type type) {
+        m_type = type;
+    }
+
+private:
+    LoggerLevel::Type m_type;
 };
 
 #endif /* LOGGER_LEVEL_H */

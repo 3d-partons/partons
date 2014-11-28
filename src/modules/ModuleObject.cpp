@@ -30,3 +30,7 @@ const std::string& ModuleObject::getModuleID() const {
 	return m_moduleID;
 }
 
+std::string ModuleObject::toString()
+{
+    return BaseObject::toString();
+}

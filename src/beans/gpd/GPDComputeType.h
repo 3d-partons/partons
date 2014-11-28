@@ -16,12 +16,12 @@ public:
         UNDEFINED, ALL, H, Ht, E, Et, HTrans
     };
 
-    GPDComputeType() :
-            m_type(GPDComputeType::UNDEFINED) {
+    GPDComputeType()
+            : m_type(GPDComputeType::UNDEFINED) {
     }
 
-    GPDComputeType(Type type) :
-            m_type(type) {
+    GPDComputeType(Type type)
+            : m_type(type) {
     }
 
     /**

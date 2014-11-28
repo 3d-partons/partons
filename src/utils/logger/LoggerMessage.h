@@ -7,8 +7,6 @@
  * @date 05 September 2014
  * @version 1.0
  *
- * Last update : 10 September 2014
- *
  * @class LoggerMessage
  * @brief
  */
@@ -19,11 +17,6 @@
 #include "LoggerLevel.h"
 
 class LoggerMessage {
-    LoggerLevel m_level;
-    std::time_t m_time;
-    std::string m_classNameSource;
-    std::string m_functionNameSource;
-    std::string m_message;
 public:
     LoggerMessage(LoggerLevel level, std::string classNameSource,
             std::string functionNameSource, std::string message);
@@ -39,6 +32,13 @@ public:
     void setMessage(const std::string& message);
     LoggerLevel getLevel() const;
     void setLevel(LoggerLevel level);
+
+private:
+    LoggerLevel m_level;
+    std::time_t m_time;
+    std::string m_classNameSource;
+    std::string m_functionNameSource;
+    std::string m_message;
 };
 
 #endif /* LOGGER_MESSAGE_H */

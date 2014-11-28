@@ -22,16 +22,16 @@ public:
 
     template<typename Type>
     Formatter & operator <<(const Type & value) {
-        stream_ << value;
+        m_stream << value;
         return *this;
     }
 
     std::string str() const {
-        return stream_.str();
+        return m_stream.str();
     }
 
     operator std::string() const {
-        return stream_.str();
+        return m_stream.str();
     }
 
     enum ConvertToString {
@@ -39,13 +39,13 @@ public:
     };
 
     std::string operator >>(ConvertToString) {
-        return stream_.str();
+        return m_stream.str();
     }
 
     void print();
 
 private:
-    std::stringstream stream_;
+    std::stringstream m_stream;
 
     Formatter(const Formatter &);
     Formatter & operator =(Formatter &);

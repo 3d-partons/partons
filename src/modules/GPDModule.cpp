@@ -8,7 +8,7 @@ GPDModule::GPDModule(const std::string &moduleID) :
 
 GPDModule::GPDModule(const GPDModule &other) :
 		ModuleObject(other) {
-	listGPDComputeTypeAvailable = other.listGPDComputeTypeAvailable;
+	m_listGPDComputeTypeAvailable = other.m_listGPDComputeTypeAvailable;
 	m_it = other.m_it;
 
 	m_x = other.m_x;
@@ -21,6 +21,10 @@ GPDModule::GPDModule(const GPDModule &other) :
 
 	if (other.m_pEvolQCDModule != 0) {
 		m_pEvolQCDModule = other.m_pEvolQCDModule->clone();
+	}
+	else
+	{
+	    m_pEvolQCDModule = 0;
 	}
 
 //		if (other.m_pPDFModule != 0) {
@@ -43,11 +47,18 @@ const EvolQCDModule* GPDModule::getEvolQcdModule() const {
 	return m_pEvolQCDModule;
 }
 
+//TODO est-il nécessaire de tester le pointeur null ?
 void GPDModule::setEvolQcdModule(EvolQCDModule* pEvolQcdModule) {
 	m_pEvolQCDModule = pEvolQcdModule;
-	if (m_pEvolQCDModule != 0) m_pEvolQCDModule->setGpdModule(this);
+	if (m_pEvolQCDModule != 0)
+		m_pEvolQCDModule->setGpdModule(this);
 }
 
 double GPDModule::getMuFRef() const {
 	return m_MuF_ref;
+}
+
+std::string GPDModule::toString()
+{
+    return ModuleObject::toString();
 }

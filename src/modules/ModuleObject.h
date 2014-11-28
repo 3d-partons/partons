@@ -41,11 +41,15 @@ public:
 
 	virtual ModuleObject* clone() const = 0;
 
+	virtual std::string toString();
+
 // ################   GETTERS & SETTERS   ################
 
 	const std::vector<double>& getParameters() const;
-	void setParameters(const std::vector<double>& parameters);
+	//TODO politique générale sur l'implementaton de cette fonction dans les fils
+	virtual void setParameters(const std::vector<double>& parameters);
 	const std::string& getModuleID() const;
+
 protected:
 	/***
 	 * Copy constructor

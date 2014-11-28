@@ -11,6 +11,7 @@
  * @brief \<singleton\> Use for handle logs.
  */
 
+#include <pthread.h>
 #include <ctime>
 #include <map>
 #include <queue>
@@ -27,77 +28,80 @@ const std::string DEFAULT_LEVEL_NAME = "default.level";
 const std::string PRINT_MODE_NAME = "print.mode";
 
 //TODO relatif folder for configFile
-//TODO trouver pourquoi il y a un segmentation fault; Apparement cela venait d'un accès concurrent à la queue; Resolu avec mutex
 
 class LoggerManager: public Thread {
 public:
-	/**
-	 * Share a unique pointer of this class
-	 */
-	static LoggerManager* getInstance();
-	~LoggerManager();
+    /**
+     * Share a unique pointer of this class
+     */
+    static LoggerManager* getInstance();
 
-	void init(const std::string & configFilePath);
+    /**
+     * Default destructor
+     */
+    ~LoggerManager();
 
-	void stop();
+    void init(const std::string & configFilePath);
 
-	void defineLevel(LoggerLevel loggerLevel);
+    void stop();
 
-	void writeConsole(LoggerMessage loggerMessage);
+    void defineLevel(LoggerLevel loggerLevel);
 
-	bool isActive();
+    void writeConsole(LoggerMessage loggerMessage);
 
-	void* run();
+    bool isActive();
 
-	void debug(const std::string & className, const std::string & functionName,
-			const std::string & message);
-	void info(const std::string & className, const std::string & functionName,
-			const std::string & message);
-	void warn(const std::string & className, const std::string & functionName,
-			const std::string & message);
-	void error(const std::string & className, const std::string & functionName,
-			const std::string & message);
+    void* run();
 
-	bool isLoggableMessage(LoggerLevel loggerLevel);
+    void debug(const std::string & className, const std::string & functionName,
+            const std::string & message);
+    void info(const std::string & className, const std::string & functionName,
+            const std::string & message);
+    void warn(const std::string & className, const std::string & functionName,
+            const std::string & message);
+    void error(const std::string & className, const std::string & functionName,
+            const std::string & message);
 
-	void addMessageToQueue(LoggerMessage loggerMessage);
+    bool isLoggableMessage(LoggerLevel loggerLevel);
 
-	std::string toString();
+    void addMessageToQueue(LoggerMessage loggerMessage);
+
+    std::string toString();
 
 private:
-	/**
-	 * Private pointer of this class for a unique instance
-	 */
-	static LoggerManager* m_pInstance;
+    /**
+     * Private pointer of this class for a unique instance
+     */
+    static LoggerManager* m_pInstance;
 
-	/**
-	 * Private default constructor for a unique instance
-	 */
-	LoggerManager();
+    /**
+     * Private default constructor for a unique instance
+     */
+    LoggerManager();
 
-	pthread_mutex_t m_mutex;
+    pthread_mutex_t m_mutex;
 
-	std::string m_configFilePath;
-	std::string m_outputFilePath;
-	LoggerLevel m_defaultLevel;
-	LoggerPrintMode m_printMode;
+    std::string m_configFilePath;
+    std::string m_outputFilePath;
+    LoggerLevel m_defaultLevel;
+    LoggerPrintMode m_printMode;
 
-	std::map<std::string, LoggerClassLevel*> m_customClassLevels;
-	std::map<std::string, LoggerClassLevel*>::iterator m_it;
+    std::map<std::string, LoggerClassLevel*> m_customClassLevels;
+    std::map<std::string, LoggerClassLevel*>::iterator m_it;
 
-	std::queue<LoggerMessage> m_messageQueue;
+    std::queue<LoggerMessage> m_messageQueue;
 
-	bool m_active;
+    bool m_active;
 
-	void parseConfigurationFile();
+    void parseConfigurationFile();
 
-	void update();
+    void update();
 
-	void handleMessage(LoggerMessage loggerMessage);
+    void handleMessage(LoggerMessage loggerMessage);
 
-	std::string formatDate(time_t time);
+    std::string formatDate(time_t time);
 
-	bool isLoggable(LoggerMessage loggerMessage);
+    bool isLoggable(LoggerMessage loggerMessage);
 };
 
 #endif /* LOGGER_MANAGER_H */

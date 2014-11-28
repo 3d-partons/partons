@@ -11,7 +11,7 @@
 
 class GPDUtils {
 public:
-    static double convertXBToXi(double xB) {
+    static double convertXBToXi(const double xB) {
         return xB / (2. - xB);
     }
 };

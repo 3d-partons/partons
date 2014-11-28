@@ -48,15 +48,6 @@
 
 #include "../../FundamentalPhysicalConstants.h"
 
-/*-------------------------------- Includes ----------------------------------*/
-
-//#include <Math/BrentRootFinder.h>
-//#include <Math/WrappedTF1.h>
-//#include <TF1.h>
-//#include <cmath>
-//#include <iomanip>
-//#include <iostream>
-//#include <string>
 /*---------------- Definition of the class TRunningAlphaStrong ---------------*/
 
 /*!

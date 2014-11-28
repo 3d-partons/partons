@@ -31,12 +31,12 @@ public:
     virtual ~CFFService();
 
     virtual CFFOutputData computeWithGPDModel(CFFModule* cffModule,
-            GPDModule* _pGPDModule, const CFFInputData &cffInputData,
-            const double &MuF, const double &MuR, QCDOrderType::Type qcdOrderType,
+            GPDModule* _pGPDModule, CFFInputData &cffInputData,
+            const double MuF, const double MuR, QCDOrderType::Type qcdOrderType,
             GPDComputeType::Type gpdComputeType = GPDComputeType::ALL);
 
     virtual CFFOutputData computeWithCFFModel(CFFModule* cffModule,
-            CFFInputData* pCFFInputData, const double &MuF, const double &MuR,
+            CFFInputData &cffInputData, const double MuF, const double MuR,
             QCDOrderType &qcdOrderType);
 
 //    std::vector<CFFOutputData> compute(

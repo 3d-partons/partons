@@ -12,8 +12,8 @@
 
 std::string IniFileParser::SECTION_KEY_CONCATENATOR = "=";
 
-IniFileParser::IniFileParser(const std::string & configFilePath) :
-        m_configFilePath(configFilePath) {
+IniFileParser::IniFileParser(const std::string & configFilePath)
+        : m_configFilePath(configFilePath) {
 
 }
 

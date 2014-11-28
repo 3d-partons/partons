@@ -6,7 +6,6 @@
  * @date 08 September 2014
  */
 
-//#include <Math/Integrator.h>
 #include <complex>
 #include <string>
 
@@ -19,81 +18,81 @@ class GPDOutputData;
 
 class DVCSCFFModel: public CFFModule {
 public:
-	static const std::string moduleID; ///< Unique ID to automatically register the module in the factory.
+    static const std::string moduleID; ///< Unique ID to automatically register the module in the factory.
 
-	DVCSCFFModel();
+    DVCSCFFModel();
 
-	/**
-	 * Copy constructor
-	 * @param other
-	 */
-	DVCSCFFModel(const DVCSCFFModel &other);
+    /**
+     * Copy constructor
+     * @param other
+     */
+    DVCSCFFModel(const DVCSCFFModel &other);
 
-	virtual DVCSCFFModel* clone() const;
+    virtual DVCSCFFModel* clone() const;
 
-	virtual ~DVCSCFFModel();
+    virtual ~DVCSCFFModel();
 
-	virtual CFFOutputData compute(const double &xB, const double &t,
-			const double Q2, const double &MuF, const double &MuR,
-			GPDComputeType::Type gpdComputeType);
+    virtual CFFOutputData compute(const double xB, const double t,
+            const double Q2, const double MuF, const double MuR,
+            GPDComputeType::Type gpdComputeType);
 
-	// ##### GETTERS & SETTERS #####
+    // ##### GETTERS & SETTERS #####
 
 private:
 
-	double m_Zeta;
-	double m_logQ2OverMu2;
-	double m_Q;
-	unsigned int m_nbOfActiveFlavour;
-	double m_alphaSOver2Pi;
-	double m_quarkDiagonal;
-	double m_gluonDiagonal;
+    double m_Zeta;
+    double m_logQ2OverMu2;
+    double m_Q;
+    unsigned int m_nbOfActiveFlavour;
+    double m_alphaSOver2Pi;
+    double m_quarkDiagonal;
+    double m_gluonDiagonal;
 
-	double m_realPartSubtractQuark;
-	double m_imaginaryPartSubtractQuark;
-	double m_realPartSubtractGluon;
-	double m_imaginaryPartSubtractGluon;
+    double m_realPartSubtractQuark;
+    double m_imaginaryPartSubtractQuark;
+    double m_realPartSubtractGluon;
+    double m_imaginaryPartSubtractGluon;
 
-	double m_CF;                     ///< ( Nc^2 - 1 ) / ( 2 Nc ) (colour)
+    double m_CF;                     ///< ( Nc^2 - 1 ) / ( 2 Nc ) (colour)
 
-	//ROOT::Math::Integrator m_integrator;
-	std::complex<double> KernelQuarkV(double x); ///< T^{q, V/A}, appendix A, eq. (A1)
-	std::complex<double> KernelGluonV(double x); ///< T^{g, V/A}, appendix A, eq. (A1)
-	std::complex<double> KernelGluonNLOV(double x); ///< T^{g, NLO, V}, appendix A, eq. (A2)
-	std::complex<double> KernelQuarkNLOV(double x); ///< T^{q, NLO, V}, appendix A, eq. (A2)
-	double ConvolReKernelQuark1V(double* x, double* Parameters = NULL); ///< eq. (8), real part of amplitude, \int_0^zeta
-	double ConvolReKernelQuark2V(double* x, double* Parameters = NULL); ///< eq. (8), real part of amplitude, \int_zeta^1
-	double ConvolImKernelQuarkV(double* x, double* Parameters = NULL); ///< eq. (8), imaginary part of amplitude
-	double ConvolReKernelGluon1V(double* x, double* Parameters = NULL); ///< eq. (9), real part of amplitude, \int_0^zeta
-	double ConvolReKernelGluon2V(double* x, double* Parameters = NULL); ///< eq. (9), real part of amplitude, \int_zeta^1
-	double ConvolImKernelGluonV(double* x, double* Parameters = NULL); ///< eq. (9), imaginary part of amplitude
+    //ROOT::Math::Integrator m_integrator;
+    std::complex<double> KernelQuarkV(double x); ///< T^{q, V/A}, appendix A, eq. (A1)
+    std::complex<double> KernelGluonV(double x); ///< T^{g, V/A}, appendix A, eq. (A1)
+    std::complex<double> KernelGluonNLOV(double x); ///< T^{g, NLO, V}, appendix A, eq. (A2)
+    std::complex<double> KernelQuarkNLOV(double x); ///< T^{q, NLO, V}, appendix A, eq. (A2)
+    double ConvolReKernelQuark1V(double* x, double* Parameters = NULL); ///< eq. (8), real part of amplitude, \int_0^zeta
+    double ConvolReKernelQuark2V(double* x, double* Parameters = NULL); ///< eq. (8), real part of amplitude, \int_zeta^1
+    double ConvolImKernelQuarkV(double* x, double* Parameters = NULL); ///< eq. (8), imaginary part of amplitude
+    double ConvolReKernelGluon1V(double* x, double* Parameters = NULL); ///< eq. (9), real part of amplitude, \int_0^zeta
+    double ConvolReKernelGluon2V(double* x, double* Parameters = NULL); ///< eq. (9), real part of amplitude, \int_zeta^1
+    double ConvolImKernelGluonV(double* x, double* Parameters = NULL); ///< eq. (9), imaginary part of amplitude
 
-	std::complex<double> KernelQuarkA(double x); ///< T^{q, V/A}, appendix A, eq. (A1)
-	std::complex<double> KernelGluonA(double x); ///< T^{g, V/A}, appendix A, eq. (A1)
-	std::complex<double> KernelQuarkNLOA(double x); ///< T^{q, NLO, A}, appendix A, eq. (A2)
-	std::complex<double> KernelGluonNLOA(double x); ///< T^{g, NLO, A}, appendix A, eq. (A2)
-	double ConvolReKernelQuark1A(double* x, double* Parameters = NULL); ///< eq. (8), real part of amplitude, \int_0^zeta
-	double ConvolReKernelQuark2A(double* x, double* Parameters = NULL); ///< eq. (8), real part of amplitude, \int_zeta^1
-	double ConvolImKernelQuarkA(double* x, double* Parameters = NULL); ///< eq. (8), imaginary part of amplitude
-	double ConvolReKernelGluon1A(double* x, double* Parameters = NULL); ///< eq. (9), real part of amplitude, \int_0^zeta
-	double ConvolReKernelGluon2A(double* x, double* Parameters = NULL); ///< eq. (9), real part of amplitude, \int_zeta^1
-	double ConvolImKernelGluonA(double* x, double* Parameters = NULL); ///< eq. (9), imaginary part of amplitude
+    std::complex<double> KernelQuarkA(double x); ///< T^{q, V/A}, appendix A, eq. (A1)
+    std::complex<double> KernelGluonA(double x); ///< T^{g, V/A}, appendix A, eq. (A1)
+    std::complex<double> KernelQuarkNLOA(double x); ///< T^{q, NLO, A}, appendix A, eq. (A2)
+    std::complex<double> KernelGluonNLOA(double x); ///< T^{g, NLO, A}, appendix A, eq. (A2)
+    double ConvolReKernelQuark1A(double* x, double* Parameters = NULL); ///< eq. (8), real part of amplitude, \int_0^zeta
+    double ConvolReKernelQuark2A(double* x, double* Parameters = NULL); ///< eq. (8), real part of amplitude, \int_zeta^1
+    double ConvolImKernelQuarkA(double* x, double* Parameters = NULL); ///< eq. (8), imaginary part of amplitude
+    double ConvolReKernelGluon1A(double* x, double* Parameters = NULL); ///< eq. (9), real part of amplitude, \int_0^zeta
+    double ConvolReKernelGluon2A(double* x, double* Parameters = NULL); ///< eq. (9), real part of amplitude, \int_zeta^1
+    double ConvolImKernelGluonA(double* x, double* Parameters = NULL); ///< eq. (9), imaginary part of amplitude
 
-	void isModuleWellConfigured();
-	void initModule();
+    void isModuleWellConfigured();
+    void initModule();
 
-	virtual std::complex<double> computeUnpolarized();
-	virtual std::complex<double> computePolarized();
+    virtual std::complex<double> computeUnpolarized();
+    virtual std::complex<double> computePolarized();
 
-	void computeSubtractionFunctionsV();
-	void computeSubtractionFunctionsA();
+    void computeSubtractionFunctionsV();
+    void computeSubtractionFunctionsA();
 
-	void computeDiagonalGPD();
+    void computeDiagonalGPD();
 
-	std::complex<double> computeIntegralsV();
-	std::complex<double> computeIntegralsA();
+    std::complex<double> computeIntegralsV();
+    std::complex<double> computeIntegralsA();
 
-	double computeSquareChargeAveragedGPD(GPDOutputData &gpdOutputData);
+    double computeSquareChargeAveragedGPD(GPDOutputData &gpdOutputData);
 
 };
 

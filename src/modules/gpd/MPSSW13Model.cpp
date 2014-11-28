@@ -1,19 +1,15 @@
 #include "MPSSW13Model.h"
 
+#include <Math/AllIntegrationTypes.h>
+#include <Math/Integrator.h>
+#include <Math/WrappedTF1.h>
+#include <TF1.h>
 #include <cmath>
+#include <cstdio>
+#include <cstdlib>
 #include <iostream>
 #include <map>
-//#include <stdexcept>
-//#include <utility>
-
-#include <TF1.h>
-#include <Math/WrappedFunction.h>
-#include <Math/IFunction.h>
-#include <Math/Integrator.h>
-#include <Math/AllIntegrationTypes.h>
-#include <Math/Functor.h>
-#include <Math/GaussIntegrator.h>
-#include <Math/WrappedTF1.h>
+#include <utility>
 
 #include "../../beans/gpd/GPDOutputData.h"
 #include "../../beans/gpd/GPDQuarkFlavorData.h"
@@ -22,82 +18,78 @@
 #include "../../FundamentalPhysicalConstants.h"
 #include "../../services/ModuleObjectFactory.h"
 #include "../../utils/logger/LoggerManager.h"
+#include "../../utils/mstwpdf.h"
 #include "../../utils/stringUtils/Formatter.h"
 #include "../EvolQCDModule.h"
 
 const std::string MPSSW13Model::moduleID = "MPSSW13Model";
-static bool isMPSSW13ModelRegistered =
-		ModuleObjectFactory::getInstance()->registerModule(new MPSSW13Model());
 
-MPSSW13Model::MPSSW13Model() :
-		GPDModule(MPSSW13Model::moduleID),
-		m_NbOfQuarkFlavor(2),
-		m_NbOfColor(3),
-		m_Mx(0.),
-		m_MuF2(4.),
-		m_MuF2_ref(4.),
-		m_CA(3.),
-		m_CF(4./3.),
-		m_TF(1./2.),
-		m_F1u(0.),
-		m_F1d(0.),
-		m_FD(0.),
-		m_ProfileShapeVal(1.),
-		m_ProfileShapeSea(2.),
-		m_ProfileShapeGlue(2.),
-		m_QuarkDTerm(0.),
-		m_GluonDTerm(0.) {
-	init();
+static bool isMPSSW13ModelRegistered =
+        ModuleObjectFactory::getInstance()->registerModule(new MPSSW13Model());
+
+MPSSW13Model::MPSSW13Model()
+        : GPDModule(MPSSW13Model::moduleID), m_NbOfQuarkFlavor(2), m_NbOfColor(
+                3), m_Mx(0.), m_MuF2(4.), m_MuF2_ref(4.), m_CA(3.), m_CF(
+                4. / 3.), m_TF(1. / 2.), m_F1u(0.), m_F1d(0.), m_FD(0.), m_ProfileShapeVal(
+                1.), m_ProfileShapeSea(2.), m_ProfileShapeGlue(2.), m_QuarkDTerm(
+                0.), m_GluonDTerm(0.) {
+    init();
 }
 
-MPSSW13Model::MPSSW13Model(const MPSSW13Model& other) :
-		GPDModule(other) {
-	m_NbOfQuarkFlavor = other.m_NbOfQuarkFlavor;
-	m_NbOfColor = other.m_NbOfColor;
-	m_Mx = other.m_Mx;
-	m_MuF2 = other.m_MuF2;
-	m_MuF2_ref = other.m_MuF2_ref;
-	m_CA = other.m_CA;
-	m_CF = other.m_CF;
-	m_TF = other.m_TF;
-	m_F1u = other.m_F1u;
-	m_F1d = other.m_F1d;
-	m_FD = other.m_FD;
-	m_ProfileShapeVal = other.m_ProfileShapeVal;
-	m_ProfileShapeSea = other.m_ProfileShapeSea;
-	m_ProfileShapeGlue = other.m_ProfileShapeGlue;
-	m_QuarkDTerm = other.m_QuarkDTerm;
-	m_GluonDTerm = other.m_GluonDTerm;
-	m_Forward = other.m_Forward;
+MPSSW13Model::MPSSW13Model(const MPSSW13Model& other)
+        : GPDModule(other) {
+    m_NbOfQuarkFlavor = other.m_NbOfQuarkFlavor;
+    m_NbOfColor = other.m_NbOfColor;
+    m_Mx = other.m_Mx;
+    m_MuF2 = other.m_MuF2;
+    m_MuF2_ref = other.m_MuF2_ref;
+    m_CA = other.m_CA;
+    m_CF = other.m_CF;
+    m_TF = other.m_TF;
+    m_F1u = other.m_F1u;
+    m_F1d = other.m_F1d;
+    m_FD = other.m_FD;
+    m_ProfileShapeVal = other.m_ProfileShapeVal;
+    m_ProfileShapeSea = other.m_ProfileShapeSea;
+    m_ProfileShapeGlue = other.m_ProfileShapeGlue;
+    m_QuarkDTerm = other.m_QuarkDTerm;
+    m_GluonDTerm = other.m_GluonDTerm;
+    m_Forward = other.m_Forward;
 }
 
 MPSSW13Model* MPSSW13Model::clone() const {
-	return new MPSSW13Model(*this);
+    return new MPSSW13Model(*this);
 }
 
 void MPSSW13Model::init() {
-	m_NbOfQuarkFlavor = 3;
-	m_MuF2_ref = 4.;
-	m_MuF_ref = sqrt(m_MuF2_ref);
+    m_NbOfQuarkFlavor = 3;
+    m_MuF2_ref = 4.;
+    m_MuF_ref = sqrt(m_MuF2_ref);
 
-	char filename[100]; // Grid name
-	char prefix[] = "/Users/administrator/Documents/CLAS/GPD/PDF/MSTW08/Grids/mstw2008nlo";
-		// prefix for the grid files
+    char filename[100]; // Grid name
 
-	// Central PDF set
-	sprintf( filename, "%s.%2.2d.dat", prefix, 0 );
-	m_Forward = new c_mstwpdf( filename );
-	// default: warn=false, fatal=true
-	// bool warn = true;   // option to turn on warnings if extrapolating.
-	// bool fatal = false; // option to return zero instead of terminating if invalid x or q
-	// c_mstwpdf *pdf = new c_mstwpdf(filename,warn,fatal);
+    //TODO supprimer le nom de fichier en dur ; le passer en propriété ou paramètre
+    char prefix[] =
+            "/home/bryan/workspace/PARTONS/data/grid/mstw2008nlo";
+    // prefix for the grid files
 
-	listGPDComputeTypeAvailable.insert(
-			std::make_pair(GPDComputeType::H, &GPDModule::computeH));
+    // Central PDF set
+    sprintf(filename, "%s.%2.2d.dat", prefix, 0);
+    m_Forward = new c_mstwpdf(filename);
+    // default: warn=false, fatal=true
+    // bool warn = true;   // option to turn on warnings if extrapolating.
+    // bool fatal = false; // option to return zero instead of terminating if invalid x or q
+    // c_mstwpdf *pdf = new c_mstwpdf(filename,warn,fatal);
+
+    m_listGPDComputeTypeAvailable.insert(
+            std::make_pair(GPDComputeType::H, &GPDModule::computeH));
 }
 
 MPSSW13Model::~MPSSW13Model() {
-	delete m_Forward;
+    if (m_Forward != 0) {
+        delete m_Forward;
+        m_Forward = 0;
+    }
 }
 
 //TODO implement
@@ -106,1309 +98,1369 @@ void MPSSW13Model::isModuleWellConfigured() {
 }
 
 void MPSSW13Model::setParameters(std::vector<double> Parameters) {
-	// TODO: Check general syntax of setParameters...
-	// Test known constraints on free parameters
-	// TODO: Modernize tests (logger, exceptions)
-	if (Parameters.at( 0 ) < 1.) {
-		std::cout << "MPSSW13Model : Exponent in valence profile function should be >= 1." << std::endl;
-		std::cout << "MPSSW13Model : Here exponent = " << Parameters.at( 0 ) << std::endl;
-		std::cout << std::endl;
-		exit( -1 );
-		}
+    // TODO: Check general syntax of setParameters...
+    // Test known constraints on free parameters
+    // TODO: Modernize tests (logger, exceptions)
+    if (Parameters.at(0) < 1.) {
+        std::cout
+                << "MPSSW13Model : Exponent in valence profile function should be >= 1."
+                << std::endl;
+        std::cout << "MPSSW13Model : Here exponent = " << Parameters.at(0)
+                << std::endl;
+        std::cout << std::endl;
+        exit(-1);
+    }
 
-	if (Parameters.at( 1 ) < 1.) {
-		std::cout << "MPSSW13Model : Exponent in sea profile function should be >= 1." << std::endl;
-		std::cout << "MPSSW13Model : Here exponent = " << Parameters.at( 1 ) << std::endl;
-		std::cout << std::endl;
-		exit( -1 );
-	}
+    if (Parameters.at(1) < 1.) {
+        std::cout
+                << "MPSSW13Model : Exponent in sea profile function should be >= 1."
+                << std::endl;
+        std::cout << "MPSSW13Model : Here exponent = " << Parameters.at(1)
+                << std::endl;
+        std::cout << std::endl;
+        exit(-1);
+    }
 
-	if (Parameters.at( 2 ) < 1.) {
-		std::cout << "MPSSW13Model : Exponent in glue profile function should be >= 1." << std::endl;
-		std::cout << "MPSSW13Model : Here exponent = " << Parameters.at( 2 ) << std::endl;
-		std::cout << std::endl;
-		exit( -1 );
-	}
+    if (Parameters.at(2) < 1.) {
+        std::cout
+                << "MPSSW13Model : Exponent in glue profile function should be >= 1."
+                << std::endl;
+        std::cout << "MPSSW13Model : Here exponent = " << Parameters.at(2)
+                << std::endl;
+        std::cout << std::endl;
+        exit(-1);
+    }
 
-	// Assign parameters
-	m_ProfileShapeVal = Parameters.at( 0 );
-	m_ProfileShapeSea = Parameters.at( 1 );
-	m_ProfileShapeGlue = Parameters.at( 2 );
+    // Assign parameters
+    m_ProfileShapeVal = Parameters.at(0);
+    m_ProfileShapeSea = Parameters.at(1);
+    m_ProfileShapeGlue = Parameters.at(2);
 }
 
 void MPSSW13Model::ComputeDTerms() {
-	double z = m_x / m_xi;
+    double z = m_x / m_xi;
 
-	const double Mu0 = 0.6; // Reference scale (in GeV)
-	const double CA2 = m_CA * m_CA;
-	const double Lambda3 = 0.232; // LambdaQCD with 3 active flavours (in GeV)
-	const double Lambda4 = 0.200; // LambdaQCD with 4 active flavours (in GeV)
-	const double MuSwitch = 1.5; // NFlavour = 3 if fMuR < MuSwitch, 4 otherwise (in GeV)
+    const double Mu0 = 0.6; // Reference scale (in GeV)
+    const double CA2 = m_CA * m_CA;
+    const double Lambda3 = 0.232; // LambdaQCD with 3 active flavours (in GeV)
+    const double Lambda4 = 0.200; // LambdaQCD with 4 active flavours (in GeV)
+    const double MuSwitch = 1.5; // NFlavour = 3 if fMuR < MuSwitch, 4 otherwise (in GeV)
 
-	double Beta0[2]; // 1st coefficient of QCD Beta function
-	double Beta1[2]; // 2nd coefficient of QCD Beta function
-	double AlphaS0; // Strong running coupling at reference scale
-	double AlphaSMuSwitch; // Strong running coupling at charm threshold MuSwitch
-	double AlphaS; // Strong running coupling at current scale
-	double Lambda; // Current value of LambdaQCD, either Lambda3 or Lambda4
-	double t; // t = 2 log( t / LambdaQCD )
-	double lt; // lt = log t
-	unsigned int NFlavour;
+    double Beta0[2]; // 1st coefficient of QCD Beta function
+    double Beta1[2]; // 2nd coefficient of QCD Beta function
+    double AlphaS0; // Strong running coupling at reference scale
+    double AlphaSMuSwitch; // Strong running coupling at charm threshold MuSwitch
+    double AlphaS; // Strong running coupling at current scale
+    double Lambda; // Current value of LambdaQCD, either Lambda3 or Lambda4
+    double t; // t = 2 log( t / LambdaQCD )
+    double lt; // lt = log t
+    unsigned int NFlavour;
 
-	const unsigned int nGegen = 3;
-	double QuarkGegenbauer[nGegen]; // Gegenbauer polynomials C3/2
-	double GluonGegenbauer[nGegen]; // Gegenbauer polynomials C5/2
-	double TabGammaQQ[2][nGegen]; // Anomalous dimension eq. (42)
-	double TabGammaQG[2][nGegen]; // Anomalous dimension eq. (42)
-	double TabGammaGQ[2][nGegen]; // Anomalous dimension eq. (42)
-	double TabGammaGG[2][nGegen]; // Anomalous dimension eq. (42)
+    const unsigned int nGegen = 3;
+    double QuarkGegenbauer[nGegen]; // Gegenbauer polynomials C3/2
+    double GluonGegenbauer[nGegen]; // Gegenbauer polynomials C5/2
+    double TabGammaQQ[2][nGegen]; // Anomalous dimension eq. (42)
+    double TabGammaQG[2][nGegen]; // Anomalous dimension eq. (42)
+    double TabGammaGQ[2][nGegen]; // Anomalous dimension eq. (42)
+    double TabGammaGG[2][nGegen]; // Anomalous dimension eq. (42)
 
-	double TabGammaPrimeQG[2][nGegen]; // Anomalous dimension eq. (45)
-	double TabGammaPrimeGQ[2][nGegen]; // Anomalous dimension eq. (45)
+    double TabGammaPrimeQG[2][nGegen]; // Anomalous dimension eq. (45)
+    double TabGammaPrimeGQ[2][nGegen]; // Anomalous dimension eq. (45)
 
-	double CapitalGammap[2][nGegen]; // Anomalous dimension eq. (46)
-	double CapitalGammam[2][nGegen]; // Anomalous dimension eq. (46)
+    double CapitalGammap[2][nGegen]; // Anomalous dimension eq. (46)
+    double CapitalGammam[2][nGegen]; // Anomalous dimension eq. (46)
 
-	double gp[2][nGegen]; // Eigenvector eq. (48)
-	double gm[2][nGegen]; // Eigenvector eq. (48)
+    double gp[2][nGegen]; // Eigenvector eq. (48)
+    double gm[2][nGegen]; // Eigenvector eq. (48)
 
-	double Ap[2][nGegen]; // Coefficients for scale-dependence in eq. (51)
-	double Am[2][nGegen]; // Coefficients for scale-dependence in eq. (51)
+    double Ap[2][nGegen]; // Coefficients for scale-dependence in eq. (51)
+    double Am[2][nGegen]; // Coefficients for scale-dependence in eq. (51)
 
-	double Kp[ 2 ][ nGegen ]; // Anomalous dimension between eq. (51) and eq. (52)
-	double Km[ 2 ][ nGegen ]; // Anomalous dimension between eq. (51) and eq. (52)
+    double Kp[2][nGegen]; // Anomalous dimension between eq. (51) and eq. (52)
+    double Km[2][nGegen]; // Anomalous dimension between eq. (51) and eq. (52)
 
-	double Quarkd[nGegen]; // Coefficients of the D-term expansion over Gegenbauer polynomial basis C3/2 at current scale
-	double Gluond[nGegen]; // Coefficients of the D-term expansion over Gegenbauer polynomial basis C5/2 at current scale
-	double QuarkInputd[2][nGegen];
-	double GluonInputd[2][nGegen];
-	double QuarkChQSMd[nGegen]; // Coefficients of the D-term expansion over Gegenbauer polynomial basis C3/2 at initial scale
-	double GluonChQSMd[nGegen]; // Coefficients of the D-term expansion over Gegenbauer polynomial basis C5/2 at initial scale
+    double Quarkd[nGegen]; // Coefficients of the D-term expansion over Gegenbauer polynomial basis C3/2 at current scale
+    double Gluond[nGegen]; // Coefficients of the D-term expansion over Gegenbauer polynomial basis C5/2 at current scale
+    double QuarkInputd[2][nGegen];
+    double GluonInputd[2][nGegen];
+    double QuarkChQSMd[nGegen]; // Coefficients of the D-term expansion over Gegenbauer polynomial basis C3/2 at initial scale
+    double GluonChQSMd[nGegen]; // Coefficients of the D-term expansion over Gegenbauer polynomial basis C5/2 at initial scale
 
-	////////////////////////////////////
-	//   Beta function coefficients   //
-	////////////////////////////////////
+    ////////////////////////////////////
+    //   Beta function coefficients   //
+    ////////////////////////////////////
 
-	// 3 active flavours
-	NFlavour = 3;
-	Beta0[0] = ( 11. / 3. * m_CA - 4. / 3. * m_TF * NFlavour ) / 4.;
-	Beta1[0] = ( 34. / 3. * CA2 - 20. / 3. * m_CA * m_TF * NFlavour - 4. * m_CF
-			* m_TF * NFlavour ) / 16.;
+    // 3 active flavours
+    NFlavour = 3;
+    Beta0[0] = (11. / 3. * m_CA - 4. / 3. * m_TF * NFlavour) / 4.;
+    Beta1[0] = (34. / 3. * CA2 - 20. / 3. * m_CA * m_TF * NFlavour
+            - 4. * m_CF * m_TF * NFlavour) / 16.;
 
-	// 4 active flavours
+    // 4 active flavours
 
-	NFlavour = 4;
-	Beta0[1] = ( 11. / 3. * m_CA - 4. / 3. * m_TF * NFlavour ) / 4.;
-	Beta1[1] = ( 34. / 3. * CA2 - 20. / 3. * m_CA * m_TF * NFlavour - 4. * m_CF
-			* m_TF * NFlavour ) / 16.;
+    NFlavour = 4;
+    Beta0[1] = (11. / 3. * m_CA - 4. / 3. * m_TF * NFlavour) / 4.;
+    Beta1[1] = (34. / 3. * CA2 - 20. / 3. * m_CA * m_TF * NFlavour
+            - 4. * m_CF * m_TF * NFlavour) / 16.;
 
-	//////////////////////////////////////////////////////
-	//   Strong Running coupling at initial scale Mu0   //
-	//////////////////////////////////////////////////////
-	Lambda = Lambda3;
-	t = 2. * log( Mu0 / Lambda );
-	lt = log( t );
+    //////////////////////////////////////////////////////
+    //   Strong Running coupling at initial scale Mu0   //
+    //////////////////////////////////////////////////////
+    Lambda = Lambda3;
+    t = 2. * log(Mu0 / Lambda);
+    lt = log(t);
 
-	AlphaS0 = 1. / ( Beta0[0] * t ); // - Beta1[ 0 ] * lt / ( ( Beta0[ 0 ] * t ) * ( Beta0[ 0 ] * t ) ) ;
-	AlphaS0 *= PI;
+    AlphaS0 = 1. / (Beta0[0] * t); // - Beta1[ 0 ] * lt / ( ( Beta0[ 0 ] * t ) * ( Beta0[ 0 ] * t ) ) ;
+    AlphaS0 *= PI;
 
-	//////////////////////////////////////////////////////////////////////////
-	//   Strong Running coupling at charm threshold MuActiveFlavourSwitch   //
-	//////////////////////////////////////////////////////////////////////////
-	Lambda = Lambda3;
-	t = 2. * log( MuSwitch / Lambda );
-	lt = log( t );
+    //////////////////////////////////////////////////////////////////////////
+    //   Strong Running coupling at charm threshold MuActiveFlavourSwitch   //
+    //////////////////////////////////////////////////////////////////////////
+    Lambda = Lambda3;
+    t = 2. * log(MuSwitch / Lambda);
+    lt = log(t);
 
-	AlphaSMuSwitch = 1. / ( Beta0[0] * t ); // - Beta1[ 0 ] * lt / ( ( Beta0[ 0 ] * t ) * ( Beta0[ 0 ] * t ) ) ;
-	AlphaSMuSwitch *= PI;
+    AlphaSMuSwitch = 1. / (Beta0[0] * t); // - Beta1[ 0 ] * lt / ( ( Beta0[ 0 ] * t ) * ( Beta0[ 0 ] * t ) ) ;
+    AlphaSMuSwitch *= PI;
 
-	///////////////////////////////////////////////////////
-	//   Strong Running coupling at current scale fMuR   //
-	///////////////////////////////////////////////////////
-	if ( m_MuR <= MuSwitch ) {
-		Lambda = Lambda3;
-		t = 2. * log( m_MuR / Lambda );
-		lt = log( t );
-		AlphaS = 1. / ( Beta0[0] * t ); // - Beta1[ 0 ] * lt / ( ( Beta0[ 0 ] * t ) * ( Beta0[ 0 ] * t ) ) ;
-	} else {
-		Lambda = Lambda4;
-		t = 2. * log( m_MuR / Lambda );
-		lt = log( t );
-		AlphaS = 1. / ( Beta0[1] * t ); // - Beta1[  1 ] * lt / ( ( Beta0[ 1 ] * t ) * ( Beta0[ 1 ] * t ) ) ;
-	}
-	AlphaS *= PI;
+    ///////////////////////////////////////////////////////
+    //   Strong Running coupling at current scale fMuR   //
+    ///////////////////////////////////////////////////////
+    if (m_MuR <= MuSwitch) {
+        Lambda = Lambda3;
+        t = 2. * log(m_MuR / Lambda);
+        lt = log(t);
+        AlphaS = 1. / (Beta0[0] * t); // - Beta1[ 0 ] * lt / ( ( Beta0[ 0 ] * t ) * ( Beta0[ 0 ] * t ) ) ;
+    } else {
+        Lambda = Lambda4;
+        t = 2. * log(m_MuR / Lambda);
+        lt = log(t);
+        AlphaS = 1. / (Beta0[1] * t); // - Beta1[  1 ] * lt / ( ( Beta0[ 1 ] * t ) * ( Beta0[ 1 ] * t ) ) ;
+    }
+    AlphaS *= PI;
 
-	/////////////////////////////////////
-	//   Gegenbauer polynomials C3/2   //
-	/////////////////////////////////////
+    /////////////////////////////////////
+    //   Gegenbauer polynomials C3/2   //
+    /////////////////////////////////////
 
-	// C^(3/2)_1
-	QuarkGegenbauer[0] = 3. * z;
+    // C^(3/2)_1
+    QuarkGegenbauer[0] = 3. * z;
 
-	// C^(3/2)_3
-	QuarkGegenbauer[1] = 5. / 2. * ( - 3. * z + 7. * pow( z, 3 ) );
+    // C^(3/2)_3
+    QuarkGegenbauer[1] = 5. / 2. * (-3. * z + 7. * pow(z, 3));
 
-	// C^(3/2)_5
-	QuarkGegenbauer[2] = 21. / 8. * ( 5. * z - 30. * pow( z, 3 )
-			+ 33. * pow( z, 5 ) );
+    // C^(3/2)_5
+    QuarkGegenbauer[2] = 21. / 8.
+            * (5. * z - 30. * pow(z, 3) + 33. * pow(z, 5));
 
-	/////////////////////////////////////
-	//   Gegenbauer polynomials C5/2   //
-	/////////////////////////////////////
+    /////////////////////////////////////
+    //   Gegenbauer polynomials C5/2   //
+    /////////////////////////////////////
 
-	// C^(5/2)_0
-	GluonGegenbauer[0] = 1.;
+    // C^(5/2)_0
+    GluonGegenbauer[0] = 1.;
 
-	// C^(5/2)_2
-	GluonGegenbauer[1] = 5. / 2. * ( - 1. + 7. * pow( z, 2 ) );
+    // C^(5/2)_2
+    GluonGegenbauer[1] = 5. / 2. * (-1. + 7. * pow(z, 2));
 
-	// C^(5/2)_4
-	GluonGegenbauer[2] = 35. / 8. * ( 1. - 18. * pow( z, 2 ) + 33. * pow( z, 4 ) );
+    // C^(5/2)_4
+    GluonGegenbauer[2] = 35. / 8. * (1. - 18. * pow(z, 2) + 33. * pow(z, 4));
 
-	//////////////////////////////
-	//   Anomalous dimensions   //
-	//////////////////////////////
-	for (unsigned int iGegen = 0 ; iGegen < nGegen ; iGegen++) {
-		// 3 active flavours
-		TabGammaQQ[0][iGegen] = GammaQQ( 3, 2 * iGegen + 1 );
-		TabGammaGQ[0][iGegen] = GammaGQ( 3, 2 * iGegen + 1 );
-		TabGammaQG[0][iGegen] = GammaQG( 3, 2 * iGegen + 1 );
-		TabGammaGG[0][iGegen] = GammaGG( 3, 2 * iGegen + 1 );
+    //////////////////////////////
+    //   Anomalous dimensions   //
+    //////////////////////////////
+    for (unsigned int iGegen = 0; iGegen < nGegen; iGegen++) {
+        // 3 active flavours
+        TabGammaQQ[0][iGegen] = GammaQQ(3, 2 * iGegen + 1);
+        TabGammaGQ[0][iGegen] = GammaGQ(3, 2 * iGegen + 1);
+        TabGammaQG[0][iGegen] = GammaQG(3, 2 * iGegen + 1);
+        TabGammaGG[0][iGegen] = GammaGG(3, 2 * iGegen + 1);
 
-		// 4 active flavours
-		TabGammaQQ[1][iGegen] = GammaQQ( 4, 2 * iGegen + 1 );
-		TabGammaGQ[1][iGegen] = GammaGQ( 4, 2 * iGegen + 1 );
-		TabGammaQG[1][iGegen] = GammaQG( 4, 2 * iGegen + 1 );
-		TabGammaGG[1][iGegen] = GammaGG( 4, 2 * iGegen + 1 );
+        // 4 active flavours
+        TabGammaQQ[1][iGegen] = GammaQQ(4, 2 * iGegen + 1);
+        TabGammaGQ[1][iGegen] = GammaGQ(4, 2 * iGegen + 1);
+        TabGammaQG[1][iGegen] = GammaQG(4, 2 * iGegen + 1);
+        TabGammaGG[1][iGegen] = GammaGG(4, 2 * iGegen + 1);
 
-		for (unsigned int i = 0 ; i < 2 ; i++) {
-			TabGammaPrimeQG[i][iGegen] = ( 2. * iGegen + 1. ) / 3.
-					* TabGammaQG[i][iGegen];
-			TabGammaPrimeGQ[i][iGegen] = 3. / ( 2. * iGegen + 1. )
-					* TabGammaGQ[i][iGegen];
+        for (unsigned int i = 0; i < 2; i++) {
+            TabGammaPrimeQG[i][iGegen] = (2. * iGegen + 1.) / 3.
+                    * TabGammaQG[i][iGegen];
+            TabGammaPrimeGQ[i][iGegen] = 3. / (2. * iGegen + 1.)
+                    * TabGammaGQ[i][iGegen];
 
-			CapitalGammap[i][iGegen] = ( TabGammaQQ[i][iGegen]
-				- TabGammaGG[i][iGegen] ) * ( TabGammaQQ[i][iGegen]
-				- TabGammaGG[i][iGegen] );
-			CapitalGammap[i][iGegen] += 4. * TabGammaPrimeQG[i][iGegen]
-				* TabGammaPrimeGQ[i][iGegen];
-			CapitalGammap[i][iGegen] = sqrt( CapitalGammap[i][iGegen] );
-			CapitalGammap[i][iGegen] += TabGammaQQ[i][iGegen]
-				+ TabGammaGG[i][iGegen];
-			CapitalGammap[i][iGegen] /= 2.;
+            CapitalGammap[i][iGegen] = (TabGammaQQ[i][iGegen]
+                    - TabGammaGG[i][iGegen])
+                    * (TabGammaQQ[i][iGegen] - TabGammaGG[i][iGegen]);
+            CapitalGammap[i][iGegen] += 4. * TabGammaPrimeQG[i][iGegen]
+                    * TabGammaPrimeGQ[i][iGegen];
+            CapitalGammap[i][iGegen] = sqrt(CapitalGammap[i][iGegen]);
+            CapitalGammap[i][iGegen] += TabGammaQQ[i][iGegen]
+                    + TabGammaGG[i][iGegen];
+            CapitalGammap[i][iGegen] /= 2.;
 
-			CapitalGammam[i][iGegen] = ( TabGammaQQ[i][iGegen]
-				- TabGammaGG[i][iGegen] ) * ( TabGammaQQ[i][iGegen]
-				- TabGammaGG[i][iGegen] );
-			CapitalGammam[i][iGegen] += 4. * TabGammaPrimeQG[i][iGegen]
-				* TabGammaPrimeGQ[i][iGegen];
-			CapitalGammam[i][iGegen] = - sqrt( CapitalGammam[i][iGegen] );
-			CapitalGammam[i][iGegen] += TabGammaQQ[i][iGegen]
-				+ TabGammaGG[i][iGegen];
-			CapitalGammam[i][iGegen] /= 2.;
+            CapitalGammam[i][iGegen] = (TabGammaQQ[i][iGegen]
+                    - TabGammaGG[i][iGegen])
+                    * (TabGammaQQ[i][iGegen] - TabGammaGG[i][iGegen]);
+            CapitalGammam[i][iGegen] += 4. * TabGammaPrimeQG[i][iGegen]
+                    * TabGammaPrimeGQ[i][iGegen];
+            CapitalGammam[i][iGegen] = -sqrt(CapitalGammam[i][iGegen]);
+            CapitalGammam[i][iGegen] += TabGammaQQ[i][iGegen]
+                    + TabGammaGG[i][iGegen];
+            CapitalGammam[i][iGegen] /= 2.;
 
-			gp[i][iGegen] = CapitalGammap[i][iGegen]
-				- TabGammaQQ[i][iGegen];
-			gp[i][iGegen] /= TabGammaPrimeQG[i][iGegen];
+            gp[i][iGegen] = CapitalGammap[i][iGegen] - TabGammaQQ[i][iGegen];
+            gp[i][iGegen] /= TabGammaPrimeQG[i][iGegen];
 
-			gm[i][iGegen] = CapitalGammam[i][iGegen]
-				- TabGammaQQ[i][iGegen ];
-			gm[i][iGegen] /= TabGammaPrimeQG[i][iGegen];
+            gm[i][iGegen] = CapitalGammam[i][iGegen] - TabGammaQQ[i][iGegen];
+            gm[i][iGegen] /= TabGammaPrimeQG[i][iGegen];
 
 //			Kp[i][iGegen] = 2. * CapitalGammap[i][iGegen] / Beta1[i];
 //			Km[i][iGegen] = 2. * CapitalGammam[i][iGegen] / Beta1[i];
-			Kp[i][iGegen] = 2. * CapitalGammap[i][iGegen]
-				/ ( 4. * Beta0[i] );
-			Km[i][iGegen] = 2. * CapitalGammam[i][iGegen]
-				/ ( 4. * Beta0[i] );
-		}
-	}
+            Kp[i][iGegen] = 2. * CapitalGammap[i][iGegen] / (4. * Beta0[i]);
+            Km[i][iGegen] = 2. * CapitalGammam[i][iGegen] / (4. * Beta0[i]);
+        }
+    }
 
-	//////////////////////////////////////////////////////////////////
-	//   Coefficients initialized with Chiral Quark Soliton Model   //
-	//////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////
+    //   Coefficients initialized with Chiral Quark Soliton Model   //
+    //////////////////////////////////////////////////////////////////
 
-	QuarkChQSMd[0] = 4.0;
-	QuarkChQSMd[1] = 1.2;
-	QuarkChQSMd[2] = 0.4;
+    QuarkChQSMd[0] = 4.0;
+    QuarkChQSMd[1] = 1.2;
+    QuarkChQSMd[2] = 0.4;
 
-	GluonChQSMd[0] = 0.;
-	GluonChQSMd[1] = 0.;
-	GluonChQSMd[2] = 0.;
+    GluonChQSMd[0] = 0.;
+    GluonChQSMd[1] = 0.;
+    GluonChQSMd[2] = 0.;
 
-	for (unsigned int iGegen = 0 ; iGegen < nGegen ; iGegen++) {
-		QuarkInputd[0][iGegen] = QuarkChQSMd[iGegen];
-		GluonInputd[0][iGegen] = GluonChQSMd[iGegen];
-	}
+    for (unsigned int iGegen = 0; iGegen < nGegen; iGegen++) {
+        QuarkInputd[0][iGegen] = QuarkChQSMd[iGegen];
+        GluonInputd[0][iGegen] = GluonChQSMd[iGegen];
+    }
 
-	/////////////////////////////////////
-	//   Scale dependent coefficients  //
-	/////////////////////////////////////
-	for (unsigned int iGegen = 0 ; iGegen < nGegen ; iGegen++) {
+    /////////////////////////////////////
+    //   Scale dependent coefficients  //
+    /////////////////////////////////////
+    for (unsigned int iGegen = 0; iGegen < nGegen; iGegen++) {
 
-		// Find coefficients Ap and Am at input scale Mu0
-		Ap[0][iGegen] = ( gm[0][iGegen] * QuarkInputd[0][iGegen]
-			- GluonInputd[0][iGegen] ) / ( gm[0][iGegen] - gp[0][iGegen] );
-		Am[0][iGegen] = ( gp[0][iGegen] * QuarkInputd[0][iGegen]
-			- GluonInputd[0][iGegen] ) / ( gp[0][iGegen] - gm[0][iGegen] );
+        // Find coefficients Ap and Am at input scale Mu0
+        Ap[0][iGegen] = (gm[0][iGegen] * QuarkInputd[0][iGegen]
+                - GluonInputd[0][iGegen]) / (gm[0][iGegen] - gp[0][iGegen]);
+        Am[0][iGegen] = (gp[0][iGegen] * QuarkInputd[0][iGegen]
+                - GluonInputd[0][iGegen]) / (gp[0][iGegen] - gm[0][iGegen]);
 
-		// Compute expansion into Gegenbauer polynomials at Mu = MuSwitch
-		QuarkInputd[1][iGegen] = Ap[0][iGegen]
-			* pow( AlphaSMuSwitch / AlphaS0, Kp[0][iGegen] );
-		QuarkInputd[1][iGegen] += Am[0][iGegen]
-			* pow( AlphaSMuSwitch / AlphaS0, Km[0][iGegen] );
+        // Compute expansion into Gegenbauer polynomials at Mu = MuSwitch
+        QuarkInputd[1][iGegen] = Ap[0][iGegen]
+                * pow(AlphaSMuSwitch / AlphaS0, Kp[0][iGegen]);
+        QuarkInputd[1][iGegen] += Am[0][iGegen]
+                * pow(AlphaSMuSwitch / AlphaS0, Km[0][iGegen]);
 
-		GluonInputd[1][iGegen] = gp[0][iGegen] * Ap[0][iGegen]
-			* pow( AlphaSMuSwitch / AlphaS0, Kp[0][iGegen] );
-		GluonInputd[1][iGegen] += gm[0][iGegen] * Am[0][iGegen]
-			* pow( AlphaSMuSwitch / AlphaS0, Km[0][iGegen] );
+        GluonInputd[1][iGegen] = gp[0][iGegen] * Ap[0][iGegen]
+                * pow(AlphaSMuSwitch / AlphaS0, Kp[0][iGegen]);
+        GluonInputd[1][iGegen] += gm[0][iGegen] * Am[0][iGegen]
+                * pow(AlphaSMuSwitch / AlphaS0, Km[0][iGegen]);
 
-		// Find coefficients Ap and Am at Mu = MuSwitch
-		Ap[1][iGegen] = ( gm[1][iGegen] * QuarkInputd[1][iGegen]
-			- GluonInputd[1][iGegen] ) / ( gm[1][iGegen] - gp[1][iGegen] );
-		Am[1][iGegen] = ( gp[1][iGegen] * QuarkInputd[1][iGegen]
-			- GluonInputd[1][iGegen] ) / ( gp[1][iGegen] - gm[1][iGegen] );
+        // Find coefficients Ap and Am at Mu = MuSwitch
+        Ap[1][iGegen] = (gm[1][iGegen] * QuarkInputd[1][iGegen]
+                - GluonInputd[1][iGegen]) / (gm[1][iGegen] - gp[1][iGegen]);
+        Am[1][iGegen] = (gp[1][iGegen] * QuarkInputd[1][iGegen]
+                - GluonInputd[1][iGegen]) / (gp[1][iGegen] - gm[1][iGegen]);
 
-		if (m_MuR <= MuSwitch) {
-			Quarkd[iGegen] = Ap[0][iGegen] * pow( AlphaS / AlphaS0, Kp[0][iGegen] );
-			Quarkd[iGegen] += Am[0][iGegen] * pow( AlphaS / AlphaS0, Km[0][iGegen] );
+        if (m_MuR <= MuSwitch) {
+            Quarkd[iGegen] = Ap[0][iGegen]
+                    * pow(AlphaS / AlphaS0, Kp[0][iGegen]);
+            Quarkd[iGegen] += Am[0][iGegen]
+                    * pow(AlphaS / AlphaS0, Km[0][iGegen]);
 
-			Gluond[iGegen] = gp[0][iGegen] * Ap[0][iGegen]
-				* pow( AlphaS / AlphaS0, Kp[0][iGegen] );
-			Gluond[iGegen] += gm[0][iGegen] * Am[0][iGegen]
-				* pow( AlphaS / AlphaS0, Km[0][iGegen] );
-		} else {
-			Quarkd[iGegen] = Ap[1][iGegen]
-				* pow( AlphaS / AlphaSMuSwitch, Kp[1][iGegen] );
-			Quarkd[iGegen] += Am[1][iGegen]
-				* pow( AlphaS / AlphaSMuSwitch, Km[1][iGegen] );
+            Gluond[iGegen] = gp[0][iGegen] * Ap[0][iGegen]
+                    * pow(AlphaS / AlphaS0, Kp[0][iGegen]);
+            Gluond[iGegen] += gm[0][iGegen] * Am[0][iGegen]
+                    * pow(AlphaS / AlphaS0, Km[0][iGegen]);
+        } else {
+            Quarkd[iGegen] = Ap[1][iGegen]
+                    * pow(AlphaS / AlphaSMuSwitch, Kp[1][iGegen]);
+            Quarkd[iGegen] += Am[1][iGegen]
+                    * pow(AlphaS / AlphaSMuSwitch, Km[1][iGegen]);
 
-			Gluond[iGegen] = gp[1][iGegen] * Ap[1][iGegen]
-				* pow( AlphaS / AlphaSMuSwitch, Kp[1][iGegen] );
-			Gluond[iGegen] += gm[1][iGegen] * Am[1][iGegen]
-				* pow( AlphaS / AlphaSMuSwitch, Km[1][iGegen] );
-		}
+            Gluond[iGegen] = gp[1][iGegen] * Ap[1][iGegen]
+                    * pow(AlphaS / AlphaSMuSwitch, Kp[1][iGegen]);
+            Gluond[iGegen] += gm[1][iGegen] * Am[1][iGegen]
+                    * pow(AlphaS / AlphaSMuSwitch, Km[1][iGegen]);
+        }
 
 //		cout << "Quarkd[" << iGegen << "] = " << Quarkd[iGegen] << endl ;
 //		cout << "Gluond[" << iGegen << "] = " << Gluond[iGegen] << endl ;
-	}
+    }
 
-	////////////////
-	//   D-terms  //
-	////////////////
-	m_QuarkDTerm = 0.;
-	m_GluonDTerm = 0.;
-	if (fabs( z ) < 1.) {
-		for (unsigned int iGegen = 0 ; iGegen < nGegen ; iGegen++) {
-			m_QuarkDTerm += Quarkd[iGegen] * QuarkGegenbauer[iGegen];
-			m_GluonDTerm += Gluond[iGegen] * GluonGegenbauer[iGegen];
-		}
+    ////////////////
+    //   D-terms  //
+    ////////////////
+    m_QuarkDTerm = 0.;
+    m_GluonDTerm = 0.;
+    if (fabs(z) < 1.) {
+        for (unsigned int iGegen = 0; iGegen < nGegen; iGegen++) {
+            m_QuarkDTerm += Quarkd[iGegen] * QuarkGegenbauer[iGegen];
+            m_GluonDTerm += Gluond[iGegen] * GluonGegenbauer[iGegen];
+        }
 
-		// Normalize with appropriate weight
-		m_QuarkDTerm *= - ( 1. - z * z );
-		m_GluonDTerm *= - 3. / 2. * ( 1. - z * z ) * ( 1. - z * z );
+        // Normalize with appropriate weight
+        m_QuarkDTerm *= -(1. - z * z);
+        m_GluonDTerm *= -3. / 2. * (1. - z * z) * (1. - z * z);
 
-		// Add t-dependence
-		m_QuarkDTerm *= m_FD / 3.;
-		m_GluonDTerm *= m_FD * m_xi;
-	}
+        // Add t-dependence
+        m_QuarkDTerm *= m_FD / 3.;
+        m_GluonDTerm *= m_FD * m_xi;
+    }
 }
 
 void MPSSW13Model::ComputeFormFactors() {
-	double Gep, Gen, Gmp, Gmn; // Sachs form factors
-	double F1p, F1n, F2p, F2n; // Pauli-Dirac form factors
+    double Gep, Gen, Gmp, Gmn; // Sachs form factors
+    double F1p, F1n, F2p, F2n; // Pauli-Dirac form factors
 
-	const double Mup = 2.79278; // Proton magnetic moment (Nucl. Phys. B32 (1971) 221)
-	const double Mun = -1.91315; // Neutron magnetic moment (Nucl. Phys. B32 (1971) 221)
-	const double MassScaleProton2 = 0.71; // Mass scale for t-dep of Gep (in GeV^2)
-	const double MV2 = 0.84 * 0.84;
-	double tau = m_t / ( 4. * PROTON_MASS * PROTON_MASS );
+    const double Mup = 2.79278; // Proton magnetic moment (Nucl. Phys. B32 (1971) 221)
+    const double Mun = -1.91315; // Neutron magnetic moment (Nucl. Phys. B32 (1971) 221)
+    const double MassScaleProton2 = 0.71; // Mass scale for t-dep of Gep (in GeV^2)
+    const double MV2 = 0.84 * 0.84;
+    double tau = m_t / (4. * PROTON_MASS * PROTON_MASS);
 
-	// Sachs form factors
-	Gep = 1. / ( ( 1. - m_t / MV2 ) * ( 1. - m_t / MV2 ) );
-	Gmp = Mup * Gep;
+    // Sachs form factors
+    Gep = 1. / ((1. - m_t / MV2) * (1. - m_t / MV2));
+    Gmp = Mup * Gep;
 
-	Gmn = Mun * Gep;
-	Gen = - tau / ( 1 - 5.6 * tau ) * fabs( Gmn );
+    Gmn = Mun * Gep;
+    Gen = -tau / (1 - 5.6 * tau) * fabs(Gmn);
 
-	// Pauli-Dirac from factors
-	F1p = ( Gep - Gmp * tau ) / ( 1. - tau );
-	F2p = ( Gmp - Gep ) / ( 1. - tau );
+    // Pauli-Dirac from factors
+    F1p = (Gep - Gmp * tau) / (1. - tau);
+    F2p = (Gmp - Gep) / (1. - tau);
 
-	F1n = ( Gen - Gmn * tau ) / ( 1. - tau );
-	F2n = ( Gmn - Gen ) / ( 1. - tau );
+    F1n = (Gen - Gmn * tau) / (1. - tau);
+    F2n = (Gmn - Gen) / (1. - tau);
 
-	// Quark contributions to Pauli-Dirac fom factors
-	m_F1u = 2. * F1p + F1n;
-	m_F1d = F1p + 2. * F1n;
+    // Quark contributions to Pauli-Dirac fom factors
+    m_F1u = 2. * F1p + F1n;
+    m_F1d = F1p + 2. * F1n;
 
-	m_FD = 1. / ( ( 1. - m_t / MV2 ) * ( 1. - m_t / MV2 ) );
+    m_FD = 1. / ((1. - m_t / MV2) * (1. - m_t / MV2));
 }
 
 double MPSSW13Model::Profile(double N, double alpha, double beta) {
-	double profile;
-	double ProfileShape = N;
-	double TwiceProfileShapePlus1 = 2. * ProfileShape + 1;
+    double profile;
+    double ProfileShape = N;
+    double TwiceProfileShapePlus1 = 2. * ProfileShape + 1;
 
-	// TODO: Change error message (logger, exception, etc.)
-	if (fabs( alpha ) + fabs( beta ) > 1.) {
-		std::cout << "MPSSW13Model : Parameters of profile function should be in rhombus | alpha | + | beta | <= 1." << std::endl;
-		std::cout << "MPSSW13Model : Here alpha = " << alpha << std::endl;
-		std::cout << "MPSSW13Model : Here beta = " << beta << std::endl;
-		std::cout << "MPSSW13Model : Here | alpha | + | beta | = " << fabs( alpha ) + fabs( beta ) << std::endl ;
-		std::cout << std::endl;
-		exit( -1 );
-	}
+    // TODO: Change error message (logger, exception, etc.)
+    if (fabs(alpha) + fabs(beta) > 1.) {
+        std::cout
+                << "MPSSW13Model : Parameters of profile function should be in rhombus | alpha | + | beta | <= 1."
+                << std::endl;
+        std::cout << "MPSSW13Model : Here alpha = " << alpha << std::endl;
+        std::cout << "MPSSW13Model : Here beta = " << beta << std::endl;
+        std::cout << "MPSSW13Model : Here | alpha | + | beta | = "
+                << fabs(alpha) + fabs(beta) << std::endl;
+        std::cout << std::endl;
+        exit(-1);
+    }
 
-	profile = pow( ( 1. - fabs( beta ) ) * ( 1. - fabs( beta ) )
-			- alpha * alpha, ProfileShape );
-	profile /= pow( 1. - fabs( beta ), TwiceProfileShapePlus1 );
-	profile *= gamma( TwiceProfileShapePlus1 + 1. );
-	profile /= ( pow( 2., TwiceProfileShapePlus1 ) * gamma( ProfileShape + 1. )
-			* gamma( ProfileShape + 1. ) );
+    profile = pow((1. - fabs(beta)) * (1. - fabs(beta)) - alpha * alpha,
+            ProfileShape);
+    profile /= pow(1. - fabs(beta), TwiceProfileShapePlus1);
+    profile *= gamma(TwiceProfileShapePlus1 + 1.);
+    profile /= (pow(2., TwiceProfileShapePlus1) * gamma(ProfileShape + 1.)
+            * gamma(ProfileShape + 1.));
 
-	return profile;
+    return profile;
 }
 
 double MPSSW13Model::IntegralHuVal(double* Var, double* Par) {
-	double Integral;
-	double pdf, beta, absbeta;
+    double Integral;
+    double pdf, beta, absbeta;
 
-	beta = Var[0];
-	absbeta = fabs(beta);
-	// TODO: Modernize error message (logger, exception, etc.)
-	if (beta <= 0 || beta > 1.) {
-		std::cout << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]" << std::endl;
-		std::cout << "MPSSW13Model : Here beta = " << Var[ 0 ] << std::endl;
-		std::cout << std::endl;
-		exit( -1 );
-	}
+    beta = Var[0];
+    absbeta = fabs(beta);
+    // TODO: Modernize error message (logger, exception, etc.)
+    if (beta <= 0 || beta > 1.) {
+        std::cout
+                << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]"
+                << std::endl;
+        std::cout << "MPSSW13Model : Here beta = " << Var[0] << std::endl;
+        std::cout << std::endl;
+        exit(-1);
+    }
 
 //	m_Forward->Setx( beta );
 //	pdf = m_Forward->GetuVal();
-	m_Forward->update(absbeta, m_MuF);
-	if (beta>0) {
-		pdf = m_Forward->cont.upv / absbeta;
-	} else {
-		pdf = 0.;
-	}
-	Integral = pdf * Profile( m_ProfileShapeVal, beta, ( m_x - beta ) / m_xi );
-	Integral /= m_xi;
-	Integral *= m_F1u / 2.;
+    m_Forward->update(absbeta, m_MuF);
+    if (beta > 0) {
+        pdf = m_Forward->cont.upv / absbeta;
+    } else {
+        pdf = 0.;
+    }
+    Integral = pdf * Profile(m_ProfileShapeVal, beta, (m_x - beta) / m_xi);
+    Integral /= m_xi;
+    Integral *= m_F1u / 2.;
 
-	return Integral;
+    return Integral;
 }
 
 double MPSSW13Model::IntegralHuValMx(double* Var, double* Par) {
-	double Integral;
-	double pdf, beta, absbeta;
+    double Integral;
+    double pdf, beta, absbeta;
 
-	beta = Var[0];
-	absbeta = fabs(beta);
-	// TODO: Modernize error message (logger, exception, etc.)
-	if (beta <= 0 || beta > 1.) {
-		std::cout << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]" << std::endl;
-		std::cout << "MPSSW13Model : Here beta = " << Var[ 0 ] << std::endl;
-		std::cout << std::endl;
-		exit( -1 );
-	}
+    beta = Var[0];
+    absbeta = fabs(beta);
+    // TODO: Modernize error message (logger, exception, etc.)
+    if (beta <= 0 || beta > 1.) {
+        std::cout
+                << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]"
+                << std::endl;
+        std::cout << "MPSSW13Model : Here beta = " << Var[0] << std::endl;
+        std::cout << std::endl;
+        exit(-1);
+    }
 
 //	m_Forward->Setx( beta );
 //	pdf = m_Forward->GetuVal();
-	m_Forward->update(absbeta, m_MuF);
-	if (beta>0) {
-		pdf = m_Forward->cont.upv / absbeta;
-	} else {
-		pdf = 0.;
-	}
-	Integral = pdf * Profile( m_ProfileShapeVal, beta, ( m_Mx - beta ) / m_xi );
-	Integral /= m_xi;
-	Integral *= m_F1u / 2.;
+    m_Forward->update(absbeta, m_MuF);
+    if (beta > 0) {
+        pdf = m_Forward->cont.upv / absbeta;
+    } else {
+        pdf = 0.;
+    }
+    Integral = pdf * Profile(m_ProfileShapeVal, beta, (m_Mx - beta) / m_xi);
+    Integral /= m_xi;
+    Integral *= m_F1u / 2.;
 
-	return Integral;
+    return Integral;
 }
 
 double MPSSW13Model::IntegralxLargeHuSea(double* Var, double* Par) {
-	double Integral;
-	double pdf, beta, absbeta;
+    double Integral;
+    double pdf, beta, absbeta;
 
-	beta = Var[0];
-	absbeta = fabs(beta);
-	// TODO: Modernize error message (logger, exception, etc.)
-	if (beta <= 0 || beta > 1.) {
-		std::cout << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]" << std::endl;
-		std::cout << "MPSSW13Model : Here beta = " << Var[ 0 ] << std::endl;
-		std::cout << std::endl;
-		exit( -1 );
-	}
+    beta = Var[0];
+    absbeta = fabs(beta);
+    // TODO: Modernize error message (logger, exception, etc.)
+    if (beta <= 0 || beta > 1.) {
+        std::cout
+                << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]"
+                << std::endl;
+        std::cout << "MPSSW13Model : Here beta = " << Var[0] << std::endl;
+        std::cout << std::endl;
+        exit(-1);
+    }
 
 //	m_Forward->Setx( beta );
 //	pdf = m_Forward->GetuSea();
-	m_Forward->update(absbeta, m_MuF);
-	pdf = m_Forward->cont.usea / absbeta;
-	Integral = pdf * Profile( m_ProfileShapeSea, beta, ( m_x - beta ) / m_xi );
-	Integral /= m_xi;
-	Integral *= m_F1u / 2.;
+    m_Forward->update(absbeta, m_MuF);
+    pdf = m_Forward->cont.usea / absbeta;
+    Integral = pdf * Profile(m_ProfileShapeSea, beta, (m_x - beta) / m_xi);
+    Integral /= m_xi;
+    Integral *= m_F1u / 2.;
 
-	return Integral;
+    return Integral;
 }
 
 double MPSSW13Model::IntegralxSmall1HuSea(double* Var, double* Par) {
-	double Integral;
-	double pdf, beta, absbeta;
+    double Integral;
+    double pdf, beta, absbeta;
 
-	beta = Var[0];
-	absbeta = fabs(beta);
-	// TODO: Modernize error message (logger, exception, etc.)
-	if (beta <= 0 || beta > 1.) {
-		std::cout << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]" << std::endl;
-		std::cout << "MPSSW13Model : Here beta = " << Var[ 0 ] << std::endl;
-		std::cout << std::endl;
-		exit( -1 );
-	}
+    beta = Var[0];
+    absbeta = fabs(beta);
+    // TODO: Modernize error message (logger, exception, etc.)
+    if (beta <= 0 || beta > 1.) {
+        std::cout
+                << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]"
+                << std::endl;
+        std::cout << "MPSSW13Model : Here beta = " << Var[0] << std::endl;
+        std::cout << std::endl;
+        exit(-1);
+    }
 
 //	m_Forward->Setx( beta );
 //	pdf = m_Forward->GetuSea();
-	m_Forward->update(absbeta, m_MuF);
-	pdf = m_Forward->cont.usea / absbeta;
-	Integral = pdf * Profile( m_ProfileShapeSea, beta, ( m_x - beta ) / m_xi );
-	Integral /= m_xi;
-	Integral *= m_F1u / 2.;
+    m_Forward->update(absbeta, m_MuF);
+    pdf = m_Forward->cont.usea / absbeta;
+    Integral = pdf * Profile(m_ProfileShapeSea, beta, (m_x - beta) / m_xi);
+    Integral /= m_xi;
+    Integral *= m_F1u / 2.;
 
-	return Integral;
+    return Integral;
 }
 
 double MPSSW13Model::IntegralxSmall2HuSea(double* Var, double* Par) {
-	double Integral;
-	double pdf, beta, absbeta;
+    double Integral;
+    double pdf, beta, absbeta;
 
-	beta = Var[0];
-	absbeta = fabs(beta);
-	// TODO: Modernize error message (logger, exception, etc.)
-	if (beta <= 0 || beta > 1.) {
-		std::cout << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]" << std::endl;
-		std::cout << "MPSSW13Model : Here beta = " << Var[ 0 ] << std::endl;
-		std::cout << std::endl;
-		exit( -1 );
-	}
+    beta = Var[0];
+    absbeta = fabs(beta);
+    // TODO: Modernize error message (logger, exception, etc.)
+    if (beta <= 0 || beta > 1.) {
+        std::cout
+                << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]"
+                << std::endl;
+        std::cout << "MPSSW13Model : Here beta = " << Var[0] << std::endl;
+        std::cout << std::endl;
+        exit(-1);
+    }
 
 //	m_Forward->Setx( beta );
 //	pdf = m_Forward->GetuSea();
-	m_Forward->update(absbeta, m_MuF);
-	pdf = m_Forward->cont.usea / absbeta;
-	m_Forward->update(absbeta, m_MuF);
-	if (beta>0) {
-		pdf = m_Forward->cont.upv / absbeta;
-	} else {
+    m_Forward->update(absbeta, m_MuF);
+    pdf = m_Forward->cont.usea / absbeta;
+    m_Forward->update(absbeta, m_MuF);
+    if (beta > 0) {
+        pdf = m_Forward->cont.upv / absbeta;
+    } else {
 
-	}
-	Integral = Profile( m_ProfileShapeSea, beta, ( m_x - beta ) / m_xi );
-	Integral += - Profile( m_ProfileShapeSea, beta, ( m_x + beta ) / m_xi );
-	Integral *= pdf;
-	Integral /= m_xi;
-	Integral *= m_F1u / 2.;
+    }
+    Integral = Profile(m_ProfileShapeSea, beta, (m_x - beta) / m_xi);
+    Integral += -Profile(m_ProfileShapeSea, beta, (m_x + beta) / m_xi);
+    Integral *= pdf;
+    Integral /= m_xi;
+    Integral *= m_F1u / 2.;
 
-	return Integral;
+    return Integral;
 }
 
 double MPSSW13Model::IntegralHdVal(double* Var, double* Par) {
-	double Integral;
-	double pdf, beta, absbeta;
+    double Integral;
+    double pdf, beta, absbeta;
 
-	beta = Var[0];
-	absbeta = fabs(beta);
-	// TODO: Modernize error message (logger, exception, etc.)
-	if (beta <= 0 || beta > 1.) {
-		std::cout << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]" << std::endl;
-		std::cout << "MPSSW13Model : Here beta = " << Var[ 0 ] << std::endl;
-		std::cout << std::endl;
-		exit( -1 );
-	}
+    beta = Var[0];
+    absbeta = fabs(beta);
+    // TODO: Modernize error message (logger, exception, etc.)
+    if (beta <= 0 || beta > 1.) {
+        std::cout
+                << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]"
+                << std::endl;
+        std::cout << "MPSSW13Model : Here beta = " << Var[0] << std::endl;
+        std::cout << std::endl;
+        exit(-1);
+    }
 
 //	m_Forward->Setx( beta );
 //	pdf = m_Forward->GetdVal();
-	m_Forward->update(absbeta, m_MuF);
-	if (beta>0) {
-		pdf = m_Forward->cont.dnv / absbeta;
-	} else {
-		pdf = 0.;
-	}
-	Integral = pdf * Profile( m_ProfileShapeVal, beta, ( m_x - beta ) / m_xi );
-	Integral /= m_xi;
-	Integral *= m_F1d;
+    m_Forward->update(absbeta, m_MuF);
+    if (beta > 0) {
+        pdf = m_Forward->cont.dnv / absbeta;
+    } else {
+        pdf = 0.;
+    }
+    Integral = pdf * Profile(m_ProfileShapeVal, beta, (m_x - beta) / m_xi);
+    Integral /= m_xi;
+    Integral *= m_F1d;
 
-	return Integral;
+    return Integral;
 }
 
 double MPSSW13Model::IntegralHdValMx(double* Var, double* Par) {
-	double Integral;
-	double pdf, beta, absbeta;
+    double Integral;
+    double pdf, beta, absbeta;
 
-	beta = Var[0];
-	absbeta = fabs(beta);
-	// TODO: Modernize error message (logger, exception, etc.)
-	if (beta <= 0 || beta > 1.) {
-		std::cout << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]" << std::endl;
-		std::cout << "MPSSW13Model : Here beta = " << Var[ 0 ] << std::endl;
-		std::cout << std::endl;
-		exit( -1 );
-	}
+    beta = Var[0];
+    absbeta = fabs(beta);
+    // TODO: Modernize error message (logger, exception, etc.)
+    if (beta <= 0 || beta > 1.) {
+        std::cout
+                << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]"
+                << std::endl;
+        std::cout << "MPSSW13Model : Here beta = " << Var[0] << std::endl;
+        std::cout << std::endl;
+        exit(-1);
+    }
 
 //	m_Forward->Setx( beta );
 //	pdf = m_Forward->GetdVal();
-	m_Forward->update(absbeta, m_MuF);
-	if (beta>0) {
-		pdf = m_Forward->cont.dnv / absbeta;
-	} else {
-		pdf = 0.;
-	}
-	Integral = pdf * Profile( m_ProfileShapeVal, beta, ( m_Mx - beta ) / m_xi );
-	Integral /= m_xi;
-	Integral *= m_F1d;
+    m_Forward->update(absbeta, m_MuF);
+    if (beta > 0) {
+        pdf = m_Forward->cont.dnv / absbeta;
+    } else {
+        pdf = 0.;
+    }
+    Integral = pdf * Profile(m_ProfileShapeVal, beta, (m_Mx - beta) / m_xi);
+    Integral /= m_xi;
+    Integral *= m_F1d;
 
-	return Integral;
+    return Integral;
 }
 
 double MPSSW13Model::IntegralxLargeHdSea(double* Var, double* Par) {
-	double Integral;
-	double pdf, beta, absbeta;
+    double Integral;
+    double pdf, beta, absbeta;
 
-	beta = Var[0];
-	absbeta = fabs(beta);
-	// TODO: Modernize error message (logger, exception, etc.)
-	if (beta <= 0 || beta > 1.) {
-		std::cout << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]" << std::endl;
-		std::cout << "MPSSW13Model : Here beta = " << Var[ 0 ] << std::endl;
-		std::cout << std::endl;
-		exit( -1 );
-	}
+    beta = Var[0];
+    absbeta = fabs(beta);
+    // TODO: Modernize error message (logger, exception, etc.)
+    if (beta <= 0 || beta > 1.) {
+        std::cout
+                << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]"
+                << std::endl;
+        std::cout << "MPSSW13Model : Here beta = " << Var[0] << std::endl;
+        std::cout << std::endl;
+        exit(-1);
+    }
 
 //	m_Forward->Setx( beta );
 //	pdf = m_Forward->GetdSea();
-	m_Forward->update(absbeta, m_MuF);
-	pdf = m_Forward->cont.dsea / absbeta;
-	Integral = pdf * Profile( m_ProfileShapeSea, beta, ( m_x - beta ) / m_xi );
-	Integral /= m_xi;
-	Integral *= m_F1d;
+    m_Forward->update(absbeta, m_MuF);
+    pdf = m_Forward->cont.dsea / absbeta;
+    Integral = pdf * Profile(m_ProfileShapeSea, beta, (m_x - beta) / m_xi);
+    Integral /= m_xi;
+    Integral *= m_F1d;
 
-	return Integral;
+    return Integral;
 }
 
 double MPSSW13Model::IntegralxSmall1HdSea(double* Var, double* Par) {
-	double Integral;
-	double pdf, beta, absbeta;
+    double Integral;
+    double pdf, beta, absbeta;
 
-	beta = Var[0];
-	absbeta = fabs(beta);
-	// TODO: Modernize error message (logger, exception, etc.)
-	if (beta <= 0 || beta > 1.) {
-		std::cout << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]" << std::endl;
-		std::cout << "MPSSW13Model : Here beta = " << Var[ 0 ] << std::endl;
-		std::cout << std::endl;
-		exit( -1 );
-	}
+    beta = Var[0];
+    absbeta = fabs(beta);
+    // TODO: Modernize error message (logger, exception, etc.)
+    if (beta <= 0 || beta > 1.) {
+        std::cout
+                << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]"
+                << std::endl;
+        std::cout << "MPSSW13Model : Here beta = " << Var[0] << std::endl;
+        std::cout << std::endl;
+        exit(-1);
+    }
 
 //	m_Forward->Setx( beta );
 //	pdf = m_Forward->GetdSea();
-	m_Forward->update(absbeta, m_MuF);
-	pdf = m_Forward->cont.dsea / absbeta;
-	Integral = pdf * Profile( m_ProfileShapeSea, beta, ( m_x - beta ) / m_xi );
-	Integral /= m_xi;
-	Integral *= m_F1d;
+    m_Forward->update(absbeta, m_MuF);
+    pdf = m_Forward->cont.dsea / absbeta;
+    Integral = pdf * Profile(m_ProfileShapeSea, beta, (m_x - beta) / m_xi);
+    Integral /= m_xi;
+    Integral *= m_F1d;
 
-	return Integral;
+    return Integral;
 }
 
 double MPSSW13Model::IntegralxSmall2HdSea(double* Var, double* Par) {
-	double Integral;
-	double pdf, beta, absbeta;
+    double Integral;
+    double pdf, beta, absbeta;
 
-	beta = Var[0];
-	absbeta = fabs(beta);
-	// TODO: Modernize error message (logger, exception, etc.)
-	if (beta <= 0 || beta > 1.) {
-		std::cout << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]" << std::endl;
-		std::cout << "MPSSW13Model : Here beta = " << Var[ 0 ] << std::endl;
-		std::cout << std::endl;
-		exit( -1 );
-	}
+    beta = Var[0];
+    absbeta = fabs(beta);
+    // TODO: Modernize error message (logger, exception, etc.)
+    if (beta <= 0 || beta > 1.) {
+        std::cout
+                << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]"
+                << std::endl;
+        std::cout << "MPSSW13Model : Here beta = " << Var[0] << std::endl;
+        std::cout << std::endl;
+        exit(-1);
+    }
 
 //	m_Forward->Setx( beta );
 //	pdf = m_Forward->GetdSea();
-	m_Forward->update(absbeta, m_MuF);
-	pdf = m_Forward->cont.dsea / absbeta;
-	Integral = Profile( m_ProfileShapeSea, beta, ( m_x - beta ) / m_xi );
-	Integral += - Profile( m_ProfileShapeSea, beta, ( m_x + beta ) / m_xi );
-	Integral *= pdf;
-	Integral /= m_xi;
-	Integral *= m_F1d;
+    m_Forward->update(absbeta, m_MuF);
+    pdf = m_Forward->cont.dsea / absbeta;
+    Integral = Profile(m_ProfileShapeSea, beta, (m_x - beta) / m_xi);
+    Integral += -Profile(m_ProfileShapeSea, beta, (m_x + beta) / m_xi);
+    Integral *= pdf;
+    Integral /= m_xi;
+    Integral *= m_F1d;
 
-	return Integral;
+    return Integral;
 }
 
 double MPSSW13Model::IntegralxLargeHsSea(double* Var, double* Par) {
-	double Integral;
-	double pdf, beta, absbeta;
+    double Integral;
+    double pdf, beta, absbeta;
 
-	beta = Var[0];
-	absbeta = fabs(beta);
-	// TODO: Modernize error message (logger, exception, etc.)
-	if (beta <= 0 || beta > 1.) {
-		std::cout << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]" << std::endl;
-		std::cout << "MPSSW13Model : Here beta = " << Var[ 0 ] << std::endl;
-		std::cout << std::endl;
-		exit( -1 );
-	}
+    beta = Var[0];
+    absbeta = fabs(beta);
+    // TODO: Modernize error message (logger, exception, etc.)
+    if (beta <= 0 || beta > 1.) {
+        std::cout
+                << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]"
+                << std::endl;
+        std::cout << "MPSSW13Model : Here beta = " << Var[0] << std::endl;
+        std::cout << std::endl;
+        exit(-1);
+    }
 
 //	m_Forward->Setx( beta );
 //	pdf = m_Forward->GetdSea();
-	m_Forward->update(absbeta, m_MuF);
-	pdf = m_Forward->cont.dsea / absbeta;
-	Integral = pdf * Profile( m_ProfileShapeSea, beta, ( m_x - beta ) / m_xi );
-	Integral /= m_xi;
-	Integral *= m_FD;
+    m_Forward->update(absbeta, m_MuF);
+    pdf = m_Forward->cont.dsea / absbeta;
+    Integral = pdf * Profile(m_ProfileShapeSea, beta, (m_x - beta) / m_xi);
+    Integral /= m_xi;
+    Integral *= m_FD;
 
-	return Integral;
+    return Integral;
 }
 
 double MPSSW13Model::IntegralxSmall1HsSea(double* Var, double* Par) {
-	double Integral;
-	double pdf, beta, absbeta;
+    double Integral;
+    double pdf, beta, absbeta;
 
-	beta = Var[0];
-	absbeta = fabs(beta);
-	// TODO: Modernize error message (logger, exception, etc.)
-	if (beta <= 0 || beta > 1.) {
-		std::cout << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]" << std::endl;
-		std::cout << "MPSSW13Model : Here beta = " << Var[ 0 ] << std::endl;
-		std::cout << std::endl;
-		exit( -1 );
-	}
+    beta = Var[0];
+    absbeta = fabs(beta);
+    // TODO: Modernize error message (logger, exception, etc.)
+    if (beta <= 0 || beta > 1.) {
+        std::cout
+                << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]"
+                << std::endl;
+        std::cout << "MPSSW13Model : Here beta = " << Var[0] << std::endl;
+        std::cout << std::endl;
+        exit(-1);
+    }
 
 //	m_Forward->Setx( beta );
 //	pdf = m_Forward->Gets();
-	m_Forward->update(absbeta, m_MuF);
-	if (beta>0) {
-		pdf = m_Forward->cont.sbar / absbeta;
-	} else {
-		pdf = - m_Forward->cont.sbar / absbeta;
-	}
-	Integral = pdf * Profile( m_ProfileShapeSea, beta, ( m_x - beta ) / m_xi );
-	Integral /= m_xi;
-	Integral *= m_FD;
+    m_Forward->update(absbeta, m_MuF);
+    if (beta > 0) {
+        pdf = m_Forward->cont.sbar / absbeta;
+    } else {
+        pdf = -m_Forward->cont.sbar / absbeta;
+    }
+    Integral = pdf * Profile(m_ProfileShapeSea, beta, (m_x - beta) / m_xi);
+    Integral /= m_xi;
+    Integral *= m_FD;
 
-	return Integral;
+    return Integral;
 }
 
 double MPSSW13Model::IntegralxSmall2HsSea(double* Var, double* Par) {
-	double Integral;
-	double pdf, beta, absbeta;
+    double Integral;
+    double pdf, beta, absbeta;
 
-	beta = Var[0];
-	absbeta = fabs(beta);
-	// TODO: Modernize error message (logger, exception, etc.)
-	if (beta <= 0 || beta > 1.) {
-		std::cout << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]" << std::endl;
-		std::cout << "MPSSW13Model : Here beta = " << Var[ 0 ] << std::endl;
-		std::cout << std::endl;
-		exit( -1 );
-	}
+    beta = Var[0];
+    absbeta = fabs(beta);
+    // TODO: Modernize error message (logger, exception, etc.)
+    if (beta <= 0 || beta > 1.) {
+        std::cout
+                << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]"
+                << std::endl;
+        std::cout << "MPSSW13Model : Here beta = " << Var[0] << std::endl;
+        std::cout << std::endl;
+        exit(-1);
+    }
 
 //	m_Forward->Setx( beta );
 //	pdf = m_Forward->Gets();
-	m_Forward->update(absbeta, m_MuF);
-	if (beta>0) {
-		pdf = m_Forward->cont.sbar / absbeta;
-	} else {
-		pdf = - m_Forward->cont.sbar / absbeta;
-	}
-	Integral = Profile( m_ProfileShapeSea, beta, ( m_x - beta ) / m_xi );
-	Integral += - Profile( m_ProfileShapeSea, beta, ( m_x + beta ) / m_xi );
-	Integral *= pdf;
-	Integral /= m_xi;
-	Integral *= m_FD;
+    m_Forward->update(absbeta, m_MuF);
+    if (beta > 0) {
+        pdf = m_Forward->cont.sbar / absbeta;
+    } else {
+        pdf = -m_Forward->cont.sbar / absbeta;
+    }
+    Integral = Profile(m_ProfileShapeSea, beta, (m_x - beta) / m_xi);
+    Integral += -Profile(m_ProfileShapeSea, beta, (m_x + beta) / m_xi);
+    Integral *= pdf;
+    Integral /= m_xi;
+    Integral *= m_FD;
 
-	return Integral;
+    return Integral;
 }
 
 double MPSSW13Model::IntegralxLargeHg(double* Var, double* Par) {
-	double Integral;
-	double pdf, beta, absbeta;
+    double Integral;
+    double pdf, beta, absbeta;
 
-	beta = Var[0];
-	absbeta = fabs(beta);
-	// TODO: Modernize error message (logger, exception, etc.)
-	if (beta <= 0 || beta > 1.) {
-		std::cout << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]" << std::endl;
-		std::cout << "MPSSW13Model : Here beta = " << Var[ 0 ] << std::endl;
-		std::cout << std::endl;
-		exit( -1 );
-	}
+    beta = Var[0];
+    absbeta = fabs(beta);
+    // TODO: Modernize error message (logger, exception, etc.)
+    if (beta <= 0 || beta > 1.) {
+        std::cout
+                << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]"
+                << std::endl;
+        std::cout << "MPSSW13Model : Here beta = " << Var[0] << std::endl;
+        std::cout << std::endl;
+        exit(-1);
+    }
 
 //	m_Forward->Setx( beta );
 //	pdf = m_Forward->Getg();
-	m_Forward->update(absbeta, m_MuF);
-	pdf = m_Forward->cont.glu / absbeta;
-	Integral = pdf * beta * Profile( m_ProfileShapeGlue, beta, ( m_x - beta ) / m_xi );
-	Integral /= m_xi;
-	Integral *= m_FD;
+    m_Forward->update(absbeta, m_MuF);
+    pdf = m_Forward->cont.glu / absbeta;
+    Integral = pdf * beta
+            * Profile(m_ProfileShapeGlue, beta, (m_x - beta) / m_xi);
+    Integral /= m_xi;
+    Integral *= m_FD;
 
-	return Integral;
+    return Integral;
 }
 
 double MPSSW13Model::IntegralxSmall1Hg(double* Var, double* Par) {
-	double Integral;
-	double pdf, beta, absbeta;
+    double Integral;
+    double pdf, beta, absbeta;
 
-	beta = Var[0];
-	absbeta = fabs(beta);
-	// TODO: Modernize error message (logger, exception, etc.)
-	if (beta <= 0 || beta > 1.) {
-		std::cout << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]" << std::endl;
-		std::cout << "MPSSW13Model : Here beta = " << Var[ 0 ] << std::endl;
-		std::cout << std::endl;
-		exit( -1 );
-	}
+    beta = Var[0];
+    absbeta = fabs(beta);
+    // TODO: Modernize error message (logger, exception, etc.)
+    if (beta <= 0 || beta > 1.) {
+        std::cout
+                << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]"
+                << std::endl;
+        std::cout << "MPSSW13Model : Here beta = " << Var[0] << std::endl;
+        std::cout << std::endl;
+        exit(-1);
+    }
 
 //	m_Forward->Setx( beta );
 //	pdf = m_Forward->Getg();
-	m_Forward->update(absbeta, m_MuF);
-	pdf = m_Forward->cont.glu / absbeta;
-	Integral = pdf * beta * Profile( m_ProfileShapeGlue, beta, ( m_x - beta ) / m_xi );
-	Integral /= m_xi;
-	Integral *= m_FD;
+    m_Forward->update(absbeta, m_MuF);
+    pdf = m_Forward->cont.glu / absbeta;
+    Integral = pdf * beta
+            * Profile(m_ProfileShapeGlue, beta, (m_x - beta) / m_xi);
+    Integral /= m_xi;
+    Integral *= m_FD;
 
-	return Integral;
+    return Integral;
 }
 
 double MPSSW13Model::IntegralxSmall2Hg(double* Var, double* Par) {
-	double Integral;
-	double pdf, beta, absbeta;
+    double Integral;
+    double pdf, beta, absbeta;
 
-	beta = Var[0];
-	absbeta = fabs(beta);
-	// TODO: Modernize error message (logger, exception, etc.)
-	if (beta <= 0 || beta > 1.) {
-		std::cout << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]" << std::endl;
-		std::cout << "MPSSW13Model : Here beta = " << Var[ 0 ] << std::endl;
-		std::cout << std::endl;
-		exit( -1 );
-	}
+    beta = Var[0];
+    absbeta = fabs(beta);
+    // TODO: Modernize error message (logger, exception, etc.)
+    if (beta <= 0 || beta > 1.) {
+        std::cout
+                << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]"
+                << std::endl;
+        std::cout << "MPSSW13Model : Here beta = " << Var[0] << std::endl;
+        std::cout << std::endl;
+        exit(-1);
+    }
 
 //	m_Forward->Setx( beta );
 //	pdf = m_Forward->Getg();
-	m_Forward->update(absbeta, m_MuF);
-	pdf = m_Forward->cont.glu / absbeta;
-	Integral = pdf * beta * Profile( m_ProfileShapeSea, beta, ( m_x + beta ) / m_xi );
-	Integral /= m_xi;
-	Integral *= m_FD;
+    m_Forward->update(absbeta, m_MuF);
+    pdf = m_Forward->cont.glu / absbeta;
+    Integral = pdf * beta
+            * Profile(m_ProfileShapeSea, beta, (m_x + beta) / m_xi);
+    Integral /= m_xi;
+    Integral *= m_FD;
 
-	return Integral;
+    return Integral;
 }
 
 double MPSSW13Model::GammaQQ(const unsigned int nflavour,
-		const unsigned int n) {
-	double Gamma ;
-	double HarmonicSum = 0.;
+        const unsigned int n) {
+    double Gamma;
+    double HarmonicSum = 0.;
 
-	for (unsigned int k = 2 ; k <= n+1 ; k++) {
-		HarmonicSum += 1. / k;
-	}
+    for (unsigned int k = 2; k <= n + 1; k++) {
+        HarmonicSum += 1. / k;
+    }
 
-	Gamma = 0.5 - 1. / ( ( n + 1. ) * ( n + 2. ) ) + 2. * HarmonicSum;
-	Gamma *= m_CF;
+    Gamma = 0.5 - 1. / ((n + 1.) * (n + 2.)) + 2. * HarmonicSum;
+    Gamma *= m_CF;
 
-	return Gamma;
+    return Gamma;
 }
 
 double MPSSW13Model::GammaQG(const unsigned int nflavour,
-		const unsigned int n) {
-	double Gamma;
+        const unsigned int n) {
+    double Gamma;
 
-	Gamma = ( n * n + 3. * n + 4. ) / ( n * ( n + 1. ) * ( n + 2. ) );
-	Gamma *= - 1. * nflavour * m_TF;
+    Gamma = (n * n + 3. * n + 4.) / (n * (n + 1.) * (n + 2.));
+    Gamma *= -1. * nflavour * m_TF;
 
-	return Gamma;
+    return Gamma;
 }
 
 double MPSSW13Model::GammaGQ(const unsigned int nflavour,
-		const unsigned int n) {
-	double Gamma;
+        const unsigned int n) {
+    double Gamma;
 
-	Gamma = ( n * n + 3. * n + 4. ) / ( ( n + 1. ) * ( n + 2. ) * ( n + 3. ) );
-	Gamma *= - 2. * m_CF;
+    Gamma = (n * n + 3. * n + 4.) / ((n + 1.) * (n + 2.) * (n + 3.));
+    Gamma *= -2. * m_CF;
 
-	return Gamma;
+    return Gamma;
 }
 
 double MPSSW13Model::GammaGG(const unsigned int nflavour,
-		const unsigned int n) {
-	double Gamma;
+        const unsigned int n) {
+    double Gamma;
 
-	double HarmonicSum = 0.;
-	for (unsigned int k = 2 ; k <= n+1 ; k++) {
-		HarmonicSum += 1. / k;
-	}
+    double HarmonicSum = 0.;
+    for (unsigned int k = 2; k <= n + 1; k++) {
+        HarmonicSum += 1. / k;
+    }
 
-	Gamma = 1. / 6. - 2. / ( n * ( n + 1. ) ) - 2. / ( ( n + 2. ) * ( n + 3. ) )
-			+ 2. * HarmonicSum;
-	Gamma *= m_CA;
-	Gamma += 2. / 3. * nflavour * m_TF;
+    Gamma = 1. / 6. - 2. / (n * (n + 1.)) - 2. / ((n + 2.) * (n + 3.))
+            + 2. * HarmonicSum;
+    Gamma *= m_CA;
+    Gamma += 2. / 3. * nflavour * m_TF;
 
-	return Gamma;
+    return Gamma;
 }
 
 void MPSSW13Model::initModule() {
 
-	m_MuF2 = m_MuF * m_MuF;
+    m_MuF2 = m_MuF * m_MuF;
 
-	m_pLoggerManager->debug(getClassName(), __func__,
-			Formatter() << "fMuF2 = " << m_MuF2 );
+    m_pLoggerManager->debug(getClassName(), __func__,
+            Formatter() << "fMuF2 = " << m_MuF2);
 }
 
 GPDOutputData MPSSW13Model::compute(const double &_x, const double &_xi,
-		const double &_t, const double &_MuF, const double &_MuR,
-		GPDComputeType::Type gpdComputeType) {
-	m_x = _x;
-	m_xi = _xi;
-	m_t = _t;
-	m_MuF = _MuF;
-	m_MuR = _MuR;
+        const double &_t, const double &_MuF, const double &_MuR,
+        GPDComputeType::Type gpdComputeType) {
+    m_x = _x;
+    m_xi = _xi;
+    m_t = _t;
+    m_MuF = _MuF;
+    m_MuR = _MuR;
 
-	m_pLoggerManager->debug(getClassName(), __func__,
-			Formatter() << "x = " << m_x << "    xi = " << m_xi << "    t = " << m_t
-			<< " GeV2    MuF = " << m_MuF << " GeV    MuR = " << m_MuR << " GeV");
+    m_pLoggerManager->debug(getClassName(), __func__,
+            Formatter() << "x = " << m_x << "    xi = " << m_xi << "    t = "
+                    << m_t << " GeV2    MuF = " << m_MuF << " GeV    MuR = "
+                    << m_MuR << " GeV");
 
-	isModuleWellConfigured();
+    isModuleWellConfigured();
 
-	// And after, update MPSSW13 variables before computing
-	initModule();
+    // And after, update MPSSW13 variables before computing
+    initModule();
 
-	if (m_pEvolQCDModule != 0 ) {
-		m_pLoggerManager->debug(getClassName(), __func__,
-			Formatter() << "isRunnable = " << m_pEvolQCDModule->isRunnable(_MuF,
-					m_MuF_ref, EvolQCDModule::RELATIVE));
-	}
+    if (m_pEvolQCDModule != 0) {
+        m_pLoggerManager->debug(getClassName(), __func__,
+                Formatter() << "isRunnable = "
+                        << m_pEvolQCDModule->isRunnable(_MuF, m_MuF_ref,
+                                EvolQCDModule::RELATIVE));
+    }
 
-	GPDOutputData gpdOutputData;
+    GPDOutputData gpdOutputData;
 
-	switch (gpdComputeType) {
-		case GPDComputeType::ALL: {
-			for (m_it = listGPDComputeTypeAvailable.begin();
-					m_it != listGPDComputeTypeAvailable.end(); m_it++) {
-				GPDResultData gpdResultData = ((*this).*(m_it->second))();
+    switch (gpdComputeType) {
+    case GPDComputeType::ALL: {
+        for (m_it = m_listGPDComputeTypeAvailable.begin();
+                m_it != m_listGPDComputeTypeAvailable.end(); m_it++) {
+            GPDResultData gpdResultData = ((*this).*(m_it->second))();
 
-				if (m_pEvolQCDModule != 0
-						&& m_pEvolQCDModule->isRunnable(_MuF, m_MuF_ref,
-								EvolQCDModule::RELATIVE)) {
-					gpdResultData = m_pEvolQCDModule->compute(m_x, m_xi, m_t, m_MuF,
-							m_MuR, gpdResultData);
-				}
+            if (m_pEvolQCDModule != 0
+                    && m_pEvolQCDModule->isRunnable(_MuF, m_MuF_ref,
+                            EvolQCDModule::RELATIVE)) {
+                gpdResultData = m_pEvolQCDModule->compute(m_x, m_xi, m_t, m_MuF,
+                        m_MuR, gpdResultData);
+            }
 
-				gpdOutputData.addGPDResultData(gpdResultData);
-			}
-			break;
-		}
-		default: {
-			m_it = listGPDComputeTypeAvailable.find(gpdComputeType);
-			if (m_it != listGPDComputeTypeAvailable.end()) {
-				GPDResultData gpdResultData = ((*this).*(m_it->second))();
+            gpdOutputData.addGPDResultData(gpdResultData);
+        }
+        break;
+    }
+    default: {
+        m_it = m_listGPDComputeTypeAvailable.find(gpdComputeType);
+        if (m_it != m_listGPDComputeTypeAvailable.end()) {
+            GPDResultData gpdResultData = ((*this).*(m_it->second))();
 
-				if (m_pEvolQCDModule != 0
-						&& m_pEvolQCDModule->isRunnable(_MuF, m_MuF_ref,
-								EvolQCDModule::RELATIVE)) {
-					gpdResultData = m_pEvolQCDModule->compute(m_x, m_xi, m_t,
-							m_MuF, m_MuR, gpdResultData);
-				}
+            if (m_pEvolQCDModule != 0
+                    && m_pEvolQCDModule->isRunnable(_MuF, m_MuF_ref,
+                            EvolQCDModule::RELATIVE)) {
+                gpdResultData = m_pEvolQCDModule->compute(m_x, m_xi, m_t, m_MuF,
+                        m_MuR, gpdResultData);
+            }
 
-				gpdOutputData.addGPDResultData(gpdResultData);
-			} else {
-				//TODO remplacer par une exception
-				std::cerr << "[MPSSW13Model::compute] GPDComputeType not available !"
-						<< std::endl;
-			}
-			break;
-		}
-	}
+            gpdOutputData.addGPDResultData(gpdResultData);
+        } else {
+            //TODO remplacer par une exception
+            std::cerr
+                    << "[MPSSW13Model::compute] GPDComputeType not available !"
+                    << std::endl;
+        }
+        break;
+    }
+    }
 
-	return gpdOutputData;
+    return gpdOutputData;
 }
 
 double MPSSW13Model::getCA() const {
-	return m_CA;
+    return m_CA;
 }
 
 double MPSSW13Model::getCF() const {
-	return m_CF;
+    return m_CF;
 }
 
 double MPSSW13Model::getF1d() const {
-	return m_F1d;
+    return m_F1d;
 }
 
 double MPSSW13Model::getF1u() const {
-	return m_F1u;
+    return m_F1u;
 }
 
 double MPSSW13Model::getFD() const {
-	return m_FD;
+    return m_FD;
 }
 
 double MPSSW13Model::getGluonDTerm() const {
-	return m_GluonDTerm;
+    return m_GluonDTerm;
 }
 
 void MPSSW13Model::setGluonDTerm(double gluonDTerm) {
-	m_GluonDTerm = gluonDTerm;
+    m_GluonDTerm = gluonDTerm;
 }
 
 double MPSSW13Model::getMuF2() const {
-	return m_MuF2;
+    return m_MuF2;
 }
 
 double MPSSW13Model::getMuF2Ref() const {
-	return m_MuF2_ref;
+    return m_MuF2_ref;
 }
 
 double MPSSW13Model::getMx() const {
-	return m_Mx;
+    return m_Mx;
 }
 
 unsigned int MPSSW13Model::getNbOfColor() const {
-	return m_NbOfColor;
+    return m_NbOfColor;
 }
 
 unsigned int MPSSW13Model::getNbOfQuarkFlavor() const {
-	return m_NbOfQuarkFlavor;
+    return m_NbOfQuarkFlavor;
 }
 
 double MPSSW13Model::getProfileShapeGlue() const {
-	return m_ProfileShapeGlue;
+    return m_ProfileShapeGlue;
 }
 
 double MPSSW13Model::getProfileShapeSea() const {
-	return m_ProfileShapeSea;
+    return m_ProfileShapeSea;
 }
 
 double MPSSW13Model::getProfileShapeVal() const {
-	return m_ProfileShapeVal;
+    return m_ProfileShapeVal;
 }
 
 double MPSSW13Model::getQuarkDTerm() const {
-	return m_QuarkDTerm;
+    return m_QuarkDTerm;
 }
 
 double MPSSW13Model::getTF() const {
-	return m_TF;
+    return m_TF;
 }
 
 GPDResultData MPSSW13Model::computeH() {
-	GPDComputeType gpdComputeType(GPDComputeType::H);
+    GPDComputeType gpdComputeType(GPDComputeType::H);
 
-	GPDResultData GPD_H(gpdComputeType);
+    GPDResultData GPD_H(gpdComputeType);
 
-	GPDQuarkFlavorData gpdQuarkFlavorData_u(gpdComputeType, QuarkFlavor::UP);
-	GPDQuarkFlavorData gpdQuarkFlavorData_d(gpdComputeType, QuarkFlavor::DOWN);
-	GPDQuarkFlavorData gpdQuarkFlavorData_s(gpdComputeType,
-			QuarkFlavor::STRANGE);
+    GPDQuarkFlavorData gpdQuarkFlavorData_u(gpdComputeType, QuarkFlavor::UP);
+    GPDQuarkFlavorData gpdQuarkFlavorData_d(gpdComputeType, QuarkFlavor::DOWN);
+    GPDQuarkFlavorData gpdQuarkFlavorData_s(gpdComputeType,
+            QuarkFlavor::STRANGE);
 
-	double Eps = 1.e-9;
-	m_Mx = - m_x;
+    double Eps = 1.e-9;
+    m_Mx = -m_x;
 
-	// Integration limits and methods
-	double Beta1 = ( m_x - m_xi ) / ( 1. - m_xi ); // eq. (54) in A. Radyushkin's paper
-	double Beta2 = ( m_x + m_xi ) / ( 1. + m_xi ); // eq. (54) in A. Radyushkin's paper
+    // Integration limits and methods
+    double Beta1 = (m_x - m_xi) / (1. - m_xi); // eq. (54) in A. Radyushkin's paper
+    double Beta2 = (m_x + m_xi) / (1. + m_xi); // eq. (54) in A. Radyushkin's paper
 
-	double Beta1Mx = ( m_Mx - m_xi ) / ( 1. - m_xi ); // eq. (54) in A. Radyushkin's paper
-	double Beta2Mx = ( m_Mx + m_xi ) / ( 1. + m_xi ); // eq. (54) in A. Radyushkin's paper
+    double Beta1Mx = (m_Mx - m_xi) / (1. - m_xi); // eq. (54) in A. Radyushkin's paper
+    double Beta2Mx = (m_Mx + m_xi) / (1. + m_xi); // eq. (54) in A. Radyushkin's paper
 
-	ROOT::Math::Integrator Integrator( ROOT::Math::IntegrationOneDim::kADAPTIVESINGULAR,
-			0., 1.e-3 );
+    ROOT::Math::Integrator Integrator(
+            ROOT::Math::IntegrationOneDim::kADAPTIVESINGULAR, 0., 1.e-3);
 //	ROOT::Math::Integrator Integrator( ROOT::Math::IntegrationOneDim::kADAPTIVESINGULAR );
 
-	// Scales
+    // Scales
 //	m_Forward->SetFactorizationScale( m_MuF2 );
 //	m_Forward->SetRenormalizationScale( m_MuR2 );
 
-	// Form factors and D-Terms
-	ComputeFormFactors();
-	ComputeDTerms();
+    // Form factors and D-Terms
+    ComputeFormFactors();
+    ComputeDTerms();
 
-	//////////////////////////////////////////////////////
-	//   u and d quarks, valence part evaluated at fx   //
-	//////////////////////////////////////////////////////
-	double HuVal = 0.;
-	double HdVal = 0.;
+    //////////////////////////////////////////////////////
+    //   u and d quarks, valence part evaluated at fx   //
+    //////////////////////////////////////////////////////
+    double HuVal = 0.;
+    double HdVal = 0.;
 
-	// Integrated functions, u quark
-	TF1 EvalIntegralHuVal( "EvalIntegralHuVal", this, &MPSSW13Model::IntegralHuVal,
-			0., 1., 0, "MPSSW13Model", "EvalIntegralHuVal" );
-	ROOT::Math::WrappedTF1 WrappedEvalIntegralHuVal =
-			ROOT::Math::WrappedTF1( EvalIntegralHuVal );
+    // Integrated functions, u quark
+    TF1 EvalIntegralHuVal("EvalIntegralHuVal", this,
+            &MPSSW13Model::IntegralHuVal, 0., 1., 0, "MPSSW13Model",
+            "EvalIntegralHuVal");
+    ROOT::Math::WrappedTF1 WrappedEvalIntegralHuVal = ROOT::Math::WrappedTF1(
+            EvalIntegralHuVal);
 
-	// Integrated functions, d quark
-	TF1 EvalIntegralHdVal( "EvalIntegralHdVal", this, &MPSSW13Model::IntegralHdVal,
-			0., 1., 0, "MPSSW13Model", "EvalIntegralHdVal" );
-	ROOT::Math::WrappedTF1 WrappedEvalIntegralHdVal =
-			ROOT::Math::WrappedTF1( EvalIntegralHdVal );
+    // Integrated functions, d quark
+    TF1 EvalIntegralHdVal("EvalIntegralHdVal", this,
+            &MPSSW13Model::IntegralHdVal, 0., 1., 0, "MPSSW13Model",
+            "EvalIntegralHdVal");
+    ROOT::Math::WrappedTF1 WrappedEvalIntegralHdVal = ROOT::Math::WrappedTF1(
+            EvalIntegralHdVal);
 
-	if (m_x >= m_xi) {
-		// Integration, u quark
-		Integrator.SetFunction( WrappedEvalIntegralHuVal );
-		HuVal = Integrator.Integral( Beta1, Beta2 );
+    if (m_x >= m_xi) {
+        // Integration, u quark
+        Integrator.SetFunction(WrappedEvalIntegralHuVal);
+        HuVal = Integrator.Integral(Beta1, Beta2);
 
-		// Integration, d quark
-		Integrator.SetFunction( WrappedEvalIntegralHdVal );
-		HdVal = Integrator.Integral( Beta1, Beta2 );
-	 }
+        // Integration, d quark
+        Integrator.SetFunction(WrappedEvalIntegralHdVal);
+        HdVal = Integrator.Integral(Beta1, Beta2);
+    }
 
-	if (fabs( m_x ) < m_xi) {
-		// Integration, u quark
-		Integrator.SetFunction( WrappedEvalIntegralHuVal );
+    if (fabs(m_x) < m_xi) {
+        // Integration, u quark
+        Integrator.SetFunction(WrappedEvalIntegralHuVal);
 //		fHuVal = Integrator.Integral( 0., Beta2 );
-		HuVal = Integrator.Integral( Eps, Beta2 );
+        HuVal = Integrator.Integral(Eps, Beta2);
 
-		// Integration, d quark
-		Integrator.SetFunction( WrappedEvalIntegralHdVal );
+        // Integration, d quark
+        Integrator.SetFunction(WrappedEvalIntegralHdVal);
 //		fHdVal = Integrator.Integral( 0., Beta2 );
-		HdVal = Integrator.Integral( Eps, Beta2 );
-	}
+        HdVal = Integrator.Integral(Eps, Beta2);
+    }
 
-	gpdQuarkFlavorData_u.setValence(HuVal);
-	gpdQuarkFlavorData_d.setValence(HdVal);
+    gpdQuarkFlavorData_u.setValence(HuVal);
+    gpdQuarkFlavorData_d.setValence(HdVal);
 
-	///////////////////////////////////////////////////////////////////////
-	//   u and d quarks, valence part evaluated at fMx (instead of fx)   //
-	///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
+    //   u and d quarks, valence part evaluated at fMx (instead of fx)   //
+    ///////////////////////////////////////////////////////////////////////
 
-	double HuValMx = 0.;
-	double HdValMx = 0.;
+    double HuValMx = 0.;
+    double HdValMx = 0.;
 
-	// Integrated functions, u quark
-	TF1 EvalIntegralHuValMx( "EvalIntegralHuValMx", this,
-			&MPSSW13Model::IntegralHuValMx, 0., 1., 0, "MPSSW13Model", "EvalIntegralHuValMx" );
-	ROOT::Math::WrappedTF1 WrappedEvalIntegralHuValMx =
-			ROOT::Math::WrappedTF1( EvalIntegralHuValMx );
+    // Integrated functions, u quark
+    TF1 EvalIntegralHuValMx("EvalIntegralHuValMx", this,
+            &MPSSW13Model::IntegralHuValMx, 0., 1., 0, "MPSSW13Model",
+            "EvalIntegralHuValMx");
+    ROOT::Math::WrappedTF1 WrappedEvalIntegralHuValMx = ROOT::Math::WrappedTF1(
+            EvalIntegralHuValMx);
 
-	// Integrated functions, d quark
-	TF1 EvalIntegralHdValMx( "EvalIntegralHdValMx", this,
-			&MPSSW13Model::IntegralHdValMx, 0., 1., 0, "MPSSW13Model", "EvalIntegralHdValMx" );
-	ROOT::Math::WrappedTF1 WrappedEvalIntegralHdValMx =
-			ROOT::Math::WrappedTF1( EvalIntegralHdValMx );
+    // Integrated functions, d quark
+    TF1 EvalIntegralHdValMx("EvalIntegralHdValMx", this,
+            &MPSSW13Model::IntegralHdValMx, 0., 1., 0, "MPSSW13Model",
+            "EvalIntegralHdValMx");
+    ROOT::Math::WrappedTF1 WrappedEvalIntegralHdValMx = ROOT::Math::WrappedTF1(
+            EvalIntegralHdValMx);
 
-	if (m_Mx >= m_xi) {
-		// Integration, u quark
-		Integrator.SetFunction( WrappedEvalIntegralHuValMx );
-		HuValMx = Integrator.Integral( Beta1Mx, Beta2Mx );
+    if (m_Mx >= m_xi) {
+        // Integration, u quark
+        Integrator.SetFunction(WrappedEvalIntegralHuValMx);
+        HuValMx = Integrator.Integral(Beta1Mx, Beta2Mx);
 
-		// Integration, d quark
-		Integrator.SetFunction( WrappedEvalIntegralHdValMx );
-		HdValMx = Integrator.Integral( Beta1Mx, Beta2Mx );
-	}
+        // Integration, d quark
+        Integrator.SetFunction(WrappedEvalIntegralHdValMx);
+        HdValMx = Integrator.Integral(Beta1Mx, Beta2Mx);
+    }
 
-	if (fabs( m_Mx ) < m_xi) {
-		// Integration, u quark
-		Integrator.SetFunction( WrappedEvalIntegralHuValMx );
+    if (fabs(m_Mx) < m_xi) {
+        // Integration, u quark
+        Integrator.SetFunction(WrappedEvalIntegralHuValMx);
 //		fHuValMx = Integrator.Integral( 0., Beta2Mx );
-		HuValMx = Integrator.Integral( Eps, Beta2Mx );
+        HuValMx = Integrator.Integral(Eps, Beta2Mx);
 
-		// Integration, d quark
-		Integrator.SetFunction( WrappedEvalIntegralHdValMx );
+        // Integration, d quark
+        Integrator.SetFunction(WrappedEvalIntegralHdValMx);
 //		fHdValMx = Integrator.Integral( 0., Beta2Mx );
-		HdValMx = Integrator.Integral( Eps, Beta2Mx );
-	}
+        HdValMx = Integrator.Integral(Eps, Beta2Mx);
+    }
 
-	//////////////////////////////////
-	//   u and d quarks, sea part   //
-	//////////////////////////////////
+    //////////////////////////////////
+    //   u and d quarks, sea part   //
+    //////////////////////////////////
 
-	double HuSea = 0.;
-	double HdSea = 0.;
+    double HuSea = 0.;
+    double HdSea = 0.;
 
-	// Integrated functions, u quark
-	TF1 EvalIntegralxLargeHuSea( "EvalIntegralxLargeHuSea", this,
-			&MPSSW13Model::IntegralxLargeHuSea, 0., 1., 0, "MPSSW13Model",
-			"EvalIntegralxLargeHuSea" );
-	TF1 EvalIntegralxSmall1HuSea( "EvalIntegralxSmall1HuSea", this,
-			&MPSSW13Model::IntegralxSmall1HuSea, 0., 1., 0, "MPSSW13Model",
-			"EvalIntegralxSmall1HuSea" );
-	TF1 EvalIntegralxSmall2HuSea( "EvalIntegralxSmall2HuSea", this,
-			&MPSSW13Model::IntegralxSmall2HuSea, 0., 1., 0, "MPSSW13Model",
-			"EvalIntegralxSmall2HuSea" );
+    // Integrated functions, u quark
+    TF1 EvalIntegralxLargeHuSea("EvalIntegralxLargeHuSea", this,
+            &MPSSW13Model::IntegralxLargeHuSea, 0., 1., 0, "MPSSW13Model",
+            "EvalIntegralxLargeHuSea");
+    TF1 EvalIntegralxSmall1HuSea("EvalIntegralxSmall1HuSea", this,
+            &MPSSW13Model::IntegralxSmall1HuSea, 0., 1., 0, "MPSSW13Model",
+            "EvalIntegralxSmall1HuSea");
+    TF1 EvalIntegralxSmall2HuSea("EvalIntegralxSmall2HuSea", this,
+            &MPSSW13Model::IntegralxSmall2HuSea, 0., 1., 0, "MPSSW13Model",
+            "EvalIntegralxSmall2HuSea");
 
-	// Integrated functions, d quark
-	TF1 EvalIntegralxLargeHdSea( "EvalIntegralxLargeHdSea", this,
-			&MPSSW13Model::IntegralxLargeHdSea, 0., 1., 0, "MPSSW13Model",
-			"EvalIntegralxLargeHdSea" );
-	TF1 EvalIntegralxSmall1HdSea( "EvalIntegralxSmall1HdSea", this,
-			&MPSSW13Model::IntegralxSmall1HdSea, 0., 1., 0, "MPSSW13Model",
-			"EvalIntegralxSmall1HdSea" );
-	TF1 EvalIntegralxSmall2HdSea( "EvalIntegralxSmall2HdSea", this,
-			&MPSSW13Model::IntegralxSmall2HdSea, 0., 1., 0, "MPSSW13Model",
-			"EvalIntegralxSmall2HdSea" );
+    // Integrated functions, d quark
+    TF1 EvalIntegralxLargeHdSea("EvalIntegralxLargeHdSea", this,
+            &MPSSW13Model::IntegralxLargeHdSea, 0., 1., 0, "MPSSW13Model",
+            "EvalIntegralxLargeHdSea");
+    TF1 EvalIntegralxSmall1HdSea("EvalIntegralxSmall1HdSea", this,
+            &MPSSW13Model::IntegralxSmall1HdSea, 0., 1., 0, "MPSSW13Model",
+            "EvalIntegralxSmall1HdSea");
+    TF1 EvalIntegralxSmall2HdSea("EvalIntegralxSmall2HdSea", this,
+            &MPSSW13Model::IntegralxSmall2HdSea, 0., 1., 0, "MPSSW13Model",
+            "EvalIntegralxSmall2HdSea");
 
-	if (m_x >= m_xi) {
-		// Integration, u quark
-		ROOT::Math::WrappedTF1 WrappedEvalIntegralxLargeHuSea =
-				ROOT::Math::WrappedTF1( EvalIntegralxLargeHuSea );
-		Integrator.SetFunction( WrappedEvalIntegralxLargeHuSea );
-		HuSea = Integrator.Integral( Beta1, Beta2 );
+    if (m_x >= m_xi) {
+        // Integration, u quark
+        ROOT::Math::WrappedTF1 WrappedEvalIntegralxLargeHuSea =
+                ROOT::Math::WrappedTF1(EvalIntegralxLargeHuSea);
+        Integrator.SetFunction(WrappedEvalIntegralxLargeHuSea);
+        HuSea = Integrator.Integral(Beta1, Beta2);
 
-		// Integration, d quark
-		ROOT::Math::WrappedTF1 WrappedEvalIntegralxLargeHdSea =
-		ROOT::Math::WrappedTF1( EvalIntegralxLargeHdSea );
-		Integrator.SetFunction( WrappedEvalIntegralxLargeHdSea );
-		HdSea = Integrator.Integral( Beta1, Beta2 );
-	}
+        // Integration, d quark
+        ROOT::Math::WrappedTF1 WrappedEvalIntegralxLargeHdSea =
+                ROOT::Math::WrappedTF1(EvalIntegralxLargeHdSea);
+        Integrator.SetFunction(WrappedEvalIntegralxLargeHdSea);
+        HdSea = Integrator.Integral(Beta1, Beta2);
+    }
 
-	if (fabs( m_x ) < m_xi) {
-		// Integration, u quark
-		ROOT::Math::WrappedTF1 WrappedEvalIntegralxSmall1HuSea( EvalIntegralxSmall1HuSea );
-		Integrator.SetFunction( WrappedEvalIntegralxSmall1HuSea );
-		HuSea = Integrator.Integral( Beta2Mx, Beta2 );
+    if (fabs(m_x) < m_xi) {
+        // Integration, u quark
+        ROOT::Math::WrappedTF1 WrappedEvalIntegralxSmall1HuSea(
+                EvalIntegralxSmall1HuSea);
+        Integrator.SetFunction(WrappedEvalIntegralxSmall1HuSea);
+        HuSea = Integrator.Integral(Beta2Mx, Beta2);
 
-		ROOT::Math::WrappedTF1 WrappedEvalIntegralxSmall2HuSea( EvalIntegralxSmall2HuSea );
-		Integrator.SetFunction( WrappedEvalIntegralxSmall2HuSea );
-		HuSea += Integrator.Integral( Eps, Beta2Mx );
+        ROOT::Math::WrappedTF1 WrappedEvalIntegralxSmall2HuSea(
+                EvalIntegralxSmall2HuSea);
+        Integrator.SetFunction(WrappedEvalIntegralxSmall2HuSea);
+        HuSea += Integrator.Integral(Eps, Beta2Mx);
 
-		// Integration, d quark
-		ROOT::Math::WrappedTF1 WrappedEvalIntegralxSmall1HdSea( EvalIntegralxSmall1HdSea );
-		Integrator.SetFunction( WrappedEvalIntegralxSmall1HdSea );
-		HdSea = Integrator.Integral( Beta2Mx, Beta2 );
+        // Integration, d quark
+        ROOT::Math::WrappedTF1 WrappedEvalIntegralxSmall1HdSea(
+                EvalIntegralxSmall1HdSea);
+        Integrator.SetFunction(WrappedEvalIntegralxSmall1HdSea);
+        HdSea = Integrator.Integral(Beta2Mx, Beta2);
 
-		ROOT::Math::WrappedTF1 WrappedEvalIntegralxSmall2HdSea( EvalIntegralxSmall2HdSea );
-		Integrator.SetFunction( WrappedEvalIntegralxSmall2HdSea );
-		HdSea += Integrator.Integral( Eps, Beta2Mx );
-	}
+        ROOT::Math::WrappedTF1 WrappedEvalIntegralxSmall2HdSea(
+                EvalIntegralxSmall2HdSea);
+        Integrator.SetFunction(WrappedEvalIntegralxSmall2HdSea);
+        HdSea += Integrator.Integral(Eps, Beta2Mx);
+    }
 
-	gpdQuarkFlavorData_u.setSea(HuSea);
-	gpdQuarkFlavorData_d.setSea(HdSea);
+    gpdQuarkFlavorData_u.setSea(HuSea);
+    gpdQuarkFlavorData_d.setSea(HdSea);
 
-	if (m_x > 0.) {
-		gpdQuarkFlavorData_u.setPartonDistribution(
-				gpdQuarkFlavorData_u.getValence()
-						+ gpdQuarkFlavorData_u.getSea());
-		gpdQuarkFlavorData_d.setPartonDistribution(
-				gpdQuarkFlavorData_d.getValence()
-						+ gpdQuarkFlavorData_d.getSea());
-	} else {
-		gpdQuarkFlavorData_u.setPartonDistribution(
-				-gpdQuarkFlavorData_u.getSea());
-		gpdQuarkFlavorData_d.setPartonDistribution(
-				-gpdQuarkFlavorData_d.getSea());
-	}
+    if (m_x > 0.) {
+        gpdQuarkFlavorData_u.setPartonDistribution(
+                gpdQuarkFlavorData_u.getValence()
+                        + gpdQuarkFlavorData_u.getSea());
+        gpdQuarkFlavorData_d.setPartonDistribution(
+                gpdQuarkFlavorData_d.getValence()
+                        + gpdQuarkFlavorData_d.getSea());
+    } else {
+        gpdQuarkFlavorData_u.setPartonDistribution(
+                -gpdQuarkFlavorData_u.getSea());
+        gpdQuarkFlavorData_d.setPartonDistribution(
+                -gpdQuarkFlavorData_d.getSea());
+    }
 
-	//////////////////////////////
-	//   s quarks, "sea part"   //
-	//////////////////////////////
-	double Hs = 0.;
+    //////////////////////////////
+    //   s quarks, "sea part"   //
+    //////////////////////////////
+    double Hs = 0.;
 
-	TF1 EvalIntegralxLargeHsSea( "EvalIntegralxLargeHsSea", this,
-			&MPSSW13Model::IntegralxLargeHsSea, 0., 1., 0, "MPSSW13Model",
-			"EvalIntegralxLargeHsSea" );
-	TF1 EvalIntegralxSmall1HsSea( "EvalIntegralxSmall1HsSea", this,
-			&MPSSW13Model::IntegralxSmall1HsSea, 0., 1., 0, "MPSSW13Model",
-			"EvalIntegralxSmall1HsSea" );
-	TF1 EvalIntegralxSmall2HsSea( "EvalIntegralxSmall2HsSea", this,
-			&MPSSW13Model::IntegralxSmall2HsSea, 0., 1., 0, "MPSSW13Model",
-			"EvalIntegralxSmall2HsSea" );
+    TF1 EvalIntegralxLargeHsSea("EvalIntegralxLargeHsSea", this,
+            &MPSSW13Model::IntegralxLargeHsSea, 0., 1., 0, "MPSSW13Model",
+            "EvalIntegralxLargeHsSea");
+    TF1 EvalIntegralxSmall1HsSea("EvalIntegralxSmall1HsSea", this,
+            &MPSSW13Model::IntegralxSmall1HsSea, 0., 1., 0, "MPSSW13Model",
+            "EvalIntegralxSmall1HsSea");
+    TF1 EvalIntegralxSmall2HsSea("EvalIntegralxSmall2HsSea", this,
+            &MPSSW13Model::IntegralxSmall2HsSea, 0., 1., 0, "MPSSW13Model",
+            "EvalIntegralxSmall2HsSea");
 
-	if (m_x >= m_xi) {
-		ROOT::Math::WrappedTF1 WrappedEvalIntegralxLargeHsSea =
-				ROOT::Math::WrappedTF1( EvalIntegralxLargeHsSea );
-		Integrator.SetFunction( WrappedEvalIntegralxLargeHsSea );
-		Hs = Integrator.Integral( Beta1, Beta2 );
-	}
+    if (m_x >= m_xi) {
+        ROOT::Math::WrappedTF1 WrappedEvalIntegralxLargeHsSea =
+                ROOT::Math::WrappedTF1(EvalIntegralxLargeHsSea);
+        Integrator.SetFunction(WrappedEvalIntegralxLargeHsSea);
+        Hs = Integrator.Integral(Beta1, Beta2);
+    }
 
-	if (fabs( m_x ) < m_xi) {
-		ROOT::Math::WrappedTF1 WrappedEvalIntegralxSmall1HsSea( EvalIntegralxSmall1HsSea );
-		Integrator.SetFunction( WrappedEvalIntegralxSmall1HsSea );
-		Hs = Integrator.Integral( Beta2Mx, Beta2 );
+    if (fabs(m_x) < m_xi) {
+        ROOT::Math::WrappedTF1 WrappedEvalIntegralxSmall1HsSea(
+                EvalIntegralxSmall1HsSea);
+        Integrator.SetFunction(WrappedEvalIntegralxSmall1HsSea);
+        Hs = Integrator.Integral(Beta2Mx, Beta2);
 
-		ROOT::Math::WrappedTF1 WrappedEvalIntegralxSmall2HsSea( EvalIntegralxSmall2HsSea );
-		Integrator.SetFunction( WrappedEvalIntegralxSmall2HsSea );
-		Hs += Integrator.Integral( Eps, Beta2Mx );
-	}
+        ROOT::Math::WrappedTF1 WrappedEvalIntegralxSmall2HsSea(
+                EvalIntegralxSmall2HsSea);
+        Integrator.SetFunction(WrappedEvalIntegralxSmall2HsSea);
+        Hs += Integrator.Integral(Eps, Beta2Mx);
+    }
 
-	gpdQuarkFlavorData_s.setPartonDistribution(Hs);
+    gpdQuarkFlavorData_s.setPartonDistribution(Hs);
 
-	////////////////
-	//   Gluons   //
-	////////////////
-	double Hg = 0.;
+    ////////////////
+    //   Gluons   //
+    ////////////////
+    double Hg = 0.;
 
-	// Integrated functions
+    // Integrated functions
 
-	TF1 EvalIntegralxLargeHg( "EvalIntegralxLargeHg", this,
-			&MPSSW13Model::IntegralxLargeHg, 0., 1., 0, "MPSSW13Model",
-			"EvalIntegralxLargeHg" );
-	TF1 EvalIntegralxSmall1Hg( "EvalIntegralxSmall1Hg", this,
-			&MPSSW13Model::IntegralxSmall1Hg, 0., 1., 0, "MPSSW13Model",
-			"EvalIntegralxSmall1Hg" );
-	TF1 EvalIntegralxSmall2Hg( "EvalIntegralxSmall2Hg", this,
-			&MPSSW13Model::IntegralxSmall2Hg, 0., 1., 0, "MPSSW13Model",
-			"EvalIntegralxSmall2Hg" );
+    TF1 EvalIntegralxLargeHg("EvalIntegralxLargeHg", this,
+            &MPSSW13Model::IntegralxLargeHg, 0., 1., 0, "MPSSW13Model",
+            "EvalIntegralxLargeHg");
+    TF1 EvalIntegralxSmall1Hg("EvalIntegralxSmall1Hg", this,
+            &MPSSW13Model::IntegralxSmall1Hg, 0., 1., 0, "MPSSW13Model",
+            "EvalIntegralxSmall1Hg");
+    TF1 EvalIntegralxSmall2Hg("EvalIntegralxSmall2Hg", this,
+            &MPSSW13Model::IntegralxSmall2Hg, 0., 1., 0, "MPSSW13Model",
+            "EvalIntegralxSmall2Hg");
 
-	if (m_x >= m_xi) {
-		// Integration
-		ROOT::Math::WrappedTF1 WrappedEvalIntegralxLargeHg =
-				ROOT::Math::WrappedTF1( EvalIntegralxLargeHg );
-		Integrator.SetFunction( WrappedEvalIntegralxLargeHg );
-		Hg = Integrator.Integral( Beta1, Beta2 );
-	}
+    if (m_x >= m_xi) {
+        // Integration
+        ROOT::Math::WrappedTF1 WrappedEvalIntegralxLargeHg =
+                ROOT::Math::WrappedTF1(EvalIntegralxLargeHg);
+        Integrator.SetFunction(WrappedEvalIntegralxLargeHg);
+        Hg = Integrator.Integral(Beta1, Beta2);
+    }
 
-	if (fabs( m_x ) < m_xi) {
-		// Integration
-		ROOT::Math::WrappedTF1 WrappedEvalIntegralxSmall1Hg( EvalIntegralxSmall1Hg );
-		Integrator.SetFunction( WrappedEvalIntegralxSmall1Hg );
-		Hg = Integrator.Integral( 0., Beta2 );
+    if (fabs(m_x) < m_xi) {
+        // Integration
+        ROOT::Math::WrappedTF1 WrappedEvalIntegralxSmall1Hg(
+                EvalIntegralxSmall1Hg);
+        Integrator.SetFunction(WrappedEvalIntegralxSmall1Hg);
+        Hg = Integrator.Integral(0., Beta2);
 
-		ROOT::Math::WrappedTF1 WrappedEvalIntegralxSmall2Hg( EvalIntegralxSmall2Hg );
-		Integrator.SetFunction( WrappedEvalIntegralxSmall2Hg );
-		Hg += Integrator.Integral( 0., Beta2Mx );
-	}
+        ROOT::Math::WrappedTF1 WrappedEvalIntegralxSmall2Hg(
+                EvalIntegralxSmall2Hg);
+        Integrator.SetFunction(WrappedEvalIntegralxSmall2Hg);
+        Hg += Integrator.Integral(0., Beta2Mx);
+    }
 
-	Hg += m_GluonDTerm;
-	GPD_H.setGluon(Hg);
+    Hg += m_GluonDTerm;
+    GPD_H.setGluon(Hg);
 
-	//////////////////////////////////////////
-	//   H, C-odd and C-even combinations   //
-	//////////////////////////////////////////
-	// u quark
-	gpdQuarkFlavorData_u.setPartonDistributionPlus(
-			gpdQuarkFlavorData_u.getValence() - HuValMx
-					+ 2. * gpdQuarkFlavorData_u.getSea());
+    //////////////////////////////////////////
+    //   H, C-odd and C-even combinations   //
+    //////////////////////////////////////////
+    // u quark
+    gpdQuarkFlavorData_u.setPartonDistributionPlus(
+            gpdQuarkFlavorData_u.getValence() - HuValMx
+                    + 2. * gpdQuarkFlavorData_u.getSea());
 
-	gpdQuarkFlavorData_u.setPartonDistributionMinus(
-			gpdQuarkFlavorData_u.getValence() + HuValMx);
+    gpdQuarkFlavorData_u.setPartonDistributionMinus(
+            gpdQuarkFlavorData_u.getValence() + HuValMx);
 
-	// d quark
-	gpdQuarkFlavorData_d.setPartonDistributionPlus(
-			gpdQuarkFlavorData_d.getValence() - HdValMx
-					+ 2. * gpdQuarkFlavorData_d.getSea());
+    // d quark
+    gpdQuarkFlavorData_d.setPartonDistributionPlus(
+            gpdQuarkFlavorData_d.getValence() - HdValMx
+                    + 2. * gpdQuarkFlavorData_d.getSea());
 
-	gpdQuarkFlavorData_d.setPartonDistributionMinus(
-			gpdQuarkFlavorData_d.getValence() + HdValMx);
+    gpdQuarkFlavorData_d.setPartonDistributionMinus(
+            gpdQuarkFlavorData_d.getValence() + HdValMx);
 
-	// s quark
-	gpdQuarkFlavorData_s.setPartonDistributionPlus(0.);
-	gpdQuarkFlavorData_s.setPartonDistributionMinus(0.);
+    // s quark
+    gpdQuarkFlavorData_s.setPartonDistributionPlus(0.);
+    gpdQuarkFlavorData_s.setPartonDistributionMinus(0.);
 
-	GPD_H.addGPDQuarkFlavorData(gpdQuarkFlavorData_u);
-	GPD_H.addGPDQuarkFlavorData(gpdQuarkFlavorData_d);
-	GPD_H.addGPDQuarkFlavorData(gpdQuarkFlavorData_s);
+    GPD_H.addGPDQuarkFlavorData(gpdQuarkFlavorData_u);
+    GPD_H.addGPDQuarkFlavorData(gpdQuarkFlavorData_d);
+    GPD_H.addGPDQuarkFlavorData(gpdQuarkFlavorData_s);
 
-	return GPD_H;
+    return GPD_H;
 }
 
 GPDResultData MPSSW13Model::computeE() {
-	return GPDResultData();
+    return GPDResultData();
 }
 
 GPDResultData MPSSW13Model::computeHt() {
-	return GPDResultData();
+    return GPDResultData();
 }
 
 GPDResultData MPSSW13Model::computeEt() {
-	return GPDResultData();
+    return GPDResultData();
 }

@@ -13,31 +13,30 @@
 #include <string>
 
 #include "../gpd/GPDComputeType.h"
-#include "../GenericData.h"
-
-class CFFInputData;
+#include "CFFInputData.h"
 
 class CFFOutputData: public GenericData {
 public:
-	CFFOutputData();
-	CFFOutputData(CFFInputData* pCFFInputData);
+    CFFOutputData();
+    CFFOutputData(CFFInputData cffInputData);
 
-	virtual ~CFFOutputData();
+    virtual ~CFFOutputData();
 
-	void add(GPDComputeType::Type gpdComputeType, std::complex<double> cff);
+    void add(GPDComputeType::Type gpdComputeType, std::complex<double> cff);
+    std::complex<double> getCFF(GPDComputeType::Type gpdComputeType);
 
-	std::string toString();
+    std::string toString();
 
-	// ##### GETTERS & SETTERS
+    // ##### GETTERS & SETTERS #####
 
-	std::complex<double> getCff() const;
-	void setCff(std::complex<double> cff);
+    const CFFInputData& getCffInputData() const;
+    void setCffInputData(const CFFInputData& cffInputData);
 
 private:
-	std::map<GPDComputeType::Type, std::complex<double> > m_listCFFbyGPDComputeType;
-	std::map<GPDComputeType::Type, std::complex<double> >::iterator m_it;
+    std::map<GPDComputeType::Type, std::complex<double> > m_listCFFbyGPDComputeType;
+    std::map<GPDComputeType::Type, std::complex<double> >::iterator m_it;
 
-	CFFInputData* m_cffInputData;
+    CFFInputData m_cffInputData;
 };
 
 #endif /* CFF_OUTPUT_DATA_H */

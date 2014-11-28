@@ -1,14 +1,6 @@
 #ifndef GPD_SERVICE_H
 #define GPD_SERVICE_H
 
-#include <vector>
-
-#include "../beans/gpd/GPDComputeType.h"
-#include "../beans/gpd/GPDInputData.h"
-#include "../modules/GPDModule.h"
-
-class ListGPDOutputData;
-
 /**
  * @file GPDService.h
  * @author Bryan BERTHOU (CEA Saclay)
@@ -21,8 +13,14 @@ class ListGPDOutputData;
  * @brief \<singleton\> Use for handle and compute some pre-configured GPD modules.
  */
 
-class GPDInputData;
+#include <vector>
+
+#include "../beans/gpd/GPDComputeType.h"
+#include "../beans/gpd/GPDInputData.h"
+#include "../modules/GPDModule.h"
+
 class GPDOutputData;
+class ListGPDOutputData;
 
 class GPDService {
     /**
@@ -51,13 +49,16 @@ public:
 
     GPDOutputData compute(GPDInputData &_gpdInputData, GPDModule* _pGPDModule);
 
+    //TODO passer la liste en reference
     ListGPDOutputData compute(GPDInputData &_gpdInputData,
             std::vector<GPDModule*> _listOfGPDToCompute);
 
+    //TODO passer la liste en reference
     ListGPDOutputData compute(GPDInputData &_gpdInputData,
             std::vector<GPDModule*> _listOfGPDToCompute,
             GPDComputeType _gpdComputeType);
 
+    //TODO passer la liste en reference
     ListGPDOutputData compute(std::vector<GPDInputData> _listOfGPDInputData,
             GPDModule* _pGPDModule);
 

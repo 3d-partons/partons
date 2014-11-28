@@ -10,6 +10,7 @@
  * @version 1.0
  */
 
+#include <stddef.h>
 #include <map>
 #include <string>
 #include <vector>

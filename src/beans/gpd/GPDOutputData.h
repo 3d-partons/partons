@@ -22,25 +22,25 @@
 
 class GPDOutputData: public GenericData {
 public:
-	/**
-	 * Default constructor
-	 */
-	GPDOutputData();
-	/**
-	 * Default destructor
-	 */
-	virtual ~GPDOutputData();
+    /**
+     * Default constructor
+     */
+    GPDOutputData();
+    /**
+     * Default destructor
+     */
+    virtual ~GPDOutputData();
 
-	std::vector<GPDComputeType> listGPDTypeComputed();
-	void addGPDResultData(GPDResultData gpdResultData);
-	GPDResultData* getGPDResultData(GPDComputeType::Type _gpdComputeType);
+    std::vector<GPDComputeType> listGPDTypeComputed();
+    void addGPDResultData(GPDResultData gpdResultData);
+    GPDResultData* getGPDResultData(GPDComputeType::Type _gpdComputeType);
 
-	std::string toString();
+    std::string toString();
 
 private:
-	// A list that stores each results of quark flavor GPD identified by the type of GPD computed (H, Ht, E, ...)
-	std::map<GPDComputeType::Type, GPDResultData> m_gpdResults;
-	std::map<GPDComputeType::Type, GPDResultData>::iterator m_it;
+    // A list that stores each results of quark flavor GPD identified by the type of GPD computed (H, Ht, E, ...)
+    std::map<GPDComputeType::Type, GPDResultData> m_gpdResults;
+    std::map<GPDComputeType::Type, GPDResultData>::iterator m_it;
 };
 
 #endif /* GPD_OUTPUT_DATA_H */

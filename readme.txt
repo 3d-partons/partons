@@ -6,6 +6,17 @@
 #
 
 #
+# Configure your eclipse environnement
+#
+
+Window -> Preferences -> C/C++ -> Build -> Environment
+
+Add this two entries (exemples) :
+
+LD_LIBRARY_PATH = /usr/local/root/v5.34.21/lib
+ROOTSYS =  /usr/local/root/v5.34.21
+
+#
 # For x64 architecture
 #
 
@@ -35,17 +46,15 @@ Right click on project -> properties -> C/C++ General -> Paths and Symbols
 Switch Configuration to All
 
 Includes -> GNU C++
-/usr/include/root
+${ROOTSYS}/include
 /usr/include
 
 Library Paths
+${LD_LIBRARY_PATH}
 /usr/lib
-/usr/lib/root
 
 Libraries
 cln
-MathCore
+Physics
+MathMore
 Hist
-Matrix
-Core
-Cint

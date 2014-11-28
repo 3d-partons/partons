@@ -4,8 +4,9 @@
 #include <utility>
 
 #include "../modules/CFFModule.h"
-#include "../modules/GPDModule.h"
 #include "../modules/EvolQCDModule.h"
+#include "../modules/GPDModule.h"
+#include "../modules/observable/DVCSModule.h"
 
 // Global static pointer used to ensure a single instance of the class.
 ModuleObjectFactory* ModuleObjectFactory::m_pInstance = 0;
@@ -54,9 +55,12 @@ CFFModule* ModuleObjectFactory::getCFFModule(const std::string & ID) {
     return static_cast<CFFModule*>(getModule(ID));
 }
 
-EvolQCDModule* ModuleObjectFactory::getEvolQCDModule(const std::string & ID)
-{
-	return static_cast<EvolQCDModule*>(getModule(ID));
+EvolQCDModule* ModuleObjectFactory::getEvolQCDModule(const std::string & ID) {
+    return static_cast<EvolQCDModule*>(getModule(ID));
+}
+
+DVCSModule* ModuleObjectFactory::getDVCSModule(const std::string & ID) {
+    return static_cast<DVCSModule*>(getModule(ID));
 }
 
 std::string ModuleObjectFactory::toString() {
@@ -64,8 +68,7 @@ std::string ModuleObjectFactory::toString() {
     os << "[BaseModuleFactory]" << std::endl;
     for (m_it = m_moduleRegistry.begin(); m_it != m_moduleRegistry.end();
             m_it++) {
-        os << m_it->first << " - id = " << m_it->second->getObjectId()
-                << std::endl;
+        os << m_it->second->toString() << std::endl;
     }
 
     return os.str();

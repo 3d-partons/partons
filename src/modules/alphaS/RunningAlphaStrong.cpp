@@ -59,8 +59,8 @@
  * Default constructor.
  * 
  */
-RunningAlphaStrong::RunningAlphaStrong(unsigned int Nc, bool Verbose) :
-        kVerbose(Verbose), fUpdateRunning(false), fNf(4), fNc(Nc), fBeta0(
+RunningAlphaStrong::RunningAlphaStrong(unsigned int Nc, bool Verbose)
+        : kVerbose(Verbose), fUpdateRunning(false), fNf(4), fNc(Nc), fBeta0(
                 2.08333), fBeta1(3.20833), fBeta2(6.34925), fBeta3(31.3874), fB1(
                 1.54), fB2(3.04764), fB3(15.066), fLambdaQCD3(0.329939), fLambdaQCD4(
                 0.28914), fLambdaQCD5(0.208364), fLambdaQCD6(0.0878108), fAlphaSMZ(

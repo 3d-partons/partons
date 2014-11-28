@@ -38,8 +38,8 @@ CFFService::~CFFService() {
 
 //TODO implementer
 CFFOutputData CFFService::computeWithGPDModel(CFFModule* cffModule,
-        GPDModule* _pGPDModule, const CFFInputData &cffInputData,
-        const double &MuF, const double &MuR, QCDOrderType::Type qcdOrderType,
+        GPDModule* _pGPDModule, CFFInputData &cffInputData,
+        const double MuF, const double MuR, QCDOrderType::Type qcdOrderType,
         GPDComputeType::Type gpdComputeType) {
 
     // Configure cff module
@@ -152,9 +152,9 @@ CFFOutputData CFFService::computeWithGPDModel(CFFModule* cffModule,
 //}
 
 //TODO implement
-CFFOutputData CFFService::computeWithCFFModel(CFFModule* pCFFModule,
-        CFFInputData* pCFFInputData, const double &MuF, const double &MuR,
+CFFOutputData CFFService::computeWithCFFModel(CFFModule* cffModule,
+        CFFInputData &cffInputData, const double MuF, const double MuR,
         QCDOrderType &qcdOrderType) {
 
-    return CFFOutputData(0);
+    return CFFOutputData();
 }

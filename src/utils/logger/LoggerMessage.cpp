@@ -1,8 +1,8 @@
 #include "LoggerMessage.h"
 
 LoggerMessage::LoggerMessage(LoggerLevel level, std::string classNameSource,
-        std::string functionNameSource, std::string message) :
-        m_level(level), m_time(time(0)), m_classNameSource(classNameSource), m_functionNameSource(
+        std::string functionNameSource, std::string message)
+        : m_level(level), m_time(time(0)), m_classNameSource(classNameSource), m_functionNameSource(
                 functionNameSource), m_message(message) {
 }
 

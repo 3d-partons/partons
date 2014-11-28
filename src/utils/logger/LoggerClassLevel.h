@@ -7,8 +7,6 @@
  * @date 12 September 2014
  * @version 1.0
  *
- * Last update : 12 September 2014
- *
  * @class LoggerClassLevel
  * @brief
  */

@@ -7,8 +7,6 @@
  * @date 05 September 2014
  * @version 1.0
  *
- * Last update : 22 September 2014
- *
  * @struct LoggerPrintMode
  * @brief
  */
@@ -23,8 +21,8 @@ public:
         COUT, FILE, BOTH, DEFAULT
     };
 
-    LoggerPrintMode(Type type) :
-            m_type(type) {
+    LoggerPrintMode(Type type)
+            : m_type(type) {
     }
 
     std::string toString() {
@@ -38,11 +36,8 @@ public:
         case BOTH:
             return "BOTH";
             break;
-        case DEFAULT:
-            return "DEFAULT";
-            break;
         default:
-            return "default";
+            return "DEFAULT";
         }
     }
 

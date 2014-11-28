@@ -3,8 +3,8 @@
 #include <utility>
 
 LoggerClassLevel::LoggerClassLevel(const std::string& className,
-        const LoggerLevel& loggerLevel) :
-        m_className(className), m_defaultClassLevel(loggerLevel) {
+        const LoggerLevel& loggerLevel)
+        : m_className(className), m_defaultClassLevel(loggerLevel) {
 }
 
 LoggerClassLevel::~LoggerClassLevel() {

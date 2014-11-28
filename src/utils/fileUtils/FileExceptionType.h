@@ -15,8 +15,7 @@
 
 #include <string>
 
-#include "../logger/LoggerPrintMode.h"
-
+//TODO refactoring
 struct FileExceptionType {
     //prevent automatic conversion for any other built-in types such as bool, int, etc
     template<typename T>

@@ -2,14 +2,14 @@
 #define BASE_MODULE_FACTORY_H
 
 /**
- * @file BaseModuleFactory.h
+ * @file ModuleObjectFactory.h
  * @author Bryan BERTHOU (CEA Saclay)
  * @date 06 Aout 2014
  * @version 1.0
  *
  * Last update : 24 September 2014
  *
- * @class BaseModuleFactory
+ * @class ModuleObjectFactory
  * @brief \<singleton\> Use for register all available module, create/configure and share them for a later use.
  *
  * Use map of pointer because you can't instantiate object from abstract class, you can only share pointer.
@@ -20,9 +20,11 @@
 
 #include "../modules/ModuleObject.h"
 
+class DVCSModule;
+
 class CFFModule;
-class GPDModule;
 class EvolQCDModule;
+class GPDModule;
 
 class ModuleObjectFactory {
 public:
@@ -48,6 +50,7 @@ public:
     GPDModule* getGPDModule(const std::string & ID);
     CFFModule* getCFFModule(const std::string & ID);
     EvolQCDModule* getEvolQCDModule(const std::string & ID);
+    DVCSModule* getDVCSModule(const std::string & ID);
 
     std::string toString();
 

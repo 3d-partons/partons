@@ -15,10 +15,10 @@
 
 class CFFInputData: public GenericData {
 public:
-
-    CFFInputData(const double &xB, const double &t, const double &Q2);
-    CFFInputData(const unsigned int &binId, const double &xB, const double &t,
-            const double &Q2);
+    CFFInputData();
+    CFFInputData(const double xB, const double t, const double Q2);
+    CFFInputData(const unsigned int binId, const double xB, const double t,
+            const double Q2);
     /**
      * Copy constructor
      *

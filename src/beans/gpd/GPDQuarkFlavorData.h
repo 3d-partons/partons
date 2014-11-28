@@ -17,53 +17,53 @@
 class GPDQuarkFlavorData {
 
 public:
-	GPDQuarkFlavorData(GPDComputeType::Type _gpdComputeType,
-			QuarkFlavor::Type _quarkFlavorType);
+    GPDQuarkFlavorData(GPDComputeType::Type _gpdComputeType,
+            QuarkFlavor::Type _quarkFlavorType);
 
-	virtual ~GPDQuarkFlavorData();
+    virtual ~GPDQuarkFlavorData();
 
-	std::string toString();
-	std::string toStringGeneric();
+    std::string toString();
+    std::string toStringGeneric();
 
-	double getSea() const;
+    double getSea() const;
 
-	void setSea(double hqSea);
+    void setSea(double hqSea);
 
-	double getValence() const;
+    double getValence() const;
 
-	void setValence(double hqVal);
+    void setValence(double hqVal);
 
-	QuarkFlavor* getQuarkFlavor();
+    QuarkFlavor* getQuarkFlavor();
 
-	void setQuarkFlavor(QuarkFlavor &_quarkFlavor);
+    void setQuarkFlavor(QuarkFlavor &_quarkFlavor);
 
-	double getPartonDistributionMinus() const;
-	void setPartonDistributionMinus(double partonDistributionMinus);
-	double getPartonDistributionPlus() const;
-	void setPartonDistributionPlus(double partonDistributionPlus);
-	double getPartonDistribution() const;
-	void setPartonDistribution(double partonDistribution);
-	double getPartonDistributionSinglet() const;
-	void setPartonDistributionSinglet(double partonDistributionSinglet);
+    double getPartonDistributionMinus() const;
+    void setPartonDistributionMinus(double partonDistributionMinus);
+    double getPartonDistributionPlus() const;
+    void setPartonDistributionPlus(double partonDistributionPlus);
+    double getPartonDistribution() const;
+    void setPartonDistribution(double partonDistribution);
+    double getPartonDistributionSinglet() const;
+    void setPartonDistributionSinglet(double partonDistributionSinglet);
 
 private:
-	GPDComputeType m_gpdComputeType;
-	QuarkFlavor m_quarkFlavor;
+    GPDComputeType m_gpdComputeType;
+    QuarkFlavor m_quarkFlavor;
 
-	double m_partonDistribution;          ///< GPD(q), flavour singlet
-	//TODO faire référence à la revue paraph 3.3.2 de Markus Diehl
-	double m_partonDistributionMinus;		///<
-	double m_partonDistributionPlus;		///<
+    double m_partonDistribution;          ///< GPD(q), flavour singlet
+    //TODO faire référence à la revue paraph 3.3.2 de Markus Diehl
+    double m_partonDistributionMinus;   ///<
+    double m_partonDistributionPlus;    ///<
 
-	double valence;     				///< GPD(q), valence part
-	double sea;         				///< GPD(q), sea part
+    double valence;             ///< GPD(q), valence part
+    double sea;             ///< GPD(q), sea part
 
-	//TODO singlet -> devient pdPlus
-	double m_partonDistributionSinglet;     ///< GPD(q), charge singlet part
+    //TODO singlet -> devient pdPlus
+    double m_partonDistributionSinglet;     ///< GPD(q), charge singlet part
 
-	//TODO a voir
-	double quark;
-	double antiQuark;
+    //TODO a voir
+    double quark;
+    double antiQuark;
 };
 
 #endif /* GPD_QUARK_FLAVOR_DATA */

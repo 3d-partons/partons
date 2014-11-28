@@ -60,6 +60,8 @@ public:
             const double &_t, const double &_MuF, const double &_MuR,
             GPDComputeType::Type gpdComputeType);
 
+    virtual std::string toString();
+
     // ##### GETTERS & SETTERS #####
 
     double getB0() const;

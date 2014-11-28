@@ -63,4 +63,7 @@ const double C2_ELEC_CHARGE = 4. / 9.; ///< Square of electric charge of charm q
 const double B2_ELEC_CHARGE = 1. / 9.; ///< Square of electric charge of bottom quark
 const double T2_ELEC_CHARGE = 1. / 9.; ///< Square of electric charge of top quark
 
+//TODO more explicit name
+const double POSITRON_CHARGE = 0.30282211985966434;
+
 #endif /* FUNDAMENTAL_PHYSICAL_CONSTANTS_H */

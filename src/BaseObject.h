@@ -12,51 +12,53 @@ class LoggerManager;
 
 class BaseObject {
 public:
-	/**
-	 * Constructor
-	 *
-	 * @param className
-	 */
-	BaseObject(std::string className);
+    /**
+     * Constructor
+     *
+     * @param className
+     */
+    BaseObject(std::string className);
 
-	/**
-	 * Default destructor
-	 */
-	virtual ~BaseObject();
+    /**
+     * Default destructor
+     */
+    virtual ~BaseObject();
 
-	/**
-	 * Virtual clone function to allow factory to copy all derived members
-	 * @return
-	 */
-	virtual BaseObject* clone() const;
+    /**
+     * Virtual clone function to allow factory to copy all derived members
+     * @return
+     */
+    virtual BaseObject* clone() const;
 
-	//TODO voir si on en a besoin pour gérer la durée de vie des pointeurs membres des sous classes
-	//virtual void destroy() = 0;
+    //TODO voir si on en a besoin pour gérer la durée de vie des pointeurs membres des sous classes
+    //virtual void destroy() = 0;
 
-	// ##### GETTERS & SETTERS #####
+    virtual std::string toString();
 
-	unsigned int getObjectId() const;
-	void setObjectId(unsigned int objectId);
-	const std::string& getClassName() const;
-	void setClassName(const std::string& className);
+    // ##### GETTERS & SETTERS #####
+
+    unsigned int getObjectId() const;
+    void setObjectId(unsigned int objectId);
+    const std::string& getClassName() const;
+    void setClassName(const std::string& className);
 
 protected:
-	LoggerManager* m_pLoggerManager; ///< Logger's pointer
+    LoggerManager* m_pLoggerManager; ///< Logger's pointer
 
-	/**
-	 * Copy constructor
-	 *
-	 * @param other
-	 */
-	BaseObject(const BaseObject& other);
+    /**
+     * Copy constructor
+     *
+     * @param other
+     */
+    BaseObject(const BaseObject& other);
 
 private:
-	static unsigned int uniqueID;
+    static unsigned int uniqueID;
 
-	unsigned int m_objectId;
-	std::string m_className; ///< String that represents class's name used by the logger for know the source of the trace
+    unsigned int m_objectId;
+    std::string m_className; ///< String that represents class's name used by the logger for know the source of the trace
 
-	unsigned int getUniqueID();
+    unsigned int getUniqueID();
 };
 
 #endif /* BASE_OBJECT_H */
