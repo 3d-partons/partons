@@ -173,12 +173,51 @@ GPDOutputData GK11Model::compute(const double &_x, const double &_xi,
 
     isModuleWellConfigured();
 
-    if (m_pEvolQCDModule != 0) {
-        m_pLoggerManager->debug(getClassName(), __func__,
-                Formatter() << "isRunnable = "
-                        << m_pEvolQCDModule->isRunnable(_MuF, m_MuF_ref,
-                                EvolQCDModule::RELATIVE));
+    GPDOutputData gpdOutputData;
+
+    switch (gpdComputeType) {
+    case GPDComputeType::ALL: {
+        for (m_it = m_listGPDComputeTypeAvailable.begin();
+                m_it != m_listGPDComputeTypeAvailable.end(); m_it++) {
+            GPDResultData gpdResultData = ((*this).*(m_it->second))();
+            gpdOutputData.addGPDResultData(gpdResultData);
+        }
+        break;
     }
+    default: {
+        m_it = m_listGPDComputeTypeAvailable.find(gpdComputeType);
+        if (m_it != m_listGPDComputeTypeAvailable.end()) {
+            GPDResultData gpdResultData = ((*this).*(m_it->second))();
+            gpdOutputData.addGPDResultData(gpdResultData);
+        } else {
+            //TODO remplacer par une exception
+            std::cerr << "[GK11Model::compute] GPDComputeType not available !"
+                    << std::endl;
+        }
+        break;
+    }
+    }
+
+    return gpdOutputData;
+}
+
+GPDOutputData GK11Model::computeWithEvolution(const double &_x,
+        const double &_xi, const double &_t, const double &_MuF,
+        const double &_MuR, GPDComputeType::Type gpdComputeType) {
+    m_x = _x;
+    m_xi = _xi;
+    m_t = _t;
+    m_MuF = _MuF;
+    m_MuR = _MuR;
+
+    m_pLoggerManager->debug(getClassName(), __func__,
+            Formatter() << "x = " << m_x << "    xi = " << m_xi << "    t = "
+                    << m_t << " GeV2    MuF = " << m_MuF << " GeV    MuR = "
+                    << m_MuR << " GeV");
+
+    initModule();
+
+    isModuleWellConfigured();
 
     GPDOutputData gpdOutputData;
 
@@ -2044,7 +2083,6 @@ unsigned int GK11Model::getNbOfQuarkFlavor() const {
     return m_nbOfQuarkFlavor;
 }
 
-std::string GK11Model::toString()
-{
+std::string GK11Model::toString() {
     return GPDModule::toString();
 }

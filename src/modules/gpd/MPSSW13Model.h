@@ -38,6 +38,10 @@ public:
             const double &_t, const double &_MuF, const double &_MuR,
             GPDComputeType::Type gpdComputeType);
 
+    virtual GPDOutputData computeWithEvolution(const double &_x,
+            const double &_xi, const double &_t, const double &_MuF,
+            const double &_MuR, GPDComputeType::Type gpdComputeType);
+
     double getCA() const;
     double getCF() const;
     double getF1d() const;

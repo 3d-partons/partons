@@ -1003,6 +1003,14 @@ void MPSSW13Model::initModule() {
             Formatter() << "fMuF2 = " << m_MuF2);
 }
 
+//TODO implement
+GPDOutputData MPSSW13Model::computeWithEvolution(const double &_x,
+            const double &_xi, const double &_t, const double &_MuF,
+            const double &_MuR, GPDComputeType::Type gpdComputeType)
+{
+    GPDOutputData();
+}
+
 GPDOutputData MPSSW13Model::compute(const double &_x, const double &_xi,
         const double &_t, const double &_MuF, const double &_MuR,
         GPDComputeType::Type gpdComputeType) {

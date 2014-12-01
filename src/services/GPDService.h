@@ -47,6 +47,10 @@ public:
     GPDOutputData compute(GPDInputData &_gpdInputData, GPDModule* _pGPDModule,
             GPDComputeType::Type _gpdComputeType);
 
+    GPDOutputData computeWithEvolution(GPDModule* pGPDModule,
+            EvolQCDModule* pEvolQCDModule, GPDInputData &gpdInputData,
+            GPDComputeType::Type gpdComputeType = GPDComputeType::ALL);
+
     GPDOutputData compute(GPDInputData &_gpdInputData, GPDModule* _pGPDModule);
 
     //TODO passer la liste en reference

@@ -60,6 +60,10 @@ public:
             const double &_t, const double &_MuF, const double &_MuR,
             GPDComputeType::Type gpdComputeType);
 
+    virtual GPDOutputData computeWithEvolution(const double &_x,
+            const double &_xi, const double &_t, const double &_MuF,
+            const double &_MuR, GPDComputeType::Type gpdComputeType);
+
     virtual std::string toString();
 
     // ##### GETTERS & SETTERS #####

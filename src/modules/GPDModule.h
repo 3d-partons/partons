@@ -64,6 +64,10 @@ public:
             const double &_t, const double &_MuF, const double &_MuR,
             GPDComputeType::Type gpdComputeType) = 0;
 
+    virtual GPDOutputData computeWithEvolution(const double &_x, const double &_xi,
+                const double &_t, const double &_MuF, const double &_MuR,
+                GPDComputeType::Type gpdComputeType) = 0;
+
     virtual GPDResultData computeH()=0;
     virtual GPDResultData computeE()=0;
     virtual GPDResultData computeHt()=0;

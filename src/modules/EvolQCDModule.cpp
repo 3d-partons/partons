@@ -2,7 +2,6 @@
 
 #include <math.h>
 #include <stddef.h>
-//#include <iostream>
 #include <stdexcept>
 
 #include "../beans/gpd/GPDQuarkFlavorData.h"
@@ -148,7 +147,7 @@ EvolQCDModule::~EvolQCDModule() {
 }
 
 void EvolQCDModule::initModule() {
-//do nothing; the definition is just mandatory for enable the use of the clone function
+    m_pLoggerManager->debug(getClassName(), __func__, "");
 
 //TODO MAJ des matrices de changement de base en fonction du Nf_EVOL choisi par l'utilisateur
     initNfMin();
@@ -167,6 +166,8 @@ void EvolQCDModule::initModule() {
 
 //TODO ajouter les tests manquants
 void EvolQCDModule::isModuleWellConfigured() {
+    m_pLoggerManager->debug(getClassName(), __func__, "");
+
     if (m_pGPDModule == 0) {
         throw std::runtime_error("[EvolQCDModule] GPDModule* is NULL");
     }
@@ -199,6 +200,7 @@ void EvolQCDModule::isModuleWellConfigured() {
 }
 
 void EvolQCDModule::initNfMin() {
+    m_pLoggerManager->debug(getClassName(), __func__, "");
 
     size_t nfGPDModel = m_gpdResultData.sizeOfListOfQuarkFlavorData();
 
@@ -216,6 +218,8 @@ void EvolQCDModule::initNfMin() {
 }
 
 void EvolQCDModule::initMatrixValue() {
+    m_pLoggerManager->debug(getClassName(), __func__, "");
+
     // care about m_nfEvol = 0 ; divided by ZERO
     double missingCoef = 1. / (2. * (double) m_nfEvol);
     double missingInvertCoef = 0.;
@@ -309,12 +313,16 @@ void EvolQCDModule::initMatrixValue() {
 }
 
 void EvolQCDModule::initVectorOfGPDCombinations() {
+    m_pLoggerManager->debug(getClassName(), __func__, "");
+
     m_vectorOfGPDCombination = MakeVectorOfGPDCombinations(m_gpdResultData);
 }
 
 //TODO implement
 bool EvolQCDModule::isRunnable(const double &MuF, const double &MuF_ref,
         EvolQCDModule::Type testType) {
+    m_pLoggerManager->debug(getClassName(), __func__, "");
+
     //TODO MuF de l'utilisateur par rapport au MuF_Ref du modèle de GPD
     bool result = false;
     switch (testType) {
@@ -335,16 +343,23 @@ bool EvolQCDModule::isRunnable(const double &MuF, const double &MuF_ref,
 }
 
 bool EvolQCDModule::isRelativeTest(const double &MuF, const double &MuF_ref) {
+    m_pLoggerManager->debug(getClassName(), __func__,
+            Formatter() << "MuF = " << MuF << "   MuF_ref = " << MuF_ref);
+
     return (fabs(MuF - MuF_ref) > (m_epsilon * MuF_ref)) ? true : false;
 }
 
 bool EvolQCDModule::isAbsoluteTest(const double &MuF, const double &MuF_ref) {
+    m_pLoggerManager->debug(getClassName(), __func__, "");
+
     return (fabs(MuF - MuF_ref) > m_alpha) ? true : false;
 }
 
 void EvolQCDModule::preCompute(const double &x, const double &xi,
         const double &t, const double &MuF, const double &MuR,
         const GPDResultData &gpdResultData) {
+    m_pLoggerManager->debug(getClassName(), __func__, "");
+
     m_x = x;
     m_xi = xi;
     m_t = t;
@@ -364,18 +379,24 @@ void EvolQCDModule::preCompute(const double &x, const double &xi,
 //TODO ajouter les commentaires qui vont bien et les références au papier
 std::vector<double> EvolQCDModule::convertBasis(
         std::vector<double> vectorToConvert) {
+    m_pLoggerManager->debug(getClassName(), __func__, "");
+
     std::vector<double> tempVector = m_currentConvertMatrix * vectorToConvert;
     return tempVector;
 }
 
 std::vector<double> EvolQCDModule::invertBasis(
         std::vector<double> vectorToInvert) {
+    m_pLoggerManager->debug(getClassName(), __func__, "");
+
     std::vector<double> tempVector = m_currentInvertMatrix * vectorToInvert;
     return tempVector;
 }
 
 //TODO automatiser les setters
 GPDResultData EvolQCDModule::makeGPDResultData() {
+    m_pLoggerManager->debug(getClassName(), __func__, "");
+
     GPDResultData gpdResultData(m_currentGPDComputeType);
 
     // set gluon
@@ -451,6 +472,9 @@ GPDResultData EvolQCDModule::makeGPDResultData() {
 }
 
 double EvolQCDModule::calculateFq(double FMinus, double FPlus) {
+    m_pLoggerManager->debug(getClassName(), __func__,
+            Formatter() << " FMinus = " << FMinus << "   FPlus = " << FPlus);
+
     return (FPlus + FMinus) / 2.;
 }
 
@@ -464,6 +488,8 @@ void EvolQCDModule::setQcdOrderType(QCDOrderType::Type qcdOrderType) {
 
 std::vector<double> EvolQCDModule::MakeVectorOfGPDCombinations(
         GPDResultData gpdResultData) {
+    m_pLoggerManager->debug(getClassName(), __func__, "");
+
     std::vector<GPDQuarkFlavorData> listOfQuarkFlavorData =
             gpdResultData.getListOfQuarkFlavorData();
 

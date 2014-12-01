@@ -37,6 +37,16 @@ GPDOutputData GPDService::compute(GPDInputData &_gpdInputData,
             _gpdInputData.getMuR(), _gpdComputeType);
 }
 
+GPDOutputData GPDService::computeWithEvolution(GPDModule* pGPDModule,
+        EvolQCDModule* pEvolQCDModule, GPDInputData &gpdInputData,
+        GPDComputeType::Type gpdComputeType) {
+    pGPDModule->setEvolQcdModule(pEvolQCDModule);
+
+    return pGPDModule->computeWithEvolution(gpdInputData.getX(),
+            gpdInputData.getXi(), gpdInputData.getT(), gpdInputData.getMuF(),
+            gpdInputData.getMuR(), gpdComputeType);
+}
+
 GPDOutputData GPDService::compute(GPDInputData &_gpdInputData,
         GPDModule* _pGPDModule) {
     return compute(_gpdInputData, _pGPDModule, GPDComputeType::ALL);
