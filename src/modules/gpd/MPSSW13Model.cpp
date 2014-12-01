@@ -20,7 +20,6 @@
 #include "../../utils/logger/LoggerManager.h"
 #include "../../utils/mstwpdf.h"
 #include "../../utils/stringUtils/Formatter.h"
-#include "../EvolQCDModule.h"
 
 const std::string MPSSW13Model::moduleID = "MPSSW13Model";
 
@@ -33,7 +32,27 @@ MPSSW13Model::MPSSW13Model()
                 4. / 3.), m_TF(1. / 2.), m_F1u(0.), m_F1d(0.), m_FD(0.), m_ProfileShapeVal(
                 1.), m_ProfileShapeSea(2.), m_ProfileShapeGlue(2.), m_QuarkDTerm(
                 0.), m_GluonDTerm(0.) {
-    init();
+
+    m_NbOfQuarkFlavor = 3;
+    m_MuF2_ref = 4.;
+    m_MuF_ref = sqrt(m_MuF2_ref);
+
+    char filename[100]; // Grid name
+
+    //TODO supprimer le nom de fichier en dur ; le passer en propriété ou paramètre
+    char prefix[] = "/home/bryan/workspace/PARTONS/data/grid/mstw2008nlo";
+    // prefix for the grid files
+
+    // Central PDF set
+    sprintf(filename, "%s.%2.2d.dat", prefix, 0);
+    m_Forward = new c_mstwpdf(filename);
+    // default: warn=false, fatal=true
+    // bool warn = true;   // option to turn on warnings if extrapolating.
+    // bool fatal = false; // option to return zero instead of terminating if invalid x or q
+    // c_mstwpdf *pdf = new c_mstwpdf(filename,warn,fatal);
+
+    m_listGPDComputeTypeAvailable.insert(
+            std::make_pair(GPDComputeType::H, &GPDModule::computeH));
 }
 
 MPSSW13Model::MPSSW13Model(const MPSSW13Model& other)
@@ -61,40 +80,11 @@ MPSSW13Model* MPSSW13Model::clone() const {
     return new MPSSW13Model(*this);
 }
 
-void MPSSW13Model::init() {
-    m_NbOfQuarkFlavor = 3;
-    m_MuF2_ref = 4.;
-    m_MuF_ref = sqrt(m_MuF2_ref);
-
-    char filename[100]; // Grid name
-
-    //TODO supprimer le nom de fichier en dur ; le passer en propriété ou paramètre
-    char prefix[] =
-            "/home/bryan/workspace/PARTONS/data/grid/mstw2008nlo";
-    // prefix for the grid files
-
-    // Central PDF set
-    sprintf(filename, "%s.%2.2d.dat", prefix, 0);
-    m_Forward = new c_mstwpdf(filename);
-    // default: warn=false, fatal=true
-    // bool warn = true;   // option to turn on warnings if extrapolating.
-    // bool fatal = false; // option to return zero instead of terminating if invalid x or q
-    // c_mstwpdf *pdf = new c_mstwpdf(filename,warn,fatal);
-
-    m_listGPDComputeTypeAvailable.insert(
-            std::make_pair(GPDComputeType::H, &GPDModule::computeH));
-}
-
 MPSSW13Model::~MPSSW13Model() {
     if (m_Forward != 0) {
         delete m_Forward;
         m_Forward = 0;
     }
-}
-
-//TODO implement
-void MPSSW13Model::isModuleWellConfigured() {
-
 }
 
 void MPSSW13Model::setParameters(std::vector<double> Parameters) {
@@ -995,7 +985,9 @@ double MPSSW13Model::GammaGG(const unsigned int nflavour,
     return Gamma;
 }
 
+//TODO meme initialisation que GK11 ?
 void MPSSW13Model::initModule() {
+    GPDModule::initModule();
 
     m_MuF2 = m_MuF * m_MuF;
 
@@ -1004,82 +996,22 @@ void MPSSW13Model::initModule() {
 }
 
 //TODO implement
+void MPSSW13Model::isModuleWellConfigured() {
+    GPDModule::isModuleWellConfigured();
+}
+
+//TODO implement
 GPDOutputData MPSSW13Model::computeWithEvolution(const double &_x,
-            const double &_xi, const double &_t, const double &_MuF,
-            const double &_MuR, GPDComputeType::Type gpdComputeType)
-{
-    GPDOutputData();
+        const double &_xi, const double &_t, const double &_MuF,
+        const double &_MuR, GPDComputeType::Type gpdComputeType) {
+    return GPDModule::computeWithEvolution(_x, _xi, _t, _MuF, _MuR,
+            gpdComputeType);
 }
 
 GPDOutputData MPSSW13Model::compute(const double &_x, const double &_xi,
         const double &_t, const double &_MuF, const double &_MuR,
         GPDComputeType::Type gpdComputeType) {
-    m_x = _x;
-    m_xi = _xi;
-    m_t = _t;
-    m_MuF = _MuF;
-    m_MuR = _MuR;
-
-    m_pLoggerManager->debug(getClassName(), __func__,
-            Formatter() << "x = " << m_x << "    xi = " << m_xi << "    t = "
-                    << m_t << " GeV2    MuF = " << m_MuF << " GeV    MuR = "
-                    << m_MuR << " GeV");
-
-    isModuleWellConfigured();
-
-    // And after, update MPSSW13 variables before computing
-    initModule();
-
-    if (m_pEvolQCDModule != 0) {
-        m_pLoggerManager->debug(getClassName(), __func__,
-                Formatter() << "isRunnable = "
-                        << m_pEvolQCDModule->isRunnable(_MuF, m_MuF_ref,
-                                EvolQCDModule::RELATIVE));
-    }
-
-    GPDOutputData gpdOutputData;
-
-    switch (gpdComputeType) {
-    case GPDComputeType::ALL: {
-        for (m_it = m_listGPDComputeTypeAvailable.begin();
-                m_it != m_listGPDComputeTypeAvailable.end(); m_it++) {
-            GPDResultData gpdResultData = ((*this).*(m_it->second))();
-
-            if (m_pEvolQCDModule != 0
-                    && m_pEvolQCDModule->isRunnable(_MuF, m_MuF_ref,
-                            EvolQCDModule::RELATIVE)) {
-                gpdResultData = m_pEvolQCDModule->compute(m_x, m_xi, m_t, m_MuF,
-                        m_MuR, gpdResultData);
-            }
-
-            gpdOutputData.addGPDResultData(gpdResultData);
-        }
-        break;
-    }
-    default: {
-        m_it = m_listGPDComputeTypeAvailable.find(gpdComputeType);
-        if (m_it != m_listGPDComputeTypeAvailable.end()) {
-            GPDResultData gpdResultData = ((*this).*(m_it->second))();
-
-            if (m_pEvolQCDModule != 0
-                    && m_pEvolQCDModule->isRunnable(_MuF, m_MuF_ref,
-                            EvolQCDModule::RELATIVE)) {
-                gpdResultData = m_pEvolQCDModule->compute(m_x, m_xi, m_t, m_MuF,
-                        m_MuR, gpdResultData);
-            }
-
-            gpdOutputData.addGPDResultData(gpdResultData);
-        } else {
-            //TODO remplacer par une exception
-            std::cerr
-                    << "[MPSSW13Model::compute] GPDComputeType not available !"
-                    << std::endl;
-        }
-        break;
-    }
-    }
-
-    return gpdOutputData;
+    return GPDModule::compute(_x, _xi, _t, _MuF, _MuR, gpdComputeType);
 }
 
 double MPSSW13Model::getCA() const {

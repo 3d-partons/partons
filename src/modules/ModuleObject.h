@@ -24,48 +24,48 @@
 
 class ModuleObject: public BaseObject {
 public:
-	/**
-	 * Default constructor
-	 */
-	ModuleObject(const std::string & moduleID);
+    /**
+     * Default constructor
+     */
+    ModuleObject(const std::string & moduleID);
 
-	/**
-	 * Default destructor
-	 */
-	virtual ~ModuleObject();
+    /**
+     * Default destructor
+     */
+    virtual ~ModuleObject();
 
-	/**
-	 * Return the number of current parameters used for configure this module.
-	 */
-	size_t getNbOfParameters();
+    /**
+     * Return the number of current parameters used for configure this module.
+     */
+    size_t getNbOfParameters();
 
-	virtual ModuleObject* clone() const = 0;
+    virtual ModuleObject* clone() const = 0;
 
-	virtual std::string toString();
+    virtual std::string toString();
 
 // ################   GETTERS & SETTERS   ################
 
-	const std::vector<double>& getParameters() const;
-	//TODO politique générale sur l'implementaton de cette fonction dans les fils
-	virtual void setParameters(const std::vector<double>& parameters);
-	const std::string& getModuleID() const;
+    const std::vector<double>& getParameters() const;
+    //TODO politique générale sur l'implementaton de cette fonction dans les fils
+    virtual void setParameters(const std::vector<double>& parameters);
+    const std::string& getModuleID() const;
 
 protected:
-	/***
-	 * Copy constructor
-	 * @param other
-	 */
-	ModuleObject(const ModuleObject &other);
+    /***
+     * Copy constructor
+     * @param other
+     */
+    ModuleObject(const ModuleObject &other);
 
-	virtual void isModuleWellConfigured() = 0;
-	virtual void initModule() = 0;
+    virtual void initModule() = 0;
+    virtual void isModuleWellConfigured() = 0;
 
 private:
 
-	std::vector<double> m_parameters; ///< parameters used for configure this module.
+    std::vector<double> m_parameters; ///< parameters used for configure this module.
 
-	//TODO redondance avec className dans la classe fille
-	std::string m_moduleID;
+    //TODO redondance avec className dans la classe fille
+    std::string m_moduleID;
 };
 
 #endif /* BASE_MODULE_H */

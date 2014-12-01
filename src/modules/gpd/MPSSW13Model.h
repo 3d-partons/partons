@@ -30,8 +30,6 @@ public:
 
     virtual MPSSW13Model* clone() const;
 
-    void init();
-
     void setParameters(std::vector<double> Parameters);
 
     virtual GPDOutputData compute(const double &_x, const double &_xi,

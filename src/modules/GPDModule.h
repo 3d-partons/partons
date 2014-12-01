@@ -62,11 +62,11 @@ public:
      */
     virtual GPDOutputData compute(const double &_x, const double &_xi,
             const double &_t, const double &_MuF, const double &_MuR,
-            GPDComputeType::Type gpdComputeType) = 0;
+            GPDComputeType::Type gpdComputeType);
 
-    virtual GPDOutputData computeWithEvolution(const double &_x, const double &_xi,
-                const double &_t, const double &_MuF, const double &_MuR,
-                GPDComputeType::Type gpdComputeType) = 0;
+    virtual GPDOutputData computeWithEvolution(const double &_x,
+            const double &_xi, const double &_t, const double &_MuF,
+            const double &_MuR, GPDComputeType::Type gpdComputeType);
 
     virtual GPDResultData computeH()=0;
     virtual GPDResultData computeE()=0;
@@ -84,16 +84,6 @@ public:
     double getMuFRef() const;
 
 protected:
-    /**
-     * Copy constructor
-     *
-     * @param other
-     */
-    GPDModule(const GPDModule &other);
-
-    std::map<GPDComputeType::Type, GPDResultData (GPDModule::*)()> m_listGPDComputeTypeAvailable;
-    std::map<GPDComputeType::Type, GPDResultData (GPDModule::*)()>::iterator m_it;
-
     double m_x;
     double m_xi;
     double m_t;
@@ -107,6 +97,23 @@ protected:
 
     //PDFModule* m_pPDFModule;
     EvolQCDModule* m_pEvolQCDModule;
+
+    /**
+     * Copy constructor
+     *
+     * @param other
+     */
+    GPDModule(const GPDModule &other);
+
+    virtual void initModule();
+    virtual void isModuleWellConfigured();
+
+    void preCompute(const double &x, const double &xi, const double &t,
+            const double &MuF, const double &MuR);
+
+    std::map<GPDComputeType::Type, GPDResultData (GPDModule::*)()> m_listGPDComputeTypeAvailable;
+    std::map<GPDComputeType::Type, GPDResultData (GPDModule::*)()>::iterator m_it;
+
 };
 
 #endif /* GPD_MODULE_H */

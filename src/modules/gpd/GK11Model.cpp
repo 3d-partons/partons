@@ -5,7 +5,6 @@
 #include <cln/floatformat.h>
 #include <cln/real.h>
 #include <cmath>
-#include <iostream>
 #include <map>
 #include <stdexcept>
 #include <utility>
@@ -18,7 +17,6 @@
 #include "../../services/ModuleObjectFactory.h"
 #include "../../utils/logger/LoggerManager.h"
 #include "../../utils/stringUtils/Formatter.h"
-#include "../EvolQCDModule.h"
 
 // Initialise GK11GPDModule::moduleID with a unique name.
 const std::string GK11Model::moduleID = "GK11Model";
@@ -31,7 +29,40 @@ static bool isGK11ModelRegistered =
 
 GK11Model::GK11Model()
         : GPDModule(GK11Model::moduleID) {
-    init();
+    m_nbOfQuarkFlavor = 3;
+    fL = 0.;
+    m_MuF2_ref = 4.;
+    m_MuF_ref = sqrt(m_MuF2_ref);
+    Huval1tab = std::vector<double>(3, 0.);
+    Hdval1tab = std::vector<double>(3, 0.);
+    Huval1mtab = std::vector<double>(3, 0.);
+    Hdval1mtab = std::vector<double>(3, 0.);
+    Hs1tab = std::vector<double>(4, 0.);
+    Hi1tab = std::vector<double>(4, 0.);
+    Euval1tab = std::vector<double>(2, 0.);
+    Edval1tab = std::vector<double>(8, 0.);
+    Euval1mtab = std::vector<double>(2, 0.);
+    Edval1mtab = std::vector<double>(8, 0.);
+    Es1tab = std::vector<double>(3, 0.);
+    Ei1tab = std::vector<double>(2, 0.);
+    Htuval1tab = std::vector<double>(3, 0.);
+    Htdval1tab = std::vector<double>(3, 0.);
+    Htuval1mtab = std::vector<double>(3, 0.);
+    Htdval1mtab = std::vector<double>(3, 0.);
+    Hti1tab = std::vector<double>(3, 0.);
+    Etuval1tab = std::vector<double>(4, 0.);
+    Etdval1tab = std::vector<double>(4, 0.);
+    Etuval1mtab = std::vector<double>(4, 0.);
+    Etdval1mtab = std::vector<double>(4, 0.);
+
+    m_listGPDComputeTypeAvailable.insert(
+            std::make_pair(GPDComputeType::H, &GPDModule::computeH));
+    m_listGPDComputeTypeAvailable.insert(
+            std::make_pair(GPDComputeType::E, &GPDModule::computeE));
+    m_listGPDComputeTypeAvailable.insert(
+            std::make_pair(GPDComputeType::Ht, &GPDModule::computeHt));
+    m_listGPDComputeTypeAvailable.insert(
+            std::make_pair(GPDComputeType::Et, &GPDModule::computeEt));
 }
 
 GK11Model::GK11Model(const GK11Model& other)
@@ -101,52 +132,16 @@ GK11Model* GK11Model::clone() const {
     return new GK11Model(*this);
 }
 
-void GK11Model::init() {
-    m_nbOfQuarkFlavor = 3;
-    fL = 0.;
-    m_MuF2_ref = 4.;
-    m_MuF_ref = sqrt(m_MuF2_ref);
-    Huval1tab = std::vector<double>(3, 0.);
-    Hdval1tab = std::vector<double>(3, 0.);
-    Huval1mtab = std::vector<double>(3, 0.);
-    Hdval1mtab = std::vector<double>(3, 0.);
-    Hs1tab = std::vector<double>(4, 0.);
-    Hi1tab = std::vector<double>(4, 0.);
-    Euval1tab = std::vector<double>(2, 0.);
-    Edval1tab = std::vector<double>(8, 0.);
-    Euval1mtab = std::vector<double>(2, 0.);
-    Edval1mtab = std::vector<double>(8, 0.);
-    Es1tab = std::vector<double>(3, 0.);
-    Ei1tab = std::vector<double>(2, 0.);
-    Htuval1tab = std::vector<double>(3, 0.);
-    Htdval1tab = std::vector<double>(3, 0.);
-    Htuval1mtab = std::vector<double>(3, 0.);
-    Htdval1mtab = std::vector<double>(3, 0.);
-    Hti1tab = std::vector<double>(3, 0.);
-    Etuval1tab = std::vector<double>(4, 0.);
-    Etdval1tab = std::vector<double>(4, 0.);
-    Etuval1mtab = std::vector<double>(4, 0.);
-    Etdval1mtab = std::vector<double>(4, 0.);
-
-    m_listGPDComputeTypeAvailable.insert(
-            std::make_pair(GPDComputeType::H, &GPDModule::computeH));
-    m_listGPDComputeTypeAvailable.insert(
-            std::make_pair(GPDComputeType::E, &GPDModule::computeE));
-    m_listGPDComputeTypeAvailable.insert(
-            std::make_pair(GPDComputeType::Ht, &GPDModule::computeHt));
-    m_listGPDComputeTypeAvailable.insert(
-            std::make_pair(GPDComputeType::Et, &GPDModule::computeEt));
-}
-
 GK11Model::~GK11Model() {
 }
 
 //TODO implement
 void GK11Model::isModuleWellConfigured() {
-
+    GPDModule::isModuleWellConfigured();
 }
 
 void GK11Model::initModule() {
+    GPDModule::initModule();
 
     fMuF2 = m_MuF * m_MuF;
     fL = log(fMuF2 / m_MuF2_ref); // Logarithmic dependence on the scale
@@ -158,109 +153,16 @@ void GK11Model::initModule() {
 GPDOutputData GK11Model::compute(const double &_x, const double &_xi,
         const double &_t, const double &_MuF, const double &_MuR,
         GPDComputeType::Type gpdComputeType) {
-    m_x = _x;
-    m_xi = _xi;
-    m_t = _t;
-    m_MuF = _MuF;
-    m_MuR = _MuR;
 
-    m_pLoggerManager->debug(getClassName(), __func__,
-            Formatter() << "x = " << m_x << "    xi = " << m_xi << "    t = "
-                    << m_t << " GeV2    MuF = " << m_MuF << " GeV    MuR = "
-                    << m_MuR << " GeV");
-
-    initModule();
-
-    isModuleWellConfigured();
-
-    GPDOutputData gpdOutputData;
-
-    switch (gpdComputeType) {
-    case GPDComputeType::ALL: {
-        for (m_it = m_listGPDComputeTypeAvailable.begin();
-                m_it != m_listGPDComputeTypeAvailable.end(); m_it++) {
-            GPDResultData gpdResultData = ((*this).*(m_it->second))();
-            gpdOutputData.addGPDResultData(gpdResultData);
-        }
-        break;
-    }
-    default: {
-        m_it = m_listGPDComputeTypeAvailable.find(gpdComputeType);
-        if (m_it != m_listGPDComputeTypeAvailable.end()) {
-            GPDResultData gpdResultData = ((*this).*(m_it->second))();
-            gpdOutputData.addGPDResultData(gpdResultData);
-        } else {
-            //TODO remplacer par une exception
-            std::cerr << "[GK11Model::compute] GPDComputeType not available !"
-                    << std::endl;
-        }
-        break;
-    }
-    }
-
-    return gpdOutputData;
+    return GPDModule::compute(_x, _xi, _t, _MuF, _MuR, gpdComputeType);
 }
 
 GPDOutputData GK11Model::computeWithEvolution(const double &_x,
         const double &_xi, const double &_t, const double &_MuF,
         const double &_MuR, GPDComputeType::Type gpdComputeType) {
-    m_x = _x;
-    m_xi = _xi;
-    m_t = _t;
-    m_MuF = _MuF;
-    m_MuR = _MuR;
 
-    m_pLoggerManager->debug(getClassName(), __func__,
-            Formatter() << "x = " << m_x << "    xi = " << m_xi << "    t = "
-                    << m_t << " GeV2    MuF = " << m_MuF << " GeV    MuR = "
-                    << m_MuR << " GeV");
-
-    initModule();
-
-    isModuleWellConfigured();
-
-    GPDOutputData gpdOutputData;
-
-    switch (gpdComputeType) {
-    case GPDComputeType::ALL: {
-        for (m_it = m_listGPDComputeTypeAvailable.begin();
-                m_it != m_listGPDComputeTypeAvailable.end(); m_it++) {
-            GPDResultData gpdResultData = ((*this).*(m_it->second))();
-
-            if (m_pEvolQCDModule != 0
-                    && m_pEvolQCDModule->isRunnable(_MuF, m_MuF_ref,
-                            EvolQCDModule::RELATIVE)) {
-                gpdResultData = m_pEvolQCDModule->compute(m_x, m_xi, m_t, m_MuF,
-                        m_MuR, gpdResultData);
-            }
-
-            gpdOutputData.addGPDResultData(gpdResultData);
-        }
-        break;
-    }
-    default: {
-        m_it = m_listGPDComputeTypeAvailable.find(gpdComputeType);
-        if (m_it != m_listGPDComputeTypeAvailable.end()) {
-            GPDResultData gpdResultData = ((*this).*(m_it->second))();
-
-            if (m_pEvolQCDModule != 0
-                    && m_pEvolQCDModule->isRunnable(_MuF, m_MuF_ref,
-                            EvolQCDModule::RELATIVE)) {
-                gpdResultData = m_pEvolQCDModule->compute(m_x, m_xi, m_t, m_MuF,
-                        m_MuR, gpdResultData);
-            }
-
-            gpdOutputData.addGPDResultData(gpdResultData);
-        } else {
-            //TODO remplacer par une exception
-            std::cerr << "[GK11Model::compute] GPDComputeType not available !"
-                    << std::endl;
-        }
-        break;
-    }
-    }
-
-    return gpdOutputData;
+    return GPDModule::computeWithEvolution(_x, _xi, _t, _MuF, _MuR,
+            gpdComputeType);
 }
 
 GPDResultData GK11Model::computeH() {

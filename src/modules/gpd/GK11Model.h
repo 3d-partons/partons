@@ -47,11 +47,6 @@ public:
     virtual GK11Model* clone() const;
 
     /**
-     * Call by default constructor to initialize all class attributes
-     */
-    void init();
-
-    /**
      * Compute GPD describes by Kroll-Goloskokov model in 2011. \n
      * Compute GPD_H, GPD_Ht, GPD_E, GPD_Et for up, down and strange quarks. \n
      * See GPDModule for more details.
