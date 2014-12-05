@@ -11,6 +11,24 @@ Vector2D::Vector2D(double x, double y)
 Vector2D::~Vector2D() {
 }
 
+Vector2D Vector2D::operator+(Vector2D const &rhs) {
+    return Vector2D(this->m_x + rhs.getX(), this->m_y + rhs.getY());
+}
+
+void Vector2D::operator+=(Vector2D const &rhs) {
+    m_x += rhs.m_x;
+    m_y += rhs.m_y;
+}
+
+Vector2D Vector2D::operator-(Vector2D const &rhs) {
+    return Vector2D(this->m_x - rhs.getX(), this->m_y - rhs.getY());
+}
+
+void Vector2D::operator-=(Vector2D const &rhs) {
+    m_x -= rhs.m_x;
+    m_y -= rhs.m_y;
+}
+
 // ##### GETTERS & SETTERS #####
 
 double Vector2D::getX() const {

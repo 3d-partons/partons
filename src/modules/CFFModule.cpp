@@ -2,9 +2,10 @@
 
 #include "GPDModule.h"
 
-//TODO finir la liste d'initialisation
 CFFModule::CFFModule(std::string _ID)
-        : ModuleObject(_ID), m_pGPDModule(0) {
+        : ModuleObject(_ID), m_xi(0.), m_xB(0.), m_t(0.), m_Q2(0.), m_MuF(0.), m_MuR(
+                0.), m_qcdOrderType(QCDOrderType::UNDEFINED), m_currentGPDComputeType(
+                GPDComputeType::UNDEFINED), m_pGPDModule(0) {
 
 }
 
@@ -21,8 +22,8 @@ CFFModule::CFFModule(const CFFModule &other)
     m_MuF = other.m_MuF;
     m_MuR = other.m_MuR;
 
-    m_currentGPDComputeType = other.m_currentGPDComputeType;
     m_qcdOrderType = other.m_qcdOrderType;
+    m_currentGPDComputeType = other.m_currentGPDComputeType;
 
     if (other.m_pGPDModule != 0) {
         // GPDModule is an abstract class, so it's impossible to use copy constructor to get a new instance of the object

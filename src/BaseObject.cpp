@@ -1,6 +1,7 @@
 #include "BaseObject.h"
 
 #include <string>
+#include <typeinfo>
 
 #include "modules/ModuleObject.h"
 #include "utils/logger/LoggerManager.h"
@@ -13,6 +14,12 @@ BaseObject::BaseObject(std::string className)
                 getUniqueID()), m_className(className) {
 
 }
+
+//BaseObject::BaseObject(std::string className)
+//        : m_pLoggerManager(LoggerManager::getInstance()), m_objectId(
+//                typeid(*this).name()), m_className(className) {
+//
+//}
 
 BaseObject::BaseObject(const BaseObject& other) {
     m_objectId = getUniqueID();
@@ -48,5 +55,6 @@ void BaseObject::setObjectId(unsigned int objectId) {
 }
 
 std::string BaseObject::toString() {
-    return Formatter() << "m_className = " << m_className << " - " << "m_objectId = " << m_objectId;
+    return Formatter() << "m_className = " << m_className << " - "
+            << "m_objectId = " << m_objectId;
 }

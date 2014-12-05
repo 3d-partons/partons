@@ -9,9 +9,10 @@
 #include <cstdlib>
 #include <iostream>
 #include <map>
+#include <typeinfo>
 #include <utility>
 
-#include "../../beans/gpd/GPDOutputData.h"
+#include "../../beans/gpd/GPDComputeType.h"
 #include "../../beans/gpd/GPDQuarkFlavorData.h"
 #include "../../beans/gpd/GPDResultData.h"
 #include "../../beans/QuarkFlavor.h"
@@ -21,17 +22,14 @@
 #include "../../utils/mstwpdf.h"
 #include "../../utils/stringUtils/Formatter.h"
 
-const std::string MPSSW13Model::moduleID = "MPSSW13Model";
-
-static bool isMPSSW13ModelRegistered =
+const std::string MPSSW13Model::moduleID =
         ModuleObjectFactory::getInstance()->registerModule(new MPSSW13Model());
 
 MPSSW13Model::MPSSW13Model()
-        : GPDModule(MPSSW13Model::moduleID), m_NbOfQuarkFlavor(2), m_NbOfColor(
-                3), m_Mx(0.), m_MuF2(4.), m_MuF2_ref(4.), m_CA(3.), m_CF(
-                4. / 3.), m_TF(1. / 2.), m_F1u(0.), m_F1d(0.), m_FD(0.), m_ProfileShapeVal(
-                1.), m_ProfileShapeSea(2.), m_ProfileShapeGlue(2.), m_QuarkDTerm(
-                0.), m_GluonDTerm(0.) {
+        : GPDModule(typeid(*this).name()), m_NbOfQuarkFlavor(2), m_NbOfColor(3), m_Mx(
+                0.), m_MuF2(4.), m_MuF2_ref(4.), m_CA(3.), m_CF(4. / 3.), m_TF(
+                1. / 2.), m_F1u(0.), m_F1d(0.), m_FD(0.), m_ProfileShapeVal(1.), m_ProfileShapeSea(
+                2.), m_ProfileShapeGlue(2.), m_QuarkDTerm(0.), m_GluonDTerm(0.) {
 
     m_NbOfQuarkFlavor = 3;
     m_MuF2_ref = 4.;
@@ -998,20 +996,6 @@ void MPSSW13Model::initModule() {
 //TODO implement
 void MPSSW13Model::isModuleWellConfigured() {
     GPDModule::isModuleWellConfigured();
-}
-
-//TODO implement
-GPDOutputData MPSSW13Model::computeWithEvolution(const double &_x,
-        const double &_xi, const double &_t, const double &_MuF,
-        const double &_MuR, GPDComputeType::Type gpdComputeType) {
-    return GPDModule::computeWithEvolution(_x, _xi, _t, _MuF, _MuR,
-            gpdComputeType);
-}
-
-GPDOutputData MPSSW13Model::compute(const double &_x, const double &_xi,
-        const double &_t, const double &_MuF, const double &_MuR,
-        GPDComputeType::Type gpdComputeType) {
-    return GPDModule::compute(_x, _xi, _t, _MuF, _MuR, gpdComputeType);
 }
 
 double MPSSW13Model::getCA() const {

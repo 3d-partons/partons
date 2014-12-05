@@ -89,6 +89,7 @@ protected:
     double m_t;
     double m_MuF;
     double m_MuR;
+    GPDComputeType::Type m_gpdComputeType;
 
     //TODO initialize
     double m_MuF_ref;
@@ -109,11 +110,17 @@ protected:
     virtual void isModuleWellConfigured();
 
     void preCompute(const double &x, const double &xi, const double &t,
-            const double &MuF, const double &MuR);
+            const double &MuF, const double &MuR,
+            GPDComputeType::Type gpdComputeType);
 
     std::map<GPDComputeType::Type, GPDResultData (GPDModule::*)()> m_listGPDComputeTypeAvailable;
     std::map<GPDComputeType::Type, GPDResultData (GPDModule::*)()>::iterator m_it;
+private:
 
+    void errorMessage(const std::string &functionName,
+            const std::string &errorMsg);
+
+    GPDOutputData compute(bool evolution);
 };
 
 #endif /* GPD_MODULE_H */

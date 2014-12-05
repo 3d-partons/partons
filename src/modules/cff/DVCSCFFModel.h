@@ -14,8 +14,6 @@
 
 class GPDOutputData;
 
-//TODO In Progress
-
 class DVCSCFFModel: public CFFModule {
 public:
     static const std::string moduleID; ///< Unique ID to automatically register the module in the factory.

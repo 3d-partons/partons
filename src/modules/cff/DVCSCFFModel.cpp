@@ -8,6 +8,7 @@
 #include <cmath>
 #include <map>
 #include <stdexcept>
+#include <typeinfo>
 #include <utility>
 
 #include "../../beans/cff/CFFInputData.h"
@@ -24,17 +25,16 @@
 #include "../alphaS/RunningAlphaStrong.h"
 #include "../GPDModule.h"
 
-// Initialise GK11GPDModule::moduleID with a unique name.
-const std::string DVCSCFFModel::moduleID = "DVCSCFFModel";
-
-// Define a useless static boolean variable to enable registerModule() to be executed before the main() function.
-// Because global variables have program scope, and are initialised before main() is called.
-// !!! CARE !!! variable name must be unique.
-static bool isDVCSCFFModuleRegistered =
+// Initialise [class]::moduleID with a unique name.
+const std::string DVCSCFFModel::moduleID =
         ModuleObjectFactory::getInstance()->registerModule(new DVCSCFFModel());
 
 DVCSCFFModel::DVCSCFFModel()
-        : CFFModule(DVCSCFFModel::moduleID), m_CF(4. / 3.)/*, m_integrator(
+        : CFFModule(typeid(*this).name()), m_Zeta(0.), m_logQ2OverMu2(0.), m_Q(
+                0.), m_nbOfActiveFlavour(0), m_alphaSOver2Pi(0.), m_quarkDiagonal(
+                0.), m_gluonDiagonal(0.), m_realPartSubtractQuark(0.), m_imaginaryPartSubtractQuark(
+                0.), m_realPartSubtractGluon(0.), m_imaginaryPartSubtractGluon(
+                0.), m_CF(4. / 3.)/*, m_integrator(
  ROOT::Math::IntegrationOneDim::kADAPTIVESINGULAR, 0., 1.e-3)*/{
 
     m_listOfCFFComputeFunctionAvailable.insert(
@@ -65,7 +65,6 @@ DVCSCFFModel::DVCSCFFModel(const DVCSCFFModel &other)
     m_CF = other.m_CF;
 }
 
-//TODO implement clone function
 DVCSCFFModel* DVCSCFFModel::clone() const {
     return new DVCSCFFModel(*this);
 }
@@ -507,7 +506,6 @@ std::complex<double> DVCSCFFModel::computeIntegralsV() {
     return std::complex<double>(fRealPartCFF, fImaginaryPartCFF);
 }
 
-//TODO implement pour KernelA
 std::complex<double> DVCSCFFModel::computeIntegralsA() {
     double IntegralRealPartKernelQuark1; // Integral between 0 and fZeta in real part of amplitude
     double IntegralRealPartKernelQuark2; // Integral between fZeta and 1 in real part of amplitude

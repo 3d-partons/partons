@@ -12,7 +12,7 @@ Vector3D::~Vector3D() {
 }
 
 double Vector3D::operator*(const Vector3D& rhs) const {
-    return getX() * rhs.getX() + getY() * rhs.getY() + getZ() * rhs.getZ();
+    return getX() * rhs.getX() + getY() * rhs.getY() + m_z * rhs.getZ();
 }
 
 // ##### GETTERS & SETTERS #####

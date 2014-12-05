@@ -91,6 +91,8 @@ private:
     double m_y;
     double m_xB2;
 
+    double m_xBMin, m_xBMax;
+
     /*---------------------------------- Tests variables -----------------------------------*/
 
     // Printouts

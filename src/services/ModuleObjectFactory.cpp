@@ -34,12 +34,12 @@ ModuleObjectFactory::~ModuleObjectFactory() {
     }
 }
 
-bool ModuleObjectFactory::registerModule(ModuleObject * pModuleObject) {
+std::string ModuleObjectFactory::registerModule(ModuleObject * pModuleObject) {
     m_moduleRegistry.insert(
             std::pair<std::string, ModuleObject*>(pModuleObject->getClassName(),
                     pModuleObject));
 
-    return true;
+    return pModuleObject->getClassName();
 }
 
 ModuleObject* ModuleObjectFactory::getModule(const std::string & ID) {

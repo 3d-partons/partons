@@ -7,9 +7,10 @@
 #include <cmath>
 #include <map>
 #include <stdexcept>
+#include <typeinfo>
 #include <utility>
 
-#include "../../beans/gpd/GPDOutputData.h"
+#include "../../beans/gpd/GPDComputeType.h"
 #include "../../beans/gpd/GPDQuarkFlavorData.h"
 #include "../../beans/gpd/GPDResultData.h"
 #include "../../beans/QuarkFlavor.h"
@@ -18,17 +19,12 @@
 #include "../../utils/logger/LoggerManager.h"
 #include "../../utils/stringUtils/Formatter.h"
 
-// Initialise GK11GPDModule::moduleID with a unique name.
-const std::string GK11Model::moduleID = "GK11Model";
-
-// Define a useless static boolean variable to enable registerModule() to be executed before the main() function.
-// Because global variables have program scope, and are initialised before main() is called.
-// !!! CARE !!! variable name must be unique.
-static bool isGK11ModelRegistered =
+// Initialise GK11Module::moduleID with a unique name and enable registerModule() to be executed before the main() function.
+const std::string GK11Model::moduleID =
         ModuleObjectFactory::getInstance()->registerModule(new GK11Model());
 
 GK11Model::GK11Model()
-        : GPDModule(GK11Model::moduleID) {
+        : GPDModule(typeid(*this).name()) {
     m_nbOfQuarkFlavor = 3;
     fL = 0.;
     m_MuF2_ref = 4.;
@@ -138,6 +134,7 @@ GK11Model::~GK11Model() {
 //TODO implement
 void GK11Model::isModuleWellConfigured() {
     GPDModule::isModuleWellConfigured();
+
 }
 
 void GK11Model::initModule() {
@@ -148,21 +145,6 @@ void GK11Model::initModule() {
 
     m_pLoggerManager->debug(getClassName(), __func__,
             Formatter() << "fMuF2 = " << fMuF2 << " fL = " << fL);
-}
-
-GPDOutputData GK11Model::compute(const double &_x, const double &_xi,
-        const double &_t, const double &_MuF, const double &_MuR,
-        GPDComputeType::Type gpdComputeType) {
-
-    return GPDModule::compute(_x, _xi, _t, _MuF, _MuR, gpdComputeType);
-}
-
-GPDOutputData GK11Model::computeWithEvolution(const double &_x,
-        const double &_xi, const double &_t, const double &_MuF,
-        const double &_MuR, GPDComputeType::Type gpdComputeType) {
-
-    return GPDModule::computeWithEvolution(_x, _xi, _t, _MuF, _MuR,
-            gpdComputeType);
 }
 
 GPDResultData GK11Model::computeH() {

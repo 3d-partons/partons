@@ -42,9 +42,9 @@ public:
     /**
      * Store a unique instance of a module identified by a unique string character key.
      * @param _pBaseModule: an instance of the module built by its default constructor.
-     * @return Not used. It's for enable registerModule() to be executed before the main() function and auto-register all available module.
+     * @return Classname of the module
      */
-    bool registerModule(ModuleObject * _pModuleObject);
+    std::string registerModule(ModuleObject * _pModuleObject);
 
     ModuleObject* getModule(const std::string & ID);
     GPDModule* getGPDModule(const std::string & ID);

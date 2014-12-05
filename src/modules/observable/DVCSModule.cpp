@@ -3,7 +3,8 @@
 #include "../../beans/observable/Observable.h"
 
 DVCSModule::DVCSModule(std::string _ID)
-        : ObservableModule(_ID) {
+        : ObservableModule(_ID), m_xB(0.), m_t(0.), m_Q2(0.), m_phi(0.), m_phiS(
+                0.), m_phie(0.), m_E(0.), m_phaseSpace(0.), m_pObservable(0) {
 
 }
 
@@ -26,19 +27,9 @@ DVCSModule::DVCSModule(const DVCSModule& other)
 
     if (other.m_pObservable != 0) {
         m_pObservable = other.m_pObservable->clone();
+    } else {
+        m_pObservable = 0;
     }
 
     m_cffOutputData = other.m_cffOutputData;
-}
-
-//TODO implement
-double DVCSModule::somme() {
-    double result = 0.;
-    return result;
-}
-
-//TODO implement
-double DVCSModule::difference() {
-    double result = 0.;
-    return result;
 }

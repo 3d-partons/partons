@@ -82,10 +82,10 @@ protected:
     double m_MuF;
     double m_MuR;
 
-    GPDModule* m_pGPDModule;
-
     QCDOrderType::Type m_qcdOrderType;
     GPDComputeType::Type m_currentGPDComputeType;
+
+    GPDModule* m_pGPDModule;
 };
 
 #endif /* CFF_MODULE_H */

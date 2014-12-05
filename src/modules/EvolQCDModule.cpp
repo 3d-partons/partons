@@ -313,15 +313,14 @@ void EvolQCDModule::initMatrixValue() {
 }
 
 void EvolQCDModule::initVectorOfGPDCombinations() {
-    m_pLoggerManager->debug(getClassName(), __func__, "");
+    m_pLoggerManager->debug(getClassName(), __func__, "entered");
 
     m_vectorOfGPDCombination = MakeVectorOfGPDCombinations(m_gpdResultData);
 }
 
-//TODO implement
 bool EvolQCDModule::isRunnable(const double &MuF, const double &MuF_ref,
         EvolQCDModule::Type testType) {
-    m_pLoggerManager->debug(getClassName(), __func__, "");
+    m_pLoggerManager->debug(getClassName(), __func__, "entered");
 
     //TODO MuF de l'utilisateur par rapport au MuF_Ref du modèle de GPD
     bool result = false;

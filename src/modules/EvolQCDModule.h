@@ -34,7 +34,6 @@ public:
             const double &t, const double &MuF, const double &MuR,
             const GPDResultData &gpdResultData) = 0;
 
-    //TODO est appelé plusieurs fois dans le cas de l'évolution
     /**
      * Checks if MuF (from compute parameters) is revelant
      */

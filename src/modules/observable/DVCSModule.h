@@ -28,9 +28,6 @@ public:
     virtual double computeCrossSection(double beamHelicity, double beamCharge,
             Vector3D targetPolarization) = 0;
 
-    double somme();
-    double difference();
-
 protected:
     /**
      * Copy constructor
@@ -45,7 +42,7 @@ protected:
     double m_t;     ///< Mandelstam variable (square of the 4-momentum transfer)
     double m_Q2;    ///< Virtuality of the photon
 
-    double m_phi;       ///<  Angle between leptonic and hadronic planes
+    double m_phi;      ///<  Angle between leptonic and hadronic planes (radian)
     double m_phiS;      ///<
     double m_phie;      ///<
 

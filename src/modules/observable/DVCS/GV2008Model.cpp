@@ -6,27 +6,24 @@
 #include <complex>
 #include <cstdlib>
 #include <iostream>
+#include <typeinfo>
 
 #include "../../../beans/gpd/GPDComputeType.h"
 #include "../../../beans/observable/Observable.h"
 #include "../../../FundamentalPhysicalConstants.h"
 #include "../../../services/ModuleObjectFactory.h"
 #include "../../../utils/logger/LoggerManager.h"
+#include "../../../utils/MathUtils.h"
 #include "../../../utils/stringUtils/Formatter.h"
 
-// Initialise GV2008Model::moduleID with a unique name.
-const std::string GV2008Model::moduleID = "GV2008Model";
-
-// Define a useless static boolean variable to enable registerModule() to be executed before the main() function.
-// Because global variables have program scope, and are initialised before main() is called.
-// !!! CARE !!! variable name must be unique.
-static bool isGV2008ModelRegistered =
+// Initialise [class]::moduleID with a unique name.
+const std::string GV2008Model::moduleID =
         ModuleObjectFactory::getInstance()->registerModule(new GV2008Model());
 
 /*--------------------------------------- Constructors ---------------------------------*/
 
 GV2008Model::GV2008Model()
-        : DVCSModule(GV2008Model::moduleID), m_qCM(Vector4D(0., 0., 0., 0.)), m_pCM(
+        : DVCSModule(typeid(*this).name()), m_qCM(Vector4D(0., 0., 0., 0.)), m_pCM(
                 Vector4D(0., 0., 0., 0.)), m_qpCM(Vector4D(0., 0., 0., 0.)), m_ppCM(
                 Vector4D(0., 0., 0., 0.)) {
     m_E = 5.77;
@@ -64,6 +61,12 @@ void GV2008Model::initModule() {
     m_xB2 = m_xB * m_xB;
 
     m_s = m_powerOfProtonMass[0] - m_powerOfQ[0] + m_powerOfQ[0] / m_xB;
+
+    // Boundaries on the m_xB physical region
+    // The value of m_xBMin comes from the requirement of omega to be real, and the value of m_xBMax expresses the fact that s >= 0.
+    m_xBMin = 2. * m_E * m_powerOfQ[0]
+            / (PROTON_MASS * (4 * pow(m_E, 2) - m_powerOfQ[0]));
+    m_xBMax = m_powerOfQ[0] / (m_powerOfQ[0] - m_powerOfProtonMass[0]);
 
     // Omega
 
@@ -173,15 +176,7 @@ void GV2008Model::initModule() {
             Formatter() << "m_phaseSpace = " << m_phaseSpace);
 }
 
-//TODO implement
 void GV2008Model::isModuleWellConfigured() {
-    // Test : realistic kinematic configuration ?
-
-    // Boundaries on the m_xB physical region
-    double m_xBMin = 2. * m_E * m_powerOfQ[0]
-            / (PROTON_MASS * (4 * pow(m_E, 2) - m_powerOfQ[0]));
-    double m_xBMax = m_powerOfQ[0] / (m_powerOfQ[0] - m_powerOfProtonMass[0]);
-    // The value of m_xBMin comes from the requirement of omega to be real, and the value of m_xBMax expresses the fact that s >= 0.
 
     if (!(m_xBMin < m_xB && m_xB < m_xBMax)) {
         std::cout
@@ -208,7 +203,7 @@ double GV2008Model::computeWithPhiDependency(double xB, double t, double Q2,
     m_xB = xB;
     m_t = t;
     m_Q2 = Q2;
-    m_phi = phi * (PI / 180);
+    m_phi = MathUtils::convertDegreeToRadian(phi);
     m_cffOutputData = cffOutputData;
     m_pObservable = pObservable;
 

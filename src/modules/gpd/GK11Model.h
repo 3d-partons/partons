@@ -18,12 +18,9 @@
 #include <string>
 #include <vector>
 
-#include "../../beans/gpd/GPDComputeType.h"
 #include "../GPDModule.h"
 
 class GPDQuarkFlavorData;
-
-class GPDOutputData;
 class GPDResultData;
 
 //TODO finir les messages de debug dans toutes les fonctions
@@ -45,19 +42,6 @@ public:
     virtual ~GK11Model();
 
     virtual GK11Model* clone() const;
-
-    /**
-     * Compute GPD describes by Kroll-Goloskokov model in 2011. \n
-     * Compute GPD_H, GPD_Ht, GPD_E, GPD_Et for up, down and strange quarks. \n
-     * See GPDModule for more details.
-     */
-    virtual GPDOutputData compute(const double &_x, const double &_xi,
-            const double &_t, const double &_MuF, const double &_MuR,
-            GPDComputeType::Type gpdComputeType);
-
-    virtual GPDOutputData computeWithEvolution(const double &_x,
-            const double &_xi, const double &_t, const double &_MuF,
-            const double &_MuR, GPDComputeType::Type gpdComputeType);
 
     virtual std::string toString();
 
