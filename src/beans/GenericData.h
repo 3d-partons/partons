@@ -4,42 +4,42 @@
 /**
  * @file GenericData.h
  * @author: Bryan BERTHOU (CEA Saclay)
- * @date 28 juil. 2014
+ * @date 08 December 2014
  * @version 1.0
  */
 
-#include <map>
+#include <sstream>
 #include <string>
-#include <vector>
 
 class GenericData {
 public:
-    GenericData() {
-    }
-    ;
-
-    const std::map<std::string, std::string>& getDataMap() const {
-        return m_dataMap;
+    GenericData(const GenericData &other) {
+        m_stream.clear();
+        m_stream << other.m_stream.str();
     }
 
-    void setDataMap(const std::map<std::string, std::string>& dataMap) {
-        this->m_dataMap = dataMap;
+    GenericData(const double value) {
+        m_stream << value;
     }
 
-    const std::vector<std::string>& getDataVector() const {
-        return m_dataVector;
+    GenericData(const int value) {
+        m_stream << value;
     }
 
-    void setDataVector(const std::vector<std::string>& dataVector) {
-        this->m_dataVector = dataVector;
+    double getDouble() {
+        double d = 0.;
+        m_stream >> d;
+        return d;
     }
 
-protected:
-
+    int getInt() {
+        int i = 0;
+        m_stream >> i;
+        return i;
+    }
 
 private:
-    std::vector<std::string> m_dataVector;
-    std::map<std::string, std::string> m_dataMap;
+    std::stringstream m_stream;
 };
 
 #endif /* GENERIC_DATA_H */

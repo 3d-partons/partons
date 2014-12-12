@@ -108,9 +108,6 @@ private:
 
     //GPDResultData compute(GPDComputeType gpdComputeType);
     virtual GPDResultData computeH(); ///< Compute GPD H at considered kinematics
-    virtual GPDResultData computeE();
-    virtual GPDResultData computeHt();
-    virtual GPDResultData computeEt();
 };
 
 #endif /* MPSSW13_H_ */

@@ -11,9 +11,7 @@
 
 #include <string>
 
-#include "../GenericData.h"
-
-class CFFInputData: public GenericData {
+class CFFInputData {
 public:
     CFFInputData();
     CFFInputData(const double xB, const double t, const double Q2);

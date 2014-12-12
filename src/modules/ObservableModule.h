@@ -7,7 +7,6 @@
  * @version 1.0
  */
 
-#include <complex>
 #include <string>
 
 #include "ModuleObject.h"
@@ -17,7 +16,7 @@ public:
     /**
      * Default constructor
      */
-    ObservableModule(std::string _ID);
+    ObservableModule(const std::string &className);
 
     virtual ObservableModule* clone() const = 0;
 

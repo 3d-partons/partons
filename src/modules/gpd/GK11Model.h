@@ -15,9 +15,11 @@
  * !!!! Use tgamma() instead of gamma() (see: http://stackoverflow.com/questions/18116376/what-is-the-definition-for-gammadouble-x-and-why-is-it-different-on-two-gcc-ve)
  */
 
+//#include <map>
 #include <string>
 #include <vector>
 
+//#include "../../beans/GenericData.h"
 #include "../GPDModule.h"
 
 class GPDQuarkFlavorData;
@@ -42,6 +44,8 @@ public:
     virtual ~GK11Model();
 
     virtual GK11Model* clone() const;
+
+    virtual void configure(Parameters parameters);
 
     virtual std::string toString();
 

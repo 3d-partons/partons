@@ -1,7 +1,9 @@
 #include "ObservableModule.h"
 
-ObservableModule::ObservableModule(std::string _ID)
-        : ModuleObject(_ID), m_xB(0.), m_t(0.), m_Q2(0.) {
+#include <string>
+
+ObservableModule::ObservableModule(const std::string &className)
+        : ModuleObject(className), m_xB(0.), m_t(0.), m_Q2(0.) {
 
 }
 

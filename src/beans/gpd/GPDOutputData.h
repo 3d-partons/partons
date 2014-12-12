@@ -20,7 +20,7 @@
 #include "GPDComputeType.h"
 #include "GPDResultData.h"
 
-class GPDOutputData: public GenericData {
+class GPDOutputData {
 public:
     /**
      * Default constructor

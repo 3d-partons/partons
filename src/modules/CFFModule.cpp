@@ -2,9 +2,9 @@
 
 #include "GPDModule.h"
 
-CFFModule::CFFModule(std::string _ID)
-        : ModuleObject(_ID), m_xi(0.), m_xB(0.), m_t(0.), m_Q2(0.), m_MuF(0.), m_MuR(
-                0.), m_qcdOrderType(QCDOrderType::UNDEFINED), m_currentGPDComputeType(
+CFFModule::CFFModule(const std::string &className)
+        : ModuleObject(className), m_xi(0.), m_xB(0.), m_t(0.), m_Q2(0.), m_MuF(
+                0.), m_MuR(0.), m_qcdOrderType(QCDOrderType::UNDEFINED), m_currentGPDComputeType(
                 GPDComputeType::UNDEFINED), m_pGPDModule(0) {
 
 }

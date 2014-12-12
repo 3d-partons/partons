@@ -1,7 +1,7 @@
 #include "BaseObject.h"
 
+#include <stdexcept>
 #include <string>
-#include <typeinfo>
 
 #include "modules/ModuleObject.h"
 #include "utils/logger/LoggerManager.h"
@@ -9,17 +9,10 @@
 
 unsigned int BaseObject::uniqueID = 0;
 
-BaseObject::BaseObject(std::string className)
+BaseObject::BaseObject(const std::string &className)
         : m_pLoggerManager(LoggerManager::getInstance()), m_objectId(
                 getUniqueID()), m_className(className) {
-
 }
-
-//BaseObject::BaseObject(std::string className)
-//        : m_pLoggerManager(LoggerManager::getInstance()), m_objectId(
-//                typeid(*this).name()), m_className(className) {
-//
-//}
 
 BaseObject::BaseObject(const BaseObject& other) {
     m_objectId = getUniqueID();
@@ -32,6 +25,19 @@ BaseObject* BaseObject::clone() const {
 
 BaseObject::~BaseObject() {
 
+}
+
+void BaseObject::throwException(const std::string &functionName,
+        const std::string &errorMessage) {
+    m_pLoggerManager->debug(getClassName(), functionName, errorMessage);
+    throw std::runtime_error(
+            Formatter() << "[" << getClassName() << "::" << functionName << "] "
+                    << errorMessage);
+}
+
+std::string BaseObject::toString() {
+    return Formatter() << "m_className = " << m_className << " - "
+            << "m_objectId = " << m_objectId;
 }
 
 const std::string& BaseObject::getClassName() const {
@@ -52,9 +58,4 @@ unsigned int BaseObject::getObjectId() const {
 
 void BaseObject::setObjectId(unsigned int objectId) {
     m_objectId = objectId;
-}
-
-std::string BaseObject::toString() {
-    return Formatter() << "m_className = " << m_className << " - "
-            << "m_objectId = " << m_objectId;
 }

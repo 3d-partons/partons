@@ -2,8 +2,6 @@
 
 #include <Math/AllIntegrationTypes.h>
 #include <Math/Integrator.h>
-#include <Math/WrappedTF1.h>
-#include <TF1.h>
 #include <TMath.h>
 #include <cmath>
 #include <map>
@@ -24,6 +22,7 @@
 #include "../../utils/stringUtils/Formatter.h"
 #include "../alphaS/RunningAlphaStrong.h"
 #include "../GPDModule.h"
+#include "../math/RootIntegrationMode.h"
 
 // Initialise [class]::moduleID with a unique name.
 const std::string DVCSCFFModel::moduleID =
@@ -45,6 +44,10 @@ DVCSCFFModel::DVCSCFFModel()
             std::make_pair(GPDComputeType::Ht, &CFFModule::computePolarized));
     m_listOfCFFComputeFunctionAvailable.insert(
             std::make_pair(GPDComputeType::Et, &CFFModule::computePolarized));
+
+    m_pMathIntegratorModule =
+            ModuleObjectFactory::getInstance()->getMathIntegratorModule(
+                    RootIntegrationMode::moduleID);
 }
 
 DVCSCFFModel::DVCSCFFModel(const DVCSCFFModel &other)
@@ -92,6 +95,10 @@ void DVCSCFFModel::isModuleWellConfigured() {
     }
     if (m_qcdOrderType == QCDOrderType::UNDEFINED) {
         throw std::runtime_error("[DVCSCFFModel] QCDOrderType is UNDEFINED");
+    }
+    if (m_pMathIntegratorModule == 0) {
+        throw std::runtime_error(
+                "[DVCSCFFModel] MathIntegratorModule* is NULL");
     }
 }
 
@@ -335,7 +342,7 @@ void DVCSCFFModel::computeSubtractionFunctionsA() {
 
     // NLO, real and imaginary parts
 
-    if (m_qcdOrderType == "NLO") {
+    if (m_qcdOrderType == QCDOrderType::NLO) {
 
         // Real part, quark contribution
 
@@ -359,13 +366,13 @@ void DVCSCFFModel::computeSubtractionFunctionsA() {
 }
 
 std::complex<double> DVCSCFFModel::computeIntegralsV() {
-    double IntegralRealPartKernelQuark1; // Integral between 0 and fZeta in real part of amplitude
-    double IntegralRealPartKernelQuark2; // Integral between fZeta and 1 in real part of amplitude
-    double IntegralImaginaryPartKernelQuark; // Integral between 0 and fZeta in imaginary part of amplitude
+    double IntegralRealPartKernelQuark1 = 0.; // Integral between 0 and fZeta in real part of amplitude
+    double IntegralRealPartKernelQuark2 = 0.; // Integral between fZeta and 1 in real part of amplitude
+    double IntegralImaginaryPartKernelQuark = 0.; // Integral between 0 and fZeta in imaginary part of amplitude
 
-    double IntegralRealPartKernelGluon1; // Integral between 0 and fZeta in real part of amplitude
-    double IntegralRealPartKernelGluon2; // Integral between fZeta and 1 in real part of amplitude
-    double IntegralImaginaryPartKernelGluon; // Integral between 0 and fZeta in imaginary part of amplitude
+    double IntegralRealPartKernelGluon1 = 0.; // Integral between 0 and fZeta in real part of amplitude
+    double IntegralRealPartKernelGluon2 = 0.; // Integral between fZeta and 1 in real part of amplitude
+    double IntegralImaginaryPartKernelGluon = 0.; // Integral between 0 and fZeta in imaginary part of amplitude
 
     double SumSqrCharges; // Sum of square of electric charges of active quark flavours
 
@@ -409,8 +416,7 @@ std::complex<double> DVCSCFFModel::computeIntegralsV() {
 
     // Define functions and compute integrals
 
-    double* DummyPointer = NULL; // dummy variable for parameters in Integral method of TF1 (no parameters for us)
-    ROOT::Math::Integrator Integrator(
+    ROOT::Math::Integrator integrator(
             ROOT::Math::IntegrationOneDim::kADAPTIVESINGULAR, 0., 1.e-3);
 
     //  ROOT::Math::Integrator Integrator( ROOT::Math::IntegrationOneDim::kADAPTIVESINGULAR, 0., 1.e-9 );
@@ -421,63 +427,26 @@ std::complex<double> DVCSCFFModel::computeIntegralsV() {
 
     // Quark sector
 
-    TF1 ConvolRealPartKernelQuark1("ConvolReKernelQuark1V", this,
-            &DVCSCFFModel::ConvolReKernelQuark1V, 0., 1., 0, "DVCSCFFModel",
-            "ConvolReKernelQuark1V");
-    ROOT::Math::WrappedTF1 WrappedConvolRealPartKernelQuark1(
-            ConvolRealPartKernelQuark1);
-    Integrator.SetFunction(WrappedConvolRealPartKernelQuark1);
-    //  IntegralRealPartKernelQuark1 =  Integrator.Integral( 1.e-8, +fXi );
-    IntegralRealPartKernelQuark1 = Integrator.Integral(0., +m_xi);
+    IntegralRealPartKernelQuark1 = m_pMathIntegratorModule->compute(
+            DVCSCFFModel::CONVOL_RE_KERNEL_QUARK_1V, this, 0., +m_xi);
 
-    TF1 ConvolRealPartKernelQuark2("ConvolReKernelQuark2V", this,
-            &DVCSCFFModel::ConvolReKernelQuark2V, 0., 1., 0, "DVCSCFFModel",
-            "ConvolReKernelQuark2V");
-    ROOT::Math::WrappedTF1 WrappedConvolRealPartKernelQuark2(
-            ConvolRealPartKernelQuark2);
-    Integrator.SetFunction(WrappedConvolRealPartKernelQuark2);
-    IntegralRealPartKernelQuark2 = Integrator.Integral(+m_xi, +1.);
+    IntegralRealPartKernelQuark2 = m_pMathIntegratorModule->compute(
+            DVCSCFFModel::CONVOL_RE_KERNEL_QUARK_2V, this, +m_xi, +1);
 
-    TF1 ConvolImaginaryPartKernelQuark("ConvolImKernelQuarkV", this,
-            &DVCSCFFModel::ConvolImKernelQuarkV, 0., 1., 0, "DVCSCFFModel",
-            "ConvolImKernelQuarkV");
-    ROOT::Math::WrappedTF1 WrappedConvolImaginaryPartKernelQuark(
-            ConvolImaginaryPartKernelQuark);
-    Integrator.SetFunction(WrappedConvolImaginaryPartKernelQuark);
-    IntegralImaginaryPartKernelQuark = Integrator.Integral(+m_xi, +1.);
+    IntegralImaginaryPartKernelQuark = m_pMathIntegratorModule->compute(
+            DVCSCFFModel::CONVOL_IM_KERNEL_QUARK_V, this, +m_xi, +1);
 
     // Gluon sector
 
-    IntegralRealPartKernelGluon1 = 0.;
-    IntegralRealPartKernelGluon2 = 0.;
-    IntegralImaginaryPartKernelGluon = 0.;
-
     if (m_qcdOrderType == QCDOrderType::NLO) {
+        IntegralRealPartKernelGluon1 = m_pMathIntegratorModule->compute(
+                DVCSCFFModel::CONVOL_RE_KERNEL_GLUON_1V, this, 0., +m_xi);
 
-        TF1 ConvolRealPartKernelGluon1("ConvolReKernelGluon1V", this,
-                &DVCSCFFModel::ConvolReKernelGluon1V, 0., 1., 0, "DVCSCFFModel",
-                "ConvolReKernelGluon1V");
-        ROOT::Math::WrappedTF1 WrappedConvolRealPartKernelGluon1(
-                ConvolRealPartKernelGluon1);
-        Integrator.SetFunction(WrappedConvolRealPartKernelGluon1);
-        //     IntegralRealPartKernelGluon1 =  Integrator.Integral( 1.e-8, +fXi );
-        IntegralRealPartKernelGluon1 = Integrator.Integral(0., +m_xi);
+        IntegralRealPartKernelGluon2 = m_pMathIntegratorModule->compute(
+                DVCSCFFModel::CONVOL_RE_KERNEL_GLUON_2V, this, +m_xi, +1);
 
-        TF1 ConvolRealPartKernelGluon2("ConvolReKernelGluon2V", this,
-                &DVCSCFFModel::ConvolReKernelGluon2V, 0., 1., 0, "DVCSCFFModel",
-                "ConvolReKernelGluon2V");
-        ROOT::Math::WrappedTF1 WrappedConvolRealPartKernelGluon2(
-                ConvolRealPartKernelGluon2);
-        Integrator.SetFunction(WrappedConvolRealPartKernelGluon2);
-        IntegralRealPartKernelGluon2 = Integrator.Integral(+m_xi, +1.);
-
-        TF1 ConvolImaginaryPartKernelGluon("ConvolImKernelGluonV", this,
-                &DVCSCFFModel::ConvolImKernelGluonV, 0., 1., 0, "DVCSCFFModel",
-                "ConvolImKernelGluonV");
-        ROOT::Math::WrappedTF1 WrappedConvolImaginaryPartKernelGluon(
-                ConvolImaginaryPartKernelGluon);
-        Integrator.SetFunction(WrappedConvolImaginaryPartKernelGluon);
-        IntegralImaginaryPartKernelGluon = Integrator.Integral(+m_xi, +1.);
+        IntegralImaginaryPartKernelGluon = m_pMathIntegratorModule->compute(
+                DVCSCFFModel::CONVOL_IM_KERNEL_GLUON_V, this, +m_xi, +1);
     }
 
     // Compute Subtraction constants (different at LO or NLO)
@@ -501,19 +470,17 @@ std::complex<double> DVCSCFFModel::computeIntegralsV() {
                     + m_gluonDiagonal * m_imaginaryPartSubtractGluon);
     // Multiplication by SumSqrCharges corrects in mistake in eq. (9)
 
-    delete DummyPointer;
-
     return std::complex<double>(fRealPartCFF, fImaginaryPartCFF);
 }
 
 std::complex<double> DVCSCFFModel::computeIntegralsA() {
-    double IntegralRealPartKernelQuark1; // Integral between 0 and fZeta in real part of amplitude
-    double IntegralRealPartKernelQuark2; // Integral between fZeta and 1 in real part of amplitude
-    double IntegralImaginaryPartKernelQuark; // Integral between 0 and fZeta in imaginary part of amplitude
+    double IntegralRealPartKernelQuark1 = 0.; // Integral between 0 and fZeta in real part of amplitude
+    double IntegralRealPartKernelQuark2 = 0.; // Integral between fZeta and 1 in real part of amplitude
+    double IntegralImaginaryPartKernelQuark = 0.; // Integral between 0 and fZeta in imaginary part of amplitude
 
-    double IntegralRealPartKernelGluon1; // Integral between 0 and fZeta in real part of amplitude
-    double IntegralRealPartKernelGluon2; // Integral between fZeta and 1 in real part of amplitude
-    double IntegralImaginaryPartKernelGluon; // Integral between 0 and fZeta in imaginary part of amplitude
+    double IntegralRealPartKernelGluon1 = 0.; // Integral between 0 and fZeta in real part of amplitude
+    double IntegralRealPartKernelGluon2 = 0.; // Integral between fZeta and 1 in real part of amplitude
+    double IntegralImaginaryPartKernelGluon = 0.; // Integral between 0 and fZeta in imaginary part of amplitude
 
     double SumSqrCharges; // Sum of square of electric charges of active quark flavours
 
@@ -558,7 +525,6 @@ std::complex<double> DVCSCFFModel::computeIntegralsA() {
 
     // Define functions and compute integrals
 
-    double* DummyPointer = NULL; // dummy variable for parameters in Integral method of TF1 (no parameters for us)
     ROOT::Math::Integrator Integrator(
             ROOT::Math::IntegrationOneDim::kADAPTIVESINGULAR, 0., 1.e-3);
 
@@ -570,63 +536,26 @@ std::complex<double> DVCSCFFModel::computeIntegralsA() {
 
     // Quark sector
 
-    TF1 ConvolRealPartKernelQuark1("ConvolReKernelQuark1A", this,
-            &DVCSCFFModel::ConvolReKernelQuark1A, 0., 1., 0, "DVCSCFFModel",
-            "ConvolReKernelQuark1A");
-    ROOT::Math::WrappedTF1 WrappedConvolRealPartKernelQuark1(
-            ConvolRealPartKernelQuark1);
-    Integrator.SetFunction(WrappedConvolRealPartKernelQuark1);
-    //	IntegralRealPartKernelQuark1 =  Integrator.Integral( 1.e-8, +fXi );
-    IntegralRealPartKernelQuark1 = Integrator.Integral(0., +m_xi);
+    IntegralRealPartKernelQuark1 = m_pMathIntegratorModule->compute(
+            DVCSCFFModel::CONVOL_RE_KERNEL_QUARK_1A, this, 0., +m_xi);
 
-    TF1 ConvolRealPartKernelQuark2("ConvolReKernelQuark2A", this,
-            &DVCSCFFModel::ConvolReKernelQuark2A, 0., 1., 0, "DVCSCFFModel",
-            "ConvolReKernelQuark2A");
-    ROOT::Math::WrappedTF1 WrappedConvolRealPartKernelQuark2(
-            ConvolRealPartKernelQuark2);
-    Integrator.SetFunction(WrappedConvolRealPartKernelQuark2);
-    IntegralRealPartKernelQuark2 = Integrator.Integral(+m_xi, +1.);
+    IntegralRealPartKernelQuark2 = m_pMathIntegratorModule->compute(
+            DVCSCFFModel::CONVOL_RE_KERNEL_QUARK_2A, this, +m_xi, +1);
 
-    TF1 ConvolImaginaryPartKernelQuark("ConvolImKernelQuarkA", this,
-            &DVCSCFFModel::ConvolImKernelQuarkA, 0., 1., 0, "DVCSCFFModel",
-            "ConvolImKernelQuarkA");
-    ROOT::Math::WrappedTF1 WrappedConvolImaginaryPartKernelQuark(
-            ConvolImaginaryPartKernelQuark);
-    Integrator.SetFunction(WrappedConvolImaginaryPartKernelQuark);
-    IntegralImaginaryPartKernelQuark = Integrator.Integral(+m_xi, +1.);
+    IntegralImaginaryPartKernelQuark = m_pMathIntegratorModule->compute(
+            DVCSCFFModel::CONVOL_IM_KERNEL_QUARK_A, this, +m_xi, +1);
 
     // Gluon sector
 
-    IntegralRealPartKernelGluon1 = 0.;
-    IntegralRealPartKernelGluon2 = 0.;
-    IntegralImaginaryPartKernelGluon = 0.;
-
     if (m_qcdOrderType == QCDOrderType::NLO) {
+        IntegralRealPartKernelGluon1 = m_pMathIntegratorModule->compute(
+                DVCSCFFModel::CONVOL_RE_KERNEL_GLUON_1A, this, 0., +m_xi);
 
-        TF1 ConvolRealPartKernelGluon1("ConvolReKernelGluon1A", this,
-                &DVCSCFFModel::ConvolReKernelGluon1A, 0., 1., 0, "DVCSCFFModel",
-                "ConvolReKernelGluon1A");
-        ROOT::Math::WrappedTF1 WrappedConvolRealPartKernelGluon1(
-                ConvolRealPartKernelGluon1);
-        Integrator.SetFunction(WrappedConvolRealPartKernelGluon1);
-        //	   IntegralRealPartKernelGluon1 =  Integrator.Integral( 1.e-8, +fXi );
-        IntegralRealPartKernelGluon1 = Integrator.Integral(0., +m_xi);
+        IntegralRealPartKernelGluon2 = m_pMathIntegratorModule->compute(
+                DVCSCFFModel::CONVOL_RE_KERNEL_GLUON_2A, this, +m_xi, +1);
 
-        TF1 ConvolRealPartKernelGluon2("ConvolReKernelGluon2A", this,
-                &DVCSCFFModel::ConvolReKernelGluon2A, 0., 1., 0, "DVCSCFFModel",
-                "ConvolReKernelGluon2A");
-        ROOT::Math::WrappedTF1 WrappedConvolRealPartKernelGluon2(
-                ConvolRealPartKernelGluon2);
-        Integrator.SetFunction(WrappedConvolRealPartKernelGluon2);
-        IntegralRealPartKernelGluon2 = Integrator.Integral(+m_xi, +1.);
-
-        TF1 ConvolImaginaryPartKernelGluon("ConvolImKernelGluonA", this,
-                &DVCSCFFModel::ConvolImKernelGluonA, 0., 1., 0, "DVCSCFFModel",
-                "ConvolImKernelGluonA");
-        ROOT::Math::WrappedTF1 WrappedConvolImaginaryPartKernelGluon(
-                ConvolImaginaryPartKernelGluon);
-        Integrator.SetFunction(WrappedConvolImaginaryPartKernelGluon);
-        IntegralImaginaryPartKernelGluon = Integrator.Integral(+m_xi, +1.);
+        IntegralImaginaryPartKernelGluon = m_pMathIntegratorModule->compute(
+                DVCSCFFModel::CONVOL_IM_KERNEL_GLUON_A, this, +m_xi, +1);
     }
 
     // Compute Subtraction constants (different at LO or NLO)
@@ -653,8 +582,6 @@ std::complex<double> DVCSCFFModel::computeIntegralsA() {
                     + m_gluonDiagonal * m_imaginaryPartSubtractGluon);
     //	cout << fpQCDOrder << "      ImaginaryPartCFF Gluon = " << SumSqrCharges * ( IntegralImaginaryPartKernelGluon + fGluonDiagonal * fImaginaryPartSubtractGluon ) << endl ;
     // Multiplication by SumSqrCharges corrects in mistake in eq. (9)
-
-    delete DummyPointer;
 
     return std::complex<double>(realPartCFF, imaginaryPartCFF);
 }
@@ -795,17 +722,17 @@ std::complex<double> DVCSCFFModel::KernelGluonA(double x) {
  * Expressions are modified in order to integrate between 0 and fXi, hence explicitely avoiding GPD behaviour at x = 0.
  *
  */
-double DVCSCFFModel::ConvolReKernelQuark1V(double* x, double* Parameters) {
+double DVCSCFFModel::ConvolReKernelQuark1V(const double x) {
 
-    GPDOutputData gpdOutputData = m_pGPDModule->compute(x[0], m_xi, m_t, m_MuF,
+    GPDOutputData gpdOutputData = m_pGPDModule->compute(x, m_xi, m_t, m_MuF,
             m_MuR, m_currentGPDComputeType);
 
     // GPD evaluated at x = x[ 0 ]
     double EvalGPD = computeSquareChargeAveragedGPD(gpdOutputData);
 
     // Integrated function
-    double Convol = (EvalGPD - m_quarkDiagonal) * KernelQuarkV(x[0]).real();
-    Convol += (-EvalGPD - m_quarkDiagonal) * KernelQuarkV(-x[0]).real();
+    double Convol = (EvalGPD - m_quarkDiagonal) * KernelQuarkV(x).real();
+    Convol += (-EvalGPD - m_quarkDiagonal) * KernelQuarkV(-x).real();
 
     Convol /= m_xi; // In eq. (8), ( 2 - fZeta ) / fZeta = 1 / fXi
 
@@ -819,17 +746,17 @@ double DVCSCFFModel::ConvolReKernelQuark1V(double* x, double* Parameters) {
  * Equivalently x integration domain ranges between fXi and 1.
  *
  */
-double DVCSCFFModel::ConvolReKernelQuark2V(double* x, double* Parameters) {
-    GPDOutputData gpdOutputData = m_pGPDModule->compute(x[0], m_xi, m_t, m_MuF,
+double DVCSCFFModel::ConvolReKernelQuark2V(const double x) {
+    GPDOutputData gpdOutputData = m_pGPDModule->compute(x, m_xi, m_t, m_MuF,
             m_MuR, m_currentGPDComputeType);
 
     // GPD evaluated at x = x[ 0 ]
     double EvalGPD = computeSquareChargeAveragedGPD(gpdOutputData);
 
     double Convol = EvalGPD - m_quarkDiagonal;
-    Convol *= KernelQuarkV(x[0]).real();
+    Convol *= KernelQuarkV(x).real();
 
-    Convol += -KernelQuarkV(-x[0]).real() * EvalGPD;
+    Convol += -KernelQuarkV(-x).real() * EvalGPD;
 
     Convol /= m_xi; // In eq. (8), ( 2 - fZeta ) / fZeta = 1 / fXi
 
@@ -843,15 +770,15 @@ double DVCSCFFModel::ConvolReKernelQuark2V(double* x, double* Parameters) {
  * Equivalently x integration domain ranges between fXi and 1.
  *
  */
-double DVCSCFFModel::ConvolImKernelQuarkV(double* x, double* Parameters) {
-    GPDOutputData gpdOutputData = m_pGPDModule->compute(x[0], m_xi, m_t, m_MuF,
+double DVCSCFFModel::ConvolImKernelQuarkV(const double x) {
+    GPDOutputData gpdOutputData = m_pGPDModule->compute(x, m_xi, m_t, m_MuF,
             m_MuR, m_currentGPDComputeType);
 
     // GPD evaluated at x = x[ 0 ]
     double EvalGPD = computeSquareChargeAveragedGPD(gpdOutputData);
 
     double Convol = EvalGPD - m_quarkDiagonal;
-    Convol *= KernelQuarkV(x[0]).imag();
+    Convol *= KernelQuarkV(x).imag();
     Convol /= m_xi; // In eq. (8), ( 2 - fZeta ) / fZeta = 1 / fXi
 
     return Convol;
@@ -867,8 +794,8 @@ double DVCSCFFModel::ConvolImKernelQuarkV(double* x, double* Parameters) {
  * Expressions are modified in order to integrate between 0 and fXi, hence explicitely avoiding GPD behaviour at x = 0.
  *
  */
-double DVCSCFFModel::ConvolReKernelGluon1V(double* x, double* Parameters) {
-    GPDOutputData gpdOutputData = m_pGPDModule->compute(x[0], m_xi, m_t, m_MuF,
+double DVCSCFFModel::ConvolReKernelGluon1V(const double x) {
+    GPDOutputData gpdOutputData = m_pGPDModule->compute(x, m_xi, m_t, m_MuF,
             m_MuR, m_currentGPDComputeType);
 
     // GPD evaluated at x = x[ 0 ]
@@ -876,8 +803,8 @@ double DVCSCFFModel::ConvolReKernelGluon1V(double* x, double* Parameters) {
             2.
                     * (gpdOutputData.getGPDResultData(m_currentGPDComputeType))->getGluon();
 
-    double Convol = (EvalGPD - m_gluonDiagonal) * KernelGluonV(x[0]).real();
-    Convol += (+EvalGPD - m_gluonDiagonal) * KernelGluonV(-x[0]).real();
+    double Convol = (EvalGPD - m_gluonDiagonal) * KernelGluonV(x).real();
+    Convol += (+EvalGPD - m_gluonDiagonal) * KernelGluonV(-x).real();
 
     Convol /= (m_xi * m_xi * m_nbOfActiveFlavour);
 
@@ -891,8 +818,8 @@ double DVCSCFFModel::ConvolReKernelGluon1V(double* x, double* Parameters) {
  * Equivalently x integration domain ranges between fXi and 1.
  *
  */
-double DVCSCFFModel::ConvolReKernelGluon2V(double* x, double* Parameters) {
-    GPDOutputData gpdOutputData = m_pGPDModule->compute(x[0], m_xi, m_t, m_MuF,
+double DVCSCFFModel::ConvolReKernelGluon2V(const double x) {
+    GPDOutputData gpdOutputData = m_pGPDModule->compute(x, m_xi, m_t, m_MuF,
             m_MuR, m_currentGPDComputeType);
 
     double EvalGPD =
@@ -900,9 +827,9 @@ double DVCSCFFModel::ConvolReKernelGluon2V(double* x, double* Parameters) {
                     * (gpdOutputData.getGPDResultData(m_currentGPDComputeType))->getGluon();
 
     double Convol = EvalGPD - m_gluonDiagonal;
-    Convol *= KernelGluonV(x[0]).real();
+    Convol *= KernelGluonV(x).real();
 
-    Convol += +KernelGluonV(-x[0]).real() * EvalGPD;
+    Convol += +KernelGluonV(-x).real() * EvalGPD;
 
     Convol /= (m_xi * m_xi * m_nbOfActiveFlavour); // In eq. (8), ( ( 2 - fZeta ) / fZeta )^2 = 1 / fXi^2
 
@@ -916,8 +843,8 @@ double DVCSCFFModel::ConvolReKernelGluon2V(double* x, double* Parameters) {
  * Equivalently x integration domain ranges between fXi and 1.
  *
  */
-double DVCSCFFModel::ConvolImKernelGluonV(double* x, double* Parameters) {
-    GPDOutputData gpdOutputData = m_pGPDModule->compute(x[0], m_xi, m_t, m_MuF,
+double DVCSCFFModel::ConvolImKernelGluonV(const double x) {
+    GPDOutputData gpdOutputData = m_pGPDModule->compute(x, m_xi, m_t, m_MuF,
             m_MuR, m_currentGPDComputeType);
 
     double EvalGPD =
@@ -925,7 +852,7 @@ double DVCSCFFModel::ConvolImKernelGluonV(double* x, double* Parameters) {
                     * (gpdOutputData.getGPDResultData(m_currentGPDComputeType))->getGluon();
 
     double Convol = EvalGPD - m_gluonDiagonal;
-    Convol *= KernelGluonV(x[0]).imag();
+    Convol *= KernelGluonV(x).imag();
     Convol /= (m_xi * m_xi * m_nbOfActiveFlavour); // In eq. (8), ( ( 2 - fZeta ) / fZeta )^2 = 1 / fXi^2
 
     return Convol;
@@ -996,70 +923,70 @@ std::complex<double> DVCSCFFModel::KernelQuarkNLOA(double x) {
     return QuarkNLOA;
 }
 
-double DVCSCFFModel::ConvolReKernelQuark1A(double* x, double* Parameters) {
-    GPDOutputData gpdOutputData = m_pGPDModule->compute(x[0], m_xi, m_t, m_MuF,
+double DVCSCFFModel::ConvolReKernelQuark1A(const double x) {
+    GPDOutputData gpdOutputData = m_pGPDModule->compute(x, m_xi, m_t, m_MuF,
             m_MuR, m_currentGPDComputeType);
 
     // GPD evaluated at x = x[ 0 ]
     double EvalGPD = computeSquareChargeAveragedGPD(gpdOutputData);
 
-    double Convol = (EvalGPD - m_quarkDiagonal) * KernelQuarkA(x[0]).real();
-    Convol += (+EvalGPD - m_quarkDiagonal) * KernelQuarkA(-x[0]).real();
+    double Convol = (EvalGPD - m_quarkDiagonal) * KernelQuarkA(x).real();
+    Convol += (+EvalGPD - m_quarkDiagonal) * KernelQuarkA(-x).real();
 
     Convol /= m_xi; // In eq. (8), ( 2 - fZeta ) / fZeta = 1 / fXi
 
     return Convol;
 }
 
-double DVCSCFFModel::ConvolReKernelQuark2A(double* x, double* Parameters) {
-    GPDOutputData gpdOutputData = m_pGPDModule->compute(x[0], m_xi, m_t, m_MuF,
-            m_MuR, m_currentGPDComputeType);
-
-    // GPD evaluated at x = x[ 0 ]
-    double EvalGPD = computeSquareChargeAveragedGPD(gpdOutputData);
-
-    double Convol = EvalGPD - m_quarkDiagonal;
-    Convol *= KernelQuarkA(x[0]).real();
-
-    Convol += +KernelQuarkA(-x[0]).real() * EvalGPD;
-
-    Convol /= m_xi; // In eq. (8), ( 2 - fZeta ) / fZeta = 1 / fXi
-
-    return Convol;
-}
-
-double DVCSCFFModel::ConvolImKernelQuarkA(double* x, double* Parameters) {
-    GPDOutputData gpdOutputData = m_pGPDModule->compute(x[0], m_xi, m_t, m_MuF,
+double DVCSCFFModel::ConvolReKernelQuark2A(const double x) {
+    GPDOutputData gpdOutputData = m_pGPDModule->compute(x, m_xi, m_t, m_MuF,
             m_MuR, m_currentGPDComputeType);
 
     // GPD evaluated at x = x[ 0 ]
     double EvalGPD = computeSquareChargeAveragedGPD(gpdOutputData);
 
     double Convol = EvalGPD - m_quarkDiagonal;
-    Convol *= KernelQuarkA(x[0]).imag();
+    Convol *= KernelQuarkA(x).real();
+
+    Convol += +KernelQuarkA(-x).real() * EvalGPD;
+
     Convol /= m_xi; // In eq. (8), ( 2 - fZeta ) / fZeta = 1 / fXi
 
     return Convol;
 }
 
-double DVCSCFFModel::ConvolReKernelGluon1A(double* x, double* Parameters) {
-    GPDOutputData gpdOutputData = m_pGPDModule->compute(x[0], m_xi, m_t, m_MuF,
+double DVCSCFFModel::ConvolImKernelQuarkA(const double x) {
+    GPDOutputData gpdOutputData = m_pGPDModule->compute(x, m_xi, m_t, m_MuF,
+            m_MuR, m_currentGPDComputeType);
+
+    // GPD evaluated at x = x[ 0 ]
+    double EvalGPD = computeSquareChargeAveragedGPD(gpdOutputData);
+
+    double Convol = EvalGPD - m_quarkDiagonal;
+    Convol *= KernelQuarkA(x).imag();
+    Convol /= m_xi; // In eq. (8), ( 2 - fZeta ) / fZeta = 1 / fXi
+
+    return Convol;
+}
+
+double DVCSCFFModel::ConvolReKernelGluon1A(const double x) {
+    GPDOutputData gpdOutputData = m_pGPDModule->compute(x, m_xi, m_t, m_MuF,
             m_MuR, m_currentGPDComputeType);
 
     double EvalGPD =
             2.
                     * (gpdOutputData.getGPDResultData(m_currentGPDComputeType))->getGluon();
 
-    double Convol = (EvalGPD - m_gluonDiagonal) * KernelGluonA(x[0]).real();
-    Convol += (-EvalGPD - m_gluonDiagonal) * KernelGluonA(-x[0]).real();
+    double Convol = (EvalGPD - m_gluonDiagonal) * KernelGluonA(x).real();
+    Convol += (-EvalGPD - m_gluonDiagonal) * KernelGluonA(-x).real();
 
     Convol /= (m_xi * m_xi * m_nbOfActiveFlavour);
 
     return Convol;
 }
 
-double DVCSCFFModel::ConvolReKernelGluon2A(double* x, double* Parameters) {
-    GPDOutputData gpdOutputData = m_pGPDModule->compute(x[0], m_xi, m_t, m_MuF,
+double DVCSCFFModel::ConvolReKernelGluon2A(const double x) {
+    GPDOutputData gpdOutputData = m_pGPDModule->compute(x, m_xi, m_t, m_MuF,
             m_MuR, m_currentGPDComputeType);
 
     double EvalGPD =
@@ -1067,17 +994,17 @@ double DVCSCFFModel::ConvolReKernelGluon2A(double* x, double* Parameters) {
                     * (gpdOutputData.getGPDResultData(m_currentGPDComputeType))->getGluon();
 
     double Convol = EvalGPD - m_gluonDiagonal;
-    Convol *= KernelGluonA(x[0]).real();
+    Convol *= KernelGluonA(x).real();
 
-    Convol += -KernelGluonA(-x[0]).real() * EvalGPD;
+    Convol += -KernelGluonA(-x).real() * EvalGPD;
 
     Convol /= (m_xi * m_xi * m_nbOfActiveFlavour); // In eq. (8), ( ( 2 - fZeta ) / fZeta )^2 = 1 / fXi^2
 
     return Convol;
 }
 
-double DVCSCFFModel::ConvolImKernelGluonA(double* x, double* Parameters) {
-    GPDOutputData gpdOutputData = m_pGPDModule->compute(x[0], m_xi, m_t, m_MuF,
+double DVCSCFFModel::ConvolImKernelGluonA(const double x) {
+    GPDOutputData gpdOutputData = m_pGPDModule->compute(x, m_xi, m_t, m_MuF,
             m_MuR, m_currentGPDComputeType);
 
     double EvalGPD =
@@ -1085,8 +1012,66 @@ double DVCSCFFModel::ConvolImKernelGluonA(double* x, double* Parameters) {
                     * (gpdOutputData.getGPDResultData(m_currentGPDComputeType))->getGluon();
 
     double Convol = EvalGPD - m_gluonDiagonal;
-    Convol *= KernelGluonA(x[0]).imag();
+    Convol *= KernelGluonA(x).imag();
     Convol /= (m_xi * m_xi * m_nbOfActiveFlavour); // In eq. (8), ( ( 2 - fZeta ) / fZeta )^2 = 1 / fXi^2
 
     return Convol;
+}
+
+double DVCSCFFModel::functionsToIntegrate(const double * x,
+        const double * parameters) {
+    double result = 0.;
+
+    switch (m_currentFunctionToIntegrate) {
+    case DVCSCFFModel::CONVOL_RE_KERNEL_QUARK_1V: {
+        result = ConvolReKernelQuark1V(x[0]);
+        break;
+    }
+    case DVCSCFFModel::CONVOL_RE_KERNEL_QUARK_2V: {
+        result = ConvolReKernelQuark2V(x[0]);
+        break;
+    }
+    case DVCSCFFModel::CONVOL_IM_KERNEL_QUARK_V: {
+        result = ConvolImKernelQuarkV(x[0]);
+        break;
+    }
+    case DVCSCFFModel::CONVOL_RE_KERNEL_GLUON_1V: {
+        result = ConvolReKernelGluon1V(x[0]);
+        break;
+    }
+    case DVCSCFFModel::CONVOL_RE_KERNEL_GLUON_2V: {
+        result = ConvolReKernelGluon2V(x[0]);
+        break;
+    }
+    case DVCSCFFModel::CONVOL_IM_KERNEL_GLUON_V: {
+        result = ConvolImKernelGluonV(x[0]);
+        break;
+    }
+    case DVCSCFFModel::CONVOL_RE_KERNEL_QUARK_1A: {
+        result = ConvolReKernelQuark1A(x[0]);
+        break;
+    }
+    case DVCSCFFModel::CONVOL_RE_KERNEL_QUARK_2A: {
+        result = ConvolReKernelQuark2A(x[0]);
+        break;
+    }
+    case DVCSCFFModel::CONVOL_IM_KERNEL_QUARK_A: {
+        result = ConvolImKernelQuarkA(x[0]);
+        break;
+    }
+    case DVCSCFFModel::CONVOL_RE_KERNEL_GLUON_1A: {
+        result = ConvolReKernelGluon1A(x[0]);
+        break;
+    }
+    case DVCSCFFModel::CONVOL_RE_KERNEL_GLUON_2A: {
+        result = ConvolReKernelGluon2A(x[0]);
+        break;
+    }
+    case DVCSCFFModel::CONVOL_IM_KERNEL_GLUON_A: {
+        result = ConvolImKernelGluonA(x[0]);
+        break;
+    }
+    }
+
+    return result;
 }

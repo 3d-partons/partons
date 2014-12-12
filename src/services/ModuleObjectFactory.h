@@ -51,6 +51,7 @@ public:
     CFFModule* getCFFModule(const std::string & ID);
     EvolQCDModule* getEvolQCDModule(const std::string & ID);
     DVCSModule* getDVCSModule(const std::string & ID);
+    MathIntegratorModule* getMathIntegratorModule(const std::string & ID);
 
     std::string toString();
 

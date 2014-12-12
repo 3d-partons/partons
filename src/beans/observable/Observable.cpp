@@ -1,11 +1,14 @@
 #include "Observable.h"
 
+#include <string>
+
 //Observable::Observable(double he, double Qe, double polarity)
 //        : BaseObject("Observable"), m_he(he), m_Qe(Qe), m_polarity(polarity) {
 //}
 
-Observable::Observable(std::string className, ObservableChannel::Type channel,
-        double beamHelicity, double beamCharge, Vector3D targetPolarization)
+Observable::Observable(const std::string &className,
+        ObservableChannel::Type channel, double beamHelicity, double beamCharge,
+        Vector3D targetPolarization)
         : BaseObject(className), m_channel(channel), m_beamHelicity(
                 beamHelicity), m_beamCharge(beamCharge), m_targetPolarization(
                 targetPolarization) {

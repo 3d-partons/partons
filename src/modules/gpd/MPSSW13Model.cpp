@@ -1376,15 +1376,3 @@ GPDResultData MPSSW13Model::computeH() {
 
     return GPD_H;
 }
-
-GPDResultData MPSSW13Model::computeE() {
-    return GPDResultData();
-}
-
-GPDResultData MPSSW13Model::computeHt() {
-    return GPDResultData();
-}
-
-GPDResultData MPSSW13Model::computeEt() {
-    return GPDResultData();
-}

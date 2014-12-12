@@ -1,11 +1,13 @@
 #include "AluObservable.h"
 
+#include <typeinfo>
+
 #include "../../modules/observable/DVCSModule.h"
 #include "../../utils/vector/Vector3D.h"
 #include "ObservableChannel.h"
 
 AluObservable::AluObservable()
-        : Observable("AluObservable", ObservableChannel::DVCS, 0., 0.,
+        : Observable(typeid(*this).name(), ObservableChannel::DVCS, 0., 0.,
                 Vector3D(0., 0., 0.)) {
 }
 

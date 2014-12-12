@@ -15,13 +15,12 @@
 #include <string>
 #include <vector>
 
-#include "../GenericData.h"
 #include "../QuarkFlavor.h"
 #include "GPDComputeType.h"
 #include "GPDQuarkFlavorData.h"
 
 //TODO PartonDistributionResultData
-class GPDResultData: public GenericData {
+class GPDResultData {
 public:
 
     GPDResultData();

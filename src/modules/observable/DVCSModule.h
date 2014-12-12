@@ -18,7 +18,7 @@ class Observable;
 
 class DVCSModule: public ObservableModule {
 public:
-    DVCSModule(std::string _ID);
+    DVCSModule(const std::string &className);
     virtual ~DVCSModule();
 
     virtual double computeWithPhiDependency(double xB, double t, double Q2,

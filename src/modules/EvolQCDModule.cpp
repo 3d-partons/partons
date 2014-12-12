@@ -3,6 +3,7 @@
 #include <math.h>
 #include <stddef.h>
 #include <stdexcept>
+//#include <string>
 
 #include "../beans/gpd/GPDQuarkFlavorData.h"
 #include "../beans/QuarkFlavor.h"
@@ -90,8 +91,8 @@ MatrixD EvolQCDModule::invertMatrix6(13, 13, 1., 0., 0., 0., 0., 0., 0., 0., 0.,
         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1.);
 
 //TODO quelles sont les valeurs par défauts lors de l'initialisation ?
-EvolQCDModule::EvolQCDModule(const std::string &moduleID)
-        : ModuleObject(moduleID), m_x(0), m_xi(0), m_t(0), m_MuF(0), m_MuR(0), m_MuF_ref(
+EvolQCDModule::EvolQCDModule(const std::string &className)
+        : ModuleObject(className), m_x(0), m_xi(0), m_t(0), m_MuF(0), m_MuR(0), m_MuF_ref(
                 0), m_pGPDModule(0), m_qcdOrderType(QCDOrderType::UNDEFINED), m_currentGPDComputeType(
                 GPDComputeType::H), m_alphaS(0), m_scaleDistinction(0), m_nfEvol(
                 -1), m_nfMin(-1), m_nbXPoints(20), m_nbMuFPoints(1), m_epsilon(
@@ -202,7 +203,7 @@ void EvolQCDModule::isModuleWellConfigured() {
 void EvolQCDModule::initNfMin() {
     m_pLoggerManager->debug(getClassName(), __func__, "");
 
-    size_t nfGPDModel = m_gpdResultData.sizeOfListOfQuarkFlavorData();
+    int nfGPDModel = m_gpdResultData.sizeOfListOfQuarkFlavorData();
 
     // si nf_evol = -1 alors nf_evol = nf_gpd
     if (m_nfEvol == -1) {

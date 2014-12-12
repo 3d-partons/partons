@@ -1,11 +1,13 @@
 #include "ModuleObjectFactory.h"
 
 #include <sstream>
+#include <stdexcept>
 #include <utility>
 
 #include "../modules/CFFModule.h"
 #include "../modules/EvolQCDModule.h"
 #include "../modules/GPDModule.h"
+#include "../modules/MathIntegratorModule.h"
 #include "../modules/observable/DVCSModule.h"
 
 // Global static pointer used to ensure a single instance of the class.
@@ -25,8 +27,13 @@ ModuleObjectFactory* ModuleObjectFactory::getInstance() {
 
 ModuleObjectFactory::~ModuleObjectFactory() {
 
-    // m_modules never delete'ed. (exist until program termination)
+    // m_moduleRegistry never delete'ed. (exist until program termination)
     // because we can't guarantee correct destruction order
+    for (m_it = m_moduleRegistry.begin(); m_it != m_moduleRegistry.end();
+            m_it++) {
+        delete (m_it->second);
+        (m_it->second) = 0;
+    }
 
     if (m_pInstance != 0) {
         delete m_pInstance;
@@ -35,9 +42,16 @@ ModuleObjectFactory::~ModuleObjectFactory() {
 }
 
 std::string ModuleObjectFactory::registerModule(ModuleObject * pModuleObject) {
-    m_moduleRegistry.insert(
-            std::pair<std::string, ModuleObject*>(pModuleObject->getClassName(),
-                    pModuleObject));
+    m_it = m_moduleRegistry.find(pModuleObject->getClassName());
+    if (m_it == m_moduleRegistry.end()) {
+        m_moduleRegistry.insert(
+                std::pair<std::string, ModuleObject*>(
+                        pModuleObject->getClassName(), pModuleObject));
+    } else {
+        throw std::runtime_error(
+                "[ModuleObjectFactory::registerModule] Module ID is already in the registry - Please check your moduleID = "
+                        + pModuleObject->getClassName());
+    }
 
     return pModuleObject->getClassName();
 }
@@ -61,6 +75,11 @@ EvolQCDModule* ModuleObjectFactory::getEvolQCDModule(const std::string & ID) {
 
 DVCSModule* ModuleObjectFactory::getDVCSModule(const std::string & ID) {
     return static_cast<DVCSModule*>(getModule(ID));
+}
+
+MathIntegratorModule* ModuleObjectFactory::getMathIntegratorModule(
+        const std::string & ID) {
+    return static_cast<MathIntegratorModule*>(getModule(ID));
 }
 
 std::string ModuleObjectFactory::toString() {

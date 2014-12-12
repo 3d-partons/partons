@@ -13,6 +13,7 @@
 #include "../../beans/gpd/GPDComputeType.h"
 #include "../../beans/gpd/GPDQuarkFlavorData.h"
 #include "../../beans/gpd/GPDResultData.h"
+#include "../../beans/Parameters.h"
 #include "../../beans/QuarkFlavor.h"
 #include "../../FundamentalPhysicalConstants.h"
 #include "../../services/ModuleObjectFactory.h"
@@ -129,6 +130,10 @@ GK11Model* GK11Model::clone() const {
 }
 
 GK11Model::~GK11Model() {
+}
+
+void GK11Model::configure(Parameters parameters) {
+    GPDModule::configure(parameters);
 }
 
 //TODO implement

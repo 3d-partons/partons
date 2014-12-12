@@ -15,8 +15,7 @@ CFFInputData::CFFInputData(const unsigned int binId, const double xB,
         : m_binId(binId), m_xB(xB), m_t(t), m_Q2(Q2) {
 }
 
-CFFInputData::CFFInputData(const CFFInputData &other)
-        : GenericData(other) {
+CFFInputData::CFFInputData(const CFFInputData &other) {
     m_binId = other.m_binId;
     m_xB = other.m_xB;
     m_t = other.m_t;

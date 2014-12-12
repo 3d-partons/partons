@@ -45,7 +45,7 @@ public:
     void setTargetPolarization(const Vector3D& targetPolarization);
 
 protected:
-    Observable(std::string className, ObservableChannel::Type channel,
+    Observable(const std::string &className, ObservableChannel::Type channel,
             double beamHelicity, double beamCharge,
             Vector3D targetPolarization);
 

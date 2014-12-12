@@ -1,5 +1,6 @@
 #include "ObservableService.h"
 
+#include <typeinfo>
 #include <utility>
 #include <vector>
 
@@ -10,7 +11,7 @@
 ObservableService* ObservableService::m_pInstance = 0;
 
 ObservableService::ObservableService()
-        : BaseObject("ObservableService") {
+        : BaseObject(typeid(*this).name()) {
 
 }
 

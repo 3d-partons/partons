@@ -29,10 +29,12 @@ class EvolQCDModule;
 
 class GPDModule: public ModuleObject {
 public:
-    /**
-     * Default constructor
-     */
-    GPDModule(const std::string &moduleID);
+
+    enum Keys {
+        e_MUF_REF_STRING_KEY
+    };
+
+    GPDModule(const std::string &className);
 
     /**
      * Default destructor
@@ -45,6 +47,8 @@ public:
      * @return
      */
     virtual GPDModule* clone() const = 0;
+
+    void configure(Parameters parameters);
 
     /**
      * Virtual method. \n
@@ -68,10 +72,10 @@ public:
             const double &_xi, const double &_t, const double &_MuF,
             const double &_MuR, GPDComputeType::Type gpdComputeType);
 
-    virtual GPDResultData computeH()=0;
-    virtual GPDResultData computeE()=0;
-    virtual GPDResultData computeHt()=0;
-    virtual GPDResultData computeEt()=0;
+    virtual GPDResultData computeH();
+    virtual GPDResultData computeE();
+    virtual GPDResultData computeHt();
+    virtual GPDResultData computeEt();
 
     virtual std::string toString();
 
@@ -116,9 +120,6 @@ protected:
     std::map<GPDComputeType::Type, GPDResultData (GPDModule::*)()> m_listGPDComputeTypeAvailable;
     std::map<GPDComputeType::Type, GPDResultData (GPDModule::*)()>::iterator m_it;
 private:
-
-    void errorMessage(const std::string &functionName,
-            const std::string &errorMsg);
 
     GPDOutputData compute(bool evolution);
 };

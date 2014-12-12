@@ -1,6 +1,6 @@
 #include "CFFService.h"
 
-//#include <complex>
+#include <typeinfo>
 
 #include "../beans/cff/CFFInputData.h"
 #include "../beans/cff/CFFOutputData.h"
@@ -15,8 +15,8 @@
 // Global static pointer used to ensure a single instance of the class.
 CFFService* CFFService::m_pInstance = 0;
 
-CFFService::CFFService() :
-        BaseObject("CFFService") {
+CFFService::CFFService()
+        : BaseObject(typeid(*this).name()) {
 
 }
 
@@ -38,8 +38,8 @@ CFFService::~CFFService() {
 
 //TODO implementer
 CFFOutputData CFFService::computeWithGPDModel(CFFModule* cffModule,
-        GPDModule* _pGPDModule, CFFInputData &cffInputData,
-        const double MuF, const double MuR, QCDOrderType::Type qcdOrderType,
+        GPDModule* _pGPDModule, CFFInputData &cffInputData, const double MuF,
+        const double MuR, QCDOrderType::Type qcdOrderType,
         GPDComputeType::Type gpdComputeType) {
 
     // Configure cff module
@@ -47,7 +47,8 @@ CFFOutputData CFFService::computeWithGPDModel(CFFModule* cffModule,
     cffModule->setQcdOrderType(qcdOrderType);
 
     CFFOutputData cffOutputData = cffModule->compute(cffInputData.getXB(),
-            cffInputData.getT(), cffInputData.getQ2(), MuF, MuR, gpdComputeType);
+            cffInputData.getT(), cffInputData.getQ2(), MuF, MuR,
+            gpdComputeType);
 
     return cffOutputData;
 }

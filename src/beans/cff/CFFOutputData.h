@@ -15,7 +15,7 @@
 #include "../gpd/GPDComputeType.h"
 #include "CFFInputData.h"
 
-class CFFOutputData: public GenericData {
+class CFFOutputData {
 public:
     CFFOutputData();
     CFFOutputData(CFFInputData cffInputData);

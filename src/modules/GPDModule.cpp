@@ -4,12 +4,14 @@
 #include <utility>
 
 #include "../beans/gpd/GPDOutputData.h"
+#include "../beans/GenericData.h"
+#include "../beans/Parameters.h"
 #include "../utils/logger/LoggerManager.h"
 #include "../utils/stringUtils/Formatter.h"
 #include "EvolQCDModule.h"
 
-GPDModule::GPDModule(const std::string &moduleID)
-        : ModuleObject(moduleID), m_x(0.), m_xi(0.), m_t(0.), m_MuF(0.), m_MuR(
+GPDModule::GPDModule(const std::string &className)
+        : ModuleObject(className), m_x(0.), m_xi(0.), m_t(0.), m_MuF(0.), m_MuR(
                 0.), m_gpdComputeType(GPDComputeType::UNDEFINED), m_MuF_ref(0.), m_nf(
                 0.), m_pEvolQCDModule(0) {
 }
@@ -46,6 +48,14 @@ GPDModule::GPDModule(const GPDModule &other)
 }
 
 GPDModule::~GPDModule() {
+}
+
+void GPDModule::configure(Parameters parameters) {
+    GenericData* pMuF_ref_value = parameters.getUnique(e_MUF_REF_STRING_KEY);
+
+    if (pMuF_ref_value != 0) {
+        m_MuF_ref = pMuF_ref_value->getDouble();
+    }
 }
 
 //TODO implement
@@ -104,9 +114,7 @@ GPDOutputData GPDModule::computeWithEvolution(const double &_x,
                 EvolQCDModule::RELATIVE)) {
             evolution = true;
         }
-    }
-    else
-    {
+    } else {
         //TODO exception pas de module d'evolution
     }
 
@@ -143,7 +151,7 @@ GPDOutputData GPDModule::compute(bool evolution) {
 
             gpdOutputData.addGPDResultData(gpdResultData);
         } else {
-            errorMessage(__func__,
+            throwException(__func__,
                     Formatter() << "GPD("
                             << GPDComputeType(m_gpdComputeType).toString()
                             << ") is not available for this GPD model");
@@ -155,11 +163,21 @@ GPDOutputData GPDModule::compute(bool evolution) {
     return gpdOutputData;
 }
 
-void GPDModule::errorMessage(const std::string &functionName,
-        const std::string &errorMsg) {
-    m_pLoggerManager->debug(getClassName(), functionName, errorMsg);
-    throw std::runtime_error(
-            getClassName() + " " + functionName + " " + errorMsg);
+//TODO implement
+GPDResultData GPDModule::computeH() {
+    throw std::runtime_error("");
+}
+
+GPDResultData GPDModule::computeE() {
+    throw std::runtime_error("");
+}
+
+GPDResultData GPDModule::computeHt() {
+    throw std::runtime_error("");
+}
+
+GPDResultData GPDModule::computeEt() {
+    throw std::runtime_error("");
 }
 
 double GPDModule::getNf() const {

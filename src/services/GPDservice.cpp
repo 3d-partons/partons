@@ -64,7 +64,7 @@ ListGPDOutputData GPDService::compute(GPDInputData &_gpdInputData,
 
     // compute inputData for each GPDModule
     for (size_t i = 0; i != _listOfGPDToCompute.size(); i++) {
-        results.add(_listOfGPDToCompute[i]->getModuleID(),
+        results.add(_listOfGPDToCompute[i]->getClassName(),
                 compute(_gpdInputData, _listOfGPDToCompute[i],
                         _gpdComputeType));
     }
@@ -79,7 +79,7 @@ ListGPDOutputData GPDService::compute(
 
     // compute GPDModule for each inputData
     for (size_t i = 0; i != _listOfGPDInputData.size(); i++) {
-        results.add(_pGPDModule->getModuleID(),
+        results.add(_pGPDModule->getClassName(),
                 compute(_listOfGPDInputData[i], _pGPDModule,
                         GPDComputeType::ALL));
     }

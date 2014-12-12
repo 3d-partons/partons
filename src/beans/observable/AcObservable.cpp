@@ -1,10 +1,12 @@
 #include "AcObservable.h"
 
+#include <typeinfo>
+
 #include "../../utils/vector/Vector3D.h"
 #include "ObservableChannel.h"
 
 AcObservable::AcObservable()
-        : Observable("AcObservable", ObservableChannel::DVCS, 0., 0.,
+        : Observable(typeid(*this).name(), ObservableChannel::DVCS, 0., 0.,
                 Vector3D(0., 0., 0.)) {
 }
 
@@ -16,7 +18,6 @@ AcObservable* AcObservable::clone() const {
 }
 
 //TODO implement
-double AcObservable::compute(DVCSModule* pDVCSModule)
-{
+double AcObservable::compute(DVCSModule* pDVCSModule) {
     return 0.;
 }

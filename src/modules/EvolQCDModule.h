@@ -26,7 +26,7 @@ public:
         RELATIVE, ABSOLUTE, BOTH
     };
 
-    EvolQCDModule(const std::string &moduleID);
+    EvolQCDModule(const std::string &className);
     virtual ~EvolQCDModule();
     virtual EvolQCDModule* clone() const = 0;
 

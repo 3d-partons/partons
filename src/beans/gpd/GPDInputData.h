@@ -10,9 +10,7 @@
 
 #include <string>
 
-#include "../GenericData.h"
-
-class GPDInputData: public GenericData {
+class GPDInputData {
 public:
 
     GPDInputData(double _x, double _xi, double _t, double _MuF, double _MuR);

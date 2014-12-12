@@ -12,12 +12,8 @@ class LoggerManager;
 
 class BaseObject {
 public:
-    /**
-     * Constructor
-     *
-     * @param className
-     */
-    BaseObject(std::string className);
+
+    BaseObject(const std::string &className);
 
     /**
      * Default destructor
@@ -51,6 +47,9 @@ protected:
      * @param other
      */
     BaseObject(const BaseObject& other);
+
+    void throwException(const std::string &functionName,
+            const std::string &errorMessage);
 
 private:
     static unsigned int uniqueID;

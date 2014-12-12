@@ -27,7 +27,7 @@ public:
     /**
      * Default constructor
      */
-    CFFModule(std::string _ID);
+    CFFModule(const std::string &className);
 
     virtual CFFModule* clone() const = 0;
 
