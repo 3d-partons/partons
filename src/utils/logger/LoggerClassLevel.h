@@ -3,7 +3,7 @@
 
 /**
  * @file LoggerClassLevel.h
- * @author Bryan BERTHOU (CEA Saclay)
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 12 September 2014
  * @version 1.0
  *

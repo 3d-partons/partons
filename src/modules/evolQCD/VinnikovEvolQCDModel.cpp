@@ -6,7 +6,7 @@
 #include <cmath>
 #include <cstdio>
 #include <string>
-#include <typeinfo>
+//#include <typeinfo>
 #include <vector>
 
 #include "../../beans/gpd/GPDComputeType.h"
@@ -21,10 +21,10 @@
 // Initialise [class]::moduleID with a unique name.
 const std::string VinnikovEvolQCDModel::moduleID =
         ModuleObjectFactory::getInstance()->registerModule(
-                new VinnikovEvolQCDModel());
+                new VinnikovEvolQCDModel("VinnikovEvolQCDModel"));
 
-VinnikovEvolQCDModel::VinnikovEvolQCDModel()
-        : EvolQCDModule(typeid(*this).name()), m_nbColor(3.), m_CF(
+VinnikovEvolQCDModel::VinnikovEvolQCDModel( const std::string &className )
+        : EvolQCDModule(className), m_nbColor(3.), m_CF(
                 0.5 * (m_nbColor - 1. / m_nbColor)), m_CA(
                 2. * m_CF + 1. / m_nbColor), m_nbActiveFlavor(3.), m_b0(
                 11. * m_nbColor / 3. - 2. * m_nbActiveFlavor / 3.), m_TR(

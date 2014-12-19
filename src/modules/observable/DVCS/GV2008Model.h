@@ -34,7 +34,7 @@ class GV2008Model: public DVCSModule {
 public:
     static const std::string moduleID; ///< Unique ID to automatically register the module in the factory.
 
-    GV2008Model();
+    GV2008Model(const std::string &className);
     virtual ~GV2008Model();
 
     virtual GV2008Model* clone() const;

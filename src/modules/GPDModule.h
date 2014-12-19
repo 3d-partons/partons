@@ -3,11 +3,9 @@
 
 /**
  * @file GPDModule.h
- * @author Bryan BERTHOU (CEA Saclay)
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 06 Aout 2014
  * @version 1.0
- *
- * Last update : 24 September 2014
  *
  * @class GPDModule
  * @brief Abstract class that provides skeleton to implement a Generalized Parton Distributions (GPD) module.
@@ -34,6 +32,12 @@ public:
         e_MUF_REF_STRING_KEY
     };
 
+    /**
+     * Constructor.
+     * See BaseObject class for more info about input parameter.
+     *
+     * @param className class's name of child class.
+     */
     GPDModule(const std::string &className);
 
     /**
@@ -48,29 +52,34 @@ public:
      */
     virtual GPDModule* clone() const = 0;
 
+    /**
+     * Provides a generic method to configure all types of modules by passing a Parameters object.
+     * (See ModuleObject class for more info).
+     *
+     * @param parameters
+     */
     void configure(Parameters parameters);
 
     /**
-     * Virtual method. \n
-     * Compute GPD with some input parameters.
+     * Virtual method, computes GPD with some input parameters.
      *
-     * @param _x : Bjorken variable
-     * @param _xi : longitudinal momentum
-     * @param _t : momentum transfer (Mandelstam variable)
-     * @param _MuF : Factorisation
-     * @param _MuR : Re-normalisation
-     * @param _gpdComputeType : H, Ht, E, Et, ... or ALL. See GPDComputeType for more details.
+     * @param x Bjorken variable
+     * @param xi longitudinal momentum
+     * @param t momentum transfer (Mandelstam variable)
+     * @param MuF Factorisation
+     * @param MuR Re-normalisation
+     * @param gpdComputeType H, Ht, E, Et, ... or ALL. See GPDComputeType for more details.
      *
-     * @return Return results in an GPDOutputData class. \n
-     * Contains GPD results for each flavor of quarks and for each GPDs (H, Ht, E, Et, ...) if computable. \n
+     * @return Return results in an GPDOutputData class.
+     * Contains GPD results for each flavor of quarks and for each GPDs (H, Ht, E, Et, ...) if computable.
      */
-    virtual GPDOutputData compute(const double &_x, const double &_xi,
-            const double &_t, const double &_MuF, const double &_MuR,
+    virtual GPDOutputData compute(const double &x, const double &xi,
+            const double &t, const double &MuF, const double &MuR,
             GPDComputeType::Type gpdComputeType);
 
-    virtual GPDOutputData computeWithEvolution(const double &_x,
-            const double &_xi, const double &_t, const double &_MuF,
-            const double &_MuR, GPDComputeType::Type gpdComputeType);
+    virtual GPDOutputData computeWithEvolution(const double &x,
+            const double &xi, const double &t, const double &MuF,
+            const double &MuR, GPDComputeType::Type gpdComputeType);
 
     virtual GPDResultData computeH();
     virtual GPDResultData computeE();
@@ -113,6 +122,16 @@ protected:
     virtual void initModule();
     virtual void isModuleWellConfigured();
 
+    /**
+     *
+     *
+     * @param x
+     * @param xi
+     * @param t
+     * @param MuF
+     * @param MuR
+     * @param gpdComputeType
+     */
     void preCompute(const double &x, const double &xi, const double &t,
             const double &MuF, const double &MuR,
             GPDComputeType::Type gpdComputeType);

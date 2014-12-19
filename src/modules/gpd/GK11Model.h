@@ -19,7 +19,6 @@
 #include <string>
 #include <vector>
 
-//#include "../../beans/GenericData.h"
 #include "../GPDModule.h"
 
 class GPDQuarkFlavorData;
@@ -36,7 +35,9 @@ public:
     /**
      * Default constructor
      */
-    GK11Model();
+    // GK11Model();
+
+    GK11Model(const std::string &className);
 
     /**
      * Default destructor

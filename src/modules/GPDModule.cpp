@@ -92,25 +92,25 @@ void GPDModule::preCompute(const double &x, const double &xi, const double &t,
     isModuleWellConfigured();
 }
 
-GPDOutputData GPDModule::compute(const double &_x, const double &_xi,
-        const double &_t, const double &_MuF, const double &_MuR,
+GPDOutputData GPDModule::compute(const double &x, const double &xi,
+        const double &t, const double &MuF, const double &MuR,
         GPDComputeType::Type gpdComputeType) {
 
-    preCompute(_x, _xi, _t, _MuF, _MuR, gpdComputeType);
+    preCompute(x, xi, t, MuF, MuR, gpdComputeType);
 
     return compute(false);
 }
 
-GPDOutputData GPDModule::computeWithEvolution(const double &_x,
-        const double &_xi, const double &_t, const double &_MuF,
-        const double &_MuR, GPDComputeType::Type gpdComputeType) {
+GPDOutputData GPDModule::computeWithEvolution(const double &x, const double &xi,
+        const double &t, const double &MuF, const double &MuR,
+        GPDComputeType::Type gpdComputeType) {
 
-    preCompute(_x, _xi, _t, _MuF, _MuR, gpdComputeType);
+    preCompute(x, xi, t, MuF, MuR, gpdComputeType);
 
     bool evolution = false;
 
     if (m_pEvolQCDModule != 0) {
-        if (m_pEvolQCDModule->isRunnable(_MuF, m_MuF_ref,
+        if (m_pEvolQCDModule->isRunnable(MuF, m_MuF_ref,
                 EvolQCDModule::RELATIVE)) {
             evolution = true;
         }

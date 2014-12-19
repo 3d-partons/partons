@@ -4,17 +4,16 @@
 #include <Math/Integrator.h>
 #include <Math/WrappedTF1.h>
 #include <TF1.h>
-#include <typeinfo>
 
 #include "../../services/ModuleObjectFactory.h"
 
 // Initialise [class]::moduleID with a unique name and enable registerModule() to be executed before the main() function.
 const std::string RootIntegrationMode::moduleID =
         ModuleObjectFactory::getInstance()->registerModule(
-                new RootIntegrationMode());
+                new RootIntegrationMode("RootIntegrationMode"));
 
-RootIntegrationMode::RootIntegrationMode()
-        : MathIntegratorModule(typeid(*this).name()) {
+RootIntegrationMode::RootIntegrationMode(const std::string &className)
+        : MathIntegratorModule(className) {
 
 }
 

@@ -6,11 +6,9 @@
 #include <cmath>
 #include <map>
 #include <stdexcept>
-#include <typeinfo>
 #include <utility>
 
-#include "../../beans/cff/CFFInputData.h"
-#include "../../beans/cff/CFFOutputData.h"
+#include "../../beans/gpd/GPDComputeType.h"
 #include "../../beans/gpd/GPDOutputData.h"
 #include "../../beans/gpd/GPDQuarkFlavorData.h"
 #include "../../beans/gpd/GPDResultData.h"
@@ -26,12 +24,13 @@
 
 // Initialise [class]::moduleID with a unique name.
 const std::string DVCSCFFModel::moduleID =
-        ModuleObjectFactory::getInstance()->registerModule(new DVCSCFFModel());
+        ModuleObjectFactory::getInstance()->registerModule(
+                new DVCSCFFModel("DVCSCFFModel"));
 
-DVCSCFFModel::DVCSCFFModel()
-        : CFFModule(typeid(*this).name()), m_Zeta(0.), m_logQ2OverMu2(0.), m_Q(
-                0.), m_nbOfActiveFlavour(0), m_alphaSOver2Pi(0.), m_quarkDiagonal(
-                0.), m_gluonDiagonal(0.), m_realPartSubtractQuark(0.), m_imaginaryPartSubtractQuark(
+DVCSCFFModel::DVCSCFFModel(const std::string &className)
+        : CFFModule(className), m_Zeta(0.), m_logQ2OverMu2(0.), m_Q(0.), m_nbOfActiveFlavour(
+                0), m_alphaSOver2Pi(0.), m_quarkDiagonal(0.), m_gluonDiagonal(
+                0.), m_realPartSubtractQuark(0.), m_imaginaryPartSubtractQuark(
                 0.), m_realPartSubtractGluon(0.), m_imaginaryPartSubtractGluon(
                 0.), m_CF(4. / 3.)/*, m_integrator(
  ROOT::Math::IntegrationOneDim::kADAPTIVESINGULAR, 0., 1.e-3)*/{
@@ -45,6 +44,7 @@ DVCSCFFModel::DVCSCFFModel()
     m_listOfCFFComputeFunctionAvailable.insert(
             std::make_pair(GPDComputeType::Et, &CFFModule::computePolarized));
 
+    //TODO le passer en configuration
     m_pMathIntegratorModule =
             ModuleObjectFactory::getInstance()->getMathIntegratorModule(
                     RootIntegrationMode::moduleID);
@@ -77,7 +77,8 @@ DVCSCFFModel::~DVCSCFFModel() {
 }
 
 void DVCSCFFModel::initModule() {
-    m_xi = m_xB / (2 - m_xB);
+    CFFModule::initModule();
+
     m_Q = sqrt(m_Q2);
     m_Zeta = 2. * m_xi / (1 + m_xi);
     m_logQ2OverMu2 = 2. * log(m_Q / m_MuF);
@@ -90,6 +91,8 @@ void DVCSCFFModel::initModule() {
 }
 
 void DVCSCFFModel::isModuleWellConfigured() {
+    CFFModule::isModuleWellConfigured();
+
     if (m_pGPDModule == 0) {
         throw std::runtime_error("[DVCSCFFModel] GPDModule* is NULL");
     }
@@ -102,56 +105,15 @@ void DVCSCFFModel::isModuleWellConfigured() {
     }
 }
 
-//TODO voir pourquoi CFFInoutData se retrouve NULL lors de la copie de CFFOutputData
-CFFOutputData DVCSCFFModel::compute(const double xB, const double t,
-        const double Q2, const double MuF, const double MuR,
-        GPDComputeType::Type gpdComputeType) {
-
-    CFFOutputData cffOutputData(CFFInputData(xB, t, Q2));
-
-    m_xB = xB;
-    m_t = t;
-    m_Q2 = Q2;
-    m_MuF = MuF;
-    m_MuR = MuR;
-
-    isModuleWellConfigured();
-
-    initModule();
-
-    switch (gpdComputeType) {
-    case GPDComputeType::ALL: {
-
-        for (m_it = m_listOfCFFComputeFunctionAvailable.begin();
-                m_it != m_listOfCFFComputeFunctionAvailable.end(); m_it++) {
-            m_currentGPDComputeType = m_it->first;
-
-            m_pLoggerManager->debug(getClassName(), __func__,
-                    Formatter() << "m_currentGPDComputeType = "
-                            << GPDComputeType(m_currentGPDComputeType).toString());
-
-            // call function store in the base class map
-            cffOutputData.add(m_currentGPDComputeType,
-                    ((*this).*(m_it->second))());
-        }
-        break;
-    }
-    default: {
-        m_it = m_listOfCFFComputeFunctionAvailable.find(gpdComputeType);
-        if (m_it != m_listOfCFFComputeFunctionAvailable.end()) {
-            m_currentGPDComputeType = gpdComputeType;
-            // call function store in the base class map
-            cffOutputData.add(m_currentGPDComputeType,
-                    ((*this).*(m_it->second))());
-        } else {
-            //TODO throw an exception : can't compute this
-        }
-        break;
-    }
-    }
-
-    return cffOutputData;
-}
+//TODO voir pourquoi CFFInputData se retrouve NULL lors de la copie de CFFOutputData
+//CFFOutputData DVCSCFFModel::compute(const double xB, const double t,
+//        const double Q2, const double MuF, const double MuR,
+//        GPDComputeType::Type gpdComputeType) {
+//
+//    m_pLoggerManager->debug(getClassName(), __func__, "entered");
+//
+//    return CFFModule::preCompute(xB, t, Q2, MuF, MuR, gpdComputeType);
+//}
 
 std::complex<double> DVCSCFFModel::computeUnpolarized() {
 
@@ -859,6 +821,7 @@ double DVCSCFFModel::ConvolImKernelGluonV(const double x) {
 }
 
 std::complex<double> DVCSCFFModel::KernelGluonNLOV(double x) {
+    m_pLoggerManager->debug(getClassName(), __func__, "entered");
 
     double z = x / m_xi;
 

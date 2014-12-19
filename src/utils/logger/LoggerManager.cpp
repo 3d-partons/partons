@@ -138,6 +138,7 @@ void LoggerManager::update() {
     std::cout << "[LoggerManager] terminated ..." << std::endl;
 }
 
+//TODO check conditions to print
 bool LoggerManager::isLoggable(LoggerMessage loggerMessage) {
     bool result = true;
 

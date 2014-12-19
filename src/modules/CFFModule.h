@@ -37,24 +37,24 @@ public:
     virtual ~CFFModule();
 
     /**
-     * Virtual method. \n
+     * Virtual method.
      * Compute CFF with some input parameters.
      *
-     * @param _xi : longitudinal momentum
-     * @param _t : momentum transfer (Mandelstam variable)
+     * @param xB : longitudinal momentum
+     * @param t : momentum transfer (Mandelstam variable)
      * @param Q2 : Photon virtuality (in GeV^2)
-     * @param _MuF : Factorisation
-     * @param _MuR : Re-normalisation
+     * @param MuF : Factorisation
+     * @param MuR : Re-normalisation
+     * @param gpdComputeType
      *
      * @return Return a pair of two double values. Real and Imaginary parts of CFF.
      */
     virtual CFFOutputData compute(const double xB, const double t,
             const double Q2, const double MuF, const double MuR,
-            GPDComputeType::Type gpdComputeType) = 0;
+            GPDComputeType::Type gpdComputeType);
 
-    virtual std::complex<double> computeUnpolarized() = 0;
-
-    virtual std::complex<double> computePolarized() = 0;
+    virtual std::complex<double> computeUnpolarized();
+    virtual std::complex<double> computePolarized();
 
     // ##### GETTERS & SETTERS #####
 
@@ -84,8 +84,16 @@ protected:
 
     QCDOrderType::Type m_qcdOrderType;
     GPDComputeType::Type m_currentGPDComputeType;
+    GPDComputeType::Type m_gpdComputeType;
 
     GPDModule* m_pGPDModule;
+
+    virtual void initModule();
+    virtual void isModuleWellConfigured();
+
+    void preCompute(const double xB, const double t, const double Q2,
+            const double MuF, const double MuR,
+            GPDComputeType::Type gpdComputeType);
 };
 
 #endif /* CFF_MODULE_H */

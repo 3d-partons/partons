@@ -3,7 +3,7 @@
 
 /**
  * @file ObservableKinematic.h
- * @author: Bryan BERTHOU (CEA Saclay)
+ * @author: Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 26 November 2014
  * @version 1.0
  *
@@ -12,15 +12,35 @@
  * @brief Class representing the kinematic variables.
  */
 
+#include <string>
 #include <vector>
 
 #include "FormFactorKinematic.h"
 
 class ObservableKinematic: public FormFactorKinematic {
 public:
+    /**
+     * Constructor
+     *
+     * @param xB
+     * @param t momentum transfer (Mandelstam variable)
+     * @param Q2 virtualty of the photon
+     * @param listOfPhi
+     */
     ObservableKinematic(double xB, double t, double Q2,
             std::vector<double> listOfPhi);
-    ~ObservableKinematic();
+
+    /**
+     * Default destructor
+     */
+    virtual ~ObservableKinematic();
+
+    /**
+     * Return a pre-formatted characters string for output visualization of class member's values
+     *
+     * @return a pre-formatted characters string
+     */
+    virtual std::string toString();
 
     // ##### GETTERS & SETTERS #####
 

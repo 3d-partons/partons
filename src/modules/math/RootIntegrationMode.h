@@ -15,7 +15,7 @@ class RootIntegrationMode: public MathIntegratorModule {
 public:
     static const std::string moduleID; ///< Unique ID to automatically register the module in the factory.
 
-    RootIntegrationMode();
+    RootIntegrationMode(const std::string &className);
     virtual ~RootIntegrationMode();
 
     virtual double compute(unsigned int functionName,

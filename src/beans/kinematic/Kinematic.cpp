@@ -1,10 +1,16 @@
 #include "Kinematic.h"
 
+#include "../../utils/stringUtils/Formatter.h"
+
 Kinematic::Kinematic(double xB, double t)
         : m_xB(xB), m_t(t) {
 }
 
 Kinematic::~Kinematic() {
+}
+
+std::string Kinematic::toString() {
+    return Formatter() << "m_xB = " << m_xB << " m_t = " << m_t;
 }
 
 // ##### GETTERS & SETTERS #####

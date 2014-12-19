@@ -3,68 +3,112 @@
 
 /**
  * @file GPDService.h
- * @author Bryan BERTHOU (CEA Saclay)
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 04 Aout 2014
  * @version 1.0
  *
- * Last update : 24 September 2014
- *
  * @class GPDService
- * @brief \<singleton\> Use for handle and compute some pre-configured GPD modules.
+ * @brief \<singleton\> Use for handle and compute some pre-configured GPD models.
  */
 
 #include <vector>
 
 #include "../beans/gpd/GPDComputeType.h"
-#include "../beans/gpd/GPDInputData.h"
+#include "../beans/kinematic/GPDKinematic.h"
 #include "../modules/GPDModule.h"
 
 class GPDOutputData;
 class ListGPDOutputData;
 
 class GPDService {
-    /**
-     * Private pointer of this class for a unique instance
-     */
-    static GPDService* pInstance;
+private:
+    static GPDService* pInstance; ///< Private pointer of this class for a unique instance
 
     /**
-     * Private default constructor for a unique instance
+     * Private default constructor for a unique instance of this class
      */
     GPDService();
 
 public:
     /**
-     * Share a unique pointer of this class
+     * A static function that provides a unique pointer of this class
+     *
+     * @return A unique pointer of this class
      */
     static GPDService* getInstance();
 
     /**
      * Default destructor
      */
-    ~GPDService();
+    virtual ~GPDService();
 
-    GPDOutputData compute(GPDInputData &_gpdInputData, GPDModule* _pGPDModule,
-            GPDComputeType::Type _gpdComputeType);
+    /**
+     * Computes GPD model at specific kinematic
+     *
+     * @param gpdKinematic
+     * @param pGPDModule
+     * @return
+     */
+    GPDOutputData computeGPDModel(GPDKinematic &gpdKinematic,
+            GPDModule* pGPDModule);
 
-    GPDOutputData computeWithEvolution(GPDModule* pGPDModule,
-            EvolQCDModule* pEvolQCDModule, GPDInputData &gpdInputData,
+    /**
+     * Computes the GPD model at specific kinematic, restricted by a GPD's type
+     *
+     * @param gpdKinematic
+     * @param pGPDModule
+     * @param gpdComputeType
+     * @return
+     */
+    GPDOutputData computeGPDModelRestrictedByGPDType(GPDKinematic &gpdKinematic,
+            GPDModule* pGPDModule, GPDComputeType::Type gpdComputeType);
+
+    /**
+     * Computes GPD model at specific kinematic with a QCD evolution model.
+     *
+     * @param pGPDModule
+     * @param pEvolQCDModule
+     * @param gpdKinematic
+     * @param gpdComputeType
+     * @return
+     */
+    GPDOutputData computeGPDModelWithEvolution(GPDKinematic &gpdKinematic,
+            GPDModule* pGPDModule, EvolQCDModule* pEvolQCDModule,
             GPDComputeType::Type gpdComputeType = GPDComputeType::ALL);
 
-    GPDOutputData compute(GPDInputData &_gpdInputData, GPDModule* _pGPDModule);
+    /**
+     * Computes a list of GPD models at specific kinematic
+     *
+     * @param gpdKinematic
+     * @param listOfGPDToCompute
+     * @return
+     */
+    ListGPDOutputData computeListOfGPDModel(GPDKinematic &gpdKinematic,
+            std::vector<GPDModule*> &listOfGPDToCompute);
 
-    //TODO passer la liste en reference
-    ListGPDOutputData compute(GPDInputData &_gpdInputData,
-            std::vector<GPDModule*> _listOfGPDToCompute);
+    /**
+     * Computes a list of GPD models at specific kinematic, restricted by a GPD's type
+     *
+     * @param gpdKinematic
+     * @param listOfGPDToCompute
+     * @param gpdComputeType
+     * @return
+     */
+    ListGPDOutputData computeListOfGPDModelRestrictedByGPDType(
+            GPDKinematic &gpdKinematic,
+            std::vector<GPDModule*> &listOfGPDToCompute,
+            GPDComputeType gpdComputeType);
 
-    //TODO passer la liste en reference
-    ListGPDOutputData compute(GPDInputData &_gpdInputData,
-            std::vector<GPDModule*> _listOfGPDToCompute,
-            GPDComputeType _gpdComputeType);
-
-    //TODO passer la liste en reference
-    ListGPDOutputData compute(std::vector<GPDInputData> _listOfGPDInputData,
-            GPDModule* _pGPDModule);
+    /**
+     * Computes GPD model by a kinematics list
+     *
+     * @param listOfGPDKinematic
+     * @param pGPDModule
+     * @return
+     */
+    ListGPDOutputData computeListOfKinematic(
+            std::vector<GPDKinematic> &listOfGPDKinematic,
+            GPDModule* pGPDModule);
 
 };
 

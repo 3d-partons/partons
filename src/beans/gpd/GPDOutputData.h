@@ -4,10 +4,8 @@
 /**
  * @file GPDOutputData.h
  * @author Bryan BERTHOU (CEA Saclay)
- * @date 24/07/2014
+ * @date 24 July 2014
  * @version 1.0
- *
- * Last update : 24 September 2014
  *
  * @class GPDOutputData
  * @brief
@@ -23,11 +21,11 @@
 class GPDOutputData {
 public:
     /**
-     * Default constructor
+     * @brief Default constructor
      */
     GPDOutputData();
     /**
-     * Default destructor
+     * @brief Default destructor
      */
     virtual ~GPDOutputData();
 

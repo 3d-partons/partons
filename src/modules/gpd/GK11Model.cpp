@@ -22,10 +22,48 @@
 
 // Initialise GK11Module::moduleID with a unique name and enable registerModule() to be executed before the main() function.
 const std::string GK11Model::moduleID =
-        ModuleObjectFactory::getInstance()->registerModule(new GK11Model());
+        ModuleObjectFactory::getInstance()->registerModule(new GK11Model("GK11Model"));
 
-GK11Model::GK11Model()
-        : GPDModule(typeid(*this).name()) {
+//GK11Model::GK11Model()
+//        : GPDModule(typeid(*this).name()) {
+//    m_nbOfQuarkFlavor = 3;
+//    fL = 0.;
+//    m_MuF2_ref = 4.;
+//    m_MuF_ref = sqrt(m_MuF2_ref);
+//    Huval1tab = std::vector<double>(3, 0.);
+//    Hdval1tab = std::vector<double>(3, 0.);
+//    Huval1mtab = std::vector<double>(3, 0.);
+//    Hdval1mtab = std::vector<double>(3, 0.);
+//    Hs1tab = std::vector<double>(4, 0.);
+//    Hi1tab = std::vector<double>(4, 0.);
+//    Euval1tab = std::vector<double>(2, 0.);
+//    Edval1tab = std::vector<double>(8, 0.);
+//    Euval1mtab = std::vector<double>(2, 0.);
+//    Edval1mtab = std::vector<double>(8, 0.);
+//    Es1tab = std::vector<double>(3, 0.);
+//    Ei1tab = std::vector<double>(2, 0.);
+//    Htuval1tab = std::vector<double>(3, 0.);
+//    Htdval1tab = std::vector<double>(3, 0.);
+//    Htuval1mtab = std::vector<double>(3, 0.);
+//    Htdval1mtab = std::vector<double>(3, 0.);
+//    Hti1tab = std::vector<double>(3, 0.);
+//    Etuval1tab = std::vector<double>(4, 0.);
+//    Etdval1tab = std::vector<double>(4, 0.);
+//    Etuval1mtab = std::vector<double>(4, 0.);
+//    Etdval1mtab = std::vector<double>(4, 0.);
+//
+//    m_listGPDComputeTypeAvailable.insert(
+//            std::make_pair(GPDComputeType::H, &GPDModule::computeH));
+//    m_listGPDComputeTypeAvailable.insert(
+//            std::make_pair(GPDComputeType::E, &GPDModule::computeE));
+//    m_listGPDComputeTypeAvailable.insert(
+//            std::make_pair(GPDComputeType::Ht, &GPDModule::computeHt));
+//    m_listGPDComputeTypeAvailable.insert(
+//            std::make_pair(GPDComputeType::Et, &GPDModule::computeEt));
+//}
+
+GK11Model::GK11Model(const std::string &className)
+        : GPDModule(className) {
     m_nbOfQuarkFlavor = 3;
     fL = 0.;
     m_MuF2_ref = 4.;

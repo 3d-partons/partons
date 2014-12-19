@@ -24,7 +24,7 @@ class GPDResultData;
 class MPSSW13Model: public GPDModule {
 public:
     static const std::string moduleID;
-    MPSSW13Model();
+    MPSSW13Model(const std::string &className);
     virtual ~MPSSW13Model();
 
     virtual MPSSW13Model* clone() const;

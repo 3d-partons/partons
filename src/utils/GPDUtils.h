@@ -4,8 +4,8 @@
 /**
  * @file GPDUtils.h
  * @brief
- * @author Bryan BERTHOU (CEA Saclay)
- * @date 25 Juil 2014
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
+ * @date 25 July 2014
  * @version 1.0
  */
 

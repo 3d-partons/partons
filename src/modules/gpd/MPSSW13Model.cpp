@@ -9,7 +9,6 @@
 #include <cstdlib>
 #include <iostream>
 #include <map>
-#include <typeinfo>
 #include <utility>
 
 #include "../../beans/gpd/GPDComputeType.h"
@@ -23,12 +22,13 @@
 #include "../../utils/stringUtils/Formatter.h"
 
 const std::string MPSSW13Model::moduleID =
-        ModuleObjectFactory::getInstance()->registerModule(new MPSSW13Model());
+        ModuleObjectFactory::getInstance()->registerModule(
+                new MPSSW13Model("MPSSW13Model"));
 
-MPSSW13Model::MPSSW13Model()
-        : GPDModule(typeid(*this).name()), m_NbOfQuarkFlavor(2), m_NbOfColor(3), m_Mx(
-                0.), m_MuF2(4.), m_MuF2_ref(4.), m_CA(3.), m_CF(4. / 3.), m_TF(
-                1. / 2.), m_F1u(0.), m_F1d(0.), m_FD(0.), m_ProfileShapeVal(1.), m_ProfileShapeSea(
+MPSSW13Model::MPSSW13Model(const std::string &className)
+        : GPDModule(className), m_NbOfQuarkFlavor(2), m_NbOfColor(3), m_Mx(0.), m_MuF2(
+                4.), m_MuF2_ref(4.), m_CA(3.), m_CF(4. / 3.), m_TF(1. / 2.), m_F1u(
+                0.), m_F1d(0.), m_FD(0.), m_ProfileShapeVal(1.), m_ProfileShapeSea(
                 2.), m_ProfileShapeGlue(2.), m_QuarkDTerm(0.), m_GluonDTerm(0.) {
 
     m_NbOfQuarkFlavor = 3;

@@ -6,7 +6,6 @@
 #include <complex>
 #include <cstdlib>
 #include <iostream>
-#include <typeinfo>
 
 #include "../../../beans/gpd/GPDComputeType.h"
 #include "../../../beans/observable/Observable.h"
@@ -18,12 +17,13 @@
 
 // Initialise [class]::moduleID with a unique name.
 const std::string GV2008Model::moduleID =
-        ModuleObjectFactory::getInstance()->registerModule(new GV2008Model());
+        ModuleObjectFactory::getInstance()->registerModule(
+                new GV2008Model("GV2008Model"));
 
 /*--------------------------------------- Constructors ---------------------------------*/
 
-GV2008Model::GV2008Model()
-        : DVCSModule(typeid(*this).name()), m_qCM(Vector4D(0., 0., 0., 0.)), m_pCM(
+GV2008Model::GV2008Model(const std::string &className)
+        : DVCSModule(className), m_qCM(Vector4D(0., 0., 0., 0.)), m_pCM(
                 Vector4D(0., 0., 0., 0.)), m_qpCM(Vector4D(0., 0., 0., 0.)), m_ppCM(
                 Vector4D(0., 0., 0., 0.)) {
     m_E = 5.77;
