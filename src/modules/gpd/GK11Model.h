@@ -121,14 +121,36 @@ protected:
      */
     GK11Model(const GK11Model& other);
 
+    virtual void isModuleWellConfigured();
+    virtual void initModule();
+
+    //GPDResultData compute(GPDComputeType gpdComputeType);
+
+    virtual GPDResultData computeH(); ///< Compute GPD H at considered kinematics
+    virtual GPDResultData computeE(); ///< Compute GPD E at considered kinematics
+    virtual GPDResultData computeHt(); ///< Compute GPD Ht at considered kinematics
+    virtual GPDResultData computeEt(); ///< Compute GPD Et at considered kinematics
+
+    double computeSinglet(const GPDQuarkFlavorData &quark_u,
+            const GPDQuarkFlavorData &quark_d,
+            const GPDQuarkFlavorData &quark_s);
+
+    void calculateHCoefs();
+    void calculateECoefs();
+    void calculateHtCoefs();
+    void calculateEtCoefs();
+
+    double c1, c2, c3, c4, c5, c6, c7, c8; // Coefficients of the expansion of CTEQ PDF in terms of half-integer powers of beta (eq. (26))
+    double b0; // Exponential t-dependence (eq. (22))
+    double fL;
+    double fMuF2;
+
+    std::vector<double> Hi1tab;               ///< Hi1(i=0,0.5,1,1.5) for gluons
+
 private:
 
     unsigned int m_nbOfQuarkFlavor;
-    double c1, c2, c3, c4, c5, c6, c7, c8; // Coefficients of the expansion of CTEQ PDF in terms of half-integer powers of beta (eq. (26))
-    double b0; // Exponential t-dependence (eq. (22))
     double kappa_s; // Flavour symmetry breaking factor, eq. (36)
-    double fL;
-    double fMuF2;
     double m_MuF2_ref;
 
     double fHuValMx;                                          ///< HuVal( - fx )
@@ -165,7 +187,6 @@ private:
     std::vector<double> Huval1mtab;  ///< Hval1(i=0,0.5,1) for valence u for -xb
     std::vector<double> Hdval1mtab;  ///< Hval1(i=0,0.5,1) for valence d for -xb
     std::vector<double> Hs1tab; ///< Hs1(i=0,0.5,1,1.5) for sea, same for u, d, s
-    std::vector<double> Hi1tab;               ///< Hi1(i=0,0.5,1,1.5) for gluons
 
     std::vector<double> Euval1tab;               ///< Eval1(i=0,1) for valence u
     std::vector<double> Edval1tab;            ///< Eval1(i=0,..,7) for valence d
@@ -185,10 +206,7 @@ private:
     std::vector<double> Etuval1mtab; ///< Etval1(i=0,1,2,3) for valence u for -xb
     std::vector<double> Etdval1mtab; ///< Etval1(i=0,1,2,3) for valence d for -xb
 
-    void calculateHCoefs();
-    void calculateECoefs();
-    void calculateHtCoefs();
-    void calculateEtCoefs();
+
 
     void calculateHKas();
     void calculateEKas();
@@ -217,19 +235,7 @@ private:
     double Htval1_alt(double x, double i, double k);
     double Etval1_alt(double x, double i, double k);
 
-    virtual void isModuleWellConfigured();
-    virtual void initModule();
 
-    //GPDResultData compute(GPDComputeType gpdComputeType);
-
-    virtual GPDResultData computeH(); ///< Compute GPD H at considered kinematics
-    virtual GPDResultData computeE(); ///< Compute GPD E at considered kinematics
-    virtual GPDResultData computeHt(); ///< Compute GPD Ht at considered kinematics
-    virtual GPDResultData computeEt(); ///< Compute GPD Et at considered kinematics
-
-    double computeSinglet(const GPDQuarkFlavorData &quark_u,
-            const GPDQuarkFlavorData &quark_d,
-            const GPDQuarkFlavorData &quark_s);
 };
 
 #endif /* GK11_MODEL_H */

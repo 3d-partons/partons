@@ -186,8 +186,8 @@ void GK11Model::initModule() {
     fMuF2 = m_MuF * m_MuF;
     fL = log(fMuF2 / m_MuF2_ref); // Logarithmic dependence on the scale
 
-    m_pLoggerManager->debug(getClassName(), __func__,
-            Formatter() << "fMuF2 = " << fMuF2 << " fL = " << fL);
+ /*   m_pLoggerManager->debug(getClassName(), __func__,
+            Formatter() << "fMuF2 = " << fMuF2 << " fL = " << fL);*/
 }
 
 GPDResultData GK11Model::computeH() {
@@ -747,6 +747,7 @@ void GK11Model::calculateHCoefs() {
             Hi1tab.at(0) = Hi1(m_x, 0., kHgluon);
             Hi1tab.at(1) = Hi1(m_x, 0.5, kHgluon);
             Hi1tab.at(2) = Hi1(m_x, 1., kHgluon);
+            Hi1tab.at(3) = Hi1(m_x, 1.5, kHgluon);///< TODO: CHECK IT - ADDED BY JAKUB
         } else {
             Hs1tab.at(0) = -Hs1(-m_x, 0., kHsea);
             Hs1tab.at(1) = -Hs1(-m_x, 0.5, kHsea);
@@ -888,9 +889,9 @@ double GK11Model::Hs1(double x, double i, double k) {
                                                 3. + i - k)));
     }
 
-    m_pLoggerManager->debug(getClassName(), __func__,
+/*    m_pLoggerManager->debug(getClassName(), __func__,
             Formatter() << "(x=" << x << ", xi=" << m_xi << ", i=" << i
-                    << ", k=" << k << ") dummy = " << dummy);
+                    << ", k=" << k << ") dummy = " << dummy);*/
 
     return dummy;
 }
@@ -1087,9 +1088,9 @@ double GK11Model::Hval1(double x, double i, double k) {
                                                 (2. + i - k))));
     }
 
-    m_pLoggerManager->debug(getClassName(), __func__,
+ /*   m_pLoggerManager->debug(getClassName(), __func__,
             Formatter() << "(x=" << x << ", xi=" << m_xi << ", i=" << i
-                    << ", k=" << k << ") dummy = " << dummy);
+                    << ", k=" << k << ") dummy = " << dummy);*/
 
     return dummy;
 }
