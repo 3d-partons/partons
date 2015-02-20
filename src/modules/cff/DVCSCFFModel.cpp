@@ -7,6 +7,7 @@
 #include <map>
 #include <stdexcept>
 #include <utility>
+#include <iostream>
 
 #include "../../beans/gpd/GPDComputeType.h"
 #include "../../beans/gpd/GPDOutputData.h"
@@ -73,7 +74,6 @@ DVCSCFFModel* DVCSCFFModel::clone() const {
 }
 
 DVCSCFFModel::~DVCSCFFModel() {
-
 }
 
 void DVCSCFFModel::initModule() {
@@ -126,7 +126,7 @@ std::complex<double> DVCSCFFModel::computePolarized() {
 
     computeDiagonalGPD();
     computeSubtractionFunctionsA();
-    return computeIntegralsV();
+    return computeIntegralsA();
 }
 
 void DVCSCFFModel::computeDiagonalGPD() {
@@ -138,6 +138,10 @@ void DVCSCFFModel::computeDiagonalGPD() {
     //TODO compute CFF singlet; FAIT; vérifier le résultat du calcul
     m_quarkDiagonal = computeSquareChargeAveragedGPD(gpdOutputData);
     m_gluonDiagonal = 2. * pGPDResultData->getGluon();
+
+ //   m_pLoggerManager->debug(getClassName(), __func__,
+ //      	                Formatter()<<"    q diagonal = "<< m_quarkDiagonal <<"   g diagonal = "<< m_gluonDiagonal);
+
 }
 
 double DVCSCFFModel::computeSquareChargeAveragedGPD(
@@ -453,7 +457,7 @@ std::complex<double> DVCSCFFModel::computeIntegralsA() {
 
         throw std::runtime_error(
                 Formatter()
-                        << "[DVCSCFFModule::computeIntegralsA] Erroneous input perturbative QCD order can only be LO or NLO. Here Order = "
+                        << "[DVCSCFFModel::computeIntegralsA] Erroneous input perturbative QCD order can only be LO or NLO. Here Order = "
                         << QCDOrderType(m_qcdOrderType).toString());
 
     }
@@ -481,7 +485,7 @@ std::complex<double> DVCSCFFModel::computeIntegralsA() {
     default:
         throw std::runtime_error(
                 Formatter()
-                        << "[DVCSCFFModule::computeIntegralsA] Erroneous input number of active quark flavours should be an integer between 3 and 6. Number of active quark flavours = "
+                        << "[DVCSCFFModel::computeIntegralsA] Erroneous input number of active quark flavours should be an integer between 3 and 6. Number of active quark flavours = "
                         << m_nbOfActiveFlavour);
     }
 
@@ -544,6 +548,8 @@ std::complex<double> DVCSCFFModel::computeIntegralsA() {
                     + m_gluonDiagonal * m_imaginaryPartSubtractGluon);
     //	cout << fpQCDOrder << "      ImaginaryPartCFF Gluon = " << SumSqrCharges * ( IntegralImaginaryPartKernelGluon + fGluonDiagonal * fImaginaryPartSubtractGluon ) << endl ;
     // Multiplication by SumSqrCharges corrects in mistake in eq. (9)
+    m_pLoggerManager->debug(getClassName(), __func__,
+   	                Formatter()<<"    integral RE = "<< realPartCFF<<"   Integral IM = "<<imaginaryPartCFF);
 
     return std::complex<double>(realPartCFF, imaginaryPartCFF);
 }
@@ -845,6 +851,13 @@ std::complex<double> DVCSCFFModel::KernelGluonNLOV(double x) {
 }
 
 std::complex<double> DVCSCFFModel::KernelGluonNLOA(double x) {
+    m_pLoggerManager->debug(getClassName(), __func__, "entered");
+//
+//    m_pLoggerManager->debug(getClassName(), __func__,
+//               Formatter() << "x= " << x );
+
+
+
     double z = x / m_xi;
     std::complex<double> LogOneMinusz(0., 0.);
     if (x < m_xi) {
@@ -857,7 +870,6 @@ std::complex<double> DVCSCFFModel::KernelGluonNLOA(double x) {
 
     std::complex<double> GluonNLOA(LogOneMinusz);
     GluonNLOA += (m_logQ2OverMu2 - 2.);
-    GluonNLOA *= 1 / (1 - z * z);
     GluonNLOA *= (1. / (1. - (z * z)) + LogOneMinusz / ((1. + z) * (1. + z)));
     GluonNLOA += -LogOneMinusz * LogOneMinusz / (2. * (1. + z) * (1. + z));
     GluonNLOA *= (m_nbOfActiveFlavour / 2.);

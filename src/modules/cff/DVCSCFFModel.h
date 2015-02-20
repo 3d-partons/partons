@@ -56,28 +56,36 @@ protected:
     virtual void initModule();
     virtual void isModuleWellConfigured();
 
-    std::complex<double> KernelGluonNLOA(double x); ///< T^{g, NLO, A}, appendix A, eq. (A2)
+    virtual std::complex<double> KernelGluonNLOA(double x); ///< T^{g, NLO, A}, appendix A, eq. (A2)
     virtual std::complex<double> KernelGluonNLOV(double x); ///< T^{g, NLO, V}, appendix A, eq. (A2)
 
-private:
+    virtual std::complex<double> computeUnpolarized();
+    virtual std::complex<double> computePolarized();
 
-    double m_Zeta;
-    double m_Q;
-    double m_alphaSOver2Pi;
-    double m_quarkDiagonal;
-    double m_gluonDiagonal;
+    virtual void computeSubtractionFunctionsV();
 
     double m_realPartSubtractQuark;
     double m_imaginaryPartSubtractQuark;
     double m_realPartSubtractGluon;
     double m_imaginaryPartSubtractGluon;
 
+    double m_Zeta;
+    double m_Q;
+    double m_alphaSOver2Pi;
+
+private:
+
+    double m_quarkDiagonal;
+    double m_gluonDiagonal;
+
+
+
     double m_CF;                     ///< ( Nc^2 - 1 ) / ( 2 Nc ) (colour)
 
     //ROOT::Math::Integrator m_integrator;
 
     std::complex<double> KernelQuarkV(double x); ///< T^{q, V/A}, appendix A, eq. (A1)
-    virtual std::complex<double> KernelGluonV(double x); ///< T^{g, V/A}, appendix A, eq. (A1)
+    std::complex<double> KernelGluonV(double x); ///< T^{g, V/A}, appendix A, eq. (A1)
 
     std::complex<double> KernelQuarkNLOV(double x); ///< T^{q, NLO, V}, appendix A, eq. (A2)
     double ConvolReKernelQuark1V(const double x); ///< eq. (8), real part of amplitude, \int_0^zeta
@@ -98,13 +106,10 @@ private:
     double ConvolReKernelGluon2A(const double x); ///< eq. (9), real part of amplitude, \int_zeta^1
     double ConvolImKernelGluonA(const double x); ///< eq. (9), imaginary part of amplitude
 
-    virtual std::complex<double> computeUnpolarized();
-    virtual std::complex<double> computePolarized();
+    virtual void computeDiagonalGPD();
 
-    void computeSubtractionFunctionsV();
+
     void computeSubtractionFunctionsA();
-
-    void computeDiagonalGPD();
 
     std::complex<double> computeIntegralsV();
     std::complex<double> computeIntegralsA();
