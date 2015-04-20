@@ -2,12 +2,12 @@
 #define QCD_ORDER_TYPE_H
 
 /**
- * @file QuarkFlavor.h
+ * @file QCDOrderType.h
  * @author Bryan BERTHOU
  * @date 16 July 2014
  * @version 1.0
  *
- * @class QuarkFlavor
+ * @class QCDOrderType
  *
  * @brief
  */
