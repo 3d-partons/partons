@@ -54,7 +54,7 @@ private:
     static ServiceRegistry* m_pInstance;
 
     /**
-     * Default destructor
+     * Default constructor
      */
     ServiceRegistry();
 

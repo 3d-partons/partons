@@ -21,17 +21,7 @@
 class GPDQuarkFlavorData {
 
 public:
-    /**
-     * @file GPDResultData.h
-     * @brief
-     * @author Bryan BERTHOU (CEA Saclay)
-     * @date 24 July 2014
-     * @version 1.0
-     *
-     * @class GPDResultData
-     *
-     * @brief
-     */(GPDComputeType::Type _gpdComputeType,
+    GPDQuarkFlavorData(GPDComputeType::Type _gpdComputeType,
             QuarkFlavor::Type _quarkFlavorType);
 
     virtual ~GPDQuarkFlavorData();
