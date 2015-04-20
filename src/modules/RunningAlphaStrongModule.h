@@ -1,3 +1,17 @@
+#ifndef MODULE_OBJECT_H
+#define MODULE_OBJECT_H
+
+/**
+ * @file ModuleObject.h
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
+ * @date 02 April 2015
+ * @version 1.0
+ *
+ * @class ModuleObject
+ *
+ * @brief
+ */
+
 #include <string>
 
 #include "ModuleObject.h"
@@ -36,3 +50,5 @@ protected:
     double m_Mu;            ///< Current renormalization scale (in GeV)
     unsigned int m_nf;      ///< Number of active flavours
 };
+
+#endif /* MODULE_OBJECT_H */

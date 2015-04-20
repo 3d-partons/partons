@@ -5,8 +5,10 @@
  * @file BaseObject.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 09 September 2014
+ * @version 1.0
  *
  * @class BaseObject
+ *
  * @brief
  */
 

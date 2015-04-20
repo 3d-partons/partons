@@ -1,6 +1,17 @@
 #ifndef TCS_MODULE_H
 #define TCS_MODULE_H
 
+/**
+ * @file TCSModule.h
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
+ * @date 17 November 2014
+ * @version 1.0
+ *
+ * @class TCSModule
+ *
+ * @brief
+ */
+
 #include "../ObservableModule.h"
 
 class TCSModule: public ObservableModule {

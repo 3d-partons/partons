@@ -3,10 +3,14 @@
 
 /**
  * @file EvolQCDModule.h
- * @author Bryan BERTHOU and H. MOUTARDE (CEA Saclay)
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
+ * @author Hervé MOUTARDE (SPhN / CEA Saclay)
  * @date 21 October 2014
+ * @version 1.0
  *
  * @class EvolQCDModule
+ *
+ * @brief
  */
 
 #include <string>

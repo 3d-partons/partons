@@ -8,6 +8,7 @@
  * @version 1.0
  *
  * @class GPDService
+ *
  * @brief \<singleton\> Use for handle and compute some pre-configured GPD models.
  */
 

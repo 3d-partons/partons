@@ -2,9 +2,14 @@
 #define ROOT_INTEGRATION_MODE_H
 
 /**
- * @author Bryan BERTHOU (CEA Saclay)
- * @date 11 december 2014
+ * @file RootIntegrationMode.h
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
+ * @date 11 December 2014
  * @version 1.0
+ *
+ * @class RootIntegrationMode
+ *
+ * @brief
  */
 
 #include <string>

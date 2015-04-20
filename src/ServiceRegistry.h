@@ -5,8 +5,10 @@
  * @file ServiceRegistry.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 16 April 2015
+ * @version 1.0
  *
  * @class ServiceRegistry
+ *
  * @brief
  */
 

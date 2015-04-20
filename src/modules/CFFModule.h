@@ -3,11 +3,12 @@
 
 /**
  * @file CFFModule.h
- * @author Bryan BERTHOU (CEA Saclay)
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 07 Aout 2014
  * @version 1.0
  *
  * @class CFFModule
+ *
  * @brief Abstract class that provides skeleton to implement a Campton Form Factor (CFF) module.
  */
 

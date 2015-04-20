@@ -8,6 +8,7 @@
  * @version 1.0
  *
  * @class ModuleObject
+ *
  * @brief Super class of all module types - A module is a class that performs a specific compute task
  *
  * ex : GK11Model is a module that computes only GPDq(x, xi, t, MuF, MuR) defined by Kroll-Goloskokov in 2011 \n

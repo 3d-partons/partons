@@ -1,3 +1,17 @@
+#ifndef DVCS_CFF_FOUR_QUARKS_MODEL_H
+#define DVCS_CFF_FOUR_QUARKS_MODEL_H
+
+/**
+ * @file DVCSCFFHeavyQuarkModel.h
+ * @author Jakub
+ * @date 11 February 2015
+ * @version 1.0
+ *
+ * @class DVCSCFFHeavyQuarkModel
+ *
+ * @brief
+ */
+
 #include <complex>
 #include <string>
 
@@ -27,3 +41,5 @@ private:
     double m_Constant;
 
 };
+
+#endif /* DVCS_CFF_FOUR_QUARKS_MODEL_H */

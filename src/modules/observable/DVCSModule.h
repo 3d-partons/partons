@@ -2,9 +2,14 @@
 #define DVCS_MODULE_H
 
 /**
- * @author Bryan BERTHOU (CEA Saclay)
- * @date 19 november 2014
+ * @file DVCSModule.h
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
+ * @date 19 November 2014
  * @version 1.0
+ *
+ * @class DVCSModule
+ *
+ * @brief
  */
 
 #include <string>

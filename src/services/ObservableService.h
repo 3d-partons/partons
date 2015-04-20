@@ -3,11 +3,12 @@
 
 /**
  * @file ObservableService.h
- * @author Bryan BERTHOU (CEA Saclay)
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 20 November 2014
  * @version 1.0
  *
  * @class ObservableService
+ *
  * @brief \<singleton\> Use for handle and compute some pre-configured CFF modules.
  */
 

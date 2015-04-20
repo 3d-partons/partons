@@ -3,10 +3,15 @@
 
 /**
  * @file VinnikovEvolQCD.h
- * @author Bryan BERTHOU, C. Mezrag and H. MOUTARDE (CEA Saclay)
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
+ * @author C. Mezrag (SPhN / CEA Saclay)
+ * @author H. MOUTARDE (SPhN / CEA Saclay)
  * @date 22 October 2014
+ * @version 1.0
  *
  * @class VinnikovEvolQCD
+ *
+ * @brief
  */
 
 #include <string>

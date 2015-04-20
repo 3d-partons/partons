@@ -3,19 +3,18 @@
 
 /**
  * @file GK11Model.h
- * @author Bryan BERTHOU (CEA Saclay) - Herve MOUTARDE (CEA Saclay)
+ * @author Bryan BERTHOU (CEA Saclay)
+ * @author Herve MOUTARDE (CEA Saclay)
  * @date 2014
  * @version 2.0
  *
- * Last update : 22 September 2014
- *
  * @class GK11Model
+ *
  * @brief A module that implements GPD as defined by Kroll-Goloskokov model in 2011.
  *
  * !!!! Use tgamma() instead of gamma() (see: http://stackoverflow.com/questions/18116376/what-is-the-definition-for-gammadouble-x-and-why-is-it-different-on-two-gcc-ve)
  */
 
-//#include <map>
 #include <string>
 #include <vector>
 
@@ -36,7 +35,6 @@ public:
      * Default constructor
      */
     // GK11Model();
-
     GK11Model(const std::string &className);
 
     /**
@@ -206,8 +204,6 @@ private:
     std::vector<double> Etuval1mtab; ///< Etval1(i=0,1,2,3) for valence u for -xb
     std::vector<double> Etdval1mtab; ///< Etval1(i=0,1,2,3) for valence d for -xb
 
-
-
     void calculateHKas();
     void calculateEKas();
     void calculateHtKas();
@@ -234,7 +230,6 @@ private:
     double Hti1_alt(double x, double i, double k);
     double Htval1_alt(double x, double i, double k);
     double Etval1_alt(double x, double i, double k);
-
 
 };
 

@@ -2,9 +2,14 @@
 #define MATH_INTEGRATOR_MODULE_H
 
 /**
- * @author Bryan BERTHOU (CEA Saclay)
+ * @file MathIntegratorModule
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 09 december 2014
  * @version 1.0
+ *
+ * @class MathIntegratorModule
+ *
+ * @brief
  */
 
 #include <string>

@@ -5,8 +5,10 @@
  * @file Service.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 14 april 2015
+ * @version 1.0
  *
  * @class Service
+ *
  * @brief
  */
 

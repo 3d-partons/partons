@@ -1,6 +1,17 @@
 #ifndef MPSSW13_MODEL_H
 #define MPSSW13_MODEL_H
 
+/**
+ * @file MPSSW13Model.h
+ * @author Hervé MOUTARDE (SPhN / CEA Saclay)
+ * @date 19 December 2014
+ * @version 1.0
+ *
+ * @class MPSSW13Model
+ *
+ * @brief
+ */
+
 /*
  * \file MPSSW13Model.h
  *

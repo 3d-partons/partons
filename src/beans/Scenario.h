@@ -1,14 +1,16 @@
-/*
- * Scenario.h
- *
- *  Created on: 30 janv. 2015
- *      Author: bryan
- */
-
 #ifndef SCENARIO_H_
 #define SCENARIO_H_
 
-
+/**
+ * @file Scenario.h
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
+ * @date 30 January 2015
+ * @version 1.0
+ *
+ * @class Scenario
+ *
+ * @brief
+ */
 
 #include <ctime>
 #include <map>

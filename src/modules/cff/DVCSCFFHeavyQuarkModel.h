@@ -1,12 +1,16 @@
-/*
- * DVCSCFFHeavyQuarkModel.h
- *
- *  Created on: Feb 11, 2015
- *      Author: kuba
- */
+#ifndef DVCS_CFF_HEAVY_QUARK_MODEL_H
+#define DVCS_CFF_HEAVY_QUARK_MODEL_H
 
-#ifndef DVCSCFFHEAVYQUARKMODEL_H_
-#define DVCSCFFHEAVYQUARKMODEL_H_
+/**
+ * @file DVCSCFFHeavyQuarkModel.h
+ * @author jakub
+ * @date 11 February 2015
+ * @version 1.0
+ *
+ * @class DVCSCFFHeavyQuarkModel
+ *
+ * @brief
+ */
 
 #include <complex>
 #include <string>
@@ -55,4 +59,4 @@ private:
 
 };
 
-#endif /* DVCSCFFHEAVYQUARKMODEL_H_ */
+#endif /* DVCS_CFF_HEAVY_QUARK_MODEL_H */

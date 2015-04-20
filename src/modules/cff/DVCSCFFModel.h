@@ -2,8 +2,15 @@
 #define DVCS_CFF_MODULE_H
 
 /**
- * @author Bryan BERTHOU (CEA Saclay) - Hervé MOUTARDE ()
+ * @file DVCSCFFModel.h
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
+ * @author Hervé MOUTARDE (SPhN / CEA Saclay)
  * @date 08 September 2014
+ * @version 1.0
+ *
+ * @class DVCSCFFModel
+ *
+ * @brief
  */
 
 #include <complex>

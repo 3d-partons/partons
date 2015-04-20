@@ -2,9 +2,14 @@
 #define OBSERVABLE_MODULE_H
 
 /**
- * @author Bryan BERTHOU (CEA Saclay)
- * @date 19 november 2014
+ * @file ObservableModule
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
+ * @date 19 November 2014
  * @version 1.0
+ *
+ * @class ObservableModule
+ *
+ * @brief
  */
 
 #include <string>

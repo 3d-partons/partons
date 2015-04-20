@@ -1,12 +1,18 @@
-/*
- * GK11NoQuarksModel.h
+#ifndef GK11_NO_QUARKS_MODEL_H
+#define GK11_NO_QUARKS_MODEL_H
+
+/**
+ * @file GK11NoQuarksModel.h
+ * @author Jakub
+ * @date 13 February 2015
+ * @version 1.0
  *
- *  Created on: Feb 13, 2015
- *      Author: kuba
+ * @class GK11NoQuarksModel
+ *
+ * @brief
  */
 
-#ifndef GK11NOQUARKSMODEL_H_
-#define GK11NOQUARKSMODEL_H_
+#include <string>
 
 #include "GK11Model.h"
 
@@ -15,14 +21,14 @@ public:
 
     static const std::string moduleID; ///< Unique ID to automatically register the module in the factory.
 
-	GK11NoQuarksModel(const std::string &className);
+    GK11NoQuarksModel(const std::string &className);
 
-	virtual ~GK11NoQuarksModel();
+    virtual ~GK11NoQuarksModel();
 
-	virtual GK11NoQuarksModel* clone() const;
+    virtual GK11NoQuarksModel* clone() const;
 
 protected:
-	GK11NoQuarksModel(const GK11NoQuarksModel& other);
+    GK11NoQuarksModel(const GK11NoQuarksModel& other);
 
 //    virtual void isModuleWellConfigured();
 //    virtual void initModule();
@@ -39,4 +45,4 @@ protected:
 //            const GPDQuarkFlavorData &quark_s);
 };
 
-#endif /* GK11NOQUARKSMODEL_H_ */
+#endif /* GK11_NO_QUARKS_MODEL_H */

@@ -3,10 +3,12 @@
 
 /**
  * @file FundamentalPhysicalConstants.h
- * @date 09/07/2014
- * @authors Bryan BERTHOU
- * @authors Herve MOUTARDE
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
+ * @author Herve MOUTARDE (SPhN / CEA Saclay)
+ * @date 09 September 2014
  * @version 1.0
+ *
+ * @brief
  */
 
 // Mathematical constants

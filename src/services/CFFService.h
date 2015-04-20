@@ -3,13 +3,12 @@
 
 /**
  * @file CFFService.h
- * @author Bryan BERTHOU (CEA Saclay)
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 07 Août 2014
  * @version 1.0
  *
- * Last update : 22 September 2014
- *
  * @class CFFService
+ *
  * @brief \<singleton\> Use for handle and compute some pre-configured CFF modules.
  */
 

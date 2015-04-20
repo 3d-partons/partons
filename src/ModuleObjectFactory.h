@@ -3,13 +3,12 @@
 
 /**
  * @file ModuleObjectFactory.h
- * @author Bryan BERTHOU (CEA Saclay)
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 06 Aout 2014
  * @version 1.0
  *
- * Last update : 24 September 2014
- *
  * @class ModuleObjectFactory
+ *
  * @brief \<singleton\> Use for register all available module, create/configure and share them for a later use.
  *
  * Use map of pointer because you can't instantiate object from abstract class, you can only share pointer.
