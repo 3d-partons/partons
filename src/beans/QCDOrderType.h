@@ -10,6 +10,16 @@
  * @class QCDOrderType
  *
  * @brief
+ *
+ * @class QCDOrderType
+ * @brief Defines available orders of perturbative QCD computations.\n
+ * Current values are:\n
+ * UNDEFINED: empty field\n
+ * LO: Leading Order\n
+ * NLO: Next-to-Leading Order\n
+ * NNLO : Next-to-Next-to-Leading Order\n
+ * LL: Leading Logarithm\n
+ * NLL: Next-to-Leading Logarithm\n
  */
 
 #include <string>
@@ -18,7 +28,7 @@ class QCDOrderType {
 
 public:
     enum Type {
-        UNDEFINED, LO, NLO, NNLO
+        UNDEFINED, LO, NLO, NNLO, LL, NLL
     };
 
     QCDOrderType()
@@ -39,6 +49,12 @@ public:
             break;
         case NNLO:
             return "NNLO";
+            break;
+        case LL:
+            return "LL";
+            break;
+        case NLL:
+            return "NLL";
             break;
         default:
             return "UNDEFINED";

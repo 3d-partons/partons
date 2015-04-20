@@ -9,8 +9,11 @@
  * @version 1.0
  *
  * @class QuarkFlavor
- *
- * @brief
+ * @brief Defines existing quark flavors and associates them with an enum type.\n
+ * It represents the dependence on quark flavors of hadron structure distributions.
+ * Current values are:\n
+ * UNDEFINED: empty field\n
+ * UP, DOWN, STRANGE, CHARM, BOTTOM, TOP: explicit quark names\n
  */
 
 #include <string>
