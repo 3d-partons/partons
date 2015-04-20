@@ -3,7 +3,10 @@
 
 /**
  * @author Bryan BERTHOU (CEA Saclay)
- * @date 22/07/2014
+ * @date 22 July 2014
+ *
+ * @class QuarkFlavor
+ * @brief
  */
 
 #include <string>
