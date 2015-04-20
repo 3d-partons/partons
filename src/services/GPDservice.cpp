@@ -15,7 +15,7 @@
 #include "../utils/stringUtils/StringUtils.h"
 #include "GPDService.h"
 
-const std::string GPDService::COMPUTE_GPD_MODEL = "COMPUTE_GPD_MODEL";
+const std::string GPDService::COMPUTE_GPD_MODEL = "computeGPDModel";
 
 const std::string GPDService::ID =
         ServiceRegistry::getInstance()->registerNewService(getInstance());
@@ -57,7 +57,7 @@ void GPDService::computeScenario(Scenario scenario) {
 
     } else {
         throw std::runtime_error(
-                "[GPDService::computeTask] unknown function name = "
+                "[GPDService::computeScenario] unknown function name = "
                         + scenario.getFunctionName());
     }
 }
