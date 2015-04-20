@@ -11,25 +11,24 @@
  * @brief \<singleton\> Use for handle and compute some pre-configured GPD models.
  */
 
+#include <string>
 #include <vector>
 
 #include "../beans/gpd/GPDComputeType.h"
-#include "../beans/kinematic/GPDKinematic.h"
 #include "../modules/GPDModule.h"
+#include "Service.h"
+
+class GPDKinematic;
 
 class GPDOutputData;
 class ListGPDOutputData;
 
-class GPDService {
-private:
-    static GPDService* pInstance; ///< Private pointer of this class for a unique instance
-
-    /**
-     * Private default constructor for a unique instance of this class
-     */
-    GPDService();
-
+class GPDService: public Service {
 public:
+    static const std::string COMPUTE_GPD_MODEL;
+
+    static const std::string ID; ///< Unique ID to self-register in the registry
+
     /**
      * A static function that provides a unique pointer of this class
      *
@@ -42,6 +41,8 @@ public:
      */
     virtual ~GPDService();
 
+    virtual void computeScenario(Scenario scenario);
+
     /**
      * Computes GPD model at specific kinematic
      *
@@ -49,7 +50,7 @@ public:
      * @param pGPDModule
      * @return
      */
-    GPDOutputData computeGPDModel(GPDKinematic &gpdKinematic,
+    GPDOutputData computeGPDModel(GPDKinematic* pGPDKinematic,
             GPDModule* pGPDModule);
 
     /**
@@ -60,8 +61,9 @@ public:
      * @param gpdComputeType
      * @return
      */
-    GPDOutputData computeGPDModelRestrictedByGPDType(GPDKinematic &gpdKinematic,
-            GPDModule* pGPDModule, GPDComputeType::Type gpdComputeType);
+    GPDOutputData computeGPDModelRestrictedByGPDType(
+            GPDKinematic* pGPDKinematic, GPDModule* pGPDModule,
+            GPDComputeType::Type gpdComputeType);
 
     /**
      * Computes GPD model at specific kinematic with a QCD evolution model.
@@ -72,7 +74,7 @@ public:
      * @param gpdComputeType
      * @return
      */
-    GPDOutputData computeGPDModelWithEvolution(GPDKinematic &gpdKinematic,
+    GPDOutputData computeGPDModelWithEvolution(GPDKinematic* pGPDKinematic,
             GPDModule* pGPDModule, EvolQCDModule* pEvolQCDModule,
             GPDComputeType::Type gpdComputeType = GPDComputeType::ALL);
 
@@ -83,7 +85,7 @@ public:
      * @param listOfGPDToCompute
      * @return
      */
-    ListGPDOutputData computeListOfGPDModel(GPDKinematic &gpdKinematic,
+    ListGPDOutputData computeListOfGPDModel(GPDKinematic* pGPDKinematic,
             std::vector<GPDModule*> &listOfGPDToCompute);
 
     /**
@@ -95,21 +97,33 @@ public:
      * @return
      */
     ListGPDOutputData computeListOfGPDModelRestrictedByGPDType(
-            GPDKinematic &gpdKinematic,
+            GPDKinematic* pGPDKinematic,
             std::vector<GPDModule*> &listOfGPDToCompute,
             GPDComputeType gpdComputeType);
 
-    /**
-     * Computes GPD model by a kinematics list
-     *
-     * @param listOfGPDKinematic
-     * @param pGPDModule
-     * @return
-     */
-    ListGPDOutputData computeListOfKinematic(
-            std::vector<GPDKinematic> &listOfGPDKinematic,
-            GPDModule* pGPDModule);
+//    /**
+//     * Computes GPD model by a kinematics list
+//     *
+//     * @param listOfGPDKinematic
+//     * @param pGPDModule
+//     * @return
+//     */
+//    ListGPDOutputData computeListOfKinematic(
+//            std::vector<GPDKinematic> &listOfGPDKinematic,
+//            GPDModule* pGPDModule);
 
+private:
+    static GPDService* pInstance; ///< Private pointer of this class for a unique instance
+
+    /**
+     * Private default constructor for a unique instance of this class
+     */
+    GPDService();
+
+    GPDKinematic* m_pGPDKinematic;
+    GPDModule* m_pGPDModule;
+
+    GPDOutputData computeGPDModel(Scenario scenario);
 };
 
 #endif /* GPD_SERVICE_H */

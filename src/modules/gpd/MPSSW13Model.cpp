@@ -16,7 +16,7 @@
 #include "../../beans/gpd/GPDResultData.h"
 #include "../../beans/QuarkFlavor.h"
 #include "../../FundamentalPhysicalConstants.h"
-#include "../../services/ModuleObjectFactory.h"
+#include "../../ModuleObjectFactory.h"
 #include "../../utils/logger/LoggerManager.h"
 #include "../../utils/mstwpdf.h"
 #include "../../utils/stringUtils/Formatter.h"

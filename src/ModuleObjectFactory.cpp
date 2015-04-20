@@ -4,11 +4,12 @@
 #include <stdexcept>
 #include <utility>
 
-#include "../modules/CFFModule.h"
-#include "../modules/EvolQCDModule.h"
-#include "../modules/GPDModule.h"
-#include "../modules/MathIntegratorModule.h"
-#include "../modules/observable/DVCSModule.h"
+#include "modules/CFFModule.h"
+#include "modules/EvolQCDModule.h"
+#include "modules/GPDModule.h"
+#include "modules/MathIntegratorModule.h"
+#include "modules/observable/DVCSModule.h"
+#include "modules/RunningAlphaStrongModule.h"
 
 // Global static pointer used to ensure a single instance of the class.
 ModuleObjectFactory* ModuleObjectFactory::m_pInstance = 0;
@@ -56,30 +57,42 @@ std::string ModuleObjectFactory::registerModule(ModuleObject * pModuleObject) {
     return pModuleObject->getClassName();
 }
 
-ModuleObject* ModuleObjectFactory::getModule(const std::string & ID) {
+void ModuleObjectFactory::init() {
+    for (m_it = m_moduleRegistry.begin(); m_it != m_moduleRegistry.end();
+            m_it++) {
+        (m_it->second)->init();
+    }
+}
+
+ModuleObject* ModuleObjectFactory::newModule(const std::string & ID) {
     return m_moduleRegistry[ID]->clone();
 }
 
-GPDModule* ModuleObjectFactory::getGPDModule(const std::string & ID) {
+GPDModule* ModuleObjectFactory::newGPDModule(const std::string & ID) {
 
-    return static_cast<GPDModule*>(getModule(ID));
+    return static_cast<GPDModule*>(newModule(ID));
 }
 
-CFFModule* ModuleObjectFactory::getCFFModule(const std::string & ID) {
-    return static_cast<CFFModule*>(getModule(ID));
+CFFModule* ModuleObjectFactory::newCFFModule(const std::string & ID) {
+    return static_cast<CFFModule*>(newModule(ID));
 }
 
-EvolQCDModule* ModuleObjectFactory::getEvolQCDModule(const std::string & ID) {
-    return static_cast<EvolQCDModule*>(getModule(ID));
+EvolQCDModule* ModuleObjectFactory::newEvolQCDModule(const std::string & ID) {
+    return static_cast<EvolQCDModule*>(newModule(ID));
 }
 
-DVCSModule* ModuleObjectFactory::getDVCSModule(const std::string & ID) {
-    return static_cast<DVCSModule*>(getModule(ID));
+DVCSModule* ModuleObjectFactory::newDVCSModule(const std::string & ID) {
+    return static_cast<DVCSModule*>(newModule(ID));
 }
 
-MathIntegratorModule* ModuleObjectFactory::getMathIntegratorModule(
+MathIntegratorModule* ModuleObjectFactory::newMathIntegratorModule(
         const std::string & ID) {
-    return static_cast<MathIntegratorModule*>(getModule(ID));
+    return static_cast<MathIntegratorModule*>(newModule(ID));
+}
+
+RunningAlphaStrongModule* ModuleObjectFactory::newRunningAlphaStrongModule(
+        const std::string & ID) {
+    return static_cast<RunningAlphaStrongModule*>(newModule(ID));
 }
 
 std::string ModuleObjectFactory::toString() {

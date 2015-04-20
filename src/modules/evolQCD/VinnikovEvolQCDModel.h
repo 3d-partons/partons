@@ -44,7 +44,7 @@ private:
     double m_nbColor;
     double m_CF;
     double m_CA;
-    double m_nbActiveFlavor;
+    unsigned int m_nbActiveFlavor;
     double m_b0;
     double m_TR;
     double m_LnMuF2_ref; //lnQ2Ini

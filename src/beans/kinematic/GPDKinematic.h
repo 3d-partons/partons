@@ -18,6 +18,12 @@
 
 class GPDKinematic: public Kinematic {
 public:
+
+    /**
+     * Default constructor
+     */
+    GPDKinematic();
+
     /**
      * Constructor
      *
@@ -52,6 +58,10 @@ public:
     double getXi() const;
     void setXi(double xi);
 
+//    friend sf::Packet& operator <<(sf::Packet& packet,
+//            const GPDKinematic& object);
+//    friend sf::Packet& operator >>(sf::Packet& packet, GPDKinematic& object);
+
 private:
     //TODO name and unit ?
     double m_x;     ///< Bjorken variable
@@ -59,5 +69,8 @@ private:
     double m_MuF;   ///< Factorisation scale
     double m_MuR;   ///< Re-normalisation scale
 };
+
+//sf::Packet& operator <<(sf::Packet& packet, const GPDKinematic& object);
+//sf::Packet& operator >>(sf::Packet& packet, GPDKinematic& object);
 
 #endif /* GPD_KINEMATIC_H */

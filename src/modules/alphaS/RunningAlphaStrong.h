@@ -46,7 +46,9 @@
 #ifndef RUNNING_ALPHA_STRONG_H
 #define RUNNING_ALPHA_STRONG_H
 
-#include "../../FundamentalPhysicalConstants.h"
+#include <string>
+
+#include "../RunningAlphaStrongModule.h"
 
 /*---------------- Definition of the class TRunningAlphaStrong ---------------*/
 
@@ -57,45 +59,52 @@
  * 
  */
 
-class RunningAlphaStrong {
+class RunningAlphaStrong: public RunningAlphaStrongModule {
 public:
 
-    explicit RunningAlphaStrong(unsigned int Nc = 3, bool Verbose = false);
+    static const std::string moduleID; ///< Unique ID to automatically register the module in the factory.
+
+    RunningAlphaStrong(const std::string &className);
+
+    virtual RunningAlphaStrong* clone() const;
+
     virtual ~RunningAlphaStrong();
 
-    void SetRunningScale(double Mu = 2.); ///< Running scale, same default as PDF's case
-    void SetAlphaSMZ(double Alpha = 0.1184); ///< Value of strong coupling at Z boson scale
-    void SetStrangeQuarkMass(double Mass = QUARK_STRANGE_MASS); ///< Strange quark threshold
-    void SetCharmQuarkMass(double Mass = QUARK_CHARM_MASS); ///< Charm quark threshold
-    void SetBottomQuarkMass(double Mass = QUARK_BOTTOM_MASS); ///< Bottom quark threshold
-    void SetTopQuarkMass(double Mass = QUARK_TOP_MASS); ///< Top quark threshold
-    void SetZBosonMass(double Mass = Z_BOSON_MASS); ///< Z boson (ref. scale for alpha_s)
+    virtual double compute(double Mu);
 
-    double GetAlphaS();             ///< Returns strong coupling at chosen scale
-    unsigned int GetActiveFlavourNumber() const; ///< Returns actual number of active flavours
     unsigned int GetColourNumber() const; ///< Returns number of colours (SU(Nc))
-    void GetLambdaQCD(double* Lambda);     ///< Returns all values of Lambda_QCD
 
     void ResetToDefault(); ///< Back to default (PDG) values
+
+protected:
+    /**
+     * Copy constructor
+     *
+     * @param other
+     */
+    RunningAlphaStrong(const RunningAlphaStrong &other);
+
+    virtual void initModule();
+    virtual void isModuleWellConfigured();
 
 private:
 
     void ComputeExpansionCoefficients(unsigned int NFlavour); ///< Beta function coefficients
     void ComputeLambdaQCD();                 ///< Lambda_QCD as a function of Nf
-    void TestMassHierarchy();         ///< Test quark and Z boson mass hierarchy
     void Running(double Mu, double Lambda, unsigned int NFlavour); ///< Strong coupling at four loops
     double FindLambda(double* Lambda, double* Parameters); ///< Returns Lambda from alpha_s at scale Mu
 
-    const bool kVerbose;                                          ///< Printouts
-    bool fUpdateRunning;           ///< Modif. of alpha_s at MZ and thresholds ?
+    unsigned int fNc;                      ///< Number of colours (SU(Nc))
 
-    unsigned int fNf;                             ///< Number of active flavours
-    const unsigned int fNc;                      ///< Number of colours (SU(Nc))
+    //TODO voir s'il ne serait pas pertinent de faire une classe pour les coeff de renormalisation
 
     double fBeta0;               ///< 1st coefficient of beta function expansion
     double fBeta1;               ///< 2nd coefficient of beta function expansion
     double fBeta2;               ///< 3rd coefficient of beta function expansion
     double fBeta3;               ///< 4th coefficient of beta function expansion
+
+    //
+
     double fB1;                         ///< Reduced coefficient fBeta1 / fBeta0
     double fB2;                         ///< Reduced coefficient fBeta2 / fBeta0
     double fB3;                         ///< Reduced coefficient fBeta3 / fBeta0
@@ -105,12 +114,6 @@ private:
     double fLambdaQCD6;                                ///< Lambda_QCD( Nf = 6 )
     double fAlphaSMZ;                         ///< Ref. value of strong coupling
     double fAlphaS;                        ///< Current value of strong coupling
-    double fRunningScale;                     ///< Current renormalization scale
-    double fStrangeQuarkMass;                       ///< Strange quark threshold
-    double fCharmQuarkMass;                           ///< Charm quark threshold
-    double fBottomQuarkMass;                         ///< Bottom quark threshold
-    double fTopQuarkMass;                               ///< Top quark threshold
-    double fZBosonMass;                    ///< Z boson (ref. scale for alpha_s)
 };
 
 #endif /* RUNNING_ALPHA_STRONG_H */

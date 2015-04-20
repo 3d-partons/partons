@@ -8,12 +8,14 @@
 #include "../utils/logger/LoggerManager.h"
 #include "../utils/stringUtils/Formatter.h"
 #include "GPDModule.h"
+#include "RunningAlphaStrongModule.h"
 
 CFFModule::CFFModule(const std::string &className)
         : ModuleObject(className), m_xi(0.), m_xB(0.), m_t(0.), m_Q2(0.), m_MuF(
                 0.), m_MuR(0.), m_qcdOrderType(QCDOrderType::UNDEFINED), m_currentGPDComputeType(
                 GPDComputeType::UNDEFINED), m_gpdComputeType(
-                GPDComputeType::UNDEFINED), m_pGPDModule(0) {
+                GPDComputeType::UNDEFINED), m_pGPDModule(0), m_pRunningAlphaStrongModule(
+                0) {
 
 }
 
@@ -39,6 +41,14 @@ CFFModule::CFFModule(const CFFModule &other)
         m_pGPDModule = (other.m_pGPDModule)->clone();
     } else {
         m_pGPDModule = 0;
+    }
+
+    if (other.m_pRunningAlphaStrongModule != 0) {
+        // GPDModule is an abstract class, so it's impossible to use copy constructor to get a new instance of the object
+        m_pRunningAlphaStrongModule =
+                (other.m_pRunningAlphaStrongModule)->clone();
+    } else {
+        m_pRunningAlphaStrongModule = 0;
     }
 }
 

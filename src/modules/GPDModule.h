@@ -90,8 +90,8 @@ public:
 
     // ##### GETTERS & SETTERS #####
 
-    double getNf() const;
-    void setNf(double nf);
+    unsigned int getNf() const;
+    void setNf(unsigned int nf);
     const EvolQCDModule* getEvolQcdModule() const;
     void setEvolQcdModule(EvolQCDModule* pEvolQcdModule);
     double getMuFRef() const;
@@ -107,7 +107,7 @@ protected:
     //TODO initialize
     double m_MuF_ref;
     //TODO faire référence à la revue pour la notation (petit) nf
-    double m_nf;
+    unsigned int m_nf;
 
     //PDFModule* m_pPDFModule;
     EvolQCDModule* m_pEvolQCDModule;

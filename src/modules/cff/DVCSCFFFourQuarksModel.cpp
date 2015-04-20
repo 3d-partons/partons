@@ -3,7 +3,7 @@
 #include <TMath.h>
 
 #include "../../FundamentalPhysicalConstants.h"
-#include "../../services/ModuleObjectFactory.h"
+#include "../../ModuleObjectFactory.h"
 #include "../../utils/logger/LoggerManager.h"
 
 // Initialise [class]::moduleID with a unique name.

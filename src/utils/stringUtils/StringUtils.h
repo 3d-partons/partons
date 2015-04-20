@@ -10,7 +10,9 @@
  * \date Derniere maj : /09/2014
  */
 
+#include <map>
 #include <string>
+#include <utility>
 #include <vector>
 
 //TODO uniformiser le fichier, corriger les parametres des fonctions (const, &, ...) refaire la documentation
@@ -19,6 +21,8 @@
  * \class StringUtils
  */
 class StringUtils {
+
+
 
 public:
 
@@ -101,8 +105,8 @@ public:
      * \param splitCharacter : caractere de split
      * \return std::vector<std::string>
      */
-    static std::vector<std::string> split(std::string chaine,
-            const char & splitCharacter);
+    static std::vector<std::string> split(const std::string &chaine,
+            char splitCharacter);
 
     /*!
      * \fn static std::string vectorToString( std::vector<std::string> vector )
@@ -115,6 +119,9 @@ public:
     static void to_upperCase(std::string &chaine);
 
     static void to_lowerCase(std::string* chaine);
+
+    static std::pair<std::string, std::vector<char> > fromStringToArrayOfChar(
+            const std::string &string);
 };
 
 #endif /* STRING_UTILS_H */

@@ -19,6 +19,8 @@
 #include "../beans/QCDOrderType.h"
 #include "ModuleObject.h"
 
+class RunningAlphaStrongModule;
+
 class CFFOutputData;
 class GPDModule;
 
@@ -87,6 +89,8 @@ protected:
     GPDComputeType::Type m_gpdComputeType;
 
     GPDModule* m_pGPDModule;
+
+    RunningAlphaStrongModule* m_pRunningAlphaStrongModule;
 
     virtual void initModule();
     virtual void isModuleWellConfigured();

@@ -5,15 +5,11 @@
 #include <stddef.h>
 #include <cmath>
 #include <cstdio>
-#include <string>
-//#include <typeinfo>
-#include <vector>
 
 #include "../../beans/gpd/GPDComputeType.h"
 #include "../../beans/gpd/GPDOutputData.h"
-#include "../../beans/gpd/GPDResultData.h"
 #include "../../FundamentalPhysicalConstants.h"
-#include "../../services/ModuleObjectFactory.h"
+#include "../../ModuleObjectFactory.h"
 #include "../../utils/logger/LoggerManager.h"
 #include "../../utils/stringUtils/Formatter.h"
 #include "../GPDModule.h"
@@ -23,7 +19,7 @@ const std::string VinnikovEvolQCDModel::moduleID =
         ModuleObjectFactory::getInstance()->registerModule(
                 new VinnikovEvolQCDModel("VinnikovEvolQCDModel"));
 
-VinnikovEvolQCDModel::VinnikovEvolQCDModel( const std::string &className )
+VinnikovEvolQCDModel::VinnikovEvolQCDModel(const std::string &className)
         : EvolQCDModule(className), m_nbColor(3.), m_CF(
                 0.5 * (m_nbColor - 1. / m_nbColor)), m_CA(
                 2. * m_CF + 1. / m_nbColor), m_nbActiveFlavor(3.), m_b0(
@@ -510,21 +506,29 @@ double VinnikovEvolQCDModel::alpha_s(double t) {
     double LOG_LAMBDA_4 = -1.1221;
     double LOG_LAMBDA_3 = -0.9883;
 
+    //TODO cast unsigned int (m_nbActiveFlavor) to double
     double B0 = (11.0 - 2.0 * m_nbActiveFlavor / 3.0);
     double B1 = (51.0 - 19.0 * m_nbActiveFlavor / 3.0);
 
     double alpha, L;
 
-    if (m_nbActiveFlavor == 3)
+    switch (m_nbActiveFlavor) {
+    case 3: {
         L = t - 2.0 * LOG_LAMBDA_3;
-    else if (m_nbActiveFlavor == 4)
+        break;
+    }
+    case 4: {
         L = t - 2.0 * LOG_LAMBDA_4;
-    else if (m_nbActiveFlavor == 5)
+        break;
+    }
+    case 5: {
         L = t - 2.0 * LOG_LAMBDA_5;
-    else {
+        break;
+    }
+    default:
         printf(
                 "WARNING (alpha_s.c): m_nbActiveFlavor not between 3 and 5. Returning alpha_s = 0\n");
-        return 0.;
+        break;
     }
 
     if ((alpha = 4.0 * M_PI / (B0 * L)
@@ -805,6 +809,7 @@ double VinnikovEvolQCDModel::convolNonSingletKernel(const unsigned int ix,
             double f3 = (-2.0 * gpd[ix - 3] + 9.0 * gpd[ix - 2]
                     - 18.0 * gpd[ix - 1] + 11.0 * gpd[ix]) / (6.0 * gamma);
             convint += -0.25 * f1 + 3.0 * f2 - 1.25 * f3;
+
         }
 
         // TODO: Unclear again...

@@ -7,7 +7,6 @@
 #include <map>
 #include <stdexcept>
 #include <utility>
-#include <iostream>
 
 #include "../../beans/gpd/GPDComputeType.h"
 #include "../../beans/gpd/GPDOutputData.h"
@@ -16,7 +15,7 @@
 #include "../../beans/QCDOrderType.h"
 #include "../../beans/QuarkFlavor.h"
 #include "../../FundamentalPhysicalConstants.h"
-#include "../../services/ModuleObjectFactory.h"
+#include "../../ModuleObjectFactory.h"
 #include "../../utils/logger/LoggerManager.h"
 #include "../../utils/stringUtils/Formatter.h"
 #include "../alphaS/RunningAlphaStrong.h"
@@ -45,10 +44,17 @@ DVCSCFFModel::DVCSCFFModel(const std::string &className)
     m_listOfCFFComputeFunctionAvailable.insert(
             std::make_pair(GPDComputeType::Et, &CFFModule::computePolarized));
 
+}
+
+void DVCSCFFModel::init() {
     //TODO le passer en configuration
     m_pMathIntegratorModule =
-            ModuleObjectFactory::getInstance()->getMathIntegratorModule(
+            ModuleObjectFactory::getInstance()->newMathIntegratorModule(
                     RootIntegrationMode::moduleID);
+
+    m_pRunningAlphaStrongModule =
+            ModuleObjectFactory::getInstance()->newRunningAlphaStrongModule(
+                    RunningAlphaStrong::moduleID);
 }
 
 DVCSCFFModel::DVCSCFFModel(const DVCSCFFModel &other)
@@ -74,9 +80,19 @@ DVCSCFFModel* DVCSCFFModel::clone() const {
 }
 
 DVCSCFFModel::~DVCSCFFModel() {
+
+    if (m_pMathIntegratorModule != 0) {
+        delete m_pMathIntegratorModule;
+        m_pMathIntegratorModule = 0;
+    }
+    if (m_pRunningAlphaStrongModule != 0) {
+        delete m_pRunningAlphaStrongModule;
+        m_pRunningAlphaStrongModule = 0;
+    }
 }
 
 void DVCSCFFModel::initModule() {
+    // init parent module before
     CFFModule::initModule();
 
     m_Q = sqrt(m_Q2);
@@ -84,13 +100,11 @@ void DVCSCFFModel::initModule() {
     m_logQ2OverMu2 = 2. * log(m_Q / m_MuF);
     m_nbOfActiveFlavour = 3;
 
-    RunningAlphaStrong* Alpha = new RunningAlphaStrong();
-    Alpha->SetRunningScale(m_MuR);
-    m_alphaSOver2Pi = Alpha->GetAlphaS() / (2. * PI);
-    delete Alpha;
+    m_alphaSOver2Pi = m_pRunningAlphaStrongModule->compute(m_MuR) / (2. * PI);
 }
 
 void DVCSCFFModel::isModuleWellConfigured() {
+    // check parent module before
     CFFModule::isModuleWellConfigured();
 
     if (m_pGPDModule == 0) {
@@ -102,6 +116,10 @@ void DVCSCFFModel::isModuleWellConfigured() {
     if (m_pMathIntegratorModule == 0) {
         throw std::runtime_error(
                 "[DVCSCFFModel] MathIntegratorModule* is NULL");
+    }
+    if (m_pRunningAlphaStrongModule == 0) {
+        throw std::runtime_error(
+                "[DVCSCFFModel] RunningAlphaStrongModule* is NULL");
     }
 }
 
@@ -139,8 +157,8 @@ void DVCSCFFModel::computeDiagonalGPD() {
     m_quarkDiagonal = computeSquareChargeAveragedGPD(gpdOutputData);
     m_gluonDiagonal = 2. * pGPDResultData->getGluon();
 
- //   m_pLoggerManager->debug(getClassName(), __func__,
- //      	                Formatter()<<"    q diagonal = "<< m_quarkDiagonal <<"   g diagonal = "<< m_gluonDiagonal);
+    //   m_pLoggerManager->debug(getClassName(), __func__,
+    //      	                Formatter()<<"    q diagonal = "<< m_quarkDiagonal <<"   g diagonal = "<< m_gluonDiagonal);
 
 }
 
@@ -549,7 +567,8 @@ std::complex<double> DVCSCFFModel::computeIntegralsA() {
     //	cout << fpQCDOrder << "      ImaginaryPartCFF Gluon = " << SumSqrCharges * ( IntegralImaginaryPartKernelGluon + fGluonDiagonal * fImaginaryPartSubtractGluon ) << endl ;
     // Multiplication by SumSqrCharges corrects in mistake in eq. (9)
     m_pLoggerManager->debug(getClassName(), __func__,
-   	                Formatter()<<"    integral RE = "<< realPartCFF<<"   Integral IM = "<<imaginaryPartCFF);
+            Formatter() << "    integral RE = " << realPartCFF
+                    << "   Integral IM = " << imaginaryPartCFF);
 
     return std::complex<double>(realPartCFF, imaginaryPartCFF);
 }
@@ -855,8 +874,6 @@ std::complex<double> DVCSCFFModel::KernelGluonNLOA(double x) {
 //
 //    m_pLoggerManager->debug(getClassName(), __func__,
 //               Formatter() << "x= " << x );
-
-
 
     double z = x / m_xi;
     std::complex<double> LogOneMinusz(0., 0.);

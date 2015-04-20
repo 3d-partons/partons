@@ -2,6 +2,10 @@
 
 #include "../../utils/stringUtils/Formatter.h"
 
+GPDKinematic::GPDKinematic()
+        : Kinematic(0., 0.), m_x(0.), m_xi(0.), m_MuF(0.), m_MuR(0.) {
+}
+
 GPDKinematic::GPDKinematic(double x, double xi, double t, double MuF,
         double MuR)
         : Kinematic(0., t), m_x(x), m_xi(xi), m_MuF(MuF), m_MuR(MuR) {
@@ -48,3 +52,13 @@ double GPDKinematic::getXi() const {
 void GPDKinematic::setXi(double xi) {
     m_xi = xi;
 }
+
+//sf::Packet& operator <<(sf::Packet& packet, const GPDKinematic& object) {
+//    return packet << object.m_x << object.m_xi << object.m_t << object.m_MuF
+//            << object.m_MuR;
+//}
+//
+//sf::Packet& operator >>(sf::Packet& packet, GPDKinematic& object) {
+//    return packet >> object.m_x >> object.m_xi >> object.m_t >> object.m_MuF
+//            >> object.m_MuR;
+//}

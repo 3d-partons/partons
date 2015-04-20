@@ -12,9 +12,10 @@
  */
 
 #include <map>
+#include <string>
 
 #include "../beans/cff/CFFOutputData.h"
-#include "../BaseObject.h"
+#include "Service.h"
 
 class ObservableKinematic;
 
@@ -22,8 +23,10 @@ class DVCSModule;
 class Observable;
 class ObservableModule;
 
-class ObservableService: public BaseObject {
+class ObservableService: public Service {
 public:
+    static const std::string ID; ///< Unique ID to self-register in the registry
+
     /**
      * Share a unique pointer of this class
      */
@@ -38,6 +41,8 @@ public:
             DVCSModule* pDVCSModule, Observable* pObservable,
             ObservableKinematic observableKinematic,
             CFFOutputData cffOutputData);
+
+    virtual void computeScenario(Scenario scenario);
 
 private:
     /**

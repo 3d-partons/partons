@@ -41,6 +41,8 @@ public:
     virtual double functionsToIntegrate(const double * x,
             const double * parameters = 0);
 
+    virtual void init();
+
     // ##### GETTERS & SETTERS #####
 
 protected:
@@ -78,8 +80,6 @@ private:
     double m_quarkDiagonal;
     double m_gluonDiagonal;
 
-
-
     double m_CF;                     ///< ( Nc^2 - 1 ) / ( 2 Nc ) (colour)
 
     //ROOT::Math::Integrator m_integrator;
@@ -107,7 +107,6 @@ private:
     double ConvolImKernelGluonA(const double x); ///< eq. (9), imaginary part of amplitude
 
     virtual void computeDiagonalGPD();
-
 
     void computeSubtractionFunctionsA();
 

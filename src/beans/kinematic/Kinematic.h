@@ -43,7 +43,7 @@ public:
     double getXB() const;
     void setXB(double xB);
 
-private:
+protected:
     //TODO unit ?
     double m_xB;    ///< x Bjorken
     double m_t;     ///< momentum transfer (Mandelstam variable)

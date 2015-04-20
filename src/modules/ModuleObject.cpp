@@ -55,3 +55,8 @@ void ModuleObject::setCurrentFunctionToIntegrate(
         unsigned int currentFunctionToIntegrate) {
     m_currentFunctionToIntegrate = currentFunctionToIntegrate;
 }
+
+void ModuleObject::init()
+{
+
+}

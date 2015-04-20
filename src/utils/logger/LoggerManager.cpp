@@ -4,7 +4,7 @@
 #include <utility>
 #include <vector>
 
-#include "../ini/IniFileParser.h"
+#include "../parser/IniFileParser.h"
 #include "../stringUtils/Formatter.h"
 #include "../stringUtils/StringUtils.h"
 

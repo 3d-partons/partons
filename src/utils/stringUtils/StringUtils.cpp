@@ -1,10 +1,12 @@
 #include "StringUtils.h"
 
 #include <stddef.h>
-#include <algorithm> // pour transform#include <cctype>    // pour tolower et toupper#include <cstdlib>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>#include <iterator>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>#include <iterator>#include <cctype>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>#include <cctype>#include <cctype>#include <cstdlib>#include <cctype>#include <cctype>#include <cctype>#include <cstdlib>
+#include <algorithm> // pour transform#include <cctype>    // pour tolower et toupper#include <cstdlib>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>#include <iterator>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>#include <iterator>#include <cctype>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>#include <cctype>#include <cctype>#include <cstdlib>#include <cctype>#include <cctype>#include <cctype>#include <cstdlib>#include <iterator>#include <cctype>#include <cstdlib>#include <cctype>#include <cctype>#include <cstdlib>#include <cctype>#include <cctype>#include <cmath>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>
 #include <iterator>
 
-#include "Formatter.h"
+//#include <utility>
+
+//#include "Formatter.h"
 
 std::string StringUtils::EMPTY = "";
 
@@ -65,7 +67,51 @@ float StringUtils::fromStringToFloat(std::string chaine) {
 }
 
 double StringUtils::fromStringToDouble(const std::string & str) {
-    return atof(str.c_str());
+    //return *reinterpret_cast<double*>(str);
+
+    //    std::stringstream stream;
+//    stream << str;
+//    double d = 0.;
+//    stream >> d;
+//    return d;
+
+//TODO http://stackoverflow.com/questions/22543349/what-is-wrong-with-the-following-code-it-converts-double-to-string-without-usin
+
+// deprecated
+// return atof(str.c_str());
+
+    return strtod(str.c_str(), NULL);
+}
+
+std::pair<std::string, std::vector<char> > StringUtils::fromStringToArrayOfChar(
+        const std::string &string) {
+
+    std::pair<std::string, std::vector<char> > result;
+    std::vector<char> floatingPointVector;
+
+    std::vector<std::string> doubleStringSplittedByPoint = StringUtils::split(
+            string, '.');
+
+    std::string realPart = "";
+    std::string floatingPart = "";
+
+    unsigned int vectorSize = doubleStringSplittedByPoint.size();
+
+    if (vectorSize == 1) {
+        realPart = doubleStringSplittedByPoint[0];
+    }
+    if (vectorSize == 2) {
+        realPart = doubleStringSplittedByPoint[0];
+        floatingPart = doubleStringSplittedByPoint[1];
+    }
+
+    for (unsigned int i = 0; i != floatingPart.size(); i++) {
+        floatingPointVector.push_back(floatingPart.at(i));
+    }
+
+    result = std::make_pair(realPart, floatingPointVector);
+
+    return result;
 }
 
 bool StringUtils::fromStringToBool(std::string chaine) {
@@ -193,8 +239,8 @@ unsigned int StringUtils::count(std::string str,
     return resultat;
 }
 
-std::vector<std::string> StringUtils::split(std::string chaine,
-        const char & splitCharacter) {
+std::vector<std::string> StringUtils::split(const std::string &chaine,
+        const char splitCharacter) {
     std::vector<std::string> strings;
     int index = 0;
 

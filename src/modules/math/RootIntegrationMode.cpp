@@ -5,7 +5,7 @@
 #include <Math/WrappedTF1.h>
 #include <TF1.h>
 
-#include "../../services/ModuleObjectFactory.h"
+#include "../../ModuleObjectFactory.h"
 
 // Initialise [class]::moduleID with a unique name and enable registerModule() to be executed before the main() function.
 const std::string RootIntegrationMode::moduleID =

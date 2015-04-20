@@ -39,6 +39,8 @@ private:
     // A list that stores each results of quark flavor GPD identified by the type of GPD computed (H, Ht, E, ...)
     std::map<GPDComputeType::Type, GPDResultData> m_gpdResults;
     std::map<GPDComputeType::Type, GPDResultData>::iterator m_it;
+
+
 };
 
 #endif /* GPD_OUTPUT_DATA_H */

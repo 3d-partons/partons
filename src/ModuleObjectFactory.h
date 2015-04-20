@@ -18,7 +18,9 @@
 #include <map>
 #include <string>
 
-#include "../modules/ModuleObject.h"
+#include "modules/ModuleObject.h"
+
+class RunningAlphaStrongModule;
 
 class DVCSModule;
 
@@ -46,12 +48,16 @@ public:
      */
     std::string registerModule(ModuleObject * _pModuleObject);
 
-    ModuleObject* getModule(const std::string & ID);
-    GPDModule* getGPDModule(const std::string & ID);
-    CFFModule* getCFFModule(const std::string & ID);
-    EvolQCDModule* getEvolQCDModule(const std::string & ID);
-    DVCSModule* getDVCSModule(const std::string & ID);
-    MathIntegratorModule* getMathIntegratorModule(const std::string & ID);
+    void init();
+
+    ModuleObject* newModule(const std::string & ID);
+    GPDModule* newGPDModule(const std::string & ID);
+    CFFModule* newCFFModule(const std::string & ID);
+    EvolQCDModule* newEvolQCDModule(const std::string & ID);
+    DVCSModule* newDVCSModule(const std::string & ID);
+    MathIntegratorModule* newMathIntegratorModule(const std::string & ID);
+    RunningAlphaStrongModule* newRunningAlphaStrongModule(
+            const std::string & ID);
 
     std::string toString();
 

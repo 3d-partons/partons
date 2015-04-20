@@ -1,17 +1,21 @@
 #include "ObservableService.h"
 
-#include <typeinfo>
 #include <utility>
 #include <vector>
 
 #include "../beans/kinematic/ObservableKinematic.h"
+#include "../beans/Scenario.h"
 #include "../modules/observable/DVCSModule.h"
+#include "../ServiceRegistry.h"
+
+const std::string ObservableService::ID =
+        ServiceRegistry::getInstance()->registerNewService(getInstance());
 
 // Global static pointer used to ensure a single instance of the class.
 ObservableService* ObservableService::m_pInstance = 0;
 
 ObservableService::ObservableService()
-        : BaseObject(typeid(*this).name()) {
+        : Service("ObservableService") {
 
 }
 
@@ -50,4 +54,9 @@ std::map<double, double> ObservableService::computeDVCSObservableWithPhiDependen
     }
 
     return results;
+}
+
+//TODO implement all function
+//TODO passer les chaine de caractere en variable final static
+void ObservableService::computeScenario(Scenario scenario) {
 }

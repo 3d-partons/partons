@@ -8,22 +8,21 @@
 #ifndef DVCSCFFHEAVYQUARKMODEL_H_
 #define DVCSCFFHEAVYQUARKMODEL_H_
 
-#include "DVCSCFFModel.h"
 #include <complex>
 #include <string>
 
+#include "DVCSCFFModel.h"
 
 class DVCSCFFHeavyQuarkModel: public DVCSCFFModel {
 public:
 
-	static const std::string moduleID; ///< Unique ID to automatically register the module in the factory.
+    static const std::string moduleID; ///< Unique ID to automatically register the module in the factory.
 
-	DVCSCFFHeavyQuarkModel(const std::string &className);
+    DVCSCFFHeavyQuarkModel(const std::string &className);
 
-	virtual DVCSCFFHeavyQuarkModel* clone() const;
+    virtual DVCSCFFHeavyQuarkModel* clone() const;
 
-
-	virtual ~DVCSCFFHeavyQuarkModel();
+    virtual ~DVCSCFFHeavyQuarkModel();
 
 protected:
     /**
@@ -31,7 +30,7 @@ protected:
      * @param other
      */
 
-	DVCSCFFHeavyQuarkModel(const DVCSCFFHeavyQuarkModel &other);
+    DVCSCFFHeavyQuarkModel(const DVCSCFFHeavyQuarkModel &other);
 
 //    virtual void initModule();
 //    virtual void isModuleWellConfigured();
@@ -44,7 +43,6 @@ protected:
 
     void computeSubtractionFunctionsV();
 
-
 private:
     std::complex<double> m_betas;
     std::complex<double> m_rs;
@@ -54,7 +52,6 @@ private:
     double m_eps;
     std::complex<double> beta(std::complex<double> s, double mq);
     std::complex<double> r(std::complex<double> s, double mq);
-
 
 };
 

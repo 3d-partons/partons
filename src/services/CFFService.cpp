@@ -1,22 +1,19 @@
 #include "CFFService.h"
 
-#include <typeinfo>
-
 #include "../beans/cff/CFFInputData.h"
 #include "../beans/cff/CFFOutputData.h"
+#include "../beans/Scenario.h"
 #include "../modules/CFFModule.h"
+#include "../ServiceRegistry.h"
 
-//#include "../utils/fileUtils/FileExceptionType.h"
-//#include "../utils/fileUtils/FileUtils.h"
-//#include "../utils/logger/LoggerManager.h"
-//#include "../utils/stringUtils/Formatter.h"
-//#include "../utils/stringUtils/StringUtils.h"
+const std::string CFFService::ID =
+        ServiceRegistry::getInstance()->registerNewService(getInstance());
 
 // Global static pointer used to ensure a single instance of the class.
 CFFService* CFFService::m_pInstance = 0;
 
 CFFService::CFFService()
-        : BaseObject(typeid(*this).name()) {
+        : Service("CFFService") {
 
 }
 
@@ -34,6 +31,11 @@ CFFService::~CFFService() {
         delete m_pInstance;
         m_pInstance = 0;
     }
+}
+
+//TODO implement
+void CFFService::computeScenario(Scenario scenario) {
+
 }
 
 //TODO implementer

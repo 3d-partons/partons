@@ -73,6 +73,8 @@ public:
     unsigned int getCurrentFunctionToIntegrate() const;
     void setCurrentFunctionToIntegrate(unsigned int currentFunctionToIntegrate);
 
+    virtual void init();
+
 protected:
     std::map<std::string, GenericData> m_parameters; ///< Parameters used for configure this module.
 

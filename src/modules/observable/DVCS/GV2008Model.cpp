@@ -10,7 +10,7 @@
 #include "../../../beans/gpd/GPDComputeType.h"
 #include "../../../beans/observable/Observable.h"
 #include "../../../FundamentalPhysicalConstants.h"
-#include "../../../services/ModuleObjectFactory.h"
+#include "../../../ModuleObjectFactory.h"
 #include "../../../utils/logger/LoggerManager.h"
 #include "../../../utils/MathUtils.h"
 #include "../../../utils/stringUtils/Formatter.h"

@@ -13,7 +13,7 @@
 GPDModule::GPDModule(const std::string &className)
         : ModuleObject(className), m_x(0.), m_xi(0.), m_t(0.), m_MuF(0.), m_MuR(
                 0.), m_gpdComputeType(GPDComputeType::UNDEFINED), m_MuF_ref(0.), m_nf(
-                0.), m_pEvolQCDModule(0) {
+                0), m_pEvolQCDModule(0) {
 }
 
 GPDModule::GPDModule(const GPDModule &other)
@@ -180,11 +180,11 @@ GPDResultData GPDModule::computeEt() {
     throw std::runtime_error("");
 }
 
-double GPDModule::getNf() const {
+unsigned int GPDModule::getNf() const {
     return m_nf;
 }
 
-void GPDModule::setNf(double nf) {
+void GPDModule::setNf(unsigned int nf) {
     m_nf = nf;
 }
 

@@ -50,6 +50,15 @@
 #include <TF1.h>
 #include <cmath>
 #include <cstdlib>
+#include <stdexcept>
+
+#include "../../FundamentalPhysicalConstants.h"
+#include "../../ModuleObjectFactory.h"
+
+// Initialise [class]::moduleID with a unique name.
+const std::string RunningAlphaStrong::moduleID =
+        ModuleObjectFactory::getInstance()->registerModule(
+                new RunningAlphaStrong("RunningAlphaStrong"));
 
 /*------------------------------- Public routines ----------------------------*/
 
@@ -59,18 +68,25 @@
  * Default constructor.
  * 
  */
-RunningAlphaStrong::RunningAlphaStrong(unsigned int Nc, bool Verbose)
-        : kVerbose(Verbose), fUpdateRunning(false), fNf(4), fNc(Nc), fBeta0(
-                2.08333), fBeta1(3.20833), fBeta2(6.34925), fBeta3(31.3874), fB1(
-                1.54), fB2(3.04764), fB3(15.066), fLambdaQCD3(0.329939), fLambdaQCD4(
+RunningAlphaStrong::RunningAlphaStrong(const std::string &className)
+        : RunningAlphaStrongModule(className), fNc(3), fBeta0(2.08333), fBeta1(
+                3.20833), fBeta2(6.34925), fBeta3(31.3874), fB1(1.54), fB2(
+                3.04764), fB3(15.066), fLambdaQCD3(0.329939), fLambdaQCD4(
                 0.28914), fLambdaQCD5(0.208364), fLambdaQCD6(0.0878108), fAlphaSMZ(
-                0.1184), fAlphaS(0.303061), fRunningScale(2.), fStrangeQuarkMass(
-                QUARK_STRANGE_MASS), fCharmQuarkMass(QUARK_CHARM_MASS), fBottomQuarkMass(
-                QUARK_BOTTOM_MASS), fTopQuarkMass(QUARK_TOP_MASS), fZBosonMass(
-                Z_BOSON_MASS) {
+                0.1184), fAlphaS(0.303061) {
 }
 
-/*!
+//TODO implement
+RunningAlphaStrong::RunningAlphaStrong(const RunningAlphaStrong &other)
+        : RunningAlphaStrongModule(other) {
+
+}
+
+RunningAlphaStrong* RunningAlphaStrong::clone() const {
+    return new RunningAlphaStrong(*this);
+}
+
+/**
  * 
  * Default destructor.
  *
@@ -78,199 +94,42 @@ RunningAlphaStrong::RunningAlphaStrong(unsigned int Nc, bool Verbose)
 RunningAlphaStrong::~RunningAlphaStrong() {
 }
 
-/*!
- * \fn void SetRunningScale( double Mu = 2. )
- * 
- * Set current renormalization scale (in GeV). Same default as for (most) PDFs.
- *
- */
-//TODO remettre les tests de contraintes
-void RunningAlphaStrong::SetRunningScale(double Mu) {
-//   if ( Mu <= fLambdaQCD3 ) {
-//      cout << "RunningAlphaStrong : Erroneous input in RunningAlphaStrong::SetRunningScale." << endl;
-//      cout << "RunningAlphaStrong : The running scale must be larger than LambdaQCD for three active flavours." << endl;
-//      cout << "RunningAlphaStrong : Here Mu = " << Mu << " GeV." << endl;
-//      cout << endl;
-//      exit( -1 );
-//   } else {
-//      fRunningScale = Mu;
-//   }
-//
-    if (fStrangeQuarkMass <= fRunningScale && fRunningScale < fCharmQuarkMass) {
-        fNf = 3;
+//TODO implement
+void RunningAlphaStrong::initModule() {
+
+}
+
+//TODO implement
+void RunningAlphaStrong::isModuleWellConfigured() {
+
+}
+
+//TODO implement - Voir a remplacer ça par un arbre binaire pour les tests si pertinent
+double RunningAlphaStrong::compute(double Mu) {
+    m_Mu = Mu;
+
+    if (QUARK_STRANGE_MASS <= m_Mu && m_Mu < QUARK_CHARM_MASS) {
+        m_nf = 3;
     }
 
-    if (fCharmQuarkMass <= fRunningScale && fRunningScale < fBottomQuarkMass) {
-        fNf = 4;
+    else if (QUARK_CHARM_MASS <= m_Mu && m_Mu < QUARK_BOTTOM_MASS) {
+        m_nf = 4;
     }
 
-    if (fBottomQuarkMass <= fRunningScale && fRunningScale < fTopQuarkMass) {
-        fNf = 5;
+    else if (QUARK_BOTTOM_MASS <= m_Mu && m_Mu < QUARK_TOP_MASS) {
+        m_nf = 5;
     }
 
-    if (fTopQuarkMass <= fRunningScale) {
-        fNf = 6;
+    else if (QUARK_TOP_MASS <= m_Mu) {
+        m_nf = 6;
     }
 
-    fRunningScale = Mu;
-}
+    ComputeLambdaQCD();
 
-/*!
- * \fn void SetAlphaSMZ( double Alpha = 0.1184 )
- * 
- *  Retrieves the value of the strong coupling constant at the scale MZ = Z^0 boson mass.
- * 
- */
-void RunningAlphaStrong::SetAlphaSMZ(double Alpha) {
-//    if (Alpha <= 0) {
-//        cout
-//                << "RunningAlphaStrong : Erroneous input in RunningAlphaStrong::SetAlphaSMZ. "
-//                << endl;
-//        cout
-//                << "RunningAlphaStrong : The strong coupling constant must be positive."
-//                << endl;
-//        cout << "RunningAlphaStrong : Here Alpha = " << Alpha << endl;
-//        cout << endl;
-//        exit(-1);
-//    } else {
-    fAlphaSMZ = Alpha;
-    fUpdateRunning = true;
-//    }
-}
-
-/*!
- * \fn void SetStrangeQuarkMass( double Mass = TConstant::StrangeQuarkMass )
- * 
- *  Retrieves strange quark mass (in GeV).
- * 
- */
-void RunningAlphaStrong::SetStrangeQuarkMass(double Mass) {
-//    if (Mass <= 0) {
-//        cout
-//                << "RunningAlphaStrong : Erroneous input in RunningAlphaStrong::SetStrangeQuarkMass. "
-//                << endl;
-//        cout << "RunningAlphaStrong : The strange quark mass must be positive."
-//                << endl;
-//        cout << "RunningAlphaStrong : Here Mass = " << Mass << " GeV." << endl;
-//        cout << endl;
-//        exit(-1);
-//    } else {
-    fStrangeQuarkMass = Mass;
-    fUpdateRunning = true;
-    TestMassHierarchy();
-//    }
-}
-
-/*!
- * \fn void SetCharmQuarkMass( double Mass = TConstant::CharmQuarkMass )
- * 
- *  Retrieves charm quark mass (in GeV).
- * 
- */
-void RunningAlphaStrong::SetCharmQuarkMass(double Mass) {
-//    if (Mass <= 0) {
-//        cout
-//                << "RunningAlphaStrong : Erroneous input in RunningAlphaStrong::SetCharmQuarkMass. "
-//                << endl;
-//        cout << "RunningAlphaStrong : The charm quark mass must be positive."
-//                << endl;
-//        cout << "RunningAlphaStrong : Here Mass = " << Mass << " GeV." << endl;
-//        cout << endl;
-//        exit(-1);
-//    } else {
-    fCharmQuarkMass = Mass;
-    fUpdateRunning = true;
-    TestMassHierarchy();
-//    }
-}
-
-/*!
- * \fn void SetBottomQuarkMass( double Mass = TConstant::BottomQuarkMass )
- * 
- *  Retrieves bottom quark mass (in GeV).
- * 
- */
-void RunningAlphaStrong::SetBottomQuarkMass(double Mass) {
-//    if (Mass <= 0) {
-//        cout
-//                << "RunningAlphaStrong : Erroneous input in RunningAlphaStrong::SetBottomQuarkMass. "
-//                << endl;
-//        cout << "RunningAlphaStrong : The bottom quark mass must be positive."
-//                << endl;
-//        cout << "RunningAlphaStrong : Here Mass = " << Mass << " GeV." << endl;
-//        cout << endl;
-//        exit(-1);
-//    } else {
-    fBottomQuarkMass = Mass;
-    fUpdateRunning = true;
-    TestMassHierarchy();
-//    }
-}
-
-/*!
- * \fn void SetTopQuarkMass( double Mass = TConstant::TopQuarkMass )
- * 
- *  Retrieves top quark mass (in GeV).
- * 
- */
-void RunningAlphaStrong::SetTopQuarkMass(double Mass) {
-//    if (Mass <= 0) {
-//        cout
-//                << "RunningAlphaStrong : Erroneous input in RunningAlphaStrong::SetTopQuarkMass. "
-//                << endl;
-//        cout << "RunningAlphaStrong : The Top quark mass must be positive."
-//                << endl;
-//        cout << "RunningAlphaStrong : Here Mass = " << Mass << " GeV." << endl;
-//        cout << endl;
-//        exit(-1);
-//    } else {
-    fTopQuarkMass = Mass;
-    fUpdateRunning = true;
-    TestMassHierarchy();
-//    }
-}
-
-/*!
- * \fn void SetZBosonMass( double Mass = TConstant::ZBosonMass )
- * 
- *  Retrieves Z boson mass (in GeV).
- * 
- */
-void RunningAlphaStrong::SetZBosonMass(double Mass) {
-//    if (Mass <= 0) {
-//        cout
-//                << "RunningAlphaStrong : Erroneous input in RunningAlphaStrong::SetZBosonMass. "
-//                << endl;
-//        cout << "RunningAlphaStrong : The Z boson mass must be positive."
-//                << endl;
-//        cout << "RunningAlphaStrong : Here Mass = " << Mass << " GeV." << endl;
-//        cout << endl;
-//        exit(-1);
-//    } else {
-    fZBosonMass = Mass;
-    fUpdateRunning = true;
-    TestMassHierarchy();
-//    }
-}
-
-/*!
- * \fn double Get AlphaS()
- * 
- * Returns strong coupling constant at scale Mu (in GeV). Mu should be larger than LambdaQCD( NFlavour = 2 ). 
- * TODO : TEST
- * 
- */
-double RunningAlphaStrong::GetAlphaS() {
-    double Lambda; // Lambda_QCD with actual number of active flavours
-
-    if (fUpdateRunning == true) {
-        ComputeLambdaQCD();
-        fUpdateRunning = false;
-    }
-
+    double Lambda = 0.; // Lambda_QCD with actual number of active flavours
     // Finds the actual value of Lambda_QCD
 
-    switch (fNf) {
+    switch (m_nf) {
 
     case 3:
         Lambda = fLambdaQCD3;
@@ -289,33 +148,13 @@ double RunningAlphaStrong::GetAlphaS() {
         break;
 
     default:
-//        cout << "RunningAlphaStrong : Erroneous input." << endl;
-//        cout
-//                << "RunningAlphaStrong : There are currently only six known quarks flavours."
-//                << endl;
-//        cout << "RunningAlphaStrong : Nf must be an integer between 2 and 6."
-//                << endl;
-//        cout << endl;
-        exit(-1);
-
+        //TODO implement
+        throw std::runtime_error("RunningAlphaStrong::compute(Mu)");
     }
 
-    // Computes beta function coefficients and running of strong coupling with actual number of active flavours
-    // and value of Lambda_QCD at current scale
-
-    Running(fRunningScale, Lambda, fNf);
+    Running(m_Mu, Lambda, m_nf);
 
     return fAlphaS;
-}
-
-/*!
- * \fn GetActiveFlavourNumber ()
- * 
- * Returns number of active flavours at scale fRunningScale.
- *
- */
-unsigned int RunningAlphaStrong::GetActiveFlavourNumber() const {
-    return fNf;
 }
 
 /*!
@@ -326,28 +165,6 @@ unsigned int RunningAlphaStrong::GetActiveFlavourNumber() const {
  */
 unsigned int RunningAlphaStrong::GetColourNumber() const {
     return fNc;
-}
-
-/*!
- * \fn GetLambdaQCD( double* Lambda )
- *
- * Returns LambdaQCD as a function of number of active flavours :
- *    Lambda[ 0 ] = LambdaQCD( Nf = 3 )
- *    Lambda[ 1 ] = LambdaQCD( Nf = 4 )
- *    Lambda[ 2 ] = LambdaQCD( Nf = 5 )
- *    Lambda[ 3 ] = LambdaQCD( Nf = 6 )
- *
- */
-void RunningAlphaStrong::GetLambdaQCD(double* Lambda) {
-    if (fUpdateRunning == true) {
-        ComputeLambdaQCD();
-        fUpdateRunning = false;
-    }
-
-    Lambda[0] = fLambdaQCD3;
-    Lambda[1] = fLambdaQCD4;
-    Lambda[2] = fLambdaQCD5;
-    Lambda[3] = fLambdaQCD6;
 }
 
 /*!
@@ -373,15 +190,8 @@ void RunningAlphaStrong::ResetToDefault() {
 
     fAlphaS = 1.;
     fAlphaSMZ = 0.1184;
-    fRunningScale = 2.;
 
-    fStrangeQuarkMass = QUARK_STRANGE_MASS;
-    fCharmQuarkMass = QUARK_CHARM_MASS;
-    fBottomQuarkMass = QUARK_BOTTOM_MASS;
-    fTopQuarkMass = QUARK_TOP_MASS;
-    fZBosonMass = Z_BOSON_MASS;
-
-    fNf = 4;
+    m_nf = 4;
 }
 
 /*------------------------------ Private routines ----------------------------*/
@@ -492,7 +302,7 @@ void RunningAlphaStrong::ComputeLambdaQCD() {
     // Solve Running( fZBosonMass, fLambdaQCD5, 5 ) = fAlphaSMZ
 
     AlphaTarget = fAlphaSMZ;
-    LambdaFinder.SetParameter(0, fZBosonMass);
+    LambdaFinder.SetParameter(0, Z_BOSON_MASS);
     LambdaFinder.SetParameter(1, fAlphaSMZ);
     LambdaFinder.SetParameter(2, 5);
 
@@ -507,9 +317,9 @@ void RunningAlphaStrong::ComputeLambdaQCD() {
     // Find fLambdaQCD4 between fLambdaQCD5 and LambdaMax
     // Solve Running( fBottomQuarkMass, fLambdaQCD5, 5 ) = Running( fBottomQuarkMass, fLambdaQCD4, 4 )
 
-    Running(fBottomQuarkMass, fLambdaQCD5, 5);
+    Running(QUARK_BOTTOM_MASS, fLambdaQCD5, 5);
     AlphaTarget = fAlphaS;
-    LambdaFinder.SetParameter(0, fBottomQuarkMass);
+    LambdaFinder.SetParameter(0, QUARK_BOTTOM_MASS);
     LambdaFinder.SetParameter(1, AlphaTarget);
     LambdaFinder.SetParameter(2, 4);
 
@@ -524,9 +334,9 @@ void RunningAlphaStrong::ComputeLambdaQCD() {
     // Find fLambdaQCD3 between fLambdaQCD4 and LambdaMax
     // Solve Running( fCharmQuarkMass, fLambdaQCD4, 4 ) = Running( fCharmQuarkMass, fLambdaQCD3, 3 )
 
-    Running(fCharmQuarkMass, fLambdaQCD4, 4);
+    Running(QUARK_CHARM_MASS, fLambdaQCD4, 4);
     AlphaTarget = fAlphaS;
-    LambdaFinder.SetParameter(0, fCharmQuarkMass);
+    LambdaFinder.SetParameter(0, QUARK_CHARM_MASS);
     LambdaFinder.SetParameter(1, AlphaTarget);
     LambdaFinder.SetParameter(2, 3);
 
@@ -541,9 +351,9 @@ void RunningAlphaStrong::ComputeLambdaQCD() {
     // Find fLambdaQCD6 between LambdaMin and fLambdaQCD5
     // Solve Running( fTopQuarkMass, fLambdaQCD5, 5 ) = Running( fTopQuarkMass, fLambdaQCD6, 6 )
 
-    Running(fTopQuarkMass, fLambdaQCD5, 5);
+    Running(QUARK_TOP_MASS, fLambdaQCD5, 5);
     AlphaTarget = fAlphaS;
-    LambdaFinder.SetParameter(0, fTopQuarkMass);
+    LambdaFinder.SetParameter(0, QUARK_TOP_MASS);
     LambdaFinder.SetParameter(1, AlphaTarget);
     LambdaFinder.SetParameter(2, 6);
 
@@ -555,40 +365,6 @@ void RunningAlphaStrong::ComputeLambdaQCD() {
 
     delete WrappedLambdaFinder;
 
-}
-
-/*!
- * \fn TestQuarkMassHierarchy()
- *
- * Test : modifying quark masses should not modify quark masses hierarchy. Only minor changes of quark masses are expected.
- *
- */
-void RunningAlphaStrong::TestMassHierarchy() {
-    bool Hierarchy = (fStrangeQuarkMass < fCharmQuarkMass)
-            && (fCharmQuarkMass < fBottomQuarkMass)
-            && (fBottomQuarkMass < fZBosonMass)
-            && (fZBosonMass < fTopQuarkMass);
-
-    if (Hierarchy == false) {
-//        cout
-//                << "RunningAlphaStrong : Erroneous input in RunningAlphaStrong::TestMassHierarchy"
-//                << endl;
-//        cout
-//                << "RunningAlphaStrong : Incorrect mass hierarchy of quark flavours and Z boson."
-//                << endl;
-//        cout << "RunningAlphaStrong :    strange quark mass = "
-//                << fStrangeQuarkMass << " GeV" << endl;
-//        cout << "RunningAlphaStrong :    charm quark mass = " << fCharmQuarkMass
-//                << " GeV" << endl;
-//        cout << "RunningAlphaStrong :    bottom quark mass = "
-//                << fBottomQuarkMass << " GeV" << endl;
-//        cout << "RunningAlphaStrong :    top quark mass = " << fTopQuarkMass
-//                << " GeV" << endl;
-//        cout << "RunningAlphaStrong :    Z boson mass = " << fZBosonMass
-//                << " GeV" << endl;
-//        cout << endl;
-        exit(-1);
-    }
 }
 
 /*!

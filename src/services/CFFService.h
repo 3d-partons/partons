@@ -1,11 +1,5 @@
-#include "../beans/gpd/GPDComputeType.h"
-#include "../beans/QCDOrderType.h"
-#include "../BaseObject.h"
-
-class CFFInputData;
-class CFFModule;
-class CFFOutputData;
-class GPDModule;
+#ifndef CFF_SERVICE_H
+#define CFF_SERVICE_H
 
 /**
  * @file CFFService.h
@@ -19,8 +13,21 @@ class GPDModule;
  * @brief \<singleton\> Use for handle and compute some pre-configured CFF modules.
  */
 
-class CFFService: BaseObject {
+#include <string>
+
+#include "../beans/gpd/GPDComputeType.h"
+#include "../beans/QCDOrderType.h"
+#include "Service.h"
+
+class CFFInputData;
+class CFFModule;
+class CFFOutputData;
+class GPDModule;
+
+class CFFService: public Service {
 public:
+    static const std::string ID; ///< Unique ID to self-register in the registry
+
     /**
      * Share a unique pointer of this class
      */
@@ -29,6 +36,8 @@ public:
      * Default destructor
      */
     virtual ~CFFService();
+
+    virtual void computeScenario(Scenario scenario);
 
     virtual CFFOutputData computeWithGPDModel(CFFModule* cffModule,
             GPDModule* _pGPDModule, CFFInputData &cffInputData,
@@ -61,3 +70,5 @@ private:
      */
     CFFService();
 };
+
+#endif /* CFF_SERVICE_H */
