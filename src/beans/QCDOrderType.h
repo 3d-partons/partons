@@ -2,8 +2,14 @@
 #define QCD_ORDER_TYPE_H
 
 /**
- * \author Bryan BERTHOU
- * \date 16/07/2014
+ * @file QuarkFlavor.h
+ * @author Bryan BERTHOU
+ * @date 16 July 2014
+ * @version 1.0
+ *
+ * @class QuarkFlavor
+ *
+ * @brief
  */
 
 #include <string>
@@ -15,12 +21,12 @@ public:
         UNDEFINED, LO, NLO, NNLO
     };
 
-    QCDOrderType() :
-            m_type(QCDOrderType::UNDEFINED) {
+    QCDOrderType()
+            : m_type(QCDOrderType::UNDEFINED) {
     }
 
-    QCDOrderType(Type type) :
-            m_type(type) {
+    QCDOrderType(Type type)
+            : m_type(type) {
     }
 
     const std::string toString() {

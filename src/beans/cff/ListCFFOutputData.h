@@ -2,9 +2,14 @@
 #define LIST_CFF_OUTPUT_DATA_H
 
 /**
+ * @file ListCFFOutputData.h
  * @author Bryan BERTHOU (CEA Saclay)
- * @date 20 november 2014
+ * @date 20 November 2014
  * @version 1.0
+ *
+ * @class ListCFFOutputData
+ *
+ * @brief
  */
 
 #include <stddef.h>

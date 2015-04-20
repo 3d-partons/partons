@@ -8,6 +8,8 @@
  * @version 1.0
  *
  * @class Observable
+ *
+ * @brief
  */
 
 #include <string>

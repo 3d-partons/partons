@@ -5,9 +5,12 @@
  * @file GPDResultData.h
  * @brief
  * @author Bryan BERTHOU (CEA Saclay)
- * @date 24/07/2014
- * Last update : 17 September 2014
+ * @date 24 July 2014
  * @version 1.0
+ *
+ * @class GPDResultData
+ *
+ * @brief
  */
 
 #include <stddef.h>

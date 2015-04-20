@@ -2,10 +2,14 @@
 #define QUARK_FLAVOR_H
 
 /**
+ *
+ * @file QuarkFlavor.h
  * @author Bryan BERTHOU (CEA Saclay)
  * @date 22 July 2014
+ * @version 1.0
  *
  * @class QuarkFlavor
+ *
  * @brief
  */
 
@@ -17,12 +21,12 @@ public:
         UNDEFINED, UP, DOWN, STRANGE, CHARM, BOTTOM, TOP
     };
 
-    QuarkFlavor() :
-            m_type(QuarkFlavor::UNDEFINED) {
+    QuarkFlavor()
+            : m_type(QuarkFlavor::UNDEFINED) {
     }
 
-    QuarkFlavor(Type type) :
-            m_type(type) {
+    QuarkFlavor(Type type)
+            : m_type(type) {
     }
     operator Type() const {
         return m_type;

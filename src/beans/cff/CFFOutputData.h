@@ -4,8 +4,12 @@
 /**
  * @file CFFOutputData.h
  * @author: Bryan BERTHOU (CEA Saclay)
- * @date 28 juil. 2014
+ * @date 28 July 2014
  * @version 1.0
+ *
+ * @class CFFOutputData
+ *
+ * @brief
  */
 
 #include <complex>

@@ -1,6 +1,17 @@
 #ifndef LIST_GPD_OUTPUT_DATA_H
 #define LIST_GPD_OUTPUT_DATA_H
 
+/**
+ * @file ListGPDOutputData.h
+ * @author: Bryan BERTHOU (CEA Saclay)
+ * @date 24 November 2014
+ * @version 1.0
+ *
+ * @class ListGPDOutputData
+ *
+ * @brief
+ */
+
 #include <stddef.h>
 #include <map>
 #include <string>

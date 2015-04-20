@@ -2,10 +2,14 @@
 #define PARAMETERS_H
 
 /**
- * @file Parameters
+ * @file Parameters.h
  * @author: Bryan BERTHOU (CEA Saclay)
  * @date 08 December 2014
  * @version 1.0
+ *
+ * @class Parameters
+ *
+ * @brief
  */
 
 #include <map>

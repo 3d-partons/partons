@@ -6,6 +6,10 @@
  * @author: Bryan BERTHOU (CEA Saclay)
  * @date 08 December 2014
  * @version 1.0
+ *
+ * @class GenericData
+ *
+ * @brief
  */
 
 #include <sstream>

@@ -8,6 +8,8 @@
  * @version 1.0
  *
  * @class AluObservable
+ *
+ * @brief
  */
 
 #include "Observable.h"

@@ -2,11 +2,14 @@
 #define CFF_INPUT_DATA_H
 
 /**
- * @file GPDInputData.h
+ * @file CFFInputData.h
  * @author: Bryan BERTHOU (CEA Saclay)
- * @date 28 juil. 2014
- * Last update : 15 September 2014
+ * @date 28 July 2014
  * @version 2.0
+ *
+ * @class CFFInputData
+ *
+ * @brief
  */
 
 #include <string>

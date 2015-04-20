@@ -3,8 +3,12 @@
 
 /**
  * @author Bryan BERTHOU (CEA Saclay)
- * @date 30 juil 2014
+ * @date 30 July 2014
  * @version 1.0
+ *
+ * @class GPDComputeType
+ *
+ * @brief
  */
 
 #include <string>
