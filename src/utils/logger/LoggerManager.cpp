@@ -4,14 +4,16 @@
 #include <utility>
 #include <vector>
 
+//#include "../../Partons.h"
 #include "../parser/IniFileParser.h"
+#include "../PropertiesManager.h"
 #include "../stringUtils/Formatter.h"
 #include "../stringUtils/StringUtils.h"
 
 // Global static pointer used to ensure a single instance of the class.
 LoggerManager* LoggerManager::m_pInstance = 0;
 
-//TODO remplacer le path du fichier qui est en dur
+//TODO remplacer le nom de la propriété "log.file.path" par un static final string
 LoggerManager::LoggerManager()
         : m_outputFilePath("default.log"), m_defaultLevel(LoggerLevel::INFO), m_printMode(
                 LoggerPrintMode::COUT), m_active(false) {
@@ -41,16 +43,15 @@ LoggerManager::~LoggerManager() {
     pthread_mutex_destroy(&m_mutex);
 }
 
-void LoggerManager::init(const std::string & configFilePath) {
-    m_configFilePath = configFilePath;
-
-    parseConfigurationFile();
+void LoggerManager::init() {
+    parseConfigurationFile(
+            PropertiesManager::getInstance()->getString("log.file.path"));
 }
 
 //TODO ameliorer le parsing du fichier de config et les erreurs
-void LoggerManager::parseConfigurationFile() {
-    IniFileParser iniFileParser(m_configFilePath);
-    iniFileParser.parse();
+void LoggerManager::parseConfigurationFile(const std::string &filePath) {
+    IniFileParser iniFileParser;
+    iniFileParser.parse(filePath);
 
     std::map<std::string, std::string> data = iniFileParser.getValues();
     std::map<std::string, std::string>::iterator it;
@@ -282,7 +283,6 @@ void LoggerManager::addMessageToQueue(LoggerMessage loggerMessage) {
 
 std::string LoggerManager::toString() {
     Formatter formatter;
-    formatter << "ConfigFilePath = " << m_configFilePath << "\n";
     formatter << "DefaultLevel = " << m_defaultLevel.toString() << "\n";
     formatter << "PrintMode = " << m_printMode.toString() << "\n";
 

@@ -41,7 +41,7 @@ public:
      */
     ~LoggerManager();
 
-    void init(const std::string & configFilePath);
+    void init();
 
     void stop();
 
@@ -81,7 +81,6 @@ private:
 
     pthread_mutex_t m_mutex;
 
-    std::string m_configFilePath;
     std::string m_outputFilePath;
     LoggerLevel m_defaultLevel;
     LoggerPrintMode m_printMode;
@@ -93,7 +92,7 @@ private:
 
     bool m_active;
 
-    void parseConfigurationFile();
+    void parseConfigurationFile(const std::string &filePath);
 
     void update();
 

@@ -17,16 +17,6 @@
 #include "utils/parser/xml/ParserXML.h"
 
 class ScenarioManager: public ParserXML {
-private:
-    static ScenarioManager* pInstance; ///< Private pointer of this class for a unique instance
-
-    /**
-     * Private default constructor for a unique instance of this class
-     */
-    ScenarioManager();
-
-    Scenario m_scenario;
-
 public:
     /**
      * A static function that provides a unique pointer of this class
@@ -44,6 +34,16 @@ public:
 
     virtual void startElement(std::string tagName, Attributs attributes,
             std::string tagValue);
+
+private:
+    static ScenarioManager* pInstance; ///< Private pointer of this class for a unique instance
+
+    /**
+     * Private default constructor for a unique instance of this class
+     */
+    ScenarioManager();
+
+    Scenario m_scenario;
 };
 
 #endif /* SCENARIO_MANAGER_H */

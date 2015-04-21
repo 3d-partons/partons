@@ -1,8 +1,7 @@
 #include "StringUtils.h"
 
 #include <stddef.h>
-#include <algorithm> // pour transform#include <cctype>    // pour tolower et toupper#include <cstdlib>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>#include <iterator>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>#include <iterator>#include <cctype>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>#include <cctype>#include <cctype>#include <cstdlib>#include <cctype>#include <cctype>#include <cctype>#include <cstdlib>#include <iterator>#include <cctype>#include <cstdlib>#include <cctype>#include <cctype>#include <cstdlib>#include <cctype>#include <cctype>#include <cmath>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>
-#include <iterator>
+#include <algorithm> // pour transform#include <cctype>    // pour tolower et toupper#include <cstdlib>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>#include <iterator>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>#include <iterator>#include <cctype>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>#include <cctype>#include <cctype>#include <cstdlib>#include <cctype>#include <cctype>#include <cctype>#include <cstdlib>#include <iterator>#include <cctype>#include <cstdlib>#include <cctype>#include <cctype>#include <cstdlib>#include <cctype>#include <cctype>#include <cmath>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>#include <iterator>
 
 //#include <utility>
 
@@ -265,6 +264,21 @@ std::string StringUtils::vectorToString(std::vector<std::string>* vector) {
 
     for (unsigned int i = 0; i != vector->size(); ++i) {
         res.append(vector->at(i)).append(" ");
+    }
+
+    return res;
+}
+
+std::string StringUtils::removeAfterLast(const std::string &chaine,
+        const char lastCharacter) {
+    std::vector<std::string> temp = split(chaine, lastCharacter);
+    temp.erase(temp.end());
+
+    std::string res = EMPTY;
+
+    for (unsigned int i = 0; i != temp.size(); ++i) {
+        res += temp.at(i);
+        res += lastCharacter;
     }
 
     return res;

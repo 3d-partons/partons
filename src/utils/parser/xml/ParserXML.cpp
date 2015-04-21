@@ -23,7 +23,8 @@ std::multimap<std::string, std::pair<Attributs, std::string> > ParserXML::analys
         }
         loop(m_total);
     } else {
-        std::cout << "Erreur dans l'ouverture du fichier\n";
+        std::cerr << "Erreur dans l'ouverture du fichier = " + file
+                << std::endl;
         exit(1);
     }
     return fileBuffer;

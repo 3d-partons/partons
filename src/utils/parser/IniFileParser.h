@@ -24,20 +24,20 @@ public:
      *
      * @param configFilePath
      */
-    IniFileParser(const std::string & configFilePath);
+    IniFileParser();
 
     /**
      * Default destructor
      */
     virtual ~IniFileParser();
 
-    void parse();
+    void parse(const std::string & configFilePath);
 
     std::map<std::string, std::string> getValues();
+    std::string getString(const std::string & key);
     std::string getString(const std::string & section, const std::string & key);
 
 private:
-    std::string m_configFilePath;
     std::map<std::string, std::string> m_values;
     std::map<std::string, std::string>::iterator m_it;
 

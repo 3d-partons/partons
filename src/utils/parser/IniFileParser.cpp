@@ -12,20 +12,18 @@
 
 std::string IniFileParser::SECTION_KEY_CONCATENATOR = "=";
 
-IniFileParser::IniFileParser(const std::string & configFilePath)
-        : m_configFilePath(configFilePath) {
-
+IniFileParser::IniFileParser() {
 }
 
 IniFileParser::~IniFileParser() {
 
 }
 
-void IniFileParser::parse() {
-    if (FileUtils::isReadable(m_configFilePath)) {
+void IniFileParser::parse(const std::string & configFilePath) {
+    if (FileUtils::isReadable(configFilePath)) {
         // retrieve each line of the file
         std::vector<std::string> fileLines = FileUtils::readByLine(
-                m_configFilePath);
+                configFilePath);
 
         // create an empty section name
         std::string sectionName = StringUtils::EMPTY;
@@ -38,7 +36,7 @@ void IniFileParser::parse() {
         // if the input file is unreadable then throw an exception
         throw std::runtime_error(
                 "[IniFileParser] Unable to open config file: "
-                        + m_configFilePath);
+                        + configFilePath);
     }
 }
 
@@ -123,6 +121,12 @@ std::string IniFileParser::makeKey(const std::string & sectionName,
     // else returns the section name concatenated with the value of the key
     return (sectionName == StringUtils::EMPTY) ?
             key : Formatter() << sectionName << SECTION_KEY_CONCATENATOR << key;
+}
+
+//TODO voir à ajouter en parametre la valeur de retour par défaut dans le cas ou EMPTY est une valeur possible
+std::string IniFileParser::getString(const std::string & key) {
+    m_it = m_values.find(makeKey(StringUtils::EMPTY, key));
+    return (m_it != m_values.end()) ? m_it->second : StringUtils::EMPTY;
 }
 
 //TODO voir à ajouter en parametre la valeur de retour par défaut dans le cas ou EMPTY est une valeur possible

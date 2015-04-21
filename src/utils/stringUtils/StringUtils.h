@@ -10,7 +10,7 @@
  * \date Derniere maj : /09/2014
  */
 
-#include <map>
+//#include <map>
 #include <string>
 #include <utility>
 #include <vector>
@@ -21,8 +21,6 @@
  * \class StringUtils
  */
 class StringUtils {
-
-
 
 public:
 
@@ -122,6 +120,9 @@ public:
 
     static std::pair<std::string, std::vector<char> > fromStringToArrayOfChar(
             const std::string &string);
+
+   static std::string removeAfterLast(const std::string &chaine,
+            const char lastCharacter);
 };
 
 #endif /* STRING_UTILS_H */

@@ -57,6 +57,8 @@ std::string ModuleObjectFactory::registerModule(ModuleObject * pModuleObject) {
     return pModuleObject->getClassName();
 }
 
+// Some modules depend of other so we need to make references at NULL and assign pointer later.
+// Performed by the init() method of target module.
 void ModuleObjectFactory::init() {
     for (m_it = m_moduleRegistry.begin(); m_it != m_moduleRegistry.end();
             m_it++) {
