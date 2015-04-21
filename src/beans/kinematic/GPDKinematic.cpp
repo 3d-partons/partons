@@ -3,20 +3,21 @@
 #include "../../utils/stringUtils/Formatter.h"
 
 GPDKinematic::GPDKinematic()
-        : Kinematic(0., 0.), m_x(0.), m_xi(0.), m_MuF(0.), m_MuR(0.) {
+        : m_x(0.), m_xi(0.), m_t(0.), m_MuF(0.), m_MuR(0.) {
 }
 
 GPDKinematic::GPDKinematic(double x, double xi, double t, double MuF,
         double MuR)
-        : Kinematic(0., t), m_x(x), m_xi(xi), m_MuF(MuF), m_MuR(MuR) {
+        : m_x(x), m_xi(xi), m_t(t), m_MuF(MuF), m_MuR(MuR) {
 }
 
 GPDKinematic::~GPDKinematic() {
 }
 
 std::string GPDKinematic::toString() {
-    return Formatter() << Kinematic::toString() << "m_x = " << m_x << " m_xi = "
-            << m_xi << " m_MuF = " << m_MuF << " m_MuR = " << m_MuR;
+    return Formatter() << "m_x = " << m_x << " m_xi = "
+            << m_xi << "m_t = " << m_t
+            << " m_MuF = " << m_MuF << " m_MuR = " << m_MuR;
 }
 
 // ##### GETTERS & SETTERS #####
@@ -53,6 +54,13 @@ void GPDKinematic::setXi(double xi) {
     m_xi = xi;
 }
 
+double GPDKinematic::getT() const {
+    return m_t;
+}
+
+void GPDKinematic::setT(double t) {
+    m_t = t;
+}
 //sf::Packet& operator <<(sf::Packet& packet, const GPDKinematic& object) {
 //    return packet << object.m_x << object.m_xi << object.m_t << object.m_MuF
 //            << object.m_MuR;

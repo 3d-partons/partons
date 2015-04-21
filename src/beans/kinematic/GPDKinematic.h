@@ -14,9 +14,7 @@
 
 #include <string>
 
-#include "Kinematic.h"
-
-class GPDKinematic: public Kinematic {
+class GPDKinematic {
 public:
 
     /**
@@ -27,11 +25,11 @@ public:
     /**
      * Constructor
      *
-     * @param x Bjorken variable
-     * @param xi
-     * @param t momentum transfer (Mandelstam variable)
-     * @param MuF Factorisation scale
-     * @param MuR Re-normalisation scale
+     * @param x Longitudinal momentum fraction of the active parton
+     * @param xi Skewness
+     * @param t Mandelstam variable, momentum transfer on the hadron target (in GeV^2)
+     * @param MuF Factorization scale (in GeV)
+     * @param MuR Renormalization scale (in GeV)
      */
     GPDKinematic(double x, double xi, double t, double MuF, double MuR);
 
@@ -53,6 +51,8 @@ public:
     void setMuF(double muF);
     double getMuR() const;
     void setMuR(double muR);
+    double getT() const;
+    void setT(double t);
     double getX() const;
     void setX(double x);
     double getXi() const;
@@ -63,11 +63,12 @@ public:
 //    friend sf::Packet& operator >>(sf::Packet& packet, GPDKinematic& object);
 
 private:
-    //TODO name and unit ?
-    double m_x;     ///< Bjorken variable
-    double m_xi;
-    double m_MuF;   ///< Factorisation scale
-    double m_MuR;   ///< Re-normalisation scale
+
+    double m_x;		///< Longitudinal momentum fraction of the active parton
+    double m_xi;	///< Skewness
+    double m_t;		///< Mandelstam variable, momentum transfer on the hadron target (in GeV^2)
+    double m_MuF;	///< Factorization scale (in GeV)
+    double m_MuR;	///< Renormalization scale (in GeV)
 };
 
 //sf::Packet& operator <<(sf::Packet& packet, const GPDKinematic& object);

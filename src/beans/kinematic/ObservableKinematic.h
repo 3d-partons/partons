@@ -15,17 +15,21 @@
 #include <string>
 #include <vector>
 
-#include "FormFactorKinematic.h"
-
-class ObservableKinematic: public FormFactorKinematic {
+class ObservableKinematic {
 public:
+
+    /**
+     * Default constructor
+     */
+	ObservableKinematic();
+
     /**
      * Constructor
      *
-     * @param xB
-     * @param t momentum transfer (Mandelstam variable)
-     * @param Q2 virtualty of the photon
-     * @param listOfPhi
+     * @param xB Bjorken variable
+     * @param t Mandelstam variable, momentum transfer on the hadron target (in GeV^2)
+     * @param Q2 Virtuality of the photon in Born approximation (in GeV^2)
+     * @param listOfPhi list of angles between leptonic and hadronic planes (in degrees, Trento convention)
      */
     ObservableKinematic(double xB, double t, double Q2,
             std::vector<double> listOfPhi);
@@ -46,9 +50,19 @@ public:
 
     const std::vector<double>& getListOfPhi() const;
     void setListOfPhi(const std::vector<double>& listOfPhi);
+	double getQ2() const;
+	void setQ2(double Q2);
+	double getT() const;
+	void setT(double t);
+	double getXB() const;
+	void setXB(double xB);
 
 private:
-    std::vector<double> m_listOfPhi; ///<  Angles between leptonic and hadronic planes
+	// TODO : What do we do when we consider Fourier harmonics of DVCS observables?
+    double m_xB;	///< Bjorken variable
+    double m_t;		///< Mandelstam variable, momentum transfer on the hadron target (in GeV^2)
+    double m_Q2;	///< Virtuality of the photon in Born approximation (in GeV^2)
+    std::vector<double> m_listOfPhi; ///<  Angles between leptonic and hadronic planes (in degrees, Trento convention)
 };
 
 #endif /* OBSERVABLE_KINEMATIC_H */
