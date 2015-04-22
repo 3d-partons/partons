@@ -17,7 +17,7 @@
 #include <string>
 
 #include "../beans/gpd/GPDComputeType.h"
-#include "../beans/QCDOrderType.h"
+#include "../beans/PerturbativeQCDOrderType.h"
 #include "ModuleObject.h"
 
 class RunningAlphaStrongModule;
@@ -63,8 +63,8 @@ public:
 
     const GPDModule* getGpdModule() const;
     void setGpdModule(GPDModule* gpdModule);
-    QCDOrderType::Type getQcdOrderType() const;
-    void setQcdOrderType(QCDOrderType::Type qcdOrderType);
+    PerturbativeQCDOrderType::Type getQcdOrderType() const;
+    void setQcdOrderType(PerturbativeQCDOrderType::Type qcdOrderType);
 
 protected:
 
@@ -85,7 +85,7 @@ protected:
     double m_MuF;
     double m_MuR;
 
-    QCDOrderType::Type m_qcdOrderType;
+    PerturbativeQCDOrderType::Type m_qcdOrderType;
     GPDComputeType::Type m_currentGPDComputeType;
     GPDComputeType::Type m_gpdComputeType;
 

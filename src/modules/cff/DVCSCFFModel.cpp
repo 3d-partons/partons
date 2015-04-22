@@ -12,7 +12,7 @@
 #include "../../beans/gpd/GPDOutputData.h"
 #include "../../beans/gpd/GPDQuarkFlavorData.h"
 #include "../../beans/gpd/GPDResultData.h"
-#include "../../beans/QCDOrderType.h"
+#include "../../beans/PerturbativeQCDOrderType.h"
 #include "../../beans/QuarkFlavor.h"
 #include "../../FundamentalPhysicalConstants.h"
 #include "../../ModuleObjectFactory.h"
@@ -110,7 +110,7 @@ void DVCSCFFModel::isModuleWellConfigured() {
     if (m_pGPDModule == 0) {
         throw std::runtime_error("[DVCSCFFModel] GPDModule* is NULL");
     }
-    if (m_qcdOrderType == QCDOrderType::UNDEFINED) {
+    if (m_qcdOrderType == PerturbativeQCDOrderType::UNDEFINED) {
         throw std::runtime_error("[DVCSCFFModel] QCDOrderType is UNDEFINED");
     }
     if (m_pMathIntegratorModule == 0) {
@@ -247,7 +247,7 @@ void DVCSCFFModel::computeSubtractionFunctionsV() {
 
     // NLO, real and imaginary parts
 
-    if (m_qcdOrderType == QCDOrderType::NLO) {
+    if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
 
         // Real part, quark contribution
 
@@ -326,7 +326,7 @@ void DVCSCFFModel::computeSubtractionFunctionsA() {
 
     // NLO, real and imaginary parts
 
-    if (m_qcdOrderType == QCDOrderType::NLO) {
+    if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
 
         // Real part, quark contribution
 
@@ -362,8 +362,8 @@ std::complex<double> DVCSCFFModel::computeIntegralsV() {
 
     // Sums up integrals and subtraction constants to get real and imaginary parts of CFF.
 
-    if (m_qcdOrderType != QCDOrderType::LO
-            && m_qcdOrderType != QCDOrderType::NLO) {
+    if (m_qcdOrderType != PerturbativeQCDOrderType::LO
+            && m_qcdOrderType != PerturbativeQCDOrderType::NLO) {
 
         Formatter()
                 << "[DVCSCFFModule::computeIntegrals] Erroneous input perturbative QCD order can only be LO or NLO. Here Order = "
@@ -422,7 +422,7 @@ std::complex<double> DVCSCFFModel::computeIntegralsV() {
 
     // Gluon sector
 
-    if (m_qcdOrderType == QCDOrderType::NLO) {
+    if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
         IntegralRealPartKernelGluon1 = m_pMathIntegratorModule->compute(
                 DVCSCFFModel::CONVOL_RE_KERNEL_GLUON_1V, this, 0., +m_xi);
 
@@ -470,13 +470,13 @@ std::complex<double> DVCSCFFModel::computeIntegralsA() {
 
     // Sums up integrals and subtraction constants to get real and imaginary parts of CFF.
 
-    if (m_qcdOrderType != QCDOrderType::LO
-            && m_qcdOrderType != QCDOrderType::NLO) {
+    if (m_qcdOrderType != PerturbativeQCDOrderType::LO
+            && m_qcdOrderType != PerturbativeQCDOrderType::NLO) {
 
         throw std::runtime_error(
                 Formatter()
                         << "[DVCSCFFModel::computeIntegralsA] Erroneous input perturbative QCD order can only be LO or NLO. Here Order = "
-                        << QCDOrderType(m_qcdOrderType).toString());
+                        << PerturbativeQCDOrderType(m_qcdOrderType).toString());
 
     }
 
@@ -531,7 +531,7 @@ std::complex<double> DVCSCFFModel::computeIntegralsA() {
 
     // Gluon sector
 
-    if (m_qcdOrderType == QCDOrderType::NLO) {
+    if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
         IntegralRealPartKernelGluon1 = m_pMathIntegratorModule->compute(
                 DVCSCFFModel::CONVOL_RE_KERNEL_GLUON_1A, this, 0., +m_xi);
 
@@ -606,17 +606,17 @@ std::complex<double> DVCSCFFModel::KernelQuarkV(double x) {
 
     std::complex<double> quark(1. / (1. - z), 0.);
 
-    if (m_qcdOrderType == QCDOrderType::NLO) {
+    if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
 
         quark += m_alphaSOver2Pi * KernelQuarkNLOV(x);
 
-        if (m_qcdOrderType != QCDOrderType::LO
-                && m_qcdOrderType != QCDOrderType::NLO) {
+        if (m_qcdOrderType != PerturbativeQCDOrderType::LO
+                && m_qcdOrderType != PerturbativeQCDOrderType::NLO) {
 
             throw std::runtime_error(
                     Formatter()
                             << "[DVCSCFFModule::KernelQuarkV] Erroneous input, perturbative QCD order can only be LO or NLO. Here Order = "
-                            << QCDOrderType(m_qcdOrderType).toString());
+                            << PerturbativeQCDOrderType(m_qcdOrderType).toString());
             //TODO throw an exception
         }
     }
@@ -635,17 +635,17 @@ std::complex<double> DVCSCFFModel::KernelQuarkA(double x) {
 
     std::complex<double> quark(1. / (1. - z), 0.);
 
-    if (m_qcdOrderType == QCDOrderType::NLO) {
+    if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
 
         quark += m_alphaSOver2Pi * KernelQuarkNLOA(x);
 
-        if (m_qcdOrderType != QCDOrderType::LO
-                && m_qcdOrderType != QCDOrderType::NLO) {
+        if (m_qcdOrderType != PerturbativeQCDOrderType::LO
+                && m_qcdOrderType != PerturbativeQCDOrderType::NLO) {
 
             throw std::runtime_error(
                     Formatter()
                             << "[DVCSCFFModule::KernelQuarkA] Erroneous input, perturbative QCD order can only be LO or NLO. Here Order = "
-                            << QCDOrderType(m_qcdOrderType).toString());
+                            << PerturbativeQCDOrderType(m_qcdOrderType).toString());
             //TODO throw an exception
         }
     }
@@ -663,15 +663,15 @@ std::complex<double> DVCSCFFModel::KernelGluonV(double x) {
 
     std::complex<double> gluon(0., 0.);
 
-    if (m_qcdOrderType == QCDOrderType::NLO) {
+    if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
 
         gluon += m_alphaSOver2Pi * KernelGluonNLOV(x);
 
-        if (m_qcdOrderType != QCDOrderType::LO
-                && m_qcdOrderType != QCDOrderType::NLO) {
+        if (m_qcdOrderType != PerturbativeQCDOrderType::LO
+                && m_qcdOrderType != PerturbativeQCDOrderType::NLO) {
             Formatter()
                     << "[DVCSCFFModule::KernelGluonV] Erroneous input, perturbative QCD order can only be LO or NLO. Here Order = "
-                    << QCDOrderType(m_qcdOrderType).toString();
+                    << PerturbativeQCDOrderType(m_qcdOrderType).toString();
             //TODO throw an exception
         }
     }
@@ -683,15 +683,15 @@ std::complex<double> DVCSCFFModel::KernelGluonA(double x) {
 
     std::complex<double> gluon(0., 0.);
 
-    if (m_qcdOrderType == QCDOrderType::NLO) {
+    if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
 
         gluon += m_alphaSOver2Pi * KernelGluonNLOA(x);
 
-        if (m_qcdOrderType != QCDOrderType::LO
-                && m_qcdOrderType != QCDOrderType::NLO) {
+        if (m_qcdOrderType != PerturbativeQCDOrderType::LO
+                && m_qcdOrderType != PerturbativeQCDOrderType::NLO) {
             Formatter()
                     << "[DVCSCFFModule::KernelGluonA] Erroneous input, perturbative QCD order can only be LO or NLO. Here Order = "
-                    << QCDOrderType(m_qcdOrderType).toString();
+                    << PerturbativeQCDOrderType(m_qcdOrderType).toString();
             //TODO throw an exception
         }
     }

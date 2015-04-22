@@ -38,7 +38,7 @@ MPSSW13Model::MPSSW13Model(const std::string &className)
     char filename[100]; // Grid name
 
     //TODO supprimer le nom de fichier en dur ; le passer en propriété ou paramètre
-    char prefix[] = "/home/bryan/workspace/PARTONS/data/grid/mstw2008nlo";
+    char prefix[] = "/Users/administrator/Documents/CLAS/GPD/GPDWorkspace/PARTONS/data/grid/mstw2008nlo";
     // prefix for the grid files
 
     // Central PDF set

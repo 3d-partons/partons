@@ -18,7 +18,7 @@
 
 #include "../beans/gpd/GPDComputeType.h"
 #include "../beans/gpd/GPDResultData.h"
-#include "../beans/QCDOrderType.h"
+#include "../beans/PerturbativeQCDOrderType.h"
 #include "../utils/MatrixD.h"
 #include "ModuleObject.h"
 
@@ -48,8 +48,8 @@ public:
 
     const GPDModule* getGpdModule() const;
     void setGpdModule(GPDModule* gpdModule);
-    QCDOrderType::Type getQcdOrderType() const;
-    void setQcdOrderType(QCDOrderType::Type qcdOrderType);
+    PerturbativeQCDOrderType::Type getQcdOrderType() const;
+    void setQcdOrderType(PerturbativeQCDOrderType::Type qcdOrderType);
     int getEvolutionActiveFlavors() const;
     void setEvolutionActiveFlavors(int nfEvol);
 
@@ -74,7 +74,7 @@ protected:
 
     GPDModule* m_pGPDModule;
 
-    QCDOrderType::Type m_qcdOrderType;
+    PerturbativeQCDOrderType::Type m_qcdOrderType;
     GPDComputeType::Type m_currentGPDComputeType;
 
     //RunningAlphaStrong m_runningAlphaS;

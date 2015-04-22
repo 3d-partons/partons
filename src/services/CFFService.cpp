@@ -41,7 +41,7 @@ void CFFService::computeScenario(Scenario scenario) {
 //TODO implementer
 CFFOutputData CFFService::computeWithGPDModel(CFFModule* cffModule,
         GPDModule* _pGPDModule, CFFInputData &cffInputData, const double MuF,
-        const double MuR, QCDOrderType::Type qcdOrderType,
+        const double MuR, PerturbativeQCDOrderType::Type qcdOrderType,
         GPDComputeType::Type gpdComputeType) {
 
     // Configure cff module
@@ -157,7 +157,7 @@ CFFOutputData CFFService::computeWithGPDModel(CFFModule* cffModule,
 //TODO implement
 CFFOutputData CFFService::computeWithCFFModel(CFFModule* cffModule,
         CFFInputData &cffInputData, const double MuF, const double MuR,
-        QCDOrderType &qcdOrderType) {
+        PerturbativeQCDOrderType &qcdOrderType) {
 
     return CFFOutputData();
 }

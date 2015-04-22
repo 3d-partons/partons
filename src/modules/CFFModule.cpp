@@ -12,7 +12,7 @@
 
 CFFModule::CFFModule(const std::string &className)
         : ModuleObject(className), m_xi(0.), m_xB(0.), m_t(0.), m_Q2(0.), m_MuF(
-                0.), m_MuR(0.), m_qcdOrderType(QCDOrderType::UNDEFINED), m_currentGPDComputeType(
+                0.), m_MuR(0.), m_qcdOrderType(PerturbativeQCDOrderType::UNDEFINED), m_currentGPDComputeType(
                 GPDComputeType::UNDEFINED), m_gpdComputeType(
                 GPDComputeType::UNDEFINED), m_pGPDModule(0), m_pRunningAlphaStrongModule(
                 0) {
@@ -177,10 +177,10 @@ void CFFModule::setGpdModule(GPDModule* gpdModule) {
     m_pGPDModule = gpdModule;
 }
 
-QCDOrderType::Type CFFModule::getQcdOrderType() const {
+PerturbativeQCDOrderType::Type CFFModule::getQcdOrderType() const {
     return m_qcdOrderType;
 }
 
-void CFFModule::setQcdOrderType(QCDOrderType::Type qcdOrderType) {
+void CFFModule::setQcdOrderType(PerturbativeQCDOrderType::Type qcdOrderType) {
     m_qcdOrderType = qcdOrderType;
 }

@@ -93,7 +93,7 @@ MatrixD EvolQCDModule::invertMatrix6(13, 13, 1., 0., 0., 0., 0., 0., 0., 0., 0.,
 //TODO quelles sont les valeurs par défauts lors de l'initialisation ?
 EvolQCDModule::EvolQCDModule(const std::string &className)
         : ModuleObject(className), m_x(0), m_xi(0), m_t(0), m_MuF(0), m_MuR(0), m_MuF_ref(
-                0), m_pGPDModule(0), m_qcdOrderType(QCDOrderType::UNDEFINED), m_currentGPDComputeType(
+                0), m_pGPDModule(0), m_qcdOrderType(PerturbativeQCDOrderType::UNDEFINED), m_currentGPDComputeType(
                 GPDComputeType::H), m_alphaS(0), m_scaleDistinction(0), m_nfEvol(
                 -1), m_nfMin(-1), m_nbXPoints(20), m_nbMuFPoints(1), m_epsilon(
                 0.01), m_alpha(0.1) {
@@ -173,7 +173,7 @@ void EvolQCDModule::isModuleWellConfigured() {
         throw std::runtime_error("[EvolQCDModule] GPDModule* is NULL");
     }
 
-    if (m_qcdOrderType == QCDOrderType::UNDEFINED) {
+    if (m_qcdOrderType == PerturbativeQCDOrderType::UNDEFINED) {
         throw std::runtime_error("[EvolQCDModule] QCDOrderType is UNDEFINED");
     }
 
@@ -478,11 +478,11 @@ double EvolQCDModule::calculateFq(double FMinus, double FPlus) {
     return (FPlus + FMinus) / 2.;
 }
 
-QCDOrderType::Type EvolQCDModule::getQcdOrderType() const {
+PerturbativeQCDOrderType::Type EvolQCDModule::getQcdOrderType() const {
     return m_qcdOrderType;
 }
 
-void EvolQCDModule::setQcdOrderType(QCDOrderType::Type qcdOrderType) {
+void EvolQCDModule::setQcdOrderType(PerturbativeQCDOrderType::Type qcdOrderType) {
     m_qcdOrderType = qcdOrderType;
 }
 
