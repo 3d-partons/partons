@@ -40,6 +40,8 @@ public:
 
     virtual MPSSW13Model* clone() const;
 
+    virtual void init();
+
     void setParameters(std::vector<double> Parameters);
 
     double getCA() const;
