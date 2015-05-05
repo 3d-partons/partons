@@ -14,7 +14,7 @@
 
 #include <string>
 
-#include "../beans/gpd/GPDComputeType.h"
+#include "../beans/gpd/GPDType.h"
 #include "../beans/PerturbativeQCDOrderType.h"
 #include "Service.h"
 
@@ -40,8 +40,9 @@ public:
 
     virtual CFFOutputData computeWithGPDModel(CFFModule* cffModule,
             GPDModule* _pGPDModule, CFFInputData &cffInputData,
-            const double MuF, const double MuR, PerturbativeQCDOrderType::Type qcdOrderType,
-            GPDComputeType::Type gpdComputeType = GPDComputeType::ALL);
+            const double MuF, const double MuR,
+            PerturbativeQCDOrderType::Type qcdOrderType,
+            GPDType::Type gpdType = GPDType::ALL);
 
     virtual CFFOutputData computeWithCFFModel(CFFModule* cffModule,
             CFFInputData &cffInputData, const double MuF, const double MuR,

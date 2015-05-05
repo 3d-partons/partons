@@ -8,14 +8,14 @@
 #include "GK11NoQuarksModel.h"
 
 #include <cmath>
-#include <string>
 #include <vector>
 
-#include "../../beans/gpd/GPDComputeType.h"
-#include "../../beans/gpd/GPDQuarkFlavorData.h"
-#include "../../beans/gpd/GPDResultData.h"
+#include "../../beans/parton_distribution/GluonDistribution.h"
+#include "../../beans/parton_distribution/PartonDistribution.h"
+#include "../../beans/parton_distribution/QuarkDistribution.h"
 #include "../../beans/QuarkFlavor.h"
 #include "../../ModuleObjectFactory.h"
+//#include "MPSSW13Model.h"
 
 // Initialise GK11NoQuarksModule::moduleID with a unique name and enable registerModule() to be executed before the main() function.
 const std::string GK11NoQuarksModel::moduleID =
@@ -38,15 +38,12 @@ GK11NoQuarksModel::GK11NoQuarksModel(const GK11NoQuarksModel& other)
         : GK11Model(other) {
 }
 
-GPDResultData GK11NoQuarksModel::computeH() {
-    GPDComputeType gpdComputeType(GPDComputeType::H);
+PartonDistribution GK11NoQuarksModel::computeH() {
+    PartonDistribution partonDistribution;
 
-    GPDResultData GPD_H(gpdComputeType);
-
-    GPDQuarkFlavorData gpdQuarkFlavorData_u(gpdComputeType, QuarkFlavor::UP);
-    GPDQuarkFlavorData gpdQuarkFlavorData_d(gpdComputeType, QuarkFlavor::DOWN);
-    GPDQuarkFlavorData gpdQuarkFlavorData_s(gpdComputeType,
-            QuarkFlavor::STRANGE);
+    QuarkDistribution quarkDistribution_u(QuarkFlavor::UP);
+    QuarkDistribution quarkDistribution_d(QuarkFlavor::DOWN);
+    QuarkDistribution quarkDistribution_s(QuarkFlavor::STRANGE);
 
     calculateHCoefs(); // Calculate the K's and the coefficients
 
@@ -58,7 +55,7 @@ GPDResultData GK11NoQuarksModel::computeH() {
     c4 = 40.6 - 21.6 * fL; // See table 1 p. 12
     b0 = 2.58 + 0.25 * log(0.880354 / (0.880354 + fMuF2)); // See eq. (39) p. 14
 
-    GPD_H.setGluon(
+    GluonDistribution gluonDistribution(
             exp(b0 * m_t)
                     * (c1 * Hi1tab.at(0) + c2 * Hi1tab.at(1) + c3 * Hi1tab.at(2)
                             + c4 * Hi1tab.at(3))); // See eq. (27)
@@ -70,55 +67,38 @@ GPDResultData GK11NoQuarksModel::computeH() {
      << "4rdt coef " << Hi1tab.at(3)) ;*/
 
 // quarks set to zero
-    gpdQuarkFlavorData_s.setPartonDistribution(0.0);
-    gpdQuarkFlavorData_u.setPartonDistribution(0.0);
-    gpdQuarkFlavorData_d.setPartonDistribution(0.0);
+    quarkDistribution_u.setQuarkDistribution(0.);
+    quarkDistribution_d.setQuarkDistribution(0.);
+    quarkDistribution_s.setQuarkDistribution(0.);
 
-    gpdQuarkFlavorData_u.setValence(0.0);
-    gpdQuarkFlavorData_d.setValence(0.0);
-    gpdQuarkFlavorData_s.setValence(0.0);
+    // Set Hq(+)
+    quarkDistribution_u.setQuarkDistributionPlus(0.);
+    quarkDistribution_d.setQuarkDistributionPlus(0.);
+    quarkDistribution_s.setQuarkDistributionPlus(0.);
 
-    gpdQuarkFlavorData_u.setSea(0.0);
-    gpdQuarkFlavorData_d.setSea(0.0);
-    gpdQuarkFlavorData_s.setSea(0.0);
+    partonDistribution.setSinglet(0.);
 
-    gpdQuarkFlavorData_u.setPartonDistributionSinglet(0.0);
+    // Set Hq(-)
+    quarkDistribution_u.setQuarkDistributionMinus(0.);
+    quarkDistribution_d.setQuarkDistributionMinus(0.);
+    quarkDistribution_s.setQuarkDistributionMinus(0.);
 
-    gpdQuarkFlavorData_d.setPartonDistributionSinglet(0.0);
+    partonDistribution.setGluonDistribution(gluonDistribution);
+    partonDistribution.addQuarkDistribution(quarkDistribution_u);
+    partonDistribution.addQuarkDistribution(quarkDistribution_d);
+    partonDistribution.addQuarkDistribution(quarkDistribution_s);
 
-    gpdQuarkFlavorData_s.setPartonDistributionSinglet(0.0);
-
-    GPD_H.setSinglet(0.0);
-
-    // Set Hq(+), Hq(-)
-    // u quark
-    gpdQuarkFlavorData_u.setPartonDistributionPlus(0.0);
-
-    gpdQuarkFlavorData_u.setPartonDistributionMinus(0.0);
-
-    // d quark
-    gpdQuarkFlavorData_d.setPartonDistributionPlus(0.0);
-
-    gpdQuarkFlavorData_d.setPartonDistributionMinus(0.0);
-
-    // s quark
-    gpdQuarkFlavorData_s.setPartonDistributionPlus(0.);
-
-    GPD_H.addGPDQuarkFlavorData(gpdQuarkFlavorData_u);
-    GPD_H.addGPDQuarkFlavorData(gpdQuarkFlavorData_d);
-    GPD_H.addGPDQuarkFlavorData(gpdQuarkFlavorData_s);
-
-    return GPD_H;
+    return partonDistribution;
 }
 
-GPDResultData GK11NoQuarksModel::computeE() {
-    return GPDResultData();
+PartonDistribution GK11NoQuarksModel::computeE() {
+    return PartonDistribution();
 }
 
-GPDResultData GK11NoQuarksModel::computeHt() {
-    return GPDResultData();
+PartonDistribution GK11NoQuarksModel::computeHt() {
+    return PartonDistribution();
 }
 
-GPDResultData GK11NoQuarksModel::computeEt() {
-    return GPDResultData();
+PartonDistribution GK11NoQuarksModel::computeEt() {
+    return PartonDistribution();
 }

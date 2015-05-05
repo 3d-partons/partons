@@ -15,14 +15,14 @@
 #include <string>
 #include <vector>
 
-#include "../beans/gpd/GPDComputeType.h"
-#include "../modules/GPDModule.h"
+#include "../beans/gpd/GPDType.h"
+#include "../beans/kinematic/GPDKinematic.h"
 #include "Service.h"
+#include "../beans/gpd/GPDResultList.h"
 
-class GPDKinematic;
-
-class GPDOutputData;
-class ListGPDOutputData;
+class EvolQCDModule;
+class GPDModule;
+class GPDResult;
 
 class GPDService: public Service {
 public:
@@ -51,7 +51,7 @@ public:
      * @param pGPDModule
      * @return
      */
-    GPDOutputData computeGPDModel(GPDKinematic* pGPDKinematic,
+    GPDResult computeGPDModel(const GPDKinematic &gpdKinematic,
             GPDModule* pGPDModule);
 
     /**
@@ -59,12 +59,12 @@ public:
      *
      * @param gpdKinematic
      * @param pGPDModule
-     * @param gpdComputeType
+     * @param gpdType
      * @return
      */
-    GPDOutputData computeGPDModelRestrictedByGPDType(
-            GPDKinematic* pGPDKinematic, GPDModule* pGPDModule,
-            GPDComputeType::Type gpdComputeType);
+    GPDResult computeGPDModelRestrictedByGPDType(
+            const GPDKinematic &gpdKinematic, GPDModule* pGPDModule,
+            GPDType::Type gpdType);
 
     /**
      * Computes GPD model at specific kinematic with a QCD evolution model.
@@ -72,46 +72,45 @@ public:
      * @param pGPDModule
      * @param pEvolQCDModule
      * @param gpdKinematic
-     * @param gpdComputeType
+     * @param gpdType
      * @return
      */
-    GPDOutputData computeGPDModelWithEvolution(GPDKinematic* pGPDKinematic,
+    GPDResult computeGPDModelWithEvolution(const GPDKinematic &gpdKinematic,
             GPDModule* pGPDModule, EvolQCDModule* pEvolQCDModule,
-            GPDComputeType::Type gpdComputeType = GPDComputeType::ALL);
-
-    /**
-     * Computes a list of GPD models at specific kinematic
-     *
-     * @param gpdKinematic
-     * @param listOfGPDToCompute
-     * @return
-     */
-    ListGPDOutputData computeListOfGPDModel(GPDKinematic* pGPDKinematic,
-            std::vector<GPDModule*> &listOfGPDToCompute);
-
-    /**
-     * Computes a list of GPD models at specific kinematic, restricted by a GPD's type
-     *
-     * @param gpdKinematic
-     * @param listOfGPDToCompute
-     * @param gpdComputeType
-     * @return
-     */
-    ListGPDOutputData computeListOfGPDModelRestrictedByGPDType(
-            GPDKinematic* pGPDKinematic,
-            std::vector<GPDModule*> &listOfGPDToCompute,
-            GPDComputeType gpdComputeType);
+            GPDType::Type gpdType = GPDType::ALL);
 
 //    /**
-//     * Computes GPD model by a kinematics list
+//     * Computes a list of GPD models at specific kinematic
 //     *
-//     * @param listOfGPDKinematic
-//     * @param pGPDModule
+//     * @param gpdKinematic
+//     * @param listOfGPDToCompute
 //     * @return
 //     */
-//    ListGPDOutputData computeListOfKinematic(
-//            std::vector<GPDKinematic> &listOfGPDKinematic,
-//            GPDModule* pGPDModule);
+//    ListGPDOutputData computeListOfGPDModel(GPDKinematic* pGPDKinematic,
+//            std::vector<GPDModule*> &listOfGPDToCompute);
+//
+//    /**
+//     * Computes a list of GPD models at specific kinematic, restricted by a GPD's type
+//     *
+//     * @param gpdKinematic
+//     * @param listOfGPDToCompute
+//     * @param gpdType
+//     * @return
+//     */
+//    ListGPDOutputData computeListOfGPDModelRestrictedByGPDType(
+//            GPDKinematic* pGPDKinematic,
+//            std::vector<GPDModule*> &listOfGPDToCompute, GPDType gpdType);
+
+    /**
+     * Computes GPD model by a kinematics list
+     *
+     * @param listOfGPDKinematic
+     * @param pGPDModule
+     * @return
+     */
+    GPDResultList computeListOfKinematic(
+            std::vector<GPDKinematic> &listOfGPDKinematic,
+            GPDModule* pGPDModule);
 
 private:
     static GPDService* pInstance; ///< Private pointer of this class for a unique instance
@@ -124,7 +123,7 @@ private:
     GPDKinematic* m_pGPDKinematic;
     GPDModule* m_pGPDModule;
 
-    GPDOutputData computeGPDModel(Scenario scenario);
+    GPDResult computeGPDModel(Scenario scenario);
 };
 
 #endif /* GPD_SERVICE_H */

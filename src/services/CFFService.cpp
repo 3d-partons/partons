@@ -42,7 +42,7 @@ void CFFService::computeScenario(Scenario scenario) {
 CFFOutputData CFFService::computeWithGPDModel(CFFModule* cffModule,
         GPDModule* _pGPDModule, CFFInputData &cffInputData, const double MuF,
         const double MuR, PerturbativeQCDOrderType::Type qcdOrderType,
-        GPDComputeType::Type gpdComputeType) {
+        GPDType::Type gpdComputeType) {
 
     // Configure cff module
     cffModule->setGpdModule(_pGPDModule);

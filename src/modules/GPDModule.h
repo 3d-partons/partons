@@ -14,16 +14,12 @@
 #include <map>
 #include <string>
 
-#include "../beans/gpd/GPDComputeType.h"
-#include "../beans/gpd/GPDResultData.h"
+#include "../beans/gpd/GPDType.h"
+#include "../beans/parton_distribution/PartonDistribution.h"
 #include "ModuleObject.h"
 
-class GPDResultData;
-class GPDOutputData;
-//class PDFModule;
 class EvolQCDModule;
-
-//typedef GPDResultData (GPDModule::*GPDComputeFunction)(GPDComputeType::Type);
+class GPDResult;
 
 class GPDModule: public ModuleObject {
 public:
@@ -73,18 +69,16 @@ public:
      * @return Return results in an GPDOutputData class.
      * Contains GPD results for each flavor of quarks and for each GPDs (H, Ht, E, Et, ...) if computable.
      */
-    virtual GPDOutputData compute(const double &x, const double &xi,
-            const double &t, const double &MuF, const double &MuR,
-            GPDComputeType::Type gpdComputeType);
+    virtual GPDResult compute(double x, double xi, double t, double MuF,
+            double MuR, GPDType::Type gpdType);
 
-    virtual GPDOutputData computeWithEvolution(const double &x,
-            const double &xi, const double &t, const double &MuF,
-            const double &MuR, GPDComputeType::Type gpdComputeType);
+    virtual GPDResult computeWithEvolution(double x, double xi, double t,
+            double MuF, double MuR, GPDType::Type gpdType);
 
-    virtual GPDResultData computeH();
-    virtual GPDResultData computeE();
-    virtual GPDResultData computeHt();
-    virtual GPDResultData computeEt();
+    virtual PartonDistribution computeH();
+    virtual PartonDistribution computeE();
+    virtual PartonDistribution computeHt();
+    virtual PartonDistribution computeEt();
 
     virtual std::string toString();
 
@@ -95,6 +89,16 @@ public:
     const EvolQCDModule* getEvolQcdModule() const;
     void setEvolQcdModule(EvolQCDModule* pEvolQcdModule);
     double getMuFRef() const;
+    double getMuF() const;
+    void setMuF(double muF);
+    double getMuR() const;
+    void setMuR(double muR);
+    double getT() const;
+    void setT(double t);
+    double getX() const;
+    void setX(double x);
+    double getXi() const;
+    void setXi(double xi);
 
 protected:
     double m_x;
@@ -102,7 +106,7 @@ protected:
     double m_t;
     double m_MuF;
     double m_MuR;
-    GPDComputeType::Type m_gpdComputeType;
+    GPDType::Type m_gpdType;
 
     //TODO initialize
     double m_MuF_ref;
@@ -132,15 +136,14 @@ protected:
      * @param MuR
      * @param gpdComputeType
      */
-    void preCompute(const double &x, const double &xi, const double &t,
-            const double &MuF, const double &MuR,
-            GPDComputeType::Type gpdComputeType);
+    void preCompute(double x, double xi, double t, double MuF, double MuR,
+            GPDType::Type gpdType);
 
-    std::map<GPDComputeType::Type, GPDResultData (GPDModule::*)()> m_listGPDComputeTypeAvailable;
-    std::map<GPDComputeType::Type, GPDResultData (GPDModule::*)()>::iterator m_it;
+    std::map<GPDType::Type, PartonDistribution (GPDModule::*)()> m_listGPDComputeTypeAvailable;
+    std::map<GPDType::Type, PartonDistribution (GPDModule::*)()>::iterator m_it;
 private:
 
-    GPDOutputData compute(bool evolution);
+    GPDResult compute(bool evolution);
 };
 
 #endif /* GPD_MODULE_H */

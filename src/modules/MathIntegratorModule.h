@@ -36,7 +36,7 @@ protected:
 
     void preCompute(unsigned int functionName, ModuleObject* pModuleObject);
 
-    double (ModuleObject::*m_pFunction)(const double *, const double *);
+    double (ModuleObject::*m_pFunction)(double *, double *);
 
     virtual void isModuleWellConfigured() = 0;
     virtual void initModule() = 0;

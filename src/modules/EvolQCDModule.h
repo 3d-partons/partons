@@ -16,9 +16,10 @@
 #include <string>
 #include <vector>
 
-#include "../beans/gpd/GPDComputeType.h"
-#include "../beans/gpd/GPDResultData.h"
+#include "../beans/gpd/GPDType.h"
+#include "../beans/parton_distribution/PartonDistribution.h"
 #include "../beans/PerturbativeQCDOrderType.h"
+#include "../beans/QuarkFlavor.h"
 #include "../utils/MatrixD.h"
 #include "ModuleObject.h"
 
@@ -34,15 +35,14 @@ public:
     virtual ~EvolQCDModule();
     virtual EvolQCDModule* clone() const = 0;
 
-    virtual GPDResultData compute(const double &x, const double &xi,
-            const double &t, const double &MuF, const double &MuR,
-            const GPDResultData &gpdResultData) = 0;
+    virtual PartonDistribution compute(double x, double xi, double t,
+            double MuF, double MuR, GPDModule* pGPDModule,
+            PartonDistribution partonDistribution) = 0;
 
     /**
      * Checks if MuF (from compute parameters) is revelant
      */
-    bool isRunnable(const double &MuF, const double &MuF_ref,
-            EvolQCDModule::Type testType);
+    bool isRunnable(double MuF, double MuF_ref, EvolQCDModule::Type testType);
 
     // ##### GETTERS & SETTERS #####
 
@@ -75,7 +75,7 @@ protected:
     GPDModule* m_pGPDModule;
 
     PerturbativeQCDOrderType::Type m_qcdOrderType;
-    GPDComputeType::Type m_currentGPDComputeType;
+    GPDType::Type m_currentGPDComputeType;
 
     //RunningAlphaStrong m_runningAlphaS;
     double m_alphaS;
@@ -88,7 +88,7 @@ protected:
     double m_epsilon;
     double m_alpha;
 
-    GPDResultData m_gpdResultData;
+    PartonDistribution m_partonDistribution;
 
     MatrixD m_currentConvertMatrix;
     MatrixD m_currentInvertMatrix;
@@ -96,9 +96,9 @@ protected:
     std::vector<double> m_vectorOfGPDCombination;
     //Matrix<double> m_matrixOfUnknownPartonDistribution; ///< HuPlus, HuMinus, ...
 
-    void preCompute(const double &x, const double &xi, const double &t,
-            const double &MuF, const double &MuR,
-            const GPDResultData &gpdResultData);
+    void preCompute(double x, double xi, double t, double MuF, double MuR,
+            GPDModule* pGPDModule,
+            PartonDistribution partonDistribution);
 
     virtual void initModule();
     virtual void isModuleWellConfigured();
@@ -106,9 +106,9 @@ protected:
     std::vector<double> convertBasis(std::vector<double> vectorToConvert);
     std::vector<double> invertBasis(std::vector<double> vectorToInvert);
 
-    GPDResultData makeGPDResultData();
+    PartonDistribution makeFinalPartonDistribution();
     std::vector<double> MakeVectorOfGPDCombinations(
-            GPDResultData gpdResultData);
+            const PartonDistribution &partonDistribution);
 
 private:
     static MatrixD conversionMatrix1;
@@ -125,13 +125,15 @@ private:
     static MatrixD invertMatrix5;
     static MatrixD invertMatrix6;
 
-    bool isRelativeTest(const double &MuF, const double &MuF_ref);
-    bool isAbsoluteTest(const double &MuF, const double &MuF_ref);
+    bool isRelativeTest(double MuF, double MuF_ref);
+    bool isAbsoluteTest(double MuF, double MuF_ref);
 
     void initNfMin();
     void initMatrixValue();
     void initVectorOfGPDCombinations();
 
+    QuarkDistribution makeFinalQuarkDistribution(QuarkFlavor::Type quarkFlavor,
+            double quarkDistributionPlus, double quarkDistributionMinus);
     double calculateFq(double FMinus, double FPlus);
 };
 

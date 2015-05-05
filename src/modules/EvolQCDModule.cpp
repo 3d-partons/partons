@@ -1,12 +1,10 @@
 #include "EvolQCDModule.h"
 
 #include <math.h>
-#include <stddef.h>
 #include <stdexcept>
-//#include <string>
 
-#include "../beans/gpd/GPDQuarkFlavorData.h"
-#include "../beans/QuarkFlavor.h"
+#include "../beans/parton_distribution/GluonDistribution.h"
+#include "../beans/parton_distribution/QuarkDistribution.h"
 #include "../utils/logger/LoggerManager.h"
 #include "../utils/stringUtils/Formatter.h"
 #include "GPDModule.h"
@@ -93,10 +91,11 @@ MatrixD EvolQCDModule::invertMatrix6(13, 13, 1., 0., 0., 0., 0., 0., 0., 0., 0.,
 //TODO quelles sont les valeurs par défauts lors de l'initialisation ?
 EvolQCDModule::EvolQCDModule(const std::string &className)
         : ModuleObject(className), m_x(0), m_xi(0), m_t(0), m_MuF(0), m_MuR(0), m_MuF_ref(
-                0), m_pGPDModule(0), m_qcdOrderType(PerturbativeQCDOrderType::UNDEFINED), m_currentGPDComputeType(
-                GPDComputeType::H), m_alphaS(0), m_scaleDistinction(0), m_nfEvol(
-                -1), m_nfMin(-1), m_nbXPoints(20), m_nbMuFPoints(1), m_epsilon(
-                0.01), m_alpha(0.1) {
+                0), m_pGPDModule(0), m_qcdOrderType(
+                PerturbativeQCDOrderType::UNDEFINED), m_currentGPDComputeType(
+                GPDType::H), m_alphaS(0), m_scaleDistinction(0), m_nfEvol(-1), m_nfMin(
+                -1), m_nbXPoints(20), m_nbMuFPoints(1), m_epsilon(0.01), m_alpha(
+                0.1) {
 }
 
 EvolQCDModule::EvolQCDModule(const EvolQCDModule &other)
@@ -138,6 +137,8 @@ EvolQCDModule::EvolQCDModule(const EvolQCDModule &other)
     m_currentInvertMatrix = other.m_currentInvertMatrix;
 
     m_vectorOfGPDCombination = other.m_vectorOfGPDCombination;
+
+    m_partonDistribution = other.m_partonDistribution;
 }
 
 //EvolQCDModule::EvolQCDModule* clone() const {
@@ -145,6 +146,30 @@ EvolQCDModule::EvolQCDModule(const EvolQCDModule &other)
 //}
 
 EvolQCDModule::~EvolQCDModule() {
+}
+
+void EvolQCDModule::preCompute(double x, double xi, double t, double MuF,
+        double MuR, GPDModule* pGPDModule,
+        PartonDistribution partonDistribution) {
+    m_pLoggerManager->debug(getClassName(), __func__, "");
+
+    m_pGPDModule = pGPDModule;
+
+    m_x = x;
+    m_xi = xi;
+    m_t = t;
+    m_MuF = MuF;
+    m_MuR = MuR;
+
+    m_partonDistribution = partonDistribution;
+
+//    m_pLoggerManager->debug(getClassName(), __func__,
+//            Formatter() << "x = " << x << "    xi = " << xi << "    t = " << t
+//                    << " GeV2    MuF = " << MuF << " GeV    MuR = " << MuR
+//                    << " GeV");
+
+//  EvolQCDModule::initModule();
+//  EvolQCDModule::isModuleWellConfigured();
 }
 
 void EvolQCDModule::initModule() {
@@ -203,7 +228,7 @@ void EvolQCDModule::isModuleWellConfigured() {
 void EvolQCDModule::initNfMin() {
     m_pLoggerManager->debug(getClassName(), __func__, "");
 
-    int nfGPDModel = m_gpdResultData.sizeOfListOfQuarkFlavorData();
+    int nfGPDModel = m_partonDistribution.getQuarkDistributionsSize();
 
     // si nf_evol = -1 alors nf_evol = nf_gpd
     if (m_nfEvol == -1) {
@@ -316,10 +341,11 @@ void EvolQCDModule::initMatrixValue() {
 void EvolQCDModule::initVectorOfGPDCombinations() {
     m_pLoggerManager->debug(getClassName(), __func__, "entered");
 
-    m_vectorOfGPDCombination = MakeVectorOfGPDCombinations(m_gpdResultData);
+    m_vectorOfGPDCombination = MakeVectorOfGPDCombinations(
+            m_partonDistribution);
 }
 
-bool EvolQCDModule::isRunnable(const double &MuF, const double &MuF_ref,
+bool EvolQCDModule::isRunnable(double MuF, double MuF_ref,
         EvolQCDModule::Type testType) {
     m_pLoggerManager->debug(getClassName(), __func__, "entered");
 
@@ -342,38 +368,17 @@ bool EvolQCDModule::isRunnable(const double &MuF, const double &MuF_ref,
     return result;
 }
 
-bool EvolQCDModule::isRelativeTest(const double &MuF, const double &MuF_ref) {
+bool EvolQCDModule::isRelativeTest(double MuF, double MuF_ref) {
     m_pLoggerManager->debug(getClassName(), __func__,
             Formatter() << "MuF = " << MuF << "   MuF_ref = " << MuF_ref);
 
     return (fabs(MuF - MuF_ref) > (m_epsilon * MuF_ref)) ? true : false;
 }
 
-bool EvolQCDModule::isAbsoluteTest(const double &MuF, const double &MuF_ref) {
+bool EvolQCDModule::isAbsoluteTest(double MuF, double MuF_ref) {
     m_pLoggerManager->debug(getClassName(), __func__, "");
 
     return (fabs(MuF - MuF_ref) > m_alpha) ? true : false;
-}
-
-void EvolQCDModule::preCompute(const double &x, const double &xi,
-        const double &t, const double &MuF, const double &MuR,
-        const GPDResultData &gpdResultData) {
-    m_pLoggerManager->debug(getClassName(), __func__, "");
-
-    m_x = x;
-    m_xi = xi;
-    m_t = t;
-    m_MuF = MuF;
-    m_MuR = MuR;
-    m_gpdResultData = gpdResultData;
-
-    m_pLoggerManager->debug(getClassName(), __func__,
-            Formatter() << "x = " << x << "    xi = " << xi << "    t = " << t
-                    << " GeV2    MuF = " << MuF << " GeV    MuR = " << MuR
-                    << " GeV");
-
-//	EvolQCDModule::initModule();
-//	EvolQCDModule::isModuleWellConfigured();
 }
 
 //TODO ajouter les commentaires qui vont bien et les références au papier
@@ -394,104 +399,86 @@ std::vector<double> EvolQCDModule::invertBasis(
 }
 
 //TODO automatiser les setters
-GPDResultData EvolQCDModule::makeGPDResultData() {
+PartonDistribution EvolQCDModule::makeFinalPartonDistribution() {
     m_pLoggerManager->debug(getClassName(), __func__, "");
 
-    GPDResultData gpdResultData(m_currentGPDComputeType);
+    PartonDistribution partonDistribution;
 
     // set gluon
-    gpdResultData.setGluon(
-            m_vectorOfGPDCombination[m_vectorOfGPDCombination.size() - 1]);
+    partonDistribution.setGluonDistribution(
+            GluonDistribution(
+                    m_vectorOfGPDCombination[m_vectorOfGPDCombination.size() - 1]));
 
-    GPDQuarkFlavorData quarkFlavorData(m_currentGPDComputeType,
-            QuarkFlavor::UNDEFINED);
+    QuarkDistribution quarkDistribution(QuarkFlavor::UNDEFINED);
 
     // TODO documenter le calcul si contre
     switch ((m_vectorOfGPDCombination.size() - 1) / 2) {
     case 6:
-        quarkFlavorData = GPDQuarkFlavorData(m_currentGPDComputeType,
-                QuarkFlavor::TOP);
-        quarkFlavorData.setPartonDistributionMinus(
-                m_vectorOfGPDCombination[10]);
-        quarkFlavorData.setPartonDistributionPlus(m_vectorOfGPDCombination[11]);
-        quarkFlavorData.setPartonDistribution(
-                calculateFq(m_vectorOfGPDCombination[10],
-                        m_vectorOfGPDCombination[11]));
-        gpdResultData.addGPDQuarkFlavorData(quarkFlavorData);
+        quarkDistribution = makeFinalQuarkDistribution(QuarkFlavor::TOP,
+                m_vectorOfGPDCombination[10], m_vectorOfGPDCombination[11]);
+        partonDistribution.addQuarkDistribution(quarkDistribution);
     case 5:
-        quarkFlavorData = GPDQuarkFlavorData(m_currentGPDComputeType,
-                QuarkFlavor::BOTTOM);
-        quarkFlavorData.setPartonDistributionMinus(m_vectorOfGPDCombination[8]);
-        quarkFlavorData.setPartonDistributionPlus(m_vectorOfGPDCombination[9]);
-        quarkFlavorData.setPartonDistribution(
-                calculateFq(m_vectorOfGPDCombination[8],
-                        m_vectorOfGPDCombination[9]));
-        gpdResultData.addGPDQuarkFlavorData(quarkFlavorData);
+        quarkDistribution = makeFinalQuarkDistribution(QuarkFlavor::BOTTOM,
+                m_vectorOfGPDCombination[8], m_vectorOfGPDCombination[9]);
+        partonDistribution.addQuarkDistribution(quarkDistribution);
     case 4:
-        quarkFlavorData = GPDQuarkFlavorData(m_currentGPDComputeType,
-                QuarkFlavor::CHARM);
-        quarkFlavorData.setPartonDistributionMinus(m_vectorOfGPDCombination[6]);
-        quarkFlavorData.setPartonDistributionPlus(m_vectorOfGPDCombination[7]);
-        quarkFlavorData.setPartonDistribution(
-                calculateFq(m_vectorOfGPDCombination[6],
-                        m_vectorOfGPDCombination[7]));
-        gpdResultData.addGPDQuarkFlavorData(quarkFlavorData);
+        quarkDistribution = makeFinalQuarkDistribution(QuarkFlavor::CHARM,
+                m_vectorOfGPDCombination[6], m_vectorOfGPDCombination[7]);
+        partonDistribution.addQuarkDistribution(quarkDistribution);
     case 3:
-        quarkFlavorData = GPDQuarkFlavorData(m_currentGPDComputeType,
-                QuarkFlavor::STRANGE);
-        quarkFlavorData.setPartonDistributionMinus(m_vectorOfGPDCombination[4]);
-        quarkFlavorData.setPartonDistributionPlus(m_vectorOfGPDCombination[5]);
-        quarkFlavorData.setPartonDistribution(
-                calculateFq(m_vectorOfGPDCombination[4],
-                        m_vectorOfGPDCombination[5]));
-        gpdResultData.addGPDQuarkFlavorData(quarkFlavorData);
+        quarkDistribution = makeFinalQuarkDistribution(QuarkFlavor::STRANGE,
+                m_vectorOfGPDCombination[4], m_vectorOfGPDCombination[5]);
+        partonDistribution.addQuarkDistribution(quarkDistribution);
     case 2:
-        quarkFlavorData = GPDQuarkFlavorData(m_currentGPDComputeType,
-                QuarkFlavor::DOWN);
-        quarkFlavorData.setPartonDistributionMinus(m_vectorOfGPDCombination[2]);
-        quarkFlavorData.setPartonDistributionPlus(m_vectorOfGPDCombination[3]);
-        quarkFlavorData.setPartonDistribution(
-                calculateFq(m_vectorOfGPDCombination[2],
-                        m_vectorOfGPDCombination[3]));
-        gpdResultData.addGPDQuarkFlavorData(quarkFlavorData);
+        quarkDistribution = makeFinalQuarkDistribution(QuarkFlavor::DOWN,
+                m_vectorOfGPDCombination[2], m_vectorOfGPDCombination[3]);
+        partonDistribution.addQuarkDistribution(quarkDistribution);
     case 1:
-        quarkFlavorData = GPDQuarkFlavorData(m_currentGPDComputeType,
-                QuarkFlavor::UP);
-        quarkFlavorData.setPartonDistributionMinus(m_vectorOfGPDCombination[0]);
-        quarkFlavorData.setPartonDistributionPlus(m_vectorOfGPDCombination[1]);
-        quarkFlavorData.setPartonDistribution(
-                calculateFq(m_vectorOfGPDCombination[0],
-                        m_vectorOfGPDCombination[1]));
-        gpdResultData.addGPDQuarkFlavorData(quarkFlavorData);
+        quarkDistribution = makeFinalQuarkDistribution(QuarkFlavor::UP,
+                m_vectorOfGPDCombination[0], m_vectorOfGPDCombination[1]);
+        partonDistribution.addQuarkDistribution(quarkDistribution);
         break;
     default:
         break;
     }
 
-    return gpdResultData;
+    return partonDistribution;
 }
 
-double EvolQCDModule::calculateFq(double FMinus, double FPlus) {
+QuarkDistribution EvolQCDModule::makeFinalQuarkDistribution(
+        QuarkFlavor::Type quarkFlavor, double quarkDistributionMinus,
+        double quarkDistributionPlus) {
+    QuarkDistribution quarkDistribution = QuarkDistribution(quarkFlavor);
+    quarkDistribution.setQuarkDistributionMinus(quarkDistributionMinus);
+    quarkDistribution.setQuarkDistributionPlus(quarkDistributionPlus);
+    quarkDistribution.setQuarkDistribution(
+            calculateFq(quarkDistributionPlus, quarkDistributionMinus));
+
+    return quarkDistribution;
+}
+
+double EvolQCDModule::calculateFq(double FPlus, double FMinus) {
     m_pLoggerManager->debug(getClassName(), __func__,
             Formatter() << " FMinus = " << FMinus << "   FPlus = " << FPlus);
 
-    return (FPlus + FMinus) / 2.;
+    return (FMinus + FPlus) / 2.;
 }
 
 PerturbativeQCDOrderType::Type EvolQCDModule::getQcdOrderType() const {
     return m_qcdOrderType;
 }
 
-void EvolQCDModule::setQcdOrderType(PerturbativeQCDOrderType::Type qcdOrderType) {
+void EvolQCDModule::setQcdOrderType(
+        PerturbativeQCDOrderType::Type qcdOrderType) {
     m_qcdOrderType = qcdOrderType;
 }
 
 std::vector<double> EvolQCDModule::MakeVectorOfGPDCombinations(
-        GPDResultData gpdResultData) {
+        const PartonDistribution &partonDistribution) {
     m_pLoggerManager->debug(getClassName(), __func__, "");
 
-    std::vector<GPDQuarkFlavorData> listOfQuarkFlavorData =
-            gpdResultData.getListOfQuarkFlavorData();
+    std::vector<QuarkDistribution> listOfQuarkFlavorData =
+            partonDistribution.getVectorOfQuarkDistribution();
 
     //TODO creation en fonction de nfMin pour tronquer ce qui doit l'être
 
@@ -502,12 +489,13 @@ std::vector<double> EvolQCDModule::MakeVectorOfGPDCombinations(
 
     for (unsigned int i = 0; i != m_nfMin; i++) {
         vectorOfGPDCombination.push_back(
-                listOfQuarkFlavorData[i].getPartonDistributionMinus());
+                listOfQuarkFlavorData[i].getQuarkDistributionMinus());
         vectorOfGPDCombination.push_back(
-                listOfQuarkFlavorData[i].getPartonDistributionPlus());
+                listOfQuarkFlavorData[i].getQuarkDistributionPlus());
     }
 
-    vectorOfGPDCombination.push_back(m_gpdResultData.getGluon());
+    vectorOfGPDCombination.push_back(
+            m_partonDistribution.getGluonDistribution().getGluonDistribution());
 
     return vectorOfGPDCombination;
 }

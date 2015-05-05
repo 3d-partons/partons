@@ -18,10 +18,10 @@
 #include <string>
 #include <vector>
 
+#include "../../beans/parton_distribution/QuarkDistribution.h"
 #include "../GPDModule.h"
 
 class GPDQuarkFlavorData;
-class GPDResultData;
 
 //TODO finir les messages de debug dans toutes les fonctions
 //TODO supprimer au maximum les pointers qui ne sont pas obligatoires
@@ -124,14 +124,14 @@ protected:
 
     //GPDResultData compute(GPDComputeType gpdComputeType);
 
-    virtual GPDResultData computeH(); ///< Compute GPD H at considered kinematics
-    virtual GPDResultData computeE(); ///< Compute GPD E at considered kinematics
-    virtual GPDResultData computeHt(); ///< Compute GPD Ht at considered kinematics
-    virtual GPDResultData computeEt(); ///< Compute GPD Et at considered kinematics
+    virtual PartonDistribution computeH(); ///< Compute GPD H at considered kinematics
+    virtual PartonDistribution computeE(); ///< Compute GPD E at considered kinematics
+    virtual PartonDistribution computeHt(); ///< Compute GPD Ht at considered kinematics
+    virtual PartonDistribution computeEt(); ///< Compute GPD Et at considered kinematics
 
-    double computeSinglet(const GPDQuarkFlavorData &quark_u,
-            const GPDQuarkFlavorData &quark_d,
-            const GPDQuarkFlavorData &quark_s);
+    double computeSinglet(const QuarkDistribution &quarkDistribution_u,
+            const QuarkDistribution &quarkDistribution_d,
+            const QuarkDistribution &quarkDistribution_s);
 
     void calculateHCoefs();
     void calculateECoefs();

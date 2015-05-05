@@ -8,10 +8,11 @@
 #include <stdexcept>
 #include <utility>
 
-#include "../../beans/gpd/GPDComputeType.h"
-#include "../../beans/gpd/GPDOutputData.h"
-#include "../../beans/gpd/GPDQuarkFlavorData.h"
-#include "../../beans/gpd/GPDResultData.h"
+#include "../../beans/gpd/GPDResult.h"
+#include "../../beans/gpd/GPDType.h"
+#include "../../beans/parton_distribution/GluonDistribution.h"
+#include "../../beans/parton_distribution/PartonDistribution.h"
+#include "../../beans/parton_distribution/QuarkDistribution.h"
 #include "../../beans/PerturbativeQCDOrderType.h"
 #include "../../beans/QuarkFlavor.h"
 #include "../../FundamentalPhysicalConstants.h"
@@ -36,13 +37,13 @@ DVCSCFFModel::DVCSCFFModel(const std::string &className)
  ROOT::Math::IntegrationOneDim::kADAPTIVESINGULAR, 0., 1.e-3)*/{
 
     m_listOfCFFComputeFunctionAvailable.insert(
-            std::make_pair(GPDComputeType::H, &CFFModule::computeUnpolarized));
+            std::make_pair(GPDType::H, &CFFModule::computeUnpolarized));
     m_listOfCFFComputeFunctionAvailable.insert(
-            std::make_pair(GPDComputeType::E, &CFFModule::computeUnpolarized));
+            std::make_pair(GPDType::E, &CFFModule::computeUnpolarized));
     m_listOfCFFComputeFunctionAvailable.insert(
-            std::make_pair(GPDComputeType::Ht, &CFFModule::computePolarized));
+            std::make_pair(GPDType::Ht, &CFFModule::computePolarized));
     m_listOfCFFComputeFunctionAvailable.insert(
-            std::make_pair(GPDComputeType::Et, &CFFModule::computePolarized));
+            std::make_pair(GPDType::Et, &CFFModule::computePolarized));
 
 }
 
@@ -148,14 +149,15 @@ std::complex<double> DVCSCFFModel::computePolarized() {
 }
 
 void DVCSCFFModel::computeDiagonalGPD() {
-    GPDOutputData gpdOutputData = m_pGPDModule->compute(m_xi, m_xi, m_t, m_MuF,
-            m_MuR, m_currentGPDComputeType);
-    GPDResultData* pGPDResultData = gpdOutputData.getGPDResultData(
+    GPDResult gpdResult = m_pGPDModule->compute(m_xi, m_xi, m_t, m_MuF, m_MuR,
+            m_currentGPDComputeType);
+    PartonDistribution partonDistribution = gpdResult.getPartonDistribution(
             m_currentGPDComputeType);
 
     //TODO compute CFF singlet; FAIT; vérifier le résultat du calcul
-    m_quarkDiagonal = computeSquareChargeAveragedGPD(gpdOutputData);
-    m_gluonDiagonal = 2. * pGPDResultData->getGluon();
+    m_quarkDiagonal = computeSquareChargeAveragedGPD(partonDistribution);
+    m_gluonDiagonal = 2.
+            * partonDistribution.getGluonDistribution().getGluonDistribution();
 
     //   m_pLoggerManager->debug(getClassName(), __func__,
     //      	                Formatter()<<"    q diagonal = "<< m_quarkDiagonal <<"   g diagonal = "<< m_gluonDiagonal);
@@ -163,19 +165,19 @@ void DVCSCFFModel::computeDiagonalGPD() {
 }
 
 double DVCSCFFModel::computeSquareChargeAveragedGPD(
-        GPDOutputData &gpdOutputData) {
+        const PartonDistribution &partonDistribution) {
 //TODO comment faire evoluer le calcul si de nouvelles saveurs de quark entrent en jeux
     double result = 0.;
-    GPDResultData* gpdResultData = gpdOutputData.getGPDResultData(
-            m_currentGPDComputeType);
+
     result +=
-            gpdResultData->getGPDQuarkFlavorData(QuarkFlavor::UP)->getPartonDistributionSinglet()
+            (partonDistribution.getQuarkDistribution(QuarkFlavor::UP).getQuarkDistributionPlus())
                     * U2_ELEC_CHARGE;
+
     result +=
-            gpdResultData->getGPDQuarkFlavorData(QuarkFlavor::DOWN)->getPartonDistributionSinglet()
+            (partonDistribution.getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistributionPlus())
                     * D2_ELEC_CHARGE;
     result +=
-            gpdResultData->getGPDQuarkFlavorData(QuarkFlavor::STRANGE)->getPartonDistributionSinglet()
+            (partonDistribution.getQuarkDistribution(QuarkFlavor::STRANGE).getQuarkDistributionPlus())
                     * S2_ELEC_CHARGE;
 
 //    std::vector<> = gpdResultData.listQuarkTypeComputed()
@@ -709,13 +711,14 @@ std::complex<double> DVCSCFFModel::KernelGluonA(double x) {
  * Expressions are modified in order to integrate between 0 and fXi, hence explicitely avoiding GPD behaviour at x = 0.
  *
  */
-double DVCSCFFModel::ConvolReKernelQuark1V(const double x) {
+double DVCSCFFModel::ConvolReKernelQuark1V(double x) {
 
-    GPDOutputData gpdOutputData = m_pGPDModule->compute(x, m_xi, m_t, m_MuF,
-            m_MuR, m_currentGPDComputeType);
+    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF, m_MuR,
+            m_currentGPDComputeType);
 
     // GPD evaluated at x = x[ 0 ]
-    double EvalGPD = computeSquareChargeAveragedGPD(gpdOutputData);
+    double EvalGPD = computeSquareChargeAveragedGPD(
+            gpdResult.getPartonDistribution(m_currentGPDComputeType));
 
     // Integrated function
     double Convol = (EvalGPD - m_quarkDiagonal) * KernelQuarkV(x).real();
@@ -733,12 +736,13 @@ double DVCSCFFModel::ConvolReKernelQuark1V(const double x) {
  * Equivalently x integration domain ranges between fXi and 1.
  *
  */
-double DVCSCFFModel::ConvolReKernelQuark2V(const double x) {
-    GPDOutputData gpdOutputData = m_pGPDModule->compute(x, m_xi, m_t, m_MuF,
-            m_MuR, m_currentGPDComputeType);
+double DVCSCFFModel::ConvolReKernelQuark2V(double x) {
+    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF, m_MuR,
+            m_currentGPDComputeType);
 
     // GPD evaluated at x = x[ 0 ]
-    double EvalGPD = computeSquareChargeAveragedGPD(gpdOutputData);
+    double EvalGPD = computeSquareChargeAveragedGPD(
+            gpdResult.getPartonDistribution(m_currentGPDComputeType));
 
     double Convol = EvalGPD - m_quarkDiagonal;
     Convol *= KernelQuarkV(x).real();
@@ -757,12 +761,13 @@ double DVCSCFFModel::ConvolReKernelQuark2V(const double x) {
  * Equivalently x integration domain ranges between fXi and 1.
  *
  */
-double DVCSCFFModel::ConvolImKernelQuarkV(const double x) {
-    GPDOutputData gpdOutputData = m_pGPDModule->compute(x, m_xi, m_t, m_MuF,
-            m_MuR, m_currentGPDComputeType);
+double DVCSCFFModel::ConvolImKernelQuarkV(double x) {
+    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF, m_MuR,
+            m_currentGPDComputeType);
 
     // GPD evaluated at x = x[ 0 ]
-    double EvalGPD = computeSquareChargeAveragedGPD(gpdOutputData);
+    double EvalGPD = computeSquareChargeAveragedGPD(
+            gpdResult.getPartonDistribution(m_currentGPDComputeType));
 
     double Convol = EvalGPD - m_quarkDiagonal;
     Convol *= KernelQuarkV(x).imag();
@@ -781,14 +786,14 @@ double DVCSCFFModel::ConvolImKernelQuarkV(const double x) {
  * Expressions are modified in order to integrate between 0 and fXi, hence explicitely avoiding GPD behaviour at x = 0.
  *
  */
-double DVCSCFFModel::ConvolReKernelGluon1V(const double x) {
-    GPDOutputData gpdOutputData = m_pGPDModule->compute(x, m_xi, m_t, m_MuF,
-            m_MuR, m_currentGPDComputeType);
+double DVCSCFFModel::ConvolReKernelGluon1V(double x) {
+    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF, m_MuR,
+            m_currentGPDComputeType);
 
     // GPD evaluated at x = x[ 0 ]
     double EvalGPD =
-            2.
-                    * (gpdOutputData.getGPDResultData(m_currentGPDComputeType))->getGluon();
+            2
+                    * gpdResult.getPartonDistribution(m_currentGPDComputeType).getGluonDistribution().getGluonDistribution();
 
     double Convol = (EvalGPD - m_gluonDiagonal) * KernelGluonV(x).real();
     Convol += (+EvalGPD - m_gluonDiagonal) * KernelGluonV(-x).real();
@@ -805,13 +810,13 @@ double DVCSCFFModel::ConvolReKernelGluon1V(const double x) {
  * Equivalently x integration domain ranges between fXi and 1.
  *
  */
-double DVCSCFFModel::ConvolReKernelGluon2V(const double x) {
-    GPDOutputData gpdOutputData = m_pGPDModule->compute(x, m_xi, m_t, m_MuF,
-            m_MuR, m_currentGPDComputeType);
+double DVCSCFFModel::ConvolReKernelGluon2V(double x) {
+    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF, m_MuR,
+            m_currentGPDComputeType);
 
     double EvalGPD =
-            2.
-                    * (gpdOutputData.getGPDResultData(m_currentGPDComputeType))->getGluon();
+            2
+                    * gpdResult.getPartonDistribution(m_currentGPDComputeType).getGluonDistribution().getGluonDistribution();
 
     double Convol = EvalGPD - m_gluonDiagonal;
     Convol *= KernelGluonV(x).real();
@@ -830,13 +835,13 @@ double DVCSCFFModel::ConvolReKernelGluon2V(const double x) {
  * Equivalently x integration domain ranges between fXi and 1.
  *
  */
-double DVCSCFFModel::ConvolImKernelGluonV(const double x) {
-    GPDOutputData gpdOutputData = m_pGPDModule->compute(x, m_xi, m_t, m_MuF,
-            m_MuR, m_currentGPDComputeType);
+double DVCSCFFModel::ConvolImKernelGluonV(double x) {
+    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF, m_MuR,
+            m_currentGPDComputeType);
 
     double EvalGPD =
-            2.
-                    * (gpdOutputData.getGPDResultData(m_currentGPDComputeType))->getGluon();
+            2
+                    * gpdResult.getPartonDistribution(m_currentGPDComputeType).getGluonDistribution().getGluonDistribution();
 
     double Convol = EvalGPD - m_gluonDiagonal;
     Convol *= KernelGluonV(x).imag();
@@ -915,12 +920,13 @@ std::complex<double> DVCSCFFModel::KernelQuarkNLOA(double x) {
     return QuarkNLOA;
 }
 
-double DVCSCFFModel::ConvolReKernelQuark1A(const double x) {
-    GPDOutputData gpdOutputData = m_pGPDModule->compute(x, m_xi, m_t, m_MuF,
-            m_MuR, m_currentGPDComputeType);
+double DVCSCFFModel::ConvolReKernelQuark1A(double x) {
+    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF, m_MuR,
+            m_currentGPDComputeType);
 
     // GPD evaluated at x = x[ 0 ]
-    double EvalGPD = computeSquareChargeAveragedGPD(gpdOutputData);
+    double EvalGPD = computeSquareChargeAveragedGPD(
+            gpdResult.getPartonDistribution(m_currentGPDComputeType));
 
     double Convol = (EvalGPD - m_quarkDiagonal) * KernelQuarkA(x).real();
     Convol += (+EvalGPD - m_quarkDiagonal) * KernelQuarkA(-x).real();
@@ -930,12 +936,13 @@ double DVCSCFFModel::ConvolReKernelQuark1A(const double x) {
     return Convol;
 }
 
-double DVCSCFFModel::ConvolReKernelQuark2A(const double x) {
-    GPDOutputData gpdOutputData = m_pGPDModule->compute(x, m_xi, m_t, m_MuF,
-            m_MuR, m_currentGPDComputeType);
+double DVCSCFFModel::ConvolReKernelQuark2A(double x) {
+    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF, m_MuR,
+            m_currentGPDComputeType);
 
     // GPD evaluated at x = x[ 0 ]
-    double EvalGPD = computeSquareChargeAveragedGPD(gpdOutputData);
+    double EvalGPD = computeSquareChargeAveragedGPD(
+            gpdResult.getPartonDistribution(m_currentGPDComputeType));
 
     double Convol = EvalGPD - m_quarkDiagonal;
     Convol *= KernelQuarkA(x).real();
@@ -947,12 +954,13 @@ double DVCSCFFModel::ConvolReKernelQuark2A(const double x) {
     return Convol;
 }
 
-double DVCSCFFModel::ConvolImKernelQuarkA(const double x) {
-    GPDOutputData gpdOutputData = m_pGPDModule->compute(x, m_xi, m_t, m_MuF,
-            m_MuR, m_currentGPDComputeType);
+double DVCSCFFModel::ConvolImKernelQuarkA(double x) {
+    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF, m_MuR,
+            m_currentGPDComputeType);
 
     // GPD evaluated at x = x[ 0 ]
-    double EvalGPD = computeSquareChargeAveragedGPD(gpdOutputData);
+    double EvalGPD = computeSquareChargeAveragedGPD(
+            gpdResult.getPartonDistribution(m_currentGPDComputeType));
 
     double Convol = EvalGPD - m_quarkDiagonal;
     Convol *= KernelQuarkA(x).imag();
@@ -961,13 +969,13 @@ double DVCSCFFModel::ConvolImKernelQuarkA(const double x) {
     return Convol;
 }
 
-double DVCSCFFModel::ConvolReKernelGluon1A(const double x) {
-    GPDOutputData gpdOutputData = m_pGPDModule->compute(x, m_xi, m_t, m_MuF,
-            m_MuR, m_currentGPDComputeType);
+double DVCSCFFModel::ConvolReKernelGluon1A(double x) {
+    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF, m_MuR,
+            m_currentGPDComputeType);
 
     double EvalGPD =
-            2.
-                    * (gpdOutputData.getGPDResultData(m_currentGPDComputeType))->getGluon();
+            2
+                    * gpdResult.getPartonDistribution(m_currentGPDComputeType).getGluonDistribution().getGluonDistribution();
 
     double Convol = (EvalGPD - m_gluonDiagonal) * KernelGluonA(x).real();
     Convol += (-EvalGPD - m_gluonDiagonal) * KernelGluonA(-x).real();
@@ -977,13 +985,13 @@ double DVCSCFFModel::ConvolReKernelGluon1A(const double x) {
     return Convol;
 }
 
-double DVCSCFFModel::ConvolReKernelGluon2A(const double x) {
-    GPDOutputData gpdOutputData = m_pGPDModule->compute(x, m_xi, m_t, m_MuF,
-            m_MuR, m_currentGPDComputeType);
+double DVCSCFFModel::ConvolReKernelGluon2A(double x) {
+    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF, m_MuR,
+            m_currentGPDComputeType);
 
     double EvalGPD =
-            2.
-                    * (gpdOutputData.getGPDResultData(m_currentGPDComputeType))->getGluon();
+            2
+                    * gpdResult.getPartonDistribution(m_currentGPDComputeType).getGluonDistribution().getGluonDistribution();
 
     double Convol = EvalGPD - m_gluonDiagonal;
     Convol *= KernelGluonA(x).real();
@@ -995,13 +1003,13 @@ double DVCSCFFModel::ConvolReKernelGluon2A(const double x) {
     return Convol;
 }
 
-double DVCSCFFModel::ConvolImKernelGluonA(const double x) {
-    GPDOutputData gpdOutputData = m_pGPDModule->compute(x, m_xi, m_t, m_MuF,
-            m_MuR, m_currentGPDComputeType);
+double DVCSCFFModel::ConvolImKernelGluonA(double x) {
+    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF, m_MuR,
+            m_currentGPDComputeType);
 
     double EvalGPD =
-            2.
-                    * (gpdOutputData.getGPDResultData(m_currentGPDComputeType))->getGluon();
+            2
+                    * gpdResult.getPartonDistribution(m_currentGPDComputeType).getGluonDistribution().getGluonDistribution();
 
     double Convol = EvalGPD - m_gluonDiagonal;
     Convol *= KernelGluonA(x).imag();
@@ -1010,8 +1018,8 @@ double DVCSCFFModel::ConvolImKernelGluonA(const double x) {
     return Convol;
 }
 
-double DVCSCFFModel::functionsToIntegrate(const double * x,
-        const double * parameters) {
+double DVCSCFFModel::functionsToIntegrate(double * x,
+        double * parameters) {
     double result = 0.;
 
     switch (m_currentFunctionToIntegrate) {

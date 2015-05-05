@@ -61,8 +61,8 @@ public:
     // Unfortunately, C++ does not offer anything like this. myObject.foo is a combination of the object pointer &myObject and the member function pointer foo. C++ does not have a pointer type that combines these two pointers.
     // One technique for implementing callbacks is to use an interface class. An interface class contains a member function to be overridden by a deriver. This is the callback function.
     // cf : http://tedfelix.com/software/c++-callbacks.html
-    virtual double functionsToIntegrate(const double * x,
-            const double * parameters = 0);
+    virtual double functionsToIntegrate(double * x,
+            double * parameters = 0);
 
     /**
      * Return a pre-formatted characters string for output visualization of class member's values

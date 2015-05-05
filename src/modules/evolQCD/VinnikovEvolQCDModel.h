@@ -17,7 +17,6 @@
 #include <string>
 #include <vector>
 
-#include "../../beans/gpd/GPDResultData.h"
 #include "../EvolQCDModule.h"
 
 class VinnikovEvolQCDModel: public EvolQCDModule {
@@ -31,9 +30,9 @@ public:
     void setNbMuFPoints(unsigned int nbMuFPoints);
     void setNbXPoints(unsigned int nbXPoints);
 
-    virtual GPDResultData compute(const double &x, const double &xi,
-            const double &t, const double &MuF, const double &MuR,
-            const GPDResultData &gpdResultData);
+    virtual PartonDistribution compute(double x, double xi, double t,
+            double MuF, double MuR, GPDModule* pGPDModule,
+            PartonDistribution partonDistribution);
 
 protected:
     /**

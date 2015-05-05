@@ -18,6 +18,10 @@
 
 #include "../CFFModule.h"
 
+class PartonDistribution;
+
+class GPDResult;
+
 class GPDOutputData;
 
 class DVCSCFFModel: public CFFModule {
@@ -45,8 +49,8 @@ public:
 
     virtual ~DVCSCFFModel();
 
-    virtual double functionsToIntegrate(const double * x,
-            const double * parameters = 0);
+    virtual double functionsToIntegrate(double * x,
+            double * parameters = 0);
 
     virtual void init();
 
@@ -95,23 +99,23 @@ private:
     std::complex<double> KernelGluonV(double x); ///< T^{g, V/A}, appendix A, eq. (A1)
 
     std::complex<double> KernelQuarkNLOV(double x); ///< T^{q, NLO, V}, appendix A, eq. (A2)
-    double ConvolReKernelQuark1V(const double x); ///< eq. (8), real part of amplitude, \int_0^zeta
-    double ConvolReKernelQuark2V(const double x); ///< eq. (8), real part of amplitude, \int_zeta^1
-    double ConvolImKernelQuarkV(const double x); ///< eq. (8), imaginary part of amplitude
-    double ConvolReKernelGluon1V(const double x); ///< eq. (9), real part of amplitude, \int_0^zeta
-    double ConvolReKernelGluon2V(const double x); ///< eq. (9), real part of amplitude, \int_zeta^1
-    virtual double ConvolImKernelGluonV(const double x); ///< eq. (9), imaginary part of amplitude
+    double ConvolReKernelQuark1V(double x); ///< eq. (8), real part of amplitude, \int_0^zeta
+    double ConvolReKernelQuark2V(double x); ///< eq. (8), real part of amplitude, \int_zeta^1
+    double ConvolImKernelQuarkV(double x); ///< eq. (8), imaginary part of amplitude
+    double ConvolReKernelGluon1V(double x); ///< eq. (9), real part of amplitude, \int_0^zeta
+    double ConvolReKernelGluon2V(double x); ///< eq. (9), real part of amplitude, \int_zeta^1
+    virtual double ConvolImKernelGluonV(double x); ///< eq. (9), imaginary part of amplitude
 
     std::complex<double> KernelQuarkA(double x); ///< T^{q, V/A}, appendix A, eq. (A1)
     std::complex<double> KernelGluonA(double x); ///< T^{g, V/A}, appendix A, eq. (A1)
     std::complex<double> KernelQuarkNLOA(double x); ///< T^{q, NLO, A}, appendix A, eq. (A2)
 
-    double ConvolReKernelQuark1A(const double x); ///< eq. (8), real part of amplitude, \int_0^zeta
-    double ConvolReKernelQuark2A(const double x); ///< eq. (8), real part of amplitude, \int_zeta^1
-    double ConvolImKernelQuarkA(const double x); ///< eq. (8), imaginary part of amplitude
-    double ConvolReKernelGluon1A(const double x); ///< eq. (9), real part of amplitude, \int_0^zeta
-    double ConvolReKernelGluon2A(const double x); ///< eq. (9), real part of amplitude, \int_zeta^1
-    double ConvolImKernelGluonA(const double x); ///< eq. (9), imaginary part of amplitude
+    double ConvolReKernelQuark1A(double x); ///< eq. (8), real part of amplitude, \int_0^zeta
+    double ConvolReKernelQuark2A(double x); ///< eq. (8), real part of amplitude, \int_zeta^1
+    double ConvolImKernelQuarkA(double x); ///< eq. (8), imaginary part of amplitude
+    double ConvolReKernelGluon1A(double x); ///< eq. (9), real part of amplitude, \int_0^zeta
+    double ConvolReKernelGluon2A(double x); ///< eq. (9), real part of amplitude, \int_zeta^1
+    double ConvolImKernelGluonA(double x); ///< eq. (9), imaginary part of amplitude
 
     virtual void computeDiagonalGPD();
 
@@ -120,7 +124,8 @@ private:
     std::complex<double> computeIntegralsV();
     std::complex<double> computeIntegralsA();
 
-    double computeSquareChargeAveragedGPD(GPDOutputData &gpdOutputData);
+    double computeSquareChargeAveragedGPD(
+            const PartonDistribution &partonDistribution);
 
 };
 

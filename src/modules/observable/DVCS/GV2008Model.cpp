@@ -7,7 +7,7 @@
 #include <cstdlib>
 #include <iostream>
 
-#include "../../../beans/gpd/GPDComputeType.h"
+#include "../../../beans/gpd/GPDType.h"
 #include "../../../beans/observable/Observable.h"
 #include "../../../FundamentalPhysicalConstants.h"
 #include "../../../ModuleObjectFactory.h"
@@ -264,10 +264,10 @@ double GV2008Model::SqrAmplVCSAndInterf(double beamHelicity, double beamCharge,
 
 void GV2008Model::MakeVCSHelicityAmplitudes() {
 
-    std::complex<double> CFF_H = m_cffOutputData.getCFF(GPDComputeType::H);
-    std::complex<double> CFF_E = m_cffOutputData.getCFF(GPDComputeType::E);
-    std::complex<double> CFF_Ht = m_cffOutputData.getCFF(GPDComputeType::Ht);
-    std::complex<double> CFF_Et = m_cffOutputData.getCFF(GPDComputeType::Et);
+    std::complex<double> CFF_H = m_cffOutputData.getCFF(GPDType::H);
+    std::complex<double> CFF_E = m_cffOutputData.getCFF(GPDType::E);
+    std::complex<double> CFF_Ht = m_cffOutputData.getCFF(GPDType::Ht);
+    std::complex<double> CFF_Et = m_cffOutputData.getCFF(GPDType::Et);
 
     RMvcs[0][0] = 0;
     RMvcs[0][1] = 0;

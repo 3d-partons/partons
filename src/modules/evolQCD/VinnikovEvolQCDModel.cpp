@@ -6,8 +6,10 @@
 #include <cmath>
 #include <cstdio>
 
-#include "../../beans/gpd/GPDComputeType.h"
-#include "../../beans/gpd/GPDOutputData.h"
+#include "../../beans/gpd/GPDResult.h"
+#include "../../beans/gpd/GPDType.h"
+#include "../../beans/parton_distribution/GluonDistribution.h"
+#include "../../beans/parton_distribution/PartonDistribution.h"
 #include "../../FundamentalPhysicalConstants.h"
 #include "../../ModuleObjectFactory.h"
 #include "../../utils/logger/LoggerManager.h"
@@ -69,20 +71,21 @@ void VinnikovEvolQCDModel::isModuleWellConfigured() {
     EvolQCDModule::isModuleWellConfigured();
 }
 
-GPDResultData VinnikovEvolQCDModel::compute(const double &x, const double &xi,
-        const double &t, const double &MuF, const double &MuR,
-        const GPDResultData &gpdResultData) {
+PartonDistribution VinnikovEvolQCDModel::compute(double x, double xi, double t,
+        double MuF, double MuR, GPDModule* pGPDModule,
+        PartonDistribution partonDistribution) {
 
-    m_pLoggerManager->debug(getClassName(), __func__,
-            Formatter() << "x = " << x << "    xi = " << xi << "    t = " << t
-                    << " GeV2    MuF = " << MuF << " GeV    MuR = " << MuR
-                    << " GeV");
+//    m_pLoggerManager->debug(getClassName(), __func__,
+//            Formatter() << "x = " << x << "    xi = " << xi << "    t = " << t
+//                    << " GeV2    MuF = " << MuF << " GeV    MuR = " << MuR
+//                    << " GeV");
 
-    // TODO : Why does the statement below not work?
+// TODO : Why does the statement below not work?
 //	m_pLoggerManager->debug(getClassName(), __func__,
 //			Formatter() << gpdResultData.toString());
 
-    EvolQCDModule::preCompute(x, xi, t, MuF, MuR, gpdResultData);
+    EvolQCDModule::preCompute(x, xi, t, MuF, MuR, pGPDModule,
+            partonDistribution);
 
     initModule();
 
@@ -90,7 +93,7 @@ GPDResultData VinnikovEvolQCDModel::compute(const double &x, const double &xi,
 
     m_pLoggerManager->debug(getClassName(), __func__,
             Formatter() << "m_currentGPDComputeType = "
-                    << GPDComputeType(m_currentGPDComputeType).toString());
+                    << GPDType(m_currentGPDComputeType).toString());
 
     m_vectorOfGPDCombination = EvolQCDModule::convertBasis(
             m_vectorOfGPDCombination);
@@ -100,12 +103,13 @@ GPDResultData VinnikovEvolQCDModel::compute(const double &x, const double &xi,
     m_vectorOfGPDCombination = EvolQCDModule::invertBasis(
             m_vectorOfGPDCombination);
 
-    GPDResultData finalGpdResultData = EvolQCDModule::makeGPDResultData();
+    PartonDistribution finalPartonDistribution =
+            EvolQCDModule::makeFinalPartonDistribution();
 
     m_pLoggerManager->debug(getClassName(), __func__,
-            Formatter() << finalGpdResultData.toString());
+            Formatter() << finalPartonDistribution.toString());
 
-    return finalGpdResultData;
+    return finalPartonDistribution;
 }
 
 void VinnikovEvolQCDModel::evolution() {
@@ -540,26 +544,26 @@ double VinnikovEvolQCDModel::alpha_s(double t) {
 }
 
 void VinnikovEvolQCDModel::initNonSingletGPD(unsigned int iNS) {
-    GPDOutputData gpdOutputData;
-    GPDResultData* pGpdResultData;
     std::vector<double> vectorOfGPDCombinations;
 
+    GPDResult gpdResult;
+
     for (unsigned int iGrid = 0; iGrid < 4 * m_nbXPoints + 1; iGrid++) {
-        gpdOutputData = m_pGPDModule->compute(m_NonSingletx.at(iGrid), m_xi,
-                m_t, m_MuF_ref, m_MuR, m_currentGPDComputeType);
+        gpdResult = m_pGPDModule->compute(m_NonSingletx.at(iGrid), m_xi, m_t,
+                m_MuF_ref, m_MuR, m_currentGPDComputeType);
 
         m_pLoggerManager->debug(getClassName(), __func__,
-                Formatter() << "gpdOutputData = " << gpdOutputData.toString());
+                Formatter() << "gpdOutputData = " << gpdResult.toString());
 
-        pGpdResultData = gpdOutputData.getGPDResultData(
+        PartonDistribution partonDistribution = gpdResult.getPartonDistribution(
                 m_currentGPDComputeType);
 
         m_pLoggerManager->debug(getClassName(), __func__,
                 Formatter() << "GpdResultData = "
-                        << pGpdResultData->toString());
+                        << partonDistribution.toString());
 
         vectorOfGPDCombinations = EvolQCDModule::MakeVectorOfGPDCombinations(
-                *pGpdResultData);
+                partonDistribution);
         // TODO: A whole matrix product is computed while only one line is used... Improve!
         vectorOfGPDCombinations = EvolQCDModule::convertBasis(
                 vectorOfGPDCombinations);
@@ -574,13 +578,13 @@ void VinnikovEvolQCDModel::initNonSingletGPD(unsigned int iNS) {
 void VinnikovEvolQCDModel::initSingletGPD() {
 
     for (unsigned int iGrid = 0; iGrid < 2 * m_nbXPoints + 1; iGrid++) {
-        GPDOutputData gpdOutputData = m_pGPDModule->compute(
-                m_Singletx.at(iGrid), m_xi, m_t, m_MuF_ref, m_MuR,
+        GPDResult gpdResult = m_pGPDModule->compute(m_Singletx.at(iGrid), m_xi,
+                m_t, m_MuF_ref, m_MuR, m_currentGPDComputeType);
+        PartonDistribution partonDistribution = gpdResult.getPartonDistribution(
                 m_currentGPDComputeType);
-        GPDResultData* pGpdResultData = gpdOutputData.getGPDResultData(
-                m_currentGPDComputeType);
-        m_GluonGpd.at(iGrid) = pGpdResultData->getGluon();
-        m_SingletGpd.at(iGrid) = pGpdResultData->getSinglet();
+        m_GluonGpd.at(iGrid) =
+                partonDistribution.getGluonDistribution().getGluonDistribution();
+        m_SingletGpd.at(iGrid) = partonDistribution.getSinglet();
     }
 }
 

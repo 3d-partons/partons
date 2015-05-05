@@ -22,7 +22,7 @@ std::string CFFOutputData::toString() {
 
     for (m_it = m_listCFFbyGPDComputeType.begin();
             m_it != m_listCFFbyGPDComputeType.end(); m_it++) {
-        formatter << "CFF_" << GPDComputeType(m_it->first).toString() << " = "
+        formatter << "CFF_" << GPDType(m_it->first).toString() << " = "
                 << (m_it->second).real() << ", " << (m_it->second).imag()
                 << "\n";
     }
@@ -32,13 +32,13 @@ std::string CFFOutputData::toString() {
     return formatter.str();
 }
 
-void CFFOutputData::add(GPDComputeType::Type gpdComputeType,
+void CFFOutputData::add(GPDType::Type gpdComputeType,
         std::complex<double> cff) {
     m_listCFFbyGPDComputeType.insert(std::make_pair(gpdComputeType, cff));
 }
 
 std::complex<double> CFFOutputData::getCFF(
-        GPDComputeType::Type gpdComputeType) {
+        GPDType::Type gpdComputeType) {
     m_it = m_listCFFbyGPDComputeType.find(gpdComputeType);
     if (m_it != m_listCFFbyGPDComputeType.end()) {
         return m_it->second;
@@ -47,7 +47,7 @@ std::complex<double> CFFOutputData::getCFF(
     throw std::runtime_error(
             Formatter()
                     << "[CFFOutputData::getCFF] cannot find CFF for GPDComputeType = "
-                    << GPDComputeType(gpdComputeType).toString());
+                    << GPDType(gpdComputeType).toString());
 }
 
 // ##### GETTERS & SETTERS #####

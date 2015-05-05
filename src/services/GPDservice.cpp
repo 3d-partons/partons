@@ -1,13 +1,16 @@
-#include <stddef.h>
+//#include <stddef.h>
+
+//#include <stddef.h>
+
 #include <map>
 #include <stdexcept>
 #include <string>
 #include <utility>
 #include <vector>
 
-#include "../beans/gpd/GPDComputeType.h"
-#include "../beans/gpd/GPDOutputData.h"
-#include "../beans/gpd/ListGPDOutputData.h"
+#include "../beans/gpd/GPDResult.h"
+#include "../beans/gpd/GPDResultList.h"
+#include "../beans/gpd/GPDType.h"
 #include "../beans/kinematic/GPDKinematic.h"
 #include "../beans/Scenario.h"
 #include "../modules/GPDModule.h"
@@ -53,7 +56,7 @@ void GPDService::computeScenario(Scenario scenario) {
     if (StringUtils::equals(scenario.getFunctionName(),
             GPDService::COMPUTE_GPD_MODEL)) {
 
-        GPDOutputData gpdoutputData = computeGPDModel(scenario);
+        GPDResult gpdResult = computeGPDModel(scenario);
 
     } else {
         throw std::runtime_error(
@@ -62,73 +65,81 @@ void GPDService::computeScenario(Scenario scenario) {
     }
 }
 
-GPDOutputData GPDService::computeGPDModel(Scenario scenario) {
+GPDResult GPDService::computeGPDModel(Scenario scenario) {
     m_pGPDKinematic =
             static_cast<GPDKinematic*>((scenario.getFunctionArgs().find(
                     "GPDKinematic"))->second);
     m_pGPDModule = static_cast<GPDModule*>((scenario.getFunctionArgs().find(
             "GPDModule"))->second);
 
-    return computeGPDModel(m_pGPDKinematic, m_pGPDModule);
+    return computeGPDModel(*m_pGPDKinematic, m_pGPDModule);
 }
 
-GPDOutputData GPDService::computeGPDModelRestrictedByGPDType(
-        GPDKinematic* pGPDKinematic, GPDModule* pGPDModule,
-        GPDComputeType::Type gpdComputeType) {
-    return pGPDModule->compute(pGPDKinematic->getX(), pGPDKinematic->getXi(),
-            pGPDKinematic->getT(), pGPDKinematic->getMuF(),
-            pGPDKinematic->getMuR(), gpdComputeType);
+GPDResult GPDService::computeGPDModelRestrictedByGPDType(
+        const GPDKinematic &gpdKinematic, GPDModule* pGPDModule,
+        GPDType::Type gpdType) {
+
+    GPDResult gpdResult = pGPDModule->compute(gpdKinematic.getX(),
+            gpdKinematic.getXi(), gpdKinematic.getT(), gpdKinematic.getMuF(),
+            gpdKinematic.getMuR(), gpdType);
+    gpdResult.setGpdKinematic(gpdKinematic);
+
+    gpdResult.setComputedByGpdModuleId(pGPDModule->getClassName());
+
+    return gpdResult;
 }
 
-GPDOutputData GPDService::computeGPDModelWithEvolution(
-        GPDKinematic* pGPDKinematic, GPDModule* pGPDModule,
-        EvolQCDModule* pEvolQCDModule, GPDComputeType::Type gpdComputeType) {
+GPDResult GPDService::computeGPDModelWithEvolution(
+        const GPDKinematic &gpdKinematic, GPDModule* pGPDModule,
+        EvolQCDModule* pEvolQCDModule, GPDType::Type gpdType) {
     pGPDModule->setEvolQcdModule(pEvolQCDModule);
 
-    return pGPDModule->computeWithEvolution(pGPDKinematic->getX(),
-            pGPDKinematic->getXi(), pGPDKinematic->getT(),
-            pGPDKinematic->getMuF(), pGPDKinematic->getMuR(), gpdComputeType);
+    GPDResult gpdResult = pGPDModule->computeWithEvolution(gpdKinematic.getX(),
+            gpdKinematic.getXi(), gpdKinematic.getT(), gpdKinematic.getMuF(),
+            gpdKinematic.getMuR(), gpdType);
+    gpdResult.setGpdKinematic(gpdKinematic);
+
+    return gpdResult;
 }
 
-GPDOutputData GPDService::computeGPDModel(GPDKinematic* pGPDKinematic,
+GPDResult GPDService::computeGPDModel(const GPDKinematic &gpdKinematic,
         GPDModule* pGPDModule) {
-    return computeGPDModelRestrictedByGPDType(pGPDKinematic, pGPDModule,
-            GPDComputeType::ALL);
+    return computeGPDModelRestrictedByGPDType(gpdKinematic, pGPDModule,
+            GPDType::ALL);
 }
 
-ListGPDOutputData GPDService::computeListOfGPDModel(GPDKinematic* pGPDKinematic,
-        std::vector<GPDModule*> &listOfGPDToCompute) {
-    return computeListOfGPDModelRestrictedByGPDType(pGPDKinematic,
-            listOfGPDToCompute, GPDComputeType::ALL);
-}
-
-ListGPDOutputData GPDService::computeListOfGPDModelRestrictedByGPDType(
-        GPDKinematic* pGPDKinematic,
-        std::vector<GPDModule*> &listOfGPDToCompute,
-        GPDComputeType gpdComputeType) {
-    ListGPDOutputData results = ListGPDOutputData();
-
-    // compute inputData for each GPDModule
-    for (size_t i = 0; i != listOfGPDToCompute.size(); i++) {
-        results.add(listOfGPDToCompute[i]->getClassName(),
-                computeGPDModelRestrictedByGPDType(pGPDKinematic,
-                        listOfGPDToCompute[i], gpdComputeType));
-    }
-
-    // return a list of outputData (one outputData by GPDModule computed)
-    return results;
-}
-
-//ListGPDOutputData GPDService::computeListOfKinematic(
-//        std::vector<GPDKinematic> &listOfGPDKinematic, GPDModule* pGPDModule) {
+//ListGPDOutputData GPDService::computeListOfGPDModel(GPDKinematic* pGPDKinematic,
+//        std::vector<GPDModule*> &listOfGPDToCompute) {
+//    return computeListOfGPDModelRestrictedByGPDType(pGPDKinematic,
+//            listOfGPDToCompute, GPDType::ALL);
+//}
+//
+//ListGPDOutputData GPDService::computeListOfGPDModelRestrictedByGPDType(
+//        GPDKinematic* pGPDKinematic,
+//        std::vector<GPDModule*> &listOfGPDToCompute, GPDType gpdComputeType) {
 //    ListGPDOutputData results = ListGPDOutputData();
 //
-//    // compute GPDModule for each inputData
-//    for (size_t i = 0; i != listOfGPDKinematic.size(); i++) {
-//        results.add(pGPDModule->getClassName(),
-//                computeGPDModelRestrictedByGPDType(listOfGPDKinematic[i],
-//                        pGPDModule, GPDComputeType::ALL));
+//    // compute inputData for each GPDModule
+//    for (size_t i = 0; i != listOfGPDToCompute.size(); i++) {
+//        results.add(listOfGPDToCompute[i]->getClassName(),
+//                computeGPDModelRestrictedByGPDType(pGPDKinematic,
+//                        listOfGPDToCompute[i], gpdComputeType));
 //    }
 //
+//    // return a list of outputData (one outputData by GPDModule computed)
 //    return results;
 //}
+
+GPDResultList GPDService::computeListOfKinematic(
+        std::vector<GPDKinematic> &listOfGPDKinematic, GPDModule* pGPDModule) {
+    GPDResultList results = GPDResultList();
+
+    // compute GPDModule for each inputData
+    for (unsigned int i = 0; i != listOfGPDKinematic.size(); i++) {
+        results.add(
+                computeGPDModelRestrictedByGPDType(listOfGPDKinematic[i],
+                        pGPDModule, GPDType::ALL));
+    }
+
+    return results;
+}

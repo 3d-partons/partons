@@ -5,15 +5,15 @@
 #include <Math/WrappedTF1.h>
 #include <TF1.h>
 #include <cmath>
-//#include <cstdio>
 #include <cstdlib>
 #include <iostream>
 #include <map>
 #include <utility>
 
-#include "../../beans/gpd/GPDComputeType.h"
-#include "../../beans/gpd/GPDQuarkFlavorData.h"
-#include "../../beans/gpd/GPDResultData.h"
+#include "../../beans/gpd/GPDType.h"
+#include "../../beans/parton_distribution/GluonDistribution.h"
+#include "../../beans/parton_distribution/PartonDistribution.h"
+#include "../../beans/parton_distribution/QuarkDistribution.h"
 #include "../../beans/QuarkFlavor.h"
 #include "../../FundamentalPhysicalConstants.h"
 #include "../../ModuleObjectFactory.h"
@@ -21,6 +21,8 @@
 #include "../../utils/mstwpdf.h"
 #include "../../utils/PropertiesManager.h"
 #include "../../utils/stringUtils/Formatter.h"
+
+//#include "GK11Model.h"
 
 const std::string MPSSW13Model::moduleID =
         ModuleObjectFactory::getInstance()->registerModule(
@@ -37,7 +39,7 @@ MPSSW13Model::MPSSW13Model(const std::string &className)
     m_MuF_ref = sqrt(m_MuF2_ref);
 
     m_listGPDComputeTypeAvailable.insert(
-            std::make_pair(GPDComputeType::H, &GPDModule::computeH));
+            std::make_pair(GPDType::H, &GPDModule::computeH));
 }
 
 void MPSSW13Model::init() {
@@ -1061,15 +1063,12 @@ double MPSSW13Model::getTF() const {
     return m_TF;
 }
 
-GPDResultData MPSSW13Model::computeH() {
-    GPDComputeType gpdComputeType(GPDComputeType::H);
+PartonDistribution MPSSW13Model::computeH() {
+    PartonDistribution partonDistribution;
 
-    GPDResultData GPD_H(gpdComputeType);
-
-    GPDQuarkFlavorData gpdQuarkFlavorData_u(gpdComputeType, QuarkFlavor::UP);
-    GPDQuarkFlavorData gpdQuarkFlavorData_d(gpdComputeType, QuarkFlavor::DOWN);
-    GPDQuarkFlavorData gpdQuarkFlavorData_s(gpdComputeType,
-            QuarkFlavor::STRANGE);
+    QuarkDistribution quarkDistribution_u(QuarkFlavor::UP);
+    QuarkDistribution quarkDistribution_d(QuarkFlavor::DOWN);
+    QuarkDistribution quarkDistribution_s(QuarkFlavor::STRANGE);
 
     double Eps = 1.e-9;
     m_Mx = -m_x;
@@ -1134,9 +1133,6 @@ GPDResultData MPSSW13Model::computeH() {
 //      fHdVal = Integrator.Integral( 0., Beta2 );
         HdVal = Integrator.Integral(Eps, Beta2);
     }
-
-    gpdQuarkFlavorData_u.setValence(HuVal);
-    gpdQuarkFlavorData_d.setValence(HdVal);
 
     ///////////////////////////////////////////////////////////////////////
     //   u and d quarks, valence part evaluated at fMx (instead of fx)   //
@@ -1248,21 +1244,12 @@ GPDResultData MPSSW13Model::computeH() {
         HdSea += Integrator.Integral(Eps, Beta2Mx);
     }
 
-    gpdQuarkFlavorData_u.setSea(HuSea);
-    gpdQuarkFlavorData_d.setSea(HdSea);
-
     if (m_x > 0.) {
-        gpdQuarkFlavorData_u.setPartonDistribution(
-                gpdQuarkFlavorData_u.getValence()
-                        + gpdQuarkFlavorData_u.getSea());
-        gpdQuarkFlavorData_d.setPartonDistribution(
-                gpdQuarkFlavorData_d.getValence()
-                        + gpdQuarkFlavorData_d.getSea());
+        quarkDistribution_u.setQuarkDistribution(HuVal + HuSea);
+        quarkDistribution_d.setQuarkDistribution(HdVal + HdSea);
     } else {
-        gpdQuarkFlavorData_u.setPartonDistribution(
-                -gpdQuarkFlavorData_u.getSea());
-        gpdQuarkFlavorData_d.setPartonDistribution(
-                -gpdQuarkFlavorData_d.getSea());
+        quarkDistribution_u.setQuarkDistribution(-HuSea);
+        quarkDistribution_d.setQuarkDistribution(-HdSea);
     }
 
     //////////////////////////////
@@ -1299,7 +1286,7 @@ GPDResultData MPSSW13Model::computeH() {
         Hs += Integrator.Integral(Eps, Beta2Mx);
     }
 
-    gpdQuarkFlavorData_s.setPartonDistribution(Hs);
+    quarkDistribution_s.setQuarkDistribution(Hs);
 
     ////////////////
     //   Gluons   //
@@ -1340,34 +1327,29 @@ GPDResultData MPSSW13Model::computeH() {
     }
 
     Hg += m_GluonDTerm;
-    GPD_H.setGluon(Hg);
+    GluonDistribution gluonDistribution(Hg);
 
     //////////////////////////////////////////
     //   H, C-odd and C-even combinations   //
     //////////////////////////////////////////
     // u quark
-    gpdQuarkFlavorData_u.setPartonDistributionPlus(
-            gpdQuarkFlavorData_u.getValence() - HuValMx
-                    + 2. * gpdQuarkFlavorData_u.getSea());
-
-    gpdQuarkFlavorData_u.setPartonDistributionMinus(
-            gpdQuarkFlavorData_u.getValence() + HuValMx);
+    quarkDistribution_u.setQuarkDistributionPlus(HuVal - HuValMx + 2 * HuSea);
+    quarkDistribution_u.setQuarkDistributionMinus(HuVal + HuValMx);
 
     // d quark
-    gpdQuarkFlavorData_d.setPartonDistributionPlus(
-            gpdQuarkFlavorData_d.getValence() - HdValMx
-                    + 2. * gpdQuarkFlavorData_d.getSea());
-
-    gpdQuarkFlavorData_d.setPartonDistributionMinus(
-            gpdQuarkFlavorData_d.getValence() + HdValMx);
+    quarkDistribution_d.setQuarkDistributionPlus(HdVal - HdValMx + 2 * HdSea);
+    quarkDistribution_d.setQuarkDistributionMinus(HdVal + HdValMx);
 
     // s quark
-    gpdQuarkFlavorData_s.setPartonDistributionPlus(0.);
-    gpdQuarkFlavorData_s.setPartonDistributionMinus(0.);
+    quarkDistribution_s.setQuarkDistributionPlus(0.);
+    quarkDistribution_s.setQuarkDistributionMinus(0.);
 
-    GPD_H.addGPDQuarkFlavorData(gpdQuarkFlavorData_u);
-    GPD_H.addGPDQuarkFlavorData(gpdQuarkFlavorData_d);
-    GPD_H.addGPDQuarkFlavorData(gpdQuarkFlavorData_s);
+    //TODO no singlet ?
 
-    return GPD_H;
+    partonDistribution.setGluonDistribution(gluonDistribution);
+    partonDistribution.addQuarkDistribution(quarkDistribution_u);
+    partonDistribution.addQuarkDistribution(quarkDistribution_d);
+    partonDistribution.addQuarkDistribution(quarkDistribution_s);
+
+    return partonDistribution;
 }

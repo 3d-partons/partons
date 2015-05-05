@@ -34,8 +34,8 @@ void ModuleObject::configure(Parameters parameters) {
 }
 
 //TODO better exception message
-double ModuleObject::functionsToIntegrate(const double * x,
-        const double * parameters) {
+double ModuleObject::functionsToIntegrate(double * x,
+        double * parameters) {
     throw std::runtime_error("[ModuleObject::functionsToIntegrate");
 }
 

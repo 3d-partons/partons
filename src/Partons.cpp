@@ -2,6 +2,7 @@
 
 #include <pthread.h>
 
+//#include "database/DatabaseManager.h"
 #include "ModuleObjectFactory.h"
 #include "utils/logger/LoggerManager.h"
 #include "utils/PropertiesManager.h"
@@ -41,6 +42,9 @@ void Partons::init(char** argv) {
 
     // 3. Init the ModuleFactory
     ModuleObjectFactory::getInstance()->init();
+
+    // Database connexion
+    // DatabaseManager::getInstance();
 
     // 4. Start logger's thread
     // Waiting for the end of the logger thread before main return

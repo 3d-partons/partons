@@ -16,6 +16,11 @@
 
 class GPDKinematic {
 public:
+    static const std::string GPD_KINEMATIC_DB_COLUMN_NAME_X;
+    static const std::string GPD_KINEMATIC_DB_COLUMN_NAME_XI;
+    static const std::string GPD_KINEMATIC_DB_COLUMN_NAME_T;
+    static const std::string GPD_KINEMATIC_DB_COLUMN_NAME_MUF;
+    static const std::string GPD_KINEMATIC_DB_COLUMN_NAME_MUR;
 
     /**
      * Default constructor

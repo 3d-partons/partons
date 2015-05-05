@@ -2,6 +2,12 @@
 
 #include "../../utils/stringUtils/Formatter.h"
 
+const std::string GPDKinematic::GPD_KINEMATIC_DB_COLUMN_NAME_X = "x";
+const std::string GPDKinematic::GPD_KINEMATIC_DB_COLUMN_NAME_XI = "xi";
+const std::string GPDKinematic::GPD_KINEMATIC_DB_COLUMN_NAME_T = "t";
+const std::string GPDKinematic::GPD_KINEMATIC_DB_COLUMN_NAME_MUF = "MuF";
+const std::string GPDKinematic::GPD_KINEMATIC_DB_COLUMN_NAME_MUR = "MuR";
+
 GPDKinematic::GPDKinematic()
         : m_x(0.), m_xi(0.), m_t(0.), m_MuF(0.), m_MuR(0.) {
 }
@@ -15,9 +21,8 @@ GPDKinematic::~GPDKinematic() {
 }
 
 std::string GPDKinematic::toString() {
-    return Formatter() << "m_x = " << m_x << " m_xi = "
-            << m_xi << "m_t = " << m_t
-            << " m_MuF = " << m_MuF << " m_MuR = " << m_MuR;
+    return Formatter() << "m_x = " << m_x << " m_xi = " << m_xi << "m_t = "
+            << m_t << " m_MuF = " << m_MuF << " m_MuR = " << m_MuR;
 }
 
 // ##### GETTERS & SETTERS #####

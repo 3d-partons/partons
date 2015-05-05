@@ -35,10 +35,10 @@ protected:
 
     //GPDResultData compute(GPDComputeType gpdComputeType);
 
-    virtual GPDResultData computeH(); ///< Compute GPD H at considered kinematics
-    virtual GPDResultData computeE(); ///< Compute GPD E at considered kinematics
-    virtual GPDResultData computeHt(); ///< Compute GPD Ht at considered kinematics
-    virtual GPDResultData computeEt(); ///< Compute GPD Et at considered kinematics
+    virtual PartonDistribution computeH(); ///< Compute GPD H at considered kinematics
+    virtual PartonDistribution computeE(); ///< Compute GPD E at considered kinematics
+    virtual PartonDistribution computeHt(); ///< Compute GPD Ht at considered kinematics
+    virtual PartonDistribution computeEt(); ///< Compute GPD Et at considered kinematics
 
 //    double computeSinglet(const GPDQuarkFlavorData &quark_u,
 //            const GPDQuarkFlavorData &quark_d,

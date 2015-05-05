@@ -21,78 +21,26 @@
 
 class QuarkFlavor {
 public:
+
+    static const std::string QUARK_FLAVOR_TYPE_DB_COLUMN_NAME;
+
     enum Type {
         UNDEFINED, UP, DOWN, STRANGE, CHARM, BOTTOM, TOP
     };
 
-    QuarkFlavor()
-            : m_type(QuarkFlavor::UNDEFINED) {
-    }
+    QuarkFlavor();
 
-    QuarkFlavor(Type type)
-            : m_type(type) {
-    }
-    operator Type() const {
-        return m_type;
-    }
+    QuarkFlavor(Type type);
 
-    std::string toString() {
-        switch (m_type) {
-        case UP:
-            return "UP";
-            break;
-        case DOWN:
-            return "DOWN";
-            break;
-        case STRANGE:
-            return "STRANGE";
-            break;
-        case CHARM:
-            return "CHARM";
-            break;
-        case BOTTOM:
-            return "BOTTOM";
-            break;
-        case TOP:
-            return "TOP";
-            break;
-        default:
-            return "UNDEFINED";
-        }
-    }
+    operator Type() const;
 
-    std::string getShortName() {
-        switch (m_type) {
-        case UP:
-            return "u";
-            break;
-        case DOWN:
-            return "d";
-            break;
-        case STRANGE:
-            return "s";
-            break;
-        case CHARM:
-            return "c";
-            break;
-        case BOTTOM:
-            return "b";
-            break;
-        case TOP:
-            return "t";
-            break;
-        default:
-            return "UNDEFINED";
-        }
-    }
+    std::string toString();
 
-    QuarkFlavor::Type getType() const {
-        return m_type;
-    }
+    std::string getShortName();
 
-    void setType(Type type) {
-        m_type = type;
-    }
+    QuarkFlavor::Type getType() const;
+
+    void setType(Type type);
 
 private:
     QuarkFlavor::Type m_type;

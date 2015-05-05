@@ -16,7 +16,7 @@
 #include <map>
 #include <string>
 
-#include "../beans/gpd/GPDComputeType.h"
+#include "../beans/gpd/GPDType.h"
 #include "../beans/PerturbativeQCDOrderType.h"
 #include "ModuleObject.h"
 
@@ -52,9 +52,9 @@ public:
      *
      * @return Return a pair of two double values. Real and Imaginary parts of CFF.
      */
-    virtual CFFOutputData compute(const double xB, const double t,
-            const double Q2, const double MuF, const double MuR,
-            GPDComputeType::Type gpdComputeType);
+    virtual CFFOutputData compute(double xB, double t,
+            double Q2, double MuF, double MuR,
+            GPDType::Type gpdType);
 
     virtual std::complex<double> computeUnpolarized();
     virtual std::complex<double> computePolarized();
@@ -75,8 +75,8 @@ protected:
      */
     CFFModule(const CFFModule &other);
 
-    std::map<GPDComputeType::Type, std::complex<double> (CFFModule::*)()> m_listOfCFFComputeFunctionAvailable;
-    std::map<GPDComputeType::Type, std::complex<double> (CFFModule::*)()>::iterator m_it;
+    std::map<GPDType::Type, std::complex<double> (CFFModule::*)()> m_listOfCFFComputeFunctionAvailable;
+    std::map<GPDType::Type, std::complex<double> (CFFModule::*)()>::iterator m_it;
 
     double m_xi;
     double m_xB;
@@ -86,8 +86,8 @@ protected:
     double m_MuR;
 
     PerturbativeQCDOrderType::Type m_qcdOrderType;
-    GPDComputeType::Type m_currentGPDComputeType;
-    GPDComputeType::Type m_gpdComputeType;
+    GPDType::Type m_currentGPDComputeType;
+    GPDType::Type m_gpdType;
 
     GPDModule* m_pGPDModule;
 
@@ -96,9 +96,8 @@ protected:
     virtual void initModule();
     virtual void isModuleWellConfigured();
 
-    void preCompute(const double xB, const double t, const double Q2,
-            const double MuF, const double MuR,
-            GPDComputeType::Type gpdComputeType);
+    void preCompute(double xB, double t, double Q2,
+            double MuF, double MuR, GPDType::Type gpdType);
 };
 
 #endif /* CFF_MODULE_H */

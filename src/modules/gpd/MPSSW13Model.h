@@ -29,8 +29,6 @@
 #include "../GPDModule.h"
 
 class c_mstwpdf;
-class GPDOutputData;
-class GPDResultData;
 
 class MPSSW13Model: public GPDModule {
 public:
@@ -120,7 +118,7 @@ private:
     virtual void initModule();
 
     //GPDResultData compute(GPDComputeType gpdComputeType);
-    virtual GPDResultData computeH(); ///< Compute GPD H at considered kinematics
+    virtual PartonDistribution computeH(); ///< Compute GPD H at considered kinematics
 };
 
 #endif /* MPSSW13_H_ */

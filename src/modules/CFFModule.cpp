@@ -13,8 +13,8 @@
 CFFModule::CFFModule(const std::string &className)
         : ModuleObject(className), m_xi(0.), m_xB(0.), m_t(0.), m_Q2(0.), m_MuF(
                 0.), m_MuR(0.), m_qcdOrderType(PerturbativeQCDOrderType::UNDEFINED), m_currentGPDComputeType(
-                GPDComputeType::UNDEFINED), m_gpdComputeType(
-                GPDComputeType::UNDEFINED), m_pGPDModule(0), m_pRunningAlphaStrongModule(
+                GPDType::UNDEFINED), m_gpdType(
+                GPDType::UNDEFINED), m_pGPDModule(0), m_pRunningAlphaStrongModule(
                 0) {
 
 }
@@ -34,7 +34,7 @@ CFFModule::CFFModule(const CFFModule &other)
 
     m_qcdOrderType = other.m_qcdOrderType;
     m_currentGPDComputeType = other.m_currentGPDComputeType;
-    m_gpdComputeType = other.m_gpdComputeType;
+    m_gpdType = other.m_gpdType;
 
     if (other.m_pGPDModule != 0) {
         // GPDModule is an abstract class, so it's impossible to use copy constructor to get a new instance of the object
@@ -97,13 +97,13 @@ void CFFModule::isModuleWellConfigured() {
 
 CFFOutputData CFFModule::compute(const double xB, const double t,
         const double Q2, const double MuF, const double MuR,
-        GPDComputeType::Type gpdComputeType) {
+        GPDType::Type gpdComputeType) {
     preCompute(xB, t, Q2, MuF, MuR, gpdComputeType);
 
     CFFOutputData cffOutputData(CFFInputData(m_xB, m_t, m_Q2));
 
-    switch (m_gpdComputeType) {
-    case GPDComputeType::ALL: {
+    switch (m_gpdType) {
+    case GPDType::ALL: {
 
         for (m_it = m_listOfCFFComputeFunctionAvailable.begin();
                 m_it != m_listOfCFFComputeFunctionAvailable.end(); m_it++) {
@@ -111,7 +111,7 @@ CFFOutputData CFFModule::compute(const double xB, const double t,
 
             m_pLoggerManager->debug(getClassName(), __func__,
                     Formatter() << "m_currentGPDComputeType = "
-                            << GPDComputeType(m_currentGPDComputeType).toString());
+                            << GPDType(m_currentGPDComputeType).toString());
 
             // call function store in the base class map
             cffOutputData.add(m_currentGPDComputeType,
@@ -120,9 +120,9 @@ CFFOutputData CFFModule::compute(const double xB, const double t,
         break;
     }
     default: {
-        m_it = m_listOfCFFComputeFunctionAvailable.find(m_gpdComputeType);
+        m_it = m_listOfCFFComputeFunctionAvailable.find(m_gpdType);
         if (m_it != m_listOfCFFComputeFunctionAvailable.end()) {
-            m_currentGPDComputeType = m_gpdComputeType;
+            m_currentGPDComputeType = m_gpdType;
             // call function store in the base class map
             cffOutputData.add(m_currentGPDComputeType,
                     ((*this).*(m_it->second))());
@@ -150,14 +150,14 @@ std::complex<double> CFFModule::computePolarized() {
 
 void CFFModule::preCompute(const double xB, const double t, const double Q2,
         const double MuF, const double MuR,
-        GPDComputeType::Type gpdComputeType) {
+        GPDType::Type gpdComputeType) {
 
     m_xB = xB;
     m_t = t;
     m_Q2 = Q2;
     m_MuF = MuF;
     m_MuR = MuR;
-    m_gpdComputeType = gpdComputeType;
+    m_gpdType = gpdComputeType;
 
     // execute last child function (virtuality)
     initModule();

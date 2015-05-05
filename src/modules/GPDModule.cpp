@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <utility>
 
-#include "../beans/gpd/GPDOutputData.h"
+#include "../beans/gpd/GPDResult.h"
 #include "../beans/GenericData.h"
 #include "../beans/Parameters.h"
 #include "../utils/logger/LoggerManager.h"
@@ -12,8 +12,8 @@
 
 GPDModule::GPDModule(const std::string &className)
         : ModuleObject(className), m_x(0.), m_xi(0.), m_t(0.), m_MuF(0.), m_MuR(
-                0.), m_gpdComputeType(GPDComputeType::UNDEFINED), m_MuF_ref(0.), m_nf(
-                0), m_pEvolQCDModule(0) {
+                0.), m_gpdType(GPDType::UNDEFINED), m_MuF_ref(0.), m_nf(0), m_pEvolQCDModule(
+                0) {
 }
 
 GPDModule::GPDModule(const GPDModule &other)
@@ -24,7 +24,7 @@ GPDModule::GPDModule(const GPDModule &other)
     m_MuF = other.m_MuF;
     m_MuR = other.m_MuR;
 
-    m_gpdComputeType = other.m_gpdComputeType;
+    m_gpdType = other.m_gpdType;
 
     m_MuF_ref = other.m_MuF_ref;
     m_nf = other.m_nf;
@@ -70,15 +70,14 @@ void GPDModule::isModuleWellConfigured() {
             Formatter() << "executed");
 }
 
-void GPDModule::preCompute(const double &x, const double &xi, const double &t,
-        const double &MuF, const double &MuR,
-        GPDComputeType::Type gpdComputeType) {
+void GPDModule::preCompute(double x, double xi, double t, double MuF,
+        double MuR, GPDType::Type gpdType) {
     m_x = x;
     m_xi = xi;
     m_t = t;
     m_MuF = MuF;
     m_MuR = MuR;
-    m_gpdComputeType = gpdComputeType;
+    m_gpdType = gpdType;
 
     m_pLoggerManager->debug(getClassName(), __func__,
             Formatter() << "x = " << m_x << "    xi = " << m_xi << "    t = "
@@ -92,25 +91,23 @@ void GPDModule::preCompute(const double &x, const double &xi, const double &t,
     isModuleWellConfigured();
 }
 
-GPDOutputData GPDModule::compute(const double &x, const double &xi,
-        const double &t, const double &MuF, const double &MuR,
-        GPDComputeType::Type gpdComputeType) {
+GPDResult GPDModule::compute(double x, double xi, double t, double MuF,
+        double MuR, GPDType::Type gpdType) {
 
-    preCompute(x, xi, t, MuF, MuR, gpdComputeType);
+    preCompute(x, xi, t, MuF, MuR, gpdType);
 
     return compute(false);
 }
 
-GPDOutputData GPDModule::computeWithEvolution(const double &x, const double &xi,
-        const double &t, const double &MuF, const double &MuR,
-        GPDComputeType::Type gpdComputeType) {
+GPDResult GPDModule::computeWithEvolution(double x, double xi, double t,
+        double MuF, double MuR, GPDType::Type gpdType) {
 
-    preCompute(x, xi, t, MuF, MuR, gpdComputeType);
+    preCompute(x, xi, t, MuF, MuR, gpdType);
 
     bool evolution = false;
 
     if (m_pEvolQCDModule != 0) {
-        if (m_pEvolQCDModule->isRunnable(MuF, m_MuF_ref,
+        if (m_pEvolQCDModule->isRunnable(m_MuF, m_MuF_ref,
                 EvolQCDModule::RELATIVE)) {
             evolution = true;
         }
@@ -121,62 +118,63 @@ GPDOutputData GPDModule::computeWithEvolution(const double &x, const double &xi,
     return compute(evolution);
 }
 
-GPDOutputData GPDModule::compute(bool evolution) {
-    GPDOutputData gpdOutputData;
-
-    switch (m_gpdComputeType) {
-    case GPDComputeType::ALL: {
+GPDResult GPDModule::compute(bool evolution) {
+    GPDResult gpdResult;
+    switch (m_gpdType) {
+    case GPDType::ALL: {
         for (m_it = m_listGPDComputeTypeAvailable.begin();
                 m_it != m_listGPDComputeTypeAvailable.end(); m_it++) {
-            GPDResultData gpdResultData = ((*this).*(m_it->second))();
+            PartonDistribution partonDistribution = ((*this).*(m_it->second))();
 
             if (evolution) {
-                gpdResultData = m_pEvolQCDModule->compute(m_x, m_xi, m_t, m_MuF,
-                        m_MuR, gpdResultData);
+                partonDistribution = m_pEvolQCDModule->compute(m_x, m_xi, m_t,
+                        m_MuF, m_MuR, this, partonDistribution);
             }
 
-            gpdOutputData.addGPDResultData(gpdResultData);
+            gpdResult.addPartonDistribution(m_it->first, partonDistribution);
         }
         break;
     }
     default: {
-        m_it = m_listGPDComputeTypeAvailable.find(m_gpdComputeType);
+        m_it = m_listGPDComputeTypeAvailable.find(m_gpdType);
         if (m_it != m_listGPDComputeTypeAvailable.end()) {
-            GPDResultData gpdResultData = ((*this).*(m_it->second))();
+            PartonDistribution partonDistribution = ((*this).*(m_it->second))();
 
             if (evolution) {
-                gpdResultData = m_pEvolQCDModule->compute(m_x, m_xi, m_t, m_MuF,
-                        m_MuR, gpdResultData);
+                partonDistribution = m_pEvolQCDModule->compute(m_x, m_xi, m_t,
+                        m_MuF, m_MuR, this, partonDistribution);
             }
 
-            gpdOutputData.addGPDResultData(gpdResultData);
+            gpdResult.addPartonDistribution(m_it->first, partonDistribution);
         } else {
             throwException(__func__,
-                    Formatter() << "GPD("
-                            << GPDComputeType(m_gpdComputeType).toString()
+                    Formatter() << "GPD(" << GPDType(m_gpdType).toString()
                             << ") is not available for this GPD model");
         }
         break;
     }
     }
 
-    return gpdOutputData;
+    m_pLoggerManager->debug(getClassName(), __func__,
+            Formatter() << gpdResult.toString());
+
+    return gpdResult;
 }
 
 //TODO implement
-GPDResultData GPDModule::computeH() {
+PartonDistribution GPDModule::computeH() {
     throw std::runtime_error("");
 }
 
-GPDResultData GPDModule::computeE() {
+PartonDistribution GPDModule::computeE() {
     throw std::runtime_error("");
 }
 
-GPDResultData GPDModule::computeHt() {
+PartonDistribution GPDModule::computeHt() {
     throw std::runtime_error("");
 }
 
-GPDResultData GPDModule::computeEt() {
+PartonDistribution GPDModule::computeEt() {
     throw std::runtime_error("");
 }
 
@@ -205,4 +203,44 @@ double GPDModule::getMuFRef() const {
 
 std::string GPDModule::toString() {
     return ModuleObject::toString();
+}
+
+double GPDModule::getMuF() const {
+    return m_MuF;
+}
+
+void GPDModule::setMuF(double muF) {
+    m_MuF = muF;
+}
+
+double GPDModule::getMuR() const {
+    return m_MuR;
+}
+
+void GPDModule::setMuR(double muR) {
+    m_MuR = muR;
+}
+
+double GPDModule::getT() const {
+    return m_t;
+}
+
+void GPDModule::setT(double t) {
+    m_t = t;
+}
+
+double GPDModule::getX() const {
+    return m_x;
+}
+
+void GPDModule::setX(double x) {
+    m_x = x;
+}
+
+double GPDModule::getXi() const {
+    return m_xi;
+}
+
+void GPDModule::setXi(double xi) {
+    m_xi = xi;
 }

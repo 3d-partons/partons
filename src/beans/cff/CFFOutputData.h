@@ -16,7 +16,7 @@
 #include <map>
 #include <string>
 
-#include "../gpd/GPDComputeType.h"
+#include "../gpd/GPDType.h"
 #include "CFFInputData.h"
 
 class CFFOutputData {
@@ -26,8 +26,8 @@ public:
 
     virtual ~CFFOutputData();
 
-    void add(GPDComputeType::Type gpdComputeType, std::complex<double> cff);
-    std::complex<double> getCFF(GPDComputeType::Type gpdComputeType);
+    void add(GPDType::Type gpdComputeType, std::complex<double> cff);
+    std::complex<double> getCFF(GPDType::Type gpdComputeType);
 
     std::string toString();
 
@@ -37,8 +37,8 @@ public:
     void setCffInputData(const CFFInputData& cffInputData);
 
 private:
-    std::map<GPDComputeType::Type, std::complex<double> > m_listCFFbyGPDComputeType;
-    std::map<GPDComputeType::Type, std::complex<double> >::iterator m_it;
+    std::map<GPDType::Type, std::complex<double> > m_listCFFbyGPDComputeType;
+    std::map<GPDType::Type, std::complex<double> >::iterator m_it;
 
     CFFInputData m_cffInputData;
 };
