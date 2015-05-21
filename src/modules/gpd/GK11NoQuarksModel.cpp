@@ -15,6 +15,7 @@
 #include "../../beans/parton_distribution/QuarkDistribution.h"
 #include "../../beans/QuarkFlavor.h"
 #include "../../ModuleObjectFactory.h"
+
 //#include "MPSSW13Model.h"
 
 // Initialise GK11NoQuarksModule::moduleID with a unique name and enable registerModule() to be executed before the main() function.
@@ -91,14 +92,17 @@ PartonDistribution GK11NoQuarksModel::computeH() {
     return partonDistribution;
 }
 
+//TODO implement
 PartonDistribution GK11NoQuarksModel::computeE() {
     return PartonDistribution();
 }
 
+//TODO implement
 PartonDistribution GK11NoQuarksModel::computeHt() {
     return PartonDistribution();
 }
 
+//TODO implement
 PartonDistribution GK11NoQuarksModel::computeEt() {
     return PartonDistribution();
 }

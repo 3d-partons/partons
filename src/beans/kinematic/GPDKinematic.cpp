@@ -9,12 +9,14 @@ const std::string GPDKinematic::GPD_KINEMATIC_DB_COLUMN_NAME_MUF = "MuF";
 const std::string GPDKinematic::GPD_KINEMATIC_DB_COLUMN_NAME_MUR = "MuR";
 
 GPDKinematic::GPDKinematic()
-        : m_x(0.), m_xi(0.), m_t(0.), m_MuF(0.), m_MuR(0.) {
+        : m_kinematicType(KinematicType::THEO), m_x(0.), m_xi(0.), m_t(0.), m_MuF(
+                0.), m_MuR(0.) {
 }
 
 GPDKinematic::GPDKinematic(double x, double xi, double t, double MuF,
         double MuR)
-        : m_x(x), m_xi(xi), m_t(t), m_MuF(MuF), m_MuR(MuR) {
+        : m_kinematicType(KinematicType::THEO), m_x(x), m_xi(xi), m_t(t), m_MuF(
+                MuF), m_MuR(MuR) {
 }
 
 GPDKinematic::~GPDKinematic() {
@@ -65,6 +67,14 @@ double GPDKinematic::getT() const {
 
 void GPDKinematic::setT(double t) {
     m_t = t;
+}
+
+KinematicType::Type GPDKinematic::getKinematicType() const {
+    return m_kinematicType;
+}
+
+void GPDKinematic::setKinematicType(KinematicType::Type kinematicType) {
+    m_kinematicType = kinematicType;
 }
 //sf::Packet& operator <<(sf::Packet& packet, const GPDKinematic& object) {
 //    return packet << object.m_x << object.m_xi << object.m_t << object.m_MuF

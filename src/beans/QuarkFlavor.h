@@ -25,7 +25,13 @@ public:
     static const std::string QUARK_FLAVOR_TYPE_DB_COLUMN_NAME;
 
     enum Type {
-        UNDEFINED, UP, DOWN, STRANGE, CHARM, BOTTOM, TOP
+        UNDEFINED = 0,
+        UP = 1,
+        DOWN = 2,
+        STRANGE = 3,
+        CHARM = 4,
+        BOTTOM = 5,
+        TOP = 6
     };
 
     QuarkFlavor();

@@ -29,7 +29,7 @@ public:
     virtual ~Partons();
 
     void init(char** argv);
-    void stop();
+    void close();
 
     std::string getCurrentWorkingDirectory();
 

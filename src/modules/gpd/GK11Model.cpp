@@ -155,7 +155,7 @@ void GK11Model::initModule() {
 }
 
 PartonDistribution GK11Model::computeH() {
-    PartonDistribution partonDistribution;
+    PartonDistribution partonDistribution(GPDType::H);
 
     QuarkDistribution quarkDistribution_u(QuarkFlavor::UP);
     QuarkDistribution quarkDistribution_d(QuarkFlavor::DOWN);
@@ -279,7 +279,7 @@ PartonDistribution GK11Model::computeHt() {
 
     m_pLoggerManager->info(getClassName(), __func__, "Entered function ...");
 
-    PartonDistribution partonDistribution;
+    PartonDistribution partonDistribution(GPDType::Ht);
 
     QuarkDistribution quarkDistribution_u(QuarkFlavor::UP);
     QuarkDistribution quarkDistribution_d(QuarkFlavor::DOWN);
@@ -395,7 +395,7 @@ PartonDistribution GK11Model::computeHt() {
 }
 
 PartonDistribution GK11Model::computeE() {
-    PartonDistribution partonDistribution;
+    PartonDistribution partonDistribution(GPDType::E);
 
     QuarkDistribution quarkDistribution_u(QuarkFlavor::UP);
     QuarkDistribution quarkDistribution_d(QuarkFlavor::DOWN);
@@ -493,7 +493,7 @@ PartonDistribution GK11Model::computeE() {
 }
 
 PartonDistribution GK11Model::computeEt() {
-    PartonDistribution partonDistribution;
+    PartonDistribution partonDistribution(GPDType::Et);
 
     QuarkDistribution quarkDistribution_u(QuarkFlavor::UP);
     QuarkDistribution quarkDistribution_d(QuarkFlavor::DOWN);

@@ -71,12 +71,12 @@ void QuarkDistribution::setQuarkDistributionMinus(
     m_quarkDistributionMinus = quarkDistributionMinus;
 }
 
-QuarkFlavor QuarkDistribution::getQuarkFlavor() const {
+QuarkFlavor::Type QuarkDistribution::getQuarkFlavor() const {
     return m_quarkFlavor;
 }
 
-void QuarkDistribution::setQuarkFlavor(QuarkFlavor quarkFlavor) {
-    m_quarkFlavor = quarkFlavor;
+void QuarkDistribution::setQuarkFlavor(QuarkFlavor::Type quarkFlavorType) {
+    m_quarkFlavor = quarkFlavorType;
 }
 
 double QuarkDistribution::getQuark() const {

@@ -12,8 +12,10 @@
  * @brief
  */
 
-#include <map>
+#include <stddef.h>
+//#include <map>
 #include <string>
+#include <vector>
 
 #include "GPDResult.h"
 
@@ -23,8 +25,9 @@ public:
     virtual ~GPDResultList();
 
     void add(const GPDResult &gpdResult);
+   const GPDResult& get(unsigned int index) const;
 
-    unsigned int getSize();
+    size_t getSize() const;
     const GPDResult& getUniqueResult();
 
     virtual std::string toString();

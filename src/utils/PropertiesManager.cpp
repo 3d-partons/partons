@@ -1,6 +1,6 @@
 #include "PropertiesManager.h"
 
-#include "../Partons.h"
+//#include "../Partons.h"
 
 const std::string PropertiesManager::PARTONS_PROPERTIES_FILE_PATH =
         "data/partons.properties";
@@ -28,8 +28,10 @@ PropertiesManager::~PropertiesManager() {
 }
 
 void PropertiesManager::init(const std::string &currentWorkingDirectoryPath) {
-    m_iniFileParser.parse(Partons::getInstance()->getCurrentWorkingDirectory()
-            + PropertiesManager::PARTONS_PROPERTIES_FILE_PATH);
+    // std::cerr << "currentWorkingDirectoryPath: " << currentWorkingDirectoryPath << std::endl;
+    m_iniFileParser.parse(
+            currentWorkingDirectoryPath
+                    + PropertiesManager::PARTONS_PROPERTIES_FILE_PATH);
 }
 
 //TODO voir à ajouter en parametre la valeur de retour par défaut dans le cas ou EMPTY est une valeur possible

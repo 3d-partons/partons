@@ -14,6 +14,8 @@
 
 #include <string>
 
+#include "KinematicType.h"
+
 class GPDKinematic {
 public:
     static const std::string GPD_KINEMATIC_DB_COLUMN_NAME_X;
@@ -62,16 +64,19 @@ public:
     void setX(double x);
     double getXi() const;
     void setXi(double xi);
+    KinematicType::Type getKinematicType() const;
+    void setKinematicType(KinematicType::Type kinematicType);
 
 //    friend sf::Packet& operator <<(sf::Packet& packet,
 //            const GPDKinematic& object);
 //    friend sf::Packet& operator >>(sf::Packet& packet, GPDKinematic& object);
 
 private:
+    KinematicType::Type m_kinematicType;
 
     double m_x;		///< Longitudinal momentum fraction of the active parton
     double m_xi;	///< Skewness
-    double m_t;		///< Mandelstam variable, momentum transfer on the hadron target (in GeV^2)
+    double m_t;	///< Mandelstam variable, momentum transfer on the hadron target (in GeV^2)
     double m_MuF;	///< Factorization scale (in GeV)
     double m_MuR;	///< Renormalization scale (in GeV)
 };

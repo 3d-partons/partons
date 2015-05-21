@@ -1,0 +1,50 @@
+#ifndef DATABASE_MANAGER_H
+#define DATABASE_MANAGER_H
+
+/**
+ * @file DatabaseManager.h
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
+ * @date 20 April 2015
+ * @version 1.0
+ *
+ * @class DatabaseManager
+ * @brief
+ */
+
+#include <QtSql/qsqldatabase.h>
+
+class DatabaseManager {
+public:
+    /**
+     * Share a unique pointer of this class
+     */
+    static DatabaseManager* getInstance();
+
+    /**
+     * Default destructor
+     */
+    virtual ~DatabaseManager();
+
+    void close();
+
+    // ##### GETTERS & SETTERS #####
+
+    const QSqlDatabase& getDb() const;
+    void setDb(const QSqlDatabase& db);
+
+private:
+
+    /**
+     * Private pointer of this class for a unique instance
+     */
+    static DatabaseManager* m_pInstance;
+
+    /**
+     * Default constructor
+     */
+    DatabaseManager();
+
+    QSqlDatabase m_db;
+};
+
+#endif /* DATABASE_MANAGER_H */

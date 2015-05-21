@@ -28,7 +28,7 @@ class PerturbativeQCDOrderType {
 
 public:
     enum Type {
-        UNDEFINED, LO, NLO, NNLO, LL, NLL
+        UNDEFINED = 0, LO = 1, NLO = 2, NNLO = 3, LL = 4, NLL = 5
     };
 
     PerturbativeQCDOrderType()

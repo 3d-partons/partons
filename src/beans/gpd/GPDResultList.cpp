@@ -1,8 +1,7 @@
 #include "GPDResultList.h"
 
 #include <sstream>
-//#include <utility>
-#include <vector>
+//#include <vector>
 
 class GPDResult;
 
@@ -18,7 +17,11 @@ void GPDResultList::add(const GPDResult &gpdResult) {
     m_gpdResults.push_back(gpdResult);
 }
 
-unsigned int GPDResultList::getSize() {
+const GPDResult& GPDResultList::get(unsigned int index) const {
+    return m_gpdResults[index];
+}
+
+size_t GPDResultList::getSize() const {
     return m_gpdResults.size();
 }
 

@@ -29,10 +29,10 @@ public:
     void setQuarkDistributionPlus(double quarkDistributionPlus);
     double getQuarkDistributionMinus() const;
     void setQuarkDistributionMinus(double quarkDistributionMinus);
-    QuarkFlavor getQuarkFlavor() const;
-    void setQuarkFlavor(QuarkFlavor quarkFlavor);
     double getQuark() const;
     void setQuark(double quark);
+    QuarkFlavor::Type getQuarkFlavor() const;
+    void setQuarkFlavor(QuarkFlavor::Type quarkFlavorType);
 
 private:
     QuarkFlavor m_quarkFlavor;

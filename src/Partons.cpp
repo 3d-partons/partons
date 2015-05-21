@@ -2,7 +2,7 @@
 
 #include <pthread.h>
 
-//#include "database/DatabaseManager.h"
+#include "database/DatabaseManager.h"
 #include "ModuleObjectFactory.h"
 #include "utils/logger/LoggerManager.h"
 #include "utils/PropertiesManager.h"
@@ -44,7 +44,7 @@ void Partons::init(char** argv) {
     ModuleObjectFactory::getInstance()->init();
 
     // Database connexion
-    // DatabaseManager::getInstance();
+    DatabaseManager::getInstance();
 
     // 4. Start logger's thread
     // Waiting for the end of the logger thread before main return
@@ -53,8 +53,10 @@ void Partons::init(char** argv) {
     m_pLoggerManager->start();
 }
 
-void Partons::stop() {
-    m_pLoggerManager->stop();
+void Partons::close() {
+    m_pLoggerManager->close();
+
+    DatabaseManager::getInstance()->close();
 }
 
 std::string Partons::getCurrentWorkingDirectory() {

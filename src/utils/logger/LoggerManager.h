@@ -43,7 +43,7 @@ public:
 
     void init();
 
-    void stop();
+    void close();
 
     void defineLevel(LoggerLevel loggerLevel);
 

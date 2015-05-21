@@ -34,6 +34,8 @@ public:
     const PartonDistribution& getPartonDistribution(
             GPDType::Type gpdType) const;
 
+    const std::vector<PartonDistribution> getPartonDistributionList() const;
+
     virtual std::string toString();
 
     // ##### GETTERS & SETTERS #####

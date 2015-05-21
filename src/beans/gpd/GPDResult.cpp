@@ -57,6 +57,18 @@ std::vector<GPDType> GPDResult::listGPDTypeComputed() {
     return list;
 }
 
+const std::vector<PartonDistribution> GPDResult::getPartonDistributionList() const {
+    std::vector<PartonDistribution> partonDistributionList;
+    std::map<GPDType::Type, PartonDistribution>::const_iterator it;
+
+    for (it = m_partonDistributions.begin(); it != m_partonDistributions.end();
+            ++it) {
+        partonDistributionList.push_back(it->second);
+    }
+
+    return partonDistributionList;
+}
+
 std::string GPDResult::toString() {
     std::ostringstream os;
     std::map<GPDType::Type, PartonDistribution>::const_iterator it;

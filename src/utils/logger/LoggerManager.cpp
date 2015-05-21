@@ -114,7 +114,7 @@ void LoggerManager::parseConfigurationFile(const std::string &filePath) {
     }
 }
 
-void LoggerManager::stop() {
+void LoggerManager::close() {
     m_active = false;
 }
 

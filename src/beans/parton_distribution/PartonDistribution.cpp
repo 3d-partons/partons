@@ -5,7 +5,12 @@
 #include <utility>
 
 PartonDistribution::PartonDistribution()
-        : m_gluonDistribution(0.), m_singlet(0.) {
+        : m_gpdType(GPDType::UNDEFINED), m_gluonDistribution(0.), m_singlet(0.) {
+}
+
+PartonDistribution::PartonDistribution(GPDType::Type gpdType)
+        : m_gpdType(gpdType), m_gluonDistribution(0.), m_singlet(0.) {
+
 }
 
 PartonDistribution::~PartonDistribution() {
@@ -14,7 +19,7 @@ PartonDistribution::~PartonDistribution() {
 void PartonDistribution::addQuarkDistribution(
         QuarkDistribution &quarkDistribution) {
     m_quarkDistributions.insert(
-            std::make_pair(quarkDistribution.getQuarkFlavor().getType(),
+            std::make_pair(quarkDistribution.getQuarkFlavor(),
                     quarkDistribution));
 }
 
@@ -52,7 +57,7 @@ unsigned int PartonDistribution::getQuarkDistributionsSize() const {
     return m_quarkDistributions.size();
 }
 
-std::vector<QuarkDistribution> PartonDistribution::getVectorOfQuarkDistribution() const {
+const std::vector<QuarkDistribution> PartonDistribution::getVectorOfQuarkDistribution() const {
     std::vector<QuarkDistribution> result;
     std::map<QuarkFlavor::Type, QuarkDistribution>::const_iterator it;
 
@@ -72,10 +77,10 @@ std::string PartonDistribution::toString() const {
 
     std::map<QuarkFlavor::Type, QuarkDistribution>::const_iterator it;
 
-       for (it = m_quarkDistributions.begin(); it != m_quarkDistributions.end();
-               it++) {
-           os << (it->second).toString();
-       }
+    for (it = m_quarkDistributions.begin(); it != m_quarkDistributions.end();
+            it++) {
+        os << (it->second).toString();
+    }
 
     return os.str();
 }
@@ -104,4 +109,12 @@ double PartonDistribution::getSinglet() const {
 
 void PartonDistribution::setSinglet(double singlet) {
     m_singlet = singlet;
+}
+
+GPDType::Type PartonDistribution::getGpdType() const {
+    return m_gpdType;
+}
+
+void PartonDistribution::setGpdType(GPDType::Type gpdType) {
+    m_gpdType = gpdType;
 }

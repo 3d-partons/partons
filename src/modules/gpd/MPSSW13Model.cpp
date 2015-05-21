@@ -1064,7 +1064,7 @@ double MPSSW13Model::getTF() const {
 }
 
 PartonDistribution MPSSW13Model::computeH() {
-    PartonDistribution partonDistribution;
+    PartonDistribution partonDistribution(GPDType::H);
 
     QuarkDistribution quarkDistribution_u(QuarkFlavor::UP);
     QuarkDistribution quarkDistribution_d(QuarkFlavor::DOWN);

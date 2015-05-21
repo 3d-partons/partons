@@ -15,10 +15,12 @@
 #include <string>
 #include <vector>
 
+//#include "../beans/gpd/GPDResultList.h"
 #include "../beans/gpd/GPDType.h"
 #include "../beans/kinematic/GPDKinematic.h"
 #include "Service.h"
-#include "../beans/gpd/GPDResultList.h"
+
+class GPDResultList;
 
 class EvolQCDModule;
 class GPDModule;
