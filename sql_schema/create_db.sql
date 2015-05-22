@@ -1,65 +1,66 @@
-CREATE DATABASE IF NOT EXISTS `partons` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+/*
+ATTENTION: Ne supporte pas les tabulation
+*/
 
-USE `PARTONS`;
+CREATE TABLE quark_flavor (id INTEGER NOT NULL PRIMARY KEY, short_name VARCHAR(10), long_name VARCHAR(255));
 
-CREATE TABLE IF NOT EXISTS `quark_flavor` (
-	`id` int NOT NULL,
-	`short_name` VARCHAR(32) NOT NULL, 
-	`name` VARCHAR(32) NOT NULL,
+CREATE TABLE gpd_type (	id INTEGER NOT NULL PRIMARY KEY, short_name VARCHAR(10), long_name VARCHAR(255));
 
-	PRIMARY KEY(`id`),
-	UNIQUE KEY `idx_short_name` (`short_name`),
-	UNIQUE KEY `idx_name` (`name`)
+CREATE TABLE kinematic_type (id INTEGER NOT NULL PRIMARY KEY, short_name VARCHAR(10), long_name VARCHAR(255));
 
-) DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC ;
+CREATE TABLE module (id INTEGER NOT NULL PRIMARY KEY, class_name VARCHAR(255),description VARCHAR(255));
+
+/* SQLITE syntax */
+
+CREATE TABLE gpd_kinematic (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, scenario_id INTEGER,kinematic_type_id INTEGER,x DOUBLE,xi DOUBLE,t DOUBLE,MuF DOUBLE,MuR DOUBLE);
+
+CREATE TABLE parton_distribution (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, gpd_result_id INTEGER, gpd_type_id INTEGER,gluon_distribution DOUBLE);
+
+CREATE TABLE quark_distribution (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, parton_distribution_id INTEGER, quark_flavor_id INTEGER,quark_distribution DOUBLE,quark_distribution_minus DOUBLE,quark_distribution_plus DOUBLE);
+
+CREATE TABLE gpd_result (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, module_id INTEGER,gpd_kinematic_id INTEGER);
+
+/* MYSQL syntax */ 
+
+CREATE TABLE gpd_kinematic (id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, scenario_id INTEGER,kinematic_type_id INTEGER,x DOUBLE,xi DOUBLE,t DOUBLE,MuF DOUBLE,MuR DOUBLE);
+
+CREATE TABLE parton_distribution (id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, gpd_result_id INTEGER, gpd_type_id INTEGER,gluon_distribution DOUBLE);
+
+CREATE TABLE quark_distribution (id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, parton_distribution_id INTEGER, quark_flavor_id INTEGER,quark_distribution DOUBLE,quark_distribution_minus DOUBLE,quark_distribution_plus DOUBLE);
+
+CREATE TABLE gpd_result (id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, module_id INTEGER,gpd_kinematic_id INTEGER);
 
 
-CREATE TABLE IF NOT EXISTS `gpd_compute_type` (
-	`id` int NOT NULL,
-	`short_name` VARCHAR(32) NOT NULL, 
-	`name` VARCHAR(32) NOT NULL,
+DROP TABLE quark_flavor;
+DROP TABLE gpd_type;
+DROP TABLE kinematic_type;
+DROP TABLE module;
 
-	PRIMARY KEY(`id`),
-	UNIQUE KEY `idx_short_name` (`short_name`),
-	UNIQUE KEY `idx_name` (`name`)
+DROP TABLE gpd_kinematic;
+DROP TABLE parton_distribution;
+DROP TABLE quark_distribution;
+DROP TABLE gpd_result;
 
-) DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC ;
+/* Fill database */ 
 
-CREATE TABLE IF NOT EXISTS `gpd_result` (
-	`id` int NOT NULL,
-	`gpd_compute_type_id` int NOT NULL,
-	`gluon` DOUBLE NOT NULL DEFAULT 0, 
-	`singlet` DOUBLE NOT NULL DEFAULT 0,
+INSERT INTO quark_flavor (id, short_name, long_name) VALUES ('0', 'UNDEFINED', 'UNDEFINED');
+INSERT INTO quark_flavor (id, short_name, long_name) VALUES ('1', 'u', 'UP');
+INSERT INTO quark_flavor (id, short_name, long_name) VALUES ('2', 'd', 'DOWN');
+INSERT INTO quark_flavor (id, short_name, long_name) VALUES ('3', 's', 'STRANGE');
+INSERT INTO quark_flavor (id, short_name, long_name) VALUES ('4', 'c', 'CHARM');
+INSERT INTO quark_flavor (id, short_name, long_name) VALUES ('5', 'b', 'BOTTOM');
+INSERT INTO quark_flavor (id, short_name, long_name) VALUES ('6', 't', 'TOP');
 
-	PRIMARY KEY(`id`),
-	FOREIGN KEY (`gpd_compute_type_id`)
-	REFERENCES `gpd_compute_type`(`id`)
+INSERT INTO kinematic_type (id, short_name, long_name) VALUES ('0', 'UNDEFINED', 'UNDEFINED');
+INSERT INTO kinematic_type (id, short_name, long_name) VALUES ('1', 'theo', 'theoretical');
+INSERT INTO kinematic_type (id, short_name, long_name) VALUES ('2', 'exp', 'experimental');
 
-) DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC ;
+INSERT INTO gpd_type (id, short_name, long_name) VALUES ('0', 'UNDEFINED', 'UNDEFINED');
+INSERT INTO gpd_type (id, short_name, long_name) VALUES ('2', 'H', 'H');
+INSERT INTO gpd_type (id, short_name, long_name) VALUES ('3', 'E', 'E');
+INSERT INTO gpd_type (id, short_name, long_name) VALUES ('4', 'Ht', 'Ht');
+INSERT INTO gpd_type (id, short_name, long_name) VALUES ('5', 'Et', 'Et');
 
-CREATE TABLE IF NOT EXISTS `gpd_result_quark_flavor` (
-	`id` int NOT NULL,
-	`gpd_result_id` int NOT NULL,
-	`parton_distribution` DOUBLE NOT NULL DEFAULT 0, 
-	`parton_distribution_minus` DOUBLE NOT NULL DEFAULT 0, 
-	`parton_distribution_plus` DOUBLE NOT NULL DEFAULT 0, 
+INSERT INTO module (id, class_name, description) VALUES ('1', 'GK11Model', 'UNDEFINED');
 
-	PRIMARY KEY(`id`),
-	FOREIGN KEY (`gpd_result_id`)
-	REFERENCES `gpd_result`(`id`)
-
-) DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC ;
-
-CREATE TABLE IF NOT EXISTS `gpd_kinematic` (
-	`id` int NOT NULL,
-	`x` DOUBLE NOT NULL DEFAULT 0,
-	`xi` DOUBLE NOT NULL DEFAULT 0, 
-	`xB` DOUBLE NOT NULL DEFAULT 0, 
-	`t` DOUBLE NOT NULL DEFAULT 0,
-	`MuF` DOUBLE NOT NULL DEFAULT 0, 
-	`MuR` DOUBLE NOT NULL DEFAULT 0,  
-
-	PRIMARY KEY(`id`)
-
-) DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC ;
 
