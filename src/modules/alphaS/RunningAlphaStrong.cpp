@@ -54,6 +54,8 @@
 
 #include "../../FundamentalPhysicalConstants.h"
 #include "../../ModuleObjectFactory.h"
+#include "../../utils/logger/LoggerManager.h"
+#include "../../utils/stringUtils/Formatter.h"
 
 // Initialise [class]::moduleID with a unique name.
 const std::string RunningAlphaStrong::moduleID =
@@ -106,6 +108,7 @@ void RunningAlphaStrong::isModuleWellConfigured() {
 
 //TODO implement - Voir a remplacer ça par un arbre binaire pour les tests si pertinent
 double RunningAlphaStrong::compute(double Mu) {
+
     m_Mu = Mu;
 
     if (QUARK_STRANGE_MASS <= m_Mu && m_Mu < QUARK_CHARM_MASS) {
@@ -123,6 +126,9 @@ double RunningAlphaStrong::compute(double Mu) {
     else if (QUARK_TOP_MASS <= m_Mu) {
         m_nf = 6;
     }
+
+    m_pLoggerManager->debug(getClassName(), __func__,
+            Formatter() << "Mu= " << Mu << " nf= " << m_nf);
 
     ComputeLambdaQCD();
 
@@ -151,6 +157,9 @@ double RunningAlphaStrong::compute(double Mu) {
         //TODO implement
         throw std::runtime_error("RunningAlphaStrong::compute(Mu)");
     }
+
+    m_pLoggerManager->debug(getClassName(), __func__,
+            Formatter() << "Lambda= " << Lambda);
 
     Running(m_Mu, Lambda, m_nf);
 

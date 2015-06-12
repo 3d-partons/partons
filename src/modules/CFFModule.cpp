@@ -12,10 +12,10 @@
 
 CFFModule::CFFModule(const std::string &className)
         : ModuleObject(className), m_xi(0.), m_xB(0.), m_t(0.), m_Q2(0.), m_MuF(
-                0.), m_MuR(0.), m_qcdOrderType(PerturbativeQCDOrderType::UNDEFINED), m_currentGPDComputeType(
-                GPDType::UNDEFINED), m_gpdType(
-                GPDType::UNDEFINED), m_pGPDModule(0), m_pRunningAlphaStrongModule(
-                0) {
+                0.), m_MuR(0.), m_qcdOrderType(
+                PerturbativeQCDOrderType::UNDEFINED), m_currentGPDComputeType(
+                GPDType::UNDEFINED), m_gpdType(GPDType::UNDEFINED), m_pGPDModule(
+                0), m_pRunningAlphaStrongModule(0) {
 
 }
 
@@ -57,10 +57,10 @@ CFFModule::~CFFModule() {
 
 //TODO implement
 void CFFModule::initModule() {
+    m_xi = m_xB / (2 - m_xB);
+
     m_pLoggerManager->debug(getClassName(), __func__,
             Formatter() << "executed");
-
-    m_xi = m_xB / (2 - m_xB);
 }
 
 //TODO implement
@@ -149,8 +149,10 @@ std::complex<double> CFFModule::computePolarized() {
 }
 
 void CFFModule::preCompute(const double xB, const double t, const double Q2,
-        const double MuF, const double MuR,
-        GPDType::Type gpdComputeType) {
+        const double MuF, const double MuR, GPDType::Type gpdComputeType) {
+
+    m_pLoggerManager->debug(getClassName(), __func__,
+               Formatter() << "enter preCompute() function ...");
 
     m_xB = xB;
     m_t = t;
@@ -164,9 +166,6 @@ void CFFModule::preCompute(const double xB, const double t, const double Q2,
 
     // execute last child function (virtuality)
     isModuleWellConfigured();
-
-    m_pLoggerManager->debug(getClassName(), __func__,
-            Formatter() << "executed");
 }
 
 const GPDModule* CFFModule::getGpdModule() const {

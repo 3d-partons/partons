@@ -277,7 +277,7 @@ PartonDistribution GK11Model::computeH() {
 
 PartonDistribution GK11Model::computeHt() {
 
-    m_pLoggerManager->info(getClassName(), __func__, "Entered function ...");
+    m_pLoggerManager->debug(getClassName(), __func__, "Entered function ...");
 
     PartonDistribution partonDistribution(GPDType::Ht);
 

@@ -1,27 +1,20 @@
 #ifndef GPD_RESULT_DAO_SERVICE
 #define GPD_RESULT_DAO_SERVICE
+
+#include "../../BaseObject.h"
+
+class GPDResult;
 class GPDResultList;
 
-//#include <string>
-class GPDResult;
-
-//#include "../dao/GPDResultDao.h"
-
-class GPDResultDaoService {
+class GPDResultDaoService: public BaseObject {
 public:
-//    GPDResultDaoService();
-//    virtual ~ GPDResultDaoService();
+    GPDResultDaoService();
+    virtual ~ GPDResultDaoService();
 
-// void insert(const GPDResult &gpdResult);
-    static int insert(const GPDResult &gpdResult);
+    int insert(const GPDResult &gpdResult);
 
-    static int insert(const GPDResultList &gpdResultList);
+    int insert(const GPDResultList &gpdResultList);
 
-//    Plot2DList getplot2D(const std::string &abscissaName,
-//            const std::string &ordinateName);
-//
-//private:
-//    GPDResultDao m_gpdResultDao;
 };
 
 #endif /* GPD_RESULT_DAO_SERVICE */

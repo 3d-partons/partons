@@ -15,7 +15,6 @@
 #include <string>
 #include <vector>
 
-//#include "../beans/gpd/GPDResultList.h"
 #include "../beans/gpd/GPDType.h"
 #include "../beans/kinematic/GPDKinematic.h"
 #include "Service.h"
@@ -28,8 +27,6 @@ class GPDResult;
 
 class GPDService: public Service {
 public:
-    static const std::string COMPUTE_GPD_MODEL;
-
     static const std::string ID; ///< Unique ID to self-register in the registry
 
     /**

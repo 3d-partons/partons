@@ -10,22 +10,25 @@
 #include <stdexcept>
 #include <string>
 
+#include "../utils/logger/LoggerManager.h"
 #include "../utils/PropertiesManager.h"
 #include "../utils/stringUtils/StringUtils.h"
 
 // Global static pointer used to ensure a single instance of the class.
 DatabaseManager* DatabaseManager::m_pInstance = 0;
 
-DatabaseManager::DatabaseManager() {
+DatabaseManager::DatabaseManager()
+        : BaseObject("DatabaseManager") {
+
     //TODO replace by static const variable
     std::string sqlDatabaseType = PropertiesManager::getInstance()->getString(
             "database.type");
 
-    if (StringUtils::equalsIgnoreCase(sqlDatabaseType, "SQLITE")) {
-        m_db = QSqlDatabase::addDatabase("QSQLITE");
+    if (StringUtils::equalsIgnoreCase(sqlDatabaseType, "MYSQL")) {
+        m_db = QSqlDatabase::addDatabase("QMYSQL");
 
     } else {
-        m_db = QSqlDatabase::addDatabase("QMYSQL");
+        m_db = QSqlDatabase::addDatabase("QSQLITE");
     }
 
     m_db.setDatabaseName(
@@ -44,11 +47,15 @@ DatabaseManager::DatabaseManager() {
                             "database.passwd").c_str()));
 
     if (!m_db.open()) {
+        m_pLoggerManager->error(getClassName(), __func__,
+                m_db.lastError().text().toStdString());
+
         throw std::runtime_error(
                 "[DatabaseManager::DatabaseManager] Can't connect to database : "
                         + m_db.lastError().text().toStdString());
     } else {
-        std::cerr << "Database connexion OK" << std::endl;
+        m_pLoggerManager->info(getClassName(), __func__,
+                "Database connection OK");
 
         QSqlTableModel model;
         model.setTable("tbl1");

@@ -1,62 +1,45 @@
 #include "GPDResultDaoService.h"
 
 #include <QtSql/qsqldatabase.h>
+#include <exception>
 #include <vector>
 
 #include "../../beans/gpd/GPDResult.h"
 #include "../../beans/gpd/GPDResultList.h"
 #include "../../beans/parton_distribution/PartonDistribution.h"
+#include "../../utils/logger/LoggerManager.h"
 #include "../dao/GPDResultDao.h"
 #include "GPDKinematicDaoService.h"
 #include "ModuleDaoService.h"
 #include "PartonDistributionDaoService.h"
 #include "QuarkDistributionDaoService.h"
 
-//GPDResultDaoService::GPDResultDaoService() {
-//
-//}
-//GPDResultDaoService::~GPDResultDaoService() {
-//
-//}
+GPDResultDaoService::GPDResultDaoService()
+        : BaseObject("GPDResultDaoService") {
 
-//void GPDResultDaoService::insert(const GPDResult &gpdResult) {
-//
-//    std::map<GPDType::Type, PartonDistribution> partonDistributions =
-//            gpdResult.getPartonDistributions();
-//    std::map<GPDType::Type, PartonDistribution>::iterator itPartonDistributions;
-//
-//    for (itPartonDistributions = partonDistributions.begin();
-//            itPartonDistributions != partonDistributions.end();
-//            itPartonDistributions++) {
-//        std::map<QuarkFlavor::Type, QuarkDistribution> quarkDistributions =
-//                (itPartonDistributions->second).getQuarkDistributions();
-//        std::map<QuarkFlavor::Type, QuarkDistribution>::iterator it_quarkDistribution;
-//
-//        for (it_quarkDistribution = quarkDistributions.begin();
-//                it_quarkDistribution != quarkDistributions.end();
-//                it_quarkDistribution++) {
-//            m_gpdResultDao.insert(gpdResult.getGpdKinematic().getX(),
-//                    gpdResult.getGpdKinematic().getXi(),
-//                    gpdResult.getGpdKinematic().getT(),
-//                    gpdResult.getGpdKinematic().getMuF(),
-//                    gpdResult.getGpdKinematic().getMuR(),
-//                    itPartonDistributions->first,
-//                    (itPartonDistributions->second).getGluonDistribution().getGluonDistribution(),
-//                    it_quarkDistribution->first,
-//                    (it_quarkDistribution->second).getQuarkDistribution(),
-//                    (it_quarkDistribution->second).getQuarkDistributionPlus(),
-//                    (it_quarkDistribution->second).getQuarkDistributionMinus());
-//        }
-//    }
-//}
+}
+
+GPDResultDaoService::~GPDResultDaoService() {
+
+}
 
 int GPDResultDaoService::insert(const GPDResult &gpdResult) {
 
-    int gpdKinematicId = GPDKinematicDaoService::insert(
+    // Check if this gpd_kinematic already exists
+    int gpdKinematicId = GPDKinematicDaoService::select(
             gpdResult.getGpdKinematic());
+
+    // If not, insert new entry in database and retrieve its id
+    if (gpdKinematicId == -1) {
+        gpdKinematicId = GPDKinematicDaoService::insert(
+                gpdResult.getGpdKinematic());
+    }
+
+    // Retrieve module_id from moduleClassName
     int moduleId = ModuleDaoService::getModuleIdByClassName(
             gpdResult.getComputedByGpdModuleId());
 
+    // Insert new gpd_result entry in database
     int gpdResultId = GPDResultDao::insert(moduleId, gpdKinematicId);
 
     std::vector<PartonDistribution> partonDistributionList =
@@ -78,35 +61,25 @@ int GPDResultDaoService::insert(const GPDResult &gpdResult) {
 int GPDResultDaoService::insert(const GPDResultList &gpdResultList) {
     int result = -1;
 
+    // For multiple query it's better to use transaction to guarantee database's integrity and performance
     QSqlDatabase::database().transaction();
 
-    for (unsigned int i = 0; i != gpdResultList.getSize(); i++) {
-        result = insert(gpdResultList.get(i));
-    }
+    try {
 
-    QSqlDatabase::database().commit();
+        for (unsigned int i = 0; i != gpdResultList.getSize(); i++) {
+            result = insert(gpdResultList.get(i));
+        }
+
+        // If there is no exception we can commit all query
+        QSqlDatabase::database().commit();
+
+    } catch (std::exception &e) {
+
+        m_pLoggerManager->error(getClassName(), __func__, e.what());
+
+        // Else return database in a stable state : n-1
+        QSqlDatabase::database().rollback();
+    }
 
     return result;
 }
-
-//
-//Plot2DList GPDResultDaoService::getplot2D(const std::string &abscissaName,
-//        const std::string &ordinateName) {
-//    Plot2DList plot2DList;
-//
-//    QSqlTableModel model;
-//    model.setTable(QString::fromStdString(GPDResult::GPD_RESULT_DB_TABLE_NAME));
-//    model.select();
-//
-//    int xIndex = model.record().indexOf(QString::fromStdString(abscissaName));
-//    int yIndex = model.record().indexOf(QString::fromStdString(ordinateName));
-//
-//    for (int i = 0; i < model.rowCount(); i++) {
-//        QSqlRecord record = model.record(i);
-//        plot2DList.addPlot2D(
-//                Plot2D(record.value(xIndex).toDouble(),
-//                        record.value(yIndex).toDouble()));
-//    }
-//
-//    return plot2DList;
-//}

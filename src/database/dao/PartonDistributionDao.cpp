@@ -21,5 +21,7 @@ int PartonDistributionDao::insert(int gpdResultId, int gpdTypeId,
         result = query.lastInsertId().toInt();
     }
 
+    query.clear();
+
     return result;
 }

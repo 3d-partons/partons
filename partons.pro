@@ -11,20 +11,27 @@ QT       += core gui sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
+
+CONFIG(debug, debug|release) {
+    DESTDIR = build/debug
+} else {
+    DESTDIR = build/release
+}
+
+OBJECTS_DIR = $${DESTDIR}/obj
+MOC_DIR = $${DESTDIR}/moc
+
+
 TARGET = PARTONS
 TEMPLATE = lib
-
-OBJECTS_DIR = obj
-MOC_DIR = moc
 
 DEFINES += QCUSTOMPLOT_COMPILE_LIBRARY
 
 INCLUDEPATH += /usr/include
 INCLUDEPATH += /usr/local/include
-INCLUDEPATH += /usr/local/qt/v4.8.6/include
-INCLUDEPATH += /usr/local/root/v5.34.21/include
+INCLUDEPATH += /usr/local/root/v5.34.30/include
 
-LIBS += -L/usr/local/root/v5.34.21/lib -lPhysics -lMathMore -lHist
+LIBS += -L/usr/local/root/v5.34.30/lib -lPhysics -lMathMore -lHist
 LIBS += -L/usr/lib -lcln
 
 include(sources.pri)

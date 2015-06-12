@@ -1,7 +1,4 @@
-//#include <stddef.h>
-
-//#include <stddef.h>
-
+#include <iostream>
 #include <map>
 #include <stdexcept>
 #include <string>
@@ -15,10 +12,8 @@
 #include "../beans/Scenario.h"
 #include "../modules/GPDModule.h"
 #include "../ServiceRegistry.h"
-#include "../utils/stringUtils/StringUtils.h"
 #include "GPDService.h"
-
-const std::string GPDService::COMPUTE_GPD_MODEL = "computeGPDModel";
+#include "ServiceFunctionNames.h"
 
 const std::string GPDService::ID =
         ServiceRegistry::getInstance()->registerNewService(getInstance());
@@ -49,19 +44,23 @@ GPDService::~GPDService() {
 //TODO implement all function
 //TODO passer les chaine de caractere en variable final static
 void GPDService::computeScenario(Scenario scenario) {
-
     m_pGPDKinematic = 0;
     m_pGPDModule = 0;
 
-    if (StringUtils::equals(scenario.getFunctionName(),
-            GPDService::COMPUTE_GPD_MODEL)) {
-
+    switch ((unsigned int) scenario.getFunctionName()) {
+    case ServiceFunctionNames::GPD_SERVICE_COMPUTE_GPD_MODEL: {
         GPDResult gpdResult = computeGPDModel(scenario);
 
-    } else {
+        std::cout << gpdResult.toString() << std::endl;
+
+        break;
+    }
+
+    default: {
         throw std::runtime_error(
                 "[GPDService::computeScenario] unknown function name = "
                         + scenario.getFunctionName());
+    }
     }
 }
 
@@ -134,7 +133,7 @@ GPDResultList GPDService::computeListOfKinematic(
         std::vector<GPDKinematic> &listOfGPDKinematic, GPDModule* pGPDModule) {
     GPDResultList results = GPDResultList();
 
-    // compute GPDModule for each inputData
+// compute GPDModule for each inputData
     for (unsigned int i = 0; i != listOfGPDKinematic.size(); i++) {
         results.add(
                 computeGPDModelRestrictedByGPDType(listOfGPDKinematic[i],

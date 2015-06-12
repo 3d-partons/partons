@@ -25,5 +25,7 @@ int QuarkDistributionDao::insert(int partonDistributionId,
         result = query.lastInsertId().toInt();
     }
 
+    query.clear();
+
     return result;
 }

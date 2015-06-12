@@ -84,7 +84,7 @@ void ScenarioManager::startElement(std::string tagName, Attributs attributes,
         std::string functionName = attributes.getStringValueOf("method");
 
         m_scenario.setServiceName(serviceClassName);
-        m_scenario.setFunctionName(functionName);
+        m_scenario.setFunctionName(ServiceFunctionNames(functionName));
     }
 
     if (StringUtils::equals(tagName, "GPDKinematic")) {

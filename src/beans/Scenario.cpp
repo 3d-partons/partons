@@ -31,14 +31,6 @@ void Scenario::setFunctionArgs(
     this->m_functionArgs = functionArgs;
 }
 
-const std::string& Scenario::getFunctionName() const {
-    return m_functionName;
-}
-
-void Scenario::setFunctionName(const std::string& functionName) {
-    this->m_functionName = functionName;
-}
-
 time_t Scenario::getDate() const {
     return m_date;
 }
@@ -69,4 +61,12 @@ const std::string& Scenario::getServiceName() const {
 
 void Scenario::setServiceName(const std::string& serviceName) {
     this->m_serviceName = serviceName;
+}
+
+ServiceFunctionNames::Type Scenario::getFunctionName() const {
+    return m_functionName;
+}
+
+void Scenario::setFunctionName(ServiceFunctionNames::Type functionName) {
+    m_functionName = functionName;
 }

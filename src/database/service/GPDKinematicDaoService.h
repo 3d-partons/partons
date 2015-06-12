@@ -12,11 +12,17 @@
  * @brief
  */
 
+#include "../../BaseObject.h"
+
 class GPDKinematic;
 
-class GPDKinematicDaoService {
+class GPDKinematicDaoService: public BaseObject {
 public:
+    GPDKinematicDaoService();
+    virtual ~GPDKinematicDaoService();
+
     static int insert(const GPDKinematic &gpdKinematic);
+    static int select(const GPDKinematic &gpdKinematic);
 };
 
 #endif /* GPD_KINEMATIC_DAO_SERVICE */

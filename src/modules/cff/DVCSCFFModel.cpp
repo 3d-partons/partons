@@ -102,6 +102,12 @@ void DVCSCFFModel::initModule() {
     m_nbOfActiveFlavour = 3;
 
     m_alphaSOver2Pi = m_pRunningAlphaStrongModule->compute(m_MuR) / (2. * PI);
+
+    m_pLoggerManager->debug(getClassName(), __func__,
+            Formatter() << "m_Q= " << m_Q << " m_Zeta= " << m_Zeta
+                    << " m_logQ2OverMu2=" << m_logQ2OverMu2
+                    << " m_nbOfActiveFlavour=" << m_nbOfActiveFlavour
+                    << " m_alphaSOver2Pi=" << m_alphaSOver2Pi);
 }
 
 void DVCSCFFModel::isModuleWellConfigured() {
@@ -199,42 +205,12 @@ void DVCSCFFModel::computeSubtractionFunctionsV() {
 
     double RealPartSubtractQuarkLO; // Real part of eq. (B2)
     double ImaginaryPartSubtractQuarkLO; // Imaginary part of eq. (B2)
-    double RealPartSubtractQuarkNLOV; // Real part of eq. (B4)
-    double ImaginaryPartSubtractQuarkNLOV; // Imaginary part of eq. (B4)
-    double RealPartSubtractGluonNLOV; // Real part of eq. (B6)
-    double ImaginaryPartSubtractGluonNLOV; // Imaginary part of eq. (B6)
 
     // LO, 1 / 1 - z
 
     RealPartSubtractQuarkLO = -LogInvZeta;
 
     ImaginaryPartSubtractQuarkLO = PI;
-
-    // NLO, quark, vector, eq. (B4)
-
-    RealPartSubtractQuarkNLOV = Pi2 / 2. - 3. * DiLogInvZeta
-            + LogInvZeta * (Pi2 + 9. + 3. * LogZeta - LogInvZeta2 / 3.);
-    RealPartSubtractQuarkNLOV += m_logQ2OverMu2
-            * (Pi2 - 3. * LogInvZeta - LogInvZeta2);
-    RealPartSubtractQuarkNLOV *= m_CF / 2.;
-
-    ImaginaryPartSubtractQuarkNLOV = Pi2 / 3. + 9. + 3. * LogZeta - LogInvZeta2
-            - m_logQ2OverMu2 * (2. * LogInvZeta + 3);
-    ImaginaryPartSubtractQuarkNLOV *= -PI * m_CF / 2.;
-
-    // NLO, gluon, vector, eq. (B6)
-
-    RealPartSubtractGluonNLOV = -1. + Pi2 / 3. * (1. - 3. / 4. * m_Zeta)
-            + DiLogInvZeta - LogZeta * LogInvZeta;
-    RealPartSubtractGluonNLOV += (2. - m_Zeta) * LogInvZeta
-            * (1. - LogInvZeta / 4.);
-    RealPartSubtractGluonNLOV += m_logQ2OverMu2 / 2.
-            * (1. - (2. - m_Zeta) * LogInvZeta);
-    RealPartSubtractGluonNLOV *= 1 / (2. * m_xi);
-
-    ImaginaryPartSubtractGluonNLOV = (2. - m_Zeta)
-            * (2. - m_logQ2OverMu2 - LogInvZeta) - 2. * LogZeta;
-    ImaginaryPartSubtractGluonNLOV *= -PI / (4. * m_xi);
 
     // Computation of subtraction terms in eq. (8) and (9)
     // Sums up previous contributions and takes care of LO / NLO and P(olarized) / U(npolarized) subtleties
@@ -250,6 +226,36 @@ void DVCSCFFModel::computeSubtractionFunctionsV() {
     // NLO, real and imaginary parts
 
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
+        double RealPartSubtractQuarkNLOV; // Real part of eq. (B4)
+        double ImaginaryPartSubtractQuarkNLOV; // Imaginary part of eq. (B4)
+        double RealPartSubtractGluonNLOV; // Real part of eq. (B6)
+        double ImaginaryPartSubtractGluonNLOV; // Imaginary part of eq. (B6)
+
+        // NLO, quark, vector, eq. (B4)
+
+        RealPartSubtractQuarkNLOV = Pi2 / 2. - 3. * DiLogInvZeta
+                + LogInvZeta * (Pi2 + 9. + 3. * LogZeta - LogInvZeta2 / 3.);
+        RealPartSubtractQuarkNLOV += m_logQ2OverMu2
+                * (Pi2 - 3. * LogInvZeta - LogInvZeta2);
+        RealPartSubtractQuarkNLOV *= m_CF / 2.;
+
+        ImaginaryPartSubtractQuarkNLOV = Pi2 / 3. + 9. + 3. * LogZeta
+                - LogInvZeta2 - m_logQ2OverMu2 * (2. * LogInvZeta + 3);
+        ImaginaryPartSubtractQuarkNLOV *= -PI * m_CF / 2.;
+
+        // NLO, gluon, vector, eq. (B6)
+
+        RealPartSubtractGluonNLOV = -1. + Pi2 / 3. * (1. - 3. / 4. * m_Zeta)
+                + DiLogInvZeta - LogZeta * LogInvZeta;
+        RealPartSubtractGluonNLOV += (2. - m_Zeta) * LogInvZeta
+                * (1. - LogInvZeta / 4.);
+        RealPartSubtractGluonNLOV += m_logQ2OverMu2 / 2.
+                * (1. - (2. - m_Zeta) * LogInvZeta);
+        RealPartSubtractGluonNLOV *= 1 / (2. * m_xi);
+
+        ImaginaryPartSubtractGluonNLOV = (2. - m_Zeta)
+                * (2. - m_logQ2OverMu2 - LogInvZeta) - 2. * LogZeta;
+        ImaginaryPartSubtractGluonNLOV *= -PI / (4. * m_xi);
 
         // Real part, quark contribution
 
@@ -281,39 +287,12 @@ void DVCSCFFModel::computeSubtractionFunctionsA() {
 
     double RealPartSubtractQuarkLO; // Real part of eq. (B2)
     double ImaginaryPartSubtractQuarkLO; // Imaginary part of eq. (B2)
-    double RealPartSubtractQuarkNLOA; // Real part of eq. (B4)
-    double ImaginaryPartSubtractQuarkNLOA; // Imaginary part of eq. (B4)
-    double RealPartSubtractGluonNLOA; // Real part of eq. (B6)
-    double ImaginaryPartSubtractGluonNLOA; // Imaginary part of eq. (B6)
 
     // LO, 1 / 1 - z
 
     RealPartSubtractQuarkLO = -LogInvZeta;
 
     ImaginaryPartSubtractQuarkLO = PI;
-
-    // NLO, quark, axial, eq. (B3)
-
-    RealPartSubtractQuarkNLOA = Pi2 / 6. - DiLogInvZeta
-            + LogInvZeta * (Pi2 + 9. + LogZeta - LogInvZeta2 / 3.);
-    RealPartSubtractQuarkNLOA += m_logQ2OverMu2
-            * (Pi2 - 3. * LogInvZeta - LogInvZeta2);
-    RealPartSubtractQuarkNLOA *= m_CF / 2.;
-
-    ImaginaryPartSubtractQuarkNLOA = Pi2 / 3. + 9. + LogZeta - LogInvZeta2
-            - m_logQ2OverMu2 * (2. * LogInvZeta + 3);
-    ImaginaryPartSubtractQuarkNLOA *= -PI * m_CF / 2.;
-
-    // NLO, gluon, axial, eq. (B5)
-
-    RealPartSubtractGluonNLOA = 1. + Pi2 / 4. * m_Zeta
-            + m_Zeta * LogInvZeta * (1. - LogInvZeta / 4.);
-    RealPartSubtractGluonNLOA += -m_logQ2OverMu2 / 2.
-            * (1. + m_Zeta * LogInvZeta);
-    RealPartSubtractGluonNLOA *= 1 / (2. * m_xi);
-
-    ImaginaryPartSubtractGluonNLOA = 2. - LogInvZeta - m_logQ2OverMu2;
-    ImaginaryPartSubtractGluonNLOA *= -PI * m_Zeta / (4. * m_xi);
 
     // Computation of subtraction terms in eq. (8) and (9)
     // Sums up previous contributions and takes care of LO / NLO and P(olarized) / U(npolarized) subtleties
@@ -329,6 +308,33 @@ void DVCSCFFModel::computeSubtractionFunctionsA() {
     // NLO, real and imaginary parts
 
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
+        double RealPartSubtractQuarkNLOA; // Real part of eq. (B4)
+        double ImaginaryPartSubtractQuarkNLOA; // Imaginary part of eq. (B4)
+        double RealPartSubtractGluonNLOA; // Real part of eq. (B6)
+        double ImaginaryPartSubtractGluonNLOA; // Imaginary part of eq. (B6)
+
+        // NLO, quark, axial, eq. (B3)
+
+        RealPartSubtractQuarkNLOA = Pi2 / 6. - DiLogInvZeta
+                + LogInvZeta * (Pi2 + 9. + LogZeta - LogInvZeta2 / 3.);
+        RealPartSubtractQuarkNLOA += m_logQ2OverMu2
+                * (Pi2 - 3. * LogInvZeta - LogInvZeta2);
+        RealPartSubtractQuarkNLOA *= m_CF / 2.;
+
+        ImaginaryPartSubtractQuarkNLOA = Pi2 / 3. + 9. + LogZeta - LogInvZeta2
+                - m_logQ2OverMu2 * (2. * LogInvZeta + 3);
+        ImaginaryPartSubtractQuarkNLOA *= -PI * m_CF / 2.;
+
+        // NLO, gluon, axial, eq. (B5)
+
+        RealPartSubtractGluonNLOA = 1. + Pi2 / 4. * m_Zeta
+                + m_Zeta * LogInvZeta * (1. - LogInvZeta / 4.);
+        RealPartSubtractGluonNLOA += -m_logQ2OverMu2 / 2.
+                * (1. + m_Zeta * LogInvZeta);
+        RealPartSubtractGluonNLOA *= 1 / (2. * m_xi);
+
+        ImaginaryPartSubtractGluonNLOA = 2. - LogInvZeta - m_logQ2OverMu2;
+        ImaginaryPartSubtractGluonNLOA *= -PI * m_Zeta / (4. * m_xi);
 
         // Real part, quark contribution
 
@@ -1018,8 +1024,7 @@ double DVCSCFFModel::ConvolImKernelGluonA(double x) {
     return Convol;
 }
 
-double DVCSCFFModel::functionsToIntegrate(double * x,
-        double * parameters) {
+double DVCSCFFModel::functionsToIntegrate(double * x, double * parameters) {
     double result = 0.;
 
     switch (m_currentFunctionToIntegrate) {

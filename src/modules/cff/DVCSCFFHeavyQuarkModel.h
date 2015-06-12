@@ -36,16 +36,10 @@ protected:
 
     DVCSCFFHeavyQuarkModel(const DVCSCFFHeavyQuarkModel &other);
 
-//    virtual void initModule();
-//    virtual void isModuleWellConfigured();
-
     virtual std::complex<double> KernelGluonNLOA(double x); ///<Modified for heavy quarks
     virtual std::complex<double> KernelGluonNLOV(double x); ///<Modified for heavy quarks
 
-    virtual std::complex<double> computeUnpolarized();
-    virtual std::complex<double> computePolarized();
-
-    void computeSubtractionFunctionsV();
+    // void computeSubtractionFunctionsV();
 
 private:
     std::complex<double> m_betas;

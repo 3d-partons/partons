@@ -14,8 +14,11 @@
 
 class GPDKinematicDao {
 public:
-    static int insert(int scenarioId, int kinematicType, double x, double xi,
-            double t, double MuF, double MuR);
+    static int insert(int kinematicType, double x, double xi, double t,
+            double MuF, double MuR);
+
+    static int select(int kinematicType, double x, double xi, double t,
+            double MuF, double MuR);
 
 private:
 

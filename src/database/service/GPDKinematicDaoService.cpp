@@ -3,17 +3,22 @@
 #include "../../beans/kinematic/GPDKinematic.h"
 #include "../dao/GPDKinematicDao.h"
 
-//GPDKinematicDaoService::GPDKinematicDaoService() {
-//
-//}
-//
-//GPDKinematicDaoService::~GPDKinematicDaoService() {
-//
-//}
+GPDKinematicDaoService::GPDKinematicDaoService()
+        : BaseObject("GPDKinematicDaoService") {
 
-//TODO implement scenarioId, remove 0 value
+}
+GPDKinematicDaoService::~GPDKinematicDaoService() {
+
+}
+
 int GPDKinematicDaoService::insert(const GPDKinematic &gpdKinematic) {
-    return GPDKinematicDao::insert( /* */ 0 /* */ , gpdKinematic.getKinematicType(),
+    return GPDKinematicDao::insert(gpdKinematic.getKinematicType(),
+            gpdKinematic.getX(), gpdKinematic.getXi(), gpdKinematic.getT(),
+            gpdKinematic.getMuF(), gpdKinematic.getMuR());
+}
+
+int GPDKinematicDaoService::select(const GPDKinematic &gpdKinematic) {
+    return GPDKinematicDao::select(gpdKinematic.getKinematicType(),
             gpdKinematic.getX(), gpdKinematic.getXi(), gpdKinematic.getT(),
             gpdKinematic.getMuF(), gpdKinematic.getMuR());
 }

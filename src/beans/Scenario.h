@@ -16,6 +16,8 @@
 #include <map>
 #include <string>
 
+#include "../services/ServiceFunctionNames.h"
+
 class Scenario {
 public:
     Scenario();
@@ -25,8 +27,6 @@ public:
 
     const std::map<std::string, void*>& getFunctionArgs() const;
     void setFunctionArgs(const std::map<std::string, void*>& functionArgs);
-    const std::string& getFunctionName() const;
-    void setFunctionName(const std::string& functionName);
     time_t getDate() const;
     void setDate(time_t date);
     const std::string& getDescription() const;
@@ -35,6 +35,8 @@ public:
     void setId(const std::string& id);
     const std::string& getServiceName() const;
     void setServiceName(const std::string& serviceName);
+    ServiceFunctionNames::Type getFunctionName() const;
+    void setFunctionName(ServiceFunctionNames::Type functionName);
 
 private:
 
@@ -43,7 +45,7 @@ private:
     std::string m_description;
 
     std::string m_serviceName;
-    std::string m_functionName;
+    ServiceFunctionNames::Type m_functionName;
     std::map<std::string, void*> m_functionArgs;
 };
 

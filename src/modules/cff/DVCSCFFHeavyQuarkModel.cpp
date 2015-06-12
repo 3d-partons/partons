@@ -117,14 +117,6 @@ std::complex<double> DVCSCFFHeavyQuarkModel::KernelGluonNLOV(double x) {
     return GluonNLOV;
 }
 
-std::complex<double> DVCSCFFHeavyQuarkModel::computeUnpolarized() {
-    return DVCSCFFModel::computeUnpolarized();
-}
-
-std::complex<double> DVCSCFFHeavyQuarkModel::computePolarized() {
-    return DVCSCFFModel::computePolarized();
-}
-
 std::complex<double> DVCSCFFHeavyQuarkModel::beta(std::complex<double> s,
         double mq) {
 //	std::complex<double> beta(1.-4.*mq*mq/(s+m_eps*m_eps)*s, 4.*mq*mq/(s+m_eps*m_eps)*m_eps);
@@ -139,9 +131,9 @@ std::complex<double> DVCSCFFHeavyQuarkModel::r(std::complex<double> s,
     return (tmp_beta - 1.) / (tmp_beta + 1.);
 }
 
-void DVCSCFFHeavyQuarkModel::computeSubtractionFunctionsV() {
-    m_realPartSubtractQuark = 0.;
-    m_imaginaryPartSubtractQuark = 0.;
-    m_realPartSubtractGluon = 0.;
-    m_imaginaryPartSubtractGluon = 0.;
-}
+//void DVCSCFFHeavyQuarkModel::computeSubtractionFunctionsV() {
+//    m_realPartSubtractQuark = 0.;
+//    m_imaginaryPartSubtractQuark = 0.;
+//    m_realPartSubtractGluon = 0.;
+//    m_imaginaryPartSubtractGluon = 0.;
+//}

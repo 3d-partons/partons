@@ -13,7 +13,9 @@
 
 #include <QtSql/qsqldatabase.h>
 
-class DatabaseManager {
+#include "../BaseObject.h"
+
+class DatabaseManager: BaseObject {
 public:
     /**
      * Share a unique pointer of this class

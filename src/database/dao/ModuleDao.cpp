@@ -21,5 +21,7 @@ int ModuleDao::getModuleIdByClassName(const std::string &moduleClassName) {
         }
     }
 
+    query.clear();
+
     return result;
 }
