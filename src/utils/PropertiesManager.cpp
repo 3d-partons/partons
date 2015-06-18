@@ -3,7 +3,7 @@
 //#include "../Partons.h"
 
 const std::string PropertiesManager::PARTONS_PROPERTIES_FILE_PATH =
-        "data/partons.properties";
+        "partons.properties";
 
 // Global static pointer used to ensure a single instance of the class.
 PropertiesManager* PropertiesManager::pInstance = 0;

@@ -11,6 +11,7 @@ QT       += core gui sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
+CONFIG += debug
 
 CONFIG(debug, debug|release) {
     DESTDIR = build/debug
@@ -27,11 +28,12 @@ TEMPLATE = lib
 
 DEFINES += QCUSTOMPLOT_COMPILE_LIBRARY
 
-INCLUDEPATH += /usr/include
-INCLUDEPATH += /usr/local/include
-INCLUDEPATH += /usr/local/root/v5.34.30/include
+INCLUDEPATH += /usr/local/cln/v1.3.4/include
+INCLUDEPATH += /usr/local/root/v5.34.30/include/root
 
-LIBS += -L/usr/local/root/v5.34.30/lib -lPhysics -lMathMore -lHist
-LIBS += -L/usr/lib -lcln
+LIBS += -L/usr/local/cln/v1.3.4/lib -lcln
+#LIBS += -L/usr/local/gsl/v1.16/lib -lgsl
+LIBS += -L/usr/local/root/v5.34.30/lib/root -lPhysics -lMathMore -lHist
+
 
 include(sources.pri)
