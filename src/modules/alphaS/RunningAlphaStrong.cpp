@@ -70,8 +70,8 @@ const std::string RunningAlphaStrong::moduleID =
  * Default constructor.
  * 
  */
-RunningAlphaStrong::RunningAlphaStrong(const std::string &className)
-        : RunningAlphaStrongModule(className), fNc(3), fBeta0(2.08333), fBeta1(
+RunningAlphaStrong::RunningAlphaStrong(const std::string &className) :
+        RunningAlphaStrongModule(className), fNc(3), fBeta0(2.08333), fBeta1(
                 3.20833), fBeta2(6.34925), fBeta3(31.3874), fB1(1.54), fB2(
                 3.04764), fB3(15.066), fLambdaQCD3(0.329939), fLambdaQCD4(
                 0.28914), fLambdaQCD5(0.208364), fLambdaQCD6(0.0878108), fAlphaSMZ(
@@ -79,9 +79,22 @@ RunningAlphaStrong::RunningAlphaStrong(const std::string &className)
 }
 
 //TODO implement
-RunningAlphaStrong::RunningAlphaStrong(const RunningAlphaStrong &other)
-        : RunningAlphaStrongModule(other) {
-
+RunningAlphaStrong::RunningAlphaStrong(const RunningAlphaStrong &other) :
+        RunningAlphaStrongModule(other) {
+    fNc = other.fNc;
+    fBeta0 = other.fBeta0;
+    fBeta1 = other.fBeta1;
+    fBeta2 = other.fBeta2;
+    fBeta3 = other.fBeta3;
+    fB1 = other.fB1;
+    fB2 = other.fB2;
+    fB3 = other.fB3;
+    fLambdaQCD3 = other.fLambdaQCD3;
+    fLambdaQCD4 = other.fLambdaQCD4;
+    fLambdaQCD5 = other.fLambdaQCD5;
+    fLambdaQCD6 = other.fLambdaQCD6;
+    fAlphaSMZ = other.fAlphaSMZ;
+    fAlphaS = other.fAlphaS;
 }
 
 RunningAlphaStrong* RunningAlphaStrong::clone() const {
