@@ -28,6 +28,7 @@
 const std::string ENABLE_NAME = "enable";
 const std::string DEFAULT_LEVEL_NAME = "default.level";
 const std::string PRINT_MODE_NAME = "print.mode";
+const std::string OUTPUT_LOG_FILE_PATH = "log.file.path";
 
 class LoggerManager: public Thread {
 public:
@@ -43,13 +44,11 @@ public:
 
     void init();
 
+    bool isEmptyMessageQueue();
+
     void close();
 
     void defineLevel(LoggerLevel loggerLevel);
-
-    void writeConsole(LoggerMessage loggerMessage);
-
-    bool isActive();
 
     void* run();
 
@@ -101,6 +100,9 @@ private:
     std::string formatDate(time_t time);
 
     bool isLoggable(LoggerMessage loggerMessage);
+
+    void writeConsole(LoggerMessage loggerMessage);
+    void writeFile(LoggerMessage loggerMessage);
 };
 
 #endif /* LOGGER_MANAGER_H */

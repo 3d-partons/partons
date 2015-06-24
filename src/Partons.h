@@ -14,6 +14,8 @@
 
 #include <string>
 
+class BaseObjectManager;
+
 class LoggerManager;
 
 class Partons {
@@ -43,6 +45,8 @@ private:
      * Default constructor
      */
     Partons();
+
+    BaseObjectManager* m_pBaseObjectManager;
 
     LoggerManager* m_pLoggerManager;
 

@@ -6,8 +6,8 @@ static void* runThread(void* arg) {
     return ((Thread*) arg)->run();
 }
 
-Thread::Thread()
-        : m_tid(0), m_running(0), m_detached(0) {
+Thread::Thread() :
+        m_tid(0), m_running(0), m_detached(0) {
 }
 
 Thread::~Thread() {
@@ -20,10 +20,18 @@ Thread::~Thread() {
 }
 
 int Thread::start() {
+    // Initialize and set thread joinable
+    pthread_attr_init(&attr);
+    pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
+
     int result = pthread_create(&m_tid, NULL, runThread, this);
     if (result == 0) {
         m_running = 1;
     }
+
+    // free attribute
+    pthread_attr_destroy(&attr);
+
     return result;
 }
 

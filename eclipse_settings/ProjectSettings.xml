@@ -4,7 +4,7 @@
 <language name="C++ Source File">
 <includepath>${CLN_PATH}/include</includepath>
 <includepath>${QT_PATH}/include</includepath>
-<includepath>${ROOT_PATH}/include</includepath>
+<includepath>${ROOT_PATH}/include/root</includepath>
 
 </language>
 <language name="C Source File">

@@ -1,5 +1,6 @@
 #include "ModuleObjectFactory.h"
 
+//#include <iostream>
 #include <sstream>
 #include <stdexcept>
 #include <utility>
@@ -62,7 +63,9 @@ std::string ModuleObjectFactory::registerModule(ModuleObject * pModuleObject) {
 void ModuleObjectFactory::init() {
     for (m_it = m_moduleRegistry.begin(); m_it != m_moduleRegistry.end();
             m_it++) {
-        (m_it->second)->init();
+        if (m_it->second) {
+            (m_it->second)->init();
+        }
     }
 }
 
@@ -99,7 +102,7 @@ RunningAlphaStrongModule* ModuleObjectFactory::newRunningAlphaStrongModule(
 
 std::string ModuleObjectFactory::toString() {
     std::ostringstream os;
-    os << "[BaseModuleFactory]" << std::endl;
+    os << "[ModuleObjectFactory]" << std::endl;
     for (m_it = m_moduleRegistry.begin(); m_it != m_moduleRegistry.end();
             m_it++) {
         os << m_it->second->toString() << std::endl;

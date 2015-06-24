@@ -14,6 +14,8 @@
 
 #include <string>
 
+class BaseObjectManager;
+
 class LoggerManager;
 
 class BaseObject {
@@ -74,6 +76,8 @@ private:
 
     unsigned int m_objectId;
     std::string m_className; ///< String that represents class's name used by the LoggerManager's class for know the source of the output trace
+
+    //BaseObjectManager* m_pBaseObjectManager;
 
     /**
      * On call, returns an incremented by one uniqueID member value.

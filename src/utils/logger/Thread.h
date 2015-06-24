@@ -34,6 +34,7 @@ public:
     pthread_t getThreadId();
 
 private:
+    pthread_attr_t attr;
     pthread_t m_tid;
     int m_running;
     int m_detached;

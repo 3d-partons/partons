@@ -4,7 +4,7 @@
 #include <utility>
 #include <vector>
 
-//#include "../../Partons.h"
+#include "../fileUtils/FileUtils.h"
 #include "../parser/IniFileParser.h"
 #include "../PropertiesManager.h"
 #include "../stringUtils/Formatter.h"
@@ -14,9 +14,9 @@
 LoggerManager* LoggerManager::m_pInstance = 0;
 
 //TODO remplacer le nom de la propriété "log.file.path" par un static final string
-LoggerManager::LoggerManager()
-        : m_outputFilePath("default.log"), m_defaultLevel(LoggerLevel::INFO), m_printMode(
-                LoggerPrintMode::COUT), m_active(false) {
+LoggerManager::LoggerManager() :
+        m_outputFilePath("default.log"), m_defaultLevel(LoggerLevel::INFO), m_printMode(
+                LoggerPrintMode::COUT), m_active(true) {
     pthread_mutex_init(&m_mutex, NULL);
 }
 
@@ -69,6 +69,11 @@ void LoggerManager::parseConfigurationFile(const std::string &filePath) {
         // retrieve print mode
         else if (StringUtils::equalsIgnoreCase(it->first, PRINT_MODE_NAME)) {
             m_printMode = LoggerPrintMode::fromString(it->second);
+        }
+        // retrieve path for log file
+        else if (StringUtils::equalsIgnoreCase(it->first,
+                OUTPUT_LOG_FILE_PATH)) {
+            m_outputFilePath = (it->second);
         }
         // handle custom level
         else {
@@ -123,7 +128,7 @@ void LoggerManager::defineLevel(LoggerLevel loggerLevel) {
 }
 
 void LoggerManager::update() {
-    while (isActive() || !m_messageQueue.empty()) {
+    while (m_active) {
         while (!m_messageQueue.empty()) {
             pthread_mutex_lock(&m_mutex);
             LoggerMessage loggerMsg = m_messageQueue.front();
@@ -192,12 +197,12 @@ void LoggerManager::handleMessage(LoggerMessage loggerMessage) {
             break;
         }
         case LoggerPrintMode::FILE: {
-            //writeFile(loggerMessage.getMessage());
+            writeFile(loggerMessage);
             break;
         }
         case LoggerPrintMode::BOTH: {
             writeConsole(loggerMessage);
-            //writeBoth(loggerMessage.getMessage());
+            writeFile(loggerMessage);
             break;
         }
         default:
@@ -234,14 +239,9 @@ void LoggerManager::writeConsole(LoggerMessage loggerMessage) {
 }
 
 void* LoggerManager::run() {
-    // Wait for the thread before terminate the main function
-    pthread_join(getThreadId(), 0);
     update();
-    return 0;
-}
 
-bool LoggerManager::isActive() {
-    return m_active;
+    pthread_exit(NULL);
 }
 
 bool LoggerManager::isLoggableMessage(LoggerLevel loggerLevel) {
@@ -295,3 +295,16 @@ std::string LoggerManager::toString() {
     return formatter;
 }
 
+bool LoggerManager::isEmptyMessageQueue() {
+    return m_messageQueue.empty();
+}
+
+void LoggerManager::writeFile(LoggerMessage loggerMessage) {
+
+    FileUtils::writef(m_outputFilePath,
+            Formatter() << loggerMessage.getLevel().toString() << " ["
+                    << loggerMessage.getClassNameSource() << "::"
+
+                    << loggerMessage.getFunctionNameSource() << "]: "
+                    << loggerMessage.getMessage());
+}

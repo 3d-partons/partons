@@ -1,7 +1,9 @@
 #include "Partons.h"
 
 #include <pthread.h>
+#include <unistd.h>
 
+#include "BaseObjectManager.h"
 #include "database/DatabaseManager.h"
 #include "ModuleObjectFactory.h"
 #include "utils/logger/LoggerManager.h"
@@ -11,8 +13,9 @@
 // Global static pointer used to ensure a single instance of the class.
 Partons* Partons::m_pInstance = 0;
 
-Partons::Partons()
-        : m_pLoggerManager(LoggerManager::getInstance()) {
+Partons::Partons() :
+        m_pBaseObjectManager(BaseObjectManager::getInstance()), m_pLoggerManager(
+                LoggerManager::getInstance()) {
 }
 
 Partons::~Partons() {
@@ -48,15 +51,28 @@ void Partons::init(char** argv) {
 
     // 4. Start logger's thread
     // Waiting for the end of the logger thread before main return
-    pthread_join(m_pLoggerManager->getThreadId(), 0);
+    //TODO
+    // pthread_join(m_pLoggerManager->getThreadId(), 0);
     // Start main function of the logger.
     m_pLoggerManager->start();
 }
 
 void Partons::close() {
-    m_pLoggerManager->close();
-
     DatabaseManager::getInstance()->close();
+
+    delete m_pBaseObjectManager;
+    m_pBaseObjectManager = 0;
+
+    void* result;
+    // Wait the end of the Logger thread
+    pthread_join(m_pLoggerManager->getThreadId(), &result);
+
+//    while (!(m_pLoggerManager->isEmptyMessageQueue())) {
+//        sleep(1);
+//    }
+
+    // Logger must be delete at last
+    m_pLoggerManager->close();
 }
 
 std::string Partons::getCurrentWorkingDirectory() {
