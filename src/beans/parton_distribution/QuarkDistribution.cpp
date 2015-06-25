@@ -32,12 +32,12 @@ std::string QuarkDistribution::toString() const {
             QuarkFlavor(m_quarkFlavor).getShortName();
 
     std::ostringstream os;
-
-    os << "H(" << quarkFlavorShortName << ") = " << m_quarkDistribution
+    // TODO : Use Formatter?
+    os << quarkFlavorShortName << " = " << m_quarkDistribution
             << std::endl;
-    os << "H+(" << quarkFlavorShortName << ") = " << m_quarkDistributionPlus
+    os << quarkFlavorShortName << "(+) = " << m_quarkDistributionPlus
             << std::endl;
-    os << "H-(" << quarkFlavorShortName << ") = " << m_quarkDistributionMinus
+    os << quarkFlavorShortName << "(-) = "  << m_quarkDistributionMinus
             << std::endl;
 
     return os.str();
