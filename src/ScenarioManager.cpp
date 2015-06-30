@@ -8,7 +8,7 @@
 #include "ModuleObjectFactory.h"
 #include "services/Service.h"
 #include "ServiceRegistry.h"
-#include "utils/GPDUtils.h"
+#include "utils/module/hadron_structure/GPDUtils.h"
 #include "utils/parser/xml/Attributs.h"
 #include "utils/stringUtils/StringUtils.h"
 

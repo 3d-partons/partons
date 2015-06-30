@@ -56,7 +56,7 @@ void BaseObject::setClassName(const std::string& className) {
 }
 
 unsigned int BaseObject::getUniqueID() {
-    return ModuleObject::uniqueID++;
+    return BaseObject::uniqueID++;
 }
 
 unsigned int BaseObject::getObjectId() const {

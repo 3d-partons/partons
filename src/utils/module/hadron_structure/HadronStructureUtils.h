@@ -19,8 +19,8 @@ public:
             GPDResult* p_gpdResultRight, double absoluteTolerance,
             double relativeTolerance);
 
-    static PartonDistributionReport comparePartonDistributions(PartonDistribution* p_partonDistributionLeft,
-            PartonDistribution* p_partonDistributionRight, double absoluteTolerance,
+    static PartonDistributionReport comparePartonDistributions(const PartonDistribution &partonDistributionLeft,
+            const PartonDistribution &partonDistributionRight, double absoluteTolerance,
             double relativeTolerance);
 };
 
