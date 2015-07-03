@@ -21,7 +21,7 @@
 #include "../beans/PerturbativeQCDOrderType.h"
 #include "../beans/QuarkFlavor.h"
 #include "../ModuleObject.h"
-#include "../utils/MatrixD.h"
+#include "../utils/math/MatrixD.h"
 
 class GPDModule;
 

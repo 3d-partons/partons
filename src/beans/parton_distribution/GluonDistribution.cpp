@@ -5,11 +5,11 @@
 const std::string GluonDistribution::GLUON_DISTRIBUTION_DB_COLUMN_NAME = "gluon_distribution";
 
 GluonDistribution::GluonDistribution()
-        : m_gluonDistribution(0.) {
+        : m_gluonDistribution(0.), m_nullObject(true) {
 }
 
 GluonDistribution::GluonDistribution(double gluonDistribution)
-        : m_gluonDistribution(gluonDistribution) {
+        : m_gluonDistribution(gluonDistribution), m_nullObject(false) {
 }
 
 GluonDistribution::~GluonDistribution() {
@@ -30,4 +30,13 @@ double GluonDistribution::getGluonDistribution() const {
 
 void GluonDistribution::setGluonDistribution(double gluonDistribution) {
     m_gluonDistribution = gluonDistribution;
+    m_nullObject = false;
+}
+
+bool GluonDistribution::isNullObject() const {
+    return m_nullObject;
+}
+
+void GluonDistribution::setNullObject(bool nullObject) {
+    m_nullObject = nullObject;
 }

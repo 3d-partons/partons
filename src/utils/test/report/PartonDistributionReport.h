@@ -17,10 +17,8 @@
 
 #include "../../../beans/gpd/GPDType.h"
 #include "../../../beans/QuarkFlavor.h"
-#include "../../DoubleComparisonReport.h"
+#include "GluonDistributionReport.h"
 #include "QuarkDistributionReport.h"
-
-class QuarkDistributionReport;
 
 class PartonDistributionReport: ComparisonReport {
 public:
@@ -31,16 +29,16 @@ public:
     std::string toString() const;
     bool isCommonPartonType() const; ///< true if there is at least one common parton type in the two instances of PartonDistribution.
     void addQuarkDistributionReport(
-            const QuarkDistributionReport& quarkDistributionReport);
+            const QuarkDistributionReport &quarkDistributionReport);
     void setGluonDistributionReport(
-            const DoubleComparisonReport& gluonDistributionReport);
+            const GluonDistributionReport &gluonDistributionReport);
     void setCommonPartonType(bool commonPartonType);
 
 private:
     bool m_commonPartonType;
     std::map<QuarkFlavor::Type, QuarkDistributionReport> m_quarkDistributionReports;
     GPDType::Type m_gpdType;
-    DoubleComparisonReport m_gluonDistributionReport;
+    GluonDistributionReport m_gluonDistributionReport;
 };
 
 #endif /* PARTONDISTRIBUTIONREPORT_H_ */

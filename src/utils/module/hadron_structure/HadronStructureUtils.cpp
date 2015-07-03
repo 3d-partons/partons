@@ -1,14 +1,15 @@
 #include "HadronStructureUtils.h"
 
 #include <vector>
+
 #include "../../../beans/gpd/GPDResult.h"
 #include "../../../beans/gpd/GPDType.h"
-#include "../../DoubleComparisonReport.h"
+#include "../../math/MathUtils.h"
 #include "../../MapUtils.h"
-#include "../../MathUtils.h"
-#include "GPDResultReport.h"
-#include "PartonDistributionReport.h"
-#include "QuarkDistributionReport.h"
+#include "../../test/DoubleComparisonReport.h"
+#include "../../test/report/GPDResultReport.h"
+#include "../../test/report/PartonDistributionReport.h"
+#include "../../test/report/QuarkDistributionReport.h"
 
 GPDResultReport HadronStructureUtils::compareGPDResults(
         GPDResult* p_lhsGpdResult, GPDResult* p_rhsGpdResult,

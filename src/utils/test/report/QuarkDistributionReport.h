@@ -6,20 +6,22 @@
  *
  * @class QuarkDistributionReport
  *
- * @brief Describes the result of the comparisons (relative and absolute) of two instances of QuarkDistributions objects within given tolerances.
+ * @brief Describes the result of the comparisons (relative and absolute) of two instances of QuarkDistributions class within given tolerances.
  */
 
 #ifndef QUARKDISTRIBUTIONREPORT_H_
 #define QUARKDISTRIBUTIONREPORT_H_
 
 #include <string>
+
 #include "../../../beans/QuarkFlavor.h"
-#include "../../DoubleComparisonReport.h"
+#include "../DoubleComparisonReport.h"
 
 class QuarkDistributionReport: public ComparisonReport {
 public:
     QuarkDistributionReport();
-    QuarkDistributionReport(QuarkFlavor::Type quarkFlavor, bool ComparisonResult,
+    QuarkDistributionReport(QuarkFlavor::Type quarkFlavor,
+            bool ComparisonResult,
             DoubleComparisonReport quarkDistributionReport,
             DoubleComparisonReport quarkDistributionPlusReport,
             DoubleComparisonReport quarkDistributionMinusReport);

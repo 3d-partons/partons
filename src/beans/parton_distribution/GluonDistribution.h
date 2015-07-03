@@ -17,9 +17,12 @@ public:
 
     double getGluonDistribution() const;
     void setGluonDistribution(double gluonDistribution);
+    bool isNullObject() const;
+    void setNullObject(bool nullObject);
 
 private:
     double m_gluonDistribution;
+    bool m_nullObject;
 };
 
 #endif /* GLUON_DISTRIBUTION_H */

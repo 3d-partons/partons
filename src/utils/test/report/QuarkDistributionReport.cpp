@@ -6,8 +6,8 @@ QuarkDistributionReport::QuarkDistributionReport() :
         ComparisonReport() {
 }
 
-QuarkDistributionReport::QuarkDistributionReport(QuarkFlavor::Type quarkFlavor, bool ComparisonResult,
-        DoubleComparisonReport quarkDistributionReport,
+QuarkDistributionReport::QuarkDistributionReport(QuarkFlavor::Type quarkFlavor,
+        bool ComparisonResult, DoubleComparisonReport quarkDistributionReport,
         DoubleComparisonReport quarkDistributionPlusReport,
         DoubleComparisonReport quarkDistributionMinusReport) :
         ComparisonReport(ComparisonResult), m_quarkFlavor(quarkFlavor), m_quarkDistributionReport(

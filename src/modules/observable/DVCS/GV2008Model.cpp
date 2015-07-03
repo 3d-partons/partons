@@ -12,7 +12,7 @@
 #include "../../../BaseObjectRegistry.h"
 #include "../../../FundamentalPhysicalConstants.h"
 #include "../../../utils/logger/LoggerManager.h"
-#include "../../../utils/MathUtils.h"
+#include "../../../utils/math/MathUtils.h"
 #include "../../../utils/stringUtils/Formatter.h"
 
 // Initialise [class]::classId with a unique name.

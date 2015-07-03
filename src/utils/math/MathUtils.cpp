@@ -4,7 +4,8 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
-#include "DoubleComparisonReport.h"
+
+#include "../test/DoubleComparisonReport.h"
 
 double MathUtils::convertDegreeToRadian(double degree) {
     return degree * (M_PI / 180.);
@@ -20,8 +21,10 @@ DoubleComparisonReport MathUtils::compare(double lhs, double rhs,
     std::ostringstream relativeToleranceStream;
     relativeToleranceStream << relativeTolerance;
     std::string relativeToleranceString = relativeToleranceStream.str();
-    std::string ErrorMessage = "Tolerances should be >0. Here Absolute Tolerance = " + absoluteToleranceString
-            + " and Relative Tolerance = " + relativeToleranceString;
+    std::string ErrorMessage =
+            "Tolerances should be >0. Here Absolute Tolerance = "
+                    + absoluteToleranceString + " and Relative Tolerance = "
+                    + relativeToleranceString;
 
     if (absoluteTolerance <= 0. || relativeTolerance <= 0.)
         throw std::range_error(ErrorMessage);
