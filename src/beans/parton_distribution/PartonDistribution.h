@@ -31,7 +31,7 @@ public:
     // ##### GETTERS & SETTERS #####
 
     const GluonDistribution& getGluonDistribution() const;
-    void setGluonDistribution(const GluonDistribution& gluonDistribution);
+    void setGluonDistribution(const GluonDistribution &gluonDistribution);
     const std::map<QuarkFlavor::Type, QuarkDistribution>& getQuarkDistributions() const;
     void setQuarkDistributions(
             const std::map<QuarkFlavor::Type, QuarkDistribution>& quarkDistributions);
