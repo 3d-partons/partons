@@ -5,34 +5,21 @@
 
 #include "../beans/kinematic/ObservableKinematic.h"
 #include "../beans/Scenario.h"
+#include "../BaseObjectRegistry.h"
 #include "../modules/observable/DVCSModule.h"
-#include "../ServiceRegistry.h"
 
-const std::string ObservableService::ID =
-        ServiceRegistry::getInstance()->registerNewService(getInstance());
+// Initialise [class]::classId with a unique name.
+const unsigned int ObservableService::classId =
+        BaseObjectRegistry::getInstance()->registerBaseObject(
+                new ObservableService("ObservableService"));
 
-// Global static pointer used to ensure a single instance of the class.
-ObservableService* ObservableService::m_pInstance = 0;
+ObservableService::ObservableService(const std::string &className) :
+        ServiceObject(className) {
 
-ObservableService::ObservableService()
-        : Service("ObservableService") {
-
-}
-
-ObservableService* ObservableService::getInstance() {
-    // Only allow one instance of class to be generated.
-    if (!m_pInstance) {
-        m_pInstance = new ObservableService();
-    }
-
-    return m_pInstance;
 }
 
 ObservableService::~ObservableService() {
-    if (m_pInstance != 0) {
-        delete m_pInstance;
-        m_pInstance = 0;
-    }
+//TODO
 }
 
 std::map<double, double> ObservableService::computeDVCSObservableWithPhiDependency(

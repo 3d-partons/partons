@@ -14,7 +14,7 @@
 
 #include <string>
 
-#include "ModuleObject.h"
+#include "../ModuleObject.h"
 
 //TODO ajouter une liste de parametres pour configurer les differents integrators
 class MathIntegratorModule: public ModuleObject {

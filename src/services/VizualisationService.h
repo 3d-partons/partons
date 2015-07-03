@@ -14,20 +14,18 @@
 
 #include <string>
 
-#include "Service.h"
+#include "../ServiceObject.h"
 
 class Plot2DList;
 
-class VizualisationService: public Service {
+class VizualisationService: public ServiceObject {
 public:
-    static const std::string ID; ///< Unique ID to self-register in the registry
+    static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
     /**
-     * A static function that provides a unique pointer of this class
-     *
-     * @return A unique pointer of this class
+     * Sefault constructor
      */
-    static VizualisationService* getInstance();
+    VizualisationService(const std::string &className);
 
     /**
      * Default destructor
@@ -39,12 +37,6 @@ public:
     Plot2DList getplot2DFromSQLQuery(const std::string &sqlQuery);
 
 private:
-    static VizualisationService* pInstance; ///< Private pointer of this class for a unique instance
-
-    /**
-     * Private default constructor for a unique instance of this class
-     */
-    VizualisationService();
 };
 
 #endif /* VIZUALISATION_SERVICE_H */

@@ -16,7 +16,9 @@
 #include <string>
 
 #include "../beans/cff/CFFOutputData.h"
-#include "Service.h"
+#include "../ServiceObject.h"
+
+class Scenario;
 
 class ObservableKinematic;
 
@@ -24,14 +26,14 @@ class DVCSModule;
 class Observable;
 class ObservableModule;
 
-class ObservableService: public Service {
+class ObservableService: public ServiceObject {
 public:
-    static const std::string ID; ///< Unique ID to self-register in the registry
+    static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
     /**
-     * Share a unique pointer of this class
+     * Default constructor
      */
-    static ObservableService* getInstance();
+    ObservableService(const std::string &className);
 
     /**
      * Default destructor
@@ -46,15 +48,7 @@ public:
     virtual void computeScenario(Scenario scenario);
 
 private:
-    /**
-     * Private pointer of this class for a unique instance
-     */
-    static ObservableService* m_pInstance;
 
-    /**
-     * Private default constructor for a unique instance
-     */
-    ObservableService();
 };
 
 #endif /* OBSERVABLE_SERVICE_H */

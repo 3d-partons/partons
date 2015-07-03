@@ -16,7 +16,7 @@
 
 #include "../beans/gpd/GPDType.h"
 #include "../beans/parton_distribution/PartonDistribution.h"
-#include "ModuleObject.h"
+#include "../ModuleObject.h"
 
 class EvolQCDModule;
 class GPDResult;

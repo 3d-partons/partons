@@ -17,7 +17,9 @@
 
 #include "../beans/gpd/GPDType.h"
 #include "../beans/kinematic/GPDKinematic.h"
-#include "Service.h"
+#include "../ServiceObject.h"
+
+class Scenario;
 
 class GPDResultList;
 
@@ -25,16 +27,14 @@ class EvolQCDModule;
 class GPDModule;
 class GPDResult;
 
-class GPDService: public Service {
+class GPDService: public ServiceObject {
 public:
-    static const std::string ID; ///< Unique ID to self-register in the registry
+    static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
     /**
-     * A static function that provides a unique pointer of this class
-     *
-     * @return A unique pointer of this class
+     * Default constructor
      */
-    static GPDService* getInstance();
+    GPDService(const std::string &className);
 
     /**
      * Default destructor
@@ -112,12 +112,6 @@ public:
             GPDModule* pGPDModule);
 
 private:
-    static GPDService* pInstance; ///< Private pointer of this class for a unique instance
-
-    /**
-     * Private default constructor for a unique instance of this class
-     */
-    GPDService();
 
     GPDKinematic* m_pGPDKinematic;
     GPDModule* m_pGPDModule;

@@ -32,7 +32,8 @@ class c_mstwpdf;
 
 class MPSSW13Model: public GPDModule {
 public:
-    static const std::string moduleID;
+    static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
+
     MPSSW13Model(const std::string &className);
     virtual ~MPSSW13Model();
 

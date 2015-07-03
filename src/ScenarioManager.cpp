@@ -6,8 +6,9 @@
 #include "beans/kinematic/GPDKinematic.h"
 #include "modules/GPDModule.h"
 #include "ModuleObjectFactory.h"
-#include "services/Service.h"
-#include "ServiceRegistry.h"
+#include "services/ServiceFunctionNames.h"
+#include "ServiceObject.h"
+#include "ServiceObjectRegistry.h"
 #include "utils/module/hadron_structure/GPDUtils.h"
 #include "utils/parser/xml/Attributs.h"
 #include "utils/stringUtils/StringUtils.h"
@@ -38,10 +39,10 @@ void ScenarioManager::playScenario(const std::string &scenarioFilePath) {
     // parse XML file
     analyse(scenarioFilePath);
 
-    Service* pService = ServiceRegistry::getInstance()->getService(
+    ServiceObject* pServiceObject = ServiceObjectRegistry::get(
             m_scenario.getServiceName());
 
-    pService->computeScenario(m_scenario);
+    pServiceObject->computeScenario(m_scenario);
 
 //    // tant que la liste des taches a effectuees n'est pas vide
 //    while (!m_taskQueue.empty()) {
@@ -106,8 +107,7 @@ void ScenarioManager::startElement(std::string tagName, Attributs attributes,
     if (StringUtils::equals(tagName, "GPDModule")) {
         std::string gpdModuleId = attributes.getStringValueOf("id");
 
-        GPDModule* pGPDModule =
-                ModuleObjectFactory::getInstance()->newGPDModule(gpdModuleId);
+        GPDModule* pGPDModule = ModuleObjectFactory::newGPDModule(gpdModuleId);
 
         m_scenario.addFunctionArg(tagName, static_cast<void*>(pGPDModule));
     }

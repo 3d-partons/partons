@@ -1,9 +1,3 @@
-/*
- * BaseObjectManager.cpp
- *
- *  Created on: Jun 23, 2015
- *      Author: debian
- */
 
 #include "BaseObjectManager.h"
 

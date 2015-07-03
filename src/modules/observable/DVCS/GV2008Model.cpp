@@ -9,21 +9,21 @@
 
 #include "../../../beans/gpd/GPDType.h"
 #include "../../../beans/observable/Observable.h"
+#include "../../../BaseObjectRegistry.h"
 #include "../../../FundamentalPhysicalConstants.h"
-#include "../../../ModuleObjectFactory.h"
 #include "../../../utils/logger/LoggerManager.h"
 #include "../../../utils/MathUtils.h"
 #include "../../../utils/stringUtils/Formatter.h"
 
-// Initialise [class]::moduleID with a unique name.
-const std::string GV2008Model::moduleID =
-        ModuleObjectFactory::getInstance()->registerModule(
+// Initialise [class]::classId with a unique name.
+const unsigned int GV2008Model::classId =
+        BaseObjectRegistry::getInstance()->registerBaseObject(
                 new GV2008Model("GV2008Model"));
 
 /*--------------------------------------- Constructors ---------------------------------*/
 
-GV2008Model::GV2008Model(const std::string &className)
-        : DVCSModule(className), m_qCM(Vector4D(0., 0., 0., 0.)), m_pCM(
+GV2008Model::GV2008Model(const std::string &className) :
+        DVCSModule(className), m_qCM(Vector4D(0., 0., 0., 0.)), m_pCM(
                 Vector4D(0., 0., 0., 0.)), m_qpCM(Vector4D(0., 0., 0., 0.)), m_ppCM(
                 Vector4D(0., 0., 0., 0.)) {
     m_E = 5.77;
@@ -34,8 +34,8 @@ GV2008Model::GV2008Model(const std::string &className)
 GV2008Model::~GV2008Model() {
 }
 
-GV2008Model::GV2008Model(const GV2008Model& other)
-        : DVCSModule(other) {
+GV2008Model::GV2008Model(const GV2008Model& other) :
+        DVCSModule(other) {
     m_qCM = other.m_qCM;
     m_pCM = other.m_pCM;
     m_qpCM = other.m_qpCM;

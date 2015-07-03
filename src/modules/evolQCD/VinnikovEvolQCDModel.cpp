@@ -10,19 +10,19 @@
 #include "../../beans/gpd/GPDType.h"
 #include "../../beans/parton_distribution/GluonDistribution.h"
 #include "../../beans/parton_distribution/PartonDistribution.h"
+#include "../../BaseObjectRegistry.h"
 #include "../../FundamentalPhysicalConstants.h"
-#include "../../ModuleObjectFactory.h"
 #include "../../utils/logger/LoggerManager.h"
 #include "../../utils/stringUtils/Formatter.h"
 #include "../GPDModule.h"
 
-// Initialise [class]::moduleID with a unique name.
-const std::string VinnikovEvolQCDModel::moduleID =
-        ModuleObjectFactory::getInstance()->registerModule(
+// Initialise [class]::classId with a unique name.
+const unsigned int VinnikovEvolQCDModel::classId =
+        BaseObjectRegistry::getInstance()->registerBaseObject(
                 new VinnikovEvolQCDModel("VinnikovEvolQCDModel"));
 
-VinnikovEvolQCDModel::VinnikovEvolQCDModel(const std::string &className)
-        : EvolQCDModule(className), m_nbColor(3.), m_CF(
+VinnikovEvolQCDModel::VinnikovEvolQCDModel(const std::string &className) :
+        EvolQCDModule(className), m_nbColor(3.), m_CF(
                 0.5 * (m_nbColor - 1. / m_nbColor)), m_CA(
                 2. * m_CF + 1. / m_nbColor), m_nbActiveFlavor(3.), m_b0(
                 11. * m_nbColor / 3. - 2. * m_nbActiveFlavor / 3.), m_TR(
@@ -38,8 +38,8 @@ VinnikovEvolQCDModel::~VinnikovEvolQCDModel() {
 }
 
 //TODO refactoring
-VinnikovEvolQCDModel::VinnikovEvolQCDModel(const VinnikovEvolQCDModel &other)
-        : EvolQCDModule(other) {
+VinnikovEvolQCDModel::VinnikovEvolQCDModel(const VinnikovEvolQCDModel &other) :
+        EvolQCDModule(other) {
     m_nbColor = other.m_nbColor;
     m_CF = other.m_CF;
     m_CA = other.m_CA;

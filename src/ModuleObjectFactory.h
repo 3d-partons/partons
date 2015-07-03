@@ -1,79 +1,59 @@
-#ifndef BASE_MODULE_FACTORY_H
-#define BASE_MODULE_FACTORY_H
-
-/**
- * @file ModuleObjectFactory.h
- * @author Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 06 Aout 2014
- * @version 1.0
+/*
+ * ModuleObjectFactory.h
  *
- * @class ModuleObjectFactory
- *
- * @brief \<singleton\> Use for register all available module, create/configure and share them for a later use.
- *
- * Use map of pointer because you can't instantiate object from abstract class, you can only share pointer.
+ *  Created on: Jul 2, 2015
+ *      Author: Bryan BERTHOU
  */
 
-#include <map>
+#ifndef MODULEOBJECTFACTORY_H_
+#define MODULEOBJECTFACTORY_H_
+
 #include <string>
 
-#include "modules/ModuleObject.h"
-
-class RunningAlphaStrongModule;
-
+class BaseObjectFactory;
+class CoefficientFunctionModule;
 class DVCSModule;
-
-class CFFModule;
 class EvolQCDModule;
 class GPDModule;
+class MathIntegratorModule;
+class ObservableModule;
+class RunningAlphaStrongModule;
 
+/*
+ *
+ */
 class ModuleObjectFactory {
 public:
 
-    /**
-     * Share a unique pointer of this class
-     */
-    static ModuleObjectFactory* getInstance();
+    static GPDModule* newGPDModule(unsigned int classId);
+    static GPDModule* newGPDModule(const std::string &className);
 
-    /**
-     * Default destructor
-     */
-    virtual ~ModuleObjectFactory();
+    static CoefficientFunctionModule* newCoefficientFunctionModule(
+            unsigned int classId);
+    static CoefficientFunctionModule* newCoefficientFunctionModule(
+            const std::string &className);
 
-    /**
-     * Store a unique instance of a module identified by a unique string character key.
-     * @param _pBaseModule: an instance of the module built by its default constructor.
-     * @return Classname of the module
-     */
-    std::string registerModule(ModuleObject * _pModuleObject);
+    static EvolQCDModule* newEvolQCDModule(unsigned int classId);
+    static EvolQCDModule* newEvolQCDModule(const std::string & className);
 
-    void init();
+    static DVCSModule* newDVCSModule(unsigned int classId);
+    static DVCSModule* newDVCSModule(const std::string & className);
 
-    ModuleObject* newModule(const std::string & ID);
-    GPDModule* newGPDModule(const std::string & ID);
-    CFFModule* newCFFModule(const std::string & ID);
-    EvolQCDModule* newEvolQCDModule(const std::string & ID);
-    DVCSModule* newDVCSModule(const std::string & ID);
-    MathIntegratorModule* newMathIntegratorModule(const std::string & ID);
-    RunningAlphaStrongModule* newRunningAlphaStrongModule(
-            const std::string & ID);
+    static MathIntegratorModule* newMathIntegratorModule(unsigned int classId);
+    static MathIntegratorModule* newMathIntegratorModule(
+            const std::string & className);
 
-    std::string toString();
+    static RunningAlphaStrongModule* newRunningAlphaStrongModule(
+            unsigned int classId);
+    static RunningAlphaStrongModule* newRunningAlphaStrongModule(
+            const std::string & className);
+
+    static ObservableModule* newObservableModule(unsigned int classId);
+    static ObservableModule* newObservableModule(const std::string &className);
 
 private:
-    /**
-     * Private pointer of this class for a unique instance
-     */
-    static ModuleObjectFactory* m_pInstance;
 
-    /**
-     * Private default constructor for a unique instance
-     */
-    ModuleObjectFactory();
-
-    std::map<std::string, ModuleObject*> m_moduleRegistry; ///< list of all available modules
-    std::map<std::string, ModuleObject*>::iterator m_it;
-
+    static BaseObjectFactory* m_pBaseObjectFactory;
 };
 
-#endif /* BASE_MODULE_FACTORY_H */
+#endif /* MODULEOBJECTFACTORY_H_ */

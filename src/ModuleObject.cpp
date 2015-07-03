@@ -1,17 +1,20 @@
 #include "ModuleObject.h"
 
+#include <stddef.h>
+#include <map>
 #include <stdexcept>
+#include <string>
 
-#include "../beans/Parameters.h"
-#include "MathIntegratorModule.h"
+#include "beans/Parameters.h"
+#include "modules/MathIntegratorModule.h"
 
-ModuleObject::ModuleObject(const std::string &className)
-        : BaseObject(className), m_currentFunctionToIntegrate(0), m_pMathIntegratorModule(
+ModuleObject::ModuleObject(const std::string &className) :
+        BaseObject(className), m_currentFunctionToIntegrate(0), m_pMathIntegratorModule(
                 0) {
 }
 
-ModuleObject::ModuleObject(const ModuleObject &other)
-        : BaseObject(other) {
+ModuleObject::ModuleObject(const ModuleObject &other) :
+        BaseObject(other) {
 
     m_currentFunctionToIntegrate = other.m_currentFunctionToIntegrate;
 
@@ -34,8 +37,7 @@ void ModuleObject::configure(Parameters parameters) {
 }
 
 //TODO better exception message
-double ModuleObject::functionsToIntegrate(double * x,
-        double * parameters) {
+double ModuleObject::functionsToIntegrate(double * x, double * parameters) {
     throw std::runtime_error("[ModuleObject::functionsToIntegrate");
 }
 
@@ -56,7 +58,6 @@ void ModuleObject::setCurrentFunctionToIntegrate(
     m_currentFunctionToIntegrate = currentFunctionToIntegrate;
 }
 
-void ModuleObject::init()
-{
+void ModuleObject::init() {
 
 }

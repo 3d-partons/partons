@@ -1,11 +1,10 @@
 #include "Partons.h"
 
 #include <pthread.h>
-#include <unistd.h>
 
 #include "BaseObjectManager.h"
+#include "BaseObjectRegistry.h"
 #include "database/DatabaseManager.h"
-#include "ModuleObjectFactory.h"
 #include "utils/logger/LoggerManager.h"
 #include "utils/PropertiesManager.h"
 #include "utils/stringUtils/StringUtils.h"
@@ -44,7 +43,7 @@ void Partons::init(char** argv) {
     m_pLoggerManager->init();
 
     // 3. Init the ModuleFactory
-    ModuleObjectFactory::getInstance()->init();
+    BaseObjectRegistry::getInstance()->init();
 
     // Database connexion
     DatabaseManager::getInstance();
@@ -60,11 +59,8 @@ void Partons::init(char** argv) {
 void Partons::close() {
     DatabaseManager::getInstance()->close();
 
-    delete m_pBaseObjectManager;
-    m_pBaseObjectManager = 0;
-
-    void* result;
     // Wait the end of the Logger thread
+    void* result;
     pthread_join(m_pLoggerManager->getThreadId(), &result);
 
 //    while (!(m_pLoggerManager->isEmptyMessageQueue())) {
@@ -73,6 +69,10 @@ void Partons::close() {
 
     // Logger must be delete at last
     m_pLoggerManager->close();
+
+    // Delete all objects at the end and only at the end.
+    delete m_pBaseObjectManager;
+    m_pBaseObjectManager = 0;
 }
 
 std::string Partons::getCurrentWorkingDirectory() {

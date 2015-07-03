@@ -5,15 +5,15 @@
 #include <Math/WrappedTF1.h>
 #include <TF1.h>
 
-#include "../../ModuleObjectFactory.h"
+#include "../../BaseObjectRegistry.h"
 
-// Initialise [class]::moduleID with a unique name and enable registerModule() to be executed before the main() function.
-const std::string RootIntegrationMode::moduleID =
-        ModuleObjectFactory::getInstance()->registerModule(
+// Initialise [class]::classId with a unique name.
+const unsigned int RootIntegrationMode::classId =
+        BaseObjectRegistry::getInstance()->registerBaseObject(
                 new RootIntegrationMode("RootIntegrationMode"));
 
-RootIntegrationMode::RootIntegrationMode(const std::string &className)
-        : MathIntegratorModule(className) {
+RootIntegrationMode::RootIntegrationMode(const std::string &className) :
+        MathIntegratorModule(className) {
 
 }
 
@@ -21,8 +21,8 @@ RootIntegrationMode::~RootIntegrationMode() {
 
 }
 
-RootIntegrationMode::RootIntegrationMode(const RootIntegrationMode &other)
-        : MathIntegratorModule(other) {
+RootIntegrationMode::RootIntegrationMode(const RootIntegrationMode &other) :
+        MathIntegratorModule(other) {
 }
 
 RootIntegrationMode* RootIntegrationMode::clone() const {

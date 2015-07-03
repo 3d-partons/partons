@@ -1,4 +1,4 @@
-#include "CFFModule.h"
+#include "CoefficientFunctionModule.h"
 
 #include <stdexcept>
 #include <utility>
@@ -10,8 +10,9 @@
 #include "GPDModule.h"
 #include "RunningAlphaStrongModule.h"
 
-CFFModule::CFFModule(const std::string &className)
-        : ModuleObject(className), m_xi(0.), m_xB(0.), m_t(0.), m_Q2(0.), m_MuF(
+CoefficientFunctionModule::CoefficientFunctionModule(
+        const std::string &className) :
+        ModuleObject(className), m_xi(0.), m_xB(0.), m_t(0.), m_Q2(0.), m_MuF(
                 0.), m_MuR(0.), m_qcdOrderType(
                 PerturbativeQCDOrderType::UNDEFINED), m_currentGPDComputeType(
                 GPDType::UNDEFINED), m_gpdType(GPDType::UNDEFINED), m_pGPDModule(
@@ -19,8 +20,9 @@ CFFModule::CFFModule(const std::string &className)
 
 }
 
-CFFModule::CFFModule(const CFFModule &other)
-        : ModuleObject(other) {
+CoefficientFunctionModule::CoefficientFunctionModule(
+        const CoefficientFunctionModule &other) :
+        ModuleObject(other) {
     m_listOfCFFComputeFunctionAvailable =
             other.m_listOfCFFComputeFunctionAvailable;
     m_it = other.m_it;
@@ -52,11 +54,11 @@ CFFModule::CFFModule(const CFFModule &other)
     }
 }
 
-CFFModule::~CFFModule() {
+CoefficientFunctionModule::~CoefficientFunctionModule() {
 }
 
 //TODO implement
-void CFFModule::initModule() {
+void CoefficientFunctionModule::initModule() {
     m_xi = m_xB / (2 - m_xB);
 
     m_pLoggerManager->debug(getClassName(), __func__,
@@ -64,7 +66,7 @@ void CFFModule::initModule() {
 }
 
 //TODO implement
-void CFFModule::isModuleWellConfigured() {
+void CoefficientFunctionModule::isModuleWellConfigured() {
     m_pLoggerManager->debug(getClassName(), __func__,
             Formatter() << "executed");
 
@@ -95,8 +97,8 @@ void CFFModule::isModuleWellConfigured() {
     }
 }
 
-CFFOutputData CFFModule::compute(const double xB, const double t,
-        const double Q2, const double MuF, const double MuR,
+CFFOutputData CoefficientFunctionModule::compute(const double xB,
+        const double t, const double Q2, const double MuF, const double MuR,
         GPDType::Type gpdComputeType) {
     preCompute(xB, t, Q2, MuF, MuR, gpdComputeType);
 
@@ -136,23 +138,24 @@ CFFOutputData CFFModule::compute(const double xB, const double t,
     return cffOutputData;
 }
 
-std::complex<double> CFFModule::computeUnpolarized() {
+std::complex<double> CoefficientFunctionModule::computeUnpolarized() {
     throw std::runtime_error(
             "[CFFModule::computeUnpolarized] check your child implementation : "
                     + getClassName());
 }
 
-std::complex<double> CFFModule::computePolarized() {
+std::complex<double> CoefficientFunctionModule::computePolarized() {
     throw std::runtime_error(
             "[CFFModule::computeUnpolarized] check your child implementation : "
                     + getClassName());
 }
 
-void CFFModule::preCompute(const double xB, const double t, const double Q2,
-        const double MuF, const double MuR, GPDType::Type gpdComputeType) {
+void CoefficientFunctionModule::preCompute(const double xB, const double t,
+        const double Q2, const double MuF, const double MuR,
+        GPDType::Type gpdComputeType) {
 
     m_pLoggerManager->debug(getClassName(), __func__,
-               Formatter() << "enter preCompute() function ...");
+            Formatter() << "enter preCompute() function ...");
 
     m_xB = xB;
     m_t = t;
@@ -168,18 +171,19 @@ void CFFModule::preCompute(const double xB, const double t, const double Q2,
     isModuleWellConfigured();
 }
 
-const GPDModule* CFFModule::getGpdModule() const {
+const GPDModule* CoefficientFunctionModule::getGpdModule() const {
     return m_pGPDModule;
 }
 
-void CFFModule::setGpdModule(GPDModule* gpdModule) {
+void CoefficientFunctionModule::setGpdModule(GPDModule* gpdModule) {
     m_pGPDModule = gpdModule;
 }
 
-PerturbativeQCDOrderType::Type CFFModule::getQcdOrderType() const {
+PerturbativeQCDOrderType::Type CoefficientFunctionModule::getQcdOrderType() const {
     return m_qcdOrderType;
 }
 
-void CFFModule::setQcdOrderType(PerturbativeQCDOrderType::Type qcdOrderType) {
+void CoefficientFunctionModule::setQcdOrderType(
+        PerturbativeQCDOrderType::Type qcdOrderType) {
     m_qcdOrderType = qcdOrderType;
 }

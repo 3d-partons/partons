@@ -20,7 +20,7 @@
 class DVCSCFFHeavyQuarkModel: public DVCSCFFModel {
 public:
 
-    static const std::string moduleID; ///< Unique ID to automatically register the module in the factory.
+    static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
     DVCSCFFHeavyQuarkModel(const std::string &className);
 

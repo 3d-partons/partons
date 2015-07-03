@@ -14,8 +14,6 @@
 
 #include <string>
 
-class BaseObjectManager;
-
 class LoggerManager;
 
 class BaseObject {
@@ -41,8 +39,7 @@ public:
      */
     virtual BaseObject* clone() const;
 
-    //TODO voir si on en a besoin pour gérer la durée de vie des pointeurs membres des sous classes
-    //virtual void destroy() = 0;
+    virtual void init();
 
     /**
      * Return a pre-formatted characters string for output visualization of class member's values
@@ -53,10 +50,10 @@ public:
 
     // ##### GETTERS & SETTERS #####
 
-    unsigned int getObjectId() const;
-    void setObjectId(unsigned int objectId);
     const std::string& getClassName() const;
     void setClassName(const std::string& className);
+    unsigned int getObjectId() const;
+    void setObjectId(unsigned int objectId);
 
 protected:
     LoggerManager* m_pLoggerManager; ///< Pointer to LoggerManager class
@@ -72,19 +69,17 @@ protected:
             const std::string &errorMessage);
 
 private:
-    static unsigned int uniqueID;
-
     unsigned int m_objectId;
     std::string m_className; ///< String that represents class's name used by the LoggerManager's class for know the source of the output trace
 
-    //BaseObjectManager* m_pBaseObjectManager;
+    static unsigned int m_uniqueObjectIdCounter;
 
     /**
      * On call, returns an incremented by one uniqueID member value.
      *
      * @return incremented unsigned int ID.
      */
-    unsigned int getUniqueID();
+    unsigned int getUniqueObjectId();
 };
 
 #endif /* BASE_OBJECT_H */

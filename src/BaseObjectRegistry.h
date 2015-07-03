@@ -1,8 +1,8 @@
 /*
  * BaseObjectRegistry.h
  *
- *  Created on: Jun 23, 2015
- *      Author: Bryan BERTHOU
+ *  Created on: Jun 25, 2015
+ *      Author: debian
  */
 
 #ifndef BASE_OBJECT_REGISTRY_H
@@ -25,22 +25,45 @@ public:
      */
     virtual ~BaseObjectRegistry();
 
-    void add(BaseObject* baseObject);
-    BaseObject* get(const std::string & baseObjectName);
+    /**
+     * Store a unique instance of a module identified by a unique string character key.
+     * @param _pBaseModule: an instance of the module built by its default constructor.
+     * @return Classname of the module
+     */
+    unsigned int registerBaseObject(BaseObject * pBaseObject);
+
+    // We need to perform this task after self registered BaseObject to resolve dependencies between pointed objects.
+    void init();
+
+    BaseObject* get(unsigned int classId);
+    BaseObject* get(const std::string &className);
+
+    std::string toString();
 
 private:
+    std::map<unsigned int, BaseObject*> m_baseObjectList;
+    std::map<unsigned int, BaseObject*>::iterator m_itBaseObjectList;
+
+    std::map<std::string, BaseObject*> m_translate;
+    std::map<std::string, BaseObject*>::iterator m_itTranslate;
+
+    static unsigned int m_uniqueClassIdCounter;
+
+    unsigned int getUniqueClassId();
+
     /**
      * Private pointer of this class for a unique instance
      */
     static BaseObjectRegistry* m_pInstance;
 
     /**
-     * Default constructor
+     * Private default constructor for a unique instance
      */
     BaseObjectRegistry();
 
-    std::map<std::string, BaseObject*> m_registry; ///< list of all available object ; an object is identified by its ID
-    std::map<std::string, BaseObject*>::iterator m_it; ///< iterator to the list of object
+    // Stop the compiler generating methods of copy the object
+    BaseObjectRegistry(BaseObjectRegistry const& other); // Not Implemented
+    BaseObjectRegistry& operator=(BaseObjectRegistry const& other); // Not Implemented
 };
 
 #endif /* BASE_OBJECT_REGISTRY_H */

@@ -14,20 +14,18 @@
 #include "../../beans/parton_distribution/PartonDistribution.h"
 #include "../../beans/Parameters.h"
 #include "../../beans/QuarkFlavor.h"
+#include "../../BaseObjectRegistry.h"
 #include "../../FundamentalPhysicalConstants.h"
-#include "../../ModuleObjectFactory.h"
 #include "../../utils/logger/LoggerManager.h"
 #include "../../utils/stringUtils/Formatter.h"
 
-//#include "MPSSW13Model.h"
-
-// Initialise GK11Module::moduleID with a unique name and enable registerModule() to be executed before the main() function.
-const std::string GK11Model::moduleID =
-        ModuleObjectFactory::getInstance()->registerModule(
+// Initialise [class]::classId with a unique name.
+const unsigned int GK11Model::classId =
+        BaseObjectRegistry::getInstance()->registerBaseObject(
                 new GK11Model("GK11Model"));
 
-GK11Model::GK11Model(const std::string &className)
-        : GPDModule(className) {
+GK11Model::GK11Model(const std::string &className) :
+        GPDModule(className) {
     m_nbOfQuarkFlavor = 3;
     fL = 0.;
     m_MuF2_ref = 4.;
@@ -64,8 +62,8 @@ GK11Model::GK11Model(const std::string &className)
             std::make_pair(GPDType::Et, &GPDModule::computeEt));
 }
 
-GK11Model::GK11Model(const GK11Model& other)
-        : GPDModule(other) {
+GK11Model::GK11Model(const GK11Model& other) :
+        GPDModule(other) {
     m_nbOfQuarkFlavor = other.getNbOfQuarkFlavor();
     c1 = other.getC1();
     c2 = other.getC2();

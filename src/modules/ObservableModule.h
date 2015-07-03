@@ -14,7 +14,7 @@
 
 #include <string>
 
-#include "ModuleObject.h"
+#include "../ModuleObject.h"
 
 class ObservableModule: public ModuleObject {
 public:

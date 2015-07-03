@@ -5,34 +5,21 @@
 #include <QtCore/qstring.h>
 
 #include "../beans/Scenario.h"
-#include "../ServiceRegistry.h"
+#include "../BaseObjectRegistry.h"
 #include "../utils/plot2D/Plot2D.h"
 #include "../utils/plot2D/Plot2DList.h"
 
-const std::string VizualisationService::ID =
-        ServiceRegistry::getInstance()->registerNewService(getInstance());
+// Initialise [class]::classId with a unique name.
+const unsigned int VizualisationService::classId =
+        BaseObjectRegistry::getInstance()->registerBaseObject(
+                new VizualisationService("VizualisationService"));
 
-// Global static pointer used to ensure a single instance of the class.
-VizualisationService* VizualisationService::pInstance = 0;
-
-VizualisationService::VizualisationService()
-        : Service("VizualisationService") {
-}
-
-VizualisationService* VizualisationService::getInstance() {
-    // Only allow one instance of class to be generated.
-    if (!pInstance) {
-        pInstance = new VizualisationService();
-    }
-
-    return pInstance;
+VizualisationService::VizualisationService(const std::string &className) :
+        ServiceObject(className) {
 }
 
 VizualisationService::~VizualisationService() {
-    if (pInstance != 0) {
-        delete pInstance;
-        pInstance = 0;
-    }
+//TODO
 }
 
 //TODO implement all function

@@ -15,21 +15,20 @@
 #include "../../beans/parton_distribution/PartonDistribution.h"
 #include "../../beans/parton_distribution/QuarkDistribution.h"
 #include "../../beans/QuarkFlavor.h"
+#include "../../BaseObjectRegistry.h"
 #include "../../FundamentalPhysicalConstants.h"
-#include "../../ModuleObjectFactory.h"
 #include "../../utils/logger/LoggerManager.h"
 #include "../../utils/mstwpdf.h"
 #include "../../utils/PropertiesManager.h"
 #include "../../utils/stringUtils/Formatter.h"
 
-//#include "GK11Model.h"
-
-const std::string MPSSW13Model::moduleID =
-        ModuleObjectFactory::getInstance()->registerModule(
+// Initialise [class]::classId with a unique name.
+const unsigned int MPSSW13Model::classId =
+        BaseObjectRegistry::getInstance()->registerBaseObject(
                 new MPSSW13Model("MPSSW13Model"));
 
-MPSSW13Model::MPSSW13Model(const std::string &className)
-        : GPDModule(className), m_NbOfQuarkFlavor(2), m_NbOfColor(3), m_Mx(0.), m_MuF2(
+MPSSW13Model::MPSSW13Model(const std::string &className) :
+        GPDModule(className), m_NbOfQuarkFlavor(2), m_NbOfColor(3), m_Mx(0.), m_MuF2(
                 4.), m_MuF2_ref(4.), m_CA(3.), m_CF(4. / 3.), m_TF(1. / 2.), m_F1u(
                 0.), m_F1d(0.), m_FD(0.), m_ProfileShapeVal(1.), m_ProfileShapeSea(
                 2.), m_ProfileShapeGlue(2.), m_QuarkDTerm(0.), m_GluonDTerm(0.) {
@@ -50,8 +49,8 @@ void MPSSW13Model::init() {
     m_Forward = new c_mstwpdf(gridFilePath);
 }
 
-MPSSW13Model::MPSSW13Model(const MPSSW13Model& other)
-        : GPDModule(other) {
+MPSSW13Model::MPSSW13Model(const MPSSW13Model& other) :
+        GPDModule(other) {
     m_NbOfQuarkFlavor = other.m_NbOfQuarkFlavor;
     m_NbOfColor = other.m_NbOfColor;
     m_Mx = other.m_Mx;

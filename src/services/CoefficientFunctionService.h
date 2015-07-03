@@ -16,36 +16,38 @@
 
 #include "../beans/gpd/GPDType.h"
 #include "../beans/PerturbativeQCDOrderType.h"
-#include "Service.h"
+#include "../ServiceObject.h"
 
+class Scenario;
 class CFFInputData;
-class CFFModule;
+class CoefficientFunctionModule;
 class CFFOutputData;
 class GPDModule;
 
-class CFFService: public Service {
+class CoefficientFunctionService: public ServiceObject {
 public:
-    static const std::string ID; ///< Unique ID to self-register in the registry
+    static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
     /**
-     * Share a unique pointer of this class
+     * Default constructor
      */
-    static CFFService* getInstance();
+    CoefficientFunctionService(const std::string &className);
     /**
      * Default destructor
      */
-    virtual ~CFFService();
+    virtual ~CoefficientFunctionService();
 
     virtual void computeScenario(Scenario scenario);
 
-    virtual CFFOutputData computeWithGPDModel(CFFModule* cffModule,
-            GPDModule* _pGPDModule, CFFInputData &cffInputData,
-            const double MuF, const double MuR,
-            PerturbativeQCDOrderType::Type qcdOrderType,
-            GPDType::Type gpdType = GPDType::ALL);
-
-    virtual CFFOutputData computeWithCFFModel(CFFModule* cffModule,
+    virtual CFFOutputData computeWithGPDModel(
+            CoefficientFunctionModule* cffModule, GPDModule* _pGPDModule,
             CFFInputData &cffInputData, const double MuF, const double MuR,
+            PerturbativeQCDOrderType::Type qcdOrderType, GPDType::Type gpdType =
+                    GPDType::ALL);
+
+    virtual CFFOutputData computeWithCFFModel(
+            CoefficientFunctionModule* cffModule, CFFInputData &cffInputData,
+            const double MuF, const double MuR,
             PerturbativeQCDOrderType &qcdOrderType);
 
 //    std::vector<CFFOutputData> compute(
@@ -60,15 +62,7 @@ public:
 //            const std::string & filePath);
 
 private:
-    /**
-     * Private pointer of this class for a unique instance
-     */
-    static CFFService* m_pInstance;
 
-    /**
-     * Private default constructor for a unique instance
-     */
-    CFFService();
 };
 
 #endif /* CFF_SERVICE_H */

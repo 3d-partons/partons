@@ -7,18 +7,18 @@
 
 #include "DVCSCFFHeavyQuarkModel.h"
 
+#include "../../BaseObjectRegistry.h"
 #include "../../FundamentalPhysicalConstants.h"
-#include "../../ModuleObjectFactory.h"
 #include "../../utils/logger/LoggerManager.h"
 #include "../../utils/stringUtils/Formatter.h"
 
-// Initialise [class]::moduleID with a unique name.
-const std::string DVCSCFFHeavyQuarkModel::moduleID =
-        ModuleObjectFactory::getInstance()->registerModule(
+// Initialise [class]::classId with a unique name.
+const unsigned int DVCSCFFHeavyQuarkModel::classId =
+        BaseObjectRegistry::getInstance()->registerBaseObject(
                 new DVCSCFFHeavyQuarkModel("DVCSCFFHeavyQuarkModel"));
 
-DVCSCFFHeavyQuarkModel::DVCSCFFHeavyQuarkModel(const std::string& className)
-        : DVCSCFFModel(className), m_betas(std::complex<double>(0.0, 0.0)), m_rs(
+DVCSCFFHeavyQuarkModel::DVCSCFFHeavyQuarkModel(const std::string& className) :
+        DVCSCFFModel(className), m_betas(std::complex<double>(0.0, 0.0)), m_rs(
                 std::complex<double>(0.0, 0.0)), m_betaq(
                 std::complex<double>(0.0, 0.0)), m_rq(
                 std::complex<double>(0.0, 0.0)), m_TF(
@@ -35,8 +35,8 @@ DVCSCFFHeavyQuarkModel::~DVCSCFFHeavyQuarkModel() {
 }
 
 DVCSCFFHeavyQuarkModel::DVCSCFFHeavyQuarkModel(
-        const DVCSCFFHeavyQuarkModel& other)
-        : DVCSCFFModel(other) {
+        const DVCSCFFHeavyQuarkModel& other) :
+        DVCSCFFModel(other) {
     m_betas = other.m_betas;
     m_betaq = other.m_betaq;
     m_rs = other.m_rs;

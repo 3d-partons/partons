@@ -16,7 +16,8 @@
 #include <complex>
 #include <string>
 
-#include "../CFFModule.h"
+#include "../../beans/parton_distribution/PartonDistribution.h"
+#include "../CoefficientFunctionModule.h"
 
 class PartonDistribution;
 
@@ -24,7 +25,7 @@ class GPDResult;
 
 class GPDOutputData;
 
-class DVCSCFFModel: public CFFModule {
+class DVCSCFFModel: public CoefficientFunctionModule {
 public:
     enum FunctionNameToIntegrate {
         CONVOL_RE_KERNEL_QUARK_1V,
@@ -41,7 +42,7 @@ public:
         CONVOL_IM_KERNEL_GLUON_A
     };
 
-    static const std::string moduleID; ///< Unique ID to automatically register the module in the factory.
+    static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
     DVCSCFFModel(const std::string &className);
 
@@ -49,8 +50,7 @@ public:
 
     virtual ~DVCSCFFModel();
 
-    virtual double functionsToIntegrate(double * x,
-            double * parameters = 0);
+    virtual double functionsToIntegrate(double * x, double * parameters = 0);
 
     virtual void init();
 

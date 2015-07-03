@@ -1,47 +1,35 @@
-#include "CFFService.h"
+#include "CoefficientFunctionService.h"
 
 #include "../beans/cff/CFFInputData.h"
 #include "../beans/cff/CFFOutputData.h"
 #include "../beans/Scenario.h"
-#include "../modules/CFFModule.h"
-#include "../ServiceRegistry.h"
+#include "../BaseObjectRegistry.h"
+#include "../modules/CoefficientFunctionModule.h"
 
-const std::string CFFService::ID =
-        ServiceRegistry::getInstance()->registerNewService(getInstance());
+// Initialise [class]::classId with a unique name.
+const unsigned int CoefficientFunctionService::classId =
+        BaseObjectRegistry::getInstance()->registerBaseObject(
+                new CoefficientFunctionService("CoefficientFunctionService"));
 
-// Global static pointer used to ensure a single instance of the class.
-CFFService* CFFService::m_pInstance = 0;
-
-CFFService::CFFService()
-        : Service("CFFService") {
+CoefficientFunctionService::CoefficientFunctionService(
+        const std::string &className) :
+        ServiceObject(className) {
 
 }
 
-CFFService* CFFService::getInstance() {
-    // Only allow one instance of class to be generated.
-    if (!m_pInstance) {
-        m_pInstance = new CFFService();
-    }
-
-    return m_pInstance;
-}
-
-CFFService::~CFFService() {
-    if (m_pInstance != 0) {
-        delete m_pInstance;
-        m_pInstance = 0;
-    }
+CoefficientFunctionService::~CoefficientFunctionService() {
 }
 
 //TODO implement
-void CFFService::computeScenario(Scenario scenario) {
+void CoefficientFunctionService::computeScenario(Scenario scenario) {
 
 }
 
 //TODO implementer
-CFFOutputData CFFService::computeWithGPDModel(CFFModule* cffModule,
-        GPDModule* _pGPDModule, CFFInputData &cffInputData, const double MuF,
-        const double MuR, PerturbativeQCDOrderType::Type qcdOrderType,
+CFFOutputData CoefficientFunctionService::computeWithGPDModel(
+        CoefficientFunctionModule* cffModule, GPDModule* _pGPDModule,
+        CFFInputData &cffInputData, const double MuF, const double MuR,
+        PerturbativeQCDOrderType::Type qcdOrderType,
         GPDType::Type gpdComputeType) {
 
     // Configure cff module
@@ -155,8 +143,9 @@ CFFOutputData CFFService::computeWithGPDModel(CFFModule* cffModule,
 //}
 
 //TODO implement
-CFFOutputData CFFService::computeWithCFFModel(CFFModule* cffModule,
-        CFFInputData &cffInputData, const double MuF, const double MuR,
+CFFOutputData CoefficientFunctionService::computeWithCFFModel(
+        CoefficientFunctionModule* cffModule, CFFInputData &cffInputData,
+        const double MuF, const double MuR,
         PerturbativeQCDOrderType &qcdOrderType) {
 
     return CFFOutputData();

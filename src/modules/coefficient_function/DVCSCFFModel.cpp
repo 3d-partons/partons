@@ -11,10 +11,10 @@
 #include "../../beans/gpd/GPDResult.h"
 #include "../../beans/gpd/GPDType.h"
 #include "../../beans/parton_distribution/GluonDistribution.h"
-#include "../../beans/parton_distribution/PartonDistribution.h"
 #include "../../beans/parton_distribution/QuarkDistribution.h"
 #include "../../beans/PerturbativeQCDOrderType.h"
 #include "../../beans/QuarkFlavor.h"
+#include "../../BaseObjectRegistry.h"
 #include "../../FundamentalPhysicalConstants.h"
 #include "../../ModuleObjectFactory.h"
 #include "../../utils/logger/LoggerManager.h"
@@ -23,43 +23,46 @@
 #include "../GPDModule.h"
 #include "../math/RootIntegrationMode.h"
 
-// Initialise [class]::moduleID with a unique name.
-const std::string DVCSCFFModel::moduleID =
-        ModuleObjectFactory::getInstance()->registerModule(
+// Initialise [class]::classId with a unique name.
+const unsigned int DVCSCFFModel::classId =
+        BaseObjectRegistry::getInstance()->registerBaseObject(
                 new DVCSCFFModel("DVCSCFFModel"));
 
-DVCSCFFModel::DVCSCFFModel(const std::string &className)
-        : CFFModule(className), m_Zeta(0.), m_logQ2OverMu2(0.), m_Q(0.), m_nbOfActiveFlavour(
-                0), m_alphaSOver2Pi(0.), m_quarkDiagonal(0.), m_gluonDiagonal(
-                0.), m_realPartSubtractQuark(0.), m_imaginaryPartSubtractQuark(
+DVCSCFFModel::DVCSCFFModel(const std::string &className) :
+        CoefficientFunctionModule(className), m_Zeta(0.), m_logQ2OverMu2(0.), m_Q(
+                0.), m_nbOfActiveFlavour(0), m_alphaSOver2Pi(0.), m_quarkDiagonal(
+                0.), m_gluonDiagonal(0.), m_realPartSubtractQuark(0.), m_imaginaryPartSubtractQuark(
                 0.), m_realPartSubtractGluon(0.), m_imaginaryPartSubtractGluon(
                 0.), m_CF(4. / 3.)/*, m_integrator(
  ROOT::Math::IntegrationOneDim::kADAPTIVESINGULAR, 0., 1.e-3)*/{
 
     m_listOfCFFComputeFunctionAvailable.insert(
-            std::make_pair(GPDType::H, &CFFModule::computeUnpolarized));
+            std::make_pair(GPDType::H,
+                    &CoefficientFunctionModule::computeUnpolarized));
     m_listOfCFFComputeFunctionAvailable.insert(
-            std::make_pair(GPDType::E, &CFFModule::computeUnpolarized));
+            std::make_pair(GPDType::E,
+                    &CoefficientFunctionModule::computeUnpolarized));
     m_listOfCFFComputeFunctionAvailable.insert(
-            std::make_pair(GPDType::Ht, &CFFModule::computePolarized));
+            std::make_pair(GPDType::Ht,
+                    &CoefficientFunctionModule::computePolarized));
     m_listOfCFFComputeFunctionAvailable.insert(
-            std::make_pair(GPDType::Et, &CFFModule::computePolarized));
+            std::make_pair(GPDType::Et,
+                    &CoefficientFunctionModule::computePolarized));
 
 }
 
 void DVCSCFFModel::init() {
     //TODO le passer en configuration
-    m_pMathIntegratorModule =
-            ModuleObjectFactory::getInstance()->newMathIntegratorModule(
-                    RootIntegrationMode::moduleID);
+    m_pMathIntegratorModule = ModuleObjectFactory::newMathIntegratorModule(
+            RootIntegrationMode::classId);
 
     m_pRunningAlphaStrongModule =
-            ModuleObjectFactory::getInstance()->newRunningAlphaStrongModule(
-                    RunningAlphaStrong::moduleID);
+            ModuleObjectFactory::newRunningAlphaStrongModule(
+                    RunningAlphaStrong::classId);
 }
 
-DVCSCFFModel::DVCSCFFModel(const DVCSCFFModel &other)
-        : CFFModule(other) {
+DVCSCFFModel::DVCSCFFModel(const DVCSCFFModel &other) :
+        CoefficientFunctionModule(other) {
     m_Zeta = other.m_Zeta;
     m_logQ2OverMu2 = other.m_logQ2OverMu2;
     m_Q = other.m_Q;
@@ -94,7 +97,7 @@ DVCSCFFModel::~DVCSCFFModel() {
 
 void DVCSCFFModel::initModule() {
     // init parent module before
-    CFFModule::initModule();
+    CoefficientFunctionModule::initModule();
 
     m_Q = sqrt(m_Q2);
     m_Zeta = 2. * m_xi / (1 + m_xi);
@@ -112,7 +115,7 @@ void DVCSCFFModel::initModule() {
 
 void DVCSCFFModel::isModuleWellConfigured() {
     // check parent module before
-    CFFModule::isModuleWellConfigured();
+    CoefficientFunctionModule::isModuleWellConfigured();
 
     if (m_pGPDModule == 0) {
         throw std::runtime_error("[DVCSCFFModel] GPDModule* is NULL");

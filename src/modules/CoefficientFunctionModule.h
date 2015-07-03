@@ -18,26 +18,26 @@
 
 #include "../beans/gpd/GPDType.h"
 #include "../beans/PerturbativeQCDOrderType.h"
-#include "ModuleObject.h"
+#include "../ModuleObject.h"
 
 class RunningAlphaStrongModule;
 
 class CFFOutputData;
 class GPDModule;
 
-class CFFModule: public ModuleObject {
+class CoefficientFunctionModule: public ModuleObject {
 public:
     /**
      * Default constructor
      */
-    CFFModule(const std::string &className);
+    CoefficientFunctionModule(const std::string &className);
 
-    virtual CFFModule* clone() const = 0;
+    virtual CoefficientFunctionModule* clone() const = 0;
 
     /**
      * Default destructor
      */
-    virtual ~CFFModule();
+    virtual ~CoefficientFunctionModule();
 
     /**
      * Virtual method.
@@ -52,9 +52,8 @@ public:
      *
      * @return Return a pair of two double values. Real and Imaginary parts of CFF.
      */
-    virtual CFFOutputData compute(double xB, double t,
-            double Q2, double MuF, double MuR,
-            GPDType::Type gpdType);
+    virtual CFFOutputData compute(double xB, double t, double Q2, double MuF,
+            double MuR, GPDType::Type gpdType);
 
     virtual std::complex<double> computeUnpolarized();
     virtual std::complex<double> computePolarized();
@@ -73,10 +72,12 @@ protected:
      *
      * @param other
      */
-    CFFModule(const CFFModule &other);
+    CoefficientFunctionModule(const CoefficientFunctionModule &other);
 
-    std::map<GPDType::Type, std::complex<double> (CFFModule::*)()> m_listOfCFFComputeFunctionAvailable;
-    std::map<GPDType::Type, std::complex<double> (CFFModule::*)()>::iterator m_it;
+    std::map<GPDType::Type,
+            std::complex<double> (CoefficientFunctionModule::*)()> m_listOfCFFComputeFunctionAvailable;
+    std::map<GPDType::Type,
+            std::complex<double> (CoefficientFunctionModule::*)()>::iterator m_it;
 
     double m_xi;
     double m_xB;
@@ -96,8 +97,8 @@ protected:
     virtual void initModule();
     virtual void isModuleWellConfigured();
 
-    void preCompute(double xB, double t, double Q2,
-            double MuF, double MuR, GPDType::Type gpdType);
+    void preCompute(double xB, double t, double Q2, double MuF, double MuR,
+            GPDType::Type gpdType);
 };
 
 #endif /* CFF_MODULE_H */

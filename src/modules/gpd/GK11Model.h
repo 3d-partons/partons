@@ -29,7 +29,7 @@ class GPDQuarkFlavorData;
 class GK11Model: public GPDModule {
 public:
 
-    static const std::string moduleID; ///< Unique ID to automatically register the module in the factory.
+    static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
     /**
      * Default constructor

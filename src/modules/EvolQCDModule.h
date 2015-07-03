@@ -20,8 +20,8 @@
 #include "../beans/parton_distribution/PartonDistribution.h"
 #include "../beans/PerturbativeQCDOrderType.h"
 #include "../beans/QuarkFlavor.h"
+#include "../ModuleObject.h"
 #include "../utils/MatrixD.h"
-#include "ModuleObject.h"
 
 class GPDModule;
 
@@ -97,8 +97,7 @@ protected:
     //Matrix<double> m_matrixOfUnknownPartonDistribution; ///< HuPlus, HuMinus, ...
 
     void preCompute(double x, double xi, double t, double MuF, double MuR,
-            GPDModule* pGPDModule,
-            PartonDistribution partonDistribution);
+            GPDModule* pGPDModule, PartonDistribution partonDistribution);
 
     virtual void initModule();
     virtual void isModuleWellConfigured();

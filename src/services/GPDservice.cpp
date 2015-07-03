@@ -10,35 +10,21 @@
 #include "../beans/gpd/GPDType.h"
 #include "../beans/kinematic/GPDKinematic.h"
 #include "../beans/Scenario.h"
+#include "../BaseObjectRegistry.h"
 #include "../modules/GPDModule.h"
-#include "../ServiceRegistry.h"
 #include "GPDService.h"
 #include "ServiceFunctionNames.h"
 
-const std::string GPDService::ID =
-        ServiceRegistry::getInstance()->registerNewService(getInstance());
+// Initialise [class]::classId with a unique name.
+const unsigned int GPDService::classId =
+        BaseObjectRegistry::getInstance()->registerBaseObject(
+                new GPDService("GPDService"));
 
-// Global static pointer used to ensure a single instance of the class.
-GPDService* GPDService::pInstance = 0;
-
-GPDService::GPDService()
-        : Service("GPDService"), m_pGPDKinematic(0), m_pGPDModule(0) {
-}
-
-GPDService* GPDService::getInstance() {
-    // Only allow one instance of class to be generated.
-    if (!pInstance) {
-        pInstance = new GPDService();
-    }
-
-    return pInstance;
+GPDService::GPDService(const std::string &className) :
+        ServiceObject(className), m_pGPDKinematic(0), m_pGPDModule(0) {
 }
 
 GPDService::~GPDService() {
-    if (pInstance != 0) {
-        delete pInstance;
-        pInstance = 0;
-    }
 }
 
 //TODO implement all function

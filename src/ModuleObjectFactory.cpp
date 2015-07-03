@@ -1,112 +1,92 @@
+
 #include "ModuleObjectFactory.h"
 
-//#include <iostream>
-#include <sstream>
-#include <stdexcept>
-#include <utility>
-
-#include "modules/CFFModule.h"
+#include "BaseObjectFactory.h"
+#include "modules/CoefficientFunctionModule.h"
 #include "modules/EvolQCDModule.h"
 #include "modules/GPDModule.h"
 #include "modules/MathIntegratorModule.h"
 #include "modules/observable/DVCSModule.h"
 #include "modules/RunningAlphaStrongModule.h"
 
-// Global static pointer used to ensure a single instance of the class.
-ModuleObjectFactory* ModuleObjectFactory::m_pInstance = 0;
+BaseObjectFactory* ModuleObjectFactory::m_pBaseObjectFactory =
+        BaseObjectFactory::getInstance();
 
-ModuleObjectFactory::ModuleObjectFactory() {
+GPDModule* ModuleObjectFactory::newGPDModule(unsigned int classId) {
+    return static_cast<GPDModule*>(ModuleObjectFactory::m_pBaseObjectFactory->newBaseObject(
+            classId));
 }
 
-ModuleObjectFactory* ModuleObjectFactory::getInstance() {
-    // Only allow one instance of class to be generated.
-    if (!m_pInstance) {
-        m_pInstance = new ModuleObjectFactory();
-    }
-
-    return m_pInstance;
+GPDModule* ModuleObjectFactory::newGPDModule(const std::string& className) {
+    return static_cast<GPDModule*>(ModuleObjectFactory::m_pBaseObjectFactory->newBaseObject(
+            className));
 }
 
-ModuleObjectFactory::~ModuleObjectFactory() {
-
-    // m_moduleRegistry never delete'ed. (exist until program termination)
-    // because we can't guarantee correct destruction order
-    for (m_it = m_moduleRegistry.begin(); m_it != m_moduleRegistry.end();
-            m_it++) {
-        delete (m_it->second);
-        (m_it->second) = 0;
-    }
-
-    if (m_pInstance != 0) {
-        delete m_pInstance;
-        m_pInstance = 0;
-    }
+CoefficientFunctionModule* ModuleObjectFactory::newCoefficientFunctionModule(
+        unsigned int classId) {
+    return static_cast<CoefficientFunctionModule*>(ModuleObjectFactory::m_pBaseObjectFactory->newBaseObject(
+            classId));
 }
 
-std::string ModuleObjectFactory::registerModule(ModuleObject * pModuleObject) {
-    m_it = m_moduleRegistry.find(pModuleObject->getClassName());
-    if (m_it == m_moduleRegistry.end()) {
-        m_moduleRegistry.insert(
-                std::pair<std::string, ModuleObject*>(
-                        pModuleObject->getClassName(), pModuleObject));
-    } else {
-        throw std::runtime_error(
-                "[ModuleObjectFactory::registerModule] Module ID is already in the registry - Please check your moduleID = "
-                        + pModuleObject->getClassName());
-    }
-
-    return pModuleObject->getClassName();
+CoefficientFunctionModule* ModuleObjectFactory::newCoefficientFunctionModule(
+        const std::string& className) {
+    return static_cast<CoefficientFunctionModule*>(ModuleObjectFactory::m_pBaseObjectFactory->newBaseObject(
+            className));
 }
 
-// Some modules depend of other so we need to make references at NULL and assign pointer later.
-// Performed by the init() method of target module.
-void ModuleObjectFactory::init() {
-    for (m_it = m_moduleRegistry.begin(); m_it != m_moduleRegistry.end();
-            m_it++) {
-        if (m_it->second) {
-            (m_it->second)->init();
-        }
-    }
+ObservableModule* ModuleObjectFactory::newObservableModule(
+        unsigned int classId) {
+    return static_cast<ObservableModule*>(ModuleObjectFactory::m_pBaseObjectFactory->newBaseObject(
+            classId));
 }
 
-ModuleObject* ModuleObjectFactory::newModule(const std::string & ID) {
-    return m_moduleRegistry[ID]->clone();
+ObservableModule* ModuleObjectFactory::newObservableModule(
+        const std::string& className) {
+    return static_cast<ObservableModule*>(ModuleObjectFactory::m_pBaseObjectFactory->newBaseObject(
+            className));
 }
 
-GPDModule* ModuleObjectFactory::newGPDModule(const std::string & ID) {
-
-    return static_cast<GPDModule*>(newModule(ID));
+EvolQCDModule* ModuleObjectFactory::newEvolQCDModule(unsigned int classId) {
+    return static_cast<EvolQCDModule*>(ModuleObjectFactory::m_pBaseObjectFactory->newBaseObject(
+            classId));
 }
 
-CFFModule* ModuleObjectFactory::newCFFModule(const std::string & ID) {
-    return static_cast<CFFModule*>(newModule(ID));
+EvolQCDModule* ModuleObjectFactory::newEvolQCDModule(
+        const std::string& className) {
+    return static_cast<EvolQCDModule*>(ModuleObjectFactory::m_pBaseObjectFactory->newBaseObject(
+            className));
 }
 
-EvolQCDModule* ModuleObjectFactory::newEvolQCDModule(const std::string & ID) {
-    return static_cast<EvolQCDModule*>(newModule(ID));
+DVCSModule* ModuleObjectFactory::newDVCSModule(unsigned int classId) {
+    return static_cast<DVCSModule*>(ModuleObjectFactory::m_pBaseObjectFactory->newBaseObject(
+            classId));
 }
 
-DVCSModule* ModuleObjectFactory::newDVCSModule(const std::string & ID) {
-    return static_cast<DVCSModule*>(newModule(ID));
+DVCSModule* ModuleObjectFactory::newDVCSModule(const std::string& className) {
+    return static_cast<DVCSModule*>(ModuleObjectFactory::m_pBaseObjectFactory->newBaseObject(
+            className));
 }
 
 MathIntegratorModule* ModuleObjectFactory::newMathIntegratorModule(
-        const std::string & ID) {
-    return static_cast<MathIntegratorModule*>(newModule(ID));
+        unsigned int classId) {
+    return static_cast<MathIntegratorModule*>(ModuleObjectFactory::m_pBaseObjectFactory->newBaseObject(
+            classId));
+}
+
+MathIntegratorModule* ModuleObjectFactory::newMathIntegratorModule(
+        const std::string& className) {
+    return static_cast<MathIntegratorModule*>(ModuleObjectFactory::m_pBaseObjectFactory->newBaseObject(
+            className));
 }
 
 RunningAlphaStrongModule* ModuleObjectFactory::newRunningAlphaStrongModule(
-        const std::string & ID) {
-    return static_cast<RunningAlphaStrongModule*>(newModule(ID));
+        unsigned int classId) {
+    return static_cast<RunningAlphaStrongModule*>(ModuleObjectFactory::m_pBaseObjectFactory->newBaseObject(
+            classId));
 }
 
-std::string ModuleObjectFactory::toString() {
-    std::ostringstream os;
-    os << "[ModuleObjectFactory]" << std::endl;
-    for (m_it = m_moduleRegistry.begin(); m_it != m_moduleRegistry.end();
-            m_it++) {
-        os << m_it->second->toString() << std::endl;
-    }
-
-    return os.str();
+RunningAlphaStrongModule* ModuleObjectFactory::newRunningAlphaStrongModule(
+        const std::string& className) {
+    return static_cast<RunningAlphaStrongModule*>(ModuleObjectFactory::m_pBaseObjectFactory->newBaseObject(
+            className));
 }

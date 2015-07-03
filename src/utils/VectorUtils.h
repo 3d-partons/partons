@@ -15,6 +15,7 @@
 class VectorUtils {
 public:
     //TODO attention ici on modifie les vecteurs car on les tri. Faut-il copier les vector ou bien ne pas trier ?
+    // http://www.geeksforgeeks.org/find-union-and-intersection-of-two-unsorted-arrays/
     template<typename T>
     static std::vector<T> intersection(std::vector<T> & lhs,
             std::vector<T> & rhs) {

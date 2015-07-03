@@ -52,14 +52,14 @@
 #include <cstdlib>
 #include <stdexcept>
 
+#include "../../BaseObjectRegistry.h"
 #include "../../FundamentalPhysicalConstants.h"
-#include "../../ModuleObjectFactory.h"
 #include "../../utils/logger/LoggerManager.h"
 #include "../../utils/stringUtils/Formatter.h"
 
-// Initialise [class]::moduleID with a unique name.
-const std::string RunningAlphaStrong::moduleID =
-        ModuleObjectFactory::getInstance()->registerModule(
+// Initialise [class]::classId with a unique name.
+const unsigned int RunningAlphaStrong::classId =
+        BaseObjectRegistry::getInstance()->registerBaseObject(
                 new RunningAlphaStrong("RunningAlphaStrong"));
 
 /*------------------------------- Public routines ----------------------------*/
