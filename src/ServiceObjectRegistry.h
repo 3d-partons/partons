@@ -12,6 +12,8 @@
 
 #include <string>
 
+class VizualisationService;
+
 class BaseObjectRegistry;
 class CoefficientFunctionService;
 class GPDService;
@@ -30,6 +32,7 @@ public:
     static GPDService* getGPDService();
     static CoefficientFunctionService* getCoefficientFunctionService();
     static ObservableService* getObservableService();
+    static VizualisationService* getVizualisationService();
 
 private:
 

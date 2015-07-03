@@ -6,6 +6,7 @@
 #include "services/CoefficientFunctionService.h"
 #include "services/GPDService.h"
 #include "services/ObservableService.h"
+#include "services/VizualisationService.h"
 
 BaseObjectRegistry* ServiceObjectRegistry::m_pBaseObjectRegistry =
         BaseObjectRegistry::getInstance();
@@ -43,4 +44,8 @@ CoefficientFunctionService* ServiceObjectRegistry::getCoefficientFunctionService
 
 ObservableService* ServiceObjectRegistry::getObservableService() {
     return static_cast<ObservableService*>(get(ObservableService::classId));
+}
+
+VizualisationService* ServiceObjectRegistry::getVizualisationService() {
+    return static_cast<VizualisationService*>(get(VizualisationService::classId));
 }
