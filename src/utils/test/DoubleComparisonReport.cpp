@@ -2,17 +2,28 @@
 
 #include <sstream>
 
+#include "../math/Tolerances.h"
+
 DoubleComparisonReport::DoubleComparisonReport() :
         ComparisonReport(), m_absoluteDifference(0.), m_relativeDifference(0.), m_absoluteTolerance(
                 0.), m_relativeTolerance(0.) {
 }
 
-DoubleComparisonReport::DoubleComparisonReport(bool comparisonResult, double absoluteDifference,
-        double relativeDifference, double absoluteTolerance,
-        double relativeTolerance) :
-        ComparisonReport(comparisonResult), m_absoluteDifference(absoluteDifference), m_relativeDifference(
-                relativeDifference), m_absoluteTolerance(absoluteTolerance), m_relativeTolerance(
-                relativeTolerance) {
+DoubleComparisonReport::DoubleComparisonReport(bool comparisonResult,
+        double absoluteDifference, double relativeDifference,
+        double absoluteTolerance, double relativeTolerance) :
+        ComparisonReport(comparisonResult), m_absoluteDifference(
+                absoluteDifference), m_relativeDifference(relativeDifference), m_absoluteTolerance(
+                absoluteTolerance), m_relativeTolerance(relativeTolerance) {
+}
+
+DoubleComparisonReport::DoubleComparisonReport(bool comparisonResult,
+        double absoluteDifference, double relativeDifference,
+        Tolerances& tolerances) :
+        ComparisonReport(comparisonResult), m_absoluteDifference(
+                absoluteDifference), m_relativeDifference(relativeDifference), m_absoluteTolerance(
+                tolerances.getAbsoluteTolerance()), m_relativeTolerance(
+                tolerances.getRelativeTolerance()) {
 }
 
 DoubleComparisonReport::~DoubleComparisonReport() {

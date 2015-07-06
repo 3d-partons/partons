@@ -21,7 +21,7 @@ class QuarkDistributionReport: public ComparisonReport {
 public:
     QuarkDistributionReport();
     QuarkDistributionReport(QuarkFlavor::Type quarkFlavor,
-            bool ComparisonResult,
+            bool comparisonResult,
             DoubleComparisonReport quarkDistributionReport,
             DoubleComparisonReport quarkDistributionPlusReport,
             DoubleComparisonReport quarkDistributionMinusReport);

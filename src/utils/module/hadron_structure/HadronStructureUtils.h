@@ -11,6 +11,7 @@
 #include "../../../beans/parton_distribution/PartonDistribution.h"
 #include "../../../beans/parton_distribution/QuarkDistribution.h"
 
+class Tolerances;
 class PartonDistribution;
 class PartonDistributionReport;
 class GPDResult;
@@ -20,18 +21,17 @@ class QuarkDistributionReport;
 class HadronStructureUtils {
 public:
     static GPDResultReport compareGPDResults(GPDResult* p_lhsGpdResult,
-            GPDResult* p_rhsGpdResult, double absoluteTolerance,
-            double relativeTolerance);
+            GPDResult* p_rhsGpdResult, Tolerances& tolerances);
 
     static PartonDistributionReport comparePartonDistributions(
             const PartonDistribution &lhsPartonDistribution,
             const PartonDistribution &rhsPartonDistribution,
-            double absoluteTolerance, double relativeTolerance);
+            Tolerances& tolerances);
 
     static QuarkDistributionReport compareQuarkDistribution(
             const QuarkDistribution& lhsQuarDistribution,
             const QuarkDistribution& rhsQuarkDistribution,
-            double absoluteTolerance, double relativeTolerance);
+            Tolerances& tolerances);
 };
 
 #endif /* HADRONSTRUCTUREUTILS_H_ */

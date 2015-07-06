@@ -13,13 +13,19 @@
 #define DOUBLECOMPARISONREPORT_H_
 
 #include <string>
+
 #include "ComparisonReport.h"
+
+class Tolerances;
 
 class DoubleComparisonReport: public ComparisonReport {
 public:
     DoubleComparisonReport();
-    DoubleComparisonReport(bool comparisonResult, double absoluteDifference, double relativeDifference,
-            double absoluteTolerance, double relativeTolerance);
+    DoubleComparisonReport(bool comparisonResult, double absoluteDifference,
+            double relativeDifference, double absoluteTolerance,
+            double relativeTolerance);
+    DoubleComparisonReport(bool comparisonResult, double absoluteDifference,
+            double relativeDifference, Tolerances& tolerances);
     virtual ~DoubleComparisonReport();
 
     virtual std::string toString() const;
