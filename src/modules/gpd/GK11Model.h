@@ -21,8 +21,6 @@
 #include "../../beans/parton_distribution/QuarkDistribution.h"
 #include "../GPDModule.h"
 
-class GPDQuarkFlavorData;
-
 //TODO finir les messages de debug dans toutes les fonctions
 //TODO supprimer au maximum les pointers qui ne sont pas obligatoires
 
@@ -44,7 +42,7 @@ public:
 
     virtual GK11Model* clone() const;
 
-    virtual void configure(Parameters parameters);
+    virtual void configure(ParameterList parameters);
 
     virtual std::string toString();
 

@@ -12,7 +12,7 @@
 
 #include "BaseObject.h"
 
-class Scenario;
+class Task;
 
 /*
  *
@@ -27,7 +27,7 @@ public:
      */
     virtual ~ServiceObject();
 
-    virtual void computeScenario(Scenario scenario) = 0;
+    virtual void computeTask(const Task &task) = 0;
 };
 
 #endif /* SERVICE_OBJECT_H */

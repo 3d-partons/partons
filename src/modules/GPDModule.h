@@ -24,6 +24,7 @@ class GPDResult;
 class GPDModule: public ModuleObject {
 public:
 
+    //TODO delete
     enum Keys {
         e_MUF_REF_STRING_KEY
     };
@@ -54,7 +55,7 @@ public:
      *
      * @param parameters
      */
-    void configure(Parameters parameters);
+    void configure(ParameterList parameters);
 
     /**
      * Virtual method, computes GPD with some input parameters.

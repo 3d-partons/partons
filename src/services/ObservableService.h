@@ -18,13 +18,9 @@
 #include "../beans/cff/CFFOutputData.h"
 #include "../ServiceObject.h"
 
-class Scenario;
-
-class ObservableKinematic;
-
 class DVCSModule;
 class Observable;
-class ObservableModule;
+class ObservableKinematic;
 
 class ObservableService: public ServiceObject {
 public:
@@ -45,7 +41,7 @@ public:
             ObservableKinematic observableKinematic,
             CFFOutputData cffOutputData);
 
-    virtual void computeScenario(Scenario scenario);
+    virtual void computeTask(const Task &task);
 
 private:
 

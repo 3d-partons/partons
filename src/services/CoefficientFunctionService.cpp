@@ -2,7 +2,7 @@
 
 #include "../beans/cff/CFFInputData.h"
 #include "../beans/cff/CFFOutputData.h"
-#include "../beans/Scenario.h"
+#include "../beans/automation/Scenario.h"
 #include "../BaseObjectRegistry.h"
 #include "../modules/CoefficientFunctionModule.h"
 
@@ -21,7 +21,7 @@ CoefficientFunctionService::~CoefficientFunctionService() {
 }
 
 //TODO implement
-void CoefficientFunctionService::computeScenario(Scenario scenario) {
+void CoefficientFunctionService::computeTask(const Task &task) {
 
 }
 

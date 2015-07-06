@@ -32,7 +32,7 @@ public:
      */
     virtual ~VizualisationService();
 
-    virtual void computeScenario(Scenario scenario);
+    virtual void computeTask(const Task &task);
 
     Plot2DList getplot2DFromSQLQuery(const std::string &sqlQuery);
 

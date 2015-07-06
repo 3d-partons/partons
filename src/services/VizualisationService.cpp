@@ -4,7 +4,6 @@
 #include <Qt/qvariant.h>
 #include <QtCore/qstring.h>
 
-#include "../beans/Scenario.h"
 #include "../BaseObjectRegistry.h"
 #include "../utils/plot2D/Plot2D.h"
 #include "../utils/plot2D/Plot2DList.h"
@@ -23,7 +22,7 @@ VizualisationService::~VizualisationService() {
 }
 
 //TODO implement all function
-void VizualisationService::computeScenario(Scenario scenario) {
+void VizualisationService::computeTask(const Task &task) {
 
 }
 

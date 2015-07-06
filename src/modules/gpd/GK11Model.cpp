@@ -12,11 +12,11 @@
 #include "../../beans/gpd/GPDType.h"
 #include "../../beans/parton_distribution/GluonDistribution.h"
 #include "../../beans/parton_distribution/PartonDistribution.h"
-#include "../../beans/Parameters.h"
 #include "../../beans/QuarkFlavor.h"
 #include "../../BaseObjectRegistry.h"
 #include "../../FundamentalPhysicalConstants.h"
 #include "../../utils/logger/LoggerManager.h"
+#include "../../utils/ParameterList.h"
 #include "../../utils/stringUtils/Formatter.h"
 
 // Initialise [class]::classId with a unique name.
@@ -132,8 +132,9 @@ GK11Model* GK11Model::clone() const {
 GK11Model::~GK11Model() {
 }
 
-void GK11Model::configure(Parameters parameters) {
-    GPDModule::configure(parameters);
+void GK11Model::configure(ParameterList parameters) {
+    //TODO
+    // GPDModule::configure(parameters);
 }
 
 //TODO implement

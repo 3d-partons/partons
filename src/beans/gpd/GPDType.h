@@ -14,6 +14,8 @@
 
 #include <string>
 
+class ParameterList;
+
 class GPDType {
 
 public:
@@ -28,6 +30,8 @@ public:
 
     GPDType(Type type);
 
+    GPDType(const ParameterList &parameters);
+
     /**
      * Copy constructor
      * @param other
@@ -41,6 +45,8 @@ public:
     GPDType::Type getType() const;
 
     void setType(Type type);
+
+    static GPDType::Type fromString(const std::string & gpdTypeStr);
 
 private:
     GPDType::Type m_type;

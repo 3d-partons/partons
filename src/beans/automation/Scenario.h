@@ -12,31 +12,33 @@
  * @brief
  */
 
+#include <stddef.h>
 #include <ctime>
-#include <map>
 #include <string>
+#include <vector>
 
-#include "../services/ServiceFunctionNames.h"
+#include "Task.h"
 
 class Scenario {
 public:
     Scenario();
     virtual ~Scenario();
 
-    void addFunctionArg(std::string argName, void* argValue);
+//    void addFunctionArg(std::string argName, void* argValue);
+//
+//    const std::map<std::string, void*>& getFunctionArgs() const;
+//    void setFunctionArgs(const std::map<std::string, void*>& functionArgs);
 
-    const std::map<std::string, void*>& getFunctionArgs() const;
-    void setFunctionArgs(const std::map<std::string, void*>& functionArgs);
+    const Task& getTask(unsigned int i) const;
+
+    size_t size();
+
     time_t getDate() const;
     void setDate(time_t date);
     const std::string& getDescription() const;
     void setDescription(const std::string& description);
     const std::string& getId() const;
     void setId(const std::string& id);
-    const std::string& getServiceName() const;
-    void setServiceName(const std::string& serviceName);
-    ServiceFunctionNames::Type getFunctionName() const;
-    void setFunctionName(ServiceFunctionNames::Type functionName);
 
 private:
 
@@ -44,9 +46,9 @@ private:
     time_t m_date;
     std::string m_description;
 
-    std::string m_serviceName;
-    ServiceFunctionNames::Type m_functionName;
-    std::map<std::string, void*> m_functionArgs;
+    // std::map<std::string, void*> m_functionArgs;
+
+    std::vector<Task> m_tasks;
 };
 
 #endif /* SCENARIO_H_ */

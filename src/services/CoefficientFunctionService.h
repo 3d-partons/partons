@@ -37,7 +37,7 @@ public:
      */
     virtual ~CoefficientFunctionService();
 
-    virtual void computeScenario(Scenario scenario);
+    virtual void computeTask(const Task &task);
 
     virtual CFFOutputData computeWithGPDModel(
             CoefficientFunctionModule* cffModule, GPDModule* _pGPDModule,

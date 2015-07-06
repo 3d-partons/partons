@@ -2,54 +2,29 @@
  * BaseObjectFactory.h
  *
  *  Created on: Jun 26, 2015
- *      Author: debian
+ *      Author: Bryan BERTHOU
  */
 
-#ifndef BASEOBJECTFACTORY_H_
-#define BASEOBJECTFACTORY_H_
+#ifndef BASE_OBJECT_FACTORY_H_
+#define BASE_OBJECT_FACTORY_H
 
 #include <string>
 
-class DVCSModule;
-class EvolQCDModule;
-class MathIntegratorModule;
-class RunningAlphaStrongModule;
-class BaseObjectRegistry;
 class BaseObject;
-class GPDModule;
-class CoefficientFunctionModule;
-class ObservableModule;
+class BaseObjectRegistry;
 
 /*
  *
  */
 class BaseObjectFactory {
 public:
-    /**
-     * Share a unique pointer of this class
-     */
-    static BaseObjectFactory* getInstance();
 
-    /**
-     * Default destructor
-     */
-    virtual ~BaseObjectFactory();
-
-    BaseObject* newBaseObject(unsigned int classId);
-    BaseObject* newBaseObject(const std::string &className);
+    static BaseObject* newBaseObject(unsigned int classId);
+    static BaseObject* newBaseObject(const std::string &className);
 
 private:
-    /**
-     * Private pointer of this class for a unique instance
-     */
-    static BaseObjectFactory* m_pInstance;
 
-    /**
-     * Private default constructor for a unique instance
-     */
-    BaseObjectFactory();
-
-    BaseObjectRegistry* m_pBaseObjectregistry;
+    static BaseObjectRegistry* m_pBaseObjectregistry;
 };
 
-#endif /* BASEOBJECTFACTORY_H_ */
+#endif /* BASE_OBJECT_FACTORY_H */

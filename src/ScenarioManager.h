@@ -13,7 +13,7 @@
 
 #include <string>
 
-#include "beans/Scenario.h"
+#include "beans/automation/Scenario.h"
 #include "utils/parser/xml/ParserXML.h"
 
 class ScenarioManager: public ParserXML {

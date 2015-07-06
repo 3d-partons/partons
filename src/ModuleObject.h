@@ -16,13 +16,9 @@
  */
 
 #include <stddef.h>
-#include <map>
 #include <string>
 
-#include "beans/GenericData.h"
-#include "BaseObject.h"
-
-class Parameters;
+#include "utils/ParameterList.h"
 
 class MathIntegratorModule;
 
@@ -47,7 +43,7 @@ public:
      *
      * @param parameters
      */
-    virtual void configure(Parameters parameters);
+    virtual void configure(ParameterList parameters);
 
     /**
      * Return the number of current parameters used for configure this module.
@@ -76,7 +72,8 @@ public:
     virtual void init();
 
 protected:
-    std::map<std::string, GenericData> m_parameters; ///< Parameters used for configure this module.
+
+    ParameterList m_parameters; ///< Parameters used for configure this module.
 
     unsigned int m_currentFunctionToIntegrate; ///< Variable used by the module to know what mathematical function integrate.
 

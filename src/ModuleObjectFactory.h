@@ -5,12 +5,11 @@
  *      Author: Bryan BERTHOU
  */
 
-#ifndef MODULEOBJECTFACTORY_H_
-#define MODULEOBJECTFACTORY_H_
+#ifndef MODULE_OBJECT_FACTORY_H
+#define MODULE_OBJECT_FACTORY_H
 
 #include <string>
 
-class BaseObjectFactory;
 class CoefficientFunctionModule;
 class DVCSModule;
 class EvolQCDModule;
@@ -50,10 +49,6 @@ public:
 
     static ObservableModule* newObservableModule(unsigned int classId);
     static ObservableModule* newObservableModule(const std::string &className);
-
-private:
-
-    static BaseObjectFactory* m_pBaseObjectFactory;
 };
 
-#endif /* MODULEOBJECTFACTORY_H_ */
+#endif /* MODULE_OBJECT_FACTORY_H */

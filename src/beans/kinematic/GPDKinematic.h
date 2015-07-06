@@ -16,6 +16,8 @@
 
 #include "KinematicType.h"
 
+class ParameterList;
+
 class GPDKinematic {
 public:
     static const std::string GPD_KINEMATIC_DB_COLUMN_NAME_X;
@@ -39,6 +41,8 @@ public:
      * @param MuR Renormalization scale (in GeV)
      */
     GPDKinematic(double x, double xi, double t, double MuF, double MuR);
+
+    GPDKinematic(const ParameterList &parameterList);
 
     /**
      * Default destructor

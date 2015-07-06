@@ -1,5 +1,7 @@
 #include "GPDKinematic.h"
 
+#include "../../utils/GenericType.h"
+#include "../../utils/ParameterList.h"
 #include "../../utils/stringUtils/Formatter.h"
 
 const std::string GPDKinematic::GPD_KINEMATIC_DB_COLUMN_NAME_X = "x";
@@ -8,15 +10,26 @@ const std::string GPDKinematic::GPD_KINEMATIC_DB_COLUMN_NAME_T = "t";
 const std::string GPDKinematic::GPD_KINEMATIC_DB_COLUMN_NAME_MUF = "MuF";
 const std::string GPDKinematic::GPD_KINEMATIC_DB_COLUMN_NAME_MUR = "MuR";
 
-GPDKinematic::GPDKinematic()
-        : m_kinematicType(KinematicType::THEO), m_x(0.), m_xi(0.), m_t(0.), m_MuF(
+GPDKinematic::GPDKinematic() :
+        m_kinematicType(KinematicType::THEO), m_x(0.), m_xi(0.), m_t(0.), m_MuF(
                 0.), m_MuR(0.) {
 }
 
 GPDKinematic::GPDKinematic(double x, double xi, double t, double MuF,
-        double MuR)
-        : m_kinematicType(KinematicType::THEO), m_x(x), m_xi(xi), m_t(t), m_MuF(
+        double MuR) :
+        m_kinematicType(KinematicType::THEO), m_x(x), m_xi(xi), m_t(t), m_MuF(
                 MuF), m_MuR(MuR) {
+}
+
+GPDKinematic::GPDKinematic(const ParameterList &parameterList) :
+        m_kinematicType(KinematicType::THEO), m_x((
+                parameterList.get(GPDKinematic::GPD_KINEMATIC_DB_COLUMN_NAME_X)).getDouble()), m_xi(
+                parameterList.get(GPDKinematic::GPD_KINEMATIC_DB_COLUMN_NAME_XI).getDouble()), m_t(
+                parameterList.get(GPDKinematic::GPD_KINEMATIC_DB_COLUMN_NAME_T).getDouble()), m_MuF(
+                parameterList.get(
+                        GPDKinematic::GPD_KINEMATIC_DB_COLUMN_NAME_MUF).getDouble()), m_MuR(
+                parameterList.get(
+                        GPDKinematic::GPD_KINEMATIC_DB_COLUMN_NAME_MUR).getDouble()) {
 }
 
 GPDKinematic::~GPDKinematic() {

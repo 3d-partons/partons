@@ -4,7 +4,6 @@
 #include <vector>
 
 #include "../beans/kinematic/ObservableKinematic.h"
-#include "../beans/Scenario.h"
 #include "../BaseObjectRegistry.h"
 #include "../modules/observable/DVCSModule.h"
 
@@ -45,5 +44,5 @@ std::map<double, double> ObservableService::computeDVCSObservableWithPhiDependen
 
 //TODO implement all function
 //TODO passer les chaine de caractere en variable final static
-void ObservableService::computeScenario(Scenario scenario) {
+void ObservableService::computeTask(const Task &task) {
 }

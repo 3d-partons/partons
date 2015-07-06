@@ -4,20 +4,20 @@
 #include <utility>
 
 #include "../beans/gpd/GPDResult.h"
-#include "../beans/GenericData.h"
-#include "../beans/Parameters.h"
+#include "../utils/GenericType.h"
 #include "../utils/logger/LoggerManager.h"
+#include "../utils/ParameterList.h"
 #include "../utils/stringUtils/Formatter.h"
 #include "EvolQCDModule.h"
 
-GPDModule::GPDModule(const std::string &className)
-        : ModuleObject(className), m_x(0.), m_xi(0.), m_t(0.), m_MuF(0.), m_MuR(
+GPDModule::GPDModule(const std::string &className) :
+        ModuleObject(className), m_x(0.), m_xi(0.), m_t(0.), m_MuF(0.), m_MuR(
                 0.), m_gpdType(GPDType::UNDEFINED), m_MuF_ref(0.), m_nf(0), m_pEvolQCDModule(
                 0) {
 }
 
-GPDModule::GPDModule(const GPDModule &other)
-        : ModuleObject(other) {
+GPDModule::GPDModule(const GPDModule &other) :
+        ModuleObject(other) {
     m_x = other.m_x;
     m_xi = other.m_xi;
     m_t = other.m_t;
@@ -50,12 +50,9 @@ GPDModule::GPDModule(const GPDModule &other)
 GPDModule::~GPDModule() {
 }
 
-void GPDModule::configure(Parameters parameters) {
-    GenericData* pMuF_ref_value = parameters.getUnique(e_MUF_REF_STRING_KEY);
-
-    if (pMuF_ref_value != 0) {
-        m_MuF_ref = pMuF_ref_value->getDouble();
-    }
+void GPDModule::configure(ParameterList parameters) {
+    //TODO replace hard coded string by static const string
+    m_MuF_ref = (parameters.get("MuRef")).getDouble();
 }
 
 //TODO implement

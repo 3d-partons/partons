@@ -31,6 +31,8 @@ class GPDService: public ServiceObject {
 public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
+    static const std::string GPD_SERVICE_COMPUTE_GPD_MODEL;
+
     /**
      * Default constructor
      */
@@ -41,7 +43,7 @@ public:
      */
     virtual ~GPDService();
 
-    virtual void computeScenario(Scenario scenario);
+    virtual void computeTask(const Task &task);
 
     /**
      * Computes GPD model at specific kinematic
@@ -116,7 +118,7 @@ private:
     GPDKinematic* m_pGPDKinematic;
     GPDModule* m_pGPDModule;
 
-    GPDResult computeGPDModel(Scenario scenario);
+    // GPDResult computeGPDModel(const Task &task);
 };
 
 #endif /* GPD_SERVICE_H */

@@ -1,12 +1,11 @@
 #include "ModuleObject.h"
 
 #include <stddef.h>
-#include <map>
 #include <stdexcept>
 #include <string>
 
-#include "beans/Parameters.h"
 #include "modules/MathIntegratorModule.h"
+#include "utils/ParameterList.h"
 
 ModuleObject::ModuleObject(const std::string &className) :
         BaseObject(className), m_currentFunctionToIntegrate(0), m_pMathIntegratorModule(
@@ -32,7 +31,7 @@ ModuleObject::~ModuleObject() {
 }
 
 //TODO exception nothing to  configure
-void ModuleObject::configure(Parameters parameters) {
+void ModuleObject::configure(ParameterList parameters) {
 
 }
 

@@ -33,7 +33,7 @@ BaseObject::~BaseObject() {
 
 // TODO replace all throw exception by this function call
 void BaseObject::throwException(const std::string &functionName,
-        const std::string &errorMessage) {
+        const std::string &errorMessage) const {
     m_pLoggerManager->error(getClassName(), functionName, errorMessage);
     throw std::runtime_error(
             Formatter() << "[" << getClassName() << "::" << functionName << "] "

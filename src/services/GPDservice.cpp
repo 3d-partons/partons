@@ -1,19 +1,19 @@
 #include <iostream>
-#include <map>
-#include <stdexcept>
 #include <string>
-#include <utility>
 #include <vector>
 
+#include "../beans/automation/Task.h"
 #include "../beans/gpd/GPDResult.h"
 #include "../beans/gpd/GPDResultList.h"
 #include "../beans/gpd/GPDType.h"
 #include "../beans/kinematic/GPDKinematic.h"
-#include "../beans/Scenario.h"
 #include "../BaseObjectRegistry.h"
-#include "../modules/GPDModule.h"
+#include "../modules/gpd/GK11Model.h"
+#include "../ModuleObjectFactory.h"
+#include "../utils/stringUtils/StringUtils.h"
 #include "GPDService.h"
-#include "ServiceFunctionNames.h"
+
+const std::string GPDService::GPD_SERVICE_COMPUTE_GPD_MODEL = "computeGPDModel";
 
 // Initialise [class]::classId with a unique name.
 const unsigned int GPDService::classId =
@@ -29,36 +29,59 @@ GPDService::~GPDService() {
 
 //TODO implement all function
 //TODO passer les chaine de caractere en variable final static
-void GPDService::computeScenario(Scenario scenario) {
-    m_pGPDKinematic = 0;
-    m_pGPDModule = 0;
+//TODO supprimer les pojnteurs membres de la classe GPDService
+void GPDService::computeTask(const Task &task) {
 
-    switch ((unsigned int) scenario.getFunctionName()) {
-    case ServiceFunctionNames::GPD_SERVICE_COMPUTE_GPD_MODEL: {
-        GPDResult gpdResult = computeGPDModel(scenario);
+    if (StringUtils::equals(task.getFunctionName(),
+            GPDService::GPD_SERVICE_COMPUTE_GPD_MODEL)) {
+        GPDKinematic gpdKinematic = GPDKinematic(
+                task.getParameterList("GPDKinematic"));
+
+        //TODO le construire avec les arguments provenant de ParameterList
+        GPDModule* pGPDModule = ModuleObjectFactory::newGPDModule(
+                GK11Model::classId);
+
+        GPDResult gpdResult = computeGPDModel(gpdKinematic, pGPDModule);
 
         std::cout << gpdResult.toString() << std::endl;
-
-        break;
+    } else {
+        throwException(__func__,
+                "unknown function name = " + task.getFunctionName());
     }
 
-    default: {
-        throw std::runtime_error(
-                "[GPDService::computeScenario] unknown function name = "
-                        + scenario.getFunctionName());
-    }
-    }
+//    m_pGPDKinematic = 0;
+//    m_pGPDModule = 0;
+//
+//    // TODO supprimer les enums
+//    switch ((unsigned int) task.getFunctionName()) {
+//    case ServiceFunctionNames::GPD_SERVICE_COMPUTE_GPD_MODEL: {
+//
+//        GPDKinematic gpdKinematic = GPDKinematic(
+//                task.getParameterList("GPDKinematic"));
+//
+//        GPDResult gpdResult = computeGPDModel(task);
+//
+//        std::cout << gpdResult.toString() << std::endl;
+//
+//        break;
+//    }
+//
+//    default: {
+//        throwException(__func__,
+//                "unknown function name = " + task.getFunctionName());
+//
+//    }
+//    }
 }
 
-GPDResult GPDService::computeGPDModel(Scenario scenario) {
-    m_pGPDKinematic =
-            static_cast<GPDKinematic*>((scenario.getFunctionArgs().find(
-                    "GPDKinematic"))->second);
-    m_pGPDModule = static_cast<GPDModule*>((scenario.getFunctionArgs().find(
-            "GPDModule"))->second);
-
-    return computeGPDModel(*m_pGPDKinematic, m_pGPDModule);
-}
+//GPDResult GPDService::computeGPDModel(const Task &task) {
+//    m_pGPDKinematic = BaseObjectFactory::
+//    static_cast<GPDKinematic*>((scenario.getFunctionArgs().find("GPDKinematic"))->second);
+//    m_pGPDModule = static_cast<GPDModule*>((scenario.getFunctionArgs().find(
+//            "GPDModule"))->second);
+//
+//    return computeGPDModel(*m_pGPDKinematic, m_pGPDModule);
+//}
 
 GPDResult GPDService::computeGPDModelRestrictedByGPDType(
         const GPDKinematic &gpdKinematic, GPDModule* pGPDModule,
