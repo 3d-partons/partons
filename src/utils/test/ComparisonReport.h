@@ -23,6 +23,7 @@ public:
 
     bool isEqual() const;
     virtual std::string toString() const = 0;
+    void setComparisonResult(bool comparisonResult);
 
 protected:
     bool m_comparisonResult;

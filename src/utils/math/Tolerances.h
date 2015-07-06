@@ -18,6 +18,11 @@ public:
     Tolerances(double absoluteTolerance, double relativeTolerance);
     virtual ~Tolerances();
 
+    double getAbsoluteTolerance() const;
+    void setAbsoluteTolerance(double absoluteTolerance);
+    double getRelativeTolerance() const;
+    void setRelativeTolerance(double relativeTolerance);
+
 private:
     double m_absoluteTolerance;
     double m_relativeTolerance;

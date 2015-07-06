@@ -6,28 +6,30 @@
 #include <string>
 
 #include "../test/DoubleComparisonReport.h"
+#include "Tolerances.h"
 
 double MathUtils::convertDegreeToRadian(double degree) {
     return degree * (M_PI / 180.);
 }
 
-DoubleComparisonReport MathUtils::compare(double lhs, double rhs,
-        double absoluteTolerance, double relativeTolerance) {
+void MathUtils::isPositiveDouble(double tolerance) {
 
-    // Check that tolerances are positive
-    std::ostringstream absoluteToleranceStream;
-    absoluteToleranceStream << absoluteTolerance;
-    std::string absoluteToleranceString = absoluteToleranceStream.str();
-    std::ostringstream relativeToleranceStream;
-    relativeToleranceStream << relativeTolerance;
-    std::string relativeToleranceString = relativeToleranceStream.str();
-    std::string ErrorMessage =
-            "Tolerances should be >0. Here Absolute Tolerance = "
-                    + absoluteToleranceString + " and Relative Tolerance = "
-                    + relativeToleranceString;
+    // Check that tolerance is positive
+    std::ostringstream toleranceStream;
+    toleranceStream << tolerance;
+    std::string toleranceString = toleranceStream.str();
+    std::string ErrorMessage = "Tolerance should be >0. Here tolerance = "
+            + toleranceString;
 
-    if (absoluteTolerance <= 0. || relativeTolerance <= 0.)
+    if (tolerance <= 0.)
         throw std::range_error(ErrorMessage);
+}
+
+DoubleComparisonReport MathUtils::compare(double lhs, double rhs,
+        double absoluteTolerance, double relativeTolerance,
+        bool testTolerances) {
+
+    bool comparisonResult = false;
 
     // Define and evaluate relative and absolute differences
     double absoluteDifference = fabs(lhs - rhs);
@@ -43,13 +45,23 @@ DoubleComparisonReport MathUtils::compare(double lhs, double rhs,
         relativeDifference = 0.;
     }
 
-    // Test differences within tolerances
-    bool comparisonResult = false;
+    // Check that tolerances are positive
+    if (testTolerances == true) {
+        isPositiveDouble(absoluteTolerance);
+        isPositiveDouble(relativeTolerance);
+    }
 
+    // Test differences within tolerances
     if (absoluteDifference < absoluteTolerance
             && relativeDifference < relativeTolerance)
         comparisonResult = true;
 
     return DoubleComparisonReport(comparisonResult, absoluteDifference,
             relativeDifference, absoluteTolerance, relativeTolerance);
+}
+
+DoubleComparisonReport MathUtils::compare(double lhs, double rhs,
+        Tolerances tolerances) {
+
+    return compare(lhs, rhs, tolerances.getAbsoluteTolerance(), tolerances.getRelativeTolerance(), false);
 }

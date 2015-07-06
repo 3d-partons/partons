@@ -20,7 +20,7 @@
 #include "GluonDistributionReport.h"
 #include "QuarkDistributionReport.h"
 
-class PartonDistributionReport: ComparisonReport {
+class PartonDistributionReport : public ComparisonReport {
 public:
     PartonDistributionReport();
     PartonDistributionReport(GPDType::Type gpdType);
@@ -33,6 +33,9 @@ public:
     void setGluonDistributionReport(
             const GluonDistributionReport &gluonDistributionReport);
     void setCommonPartonType(bool commonPartonType);
+    const GluonDistributionReport& getGluonDistributionReport() const;
+    const QuarkDistributionReport& getQuarkDistributionReport(
+            QuarkFlavor::Type quarkFlavorType) const;
 
 private:
     bool m_commonPartonType;
