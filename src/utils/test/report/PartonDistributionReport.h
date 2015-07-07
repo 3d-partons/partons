@@ -1,4 +1,4 @@
-/*
+/**
  * @file PartonDistributionReport.h
  * @author: Hervé MOUTARDE (SPhN / CEA Saclay)
  * @date 2 July 2015

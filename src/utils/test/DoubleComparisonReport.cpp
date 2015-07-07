@@ -34,10 +34,10 @@ std::string DoubleComparisonReport::toString() const {
     std::ostringstream os;
     // TODO : Use Formatter?
     os.setf(std::ios::scientific, std::ios::floatfield);
-    os << "Relative Difference = " << m_absoluteDifference << std::endl;
+    os << "Absolute Difference = " << m_absoluteDifference << std::endl;
     os << "Relative Difference = " << m_relativeDifference << std::endl;
-    os << "Relative Difference = " << m_absoluteTolerance << std::endl;
-    os << "Relative Difference = " << m_relativeTolerance << std::endl;
+    os << "Absolute Tolerance = " << m_absoluteTolerance << std::endl;
+    os << "Relative Tolerance = " << m_relativeTolerance << std::endl;
 
     return os.str();
 }

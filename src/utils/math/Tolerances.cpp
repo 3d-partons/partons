@@ -2,12 +2,13 @@
 
 #include "MathUtils.h"
 
-Tolerances::Tolerances() : m_absoluteTolerance(0.), m_relativeTolerance(0.) {
+Tolerances::Tolerances() :
+        m_absoluteTolerance(0.), m_relativeTolerance(0.) {
 }
 
 Tolerances::Tolerances(double absoluteTolerance, double relativeTolerance) :
-        m_absoluteTolerance(absoluteTolerance),
-                m_relativeTolerance(relativeTolerance) {
+        m_absoluteTolerance(absoluteTolerance), m_relativeTolerance(
+                relativeTolerance) {
 
     MathUtils::isPositiveDouble(absoluteTolerance);
     MathUtils::isPositiveDouble(relativeTolerance);
@@ -21,6 +22,7 @@ double Tolerances::getAbsoluteTolerance() const {
 }
 
 void Tolerances::setAbsoluteTolerance(double absoluteTolerance) {
+    MathUtils::isPositiveDouble(absoluteTolerance);
     m_absoluteTolerance = absoluteTolerance;
 }
 
@@ -29,5 +31,6 @@ double Tolerances::getRelativeTolerance() const {
 }
 
 void Tolerances::setRelativeTolerance(double relativeTolerance) {
+    MathUtils::isPositiveDouble(relativeTolerance);
     m_relativeTolerance = relativeTolerance;
 }

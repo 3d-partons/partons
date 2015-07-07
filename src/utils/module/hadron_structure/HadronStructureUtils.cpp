@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "../../../beans/gpd/GPDResult.h"
+#include "../../../beans/gpd/GPDResultList.h"
 #include "../../../beans/gpd/GPDType.h"
 #include "../../../beans/parton_distribution/GluonDistribution.h"
 #include "../../../beans/QuarkFlavor.h"
@@ -12,13 +13,36 @@
 #include "../../MapUtils.h"
 #include "../../test/DoubleComparisonReport.h"
 #include "../../test/report/GluonDistributionReport.h"
+#include "../../test/report/GPDResultListReport.h"
 #include "../../test/report/GPDResultReport.h"
 #include "../../test/report/PartonDistributionReport.h"
 #include "../../test/report/QuarkDistributionReport.h"
 
-GPDResultReport HadronStructureUtils::compareGPDResults(
-        GPDResult* p_lhsGpdResult, GPDResult* p_rhsGpdResult,
-        Tolerances& tolerances) {
+class Partons;
+
+GPDResultListReport HadronStructureUtils::compareGPDResultsLists(
+        const GPDResultList& lhsGpdResultList, const GPDResultList& rhsGpdResultList,
+        const Tolerances& tolerances) {
+
+    bool comparableLists = false;
+    GPDResultListReport gpdResultListReport;
+    GPDResultReport gpdResultReport;
+    if (lhsGpdResultList.getSize() == rhsGpdResultList.getSize()) {
+        comparableLists = true;
+        for (unsigned int i = 0; i < lhsGpdResultList.getSize(); i++) {
+            gpdResultReport = HadronStructureUtils::compareGPDResults(
+                    lhsGpdResultList.get(i), rhsGpdResultList.get(i),
+                    tolerances);
+            gpdResultListReport.add(gpdResultReport);
+        }
+        gpdResultListReport.setSameSize(comparableLists);
+    }
+
+    return gpdResultListReport;
+}
+
+GPDResultReport HadronStructureUtils::compareGPDResults(const GPDResult& lhsGpdResult,
+        const GPDResult& rhsGpdResult, const Tolerances& tolerances) {
 
     bool comparableGPD = false;
     bool isEqualPartonDistributions = false;
@@ -28,8 +52,8 @@ GPDResultReport HadronStructureUtils::compareGPDResults(
     // Retrieve vector of common GPDs
     std::vector<GPDType::Type> gpdType = MapUtils::intersectionOfKey<
             GPDType::Type, PartonDistribution>(
-            p_lhsGpdResult->getPartonDistributions(),
-            p_rhsGpdResult->getPartonDistributions());
+            lhsGpdResult.getPartonDistributions(),
+            rhsGpdResult.getPartonDistributions());
 
     // Compare corresponding parton distributions (if there are any in common)
     if (gpdType.size() > 0) {
@@ -37,10 +61,9 @@ GPDResultReport HadronStructureUtils::compareGPDResults(
         for (unsigned int i = 0; i < gpdType.size(); i++) {
             partonDistributionReport =
                     HadronStructureUtils::comparePartonDistributions(
-                            p_lhsGpdResult->getPartonDistribution(
-                                    gpdType.at(i)),
-                            p_rhsGpdResult->getPartonDistribution(
-                                    gpdType.at(i)), tolerances);
+                            lhsGpdResult.getPartonDistribution(gpdType.at(i)),
+                            rhsGpdResult.getPartonDistribution(gpdType.at(i)),
+                            tolerances);
             isEqualPartonDistributions = isEqualPartonDistributions
                     && partonDistributionReport.isEqual();
             gpdResultReport.addPartonDistributionReport(gpdType.at(i),
@@ -55,7 +78,7 @@ GPDResultReport HadronStructureUtils::compareGPDResults(
 PartonDistributionReport HadronStructureUtils::comparePartonDistributions(
         const PartonDistribution &lhsPartonDistribution,
         const PartonDistribution &rhsPartonDistribution,
-        Tolerances& tolerance) {
+        const Tolerances& tolerance) {
 
     bool comparableGluons = false;
     bool comparableQuarkFlavors = false;
@@ -107,7 +130,7 @@ PartonDistributionReport HadronStructureUtils::comparePartonDistributions(
                     commonQuarkFlavors.at(i));
             rhsQuarkDistribution = rhsPartonDistribution.getQuarkDistribution(
                     commonQuarkFlavors.at(i));
-            quarkDistributionReport = compareQuarkDistribution(
+            quarkDistributionReport = compareQuarkDistributions(
                     lhsQuarkDistribution, rhsQuarkDistribution, tolerance);
             partonDistributionReport.addQuarkDistributionReport(
                     quarkDistributionReport);
@@ -126,9 +149,9 @@ PartonDistributionReport HadronStructureUtils::comparePartonDistributions(
     return partonDistributionReport;
 }
 
-QuarkDistributionReport HadronStructureUtils::compareQuarkDistribution(
+QuarkDistributionReport HadronStructureUtils::compareQuarkDistributions(
         const QuarkDistribution& lhsQuarkDistribution,
-        const QuarkDistribution& rhsQuarkDistribution, Tolerances& tolerance) {
+        const QuarkDistribution& rhsQuarkDistribution, const Tolerances& tolerance) {
 
     bool comparisonResult = false;
     DoubleComparisonReport quarkDistributionReport, quarkDistributionPlusReport,

@@ -1,8 +1,12 @@
-/*
- * HadronStructureUtils.h
+/**
+ * @file HadronStructureUtils.h
+ * @author: Hervé MOUTARDE (SPhN / CEA Saclay)
+ * @date 30 juin 2015
+ * @version 1.0
  *
- *  Created on: 30 juin 2015
- *      Author: debian
+ * @class HadronStructureUtils
+ *
+ * @brief Compare various parton distributions within given tolerances.
  */
 
 #ifndef HADRONSTRUCTUREUTILS_H_
@@ -11,6 +15,8 @@
 #include "../../../beans/parton_distribution/PartonDistribution.h"
 #include "../../../beans/parton_distribution/QuarkDistribution.h"
 
+class GPDResultList;
+class GPDResultListReport;
 class Tolerances;
 class PartonDistribution;
 class PartonDistributionReport;
@@ -20,18 +26,22 @@ class QuarkDistributionReport;
 
 class HadronStructureUtils {
 public:
-    static GPDResultReport compareGPDResults(GPDResult* p_lhsGpdResult,
-            GPDResult* p_rhsGpdResult, Tolerances& tolerances);
+    static GPDResultListReport compareGPDResultsLists(
+            const GPDResultList& lhsGpdResultList, const GPDResultList& rhsGpdResultList,
+            const Tolerances& tolerances);
+
+    static GPDResultReport compareGPDResults(const GPDResult& lhsGpdResult,
+            const GPDResult& rhsGpdResult, const Tolerances& tolerances);
 
     static PartonDistributionReport comparePartonDistributions(
-            const PartonDistribution &lhsPartonDistribution,
-            const PartonDistribution &rhsPartonDistribution,
-            Tolerances& tolerances);
+            const PartonDistribution& lhsPartonDistribution,
+            const PartonDistribution& rhsPartonDistribution,
+            const Tolerances& tolerances);
 
-    static QuarkDistributionReport compareQuarkDistribution(
+    static QuarkDistributionReport compareQuarkDistributions(
             const QuarkDistribution& lhsQuarDistribution,
             const QuarkDistribution& rhsQuarkDistribution,
-            Tolerances& tolerances);
+            const Tolerances& tolerances);
 };
 
 #endif /* HADRONSTRUCTUREUTILS_H_ */

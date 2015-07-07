@@ -26,7 +26,7 @@ public:
             bool testTolerances = true);
 
     static DoubleComparisonReport compare(double lhs, double rhs,
-            Tolerances tolerances);
+            const Tolerances &tolerances);
 };
 
 #endif /* MATH_UTILS_H */

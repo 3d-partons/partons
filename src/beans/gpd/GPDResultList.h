@@ -13,7 +13,6 @@
  */
 
 #include <stddef.h>
-//#include <map>
 #include <string>
 #include <vector>
 
@@ -25,7 +24,7 @@ public:
     virtual ~GPDResultList();
 
     void add(const GPDResult &gpdResult);
-   const GPDResult& get(unsigned int index) const;
+    const GPDResult& get(unsigned int index) const;
 
     size_t getSize() const;
     const GPDResult& getUniqueResult();

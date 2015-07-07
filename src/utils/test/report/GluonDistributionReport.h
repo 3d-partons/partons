@@ -1,4 +1,4 @@
-/*
+/**
  * @file GluonDistributionReport.h
  * @author: Hervé MOUTARDE (SPhN / CEA Saclay)
  * @date 3 July 2015

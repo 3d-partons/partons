@@ -61,7 +61,7 @@ DoubleComparisonReport MathUtils::compare(double lhs, double rhs,
 }
 
 DoubleComparisonReport MathUtils::compare(double lhs, double rhs,
-        Tolerances tolerances) {
+        const Tolerances &tolerances) {
 
     return compare(lhs, rhs, tolerances.getAbsoluteTolerance(), tolerances.getRelativeTolerance(), false);
 }

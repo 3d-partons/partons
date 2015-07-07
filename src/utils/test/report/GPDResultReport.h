@@ -1,4 +1,4 @@
-/*
+/**
  * @file GPDResultReport.h
  * @author: Hervé MOUTARDE (SPhN / CEA Saclay)
  * @date 6 July 2015
