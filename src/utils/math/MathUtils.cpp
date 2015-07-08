@@ -33,7 +33,7 @@ DoubleComparisonReport MathUtils::compare(double lhs, double rhs,
 
     // Define and evaluate relative and absolute differences
     double absoluteDifference = fabs(lhs - rhs);
-    double relativeDifference;
+    double relativeDifference = 0.;
 
     if (lhs != 0) {
         relativeDifference = absoluteDifference / fabs(lhs);
@@ -41,12 +41,9 @@ DoubleComparisonReport MathUtils::compare(double lhs, double rhs,
     if (lhs == 0 && rhs != 0) {
         relativeDifference = absoluteDifference / fabs(rhs);
     }
-    if (lhs == 0 && rhs == 0) {
-        relativeDifference = 0.;
-    }
 
     // Check that tolerances are positive
-    if (testTolerances == true) {
+    if (testTolerances) {
         isPositiveDouble(absoluteTolerance);
         isPositiveDouble(relativeTolerance);
     }

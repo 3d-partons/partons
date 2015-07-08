@@ -23,18 +23,10 @@ BaseObjectManager* BaseObjectManager::getInstance() {
 }
 
 BaseObjectManager::~BaseObjectManager() {
-    LoggerManager::getInstance()->debug("BaseObjectManager", __func__,
-            Formatter() << "Number of instantiated object to destroy="
-                    << m_instantiatedObject.size());
-
     // Unallocated memory for all instantiated object
     for (m_it = m_instantiatedObject.begin();
             m_it != m_instantiatedObject.end(); m_it++) {
         if (m_it->second) {
-            LoggerManager::getInstance()->debug("BaseObjectManager", __func__,
-                    Formatter() << "Destroying ... : "
-                            << m_it->second->getClassName() << " | "
-                            << m_it->second->getObjectId());
             delete (m_it->second);
             (m_it->second) = 0;
         }

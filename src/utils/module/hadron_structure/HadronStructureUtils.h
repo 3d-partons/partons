@@ -12,9 +12,6 @@
 #ifndef HADRONSTRUCTUREUTILS_H_
 #define HADRONSTRUCTUREUTILS_H_
 
-#include "../../../beans/parton_distribution/PartonDistribution.h"
-#include "../../../beans/parton_distribution/QuarkDistribution.h"
-
 class GPDResultList;
 class GPDResultListReport;
 class Tolerances;
@@ -22,12 +19,16 @@ class PartonDistribution;
 class PartonDistributionReport;
 class GPDResult;
 class GPDResultReport;
+class QuarkDistribution;
 class QuarkDistributionReport;
+class GluonDistribution;
+class GluonDistributionReport;
 
 class HadronStructureUtils {
 public:
     static GPDResultListReport compareGPDResultsLists(
-            const GPDResultList& lhsGpdResultList, const GPDResultList& rhsGpdResultList,
+            const GPDResultList& lhsGpdResultList,
+            const GPDResultList& rhsGpdResultList,
             const Tolerances& tolerances);
 
     static GPDResultReport compareGPDResults(const GPDResult& lhsGpdResult,
@@ -37,6 +38,10 @@ public:
             const PartonDistribution& lhsPartonDistribution,
             const PartonDistribution& rhsPartonDistribution,
             const Tolerances& tolerances);
+
+    static GluonDistributionReport compareGluonDistributions(
+            const GluonDistribution& lhsGluonDistribution,
+            const GluonDistribution& rhsGluonDistribution, const Tolerances& tolerances);
 
     static QuarkDistributionReport compareQuarkDistributions(
             const QuarkDistribution& lhsQuarDistribution,

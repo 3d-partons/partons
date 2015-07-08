@@ -59,6 +59,9 @@ void Partons::init(char** argv) {
 void Partons::close() {
     DatabaseManager::getInstance()->close();
 
+    // Logger must be delete at last
+    m_pLoggerManager->close();
+
     // Wait the end of the Logger thread
     void* result;
     pthread_join(m_pLoggerManager->getThreadId(), &result);
@@ -66,9 +69,6 @@ void Partons::close() {
 //    while (!(m_pLoggerManager->isEmptyMessageQueue())) {
 //        sleep(1);
 //    }
-
-    // Logger must be delete at last
-    m_pLoggerManager->close();
 
     // Delete all objects at the end and only at the end.
     delete m_pBaseObjectManager;

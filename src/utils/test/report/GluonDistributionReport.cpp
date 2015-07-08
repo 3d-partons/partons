@@ -1,6 +1,8 @@
 #include "GluonDistributionReport.h"
 
+#include <iostream>
 #include <sstream>
+
 //#include <string>
 
 GluonDistributionReport::GluonDistributionReport() :

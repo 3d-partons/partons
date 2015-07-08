@@ -7,9 +7,11 @@
 #include "../../../beans/gpd/GPDResultList.h"
 #include "../../../beans/gpd/GPDType.h"
 #include "../../../beans/parton_distribution/GluonDistribution.h"
+#include "../../../beans/parton_distribution/PartonDistribution.h"
+#include "../../../beans/parton_distribution/QuarkDistribution.h"
 #include "../../../beans/QuarkFlavor.h"
 #include "../../math/MathUtils.h"
-#include "../../math/Tolerances.h"
+//#include "../../math/Tolerances.h"
 #include "../../MapUtils.h"
 #include "../../test/DoubleComparisonReport.h"
 #include "../../test/report/GluonDistributionReport.h"
@@ -21,8 +23,8 @@
 class Partons;
 
 GPDResultListReport HadronStructureUtils::compareGPDResultsLists(
-        const GPDResultList& lhsGpdResultList, const GPDResultList& rhsGpdResultList,
-        const Tolerances& tolerances) {
+        const GPDResultList& lhsGpdResultList,
+        const GPDResultList& rhsGpdResultList, const Tolerances& tolerances) {
 
     bool comparableLists = false;
     GPDResultListReport gpdResultListReport;
@@ -41,8 +43,9 @@ GPDResultListReport HadronStructureUtils::compareGPDResultsLists(
     return gpdResultListReport;
 }
 
-GPDResultReport HadronStructureUtils::compareGPDResults(const GPDResult& lhsGpdResult,
-        const GPDResult& rhsGpdResult, const Tolerances& tolerances) {
+GPDResultReport HadronStructureUtils::compareGPDResults(
+        const GPDResult& lhsGpdResult, const GPDResult& rhsGpdResult,
+        const Tolerances& tolerances) {
 
     bool comparableGPD = false;
     bool isEqualPartonDistributions = false;
@@ -95,18 +98,19 @@ PartonDistributionReport HadronStructureUtils::comparePartonDistributions(
                 lhsPartonDistribution.getGluonDistribution();
         GluonDistribution rhsGluonDistribution =
                 rhsPartonDistribution.getGluonDistribution();
+
         if ((lhsGluonDistribution.isNullObject() == true
                 && rhsGluonDistribution.isNullObject() == true)
                 || (lhsGluonDistribution.isNullObject() == false
-                        && rhsGluonDistribution.isNullObject() == false)) {
-
+                        && rhsGluonDistribution.isNullObject() == false))
             comparableGluons = true;
-            gluonDistributionReport = MathUtils::compare(
-                    lhsGluonDistribution.getGluonDistribution(),
-                    rhsGluonDistribution.getGluonDistribution(), tolerance);
-            partonDistributionReport.setGluonDistributionReport(
-                    gluonDistributionReport);
-        }
+
+        gluonDistributionReport =
+                HadronStructureUtils::compareGluonDistributions(
+                        lhsGluonDistribution.getGluonDistribution(),
+                        rhsGluonDistribution.getGluonDistribution(), tolerance);
+        partonDistributionReport.setGluonDistributionReport(
+                gluonDistributionReport);
     }
 
     // Retrieve the list of computed quark flavors and identify common elements
@@ -149,9 +153,35 @@ PartonDistributionReport HadronStructureUtils::comparePartonDistributions(
     return partonDistributionReport;
 }
 
+GluonDistributionReport HadronStructureUtils::compareGluonDistributions(
+        const GluonDistribution& lhsGluonDistribution,
+        const GluonDistribution& rhsGluonDistribution,
+        const Tolerances& tolerances) {
+
+    GluonDistributionReport gluoncomparisonReport;
+
+    if (lhsGluonDistribution.isNullObject() == false
+            && rhsGluonDistribution.isNullObject() == false) {
+
+        DoubleComparisonReport doubleComparisonReport = MathUtils::compare(
+                lhsGluonDistribution.getGluonDistribution(),
+                rhsGluonDistribution.getGluonDistribution(), tolerances);
+        gluoncomparisonReport.setGluonComparisonReport(doubleComparisonReport);
+    }
+
+    if (lhsGluonDistribution.isNullObject() == true
+                    && rhsGluonDistribution.isNullObject() == true) {
+
+        gluoncomparisonReport.setComparisonResult(true);
+    }
+
+    return gluoncomparisonReport;
+}
+
 QuarkDistributionReport HadronStructureUtils::compareQuarkDistributions(
         const QuarkDistribution& lhsQuarkDistribution,
-        const QuarkDistribution& rhsQuarkDistribution, const Tolerances& tolerance) {
+        const QuarkDistribution& rhsQuarkDistribution,
+        const Tolerances& tolerance) {
 
     bool comparisonResult = false;
     DoubleComparisonReport quarkDistributionReport, quarkDistributionPlusReport,
