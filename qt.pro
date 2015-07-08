@@ -29,11 +29,10 @@ TEMPLATE = lib
 DEFINES += QCUSTOMPLOT_COMPILE_LIBRARY
 
 INCLUDEPATH += /usr/local/cln/v1.3.4/include
-INCLUDEPATH += /usr/local/root/v5.34.30/include/root
+INCLUDEPATH += /usr/local/root/v5.34.32/include/root
 
 LIBS += -L/usr/local/cln/v1.3.4/lib -lcln
-#LIBS += -L/usr/local/gsl/v1.16/lib -lgsl
-LIBS += -L/usr/local/root/v5.34.30/lib/root -lPhysics -lMathMore -lHist
+LIBS += -L/usr/local/root/v5.34.32/lib/root -lPhysics -lMathMore -lHist
 
 
 include(sources.pri)

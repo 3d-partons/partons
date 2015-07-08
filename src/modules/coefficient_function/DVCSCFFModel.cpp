@@ -721,6 +721,7 @@ std::complex<double> DVCSCFFModel::KernelGluonA(double x) {
  *
  */
 double DVCSCFFModel::ConvolReKernelQuark1V(double x) {
+    m_pLoggerManager->debug(getClassName(), __func__, "Entered");
 
     GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF, m_MuR,
             m_currentGPDComputeType);
@@ -979,6 +980,9 @@ double DVCSCFFModel::ConvolImKernelQuarkA(double x) {
 }
 
 double DVCSCFFModel::ConvolReKernelGluon1A(double x) {
+
+    m_pLoggerManager->debug(getClassName(), __func__, "Entered");
+
     GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF, m_MuR,
             m_currentGPDComputeType);
 
