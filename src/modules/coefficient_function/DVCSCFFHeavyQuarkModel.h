@@ -1,6 +1,3 @@
-#ifndef DVCS_CFF_HEAVY_QUARK_MODEL_H
-#define DVCS_CFF_HEAVY_QUARK_MODEL_H
-
 /**
  * @file DVCSCFFHeavyQuarkModel.h
  * @author jakub
@@ -11,6 +8,9 @@
  *
  * @brief
  */
+
+#ifndef DVCS_CFF_HEAVY_QUARK_MODEL_H
+#define DVCS_CFF_HEAVY_QUARK_MODEL_H
 
 #include <complex>
 #include <string>
@@ -36,10 +36,17 @@ protected:
 
     DVCSCFFHeavyQuarkModel(const DVCSCFFHeavyQuarkModel &other);
 
+//    virtual void initModule();
+//    virtual void isModuleWellConfigured();
+
     virtual std::complex<double> KernelGluonNLOA(double x); ///<Modified for heavy quarks
     virtual std::complex<double> KernelGluonNLOV(double x); ///<Modified for heavy quarks
 
-    // void computeSubtractionFunctionsV();
+    virtual std::complex<double> KernelQuarkNLOV(double x); ///< T^{q, NLO, V}, appendix A, eq. (A2)
+    virtual std::complex<double> KernelQuarkNLOA(double x); ///< T^{q, NLO, A}, appendix A, eq. (A2)
+
+    virtual void computeSubtractionFunctionsV(); ///<Modified for heavy quarks
+    virtual void computeSubtractionFunctionsA(); ///<Modified for heavy quarks
 
 private:
     std::complex<double> m_betas;
@@ -47,9 +54,9 @@ private:
     std::complex<double> m_betaq;
     std::complex<double> m_rq;
     std::complex<double> m_TF;
-    double m_eps;
-    std::complex<double> beta(std::complex<double> s, double mq);
-    std::complex<double> r(std::complex<double> s, double mq);
+
+    std::complex<double> beta(double s, double mq);
+    std::complex<double> r(double s, double mq);
 
 };
 
