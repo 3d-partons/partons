@@ -32,7 +32,7 @@ BaseObjectRegistry::~BaseObjectRegistry() {
         }
     }
 
-    if (m_pInstance != 0) {
+    if (m_pInstance) {
         delete m_pInstance;
         m_pInstance = 0;
     }
@@ -72,7 +72,7 @@ unsigned int BaseObjectRegistry::registerBaseObject(BaseObject * pBaseObject) {
 
 // Some modules depend of other so we need to make references at NULL and assign pointer later.
 // Performed by the init() method of target module.
-void BaseObjectRegistry::init() {
+void BaseObjectRegistry::initBaseObject() {
     for (m_itBaseObjectList = m_baseObjectList.begin();
             m_itBaseObjectList != m_baseObjectList.end();
             m_itBaseObjectList++) {

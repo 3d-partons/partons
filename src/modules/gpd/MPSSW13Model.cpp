@@ -75,7 +75,7 @@ MPSSW13Model* MPSSW13Model::clone() const {
 }
 
 MPSSW13Model::~MPSSW13Model() {
-    if (m_Forward != 0) {
+    if (m_Forward) {
         delete m_Forward;
         m_Forward = 0;
     }

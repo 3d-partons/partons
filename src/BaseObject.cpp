@@ -2,33 +2,32 @@
 
 #include <stdexcept>
 
-#include "BaseObjectManager.h"
+#include "BaseObjectFactory.h"
 #include "utils/logger/LoggerManager.h"
 #include "utils/stringUtils/Formatter.h"
 
 unsigned int BaseObject::m_uniqueObjectIdCounter = 0;
 
 BaseObject::BaseObject(const std::string &className) :
-        m_pLoggerManager(LoggerManager::getInstance()), m_objectId(
-                getUniqueObjectId()), m_className(className) {
-    // Use to self registering class object
-    BaseObjectManager::getInstance()->add(this);
+        m_pLoggerManager(0), m_objectId(getUniqueObjectId()), m_className(
+                className) {
+    m_pLoggerManager = LoggerManager::getInstance();
 }
 
 BaseObject::BaseObject(const BaseObject& other) {
     m_objectId = getUniqueObjectId();
     m_className = other.m_className;
     m_pLoggerManager = other.m_pLoggerManager;
-
-    // Use to self registering copied class object
-    BaseObjectManager::getInstance()->add(this);
 }
 BaseObject* BaseObject::clone() const {
     return new BaseObject(*this);
 }
 
 BaseObject::~BaseObject() {
-// Nothing to destroy
+    // Nothing to destroy
+
+    //Self removing from factory store if previously created by it
+    BaseObjectFactory::getInstance()->removeFromStore(getObjectId());
 }
 
 // TODO replace all throw exception by this function call

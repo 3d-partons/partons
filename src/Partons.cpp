@@ -2,7 +2,7 @@
 
 #include <pthread.h>
 
-#include "BaseObjectManager.h"
+#include "BaseObjectFactory.h"
 #include "BaseObjectRegistry.h"
 #include "database/DatabaseManager.h"
 #include "utils/logger/LoggerManager.h"
@@ -13,12 +13,15 @@
 Partons* Partons::m_pInstance = 0;
 
 Partons::Partons() :
-        m_pBaseObjectManager(BaseObjectManager::getInstance()), m_pLoggerManager(
-                LoggerManager::getInstance()) {
+        m_pBaseObjectRegistry(0), m_pBaseObjectFactory(0), m_pLoggerManager(0) {
+
+    m_pBaseObjectRegistry = BaseObjectRegistry::getInstance();
+    m_pBaseObjectFactory = BaseObjectFactory::getInstance();
+    m_pLoggerManager = LoggerManager::getInstance();
 }
 
 Partons::~Partons() {
-    if (m_pInstance != 0) {
+    if (m_pInstance) {
         delete m_pInstance;
         m_pInstance = 0;
     }
@@ -42,8 +45,8 @@ void Partons::init(char** argv) {
     // 2. Init the logger to trac info/warn/debug message
     m_pLoggerManager->init();
 
-    // 3. Init the ModuleFactory
-    BaseObjectRegistry::getInstance()->init();
+    // 3. Init each object stored in the registry
+    m_pBaseObjectRegistry->initBaseObject();
 
     // Database connexion
     DatabaseManager::getInstance();
@@ -68,9 +71,13 @@ void Partons::close() {
         pthread_join(m_pLoggerManager->getThreadId(), &result);
     }
 
-    // Delete all objects at the end and only at the end.
-    delete m_pBaseObjectManager;
-    m_pBaseObjectManager = 0;
+    // Delete all objects instanciated by the factory
+    delete m_pBaseObjectFactory;
+    m_pBaseObjectFactory = 0;
+
+    // Delete all objects stored in the registry
+    delete m_pBaseObjectRegistry;
+    m_pBaseObjectRegistry = 0;
 }
 
 std::string Partons::getCurrentWorkingDirectory() {

@@ -335,6 +335,7 @@ void RunningAlphaStrong::ComputeLambdaQCD() {
     fLambdaQCD5 = Brent.Root();
 
     delete WrappedLambdaFinder;
+    WrappedLambdaFinder = 0;
 
     // Find fLambdaQCD4 between fLambdaQCD5 and LambdaMax
     // Solve Running( fBottomQuarkMass, fLambdaQCD5, 5 ) = Running( fBottomQuarkMass, fLambdaQCD4, 4 )
@@ -352,6 +353,7 @@ void RunningAlphaStrong::ComputeLambdaQCD() {
     fLambdaQCD4 = Brent.Root();
 
     delete WrappedLambdaFinder;
+    WrappedLambdaFinder = 0;
 
     // Find fLambdaQCD3 between fLambdaQCD4 and LambdaMax
     // Solve Running( fCharmQuarkMass, fLambdaQCD4, 4 ) = Running( fCharmQuarkMass, fLambdaQCD3, 3 )
@@ -369,6 +371,7 @@ void RunningAlphaStrong::ComputeLambdaQCD() {
     fLambdaQCD3 = Brent.Root();
 
     delete WrappedLambdaFinder;
+    WrappedLambdaFinder = 0;
 
     // Find fLambdaQCD6 between LambdaMin and fLambdaQCD5
     // Solve Running( fTopQuarkMass, fLambdaQCD5, 5 ) = Running( fTopQuarkMass, fLambdaQCD6, 6 )
@@ -386,6 +389,7 @@ void RunningAlphaStrong::ComputeLambdaQCD() {
     fLambdaQCD6 = Brent.Root();
 
     delete WrappedLambdaFinder;
+    WrappedLambdaFinder = 0;
 
 }
 

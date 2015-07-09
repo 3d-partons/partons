@@ -61,6 +61,7 @@ DVCSCFFHeavyQuarkModel::DVCSCFFHeavyQuarkModel(
  Alpha->SetRunningScale(m_MuR);
  m_alphaSOver2Pi = Alpha->GetAlphaS() / (2. * PI);
  delete Alpha;
+ Alpha = 0;
  }*/
 
 //void DVCSCFFHeavyQuarkModel::isModuleWellConfigured() {

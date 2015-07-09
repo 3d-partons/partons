@@ -5,6 +5,10 @@
  *      Author: Bryan BERTHOU
  */
 
+#include <map>
+
+#include "BaseObject.h"
+
 #ifndef BASE_OBJECT_FACTORY_H_
 #define BASE_OBJECT_FACTORY_H
 
@@ -18,13 +22,38 @@ class BaseObjectRegistry;
  */
 class BaseObjectFactory {
 public:
+    /**
+     * Share a unique pointer of this class
+     */
+    static BaseObjectFactory* getInstance();
 
-    static BaseObject* newBaseObject(unsigned int classId);
-    static BaseObject* newBaseObject(const std::string &className);
+    /**
+     * Default destructor
+     */
+    virtual ~BaseObjectFactory();
+
+    BaseObject* newBaseObject(unsigned int classId);
+    BaseObject* newBaseObject(const std::string &className);
+
+    void removeFromStore(unsigned int baseObjectUniqueId);
 
 private:
+    /**
+     * Private pointer of this class for a unique instance
+     */
+    static BaseObjectFactory* m_pInstance;
 
-    static BaseObjectRegistry* m_pBaseObjectregistry;
+    /**
+     * Private default constructor for a unique instance
+     */
+    BaseObjectFactory();
+
+    /// Store BaseObject pointer created by the factory; used at the end of the programm to delete orphan pointer.
+    std::map<unsigned int, BaseObject*> m_pCreatedBaseObjectList;
+
+    BaseObjectRegistry* m_pBaseObjectRegistry;
+
+    void store(BaseObject* pBaseObject);
 };
 
 #endif /* BASE_OBJECT_FACTORY_H */

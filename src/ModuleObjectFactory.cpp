@@ -9,75 +9,80 @@
 #include "modules/RunningAlphaStrongModule.h"
 
 GPDModule* ModuleObjectFactory::newGPDModule(unsigned int classId) {
-    return static_cast<GPDModule*>(BaseObjectFactory::newBaseObject(classId));
+    return static_cast<GPDModule*>(BaseObjectFactory::getInstance()->newBaseObject(
+            classId));
 }
 
 GPDModule* ModuleObjectFactory::newGPDModule(const std::string& className) {
-    return static_cast<GPDModule*>(BaseObjectFactory::newBaseObject(className));
+    return static_cast<GPDModule*>(BaseObjectFactory::getInstance()->newBaseObject(
+            className));
 }
 
 CoefficientFunctionModule* ModuleObjectFactory::newCoefficientFunctionModule(
         unsigned int classId) {
-    return static_cast<CoefficientFunctionModule*>(BaseObjectFactory::newBaseObject(
+    return static_cast<CoefficientFunctionModule*>(BaseObjectFactory::getInstance()->newBaseObject(
             classId));
 }
 
 CoefficientFunctionModule* ModuleObjectFactory::newCoefficientFunctionModule(
         const std::string& className) {
-    return static_cast<CoefficientFunctionModule*>(BaseObjectFactory::newBaseObject(
+    return static_cast<CoefficientFunctionModule*>(BaseObjectFactory::getInstance()->newBaseObject(
             className));
 }
 
 ObservableModule* ModuleObjectFactory::newObservableModule(
         unsigned int classId) {
-    return static_cast<ObservableModule*>(BaseObjectFactory::newBaseObject(
+    return static_cast<ObservableModule*>(BaseObjectFactory::getInstance()->newBaseObject(
             classId));
 }
 
 ObservableModule* ModuleObjectFactory::newObservableModule(
         const std::string& className) {
-    return static_cast<ObservableModule*>(BaseObjectFactory::newBaseObject(
+    return static_cast<ObservableModule*>(BaseObjectFactory::getInstance()->newBaseObject(
             className));
 }
 
 EvolQCDModule* ModuleObjectFactory::newEvolQCDModule(unsigned int classId) {
-    return static_cast<EvolQCDModule*>(BaseObjectFactory::newBaseObject(classId));
+    return static_cast<EvolQCDModule*>(BaseObjectFactory::getInstance()->newBaseObject(
+            classId));
 }
 
 EvolQCDModule* ModuleObjectFactory::newEvolQCDModule(
         const std::string& className) {
-    return static_cast<EvolQCDModule*>(BaseObjectFactory::newBaseObject(
+    return static_cast<EvolQCDModule*>(BaseObjectFactory::getInstance()->newBaseObject(
             className));
 }
 
 DVCSModule* ModuleObjectFactory::newDVCSModule(unsigned int classId) {
-    return static_cast<DVCSModule*>(BaseObjectFactory::newBaseObject(classId));
+    return static_cast<DVCSModule*>(BaseObjectFactory::getInstance()->newBaseObject(
+            classId));
 }
 
 DVCSModule* ModuleObjectFactory::newDVCSModule(const std::string& className) {
-    return static_cast<DVCSModule*>(BaseObjectFactory::newBaseObject(className));
+    return static_cast<DVCSModule*>(BaseObjectFactory::getInstance()->newBaseObject(
+            className));
 }
 
 MathIntegratorModule* ModuleObjectFactory::newMathIntegratorModule(
         unsigned int classId) {
-    return static_cast<MathIntegratorModule*>(BaseObjectFactory::newBaseObject(
+    return static_cast<MathIntegratorModule*>(BaseObjectFactory::getInstance()->newBaseObject(
             classId));
 }
 
 MathIntegratorModule* ModuleObjectFactory::newMathIntegratorModule(
         const std::string& className) {
-    return static_cast<MathIntegratorModule*>(BaseObjectFactory::newBaseObject(
+    return static_cast<MathIntegratorModule*>(BaseObjectFactory::getInstance()->newBaseObject(
             className));
 }
 
 RunningAlphaStrongModule* ModuleObjectFactory::newRunningAlphaStrongModule(
         unsigned int classId) {
-    return static_cast<RunningAlphaStrongModule*>(BaseObjectFactory::newBaseObject(
+    return static_cast<RunningAlphaStrongModule*>(BaseObjectFactory::getInstance()->newBaseObject(
             classId));
 }
 
 RunningAlphaStrongModule* ModuleObjectFactory::newRunningAlphaStrongModule(
         const std::string& className) {
-    return static_cast<RunningAlphaStrongModule*>(BaseObjectFactory::newBaseObject(
+    return static_cast<RunningAlphaStrongModule*>(BaseObjectFactory::getInstance()->newBaseObject(
             className));
 }

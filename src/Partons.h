@@ -14,7 +14,8 @@
 
 #include <string>
 
-class BaseObjectManager;
+class BaseObjectFactory;
+class BaseObjectRegistry;
 
 class LoggerManager;
 
@@ -46,8 +47,8 @@ private:
      */
     Partons();
 
-    BaseObjectManager* m_pBaseObjectManager;
-
+    BaseObjectRegistry* m_pBaseObjectRegistry;
+    BaseObjectFactory* m_pBaseObjectFactory;
     LoggerManager* m_pLoggerManager;
 
     std::string m_currentWorkingDirectoryPath;

@@ -1,16 +1,11 @@
 #include "ScenarioManager.h"
 
-#include <cmath>
 #include <iostream>
 
-#include "beans/kinematic/GPDKinematic.h"
 #include "ServiceObject.h"
 #include "ServiceObjectRegistry.h"
-#include "utils/module/hadron_structure/GPDUtils.h"
 #include "utils/parser/xml/Attributs.h"
 #include "utils/stringUtils/StringUtils.h"
-
-//#include "utils/stringUtils/StringUtils.h"
 
 // Global static pointer used to ensure a single instance of the class.
 ScenarioManager* ScenarioManager::pInstance = 0;
@@ -29,7 +24,7 @@ ScenarioManager* ScenarioManager::getInstance() {
 }
 
 ScenarioManager::~ScenarioManager() {
-    if (pInstance != 0) {
+    if (pInstance) {
         delete pInstance;
         pInstance = 0;
     }

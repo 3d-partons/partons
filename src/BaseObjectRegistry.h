@@ -33,7 +33,7 @@ public:
     unsigned int registerBaseObject(BaseObject * pBaseObject);
 
     // We need to perform this task after self registered BaseObject to resolve dependencies between pointed objects.
-    void init();
+    void initBaseObject();
 
     BaseObject* get(unsigned int classId);
     BaseObject* get(const std::string &className);

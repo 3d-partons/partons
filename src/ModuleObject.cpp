@@ -27,11 +27,12 @@ ModuleObject::ModuleObject(const ModuleObject &other) :
 //m_parameters = other.m_parameters;
 }
 
+//TODO vérifier le cycle de vie des modules membres
 ModuleObject::~ModuleObject() {
-    if (m_pMathIntegratorModule) {
-        delete m_pMathIntegratorModule;
-        m_pMathIntegratorModule = 0;
-    }
+//    if (m_pMathIntegratorModule) {
+//        delete m_pMathIntegratorModule;
+//        m_pMathIntegratorModule = 0;
+//    }
 }
 
 //TODO exception nothing to  configure
