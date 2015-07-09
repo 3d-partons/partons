@@ -6,6 +6,7 @@
 #include <TF1.h>
 
 #include "../../BaseObjectRegistry.h"
+#include "../../utils/logger/LoggerManager.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int RootIntegrationMode::classId =
@@ -40,6 +41,8 @@ void RootIntegrationMode::initModule() {
 
 double RootIntegrationMode::compute(unsigned int functionName,
         ModuleObject* pModuleObject, double xMin, double xMax) {
+    m_pLoggerManager->debug(getClassName(), __func__, "Entered");
+
     preCompute(functionName, pModuleObject);
 
     ROOT::Math::Integrator integrator(

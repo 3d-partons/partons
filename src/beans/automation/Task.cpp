@@ -53,3 +53,21 @@ const std::string& Task::getServiceName() const {
 void Task::setServiceName(const std::string& serviceName) {
     m_serviceName = serviceName;
 }
+
+void Task::addParameter(const std::string& className,
+        const std::string& parameterName, const std::string& parameterValue) {
+    std::map<std::string, ParameterList>::iterator it =
+            m_functionParameters.find(className);
+
+    if (it != m_functionParameters.end()) {
+        (it->second).add(parameterName, parameterValue);
+    } else {
+        addParameterList(className,
+                ParameterList(parameterName, parameterValue));
+    }
+}
+
+void Task::addParameterList(const std::string& className,
+        const ParameterList& parameterList) {
+    m_functionParameters.insert(std::make_pair(className, parameterList));
+}

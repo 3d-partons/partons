@@ -34,7 +34,9 @@ BaseObject::~BaseObject() {
 // TODO replace all throw exception by this function call
 void BaseObject::throwException(const std::string &functionName,
         const std::string &errorMessage) const {
-    m_pLoggerManager->error(getClassName(), functionName, errorMessage);
+    if (m_pLoggerManager != 0) {
+        m_pLoggerManager->error(getClassName(), functionName, errorMessage);
+    }
     throw std::runtime_error(
             Formatter() << "[" << getClassName() << "::" << functionName << "] "
                     << errorMessage);
@@ -57,10 +59,6 @@ unsigned int BaseObject::getUniqueObjectId() {
 
 const std::string& BaseObject::getClassName() const {
     return m_className;
-}
-
-void BaseObject::setClassName(const std::string& className) {
-    m_className = className;
 }
 
 unsigned int BaseObject::getObjectId() const {

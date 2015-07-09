@@ -1,11 +1,6 @@
-
 #include "BaseObjectManager.h"
 
-#include <string>
 #include <utility>
-
-#include "utils/logger/LoggerManager.h"
-#include "utils/stringUtils/Formatter.h"
 
 // Global static pointer used to ensure a single instance of the class.
 BaseObjectManager* BaseObjectManager::m_pInstance = 0;
@@ -24,15 +19,16 @@ BaseObjectManager* BaseObjectManager::getInstance() {
 
 BaseObjectManager::~BaseObjectManager() {
     // Unallocated memory for all instantiated object
-    for (m_it = m_instantiatedObject.begin();
-            m_it != m_instantiatedObject.end(); m_it++) {
-        if (m_it->second) {
-            delete (m_it->second);
-            (m_it->second) = 0;
+    for (std::map<unsigned int, BaseObject*>::iterator it =
+            m_instantiatedObject.begin(); it != m_instantiatedObject.end();
+            it++) {
+        if (it->second != 0) {
+            delete (it->second);
+            (it->second) = 0;
         }
     }
 
-    if (m_pInstance) {
+    if (m_pInstance != 0) {
         delete m_pInstance;
         m_pInstance = 0;
     }

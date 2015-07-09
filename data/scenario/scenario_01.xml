@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 
+<!-- Comment test -->
+
 <scenario id="01" date="" description="Ceci est un scenario de test qui a pour but d'utiliser le service GPD">
-	<operation service="GPDService" method="computeGPDModel" >
+	<task service="GPDService" method="computeGPDModel" >
 		<GPDKinematic x="0.1" xB="0.001" t="-0.3" MuF2="8" MuR2="8">
 		</GPDKinematic>
 		<GPDModule id="GK11Model">
-			<param name="" value="" />
-			<param name="" value="" />
+			<param name="value1" value="value2" />
+			<param name="value3" value="value4" />
 		</GPDModule>
-	</operation>
+	</task>
 </scenario>
 
+<TestEmptyNode />

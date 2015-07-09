@@ -63,3 +63,7 @@ size_t Scenario::size() {
 const Task& Scenario::getTask(unsigned int i) const {
     return m_tasks[i];
 }
+
+void Scenario::add(const Task& task) {
+    m_tasks.push_back(task);
+}

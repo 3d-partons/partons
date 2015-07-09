@@ -21,6 +21,11 @@ public:
     Task();
     virtual ~Task();
 
+    void addParameter(const std::string& className,
+            const std::string &parameterName,
+            const std::string &parameterValue);
+    void addParameterList(const std::string& className,
+            const ParameterList &parameterList);
     const ParameterList& getParameterList(const std::string &className) const;
 
     const std::string& getFunctionName() const;

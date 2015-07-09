@@ -32,7 +32,6 @@ private:
     BaseObjectManager();
 
     std::map<unsigned int, BaseObject*> m_instantiatedObject;
-    std::map<unsigned int, BaseObject*>::iterator m_it;
 };
 
 #endif /* BASEOBJECTMANAGER_H_ */

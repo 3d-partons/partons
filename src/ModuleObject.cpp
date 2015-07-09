@@ -28,6 +28,10 @@ ModuleObject::ModuleObject(const ModuleObject &other) :
 }
 
 ModuleObject::~ModuleObject() {
+    if (m_pMathIntegratorModule) {
+        delete m_pMathIntegratorModule;
+        m_pMathIntegratorModule = 0;
+    }
 }
 
 //TODO exception nothing to  configure

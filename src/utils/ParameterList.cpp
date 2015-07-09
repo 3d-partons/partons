@@ -13,8 +13,14 @@ ParameterList::ParameterList() :
         BaseObject("ParameterList") {
 }
 
+ParameterList::ParameterList(const std::string& parameterName,
+        const std::string& parameterValue) :
+        BaseObject("ParameterList") {
+    add(parameterName, parameterValue);
+}
+
 ParameterList::~ParameterList() {
-    // TODO Auto-generated destructor stub
+// TODO Auto-generated destructor stub
 }
 
 GenericType ParameterList::get(const std::string& parameterName) const {
@@ -31,3 +37,10 @@ GenericType ParameterList::get(const std::string& parameterName) const {
 size_t ParameterList::size() {
     return m_parameters.size();
 }
+
+void ParameterList::add(const std::string& parameterName,
+        const std::string& parameterValue) {
+    m_parameters.insert(
+            std::make_pair(parameterName, GenericType(parameterValue)));
+}
+

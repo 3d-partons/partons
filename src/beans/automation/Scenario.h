@@ -24,12 +24,8 @@ public:
     Scenario();
     virtual ~Scenario();
 
-//    void addFunctionArg(std::string argName, void* argValue);
-//
-//    const std::map<std::string, void*>& getFunctionArgs() const;
-//    void setFunctionArgs(const std::map<std::string, void*>& functionArgs);
-
     const Task& getTask(unsigned int i) const;
+    void add(const Task &task);
 
     size_t size();
 
@@ -45,8 +41,6 @@ private:
     std::string m_id;
     time_t m_date;
     std::string m_description;
-
-    // std::map<std::string, void*> m_functionArgs;
 
     std::vector<Task> m_tasks;
 };

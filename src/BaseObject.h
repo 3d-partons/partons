@@ -51,7 +51,6 @@ public:
     // ##### GETTERS & SETTERS #####
 
     const std::string& getClassName() const;
-    void setClassName(const std::string& className);
     unsigned int getObjectId() const;
     void setObjectId(unsigned int objectId);
 

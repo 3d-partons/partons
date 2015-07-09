@@ -120,7 +120,9 @@ void LoggerManager::parseConfigurationFile(const std::string &filePath) {
 }
 
 void LoggerManager::close() {
+    pthread_mutex_lock(&m_mutex);
     m_active = false;
+    pthread_mutex_unlock(&m_mutex);
 }
 
 void LoggerManager::defineLevel(LoggerLevel loggerLevel) {

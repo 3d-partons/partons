@@ -14,9 +14,12 @@
 #include <string>
 
 #include "beans/automation/Scenario.h"
-#include "utils/parser/xml/ParserXML.h"
+#include "beans/automation/Task.h"
+#include "utils/parser/xml/XMLParser.h"
 
-class ScenarioManager: public ParserXML {
+class Attributs;
+
+class ScenarioManager: public XMLParser /* ParserXML */{
 public:
     /**
      * A static function that provides a unique pointer of this class
@@ -32,8 +35,12 @@ public:
 
     void playScenario(const std::string &scenarioFilePath);
 
-    virtual void startElement(std::string tagName, Attributs attributes,
-            std::string tagValue);
+//    virtual void startElement(std::string tagName, Attributs attributes,
+//            std::string tagValue);
+
+    virtual void startElement(const std::string &elementName,
+            Attributs attributes, const std::string &elementData);
+    virtual void endElement(const std::string &elementName);
 
 private:
     static ScenarioManager* pInstance; ///< Private pointer of this class for a unique instance
@@ -44,6 +51,7 @@ private:
     ScenarioManager();
 
     Scenario m_scenario;
+    Task m_task;
 };
 
 #endif /* SCENARIO_MANAGER_H */

@@ -21,8 +21,12 @@
 class ParameterList: public BaseObject {
 public:
     ParameterList();
+    ParameterList(const std::string &parameterName,
+            const std::string &parameterValue);
     virtual ~ParameterList();
 
+    void add(const std::string &parameterName,
+            const std::string &parameterValue);
     GenericType get(const std::string &parameterName) const;
 
     size_t size();
