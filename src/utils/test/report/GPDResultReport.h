@@ -14,8 +14,10 @@
 
 #include <map>
 #include <string>
+#include <vector>
 
 #include "../../../beans/gpd/GPDType.h"
+#include "GPDKinematicReport.h"
 #include "PartonDistributionReport.h"
 
 class GPDResultReport: public ComparisonReport {
@@ -30,10 +32,25 @@ public:
             PartonDistributionReport partonDistributionReport);
     const PartonDistributionReport& getPartonDistributionReport(
             GPDType::Type gpdType) const;
+    const std::vector<GPDType::Type>& getLhsGpdTypes() const;
+    void setLhsGpdTypes(const std::vector<GPDType::Type>& lhsGpdTypes);
+    const std::vector<GPDType::Type>& getRhsGpdTypes() const;
+    void setRhsGpdTypes(const std::vector<GPDType::Type>& rhsGpdTypes);
+
+    const GPDKinematicReport& getGpdKinematicReport() const {
+        return m_gpdKinematicReport;
+    }
+
+    void setGpdKinematicReport(const GPDKinematicReport& gpdKinematicReport) {
+        m_gpdKinematicReport = gpdKinematicReport;
+    }
 
 private:
     bool m_commonGPDType;
+    GPDKinematicReport m_gpdKinematicReport;
     std::map<GPDType::Type, PartonDistributionReport> m_partonDistributionReports;
+    std::vector<GPDType::Type> m_lhsGpdTypes;
+    std::vector<GPDType::Type> m_rhsGpdTypes;
 };
 
 #endif /* GPDRESULTREPORT_H_ */

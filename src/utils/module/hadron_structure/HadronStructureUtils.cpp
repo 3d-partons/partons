@@ -6,15 +6,12 @@
 #include "../../../beans/gpd/GPDResult.h"
 #include "../../../beans/gpd/GPDResultList.h"
 #include "../../../beans/gpd/GPDType.h"
-#include "../../../beans/parton_distribution/GluonDistribution.h"
-#include "../../../beans/parton_distribution/PartonDistribution.h"
-#include "../../../beans/parton_distribution/QuarkDistribution.h"
 #include "../../../beans/QuarkFlavor.h"
 #include "../../math/MathUtils.h"
-//#include "../../math/Tolerances.h"
 #include "../../MapUtils.h"
 #include "../../test/DoubleComparisonReport.h"
 #include "../../test/report/GluonDistributionReport.h"
+#include "../../test/report/GPDKinematicReport.h"
 #include "../../test/report/GPDResultListReport.h"
 #include "../../test/report/GPDResultReport.h"
 #include "../../test/report/PartonDistributionReport.h"
@@ -27,17 +24,31 @@ GPDResultListReport HadronStructureUtils::compareGPDResultsLists(
         const GPDResultList& rhsGpdResultList, const Tolerances& tolerances) {
 
     bool comparableLists = false;
+    bool isEqualList = true;
+    std::vector<unsigned int> differentGpdResultsIndex;
+
     GPDResultListReport gpdResultListReport;
     GPDResultReport gpdResultReport;
-    if (lhsGpdResultList.getSize() == rhsGpdResultList.getSize()) {
+
+    unsigned int lhsGpdResultListSize = lhsGpdResultList.getSize();
+    unsigned int rhsGpdResultListSize = rhsGpdResultList.getSize();
+    gpdResultListReport.setLhsGpdResultListSize(lhsGpdResultListSize);
+    gpdResultListReport.setRhsGpdResultListSize(rhsGpdResultListSize);
+
+    if (lhsGpdResultListSize == rhsGpdResultListSize) {
         comparableLists = true;
-        for (unsigned int i = 0; i < lhsGpdResultList.getSize(); i++) {
+        for (unsigned int i = 0; i < lhsGpdResultListSize; i++) {
             gpdResultReport = HadronStructureUtils::compareGPDResults(
                     lhsGpdResultList.get(i), rhsGpdResultList.get(i),
                     tolerances);
+            if (!gpdResultReport.isEqual())
+                differentGpdResultsIndex.push_back(i);
             gpdResultListReport.add(gpdResultReport);
+            isEqualList = isEqualList && gpdResultReport.isEqual();
         }
+        gpdResultListReport.setDifferentResultIndex(differentGpdResultsIndex);
         gpdResultListReport.setSameSize(comparableLists);
+        gpdResultListReport.setComparisonResult(isEqualList);
     }
 
     return gpdResultListReport;
@@ -47,33 +58,57 @@ GPDResultReport HadronStructureUtils::compareGPDResults(
         const GPDResult& lhsGpdResult, const GPDResult& rhsGpdResult,
         const Tolerances& tolerances) {
 
-    bool comparableGPD = false;
-    bool isEqualPartonDistributions = false;
-    PartonDistributionReport partonDistributionReport(GPDType::UNDEFINED);
+    bool isEqualGpdResult = true;
+    bool missingGpdTypes = false;
+    PartonDistributionReport partonDistributionReport;
     GPDResultReport gpdResultReport;
 
-    // Retrieve vector of common GPDs
-    std::vector<GPDType::Type> gpdType = MapUtils::intersectionOfKey<
+    // Compare corresponding GPD kinematics
+    GPDKinematic lhsGpdKinematic = lhsGpdResult.getGpdKinematic();
+    GPDKinematic rhsGpdKinemaitc = rhsGpdResult.getGpdKinematic();
+    GPDKinematicReport gpdKinematicReport =
+            HadronStructureUtils::compareGPDKinematics(lhsGpdKinematic,
+                    rhsGpdKinemaitc, tolerances);
+    gpdResultReport.setGpdKinematicReport(gpdKinematicReport);
+
+    // Retrieve vector of computed GPDs and identify common GPDs
+    std::map<GPDType::Type, PartonDistribution> lhsPartonDistributions =
+            lhsGpdResult.getPartonDistributions();
+    std::map<GPDType::Type, PartonDistribution> rhsPartonDistributions =
+            rhsGpdResult.getPartonDistributions();
+    gpdResultReport.setLhsGpdTypes(
+            MapUtils::mapToVectorOfKey(lhsPartonDistributions));
+    gpdResultReport.setRhsGpdTypes(
+            MapUtils::mapToVectorOfKey(rhsPartonDistributions));
+    std::vector<GPDType::Type> commonGpdTypes = MapUtils::intersectionOfKey<
             GPDType::Type, PartonDistribution>(
             lhsGpdResult.getPartonDistributions(),
             rhsGpdResult.getPartonDistributions());
 
     // Compare corresponding parton distributions (if there are any in common)
-    if (gpdType.size() > 0) {
-        comparableGPD = true;
-        for (unsigned int i = 0; i < gpdType.size(); i++) {
+    if (commonGpdTypes.size() > 0) {
+        gpdResultReport.setCommonGpdType(true);
+        for (unsigned int i = 0; i < commonGpdTypes.size(); i++) {
             partonDistributionReport =
                     HadronStructureUtils::comparePartonDistributions(
-                            lhsGpdResult.getPartonDistribution(gpdType.at(i)),
-                            rhsGpdResult.getPartonDistribution(gpdType.at(i)),
-                            tolerances);
-            isEqualPartonDistributions = isEqualPartonDistributions
+                            lhsGpdResult.getPartonDistribution(
+                                    commonGpdTypes.at(i)),
+                            rhsGpdResult.getPartonDistribution(
+                                    commonGpdTypes.at(i)), tolerances);
+            isEqualGpdResult = isEqualGpdResult
                     && partonDistributionReport.isEqual();
-            gpdResultReport.addPartonDistributionReport(gpdType.at(i),
+            gpdResultReport.addPartonDistributionReport(commonGpdTypes.at(i),
                     partonDistributionReport);
         }
     }
-    gpdResultReport.setComparisonResult(isEqualPartonDistributions);
+
+    // Test different sets of quark flavors in rhs and lhs
+    if (commonGpdTypes.size() < lhsPartonDistributions.size()
+            || commonGpdTypes.size() < rhsPartonDistributions.size())
+        missingGpdTypes = true;
+
+    if (gpdKinematicReport.isEqual() && isEqualGpdResult && !missingGpdTypes)
+        gpdResultReport.setComparisonResult(true);
 
     return gpdResultReport;
 }
@@ -85,7 +120,8 @@ PartonDistributionReport HadronStructureUtils::comparePartonDistributions(
 
     bool comparableGluons = false;
     bool comparableQuarkFlavors = false;
-    bool isEqualQuarkDistributions = false;
+    bool missingQuarkFlavor = false;
+    bool isEqualQuarkDistributions = true;
     GluonDistributionReport gluonDistributionReport;
     PartonDistributionReport partonDistributionReport;
 
@@ -96,13 +132,17 @@ PartonDistributionReport HadronStructureUtils::comparePartonDistributions(
         // Retrieve and test definition of gluon distributions
         GluonDistribution lhsGluonDistribution =
                 lhsPartonDistribution.getGluonDistribution();
+        if (lhsGluonDistribution.isNullObject())
+            partonDistributionReport.setLhsUndefinedGluons(true);
         GluonDistribution rhsGluonDistribution =
                 rhsPartonDistribution.getGluonDistribution();
+        if (rhsGluonDistribution.isNullObject())
+            partonDistributionReport.setRhsUndefinedGluons(true);
 
-        if ((lhsGluonDistribution.isNullObject() == true
-                && rhsGluonDistribution.isNullObject() == true)
-                || (lhsGluonDistribution.isNullObject() == false
-                        && rhsGluonDistribution.isNullObject() == false))
+        if ((lhsGluonDistribution.isNullObject()
+                && rhsGluonDistribution.isNullObject())
+                || (!lhsGluonDistribution.isNullObject()
+                        && !rhsGluonDistribution.isNullObject()))
             comparableGluons = true;
 
         gluonDistributionReport =
@@ -118,6 +158,10 @@ PartonDistributionReport HadronStructureUtils::comparePartonDistributions(
             lhsPartonDistribution.getQuarkDistributions();
     std::map<QuarkFlavor::Type, QuarkDistribution> rhsQuarkDistributions =
             rhsPartonDistribution.getQuarkDistributions();
+    partonDistributionReport.setLhsQuarkFlavors(
+            MapUtils::mapToVectorOfKey(lhsQuarkDistributions));
+    partonDistributionReport.setRhsQuarkFlavors(
+            MapUtils::mapToVectorOfKey(rhsQuarkDistributions));
     std::vector<QuarkFlavor::Type> commonQuarkFlavors =
             MapUtils::intersectionOfKey(lhsQuarkDistributions,
                     rhsQuarkDistributions);
@@ -143,10 +187,15 @@ PartonDistributionReport HadronStructureUtils::comparePartonDistributions(
         }
     }
 
-    if (comparableGluons == true || comparableQuarkFlavors == true) {
+    // Test different sets of quark flavors in rhs and lhs
+    if (commonQuarkFlavors.size() < lhsQuarkDistributions.size()
+            || commonQuarkFlavors.size() < rhsQuarkDistributions.size())
+        missingQuarkFlavor = true;
+
+    if (comparableGluons || comparableQuarkFlavors) {
         partonDistributionReport.setCommonPartonType(true);
-        if (gluonDistributionReport.isEqual()
-                && isEqualQuarkDistributions == true)
+        if (gluonDistributionReport.isEqual() && isEqualQuarkDistributions
+                && !missingQuarkFlavor)
             partonDistributionReport.setComparisonResult(true);
     }
 
@@ -160,8 +209,8 @@ GluonDistributionReport HadronStructureUtils::compareGluonDistributions(
 
     GluonDistributionReport gluoncomparisonReport;
 
-    if (lhsGluonDistribution.isNullObject() == false
-            && rhsGluonDistribution.isNullObject() == false) {
+    if (!lhsGluonDistribution.isNullObject()
+            && !rhsGluonDistribution.isNullObject()) {
 
         DoubleComparisonReport doubleComparisonReport = MathUtils::compare(
                 lhsGluonDistribution.getGluonDistribution(),
@@ -169,8 +218,8 @@ GluonDistributionReport HadronStructureUtils::compareGluonDistributions(
         gluoncomparisonReport.setGluonComparisonReport(doubleComparisonReport);
     }
 
-    if (lhsGluonDistribution.isNullObject() == true
-                    && rhsGluonDistribution.isNullObject() == true) {
+    if (lhsGluonDistribution.isNullObject()
+            && rhsGluonDistribution.isNullObject()) {
 
         gluoncomparisonReport.setComparisonResult(true);
     }
@@ -183,7 +232,6 @@ QuarkDistributionReport HadronStructureUtils::compareQuarkDistributions(
         const QuarkDistribution& rhsQuarkDistribution,
         const Tolerances& tolerance) {
 
-    bool comparisonResult = false;
     DoubleComparisonReport quarkDistributionReport, quarkDistributionPlusReport,
             quarkDistributionMinusReport;
 
@@ -198,14 +246,39 @@ QuarkDistributionReport HadronStructureUtils::compareQuarkDistributions(
         quarkDistributionMinusReport = MathUtils::compare(
                 lhsQuarkDistribution.getQuarkDistributionMinus(),
                 rhsQuarkDistribution.getQuarkDistributionMinus(), tolerance);
-
-        if (quarkDistributionReport.isEqual() == true
-                && quarkDistributionPlusReport.isEqual() == true
-                && quarkDistributionMinusReport.isEqual() == true)
-            comparisonResult = true;
     }
 
     return QuarkDistributionReport(lhsQuarkDistribution.getQuarkFlavor(),
-            comparisonResult, quarkDistributionReport,
-            quarkDistributionPlusReport, quarkDistributionMinusReport);
+            quarkDistributionReport, quarkDistributionPlusReport,
+            quarkDistributionMinusReport);
+}
+
+GPDKinematicReport HadronStructureUtils::compareGPDKinematics(
+        const GPDKinematic& lhsGpdKinematic,
+        const GPDKinematic& rhsGpdKinematic, const Tolerances& tolerances) {
+
+    GPDKinematicReport gpdKinematicReport;
+
+    DoubleComparisonReport xReport = MathUtils::compare(lhsGpdKinematic.getX(),
+            rhsGpdKinematic.getX(), tolerances);
+    DoubleComparisonReport xiReport = MathUtils::compare(
+            lhsGpdKinematic.getXi(), rhsGpdKinematic.getXi(), tolerances);
+    DoubleComparisonReport tReport = MathUtils::compare(lhsGpdKinematic.getT(),
+            rhsGpdKinematic.getT(), tolerances);
+    DoubleComparisonReport muFReport = MathUtils::compare(
+            lhsGpdKinematic.getMuF(), rhsGpdKinematic.getMuF(), tolerances);
+    DoubleComparisonReport muRReport = MathUtils::compare(
+            lhsGpdKinematic.getMuR(), rhsGpdKinematic.getMuR(), tolerances);
+
+    gpdKinematicReport.setXReport(xReport);
+    gpdKinematicReport.setXiReport(xiReport);
+    gpdKinematicReport.setTReport(tReport);
+    gpdKinematicReport.setMuFReport(muFReport);
+    gpdKinematicReport.setMuRReport(muRReport);
+
+    if (xReport.isEqual() && xiReport.isEqual() && tReport.isEqual()
+            && muFReport.isEqual() && muRReport.isEqual())
+        gpdKinematicReport.setComparisonResult(true);
+
+    return gpdKinematicReport;
 }

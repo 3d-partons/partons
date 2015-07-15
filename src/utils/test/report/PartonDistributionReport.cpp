@@ -5,12 +5,8 @@
 #include <utility>
 
 PartonDistributionReport::PartonDistributionReport() :
-        ComparisonReport(), m_commonPartonType(false), m_gpdType(
-                GPDType::UNDEFINED), m_gluonDistributionReport() {
-}
-
-PartonDistributionReport::PartonDistributionReport(GPDType::Type gpdType) :
-        ComparisonReport(), m_commonPartonType(false), m_gpdType(gpdType), m_gluonDistributionReport() {
+        ComparisonReport(), m_commonPartonType(false), m_lhsUndefinedGluons(
+                false), m_rhsUndefinedGluons(false), m_gluonDistributionReport() {
 }
 
 PartonDistributionReport::~PartonDistributionReport() {
@@ -19,9 +15,44 @@ PartonDistributionReport::~PartonDistributionReport() {
 std::string PartonDistributionReport::toString() const {
 
     std::ostringstream os;
+    QuarkFlavor quarkFlavorPrint;
 
-    os << "g" << std::endl;
-    os << m_gluonDistributionReport.toString();
+    os << "lhs parton distributions" << std::endl;
+    if (m_lhsQuarkFlavors.empty())
+        os << "No quark distributions on lhs of comparison" << std::endl;
+    else {
+        for (unsigned int i = 0; i < m_lhsQuarkFlavors.size(); i++) {
+            quarkFlavorPrint.setType(m_lhsQuarkFlavors.at(i));
+            os << quarkFlavorPrint.toString() << "    ";
+        }
+    }
+    if (m_lhsUndefinedGluons) {
+        os << std::endl;
+        os << "No gluon distributions on lhs of comparison" << std::endl;
+    } else
+        os << "GLUON" << std::endl;
+    os << std::endl;
+
+    os << "rhs parton distributions" << std::endl;
+    if (m_rhsQuarkFlavors.empty())
+        os << "No quark distributions on rhs of comparison" << std::endl;
+    else {
+        for (unsigned int i = 0; i < m_rhsQuarkFlavors.size(); i++) {
+            quarkFlavorPrint.setType(m_rhsQuarkFlavors.at(i));
+            os << quarkFlavorPrint.toString() << "    ";
+        }
+    }
+    if (m_rhsUndefinedGluons) {
+        os << std::endl;
+        os << "No gluon distributions on rhs of comparison" << std::endl;
+    } else
+        os << "GLUON" << std::endl;
+    os << std::endl;
+
+    if (m_lhsUndefinedGluons && m_rhsUndefinedGluons) {
+        os << "g" << std::endl;
+        os << m_gluonDistributionReport.toString();
+    }
 
     std::map<QuarkFlavor::Type, QuarkDistributionReport>::const_iterator it;
 
@@ -66,4 +97,38 @@ const QuarkDistributionReport& PartonDistributionReport::getQuarkDistributionRep
     }
 
     return (it->second);
+}
+
+const std::vector<QuarkFlavor::Type>& PartonDistributionReport::getLhsQuarkFlavors() const {
+    return m_lhsQuarkFlavors;
+}
+
+void PartonDistributionReport::setLhsQuarkFlavors(
+        const std::vector<QuarkFlavor::Type>& lhsQuarkFlavors) {
+    m_lhsQuarkFlavors = lhsQuarkFlavors;
+}
+
+bool PartonDistributionReport::isLhsUndefinedGluons() const {
+    return m_lhsUndefinedGluons;
+}
+
+void PartonDistributionReport::setLhsUndefinedGluons(bool lhsUndefinedGluons) {
+    m_lhsUndefinedGluons = lhsUndefinedGluons;
+}
+
+const std::vector<QuarkFlavor::Type>& PartonDistributionReport::getRhsQuarkFlavors() const {
+    return m_rhsQuarkFlavors;
+}
+
+void PartonDistributionReport::setRhsQuarkFlavors(
+        const std::vector<QuarkFlavor::Type>& rhsQuarkFlavors) {
+    m_rhsQuarkFlavors = rhsQuarkFlavors;
+}
+
+bool PartonDistributionReport::isRhsUndefinedGluons() const {
+    return m_rhsUndefinedGluons;
+}
+
+void PartonDistributionReport::setRhsUndefinedGluons(bool rhsUndefinedGluons) {
+    m_rhsUndefinedGluons = rhsUndefinedGluons;
 }

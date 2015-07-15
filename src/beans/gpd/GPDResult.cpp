@@ -20,6 +20,7 @@ GPDResult::~GPDResult() {
 
 void GPDResult::addPartonDistribution(GPDType::Type gpdType,
         PartonDistribution partonDistribution) {
+    // TODO: The object partonDistribution already has a GPDType member, so the arguments of the function are redundant (without check...).
     m_partonDistributions.insert(
             std::pair<GPDType::Type, PartonDistribution>(gpdType,
                     partonDistribution));

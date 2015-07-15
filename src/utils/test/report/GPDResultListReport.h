@@ -33,9 +33,19 @@ public:
     virtual std::string toString() const;
     bool isSameSize() const;
     void setSameSize(bool sameSize);
+    const std::vector<unsigned int>& getDifferentResultIndex() const;
+    void setDifferentResultIndex(
+            const std::vector<unsigned int>& differentResultIndex);
+    unsigned int getLhsGpdResultListSize() const;
+    void setLhsGpdResultListSize(unsigned int lhsGpdResultListSize);
+    unsigned int getRhsGpdResultListSize() const;
+    void setRhsGpdResultListSize(unsigned int rhsGpdResultListSize);
 
 private:
     bool m_sameSize;
+    unsigned int m_lhsGPDResultListSize;
+    unsigned int m_rhsGPDResultListSize;
+    std::vector<unsigned int> m_differentResultIndex;
     std::vector<GPDResultReport> m_gpdResultReports;
 };
 

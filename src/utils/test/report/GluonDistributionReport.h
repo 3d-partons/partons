@@ -23,12 +23,14 @@ public:
     virtual ~GluonDistributionReport();
 
     virtual std::string toString() const;
-    const DoubleComparisonReport& getGluonComparisonReport() const;
     void setGluonComparisonReport(
             const DoubleComparisonReport& gluonComparisonReport);
 
 private:
-    DoubleComparisonReport m_gluonComparisonReport;
+    double m_absoluteDifference;
+    double m_relativeDifference;
+    double m_absoluteTolerance;
+    double m_relativeTolerance;
 };
 
 #endif /* GLUONDISTRIBUTIONREPORT_H_ */

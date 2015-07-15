@@ -12,6 +12,12 @@
 #ifndef HADRONSTRUCTUREUTILS_H_
 #define HADRONSTRUCTUREUTILS_H_
 
+#include "../../../beans/kinematic/GPDKinematic.h"
+#include "../../../beans/parton_distribution/GluonDistribution.h"
+#include "../../../beans/parton_distribution/PartonDistribution.h"
+#include "../../../beans/parton_distribution/QuarkDistribution.h"
+
+class GPDKinematicReport;
 class GPDResultList;
 class GPDResultListReport;
 class Tolerances;
@@ -41,12 +47,17 @@ public:
 
     static GluonDistributionReport compareGluonDistributions(
             const GluonDistribution& lhsGluonDistribution,
-            const GluonDistribution& rhsGluonDistribution, const Tolerances& tolerances);
+            const GluonDistribution& rhsGluonDistribution,
+            const Tolerances& tolerances);
 
     static QuarkDistributionReport compareQuarkDistributions(
             const QuarkDistribution& lhsQuarDistribution,
             const QuarkDistribution& rhsQuarkDistribution,
             const Tolerances& tolerances);
+
+    static GPDKinematicReport compareGPDKinematics(
+            const GPDKinematic& lhsGpdKinematic,
+            const GPDKinematic& rhsGpdKinematic, const Tolerances& tolerances);
 };
 
 #endif /* HADRONSTRUCTUREUTILS_H_ */

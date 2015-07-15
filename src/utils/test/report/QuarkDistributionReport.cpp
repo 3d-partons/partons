@@ -7,10 +7,14 @@ QuarkDistributionReport::QuarkDistributionReport() :
 }
 
 QuarkDistributionReport::QuarkDistributionReport(QuarkFlavor::Type quarkFlavor,
-        bool ComparisonResult, DoubleComparisonReport quarkDistributionReport,
+        DoubleComparisonReport quarkDistributionReport,
         DoubleComparisonReport quarkDistributionPlusReport,
         DoubleComparisonReport quarkDistributionMinusReport) :
-        ComparisonReport(ComparisonResult), m_quarkFlavor(quarkFlavor), m_quarkDistributionReport(
+        ComparisonReport(
+                quarkDistributionReport.isEqual()
+                        && quarkDistributionPlusReport.isEqual()
+                        && quarkDistributionMinusReport.isEqual()), m_quarkFlavor(
+                quarkFlavor), m_quarkDistributionReport(
                 quarkDistributionReport), m_quarkDistributionPlusReport(
                 quarkDistributionPlusReport), m_quarkDistributionMinusReport(
                 quarkDistributionMinusReport) {

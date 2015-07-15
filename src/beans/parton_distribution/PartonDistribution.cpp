@@ -5,11 +5,11 @@
 #include <utility>
 
 PartonDistribution::PartonDistribution()
-        : m_gpdType(GPDType::UNDEFINED), m_gluonDistribution(0.), m_singlet(0.) {
+        : m_gpdType(GPDType::UNDEFINED), m_singlet(0.) {
 }
 
 PartonDistribution::PartonDistribution(GPDType::Type gpdType)
-        : m_gpdType(gpdType), m_gluonDistribution(0.), m_singlet(0.) {
+        : m_gpdType(gpdType), m_singlet(0.) {
 
 }
 

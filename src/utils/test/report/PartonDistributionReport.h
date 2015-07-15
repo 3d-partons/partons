@@ -14,16 +14,15 @@
 
 #include <map>
 #include <string>
+#include <vector>
 
-#include "../../../beans/gpd/GPDType.h"
 #include "../../../beans/QuarkFlavor.h"
 #include "GluonDistributionReport.h"
 #include "QuarkDistributionReport.h"
 
-class PartonDistributionReport : public ComparisonReport {
+class PartonDistributionReport: public ComparisonReport {
 public:
     PartonDistributionReport();
-    PartonDistributionReport(GPDType::Type gpdType);
     virtual ~PartonDistributionReport();
 
     std::string toString() const;
@@ -36,11 +35,24 @@ public:
     const GluonDistributionReport& getGluonDistributionReport() const;
     const QuarkDistributionReport& getQuarkDistributionReport(
             QuarkFlavor::Type quarkFlavorType) const;
+    const std::vector<QuarkFlavor::Type>& getLhsQuarkFlavors() const;
+    void setLhsQuarkFlavors(
+            const std::vector<QuarkFlavor::Type>& lhsQuarkFlavors);
+    bool isLhsUndefinedGluons() const;
+    void setLhsUndefinedGluons(bool lhsUndefinedGluons);
+    const std::vector<QuarkFlavor::Type>& getRhsQuarkFlavors() const;
+    void setRhsQuarkFlavors(
+            const std::vector<QuarkFlavor::Type>& rhsQuarkFlavors);
+    bool isRhsUndefinedGluons() const;
+    void setRhsUndefinedGluons(bool rhsUndefinedGluons);
 
 private:
     bool m_commonPartonType;
+    bool m_lhsUndefinedGluons;
+    bool m_rhsUndefinedGluons;
     std::map<QuarkFlavor::Type, QuarkDistributionReport> m_quarkDistributionReports;
-    GPDType::Type m_gpdType;
+    std::vector<QuarkFlavor::Type> m_lhsQuarkFlavors;
+    std::vector<QuarkFlavor::Type> m_rhsQuarkFlavors;
     GluonDistributionReport m_gluonDistributionReport;
 };
 
