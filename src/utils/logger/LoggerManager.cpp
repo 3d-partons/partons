@@ -32,7 +32,10 @@ LoggerManager* LoggerManager::getInstance() {
 LoggerManager::~LoggerManager() {
     for (m_it = m_customClassLevels.begin(); m_it != m_customClassLevels.end();
             m_it++) {
-        delete (m_it->second);
+        if (m_it->second) {
+            delete (m_it->second);
+            (m_it->second) = 0;
+        }
     }
 
     if (m_pInstance != 0) {

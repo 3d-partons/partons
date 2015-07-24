@@ -12,7 +12,7 @@ CREATE TABLE module (id INTEGER NOT NULL PRIMARY KEY, class_name VARCHAR(255),de
 
 /* SQLITE syntax */
 
-CREATE TABLE gpd_kinematic (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, kinematic_type_id INTEGER, x DOUBLE, xi DOUBLE, t DOUBLE, MuF DOUBLE, MuR DOUBLE, UNIQUE(x, xi, t, MuF, MuR));
+CREATE TABLE gpd_kinematic (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, kinematic_type_id INTEGER, x DOUBLE, xi DOUBLE, t DOUBLE, MuF2 DOUBLE, MuR2 DOUBLE, UNIQUE(x, xi, t, MuF2, MuR2));
 
 CREATE TABLE parton_distribution (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, gpd_result_id INTEGER, gpd_type_id INTEGER,gluon_distribution DOUBLE);
 
@@ -24,7 +24,7 @@ CREATE TABLE module_configuration (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
 
 /* MYSQL syntax */ 
 
-CREATE TABLE gpd_kinematic (id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, kinematic_type_id INTEGER, x DOUBLE, xi DOUBLE, t DOUBLE, MuF DOUBLE, MuR DOUBLE, UNIQUE(x, xi, t, MuF, MuR));
+CREATE TABLE gpd_kinematic (id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, kinematic_type_id INTEGER, x DOUBLE, xi DOUBLE, t DOUBLE, MuF2 DOUBLE, MuR2 DOUBLE, UNIQUE(x, xi, t, MuF2, MuR2));
 
 CREATE TABLE parton_distribution (id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, gpd_result_id INTEGER, gpd_type_id INTEGER,gluon_distribution DOUBLE);
 

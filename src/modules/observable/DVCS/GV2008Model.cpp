@@ -198,13 +198,14 @@ void GV2008Model::isModuleWellConfigured() {
 }
 
 double GV2008Model::computeWithPhiDependency(double xB, double t, double Q2,
-        double phi, CFFOutputData cffOutputData, Observable* pObservable) {
+        double phi, DVCSConvolCoeffFunctionResult dvcsConvolCoeffFunctionResult,
+        Observable* pObservable) {
 
     m_xB = xB;
     m_t = t;
     m_Q2 = Q2;
     m_phi = MathUtils::convertDegreeToRadian(phi);
-    m_cffOutputData = cffOutputData;
+    m_dvcsConvolCoeffFunctionResult = dvcsConvolCoeffFunctionResult;
     m_pObservable = pObservable;
 
     initModule();
@@ -264,10 +265,14 @@ double GV2008Model::SqrAmplVCSAndInterf(double beamHelicity, double beamCharge,
 
 void GV2008Model::MakeVCSHelicityAmplitudes() {
 
-    std::complex<double> CFF_H = m_cffOutputData.getCFF(GPDType::H);
-    std::complex<double> CFF_E = m_cffOutputData.getCFF(GPDType::E);
-    std::complex<double> CFF_Ht = m_cffOutputData.getCFF(GPDType::Ht);
-    std::complex<double> CFF_Et = m_cffOutputData.getCFF(GPDType::Et);
+    std::complex<double> CFF_H = m_dvcsConvolCoeffFunctionResult.get(
+            GPDType::H);
+    std::complex<double> CFF_E = m_dvcsConvolCoeffFunctionResult.get(
+            GPDType::E);
+    std::complex<double> CFF_Ht = m_dvcsConvolCoeffFunctionResult.get(
+            GPDType::Ht);
+    std::complex<double> CFF_Et = m_dvcsConvolCoeffFunctionResult.get(
+            GPDType::Et);
 
     RMvcs[0][0] = 0;
     RMvcs[0][1] = 0;

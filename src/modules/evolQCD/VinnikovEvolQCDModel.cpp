@@ -9,7 +9,7 @@
 #include "../../beans/gpd/GPDResult.h"
 #include "../../beans/gpd/GPDType.h"
 #include "../../beans/parton_distribution/GluonDistribution.h"
-#include "../../beans/parton_distribution/PartonDistribution.h"
+//#include "../../beans/parton_distribution/PartonDistribution.h"
 #include "../../BaseObjectRegistry.h"
 #include "../../FundamentalPhysicalConstants.h"
 #include "../../utils/logger/LoggerManager.h"
@@ -26,11 +26,10 @@ VinnikovEvolQCDModel::VinnikovEvolQCDModel(const std::string &className) :
                 0.5 * (m_nbColor - 1. / m_nbColor)), m_CA(
                 2. * m_CF + 1. / m_nbColor), m_nbActiveFlavor(3.), m_b0(
                 11. * m_nbColor / 3. - 2. * m_nbActiveFlavor / 3.), m_TR(
-                m_nbActiveFlavor / 2.), m_LnMuF2_ref(
-                log(m_MuF_ref * m_MuF_ref)), m_LnMuF2(log(m_MuF * m_MuF)), m_NonSingletGpd(
-                4 * m_nbXPoints + 1, 0.), m_SingletGpd(2 * m_nbXPoints + 1, 0.), m_GluonGpd(
-                2 * m_nbXPoints + 1, 0.), m_Singletx(2 * m_nbXPoints + 1, 0.), m_NonSingletx(
-                4 * m_nbXPoints + 1, 0.) {
+                m_nbActiveFlavor / 2.), m_LnMuF2_ref(log(m_MuF2_ref)), m_LnMuF2(
+                log(m_MuF2)), m_NonSingletGpd(4 * m_nbXPoints + 1, 0.), m_SingletGpd(
+                2 * m_nbXPoints + 1, 0.), m_GluonGpd(2 * m_nbXPoints + 1, 0.), m_Singletx(
+                2 * m_nbXPoints + 1, 0.), m_NonSingletx(4 * m_nbXPoints + 1, 0.) {
 }
 
 VinnikovEvolQCDModel::~VinnikovEvolQCDModel() {
@@ -62,8 +61,8 @@ VinnikovEvolQCDModel* VinnikovEvolQCDModel::clone() const {
 void VinnikovEvolQCDModel::initModule() {
     EvolQCDModule::initModule();
 
-    m_LnMuF2_ref = log(m_MuF_ref * m_MuF_ref);
-    m_LnMuF2 = log(m_MuF * m_MuF);
+    m_LnMuF2_ref = log(m_MuF2_ref);
+    m_LnMuF2 = log(m_MuF2);
 }
 
 //TODO implementer
@@ -550,7 +549,7 @@ void VinnikovEvolQCDModel::initNonSingletGPD(unsigned int iNS) {
 
     for (unsigned int iGrid = 0; iGrid < 4 * m_nbXPoints + 1; iGrid++) {
         gpdResult = m_pGPDModule->compute(m_NonSingletx.at(iGrid), m_xi, m_t,
-                m_MuF_ref, m_MuR, m_currentGPDComputeType);
+                m_MuF2_ref, m_MuR2, m_currentGPDComputeType);
 
         m_pLoggerManager->debug(getClassName(), __func__,
                 Formatter() << "gpdOutputData = " << gpdResult.toString());
@@ -579,7 +578,7 @@ void VinnikovEvolQCDModel::initSingletGPD() {
 
     for (unsigned int iGrid = 0; iGrid < 2 * m_nbXPoints + 1; iGrid++) {
         GPDResult gpdResult = m_pGPDModule->compute(m_Singletx.at(iGrid), m_xi,
-                m_t, m_MuF_ref, m_MuR, m_currentGPDComputeType);
+                m_t, m_MuF2_ref, m_MuR2, m_currentGPDComputeType);
         PartonDistribution partonDistribution = gpdResult.getPartonDistribution(
                 m_currentGPDComputeType);
         m_GluonGpd.at(iGrid) =

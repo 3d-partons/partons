@@ -52,7 +52,7 @@ PartonDistribution GK11NoQuarksModel::computeH() {
     c2 = 5.43 - 7.0 * fL; // See table 1 p. 12
     c3 = -34.0 + 22.5 * fL; // See table 1 p. 12
     c4 = 40.6 - 21.6 * fL; // See table 1 p. 12
-    b0 = 2.58 + 0.25 * log(0.880354 / (0.880354 + fMuF2)); // See eq. (39) p. 14
+    b0 = 2.58 + 0.25 * log(0.880354 / (0.880354 + m_MuF2)); // See eq. (39) p. 14
 
     GluonDistribution gluonDistribution(
             exp(b0 * m_t)

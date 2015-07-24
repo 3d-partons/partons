@@ -1,13 +1,13 @@
-#ifndef CFF_SERVICE_H
-#define CFF_SERVICE_H
+#ifndef DVCS_CONVOL_COEFF_FUNCTION_SERVICE_H
+#define DVCS_CONVOL_COEFF_FUNCTION_SERVICE_H
 
 /**
- * @file CFFService.h
+ * @file DVCSConvolCoeffFunctionService.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 07 Août 2014
  * @version 1.0
  *
- * @class CFFService
+ * @class DVCSConvolCoeffFunctionService
  *
  * @brief \<singleton\> Use for handle and compute some pre-configured CFF modules.
  */
@@ -18,39 +18,38 @@
 #include "../beans/PerturbativeQCDOrderType.h"
 #include "../ServiceObject.h"
 
-class Scenario;
-class CFFInputData;
-class CoefficientFunctionModule;
-class CFFOutputData;
+class DVCSConvolCoeffFunctionKinematic;
+class DVCSConvolCoeffFunctionModule;
+class DVCSConvolCoeffFunctionResult;
 class GPDModule;
 
-class CoefficientFunctionService: public ServiceObject {
+class DVCSConvolCoeffFunctionService: public ServiceObject {
 public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
     /**
      * Default constructor
      */
-    CoefficientFunctionService(const std::string &className);
+    DVCSConvolCoeffFunctionService(const std::string &className);
     /**
      * Default destructor
      */
-    virtual ~CoefficientFunctionService();
+    virtual ~DVCSConvolCoeffFunctionService();
 
     virtual void computeTask(const Task &task);
 
-    virtual CFFOutputData computeWithGPDModel(
-            CoefficientFunctionModule* cffModule, GPDModule* _pGPDModule,
-            CFFInputData &cffInputData, const double MuF, const double MuR,
+    virtual DVCSConvolCoeffFunctionResult computeWithGPDModel(
+            DVCSConvolCoeffFunctionModule* dvcsConvolCoeffFunctionModule,
+            GPDModule* _pGPDModule, DVCSConvolCoeffFunctionKinematic &kinematic,
             PerturbativeQCDOrderType::Type qcdOrderType, GPDType::Type gpdType =
                     GPDType::ALL);
 
-    virtual CFFOutputData computeWithCFFModel(
-            CoefficientFunctionModule* cffModule, CFFInputData &cffInputData,
-            const double MuF, const double MuR,
+    virtual DVCSConvolCoeffFunctionResult computeWithCFFModel(
+            DVCSConvolCoeffFunctionModule* dvcsConvolCoeffFunctionModule,
+            DVCSConvolCoeffFunctionKinematic &kinematic,
             PerturbativeQCDOrderType &qcdOrderType);
 
-//    std::vector<CFFOutputData> compute(
+//    std::vector<DVCSConvolCoeffFunctionResult> compute(
 //            std::vector<CFFInputData> ListOfCFFInputData,
 //            GPDModule* _pGPDModule, double MuF, double MuR,
 //            QCDOrderType qcdOrderType);
@@ -61,8 +60,6 @@ public:
 //    std::vector<CFFInputData> getListOfCFFInputDataFromFile(
 //            const std::string & filePath);
 
-private:
-
 };
 
-#endif /* CFF_SERVICE_H */
+#endif /* DVCS_CONVOL_COEFF_FUNCTION_SERVICE_H */

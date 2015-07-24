@@ -37,6 +37,7 @@ Partons* Partons::getInstance() {
 }
 
 void Partons::init(char** argv) {
+    // Get current working directory
     m_currentWorkingDirectoryPath = StringUtils::removeAfterLast(argv[0], '/');
 
     // 1. Init PropertiesManager to provides configurations
@@ -52,10 +53,6 @@ void Partons::init(char** argv) {
     DatabaseManager::getInstance();
 
     // 4. Start logger's thread
-    // Waiting for the end of the logger thread before main return
-    //TODO
-    // pthread_join(m_pLoggerManager->getThreadId(), 0);
-    // Start main function of the logger.
     m_pLoggerManager->start();
 }
 
@@ -71,7 +68,11 @@ void Partons::close() {
         pthread_join(m_pLoggerManager->getThreadId(), &result);
     }
 
-    // Delete all objects instanciated by the factory
+    // Finally delete LoggerManager pointer
+    delete m_pLoggerManager;
+    m_pLoggerManager = 0;
+
+    // Delete all objects instantiated by the factory
     delete m_pBaseObjectFactory;
     m_pBaseObjectFactory = 0;
 

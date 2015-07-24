@@ -36,13 +36,13 @@ public:
     virtual EvolQCDModule* clone() const = 0;
 
     virtual PartonDistribution compute(double x, double xi, double t,
-            double MuF, double MuR, GPDModule* pGPDModule,
+            double MuF2, double MuR2, GPDModule* pGPDModule,
             PartonDistribution partonDistribution) = 0;
 
     /**
      * Checks if MuF (from compute parameters) is revelant
      */
-    bool isRunnable(double MuF, double MuF_ref, EvolQCDModule::Type testType);
+    bool isRunnable(double MuF2, double MuF2_ref, EvolQCDModule::Type testType);
 
     // ##### GETTERS & SETTERS #####
 
@@ -68,9 +68,9 @@ protected:
     double m_x;
     double m_xi;
     double m_t;
-    double m_MuF;
-    double m_MuR;
-    double m_MuF_ref;
+    double m_MuF2;
+    double m_MuR2;
+    double m_MuF2_ref;
 
     GPDModule* m_pGPDModule;
 
@@ -96,7 +96,7 @@ protected:
     std::vector<double> m_vectorOfGPDCombination;
     //Matrix<double> m_matrixOfUnknownPartonDistribution; ///< HuPlus, HuMinus, ...
 
-    void preCompute(double x, double xi, double t, double MuF, double MuR,
+    void preCompute(double x, double xi, double t, double MuF2, double MuR2,
             GPDModule* pGPDModule, PartonDistribution partonDistribution);
 
     virtual void initModule();
@@ -124,8 +124,8 @@ private:
     static MatrixD invertMatrix5;
     static MatrixD invertMatrix6;
 
-    bool isRelativeTest(double MuF, double MuF_ref);
-    bool isAbsoluteTest(double MuF, double MuF_ref);
+    bool isRelativeTest(double MuF2, double MuF2_ref);
+    bool isAbsoluteTest(double MuF2, double MuF2_ref);
 
     void initNfMin();
     void initMatrixValue();

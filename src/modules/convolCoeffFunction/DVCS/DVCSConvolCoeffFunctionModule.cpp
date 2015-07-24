@@ -1,38 +1,37 @@
-#include "CoefficientFunctionModule.h"
+#include "DVCSConvolCoeffFunctionModule.h"
 
 #include <stdexcept>
 #include <utility>
 
-#include "../beans/cff/CFFInputData.h"
-#include "../beans/cff/CFFOutputData.h"
-#include "../utils/logger/LoggerManager.h"
-#include "../utils/stringUtils/Formatter.h"
-#include "GPDModule.h"
-#include "RunningAlphaStrongModule.h"
+#include "../../../beans/convolCoeffFunction/DVCS/DVCSConvolCoeffFunctionKinematic.h"
+#include "../../../beans/convolCoeffFunction/DVCS/DVCSConvolCoeffFunctionResult.h"
+#include "../../../utils/logger/LoggerManager.h"
+#include "../../../utils/stringUtils/Formatter.h"
+#include "../../GPDModule.h"
+#include "../../RunningAlphaStrongModule.h"
 
-CoefficientFunctionModule::CoefficientFunctionModule(
+DVCSConvolCoeffFunctionModule::DVCSConvolCoeffFunctionModule(
         const std::string &className) :
-        ModuleObject(className), m_xi(0.), m_xB(0.), m_t(0.), m_Q2(0.), m_MuF(
-                0.), m_MuR(0.), m_qcdOrderType(
+        ConvolCoeffFunctionModule(className), m_xi(0.), m_t(0.), m_Q2(
+                0.), m_MuF2(0.), m_MuR2(0.), m_qcdOrderType(
                 PerturbativeQCDOrderType::UNDEFINED), m_currentGPDComputeType(
                 GPDType::UNDEFINED), m_gpdType(GPDType::UNDEFINED), m_pGPDModule(
                 0), m_pRunningAlphaStrongModule(0) {
 
 }
 
-CoefficientFunctionModule::CoefficientFunctionModule(
-        const CoefficientFunctionModule &other) :
-        ModuleObject(other) {
+DVCSConvolCoeffFunctionModule::DVCSConvolCoeffFunctionModule(
+        const DVCSConvolCoeffFunctionModule &other) :
+        ConvolCoeffFunctionModule(other) {
     m_listOfCFFComputeFunctionAvailable =
             other.m_listOfCFFComputeFunctionAvailable;
     m_it = other.m_it;
 
     m_xi = other.m_xi;
-    m_xB = other.m_xB;
     m_t = other.m_t;
     m_Q2 = other.m_Q2;
-    m_MuF = other.m_MuF;
-    m_MuR = other.m_MuR;
+    m_MuF2 = other.m_MuF2;
+    m_MuR2 = other.m_MuR2;
 
     m_qcdOrderType = other.m_qcdOrderType;
     m_currentGPDComputeType = other.m_currentGPDComputeType;
@@ -54,19 +53,18 @@ CoefficientFunctionModule::CoefficientFunctionModule(
     }
 }
 
-CoefficientFunctionModule::~CoefficientFunctionModule() {
+DVCSConvolCoeffFunctionModule::~DVCSConvolCoeffFunctionModule() {
 }
 
 //TODO implement
-void CoefficientFunctionModule::initModule() {
-    m_xi = m_xB / (2 - m_xB);
+void DVCSConvolCoeffFunctionModule::initModule() {
 
     m_pLoggerManager->debug(getClassName(), __func__,
             Formatter() << "executed");
 }
 
 //TODO implement
-void CoefficientFunctionModule::isModuleWellConfigured() {
+void DVCSConvolCoeffFunctionModule::isModuleWellConfigured() {
     m_pLoggerManager->debug(getClassName(), __func__,
             Formatter() << "executed");
 
@@ -97,12 +95,13 @@ void CoefficientFunctionModule::isModuleWellConfigured() {
     }
 }
 
-CFFOutputData CoefficientFunctionModule::compute(const double xB,
-        const double t, const double Q2, const double MuF, const double MuR,
-        GPDType::Type gpdComputeType) {
-    preCompute(xB, t, Q2, MuF, MuR, gpdComputeType);
+DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionModule::compute(
+        const double xi, const double t, const double Q2, const double MuF2,
+        const double MuR2, GPDType::Type gpdComputeType) {
+    preCompute(xi, t, Q2, MuF2, MuR2, gpdComputeType);
 
-    CFFOutputData cffOutputData(CFFInputData(m_xB, m_t, m_Q2));
+    DVCSConvolCoeffFunctionResult dvcsConvolCoeffFunctionResult(
+            DVCSConvolCoeffFunctionKinematic(m_xi, m_t, m_Q2, m_MuF2, m_MuR2));
 
     switch (m_gpdType) {
     case GPDType::ALL: {
@@ -116,7 +115,7 @@ CFFOutputData CoefficientFunctionModule::compute(const double xB,
                             << GPDType(m_currentGPDComputeType).toString());
 
             // call function store in the base class map
-            cffOutputData.add(m_currentGPDComputeType,
+            dvcsConvolCoeffFunctionResult.add(m_currentGPDComputeType,
                     ((*this).*(m_it->second))());
         }
         break;
@@ -126,7 +125,7 @@ CFFOutputData CoefficientFunctionModule::compute(const double xB,
         if (m_it != m_listOfCFFComputeFunctionAvailable.end()) {
             m_currentGPDComputeType = m_gpdType;
             // call function store in the base class map
-            cffOutputData.add(m_currentGPDComputeType,
+            dvcsConvolCoeffFunctionResult.add(m_currentGPDComputeType,
                     ((*this).*(m_it->second))());
         } else {
             //TODO throw an exception : can't compute this
@@ -135,33 +134,33 @@ CFFOutputData CoefficientFunctionModule::compute(const double xB,
     }
     }
 
-    return cffOutputData;
+    return dvcsConvolCoeffFunctionResult;
 }
 
-std::complex<double> CoefficientFunctionModule::computeUnpolarized() {
+std::complex<double> DVCSConvolCoeffFunctionModule::computeUnpolarized() {
     throw std::runtime_error(
             "[CFFModule::computeUnpolarized] check your child implementation : "
                     + getClassName());
 }
 
-std::complex<double> CoefficientFunctionModule::computePolarized() {
+std::complex<double> DVCSConvolCoeffFunctionModule::computePolarized() {
     throw std::runtime_error(
             "[CFFModule::computeUnpolarized] check your child implementation : "
                     + getClassName());
 }
 
-void CoefficientFunctionModule::preCompute(const double xB, const double t,
-        const double Q2, const double MuF, const double MuR,
+void DVCSConvolCoeffFunctionModule::preCompute(const double xi, const double t,
+        const double Q2, const double MuF2, const double MuR2,
         GPDType::Type gpdComputeType) {
 
     m_pLoggerManager->debug(getClassName(), __func__,
             Formatter() << "enter preCompute() function ...");
 
-    m_xB = xB;
+    m_xi = xi;
     m_t = t;
     m_Q2 = Q2;
-    m_MuF = MuF;
-    m_MuR = MuR;
+    m_MuF2 = MuF2;
+    m_MuR2 = MuR2;
     m_gpdType = gpdComputeType;
 
     // execute last child function (virtuality)
@@ -171,19 +170,20 @@ void CoefficientFunctionModule::preCompute(const double xB, const double t,
     isModuleWellConfigured();
 }
 
-const GPDModule* CoefficientFunctionModule::getGpdModule() const {
+const GPDModule* DVCSConvolCoeffFunctionModule::getGPDModule() const {
     return m_pGPDModule;
 }
 
-void CoefficientFunctionModule::setGpdModule(GPDModule* gpdModule) {
+void DVCSConvolCoeffFunctionModule::setGPDModule(GPDModule* gpdModule) {
     m_pGPDModule = gpdModule;
 }
 
-PerturbativeQCDOrderType::Type CoefficientFunctionModule::getQcdOrderType() const {
+PerturbativeQCDOrderType::Type DVCSConvolCoeffFunctionModule::getQCDOrderType() const {
     return m_qcdOrderType;
 }
 
-void CoefficientFunctionModule::setQcdOrderType(
+void DVCSConvolCoeffFunctionModule::setQCDOrderType(
         PerturbativeQCDOrderType::Type qcdOrderType) {
     m_qcdOrderType = qcdOrderType;
 }
+

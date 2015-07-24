@@ -1,7 +1,7 @@
 #include "ModuleObjectFactory.h"
 
 #include "BaseObjectFactory.h"
-#include "modules/CoefficientFunctionModule.h"
+#include "modules/convolCoeffFunction/DVCS/DVCSConvolCoeffFunctionModule.h"
 #include "modules/EvolQCDModule.h"
 #include "modules/GPDModule.h"
 #include "modules/MathIntegratorModule.h"
@@ -18,15 +18,15 @@ GPDModule* ModuleObjectFactory::newGPDModule(const std::string& className) {
             className));
 }
 
-CoefficientFunctionModule* ModuleObjectFactory::newCoefficientFunctionModule(
+DVCSConvolCoeffFunctionModule* ModuleObjectFactory::newDVCSConvolCoeffFunctionModule(
         unsigned int classId) {
-    return static_cast<CoefficientFunctionModule*>(BaseObjectFactory::getInstance()->newBaseObject(
+    return static_cast<DVCSConvolCoeffFunctionModule*>(BaseObjectFactory::getInstance()->newBaseObject(
             classId));
 }
 
-CoefficientFunctionModule* ModuleObjectFactory::newCoefficientFunctionModule(
+DVCSConvolCoeffFunctionModule* ModuleObjectFactory::newDVCSConvolCoeffFunctionModule(
         const std::string& className) {
-    return static_cast<CoefficientFunctionModule*>(BaseObjectFactory::getInstance()->newBaseObject(
+    return static_cast<DVCSConvolCoeffFunctionModule*>(BaseObjectFactory::getInstance()->newBaseObject(
             className));
 }
 

@@ -3,7 +3,7 @@
 #include <stdexcept>
 
 #include "BaseObjectRegistry.h"
-#include "services/CoefficientFunctionService.h"
+#include "services/DVCSConvolCoeffFunctionService.h"
 #include "services/GPDService.h"
 #include "services/ObservableService.h"
 #include "services/VizualisationService.h"
@@ -37,9 +37,9 @@ void ServiceObjectRegistry::checkBaseObjectRegistryNullPointer() {
 }
 
 //TODO tester le cast BaseObject -> ServoceObject -> CoefficientFunctionObject
-CoefficientFunctionService* ServiceObjectRegistry::getCoefficientFunctionService() {
-    return static_cast<CoefficientFunctionService*>(get(
-            CoefficientFunctionService::classId));
+DVCSConvolCoeffFunctionService* ServiceObjectRegistry::getConvolCoeffFunctionService() {
+    return static_cast<DVCSConvolCoeffFunctionService*>(get(
+            DVCSConvolCoeffFunctionService::classId));
 }
 
 ObservableService* ServiceObjectRegistry::getObservableService() {

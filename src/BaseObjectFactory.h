@@ -48,8 +48,8 @@ private:
      */
     BaseObjectFactory();
 
-    /// Store BaseObject pointer created by the factory; used at the end of the programm to delete orphan pointer.
-    std::map<unsigned int, BaseObject*> m_pCreatedBaseObjectList;
+    /// Store BaseObject pointer created by the factory; used at the end of the program to delete orphan pointer.
+    std::map<unsigned int, BaseObject*> m_pInstantiatedObject;
 
     BaseObjectRegistry* m_pBaseObjectRegistry;
 

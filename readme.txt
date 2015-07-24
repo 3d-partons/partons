@@ -58,3 +58,11 @@ cln
 Physics
 MathMore
 Hist
+
+
+
+#
+# Mu or Mu2
+#
+
+Impossible to use sqrt in xml file used for automation when users want to work with Mu2 = Q2 or Mu = Q.

@@ -120,9 +120,10 @@ void RunningAlphaStrong::isModuleWellConfigured() {
 }
 
 //TODO implement - Voir a remplacer ça par un arbre binaire pour les tests si pertinent
-double RunningAlphaStrong::compute(double Mu) {
+//TODO Definir la masse des quarks au carré dans le fichier de constantes
+double RunningAlphaStrong::compute(double Mu2) {
 
-    m_Mu = Mu;
+    m_Mu = sqrt(Mu2);
 
     if (QUARK_STRANGE_MASS <= m_Mu && m_Mu < QUARK_CHARM_MASS) {
         m_nf = 3;
@@ -141,7 +142,7 @@ double RunningAlphaStrong::compute(double Mu) {
     }
 
     m_pLoggerManager->debug(getClassName(), __func__,
-            Formatter() << "Mu= " << Mu << " nf= " << m_nf);
+            Formatter() << "Mu2= " << Mu2 << "(GeV^2)   nf= " << m_nf);
 
     ComputeLambdaQCD();
 

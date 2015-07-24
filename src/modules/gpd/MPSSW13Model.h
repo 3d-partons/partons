@@ -50,8 +50,6 @@ public:
     double getFD() const;
     double getGluonDTerm() const;
     void setGluonDTerm(double gluonDTerm);
-    double getMuF2() const;
-    double getMuF2Ref() const;
     double getMx() const;
     unsigned int getNbOfColor() const;
     unsigned int getNbOfQuarkFlavor() const;
@@ -69,8 +67,6 @@ private:
     unsigned int m_NbOfColor;
 
     double m_Mx;
-    double m_MuF2;
-    double m_MuF2_ref;
 
     double m_CA;
     double m_CF;

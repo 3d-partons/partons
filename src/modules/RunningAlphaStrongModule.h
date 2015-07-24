@@ -30,7 +30,7 @@ public:
      */
     virtual ~RunningAlphaStrongModule();
 
-    virtual double compute(double Mu) = 0;
+    virtual double compute(double Mu2) = 0;
 
     unsigned int getNf() const;
     void setNf(unsigned int nf);

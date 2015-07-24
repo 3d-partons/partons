@@ -16,8 +16,8 @@ BaseObjectFactory::~BaseObjectFactory() {
     // m_pCreatedBaseObjectList never delete'ed. (exist until program termination)
     // because we can't guarantee correct destruction order
     for (std::map<unsigned int, BaseObject*>::iterator it =
-            m_pCreatedBaseObjectList.begin();
-            it != m_pCreatedBaseObjectList.end(); it++) {
+            m_pInstantiatedObject.begin();
+            it != m_pInstantiatedObject.end(); it++) {
         if ((it->second)) {
             delete (it->second);
             (it->second) = 0;
@@ -52,14 +52,14 @@ BaseObject* BaseObjectFactory::newBaseObject(const std::string& className) {
 }
 
 void BaseObjectFactory::store(BaseObject* pBaseObject) {
-    m_pCreatedBaseObjectList.insert(
+    m_pInstantiatedObject.insert(
             std::make_pair(pBaseObject->getObjectId(), pBaseObject));
 }
 
 void BaseObjectFactory::removeFromStore(unsigned int baseObjectUniqueId) {
     std::map<unsigned int, BaseObject*>::iterator it =
-            m_pCreatedBaseObjectList.find(baseObjectUniqueId);
-    if (it != m_pCreatedBaseObjectList.end()) {
-        m_pCreatedBaseObjectList.erase(baseObjectUniqueId);
+            m_pInstantiatedObject.find(baseObjectUniqueId);
+    if (it != m_pInstantiatedObject.end()) {
+        m_pInstantiatedObject.erase(baseObjectUniqueId);
     }
 }

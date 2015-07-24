@@ -29,7 +29,6 @@ GK11Model::GK11Model(const std::string &className) :
     m_nbOfQuarkFlavor = 3;
     fL = 0.;
     m_MuF2_ref = 4.;
-    m_MuF_ref = sqrt(m_MuF2_ref);
     Huval1tab = std::vector<double>(3, 0.);
     Hdval1tab = std::vector<double>(3, 0.);
     Huval1mtab = std::vector<double>(3, 0.);
@@ -76,8 +75,6 @@ GK11Model::GK11Model(const GK11Model& other) :
     b0 = other.getB0();
     kappa_s = other.getKappaS();
     fL = other.getL();
-    m_MuF2_ref = other.m_MuF2_ref;
-    fMuF2 = other.getMuF2();
     fHuValMx = other.getHuValMx();
     fHdValMx = other.getHdValMx();
     fEuValMx = other.getEuValMx();
@@ -146,8 +143,7 @@ void GK11Model::isModuleWellConfigured() {
 void GK11Model::initModule() {
     GPDModule::initModule();
 
-    fMuF2 = m_MuF * m_MuF;
-    fL = log(fMuF2 / m_MuF2_ref); // Logarithmic dependence on the scale
+    fL = log(m_MuF2 / m_MuF2_ref); // Logarithmic dependence on the scale
 
     /*   m_pLoggerManager->debug(getClassName(), __func__,
      Formatter() << "fMuF2 = " << fMuF2 << " fL = " << fL);*/
@@ -170,7 +166,7 @@ PartonDistribution GK11Model::computeH() {
     c2 = 5.43 - 7.0 * fL; // See table 1 p. 12
     c3 = -34.0 + 22.5 * fL; // See table 1 p. 12
     c4 = 40.6 - 21.6 * fL; // See table 1 p. 12
-    b0 = 2.58 + 0.25 * log(0.880354 / (0.880354 + fMuF2)); // See eq. (39) p. 14
+    b0 = 2.58 + 0.25 * log(0.880354 / (0.880354 + m_MuF2)); // See eq. (39) p. 14
 
     GluonDistribution gluonDistribution(
             exp(b0 * m_t)
@@ -183,7 +179,7 @@ PartonDistribution GK11Model::computeH() {
     c2 = -0.327 - 0.004 * fL; // See table 1 p. 12
     c3 = 0.692 - 0.068 * fL; // See table 1 p. 12
     c4 = -0.486 + 0.038 * fL; // See table 1 p. 12
-    b0 = 2.58 + 0.25 * log(0.880354 / (0.880354 + fMuF2)); // See eq. (39) p. 14
+    b0 = 2.58 + 0.25 * log(0.880354 / (0.880354 + m_MuF2)); // See eq. (39) p. 14
 
     quarkDistribution_s.setQuarkDistribution(
             exp(b0 * m_t)
@@ -225,7 +221,7 @@ PartonDistribution GK11Model::computeH() {
 
 // u and d quarks, sea part
 
-    kappa_s = 1. + 0.68 / (1. + 0.52 * log(fMuF2 / m_MuF2_ref)); // See eq. (36)
+    kappa_s = 1. + 0.68 / (1. + 0.52 * log(m_MuF2 / m_MuF2_ref)); // See eq. (36)
 
     double uSea = kappa_s * quarkDistribution_s.getQuarkDistribution(); // See eq. (35)
     double dSea = uSea;
@@ -293,7 +289,7 @@ PartonDistribution GK11Model::computeHt() {
     c1 = 3.39 - 0.864 * fL;
     c2 = 1.73 + 0.24 * fL - 0.17 * fL * fL;
     c3 = 0.42 - 0.115 * fL - 0.069 * fL * fL;
-    b0 = 2.58 + 0.25 * log(0.880354 / (0.880354 + fMuF2));
+    b0 = 2.58 + 0.25 * log(0.880354 / (0.880354 + m_MuF2));
 
     GluonDistribution gluonDistribution(
             exp(b0 * m_t)
@@ -406,7 +402,7 @@ PartonDistribution GK11Model::computeE() {
 
     c1 = 0.779;
     c2 = -c1;
-    b0 = 2.58 + 0.25 * log(0.880354 / (0.880354 + fMuF2));
+    b0 = 2.58 + 0.25 * log(0.880354 / (0.880354 + m_MuF2));
 
     GluonDistribution gluonDistribution(
             exp(b0 * m_t) * (c1 * Ei1tab.at(0) + c2 * Ei1tab.at(1)));
@@ -416,7 +412,7 @@ PartonDistribution GK11Model::computeE() {
     c1 = -0.155;
     c2 = -2 * c1;
     c3 = c1;
-    b0 = 2.58 + 0.25 * log(0.880354 / (0.880354 + fMuF2));
+    b0 = 2.58 + 0.25 * log(0.880354 / (0.880354 + m_MuF2));
 
     quarkDistribution_s.setQuarkDistribution(
             exp(b0 * m_t)
@@ -1569,7 +1565,7 @@ double GK11Model::Et_pole(double x) {
     double eps2;
     double tmin;
     double xbj;
-    double Q2 = fMuF2;
+    double Q2 = m_MuF2;
     double tOverQ2 = m_t / Q2;
     double y = (x + m_xi) / 2. / m_xi;
     double MPi2 = PI_ZERO_MASS * PI_ZERO_MASS;
@@ -1767,10 +1763,6 @@ double GK11Model::getHuValMx() const {
 
 double GK11Model::getL() const {
     return fL;
-}
-
-double GK11Model::getMuF2() const {
-    return fMuF2;
 }
 
 const std::vector<double>& GK11Model::getHdval1mtab() const {

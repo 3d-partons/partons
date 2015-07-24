@@ -14,11 +14,10 @@
 
 #include <string>
 
-#include "../../beans/cff/CFFOutputData.h"
+#include "../../beans/convolCoeffFunction/DVCS/DVCSConvolCoeffFunctionResult.h"
 #include "../ObservableModule.h"
 
 class Vector3D;
-
 class Observable;
 
 class DVCSModule: public ObservableModule {
@@ -27,7 +26,8 @@ public:
     virtual ~DVCSModule();
 
     virtual double computeWithPhiDependency(double xB, double t, double Q2,
-            double phi, CFFOutputData cffOutputData,
+            double phi,
+            DVCSConvolCoeffFunctionResult dvcsConvolCoeffFunctionResult,
             Observable* pObservable) = 0;
 
     virtual double computeCrossSection(double beamHelicity, double beamCharge,
@@ -56,7 +56,7 @@ protected:
     double m_phaseSpace;
 
     Observable* m_pObservable;
-    CFFOutputData m_cffOutputData;
+    DVCSConvolCoeffFunctionResult m_dvcsConvolCoeffFunctionResult;
 
 private:
 };

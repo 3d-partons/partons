@@ -8,20 +8,20 @@
 #include <stdexcept>
 #include <utility>
 
-#include "../../beans/gpd/GPDResult.h"
-#include "../../beans/gpd/GPDType.h"
-#include "../../beans/parton_distribution/GluonDistribution.h"
-#include "../../beans/parton_distribution/QuarkDistribution.h"
-#include "../../beans/PerturbativeQCDOrderType.h"
-#include "../../beans/QuarkFlavor.h"
-#include "../../BaseObjectRegistry.h"
-#include "../../FundamentalPhysicalConstants.h"
-#include "../../ModuleObjectFactory.h"
-#include "../../utils/logger/LoggerManager.h"
-#include "../../utils/stringUtils/Formatter.h"
-#include "../alphaS/RunningAlphaStrong.h"
-#include "../GPDModule.h"
-#include "../math/RootIntegrationMode.h"
+#include "../../../beans/gpd/GPDResult.h"
+#include "../../../beans/gpd/GPDType.h"
+#include "../../../beans/parton_distribution/GluonDistribution.h"
+#include "../../../beans/parton_distribution/QuarkDistribution.h"
+#include "../../../beans/PerturbativeQCDOrderType.h"
+#include "../../../beans/QuarkFlavor.h"
+#include "../../../BaseObjectRegistry.h"
+#include "../../../FundamentalPhysicalConstants.h"
+#include "../../../ModuleObjectFactory.h"
+#include "../../../utils/logger/LoggerManager.h"
+#include "../../../utils/stringUtils/Formatter.h"
+#include "../../alphaS/RunningAlphaStrong.h"
+#include "../../GPDModule.h"
+#include "../../math/RootIntegrationMode.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int DVCSCFFModel::classId =
@@ -29,8 +29,8 @@ const unsigned int DVCSCFFModel::classId =
                 new DVCSCFFModel("DVCSCFFModel"));
 
 DVCSCFFModel::DVCSCFFModel(const std::string &className) :
-        CoefficientFunctionModule(className), m_Zeta(0.), m_logQ2OverMu2(0.), m_Q(
-                0.), m_nbOfActiveFlavour(0), m_alphaSOver2Pi(0.), m_quarkDiagonal(
+        DVCSConvolCoeffFunctionModule(className), m_Zeta(0.), m_logQ2OverMu2(
+                0.), m_Q(0.), m_nbOfActiveFlavour(0), m_alphaSOver2Pi(0.), m_quarkDiagonal(
                 0.), m_gluonDiagonal(0.), m_realPartSubtractQuark(0.), m_imaginaryPartSubtractQuark(
                 0.), m_realPartSubtractGluon(0.), m_imaginaryPartSubtractGluon(
                 0.), m_CF(4. / 3.)/*, m_integrator(
@@ -38,16 +38,16 @@ DVCSCFFModel::DVCSCFFModel(const std::string &className) :
 
     m_listOfCFFComputeFunctionAvailable.insert(
             std::make_pair(GPDType::H,
-                    &CoefficientFunctionModule::computeUnpolarized));
+                    &DVCSConvolCoeffFunctionModule::computeUnpolarized));
     m_listOfCFFComputeFunctionAvailable.insert(
             std::make_pair(GPDType::E,
-                    &CoefficientFunctionModule::computeUnpolarized));
+                    &DVCSConvolCoeffFunctionModule::computeUnpolarized));
     m_listOfCFFComputeFunctionAvailable.insert(
             std::make_pair(GPDType::Ht,
-                    &CoefficientFunctionModule::computePolarized));
+                    &DVCSConvolCoeffFunctionModule::computePolarized));
     m_listOfCFFComputeFunctionAvailable.insert(
             std::make_pair(GPDType::Et,
-                    &CoefficientFunctionModule::computePolarized));
+                    &DVCSConvolCoeffFunctionModule::computePolarized));
 
 }
 
@@ -62,7 +62,7 @@ void DVCSCFFModel::init() {
 }
 
 DVCSCFFModel::DVCSCFFModel(const DVCSCFFModel &other) :
-        CoefficientFunctionModule(other) {
+        DVCSConvolCoeffFunctionModule(other) {
     m_Zeta = other.m_Zeta;
     m_logQ2OverMu2 = other.m_logQ2OverMu2;
     m_Q = other.m_Q;
@@ -98,14 +98,14 @@ DVCSCFFModel::~DVCSCFFModel() {
 
 void DVCSCFFModel::initModule() {
     // init parent module before
-    CoefficientFunctionModule::initModule();
+    DVCSConvolCoeffFunctionModule::initModule();
 
     m_Q = sqrt(m_Q2);
     m_Zeta = 2. * m_xi / (1 + m_xi);
-    m_logQ2OverMu2 = 2. * log(m_Q / m_MuF);
+    m_logQ2OverMu2 = log(m_Q2 / m_MuF2);
     m_nbOfActiveFlavour = 3;
 
-    m_alphaSOver2Pi = m_pRunningAlphaStrongModule->compute(m_MuR) / (2. * PI);
+    m_alphaSOver2Pi = m_pRunningAlphaStrongModule->compute(m_MuR2) / (2. * PI);
 
     m_pLoggerManager->debug(getClassName(), __func__,
             Formatter() << "m_Q= " << m_Q << " m_Zeta= " << m_Zeta
@@ -116,7 +116,7 @@ void DVCSCFFModel::initModule() {
 
 void DVCSCFFModel::isModuleWellConfigured() {
     // check parent module before
-    CoefficientFunctionModule::isModuleWellConfigured();
+    DVCSConvolCoeffFunctionModule::isModuleWellConfigured();
 
     if (m_pGPDModule == 0) {
         throw std::runtime_error("[DVCSCFFModel] GPDModule* is NULL");
@@ -159,7 +159,7 @@ std::complex<double> DVCSCFFModel::computePolarized() {
 }
 
 void DVCSCFFModel::computeDiagonalGPD() {
-    GPDResult gpdResult = m_pGPDModule->compute(m_xi, m_xi, m_t, m_MuF, m_MuR,
+    GPDResult gpdResult = m_pGPDModule->compute(m_xi, m_xi, m_t, m_MuF2, m_MuR2,
             m_currentGPDComputeType);
     PartonDistribution partonDistribution = gpdResult.getPartonDistribution(
             m_currentGPDComputeType);
@@ -724,7 +724,7 @@ std::complex<double> DVCSCFFModel::KernelGluonA(double x) {
 double DVCSCFFModel::ConvolReKernelQuark1V(double x) {
     m_pLoggerManager->debug(getClassName(), __func__, "Entered");
 
-    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF, m_MuR,
+    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF2, m_MuR2,
             m_currentGPDComputeType);
 
     // GPD evaluated at x = x[ 0 ]
@@ -748,7 +748,7 @@ double DVCSCFFModel::ConvolReKernelQuark1V(double x) {
  *
  */
 double DVCSCFFModel::ConvolReKernelQuark2V(double x) {
-    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF, m_MuR,
+    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF2, m_MuR2,
             m_currentGPDComputeType);
 
     // GPD evaluated at x = x[ 0 ]
@@ -773,7 +773,7 @@ double DVCSCFFModel::ConvolReKernelQuark2V(double x) {
  *
  */
 double DVCSCFFModel::ConvolImKernelQuarkV(double x) {
-    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF, m_MuR,
+    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF2, m_MuR2,
             m_currentGPDComputeType);
 
     // GPD evaluated at x = x[ 0 ]
@@ -798,7 +798,7 @@ double DVCSCFFModel::ConvolImKernelQuarkV(double x) {
  *
  */
 double DVCSCFFModel::ConvolReKernelGluon1V(double x) {
-    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF, m_MuR,
+    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF2, m_MuR2,
             m_currentGPDComputeType);
 
     // GPD evaluated at x = x[ 0 ]
@@ -822,7 +822,7 @@ double DVCSCFFModel::ConvolReKernelGluon1V(double x) {
  *
  */
 double DVCSCFFModel::ConvolReKernelGluon2V(double x) {
-    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF, m_MuR,
+    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF2, m_MuR2,
             m_currentGPDComputeType);
 
     double EvalGPD =
@@ -847,7 +847,7 @@ double DVCSCFFModel::ConvolReKernelGluon2V(double x) {
  *
  */
 double DVCSCFFModel::ConvolImKernelGluonV(double x) {
-    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF, m_MuR,
+    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF2, m_MuR2,
             m_currentGPDComputeType);
 
     double EvalGPD =
@@ -932,7 +932,7 @@ std::complex<double> DVCSCFFModel::KernelQuarkNLOA(double x) {
 }
 
 double DVCSCFFModel::ConvolReKernelQuark1A(double x) {
-    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF, m_MuR,
+    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF2, m_MuR2,
             m_currentGPDComputeType);
 
     // GPD evaluated at x = x[ 0 ]
@@ -948,7 +948,7 @@ double DVCSCFFModel::ConvolReKernelQuark1A(double x) {
 }
 
 double DVCSCFFModel::ConvolReKernelQuark2A(double x) {
-    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF, m_MuR,
+    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF2, m_MuR2,
             m_currentGPDComputeType);
 
     // GPD evaluated at x = x[ 0 ]
@@ -966,7 +966,7 @@ double DVCSCFFModel::ConvolReKernelQuark2A(double x) {
 }
 
 double DVCSCFFModel::ConvolImKernelQuarkA(double x) {
-    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF, m_MuR,
+    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF2, m_MuR2,
             m_currentGPDComputeType);
 
     // GPD evaluated at x = x[ 0 ]
@@ -984,7 +984,7 @@ double DVCSCFFModel::ConvolReKernelGluon1A(double x) {
 
     m_pLoggerManager->debug(getClassName(), __func__, "Entered");
 
-    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF, m_MuR,
+    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF2, m_MuR2,
             m_currentGPDComputeType);
 
     double EvalGPD =
@@ -1000,7 +1000,7 @@ double DVCSCFFModel::ConvolReKernelGluon1A(double x) {
 }
 
 double DVCSCFFModel::ConvolReKernelGluon2A(double x) {
-    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF, m_MuR,
+    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF2, m_MuR2,
             m_currentGPDComputeType);
 
     double EvalGPD =
@@ -1018,7 +1018,7 @@ double DVCSCFFModel::ConvolReKernelGluon2A(double x) {
 }
 
 double DVCSCFFModel::ConvolImKernelGluonA(double x) {
-    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF, m_MuR,
+    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF2, m_MuR2,
             m_currentGPDComputeType);
 
     double EvalGPD =

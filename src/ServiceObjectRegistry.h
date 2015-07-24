@@ -12,17 +12,13 @@
 
 #include <string>
 
-class VizualisationService;
-
 class BaseObjectRegistry;
-class CoefficientFunctionService;
+class DVCSConvolCoeffFunctionService;
 class GPDService;
 class ObservableService;
 class ServiceObject;
+class VizualisationService;
 
-/*
- *
- */
 class ServiceObjectRegistry {
 public:
 
@@ -30,7 +26,7 @@ public:
     static ServiceObject* get(const std::string &className);
 
     static GPDService* getGPDService();
-    static CoefficientFunctionService* getCoefficientFunctionService();
+    static DVCSConvolCoeffFunctionService* getConvolCoeffFunctionService();
     static ObservableService* getObservableService();
     static VizualisationService* getVizualisationService();
 

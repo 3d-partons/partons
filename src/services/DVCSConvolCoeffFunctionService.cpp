@@ -1,46 +1,47 @@
-#include "CoefficientFunctionService.h"
+#include "DVCSConvolCoeffFunctionService.h"
 
-#include "../beans/cff/CFFInputData.h"
-#include "../beans/cff/CFFOutputData.h"
-#include "../beans/automation/Scenario.h"
+#include "../beans/convolCoeffFunction/DVCS/DVCSConvolCoeffFunctionKinematic.h"
+#include "../beans/convolCoeffFunction/DVCS/DVCSConvolCoeffFunctionResult.h"
 #include "../BaseObjectRegistry.h"
-#include "../modules/CoefficientFunctionModule.h"
+#include "../modules/convolCoeffFunction/DVCS/DVCSConvolCoeffFunctionModule.h"
 
 // Initialise [class]::classId with a unique name.
-const unsigned int CoefficientFunctionService::classId =
+const unsigned int DVCSConvolCoeffFunctionService::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
-                new CoefficientFunctionService("CoefficientFunctionService"));
+                new DVCSConvolCoeffFunctionService(
+                        "CoefficientFunctionService"));
 
-CoefficientFunctionService::CoefficientFunctionService(
+DVCSConvolCoeffFunctionService::DVCSConvolCoeffFunctionService(
         const std::string &className) :
         ServiceObject(className) {
 
 }
 
-CoefficientFunctionService::~CoefficientFunctionService() {
+DVCSConvolCoeffFunctionService::~DVCSConvolCoeffFunctionService() {
 }
 
 //TODO implement
-void CoefficientFunctionService::computeTask(const Task &task) {
+void DVCSConvolCoeffFunctionService::computeTask(const Task &task) {
 
 }
 
 //TODO implementer
-CFFOutputData CoefficientFunctionService::computeWithGPDModel(
-        CoefficientFunctionModule* cffModule, GPDModule* _pGPDModule,
-        CFFInputData &cffInputData, const double MuF, const double MuR,
-        PerturbativeQCDOrderType::Type qcdOrderType,
-        GPDType::Type gpdComputeType) {
+DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionService::computeWithGPDModel(
+        DVCSConvolCoeffFunctionModule* dvcsConvolCoeffFunctionModule,
+        GPDModule* _pGPDModule, DVCSConvolCoeffFunctionKinematic &kinematic,
+        PerturbativeQCDOrderType::Type qcdOrderType, GPDType::Type gpdType) {
 
     // Configure cff module
-    cffModule->setGpdModule(_pGPDModule);
-    cffModule->setQcdOrderType(qcdOrderType);
+    dvcsConvolCoeffFunctionModule->setGPDModule(_pGPDModule);
+    dvcsConvolCoeffFunctionModule->setQCDOrderType(qcdOrderType);
 
-    CFFOutputData cffOutputData = cffModule->compute(cffInputData.getXB(),
-            cffInputData.getT(), cffInputData.getQ2(), MuF, MuR,
-            gpdComputeType);
+    //TODO call with xi no xB ?
+    DVCSConvolCoeffFunctionResult result =
+            dvcsConvolCoeffFunctionModule->compute(kinematic.getXi(),
+                    kinematic.getT(), kinematic.getQ2(), kinematic.getMuF2(),
+                    kinematic.getMuR2(), gpdType);
 
-    return cffOutputData;
+    return result;
 }
 //
 ////TODO implementer
@@ -143,10 +144,10 @@ CFFOutputData CoefficientFunctionService::computeWithGPDModel(
 //}
 
 //TODO implement
-CFFOutputData CoefficientFunctionService::computeWithCFFModel(
-        CoefficientFunctionModule* cffModule, CFFInputData &cffInputData,
-        const double MuF, const double MuR,
+DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionService::computeWithCFFModel(
+        DVCSConvolCoeffFunctionModule* dvcsConvolCoeffFunctionModule,
+        DVCSConvolCoeffFunctionKinematic &kinematic,
         PerturbativeQCDOrderType &qcdOrderType) {
 
-    return CFFOutputData();
+    return DVCSConvolCoeffFunctionResult();
 }

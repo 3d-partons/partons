@@ -11,11 +11,11 @@
 #include <cmath>
 #include <stdexcept>
 
-#include "../../beans/PerturbativeQCDOrderType.h"
-#include "../../BaseObjectRegistry.h"
-#include "../../FundamentalPhysicalConstants.h"
-#include "../../utils/logger/LoggerManager.h"
-#include "../../utils/stringUtils/Formatter.h"
+#include "../../../beans/PerturbativeQCDOrderType.h"
+#include "../../../BaseObjectRegistry.h"
+#include "../../../FundamentalPhysicalConstants.h"
+#include "../../../utils/logger/LoggerManager.h"
+#include "../../../utils/stringUtils/Formatter.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int DVCSCFFHeavyQuarkModel::classId =

@@ -23,7 +23,8 @@ ObservableService::~ObservableService() {
 
 std::map<double, double> ObservableService::computeDVCSObservableWithPhiDependency(
         DVCSModule* pDVCSModule, Observable* pObservable,
-        ObservableKinematic observableKinematic, CFFOutputData cffOutputData) {
+        ObservableKinematic observableKinematic,
+        DVCSConvolCoeffFunctionResult dvcsConvolCoeffFunctionResult) {
 
     std::map<double, double> results;
     std::vector<double> listOfPhi = observableKinematic.getListOfPhi();
@@ -36,7 +37,7 @@ std::map<double, double> ObservableService::computeDVCSObservableWithPhiDependen
                                 observableKinematic.getXB(),
                                 observableKinematic.getT(),
                                 observableKinematic.getQ2(), listOfPhi[i],
-                                cffOutputData, pObservable)));
+                                dvcsConvolCoeffFunctionResult, pObservable)));
     }
 
     return results;

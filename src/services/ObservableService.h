@@ -15,7 +15,7 @@
 #include <map>
 #include <string>
 
-#include "../beans/cff/CFFOutputData.h"
+#include "../beans/convolCoeffFunction/DVCS/DVCSConvolCoeffFunctionResult.h"
 #include "../ServiceObject.h"
 
 class DVCSModule;
@@ -39,7 +39,7 @@ public:
     std::map<double, double> computeDVCSObservableWithPhiDependency(
             DVCSModule* pDVCSModule, Observable* pObservable,
             ObservableKinematic observableKinematic,
-            CFFOutputData cffOutputData);
+            DVCSConvolCoeffFunctionResult dvcsConvolCoeffFunctionResult);
 
     virtual void computeTask(const Task &task);
 

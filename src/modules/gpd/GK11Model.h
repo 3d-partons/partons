@@ -76,7 +76,6 @@ public:
     double getHtuValMx() const;
     double getHuValMx() const;
     double getL() const;
-    double getMuF2() const;
     const std::vector<double>& getHdval1mtab() const;
     const std::vector<double>& getHdval1tab() const;
     const std::vector<double>& getHi1tab() const;
@@ -139,7 +138,6 @@ protected:
     double c1, c2, c3, c4, c5, c6, c7, c8; // Coefficients of the expansion of CTEQ PDF in terms of half-integer powers of beta (eq. (26))
     double b0; // Exponential t-dependence (eq. (22))
     double fL;
-    double fMuF2;
 
     std::vector<double> Hi1tab;               ///< Hi1(i=0,0.5,1,1.5) for gluons
 
@@ -147,7 +145,6 @@ private:
 
     unsigned int m_nbOfQuarkFlavor;
     double kappa_s; // Flavour symmetry breaking factor, eq. (36)
-    double m_MuF2_ref;
 
     double fHuValMx;                                          ///< HuVal( - fx )
     double fHdValMx;                                          ///< HdVal( - fx )

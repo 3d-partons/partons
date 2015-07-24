@@ -96,6 +96,7 @@ void ScenarioManager::startElement(const std::string &elementName,
                 attributes.getStringValueOf("MuF2"));
         m_task.addParameter(elementName, "MuR",
                 attributes.getStringValueOf("MuR2"));
+
         //TODO quand est-ce que l'on fait la conversion des données utilisateurs vers les services ?
         //TODO comment selectionne-t-on la bonne conversion xB to xi ?
 

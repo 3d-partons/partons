@@ -1,7 +1,6 @@
 #include "EvolQCDModule.h"
 
 #include <math.h>
-#include <stdexcept>
 
 #include "../beans/parton_distribution/GluonDistribution.h"
 #include "../beans/parton_distribution/QuarkDistribution.h"
@@ -89,8 +88,8 @@ MatrixD EvolQCDModule::invertMatrix6(13, 13, 1., 0., 0., 0., 0., 0., 0., 0., 0.,
         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1.);
 
 //TODO quelles sont les valeurs par défauts lors de l'initialisation ?
-EvolQCDModule::EvolQCDModule(const std::string &className)
-        : ModuleObject(className), m_x(0), m_xi(0), m_t(0), m_MuF(0), m_MuR(0), m_MuF_ref(
+EvolQCDModule::EvolQCDModule(const std::string &className) :
+        ModuleObject(className), m_x(0), m_xi(0), m_t(0), m_MuF2(0), m_MuR2(0), m_MuF2_ref(
                 0), m_pGPDModule(0), m_qcdOrderType(
                 PerturbativeQCDOrderType::UNDEFINED), m_currentGPDComputeType(
                 GPDType::H), m_alphaS(0), m_scaleDistinction(0), m_nfEvol(-1), m_nfMin(
@@ -98,14 +97,14 @@ EvolQCDModule::EvolQCDModule(const std::string &className)
                 0.1) {
 }
 
-EvolQCDModule::EvolQCDModule(const EvolQCDModule &other)
-        : ModuleObject(other) {
+EvolQCDModule::EvolQCDModule(const EvolQCDModule &other) :
+        ModuleObject(other) {
     m_x = other.m_x;
     m_xi = other.m_xi;
     m_t = other.m_t;
-    m_MuF = other.m_MuF;
-    m_MuR = other.m_MuR;
-    m_MuF_ref = other.m_MuF_ref;
+    m_MuF2 = other.m_MuF2;
+    m_MuR2 = other.m_MuR2;
+    m_MuF2_ref = other.m_MuF2_ref;
 
     m_nfMin = other.m_nfMin;
     m_nfEvol = other.m_nfEvol;
@@ -148,8 +147,8 @@ EvolQCDModule::EvolQCDModule(const EvolQCDModule &other)
 EvolQCDModule::~EvolQCDModule() {
 }
 
-void EvolQCDModule::preCompute(double x, double xi, double t, double MuF,
-        double MuR, GPDModule* pGPDModule,
+void EvolQCDModule::preCompute(double x, double xi, double t, double MuF2,
+        double MuR2, GPDModule* pGPDModule,
         PartonDistribution partonDistribution) {
     m_pLoggerManager->debug(getClassName(), __func__, "");
 
@@ -158,8 +157,8 @@ void EvolQCDModule::preCompute(double x, double xi, double t, double MuF,
     m_x = x;
     m_xi = xi;
     m_t = t;
-    m_MuF = MuF;
-    m_MuR = MuR;
+    m_MuF2 = MuF2;
+    m_MuR2 = MuR2;
 
     m_partonDistribution = partonDistribution;
 
@@ -195,33 +194,32 @@ void EvolQCDModule::isModuleWellConfigured() {
     m_pLoggerManager->debug(getClassName(), __func__, "");
 
     if (m_pGPDModule == 0) {
-        throw std::runtime_error("[EvolQCDModule] GPDModule* is NULL");
+        throwException(__func__, "GPDModule* is NULL");
     }
 
     if (m_qcdOrderType == PerturbativeQCDOrderType::UNDEFINED) {
-        throw std::runtime_error("[EvolQCDModule] QCDOrderType is UNDEFINED");
+        throwException(__func__, "QCDOrderType is UNDEFINED");
     }
 
     // test contrainte sur les bornes du nf_evol
     if (m_nfEvol < 1 || m_nfEvol > 6) {
-        throw std::runtime_error(
-                Formatter()
-                        << "[EvolQCDModule] nfEvol is out of range ; a good value is between [1 : 6]");
+        throwException(__func__,
+                "nfEvol is out of range ; a good value is between [1 : 6]");
     }
 
     // Test range in MuF and MuF_ref
-    if (m_MuF <= 0.) {
-        throw std::runtime_error(
-                Formatter() << "[EvolQCDModule] m_MuF is out of range ;"
-                        << "m_MuF should be >0. Here m_MuF = " << m_MuF);
+    if (m_MuF2 <= 0.) {
+        throwException(__func__,
+                Formatter() << "m_MuF2 is out of range ;"
+                        << "m_MuF2 should be >0. Here m_MuF2 = " << m_MuF2);
     }
 
     // Test range in MuF and MuF_ref
-    if (m_MuF_ref <= 0.) {
-        throw std::runtime_error(
-                Formatter() << "[EvolQCDModule] m_MuF_ref is out of range ;"
-                        << "m_MuF_ref should be >0. Here m_MuF_ref = "
-                        << m_MuF_ref);
+    if (m_MuF2_ref <= 0.) {
+        throwException(__func__,
+                Formatter() << "m_MuF2_ref is out of range ;"
+                        << "m_MuF2_ref should be >0. Here m_MuF2_ref = "
+                        << m_MuF2_ref);
     }
 }
 
@@ -345,7 +343,7 @@ void EvolQCDModule::initVectorOfGPDCombinations() {
             m_partonDistribution);
 }
 
-bool EvolQCDModule::isRunnable(double MuF, double MuF_ref,
+bool EvolQCDModule::isRunnable(double MuF2, double MuF2_ref,
         EvolQCDModule::Type testType) {
     m_pLoggerManager->debug(getClassName(), __func__, "entered");
 
@@ -353,13 +351,14 @@ bool EvolQCDModule::isRunnable(double MuF, double MuF_ref,
     bool result = false;
     switch (testType) {
     case EvolQCDModule::RELATIVE:
-        result = isRelativeTest(MuF, MuF_ref);
+        result = isRelativeTest(MuF2, MuF2_ref);
         break;
     case EvolQCDModule::ABSOLUTE:
-        result = isAbsoluteTest(MuF, MuF_ref);
+        result = isAbsoluteTest(MuF2, MuF2_ref);
         break;
     case EvolQCDModule::BOTH:
-        result = (isRelativeTest(MuF, MuF_ref) && isAbsoluteTest(MuF, MuF_ref));
+        result = (isRelativeTest(MuF2, MuF2_ref)
+                && isAbsoluteTest(MuF2, MuF2_ref));
         break;
     default:
         break;
@@ -368,17 +367,17 @@ bool EvolQCDModule::isRunnable(double MuF, double MuF_ref,
     return result;
 }
 
-bool EvolQCDModule::isRelativeTest(double MuF, double MuF_ref) {
+bool EvolQCDModule::isRelativeTest(double MuF2, double MuF2_ref) {
     m_pLoggerManager->debug(getClassName(), __func__,
-            Formatter() << "MuF = " << MuF << "   MuF_ref = " << MuF_ref);
+            Formatter() << "MuF2 = " << MuF2 << "   MuF2_ref = " << MuF2_ref);
 
-    return (fabs(MuF - MuF_ref) > (m_epsilon * MuF_ref)) ? true : false;
+    return (fabs(MuF2 - MuF2_ref) > (m_epsilon * MuF2_ref)) ? true : false;
 }
 
-bool EvolQCDModule::isAbsoluteTest(double MuF, double MuF_ref) {
+bool EvolQCDModule::isAbsoluteTest(double MuF2, double MuF2_ref) {
     m_pLoggerManager->debug(getClassName(), __func__, "");
 
-    return (fabs(MuF - MuF_ref) > m_alpha) ? true : false;
+    return (fabs(MuF2 - MuF2_ref) > m_alpha) ? true : false;
 }
 
 //TODO ajouter les commentaires qui vont bien et les références au papier
@@ -506,13 +505,13 @@ const GPDModule* EvolQCDModule::getGpdModule() const {
 
 void EvolQCDModule::setGpdModule(GPDModule* gpdModule) {
     m_pGPDModule = gpdModule;
-    m_MuF_ref = m_pGPDModule->getMuFRef();
+    m_MuF2_ref = m_pGPDModule->getMuF2Ref();
 
     m_pLoggerManager->debug(getClassName(), __func__,
             Formatter() << "GPDModule = " << m_pGPDModule->getClassName());
 
     m_pLoggerManager->debug(getClassName(), __func__,
-            Formatter() << "MuF_ref = " << m_MuF_ref << " GeV");
+            Formatter() << "MuF2_ref = " << m_MuF2_ref << " GeV^2");
 }
 
 int EvolQCDModule::getEvolutionActiveFlavors() const {

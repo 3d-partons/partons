@@ -23,8 +23,8 @@ public:
     static const std::string GPD_KINEMATIC_DB_COLUMN_NAME_X;
     static const std::string GPD_KINEMATIC_DB_COLUMN_NAME_XI;
     static const std::string GPD_KINEMATIC_DB_COLUMN_NAME_T;
-    static const std::string GPD_KINEMATIC_DB_COLUMN_NAME_MUF;
-    static const std::string GPD_KINEMATIC_DB_COLUMN_NAME_MUR;
+    static const std::string GPD_KINEMATIC_DB_COLUMN_NAME_MUF2;
+    static const std::string GPD_KINEMATIC_DB_COLUMN_NAME_MUR2;
 
     /**
      * Default constructor
@@ -40,7 +40,7 @@ public:
      * @param MuF Factorization scale (in GeV)
      * @param MuR Renormalization scale (in GeV)
      */
-    GPDKinematic(double x, double xi, double t, double MuF, double MuR);
+    GPDKinematic(double x, double xi, double t, double MuF2, double MuR2);
 
     GPDKinematic(const ParameterList &parameterList);
 
@@ -58,10 +58,10 @@ public:
 
     // ##### GETTERS & SETTERS #####
 
-    double getMuF() const;
-    void setMuF(double muF);
-    double getMuR() const;
-    void setMuR(double muR);
+    double getMuF2() const;
+    void setMuF2(double muF2);
+    double getMuR2() const;
+    void setMuR2(double muR2);
     double getT() const;
     void setT(double t);
     double getX() const;
@@ -81,8 +81,8 @@ private:
     double m_x;		///< Longitudinal momentum fraction of the active parton
     double m_xi;	///< Skewness
     double m_t;	///< Mandelstam variable, momentum transfer on the hadron target (in GeV^2)
-    double m_MuF;	///< Factorization scale (in GeV)
-    double m_MuR;	///< Renormalization scale (in GeV)
+    double m_MuF2;	///< Factorization scale (in GeV^2)
+    double m_MuR2;	///< Renormalization scale (in GeV^2)
 };
 
 //sf::Packet& operator <<(sf::Packet& packet, const GPDKinematic& object);

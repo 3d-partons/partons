@@ -266,9 +266,9 @@ GPDKinematicReport HadronStructureUtils::compareGPDKinematics(
     DoubleComparisonReport tReport = MathUtils::compare(lhsGpdKinematic.getT(),
             rhsGpdKinematic.getT(), tolerances);
     DoubleComparisonReport muFReport = MathUtils::compare(
-            lhsGpdKinematic.getMuF(), rhsGpdKinematic.getMuF(), tolerances);
+            lhsGpdKinematic.getMuF2(), rhsGpdKinematic.getMuF2(), tolerances);
     DoubleComparisonReport muRReport = MathUtils::compare(
-            lhsGpdKinematic.getMuR(), rhsGpdKinematic.getMuR(), tolerances);
+            lhsGpdKinematic.getMuR2(), rhsGpdKinematic.getMuR2(), tolerances);
 
     gpdKinematicReport.setXReport(xReport);
     gpdKinematicReport.setXiReport(xiReport);

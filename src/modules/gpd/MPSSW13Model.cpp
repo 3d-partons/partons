@@ -28,14 +28,15 @@ const unsigned int MPSSW13Model::classId =
                 new MPSSW13Model("MPSSW13Model"));
 
 MPSSW13Model::MPSSW13Model(const std::string &className) :
-        GPDModule(className), m_NbOfQuarkFlavor(2), m_NbOfColor(3), m_Mx(0.), m_MuF2(
-                4.), m_MuF2_ref(4.), m_CA(3.), m_CF(4. / 3.), m_TF(1. / 2.), m_F1u(
-                0.), m_F1d(0.), m_FD(0.), m_ProfileShapeVal(1.), m_ProfileShapeSea(
-                2.), m_ProfileShapeGlue(2.), m_QuarkDTerm(0.), m_GluonDTerm(0.) {
+        GPDModule(className), m_Forward(0), m_NbOfQuarkFlavor(2), m_NbOfColor(
+                3), m_Mx(0.), m_CA(3.), m_CF(
+                4. / 3.), m_TF(1. / 2.), m_F1u(0.), m_F1d(0.), m_FD(0.), m_ProfileShapeVal(
+                1.), m_ProfileShapeSea(2.), m_ProfileShapeGlue(2.), m_QuarkDTerm(
+                0.), m_GluonDTerm(0.) {
 
     m_NbOfQuarkFlavor = 3;
+    m_MuF2 = 4.;
     m_MuF2_ref = 4.;
-    m_MuF_ref = sqrt(m_MuF2_ref);
 
     m_listGPDComputeTypeAvailable.insert(
             std::make_pair(GPDType::H, &GPDModule::computeH));
@@ -54,8 +55,6 @@ MPSSW13Model::MPSSW13Model(const MPSSW13Model& other) :
     m_NbOfQuarkFlavor = other.m_NbOfQuarkFlavor;
     m_NbOfColor = other.m_NbOfColor;
     m_Mx = other.m_Mx;
-    m_MuF2 = other.m_MuF2;
-    m_MuF2_ref = other.m_MuF2_ref;
     m_CA = other.m_CA;
     m_CF = other.m_CF;
     m_TF = other.m_TF;
@@ -210,14 +209,14 @@ void MPSSW13Model::ComputeDTerms() {
     ///////////////////////////////////////////////////////
     //   Strong Running coupling at current scale fMuR   //
     ///////////////////////////////////////////////////////
-    if (m_MuR <= MuSwitch) {
+    if (m_MuR2 <= MuSwitch) {
         Lambda = Lambda3;
-        t = 2. * log(m_MuR / Lambda);
+        t = 2. * log(m_MuR2 / Lambda);
         lt = log(t);
         AlphaS = 1. / (Beta0[0] * t); // - Beta1[ 0 ] * lt / ( ( Beta0[ 0 ] * t ) * ( Beta0[ 0 ] * t ) ) ;
     } else {
         Lambda = Lambda4;
-        t = 2. * log(m_MuR / Lambda);
+        t = 2. * log(m_MuR2 / Lambda);
         lt = log(t);
         AlphaS = 1. / (Beta0[1] * t); // - Beta1[  1 ] * lt / ( ( Beta0[ 1 ] * t ) * ( Beta0[ 1 ] * t ) ) ;
     }
@@ -350,7 +349,7 @@ void MPSSW13Model::ComputeDTerms() {
         Am[1][iGegen] = (gp[1][iGegen] * QuarkInputd[1][iGegen]
                 - GluonInputd[1][iGegen]) / (gp[1][iGegen] - gm[1][iGegen]);
 
-        if (m_MuR <= MuSwitch) {
+        if (m_MuR2 <= MuSwitch) {
             Quarkd[iGegen] = Ap[0][iGegen]
                     * pow(AlphaS / AlphaS0, Kp[0][iGegen]);
             Quarkd[iGegen] += Am[0][iGegen]
@@ -474,7 +473,7 @@ double MPSSW13Model::IntegralHuVal(double* Var, double* Par) {
 
 //  m_Forward->Setx( beta );
 //  pdf = m_Forward->GetuVal();
-    m_Forward->update(absbeta, m_MuF);
+    m_Forward->update(absbeta, m_MuF2);
     if (beta > 0) {
         pdf = m_Forward->cont.upv / absbeta;
     } else {
@@ -505,7 +504,7 @@ double MPSSW13Model::IntegralHuValMx(double* Var, double* Par) {
 
 //  m_Forward->Setx( beta );
 //  pdf = m_Forward->GetuVal();
-    m_Forward->update(absbeta, m_MuF);
+    m_Forward->update(absbeta, m_MuF2);
     if (beta > 0) {
         pdf = m_Forward->cont.upv / absbeta;
     } else {
@@ -536,7 +535,7 @@ double MPSSW13Model::IntegralxLargeHuSea(double* Var, double* Par) {
 
 //  m_Forward->Setx( beta );
 //  pdf = m_Forward->GetuSea();
-    m_Forward->update(absbeta, m_MuF);
+    m_Forward->update(absbeta, m_MuF2);
     pdf = m_Forward->cont.usea / absbeta;
     Integral = pdf * Profile(m_ProfileShapeSea, beta, (m_x - beta) / m_xi);
     Integral /= m_xi;
@@ -563,7 +562,7 @@ double MPSSW13Model::IntegralxSmall1HuSea(double* Var, double* Par) {
 
 //  m_Forward->Setx( beta );
 //  pdf = m_Forward->GetuSea();
-    m_Forward->update(absbeta, m_MuF);
+    m_Forward->update(absbeta, m_MuF2);
     pdf = m_Forward->cont.usea / absbeta;
     Integral = pdf * Profile(m_ProfileShapeSea, beta, (m_x - beta) / m_xi);
     Integral /= m_xi;
@@ -590,9 +589,9 @@ double MPSSW13Model::IntegralxSmall2HuSea(double* Var, double* Par) {
 
 //  m_Forward->Setx( beta );
 //  pdf = m_Forward->GetuSea();
-    m_Forward->update(absbeta, m_MuF);
+    m_Forward->update(absbeta, m_MuF2);
     pdf = m_Forward->cont.usea / absbeta;
-    m_Forward->update(absbeta, m_MuF);
+    m_Forward->update(absbeta, m_MuF2);
     if (beta > 0) {
         pdf = m_Forward->cont.upv / absbeta;
     } else {
@@ -625,7 +624,7 @@ double MPSSW13Model::IntegralHdVal(double* Var, double* Par) {
 
 //  m_Forward->Setx( beta );
 //  pdf = m_Forward->GetdVal();
-    m_Forward->update(absbeta, m_MuF);
+    m_Forward->update(absbeta, m_MuF2);
     if (beta > 0) {
         pdf = m_Forward->cont.dnv / absbeta;
     } else {
@@ -656,7 +655,7 @@ double MPSSW13Model::IntegralHdValMx(double* Var, double* Par) {
 
 //  m_Forward->Setx( beta );
 //  pdf = m_Forward->GetdVal();
-    m_Forward->update(absbeta, m_MuF);
+    m_Forward->update(absbeta, m_MuF2);
     if (beta > 0) {
         pdf = m_Forward->cont.dnv / absbeta;
     } else {
@@ -687,7 +686,7 @@ double MPSSW13Model::IntegralxLargeHdSea(double* Var, double* Par) {
 
 //  m_Forward->Setx( beta );
 //  pdf = m_Forward->GetdSea();
-    m_Forward->update(absbeta, m_MuF);
+    m_Forward->update(absbeta, m_MuF2);
     pdf = m_Forward->cont.dsea / absbeta;
     Integral = pdf * Profile(m_ProfileShapeSea, beta, (m_x - beta) / m_xi);
     Integral /= m_xi;
@@ -714,7 +713,7 @@ double MPSSW13Model::IntegralxSmall1HdSea(double* Var, double* Par) {
 
 //  m_Forward->Setx( beta );
 //  pdf = m_Forward->GetdSea();
-    m_Forward->update(absbeta, m_MuF);
+    m_Forward->update(absbeta, m_MuF2);
     pdf = m_Forward->cont.dsea / absbeta;
     Integral = pdf * Profile(m_ProfileShapeSea, beta, (m_x - beta) / m_xi);
     Integral /= m_xi;
@@ -741,7 +740,7 @@ double MPSSW13Model::IntegralxSmall2HdSea(double* Var, double* Par) {
 
 //  m_Forward->Setx( beta );
 //  pdf = m_Forward->GetdSea();
-    m_Forward->update(absbeta, m_MuF);
+    m_Forward->update(absbeta, m_MuF2);
     pdf = m_Forward->cont.dsea / absbeta;
     Integral = Profile(m_ProfileShapeSea, beta, (m_x - beta) / m_xi);
     Integral += -Profile(m_ProfileShapeSea, beta, (m_x + beta) / m_xi);
@@ -770,7 +769,7 @@ double MPSSW13Model::IntegralxLargeHsSea(double* Var, double* Par) {
 
 //  m_Forward->Setx( beta );
 //  pdf = m_Forward->GetdSea();
-    m_Forward->update(absbeta, m_MuF);
+    m_Forward->update(absbeta, m_MuF2);
     pdf = m_Forward->cont.dsea / absbeta;
     Integral = pdf * Profile(m_ProfileShapeSea, beta, (m_x - beta) / m_xi);
     Integral /= m_xi;
@@ -797,7 +796,7 @@ double MPSSW13Model::IntegralxSmall1HsSea(double* Var, double* Par) {
 
 //  m_Forward->Setx( beta );
 //  pdf = m_Forward->Gets();
-    m_Forward->update(absbeta, m_MuF);
+    m_Forward->update(absbeta, m_MuF2);
     if (beta > 0) {
         pdf = m_Forward->cont.sbar / absbeta;
     } else {
@@ -828,7 +827,7 @@ double MPSSW13Model::IntegralxSmall2HsSea(double* Var, double* Par) {
 
 //  m_Forward->Setx( beta );
 //  pdf = m_Forward->Gets();
-    m_Forward->update(absbeta, m_MuF);
+    m_Forward->update(absbeta, m_MuF2);
     if (beta > 0) {
         pdf = m_Forward->cont.sbar / absbeta;
     } else {
@@ -861,7 +860,7 @@ double MPSSW13Model::IntegralxLargeHg(double* Var, double* Par) {
 
 //  m_Forward->Setx( beta );
 //  pdf = m_Forward->Getg();
-    m_Forward->update(absbeta, m_MuF);
+    m_Forward->update(absbeta, m_MuF2);
     pdf = m_Forward->cont.glu / absbeta;
     Integral = pdf * beta
             * Profile(m_ProfileShapeGlue, beta, (m_x - beta) / m_xi);
@@ -889,7 +888,7 @@ double MPSSW13Model::IntegralxSmall1Hg(double* Var, double* Par) {
 
 //  m_Forward->Setx( beta );
 //  pdf = m_Forward->Getg();
-    m_Forward->update(absbeta, m_MuF);
+    m_Forward->update(absbeta, m_MuF2);
     pdf = m_Forward->cont.glu / absbeta;
     Integral = pdf * beta
             * Profile(m_ProfileShapeGlue, beta, (m_x - beta) / m_xi);
@@ -917,7 +916,7 @@ double MPSSW13Model::IntegralxSmall2Hg(double* Var, double* Par) {
 
 //  m_Forward->Setx( beta );
 //  pdf = m_Forward->Getg();
-    m_Forward->update(absbeta, m_MuF);
+    m_Forward->update(absbeta, m_MuF2);
     pdf = m_Forward->cont.glu / absbeta;
     Integral = pdf * beta
             * Profile(m_ProfileShapeSea, beta, (m_x + beta) / m_xi);
@@ -983,7 +982,7 @@ double MPSSW13Model::GammaGG(const unsigned int nflavour,
 void MPSSW13Model::initModule() {
     GPDModule::initModule();
 
-    m_MuF2 = m_MuF * m_MuF;
+    m_MuF2 = m_MuF2 * m_MuF2;
 
     m_pLoggerManager->debug(getClassName(), __func__,
             Formatter() << "fMuF2 = " << m_MuF2);
@@ -1020,14 +1019,6 @@ double MPSSW13Model::getGluonDTerm() const {
 
 void MPSSW13Model::setGluonDTerm(double gluonDTerm) {
     m_GluonDTerm = gluonDTerm;
-}
-
-double MPSSW13Model::getMuF2() const {
-    return m_MuF2;
-}
-
-double MPSSW13Model::getMuF2Ref() const {
-    return m_MuF2_ref;
 }
 
 double MPSSW13Model::getMx() const {

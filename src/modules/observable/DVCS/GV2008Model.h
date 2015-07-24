@@ -24,7 +24,7 @@
 #include <string>
 #include <vector>
 
-#include "../../../beans/cff/CFFOutputData.h"
+#include "../../../beans/convolCoeffFunction/DVCS/DVCSConvolCoeffFunctionResult.h"
 #include "../../../utils/vector/Vector4D.h"
 #include "../DVCSModule.h"
 
@@ -43,7 +43,9 @@ public:
     virtual void isModuleWellConfigured();
 
     virtual double computeWithPhiDependency(double xB, double t, double Q2,
-            double phi, CFFOutputData cffOutputData, Observable* pObservable);
+            double phi,
+            DVCSConvolCoeffFunctionResult dvcsConvolCoeffFunctionResult,
+            Observable* pObservable);
 
     virtual double computeCrossSection(double beamHelicity, double beamCharge,
             Vector3D targetPolarization);

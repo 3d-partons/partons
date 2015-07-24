@@ -88,8 +88,8 @@ GPDResult GPDService::computeGPDModelRestrictedByGPDType(
         GPDType::Type gpdType) {
 
     GPDResult gpdResult = pGPDModule->compute(gpdKinematic.getX(),
-            gpdKinematic.getXi(), gpdKinematic.getT(), gpdKinematic.getMuF(),
-            gpdKinematic.getMuR(), gpdType);
+            gpdKinematic.getXi(), gpdKinematic.getT(), gpdKinematic.getMuF2(),
+            gpdKinematic.getMuR2(), gpdType);
     gpdResult.setGpdKinematic(gpdKinematic);
 
     gpdResult.setComputedByGpdModuleId(pGPDModule->getClassName());
@@ -103,8 +103,8 @@ GPDResult GPDService::computeGPDModelWithEvolution(
     pGPDModule->setEvolQcdModule(pEvolQCDModule);
 
     GPDResult gpdResult = pGPDModule->computeWithEvolution(gpdKinematic.getX(),
-            gpdKinematic.getXi(), gpdKinematic.getT(), gpdKinematic.getMuF(),
-            gpdKinematic.getMuR(), gpdType);
+            gpdKinematic.getXi(), gpdKinematic.getT(), gpdKinematic.getMuF2(),
+            gpdKinematic.getMuR2(), gpdType);
     gpdResult.setGpdKinematic(gpdKinematic);
 
     return gpdResult;

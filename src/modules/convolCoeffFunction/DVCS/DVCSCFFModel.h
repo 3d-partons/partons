@@ -16,12 +16,12 @@
 #include <complex>
 #include <string>
 
-#include "../../beans/parton_distribution/PartonDistribution.h"
-#include "../CoefficientFunctionModule.h"
+#include "../../../beans/parton_distribution/PartonDistribution.h"
+#include "DVCSConvolCoeffFunctionModule.h"
 
 class GPDOutputData;
 
-class DVCSCFFModel: public CoefficientFunctionModule {
+class DVCSCFFModel: public DVCSConvolCoeffFunctionModule {
 public:
     enum FunctionNameToIntegrate {
         CONVOL_RE_KERNEL_QUARK_1V,

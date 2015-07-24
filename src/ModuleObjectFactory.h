@@ -10,7 +10,7 @@
 
 #include <string>
 
-class CoefficientFunctionModule;
+class DVCSConvolCoeffFunctionModule;
 class DVCSModule;
 class EvolQCDModule;
 class GPDModule;
@@ -18,18 +18,15 @@ class MathIntegratorModule;
 class ObservableModule;
 class RunningAlphaStrongModule;
 
-/*
- *
- */
 class ModuleObjectFactory {
 public:
 
     static GPDModule* newGPDModule(unsigned int classId);
     static GPDModule* newGPDModule(const std::string &className);
 
-    static CoefficientFunctionModule* newCoefficientFunctionModule(
+    static DVCSConvolCoeffFunctionModule* newDVCSConvolCoeffFunctionModule(
             unsigned int classId);
-    static CoefficientFunctionModule* newCoefficientFunctionModule(
+    static DVCSConvolCoeffFunctionModule* newDVCSConvolCoeffFunctionModule(
             const std::string &className);
 
     static EvolQCDModule* newEvolQCDModule(unsigned int classId);
