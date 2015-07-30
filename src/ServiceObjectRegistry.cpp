@@ -3,6 +3,7 @@
 #include <stdexcept>
 
 #include "BaseObjectRegistry.h"
+#include "services/DoubleDistributionService.h"
 #include "services/DVCSConvolCoeffFunctionService.h"
 #include "services/GPDService.h"
 #include "services/ObservableService.h"
@@ -48,4 +49,9 @@ ObservableService* ServiceObjectRegistry::getObservableService() {
 
 VizualisationService* ServiceObjectRegistry::getVizualisationService() {
     return static_cast<VizualisationService*>(get(VizualisationService::classId));
+}
+
+DoubleDistributionService* ServiceObjectRegistry::getDoubleDistributionService() {
+    return static_cast<DoubleDistributionService*>(get(
+            DoubleDistributionService::classId));
 }

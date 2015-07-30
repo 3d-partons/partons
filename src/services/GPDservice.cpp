@@ -15,7 +15,7 @@
 
 const std::string GPDService::GPD_SERVICE_COMPUTE_GPD_MODEL = "computeGPDModel";
 
-// Initialise [class]::classId with a unique name.
+// Initialise [class]::classId with a unique name and selfregister this module into the global registry.
 const unsigned int GPDService::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new GPDService("GPDService"));

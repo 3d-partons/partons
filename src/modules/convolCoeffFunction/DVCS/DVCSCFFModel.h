@@ -19,24 +19,8 @@
 #include "../../../beans/parton_distribution/PartonDistribution.h"
 #include "DVCSConvolCoeffFunctionModule.h"
 
-class GPDOutputData;
-
 class DVCSCFFModel: public DVCSConvolCoeffFunctionModule {
 public:
-    enum FunctionNameToIntegrate {
-        CONVOL_RE_KERNEL_QUARK_1V,
-        CONVOL_RE_KERNEL_QUARK_2V,
-        CONVOL_IM_KERNEL_QUARK_V,
-        CONVOL_RE_KERNEL_GLUON_1V,
-        CONVOL_RE_KERNEL_GLUON_2V,
-        CONVOL_IM_KERNEL_GLUON_V,
-        CONVOL_RE_KERNEL_QUARK_1A,
-        CONVOL_RE_KERNEL_QUARK_2A,
-        CONVOL_IM_KERNEL_QUARK_A,
-        CONVOL_RE_KERNEL_GLUON_1A,
-        CONVOL_RE_KERNEL_GLUON_2A,
-        CONVOL_IM_KERNEL_GLUON_A
-    };
 
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
@@ -45,8 +29,6 @@ public:
     virtual DVCSCFFModel* clone() const;
 
     virtual ~DVCSCFFModel();
-
-    virtual double functionsToIntegrate(double * x, double * parameters = 0);
 
     virtual void init();
 
@@ -89,29 +71,27 @@ private:
     double m_quarkDiagonal;
     double m_gluonDiagonal;
 
-    //ROOT::Math::Integrator m_integrator;
-
     virtual void computeDiagonalGPD();
 
     virtual std::complex<double> KernelQuarkV(double x); ///< T^{q, V/A}, appendix A, eq. (A1)
     virtual std::complex<double> KernelGluonV(double x); ///< T^{g, V/A}, appendix A, eq. (A1)
 
-    virtual double ConvolReKernelQuark1V(const double x); ///< eq. (8), real part of amplitude, \int_0^zeta
-    virtual double ConvolReKernelQuark2V(const double x); ///< eq. (8), real part of amplitude, \int_zeta^1
-    virtual double ConvolImKernelQuarkV(const double x); ///< eq. (8), imaginary part of amplitude
-    virtual double ConvolReKernelGluon1V(const double x); ///< eq. (9), real part of amplitude, \int_0^zeta
-    virtual double ConvolReKernelGluon2V(const double x); ///< eq. (9), real part of amplitude, \int_zeta^1
-    virtual double ConvolImKernelGluonV(const double x); ///< eq. (9), imaginary part of amplitude
+    virtual double ConvolReKernelQuark1V(double* x, double* params); ///< eq. (8), real part of amplitude, \int_0^zeta
+    virtual double ConvolReKernelQuark2V(double* x, double* params); ///< eq. (8), real part of amplitude, \int_zeta^1
+    virtual double ConvolImKernelQuarkV(double* x, double* params); ///< eq. (8), imaginary part of amplitude
+    virtual double ConvolReKernelGluon1V(double* x, double* params); ///< eq. (9), real part of amplitude, \int_0^zeta
+    virtual double ConvolReKernelGluon2V(double* x, double* params); ///< eq. (9), real part of amplitude, \int_zeta^1
+    virtual double ConvolImKernelGluonV(double* x, double* params); ///< eq. (9), imaginary part of amplitude
 
     virtual std::complex<double> KernelQuarkA(double x); ///< T^{q, V/A}, appendix A, eq. (A1)
     virtual std::complex<double> KernelGluonA(double x); ///< T^{g, V/A}, appendix A, eq. (A1)
 
-    virtual double ConvolReKernelQuark1A(const double x); ///< eq. (8), real part of amplitude, \int_0^zeta
-    virtual double ConvolReKernelQuark2A(const double x); ///< eq. (8), real part of amplitude, \int_zeta^1
-    virtual double ConvolImKernelQuarkA(const double x); ///< eq. (8), imaginary part of amplitude
-    virtual double ConvolReKernelGluon1A(const double x); ///< eq. (9), real part of amplitude, \int_0^zeta
-    virtual double ConvolReKernelGluon2A(const double x); ///< eq. (9), real part of amplitude, \int_zeta^1
-    virtual double ConvolImKernelGluonA(const double x); ///< eq. (9), imaginary part of amplitude
+    virtual double ConvolReKernelQuark1A(double* x, double* params); ///< eq. (8), real part of amplitude, \int_0^zeta
+    virtual double ConvolReKernelQuark2A(double* x, double* params); ///< eq. (8), real part of amplitude, \int_zeta^1
+    virtual double ConvolImKernelQuarkA(double* x, double* params); ///< eq. (8), imaginary part of amplitude
+    virtual double ConvolReKernelGluon1A(double* x, double* params); ///< eq. (9), real part of amplitude, \int_0^zeta
+    virtual double ConvolReKernelGluon2A(double* x, double* params); ///< eq. (9), real part of amplitude, \int_zeta^1
+    virtual double ConvolImKernelGluonA(double* x, double* params); ///< eq. (9), imaginary part of amplitude
 
     std::complex<double> computeIntegralsV();
     std::complex<double> computeIntegralsA();

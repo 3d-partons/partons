@@ -1,16 +1,10 @@
 #include "PartonDistribution.h"
 
 #include <sstream>
-#include <stdexcept>
 #include <utility>
 
-PartonDistribution::PartonDistribution()
-        : m_gpdType(GPDType::UNDEFINED), m_singlet(0.) {
-}
-
-PartonDistribution::PartonDistribution(GPDType::Type gpdType)
-        : m_gpdType(gpdType), m_singlet(0.) {
-
+PartonDistribution::PartonDistribution() :
+        BaseObject("PartonDistribution"), m_singlet(0.) {
 }
 
 PartonDistribution::~PartonDistribution() {
@@ -30,8 +24,8 @@ const QuarkDistribution& PartonDistribution::getQuarkDistribution(
             m_quarkDistributions.find(quarkFlavorType);
 
     if (it == m_quarkDistributions.end()) {
-        throw std::runtime_error(
-                "[PartonDistribution::getQuarkDistribution] Enable to find QuardDistribution object from QuarFlavorType = "
+        throwException(__func__,
+                "Enable to find QuardDistribution object from QuarFlavorType = "
                         + QuarkFlavor(quarkFlavorType).getShortName());
     }
 
@@ -109,12 +103,4 @@ double PartonDistribution::getSinglet() const {
 
 void PartonDistribution::setSinglet(double singlet) {
     m_singlet = singlet;
-}
-
-GPDType::Type PartonDistribution::getGpdType() const {
-    return m_gpdType;
-}
-
-void PartonDistribution::setGpdType(GPDType::Type gpdType) {
-    m_gpdType = gpdType;
 }

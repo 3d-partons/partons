@@ -11,5 +11,5 @@ ConvolCoeffFunctionModule::~ConvolCoeffFunctionModule() {
 
 ConvolCoeffFunctionModule::ConvolCoeffFunctionModule(
         const ConvolCoeffFunctionModule& other) :
-        ModuleObject(other) {
+        ModuleObject(other), MathIntegratorModule(other) {
 }

@@ -5,15 +5,14 @@
 #include <string>
 #include <vector>
 
-#include "../gpd/GPDType.h"
+#include "../../BaseObject.h"
 #include "../QuarkFlavor.h"
 #include "GluonDistribution.h"
 #include "QuarkDistribution.h"
 
-class PartonDistribution {
+class PartonDistribution: public BaseObject {
 public:
     PartonDistribution();
-    PartonDistribution(GPDType::Type gpdType);
 
     virtual ~PartonDistribution();
 
@@ -37,14 +36,10 @@ public:
             const std::map<QuarkFlavor::Type, QuarkDistribution>& quarkDistributions);
     double getSinglet() const;
     void setSinglet(double singlet);
-    GPDType::Type getGpdType() const;
-    void setGpdType(GPDType::Type gpdType);
 
 private:
     std::map<QuarkFlavor::Type, QuarkDistribution> m_quarkDistributions;
     // std::map<QuarkFlavor::Type, QuarkDistribution>::const_iterator it;
-
-    GPDType::Type m_gpdType;
 
     GluonDistribution m_gluonDistribution;
     double m_singlet;

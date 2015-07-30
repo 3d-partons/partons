@@ -1,0 +1,57 @@
+#include "DoubleDistributionResult.h"
+
+#include <sstream>
+#include <utility>
+
+#include "../../utils/stringUtils/Formatter.h"
+
+DoubleDistributionResult::DoubleDistributionResult() :
+        BaseObject("DualDistributionResult") {
+    // TODO Auto-generated constructor stub
+
+}
+
+DoubleDistributionResult::~DoubleDistributionResult() {
+    // TODO Auto-generated destructor stub
+}
+
+void DoubleDistributionResult::addPartonDistribution(
+        DoubleDistributionType::Type doubleDistributionType,
+        PartonDistribution partonDistribution) {
+    // TODO: The object partonDistribution already has a GPDType member, so the arguments of the function are redundant (without check...).
+    m_partonDistributions.insert(
+            std::pair<DoubleDistributionType::Type, PartonDistribution>(
+                    doubleDistributionType, partonDistribution));
+}
+
+const PartonDistribution& DoubleDistributionResult::getPartonDistribution(
+        DoubleDistributionType::Type doubleDistributionType) const {
+
+    std::map<DoubleDistributionType::Type, PartonDistribution>::const_iterator it =
+            m_partonDistributions.find(doubleDistributionType);
+
+    if (it == m_partonDistributions.end()) {
+        throwException(__func__,
+                Formatter()
+                        << "Enable to find PartonDistribution object from type = "
+                        << DoubleDistributionType(doubleDistributionType).toString());
+
+    }
+
+    return (it->second);
+}
+
+std::string DoubleDistributionResult::toString() {
+    std::ostringstream os;
+    std::map<DoubleDistributionType::Type, PartonDistribution>::const_iterator it;
+
+    for (it = m_partonDistributions.begin(); it != m_partonDistributions.end();
+            it++) {
+        os << "DD_" << DoubleDistributionType(it->first).toString()
+                << std::endl;
+        os << (it->second).toString();
+        os << std::endl;
+    }
+
+    return os.str();
+}

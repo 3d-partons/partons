@@ -29,10 +29,9 @@ const unsigned int MPSSW13Model::classId =
 
 MPSSW13Model::MPSSW13Model(const std::string &className) :
         GPDModule(className), m_Forward(0), m_NbOfQuarkFlavor(2), m_NbOfColor(
-                3), m_Mx(0.), m_CA(3.), m_CF(
-                4. / 3.), m_TF(1. / 2.), m_F1u(0.), m_F1d(0.), m_FD(0.), m_ProfileShapeVal(
-                1.), m_ProfileShapeSea(2.), m_ProfileShapeGlue(2.), m_QuarkDTerm(
-                0.), m_GluonDTerm(0.) {
+                3), m_Mx(0.), m_CA(3.), m_CF(4. / 3.), m_TF(1. / 2.), m_F1u(0.), m_F1d(
+                0.), m_FD(0.), m_ProfileShapeVal(1.), m_ProfileShapeSea(2.), m_ProfileShapeGlue(
+                2.), m_QuarkDTerm(0.), m_GluonDTerm(0.) {
 
     m_NbOfQuarkFlavor = 3;
     m_MuF2 = 4.;
@@ -1054,7 +1053,7 @@ double MPSSW13Model::getTF() const {
 }
 
 PartonDistribution MPSSW13Model::computeH() {
-    PartonDistribution partonDistribution(GPDType::H);
+    PartonDistribution partonDistribution;
 
     QuarkDistribution quarkDistribution_u(QuarkFlavor::UP);
     QuarkDistribution quarkDistribution_d(QuarkFlavor::DOWN);

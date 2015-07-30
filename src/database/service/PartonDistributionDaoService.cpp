@@ -1,15 +1,17 @@
 #include "PartonDistributionDaoService.h"
 
-//#include <vector>
-
-#include "../../beans/parton_distribution/GluonDistribution.h"
-#include "../dao/PartonDistributionDao.h"
+//#include "../../beans/parton_distribution/GluonDistribution.h"
+//#include "../dao/PartonDistributionDao.h"
 
 int PartonDistributionDaoService::insert(int gpdResultId,
         const PartonDistribution &partonDistribution) {
-    return PartonDistributionDao::insert(gpdResultId,
-            partonDistribution.getGpdType(),
-            partonDistribution.getGluonDistribution().getGluonDistribution());
+//    return PartonDistributionDao::insert(gpdResultId,
+//            partonDistribution.getGpdType(),
+//            partonDistribution.getGluonDistribution().getGluonDistribution());
+
+//TODO re-implement
+
+    return 0;
 }
 
 int PartonDistributionDaoService::insert(int gpdResultId,

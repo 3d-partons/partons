@@ -20,8 +20,6 @@
 
 #include "utils/ParameterList.h"
 
-class MathIntegratorModule;
-
 class ModuleObject: public BaseObject {
 public:
     /**
@@ -52,13 +50,6 @@ public:
 
     virtual ModuleObject* clone() const = 0;
 
-    // Callbacks are tremendously useful in object-oriented design when one needs to decouple two classes but let them be connected via a single function call.
-    // Wouldn't it be nice if C++ supported callbacks directly?
-    // Unfortunately, C++ does not offer anything like this. myObject.foo is a combination of the object pointer &myObject and the member function pointer foo. C++ does not have a pointer type that combines these two pointers.
-    // One technique for implementing callbacks is to use an interface class. An interface class contains a member function to be overridden by a deriver. This is the callback function.
-    // cf : http://tedfelix.com/software/c++-callbacks.html
-    virtual double functionsToIntegrate(double * x, double * parameters = 0);
-
     /**
      * Return a pre-formatted characters string for output visualization of class member's values
      *
@@ -66,18 +57,11 @@ public:
      */
     virtual std::string toString();
 
-    unsigned int getCurrentFunctionToIntegrate() const;
-    void setCurrentFunctionToIntegrate(unsigned int currentFunctionToIntegrate);
-
     virtual void init();
 
 protected:
 
     ParameterList m_parameters; ///< Parameters used for configure this module.
-
-    unsigned int m_currentFunctionToIntegrate; ///< Variable used by the module to know what mathematical function integrate.
-
-    MathIntegratorModule* m_pMathIntegratorModule; ///< Pointer to MathIntegratorModule class.
 
     /***
      * Copy constructor

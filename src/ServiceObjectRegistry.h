@@ -12,6 +12,8 @@
 
 #include <string>
 
+class DoubleDistributionService;
+
 class BaseObjectRegistry;
 class DVCSConvolCoeffFunctionService;
 class GPDService;
@@ -29,6 +31,7 @@ public:
     static DVCSConvolCoeffFunctionService* getConvolCoeffFunctionService();
     static ObservableService* getObservableService();
     static VizualisationService* getVizualisationService();
+    static DoubleDistributionService* getDoubleDistributionService();
 
 private:
 

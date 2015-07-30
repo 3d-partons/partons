@@ -2,11 +2,34 @@
 
 #include "BaseObjectFactory.h"
 #include "modules/convolCoeffFunction/DVCS/DVCSConvolCoeffFunctionModule.h"
+#include "modules/DoubleDistributionModule.h"
 #include "modules/EvolQCDModule.h"
 #include "modules/GPDModule.h"
-#include "modules/MathIntegratorModule.h"
 #include "modules/observable/DVCSModule.h"
 #include "modules/RunningAlphaStrongModule.h"
+
+DoubleDistributionModule* ModuleObjectFactory::newDoubleDistributionModule(
+        unsigned int classId) {
+    return static_cast<DoubleDistributionModule*>(BaseObjectFactory::getInstance()->newBaseObject(
+            classId));
+}
+
+DoubleDistributionModule* ModuleObjectFactory::newDoubleDistributionModule(
+        const std::string& className) {
+    return static_cast<DoubleDistributionModule*>(BaseObjectFactory::getInstance()->newBaseObject(
+            className));
+}
+
+EvolQCDModule* ModuleObjectFactory::newEvolQCDModule(unsigned int classId) {
+    return static_cast<EvolQCDModule*>(BaseObjectFactory::getInstance()->newBaseObject(
+            classId));
+}
+
+EvolQCDModule* ModuleObjectFactory::newEvolQCDModule(
+        const std::string& className) {
+    return static_cast<EvolQCDModule*>(BaseObjectFactory::getInstance()->newBaseObject(
+            className));
+}
 
 GPDModule* ModuleObjectFactory::newGPDModule(unsigned int classId) {
     return static_cast<GPDModule*>(BaseObjectFactory::getInstance()->newBaseObject(
@@ -42,17 +65,6 @@ ObservableModule* ModuleObjectFactory::newObservableModule(
             className));
 }
 
-EvolQCDModule* ModuleObjectFactory::newEvolQCDModule(unsigned int classId) {
-    return static_cast<EvolQCDModule*>(BaseObjectFactory::getInstance()->newBaseObject(
-            classId));
-}
-
-EvolQCDModule* ModuleObjectFactory::newEvolQCDModule(
-        const std::string& className) {
-    return static_cast<EvolQCDModule*>(BaseObjectFactory::getInstance()->newBaseObject(
-            className));
-}
-
 DVCSModule* ModuleObjectFactory::newDVCSModule(unsigned int classId) {
     return static_cast<DVCSModule*>(BaseObjectFactory::getInstance()->newBaseObject(
             classId));
@@ -60,18 +72,6 @@ DVCSModule* ModuleObjectFactory::newDVCSModule(unsigned int classId) {
 
 DVCSModule* ModuleObjectFactory::newDVCSModule(const std::string& className) {
     return static_cast<DVCSModule*>(BaseObjectFactory::getInstance()->newBaseObject(
-            className));
-}
-
-MathIntegratorModule* ModuleObjectFactory::newMathIntegratorModule(
-        unsigned int classId) {
-    return static_cast<MathIntegratorModule*>(BaseObjectFactory::getInstance()->newBaseObject(
-            classId));
-}
-
-MathIntegratorModule* ModuleObjectFactory::newMathIntegratorModule(
-        const std::string& className) {
-    return static_cast<MathIntegratorModule*>(BaseObjectFactory::getInstance()->newBaseObject(
             className));
 }
 

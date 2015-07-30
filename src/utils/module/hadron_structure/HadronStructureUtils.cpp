@@ -125,33 +125,27 @@ PartonDistributionReport HadronStructureUtils::comparePartonDistributions(
     GluonDistributionReport gluonDistributionReport;
     PartonDistributionReport partonDistributionReport;
 
-    // Check that the comparison involves the same GPD in lhs and rhs
-    if (lhsPartonDistribution.getGpdType()
-            == rhsPartonDistribution.getGpdType()) {
+    // Retrieve and test definition of gluon distributions
+    GluonDistribution lhsGluonDistribution =
+            lhsPartonDistribution.getGluonDistribution();
+    if (lhsGluonDistribution.isNullObject())
+        partonDistributionReport.setLhsUndefinedGluons(true);
+    GluonDistribution rhsGluonDistribution =
+            rhsPartonDistribution.getGluonDistribution();
+    if (rhsGluonDistribution.isNullObject())
+        partonDistributionReport.setRhsUndefinedGluons(true);
 
-        // Retrieve and test definition of gluon distributions
-        GluonDistribution lhsGluonDistribution =
-                lhsPartonDistribution.getGluonDistribution();
-        if (lhsGluonDistribution.isNullObject())
-            partonDistributionReport.setLhsUndefinedGluons(true);
-        GluonDistribution rhsGluonDistribution =
-                rhsPartonDistribution.getGluonDistribution();
-        if (rhsGluonDistribution.isNullObject())
-            partonDistributionReport.setRhsUndefinedGluons(true);
+    if ((lhsGluonDistribution.isNullObject()
+            && rhsGluonDistribution.isNullObject())
+            || (!lhsGluonDistribution.isNullObject()
+                    && !rhsGluonDistribution.isNullObject()))
+        comparableGluons = true;
 
-        if ((lhsGluonDistribution.isNullObject()
-                && rhsGluonDistribution.isNullObject())
-                || (!lhsGluonDistribution.isNullObject()
-                        && !rhsGluonDistribution.isNullObject()))
-            comparableGluons = true;
-
-        gluonDistributionReport =
-                HadronStructureUtils::compareGluonDistributions(
-                        lhsGluonDistribution.getGluonDistribution(),
-                        rhsGluonDistribution.getGluonDistribution(), tolerance);
-        partonDistributionReport.setGluonDistributionReport(
-                gluonDistributionReport);
-    }
+    gluonDistributionReport = HadronStructureUtils::compareGluonDistributions(
+            lhsGluonDistribution.getGluonDistribution(),
+            rhsGluonDistribution.getGluonDistribution(), tolerance);
+    partonDistributionReport.setGluonDistributionReport(
+            gluonDistributionReport);
 
     // Retrieve the list of computed quark flavors and identify common elements
     std::map<QuarkFlavor::Type, QuarkDistribution> lhsQuarkDistributions =

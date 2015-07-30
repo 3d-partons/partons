@@ -1,0 +1,35 @@
+#ifndef DOUBLE_DISTRIBUTION_TYPE_H
+#define DOUBLE_DISTRIBUTION_TYPE_H
+
+/**
+ * @file DoubleDistributionType.h
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
+ * @date 29 July 2015
+ * @version 1.0
+ *
+ * @class DoubleDistributionType
+ *
+ * @brief
+ */
+
+#include <string>
+
+class DoubleDistributionType {
+public:
+    enum Type {
+        UNDEFINED, ALL, F, G, K
+    };
+
+    DoubleDistributionType();
+    DoubleDistributionType(DoubleDistributionType::Type type);
+    virtual ~DoubleDistributionType();
+
+    operator Type() const;
+
+    std::string toString();
+
+private:
+    DoubleDistributionType::Type m_type;
+};
+
+#endif /* DOUBLE_DISTRIBUTION_TYPE_H */
