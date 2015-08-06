@@ -14,8 +14,8 @@
 #include "PartonDistributionDaoService.h"
 #include "QuarkDistributionDaoService.h"
 
-GPDResultDaoService::GPDResultDaoService()
-        : BaseObject("GPDResultDaoService") {
+GPDResultDaoService::GPDResultDaoService() :
+        BaseObject("GPDResultDaoService") {
 
 }
 
@@ -27,12 +27,12 @@ int GPDResultDaoService::insert(const GPDResult &gpdResult) {
 
     // Check if this gpd_kinematic already exists
     int gpdKinematicId = GPDKinematicDaoService::select(
-            gpdResult.getGpdKinematic());
+            gpdResult.getKinematic());
 
     // If not, insert new entry in database and retrieve its id
     if (gpdKinematicId == -1) {
         gpdKinematicId = GPDKinematicDaoService::insert(
-                gpdResult.getGpdKinematic());
+                gpdResult.getKinematic());
     }
 
     // Retrieve module_id from moduleClassName

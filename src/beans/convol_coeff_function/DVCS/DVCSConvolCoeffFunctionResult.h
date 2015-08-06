@@ -1,4 +1,3 @@
-
 #ifndef DVCS_CONVOL_COEFF_FUNCTION_RESULT_H
 #define DVCS_CONVOL_COEFF_FUNCTION_RESULT_H
 
@@ -30,6 +29,11 @@ public:
     std::complex<double> get(GPDType::Type gpdComputeType);
 
     std::string toString();
+
+// ##### GETTERS & SETTERS #####
+
+    const DVCSConvolCoeffFunctionKinematic& getKinematic() const;
+    void setKinematic(const DVCSConvolCoeffFunctionKinematic& kinematic);
 
 private:
     DVCSConvolCoeffFunctionKinematic m_kinematic;

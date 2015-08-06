@@ -15,8 +15,8 @@
 #include <string>
 #include <vector>
 
+#include "../beans/gpd/GPDKinematic.h"
 #include "../beans/gpd/GPDType.h"
-#include "../beans/kinematic/GPDKinematic.h"
 #include "../ServiceObject.h"
 
 class Scenario;

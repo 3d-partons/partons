@@ -14,7 +14,7 @@
 
 #include <string>
 
-#include "KinematicType.h"
+#include "../kinematic/KinematicType.h"
 
 class ParameterList;
 

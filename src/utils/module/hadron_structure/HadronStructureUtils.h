@@ -12,9 +12,8 @@
 #ifndef HADRONSTRUCTUREUTILS_H_
 #define HADRONSTRUCTUREUTILS_H_
 
-#include "../../../beans/kinematic/GPDKinematic.h"
+#include "../../../beans/gpd/GPDKinematic.h"
 #include "../../../beans/parton_distribution/GluonDistribution.h"
-#include "../../../beans/parton_distribution/PartonDistribution.h"
 #include "../../../beans/parton_distribution/QuarkDistribution.h"
 
 class GPDKinematicReport;

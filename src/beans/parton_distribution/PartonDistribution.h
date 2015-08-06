@@ -25,6 +25,8 @@ public:
 
     const std::vector<QuarkDistribution> getVectorOfQuarkDistribution() const;
 
+    double getSinglet();
+
     virtual std::string toString() const;
 
     // ##### GETTERS & SETTERS #####
@@ -34,15 +36,12 @@ public:
     const std::map<QuarkFlavor::Type, QuarkDistribution>& getQuarkDistributions() const;
     void setQuarkDistributions(
             const std::map<QuarkFlavor::Type, QuarkDistribution>& quarkDistributions);
-    double getSinglet() const;
-    void setSinglet(double singlet);
 
 private:
     std::map<QuarkFlavor::Type, QuarkDistribution> m_quarkDistributions;
     // std::map<QuarkFlavor::Type, QuarkDistribution>::const_iterator it;
 
     GluonDistribution m_gluonDistribution;
-    double m_singlet;
 };
 
 #endif /* PARTON_DISTRIBUTION_H */

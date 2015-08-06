@@ -1,7 +1,7 @@
 #include "ModuleObjectFactory.h"
 
 #include "BaseObjectFactory.h"
-#include "modules/convolCoeffFunction/DVCS/DVCSConvolCoeffFunctionModule.h"
+#include "modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
 #include "modules/DoubleDistributionModule.h"
 #include "modules/EvolQCDModule.h"
 #include "modules/GPDModule.h"

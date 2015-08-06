@@ -1,6 +1,6 @@
 #include "GPDKinematicDaoService.h"
 
-#include "../../beans/kinematic/GPDKinematic.h"
+#include "../../beans/gpd/GPDKinematic.h"
 #include "../dao/GPDKinematicDao.h"
 
 GPDKinematicDaoService::GPDKinematicDaoService() :

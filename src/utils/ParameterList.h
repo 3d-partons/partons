@@ -1,12 +1,17 @@
-/*
- * ParameterList.h
- *
- *  Created on: Jul 3, 2015
- *      Author: Bryan BERTHOU
- */
 
 #ifndef PARAMETER_LIST_H
 #define PARAMETER_LIST_H
+
+/**
+ * @file ParameterList.h
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
+ * @date 03 July 2014
+ * @version 1.0
+ *
+ * @class ParameterList
+ *
+ * @brief
+ */
 
 #include <stddef.h>
 #include <map>

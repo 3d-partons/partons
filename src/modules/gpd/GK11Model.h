@@ -18,7 +18,6 @@
 #include <string>
 #include <vector>
 
-#include "../../beans/parton_distribution/QuarkDistribution.h"
 #include "../GPDModule.h"
 
 //TODO finir les messages de debug dans toutes les fonctions
@@ -104,7 +103,6 @@ public:
     double getHtsea() const;
     double getHtuval() const;
     double getHuval() const;
-    unsigned int getNbOfQuarkFlavor() const;
 
 protected:
     /**
@@ -126,9 +124,9 @@ protected:
     virtual PartonDistribution computeHt(); ///< Compute GPD Ht at considered kinematics
     virtual PartonDistribution computeEt(); ///< Compute GPD Et at considered kinematics
 
-    double computeSinglet(const QuarkDistribution &quarkDistribution_u,
-            const QuarkDistribution &quarkDistribution_d,
-            const QuarkDistribution &quarkDistribution_s);
+//    double computeSinglet(const QuarkDistribution &quarkDistribution_u,
+//            const QuarkDistribution &quarkDistribution_d,
+//            const QuarkDistribution &quarkDistribution_s);
 
     void calculateHCoefs();
     void calculateECoefs();
@@ -143,7 +141,6 @@ protected:
 
 private:
 
-    unsigned int m_nbOfQuarkFlavor;
     double kappa_s; // Flavour symmetry breaking factor, eq. (36)
 
     double fHuValMx;                                          ///< HuVal( - fx )

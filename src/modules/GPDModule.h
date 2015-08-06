@@ -73,9 +73,6 @@ public:
     virtual GPDResult compute(double x, double xi, double t, double MuF2,
             double MuR2, GPDType::Type gpdType);
 
-    virtual GPDResult computeWithEvolution(double x, double xi, double t,
-            double MuF2, double MuR2, GPDType::Type gpdType);
-
     virtual PartonDistribution computeH();
     virtual PartonDistribution computeE();
     virtual PartonDistribution computeHt();
@@ -142,9 +139,6 @@ protected:
 
     std::map<GPDType::Type, PartonDistribution (GPDModule::*)()> m_listGPDComputeTypeAvailable;
     std::map<GPDType::Type, PartonDistribution (GPDModule::*)()>::iterator m_it;
-private:
-
-    GPDResult compute(bool evolution);
 };
 
 #endif /* GPD_MODULE_H */

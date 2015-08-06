@@ -71,8 +71,7 @@ void VinnikovEvolQCDModel::isModuleWellConfigured() {
 }
 
 PartonDistribution VinnikovEvolQCDModel::compute(double x, double xi, double t,
-        double MuF, double MuR, GPDModule* pGPDModule,
-        PartonDistribution partonDistribution) {
+        double MuF, double MuR, GPDModule* pGPDModule) {
 
 //    m_pLoggerManager->debug(getClassName(), __func__,
 //            Formatter() << "x = " << x << "    xi = " << xi << "    t = " << t
@@ -83,8 +82,7 @@ PartonDistribution VinnikovEvolQCDModel::compute(double x, double xi, double t,
 //	m_pLoggerManager->debug(getClassName(), __func__,
 //			Formatter() << gpdResultData.toString());
 
-    EvolQCDModule::preCompute(x, xi, t, MuF, MuR, pGPDModule,
-            partonDistribution);
+    EvolQCDModule::preCompute(x, xi, t, MuF, MuR, pGPDModule);
 
     initModule();
 

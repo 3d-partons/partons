@@ -20,14 +20,14 @@ public:
     virtual ~MathIntegratorModule();
 
 protected:
-    NumA::MathIntegrator m_mathIntegrator;
-
     /**
      * Copy constructor
      *
      * @param other
      */
     MathIntegratorModule(const MathIntegratorModule &other);
+
+    NumA::MathIntegrator m_mathIntegrator;
 };
 
 #endif /* MATH_INTEGRATOR_MODULE_H */

@@ -1,9 +1,9 @@
 #include "DVCSConvolCoeffFunctionService.h"
 
-#include "../beans/convolCoeffFunction/DVCS/DVCSConvolCoeffFunctionKinematic.h"
-#include "../beans/convolCoeffFunction/DVCS/DVCSConvolCoeffFunctionResult.h"
+#include "../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
+#include "../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
 #include "../BaseObjectRegistry.h"
-#include "../modules/convolCoeffFunction/DVCS/DVCSConvolCoeffFunctionModule.h"
+#include "../modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int DVCSConvolCoeffFunctionService::classId =
@@ -40,6 +40,8 @@ DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionService::computeWithGPDMode
             dvcsConvolCoeffFunctionModule->compute(kinematic.getXi(),
                     kinematic.getT(), kinematic.getQ2(), kinematic.getMuF2(),
                     kinematic.getMuR2(), gpdType);
+
+    result.setKinematic(kinematic);
 
     return result;
 }

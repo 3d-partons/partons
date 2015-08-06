@@ -6,6 +6,7 @@
 #include <map>
 #include <stdexcept>
 #include <utility>
+//#include <vector>
 
 #include "../../../beans/gpd/GPDResult.h"
 #include "../../../beans/gpd/GPDType.h"
@@ -28,12 +29,10 @@ const unsigned int DVCSCFFModel::classId =
 
 DVCSCFFModel::DVCSCFFModel(const std::string &className) :
         DVCSConvolCoeffFunctionModule(className), m_Zeta(0.), m_logQ2OverMu2(
-                0.), m_Q(0.), m_nbOfActiveFlavour(0), m_alphaSOver2Pi(0.), m_quarkDiagonal(
-                0.), m_gluonDiagonal(0.), m_realPartSubtractQuark(0.), m_imaginaryPartSubtractQuark(
+                0.), m_Q(0.), m_alphaSOver2Pi(0.), m_quarkDiagonal(0.), m_gluonDiagonal(
+                0.), m_realPartSubtractQuark(0.), m_imaginaryPartSubtractQuark(
                 0.), m_realPartSubtractGluon(0.), m_imaginaryPartSubtractGluon(
-                0.), m_CF(4. / 3.)/*, m_integrator(
- ROOT::Math::IntegrationOneDim::kADAPTIVESINGULAR, 0., 1.e-3)*/{
-
+                0.), m_CF(4. / 3.) {
     m_listOfCFFComputeFunctionAvailable.insert(
             std::make_pair(GPDType::H,
                     &DVCSConvolCoeffFunctionModule::computeUnpolarized));
@@ -61,7 +60,6 @@ DVCSCFFModel::DVCSCFFModel(const DVCSCFFModel &other) :
     m_Zeta = other.m_Zeta;
     m_logQ2OverMu2 = other.m_logQ2OverMu2;
     m_Q = other.m_Q;
-    m_nbOfActiveFlavour = other.m_nbOfActiveFlavour;
     m_alphaSOver2Pi = other.m_alphaSOver2Pi;
     m_quarkDiagonal = other.m_quarkDiagonal;
     m_gluonDiagonal = other.m_gluonDiagonal;
@@ -95,18 +93,18 @@ void DVCSCFFModel::initModule() {
     // init parent module before
     DVCSConvolCoeffFunctionModule::initModule();
 
+    m_nf = 3;
     m_Q = sqrt(m_Q2);
     m_Zeta = 2. * m_xi / (1 + m_xi);
     m_logQ2OverMu2 = log(m_Q2 / m_MuF2);
-    m_nbOfActiveFlavour = 3;
 
     m_alphaSOver2Pi = m_pRunningAlphaStrongModule->compute(m_MuR2) / (2. * PI);
 
     m_pLoggerManager->debug(getClassName(), __func__,
             Formatter() << "m_Q= " << m_Q << " m_Zeta= " << m_Zeta
                     << " m_logQ2OverMu2=" << m_logQ2OverMu2
-                    << " m_nbOfActiveFlavour=" << m_nbOfActiveFlavour
-                    << " m_alphaSOver2Pi=" << m_alphaSOver2Pi);
+                    << " m_nbOfActiveFlavour=" << m_nf << " m_alphaSOver2Pi="
+                    << m_alphaSOver2Pi);
 }
 
 void DVCSCFFModel::isModuleWellConfigured() {
@@ -381,7 +379,7 @@ std::complex<double> DVCSCFFModel::computeIntegralsV() {
 
     // Compute sum of active quark electric charges squared
 
-    switch (m_nbOfActiveFlavour) {
+    switch (m_nf) {
 
     case 3:
         SumSqrCharges = 2. / 3.;
@@ -403,32 +401,32 @@ std::complex<double> DVCSCFFModel::computeIntegralsV() {
         throw std::runtime_error(
                 Formatter()
                         << "[DVCSCFFModule::computeIntegrals] Erroneous input number of active quark flavours should be an integer between 3 and 6. Number of active quark flavours = "
-                        << m_nbOfActiveFlavour);
+                        << m_nf);
     }
 
     // Quark sector
 
-    IntegralRealPartKernelQuark1 = m_mathIntegrator.integrate(this,
+    IntegralRealPartKernelQuark1 = m_mathIntegrator.integrateWithROOT(this,
             &DVCSCFFModel::ConvolReKernelQuark1V, 0., +m_xi);
 
-    IntegralRealPartKernelQuark2 = m_mathIntegrator.integrate(this,
+    IntegralRealPartKernelQuark2 = m_mathIntegrator.integrateWithROOT(this,
             &DVCSCFFModel::ConvolReKernelQuark2V, +m_xi, +1);
 
-    IntegralImaginaryPartKernelQuark = m_mathIntegrator.integrate(this,
+    IntegralImaginaryPartKernelQuark = m_mathIntegrator.integrateWithROOT(this,
             &DVCSCFFModel::ConvolImKernelQuarkV, +m_xi, +1);
 
     // Gluon sector
 
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
 
-        IntegralRealPartKernelGluon1 = m_mathIntegrator.integrate(this,
+        IntegralRealPartKernelGluon1 = m_mathIntegrator.integrateWithROOT(this,
                 &DVCSCFFModel::ConvolReKernelGluon1V, 0., +m_xi);
 
-        IntegralRealPartKernelGluon2 = m_mathIntegrator.integrate(this,
+        IntegralRealPartKernelGluon2 = m_mathIntegrator.integrateWithROOT(this,
                 &DVCSCFFModel::ConvolReKernelGluon2V, +m_xi, +1);
 
-        IntegralImaginaryPartKernelGluon = m_mathIntegrator.integrate(this,
-                &DVCSCFFModel::ConvolImKernelGluonV, +m_xi, +1);
+        IntegralImaginaryPartKernelGluon = m_mathIntegrator.integrateWithROOT(
+                this, &DVCSCFFModel::ConvolImKernelGluonV, +m_xi, +1);
     }
 
     // Compute Subtraction constants (different at LO or NLO)
@@ -480,7 +478,7 @@ std::complex<double> DVCSCFFModel::computeIntegralsA() {
 
     // Compute sum of active quark electric charges squared
 
-    switch (m_nbOfActiveFlavour) {
+    switch (m_nf) {
 
     case 3:
         SumSqrCharges = 2. / 3.;
@@ -502,31 +500,31 @@ std::complex<double> DVCSCFFModel::computeIntegralsA() {
         throw std::runtime_error(
                 Formatter()
                         << "[DVCSCFFModel::computeIntegralsA] Erroneous input number of active quark flavours should be an integer between 3 and 6. Number of active quark flavours = "
-                        << m_nbOfActiveFlavour);
+                        << m_nf);
     }
 
     // Quark sector
 
-    IntegralRealPartKernelQuark1 = m_mathIntegrator.integrate(this,
+    IntegralRealPartKernelQuark1 = m_mathIntegrator.integrateWithROOT(this,
             &DVCSCFFModel::ConvolReKernelQuark1A, 0., +m_xi);
 
-    IntegralRealPartKernelQuark2 = m_mathIntegrator.integrate(this,
+    IntegralRealPartKernelQuark2 = m_mathIntegrator.integrateWithROOT(this,
             &DVCSCFFModel::ConvolReKernelQuark2A, +m_xi, +1);
 
-    IntegralImaginaryPartKernelQuark = m_mathIntegrator.integrate(this,
+    IntegralImaginaryPartKernelQuark = m_mathIntegrator.integrateWithROOT(this,
             &DVCSCFFModel::ConvolImKernelQuarkA, +m_xi, +1);
 
     // Gluon sector
 
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
-        IntegralRealPartKernelGluon1 = m_mathIntegrator.integrate(this,
+        IntegralRealPartKernelGluon1 = m_mathIntegrator.integrateWithROOT(this,
                 &DVCSCFFModel::ConvolReKernelGluon1A, 0., +m_xi);
 
-        IntegralRealPartKernelGluon2 = m_mathIntegrator.integrate(this,
+        IntegralRealPartKernelGluon2 = m_mathIntegrator.integrateWithROOT(this,
                 &DVCSCFFModel::ConvolReKernelGluon2A, +m_xi, +1);
 
-        IntegralImaginaryPartKernelGluon = m_mathIntegrator.integrate(this,
-                &DVCSCFFModel::ConvolImKernelGluonA, +m_xi, +1);
+        IntegralImaginaryPartKernelGluon = m_mathIntegrator.integrateWithROOT(
+                this, &DVCSCFFModel::ConvolImKernelGluonA, +m_xi, +1);
     }
 
     // Compute Subtraction constants (different at LO or NLO)
@@ -724,6 +722,7 @@ double DVCSCFFModel::ConvolReKernelQuark1V(double* x, double* params) {
  *
  */
 double DVCSCFFModel::ConvolReKernelQuark2V(double* x, double* params) {
+
     GPDResult gpdResult = m_pGPDModule->compute(x[0], m_xi, m_t, m_MuF2, m_MuR2,
             m_currentGPDComputeType);
 
@@ -791,7 +790,7 @@ double DVCSCFFModel::ConvolReKernelGluon1V(double* x, double* params) {
     double Convol = (EvalGPD - m_gluonDiagonal) * KernelGluonV(x[0]).real();
     Convol += (+EvalGPD - m_gluonDiagonal) * KernelGluonV(-x[0]).real();
 
-    Convol /= (m_xi * m_xi * m_nbOfActiveFlavour);
+    Convol /= (m_xi * m_xi * m_nf);
 
     m_pLoggerManager->debug(getClassName(), __func__,
             Formatter() << "x = " << x[0] << " | convol = " << Convol);
@@ -819,7 +818,7 @@ double DVCSCFFModel::ConvolReKernelGluon2V(double* x, double* params) {
 
     Convol += +KernelGluonV(-x[0]).real() * EvalGPD;
 
-    Convol /= (m_xi * m_xi * m_nbOfActiveFlavour); // In eq. (8), ( ( 2 - fZeta ) / fZeta )^2 = 1 / fXi^2
+    Convol /= (m_xi * m_xi * m_nf); // In eq. (8), ( ( 2 - fZeta ) / fZeta )^2 = 1 / fXi^2
 
     m_pLoggerManager->debug(getClassName(), __func__,
             Formatter() << "x = " << x[0] << " | convol = " << Convol);
@@ -844,7 +843,7 @@ double DVCSCFFModel::ConvolImKernelGluonV(double* x, double* params) {
 
     double Convol = EvalGPD - m_gluonDiagonal;
     Convol *= KernelGluonV(x[0]).imag();
-    Convol /= (m_xi * m_xi * m_nbOfActiveFlavour); // In eq. (8), ( ( 2 - fZeta ) / fZeta )^2 = 1 / fXi^2
+    Convol /= (m_xi * m_xi * m_nf); // In eq. (8), ( ( 2 - fZeta ) / fZeta )^2 = 1 / fXi^2
 
     m_pLoggerManager->debug(getClassName(), __func__,
             Formatter() << "x = " << x[0] << " | convol = " << Convol);
@@ -870,7 +869,7 @@ std::complex<double> DVCSCFFModel::KernelGluonNLOV(double x) {
     GluonNLOV += (m_logQ2OverMu2 - 2.);
     GluonNLOV /= 1. - z;
     GluonNLOV += LogOneMinusz / (1. + z);
-    GluonNLOV *= (m_nbOfActiveFlavour / 2.);
+    GluonNLOV *= (m_nf / 2.);
     GluonNLOV += -KernelGluonNLOA(x);
 
     return GluonNLOV;
@@ -896,7 +895,7 @@ std::complex<double> DVCSCFFModel::KernelGluonNLOA(double x) {
     GluonNLOA += (m_logQ2OverMu2 - 2.);
     GluonNLOA *= (1. / (1. - (z * z)) + LogOneMinusz / ((1. + z) * (1. + z)));
     GluonNLOA += -LogOneMinusz * LogOneMinusz / (2. * (1. + z) * (1. + z));
-    GluonNLOA *= (m_nbOfActiveFlavour / 2.);
+    GluonNLOA *= (m_nf / 2.);
 
     return GluonNLOA;
 }
@@ -994,7 +993,7 @@ double DVCSCFFModel::ConvolReKernelGluon1A(double* x, double* params) {
     double Convol = (EvalGPD - m_gluonDiagonal) * KernelGluonA(x[0]).real();
     Convol += (-EvalGPD - m_gluonDiagonal) * KernelGluonA(-x[0]).real();
 
-    Convol /= (m_xi * m_xi * m_nbOfActiveFlavour);
+    Convol /= (m_xi * m_xi * m_nf);
 
     m_pLoggerManager->debug(getClassName(), __func__,
             Formatter() << "x = " << x[0] << " | convol = " << Convol);
@@ -1015,7 +1014,7 @@ double DVCSCFFModel::ConvolReKernelGluon2A(double* x, double* params) {
 
     Convol += -KernelGluonA(-x[0]).real() * EvalGPD;
 
-    Convol /= (m_xi * m_xi * m_nbOfActiveFlavour); // In eq. (8), ( ( 2 - fZeta ) / fZeta )^2 = 1 / fXi^2
+    Convol /= (m_xi * m_xi * m_nf); // In eq. (8), ( ( 2 - fZeta ) / fZeta )^2 = 1 / fXi^2
 
     m_pLoggerManager->debug(getClassName(), __func__,
             Formatter() << "x = " << x[0] << " | convol = " << Convol);
@@ -1033,7 +1032,7 @@ double DVCSCFFModel::ConvolImKernelGluonA(double* x, double* params) {
 
     double Convol = EvalGPD - m_gluonDiagonal;
     Convol *= KernelGluonA(x[0]).imag();
-    Convol /= (m_xi * m_xi * m_nbOfActiveFlavour); // In eq. (8), ( ( 2 - fZeta ) / fZeta )^2 = 1 / fXi^2
+    Convol /= (m_xi * m_xi * m_nf); // In eq. (8), ( ( 2 - fZeta ) / fZeta )^2 = 1 / fXi^2
 
     m_pLoggerManager->debug(getClassName(), __func__,
             Formatter() << "x = " << x[0] << " | convol = " << Convol);

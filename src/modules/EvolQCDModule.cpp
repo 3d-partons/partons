@@ -2,6 +2,7 @@
 
 #include <math.h>
 
+#include "../beans/gpd/GPDResult.h"
 #include "../beans/parton_distribution/GluonDistribution.h"
 #include "../beans/parton_distribution/QuarkDistribution.h"
 #include "../utils/logger/LoggerManager.h"
@@ -136,8 +137,6 @@ EvolQCDModule::EvolQCDModule(const EvolQCDModule &other) :
     m_currentInvertMatrix = other.m_currentInvertMatrix;
 
     m_vectorOfGPDCombination = other.m_vectorOfGPDCombination;
-
-    m_partonDistribution = other.m_partonDistribution;
 }
 
 //EvolQCDModule::EvolQCDModule* clone() const {
@@ -148,8 +147,7 @@ EvolQCDModule::~EvolQCDModule() {
 }
 
 void EvolQCDModule::preCompute(double x, double xi, double t, double MuF2,
-        double MuR2, GPDModule* pGPDModule,
-        PartonDistribution partonDistribution) {
+        double MuR2, GPDModule* pGPDModule) {
     m_pLoggerManager->debug(getClassName(), __func__, "");
 
     m_pGPDModule = pGPDModule;
@@ -159,8 +157,6 @@ void EvolQCDModule::preCompute(double x, double xi, double t, double MuF2,
     m_t = t;
     m_MuF2 = MuF2;
     m_MuR2 = MuR2;
-
-    m_partonDistribution = partonDistribution;
 
 //    m_pLoggerManager->debug(getClassName(), __func__,
 //            Formatter() << "x = " << x << "    xi = " << xi << "    t = " << t
@@ -226,7 +222,7 @@ void EvolQCDModule::isModuleWellConfigured() {
 void EvolQCDModule::initNfMin() {
     m_pLoggerManager->debug(getClassName(), __func__, "");
 
-    int nfGPDModel = m_partonDistribution.getQuarkDistributionsSize();
+    int nfGPDModel = m_pGPDModule->getNf();
 
     // si nf_evol = -1 alors nf_evol = nf_gpd
     if (m_nfEvol == -1) {
@@ -339,8 +335,11 @@ void EvolQCDModule::initMatrixValue() {
 void EvolQCDModule::initVectorOfGPDCombinations() {
     m_pLoggerManager->debug(getClassName(), __func__, "entered");
 
+    //TODO replace calling to GPDModule
     m_vectorOfGPDCombination = MakeVectorOfGPDCombinations(
-            m_partonDistribution);
+            (m_pGPDModule->compute(m_x, m_xi, m_t, m_pGPDModule->getMuF2Ref(),
+                    m_MuR2, m_currentGPDComputeType)).getPartonDistribution(
+                    m_currentGPDComputeType));
 }
 
 bool EvolQCDModule::isRunnable(double MuF2, double MuF2_ref,
@@ -494,7 +493,7 @@ std::vector<double> EvolQCDModule::MakeVectorOfGPDCombinations(
     }
 
     vectorOfGPDCombination.push_back(
-            m_partonDistribution.getGluonDistribution().getGluonDistribution());
+            partonDistribution.getGluonDistribution().getGluonDistribution());
 
     return vectorOfGPDCombination;
 }

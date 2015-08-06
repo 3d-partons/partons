@@ -64,8 +64,8 @@ GPDResultReport HadronStructureUtils::compareGPDResults(
     GPDResultReport gpdResultReport;
 
     // Compare corresponding GPD kinematics
-    GPDKinematic lhsGpdKinematic = lhsGpdResult.getGpdKinematic();
-    GPDKinematic rhsGpdKinemaitc = rhsGpdResult.getGpdKinematic();
+    GPDKinematic lhsGpdKinematic = lhsGpdResult.getKinematic();
+    GPDKinematic rhsGpdKinemaitc = rhsGpdResult.getKinematic();
     GPDKinematicReport gpdKinematicReport =
             HadronStructureUtils::compareGPDKinematics(lhsGpdKinematic,
                     rhsGpdKinemaitc, tolerances);

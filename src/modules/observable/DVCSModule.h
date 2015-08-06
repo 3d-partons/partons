@@ -14,7 +14,7 @@
 
 #include <string>
 
-#include "../../beans/convolCoeffFunction/DVCS/DVCSConvolCoeffFunctionResult.h"
+#include "../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
 #include "../ObservableModule.h"
 
 class Vector3D;

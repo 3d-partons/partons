@@ -6,12 +6,12 @@
 #include <cln/real.h>
 #include <cmath>
 #include <map>
-#include <stdexcept>
 #include <utility>
 
 #include "../../beans/gpd/GPDType.h"
 #include "../../beans/parton_distribution/GluonDistribution.h"
 #include "../../beans/parton_distribution/PartonDistribution.h"
+#include "../../beans/parton_distribution/QuarkDistribution.h"
 #include "../../beans/QuarkFlavor.h"
 #include "../../BaseObjectRegistry.h"
 #include "../../FundamentalPhysicalConstants.h"
@@ -26,7 +26,7 @@ const unsigned int GK11Model::classId =
 
 GK11Model::GK11Model(const std::string &className) :
         GPDModule(className) {
-    m_nbOfQuarkFlavor = 3;
+    m_nf = 3;
     fL = 0.;
     m_MuF2_ref = 4.;
     Huval1tab = std::vector<double>(3, 0.);
@@ -63,7 +63,6 @@ GK11Model::GK11Model(const std::string &className) :
 
 GK11Model::GK11Model(const GK11Model& other) :
         GPDModule(other) {
-    m_nbOfQuarkFlavor = other.getNbOfQuarkFlavor();
     c1 = other.getC1();
     c2 = other.getC2();
     c3 = other.getC3();
@@ -253,10 +252,6 @@ PartonDistribution GK11Model::computeH() {
     quarkDistribution_s.setQuarkDistributionPlus(
             2 * quarkDistribution_s.getQuarkDistribution());
 
-    partonDistribution.setSinglet(
-            computeSinglet(quarkDistribution_u, quarkDistribution_d,
-                    quarkDistribution_s));
-
     // Set Hq(-)
     quarkDistribution_u.setQuarkDistributionMinus(uVal + fHuValMx);
     quarkDistribution_d.setQuarkDistributionMinus(dVal + fHdValMx);
@@ -377,10 +372,6 @@ PartonDistribution GK11Model::computeHt() {
     quarkDistribution_d.setQuarkDistributionPlus(dVal - fHdValMx);
     quarkDistribution_s.setQuarkDistributionPlus(0.);
 
-    partonDistribution.setSinglet(
-            computeSinglet(quarkDistribution_u, quarkDistribution_d,
-                    quarkDistribution_s));
-
     partonDistribution.setGluonDistribution(gluonDistribution);
     partonDistribution.addQuarkDistribution(quarkDistribution_u);
     partonDistribution.addQuarkDistribution(quarkDistribution_d);
@@ -475,10 +466,6 @@ PartonDistribution GK11Model::computeE() {
     quarkDistribution_s.setQuarkDistributionPlus(
             2 * quarkDistribution_s.getQuarkDistribution());
 
-    partonDistribution.setSinglet(
-            computeSinglet(quarkDistribution_u, quarkDistribution_d,
-                    quarkDistribution_s));
-
     partonDistribution.setGluonDistribution(gluonDistribution);
     partonDistribution.addQuarkDistribution(quarkDistribution_u);
     partonDistribution.addQuarkDistribution(quarkDistribution_d);
@@ -565,10 +552,6 @@ PartonDistribution GK11Model::computeEt() {
     quarkDistribution_d.setQuarkDistributionPlus(dVal + fEtdValMx);
     quarkDistribution_s.setQuarkDistributionPlus(0.);
 
-    partonDistribution.setSinglet(
-            computeSinglet(quarkDistribution_u, quarkDistribution_d,
-                    quarkDistribution_s));
-
     partonDistribution.setGluonDistribution(gluonDistribution);
     partonDistribution.addQuarkDistribution(quarkDistribution_u);
     partonDistribution.addQuarkDistribution(quarkDistribution_d);
@@ -577,22 +560,21 @@ PartonDistribution GK11Model::computeEt() {
     return partonDistribution;
 }
 
-double GK11Model::computeSinglet(const QuarkDistribution &quarkDistribution_u,
-        const QuarkDistribution &quarkDistribution_d,
-        const QuarkDistribution &quarkDistribution_s) {
-
-    if (m_nbOfQuarkFlavor == 0) {
-        throw std::runtime_error(
-                "[GK11Model::computeSinglet] divided by ZERO !");
-    }
-
-    double result = quarkDistribution_u.getQuarkDistributionPlus()
-            + quarkDistribution_d.getQuarkDistributionPlus()
-            + quarkDistribution_s.getQuarkDistributionPlus();
-    result *= (1 / (2 * m_nbOfQuarkFlavor));
-
-    return result;
-}
+//double GK11Model::computeSinglet(const QuarkDistribution &quarkDistribution_u,
+//        const QuarkDistribution &quarkDistribution_d,
+//        const QuarkDistribution &quarkDistribution_s) {
+//
+//    if (m_nbOfQuarkFlavor == 0) {
+//        throwException(__func__, "divided by ZERO !");
+//    }
+//
+//    double result = quarkDistribution_u.getQuarkDistributionPlus()
+//            + quarkDistribution_d.getQuarkDistributionPlus()
+//            + quarkDistribution_s.getQuarkDistributionPlus();
+//    result *= (1 / (2 * m_nbOfQuarkFlavor));
+//
+//    return result;
+//}
 
 void GK11Model::calculateHCoefs() {
     int slow_sea = 0; // by default,  fast
@@ -1875,10 +1857,6 @@ double GK11Model::getHtuval() const {
 
 double GK11Model::getHuval() const {
     return kHuval;
-}
-
-unsigned int GK11Model::getNbOfQuarkFlavor() const {
-    return m_nbOfQuarkFlavor;
 }
 
 std::string GK11Model::toString() {

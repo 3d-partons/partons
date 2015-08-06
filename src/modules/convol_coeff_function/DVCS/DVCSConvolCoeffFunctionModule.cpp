@@ -3,8 +3,7 @@
 #include <stdexcept>
 #include <utility>
 
-#include "../../../beans/convolCoeffFunction/DVCS/DVCSConvolCoeffFunctionKinematic.h"
-#include "../../../beans/convolCoeffFunction/DVCS/DVCSConvolCoeffFunctionResult.h"
+#include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
 #include "../../../utils/logger/LoggerManager.h"
 #include "../../../utils/stringUtils/Formatter.h"
 #include "../../GPDModule.h"
@@ -12,8 +11,8 @@
 
 DVCSConvolCoeffFunctionModule::DVCSConvolCoeffFunctionModule(
         const std::string &className) :
-        ConvolCoeffFunctionModule(className), m_xi(0.), m_t(0.), m_Q2(
-                0.), m_MuF2(0.), m_MuR2(0.), m_qcdOrderType(
+        ConvolCoeffFunctionModule(className), m_xi(0.), m_t(0.), m_Q2(0.), m_MuF2(
+                0.), m_MuR2(0.), m_nf(0), m_qcdOrderType(
                 PerturbativeQCDOrderType::UNDEFINED), m_currentGPDComputeType(
                 GPDType::UNDEFINED), m_gpdType(GPDType::UNDEFINED), m_pGPDModule(
                 0), m_pRunningAlphaStrongModule(0) {
@@ -32,6 +31,8 @@ DVCSConvolCoeffFunctionModule::DVCSConvolCoeffFunctionModule(
     m_Q2 = other.m_Q2;
     m_MuF2 = other.m_MuF2;
     m_MuR2 = other.m_MuR2;
+
+    m_nf = other.m_nf;
 
     m_qcdOrderType = other.m_qcdOrderType;
     m_currentGPDComputeType = other.m_currentGPDComputeType;
@@ -100,8 +101,7 @@ DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionModule::compute(
         const double MuR2, GPDType::Type gpdComputeType) {
     preCompute(xi, t, Q2, MuF2, MuR2, gpdComputeType);
 
-    DVCSConvolCoeffFunctionResult dvcsConvolCoeffFunctionResult(
-            DVCSConvolCoeffFunctionKinematic(m_xi, m_t, m_Q2, m_MuF2, m_MuR2));
+    DVCSConvolCoeffFunctionResult dvcsConvolCoeffFunctionResult;
 
     switch (m_gpdType) {
     case GPDType::ALL: {

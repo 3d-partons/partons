@@ -1,7 +1,5 @@
 #include "GenericType.h"
 
-//#include <string>
-
 GenericType::GenericType(const GenericType &other) {
     m_stream.clear();
     m_stream << other.m_stream.str();

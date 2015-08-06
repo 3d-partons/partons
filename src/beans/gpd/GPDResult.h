@@ -16,8 +16,8 @@
 #include <string>
 #include <vector>
 
-#include "../kinematic/GPDKinematic.h"
 #include "../parton_distribution/PartonDistribution.h"
+#include "GPDKinematic.h"
 #include "GPDType.h"
 
 class GPDResult {
@@ -40,18 +40,18 @@ public:
 
     // ##### GETTERS & SETTERS #####
 
-    const GPDKinematic& getGpdKinematic() const;
-    void setGpdKinematic(const GPDKinematic& gpdKinematic);
     const std::map<GPDType::Type, PartonDistribution>& getPartonDistributions() const;
     void setPartonDistributions(
             const std::map<GPDType::Type, PartonDistribution>& partonDistributions);
     const std::string& getComputedByGpdModuleId() const;
     void setComputedByGpdModuleId(const std::string& computedByGpdModuleId);
+    const GPDKinematic& getKinematic() const;
+    void setKinematic(const GPDKinematic& kinematic);
 
 private:
     std::map<GPDType::Type, PartonDistribution> m_partonDistributions;
 
-    GPDKinematic m_gpdKinematic;
+    GPDKinematic m_kinematic;
     std::string m_computedByGPDModuleId;
 };
 

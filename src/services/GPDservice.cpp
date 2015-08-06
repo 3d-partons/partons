@@ -3,10 +3,10 @@
 #include <vector>
 
 #include "../beans/automation/Task.h"
+#include "../beans/gpd/GPDKinematic.h"
 #include "../beans/gpd/GPDResult.h"
 #include "../beans/gpd/GPDResultList.h"
 #include "../beans/gpd/GPDType.h"
-#include "../beans/kinematic/GPDKinematic.h"
 #include "../BaseObjectRegistry.h"
 #include "../modules/gpd/GK11Model.h"
 #include "../ModuleObjectFactory.h"
@@ -90,8 +90,8 @@ GPDResult GPDService::computeGPDModelRestrictedByGPDType(
     GPDResult gpdResult = pGPDModule->compute(gpdKinematic.getX(),
             gpdKinematic.getXi(), gpdKinematic.getT(), gpdKinematic.getMuF2(),
             gpdKinematic.getMuR2(), gpdType);
-    gpdResult.setGpdKinematic(gpdKinematic);
 
+    gpdResult.setKinematic(gpdKinematic);
     gpdResult.setComputedByGpdModuleId(pGPDModule->getClassName());
 
     return gpdResult;
@@ -102,10 +102,11 @@ GPDResult GPDService::computeGPDModelWithEvolution(
         EvolQCDModule* pEvolQCDModule, GPDType::Type gpdType) {
     pGPDModule->setEvolQcdModule(pEvolQCDModule);
 
-    GPDResult gpdResult = pGPDModule->computeWithEvolution(gpdKinematic.getX(),
+    GPDResult gpdResult = pGPDModule->compute(gpdKinematic.getX(),
             gpdKinematic.getXi(), gpdKinematic.getT(), gpdKinematic.getMuF2(),
             gpdKinematic.getMuR2(), gpdType);
-    gpdResult.setGpdKinematic(gpdKinematic);
+
+    gpdResult.setKinematic(gpdKinematic);
 
     return gpdResult;
 }

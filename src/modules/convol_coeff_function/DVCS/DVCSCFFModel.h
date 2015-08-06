@@ -42,7 +42,6 @@ protected:
     DVCSCFFModel(const DVCSCFFModel &other);
 
     double m_logQ2OverMu2;
-    unsigned int m_nbOfActiveFlavour;
 
     virtual void initModule();
     virtual void isModuleWellConfigured();

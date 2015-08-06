@@ -32,8 +32,7 @@ public:
     void setNbXPoints(unsigned int nbXPoints);
 
     virtual PartonDistribution compute(double x, double xi, double t,
-            double MuF, double MuR, GPDModule* pGPDModule,
-            PartonDistribution partonDistribution);
+            double MuF, double MuR, GPDModule* pGPDModule);
 
 protected:
     /**

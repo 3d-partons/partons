@@ -24,7 +24,7 @@
 #include <string>
 #include <vector>
 
-#include "../../../beans/convolCoeffFunction/DVCS/DVCSConvolCoeffFunctionResult.h"
+#include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
 #include "../../../utils/vector/Vector4D.h"
 #include "../DVCSModule.h"
 

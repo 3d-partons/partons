@@ -48,3 +48,12 @@ std::string DVCSConvolCoeffFunctionResult::toString() {
 
     return formatter.str();
 }
+
+const DVCSConvolCoeffFunctionKinematic& DVCSConvolCoeffFunctionResult::getKinematic() const {
+    return m_kinematic;
+}
+
+void DVCSConvolCoeffFunctionResult::setKinematic(
+        const DVCSConvolCoeffFunctionKinematic& kinematic) {
+    m_kinematic = kinematic;
+}

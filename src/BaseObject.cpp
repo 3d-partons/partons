@@ -31,8 +31,8 @@ BaseObject::~BaseObject() {
 }
 
 // TODO replace all throw exception by this function call
-void BaseObject::throwException(const std::string &functionName,
-        const std::string &errorMessage) const {
+void BaseObject::throwException(const std::string functionName,
+        const std::string errorMessage) const {
     if (m_pLoggerManager != 0) {
         m_pLoggerManager->error(getClassName(), functionName, errorMessage);
     }

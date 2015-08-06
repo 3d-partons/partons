@@ -75,8 +75,6 @@ PartonDistribution GK11NoQuarksModel::computeH() {
     quarkDistribution_d.setQuarkDistributionPlus(0.);
     quarkDistribution_s.setQuarkDistributionPlus(0.);
 
-    partonDistribution.setSinglet(0.);
-
     // Set Hq(-)
     quarkDistribution_u.setQuarkDistributionMinus(0.);
     quarkDistribution_d.setQuarkDistributionMinus(0.);

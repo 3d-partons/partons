@@ -62,6 +62,8 @@ protected:
     double m_MuF2;
     double m_MuR2;
 
+    unsigned int m_nf;
+
     GPDModule* m_pGPDModule;
     RunningAlphaStrongModule* m_pRunningAlphaStrongModule;
 

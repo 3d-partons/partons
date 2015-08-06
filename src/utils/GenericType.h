@@ -1,19 +1,20 @@
-/*
- * GenericType.h
- *
- *  Created on: Jul 3, 2015
- *      Author: debian
- */
+#ifndef GENERIC_TYPE_H
+#define GENERIC_TYPE_H
 
-#ifndef GENERICTYPE_H_
-#define GENERICTYPE_H_
+/**
+ * @file GenericType.h
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
+ * @date 03 July 2014
+ * @version 1.0
+ *
+ * @class GenericType
+ *
+ * @brief
+ */
 
 #include <sstream>
 #include <string>
 
-/*
- *
- */
 class GenericType {
 public:
     /**

@@ -6,8 +6,8 @@
 
 const std::string GPDResult::GPD_RESULT_DB_TABLE_NAME = "gpd_result";
 
-GPDResult::GPDResult()
-        : m_computedByGPDModuleId("UNDEFINED") {
+GPDResult::GPDResult() :
+        m_computedByGPDModuleId("UNDEFINED") {
 }
 
 //GPDResult::GPDResult(GPDKinematic &gpdKinematic)
@@ -85,14 +85,6 @@ std::string GPDResult::toString() {
     return os.str();
 }
 
-const GPDKinematic& GPDResult::getGpdKinematic() const {
-    return m_gpdKinematic;
-}
-
-void GPDResult::setGpdKinematic(const GPDKinematic& gpdKinematic) {
-    m_gpdKinematic = gpdKinematic;
-}
-
 const std::map<GPDType::Type, PartonDistribution>& GPDResult::getPartonDistributions() const {
     return m_partonDistributions;
 }
@@ -109,4 +101,12 @@ const std::string& GPDResult::getComputedByGpdModuleId() const {
 void GPDResult::setComputedByGpdModuleId(
         const std::string& computedByGpdModuleId) {
     m_computedByGPDModuleId = computedByGpdModuleId;
+}
+
+const GPDKinematic& GPDResult::getKinematic() const {
+    return m_kinematic;
+}
+
+void GPDResult::setKinematic(const GPDKinematic& kinematic) {
+    m_kinematic = kinematic;
 }

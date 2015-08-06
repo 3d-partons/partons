@@ -53,6 +53,9 @@ GPDModule::~GPDModule() {
 void GPDModule::configure(ParameterList parameters) {
     //TODO replace hard coded string by static const string
     m_MuF2_ref = (parameters.get("Mu2Ref")).getDouble();
+
+
+
 }
 
 //TODO implement
@@ -93,14 +96,6 @@ GPDResult GPDModule::compute(double x, double xi, double t, double MuF2,
 
     preCompute(x, xi, t, MuF2, MuR2, gpdType);
 
-    return compute(false);
-}
-
-GPDResult GPDModule::computeWithEvolution(double x, double xi, double t,
-        double MuF2, double MuR2, GPDType::Type gpdType) {
-
-    preCompute(x, xi, t, MuF2, MuR2, gpdType);
-
     bool evolution = false;
 
     if (m_pEvolQCDModule != 0) {
@@ -112,20 +107,19 @@ GPDResult GPDModule::computeWithEvolution(double x, double xi, double t,
         //TODO exception pas de module d'evolution
     }
 
-    return compute(evolution);
-}
-
-GPDResult GPDModule::compute(bool evolution) {
     GPDResult gpdResult;
     switch (m_gpdType) {
     case GPDType::ALL: {
         for (m_it = m_listGPDComputeTypeAvailable.begin();
                 m_it != m_listGPDComputeTypeAvailable.end(); m_it++) {
-            PartonDistribution partonDistribution = ((*this).*(m_it->second))();
+
+            PartonDistribution partonDistribution;
 
             if (evolution) {
                 partonDistribution = m_pEvolQCDModule->compute(m_x, m_xi, m_t,
-                        m_MuF2, m_MuR2, this, partonDistribution);
+                        m_MuF2, m_MuR2, this);
+            } else {
+                partonDistribution = ((*this).*(m_it->second))();
             }
 
             gpdResult.addPartonDistribution(m_it->first, partonDistribution);
@@ -135,11 +129,13 @@ GPDResult GPDModule::compute(bool evolution) {
     default: {
         m_it = m_listGPDComputeTypeAvailable.find(m_gpdType);
         if (m_it != m_listGPDComputeTypeAvailable.end()) {
-            PartonDistribution partonDistribution = ((*this).*(m_it->second))();
+            PartonDistribution partonDistribution;
 
             if (evolution) {
                 partonDistribution = m_pEvolQCDModule->compute(m_x, m_xi, m_t,
-                        m_MuF2, m_MuR2, this, partonDistribution);
+                        m_MuF2, m_MuR2, this);
+            } else {
+                partonDistribution = ((*this).*(m_it->second))();
             }
 
             gpdResult.addPartonDistribution(m_it->first, partonDistribution);

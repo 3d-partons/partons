@@ -17,11 +17,13 @@
 #include <vector>
 
 #include "../beans/gpd/GPDType.h"
-#include "../beans/parton_distribution/PartonDistribution.h"
 #include "../beans/PerturbativeQCDOrderType.h"
 #include "../beans/QuarkFlavor.h"
 #include "../ModuleObject.h"
 #include "../utils/math/MatrixD.h"
+
+class PartonDistribution;
+class QuarkDistribution;
 
 class GPDModule;
 
@@ -36,8 +38,7 @@ public:
     virtual EvolQCDModule* clone() const = 0;
 
     virtual PartonDistribution compute(double x, double xi, double t,
-            double MuF2, double MuR2, GPDModule* pGPDModule,
-            PartonDistribution partonDistribution) = 0;
+            double MuF2, double MuR2, GPDModule* pGPDModule) = 0;
 
     /**
      * Checks if MuF (from compute parameters) is revelant
@@ -88,8 +89,6 @@ protected:
     double m_epsilon;
     double m_alpha;
 
-    PartonDistribution m_partonDistribution;
-
     MatrixD m_currentConvertMatrix;
     MatrixD m_currentInvertMatrix;
 
@@ -97,7 +96,7 @@ protected:
     //Matrix<double> m_matrixOfUnknownPartonDistribution; ///< HuPlus, HuMinus, ...
 
     void preCompute(double x, double xi, double t, double MuF2, double MuR2,
-            GPDModule* pGPDModule, PartonDistribution partonDistribution);
+            GPDModule* pGPDModule);
 
     virtual void initModule();
     virtual void isModuleWellConfigured();

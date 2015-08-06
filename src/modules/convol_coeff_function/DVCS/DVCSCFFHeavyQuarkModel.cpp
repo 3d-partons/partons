@@ -1,10 +1,3 @@
-/*
- * DVCSCFFHeavyQuarkModel.cpp
- *
- *  Created on: Feb 11, 2015
- *      Author: kuba
- */
-
 #include "DVCSCFFHeavyQuarkModel.h"
 
 #include <TMath.h>
@@ -96,7 +89,7 @@ std::complex<double> DVCSCFFHeavyQuarkModel::KernelGluonNLOA(double x) {
         GluonNLOA *= (m_TF / 2. / (z + 1.) / (z + 1.));
     }
 
-    switch (m_nbOfActiveFlavour) {
+    switch (m_nf) {
 
     case 3:
         SumSqrCharges = 2. / 3.;
@@ -118,7 +111,7 @@ std::complex<double> DVCSCFFHeavyQuarkModel::KernelGluonNLOA(double x) {
         throw std::runtime_error(
                 Formatter()
                         << "[DVCSCFFModule::computeIntegrals] Erroneous input number of active quark flavours should be an integer between 3 and 6. Number of active quark flavours = "
-                        << m_nbOfActiveFlavour);
+                        << m_nf);
     }
     //	RunningAlphaStrong* Alpha = new RunningAlphaStrong();
     //	Alpha->SetRunningScale(m_MuR);
@@ -170,7 +163,7 @@ std::complex<double> DVCSCFFHeavyQuarkModel::KernelGluonNLOV(double x) {
         GluonNLOV *= (m_TF / 2. / (z + 1.) / (z + 1.));
     }
 
-    switch (m_nbOfActiveFlavour) {
+    switch (m_nf) {
 
     case 3:
         SumSqrCharges = 2. / 3.;
@@ -192,7 +185,7 @@ std::complex<double> DVCSCFFHeavyQuarkModel::KernelGluonNLOV(double x) {
         throw std::runtime_error(
                 Formatter()
                         << "[DVCSCFFModule::computeIntegrals] Erroneous input number of active quark flavours should be an integer between 3 and 6. Number of active quark flavours = "
-                        << m_nbOfActiveFlavour);
+                        << m_nf);
     }
 //	RunningAlphaStrong* Alpha = new RunningAlphaStrong();
 //	Alpha->SetRunningScale(m_MuR);

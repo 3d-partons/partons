@@ -4,7 +4,7 @@
 #include <utility>
 
 PartonDistribution::PartonDistribution() :
-        BaseObject("PartonDistribution"), m_singlet(0.) {
+        BaseObject("PartonDistribution") {
 }
 
 PartonDistribution::~PartonDistribution() {
@@ -67,11 +67,9 @@ std::string PartonDistribution::toString() const {
     std::ostringstream os;
 
     os << m_gluonDistribution.toString();
-    os << "Singlet = " << m_singlet << std::endl;
 
-    std::map<QuarkFlavor::Type, QuarkDistribution>::const_iterator it;
-
-    for (it = m_quarkDistributions.begin(); it != m_quarkDistributions.end();
+    for (std::map<QuarkFlavor::Type, QuarkDistribution>::const_iterator it =
+            m_quarkDistributions.begin(); it != m_quarkDistributions.end();
             it++) {
         os << (it->second).toString();
     }
@@ -97,10 +95,24 @@ void PartonDistribution::setQuarkDistributions(
     m_quarkDistributions = quarkDistributions;
 }
 
-double PartonDistribution::getSinglet() const {
-    return m_singlet;
-}
+double PartonDistribution::getSinglet() {
+    double result = 0.;
 
-void PartonDistribution::setSinglet(double singlet) {
-    m_singlet = singlet;
+    for (std::map<QuarkFlavor::Type, QuarkDistribution>::const_iterator it =
+            m_quarkDistributions.begin(); it != m_quarkDistributions.end();
+            it++) {
+        result += (it->second).getQuarkDistributionPlus();
+    }
+
+//    if (m_nbOfQuarkFlavor == 0) {
+//           throw std::runtime_error(
+//                   "[GK11Model::computeSinglet] divided by ZERO !");
+//       }
+//
+//       result = quarkDistribution_u.getQuarkDistributionPlus()
+//               + quarkDistribution_d.getQuarkDistributionPlus()
+//               + quarkDistribution_s.getQuarkDistributionPlus();
+//       result *= (1 / (2 * m_nbOfQuarkFlavor));
+
+    return result;
 }
