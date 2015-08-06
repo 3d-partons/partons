@@ -628,10 +628,10 @@ void GK11Model::calculateHCoefs() {
             Hs1tab.at(2) = -Hs1(-m_x, 1., kHsea);
             Hs1tab.at(3) = -Hs1(-m_x, 1.5, kHsea);
 
-            Hi1tab.at(0) = -Hi1(-m_x, 0., kHgluon);
-            Hi1tab.at(1) = -Hi1(-m_x, 0.5, kHgluon);
-            Hi1tab.at(2) = -Hi1(-m_x, 1., kHgluon);
-            Hi1tab.at(3) = -Hi1(-m_x, 1.5, kHgluon);
+            Hi1tab.at(0) = Hi1(-m_x, 0., kHgluon);
+            Hi1tab.at(1) = Hi1(-m_x, 0.5, kHgluon);
+            Hi1tab.at(2) = Hi1(-m_x, 1., kHgluon);
+            Hi1tab.at(3) = Hi1(-m_x, 1.5, kHgluon);
         }
     } else {
         if (m_x >= 0) {
@@ -650,10 +650,10 @@ void GK11Model::calculateHCoefs() {
             Hs1tab.at(2) = -Hs1_alt(-m_x, 1., kHsea);
             Hs1tab.at(3) = -Hs1_alt(-m_x, 1.5, kHsea);
 
-            Hi1tab.at(0) = -Hi1_alt(-m_x, 0., kHgluon);
-            Hi1tab.at(1) = -Hi1_alt(-m_x, 0.5, kHgluon);
-            Hi1tab.at(2) = -Hi1_alt(-m_x, 1., kHgluon);
-            Hi1tab.at(3) = -Hi1_alt(-m_x, 1.5, kHgluon);
+            Hi1tab.at(0) = Hi1_alt(-m_x, 0., kHgluon);
+            Hi1tab.at(1) = Hi1_alt(-m_x, 0.5, kHgluon);
+            Hi1tab.at(2) = Hi1_alt(-m_x, 1., kHgluon);
+            Hi1tab.at(3) = Hi1_alt(-m_x, 1.5, kHgluon);
         }
     }
 
