@@ -1025,13 +1025,13 @@ void GK11Model::calculateHtCoefs() {
     int slow_sea = 0; // by default,  fast
     int slow_val = 0; // if  =  1 : slow ( full calculation with cln )
 
-    if (log10(m_xi) < (4. / 2.5) * log10(m_x)) {
+    if (log10(m_xi) < (4. / 2.5) * log10(fabs(m_x))) {
         slow_sea = 1;
     }
 
 // For valence
 
-    if ((m_xi < 0.01) && (log10(m_xi) < ((-4. / log10(0.6)) * log10(m_x)))) {
+    if ((m_xi < 0.01) && (log10(m_xi) < ((-4. / log10(0.6)) * log10(fabs(m_x))))) {
         slow_val = 1;
     }
 
@@ -1046,13 +1046,25 @@ void GK11Model::calculateHtCoefs() {
 //TODO permuter les conditions
 
     if (!slow_sea) {
-        Hti1tab.at(0) = Hti1(m_x, 0., kHtgluon);
-        Hti1tab.at(1) = Hti1(m_x, 0.5, kHtgluon);
-        Hti1tab.at(2) = Hti1(m_x, 1.0, kHtgluon);
+        if (m_x >= 0) {
+            Hti1tab.at(0) = Hti1(m_x, 0., kHtgluon);
+            Hti1tab.at(1) = Hti1(m_x, 0.5, kHtgluon);
+            Hti1tab.at(2) = Hti1(m_x, 1.0, kHtgluon);
+        }else{
+            Hti1tab.at(0) = Hti1(-m_x, 0., kHtgluon);
+            Hti1tab.at(1) = Hti1(-m_x, 0.5, kHtgluon);
+            Hti1tab.at(2) = Hti1(-m_x, 1.0, kHtgluon);
+        }
     } else {
-        Hti1tab.at(0) = Hti1_alt(m_x, 0., kHtgluon);
-        Hti1tab.at(1) = Hti1_alt(m_x, 0.5, kHtgluon);
-        Hti1tab.at(2) = Hti1_alt(m_x, 1.0, kHtgluon);
+        if (m_x >= 0) {
+            Hti1tab.at(0) = Hti1_alt(m_x, 0., kHtgluon);
+            Hti1tab.at(1) = Hti1_alt(m_x, 0.5, kHtgluon);
+            Hti1tab.at(2) = Hti1_alt(m_x, 1.0, kHtgluon);
+        }else{
+            Hti1tab.at(0) = Hti1_alt(-m_x, 0., kHtgluon);
+            Hti1tab.at(1) = Hti1_alt(-m_x, 0.5, kHtgluon);
+            Hti1tab.at(2) = Hti1_alt(-m_x, 1.0, kHtgluon);
+        }
     }
 
     if (!slow_val) {
@@ -1255,32 +1267,50 @@ void GK11Model::calculateECoefs() {
     int slow_sea = 0; // by default,  fast
     int slow_val = 0; // if  =  1 : slow ( full calculation with cln )
 
-    if (log10(m_xi) < (4. / 2.5) * log10(m_x)) {
+    if (log10(m_xi) < (4. / 2.5) * log10(fabs(m_x))) {
         slow_sea = 1;
     }
 
 // For valence
 
-    if ((m_xi < 0.01) && (log10(m_xi) < ((-4. / log10(0.6)) * log10(m_x)))) {
+    if ((m_xi < 0.01) && (log10(m_xi) < ((-4. / log10(0.6)) * log10(fabs(m_x))))) {
         slow_val = 1;
     }
 
     calculateEKas(); // comes up with kEgluon,  kEsea,  kEuval,  kEdval
 
     if (!slow_sea) {
-        Es1tab.at(0) = Es1(m_x, 0., kEsea);
-        Es1tab.at(1) = Es1(m_x, 1., kEsea);
-        Es1tab.at(2) = Es1(m_x, 2., kEsea);
+        if (m_x >= 0) {
+            Es1tab.at(0) = Es1(m_x, 0., kEsea);
+            Es1tab.at(1) = Es1(m_x, 1., kEsea);
+            Es1tab.at(2) = Es1(m_x, 2., kEsea);
 
-        Ei1tab.at(0) = Ei1(m_x, 0., kEgluon);
-        Ei1tab.at(1) = Ei1(m_x, 1., kEgluon);
+            Ei1tab.at(0) = Ei1(m_x, 0., kEgluon);
+            Ei1tab.at(1) = Ei1(m_x, 1., kEgluon);
+        }else{
+            Es1tab.at(0) = -Es1(-m_x, 0., kEsea);
+            Es1tab.at(1) = -Es1(-m_x, 1., kEsea);
+            Es1tab.at(2) = -Es1(-m_x, 2., kEsea);
+
+            Ei1tab.at(0) = Ei1(-m_x, 0., kEgluon);
+            Ei1tab.at(1) = Ei1(-m_x, 1., kEgluon);
+        }
     } else {
-        Es1tab.at(0) = Es1_alt(m_x, 0., kEsea);
-        Es1tab.at(1) = Es1_alt(m_x, 1., kEsea);
-        Es1tab.at(2) = Es1_alt(m_x, 2., kEsea);
+        if (m_x >= 0) {
+            Es1tab.at(0) = Es1_alt(m_x, 0., kEsea);
+            Es1tab.at(1) = Es1_alt(m_x, 1., kEsea);
+            Es1tab.at(2) = Es1_alt(m_x, 2., kEsea);
 
-        Ei1tab.at(0) = Ei1_alt(m_x, 0., kEgluon);
-        Ei1tab.at(1) = Ei1_alt(m_x, 1., kEgluon);
+            Ei1tab.at(0) = Ei1_alt(m_x, 0., kEgluon);
+            Ei1tab.at(1) = Ei1_alt(m_x, 1., kEgluon);
+        }else{
+            Es1tab.at(0) = -Es1_alt(-m_x, 0., kEsea);
+            Es1tab.at(1) = -Es1_alt(-m_x, 1., kEsea);
+            Es1tab.at(2) = -Es1_alt(-m_x, 2., kEsea);
+
+            Ei1tab.at(0) = Ei1_alt(-m_x, 0., kEgluon);
+            Ei1tab.at(1) = Ei1_alt(-m_x, 1., kEgluon);
+        }
     }
 
     if (!slow_val) {
@@ -1452,7 +1482,7 @@ void GK11Model::calculateEtCoefs() {
 
 // For valence
 
-    if ((m_xi < 0.04) && (log10(m_xi) < ((-4. / log10(0.55)) * log10(m_x)))) {
+    if ((m_xi < 0.04) && (log10(m_xi) < ((-4. / log10(0.55)) * log10(fabs(m_x))))) {
         slow_val = 1;
     }
 
