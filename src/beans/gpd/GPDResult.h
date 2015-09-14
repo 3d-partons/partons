@@ -52,7 +52,7 @@ private:
     std::map<GPDType::Type, PartonDistribution> m_partonDistributions;
 
     GPDKinematic m_kinematic;
-    std::string m_computedByGPDModuleId;
+    std::string m_computedByGPDModuleId; //TODO always undefined ; modify GPD service to store module class id
 };
 
 #endif /* GPD_RESULT_H */

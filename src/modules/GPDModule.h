@@ -18,7 +18,7 @@
 #include "../beans/parton_distribution/PartonDistribution.h"
 #include "../ModuleObject.h"
 
-class EvolQCDModule;
+class GPDEvolutionModule;
 class GPDResult;
 
 class GPDModule: public ModuleObject {
@@ -84,8 +84,8 @@ public:
 
     unsigned int getNf() const;
     void setNf(unsigned int nf);
-    const EvolQCDModule* getEvolQcdModule() const;
-    void setEvolQcdModule(EvolQCDModule* pEvolQcdModule);
+    const GPDEvolutionModule* getEvolQcdModule() const;
+    void setEvolQcdModule(GPDEvolutionModule* pEvolQcdModule);
     double getMuF2Ref() const;
     double getMuF2() const;
     void setMuF2(double muF2);
@@ -112,7 +112,7 @@ protected:
     unsigned int m_nf;
 
     //PDFModule* m_pPDFModule;
-    EvolQCDModule* m_pEvolQCDModule;
+    GPDEvolutionModule* m_pGPDEvolutionModule;
 
     /**
      * Copy constructor

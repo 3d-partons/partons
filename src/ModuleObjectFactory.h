@@ -14,10 +14,12 @@
 
 #include <string>
 
+class ActiveFlavorsModule;
+
 class DoubleDistributionModule;
 class DVCSConvolCoeffFunctionModule;
 class DVCSModule;
-class EvolQCDModule;
+class GPDEvolutionModule;
 class GPDModule;
 class ObservableModule;
 class RunningAlphaStrongModule;
@@ -30,8 +32,9 @@ public:
     static DoubleDistributionModule* newDoubleDistributionModule(
             const std::string & className);
 
-    static EvolQCDModule* newEvolQCDModule(unsigned int classId);
-    static EvolQCDModule* newEvolQCDModule(const std::string & className);
+    static GPDEvolutionModule* newGPDEvolutionModule(unsigned int classId);
+    static GPDEvolutionModule* newGPDEvolutionModule(
+            const std::string & className);
 
     static GPDModule* newGPDModule(unsigned int classId);
     static GPDModule* newGPDModule(const std::string &className);
@@ -51,6 +54,10 @@ public:
 
     static ObservableModule* newObservableModule(unsigned int classId);
     static ObservableModule* newObservableModule(const std::string &className);
+
+    static ActiveFlavorsModule* newActiveFlavorsModule(unsigned int classId);
+    static ActiveFlavorsModule* newActiveFlavorsModule(
+            const std::string &className);
 };
 
 #endif /* MODULE_OBJECT_FACTORY_H */

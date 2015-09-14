@@ -6,18 +6,20 @@
 #include "../stringUtils/Formatter.h"
 
 MatrixD::MatrixD() :
-        m_rows(0), m_cols(0) {
+        m_rowLength(0), m_colLength(0) {
 }
 
-MatrixD::MatrixD(unsigned int _rows, unsigned int _cols, ...) :
-        m_rows(_rows), m_cols(_cols) {
+// TODO test matrix construction
+MatrixD::MatrixD(const size_t _rowLength, const size_t _colLength, ...) :
+        m_rowLength(_rowLength), m_colLength(_colLength) {
 
     va_list ap;
-    va_start(ap, _cols);
+    va_start(ap, _colLength);
 
-    m_matrix.resize(m_rows);
+    m_matrix.resize(m_colLength);
     for (unsigned int i = 0; i < m_matrix.size(); i++) {
-        m_matrix[i].resize(m_cols);
+        m_matrix[i].resize(m_rowLength);
+        // fill each line by values
         for (unsigned int j = 0; j < m_matrix[i].size(); j++) {
         m_matrix[i][j] = va_arg(ap, double);
     }
@@ -26,26 +28,26 @@ MatrixD::MatrixD(unsigned int _rows, unsigned int _cols, ...) :
 
 MatrixD::MatrixD(const MatrixD &other) {
 m_matrix = other.m_matrix;
-m_rows = other.m_rows;
-m_cols = other.m_cols;
+m_rowLength = other.m_rowLength;
+m_colLength = other.m_colLength;
 }
 
 MatrixD::~MatrixD() {
 }
 
-std::vector<double> MatrixD::operator*(const std::vector<double>& rhs) {
+VectorD MatrixD::operator*(const VectorD& rhs) {
 
 // test vector's size and matrix's size
-if (rhs.size() != m_rows) {
+if (rhs.size() != m_rowLength) {
     throw std::runtime_error(
             Formatter() << "[MatrixD::operator*] Vector's size = " << rhs.size()
-                    << " does not match matrix size = " << m_rows);
+                    << " does not match matrix size = " << m_rowLength);
 }
 
-std::vector<double> result(rhs.size(), 0.0);
+VectorD result(rhs.size(), 0.0);
 
-for (unsigned i = 0; i < m_rows; i++) {
-    for (unsigned j = 0; j < m_cols; j++) {
+for (unsigned i = 0; i < m_rowLength; i++) {
+    for (unsigned j = 0; j < m_colLength; j++) {
         result[i] += this->m_matrix[i][j] * rhs[j];
     }
 }
@@ -58,13 +60,13 @@ return result;
 //	return result;
 //}
 
-void MatrixD::update(const unsigned int i, const unsigned int j,
+void MatrixD::update(const size_t i, const size_t j,
     const double value) {
-if (i > m_rows || j > m_cols) {
+if (i > m_rowLength || j > m_colLength) {
     throw std::runtime_error(
             Formatter()
                     << "[MatrixD::update] i or j index does not match matrix size rows = "
-                    << m_rows << " cols = " << m_cols);
+                    << m_rowLength << " cols = " << m_colLength);
 }
 
 m_matrix[i][j] = value;
@@ -84,3 +86,13 @@ for (unsigned int i = 0; i < m_matrix.size(); i++) {
 
 return formatter.str();
 }
+
+VectorD MatrixD::getLine(const size_t lineIndex) {
+if (lineIndex >= m_matrix.size()) {
+    //TODO print more information
+    throw std::runtime_error("[MatrixD::getLine] lineIndex is out of bound");
+}
+
+return m_matrix[lineIndex];
+}
+

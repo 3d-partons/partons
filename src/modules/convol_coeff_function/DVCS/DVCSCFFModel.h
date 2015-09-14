@@ -16,8 +16,10 @@
 #include <complex>
 #include <string>
 
-#include "../../../beans/parton_distribution/PartonDistribution.h"
+//#include "../../../beans/parton_distribution/PartonDistribution.h"
 #include "DVCSConvolCoeffFunctionModule.h"
+
+class PartonDistribution;
 
 class DVCSCFFModel: public DVCSConvolCoeffFunctionModule {
 public:

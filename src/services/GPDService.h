@@ -23,7 +23,7 @@ class Scenario;
 
 class GPDResultList;
 
-class EvolQCDModule;
+class GPDEvolutionModule;
 class GPDModule;
 class GPDResult;
 
@@ -77,7 +77,7 @@ public:
      * @return
      */
     GPDResult computeGPDModelWithEvolution(const GPDKinematic &gpdKinematic,
-            GPDModule* pGPDModule, EvolQCDModule* pEvolQCDModule,
+            GPDModule* pGPDModule, GPDEvolutionModule* pEvolQCDModule,
             GPDType::Type gpdType = GPDType::ALL);
 
 //    /**

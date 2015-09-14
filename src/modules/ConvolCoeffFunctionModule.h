@@ -17,7 +17,8 @@
 #include "../ModuleObject.h"
 #include "MathIntegratorModule.h"
 
-class ConvolCoeffFunctionModule: public ModuleObject, public MathIntegratorModule {
+class ConvolCoeffFunctionModule: public ModuleObject,
+        public MathIntegratorModule {
 public:
     ConvolCoeffFunctionModule(const std::string &className);
     virtual ~ConvolCoeffFunctionModule();

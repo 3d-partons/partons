@@ -11,8 +11,11 @@
  * @brief Represents a two-dimensional array of double.
  */
 
+#include <stddef.h>
 #include <string>
 #include <vector>
+
+#include "../vector/VectorD.h"
 
 class MatrixD {
 public:
@@ -28,7 +31,7 @@ public:
      * @param _rows : row length
      * @param _cols : column length
      */
-    MatrixD(const unsigned int _rows, const unsigned int _cols, ...);
+    MatrixD(const size_t _rowLength, const size_t _colLength, ...);
 
     /**
      * Copy constructor
@@ -42,8 +45,10 @@ public:
      */
     virtual ~MatrixD();
 
+    VectorD getLine(const size_t lineIndex);
+
     // Matrix/vector operations
-    std::vector<double> operator*(const std::vector<double>& rhs);
+    VectorD operator*(const VectorD& rhs);
     //std::vector<double> operator*=(const std::vector<double>& rhs);
 
     /**
@@ -53,7 +58,7 @@ public:
      * @param j : column coordinate
      * @param value
      */
-    void update(const unsigned int i, const unsigned int j, const double value);
+    void update(const size_t i, const size_t j, const double value);
 
     /**
      * Return a formatted characters string to display matrix's values
@@ -62,10 +67,12 @@ public:
      */
     std::string toString();
 
+    // ##### GETTERS & SETTERS #####
+
 private:
-    std::vector<std::vector<double> > m_matrix; ///< two-dimensional array of double for represent a matrix
-    unsigned int m_rows;    ///< row length
-    unsigned int m_cols;    ///< column length
+    std::vector<VectorD> m_matrix; ///< two-dimensional array of double for represent a matrix
+    size_t m_rowLength;    ///< row length
+    size_t m_colLength;    ///< column length
 };
 
 #endif /* MATRIX_D_H */

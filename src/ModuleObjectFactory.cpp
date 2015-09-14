@@ -1,9 +1,10 @@
 #include "ModuleObjectFactory.h"
 
 #include "BaseObjectFactory.h"
+#include "modules/ActiveFlavorsModule.h"
 #include "modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
 #include "modules/DoubleDistributionModule.h"
-#include "modules/EvolQCDModule.h"
+#include "modules/evolution/GPDEvolutionModule.h"
 #include "modules/GPDModule.h"
 #include "modules/observable/DVCSModule.h"
 #include "modules/RunningAlphaStrongModule.h"
@@ -20,14 +21,15 @@ DoubleDistributionModule* ModuleObjectFactory::newDoubleDistributionModule(
             className));
 }
 
-EvolQCDModule* ModuleObjectFactory::newEvolQCDModule(unsigned int classId) {
-    return static_cast<EvolQCDModule*>(BaseObjectFactory::getInstance()->newBaseObject(
+GPDEvolutionModule* ModuleObjectFactory::newGPDEvolutionModule(
+        unsigned int classId) {
+    return static_cast<GPDEvolutionModule*>(BaseObjectFactory::getInstance()->newBaseObject(
             classId));
 }
 
-EvolQCDModule* ModuleObjectFactory::newEvolQCDModule(
+GPDEvolutionModule* ModuleObjectFactory::newGPDEvolutionModule(
         const std::string& className) {
-    return static_cast<EvolQCDModule*>(BaseObjectFactory::getInstance()->newBaseObject(
+    return static_cast<GPDEvolutionModule*>(BaseObjectFactory::getInstance()->newBaseObject(
             className));
 }
 
@@ -84,5 +86,17 @@ RunningAlphaStrongModule* ModuleObjectFactory::newRunningAlphaStrongModule(
 RunningAlphaStrongModule* ModuleObjectFactory::newRunningAlphaStrongModule(
         const std::string& className) {
     return static_cast<RunningAlphaStrongModule*>(BaseObjectFactory::getInstance()->newBaseObject(
+            className));
+}
+
+ActiveFlavorsModule* ModuleObjectFactory::newActiveFlavorsModule(
+        unsigned int classId) {
+    return static_cast<ActiveFlavorsModule*>(BaseObjectFactory::getInstance()->newBaseObject(
+            classId));
+}
+
+ActiveFlavorsModule* ModuleObjectFactory::newActiveFlavorsModule(
+        const std::string &className) {
+    return static_cast<ActiveFlavorsModule*>(BaseObjectFactory::getInstance()->newBaseObject(
             className));
 }

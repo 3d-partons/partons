@@ -20,6 +20,8 @@
 #include "../../../beans/PerturbativeQCDOrderType.h"
 #include "../../ConvolCoeffFunctionModule.h"
 
+class ActiveFlavorsModule;
+
 class DVCSConvolCoeffFunctionResult;
 class GPDModule;
 class RunningAlphaStrongModule;
@@ -28,6 +30,8 @@ class DVCSConvolCoeffFunctionModule: public ConvolCoeffFunctionModule {
 public:
     DVCSConvolCoeffFunctionModule(const std::string &className);
     virtual ~DVCSConvolCoeffFunctionModule();
+
+    virtual void init();
 
     virtual DVCSConvolCoeffFunctionResult compute(double xi, double t,
             double Q2, double MuF2, double MuR2, GPDType::Type gpdType);
@@ -66,6 +70,9 @@ protected:
 
     GPDModule* m_pGPDModule;
     RunningAlphaStrongModule* m_pRunningAlphaStrongModule;
+
+    //TODO implement
+    ActiveFlavorsModule* m_pNfConvolCoeffFunction;
 
     PerturbativeQCDOrderType::Type m_qcdOrderType;
     GPDType::Type m_currentGPDComputeType;

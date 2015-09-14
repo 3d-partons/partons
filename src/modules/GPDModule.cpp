@@ -8,11 +8,11 @@
 #include "../utils/logger/LoggerManager.h"
 #include "../utils/ParameterList.h"
 #include "../utils/stringUtils/Formatter.h"
-#include "EvolQCDModule.h"
+#include "evolution/GPDEvolutionModule.h"
 
 GPDModule::GPDModule(const std::string &className) :
         ModuleObject(className), m_x(0.), m_xi(0.), m_t(0.), m_MuF2(0.), m_MuR2(
-                0.), m_gpdType(GPDType::UNDEFINED), m_MuF2_ref(0.), m_nf(0), m_pEvolQCDModule(
+                0.), m_gpdType(GPDType::UNDEFINED), m_MuF2_ref(0.), m_nf(0), m_pGPDEvolutionModule(
                 0) {
 }
 
@@ -29,10 +29,10 @@ GPDModule::GPDModule(const GPDModule &other) :
     m_MuF2_ref = other.m_MuF2_ref;
     m_nf = other.m_nf;
 
-    if (other.m_pEvolQCDModule != 0) {
-        m_pEvolQCDModule = other.m_pEvolQCDModule->clone();
+    if (other.m_pGPDEvolutionModule != 0) {
+        m_pGPDEvolutionModule = other.m_pGPDEvolutionModule->clone();
     } else {
-        m_pEvolQCDModule = 0;
+        m_pGPDEvolutionModule = 0;
     }
 
     m_listGPDComputeTypeAvailable = other.m_listGPDComputeTypeAvailable;
@@ -53,8 +53,6 @@ GPDModule::~GPDModule() {
 void GPDModule::configure(ParameterList parameters) {
     //TODO replace hard coded string by static const string
     m_MuF2_ref = (parameters.get("Mu2Ref")).getDouble();
-
-
 
 }
 
@@ -98,9 +96,9 @@ GPDResult GPDModule::compute(double x, double xi, double t, double MuF2,
 
     bool evolution = false;
 
-    if (m_pEvolQCDModule != 0) {
-        if (m_pEvolQCDModule->isRunnable(m_MuF2, m_MuF2_ref,
-                EvolQCDModule::RELATIVE)) {
+    if (m_pGPDEvolutionModule != 0) {
+        if (m_pGPDEvolutionModule->isRunnable(m_MuF2, m_MuF2_ref,
+                GPDEvolutionModule::RELATIVE)) {
             evolution = true;
         }
     } else {
@@ -116,8 +114,8 @@ GPDResult GPDModule::compute(double x, double xi, double t, double MuF2,
             PartonDistribution partonDistribution;
 
             if (evolution) {
-                partonDistribution = m_pEvolQCDModule->compute(m_x, m_xi, m_t,
-                        m_MuF2, m_MuR2, this);
+                partonDistribution = m_pGPDEvolutionModule->compute(m_x, m_xi, m_t,
+                        m_MuF2, m_MuR2, this, (m_it->first));
             } else {
                 partonDistribution = ((*this).*(m_it->second))();
             }
@@ -132,8 +130,8 @@ GPDResult GPDModule::compute(double x, double xi, double t, double MuF2,
             PartonDistribution partonDistribution;
 
             if (evolution) {
-                partonDistribution = m_pEvolQCDModule->compute(m_x, m_xi, m_t,
-                        m_MuF2, m_MuR2, this);
+                partonDistribution = m_pGPDEvolutionModule->compute(m_x, m_xi, m_t,
+                        m_MuF2, m_MuR2, this, (m_it->first));
             } else {
                 partonDistribution = ((*this).*(m_it->second))();
             }
@@ -179,14 +177,14 @@ void GPDModule::setNf(unsigned int nf) {
     m_nf = nf;
 }
 
-const EvolQCDModule* GPDModule::getEvolQcdModule() const {
-    return m_pEvolQCDModule;
+const GPDEvolutionModule* GPDModule::getEvolQcdModule() const {
+    return m_pGPDEvolutionModule;
 }
 
-void GPDModule::setEvolQcdModule(EvolQCDModule* pEvolQcdModule) {
-    m_pEvolQCDModule = pEvolQcdModule;
-    if (m_pEvolQCDModule != 0) {
-        m_pEvolQCDModule->setGpdModule(this);
+void GPDModule::setEvolQcdModule(GPDEvolutionModule* pEvolQcdModule) {
+    m_pGPDEvolutionModule = pEvolQcdModule;
+    if (m_pGPDEvolutionModule != 0) {
+        m_pGPDEvolutionModule->setGpdModule(this);
     }
 }
 

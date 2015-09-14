@@ -13,6 +13,9 @@
  * @brief A module that implements GPD as defined by Kroll-Goloskokov model in 2011.
  *
  * !!!! Use tgamma() instead of gamma() (see: http://stackoverflow.com/questions/18116376/what-is-the-definition-for-gammadouble-x-and-why-is-it-different-on-two-gcc-ve)
+ *
+ *
+ * August 2015 : Tested and approved by Pawel Sznajder
  */
 
 #include <string>

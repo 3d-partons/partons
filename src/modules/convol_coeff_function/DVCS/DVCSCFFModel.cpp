@@ -6,7 +6,6 @@
 #include <map>
 #include <stdexcept>
 #include <utility>
-//#include <vector>
 
 #include "../../../beans/gpd/GPDResult.h"
 #include "../../../beans/gpd/GPDType.h"

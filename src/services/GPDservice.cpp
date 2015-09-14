@@ -99,7 +99,7 @@ GPDResult GPDService::computeGPDModelRestrictedByGPDType(
 
 GPDResult GPDService::computeGPDModelWithEvolution(
         const GPDKinematic &gpdKinematic, GPDModule* pGPDModule,
-        EvolQCDModule* pEvolQCDModule, GPDType::Type gpdType) {
+        GPDEvolutionModule* pEvolQCDModule, GPDType::Type gpdType) {
     pGPDModule->setEvolQcdModule(pEvolQCDModule);
 
     GPDResult gpdResult = pGPDModule->compute(gpdKinematic.getX(),

@@ -4,8 +4,10 @@
 #include <utility>
 
 #include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
+#include "../../../ModuleObjectFactory.h"
 #include "../../../utils/logger/LoggerManager.h"
 #include "../../../utils/stringUtils/Formatter.h"
+#include "../../active_flavors/NfFunctionExample.h"
 #include "../../GPDModule.h"
 #include "../../RunningAlphaStrongModule.h"
 
@@ -15,7 +17,7 @@ DVCSConvolCoeffFunctionModule::DVCSConvolCoeffFunctionModule(
                 0.), m_MuR2(0.), m_nf(0), m_qcdOrderType(
                 PerturbativeQCDOrderType::UNDEFINED), m_currentGPDComputeType(
                 GPDType::UNDEFINED), m_gpdType(GPDType::UNDEFINED), m_pGPDModule(
-                0), m_pRunningAlphaStrongModule(0) {
+                0), m_pRunningAlphaStrongModule(0), m_pNfConvolCoeffFunction(0) {
 
 }
 
@@ -46,15 +48,27 @@ DVCSConvolCoeffFunctionModule::DVCSConvolCoeffFunctionModule(
     }
 
     if (other.m_pRunningAlphaStrongModule != 0) {
-        // GPDModule is an abstract class, so it's impossible to use copy constructor to get a new instance of the object
+        // RunningAlphaStrongModule is an abstract class, so it's impossible to use copy constructor to get a new instance of the object
         m_pRunningAlphaStrongModule =
                 (other.m_pRunningAlphaStrongModule)->clone();
     } else {
         m_pRunningAlphaStrongModule = 0;
     }
+
+    if (other.m_pNfConvolCoeffFunction != 0) {
+        // ActiveFlavorsModule is an abstract class, so it's impossible to use copy constructor to get a new instance of the object
+        m_pNfConvolCoeffFunction = (other.m_pNfConvolCoeffFunction)->clone();
+    } else {
+        m_pNfConvolCoeffFunction = 0;
+    }
 }
 
 DVCSConvolCoeffFunctionModule::~DVCSConvolCoeffFunctionModule() {
+}
+
+void DVCSConvolCoeffFunctionModule::init() {
+    m_pNfConvolCoeffFunction = ModuleObjectFactory::newActiveFlavorsModule(
+            NfFunctionExample::classId);
 }
 
 //TODO implement
@@ -72,27 +86,35 @@ void DVCSConvolCoeffFunctionModule::isModuleWellConfigured() {
     // Test kinematic domain of Xi
     if (m_xi < 0 || m_xi > 1) {
         Formatter formatter;
-        formatter
-                << "[CFFModule::isModuleWellConfigured] : Input value of Xi = "
-                << m_xi << " do not lay between 0 and 1.";
-        throw std::runtime_error(formatter.str());
+        formatter << "Input value of Xi = " << m_xi
+                << " do not lay between 0 and 1.";
+        throwException(__func__, formatter.str());
     }
 
     // Test kinematic domain of t
     if (m_t > 0) {
         Formatter formatter;
-        formatter << "[CFFModule::isModuleWellConfigured] : Input value of t = "
-                << m_t << " is not <= 0.";
-        throw std::runtime_error(formatter.str());
+        formatter << " Input value of t = " << m_t << " is not <= 0.";
+        throwException(__func__, formatter.str());
     }
 
     // Test kinematic domain of Q2
     if (m_Q2 < 0) {
         Formatter formatter;
-        formatter
-                << "[CFFModule::isModuleWellConfigured] : Input value of Q2 = "
-                << m_Q2 << " is not > 0.";
-        throw std::runtime_error(formatter.str());
+        formatter << "Input value of Q2 = " << m_Q2 << " is not > 0.";
+        throwException(__func__, formatter.str());
+    }
+
+    if (m_pGPDModule == 0) {
+        throwException(__func__, "m_pGPDModule is NULL");
+    }
+
+    if (m_pRunningAlphaStrongModule == 0) {
+        throwException(__func__, "m_pRunningAlphaStrongModule is NULL");
+    }
+
+    if (m_pNfConvolCoeffFunction == 0) {
+        throwException(__func__, "m_pNfConvolCoeffFunction is NULL");
     }
 }
 
