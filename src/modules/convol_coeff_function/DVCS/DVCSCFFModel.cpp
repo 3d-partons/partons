@@ -10,6 +10,7 @@
 #include "../../../beans/gpd/GPDResult.h"
 #include "../../../beans/gpd/GPDType.h"
 #include "../../../beans/parton_distribution/GluonDistribution.h"
+#include "../../../beans/parton_distribution/PartonDistribution.h"
 #include "../../../beans/parton_distribution/QuarkDistribution.h"
 #include "../../../beans/PerturbativeQCDOrderType.h"
 #include "../../../beans/QuarkFlavor.h"
@@ -19,6 +20,7 @@
 #include "../../../utils/logger/LoggerManager.h"
 #include "../../../utils/stringUtils/Formatter.h"
 #include "../../alphaS/RunningAlphaStrong.h"
+#include "../../evolution/gpd/ExampleEvolQCDModel.h"
 #include "../../GPDModule.h"
 
 // Initialise [class]::classId with a unique name.
@@ -52,6 +54,9 @@ void DVCSCFFModel::init() {
     m_pRunningAlphaStrongModule =
             ModuleObjectFactory::newRunningAlphaStrongModule(
                     RunningAlphaStrong::classId);
+
+    m_pNfConvolCoeffFunction = ModuleObjectFactory::newActiveFlavorsModule(
+            ExampleEvolQCDModel::classId);
 }
 
 DVCSCFFModel::DVCSCFFModel(const DVCSCFFModel &other) :
