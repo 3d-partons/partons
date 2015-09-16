@@ -13,10 +13,13 @@
  */
 
 #include <string>
+#include <vector>
 
 #include "../DoubleDistributionModule.h"
+#include "../MathIntegratorModule.h"
 
-class DoubleDistributionExample: public DoubleDistributionModule {
+class DoubleDistributionExample: public DoubleDistributionModule,
+        public MathIntegratorModule {
 public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
@@ -41,7 +44,8 @@ protected:
     virtual void isModuleWellConfigured();
 
 private:
-
+    double integrateExample(std::vector<double> &variables,
+            std::vector<double> &parameters);
 };
 
 #endif /* DOUBLE_DISTRIBUTION_EXAMPLE_H */

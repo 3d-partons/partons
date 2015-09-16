@@ -8,6 +8,10 @@
 DoubleDistributionModule::DoubleDistributionModule(const std::string& className) :
         ModuleObject(className), m_beta(0.), m_alpha(0.), m_t(0.), m_MuF2(0.), m_MuR2(
                 0.), m_doubleDistributionType(DoubleDistributionType::UNDEFINED) {
+
+    m_listOfAvailableDualDistributionFunctions.insert(
+            std::make_pair(DoubleDistributionType::F,
+                    &DoubleDistributionModule::computeF));
 }
 
 DoubleDistributionModule::~DoubleDistributionModule() {
