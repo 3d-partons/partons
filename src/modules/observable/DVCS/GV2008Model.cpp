@@ -1,18 +1,14 @@
 #include "GV2008Model.h"
 
-#include <Rtypes.h>
 #include <TMath.h>
 #include <cmath>
 #include <complex>
-#include <cstdlib>
-#include <iostream>
 
+#include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
 #include "../../../beans/gpd/GPDType.h"
-#include "../../../beans/observable/Observable.h"
 #include "../../../BaseObjectRegistry.h"
 #include "../../../FundamentalPhysicalConstants.h"
 #include "../../../utils/logger/LoggerManager.h"
-#include "../../../utils/math/MathUtils.h"
 #include "../../../utils/stringUtils/Formatter.h"
 
 // Initialise [class]::classId with a unique name.
@@ -47,6 +43,10 @@ GV2008Model* GV2008Model::clone() const {
 }
 
 void GV2008Model::initModule() {
+
+    //init mother class
+    DVCSModule::initModule();
+
     m_Q = sqrt(m_Q2);
     m_powerOfQ.push_back(m_Q2);
     m_powerOfQ.push_back(pow(m_Q, 3));
@@ -174,55 +174,39 @@ void GV2008Model::initModule() {
 
     m_pLoggerManager->debug(getClassName(), __func__,
             Formatter() << "m_phaseSpace = " << m_phaseSpace);
+
+    //TODO : disable computation if kinematic unchanged
+
+    MakeExactBHCrossSections();
+    MakeVCSHelicityAmplitudes();
+    MakeExactVCSAndInterfCrossSections();
 }
 
 void GV2008Model::isModuleWellConfigured() {
 
+    //check mother class
+    DVCSModule::isModuleWellConfigured();
+
     if (!(m_xBMin < m_xB && m_xB < m_xBMax)) {
-        std::cout
-                << "TGV : Unrealistic kinematic configuration : m_xB isn't in the physical region !"
-                << std::endl;
-        std::cout << "    TGV : m_xB = " << m_xB << std::endl;
-        std::cout << "    TGV : m_xBMin = " << m_xBMin << std::endl;
-        std::cout << "    TGV : m_xBMax = " << m_xBMax << std::endl;
-        exit(-1);
+        Formatter formater;
+
+        formater
+                << "Unrealistic kinematic configuration : m_xB isn't in the physical region !"
+                << '\n';
+        formater << " m_xB = " << m_xB << '\n';
+        formater << "m_xBMin = " << m_xBMin << '\n';
+        formater << "m_xBMax = " << m_xBMax << '\n';
+
+        throwException(__func__, formater.str());
     }
 
     if (m_y < 1.) {
-        std::cout << "TGV : ELab " << m_E
-                << " GeV is too small. TMath::CosH[ome]= " << m_y << std::endl;
-        exit(-1);
-    } // end if y
+        throwException(__func__,
+                Formatter() << "ELab = " << m_E
+                        << " GeV is too small. TMath::CosH[ome]= " << m_y);
+    }
 
-    //TODO mettre une contrainte sur les GPD dont on a besoin pour calculer le modele
-}
-
-double GV2008Model::computeWithPhiDependency(double xB, double t, double Q2,
-        double phi, DVCSConvolCoeffFunctionResult dvcsConvolCoeffFunctionResult,
-        Observable* pObservable) {
-
-    m_xB = xB;
-    m_t = t;
-    m_Q2 = Q2;
-    m_phi = MathUtils::convertDegreeToRadian(phi);
-    m_dvcsConvolCoeffFunctionResult = dvcsConvolCoeffFunctionResult;
-    m_pObservable = pObservable;
-
-    initModule();
-    isModuleWellConfigured();
-
-    return pObservable->compute(this);
-}
-
-double GV2008Model::computeCrossSection(double beamHelicity, double beamCharge,
-        Vector3D targetPolarization) {
-    MakeExactBHCrossSections();
-    MakeVCSHelicityAmplitudes();
-    MakeExactVCSAndInterfCrossSections();
-
-    return CrossSectionBH(beamHelicity, beamCharge, targetPolarization)
-            + CrossSectionVCS(beamHelicity, beamCharge, targetPolarization)
-            + CrossSectionInterf(beamHelicity, beamCharge, targetPolarization);
+    //TODO mettre une contrainte sur les CFF dont on a besoin pour calculer le modele
 }
 
 double GV2008Model::SqrAmplBH(double beamHelicity, double beamCharge,
@@ -256,23 +240,27 @@ double GV2008Model::SqrAmplBH(double beamHelicity, double beamCharge,
 
 double GV2008Model::SqrAmplVCSAndInterf(double beamHelicity, double beamCharge,
         Vector3D targetPolarization) {
-    MakeVCSHelicityAmplitudes();
-    MakeExactVCSAndInterfCrossSections();
-
     return SqrAmplVCS(beamHelicity, beamCharge, targetPolarization)
             + SqrAmplInterf(beamHelicity, beamCharge, targetPolarization);
 }
 
+//TODO avoid multiple computation if kinematic unchanged
 void GV2008Model::MakeVCSHelicityAmplitudes() {
 
-    std::complex<double> CFF_H = m_dvcsConvolCoeffFunctionResult.get(
-            GPDType::H);
-    std::complex<double> CFF_E = m_dvcsConvolCoeffFunctionResult.get(
-            GPDType::E);
-    std::complex<double> CFF_Ht = m_dvcsConvolCoeffFunctionResult.get(
-            GPDType::Ht);
-    std::complex<double> CFF_Et = m_dvcsConvolCoeffFunctionResult.get(
-            GPDType::Et);
+    std::complex<double> CFF_H = 0., CFF_E = 0., CFF_Ht = 0., CFF_Et = 0.;
+
+    if (m_dvcsConvolCoeffFunctionResult.isAvailable(GPDType::H)) {
+        CFF_H = m_dvcsConvolCoeffFunctionResult.getLastAvailable();
+    }
+    if (m_dvcsConvolCoeffFunctionResult.isAvailable(GPDType::E)) {
+        CFF_E = m_dvcsConvolCoeffFunctionResult.getLastAvailable();
+    }
+    if (m_dvcsConvolCoeffFunctionResult.isAvailable(GPDType::Ht)) {
+        CFF_Ht = m_dvcsConvolCoeffFunctionResult.getLastAvailable();
+    }
+    if (m_dvcsConvolCoeffFunctionResult.isAvailable(GPDType::Et)) {
+        CFF_Et = m_dvcsConvolCoeffFunctionResult.getLastAvailable();
+    }
 
     RMvcs[0][0] = 0;
     RMvcs[0][1] = 0;
@@ -469,21 +457,8 @@ double GV2008Model::SqrAmplInterf(double beamHelicity, double beamCharge,
  *--------------------------------------------------------------------------------------*/
 
 void GV2008Model::SetBeamEnergy(double EBeam) {
-    if (InitBeamEnergy == kFALSE) {
-        m_E = EBeam;
-
-        // Flag
-
-        InitBeamEnergy = kTRUE;
-        if (NoPrint == kFALSE) {
-            std::cout << "TGV : Beam Energy Initialization : " << InitBeamEnergy
-                    << std::endl;
-            std::cout << "    TGV : ELab = " << EBeam << " GeV" << std::endl;
-        } // end if NoPrint
-
-    } // end if InitBeamEnergy
-
-} // end SetBeamEnergy
+    m_E = EBeam;
+}
 
 /*----------------------- Function MakeExactBHCrossSections() --------------------------*
  | Computes all the stuff to evaluate the cross section assuming the hadronic helicity  |
@@ -495,546 +470,457 @@ void GV2008Model::SetBeamEnergy(double EBeam) {
  *--------------------------------------------------------------------------------------*/
 
 void GV2008Model::MakeExactBHCrossSections() {
-    if (InitExactBHCrossSections == kFALSE) {
-        double F1; // Dirac form factor
-        double F2; // Pauli form factor
-        double Ge, Gm; // Sachs' parametrization
 
-        F1 = (4. * m_powerOfProtonMass[0] - 2.79285 * m_t)
-                / (pow(1. - 1.4084507042253522 * m_t, 2)
-                        * (4. * m_powerOfProtonMass[0] - 1. * m_t));
-        F2 = (7.1714 * m_powerOfProtonMass[0])
-                / (pow(1 - 1.4084507042253522 * m_t, 2)
-                        * (4 * m_powerOfProtonMass[0] - m_t));
-        Gm = 2.79285 / pow(1 - 1.4084507042253522 * m_t, 2);
-        Ge = pow(1 - 1.4084507042253522 * m_t, -2);
+    // TODO externaliser F1, F2, Ge, Gm : en faire un module de facteur de form
+    double F1; // Dirac form factor
+    double F2; // Pauli form factor
+    double Ge, Gm; // Sachs' parametrization
 
-        /*----------------- Helicity amplitudes of the interference process --------------------*/
+    F1 = (4. * m_powerOfProtonMass[0] - 2.79285 * m_t)
+            / (pow(1. - 1.4084507042253522 * m_t, 2)
+                    * (4. * m_powerOfProtonMass[0] - 1. * m_t));
+    F2 = (7.1714 * m_powerOfProtonMass[0])
+            / (pow(1 - 1.4084507042253522 * m_t, 2)
+                    * (4 * m_powerOfProtonMass[0] - m_t));
+    Gm = 2.79285 / pow(1 - 1.4084507042253522 * m_t, 2);
+    Ge = pow(1 - 1.4084507042253522 * m_t, -2);
 
-        Jem[0][0] = (-2 * sqrt(2.) * m_qCM.getZ() * m_qpCM.getX() * F2
-                * (sqrt(m_pCM.getE() - PROTON_MASS)
-                        * sqrt(m_ppCM.getE() - PROTON_MASS)
-                        - sqrt(m_pCM.getE() + PROTON_MASS)
-                                * sqrt(m_ppCM.getE() + PROTON_MASS)) * sqrt(m_s)
-                * TMath::Cos(m_thetag / 2.))
-                / (PROTON_MASS * sqrt(m_powerOfQ[2] - 4 * m_s * m_t))
-                - (2 * sqrt(2.) * (m_qCM.getZ() + m_qpCM.getE()) * Gm
-                        * (sqrt(m_ppCM.getE() - PROTON_MASS)
-                                * sqrt(m_pCM.getE() + PROTON_MASS)
-                                + sqrt(m_pCM.getE() - PROTON_MASS)
-                                        * sqrt(m_ppCM.getE() + PROTON_MASS))
-                        * sqrt(m_s) * TMath::Sin(m_thetag / 2.))
-                        / sqrt(m_powerOfQ[2] - 4 * m_s * m_t);
-        Jem[0][1] =
-                -((F2
-                        * (sqrt(m_pCM.getE() - PROTON_MASS)
-                                * sqrt(m_ppCM.getE() - PROTON_MASS)
-                                - sqrt(m_pCM.getE() + PROTON_MASS)
-                                        * sqrt(m_ppCM.getE() + PROTON_MASS))
-                        * (2 * m_powerOfProtonMass[0] + m_powerOfQ[0] + 2 * m_s)
-                        * sqrt(-(m_s * m_t)) * TMath::Cos(m_thetag / 2.))
-                        / (PROTON_MASS * sqrt(m_s)
-                                * sqrt(m_powerOfQ[2] - 4 * m_s * m_t)))
-                        - (8 * Gm
-                                * (sqrt(m_ppCM.getE() - PROTON_MASS)
-                                        * sqrt(m_pCM.getE() + PROTON_MASS)
-                                        + sqrt(m_pCM.getE() - PROTON_MASS)
-                                                * sqrt(
-                                                        m_ppCM.getE()
-                                                                + PROTON_MASS))
-                                * m_s * sqrt(-m_t)
-                                * ((m_qCM.getZ() - m_qpCM.getZ())
-                                        * TMath::Cos(m_thetag / 2.)
-                                        - m_qpCM.getX()
-                                                * TMath::Sin(m_thetag / 2.)))
-                                / (m_powerOfQ[0]
-                                        * sqrt(m_powerOfQ[2] - 4 * m_s * m_t));
-        Jem[0][2] = (2 * sqrt(2.) * m_qCM.getZ() * m_qpCM.getX() * F2
-                * (sqrt(m_pCM.getE() - PROTON_MASS)
-                        * sqrt(m_ppCM.getE() - PROTON_MASS)
-                        - sqrt(m_pCM.getE() + PROTON_MASS)
-                                * sqrt(m_ppCM.getE() + PROTON_MASS)) * sqrt(m_s)
-                * TMath::Cos(m_thetag / 2.))
-                / (PROTON_MASS * sqrt(m_powerOfQ[2] - 4 * m_s * m_t))
-                + (2 * sqrt(2.) * (m_qCM.getZ() + m_qpCM.getE()) * Gm
-                        * (sqrt(m_ppCM.getE() - PROTON_MASS)
-                                * sqrt(m_pCM.getE() + PROTON_MASS)
-                                + sqrt(m_pCM.getE() - PROTON_MASS)
-                                        * sqrt(m_ppCM.getE() + PROTON_MASS))
-                        * sqrt(m_s) * TMath::Sin(m_thetag / 2.))
-                        / sqrt(m_powerOfQ[2] - 4 * m_s * m_t);
-        Jem[1][0] = sqrt(2.) * Gm
-                * (-(sqrt(m_ppCM.getE() - PROTON_MASS)
-                        * sqrt(m_pCM.getE() + PROTON_MASS))
-                        + sqrt(m_pCM.getE() - PROTON_MASS)
-                                * sqrt(m_ppCM.getE() + PROTON_MASS))
-                * TMath::Cos(m_thetag / 2.);
-        Jem[1][1] = 0;
-        Jem[1][2] = sqrt(2.) * Gm
-                * (-(sqrt(m_ppCM.getE() - PROTON_MASS)
-                        * sqrt(m_pCM.getE() + PROTON_MASS))
-                        + sqrt(m_pCM.getE() - PROTON_MASS)
-                                * sqrt(m_ppCM.getE() + PROTON_MASS))
-                * TMath::Cos(m_thetag / 2.);
-        Jem[2][0] = (2 * sqrt(2.) * (m_qCM.getZ() - m_qpCM.getE()) * Gm
-                * (sqrt(m_ppCM.getE() - PROTON_MASS)
-                        * sqrt(m_pCM.getE() + PROTON_MASS)
-                        - sqrt(m_pCM.getE() - PROTON_MASS)
-                                * sqrt(m_ppCM.getE() + PROTON_MASS)) * sqrt(m_s)
-                * TMath::Cos(m_thetag / 2.))
-                / sqrt(m_powerOfQ[2] - 4 * m_s * m_t)
-                - (2 * sqrt(2.) * m_qCM.getZ() * m_qpCM.getX() * F2
-                        * (sqrt(m_pCM.getE() - PROTON_MASS)
-                                * sqrt(m_ppCM.getE() - PROTON_MASS)
-                                + sqrt(m_pCM.getE() + PROTON_MASS)
-                                        * sqrt(m_ppCM.getE() + PROTON_MASS))
-                        * sqrt(m_s) * TMath::Sin(m_thetag / 2.))
-                        / (PROTON_MASS * sqrt(m_powerOfQ[2] - 4 * m_s * m_t));
-        Jem[2][1] =
-                -((F2
-                        * (sqrt(m_pCM.getE() - PROTON_MASS)
-                                * sqrt(m_ppCM.getE() - PROTON_MASS)
-                                + sqrt(m_pCM.getE() + PROTON_MASS)
-                                        * sqrt(m_ppCM.getE() + PROTON_MASS))
-                        * (2 * m_powerOfProtonMass[0] + m_powerOfQ[0] + 2 * m_s)
-                        * sqrt(-(m_s * m_t)) * TMath::Sin(m_thetag / 2.))
-                        / (PROTON_MASS * sqrt(m_s)
-                                * sqrt(m_powerOfQ[2] - 4 * m_s * m_t)))
-                        - (8 * Gm
-                                * (sqrt(m_ppCM.getE() - PROTON_MASS)
-                                        * sqrt(m_pCM.getE() + PROTON_MASS)
-                                        - sqrt(m_pCM.getE() - PROTON_MASS)
-                                                * sqrt(
-                                                        m_ppCM.getE()
-                                                                + PROTON_MASS))
-                                * m_s * sqrt(-m_t)
-                                * (m_qpCM.getX() * TMath::Cos(m_thetag / 2.)
-                                        + (m_qCM.getZ() - m_qpCM.getZ())
-                                                * TMath::Sin(m_thetag / 2.)))
-                                / (m_powerOfQ[0]
-                                        * sqrt(m_powerOfQ[2] - 4 * m_s * m_t));
-        Jem[2][2] = (-2 * sqrt(2.) * (m_qCM.getZ() - m_qpCM.getE()) * Gm
-                * (sqrt(m_ppCM.getE() - PROTON_MASS)
-                        * sqrt(m_pCM.getE() + PROTON_MASS)
-                        - sqrt(m_pCM.getE() - PROTON_MASS)
-                                * sqrt(m_ppCM.getE() + PROTON_MASS)) * sqrt(m_s)
-                * TMath::Cos(m_thetag / 2.))
-                / sqrt(m_powerOfQ[2] - 4 * m_s * m_t)
-                + (2 * sqrt(2.) * m_qCM.getZ() * m_qpCM.getX() * F2
-                        * (sqrt(m_pCM.getE() - PROTON_MASS)
-                                * sqrt(m_ppCM.getE() - PROTON_MASS)
-                                + sqrt(m_pCM.getE() + PROTON_MASS)
-                                        * sqrt(m_ppCM.getE() + PROTON_MASS))
-                        * sqrt(m_s) * TMath::Sin(m_thetag / 2.))
-                        / (PROTON_MASS * sqrt(m_powerOfQ[2] - 4 * m_s * m_t));
-        Jem[3][0] = sqrt(2.) * Gm
-                * (sqrt(m_ppCM.getE() - PROTON_MASS)
-                        * sqrt(m_pCM.getE() + PROTON_MASS)
-                        + sqrt(m_pCM.getE() - PROTON_MASS)
-                                * sqrt(m_ppCM.getE() + PROTON_MASS))
-                * TMath::Sin(m_thetag / 2.);
-        Jem[3][1] = 0;
-        Jem[3][2] = sqrt(2.) * Gm
-                * (sqrt(m_ppCM.getE() - PROTON_MASS)
-                        * sqrt(m_pCM.getE() + PROTON_MASS)
-                        + sqrt(m_pCM.getE() - PROTON_MASS)
-                                * sqrt(m_ppCM.getE() + PROTON_MASS))
-                * TMath::Sin(m_thetag / 2.);
+    /*----------------- Helicity amplitudes of the interference process --------------------*/
 
-        /*--------------------------------BH cross sections ------------------------------------*/
+    Jem[0][0] = (-2 * sqrt(2.) * m_qCM.getZ() * m_qpCM.getX() * F2
+            * (sqrt(m_pCM.getE() - PROTON_MASS)
+                    * sqrt(m_ppCM.getE() - PROTON_MASS)
+                    - sqrt(m_pCM.getE() + PROTON_MASS)
+                            * sqrt(m_ppCM.getE() + PROTON_MASS)) * sqrt(m_s)
+            * TMath::Cos(m_thetag / 2.))
+            / (PROTON_MASS * sqrt(m_powerOfQ[2] - 4 * m_s * m_t))
+            - (2 * sqrt(2.) * (m_qCM.getZ() + m_qpCM.getE()) * Gm
+                    * (sqrt(m_ppCM.getE() - PROTON_MASS)
+                            * sqrt(m_pCM.getE() + PROTON_MASS)
+                            + sqrt(m_pCM.getE() - PROTON_MASS)
+                                    * sqrt(m_ppCM.getE() + PROTON_MASS))
+                    * sqrt(m_s) * TMath::Sin(m_thetag / 2.))
+                    / sqrt(m_powerOfQ[2] - 4 * m_s * m_t);
+    Jem[0][1] = -((F2
+            * (sqrt(m_pCM.getE() - PROTON_MASS)
+                    * sqrt(m_ppCM.getE() - PROTON_MASS)
+                    - sqrt(m_pCM.getE() + PROTON_MASS)
+                            * sqrt(m_ppCM.getE() + PROTON_MASS))
+            * (2 * m_powerOfProtonMass[0] + m_powerOfQ[0] + 2 * m_s)
+            * sqrt(-(m_s * m_t)) * TMath::Cos(m_thetag / 2.))
+            / (PROTON_MASS * sqrt(m_s) * sqrt(m_powerOfQ[2] - 4 * m_s * m_t)))
+            - (8 * Gm
+                    * (sqrt(m_ppCM.getE() - PROTON_MASS)
+                            * sqrt(m_pCM.getE() + PROTON_MASS)
+                            + sqrt(m_pCM.getE() - PROTON_MASS)
+                                    * sqrt(m_ppCM.getE() + PROTON_MASS)) * m_s
+                    * sqrt(-m_t)
+                    * ((m_qCM.getZ() - m_qpCM.getZ())
+                            * TMath::Cos(m_thetag / 2.)
+                            - m_qpCM.getX() * TMath::Sin(m_thetag / 2.)))
+                    / (m_powerOfQ[0] * sqrt(m_powerOfQ[2] - 4 * m_s * m_t));
+    Jem[0][2] = (2 * sqrt(2.) * m_qCM.getZ() * m_qpCM.getX() * F2
+            * (sqrt(m_pCM.getE() - PROTON_MASS)
+                    * sqrt(m_ppCM.getE() - PROTON_MASS)
+                    - sqrt(m_pCM.getE() + PROTON_MASS)
+                            * sqrt(m_ppCM.getE() + PROTON_MASS)) * sqrt(m_s)
+            * TMath::Cos(m_thetag / 2.))
+            / (PROTON_MASS * sqrt(m_powerOfQ[2] - 4 * m_s * m_t))
+            + (2 * sqrt(2.) * (m_qCM.getZ() + m_qpCM.getE()) * Gm
+                    * (sqrt(m_ppCM.getE() - PROTON_MASS)
+                            * sqrt(m_pCM.getE() + PROTON_MASS)
+                            + sqrt(m_pCM.getE() - PROTON_MASS)
+                                    * sqrt(m_ppCM.getE() + PROTON_MASS))
+                    * sqrt(m_s) * TMath::Sin(m_thetag / 2.))
+                    / sqrt(m_powerOfQ[2] - 4 * m_s * m_t);
+    Jem[1][0] = sqrt(2.) * Gm
+            * (-(sqrt(m_ppCM.getE() - PROTON_MASS)
+                    * sqrt(m_pCM.getE() + PROTON_MASS))
+                    + sqrt(m_pCM.getE() - PROTON_MASS)
+                            * sqrt(m_ppCM.getE() + PROTON_MASS))
+            * TMath::Cos(m_thetag / 2.);
+    Jem[1][1] = 0;
+    Jem[1][2] = sqrt(2.) * Gm
+            * (-(sqrt(m_ppCM.getE() - PROTON_MASS)
+                    * sqrt(m_pCM.getE() + PROTON_MASS))
+                    + sqrt(m_pCM.getE() - PROTON_MASS)
+                            * sqrt(m_ppCM.getE() + PROTON_MASS))
+            * TMath::Cos(m_thetag / 2.);
+    Jem[2][0] = (2 * sqrt(2.) * (m_qCM.getZ() - m_qpCM.getE()) * Gm
+            * (sqrt(m_ppCM.getE() - PROTON_MASS)
+                    * sqrt(m_pCM.getE() + PROTON_MASS)
+                    - sqrt(m_pCM.getE() - PROTON_MASS)
+                            * sqrt(m_ppCM.getE() + PROTON_MASS)) * sqrt(m_s)
+            * TMath::Cos(m_thetag / 2.)) / sqrt(m_powerOfQ[2] - 4 * m_s * m_t)
+            - (2 * sqrt(2.) * m_qCM.getZ() * m_qpCM.getX() * F2
+                    * (sqrt(m_pCM.getE() - PROTON_MASS)
+                            * sqrt(m_ppCM.getE() - PROTON_MASS)
+                            + sqrt(m_pCM.getE() + PROTON_MASS)
+                                    * sqrt(m_ppCM.getE() + PROTON_MASS))
+                    * sqrt(m_s) * TMath::Sin(m_thetag / 2.))
+                    / (PROTON_MASS * sqrt(m_powerOfQ[2] - 4 * m_s * m_t));
+    Jem[2][1] = -((F2
+            * (sqrt(m_pCM.getE() - PROTON_MASS)
+                    * sqrt(m_ppCM.getE() - PROTON_MASS)
+                    + sqrt(m_pCM.getE() + PROTON_MASS)
+                            * sqrt(m_ppCM.getE() + PROTON_MASS))
+            * (2 * m_powerOfProtonMass[0] + m_powerOfQ[0] + 2 * m_s)
+            * sqrt(-(m_s * m_t)) * TMath::Sin(m_thetag / 2.))
+            / (PROTON_MASS * sqrt(m_s) * sqrt(m_powerOfQ[2] - 4 * m_s * m_t)))
+            - (8 * Gm
+                    * (sqrt(m_ppCM.getE() - PROTON_MASS)
+                            * sqrt(m_pCM.getE() + PROTON_MASS)
+                            - sqrt(m_pCM.getE() - PROTON_MASS)
+                                    * sqrt(m_ppCM.getE() + PROTON_MASS)) * m_s
+                    * sqrt(-m_t)
+                    * (m_qpCM.getX() * TMath::Cos(m_thetag / 2.)
+                            + (m_qCM.getZ() - m_qpCM.getZ())
+                                    * TMath::Sin(m_thetag / 2.)))
+                    / (m_powerOfQ[0] * sqrt(m_powerOfQ[2] - 4 * m_s * m_t));
+    Jem[2][2] = (-2 * sqrt(2.) * (m_qCM.getZ() - m_qpCM.getE()) * Gm
+            * (sqrt(m_ppCM.getE() - PROTON_MASS)
+                    * sqrt(m_pCM.getE() + PROTON_MASS)
+                    - sqrt(m_pCM.getE() - PROTON_MASS)
+                            * sqrt(m_ppCM.getE() + PROTON_MASS)) * sqrt(m_s)
+            * TMath::Cos(m_thetag / 2.)) / sqrt(m_powerOfQ[2] - 4 * m_s * m_t)
+            + (2 * sqrt(2.) * m_qCM.getZ() * m_qpCM.getX() * F2
+                    * (sqrt(m_pCM.getE() - PROTON_MASS)
+                            * sqrt(m_ppCM.getE() - PROTON_MASS)
+                            + sqrt(m_pCM.getE() + PROTON_MASS)
+                                    * sqrt(m_ppCM.getE() + PROTON_MASS))
+                    * sqrt(m_s) * TMath::Sin(m_thetag / 2.))
+                    / (PROTON_MASS * sqrt(m_powerOfQ[2] - 4 * m_s * m_t));
+    Jem[3][0] = sqrt(2.) * Gm
+            * (sqrt(m_ppCM.getE() - PROTON_MASS)
+                    * sqrt(m_pCM.getE() + PROTON_MASS)
+                    + sqrt(m_pCM.getE() - PROTON_MASS)
+                            * sqrt(m_ppCM.getE() + PROTON_MASS))
+            * TMath::Sin(m_thetag / 2.);
+    Jem[3][1] = 0;
+    Jem[3][2] = sqrt(2.) * Gm
+            * (sqrt(m_ppCM.getE() - PROTON_MASS)
+                    * sqrt(m_pCM.getE() + PROTON_MASS)
+                    + sqrt(m_pCM.getE() - PROTON_MASS)
+                            * sqrt(m_ppCM.getE() + PROTON_MASS))
+            * TMath::Sin(m_thetag / 2.);
 
-        SigmaBHPol0[0] =
-                (-32 * pow(Ge, 2) * m_powerOfProtonMass[0]
-                        * (3 * m_powerOfProtonMass[3] * m_t
-                                + 3 * m_powerOfProtonMass[2]
-                                        * (m_powerOfQ[2] + m_powerOfQ[0] * m_t
-                                                - 4 * m_s * m_t)
-                                + m_powerOfProtonMass[0]
-                                        * (3 * m_powerOfQ[2]
-                                                * pow(m_powerOfQ[0] + m_s, 2)
-                                                - (m_powerOfQ[0] + m_s)
-                                                        * (m_powerOfQ[2]
-                                                                + 3
-                                                                        * m_powerOfQ[0]
-                                                                        * m_s
-                                                                + 12
-                                                                        * pow(
-                                                                                m_s,
-                                                                                2))
-                                                        * m_t
-                                                + 2
-                                                        * (m_powerOfQ[2]
-                                                                + m_powerOfQ[0]
-                                                                        * m_s
-                                                                - 3
-                                                                        * pow(
-                                                                                m_s,
-                                                                                2))
-                                                        * pow(m_t, 2))
-                                + pow(m_powerOfQ[0] + m_s, 2) * m_t
-                                        * (3 * m_s * (m_s + m_t)
-                                                + m_powerOfQ[0]
-                                                        * (3 * m_s + m_t))
-                                + m_powerOfProtonMass[1]
-                                        * (4 * pow(m_Q, 6)
-                                                + m_powerOfQ[0] * m_t
-                                                        * (3 * m_s + m_t)
-                                                - m_powerOfQ[2]
-                                                        * (6 * m_s + m_t)
-                                                + 3 * m_s * m_t
-                                                        * (6 * m_s + m_t)))
-                        + 4 * pow(Gm, 2) * m_t
-                                * (6 * m_powerOfProtonMass[3] * m_t
-                                        + m_t
-                                                * (3
-                                                        * pow(
-                                                                m_powerOfQ[0]
-                                                                        + m_s,
-                                                                2)
-                                                        * (m_powerOfQ[2]
-                                                                + 2
-                                                                        * m_powerOfQ[0]
-                                                                        * m_s
-                                                                + 2
-                                                                        * pow(
-                                                                                m_s,
-                                                                                2))
-                                                        + 2 * m_s
-                                                                * (m_powerOfQ[0]
-                                                                        + m_s)
-                                                                * (2
-                                                                        * m_powerOfQ[0]
-                                                                        + 3
-                                                                                * m_s)
-                                                                * m_t
-                                                        + (3 * m_powerOfQ[2]
-                                                                + 4
-                                                                        * m_powerOfQ[0]
-                                                                        * m_s
-                                                                + 3
-                                                                        * pow(
-                                                                                m_s,
-                                                                                2))
-                                                                * pow(m_t, 2))
-                                        - 2 * m_powerOfProtonMass[2]
-                                                * (3 * m_powerOfQ[2]
-                                                        - 11 * m_powerOfQ[0]
-                                                                * m_t
-                                                        + 6 * m_t
-                                                                * (2 * m_s + m_t))
-                                        + m_powerOfProtonMass[1]
-                                                * (-8 * pow(m_Q, 6)
-                                                        - 26 * m_powerOfQ[0]
-                                                                * m_t
-                                                                * (m_s + m_t)
-                                                        + m_powerOfQ[2]
-                                                                * (12 * m_s
-                                                                        + 25
-                                                                                * m_t)
-                                                        + 3 * m_t
-                                                                * (12
-                                                                        * pow(
-                                                                                m_s,
-                                                                                2)
-                                                                        + 10
-                                                                                * m_s
-                                                                                * m_t
-                                                                        + pow(
-                                                                                m_t,
-                                                                                2)))
-                                        - 2 * m_powerOfProtonMass[0]
-                                                * (3 * pow(m_Q, 8)
-                                                        + pow(m_Q, 6)
-                                                                * (6 * m_s
-                                                                        - 5
-                                                                                * m_t)
-                                                        + 3 * m_s * m_t
-                                                                * pow(
-                                                                        2 * m_s
-                                                                                + m_t,
-                                                                        2)
-                                                        + m_powerOfQ[0] * m_t
-                                                                * (7
-                                                                        * pow(
-                                                                                m_s,
-                                                                                2)
-                                                                        + 2
-                                                                                * m_s
-                                                                                * m_t
-                                                                        - 3
-                                                                                * pow(
-                                                                                        m_t,
-                                                                                        2))
-                                                        + m_powerOfQ[2]
-                                                                * (3
-                                                                        * pow(
-                                                                                m_s,
-                                                                                2)
-                                                                        - 5
-                                                                                * m_s
-                                                                                * m_t
-                                                                        + 7
-                                                                                * pow(
-                                                                                        m_t,
-                                                                                        2)))))
-                        / ((m_powerOfProtonMass[1]
-                                + 2 * m_powerOfProtonMass[0]
-                                        * (m_powerOfQ[0] - m_s)
-                                + pow(m_powerOfQ[0] + m_s, 2))
-                                * (4 * m_powerOfProtonMass[0] - m_t));
-        SigmaBHPol0[1] =
-                (-32 * pow(Ge, 2) * m_powerOfProtonMass[0]
-                        * (m_powerOfProtonMass[3] * m_t
-                                + m_powerOfProtonMass[2]
-                                        * (m_powerOfQ[2] + m_powerOfQ[0] * m_t
-                                                - 4 * m_s * m_t)
-                                + m_powerOfProtonMass[0]
-                                        * (m_powerOfQ[2]
-                                                * pow(m_powerOfQ[0] + m_s, 2)
-                                                + (m_powerOfQ[0] - m_s)
-                                                        * (m_powerOfQ[0] + m_s)
-                                                        * (5 * m_powerOfQ[0]
-                                                                + 4 * m_s) * m_t
-                                                - 2
-                                                        * (m_powerOfQ[2]
-                                                                + m_powerOfQ[0]
-                                                                        * m_s
-                                                                + pow(m_s, 2))
-                                                        * pow(m_t, 2))
-                                + pow(m_powerOfQ[0] + m_s, 2) * m_t
-                                        * (m_powerOfQ[0] * (m_s - m_t)
-                                                + m_s * (m_s + m_t))
-                                + m_powerOfProtonMass[1]
-                                        * (-4 * pow(m_Q, 6)
-                                                + m_powerOfQ[0] * (m_s - m_t)
-                                                        * m_t
-                                                + m_s * m_t * (6 * m_s + m_t)
-                                                + m_powerOfQ[2]
-                                                        * (-2 * m_s + 5 * m_t)))
-                        + 4 * pow(Gm, 2) * m_t
-                                * (2 * m_powerOfProtonMass[3] * m_t
-                                        + m_t
-                                                * (pow(m_powerOfQ[0] + m_s, 2)
-                                                        * (m_powerOfQ[2]
-                                                                + 2
-                                                                        * m_powerOfQ[0]
-                                                                        * m_s
-                                                                + 2
-                                                                        * pow(
-                                                                                m_s,
-                                                                                2))
-                                                        + 2 * m_s
-                                                                * (-2
-                                                                        * m_powerOfQ[2]
-                                                                        - m_powerOfQ[0]
-                                                                                * m_s
-                                                                        + pow(
-                                                                                m_s,
-                                                                                2))
-                                                                * m_t
-                                                        + (m_powerOfQ[2]
-                                                                - 4
-                                                                        * m_powerOfQ[0]
-                                                                        * m_s
-                                                                + pow(m_s, 2))
-                                                                * pow(m_t, 2))
-                                        - 2 * m_powerOfProtonMass[2]
-                                                * (m_powerOfQ[2]
-                                                        - 9 * m_powerOfQ[0]
-                                                                * m_t
-                                                        + 2 * m_t
-                                                                * (2 * m_s + m_t))
-                                        + m_powerOfProtonMass[1]
-                                                * (8 * pow(m_Q, 6)
-                                                        - 2 * m_powerOfQ[0]
-                                                                * m_t
-                                                                * (15 * m_s
-                                                                        + 7
-                                                                                * m_t)
-                                                        + m_powerOfQ[2]
-                                                                * (4 * m_s
-                                                                        + 19
-                                                                                * m_t)
-                                                        + m_t
-                                                                * (12
-                                                                        * pow(
-                                                                                m_s,
-                                                                                2)
-                                                                        + 10
-                                                                                * m_s
-                                                                                * m_t
-                                                                        + pow(
-                                                                                m_t,
-                                                                                2)))\
+    /*--------------------------------BH cross sections ------------------------------------*/
 
-                                        - 2 * m_powerOfProtonMass[0]
-                                                * (pow(m_Q, 8)
-                                                        + pow(m_Q, 6)
-                                                                * (2 * m_s + m_t)
-                                                        + m_s * m_t
-                                                                * pow(
-                                                                        2 * m_s
-                                                                                + m_t,
-                                                                        2)
-                                                        - m_powerOfQ[0] * m_t
-                                                                * (3
-                                                                        * pow(
-                                                                                m_s,
-                                                                                2)
-                                                                        + 10
-                                                                                * m_s
-                                                                                * m_t
-                                                                        + pow(
-                                                                                m_t,
-                                                                                2))
-                                                        + m_powerOfQ[2]
-                                                                * (pow(m_s, 2)
-                                                                        - 7
-                                                                                * m_s
-                                                                                * m_t
-                                                                        + 5
-                                                                                * pow(
-                                                                                        m_t,
-                                                                                        2)))))
-                        / ((m_powerOfProtonMass[1]
-                                + 2 * m_powerOfProtonMass[0]
-                                        * (m_powerOfQ[0] - m_s)
-                                + pow(m_powerOfQ[0] + m_s, 2))
-                                * (4 * m_powerOfProtonMass[0] - m_t));
-        SigmaBHPol0[2] = (-64 * pow(Ge, 2) * m_powerOfProtonMass[0] * m_Q
-                * m_qpPerp * (m_powerOfProtonMass[0] - m_powerOfQ[0] - m_s)
-                * (2 * m_powerOfProtonMass[0] * m_powerOfQ[0]
-                        - (m_powerOfProtonMass[0] + m_powerOfQ[0] + m_s) * m_t)
-                + 16 * pow(Gm, 2) * m_Q * m_qpPerp * m_t
-                        * (m_powerOfProtonMass[1]
-                                * (-2 * m_powerOfQ[0] + 3 * m_t)
-                                + m_t
-                                        * (m_powerOfQ[0] * (m_s - m_t)
-                                                + m_s * (m_s + m_t))
-                                + m_powerOfProtonMass[0]
-                                        * (2 * m_powerOfQ[2]
-                                                - m_t * (4 * m_s + m_t)
-                                                + m_powerOfQ[0]
-                                                        * (2 * m_s + 5 * m_t))))
-                / (sqrt(
-                        m_powerOfProtonMass[1]
-                                + 2 * m_powerOfProtonMass[0]
-                                        * (m_powerOfQ[0] - m_s)
-                                + pow(m_powerOfQ[0] + m_s, 2))
-                        * (4 * m_powerOfProtonMass[0] - m_t));
-        SigmaBHPol0[3] = (-64 * pow(Ge, 2) * m_powerOfProtonMass[1]
-                * m_powerOfQ[0]
-                * (m_powerOfProtonMass[1] * m_t
-                        + m_s * m_t * (m_powerOfQ[0] + m_s + m_t)
-                        + m_powerOfProtonMass[0]
-                                * (m_powerOfQ[2] + m_powerOfQ[0] * m_t
-                                        - 2 * m_s * m_t))
-                - 8 * pow(Gm, 2) * m_powerOfQ[0]
-                        * (2 * m_powerOfProtonMass[0] - m_t) * m_t
-                        * (m_powerOfProtonMass[1] * m_t
-                                + m_s * m_t * (m_powerOfQ[0] + m_s + m_t)
-                                + m_powerOfProtonMass[0]
-                                        * (m_powerOfQ[2] + m_powerOfQ[0] * m_t
-                                                - 2 * m_s * m_t)))
-                / ((m_powerOfProtonMass[1]
-                        + 2 * m_powerOfProtonMass[0] * (m_powerOfQ[0] - m_s)
-                        + pow(m_powerOfQ[0] + m_s, 2))
-                        * (4 * m_powerOfProtonMass[0] - m_t));
-        SigmaBHPolX[0] = (64 * Ge * Gm * PROTON_MASS * m_qpPerp
-                * (-(m_powerOfQ[0] * (m_powerOfQ[0] + m_s))
-                        + m_powerOfProtonMass[0] * (m_powerOfQ[0] - m_t)
-                        + m_s * m_t)
-                * (2 * m_powerOfProtonMass[0] * m_powerOfQ[0]
-                        - (m_powerOfProtonMass[0] + m_powerOfQ[0] + m_s) * m_t)
-                + 32 * pow(Gm, 2) * PROTON_MASS * m_qpPerp * m_t
-                        * (-pow(m_Q, 6) - 3 * m_powerOfQ[2] * m_s
-                                - 2 * m_powerOfProtonMass[1]
-                                        * (m_powerOfQ[0] - m_t)
-                                + m_s * m_t * (2 * m_s + m_t)
-                                - m_powerOfQ[0]
-                                        * (2 * pow(m_s, 2) + pow(m_t, 2))
-                                - m_powerOfProtonMass[0]
-                                        * (m_powerOfQ[2]
-                                                - 4 * m_powerOfQ[0]
-                                                        * (m_s + m_t)
-                                                + m_t * (4 * m_s + m_t))))
-                / (sqrt(
-                        m_powerOfProtonMass[1]
-                                + 2 * m_powerOfProtonMass[0]
-                                        * (m_powerOfQ[0] - m_s)
-                                + pow(m_powerOfQ[0] + m_s, 2))
-                        * (4 * m_powerOfProtonMass[0] - m_t));
-        SigmaBHPolX[1] = (32 * Ge * Gm * PROTON_MASS * m_Q
-                * (-2 * m_powerOfProtonMass[0] * m_powerOfQ[0]
-                        + (m_powerOfProtonMass[0] + m_powerOfQ[0] + m_s) * m_t)
-                * (4 * m_powerOfProtonMass[0] * m_powerOfQ[2]
-                        + (2 * m_powerOfProtonMass[0] + m_powerOfQ[0] - 2 * m_s)
-                                * (m_powerOfProtonMass[0] - m_powerOfQ[0] - m_s)
-                                * m_t
-                        + (m_powerOfProtonMass[0] + m_powerOfQ[0] + 3 * m_s)
-                                * pow(m_t, 2))
-                + 64 * pow(Gm, 2) * PROTON_MASS * m_Q
-                        * (m_powerOfProtonMass[0] - m_s - m_t) * m_t
-                        * (m_powerOfProtonMass[1] * m_t
-                                + m_s * m_t * (m_powerOfQ[0] + m_s + m_t)
-                                + m_powerOfProtonMass[0]
-                                        * (m_powerOfQ[2] + m_powerOfQ[0] * m_t
-                                                - 2 * m_s * m_t)))
-                / ((m_powerOfProtonMass[1]
-                        + 2 * m_powerOfProtonMass[0] * (m_powerOfQ[0] - m_s)
-                        + pow(m_powerOfQ[0] + m_s, 2))
-                        * (4 * m_powerOfProtonMass[0] - m_t));
-        SigmaBHPolY = 32 * Ge * Gm * PROTON_MASS * m_Q * (m_powerOfQ[0] - m_t)
-                * m_t;
-        SigmaBHPolZ[0] = (-128 * Ge * Gm * m_powerOfProtonMass[0]
-                * (-(m_powerOfQ[0] * (m_powerOfQ[0] + m_s))
-                        + m_powerOfProtonMass[0] * (m_powerOfQ[0] - m_t)
-                        + m_s * m_t)
-                * (m_powerOfProtonMass[1] * m_t
-                        + m_s * m_t * (m_powerOfQ[0] + m_s + m_t)
-                        + m_powerOfProtonMass[0]
-                                * (m_powerOfQ[2] + m_powerOfQ[0] * m_t
-                                        - 2 * m_s * m_t))
-                + 16 * pow(Gm, 2) * m_t
-                        * (2 * m_powerOfProtonMass[0] * m_powerOfQ[0]
-                                - (m_powerOfProtonMass[0] + m_powerOfQ[0] + m_s)
-                                        * m_t)
-                        * (pow(m_Q, 6) + 3 * m_powerOfQ[2] * m_s
-                                + 2 * m_powerOfProtonMass[1]
-                                        * (m_powerOfQ[0] - m_t)
-                                - m_s * m_t * (2 * m_s + m_t)
-                                + m_powerOfQ[0]
-                                        * (2 * pow(m_s, 2) + pow(m_t, 2))
-                                + m_powerOfProtonMass[0]
-                                        * (m_powerOfQ[2]
-                                                - 4 * m_powerOfQ[0]
-                                                        * (m_s + m_t)
-                                                + m_t * (4 * m_s + m_t))))
-                / ((m_powerOfProtonMass[1]
-                        + 2 * m_powerOfProtonMass[0] * (m_powerOfQ[0] - m_s)
-                        + pow(m_powerOfQ[0] + m_s, 2))
-                        * (4 * m_powerOfProtonMass[0] - m_t));
-        SigmaBHPolZ[1] = (64 * Ge * Gm * m_powerOfProtonMass[0] * m_Q * m_qpPerp
-                * (-4 * m_powerOfProtonMass[0] * m_powerOfQ[2]
-                        - (2 * m_powerOfProtonMass[0] + m_powerOfQ[0] - 2 * m_s)
-                                * (m_powerOfProtonMass[0] - m_powerOfQ[0] - m_s)
-                                * m_t
-                        - (m_powerOfProtonMass[0] + m_powerOfQ[0] + 3 * m_s)
-                                * pow(m_t, 2))
-                + 32 * pow(Gm, 2) * m_Q * m_qpPerp * m_t
-                        * (-m_powerOfProtonMass[0] + m_s + m_t)
-                        * ((m_powerOfQ[0] + m_s) * m_t
-                                + m_powerOfProtonMass[0]
-                                        * (-2 * m_powerOfQ[0] + m_t)))
-                / (sqrt(
-                        m_powerOfProtonMass[1]
-                                + 2 * m_powerOfProtonMass[0]
-                                        * (m_powerOfQ[0] - m_s)
-                                + pow(m_powerOfQ[0] + m_s, 2))
-                        * (4 * m_powerOfProtonMass[0] - m_t));
+    SigmaBHPol0[0] =
+            (-32 * pow(Ge, 2) * m_powerOfProtonMass[0]
+                    * (3 * m_powerOfProtonMass[3] * m_t
+                            + 3 * m_powerOfProtonMass[2]
+                                    * (m_powerOfQ[2] + m_powerOfQ[0] * m_t
+                                            - 4 * m_s * m_t)
+                            + m_powerOfProtonMass[0]
+                                    * (3 * m_powerOfQ[2]
+                                            * pow(m_powerOfQ[0] + m_s, 2)
+                                            - (m_powerOfQ[0] + m_s)
+                                                    * (m_powerOfQ[2]
+                                                            + 3 * m_powerOfQ[0]
+                                                                    * m_s
+                                                            + 12 * pow(m_s, 2))
+                                                    * m_t
+                                            + 2
+                                                    * (m_powerOfQ[2]
+                                                            + m_powerOfQ[0]
+                                                                    * m_s
+                                                            - 3 * pow(m_s, 2))
+                                                    * pow(m_t, 2))
+                            + pow(m_powerOfQ[0] + m_s, 2) * m_t
+                                    * (3 * m_s * (m_s + m_t)
+                                            + m_powerOfQ[0] * (3 * m_s + m_t))
+                            + m_powerOfProtonMass[1]
+                                    * (4 * pow(m_Q, 6)
+                                            + m_powerOfQ[0] * m_t
+                                                    * (3 * m_s + m_t)
+                                            - m_powerOfQ[2] * (6 * m_s + m_t)
+                                            + 3 * m_s * m_t * (6 * m_s + m_t)))
+                    + 4 * pow(Gm, 2) * m_t
+                            * (6 * m_powerOfProtonMass[3] * m_t
+                                    + m_t
+                                            * (3 * pow(m_powerOfQ[0] + m_s, 2)
+                                                    * (m_powerOfQ[2]
+                                                            + 2 * m_powerOfQ[0]
+                                                                    * m_s
+                                                            + 2 * pow(m_s, 2))
+                                                    + 2 * m_s
+                                                            * (m_powerOfQ[0]
+                                                                    + m_s)
+                                                            * (2 * m_powerOfQ[0]
+                                                                    + 3 * m_s)
+                                                            * m_t
+                                                    + (3 * m_powerOfQ[2]
+                                                            + 4 * m_powerOfQ[0]
+                                                                    * m_s
+                                                            + 3 * pow(m_s, 2))
+                                                            * pow(m_t, 2))
+                                    - 2 * m_powerOfProtonMass[2]
+                                            * (3 * m_powerOfQ[2]
+                                                    - 11 * m_powerOfQ[0] * m_t
+                                                    + 6 * m_t * (2 * m_s + m_t))
+                                    + m_powerOfProtonMass[1]
+                                            * (-8 * pow(m_Q, 6)
+                                                    - 26 * m_powerOfQ[0] * m_t
+                                                            * (m_s + m_t)
+                                                    + m_powerOfQ[2]
+                                                            * (12 * m_s
+                                                                    + 25 * m_t)
+                                                    + 3 * m_t
+                                                            * (12 * pow(m_s, 2)
+                                                                    + 10 * m_s
+                                                                            * m_t
+                                                                    + pow(m_t,
+                                                                            2)))
+                                    - 2 * m_powerOfProtonMass[0]
+                                            * (3 * pow(m_Q, 8)
+                                                    + pow(m_Q, 6)
+                                                            * (6 * m_s - 5 * m_t)
+                                                    + 3 * m_s * m_t
+                                                            * pow(2 * m_s + m_t,
+                                                                    2)
+                                                    + m_powerOfQ[0] * m_t
+                                                            * (7 * pow(m_s, 2)
+                                                                    + 2 * m_s
+                                                                            * m_t
+                                                                    - 3
+                                                                            * pow(
+                                                                                    m_t,
+                                                                                    2))
+                                                    + m_powerOfQ[2]
+                                                            * (3 * pow(m_s, 2)
+                                                                    - 5 * m_s
+                                                                            * m_t
+                                                                    + 7
+                                                                            * pow(
+                                                                                    m_t,
+                                                                                    2)))))
+                    / ((m_powerOfProtonMass[1]
+                            + 2 * m_powerOfProtonMass[0] * (m_powerOfQ[0] - m_s)
+                            + pow(m_powerOfQ[0] + m_s, 2))
+                            * (4 * m_powerOfProtonMass[0] - m_t));
+    SigmaBHPol0[1] =
+            (-32 * pow(Ge, 2) * m_powerOfProtonMass[0]
+                    * (m_powerOfProtonMass[3] * m_t
+                            + m_powerOfProtonMass[2]
+                                    * (m_powerOfQ[2] + m_powerOfQ[0] * m_t
+                                            - 4 * m_s * m_t)
+                            + m_powerOfProtonMass[0]
+                                    * (m_powerOfQ[2]
+                                            * pow(m_powerOfQ[0] + m_s, 2)
+                                            + (m_powerOfQ[0] - m_s)
+                                                    * (m_powerOfQ[0] + m_s)
+                                                    * (5 * m_powerOfQ[0]
+                                                            + 4 * m_s) * m_t
+                                            - 2
+                                                    * (m_powerOfQ[2]
+                                                            + m_powerOfQ[0]
+                                                                    * m_s
+                                                            + pow(m_s, 2))
+                                                    * pow(m_t, 2))
+                            + pow(m_powerOfQ[0] + m_s, 2) * m_t
+                                    * (m_powerOfQ[0] * (m_s - m_t)
+                                            + m_s * (m_s + m_t))
+                            + m_powerOfProtonMass[1]
+                                    * (-4 * pow(m_Q, 6)
+                                            + m_powerOfQ[0] * (m_s - m_t) * m_t
+                                            + m_s * m_t * (6 * m_s + m_t)
+                                            + m_powerOfQ[2]
+                                                    * (-2 * m_s + 5 * m_t)))
+                    + 4 * pow(Gm, 2) * m_t
+                            * (2 * m_powerOfProtonMass[3] * m_t
+                                    + m_t
+                                            * (pow(m_powerOfQ[0] + m_s, 2)
+                                                    * (m_powerOfQ[2]
+                                                            + 2 * m_powerOfQ[0]
+                                                                    * m_s
+                                                            + 2 * pow(m_s, 2))
+                                                    + 2 * m_s
+                                                            * (-2
+                                                                    * m_powerOfQ[2]
+                                                                    - m_powerOfQ[0]
+                                                                            * m_s
+                                                                    + pow(m_s,
+                                                                            2))
+                                                            * m_t
+                                                    + (m_powerOfQ[2]
+                                                            - 4 * m_powerOfQ[0]
+                                                                    * m_s
+                                                            + pow(m_s, 2))
+                                                            * pow(m_t, 2))
+                                    - 2 * m_powerOfProtonMass[2]
+                                            * (m_powerOfQ[2]
+                                                    - 9 * m_powerOfQ[0] * m_t
+                                                    + 2 * m_t * (2 * m_s + m_t))
+                                    + m_powerOfProtonMass[1]
+                                            * (8 * pow(m_Q, 6)
+                                                    - 2 * m_powerOfQ[0] * m_t
+                                                            * (15 * m_s
+                                                                    + 7 * m_t)
+                                                    + m_powerOfQ[2]
+                                                            * (4 * m_s
+                                                                    + 19 * m_t)
+                                                    + m_t
+                                                            * (12 * pow(m_s, 2)
+                                                                    + 10 * m_s
+                                                                            * m_t
+                                                                    + pow(m_t,
+                                                                            2)))\
 
-    } // end if InitExactBHCrossSections
-
+                                    - 2 * m_powerOfProtonMass[0]
+                                            * (pow(m_Q, 8)
+                                                    + pow(m_Q, 6)
+                                                            * (2 * m_s + m_t)
+                                                    + m_s * m_t
+                                                            * pow(2 * m_s + m_t,
+                                                                    2)
+                                                    - m_powerOfQ[0] * m_t
+                                                            * (3 * pow(m_s, 2)
+                                                                    + 10 * m_s
+                                                                            * m_t
+                                                                    + pow(m_t,
+                                                                            2))
+                                                    + m_powerOfQ[2]
+                                                            * (pow(m_s, 2)
+                                                                    - 7 * m_s
+                                                                            * m_t
+                                                                    + 5
+                                                                            * pow(
+                                                                                    m_t,
+                                                                                    2)))))
+                    / ((m_powerOfProtonMass[1]
+                            + 2 * m_powerOfProtonMass[0] * (m_powerOfQ[0] - m_s)
+                            + pow(m_powerOfQ[0] + m_s, 2))
+                            * (4 * m_powerOfProtonMass[0] - m_t));
+    SigmaBHPol0[2] = (-64 * pow(Ge, 2) * m_powerOfProtonMass[0] * m_Q * m_qpPerp
+            * (m_powerOfProtonMass[0] - m_powerOfQ[0] - m_s)
+            * (2 * m_powerOfProtonMass[0] * m_powerOfQ[0]
+                    - (m_powerOfProtonMass[0] + m_powerOfQ[0] + m_s) * m_t)
+            + 16 * pow(Gm, 2) * m_Q * m_qpPerp * m_t
+                    * (m_powerOfProtonMass[1] * (-2 * m_powerOfQ[0] + 3 * m_t)
+                            + m_t
+                                    * (m_powerOfQ[0] * (m_s - m_t)
+                                            + m_s * (m_s + m_t))
+                            + m_powerOfProtonMass[0]
+                                    * (2 * m_powerOfQ[2] - m_t * (4 * m_s + m_t)
+                                            + m_powerOfQ[0]
+                                                    * (2 * m_s + 5 * m_t))))
+            / (sqrt(
+                    m_powerOfProtonMass[1]
+                            + 2 * m_powerOfProtonMass[0] * (m_powerOfQ[0] - m_s)
+                            + pow(m_powerOfQ[0] + m_s, 2))
+                    * (4 * m_powerOfProtonMass[0] - m_t));
+    SigmaBHPol0[3] = (-64 * pow(Ge, 2) * m_powerOfProtonMass[1] * m_powerOfQ[0]
+            * (m_powerOfProtonMass[1] * m_t
+                    + m_s * m_t * (m_powerOfQ[0] + m_s + m_t)
+                    + m_powerOfProtonMass[0]
+                            * (m_powerOfQ[2] + m_powerOfQ[0] * m_t
+                                    - 2 * m_s * m_t))
+            - 8 * pow(Gm, 2) * m_powerOfQ[0]
+                    * (2 * m_powerOfProtonMass[0] - m_t) * m_t
+                    * (m_powerOfProtonMass[1] * m_t
+                            + m_s * m_t * (m_powerOfQ[0] + m_s + m_t)
+                            + m_powerOfProtonMass[0]
+                                    * (m_powerOfQ[2] + m_powerOfQ[0] * m_t
+                                            - 2 * m_s * m_t)))
+            / ((m_powerOfProtonMass[1]
+                    + 2 * m_powerOfProtonMass[0] * (m_powerOfQ[0] - m_s)
+                    + pow(m_powerOfQ[0] + m_s, 2))
+                    * (4 * m_powerOfProtonMass[0] - m_t));
+    SigmaBHPolX[0] =
+            (64 * Ge * Gm * PROTON_MASS * m_qpPerp
+                    * (-(m_powerOfQ[0] * (m_powerOfQ[0] + m_s))
+                            + m_powerOfProtonMass[0] * (m_powerOfQ[0] - m_t)
+                            + m_s * m_t)
+                    * (2 * m_powerOfProtonMass[0] * m_powerOfQ[0]
+                            - (m_powerOfProtonMass[0] + m_powerOfQ[0] + m_s)
+                                    * m_t)
+                    + 32 * pow(Gm, 2) * PROTON_MASS * m_qpPerp * m_t
+                            * (-pow(m_Q, 6) - 3 * m_powerOfQ[2] * m_s
+                                    - 2 * m_powerOfProtonMass[1]
+                                            * (m_powerOfQ[0] - m_t)
+                                    + m_s * m_t * (2 * m_s + m_t)
+                                    - m_powerOfQ[0]
+                                            * (2 * pow(m_s, 2) + pow(m_t, 2))
+                                    - m_powerOfProtonMass[0]
+                                            * (m_powerOfQ[2]
+                                                    - 4 * m_powerOfQ[0]
+                                                            * (m_s + m_t)
+                                                    + m_t * (4 * m_s + m_t))))
+                    / (sqrt(
+                            m_powerOfProtonMass[1]
+                                    + 2 * m_powerOfProtonMass[0]
+                                            * (m_powerOfQ[0] - m_s)
+                                    + pow(m_powerOfQ[0] + m_s, 2))
+                            * (4 * m_powerOfProtonMass[0] - m_t));
+    SigmaBHPolX[1] = (32 * Ge * Gm * PROTON_MASS * m_Q
+            * (-2 * m_powerOfProtonMass[0] * m_powerOfQ[0]
+                    + (m_powerOfProtonMass[0] + m_powerOfQ[0] + m_s) * m_t)
+            * (4 * m_powerOfProtonMass[0] * m_powerOfQ[2]
+                    + (2 * m_powerOfProtonMass[0] + m_powerOfQ[0] - 2 * m_s)
+                            * (m_powerOfProtonMass[0] - m_powerOfQ[0] - m_s)
+                            * m_t
+                    + (m_powerOfProtonMass[0] + m_powerOfQ[0] + 3 * m_s)
+                            * pow(m_t, 2))
+            + 64 * pow(Gm, 2) * PROTON_MASS * m_Q
+                    * (m_powerOfProtonMass[0] - m_s - m_t) * m_t
+                    * (m_powerOfProtonMass[1] * m_t
+                            + m_s * m_t * (m_powerOfQ[0] + m_s + m_t)
+                            + m_powerOfProtonMass[0]
+                                    * (m_powerOfQ[2] + m_powerOfQ[0] * m_t
+                                            - 2 * m_s * m_t)))
+            / ((m_powerOfProtonMass[1]
+                    + 2 * m_powerOfProtonMass[0] * (m_powerOfQ[0] - m_s)
+                    + pow(m_powerOfQ[0] + m_s, 2))
+                    * (4 * m_powerOfProtonMass[0] - m_t));
+    SigmaBHPolY = 32 * Ge * Gm * PROTON_MASS * m_Q * (m_powerOfQ[0] - m_t)
+            * m_t;
+    SigmaBHPolZ[0] =
+            (-128 * Ge * Gm * m_powerOfProtonMass[0]
+                    * (-(m_powerOfQ[0] * (m_powerOfQ[0] + m_s))
+                            + m_powerOfProtonMass[0] * (m_powerOfQ[0] - m_t)
+                            + m_s * m_t)
+                    * (m_powerOfProtonMass[1] * m_t
+                            + m_s * m_t * (m_powerOfQ[0] + m_s + m_t)
+                            + m_powerOfProtonMass[0]
+                                    * (m_powerOfQ[2] + m_powerOfQ[0] * m_t
+                                            - 2 * m_s * m_t))
+                    + 16 * pow(Gm, 2) * m_t
+                            * (2 * m_powerOfProtonMass[0] * m_powerOfQ[0]
+                                    - (m_powerOfProtonMass[0] + m_powerOfQ[0]
+                                            + m_s) * m_t)
+                            * (pow(m_Q, 6) + 3 * m_powerOfQ[2] * m_s
+                                    + 2 * m_powerOfProtonMass[1]
+                                            * (m_powerOfQ[0] - m_t)
+                                    - m_s * m_t * (2 * m_s + m_t)
+                                    + m_powerOfQ[0]
+                                            * (2 * pow(m_s, 2) + pow(m_t, 2))
+                                    + m_powerOfProtonMass[0]
+                                            * (m_powerOfQ[2]
+                                                    - 4 * m_powerOfQ[0]
+                                                            * (m_s + m_t)
+                                                    + m_t * (4 * m_s + m_t))))
+                    / ((m_powerOfProtonMass[1]
+                            + 2 * m_powerOfProtonMass[0] * (m_powerOfQ[0] - m_s)
+                            + pow(m_powerOfQ[0] + m_s, 2))
+                            * (4 * m_powerOfProtonMass[0] - m_t));
+    SigmaBHPolZ[1] = (64 * Ge * Gm * m_powerOfProtonMass[0] * m_Q * m_qpPerp
+            * (-4 * m_powerOfProtonMass[0] * m_powerOfQ[2]
+                    - (2 * m_powerOfProtonMass[0] + m_powerOfQ[0] - 2 * m_s)
+                            * (m_powerOfProtonMass[0] - m_powerOfQ[0] - m_s)
+                            * m_t
+                    - (m_powerOfProtonMass[0] + m_powerOfQ[0] + 3 * m_s)
+                            * pow(m_t, 2))
+            + 32 * pow(Gm, 2) * m_Q * m_qpPerp * m_t
+                    * (-m_powerOfProtonMass[0] + m_s + m_t)
+                    * ((m_powerOfQ[0] + m_s) * m_t
+                            + m_powerOfProtonMass[0]
+                                    * (-2 * m_powerOfQ[0] + m_t)))
+            / (sqrt(
+                    m_powerOfProtonMass[1]
+                            + 2 * m_powerOfProtonMass[0] * (m_powerOfQ[0] - m_s)
+                            + pow(m_powerOfQ[0] + m_s, 2))
+                    * (4 * m_powerOfProtonMass[0] - m_t));
 } // end MakeExactBHCrossSections
 
 /*------------------ Function MakeExactVCSAndInterfCrossSections() ---------------------*
@@ -1048,9 +934,6 @@ void GV2008Model::MakeExactBHCrossSections() {
  *--------------------------------------------------------------------------------------*/
 
 void GV2008Model::MakeExactVCSAndInterfCrossSections() {
-//	if ( InitExactVCSAndInterfCrossSections == kFALSE )
-//	{
-
     /*-------------- Harmonic expansion coefficients of the VCS cross section --------------*/
 
     m_Ur[0] = -((m_powerOfQ[2]
@@ -2450,14 +2333,6 @@ void GV2008Model::MakeExactVCSAndInterfCrossSections() {
             - IMvcs[0][2] * RMvcs[3][0] + IMvcs[0][0] * RMvcs[3][2]) / 2.;
 
     /*--------------------------- Interference cross sections ------------------------------*/
-
-    if (InitExactBHCrossSections == kFALSE) {
-        GV2008Model::MakeExactBHCrossSections();
-
-        // Flag
-
-        InitExactBHCrossSections = kTRUE;
-    } // end if InitExactBHCrossSections
 
     SigmaIPol0[0] = Jem[0][1]
             * (-2 * RMvcs[0][0] * m_Ur[0] * m_powerOfQ[0]

@@ -57,3 +57,13 @@ void DVCSConvolCoeffFunctionResult::setKinematic(
         const DVCSConvolCoeffFunctionKinematic& kinematic) {
     m_kinematic = kinematic;
 }
+
+bool DVCSConvolCoeffFunctionResult::isAvailable(GPDType gpdType) {
+    m_it = m_resultsByGPDType.find(gpdType);
+
+    return (m_it != m_resultsByGPDType.end()) ? true : false;
+}
+
+std::complex<double> DVCSConvolCoeffFunctionResult::getLastAvailable() {
+    return m_it->second;
+}

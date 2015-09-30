@@ -24,6 +24,8 @@ class GPDResult;
 class GPDModule: public ModuleObject {
 public:
 
+    static const std::string GPD_TYPE;
+
     //TODO delete
     enum Keys {
         e_MUF_REF_STRING_KEY

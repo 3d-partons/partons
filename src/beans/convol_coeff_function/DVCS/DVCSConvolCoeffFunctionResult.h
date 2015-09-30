@@ -28,6 +28,9 @@ public:
     void add(GPDType::Type gpdComputeType, std::complex<double> result);
     std::complex<double> get(GPDType::Type gpdComputeType);
 
+    bool isAvailable(GPDType gpdType);
+    std::complex<double> getLastAvailable();
+
     std::string toString();
 
 // ##### GETTERS & SETTERS #####
@@ -39,7 +42,7 @@ private:
     DVCSConvolCoeffFunctionKinematic m_kinematic;
 
     std::map<GPDType::Type, std::complex<double> > m_resultsByGPDType;
-    std::map<GPDType::Type, std::complex<double> >::iterator m_it;
+    std::map<GPDType::Type, std::complex<double> >::const_iterator m_it;
 };
 
 #endif /* DVCS_CONVOL_COEFF_FUNCTION_RESULT_H */

@@ -12,18 +12,17 @@
  * @brief
  */
 
+#include <NumA/linear_algebra/VectorD.h>
 #include <string>
 
 #include "../../beans/gpd/GPDType.h"
 #include "../../beans/PerturbativeQCDOrderType.h"
 #include "../../beans/QuarkFlavor.h"
 #include "../../ModuleObject.h"
-#include "../../utils/vector/VectorD.h"
-
-class MatrixD;
 
 class ActiveFlavorsModule;
 class GPDModule;
+class MatrixD;
 class NfInterval;
 class PartonDistribution;
 class QuarkDistribution;
@@ -31,6 +30,8 @@ class RunningAlphaStrongModule;
 
 class GPDEvolutionModule: public ModuleObject {
 public:
+    static const std::string QCD_ORDER_TYPE;
+
     enum Type {
         RELATIVE, ABSOLUTE, BOTH
     };
@@ -38,6 +39,8 @@ public:
     GPDEvolutionModule(const std::string &className);
     virtual ~GPDEvolutionModule();
     virtual GPDEvolutionModule* clone() const = 0;
+
+    virtual void configure(ParameterList parameters);
 
     virtual void init();
 
@@ -90,8 +93,8 @@ protected:
     double m_alpha;
     //TODO a quoi cela sert ?
 
-    VectorD m_partonDistributionFlavorBase;
-    VectorD m_partonDistributionEvolutionBase;
+    NumA::VectorD m_partonDistributionFlavorBase;
+    NumA::VectorD m_partonDistributionEvolutionBase;
 
     void preCompute(double x, double xi, double t, double MuF2, double MuR2,
             GPDModule* pGPDModule, GPDType::Type gpdType);
@@ -134,19 +137,19 @@ private:
 
     PartonDistribution computeGPDModelAtMufRef();
 
-    VectorD makeVectorOfGPDCombinations(
+    NumA::VectorD makeVectorOfGPDCombinations(
             const PartonDistribution &partonDistribution);
-    void resizeVectorOfGPDCombination(VectorD &vectorOfQuarkDistribution,
+    void resizeVectorOfGPDCombination(NumA::VectorD &vectorOfQuarkDistribution,
             unsigned short nfInterval);
 
     PartonDistribution evolution(const PartonDistribution &partonDistribution);
     void evolution(const NfInterval &nfInterval);
 
-    VectorD convertBasis(const VectorD &vectorToConvert,
+    NumA::VectorD convertBasis(const NumA::VectorD &vectorToConvert,
             unsigned short matrixNum);
-    double convertBasis(const VectorD &vectorToConvert,
+    double convertBasis(const NumA::VectorD &vectorToConvert,
             unsigned short currentNf, unsigned short nonSingletIndex);
-    VectorD invertBasis(const VectorD &vectorToInvert,
+    NumA::VectorD invertBasis(const NumA::VectorD &vectorToInvert,
             unsigned short matrixNum);
 
     void computeNonSinglet(const NfInterval &nfInterval);

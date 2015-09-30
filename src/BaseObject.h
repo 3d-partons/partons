@@ -46,7 +46,8 @@ public:
      *
      * @return a pre-formatted characters string
      */
-    virtual std::string toString();
+    //TODO propagade const every daugther class
+    virtual std::string toString() const;
 
     // ##### GETTERS & SETTERS #####
 

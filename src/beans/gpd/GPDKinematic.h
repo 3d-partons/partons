@@ -18,13 +18,14 @@
 
 class ParameterList;
 
+//TODO add inheritance from BaseObject class
 class GPDKinematic {
 public:
-    static const std::string GPD_KINEMATIC_DB_COLUMN_NAME_X;
-    static const std::string GPD_KINEMATIC_DB_COLUMN_NAME_XI;
-    static const std::string GPD_KINEMATIC_DB_COLUMN_NAME_T;
-    static const std::string GPD_KINEMATIC_DB_COLUMN_NAME_MUF2;
-    static const std::string GPD_KINEMATIC_DB_COLUMN_NAME_MUR2;
+    static const std::string GPD_KINEMATIC_PARAMETER_NAME_X;
+    static const std::string GPD_KINEMATIC_PARAMETER_NAME_XI;
+    static const std::string GPD_KINEMATIC_PARAMETER_NAME_T;
+    static const std::string GPD_KINEMATIC_PARAMETER_NAME_MUF2;
+    static const std::string GPD_KINEMATIC_PARAMETER_NAME_MUR2;
 
     /**
      * Default constructor

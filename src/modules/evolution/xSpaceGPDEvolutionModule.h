@@ -45,8 +45,7 @@ protected:
     virtual double kernelSingletgg(double y) = 0;
 
 private:
-    double integrateNonSinglet(double* variables,
-            double* parameters);
+    double integrateNonSinglet(double* variables, double* parameters);
     double integrateSinglet(double *variables, double *parameters);
     double integrateGluon(double *variables, double *parameters);
 };

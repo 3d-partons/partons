@@ -105,10 +105,10 @@ void DVCSCFFModel::initModule() {
     m_alphaSOver2Pi = m_pRunningAlphaStrongModule->compute(m_MuR2) / (2. * PI);
 
     m_pLoggerManager->debug(getClassName(), __func__,
-            Formatter() << "m_Q= " << m_Q << " m_Zeta= " << m_Zeta
-                    << " m_logQ2OverMu2=" << m_logQ2OverMu2
-                    << " m_nbOfActiveFlavour=" << m_nf << " m_alphaSOver2Pi="
-                    << m_alphaSOver2Pi);
+            Formatter() << "m_Q2=" << m_Q2 << " m_Q= " << m_Q << " m_MuF2="
+                    << m_MuF2 << " m_Zeta= " << m_Zeta << " m_logQ2OverMu2="
+                    << m_logQ2OverMu2 << " m_nbOfActiveFlavour=" << m_nf
+                    << " m_alphaSOver2Pi=" << m_alphaSOver2Pi);
 }
 
 void DVCSCFFModel::isModuleWellConfigured() {

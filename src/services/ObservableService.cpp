@@ -1,9 +1,10 @@
 #include "ObservableService.h"
 
-#include <utility>
 #include <vector>
 
-#include "../beans/kinematic/ObservableKinematic.h"
+#include "../beans/observable/Observable.h"
+#include "../beans/observable/ObservableKinematic.h"
+#include "../beans/observable/ObservableResultList.h"
 #include "../BaseObjectRegistry.h"
 #include "../modules/observable/DVCSModule.h"
 
@@ -21,26 +22,18 @@ ObservableService::~ObservableService() {
 //TODO
 }
 
-std::map<double, double> ObservableService::computeDVCSObservableWithPhiDependency(
+ObservableResultList ObservableService::computeDVCSObservable(
         DVCSModule* pDVCSModule, Observable* pObservable,
-        ObservableKinematic observableKinematic,
-        DVCSConvolCoeffFunctionResult dvcsConvolCoeffFunctionResult) {
+        const ObservableKinematic &observableKinematic,
+        DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule) {
 
-    std::map<double, double> results;
-    std::vector<double> listOfPhi = observableKinematic.getListOfPhi();
+    pDVCSModule->setDVCSConvolCoeffFunctionModule(
+            pDVCSConvolCoeffFunctionModule);
+    pObservable->setDVCSModule(pDVCSModule);
 
-    for (unsigned int i = 0; i != listOfPhi.size(); i++) {
-
-        results.insert(
-                std::pair<double, double>(listOfPhi[i],
-                        pDVCSModule->computeWithPhiDependency(
-                                observableKinematic.getXB(),
-                                observableKinematic.getT(),
-                                observableKinematic.getQ2(), listOfPhi[i],
-                                dvcsConvolCoeffFunctionResult, pObservable)));
-    }
-
-    return results;
+    return pObservable->compute(observableKinematic.getXB(),
+            observableKinematic.getT(), observableKinematic.getQ2(),
+            observableKinematic.getListOfPhi());
 }
 
 //TODO implement all function

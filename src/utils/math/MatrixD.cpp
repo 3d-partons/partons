@@ -35,7 +35,7 @@ m_colLength = other.m_colLength;
 MatrixD::~MatrixD() {
 }
 
-VectorD MatrixD::operator*(const VectorD& rhs) {
+NumA::VectorD MatrixD::operator*(const NumA::VectorD& rhs) {
 
 // test vector's size and matrix's size
 if (rhs.size() != m_rowLength) {
@@ -44,7 +44,7 @@ if (rhs.size() != m_rowLength) {
                     << " does not match matrix size = " << m_rowLength);
 }
 
-VectorD result(rhs.size(), 0.0);
+NumA::VectorD result(rhs.size(), 0.0);
 
 for (unsigned i = 0; i < m_rowLength; i++) {
     for (unsigned j = 0; j < m_colLength; j++) {
@@ -60,8 +60,7 @@ return result;
 //	return result;
 //}
 
-void MatrixD::update(const size_t i, const size_t j,
-    const double value) {
+void MatrixD::update(const size_t i, const size_t j, const double value) {
 if (i > m_rowLength || j > m_colLength) {
     throw std::runtime_error(
             Formatter()
@@ -87,7 +86,7 @@ for (unsigned int i = 0; i < m_matrix.size(); i++) {
 return formatter.str();
 }
 
-VectorD MatrixD::getLine(const size_t lineIndex) {
+NumA::VectorD MatrixD::getLine(const size_t lineIndex) {
 if (lineIndex >= m_matrix.size()) {
     //TODO print more information
     throw std::runtime_error("[MatrixD::getLine] lineIndex is out of bound");

@@ -1,0 +1,51 @@
+#include "ObservableResult.h"
+
+#include <sstream>
+
+ObservableResult::ObservableResult() :
+        m_phi(0.), m_value(0.) {
+}
+
+ObservableResult::ObservableResult(double value) :
+        m_phi(0.), m_value(value) {
+}
+
+ObservableResult::ObservableResult(double phi, double value) :
+        m_phi(phi), m_value(value) {
+}
+
+ObservableResult::~ObservableResult() {
+    // TODO Auto-generated destructor stub
+}
+
+void ObservableResult::setPhi(double phi) {
+    m_phi = phi;
+}
+
+void ObservableResult::setKinematic(const ObservableKinematic &kinematic) {
+    m_kinematic = kinematic;
+}
+
+void ObservableResult::setStatError(const ErrorBar& statError) {
+    m_statError = statError;
+}
+
+void ObservableResult::setSystError(const ErrorBar& systError) {
+    m_systError = systError;
+}
+
+void ObservableResult::setTotalError(double totalError) {
+    m_totalError = totalError;
+}
+
+void ObservableResult::setValue(double value) {
+    m_value = value;
+}
+
+std::string ObservableResult::toString() {
+    std::ostringstream os;
+
+    os << "phi(°) = " << m_phi << " - observable = " << m_value;
+
+    return os.str();
+}

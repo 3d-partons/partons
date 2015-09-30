@@ -25,7 +25,7 @@ public:
      */
     virtual AluObservable* clone() const;
 
-    double compute(DVCSModule* pDVCSModule);
+    virtual double compute(ObservableModule* pDVCSModule, double phi);
 
 private:
 };

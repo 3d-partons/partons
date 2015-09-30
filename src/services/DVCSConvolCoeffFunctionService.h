@@ -41,8 +41,7 @@ public:
     virtual DVCSConvolCoeffFunctionResult computeWithGPDModel(
             DVCSConvolCoeffFunctionModule* dvcsConvolCoeffFunctionModule,
             GPDModule* _pGPDModule, DVCSConvolCoeffFunctionKinematic &kinematic,
-            PerturbativeQCDOrderType::Type qcdOrderType, GPDType::Type gpdType =
-                    GPDType::ALL);
+            GPDType::Type gpdType = GPDType::ALL);
 
     virtual DVCSConvolCoeffFunctionResult computeWithCFFModel(
             DVCSConvolCoeffFunctionModule* dvcsConvolCoeffFunctionModule,

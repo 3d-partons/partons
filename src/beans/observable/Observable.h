@@ -13,14 +13,20 @@
  */
 
 #include <string>
+#include <vector>
 
 #include "../../modules/observable/DVCSModule.h"
 #include "../../utils/vector/Vector3D.h"
 #include "ObservableChannel.h"
+#include "ObservableType.h"
+
+class ObservableResultList;
 
 class Observable: public BaseObject {
 
 public:
+    Observable(const std::string &className);
+
     /**
      * Default destructor
      */
@@ -35,7 +41,8 @@ public:
     typedef double (DVCSModule::*computeCrossSection)(double beamHelicity,
             double beamCharge, Vector3D targetPolarization);
 
-    virtual double compute(DVCSModule* pDVCSModule) = 0;
+    ObservableResultList compute(double xB, double t, double Q2,
+            std::vector<double> listOfPhi);
 
 // ##### GETTERS & SETTERS #####
 
@@ -45,11 +52,10 @@ public:
     void setBeamHelicity(double beamHelicity);
     const Vector3D& getTargetPolarization() const;
     void setTargetPolarization(const Vector3D& targetPolarization);
+    const ObservableModule* getDVCSModule() const;
+    void setDVCSModule(ObservableModule* pDVCSModule);
 
 protected:
-    Observable(const std::string &className, ObservableChannel::Type channel,
-            double beamHelicity, double beamCharge,
-            Vector3D targetPolarization);
 
     /**
      * Copy constructor
@@ -60,13 +66,19 @@ protected:
      */
     Observable(const Observable& other);
 
-private:
+    ObservableModule* m_pDVCSModule;
+
     //TODO doc
     ObservableChannel::Type m_channel;
+    ObservableType::Type m_observableType;
 
     double m_beamHelicity;
     double m_beamCharge;
+
     Vector3D m_targetPolarization;
+
+    virtual double compute(ObservableModule* pDVCSModule, double phi);
+    virtual double compute();
 };
 
 #endif /* OBSERVABLE_H */

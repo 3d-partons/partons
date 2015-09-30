@@ -1,22 +1,9 @@
-/*
- * ParameterList.cpp
- *
- *  Created on: Jul 3, 2015
- *      Author: debian
- */
-
 #include "ParameterList.h"
 
-#include <utility>
+#include "stringUtils/Formatter.h"
 
 ParameterList::ParameterList() :
         BaseObject("ParameterList") {
-}
-
-ParameterList::ParameterList(const std::string& parameterName,
-        const std::string& parameterValue) :
-        BaseObject("ParameterList") {
-    add(parameterName, parameterValue);
 }
 
 ParameterList::~ParameterList() {
@@ -38,9 +25,25 @@ size_t ParameterList::size() {
     return m_parameters.size();
 }
 
-void ParameterList::add(const std::string& parameterName,
-        const std::string& parameterValue) {
-    m_parameters.insert(
-            std::make_pair(parameterName, GenericType(parameterValue)));
+bool ParameterList::isAvailable(const std::string& parameterName) {
+    m_it = m_parameters.find(parameterName);
+
+    return (m_it != m_parameters.end()) ? true : false;
 }
 
+GenericType ParameterList::getLastAvailable() const {
+    return m_it->second;
+}
+
+std::string ParameterList::toString() const {
+    Formatter formatter;
+
+    formatter << "[ParameterList::toString()]" << '\n';
+
+    for (std::map<std::string, GenericType>::const_iterator it =
+            m_parameters.begin(); it != m_parameters.end(); it++) {
+        formatter << (it->first) << " = " << (it->second).toString() << '\n';
+    }
+
+    return formatter.str();
+}

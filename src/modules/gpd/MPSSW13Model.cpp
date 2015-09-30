@@ -120,6 +120,7 @@ void MPSSW13Model::setParameters(std::vector<double> Parameters) {
 }
 
 void MPSSW13Model::ComputeDTerms() {
+    //TODO divided by zero !
     double z = m_x / m_xi;
 
     const double Mu0 = 0.6; // Reference scale (in GeV)
@@ -980,7 +981,7 @@ double MPSSW13Model::GammaGG(const unsigned int nflavour,
 //TODO meme initialisation que GK11 ?
 void MPSSW13Model::initModule() {
     GPDModule::initModule();
-    
+
     m_pLoggerManager->debug(getClassName(), __func__,
             Formatter() << "fMuF2 = " << m_MuF2);
 }

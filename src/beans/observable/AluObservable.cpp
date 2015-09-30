@@ -1,14 +1,10 @@
 #include "AluObservable.h"
 
-#include <typeinfo>
-
-#include "../../modules/observable/DVCSModule.h"
+#include "../../modules/ObservableModule.h"
 #include "../../utils/vector/Vector3D.h"
-#include "ObservableChannel.h"
 
-AluObservable::AluObservable()
-        : Observable(typeid(*this).name(), ObservableChannel::DVCS, 0., 0.,
-                Vector3D(0., 0., 0.)) {
+AluObservable::AluObservable() :
+        Observable("AluObservable") {
 }
 
 AluObservable::~AluObservable() {
@@ -18,11 +14,15 @@ AluObservable* AluObservable::clone() const {
     return new AluObservable(*this);
 }
 
-double AluObservable::compute(DVCSModule* pDVCSModule) {
-    double result = (pDVCSModule->computeCrossSection(+1, -1, Vector3D(0., 0., 0.))
-            - pDVCSModule->computeCrossSection(-1, -1, Vector3D(0., 0., 0.)))
-            / (pDVCSModule->computeCrossSection(+1, -1, Vector3D(0., 0., 0.))
+//TODO vérifier
+double AluObservable::compute(ObservableModule* pDVCSModule, double phi) {
+    double result = (pDVCSModule->computeCrossSection(+1, -1,
+            Vector3D(0., 0., 0.), phi)
+            - pDVCSModule->computeCrossSection(-1, -1, Vector3D(0., 0., 0.),
+                    phi))
+            / (pDVCSModule->computeCrossSection(+1, -1, Vector3D(0., 0., 0.),
+                    phi)
                     + pDVCSModule->computeCrossSection(-1, -1,
-                            Vector3D(0., 0., 0.)));
+                            Vector3D(0., 0., 0.), phi));
     return result;
 }

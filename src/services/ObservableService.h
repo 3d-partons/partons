@@ -12,15 +12,15 @@
  * @brief \<singleton\> Use for handle and compute some pre-configured CFF modules.
  */
 
-#include <map>
 #include <string>
 
-#include "../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
 #include "../ServiceObject.h"
 
+class DVCSConvolCoeffFunctionModule;
 class DVCSModule;
 class Observable;
 class ObservableKinematic;
+class ObservableResultList;
 
 class ObservableService: public ServiceObject {
 public:
@@ -36,10 +36,10 @@ public:
      */
     virtual ~ObservableService();
 
-    std::map<double, double> computeDVCSObservableWithPhiDependency(
-            DVCSModule* pDVCSModule, Observable* pObservable,
-            ObservableKinematic observableKinematic,
-            DVCSConvolCoeffFunctionResult dvcsConvolCoeffFunctionResult);
+    ObservableResultList computeDVCSObservable(DVCSModule* pDVCSModule,
+            Observable* pObservable,
+            const ObservableKinematic &observableKinematic,
+            DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule);
 
     virtual void computeTask(const Task &task);
 

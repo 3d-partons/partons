@@ -30,7 +30,6 @@ BaseObject::~BaseObject() {
     BaseObjectFactory::getInstance()->removeFromStore(getObjectId());
 }
 
-// TODO replace all throw exception by this function call
 void BaseObject::throwException(const std::string functionName,
         const std::string errorMessage) const {
     if (m_pLoggerManager != 0) {
@@ -45,7 +44,7 @@ void BaseObject::init() {
 
 }
 
-std::string BaseObject::toString() {
+std::string BaseObject::toString() const {
     return Formatter() << "m_className = " << m_className << " - "
             << "m_objectId = " << m_objectId;
 }

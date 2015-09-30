@@ -10,9 +10,11 @@
 #include "../utils/stringUtils/Formatter.h"
 #include "evolution/GPDEvolutionModule.h"
 
+const std::string GPDModule::GPD_TYPE = "GPD_MODULE_GPD_TYPE";
+
 GPDModule::GPDModule(const std::string &className) :
         ModuleObject(className), m_x(0.), m_xi(0.), m_t(0.), m_MuF2(0.), m_MuR2(
-                0.), m_gpdType(GPDType::UNDEFINED), m_MuF2_ref(0.), m_nf(0), m_pGPDEvolutionModule(
+                0.), m_gpdType(GPDType::ALL), m_MuF2_ref(0.), m_nf(0), m_pGPDEvolutionModule(
                 0) {
 }
 
@@ -51,9 +53,10 @@ GPDModule::~GPDModule() {
 }
 
 void GPDModule::configure(ParameterList parameters) {
-    //TODO replace hard coded string by static const string
-    m_MuF2_ref = (parameters.get("Mu2Ref")).getDouble();
-
+    if (parameters.isAvailable(GPDModule::GPD_TYPE)) {
+        m_gpdType =
+                static_cast<GPDType::Type>(parameters.getLastAvailable().toUInt());
+    }
 }
 
 //TODO implement
@@ -114,8 +117,8 @@ GPDResult GPDModule::compute(double x, double xi, double t, double MuF2,
             PartonDistribution partonDistribution;
 
             if (evolution) {
-                partonDistribution = m_pGPDEvolutionModule->compute(m_x, m_xi, m_t,
-                        m_MuF2, m_MuR2, this, (m_it->first));
+                partonDistribution = m_pGPDEvolutionModule->compute(m_x, m_xi,
+                        m_t, m_MuF2, m_MuR2, this, (m_it->first));
             } else {
                 partonDistribution = ((*this).*(m_it->second))();
             }
@@ -130,8 +133,8 @@ GPDResult GPDModule::compute(double x, double xi, double t, double MuF2,
             PartonDistribution partonDistribution;
 
             if (evolution) {
-                partonDistribution = m_pGPDEvolutionModule->compute(m_x, m_xi, m_t,
-                        m_MuF2, m_MuR2, this, (m_it->first));
+                partonDistribution = m_pGPDEvolutionModule->compute(m_x, m_xi,
+                        m_t, m_MuF2, m_MuR2, this, (m_it->first));
             } else {
                 partonDistribution = ((*this).*(m_it->second))();
             }

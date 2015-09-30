@@ -2,6 +2,7 @@
 
 #include <algorithm>
 
+#include "../utils/logger/LoggerManager.h"
 #include "../utils/stringUtils/Formatter.h"
 
 ActiveFlavorsModule::ActiveFlavorsModule(const std::string &className) :
@@ -68,6 +69,9 @@ std::vector<NfInterval> ActiveFlavorsModule::getNfIntervals(double MuMin,
 
     // case MuMin > MuMax
     if (MuMin > MuMax) {
+        m_pLoggerManager->warn(getClassName(), __func__,
+                "MuMin > MuMax : threshold suppressed by overriding lower bound and upper bound ; nf will be constant");
+
         NfInterval nfInterval = getNfInterval(MuMin);
         // delete thresholds by overriding lowerBound & upperBound
         // and swap lowerBound & upperBound value to perform backward evolution later in the code with math integration

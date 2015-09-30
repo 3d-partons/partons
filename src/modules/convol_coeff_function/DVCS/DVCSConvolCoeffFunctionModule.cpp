@@ -5,11 +5,18 @@
 
 #include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
 #include "../../../ModuleObjectFactory.h"
+#include "../../../utils/GenericType.h"
 #include "../../../utils/logger/LoggerManager.h"
+#include "../../../utils/ParameterList.h"
 #include "../../../utils/stringUtils/Formatter.h"
 #include "../../active_flavors/NfFunctionExample.h"
 #include "../../GPDModule.h"
 #include "../../RunningAlphaStrongModule.h"
+
+const std::string DVCSConvolCoeffFunctionModule::GPD_MODULE_ID =
+        "DVCS_CONVOL_COEFF_FUNCTION_GPD_MODULE_ID";
+const std::string DVCSConvolCoeffFunctionModule::QCD_ORDER_TYPE =
+        "DVCS_CONVOL_COEFF_FUNCTION_QCD_ORDER_TYPE";
 
 DVCSConvolCoeffFunctionModule::DVCSConvolCoeffFunctionModule(
         const std::string &className) :
@@ -136,7 +143,7 @@ DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionModule::compute(
                     Formatter() << "m_currentGPDComputeType = "
                             << GPDType(m_currentGPDComputeType).toString());
 
-            // call function store in the base class map
+            // call function storef in the base class map
             dvcsConvolCoeffFunctionResult.add(m_currentGPDComputeType,
                     ((*this).*(m_it->second))());
         }
@@ -146,11 +153,14 @@ DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionModule::compute(
         m_it = m_listOfCFFComputeFunctionAvailable.find(m_gpdType);
         if (m_it != m_listOfCFFComputeFunctionAvailable.end()) {
             m_currentGPDComputeType = m_gpdType;
-            // call function store in the base class map
+            // call function storef in the base class map
             dvcsConvolCoeffFunctionResult.add(m_currentGPDComputeType,
                     ((*this).*(m_it->second))());
         } else {
-            //TODO throw an exception : can't compute this
+            throwException(__func__,
+                    Formatter()
+                            << "Cannot run computation for this value of GPDType = "
+                            << GPDType(m_gpdType).toString());
         }
         break;
     }
@@ -209,3 +219,16 @@ void DVCSConvolCoeffFunctionModule::setQCDOrderType(
     m_qcdOrderType = qcdOrderType;
 }
 
+void DVCSConvolCoeffFunctionModule::configure(ParameterList parameters) {
+    //TODO propager la configuration aussi vers le parent ; il se peut que ce soit lui qui porte le membre à configurer et non l'enfant !
+    ConvolCoeffFunctionModule::configure(parameters);
+
+    if (parameters.isAvailable(DVCSConvolCoeffFunctionModule::GPD_MODULE_ID)) {
+        m_pGPDModule = ModuleObjectFactory::newGPDModule(
+                parameters.getLastAvailable().toUInt());
+    }
+    if (parameters.isAvailable(DVCSConvolCoeffFunctionModule::QCD_ORDER_TYPE)) {
+        m_qcdOrderType =
+                static_cast<PerturbativeQCDOrderType::Type>(parameters.getLastAvailable().toUInt());
+    }
+}

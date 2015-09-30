@@ -1,34 +1,22 @@
-/*---------------------------------------- TGV.h ---------------------------------------*
- |                                                                                      |
- | Author : H. Moutarde (CEA-Saclay, IRFU/SPhN).                                        |
- | v1.3, July, 25th 2008.                                                               |
- |                                                                                      |
- | Computation of the differential cross sections of the Bethe-Heitler and Deeply       |
- | Virtual Compton Scattering processes (and also of the interference of the two        |
- | processes).                                                                          |
- |                                                                                      |
- | The formulas are derived from a Mathematica package written by P. Guichon            |
- | (CEA-Saclay, IRFU/SPhN) and M. Vanderhaegen (W&M College), see arXiv:0808.????       |
- |                                                                                      | 
- | This library is not standalone, since some Root librairies are necessary.            |
- |                                                                                      |
- | All expressions are written in a class named TGV.                                    | 
- |                                                                                      |
- *--------------------------------------------------------------------------------------*/
-
-/*------------------------------ Compilation of the class ------------------------------*/
-
-#ifndef GV_2008_MODEL // Checks that the class is compiled only once
+#ifndef GV_2008_MODEL
 #define GV_2008_MODEL
+
+/**
+ * @file GV2008Model.h
+ * @author Hervé MOUTARDE (SPhN / CEA Saclay)
+ * @date unknow
+ * @version 1.0
+ *
+ * @class GV2008Model
+ *
+ * @brief 25-09-2015 (Bryan BERTHOU) : refactoring
+ */
 
 #include <string>
 #include <vector>
 
-#include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
 #include "../../../utils/vector/Vector4D.h"
 #include "../DVCSModule.h"
-
-/*------------------------------ Definition of the class TGV ---------------------------*/
 
 class GV2008Model: public DVCSModule {
 public:
@@ -39,27 +27,16 @@ public:
 
     virtual GV2008Model* clone() const;
 
-    virtual void initModule();
-    virtual void isModuleWellConfigured();
-
-    virtual double computeWithPhiDependency(double xB, double t, double Q2,
-            double phi,
-            DVCSConvolCoeffFunctionResult dvcsConvolCoeffFunctionResult,
-            Observable* pObservable);
-
-    virtual double computeCrossSection(double beamHelicity, double beamCharge,
-            Vector3D targetPolarization);
-
     // Cross sections
-    double CrossSectionBH(double beamHelicity, double beamCharge,
+    virtual double CrossSectionBH(double beamHelicity, double beamCharge,
             Vector3D targetPolarization);
     // Bethe Heitler cross section
 
-    double CrossSectionVCS(double beamHelicity, double beamCharge,
+    virtual double CrossSectionVCS(double beamHelicity, double beamCharge,
             Vector3D targetPolarization);
     // Virtual Compton Scattering cross section
 
-    double CrossSectionInterf(double beamHelicity, double beamCharge,
+    virtual double CrossSectionInterf(double beamHelicity, double beamCharge,
             Vector3D targetPolarization);
     // Interference cross section
 
@@ -72,6 +49,9 @@ protected:
      * @param other
      */
     GV2008Model(const GV2008Model& other);
+
+    virtual void initModule();
+    virtual void isModuleWellConfigured();
 
 private:
 
@@ -100,16 +80,6 @@ private:
     // Printouts
     bool Validation;
     bool NoPrint;
-
-    // Initialisation flags
-
-    bool InitBeamEnergy;
-    bool InitKinematics;
-    bool InitMvcs;
-    bool InitExactBHCrossSections;
-    bool InitExactVCSAndInterfCrossSections;
-    bool InitLeadingBHCrossSections;
-    bool InitLeadingVCSAndInterfCrossSections;
 
     /*---------------------------------------- Kinematics ----------------------------------*/
 
@@ -192,7 +162,6 @@ private:
     void MakeVCSHelicityAmplitudes();
 
 };
-// end of the TGV class definition
 
 #endif /* GV_2008_MODEL */
 

@@ -29,11 +29,10 @@ void DVCSConvolCoeffFunctionService::computeTask(const Task &task) {
 DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionService::computeWithGPDModel(
         DVCSConvolCoeffFunctionModule* dvcsConvolCoeffFunctionModule,
         GPDModule* _pGPDModule, DVCSConvolCoeffFunctionKinematic &kinematic,
-        PerturbativeQCDOrderType::Type qcdOrderType, GPDType::Type gpdType) {
+        GPDType::Type gpdType) {
 
     // Configure cff module
     dvcsConvolCoeffFunctionModule->setGPDModule(_pGPDModule);
-    dvcsConvolCoeffFunctionModule->setQCDOrderType(qcdOrderType);
 
     //TODO call with xi no xB ?
     DVCSConvolCoeffFunctionResult result =

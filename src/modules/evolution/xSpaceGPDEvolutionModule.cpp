@@ -3,7 +3,6 @@
 #include <NumA/MathIntegrator.h>
 
 #include "../../beans/active_flavors/NfInterval.h"
-#include "../../utils/vector/VectorD.h"
 
 xSpaceGPDEvolutionModule::xSpaceGPDEvolutionModule(const std::string &className) :
         GPDEvolutionModule(className), MathIntegratorModule() {

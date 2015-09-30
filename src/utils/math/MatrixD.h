@@ -11,11 +11,10 @@
  * @brief Represents a two-dimensional array of double.
  */
 
+#include <NumA/linear_algebra/VectorD.h>
 #include <stddef.h>
 #include <string>
 #include <vector>
-
-#include "../vector/VectorD.h"
 
 class MatrixD {
 public:
@@ -26,10 +25,10 @@ public:
     MatrixD();
 
     /**
-     * Create matrix with specific dimension and fill it with given values.
+     * Create matrix with specific dimension and fill it with given values separate by comma.
      *
-     * @param _rows : row length
-     * @param _cols : column length
+     * @param _rowLength : row length
+     * @param _colLength : column length
      */
     MatrixD(const size_t _rowLength, const size_t _colLength, ...);
 
@@ -45,10 +44,10 @@ public:
      */
     virtual ~MatrixD();
 
-    VectorD getLine(const size_t lineIndex);
+    NumA::VectorD getLine(const size_t lineIndex);
 
     // Matrix/vector operations
-    VectorD operator*(const VectorD& rhs);
+    NumA::VectorD operator*(const NumA::VectorD& rhs);
     //std::vector<double> operator*=(const std::vector<double>& rhs);
 
     /**
@@ -70,7 +69,7 @@ public:
     // ##### GETTERS & SETTERS #####
 
 private:
-    std::vector<VectorD> m_matrix; ///< two-dimensional array of double for represent a matrix
+    std::vector<NumA::VectorD> m_matrix; ///< an array of VectorD to represent the matrix
     size_t m_rowLength;    ///< row length
     size_t m_colLength;    ///< column length
 };

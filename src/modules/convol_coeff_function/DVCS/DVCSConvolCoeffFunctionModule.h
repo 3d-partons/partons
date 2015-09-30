@@ -21,17 +21,21 @@
 #include "../../ConvolCoeffFunctionModule.h"
 
 class ActiveFlavorsModule;
-
 class DVCSConvolCoeffFunctionResult;
 class GPDModule;
 class RunningAlphaStrongModule;
 
 class DVCSConvolCoeffFunctionModule: public ConvolCoeffFunctionModule {
 public:
+    static const std::string GPD_MODULE_ID;
+    static const std::string QCD_ORDER_TYPE;
+
     DVCSConvolCoeffFunctionModule(const std::string &className);
     virtual ~DVCSConvolCoeffFunctionModule();
 
     virtual void init();
+
+    virtual void configure(ParameterList parameters);
 
     virtual DVCSConvolCoeffFunctionResult compute(double xi, double t,
             double Q2, double MuF2, double MuR2, GPDType::Type gpdType);

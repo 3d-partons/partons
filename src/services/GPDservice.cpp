@@ -10,6 +10,7 @@
 #include "../BaseObjectRegistry.h"
 #include "../modules/gpd/GK11Model.h"
 #include "../ModuleObjectFactory.h"
+#include "../utils/ParameterList.h"
 #include "../utils/stringUtils/StringUtils.h"
 #include "GPDService.h"
 
@@ -32,8 +33,12 @@ GPDService::~GPDService() {
 //TODO supprimer les pojnteurs membres de la classe GPDService
 void GPDService::computeTask(const Task &task) {
 
+    std::cerr << (task.getParameterList("GPDKinematic").toString())
+            << std::endl;
+
     if (StringUtils::equals(task.getFunctionName(),
             GPDService::GPD_SERVICE_COMPUTE_GPD_MODEL)) {
+        //create a GPDKinematic and init it with a list of parameters
         GPDKinematic gpdKinematic = GPDKinematic(
                 task.getParameterList("GPDKinematic"));
 

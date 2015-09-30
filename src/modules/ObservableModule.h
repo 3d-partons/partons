@@ -16,6 +16,8 @@
 
 #include "../ModuleObject.h"
 
+class Vector3D;
+
 class ObservableModule: public ModuleObject {
 public:
     /**
@@ -29,6 +31,12 @@ public:
      * Default destructor
      */
     virtual ~ObservableModule();
+
+    virtual void computeConvolCoeffFunction(double xB, double t, double Q2,
+            double MuF2, double MuR2) = 0;
+
+    virtual double computeCrossSection(double beamHelicity, double beamCharge,
+            Vector3D targetPolarization, double phi) = 0;
 
 protected:
     /**

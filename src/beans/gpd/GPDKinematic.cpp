@@ -1,14 +1,16 @@
 #include "GPDKinematic.h"
 
+#include <stdexcept>
+
 #include "../../utils/GenericType.h"
 #include "../../utils/ParameterList.h"
 #include "../../utils/stringUtils/Formatter.h"
 
-const std::string GPDKinematic::GPD_KINEMATIC_DB_COLUMN_NAME_X = "x";
-const std::string GPDKinematic::GPD_KINEMATIC_DB_COLUMN_NAME_XI = "xi";
-const std::string GPDKinematic::GPD_KINEMATIC_DB_COLUMN_NAME_T = "t";
-const std::string GPDKinematic::GPD_KINEMATIC_DB_COLUMN_NAME_MUF2 = "MuF2";
-const std::string GPDKinematic::GPD_KINEMATIC_DB_COLUMN_NAME_MUR2 = "MuR2";
+const std::string GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_X = "x";
+const std::string GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI = "xi";
+const std::string GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_T = "t";
+const std::string GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUF2 = "MuF2";
+const std::string GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUR2 = "MuR2";
 
 GPDKinematic::GPDKinematic() :
         m_kinematicType(KinematicType::THEO), m_x(0.), m_xi(0.), m_t(0.), m_MuF2(
@@ -22,14 +24,29 @@ GPDKinematic::GPDKinematic(double x, double xi, double t, double MuF2,
 }
 
 GPDKinematic::GPDKinematic(const ParameterList &parameterList) :
-        m_kinematicType(KinematicType::THEO), m_x(
-                (parameterList.get(GPDKinematic::GPD_KINEMATIC_DB_COLUMN_NAME_X)).getDouble()), m_xi(
-                parameterList.get(GPDKinematic::GPD_KINEMATIC_DB_COLUMN_NAME_XI).getDouble()), m_t(
-                parameterList.get(GPDKinematic::GPD_KINEMATIC_DB_COLUMN_NAME_T).getDouble()), m_MuF2(
-                parameterList.get(
-                        GPDKinematic::GPD_KINEMATIC_DB_COLUMN_NAME_MUF2).getDouble()), m_MuR2(
-                parameterList.get(
-                        GPDKinematic::GPD_KINEMATIC_DB_COLUMN_NAME_MUR2).getDouble()) {
+        m_kinematicType(KinematicType::THEO) {
+
+    try {
+        m_x =
+                (parameterList.get(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_X)).toDouble();
+        m_xi =
+                parameterList.get(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI).toDouble();
+        m_t =
+                parameterList.get(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_T).toDouble();
+        m_MuF2 = parameterList.get(
+                GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUF2).toDouble();
+        m_MuR2 = parameterList.get(
+                GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUR2).toDouble();
+    } catch (std::exception &e) {
+
+        //TODO refactoring throw exception from BaseObject class
+
+        //catch exception and add current class name to follow exception
+        std::string errorMsg =
+                "[GPDKinematic::GPDKinematic(const ParameterList &parameterList)]"
+                        + std::string(e.what());
+        throw std::runtime_error(errorMsg);
+    }
 }
 
 GPDKinematic::~GPDKinematic() {

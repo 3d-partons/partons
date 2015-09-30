@@ -22,10 +22,10 @@ GPDType::GPDType(const GPDType &other) {
     m_type = other.m_type;
 }
 
-//TODO replace hardcoded GPDType
-GPDType::GPDType(const ParameterList& parameters) :
-        m_type(GPDType::fromString(parameters.get("GPDType").getString())) {
-}
+////TODO replace hardcoded GPDType
+//GPDType::GPDType(const ParameterList& parameters) :
+//        m_type(GPDType::fromString(parameters.get("GPDType").toString())) {
+//}
 
 GPDType::operator GPDType::Type() const {
     return m_type;

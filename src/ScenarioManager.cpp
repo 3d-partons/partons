@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include "beans/gpd/GPDKinematic.h"
 #include "ServiceObject.h"
 #include "ServiceObjectRegistry.h"
 #include "utils/parser/xml/Attributs.h"
@@ -87,15 +88,28 @@ void ScenarioManager::startElement(const std::string &elementName,
         m_task.setFunctionName(attributes.getStringValueOf("method"));
     }
 
+    //TODO replace hardcoded parameter name lot of error in parsing parameters later !!!!
     if (StringUtils::equals(elementName, "GPDKinematic")) {
-        m_task.addParameter(elementName, "x", attributes.getStringValueOf("x"));
-        m_task.addParameter(elementName, "xi",
-                attributes.getStringValueOf("xB"));
-        m_task.addParameter(elementName, "t", attributes.getStringValueOf("t"));
-        m_task.addParameter(elementName, "MuF",
-                attributes.getStringValueOf("MuF2"));
-        m_task.addParameter(elementName, "MuR",
-                attributes.getStringValueOf("MuR2"));
+        m_task.addParameter(elementName,
+                GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_X,
+                attributes.getStringValueOf(
+                        GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_X));
+        m_task.addParameter(elementName,
+                GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI,
+                attributes.getStringValueOf(
+                        GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI));
+        m_task.addParameter(elementName,
+                GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_T,
+                attributes.getStringValueOf(
+                        GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_T));
+        m_task.addParameter(elementName,
+                GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUF2,
+                attributes.getStringValueOf(
+                        GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUF2));
+        m_task.addParameter(elementName,
+                GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUR2,
+                attributes.getStringValueOf(
+                        GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUR2));
 
         //TODO quand est-ce que l'on fait la conversion des données utilisateurs vers les services ?
         //TODO comment selectionne-t-on la bonne conversion xB to xi ?

@@ -26,11 +26,11 @@ public:
 
     static std::string EMPTY;
 
-    /*!
-     * \fn static bool isEmpty(const std::string & str)
-     * \brief Test si la chaine de caracteres cible est NULL ou vide ""
-     * \param _chaine : chaine de caracteres a tester
-     * \return bool
+    /**
+     * @fn static bool isEmpty(const std::string & str)
+     * @brief Test si la chaine de caracteres cible est NULL ou vide ""
+     * @param str : chaine de caracteres a tester
+     * @return bool
      */
     static bool isEmpty(const std::string & str);
 
@@ -121,7 +121,7 @@ public:
     static std::pair<std::string, std::vector<char> > fromStringToArrayOfChar(
             const std::string &string);
 
-   static std::string removeAfterLast(const std::string &chaine,
+    static std::string removeAfterLast(const std::string &chaine,
             const char lastCharacter);
 };
 

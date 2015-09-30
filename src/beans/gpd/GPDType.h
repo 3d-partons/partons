@@ -30,7 +30,7 @@ public:
 
     GPDType(Type type);
 
-    GPDType(const ParameterList &parameters);
+//    GPDType(const ParameterList &parameters);
 
     /**
      * Copy constructor

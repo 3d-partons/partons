@@ -9,12 +9,16 @@
 #include "../../beans/parton_distribution/PartonDistribution.h"
 #include "../../beans/parton_distribution/QuarkDistribution.h"
 #include "../../ModuleObjectFactory.h"
+#include "../../utils/GenericType.h"
 #include "../../utils/logger/LoggerManager.h"
 #include "../../utils/math/MatrixD.h"
+#include "../../utils/ParameterList.h"
 #include "../../utils/stringUtils/Formatter.h"
 #include "../active_flavors/NfFunctionExample.h"
 #include "../alphaS/RunningAlphaStrong.h"
 #include "../GPDModule.h"
+
+const std::string GPDEvolutionModule::QCD_ORDER_TYPE = "QCD_ORDER_TYPE";
 
 MatrixD GPDEvolutionModule::conversionMatrix1(3, 3,  //
         1., 0., 0.,                             //
@@ -310,7 +314,7 @@ bool GPDEvolutionModule::isAbsoluteTest(double MuF2, double MuF2_ref) {
 }
 
 //TODO ajouter les commentaires qui vont bien et les références au papier
-double GPDEvolutionModule::convertBasis(const VectorD &vectorToConvert,
+double GPDEvolutionModule::convertBasis(const NumA::VectorD &vectorToConvert,
         unsigned short currentNf, unsigned short nonSingletIndex) {
 
     double result;
@@ -354,10 +358,10 @@ double GPDEvolutionModule::convertBasis(const VectorD &vectorToConvert,
 }
 
 //TODO ajouter les commentaires qui vont bien et les références au papier
-VectorD GPDEvolutionModule::convertBasis(const VectorD &vectorToConvert,
-        unsigned short matrixNum) {
+NumA::VectorD GPDEvolutionModule::convertBasis(
+        const NumA::VectorD &vectorToConvert, unsigned short matrixNum) {
 
-    VectorD result;
+    NumA::VectorD result;
 
     switch (matrixNum) {
     case 1:
@@ -391,9 +395,9 @@ VectorD GPDEvolutionModule::convertBasis(const VectorD &vectorToConvert,
     return result;
 }
 
-VectorD GPDEvolutionModule::invertBasis(const VectorD &vectorToInvert,
-        unsigned short matrixNum) {
-    VectorD result;
+NumA::VectorD GPDEvolutionModule::invertBasis(
+        const NumA::VectorD &vectorToInvert, unsigned short matrixNum) {
+    NumA::VectorD result;
 
     switch (matrixNum) {
     case 1:
@@ -427,10 +431,10 @@ VectorD GPDEvolutionModule::invertBasis(const VectorD &vectorToInvert,
     return result;
 }
 
-VectorD GPDEvolutionModule::makeVectorOfGPDCombinations(
+NumA::VectorD GPDEvolutionModule::makeVectorOfGPDCombinations(
         const PartonDistribution &partonDistribution) {
 
-    VectorD vectorOfGPDCombinations;
+    NumA::VectorD vectorOfGPDCombinations;
 
     std::vector<QuarkDistribution> quarkDistributions =
             partonDistribution.getVectorOfQuarkDistribution();
@@ -612,7 +616,7 @@ void GPDEvolutionModule::computeSingletGluon(const NfInterval &nfInterval) {
 }
 
 void GPDEvolutionModule::resizeVectorOfGPDCombination(
-        VectorD &vectorOfGPDCombination, unsigned short nfInterval) {
+        NumA::VectorD &vectorOfGPDCombination, unsigned short nfInterval) {
 
     // -1 because first entry = gluon
     unsigned short nfGPDModel = (vectorOfGPDCombination.size() - 1) / 2;
@@ -640,13 +644,20 @@ double GPDEvolutionModule::nonSingletGPD(unsigned short nonSingletIndex,
             MuF2, m_MuR2, m_currentGPDComputeType).getPartonDistribution(
             m_currentGPDComputeType);
 
-    VectorD vectorOfQuarkDistribution = makeVectorOfGPDCombinations(
+    NumA::VectorD vectorOfQuarkDistribution = makeVectorOfGPDCombinations(
             partonDistribution);
 
     // compare nfInterval to nf of vector of GPD combination and resize vector of GPD combination
     resizeVectorOfGPDCombination(vectorOfQuarkDistribution, currentNf);
 
     return convertBasis(vectorOfQuarkDistribution, currentNf, nonSingletIndex);
+}
+
+void GPDEvolutionModule::configure(ParameterList parameters) {
+    if (parameters.isAvailable(GPDEvolutionModule::QCD_ORDER_TYPE)) {
+        m_qcdOrderType =
+                static_cast<PerturbativeQCDOrderType::Type>(parameters.getLastAvailable().toUInt());
+    }
 }
 //
 //double GPDEvolutionModule::nonSingletMuFDerivative(
