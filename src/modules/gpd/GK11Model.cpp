@@ -368,8 +368,8 @@ PartonDistribution GK11Model::computeHt() {
     }
 
     // Set Htq(+)
-    quarkDistribution_u.setQuarkDistributionPlus(uVal - fHuValMx);
-    quarkDistribution_d.setQuarkDistributionPlus(dVal - fHdValMx);
+    quarkDistribution_u.setQuarkDistributionPlus(uVal + fHtuValMx);
+    quarkDistribution_d.setQuarkDistributionPlus(dVal + fHtdValMx);
     quarkDistribution_s.setQuarkDistributionPlus(0.);
 
     partonDistribution.setGluonDistribution(gluonDistribution);
@@ -461,8 +461,8 @@ PartonDistribution GK11Model::computeE() {
     }
 
     // Set Eq(+)
-    quarkDistribution_u.setQuarkDistributionPlus(uVal - fHuValMx + 2 * uSea);
-    quarkDistribution_d.setQuarkDistributionPlus(dVal - fHdValMx + 2 * dSea);
+    quarkDistribution_u.setQuarkDistributionPlus(uVal - fEuValMx + 2 * uSea);
+    quarkDistribution_d.setQuarkDistributionPlus(dVal - fEdValMx + 2 * dSea);
     quarkDistribution_s.setQuarkDistributionPlus(
             2 * quarkDistribution_s.getQuarkDistribution());
 
