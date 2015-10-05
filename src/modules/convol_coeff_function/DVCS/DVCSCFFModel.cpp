@@ -920,7 +920,7 @@ std::complex<double> DVCSCFFModel::KernelQuarkNLOA(double x) {
     QuarkNLOA += LogOneMinusz / 2. - (3. / 4.);
     QuarkNLOA *= 2. * LogOneMinusz + 3.;
     QuarkNLOA += -(27. / 4.) - (1. - z) / (1. + z) * LogOneMinusz;
-    QuarkNLOA *= m_CF / 2. * (1. - z);
+    QuarkNLOA *= m_CF / (2. * (1. - z));
 
     return QuarkNLOA;
 }
