@@ -1,15 +1,24 @@
 #include "DVCSConvolCoeffFunctionService.h"
 
-#include "../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
+#include "../beans/automation/Task.h"
 #include "../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
 #include "../BaseObjectRegistry.h"
 #include "../modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
+#include "../modules/GPDModule.h"
+#include "../ModuleObjectFactory.h"
+#include "../utils/GenericType.h"
+#include "../utils/ParameterList.h"
+#include "../utils/stringUtils/Formatter.h"
+#include "../utils/stringUtils/StringUtils.h"
+
+const std::string DVCSConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_WITH_GPD_MODEL =
+        "computeWithGPDModel";
 
 // Initialise [class]::classId with a unique name.
 const unsigned int DVCSConvolCoeffFunctionService::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new DVCSConvolCoeffFunctionService(
-                        "CoefficientFunctionService"));
+                        "DVCSConvolCoeffFunctionService"));
 
 DVCSConvolCoeffFunctionService::DVCSConvolCoeffFunctionService(
         const std::string &className) :
@@ -21,8 +30,59 @@ DVCSConvolCoeffFunctionService::~DVCSConvolCoeffFunctionService() {
 }
 
 //TODO implement
-void DVCSConvolCoeffFunctionService::computeTask(const Task &task) {
+void DVCSConvolCoeffFunctionService::computeTask(Task &task) {
+    if (StringUtils::equals(task.getFunctionName(),
+            DVCSConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_WITH_GPD_MODEL)) {
 
+        //create a GPDKinematic and init it with a list of parameters
+        DVCSConvolCoeffFunctionKinematic kinematic;
+
+        if (task.isAvailableParameterList("DVCSConvolCoeffFunctionKinematic")) {
+            kinematic = DVCSConvolCoeffFunctionKinematic(
+                    task.getLastAvailableParameterList());
+        } else {
+            throwException(__func__,
+                    Formatter()
+                            << "Missing object : <DVCSConvolCoeffFunctionKinematic> for method "
+                            << task.getFunctionName());
+        }
+
+        GPDModule* pGPDModule = 0;
+
+        if (task.isAvailableParameterList("GPDModule")) {
+            pGPDModule = ModuleObjectFactory::newGPDModule(
+                    task.getLastAvailableParameterList().get("id").toString());
+            pGPDModule->configure(task.getLastAvailableParameterList());
+        } else {
+            throwException(__func__,
+                    Formatter() << "Missing object : <GPDModule> for method "
+                            << task.getFunctionName());
+        }
+
+        DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule = 0;
+
+        if (task.isAvailableParameterList("DVCSConvolCoeffFunctionModule")) {
+            pDVCSConvolCoeffFunctionModule =
+                    ModuleObjectFactory::newDVCSConvolCoeffFunctionModule(
+                            task.getLastAvailableParameterList().get("id").toString());
+            pDVCSConvolCoeffFunctionModule->configure(
+                    task.getLastAvailableParameterList());
+        } else {
+            throwException(__func__,
+                    Formatter()
+                            << "Missing object : <GPDEvolutionModule> for method "
+                            << task.getFunctionName());
+        }
+
+        DVCSConvolCoeffFunctionResult result = computeWithGPDModel(
+                pDVCSConvolCoeffFunctionModule, pGPDModule, kinematic);
+
+        info(__func__, Formatter() << result.toString());
+
+    } else {
+        throwException(__func__,
+                "unknown function name = " + task.getFunctionName());
+    }
 }
 
 //TODO implementer
@@ -89,7 +149,7 @@ DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionService::computeWithGPDMode
 //    } else {
 //        //TODO faire une classe FileException pour mettre en forme le message et utiliser le formatter
 //
-//        m_pLoggerManager->error(getClassName(), __func__,
+//        error( __func__,
 //                "UNREADABLE file: " + filePath);
 //
 //        throw std::runtime_error(
@@ -132,7 +192,7 @@ DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionService::computeWithGPDMode
 //    } else {
 //        //TODO faire une classe FileException pour mettre en forme le message et utiliser le formatter
 //
-//        m_pLoggerManager->error(getClassName(), __func__,
+//        error( __func__,
 //                "UNREADABLE file: " + filePath);
 //
 //        throw std::runtime_error(

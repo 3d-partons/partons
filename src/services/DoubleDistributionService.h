@@ -31,7 +31,7 @@ public:
      */
     virtual ~DoubleDistributionService();
 
-    virtual void computeTask(const Task &task);
+    virtual void computeTask(Task &task);
 
     DoubleDistributionResult compute(const DoubleDistributionKinematic &kinematic,
             DoubleDistributionModule* pDoubleDistributionModule);

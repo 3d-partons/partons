@@ -14,16 +14,16 @@
 
 #include <string>
 
+#include "../../BaseObject.h"
 #include "../kinematic/KinematicType.h"
 
 class ParameterList;
 
 //TODO add inheritance from BaseObject class
-class GPDKinematic {
+class GPDKinematic: public BaseObject {
 public:
     static const std::string GPD_KINEMATIC_PARAMETER_NAME_X;
     static const std::string GPD_KINEMATIC_PARAMETER_NAME_XI;
-    static const std::string GPD_KINEMATIC_PARAMETER_NAME_T;
     static const std::string GPD_KINEMATIC_PARAMETER_NAME_MUF2;
     static const std::string GPD_KINEMATIC_PARAMETER_NAME_MUR2;
 
@@ -43,7 +43,7 @@ public:
      */
     GPDKinematic(double x, double xi, double t, double MuF2, double MuR2);
 
-    GPDKinematic(const ParameterList &parameterList);
+    GPDKinematic(ParameterList &parameterList);
 
     /**
      * Default destructor

@@ -47,3 +47,7 @@ std::string ParameterList::toString() const {
 
     return formatter.str();
 }
+
+void ParameterList::clear() {
+    m_parameters.clear();
+}

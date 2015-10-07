@@ -14,6 +14,7 @@
 
 #include <string>
 
+#include "../beans/observable/ObservableKinematic.h"
 #include "../ServiceObject.h"
 
 class DVCSConvolCoeffFunctionModule;
@@ -24,6 +25,8 @@ class ObservableResultList;
 
 class ObservableService: public ServiceObject {
 public:
+    static const std::string FUNCTION_NAME_COMPUTE_DVCS_OBSERVABLE;
+
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
     /**
@@ -41,7 +44,7 @@ public:
             const ObservableKinematic &observableKinematic,
             DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule);
 
-    virtual void computeTask(const Task &task);
+    virtual void computeTask(Task &task);
 
 private:
 

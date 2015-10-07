@@ -1,4 +1,3 @@
-#include <iostream>
 #include <string>
 #include <vector>
 
@@ -8,13 +7,18 @@
 #include "../beans/gpd/GPDResultList.h"
 #include "../beans/gpd/GPDType.h"
 #include "../BaseObjectRegistry.h"
-#include "../modules/gpd/GK11Model.h"
+#include "../modules/evolution/GPDEvolutionModule.h"
+#include "../modules/GPDModule.h"
 #include "../ModuleObjectFactory.h"
+#include "../utils/GenericType.h"
 #include "../utils/ParameterList.h"
+#include "../utils/stringUtils/Formatter.h"
 #include "../utils/stringUtils/StringUtils.h"
 #include "GPDService.h"
 
 const std::string GPDService::GPD_SERVICE_COMPUTE_GPD_MODEL = "computeGPDModel";
+const std::string GPDService::GPD_SERVICE_COMPUTE_GPD_MODEL_WITH_EVOLUTION =
+        "computeGPDModelWithEvolution";
 
 // Initialise [class]::classId with a unique name and selfregister this module into the global registry.
 const unsigned int GPDService::classId =
@@ -28,65 +32,92 @@ GPDService::GPDService(const std::string &className) :
 GPDService::~GPDService() {
 }
 
+//TODO ParameterList use isAvailable function and throw exception if missing parameter
 //TODO implement all function
 //TODO passer les chaine de caractere en variable final static
 //TODO supprimer les pojnteurs membres de la classe GPDService
-void GPDService::computeTask(const Task &task) {
-
-    std::cerr << (task.getParameterList("GPDKinematic").toString())
-            << std::endl;
+void GPDService::computeTask(Task &task) {
 
     if (StringUtils::equals(task.getFunctionName(),
             GPDService::GPD_SERVICE_COMPUTE_GPD_MODEL)) {
-        //create a GPDKinematic and init it with a list of parameters
-        GPDKinematic gpdKinematic = GPDKinematic(
-                task.getParameterList("GPDKinematic"));
 
-        //TODO le construire avec les arguments provenant de ParameterList
-        GPDModule* pGPDModule = ModuleObjectFactory::newGPDModule(
-                GK11Model::classId);
+        //create a GPDKinematic and init it with a list of parameters
+        GPDKinematic gpdKinematic;
+
+        if (task.isAvailableParameterList("GPDKinematic")) {
+            gpdKinematic = GPDKinematic(task.getLastAvailableParameterList());
+        } else {
+            throwException(__func__,
+                    Formatter() << "Missing object : <GPDKinematic> for method "
+                            << task.getFunctionName());
+        }
+
+        GPDModule* pGPDModule = 0;
+
+        if (task.isAvailableParameterList("GPDModule")) {
+            pGPDModule = ModuleObjectFactory::newGPDModule(
+                    task.getLastAvailableParameterList().get("id").toString());
+            pGPDModule->configure(task.getLastAvailableParameterList());
+        } else {
+            throwException(__func__,
+                    Formatter() << "Missing object : <GPDModule> for method "
+                            << task.getFunctionName());
+        }
 
         GPDResult gpdResult = computeGPDModel(gpdKinematic, pGPDModule);
 
-        std::cout << gpdResult.toString() << std::endl;
+        info(__func__, Formatter() << gpdResult.toString());
+
+    } else if (StringUtils::equals(task.getFunctionName(),
+            GPDService::GPD_SERVICE_COMPUTE_GPD_MODEL_WITH_EVOLUTION)) {
+
+        //create a GPDKinematic and init it with a list of parameters
+        GPDKinematic gpdKinematic;
+
+        if (task.isAvailableParameterList("GPDKinematic")) {
+            gpdKinematic = GPDKinematic(task.getLastAvailableParameterList());
+        } else {
+            throwException(__func__,
+                    Formatter() << "Missing object : <GPDKinematic> for method "
+                            << task.getFunctionName());
+        }
+
+        GPDModule* pGPDModule = 0;
+
+        if (task.isAvailableParameterList("GPDModule")) {
+            pGPDModule = ModuleObjectFactory::newGPDModule(
+                    task.getLastAvailableParameterList().get("id").toString());
+            pGPDModule->configure(task.getLastAvailableParameterList());
+        } else {
+            throwException(__func__,
+                    Formatter() << "Missing object : <GPDModule> for method "
+                            << task.getFunctionName());
+        }
+
+        GPDEvolutionModule* pGPDEvolutionModule = 0;
+
+        if (task.isAvailableParameterList("GPDEvolutionModule")) {
+            pGPDEvolutionModule = ModuleObjectFactory::newGPDEvolutionModule(
+                    task.getLastAvailableParameterList().get("id").toString());
+            pGPDEvolutionModule->configure(
+                    task.getLastAvailableParameterList());
+        } else {
+            throwException(__func__,
+                    Formatter()
+                            << "Missing object : <GPDEvolutionModule> for method "
+                            << task.getFunctionName());
+        }
+
+        GPDResult gpdResult = computeGPDModelWithEvolution(gpdKinematic,
+                pGPDModule, pGPDEvolutionModule);
+
+        info(__func__, Formatter() << gpdResult.toString());
+
     } else {
         throwException(__func__,
                 "unknown function name = " + task.getFunctionName());
     }
-
-//    m_pGPDKinematic = 0;
-//    m_pGPDModule = 0;
-//
-//    // TODO supprimer les enums
-//    switch ((unsigned int) task.getFunctionName()) {
-//    case ServiceFunctionNames::GPD_SERVICE_COMPUTE_GPD_MODEL: {
-//
-//        GPDKinematic gpdKinematic = GPDKinematic(
-//                task.getParameterList("GPDKinematic"));
-//
-//        GPDResult gpdResult = computeGPDModel(task);
-//
-//        std::cout << gpdResult.toString() << std::endl;
-//
-//        break;
-//    }
-//
-//    default: {
-//        throwException(__func__,
-//                "unknown function name = " + task.getFunctionName());
-//
-//    }
-//    }
 }
-
-//GPDResult GPDService::computeGPDModel(const Task &task) {
-//    m_pGPDKinematic = BaseObjectFactory::
-//    static_cast<GPDKinematic*>((scenario.getFunctionArgs().find("GPDKinematic"))->second);
-//    m_pGPDModule = static_cast<GPDModule*>((scenario.getFunctionArgs().find(
-//            "GPDModule"))->second);
-//
-//    return computeGPDModel(*m_pGPDKinematic, m_pGPDModule);
-//}
 
 GPDResult GPDService::computeGPDModelRestrictedByGPDType(
         const GPDKinematic &gpdKinematic, GPDModule* pGPDModule,
@@ -112,6 +143,7 @@ GPDResult GPDService::computeGPDModelWithEvolution(
             gpdKinematic.getMuR2(), gpdType);
 
     gpdResult.setKinematic(gpdKinematic);
+    gpdResult.setComputedByGpdModuleId(pGPDModule->getClassName());
 
     return gpdResult;
 }

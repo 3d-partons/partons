@@ -30,8 +30,6 @@ class RunningAlphaStrongModule;
 
 class GPDEvolutionModule: public ModuleObject {
 public:
-    static const std::string QCD_ORDER_TYPE;
-
     enum Type {
         RELATIVE, ABSOLUTE, BOTH
     };

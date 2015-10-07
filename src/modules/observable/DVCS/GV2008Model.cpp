@@ -8,7 +8,7 @@
 #include "../../../beans/gpd/GPDType.h"
 #include "../../../BaseObjectRegistry.h"
 #include "../../../FundamentalPhysicalConstants.h"
-#include "../../../utils/logger/LoggerManager.h"
+//#include "../../../utils/logger/LoggerManager.h"
 #include "../../../utils/stringUtils/Formatter.h"
 
 // Initialise [class]::classId with a unique name.
@@ -172,8 +172,7 @@ void GV2008Model::initModule() {
 
     m_thetag = TMath::ACos(m_qpCM.getZ() / m_qpCM.getE());
 
-    m_pLoggerManager->debug(getClassName(), __func__,
-            Formatter() << "m_phaseSpace = " << m_phaseSpace);
+    debug(__func__, Formatter() << "m_phaseSpace = " << m_phaseSpace);
 
     //TODO : disable computation if kinematic unchanged
 

@@ -2,10 +2,28 @@
 
 #include <cmath>
 
+#include "../../BaseObjectRegistry.h"
+#include "../../ObservableObjectFactory.h"
 #include "AcObservable.h"
 
-AcCos2phi::AcCos2phi() :
-        FourrierObservable("AcCos2phi"), m_pAcObservable(new AcObservable()) {
+// Initialise [class]::classId with a unique name.
+const unsigned int AcCos2phi::classId =
+        BaseObjectRegistry::getInstance()->registerBaseObject(
+                new AcCos2phi("AcCos2phi"));
+
+AcCos2phi::AcCos2phi(const std::string &className) :
+        FourierObservable(className), m_pAcObservable(0) {
+    m_pAcObservable = ObservableObjectFactory::newObservable(
+            AcObservable::classId);
+}
+
+AcCos2phi::AcCos2phi(const AcCos2phi& other) :
+        FourierObservable(other) {
+    if (other.m_pAcObservable != 0) {
+        m_pAcObservable = other.m_pAcObservable->clone();
+    } else {
+        m_pAcObservable = 0;
+    }
 }
 
 AcCos2phi::~AcCos2phi() {

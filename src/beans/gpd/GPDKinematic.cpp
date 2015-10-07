@@ -1,52 +1,60 @@
 #include "GPDKinematic.h"
 
-#include <stdexcept>
-
 #include "../../utils/GenericType.h"
 #include "../../utils/ParameterList.h"
 #include "../../utils/stringUtils/Formatter.h"
+#include "../observable/ObservableKinematic.h"
 
 const std::string GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_X = "x";
 const std::string GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI = "xi";
-const std::string GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_T = "t";
 const std::string GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUF2 = "MuF2";
 const std::string GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUR2 = "MuR2";
 
 GPDKinematic::GPDKinematic() :
-        m_kinematicType(KinematicType::THEO), m_x(0.), m_xi(0.), m_t(0.), m_MuF2(
-                0.), m_MuR2(0.) {
+        BaseObject("GPDKinematic"), m_kinematicType(KinematicType::THEO), m_x(
+                0.), m_xi(0.), m_t(0.), m_MuF2(0.), m_MuR2(0.) {
 }
 
 GPDKinematic::GPDKinematic(double x, double xi, double t, double MuF2,
         double MuR2) :
-        m_kinematicType(KinematicType::THEO), m_x(x), m_xi(xi), m_t(t), m_MuF2(
-                MuF2), m_MuR2(MuR2) {
+        BaseObject("GPDKinematic"), m_kinematicType(KinematicType::THEO), m_x(
+                x), m_xi(xi), m_t(t), m_MuF2(MuF2), m_MuR2(MuR2) {
 }
 
-GPDKinematic::GPDKinematic(const ParameterList &parameterList) :
-        m_kinematicType(KinematicType::THEO) {
+GPDKinematic::GPDKinematic(ParameterList &parameterList) :
+        BaseObject("GPDKinematic"), m_kinematicType(KinematicType::THEO), m_x(
+                0.), m_xi(0.), m_t(0.), m_MuF2(0.), m_MuR2(0.) {
 
-    try {
-        m_x =
-                (parameterList.get(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_X)).toDouble();
-        m_xi =
-                parameterList.get(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI).toDouble();
-        m_t =
-                parameterList.get(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_T).toDouble();
-        m_MuF2 = parameterList.get(
-                GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUF2).toDouble();
-        m_MuR2 = parameterList.get(
-                GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUR2).toDouble();
-    } catch (std::exception &e) {
-
-        //TODO refactoring throw exception from BaseObject class
-
-        //catch exception and add current class name to follow exception
-        std::string errorMsg =
-                "[GPDKinematic::GPDKinematic(const ParameterList &parameterList)]"
-                        + std::string(e.what());
-        throw std::runtime_error(errorMsg);
+    if (parameterList.isAvailable(
+            GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_X)) {
+        m_x = parameterList.getLastAvailable().toDouble();
+    } else {
+        throwException(__func__,
+                Formatter() << "Missing parameter <"
+                        << GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_X << ">");
     }
+    if (parameterList.isAvailable(
+            GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI)) {
+        m_xi = parameterList.getLastAvailable().toDouble();
+    } else {
+        throwException(__func__,
+                Formatter() << "Missing parameter <"
+                        << GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI
+                        << ">");
+    }
+    if (parameterList.isAvailable(ObservableKinematic::PARAMETER_NAME_T)) {
+        m_t = parameterList.getLastAvailable().toDouble();
+    } else {
+        throwException(__func__,
+                Formatter() << "Missing parameter <"
+                        << ObservableKinematic::PARAMETER_NAME_T << ">");
+    }
+
+    //TODO remove from kinematic
+    m_MuF2 =
+            parameterList.get(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUF2).toDouble();
+    m_MuR2 =
+            parameterList.get(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUR2).toDouble();
 }
 
 GPDKinematic::~GPDKinematic() {

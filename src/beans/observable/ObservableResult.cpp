@@ -3,15 +3,15 @@
 #include <sstream>
 
 ObservableResult::ObservableResult() :
-        m_phi(0.), m_value(0.) {
+        m_phi(0.), m_value(0.), m_observableType(ObservableType::UNDEFINED) {
 }
 
 ObservableResult::ObservableResult(double value) :
-        m_phi(0.), m_value(value) {
+        m_phi(0.), m_value(value), m_observableType(ObservableType::UNDEFINED) {
 }
 
 ObservableResult::ObservableResult(double phi, double value) :
-        m_phi(phi), m_value(value) {
+        m_phi(phi), m_value(value), m_observableType(ObservableType::UNDEFINED) {
 }
 
 ObservableResult::~ObservableResult() {
@@ -45,7 +45,17 @@ void ObservableResult::setValue(double value) {
 std::string ObservableResult::toString() {
     std::ostringstream os;
 
-    os << "phi(°) = " << m_phi << " - observable = " << m_value;
+    if (m_observableType == ObservableType::PHI) {
+        os << "phi(°) = " << m_phi << " - observable = " << m_value;
+    } else if (m_observableType == ObservableType::FOURIER) {
+        os << "observable = " << m_value;
+    } else {
+        os << "unknow observable = " << m_value;
+    }
 
     return os.str();
+}
+
+void ObservableResult::setObservableType(ObservableType::Type observableType) {
+    m_observableType = observableType;
 }

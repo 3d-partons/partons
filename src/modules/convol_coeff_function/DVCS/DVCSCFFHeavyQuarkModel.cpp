@@ -7,7 +7,7 @@
 #include "../../../beans/PerturbativeQCDOrderType.h"
 #include "../../../BaseObjectRegistry.h"
 #include "../../../FundamentalPhysicalConstants.h"
-#include "../../../utils/logger/LoggerManager.h"
+//#include "../../../utils/logger/LoggerManager.h"
 #include "../../../utils/stringUtils/Formatter.h"
 
 // Initialise [class]::classId with a unique name.
@@ -60,7 +60,7 @@ DVCSCFFHeavyQuarkModel::DVCSCFFHeavyQuarkModel(
 //void DVCSCFFHeavyQuarkModel::isModuleWellConfigured() {
 //}
 std::complex<double> DVCSCFFHeavyQuarkModel::KernelGluonNLOA(double x) {
-//    m_pLoggerManager->debug(getClassName(), __func__, "entered");
+//    debug(__func__, "entered");
 // TODO Add a massless part
     double z = m_xi / x;
     double mq = QUARK_CHARM_MASS;
@@ -122,7 +122,7 @@ std::complex<double> DVCSCFFHeavyQuarkModel::KernelGluonNLOA(double x) {
 
 //	GluonNLOA = 0.; /////TESTING
 
-    m_pLoggerManager->debug(getClassName(), __func__,
+    debug(__func__,
             Formatter() << "x= " << x << "    GluonNLOA RE = "
                     << GluonNLOA.real() << "   GluonNLOA IM = "
                     << GluonNLOA.imag());
@@ -195,7 +195,7 @@ std::complex<double> DVCSCFFHeavyQuarkModel::KernelGluonNLOV(double x) {
 
     GluonNLOV /= x * x;
 
-    m_pLoggerManager->debug(getClassName(), __func__,
+    debug(__func__,
             Formatter() << "x= " << x << "    GluonNLOV RE = "
                     << GluonNLOV.real() << "   GluonNLOV IM = "
                     << GluonNLOV.imag() << " malpha=" << m_alphaSOver2Pi);

@@ -7,18 +7,19 @@
 #include <QtSql/qsqlrecord.h>
 #include <QtSql/qsqltablemodel.h>
 #include <iostream>
-#include <stdexcept>
+//#include <stdexcept>
 #include <string>
 
-#include "../utils/logger/LoggerManager.h"
+//#include "../utils/logger/LoggerManager.h"
 #include "../utils/PropertiesManager.h"
+#include "../utils/stringUtils/Formatter.h"
 #include "../utils/stringUtils/StringUtils.h"
 
 // Global static pointer used to ensure a single instance of the class.
 DatabaseManager* DatabaseManager::m_pInstance = 0;
 
-DatabaseManager::DatabaseManager()
-        : BaseObject("DatabaseManager") {
+DatabaseManager::DatabaseManager() :
+        BaseObject("DatabaseManager") {
 
     //TODO replace by static const variable
     std::string sqlDatabaseType = PropertiesManager::getInstance()->getString(
@@ -47,15 +48,11 @@ DatabaseManager::DatabaseManager()
                             "database.passwd").c_str()));
 
     if (!m_db.open()) {
-        m_pLoggerManager->error(getClassName(), __func__,
-                m_db.lastError().text().toStdString());
-
-        throw std::runtime_error(
-                "[DatabaseManager::DatabaseManager] Can't connect to database : "
-                        + m_db.lastError().text().toStdString());
+        throwException(__func__,
+                Formatter() << "Can't connect to database : "
+                        << m_db.lastError().text().toStdString());
     } else {
-        m_pLoggerManager->info(getClassName(), __func__,
-                "Database connection OK");
+        info(__func__, "Database connection OK");
 
         QSqlTableModel model;
         model.setTable("tbl1");

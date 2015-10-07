@@ -59,7 +59,7 @@ PartonDistribution GK11NoQuarksModel::computeH() {
                     * (c1 * Hi1tab.at(0) + c2 * Hi1tab.at(1) + c3 * Hi1tab.at(2)
                             + c4 * Hi1tab.at(3))); // See eq. (27)
 
-    /*    m_pLoggerManager->debug(getClassName(), __func__,
+    /*    debug(__func__,
      Formatter() << "1st coef " << Hi1tab.at(0)
      << "2nd coef " << Hi1tab.at(1)
      << "3rd coef " << Hi1tab.at(2)

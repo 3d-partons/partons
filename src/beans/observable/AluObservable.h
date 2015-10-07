@@ -12,11 +12,15 @@
  * @brief
  */
 
+#include <string>
+
 #include "Observable.h"
 
 class AluObservable: public Observable {
 public:
-    AluObservable();
+    static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
+
+    AluObservable(const std::string &className);
     virtual ~AluObservable();
 
     /**
@@ -26,6 +30,12 @@ public:
     virtual AluObservable* clone() const;
 
     virtual double compute(ObservableModule* pDVCSModule, double phi);
+
+protected:
+    /**
+     * Copy constructor
+     */
+    AluObservable(const AluObservable &other);
 
 private:
 };

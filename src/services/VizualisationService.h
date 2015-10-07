@@ -32,7 +32,7 @@ public:
      */
     virtual ~VizualisationService();
 
-    virtual void computeTask(const Task &task);
+    virtual void computeTask(Task &task);
 
     Plot2DList getplot2DFromSQLQuery(const std::string &sqlQuery);
 

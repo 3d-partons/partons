@@ -16,7 +16,7 @@ std::string ObservableType::toString() {
     case PHI:
         return "PHI";
         break;
-    case FOURRIER:
+    case FOURIER:
         return "FOURRIER";
         break;
     default:
@@ -29,7 +29,7 @@ std::string ObservableType::getShortName() {
     case PHI:
         return "phi";
         break;
-    case FOURRIER:
+    case FOURIER:
         return "fourrier";
         break;
     default:

@@ -54,7 +54,7 @@
 
 #include "../../BaseObjectRegistry.h"
 #include "../../FundamentalPhysicalConstants.h"
-#include "../../utils/logger/LoggerManager.h"
+//#include "../../utils/logger/LoggerManager.h"
 #include "../../utils/stringUtils/Formatter.h"
 
 // Initialise [class]::classId with a unique name.
@@ -141,8 +141,7 @@ double RunningAlphaStrong::compute(double Mu2) {
         m_nf = 6;
     }
 
-    m_pLoggerManager->debug(getClassName(), __func__,
-            Formatter() << "Mu2= " << Mu2 << "(GeV^2)   nf= " << m_nf);
+    debug(__func__, Formatter() << "Mu2= " << Mu2 << "(GeV^2)   nf= " << m_nf);
 
     ComputeLambdaQCD();
 
@@ -172,8 +171,7 @@ double RunningAlphaStrong::compute(double Mu2) {
         throw std::runtime_error("RunningAlphaStrong::compute(Mu)");
     }
 
-    m_pLoggerManager->debug(getClassName(), __func__,
-            Formatter() << "Lambda= " << Lambda);
+    debug(__func__, Formatter() << "Lambda= " << Lambda);
 
     Running(m_Mu, Lambda, m_nf);
 

@@ -88,7 +88,20 @@ BaseObject* BaseObjectRegistry::get(unsigned int classId) {
 }
 
 BaseObject* BaseObjectRegistry::get(const std::string &className) {
+    // if class name not available in the registry : throw exception
+    if (!isAvailable(className)) {
+        throw std::runtime_error(
+                "[BaseObjectRegistry::get] Class name not registered in the registry ; spell check class name or available module for class name = "
+                        + className);
+    }
+
     return m_translate[className];
+}
+
+bool BaseObjectRegistry::isAvailable(const std::string &className) {
+    m_itTranslate = m_translate.find(className);
+
+    return (m_itTranslate == m_translate.end()) ? false : true;
 }
 
 //TODO

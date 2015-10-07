@@ -5,18 +5,18 @@
  *      Author: debian
  */
 
-#ifndef FOURRIEROBSERVABLE_H_
-#define FOURRIEROBSERVABLE_H_
+#ifndef FOURIEROBSERVABLE_H_
+#define FOURIEROBSERVABLE_H_
 
 #include <string>
 
 #include "../../modules/MathIntegratorModule.h"
 #include "Observable.h"
 
-class FourrierObservable: public Observable, public MathIntegratorModule {
+class FourierObservable: public Observable, public MathIntegratorModule {
 public:
-    FourrierObservable(const std::string &className);
-    virtual ~FourrierObservable();
+    FourierObservable(const std::string &className);
+    virtual ~FourierObservable();
 
     /**
      * Virtual clone function to allow factory to copy all derived members
@@ -24,7 +24,7 @@ public:
      */
     virtual Observable* clone() const = 0;
 
-    virtual double compute();
+    double compute();
 
 protected:
     virtual double functionToIntegrate(double *x, double *params) = 0;

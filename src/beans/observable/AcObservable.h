@@ -12,11 +12,15 @@
  * @brief
  */
 
+#include <string>
+
 #include "Observable.h"
 
 class AcObservable: public Observable {
 public:
-    AcObservable();
+    static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
+
+    AcObservable(const std::string &className);
     virtual ~AcObservable();
 
     /**
@@ -26,6 +30,12 @@ public:
     virtual AcObservable* clone() const;
 
     virtual double compute(ObservableModule* pDVCSModule, double phi);
+
+protected:
+    /**
+     * Copy constructor
+     */
+    AcObservable(const AcObservable &other);
 
 private:
 };

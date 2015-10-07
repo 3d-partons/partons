@@ -10,15 +10,12 @@
 #include "../../beans/parton_distribution/QuarkDistribution.h"
 #include "../../ModuleObjectFactory.h"
 #include "../../utils/GenericType.h"
-#include "../../utils/logger/LoggerManager.h"
 #include "../../utils/math/MatrixD.h"
 #include "../../utils/ParameterList.h"
 #include "../../utils/stringUtils/Formatter.h"
 #include "../active_flavors/NfFunctionExample.h"
 #include "../alphaS/RunningAlphaStrong.h"
 #include "../GPDModule.h"
-
-const std::string GPDEvolutionModule::QCD_ORDER_TYPE = "QCD_ORDER_TYPE";
 
 MatrixD GPDEvolutionModule::conversionMatrix1(3, 3,  //
         1., 0., 0.,                             //
@@ -229,9 +226,10 @@ void GPDEvolutionModule::init() {
             NfFunctionExample::classId);
 }
 
+//TODO logger
 void GPDEvolutionModule::preCompute(double x, double xi, double t, double MuF2,
         double MuR2, GPDModule* pGPDModule, GPDType::Type gpdType) {
-    m_pLoggerManager->debug(getClassName(), __func__, "");
+    debug(__func__, "");
 
     m_pGPDModule = pGPDModule;
 
@@ -244,13 +242,14 @@ void GPDEvolutionModule::preCompute(double x, double xi, double t, double MuF2,
     m_currentGPDComputeType = gpdType;
 }
 
+//TODO logger
 void GPDEvolutionModule::initModule() {
-    m_pLoggerManager->debug(getClassName(), __func__, "");
+    debug(__func__, "");
 }
 
 //TODO ajouter les tests manquants
 void GPDEvolutionModule::isModuleWellConfigured() {
-    m_pLoggerManager->debug(getClassName(), __func__, "");
+    debug(__func__, "");
 
     if (m_pNfFunction == 0) {
         throwException(__func__, "m_pNfFunction* is NULL");
@@ -278,7 +277,7 @@ void GPDEvolutionModule::isModuleWellConfigured() {
 
 bool GPDEvolutionModule::isRunnable(double MuF2, double MuF2_ref,
         GPDEvolutionModule::Type testType) {
-    m_pLoggerManager->debug(getClassName(), __func__, "entered");
+    debug(__func__, "entered");
 
     //TODO MuF de l'utilisateur par rapport au MuF_Ref du modèle de GPD
     bool result = false;
@@ -301,14 +300,14 @@ bool GPDEvolutionModule::isRunnable(double MuF2, double MuF2_ref,
 }
 
 bool GPDEvolutionModule::isRelativeTest(double MuF2, double MuF2_ref) {
-    m_pLoggerManager->debug(getClassName(), __func__,
+    debug(__func__,
             Formatter() << "MuF2 = " << MuF2 << "   MuF2_ref = " << MuF2_ref);
 
     return (fabs(MuF2 - MuF2_ref) > (m_epsilon * MuF2_ref)) ? true : false;
 }
 
 bool GPDEvolutionModule::isAbsoluteTest(double MuF2, double MuF2_ref) {
-    m_pLoggerManager->debug(getClassName(), __func__, "");
+    debug(__func__, "");
 
     return (fabs(MuF2 - MuF2_ref) > m_alpha) ? true : false;
 }
@@ -456,7 +455,7 @@ NumA::VectorD GPDEvolutionModule::makeVectorOfGPDCombinations(
 
 //TODO automatiser les setters
 PartonDistribution GPDEvolutionModule::makeFinalPartonDistribution() {
-    m_pLoggerManager->debug(getClassName(), __func__, "");
+    debug(__func__, "");
 
     PartonDistribution partonDistribution;
 
@@ -523,7 +522,7 @@ QuarkDistribution GPDEvolutionModule::makeFinalQuarkDistribution(
 }
 
 double GPDEvolutionModule::calculateFq(double FPlus, double FMinus) {
-    m_pLoggerManager->debug(getClassName(), __func__,
+    debug(__func__,
             Formatter() << " FMinus = " << FMinus << "   FPlus = " << FPlus);
 
     return (FMinus + FPlus) / 2.;
@@ -541,7 +540,7 @@ void GPDEvolutionModule::setQcdOrderType(
 void GPDEvolutionModule::setGpdModule(GPDModule* gpdModule) {
     m_pGPDModule = gpdModule;
 
-    m_pLoggerManager->debug(getClassName(), __func__,
+    debug(__func__,
             Formatter() << "GPDModule = " << m_pGPDModule->getClassName());
 }
 
@@ -654,9 +653,16 @@ double GPDEvolutionModule::nonSingletGPD(unsigned short nonSingletIndex,
 }
 
 void GPDEvolutionModule::configure(ParameterList parameters) {
-    if (parameters.isAvailable(GPDEvolutionModule::QCD_ORDER_TYPE)) {
-        m_qcdOrderType =
-                static_cast<PerturbativeQCDOrderType::Type>(parameters.getLastAvailable().toUInt());
+    if (parameters.isAvailable(
+            PerturbativeQCDOrderType::PARAMETER_NAME_PERTURBATIVE_QCD_ORDER_TYPE)) {
+        m_qcdOrderType = PerturbativeQCDOrderType::fromString(
+                parameters.getLastAvailable().toString());
+
+        info(__func__,
+                Formatter()
+                        << PerturbativeQCDOrderType::PARAMETER_NAME_PERTURBATIVE_QCD_ORDER_TYPE
+                        << " configured with value = "
+                        << PerturbativeQCDOrderType(m_qcdOrderType).toString());
     }
 }
 //

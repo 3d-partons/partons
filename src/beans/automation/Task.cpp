@@ -71,3 +71,13 @@ void Task::addParameterList(const std::string& className,
         const ParameterList& parameterList) {
     m_functionParameters.insert(std::make_pair(className, parameterList));
 }
+
+bool Task::isAvailableParameterList(const std::string &className) {
+    m_it = m_functionParameters.find(className);
+
+    return (m_it != m_functionParameters.end()) ? true : false;
+}
+
+ParameterList& Task::getLastAvailableParameterList() const {
+    return (m_it->second);
+}

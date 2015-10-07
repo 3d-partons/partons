@@ -36,12 +36,17 @@ public:
     const std::string& getServiceName() const;
     void setServiceName(const std::string& serviceName);
 
+    bool isAvailableParameterList(const std::string &className);
+    ParameterList& getLastAvailableParameterList() const;
+
 private:
     std::string m_serviceName;
     std::string m_functionName;
     // std::string : className
     // ParameterList : parameters to create object from the class
     std::map<std::string, ParameterList> m_functionParameters;
+
+    std::map<std::string, ParameterList>::iterator m_it;
 };
 
 #endif /* TASK_H */

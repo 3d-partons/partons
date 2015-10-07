@@ -61,6 +61,8 @@ private:
      */
     BaseObjectRegistry();
 
+    bool isAvailable(const std::string &className);
+
     // Stop the compiler generating methods of copy the object
     BaseObjectRegistry(BaseObjectRegistry const& other); // Not Implemented
     BaseObjectRegistry& operator=(BaseObjectRegistry const& other); // Not Implemented

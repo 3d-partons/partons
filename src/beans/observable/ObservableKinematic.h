@@ -15,13 +15,23 @@
 #include <string>
 #include <vector>
 
-class ObservableKinematic {
+#include "../../BaseObject.h"
+
+class ParameterList;
+
+class ObservableKinematic: public BaseObject {
 public:
+    static const std::string PARAMETER_NAME_XB;
+    static const std::string PARAMETER_NAME_T;
+    static const std::string PARAMETER_NAME_Q2;
+    static const std::string PARAMETER_NAME_PHI;
 
     /**
      * Default constructor
      */
     ObservableKinematic();
+
+    ObservableKinematic(ParameterList &parameterList);
 
     /**
      * Constructor

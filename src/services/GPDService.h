@@ -32,6 +32,7 @@ public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
     static const std::string GPD_SERVICE_COMPUTE_GPD_MODEL;
+    static const std::string GPD_SERVICE_COMPUTE_GPD_MODEL_WITH_EVOLUTION;
 
     /**
      * Default constructor
@@ -43,7 +44,7 @@ public:
      */
     virtual ~GPDService();
 
-    virtual void computeTask(const Task &task);
+    virtual void computeTask(Task &task);
 
     /**
      * Computes GPD model at specific kinematic

@@ -21,7 +21,7 @@ Observable::Observable(const Observable& other) :
     m_targetPolarization = other.m_targetPolarization;
     m_observableType = other.m_observableType;
 
-    if (m_pDVCSModule != 0) {
+    if (other.m_pDVCSModule != 0) {
         m_pDVCSModule = other.m_pDVCSModule->clone();
     } else {
         m_pDVCSModule = 0;
@@ -41,36 +41,43 @@ ObservableResultList Observable::compute(double xB, double t, double Q2,
 
     m_pDVCSModule->computeConvolCoeffFunction(xB, t, Q2, MuF, MuR);
 
-    // if listOfPhi empty then run computation of fourrier observable
+    // if listOfPhi empty then run computation of fourier observable
     if (listOfPhi.empty()) {
-        // check if this observable is a fourrier observable
-        if (m_observableType == ObservableType::FOURRIER) {
-            observableResultList.add(ObservableResult(compute()));
+        // check if this observable is a fourier observable
+        if (m_observableType == ObservableType::FOURIER) {
+
+            //TODO improve
+            ObservableResult observableResult(compute());
+            observableResult.setObservableType(m_observableType);
+            observableResultList.add(observableResult);
         }
         // else throw exception
         else {
             throwException(__func__,
                     Formatter()
-                            << "Cannot perform fourrier computation with a phi dependencies observable");
+                            << "Cannot perform fourier computation with a phi dependencies observable");
         }
     }
     // else run computation of observable with phi dependencies
     else {
-        // check if this observable is a fourrier observable
+        // check if this observable is a fourier observable
         if (m_observableType == ObservableType::PHI) {
             for (unsigned int i = 0; i != listOfPhi.size(); i++) {
-                observableResultList.add(
-                        ObservableResult(listOfPhi[i],
-                                compute(m_pDVCSModule,
-                                        MathUtils::convertDegreeToRadian(
-                                                listOfPhi[i]))));
+
+                //TODO improve
+                ObservableResult observableResult(listOfPhi[i],
+                        compute(m_pDVCSModule,
+                                MathUtils::convertDegreeToRadian(
+                                        listOfPhi[i])));
+                observableResult.setObservableType(m_observableType);
+                observableResultList.add(observableResult);
             }
         }
         // else throw exception
         else {
             throwException(__func__,
                     Formatter()
-                            << "Cannot perform phi dependencies observable computation with fourrier observable");
+                            << "Cannot perform phi dependencies observable computation with fourier observable");
         }
     }
 

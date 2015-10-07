@@ -1,5 +1,11 @@
 #include "Partons.h"
 
+#ifdef WIN32
+#include <windows.h>
+#else
+#include <unistd.h>
+#endif // win32
+
 #include <pthread.h>
 
 #include "BaseObjectFactory.h"
@@ -57,8 +63,20 @@ void Partons::init(char** argv) {
 }
 
 void Partons::close() {
-    DatabaseManager::getInstance()->close();
+#ifdef WIN32
+    Sleep(milliseconds);
+#else
+    usleep(1000 * 1000);
+#endif // win32
 
+    //TODO test portability
+    while (!m_pLoggerManager->isEmptyMessageQueue()) {
+#ifdef WIN32
+        Sleep(milliseconds);
+#else
+        usleep(30 * 1000);
+#endif // win32
+    }
     // Send close signal to logger
     m_pLoggerManager->close();
 
@@ -67,6 +85,8 @@ void Partons::close() {
     if (m_pLoggerManager != 0) {
         pthread_join(m_pLoggerManager->getThreadId(), &result);
     }
+
+    DatabaseManager::getInstance()->close();
 
     // Finally delete LoggerManager pointer
     delete m_pLoggerManager;
@@ -83,4 +103,12 @@ void Partons::close() {
 
 std::string Partons::getCurrentWorkingDirectory() {
     return m_currentWorkingDirectoryPath;
+}
+
+void Partons::setScale(double MuF2, double MuR2) {
+    m_scale = Scale(MuF2, MuR2);
+}
+
+Scale Partons::getScale() const {
+    return m_scale;
 }

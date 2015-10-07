@@ -15,7 +15,6 @@
 #include "../../beans/QuarkFlavor.h"
 #include "../../BaseObjectRegistry.h"
 #include "../../FundamentalPhysicalConstants.h"
-#include "../../utils/logger/LoggerManager.h"
 #include "../../utils/ParameterList.h"
 #include "../../utils/stringUtils/Formatter.h"
 
@@ -144,7 +143,7 @@ void GK11Model::initModule() {
 
     fL = log(m_MuF2 / m_MuF2_ref); // Logarithmic dependence on the scale
 
-    /*   m_pLoggerManager->debug(getClassName(), __func__,
+    /*   debug(__func__,
      Formatter() << "fMuF2 = " << fMuF2 << " fL = " << fL);*/
 }
 
@@ -267,7 +266,7 @@ PartonDistribution GK11Model::computeH() {
 
 PartonDistribution GK11Model::computeHt() {
 
-    m_pLoggerManager->debug(getClassName(), __func__, "Entered function ...");
+    debug(__func__, "Entered function ...");
 
     PartonDistribution partonDistribution;
 
@@ -291,7 +290,7 @@ PartonDistribution GK11Model::computeHt() {
                     * (c1 * Hti1tab.at(0) + c2 * Hti1tab.at(1)
                             + c3 * Hti1tab.at(2)));
 
-    m_pLoggerManager->debug(getClassName(), __func__,
+    debug(__func__,
             Formatter() << "c1 = " << c1 << ", c2 = " << c2 << ", c3 = " << c3
                     << ", b0 = " << b0);
 
@@ -314,7 +313,7 @@ PartonDistribution GK11Model::computeHt() {
                             / (5. - delta));
 //      +  c4 * (3.-delta) * (2.-delta) * (1-delta)/(7.-delta)/(6.-delta)/(5.-delta) ) ;
 
-    m_pLoggerManager->debug(getClassName(), __func__,
+    debug(__func__,
             Formatter() << "c1 = " << c1 << ", c2 = " << c2 << ", c3 = " << c3
                     << ", b0 = " << b0 << ", etau = " << etau << ", delta = "
                     << delta << ", Nu = " << Nu);
@@ -341,7 +340,7 @@ PartonDistribution GK11Model::computeHt() {
 
     b0 = 0;
 
-    m_pLoggerManager->debug(getClassName(), __func__,
+    debug(__func__,
             Formatter() << "c1 = " << c1 << ", c2 = " << c2 << ", c3 = " << c3
                     << ", b0 = " << b0 << ", etad = " << etad << ", Nd = "
                     << Nd);
@@ -745,7 +744,7 @@ double GK11Model::Hs1(double x, double i, double k) {
                                                 3. + i - k)));
     }
 
-    /*    m_pLoggerManager->debug(getClassName(), __func__,
+    /*    debug(__func__,
      Formatter() << "(x=" << x << ", xi=" << m_xi << ", i=" << i
      << ", k=" << k << ") dummy = " << dummy);*/
 
@@ -944,7 +943,7 @@ double GK11Model::Hval1(double x, double i, double k) {
                                                 (2. + i - k))));
     }
 
-    /*   m_pLoggerManager->debug(getClassName(), __func__,
+    /*   debug(__func__,
      Formatter() << "(x=" << x << ", xi=" << m_xi << ", i=" << i
      << ", k=" << k << ") dummy = " << dummy);*/
 
@@ -997,7 +996,7 @@ double GK11Model::Hval1_alt(double x, double i, double k) {
 
     dummy = double_approx(dummya);
 
-    m_pLoggerManager->debug(getClassName(), __func__,
+    debug(__func__,
             Formatter() << "(x=" << x << ", xi=" << m_xi << ", i=" << i
                     << ", k=" << k << ") dummy = " << dummy);
 
@@ -1031,7 +1030,8 @@ void GK11Model::calculateHtCoefs() {
 
 // For valence
 
-    if ((m_xi < 0.01) && (log10(m_xi) < ((-4. / log10(0.6)) * log10(fabs(m_x))))) {
+    if ((m_xi < 0.01)
+            && (log10(m_xi) < ((-4. / log10(0.6)) * log10(fabs(m_x))))) {
         slow_val = 1;
     }
 
@@ -1039,7 +1039,7 @@ void GK11Model::calculateHtCoefs() {
 
 // No sea Ht for GK.
 
-    m_pLoggerManager->debug(getClassName(), __func__,
+    debug(__func__,
             Formatter() << "slow_sea = " << slow_sea << " slow_val = "
                     << slow_val);
 
@@ -1050,7 +1050,7 @@ void GK11Model::calculateHtCoefs() {
             Hti1tab.at(0) = Hti1(m_x, 0., kHtgluon);
             Hti1tab.at(1) = Hti1(m_x, 0.5, kHtgluon);
             Hti1tab.at(2) = Hti1(m_x, 1.0, kHtgluon);
-        }else{
+        } else {
             Hti1tab.at(0) = Hti1(-m_x, 0., kHtgluon);
             Hti1tab.at(1) = Hti1(-m_x, 0.5, kHtgluon);
             Hti1tab.at(2) = Hti1(-m_x, 1.0, kHtgluon);
@@ -1060,7 +1060,7 @@ void GK11Model::calculateHtCoefs() {
             Hti1tab.at(0) = Hti1_alt(m_x, 0., kHtgluon);
             Hti1tab.at(1) = Hti1_alt(m_x, 0.5, kHtgluon);
             Hti1tab.at(2) = Hti1_alt(m_x, 1.0, kHtgluon);
-        }else{
+        } else {
             Hti1tab.at(0) = Hti1_alt(-m_x, 0., kHtgluon);
             Hti1tab.at(1) = Hti1_alt(-m_x, 0.5, kHtgluon);
             Hti1tab.at(2) = Hti1_alt(-m_x, 1.0, kHtgluon);
@@ -1132,7 +1132,7 @@ void GK11Model::calculateHtKas() {
 
     kHtdval = kHtuval;
 
-    m_pLoggerManager->debug(getClassName(), __func__,
+    debug(__func__,
             Formatter() << "(t=" << m_t << ") kHtgluon=" << kHtgluon
                     << " kHtsea=" << kHtsea << " kHtuval=" << kHtuval
                     << " kHtdval=" << kHtdval);
@@ -1227,7 +1227,7 @@ double GK11Model::Hti1_alt(double x, double i, double k) {
     }
     dummy = double_approx(dummya);
 
-    m_pLoggerManager->debug(getClassName(), __func__,
+    debug(__func__,
             Formatter() << "(x=" << x << ", xi=" << m_xi << ", i=" << i
                     << ", k=" << k << ") dummy = " << dummy);
 
@@ -1273,7 +1273,8 @@ void GK11Model::calculateECoefs() {
 
 // For valence
 
-    if ((m_xi < 0.01) && (log10(m_xi) < ((-4. / log10(0.6)) * log10(fabs(m_x))))) {
+    if ((m_xi < 0.01)
+            && (log10(m_xi) < ((-4. / log10(0.6)) * log10(fabs(m_x))))) {
         slow_val = 1;
     }
 
@@ -1287,7 +1288,7 @@ void GK11Model::calculateECoefs() {
 
             Ei1tab.at(0) = Ei1(m_x, 0., kEgluon);
             Ei1tab.at(1) = Ei1(m_x, 1., kEgluon);
-        }else{
+        } else {
             Es1tab.at(0) = -Es1(-m_x, 0., kEsea);
             Es1tab.at(1) = -Es1(-m_x, 1., kEsea);
             Es1tab.at(2) = -Es1(-m_x, 2., kEsea);
@@ -1303,7 +1304,7 @@ void GK11Model::calculateECoefs() {
 
             Ei1tab.at(0) = Ei1_alt(m_x, 0., kEgluon);
             Ei1tab.at(1) = Ei1_alt(m_x, 1., kEgluon);
-        }else{
+        } else {
             Es1tab.at(0) = -Es1_alt(-m_x, 0., kEsea);
             Es1tab.at(1) = -Es1_alt(-m_x, 1., kEsea);
             Es1tab.at(2) = -Es1_alt(-m_x, 2., kEsea);
@@ -1482,7 +1483,8 @@ void GK11Model::calculateEtCoefs() {
 
 // For valence
 
-    if ((m_xi < 0.04) && (log10(m_xi) < ((-4. / log10(0.55)) * log10(fabs(m_x))))) {
+    if ((m_xi < 0.04)
+            && (log10(m_xi) < ((-4. / log10(0.55)) * log10(fabs(m_x))))) {
         slow_val = 1;
     }
 

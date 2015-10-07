@@ -2,7 +2,7 @@
 
 #include "../../beans/gpd/GPDType.h"
 #include "../../beans/observable/Observable.h"
-#include "../../utils/logger/LoggerManager.h"
+//#include "../../utils/logger/LoggerManager.h"
 #include "../../utils/stringUtils/Formatter.h"
 #include "../../utils/vector/Vector3D.h"
 #include "../convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
@@ -61,7 +61,7 @@ double DVCSModule::xBToXi(double xB) {
 void DVCSModule::computeConvolCoeffFunction(double xB, double t, double Q2,
         double MuF2, double MuR2) {
 
-    m_pLoggerManager->debug(getClassName(), __func__,
+    debug(__func__,
             Formatter() << "xB = " << xB << " t = " << t << " Q2 = " << Q2
                     << " MuF2 = " << MuF2 << " MuR2 = " << MuR2);
 
@@ -72,7 +72,7 @@ void DVCSModule::computeConvolCoeffFunction(double xB, double t, double Q2,
                         MuF2, MuR2, GPDType::ALL);
     }
 
-    m_pLoggerManager->debug(getClassName(), __func__,
+    debug(__func__,
             Formatter() << "m_dvcsConvolCoeffFunctionResult = "
                     << m_dvcsConvolCoeffFunctionResult.toString());
 
@@ -91,7 +91,7 @@ double DVCSModule::computeCrossSection(double beamHelicity, double beamCharge,
 
     m_phi = phi;
 
-    m_pLoggerManager->debug(getClassName(), __func__,
+    debug(__func__,
             Formatter() << "beamHelicity = " << beamHelicity << " beamCharge = "
                     << beamCharge << " phi = " << m_phi);
 

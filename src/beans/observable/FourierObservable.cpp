@@ -1,22 +1,22 @@
-#include "FourrierObservable.h"
+#include "FourierObservable.h"
 
 #include <NumA/MathIntegrator.h>
 
 #include "../../FundamentalPhysicalConstants.h"
 #include "ObservableType.h"
 
-FourrierObservable::FourrierObservable(const std::string &className) :
+FourierObservable::FourierObservable(const std::string &className) :
         Observable(className) {
-    m_observableType = ObservableType::FOURRIER;
+    m_observableType = ObservableType::FOURIER;
     m_mathIntegrator.setIntegrationMode(NumA::MathIntegrator::ROOT);
 }
 
-FourrierObservable::~FourrierObservable() {
+FourierObservable::~FourierObservable() {
     // TODO Auto-generated destructor stub
 }
 
 //TODO check
-double FourrierObservable::compute() {
+double FourierObservable::compute() {
     return m_mathIntegrator.integrateWithROOT(this,
-            &FourrierObservable::functionToIntegrate, 0., (2 * PI));
+            &FourierObservable::functionToIntegrate, 0., (2 * PI));
 }

@@ -14,6 +14,8 @@
 
 #include <string>
 
+#include "beans/Scale.h"
+
 class BaseObjectFactory;
 class BaseObjectRegistry;
 
@@ -36,6 +38,9 @@ public:
 
     std::string getCurrentWorkingDirectory();
 
+    void setScale(double MuF2, double MuR2);
+    Scale getScale() const;
+
 private:
     /**
      * Private pointer of this class for a unique instance
@@ -52,6 +57,8 @@ private:
     LoggerManager* m_pLoggerManager;
 
     std::string m_currentWorkingDirectoryPath;
+
+    Scale m_scale;
 };
 
 #endif /* PARTONS_H */

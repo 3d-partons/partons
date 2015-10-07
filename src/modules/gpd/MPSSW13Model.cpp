@@ -17,7 +17,7 @@
 #include "../../beans/QuarkFlavor.h"
 #include "../../BaseObjectRegistry.h"
 #include "../../FundamentalPhysicalConstants.h"
-#include "../../utils/logger/LoggerManager.h"
+//#include "../../utils/logger/LoggerManager.h"
 #include "../../utils/mstwpdf.h"
 #include "../../utils/PropertiesManager.h"
 #include "../../utils/stringUtils/Formatter.h"
@@ -982,8 +982,7 @@ double MPSSW13Model::GammaGG(const unsigned int nflavour,
 void MPSSW13Model::initModule() {
     GPDModule::initModule();
 
-    m_pLoggerManager->debug(getClassName(), __func__,
-            Formatter() << "fMuF2 = " << m_MuF2);
+    debug(__func__, Formatter() << "fMuF2 = " << m_MuF2);
 }
 
 //TODO implement

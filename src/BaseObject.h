@@ -56,8 +56,6 @@ public:
     void setObjectId(unsigned int objectId);
 
 protected:
-    LoggerManager* m_pLoggerManager; ///< Pointer to LoggerManager class
-
     /**
      * Copy constructor
      *
@@ -68,7 +66,17 @@ protected:
     void throwException(const std::string functionName,
             const std::string errorMessage) const;
 
+    void info(const std::string &functionName, const std::string &message);
+
+    void debug(const std::string &functionName, const std::string &message);
+
+    void warn(const std::string &functionName, const std::string &message);
+
+    void error(const std::string &functionName, const std::string &message);
+
 private:
+    LoggerManager* m_pLoggerManager; ///< Pointer to LoggerManager class
+
     unsigned int m_objectId;
     std::string m_className; ///< String that represents class's name used by the LoggerManager's class for know the source of the output trace
 

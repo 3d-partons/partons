@@ -28,7 +28,6 @@ class RunningAlphaStrongModule;
 class DVCSConvolCoeffFunctionModule: public ConvolCoeffFunctionModule {
 public:
     static const std::string GPD_MODULE_ID;
-    static const std::string QCD_ORDER_TYPE;
 
     DVCSConvolCoeffFunctionModule(const std::string &className);
     virtual ~DVCSConvolCoeffFunctionModule();

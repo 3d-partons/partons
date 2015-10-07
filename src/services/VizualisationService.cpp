@@ -22,7 +22,7 @@ VizualisationService::~VizualisationService() {
 }
 
 //TODO implement all function
-void VizualisationService::computeTask(const Task &task) {
+void VizualisationService::computeTask(Task &task) {
 
 }
 

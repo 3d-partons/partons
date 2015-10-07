@@ -1,10 +1,49 @@
 #include "DVCSConvolCoeffFunctionKinematic.h"
 
+#include "../../../utils/GenericType.h"
+#include "../../../utils/ParameterList.h"
 #include "../../../utils/stringUtils/Formatter.h"
+#include "../../gpd/GPDKinematic.h"
+#include "../../observable/ObservableKinematic.h"
 
 DVCSConvolCoeffFunctionKinematic::DVCSConvolCoeffFunctionKinematic() :
         BaseObject("DVCSConvolCoeffFunctionKinematic"), m_binId(0), m_xi(0.), m_t(
                 0.), m_Q2(0.), m_MuF2(0.), m_MuR2(0.) {
+}
+
+DVCSConvolCoeffFunctionKinematic::DVCSConvolCoeffFunctionKinematic(
+        ParameterList &parameterList) :
+        BaseObject("DVCSConvolCoeffFunctionKinematic"), m_binId(0), m_xi(0.), m_t(
+                0.), m_Q2(0.), m_MuF2(0.), m_MuR2(0.) {
+    if (parameterList.isAvailable(
+            GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI)) {
+        m_xi = parameterList.getLastAvailable().toDouble();
+    } else {
+        throwException(__func__,
+                Formatter() << "Missing parameter <"
+                        << GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI
+                        << ">");
+    }
+    if (parameterList.isAvailable(ObservableKinematic::PARAMETER_NAME_T)) {
+        m_t = parameterList.getLastAvailable().toDouble();
+    } else {
+        throwException(__func__,
+                Formatter() << "Missing parameter <"
+                        << ObservableKinematic::PARAMETER_NAME_T << ">");
+    }
+    if (parameterList.isAvailable(ObservableKinematic::PARAMETER_NAME_Q2)) {
+        m_Q2 = parameterList.getLastAvailable().toDouble();
+    } else {
+        throwException(__func__,
+                Formatter() << "Missing parameter <"
+                        << ObservableKinematic::PARAMETER_NAME_Q2 << ">");
+    }
+
+    //TODO remove from kinematic
+    m_MuF2 =
+            parameterList.get(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUF2).toDouble();
+    m_MuR2 =
+            parameterList.get(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUR2).toDouble();
 }
 
 DVCSConvolCoeffFunctionKinematic::DVCSConvolCoeffFunctionKinematic(double xi,

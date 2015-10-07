@@ -20,7 +20,7 @@ DoubleDistributionService::~DoubleDistributionService() {
 }
 
 //TODO implement all function
-void DoubleDistributionService::computeTask(const Task &task) {
+void DoubleDistributionService::computeTask(Task &task) {
 }
 
 DoubleDistributionResult DoubleDistributionService::compute(

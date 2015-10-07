@@ -1,12 +1,23 @@
 #include "AcObservable.h"
 
+//#include <string>
+
+#include "../../BaseObjectRegistry.h"
 #include "../../modules/ObservableModule.h"
-#include "../../utils/logger/LoggerManager.h"
 #include "../../utils/stringUtils/Formatter.h"
 #include "../../utils/vector/Vector3D.h"
 
-AcObservable::AcObservable() :
-        Observable("AcObservable") {
+// Initialise [class]::classId with a unique name.
+const unsigned int AcObservable::classId =
+        BaseObjectRegistry::getInstance()->registerBaseObject(
+                new AcObservable("AcObservable"));
+
+AcObservable::AcObservable(const std::string &className) :
+        Observable(className) {
+}
+
+AcObservable::AcObservable(const AcObservable& other) :
+        Observable(other) {
 }
 
 AcObservable::~AcObservable() {
@@ -19,8 +30,7 @@ AcObservable* AcObservable::clone() const {
 //TODO vérifier
 double AcObservable::compute(ObservableModule* pDVCSModule, double phi) {
 
-    m_pLoggerManager->debug(getClassName(), __func__,
-            Formatter() << "phi = " << phi);
+    debug(__func__, Formatter() << "phi = " << phi);
 
     double result = 0.;
 

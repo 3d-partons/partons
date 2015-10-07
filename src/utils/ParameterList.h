@@ -44,6 +44,8 @@ public:
 
     bool isAvailable(const std::string &parameterName);
 
+    void clear();
+
     virtual std::string toString() const;
 
 private:

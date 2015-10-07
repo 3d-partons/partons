@@ -67,3 +67,22 @@ void BaseObject::setObjectId(unsigned int objectId) {
     m_objectId = objectId;
 }
 
+void BaseObject::info(const std::string& functionName,
+        const std::string& message) {
+    m_pLoggerManager->info(getClassName(), functionName, message);
+}
+
+void BaseObject::debug(const std::string& functionName,
+        const std::string& message) {
+    m_pLoggerManager->debug(getClassName(), functionName, message);
+}
+
+void BaseObject::warn(const std::string& functionName,
+        const std::string& message) {
+    m_pLoggerManager->warn(getClassName(), functionName, message);
+}
+
+void BaseObject::error(const std::string& functionName,
+        const std::string& message) {
+    m_pLoggerManager->error(getClassName(), functionName, message);
+}

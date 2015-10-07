@@ -16,6 +16,7 @@
 
 #include "../../utils/math/ErrorBar.h"
 #include "ObservableKinematic.h"
+#include "ObservableType.h"
 
 class ObservableResult {
 public:
@@ -32,6 +33,7 @@ public:
     void setSystError(const ErrorBar& systError);
     void setTotalError(double totalError);
     void setValue(double value);
+    void setObservableType(ObservableType::Type observableType);
 
 private:
     double m_value;
@@ -42,6 +44,8 @@ private:
     ErrorBar m_systError;
 
     ObservableKinematic m_kinematic;
+
+    ObservableType::Type m_observableType;
 };
 
 #endif /* OBSERVABLE_RESULT_H */

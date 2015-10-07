@@ -6,7 +6,6 @@
 #include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
 #include "../../../ModuleObjectFactory.h"
 #include "../../../utils/GenericType.h"
-#include "../../../utils/logger/LoggerManager.h"
 #include "../../../utils/ParameterList.h"
 #include "../../../utils/stringUtils/Formatter.h"
 #include "../../active_flavors/NfFunctionExample.h"
@@ -15,8 +14,6 @@
 
 const std::string DVCSConvolCoeffFunctionModule::GPD_MODULE_ID =
         "DVCS_CONVOL_COEFF_FUNCTION_GPD_MODULE_ID";
-const std::string DVCSConvolCoeffFunctionModule::QCD_ORDER_TYPE =
-        "DVCS_CONVOL_COEFF_FUNCTION_QCD_ORDER_TYPE";
 
 DVCSConvolCoeffFunctionModule::DVCSConvolCoeffFunctionModule(
         const std::string &className) :
@@ -81,14 +78,12 @@ void DVCSConvolCoeffFunctionModule::init() {
 //TODO implement
 void DVCSConvolCoeffFunctionModule::initModule() {
 
-    m_pLoggerManager->debug(getClassName(), __func__,
-            Formatter() << "executed");
+    debug(__func__, Formatter() << "executed");
 }
 
 //TODO implement
 void DVCSConvolCoeffFunctionModule::isModuleWellConfigured() {
-    m_pLoggerManager->debug(getClassName(), __func__,
-            Formatter() << "executed");
+    debug(__func__, Formatter() << "executed");
 
     // Test kinematic domain of Xi
     if (m_xi < 0 || m_xi > 1) {
@@ -139,7 +134,7 @@ DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionModule::compute(
                 m_it != m_listOfCFFComputeFunctionAvailable.end(); m_it++) {
             m_currentGPDComputeType = m_it->first;
 
-            m_pLoggerManager->debug(getClassName(), __func__,
+            debug(__func__,
                     Formatter() << "m_currentGPDComputeType = "
                             << GPDType(m_currentGPDComputeType).toString());
 
@@ -185,8 +180,7 @@ void DVCSConvolCoeffFunctionModule::preCompute(const double xi, const double t,
         const double Q2, const double MuF2, const double MuR2,
         GPDType::Type gpdComputeType) {
 
-    m_pLoggerManager->debug(getClassName(), __func__,
-            Formatter() << "enter preCompute() function ...");
+    debug(__func__, Formatter() << "enter preCompute() function ...");
 
     m_xi = xi;
     m_t = t;
@@ -226,9 +220,22 @@ void DVCSConvolCoeffFunctionModule::configure(ParameterList parameters) {
     if (parameters.isAvailable(DVCSConvolCoeffFunctionModule::GPD_MODULE_ID)) {
         m_pGPDModule = ModuleObjectFactory::newGPDModule(
                 parameters.getLastAvailable().toUInt());
+
+        info(__func__,
+                Formatter() << DVCSConvolCoeffFunctionModule::GPD_MODULE_ID
+                        << " configured with value = "
+                        << m_pGPDModule->getClassName());
     }
-    if (parameters.isAvailable(DVCSConvolCoeffFunctionModule::QCD_ORDER_TYPE)) {
-        m_qcdOrderType =
-                static_cast<PerturbativeQCDOrderType::Type>(parameters.getLastAvailable().toUInt());
+
+    if (parameters.isAvailable(
+            PerturbativeQCDOrderType::PARAMETER_NAME_PERTURBATIVE_QCD_ORDER_TYPE)) {
+        m_qcdOrderType = PerturbativeQCDOrderType::fromString(
+                parameters.getLastAvailable().toString());
+
+        info(__func__,
+                Formatter()
+                        << PerturbativeQCDOrderType::PARAMETER_NAME_PERTURBATIVE_QCD_ORDER_TYPE
+                        << " configured with value = "
+                        << PerturbativeQCDOrderType(m_qcdOrderType).toString());
     }
 }

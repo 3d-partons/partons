@@ -27,47 +27,24 @@
 class PerturbativeQCDOrderType {
 
 public:
+    static const std::string PARAMETER_NAME_PERTURBATIVE_QCD_ORDER_TYPE;
+
     enum Type {
         UNDEFINED = 0, LO = 1, NLO = 2, NNLO = 3, LL = 4, NLL = 5
     };
 
-    PerturbativeQCDOrderType()
-            : m_type(PerturbativeQCDOrderType::UNDEFINED) {
-    }
+    PerturbativeQCDOrderType();
 
-    PerturbativeQCDOrderType(Type type)
-            : m_type(type) {
-    }
+    PerturbativeQCDOrderType(Type type);
 
-    const std::string toString() {
-        switch (m_type) {
-        case LO:
-            return "LO";
-            break;
-        case NLO:
-            return "NLO";
-            break;
-        case NNLO:
-            return "NNLO";
-            break;
-        case LL:
-            return "LL";
-            break;
-        case NLL:
-            return "NLL";
-            break;
-        default:
-            return "UNDEFINED";
-        }
-    }
+    const std::string toString();
 
-    PerturbativeQCDOrderType::Type getType() const {
-        return m_type;
-    }
+    PerturbativeQCDOrderType::Type getType() const;
 
-    void setType(Type type) {
-        m_type = type;
-    }
+    void setType(Type type);
+
+    static PerturbativeQCDOrderType::Type fromString(
+            const std::string& gpdTypeStr);
 
 private:
     PerturbativeQCDOrderType::Type m_type;

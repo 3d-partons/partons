@@ -17,7 +17,7 @@
 #include "../../../BaseObjectRegistry.h"
 #include "../../../FundamentalPhysicalConstants.h"
 #include "../../../ModuleObjectFactory.h"
-#include "../../../utils/logger/LoggerManager.h"
+//#include "../../../utils/logger/LoggerManager.h"
 #include "../../../utils/stringUtils/Formatter.h"
 #include "../../alphaS/RunningAlphaStrong.h"
 #include "../../evolution/gpd/ExampleEvolQCDModel.h"
@@ -104,7 +104,7 @@ void DVCSCFFModel::initModule() {
 
     m_alphaSOver2Pi = m_pRunningAlphaStrongModule->compute(m_MuR2) / (2. * PI);
 
-    m_pLoggerManager->debug(getClassName(), __func__,
+    debug(__func__,
             Formatter() << "m_Q2=" << m_Q2 << " m_Q= " << m_Q << " m_MuF2="
                     << m_MuF2 << " m_Zeta= " << m_Zeta << " m_logQ2OverMu2="
                     << m_logQ2OverMu2 << " m_nbOfActiveFlavour=" << m_nf
@@ -137,7 +137,7 @@ void DVCSCFFModel::isModuleWellConfigured() {
 //        const double Q2, const double MuF, const double MuR,
 //        GPDComputeType::Type gpdComputeType) {
 //
-//    m_pLoggerManager->debug(getClassName(), __func__, "entered");
+//    debug( __func__, "entered");
 //
 //    return CFFModule::preCompute(xB, t, Q2, MuF, MuR, gpdComputeType);
 //}
@@ -167,7 +167,7 @@ void DVCSCFFModel::computeDiagonalGPD() {
     m_gluonDiagonal = 2.
             * partonDistribution.getGluonDistribution().getGluonDistribution();
 
-    //   m_pLoggerManager->debug(getClassName(), __func__,
+    //   debug( __func__,
     //      	                Formatter()<<"    q diagonal = "<< m_quarkDiagonal <<"   g diagonal = "<< m_gluonDiagonal);
 
 }
@@ -555,7 +555,7 @@ std::complex<double> DVCSCFFModel::computeIntegralsA() {
                     + m_gluonDiagonal * m_imaginaryPartSubtractGluon);
     //	cout << fpQCDOrder << "      ImaginaryPartCFF Gluon = " << SumSqrCharges * ( IntegralImaginaryPartKernelGluon + fGluonDiagonal * fImaginaryPartSubtractGluon ) << endl ;
     // Multiplication by SumSqrCharges corrects in mistake in eq. (9)
-    m_pLoggerManager->debug(getClassName(), __func__,
+    debug( __func__,
             Formatter() << "    integral RE = " << realPartCFF
                     << "   Integral IM = " << imaginaryPartCFF);
 
@@ -712,7 +712,7 @@ double DVCSCFFModel::ConvolReKernelQuark1V(double* x, double* params) {
 
     Convol /= m_xi; // In eq. (8), ( 2 - fZeta ) / fZeta = 1 / fXi
 
-    m_pLoggerManager->debug(getClassName(), __func__,
+    debug( __func__,
             Formatter() << "x = " << x[0] << " | convol = " << Convol);
 
     return Convol;
@@ -741,7 +741,7 @@ double DVCSCFFModel::ConvolReKernelQuark2V(double* x, double* params) {
 
     Convol /= m_xi; // In eq. (8), ( 2 - fZeta ) / fZeta = 1 / fXi
 
-    m_pLoggerManager->debug(getClassName(), __func__,
+    debug( __func__,
             Formatter() << "x = " << x[0] << " | convol = " << Convol);
 
     return Convol;
@@ -766,7 +766,7 @@ double DVCSCFFModel::ConvolImKernelQuarkV(double* x, double* params) {
     Convol *= KernelQuarkV(x[0]).imag();
     Convol /= m_xi; // In eq. (8), ( 2 - fZeta ) / fZeta = 1 / fXi
 
-    m_pLoggerManager->debug(getClassName(), __func__,
+    debug( __func__,
             Formatter() << "x = " << x[0] << " | convol = " << Convol);
 
     return Convol;
@@ -796,7 +796,7 @@ double DVCSCFFModel::ConvolReKernelGluon1V(double* x, double* params) {
 
     Convol /= (m_xi * m_xi * m_nf);
 
-    m_pLoggerManager->debug(getClassName(), __func__,
+    debug( __func__,
             Formatter() << "x = " << x[0] << " | convol = " << Convol);
 
     return Convol;
@@ -824,7 +824,7 @@ double DVCSCFFModel::ConvolReKernelGluon2V(double* x, double* params) {
 
     Convol /= (m_xi * m_xi * m_nf); // In eq. (8), ( ( 2 - fZeta ) / fZeta )^2 = 1 / fXi^2
 
-    m_pLoggerManager->debug(getClassName(), __func__,
+    debug( __func__,
             Formatter() << "x = " << x[0] << " | convol = " << Convol);
 
     return Convol;
@@ -849,14 +849,14 @@ double DVCSCFFModel::ConvolImKernelGluonV(double* x, double* params) {
     Convol *= KernelGluonV(x[0]).imag();
     Convol /= (m_xi * m_xi * m_nf); // In eq. (8), ( ( 2 - fZeta ) / fZeta )^2 = 1 / fXi^2
 
-    m_pLoggerManager->debug(getClassName(), __func__,
+    debug( __func__,
             Formatter() << "x = " << x[0] << " | convol = " << Convol);
 
     return Convol;
 }
 
 std::complex<double> DVCSCFFModel::KernelGluonNLOV(double x) {
-    m_pLoggerManager->debug(getClassName(), __func__, "entered");
+    debug( __func__, "entered");
 
     double z = x / m_xi;
 
@@ -880,9 +880,9 @@ std::complex<double> DVCSCFFModel::KernelGluonNLOV(double x) {
 }
 
 std::complex<double> DVCSCFFModel::KernelGluonNLOA(double x) {
-    m_pLoggerManager->debug(getClassName(), __func__, "entered");
+    debug( __func__, "entered");
 //
-//    m_pLoggerManager->debug(getClassName(), __func__,
+//    debug( __func__,
 //               Formatter() << "x= " << x );
 
     double z = x / m_xi;
@@ -938,7 +938,7 @@ double DVCSCFFModel::ConvolReKernelQuark1A(double* x, double* params) {
 
     Convol /= m_xi; // In eq. (8), ( 2 - fZeta ) / fZeta = 1 / fXi
 
-    m_pLoggerManager->debug(getClassName(), __func__,
+    debug( __func__,
             Formatter() << "x = " << x[0] << " | convol = " << Convol);
 
     return Convol;
@@ -959,7 +959,7 @@ double DVCSCFFModel::ConvolReKernelQuark2A(double* x, double* params) {
 
     Convol /= m_xi; // In eq. (8), ( 2 - fZeta ) / fZeta = 1 / fXi
 
-    m_pLoggerManager->debug(getClassName(), __func__,
+    debug( __func__,
             Formatter() << "x = " << x[0] << " | convol = " << Convol);
 
     return Convol;
@@ -977,7 +977,7 @@ double DVCSCFFModel::ConvolImKernelQuarkA(double* x, double* params) {
     Convol *= KernelQuarkA(x[0]).imag();
     Convol /= m_xi; // In eq. (8), ( 2 - fZeta ) / fZeta = 1 / fXi
 
-    m_pLoggerManager->debug(getClassName(), __func__,
+    debug( __func__,
             Formatter() << "x = " << x[0] << " | convol = " << Convol);
 
     return Convol;
@@ -985,7 +985,7 @@ double DVCSCFFModel::ConvolImKernelQuarkA(double* x, double* params) {
 
 double DVCSCFFModel::ConvolReKernelGluon1A(double* x, double* params) {
 
-    m_pLoggerManager->debug(getClassName(), __func__, "Entered");
+    debug( __func__, "Entered");
 
     GPDResult gpdResult = m_pGPDModule->compute(x[0], m_xi, m_t, m_MuF2, m_MuR2,
             m_currentGPDComputeType);
@@ -999,7 +999,7 @@ double DVCSCFFModel::ConvolReKernelGluon1A(double* x, double* params) {
 
     Convol /= (m_xi * m_xi * m_nf);
 
-    m_pLoggerManager->debug(getClassName(), __func__,
+    debug( __func__,
             Formatter() << "x = " << x[0] << " | convol = " << Convol);
 
     return Convol;
@@ -1020,7 +1020,7 @@ double DVCSCFFModel::ConvolReKernelGluon2A(double* x, double* params) {
 
     Convol /= (m_xi * m_xi * m_nf); // In eq. (8), ( ( 2 - fZeta ) / fZeta )^2 = 1 / fXi^2
 
-    m_pLoggerManager->debug(getClassName(), __func__,
+    debug( __func__,
             Formatter() << "x = " << x[0] << " | convol = " << Convol);
 
     return Convol;
@@ -1038,7 +1038,7 @@ double DVCSCFFModel::ConvolImKernelGluonA(double* x, double* params) {
     Convol *= KernelGluonA(x[0]).imag();
     Convol /= (m_xi * m_xi * m_nf); // In eq. (8), ( ( 2 - fZeta ) / fZeta )^2 = 1 / fXi^2
 
-    m_pLoggerManager->debug(getClassName(), __func__,
+    debug( __func__,
             Formatter() << "x = " << x[0] << " | convol = " << Convol);
 
     return Convol;

@@ -1,20 +1,28 @@
-/*
- * AcCos2phi.h
+#ifndef AC_COS_2_PHI_H
+#define AC_COS_2_PHI_H
+
+/**
+ * @file AcCos2phi.h
+ * @author Bryan BERTHOU (CEA Saclay)
+ * @date 28 September 2015
+ * @version 1.0
  *
- *  Created on: Sep 28, 2015
- *      Author: debian
+ * @class AcCos2phi
+ *
+ * @brief
  */
 
-#ifndef ACCOS2PHI_H_
-#define ACCOS2PHI_H_
+#include <string>
 
-#include "FourrierObservable.h"
+#include "FourierObservable.h"
 
-class AcObservable;
+class Observable;
 
-class AcCos2phi: public FourrierObservable {
+class AcCos2phi: public FourierObservable {
 public:
-    AcCos2phi();
+    static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
+
+    AcCos2phi(const std::string &className);
     virtual ~AcCos2phi();
 
     /**
@@ -24,9 +32,14 @@ public:
     virtual AcCos2phi* clone() const;
 
 protected:
-    AcObservable* m_pAcObservable;
+    /**
+     * Copy constructor
+     */
+    AcCos2phi(const AcCos2phi &other);
+
+    Observable* m_pAcObservable;
 
     virtual double functionToIntegrate(double *x, double *params);
 };
 
-#endif /* ACCOS2PHI_H_ */
+#endif /* AC_COS_2_PHI_H */

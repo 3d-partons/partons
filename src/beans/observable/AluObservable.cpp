@@ -1,10 +1,20 @@
 #include "AluObservable.h"
 
+#include "../../BaseObjectRegistry.h"
 #include "../../modules/ObservableModule.h"
 #include "../../utils/vector/Vector3D.h"
 
-AluObservable::AluObservable() :
-        Observable("AluObservable") {
+// Initialise [class]::classId with a unique name.
+const unsigned int AluObservable::classId =
+        BaseObjectRegistry::getInstance()->registerBaseObject(
+                new AluObservable("AluObservable"));
+
+AluObservable::AluObservable(const std::string &className) :
+        Observable(className) {
+}
+
+AluObservable::AluObservable(const AluObservable& other) :
+        Observable(other) {
 }
 
 AluObservable::~AluObservable() {

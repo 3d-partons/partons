@@ -44,6 +44,8 @@ public:
     ObservableResultList compute(double xB, double t, double Q2,
             std::vector<double> listOfPhi);
 
+    virtual double compute(ObservableModule* pDVCSModule, double phi);
+
 // ##### GETTERS & SETTERS #####
 
     double getBeamCharge() const;
@@ -77,7 +79,6 @@ protected:
 
     Vector3D m_targetPolarization;
 
-    virtual double compute(ObservableModule* pDVCSModule, double phi);
     virtual double compute();
 };
 

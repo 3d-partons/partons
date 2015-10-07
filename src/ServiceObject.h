@@ -27,7 +27,7 @@ public:
      */
     virtual ~ServiceObject();
 
-    virtual void computeTask(const Task &task) = 0;
+    virtual void computeTask(Task &task) = 0;
 };
 
 #endif /* SERVICE_OBJECT_H */

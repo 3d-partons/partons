@@ -14,6 +14,7 @@
 
 #include <string>
 
+#include "../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "../beans/gpd/GPDType.h"
 #include "../beans/PerturbativeQCDOrderType.h"
 #include "../ServiceObject.h"
@@ -25,6 +26,8 @@ class GPDModule;
 
 class DVCSConvolCoeffFunctionService: public ServiceObject {
 public:
+    static const std::string FUNCTION_NAME_COMPUTE_WITH_GPD_MODEL;
+
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
     /**
@@ -36,7 +39,7 @@ public:
      */
     virtual ~DVCSConvolCoeffFunctionService();
 
-    virtual void computeTask(const Task &task);
+    virtual void computeTask(Task &task);
 
     virtual DVCSConvolCoeffFunctionResult computeWithGPDModel(
             DVCSConvolCoeffFunctionModule* dvcsConvolCoeffFunctionModule,

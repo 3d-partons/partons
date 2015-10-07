@@ -5,7 +5,7 @@
 
 #include "../beans/gpd/GPDResult.h"
 #include "../utils/GenericType.h"
-#include "../utils/logger/LoggerManager.h"
+//#include "../utils/logger/LoggerManager.h"
 #include "../utils/ParameterList.h"
 #include "../utils/stringUtils/Formatter.h"
 #include "evolution/GPDEvolutionModule.h"
@@ -61,14 +61,12 @@ void GPDModule::configure(ParameterList parameters) {
 
 //TODO implement
 void GPDModule::initModule() {
-    m_pLoggerManager->debug(getClassName(), __func__,
-            Formatter() << "executed");
+    debug(__func__, Formatter() << "executed");
 }
 
 //TODO implement
 void GPDModule::isModuleWellConfigured() {
-    m_pLoggerManager->debug(getClassName(), __func__,
-            Formatter() << "executed");
+    debug(__func__, Formatter() << "executed");
 }
 
 void GPDModule::preCompute(double x, double xi, double t, double MuF,
@@ -80,7 +78,7 @@ void GPDModule::preCompute(double x, double xi, double t, double MuF,
     m_MuR2 = MuR;
     m_gpdType = gpdType;
 
-    m_pLoggerManager->debug(getClassName(), __func__,
+    debug(__func__,
             Formatter() << "x = " << m_x << "    xi = " << m_xi << "    t = "
                     << m_t << " GeV2    MuF = " << m_MuF2 << " GeV    MuR = "
                     << m_MuR2 << " GeV");
@@ -149,8 +147,7 @@ GPDResult GPDModule::compute(double x, double xi, double t, double MuF2,
     }
     }
 
-    m_pLoggerManager->debug(getClassName(), __func__,
-            Formatter() << gpdResult.toString());
+    debug(__func__, Formatter() << gpdResult.toString());
 
     return gpdResult;
 }

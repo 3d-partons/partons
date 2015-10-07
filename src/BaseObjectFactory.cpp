@@ -16,8 +16,8 @@ BaseObjectFactory::~BaseObjectFactory() {
     // m_pCreatedBaseObjectList never delete'ed. (exist until program termination)
     // because we can't guarantee correct destruction order
     for (std::map<unsigned int, BaseObject*>::iterator it =
-            m_pInstantiatedObject.begin();
-            it != m_pInstantiatedObject.end(); it++) {
+            m_pInstantiatedObject.begin(); it != m_pInstantiatedObject.end();
+            it++) {
         if ((it->second)) {
             delete (it->second);
             (it->second) = 0;
