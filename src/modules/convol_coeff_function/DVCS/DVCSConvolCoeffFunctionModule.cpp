@@ -213,6 +213,7 @@ void DVCSConvolCoeffFunctionModule::setQCDOrderType(
     m_qcdOrderType = qcdOrderType;
 }
 
+//TODO handle string for XML file and native type from C++ code ; see QCD_ORDER_TYPE test
 void DVCSConvolCoeffFunctionModule::configure(ParameterList parameters) {
     //TODO propager la configuration aussi vers le parent ; il se peut que ce soit lui qui porte le membre à configurer et non l'enfant !
     ConvolCoeffFunctionModule::configure(parameters);
@@ -229,8 +230,16 @@ void DVCSConvolCoeffFunctionModule::configure(ParameterList parameters) {
 
     if (parameters.isAvailable(
             PerturbativeQCDOrderType::PARAMETER_NAME_PERTURBATIVE_QCD_ORDER_TYPE)) {
-        m_qcdOrderType = PerturbativeQCDOrderType::fromString(
-                parameters.getLastAvailable().toString());
+        // try to set m_qcdOrderType by standard way
+        try {
+            m_qcdOrderType =
+                    static_cast<PerturbativeQCDOrderType::Type>(parameters.getLastAvailable().toUInt());
+
+        } catch (const std::exception &e) {
+            // if an exception is raised it means that it's a string configuration value
+            m_qcdOrderType = PerturbativeQCDOrderType::fromString(
+                    parameters.getLastAvailable().toString());
+        }
 
         info(__func__,
                 Formatter()
