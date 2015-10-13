@@ -137,8 +137,6 @@ private:
     /*-------------------------------------- Methods ---------------------------------------*/
 
     // Initialisations
-    void SetBeamEnergy(double EBeam);
-    // Sets beam energy
 
     void MakeExactBHCrossSections();
     // Fills the Jem and SigmaBHPol. arrays

@@ -39,7 +39,8 @@ public:
     virtual Observable* clone() const = 0;
 
     typedef double (DVCSModule::*computeCrossSection)(double beamHelicity,
-            double beamCharge, Vector3D targetPolarization);
+
+    double beamCharge, Vector3D targetPolarization);
 
     ObservableResultList compute(double xB, double t, double Q2,
             std::vector<double> listOfPhi);

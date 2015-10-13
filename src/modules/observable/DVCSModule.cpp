@@ -47,10 +47,20 @@ DVCSModule::DVCSModule(const DVCSModule& other) :
 
 void DVCSModule::initModule() {
     //TODO implement
+
+    debug(__func__,"Entered function.");
+}
+
+void DVCSModule::initModule(double beamHelicity, double beamCharge,
+        Vector3D targetPolarization) {
+
+    debug(__func__,"Entered function.");
 }
 
 void DVCSModule::isModuleWellConfigured() {
     //TODO implement
+
+    debug(__func__,"Entered function.");
 }
 
 //TODO delete
@@ -76,6 +86,7 @@ void DVCSModule::computeConvolCoeffFunction(double xB, double t, double Q2,
             Formatter() << "m_dvcsConvolCoeffFunctionResult = "
                     << m_dvcsConvolCoeffFunctionResult.toString());
 
+    //TODO add the definition of m_E (beam energy)
     m_xB = xB;
     m_t = t;
     m_Q2 = Q2;
@@ -86,6 +97,13 @@ void DVCSModule::computeConvolCoeffFunction(double xB, double t, double Q2,
     isModuleWellConfigured();
 }
 
+/*--------------------------- Function SetBeamEnergy(EBeam) ----------------------------*
+ | Sets the beam energy in the laboratory frame.                                        |
+ *--------------------------------------------------------------------------------------*/
+void DVCSModule::SetBeamEnergy(double EBeam) {
+    m_E = EBeam;
+}
+
 double DVCSModule::computeCrossSection(double beamHelicity, double beamCharge,
         Vector3D targetPolarization, double phi) {
 
@@ -94,6 +112,8 @@ double DVCSModule::computeCrossSection(double beamHelicity, double beamCharge,
     debug(__func__,
             Formatter() << "beamHelicity = " << beamHelicity << " beamCharge = "
                     << beamCharge << " phi = " << m_phi);
+
+    initModule(beamHelicity, beamCharge, targetPolarization);
 
     return CrossSectionBH(beamHelicity, beamCharge, targetPolarization)
             + CrossSectionVCS(beamHelicity, beamCharge, targetPolarization)

@@ -23,7 +23,9 @@ public:
     static const std::string GPD_TYPE_DB_COLUMN_NAME;
 
     enum Type {
-        UNDEFINED = 0, ALL = 1, H = 2, E = 3, Ht = 4, Et = 5, HTrans = 6
+        UNDEFINED = 0, ALL = 1, H = 2, E = 3, Ht = 4, Et = 5, HTrans = 6, ETrans = 7,
+        HtTrans = 8, EtTrans = 9, H3p = 10, E3p = 11, H3pt = 12, E3pt = 13,
+        H3m = 14, E3m = 15, H3mt = 16, E3mt = 17
     };
 
     GPDType();

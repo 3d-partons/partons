@@ -39,6 +39,7 @@ ObservableResultList Observable::compute(double xB, double t, double Q2,
     //TODO replace hard coded value
     double MuF = 4., MuR = 4.;
 
+    //TODO add the value of E (beam energy)
     m_pDVCSModule->computeConvolCoeffFunction(xB, t, Q2, MuF, MuR);
 
     // if listOfPhi empty then run computation of fourier observable

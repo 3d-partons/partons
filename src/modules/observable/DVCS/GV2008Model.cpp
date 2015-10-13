@@ -451,13 +451,6 @@ double GV2008Model::SqrAmplInterf(double beamHelicity, double beamCharge,
  |           ImHT,ReET,ImET)                                                            |
  *--------------------------------------------------------------------------------------*/
 
-/*--------------------------- Function SetBeamEnergy(EBeam) ----------------------------*
- | Sets the beam energy in the laboratory frame.                                        |
- *--------------------------------------------------------------------------------------*/
-
-void GV2008Model::SetBeamEnergy(double EBeam) {
-    m_E = EBeam;
-}
 
 /*----------------------- Function MakeExactBHCrossSections() --------------------------*
  | Computes all the stuff to evaluate the cross section assuming the hadronic helicity  |

@@ -49,7 +49,12 @@ protected:
     DVCSModule(const DVCSModule& other);
 
     virtual void initModule();
+    virtual void initModule(double beamHelicity, double beamCharge,
+            Vector3D targetPolarization);
     virtual void isModuleWellConfigured();
+
+
+    void SetBeamEnergy(double EBeam); ///< Sets beam energy
 
     double m_xB;        ///< Bjorken variable
     double m_t;     ///< Mandelstam variable (square of the 4-momentum transfer)
@@ -73,6 +78,8 @@ protected:
     virtual double CrossSectionBH(double beamHelicity, double beamCharge,
             Vector3D targetPolarization) = 0;
     // Bethe Heitler cross section
+    // beamCharge in units of positron charge
+    // beamHelicity in units of hbar/2
 
     virtual double CrossSectionVCS(double beamHelicity, double beamCharge,
             Vector3D targetPolarization) = 0;
