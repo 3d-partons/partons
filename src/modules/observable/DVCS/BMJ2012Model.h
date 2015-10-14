@@ -84,18 +84,46 @@ private:
                                   ///< m_Delta2[0] = t, m_Delta2[1] = Delta^4 = t^2, etc...
     double m_Delta2_min; ///< minimum of t
 
-    /// Bethe Heitler coeffs (BMK2002)
+    double m_P1, m_P2; ///< Lepton propagators
+
+    /* Bethe Heitler coeffs (BMK2002) */
     /** Fourier coeffs of the BH squared amplitude
-     *  1st index: 0=unp, 1=LP, 2=TP
-     *  2nd index: c0, c1, c2
+     *  1st index: [0]=unp, [1]=LP, [2]=TP
+     *  2nd index: [0]=c0, [1]=c1, [2]=c2
      */
     std::vector<std::vector<double> > m_cBH;
 
     double m_s1BHTP; ///< BH Fourier coeff s1 TP
 
-    double m_P1, m_P2; ///< Lepton propagators
+    void computeFourierCoeffsBH(); ///< Computes c_BH and s_BH
 
-    void computeFourierCoeffsBH();
+    /* VCS coeffs (BMJ2012) */
+    /** Fourier coeffs (cosinus) of the VCS squared amplitude
+     *  1st index: [0]=unp, [1]=LP, [2]=TP
+     *  2nd index: [0]=c0, [1]=c1, [2]=c2
+     */
+    std::vector<std::vector<double> > m_cVCS;
+    /** Fourier coeffs (sinus) of the VCS squared amplitude
+     *  1st index: [0]=unp, [1]=LP, [2]=TP
+     *  2nd index: [0]=0., [1]=s1, [2]=s2
+     */
+    std::vector<std::vector<double> > m_sVCS;
+
+    void computeFourierCoeffsVCS(); ///< Computes c_VCS and s_VCS
+
+    /* Interference coeffs (BMJ2012) */
+    /** Fourier coeffs (cosinus) of the Interference term
+     *  1st index: [0]=unp, [1]=LP, [2]=TP
+     *  2nd index: [0]=c0, [1]=c1, [2]=c2, [3]=c3
+     */
+    std::vector<std::vector<double> > m_cI;
+    /** Fourier coeffs (sinus) of the Interference term
+     *  1st index: [0]=unp, [1]=LP, [2]=TP
+     *  2nd index: [0]=0., [1]=s1, [2]=s2, [3]=s3
+     */
+    std::vector<std::vector<double> > m_sI;
+
+    void computeFourierCoeffsInterf(); ///< Computes c_I and s_I
 
     void defineAngles(Vector3D targetPolarization); ///< Define the BMK angles
 

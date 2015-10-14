@@ -32,7 +32,7 @@ BMJ2012Model::BMJ2012Model(const std::string &className) :
     m_Lambda = 0.;
     m_lambda = 0.;
     m_xB2 = 0.;
-    m_y.assign(2, 0.);
+    m_y.assign(3, 0.);
     m_Q.assign(4, 0.);
     m_M.assign(2, 0.);
     m_epsilon.assign(2, 0.);
@@ -44,6 +44,10 @@ BMJ2012Model::BMJ2012Model(const std::string &className) :
     m_s1BHTP = 0.;
     m_P1 = 0.;
     m_P2 = 0.;
+    m_cVCS.assign(3, std::vector<double>(3, 0.));
+    m_sVCS.assign(3, std::vector<double>(3, 0.));
+    m_cI.assign(3, std::vector<double>(4, 0.));
+    m_sI.assign(3, std::vector<double>(4, 0.));
 }
 
 /*-------------------------------------- Destructor ------------------------------------*/
@@ -73,6 +77,10 @@ BMJ2012Model::BMJ2012Model(const BMJ2012Model& other) :
     m_s1BHTP = other.m_s1BHTP;
     m_P1 = other.m_P1;
     m_P2 = other.m_P2;
+    m_cVCS = other.m_cVCS;
+    m_sVCS = other.m_sVCS;
+    m_cI = other.m_cI;
+    m_sI = other.m_sI;
 }
 
 BMJ2012Model* BMJ2012Model::clone() const {
@@ -95,6 +103,7 @@ void BMJ2012Model::initModule() {
     m_M[1] = pow(PROTON_MASS, 2);
     m_y[0] = m_Q2 / (2 * m_xB * m_M[0] * m_E);
     m_y[1] = m_y[0] * m_y[0];
+    m_y[2] = m_y[0] * m_y[1];
     m_epsilon[0] = 2 * m_xB * PROTON_MASS / m_Q[0];
     m_epsilon[1] = pow(m_epsilon[0], 2);
     m_epsroot = sqrt(1 + m_epsilon[1]);
@@ -136,6 +145,8 @@ void BMJ2012Model::initModule(double beamHelicity, double beamCharge,
 
     // Compute Fourier coeffs of BH
     computeFourierCoeffsBH();
+    // Compute Fourier coeffs of VCS
+    computeFourierCoeffsVCS();
 }
 
 void BMJ2012Model::isModuleWellConfigured() {
@@ -272,18 +283,22 @@ void BMJ2012Model::computeFourierCoeffsBH() {
             * pow(m_epsroot, 3) * (1 - Delta2Q2) * F1PlusF2 * F1PlusDeltaF2;
 }
 
+void BMJ2012Model::computeFourierCoeffsVCS() {
+
+}
+
 double BMJ2012Model::SqrAmplBH(double beamHelicity, double beamCharge,
         Vector3D targetPolarization) {
 
     double A = pow(POSITRON_CHARGE, 6)
             / (m_xB2 * m_y[1] * pow(1 + m_epsilon[1], 2) * m_t * m_P1 * m_P2);
 
-    double result = 0;
+    double result = 0.;
     for (int n(0); n < 3; n++) {
         result += (m_cBH[0][n] + cos(m_theta) * m_cBH[1][n]
                 + sin(m_theta) * m_cBH[2][n]) * cos(n * m_phi1BMK);
     }
-    result += m_s1BHTP * sin(m_phi1BMK);
+    result += m_s1BHTP * sin(m_theta) * sin(m_phi1BMK);
     result *= A;
 
     return result;
@@ -291,10 +306,37 @@ double BMJ2012Model::SqrAmplBH(double beamHelicity, double beamCharge,
 
 double BMJ2012Model::SqrAmplVCS(double beamHelicity, double beamCharge,
         Vector3D targetPolarization) {
+
+    double A = pow(POSITRON_CHARGE, 6) / (m_y[1] * m_Q2);
+
+    double result = 0.;
+    for (int n(0); n < 3; n++) {
+        result += (m_cVCS[0][n] + cos(m_theta) * m_cVCS[1][n]
+                + sin(m_theta) * m_cVCS[2][n]) * cos(n * m_phi1BMK);
+        result += (m_sVCS[0][n] + cos(m_theta) * m_sVCS[1][n]
+                + sin(m_theta) * m_sVCS[2][n]) * sin(n * m_phi1BMK);
+    }
+    result *= A;
+
+    return result;
 }
 
 double BMJ2012Model::SqrAmplInterf(double beamHelicity, double beamCharge,
         Vector3D targetPolarization) {
+
+    double A = -beamCharge * pow(POSITRON_CHARGE, 6)
+            / (m_xB * m_y[2] * m_t * m_P1 * m_P2);
+
+    double result = 0.;
+    for (int n(0); n < 4; n++) {
+        result += (m_cI[0][n] + cos(m_theta) * m_cI[1][n]
+                + sin(m_theta) * m_cI[2][n]) * cos(n * m_phi1BMK);
+        result += (m_sI[0][n] + cos(m_theta) * m_sI[1][n]
+                + sin(m_theta) * m_sI[2][n]) * sin(n * m_phi1BMK);
+    }
+    result *= A;
+
+    return result;
 }
 
 double BMJ2012Model::CrossSectionBH(double beamHelicity, double beamCharge,
