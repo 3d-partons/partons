@@ -108,6 +108,10 @@ void BMJ2012Model::initModule() {
                             * (m_t - m_Delta2_min) / m_Q2);
     m_K[0] = sqrt(m_K[1]);
 
+    // Phase space
+    m_phaseSpace = pow(POSITRON_CHARGE, 3) * m_xB * m_y[1]
+            / (1024 * pow(PI, 5) * m_Q[3] * m_epsroot);
+
 }
 
 void BMJ2012Model::initModule(double beamHelicity, double beamCharge,
@@ -187,7 +191,8 @@ void BMJ2012Model::computeFourierCoeffsBH() {
     //TODO Get the value of F1(t) and F2(t) from another module
     double F1; // Dirac form factor
     double F2; // Pauli form factor
-    F1 = (4. * m_M[1] - 2.79285 * m_t)
+    F1 =
+            (4. * m_M[1] - 2.79285 * m_t)
                     / (pow(1. - 1.4084507042253522 * m_t, 2)
                             * (4. * m_M[1] - 1. * m_t));
     F2 = (7.1714 * m_M[1])
