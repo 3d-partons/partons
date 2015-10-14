@@ -98,7 +98,7 @@
         </Observable>
         
         <DVCSModule>
-            <param name="id" value="GV2008Model" />
+            <param name="id" value="BMJ2012Model" />
         </DVCSModule>
         
         <DVCSConvolCoeffFunctionModule>
@@ -126,7 +126,7 @@
         </Observable>
         
         <DVCSModule>
-            <param name="id" value="GV2008Model" />
+            <param name="id" value="BMJ2012Model" />
         </DVCSModule>
         
         <DVCSConvolCoeffFunctionModule>

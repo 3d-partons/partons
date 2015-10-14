@@ -1,14 +1,9 @@
 #include "DVCSModule.h"
 
-#include "../../beans/gpd/GPDType.h"
 #include "../../beans/observable/Observable.h"
-//#include "../../utils/logger/LoggerManager.h"
 #include "../../utils/stringUtils/Formatter.h"
 #include "../../utils/vector/Vector3D.h"
 #include "../convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
-
-//#include "../../utils/math/MathUtils.h"
-//#include "../convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
 
 DVCSModule::DVCSModule(const std::string &className) :
         ObservableModule(className), m_xB(0.), m_t(0.), m_Q2(0.), m_phi(0.), m_phiS(
@@ -135,4 +130,15 @@ DVCSConvolCoeffFunctionModule* DVCSModule::getDVCSConvolCoeffFunctionModule() co
 void DVCSModule::setDVCSConvolCoeffFunctionModule(
         DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule) {
     m_pDVCSConvolCoeffFunctionModule = pDVCSConvolCoeffFunctionModule;
+}
+
+std::complex<double> DVCSModule::getConvolCoeffFunctionValue(
+        GPDType::Type gpdType) {
+    std::complex<double> result = 0.;
+
+    if (m_dvcsConvolCoeffFunctionResult.isAvailable(gpdType)) {
+        result = m_dvcsConvolCoeffFunctionResult.getLastAvailable();
+    }
+
+    return result;
 }

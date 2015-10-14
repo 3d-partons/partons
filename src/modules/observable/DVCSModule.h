@@ -12,9 +12,11 @@
  * @brief
  */
 
+#include <complex>
 #include <string>
 
 #include "../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
+#include "../../beans/gpd/GPDType.h"
 #include "../ObservableModule.h"
 
 class DVCSConvolCoeffFunctionModule;
@@ -88,6 +90,8 @@ protected:
     virtual double CrossSectionInterf(double beamHelicity, double beamCharge,
             Vector3D targetPolarization) = 0;
     // Interference cross section
+
+    std::complex<double> getConvolCoeffFunctionValue(GPDType::Type gpdType);
 
 private:
 

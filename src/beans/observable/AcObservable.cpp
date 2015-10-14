@@ -28,6 +28,7 @@ AcObservable* AcObservable::clone() const {
 }
 
 //TODO vérifier
+//TODO !!! division par zero !!!
 double AcObservable::compute(ObservableModule* pDVCSModule, double phi) {
 
     debug(__func__, Formatter() << "phi = " << phi);

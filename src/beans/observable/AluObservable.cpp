@@ -25,6 +25,8 @@ AluObservable* AluObservable::clone() const {
 }
 
 //TODO vérifier
+//TODO !!! division par zero !!!
+//TODO optimisation remplacer les multiples appels similaires par A - B / A + B
 double AluObservable::compute(ObservableModule* pDVCSModule, double phi) {
     double result = (pDVCSModule->computeCrossSection(+1, -1,
             Vector3D(0., 0., 0.), phi)

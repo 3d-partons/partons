@@ -7,9 +7,8 @@
 
 #include "BMJ2012Model.h"
 
-//#include <algorithm>
 #include <cmath>
-#include <vector>
+//#include <vector>
 
 #include "../../../BaseObjectRegistry.h"
 #include "../../../FundamentalPhysicalConstants.h"
@@ -134,11 +133,11 @@ void BMJ2012Model::initModule(double beamHelicity, double beamCharge,
 
     //define the Lepton propagators
     double Delta2Q2 = m_t / m_Q2;
-    double yeps = m_y[0] * (1 + m_epsilon[1]);
-    double J = (1 - m_y[0] - m_y[0] * m_epsilon[1]) * (1 + Delta2Q2)
-            - (1 - m_xB) * (2 - m_y[0]) * Delta2Q2;
-    m_P1 = -(J + 2 * m_K[0] * cos(m_phi1BMK)) / yeps;
-    m_P2 = 1 + Delta2Q2 - m_P1;
+    double yeps = m_y[0] * (1. + m_epsilon[1]);
+    double J = (1. - m_y[0] - m_y[0] * m_epsilon[1]) * (1. + Delta2Q2)
+            - (1. - m_xB) * (2. - m_y[0]) * Delta2Q2;
+    m_P1 = -(J + 2. * m_K[0] * cos(m_phi1BMK)) / yeps;
+    m_P2 = 1. + Delta2Q2 - m_P1;
 
     // beam helicity
     m_lambda = beamHelicity;
@@ -155,7 +154,7 @@ void BMJ2012Model::isModuleWellConfigured() {
     DVCSModule::isModuleWellConfigured();
 }
 
-void BMJ2012Model::defineAngles(Vector3D targetPolarization) {
+void BMJ2012Model::defineAngles(const Vector3D &targetPolarization) {
     double Px = targetPolarization.getX();
     double Py = targetPolarization.getY();
     double Pz = targetPolarization.getZ();
@@ -186,7 +185,6 @@ void BMJ2012Model::defineAngles(Vector3D targetPolarization) {
                 }
             }
         }
-
     }
 
     double costheta = cos(m_theta);
@@ -294,7 +292,7 @@ double BMJ2012Model::SqrAmplBH(double beamHelicity, double beamCharge,
             / (m_xB2 * m_y[1] * pow(1 + m_epsilon[1], 2) * m_t * m_P1 * m_P2);
 
     double result = 0.;
-    for (int n(0); n < 3; n++) {
+    for (unsigned int n = 0; n < 3; n++) {
         result += (m_cBH[0][n] + cos(m_theta) * m_cBH[1][n]
                 + sin(m_theta) * m_cBH[2][n]) * cos(n * m_phi1BMK);
     }

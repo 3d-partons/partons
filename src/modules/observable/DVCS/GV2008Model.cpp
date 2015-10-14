@@ -4,11 +4,9 @@
 #include <cmath>
 #include <complex>
 
-#include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
 #include "../../../beans/gpd/GPDType.h"
 #include "../../../BaseObjectRegistry.h"
 #include "../../../FundamentalPhysicalConstants.h"
-//#include "../../../utils/logger/LoggerManager.h"
 #include "../../../utils/stringUtils/Formatter.h"
 
 // Initialise [class]::classId with a unique name.
@@ -246,20 +244,10 @@ double GV2008Model::SqrAmplVCSAndInterf(double beamHelicity, double beamCharge,
 //TODO avoid multiple computation if kinematic unchanged
 void GV2008Model::MakeVCSHelicityAmplitudes() {
 
-    std::complex<double> CFF_H = 0., CFF_E = 0., CFF_Ht = 0., CFF_Et = 0.;
-
-    if (m_dvcsConvolCoeffFunctionResult.isAvailable(GPDType::H)) {
-        CFF_H = m_dvcsConvolCoeffFunctionResult.getLastAvailable();
-    }
-    if (m_dvcsConvolCoeffFunctionResult.isAvailable(GPDType::E)) {
-        CFF_E = m_dvcsConvolCoeffFunctionResult.getLastAvailable();
-    }
-    if (m_dvcsConvolCoeffFunctionResult.isAvailable(GPDType::Ht)) {
-        CFF_Ht = m_dvcsConvolCoeffFunctionResult.getLastAvailable();
-    }
-    if (m_dvcsConvolCoeffFunctionResult.isAvailable(GPDType::Et)) {
-        CFF_Et = m_dvcsConvolCoeffFunctionResult.getLastAvailable();
-    }
+    std::complex<double> CFF_H = getConvolCoeffFunctionValue(GPDType::H);
+    std::complex<double> CFF_E = getConvolCoeffFunctionValue(GPDType::E);
+    std::complex<double> CFF_Ht = getConvolCoeffFunctionValue(GPDType::Ht);
+    std::complex<double> CFF_Et = getConvolCoeffFunctionValue(GPDType::Et);
 
     RMvcs[0][0] = 0;
     RMvcs[0][1] = 0;

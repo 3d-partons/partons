@@ -125,7 +125,7 @@ private:
 
     void computeFourierCoeffsInterf(); ///< Computes c_I and s_I
 
-    void defineAngles(Vector3D targetPolarization); ///< Define the BMK angles
+    void defineAngles(const Vector3D &targetPolarization); ///< Define the BMK angles
 
     double SqrAmplBH(double beamHelicity, double beamCharge,
             Vector3D targetPolarization); ///< Returns the squared amplitude of Bethe Heitler process
