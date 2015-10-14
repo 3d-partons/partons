@@ -9,6 +9,7 @@
 #define BMJ2012MODEL_H_
 
 #include <string>
+#include <vector>
 
 #include "../DVCSModule.h"
 
@@ -57,6 +58,9 @@ protected:
 
 private:
 
+    // The vectors here are actually static arrays, DO NOT PUSH BACK OR POP BACK.
+    // Use them as arrays! Size fixed in the constructor.
+
     double m_phi1BMK; ///< Angle small phi of BMK (between electron and outgoing proton)
     double m_phi2BMK; ///< Angle small phi of BMK (between target polarization and outgoing proton)
     double m_PhiBMK; ///< Angle capital Phi of BMK (between electron and target polarization)
@@ -65,19 +69,19 @@ private:
     double m_lambda; ///< Lepton helicity
 
     double m_xB2; ///< square of xB
-    double m_Q[4]; ///< square root of virtuality Q2
-                   ///< m_Q[0] = Q, m_Q[1] = Q^2, etc...
-    double m_M[2]; ///< Proton mass
-                   ///< m_M[0] = M, m_M[1] = M^2, etc...
-    double m_y[2]; ///< Lepton energy fraction
-                   ///< m_y[0] = y, m_y[1] = y^2, etc...
-    double m_epsilon[2]; ///<
-                         ///< m_epsilon[0] = epsilon, m_epsilon[1] = epsilon^2, etc...
+    std::vector<double> m_Q; ///< square root of virtuality Q2
+                             ///< m_Q[0] = Q, m_Q[1] = Q^2, etc...
+    std::vector<double> m_M; ///< Proton mass
+                             ///< m_M[0] = M, m_M[1] = M^2, etc...
+    std::vector<double> m_y; ///< Lepton energy fraction
+                             ///< m_y[0] = y, m_y[1] = y^2, etc...
+    std::vector<double> m_epsilon; ///<
+                                   ///< m_epsilon[0] = epsilon, m_epsilon[1] = epsilon^2, etc...
     double m_epsroot; ///< sqrt(1+epsilon^2)
-    double m_K[2]; ///< Kinematical factor K
-                   ///< m_K[0] = K, m_K[1] = K^2, etc...
-    double m_Delta2[2]; ///< Mandelstam variable t
-                        ///< m_Delta2[0] = t, m_Delta2[1] = Delta^4 = t^2, etc...
+    std::vector<double> m_K; ///< Kinematical factor K
+                             ///< m_K[0] = K, m_K[1] = K^2, etc...
+    std::vector<double> m_Delta2; ///< Mandelstam variable t
+                                  ///< m_Delta2[0] = t, m_Delta2[1] = Delta^4 = t^2, etc...
     double m_Delta2_min; ///< minimum of t
 
     /// Bethe Heitler coeffs (BMK2002)
@@ -85,7 +89,7 @@ private:
      *  1st index: 0=unp, 1=LP, 2=TP
      *  2nd index: c0, c1, c2
      */
-    double m_cBH[3][3];
+    std::vector<std::vector<double> > m_cBH;
 
     double m_s1BHTP; ///< BH Fourier coeff s1 TP
 

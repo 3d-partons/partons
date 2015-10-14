@@ -7,8 +7,9 @@
 
 #include "BMJ2012Model.h"
 
-#include <algorithm>
+//#include <algorithm>
 #include <cmath>
+#include <vector>
 
 #include "../../../BaseObjectRegistry.h"
 #include "../../../FundamentalPhysicalConstants.h"
@@ -22,7 +23,7 @@ const unsigned int BMJ2012Model::classId =
 /*--------------------------------------- Constructors ---------------------------------*/
 
 BMJ2012Model::BMJ2012Model(const std::string &className) :
-        DVCSModule(className) {
+        DVCSModule(className), m_y() {
     m_E = 5.77;
     m_phi1BMK = 0.;
     m_phi2BMK = 0.;
@@ -31,16 +32,18 @@ BMJ2012Model::BMJ2012Model(const std::string &className) :
     m_Lambda = 0.;
     m_lambda = 0.;
     m_xB2 = 0.;
-    m_y[0] = 0.;
-    m_Q[0] = 0;
-    m_M[0] = 0;
-    m_epsilon[0] = 0.;
+    m_y.assign(2, 0.);
+    m_Q.assign(4, 0.);
+    m_M.assign(2, 0.);
+    m_epsilon.assign(2, 0.);
     m_epsroot = 0.;
-    m_K[0] = 0.;
-    m_Delta2[0] = 0.;
+    m_K.assign(2, 0.);
+    m_Delta2.assign(2, 0.);
     m_Delta2_min = 0.;
-    std::fill_n(m_cBH[0], 3 * 3, 0.);
+    m_cBH.assign(3, std::vector<double>(3, 0.));
     m_s1BHTP = 0.;
+    m_P1 = 0.;
+    m_P2 = 0.;
 }
 
 /*-------------------------------------- Destructor ------------------------------------*/
@@ -51,6 +54,25 @@ BMJ2012Model::~BMJ2012Model() {
 
 BMJ2012Model::BMJ2012Model(const BMJ2012Model& other) :
         DVCSModule(other) {
+    m_phi1BMK = other.m_phi1BMK;
+    m_phi2BMK = other.m_phi2BMK;
+    m_PhiBMK = other.m_PhiBMK;
+    m_theta = other.m_theta;
+    m_Lambda = other.m_Lambda;
+    m_lambda = other.m_lambda;
+    m_xB2 = other.m_xB2;
+    m_y = other.m_y;
+    m_Q = other.m_Q;
+    m_M = other.m_M;
+    m_epsilon = other.m_epsilon;
+    m_epsroot = other.m_epsroot;
+    m_K = other.m_K;
+    m_Delta2 = other.m_Delta2;
+    m_Delta2_min = other.m_Delta2_min;
+    m_cBH = other.m_cBH;
+    m_s1BHTP = other.m_s1BHTP;
+    m_P1 = other.m_P1;
+    m_P2 = other.m_P2;
 }
 
 BMJ2012Model* BMJ2012Model::clone() const {
@@ -163,8 +185,14 @@ void BMJ2012Model::defineAngles(Vector3D targetPolarization) {
 
 void BMJ2012Model::computeFourierCoeffsBH() {
     //TODO Get the value of F1(t) and F2(t) from another module
-    double F1 = 0;
-    double F2 = 0.;
+    double F1; // Dirac form factor
+    double F2; // Pauli form factor
+    F1 = (4. * m_M[1] - 2.79285 * m_t)
+                    / (pow(1. - 1.4084507042253522 * m_t, 2)
+                            * (4. * m_M[1] - 1. * m_t));
+    F2 = (7.1714 * m_M[1])
+            / (pow(1 - 1.4084507042253522 * m_t, 2) * (4 * m_M[1] - m_t));
+
     double F12 = pow(F1, 2);
     double F22 = pow(F2, 2);
     double F1PlusF2 = F1 + F2;
