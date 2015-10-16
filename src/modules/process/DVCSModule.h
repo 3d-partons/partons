@@ -17,14 +17,13 @@
 
 #include "../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
 #include "../../beans/gpd/GPDType.h"
-#include "../ObservableModule.h"
+#include "../ProcessModule.h"
 
 class DVCSConvolCoeffFunctionModule;
-
 class Observable;
 class Vector3D;
 
-class DVCSModule: public ObservableModule {
+class DVCSModule: public ProcessModule {
 public:
     static const std::string PARAMETER_NAME_BEAM_ENERGY;
 
@@ -67,18 +66,9 @@ protected:
 
     void SetBeamEnergy(double EBeam); ///< Sets beam energy
 
-//    double m_xB;        ///< Bjorken variable
-//    double m_t;     ///< Mandelstam variable (square of the 4-momentum transfer)
-//    double m_Q2;    ///< Virtuality of the photon
-
-    double m_MuF2;
-    double m_MuR2;
-
     double m_phi;      ///<  Angle between leptonic and hadronic planes (radian)
     double m_phiS;      ///<
     double m_phie;      ///<
-
-    double m_E;     ///< Beam energy in target rest frame
 
     double m_phaseSpace;
 

@@ -1,13 +1,13 @@
-#ifndef OBSERVABLE_MODULE_H
-#define OBSERVABLE_MODULE_H
+#ifndef PROCESS_MODULE_H
+#define PROCESS_MODULE_H
 
 /**
- * @file ObservableModule
+ * @file ProcessModule.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 19 November 2014
  * @version 1.0
  *
- * @class ObservableModule
+ * @class ProcessModule
  *
  * @brief
  */
@@ -18,19 +18,19 @@
 
 class Vector3D;
 
-class ObservableModule: public ModuleObject {
+class ProcessModule: public ModuleObject {
 public:
     /**
      * Default constructor
      */
-    ObservableModule(const std::string &className);
+    ProcessModule(const std::string &className);
 
-    virtual ObservableModule* clone() const = 0;
+    virtual ProcessModule* clone() const = 0;
 
     /**
      * Default destructor
      */
-    virtual ~ObservableModule();
+    virtual ~ProcessModule();
 
     virtual void computeConvolCoeffFunction(double xB, double t, double Q2,
             double MuF2, double MuR2) = 0;
@@ -44,12 +44,17 @@ protected:
      *
      * @param other
      */
-    ObservableModule(const ObservableModule &other);
+    ProcessModule(const ProcessModule &other);
 
     // Invariant scalars
-    double m_xB;
-    double m_t;
-    double m_Q2;
+    double m_xB;        ///< Bjorken variable
+    double m_t;     ///< Mandelstam variable (square of the 4-momentum transfer)
+    double m_Q2;    ///< Virtuality of the photon
+
+    double m_MuF2;
+    double m_MuR2;
+
+    double m_E;     ///< Beam energy in target rest frame
 
     // Frame dependent scalars
 
@@ -59,4 +64,4 @@ private:
 
 };
 
-#endif /* OBSERVABLE_MODULE_H */
+#endif /* PROCESS_MODULE_H */

@@ -29,7 +29,7 @@ public:
      */
     virtual CrossSectionObservable* clone() const;
 
-    virtual double compute(ObservableModule* pDVCSModule, double phi);
+    virtual double compute(ProcessModule* pDVCSModule, double phi);
 
 protected:
     /**

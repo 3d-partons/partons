@@ -55,15 +55,15 @@ DVCSConvolCoeffFunctionModule* ModuleObjectFactory::newDVCSConvolCoeffFunctionMo
             className));
 }
 
-ObservableModule* ModuleObjectFactory::newObservableModule(
+ProcessModule* ModuleObjectFactory::newObservableModule(
         unsigned int classId) {
-    return static_cast<ObservableModule*>(BaseObjectFactory::getInstance()->newBaseObject(
+    return static_cast<ProcessModule*>(BaseObjectFactory::getInstance()->newBaseObject(
             classId));
 }
 
-ObservableModule* ModuleObjectFactory::newObservableModule(
+ProcessModule* ModuleObjectFactory::newObservableModule(
         const std::string& className) {
-    return static_cast<ObservableModule*>(BaseObjectFactory::getInstance()->newBaseObject(
+    return static_cast<ProcessModule*>(BaseObjectFactory::getInstance()->newBaseObject(
             className));
 }
 

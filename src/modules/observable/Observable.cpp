@@ -4,7 +4,7 @@
 #include "../../beans/observable/ObservableResultList.h"
 #include "../../utils/math/MathUtils.h"
 #include "../../utils/stringUtils/Formatter.h"
-#include "../ObservableModule.h"
+#include "../ProcessModule.h"
 
 Observable::Observable(const std::string &className) :
         BaseObject(className), m_channel(ObservableChannel::UNDEFINED), m_beamHelicity(
@@ -85,7 +85,7 @@ ObservableResultList Observable::compute(double xB, double t, double Q2,
     return observableResultList;
 }
 
-double Observable::compute(ObservableModule* pDVCSModule, double phi) {
+double Observable::compute(ProcessModule* pDVCSModule, double phi) {
     throwException(__func__,
             "Nothing to do ; Must be implemented in daugther class");
     return 0.;
@@ -124,10 +124,10 @@ void Observable::setTargetPolarization(const Vector3D& targetPolarization) {
     m_targetPolarization = targetPolarization;
 }
 
-const ObservableModule* Observable::getDVCSModule() const {
+const ProcessModule* Observable::getDVCSModule() const {
     return m_pDVCSModule;
 }
 
-void Observable::setDVCSModule(ObservableModule* pDVCSModule) {
+void Observable::setDVCSModule(ProcessModule* pDVCSModule) {
     m_pDVCSModule = pDVCSModule;
 }

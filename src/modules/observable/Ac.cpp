@@ -3,12 +3,11 @@
 #include "../../BaseObjectRegistry.h"
 #include "../../utils/stringUtils/Formatter.h"
 #include "../../utils/vector/Vector3D.h"
-#include "../ObservableModule.h"
+#include "../ProcessModule.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int Ac::classId =
-        BaseObjectRegistry::getInstance()->registerBaseObject(
-                new Ac("Ac"));
+        BaseObjectRegistry::getInstance()->registerBaseObject(new Ac("Ac"));
 
 Ac::Ac(const std::string &className) :
         Observable(className) {
@@ -27,7 +26,7 @@ Ac* Ac::clone() const {
 
 //TODO vérifier
 //TODO !!! division par zero !!!
-double Ac::compute(ObservableModule* pDVCSModule, double phi) {
+double Ac::compute(ProcessModule* pDVCSModule, double phi) {
 
     debug(__func__, Formatter() << "phi = " << phi);
 

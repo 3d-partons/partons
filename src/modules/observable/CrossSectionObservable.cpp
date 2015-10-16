@@ -2,7 +2,7 @@
 
 #include "../../BaseObjectRegistry.h"
 #include "../../utils/vector/Vector3D.h"
-#include "../ObservableModule.h"
+#include "../ProcessModule.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int CrossSectionObservable::classId =
@@ -25,8 +25,7 @@ CrossSectionObservable* CrossSectionObservable::clone() const {
     return new CrossSectionObservable(*this);
 }
 
-double CrossSectionObservable::compute(ObservableModule* pDVCSModule,
-        double phi) {
+double CrossSectionObservable::compute(ProcessModule* pDVCSModule, double phi) {
     double result = pDVCSModule->computeCrossSection(+1, -1,
             Vector3D(0., 0., 0.), phi);
     return result;

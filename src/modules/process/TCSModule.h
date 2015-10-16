@@ -14,7 +14,7 @@
 
 #include "../ObservableModule.h"
 
-class TCSModule: public ObservableModule {
+class TCSModule: public ProcessModule {
 public:
 
 protected:

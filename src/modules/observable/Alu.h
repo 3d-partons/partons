@@ -16,7 +16,7 @@
 
 #include "Observable.h"
 
-class ObservableModule;
+class ProcessModule;
 
 class Alu: public Observable {
 public:
@@ -31,7 +31,7 @@ public:
      */
     virtual Alu* clone() const;
 
-    virtual double compute(ObservableModule* pDVCSModule, double phi);
+    virtual double compute(ProcessModule* pDVCSModule, double phi);
 
 protected:
     /**

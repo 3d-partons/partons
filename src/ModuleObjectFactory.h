@@ -21,7 +21,7 @@ class DVCSConvolCoeffFunctionModule;
 class DVCSModule;
 class GPDEvolutionModule;
 class GPDModule;
-class ObservableModule;
+class ProcessModule;
 class RunningAlphaStrongModule;
 
 class ModuleObjectFactory {
@@ -52,8 +52,8 @@ public:
     static RunningAlphaStrongModule* newRunningAlphaStrongModule(
             const std::string & className);
 
-    static ObservableModule* newObservableModule(unsigned int classId);
-    static ObservableModule* newObservableModule(const std::string &className);
+    static ProcessModule* newObservableModule(unsigned int classId);
+    static ProcessModule* newObservableModule(const std::string &className);
 
     static ActiveFlavorsModule* newActiveFlavorsModule(unsigned int classId);
     static ActiveFlavorsModule* newActiveFlavorsModule(

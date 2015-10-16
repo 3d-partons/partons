@@ -13,8 +13,7 @@ const unsigned int AcCos2phi::classId =
 
 AcCos2phi::AcCos2phi(const std::string &className) :
         FourierObservable(className), m_pAcObservable(0) {
-    m_pAcObservable = ObservableObjectFactory::newObservable(
-            Ac::classId);
+    m_pAcObservable = ObservableObjectFactory::newObservable(Ac::classId);
 }
 
 AcCos2phi::AcCos2phi(const AcCos2phi& other) :

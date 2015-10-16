@@ -45,7 +45,7 @@ public:
     ObservableResultList compute(double xB, double t, double Q2,
             std::vector<double> listOfPhi);
 
-    virtual double compute(ObservableModule* pDVCSModule, double phi);
+    virtual double compute(ProcessModule* pDVCSModule, double phi);
 
 // ##### GETTERS & SETTERS #####
 
@@ -55,8 +55,8 @@ public:
     void setBeamHelicity(double beamHelicity);
     const Vector3D& getTargetPolarization() const;
     void setTargetPolarization(const Vector3D& targetPolarization);
-    const ObservableModule* getDVCSModule() const;
-    void setDVCSModule(ObservableModule* pDVCSModule);
+    const ProcessModule* getDVCSModule() const;
+    void setDVCSModule(ProcessModule* pDVCSModule);
 
 protected:
 
@@ -69,7 +69,7 @@ protected:
      */
     Observable(const Observable& other);
 
-    ObservableModule* m_pDVCSModule;
+    ProcessModule* m_pDVCSModule;
 
     //TODO doc
     ObservableChannel::Type m_channel;

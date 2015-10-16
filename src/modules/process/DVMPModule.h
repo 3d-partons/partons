@@ -14,7 +14,7 @@
 
 #include "../ObservableModule.h"
 
-class DVMPModule: public ObservableModule {
+class DVMPModule: public ProcessModule {
 public:
 
 protected:
