@@ -49,6 +49,8 @@ void DVCSConvolCoeffFunctionService::computeTask(Task &task) {
 
         GPDModule* pGPDModule = 0;
 
+        //TODO How to handle CFF module without GPD module ?
+
         if (task.isAvailableParameterList("GPDModule")) {
             pGPDModule = ModuleObjectFactory::newGPDModule(
                     task.getLastAvailableParameterList().get("id").toString());
@@ -77,7 +79,11 @@ void DVCSConvolCoeffFunctionService::computeTask(Task &task) {
         DVCSConvolCoeffFunctionResult result = computeWithGPDModel(
                 pDVCSConvolCoeffFunctionModule, pGPDModule, kinematic);
 
-        info(__func__, Formatter() << result.toString());
+        info(__func__,
+                Formatter() << task.getFunctionName() << "("
+                        << pDVCSConvolCoeffFunctionModule->getClassName()
+                        << " , " << pGPDModule->getClassName() << ")" << '\n'
+                        << result.toString());
 
     } else {
         throwException(__func__,

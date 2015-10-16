@@ -76,7 +76,7 @@ std::string GPDResult::toString() {
 
     for (it = m_partonDistributions.begin(); it != m_partonDistributions.end();
             it++) {
-        os << "ComputedBy: " << m_computedByGPDModuleId << std::endl;
+        //os << "ComputedBy: " << m_computedByGPDModuleId << std::endl;
         os << "GPD_" << GPDType(it->first).toString() << std::endl;
         os << (it->second).toString();
         os << std::endl;
