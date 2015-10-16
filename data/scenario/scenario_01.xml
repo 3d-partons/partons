@@ -94,11 +94,11 @@
         </ObservableKinematic>
         
         <Observable>
-            <param name="id" value="Alu" />
+            <param name="id" value="CrossSectionObservable" />
         </Observable>
         
         <DVCSModule>
-            <param name="id" value="GV2008Model" />
+            <param name="id" value="BMJ2012Model" />
             <param name="beam_energy" value="5.77" />
         </DVCSModule>
         
@@ -119,11 +119,11 @@
             <param name="Q2" value="1.3651" />
             <param name="MuF2" value="4" />
             <param name="MuR2" value="4" />
-            <param name="phi" value="" />
+            <param name="phi" value="7.5|22.5|37.5" />
         </ObservableKinematic>
         
         <Observable>
-            <param name="id" value="AcCos2phi" />
+            <param name="id" value="CrossSectionObservable" />
         </Observable>
         
         <DVCSModule>
