@@ -98,7 +98,7 @@
         </Observable>
         
         <DVCSModule>
-            <param name="id" value="BMJ2012Model" />
+            <param name="id" value="GV2008Model" />
             <param name="beam_energy" value="5.77" />
         </DVCSModule>
         
@@ -127,7 +127,7 @@
         </Observable>
         
         <DVCSModule>
-            <param name="id" value="BMJ2012Model" />
+            <param name="id" value="GV2008Model" />
             <param name="beam_energy" value="5.77" />
         </DVCSModule>
         
