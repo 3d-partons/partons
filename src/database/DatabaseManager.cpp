@@ -7,10 +7,8 @@
 #include <QtSql/qsqlrecord.h>
 #include <QtSql/qsqltablemodel.h>
 #include <iostream>
-//#include <stdexcept>
 #include <string>
 
-//#include "../utils/logger/LoggerManager.h"
 #include "../utils/PropertiesManager.h"
 #include "../utils/stringUtils/Formatter.h"
 #include "../utils/stringUtils/StringUtils.h"
@@ -85,8 +83,15 @@ DatabaseManager* DatabaseManager::getInstance() {
 }
 
 void DatabaseManager::close() {
+    QString connection;
+    connection = m_db.connectionName();
     m_db.close();
-    m_db.removeDatabase(m_db.connectionName());
+    // QSqlDatabasePrivate::removeDatabase: connection 'qt_sql_default_connection' is still in use, all queries will cease to work.
+    // After you closed it, m_db still holds a reference to the database you configured in connect().
+    // You can reset m_db by assigning a default constructed QSqlDatabase
+    // See : http://stackoverflow.com/questions/9519736/warning-remove-database
+    m_db = QSqlDatabase();
+    m_db.removeDatabase(connection);
 }
 
 const QSqlDatabase& DatabaseManager::getDb() const {
