@@ -3,7 +3,6 @@
 #include <vector>
 
 #include "../beans/automation/Task.h"
-//#include "../beans/observable/AluObservable.h"
 #include "../beans/observable/Observable.h"
 #include "../beans/observable/ObservableResultList.h"
 #include "../BaseObjectRegistry.h"
@@ -108,7 +107,9 @@ void ObservableService::computeTask(Task &task) {
         ObservableResultList result = computeDVCSObservable(pDVCSModule,
                 pObservable, kinematic, pDVCSConvolCoeffFunctionModule);
 
-        info(__func__, Formatter() << result.toString());
+        info(__func__,
+                Formatter() << task.getFunctionName() << '\n'
+                        << result.toString());
 
     } else {
         throwException(__func__,
