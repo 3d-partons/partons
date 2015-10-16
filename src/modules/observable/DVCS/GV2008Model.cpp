@@ -20,7 +20,6 @@ GV2008Model::GV2008Model(const std::string &className) :
         DVCSModule(className), m_qCM(Vector4D(0., 0., 0., 0.)), m_pCM(
                 Vector4D(0., 0., 0., 0.)), m_qpCM(Vector4D(0., 0., 0., 0.)), m_ppCM(
                 Vector4D(0., 0., 0., 0.)) {
-    m_E = 5.77;
 }
 
 /*-------------------------------------- Destructor ------------------------------------*/
@@ -438,7 +437,6 @@ double GV2008Model::SqrAmplInterf(double beamHelicity, double beamCharge,
  |	 - SqrAmplInterf(Q2,xB,t,phi,BeamHeli,TargetPolar,BeamCharge,ReH,ImH,ReE,ImE,ReHT,  |
  |           ImHT,ReET,ImET)                                                            |
  *--------------------------------------------------------------------------------------*/
-
 
 /*----------------------- Function MakeExactBHCrossSections() --------------------------*
  | Computes all the stuff to evaluate the cross section assuming the hadronic helicity  |

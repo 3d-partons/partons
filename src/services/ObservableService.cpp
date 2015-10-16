@@ -108,7 +108,8 @@ void ObservableService::computeTask(Task &task) {
                 pObservable, kinematic, pDVCSConvolCoeffFunctionModule);
 
         info(__func__,
-                Formatter() << task.getFunctionName() << '\n'
+                Formatter() << task.getFunctionName() << "("
+                        << pObservable->getClassName() << ")" << '\n'
                         << result.toString());
 
     } else {

@@ -1,9 +1,15 @@
 #include "DVCSModule.h"
 
 #include "../../beans/observable/Observable.h"
+#include "../../utils/GenericType.h"
+#include "../../utils/ParameterList.h"
 #include "../../utils/stringUtils/Formatter.h"
 #include "../../utils/vector/Vector3D.h"
 #include "../convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
+
+//#include "../GPDModule.h"
+
+const std::string DVCSModule::PARAMETER_NAME_BEAM_ENERGY = "beam_energy";
 
 DVCSModule::DVCSModule(const std::string &className) :
         ObservableModule(className), m_xB(0.), m_t(0.), m_Q2(0.), m_phi(0.), m_phiS(
@@ -43,19 +49,19 @@ DVCSModule::DVCSModule(const DVCSModule& other) :
 void DVCSModule::initModule() {
     //TODO implement
 
-    debug(__func__,"Entered function.");
+    debug(__func__, "Entered function.");
 }
 
 void DVCSModule::initModule(double beamHelicity, double beamCharge,
         Vector3D targetPolarization) {
 
-    debug(__func__,"Entered function.");
+    debug(__func__, "Entered function.");
 }
 
 void DVCSModule::isModuleWellConfigured() {
     //TODO implement
 
-    debug(__func__,"Entered function.");
+    debug(__func__, "Entered function.");
 }
 
 //TODO delete
@@ -141,4 +147,14 @@ std::complex<double> DVCSModule::getConvolCoeffFunctionValue(
     }
 
     return result;
+}
+
+void DVCSModule::configure(ParameterList parameters) {
+    if (parameters.isAvailable(DVCSModule::PARAMETER_NAME_BEAM_ENERGY)) {
+        m_E = parameters.getLastAvailable().toDouble();
+
+        info(__func__,
+                Formatter() << DVCSModule::PARAMETER_NAME_BEAM_ENERGY
+                        << " configured with value = " << m_E);
+    }
 }

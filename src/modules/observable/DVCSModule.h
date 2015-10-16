@@ -26,8 +26,18 @@ class Vector3D;
 
 class DVCSModule: public ObservableModule {
 public:
+    static const std::string PARAMETER_NAME_BEAM_ENERGY;
+
     DVCSModule(const std::string &className);
     virtual ~DVCSModule();
+
+    /**
+     * Provides a generic method to configure all types of modules by passing a Parameters object.
+     * (See ModuleObject class for more info).
+     *
+     * @param parameters
+     */
+    void configure(ParameterList parameters);
 
     void computeConvolCoeffFunction(double xB, double t, double Q2, double MuF2,
             double MuR2);
@@ -54,7 +64,6 @@ protected:
     virtual void initModule(double beamHelicity, double beamCharge,
             Vector3D targetPolarization);
     virtual void isModuleWellConfigured();
-
 
     void SetBeamEnergy(double EBeam); ///< Sets beam energy
 

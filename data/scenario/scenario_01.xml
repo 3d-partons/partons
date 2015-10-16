@@ -99,6 +99,7 @@
         
         <DVCSModule>
             <param name="id" value="BMJ2012Model" />
+            <param name="beam_energy" value="5.77" />
         </DVCSModule>
         
         <DVCSConvolCoeffFunctionModule>
@@ -127,6 +128,7 @@
         
         <DVCSModule>
             <param name="id" value="BMJ2012Model" />
+            <param name="beam_energy" value="5.77" />
         </DVCSModule>
         
         <DVCSConvolCoeffFunctionModule>
