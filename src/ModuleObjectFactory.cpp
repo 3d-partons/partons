@@ -6,7 +6,7 @@
 #include "modules/DoubleDistributionModule.h"
 #include "modules/evolution/GPDEvolutionModule.h"
 #include "modules/GPDModule.h"
-#include "modules/observable/DVCSModule.h"
+#include "modules/process/DVCSModule.h"
 #include "modules/RunningAlphaStrongModule.h"
 
 DoubleDistributionModule* ModuleObjectFactory::newDoubleDistributionModule(

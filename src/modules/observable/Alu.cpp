@@ -1,33 +1,33 @@
-#include "AluObservable.h"
+#include "Alu.h"
 
 #include "../../BaseObjectRegistry.h"
-#include "../../modules/ObservableModule.h"
 #include "../../utils/vector/Vector3D.h"
+#include "../ObservableModule.h"
 
 // Initialise [class]::classId with a unique name.
-const unsigned int AluObservable::classId =
+const unsigned int Alu::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
-                new AluObservable("AluObservable"));
+                new Alu("Alu"));
 
-AluObservable::AluObservable(const std::string &className) :
+Alu::Alu(const std::string &className) :
         Observable(className) {
 }
 
-AluObservable::AluObservable(const AluObservable& other) :
+Alu::Alu(const Alu& other) :
         Observable(other) {
 }
 
-AluObservable::~AluObservable() {
+Alu::~Alu() {
 }
 
-AluObservable* AluObservable::clone() const {
-    return new AluObservable(*this);
+Alu* Alu::clone() const {
+    return new Alu(*this);
 }
 
 //TODO vérifier
 //TODO !!! division par zero !!!
 //TODO optimisation remplacer les multiples appels similaires par A - B / A + B
-double AluObservable::compute(ObservableModule* pDVCSModule, double phi) {
+double Alu::compute(ObservableModule* pDVCSModule, double phi) {
     double result = (pDVCSModule->computeCrossSection(+1, -1,
             Vector3D(0., 0., 0.), phi)
             - pDVCSModule->computeCrossSection(-1, -1, Vector3D(0., 0., 0.),

@@ -1,7 +1,7 @@
 #include "ObservableObjectFactory.h"
 
-#include "beans/observable/Observable.h"
 #include "BaseObjectFactory.h"
+#include "modules/observable/Observable.h"
 
 Observable* ObservableObjectFactory::newObservable(unsigned int classId) {
     return static_cast<Observable*>(BaseObjectFactory::getInstance()->newBaseObject(

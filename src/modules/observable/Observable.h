@@ -15,10 +15,10 @@
 #include <string>
 #include <vector>
 
-#include "../../modules/observable/DVCSModule.h"
+#include "../../beans/observable/ObservableChannel.h"
+#include "../../beans/observable/ObservableType.h"
 #include "../../utils/vector/Vector3D.h"
-#include "ObservableChannel.h"
-#include "ObservableType.h"
+#include "../process/DVCSModule.h"
 
 class ObservableResultList;
 

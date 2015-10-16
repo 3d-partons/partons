@@ -94,7 +94,7 @@
         </ObservableKinematic>
         
         <Observable>
-            <param name="id" value="AluObservable" />
+            <param name="id" value="Alu" />
         </Observable>
         
         <DVCSModule>

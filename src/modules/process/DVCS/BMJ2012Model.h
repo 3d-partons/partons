@@ -1,12 +1,5 @@
-/*
- * BMJ2012Model.h
- *
- *  Created on: Oct 7, 2015
- *      Author: debian
- */
-
-#ifndef BMJ2012MODEL_H_
-#define BMJ2012MODEL_H_
+#ifndef BMJ_2012_MODEL_H
+#define BMJ_2012_MODEL_H
 
 #include <string>
 #include <vector>
@@ -16,7 +9,7 @@
 /**
  * @file BMJ2012Model.h
  * @author Nabil CHOUIKA (SPhN / CEA Saclay)
- * @date 07-10-2015
+ * @date 07 October 2015
  * @version 1.0
  *
  * @class BMJ2012Model
@@ -135,4 +128,4 @@ private:
             Vector3D targetPolarization); ///< Returns the interference term of the squared amplitude
 };
 
-#endif /* BMJ2012MODEL_H_ */
+#endif /* BMJ_2012_MODEL_H */

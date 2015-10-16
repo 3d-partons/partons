@@ -1,10 +1,10 @@
 #include "Observable.h"
 
-#include "../../modules/ObservableModule.h"
+#include "../../beans/observable/ObservableResult.h"
+#include "../../beans/observable/ObservableResultList.h"
 #include "../../utils/math/MathUtils.h"
 #include "../../utils/stringUtils/Formatter.h"
-#include "ObservableResult.h"
-#include "ObservableResultList.h"
+#include "../ObservableModule.h"
 
 Observable::Observable(const std::string &className) :
         BaseObject(className), m_channel(ObservableChannel::UNDEFINED), m_beamHelicity(

@@ -1,11 +1,11 @@
 #include "DVCSModule.h"
 
-#include "../../beans/observable/Observable.h"
 #include "../../utils/GenericType.h"
 #include "../../utils/ParameterList.h"
 #include "../../utils/stringUtils/Formatter.h"
 #include "../../utils/vector/Vector3D.h"
 #include "../convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
+#include "../observable/Observable.h"
 
 //#include "../GPDModule.h"
 

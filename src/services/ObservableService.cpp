@@ -3,12 +3,12 @@
 #include <vector>
 
 #include "../beans/automation/Task.h"
-#include "../beans/observable/Observable.h"
 #include "../beans/observable/ObservableResultList.h"
 #include "../BaseObjectRegistry.h"
 #include "../modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
 #include "../modules/GPDModule.h"
-#include "../modules/observable/DVCSModule.h"
+#include "../modules/observable/Observable.h"
+#include "../modules/process/DVCSModule.h"
 #include "../ModuleObjectFactory.h"
 #include "../ObservableObjectFactory.h"
 #include "../utils/GenericType.h"

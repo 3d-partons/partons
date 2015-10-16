@@ -137,7 +137,6 @@ private:
     /*-------------------------------------- Methods ---------------------------------------*/
 
     // Initialisations
-
     void MakeExactBHCrossSections();
     // Fills the Jem and SigmaBHPol. arrays
 

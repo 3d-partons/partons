@@ -1,35 +1,33 @@
-#include "AcObservable.h"
-
-//#include <string>
+#include "Ac.h"
 
 #include "../../BaseObjectRegistry.h"
-#include "../../modules/ObservableModule.h"
 #include "../../utils/stringUtils/Formatter.h"
 #include "../../utils/vector/Vector3D.h"
+#include "../ObservableModule.h"
 
 // Initialise [class]::classId with a unique name.
-const unsigned int AcObservable::classId =
+const unsigned int Ac::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
-                new AcObservable("AcObservable"));
+                new Ac("Ac"));
 
-AcObservable::AcObservable(const std::string &className) :
+Ac::Ac(const std::string &className) :
         Observable(className) {
 }
 
-AcObservable::AcObservable(const AcObservable& other) :
+Ac::Ac(const Ac& other) :
         Observable(other) {
 }
 
-AcObservable::~AcObservable() {
+Ac::~Ac() {
 }
 
-AcObservable* AcObservable::clone() const {
-    return new AcObservable(*this);
+Ac* Ac::clone() const {
+    return new Ac(*this);
 }
 
 //TODO vérifier
 //TODO !!! division par zero !!!
-double AcObservable::compute(ObservableModule* pDVCSModule, double phi) {
+double Ac::compute(ObservableModule* pDVCSModule, double phi) {
 
     debug(__func__, Formatter() << "phi = " << phi);
 

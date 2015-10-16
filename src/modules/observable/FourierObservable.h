@@ -1,16 +1,20 @@
-/*
- * FourrierObservable.h
- *
- *  Created on: Sep 28, 2015
- *      Author: debian
- */
+#ifndef FOURIER_OBSERVABLE_H
+#define FOURIER_OBSERVABLE_H
 
-#ifndef FOURIEROBSERVABLE_H_
-#define FOURIEROBSERVABLE_H_
+/**
+ * @file FourierObservable.h
+ * @author Bryan BERTHOU (CEA Saclay)
+ * @date 28 September 2015
+ * @version 1.0
+ *
+ * @class FourierObservable
+ *
+ * @brief
+ */
 
 #include <string>
 
-#include "../../modules/MathIntegratorModule.h"
+#include "../MathIntegratorModule.h"
 #include "Observable.h"
 
 class FourierObservable: public Observable, public MathIntegratorModule {
@@ -30,4 +34,4 @@ protected:
     virtual double functionToIntegrate(double *x, double *params) = 0;
 };
 
-#endif /* FOURRIEROBSERVABLE_H_ */
+#endif /* FOURIER_OBSERVABLE_H */

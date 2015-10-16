@@ -2,8 +2,8 @@
 
 #include <NumA/MathIntegrator.h>
 
+#include "../../beans/observable/ObservableType.h"
 #include "../../FundamentalPhysicalConstants.h"
-#include "ObservableType.h"
 
 FourierObservable::FourierObservable(const std::string &className) :
         Observable(className) {

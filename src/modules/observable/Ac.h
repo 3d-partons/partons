@@ -1,13 +1,13 @@
-#ifndef ALU_OBSERVABLE_H
-#define ALU_OBSERVABLE_H
+#ifndef AC_H
+#define AC_H
 
 /**
- * @file AluObservable.h
+ * @file Ac.h
  * @author Bryan BERTHOU (CEA Saclay)
- * @date 28 November 2014
+ * @date 25 November 2014
  * @version 1.0
  *
- * @class AluObservable
+ * @class Ac
  *
  * @brief
  */
@@ -16,18 +16,20 @@
 
 #include "Observable.h"
 
-class AluObservable: public Observable {
+class ObservableModule;
+
+class Ac: public Observable {
 public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
-    AluObservable(const std::string &className);
-    virtual ~AluObservable();
+    Ac(const std::string &className);
+    virtual ~Ac();
 
     /**
      * Virtual clone function to allow factory to copy all derived members
      * @return
      */
-    virtual AluObservable* clone() const;
+    virtual Ac* clone() const;
 
     virtual double compute(ObservableModule* pDVCSModule, double phi);
 
@@ -35,9 +37,9 @@ protected:
     /**
      * Copy constructor
      */
-    AluObservable(const AluObservable &other);
+    Ac(const Ac &other);
 
 private:
 };
 
-#endif /* ALU_OBSERVABLE_H */
+#endif /* AC_H */

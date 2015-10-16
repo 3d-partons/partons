@@ -4,7 +4,7 @@
 
 #include "../../BaseObjectRegistry.h"
 #include "../../ObservableObjectFactory.h"
-#include "AcObservable.h"
+#include "Ac.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int AcCos2phi::classId =
@@ -14,7 +14,7 @@ const unsigned int AcCos2phi::classId =
 AcCos2phi::AcCos2phi(const std::string &className) :
         FourierObservable(className), m_pAcObservable(0) {
     m_pAcObservable = ObservableObjectFactory::newObservable(
-            AcObservable::classId);
+            Ac::classId);
 }
 
 AcCos2phi::AcCos2phi(const AcCos2phi& other) :
