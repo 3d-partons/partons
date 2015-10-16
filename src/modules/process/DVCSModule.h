@@ -36,6 +36,7 @@ public:
      *
      * @param parameters
      */
+    //todo virtual
     void configure(ParameterList parameters);
 
     void computeConvolCoeffFunction(double xB, double t, double Q2, double MuF2,

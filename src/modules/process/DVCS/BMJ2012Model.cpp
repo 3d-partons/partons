@@ -21,8 +21,7 @@ const unsigned int BMJ2012Model::classId =
 /*--------------------------------------- Constructors ---------------------------------*/
 
 BMJ2012Model::BMJ2012Model(const std::string &className) :
-        DVCSModule(className), m_y() {
-    m_E = 5.77;
+        DVCSModule(className) {
     m_phi1BMK = 0.;
     m_phi2BMK = 0.;
     m_PhiBMK = 0.;
@@ -159,8 +158,8 @@ void BMJ2012Model::defineAngles(const Vector3D &targetPolarization) {
 
     //TODO BMK polarization rotation
     double Sx = Px;
-    double Sy = Py;
-    double Sz = Pz;
+    double Sy = -Py;
+    double Sz = -Pz;
 
     //TODO Fix the method for determining angles (it's wrong since Lambda can be negative)
     double sintheta = sqrt(pow(Sx, 2) + pow(Sy, 2));

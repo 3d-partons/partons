@@ -27,6 +27,6 @@ CrossSectionObservable* CrossSectionObservable::clone() const {
 
 double CrossSectionObservable::compute(ProcessModule* pDVCSModule, double phi) {
     double result = pDVCSModule->computeCrossSection(+1, -1,
-            Vector3D(0., 0., 0.), phi);
+            Vector3D(0., 1., 0.), phi);
     return result;
 }
