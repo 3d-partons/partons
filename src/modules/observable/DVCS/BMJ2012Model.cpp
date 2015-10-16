@@ -1,14 +1,6 @@
-/*
- * BMJ2012Model.cpp
- *
- *  Created on: Oct 7, 2015
- *      Author: debian
- */
-
 #include "BMJ2012Model.h"
 
 #include <cmath>
-//#include <vector>
 
 #include "../../../BaseObjectRegistry.h"
 #include "../../../FundamentalPhysicalConstants.h"
@@ -23,7 +15,6 @@ const unsigned int BMJ2012Model::classId =
 
 BMJ2012Model::BMJ2012Model(const std::string &className) :
         DVCSModule(className), m_y() {
-    m_E = 5.77;
     m_phi1BMK = 0.;
     m_phi2BMK = 0.;
     m_PhiBMK = 0.;
