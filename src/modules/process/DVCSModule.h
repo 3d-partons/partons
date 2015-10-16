@@ -67,9 +67,9 @@ protected:
 
     void SetBeamEnergy(double EBeam); ///< Sets beam energy
 
-    double m_xB;        ///< Bjorken variable
-    double m_t;     ///< Mandelstam variable (square of the 4-momentum transfer)
-    double m_Q2;    ///< Virtuality of the photon
+//    double m_xB;        ///< Bjorken variable
+//    double m_t;     ///< Mandelstam variable (square of the 4-momentum transfer)
+//    double m_Q2;    ///< Virtuality of the photon
 
     double m_MuF2;
     double m_MuR2;
