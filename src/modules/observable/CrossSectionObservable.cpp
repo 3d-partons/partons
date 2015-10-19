@@ -10,9 +10,9 @@
 #include "../../utils/vector/Vector3D.h"
 #include "../ProcessModule.h"
 
-const std::string CrossSectionObservable::PARAMETER_NAME_HELICITY = "helicity";
-const std::string CrossSectionObservable::PARAMETER_NAME_CHARGE = "charge";
-const std::string CrossSectionObservable::PARAMETER_NAME_TARGET = "target";
+const std::string CrossSectionObservable::PARAMETER_NAME_BEAM_HELICITY = "beam_helicity";
+const std::string CrossSectionObservable::PARAMETER_NAME_BEAM_CHARGE = "beam_charge";
+const std::string CrossSectionObservable::PARAMETER_NAME_TARGET_POLARIZATION = "target_polarization";
 
 // Initialise [class]::classId with a unique name.
 const unsigned int CrossSectionObservable::classId =
@@ -47,21 +47,21 @@ double CrossSectionObservable::compute(ProcessModule* pDVCSModule, double phi) {
 
 void CrossSectionObservable::configure(ParameterList parameters) {
     if (parameters.isAvailable(
-            CrossSectionObservable::PARAMETER_NAME_HELICITY)) {
+            CrossSectionObservable::PARAMETER_NAME_BEAM_HELICITY)) {
         m_beamHelicity = parameters.getLastAvailable().toInt();
 
         info(__func__,
-                Formatter() << CrossSectionObservable::PARAMETER_NAME_HELICITY
+                Formatter() << CrossSectionObservable::PARAMETER_NAME_BEAM_HELICITY
                         << " configured with value = " << m_beamHelicity);
     }
-    if (parameters.isAvailable(CrossSectionObservable::PARAMETER_NAME_CHARGE)) {
+    if (parameters.isAvailable(CrossSectionObservable::PARAMETER_NAME_BEAM_CHARGE)) {
         m_beamCharge = parameters.getLastAvailable().toInt();
 
         info(__func__,
-                Formatter() << CrossSectionObservable::PARAMETER_NAME_CHARGE
+                Formatter() << CrossSectionObservable::PARAMETER_NAME_BEAM_CHARGE
                         << " configured with value = " << m_beamCharge);
     }
-    if (parameters.isAvailable(CrossSectionObservable::PARAMETER_NAME_TARGET)) {
+    if (parameters.isAvailable(CrossSectionObservable::PARAMETER_NAME_TARGET_POLARIZATION)) {
 
         std::string temp_str = parameters.getLastAvailable().toString();
         if (!temp_str.empty()) {
@@ -76,7 +76,7 @@ void CrossSectionObservable::configure(ParameterList parameters) {
 
                 info(__func__,
                         Formatter()
-                                << CrossSectionObservable::PARAMETER_NAME_TARGET
+                                << CrossSectionObservable::PARAMETER_NAME_TARGET_POLARIZATION
                                 << " configured with value = "
                                 << m_targetPolarization.toString());
             } else {

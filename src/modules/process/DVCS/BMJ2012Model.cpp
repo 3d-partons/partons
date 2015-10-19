@@ -157,8 +157,8 @@ void BMJ2012Model::defineAngles(const Vector3D &targetPolarization) {
     double Pz = targetPolarization.getZ();
 
     //TODO BMK polarization rotation
-    double Sx = Px;
-    double Sy = -Py;
+    double Sx = Px*cos(-m_phi)-Py*sin(-m_phi);
+    double Sy = -(Px*sin(-m_phi)+Py*cos(-m_phi));
     double Sz = -Pz;
 
     //TODO Fix the method for determining angles (it's wrong since Lambda can be negative)
@@ -192,7 +192,7 @@ void BMJ2012Model::defineAngles(const Vector3D &targetPolarization) {
         m_Lambda = Sz / costheta;
     }
 
-    m_phi1BMK = PI - m_phi;
+    m_phi1BMK = PI + m_phi;
     m_phi2BMK = m_PhiBMK - m_phi1BMK;
 }
 

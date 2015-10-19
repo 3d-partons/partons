@@ -18,9 +18,9 @@
 
 class CrossSectionObservable: public Observable {
 public:
-    static const std::string PARAMETER_NAME_HELICITY;
-    static const std::string PARAMETER_NAME_CHARGE;
-    static const std::string PARAMETER_NAME_TARGET;
+    static const std::string PARAMETER_NAME_BEAM_HELICITY;
+    static const std::string PARAMETER_NAME_BEAM_CHARGE;
+    static const std::string PARAMETER_NAME_TARGET_POLARIZATION;
 
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
