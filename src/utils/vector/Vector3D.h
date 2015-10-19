@@ -10,6 +10,8 @@
  * @class Vector3D
  */
 
+#include <string>
+
 #include "Vector2D.h"
 
 //TODO mathematique function add, sub, ...
@@ -27,6 +29,8 @@ public:
 
     double getZ() const;
     void setZ(double z);
+
+    std::string toString();
 
 private:
     double m_z;

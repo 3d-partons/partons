@@ -3,13 +3,14 @@
 #include "../../beans/observable/ObservableResult.h"
 #include "../../beans/observable/ObservableResultList.h"
 #include "../../utils/math/MathUtils.h"
+#include "../../utils/ParameterList.h"
 #include "../../utils/stringUtils/Formatter.h"
 #include "../ProcessModule.h"
 
 Observable::Observable(const std::string &className) :
         BaseObject(className), m_channel(ObservableChannel::UNDEFINED), m_beamHelicity(
                 0.), m_beamCharge(0.), m_targetPolarization(
-                Vector3D(0., 0., 0.)), m_observableType(ObservableType::PHI), m_pDVCSModule(
+                Vector3D(0., 0., 0.)), m_observableType(ObservableType::PHI), m_pProcess(
                 0) {
 }
 
@@ -21,10 +22,10 @@ Observable::Observable(const Observable& other) :
     m_targetPolarization = other.m_targetPolarization;
     m_observableType = other.m_observableType;
 
-    if (other.m_pDVCSModule != 0) {
-        m_pDVCSModule = other.m_pDVCSModule->clone();
+    if (other.m_pProcess != 0) {
+        m_pProcess = other.m_pProcess->clone();
     } else {
-        m_pDVCSModule = 0;
+        m_pProcess = 0;
     }
 }
 
@@ -39,8 +40,7 @@ ObservableResultList Observable::compute(double xB, double t, double Q2,
     //TODO replace hard coded value
     double MuF = 4., MuR = 4.;
 
-    //TODO add the value of E (beam energy)
-    m_pDVCSModule->computeConvolCoeffFunction(xB, t, Q2, MuF, MuR);
+    m_pProcess->computeConvolCoeffFunction(xB, t, Q2, MuF, MuR);
 
     // if listOfPhi empty then run computation of fourier observable
     if (listOfPhi.empty()) {
@@ -67,7 +67,7 @@ ObservableResultList Observable::compute(double xB, double t, double Q2,
 
                 //TODO improve
                 ObservableResult observableResult(listOfPhi[i],
-                        compute(m_pDVCSModule,
+                        compute(m_pProcess,
                                 MathUtils::convertDegreeToRadian(
                                         listOfPhi[i])));
                 observableResult.setObservableType(m_observableType);
@@ -125,9 +125,12 @@ void Observable::setTargetPolarization(const Vector3D& targetPolarization) {
 }
 
 const ProcessModule* Observable::getDVCSModule() const {
-    return m_pDVCSModule;
+    return m_pProcess;
 }
 
 void Observable::setDVCSModule(ProcessModule* pDVCSModule) {
-    m_pDVCSModule = pDVCSModule;
+    m_pProcess = pDVCSModule;
+}
+
+void Observable::configure(ParameterList parameters) {
 }

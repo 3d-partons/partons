@@ -11,7 +11,7 @@ const std::string DVCSModule::PARAMETER_NAME_BEAM_ENERGY = "beam_energy";
 
 DVCSModule::DVCSModule(const std::string &className) :
         ProcessModule(className), m_phi(0.), m_phiS(0.), m_phie(0.), m_phaseSpace(
-                0.), m_pObservable(0) {
+                0.), m_pObservable(0), m_pDVCSConvolCoeffFunctionModule(0) {
 
 }
 
@@ -31,6 +31,13 @@ DVCSModule::DVCSModule(const DVCSModule& other) :
         m_pObservable = other.m_pObservable->clone();
     } else {
         m_pObservable = 0;
+    }
+
+    if (other.m_pDVCSConvolCoeffFunctionModule != 0) {
+        m_pDVCSConvolCoeffFunctionModule =
+                other.m_pDVCSConvolCoeffFunctionModule->clone();
+    } else {
+        m_pDVCSConvolCoeffFunctionModule = 0;
     }
 
     m_dvcsConvolCoeffFunctionResult = other.m_dvcsConvolCoeffFunctionResult;

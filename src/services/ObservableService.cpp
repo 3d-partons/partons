@@ -56,6 +56,7 @@ void ObservableService::computeTask(Task &task) {
         if (task.isAvailableParameterList("Observable")) {
             pObservable = ObservableObjectFactory::newObservable(
                     task.getLastAvailableParameterList().get("id").toString());
+            pObservable->configure(task.getLastAvailableParameterList());
         } else {
             throwException(__func__,
                     Formatter() << "Missing object : <Observable> for method "

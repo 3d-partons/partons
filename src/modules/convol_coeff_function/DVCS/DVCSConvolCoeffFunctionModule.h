@@ -32,6 +32,12 @@ public:
     DVCSConvolCoeffFunctionModule(const std::string &className);
     virtual ~DVCSConvolCoeffFunctionModule();
 
+    /**
+     * Virtual clone function to allow factory to copy all derived members
+     * @return
+     */
+    virtual DVCSConvolCoeffFunctionModule* clone() const = 0;
+
     virtual void init();
 
     virtual void configure(ParameterList parameters);

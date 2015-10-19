@@ -57,7 +57,7 @@ public:
      *
      * @param parameters
      */
-    void configure(ParameterList parameters);
+    void virtual configure(ParameterList parameters);
 
     /**
      * Virtual method, computes GPD with some input parameters.

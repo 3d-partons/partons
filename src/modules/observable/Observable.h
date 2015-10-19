@@ -38,6 +38,14 @@ public:
      */
     virtual Observable* clone() const = 0;
 
+    /**
+     * Provides a generic method to configure all types of modules by passing a Parameters object.
+     * (See ModuleObject class for more info).
+     *
+     * @param parameters
+     */
+    virtual void configure(ParameterList parameters);
+
     typedef double (DVCSModule::*computeCrossSection)(double beamHelicity,
 
     double beamCharge, Vector3D targetPolarization);
@@ -69,7 +77,7 @@ protected:
      */
     Observable(const Observable& other);
 
-    ProcessModule* m_pDVCSModule;
+    ProcessModule* m_pProcess;
 
     //TODO doc
     ObservableChannel::Type m_channel;

@@ -1,8 +1,18 @@
 #include "CrossSectionObservable.h"
 
+#include <vector>
+
 #include "../../BaseObjectRegistry.h"
+#include "../../utils/GenericType.h"
+#include "../../utils/ParameterList.h"
+#include "../../utils/stringUtils/Formatter.h"
+#include "../../utils/stringUtils/StringUtils.h"
 #include "../../utils/vector/Vector3D.h"
 #include "../ProcessModule.h"
+
+const std::string CrossSectionObservable::PARAMETER_NAME_HELICITY = "helicity";
+const std::string CrossSectionObservable::PARAMETER_NAME_CHARGE = "charge";
+const std::string CrossSectionObservable::PARAMETER_NAME_TARGET = "target";
 
 // Initialise [class]::classId with a unique name.
 const unsigned int CrossSectionObservable::classId =
@@ -26,7 +36,52 @@ CrossSectionObservable* CrossSectionObservable::clone() const {
 }
 
 double CrossSectionObservable::compute(ProcessModule* pDVCSModule, double phi) {
-    double result = pDVCSModule->computeCrossSection(+1, -1,
-            Vector3D(0., 1., 0.), phi);
+//    double result = pDVCSModule->computeCrossSection(+1, -1,
+//            Vector3D(0., 1., 0.), phi);
+//    return result;
+
+    double result = pDVCSModule->computeCrossSection(m_beamHelicity,
+            m_beamCharge, m_targetPolarization, phi);
     return result;
+}
+
+void CrossSectionObservable::configure(ParameterList parameters) {
+    if (parameters.isAvailable(
+            CrossSectionObservable::PARAMETER_NAME_HELICITY)) {
+        m_beamHelicity = parameters.getLastAvailable().toInt();
+
+        info(__func__,
+                Formatter() << CrossSectionObservable::PARAMETER_NAME_HELICITY
+                        << " configured with value = " << m_beamHelicity);
+    }
+    if (parameters.isAvailable(CrossSectionObservable::PARAMETER_NAME_CHARGE)) {
+        m_beamCharge = parameters.getLastAvailable().toInt();
+
+        info(__func__,
+                Formatter() << CrossSectionObservable::PARAMETER_NAME_CHARGE
+                        << " configured with value = " << m_beamCharge);
+    }
+    if (parameters.isAvailable(CrossSectionObservable::PARAMETER_NAME_TARGET)) {
+
+        std::string temp_str = parameters.getLastAvailable().toString();
+        if (!temp_str.empty()) {
+            std::vector<std::string> vectorPoints = StringUtils::split(
+                    parameters.getLastAvailable().toString(), '|');
+
+            if (vectorPoints.size() == 3) {
+                m_targetPolarization = Vector3D(
+                        StringUtils::fromStringToInt(vectorPoints[0]),
+                        StringUtils::fromStringToInt(vectorPoints[1]),
+                        StringUtils::fromStringToInt(vectorPoints[2]));
+
+                info(__func__,
+                        Formatter()
+                                << CrossSectionObservable::PARAMETER_NAME_TARGET
+                                << " configured with value = "
+                                << m_targetPolarization.toString());
+            } else {
+                //TODO exception missing point
+            }
+        }
+    }
 }
