@@ -21,7 +21,7 @@
 //                new VinnikovEvolQCDModel("VinnikovEvolQCDModel"));
 //
 //VinnikovEvolQCDModel::VinnikovEvolQCDModel(const std::string &className) :
-//        EvolQCDModule(className), m_nbColor(3.), m_CF(
+//        GPDEvolutionModule(className), m_nbColor(3.), m_CF(
 //                0.5 * (m_nbColor - 1. / m_nbColor)), m_CA(
 //                2. * m_CF + 1. / m_nbColor), m_nbActiveFlavor(3.), m_b0(
 //                11. * m_nbColor / 3. - 2. * m_nbActiveFlavor / 3.), m_TR(
@@ -37,7 +37,7 @@
 //
 ////TODO refactoring
 //VinnikovEvolQCDModel::VinnikovEvolQCDModel(const VinnikovEvolQCDModel &other) :
-//        EvolQCDModule(other) {
+//        GPDEvolutionModule(other) {
 //    m_nbColor = other.m_nbColor;
 //    m_CF = other.m_CF;
 //    m_CA = other.m_CA;
@@ -58,7 +58,7 @@
 //}
 //
 //void VinnikovEvolQCDModel::initModule() {
-//    EvolQCDModule::initModule();
+//    GPDEvolutionModule::initModule();
 //
 //    m_LnMuF2_ref = log(m_pGPDModule->getMuF2Ref());
 //    m_LnMuF2 = log(m_MuF2);
@@ -66,7 +66,7 @@
 //
 ////TODO implementer
 //void VinnikovEvolQCDModel::isModuleWellConfigured() {
-//    EvolQCDModule::isModuleWellConfigured();
+//    GPDEvolutionModule::isModuleWellConfigured();
 //}
 //
 ////PartonDistribution VinnikovEvolQCDModel::compute(double x, double xi, double t,
@@ -2922,26 +2922,4 @@
 //    m_GluonGpd.resize(m_nbXPoints);
 //    m_Singletx.resize(m_nbXPoints);
 //    m_NonSingletx.resize(m_nbXPoints);
-//}
-//
-//void VinnikovEvolQCDModel::NSIntegratedOverMomentumFraction() {
-//}
-//
-//void VinnikovEvolQCDModel::NSIntegratedOverFactorisationScale() {
-//}
-//
-//void VinnikovEvolQCDModel::SIntegratedOverMomentumFraction() {
-//}
-//
-//void VinnikovEvolQCDModel::SIntegratedOverFactorisationScale() {
-//}
-//
-//void VinnikovEvolQCDModel::GluonIntegratedOverMomentumFraction() {
-//}
-//
-//void VinnikovEvolQCDModel::GluonIntegratedOverFactorisationScale() {
-//}
-//
-//double VinnikovEvolQCDModel::integrateNonSinglet(double nonSingletIndex,
-//        const NfInterval& nfInterval) {
 //}

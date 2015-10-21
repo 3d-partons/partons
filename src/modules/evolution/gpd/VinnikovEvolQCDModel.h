@@ -17,9 +17,9 @@
 //#include <string>
 //#include <vector>
 //
-//#include "../EvolQCDModule.h"
+//#include "../GPDEvolutionModule.h"
 //
-//class VinnikovEvolQCDModel: public EvolQCDModule {
+//class VinnikovEvolQCDModel: public GPDEvolutionModule {
 //public:
 //    static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 //
@@ -41,16 +41,6 @@
 //
 //    virtual void isModuleWellConfigured();
 //    virtual void initModule();
-//
-//    virtual void NSIntegratedOverMomentumFraction();
-//    virtual void NSIntegratedOverFactorisationScale();
-//    virtual void SIntegratedOverMomentumFraction();
-//    virtual void SIntegratedOverFactorisationScale();
-//    virtual void GluonIntegratedOverMomentumFraction();
-//    virtual void GluonIntegratedOverFactorisationScale();
-//
-//    virtual double integrateNonSinglet(double nonSingletIndex,
-//            const NfInterval &nfInterval);
 //
 //private:
 //

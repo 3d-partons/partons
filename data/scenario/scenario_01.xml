@@ -18,6 +18,25 @@
         </GPDModule>
 	</task>
 	
+	   <task service="GPDService" method="computeListOfGPDModel" >
+        <GPDKinematic>
+            <param name="x" value="0.1" />
+            <param name="xi" value="1.00050025" />
+            <param name="t" value="-0.3" />
+            <param name="MuF2" value="8" />
+            <param name="MuR2" value="8" />
+        </GPDKinematic>
+
+        <GPDModule>
+            <param name="id" value="GK11Model" />
+        </GPDModule>
+        
+        <GPDModule>
+            <param name="id" value="MPSSW13Model" />
+        </GPDModule>
+        
+    </task>
+	
 	<task service="GPDService" method="computeGPDModelWithEvolution" >
         <GPDKinematic>
             <param name="x" value="0.1" />

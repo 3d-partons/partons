@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include <string>
 #include <vector>
 
@@ -19,6 +20,8 @@
 const std::string GPDService::GPD_SERVICE_COMPUTE_GPD_MODEL = "computeGPDModel";
 const std::string GPDService::GPD_SERVICE_COMPUTE_GPD_MODEL_WITH_EVOLUTION =
         "computeGPDModelWithEvolution";
+const std::string GPDService::GPD_SERVICE_COMPUTE_LIST_OF_GPD_MODEL =
+        "computeListOfGPDModel";
 
 // Initialise [class]::classId with a unique name and selfregister this module into the global registry.
 const unsigned int GPDService::classId =
@@ -120,6 +123,44 @@ void GPDService::computeTask(Task &task) {
                         << pGPDEvolutionModule->getClassName() << ")" << '\n'
                         << gpdResult.toString());
 
+    } else if (StringUtils::equals(task.getFunctionName(),
+            GPDService::GPD_SERVICE_COMPUTE_LIST_OF_GPD_MODEL)) {
+        //create a GPDKinematic and init it with a list of parameters
+        GPDKinematic gpdKinematic;
+
+        if (task.isAvailableParameterList("GPDKinematic")) {
+            gpdKinematic = GPDKinematic(task.getLastAvailableParameterList());
+        } else {
+            throwException(__func__,
+                    Formatter() << "Missing object : <GPDKinematic> for method "
+                            << task.getFunctionName());
+        }
+
+        std::vector<GPDModule*> listOfGPDModule;
+
+        if (task.isAvailableParameterList("GPDModule")) {
+            std::vector<ParameterList> listOfParameterList =
+                    task.getListOfLastAvailableParameterList("GPDModule");
+
+            for (unsigned int i = 0; i != listOfParameterList.size(); i++) {
+                listOfGPDModule.push_back(
+                        ModuleObjectFactory::newGPDModule(
+                                listOfParameterList[i].get("id").toString()));
+                listOfGPDModule[i]->configure(listOfParameterList[i]);
+            }
+
+        } else {
+            throwException(__func__,
+                    Formatter() << "Missing object : <GPDModule> for method "
+                            << task.getFunctionName());
+        }
+
+        GPDResultList results = computeListOfGPDModel(gpdKinematic,
+                listOfGPDModule);
+
+        info(__func__,
+                Formatter() << task.getFunctionName() << "(" << ")" << '\n'
+                        << results.toString());
     } else {
         throwException(__func__,
                 "unknown function name = " + task.getFunctionName());
@@ -161,27 +202,27 @@ GPDResult GPDService::computeGPDModel(const GPDKinematic &gpdKinematic,
             GPDType::ALL);
 }
 
-//ListGPDOutputData GPDService::computeListOfGPDModel(GPDKinematic* pGPDKinematic,
-//        std::vector<GPDModule*> &listOfGPDToCompute) {
-//    return computeListOfGPDModelRestrictedByGPDType(pGPDKinematic,
-//            listOfGPDToCompute, GPDType::ALL);
-//}
-//
-//ListGPDOutputData GPDService::computeListOfGPDModelRestrictedByGPDType(
-//        GPDKinematic* pGPDKinematic,
-//        std::vector<GPDModule*> &listOfGPDToCompute, GPDType gpdComputeType) {
-//    ListGPDOutputData results = ListGPDOutputData();
-//
-//    // compute inputData for each GPDModule
-//    for (size_t i = 0; i != listOfGPDToCompute.size(); i++) {
-//        results.add(listOfGPDToCompute[i]->getClassName(),
-//                computeGPDModelRestrictedByGPDType(pGPDKinematic,
-//                        listOfGPDToCompute[i], gpdComputeType));
-//    }
-//
-//    // return a list of outputData (one outputData by GPDModule computed)
-//    return results;
-//}
+GPDResultList GPDService::computeListOfGPDModel(
+        const GPDKinematic &gpdKinematic,
+        std::vector<GPDModule*> &listOfGPDToCompute) {
+    return computeListOfGPDModelRestrictedByGPDType(gpdKinematic,
+            listOfGPDToCompute, GPDType::ALL);
+}
+
+GPDResultList GPDService::computeListOfGPDModelRestrictedByGPDType(
+        const GPDKinematic &gpdKinematic,
+        std::vector<GPDModule*> &listOfGPDToCompute, GPDType gpdType) {
+    GPDResultList results;
+
+    for (size_t i = 0; i != listOfGPDToCompute.size(); i++) {
+        results.add(
+                computeGPDModelRestrictedByGPDType(gpdKinematic,
+                        listOfGPDToCompute[i], gpdType));
+    }
+
+    // return a list of outputData (one outputData by GPDModule computed)
+    return results;
+}
 
 GPDResultList GPDService::computeListOfKinematic(
         std::vector<GPDKinematic> &listOfGPDKinematic, GPDModule* pGPDModule) {

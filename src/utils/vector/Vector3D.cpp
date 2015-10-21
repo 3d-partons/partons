@@ -1,6 +1,7 @@
 #include "Vector3D.h"
 
 #include <sstream>
+
 //#include <string>
 
 Vector3D::Vector3D() :
@@ -32,7 +33,7 @@ std::string Vector3D::toString() {
 
     std::ostringstream os;
 
-    os << "vector<" << getX() << ", " << getY() << ", " << m_z << std::endl;
+    os << "Vector3D<" << getX() << ", " << getY() << ", " << m_z << ">" << std::endl;
 
     return os.str();
 }

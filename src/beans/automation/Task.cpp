@@ -9,6 +9,8 @@
 
 #include <utility>
 
+//#include <vector>
+
 Task::Task() :
         BaseObject("Task") {
 }
@@ -37,15 +39,6 @@ void Task::setFunctionName(const std::string& functionName) {
     m_functionName = functionName;
 }
 
-const std::map<std::string, ParameterList>& Task::getFunctionParameters() const {
-    return m_functionParameters;
-}
-
-void Task::setFunctionParameters(
-        const std::map<std::string, ParameterList>& functionParameters) {
-    m_functionParameters = functionParameters;
-}
-
 const std::string& Task::getServiceName() const {
     return m_serviceName;
 }
@@ -54,18 +47,18 @@ void Task::setServiceName(const std::string& serviceName) {
     m_serviceName = serviceName;
 }
 
-void Task::addParameter(const std::string& className,
-        const std::string& parameterName, const std::string& parameterValue) {
-    std::map<std::string, ParameterList>::iterator it =
-            m_functionParameters.find(className);
-
-    if (it != m_functionParameters.end()) {
-        (it->second).add(parameterName, parameterValue);
-    } else {
-        addParameterList(className,
-                ParameterList(parameterName, parameterValue));
-    }
-}
+//void Task::addParameter(const std::string& className,
+//        const std::string& parameterName, const std::string& parameterValue) {
+//    std::map<std::string, ParameterList>::iterator it =
+//            m_functionParameters.find(className);
+//
+//    if (it != m_functionParameters.end()) {
+//        (it->second).add(parameterName, parameterValue);
+//    } else {
+//        addParameterList(className,
+//                ParameterList(parameterName, parameterValue));
+//    }
+//}
 
 void Task::addParameterList(const std::string& className,
         const ParameterList& parameterList) {
@@ -80,4 +73,19 @@ bool Task::isAvailableParameterList(const std::string &className) {
 
 ParameterList& Task::getLastAvailableParameterList() const {
     return (m_it->second);
+}
+
+std::vector<ParameterList> Task::getListOfLastAvailableParameterList(
+        const std::string &className) {
+    std::vector<ParameterList> listOfParameterList;
+
+    std::multimap<std::string, ParameterList>::iterator itUpperBound =
+            m_functionParameters.upper_bound(className);
+
+    while (m_it != itUpperBound && m_it != m_functionParameters.end()) {
+        listOfParameterList.push_back(m_it->second);
+        m_it++;
+    }
+
+    return listOfParameterList;
 }

@@ -17,6 +17,7 @@
 
 #include "../beans/gpd/GPDKinematic.h"
 #include "../beans/gpd/GPDType.h"
+#include "../modules/GPDModule.h"
 #include "../ServiceObject.h"
 
 class Scenario;
@@ -33,6 +34,7 @@ public:
 
     static const std::string GPD_SERVICE_COMPUTE_GPD_MODEL;
     static const std::string GPD_SERVICE_COMPUTE_GPD_MODEL_WITH_EVOLUTION;
+    static const std::string GPD_SERVICE_COMPUTE_LIST_OF_GPD_MODEL;
 
     /**
      * Default constructor
@@ -81,27 +83,25 @@ public:
             GPDModule* pGPDModule, GPDEvolutionModule* pEvolQCDModule,
             GPDType::Type gpdType = GPDType::ALL);
 
-//    /**
-//     * Computes a list of GPD models at specific kinematic
-//     *
-//     * @param gpdKinematic
-//     * @param listOfGPDToCompute
-//     * @return
-//     */
-//    ListGPDOutputData computeListOfGPDModel(GPDKinematic* pGPDKinematic,
-//            std::vector<GPDModule*> &listOfGPDToCompute);
-//
-//    /**
-//     * Computes a list of GPD models at specific kinematic, restricted by a GPD's type
-//     *
-//     * @param gpdKinematic
-//     * @param listOfGPDToCompute
-//     * @param gpdType
-//     * @return
-//     */
-//    ListGPDOutputData computeListOfGPDModelRestrictedByGPDType(
-//            GPDKinematic* pGPDKinematic,
-//            std::vector<GPDModule*> &listOfGPDToCompute, GPDType gpdType);
+    /**
+     *
+     * @param gpdKinematic
+     * @param listOfGPDToCompute
+     * @return
+     */
+    GPDResultList computeListOfGPDModel(const GPDKinematic &gpdKinematic,
+            std::vector<GPDModule*> &listOfGPDToCompute);
+
+    /**
+     *
+     * @param gpdKinematic
+     * @param listOfGPDToCompute
+     * @param gpdType
+     * @return
+     */
+    GPDResultList computeListOfGPDModelRestrictedByGPDType(
+            const GPDKinematic &gpdKinematic,
+            std::vector<GPDModule*> &listOfGPDToCompute, GPDType gpdType);
 
     /**
      * Computes GPD model by a kinematics list
