@@ -2,8 +2,8 @@
 
 #include "../beans/automation/Task.h"
 #include "../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
+#include "../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResultList.h"
 #include "../BaseObjectRegistry.h"
-#include "../modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
 #include "../modules/GPDModule.h"
 #include "../ModuleObjectFactory.h"
 #include "../utils/GenericType.h"
@@ -11,8 +11,12 @@
 #include "../utils/stringUtils/Formatter.h"
 #include "../utils/stringUtils/StringUtils.h"
 
+//#include "GPDService.h"
+
 const std::string DVCSConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_WITH_GPD_MODEL =
         "computeWithGPDModel";
+const std::string DVCSConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_LIST_WITH_GPD_MODEL =
+        "computeListWithGPDModel";
 
 // Initialise [class]::classId with a unique name.
 const unsigned int DVCSConvolCoeffFunctionService::classId =
@@ -85,6 +89,63 @@ void DVCSConvolCoeffFunctionService::computeTask(Task &task) {
                         << " , " << pGPDModule->getClassName() << ")" << '\n'
                         << result.toString());
 
+    } else if (StringUtils::equals(task.getFunctionName(),
+            DVCSConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_LIST_WITH_GPD_MODEL)) {
+
+//create kinematic
+        DVCSConvolCoeffFunctionKinematic kinematic;
+
+        if (task.isAvailableParameterList("DVCSConvolCoeffFunctionKinematic")) {
+            kinematic = DVCSConvolCoeffFunctionKinematic(
+                    task.getLastAvailableParameterList());
+        } else {
+            throwException(__func__,
+                    Formatter()
+                            << "Missing object : <DVCSConvolCoeffFunctionKinematic> for method "
+                            << task.getFunctionName());
+        }
+
+        std::vector<DVCSConvolCoeffFunctionModule*> listOfModule;
+
+        if (task.isAvailableParameterList("DVCSConvolCoeffFunctionModule")) {
+            std::vector<ParameterList> listOfParameterList =
+                    task.getListOfLastAvailableParameterList(
+                            "DVCSConvolCoeffFunctionModule");
+
+            for (unsigned int i = 0; i != listOfParameterList.size(); i++) {
+                listOfModule.push_back(
+                        ModuleObjectFactory::newDVCSConvolCoeffFunctionModule(
+                                listOfParameterList[i].get("id").toString()));
+                listOfModule[i]->configure(listOfParameterList[i]);
+            }
+
+        } else {
+            throwException(__func__,
+                    Formatter()
+                            << "Missing object : <DVCSConvolCoeffFunctionModule> for method "
+                            << task.getFunctionName());
+        }
+
+        GPDModule* pGPDModule = 0;
+
+        //TODO How to handle CFF module without GPD module ?
+
+        if (task.isAvailableParameterList("GPDModule")) {
+            pGPDModule = ModuleObjectFactory::newGPDModule(
+                    task.getLastAvailableParameterList().get("id").toString());
+            pGPDModule->configure(task.getLastAvailableParameterList());
+        } else {
+            throwException(__func__,
+                    Formatter() << "Missing object : <GPDModule> for method "
+                            << task.getFunctionName());
+        }
+
+        DVCSConvolCoeffFunctionResultList results = computeListWithGPDModel(
+                kinematic, listOfModule, pGPDModule);
+
+        info(__func__,
+                Formatter() << task.getFunctionName() << "(" << ")" << '\n'
+                        << results.toString());
     } else {
         throwException(__func__,
                 "unknown function name = " + task.getFunctionName());
@@ -94,7 +155,8 @@ void DVCSConvolCoeffFunctionService::computeTask(Task &task) {
 //TODO implementer
 DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionService::computeWithGPDModel(
         DVCSConvolCoeffFunctionModule* dvcsConvolCoeffFunctionModule,
-        GPDModule* _pGPDModule, DVCSConvolCoeffFunctionKinematic &kinematic,
+        GPDModule* _pGPDModule,
+        const DVCSConvolCoeffFunctionKinematic &kinematic,
         GPDType::Type gpdType) {
 
     // Configure cff module
@@ -110,6 +172,24 @@ DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionService::computeWithGPDMode
 
     return result;
 }
+
+DVCSConvolCoeffFunctionResultList DVCSConvolCoeffFunctionService::computeListWithGPDModel(
+        const DVCSConvolCoeffFunctionKinematic& kinematic,
+        std::vector<DVCSConvolCoeffFunctionModule*> listOfDVCSConvolCoeffFunctionModule,
+        GPDModule* _pGPDModule, GPDType::Type gpdType) {
+
+    DVCSConvolCoeffFunctionResultList results;
+
+    for (unsigned int i = 0; i != listOfDVCSConvolCoeffFunctionModule.size();
+            i++) {
+        results.add(
+                computeWithGPDModel(listOfDVCSConvolCoeffFunctionModule[i],
+                        _pGPDModule, kinematic, gpdType));
+    }
+
+    return results;
+}
+
 //
 ////TODO implementer
 //std::vector<CFFOutputData> compute(std::vector<CFFInputData> ListOfCFFInputData,
@@ -210,11 +290,3 @@ DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionService::computeWithGPDMode
 //    return data;
 //}
 
-//TODO implement
-DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionService::computeWithCFFModel(
-        DVCSConvolCoeffFunctionModule* dvcsConvolCoeffFunctionModule,
-        DVCSConvolCoeffFunctionKinematic &kinematic,
-        PerturbativeQCDOrderType &qcdOrderType) {
-
-    return DVCSConvolCoeffFunctionResult();
-}

@@ -1,7 +1,6 @@
 #include "LoggerManager.h"
 
 #include <iostream>
-#include <sstream>
 #include <utility>
 #include <vector>
 
@@ -196,7 +195,7 @@ bool LoggerManager::isLoggable(LoggerMessage loggerMessage) {
 //TODO implementer les autres sorties de logging
 void LoggerManager::handleMessage(LoggerMessage loggerMessage) {
 
-    std::ostringstream formattedMessage;
+    Formatter formattedMessage;
 
     formattedMessage << formatDate(loggerMessage.getTime()) << " ["
             << loggerMessage.getLevel().toString() << "] ("

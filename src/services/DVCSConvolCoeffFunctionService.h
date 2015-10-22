@@ -13,11 +13,14 @@
  */
 
 #include <string>
+#include <vector>
 
 #include "../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "../beans/gpd/GPDType.h"
-#include "../beans/PerturbativeQCDOrderType.h"
+#include "../modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
 #include "../ServiceObject.h"
+
+class DVCSConvolCoeffFunctionResultList;
 
 class DVCSConvolCoeffFunctionKinematic;
 class DVCSConvolCoeffFunctionModule;
@@ -27,6 +30,7 @@ class GPDModule;
 class DVCSConvolCoeffFunctionService: public ServiceObject {
 public:
     static const std::string FUNCTION_NAME_COMPUTE_WITH_GPD_MODEL;
+    static const std::string FUNCTION_NAME_COMPUTE_LIST_WITH_GPD_MODEL;
 
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
@@ -43,13 +47,13 @@ public:
 
     virtual DVCSConvolCoeffFunctionResult computeWithGPDModel(
             DVCSConvolCoeffFunctionModule* dvcsConvolCoeffFunctionModule,
-            GPDModule* _pGPDModule, DVCSConvolCoeffFunctionKinematic &kinematic,
+            GPDModule* _pGPDModule, const DVCSConvolCoeffFunctionKinematic &kinematic,
             GPDType::Type gpdType = GPDType::ALL);
 
-    virtual DVCSConvolCoeffFunctionResult computeWithCFFModel(
-            DVCSConvolCoeffFunctionModule* dvcsConvolCoeffFunctionModule,
-            DVCSConvolCoeffFunctionKinematic &kinematic,
-            PerturbativeQCDOrderType &qcdOrderType);
+    virtual DVCSConvolCoeffFunctionResultList computeListWithGPDModel(
+            const DVCSConvolCoeffFunctionKinematic &kinematic,
+            std::vector<DVCSConvolCoeffFunctionModule*> listOfDVCSConvolCoeffFunctionModule,
+            GPDModule* _pGPDModule, GPDType::Type gpdType = GPDType::ALL);
 
 //    std::vector<DVCSConvolCoeffFunctionResult> compute(
 //            std::vector<CFFInputData> ListOfCFFInputData,
