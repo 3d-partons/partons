@@ -101,8 +101,8 @@ private:
 
     bool isLoggable(LoggerMessage loggerMessage);
 
-    void writeConsole(LoggerMessage loggerMessage);
-    void writeFile(LoggerMessage loggerMessage);
+    void writeConsole(const std::string &message);
+    void writeFile(const std::string &message);
 };
 
 #endif /* LOGGER_MANAGER_H */

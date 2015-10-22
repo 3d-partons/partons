@@ -67,12 +67,12 @@ void GPDService::computeTask(Task &task) {
                             << task.getFunctionName());
         }
 
-        GPDResult gpdResult = computeGPDModel(gpdKinematic, pGPDModule);
+        GPDResult result = computeGPDModel(gpdKinematic, pGPDModule);
 
         info(__func__,
                 Formatter() << task.getFunctionName() << "("
                         << pGPDModule->getClassName() << ")" << '\n'
-                        << gpdResult.toString());
+                        << result.toString());
 
     } else if (StringUtils::equals(task.getFunctionName(),
             GPDService::GPD_SERVICE_COMPUTE_GPD_MODEL_WITH_EVOLUTION)) {
@@ -114,14 +114,14 @@ void GPDService::computeTask(Task &task) {
                             << task.getFunctionName());
         }
 
-        GPDResult gpdResult = computeGPDModelWithEvolution(gpdKinematic,
+        GPDResult result = computeGPDModelWithEvolution(gpdKinematic,
                 pGPDModule, pGPDEvolutionModule);
 
         info(__func__,
                 Formatter() << task.getFunctionName() << "("
                         << pGPDModule->getClassName() << " , "
                         << pGPDEvolutionModule->getClassName() << ")" << '\n'
-                        << gpdResult.toString());
+                        << result.toString());
 
     } else if (StringUtils::equals(task.getFunctionName(),
             GPDService::GPD_SERVICE_COMPUTE_LIST_OF_GPD_MODEL)) {

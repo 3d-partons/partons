@@ -1,6 +1,7 @@
 #include "LoggerManager.h"
 
 #include <iostream>
+#include <sstream>
 #include <utility>
 #include <vector>
 
@@ -195,19 +196,28 @@ bool LoggerManager::isLoggable(LoggerMessage loggerMessage) {
 //TODO implementer les autres sorties de logging
 void LoggerManager::handleMessage(LoggerMessage loggerMessage) {
 
+    std::ostringstream formattedMessage;
+
+    formattedMessage << formatDate(loggerMessage.getTime()) << " ["
+            << loggerMessage.getLevel().toString() << "] ("
+            << loggerMessage.getClassNameSource() << "::"
+
+            << loggerMessage.getFunctionNameSource() << ") "
+            << loggerMessage.getMessage();
+
     if (isLoggable(loggerMessage)) {
         switch (m_printMode.getType()) {
         case LoggerPrintMode::COUT: {
-            writeConsole(loggerMessage);
+            writeConsole(formattedMessage.str());
             break;
         }
         case LoggerPrintMode::FILE: {
-            writeFile(loggerMessage);
+            writeFile(formattedMessage.str());
             break;
         }
         case LoggerPrintMode::BOTH: {
-            writeConsole(loggerMessage);
-            writeFile(loggerMessage);
+            writeConsole(formattedMessage.str());
+            writeFile(formattedMessage.str());
             break;
         }
         default:
@@ -217,30 +227,25 @@ void LoggerManager::handleMessage(LoggerMessage loggerMessage) {
 }
 
 std::string LoggerManager::formatDate(time_t time) {
-//tm dateFormatter = localtime(&time);
 
-//    std::ostringstream os;
-//    os << dateFormatter.tm_year << "-" << dateFormatter.tm_mon << "-"
-//            << dateFormatter.tm_mday;
-//
-//    return os.str();
+    // see : http://stackoverflow.com/questions/16357999/current-date-and-time-as-string
 
-    return "";
+    struct tm* timeinfo;
+    char buffer[80];
+    timeinfo = localtime(&time);
+
+    strftime(buffer, 80, "%d-%m-%Y %I:%M:%S", timeinfo);
+
+    return std::string(buffer);
 }
 
-void LoggerManager::writeConsole(LoggerMessage loggerMessage) {
-//char* dt = ctime(&loggerMessage.getTime());
+void LoggerManager::writeConsole(const std::string &message) {
+    std::cout << message << std::endl;
+}
 
-//    std::cout << formatDate(loggerMessage.getTime()) << " "
-//            << loggerMessage.getClassNameSource() << "::"
-//            << loggerMessage.getFunctionNameSource() << "() "
-//            << loggerMessage.getMessage() << std::endl;
+void LoggerManager::writeFile(const std::string &message) {
 
-    std::cout << loggerMessage.getLevel().toString() << " ["
-            << loggerMessage.getClassNameSource() << "::"
-
-            << loggerMessage.getFunctionNameSource() << "]: "
-            << loggerMessage.getMessage() << std::endl;
+    FileUtils::writef(m_outputFilePath, message);
 }
 
 void* LoggerManager::run() {
@@ -302,14 +307,4 @@ std::string LoggerManager::toString() {
 
 bool LoggerManager::isEmptyMessageQueue() {
     return m_messageQueue.empty();
-}
-
-void LoggerManager::writeFile(LoggerMessage loggerMessage) {
-
-    FileUtils::writef(m_outputFilePath,
-            Formatter() << loggerMessage.getLevel().toString() << " ["
-                    << loggerMessage.getClassNameSource() << "::"
-
-                    << loggerMessage.getFunctionNameSource() << "]: "
-                    << loggerMessage.getMessage());
 }
