@@ -18,7 +18,6 @@ VizualisationService::VizualisationService(const std::string &className) :
 }
 
 VizualisationService::~VizualisationService() {
-//TODO
 }
 
 //TODO implement all function

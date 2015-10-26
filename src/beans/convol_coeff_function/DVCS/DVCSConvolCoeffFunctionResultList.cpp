@@ -1,21 +1,11 @@
-/*
- * DVCSConvolCoeffFunctionResultList.cpp
- *
- *  Created on: Oct 22, 2015
- *      Author: debian
- */
-
 #include "DVCSConvolCoeffFunctionResultList.h"
 
 #include "../../../utils/stringUtils/Formatter.h"
 
 DVCSConvolCoeffFunctionResultList::DVCSConvolCoeffFunctionResultList() {
-    // TODO Auto-generated constructor stub
-
 }
 
 DVCSConvolCoeffFunctionResultList::~DVCSConvolCoeffFunctionResultList() {
-    // TODO Auto-generated destructor stub
 }
 
 void DVCSConvolCoeffFunctionResultList::add(

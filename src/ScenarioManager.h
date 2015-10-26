@@ -20,7 +20,6 @@
 
 class Attributs;
 
-//TODO améliorer la précision des erreurs (ex : ligne du fichier xml, nom de la balise, ...)
 class ScenarioManager: public BaseObject, public XMLParser {
 public:
     static const std::string SCENARIO_NODE_NAME;

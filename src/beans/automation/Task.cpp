@@ -7,7 +7,6 @@ Task::Task() :
 }
 
 Task::~Task() {
-    // TODO Auto-generated destructor stub
 }
 
 const ParameterList& Task::getParameterList(

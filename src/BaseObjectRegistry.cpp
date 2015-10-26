@@ -1,5 +1,6 @@
 #include "BaseObjectRegistry.h"
 
+#include <sstream>
 #include <stdexcept>
 #include <utility>
 
@@ -9,8 +10,6 @@ BaseObjectRegistry* BaseObjectRegistry::m_pInstance = 0;
 unsigned int BaseObjectRegistry::m_uniqueClassIdCounter = 0;
 
 BaseObjectRegistry::BaseObjectRegistry() {
-    // TODO Auto-generated constructor stub
-
 }
 
 BaseObjectRegistry::~BaseObjectRegistry() {
@@ -97,16 +96,16 @@ bool BaseObjectRegistry::isAvailable(const std::string &className) {
     return (m_itTranslate == m_translate.end()) ? false : true;
 }
 
-//TODO
 std::string BaseObjectRegistry::toString() {
-//    std::ostringstream os;
-//    os << "[ModuleObjectFactory]" << std::endl;
-//    for (m_it = m_moduleRegistry.begin(); m_it != m_moduleRegistry.end();
-//            m_it++) {
-//        os << m_it->second->toString() << std::endl;
-//    }
-//
-//    return os.str();
+    std::ostringstream os;
+    os << "[ModuleObjectFactory]" << std::endl;
+    for (m_itBaseObjectList = m_baseObjectList.begin();
+            m_itBaseObjectList != m_baseObjectList.end();
+            m_itBaseObjectList++) {
+        if ((m_itBaseObjectList->second) != 0) {
+            os << (m_itBaseObjectList->second)->toString() << std::endl;
+        }
+    }
 
-    return "";
+    return os.str();
 }

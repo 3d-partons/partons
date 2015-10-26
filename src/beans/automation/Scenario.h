@@ -1,5 +1,5 @@
-#ifndef SCENARIO_H_
-#define SCENARIO_H_
+#ifndef SCENARIO_H
+#define SCENARIO_H
 
 /**
  * @file Scenario.h
@@ -45,4 +45,4 @@ private:
     std::vector<Task> m_tasks;
 };
 
-#endif /* SCENARIO_H_ */
+#endif /* SCENARIO_H */

@@ -14,7 +14,6 @@ DoubleDistributionKinematic::DoubleDistributionKinematic(double beta,
 }
 
 DoubleDistributionKinematic::~DoubleDistributionKinematic() {
-    // TODO Auto-generated destructor stub
 }
 
 double DoubleDistributionKinematic::getAlpha() const {

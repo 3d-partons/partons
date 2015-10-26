@@ -2,10 +2,8 @@
 
 #include <NumA/linear_algebra/vector/Vector3D.h>
 #include <cmath>
-#include <complex>
 #include <cstdlib>
 
-#include "../../../beans/gpd/GPDType.h"
 #include "../../../BaseObjectRegistry.h"
 #include "../../../FundamentalPhysicalConstants.h"
 
@@ -53,7 +51,6 @@ BMJ2012Model::BMJ2012Model(const std::string &className) :
 /*-------------------------------------- Destructor ------------------------------------*/
 
 BMJ2012Model::~BMJ2012Model() {
-    // TODO Auto-generated destructor stub
 }
 
 BMJ2012Model::BMJ2012Model(const BMJ2012Model& other) :

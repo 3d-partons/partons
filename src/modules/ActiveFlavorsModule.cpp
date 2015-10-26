@@ -2,7 +2,6 @@
 
 #include <algorithm>
 
-//#include "../utils/logger/LoggerManager.h"
 #include "../utils/stringUtils/Formatter.h"
 
 ActiveFlavorsModule::ActiveFlavorsModule(const std::string &className) :
@@ -106,15 +105,26 @@ void ActiveFlavorsModule::checkCurveIntegrity() {
         throwException(__func__, "there is no nfInterval defined");
     }
 
-// bornage NF entre 1 et 6
+    double previousNf = 0;
+
     for (unsigned short i = 0; i != m_nfFunctionOfMu.size(); i++) {
+        // check NF between 1 and 6
         if ((m_nfFunctionOfMu[i].getNf() < 1)
                 || (m_nfFunctionOfMu[i].getNf() > 6)) {
             throwException(__func__, "nf out of range ; must be  0 < nf < 7");
         }
+
+        //check if nf is contigus step by 1
+        if (i == 0) {
+            previousNf = m_nfFunctionOfMu[i].getNf();
+        } else {
+            if (m_nfFunctionOfMu[i].getNf() != (previousNf + 1)) {
+                throwException(__func__, "nf not contigus step by 1");
+            }
+            previousNf = m_nfFunctionOfMu[i].getNf();
+        }
     }
 
-    //TODO check if nf is contigus step by 1
 }
 
 std::string ActiveFlavorsModule::toString() {

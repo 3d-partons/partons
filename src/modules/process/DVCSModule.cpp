@@ -84,7 +84,6 @@ void DVCSModule::computeConvolCoeffFunction(double xB, double t, double Q2,
             Formatter() << "m_dvcsConvolCoeffFunctionResult = "
                     << m_dvcsConvolCoeffFunctionResult.toString());
 
-    //TODO add the definition of m_E (beam energy)
     m_xB = xB;
     m_t = t;
     m_Q2 = Q2;

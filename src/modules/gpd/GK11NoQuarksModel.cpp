@@ -1,10 +1,3 @@
-/*
- * GK11NoQuarksModel.cpp
- *
- *  Created on: Feb 13, 2015
- *      Author: kuba
- */
-
 #include "GK11NoQuarksModel.h"
 
 #include <cmath>
@@ -26,7 +19,6 @@ GK11NoQuarksModel::GK11NoQuarksModel(const std::string& className) :
 }
 
 GK11NoQuarksModel::~GK11NoQuarksModel() {
-    // TODO Auto-generated destructor stub
 }
 
 GK11NoQuarksModel* GK11NoQuarksModel::clone() const {

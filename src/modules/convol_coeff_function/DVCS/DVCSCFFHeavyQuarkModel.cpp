@@ -7,7 +7,6 @@
 #include "../../../beans/PerturbativeQCDOrderType.h"
 #include "../../../BaseObjectRegistry.h"
 #include "../../../FundamentalPhysicalConstants.h"
-//#include "../../../utils/logger/LoggerManager.h"
 #include "../../../utils/stringUtils/Formatter.h"
 
 // Initialise [class]::classId with a unique name.
@@ -29,7 +28,6 @@ DVCSCFFHeavyQuarkModel* DVCSCFFHeavyQuarkModel::clone() const {
 }
 
 DVCSCFFHeavyQuarkModel::~DVCSCFFHeavyQuarkModel() {
-    // TODO Auto-generated destructor stub
 }
 
 DVCSCFFHeavyQuarkModel::DVCSCFFHeavyQuarkModel(

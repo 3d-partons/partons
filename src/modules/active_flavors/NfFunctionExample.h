@@ -31,6 +31,8 @@ protected:
      */
     NfFunctionExample(const NfFunctionExample &other);
 
+    virtual void initModule();
+    virtual void isModuleWellConfigured();
 };
 
 #endif /* NF_FUNCTIONEXAMPLE_H */

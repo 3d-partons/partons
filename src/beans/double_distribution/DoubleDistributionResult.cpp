@@ -7,12 +7,9 @@
 
 DoubleDistributionResult::DoubleDistributionResult() :
         BaseObject("DualDistributionResult") {
-    // TODO Auto-generated constructor stub
-
 }
 
 DoubleDistributionResult::~DoubleDistributionResult() {
-    // TODO Auto-generated destructor stub
 }
 
 void DoubleDistributionResult::addPartonDistribution(

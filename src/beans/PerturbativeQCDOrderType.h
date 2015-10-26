@@ -3,7 +3,7 @@
 
 /**
  * @file QCDOrderType.h
- * @author Bryan BERTHOU
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 16 July 2014
  * @version 1.0
  *

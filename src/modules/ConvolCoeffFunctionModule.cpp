@@ -6,7 +6,6 @@ ConvolCoeffFunctionModule::ConvolCoeffFunctionModule(
 }
 
 ConvolCoeffFunctionModule::~ConvolCoeffFunctionModule() {
-    // TODO Auto-generated destructor stub
 }
 
 ConvolCoeffFunctionModule::ConvolCoeffFunctionModule(

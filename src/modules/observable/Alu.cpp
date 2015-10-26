@@ -24,17 +24,27 @@ Alu* Alu::clone() const {
     return new Alu(*this);
 }
 
-//TODO vérifier
-//TODO !!! division par zero !!!
-//TODO optimisation remplacer les multiples appels similaires par A - B / A + B
+// optimisation remplacement des multiples appels similaires par A - B / A + B
 double Alu::compute(ProcessModule* pDVCSModule, double phi) {
-    double result = (pDVCSModule->computeCrossSection(+1, -1,
-            NumA::Vector3D(0., 0., 0.), phi)
-            - pDVCSModule->computeCrossSection(-1, -1,
-                    NumA::Vector3D(0., 0., 0.), phi))
-            / (pDVCSModule->computeCrossSection(+1, -1,
-                    NumA::Vector3D(0., 0., 0.), phi)
-                    + pDVCSModule->computeCrossSection(-1, -1,
-                            NumA::Vector3D(0., 0., 0.), phi));
+    //    double result = (pDVCSModule->computeCrossSection(+1, -1,
+    //            NumA::Vector3D(0., 0., 0.), phi)
+    //            - pDVCSModule->computeCrossSection(-1, -1,
+    //                    NumA::Vector3D(0., 0., 0.), phi))
+    //            / (pDVCSModule->computeCrossSection(+1, -1,
+    //                    NumA::Vector3D(0., 0., 0.), phi)
+    //                    + pDVCSModule->computeCrossSection(-1, -1,
+    //                            NumA::Vector3D(0., 0., 0.), phi));
+
+    double result = 0.;
+
+    double A = pDVCSModule->computeCrossSection(+1, -1,
+            NumA::Vector3D(0., 0., 0.), phi);
+
+    double B = pDVCSModule->computeCrossSection(-1, -1,
+            NumA::Vector3D(0., 0., 0.), phi);
+
+    //TODO !!! division par zero !!!
+    result = (A - B) / (A + B);
+
     return result;
 }

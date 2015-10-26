@@ -9,8 +9,6 @@ const unsigned int ExampleEvolQCDModel::classId =
 
 ExampleEvolQCDModel::ExampleEvolQCDModel(const std::string &className) :
         GPDEvolutionModule(className) {
-    // TODO Auto-generated constructor stub
-
 }
 
 ExampleEvolQCDModel::ExampleEvolQCDModel(const ExampleEvolQCDModel& other) :
@@ -18,7 +16,6 @@ ExampleEvolQCDModel::ExampleEvolQCDModel(const ExampleEvolQCDModel& other) :
 }
 
 ExampleEvolQCDModel::~ExampleEvolQCDModel() {
-    // TODO Auto-generated destructor stub
 }
 
 ExampleEvolQCDModel* ExampleEvolQCDModel::clone() const {

@@ -30,7 +30,6 @@ ObservableService::ObservableService(const std::string &className) :
 }
 
 ObservableService::~ObservableService() {
-//TODO
 }
 
 //TODO implement all function

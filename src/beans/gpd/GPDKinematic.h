@@ -19,7 +19,6 @@
 
 class ParameterList;
 
-//TODO add inheritance from BaseObject class
 class GPDKinematic: public BaseObject {
 public:
     static const std::string GPD_KINEMATIC_PARAMETER_NAME_X;

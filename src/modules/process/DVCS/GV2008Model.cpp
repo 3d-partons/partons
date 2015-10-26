@@ -241,7 +241,6 @@ double GV2008Model::SqrAmplVCSAndInterf(double beamHelicity, double beamCharge,
             + SqrAmplInterf(beamHelicity, beamCharge, targetPolarization);
 }
 
-//TODO avoid multiple computation if kinematic unchanged
 void GV2008Model::MakeVCSHelicityAmplitudes() {
 
     std::complex<double> CFF_H = getConvolCoeffFunctionValue(GPDType::H);

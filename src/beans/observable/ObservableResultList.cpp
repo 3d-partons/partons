@@ -3,12 +3,9 @@
 #include <sstream>
 
 ObservableResultList::ObservableResultList() {
-    // TODO Auto-generated constructor stub
-
 }
 
 ObservableResultList::~ObservableResultList() {
-    // TODO Auto-generated destructor stub
 }
 
 void ObservableResultList::add(const ObservableResult& observableResult) {

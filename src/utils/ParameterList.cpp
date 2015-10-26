@@ -7,7 +7,6 @@ ParameterList::ParameterList() :
 }
 
 ParameterList::~ParameterList() {
-// TODO Auto-generated destructor stub
 }
 
 GenericType ParameterList::get(const std::string& parameterName) const {

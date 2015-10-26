@@ -60,7 +60,6 @@ DVCSConvolCoeffFunctionKinematic::DVCSConvolCoeffFunctionKinematic(
 }
 
 DVCSConvolCoeffFunctionKinematic::~DVCSConvolCoeffFunctionKinematic() {
-    // TODO Auto-generated destructor stub
 }
 
 std::string DVCSConvolCoeffFunctionKinematic::toString() {

@@ -12,7 +12,6 @@ FourierObservable::FourierObservable(const std::string &className) :
 }
 
 FourierObservable::~FourierObservable() {
-    // TODO Auto-generated destructor stub
 }
 
 //TODO check

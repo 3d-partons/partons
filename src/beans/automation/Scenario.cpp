@@ -1,21 +1,12 @@
-/*
- * Scenario.cpp
- *
- *  Created on: 30 janv. 2015
- *      Author: bryan
- */
-
 #include "Scenario.h"
 
-//#include <utility>
+#include "../../utils/stringUtils/StringUtils.h"
 
-Scenario::Scenario() {
-    // TODO Auto-generated constructor stub
-
+Scenario::Scenario() :
+        m_id(StringUtils::EMPTY), m_date(), m_description(StringUtils::EMPTY) {
 }
 
 Scenario::~Scenario() {
-    // TODO Auto-generated destructor stub
 }
 
 //void Scenario::addFunctionArg(std::string argName, void* argValue) {

@@ -1,17 +1,15 @@
 #include "xSpaceGPDEvolutionModule.h"
 
+#include <NumA/linear_algebra/vector/VectorD.h>
 #include <NumA/MathIntegrator.h>
 
 #include "../../beans/active_flavors/NfInterval.h"
 
 xSpaceGPDEvolutionModule::xSpaceGPDEvolutionModule(const std::string &className) :
         GPDEvolutionModule(className), MathIntegratorModule() {
-    // TODO Auto-generated constructor stub
-
 }
 
 xSpaceGPDEvolutionModule::~xSpaceGPDEvolutionModule() {
-    // TODO Auto-generated destructor stub
 }
 
 xSpaceGPDEvolutionModule::xSpaceGPDEvolutionModule(

@@ -24,7 +24,6 @@ NfFunctionExample::NfFunctionExample(const std::string &className) :
 }
 
 NfFunctionExample::~NfFunctionExample() {
-    // TODO Auto-generated destructor stub
 }
 
 NfFunctionExample::NfFunctionExample(const NfFunctionExample& other) :
@@ -33,4 +32,12 @@ NfFunctionExample::NfFunctionExample(const NfFunctionExample& other) :
 
 NfFunctionExample* NfFunctionExample::clone() const {
     return new NfFunctionExample(*this);
+}
+
+void NfFunctionExample::initModule() {
+    ActiveFlavorsModule::initModule();
+}
+
+void NfFunctionExample::isModuleWellConfigured() {
+    ActiveFlavorsModule::isModuleWellConfigured();
 }

@@ -1,12 +1,14 @@
-/*
- * VectorUtils.h
- *
- *  Created on: Jun 30, 2015
- *      Author: Bryan BERTHOU
- */
-
 #ifndef VECTOR_UTILS_H
 #define VECTOR_UTILS_H
+
+/**
+ * @file VectorUtils.h
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
+ * @date 30 June 2015
+ * @version 1.0
+ *
+ * @class VectorUtils
+ */
 
 #include <algorithm>
 #include <vector>
@@ -14,7 +16,7 @@
 //TODO tester les fonctions de la classe. Je ne sais pas si elles sont correctes.
 class VectorUtils {
 public:
-    //TODO attention ici on modifie les vecteurs car on les tri. Faut-il copier les vector ou bien ne pas trier ?
+    //TODO attention ici on modifie les vecteurs car on les tri. Faut-il copier les vector avant de les trier ?
     // http://www.geeksforgeeks.org/find-union-and-intersection-of-two-unsorted-arrays/
     template<typename T>
     static std::vector<T> intersection(std::vector<T> & lhs,

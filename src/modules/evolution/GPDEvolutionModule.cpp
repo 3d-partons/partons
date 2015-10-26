@@ -215,6 +215,7 @@ GPDEvolutionModule::GPDEvolutionModule(const GPDEvolutionModule &other) :
 GPDEvolutionModule::~GPDEvolutionModule() {
 }
 
+//TODO replace hardcoded active flavors module
 void GPDEvolutionModule::init() {
     m_pRunningAlphaStrong = ModuleObjectFactory::newRunningAlphaStrongModule(
             RunningAlphaStrong::classId);
@@ -453,7 +454,6 @@ NumA::VectorD GPDEvolutionModule::makeVectorOfGPDCombinations(
     return vectorOfGPDCombinations;
 }
 
-//TODO automatiser les setters
 PartonDistribution GPDEvolutionModule::makeFinalPartonDistribution() {
     debug(__func__, "");
 
