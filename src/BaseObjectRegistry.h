@@ -1,12 +1,16 @@
-/*
- * BaseObjectRegistry.h
- *
- *  Created on: Jun 25, 2015
- *      Author: debian
- */
-
 #ifndef BASE_OBJECT_REGISTRY_H
 #define BASE_OBJECT_REGISTRY_H
+
+/**
+ * @file BaseObjectRegistry.h
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
+ * @date 25 June 2015
+ * @version 1.0
+ *
+ * @class BaseObjectRegistry
+ *
+ * @brief
+ */
 
 #include <map>
 #include <string>

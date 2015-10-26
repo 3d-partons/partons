@@ -11,7 +11,7 @@
  * @brief Represents a two-dimensional array of double.
  */
 
-#include <NumA/linear_algebra/VectorD.h>
+#include <NumA/linear_algebra/vector/VectorD.h>
 #include <stddef.h>
 #include <string>
 #include <vector>

@@ -1,7 +1,8 @@
 #include "Alu.h"
 
+#include <NumA/linear_algebra/vector/Vector3D.h>
+
 #include "../../BaseObjectRegistry.h"
-#include "../../utils/vector/Vector3D.h"
 #include "../ProcessModule.h"
 
 // Initialise [class]::classId with a unique name.
@@ -28,12 +29,12 @@ Alu* Alu::clone() const {
 //TODO optimisation remplacer les multiples appels similaires par A - B / A + B
 double Alu::compute(ProcessModule* pDVCSModule, double phi) {
     double result = (pDVCSModule->computeCrossSection(+1, -1,
-            Vector3D(0., 0., 0.), phi)
-            - pDVCSModule->computeCrossSection(-1, -1, Vector3D(0., 0., 0.),
-                    phi))
-            / (pDVCSModule->computeCrossSection(+1, -1, Vector3D(0., 0., 0.),
-                    phi)
+            NumA::Vector3D(0., 0., 0.), phi)
+            - pDVCSModule->computeCrossSection(-1, -1,
+                    NumA::Vector3D(0., 0., 0.), phi))
+            / (pDVCSModule->computeCrossSection(+1, -1,
+                    NumA::Vector3D(0., 0., 0.), phi)
                     + pDVCSModule->computeCrossSection(-1, -1,
-                            Vector3D(0., 0., 0.), phi));
+                            NumA::Vector3D(0., 0., 0.), phi));
     return result;
 }

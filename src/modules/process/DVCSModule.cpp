@@ -3,7 +3,7 @@
 #include "../../utils/GenericType.h"
 #include "../../utils/ParameterList.h"
 #include "../../utils/stringUtils/Formatter.h"
-#include "../../utils/vector/Vector3D.h"
+
 #include "../convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
 #include "../observable/Observable.h"
 
@@ -50,7 +50,7 @@ void DVCSModule::initModule() {
 }
 
 void DVCSModule::initModule(double beamHelicity, double beamCharge,
-        Vector3D targetPolarization) {
+        NumA::Vector3D targetPolarization) {
 
     debug(__func__, "Entered function.");
 }
@@ -103,7 +103,7 @@ void DVCSModule::SetBeamEnergy(double EBeam) {
 }
 
 double DVCSModule::computeCrossSection(double beamHelicity, double beamCharge,
-        Vector3D targetPolarization, double phi) {
+        NumA::Vector3D targetPolarization, double phi) {
 
     m_phi = phi;
 

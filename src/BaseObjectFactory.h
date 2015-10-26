@@ -1,25 +1,24 @@
-/*
- * BaseObjectFactory.h
- *
- *  Created on: Jun 26, 2015
- *      Author: Bryan BERTHOU
- */
-
-#include <map>
-
-#include "BaseObject.h"
-
 #ifndef BASE_OBJECT_FACTORY_H_
 #define BASE_OBJECT_FACTORY_H
 
+/**
+ * @file BaseObjectFactory.h
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
+ * @date 26 June 2015
+ * @version 1.0
+ *
+ * @class BaseObjectFactory
+ *
+ * @brief
+ */
+
+#include <map>
 #include <string>
 
-class BaseObject;
+#include "BaseObject.h"
+
 class BaseObjectRegistry;
 
-/*
- *
- */
 class BaseObjectFactory {
 public:
     /**

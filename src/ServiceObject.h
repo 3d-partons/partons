@@ -1,12 +1,16 @@
-/*
- * ServiceObject.h
- *
- *  Created on: Jul 1, 2015
- *      Author: Bryan BERTHOU
- */
-
 #ifndef SERVICE_OBJECT_H
 #define SERVICE_OBJECT_H
+
+/**
+ * @file ServiceObject.h
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
+ * @date 01 July 2015
+ * @version 1.0
+ *
+ * @class ServiceObject
+ *
+ * @brief
+ */
 
 #include <string>
 
@@ -14,9 +18,6 @@
 
 class Task;
 
-/*
- *
- */
 class ServiceObject: public BaseObject {
 public:
 

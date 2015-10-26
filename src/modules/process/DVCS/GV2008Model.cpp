@@ -17,9 +17,10 @@ const unsigned int GV2008Model::classId =
 /*--------------------------------------- Constructors ---------------------------------*/
 
 GV2008Model::GV2008Model(const std::string &className) :
-        DVCSModule(className), m_qCM(Vector4D(0., 0., 0., 0.)), m_pCM(
-                Vector4D(0., 0., 0., 0.)), m_qpCM(Vector4D(0., 0., 0., 0.)), m_ppCM(
-                Vector4D(0., 0., 0., 0.)) {
+        DVCSModule(className), m_qCM(NumA::Vector4D(0., 0., 0., 0.)), m_pCM(
+                NumA::Vector4D(0., 0., 0., 0.)), m_qpCM(
+                NumA::Vector4D(0., 0., 0., 0.)), m_ppCM(
+                NumA::Vector4D(0., 0., 0., 0.)) {
 }
 
 /*-------------------------------------- Destructor ------------------------------------*/
@@ -206,7 +207,7 @@ void GV2008Model::isModuleWellConfigured() {
 }
 
 double GV2008Model::SqrAmplBH(double beamHelicity, double beamCharge,
-        Vector3D targetPolarization) {
+        NumA::Vector3D targetPolarization) {
 
     double DDDC = DdirectDcrossed(m_phi);
     double M0, M1, M2, M3;
@@ -229,13 +230,13 @@ double GV2008Model::SqrAmplBH(double beamHelicity, double beamCharge,
             + SigmaBHPolZ[1] * beamHelicity * cos(m_phi) * TMath::SinH(m_Omega))
             / (4. * DDDC * pow(m_t, 2));
 
-    Vector3D vM(M1, M2, M3);
+    NumA::Vector3D vM(M1, M2, M3);
 
     return M0 + (targetPolarization * vM);
 }
 
 double GV2008Model::SqrAmplVCSAndInterf(double beamHelicity, double beamCharge,
-        Vector3D targetPolarization) {
+        NumA::Vector3D targetPolarization) {
     return SqrAmplVCS(beamHelicity, beamCharge, targetPolarization)
             + SqrAmplInterf(beamHelicity, beamCharge, targetPolarization);
 }
@@ -282,7 +283,7 @@ void GV2008Model::MakeVCSHelicityAmplitudes() {
 }
 
 double GV2008Model::SqrAmplVCS(double beamHelicity, double beamCharge,
-        Vector3D targetPolarization) {
+        NumA::Vector3D targetPolarization) {
     double M0, M1, M2, M3;
 
     M0 = (SigmaVCSPol0[0]
@@ -319,13 +320,13 @@ double GV2008Model::SqrAmplVCS(double beamHelicity, double beamCharge,
             + SigmaVCSPolZ[2] * TMath::Sin(m_phi) * TMath::SinH(2 * m_Omega))
             / (2. * m_powerOfQ[0]);
 
-    Vector3D vM(M1, M2, M3);
+    NumA::Vector3D vM(M1, M2, M3);
 
     return M0 + (targetPolarization * vM);
 }
 
 double GV2008Model::SqrAmplInterf(double beamHelicity, double beamCharge,
-        Vector3D targetPolarization) {
+        NumA::Vector3D targetPolarization) {
 
     double DDDC = DdirectDcrossed(m_phi);
     double M0, M1, M2, M3;
@@ -418,7 +419,7 @@ double GV2008Model::SqrAmplInterf(double beamHelicity, double beamCharge,
                                                     * TMath::SinH(3 * m_Omega))))
                     / (DDDC * m_powerOfQ[0] * m_t));
 
-    Vector3D vM(M1, M2, M3);
+    NumA::Vector3D vM(M1, M2, M3);
 
     return M0 + (targetPolarization * vM);
 }
@@ -3086,19 +3087,19 @@ double GV2008Model::DdirectDcrossed(double phi) {
 }
 
 double GV2008Model::CrossSectionBH(double beamHelicity, double beamCharge,
-        Vector3D targetPolarization) {
+        NumA::Vector3D targetPolarization) {
     return SqrAmplBH(beamHelicity, beamCharge, targetPolarization)
             * m_phaseSpace;
 }
 
 double GV2008Model::CrossSectionVCS(double beamHelicity, double beamCharge,
-        Vector3D targetPolarization) {
+        NumA::Vector3D targetPolarization) {
     return SqrAmplVCS(beamHelicity, beamCharge, targetPolarization)
             * m_phaseSpace;
 }
 
 double GV2008Model::CrossSectionInterf(double beamHelicity, double beamCharge,
-        Vector3D targetPolarization) {
+        NumA::Vector3D targetPolarization) {
     return SqrAmplInterf(beamHelicity, beamCharge, targetPolarization)
             * m_phaseSpace;
 }

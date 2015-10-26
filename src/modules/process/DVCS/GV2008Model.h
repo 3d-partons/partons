@@ -12,10 +12,10 @@
  * @brief 25-09-2015 (Bryan BERTHOU) : refactoring
  */
 
+#include <NumA/linear_algebra/vector/Vector4D.h>
 #include <string>
 #include <vector>
 
-#include "../../../utils/vector/Vector4D.h"
 #include "../DVCSModule.h"
 
 class GV2008Model: public DVCSModule {
@@ -29,15 +29,15 @@ public:
 
     // Cross sections
     virtual double CrossSectionBH(double beamHelicity, double beamCharge,
-            Vector3D targetPolarization);
+            NumA::Vector3D targetPolarization);
     // Bethe Heitler cross section
 
     virtual double CrossSectionVCS(double beamHelicity, double beamCharge,
-            Vector3D targetPolarization);
+            NumA::Vector3D targetPolarization);
     // Virtual Compton Scattering cross section
 
     virtual double CrossSectionInterf(double beamHelicity, double beamCharge,
-            Vector3D targetPolarization);
+            NumA::Vector3D targetPolarization);
     // Interference cross section
 
 protected:
@@ -98,10 +98,10 @@ private:
     double m_Q;  // Photon virtual mass i.e. square root of Q2
 
     // 4-vectors defined in the CM frame :
-    Vector4D m_qCM; // Virtual photon (propagates along z-axis)
-    Vector4D m_pCM; // Incoming proton (propagates along z-axis)
-    Vector4D m_qpCM; // Real photon (defines hadronic plane xz)
-    Vector4D m_ppCM; // Outgoing proton
+    NumA::Vector4D m_qCM; // Virtual photon (propagates along z-axis)
+    NumA::Vector4D m_pCM; // Incoming proton (propagates along z-axis)
+    NumA::Vector4D m_qpCM; // Real photon (defines hadronic plane xz)
+    NumA::Vector4D m_ppCM; // Outgoing proton
 
     /*------------------------ (Combinations of) helicity amplitudes -----------------------*/
 
@@ -147,14 +147,14 @@ private:
     // Denominator of the Bethe Heitler cross section
 
     double SqrAmplBH(double beamHelicity, double beamCharge,
-            Vector3D targetPolarization);
+            NumA::Vector3D targetPolarization);
 
     double SqrAmplVCSAndInterf(double beamHelicity, double beamCharge,
-            Vector3D targetPolarization);
+            NumA::Vector3D targetPolarization);
     double SqrAmplVCS(double beamHelicity, double beamCharge,
-            Vector3D targetPolarization);
+            NumA::Vector3D targetPolarization);
     double SqrAmplInterf(double beamHelicity, double beamCharge,
-            Vector3D targetPolarization);
+            NumA::Vector3D targetPolarization);
 
     void MakeVCSHelicityAmplitudes();
 

@@ -1,17 +1,10 @@
-/*
- * BMJ2012Model.cpp
- *
- *  Created on: Oct 7, 2015
- *      Author: debian
- */
-
 #include "BMJ2012Model.h"
 
+#include <NumA/linear_algebra/vector/Vector3D.h>
 #include <cmath>
 
 #include "../../../BaseObjectRegistry.h"
 #include "../../../FundamentalPhysicalConstants.h"
-#include "../../../utils/vector/Vector3D.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int BMJ2012Model::classId =
@@ -120,7 +113,7 @@ void BMJ2012Model::initModule() {
 }
 
 void BMJ2012Model::initModule(double beamHelicity, double beamCharge,
-        Vector3D targetPolarization) {
+        NumA::Vector3D targetPolarization) {
 
     //init mother class
     DVCSModule::initModule(beamHelicity, beamCharge, targetPolarization);
@@ -151,14 +144,14 @@ void BMJ2012Model::isModuleWellConfigured() {
     DVCSModule::isModuleWellConfigured();
 }
 
-void BMJ2012Model::defineAngles(const Vector3D &targetPolarization) {
+void BMJ2012Model::defineAngles(const NumA::Vector3D &targetPolarization) {
     double Px = targetPolarization.getX();
     double Py = targetPolarization.getY();
     double Pz = targetPolarization.getZ();
 
     //TODO BMK polarization rotation
-    double Sx = Px*cos(-m_phi)-Py*sin(-m_phi);
-    double Sy = -(Px*sin(-m_phi)+Py*cos(-m_phi));
+    double Sx = Px * cos(-m_phi) - Py * sin(-m_phi);
+    double Sy = -(Px * sin(-m_phi) + Py * cos(-m_phi));
     double Sz = -Pz;
 
     //TODO Fix the method for determining angles (it's wrong since Lambda can be negative)
@@ -290,7 +283,7 @@ void BMJ2012Model::computeFourierCoeffsVCS() {
 }
 
 double BMJ2012Model::SqrAmplBH(double beamHelicity, double beamCharge,
-        Vector3D targetPolarization) {
+        NumA::Vector3D targetPolarization) {
 
     double A = pow(POSITRON_CHARGE, 6)
             / (m_xB2 * m_y[1] * pow(1 + m_epsilon[1], 2) * m_t * m_P1 * m_P2);
@@ -307,7 +300,7 @@ double BMJ2012Model::SqrAmplBH(double beamHelicity, double beamCharge,
 }
 
 double BMJ2012Model::SqrAmplVCS(double beamHelicity, double beamCharge,
-        Vector3D targetPolarization) {
+        NumA::Vector3D targetPolarization) {
 
     double A = pow(POSITRON_CHARGE, 6) / (m_y[1] * m_Q2);
 
@@ -324,7 +317,7 @@ double BMJ2012Model::SqrAmplVCS(double beamHelicity, double beamCharge,
 }
 
 double BMJ2012Model::SqrAmplInterf(double beamHelicity, double beamCharge,
-        Vector3D targetPolarization) {
+        NumA::Vector3D targetPolarization) {
 
     double A = -beamCharge * pow(POSITRON_CHARGE, 6)
             / (m_xB * m_y[2] * m_t * m_P1 * m_P2);
@@ -342,19 +335,19 @@ double BMJ2012Model::SqrAmplInterf(double beamHelicity, double beamCharge,
 }
 
 double BMJ2012Model::CrossSectionBH(double beamHelicity, double beamCharge,
-        Vector3D targetPolarization) {
+        NumA::Vector3D targetPolarization) {
     return SqrAmplBH(beamHelicity, beamCharge, targetPolarization)
             * m_phaseSpace;
 }
 
 double BMJ2012Model::CrossSectionVCS(double beamHelicity, double beamCharge,
-        Vector3D targetPolarization) {
+        NumA::Vector3D targetPolarization) {
     return SqrAmplVCS(beamHelicity, beamCharge, targetPolarization)
             * m_phaseSpace;
 }
 
 double BMJ2012Model::CrossSectionInterf(double beamHelicity, double beamCharge,
-        Vector3D targetPolarization) {
+        NumA::Vector3D targetPolarization) {
     return SqrAmplInterf(beamHelicity, beamCharge, targetPolarization)
             * m_phaseSpace;
 }

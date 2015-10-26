@@ -10,8 +10,8 @@
 Observable::Observable(const std::string &className) :
         BaseObject(className), m_channel(ObservableChannel::UNDEFINED), m_beamHelicity(
                 0.), m_beamCharge(0.), m_targetPolarization(
-                Vector3D(0., 0., 0.)), m_observableType(ObservableType::PHI), m_pProcess(
-                0) {
+                NumA::Vector3D(0., 0., 0.)), m_observableType(
+                ObservableType::PHI), m_pProcess(0) {
 }
 
 Observable::Observable(const Observable& other) :
@@ -116,11 +116,12 @@ void Observable::setBeamHelicity(double beamHelicity) {
     m_beamHelicity = beamHelicity;
 }
 
-const Vector3D& Observable::getTargetPolarization() const {
+const NumA::Vector3D& Observable::getTargetPolarization() const {
     return m_targetPolarization;
 }
 
-void Observable::setTargetPolarization(const Vector3D& targetPolarization) {
+void Observable::setTargetPolarization(
+        const NumA::Vector3D& targetPolarization) {
     m_targetPolarization = targetPolarization;
 }
 

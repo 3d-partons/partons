@@ -16,6 +16,10 @@
 
 #include "../ModuleObject.h"
 
+namespace NumA {
+class Vector3D;
+} /* namespace NumA */
+
 class Vector3D;
 
 class ProcessModule: public ModuleObject {
@@ -36,7 +40,7 @@ public:
             double MuF2, double MuR2) = 0;
 
     virtual double computeCrossSection(double beamHelicity, double beamCharge,
-            Vector3D targetPolarization, double phi) = 0;
+            NumA::Vector3D targetPolarization, double phi) = 0;
 
 protected:
     /**

@@ -12,12 +12,12 @@
  * @brief
  */
 
+#include <NumA/linear_algebra/vector/Vector3D.h>
 #include <string>
 #include <vector>
 
 #include "../../beans/observable/ObservableChannel.h"
 #include "../../beans/observable/ObservableType.h"
-#include "../../utils/vector/Vector3D.h"
 #include "../process/DVCSModule.h"
 
 class ObservableResultList;
@@ -48,7 +48,7 @@ public:
 
     typedef double (DVCSModule::*computeCrossSection)(double beamHelicity,
 
-    double beamCharge, Vector3D targetPolarization);
+    double beamCharge, NumA::Vector3D targetPolarization);
 
     ObservableResultList compute(double xB, double t, double Q2,
             std::vector<double> listOfPhi);
@@ -61,8 +61,8 @@ public:
     void setBeamCharge(double beamCharge);
     double getBeamHelicity() const;
     void setBeamHelicity(double beamHelicity);
-    const Vector3D& getTargetPolarization() const;
-    void setTargetPolarization(const Vector3D& targetPolarization);
+    const NumA::Vector3D& getTargetPolarization() const;
+    void setTargetPolarization(const NumA::Vector3D& targetPolarization);
     const ProcessModule* getDVCSModule() const;
     void setDVCSModule(ProcessModule* pDVCSModule);
 
@@ -86,7 +86,7 @@ protected:
     double m_beamHelicity;
     double m_beamCharge;
 
-    Vector3D m_targetPolarization;
+    NumA::Vector3D m_targetPolarization;
 
     virtual double compute();
 };

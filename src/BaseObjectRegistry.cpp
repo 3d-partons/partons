@@ -1,10 +1,3 @@
-/*
- * BaseObjectRegistry.cpp
- *
- *  Created on: Jun 25, 2015
- *      Author: debian
- */
-
 #include "BaseObjectRegistry.h"
 
 #include <stdexcept>

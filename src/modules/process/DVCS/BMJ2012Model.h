@@ -26,13 +26,13 @@ public:
 
     // Cross sections
     virtual double CrossSectionBH(double beamHelicity, double beamCharge,
-            Vector3D targetPolarization); ///< Bethe Heitler cross section
+            NumA::Vector3D targetPolarization); ///< Bethe Heitler cross section
 
     virtual double CrossSectionVCS(double beamHelicity, double beamCharge,
-            Vector3D targetPolarization); ///< Virtual Compton Scattering cross section
+            NumA::Vector3D targetPolarization); ///< Virtual Compton Scattering cross section
 
     virtual double CrossSectionInterf(double beamHelicity, double beamCharge,
-            Vector3D targetPolarization); ///< Interference cross section
+            NumA::Vector3D targetPolarization); ///< Interference cross section
 
 protected:
     /**
@@ -46,7 +46,7 @@ protected:
 
     virtual void initModule();
     virtual void initModule(double beamHelicity, double beamCharge,
-            Vector3D targetPolarization);
+            NumA::Vector3D targetPolarization);
     virtual void isModuleWellConfigured();
 
 private:
@@ -118,14 +118,14 @@ private:
 
     void computeFourierCoeffsInterf(); ///< Computes c_I and s_I
 
-    void defineAngles(const Vector3D &targetPolarization); ///< Define the BMK angles
+    void defineAngles(const NumA::Vector3D &targetPolarization); ///< Define the BMK angles
 
     double SqrAmplBH(double beamHelicity, double beamCharge,
-            Vector3D targetPolarization); ///< Returns the squared amplitude of Bethe Heitler process
+            NumA::Vector3D targetPolarization); ///< Returns the squared amplitude of Bethe Heitler process
     double SqrAmplVCS(double beamHelicity, double beamCharge,
-            Vector3D targetPolarization); ///< Returns the squared amplitude of VCS process
+            NumA::Vector3D targetPolarization); ///< Returns the squared amplitude of VCS process
     double SqrAmplInterf(double beamHelicity, double beamCharge,
-            Vector3D targetPolarization); ///< Returns the interference term of the squared amplitude
+            NumA::Vector3D targetPolarization); ///< Returns the interference term of the squared amplitude
 };
 
 #endif /* BMJ_2012_MODEL_H */

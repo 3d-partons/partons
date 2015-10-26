@@ -1,20 +1,21 @@
-/*
- * ServiceObjectRegistry.h
- *
- *  Created on: Jul 1, 2015
- *      Author: Bryan BERTHOU
- *
- *      Shared unique instance of a service class. Not a copied pointer !
- */
-
 #ifndef SERVICE_OBJECT_REGISTRY_H
 #define SERVICE_OBJECT_REGISTRY_H
 
+/**
+ * @file ServiceObjectRegistry.h
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
+ * @date 01 July 2015
+ * @version 1.0
+ *
+ * @class ServiceObjectRegistry
+ *
+ * @brief
+ */
+
 #include <string>
 
-class DoubleDistributionService;
-
 class BaseObjectRegistry;
+class DoubleDistributionService;
 class DVCSConvolCoeffFunctionService;
 class GPDService;
 class ObservableService;

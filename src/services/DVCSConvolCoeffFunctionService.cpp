@@ -11,8 +11,6 @@
 #include "../utils/stringUtils/Formatter.h"
 #include "../utils/stringUtils/StringUtils.h"
 
-//#include "GPDService.h"
-
 const std::string DVCSConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_WITH_GPD_MODEL =
         "computeWithGPDModel";
 const std::string DVCSConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_LIST_WITH_GPD_MODEL =
@@ -92,7 +90,7 @@ void DVCSConvolCoeffFunctionService::computeTask(Task &task) {
     } else if (StringUtils::equals(task.getFunctionName(),
             DVCSConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_LIST_WITH_GPD_MODEL)) {
 
-//create kinematic
+        //create kinematic
         DVCSConvolCoeffFunctionKinematic kinematic;
 
         if (task.isAvailableParameterList("DVCSConvolCoeffFunctionKinematic")) {
@@ -159,7 +157,7 @@ DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionService::computeWithGPDMode
         const DVCSConvolCoeffFunctionKinematic &kinematic,
         GPDType::Type gpdType) {
 
-    // Configure cff module
+    // set gpd module to dvcs convol coeff function module
     dvcsConvolCoeffFunctionModule->setGPDModule(_pGPDModule);
 
     //TODO call with xi no xB ?

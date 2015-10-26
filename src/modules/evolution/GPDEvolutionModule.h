@@ -12,7 +12,7 @@
  * @brief
  */
 
-#include <NumA/linear_algebra/VectorD.h>
+#include <NumA/linear_algebra/vector/VectorD.h>
 #include <string>
 
 #include "../../beans/gpd/GPDType.h"
