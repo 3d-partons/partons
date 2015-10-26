@@ -1,9 +1,11 @@
 #ifndef BMJ_2012_MODEL_H
 #define BMJ_2012_MODEL_H
 
+#include <complex>
 #include <string>
 #include <vector>
 
+#include "../../../beans/gpd/GPDType.h"
 #include "../DVCSModule.h"
 
 /**
@@ -64,20 +66,26 @@ private:
     double m_xB2; ///< square of xB
     std::vector<double> m_Q; ///< square root of virtuality Q2
                              ///< m_Q[0] = Q, m_Q[1] = Q^2, etc...
+    std::vector<double> m_xBtQ2;
     std::vector<double> m_M; ///< Proton mass
                              ///< m_M[0] = M, m_M[1] = M^2, etc...
     std::vector<double> m_y; ///< Lepton energy fraction
                              ///< m_y[0] = y, m_y[1] = y^2, etc...
     std::vector<double> m_epsilon; ///<
                                    ///< m_epsilon[0] = epsilon, m_epsilon[1] = epsilon^2, etc...
-    double m_epsroot; ///< sqrt(1+epsilon^2)
-    std::vector<double> m_K; ///< Kinematical factor K
-                             ///< m_K[0] = K, m_K[1] = K^2, etc...
+    std::vector<double> m_epsroot; ///< sqrt(1+epsilon^2)
+    std::vector<double> m_K, m_Kt; ///< Kinematical factors K and K tilde
+    ///< m_K[0] = K, m_K[1] = K^2, etc...
     std::vector<double> m_Delta2; ///< Mandelstam variable t
                                   ///< m_Delta2[0] = t, m_Delta2[1] = Delta^4 = t^2, etc...
     double m_Delta2_min; ///< minimum of t
+    double m_Delta2_max; ///< max of t
 
     double m_P1, m_P2; ///< Lepton propagators
+
+    void defineAngles(const NumA::Vector3D &targetPolarization); ///< Define the BMK angles
+
+    double m_F1, m_F2; ///< Dirac and Pauli form factors
 
     /* Bethe Heitler coeffs (BMK2002) */
     /** Fourier coeffs of the BH squared amplitude
@@ -118,7 +126,42 @@ private:
 
     void computeFourierCoeffsInterf(); ///< Computes c_I and s_I
 
-    void defineAngles(const NumA::Vector3D &targetPolarization); ///< Define the BMK angles
+    /** Coefficients used for computing F+b and F0+
+     * 1st index: [0] = F++, [1] = F+-, [2] = F0+
+     * 2nd index: [0]: F coeff, [1]: FT coeff, [2]: FLT coeff
+     */
+    std::vector<std::vector<double> > m_cF;
+
+    /** Array that stores the CFFs F+b and F0+
+     * 1st index: [0] = H, [1] = E, [2] = Ht, [3] = Et
+     * 2nd index: [0] = F++, [1] = F+-, [2] = F0+
+     */
+    std::vector<std::vector<std::complex<double> > > m_CFF;
+
+    /** Method that calculates F+b and F0+
+     */
+    std::complex<double> computeCFF(int i, int j);
+
+    /** Method that gives F+b and F0+ already calculated
+     */
+    std::complex<double> CFF(GPDType::Type F, int a, int b);
+
+    /** Method that gives the VCS coefficient bilinear in the CFFs
+     *
+     * @param i 0=unp, 1=LP, 2=TP+, 3=TP-
+     */
+    std::complex<double> C_VCS(unsigned int i, int a1, int b1, int a2, int b2);
+    std::complex<double> C_VCS(unsigned int i, int a1, int b1, int a2, int b2,
+            int a3, int b3);
+    std::complex<double> C_VCS(unsigned int i, int a1, int b1, int a2, int b2,
+            int a3, int b3, int a4, int b4);
+
+    /** Method that gives the Interference coefficient linear in the CFFs
+     *
+     * @param i 0=unp, 1=LP, 2=TP+, 3=TP-
+     * @param j 0=not, 1=V, 2=A
+     */
+    std::complex<double> C_I(unsigned int i, unsigned int j, int a, int b);
 
     double SqrAmplBH(double beamHelicity, double beamCharge,
             NumA::Vector3D targetPolarization); ///< Returns the squared amplitude of Bethe Heitler process
