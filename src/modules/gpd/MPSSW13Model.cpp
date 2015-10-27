@@ -5,8 +5,6 @@
 #include <Math/WrappedTF1.h>
 #include <TF1.h>
 #include <cmath>
-#include <cstdlib>
-#include <iostream>
 #include <map>
 #include <utility>
 
@@ -17,7 +15,6 @@
 #include "../../beans/QuarkFlavor.h"
 #include "../../BaseObjectRegistry.h"
 #include "../../FundamentalPhysicalConstants.h"
-//#include "../../utils/logger/LoggerManager.h"
 #include "../../utils/mstwpdf.h"
 #include "../../utils/PropertiesManager.h"
 #include "../../utils/stringUtils/Formatter.h"
@@ -81,36 +78,32 @@ MPSSW13Model::~MPSSW13Model() {
 
 void MPSSW13Model::setParameters(std::vector<double> Parameters) {
     // TODO: Check general syntax of setParameters...
+
+    if (Parameters.size() != 3) {
+        throwException(__func__, "Missing parameters !");
+    }
+
     // Test known constraints on free parameters
-    // TODO: Modernize tests (logger, exceptions)
     if (Parameters.at(0) < 1.) {
-        std::cout
-                << "MPSSW13Model : Exponent in valence profile function should be >= 1."
-                << std::endl;
-        std::cout << "MPSSW13Model : Here exponent = " << Parameters.at(0)
-                << std::endl;
-        std::cout << std::endl;
-        exit(-1);
+        throwException(__func__,
+                Formatter()
+                        << "Exponent in valence profile function should be >= 1."
+                        << '\n' << "Here exponent = " << Parameters.at(0)
+                        << '\n');
     }
-
     if (Parameters.at(1) < 1.) {
-        std::cout
-                << "MPSSW13Model : Exponent in sea profile function should be >= 1."
-                << std::endl;
-        std::cout << "MPSSW13Model : Here exponent = " << Parameters.at(1)
-                << std::endl;
-        std::cout << std::endl;
-        exit(-1);
+        throwException(__func__,
+                Formatter()
+                        << "Exponent in sea profile function should be >= 1."
+                        << '\n' << "Here exponent = " << Parameters.at(1)
+                        << '\n');
     }
-
     if (Parameters.at(2) < 1.) {
-        std::cout
-                << "MPSSW13Model : Exponent in glue profile function should be >= 1."
-                << std::endl;
-        std::cout << "MPSSW13Model : Here exponent = " << Parameters.at(2)
-                << std::endl;
-        std::cout << std::endl;
-        exit(-1);
+        throwException(__func__,
+                Formatter()
+                        << "Exponent in glue profile function should be >= 1."
+                        << '\n' << "Here exponent = " << Parameters.at(2)
+                        << '\n');
     }
 
     // Assign parameters
@@ -432,17 +425,15 @@ double MPSSW13Model::Profile(double N, double beta, double alpha) {
     double ProfileShape = N;
     double TwiceProfileShapePlus1 = 2. * ProfileShape + 1;
 
-    // TODO: Change error message (logger, exception, etc.)
-    if (fabs(alpha) + fabs(beta) > 1.) {
-        std::cout
-                << "MPSSW13Model : Parameters of profile function should be in rhombus | alpha | + | beta | <= 1."
-                << std::endl;
-        std::cout << "MPSSW13Model : Here alpha = " << alpha << std::endl;
-        std::cout << "MPSSW13Model : Here beta = " << beta << std::endl;
-        std::cout << "MPSSW13Model : Here | alpha | + | beta | = "
-                << fabs(alpha) + fabs(beta) << std::endl;
-        std::cout << std::endl;
-        exit(-1);
+    double alphaBeta = fabs(alpha) + fabs(beta);
+    if (alphaBeta > 1.) {
+
+        throwException(__func__,
+                Formatter()
+                        << "MPSSW13Model : Parameters of profile function should be in rhombus | alpha | + | beta | <= 1."
+                        << '\n' << "Here alpha = " << alpha << " beta = "
+                        << beta << " | alpha | + | beta | = " << alphaBeta
+                        << '\n');
     }
 
     profile = pow((1. - fabs(beta)) * (1. - fabs(beta)) - alpha * alpha,
@@ -455,20 +446,23 @@ double MPSSW13Model::Profile(double N, double beta, double alpha) {
     return profile;
 }
 
+void MPSSW13Model::throwBetaException(const std::string &funcName,
+        double betaValue) {
+    throwException(funcName,
+            Formatter()
+                    << "Longitudinal momentum fraction should be in ] 0., +1. ]"
+                    << '\n' << "Here beta = " << betaValue << '\n');
+}
+
 double MPSSW13Model::IntegralHuVal(double* Var, double* Par) {
     double Integral;
     double pdf, beta, absbeta;
 
     beta = Var[0];
     absbeta = fabs(beta);
-    // TODO: Modernize error message (logger, exception, etc.)
+
     if (beta <= 0 || beta > 1.) {
-        std::cout
-                << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]"
-                << std::endl;
-        std::cout << "MPSSW13Model : Here beta = " << Var[0] << std::endl;
-        std::cout << std::endl;
-        exit(-1);
+        throwBetaException(__func__, Var[0]);
     }
 
 //  m_Forward->Setx( beta );
@@ -492,14 +486,9 @@ double MPSSW13Model::IntegralHuValMx(double* Var, double* Par) {
 
     beta = Var[0];
     absbeta = fabs(beta);
-    // TODO: Modernize error message (logger, exception, etc.)
+
     if (beta <= 0 || beta > 1.) {
-        std::cout
-                << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]"
-                << std::endl;
-        std::cout << "MPSSW13Model : Here beta = " << Var[0] << std::endl;
-        std::cout << std::endl;
-        exit(-1);
+        throwBetaException(__func__, Var[0]);
     }
 
 //  m_Forward->Setx( beta );
@@ -523,14 +512,9 @@ double MPSSW13Model::IntegralxLargeHuSea(double* Var, double* Par) {
 
     beta = Var[0];
     absbeta = fabs(beta);
-    // TODO: Modernize error message (logger, exception, etc.)
+
     if (beta <= 0 || beta > 1.) {
-        std::cout
-                << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]"
-                << std::endl;
-        std::cout << "MPSSW13Model : Here beta = " << Var[0] << std::endl;
-        std::cout << std::endl;
-        exit(-1);
+        throwBetaException(__func__, Var[0]);
     }
 
 //  m_Forward->Setx( beta );
@@ -550,14 +534,9 @@ double MPSSW13Model::IntegralxSmall1HuSea(double* Var, double* Par) {
 
     beta = Var[0];
     absbeta = fabs(beta);
-    // TODO: Modernize error message (logger, exception, etc.)
+
     if (beta <= 0 || beta > 1.) {
-        std::cout
-                << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]"
-                << std::endl;
-        std::cout << "MPSSW13Model : Here beta = " << Var[0] << std::endl;
-        std::cout << std::endl;
-        exit(-1);
+        throwBetaException(__func__, Var[0]);
     }
 
 //  m_Forward->Setx( beta );
@@ -577,14 +556,9 @@ double MPSSW13Model::IntegralxSmall2HuSea(double* Var, double* Par) {
 
     beta = Var[0];
     absbeta = fabs(beta);
-    // TODO: Modernize error message (logger, exception, etc.)
+
     if (beta <= 0 || beta > 1.) {
-        std::cout
-                << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]"
-                << std::endl;
-        std::cout << "MPSSW13Model : Here beta = " << Var[0] << std::endl;
-        std::cout << std::endl;
-        exit(-1);
+        throwBetaException(__func__, Var[0]);
     }
 
 //  m_Forward->Setx( beta );
@@ -612,14 +586,9 @@ double MPSSW13Model::IntegralHdVal(double* Var, double* Par) {
 
     beta = Var[0];
     absbeta = fabs(beta);
-    // TODO: Modernize error message (logger, exception, etc.)
+
     if (beta <= 0 || beta > 1.) {
-        std::cout
-                << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]"
-                << std::endl;
-        std::cout << "MPSSW13Model : Here beta = " << Var[0] << std::endl;
-        std::cout << std::endl;
-        exit(-1);
+        throwBetaException(__func__, Var[0]);
     }
 
 //  m_Forward->Setx( beta );
@@ -643,14 +612,9 @@ double MPSSW13Model::IntegralHdValMx(double* Var, double* Par) {
 
     beta = Var[0];
     absbeta = fabs(beta);
-    // TODO: Modernize error message (logger, exception, etc.)
+
     if (beta <= 0 || beta > 1.) {
-        std::cout
-                << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]"
-                << std::endl;
-        std::cout << "MPSSW13Model : Here beta = " << Var[0] << std::endl;
-        std::cout << std::endl;
-        exit(-1);
+        throwBetaException(__func__, Var[0]);
     }
 
 //  m_Forward->Setx( beta );
@@ -674,14 +638,9 @@ double MPSSW13Model::IntegralxLargeHdSea(double* Var, double* Par) {
 
     beta = Var[0];
     absbeta = fabs(beta);
-    // TODO: Modernize error message (logger, exception, etc.)
+
     if (beta <= 0 || beta > 1.) {
-        std::cout
-                << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]"
-                << std::endl;
-        std::cout << "MPSSW13Model : Here beta = " << Var[0] << std::endl;
-        std::cout << std::endl;
-        exit(-1);
+        throwBetaException(__func__, Var[0]);
     }
 
 //  m_Forward->Setx( beta );
@@ -701,14 +660,9 @@ double MPSSW13Model::IntegralxSmall1HdSea(double* Var, double* Par) {
 
     beta = Var[0];
     absbeta = fabs(beta);
-    // TODO: Modernize error message (logger, exception, etc.)
+
     if (beta <= 0 || beta > 1.) {
-        std::cout
-                << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]"
-                << std::endl;
-        std::cout << "MPSSW13Model : Here beta = " << Var[0] << std::endl;
-        std::cout << std::endl;
-        exit(-1);
+        throwBetaException(__func__, Var[0]);
     }
 
 //  m_Forward->Setx( beta );
@@ -728,14 +682,9 @@ double MPSSW13Model::IntegralxSmall2HdSea(double* Var, double* Par) {
 
     beta = Var[0];
     absbeta = fabs(beta);
-    // TODO: Modernize error message (logger, exception, etc.)
+
     if (beta <= 0 || beta > 1.) {
-        std::cout
-                << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]"
-                << std::endl;
-        std::cout << "MPSSW13Model : Here beta = " << Var[0] << std::endl;
-        std::cout << std::endl;
-        exit(-1);
+        throwBetaException(__func__, Var[0]);
     }
 
 //  m_Forward->Setx( beta );
@@ -757,14 +706,9 @@ double MPSSW13Model::IntegralxLargeHsSea(double* Var, double* Par) {
 
     beta = Var[0];
     absbeta = fabs(beta);
-    // TODO: Modernize error message (logger, exception, etc.)
+
     if (beta <= 0 || beta > 1.) {
-        std::cout
-                << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]"
-                << std::endl;
-        std::cout << "MPSSW13Model : Here beta = " << Var[0] << std::endl;
-        std::cout << std::endl;
-        exit(-1);
+        throwBetaException(__func__, Var[0]);
     }
 
 //  m_Forward->Setx( beta );
@@ -784,14 +728,9 @@ double MPSSW13Model::IntegralxSmall1HsSea(double* Var, double* Par) {
 
     beta = Var[0];
     absbeta = fabs(beta);
-    // TODO: Modernize error message (logger, exception, etc.)
+
     if (beta <= 0 || beta > 1.) {
-        std::cout
-                << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]"
-                << std::endl;
-        std::cout << "MPSSW13Model : Here beta = " << Var[0] << std::endl;
-        std::cout << std::endl;
-        exit(-1);
+        throwBetaException(__func__, Var[0]);
     }
 
 //  m_Forward->Setx( beta );
@@ -815,14 +754,9 @@ double MPSSW13Model::IntegralxSmall2HsSea(double* Var, double* Par) {
 
     beta = Var[0];
     absbeta = fabs(beta);
-    // TODO: Modernize error message (logger, exception, etc.)
+
     if (beta <= 0 || beta > 1.) {
-        std::cout
-                << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]"
-                << std::endl;
-        std::cout << "MPSSW13Model : Here beta = " << Var[0] << std::endl;
-        std::cout << std::endl;
-        exit(-1);
+        throwBetaException(__func__, Var[0]);
     }
 
 //  m_Forward->Setx( beta );
@@ -848,14 +782,9 @@ double MPSSW13Model::IntegralxLargeHg(double* Var, double* Par) {
 
     beta = Var[0];
     absbeta = fabs(beta);
-    // TODO: Modernize error message (logger, exception, etc.)
+
     if (beta <= 0 || beta > 1.) {
-        std::cout
-                << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]"
-                << std::endl;
-        std::cout << "MPSSW13Model : Here beta = " << Var[0] << std::endl;
-        std::cout << std::endl;
-        exit(-1);
+        throwBetaException(__func__, Var[0]);
     }
 
 //  m_Forward->Setx( beta );
@@ -876,14 +805,9 @@ double MPSSW13Model::IntegralxSmall1Hg(double* Var, double* Par) {
 
     beta = Var[0];
     absbeta = fabs(beta);
-    // TODO: Modernize error message (logger, exception, etc.)
+
     if (beta <= 0 || beta > 1.) {
-        std::cout
-                << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]"
-                << std::endl;
-        std::cout << "MPSSW13Model : Here beta = " << Var[0] << std::endl;
-        std::cout << std::endl;
-        exit(-1);
+        throwBetaException(__func__, Var[0]);
     }
 
 //  m_Forward->Setx( beta );
@@ -904,14 +828,9 @@ double MPSSW13Model::IntegralxSmall2Hg(double* Var, double* Par) {
 
     beta = Var[0];
     absbeta = fabs(beta);
-    // TODO: Modernize error message (logger, exception, etc.)
+
     if (beta <= 0 || beta > 1.) {
-        std::cout
-                << "MPSSW13Model : Longitudinal momentum fraction should be in ] 0., +1. ]"
-                << std::endl;
-        std::cout << "MPSSW13Model : Here beta = " << Var[0] << std::endl;
-        std::cout << std::endl;
-        exit(-1);
+        throwBetaException(__func__, Var[0]);
     }
 
 //  m_Forward->Setx( beta );

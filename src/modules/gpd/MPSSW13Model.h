@@ -116,6 +116,8 @@ private:
 
     //GPDResultData compute(GPDComputeType gpdComputeType);
     virtual PartonDistribution computeH(); ///< Compute GPD H at considered kinematics
+
+    void throwBetaException(const std::string &funcName, double betaValue);
 };
 
 #endif /* MPSSW13_H_ */
