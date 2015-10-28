@@ -8,6 +8,7 @@
 #include "modules/GPDModule.h"
 #include "modules/process/DVCSModule.h"
 #include "modules/RunningAlphaStrongModule.h"
+#include "modules/scale/ScaleModule.h"
 
 DoubleDistributionModule* ModuleObjectFactory::newDoubleDistributionModule(
         unsigned int classId) {
@@ -55,8 +56,7 @@ DVCSConvolCoeffFunctionModule* ModuleObjectFactory::newDVCSConvolCoeffFunctionMo
             className));
 }
 
-ProcessModule* ModuleObjectFactory::newObservableModule(
-        unsigned int classId) {
+ProcessModule* ModuleObjectFactory::newObservableModule(unsigned int classId) {
     return static_cast<ProcessModule*>(BaseObjectFactory::getInstance()->newBaseObject(
             classId));
 }
@@ -98,5 +98,15 @@ ActiveFlavorsModule* ModuleObjectFactory::newActiveFlavorsModule(
 ActiveFlavorsModule* ModuleObjectFactory::newActiveFlavorsModule(
         const std::string &className) {
     return static_cast<ActiveFlavorsModule*>(BaseObjectFactory::getInstance()->newBaseObject(
+            className));
+}
+
+ScaleModule* ModuleObjectFactory::newScaleModule(unsigned int classId) {
+    return static_cast<ScaleModule*>(BaseObjectFactory::getInstance()->newBaseObject(
+            classId));
+}
+
+ScaleModule* ModuleObjectFactory::newScaleModule(const std::string &className) {
+    return static_cast<ScaleModule*>(BaseObjectFactory::getInstance()->newBaseObject(
             className));
 }

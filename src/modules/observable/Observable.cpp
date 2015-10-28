@@ -37,10 +37,7 @@ ObservableResultList Observable::compute(double xB, double t, double Q2,
 
     ObservableResultList observableResultList;
 
-    //TODO replace hard coded value
-    double MuF = 4., MuR = 4.;
-
-    m_pProcess->computeConvolCoeffFunction(xB, t, Q2, MuF, MuR);
+    m_pProcess->computeConvolCoeffFunction(xB, t, Q2);
 
     // if listOfPhi empty then run computation of fourier observable
     if (listOfPhi.empty()) {

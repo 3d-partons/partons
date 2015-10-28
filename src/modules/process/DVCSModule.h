@@ -19,6 +19,8 @@
 #include "../../beans/gpd/GPDType.h"
 #include "../ProcessModule.h"
 
+class ScaleModule;
+
 class DVCSConvolCoeffFunctionModule;
 class Observable;
 
@@ -29,6 +31,8 @@ public:
     DVCSModule(const std::string &className);
     virtual ~DVCSModule();
 
+    virtual void init();
+
     /**
      * Provides a generic method to configure all types of modules by passing a Parameters object.
      * (See ModuleObject class for more info).
@@ -37,8 +41,7 @@ public:
      */
     virtual void configure(ParameterList parameters);
 
-    void computeConvolCoeffFunction(double xB, double t, double Q2, double MuF2,
-            double MuR2);
+    void computeConvolCoeffFunction(double xB, double t, double Q2);
 
     // TODO convert double to integer
     double computeCrossSection(double beamHelicity, double beamCharge,
@@ -73,6 +76,8 @@ protected:
 
     Observable* m_pObservable;
     DVCSConvolCoeffFunctionResult m_dvcsConvolCoeffFunctionResult;
+
+    ScaleModule* m_pScaleModule;
 
     // Cross sections
     virtual double CrossSectionBH(double beamHelicity, double beamCharge,

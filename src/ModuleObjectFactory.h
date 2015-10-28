@@ -14,6 +14,8 @@
 
 #include <string>
 
+class ScaleModule;
+
 class ActiveFlavorsModule;
 
 class DoubleDistributionModule;
@@ -58,6 +60,9 @@ public:
     static ActiveFlavorsModule* newActiveFlavorsModule(unsigned int classId);
     static ActiveFlavorsModule* newActiveFlavorsModule(
             const std::string &className);
+
+    static ScaleModule* newScaleModule(unsigned int classId);
+    static ScaleModule* newScaleModule(const std::string &className);
 };
 
 #endif /* MODULE_OBJECT_FACTORY_H */

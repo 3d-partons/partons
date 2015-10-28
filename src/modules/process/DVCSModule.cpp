@@ -1,17 +1,22 @@
 #include "DVCSModule.h"
 
+#include <NumA/linear_algebra/vector/Vector3D.h>
+
+#include "../../beans/Scale.h"
+#include "../../ModuleObjectFactory.h"
 #include "../../utils/GenericType.h"
 #include "../../utils/ParameterList.h"
 #include "../../utils/stringUtils/Formatter.h"
-
 #include "../convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
 #include "../observable/Observable.h"
+#include "../scale/LambdaQ2Scale.h"
 
 const std::string DVCSModule::PARAMETER_NAME_BEAM_ENERGY = "beam_energy";
 
 DVCSModule::DVCSModule(const std::string &className) :
         ProcessModule(className), m_phi(0.), m_phiS(0.), m_phie(0.), m_phaseSpace(
-                0.), m_pObservable(0), m_pDVCSConvolCoeffFunctionModule(0) {
+                0.), m_pObservable(0), m_pDVCSConvolCoeffFunctionModule(0), m_pScaleModule(
+                0) {
 
 }
 
@@ -40,7 +45,18 @@ DVCSModule::DVCSModule(const DVCSModule& other) :
         m_pDVCSConvolCoeffFunctionModule = 0;
     }
 
+    if (other.m_pScaleModule != 0) {
+        m_pScaleModule = other.m_pScaleModule->clone();
+    } else {
+        m_pScaleModule = 0;
+    }
+
     m_dvcsConvolCoeffFunctionResult = other.m_dvcsConvolCoeffFunctionResult;
+}
+
+void DVCSModule::init() {
+    m_pScaleModule = ModuleObjectFactory::newScaleModule(
+            LambdaQ2Scale::classId);
 }
 
 void DVCSModule::initModule() {
@@ -56,9 +72,10 @@ void DVCSModule::initModule(double beamHelicity, double beamCharge,
 }
 
 void DVCSModule::isModuleWellConfigured() {
-    //TODO implement
-
-    debug(__func__, "Entered function.");
+    if (m_pScaleModule == 0) {
+        throwException(__func__,
+                "m_pScaleModule is NULL pointer ; Use configure method to configure it");
+    }
 }
 
 //TODO delete
@@ -66,18 +83,15 @@ double DVCSModule::xBToXi(double xB) {
     return xB / (2 - xB);
 }
 
-void DVCSModule::computeConvolCoeffFunction(double xB, double t, double Q2,
-        double MuF2, double MuR2) {
-
-    debug(__func__,
-            Formatter() << "xB = " << xB << " t = " << t << " Q2 = " << Q2
-                    << " MuF2 = " << MuF2 << " MuR2 = " << MuR2);
-
+void DVCSModule::computeConvolCoeffFunction(double xB, double t, double Q2) {
     if (isPreviousKinematicDifferent(xB, t, Q2)) {
+        // Compute scale from Q2
+        Scale scale = m_pScaleModule->compute(Q2);
+
         //TODO replace hard coded : convert xB to xi
         m_dvcsConvolCoeffFunctionResult =
                 m_pDVCSConvolCoeffFunctionModule->compute(xBToXi(xB), t, Q2,
-                        MuF2, MuR2, GPDType::ALL);
+                        scale.getMuF2(), scale.getMuR2(), GPDType::ALL);
     }
 
     debug(__func__,
@@ -87,8 +101,6 @@ void DVCSModule::computeConvolCoeffFunction(double xB, double t, double Q2,
     m_xB = xB;
     m_t = t;
     m_Q2 = Q2;
-    m_MuF2 = MuF2;
-    m_MuR2 = MuR2;
 
     initModule();
     isModuleWellConfigured();

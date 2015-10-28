@@ -36,8 +36,7 @@ public:
      */
     virtual ~ProcessModule();
 
-    virtual void computeConvolCoeffFunction(double xB, double t, double Q2,
-            double MuF2, double MuR2) = 0;
+    virtual void computeConvolCoeffFunction(double xB, double t, double Q2) = 0;
 
     virtual double computeCrossSection(double beamHelicity, double beamCharge,
             NumA::Vector3D targetPolarization, double phi) = 0;
@@ -54,9 +53,6 @@ protected:
     double m_xB;        ///< Bjorken variable
     double m_t;     ///< Mandelstam variable (square of the 4-momentum transfer)
     double m_Q2;    ///< Virtuality of the photon
-
-    double m_MuF2;
-    double m_MuR2;
 
     double m_E;     ///< Beam energy in target rest frame
 
