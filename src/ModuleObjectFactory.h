@@ -14,6 +14,8 @@
 
 #include <string>
 
+class XiConverterModule;
+
 class ScaleModule;
 
 class ActiveFlavorsModule;
@@ -63,6 +65,11 @@ public:
 
     static ScaleModule* newScaleModule(unsigned int classId);
     static ScaleModule* newScaleModule(const std::string &className);
+
+    static XiConverterModule* newXiConverterModule(unsigned int classId);
+    static XiConverterModule* newXiConverterModule(
+            const std::string &className);
+
 };
 
 #endif /* MODULE_OBJECT_FACTORY_H */

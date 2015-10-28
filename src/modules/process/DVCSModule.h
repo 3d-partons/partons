@@ -19,10 +19,10 @@
 #include "../../beans/gpd/GPDType.h"
 #include "../ProcessModule.h"
 
-class ScaleModule;
-
 class DVCSConvolCoeffFunctionModule;
 class Observable;
+class ScaleModule;
+class XiConverterModule;
 
 class DVCSModule: public ProcessModule {
 public:
@@ -79,6 +79,8 @@ protected:
 
     ScaleModule* m_pScaleModule;
 
+    XiConverterModule* m_pXiConverterModule;
+
     // Cross sections
     virtual double CrossSectionBH(double beamHelicity, double beamCharge,
             NumA::Vector3D targetPolarization) = 0;
@@ -101,7 +103,6 @@ private:
     DVCSConvolCoeffFunctionModule* m_pDVCSConvolCoeffFunctionModule;
 
     bool isPreviousKinematicDifferent(double xB, double t, double Q2);
-    double xBToXi(double xB);
 };
 
 #endif /* DVCS_MODULE_H */

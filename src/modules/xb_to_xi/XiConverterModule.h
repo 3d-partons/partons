@@ -5,21 +5,23 @@
  *      Author: debian
  */
 
-#ifndef XBTOXICONVERTER_H_
-#define XBTOXICONVERTER_H_
+#ifndef XI_CONVERTER_MODULE
+#define XI_CONVERTER_MODULE
 
 #include <string>
 
 #include "../../ModuleObject.h"
 
-class XbToXiConverter: public ModuleObject {
+class XiConverterModule: public ModuleObject {
 public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
-    XbToXiConverter(const std::string &className);
-    virtual ~XbToXiConverter();
+    XiConverterModule(const std::string &className);
+    virtual ~XiConverterModule();
 
-    virtual XbToXiConverter* clone() const;
+    virtual XiConverterModule* clone() const = 0;
+
+    virtual double compute(double xB, double t, double Q2) = 0;
 protected:
     /**
      * Copy constructor
@@ -28,10 +30,10 @@ protected:
      *
      * @param other
      */
-    XbToXiConverter(const XbToXiConverter& other);
+    XiConverterModule(const XiConverterModule& other);
 
     virtual void isModuleWellConfigured();
     virtual void initModule();
 };
 
-#endif /* XBTOXICONVERTER_H_ */
+#endif /* XI_CONVERTER_MODULE */

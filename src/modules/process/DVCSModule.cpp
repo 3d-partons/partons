@@ -10,13 +10,14 @@
 #include "../convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
 #include "../observable/Observable.h"
 #include "../scale/LambdaQ2Scale.h"
+#include "../xb_to_xi/XBToXi.h"
 
 const std::string DVCSModule::PARAMETER_NAME_BEAM_ENERGY = "beam_energy";
 
 DVCSModule::DVCSModule(const std::string &className) :
         ProcessModule(className), m_phi(0.), m_phiS(0.), m_phie(0.), m_phaseSpace(
                 0.), m_pObservable(0), m_pDVCSConvolCoeffFunctionModule(0), m_pScaleModule(
-                0) {
+                0), m_pXiConverterModule(0) {
 
 }
 
@@ -51,12 +52,21 @@ DVCSModule::DVCSModule(const DVCSModule& other) :
         m_pScaleModule = 0;
     }
 
+    if (other.m_pXiConverterModule != 0) {
+        m_pXiConverterModule = other.m_pXiConverterModule->clone();
+    } else {
+        m_pXiConverterModule = 0;
+    }
+
     m_dvcsConvolCoeffFunctionResult = other.m_dvcsConvolCoeffFunctionResult;
 }
 
 void DVCSModule::init() {
     m_pScaleModule = ModuleObjectFactory::newScaleModule(
             LambdaQ2Scale::classId);
+
+    m_pXiConverterModule = ModuleObjectFactory::newXiConverterModule(
+            XBToXi::classId);
 }
 
 void DVCSModule::initModule() {
@@ -76,11 +86,11 @@ void DVCSModule::isModuleWellConfigured() {
         throwException(__func__,
                 "m_pScaleModule is NULL pointer ; Use configure method to configure it");
     }
-}
 
-//TODO delete
-double DVCSModule::xBToXi(double xB) {
-    return xB / (2 - xB);
+    if (m_pXiConverterModule == 0) {
+        throwException(__func__,
+                "m_pXiConverterModule is NULL pointer ; Use configure method to configure it");
+    }
 }
 
 void DVCSModule::computeConvolCoeffFunction(double xB, double t, double Q2) {
@@ -90,7 +100,8 @@ void DVCSModule::computeConvolCoeffFunction(double xB, double t, double Q2) {
 
         //TODO replace hard coded : convert xB to xi
         m_dvcsConvolCoeffFunctionResult =
-                m_pDVCSConvolCoeffFunctionModule->compute(xBToXi(xB), t, Q2,
+                m_pDVCSConvolCoeffFunctionModule->compute(
+                        m_pXiConverterModule->compute(xB, t, Q2), t, Q2,
                         scale.getMuF2(), scale.getMuR2(), GPDType::ALL);
     }
 

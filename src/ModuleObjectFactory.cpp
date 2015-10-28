@@ -9,6 +9,7 @@
 #include "modules/process/DVCSModule.h"
 #include "modules/RunningAlphaStrongModule.h"
 #include "modules/scale/ScaleModule.h"
+#include "modules/xb_to_xi/XiConverterModule.h"
 
 DoubleDistributionModule* ModuleObjectFactory::newDoubleDistributionModule(
         unsigned int classId) {
@@ -108,5 +109,16 @@ ScaleModule* ModuleObjectFactory::newScaleModule(unsigned int classId) {
 
 ScaleModule* ModuleObjectFactory::newScaleModule(const std::string &className) {
     return static_cast<ScaleModule*>(BaseObjectFactory::getInstance()->newBaseObject(
+            className));
+}
+
+XiConverterModule* ModuleObjectFactory::newXiConverterModule(
+        unsigned int classId) {
+    return static_cast<XiConverterModule*>(BaseObjectFactory::getInstance()->newBaseObject(
+            classId));
+}
+XiConverterModule* ModuleObjectFactory::newXiConverterModule(
+        const std::string &className) {
+    return static_cast<XiConverterModule*>(BaseObjectFactory::getInstance()->newBaseObject(
             className));
 }
