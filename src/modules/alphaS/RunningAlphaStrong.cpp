@@ -54,7 +54,6 @@
 
 #include "../../BaseObjectRegistry.h"
 #include "../../FundamentalPhysicalConstants.h"
-//#include "../../utils/logger/LoggerManager.h"
 #include "../../utils/stringUtils/Formatter.h"
 
 // Initialise [class]::classId with a unique name.

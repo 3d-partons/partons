@@ -33,9 +33,9 @@ protected:
     virtual void initModule();
     virtual void isModuleWellConfigured();
 
-    virtual double nonSingletMuFDerivative(const NfInterval &nfInterval);
-    virtual double singletMuFDerivative(const NfInterval &nfInterval);
-    virtual double gluonMuFDerivative(const NfInterval &nfInterval);
+    virtual double integratedNonSingletMuFDerivative(const NfInterval &nfInterval);
+    virtual double integratedSingletMuFDerivative(const NfInterval &nfInterval);
+    virtual double integratedGluonMuFDerivative(const NfInterval &nfInterval);
 
     virtual double kernelNonSinglet(double y) = 0;
 

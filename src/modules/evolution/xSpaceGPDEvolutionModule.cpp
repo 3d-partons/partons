@@ -24,7 +24,7 @@ void xSpaceGPDEvolutionModule::initModule() {
 void xSpaceGPDEvolutionModule::isModuleWellConfigured() {
 }
 
-double xSpaceGPDEvolutionModule::nonSingletMuFDerivative(
+double xSpaceGPDEvolutionModule::integratedNonSingletMuFDerivative(
         const NfInterval &nfInterval) {
 
     return m_mathIntegrator.integrateWithROOT(this,
@@ -43,7 +43,7 @@ double xSpaceGPDEvolutionModule::integrateNonSinglet(double* variables,
                     variables[1]);
 }
 
-double xSpaceGPDEvolutionModule::singletMuFDerivative(
+double xSpaceGPDEvolutionModule::integratedSingletMuFDerivative(
         const NfInterval &nfInterval) {
 
     return m_mathIntegrator.integrateWithROOT(this,
@@ -63,7 +63,7 @@ double xSpaceGPDEvolutionModule::integrateSinglet(double *variables,
                     * m_partonDistributionEvolutionBase[0];
 }
 
-double xSpaceGPDEvolutionModule::gluonMuFDerivative(
+double xSpaceGPDEvolutionModule::integratedGluonMuFDerivative(
         const NfInterval &nfInterval) {
 
     return m_mathIntegrator.integrateWithROOT(this,

@@ -544,6 +544,8 @@
 //
 //    GPDResult gpdResult;
 //
+//    // TODO gpd computed at MuF_ref with x grid.
+//
 //    for (unsigned int iGrid = 0; iGrid < 4 * m_nbXPoints + 1; iGrid++) {
 //        gpdResult = m_pGPDModule->compute(m_NonSingletx.at(iGrid), m_xi, m_t,
 //                m_pGPDModule->getMuF2Ref(), m_MuR2, m_currentGPDComputeType);

@@ -30,15 +30,15 @@ void ExampleEvolQCDModel::initModule() {
     GPDEvolutionModule::initModule();
 }
 
-double ExampleEvolQCDModel::nonSingletMuFDerivative(
+double ExampleEvolQCDModel::integratedNonSingletMuFDerivative(
         const NfInterval& nfInterval) {
     return 1.;
 }
 
-double ExampleEvolQCDModel::singletMuFDerivative(const NfInterval& nfInterval) {
+double ExampleEvolQCDModel::integratedSingletMuFDerivative(const NfInterval& nfInterval) {
     return 1.;
 }
 
-double ExampleEvolQCDModel::gluonMuFDerivative(const NfInterval& nfInterval) {
+double ExampleEvolQCDModel::integratedGluonMuFDerivative(const NfInterval& nfInterval) {
     return 1.;
 }

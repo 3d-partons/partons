@@ -105,9 +105,9 @@ protected:
     double nonSingletGPD(unsigned short nonSingletIndex,
             unsigned short currentNf, double y, double MuF2);
 
-    virtual double nonSingletMuFDerivative(const NfInterval &nfInterval) = 0;
-    virtual double singletMuFDerivative(const NfInterval &nfInterval) = 0;
-    virtual double gluonMuFDerivative(const NfInterval &nfInterval) = 0;
+    virtual double integratedNonSingletMuFDerivative(const NfInterval &nfInterval) = 0;
+    virtual double integratedSingletMuFDerivative(const NfInterval &nfInterval) = 0;
+    virtual double integratedGluonMuFDerivative(const NfInterval &nfInterval) = 0;
 
 private:
     static MatrixD conversionMatrix1;

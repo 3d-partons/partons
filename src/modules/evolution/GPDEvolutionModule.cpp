@@ -597,12 +597,12 @@ void GPDEvolutionModule::evolution(const NfInterval &nfInterval) {
 }
 
 void GPDEvolutionModule::computeNonSinglet(const NfInterval &nfInterval) {
-    // Pour chaque entrée du vector on calcul FNS,i ; On commence à 2 car vector[0] = FG et vector[1] = FS
+    // For each entry of the vector we compute FNS,i ; We started the loop at 2 because vector[0] = FG and vector[1] = FS
     for (unsigned int i = 2; i != m_partonDistributionEvolutionBase.size();
             i++) {
         m_currentNonSingletIndex = i;
 
-        m_partonDistributionEvolutionBase[i] += nonSingletMuFDerivative(
+        m_partonDistributionEvolutionBase[i] += integratedNonSingletMuFDerivative(
                 nfInterval);
     }
 }
@@ -610,8 +610,8 @@ void GPDEvolutionModule::computeNonSinglet(const NfInterval &nfInterval) {
 void GPDEvolutionModule::computeSingletGluon(const NfInterval &nfInterval) {
     // m_vectorOfNonSingletSingletGluon[0] = FG
     // m_vectorOfNonSingletSingletGluon[1] = FS
-    m_partonDistributionEvolutionBase[0] = gluonMuFDerivative(nfInterval);
-    m_partonDistributionEvolutionBase[1] = singletMuFDerivative(nfInterval);
+    m_partonDistributionEvolutionBase[0] = integratedGluonMuFDerivative(nfInterval);
+    m_partonDistributionEvolutionBase[1] = integratedSingletMuFDerivative(nfInterval);
 }
 
 void GPDEvolutionModule::resizeVectorOfGPDCombination(
