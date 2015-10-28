@@ -1,6 +1,6 @@
 #include "ObservableResult.h"
 
-#include <sstream>
+#include "../../utils/stringUtils/Formatter.h"
 
 ObservableResult::ObservableResult() :
         m_phi(0.), m_value(0.), m_observableType(ObservableType::UNDEFINED) {
@@ -43,17 +43,17 @@ void ObservableResult::setValue(double value) {
 }
 
 std::string ObservableResult::toString() {
-    std::ostringstream os;
+    Formatter formatter;
 
     if (m_observableType == ObservableType::PHI) {
-        os << "phi(°) = " << m_phi << " - observable = " << m_value;
+        formatter << "phi(°) = " << m_phi << " - observable = " << m_value;
     } else if (m_observableType == ObservableType::FOURIER) {
-        os << "observable = " << m_value;
+        formatter << "observable = " << m_value;
     } else {
-        os << "unknow observable = " << m_value;
+        formatter << "unknow observable = " << m_value;
     }
 
-    return os.str();
+    return formatter.str();
 }
 
 void ObservableResult::setObservableType(ObservableType::Type observableType) {

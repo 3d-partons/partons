@@ -9,12 +9,15 @@
  * @class Formatter
  */
 
+#include <iomanip>
 #include <sstream>
 #include <string>
 
 class Formatter {
 public:
     Formatter() {
+        // use to print full precision double
+        m_stream << std::setprecision(15);
     }
 
     ~Formatter() {
