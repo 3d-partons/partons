@@ -2,7 +2,11 @@
 
 #include "../../beans/Scale.h"
 #include "../../BaseObjectRegistry.h"
+#include "../../utils/GenericType.h"
+#include "../../utils/ParameterList.h"
 #include "../../utils/stringUtils/Formatter.h"
+
+const std::string LambdaQ2Scale::PARAMETER_NAME_LAMBDA = "lambda";
 
 // Initialise [class]::classId with a unique name.
 const unsigned int LambdaQ2Scale::classId =
@@ -45,5 +49,15 @@ void LambdaQ2Scale::isModuleWellConfigured() {
 
     if (m_lambda == 1.) {
         warn(__func__, Formatter() << "m_lambda = " << m_lambda);
+    }
+}
+
+void LambdaQ2Scale::configure(ParameterList parameters) {
+    if (parameters.isAvailable(LambdaQ2Scale::PARAMETER_NAME_LAMBDA)) {
+        m_lambda = parameters.getLastAvailable().toDouble();
+
+        info(__func__,
+                Formatter() << LambdaQ2Scale::PARAMETER_NAME_LAMBDA
+                        << " configured with value = " << m_lambda);
     }
 }

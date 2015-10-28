@@ -18,12 +18,22 @@
 
 class LambdaQ2Scale: public ScaleModule {
 public:
+    static const std::string PARAMETER_NAME_LAMBDA;
+
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
     LambdaQ2Scale(const std::string &className);
     virtual ~LambdaQ2Scale();
 
     virtual LambdaQ2Scale* clone() const;
+
+    /**
+     * Provides a generic method to configure all types of modules by passing a Parameters object.
+     * (See ModuleObject class for more info).
+     *
+     * @param parameters
+     */
+    virtual void configure(ParameterList parameters);
 
     virtual Scale compute(double Q2);
 

@@ -50,6 +50,8 @@ public:
     DVCSConvolCoeffFunctionModule* getDVCSConvolCoeffFunctionModule() const;
     void setDVCSConvolCoeffFunctionModule(
             DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule);
+    void setPScaleModule(ScaleModule* pScaleModule);
+    void setPXiConverterModule(XiConverterModule* pXiConverterModule);
 
 protected:
     /**

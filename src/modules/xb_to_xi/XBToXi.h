@@ -1,12 +1,16 @@
-/*
- * XBToXi.h
- *
- *  Created on: Oct 28, 2015
- *      Author: debian
- */
+#ifndef XB_TO_XI_H
+#define XB_TO_XI_H
 
-#ifndef XBTOXI_H_
-#define XBTOXI_H_
+/**
+ * @file XBToXi.h
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
+ * @date 05 October 2015
+ * @version 1.0
+ *
+ * @class XBToXi
+ *
+ * @brief
+ */
 
 #include <string>
 
@@ -33,4 +37,4 @@ protected:
     virtual void isModuleWellConfigured();
 };
 
-#endif /* XBTOXI_H_ */
+#endif /* XB_TO_XI_H */

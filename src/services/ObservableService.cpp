@@ -9,6 +9,8 @@
 #include "../modules/GPDModule.h"
 #include "../modules/observable/Observable.h"
 #include "../modules/process/DVCSModule.h"
+#include "../modules/scale/ScaleModule.h"
+#include "../modules/xb_to_xi/XiConverterModule.h"
 #include "../ModuleObjectFactory.h"
 #include "../ObservableObjectFactory.h"
 #include "../utils/GenericType.h"
@@ -36,6 +38,33 @@ ObservableService::~ObservableService() {
 void ObservableService::computeTask(Task &task) {
     if (StringUtils::equals(task.getFunctionName(),
             ObservableService::FUNCTION_NAME_COMPUTE_DVCS_OBSERVABLE)) {
+
+        // create ScaleModule
+        ScaleModule* pScaleModule = 0;
+
+        if (task.isAvailableParameterList("ScaleModule")) {
+            pScaleModule = ModuleObjectFactory::newScaleModule(
+                    task.getLastAvailableParameterList().get("id").toString());
+            pScaleModule->configure(task.getLastAvailableParameterList());
+        } else {
+            throwException(__func__,
+                    Formatter() << "Missing object : <ScaleModule> for method "
+                            << task.getFunctionName());
+        }
+
+        // create XiConverterModule
+        XiConverterModule* pXiConverterModule = 0;
+
+        if (task.isAvailableParameterList("XiConverterModule")) {
+            pXiConverterModule = ModuleObjectFactory::newXiConverterModule(
+                    task.getLastAvailableParameterList().get("id").toString());
+            pXiConverterModule->configure(task.getLastAvailableParameterList());
+        } else {
+            throwException(__func__,
+                    Formatter()
+                            << "Missing object : <XiConverterModule> for method "
+                            << task.getFunctionName());
+        }
 
         //create a GPDKinematic and init it with a list of parameters
         ObservableKinematic kinematic;
@@ -103,6 +132,8 @@ void ObservableService::computeTask(Task &task) {
 
         //TODO how to remove it and autoconfigure ?
         pDVCSConvolCoeffFunctionModule->setGPDModule(pGPDModule);
+        pDVCSModule->setPScaleModule(pScaleModule);
+        pDVCSModule->setPXiConverterModule(pXiConverterModule);
 
         ObservableResultList result = computeDVCSObservable(pDVCSModule,
                 pObservable, kinematic, pDVCSConvolCoeffFunctionModule);

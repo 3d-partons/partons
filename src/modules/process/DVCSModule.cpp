@@ -177,3 +177,11 @@ void DVCSModule::configure(ParameterList parameters) {
                         << " configured with value = " << m_E);
     }
 }
+
+void DVCSModule::setPScaleModule(ScaleModule* pScaleModule) {
+    m_pScaleModule = pScaleModule;
+}
+
+void DVCSModule::setPXiConverterModule(XiConverterModule* pXiConverterModule) {
+    m_pXiConverterModule = pXiConverterModule;
+}

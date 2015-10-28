@@ -1,12 +1,16 @@
-/*
- * XbToXiConverter.h
- *
- *  Created on: Oct 5, 2015
- *      Author: debian
- */
-
 #ifndef XI_CONVERTER_MODULE
 #define XI_CONVERTER_MODULE
+
+/**
+ * @file XiConverterModule.h
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
+ * @date 05 October 2015
+ * @version 1.0
+ *
+ * @class XiConverterModule
+ *
+ * @brief
+ */
 
 #include <string>
 
