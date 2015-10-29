@@ -1,7 +1,5 @@
 #include "DVCSCFFHeavyQuarkModel.h"
 
-#include <Math/AllIntegrationTypes.h>
-#include <Math/Integrator.h>
 #include <NumA/MathIntegrator.h>
 #include <cmath>
 #include <stdexcept>
@@ -73,13 +71,6 @@ std::complex<double> DVCSCFFHeavyQuarkModel::computeIntegralsMassiveV() {
 
     // Compute sum of active quark electric charges squared
 
-    // Define functions and compute integrals
-
-    ROOT::Math::Integrator integrator(
-            ROOT::Math::IntegrationOneDim::kADAPTIVESINGULAR, 0., 1.e-3);
-
-    //  ROOT::Math::Integrator Integrator( ROOT::Math::IntegrationOneDim::kADAPTIVESINGULAR, 0., 1.e-9 );
-
     //  Integrator.SetAbsTolerance( 0. );
     //   Integrator.SetRelTolerance( 0.001 );
     //   Integrator.SetNPoints( 1 );
@@ -87,19 +78,11 @@ std::complex<double> DVCSCFFHeavyQuarkModel::computeIntegralsMassiveV() {
     // Gluon sector
 
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
-//        IntegralRealPartMassive = m_pMathIntegratorModule->compute(
-//                DVCSCFFHeavyQuarkModel::CONVOL_RE_KERNEL_GLUON_MASSIVE_V, this,
-//                0., +1);
-
         IntegralRealPartMassive = m_mathIntegrator.integrateWithROOT(this,
                 &DVCSCFFHeavyQuarkModel::ConvolReKernelGluonMassiveV, 0., +1.);
     }
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
-//        IntegralImaginaryPartMassive = m_pMathIntegratorModule->compute(
-//                DVCSCFFHeavyQuarkModel::CONVOL_IM_KERNEL_GLUON_MASSIVE_V, this,
-//                0., +1);
-
-        IntegralRealPartMassive = m_mathIntegrator.integrateWithROOT(this,
+        IntegralImaginaryPartMassive = m_mathIntegrator.integrateWithROOT(this,
                 &DVCSCFFHeavyQuarkModel::ConvolImKernelGluonMassiveV, 0., +1.);
     }
 
@@ -123,13 +106,6 @@ std::complex<double> DVCSCFFHeavyQuarkModel::computeIntegralsMassiveA() {
 
     // Compute sum of active quark electric charges squared
 
-    // Define functions and compute integrals
-
-    ROOT::Math::Integrator integrator(
-            ROOT::Math::IntegrationOneDim::kADAPTIVESINGULAR, 0., 1.e-3);
-
-    //  ROOT::Math::Integrator Integrator( ROOT::Math::IntegrationOneDim::kADAPTIVESINGULAR, 0., 1.e-9 );
-
     //  Integrator.SetAbsTolerance( 0. );
     //   Integrator.SetRelTolerance( 0.001 );
     //   Integrator.SetNPoints( 1 );
@@ -137,19 +113,12 @@ std::complex<double> DVCSCFFHeavyQuarkModel::computeIntegralsMassiveA() {
     // Gluon sector
 
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
-//        IntegralRealPartMassive = m_pMathIntegratorModule->compute(
-//                DVCSCFFHeavyQuarkModel::CONVOL_RE_KERNEL_GLUON_MASSIVE_A, this,
-//                0., +1);
-
         IntegralRealPartMassive = m_mathIntegrator.integrateWithROOT(this,
                 &DVCSCFFHeavyQuarkModel::ConvolReKernelGluonMassiveA, 0., +1.);
     }
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
-//        IntegralImaginaryPartMassive = m_pMathIntegratorModule->compute(
-//                DVCSCFFHeavyQuarkModel::CONVOL_IM_KERNEL_GLUON_MASSIVE_A, this,
-//                0., +1);
 
-        IntegralRealPartMassive = m_mathIntegrator.integrateWithROOT(this,
+        IntegralImaginaryPartMassive = m_mathIntegrator.integrateWithROOT(this,
                 &DVCSCFFHeavyQuarkModel::ConvolImKernelGluonMassiveA, 0., +1.);
     }
 
