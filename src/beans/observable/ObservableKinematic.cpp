@@ -1,12 +1,9 @@
 #include "ObservableKinematic.h"
 
-//#include <iostream>
-
 #include "../../utils/GenericType.h"
 #include "../../utils/ParameterList.h"
 #include "../../utils/stringUtils/Formatter.h"
 #include "../../utils/stringUtils/StringUtils.h"
-#include "../gpd/GPDKinematic.h"
 
 const std::string ObservableKinematic::PARAMETER_NAME_XB = "xB";
 const std::string ObservableKinematic::PARAMETER_NAME_T = "t";
@@ -60,12 +57,6 @@ ObservableKinematic::ObservableKinematic(ParameterList &parameterList) :
                 Formatter() << "Missing parameter <"
                         << ObservableKinematic::PARAMETER_NAME_PHI << ">");
     }
-
-    //TODO remove from kinematic
-    m_MuF2 =
-            parameterList.get(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUF2).toDouble();
-    m_MuR2 =
-            parameterList.get(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUR2).toDouble();
 
 }
 

@@ -72,8 +72,6 @@ private:
     double m_xB;    ///< Bjorken variable
     double m_t; ///< Mandelstam variable, momentum transfer on the hadron target (in GeV^2)
     double m_Q2;  ///< Virtuality of the photon in Born approximation (in GeV^2)
-    double m_MuF2;
-    double m_MuR2;
     std::vector<double> m_listOfPhi; ///<  Angles between leptonic and hadronic planes (in degrees, Trento convention)
 };
 
