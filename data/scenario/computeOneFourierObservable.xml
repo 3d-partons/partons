@@ -1,33 +1,34 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 
-<scenario id="05" date="" description="Example : computation of one fourier observable(AcCos2phi) with GV2008 DVCS model">
+<scenario id="05" date=""
+	description="Example : computation of one fourier observable(AcCos2phi) with GV2008 DVCS model">
 
-    <task service="ObservableService" method="computeDVCSObservable" >
-        <ObservableKinematic>
-            <param name="xB" value="0.1763" />
-            <param name="t" value="-0.1346" />
-            <param name="Q2" value="1.3651" />
-            <param name="MuF2" value="4" />
-            <param name="MuR2" value="4" />
-            <param name="phi" value="" />
-        </ObservableKinematic>
-        
-        <Observable>
-            <param name="id" value="AcCos2phi" />
-        </Observable>
-        
-        <DVCSModule>
-            <param name="id" value="GV2008Model" />
-            <param name="beam_energy" value="5.77" />
-        </DVCSModule>
-        
-        <DVCSConvolCoeffFunctionModule>
-            <param name="id" value="DVCSCFFModel" />
-            <param name="qcd_order_type" value="LO" />
-        </DVCSConvolCoeffFunctionModule>
-        
-        <GPDModule>
-            <param name="id" value="GK11Model" />
-        </GPDModule>
-    </task>
+	<task service="ObservableService" method="computeDVCSObservable">
+		<ObservableKinematic>
+			<param name="xB" value="0.1763" />
+			<param name="t" value="-0.1346" />
+			<param name="Q2" value="1.3651" />
+			<param name="MuF2" value="4" />
+			<param name="MuR2" value="4" />
+			<param name="phi" value="" />
+		</ObservableKinematic>
+
+		<Observable>
+			<param name="id" value="AcCos2phi" />
+		</Observable>
+
+		<DVCSModule>
+			<param name="id" value="GV2008Model" />
+			<param name="beam_energy" value="5.77" />
+		</DVCSModule>
+
+		<DVCSConvolCoeffFunctionModule>
+			<param name="id" value="DVCSCFFModel" />
+			<param name="qcd_order_type" value="LO" />
+		</DVCSConvolCoeffFunctionModule>
+
+		<GPDModule>
+			<param name="id" value="GK11Model" />
+		</GPDModule>
+	</task>
 </scenario>

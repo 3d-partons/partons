@@ -1,211 +1,210 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 
-<!-- Comment test -->
+<scenario id="01" date=""
+	description="Ceci est un scenario de test qui a pour but d'utiliser le service GPD">
 
-<scenario id="01" date="" description="Ceci est un scenario de test qui a pour but d'utiliser le service GPD">
-
-	<task service="GPDService" method="computeGPDModel" >
+	<task service="GPDService" method="computeGPDModel">
 		<GPDKinematic>
-            <param name="x" value="0.1" />
-            <param name="xi" value="1.00050025" />
-            <param name="t" value="-0.3" />
-            <param name="MuF2" value="8" />
-            <param name="MuR2" value="8" />
-        </GPDKinematic>
+			<param name="x" value="0.1" />
+			<param name="xi" value="1.00050025" />
+			<param name="t" value="-0.3" />
+			<param name="MuF2" value="8" />
+			<param name="MuR2" value="8" />
+		</GPDKinematic>
 
-        <GPDModule>
-            <param name="id" value="GK11Model" />
-        </GPDModule>
+		<GPDModule>
+			<param name="id" value="GK11Model" />
+		</GPDModule>
 	</task>
-	
-	   <task service="GPDService" method="computeListOfGPDModel" >
-        <GPDKinematic>
-            <param name="x" value="0.1" />
-            <param name="xi" value="1.00050025" />
-            <param name="t" value="-0.3" />
-            <param name="MuF2" value="8" />
-            <param name="MuR2" value="8" />
-        </GPDKinematic>
 
-        <GPDModule>
-            <param name="id" value="GK11Model" />
-        </GPDModule>
-        
-        <GPDModule>
-            <param name="id" value="MPSSW13Model" />
-        </GPDModule>
-        
-    </task>
-	
-	<task service="GPDService" method="computeGPDModelWithEvolution" >
-        <GPDKinematic>
-            <param name="x" value="0.1" />
-            <param name="xi" value="1.00050025" />
-            <param name="t" value="-0.3" />
-            <param name="MuF2" value="8" />
-            <param name="MuR2" value="8" />
-        </GPDKinematic>
-        
-        <GPDModule>
-            <param name="id" value="GK11Model" />
-        </GPDModule>
-        
-        <GPDEvolutionModule>
-            <param name="id" value="ExampleEvolQCDModel" />
-            <param name="qcd_order_type" value="LO" />
-        </GPDEvolutionModule>
-    </task>
-    
-    
-    
-    
-    
-    <task service="DVCSConvolCoeffFunctionService" method="computeWithGPDModel" >
-        <DVCSConvolCoeffFunctionKinematic>
-            <param name="xi" value="0.5" />
-            <param name="t" value="-0.1346" />
-            <param name="Q2" value="1.5557" />
-            <param name="MuF2" value="4" />
-            <param name="MuR2" value="4" />
-        </DVCSConvolCoeffFunctionKinematic>
-        
-        <GPDModule>
-            <param name="id" value="GK11Model" />
-        </GPDModule>
-        
-        <DVCSConvolCoeffFunctionModule>
-            <param name="id" value="DVCSCFFModel" />
-            <param name="qcd_order_type" value="LO" />
-        </DVCSConvolCoeffFunctionModule>
-    </task>
-    
-    <task service="DVCSConvolCoeffFunctionService" method="computeWithGPDModel" >
-        <DVCSConvolCoeffFunctionKinematic>
-            <param name="xi" value="0.5" />
-            <param name="t" value="-0.1346" />
-            <param name="Q2" value="1.5557" />
-            <param name="MuF2" value="4" />
-            <param name="MuR2" value="4" />
-        </DVCSConvolCoeffFunctionKinematic>
-        
-        <GPDModule>
-            <param name="id" value="GK11Model" />
-        </GPDModule>
-        
-        <DVCSConvolCoeffFunctionModule>
-            <param name="id" value="DVCSCFFHeavyQuarkModel" />
-            <param name="qcd_order_type" value="NLO" />
-        </DVCSConvolCoeffFunctionModule>
-    </task>
-    
-     <task service="DVCSConvolCoeffFunctionService" method="computeListWithGPDModel" >
-        <DVCSConvolCoeffFunctionKinematic>
-            <param name="xi" value="0.5" />
-            <param name="t" value="-0.1346" />
-            <param name="Q2" value="1.5557" />
-            <param name="MuF2" value="4" />
-            <param name="MuR2" value="4" />
-        </DVCSConvolCoeffFunctionKinematic>
-        
-        <GPDModule>
-            <param name="id" value="GK11Model" />
-        </GPDModule>
-        
-        <DVCSConvolCoeffFunctionModule>
-            <param name="id" value="DVCSCFFModel" />
-            <param name="qcd_order_type" value="LO" />
-        </DVCSConvolCoeffFunctionModule>
-        
-        <DVCSConvolCoeffFunctionModule>
-            <param name="id" value="DVCSCFFHeavyQuarkModel" />
-            <param name="qcd_order_type" value="LO" />
-        </DVCSConvolCoeffFunctionModule>
-    </task>
-    
-    
-    
-    <task service="ObservableService" method="computeDVCSObservable" >
-        <ScaleModule>
-            <param name="id" value="LambdaQ2Scale" />
-            <param name="lambda" value="1" />
-        </ScaleModule>
-        
-        <XiConverterModule>
-            <param name="id" value="XBToXi" />
-        </XiConverterModule>
-        
-        <ObservableKinematic>
-            <param name="xB" value="0.1763" />
-            <param name="t" value="-0.1346" />
-            <param name="Q2" value="1.3651" />
-            <param name="MuF2" value="4" />
-            <param name="MuR2" value="4" />
-            <param name="phi" value="7.5|22.5|37.5" />
-        </ObservableKinematic>
-        
-        <Observable>
-            <param name="id" value="CrossSectionObservable" />
-            <param name="beam_helicity" value="1" />
-            <param name="beam_charge" value="-1" />
-            <param name="target_polarization" value="0|0|0" />
-            
-        </Observable>
-        
-        <DVCSModule>
-            <param name="id" value="BMJ2012Model" />
-            <param name="beam_energy" value="5.77" />
-        </DVCSModule>
-        
-        <DVCSConvolCoeffFunctionModule>
-            <param name="id" value="DVCSCFFModel" />
-            <param name="qcd_order_type" value="LO" />
-        </DVCSConvolCoeffFunctionModule>
-        
-        <GPDModule>
-            <param name="id" value="GK11Model" />
-        </GPDModule>
-    </task>
-    
-    <task service="ObservableService" method="computeDVCSObservable" >
-        <ScaleModule>
-            <param name="id" value="LambdaQ2Scale" />
-            <param name="lambda" value="1" />
-        </ScaleModule>
-        
-        <XiConverterModule>
-            <param name="id" value="XBToXi" />
-        </XiConverterModule>
-    
-        <ObservableKinematic>
-            <param name="xB" value="0.1763" />
-            <param name="t" value="-0.1346" />
-            <param name="Q2" value="1.3651" />
-            <param name="MuF2" value="4" />
-            <param name="MuR2" value="4" />
-            <param name="phi" value="7.5|22.5|37.5" />
-        </ObservableKinematic>
-        
-        <Observable>
-            <param name="id" value="CrossSectionObservable" />
-            <param name="beam_helicity" value="1" />
-            <param name="beam_charge" value="-1" />
-            <param name="target_polarization" value="0|0|0" />
-            
-        </Observable>
-        
-        <DVCSModule>
-            <param name="id" value="GV2008Model" />
-            <param name="beam_energy" value="5.77" />
-        </DVCSModule>
-        
-        <DVCSConvolCoeffFunctionModule>
-            <param name="id" value="DVCSCFFModel" />
-            <param name="qcd_order_type" value="LO" />
-        </DVCSConvolCoeffFunctionModule>
-        
-        <GPDModule>
-            <param name="id" value="GK11Model" />
-        </GPDModule>
-    </task>
-    
+	<task service="GPDService" method="computeListOfGPDModel">
+		<GPDKinematic>
+			<param name="x" value="0.1" />
+			<param name="xi" value="1.00050025" />
+			<param name="t" value="-0.3" />
+			<param name="MuF2" value="8" />
+			<param name="MuR2" value="8" />
+		</GPDKinematic>
+
+		<GPDModule>
+			<param name="id" value="GK11Model" />
+		</GPDModule>
+
+		<GPDModule>
+			<param name="id" value="MPSSW13Model" />
+		</GPDModule>
+
+	</task>
+
+	<task service="GPDService" method="computeGPDModelWithEvolution">
+		<GPDKinematic>
+			<param name="x" value="0.1" />
+			<param name="xi" value="1.00050025" />
+			<param name="t" value="-0.3" />
+			<param name="MuF2" value="8" />
+			<param name="MuR2" value="8" />
+		</GPDKinematic>
+
+		<GPDModule>
+			<param name="id" value="GK11Model" />
+		</GPDModule>
+
+		<GPDEvolutionModule>
+			<param name="id" value="ExampleEvolQCDModel" />
+			<param name="qcd_order_type" value="LO" />
+		</GPDEvolutionModule>
+	</task>
+
+
+
+
+
+	<task service="DVCSConvolCoeffFunctionService" method="computeWithGPDModel">
+		<DVCSConvolCoeffFunctionKinematic>
+			<param name="xi" value="0.5" />
+			<param name="t" value="-0.1346" />
+			<param name="Q2" value="1.5557" />
+			<param name="MuF2" value="4" />
+			<param name="MuR2" value="4" />
+		</DVCSConvolCoeffFunctionKinematic>
+
+		<GPDModule>
+			<param name="id" value="GK11Model" />
+		</GPDModule>
+
+		<DVCSConvolCoeffFunctionModule>
+			<param name="id" value="DVCSCFFModel" />
+			<param name="qcd_order_type" value="LO" />
+		</DVCSConvolCoeffFunctionModule>
+	</task>
+
+	<task service="DVCSConvolCoeffFunctionService" method="computeWithGPDModel">
+		<DVCSConvolCoeffFunctionKinematic>
+			<param name="xi" value="0.5" />
+			<param name="t" value="-0.1346" />
+			<param name="Q2" value="1.5557" />
+			<param name="MuF2" value="4" />
+			<param name="MuR2" value="4" />
+		</DVCSConvolCoeffFunctionKinematic>
+
+		<GPDModule>
+			<param name="id" value="GK11Model" />
+		</GPDModule>
+
+		<DVCSConvolCoeffFunctionModule>
+			<param name="id" value="DVCSCFFHeavyQuarkModel" />
+			<param name="qcd_order_type" value="NLO" />
+		</DVCSConvolCoeffFunctionModule>
+	</task>
+
+	<task service="DVCSConvolCoeffFunctionService" method="computeListWithGPDModel">
+		<DVCSConvolCoeffFunctionKinematic>
+			<param name="xi" value="0.5" />
+			<param name="t" value="-0.1346" />
+			<param name="Q2" value="1.5557" />
+			<param name="MuF2" value="4" />
+			<param name="MuR2" value="4" />
+		</DVCSConvolCoeffFunctionKinematic>
+
+		<GPDModule>
+			<param name="id" value="GK11Model" />
+		</GPDModule>
+
+		<DVCSConvolCoeffFunctionModule>
+			<param name="id" value="DVCSCFFModel" />
+			<param name="qcd_order_type" value="LO" />
+		</DVCSConvolCoeffFunctionModule>
+
+		<DVCSConvolCoeffFunctionModule>
+			<param name="id" value="DVCSCFFHeavyQuarkModel" />
+			<param name="qcd_order_type" value="LO" />
+		</DVCSConvolCoeffFunctionModule>
+	</task>
+
+
+
+	<task service="ObservableService" method="computeDVCSObservable">
+		<ScaleModule>
+			<param name="id" value="LambdaQ2Scale" />
+			<param name="lambda" value="1" />
+		</ScaleModule>
+
+		<XiConverterModule>
+			<param name="id" value="XBToXi" />
+		</XiConverterModule>
+
+		<ObservableKinematic>
+			<param name="xB" value="0.1763" />
+			<param name="t" value="-0.1346" />
+			<param name="Q2" value="1.3651" />
+			<param name="MuF2" value="4" />
+			<param name="MuR2" value="4" />
+			<param name="phi" value="7.5|22.5|37.5" />
+		</ObservableKinematic>
+
+		<Observable>
+			<param name="id" value="CrossSectionObservable" />
+			<param name="beam_helicity" value="1" />
+			<param name="beam_charge" value="-1" />
+			<param name="target_polarization" value="0|0|0" />
+
+		</Observable>
+
+		<DVCSModule>
+			<param name="id" value="BMJ2012Model" />
+			<param name="beam_energy" value="5.77" />
+		</DVCSModule>
+
+		<DVCSConvolCoeffFunctionModule>
+			<param name="id" value="DVCSCFFModel" />
+			<param name="qcd_order_type" value="LO" />
+		</DVCSConvolCoeffFunctionModule>
+
+		<GPDModule>
+			<param name="id" value="GK11Model" />
+		</GPDModule>
+	</task>
+
+	<task service="ObservableService" method="computeDVCSObservable">
+		<ScaleModule>
+			<param name="id" value="LambdaQ2Scale" />
+			<param name="lambda" value="1" />
+		</ScaleModule>
+
+		<XiConverterModule>
+			<param name="id" value="XBToXi" />
+		</XiConverterModule>
+
+		<ObservableKinematic>
+			<param name="xB" value="0.1763" />
+			<param name="t" value="-0.1346" />
+			<param name="Q2" value="1.3651" />
+			<param name="MuF2" value="4" />
+			<param name="MuR2" value="4" />
+			<param name="phi" value="7.5|22.5|37.5" />
+		</ObservableKinematic>
+
+		<Observable>
+			<param name="id" value="CrossSectionObservable" />
+			<param name="beam_helicity" value="1" />
+			<param name="beam_charge" value="-1" />
+			<param name="target_polarization" value="0|0|0" />
+
+		</Observable>
+
+		<DVCSModule>
+			<param name="id" value="GV2008Model" />
+			<param name="beam_energy" value="5.77" />
+		</DVCSModule>
+
+		<DVCSConvolCoeffFunctionModule>
+			<param name="id" value="DVCSCFFModel" />
+			<param name="qcd_order_type" value="LO" />
+		</DVCSConvolCoeffFunctionModule>
+
+		<GPDModule>
+			<param name="id" value="GK11Model" />
+		</GPDModule>
+	</task>
+
 </scenario>
