@@ -58,6 +58,15 @@ private:
     std::complex<double> beta(double s, double mq);
     std::complex<double> r(double s, double mq);
 
+    std::complex<double> MassiveKernelGluonNLOA(double x);
+    std::complex<double> MassiveKernelGluonNLOV(double x);
+    std::complex<double> computeIntegralsMassiveV();
+    std::complex<double> computeIntegralsMassiveA();
+    double ConvolReKernelGluonMassiveV(double* x, double* params);
+    double ConvolImKernelGluonMassiveV(double* x, double* params);
+    double ConvolReKernelGluonMassiveA(double* x, double* params);
+    double ConvolImKernelGluonMassiveA(double* x, double* params);
+
 };
 
 #endif /* DVCS_CFF_HEAVY_QUARK_MODEL_H */

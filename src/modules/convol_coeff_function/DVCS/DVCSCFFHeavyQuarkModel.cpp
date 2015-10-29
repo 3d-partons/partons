@@ -4,10 +4,15 @@
 #include <cmath>
 #include <stdexcept>
 
+#include "../../../beans/gpd/GPDResult.h"
+#include "../../../beans/parton_distribution/GluonDistribution.h"
+#include "../../../beans/parton_distribution/PartonDistribution.h"
 #include "../../../beans/PerturbativeQCDOrderType.h"
 #include "../../../BaseObjectRegistry.h"
 #include "../../../FundamentalPhysicalConstants.h"
+//#include "../../../utils/logger/LoggerManager.h"
 #include "../../../utils/stringUtils/Formatter.h"
+#include "../../GPDModule.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int DVCSCFFHeavyQuarkModel::classId =
@@ -401,4 +406,189 @@ void DVCSCFFHeavyQuarkModel::computeSubtractionFunctionsA() {
 //  Uncomment above after testing of heavy quark
 
     }
+}
+
+double DVCSCFFHeavyQuarkModel::ConvolReKernelGluonMassiveV(double* x,
+        double* params) {
+    GPDResult gpdResult = m_pGPDModule->compute(x[0], m_xi, m_t, m_MuF2, m_MuR2,
+            m_currentGPDComputeType);
+
+    // GPD evaluated at x = x[ 0 ]
+    double EvalGPD =
+            2
+                    * gpdResult.getPartonDistribution(m_currentGPDComputeType).getGluonDistribution().getGluonDistribution();
+
+    double Convol = (EvalGPD) * MassiveKernelGluonNLOV(x[0]).real();
+    return Convol;
+}
+
+double DVCSCFFHeavyQuarkModel::ConvolImKernelGluonMassiveV(double* x,
+        double* params) {
+    GPDResult gpdResult = m_pGPDModule->compute(x[0], m_xi, m_t, m_MuF2, m_MuR2,
+            m_currentGPDComputeType);
+
+    // GPD evaluated at x = x[ 0 ]
+    double EvalGPD =
+            2
+                    * gpdResult.getPartonDistribution(m_currentGPDComputeType).getGluonDistribution().getGluonDistribution();
+
+    double Convol = (EvalGPD) * MassiveKernelGluonNLOV(x[0]).imag();
+    return Convol;
+}
+
+double DVCSCFFHeavyQuarkModel::ConvolReKernelGluonMassiveA(double* x,
+        double* params) {
+    GPDResult gpdResult = m_pGPDModule->compute(x[0], m_xi, m_t, m_MuF2, m_MuR2,
+            m_currentGPDComputeType);
+
+    // GPD evaluated at x = x[ 0 ]
+    double EvalGPD =
+            2
+                    * gpdResult.getPartonDistribution(m_currentGPDComputeType).getGluonDistribution().getGluonDistribution();
+
+    double Convol = (EvalGPD) * MassiveKernelGluonNLOA(x[0]).real();
+    return Convol;
+}
+
+double DVCSCFFHeavyQuarkModel::ConvolImKernelGluonMassiveA(double* x,
+        double* params) {
+    GPDResult gpdResult = m_pGPDModule->compute(x[0], m_xi, m_t, m_MuF2, m_MuR2,
+            m_currentGPDComputeType);
+
+    // GPD evaluated at x = x[ 0 ]
+    double EvalGPD =
+            2
+                    * gpdResult.getPartonDistribution(m_currentGPDComputeType).getGluonDistribution().getGluonDistribution();
+
+    double Convol = (EvalGPD) * MassiveKernelGluonNLOA(x[0]).imag();
+    return Convol;
+}
+
+std::complex<double> DVCSCFFHeavyQuarkModel::MassiveKernelGluonNLOA(double x) {
+//    m_pLoggerManager->debug(getClassName(), __func__, "entered");
+// TODO Add a massless part
+    double z = m_xi / x;
+    double mq = QUARK_CHARM_MASS;
+    double s = -m_Q2 * (z - 1.) / 2. / z;
+    double SumSqrCharges; // Sum of square of electric charges of active quark flavours
+
+    m_betas = beta(s, mq);
+    m_rs = r(s, mq);
+    m_betaq = beta(-m_Q2, mq);
+    m_rq = r(-m_Q2, mq);
+    std::complex<double> GluonNLOA(0.0, 0.0);
+    std::complex<double> GluonNLOAa(0.0, 0.0);
+    std::complex<double> GluonNLOAb(0.0, 0.0);
+
+    if (z == 1.) {
+        GluonNLOA.real() = 1.0;
+        GluonNLOA.imag() = 0.;
+    }
+    if (z == -1.) {
+        GluonNLOA.real() = -1.0;
+        GluonNLOA.imag() = 0.;
+    }
+
+    ///////////////// c(z)
+
+    if ((z != 1) && (z != -1)) {
+        GluonNLOAa = m_betas * std::log(m_rs) - m_betaq * std::log(m_rq);
+        GluonNLOAa *= (2. * z - 6.) / (z - 1.);
+        GluonNLOAa += std::log(m_rs) * std::log(m_rs)
+                - std::log(m_rq) * std::log(m_rq);
+        GluonNLOAa *= (m_TF / 2. / (z + 1.) / (z + 1.));
+    }
+
+///////////////// c(-z)
+    z = -z;
+    s = -m_Q2 * (z - 1.) / 2. / z;
+    m_betas = beta(s, mq);
+    m_rs = r(s, mq);
+    if ((z != 1) && (z != -1)) {
+        GluonNLOAb = m_betas * std::log(m_rs) - m_betaq * std::log(m_rq);
+        GluonNLOAb *= (2. * z - 6.) / (z - 1.);
+        GluonNLOAb += std::log(m_rs) * std::log(m_rs)
+                - std::log(m_rq) * std::log(m_rq);
+        GluonNLOAb *= (m_TF / 2. / (z + 1.) / (z + 1.));
+    }
+
+    GluonNLOA = m_alphaSOver2Pi * C_ELEC_CHARGE * C_ELEC_CHARGE
+            * (GluonNLOAa - GluonNLOAb);
+    ;
+    GluonNLOA /= x * x;
+
+    debug(__func__,
+            Formatter() << "x= " << x << "    GluonNLOA RE = "
+                    << GluonNLOA.real() << "   GluonNLOA IM = "
+                    << GluonNLOA.imag() << "  alphaSover2Pi = "
+                    << m_alphaSOver2Pi);
+
+    return GluonNLOA;
+}
+
+std::complex<double> DVCSCFFHeavyQuarkModel::MassiveKernelGluonNLOV(double x) {
+    double z = -m_xi / x;
+    double mq = QUARK_CHARM_MASS;
+    double s = -m_Q2 * (z - 1.) / 2. / z;
+    double eta = mq * mq / m_Q2;
+    double SumSqrCharges; // Sum of square of electric charges of active quark flavours
+    std::complex<double> GluonNLOV(0.0, 0.0);
+    std::complex<double> GluonNLOVa(0.0, 0.0);
+    std::complex<double> GluonNLOVb(0.0, 0.0);
+    if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
+
+        m_betas = beta(s, mq);
+        m_rs = r(s, mq);
+        m_betaq = beta(-m_Q2, mq);
+        m_rq = r(-m_Q2, mq);
+
+        if (z == 1.) {
+            GluonNLOV.real() = 0.0;
+            GluonNLOV.imag() = 0.;
+        }
+        if (z == -1.) {
+            GluonNLOV.real() = 0.0;
+            GluonNLOV.imag() = 0.;
+        }
+        if ((z != 1.) && (z != -1.)) {
+////////////////// c(z)
+            GluonNLOVa = m_betas * std::log(m_rs) - m_betaq * std::log(m_rq);
+            GluonNLOVa *= (2. - z * (6. - 16. * eta)) / (z - 1.);
+            GluonNLOVa -= (1.
+                    + 8. * eta * z * (1. - (1. + 4. * eta) * z) / (z - 1.)
+                            / (z - 1.)) * std::log(m_rs) * std::log(m_rs);
+            GluonNLOVa += (1.
+                    - 2. * eta * (1. + (3. + 8. * eta) * z * z) / (z - 1.)
+                            / (z - 1.)) * std::log(m_rq) * std::log(m_rq);
+            GluonNLOVa *= (m_TF / 2. / (z + 1.) / (z + 1.));
+///////////////// c(-z)
+            z = -z;
+            s = -m_Q2 * (z - 1.) / 2. / z;
+            m_betas = beta(s, mq);
+            m_rs = r(s, mq);
+
+            GluonNLOVb = m_betas * std::log(m_rs) - m_betaq * std::log(m_rq);
+            GluonNLOVb *= (2. - z * (6. - 16. * eta)) / (z - 1.);
+            GluonNLOVb -= (1.
+                    + 8. * eta * z * (1. - (1. + 4. * eta) * z) / (z - 1.)
+                            / (z - 1.)) * std::log(m_rs) * std::log(m_rs);
+            GluonNLOVb += (1.
+                    - 2. * eta * (1. + (3. + 8. * eta) * z * z) / (z - 1.)
+                            / (z - 1.)) * std::log(m_rq) * std::log(m_rq);
+            GluonNLOVb *= (m_TF / 2. / (z + 1.) / (z + 1.));
+
+        }
+
+        GluonNLOV = m_alphaSOver2Pi * C_ELEC_CHARGE * C_ELEC_CHARGE
+                * (GluonNLOVa + GluonNLOVb);
+        GluonNLOV /= x * x;
+
+    }
+
+    debug(__func__, Formatter() << "x= " << x
+//            << "    GluonNLOV RE = " << GluonNLOV.real()
+//            << "   GluonNLOV IM = "<< GluonNLOV.imag()
+            << "  alphaSover2Pi = " << m_alphaSOver2Pi);
+
+    return GluonNLOV;
 }
