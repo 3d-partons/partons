@@ -24,7 +24,6 @@ DVCSCFFHeavyQuarkModel::DVCSCFFHeavyQuarkModel(const std::string& className) :
                 std::complex<double>(0.0, 0.0)), m_rq(
                 std::complex<double>(0.0, 0.0)), m_TF(
                 std::complex<double>(0.5, 0.0)) {
-
 }
 
 DVCSCFFHeavyQuarkModel* DVCSCFFHeavyQuarkModel::clone() const {
