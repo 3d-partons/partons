@@ -51,7 +51,7 @@ double CrossSectionObservable::compute(ProcessModule* pDVCSModule, double phi) {
 void CrossSectionObservable::configure(ParameterList parameters) {
     if (parameters.isAvailable(
             CrossSectionObservable::PARAMETER_NAME_BEAM_HELICITY)) {
-        m_beamHelicity = parameters.getLastAvailable().toInt();
+        m_beamHelicity = parameters.getLastAvailable().toDouble();
 
         info(__func__,
                 Formatter()
@@ -60,7 +60,7 @@ void CrossSectionObservable::configure(ParameterList parameters) {
     }
     if (parameters.isAvailable(
             CrossSectionObservable::PARAMETER_NAME_BEAM_CHARGE)) {
-        m_beamCharge = parameters.getLastAvailable().toInt();
+        m_beamCharge = parameters.getLastAvailable().toDouble();
 
         info(__func__,
                 Formatter()
@@ -77,9 +77,9 @@ void CrossSectionObservable::configure(ParameterList parameters) {
 
             if (vectorPoints.size() == 3) {
                 m_targetPolarization = NumA::Vector3D(
-                        StringUtils::fromStringToInt(vectorPoints[0]),
-                        StringUtils::fromStringToInt(vectorPoints[1]),
-                        StringUtils::fromStringToInt(vectorPoints[2]));
+                        StringUtils::fromStringToDouble(vectorPoints[0]),
+                        StringUtils::fromStringToDouble(vectorPoints[1]),
+                        StringUtils::fromStringToDouble(vectorPoints[2]));
 
                 info(__func__,
                         Formatter()

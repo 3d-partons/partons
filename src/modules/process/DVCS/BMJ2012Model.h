@@ -86,6 +86,7 @@ private:
     void defineAngles(const NumA::Vector3D &targetPolarization); ///< Define the BMK angles
 
     double m_F1, m_F2; ///< Dirac and Pauli form factors
+    void computeFormFactors(); ///< Compute F1 and F2 form factors
 
     /* Bethe Heitler coeffs (BMK2002) */
     /** Fourier coeffs of the BH squared amplitude
@@ -123,7 +124,14 @@ private:
      *  2nd index: [0]=0., [1]=s1, [2]=s2, [3]=s3
      */
     std::vector<std::vector<double> > m_sI;
+    /** Angular coeffs C_ab(n), dC_ab(n), S_ab(n), dS_ab(n)
+     * 1st index: [0]=C++, [1]=C-+, [2]=C0+
+     * 2nd index: [0]=not, [1]=V, [2]=A
+     * 3rd index: n
+     */
+    std::vector<std::vector<std::vector<double> > > m_C, m_S, m_dC, m_dS;
 
+    void computeAngularCoeffsInterf(); ///< Computes C_ab(n), S_ab(n), etc.
     void computeFourierCoeffsInterf(); ///< Computes c_I and s_I
 
     /** Coefficients used for computing F+b and F0+
@@ -138,30 +146,49 @@ private:
      */
     std::vector<std::vector<std::complex<double> > > m_CFF;
 
-    /** Method that calculates F+b and F0+
-     */
-    std::complex<double> computeCFF(int i, int j);
-
     /** Method that gives F+b and F0+ already calculated
      */
     std::complex<double> CFF(GPDType::Type F, int a, int b);
 
+    void computeCFFs(); ///< Computes CFFS F+b and F0+
+
     /** Method that gives the VCS coefficient bilinear in the CFFs
      *
-     * @param i 0=unp, 1=LP, 2=TP+, 3=TP-
+     * @param S 0=unp, 1=LP, 2=TP+, 3=TP-
      */
-    std::complex<double> C_VCS(unsigned int i, int a1, int b1, int a2, int b2);
-    std::complex<double> C_VCS(unsigned int i, int a1, int b1, int a2, int b2,
+    std::complex<double> C_VCS(unsigned int S, int a1, int b1, int a2, int b2);
+    std::complex<double> C_VCS(unsigned int S, int a1, int b1, int a2, int b2,
             int a3, int b3);
-    std::complex<double> C_VCS(unsigned int i, int a1, int b1, int a2, int b2,
+    std::complex<double> C_VCS(unsigned int S, int a1, int b1, int a2, int b2,
             int a3, int b3, int a4, int b4);
 
     /** Method that gives the Interference coefficient linear in the CFFs
      *
-     * @param i 0=unp, 1=LP, 2=TP+, 3=TP-
-     * @param j 0=not, 1=V, 2=A
+     * @param S 0=unp, 1=LP, 2=TP+, 3=TP-
+     * @param VA can be "V" or "A" or ""
      */
-    std::complex<double> C_I(unsigned int i, unsigned int j, int a, int b);
+    std::complex<double> C_I(unsigned int S, int a, int b,
+            const std::string& VA);
+    /** Method that gives the "effective" linear combinations of CFFS
+     * Corresponds to Eqs. (68-69) but multiplied by the coefficient C_{ab}(n)
+     * to avoid divisions by zero.
+     * @param S 0=unp, 1=LP, 2=TP+, 3=TP-
+     * @param n
+     * @param a
+     * @param b
+     * @return {\cal C}_{ab,S}(n|Fab) * C_{ab}(n)
+     */
+    std::complex<double> C_I(unsigned int S, unsigned int n, int a, int b);
+    /** Method that gives the "effective" linear combinations of CFFS
+     * Corresponds to Eqs. (68-69) but multiplied by the coefficient S_{ab}(n)
+     * to avoid divisions by zero.
+     * @param S 0=unp, 1=LP, 2=TP+, 3=TP-
+     * @param n
+     * @param a
+     * @param b
+     * @return {\cal S}_{ab,S}(n|Fab) * S_{ab}(n)
+     */
+    std::complex<double> S_I(unsigned int S, unsigned int n, int a, int b);
 
     double SqrAmplBH(double beamHelicity, double beamCharge,
             NumA::Vector3D targetPolarization); ///< Returns the squared amplitude of Bethe Heitler process

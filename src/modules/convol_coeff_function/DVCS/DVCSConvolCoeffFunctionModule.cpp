@@ -161,6 +161,8 @@ DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionModule::compute(
     }
     }
 
+    debug(__func__, dvcsConvolCoeffFunctionResult.toString());
+
     return dvcsConvolCoeffFunctionResult;
 }
 
