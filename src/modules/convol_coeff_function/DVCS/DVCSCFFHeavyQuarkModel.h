@@ -39,14 +39,9 @@ protected:
 //    virtual void initModule();
 //    virtual void isModuleWellConfigured();
 
-    virtual std::complex<double> KernelGluonNLOA(double x); ///<Modified for heavy quarks
-    virtual std::complex<double> KernelGluonNLOV(double x); ///<Modified for heavy quarks
 
-    virtual std::complex<double> KernelQuarkNLOV(double x); ///< T^{q, NLO, V}, appendix A, eq. (A2)
-    virtual std::complex<double> KernelQuarkNLOA(double x); ///< T^{q, NLO, A}, appendix A, eq. (A2)
-
-    virtual void computeSubtractionFunctionsV(); ///<Modified for heavy quarks
-    virtual void computeSubtractionFunctionsA(); ///<Modified for heavy quarks
+    virtual std::complex<double> computeUnpolarized();
+    virtual std::complex<double> computePolarized();
 
 private:
     std::complex<double> m_betas;

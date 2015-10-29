@@ -5,7 +5,7 @@
 
 	<task service="DVCSConvolCoeffFunctionService" method="computeWithGPDModel">
 		<DVCSConvolCoeffFunctionKinematic>
-			<param name="xi" value="0.5" />
+			<param name="xi" value="0.096671602" />
 			<param name="t" value="-0.1346" />
 			<param name="Q2" value="1.5557" />
 			<param name="MuF2" value="4" />
@@ -17,8 +17,8 @@
 		</GPDModule>
 
 		<DVCSConvolCoeffFunctionModule>
-			<param name="id" value="DVCSCFFModel" />
-			<param name="qcd_order_type" value="LO" />
+			<param name="id" value="DVCSCFFHeavyQuarkModel" />
+			<param name="qcd_order_type" value="NLO" />
 		</DVCSConvolCoeffFunctionModule>
 	</task>
 

@@ -16,7 +16,6 @@
 #include <complex>
 #include <string>
 
-//#include "../../../beans/parton_distribution/PartonDistribution.h"
 #include "DVCSConvolCoeffFunctionModule.h"
 
 class PartonDistribution;
@@ -67,6 +66,9 @@ protected:
     double m_Q;
     double m_alphaSOver2Pi;
 
+    virtual std::complex<double> computeUnpolarized();
+    virtual std::complex<double> computePolarized();
+
 private:
 
     double m_quarkDiagonal;
@@ -96,9 +98,6 @@ private:
 
     std::complex<double> computeIntegralsV();
     std::complex<double> computeIntegralsA();
-
-    virtual std::complex<double> computeUnpolarized();
-    virtual std::complex<double> computePolarized();
 
     double computeSquareChargeAveragedGPD(
             const PartonDistribution &partonDistribution);
