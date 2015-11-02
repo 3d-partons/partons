@@ -92,11 +92,20 @@ ObservableKinematic::~ObservableKinematic() {
 std::string ObservableKinematic::toString() {
     Formatter formatter;
 
-    formatter << "m_xB = " << m_xB << "m_t = " << m_t << " m_Q2 = " << m_Q2;
+    formatter << toStringWithoutPhi() << '\n';
 
     for (unsigned int i = 0; i < m_listOfPhi.size(); i++) {
         formatter << "m_phi = " << m_listOfPhi[i] << "\n";
     }
+
+    return formatter;
+}
+
+std::string ObservableKinematic::toStringWithoutPhi() {
+    Formatter formatter;
+
+    formatter << "m_xB = " << m_xB << " m_t = " << m_t << " (GeV2) m_Q2 = "
+            << m_Q2 << " (GeV2)";
 
     return formatter;
 }

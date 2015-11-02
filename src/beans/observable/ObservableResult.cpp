@@ -45,10 +45,12 @@ void ObservableResult::setValue(double value) {
 std::string ObservableResult::toString() {
     Formatter formatter;
 
+    formatter << m_kinematic.toStringWithoutPhi();
+
     if (m_observableType == ObservableType::PHI) {
-        formatter << "phi(°) = " << m_phi << " - observable = " << m_value;
+        formatter << " phi = " << m_phi << " (degree) - observable = " << m_value;
     } else if (m_observableType == ObservableType::FOURIER) {
-        formatter << "observable = " << m_value;
+        formatter << " observable = " << m_value;
     } else {
         formatter << "unknow observable = " << m_value;
     }

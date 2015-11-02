@@ -1,6 +1,6 @@
 #include "ObservableService.h"
 
-#include <stddef.h>
+#include <vector>
 
 #include "../beans/automation/Task.h"
 #include "../beans/observable/ObservableResultList.h"
@@ -13,7 +13,6 @@
 #include "../modules/xb_to_xi/XiConverterModule.h"
 #include "../ModuleObjectFactory.h"
 #include "../ObservableObjectFactory.h"
-#include "../utils/fileUtils/FileUtils.h"
 #include "../utils/GenericType.h"
 #include "../utils/ParameterList.h"
 #include "../utils/stringUtils/Formatter.h"
@@ -67,8 +66,8 @@ ObservableResultList ObservableService::computeDVCSObservable(
 }
 
 ObservableResultList ObservableService::computeManyKinematicOneModel(
-        std::vector<ObservableKinematic> listOfKinematic,
-        DVCSModule* pDVCSModule, Observable* pObservable,
+        ObservableKinematicList listOfKinematic, DVCSModule* pDVCSModule,
+        Observable* pObservable,
         DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule) {
 
     ObservableResultList results;
@@ -217,39 +216,13 @@ void ObservableService::computeManyKinematicOneModelTask(Task& task) {
                         << task.getFunctionName());
     }
 
-    std::vector<ObservableKinematic> listOfKinematic;
+    ObservableKinematicList listOfKinematic;
 
     if (task.isAvailableParameterList("ObservableKinematic")) {
         ParameterList parameterList = task.getLastAvailableParameterList();
         if (parameterList.isAvailable("file")) {
-            std::string filePath = parameterList.getLastAvailable().toString();
-            std::vector<std::string> kinematicString = FileUtils::readByLine(
-                    filePath);
-
-            if (kinematicString.empty()) {
-                throwException(__func__,
-                        Formatter() << "Empty kinematic input file : "
-                                << filePath);
-            }
-
-            for (size_t i = 0; i != kinematicString.size(); i++) {
-                std::vector<std::string> kinematicValues = StringUtils::split(
-                        kinematicString[i], '|');
-                if (kinematicValues.size() < 4) {
-                    throwException(__func__,
-                            Formatter()
-                                    << "Missing column value in your kinematic input file : "
-                                    << filePath
-                                    << " ; You must provided 4 column");
-                }
-
-                listOfKinematic.push_back(
-                        ObservableKinematic(kinematicValues[0],
-                                kinematicValues[1], kinematicValues[2],
-                                kinematicValues[3]));
-
-            }
-
+            listOfKinematic = ObservableKinematicList(
+                    parameterList.getLastAvailable().toString());
         } else {
             throwException(__func__,
                     Formatter()

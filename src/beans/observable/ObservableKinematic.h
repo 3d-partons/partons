@@ -59,6 +59,8 @@ public:
      */
     virtual std::string toString();
 
+    std::string toStringWithoutPhi();
+
     // ##### GETTERS & SETTERS #####
 
     const std::vector<double>& getListOfPhi() const;

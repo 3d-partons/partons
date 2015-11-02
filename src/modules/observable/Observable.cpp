@@ -1,5 +1,6 @@
 #include "Observable.h"
 
+#include "../../beans/observable/ObservableKinematic.h"
 #include "../../beans/observable/ObservableResult.h"
 #include "../../beans/observable/ObservableResultList.h"
 #include "../../utils/math/MathUtils.h"
@@ -45,6 +46,7 @@ ObservableResultList Observable::compute(double xB, double t, double Q2,
         //TODO improve
         ObservableResult observableResult(compute());
         observableResult.setObservableType(m_observableType);
+        observableResult.setKinematic(ObservableKinematic(xB, t, Q2, listOfPhi));
         observableResultList.add(observableResult);
     } else
     // check if this observable is a phi observable
@@ -59,6 +61,8 @@ ObservableResultList Observable::compute(double xB, double t, double Q2,
                                 MathUtils::convertDegreeToRadian(
                                         listOfPhi[i])));
                 observableResult.setObservableType(m_observableType);
+                observableResult.setKinematic(
+                        ObservableKinematic(xB, t, Q2, listOfPhi));
                 observableResultList.add(observableResult);
             }
         } else {

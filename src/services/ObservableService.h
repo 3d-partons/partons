@@ -13,9 +13,10 @@
  */
 
 #include <string>
-#include <vector>
+//#include <vector>
 
 #include "../beans/observable/ObservableKinematic.h"
+#include "../beans/observable/ObservableKinematicList.h"
 #include "../ServiceObject.h"
 
 class DVCSConvolCoeffFunctionModule;
@@ -47,8 +48,8 @@ public:
             DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule);
 
     ObservableResultList computeManyKinematicOneModel(
-            std::vector<ObservableKinematic> listOfKinematic,
-            DVCSModule* pDVCSModule, Observable* pObservable,
+            ObservableKinematicList listOfKinematic, DVCSModule* pDVCSModule,
+            Observable* pObservable,
             DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule);
 
     virtual void computeTask(Task &task);
