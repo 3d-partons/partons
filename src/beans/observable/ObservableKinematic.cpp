@@ -89,7 +89,7 @@ ObservableKinematic::ObservableKinematic(const std::string &xB,
 ObservableKinematic::~ObservableKinematic() {
 }
 
-std::string ObservableKinematic::toString() {
+std::string ObservableKinematic::toString() const {
     Formatter formatter;
 
     formatter << toStringWithoutPhi() << '\n';
@@ -101,7 +101,7 @@ std::string ObservableKinematic::toString() {
     return formatter;
 }
 
-std::string ObservableKinematic::toStringWithoutPhi() {
+const std::string ObservableKinematic::toStringWithoutPhi() const {
     Formatter formatter;
 
     formatter << "m_xB = " << m_xB << " m_t = " << m_t << " (GeV2) m_Q2 = "
@@ -142,4 +142,18 @@ double ObservableKinematic::getXB() const {
 
 void ObservableKinematic::setXB(double xB) {
     m_xB = xB;
+}
+
+//TODO replace hardcoded separator ";"
+const std::string ObservableKinematic::getListOfPhi_str() const {
+    Formatter formatter;
+
+    for (size_t i = 0; i != m_listOfPhi.size(); i++) {
+        if (i != 0) {
+            formatter << ";";
+        }
+        formatter << m_listOfPhi[i];
+    }
+
+    return formatter.str();
 }

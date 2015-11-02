@@ -7,7 +7,6 @@
 #include "../../beans/gpd/GPDResult.h"
 #include "../../beans/gpd/GPDResultList.h"
 #include "../../beans/parton_distribution/PartonDistribution.h"
-//#include "../../utils/logger/LoggerManager.h"
 #include "../dao/GPDResultDao.h"
 #include "GPDKinematicDaoService.h"
 #include "ModuleDaoService.h"

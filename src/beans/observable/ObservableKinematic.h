@@ -57,9 +57,11 @@ public:
      *
      * @return a pre-formatted characters string
      */
-    virtual std::string toString();
+    virtual std::string toString() const;
 
-    std::string toStringWithoutPhi();
+    const std::string toStringWithoutPhi() const;
+
+    const std::string getListOfPhi_str() const;
 
     // ##### GETTERS & SETTERS #####
 

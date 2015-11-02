@@ -21,8 +21,9 @@
 class ObservableResult {
 public:
     ObservableResult();
-    ObservableResult(double value);
-    ObservableResult(double phi, double value);
+    ObservableResult(const std::string &observableName, double value);
+    ObservableResult(const std::string &observableName, double phi,
+            double value);
     virtual ~ObservableResult();
 
     virtual std::string toString();
@@ -35,7 +36,18 @@ public:
     void setValue(double value);
     void setObservableType(ObservableType::Type observableType);
 
+    const ObservableKinematic& getKinematic() const;
+    ObservableType::Type getObservableType() const;
+    const std::string& getObservbleName() const;
+    double getPhi() const;
+    const ErrorBar& getStatError() const;
+    const ErrorBar& getSystError() const;
+    double getTotalError() const;
+    double getValue() const;
+
 private:
+    std::string m_observbleName;
+
     double m_value;
     double m_phi;
     double m_totalError;

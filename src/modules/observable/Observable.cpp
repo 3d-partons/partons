@@ -44,9 +44,10 @@ ObservableResultList Observable::compute(double xB, double t, double Q2,
     if (m_observableType == ObservableType::FOURIER) {
 
         //TODO improve
-        ObservableResult observableResult(compute());
+        ObservableResult observableResult(getClassName(), compute());
         observableResult.setObservableType(m_observableType);
-        observableResult.setKinematic(ObservableKinematic(xB, t, Q2, listOfPhi));
+        observableResult.setKinematic(
+                ObservableKinematic(xB, t, Q2, listOfPhi));
         observableResultList.add(observableResult);
     } else
     // check if this observable is a phi observable
@@ -56,7 +57,7 @@ ObservableResultList Observable::compute(double xB, double t, double Q2,
             for (unsigned int i = 0; i != listOfPhi.size(); i++) {
 
                 //TODO improve
-                ObservableResult observableResult(listOfPhi[i],
+                ObservableResult observableResult(getClassName(), listOfPhi[i],
                         compute(m_pProcess,
                                 MathUtils::convertDegreeToRadian(
                                         listOfPhi[i])));
