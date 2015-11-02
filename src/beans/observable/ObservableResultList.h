@@ -12,6 +12,7 @@
  * @brief
  */
 
+#include <stddef.h>
 #include <string>
 #include <vector>
 
@@ -23,6 +24,12 @@ public:
     virtual ~ObservableResultList();
 
     void add(const ObservableResult &observableResult);
+    void add(const ObservableResultList &observableResultList);
+
+    size_t size() const;
+
+    ObservableResult& operator[](size_t n);
+    const ObservableResult& operator[](size_t n) const;
 
     virtual std::string toString();
 

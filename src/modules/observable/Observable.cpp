@@ -39,27 +39,18 @@ ObservableResultList Observable::compute(double xB, double t, double Q2,
 
     m_pProcess->computeConvolCoeffFunction(xB, t, Q2);
 
-    // if listOfPhi empty then run computation of fourier observable
-    if (listOfPhi.empty()) {
-        // check if this observable is a fourier observable
-        if (m_observableType == ObservableType::FOURIER) {
+    // check if this observable is a fourier observable
+    if (m_observableType == ObservableType::FOURIER) {
 
-            //TODO improve
-            ObservableResult observableResult(compute());
-            observableResult.setObservableType(m_observableType);
-            observableResultList.add(observableResult);
-        }
-        // else throw exception
-        else {
-            throwException(__func__,
-                    Formatter()
-                            << "Cannot perform fourier computation with a phi dependencies observable");
-        }
-    }
-    // else run computation of observable with phi dependencies
-    else {
-        // check if this observable is a fourier observable
-        if (m_observableType == ObservableType::PHI) {
+        //TODO improve
+        ObservableResult observableResult(compute());
+        observableResult.setObservableType(m_observableType);
+        observableResultList.add(observableResult);
+    } else
+    // check if this observable is a phi observable
+    if (m_observableType == ObservableType::PHI) {
+        // if listOfPhi not empty then run computation of phi observable
+        if (!listOfPhi.empty()) {
             for (unsigned int i = 0; i != listOfPhi.size(); i++) {
 
                 //TODO improve
@@ -70,13 +61,15 @@ ObservableResultList Observable::compute(double xB, double t, double Q2,
                 observableResult.setObservableType(m_observableType);
                 observableResultList.add(observableResult);
             }
-        }
-        // else throw exception
-        else {
+        } else {
             throwException(__func__,
                     Formatter()
-                            << "Cannot perform phi dependencies observable computation with fourier observable");
+                            << "The list of phi is empty ; You must provide at least one phi value to compute a phi dependencies observable");
         }
+    } else {
+        throwException(__func__,
+                Formatter() << "Unknow observable type : "
+                        << ObservableType(m_observableType).toString());
     }
 
     return observableResultList;

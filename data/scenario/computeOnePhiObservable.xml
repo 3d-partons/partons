@@ -4,13 +4,20 @@
 	description="Example : computation of one observable(Alu) with GV2008 DVCS model">
 
 	<task service="ObservableService" method="computeDVCSObservable">
+		<ScaleModule>
+			<param name="id" value="LambdaQ2Scale" />
+			<param name="lambda" value="1" />
+		</ScaleModule>
+
+		<XiConverterModule>
+			<param name="id" value="XBToXi" />
+		</XiConverterModule>
+
 		<ObservableKinematic>
 			<param name="xB" value="0.1763" />
 			<param name="t" value="-0.1346" />
 			<param name="Q2" value="1.3651" />
-			<param name="MuF2" value="4" />
-			<param name="MuR2" value="4" />
-			<param name="phi" value="7.5|22.5|37.5" />
+            <param name="phi" value="7.5|22.5|37.5" />
 		</ObservableKinematic>
 
 		<Observable>

@@ -13,6 +13,7 @@
  */
 
 #include <string>
+#include <vector>
 
 #include "../beans/observable/ObservableKinematic.h"
 #include "../ServiceObject.h"
@@ -26,6 +27,7 @@ class ObservableResultList;
 class ObservableService: public ServiceObject {
 public:
     static const std::string FUNCTION_NAME_COMPUTE_DVCS_OBSERVABLE;
+    static const std::string FUNCTION_NAME_COMPUTE_MANY_KINEMATIC_ONE_MODEL;
 
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
@@ -44,9 +46,16 @@ public:
             const ObservableKinematic &observableKinematic,
             DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule);
 
+    ObservableResultList computeManyKinematicOneModel(
+            std::vector<ObservableKinematic> listOfKinematic,
+            DVCSModule* pDVCSModule, Observable* pObservable,
+            DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule);
+
     virtual void computeTask(Task &task);
 
 private:
+    void computeDVCSObservableTask(Task &task);
+    void computeManyKinematicOneModelTask(Task &task);
 
 };
 

@@ -1,5 +1,7 @@
 #include "ObservableKinematic.h"
 
+#include <stddef.h>
+
 #include "../../utils/GenericType.h"
 #include "../../utils/ParameterList.h"
 #include "../../utils/stringUtils/Formatter.h"
@@ -52,11 +54,12 @@ ObservableKinematic::ObservableKinematic(ParameterList &parameterList) :
                         StringUtils::fromStringToDouble(listOfPhi_str[i]));
             }
         }
-    } else {
-        throwException(__func__,
-                Formatter() << "Missing parameter <"
-                        << ObservableKinematic::PARAMETER_NAME_PHI << ">");
     }
+//    else {
+//        throwException(__func__,
+//                Formatter() << "Missing parameter <"
+//                        << ObservableKinematic::PARAMETER_NAME_PHI << ">");
+//    }
 
 }
 
@@ -64,6 +67,23 @@ ObservableKinematic::ObservableKinematic(double xB, double t, double Q2,
         std::vector<double> listOfPhi) :
         BaseObject("ObservableKinematic"), m_xB(xB), m_t(t), m_Q2(Q2), m_listOfPhi(
                 listOfPhi) {
+}
+
+ObservableKinematic::ObservableKinematic(const std::string &xB,
+        const std::string &t, const std::string &Q2,
+        const std::string &listOfPhi) :
+        BaseObject("ObservableKinematic"), m_xB(
+                StringUtils::fromStringToDouble(xB)), m_t(
+                StringUtils::fromStringToDouble(t)), m_Q2(
+                StringUtils::fromStringToDouble(Q2)) {
+    std::vector<std::string> listOfPhiValue = StringUtils::split(listOfPhi,
+            ';');
+    if (!listOfPhiValue.empty()) {
+        for (size_t i = 0; i != listOfPhiValue.size(); i++) {
+            m_listOfPhi.push_back(
+                    StringUtils::fromStringToDouble(listOfPhiValue[i]));
+        }
+    }
 }
 
 ObservableKinematic::~ObservableKinematic() {

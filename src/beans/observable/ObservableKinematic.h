@@ -44,6 +44,9 @@ public:
     ObservableKinematic(double xB, double t, double Q2,
             std::vector<double> listOfPhi);
 
+    ObservableKinematic(const std::string &xB, const std::string &t,
+            const std::string &Q2, const std::string &listOfPhi);
+
     /**
      * Default destructor
      */
