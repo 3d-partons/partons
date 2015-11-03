@@ -64,3 +64,29 @@ std::string Attributs::toString() {
     return result;
 }
 
+bool Attributs::isAvailable(const std::string& key) const {
+    bool result = false;
+
+    std::map<std::string, std::string>::const_iterator it = m_attributes.find(
+            key);
+    if (it != m_attributes.end()) {
+        result = true;
+    }
+
+    return result;
+}
+
+bool Attributs::getBooleanValueOf(const std::string& key) {
+    bool b = false;
+
+    std::stringstream sstream;
+    sstream << getStringValueOf(key);
+
+    // if conversion failed then print an exception
+    if ((sstream >> b).fail()) {
+        throw std::runtime_error(
+                "[Attributs::getBooleanValueOf] cast from std::string to bool failed ! ");
+    }
+
+    return b;
+}

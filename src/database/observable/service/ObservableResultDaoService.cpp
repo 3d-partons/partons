@@ -37,6 +37,7 @@ int ObservableResultDaoService::insert(
                 observableResult.getDateTime());
     }
 
+    //Then store observableResult in database
     ObservableResultDao::insert(observableResult.getObservbleName(),
             observableResult.getValue(), observableResult.getPhi(),
             observableResult.getStatError().getLowerBound(),

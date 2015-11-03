@@ -37,9 +37,13 @@ public:
     std::vector<ParameterList> getListOfLastAvailableParameterList(
             const std::string &className);
 
+    bool isStoreInDB() const;
+    void setStoreInDB(bool storeInDb);
+
 private:
     std::string m_serviceName;
     std::string m_functionName;
+    bool m_storeInDB;
 
     // std::string : className
     // ParameterList : parameters to create object from the class

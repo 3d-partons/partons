@@ -11,7 +11,6 @@
  * @brief
  */
 
-#include <iostream>
 #include <map>
 #include <string>
 
@@ -25,10 +24,13 @@ public:
     std::string getStringValueOf(const std::string &key);
     int getIntValueOf(const std::string &key);
     double getDoubleValueOf(const std::string &key);
+    bool getBooleanValueOf(const std::string &key);
 
     bool isInt(std::string);
 
     std::string toString();
+
+    bool isAvailable(const std::string &key) const;
 
 private:
     std::map<std::string, std::string> m_attributes;

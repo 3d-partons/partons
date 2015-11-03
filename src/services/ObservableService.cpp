@@ -5,6 +5,7 @@
 #include "../beans/automation/Task.h"
 #include "../beans/observable/ObservableResultList.h"
 #include "../BaseObjectRegistry.h"
+#include "../database/observable/service/ObservableResultDaoService.h"
 #include "../modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
 #include "../modules/GPDModule.h"
 #include "../modules/observable/Observable.h"
@@ -39,15 +40,28 @@ ObservableService::~ObservableService() {
 
 //TODO implement all function
 void ObservableService::computeTask(Task &task) {
+
+    ObservableResultList observableResultList;
+
     if (StringUtils::equals(task.getFunctionName(),
             ObservableService::FUNCTION_NAME_COMPUTE_DVCS_OBSERVABLE)) {
-        computeDVCSObservableTask(task);
+        observableResultList = computeDVCSObservableTask(task);
     } else if (StringUtils::equals(task.getFunctionName(),
             ObservableService::FUNCTION_NAME_COMPUTE_MANY_KINEMATIC_ONE_MODEL)) {
-        computeManyKinematicOneModelTask(task);
+        observableResultList = computeManyKinematicOneModelTask(task);
     } else {
         throwException(__func__,
                 "unknown function name = " + task.getFunctionName());
+    }
+
+    if (task.isStoreInDB()) {
+        ObservableResultDaoService observableResultDaoService;
+        int computationId = observableResultDaoService.insert(
+                observableResultList);
+        info(__func__,
+                Formatter()
+                        << "ObservableResultList object has been stored in database with computation_id = "
+                        << computationId);
     }
 }
 
@@ -81,7 +95,7 @@ ObservableResultList ObservableService::computeManyKinematicOneModel(
     return results;
 }
 
-void ObservableService::computeDVCSObservableTask(Task& task) {
+ObservableResultList ObservableService::computeDVCSObservableTask(Task& task) {
 
     // create ScaleModule
     ScaleModule* pScaleModule = 0;
@@ -185,9 +199,12 @@ void ObservableService::computeDVCSObservableTask(Task& task) {
             Formatter() << task.getFunctionName() << "("
                     << pObservable->getClassName() << ")" << '\n'
                     << result.toString());
+
+    return result;
 }
 
-void ObservableService::computeManyKinematicOneModelTask(Task& task) {
+ObservableResultList ObservableService::computeManyKinematicOneModelTask(
+        Task& task) {
 
     // create ScaleModule
     ScaleModule* pScaleModule = 0;
@@ -300,4 +317,6 @@ void ObservableService::computeManyKinematicOneModelTask(Task& task) {
             Formatter() << task.getFunctionName() << "("
                     << pObservable->getClassName() << ")" << '\n'
                     << result.toString());
+
+    return result;
 }

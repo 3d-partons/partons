@@ -63,6 +63,10 @@ void ScenarioManager::startElement(const std::string &elementName,
 
         m_task.setServiceName(attributes.getStringValueOf("service"));
         m_task.setFunctionName(attributes.getStringValueOf("method"));
+
+        if (attributes.isAvailable("storeInDB")) {
+            m_task.setStoreInDB(attributes.getBooleanValueOf("storeInDB"));
+        }
     }
 
     //TODO replace hardcoded parameter name lot of error in parsing parameters later !!!!

@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 
-<scenario id="10" date=""
-    description="">
+<scenario id="10" date="" description="">
 
-    <task service="ObservableService" method="computeManyKinematicOneModel">
-        <ScaleModule>
-            <param name="id" value="LambdaQ2Scale" />
-            <param name="lambda" value="1" />
-        </ScaleModule>
+	<task service="ObservableService" method="computeManyKinematicOneModel"
+		storeInDB="1">
+		<ScaleModule>
+			<param name="id" value="LambdaQ2Scale" />
+			<param name="lambda" value="1" />
+		</ScaleModule>
 
-        <XiConverterModule>
-            <param name="id" value="XBToXi" />
-        </XiConverterModule>
+		<XiConverterModule>
+			<param name="id" value="XBToXi" />
+		</XiConverterModule>
 
-        <ObservableKinematic>
-            <param name="file" value="/home/debian/workspace/PARTONS/data/xB_t_Q2.dat" />
-        </ObservableKinematic>
+		<ObservableKinematic>
+			<param name="file" value="/home/debian/workspace/PARTONS/data/xB_t_Q2_listOfPhi.dat" />
+		</ObservableKinematic>
 
-        <Observable>
-            <param name="id" value="CrossSectionObservable" />
-        </Observable>
+		<Observable>
+			<param name="id" value="CrossSectionObservable" />
+		</Observable>
 
-        <DVCSModule>
-            <param name="id" value="BMJ2012Model" />
-            <param name="beam_energy" value="5.77" />
-        </DVCSModule>
+		<DVCSModule>
+			<param name="id" value="BMJ2012Model" />
+			<param name="beam_energy" value="5.77" />
+		</DVCSModule>
 
-        <DVCSConvolCoeffFunctionModule>
-            <param name="id" value="DVCSCFFModel" />
-            <param name="qcd_order_type" value="LO" />
-        </DVCSConvolCoeffFunctionModule>
+		<DVCSConvolCoeffFunctionModule>
+			<param name="id" value="DVCSCFFModel" />
+			<param name="qcd_order_type" value="LO" />
+		</DVCSConvolCoeffFunctionModule>
 
-        <GPDModule>
-            <param name="id" value="GK11Model" />
-        </GPDModule>
-    </task>
+		<GPDModule>
+			<param name="id" value="GK11Model" />
+		</GPDModule>
+	</task>
 
 </scenario>

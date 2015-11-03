@@ -3,7 +3,7 @@
 #include <utility>
 
 Task::Task() :
-        BaseObject("Task") {
+        BaseObject("Task"), m_storeInDB(false) {
 }
 
 Task::~Task() {
@@ -65,4 +65,12 @@ std::vector<ParameterList> Task::getListOfLastAvailableParameterList(
     }
 
     return listOfParameterList;
+}
+
+bool Task::isStoreInDB() const {
+    return m_storeInDB;
+}
+
+void Task::setStoreInDB(bool storeInDb) {
+    m_storeInDB = storeInDb;
 }

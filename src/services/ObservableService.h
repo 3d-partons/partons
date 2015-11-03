@@ -13,7 +13,6 @@
  */
 
 #include <string>
-//#include <vector>
 
 #include "../beans/observable/ObservableKinematic.h"
 #include "../beans/observable/ObservableKinematicList.h"
@@ -55,8 +54,9 @@ public:
     virtual void computeTask(Task &task);
 
 private:
-    void computeDVCSObservableTask(Task &task);
-    void computeManyKinematicOneModelTask(Task &task);
+    //TODO improve object copy
+    ObservableResultList computeDVCSObservableTask(Task &task);
+    ObservableResultList computeManyKinematicOneModelTask(Task &task);
 
 };
 
