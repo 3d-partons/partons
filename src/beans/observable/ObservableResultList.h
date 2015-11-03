@@ -13,6 +13,7 @@
  */
 
 #include <stddef.h>
+#include <ctime>
 #include <string>
 #include <vector>
 
@@ -23,7 +24,7 @@ public:
     ObservableResultList();
     virtual ~ObservableResultList();
 
-    void add(const ObservableResult &observableResult);
+    void add(ObservableResult &observableResult);
     void add(const ObservableResultList &observableResultList);
 
     size_t size() const;
@@ -33,8 +34,13 @@ public:
 
     virtual std::string toString();
 
+    time_t getDateTime() const;
+    void setDateTime(time_t dateTime);
+
 private:
     std::vector<ObservableResult> m_observableResultList;
+
+    time_t m_dateTime;
 };
 
 #endif /* OBSERVABLE_RESULT_LIST_H */

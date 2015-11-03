@@ -12,11 +12,12 @@
  * @brief
  */
 
-#include <string>
+#include <ctime>
 
 class CommonDao {
 public:
-    static int insertComputation(const std::string &computationDate);
+    static int insertComputation(const time_t &dateTime);
+    static int getComputationIdByDateTime(const time_t &dateTime);
 };
 
 #endif /* COMMON_DAO_H */

@@ -2,13 +2,15 @@
 
 #include <sstream>
 
-ObservableResultList::ObservableResultList() {
+ObservableResultList::ObservableResultList() :
+        m_dateTime(time(0)) {
 }
 
 ObservableResultList::~ObservableResultList() {
 }
 
-void ObservableResultList::add(const ObservableResult& observableResult) {
+void ObservableResultList::add(ObservableResult& observableResult) {
+    observableResult.setDateTime(getDateTime());
     m_observableResultList.push_back(observableResult);
 }
 
@@ -39,4 +41,12 @@ ObservableResult& ObservableResultList::operator [](size_t n) {
 
 const ObservableResult& ObservableResultList::operator [](size_t n) const {
     return m_observableResultList[n];
+}
+
+time_t ObservableResultList::getDateTime() const {
+    return m_dateTime;
+}
+
+void ObservableResultList::setDateTime(time_t dateTime) {
+    m_dateTime = dateTime;
 }

@@ -4,19 +4,21 @@
 
 ObservableResult::ObservableResult() :
         m_observbleName("UNDEFINED"), m_value(0.), m_phi(0.), m_totalError(0.), m_observableType(
-                ObservableType::UNDEFINED) {
+                ObservableType::UNDEFINED), m_dateTime(time(0)) {
 }
 
 ObservableResult::ObservableResult(const std::string &observableName,
         double value) :
         m_observbleName(observableName), m_phi(0.), m_value(value), m_totalError(
-                0.), m_observableType(ObservableType::UNDEFINED) {
+                0.), m_observableType(ObservableType::UNDEFINED), m_dateTime(
+                time(0)) {
 }
 
 ObservableResult::ObservableResult(const std::string &observableName,
         double phi, double value) :
         m_observbleName(observableName), m_phi(phi), m_value(value), m_totalError(
-                0.), m_observableType(ObservableType::UNDEFINED) {
+                0.), m_observableType(ObservableType::UNDEFINED), m_dateTime(
+                time(0)) {
 }
 
 ObservableResult::~ObservableResult() {
@@ -98,4 +100,12 @@ void ObservableResult::setTotalError(double totalError) {
 
 void ObservableResult::setValue(double value) {
     m_value = value;
+}
+
+const time_t ObservableResult::getDateTime() const {
+    return m_dateTime;
+}
+
+void ObservableResult::setDateTime(time_t dateTime) {
+    m_dateTime = dateTime;
 }

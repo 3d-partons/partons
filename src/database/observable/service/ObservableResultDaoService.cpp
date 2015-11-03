@@ -22,15 +22,20 @@ int ObservableResultDaoService::insert(
     // Check if this kinematic already exists
     int kinematicId = m_observableKinematicDaoService.getKinematicId(
             observableResult.getKinematic());
-
     // If not, insert new entry in database and retrieve its id
     if (kinematicId == -1) {
         kinematicId = m_observableKinematicDaoService.insert(
                 observableResult.getKinematic());
     }
 
-    // insert new computation entry
-    int computationId = m_commonDaoService.insertComputation();
+    // Check if this computation date already exists and retrieve Id
+    int computationId = m_commonDaoService.getComputationId(
+            observableResult.getDateTime());
+    // If not, insert new entry in database and retrieve its id
+    if (computationId == -1) {
+        computationId = m_commonDaoService.insertComputation(
+                observableResult.getDateTime());
+    }
 
     return ObservableResultDao::insert(observableResult.getObservbleName(),
             observableResult.getValue(), observableResult.getPhi(),
