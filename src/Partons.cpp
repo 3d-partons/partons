@@ -112,3 +112,7 @@ void Partons::setScale(double MuF2, double MuR2) {
 Scale Partons::getScale() const {
     return m_scale;
 }
+
+LoggerManager* Partons::getLoggerManager() {
+    return m_pLoggerManager;
+}
