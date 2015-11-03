@@ -3,7 +3,7 @@
 <scenario id="10" date="" description="">
 
 	<task service="ObservableService" method="computeManyKinematicOneModel"
-		storeInDB="1">
+		storeInDB="0">
 		<ScaleModule>
 			<param name="id" value="LambdaQ2Scale" />
 			<param name="lambda" value="1" />
