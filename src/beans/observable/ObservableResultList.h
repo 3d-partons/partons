@@ -24,7 +24,7 @@ public:
     ObservableResultList();
     virtual ~ObservableResultList();
 
-    void add(ObservableResult &observableResult);
+    void add(ObservableResult observableResult);
     void add(const ObservableResultList &observableResultList);
 
     size_t size() const;

@@ -19,5 +19,6 @@ int ObservableKinematicDaoService::insert(
 int ObservableKinematicDaoService::getKinematicId(
         const ObservableKinematic& observableKinematic) const {
     return ObservableKinematicDao::select(observableKinematic.getXB(),
-            observableKinematic.getT(), observableKinematic.getQ2());
+            observableKinematic.getT(), observableKinematic.getQ2(),
+            observableKinematic.getListOfPhi_str());
 }

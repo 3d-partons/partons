@@ -19,7 +19,8 @@ public:
     static int insert(double xB, double t, double Q2,
             const std::string &listOfPhi);
 
-    static int select(double xB, double t, double Q2);
+    static int select(double xB, double t, double Q2,
+            const std::string &listOfPhi_str);
 };
 
 #endif /* OBSERVABLE_KINEMATIC_DAO_H */

@@ -9,7 +9,8 @@ ObservableResultList::ObservableResultList() :
 ObservableResultList::~ObservableResultList() {
 }
 
-void ObservableResultList::add(ObservableResult& observableResult) {
+// Copy object before add it to m_observableResultList ; we need to do it to set proper DateTime
+void ObservableResultList::add(ObservableResult observableResult) {
     observableResult.setDateTime(getDateTime());
     m_observableResultList.push_back(observableResult);
 }
@@ -27,7 +28,7 @@ std::string ObservableResultList::toString() {
 void ObservableResultList::add(
         const ObservableResultList& observableResultList) {
     for (size_t i = 0; i != observableResultList.size(); i++) {
-        m_observableResultList.push_back(observableResultList[i]);
+        add(observableResultList[i]);
     }
 }
 
