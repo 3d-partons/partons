@@ -37,13 +37,15 @@ int ObservableResultDaoService::insert(
                 observableResult.getDateTime());
     }
 
-    return ObservableResultDao::insert(observableResult.getObservbleName(),
+    ObservableResultDao::insert(observableResult.getObservbleName(),
             observableResult.getValue(), observableResult.getPhi(),
             observableResult.getStatError().getLowerBound(),
             observableResult.getStatError().getUpperBound(),
             observableResult.getSystError().getLowerBound(),
             observableResult.getSystError().getUpperBound(),
             observableResult.getTotalError(), kinematicId, computationId);
+
+    return computationId;
 }
 
 int ObservableResultDaoService::insert(

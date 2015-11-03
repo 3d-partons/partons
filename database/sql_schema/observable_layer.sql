@@ -1,8 +1,13 @@
 /* SQLITE syntax */
 
-CREATE TABLE collaboration (
+CREATE TABLE laboratory (
 id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
 name VARCHAR(255));
+
+CREATE TABLE collaboration (
+id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
+name VARCHAR(255),
+laboratory_id INTEGER);
 
 CREATE TABLE experiment (
 id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
@@ -34,11 +39,44 @@ total_error DOUBLE,
 observable_kinematic_id INTEGER NOT NULL,
 computation_id INTEGER NOT NULL);
 
-INSERT INTO collaboration (id, name) 
-VALUES ('0', 'HALLA');
+
+
+INSERT INTO laboratory (id, name) 
+VALUES ('0', 'CERN');
+
+INSERT INTO laboratory (id, name) 
+VALUES ('1', 'DESY');
+
+INSERT INTO laboratory (id, name) 
+VALUES ('2', 'Jefferson Lab');
+
+
+
+INSERT INTO collaboration (id, name, laboratory_id) 
+VALUES ('0', 'COMPASS', 0);
+
+INSERT INTO collaboration (id, name, laboratory_id) 
+VALUES ('1', 'H1', 1);
+
+INSERT INTO collaboration (id, name, laboratory_id) 
+VALUES ('2', 'HERMES', 1);
+
+INSERT INTO collaboration (id, name, laboratory_id) 
+VALUES ('3', 'HERA', 1);
+
+INSERT INTO collaboration (id, name, laboratory_id) 
+VALUES ('4', 'ZEUS', 1);
+
+INSERT INTO collaboration (id, name, laboratory_id) 
+VALUES ('5', 'CLAS', 2);
+
+INSERT INTO collaboration (id, name, laboratory_id) 
+VALUES ('6', 'HALL A', 2);
+
+
 
 INSERT INTO experiment (id, process, experiment_type, year, reference, collaboration_id) 
-VALUES ('0', 'ep2epgamma', 'fixed target', '2006', 'nucl-ex/0607029 | private tables', '0');
+VALUES ('0', 'ep2epgamma', 'fixed target', '2006', 'nucl-ex/0607029 | private tables', '6');
 
 INSERT INTO observable_kinematic (id, bin_id, xB, t, Q2, phi_list) 
 VALUES ('0', '0', '0.36', '-0.17', '2.3', '7.5;22.5;37.5;52.5;67.5;82.5;97.5');
