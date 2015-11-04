@@ -145,7 +145,6 @@
 			<param name="beam_helicity" value="1" />
 			<param name="beam_charge" value="-1" />
 			<param name="target_polarization" value="0|0|0" />
-
 		</Observable>
 
 		<DVCSModule>
@@ -185,7 +184,6 @@
 			<param name="beam_helicity" value="1" />
 			<param name="beam_charge" value="-1" />
 			<param name="target_polarization" value="0|0|0" />
-
 		</Observable>
 
 		<DVCSModule>

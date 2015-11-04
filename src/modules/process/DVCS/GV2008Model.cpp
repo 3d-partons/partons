@@ -45,12 +45,15 @@ void GV2008Model::initModule() {
     //init mother class
     DVCSModule::initModule();
 
+    // vectors reinitialized to avoid problems with fixed indices
     m_Q = sqrt(m_Q2);
+    m_powerOfQ = std::vector<double>();
     m_powerOfQ.push_back(m_Q2);
     m_powerOfQ.push_back(pow(m_Q, 3));
     m_powerOfQ.push_back(pow(m_Q, 4));
     m_powerOfQ.push_back(pow(m_Q, 5));
 
+    m_powerOfProtonMass = std::vector<double>();
     m_powerOfProtonMass.push_back(pow(PROTON_MASS, 2));
     m_powerOfProtonMass.push_back(pow(PROTON_MASS, 4));
     m_powerOfProtonMass.push_back(pow(PROTON_MASS, 6));

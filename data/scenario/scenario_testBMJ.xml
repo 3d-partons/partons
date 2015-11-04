@@ -16,7 +16,7 @@
 		<ObservableKinematic>
 			<param name="xB" value="0.1763" />
 			<param name="t" value="-0.1346" />
-			<param name="Q2" value="1.3651" />
+			<param name="Q2" value="2" />
 			<param name="phi" value="7.5|22.5|37.5" />
 		</ObservableKinematic>
 
@@ -25,12 +25,11 @@
 			<param name="beam_helicity" value="1" />
 			<param name="beam_charge" value="-1" />
 			<param name="target_polarization" value="0.5|0.2|0.3" />
-
 		</Observable>
 
 		<DVCSModule>
 			<param name="id" value="BMJ2012Model" />
-			<param name="beam_energy" value="5.77" />
+			<param name="beam_energy" value="100" />
 		</DVCSModule>
 
 		<DVCSConvolCoeffFunctionModule>
@@ -56,7 +55,7 @@
 		<ObservableKinematic>
 			<param name="xB" value="0.1763" />
 			<param name="t" value="-0.1346" />
-			<param name="Q2" value="1.3651" />
+			<param name="Q2" value="2" />
 			<param name="phi" value="7.5|22.5|37.5" />
 		</ObservableKinematic>
 
@@ -65,12 +64,11 @@
 			<param name="beam_helicity" value="1" />
 			<param name="beam_charge" value="-1" />
 			<param name="target_polarization" value="0.5|0.2|0.3" />
-
 		</Observable>
 
 		<DVCSModule>
 			<param name="id" value="GV2008Model" />
-			<param name="beam_energy" value="5.77" />
+			<param name="beam_energy" value="100" />
 		</DVCSModule>
 
 		<DVCSConvolCoeffFunctionModule>

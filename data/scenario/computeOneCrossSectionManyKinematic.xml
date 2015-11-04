@@ -14,16 +14,20 @@
 		</XiConverterModule>
 
 		<ObservableKinematic>
-			<param name="file" value="/home/debian/workspace/PARTONS/data/xB_t_Q2_listOfPhi.dat" />
+			<param name="file"
+				value="/home/debian/workspace/PARTONS/data/xB_t_Q2_listOfPhi.dat" />
 		</ObservableKinematic>
 
 		<Observable>
 			<param name="id" value="CrossSectionObservable" />
+			<param name="beam_helicity" value="1" />
+			<param name="beam_charge" value="-1" />
+			<param name="target_polarization" value="0.5|0.2|0.3" />
 		</Observable>
 
 		<DVCSModule>
 			<param name="id" value="BMJ2012Model" />
-			<param name="beam_energy" value="5.77" />
+			<param name="beam_energy" value="100" />
 		</DVCSModule>
 
 		<DVCSConvolCoeffFunctionModule>
