@@ -166,8 +166,6 @@ DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionService::computeWithGPDMode
                     kinematic.getT(), kinematic.getQ2(), kinematic.getMuF2(),
                     kinematic.getMuR2(), gpdType);
 
-    result.setKinematic(kinematic);
-
     return result;
 }
 

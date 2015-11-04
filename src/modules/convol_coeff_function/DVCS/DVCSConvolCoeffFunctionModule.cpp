@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <utility>
 
+#include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
 #include "../../../ModuleObjectFactory.h"
 #include "../../../utils/GenericType.h"
@@ -159,7 +160,9 @@ DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionModule::compute(
         }
         break;
     }
-    }
+}
+
+    dvcsConvolCoeffFunctionResult.setKinematic(DVCSConvolCoeffFunctionKinematic(m_xi, m_t, m_Q2, m_MuF2, m_MuR2));
 
     debug(__func__, dvcsConvolCoeffFunctionResult.toString());
 
