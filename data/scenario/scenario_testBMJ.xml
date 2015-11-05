@@ -5,7 +5,7 @@
 
 	<task service="ObservableService" method="computeDVCSObservable">
 		<ScaleModule>
-			<param name="id" value="LambdaQ2Scale" />
+			<param name="id" value="Q2Multiplier" />
 			<param name="lambda" value="1" />
 		</ScaleModule>
 
@@ -44,7 +44,7 @@
 
 	<task service="ObservableService" method="computeDVCSObservable">
 		<ScaleModule>
-			<param name="id" value="LambdaQ2Scale" />
+			<param name="id" value="Q2Multiplier" />
 			<param name="lambda" value="1" />
 		</ScaleModule>
 

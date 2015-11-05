@@ -1,4 +1,4 @@
-#include "LambdaQ2Scale.h"
+#include "Q2Multiplier.h"
 
 #include "../../beans/Scale.h"
 #include "../../BaseObjectRegistry.h"
@@ -6,25 +6,25 @@
 #include "../../utils/ParameterList.h"
 #include "../../utils/stringUtils/Formatter.h"
 
-const std::string LambdaQ2Scale::PARAMETER_NAME_LAMBDA = "lambda";
+const std::string Q2Multiplier::PARAMETER_NAME_LAMBDA = "lambda";
 
 // Initialise [class]::classId with a unique name.
-const unsigned int LambdaQ2Scale::classId =
+const unsigned int Q2Multiplier::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
-                new LambdaQ2Scale("LambdaQ2Scale"));
+                new Q2Multiplier("Q2Multiplier"));
 
-LambdaQ2Scale::LambdaQ2Scale(const std::string &className) :
+Q2Multiplier::Q2Multiplier(const std::string &className) :
         ScaleModule(className), m_lambda(1.) {
 }
 
-LambdaQ2Scale::~LambdaQ2Scale() {
+Q2Multiplier::~Q2Multiplier() {
 }
 
-LambdaQ2Scale* LambdaQ2Scale::clone() const {
-    return new LambdaQ2Scale(*this);
+Q2Multiplier* Q2Multiplier::clone() const {
+    return new Q2Multiplier(*this);
 }
 
-Scale LambdaQ2Scale::compute(double Q2) {
+Scale Q2Multiplier::compute(double Q2) {
     initModule();
     isModuleWellConfigured();
 
@@ -35,16 +35,16 @@ Scale LambdaQ2Scale::compute(double Q2) {
     return Scale(scale, scale);
 }
 
-LambdaQ2Scale::LambdaQ2Scale(const LambdaQ2Scale& other) :
+Q2Multiplier::Q2Multiplier(const Q2Multiplier& other) :
         ScaleModule(other) {
     m_lambda = other.m_lambda;
 }
 
-void LambdaQ2Scale::initModule() {
+void Q2Multiplier::initModule() {
     ScaleModule::initModule();
 }
 
-void LambdaQ2Scale::isModuleWellConfigured() {
+void Q2Multiplier::isModuleWellConfigured() {
     ScaleModule::isModuleWellConfigured();
 
     if (m_lambda == 1.) {
@@ -52,12 +52,12 @@ void LambdaQ2Scale::isModuleWellConfigured() {
     }
 }
 
-void LambdaQ2Scale::configure(ParameterList parameters) {
-    if (parameters.isAvailable(LambdaQ2Scale::PARAMETER_NAME_LAMBDA)) {
+void Q2Multiplier::configure(ParameterList parameters) {
+    if (parameters.isAvailable(Q2Multiplier::PARAMETER_NAME_LAMBDA)) {
         m_lambda = parameters.getLastAvailable().toDouble();
 
         info(__func__,
-                Formatter() << LambdaQ2Scale::PARAMETER_NAME_LAMBDA
+                Formatter() << Q2Multiplier::PARAMETER_NAME_LAMBDA
                         << " configured with value = " << m_lambda);
     }
 }

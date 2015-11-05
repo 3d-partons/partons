@@ -1,13 +1,13 @@
-#ifndef LAMBDA_Q2_SCALE_H
-#define LAMBDA_Q2_SCALE_H
+#ifndef Q2_MULTIPLIER_H
+#define Q2_MULTIPLIER_H
 
 /**
- * @file LambdaQ2Scale.h
+ * @file Q2Multiplier.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 28 October 2015
  * @version 1.0
  *
- * @class LambdaQ2Scale
+ * @class Q2Multiplier
  *
  * @brief
  */
@@ -16,16 +16,16 @@
 
 #include "ScaleModule.h"
 
-class LambdaQ2Scale: public ScaleModule {
+class Q2Multiplier: public ScaleModule {
 public:
     static const std::string PARAMETER_NAME_LAMBDA;
 
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
-    LambdaQ2Scale(const std::string &className);
-    virtual ~LambdaQ2Scale();
+    Q2Multiplier(const std::string &className);
+    virtual ~Q2Multiplier();
 
-    virtual LambdaQ2Scale* clone() const;
+    virtual Q2Multiplier* clone() const;
 
     /**
      * Provides a generic method to configure all types of modules by passing a Parameters object.
@@ -41,7 +41,7 @@ protected:
     /**
      * Copy constructor
      */
-    LambdaQ2Scale(const LambdaQ2Scale &other);
+    Q2Multiplier(const Q2Multiplier &other);
 
     virtual void initModule();
     virtual void isModuleWellConfigured();
@@ -50,4 +50,4 @@ private:
     double m_lambda;
 };
 
-#endif /* LAMBDA_Q2_SCALE_H */
+#endif /* Q2_MULTIPLIER_H */

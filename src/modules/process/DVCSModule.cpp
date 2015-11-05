@@ -9,7 +9,7 @@
 #include "../../utils/stringUtils/Formatter.h"
 #include "../convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
 #include "../observable/Observable.h"
-#include "../scale/LambdaQ2Scale.h"
+#include "../scale/Q2Multiplier.h"
 #include "../xb_to_xi/XBToXi.h"
 
 const std::string DVCSModule::PARAMETER_NAME_BEAM_ENERGY = "beam_energy";
@@ -62,8 +62,7 @@ DVCSModule::DVCSModule(const DVCSModule& other) :
 }
 
 void DVCSModule::init() {
-    m_pScaleModule = ModuleObjectFactory::newScaleModule(
-            LambdaQ2Scale::classId);
+    m_pScaleModule = ModuleObjectFactory::newScaleModule(Q2Multiplier::classId);
 
     m_pXiConverterModule = ModuleObjectFactory::newXiConverterModule(
             XBToXi::classId);
