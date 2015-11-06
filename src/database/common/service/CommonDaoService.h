@@ -14,7 +14,7 @@
 
 #include <ctime>
 
-#include "../../../BaseObject.h"
+#include "../dao/CommonDao.h"
 
 class CommonDaoService: public BaseObject {
 public:
@@ -23,6 +23,9 @@ public:
 
     int insertComputation(const time_t &dateTime) const;
     int getComputationId(const time_t &dateTime) const;
+
+private:
+    CommonDao m_commonDao;
 };
 
 #endif /* COMMON_DAO_SERVICE_H */

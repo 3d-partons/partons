@@ -14,10 +14,15 @@
 
 #include <ctime>
 
-class CommonDao {
+#include "../../../BaseObject.h"
+
+class CommonDao: public BaseObject {
 public:
-    static int insertComputation(const time_t &dateTime);
-    static int getComputationIdByDateTime(const time_t &dateTime);
+    CommonDao();
+    virtual ~CommonDao();
+
+    int insertComputation(const time_t &dateTime) const;
+    int getComputationIdByDateTime(const time_t &dateTime) const;
 };
 
 #endif /* COMMON_DAO_H */

@@ -9,6 +9,12 @@ id INTEGER NOT NULL PRIMARY KEY,
 short_name VARCHAR(10),
 long_name VARCHAR(255));
 
+CREATE TABLE quark_flavor (
+id INTEGER NOT NULL PRIMARY KEY,
+short_name VARCHAR(10),
+long_name VARCHAR(255));
+
+
 
 
 INSERT INTO gpd_type (id, short_name, long_name)
@@ -28,3 +34,27 @@ VALUES ('4', 'Ht', 'Ht');
 
 INSERT INTO gpd_type (id, short_name, long_name)
 VALUES ('5', 'Et', 'Et');
+
+
+
+INSERT INTO quark_flavor (id, short_name, long_name)
+VALUES ('0', 'UNDEFINED', 'UNDEFINED');
+
+INSERT INTO quark_flavor (id, short_name, long_name)
+VALUES ('1', 'u', 'UP');
+
+INSERT INTO quark_flavor (id, short_name, long_name)
+VALUES ('2', 'd', 'DOWN');
+
+INSERT INTO quark_flavor (id, short_name, long_name)
+VALUES ('3', 's', 'STRANGE');
+
+INSERT INTO quark_flavor (id, short_name, long_name)
+VALUES ('4', 'c', 'CHARM');
+
+INSERT INTO quark_flavor (id, short_name, long_name)
+VALUES ('5', 'b', 'BOTTOM');
+
+INSERT INTO quark_flavor (id, short_name, long_name)
+VALUES ('6', 't', 'TOP');
+

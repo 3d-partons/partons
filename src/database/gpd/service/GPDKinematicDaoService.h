@@ -12,7 +12,8 @@
  * @brief
  */
 
-#include "../../BaseObject.h"
+#include "../../../beans/gpd/GPDKinematic.h"
+#include "../dao/GPDKinematicDao.h"
 
 class GPDKinematic;
 
@@ -21,8 +22,11 @@ public:
     GPDKinematicDaoService();
     virtual ~GPDKinematicDaoService();
 
-    static int insert(const GPDKinematic &gpdKinematic);
-    static int select(const GPDKinematic &gpdKinematic);
+    int insert(const GPDKinematic &gpdKinematic) const;
+    int select(const GPDKinematic &gpdKinematic) const;
+
+private:
+    GPDKinematicDao m_GPDKinematicDao;
 };
 
 #endif /* GPD_KINEMATIC_DAO_SERVICE */
