@@ -16,6 +16,31 @@ ObservableResultDaoService::~ObservableResultDaoService() {
 }
 
 int ObservableResultDaoService::insert(
+        const ObservableResult &observableResult) const {
+
+    int result = -1;
+
+    // For multiple query it's better to use transaction to guarantee database's integrity and performance
+    QSqlDatabase::database().transaction();
+
+    try {
+
+        result = insertWithoutTransaction(observableResult);
+
+        // If there is no exception we can commit all query
+        QSqlDatabase::database().commit();
+
+    } catch (std::exception &e) {
+        error(__func__, e.what());
+
+        // Else return database in a stable state : n-1
+        QSqlDatabase::database().rollback();
+    }
+
+    return result;
+}
+
+int ObservableResultDaoService::insertWithoutTransaction(
         const ObservableResult& observableResult) const {
 
     // Check if this kinematic already exists
@@ -58,7 +83,7 @@ int ObservableResultDaoService::insert(
     try {
         // for each result
         for (size_t i = 0; i != observableResultList.size(); i++) {
-            result = insert(observableResultList[i]);
+            result = insertWithoutTransaction(observableResultList[i]);
         }
 
         // If there is no exception we can commit all query

@@ -33,6 +33,8 @@ int ConvolCoeffFunctionResultDaoService::insert(
         QSqlDatabase::database().commit();
 
     } catch (std::exception &e) {
+        error(__func__, e.what());
+
         // Else return database in a stable state : n-1
         QSqlDatabase::database().rollback();
     }

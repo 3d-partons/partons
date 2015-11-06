@@ -32,6 +32,9 @@ private:
 
     ObservableKinematicDaoService m_observableKinematicDaoService;
     CommonDaoService m_commonDaoService;
+
+    int insertWithoutTransaction(
+            const ObservableResult& observableResult) const;
 };
 
 #endif /* OBSERVABLE_RESULT_DAO_SERVICE_H */
