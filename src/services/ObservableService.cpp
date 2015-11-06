@@ -58,10 +58,17 @@ void ObservableService::computeTask(Task &task) {
         ObservableResultDaoService observableResultDaoService;
         int computationId = observableResultDaoService.insert(
                 observableResultList);
-        info(__func__,
-                Formatter()
-                        << "ObservableResultList object has been stored in database with computation_id = "
-                        << computationId);
+
+        if (computationId != -1) {
+            info(__func__,
+                    Formatter()
+                            << "ObservableResultList object has been stored in database with computation_id = "
+                            << computationId);
+        } else {
+            error(__func__,
+                    Formatter()
+                            << "ObservableResultList object : insertion into database failed");
+        }
     }
 }
 

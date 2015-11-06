@@ -47,7 +47,8 @@ public:
 
     virtual DVCSConvolCoeffFunctionResult computeWithGPDModel(
             DVCSConvolCoeffFunctionModule* dvcsConvolCoeffFunctionModule,
-            GPDModule* _pGPDModule, const DVCSConvolCoeffFunctionKinematic &kinematic,
+            GPDModule* _pGPDModule,
+            const DVCSConvolCoeffFunctionKinematic &kinematic,
             GPDType::Type gpdType = GPDType::ALL);
 
     virtual DVCSConvolCoeffFunctionResultList computeListWithGPDModel(
@@ -66,6 +67,10 @@ public:
 //    std::vector<CFFInputData> getListOfCFFInputDataFromFile(
 //            const std::string & filePath);
 
+private:
+    //TODO improve object copy
+    DVCSConvolCoeffFunctionResult computeWithGPDModelTask(Task &task);
+    DVCSConvolCoeffFunctionResultList computeListWithGPDModelTask(Task &task);
 };
 
 #endif /* DVCS_CONVOL_COEFF_FUNCTION_SERVICE_H */
