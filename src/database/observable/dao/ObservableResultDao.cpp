@@ -1,15 +1,24 @@
 #include "ObservableResultDao.h"
 
+#include <Qt/qsqlerror.h>
 #include <Qt/qsqlquery.h>
 #include <Qt/qvariant.h>
 #include <QtCore/qstring.h>
 
+#include "../../../utils/stringUtils/Formatter.h"
 #include "../../DatabaseManager.h"
+
+ObservableResultDao::ObservableResultDao() :
+        BaseObject("ObservableResultDao") {
+}
+
+ObservableResultDao::~ObservableResultDao() {
+}
 
 int ObservableResultDao::insert(const std::string& observableName,
         double observableValue, double phi, double statErrorLB,
         double statErrorUB, double systErrorLB, double systErrorUB,
-        double errorTotal, int kinematicId, int computationId) {
+        double errorTotal, int kinematicId, int computationId) const {
 
     int result = -1;
     QSqlQuery query(DatabaseManager::getInstance()->getDb());
@@ -30,6 +39,8 @@ int ObservableResultDao::insert(const std::string& observableName,
 
     if (query.exec()) {
         result = query.lastInsertId().toInt();
+    } else {
+        error(__func__, Formatter() << query.lastError().text().toStdString());
     }
 
     query.clear();

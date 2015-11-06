@@ -7,7 +7,6 @@
 #include "../../../beans/observable/ObservableResult.h"
 #include "../../../beans/observable/ObservableResultList.h"
 #include "../../../utils/math/ErrorBar.h"
-#include "../dao/ObservableResultDao.h"
 
 ObservableResultDaoService::ObservableResultDaoService() :
         BaseObject("ObservableResultDaoService") {
@@ -38,7 +37,7 @@ int ObservableResultDaoService::insert(
     }
 
     //Then store observableResult in database
-    ObservableResultDao::insert(observableResult.getObservbleName(),
+    m_observableResultDao.insert(observableResult.getObservbleName(),
             observableResult.getValue(), observableResult.getPhi(),
             observableResult.getStatError().getLowerBound(),
             observableResult.getStatError().getUpperBound(),

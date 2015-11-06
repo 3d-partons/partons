@@ -14,12 +14,17 @@
 
 #include <string>
 
-class ObservableResultDao {
+#include "../../../BaseObject.h"
+
+class ObservableResultDao: public BaseObject {
 public:
-    static int insert(const std::string &observableName, double observableValue, double phi,
-            double statErrorLB, double statErrorUB, double systErrorLB,
-            double systErrorUB, double errorTotal, int kinematicId,
-            int computationId);
+    ObservableResultDao();
+    virtual ~ObservableResultDao();
+
+    int insert(const std::string &observableName, double observableValue,
+            double phi, double statErrorLB, double statErrorUB,
+            double systErrorLB, double systErrorUB, double errorTotal,
+            int kinematicId, int computationId) const;
 };
 
 #endif /* OBSERVABLE_RESULT_DAO_H */

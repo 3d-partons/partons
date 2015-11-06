@@ -14,13 +14,18 @@
 
 #include <string>
 
-class ObservableKinematicDao {
-public:
-    static int insert(double xB, double t, double Q2,
-            const std::string &listOfPhi);
+#include "../../../BaseObject.h"
 
-    static int select(double xB, double t, double Q2,
-            const std::string &listOfPhi_str);
+class ObservableKinematicDao: public BaseObject {
+public:
+    ObservableKinematicDao();
+    virtual ~ObservableKinematicDao();
+
+    int insert(double xB, double t, double Q2,
+            const std::string &listOfPhi) const;
+
+    int select(double xB, double t, double Q2,
+            const std::string &listOfPhi_str) const;
 };
 
 #endif /* OBSERVABLE_KINEMATIC_DAO_H */

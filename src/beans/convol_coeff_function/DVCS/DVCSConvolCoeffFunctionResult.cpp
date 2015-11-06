@@ -5,13 +5,14 @@
 #include "../../../utils/stringUtils/Formatter.h"
 
 DVCSConvolCoeffFunctionResult::DVCSConvolCoeffFunctionResult() :
-        BaseObject("DVCSConvolCoeffFunctionResult") {
+        BaseObject("DVCSConvolCoeffFunctionResult"), Computation() {
 
 }
 
 DVCSConvolCoeffFunctionResult::DVCSConvolCoeffFunctionResult(
         DVCSConvolCoeffFunctionKinematic kinematic) :
-        BaseObject("DVCSConvolCoeffFunctionResult"), m_kinematic(kinematic) {
+        BaseObject("DVCSConvolCoeffFunctionResult"), Computation(), m_kinematic(
+                kinematic) {
 }
 
 DVCSConvolCoeffFunctionResult::~DVCSConvolCoeffFunctionResult() {
@@ -66,4 +67,13 @@ bool DVCSConvolCoeffFunctionResult::isAvailable(GPDType gpdType) {
 
 std::complex<double> DVCSConvolCoeffFunctionResult::getLastAvailable() {
     return m_it->second;
+}
+
+const std::map<GPDType::Type, std::complex<double> >& DVCSConvolCoeffFunctionResult::getResultsByGpdType() const {
+    return m_resultsByGPDType;
+}
+
+void DVCSConvolCoeffFunctionResult::setResultsByGpdType(
+        const std::map<GPDType::Type, std::complex<double> >& resultsByGpdType) {
+    m_resultsByGPDType = resultsByGpdType;
 }

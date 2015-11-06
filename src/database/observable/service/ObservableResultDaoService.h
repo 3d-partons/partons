@@ -13,6 +13,7 @@
  */
 
 #include "../../common/service/CommonDaoService.h"
+#include "../dao/ObservableResultDao.h"
 #include "ObservableKinematicDaoService.h"
 
 class ObservableResultList;
@@ -27,6 +28,8 @@ public:
     int insert(const ObservableResultList &observableResultList);
 
 private:
+    ObservableResultDao m_observableResultDao;
+
     ObservableKinematicDaoService m_observableKinematicDaoService;
     CommonDaoService m_commonDaoService;
 };

@@ -2,14 +2,17 @@
 
 #include "../../../utils/stringUtils/Formatter.h"
 
-DVCSConvolCoeffFunctionResultList::DVCSConvolCoeffFunctionResultList() {
+DVCSConvolCoeffFunctionResultList::DVCSConvolCoeffFunctionResultList() :
+        Computation() {
 }
 
 DVCSConvolCoeffFunctionResultList::~DVCSConvolCoeffFunctionResultList() {
 }
 
+// Copy object before add it to m_results ; we need to do it to set proper DateTime
 void DVCSConvolCoeffFunctionResultList::add(
-        const DVCSConvolCoeffFunctionResult &result) {
+        DVCSConvolCoeffFunctionResult result) {
+    result.setDateTime(getDateTime());
     m_results.push_back(result);
 }
 
@@ -18,7 +21,7 @@ const DVCSConvolCoeffFunctionResult& DVCSConvolCoeffFunctionResultList::get(
     return m_results[index];
 }
 
-size_t DVCSConvolCoeffFunctionResultList::getSize() const {
+size_t DVCSConvolCoeffFunctionResultList::size() const {
     return m_results.size();
 }
 
@@ -34,4 +37,14 @@ std::string DVCSConvolCoeffFunctionResultList::toString() {
     }
 
     return formatter.str();
+}
+
+DVCSConvolCoeffFunctionResult& DVCSConvolCoeffFunctionResultList::operator [](
+        size_t n) {
+    return m_results[n];
+}
+
+const DVCSConvolCoeffFunctionResult& DVCSConvolCoeffFunctionResultList::operator [](
+        size_t n) const {
+    return m_results[n];
 }

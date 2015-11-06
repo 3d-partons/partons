@@ -1,12 +1,16 @@
-/*
- * ObservableType.h
- *
- *  Created on: Sep 28, 2015
- *      Author: debian
- */
+#ifndef OBSERVABLE_TYPE_H
+#define OBSERVABLE_TYPE_H
 
-#ifndef OBSERVABLETYPE_H_
-#define OBSERVABLETYPE_H_
+/**
+ * @file ObservableResult.h
+ * @author: Bryan BERTHOU (SPhN / CEA Saclay)
+ * @date 28 September 2015
+ * @version 1.0
+ *
+ * @class ObservableResult
+ *
+ * @brief
+ */
 
 #include <string>
 
@@ -34,4 +38,4 @@ private:
     ObservableType::Type m_type;
 };
 
-#endif /* OBSERVABLETYPE_H_ */
+#endif /* OBSERVABLE_TYPE_H */

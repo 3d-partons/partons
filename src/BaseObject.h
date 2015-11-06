@@ -66,13 +66,17 @@ protected:
     void throwException(const std::string functionName,
             const std::string errorMessage) const;
 
-    void info(const std::string &functionName, const std::string &message);
+    void info(const std::string &functionName,
+            const std::string &message) const;
 
-    void debug(const std::string &functionName, const std::string &message);
+    void debug(const std::string &functionName,
+            const std::string &message) const;
 
-    void warn(const std::string &functionName, const std::string &message);
+    void warn(const std::string &functionName,
+            const std::string &message) const;
 
-    void error(const std::string &functionName, const std::string &message);
+    void error(const std::string &functionName,
+            const std::string &message) const;
 
 private:
     LoggerManager* m_pLoggerManager; ///< Pointer to LoggerManager class

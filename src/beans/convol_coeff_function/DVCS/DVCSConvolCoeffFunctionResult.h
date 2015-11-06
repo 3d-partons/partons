@@ -16,10 +16,11 @@
 #include <map>
 #include <string>
 
+#include "../../Computation.h"
 #include "../../gpd/GPDType.h"
 #include "DVCSConvolCoeffFunctionKinematic.h"
 
-class DVCSConvolCoeffFunctionResult: public BaseObject {
+class DVCSConvolCoeffFunctionResult: public BaseObject, public Computation {
 public:
     DVCSConvolCoeffFunctionResult();
     DVCSConvolCoeffFunctionResult(DVCSConvolCoeffFunctionKinematic kinematic);
@@ -37,6 +38,9 @@ public:
 
     const DVCSConvolCoeffFunctionKinematic& getKinematic() const;
     void setKinematic(const DVCSConvolCoeffFunctionKinematic& kinematic);
+    const std::map<GPDType::Type, std::complex<double> >& getResultsByGpdType() const;
+    void setResultsByGpdType(
+            const std::map<GPDType::Type, std::complex<double> >& resultsByGpdType);
 
 private:
     DVCSConvolCoeffFunctionKinematic m_kinematic;

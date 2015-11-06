@@ -3,7 +3,7 @@
 #include <sstream>
 
 ObservableResultList::ObservableResultList() :
-        m_dateTime(time(0)) {
+        Computation() {
 }
 
 ObservableResultList::~ObservableResultList() {
@@ -25,8 +25,7 @@ std::string ObservableResultList::toString() {
     return os.str();
 }
 
-void ObservableResultList::add(
-        const ObservableResultList& observableResultList) {
+void ObservableResultList::add(ObservableResultList observableResultList) {
     for (size_t i = 0; i != observableResultList.size(); i++) {
         add(observableResultList[i]);
     }
@@ -42,12 +41,4 @@ ObservableResult& ObservableResultList::operator [](size_t n) {
 
 const ObservableResult& ObservableResultList::operator [](size_t n) const {
     return m_observableResultList[n];
-}
-
-time_t ObservableResultList::getDateTime() const {
-    return m_dateTime;
-}
-
-void ObservableResultList::setDateTime(time_t dateTime) {
-    m_dateTime = dateTime;
 }

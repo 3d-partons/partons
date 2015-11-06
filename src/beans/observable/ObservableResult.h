@@ -12,14 +12,14 @@
  * @brief
  */
 
-#include <ctime>
 #include <string>
 
 #include "../../utils/math/ErrorBar.h"
+#include "../Computation.h"
 #include "ObservableKinematic.h"
 #include "ObservableType.h"
 
-class ObservableResult {
+class ObservableResult: public Computation {
 public:
     ObservableResult();
     ObservableResult(const std::string &observableName, double value);
@@ -45,8 +45,6 @@ public:
     const ErrorBar& getSystError() const;
     double getTotalError() const;
     double getValue() const;
-    const time_t getDateTime() const;
-    void setDateTime(time_t dateTime);
 
 private:
     std::string m_observbleName;
@@ -61,8 +59,6 @@ private:
     ObservableKinematic m_kinematic;
 
     ObservableType::Type m_observableType;
-
-    time_t m_dateTime;
 };
 
 #endif /* OBSERVABLE_RESULT_H */

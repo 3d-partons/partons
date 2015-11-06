@@ -18,18 +18,21 @@
 
 #include "DVCSConvolCoeffFunctionResult.h"
 
-class DVCSConvolCoeffFunctionResultList {
+class DVCSConvolCoeffFunctionResultList: public Computation {
 public:
     DVCSConvolCoeffFunctionResultList();
     virtual ~DVCSConvolCoeffFunctionResultList();
 
-    void add(const DVCSConvolCoeffFunctionResult &result);
+    void add(DVCSConvolCoeffFunctionResult result);
     const DVCSConvolCoeffFunctionResult& get(unsigned int index) const;
 
-    size_t getSize() const;
+    size_t size() const;
     const DVCSConvolCoeffFunctionResult& getUniqueResult();
 
     virtual std::string toString();
+
+    DVCSConvolCoeffFunctionResult& operator[](size_t n);
+    const DVCSConvolCoeffFunctionResult& operator[](size_t n) const;
 
 private:
     std::vector<DVCSConvolCoeffFunctionResult> m_results;
