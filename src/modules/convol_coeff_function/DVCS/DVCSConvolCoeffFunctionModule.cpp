@@ -181,6 +181,12 @@ std::complex<double> DVCSConvolCoeffFunctionModule::computePolarized() {
                     + getClassName());
 }
 
+std::complex<double> DVCSConvolCoeffFunctionModule::computeCFF() {
+    throw std::runtime_error(
+                "[CFFModule::computeCFF] check your child implementation : "
+                        + getClassName());
+}
+
 void DVCSConvolCoeffFunctionModule::preCompute(const double xi, const double t,
         const double Q2, const double MuF2, const double MuR2,
         GPDType::Type gpdComputeType) {

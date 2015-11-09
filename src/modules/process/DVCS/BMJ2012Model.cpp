@@ -53,7 +53,7 @@ BMJ2012Model::BMJ2012Model(const std::string &className) :
     m_dS.assign(3,
             std::vector<std::vector<double> >(3, std::vector<double>(4, 0.)));
     m_cF.assign(3, std::vector<double>(3, 0.));
-    m_CFF.assign(4, std::vector<std::complex<double> >(3, (0., 0.)));
+    m_CFF.assign(4, std::vector<std::complex<double> >(3, 0.));
 }
 
 /*-------------------------------------- Destructor ------------------------------------*/
@@ -108,7 +108,7 @@ void BMJ2012Model::initModule() {
     //init mother class
     DVCSModule::initModule();
 
-    m_xB2 = pow(m_xB, 2);
+    m_xB2 = m_xB * m_xB;
     m_Q[0] = sqrt(m_Q2);
     m_Q[1] = m_Q2;
     m_Q[2] = m_Q[0] * m_Q2;
@@ -1199,7 +1199,6 @@ std::complex<double> BMJ2012Model::C_I(unsigned int S, int a, int b,
     double F1PlusF2 = m_F1 + m_F2;
     double xBF1PlusF2 = m_xB * F1PlusF2 / m_xBtQ2[0];
 
-    double tQ2 = m_t / m_Q2;
     if (S == 0) {
         if (VA == "V") {
             return xBF1PlusF2 * (H + E);
@@ -1283,7 +1282,7 @@ std::complex<double> BMJ2012Model::C_I(unsigned int S, unsigned int n, int a,
         return 0.;
     }
 
-    if (n >= 0 and n <= 4) {
+    if (n < 4) {
         if (S == 0 or S == 3) {
             return m_C[i][0][n] * C_I(S, a, b, "")
                     + m_C[i][1][n] * C_I(S, a, b, "V")
@@ -1317,7 +1316,7 @@ std::complex<double> BMJ2012Model::S_I(unsigned int S, unsigned int n, int a,
         return 0.;
     }
 
-    if (n >= 0 and n <= 4) {
+    if (n < 4) {
         if (S == 0 or S == 3) {
             return m_S[i][0][n] * C_I(S, a, b, "")
                     + m_S[i][1][n] * C_I(S, a, b, "V")

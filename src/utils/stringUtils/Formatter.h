@@ -17,7 +17,7 @@ class Formatter {
 public:
     Formatter() {
         // use to print full precision double
-        m_stream << std::setprecision(15);
+        m_stream << std::setprecision(17);
     }
 
     ~Formatter() {

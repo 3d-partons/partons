@@ -27,12 +27,13 @@
 
 		<DVCSModule>
 			<param name="id" value="BMJ2012Model" />
-			<param name="beam_energy" value="100" />
+			<param name="beam_energy" value="400" />
 		</DVCSModule>
 
 		<DVCSConvolCoeffFunctionModule>
-			<param name="id" value="DVCSCFFModel" />
+			<param name="id" value="DVCSConstantCFFModel" />
 			<param name="qcd_order_type" value="LO" />
+			<param name="cff_values" value="1|0|0|1" />
 		</DVCSConvolCoeffFunctionModule>
 
 		<GPDModule>

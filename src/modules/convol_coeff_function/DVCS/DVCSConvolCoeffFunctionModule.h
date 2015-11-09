@@ -47,6 +47,7 @@ public:
 
     virtual std::complex<double> computeUnpolarized();
     virtual std::complex<double> computePolarized();
+    virtual std::complex<double> computeCFF();
 
     // ##### GETTERS & SETTERS #####
 
