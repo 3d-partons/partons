@@ -33,6 +33,8 @@ public:
 
     virtual std::string toString();
 
+    void printTofileAsList(const std::string &filePath);
+
 private:
     std::vector<ObservableResult> m_observableResultList;
 };

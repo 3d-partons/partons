@@ -37,10 +37,7 @@ public:
      */
     static LoggerManager* getInstance();
 
-    /**
-     * Default destructor
-     */
-    ~LoggerManager();
+    void delete_();
 
     void init();
 
@@ -77,6 +74,11 @@ private:
      * Private default constructor for a unique instance
      */
     LoggerManager();
+
+    /**
+     * Default destructor
+     */
+    ~LoggerManager();
 
     pthread_mutex_t m_mutex;
 

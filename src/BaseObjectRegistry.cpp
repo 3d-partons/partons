@@ -23,7 +23,9 @@ BaseObjectRegistry::~BaseObjectRegistry() {
             (m_itBaseObjectList->second) = 0;
         }
     }
+}
 
+void BaseObjectRegistry::delete_() {
     if (m_pInstance) {
         delete m_pInstance;
         m_pInstance = 0;

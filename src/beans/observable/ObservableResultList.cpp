@@ -2,6 +2,9 @@
 
 #include <sstream>
 
+#include "../../utils/fileUtils/FileUtils.h"
+#include "../../utils/stringUtils/Formatter.h"
+
 ObservableResultList::ObservableResultList() :
         Computation() {
 }
@@ -41,4 +44,14 @@ ObservableResult& ObservableResultList::operator [](size_t n) {
 
 const ObservableResult& ObservableResultList::operator [](size_t n) const {
     return m_observableResultList[n];
+}
+
+void ObservableResultList::printTofileAsList(const std::string &filePath) {
+    Formatter formatter;
+
+    for (size_t i = 0; i != m_observableResultList.size(); i++) {
+        formatter << m_observableResultList[i].getValue() << ";";
+    }
+
+    FileUtils::writef(filePath, formatter.str());
 }

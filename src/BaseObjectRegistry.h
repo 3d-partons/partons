@@ -24,10 +24,7 @@ public:
      */
     static BaseObjectRegistry* getInstance();
 
-    /**
-     * Default destructor
-     */
-    virtual ~BaseObjectRegistry();
+    void delete_();
 
     /**
      * Store a unique instance of a module identified by a unique string character key.
@@ -64,6 +61,11 @@ private:
      * Private default constructor for a unique instance
      */
     BaseObjectRegistry();
+
+    /**
+     * Default destructor
+     */
+    virtual ~BaseObjectRegistry();
 
     bool isAvailable(const std::string &className);
 

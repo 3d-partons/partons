@@ -1,7 +1,7 @@
 #ifndef GPD_RESULT_DAO_SERVICE
 #define GPD_RESULT_DAO_SERVICE
 
-#include "../../dao/GPDResultDao.h"
+#include "../dao/GPDResultDao.h"
 #include "GPDKinematicDaoService.h"
 
 class GPDResult;

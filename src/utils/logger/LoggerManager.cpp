@@ -38,12 +38,14 @@ LoggerManager::~LoggerManager() {
         }
     }
 
+    pthread_mutex_destroy(&m_mutex);
+}
+
+void LoggerManager::delete_() {
     if (m_pInstance != 0) {
         delete m_pInstance;
         m_pInstance = 0;
     }
-
-    pthread_mutex_destroy(&m_mutex);
 }
 
 void LoggerManager::init() {

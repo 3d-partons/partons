@@ -89,15 +89,15 @@ void Partons::close() {
     DatabaseManager::getInstance()->close();
 
     // Finally delete LoggerManager pointer
-    delete m_pLoggerManager;
+    m_pLoggerManager->delete_();
     m_pLoggerManager = 0;
 
     // Delete all objects instantiated by the factory
-    delete m_pBaseObjectFactory;
+    m_pBaseObjectFactory->delete_();
     m_pBaseObjectFactory = 0;
 
     // Delete all objects stored in the registry
-    delete m_pBaseObjectRegistry;
+    m_pBaseObjectRegistry->delete_();
     m_pBaseObjectRegistry = 0;
 }
 

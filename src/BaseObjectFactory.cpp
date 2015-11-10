@@ -23,7 +23,9 @@ BaseObjectFactory::~BaseObjectFactory() {
             (it->second) = 0;
         }
     }
+}
 
+void BaseObjectFactory::delete_() {
     if (m_pInstance) {
         delete m_pInstance;
         m_pInstance = 0;
@@ -63,3 +65,4 @@ void BaseObjectFactory::removeFromStore(unsigned int baseObjectUniqueId) {
         m_pInstantiatedObject.erase(baseObjectUniqueId);
     }
 }
+

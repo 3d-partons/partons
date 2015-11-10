@@ -26,10 +26,7 @@ public:
      */
     static BaseObjectFactory* getInstance();
 
-    /**
-     * Default destructor
-     */
-    virtual ~BaseObjectFactory();
+    void delete_();
 
     BaseObject* newBaseObject(unsigned int classId);
     BaseObject* newBaseObject(const std::string &className);
@@ -46,6 +43,11 @@ private:
      * Private default constructor for a unique instance
      */
     BaseObjectFactory();
+
+    /**
+     * Default destructor
+     */
+    virtual ~BaseObjectFactory();
 
     /// Store BaseObject pointer created by the factory; used at the end of the program to delete orphan pointer.
     std::map<unsigned int, BaseObject*> m_pInstantiatedObject;

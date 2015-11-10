@@ -32,10 +32,7 @@ public:
      */
     static ScenarioManager* getInstance();
 
-    /**
-     * Default destructor
-     */
-    virtual ~ScenarioManager();
+    void delete_();
 
     void playScenario(const std::string &scenarioFilePath);
 
@@ -50,6 +47,11 @@ private:
      * Private default constructor for a unique instance of this class
      */
     ScenarioManager();
+
+    /**
+     * Default destructor
+     */
+    virtual ~ScenarioManager();
 
     Scenario m_scenario;
 

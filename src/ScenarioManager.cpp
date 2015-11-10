@@ -26,6 +26,9 @@ ScenarioManager* ScenarioManager::getInstance() {
 }
 
 ScenarioManager::~ScenarioManager() {
+}
+
+void ScenarioManager::delete_() {
     if (pInstance) {
         delete pInstance;
         pInstance = 0;
