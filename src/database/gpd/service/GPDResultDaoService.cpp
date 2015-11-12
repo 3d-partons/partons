@@ -58,7 +58,7 @@ int GPDResultDaoService::insertWithoutTransaction(
 
     // Retrieve module_id from moduleClassName
     int moduleId = ModuleDaoService::getModuleIdByClassName(
-            gpdResult.getComputedByGpdModuleId());
+            gpdResult.getComputationModuleName());
 
     // Insert new gpd_result entry in database
     int gpdResultId = m_gpdResultDao.insert(moduleId, gpdKinematicId);

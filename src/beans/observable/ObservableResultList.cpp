@@ -6,7 +6,7 @@
 #include "../../utils/stringUtils/Formatter.h"
 
 ObservableResultList::ObservableResultList() :
-        Computation() {
+        m_computationDateTime(time(0)) {
 }
 
 ObservableResultList::~ObservableResultList() {
@@ -14,7 +14,7 @@ ObservableResultList::~ObservableResultList() {
 
 // Copy object before add it to m_observableResultList ; we need to do it to set proper DateTime
 void ObservableResultList::add(ObservableResult observableResult) {
-    observableResult.setDateTime(getDateTime());
+    observableResult.setComputationDateTime(m_computationDateTime);
     m_observableResultList.push_back(observableResult);
 }
 

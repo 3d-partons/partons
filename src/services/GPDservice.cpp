@@ -175,9 +175,6 @@ GPDResult GPDService::computeGPDModelRestrictedByGPDType(
             gpdKinematic.getXi(), gpdKinematic.getT(), gpdKinematic.getMuF2(),
             gpdKinematic.getMuR2(), gpdType);
 
-    gpdResult.setKinematic(gpdKinematic);
-    gpdResult.setComputedByGpdModuleId(pGPDModule->getClassName());
-
     return gpdResult;
 }
 
@@ -189,9 +186,6 @@ GPDResult GPDService::computeGPDModelWithEvolution(
     GPDResult gpdResult = pGPDModule->compute(gpdKinematic.getX(),
             gpdKinematic.getXi(), gpdKinematic.getT(), gpdKinematic.getMuF2(),
             gpdKinematic.getMuR2(), gpdType);
-
-    gpdResult.setKinematic(gpdKinematic);
-    gpdResult.setComputedByGpdModuleId(pGPDModule->getClassName());
 
     return gpdResult;
 }

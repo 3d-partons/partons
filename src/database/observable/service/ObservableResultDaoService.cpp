@@ -54,11 +54,11 @@ int ObservableResultDaoService::insertWithoutTransaction(
 
     // Check if this computation date already exists and retrieve Id
     int computationId = m_commonDaoService.getComputationId(
-            observableResult.getDateTime());
+            observableResult.getComputationDateTime());
     // If not, insert new entry in database and retrieve its id
     if (computationId == -1) {
         computationId = m_commonDaoService.insertComputation(
-                observableResult.getDateTime());
+                observableResult.getComputationDateTime());
     }
 
     //Then store observableResult in database
@@ -68,7 +68,9 @@ int ObservableResultDaoService::insertWithoutTransaction(
             observableResult.getStatError().getUpperBound(),
             observableResult.getSystError().getLowerBound(),
             observableResult.getSystError().getUpperBound(),
-            observableResult.getTotalError(), kinematicId, computationId);
+            observableResult.getTotalError(),
+            observableResult.getComputationModuleName(), kinematicId,
+            computationId);
 
     return computationId;
 }

@@ -13,12 +13,13 @@
  */
 
 #include <stddef.h>
+#include <ctime>
 #include <string>
 #include <vector>
 
 #include "ObservableResult.h"
 
-class ObservableResultList: public Computation {
+class ObservableResultList {
 public:
     ObservableResultList();
     virtual ~ObservableResultList();
@@ -37,6 +38,8 @@ public:
 
 private:
     std::vector<ObservableResult> m_observableResultList;
+
+    time_t m_computationDateTime;
 };
 
 #endif /* OBSERVABLE_RESULT_LIST_H */

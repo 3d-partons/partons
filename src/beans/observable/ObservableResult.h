@@ -15,11 +15,11 @@
 #include <string>
 
 #include "../../utils/math/ErrorBar.h"
-#include "../Computation.h"
+#include "../Result.h"
 #include "ObservableKinematic.h"
 #include "ObservableType.h"
 
-class ObservableResult: public Computation {
+class ObservableResult: public Result {
 public:
     ObservableResult();
     ObservableResult(const std::string &observableName, double value);

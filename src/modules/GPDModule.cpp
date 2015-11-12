@@ -3,9 +3,9 @@
 #include <stdexcept>
 #include <utility>
 
+#include "../beans/gpd/GPDKinematic.h"
 #include "../beans/gpd/GPDResult.h"
 #include "../utils/GenericType.h"
-//#include "../utils/logger/LoggerManager.h"
 #include "../utils/ParameterList.h"
 #include "../utils/stringUtils/Formatter.h"
 #include "evolution/GPDEvolutionModule.h"
@@ -146,6 +146,9 @@ GPDResult GPDModule::compute(double x, double xi, double t, double MuF2,
         break;
     }
     }
+
+    gpdResult.setComputationModuleName(getClassName());
+    gpdResult.setKinematic(GPDKinematic(x, xi, t, MuF2, MuR2));
 
     debug(__func__, Formatter() << gpdResult.toString());
 

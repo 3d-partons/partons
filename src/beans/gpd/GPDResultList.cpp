@@ -1,11 +1,9 @@
 #include "GPDResultList.h"
 
 #include <sstream>
-//#include <vector>
 
-class GPDResult;
-
-GPDResultList::GPDResultList() {
+GPDResultList::GPDResultList() :
+        m_computationDateTime(time(0)) {
 
 }
 
@@ -13,7 +11,9 @@ GPDResultList::~GPDResultList() {
 
 }
 
-void GPDResultList::add(const GPDResult &gpdResult) {
+//TODO improve copy object
+void GPDResultList::add(GPDResult gpdResult) {
+    gpdResult.setComputationDateTime(m_computationDateTime);
     m_gpdResults.push_back(gpdResult);
 }
 

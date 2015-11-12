@@ -45,6 +45,7 @@ ObservableResultList Observable::compute(double xB, double t, double Q2,
 
         //TODO improve
         ObservableResult observableResult(getClassName(), compute());
+        observableResult.setComputationModuleName(m_pProcess->getClassName());
         observableResult.setObservableType(m_observableType);
         observableResult.setKinematic(
                 ObservableKinematic(xB, t, Q2, listOfPhi));
@@ -61,6 +62,7 @@ ObservableResultList Observable::compute(double xB, double t, double Q2,
                         compute(m_pProcess,
                                 MathUtils::convertDegreeToRadian(
                                         listOfPhi[i])));
+                observableResult.setComputationModuleName(m_pProcess->getClassName());
                 observableResult.setObservableType(m_observableType);
                 observableResult.setKinematic(
                         ObservableKinematic(xB, t, Q2, listOfPhi));

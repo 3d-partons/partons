@@ -24,7 +24,8 @@ public:
     int insert(const std::string &observableName, double observableValue,
             double phi, double statErrorLB, double statErrorUB,
             double systErrorLB, double systErrorUB, double errorTotal,
-            int kinematicId, int computationId) const;
+            const std::string &computationModuleName, int kinematicId,
+            int computationId) const;
 };
 
 #endif /* OBSERVABLE_RESULT_DAO_H */

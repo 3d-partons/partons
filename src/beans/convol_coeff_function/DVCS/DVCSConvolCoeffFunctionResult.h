@@ -16,11 +16,12 @@
 #include <map>
 #include <string>
 
-#include "../../Computation.h"
 #include "../../gpd/GPDType.h"
+#include "../../Result.h"
 #include "DVCSConvolCoeffFunctionKinematic.h"
 
-class DVCSConvolCoeffFunctionResult: public BaseObject, public Computation {
+//TODO improve public BaseObject, public Result
+class DVCSConvolCoeffFunctionResult: public BaseObject, public Result {
 public:
     DVCSConvolCoeffFunctionResult();
     DVCSConvolCoeffFunctionResult(DVCSConvolCoeffFunctionKinematic kinematic);

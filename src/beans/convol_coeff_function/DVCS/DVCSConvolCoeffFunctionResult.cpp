@@ -5,13 +5,13 @@
 #include "../../../utils/stringUtils/Formatter.h"
 
 DVCSConvolCoeffFunctionResult::DVCSConvolCoeffFunctionResult() :
-        BaseObject("DVCSConvolCoeffFunctionResult"), Computation() {
+        BaseObject("DVCSConvolCoeffFunctionResult"), Result() {
 
 }
 
 DVCSConvolCoeffFunctionResult::DVCSConvolCoeffFunctionResult(
         DVCSConvolCoeffFunctionKinematic kinematic) :
-        BaseObject("DVCSConvolCoeffFunctionResult"), Computation(), m_kinematic(
+        BaseObject("DVCSConvolCoeffFunctionResult"), Result(), m_kinematic(
                 kinematic) {
 }
 

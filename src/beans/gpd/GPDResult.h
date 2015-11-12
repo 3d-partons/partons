@@ -17,10 +17,11 @@
 #include <vector>
 
 #include "../parton_distribution/PartonDistribution.h"
+#include "../Result.h"
 #include "GPDKinematic.h"
 #include "GPDType.h"
 
-class GPDResult {
+class GPDResult: public Result {
 public:
     static const std::string GPD_RESULT_DB_TABLE_NAME;
 
@@ -43,8 +44,6 @@ public:
     const std::map<GPDType::Type, PartonDistribution>& getPartonDistributions() const;
     void setPartonDistributions(
             const std::map<GPDType::Type, PartonDistribution>& partonDistributions);
-    const std::string& getComputedByGpdModuleId() const;
-    void setComputedByGpdModuleId(const std::string& computedByGpdModuleId);
     const GPDKinematic& getKinematic() const;
     void setKinematic(const GPDKinematic& kinematic);
 
@@ -52,7 +51,6 @@ private:
     std::map<GPDType::Type, PartonDistribution> m_partonDistributions;
 
     GPDKinematic m_kinematic;
-    std::string m_computedByGPDModuleId; //TODO always undefined ; modify GPD service to store module class id
 };
 
 #endif /* GPD_RESULT_H */

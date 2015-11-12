@@ -56,11 +56,11 @@ int ConvolCoeffFunctionResultDaoService::insertWithoutTransaction(
 
     // Check if this computation date already exists and retrieve Id
     int computationId = m_commonDaoService.getComputationId(
-            result.getDateTime());
+            result.getComputationDateTime());
     // If not, insert new entry into database and retrieve its id
     if (computationId == -1) {
         computationId = m_commonDaoService.insertComputation(
-                result.getDateTime());
+                result.getComputationDateTime());
     }
 
     std::map<GPDType::Type, std::complex<double> > resultsByGPDType =
@@ -70,7 +70,8 @@ int ConvolCoeffFunctionResultDaoService::insertWithoutTransaction(
     for (it = resultsByGPDType.begin(); it != resultsByGPDType.end(); it++) {
         //Then store result into database
         m_convolCoeffFunctionResultDao.insert((it->second).real(),
-                (it->second).imag(), (it->first), kinematicId, computationId);
+                (it->second).imag(), (it->first),
+                result.getComputationModuleName(), kinematicId, computationId);
     }
 
     return computationId;

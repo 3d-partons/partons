@@ -3,7 +3,7 @@
 #include "../../../utils/stringUtils/Formatter.h"
 
 DVCSConvolCoeffFunctionResultList::DVCSConvolCoeffFunctionResultList() :
-        Computation() {
+        m_computationDateTime(time(0)) {
 }
 
 DVCSConvolCoeffFunctionResultList::~DVCSConvolCoeffFunctionResultList() {
@@ -12,7 +12,7 @@ DVCSConvolCoeffFunctionResultList::~DVCSConvolCoeffFunctionResultList() {
 // Copy object before add it to m_results ; we need to do it to set proper DateTime
 void DVCSConvolCoeffFunctionResultList::add(
         DVCSConvolCoeffFunctionResult result) {
-    result.setDateTime(getDateTime());
+    result.setComputationDateTime(m_computationDateTime);
     m_results.push_back(result);
 }
 

@@ -13,6 +13,7 @@
  */
 
 #include <stddef.h>
+#include <ctime>
 #include <string>
 #include <vector>
 
@@ -23,7 +24,7 @@ public:
     GPDResultList();
     virtual ~GPDResultList();
 
-    void add(const GPDResult &gpdResult);
+    void add(GPDResult gpdResult);
     const GPDResult& get(unsigned int index) const;
 
     size_t getSize() const;
@@ -33,6 +34,8 @@ public:
 
 private:
     std::vector<GPDResult> m_gpdResults;
+
+    time_t m_computationDateTime;
 };
 
 #endif /* GPD_RESULT_LIST_H */

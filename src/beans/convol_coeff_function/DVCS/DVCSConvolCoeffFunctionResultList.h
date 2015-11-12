@@ -13,12 +13,13 @@
  */
 
 #include <stddef.h>
+#include <ctime>
 #include <string>
 #include <vector>
 
 #include "DVCSConvolCoeffFunctionResult.h"
 
-class DVCSConvolCoeffFunctionResultList: public Computation {
+class DVCSConvolCoeffFunctionResultList {
 public:
     DVCSConvolCoeffFunctionResultList();
     virtual ~DVCSConvolCoeffFunctionResultList();
@@ -36,6 +37,8 @@ public:
 
 private:
     std::vector<DVCSConvolCoeffFunctionResult> m_results;
+
+    time_t m_computationDateTime;
 };
 
 #endif /* DVCS_CONVOL_COEFF_FUNCTION_RESULT_LIST_H */

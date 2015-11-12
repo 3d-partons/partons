@@ -160,9 +160,11 @@ DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionModule::compute(
         }
         break;
     }
-}
+    }
 
-    dvcsConvolCoeffFunctionResult.setKinematic(DVCSConvolCoeffFunctionKinematic(m_xi, m_t, m_Q2, m_MuF2, m_MuR2));
+    dvcsConvolCoeffFunctionResult.setComputationModuleName(getClassName());
+    dvcsConvolCoeffFunctionResult.setKinematic(
+            DVCSConvolCoeffFunctionKinematic(m_xi, m_t, m_Q2, m_MuF2, m_MuR2));
 
     debug(__func__, dvcsConvolCoeffFunctionResult.toString());
 
@@ -183,8 +185,8 @@ std::complex<double> DVCSConvolCoeffFunctionModule::computePolarized() {
 
 std::complex<double> DVCSConvolCoeffFunctionModule::computeCFF() {
     throw std::runtime_error(
-                "[CFFModule::computeCFF] check your child implementation : "
-                        + getClassName());
+            "[CFFModule::computeCFF] check your child implementation : "
+                    + getClassName());
 }
 
 void DVCSConvolCoeffFunctionModule::preCompute(const double xi, const double t,

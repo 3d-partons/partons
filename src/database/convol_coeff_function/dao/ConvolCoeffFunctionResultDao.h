@@ -12,6 +12,8 @@
  * @brief
  */
 
+#include <string>
+
 #include "../../../BaseObject.h"
 
 class ConvolCoeffFunctionResultDao: public BaseObject {
@@ -19,7 +21,8 @@ public:
     ConvolCoeffFunctionResultDao();
     virtual ~ConvolCoeffFunctionResultDao();
 
-    int insert(double realPart, double imgPart, int gpdType, int kinematicId,
+    int insert(double realPart, double imgPart, int gpdType,
+            const std::string &computationModuleName, int kinematicId,
             int computationId) const;
 };
 

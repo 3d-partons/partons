@@ -3,26 +3,23 @@
 #include "../../utils/stringUtils/Formatter.h"
 
 ObservableResult::ObservableResult() :
-        Computation(), m_observbleName("UNDEFINED"), m_value(0.), m_phi(0.), m_totalError(
+        Result(), m_observbleName("UNDEFINED"), m_value(0.), m_phi(0.), m_totalError(
                 0.), m_observableType(ObservableType::UNDEFINED) {
 }
 
 ObservableResult::ObservableResult(const std::string &observableName,
         double value) :
-        Computation(), m_observbleName(observableName), m_phi(0.), m_value(
-                value), m_totalError(0.), m_observableType(
-                ObservableType::UNDEFINED) {
+        Result(), m_observbleName(observableName), m_phi(0.), m_value(value), m_totalError(
+                0.), m_observableType(ObservableType::UNDEFINED) {
 }
 
 ObservableResult::ObservableResult(const std::string &observableName,
         double phi, double value) :
-        Computation(), m_observbleName(observableName), m_phi(phi), m_value(
-                value), m_totalError(0.), m_observableType(
-                ObservableType::UNDEFINED) {
+        Result(), m_observbleName(observableName), m_phi(phi), m_value(value), m_totalError(
+                0.), m_observableType(ObservableType::UNDEFINED) {
 }
 
 ObservableResult::~ObservableResult() {
-    // TODO Auto-generated destructor stub
 }
 
 std::string ObservableResult::toString() {
