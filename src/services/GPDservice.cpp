@@ -4,6 +4,7 @@
 
 #include "../beans/automation/Task.h"
 #include "../beans/gpd/GPDKinematic.h"
+#include "../beans/gpd/GPDKinematicList.h"
 #include "../beans/gpd/GPDResult.h"
 #include "../beans/gpd/GPDResultList.h"
 #include "../beans/gpd/GPDType.h"
@@ -218,14 +219,14 @@ GPDResultList GPDService::computeListOfGPDModelRestrictedByGPDType(
     return results;
 }
 
-GPDResultList GPDService::computeListOfKinematic(
-        std::vector<GPDKinematic> &listOfGPDKinematic, GPDModule* pGPDModule) {
+GPDResultList GPDService::computeManyKinematicOneModel(
+        const GPDKinematicList &gpdKinematicList, GPDModule* pGPDModule) {
     GPDResultList results = GPDResultList();
 
 // compute GPDModule for each inputData
-    for (unsigned int i = 0; i != listOfGPDKinematic.size(); i++) {
+    for (unsigned int i = 0; i != gpdKinematicList.size(); i++) {
         results.add(
-                computeGPDModelRestrictedByGPDType(listOfGPDKinematic[i],
+                computeGPDModelRestrictedByGPDType(gpdKinematicList[i],
                         pGPDModule, GPDType::ALL));
     }
 

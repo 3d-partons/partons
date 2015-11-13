@@ -20,6 +20,8 @@
 #include "../modules/GPDModule.h"
 #include "../ServiceObject.h"
 
+class GPDKinematicList;
+
 class Scenario;
 
 class GPDResultList;
@@ -110,9 +112,8 @@ public:
      * @param pGPDModule
      * @return
      */
-    GPDResultList computeListOfKinematic(
-            std::vector<GPDKinematic> &listOfGPDKinematic,
-            GPDModule* pGPDModule);
+    GPDResultList computeManyKinematicOneModel(
+            const GPDKinematicList &gpdKinematicList, GPDModule* pGPDModule);
 
 private:
 
