@@ -12,12 +12,14 @@
  * @brief
  */
 
-class PartonDistributionDao {
+#include "../../../BaseObject.h"
+
+class PartonDistributionDao: public BaseObject {
 public:
-    static int insert(int gpdResultId, int gpdTypeId, double gluonDistribution);
+    PartonDistributionDao();
+    virtual ~PartonDistributionDao();
 
-private:
-
+    int insert(double gluonDistributionValue) const;
 };
 
 #endif /* PARTON_DISTRIBUTION_DAO */

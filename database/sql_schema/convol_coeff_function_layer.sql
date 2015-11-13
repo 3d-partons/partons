@@ -14,5 +14,5 @@ real_part DOUBLE NOT NULL,
 img_part DOUBLE NOT NULL,
 gpd_type_id INTEGER NOT NULL,
 computation_module_name VARCHAR(255) NOT NULL,
-convol_coeff_function_kinematic_id INTEGER NOT NULL 
+convol_coeff_function_kinematic_id INTEGER NOT NULL,
 computation_id INTEGER NOT NULL);

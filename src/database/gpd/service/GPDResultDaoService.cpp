@@ -2,14 +2,13 @@
 
 #include <QtSql/qsqldatabase.h>
 #include <exception>
-#include <vector>
+#include <map>
+#include <utility>
 
 #include "../../../beans/gpd/GPDResult.h"
 #include "../../../beans/gpd/GPDResultList.h"
+#include "../../../beans/gpd/GPDType.h"
 #include "../../../beans/parton_distribution/PartonDistribution.h"
-#include "../../service/ModuleDaoService.h"
-#include "../../service/PartonDistributionDaoService.h"
-#include "../../service/QuarkDistributionDaoService.h"
 
 GPDResultDaoService::GPDResultDaoService() :
         BaseObject("GPDResultDaoService") {
@@ -56,27 +55,37 @@ int GPDResultDaoService::insertWithoutTransaction(
                 gpdResult.getKinematic());
     }
 
-    // Retrieve module_id from moduleClassName
-    int moduleId = ModuleDaoService::getModuleIdByClassName(
-            gpdResult.getComputationModuleName());
+    // Check if this computation date already exists and retrieve Id
+    int computationId = m_commonDaoService.getComputationId(
+            gpdResult.getComputationDateTime());
+    // If not, insert new entry in database and retrieve its id
+    if (computationId == -1) {
+        computationId = m_commonDaoService.insertComputation(
+                gpdResult.getComputationDateTime());
+    }
 
     // Insert new gpd_result entry in database
-    int gpdResultId = m_gpdResultDao.insert(moduleId, gpdKinematicId);
+    int gpdResultId = m_gpdResultDao.insert(
+            gpdResult.getComputationModuleName(), gpdKinematicId,
+            computationId);
 
-    std::vector<PartonDistribution> partonDistributionList =
-            gpdResult.getPartonDistributionList();
+    std::map<GPDType::Type, PartonDistribution> partonDistributionMap =
+            gpdResult.getPartonDistributions();
 
     int partonDistributionId = 0;
 
-    for (unsigned int i = 0; i != partonDistributionList.size(); i++) {
-        partonDistributionId = PartonDistributionDaoService::insert(gpdResultId,
-                partonDistributionList[i]);
+    for (std::map<GPDType::Type, PartonDistribution>::const_iterator it =
+            partonDistributionMap.begin(); it != partonDistributionMap.end();
+            it++) {
+        PartonDistribution partonDistribution = (it->second);
+        partonDistributionId = m_partonDistributionDaoService.insert(
+                partonDistribution);
 
-        QuarkDistributionDaoService::insert(partonDistributionId,
-                partonDistributionList[i].getVectorOfQuarkDistribution());
+        m_gpdResultPartonDistributionDao.insert((it->first), gpdResultId,
+                partonDistributionId);
     }
 
-    return gpdResultId;
+    return computationId;
 }
 
 int GPDResultDaoService::insert(const GPDResultList &gpdResultList) const {

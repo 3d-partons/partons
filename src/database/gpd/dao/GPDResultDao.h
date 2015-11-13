@@ -1,24 +1,28 @@
 #ifndef GPD_RESULT_DAO
 #define GPD_RESULT_DAO
 
-//#include <Qt/qsqltablemodel.h>
+/**
+ * @file GPDResultDao.h
+ * @author: Bryan BERTHOU (SPhN / CEA Saclay)
+ * @date 13 November 2015
+ * @version 1.0
+ *
+ * @class GPDResultDao
+ *
+ * @brief
+ */
 
-//#include <QtSql/qsqltablemodel.h>
+#include <string>
 
-//#include <string>
+#include "../../../BaseObject.h"
 
-class GPDResultDao {
+class GPDResultDao: public BaseObject {
 public:
+    GPDResultDao();
+    virtual ~GPDResultDao();
 
-//    int insert(double x, double xi, double t, double MuF, double MuR,
-//            int gpdType, double gluonDistribution, int quarkFlavorType,
-//            double quarkDistribution, double quarkDistributionPlus,
-//            double quarkDistributionMinus);
-
-//    QSqlRecord getPlot2D(const std::string &abscissaName,
-//            const std::string &ordinateName);
-
-    static int insert(int moduleId, int gpdKinematicId);
+    int insert(const std::string &computationModuleName, int gpdKinematicId,
+            int computationId) const;
 };
 
 #endif /* GPD_RESULT_DAO */

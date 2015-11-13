@@ -4,27 +4,34 @@
 #include <Qt/qsqlquery.h>
 #include <Qt/qvariant.h>
 #include <QtCore/qstring.h>
-#include <stdexcept>
-#include <string>
 
-#include "../DatabaseManager.h"
+#include "../../../utils/stringUtils/Formatter.h"
+#include "../../DatabaseManager.h"
 
-int GPDResultDao::insert(int moduleConfigurationId, int gpdKinematicId) {
+GPDResultDao::GPDResultDao() :
+        BaseObject("GPDResultDao") {
+}
+
+GPDResultDao::~GPDResultDao() {
+}
+
+int GPDResultDao::insert(const std::string &computationModuleName,
+        int gpdKinematicId, int computationId) const {
     int result = -1;
     QSqlQuery query(DatabaseManager::getInstance()->getDb());
 
     query.prepare(
-            "INSERT INTO gpd_result (module_id, gpd_kinematic_id) VALUES (:moduleId, :gpdKinematicId)");
+            "INSERT INTO gpd_result (computation_module_name, gpd_kinematic_id, computation_id) VALUES (:computationModuleName, :gpdKinematicId, :computationId)");
 
-    query.bindValue(":moduleId", moduleConfigurationId);
+    query.bindValue(":computationModuleName",
+            QString(computationModuleName.c_str()));
     query.bindValue(":gpdKinematicId", gpdKinematicId);
+    query.bindValue(":computationId", computationId);
 
     if (query.exec()) {
         result = query.lastInsertId().toInt();
     } else {
-        throw std::runtime_error(
-                "[GPDResultDao::insert] Error when inserting new gpd_result entry in database : "
-                        + query.lastError().text().toStdString());
+        error(__func__, Formatter() << query.lastError().text().toStdString());
     }
 
     query.clear();
