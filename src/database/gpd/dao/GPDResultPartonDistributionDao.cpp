@@ -19,7 +19,7 @@ GPDResultPartonDistributionDao::~GPDResultPartonDistributionDao() {
 int GPDResultPartonDistributionDao::insert(int gpdTypeId, int gpdResultId,
         int partonDistributionId) const {
     int result = -1;
-    QSqlQuery query(DatabaseManager::getInstance()->getDb());
+    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     query.prepare(
             "INSERT INTO gpd_result_parton_distribution (gpd_type_id, gpd_result_id, parton_distribution_id) VALUES (:gpdTypeId, :gpdResultId, :partonDistributionId)");

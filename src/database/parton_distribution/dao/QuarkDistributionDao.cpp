@@ -21,7 +21,7 @@ int QuarkDistributionDao::insert(double quarkDistributionPlus,
         int quarkFlavorTypeId, int partonDistributionId) const {
 
     int result = -1;
-    QSqlQuery query(DatabaseManager::getInstance()->getDb());
+    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     query.prepare(
             "INSERT INTO quark_distribution (quark_distribution_plus, quark_distribution_minus, quark_distribution, quark_flavor_id, parton_distribution_id) VALUES (:quarkDistributionPlus, :quarkDistributionMinus, :quarkDistribution, :quarkFlavorTypeId, :partonDistributionId )");

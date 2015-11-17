@@ -1,6 +1,7 @@
 #include "ObservableKinematic.h"
 
 #include <stddef.h>
+#include <algorithm>
 
 #include "../../utils/GenericType.h"
 #include "../../utils/ParameterList.h"
@@ -13,11 +14,11 @@ const std::string ObservableKinematic::PARAMETER_NAME_Q2 = "Q2";
 const std::string ObservableKinematic::PARAMETER_NAME_PHI = "phi";
 
 ObservableKinematic::ObservableKinematic() :
-        BaseObject("ObservableKinematic"), m_xB(0.), m_t(0.), m_Q2(0.) {
+        Kinematic("ObservableKinematic"), m_xB(0.), m_t(0.), m_Q2(0.) {
 }
 
 ObservableKinematic::ObservableKinematic(ParameterList &parameterList) :
-        BaseObject("ObservableKinematic"), m_xB(0.), m_t(0.), m_Q2(0.) {
+        Kinematic("ObservableKinematic"), m_xB(0.), m_t(0.), m_Q2(0.) {
     if (parameterList.isAvailable(ObservableKinematic::PARAMETER_NAME_XB)) {
         m_xB = parameterList.getLastAvailable().toDouble();
     } else {
@@ -65,14 +66,14 @@ ObservableKinematic::ObservableKinematic(ParameterList &parameterList) :
 
 ObservableKinematic::ObservableKinematic(double xB, double t, double Q2,
         std::vector<double> listOfPhi) :
-        BaseObject("ObservableKinematic"), m_xB(xB), m_t(t), m_Q2(Q2), m_listOfPhi(
+        Kinematic("ObservableKinematic"), m_xB(xB), m_t(t), m_Q2(Q2), m_listOfPhi(
                 listOfPhi) {
 }
 
 ObservableKinematic::ObservableKinematic(const std::string &xB,
         const std::string &t, const std::string &Q2,
         const std::string &listOfPhi) :
-        BaseObject("ObservableKinematic"), m_xB(
+        Kinematic("ObservableKinematic"), m_xB(
                 StringUtils::fromStringToDouble(xB)), m_t(
                 StringUtils::fromStringToDouble(t)), m_Q2(
                 StringUtils::fromStringToDouble(Q2)) {
@@ -104,8 +105,8 @@ std::string ObservableKinematic::toString() const {
 const std::string ObservableKinematic::toStringWithoutPhi() const {
     Formatter formatter;
 
-    formatter << "m_xB = " << m_xB << " m_t = " << m_t << " (GeV2) m_Q2 = "
-            << m_Q2 << " (GeV2)";
+    formatter << Kinematic::toString() << " m_xB = " << m_xB << " m_t = " << m_t
+            << " (GeV2) m_Q2 = " << m_Q2 << " (GeV2)";
 
     return formatter;
 }
@@ -156,4 +157,9 @@ const std::string ObservableKinematic::getListOfPhi_str() const {
     }
 
     return formatter.str();
+}
+
+void ObservableKinematic::sortListOfPhi() {
+    // sort vector of phi (double) ; ascending order
+    std::sort(m_listOfPhi.begin(), m_listOfPhi.end());
 }

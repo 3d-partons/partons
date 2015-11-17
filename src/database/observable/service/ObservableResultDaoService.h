@@ -27,6 +27,9 @@ public:
     int insert(const ObservableResult &observableResult) const;
     int insert(const ObservableResultList &observableResultList);
 
+    ObservableResultList getObservableResultListByComputationId(
+            const int computationId) const;
+
 private:
     ObservableResultDao m_observableResultDao;
 

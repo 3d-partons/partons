@@ -16,39 +16,49 @@
 // Global static pointer used to ensure a single instance of the class.
 DatabaseManager* DatabaseManager::m_pInstance = 0;
 
+const QSqlDatabase& DatabaseManager::getProductionDatabase() const {
+    return m_productionDatabase;
+}
+
+const QSqlDatabase& DatabaseManager::getTestDatabase() const {
+    return m_testDatabase;
+}
+
 DatabaseManager::DatabaseManager() :
         BaseObject("DatabaseManager") {
 
     //TODO replace by static const variable
     std::string sqlDatabaseType = PropertiesManager::getInstance()->getString(
-            "database.type");
+            "database.production.type");
 
     if (StringUtils::equalsIgnoreCase(sqlDatabaseType, "MYSQL")) {
-        m_db = QSqlDatabase::addDatabase("QMYSQL");
+        m_productionDatabase = QSqlDatabase::addDatabase("QMYSQL");
 
     } else {
-        m_db = QSqlDatabase::addDatabase("QSQLITE");
+        m_productionDatabase = QSqlDatabase::addDatabase("QSQLITE");
     }
 
-    m_db.setDatabaseName(
+    m_productionDatabase.setDatabaseName(
             QString(
                     PropertiesManager::getInstance()->getString(
-                            "database.dbname").c_str()));
-    m_db.setHostName(
-            QString(
-                    PropertiesManager::getInstance()->getString("database.url").c_str()));
-    m_db.setUserName(
-            QString(
-                    PropertiesManager::getInstance()->getString("database.user").c_str()));
-    m_db.setPassword(
+                            "database.production.dbname").c_str()));
+    m_productionDatabase.setHostName(
             QString(
                     PropertiesManager::getInstance()->getString(
-                            "database.passwd").c_str()));
+                            "database.production.url").c_str()));
+    m_productionDatabase.setUserName(
+            QString(
+                    PropertiesManager::getInstance()->getString(
+                            "database.production.user").c_str()));
+    m_productionDatabase.setPassword(
+            QString(
+                    PropertiesManager::getInstance()->getString(
+                            "database.production.passwd").c_str()));
 
-    if (!m_db.open()) {
+    if (!m_productionDatabase.open()) {
         throwException(__func__,
                 Formatter() << "Can't connect to database : "
-                        << m_db.lastError().text().toStdString());
+                        << m_productionDatabase.lastError().text().toStdString());
     } else {
         info(__func__, "Database connection OK");
 
@@ -84,20 +94,13 @@ DatabaseManager* DatabaseManager::getInstance() {
 
 void DatabaseManager::close() {
     QString connection;
-    connection = m_db.connectionName();
-    m_db.close();
+    connection = m_productionDatabase.connectionName();
+    m_productionDatabase.close();
     // QSqlDatabasePrivate::removeDatabase: connection 'qt_sql_default_connection' is still in use, all queries will cease to work.
     // After you closed it, m_db still holds a reference to the database you configured in connect().
     // You can reset m_db by assigning a default constructed QSqlDatabase
     // See : http://stackoverflow.com/questions/9519736/warning-remove-database
-    m_db = QSqlDatabase();
-    m_db.removeDatabase(connection);
+    m_productionDatabase = QSqlDatabase();
+    m_productionDatabase.removeDatabase(connection);
 }
 
-const QSqlDatabase& DatabaseManager::getDb() const {
-    return m_db;
-}
-
-void DatabaseManager::setDb(const QSqlDatabase& db) {
-    m_db = db;
-}

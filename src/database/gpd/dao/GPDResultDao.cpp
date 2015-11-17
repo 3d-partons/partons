@@ -18,7 +18,7 @@ GPDResultDao::~GPDResultDao() {
 int GPDResultDao::insert(const std::string &computationModuleName,
         int gpdKinematicId, int computationId) const {
     int result = -1;
-    QSqlQuery query(DatabaseManager::getInstance()->getDb());
+    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     query.prepare(
             "INSERT INTO gpd_result (computation_module_name, gpd_kinematic_id, computation_id) VALUES (:computationModuleName, :gpdKinematicId, :computationId)");

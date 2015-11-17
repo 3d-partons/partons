@@ -24,10 +24,16 @@ public:
     ObservableKinematicList(const std::string &kinematicFilePath);
     virtual ~ObservableKinematicList();
 
+    void add(const ObservableKinematic &observableKinematic);
+
+    void sort();
+
     size_t size() const;
 
     ObservableKinematic& operator[](size_t n);
     const ObservableKinematic& operator[](size_t n) const;
+
+    virtual std::string toString() const;
 
 private:
     std::vector<ObservableKinematic> m_kinematicList;

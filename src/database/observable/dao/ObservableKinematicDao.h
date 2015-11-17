@@ -16,6 +16,8 @@
 
 #include "../../../BaseObject.h"
 
+class ObservableKinematicList;
+
 class ObservableKinematicDao: public BaseObject {
 public:
     ObservableKinematicDao();
@@ -26,6 +28,9 @@ public:
 
     int select(double xB, double t, double Q2,
             const std::string &listOfPhi_str) const;
+
+    ObservableKinematicList getKinematicListByComputationId(
+            int computationId) const;
 };
 
 #endif /* OBSERVABLE_KINEMATIC_DAO_H */

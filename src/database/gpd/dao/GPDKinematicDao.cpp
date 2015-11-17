@@ -20,7 +20,7 @@ int GPDKinematicDao::insert(double x, double xi, double t, double MuF2,
         double MuR2) const {
 
     int result = -1;
-    QSqlQuery query(DatabaseManager::getInstance()->getDb());
+    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     query.prepare(
             "INSERT INTO gpd_kinematic (x, xi, t, MuF2, MuR2) VALUES (:x, :xi, :t, :MuF2, :MuR2)");
@@ -46,7 +46,7 @@ int GPDKinematicDao::select(double x, double xi, double t, double MuF2,
         double MuR2) const {
 
     int result = -1;
-    QSqlQuery query(DatabaseManager::getInstance()->getDb());
+    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     query.prepare(
             "SELECT id FROM gpd_kinematic WHERE x = :x AND xi = :xi AND t = :t AND MuF2 = :MuF2 AND MuR2 = :MuR2");

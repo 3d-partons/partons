@@ -19,7 +19,7 @@ ConvolCoeffFunctionKinematicDao::~ConvolCoeffFunctionKinematicDao() {
 int ConvolCoeffFunctionKinematicDao::insert(double xi, double t, double Q2,
         double MuF2, double MuR2) const {
     int result = -1;
-    QSqlQuery query(DatabaseManager::getInstance()->getDb());
+    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     query.prepare(
             "INSERT INTO convol_coeff_function_kinematic (xi, t, Q2, MuF2, MuR2) VALUES (:xi, :t, :Q2, :MuF2, :MuR2)");
@@ -44,7 +44,7 @@ int ConvolCoeffFunctionKinematicDao::insert(double xi, double t, double Q2,
 int ConvolCoeffFunctionKinematicDao::select(double xi, double t, double Q2,
         double MuF2, double MuR2) const {
     int result = -1;
-    QSqlQuery query(DatabaseManager::getInstance()->getDb());
+    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     query.prepare(
             "SELECT id FROM convol_coeff_function_kinematic WHERE xi = :xi AND t = :t AND Q2 = :MuF2 AND MuR2 = :MuR2 AND MuR2 = :Q2");

@@ -1,13 +1,13 @@
 #include "ObservableKinematicList.h"
 
+#include <algorithm>
+
 #include "../../utils/fileUtils/FileUtils.h"
 #include "../../utils/stringUtils/Formatter.h"
 #include "../../utils/stringUtils/StringUtils.h"
 
 ObservableKinematicList::ObservableKinematicList() :
         BaseObject("ObservableKinematicList") {
-    // TODO Auto-generated constructor stub
-
 }
 
 ObservableKinematicList::ObservableKinematicList(
@@ -41,7 +41,6 @@ ObservableKinematicList::ObservableKinematicList(
 }
 
 ObservableKinematicList::~ObservableKinematicList() {
-    // TODO Auto-generated destructor stub
 }
 
 size_t ObservableKinematicList::size() const {
@@ -55,4 +54,28 @@ ObservableKinematic& ObservableKinematicList::operator [](size_t n) {
 const ObservableKinematic& ObservableKinematicList::operator [](
         size_t n) const {
     return m_kinematicList[n];
+}
+
+void ObservableKinematicList::sort() {
+    for (unsigned int i = 0; i != m_kinematicList.size(); i++) {
+        m_kinematicList[i].sortListOfPhi();
+    }
+
+    // sort vector of kineamtic (ObservableKinematic) ; ascending order by id
+    std::sort(m_kinematicList.begin(), m_kinematicList.end());
+}
+
+void ObservableKinematicList::add(
+        const ObservableKinematic& observableKinematic) {
+    m_kinematicList.push_back(observableKinematic);
+}
+
+std::string ObservableKinematicList::toString() const {
+    Formatter formatter;
+
+    for (size_t i = 0; i != m_kinematicList.size(); i++) {
+        formatter << m_kinematicList[i].toString() << '\n';
+    }
+
+    return formatter.str();
 }

@@ -16,6 +16,8 @@
 
 #include "../../../BaseObject.h"
 
+class ObservableResultList;
+
 class ObservableResultDao: public BaseObject {
 public:
     ObservableResultDao();
@@ -26,6 +28,9 @@ public:
             double systErrorLB, double systErrorUB, double errorTotal,
             const std::string &computationModuleName, int kinematicId,
             int computationId) const;
+
+    ObservableResultList getObservableResultListByComputationId(
+            const int computationId) const;
 };
 
 #endif /* OBSERVABLE_RESULT_DAO_H */

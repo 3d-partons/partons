@@ -1,5 +1,7 @@
 #include "ObservableKinematicDaoService.h"
 
+#include "../../../beans/observable/ObservableKinematicList.h"
+
 ObservableKinematicDaoService::ObservableKinematicDaoService() :
         BaseObject("ObservableKinematicDaoService") {
 }
@@ -19,4 +21,10 @@ int ObservableKinematicDaoService::getKinematicId(
     return m_observableKinematicDao.select(observableKinematic.getXB(),
             observableKinematic.getT(), observableKinematic.getQ2(),
             observableKinematic.getListOfPhi_str());
+}
+
+ObservableKinematicList ObservableKinematicDaoService::getKinematicListByComputationId(
+        int computationId) const {
+    return m_observableKinematicDao.getKinematicListByComputationId(
+            computationId);
 }

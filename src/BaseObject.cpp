@@ -45,8 +45,12 @@ void BaseObject::init() {
 }
 
 std::string BaseObject::toString() const {
-    return Formatter() << "m_className = " << m_className << " - "
-            << "m_objectId = " << m_objectId;
+    Formatter formatter;
+
+    formatter << "m_className = " << m_className << " - " << "m_objectId = "
+            << m_objectId << '\n';
+
+    return formatter.str();
 }
 
 unsigned int BaseObject::getUniqueObjectId() {

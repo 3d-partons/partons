@@ -18,6 +18,8 @@
 #include "../beans/observable/ObservableKinematicList.h"
 #include "../ServiceObject.h"
 
+class ObservableResultListReport;
+class Tolerances;
 class DVCSConvolCoeffFunctionModule;
 class DVCSModule;
 class Observable;
@@ -50,6 +52,11 @@ public:
             ObservableKinematicList listOfKinematic, DVCSModule* pDVCSModule,
             Observable* pObservable,
             DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule);
+
+    ObservableResultListReport compareResultList(
+            const ObservableResultList &resultList_01,
+            const ObservableResultList &resultList_02,
+            const Tolerances &tolerances) const;
 
     virtual void computeTask(Task &task);
 

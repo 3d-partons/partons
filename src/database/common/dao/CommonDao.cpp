@@ -19,7 +19,7 @@ CommonDao::~CommonDao() {
 
 int CommonDao::insertComputation(const time_t &dateTime) const {
     int result = -1;
-    QSqlQuery query(DatabaseManager::getInstance()->getDb());
+    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     query.prepare(
             "INSERT INTO computation (computation_date) VALUES (:dateTime)");
@@ -41,7 +41,7 @@ int CommonDao::insertComputation(const time_t &dateTime) const {
 
 int CommonDao::getComputationIdByDateTime(const time_t &dateTime) const {
     int result = -1;
-    QSqlQuery query(DatabaseManager::getInstance()->getDb());
+    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     query.prepare(
             "SELECT id FROM computation WHERE computation_date = :dateTime");

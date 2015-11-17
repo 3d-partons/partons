@@ -5,6 +5,7 @@
 #include <Qt/qvariant.h>
 #include <QtCore/qstring.h>
 
+#include "../../../beans/observable/ObservableResultList.h"
 #include "../../../utils/stringUtils/Formatter.h"
 #include "../../DatabaseManager.h"
 
@@ -22,7 +23,7 @@ int ObservableResultDao::insert(const std::string& observableName,
         int kinematicId, int computationId) const {
 
     int result = -1;
-    QSqlQuery query(DatabaseManager::getInstance()->getDb());
+    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     query.prepare(
             "INSERT INTO observable_result (observable_name, observable_value, phi, stat_error_lb, stat_error_ub, syst_error_lb, syst_error_ub, total_error, computation_module_name, observable_kinematic_id, computation_id)  VALUES (:observable_name, :observable_value, :phi, :stat_error_lb, :stat_error_ub, :syst_error_lb, :syst_error_ub, :total_error, :computationModuleName, :observable_kinematic_id, :computation_id)");
@@ -49,4 +50,10 @@ int ObservableResultDao::insert(const std::string& observableName,
     query.clear();
 
     return result;
+}
+
+ObservableResultList ObservableResultDao::getObservableResultListByComputationId(
+        const int computationId) const {
+//TODO
+    return ObservableResultList();
 }

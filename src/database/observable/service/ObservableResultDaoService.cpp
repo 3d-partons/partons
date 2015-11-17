@@ -101,3 +101,9 @@ int ObservableResultDaoService::insert(
 
     return result;
 }
+
+ObservableResultList ObservableResultDaoService::getObservableResultListByComputationId(
+        const int computationId) const {
+//TODO implement
+    return ObservableResultList();
+}

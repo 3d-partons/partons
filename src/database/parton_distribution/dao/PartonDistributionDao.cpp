@@ -18,7 +18,7 @@ PartonDistributionDao::~PartonDistributionDao() {
 
 int PartonDistributionDao::insert(double gluonDistributionValue) const {
     int result = -1;
-    QSqlQuery query(DatabaseManager::getInstance()->getDb());
+    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     query.prepare(
             "INSERT INTO parton_distribution (gluon_distribution_value) VALUES (:gluonDistributionValue )");

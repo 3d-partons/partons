@@ -19,7 +19,7 @@ int ConvolCoeffFunctionResultDao::insert(double realPart, double imgPart,
         int gpdType, const std::string &computationModuleName, int kinematicId,
         int computationId) const {
     int result = -1;
-    QSqlQuery query(DatabaseManager::getInstance()->getDb());
+    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     query.prepare(
             "INSERT INTO convol_coeff_function_result (real_part, img_part, gpd_type_id, computation_module_name, convol_coeff_function_kinematic_id, computation_id) VALUES (:realPart, :imgPart, :gpdType, :computationModuleName, :kinematicId, :computationId)");

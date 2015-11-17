@@ -18,6 +18,7 @@
 #include "../utils/ParameterList.h"
 #include "../utils/stringUtils/Formatter.h"
 #include "../utils/stringUtils/StringUtils.h"
+#include "../utils/test/report/observable/ObservableResultListReport.h"
 
 const std::string ObservableService::FUNCTION_NAME_COMPUTE_DVCS_OBSERVABLE =
         "computeDVCSObservable";
@@ -326,4 +327,11 @@ ObservableResultList ObservableService::computeManyKinematicOneModelTask(
                     << result.toString());
 
     return result;
+}
+
+ObservableResultListReport ObservableService::compareResultList(
+        const ObservableResultList& resultList_01,
+        const ObservableResultList& resultList_02,
+        const Tolerances &tolerances) const {
+
 }

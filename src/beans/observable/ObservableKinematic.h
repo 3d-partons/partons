@@ -15,11 +15,11 @@
 #include <string>
 #include <vector>
 
-#include "../../BaseObject.h"
+#include "../Kinematic.h"
 
 class ParameterList;
 
-class ObservableKinematic: public BaseObject {
+class ObservableKinematic: public Kinematic {
 public:
     static const std::string PARAMETER_NAME_XB;
     static const std::string PARAMETER_NAME_T;
@@ -62,6 +62,8 @@ public:
     const std::string toStringWithoutPhi() const;
 
     const std::string getListOfPhi_str() const;
+
+    void sortListOfPhi();
 
     // ##### GETTERS & SETTERS #####
 

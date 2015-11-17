@@ -15,6 +15,8 @@
 #include "../../../beans/observable/ObservableKinematic.h"
 #include "../dao/ObservableKinematicDao.h"
 
+class ObservableKinematicList;
+
 class ObservableKinematicDaoService: public BaseObject {
 public:
     ObservableKinematicDaoService();
@@ -23,6 +25,9 @@ public:
     int insert(const ObservableKinematic &observableKinematic) const;
 
     int getKinematicId(const ObservableKinematic &observableKinematic) const;
+
+    ObservableKinematicList getKinematicListByComputationId(
+            int computationId) const;
 
 private:
     ObservableKinematicDao m_observableKinematicDao;

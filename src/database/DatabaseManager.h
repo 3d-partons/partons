@@ -31,8 +31,8 @@ public:
 
     // ##### GETTERS & SETTERS #####
 
-    const QSqlDatabase& getDb() const;
-    void setDb(const QSqlDatabase& db);
+    const QSqlDatabase& getProductionDatabase() const;
+    const QSqlDatabase& getTestDatabase() const;
 
 private:
 
@@ -46,7 +46,8 @@ private:
      */
     DatabaseManager();
 
-    QSqlDatabase m_db;
+    QSqlDatabase m_productionDatabase;
+    QSqlDatabase m_testDatabase;
 };
 
 #endif /* DATABASE_MANAGER_H */
