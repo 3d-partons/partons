@@ -38,6 +38,11 @@ const DoubleComparisonReport& ObservableKinematicReport::getXBReport() const {
     return m_xBReport;
 }
 
+//TODO implement
+std::string ObservableKinematicReport::toString() const {
+    return "";
+}
+
 void ObservableKinematicReport::setXBReport(
         const DoubleComparisonReport& xBReport) {
     m_xBReport = xBReport;
