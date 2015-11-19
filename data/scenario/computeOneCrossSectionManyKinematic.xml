@@ -33,7 +33,7 @@
 		<DVCSConvolCoeffFunctionModule>
 			<param name="id" value="DVCSConstantCFFModel" />
 			<param name="qcd_order_type" value="LO" />
-			<param name="cff_values" value="1|0|0|1" />
+			<param name="cff_values" value="0|0|0|0|0|0|1" />
 		</DVCSConvolCoeffFunctionModule>
 
 		<GPDModule>

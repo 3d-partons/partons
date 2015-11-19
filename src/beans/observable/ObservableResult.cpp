@@ -51,7 +51,7 @@ ObservableType::Type ObservableResult::getObservableType() const {
     return m_observableType;
 }
 
-const std::string& ObservableResult::getObservbleName() const {
+const std::string& ObservableResult::getObservableName() const {
     return m_observbleName;
 }
 

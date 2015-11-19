@@ -62,7 +62,7 @@ int ObservableResultDaoService::insertWithoutTransaction(
     }
 
     //Then store observableResult in database
-    m_observableResultDao.insert(observableResult.getObservbleName(),
+    m_observableResultDao.insert(observableResult.getObservableName(),
             observableResult.getValue(), observableResult.getPhi(),
             observableResult.getStatError().getLowerBound(),
             observableResult.getStatError().getUpperBound(),

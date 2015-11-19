@@ -138,7 +138,10 @@ void DVCSConstantCFFModel::configure(ParameterList parameters) {
                 int j = static_cast<int>(GPDType::H) + i / 2;
                 m_CFF[j] = std::complex<double>(
                         StringUtils::fromStringToDouble(CFFValues[i]),
-                        StringUtils::fromStringToDouble(CFFValues[i + 1]));
+                        i + 1 < CFFValues.size() ?
+                                StringUtils::fromStringToDouble(
+                                        CFFValues[i + 1]) :
+                                0.);
 
                 info(__func__,
                         Formatter() << DVCSConstantCFFModel::CFF_VALUES

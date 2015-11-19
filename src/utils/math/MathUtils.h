@@ -1,4 +1,4 @@
-/*
+/**
  * @file MathUtils.h
  * @author Bryan BERTHOU (CEA Saclay)
  * @date 02 December 2014

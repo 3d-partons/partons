@@ -22,7 +22,6 @@ class GPDResultListReport: public ComparisonReport {
 public:
     GPDResultListReport();
     virtual ~GPDResultListReport();
-    ;
 
     void add(const GPDResultReport &gpdResultReport);
     const GPDResultReport& get(unsigned int index) const;

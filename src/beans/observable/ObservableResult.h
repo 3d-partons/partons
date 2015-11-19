@@ -39,7 +39,7 @@ public:
 
     const ObservableKinematic& getKinematic() const;
     ObservableType::Type getObservableType() const;
-    const std::string& getObservbleName() const;
+    const std::string& getObservableName() const;
     double getPhi() const;
     const ErrorBar& getStatError() const;
     const ErrorBar& getSystError() const;

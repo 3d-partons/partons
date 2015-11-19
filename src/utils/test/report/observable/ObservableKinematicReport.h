@@ -1,0 +1,34 @@
+/**
+ * @file ObservableKinematicReport
+ * @author Nabil CHOUIKA (SPhN / CEA Saclay)
+ * @date 19 November 2015
+ * @version 1.0
+ *
+ * @class ObservableKinematicReport
+ *
+ * @brief Compare two different ObservableKinematic objects within given tolerances.
+ */
+
+#ifndef OBSERVABLEKINEMATICREPORT_H_
+#define OBSERVABLEKINEMATICREPORT_H_
+
+class ObservableKinematicReport: public ComparisonReport {
+public:
+    ObservableKinematicReport();
+    virtual ~ObservableKinematicReport();
+
+    virtual std::string toString() const;
+    const DoubleComparisonReport& getQ2Report() const;
+    void setQ2Report(const DoubleComparisonReport& q2Report);
+    const DoubleComparisonReport& getTReport() const;
+    void setTReport(const DoubleComparisonReport& tReport);
+    const DoubleComparisonReport& getXBReport() const;
+    void setXBReport(const DoubleComparisonReport& xBReport);
+
+private:
+    DoubleComparisonReport m_xBReport;
+    DoubleComparisonReport m_tReport;
+    DoubleComparisonReport m_Q2Report;
+};
+
+#endif /* OBSERVABLEKINEMATICREPORT_H_ */
