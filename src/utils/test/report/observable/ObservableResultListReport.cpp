@@ -1,5 +1,8 @@
 #include "ObservableResultListReport.h"
 
+#include <sstream>
+#include <string>
+
 ObservableResultListReport::ObservableResultListReport() :
         ComparisonReport(), m_sameSize(false), m_lhsObservableResultListSize(0), m_rhsObservableResultListSize(
                 0) {
@@ -102,10 +105,10 @@ std::string ObservableResultListReport::toString() const {
         }
     } else {
         os << "The compared lists do not have the same size." << std::endl;
-        os << "Size of lhs list:" << m_lhsObservableResultListSize << " elements"
-                << std::endl;
-        os << "Size of rhs list:" << m_rhsObservableResultListSize << " elements"
-                << std::endl;
+        os << "Size of lhs list:" << m_lhsObservableResultListSize
+                << " elements" << std::endl;
+        os << "Size of rhs list:" << m_rhsObservableResultListSize
+                << " elements" << std::endl;
     }
 
     return os.str();

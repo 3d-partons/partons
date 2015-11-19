@@ -12,6 +12,10 @@
 #ifndef OBSERVABLEKINEMATICREPORT_H_
 #define OBSERVABLEKINEMATICREPORT_H_
 
+#include <string>
+
+#include "../../DoubleComparisonReport.h"
+
 class ObservableKinematicReport: public ComparisonReport {
 public:
     ObservableKinematicReport();
