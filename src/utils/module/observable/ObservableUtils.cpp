@@ -7,6 +7,7 @@
 
 #include "ObservableUtils.h"
 
+#include "../../test/report/observable/ObservableKinematicReport.h"
 #include "../../test/report/observable/ObservableResultListReport.h"
 #include "../../test/report/observable/ObservableResultReport.h"
 
@@ -20,5 +21,11 @@ ObservableResultListReport ObservableUtils::compareObservableResultsLists(
 ObservableResultReport ObservableUtils::compareObservableResults(
         const ObservableResult& lhsObservableResult,
         const ObservableResult& rhsObservableResult,
+        const Tolerances& tolerances) {
+}
+
+ObservableKinematicReport ObservableUtils::compareObservableKinematics(
+        const ObservableKinematic& lhsObservableKinematic,
+        const ObservableKinematic& rhsObservableKinematic,
         const Tolerances& tolerances) {
 }

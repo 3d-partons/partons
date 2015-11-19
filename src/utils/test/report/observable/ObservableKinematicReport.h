@@ -13,6 +13,7 @@
 #define OBSERVABLEKINEMATICREPORT_H_
 
 #include <string>
+#include <vector>
 
 #include "../../DoubleComparisonReport.h"
 
@@ -28,11 +29,15 @@ public:
     void setTReport(const DoubleComparisonReport& tReport);
     const DoubleComparisonReport& getXBReport() const;
     void setXBReport(const DoubleComparisonReport& xBReport);
+    const std::vector<DoubleComparisonReport>& getListOfPhiReport() const;
+    void setListOfPhiReport(
+            const std::vector<DoubleComparisonReport>& listOfPhiReport);
 
 private:
     DoubleComparisonReport m_xBReport;
     DoubleComparisonReport m_tReport;
     DoubleComparisonReport m_Q2Report;
+    std::vector<DoubleComparisonReport> m_listOfPhiReport;
 };
 
 #endif /* OBSERVABLEKINEMATICREPORT_H_ */

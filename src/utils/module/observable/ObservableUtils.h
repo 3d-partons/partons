@@ -11,6 +11,11 @@
 
 #ifndef OBSERVABLEUTILS_H_
 #define OBSERVABLEUTILS_H_
+
+#include "../../../beans/observable/ObservableKinematic.h"
+
+class ObservableKinematicReport;
+
 class ObservableResult;
 class ObservableResultList;
 class ObservableResultListReport;
@@ -28,6 +33,10 @@ public:
             const ObservableResult& lhsObservableResult,
             const ObservableResult& rhsObservableResult,
             const Tolerances& tolerances);
+
+    static ObservableKinematicReport compareObservableKinematics(
+                const ObservableKinematic& lhsObservableKinematic,
+                const ObservableKinematic& rhsObservableKinematic, const Tolerances& tolerances);
 };
 
 #endif /* OBSERVABLEUTILS_H_ */
