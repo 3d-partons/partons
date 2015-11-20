@@ -13,6 +13,7 @@
  * @brief
  */
 
+#include <string>
 #include <vector>
 
 #include "ObservableResultReport.h"
@@ -22,6 +23,9 @@ public:
     ObservableResultListReport();
     ObservableResultListReport(unsigned int lhsObservableResultListSize,
             unsigned int rhsObservableResultListSize);
+    ObservableResultListReport(unsigned int lhsObservableResultListSize,
+            unsigned int rhsObservableResultListSize,
+            const std::vector<ObservableResultReport>& observableResultReports);
     virtual ~ObservableResultListReport();
 
     void addObservableResultReport(
@@ -56,6 +60,8 @@ private:
     unsigned int m_rhsObservableResultListSize;
     std::vector<unsigned int> m_differentResultIndex;
     std::vector<ObservableResultReport> m_observableResultReports;
+
+    void testComparison();
 };
 
 #endif /* OBSERVABLE_RESULT_LIST_REPORT_H */

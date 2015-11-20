@@ -8,11 +8,32 @@
 #include "ObservableKinematicReport.h"
 
 #include <sstream>
-#include <vector>
 
-ObservableKinematicReport::ObservableKinematicReport() {
-    // TODO Auto-generated constructor stub
+ObservableKinematicReport::ObservableKinematicReport() :
+        ComparisonReport(), m_sameSizeListOfPhi(true) {
 
+}
+
+ObservableKinematicReport::ObservableKinematicReport(
+        const DoubleComparisonReport& xBReport,
+        const DoubleComparisonReport& tReport,
+        const DoubleComparisonReport& q2Report,
+        const std::vector<DoubleComparisonReport>& listOfPhiReport) :
+        ComparisonReport(), m_sameSizeListOfPhi(true), m_xBReport(xBReport), m_tReport(tReport), m_Q2Report(
+                q2Report), m_listOfPhiReport(listOfPhiReport) {
+    testComparison();
+}
+
+ObservableKinematicReport::ObservableKinematicReport(
+        const DoubleComparisonReport& xBReport,
+        const DoubleComparisonReport& tReport,
+        const DoubleComparisonReport& q2Report,
+        const std::vector<DoubleComparisonReport>& listOfPhiReport,
+        bool sameSizeListOfPhi) :
+        ComparisonReport(), m_xBReport(xBReport), m_tReport(tReport), m_Q2Report(
+                        q2Report), m_listOfPhiReport(listOfPhiReport), m_sameSizeListOfPhi(
+                sameSizeListOfPhi) {
+    testComparison();
 }
 
 ObservableKinematicReport::~ObservableKinematicReport() {
@@ -26,6 +47,7 @@ const DoubleComparisonReport& ObservableKinematicReport::getQ2Report() const {
 void ObservableKinematicReport::setQ2Report(
         const DoubleComparisonReport& q2Report) {
     m_Q2Report = q2Report;
+    testComparison();
 }
 
 const DoubleComparisonReport& ObservableKinematicReport::getTReport() const {
@@ -35,6 +57,7 @@ const DoubleComparisonReport& ObservableKinematicReport::getTReport() const {
 void ObservableKinematicReport::setTReport(
         const DoubleComparisonReport& tReport) {
     m_tReport = tReport;
+    testComparison();
 }
 
 const DoubleComparisonReport& ObservableKinematicReport::getXBReport() const {
@@ -54,6 +77,11 @@ std::string ObservableKinematicReport::toString() const {
     os << m_Q2Report.toString() << std::endl;
 
     os << "List of Phi" << std::endl;
+    if (!isSameSizeListOfPhi()) {
+        os
+                << "Lists of Phi of different sizes, only comparing up to the least size :"
+                << std::endl;
+    }
     for (unsigned i = 0; i < m_listOfPhiReport.size(); i++) {
         os << m_listOfPhiReport.at(i).toString() << std::endl;
     }
@@ -64,6 +92,7 @@ std::string ObservableKinematicReport::toString() const {
 void ObservableKinematicReport::setXBReport(
         const DoubleComparisonReport& xBReport) {
     m_xBReport = xBReport;
+    testComparison();
 }
 
 const std::vector<DoubleComparisonReport>& ObservableKinematicReport::getListOfPhiReport() const {
@@ -73,4 +102,22 @@ const std::vector<DoubleComparisonReport>& ObservableKinematicReport::getListOfP
 void ObservableKinematicReport::setListOfPhiReport(
         const std::vector<DoubleComparisonReport>& listOfPhiReport) {
     m_listOfPhiReport = listOfPhiReport;
+    testComparison();
+}
+
+void ObservableKinematicReport::testComparison() {
+    m_comparisonResult = m_xBReport.isEqual() && m_tReport.isEqual()
+            && m_Q2Report.isEqual() && isSameSizeListOfPhi();
+    for (unsigned int i = 0; i < m_listOfPhiReport.size(); i++) {
+        m_comparisonResult = m_comparisonResult
+                && m_listOfPhiReport.at(i).isEqual();
+    }
+}
+
+bool ObservableKinematicReport::isSameSizeListOfPhi() const {
+    return m_sameSizeListOfPhi;
+}
+
+void ObservableKinematicReport::setSameSizeListOfPhi(bool sameSizeListOfPhi) {
+    m_sameSizeListOfPhi = sameSizeListOfPhi;
 }

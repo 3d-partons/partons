@@ -1,7 +1,6 @@
 #include "ObservableResultListReport.h"
 
 #include <sstream>
-#include <string>
 
 ObservableResultListReport::ObservableResultListReport() :
         ComparisonReport(), m_sameSize(false), m_lhsObservableResultListSize(0), m_rhsObservableResultListSize(
@@ -15,6 +14,17 @@ ObservableResultListReport::ObservableResultListReport(
                 lhsObservableResultListSize == rhsObservableResultListSize), m_lhsObservableResultListSize(
                 lhsObservableResultListSize), m_rhsObservableResultListSize(
                 rhsObservableResultListSize) {
+}
+
+ObservableResultListReport::ObservableResultListReport(
+        unsigned int lhsObservableResultListSize,
+        unsigned int rhsObservableResultListSize,
+        const std::vector<ObservableResultReport>& observableResultReports) :
+        ComparisonReport(), m_sameSize(
+                lhsObservableResultListSize == rhsObservableResultListSize), m_lhsObservableResultListSize(
+                lhsObservableResultListSize), m_rhsObservableResultListSize(
+                rhsObservableResultListSize) {
+    setObservableResultReports(observableResultReports);
 }
 
 ObservableResultListReport::~ObservableResultListReport() {
@@ -48,6 +58,7 @@ void ObservableResultListReport::setLhsObservableResultListSize(
         unsigned int lhsObservableResultListSize) {
     m_lhsObservableResultListSize = lhsObservableResultListSize;
     m_sameSize = lhsObservableResultListSize == m_rhsObservableResultListSize;
+    testComparison();
 }
 
 unsigned int ObservableResultListReport::getRhsObservableResultListSize() const {
@@ -58,6 +69,7 @@ void ObservableResultListReport::setRhsObservableResultListSize(
         unsigned int rhsObservableResultListSize) {
     m_rhsObservableResultListSize = rhsObservableResultListSize;
     m_sameSize = rhsObservableResultListSize == m_lhsObservableResultListSize;
+    testComparison();
 }
 
 bool ObservableResultListReport::isSameSize() const {
@@ -70,7 +82,11 @@ const std::vector<ObservableResultReport>& ObservableResultListReport::getObserv
 
 void ObservableResultListReport::addObservableResultReport(
         const ObservableResultReport& observableResultReport) {
+    if (!observableResultReport.isEqual()) {
+        addDifferentResultIndex(getSize());
+    }
     m_observableResultReports.push_back(observableResultReport);
+    testComparison();
 }
 
 const ObservableResultReport& ObservableResultListReport::getObservableResultReport(
@@ -84,7 +100,9 @@ unsigned int ObservableResultListReport::getSize() const {
 
 void ObservableResultListReport::setObservableResultReports(
         const std::vector<ObservableResultReport>& observableResultReports) {
-    m_observableResultReports = observableResultReports;
+    for (unsigned int i = 0; i < observableResultReports.size(); i++) {
+        addObservableResultReport(observableResultReports.at(i));
+    }
 }
 
 std::string ObservableResultListReport::toString() const {
@@ -112,4 +130,12 @@ std::string ObservableResultListReport::toString() const {
     }
 
     return os.str();
+}
+
+void ObservableResultListReport::testComparison() {
+    m_comparisonResult = m_sameSize;
+    for (unsigned int i = 0; i < getSize(); i++) {
+        m_comparisonResult = m_comparisonResult
+                && getObservableResultReport(i).isEqual();
+    }
 }

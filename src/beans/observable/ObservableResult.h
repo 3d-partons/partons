@@ -47,7 +47,7 @@ public:
     double getValue() const;
 
 private:
-    std::string m_observbleName;
+    std::string m_observableName;
 
     double m_value;
     double m_phi;

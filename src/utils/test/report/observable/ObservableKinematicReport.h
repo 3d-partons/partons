@@ -20,6 +20,15 @@
 class ObservableKinematicReport: public ComparisonReport {
 public:
     ObservableKinematicReport();
+    ObservableKinematicReport(const DoubleComparisonReport& xBReport,
+            const DoubleComparisonReport& tReport,
+            const DoubleComparisonReport& q2Report,
+            const std::vector<DoubleComparisonReport>& listOfPhiReport);
+    ObservableKinematicReport(const DoubleComparisonReport& xBReport,
+            const DoubleComparisonReport& tReport,
+            const DoubleComparisonReport& q2Report,
+            const std::vector<DoubleComparisonReport>& listOfPhiReport,
+            bool sameSizeListOfPhi);
     virtual ~ObservableKinematicReport();
 
     virtual std::string toString() const;
@@ -32,12 +41,17 @@ public:
     const std::vector<DoubleComparisonReport>& getListOfPhiReport() const;
     void setListOfPhiReport(
             const std::vector<DoubleComparisonReport>& listOfPhiReport);
+    bool isSameSizeListOfPhi() const;
+    void setSameSizeListOfPhi(bool sameSizeListOfPhi);
 
 private:
     DoubleComparisonReport m_xBReport;
     DoubleComparisonReport m_tReport;
     DoubleComparisonReport m_Q2Report;
     std::vector<DoubleComparisonReport> m_listOfPhiReport;
+    bool m_sameSizeListOfPhi;
+
+    void testComparison();
 };
 
 #endif /* OBSERVABLEKINEMATICREPORT_H_ */
