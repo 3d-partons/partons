@@ -12,7 +12,11 @@
  * @brief
  */
 
+#include <Qt/qsqlquery.h>
+
 #include "../../../BaseObject.h"
+
+class GPDKinematic;
 
 class GPDKinematicDao: public BaseObject {
 public:
@@ -22,6 +26,11 @@ public:
     int insert(double x, double xi, double t, double MuF2, double MuR2) const;
 
     int select(double x, double xi, double t, double MuF2, double MuR2) const;
+
+    GPDKinematic getKinematicById(const int id) const;
+
+private:
+    GPDKinematic getGPDKinematicFromQuery(QSqlQuery &query) const;
 };
 
 #endif /* GPD_KINEMATIC_DAO */

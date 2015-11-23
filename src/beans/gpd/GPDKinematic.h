@@ -14,12 +14,12 @@
 
 #include <string>
 
-#include "../../BaseObject.h"
 #include "../kinematic/KinematicType.h"
+#include "../Kinematic.h"
 
 class ParameterList;
 
-class GPDKinematic: public BaseObject {
+class GPDKinematic: public Kinematic {
 public:
     static const std::string GPD_KINEMATIC_PARAMETER_NAME_X;
     static const std::string GPD_KINEMATIC_PARAMETER_NAME_XI;

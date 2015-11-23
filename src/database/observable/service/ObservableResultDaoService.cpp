@@ -63,7 +63,7 @@ int ObservableResultDaoService::insertWithoutTransaction(
 
     //Then store observableResult in database
     m_observableResultDao.insert(observableResult.getObservableName(),
-            observableResult.getValue(), observableResult.getPhi(),
+            observableResult.getValue(),
             observableResult.getStatError().getLowerBound(),
             observableResult.getStatError().getUpperBound(),
             observableResult.getSystError().getLowerBound(),
@@ -104,6 +104,6 @@ int ObservableResultDaoService::insert(
 
 ObservableResultList ObservableResultDaoService::getObservableResultListByComputationId(
         const int computationId) const {
-//TODO implement
-    return ObservableResultList();
+    return m_observableResultDao.getObservableResultListByComputationId(
+            computationId);
 }

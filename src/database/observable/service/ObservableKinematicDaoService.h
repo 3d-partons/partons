@@ -29,6 +29,8 @@ public:
     ObservableKinematicList getKinematicListByComputationId(
             int computationId) const;
 
+    ObservableKinematic getKinematicById(const int kinematicId) const;
+
 private:
     ObservableKinematicDao m_observableKinematicDao;
 };

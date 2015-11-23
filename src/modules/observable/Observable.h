@@ -14,13 +14,12 @@
 
 #include <NumA/linear_algebra/vector/Vector3D.h>
 #include <string>
-#include <vector>
 
 #include "../../beans/observable/ObservableChannel.h"
 #include "../../beans/observable/ObservableType.h"
 #include "../process/DVCSModule.h"
 
-class ObservableResultList;
+class ObservableResult;
 
 class Observable: public BaseObject {
 
@@ -50,8 +49,7 @@ public:
 
     double beamCharge, NumA::Vector3D targetPolarization);
 
-    ObservableResultList compute(double xB, double t, double Q2,
-            std::vector<double> listOfPhi);
+    ObservableResult compute(double xB, double t, double Q2, double phi);
 
     virtual double compute(ProcessModule* pDVCSModule, double phi);
 

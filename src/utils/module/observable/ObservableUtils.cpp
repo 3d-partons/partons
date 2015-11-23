@@ -1,10 +1,3 @@
-/*
- * ObservableUtils.cpp
- *
- *  Created on: Nov 18, 2015
- *      Author: debian
- */
-
 #include "ObservableUtils.h"
 
 #include <algorithm>

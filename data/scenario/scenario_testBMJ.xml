@@ -17,7 +17,7 @@
 			<param name="xB" value="0.1763" />
 			<param name="t" value="-0.1346" />
 			<param name="Q2" value="2" />
-			<param name="phi" value="7.5|22.5|37.5" />
+			<param name="phi" value="7.5" />
 		</ObservableKinematic>
 
 		<Observable>
@@ -56,7 +56,7 @@
 			<param name="xB" value="0.1763" />
 			<param name="t" value="-0.1346" />
 			<param name="Q2" value="2" />
-			<param name="phi" value="7.5|22.5|37.5" />
+			<param name="phi" value="7.5" />
 		</ObservableKinematic>
 
 		<Observable>

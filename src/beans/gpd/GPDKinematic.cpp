@@ -11,18 +11,18 @@ const std::string GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUF2 = "MuF2";
 const std::string GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUR2 = "MuR2";
 
 GPDKinematic::GPDKinematic() :
-        BaseObject("GPDKinematic"), m_kinematicType(KinematicType::THEO), m_x(
+        Kinematic("GPDKinematic"), m_kinematicType(KinematicType::THEO), m_x(
                 0.), m_xi(0.), m_t(0.), m_MuF2(0.), m_MuR2(0.) {
 }
 
 GPDKinematic::GPDKinematic(double x, double xi, double t, double MuF2,
         double MuR2) :
-        BaseObject("GPDKinematic"), m_kinematicType(KinematicType::THEO), m_x(
-                x), m_xi(xi), m_t(t), m_MuF2(MuF2), m_MuR2(MuR2) {
+        Kinematic("GPDKinematic"), m_kinematicType(KinematicType::THEO), m_x(x), m_xi(
+                xi), m_t(t), m_MuF2(MuF2), m_MuR2(MuR2) {
 }
 
 GPDKinematic::GPDKinematic(ParameterList &parameterList) :
-        BaseObject("GPDKinematic"), m_kinematicType(KinematicType::THEO), m_x(
+        Kinematic("GPDKinematic"), m_kinematicType(KinematicType::THEO), m_x(
                 0.), m_xi(0.), m_t(0.), m_MuF2(0.), m_MuR2(0.) {
 
     if (parameterList.isAvailable(
@@ -61,8 +61,9 @@ GPDKinematic::~GPDKinematic() {
 }
 
 std::string GPDKinematic::toString() {
-    return Formatter() << "m_x = " << m_x << " m_xi = " << m_xi << "m_t = "
-            << m_t << " m_MuF = " << m_MuF2 << " m_MuR = " << m_MuR2;
+    return Formatter() << Kinematic::toString() << " m_x = " << m_x
+            << " m_xi = " << m_xi << " m_t = " << m_t << " m_MuF2 = " << m_MuF2
+            << "(Gev2) m_MuR2 = " << m_MuR2 << "(Gev2)";
 }
 
 // ##### GETTERS & SETTERS #####

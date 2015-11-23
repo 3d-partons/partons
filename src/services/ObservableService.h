@@ -18,13 +18,13 @@
 #include "../beans/observable/ObservableKinematicList.h"
 #include "../ServiceObject.h"
 
-class ObservableResultListReport;
-class Tolerances;
 class DVCSConvolCoeffFunctionModule;
 class DVCSModule;
 class Observable;
-class ObservableKinematic;
+class ObservableResult;
 class ObservableResultList;
+class ObservableResultListReport;
+class Tolerances;
 
 class ObservableService: public ServiceObject {
 public:
@@ -43,7 +43,7 @@ public:
      */
     virtual ~ObservableService();
 
-    ObservableResultList computeDVCSObservable(DVCSModule* pDVCSModule,
+    ObservableResult computeDVCSObservable(DVCSModule* pDVCSModule,
             Observable* pObservable,
             const ObservableKinematic &observableKinematic,
             DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule);
@@ -62,7 +62,7 @@ public:
 
 private:
     //TODO improve object copy
-    ObservableResultList computeDVCSObservableTask(Task &task);
+    ObservableResult computeDVCSObservableTask(Task &task);
     ObservableResultList computeManyKinematicOneModelTask(Task &task);
 
 };

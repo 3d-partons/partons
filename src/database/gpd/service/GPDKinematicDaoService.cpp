@@ -17,3 +17,7 @@ int GPDKinematicDaoService::select(const GPDKinematic &gpdKinematic) const {
     return m_GPDKinematicDao.select(gpdKinematic.getX(), gpdKinematic.getXi(),
             gpdKinematic.getT(), gpdKinematic.getMuF2(), gpdKinematic.getMuR2());
 }
+
+GPDKinematic GPDKinematicDaoService::getKinematicById(const int id) const {
+    return m_GPDKinematicDao.getKinematicById(id);
+}

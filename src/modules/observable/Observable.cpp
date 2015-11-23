@@ -2,7 +2,6 @@
 
 #include "../../beans/observable/ObservableKinematic.h"
 #include "../../beans/observable/ObservableResult.h"
-#include "../../beans/observable/ObservableResultList.h"
 #include "../../utils/math/MathUtils.h"
 #include "../../utils/ParameterList.h"
 #include "../../utils/stringUtils/Formatter.h"
@@ -33,10 +32,10 @@ Observable::Observable(const Observable& other) :
 Observable::~Observable() {
 }
 
-ObservableResultList Observable::compute(double xB, double t, double Q2,
-        std::vector<double> listOfPhi) {
+ObservableResult Observable::compute(double xB, double t, double Q2,
+        double phi) {
 
-    ObservableResultList observableResultList;
+    ObservableResult observableResult;
 
     m_pProcess->computeConvolCoeffFunction(xB, t, Q2);
 
@@ -44,42 +43,30 @@ ObservableResultList Observable::compute(double xB, double t, double Q2,
     if (m_observableType == ObservableType::FOURIER) {
 
         //TODO improve
-        ObservableResult observableResult(getClassName(), compute());
+        observableResult = ObservableResult(getClassName(), compute());
         observableResult.setComputationModuleName(m_pProcess->getClassName());
         observableResult.setObservableType(m_observableType);
-        observableResult.setKinematic(
-                ObservableKinematic(xB, t, Q2, listOfPhi));
-        observableResultList.add(observableResult);
+        observableResult.setKinematic(ObservableKinematic(xB, t, Q2, phi));
+
     } else
     // check if this observable is a phi observable
     if (m_observableType == ObservableType::PHI) {
-        // if listOfPhi not empty then run computation of phi observable
-        if (!listOfPhi.empty()) {
-            for (unsigned int i = 0; i != listOfPhi.size(); i++) {
 
-                //TODO improve
-                ObservableResult observableResult(getClassName(), listOfPhi[i],
-                        compute(m_pProcess,
-                                MathUtils::convertDegreeToRadian(
-                                        listOfPhi[i])));
-                observableResult.setComputationModuleName(m_pProcess->getClassName());
-                observableResult.setObservableType(m_observableType);
-                observableResult.setKinematic(
-                        ObservableKinematic(xB, t, Q2, listOfPhi));
-                observableResultList.add(observableResult);
-            }
-        } else {
-            throwException(__func__,
-                    Formatter()
-                            << "The list of phi is empty ; You must provide at least one phi value to compute a phi dependencies observable");
-        }
-    } else {
+        //TODO improve
+        observableResult = ObservableResult(getClassName(),
+                compute(m_pProcess, MathUtils::convertDegreeToRadian(phi)));
+        observableResult.setComputationModuleName(m_pProcess->getClassName());
+        observableResult.setObservableType(m_observableType);
+        observableResult.setKinematic(ObservableKinematic(xB, t, Q2, phi));
+    }
+
+    else {
         throwException(__func__,
                 Formatter() << "Unknow observable type : "
                         << ObservableType(m_observableType).toString());
     }
 
-    return observableResultList;
+    return observableResult;
 }
 
 double Observable::compute(ProcessModule* pDVCSModule, double phi) {

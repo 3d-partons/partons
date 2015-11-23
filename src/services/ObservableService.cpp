@@ -1,8 +1,7 @@
 #include "ObservableService.h"
 
-#include <vector>
-
 #include "../beans/automation/Task.h"
+#include "../beans/observable/ObservableResult.h"
 #include "../beans/observable/ObservableResultList.h"
 #include "../BaseObjectRegistry.h"
 #include "../database/observable/service/ObservableResultDaoService.h"
@@ -46,7 +45,7 @@ void ObservableService::computeTask(Task &task) {
 
     if (StringUtils::equals(task.getFunctionName(),
             ObservableService::FUNCTION_NAME_COMPUTE_DVCS_OBSERVABLE)) {
-        observableResultList = computeDVCSObservableTask(task);
+        observableResultList.add(computeDVCSObservableTask(task));
     } else if (StringUtils::equals(task.getFunctionName(),
             ObservableService::FUNCTION_NAME_COMPUTE_MANY_KINEMATIC_ONE_MODEL)) {
         observableResultList = computeManyKinematicOneModelTask(task);
@@ -73,7 +72,7 @@ void ObservableService::computeTask(Task &task) {
     }
 }
 
-ObservableResultList ObservableService::computeDVCSObservable(
+ObservableResult ObservableService::computeDVCSObservable(
         DVCSModule* pDVCSModule, Observable* pObservable,
         const ObservableKinematic &observableKinematic,
         DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule) {
@@ -84,7 +83,7 @@ ObservableResultList ObservableService::computeDVCSObservable(
 
     return pObservable->compute(observableKinematic.getXB(),
             observableKinematic.getT(), observableKinematic.getQ2(),
-            observableKinematic.getListOfPhi());
+            observableKinematic.getPhi());
 }
 
 ObservableResultList ObservableService::computeManyKinematicOneModel(
@@ -103,7 +102,7 @@ ObservableResultList ObservableService::computeManyKinematicOneModel(
     return results;
 }
 
-ObservableResultList ObservableService::computeDVCSObservableTask(Task& task) {
+ObservableResult ObservableService::computeDVCSObservableTask(Task& task) {
 
     // create ScaleModule
     ScaleModule* pScaleModule = 0;
@@ -200,8 +199,8 @@ ObservableResultList ObservableService::computeDVCSObservableTask(Task& task) {
     pDVCSModule->setPScaleModule(pScaleModule);
     pDVCSModule->setPXiConverterModule(pXiConverterModule);
 
-    ObservableResultList result = computeDVCSObservable(pDVCSModule,
-            pObservable, kinematic, pDVCSConvolCoeffFunctionModule);
+    ObservableResult result = computeDVCSObservable(pDVCSModule, pObservable,
+            kinematic, pDVCSConvolCoeffFunctionModule);
 
     info(__func__,
             Formatter() << task.getFunctionName() << "("

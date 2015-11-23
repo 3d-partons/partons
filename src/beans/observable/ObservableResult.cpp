@@ -3,19 +3,13 @@
 #include "../../utils/stringUtils/Formatter.h"
 
 ObservableResult::ObservableResult() :
-        Result(), m_observableName("UNDEFINED"), m_value(0.), m_phi(0.), m_totalError(
-                0.), m_observableType(ObservableType::UNDEFINED) {
+        Result(), m_observableName("UNDEFINED"), m_value(0.), m_totalError(0.), m_observableType(
+                ObservableType::UNDEFINED) {
 }
 
 ObservableResult::ObservableResult(const std::string &observableName,
         double value) :
-        Result(), m_observableName(observableName), m_phi(0.), m_value(value), m_totalError(
-                0.), m_observableType(ObservableType::UNDEFINED) {
-}
-
-ObservableResult::ObservableResult(const std::string &observableName,
-        double phi, double value) :
-        Result(), m_observableName(observableName), m_phi(phi), m_value(value), m_totalError(
+        Result(), m_observableName(observableName), m_value(value), m_totalError(
                 0.), m_observableType(ObservableType::UNDEFINED) {
 }
 
@@ -27,20 +21,13 @@ std::string ObservableResult::toString() {
 
     formatter << m_kinematic.toStringWithoutPhi();
 
-    std::string observableName;
-    if (m_observableName == "UNDEFINED") {
-        observableName = "Observable";
-    } else {
-        observableName = m_observableName;
-    }
-
     if (m_observableType == ObservableType::PHI) {
-        formatter << " phi = " << m_phi << " (degree) : " << observableName << " = "
-                << m_value;
+        formatter << " phi = " << m_kinematic.getPhi()
+                << " (degree) - observable = " << m_value;
     } else if (m_observableType == ObservableType::FOURIER) {
-        formatter << " " << observableName << " = " << m_value;
+        formatter << " observable = " << m_value;
     } else {
-        formatter << "unknow observable = " << m_value;
+        formatter << " unknow observable = " << m_value;
     }
 
     return formatter.str();
@@ -62,10 +49,6 @@ const std::string& ObservableResult::getObservableName() const {
     return m_observableName;
 }
 
-double ObservableResult::getPhi() const {
-    return m_phi;
-}
-
 const ErrorBar& ObservableResult::getStatError() const {
     return m_statError;
 }
@@ -80,10 +63,6 @@ double ObservableResult::getTotalError() const {
 
 double ObservableResult::getValue() const {
     return m_value;
-}
-
-void ObservableResult::setPhi(double phi) {
-    m_phi = phi;
 }
 
 void ObservableResult::setKinematic(const ObservableKinematic &kinematic) {

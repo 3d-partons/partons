@@ -12,9 +12,11 @@
  * @brief
  */
 
-#include <string>
+#include <Qt/qsqlquery.h>
 
 #include "../../../BaseObject.h"
+
+class ObservableKinematic;
 
 class ObservableKinematicList;
 
@@ -23,14 +25,17 @@ public:
     ObservableKinematicDao();
     virtual ~ObservableKinematicDao();
 
-    int insert(double xB, double t, double Q2,
-            const std::string &listOfPhi) const;
+    int insert(double xB, double t, double Q2, double phi) const;
 
-    int select(double xB, double t, double Q2,
-            const std::string &listOfPhi_str) const;
+    int select(double xB, double t, double Q2, double phi) const;
 
     ObservableKinematicList getKinematicListByComputationId(
             int computationId) const;
+
+    ObservableKinematic getKinematicById(const int kinematicId) const;
+
+private:
+    ObservableKinematic getObservableKinematicFromQuery(QSqlQuery &query) const;
 };
 
 #endif /* OBSERVABLE_KINEMATIC_DAO_H */

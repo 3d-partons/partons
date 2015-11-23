@@ -13,7 +13,6 @@
  */
 
 #include <string>
-#include <vector>
 
 #include "../Kinematic.h"
 
@@ -39,13 +38,12 @@ public:
      * @param xB Bjorken variable
      * @param t Mandelstam variable, momentum transfer on the hadron target (in GeV^2)
      * @param Q2 Virtuality of the photon in Born approximation (in GeV^2)
-     * @param listOfPhi list of angles between leptonic and hadronic planes (in degrees, Trento convention)
+     * @param phi angle between leptonic and hadronic planes (in degrees, Trento convention)
      */
-    ObservableKinematic(double xB, double t, double Q2,
-            std::vector<double> listOfPhi);
+    ObservableKinematic(double xB, double t, double Q2, double phi);
 
     ObservableKinematic(const std::string &xB, const std::string &t,
-            const std::string &Q2, const std::string &listOfPhi);
+            const std::string &Q2, const std::string &phi);
 
     /**
      * Default destructor
@@ -61,27 +59,23 @@ public:
 
     const std::string toStringWithoutPhi() const;
 
-    const std::string getListOfPhi_str() const;
-
-    void sortListOfPhi();
-
     // ##### GETTERS & SETTERS #####
 
-    const std::vector<double>& getListOfPhi() const;
-    void setListOfPhi(const std::vector<double>& listOfPhi);
     double getQ2() const;
     void setQ2(double Q2);
     double getT() const;
     void setT(double t);
     double getXB() const;
     void setXB(double xB);
+    double getPhi() const;
+    void setPhi(double phi);
 
 private:
     // TODO : What do we do when we consider Fourier harmonics of DVCS observables?
     double m_xB;    ///< Bjorken variable
     double m_t; ///< Mandelstam variable, momentum transfer on the hadron target (in GeV^2)
     double m_Q2;  ///< Virtuality of the photon in Born approximation (in GeV^2)
-    std::vector<double> m_listOfPhi; ///<  Angles between leptonic and hadronic planes (in degrees, Trento convention)
+    double m_phi; ///<  Angle between leptonic and hadronic planes (in degrees, Trento convention)
 };
 
 #endif /* OBSERVABLE_KINEMATIC_H */

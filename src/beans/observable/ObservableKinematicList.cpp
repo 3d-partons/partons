@@ -57,10 +57,6 @@ const ObservableKinematic& ObservableKinematicList::operator [](
 }
 
 void ObservableKinematicList::sort() {
-    for (unsigned int i = 0; i != m_kinematicList.size(); i++) {
-        m_kinematicList[i].sortListOfPhi();
-    }
-
     // sort vector of kineamtic (ObservableKinematic) ; ascending order by id
     std::sort(m_kinematicList.begin(), m_kinematicList.end());
 }

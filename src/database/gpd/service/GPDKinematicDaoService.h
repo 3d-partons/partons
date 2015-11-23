@@ -25,6 +25,8 @@ public:
     int insert(const GPDKinematic &gpdKinematic) const;
     int select(const GPDKinematic &gpdKinematic) const;
 
+    GPDKinematic getKinematicById(const int id) const;
+
 private:
     GPDKinematicDao m_GPDKinematicDao;
 };

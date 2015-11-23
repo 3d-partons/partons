@@ -12,9 +12,12 @@
  * @brief
  */
 
+#include <Qt/qsqlquery.h>
 #include <string>
 
 #include "../../../BaseObject.h"
+
+class ObservableResult;
 
 class ObservableResultList;
 
@@ -24,13 +27,16 @@ public:
     virtual ~ObservableResultDao();
 
     int insert(const std::string &observableName, double observableValue,
-            double phi, double statErrorLB, double statErrorUB,
-            double systErrorLB, double systErrorUB, double errorTotal,
+            double statErrorLB, double statErrorUB, double systErrorLB,
+            double systErrorUB, double errorTotal,
             const std::string &computationModuleName, int kinematicId,
             int computationId) const;
 
     ObservableResultList getObservableResultListByComputationId(
             const int computationId) const;
+
+private:
+    ObservableResult getObservableResultFromQuery(QSqlQuery &query) const;
 };
 
 #endif /* OBSERVABLE_RESULT_DAO_H */
