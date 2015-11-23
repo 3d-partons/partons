@@ -14,7 +14,10 @@ id INTEGER NOT NULL PRIMARY KEY,
 short_name VARCHAR(10),
 long_name VARCHAR(255));
 
-
+CREATE TABLE observable_type (
+id INTEGER NOT NULL PRIMARY KEY,
+short_name VARCHAR(10),
+long_name VARCHAR(255));
 
 
 INSERT INTO gpd_type (id, short_name, long_name)
@@ -58,3 +61,13 @@ VALUES ('5', 'b', 'BOTTOM');
 INSERT INTO quark_flavor (id, short_name, long_name)
 VALUES ('6', 't', 'TOP');
 
+
+
+INSERT INTO observable_type (id, short_name, long_name)
+VALUES ('0', 'UNDEFINED', 'UNDEFINED');
+
+INSERT INTO observable_type (id, short_name, long_name)
+VALUES ('1', 'PHI', 'PHI');
+
+INSERT INTO observable_type (id, short_name, long_name)
+VALUES ('2', 'FOURIER', 'FOURIER');

@@ -18,7 +18,6 @@
 #include "../../../BaseObject.h"
 
 class ObservableResult;
-
 class ObservableResultList;
 
 class ObservableResultDao: public BaseObject {
@@ -29,8 +28,8 @@ public:
     int insert(const std::string &observableName, double observableValue,
             double statErrorLB, double statErrorUB, double systErrorLB,
             double systErrorUB, double errorTotal,
-            const std::string &computationModuleName, int kinematicId,
-            int computationId) const;
+            const std::string &computationModuleName, int observableTypeId,
+            int kinematicId, int computationId) const;
 
     ObservableResultList getObservableResultListByComputationId(
             const int computationId) const;

@@ -69,8 +69,8 @@ int ObservableResultDaoService::insertWithoutTransaction(
             observableResult.getSystError().getLowerBound(),
             observableResult.getSystError().getUpperBound(),
             observableResult.getTotalError(),
-            observableResult.getComputationModuleName(), kinematicId,
-            computationId);
+            observableResult.getComputationModuleName(),
+            observableResult.getObservableType(), kinematicId, computationId);
 
     return computationId;
 }

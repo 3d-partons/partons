@@ -17,7 +17,7 @@
 class ObservableType {
 public:
     enum Type {
-        UNDEFINED = 0, PHI, FOURIER
+        UNDEFINED = 0, PHI = 1, FOURIER = 2
     };
 
     ObservableType();
