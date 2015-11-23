@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <string>
-#include <vector>
 
 #include "../../../beans/observable/ObservableResult.h"
 #include "../../../beans/observable/ObservableResultList.h"
@@ -82,24 +81,12 @@ ObservableKinematicReport ObservableUtils::compareObservableKinematics(
     DoubleComparisonReport Q2Report = MathUtils::compare(
             lhsObservableKinematic.getQ2(), rhsObservableKinematic.getQ2(),
             tolerances);
-    std::vector<DoubleComparisonReport> listOfPhiReport;
-    bool sameSizeListOfPhi = true;
-
-//    bool sameSizeListOfPhi = lhsObservableKinematic.getListOfPhi().size()
-//            == rhsObservableKinematic.getListOfPhi().size();
-//    unsigned int sizeListOfPhi = std::min(
-//            lhsObservableKinematic.getListOfPhi().size(),
-//            rhsObservableKinematic.getListOfPhi().size());
-//    for (unsigned int i = 0; i < sizeListOfPhi; i++) {
-//        listOfPhiReport.push_back(
-//                MathUtils::compare(lhsObservableKinematic.getListOfPhi().at(i),
-//                        rhsObservableKinematic.getListOfPhi().at(i),
-//                        tolerances));
-//    }
+    DoubleComparisonReport phiReport = MathUtils::compare(
+            lhsObservableKinematic.getPhi(), rhsObservableKinematic.getPhi(),
+            tolerances);
 
     ObservableKinematicReport observableKinematicReport =
-            ObservableKinematicReport(xBReport, tReport, Q2Report,
-                    listOfPhiReport, sameSizeListOfPhi);
+            ObservableKinematicReport(xBReport, tReport, Q2Report, phiReport);
 
     return observableKinematicReport;
 }

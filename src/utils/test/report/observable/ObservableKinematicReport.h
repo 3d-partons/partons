@@ -23,12 +23,7 @@ public:
     ObservableKinematicReport(const DoubleComparisonReport& xBReport,
             const DoubleComparisonReport& tReport,
             const DoubleComparisonReport& q2Report,
-            const std::vector<DoubleComparisonReport>& listOfPhiReport);
-    ObservableKinematicReport(const DoubleComparisonReport& xBReport,
-            const DoubleComparisonReport& tReport,
-            const DoubleComparisonReport& q2Report,
-            const std::vector<DoubleComparisonReport>& listOfPhiReport,
-            bool sameSizeListOfPhi);
+            const DoubleComparisonReport& phiReport);
     virtual ~ObservableKinematicReport();
 
     virtual std::string toString() const;
@@ -38,18 +33,14 @@ public:
     void setTReport(const DoubleComparisonReport& tReport);
     const DoubleComparisonReport& getXBReport() const;
     void setXBReport(const DoubleComparisonReport& xBReport);
-    const std::vector<DoubleComparisonReport>& getListOfPhiReport() const;
-    void setListOfPhiReport(
-            const std::vector<DoubleComparisonReport>& listOfPhiReport);
-    bool isSameSizeListOfPhi() const;
-    void setSameSizeListOfPhi(bool sameSizeListOfPhi);
+    const DoubleComparisonReport& getPhiReport() const;
+    void setPhiReport(const DoubleComparisonReport& phiReport);
 
 private:
     DoubleComparisonReport m_xBReport;
     DoubleComparisonReport m_tReport;
     DoubleComparisonReport m_Q2Report;
-    std::vector<DoubleComparisonReport> m_listOfPhiReport;
-    bool m_sameSizeListOfPhi;
+    DoubleComparisonReport m_phiReport;
 
     void testComparison();
 };
