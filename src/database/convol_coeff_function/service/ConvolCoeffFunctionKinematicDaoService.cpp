@@ -20,3 +20,8 @@ int ConvolCoeffFunctionKinematicDaoService::getKinematicId(
             kinematic.getT(), kinematic.getQ2(), kinematic.getMuF2(),
             kinematic.getMuR2());
 }
+
+DVCSConvolCoeffFunctionKinematic ConvolCoeffFunctionKinematicDaoService::getKinematicById(
+        const int id) const {
+    return m_convolCoeffFunctionKinematicDao.getKinematicById(id);
+}

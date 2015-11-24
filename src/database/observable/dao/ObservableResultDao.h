@@ -15,7 +15,7 @@
 #include <Qt/qsqlquery.h>
 #include <string>
 
-#include "../../../BaseObject.h"
+#include "ObservableKinematicDao.h"
 
 class ObservableResult;
 class ObservableResultList;
@@ -35,7 +35,9 @@ public:
             const int computationId) const;
 
 private:
-    ObservableResult getObservableResultFromQuery(QSqlQuery &query) const;
+    ObservableKinematicDao m_observableKinematicDao;
+
+    ObservableResult getObservableResultFromQuery(QSqlQuery& query) const;
 };
 
 #endif /* OBSERVABLE_RESULT_DAO_H */

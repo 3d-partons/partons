@@ -4,6 +4,7 @@
 #include "../../utils/ParameterList.h"
 #include "../../utils/stringUtils/Formatter.h"
 #include "../../utils/stringUtils/StringUtils.h"
+#include "../../utils/test/ComparisonReport.h"
 
 const std::string ObservableKinematic::PARAMETER_NAME_XB = "xB";
 const std::string ObservableKinematic::PARAMETER_NAME_T = "t";
@@ -70,9 +71,8 @@ ObservableKinematic::~ObservableKinematic() {
 std::string ObservableKinematic::toString() const {
     Formatter formatter;
 
-    formatter << toStringWithoutPhi() << '\n';
-
-    formatter << "m_phi = " << m_phi << "\n";
+    formatter << toStringWithoutPhi() << " m_phi = " << m_phi << " (degree)"
+            << "\n";
 
     return formatter;
 }
@@ -118,4 +118,11 @@ double ObservableKinematic::getPhi() const {
 
 void ObservableKinematic::setPhi(double phi) {
     m_phi = phi;
+}
+
+ComparisonReport ObservableKinematic::compare(const ObservableKinematic& other,
+        const Tolerances& tolerances) const {
+    ComparisonReport report;
+
+    return report;
 }

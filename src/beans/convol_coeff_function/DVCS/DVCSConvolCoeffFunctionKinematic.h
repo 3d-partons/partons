@@ -14,11 +14,11 @@
 
 #include <string>
 
-#include "../../../BaseObject.h"
+#include "../../Kinematic.h"
 
 class ParameterList;
 
-class DVCSConvolCoeffFunctionKinematic: public BaseObject {
+class DVCSConvolCoeffFunctionKinematic: public Kinematic {
 public:
     DVCSConvolCoeffFunctionKinematic();
     DVCSConvolCoeffFunctionKinematic(ParameterList &parameterList);

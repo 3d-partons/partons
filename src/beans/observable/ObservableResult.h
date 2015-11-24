@@ -27,6 +27,9 @@ public:
 
     virtual std::string toString();
 
+    ComparisonReport compare(const ObservableResult &other,
+            const Tolerances &tolerances) const;
+
     void setKinematic(const ObservableKinematic &kinematic);
     void setStatError(const ErrorBar& statError);
     void setSystError(const ErrorBar& systError);

@@ -23,6 +23,8 @@ public:
     int insert(const DVCSConvolCoeffFunctionKinematic &kinematic) const;
     int getKinematicId(const DVCSConvolCoeffFunctionKinematic &kinematic) const;
 
+    DVCSConvolCoeffFunctionKinematic getKinematicById(const int id) const;
+
 private:
     ConvolCoeffFunctionKinematicDao m_convolCoeffFunctionKinematicDao;
 };

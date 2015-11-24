@@ -18,3 +18,8 @@ bool ComparisonReport::isEqual() const {
 void ComparisonReport::setComparisonResult(bool comparisonResult) {
     m_comparisonResult = comparisonResult;
 }
+
+//TODO implement
+std::string ComparisonReport::toString() {
+    return "";
+}

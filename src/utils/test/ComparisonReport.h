@@ -22,7 +22,7 @@ public:
     virtual ~ComparisonReport();
 
     bool isEqual() const;
-    virtual std::string toString() const = 0;
+    virtual std::string toString();
     void setComparisonResult(bool comparisonResult);
 
 protected:

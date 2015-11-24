@@ -5,8 +5,11 @@
 #include <QtCore/qstring.h>
 #include <QtSql/qsqlrecord.h>
 
+#include "../../../beans/observable/ObservableKinematic.h"
 #include "../../../beans/observable/ObservableResult.h"
 #include "../../../beans/observable/ObservableResultList.h"
+#include "../../../beans/observable/ObservableType.h"
+#include "../../../utils/math/ErrorBar.h"
 #include "../../../utils/stringUtils/Formatter.h"
 #include "../../DatabaseManager.h"
 
@@ -56,7 +59,7 @@ int ObservableResultDao::insert(const std::string& observableName,
 ObservableResultList ObservableResultDao::getObservableResultListByComputationId(
         const int computationId) const {
 
-    ObservableResultList observableResultList;
+    ObservableResultList results;
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
@@ -67,7 +70,7 @@ ObservableResultList ObservableResultDao::getObservableResultListByComputationId
 
     if (query.exec()) {
         while (query.next()) {
-            observableResultList.add(getObservableResultFromQuery(query));
+            results.add(getObservableResultFromQuery(query));
         }
     } else {
         error(__func__, Formatter() << query.lastError().text().toStdString());
@@ -75,7 +78,7 @@ ObservableResultList ObservableResultDao::getObservableResultListByComputationId
 
     query.clear();
 
-    return observableResultList;
+    return results;
 }
 
 ObservableResult ObservableResultDao::getObservableResultFromQuery(
@@ -85,8 +88,15 @@ ObservableResult ObservableResultDao::getObservableResultFromQuery(
     int field_id = query.record().indexOf("id");
     int field_observable_name = query.record().indexOf("observable_name");
     int field_observable_value = query.record().indexOf("observable_value");
+    int field_stat_error_lb = query.record().indexOf("stat_error_lb");
+    int field_stat_error_ub = query.record().indexOf("stat_error_ub");
+    int field_syst_error_lb = query.record().indexOf("syst_error_lb");
+    int field_syst_error_ub = query.record().indexOf("syst_error_ub");
+    int field_total_error = query.record().indexOf("total_error");
     int field_computation_module_name = query.record().indexOf(
             "computation_module_name");
+    int field_observable_type_id = query.record().indexOf("observable_type_id");
+    int field_kinematic_id = query.record().indexOf("observable_kinematic_id");
 
     int id = query.value(field_id).toInt();
     std::string observable_name =
@@ -95,8 +105,25 @@ ObservableResult ObservableResultDao::getObservableResultFromQuery(
     int computation_module_name =
             query.value(field_computation_module_name).toInt();
 
+    ErrorBar statError(query.value(field_stat_error_ub).toDouble(),
+            query.value(field_stat_error_lb).toDouble());
+    ErrorBar systError(query.value(field_syst_error_ub).toDouble(),
+            query.value(field_syst_error_lb).toDouble());
+
     result = ObservableResult(observable_name, observable_value);
-    // result.setId(id);
+    result.setStatError(statError);
+    result.setSystError(systError);
+    result.setTotalError(query.value(field_total_error).toDouble());
+    result.setObservableType(
+            static_cast<ObservableType::Type>(query.value(
+                    field_observable_type_id).toInt()));
+
+    result.setKinematic(
+            m_observableKinematicDao.getKinematicById(
+                    query.value(field_kinematic_id).toInt()));
+
+    //TODO implement ; storing id
+    //result.setId(id);
 
     return result;
 }

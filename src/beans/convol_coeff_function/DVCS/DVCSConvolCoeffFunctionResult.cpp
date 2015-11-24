@@ -37,14 +37,15 @@ std::complex<double> DVCSConvolCoeffFunctionResult::get(
 
 std::string DVCSConvolCoeffFunctionResult::toString() {
     Formatter formatter;
-    formatter << "[" << getClassName() << "]" << "\n";
-    formatter << m_kinematic.toString() << "\n";
+    formatter << "[" << getClassName() << "] computed by "
+            << getComputationModuleName() << '\n';
+    formatter << "kinematic(" << m_kinematic.toString() << ") \n";
 
     for (m_it = m_resultsByGPDType.begin(); m_it != m_resultsByGPDType.end();
             m_it++) {
-        formatter << "CFF_" << GPDType(m_it->first).toString() << " = "
-                << (m_it->second).real() << ", " << (m_it->second).imag()
-                << "\n";
+        formatter << " CFF_" << GPDType(m_it->first).toString() << " = "
+                << (m_it->second).real() << " ; " << (m_it->second).imag()
+                << '\n' << '\n';
     }
 
     return formatter.str();

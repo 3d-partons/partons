@@ -7,13 +7,13 @@
 #include "../../observable/ObservableKinematic.h"
 
 DVCSConvolCoeffFunctionKinematic::DVCSConvolCoeffFunctionKinematic() :
-        BaseObject("DVCSConvolCoeffFunctionKinematic"), m_binId(0), m_xi(0.), m_t(
+        Kinematic("DVCSConvolCoeffFunctionKinematic"), m_binId(0), m_xi(0.), m_t(
                 0.), m_Q2(0.), m_MuF2(0.), m_MuR2(0.) {
 }
 
 DVCSConvolCoeffFunctionKinematic::DVCSConvolCoeffFunctionKinematic(
         ParameterList &parameterList) :
-        BaseObject("DVCSConvolCoeffFunctionKinematic"), m_binId(0), m_xi(0.), m_t(
+        Kinematic("DVCSConvolCoeffFunctionKinematic"), m_binId(0), m_xi(0.), m_t(
                 0.), m_Q2(0.), m_MuF2(0.), m_MuR2(0.) {
     if (parameterList.isAvailable(
             GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI)) {
@@ -48,15 +48,15 @@ DVCSConvolCoeffFunctionKinematic::DVCSConvolCoeffFunctionKinematic(
 
 DVCSConvolCoeffFunctionKinematic::DVCSConvolCoeffFunctionKinematic(double xi,
         double t, double Q2, double MuF2, double MuR2) :
-        BaseObject("DVCSConvolCoeffFunctionKinematic"), m_binId(0), m_xi(xi), m_t(
+        Kinematic("DVCSConvolCoeffFunctionKinematic"), m_binId(0), m_xi(xi), m_t(
                 t), m_Q2(Q2), m_MuF2(MuF2), m_MuR2(MuR2) {
 }
 
 DVCSConvolCoeffFunctionKinematic::DVCSConvolCoeffFunctionKinematic(
         unsigned int binId, double xi, double t, double Q2, double MuF2,
         double MuR2) :
-        BaseObject("DVCSConvolCoeffFunctionKinematic"), m_binId(binId), m_xi(
-                xi), m_t(t), m_Q2(Q2), m_MuF2(MuF2), m_MuR2(MuR2) {
+        Kinematic("DVCSConvolCoeffFunctionKinematic"), m_binId(binId), m_xi(xi), m_t(
+                t), m_Q2(Q2), m_MuF2(MuF2), m_MuR2(MuR2) {
 }
 
 DVCSConvolCoeffFunctionKinematic::~DVCSConvolCoeffFunctionKinematic() {

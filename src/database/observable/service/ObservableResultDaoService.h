@@ -16,8 +16,8 @@
 #include "../dao/ObservableResultDao.h"
 #include "ObservableKinematicDaoService.h"
 
-class ObservableResultList;
 class ObservableResult;
+class ObservableResultList;
 
 class ObservableResultDaoService: public BaseObject {
 public:

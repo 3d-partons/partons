@@ -12,9 +12,14 @@
  * @brief
  */
 
+#include <Qt/qsqlquery.h>
 #include <string>
 
-#include "../../../BaseObject.h"
+#include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
+#include "ConvolCoeffFunctionKinematicDao.h"
+
+class DVCSConvolCoeffFunctionResultList;
+class DVCSConvolCoeffFunctionResult;
 
 class ConvolCoeffFunctionResultDao: public BaseObject {
 public:
@@ -24,6 +29,15 @@ public:
     int insert(double realPart, double imgPart, int gpdType,
             const std::string &computationModuleName, int kinematicId,
             int computationId) const;
+
+    DVCSConvolCoeffFunctionResultList getResultListByComputationId(
+            const int computationId) const;
+
+private:
+    ConvolCoeffFunctionKinematicDao m_convolCoeffFunctionKinematicDao;
+
+    void getResultFromQuery(QSqlQuery &query,
+            DVCSConvolCoeffFunctionResult &result) const;
 };
 
 #endif /* CONVOL_COEFF_FUNCTION_RESULT_DAO_H */

@@ -100,3 +100,9 @@ int ConvolCoeffFunctionResultDaoService::insert(
 
     return result;
 }
+
+DVCSConvolCoeffFunctionResultList ConvolCoeffFunctionResultDaoService::getResultListByComputationId(
+        const int computationId) const {
+    return m_convolCoeffFunctionResultDao.getResultListByComputationId(
+            computationId);
+}

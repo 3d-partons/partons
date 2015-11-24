@@ -27,6 +27,9 @@ public:
     int insert(const DVCSConvolCoeffFunctionResult &result);
     int insert(const DVCSConvolCoeffFunctionResultList &resultList);
 
+    DVCSConvolCoeffFunctionResultList getResultListByComputationId(
+            const int computationId) const;
+
 private:
     ConvolCoeffFunctionResultDao m_convolCoeffFunctionResultDao;
 

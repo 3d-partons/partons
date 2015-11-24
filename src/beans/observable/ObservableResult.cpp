@@ -1,6 +1,7 @@
 #include "ObservableResult.h"
 
 #include "../../utils/stringUtils/Formatter.h"
+#include "../../utils/test/ComparisonReport.h"
 
 ObservableResult::ObservableResult() :
         Result(), m_observableName("UNDEFINED"), m_value(0.), m_totalError(0.), m_observableType(
@@ -83,4 +84,10 @@ void ObservableResult::setTotalError(double totalError) {
 
 void ObservableResult::setValue(double value) {
     m_value = value;
+}
+
+ComparisonReport ObservableResult::compare(const ObservableResult& other,
+        const Tolerances& tolerances) const {
+
+    return ComparisonReport();
 }

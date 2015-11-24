@@ -16,7 +16,9 @@
 
 #include "../Kinematic.h"
 
+class ComparisonReport;
 class ParameterList;
+class Tolerances;
 
 class ObservableKinematic: public Kinematic {
 public:
@@ -58,6 +60,9 @@ public:
     virtual std::string toString() const;
 
     const std::string toStringWithoutPhi() const;
+
+    ComparisonReport compare(const ObservableKinematic &other,
+            const Tolerances &tolerances) const;
 
     // ##### GETTERS & SETTERS #####
 
