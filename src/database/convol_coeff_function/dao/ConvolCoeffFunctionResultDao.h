@@ -40,10 +40,12 @@ private:
     ConvolCoeffFunctionKinematicDao m_convolCoeffFunctionKinematicDao;
     ComplexDao m_complexDao;
 
-    void getResultFromQuery(QSqlQuery &query,
-            DVCSConvolCoeffFunctionResult &result) const;
+    void fillConvolCoeffFunctionResultList(
+            DVCSConvolCoeffFunctionResultList &resultList,
+            QSqlQuery& query) const;
 
-    void fillResult(DVCSConvolCoeffFunctionResult &result) const;
+    void fillConvolCoeffFunctionResult(
+            DVCSConvolCoeffFunctionResult &convolCoeffFunctionResult) const;
 };
 
 #endif /* CONVOL_COEFF_FUNCTION_RESULT_DAO_H */

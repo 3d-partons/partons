@@ -44,57 +44,6 @@ int ConvolCoeffFunctionResultDao::insert(
     return result;
 }
 
-DVCSConvolCoeffFunctionResultList ConvolCoeffFunctionResultDao::getResultListByComputationId(
-        const int computationId) const {
-    DVCSConvolCoeffFunctionResultList resultList;
-
-    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
-
-    query.prepare(
-            "SELECT * FROM convol_coeff_function_result WHERE computation_id = :computationId;");
-
-    query.bindValue(":computationId", computationId);
-
-    if (query.exec()) {
-        while (query.next()) {
-            DVCSConvolCoeffFunctionResult result;
-            getResultFromQuery(query, result);
-            resultList.add(result);
-        }
-    } else {
-        error(__func__, Formatter() << query.lastError().text().toStdString());
-    }
-
-    query.clear();
-
-    for (unsigned int i = 0; i != resultList.size(); i++) {
-        fillResult(resultList[i]);
-    }
-
-    return resultList;
-}
-
-void ConvolCoeffFunctionResultDao::getResultFromQuery(QSqlQuery& query,
-        DVCSConvolCoeffFunctionResult &result) const {
-
-    int field_id = query.record().indexOf("id");
-    int field_kinematic_id = query.record().indexOf(
-            "convol_coeff_function_kinematic_id");
-    int field_computation_module_name = query.record().indexOf(
-            "computation_module_name");
-
-    int id = query.value(field_id).toInt();
-    int kinematicId = query.value(field_kinematic_id).toInt();
-    std::string computationModuleName = query.value(
-            field_computation_module_name).toString().toStdString();
-
-    result.setKinematic(
-            m_convolCoeffFunctionKinematicDao.getKinematicById(kinematicId));
-    result.setComputationModuleName(computationModuleName);
-
-    result.setId(id);
-}
-
 int ConvolCoeffFunctionResultDao::insertIntoCCFResultComplex(
         const int gpdTypeId, const int ccfResultId, const int complexId) const {
     int result = -1;
@@ -118,29 +67,81 @@ int ConvolCoeffFunctionResultDao::insertIntoCCFResultComplex(
     return result;
 }
 
-void ConvolCoeffFunctionResultDao::fillResult(
-        DVCSConvolCoeffFunctionResult &result) const {
+DVCSConvolCoeffFunctionResultList ConvolCoeffFunctionResultDao::getResultListByComputationId(
+        const int computationId) const {
+    DVCSConvolCoeffFunctionResultList resultList;
 
+    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
+
+    query.prepare(
+            "SELECT * FROM convol_coeff_function_result WHERE computation_id = :computationId;");
+
+    query.bindValue(":computationId", computationId);
+
+    if (query.exec()) {
+        fillConvolCoeffFunctionResultList(resultList, query);
+    } else {
+        error(__func__, Formatter() << query.lastError().text().toStdString());
+    }
+
+    query.clear();
+
+    return resultList;
+}
+
+void ConvolCoeffFunctionResultDao::fillConvolCoeffFunctionResultList(
+        DVCSConvolCoeffFunctionResultList &resultList, QSqlQuery& query) const {
+
+    int field_id = query.record().indexOf("id");
+    int field_kinematic_id = query.record().indexOf(
+            "convol_coeff_function_kinematic_id");
+    int field_computation_module_name = query.record().indexOf(
+            "computation_module_name");
+
+    while (query.next()) {
+        int id = query.value(field_id).toInt();
+        int kinematicId = query.value(field_kinematic_id).toInt();
+        std::string computationModuleName = query.value(
+                field_computation_module_name).toString().toStdString();
+
+        DVCSConvolCoeffFunctionResult convolCoeffFunctionResult;
+
+        convolCoeffFunctionResult.setKinematic(
+                m_convolCoeffFunctionKinematicDao.getKinematicById(
+                        kinematicId));
+        convolCoeffFunctionResult.setComputationModuleName(
+                computationModuleName);
+        convolCoeffFunctionResult.setId(id);
+
+        fillConvolCoeffFunctionResult(convolCoeffFunctionResult);
+
+        resultList.add(convolCoeffFunctionResult);
+    }
+}
+
+void ConvolCoeffFunctionResultDao::fillConvolCoeffFunctionResult(
+        DVCSConvolCoeffFunctionResult &convolCoeffFunctionResult) const {
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     query.prepare(
             "SELECT * FROM ccf_result_complex WHERE ccf_result_id = :resultId");
 
-    query.bindValue(":resultId", result.getId());
+    query.bindValue(":resultId", convolCoeffFunctionResult.getId());
 
     if (query.exec()) {
+
+        int field_gpd_type_id = query.record().indexOf("gpd_type_id");
+        int field_complex_id = query.record().indexOf("complex_id");
+
         while (query.next()) {
-
-            int field_gpd_type_id = query.record().indexOf("gpd_type_id");
-            int field_complex_id = query.record().indexOf("complex_id");
-
             int gpd_type_id = query.value(field_gpd_type_id).toInt();
             int complex_id = query.value(field_complex_id).toInt();
 
             std::complex<double> complex = m_complexDao.getComplexById(
                     complex_id);
 
-            result.add(static_cast<GPDType::Type>(gpd_type_id), complex);
+            convolCoeffFunctionResult.add(
+                    static_cast<GPDType::Type>(gpd_type_id), complex);
         }
     } else {
         error(__func__, Formatter() << query.lastError().text().toStdString());

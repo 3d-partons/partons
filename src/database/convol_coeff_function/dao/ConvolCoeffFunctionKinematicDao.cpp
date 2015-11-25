@@ -6,7 +6,6 @@
 #include <QtSql/qsqlrecord.h>
 #include <string>
 
-#include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "../../../utils/stringUtils/Formatter.h"
 #include "../../DatabaseManager.h"
 
@@ -71,7 +70,7 @@ int ConvolCoeffFunctionKinematicDao::select(double xi, double t, double Q2,
 
 DVCSConvolCoeffFunctionKinematic ConvolCoeffFunctionKinematicDao::getKinematicById(
         const int id) const {
-    DVCSConvolCoeffFunctionKinematic result;
+    DVCSConvolCoeffFunctionKinematic convolCoeffFunctionKinematic;
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
@@ -82,7 +81,7 @@ DVCSConvolCoeffFunctionKinematic ConvolCoeffFunctionKinematicDao::getKinematicBy
 
     if (query.exec()) {
         if (query.first()) {
-            result = getKinematicFromQuery(query);
+            fillKinematicFromQuery(convolCoeffFunctionKinematic, query);
         }
     } else {
         error(__func__, Formatter() << query.lastError().text().toStdString());
@@ -90,13 +89,11 @@ DVCSConvolCoeffFunctionKinematic ConvolCoeffFunctionKinematicDao::getKinematicBy
 
     query.clear();
 
-    return result;
+    return convolCoeffFunctionKinematic;
 }
 
-DVCSConvolCoeffFunctionKinematic ConvolCoeffFunctionKinematicDao::getKinematicFromQuery(
-        QSqlQuery &query) const {
-
-    DVCSConvolCoeffFunctionKinematic kinematic;
+void ConvolCoeffFunctionKinematicDao::fillKinematicFromQuery(
+        DVCSConvolCoeffFunctionKinematic &kinematic, QSqlQuery &query) const {
 
     int field_id = query.record().indexOf("id");
     int field_xi = query.record().indexOf("xi");
@@ -114,6 +111,4 @@ DVCSConvolCoeffFunctionKinematic ConvolCoeffFunctionKinematicDao::getKinematicFr
 
     kinematic = DVCSConvolCoeffFunctionKinematic(xi, t, Q2, MuF2, MuR2);
     kinematic.setId(id);
-
-    return kinematic;
 }

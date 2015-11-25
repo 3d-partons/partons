@@ -14,9 +14,7 @@
 
 #include <Qt/qsqlquery.h>
 
-#include "../../../BaseObject.h"
-
-class DVCSConvolCoeffFunctionKinematic;
+#include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 
 class ConvolCoeffFunctionKinematicDao: public BaseObject {
 public:
@@ -30,7 +28,7 @@ public:
     DVCSConvolCoeffFunctionKinematic getKinematicById(const int id) const;
 
 private:
-    DVCSConvolCoeffFunctionKinematic getKinematicFromQuery(
+    void fillKinematicFromQuery(DVCSConvolCoeffFunctionKinematic &kinematic,
             QSqlQuery &query) const;
 };
 
