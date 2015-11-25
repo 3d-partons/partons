@@ -38,8 +38,27 @@ int ComplexDao::insert(const double realPart, const double imgPart) const {
 }
 
 int ComplexDao::select(const double realPart, const double imgPart) const {
-    //TODO implement
-    return -1;
+    int result = -1;
+
+    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
+
+    query.prepare(
+            "SELECT id FROM complex WHERE real_part = :realPart AND img_part = :imgPart");
+
+    query.bindValue(":realPart", realPart);
+    query.bindValue(":imgPart", imgPart);
+
+    if (query.exec()) {
+        if (query.first()) {
+            result = query.value(0).toInt();
+        }
+    } else {
+        error(__func__, Formatter() << query.lastError().text().toStdString());
+    }
+
+    query.clear();
+
+    return result;
 }
 
 std::complex<double> ComplexDao::getComplexById(const int id) const {

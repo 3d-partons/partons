@@ -73,7 +73,7 @@ int ConvolCoeffFunctionResultDaoService::insertWithoutTransaction(
     for (it = resultsByGPDType.begin(); it != resultsByGPDType.end(); it++) {
 
         // Check if complex already exists
-        int complexId = m_complexDaoService.getComplexIdBy((it->second));
+        int complexId = m_complexDaoService.getComplexId((it->second));
         if (complexId == -1) {
             // If not, insert new entry into database and retrieve its id
             complexId = m_complexDaoService.insert((it->second));

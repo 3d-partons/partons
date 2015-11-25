@@ -19,7 +19,7 @@ public:
 
     int insert(const std::complex<double> &complex) const;
     std::complex<double> getComplexById(const int id) const;
-    int getComplexIdBy(const std::complex<double> &complex) const;
+    int getComplexId(const std::complex<double> &complex) const;
 
 private:
     ComplexDao m_complexDao;
