@@ -122,8 +122,7 @@ ObservableResult ObservableResultDao::getObservableResultFromQuery(
             m_observableKinematicDao.getKinematicById(
                     query.value(field_kinematic_id).toInt()));
 
-    //TODO implement ; storing id
-    //result.setId(id);
+    result.setId(id);
 
     return result;
 }

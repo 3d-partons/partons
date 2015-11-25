@@ -16,6 +16,7 @@
 #include <string>
 
 #include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
+#include "../../common/dao/ComplexDao.h"
 #include "ConvolCoeffFunctionKinematicDao.h"
 
 class DVCSConvolCoeffFunctionResultList;
@@ -26,18 +27,23 @@ public:
     ConvolCoeffFunctionResultDao();
     virtual ~ConvolCoeffFunctionResultDao();
 
-    int insert(double realPart, double imgPart, int gpdType,
-            const std::string &computationModuleName, int kinematicId,
-            int computationId) const;
+    int insert(const std::string &computationModuleName, const int kinematicId,
+            const int computationId) const;
 
     DVCSConvolCoeffFunctionResultList getResultListByComputationId(
             const int computationId) const;
 
+    int insertIntoCCFResultComplex(const int gpdTypeId, const int ccfResultId,
+            const int complexId) const;
+
 private:
     ConvolCoeffFunctionKinematicDao m_convolCoeffFunctionKinematicDao;
+    ComplexDao m_complexDao;
 
     void getResultFromQuery(QSqlQuery &query,
             DVCSConvolCoeffFunctionResult &result) const;
+
+    void fillResult(DVCSConvolCoeffFunctionResult &result) const;
 };
 
 #endif /* CONVOL_COEFF_FUNCTION_RESULT_DAO_H */

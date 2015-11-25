@@ -38,8 +38,9 @@ public:
 // ##### GETTERS & SETTERS #####
 
     const DVCSConvolCoeffFunctionKinematic& getKinematic() const;
-    void setKinematic(const DVCSConvolCoeffFunctionKinematic& kinematic);
     const std::map<GPDType::Type, std::complex<double> >& getResultsByGpdType() const;
+
+    void setKinematic(const DVCSConvolCoeffFunctionKinematic& kinematic);
     void setResultsByGpdType(
             const std::map<GPDType::Type, std::complex<double> >& resultsByGpdType);
 

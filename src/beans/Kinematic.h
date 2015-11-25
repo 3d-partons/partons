@@ -27,11 +27,11 @@ public:
     // use by std::sort function
     bool operator <(const Kinematic &other) const;
 
-    unsigned int getId() const;
-    void setId(unsigned int id);
+    int getId() const;
+    void setId(int id);
 
 private:
-    unsigned int m_id;
+    int m_id;
 };
 
 #endif /* KINEMATIC_H */

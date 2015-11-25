@@ -63,15 +63,24 @@ int ConvolCoeffFunctionResultDaoService::insertWithoutTransaction(
                 result.getComputationDateTime());
     }
 
+    int resultId = m_convolCoeffFunctionResultDao.insert(
+            result.getComputationModuleName(), kinematicId, computationId);
+
     std::map<GPDType::Type, std::complex<double> > resultsByGPDType =
             result.getResultsByGpdType();
     std::map<GPDType::Type, std::complex<double> >::const_iterator it;
 
     for (it = resultsByGPDType.begin(); it != resultsByGPDType.end(); it++) {
-        //Then store result into database
-        m_convolCoeffFunctionResultDao.insert((it->second).real(),
-                (it->second).imag(), (it->first),
-                result.getComputationModuleName(), kinematicId, computationId);
+
+        // Check if complex already exists
+        int complexId = m_complexDaoService.getComplexIdBy((it->second));
+        if (complexId == -1) {
+            // If not, insert new entry into database and retrieve its id
+            complexId = m_complexDaoService.insert((it->second));
+        }
+
+        m_convolCoeffFunctionResultDao.insertIntoCCFResultComplex((it->first),
+                resultId, complexId);
     }
 
     return computationId;

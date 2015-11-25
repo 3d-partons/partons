@@ -45,7 +45,7 @@ std::string DVCSConvolCoeffFunctionResult::toString() {
             m_it++) {
         formatter << " CFF_" << GPDType(m_it->first).toString() << " = "
                 << (m_it->second).real() << " ; " << (m_it->second).imag()
-                << '\n' << '\n';
+                << "\n";
     }
 
     return formatter.str();

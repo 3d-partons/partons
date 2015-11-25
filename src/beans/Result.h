@@ -21,13 +21,18 @@ public:
     virtual ~Result();
 
     time_t getComputationDateTime() const;
-    void setComputationDateTime(time_t computationDateTime);
     const std::string& getComputationModuleName() const;
+    int getId() const;
+
+    void setComputationDateTime(time_t computationDateTime);
     void setComputationModuleName(const std::string& moduleName);
+    void setId(int id);
 
 private:
     std::string m_computationModuleName;
     time_t m_computationDateTime;
+
+    int m_id;
 };
 
 #endif /* RESULT_H */

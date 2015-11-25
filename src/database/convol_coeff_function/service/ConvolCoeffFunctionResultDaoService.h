@@ -14,6 +14,7 @@
 
 #include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
 #include "../../common/service/CommonDaoService.h"
+#include "../../common/service/ComplexDaoService.h"
 #include "../dao/ConvolCoeffFunctionResultDao.h"
 #include "ConvolCoeffFunctionKinematicDaoService.h"
 
@@ -35,6 +36,7 @@ private:
 
     ConvolCoeffFunctionKinematicDaoService m_convolCoeffFunctionKinematicDaoService;
     CommonDaoService m_commonDaoService;
+    ComplexDaoService m_complexDaoService;
 
     int insertWithoutTransaction(
             const DVCSConvolCoeffFunctionResult &result) const;

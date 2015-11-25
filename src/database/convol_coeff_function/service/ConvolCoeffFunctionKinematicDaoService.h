@@ -25,6 +25,9 @@ public:
 
     DVCSConvolCoeffFunctionKinematic getKinematicById(const int id) const;
 
+//    DVCSConvolCoeffFunctionKinematic getKinematicListByComputationId(
+//            int computationId) const;
+
 private:
     ConvolCoeffFunctionKinematicDao m_convolCoeffFunctionKinematicDao;
 };

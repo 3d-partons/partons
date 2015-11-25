@@ -19,6 +19,12 @@ id INTEGER NOT NULL PRIMARY KEY,
 short_name VARCHAR(10),
 long_name VARCHAR(255));
 
+CREATE TABLE complex (
+id INTEGER NOT NULL PRIMARY KEY,
+real_part DOUBLE NOT NULL,
+img_part DOUBLE NOT NULL);
+
+
 
 INSERT INTO gpd_type (id, short_name, long_name)
 VALUES ('0', 'UNDEFINED', 'UNDEFINED');
