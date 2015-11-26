@@ -4,14 +4,15 @@
 #include "../../utils/test/ComparisonReport.h"
 
 ObservableResult::ObservableResult() :
-        Result(), m_observableName("UNDEFINED"), m_value(0.), m_totalError(0.), m_observableType(
-                ObservableType::UNDEFINED) {
+        Result("ObservableResult"), m_observableName("UNDEFINED"), m_value(0.), m_totalError(
+                0.), m_observableType(ObservableType::UNDEFINED) {
 }
 
 ObservableResult::ObservableResult(const std::string &observableName,
         double value) :
-        Result(), m_observableName(observableName), m_value(value), m_totalError(
-                0.), m_observableType(ObservableType::UNDEFINED) {
+        Result("ObservableResult"), m_observableName(observableName), m_value(
+                value), m_totalError(0.), m_observableType(
+                ObservableType::UNDEFINED) {
 }
 
 ObservableResult::~ObservableResult() {

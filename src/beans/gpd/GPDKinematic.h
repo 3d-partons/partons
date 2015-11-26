@@ -17,6 +17,9 @@
 #include "../kinematic/KinematicType.h"
 #include "../Kinematic.h"
 
+class ComparisonReport;
+class Tolerances;
+
 class ParameterList;
 
 class GPDKinematic: public Kinematic {
@@ -55,6 +58,9 @@ public:
      * @return a pre-formatted characters string
      */
     virtual std::string toString();
+
+    ComparisonReport compare(const GPDKinematic &gpdKinematic,
+            const Tolerances &tolerances) const;
 
     // ##### GETTERS & SETTERS #####
 

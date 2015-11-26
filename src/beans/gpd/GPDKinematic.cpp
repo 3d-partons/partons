@@ -1,8 +1,11 @@
 #include "GPDKinematic.h"
 
+#include <iostream>
+
 #include "../../utils/GenericType.h"
 #include "../../utils/ParameterList.h"
 #include "../../utils/stringUtils/Formatter.h"
+#include "../../utils/test/ComparisonReport.h"
 #include "../observable/ObservableKinematic.h"
 
 const std::string GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_X = "x";
@@ -114,6 +117,14 @@ KinematicType::Type GPDKinematic::getKinematicType() const {
 
 void GPDKinematic::setKinematicType(KinematicType::Type kinematicType) {
     m_kinematicType = kinematicType;
+}
+
+ComparisonReport GPDKinematic::compare(const GPDKinematic& gpdKinematic,
+        const Tolerances& tolerances) const {
+    std::cerr << "GPDKinematic::compare" << std::endl;
+
+    //TODO implement
+    return ComparisonReport();
 }
 //sf::Packet& operator <<(sf::Packet& packet, const GPDKinematic& object) {
 //    return packet << object.m_x << object.m_xi << object.m_t << object.m_MuF

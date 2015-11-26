@@ -15,9 +15,11 @@
 #include <ctime>
 #include <string>
 
-class Result {
+#include "../BaseObject.h"
+
+class Result: public BaseObject {
 public:
-    Result();
+    Result(const std::string &className);
     virtual ~Result();
 
     time_t getComputationDateTime() const;

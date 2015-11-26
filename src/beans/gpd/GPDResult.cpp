@@ -1,13 +1,16 @@
 #include "GPDResult.h"
 
+#include <iostream>
 #include <sstream>
 #include <stdexcept>
 #include <utility>
 
+#include "../../utils/test/ComparisonReport.h"
+
 const std::string GPDResult::GPD_RESULT_DB_TABLE_NAME = "gpd_result";
 
 GPDResult::GPDResult() :
-        Result() {
+        Result("GPDResult") {
 }
 
 GPDResult::~GPDResult() {
@@ -95,4 +98,13 @@ const GPDKinematic& GPDResult::getKinematic() const {
 
 void GPDResult::setKinematic(const GPDKinematic& kinematic) {
     m_kinematic = kinematic;
+}
+
+ComparisonReport GPDResult::compare(const GPDResult& GPDResult,
+        const Tolerances& tolerances) const {
+
+    std::cerr << "GPDResult::compare" << std::endl;
+
+    //TODO implement
+    return ComparisonReport();
 }

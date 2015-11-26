@@ -39,6 +39,9 @@ public:
 
     virtual std::string toString();
 
+    ComparisonReport compare(const GPDResult &GPDResult,
+            const Tolerances &tolerances) const;
+
     // ##### GETTERS & SETTERS #####
 
     const std::map<GPDType::Type, PartonDistribution>& getPartonDistributions() const;

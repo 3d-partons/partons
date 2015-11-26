@@ -20,8 +20,7 @@
 #include "../../Result.h"
 #include "DVCSConvolCoeffFunctionKinematic.h"
 
-//TODO improve public BaseObject, public Result
-class DVCSConvolCoeffFunctionResult: public BaseObject, public Result {
+class DVCSConvolCoeffFunctionResult: public Result {
 public:
     DVCSConvolCoeffFunctionResult();
     DVCSConvolCoeffFunctionResult(DVCSConvolCoeffFunctionKinematic kinematic);

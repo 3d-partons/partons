@@ -1,8 +1,8 @@
 #include "Result.h"
 
-Result::Result() :
-        m_computationModuleName("UNDEFINED"), m_computationDateTime(time(0)), m_id(
-                -1) {
+Result::Result(const std::string &className) :
+        BaseObject(className), m_computationModuleName("UNDEFINED"), m_computationDateTime(
+                time(0)), m_id(-1) {
 }
 
 Result::~Result() {
