@@ -36,7 +36,10 @@ int ConvolCoeffFunctionResultDao::insert(
     if (query.exec()) {
         result = query.lastInsertId().toInt();
     } else {
-        error(__func__, Formatter() << query.lastError().text().toStdString());
+        error(__func__,
+                Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
     }
 
     query.clear();
@@ -59,7 +62,10 @@ int ConvolCoeffFunctionResultDao::insertIntoCCFResultComplex(
     if (query.exec()) {
         result = query.lastInsertId().toInt();
     } else {
-        error(__func__, Formatter() << query.lastError().text().toStdString());
+        error(__func__,
+                Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
     }
 
     query.clear();
@@ -81,7 +87,10 @@ DVCSConvolCoeffFunctionResultList ConvolCoeffFunctionResultDao::getResultListByC
     if (query.exec()) {
         fillConvolCoeffFunctionResultList(resultList, query);
     } else {
-        error(__func__, Formatter() << query.lastError().text().toStdString());
+        error(__func__,
+                Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
     }
 
     query.clear();
@@ -144,7 +153,10 @@ void ConvolCoeffFunctionResultDao::fillConvolCoeffFunctionResult(
                     static_cast<GPDType::Type>(gpd_type_id), complex);
         }
     } else {
-        error(__func__, Formatter() << query.lastError().text().toStdString());
+        error(__func__,
+                Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
     }
 
     query.clear();

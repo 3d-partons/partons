@@ -16,7 +16,9 @@ public:
 
     virtual ~PartonDistribution();
 
+    void addQuarkDistribution(const QuarkDistribution &quarkDistribution);
     void addQuarkDistribution(QuarkDistribution &quarkDistribution);
+
     const QuarkDistribution& getQuarkDistribution(
             QuarkFlavor::Type quarkFlavorType) const;
 

@@ -30,8 +30,8 @@ GPDResultListReport HadronStructureUtils::compareGPDResultsLists(
     GPDResultListReport gpdResultListReport;
     GPDResultReport gpdResultReport;
 
-    unsigned int lhsGpdResultListSize = lhsGpdResultList.getSize();
-    unsigned int rhsGpdResultListSize = rhsGpdResultList.getSize();
+    unsigned int lhsGpdResultListSize = lhsGpdResultList.size();
+    unsigned int rhsGpdResultListSize = rhsGpdResultList.size();
     gpdResultListReport.setLhsGpdResultListSize(lhsGpdResultListSize);
     gpdResultListReport.setRhsGpdResultListSize(rhsGpdResultListSize);
 

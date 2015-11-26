@@ -9,6 +9,7 @@
 #include "../../../beans/gpd/GPDResultList.h"
 #include "../../../beans/gpd/GPDType.h"
 #include "../../../beans/parton_distribution/PartonDistribution.h"
+#include "../../../utils/stringUtils/Formatter.h"
 
 GPDResultDaoService::GPDResultDaoService() :
         BaseObject("GPDResultDaoService") {
@@ -65,14 +66,14 @@ int GPDResultDaoService::insertWithoutTransaction(
     }
 
     // Insert new gpd_result entry in database
-    int gpdResultId = m_gpdResultDao.insert(
+    int gpdResultId = m_gpdResultDao.insertResult(
             gpdResult.getComputationModuleName(), gpdKinematicId,
             computationId);
 
     std::map<GPDType::Type, PartonDistribution> partonDistributionMap =
             gpdResult.getPartonDistributions();
 
-    int partonDistributionId = 0;
+    int partonDistributionId = -1;
 
     for (std::map<GPDType::Type, PartonDistribution>::const_iterator it =
             partonDistributionMap.begin(); it != partonDistributionMap.end();
@@ -81,14 +82,18 @@ int GPDResultDaoService::insertWithoutTransaction(
         partonDistributionId = m_partonDistributionDaoService.insert(
                 partonDistribution);
 
-        m_gpdResultPartonDistributionDao.insert((it->first), gpdResultId,
-                partonDistributionId);
+        m_gpdResultDao.insertIntoGPDResultPartonDistributionTable((it->first),
+                gpdResultId, partonDistributionId);
     }
 
     return computationId;
 }
 
 int GPDResultDaoService::insert(const GPDResultList &gpdResultList) const {
+
+    info(__func__,
+            Formatter() << "Inserting object size = " << gpdResultList.size());
+
     int computationId = -1;
 
     // For multiple query it's better to use transaction to guarantee database's integrity and performance
@@ -96,7 +101,7 @@ int GPDResultDaoService::insert(const GPDResultList &gpdResultList) const {
 
     try {
 
-        for (unsigned int i = 0; i != gpdResultList.getSize(); i++) {
+        for (unsigned int i = 0; i != gpdResultList.size(); i++) {
             computationId = insertWithoutTransaction(gpdResultList.get(i));
         }
 
@@ -112,4 +117,9 @@ int GPDResultDaoService::insert(const GPDResultList &gpdResultList) const {
     }
 
     return computationId;
+}
+
+GPDResultList GPDResultDaoService::getGPDResultListByComputationId(
+        const int computationId) const {
+    return m_gpdResultDao.getGPDResultListByComputationId(computationId);
 }

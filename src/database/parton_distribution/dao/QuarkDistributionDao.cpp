@@ -1,11 +1,12 @@
 #include "QuarkDistributionDao.h"
 
 #include <Qt/qsqlerror.h>
-#include <Qt/qsqlquery.h>
 #include <Qt/qvariant.h>
 #include <QtCore/qstring.h>
+#include <QtSql/qsqlrecord.h>
 #include <string>
 
+#include "../../../beans/QuarkFlavor.h"
 #include "../../../utils/stringUtils/Formatter.h"
 #include "../../DatabaseManager.h"
 
@@ -24,21 +25,82 @@ int QuarkDistributionDao::insert(double quarkDistributionPlus,
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     query.prepare(
-            "INSERT INTO quark_distribution (quark_distribution_plus, quark_distribution_minus, quark_distribution, quark_flavor_id, parton_distribution_id) VALUES (:quarkDistributionPlus, :quarkDistributionMinus, :quarkDistribution, :quarkFlavorTypeId, :partonDistributionId )");
+            "INSERT INTO quark_distribution (quark_distribution_plus, quark_distribution_minus, quark_distribution, quark_flavor_id) VALUES (:quarkDistributionPlus, :quarkDistributionMinus, :quarkDistribution, :quarkFlavorTypeId )");
 
     query.bindValue(":quarkDistributionPlus", quarkDistributionPlus);
     query.bindValue(":quarkDistributionMinus", quarkDistributionMinus);
     query.bindValue(":quarkDistribution", quarkDistribution);
     query.bindValue(":quarkFlavorTypeId", quarkFlavorTypeId);
-    query.bindValue(":partonDistributionId", partonDistributionId);
 
     if (query.exec()) {
         result = query.lastInsertId().toInt();
     } else {
-        error(__func__, Formatter() << query.lastError().text().toStdString());
+        error(__func__,
+                Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
     }
 
     query.clear();
 
     return result;
+}
+
+QuarkDistribution QuarkDistributionDao::getQuarkDistributionById(
+        const int quarkDistributionId) const {
+
+    QuarkDistribution quarkDistribution;
+
+    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
+
+    query.prepare(
+            "SELECT * FROM quark_distribution WHERE id = :quarkDistributionId");
+
+    query.bindValue(":quarkDistributionId", quarkDistributionId);
+
+    if (query.exec()) {
+
+        fillQuarkDistributionFromQuery(quarkDistribution, query);
+
+    } else {
+        error(__func__,
+                Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
+    }
+
+    query.clear();
+
+    return quarkDistribution;
+
+}
+
+void QuarkDistributionDao::fillQuarkDistributionFromQuery(
+        QuarkDistribution &quarkDistribution, QSqlQuery &query) const {
+
+    // mapping index - column name
+    int f_quark_flavor_id = query.record().indexOf("quark_flavor_id");
+    int f_quark_distribution = query.record().indexOf("quark_distribution");
+    int f_quark_distribution_minus = query.record().indexOf(
+            "quark_distribution_minus");
+    int f_quark_distribution_plus = query.record().indexOf(
+            "quark_distribution_plus");
+
+    if (query.first()) {
+        // retrieve column value
+        int quarkFlavorId = query.value(f_quark_flavor_id).toInt();
+        double quarkDistributionValue =
+                query.value(f_quark_distribution).toDouble();
+        double quarkDistributionMinus =
+                query.value(f_quark_distribution_minus).toDouble();
+        double quarkDistributionPlus =
+                query.value(f_quark_distribution_plus).toDouble();
+
+        // fill QuarkDistribution object
+        quarkDistribution.setQuarkFlavor(
+                static_cast<QuarkFlavor::Type>(quarkFlavorId));
+        quarkDistribution.setQuarkDistribution(quarkDistributionValue);
+        quarkDistribution.setQuarkDistributionMinus(quarkDistributionMinus);
+        quarkDistribution.setQuarkDistributionPlus(quarkDistributionPlus);
+    }
 }

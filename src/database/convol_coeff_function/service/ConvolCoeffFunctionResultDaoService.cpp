@@ -9,6 +9,7 @@
 
 #include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResultList.h"
 #include "../../../beans/gpd/GPDType.h"
+#include "../../../utils/stringUtils/Formatter.h"
 
 ConvolCoeffFunctionResultDaoService::ConvolCoeffFunctionResultDaoService() :
         BaseObject("ConvolCoeffFunctionResultDaoService") {
@@ -88,6 +89,10 @@ int ConvolCoeffFunctionResultDaoService::insertWithoutTransaction(
 
 int ConvolCoeffFunctionResultDaoService::insert(
         const DVCSConvolCoeffFunctionResultList& resultList) {
+
+    info(__func__,
+            Formatter() << "Inserting object size = " << resultList.size());
+
     int result = -1;
 
     // For multiple query it's better to use transaction to guarantee database's integrity and performance

@@ -33,7 +33,10 @@ int ConvolCoeffFunctionKinematicDao::insert(double xi, double t, double Q2,
     if (query.exec()) {
         result = query.lastInsertId().toInt();
     } else {
-        error(__func__, Formatter() << query.lastError().text().toStdString());
+        error(__func__,
+                Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
     }
 
     query.clear();
@@ -60,7 +63,10 @@ int ConvolCoeffFunctionKinematicDao::select(double xi, double t, double Q2,
             result = query.value(0).toInt();
         }
     } else {
-        error(__func__, Formatter() << query.lastError().text().toStdString());
+        error(__func__,
+                Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
     }
 
     query.clear();
@@ -80,11 +86,13 @@ DVCSConvolCoeffFunctionKinematic ConvolCoeffFunctionKinematicDao::getKinematicBy
     query.bindValue(":id", id);
 
     if (query.exec()) {
-        if (query.first()) {
-            fillKinematicFromQuery(convolCoeffFunctionKinematic, query);
-        }
+
+        fillKinematicFromQuery(convolCoeffFunctionKinematic, query);
     } else {
-        error(__func__, Formatter() << query.lastError().text().toStdString());
+        error(__func__,
+                Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
     }
 
     query.clear();
@@ -102,13 +110,16 @@ void ConvolCoeffFunctionKinematicDao::fillKinematicFromQuery(
     int field_MuF2 = query.record().indexOf("MuF2");
     int field_MuR2 = query.record().indexOf("MuR2");
 
-    int id = query.value(field_id).toInt();
-    double xi = query.value(field_xi).toDouble();
-    double t = query.value(field_t).toDouble();
-    double Q2 = query.value(field_Q2).toDouble();
-    double MuF2 = query.value(field_MuF2).toDouble();
-    double MuR2 = query.value(field_MuR2).toDouble();
+    if (query.first()) {
 
-    kinematic = DVCSConvolCoeffFunctionKinematic(xi, t, Q2, MuF2, MuR2);
-    kinematic.setId(id);
+        int id = query.value(field_id).toInt();
+        double xi = query.value(field_xi).toDouble();
+        double t = query.value(field_t).toDouble();
+        double Q2 = query.value(field_Q2).toDouble();
+        double MuF2 = query.value(field_MuF2).toDouble();
+        double MuR2 = query.value(field_MuR2).toDouble();
+
+        kinematic = DVCSConvolCoeffFunctionKinematic(xi, t, Q2, MuF2, MuR2);
+        kinematic.setId(id);
+    }
 }

@@ -31,7 +31,10 @@ int CommonDao::insertComputation(const time_t &dateTime) const {
     if (query.exec()) {
         result = query.lastInsertId().toInt();
     } else {
-        error(__func__, Formatter() << query.lastError().text().toStdString());
+        error(__func__,
+                Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
     }
 
     query.clear();
@@ -55,7 +58,10 @@ int CommonDao::getComputationIdByDateTime(const time_t &dateTime) const {
             result = query.value(0).toInt();
         }
     } else {
-        error(__func__, Formatter() << query.lastError().text().toStdString());
+        error(__func__,
+                Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
     }
 
     query.clear();

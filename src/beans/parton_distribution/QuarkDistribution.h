@@ -12,6 +12,7 @@ public:
     static const std::string QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DISTRIBUTION_PLUS;
     static const std::string QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DISTRIBUTION_MINUS;
 
+    QuarkDistribution();
     QuarkDistribution(QuarkFlavor::Type quarkFlavor);
     QuarkDistribution(QuarkFlavor::Type quarkFlavor, double quarkDistribution,
             double quarkDistributionPlus, double quarkDistributionMinus);

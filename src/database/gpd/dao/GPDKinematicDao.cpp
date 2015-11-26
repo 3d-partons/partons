@@ -6,7 +6,6 @@
 #include <QtSql/qsqlrecord.h>
 #include <string>
 
-#include "../../../beans/gpd/GPDKinematic.h"
 #include "../../../utils/stringUtils/Formatter.h"
 #include "../../DatabaseManager.h"
 
@@ -35,7 +34,11 @@ int GPDKinematicDao::insert(double x, double xi, double t, double MuF2,
     if (query.exec()) {
         result = query.lastInsertId().toInt();
     } else {
-        error(__func__, Formatter() << query.lastError().text().toStdString());
+        //TODO move implementation in mother classe for avoid code redondance
+        error(__func__,
+                Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
     }
 
     query.clear();
@@ -63,7 +66,10 @@ int GPDKinematicDao::select(double x, double xi, double t, double MuF2,
             result = query.value(0).toInt();
         }
     } else {
-        error(__func__, Formatter() << query.lastError().text().toStdString());
+        error(__func__,
+                Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
     }
 
     query.clear();
@@ -72,7 +78,7 @@ int GPDKinematicDao::select(double x, double xi, double t, double MuF2,
 }
 
 GPDKinematic GPDKinematicDao::getKinematicById(const int id) const {
-    GPDKinematic result;
+    GPDKinematic gpdKinematic;
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
@@ -81,21 +87,21 @@ GPDKinematic GPDKinematicDao::getKinematicById(const int id) const {
     query.bindValue(":id", id);
 
     if (query.exec()) {
-        if (query.first()) {
-            result = getGPDKinematicFromQuery(query);
-        }
+        getGPDKinematicFromQuery(gpdKinematic, query);
     } else {
-        error(__func__, Formatter() << query.lastError().text().toStdString());
+        error(__func__,
+                Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
     }
 
     query.clear();
 
-    return result;
+    return gpdKinematic;
 }
 
-GPDKinematic GPDKinematicDao::getGPDKinematicFromQuery(QSqlQuery& query) const {
-    GPDKinematic gpdKinematic;
-
+void GPDKinematicDao::getGPDKinematicFromQuery(GPDKinematic &gpdKinematic,
+        QSqlQuery& query) const {
     int field_id = query.record().indexOf("id");
     int field_x = query.record().indexOf("x");
     int field_xi = query.record().indexOf("xi");
@@ -103,15 +109,15 @@ GPDKinematic GPDKinematicDao::getGPDKinematicFromQuery(QSqlQuery& query) const {
     int field_MuF2 = query.record().indexOf("MuF2");
     int field_MuR2 = query.record().indexOf("MuR2");
 
-    int id = query.value(field_id).toInt();
-    double x = query.value(field_x).toDouble();
-    double xi = query.value(field_xi).toDouble();
-    double t = query.value(field_t).toDouble();
-    double MuF2 = query.value(field_MuF2).toDouble();
-    double MuR2 = query.value(field_MuR2).toDouble();
+    if (query.first()) {
+        int id = query.value(field_id).toInt();
+        double x = query.value(field_x).toDouble();
+        double xi = query.value(field_xi).toDouble();
+        double t = query.value(field_t).toDouble();
+        double MuF2 = query.value(field_MuF2).toDouble();
+        double MuR2 = query.value(field_MuR2).toDouble();
 
-    gpdKinematic = GPDKinematic(x, xi, t, MuF2, MuR2);
-    gpdKinematic.setId(id);
-
-    return gpdKinematic;
+        gpdKinematic = GPDKinematic(x, xi, t, MuF2, MuR2);
+        gpdKinematic.setId(id);
+    }
 }

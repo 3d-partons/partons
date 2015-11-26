@@ -11,7 +11,7 @@ PartonDistribution::~PartonDistribution() {
 }
 
 void PartonDistribution::addQuarkDistribution(
-        QuarkDistribution &quarkDistribution) {
+        const QuarkDistribution &quarkDistribution) {
     m_quarkDistributions.insert(
             std::make_pair(quarkDistribution.getQuarkFlavor(),
                     quarkDistribution));
@@ -115,4 +115,11 @@ double PartonDistribution::getSinglet() {
 //       result *= (1 / (2 * m_nbOfQuarkFlavor));
 
     return result;
+}
+
+void PartonDistribution::addQuarkDistribution(
+        QuarkDistribution& quarkDistribution) {
+    m_quarkDistributions.insert(
+               std::make_pair(quarkDistribution.getQuarkFlavor(),
+                       quarkDistribution));
 }

@@ -52,12 +52,20 @@ int PartonDistributionDaoService::insertWithoutTransaction(
     for (std::map<QuarkFlavor::Type, QuarkDistribution>::const_iterator it =
             quarkDistributionList.begin(); it != quarkDistributionList.end();
             it++) {
+
+        // insert QuarkDistribution object
+
         QuarkDistribution quarkDistribution = (it->second);
-        m_quarkDistributionDao.insert(
+        int quarkDistributionId = m_quarkDistributionDao.insert(
                 quarkDistribution.getQuarkDistributionPlus(),
                 quarkDistribution.getQuarkDistributionMinus(),
                 quarkDistribution.getQuarkDistribution(), (it->first),
                 partonDistributionId);
+
+        // fill association table "parton_distribution_quark_distribution"
+
+        m_partonDistributionDao.insertIntoPartonDistributionQuarkDistributionTable(
+                partonDistributionId, quarkDistributionId);
     }
 
     return partonDistributionId;

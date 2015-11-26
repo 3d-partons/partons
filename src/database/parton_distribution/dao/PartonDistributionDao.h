@@ -12,7 +12,11 @@
  * @brief
  */
 
-#include "../../../BaseObject.h"
+#include <Qt/qsqlquery.h>
+
+#include "QuarkDistributionDao.h"
+
+class PartonDistribution;
 
 class PartonDistributionDao: public BaseObject {
 public:
@@ -20,6 +24,22 @@ public:
     virtual ~PartonDistributionDao();
 
     int insert(double gluonDistributionValue) const;
+
+    int insertIntoPartonDistributionQuarkDistributionTable(
+            const int partonDistributionId,
+            const int quarkDistributionId) const;
+
+    PartonDistribution getPartonDistributionById(
+            const int partonDistributionId) const;
+
+private:
+    QuarkDistributionDao m_quarkDistributionDao;
+
+    void fillPartonDistributionFromQuery(PartonDistribution &partonDistribution,
+            QSqlQuery &query) const;
+
+    void fillPartonDistribution(PartonDistribution &partonDistribution,
+            const int partonDistributionId) const;
 };
 
 #endif /* PARTON_DISTRIBUTION_DAO */

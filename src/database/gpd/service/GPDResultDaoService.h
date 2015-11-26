@@ -15,7 +15,6 @@
 #include "../../common/service/CommonDaoService.h"
 #include "../../parton_distribution/service/PartonDistributionDaoService.h"
 #include "../dao/GPDResultDao.h"
-#include "../dao/GPDResultPartonDistributionDao.h"
 #include "GPDKinematicDaoService.h"
 
 class GPDResult;
@@ -29,9 +28,11 @@ public:
     int insert(const GPDResult &gpdResult) const;
     int insert(const GPDResultList &gpdResultList) const;
 
+    GPDResultList getGPDResultListByComputationId(
+            const int computationId) const;
+
 private:
     GPDResultDao m_gpdResultDao;
-    GPDResultPartonDistributionDao m_gpdResultPartonDistributionDao;
 
     GPDKinematicDaoService m_gpdKinematicDaoService;
     PartonDistributionDaoService m_partonDistributionDaoService;

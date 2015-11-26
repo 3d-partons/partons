@@ -29,7 +29,10 @@ int ComplexDao::insert(const double realPart, const double imgPart) const {
     if (query.exec()) {
         result = query.lastInsertId().toInt();
     } else {
-        error(__func__, Formatter() << query.lastError().text().toStdString());
+        error(__func__,
+                Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
     }
 
     query.clear();
@@ -53,7 +56,10 @@ int ComplexDao::select(const double realPart, const double imgPart) const {
             result = query.value(0).toInt();
         }
     } else {
-        error(__func__, Formatter() << query.lastError().text().toStdString());
+        error(__func__,
+                Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
     }
 
     query.clear();
@@ -74,7 +80,10 @@ std::complex<double> ComplexDao::getComplexById(const int id) const {
             result = getComplexFromQuery(query);
         }
     } else {
-        error(__func__, Formatter() << query.lastError().text().toStdString());
+        error(__func__,
+                Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
     }
 
     query.clear();

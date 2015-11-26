@@ -14,9 +14,7 @@
 
 #include <Qt/qsqlquery.h>
 
-#include "../../../BaseObject.h"
-
-class GPDKinematic;
+#include "../../../beans/gpd/GPDKinematic.h"
 
 class GPDKinematicDao: public BaseObject {
 public:
@@ -30,7 +28,8 @@ public:
     GPDKinematic getKinematicById(const int id) const;
 
 private:
-    GPDKinematic getGPDKinematicFromQuery(QSqlQuery &query) const;
+    void getGPDKinematicFromQuery(GPDKinematic &gpdKinematic,
+            QSqlQuery &query) const;
 };
 
 #endif /* GPD_KINEMATIC_DAO */

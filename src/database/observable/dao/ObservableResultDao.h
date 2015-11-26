@@ -17,7 +17,6 @@
 
 #include "ObservableKinematicDao.h"
 
-class ObservableResult;
 class ObservableResultList;
 
 class ObservableResultDao: public BaseObject {
@@ -37,7 +36,8 @@ public:
 private:
     ObservableKinematicDao m_observableKinematicDao;
 
-    ObservableResult getObservableResultFromQuery(QSqlQuery& query) const;
+    void fillObservableResultList(ObservableResultList &observableResultList,
+            QSqlQuery& query) const;
 };
 
 #endif /* OBSERVABLE_RESULT_DAO_H */

@@ -6,8 +6,6 @@
 #include <QtSql/qsqlrecord.h>
 #include <string>
 
-#include "../../../beans/observable/ObservableKinematic.h"
-#include "../../../beans/observable/ObservableKinematicList.h"
 #include "../../../utils/stringUtils/Formatter.h"
 #include "../../DatabaseManager.h"
 
@@ -36,7 +34,10 @@ int ObservableKinematicDao::insert(double xB, double t, double Q2,
     if (query.exec()) {
         result = query.lastInsertId().toInt();
     } else {
-        error(__func__, Formatter() << query.lastError().text().toStdString());
+        error(__func__,
+                Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
     }
 
     query.clear();
@@ -62,7 +63,10 @@ int ObservableKinematicDao::select(double xB, double t, double Q2,
             result = query.value(0).toInt();
         }
     } else {
-        error(__func__, Formatter() << query.lastError().text().toStdString());
+        error(__func__,
+                Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
     }
 
     query.clear();
@@ -73,7 +77,7 @@ int ObservableKinematicDao::select(double xB, double t, double Q2,
 ObservableKinematicList ObservableKinematicDao::getKinematicListByComputationId(
         int computationId) const {
 
-    ObservableKinematicList result;
+    ObservableKinematicList observableKinematicList;
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     query.prepare(
@@ -82,23 +86,24 @@ ObservableKinematicList ObservableKinematicDao::getKinematicListByComputationId(
     query.bindValue(":computationId", computationId);
 
     if (query.exec()) {
-        while (query.next()) {
-            result.add(getObservableKinematicFromQuery(query));
-        }
+        fillObservableKinematicList(observableKinematicList, query);
     } else {
-        error(__func__, Formatter() << query.lastError().text().toStdString());
+        error(__func__,
+                Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
     }
 
     query.clear();
 
-    return result;
+    return observableKinematicList;
 
 }
 
 ObservableKinematic ObservableKinematicDao::getKinematicById(
         const int kinematicId) const {
 
-    ObservableKinematic result;
+    ObservableKinematic observableKinematic;
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
@@ -108,22 +113,21 @@ ObservableKinematic ObservableKinematicDao::getKinematicById(
     query.bindValue(":kinematicId", kinematicId);
 
     if (query.exec()) {
-        if (query.first()) {
-            result = getObservableKinematicFromQuery(query);
-        }
+        fillObservableKinematic(observableKinematic, query);
     } else {
-        error(__func__, Formatter() << query.lastError().text().toStdString());
+        error(__func__,
+                Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
     }
 
     query.clear();
 
-    return result;
+    return observableKinematic;
 }
 
-ObservableKinematic ObservableKinematicDao::getObservableKinematicFromQuery(
-        QSqlQuery &query) const {
-
-    ObservableKinematic observableKinematic;
+void ObservableKinematicDao::fillObservableKinematic(
+        ObservableKinematic &observableKinematic, QSqlQuery &query) const {
 
     int field_id = query.record().indexOf("id");
     int field_xB = query.record().indexOf("xB");
@@ -131,14 +135,24 @@ ObservableKinematic ObservableKinematicDao::getObservableKinematicFromQuery(
     int field_Q2 = query.record().indexOf("Q2");
     int field_phi = query.record().indexOf("phi");
 
-    int id = query.value(field_id).toInt();
-    double xB = query.value(field_xB).toDouble();
-    double t = query.value(field_t).toDouble();
-    double Q2 = query.value(field_Q2).toDouble();
-    double phi = query.value(field_phi).toDouble();
+    if (query.first()) {
+        int id = query.value(field_id).toInt();
+        double xB = query.value(field_xB).toDouble();
+        double t = query.value(field_t).toDouble();
+        double Q2 = query.value(field_Q2).toDouble();
+        double phi = query.value(field_phi).toDouble();
 
-    observableKinematic = ObservableKinematic(xB, t, Q2, phi);
-    observableKinematic.setId(id);
+        observableKinematic = ObservableKinematic(xB, t, Q2, phi);
+        observableKinematic.setId(id);
+    }
+}
 
-    return observableKinematic;
+void ObservableKinematicDao::fillObservableKinematicList(
+        ObservableKinematicList& observableKinematicList,
+        QSqlQuery& query) const {
+    while (query.next()) {
+        ObservableKinematic observableKinematic;
+        fillObservableKinematic(observableKinematic, query);
+        observableKinematicList.add(observableKinematic);
+    }
 }

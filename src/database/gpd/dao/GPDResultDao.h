@@ -12,17 +12,39 @@
  * @brief
  */
 
+#include <Qt/qsqlquery.h>
 #include <string>
 
-#include "../../../BaseObject.h"
+#include "../../parton_distribution/dao/PartonDistributionDao.h"
+#include "GPDKinematicDao.h"
+
+class GPDResult;
+class GPDResultList;
 
 class GPDResultDao: public BaseObject {
 public:
     GPDResultDao();
     virtual ~GPDResultDao();
 
-    int insert(const std::string &computationModuleName, int gpdKinematicId,
-            int computationId) const;
+    int insertResult(const std::string &computationModuleName,
+            int gpdKinematicId, int computationId) const;
+
+    int insertIntoGPDResultPartonDistributionTable(const int gpdTypeId,
+            const int gpdResultId, const int partonDistributionId) const;
+
+    GPDResultList getGPDResultListByComputationId(
+            const int computationId) const;
+
+private:
+    GPDKinematicDao m_gpdKinematicDao;
+    PartonDistributionDao m_partonDistributionDao;
+
+    void fillGPDResultList(GPDResultList &gpdResultList,
+            QSqlQuery &query) const;
+
+    // a supprimer
+
+    void fillGPDResult(GPDResult &gpdResult) const;
 };
 
 #endif /* GPD_RESULT_DAO */

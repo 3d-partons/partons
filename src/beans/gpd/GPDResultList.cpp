@@ -21,7 +21,7 @@ const GPDResult& GPDResultList::get(unsigned int index) const {
     return m_gpdResults[index];
 }
 
-size_t GPDResultList::getSize() const {
+size_t GPDResultList::size() const {
     return m_gpdResults.size();
 }
 
@@ -38,4 +38,12 @@ std::string GPDResultList::toString() {
     }
 
     return os.str();
+}
+
+GPDResult& GPDResultList::operator [](size_t n) {
+    return m_gpdResults[n];
+}
+
+const GPDResult& GPDResultList::operator [](size_t n) const {
+    return m_gpdResults[n];
 }

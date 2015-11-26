@@ -48,7 +48,10 @@ int ObservableResultDao::insert(const std::string& observableName,
     if (query.exec()) {
         result = query.lastInsertId().toInt();
     } else {
-        error(__func__, Formatter() << query.lastError().text().toStdString());
+        error(__func__,
+                Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
     }
 
     query.clear();
@@ -69,11 +72,12 @@ ObservableResultList ObservableResultDao::getObservableResultListByComputationId
     query.bindValue(":computationId", computationId);
 
     if (query.exec()) {
-        while (query.next()) {
-            results.add(getObservableResultFromQuery(query));
-        }
+        fillObservableResultList(results, query);
     } else {
-        error(__func__, Formatter() << query.lastError().text().toStdString());
+        error(__func__,
+                Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
     }
 
     query.clear();
@@ -81,9 +85,8 @@ ObservableResultList ObservableResultDao::getObservableResultListByComputationId
     return results;
 }
 
-ObservableResult ObservableResultDao::getObservableResultFromQuery(
-        QSqlQuery& query) const {
-    ObservableResult result;
+void ObservableResultDao::fillObservableResultList(
+        ObservableResultList &observableResultList, QSqlQuery& query) const {
 
     int field_id = query.record().indexOf("id");
     int field_observable_name = query.record().indexOf("observable_name");
@@ -98,31 +101,35 @@ ObservableResult ObservableResultDao::getObservableResultFromQuery(
     int field_observable_type_id = query.record().indexOf("observable_type_id");
     int field_kinematic_id = query.record().indexOf("observable_kinematic_id");
 
-    int id = query.value(field_id).toInt();
-    std::string observable_name =
-            query.value(field_observable_name).toString().toStdString();
-    double observable_value = query.value(field_observable_value).toDouble();
-    int computation_module_name =
-            query.value(field_computation_module_name).toInt();
+    while (query.next()) {
+        int id = query.value(field_id).toInt();
+        std::string observable_name =
+                query.value(field_observable_name).toString().toStdString();
+        double observable_value =
+                query.value(field_observable_value).toDouble();
+        int computation_module_name =
+                query.value(field_computation_module_name).toInt();
 
-    ErrorBar statError(query.value(field_stat_error_ub).toDouble(),
-            query.value(field_stat_error_lb).toDouble());
-    ErrorBar systError(query.value(field_syst_error_ub).toDouble(),
-            query.value(field_syst_error_lb).toDouble());
+        ErrorBar statError(query.value(field_stat_error_ub).toDouble(),
+                query.value(field_stat_error_lb).toDouble());
+        ErrorBar systError(query.value(field_syst_error_ub).toDouble(),
+                query.value(field_syst_error_lb).toDouble());
 
-    result = ObservableResult(observable_name, observable_value);
-    result.setStatError(statError);
-    result.setSystError(systError);
-    result.setTotalError(query.value(field_total_error).toDouble());
-    result.setObservableType(
-            static_cast<ObservableType::Type>(query.value(
-                    field_observable_type_id).toInt()));
+        ObservableResult observableResult;
 
-    result.setKinematic(
-            m_observableKinematicDao.getKinematicById(
-                    query.value(field_kinematic_id).toInt()));
+        observableResult = ObservableResult(observable_name, observable_value);
+        observableResult.setStatError(statError);
+        observableResult.setSystError(systError);
+        observableResult.setTotalError(
+                query.value(field_total_error).toDouble());
+        observableResult.setObservableType(
+                static_cast<ObservableType::Type>(query.value(
+                        field_observable_type_id).toInt()));
+        observableResult.setKinematic(
+                m_observableKinematicDao.getKinematicById(
+                        query.value(field_kinematic_id).toInt()));
+        observableResult.setId(id);
 
-    result.setId(id);
-
-    return result;
+        observableResultList.add(observableResult);
+    }
 }

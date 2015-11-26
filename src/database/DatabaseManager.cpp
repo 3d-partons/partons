@@ -104,3 +104,14 @@ void DatabaseManager::close() {
     m_productionDatabase.removeDatabase(connection);
 }
 
+int DatabaseManager::getNumberOfRows(QSqlQuery& query) {
+    int numberOfRows = 0;
+
+    if (query.last()) {
+        numberOfRows = query.at() + 1;
+        query.first();
+        query.previous();
+    }
+
+    return numberOfRows;
+}

@@ -11,6 +11,7 @@
  * @brief
  */
 
+#include <Qt/qsqlquery.h>
 #include <QtSql/qsqldatabase.h>
 
 #include "../BaseObject.h"
@@ -28,6 +29,16 @@ public:
     virtual ~DatabaseManager();
 
     void close();
+
+    /**
+     * http://stackoverflow.com/a/26500811
+     *
+     * query.size() is not supported with SQLite. But you can get the number of rows with a workaround.
+     *
+     * @param query
+     * @return
+     */
+    static int getNumberOfRows(QSqlQuery &query);
 
     // ##### GETTERS & SETTERS #####
 

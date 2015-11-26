@@ -27,10 +27,13 @@ public:
     void add(GPDResult gpdResult);
     const GPDResult& get(unsigned int index) const;
 
-    size_t getSize() const;
+    size_t size() const;
     const GPDResult& getUniqueResult();
 
     virtual std::string toString();
+
+    GPDResult& operator[](size_t n);
+    const GPDResult& operator[](size_t n) const;
 
 private:
     std::vector<GPDResult> m_gpdResults;

@@ -12,6 +12,9 @@
  * @brief
  */
 
+#include <Qt/qsqlquery.h>
+
+#include "../../../beans/parton_distribution/QuarkDistribution.h"
 #include "../../../BaseObject.h"
 
 class QuarkDistributionDao: public BaseObject {
@@ -22,6 +25,14 @@ public:
     int insert(double quarkDistributionPlus, double quarkDistributionMinus,
             double quarkDistribution, int quarkFlavorTypeId,
             int partonDistributionId) const;
+
+    QuarkDistribution getQuarkDistributionById(
+            const int quarkDistributionId) const;
+
+private:
+
+    void fillQuarkDistributionFromQuery(QuarkDistribution &quarkDistribution,
+            QSqlQuery &query) const;
 };
 
 #endif /* QUARK_DISTRIBUTION_DAO */

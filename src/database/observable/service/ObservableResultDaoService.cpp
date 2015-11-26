@@ -7,6 +7,7 @@
 #include "../../../beans/observable/ObservableResult.h"
 #include "../../../beans/observable/ObservableResultList.h"
 #include "../../../utils/math/ErrorBar.h"
+#include "../../../utils/stringUtils/Formatter.h"
 
 ObservableResultDaoService::ObservableResultDaoService() :
         BaseObject("ObservableResultDaoService") {
@@ -78,6 +79,10 @@ int ObservableResultDaoService::insertWithoutTransaction(
 int ObservableResultDaoService::insert(
         const ObservableResultList &observableResultList) {
     int result = -1;
+
+    info(__func__,
+            Formatter() << "Inserting object size = "
+                    << observableResultList.size());
 
     // For multiple query it's better to use transaction to guarantee database's integrity and performance
     QSqlDatabase::database().transaction();
