@@ -4,10 +4,10 @@
 
 #include "../beans/automation/Task.h"
 #include "../beans/gpd/GPDKinematic.h"
-#include "../beans/gpd/GPDKinematicList.h"
 #include "../beans/gpd/GPDResult.h"
 #include "../beans/gpd/GPDResultList.h"
 #include "../beans/gpd/GPDType.h"
+#include "../beans/List.h"
 #include "../BaseObjectRegistry.h"
 #include "../modules/evolution/GPDEvolutionModule.h"
 #include "../modules/GPDModule.h"
@@ -170,7 +170,7 @@ void GPDService::computeTask(Task &task) {
 
 GPDResult GPDService::computeGPDModelRestrictedByGPDType(
         const GPDKinematic &gpdKinematic, GPDModule* pGPDModule,
-        GPDType::Type gpdType) {
+        GPDType::Type gpdType) const {
 
     GPDResult gpdResult = pGPDModule->compute(gpdKinematic.getX(),
             gpdKinematic.getXi(), gpdKinematic.getT(), gpdKinematic.getMuF2(),
@@ -220,7 +220,8 @@ GPDResultList GPDService::computeListOfGPDModelRestrictedByGPDType(
 }
 
 GPDResultList GPDService::computeManyKinematicOneModel(
-        const GPDKinematicList &gpdKinematicList, GPDModule* pGPDModule) {
+        const List<GPDKinematic> &gpdKinematicList,
+        GPDModule* pGPDModule) const {
     GPDResultList results = GPDResultList();
 
 // compute GPDModule for each inputData

@@ -17,18 +17,13 @@
 
 #include "../beans/gpd/GPDKinematic.h"
 #include "../beans/gpd/GPDType.h"
+#include "../beans/List.h"
 #include "../modules/GPDModule.h"
 #include "../ServiceObject.h"
 
-class GPDKinematicList;
-
-class Scenario;
-
-class GPDResultList;
-
 class GPDEvolutionModule;
-class GPDModule;
 class GPDResult;
+class GPDResultList;
 
 class GPDService: public ServiceObject {
 public:
@@ -70,7 +65,7 @@ public:
      */
     GPDResult computeGPDModelRestrictedByGPDType(
             const GPDKinematic &gpdKinematic, GPDModule* pGPDModule,
-            GPDType::Type gpdType);
+            GPDType::Type gpdType) const;
 
     /**
      * Computes GPD model at specific kinematic with a QCD evolution model.
@@ -113,7 +108,8 @@ public:
      * @return
      */
     GPDResultList computeManyKinematicOneModel(
-            const GPDKinematicList &gpdKinematicList, GPDModule* pGPDModule);
+            const List<GPDKinematic> &gpdKinematicList,
+            GPDModule* pGPDModule) const;
 
 private:
 

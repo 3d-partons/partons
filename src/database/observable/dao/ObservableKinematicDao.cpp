@@ -74,10 +74,10 @@ int ObservableKinematicDao::select(double xB, double t, double Q2,
     return result;
 }
 
-ObservableKinematicList ObservableKinematicDao::getKinematicListByComputationId(
+List<ObservableKinematic> ObservableKinematicDao::getKinematicListByComputationId(
         int computationId) const {
 
-    ObservableKinematicList observableKinematicList;
+    List<ObservableKinematic> observableKinematicList;
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     query.prepare(
@@ -148,7 +148,7 @@ void ObservableKinematicDao::fillObservableKinematic(
 }
 
 void ObservableKinematicDao::fillObservableKinematicList(
-        ObservableKinematicList& observableKinematicList,
+        List<ObservableKinematic>& observableKinematicList,
         QSqlQuery& query) const {
     while (query.next()) {
         ObservableKinematic observableKinematic;

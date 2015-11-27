@@ -14,10 +14,8 @@
 
 #include <Qt/qsqlquery.h>
 
+#include "../../../beans/List.h"
 #include "../../../beans/observable/ObservableKinematic.h"
-#include "../../../beans/observable/ObservableKinematicList.h"
-
-class ObservableKinematicList;
 
 class ObservableKinematicDao: public BaseObject {
 public:
@@ -28,17 +26,17 @@ public:
 
     int select(double xB, double t, double Q2, double phi) const;
 
-    ObservableKinematicList getKinematicListByComputationId(
+    List<ObservableKinematic> getKinematicListByComputationId(
             int computationId) const;
 
     ObservableKinematic getKinematicById(const int kinematicId) const;
 
 private:
-    void fillObservableKinematic(
-            ObservableKinematic &observableKinematic, QSqlQuery &query) const;
+    void fillObservableKinematic(ObservableKinematic &observableKinematic,
+            QSqlQuery &query) const;
 
     void fillObservableKinematicList(
-            ObservableKinematicList &observableKinematicList,
+            List<ObservableKinematic> &observableKinematicList,
             QSqlQuery &query) const;
 };
 

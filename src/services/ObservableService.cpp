@@ -1,6 +1,7 @@
 #include "ObservableService.h"
 
 #include "../beans/automation/Task.h"
+#include "../beans/KinematicUtils.h"
 #include "../beans/observable/ObservableResult.h"
 #include "../beans/observable/ObservableResultList.h"
 #include "../BaseObjectRegistry.h"
@@ -75,7 +76,7 @@ void ObservableService::computeTask(Task &task) {
 ObservableResult ObservableService::computeDVCSObservable(
         DVCSModule* pDVCSModule, Observable* pObservable,
         const ObservableKinematic &observableKinematic,
-        DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule) {
+        DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule) const {
 
     pDVCSModule->setDVCSConvolCoeffFunctionModule(
             pDVCSConvolCoeffFunctionModule);
@@ -87,9 +88,9 @@ ObservableResult ObservableService::computeDVCSObservable(
 }
 
 ObservableResultList ObservableService::computeManyKinematicOneModel(
-        ObservableKinematicList listOfKinematic, DVCSModule* pDVCSModule,
-        Observable* pObservable,
-        DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule) {
+        const List<ObservableKinematic> & listOfKinematic,
+        DVCSModule* pDVCSModule, Observable* pObservable,
+        DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule) const {
 
     ObservableResultList results;
 
@@ -240,12 +241,12 @@ ObservableResultList ObservableService::computeManyKinematicOneModelTask(
                         << task.getFunctionName());
     }
 
-    ObservableKinematicList listOfKinematic;
+    List<ObservableKinematic> listOfKinematic;
 
     if (task.isAvailableParameterList("ObservableKinematic")) {
         ParameterList parameterList = task.getLastAvailableParameterList();
         if (parameterList.isAvailable("file")) {
-            listOfKinematic = ObservableKinematicList(
+            listOfKinematic = KinematicUtils::getObservableKinematicFromFile(
                     parameterList.getLastAvailable().toString());
         } else {
             throwException(__func__,
@@ -333,4 +334,6 @@ ObservableResultListReport ObservableService::compareResultList(
         const ObservableResultList& resultList_02,
         const Tolerances &tolerances) const {
 
+    //TODO implement
+    return ObservableResultListReport();
 }

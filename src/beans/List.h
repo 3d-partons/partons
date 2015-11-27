@@ -14,8 +14,10 @@
 
 #include <stddef.h>
 #include <iostream>
+#include <string>
 #include <vector>
 
+#include "../utils/stringUtils/Formatter.h"
 #include "../utils/test/ComparisonReport.h"
 
 class Tolerances;
@@ -48,6 +50,16 @@ public:
 
     bool isEmpty() const {
         return (size() == 0) ? true : false;
+    }
+
+    std::string toString() {
+        Formatter formatter;
+
+        for (size_t i = 0; i != m_data.size(); i++) {
+            formatter << m_data[i].toString() << '\n';
+        }
+
+        return formatter.str();
     }
 
     ComparisonReport compare(const List<T> &other,

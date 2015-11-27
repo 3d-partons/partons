@@ -14,8 +14,9 @@
 
 #include <string>
 
+#include "../beans/List.h"
 #include "../beans/observable/ObservableKinematic.h"
-#include "../beans/observable/ObservableKinematicList.h"
+//#include "../beans/observable/ObservableKinematicList.h"
 #include "../ServiceObject.h"
 
 class DVCSConvolCoeffFunctionModule;
@@ -46,12 +47,12 @@ public:
     ObservableResult computeDVCSObservable(DVCSModule* pDVCSModule,
             Observable* pObservable,
             const ObservableKinematic &observableKinematic,
-            DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule);
+            DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule) const;
 
     ObservableResultList computeManyKinematicOneModel(
-            ObservableKinematicList listOfKinematic, DVCSModule* pDVCSModule,
-            Observable* pObservable,
-            DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule);
+            const List<ObservableKinematic> & listOfKinematic,
+            DVCSModule* pDVCSModule, Observable* pObservable,
+            DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule) const;
 
     ObservableResultListReport compareResultList(
             const ObservableResultList &resultList_01,

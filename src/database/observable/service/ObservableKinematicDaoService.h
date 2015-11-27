@@ -12,6 +12,7 @@
  * @brief
  */
 
+#include "../../../beans/List.h"
 #include "../../../beans/observable/ObservableKinematic.h"
 #include "../dao/ObservableKinematicDao.h"
 
@@ -26,7 +27,7 @@ public:
 
     int getKinematicId(const ObservableKinematic &observableKinematic) const;
 
-    ObservableKinematicList getKinematicListByComputationId(
+    List<ObservableKinematic> getKinematicListByComputationId(
             int computationId) const;
 
     ObservableKinematic getKinematicById(const int kinematicId) const;
