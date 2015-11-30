@@ -2,8 +2,6 @@
 
 #include "../beans/automation/Task.h"
 #include "../beans/KinematicUtils.h"
-#include "../beans/observable/ObservableResult.h"
-#include "../beans/observable/ObservableResultList.h"
 #include "../BaseObjectRegistry.h"
 #include "../database/observable/service/ObservableResultDaoService.h"
 #include "../modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
@@ -42,7 +40,7 @@ ObservableService::~ObservableService() {
 //TODO implement all function
 void ObservableService::computeTask(Task &task) {
 
-    ObservableResultList observableResultList;
+    ResultList<ObservableResult> observableResultList;
 
     if (StringUtils::equals(task.getFunctionName(),
             ObservableService::FUNCTION_NAME_COMPUTE_DVCS_OBSERVABLE)) {
@@ -87,12 +85,12 @@ ObservableResult ObservableService::computeDVCSObservable(
             observableKinematic.getPhi());
 }
 
-ObservableResultList ObservableService::computeManyKinematicOneModel(
+ResultList<ObservableResult> ObservableService::computeManyKinematicOneModel(
         const List<ObservableKinematic> & listOfKinematic,
         DVCSModule* pDVCSModule, Observable* pObservable,
         DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule) const {
 
-    ObservableResultList results;
+    ResultList<ObservableResult> results;
 
     for (unsigned int i = 0; i != listOfKinematic.size(); i++) {
         results.add(
@@ -211,7 +209,7 @@ ObservableResult ObservableService::computeDVCSObservableTask(Task& task) {
     return result;
 }
 
-ObservableResultList ObservableService::computeManyKinematicOneModelTask(
+ResultList<ObservableResult> ObservableService::computeManyKinematicOneModelTask(
         Task& task) {
 
     // create ScaleModule
@@ -318,8 +316,9 @@ ObservableResultList ObservableService::computeManyKinematicOneModelTask(
     pDVCSModule->setPScaleModule(pScaleModule);
     pDVCSModule->setPXiConverterModule(pXiConverterModule);
 
-    ObservableResultList result = computeManyKinematicOneModel(listOfKinematic,
-            pDVCSModule, pObservable, pDVCSConvolCoeffFunctionModule);
+    ResultList<ObservableResult> result = computeManyKinematicOneModel(
+            listOfKinematic, pDVCSModule, pObservable,
+            pDVCSConvolCoeffFunctionModule);
 
     info(__func__,
             Formatter() << task.getFunctionName() << "("
@@ -330,8 +329,8 @@ ObservableResultList ObservableService::computeManyKinematicOneModelTask(
 }
 
 ObservableResultListReport ObservableService::compareResultList(
-        const ObservableResultList& resultList_01,
-        const ObservableResultList& resultList_02,
+        const ResultList<ObservableResult>& resultList_01,
+        const ResultList<ObservableResult>& resultList_02,
         const Tolerances &tolerances) const {
 
     //TODO implement

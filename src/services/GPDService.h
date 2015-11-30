@@ -16,14 +16,14 @@
 #include <vector>
 
 #include "../beans/gpd/GPDKinematic.h"
+#include "../beans/gpd/GPDResult.h"
 #include "../beans/gpd/GPDType.h"
 #include "../beans/List.h"
+#include "../beans/ResultList.h"
 #include "../modules/GPDModule.h"
 #include "../ServiceObject.h"
 
 class GPDEvolutionModule;
-class GPDResult;
-class GPDResultList;
 
 class GPDService: public ServiceObject {
 public:
@@ -86,7 +86,8 @@ public:
      * @param listOfGPDToCompute
      * @return
      */
-    GPDResultList computeListOfGPDModel(const GPDKinematic &gpdKinematic,
+    ResultList<GPDResult> computeListOfGPDModel(
+            const GPDKinematic &gpdKinematic,
             std::vector<GPDModule*> &listOfGPDToCompute);
 
     /**
@@ -96,7 +97,7 @@ public:
      * @param gpdType
      * @return
      */
-    GPDResultList computeListOfGPDModelRestrictedByGPDType(
+    ResultList<GPDResult> computeListOfGPDModelRestrictedByGPDType(
             const GPDKinematic &gpdKinematic,
             std::vector<GPDModule*> &listOfGPDToCompute, GPDType gpdType);
 
@@ -107,7 +108,7 @@ public:
      * @param pGPDModule
      * @return
      */
-    GPDResultList computeManyKinematicOneModel(
+    ResultList<GPDResult> computeManyKinematicOneModel(
             const List<GPDKinematic> &gpdKinematicList,
             GPDModule* pGPDModule) const;
 

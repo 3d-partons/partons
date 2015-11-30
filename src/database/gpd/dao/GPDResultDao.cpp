@@ -6,9 +6,8 @@
 #include <QtSql/qsqlrecord.h>
 
 #include "../../../beans/gpd/GPDKinematic.h"
-#include "../../../beans/gpd/GPDResult.h"
-#include "../../../beans/gpd/GPDResultList.h"
 #include "../../../beans/gpd/GPDType.h"
+#include "../../../beans/List.h"
 #include "../../../beans/parton_distribution/PartonDistribution.h"
 #include "../../../utils/stringUtils/Formatter.h"
 #include "../../DatabaseManager.h"
@@ -75,9 +74,9 @@ int GPDResultDao::insertIntoGPDResultPartonDistributionTable(
     return result;
 }
 
-GPDResultList GPDResultDao::getGPDResultListByComputationId(
+ResultList<GPDResult> GPDResultDao::getGPDResultListByComputationId(
         const int computationId) const {
-    GPDResultList resultList;
+    ResultList<GPDResult> resultList;
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
@@ -102,7 +101,7 @@ GPDResultList GPDResultDao::getGPDResultListByComputationId(
     return resultList;
 }
 
-void GPDResultDao::fillGPDResultList(GPDResultList &gpdResultList,
+void GPDResultDao::fillGPDResultList(ResultList<GPDResult> &gpdResultList,
         QSqlQuery &query) const {
 
     int f_gpd_result_id = query.record().indexOf("id");

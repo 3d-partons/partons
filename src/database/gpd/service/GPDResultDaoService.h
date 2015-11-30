@@ -12,13 +12,12 @@
  * @brief
  */
 
+#include "../../../beans/gpd/GPDResult.h"
+#include "../../../beans/ResultList.h"
 #include "../../common/service/CommonDaoService.h"
 #include "../../parton_distribution/service/PartonDistributionDaoService.h"
 #include "../dao/GPDResultDao.h"
 #include "GPDKinematicDaoService.h"
-
-class GPDResult;
-class GPDResultList;
 
 class GPDResultDaoService: public BaseObject {
 public:
@@ -26,9 +25,9 @@ public:
     virtual ~ GPDResultDaoService();
 
     int insert(const GPDResult &gpdResult) const;
-    int insert(const GPDResultList &gpdResultList) const;
+    int insert(const ResultList<GPDResult> &gpdResultList) const;
 
-    GPDResultList getGPDResultListByComputationId(
+    ResultList<GPDResult> getGPDResultListByComputationId(
             const int computationId) const;
 
 private:

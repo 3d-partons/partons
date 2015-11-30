@@ -7,8 +7,8 @@
 #include <complex>
 
 #include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
-#include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResultList.h"
 #include "../../../beans/gpd/GPDType.h"
+#include "../../../beans/List.h"
 #include "../../../utils/stringUtils/Formatter.h"
 #include "../../DatabaseManager.h"
 
@@ -73,9 +73,9 @@ int ConvolCoeffFunctionResultDao::insertIntoCCFResultComplex(
     return result;
 }
 
-DVCSConvolCoeffFunctionResultList ConvolCoeffFunctionResultDao::getResultListByComputationId(
+ResultList<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionResultDao::getResultListByComputationId(
         const int computationId) const {
-    DVCSConvolCoeffFunctionResultList resultList;
+    ResultList<DVCSConvolCoeffFunctionResult> resultList;
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
@@ -99,7 +99,8 @@ DVCSConvolCoeffFunctionResultList ConvolCoeffFunctionResultDao::getResultListByC
 }
 
 void ConvolCoeffFunctionResultDao::fillConvolCoeffFunctionResultList(
-        DVCSConvolCoeffFunctionResultList &resultList, QSqlQuery& query) const {
+        ResultList<DVCSConvolCoeffFunctionResult> &resultList,
+        QSqlQuery& query) const {
 
     int field_id = query.record().indexOf("id");
     int field_kinematic_id = query.record().indexOf(

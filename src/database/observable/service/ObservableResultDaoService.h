@@ -12,12 +12,11 @@
  * @brief
  */
 
+#include "../../../beans/observable/ObservableResult.h"
+#include "../../../beans/ResultList.h"
 #include "../../common/service/CommonDaoService.h"
 #include "../dao/ObservableResultDao.h"
 #include "ObservableKinematicDaoService.h"
-
-class ObservableResult;
-class ObservableResultList;
 
 class ObservableResultDaoService: public BaseObject {
 public:
@@ -25,9 +24,9 @@ public:
     virtual ~ObservableResultDaoService();
 
     int insert(const ObservableResult &observableResult) const;
-    int insert(const ObservableResultList &observableResultList);
+    int insert(const ResultList<ObservableResult> &observableResultList);
 
-    ObservableResultList getObservableResultListByComputationId(
+    ResultList<ObservableResult> getObservableResultListByComputationId(
             const int computationId) const;
 
 private:

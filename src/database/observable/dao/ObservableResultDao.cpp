@@ -5,9 +5,8 @@
 #include <QtCore/qstring.h>
 #include <QtSql/qsqlrecord.h>
 
+#include "../../../beans/List.h"
 #include "../../../beans/observable/ObservableKinematic.h"
-#include "../../../beans/observable/ObservableResult.h"
-#include "../../../beans/observable/ObservableResultList.h"
 #include "../../../beans/observable/ObservableType.h"
 #include "../../../utils/math/ErrorBar.h"
 #include "../../../utils/stringUtils/Formatter.h"
@@ -59,10 +58,10 @@ int ObservableResultDao::insert(const std::string& observableName,
     return result;
 }
 
-ObservableResultList ObservableResultDao::getObservableResultListByComputationId(
+ResultList<ObservableResult> ObservableResultDao::getObservableResultListByComputationId(
         const int computationId) const {
 
-    ObservableResultList results;
+    ResultList<ObservableResult> results;
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
@@ -86,7 +85,8 @@ ObservableResultList ObservableResultDao::getObservableResultListByComputationId
 }
 
 void ObservableResultDao::fillObservableResultList(
-        ObservableResultList &observableResultList, QSqlQuery& query) const {
+        ResultList<ObservableResult> &observableResultList,
+        QSqlQuery& query) const {
 
     int field_id = query.record().indexOf("id");
     int field_observable_name = query.record().indexOf("observable_name");

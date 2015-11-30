@@ -4,8 +4,7 @@
 #include <stddef.h>
 #include <exception>
 
-#include "../../../beans/observable/ObservableResult.h"
-#include "../../../beans/observable/ObservableResultList.h"
+#include "../../../beans/List.h"
 #include "../../../utils/math/ErrorBar.h"
 #include "../../../utils/stringUtils/Formatter.h"
 
@@ -77,7 +76,7 @@ int ObservableResultDaoService::insertWithoutTransaction(
 }
 
 int ObservableResultDaoService::insert(
-        const ObservableResultList &observableResultList) {
+        const ResultList<ObservableResult> &observableResultList) {
     int result = -1;
 
     info(__func__,
@@ -107,7 +106,7 @@ int ObservableResultDaoService::insert(
     return result;
 }
 
-ObservableResultList ObservableResultDaoService::getObservableResultListByComputationId(
+ResultList<ObservableResult> ObservableResultDaoService::getObservableResultListByComputationId(
         const int computationId) const {
     return m_observableResultDao.getObservableResultListByComputationId(
             computationId);

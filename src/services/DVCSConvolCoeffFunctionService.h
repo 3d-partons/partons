@@ -16,15 +16,13 @@
 #include <vector>
 
 #include "../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
+#include "../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
 #include "../beans/gpd/GPDType.h"
+#include "../beans/ResultList.h"
 #include "../modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
 #include "../ServiceObject.h"
 
 class DVCSConvolCoeffFunctionResultList;
-
-class DVCSConvolCoeffFunctionKinematic;
-class DVCSConvolCoeffFunctionModule;
-class DVCSConvolCoeffFunctionResult;
 class GPDModule;
 
 class DVCSConvolCoeffFunctionService: public ServiceObject {
@@ -49,12 +47,12 @@ public:
             DVCSConvolCoeffFunctionModule* dvcsConvolCoeffFunctionModule,
             GPDModule* _pGPDModule,
             const DVCSConvolCoeffFunctionKinematic &kinematic,
-            GPDType::Type gpdType = GPDType::ALL);
+            GPDType::Type gpdType = GPDType::ALL) const;
 
-    virtual DVCSConvolCoeffFunctionResultList computeListWithGPDModel(
+    virtual ResultList<DVCSConvolCoeffFunctionResult> computeListWithGPDModel(
             const DVCSConvolCoeffFunctionKinematic &kinematic,
             std::vector<DVCSConvolCoeffFunctionModule*> listOfDVCSConvolCoeffFunctionModule,
-            GPDModule* _pGPDModule, GPDType::Type gpdType = GPDType::ALL);
+            GPDModule* _pGPDModule, GPDType::Type gpdType = GPDType::ALL) const;
 
 //    std::vector<DVCSConvolCoeffFunctionResult> compute(
 //            std::vector<CFFInputData> ListOfCFFInputData,
@@ -69,8 +67,9 @@ public:
 
 private:
     //TODO improve object copy
-    DVCSConvolCoeffFunctionResult computeWithGPDModelTask(Task &task);
-    DVCSConvolCoeffFunctionResultList computeListWithGPDModelTask(Task &task);
+    DVCSConvolCoeffFunctionResult computeWithGPDModelTask(Task &task) const;
+    ResultList<DVCSConvolCoeffFunctionResult> computeListWithGPDModelTask(
+            Task &task) const;
 };
 
 #endif /* DVCS_CONVOL_COEFF_FUNCTION_SERVICE_H */

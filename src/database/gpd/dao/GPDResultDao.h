@@ -15,11 +15,10 @@
 #include <Qt/qsqlquery.h>
 #include <string>
 
+#include "../../../beans/gpd/GPDResult.h"
+#include "../../../beans/ResultList.h"
 #include "../../parton_distribution/dao/PartonDistributionDao.h"
 #include "GPDKinematicDao.h"
-
-class GPDResult;
-class GPDResultList;
 
 class GPDResultDao: public BaseObject {
 public:
@@ -32,14 +31,14 @@ public:
     int insertIntoGPDResultPartonDistributionTable(const int gpdTypeId,
             const int gpdResultId, const int partonDistributionId) const;
 
-    GPDResultList getGPDResultListByComputationId(
+    ResultList<GPDResult> getGPDResultListByComputationId(
             const int computationId) const;
 
 private:
     GPDKinematicDao m_gpdKinematicDao;
     PartonDistributionDao m_partonDistributionDao;
 
-    void fillGPDResultList(GPDResultList &gpdResultList,
+    void fillGPDResultList(ResultList<GPDResult> &gpdResultList,
             QSqlQuery &query) const;
 
     // a supprimer

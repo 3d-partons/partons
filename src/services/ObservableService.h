@@ -16,14 +16,13 @@
 
 #include "../beans/List.h"
 #include "../beans/observable/ObservableKinematic.h"
-//#include "../beans/observable/ObservableKinematicList.h"
+#include "../beans/observable/ObservableResult.h"
+#include "../beans/ResultList.h"
 #include "../ServiceObject.h"
 
 class DVCSConvolCoeffFunctionModule;
 class DVCSModule;
 class Observable;
-class ObservableResult;
-class ObservableResultList;
 class ObservableResultListReport;
 class Tolerances;
 
@@ -49,14 +48,14 @@ public:
             const ObservableKinematic &observableKinematic,
             DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule) const;
 
-    ObservableResultList computeManyKinematicOneModel(
+    ResultList<ObservableResult> computeManyKinematicOneModel(
             const List<ObservableKinematic> & listOfKinematic,
             DVCSModule* pDVCSModule, Observable* pObservable,
             DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule) const;
 
     ObservableResultListReport compareResultList(
-            const ObservableResultList &resultList_01,
-            const ObservableResultList &resultList_02,
+            const ResultList<ObservableResult> &resultList_01,
+            const ResultList<ObservableResult> &resultList_02,
             const Tolerances &tolerances) const;
 
     virtual void computeTask(Task &task);
@@ -64,7 +63,7 @@ public:
 private:
     //TODO improve object copy
     ObservableResult computeDVCSObservableTask(Task &task);
-    ObservableResultList computeManyKinematicOneModelTask(Task &task);
+    ResultList<ObservableResult> computeManyKinematicOneModelTask(Task &task);
 
 };
 

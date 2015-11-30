@@ -5,9 +5,9 @@
 #include "../beans/automation/Task.h"
 #include "../beans/gpd/GPDKinematic.h"
 #include "../beans/gpd/GPDResult.h"
-#include "../beans/gpd/GPDResultList.h"
 #include "../beans/gpd/GPDType.h"
 #include "../beans/List.h"
+#include "../beans/ResultList.h"
 #include "../BaseObjectRegistry.h"
 #include "../modules/evolution/GPDEvolutionModule.h"
 #include "../modules/GPDModule.h"
@@ -156,7 +156,7 @@ void GPDService::computeTask(Task &task) {
                             << task.getFunctionName());
         }
 
-        GPDResultList results = computeListOfGPDModel(gpdKinematic,
+        ResultList<GPDResult> results = computeListOfGPDModel(gpdKinematic,
                 listOfGPDModule);
 
         info(__func__,
@@ -197,17 +197,17 @@ GPDResult GPDService::computeGPDModel(const GPDKinematic &gpdKinematic,
             GPDType::ALL);
 }
 
-GPDResultList GPDService::computeListOfGPDModel(
+ResultList<GPDResult> GPDService::computeListOfGPDModel(
         const GPDKinematic &gpdKinematic,
         std::vector<GPDModule*> &listOfGPDToCompute) {
     return computeListOfGPDModelRestrictedByGPDType(gpdKinematic,
             listOfGPDToCompute, GPDType::ALL);
 }
 
-GPDResultList GPDService::computeListOfGPDModelRestrictedByGPDType(
+ResultList<GPDResult> GPDService::computeListOfGPDModelRestrictedByGPDType(
         const GPDKinematic &gpdKinematic,
         std::vector<GPDModule*> &listOfGPDToCompute, GPDType gpdType) {
-    GPDResultList results;
+    ResultList<GPDResult> results;
 
     for (size_t i = 0; i != listOfGPDToCompute.size(); i++) {
         results.add(
@@ -219,10 +219,10 @@ GPDResultList GPDService::computeListOfGPDModelRestrictedByGPDType(
     return results;
 }
 
-GPDResultList GPDService::computeManyKinematicOneModel(
+ResultList<GPDResult> GPDService::computeManyKinematicOneModel(
         const List<GPDKinematic> &gpdKinematicList,
         GPDModule* pGPDModule) const {
-    GPDResultList results = GPDResultList();
+    ResultList<GPDResult> results;
 
 // compute GPDModule for each inputData
     for (unsigned int i = 0; i != gpdKinematicList.size(); i++) {

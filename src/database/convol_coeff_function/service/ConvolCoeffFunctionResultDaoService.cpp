@@ -7,8 +7,8 @@
 #include <map>
 #include <utility>
 
-#include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResultList.h"
 #include "../../../beans/gpd/GPDType.h"
+#include "../../../beans/List.h"
 #include "../../../utils/stringUtils/Formatter.h"
 
 ConvolCoeffFunctionResultDaoService::ConvolCoeffFunctionResultDaoService() :
@@ -88,7 +88,7 @@ int ConvolCoeffFunctionResultDaoService::insertWithoutTransaction(
 }
 
 int ConvolCoeffFunctionResultDaoService::insert(
-        const DVCSConvolCoeffFunctionResultList& resultList) {
+        const ResultList<DVCSConvolCoeffFunctionResult>& resultList) {
 
     info(__func__,
             Formatter() << "Inserting object size = " << resultList.size());
@@ -115,7 +115,7 @@ int ConvolCoeffFunctionResultDaoService::insert(
     return result;
 }
 
-DVCSConvolCoeffFunctionResultList ConvolCoeffFunctionResultDaoService::getResultListByComputationId(
+ResultList<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionResultDaoService::getResultListByComputationId(
         const int computationId) const {
     return m_convolCoeffFunctionResultDao.getResultListByComputationId(
             computationId);

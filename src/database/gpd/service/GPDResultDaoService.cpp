@@ -5,9 +5,8 @@
 #include <map>
 #include <utility>
 
-#include "../../../beans/gpd/GPDResult.h"
-#include "../../../beans/gpd/GPDResultList.h"
 #include "../../../beans/gpd/GPDType.h"
+#include "../../../beans/List.h"
 #include "../../../beans/parton_distribution/PartonDistribution.h"
 #include "../../../utils/stringUtils/Formatter.h"
 
@@ -89,7 +88,8 @@ int GPDResultDaoService::insertWithoutTransaction(
     return computationId;
 }
 
-int GPDResultDaoService::insert(const GPDResultList &gpdResultList) const {
+int GPDResultDaoService::insert(
+        const ResultList<GPDResult> &gpdResultList) const {
 
     info(__func__,
             Formatter() << "Inserting object size = " << gpdResultList.size());
@@ -119,7 +119,7 @@ int GPDResultDaoService::insert(const GPDResultList &gpdResultList) const {
     return computationId;
 }
 
-GPDResultList GPDResultDaoService::getGPDResultListByComputationId(
+ResultList<GPDResult> GPDResultDaoService::getGPDResultListByComputationId(
         const int computationId) const {
     return m_gpdResultDao.getGPDResultListByComputationId(computationId);
 }

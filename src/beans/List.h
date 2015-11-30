@@ -19,21 +19,30 @@
 
 #include "../utils/stringUtils/Formatter.h"
 #include "../utils/test/ComparisonReport.h"
+#include "ComparisonMode.h"
 
 class Tolerances;
 
 template<class T> class List {
 public:
     List() {
-
     }
 
     virtual ~List() {
-
     }
 
     void add(const T &data) {
         m_data.push_back(data);
+    }
+
+    void add(const List<T> &list) {
+        for (size_t i = 0; i != list.size(); i++) {
+            m_data.push_back(list[i]);
+        }
+    }
+
+    const T& get(size_t n) const {
+        return m_data.at(n);
     }
 
     T& operator[](size_t n) {
@@ -62,8 +71,8 @@ public:
         return formatter.str();
     }
 
-    ComparisonReport compare(const List<T> &other,
-            const Tolerances &tolerances) const {
+    ComparisonReport compare(const List<T> &other, const Tolerances &tolerances,
+            const ComparisonMode &comparisonMode) const {
 
         if (this->isEmpty() && other.isEmpty()) {
 

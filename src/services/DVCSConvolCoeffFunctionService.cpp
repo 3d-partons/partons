@@ -1,8 +1,8 @@
 #include "DVCSConvolCoeffFunctionService.h"
 
 #include "../beans/automation/Task.h"
-#include "../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
-#include "../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResultList.h"
+//#include "../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResultList.h"
+#include "../beans/List.h"
 #include "../BaseObjectRegistry.h"
 #include "../database/convol_coeff_function/service/ConvolCoeffFunctionResultDaoService.h"
 #include "../modules/GPDModule.h"
@@ -35,7 +35,7 @@ DVCSConvolCoeffFunctionService::~DVCSConvolCoeffFunctionService() {
 //TODO implement
 void DVCSConvolCoeffFunctionService::computeTask(Task &task) {
 
-    DVCSConvolCoeffFunctionResultList resultList;
+    ResultList<DVCSConvolCoeffFunctionResult> resultList;
 
     if (StringUtils::equals(task.getFunctionName(),
             DVCSConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_WITH_GPD_MODEL)) {
@@ -72,7 +72,7 @@ DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionService::computeWithGPDMode
         DVCSConvolCoeffFunctionModule* dvcsConvolCoeffFunctionModule,
         GPDModule* _pGPDModule,
         const DVCSConvolCoeffFunctionKinematic &kinematic,
-        GPDType::Type gpdType) {
+        GPDType::Type gpdType) const {
 
     // set gpd module to dvcs convol coeff function module
     dvcsConvolCoeffFunctionModule->setGPDModule(_pGPDModule);
@@ -85,12 +85,12 @@ DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionService::computeWithGPDMode
     return result;
 }
 
-DVCSConvolCoeffFunctionResultList DVCSConvolCoeffFunctionService::computeListWithGPDModel(
+ResultList<DVCSConvolCoeffFunctionResult> DVCSConvolCoeffFunctionService::computeListWithGPDModel(
         const DVCSConvolCoeffFunctionKinematic& kinematic,
         std::vector<DVCSConvolCoeffFunctionModule*> listOfDVCSConvolCoeffFunctionModule,
-        GPDModule* _pGPDModule, GPDType::Type gpdType) {
+        GPDModule* _pGPDModule, GPDType::Type gpdType) const {
 
-    DVCSConvolCoeffFunctionResultList results;
+    ResultList<DVCSConvolCoeffFunctionResult> results;
 
     for (unsigned int i = 0; i != listOfDVCSConvolCoeffFunctionModule.size();
             i++) {
@@ -103,7 +103,7 @@ DVCSConvolCoeffFunctionResultList DVCSConvolCoeffFunctionService::computeListWit
 }
 
 DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionService::computeWithGPDModelTask(
-        Task& task) {
+        Task& task) const {
 
     //create a kinematic and init it with a list of parameters
     DVCSConvolCoeffFunctionKinematic kinematic;
@@ -153,8 +153,8 @@ DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionService::computeWithGPDMode
     return result;
 }
 
-DVCSConvolCoeffFunctionResultList DVCSConvolCoeffFunctionService::computeListWithGPDModelTask(
-        Task& task) {
+ResultList<DVCSConvolCoeffFunctionResult> DVCSConvolCoeffFunctionService::computeListWithGPDModelTask(
+        Task& task) const {
     //create kinematic
     DVCSConvolCoeffFunctionKinematic kinematic;
 
@@ -203,7 +203,7 @@ DVCSConvolCoeffFunctionResultList DVCSConvolCoeffFunctionService::computeListWit
                         << task.getFunctionName());
     }
 
-    DVCSConvolCoeffFunctionResultList results = computeListWithGPDModel(
+    ResultList<DVCSConvolCoeffFunctionResult> results = computeListWithGPDModel(
             kinematic, listOfModule, pGPDModule);
 
     return results;

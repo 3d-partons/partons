@@ -13,12 +13,11 @@
  */
 
 #include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
+#include "../../../beans/ResultList.h"
 #include "../../common/service/CommonDaoService.h"
 #include "../../common/service/ComplexDaoService.h"
 #include "../dao/ConvolCoeffFunctionResultDao.h"
 #include "ConvolCoeffFunctionKinematicDaoService.h"
-
-class DVCSConvolCoeffFunctionResultList;
 
 class ConvolCoeffFunctionResultDaoService: public BaseObject {
 public:
@@ -26,9 +25,9 @@ public:
     virtual ~ConvolCoeffFunctionResultDaoService();
 
     int insert(const DVCSConvolCoeffFunctionResult &result);
-    int insert(const DVCSConvolCoeffFunctionResultList &resultList);
+    int insert(const ResultList<DVCSConvolCoeffFunctionResult> &resultList);
 
-    DVCSConvolCoeffFunctionResultList getResultListByComputationId(
+    ResultList<DVCSConvolCoeffFunctionResult> getResultListByComputationId(
             const int computationId) const;
 
 private:
