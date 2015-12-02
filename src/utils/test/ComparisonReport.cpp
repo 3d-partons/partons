@@ -1,7 +1,21 @@
 #include "ComparisonReport.h"
 
+#include <stddef.h>
+
+#include "../stringUtils/Formatter.h"
+
 ComparisonReport::ComparisonReport() :
-        m_comparisonResult(false) {
+        m_failed(false) {
+}
+
+ComparisonReport::ComparisonReport(const std::string &className) :
+        m_className(className) {
+
+}
+
+ComparisonReport::ComparisonReport(const std::string& className,
+        const std::string& context) :
+        m_className(className), m_context(context) {
 }
 
 ComparisonReport::ComparisonReport(bool comparisonResult) :
@@ -11,15 +25,60 @@ ComparisonReport::ComparisonReport(bool comparisonResult) :
 ComparisonReport::~ComparisonReport() {
 }
 
+//TODO remove
 bool ComparisonReport::isEqual() const {
-    return m_comparisonResult;
+    return true;
+}
+
+//TODO implement
+std::string ComparisonReport::toString() const {
+    Formatter formatter;
+
+    formatter << m_className << '\n';
+
+    if (!m_context.empty()) {
+        formatter << "Context = " << m_context << '\n';
+    }
+
+    for (size_t i = 0; i != m_data.size(); i++) {
+        formatter << m_data[i].toString() << '\n';
+    }
+
+    for (size_t i = 0; i != m_children.size(); i++) {
+        formatter << m_children[i].toString() << '\n';
+    }
+
+    return formatter.str();
+}
+
+void ComparisonReport::addChildren(const ComparisonReport &children) {
+    m_children.push_back(children);
+}
+
+bool ComparisonReport::isFailed() const {
+    return m_failed;
+}
+
+void ComparisonReport::addComparisonData(const ComparisonData& comparisonData) {
+    m_data.push_back(comparisonData);
 }
 
 void ComparisonReport::setComparisonResult(bool comparisonResult) {
     m_comparisonResult = comparisonResult;
 }
 
-//TODO implement
-std::string ComparisonReport::toString() {
-    return "";
+void ComparisonReport::setClassName(const std::string& className) {
+    m_className = className;
+}
+
+void ComparisonReport::setContext(const std::string& context) {
+    m_context = context;
+}
+
+const std::string& ComparisonReport::getClassName() const {
+    return m_className;
+}
+
+const std::string& ComparisonReport::getContext() const {
+    return m_context;
 }

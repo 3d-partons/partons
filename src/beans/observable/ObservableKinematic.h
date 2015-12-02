@@ -61,7 +61,7 @@ public:
 
     const std::string toStringWithoutPhi() const;
 
-    ComparisonReport compare(const ObservableKinematic &other,
+    ComparisonReport compare(const ObservableKinematic &referenceObject,
             const Tolerances &tolerances) const;
 
     // ##### GETTERS & SETTERS #####

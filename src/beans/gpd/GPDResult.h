@@ -39,7 +39,7 @@ public:
 
     virtual std::string toString();
 
-    ComparisonReport compare(const GPDResult &GPDResult,
+    ComparisonReport compare(const GPDResult &other,
             const Tolerances &tolerances) const;
 
     // ##### GETTERS & SETTERS #####
@@ -52,6 +52,7 @@ public:
 
 private:
     std::map<GPDType::Type, PartonDistribution> m_partonDistributions;
+    //std::map<GPDType::Type, PartonDistribution>::iterator m_it;
 
     GPDKinematic m_kinematic;
 };

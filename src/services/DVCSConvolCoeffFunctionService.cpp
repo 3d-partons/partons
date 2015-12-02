@@ -1,7 +1,6 @@
 #include "DVCSConvolCoeffFunctionService.h"
 
 #include "../beans/automation/Task.h"
-//#include "../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResultList.h"
 #include "../beans/List.h"
 #include "../BaseObjectRegistry.h"
 #include "../database/convol_coeff_function/service/ConvolCoeffFunctionResultDaoService.h"

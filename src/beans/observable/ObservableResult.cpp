@@ -87,8 +87,12 @@ void ObservableResult::setValue(double value) {
     m_value = value;
 }
 
-ComparisonReport ObservableResult::compare(const ObservableResult& other,
+ComparisonReport ObservableResult::compare(
+        const ObservableResult& referenceObject,
         const Tolerances& tolerances) const {
 
-    return ComparisonReport();
+    ComparisonReport comparisonReport(getClassName());
+
+    //TODO implement
+    return comparisonReport;
 }

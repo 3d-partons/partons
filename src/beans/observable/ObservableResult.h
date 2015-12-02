@@ -27,7 +27,7 @@ public:
 
     virtual std::string toString();
 
-    ComparisonReport compare(const ObservableResult &other,
+    ComparisonReport compare(const ObservableResult &referenceObject,
             const Tolerances &tolerances) const;
 
     void setKinematic(const ObservableKinematic &kinematic);

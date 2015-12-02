@@ -3,6 +3,8 @@
 #include <sstream>
 #include <utility>
 
+#include "../../utils/test/ComparisonReport.h"
+
 PartonDistribution::PartonDistribution() :
         BaseObject("PartonDistribution") {
 }
@@ -120,6 +122,22 @@ double PartonDistribution::getSinglet() {
 void PartonDistribution::addQuarkDistribution(
         QuarkDistribution& quarkDistribution) {
     m_quarkDistributions.insert(
-               std::make_pair(quarkDistribution.getQuarkFlavor(),
-                       quarkDistribution));
+            std::make_pair(quarkDistribution.getQuarkFlavor(),
+                    quarkDistribution));
+}
+
+ComparisonReport PartonDistribution::compare(const PartonDistribution& other,
+        const Tolerances& tolerances) const {
+
+    ComparisonReport comparisonReport(getClassName(), toString());
+
+    for (std::map<QuarkFlavor::Type, QuarkDistribution>::const_iterator m_it =
+            m_quarkDistributions.begin(); m_it != m_quarkDistributions.end();
+            m_it++) {
+        comparisonReport.addChildren(
+                (m_it->second).compare(
+                        other.getQuarkDistribution((m_it->first)), tolerances));
+    }
+
+    return comparisonReport;
 }

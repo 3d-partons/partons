@@ -120,9 +120,12 @@ void ObservableKinematic::setPhi(double phi) {
     m_phi = phi;
 }
 
-ComparisonReport ObservableKinematic::compare(const ObservableKinematic& other,
+ComparisonReport ObservableKinematic::compare(
+        const ObservableKinematic& referenceObject,
         const Tolerances& tolerances) const {
     ComparisonReport report;
+
+
 
     return report;
 }

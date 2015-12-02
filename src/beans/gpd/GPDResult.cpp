@@ -1,10 +1,10 @@
 #include "GPDResult.h"
 
-#include <iostream>
 #include <sstream>
 #include <stdexcept>
 #include <utility>
 
+#include "../../utils/stringUtils/Formatter.h"
 #include "../../utils/test/ComparisonReport.h"
 
 const std::string GPDResult::GPD_RESULT_DB_TABLE_NAME = "gpd_result";
@@ -100,11 +100,20 @@ void GPDResult::setKinematic(const GPDKinematic& kinematic) {
     m_kinematic = kinematic;
 }
 
-ComparisonReport GPDResult::compare(const GPDResult& GPDResult,
+ComparisonReport GPDResult::compare(const GPDResult& other,
         const Tolerances& tolerances) const {
 
-    std::cerr << "GPDResult::compare" << std::endl;
+    ComparisonReport comparisonReport(getClassName(),
+            Formatter() << m_kinematic.toString());
 
-    //TODO implement
-    return ComparisonReport();
+    for (std::map<GPDType::Type, PartonDistribution>::const_iterator m_it =
+            m_partonDistributions.begin(); m_it != m_partonDistributions.end();
+            m_it++) {
+        comparisonReport.addChildren(
+                (m_it->second).compare(
+                        other.getPartonDistribution((m_it->first)),
+                        tolerances));
+    }
+
+    return comparisonReport;
 }

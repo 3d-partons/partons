@@ -3,9 +3,13 @@
 
 #include <string>
 
+#include "../../BaseObject.h"
 #include "../QuarkFlavor.h"
 
-class QuarkDistribution {
+class ComparisonReport;
+class Tolerances;
+
+class QuarkDistribution: public BaseObject {
 public:
 
     static const std::string QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DISTRIBUTION;
@@ -19,6 +23,9 @@ public:
     virtual ~QuarkDistribution();
 
     virtual std::string toString() const;
+
+    ComparisonReport compare(const QuarkDistribution& other,
+            const Tolerances& tolerances) const;
 
     // ##### GETTERS & SETTERS #####
 

@@ -1,11 +1,10 @@
 #include "GPDKinematic.h"
 
-#include <iostream>
-
 #include "../../utils/GenericType.h"
 #include "../../utils/ParameterList.h"
 #include "../../utils/stringUtils/Formatter.h"
 #include "../../utils/test/ComparisonReport.h"
+#include "../ComparisonData.h"
 #include "../observable/ObservableKinematic.h"
 
 const std::string GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_X = "x";
@@ -63,7 +62,7 @@ GPDKinematic::GPDKinematic(ParameterList &parameterList) :
 GPDKinematic::~GPDKinematic() {
 }
 
-std::string GPDKinematic::toString() {
+std::string GPDKinematic::toString() const {
     return Formatter() << Kinematic::toString() << " m_x = " << m_x
             << " m_xi = " << m_xi << " m_t = " << m_t << " m_MuF2 = " << m_MuF2
             << "(Gev2) m_MuR2 = " << m_MuR2 << "(Gev2)";
@@ -119,12 +118,15 @@ void GPDKinematic::setKinematicType(KinematicType::Type kinematicType) {
     m_kinematicType = kinematicType;
 }
 
-ComparisonReport GPDKinematic::compare(const GPDKinematic& gpdKinematic,
+ComparisonReport GPDKinematic::compare(const GPDKinematic& other,
         const Tolerances& tolerances) const {
-    std::cerr << "GPDKinematic::compare" << std::endl;
+    ComparisonReport comparisonReport(getClassName());
 
-    //TODO implement
-    return ComparisonReport();
+    ComparisonData comparisonData(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_X,
+            "blabla");
+    comparisonReport.addComparisonData(comparisonData);
+
+    return comparisonReport;
 }
 //sf::Packet& operator <<(sf::Packet& packet, const GPDKinematic& object) {
 //    return packet << object.m_x << object.m_xi << object.m_t << object.m_MuF

@@ -13,19 +13,20 @@
  */
 
 #include <stddef.h>
-#include <iostream>
 #include <string>
 #include <vector>
 
+#include "../BaseObject.h"
 #include "../utils/stringUtils/Formatter.h"
-#include "../utils/test/ComparisonReport.h"
 #include "ComparisonMode.h"
+#include "ComparisonReportList.h"
 
 class Tolerances;
 
-template<class T> class List {
+template<class T> class List: public BaseObject {
 public:
-    List() {
+    List() :
+            BaseObject("List") {
     }
 
     virtual ~List() {
@@ -71,25 +72,37 @@ public:
         return formatter.str();
     }
 
-    ComparisonReport compare(const List<T> &other, const Tolerances &tolerances,
+    ComparisonReportList compare(const List<T> &other,
+            const Tolerances &tolerances,
             const ComparisonMode &comparisonMode) const {
 
+        ComparisonReportList reportList;
+
         if (this->isEmpty() && other.isEmpty()) {
-
+            warn(__func__, Formatter() << "Lists are empty");
         } else {
-            if (this->size() == other.size()) {
 
-                for (size_t i = 0; i != this->size(); i++) {
-                    (this->m_data[i]).compare(other[i], tolerances);
+            switch (comparisonMode) {
+            case ComparisonMode::INTERSECTION:
+                break;
+            default:
+                // equal comparison by default
+                if (this->size() == other.size()) {
+                    for (size_t i = 0; i != this->size(); i++) {
+                        reportList.add(
+                                (this->m_data[i]).compare(other[i],
+                                        tolerances));
+                    }
+                } else {
+                    warn(__func__,
+                            Formatter() << "Lists are not equal in size");
                 }
-
-            } else {
-                std::cerr << "Lists of are not equal in size" << std::endl;
+                break;
             }
 
         }
 
-        return ComparisonReport();
+        return reportList;
     }
 
 private:

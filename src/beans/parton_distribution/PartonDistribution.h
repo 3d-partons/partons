@@ -5,10 +5,12 @@
 #include <string>
 #include <vector>
 
-#include "../../BaseObject.h"
 #include "../QuarkFlavor.h"
 #include "GluonDistribution.h"
 #include "QuarkDistribution.h"
+
+class ComparisonReport;
+class Tolerances;
 
 class PartonDistribution: public BaseObject {
 public:
@@ -31,6 +33,9 @@ public:
 
     virtual std::string toString() const;
 
+    ComparisonReport compare(const PartonDistribution &other,
+            const Tolerances &tolerances) const;
+
     // ##### GETTERS & SETTERS #####
 
     const GluonDistribution& getGluonDistribution() const;
@@ -41,7 +46,7 @@ public:
 
 private:
     std::map<QuarkFlavor::Type, QuarkDistribution> m_quarkDistributions;
-    // std::map<QuarkFlavor::Type, QuarkDistribution>::const_iterator it;
+    // std::map<QuarkFlavor::Type, QuarkDistribution>::iterator m_it;
 
     GluonDistribution m_gluonDistribution;
 };

@@ -2,6 +2,9 @@
 
 #include <sstream>
 
+#include "../../utils/test/ComparisonReport.h"
+#include "../ComparisonData.h"
+
 //#include <sstream>
 
 const std::string QuarkDistribution::QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DISTRIBUTION =
@@ -12,19 +15,20 @@ const std::string QuarkDistribution::QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DIS
         "quark_distribution_minus";
 
 QuarkDistribution::QuarkDistribution() :
-        m_quarkFlavor(QuarkFlavor::UNDEFINED), m_quarkDistribution(0.), m_quarkDistributionPlus(
-                0.), m_quarkDistributionMinus(0.) {
+        BaseObject("QuarkDistribution"), m_quarkFlavor(QuarkFlavor::UNDEFINED), m_quarkDistribution(
+                0.), m_quarkDistributionPlus(0.), m_quarkDistributionMinus(0.) {
 }
 
 QuarkDistribution::QuarkDistribution(QuarkFlavor::Type quarkFlavor) :
-        m_quarkFlavor(quarkFlavor), m_quarkDistribution(0.), m_quarkDistributionPlus(
-                0.), m_quarkDistributionMinus(0.) {
+        BaseObject("QuarkDistribution"), m_quarkFlavor(quarkFlavor), m_quarkDistribution(
+                0.), m_quarkDistributionPlus(0.), m_quarkDistributionMinus(0.) {
 }
 
 QuarkDistribution::QuarkDistribution(QuarkFlavor::Type quarkFlavor,
         double quarkDistribution, double quarkDistributionPlus,
         double quarkDistributionMinus) :
-        m_quarkFlavor(quarkFlavor), m_quarkDistribution(quarkDistribution), m_quarkDistributionPlus(
+        BaseObject("QuarkDistribution"), m_quarkFlavor(quarkFlavor), m_quarkDistribution(
+                quarkDistribution), m_quarkDistributionPlus(
                 quarkDistributionPlus), m_quarkDistributionMinus(
                 quarkDistributionMinus) {
 }
@@ -94,4 +98,16 @@ double QuarkDistribution::getQuark() const {
 
 void QuarkDistribution::setQuark(double quark) {
     this->quark = quark;
+}
+
+ComparisonReport QuarkDistribution::compare(const QuarkDistribution& other,
+        const Tolerances& tolerances) const {
+    ComparisonReport comparisonReport(getClassName());
+
+    ComparisonData comparisonData(
+            QuarkDistribution::QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DISTRIBUTION_PLUS,
+            "blabla");
+    comparisonReport.addComparisonData(comparisonData);
+
+    return comparisonReport;
 }

@@ -3,7 +3,7 @@
 
 /**
  * @file Scale.h
- * @author Bryan BERTHOU (CEA Saclay)
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 07 October 2015
  * @version 1.0
  *
