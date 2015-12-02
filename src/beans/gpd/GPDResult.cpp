@@ -106,12 +106,12 @@ ComparisonReport GPDResult::compare(const GPDResult& other,
     ComparisonReport comparisonReport(getClassName(),
             Formatter() << m_kinematic.toString());
 
-    for (std::map<GPDType::Type, PartonDistribution>::const_iterator m_it =
-            m_partonDistributions.begin(); m_it != m_partonDistributions.end();
-            m_it++) {
+    for (std::map<GPDType::Type, PartonDistribution>::const_iterator it =
+            m_partonDistributions.begin(); it != m_partonDistributions.end();
+            it++) {
         comparisonReport.addChildren(
-                (m_it->second).compare(
-                        other.getPartonDistribution((m_it->first)),
+                (it->second).compare(
+                        other.getPartonDistribution((it->first)),
                         tolerances));
     }
 

@@ -131,12 +131,12 @@ ComparisonReport PartonDistribution::compare(const PartonDistribution& other,
 
     ComparisonReport comparisonReport(getClassName(), toString());
 
-    for (std::map<QuarkFlavor::Type, QuarkDistribution>::const_iterator m_it =
-            m_quarkDistributions.begin(); m_it != m_quarkDistributions.end();
-            m_it++) {
+    for (std::map<QuarkFlavor::Type, QuarkDistribution>::const_iterator it =
+            m_quarkDistributions.begin(); it != m_quarkDistributions.end();
+            it++) {
         comparisonReport.addChildren(
-                (m_it->second).compare(
-                        other.getQuarkDistribution((m_it->first)), tolerances));
+                (it->second).compare(
+                        other.getQuarkDistribution((it->first)), tolerances));
     }
 
     return comparisonReport;

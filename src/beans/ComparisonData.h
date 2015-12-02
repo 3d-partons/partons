@@ -2,12 +2,12 @@
 #define COMPARISON_DATA_H
 
 /**
- * @file ComparisonReportList.h
+ * @file ComparisonData.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 01 December 2015
  * @version 1.0
  *
- * @class ComparisonReportList
+ * @class ComparisonData
  *
  * @brief
  */
