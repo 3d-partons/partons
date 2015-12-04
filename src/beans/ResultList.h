@@ -12,6 +12,7 @@
  * @brief
  */
 
+//#include <stddef.h>
 #include <ctime>
 
 #include "List.h"
@@ -23,7 +24,7 @@ public:
             List<T>(), m_computationDateTime(time(0)) {
     }
 
-    ~ResultList() {
+    virtual ~ResultList() {
     }
 
     time_t getComputationDateTime() const {
@@ -32,6 +33,11 @@ public:
 
     void setComputationDateTime(time_t computationDateTime) {
         m_computationDateTime = computationDateTime;
+    }
+
+    virtual void add(const T &data) {
+        List<T>::add(data);
+        this->m_data.back().setComputationDateTime(m_computationDateTime);
     }
 
 private:

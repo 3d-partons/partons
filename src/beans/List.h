@@ -32,13 +32,13 @@ public:
     virtual ~List() {
     }
 
-    void add(const T &data) {
+    virtual void add(const T &data) {
         m_data.push_back(data);
     }
 
     void add(const List<T> &list) {
         for (size_t i = 0; i != list.size(); i++) {
-            m_data.push_back(list[i]);
+            add(list[i]);
         }
     }
 
@@ -105,7 +105,7 @@ public:
         return reportList;
     }
 
-private:
+protected:
     std::vector<T> m_data;
 };
 
