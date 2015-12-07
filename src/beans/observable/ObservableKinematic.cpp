@@ -42,7 +42,6 @@ ObservableKinematic::ObservableKinematic(ParameterList &parameterList) :
     }
 
     if (parameterList.isAvailable(ObservableKinematic::PARAMETER_NAME_PHI)) {
-
         m_phi = parameterList.getLastAvailable().toDouble();
     } else {
         throwException(__func__,
@@ -124,8 +123,6 @@ ComparisonReport ObservableKinematic::compare(
         const ObservableKinematic& referenceObject,
         const Tolerances& tolerances) const {
     ComparisonReport report;
-
-
 
     return report;
 }

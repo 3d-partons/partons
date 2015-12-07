@@ -2,14 +2,20 @@
 
 #include <sstream>
 
-const std::string GluonDistribution::GLUON_DISTRIBUTION_DB_COLUMN_NAME = "gluon_distribution";
+#include "../../utils/test/ComparisonReport.h"
+#include "../ComparisonData.h"
 
-GluonDistribution::GluonDistribution()
-        : m_gluonDistribution(0.), m_nullObject(true) {
+const std::string GluonDistribution::GLUON_DISTRIBUTION_DB_COLUMN_NAME =
+        "gluon_distribution";
+
+GluonDistribution::GluonDistribution() :
+        BaseObject("GluonDistribution"), m_gluonDistribution(0.), m_nullObject(
+                true) {
 }
 
-GluonDistribution::GluonDistribution(double gluonDistribution)
-        : m_gluonDistribution(gluonDistribution), m_nullObject(false) {
+GluonDistribution::GluonDistribution(double gluonDistribution) :
+        BaseObject("GluonDistribution"), m_gluonDistribution(gluonDistribution), m_nullObject(
+                false) {
 }
 
 GluonDistribution::~GluonDistribution() {
@@ -39,4 +45,19 @@ bool GluonDistribution::isNullObject() const {
 
 void GluonDistribution::setNullObject(bool nullObject) {
     m_nullObject = nullObject;
+}
+
+//TODO implement
+ComparisonReport GluonDistribution::compare(
+        const GluonDistribution& referenceObject,
+        const Tolerances& tolerances) const {
+
+    ComparisonReport comparisonReport(getClassName());
+
+    //TODO replace column name by real variable name
+    comparisonReport.addComparisonData(
+            ComparisonData(
+                    GluonDistribution::GLUON_DISTRIBUTION_DB_COLUMN_NAME));
+
+    return comparisonReport;
 }

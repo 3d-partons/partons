@@ -4,6 +4,8 @@
 #include <utility>
 
 #include "../../utils/test/ComparisonReport.h"
+#include "../ComparisonMode.h"
+#include "../ComparisonReportList.h"
 
 PartonDistribution::PartonDistribution() :
         BaseObject("PartonDistribution") {
@@ -53,13 +55,13 @@ unsigned int PartonDistribution::getQuarkDistributionsSize() const {
     return m_quarkDistributions.size();
 }
 
-const std::vector<QuarkDistribution> PartonDistribution::getVectorOfQuarkDistribution() const {
-    std::vector<QuarkDistribution> result;
-    std::map<QuarkFlavor::Type, QuarkDistribution>::const_iterator it;
+List<QuarkDistribution> PartonDistribution::getListOfQuarkDistribution() const {
+    List<QuarkDistribution> result;
 
-    for (it = m_quarkDistributions.begin(); it != m_quarkDistributions.end();
+    for (std::map<QuarkFlavor::Type, QuarkDistribution>::const_iterator it =
+            m_quarkDistributions.begin(); it != m_quarkDistributions.end();
             it++) {
-        result.push_back(it->second);
+        result.add(it->second);
     }
 
     return result;
@@ -126,18 +128,23 @@ void PartonDistribution::addQuarkDistribution(
                     quarkDistribution));
 }
 
-ComparisonReport PartonDistribution::compare(const PartonDistribution& other,
+ComparisonReport PartonDistribution::compare(
+        const PartonDistribution& referenceObject,
         const Tolerances& tolerances) const {
 
     ComparisonReport comparisonReport(getClassName(), toString());
 
-    for (std::map<QuarkFlavor::Type, QuarkDistribution>::const_iterator it =
-            m_quarkDistributions.begin(); it != m_quarkDistributions.end();
-            it++) {
-        comparisonReport.addChildren(
-                (it->second).compare(
-                        other.getQuarkDistribution((it->first)), tolerances));
-    }
+    // compare gluon distribution
+    comparisonReport.addChildren(
+            m_gluonDistribution.compare(referenceObject.getGluonDistribution(),
+                    tolerances));
+
+    // compare quark distribution list
+
+    comparisonReport.addChildren(
+            this->getListOfQuarkDistribution().compare(
+                    referenceObject.getListOfQuarkDistribution(), tolerances,
+                    ComparisonMode::EQUAL));
 
     return comparisonReport;
 }

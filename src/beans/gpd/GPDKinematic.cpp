@@ -118,7 +118,7 @@ void GPDKinematic::setKinematicType(KinematicType::Type kinematicType) {
     m_kinematicType = kinematicType;
 }
 
-ComparisonReport GPDKinematic::compare(const GPDKinematic& other,
+ComparisonReport GPDKinematic::compare(const GPDKinematic& referenceObject,
         const Tolerances& tolerances) const {
     ComparisonReport comparisonReport(getClassName());
 

@@ -17,12 +17,15 @@
 
 #include "../../beans/ComparisonData.h"
 
+class ComparisonReportList;
+
 // TODO: Add "I" for "Interface" to the class name, i.e. change to ComparisonReportI
 class ComparisonReport {
 public:
     ComparisonReport();
-    ComparisonReport(const std::string &className);
-    ComparisonReport(const std::string &className, const std::string &context);
+    ComparisonReport(const std::string &objectClassName);
+    ComparisonReport(const std::string &objectClassName,
+            const std::string &context);
     virtual ~ComparisonReport();
 
     //TODO remove
@@ -31,6 +34,7 @@ public:
     //
 
     void addChildren(const ComparisonReport &children);
+    void addChildren(const ComparisonReportList &children);
     void addComparisonData(const ComparisonData &comparisonData);
 
     std::string toString() const;
@@ -38,7 +42,7 @@ public:
     bool isFailed() const;
     bool isEqual() const;
 
-    void setClassName(const std::string& className);
+    void setClassName(const std::string& objectClassName);
     void setContext(const std::string& context);
 
     const std::string& getClassName() const;
@@ -53,7 +57,7 @@ private:
     std::vector<ComparisonReport> m_children;
     std::vector<ComparisonData> m_data;
 
-    std::string m_className;
+    std::string m_objectClassName;
     std::string m_context;
 
     bool m_failed;

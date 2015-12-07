@@ -24,7 +24,7 @@ public:
 
     virtual std::string toString() const;
 
-    ComparisonReport compare(const QuarkDistribution& other,
+    ComparisonReport compare(const QuarkDistribution& referenceObject,
             const Tolerances& tolerances) const;
 
     // ##### GETTERS & SETTERS #####

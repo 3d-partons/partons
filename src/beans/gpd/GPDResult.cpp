@@ -6,6 +6,8 @@
 
 #include "../../utils/stringUtils/Formatter.h"
 #include "../../utils/test/ComparisonReport.h"
+#include "../ComparisonMode.h"
+#include "../ComparisonReportList.h"
 
 const std::string GPDResult::GPD_RESULT_DB_TABLE_NAME = "gpd_result";
 
@@ -56,13 +58,14 @@ std::vector<GPDType> GPDResult::listGPDTypeComputed() {
     return list;
 }
 
-const std::vector<PartonDistribution> GPDResult::getPartonDistributionList() const {
-    std::vector<PartonDistribution> partonDistributionList;
-    std::map<GPDType::Type, PartonDistribution>::const_iterator it;
+//TODO improve memory usage ; don't copy object parton distribution ; use reference or pointer
+List<PartonDistribution> GPDResult::getPartonDistributionList() const {
+    List<PartonDistribution> partonDistributionList;
 
-    for (it = m_partonDistributions.begin(); it != m_partonDistributions.end();
+    for (std::map<GPDType::Type, PartonDistribution>::const_iterator it =
+            m_partonDistributions.begin(); it != m_partonDistributions.end();
             ++it) {
-        partonDistributionList.push_back(it->second);
+        partonDistributionList.add(it->second);
     }
 
     return partonDistributionList;
@@ -100,20 +103,19 @@ void GPDResult::setKinematic(const GPDKinematic& kinematic) {
     m_kinematic = kinematic;
 }
 
-ComparisonReport GPDResult::compare(const GPDResult& other,
+ComparisonReport GPDResult::compare(const GPDResult& referenceObject,
         const Tolerances& tolerances) const {
 
     ComparisonReport comparisonReport(getClassName(),
             Formatter() << m_kinematic.toString());
 
-    for (std::map<GPDType::Type, PartonDistribution>::const_iterator it =
-            m_partonDistributions.begin(); it != m_partonDistributions.end();
-            it++) {
-        comparisonReport.addChildren(
-                (it->second).compare(
-                        other.getPartonDistribution((it->first)),
-                        tolerances));
-    }
+    //TODO replace hardcoded comparisonMode
+    ComparisonReportList partonDistributionReportList =
+            this->getPartonDistributionList().compare(
+                    referenceObject.getPartonDistributionList(), tolerances,
+                    ComparisonMode::EQUAL);
+
+    comparisonReport.addChildren(partonDistributionReportList);
 
     return comparisonReport;
 }

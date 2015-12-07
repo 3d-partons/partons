@@ -12,7 +12,7 @@ ComparisonMode::operator ComparisonMode::Type() const {
     return m_type;
 }
 
-std::string ComparisonMode::toString() {
+std::string ComparisonMode::toString() const {
     switch (m_type) {
     case EQUAL:
         return "EQUAL";
@@ -25,7 +25,7 @@ std::string ComparisonMode::toString() {
     }
 }
 
-std::string ComparisonMode::getShortName() {
+std::string ComparisonMode::getShortName() const {
     switch (m_type) {
     case EQUAL:
         return "EQUAL";

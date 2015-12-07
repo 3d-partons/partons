@@ -75,6 +75,9 @@ public:
     virtual GPDResult compute(double x, double xi, double t, double MuF2,
             double MuR2, GPDType::Type gpdType);
 
+    virtual GPDResult computeWithoutEvolution(double x, double xi, double t, double MuF2,
+            double MuR2, GPDType::Type gpdType);
+
     virtual PartonDistribution computeH();
     virtual PartonDistribution computeE();
     virtual PartonDistribution computeHt();

@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include "../List.h"
 #include "../QuarkFlavor.h"
 #include "GluonDistribution.h"
 #include "QuarkDistribution.h"
@@ -27,13 +28,13 @@ public:
     std::vector<QuarkFlavor::Type> listTypeOfQuarkFlavor();
     unsigned int getQuarkDistributionsSize() const;
 
-    const std::vector<QuarkDistribution> getVectorOfQuarkDistribution() const;
+    List<QuarkDistribution> getListOfQuarkDistribution() const;
 
     double getSinglet();
 
     virtual std::string toString() const;
 
-    ComparisonReport compare(const PartonDistribution &other,
+    ComparisonReport compare(const PartonDistribution &referenceObject,
             const Tolerances &tolerances) const;
 
     // ##### GETTERS & SETTERS #####

@@ -100,7 +100,8 @@ void QuarkDistribution::setQuark(double quark) {
     this->quark = quark;
 }
 
-ComparisonReport QuarkDistribution::compare(const QuarkDistribution& other,
+ComparisonReport QuarkDistribution::compare(
+        const QuarkDistribution& referenceObject,
         const Tolerances& tolerances) const {
     ComparisonReport comparisonReport(getClassName());
 

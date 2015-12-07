@@ -1,13 +1,15 @@
 #include "Tolerances.h"
 
+#include "../stringUtils/Formatter.h"
 #include "MathUtils.h"
 
 Tolerances::Tolerances() :
-        m_absoluteTolerance(0.), m_relativeTolerance(0.) {
+        BaseObject("Tolerances"), m_absoluteTolerance(0.), m_relativeTolerance(
+                0.) {
 }
 
 Tolerances::Tolerances(double absoluteTolerance, double relativeTolerance) :
-        m_absoluteTolerance(absoluteTolerance), m_relativeTolerance(
+        BaseObject("Tolerances"), m_absoluteTolerance(absoluteTolerance), m_relativeTolerance(
                 relativeTolerance) {
 
     MathUtils::isPositiveDouble(absoluteTolerance);
@@ -33,4 +35,14 @@ double Tolerances::getRelativeTolerance() const {
 void Tolerances::setRelativeTolerance(double relativeTolerance) {
     MathUtils::isPositiveDouble(relativeTolerance);
     m_relativeTolerance = relativeTolerance;
+}
+
+std::string Tolerances::toString() const {
+    Formatter formatter;
+
+    formatter << getClassName();
+    formatter << " m_absoluteTolerance = " << m_absoluteTolerance;
+    formatter << " m_relativeTolerance = " << m_relativeTolerance;
+
+    return formatter.str();
 }

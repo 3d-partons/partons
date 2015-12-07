@@ -1,8 +1,14 @@
 #include "ComparisonData.h"
 
 #include "../utils/stringUtils/Formatter.h"
+#include "../utils/stringUtils/StringUtils.h"
 
-ComparisonData::ComparisonData() {
+ComparisonData::ComparisonData() :
+        m_variableName(StringUtils::EMPTY), m_additionalInfo(StringUtils::EMPTY) {
+}
+
+ComparisonData::ComparisonData(const std::string& variableName) :
+        m_variableName(variableName), m_additionalInfo(StringUtils::EMPTY) {
 }
 
 ComparisonData::ComparisonData(const std::string& variableName,

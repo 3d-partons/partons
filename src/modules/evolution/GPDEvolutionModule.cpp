@@ -1,9 +1,8 @@
 #include "GPDEvolutionModule.h"
 
 #include <math.h>
-#include <vector>
+#include <iostream>
 
-#include "../../beans/active_flavors/NfInterval.h"
 #include "../../beans/gpd/GPDResult.h"
 #include "../../beans/List.h"
 #include "../../beans/parton_distribution/GluonDistribution.h"
@@ -529,55 +528,73 @@ double GPDEvolutionModule::calculateFq(double FPlus, double FMinus) {
     return (FMinus + FPlus) / 2.;
 }
 
-PerturbativeQCDOrderType::Type GPDEvolutionModule::getQcdOrderType() const {
-    return m_qcdOrderType;
-}
-
-void GPDEvolutionModule::setQcdOrderType(
-        PerturbativeQCDOrderType::Type qcdOrderType) {
-    m_qcdOrderType = qcdOrderType;
-}
-
-void GPDEvolutionModule::setGpdModule(GPDModule* gpdModule) {
-    m_pGPDModule = gpdModule;
-
-    debug(__func__,
-            Formatter() << "GPDModule = " << m_pGPDModule->getClassName());
-}
-
 PartonDistribution GPDEvolutionModule::compute(double x, double xi, double t,
         double MuF2, double MuR2, GPDModule* pGPDModule,
         GPDType::Type gpdType) {
     preCompute(x, xi, t, MuF2, MuR2, pGPDModule, gpdType);
 
-    // start evolution at GPD model computed at MuF_ref
-    return evolution(computeGPDModelAtMufRef());
-}
-
-PartonDistribution GPDEvolutionModule::computeGPDModelAtMufRef() {
-    return m_pGPDModule->compute(m_x, m_xi, m_t, m_pGPDModule->getMuF2Ref(),
-            m_MuR2, m_currentGPDComputeType).getPartonDistribution(
-            m_currentGPDComputeType);
-}
-
-PartonDistribution GPDEvolutionModule::evolution(
-        const PartonDistribution &partonDistribution) {
-
-    // retrieve list of nfInterval to perform evolution threshold by threshold
+    // 1. retrieve intervals from function nf over MuF in descending order nf ; from MuF_ref to MuF
     std::vector<NfInterval> nfIntervals = m_pNfFunction->getNfIntervals(
             m_pGPDModule->getMuF2Ref(), m_MuF2);
 
-    // create the first vector of GPD combination to init evolution process ; at MuF_ref
-    m_partonDistributionFlavorBase = makeVectorOfGPDCombinations(
-            partonDistribution);
+    std::cerr << "nfIntervals = " << nfIntervals.size() << " for MuF2_ref = "
+            << m_pGPDModule->getMuF2Ref() << " and MuF2 = " << m_MuF2
+            << std::endl;
 
-    // perform evolution interval by interval ; from MuF_ref to MuF_final = MuF
-    for (unsigned short i = 0; i != nfIntervals.size(); i++) {
-        evolution(nfIntervals[i]);
-    }
+//    // sort descending order
+//    for (size_t i = nfIntervals.size() - 1; i != -1; i--) {
+//        m_invertedIntervals.push_back(nfIntervals[i]);
+//    }
+
+    m_invertedIntervals = nfIntervals;
+
+    std::cerr << "m_invertedIntervals = " << m_invertedIntervals.size()
+            << std::endl;
+
+    // 2.
+    evolutionR(x, nfIntervals.size() - 1);
 
     return makeFinalPartonDistribution();
 }
+
+void GPDEvolutionModule::evolutionR(double x,
+        unsigned int indexCurrentInterval) {
+    if (indexCurrentInterval == 0) {
+        // end of recursivity ; compute GPD at Muf_ref
+        double MuF2_ref =
+                m_invertedIntervals[indexCurrentInterval].getLowerBound();
+        m_partonDistributionFlavorBase = makeVectorOfGPDCombinations(
+                m_pGPDModule->compute(x, m_xi, m_t, MuF2_ref, MuF2_ref,
+                        m_currentGPDComputeType).getPartonDistribution(
+                        m_currentGPDComputeType));
+    } else {
+        evolutionR(x, indexCurrentInterval-1);
+    }
+
+    // add new flavor if needed ; convert basis ; evolution ; invert basis
+    evolution(m_invertedIntervals[indexCurrentInterval]);
+}
+
+//PartonDistribution GPDEvolutionModule::computeGPDModelAtMufRef() {
+//    return m_pGPDModule->compute(m_x, m_xi, m_t, m_pGPDModule->getMuF2Ref(),
+//            m_MuR2, m_currentGPDComputeType).getPartonDistribution(
+//            m_currentGPDComputeType);
+//}
+
+//PartonDistribution GPDEvolutionModule::evolution(
+//        const PartonDistribution &partonDistribution) {
+//
+//    // create the first vector of GPD combination to init evolution process ; at MuF_ref
+//    m_partonDistributionFlavorBase = makeVectorOfGPDCombinations(
+//            partonDistribution);
+//
+//    // perform evolution interval by interval ; from MuF_ref to MuF_final = MuF
+//    for (unsigned short i = 0; i != nfIntervals.size(); i++) {
+//        evolution (nfIntervals[i]);
+//    }
+//
+//    return makeFinalPartonDistribution();
+//}
 
 void GPDEvolutionModule::evolution(const NfInterval &nfInterval) {
     m_currentNf = nfInterval.getNf();
@@ -668,6 +685,23 @@ void GPDEvolutionModule::configure(ParameterList parameters) {
                         << PerturbativeQCDOrderType(m_qcdOrderType).toString());
     }
 }
+
+PerturbativeQCDOrderType::Type GPDEvolutionModule::getQcdOrderType() const {
+    return m_qcdOrderType;
+}
+
+void GPDEvolutionModule::setQcdOrderType(
+        PerturbativeQCDOrderType::Type qcdOrderType) {
+    m_qcdOrderType = qcdOrderType;
+}
+
+void GPDEvolutionModule::setGpdModule(GPDModule* gpdModule) {
+    m_pGPDModule = gpdModule;
+
+    debug(__func__,
+            Formatter() << "GPDModule = " << m_pGPDModule->getClassName());
+}
+
 //
 //double GPDEvolutionModule::nonSingletMuFDerivative(
 //        const NfInterval &nfInterval) {

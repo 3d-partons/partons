@@ -16,6 +16,7 @@
 #include <string>
 #include <vector>
 
+#include "../List.h"
 #include "../parton_distribution/PartonDistribution.h"
 #include "../Result.h"
 #include "GPDKinematic.h"
@@ -35,11 +36,11 @@ public:
     const PartonDistribution& getPartonDistribution(
             GPDType::Type gpdType) const;
 
-    const std::vector<PartonDistribution> getPartonDistributionList() const;
+    List<PartonDistribution> getPartonDistributionList() const;
 
     virtual std::string toString();
 
-    ComparisonReport compare(const GPDResult &other,
+    ComparisonReport compare(const GPDResult &referenceObject,
             const Tolerances &tolerances) const;
 
     // ##### GETTERS & SETTERS #####

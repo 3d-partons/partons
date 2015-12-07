@@ -3,7 +3,12 @@
 
 #include <string>
 
-class GluonDistribution {
+#include "../../BaseObject.h"
+
+class ComparisonReport;
+class Tolerances;
+
+class GluonDistribution: public BaseObject {
 public:
     static const std::string GLUON_DISTRIBUTION_DB_COLUMN_NAME;
 
@@ -12,6 +17,9 @@ public:
     virtual ~GluonDistribution();
 
     virtual std::string toString() const;
+
+    ComparisonReport compare(const GluonDistribution &referenceObject,
+            const Tolerances &tolerances) const;
 
     // ##### GETTERS & SETTERS #####
 

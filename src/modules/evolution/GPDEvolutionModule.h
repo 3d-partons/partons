@@ -14,7 +14,9 @@
 
 #include <NumA/linear_algebra/vector/VectorD.h>
 #include <string>
+#include <vector>
 
+#include "../../beans/active_flavors/NfInterval.h"
 #include "../../beans/gpd/GPDType.h"
 #include "../../beans/PerturbativeQCDOrderType.h"
 #include "../../beans/QuarkFlavor.h"
@@ -105,9 +107,12 @@ protected:
     double nonSingletGPD(unsigned short nonSingletIndex,
             unsigned short currentNf, double y, double MuF2);
 
-    virtual double integratedNonSingletMuFDerivative(const NfInterval &nfInterval) = 0;
-    virtual double integratedSingletMuFDerivative(const NfInterval &nfInterval) = 0;
-    virtual double integratedGluonMuFDerivative(const NfInterval &nfInterval) = 0;
+    virtual double integratedNonSingletMuFDerivative(
+            const NfInterval &nfInterval) = 0;
+    virtual double integratedSingletMuFDerivative(
+            const NfInterval &nfInterval) = 0;
+    virtual double integratedGluonMuFDerivative(
+            const NfInterval &nfInterval) = 0;
 
 private:
     static MatrixD conversionMatrix1;
@@ -133,14 +138,14 @@ private:
 
     // refactored
 
-    PartonDistribution computeGPDModelAtMufRef();
+   // PartonDistribution computeGPDModelAtMufRef();
 
     NumA::VectorD makeVectorOfGPDCombinations(
             const PartonDistribution &partonDistribution);
     void resizeVectorOfGPDCombination(NumA::VectorD &vectorOfQuarkDistribution,
             unsigned short nfInterval);
 
-    PartonDistribution evolution(const PartonDistribution &partonDistribution);
+    // PartonDistribution evolution(const PartonDistribution &partonDistribution);
     void evolution(const NfInterval &nfInterval);
 
     NumA::VectorD convertBasis(const NumA::VectorD &vectorToConvert,
@@ -152,6 +157,11 @@ private:
 
     void computeNonSinglet(const NfInterval &nfInterval);
     void computeSingletGluon(const NfInterval &nfInterval);
+
+    // ***************
+
+    std::vector<NfInterval> m_invertedIntervals;
+    void evolutionR(double x, unsigned int indexCurrentInterval);
 };
 
 #endif /* GPD_EVOLUTION_MODULE_H */

@@ -33,6 +33,20 @@ public:
 
     void toHTMLFile(const std::string &filePath) const;
 
+    // ##### GETTERS & SETTERS #####
+
+    ComparisonMode getComparisonMode() const;
+    size_t getNumberOfComparedObjet() const;
+    const std::string& getObjectTypeCompared() const;
+    const std::vector<ComparisonReport>& getReports() const;
+    const Tolerances& getTolerances() const;
+
+    void setComparisonMode(ComparisonMode comparisonMode);
+    void setNumberOfComparedObjet(size_t numberOfComparedObjet);
+    void setObjectTypeCompared(const std::string& objectTypeCompared);
+    void setReports(const std::vector<ComparisonReport>& reports);
+    void setTolerances(const Tolerances& tolerances);
+
 private:
     std::vector<ComparisonReport> m_reports;
 

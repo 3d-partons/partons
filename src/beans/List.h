@@ -20,6 +20,9 @@
 #include "../utils/stringUtils/Formatter.h"
 #include "ComparisonMode.h"
 #include "ComparisonReportList.h"
+#include "SortingMode.h"
+
+class SortingMode;
 
 class Tolerances;
 
@@ -39,6 +42,12 @@ public:
     void add(const List<T> &list) {
         for (size_t i = 0; i != list.size(); i++) {
             add(list[i]);
+        }
+    }
+
+    void add(const std::vector<T> &vector) {
+        for (size_t i = 0; i != vector.size(); i++) {
+            add(vector[i]);
         }
     }
 
@@ -72,25 +81,45 @@ public:
         return formatter.str();
     }
 
-    ComparisonReportList compare(const List<T> &other,
+    //TODO implement
+    void sort(const SortingMode &sortingMode) {
+        switch (sortingMode.getType()) {
+        case SortingMode::ASCENDING: {
+
+            break;
+        }
+        case SortingMode::DESCENDING: {
+            break;
+        }
+        }
+    }
+
+    ComparisonReportList compare(const List<T> &referenceObject,
             const Tolerances &tolerances,
             const ComparisonMode &comparisonMode) const {
 
         ComparisonReportList reportList;
+        reportList.setTolerances(tolerances);
+        reportList.setComparisonMode(comparisonMode);
 
-        if (this->isEmpty() && other.isEmpty()) {
+        if (this->isEmpty() && referenceObject.isEmpty()) {
             warn(__func__, Formatter() << "Lists are empty");
         } else {
+            // see : http://stackoverflow.com/a/9813792
+            // TODO Don't work
+            reportList.setObjectTypeCompared(__PRETTY_FUNCTION__);
 
             switch (comparisonMode) {
             case ComparisonMode::INTERSECTION:
                 break;
             default:
                 // equal comparison by default
-                if (this->size() == other.size()) {
+                if (this->size() == referenceObject.size()) {
+                    reportList.setNumberOfComparedObjet(this->size());
+
                     for (size_t i = 0; i != this->size(); i++) {
                         reportList.add(
-                                (this->m_data[i]).compare(other[i],
+                                (this->m_data[i]).compare(referenceObject[i],
                                         tolerances));
                     }
                 } else {

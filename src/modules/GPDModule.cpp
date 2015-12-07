@@ -102,6 +102,10 @@ GPDResult GPDModule::compute(double x, double xi, double t, double MuF2,
                 GPDEvolutionModule::RELATIVE)) {
             evolution = true;
         }
+        else
+        {
+            warn(__func__, "Evolution is not runnable : out of relative test");
+        }
     } else {
         //TODO exception pas de module d'evolution
     }
@@ -237,4 +241,8 @@ double GPDModule::getXi() const {
 
 void GPDModule::setXi(double xi) {
     m_xi = xi;
+}
+
+GPDResult GPDModule::computeWithoutEvolution(double x, double xi, double t,
+        double MuF2, double MuR2, GPDType::Type gpdType) {
 }

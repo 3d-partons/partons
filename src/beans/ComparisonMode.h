@@ -34,9 +34,9 @@ public:
 
     operator Type() const;
 
-    std::string toString();
+    std::string toString() const;
 
-    std::string getShortName();
+    std::string getShortName() const;
 
     ComparisonMode::Type getType() const;
 

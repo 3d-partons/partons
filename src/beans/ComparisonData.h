@@ -17,6 +17,7 @@
 class ComparisonData {
 public:
     ComparisonData();
+    ComparisonData(const std::string & variableName);
     ComparisonData(const std::string & variableName,
             const std::string & additionalInfo);
     virtual ~ComparisonData();
@@ -32,6 +33,11 @@ public:
 private:
     std::string m_variableName;
     std::string m_additionalInfo;
+
+    double m_absoluteDifference;
+    double m_relativeDifference;
+    double m_absoluteTolerance;
+    double m_relativeTolerance;
 };
 
 #endif /* COMPARISON_DATA_H */

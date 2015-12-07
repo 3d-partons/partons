@@ -29,7 +29,8 @@ List<ObservableKinematic> KinematicUtils::getObservableKinematicFromFile(
             throw std::runtime_error(
                     Formatter()
                             << "(KinematicUtils::getObservableKinematicFromFile) Missing column value in your kinematic input file : "
-                            << filePath << " ; You must provided 4 column");
+                            << filePath
+                            << " ; You must provided 4 column : xB | t | Q2 | phi");
         }
 
         observableKinematicList.add(

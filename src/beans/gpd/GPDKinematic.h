@@ -59,7 +59,7 @@ public:
      */
     virtual std::string toString() const;
 
-    ComparisonReport compare(const GPDKinematic &gpdKinematic,
+    ComparisonReport compare(const GPDKinematic &referenceObject,
             const Tolerances &tolerances) const;
 
     // ##### GETTERS & SETTERS #####
