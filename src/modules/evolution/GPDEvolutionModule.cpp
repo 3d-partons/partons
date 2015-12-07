@@ -5,6 +5,7 @@
 
 #include "../../beans/active_flavors/NfInterval.h"
 #include "../../beans/gpd/GPDResult.h"
+#include "../../beans/List.h"
 #include "../../beans/parton_distribution/GluonDistribution.h"
 #include "../../beans/parton_distribution/PartonDistribution.h"
 #include "../../beans/parton_distribution/QuarkDistribution.h"
@@ -436,8 +437,8 @@ NumA::VectorD GPDEvolutionModule::makeVectorOfGPDCombinations(
 
     NumA::VectorD vectorOfGPDCombinations;
 
-    std::vector<QuarkDistribution> quarkDistributions =
-            partonDistribution.getVectorOfQuarkDistribution();
+    List<QuarkDistribution> quarkDistributions =
+            partonDistribution.getListOfQuarkDistribution();
 
     // first entry of vector = gluon value
     vectorOfGPDCombinations.push_back(
@@ -602,16 +603,18 @@ void GPDEvolutionModule::computeNonSinglet(const NfInterval &nfInterval) {
             i++) {
         m_currentNonSingletIndex = i;
 
-        m_partonDistributionEvolutionBase[i] += integratedNonSingletMuFDerivative(
-                nfInterval);
+        m_partonDistributionEvolutionBase[i] +=
+                integratedNonSingletMuFDerivative(nfInterval);
     }
 }
 
 void GPDEvolutionModule::computeSingletGluon(const NfInterval &nfInterval) {
     // m_vectorOfNonSingletSingletGluon[0] = FG
     // m_vectorOfNonSingletSingletGluon[1] = FS
-    m_partonDistributionEvolutionBase[0] = integratedGluonMuFDerivative(nfInterval);
-    m_partonDistributionEvolutionBase[1] = integratedSingletMuFDerivative(nfInterval);
+    m_partonDistributionEvolutionBase[0] = integratedGluonMuFDerivative(
+            nfInterval);
+    m_partonDistributionEvolutionBase[1] = integratedSingletMuFDerivative(
+            nfInterval);
 }
 
 void GPDEvolutionModule::resizeVectorOfGPDCombination(
