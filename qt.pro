@@ -29,12 +29,12 @@ TEMPLATE = lib
 DEFINES += QCUSTOMPLOT_COMPILE_LIBRARY
 
 INCLUDEPATH += /usr/local/cln/v1.3.4/include
-INCLUDEPATH += /usr/local/root/v5.34.32/include/root
+INCLUDEPATH += /usr/local/root/v5.34.34/include
 INCLUDEPATH += /home/debian/workspace/NumA++/include
 
 LIBS += -L/usr/local/cln/v1.3.4/lib -lcln
-LIBS += -L/usr/local/root/v5.34.32/lib/root -lPhysics -lMathMore -lHist
-LIBS += -L/home/debian/workspace/NumA++/Debug -lNumA++
+LIBS += -L/usr/local/root/v5.34.34/lib -lPhysics -lMathMore -lHist
+LIBS += -L/home/debian/workspace/NumA++/lib -lNumA++
 
 
 include(sources.pri)
