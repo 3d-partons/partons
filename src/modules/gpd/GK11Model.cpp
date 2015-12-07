@@ -371,10 +371,17 @@ PartonDistribution GK11Model::computeHt() {
     quarkDistribution_d.setQuarkDistributionPlus(dVal + fHtdValMx);
     quarkDistribution_s.setQuarkDistributionPlus(0.);
 
+    // Set Htq(-)
+    quarkDistribution_u.setQuarkDistributionMinus(uVal - fHtuValMx);
+    quarkDistribution_d.setQuarkDistributionMinus(dVal - fHtdValMx);
+    quarkDistribution_s.setQuarkDistributionMinus(0.);
+
     partonDistribution.setGluonDistribution(gluonDistribution);
     partonDistribution.addQuarkDistribution(quarkDistribution_u);
     partonDistribution.addQuarkDistribution(quarkDistribution_d);
     partonDistribution.addQuarkDistribution(quarkDistribution_s);
+
+
 
     return partonDistribution;
 }
@@ -465,6 +472,11 @@ PartonDistribution GK11Model::computeE() {
     quarkDistribution_s.setQuarkDistributionPlus(
             2 * quarkDistribution_s.getQuarkDistribution());
 
+    // Set Eq(-)
+    quarkDistribution_u.setQuarkDistributionMinus(uVal + fEuValMx);
+    quarkDistribution_d.setQuarkDistributionMinus(dVal + fEdValMx);
+    quarkDistribution_s.setQuarkDistributionMinus(0.);
+
     partonDistribution.setGluonDistribution(gluonDistribution);
     partonDistribution.addQuarkDistribution(quarkDistribution_u);
     partonDistribution.addQuarkDistribution(quarkDistribution_d);
@@ -550,6 +562,12 @@ PartonDistribution GK11Model::computeEt() {
     quarkDistribution_u.setQuarkDistributionPlus(uVal + fEtuValMx);
     quarkDistribution_d.setQuarkDistributionPlus(dVal + fEtdValMx);
     quarkDistribution_s.setQuarkDistributionPlus(0.);
+
+    // Set Eq(-)
+    quarkDistribution_u.setQuarkDistributionMinus(uVal - fEtuValMx);
+    quarkDistribution_d.setQuarkDistributionMinus(dVal - fEtdValMx);
+    quarkDistribution_s.setQuarkDistributionMinus(0.);
+
 
     partonDistribution.setGluonDistribution(gluonDistribution);
     partonDistribution.addQuarkDistribution(quarkDistribution_u);

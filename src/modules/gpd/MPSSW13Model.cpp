@@ -425,16 +425,15 @@ double MPSSW13Model::Profile(double N, double beta, double alpha) {
     double ProfileShape = N;
     double TwiceProfileShapePlus1 = 2. * ProfileShape + 1;
 
-    double alphaBeta = fabs(alpha) + fabs(beta);
-    if (alphaBeta > 1.) {
-
-        throwException(__func__,
-                Formatter()
-                        << "MPSSW13Model : Parameters of profile function should be in rhombus | alpha | + | beta | <= 1."
-                        << '\n' << "Here alpha = " << alpha << " beta = "
-                        << beta << " | alpha | + | beta | = " << alphaBeta
-                        << '\n');
-    }
+//    double alphaBeta = fabs(alpha) + fabs(beta);
+//    if (alphaBeta > 1.) {
+//        throwException(__func__,
+//                Formatter()
+//                        << "MPSSW13Model : Parameters of profile function should be in rhombus | alpha | + | beta | <= 1."
+//                        << '\n' << "Here alpha = " << alpha << " beta = "
+//                        << beta << " | alpha | + | beta | = " << alphaBeta
+//                        << '\n');
+//    }
 
     profile = pow((1. - fabs(beta)) * (1. - fabs(beta)) - alpha * alpha,
             ProfileShape);
@@ -528,6 +527,29 @@ double MPSSW13Model::IntegralxLargeHuSea(double* Var, double* Par) {
     return Integral;
 }
 
+double MPSSW13Model::IntegralxLargeHuSeaMx(double* Var, double* Par) {
+    double Integral;
+    double pdf, beta, absbeta;
+
+    beta = Var[0];
+    absbeta = fabs(beta);
+
+    if (beta <= 0 || beta > 1.) {
+        throwBetaException(__func__, Var[0]);
+    }
+
+//  m_Forward->Setx( beta );
+//  pdf = m_Forward->GetuSea();
+    m_Forward->update(absbeta, sqrt(m_MuF2));
+    pdf = m_Forward->cont.usea / absbeta;
+    Integral = pdf * Profile(m_ProfileShapeSea, beta, (m_x + beta) / m_xi);
+    Integral /= m_xi;
+    Integral *= m_F1u / 2.;
+
+    return Integral;
+}
+
+
 double MPSSW13Model::IntegralxSmall1HuSea(double* Var, double* Par) {
     double Integral;
     double pdf, beta, absbeta;
@@ -565,12 +587,14 @@ double MPSSW13Model::IntegralxSmall2HuSea(double* Var, double* Par) {
 //  pdf = m_Forward->GetuSea();
     m_Forward->update(absbeta, sqrt(m_MuF2));
     pdf = m_Forward->cont.usea / absbeta;
-    m_Forward->update(absbeta, sqrt(m_MuF2));
+
+    /*    m_Forward->update(absbeta, sqrt(m_MuF2));
     if (beta > 0) {
         pdf = m_Forward->cont.upv / absbeta;
     } else {
 
-    }
+    }*/  //  Possible source of the error, J.Wagner
+
     Integral = Profile(m_ProfileShapeSea, beta, (m_x - beta) / m_xi);
     Integral += -Profile(m_ProfileShapeSea, beta, (m_x + beta) / m_xi);
     Integral *= pdf;
@@ -654,6 +678,28 @@ double MPSSW13Model::IntegralxLargeHdSea(double* Var, double* Par) {
     return Integral;
 }
 
+double MPSSW13Model::IntegralxLargeHdSeaMx(double* Var, double* Par) {
+    double Integral;
+    double pdf, beta, absbeta;
+
+    beta = Var[0];
+    absbeta = fabs(beta);
+
+    if (beta <= 0 || beta > 1.) {
+        throwBetaException(__func__, Var[0]);
+    }
+
+//  m_Forward->Setx( beta );
+//  pdf = m_Forward->GetdSea();
+    m_Forward->update(absbeta, sqrt(m_MuF2));
+    pdf = m_Forward->cont.dsea / absbeta;
+    Integral = pdf * Profile(m_ProfileShapeSea, beta, (m_x + beta) / m_xi);
+    Integral /= m_xi;
+    Integral *= m_F1d;
+
+    return Integral;
+}
+
 double MPSSW13Model::IntegralxSmall1HdSea(double* Var, double* Par) {
     double Integral;
     double pdf, beta, absbeta;
@@ -721,6 +767,29 @@ double MPSSW13Model::IntegralxLargeHsSea(double* Var, double* Par) {
 
     return Integral;
 }
+
+double MPSSW13Model::IntegralxLargeHsSeaMx(double* Var, double* Par) {
+    double Integral;
+    double pdf, beta, absbeta;
+
+    beta = Var[0];
+    absbeta = fabs(beta);
+
+    if (beta <= 0 || beta > 1.) {
+        throwBetaException(__func__, Var[0]);
+    }
+
+//  m_Forward->Setx( beta );
+//  pdf = m_Forward->GetdSea();
+    m_Forward->update(absbeta, sqrt(m_MuF2));
+    pdf = m_Forward->cont.sbar / absbeta;
+    Integral = pdf * Profile(m_ProfileShapeSea, beta, (m_x + beta) / m_xi);
+    Integral /= m_xi;
+    Integral *= m_FD;
+
+    return Integral;
+}
+
 
 double MPSSW13Model::IntegralxSmall1HsSea(double* Var, double* Par) {
     double Integral;
@@ -798,6 +867,30 @@ double MPSSW13Model::IntegralxLargeHg(double* Var, double* Par) {
 
     return Integral;
 }
+
+double MPSSW13Model::IntegralxLargeHgMx(double* Var, double* Par) {
+    double Integral;
+    double pdf, beta, absbeta;
+
+    beta = Var[0];
+    absbeta = fabs(beta);
+
+    if (beta <= 0 || beta > 1.) {
+        throwBetaException(__func__, Var[0]);
+    }
+
+//  m_Forward->Setx( beta );
+//  pdf = m_Forward->Getg();
+    m_Forward->update(absbeta, sqrt(m_MuF2));
+    pdf = m_Forward->cont.glu / absbeta;
+    Integral = pdf * beta
+            * Profile(m_ProfileShapeGlue, beta, (m_x + beta) / m_xi);
+    Integral /= m_xi;
+    Integral *= m_FD;
+
+    return Integral;
+}
+
 
 double MPSSW13Model::IntegralxSmall1Hg(double* Var, double* Par) {
     double Integral;
@@ -1094,6 +1187,9 @@ PartonDistribution MPSSW13Model::computeH() {
     TF1 EvalIntegralxLargeHuSea("EvalIntegralxLargeHuSea", this,
             &MPSSW13Model::IntegralxLargeHuSea, 0., 1., 0, "MPSSW13Model",
             "EvalIntegralxLargeHuSea");
+    TF1 EvalIntegralxLargeHuSeaMx("EvalIntegralxLargeHuSeaMx", this,
+             &MPSSW13Model::IntegralxLargeHuSeaMx, 0., 1., 0, "MPSSW13Model",
+             "EvalIntegralxLargeHuSeaMx");
     TF1 EvalIntegralxSmall1HuSea("EvalIntegralxSmall1HuSea", this,
             &MPSSW13Model::IntegralxSmall1HuSea, 0., 1., 0, "MPSSW13Model",
             "EvalIntegralxSmall1HuSea");
@@ -1105,6 +1201,9 @@ PartonDistribution MPSSW13Model::computeH() {
     TF1 EvalIntegralxLargeHdSea("EvalIntegralxLargeHdSea", this,
             &MPSSW13Model::IntegralxLargeHdSea, 0., 1., 0, "MPSSW13Model",
             "EvalIntegralxLargeHdSea");
+    TF1 EvalIntegralxLargeHdSeaMx("EvalIntegralxLargeHdSeaMx", this,
+             &MPSSW13Model::IntegralxLargeHdSeaMx, 0., 1., 0, "MPSSW13Model",
+             "EvalIntegralxLargeHdSeaMx");
     TF1 EvalIntegralxSmall1HdSea("EvalIntegralxSmall1HdSea", this,
             &MPSSW13Model::IntegralxSmall1HdSea, 0., 1., 0, "MPSSW13Model",
             "EvalIntegralxSmall1HdSea");
@@ -1150,13 +1249,34 @@ PartonDistribution MPSSW13Model::computeH() {
         HdSea += Integrator.Integral(Eps, Beta2Mx);
     }
 
-    if (m_x > 0.) {
+
+    if (m_x <= -m_xi) {
+        // Integration, u quark
+        ROOT::Math::WrappedTF1 WrappedEvalIntegralxLargeHuSeaMx =
+                ROOT::Math::WrappedTF1(EvalIntegralxLargeHuSeaMx);
+        Integrator.SetFunction(WrappedEvalIntegralxLargeHuSeaMx);
+        HuSea =- Integrator.Integral(Beta1Mx, Beta2Mx);
+
+        // Integration, d quark
+        ROOT::Math::WrappedTF1 WrappedEvalIntegralxLargeHdSeaMx =
+                ROOT::Math::WrappedTF1(EvalIntegralxLargeHdSeaMx);
+        Integrator.SetFunction(WrappedEvalIntegralxLargeHdSeaMx);
+        HdSea = -Integrator.Integral(Beta1Mx, Beta2Mx);
+    }
+
+//    if (m_x > 0.) {
+//        quarkDistribution_u.setQuarkDistribution(HuVal + HuSea);
+//        quarkDistribution_d.setQuarkDistribution(HdVal + HdSea);
+//    } else {
+//        quarkDistribution_u.setQuarkDistribution(-HuSea);
+//        quarkDistribution_d.setQuarkDistribution(-HdSea);
+//    }
+
+
         quarkDistribution_u.setQuarkDistribution(HuVal + HuSea);
         quarkDistribution_d.setQuarkDistribution(HdVal + HdSea);
-    } else {
-        quarkDistribution_u.setQuarkDistribution(-HuSea);
-        quarkDistribution_d.setQuarkDistribution(-HdSea);
-    }
+
+
 
     //////////////////////////////
     //   s quarks, "sea part"   //
@@ -1166,6 +1286,9 @@ PartonDistribution MPSSW13Model::computeH() {
     TF1 EvalIntegralxLargeHsSea("EvalIntegralxLargeHsSea", this,
             &MPSSW13Model::IntegralxLargeHsSea, 0., 1., 0, "MPSSW13Model",
             "EvalIntegralxLargeHsSea");
+    TF1 EvalIntegralxLargeHsSeaMx("EvalIntegralxLargeHsSeaMx", this,
+            &MPSSW13Model::IntegralxLargeHsSeaMx, 0., 1., 0, "MPSSW13Model",
+            "EvalIntegralxLargeHsSeaMx");
     TF1 EvalIntegralxSmall1HsSea("EvalIntegralxSmall1HsSea", this,
             &MPSSW13Model::IntegralxSmall1HsSea, 0., 1., 0, "MPSSW13Model",
             "EvalIntegralxSmall1HsSea");
@@ -1192,6 +1315,12 @@ PartonDistribution MPSSW13Model::computeH() {
         Hs += Integrator.Integral(Eps, Beta2Mx);
     }
 
+    if (m_x <= -m_xi) {
+        ROOT::Math::WrappedTF1 WrappedEvalIntegralxLargeHsSeaMx =
+                ROOT::Math::WrappedTF1(EvalIntegralxLargeHsSeaMx);
+        Integrator.SetFunction(WrappedEvalIntegralxLargeHsSeaMx);
+        Hs = -Integrator.Integral(Beta1Mx, Beta2Mx);
+    }
     quarkDistribution_s.setQuarkDistribution(Hs);
 
     ////////////////
@@ -1204,6 +1333,9 @@ PartonDistribution MPSSW13Model::computeH() {
     TF1 EvalIntegralxLargeHg("EvalIntegralxLargeHg", this,
             &MPSSW13Model::IntegralxLargeHg, 0., 1., 0, "MPSSW13Model",
             "EvalIntegralxLargeHg");
+    TF1 EvalIntegralxLargeHgMx("EvalIntegralxLargeHgMx", this,
+            &MPSSW13Model::IntegralxLargeHgMx, 0., 1., 0, "MPSSW13Model",
+            "EvalIntegralxLargeHgMx");
     TF1 EvalIntegralxSmall1Hg("EvalIntegralxSmall1Hg", this,
             &MPSSW13Model::IntegralxSmall1Hg, 0., 1., 0, "MPSSW13Model",
             "EvalIntegralxSmall1Hg");
@@ -1232,6 +1364,14 @@ PartonDistribution MPSSW13Model::computeH() {
         Hg += Integrator.Integral(0., Beta2Mx);
     }
 
+    if (m_x <= -m_xi) {
+           // Integration
+           ROOT::Math::WrappedTF1 WrappedEvalIntegralxLargeHgMx =
+                   ROOT::Math::WrappedTF1(EvalIntegralxLargeHgMx);
+           Integrator.SetFunction(WrappedEvalIntegralxLargeHgMx);
+           Hg = Integrator.Integral(Beta1Mx, Beta2Mx);
+       }
+
     Hg += m_GluonDTerm;
     GluonDistribution gluonDistribution(Hg);
 
@@ -1247,7 +1387,7 @@ PartonDistribution MPSSW13Model::computeH() {
     quarkDistribution_d.setQuarkDistributionMinus(HdVal + HdValMx);
 
     // s quark
-    quarkDistribution_s.setQuarkDistributionPlus(0.);
+    quarkDistribution_s.setQuarkDistributionPlus(2 * Hs);
     quarkDistribution_s.setQuarkDistributionMinus(0.);
 
     //TODO no singlet ?

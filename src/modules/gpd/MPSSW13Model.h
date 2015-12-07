@@ -92,17 +92,21 @@ private:
     double IntegralHuVal(double* Var, double* Par);
     double IntegralHuValMx(double* Var, double* Par);
     double IntegralxLargeHuSea(double* Var, double* Par);
+    double IntegralxLargeHuSeaMx(double* Var, double* Par);
     double IntegralxSmall1HuSea(double* Var, double* Par);
     double IntegralxSmall2HuSea(double* Var, double* Par);
     double IntegralHdVal(double* Var, double* Par);
     double IntegralHdValMx(double* Var, double* Par);
     double IntegralxLargeHdSea(double* Var, double* Par);
+    double IntegralxLargeHdSeaMx(double* Var, double* Par);
     double IntegralxSmall1HdSea(double* Var, double* Par);
     double IntegralxSmall2HdSea(double* Var, double* Par);
     double IntegralxLargeHsSea(double* Var, double* Par);
+    double IntegralxLargeHsSeaMx(double* Var, double* Par);
     double IntegralxSmall1HsSea(double* Var, double* Par);
     double IntegralxSmall2HsSea(double* Var, double* Par);
     double IntegralxLargeHg(double* Var, double* Par);
+    double IntegralxLargeHgMx(double* Var, double* Par);
     double IntegralxSmall1Hg(double* Var, double* Par);
     double IntegralxSmall2Hg(double* Var, double* Par);
 
