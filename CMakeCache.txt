@@ -139,7 +139,7 @@ CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 PARTONS_BINARY_DIR:STATIC=/home/debian/workspace/PARTONS
 
 //Dependencies for the target
-PARTONS_LIB_DEPENDS:STATIC=general;Hist;general;Core;general;NumA++;general;cln;general;/usr/local/qt/v4.8.6/lib/libQtGui.so;general;/usr/local/qt/v4.8.6/lib/libQtCore.so;
+PARTONS_LIB_DEPENDS:STATIC=general;Hist;general;Core;general;NumA++;general;cln;
 
 //Value Computed by CMake
 PARTONS_SOURCE_DIR:STATIC=/home/debian/workspace/PARTONS

@@ -50,7 +50,7 @@
 							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.so.debug.460326629" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.so.debug">
 								<option defaultValue="true" id="gnu.cpp.link.so.debug.option.shared.1932062549" name="Shared (-shared)" superClass="gnu.cpp.link.so.debug.option.shared" valueType="boolean"/>
 								<option id="gnu.cpp.link.option.paths.394327902" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/NumA++/Debug}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/NumA++/lib}&quot;"/>
 								</option>
 								<option id="gnu.cpp.link.option.libs.1838264971" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="NumA++"/>

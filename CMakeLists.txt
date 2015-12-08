@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 2.6)
+
 project(PARTONS CXX)
 
 # Tell CMake to run moc when necessary:
@@ -20,7 +21,7 @@ set(LIBRARY_OUTPUT_PATH lib)
 
  # add some useful macros and variables
 # (QT_USE_FILE is a variable defined by FIND_PACKAGE( Qt4 ) that contains a path to CMake script)
-INCLUDE( ${QT_USE_FILE} )
+#INCLUDE( ${QT_USE_FILE} )
 
 include_directories(${root_include_dir} ${numa_include_dir} ${cln_include_dir})
 
@@ -33,15 +34,6 @@ file(
 
         GLOB_RECURSE
 
-        header_files
-
-        include/*
-)
-
-file(
-
-        GLOB_RECURSE
-
         source_files
 
         src/*
@@ -49,11 +41,11 @@ file(
 
 
 # and finally this will run moc:
-QT4_WRAP_CPP( source_files include )
+#QT4_WRAP_CPP( source_files include )
 
 #Génération de la liste des fichiers sources
 
-QT4_WRAP_CPP(LIB_HEADER_MOC ${header_files})
+#QT4_WRAP_CPP(LIB_HEADER_MOC ${header_files})
 
 add_library(
 
@@ -62,8 +54,6 @@ add_library(
         SHARED
 
         ${source_files}
-        
-        ${LIB_HEADER_MOC}
 )
 
 #Configuration de l'édition de liens
