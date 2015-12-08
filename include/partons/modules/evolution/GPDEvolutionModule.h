@@ -84,6 +84,15 @@ protected:
     double m_scaleDistinction;
 
     unsigned short m_currentNf;
+
+    /* m_nonSingletIndex refers to the current nonsinglet contribution.
+     * There are 2*m_nf-1 nonsinglet contributions for a given nf value.
+     * Therefore m_nonSingletIndex should (and will) range between 0 and 2*m_nf-2.
+     * It is the easiest way for the parent class GPDEvolutionModule to send
+     * the information on the current nonsinglet GPD combination to a daughter class
+     * specifying the implementation of evolution equations.
+     * It is not, strictly speaking, an information related to the MuF interval.
+     */
     unsigned short m_currentNonSingletIndex;
 
     //TODO a quoi cela sert ?
@@ -138,7 +147,7 @@ private:
 
     // refactored
 
-   // PartonDistribution computeGPDModelAtMufRef();
+    // PartonDistribution computeGPDModelAtMufRef();
 
     NumA::VectorD makeVectorOfGPDCombinations(
             const PartonDistribution &partonDistribution);
