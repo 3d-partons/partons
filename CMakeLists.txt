@@ -9,23 +9,21 @@ set(CMAKE_AUTOMOC ON)
 # to always look for includes there:
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+set(LIBRARY_OUTPUT_PATH lib)
+
  # this command finds Qt4 libraries and sets all required variables
 # note that it's Qt4, not QT4 or qt4
-FIND_PACKAGE( Qt4 REQUIRED )
+FIND_PACKAGE( Qt4 COMPONENTS QtCore QtSql REQUIRED )
 
  # add some useful macros and variables
 # (QT_USE_FILE is a variable defined by FIND_PACKAGE( Qt4 ) that contains a path to CMake script)
 INCLUDE( ${QT_USE_FILE} )
-
-#  placez vos exécutables dans des dossiers portant le nom du type de compilation (Release, Debug...). Ce dernier est défini par la variable CMAKE_BUILD_TYPE (qui n'a d'effet seulement si le générateur choisi est basé sur Make)
-
-set(LIBRARY_OUTPUT_PATH lib)
+ADD_DEFINITIONS (${QT_DEFINITIONS})
 
 # Inclusion des libraries
+INCLUDE_DIRECTORIES( ${QT_INCLUDE_DIRS} ${ROOT_PATH}/include ${NUMA_PATH}/include ${CLN_PATH}/include)
 
-include_directories(${root_include_dir} ${numa_include_dir} ${cln_include_dir})
-
-link_directories(${root_lib_dir} ${numa_lib_dir} ${cln_lib_dir})
+LINK_DIRECTORIES(${ROOT_PATH}/lib ${NUMA_PATH}/lib ${CLN_PATH}/lib)
 
 #Inclusion des en-têtes publics
 include_directories(include)
@@ -61,12 +59,13 @@ target_link_libraries(
 
         PARTONS
 
-         ${root_lib_name}
-         
-         ${numa_lib_name}
-         
-         ${cln_lib_name}
-         
          ${QT_LIBRARIES}
+ 
+         ${ROOT_LIBRARIES}
+         
+         ${NUMA_LIBRARIES}
+         
+         ${CLN_LIBRARIES}
 
+        
 )

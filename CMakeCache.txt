@@ -14,6 +14,11 @@
 # EXTERNAL cache entries
 ########################
 
+CLN_LIBRARIES:STRING=cln
+
+//Chemin vers le dossier des fichiers d'en-tête de CLN
+CLN_PATH:FILEPATH=/usr/local/cln/v1.3.4
+
 //Path to a program.
 CMAKE_AR:FILEPATH=/usr/bin/ar
 
@@ -135,11 +140,17 @@ CMAKE_USE_RELATIVE_PATHS:BOOL=OFF
 // Studio IDE projects all commands are done without /nologo.
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 
+//Nom du fichier de la bibliothèque NUMA
+NUMA_LIBRARIES:STRING=NumA++
+
+//Chemin vers le dossier des fichiers d'en-tête de NUMA
+NUMA_PATH:FILEPATH=/home/debian/workspace/NumA++
+
 //Value Computed by CMake
 PARTONS_BINARY_DIR:STATIC=/home/debian/workspace/PARTONS
 
 //Dependencies for the target
-PARTONS_LIB_DEPENDS:STATIC=general;Hist;general;Core;general;NumA++;general;cln;general;/usr/local/qt/v4.8.6/lib/libQtGui.so;general;/usr/local/qt/v4.8.6/lib/libQtCore.so;
+PARTONS_LIB_DEPENDS:STATIC=general;/usr/local/qt/v4.8.6/lib/libQtSql.so;general;/usr/local/qt/v4.8.6/lib/libQtCore.so;general;Hist;general;Core;general;NumA++;general;cln;
 
 //Value Computed by CMake
 PARTONS_SOURCE_DIR:STATIC=/home/debian/workspace/PARTONS
@@ -744,32 +755,11 @@ QT_WORLDTIMECLOCKPLUGIN_PLUGIN_DEBUG:FILEPATH=QT_WORLDTIMECLOCKPLUGIN_PLUGIN_DEB
 //Path to a library.
 QT_WORLDTIMECLOCKPLUGIN_PLUGIN_RELEASE:FILEPATH=QT_WORLDTIMECLOCKPLUGIN_PLUGIN_RELEASE-NOTFOUND
 
-//Chemin vers le dossier des fichiers d'en-tête de CLN
-cln_include_dir:FILEPATH=/usr/local/cln/v1.3.4/include
-
-//Chemin vers le dossier des fichiers bibliothèques de CLN
-cln_lib_dir:FILEPATH=/usr/local/cln/v1.3.4/lib
-
-//Nom du fichier de la bibliothèque CLN
-cln_lib_name:STRING=cln
-
-//Chemin vers le dossier des fichiers d'en-tête de NumA
-numa_include_dir:FILEPATH=/home/debian/workspace/NumA++/include
-
-//Chemin vers le dossier des fichiers bibliothèques de NumA
-numa_lib_dir:FILEPATH=/home/debian/workspace/NumA++/lib
-
-//Nom du fichier de la bibliothèque NumA
-numa_lib_name:STRING=NumA++
+//Nom du fichier de la bibliothèque ROOT
+ROOT_LIBRARIES:STRING=Hist;Core
 
 //Chemin vers le dossier des fichiers d'en-tête de ROOT
-root_include_dir:FILEPATH=/usr/local/root/v5.34.34/include
-
-//Chemin vers le dossier des fichiers bibliothèques de ROOT
-root_lib_dir:FILEPATH=/usr/local/root/v5.34.34/lib
-
-//Nom du fichier de la bibliothèque ROOT
-root_lib_name:STRING=Hist;Core
+ROOT_PATH:FILEPATH=/usr/local/root/v5.34.34
 
 
 ########################
@@ -883,7 +873,7 @@ CMAKE_USE_RELATIVE_PATHS-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_VERBOSE_MAKEFILE
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
 //Details about finding Qt4
-FIND_PACKAGE_MESSAGE_DETAILS_Qt4:INTERNAL=[/usr/bin/qmake][/usr/local/qt/v4.8.6/bin/moc][/usr/local/qt/v4.8.6/bin/rcc][/usr/local/qt/v4.8.6/bin/uic][/usr/local/qt/v4.8.6/include][/usr/local/qt/v4.8.6/lib][/usr/local/qt/v4.8.6/lib/libQtCore.so][v4.8.6()]
+FIND_PACKAGE_MESSAGE_DETAILS_Qt4:INTERNAL=[/usr/bin/qmake][/usr/local/qt/v4.8.6/bin/moc][/usr/local/qt/v4.8.6/bin/rcc][/usr/local/qt/v4.8.6/include][/usr/local/qt/v4.8.6/lib][/usr/local/qt/v4.8.6/include/QtCore][/usr/local/qt/v4.8.6/lib/libQtCore.so][/usr/local/qt/v4.8.6/include/QtSql][/usr/local/qt/v4.8.6/lib/libQtSql.so][v4.8.2()]
 //ADVANCED property for variable: QT_ARTHURPLUGIN_PLUGIN_DEBUG
 QT_ARTHURPLUGIN_PLUGIN_DEBUG-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: QT_ARTHURPLUGIN_PLUGIN_RELEASE
