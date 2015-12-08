@@ -13,15 +13,15 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # note that it's Qt4, not QT4 or qt4
 FIND_PACKAGE( Qt4 REQUIRED )
 
+ # add some useful macros and variables
+# (QT_USE_FILE is a variable defined by FIND_PACKAGE( Qt4 ) that contains a path to CMake script)
+INCLUDE( ${QT_USE_FILE} )
+
 #  placez vos exécutables dans des dossiers portant le nom du type de compilation (Release, Debug...). Ce dernier est défini par la variable CMAKE_BUILD_TYPE (qui n'a d'effet seulement si le générateur choisi est basé sur Make)
 
 set(LIBRARY_OUTPUT_PATH lib)
 
 # Inclusion des libraries
-
- # add some useful macros and variables
-# (QT_USE_FILE is a variable defined by FIND_PACKAGE( Qt4 ) that contains a path to CMake script)
-#INCLUDE( ${QT_USE_FILE} )
 
 include_directories(${root_include_dir} ${numa_include_dir} ${cln_include_dir})
 

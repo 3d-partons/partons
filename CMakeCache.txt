@@ -139,7 +139,7 @@ CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 PARTONS_BINARY_DIR:STATIC=/home/debian/workspace/PARTONS
 
 //Dependencies for the target
-PARTONS_LIB_DEPENDS:STATIC=general;Hist;general;Core;general;NumA++;general;cln;
+PARTONS_LIB_DEPENDS:STATIC=general;Hist;general;Core;general;NumA++;general;cln;general;/usr/local/qt/v4.8.6/lib/libQtGui.so;general;/usr/local/qt/v4.8.6/lib/libQtCore.so;
 
 //Value Computed by CMake
 PARTONS_SOURCE_DIR:STATIC=/home/debian/workspace/PARTONS
@@ -761,15 +761,6 @@ numa_lib_dir:FILEPATH=/home/debian/workspace/NumA++/lib
 
 //Nom du fichier de la bibliothèque NumA
 numa_lib_name:STRING=NumA++
-
-//Chemin vers le dossier des fichiers d'en-tête de QT4
-qt4_include_dir:FILEPATH=/usr/local/qt/v4.8.6/include
-
-//Chemin vers le dossier des fichiers bibliothèques de QT4
-qt4_lib_dir:FILEPATH=/usr/local/qt/v4.8.6/lib
-
-//Nom du fichier de la bibliothèque QT4
-qt4_lib_name:STRING=QtCore;QtGui;QtSql
 
 //Chemin vers le dossier des fichiers d'en-tête de ROOT
 root_include_dir:FILEPATH=/usr/local/root/v5.34.34/include
