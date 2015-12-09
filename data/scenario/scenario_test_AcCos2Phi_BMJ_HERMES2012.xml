@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+
+<scenario id="05" date="" description="Comparison with HERMES for AcCos2Phi.">
+
+	<task service="ObservableService" method="computeManyKinematicOneModel"
+		storeInDB="1">
+		<ScaleModule>
+			<param name="id" value="Q2Multiplier" />
+			<param name="lambda" value="1" />
+		</ScaleModule>
+
+		<XiConverterModule>
+			<param name="id" value="XBToXi" />
+		</XiConverterModule>
+
+		<ObservableKinematic>
+			<param name="file"
+				value="/home/debian/workspace/PARTONS/data/kinematics_compare_BMJ_GV_AcCos2phi_HERMES.dat" />
+		</ObservableKinematic>
+
+		<Observable>
+			<param name="id" value="AcCos2phi" />
+		</Observable>
+
+		<DVCSModule>
+			<param name="id" value="GV2008Model" />
+			<param name="beam_energy" value="27.6" />
+		</DVCSModule>
+
+		<DVCSConvolCoeffFunctionModule>
+			<param name="id" value="DVCSCFFModel" />
+			<param name="qcd_order_type" value="LO" />
+		</DVCSConvolCoeffFunctionModule>
+
+		<GPDModule>
+			<param name="id" value="GK11Model" />
+		</GPDModule>
+	</task>
+
+	<task service="ObservableService" method="computeManyKinematicOneModel"
+		storeInDB="1">
+		<ScaleModule>
+			<param name="id" value="Q2Multiplier" />
+			<param name="lambda" value="1" />
+		</ScaleModule>
+
+		<XiConverterModule>
+			<param name="id" value="XBToXi" />
+		</XiConverterModule>
+
+		<ObservableKinematic>
+			<param name="file"
+				value="/home/debian/workspace/PARTONS/data/kinematics_compare_BMJ_GV_AcCos2phi_HERMES.dat" />
+		</ObservableKinematic>
+
+		<Observable>
+			<param name="id" value="AcCos2phi" />
+		</Observable>
+
+		<DVCSModule>
+			<param name="id" value="BMJ2012Model" />
+			<param name="beam_energy" value="27.6" />
+		</DVCSModule>
+
+		<DVCSConvolCoeffFunctionModule>
+			<param name="id" value="DVCSCFFModel" />
+			<param name="qcd_order_type" value="LO" />
+		</DVCSConvolCoeffFunctionModule>
+
+		<GPDModule>
+			<param name="id" value="GK11Model" />
+		</GPDModule>
+	</task>
+</scenario>
