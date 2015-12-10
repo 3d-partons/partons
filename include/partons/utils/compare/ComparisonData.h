@@ -19,11 +19,11 @@ class Differences;
 
 class ComparisonData {
 public:
-    ComparisonData(bool isFailed, const std::string &variableName,
+    ComparisonData(bool isPassed, const std::string &variableName,
             const std::string &variableValue,
             const std::string &variableValueReference);
 
-    ComparisonData(bool isFailed, const std::string& variableName,
+    ComparisonData(bool isPassed, const std::string& variableName,
             const std::string& variableValue,
             const std::string& variableValueReference, Tolerances* pTolerances,
             Differences* pDifferences);
@@ -39,7 +39,7 @@ public:
     const std::string& getVariableName() const;
 
 private:
-    bool m_failed;
+    bool m_passed;
 
     std::string m_variableName;
     std::string m_variableValue;

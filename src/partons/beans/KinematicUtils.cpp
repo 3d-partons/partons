@@ -1,6 +1,7 @@
 #include "../../../include/partons/beans/KinematicUtils.h"
 
 #include <stddef.h>
+#include <iostream>
 #include <stdexcept>
 #include <vector>
 
@@ -13,30 +14,38 @@ List<ObservableKinematic> KinematicUtils::getObservableKinematicFromFile(
 
     List<ObservableKinematic> observableKinematicList;
 
-    std::vector<std::string> kinematicString = FileUtils::readByLine(filePath);
+    if (FileUtils::isReadable(filePath)) {
 
-    if (kinematicString.empty()) {
-        throw std::runtime_error(
-                Formatter()
-                        << "(KinematicUtils::getObservableKinematicFromFile) Empty kinematic input file : "
-                        << filePath);
-    }
+        std::vector<std::string> kinematicString = FileUtils::readByLine(
+                filePath);
 
-    for (size_t i = 0; i != kinematicString.size(); i++) {
-        std::vector<std::string> kinematicValues = StringUtils::split(
-                kinematicString[i], '|');
-        if (kinematicValues.size() < 4) {
+        if (kinematicString.empty()) {
             throw std::runtime_error(
                     Formatter()
-                            << "(KinematicUtils::getObservableKinematicFromFile) Missing column value in your kinematic input file : "
-                            << filePath
-                            << " ; You must provided 4 column : xB | t | Q2 | phi");
+                            << "(KinematicUtils::getObservableKinematicFromFile) Empty kinematic input file : "
+                            << filePath);
         }
 
-        observableKinematicList.add(
-                ObservableKinematic(kinematicValues[0], kinematicValues[1],
-                        kinematicValues[2], kinematicValues[3]));
+        for (size_t i = 0; i != kinematicString.size(); i++) {
+            std::vector<std::string> kinematicValues = StringUtils::split(
+                    kinematicString[i], '|');
+            if (kinematicValues.size() < 4) {
+                throw std::runtime_error(
+                        Formatter()
+                                << "(KinematicUtils::getObservableKinematicFromFile) Missing column value in your kinematic input file : "
+                                << filePath
+                                << " ; You must provided 4 column : xB | t | Q2 | phi");
+            }
 
+            observableKinematicList.add(
+                    ObservableKinematic(kinematicValues[0], kinematicValues[1],
+                            kinematicValues[2], kinematicValues[3]));
+
+        }
+    } else {
+        //TODO print error with logger : cannot open file;
+
+        std::cerr << "Cannot open file : " << filePath << std::endl;
     }
 
     return observableKinematicList;

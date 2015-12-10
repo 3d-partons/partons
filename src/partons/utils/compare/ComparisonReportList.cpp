@@ -2,7 +2,8 @@
 
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
-ComparisonReportList::ComparisonReportList() {
+ComparisonReportList::ComparisonReportList() :
+        m_numberOfComparedObjet(0) {
     // TODO Auto-generated constructor stub
 
 }

@@ -47,9 +47,9 @@ void Q2Multiplier::initModule() {
 void Q2Multiplier::isModuleWellConfigured() {
     ScaleModule::isModuleWellConfigured();
 
-    if (m_lambda == 1.) {
-        warn(__func__, Formatter() << "m_lambda = " << m_lambda);
-    }
+//    if (m_lambda == 1.) {
+//        warn(__func__, Formatter() << "m_lambda = " << m_lambda);
+//    }
 }
 
 void Q2Multiplier::configure(ParameterList parameters) {

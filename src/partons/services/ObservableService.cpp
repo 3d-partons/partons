@@ -90,6 +90,12 @@ ResultList<ObservableResult> ObservableService::computeManyKinematicOneModel(
         DVCSModule* pDVCSModule, Observable* pObservable,
         DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule) const {
 
+    info(__func__,
+            Formatter() << listOfKinematic.size()
+                    << " kinematics will be computed with "
+                    << pDVCSModule->getClassName());
+    info(__func__, Formatter() << "Computing ...");
+
     ResultList<ObservableResult> results;
 
     for (unsigned int i = 0; i != listOfKinematic.size(); i++) {
@@ -328,6 +334,7 @@ ResultList<ObservableResult> ObservableService::computeManyKinematicOneModelTask
     return result;
 }
 
+//TODO remove ? : how to compare with XML scenario (automation) ?
 ObservableResultListReport ObservableService::compareResultList(
         const ResultList<ObservableResult>& resultList_01,
         const ResultList<ObservableResult>& resultList_02,

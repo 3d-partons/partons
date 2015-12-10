@@ -197,11 +197,11 @@ void GV2008Model::isModuleWellConfigured() {
         formater << "m_xBMin = " << m_xBMin << '\n';
         formater << "m_xBMax = " << m_xBMax << '\n';
 
-        throwException(__func__, formater.str());
+        error(__func__, formater.str());
     }
 
     if (m_y < 1.) {
-        throwException(__func__,
+        error(__func__,
                 Formatter() << "ELab = " << m_E
                         << " GeV is too small. TMath::CosH[ome]= " << m_y);
     }

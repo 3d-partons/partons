@@ -32,9 +32,6 @@ BaseObject::~BaseObject() {
 
 void BaseObject::throwException(const std::string functionName,
         const std::string errorMessage) const {
-    if (m_pLoggerManager != 0) {
-        m_pLoggerManager->error(getClassName(), functionName, errorMessage);
-    }
     throw std::runtime_error(
             Formatter() << "[" << getClassName() << "::" << functionName << "] "
                     << errorMessage);
@@ -86,7 +83,9 @@ void BaseObject::warn(const std::string& functionName,
     m_pLoggerManager->warn(getClassName(), functionName, message);
 }
 
+//TODO remove error or throwException function from BaseObject class
 void BaseObject::error(const std::string& functionName,
         const std::string& message) const {
     m_pLoggerManager->error(getClassName(), functionName, message);
+    throwException(functionName, message);
 }

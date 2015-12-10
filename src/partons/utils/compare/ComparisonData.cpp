@@ -8,19 +8,19 @@
 //                StringUtils::EMPTY) {
 //}
 
-ComparisonData::ComparisonData(bool isFailed, const std::string& variableName,
+ComparisonData::ComparisonData(bool isPassed, const std::string& variableName,
         const std::string& variableValue,
         const std::string& variableValueReference) :
-        m_failed(isFailed), m_variableName(variableName), m_variableValue(
+        m_passed(isPassed), m_variableName(variableName), m_variableValue(
                 variableValue), m_variableValueReference(
                 variableValueReference), m_pTolerances(0), m_pDifferences(0) {
 }
 
-ComparisonData::ComparisonData(bool isFailed, const std::string& variableName,
+ComparisonData::ComparisonData(bool isPassed, const std::string& variableName,
         const std::string& variableValue,
         const std::string& variableValueReference, Tolerances* pTolerances,
         Differences* pDifferences) :
-        m_failed(isFailed), m_variableName(variableName), m_variableValue(
+        m_passed(isPassed), m_variableName(variableName), m_variableValue(
                 variableValue), m_variableValueReference(
                 variableValueReference), m_pTolerances(pTolerances), m_pDifferences(
                 pDifferences) {
@@ -32,10 +32,10 @@ ComparisonData::~ComparisonData() {
 std::string ComparisonData::toString() const {
     Formatter formatter;
 
-    if (m_failed) {
-        formatter << "[FAILED]";
-    } else {
+    if (m_passed) {
         formatter << "[PASSED]";
+    } else {
+        formatter << "[FAILED]";
     }
 
     formatter << " variableName = " << m_variableName << " with value = "
