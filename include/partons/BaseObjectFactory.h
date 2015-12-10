@@ -52,6 +52,7 @@ private:
     /// Store BaseObject pointer created by the factory; used at the end of the program to delete orphan pointer.
     std::map<unsigned int, BaseObject*> m_pInstantiatedObject;
 
+    /// Pointer to unique instance of BaseObjectRegistry
     BaseObjectRegistry* m_pBaseObjectRegistry;
 
     void store(BaseObject* pBaseObject);

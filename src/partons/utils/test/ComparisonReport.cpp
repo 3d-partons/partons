@@ -5,21 +5,21 @@
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 ComparisonReport::ComparisonReport() :
-        m_failed(false) {
+        m_pParent(0), m_failed(false) {
 }
 
 ComparisonReport::ComparisonReport(const std::string &objectClassName) :
-        m_objectClassName(objectClassName) {
+        m_objectClassName(objectClassName), m_pParent(0) {
 
 }
 
 ComparisonReport::ComparisonReport(const std::string& objectClassName,
         const std::string& context) :
-        m_objectClassName(objectClassName), m_context(context) {
+        m_objectClassName(objectClassName), m_pParent(0), m_context(context) {
 }
 
 ComparisonReport::ComparisonReport(bool comparisonResult) :
-        m_comparisonResult(comparisonResult) {
+        m_pParent(0), m_comparisonResult(comparisonResult) {
 }
 
 ComparisonReport::~ComparisonReport() {
@@ -53,6 +53,7 @@ std::string ComparisonReport::toString() const {
 
 void ComparisonReport::addChildren(const ComparisonReport &children) {
     m_children.push_back(children);
+    m_children.back().setParent(this);
 }
 
 // TODO improve memory ; avoid copy object
@@ -61,7 +62,7 @@ void ComparisonReport::addChildren(const ComparisonReportList &children) {
     std::vector<ComparisonReport> reports;
 
     for (size_t i = 0; i != reports.size(); i++) {
-        m_children.push_back(reports[i]);
+        addChildren(reports[i]);
     }
 }
 
@@ -91,4 +92,12 @@ const std::string& ComparisonReport::getClassName() const {
 
 const std::string& ComparisonReport::getContext() const {
     return m_context;
+}
+
+const ComparisonReport* ComparisonReport::getParent() const {
+    return m_pParent;
+}
+
+void ComparisonReport::setParent(const ComparisonReport* parent) {
+    m_pParent = parent;
 }

@@ -9,7 +9,13 @@
  *
  * @class ServiceObject
  *
- * @brief
+ * @brief Services hide the complexity of low-level functions to provide high-level functionalities to the user.
+ *
+ * A service is basically a toolbox for the user: the user is being given tools to use the software without knowing the details of its operating.
+ * Services combine different modules and datasets to produce results in a transparent way.
+ *
+ * For example : the GPDService provide several functions that hide the complexity related to repetitive tasks,
+ * like evaluating a GPD at a list of kinematic configurations, or evaluating several GPD models at the same input kinematic.
  */
 
 #include <string>

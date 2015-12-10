@@ -44,9 +44,11 @@ public:
 
     void setClassName(const std::string& objectClassName);
     void setContext(const std::string& context);
+    void setParent(const ComparisonReport* parent);
 
     const std::string& getClassName() const;
     const std::string& getContext() const;
+    const ComparisonReport* getParent() const;
 
 //TODO remove
 protected:
@@ -54,6 +56,8 @@ protected:
 //
 
 private:
+    ComparisonReport* m_pParent;
+
     std::vector<ComparisonReport> m_children;
     std::vector<ComparisonData> m_data;
 

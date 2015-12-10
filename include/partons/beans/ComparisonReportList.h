@@ -49,6 +49,7 @@ public:
 
 private:
     std::vector<ComparisonReport> m_reports;
+    std::vector<ComparisonReport*> m_failedReports;
 
     std::string m_objectTypeCompared;
     ComparisonMode m_comparisonMode;

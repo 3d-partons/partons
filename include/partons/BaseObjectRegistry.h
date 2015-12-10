@@ -9,7 +9,13 @@
  *
  * @class BaseObjectRegistry
  *
- * @brief
+ * @brief The Registry is the analog of a phonebook, which lists all available modules identified by a unique id or by a unique string for translation. And only one species of each.
+ *
+ * From the point of view of software engineering, it corresponds to the singleton design pattern which ensures that it is unique.
+ * When a new module is created, the first thing to do is to call this unique instance, and to register the new module with a name provided by the developer of the module.
+ * In turn the Registry gives a unique identifier encoded in a int variable for performance purposes.
+ * Registry stores pointers to all modules in a generic way, i.e. whatever their nature are: pointers to GPDModule, to RunningAlphaStrongModule, to DoubleDistributionModule, etc.
+ * This is achieved by requiring all modules to derive from a single parent class named BaseObject.
  */
 
 #include <map>
@@ -28,12 +34,14 @@ public:
 
     /**
      * Store a unique instance of a module identified by a unique string character key.
-     * @param _pBaseModule: an instance of the module built by its default constructor.
-     * @return Classname of the module
+     * @param pBaseObject: an instance of the module built by its default constructor.
+     * @return A unique system identifier ; unsigned int.
      */
     unsigned int registerBaseObject(BaseObject * pBaseObject);
 
-    // We need to perform this task after self registered BaseObject to resolve dependencies between pointed objects.
+    /**
+     * We need to perform this task after self registered BaseObject to resolve dependencies between pointed objects.
+     */
     void initBaseObject();
 
     BaseObject* get(unsigned int classId);

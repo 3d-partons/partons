@@ -14,6 +14,8 @@
 
 #include <string>
 
+#include "../utils/math/Tolerances.h"
+
 class ComparisonData {
 public:
     ComparisonData();
@@ -36,8 +38,8 @@ private:
 
     double m_absoluteDifference;
     double m_relativeDifference;
-    double m_absoluteTolerance;
-    double m_relativeTolerance;
+
+    Tolerances m_tolerances;
 };
 
 #endif /* COMPARISON_DATA_H */

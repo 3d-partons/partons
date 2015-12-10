@@ -9,7 +9,10 @@
  *
  * @class BaseObject
  *
- * @brief
+ * @brief BaseObject is the ”zeroth-level-object” of the architecture.
+ *
+ * Any C++ object in PARTONS can inherit of it.
+ * It also carries information on the identity of a specific object to transmit an explicit message to the logger (i.e. understandable by a human being, not an address in memory).
  */
 
 #include <string>
