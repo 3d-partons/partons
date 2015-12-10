@@ -16,8 +16,8 @@
 #include <string>
 #include <vector>
 
-#include "../utils/math/Tolerances.h"
-#include "../utils/test/ComparisonReport.h"
+#include "../math/Tolerances.h"
+#include "../test/ComparisonReport.h"
 #include "ComparisonMode.h"
 
 class ComparisonReportList {

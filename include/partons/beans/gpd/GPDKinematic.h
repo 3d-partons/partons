@@ -18,12 +18,12 @@
 #include "../Kinematic.h"
 
 class ComparisonReport;
-class Tolerances;
-
 class ParameterList;
+class Tolerances;
 
 class GPDKinematic: public Kinematic {
 public:
+    //TODO why missing T ?
     static const std::string GPD_KINEMATIC_PARAMETER_NAME_X;
     static const std::string GPD_KINEMATIC_PARAMETER_NAME_XI;
     static const std::string GPD_KINEMATIC_PARAMETER_NAME_MUF2;

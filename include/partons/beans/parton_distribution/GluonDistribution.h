@@ -12,6 +12,8 @@ class GluonDistribution: public BaseObject {
 public:
     static const std::string GLUON_DISTRIBUTION_DB_COLUMN_NAME;
 
+    static const std::string GLUON_DISTRIBUTION_PARAMETER_NAME_GLUON_DISTRIBUTION;
+
     GluonDistribution();
     GluonDistribution(double gluonDistribution);
     virtual ~GluonDistribution();

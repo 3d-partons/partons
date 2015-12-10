@@ -1,4 +1,4 @@
-#include "../../../include/partons/beans/ComparisonMode.h"
+#include "../../../../include/partons/utils/compare/ComparisonMode.h"
 
 ComparisonMode::ComparisonMode() :
         m_type(ComparisonMode::UNDEFINED) {

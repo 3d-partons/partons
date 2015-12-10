@@ -2,10 +2,9 @@
 
 #include <sstream>
 
-#include "../../../../include/partons/beans/ComparisonData.h"
+#include "../../../../include/partons/utils/compare/CompareUtils.h"
+#include "../../../../include/partons/utils/compare/ComparisonData.h"
 #include "../../../../include/partons/utils/test/ComparisonReport.h"
-
-//#include <sstream>
 
 const std::string QuarkDistribution::QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DISTRIBUTION =
         "quark_distribution";
@@ -105,10 +104,12 @@ ComparisonReport QuarkDistribution::compare(
         const Tolerances& tolerances) const {
     ComparisonReport comparisonReport(getClassName());
 
-    ComparisonData comparisonData(
-            QuarkDistribution::QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DISTRIBUTION_PLUS,
-            "blabla");
-    comparisonReport.addComparisonData(comparisonData);
+    ComparisonData quark_distribution_plus_comparisonData =
+            CompareUtils::compareDouble(
+                    QuarkDistribution::QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DISTRIBUTION_PLUS,
+                    getQuarkDistributionPlus(),
+                    referenceObject.getQuarkDistributionPlus(), tolerances);
+    comparisonReport.addComparisonData(quark_distribution_plus_comparisonData);
 
     return comparisonReport;
 }

@@ -1,6 +1,6 @@
-#include "../../../include/partons/beans/ComparisonReportList.h"
+#include "../../../../include/partons/utils/compare/ComparisonReportList.h"
 
-#include "../../../include/partons/utils/stringUtils/Formatter.h"
+#include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 ComparisonReportList::ComparisonReportList() {
     // TODO Auto-generated constructor stub

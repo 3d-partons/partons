@@ -2,6 +2,7 @@
 
 #include <stddef.h>
 
+#include "../../../../include/partons/utils/compare/ComparisonData.h"
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 ComparisonReport::ComparisonReport() :
@@ -98,6 +99,6 @@ const ComparisonReport* ComparisonReport::getParent() const {
     return m_pParent;
 }
 
-void ComparisonReport::setParent(const ComparisonReport* parent) {
+void ComparisonReport::setParent(ComparisonReport* parent) {
     m_pParent = parent;
 }

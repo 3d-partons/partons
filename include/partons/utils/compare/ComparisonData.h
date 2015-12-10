@@ -14,14 +14,20 @@
 
 #include <string>
 
-#include "../utils/math/Tolerances.h"
+class Tolerances;
+class Differences;
 
 class ComparisonData {
 public:
-    ComparisonData();
-    ComparisonData(const std::string & variableName);
-    ComparisonData(const std::string & variableName,
-            const std::string & additionalInfo);
+    ComparisonData(bool isFailed, const std::string &variableName,
+            const std::string &variableValue,
+            const std::string &variableValueReference);
+
+    ComparisonData(bool isFailed, const std::string& variableName,
+            const std::string& variableValue,
+            const std::string& variableValueReference, Tolerances* pTolerances,
+            Differences* pDifferences);
+
     virtual ~ComparisonData();
 
     std::string toString() const;
@@ -33,13 +39,16 @@ public:
     const std::string& getVariableName() const;
 
 private:
+    bool m_failed;
+
     std::string m_variableName;
+    std::string m_variableValue;
+    std::string m_variableValueReference;
+
     std::string m_additionalInfo;
 
-    double m_absoluteDifference;
-    double m_relativeDifference;
-
-    Tolerances m_tolerances;
+    Tolerances* m_pTolerances;
+    Differences* m_pDifferences;
 };
 
 #endif /* COMPARISON_DATA_H */

@@ -21,6 +21,8 @@
 
 class ObservableResult: public Result {
 public:
+    static const std::string PARAMETER_NAME_OBSERVABLE_VALUE;
+
     ObservableResult();
     ObservableResult(const std::string &observableName, double value);
     virtual ~ObservableResult();

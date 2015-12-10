@@ -15,7 +15,7 @@
 #include <string>
 #include <vector>
 
-#include "../../beans/ComparisonData.h"
+#include "../compare/ComparisonData.h"
 
 class ComparisonReportList;
 
@@ -44,7 +44,7 @@ public:
 
     void setClassName(const std::string& objectClassName);
     void setContext(const std::string& context);
-    void setParent(const ComparisonReport* parent);
+    void setParent(ComparisonReport* parent);
 
     const std::string& getClassName() const;
     const std::string& getContext() const;

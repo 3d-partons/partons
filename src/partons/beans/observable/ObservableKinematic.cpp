@@ -1,5 +1,7 @@
 #include "../../../../include/partons/beans/observable/ObservableKinematic.h"
 
+#include "../../../../include/partons/utils/compare/CompareUtils.h"
+#include "../../../../include/partons/utils/compare/ComparisonData.h"
 #include "../../../../include/partons/utils/GenericType.h"
 #include "../../../../include/partons/utils/ParameterList.h"
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
@@ -85,6 +87,31 @@ const std::string ObservableKinematic::toStringWithoutPhi() const {
     return formatter;
 }
 
+ComparisonReport ObservableKinematic::compare(
+        const ObservableKinematic& referenceObject,
+        const Tolerances& tolerances) const {
+    ComparisonReport comparisonReport(getClassName());
+
+    ComparisonData xb_comparisonData = CompareUtils::compareDouble(
+            ObservableKinematic::PARAMETER_NAME_XB, getXB(),
+            referenceObject.getXB(), tolerances);
+    comparisonReport.addComparisonData(xb_comparisonData);
+
+    ComparisonData t_comparisonData = CompareUtils::compareDouble(
+            ObservableKinematic::PARAMETER_NAME_T, getT(),
+            referenceObject.getT(), tolerances);
+    comparisonReport.addComparisonData(t_comparisonData);
+
+    ComparisonData q2_comparisonData = CompareUtils::compareDouble(
+            ObservableKinematic::PARAMETER_NAME_Q2, getQ2(),
+            referenceObject.getQ2(), tolerances);
+    comparisonReport.addComparisonData(q2_comparisonData);
+
+    //TODO handle phi
+
+    return comparisonReport;
+}
+
 // ##### GETTERS & SETTERS #####
 
 double ObservableKinematic::getQ2() const {
@@ -117,12 +144,4 @@ double ObservableKinematic::getPhi() const {
 
 void ObservableKinematic::setPhi(double phi) {
     m_phi = phi;
-}
-
-ComparisonReport ObservableKinematic::compare(
-        const ObservableKinematic& referenceObject,
-        const Tolerances& tolerances) const {
-    ComparisonReport report;
-
-    return report;
 }

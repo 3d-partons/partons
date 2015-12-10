@@ -1,7 +1,8 @@
 #include "../../../../include/partons/beans/gpd/GPDKinematic.h"
 
-#include "../../../../include/partons/beans/ComparisonData.h"
 #include "../../../../include/partons/beans/observable/ObservableKinematic.h"
+#include "../../../../include/partons/utils/compare/CompareUtils.h"
+#include "../../../../include/partons/utils/compare/ComparisonData.h"
 #include "../../../../include/partons/utils/GenericType.h"
 #include "../../../../include/partons/utils/ParameterList.h"
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
@@ -68,6 +69,33 @@ std::string GPDKinematic::toString() const {
             << "(Gev2) m_MuR2 = " << m_MuR2 << "(Gev2)";
 }
 
+ComparisonReport GPDKinematic::compare(const GPDKinematic& referenceObject,
+        const Tolerances& tolerances) const {
+    ComparisonReport comparisonReport(getClassName());
+
+    ComparisonData x_comparisonData = CompareUtils::compareDouble(
+            GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_X, getX(),
+            referenceObject.getX(), tolerances);
+    comparisonReport.addComparisonData(x_comparisonData);
+
+    ComparisonData xi_comparisonData = CompareUtils::compareDouble(
+            GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI, getXi(),
+            referenceObject.getXi(), tolerances);
+    comparisonReport.addComparisonData(xi_comparisonData);
+
+    ComparisonData MuF2_comparisonData = CompareUtils::compareDouble(
+            GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUF2, getMuF2(),
+            referenceObject.getMuF2(), tolerances);
+    comparisonReport.addComparisonData(MuF2_comparisonData);
+
+    ComparisonData MuR2_comparisonData = CompareUtils::compareDouble(
+            GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUF2, getMuR2(),
+            referenceObject.getMuR2(), tolerances);
+    comparisonReport.addComparisonData(MuR2_comparisonData);
+
+    return comparisonReport;
+}
+
 // ##### GETTERS & SETTERS #####
 
 double GPDKinematic::getMuF2() const {
@@ -118,16 +146,6 @@ void GPDKinematic::setKinematicType(KinematicType::Type kinematicType) {
     m_kinematicType = kinematicType;
 }
 
-ComparisonReport GPDKinematic::compare(const GPDKinematic& referenceObject,
-        const Tolerances& tolerances) const {
-    ComparisonReport comparisonReport(getClassName());
-
-    ComparisonData comparisonData(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_X,
-            "blabla");
-    comparisonReport.addComparisonData(comparisonData);
-
-    return comparisonReport;
-}
 //sf::Packet& operator <<(sf::Packet& packet, const GPDKinematic& object) {
 //    return packet << object.m_x << object.m_xi << object.m_t << object.m_MuF
 //            << object.m_MuR;

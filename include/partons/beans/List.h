@@ -17,9 +17,9 @@
 #include <vector>
 
 #include "../BaseObject.h"
+#include "../utils/compare/ComparisonMode.h"
+#include "../utils/compare/ComparisonReportList.h"
 #include "../utils/stringUtils/Formatter.h"
-#include "ComparisonMode.h"
-#include "ComparisonReportList.h"
 #include "SortingMode.h"
 
 class SortingMode;

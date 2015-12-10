@@ -1,7 +1,12 @@
 #include "../../../../include/partons/beans/observable/ObservableResult.h"
 
+#include "../../../../include/partons/utils/compare/CompareUtils.h"
+#include "../../../../include/partons/utils/compare/ComparisonData.h"
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
 #include "../../../../include/partons/utils/test/ComparisonReport.h"
+
+const std::string ObservableResult::PARAMETER_NAME_OBSERVABLE_VALUE =
+        "observable value";
 
 ObservableResult::ObservableResult() :
         Result("ObservableResult"), m_observableName("UNDEFINED"), m_value(0.), m_totalError(
@@ -34,6 +39,22 @@ std::string ObservableResult::toString() {
 
     return formatter.str();
 }
+
+ComparisonReport ObservableResult::compare(
+        const ObservableResult& referenceObject,
+        const Tolerances& tolerances) const {
+
+    ComparisonReport comparisonReport(getClassName());
+
+    ComparisonData xb_comparisonData = CompareUtils::compareDouble(
+            ObservableResult::PARAMETER_NAME_OBSERVABLE_VALUE, getValue(),
+            referenceObject.getValue(), tolerances);
+    comparisonReport.addComparisonData(xb_comparisonData);
+
+    return comparisonReport;
+}
+
+// ##### GETTERS & SETTERS #####
 
 void ObservableResult::setObservableType(ObservableType::Type observableType) {
     m_observableType = observableType;
@@ -85,14 +106,4 @@ void ObservableResult::setTotalError(double totalError) {
 
 void ObservableResult::setValue(double value) {
     m_value = value;
-}
-
-ComparisonReport ObservableResult::compare(
-        const ObservableResult& referenceObject,
-        const Tolerances& tolerances) const {
-
-    ComparisonReport comparisonReport(getClassName());
-
-    //TODO implement
-    return comparisonReport;
 }

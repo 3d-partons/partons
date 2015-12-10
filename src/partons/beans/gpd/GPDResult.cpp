@@ -4,8 +4,8 @@
 #include <stdexcept>
 #include <utility>
 
-#include "../../../../include/partons/beans/ComparisonMode.h"
-#include "../../../../include/partons/beans/ComparisonReportList.h"
+#include "../../../../include/partons/utils/compare/ComparisonMode.h"
+#include "../../../../include/partons/utils/compare/ComparisonReportList.h"
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
 #include "../../../../include/partons/utils/test/ComparisonReport.h"
 
