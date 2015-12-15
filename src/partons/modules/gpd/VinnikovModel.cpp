@@ -2,7 +2,7 @@
  * VinnikovModel.cpp
  *
  *  Created on: Oct 1, 2015
- *      Author: debian
+ *      Author: Pawel Sznajder (NCBJ)
  */
 
 #include "../../../../include/partons/modules/gpd/VinnikovModel.h"
@@ -12,6 +12,8 @@
 #include <map>
 #include <string>
 #include <utility>
+#include <stdlib.h>
+#include <stdexcept>
 
 #include "../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
@@ -65,6 +67,13 @@ VinnikovModel::VinnikovModel(const VinnikovModel& other) :
 }
 
 void VinnikovModel::isModuleWellConfigured() {
+
+    if (n_par == 0)
+        throw std::runtime_error("[VinnikovModel] Unknown n_par");
+
+    if (param == NULL)
+        throw std::runtime_error("[VinnikovModel] param is NULL");
+
     GPDModule::isModuleWellConfigured();
 }
 
@@ -83,37 +92,18 @@ PartonDistribution VinnikovModel::computeH() {
 
     double g, uVal, uSea, dVal, dSea, sSea, uValMx, dValMx;
 
-    if (m_x > 0.) {
-        g = gpdh(0, m_x, m_xi, m_t, n_par, param);
+    g = gpdh(0, m_x, m_xi, m_t, n_par, param);
 
-        uVal = gpdh(1, m_x, m_xi, m_t, n_par, param)
-                - gpdh(1, -m_x, m_xi, m_t, n_par, param);
-        uSea = gpdh(1, -m_x, m_xi, m_t, n_par, param);
+    uVal = gpdh(-1, m_x, m_xi, m_t, n_par, param);
+    uSea = gpdh(1, m_x, m_xi, m_t, n_par, param);
 
-        dVal = gpdh(2, m_x, m_xi, m_t, n_par, param)
-                - gpdh(2, -m_x, m_xi, m_t, n_par, param);
-        dSea = gpdh(2, -m_x, m_xi, m_t, n_par, param);
+    dVal = gpdh(-2, m_x, m_xi, m_t, n_par, param);
+    dSea = gpdh(2, m_x, m_xi, m_t, n_par, param);
 
-        sSea = gpdh(3, m_x, m_xi, m_t, n_par, param);
+    sSea = gpdh(3, m_x, m_xi, m_t, n_par, param);
 
-        uValMx = 0.;
-        dValMx = 0.;
-    } else {
-        g = gpdh(0, m_x, m_xi, m_t, n_par, param);
-
-        uVal = 0.;
-        uSea = gpdh(1, m_x, m_xi, m_t, n_par, param);
-
-        dVal = 0.;
-        dSea = gpdh(2, m_x, m_xi, m_t, n_par, param);
-
-        sSea = gpdh(3, m_x, m_xi, m_t, n_par, param);
-
-        uValMx = gpdh(1, -m_x, m_xi, m_t, n_par, param)
-                - gpdh(1, m_x, m_xi, m_t, n_par, param);
-        dValMx = gpdh(2, -m_x, m_xi, m_t, n_par, param)
-                - gpdh(2, m_x, m_xi, m_t, n_par, param);
-    }
+    uValMx = gpdh(-1, -m_x, m_xi, m_t, n_par, param);
+    dValMx = gpdh(-2, -m_x, m_xi, m_t, n_par, param);
 
     QuarkDistribution quarkDistribution_u(QuarkFlavor::UP);
     QuarkDistribution quarkDistribution_d(QuarkFlavor::DOWN);
@@ -147,37 +137,18 @@ PartonDistribution VinnikovModel::computeHt() {
 
     double g, uVal, uSea, dVal, dSea, sSea, uValMx, dValMx;
 
-    if (m_x > 0.) {
-        g = gpdh_pol(0, m_x, m_xi, m_t, n_par, param);
+    g = gpdh_pol(0, m_x, m_xi, m_t, n_par, param);
 
-        uVal = gpdh_pol(1, m_x, m_xi, m_t, n_par, param)
-                - gpdh_pol(1, -m_x, m_xi, m_t, n_par, param);
-        uSea = gpdh_pol(1, -m_x, m_xi, m_t, n_par, param);
+    uVal = gpdh_pol(-1, m_x, m_xi, m_t, n_par, param);
+    uSea = gpdh_pol(1, m_x, m_xi, m_t, n_par, param);
 
-        dVal = gpdh_pol(2, m_x, m_xi, m_t, n_par, param)
-                - gpdh_pol(2, -m_x, m_xi, m_t, n_par, param);
-        dSea = gpdh_pol(2, -m_x, m_xi, m_t, n_par, param);
+    dVal = gpdh_pol(-2, m_x, m_xi, m_t, n_par, param);
+    dSea = gpdh_pol(2, m_x, m_xi, m_t, n_par, param);
 
-        sSea = gpdh_pol(3, m_x, m_xi, m_t, n_par, param);
+    sSea = gpdh_pol(3, m_x, m_xi, m_t, n_par, param);
 
-        uValMx = 0.;
-        dValMx = 0.;
-    } else {
-        g = gpdh_pol(0, m_x, m_xi, m_t, n_par, param);
-
-        uVal = 0.;
-        uSea = gpdh_pol(1, m_x, m_xi, m_t, n_par, param);
-
-        dVal = 0.;
-        dSea = gpdh_pol(2, m_x, m_xi, m_t, n_par, param);
-
-        sSea = gpdh_pol(3, m_x, m_xi, m_t, n_par, param);
-
-        uValMx = gpdh(1, -m_x, m_xi, m_t, n_par, param)
-                - gpdh(1, m_x, m_xi, m_t, n_par, param);
-        dValMx = gpdh(2, -m_x, m_xi, m_t, n_par, param)
-                - gpdh(2, m_x, m_xi, m_t, n_par, param);
-    }
+    uValMx = gpdh_pol(-1, -m_x, m_xi, m_t, n_par, param);
+    dValMx = gpdh_pol(-2, -m_x, m_xi, m_t, n_par, param);
 
     QuarkDistribution quarkDistribution_u(QuarkFlavor::UP);
     QuarkDistribution quarkDistribution_d(QuarkFlavor::DOWN);
@@ -311,7 +282,7 @@ double VinnikovModel::dd1(int const i_part, double const beta, double const x,
     if (0 == i_part)
         prof_b = param[0];
     else
-        prof_b = param[n_par * (i_part + 2)];
+        prof_b = param[n_par * (abs(i_part) + 2)];
 
     if (alpha >= (1.0 - beta)) {
         if ((alpha + beta - 1.0) > EPS_BETR)
@@ -330,21 +301,25 @@ double VinnikovModel::dd1(int const i_part, double const beta, double const x,
 
     if (0 == i_part)
         return pf * glu(beta, t);
+    if (-1 == i_part)
+        return 0.;
     if (1 == i_part)
         return -pf * usea(beta, t);
+    if (-2 == i_part)
+        return 0.;
     if (2 == i_part)
         return -pf * dsea(beta, t);
     if (3 == i_part)
         return -pf * ssea(beta, t);
 
-    printf("dd1 (gpdh.c): WARNING3, ipart = %5d !={0,1,2,3}", i_part);
+    printf("dd1 (gpdh.c): WARNING3, ipart = %5d !={0,-1,1,-2,2,3}", i_part);
     return 0.0;
 }
 
 double VinnikovModel::dd2(int const i_part, double const beta, double const x,
         double const xi, double const t, int const n_par, double* const param) {
-    double prof_b_val = param[n_par * i_part];
-    double prof_b_sea = param[n_par * (i_part + 2)];
+    double prof_b_val = param[n_par * abs(i_part)];
+    double prof_b_sea = param[n_par * (abs(i_part) + 2)];
 
     double alpha1 = (x + beta) / xi;
     double alpha2 = (x - beta) / xi;
@@ -381,23 +356,29 @@ double VinnikovModel::dd2(int const i_part, double const beta, double const x,
     if (0 == i_part)
         return (pf2_val + pf1_val) * glu(beta, t);
 
+    if (-1 == i_part)
+        return pf2_val * uval(beta, t);
+
     if (1 == i_part)
-        return (pf2_sea - pf1_sea) * usea(beta, t) + pf2_val * uval(beta, t);
+        return (pf2_sea - pf1_sea) * usea(beta, t);
+
+    if (-2 == i_part)
+        return pf2_val * dval(beta, t);
 
     if (2 == i_part)
-        return (pf2_sea - pf1_sea) * dsea(beta, t) + pf2_val * dval(beta, t);
+        return (pf2_sea - pf1_sea) * dsea(beta, t);
 
     if (3 == i_part)
         return (pf2_sea - pf1_sea) * ssea(beta, t);
 
-    printf("dd2 (gpdh.c): WARNING5, ipart = %5d !={0,1,2,3}", i_part);
+    printf("dd2 (gpdh.c): WARNING5, ipart = %5d !={0,-1,1,-2,2,3}", i_part);
     return 0.0;
 }
 
 double VinnikovModel::dd3(int const i_part, double const beta, double const x,
         double const xi, double const t, int const n_par, double* const param) {
-    double prof_b_val = param[n_par * i_part];
-    double prof_b_sea = param[n_par * (i_part + 2)];
+    double prof_b_val = param[n_par * abs(i_part)];
+    double prof_b_sea = param[n_par * (abs(i_part) + 2)];
 
     double alpha = (x - beta) / xi;
 
@@ -420,16 +401,22 @@ double VinnikovModel::dd3(int const i_part, double const beta, double const x,
     if (0 == i_part)
         return pf_val * glu(beta, t);
 
+    if (-1 == i_part)
+        return pf_val * uval(beta, t);
+
     if (1 == i_part)
-        return pf_val * uval(beta, t) + pf_sea * usea(beta, t);
+        return pf_sea * usea(beta, t);
+
+    if (-2 == i_part)
+        return pf_val * dval(beta, t);
 
     if (2 == i_part)
-        return pf_val * dval(beta, t) + pf_sea * dsea(beta, t);
+        return pf_sea * dsea(beta, t);
 
     if (3 == i_part)
         return pf_sea * ssea(beta, t);
 
-    printf("dd3 (gpdh.c): WARNING3, ipart = %5d !={0,1,2,3}", i_part);
+    printf("dd3 (gpdh.c): WARNING3, ipart = %5d !={0,-1,1,-2,2,3}", i_part);
     return 0.0;
 }
 
@@ -665,7 +652,7 @@ double VinnikovModel::dd1_pol(int const i_part, double const beta,
         double const x, double const xi, double const t, int const n_par,
         double* const param) {
     double alpha = (x + beta) / xi;
-    double prof_b = param[n_par * i_part];
+    double prof_b = param[n_par * abs(i_part)];
 
     if (alpha >= (1.0 - beta)) {
         if ((alpha + beta - 1.0) > EPS_BETR)
@@ -686,22 +673,27 @@ double VinnikovModel::dd1_pol(int const i_part, double const beta,
 
     if (0 == i_part)
         return -pf * glu_pol(beta, t);
+    if (-1 == i_part)
+        return 0.;
     if (1 == i_part)
         return pf * usea_pol(beta, t);
+    if (-2 == i_part)
+        return 0.;
     if (2 == i_part)
         return pf * dsea_pol(beta, t);
     if (3 == i_part)
         return pf * ssea_pol(beta, t);
 
-    printf("dd1_pol (gpdh_pol.c): WARNING3, ipart = %5d !={0,1,2,3}", i_part);
+    printf("dd1_pol (gpdh_pol.c): WARNING3, ipart = %5d !={0,-1,1,-2,2,3}",
+            i_part);
     return 0.0;
 }
 
 double VinnikovModel::dd2_pol(int const i_part, double const beta,
         double const x, double const xi, double const t, int const n_par,
         double* const param) {
-    double prof_b_val = param[n_par * i_part];
-    double prof_b_sea = param[n_par * (i_part + 2)];
+    double prof_b_val = param[n_par * abs(i_part)];
+    double prof_b_sea = param[n_par * (abs(i_part) + 2)];
 
     double alpha1 = (x + beta) / xi;
     double alpha2 = (x - beta) / xi;
@@ -742,26 +734,31 @@ double VinnikovModel::dd2_pol(int const i_part, double const beta,
     if (0 == i_part)
         return (pf2_val - pf1_val) * glu_pol(beta, t);
 
+    if (-1 == i_part)
+        return pf2_val * uval_pol(beta, t);
+
     if (1 == i_part)
-        return (pf2_sea + pf1_sea) * usea_pol(beta, t)
-                + pf2_val * uval_pol(beta, t);
+        return (pf2_sea + pf1_sea) * usea_pol(beta, t);
+
+    if (-2 == i_part)
+        return pf2_val * dval_pol(beta, t);
 
     if (2 == i_part)
-        return (pf2_sea + pf1_sea) * dsea_pol(beta, t)
-                + pf2_val * dval_pol(beta, t);
+        return (pf2_sea + pf1_sea) * dsea_pol(beta, t);
 
     if (3 == i_part)
         return (pf2_sea + pf1_sea) * ssea_pol(beta, t);
 
-    printf("dd2_pol (gpdh_pol.c): WARNING5, ipart = %5d !={0,1,2,3}", i_part);
+    printf("dd2_pol (gpdh_pol.c): WARNING5, ipart = %5d !={0,-1,1,-2,2,3}",
+            i_part);
     return 0.0;
 }
 
 double VinnikovModel::dd3_pol(int const i_part, double const beta,
         double const x, double const xi, double const t, int const n_par,
         double* const param) {
-    double prof_b_val = param[n_par * i_part];
-    double prof_b_sea = param[n_par * (i_part + 2)];
+    double prof_b_val = param[n_par * abs(i_part)];
+    double prof_b_sea = param[n_par * (abs(i_part) + 2)];
 
     double alpha = (x - beta) / xi;
 
@@ -786,16 +783,23 @@ double VinnikovModel::dd3_pol(int const i_part, double const beta,
     if (0 == i_part)
         return pf_val * glu_pol(beta, t);
 
+    if (-1 == i_part)
+        return pf_val * uval_pol(beta, t);
+
     if (1 == i_part)
-        return pf_val * uval_pol(beta, t) + pf_sea * usea_pol(beta, t);
+        return pf_sea * usea_pol(beta, t);
+
+    if (-2 == i_part)
+        return pf_val * dval_pol(beta, t);
 
     if (2 == i_part)
-        return pf_val * dval_pol(beta, t) + pf_sea * dsea_pol(beta, t);
+        return pf_sea * dsea_pol(beta, t);
 
     if (3 == i_part)
         return pf_sea * ssea_pol(beta, t);
 
-    printf("dd3_pol (gpdh_pol.c): WARNING3, ipart = %5d !={0,1,2,3}", i_part);
+    printf("dd3_pol (gpdh_pol.c): WARNING3, ipart = %5d !={0,-1,1,-2,2,3}",
+            i_part);
     return 0.0;
 }
 
