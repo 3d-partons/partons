@@ -226,13 +226,8 @@ PartonDistribution GK11Model::computeH() {
 
 // u and d quarks, valence + sea parts
 
-    if (m_x > 0.) {
-        quarkDistribution_u.setQuarkDistribution(uVal + uSea);
-        quarkDistribution_d.setQuarkDistribution(dVal + dSea);
-    } else {
-        quarkDistribution_u.setQuarkDistribution(-uSea);
-        quarkDistribution_d.setQuarkDistribution(-dSea);
-    }
+    quarkDistribution_u.setQuarkDistribution(uVal + uSea);
+    quarkDistribution_d.setQuarkDistribution(dVal + dSea);
 
 // H, charge singlet
 
@@ -358,13 +353,8 @@ PartonDistribution GK11Model::computeHt() {
 
 // u and d quarks, valence + sea parts
 
-    if (m_x > 0.) {
-        quarkDistribution_u.setQuarkDistribution(uVal + uSea);
-        quarkDistribution_d.setQuarkDistribution(dVal + dSea);
-    } else {
-        quarkDistribution_u.setQuarkDistribution(-uSea);
-        quarkDistribution_d.setQuarkDistribution(-dSea);
-    }
+    quarkDistribution_u.setQuarkDistribution(uVal + uSea);
+    quarkDistribution_d.setQuarkDistribution(dVal + dSea);
 
     // Set Htq(+)
     quarkDistribution_u.setQuarkDistributionPlus(uVal + fHtuValMx);
@@ -456,13 +446,8 @@ PartonDistribution GK11Model::computeE() {
 
 // u and d quarks, valence + sea parts
 
-    if (m_x > 0.) {
-        quarkDistribution_u.setQuarkDistribution(uVal + uSea);
-        quarkDistribution_d.setQuarkDistribution(dVal + dSea);
-    } else {
-        quarkDistribution_u.setQuarkDistribution(-uSea);
-        quarkDistribution_d.setQuarkDistribution(-dSea);
-    }
+    quarkDistribution_u.setQuarkDistribution(uVal + uSea);
+    quarkDistribution_d.setQuarkDistribution(dVal + dSea);
 
     // Set Eq(+)
     quarkDistribution_u.setQuarkDistributionPlus(uVal - fEuValMx + 2 * uSea);
@@ -548,13 +533,8 @@ PartonDistribution GK11Model::computeEt() {
 
 // u and d quarks, valence + sea parts
 
-    if (m_x > 0.) {
-        quarkDistribution_u.setQuarkDistribution(uVal + uSea);
-        quarkDistribution_d.setQuarkDistribution(dVal + dSea);
-    } else {
-        quarkDistribution_u.setQuarkDistribution(-uSea);
-        quarkDistribution_d.setQuarkDistribution(-dSea);
-    }
+    quarkDistribution_u.setQuarkDistribution(uVal + uSea);
+    quarkDistribution_d.setQuarkDistribution(dVal + dSea);
 
     // Set Etq(+)
     quarkDistribution_u.setQuarkDistributionPlus(uVal + fEtuValMx);
