@@ -6,6 +6,7 @@
 #include <map>
 #include <stdexcept>
 #include <utility>
+#include <vector>
 
 #include "../../../../../include/partons/beans/gpd/GPDResult.h"
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
@@ -409,27 +410,32 @@ std::complex<double> DVCSCFFModel::computeIntegralsV() {
 
     // Quark sector
 
+    std::vector<double> emptyParameters;
+
     IntegralRealPartKernelQuark1 = m_mathIntegrator.integrateWithROOT(this,
-            &DVCSCFFModel::ConvolReKernelQuark1V, 0., +m_xi);
+            &DVCSCFFModel::ConvolReKernelQuark1V, 0., +m_xi, emptyParameters);
 
     IntegralRealPartKernelQuark2 = m_mathIntegrator.integrateWithROOT(this,
-            &DVCSCFFModel::ConvolReKernelQuark2V, +m_xi, +1);
+            &DVCSCFFModel::ConvolReKernelQuark2V, +m_xi, +1, emptyParameters);
 
     IntegralImaginaryPartKernelQuark = m_mathIntegrator.integrateWithROOT(this,
-            &DVCSCFFModel::ConvolImKernelQuarkV, +m_xi, +1);
+            &DVCSCFFModel::ConvolImKernelQuarkV, +m_xi, +1, emptyParameters);
 
     // Gluon sector
 
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
 
         IntegralRealPartKernelGluon1 = m_mathIntegrator.integrateWithROOT(this,
-                &DVCSCFFModel::ConvolReKernelGluon1V, 0., +m_xi);
+                &DVCSCFFModel::ConvolReKernelGluon1V, 0., +m_xi,
+                emptyParameters);
 
         IntegralRealPartKernelGluon2 = m_mathIntegrator.integrateWithROOT(this,
-                &DVCSCFFModel::ConvolReKernelGluon2V, +m_xi, +1);
+                &DVCSCFFModel::ConvolReKernelGluon2V, +m_xi, +1,
+                emptyParameters);
 
         IntegralImaginaryPartKernelGluon = m_mathIntegrator.integrateWithROOT(
-                this, &DVCSCFFModel::ConvolImKernelGluonV, +m_xi, +1);
+                this, &DVCSCFFModel::ConvolImKernelGluonV, +m_xi, +1,
+                emptyParameters);
     }
 
     // Compute Subtraction constants (different at LO or NLO)
@@ -508,26 +514,31 @@ std::complex<double> DVCSCFFModel::computeIntegralsA() {
 
     // Quark sector
 
+    std::vector<double> emptyParameters;
+
     IntegralRealPartKernelQuark1 = m_mathIntegrator.integrateWithROOT(this,
-            &DVCSCFFModel::ConvolReKernelQuark1A, 0., +m_xi);
+            &DVCSCFFModel::ConvolReKernelQuark1A, 0., +m_xi, emptyParameters);
 
     IntegralRealPartKernelQuark2 = m_mathIntegrator.integrateWithROOT(this,
-            &DVCSCFFModel::ConvolReKernelQuark2A, +m_xi, +1);
+            &DVCSCFFModel::ConvolReKernelQuark2A, +m_xi, +1, emptyParameters);
 
     IntegralImaginaryPartKernelQuark = m_mathIntegrator.integrateWithROOT(this,
-            &DVCSCFFModel::ConvolImKernelQuarkA, +m_xi, +1);
+            &DVCSCFFModel::ConvolImKernelQuarkA, +m_xi, +1, emptyParameters);
 
     // Gluon sector
 
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
         IntegralRealPartKernelGluon1 = m_mathIntegrator.integrateWithROOT(this,
-                &DVCSCFFModel::ConvolReKernelGluon1A, 0., +m_xi);
+                &DVCSCFFModel::ConvolReKernelGluon1A, 0., +m_xi,
+                emptyParameters);
 
         IntegralRealPartKernelGluon2 = m_mathIntegrator.integrateWithROOT(this,
-                &DVCSCFFModel::ConvolReKernelGluon2A, +m_xi, +1);
+                &DVCSCFFModel::ConvolReKernelGluon2A, +m_xi, +1,
+                emptyParameters);
 
         IntegralImaginaryPartKernelGluon = m_mathIntegrator.integrateWithROOT(
-                this, &DVCSCFFModel::ConvolImKernelGluonA, +m_xi, +1);
+                this, &DVCSCFFModel::ConvolImKernelGluonA, +m_xi, +1,
+                emptyParameters);
     }
 
     // Compute Subtraction constants (different at LO or NLO)

@@ -7,12 +7,22 @@
 
 #include "../../../../include/partons/modules/gpd/VGGModel.h"
 
-#include <stdio.h>
 #include <math.h>
+//#include <stdio.h>
+#include <map>
 #include <stdexcept>
+#include <string>
+#include <utility>
+#include <vector>
 
-#include "../../../../include/partons/utils/mstwpdf.h"
+#include "../../../../include/partons/beans/gpd/GPDType.h"
+#include "../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
+#include "../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
+#include "../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
+#include "../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
+#include "../../../../include/partons/utils/mstwpdf.h"
+#include "../../../../include/partons/utils/ParameterList.h"
 #include "../../../../include/partons/utils/PropertiesManager.h"
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
@@ -209,6 +219,7 @@ PartonDistribution VGGModel::computeH() {
 }
 
 PartonDistribution VGGModel::computeE() {
+    std::vector<double> emptyParameters;
 
     //GPD
     gpd_s5 = GPDType::E;
@@ -223,12 +234,12 @@ PartonDistribution VGGModel::computeE() {
     flavour_s5 = upv;
     uVal = kappa_u * offforward_distr()
             / m_mathIntegrator->integrateWithROOT(this,
-                    &VGGModel::int_mom2_up_valence_e, 0., 1.);
+                    &VGGModel::int_mom2_up_valence_e, 0., 1., emptyParameters);
 
     flavour_s5 = dnv;
     dVal = kappa_d * offforward_distr()
             / m_mathIntegrator->integrateWithROOT(this,
-                    &VGGModel::int_mom2_up_valence_e, 0., 1.);
+                    &VGGModel::int_mom2_up_valence_e, 0., 1., emptyParameters);
 
     uSea = 0.;
     dSea = 0.;
@@ -274,6 +285,7 @@ PartonDistribution VGGModel::computeE() {
 }
 
 double VGGModel::offforward_distr() {
+    std::vector<double> emptyParameters;
 
     //result
     double ofpd;
@@ -314,22 +326,26 @@ double VGGModel::offforward_distr() {
     if (x_s5 >= m_xi) {
 
         ofpd = m_mathIntegrator->integrateWithROOT(this, f_dist,
-                -(1. - x_s5) / (1. + m_xi), (1. - x_s5) / (1. - m_xi));
+                -(1. - x_s5) / (1. + m_xi), (1. - x_s5) / (1. - m_xi),
+                emptyParameters);
 
     } else if ((-m_xi < x_s5) && (x_s5 < m_xi)) {
 
         ofpd = m_mathIntegrator->integrateWithROOT(this, f_dist,
-                -(1. - x_s5) / (1. + m_xi), x_s5 / m_xi - eps_doubleint);
+                -(1. - x_s5) / (1. + m_xi), x_s5 / m_xi - eps_doubleint,
+                emptyParameters);
 
         if (flavour_s5 != upv && flavour_s5 != dnv) {
             ofpd -= m_mathIntegrator->integrateWithROOT(this, f_distMx,
-                    -(1. + x_s5) / (1. + m_xi), -x_s5 / m_xi - eps_doubleint);
+                    -(1. + x_s5) / (1. + m_xi), -x_s5 / m_xi - eps_doubleint,
+                    emptyParameters);
         }
 
     } else {
         if (flavour_s5 != upv && flavour_s5 != dnv) {
             ofpd = -m_mathIntegrator->integrateWithROOT(this, f_distMx,
-                    -(1. + x_s5) / (1. + m_xi), (1. + x_s5) / (1. - m_xi));
+                    -(1. + x_s5) / (1. + m_xi), (1. + x_s5) / (1. - m_xi),
+                    emptyParameters);
         } else {
             ofpd = 0.;
         }

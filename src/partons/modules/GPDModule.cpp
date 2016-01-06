@@ -1,5 +1,6 @@
 #include "../../../include/partons/modules/GPDModule.h"
 
+#include <cmath>
 #include <stdexcept>
 #include <utility>
 
@@ -67,6 +68,25 @@ void GPDModule::initModule() {
 //TODO implement
 void GPDModule::isModuleWellConfigured() {
     debug(__func__, Formatter() << "executed");
+
+    // Test variable range
+
+    if (fabs(m_x) > 1.) {
+        error(__func__,
+                "Longitudinal momentum fraction should be in [-1., +1.]");
+    }
+
+    if (m_xi > 1. || m_xi < 0.) {
+        error(__func__, "Skewness should be in [0., +1.]");
+    }
+
+    if (m_t > 0.) {
+        error(__func__, "Nucleon momentum transfer should be <= 0.");
+    }
+
+    if (m_MuF2 < 0.) {
+        error(__func__, "Square of factorization scale should be > 0.");
+    }
 }
 
 void GPDModule::preCompute(double x, double xi, double t, double MuF,

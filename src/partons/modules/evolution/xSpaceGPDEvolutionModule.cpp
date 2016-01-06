@@ -2,6 +2,7 @@
 
 #include <NumA/linear_algebra/vector/VectorD.h>
 #include <NumA/MathIntegrator.h>
+#include <vector>
 
 #include "../../../../include/partons/beans/active_flavors/NfInterval.h"
 
@@ -27,9 +28,12 @@ void xSpaceGPDEvolutionModule::isModuleWellConfigured() {
 double xSpaceGPDEvolutionModule::integratedNonSingletMuFDerivative(
         const NfInterval &nfInterval) {
 
+    std::vector<double> emptyParameters;
+
     return m_mathIntegrator.integrateWithROOT(this,
             &xSpaceGPDEvolutionModule::integrateNonSinglet,
-            nfInterval.getLowerBound(), nfInterval.getUpperBound());
+            nfInterval.getLowerBound(), nfInterval.getUpperBound(),
+            emptyParameters);
 }
 
 double xSpaceGPDEvolutionModule::integrateNonSinglet(double* variables,
@@ -46,9 +50,12 @@ double xSpaceGPDEvolutionModule::integrateNonSinglet(double* variables,
 double xSpaceGPDEvolutionModule::integratedSingletMuFDerivative(
         const NfInterval &nfInterval) {
 
+    std::vector<double> emptyParameters;
+
     return m_mathIntegrator.integrateWithROOT(this,
             &xSpaceGPDEvolutionModule::integrateSinglet,
-            nfInterval.getLowerBound(), nfInterval.getUpperBound());
+            nfInterval.getLowerBound(), nfInterval.getUpperBound(),
+            emptyParameters);
 }
 
 double xSpaceGPDEvolutionModule::integrateSinglet(double *variables,
@@ -66,9 +73,12 @@ double xSpaceGPDEvolutionModule::integrateSinglet(double *variables,
 double xSpaceGPDEvolutionModule::integratedGluonMuFDerivative(
         const NfInterval &nfInterval) {
 
+    std::vector<double> emptyParameters;
+
     return m_mathIntegrator.integrateWithROOT(this,
             &xSpaceGPDEvolutionModule::integrateGluon,
-            nfInterval.getLowerBound(), nfInterval.getUpperBound());
+            nfInterval.getLowerBound(), nfInterval.getUpperBound(),
+            emptyParameters);
 }
 
 double xSpaceGPDEvolutionModule::integrateGluon(double *variables,

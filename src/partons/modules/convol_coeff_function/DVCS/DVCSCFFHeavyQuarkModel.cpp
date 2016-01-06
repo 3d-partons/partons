@@ -3,6 +3,7 @@
 #include <NumA/MathIntegrator.h>
 #include <cmath>
 #include <stdexcept>
+#include <vector>
 
 #include "../../../../../include/partons/beans/gpd/GPDResult.h"
 #include "../../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
@@ -76,13 +77,17 @@ std::complex<double> DVCSCFFHeavyQuarkModel::computeIntegralsMassiveV() {
 
     // Gluon sector
 
+    std::vector<double> emptyParameters;
+
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
         IntegralRealPartMassive = m_mathIntegrator.integrateWithROOT(this,
-                &DVCSCFFHeavyQuarkModel::ConvolReKernelGluonMassiveV, 0., +1.);
+                &DVCSCFFHeavyQuarkModel::ConvolReKernelGluonMassiveV, 0., +1.,
+                emptyParameters);
     }
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
         IntegralImaginaryPartMassive = m_mathIntegrator.integrateWithROOT(this,
-                &DVCSCFFHeavyQuarkModel::ConvolImKernelGluonMassiveV, 0., +1.);
+                &DVCSCFFHeavyQuarkModel::ConvolImKernelGluonMassiveV, 0., +1.,
+                emptyParameters);
     }
 
     return std::complex<double>(IntegralRealPartMassive,
@@ -111,14 +116,18 @@ std::complex<double> DVCSCFFHeavyQuarkModel::computeIntegralsMassiveA() {
 
     // Gluon sector
 
+    std::vector<double> emptyParameters;
+
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
         IntegralRealPartMassive = m_mathIntegrator.integrateWithROOT(this,
-                &DVCSCFFHeavyQuarkModel::ConvolReKernelGluonMassiveA, 0., +1.);
+                &DVCSCFFHeavyQuarkModel::ConvolReKernelGluonMassiveA, 0., +1.,
+                emptyParameters);
     }
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
 
         IntegralImaginaryPartMassive = m_mathIntegrator.integrateWithROOT(this,
-                &DVCSCFFHeavyQuarkModel::ConvolImKernelGluonMassiveA, 0., +1.);
+                &DVCSCFFHeavyQuarkModel::ConvolImKernelGluonMassiveA, 0., +1.,
+                emptyParameters);
     }
 
     return std::complex<double>(IntegralRealPartMassive,

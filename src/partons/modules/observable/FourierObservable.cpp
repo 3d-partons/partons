@@ -16,6 +16,8 @@ FourierObservable::~FourierObservable() {
 
 //TODO check
 double FourierObservable::compute() {
+    std::vector<double> emptyParameters;
+
     return m_mathIntegrator.integrateWithROOT(this,
-            &FourierObservable::functionToIntegrate, 0., (2 * PI));
+            &FourierObservable::functionToIntegrate, 0., (2 * PI), emptyParameters);
 }
