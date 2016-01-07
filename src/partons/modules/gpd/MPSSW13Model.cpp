@@ -1364,7 +1364,7 @@ PartonDistribution MPSSW13Model::computeH() {
         Hg = Integrator.Integral(Beta1Mx, Beta2Mx);
     }
 
-    Hg += m_GluonDTerm;
+    //Hg += m_GluonDTerm;
     GluonDistribution gluonDistribution(Hg);
 
     //////////////////////////////////////////
