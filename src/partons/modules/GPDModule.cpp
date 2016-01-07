@@ -1,6 +1,6 @@
 #include "../../../include/partons/modules/GPDModule.h"
 
-#include <cmath>
+#include <math.h>
 #include <stdexcept>
 #include <utility>
 

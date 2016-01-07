@@ -2,25 +2,22 @@
 
 <project name="PARTONS">
 
-	<target name="clean">
-		<delete dir="build" />
-		<delete file="Makefile" />
-	</target>
+    <property name="build" location="${basedir}/build" />
 
-	<target name="QtSourceFileGenerator">
-		<java jar="/usr/local/QtSourceFileGenerator/QtSourceFileGenerator.jar" fork="true">
-			<arg value="${basedir}" />
-		</java>
-	</target>
+    <record name="${build}/build.log" loglevel="debug" action="start" />
 
-	<target name="qmake" depends="QtSourceFileGenerator">
-		<exec executable="qmake" failonerror="true" dir="${basedir}">
-		</exec>
-	</target>
+    <target name="clean">
+        <delete dir="${build}/CMakeFiles" />
+        <delete file="${build}/cmake_install.cmake" />
+        <delete file="${build}/Makefile" />
+    </target>
 
-	<target name="build" depends="qmake">
-		<exec executable="make" failonerror="true" dir="${basedir}">
-		</exec>
-	</target>
+    <target name="cmake">
+        <exec command="cmake -G&quot;Unix Makefiles&quot; ${basedir}" failonerror="true" dir="${build}" />
+    </target>
+
+    <target name="build" depends="cmake">
+        <exec executable="make" failonerror="true" dir="${build}" />
+    </target>
 
 </project>
