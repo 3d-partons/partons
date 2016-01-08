@@ -121,6 +121,14 @@ void DVCSCFFModel::isModuleWellConfigured() {
     if (m_qcdOrderType == PerturbativeQCDOrderType::UNDEFINED) {
         throw std::runtime_error("[DVCSCFFModel] QCDOrderType is UNDEFINED");
     }
+    if (m_qcdOrderType != PerturbativeQCDOrderType::LO
+            && m_qcdOrderType != PerturbativeQCDOrderType::NLO) {
+
+        error(__func__,
+                Formatter()
+                        << "Erroneous input, perturbative QCD order can only be LO or NLO. Here Order = "
+                        << PerturbativeQCDOrderType(m_qcdOrderType).toString());
+    }
     if (m_mathIntegrator.getIntegrationMode()
             == NumA::MathIntegrator::UNDEFINED) {
         throw std::runtime_error(
@@ -606,18 +614,7 @@ std::complex<double> DVCSCFFModel::KernelQuarkV(double x) {
     std::complex<double> quark(1. / (1. - z), 0.);
 
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
-
         quark += m_alphaSOver2Pi * KernelQuarkNLOV(x);
-
-        if (m_qcdOrderType != PerturbativeQCDOrderType::LO
-                && m_qcdOrderType != PerturbativeQCDOrderType::NLO) {
-
-            throw std::runtime_error(
-                    Formatter()
-                            << "[DVCSCFFModule::KernelQuarkV] Erroneous input, perturbative QCD order can only be LO or NLO. Here Order = "
-                            << PerturbativeQCDOrderType(m_qcdOrderType).toString());
-            //TODO throw an exception
-        }
     }
 
     return quark;
@@ -635,18 +632,7 @@ std::complex<double> DVCSCFFModel::KernelQuarkA(double x) {
     std::complex<double> quark(1. / (1. - z), 0.);
 
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
-
         quark += m_alphaSOver2Pi * KernelQuarkNLOA(x);
-
-        if (m_qcdOrderType != PerturbativeQCDOrderType::LO
-                && m_qcdOrderType != PerturbativeQCDOrderType::NLO) {
-
-            throw std::runtime_error(
-                    Formatter()
-                            << "[DVCSCFFModule::KernelQuarkA] Erroneous input, perturbative QCD order can only be LO or NLO. Here Order = "
-                            << PerturbativeQCDOrderType(m_qcdOrderType).toString());
-            //TODO throw an exception
-        }
     }
 
     return quark;
@@ -663,16 +649,7 @@ std::complex<double> DVCSCFFModel::KernelGluonV(double x) {
     std::complex<double> gluon(0., 0.);
 
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
-
         gluon += m_alphaSOver2Pi * KernelGluonNLOV(x);
-
-        if (m_qcdOrderType != PerturbativeQCDOrderType::LO
-                && m_qcdOrderType != PerturbativeQCDOrderType::NLO) {
-            Formatter()
-                    << "[DVCSCFFModule::KernelGluonV] Erroneous input, perturbative QCD order can only be LO or NLO. Here Order = "
-                    << PerturbativeQCDOrderType(m_qcdOrderType).toString();
-            //TODO throw an exception
-        }
     }
 
     return gluon;
@@ -683,16 +660,7 @@ std::complex<double> DVCSCFFModel::KernelGluonA(double x) {
     std::complex<double> gluon(0., 0.);
 
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
-
         gluon += m_alphaSOver2Pi * KernelGluonNLOA(x);
-
-        if (m_qcdOrderType != PerturbativeQCDOrderType::LO
-                && m_qcdOrderType != PerturbativeQCDOrderType::NLO) {
-            Formatter()
-                    << "[DVCSCFFModule::KernelGluonA] Erroneous input, perturbative QCD order can only be LO or NLO. Here Order = "
-                    << PerturbativeQCDOrderType(m_qcdOrderType).toString();
-            //TODO throw an exception
-        }
     }
 
     return gluon;
