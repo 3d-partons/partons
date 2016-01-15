@@ -17,6 +17,7 @@
 #include "../../../include/partons/utils/stringUtils/Formatter.h"
 #include "../../../include/partons/utils/stringUtils/StringUtils.h"
 #include "../../../include/partons/utils/test/report/observable/ObservableResultListReport.h"
+#include "../../../include/partons/utils/thread/Packet.h"
 
 const std::string ObservableService::FUNCTION_NAME_COMPUTE_DVCS_OBSERVABLE =
         "computeDVCSObservable";
@@ -80,29 +81,34 @@ ObservableResult ObservableService::computeDVCSObservable(
             pDVCSConvolCoeffFunctionModule);
     pObservable->setDVCSModule(pDVCSModule);
 
-    return pObservable->compute(observableKinematic.getXB(),
-            observableKinematic.getT(), observableKinematic.getQ2(),
-            observableKinematic.getPhi());
+    return pObservable->compute(observableKinematic);
 }
 
 ResultList<ObservableResult> ObservableService::computeManyKinematicOneModel(
         const List<ObservableKinematic> & listOfKinematic,
         DVCSModule* pDVCSModule, Observable* pObservable,
-        DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule) const {
-
-    info(__func__,
-            Formatter() << listOfKinematic.size()
-                    << " kinematics will be computed with "
-                    << pDVCSModule->getClassName());
-    info(__func__, Formatter() << "Computing ...");
+        DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule) {
 
     ResultList<ObservableResult> results;
 
+    pDVCSModule->setDVCSConvolCoeffFunctionModule(
+            pDVCSConvolCoeffFunctionModule);
+    pObservable->setDVCSModule(pDVCSModule);
+
+    List<Packet> listOfPacket;
+
     for (unsigned int i = 0; i != listOfKinematic.size(); i++) {
-        results.add(
-                computeDVCSObservable(pDVCSModule, pObservable,
-                        listOfKinematic[i], pDVCSConvolCoeffFunctionModule));
+        Packet packet;
+        ObservableKinematic obsK;
+        obsK = listOfKinematic[i];
+        packet << obsK;
+        listOfPacket.add(packet);
     }
+
+    addTasks(listOfPacket);
+
+    initComputationalThread(pObservable);
+    launchAllThreadAndWaitingFor();
 
     return results;
 }

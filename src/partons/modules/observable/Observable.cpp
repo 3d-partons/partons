@@ -1,11 +1,15 @@
 #include "../../../../include/partons/modules/observable/Observable.h"
 
-#include "../../../../include/partons/beans/observable/ObservableKinematic.h"
+#include <unistd.h>
+
 #include "../../../../include/partons/beans/observable/ObservableResult.h"
 #include "../../../../include/partons/modules/ProcessModule.h"
+#include "../../../../include/partons/services/ObservableService.h"
+#include "../../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../../include/partons/utils/math/MathUtils.h"
 #include "../../../../include/partons/utils/ParameterList.h"
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
+#include "../../../../include/partons/utils/thread/Packet.h"
 
 Observable::Observable(const std::string &className) :
         BaseObject(className), m_channel(ObservableChannel::UNDEFINED), m_beamHelicity(
@@ -30,6 +34,39 @@ Observable::Observable(const Observable& other) :
 }
 
 Observable::~Observable() {
+}
+
+void* Observable::run() {
+
+    // Retrieve Observable service
+    ObservableService* pObservableService =
+            ServiceObjectRegistry::getObservableService();
+
+    while (!(pObservableService->isEmptyTaskQueue())) {
+        ObservableKinematic observableKinematic;
+        Packet packet = pObservableService->popTaskFormQueue();
+        packet >> observableKinematic;
+
+        ObservableResult result = compute(observableKinematic);
+
+        info(__func__,
+                Formatter() << "[Thread] id = " << getThreadId() << " "
+                        << result.toString());
+
+        //TODO replace by standard sleep ; multiplatform
+        usleep(30000);
+    }
+
+    info(__func__,
+            Formatter() << "[Thread] id = " << getThreadId()
+                    << " empty task list, terminated.");
+
+    return 0;
+}
+
+ObservableResult Observable::compute(const ObservableKinematic &kinematic) {
+    return compute(kinematic.getXB(), kinematic.getT(), kinematic.getQ2(),
+            kinematic.getPhi());
 }
 
 ObservableResult Observable::compute(double xB, double t, double Q2,

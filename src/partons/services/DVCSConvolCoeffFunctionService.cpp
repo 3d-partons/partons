@@ -9,6 +9,7 @@
 #include "../../../include/partons/utils/ParameterList.h"
 #include "../../../include/partons/utils/stringUtils/Formatter.h"
 #include "../../../include/partons/utils/stringUtils/StringUtils.h"
+
 //#include "../beans/List.h"
 
 const std::string DVCSConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_WITH_GPD_MODEL =
@@ -77,9 +78,7 @@ DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionService::computeWithGPDMode
     dvcsConvolCoeffFunctionModule->setGPDModule(_pGPDModule);
 
     DVCSConvolCoeffFunctionResult result =
-            dvcsConvolCoeffFunctionModule->compute(kinematic.getXi(),
-                    kinematic.getT(), kinematic.getQ2(), kinematic.getMuF2(),
-                    kinematic.getMuR2(), gpdType);
+            dvcsConvolCoeffFunctionModule->compute(kinematic, gpdType);
 
     return result;
 }

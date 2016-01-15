@@ -134,6 +134,10 @@ public:
         return reportList;
     }
 
+    void clear() {
+        m_data.clear();
+    }
+
 protected:
     std::vector<T> m_data;
 };

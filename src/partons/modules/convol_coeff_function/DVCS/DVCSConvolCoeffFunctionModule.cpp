@@ -3,7 +3,6 @@
 #include <stdexcept>
 #include <utility>
 
-#include "../../../../../include/partons/beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "../../../../../include/partons/beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
 #include "../../../../../include/partons/modules/active_flavors/NfFunctionExample.h"
 #include "../../../../../include/partons/modules/GPDModule.h"
@@ -119,6 +118,13 @@ void DVCSConvolCoeffFunctionModule::isModuleWellConfigured() {
     if (m_pNfConvolCoeffFunction == 0) {
         throwException(__func__, "m_pNfConvolCoeffFunction is NULL");
     }
+}
+
+DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionModule::compute(
+        const DVCSConvolCoeffFunctionKinematic &kinematic,
+        GPDType::Type gpdType) {
+    return compute(kinematic.getXi(), kinematic.getT(), kinematic.getQ2(),
+            kinematic.getMuF2(), kinematic.getMuR2(), gpdType);
 }
 
 DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionModule::compute(

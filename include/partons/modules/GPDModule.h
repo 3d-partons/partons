@@ -14,6 +14,7 @@
 #include <map>
 #include <string>
 
+#include "../beans/gpd/GPDKinematic.h"
 #include "../beans/gpd/GPDType.h"
 #include "../beans/parton_distribution/PartonDistribution.h"
 #include "../ModuleObject.h"
@@ -58,6 +59,9 @@ public:
      * @param parameters
      */
     void virtual configure(ParameterList parameters);
+
+    virtual GPDResult compute(const GPDKinematic &kinematic,
+            GPDType::Type gpdType, bool evolution = false);
 
     /**
      * Virtual method, computes GPD with some input parameters.

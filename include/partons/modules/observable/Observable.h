@@ -16,12 +16,14 @@
 #include <string>
 
 #include "../../beans/observable/ObservableChannel.h"
+#include "../../beans/observable/ObservableKinematic.h"
 #include "../../beans/observable/ObservableType.h"
+#include "../../utils/thread/Thread.h"
 #include "../process/DVCSModule.h"
 
 class ObservableResult;
 
-class Observable: public BaseObject {
+class Observable: public BaseObject, public Thread {
 
 public:
     Observable(const std::string &className);
@@ -49,9 +51,13 @@ public:
 
     double beamCharge, NumA::Vector3D targetPolarization);
 
+    ObservableResult compute(const ObservableKinematic &kinematic);
+
     ObservableResult compute(double xB, double t, double Q2, double phi);
 
     virtual double compute(ProcessModule* pDVCSModule, double phi);
+
+    virtual void* run();
 
 // ##### GETTERS & SETTERS #####
 
@@ -65,7 +71,6 @@ public:
     void setDVCSModule(ProcessModule* pDVCSModule);
 
 protected:
-
     /**
      * Copy constructor
      *

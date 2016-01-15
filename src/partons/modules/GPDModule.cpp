@@ -4,7 +4,6 @@
 #include <stdexcept>
 #include <utility>
 
-#include "../../../include/partons/beans/gpd/GPDKinematic.h"
 #include "../../../include/partons/beans/gpd/GPDResult.h"
 #include "../../../include/partons/modules/evolution/GPDEvolutionModule.h"
 #include "../../../include/partons/utils/GenericType.h"
@@ -108,6 +107,12 @@ void GPDModule::preCompute(double x, double xi, double t, double MuF,
 
     // execute last child function (virtuality)
     isModuleWellConfigured();
+}
+
+GPDResult GPDModule::compute(const GPDKinematic &kinematic,
+        GPDType::Type gpdType, bool evolution) {
+    return compute(kinematic.getX(), kinematic.getXi(), kinematic.getT(),
+            kinematic.getMuF2(), kinematic.getMuR2(), gpdType, evolution);
 }
 
 GPDResult GPDModule::compute(double x, double xi, double t, double MuF2,

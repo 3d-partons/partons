@@ -16,6 +16,7 @@
 #include <map>
 #include <string>
 
+#include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "../../../beans/gpd/GPDType.h"
 #include "../../../beans/PerturbativeQCDOrderType.h"
 #include "../../ConvolCoeffFunctionModule.h"
@@ -41,6 +42,10 @@ public:
     virtual void init();
 
     virtual void configure(ParameterList parameters);
+
+    virtual DVCSConvolCoeffFunctionResult compute(
+            const DVCSConvolCoeffFunctionKinematic &kinematic,
+            GPDType::Type gpdType);
 
     virtual DVCSConvolCoeffFunctionResult compute(double xi, double t,
             double Q2, double MuF2, double MuR2, GPDType::Type gpdType);

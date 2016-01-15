@@ -172,9 +172,7 @@ GPDResult GPDService::computeGPDModelRestrictedByGPDType(
         const GPDKinematic &gpdKinematic, GPDModule* pGPDModule,
         GPDType::Type gpdType) const {
 
-    GPDResult gpdResult = pGPDModule->compute(gpdKinematic.getX(),
-            gpdKinematic.getXi(), gpdKinematic.getT(), gpdKinematic.getMuF2(),
-            gpdKinematic.getMuR2(), gpdType);
+    GPDResult gpdResult = pGPDModule->compute(gpdKinematic, gpdType);
 
     return gpdResult;
 }

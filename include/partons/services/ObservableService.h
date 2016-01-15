@@ -51,7 +51,7 @@ public:
     ResultList<ObservableResult> computeManyKinematicOneModel(
             const List<ObservableKinematic> & listOfKinematic,
             DVCSModule* pDVCSModule, Observable* pObservable,
-            DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule) const;
+            DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule);
 
     ObservableResultListReport compareResultList(
             const ResultList<ObservableResult> &resultList_01,

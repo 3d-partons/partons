@@ -3,7 +3,7 @@
 
 /**
  * @file Thread.h
- * @author Bryan BERTHOu (CEA Saclay)
+ * @author Bryan BERTHOU (CEA Saclay)
  * @author <contibutor> http://vichargrave.com/java-style-thread-class-in-c/
  * @date 10 September 2014
  *
@@ -26,15 +26,18 @@ public:
 
     int start();
 
+    //TODO change it or suppress it
+    virtual Thread* clone() const;
+
     /**
      * Main function executed by the thread
      */
-    virtual void* run() = 0;
+    virtual void* run();
 
     pthread_t getThreadId();
 
 private:
-    pthread_attr_t attr;
+    pthread_attr_t m_attr;
     pthread_t m_tid;
     int m_running;
     int m_detached;

@@ -20,13 +20,18 @@
 
 #include <string>
 
-#include "BaseObject.h"
+#include "beans/List.h"
+#include "utils/thread/Packet.h"
+#include "utils/thread/ThreadManager.h"
+#include "utils/thread/ThreadQueue.h"
 
+class Thread;
+
+class ThreadQueue;
 class Task;
 
 class ServiceObject: public BaseObject {
 public:
-
     ServiceObject(const std::string &className);
 
     /**
@@ -35,6 +40,21 @@ public:
     virtual ~ServiceObject();
 
     virtual void computeTask(Task &task) = 0;
+
+    void addTasks(const List<Packet> &tasks);
+
+    bool isEmptyTaskQueue() const;
+
+    Packet popTaskFormQueue();
+
+    void initComputationalThread(Thread* pModuleObject);
+
+    void launchAllThreadAndWaitingFor();
+
+private:
+    ThreadQueue m_queueOfTask;
+
+    ThreadManager m_threadManager;
 };
 
 #endif /* SERVICE_OBJECT_H */

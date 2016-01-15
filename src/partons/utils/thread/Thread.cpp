@@ -1,4 +1,4 @@
-#include "../../../../include/partons/utils/logger/Thread.h"
+#include "../../../../include/partons/utils/thread/Thread.h"
 
 #include <stddef.h>
 
@@ -19,10 +19,14 @@ Thread::~Thread() {
     }
 }
 
+Thread* Thread::clone() const {
+    return new Thread(*this);
+}
+
 int Thread::start() {
     // Initialize and set thread joinable
-    pthread_attr_init(&attr);
-    pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
+    pthread_attr_init(&m_attr);
+    pthread_attr_setdetachstate(&m_attr, PTHREAD_CREATE_JOINABLE);
 
     int result = pthread_create(&m_tid, NULL, runThread, this);
     if (result == 0) {
@@ -30,11 +34,16 @@ int Thread::start() {
     }
 
     // free attribute
-    pthread_attr_destroy(&attr);
+    pthread_attr_destroy(&m_attr);
 
     return result;
 }
 
 pthread_t Thread::getThreadId() {
     return m_tid;
+}
+
+void* Thread::run() {
+    //TODO throw exception : must be implemented in daugther class
+    return 0;
 }

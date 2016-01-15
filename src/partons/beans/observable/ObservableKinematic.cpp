@@ -7,6 +7,7 @@
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
 #include "../../../../include/partons/utils/stringUtils/StringUtils.h"
 #include "../../../../include/partons/utils/test/ComparisonReport.h"
+#include "../../../../include/partons/utils/thread/Packet.h"
 
 const std::string ObservableKinematic::PARAMETER_NAME_XB = "xB";
 const std::string ObservableKinematic::PARAMETER_NAME_T = "t";
@@ -144,4 +145,25 @@ double ObservableKinematic::getPhi() const {
 
 void ObservableKinematic::setPhi(double phi) {
     m_phi = phi;
+}
+
+void ObservableKinematic::serialize(Packet &packet) const {
+    packet << m_xB << m_t << m_Q2 << m_phi;
+}
+
+void ObservableKinematic::unserialize(Packet &packet) {
+    packet >> m_xB;
+    packet >> m_t;
+    packet >> m_Q2;
+    packet >> m_phi;
+}
+
+Packet& operator <<(Packet& packet, ObservableKinematic& observableKinematic) {
+    observableKinematic.serialize(packet);
+    return packet;
+}
+Packet& operator >>(Packet& packet, ObservableKinematic& observableKinematic) {
+
+    observableKinematic.unserialize(packet);
+    return packet;
 }

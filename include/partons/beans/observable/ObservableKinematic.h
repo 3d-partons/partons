@@ -16,6 +16,8 @@
 
 #include "../Kinematic.h"
 
+class Packet;
+
 class ComparisonReport;
 class ParameterList;
 class Tolerances;
@@ -75,6 +77,9 @@ public:
     double getPhi() const;
     void setPhi(double phi);
 
+    void serialize(Packet &packet) const;
+    void unserialize(Packet &packet);
+
 private:
     // TODO : What do we do when we consider Fourier harmonics of DVCS observables?
     double m_xB;    ///< Bjorken variable
@@ -82,5 +87,8 @@ private:
     double m_Q2;  ///< Virtuality of the photon in Born approximation (in GeV^2)
     double m_phi; ///<  Angle between leptonic and hadronic planes (in degrees, Trento convention)
 };
+
+Packet& operator <<(Packet& packet, ObservableKinematic& observableKinematic);
+Packet& operator >>(Packet& packet, ObservableKinematic& observableKinematic);
 
 #endif /* OBSERVABLE_KINEMATIC_H */

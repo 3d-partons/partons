@@ -17,11 +17,11 @@
 #include <queue>
 #include <string>
 
+#include "../thread/Thread.h"
 #include "LoggerClassLevel.h"
 #include "LoggerLevel.h"
 #include "LoggerMessage.h"
 #include "LoggerPrintMode.h"
-#include "Thread.h"
 
 //TODO relatif folder for configFile
 
