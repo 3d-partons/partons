@@ -97,7 +97,7 @@ double c_mstwpdf::xx[nx + 1];
 
 double c_mstwpdf::qq[nq + 1];
 
-c_mstwpdf::c_mstwpdf(string filename, bool warn_in, bool fatal_in)
+c_mstwpdf::c_mstwpdf(std::string filename, bool warn_in, bool fatal_in)
 // The constructor: this will initialise the functions automatically.
         {
     int i, n, m, k, l, j; // counters
@@ -263,11 +263,12 @@ c_mstwpdf::c_mstwpdf(string filename, bool warn_in, bool fatal_in)
     // cout << "Reading PDF grid from " << filename << endl;
 //  cout << "." << flush ;
 
-    ifstream data_file;
+    std::ifstream data_file;
     data_file.open(filename.c_str());
 
     if (data_file.fail()) {
-        cerr << "Error in c_mstwpdf::c_mstwpdf opening " << filename << endl;
+        std::cerr << "Error in c_mstwpdf::c_mstwpdf opening " << filename
+                << std::endl;
         exit(-1);
     }
 
@@ -300,8 +301,8 @@ c_mstwpdf::c_mstwpdf(string filename, bool warn_in, bool fatal_in)
     // Check that the heavy quark masses are sensible.
     // Redistribute grid points if not in usual range.
     if (mc2 <= qq[1] || mc2 + eps >= qq[8]) {
-        cerr << "Error in c_mstwpdf::c_mstwpdf: invalid mCharm = " << mCharm
-                << endl;
+        std::cerr << "Error in c_mstwpdf::c_mstwpdf: invalid mCharm = "
+                << mCharm << std::endl;
         exit(-1);
     } else if (mc2 < qq[2]) {
         nqc0 = 2;
@@ -321,8 +322,8 @@ c_mstwpdf::c_mstwpdf(string filename, bool warn_in, bool fatal_in)
         qq[5] = qq[7];
     }
     if (mb2 <= qq[12] || mb2 + eps >= qq[17]) {
-        cerr << "Error in c_mstwpdf::c_mstwpdf: invalid mBottom = " << mBottom
-                << endl;
+        std::cerr << "Error in c_mstwpdf::c_mstwpdf: invalid mBottom = "
+                << mBottom << std::endl;
         exit(-1);
     } else if (mb2 < qq[13]) {
         nqb0 = 13;
@@ -342,8 +343,8 @@ c_mstwpdf::c_mstwpdf(string filename, bool warn_in, bool fatal_in)
     // with future grids where, for example, a photon distribution
     // might be provided (cf. the MRST2004QED PDFs).
     if (nExtraFlavours < 0 || nExtraFlavours > 1) {
-        cerr << "Error in c_mstwpdf::c_mstwpdf: invalid nExtraFlavours = "
-                << nExtraFlavours << endl;
+        std::cerr << "Error in c_mstwpdf::c_mstwpdf: invalid nExtraFlavours = "
+                << nExtraFlavours << std::endl;
         exit(-1);
     }
 
@@ -364,8 +365,8 @@ c_mstwpdf::c_mstwpdf(string filename, bool warn_in, bool fatal_in)
             else
                 f[12][n][m] = 0.; // photon
             if (data_file.eof()) {
-                cerr << "Error in c_mstwpdf::c_mstwpdf reading " << filename
-                        << endl;
+                std::cerr << "Error in c_mstwpdf::c_mstwpdf reading "
+                        << filename << std::endl;
                 exit(-1);
             }
         }
@@ -373,7 +374,8 @@ c_mstwpdf::c_mstwpdf(string filename, bool warn_in, bool fatal_in)
     // Check that ALL the file contents have been read in.
     data_file >> dtemp;
     if (!data_file.eof()) {
-        cerr << "Error in c_mstwpdf::c_mstwpdf reading " << filename << endl;
+        std::cerr << "Error in c_mstwpdf::c_mstwpdf reading " << filename
+                << std::endl;
         exit(-1);
     }
 
@@ -599,7 +601,8 @@ double c_mstwpdf::parton(int f, double x, double q)
         interpolate = 0;
         if (x <= 0.) {
             if (warn || fatal)
-                cerr << "Error in c_mstwpdf::parton, x = " << x << endl;
+                std::cerr << "Error in c_mstwpdf::parton, x = " << x
+                        << std::endl;
             if (fatal)
                 exit(-1);
             else
@@ -608,7 +611,7 @@ double c_mstwpdf::parton(int f, double x, double q)
     } else if (x > xmax) {
         interpolate = 0;
         if (warn || fatal)
-            cerr << "Error in c_mstwpdf::parton, x = " << x << endl;
+            std::cerr << "Error in c_mstwpdf::parton, x = " << x << std::endl;
         if (fatal)
             exit(-1);
         else
@@ -619,7 +622,8 @@ double c_mstwpdf::parton(int f, double x, double q)
         interpolate = -1;
         if (q <= 0.) {
             if (warn || fatal)
-                cerr << "Error in c_mstwpdf::parton, q = " << q << endl;
+                std::cerr << "Error in c_mstwpdf::parton, q = " << q
+                        << std::endl;
             if (fatal)
                 exit(-1);
             else
@@ -643,7 +647,7 @@ double c_mstwpdf::parton(int f, double x, double q)
         return 0.;
     else {
         if (warn || fatal)
-            cerr << "Error in c_mstwpdf::parton, f = " << f << endl;
+            std::cerr << "Error in c_mstwpdf::parton, f = " << f << std::endl;
         if (fatal)
             exit(-1);
         else
@@ -685,7 +689,8 @@ double c_mstwpdf::parton(int f, double x, double q)
         // anomalous dimension to 1 to prevent rounding errors.
         // Impose minimum anomalous dimension of -2.5.
         if (fabs(parton_pdf) >= 1.e-5)
-            anom = max(-2.5, (parton_pdf1 - parton_pdf) / parton_pdf / 0.01);
+            anom = std::max(-2.5,
+                    (parton_pdf1 - parton_pdf) / parton_pdf / 0.01);
         else
             anom = 1.;
         parton_pdf = parton_pdf
@@ -693,8 +698,8 @@ double c_mstwpdf::parton(int f, double x, double q)
 
     } else { // extrapolate outside PDF grid to low x or high Q^2
         if (warn)
-            cerr << "Warning in c_mstwpdf::parton, extrapolating: f = " << f
-                    << ", x = " << x << ", q = " << q << endl;
+            std::cerr << "Warning in c_mstwpdf::parton, extrapolating: f = "
+                    << f << ", x = " << x << ", q = " << q << std::endl;
         parton_pdf = parton_extrapolate(ip, xxx, qqq);
         if (f <= -1 && f >= -5) // antiquark = quark - valence
             parton_pdf -= parton_extrapolate(ip + 5, xxx, qqq);

@@ -34,8 +34,6 @@
 
 #include <string>
 
-using namespace std;
-
 //TODO supprimer cette classe
 
 class c_mstwpdf {
@@ -62,7 +60,7 @@ public:
     void update(double x, double q); // update cont
     double parton(int flavour, double x, double q);
     // The constructor (initialises the functions):
-    c_mstwpdf(string filename, bool warn = false, bool fatal = true);
+    c_mstwpdf(std::string filename, bool warn = false, bool fatal = true);
 };
 
 #endif
