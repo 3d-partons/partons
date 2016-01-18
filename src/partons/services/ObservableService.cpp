@@ -95,6 +95,8 @@ ResultList<ObservableResult> ObservableService::computeManyKinematicOneModel(
             pDVCSConvolCoeffFunctionModule);
     pObservable->setDVCSModule(pDVCSModule);
 
+    // TODO voir s'il n'est pas possible de déplacer ça de manière générique dans la classe parent
+
     List<Packet> listOfPacket;
 
     for (unsigned int i = 0; i != listOfKinematic.size(); i++) {
@@ -109,6 +111,8 @@ ResultList<ObservableResult> ObservableService::computeManyKinematicOneModel(
 
     initComputationalThread(pObservable);
     launchAllThreadAndWaitingFor();
+
+    // ####################################################
 
     return results;
 }

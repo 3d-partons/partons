@@ -21,9 +21,9 @@ INCLUDE( ${QT_USE_FILE} )
 ADD_DEFINITIONS (${QT_DEFINITIONS})
 
 # Inclusion des libraries
-INCLUDE_DIRECTORIES( ${QT_INCLUDE_DIRS} ${ROOT_PATH}/include ${NUMA_PATH}/include ${CLN_PATH}/include)
+INCLUDE_DIRECTORIES( ${QT_INCLUDE_DIRS} ${ROOT_INCLUDE_DIR} ${NUMA_INCLUDE_DIR} ${CLN_INCLUDE_DIR})
 
-LINK_DIRECTORIES(${ROOT_PATH}/lib ${NUMA_PATH}/lib ${CLN_PATH}/lib)
+LINK_DIRECTORIES(${ROOT_LIB_DIR} ${NUMA_LIB_DIR} ${CLN_LIB_DIR})
 
 #Inclusion des en-têtes publics
 include_directories(include)

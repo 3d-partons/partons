@@ -14,10 +14,13 @@
 # EXTERNAL cache entries
 ########################
 
+//Chemin vers le dossier des fichiers d'en-tête de CLN
+CLN_INCLUDE_DIR:FILEPATH=/usr/local/cln/v1.3.4/include
+
 CLN_LIBRARIES:STRING=cln
 
 //Chemin vers le dossier des fichiers d'en-tête de CLN
-CLN_PATH:FILEPATH=/usr/local/cln/v1.3.4
+CLN_LIB_DIR:FILEPATH=/usr/local/cln/v1.3.4/lib
 
 //Path to a program.
 CMAKE_AR:FILEPATH=/usr/bin/ar
@@ -160,11 +163,14 @@ CMAKE_USE_RELATIVE_PATHS:BOOL=OFF
 // Studio IDE projects all commands are done without /nologo.
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 
+//Chemin vers le dossier des fichiers d'en-tête de NUMA
+NUMA_INCLUDE_DIR:FILEPATH=/home/debian/workspace/NumA++/include
+
 //Nom du fichier de la bibliothèque NUMA
 NUMA_LIBRARIES:STRING=NumA++
 
 //Chemin vers le dossier des fichiers d'en-tête de NUMA
-NUMA_PATH:FILEPATH=/home/debian/workspace/NumA++
+NUMA_LIB_DIR:FILEPATH=/home/debian/workspace/NumA++/lib
 
 //Value Computed by CMake
 PARTONS_BINARY_DIR:STATIC=/home/debian/workspace/PARTONS/build
@@ -775,11 +781,14 @@ QT_WORLDTIMECLOCKPLUGIN_PLUGIN_DEBUG:FILEPATH=QT_WORLDTIMECLOCKPLUGIN_PLUGIN_DEB
 //Path to a library.
 QT_WORLDTIMECLOCKPLUGIN_PLUGIN_RELEASE:FILEPATH=QT_WORLDTIMECLOCKPLUGIN_PLUGIN_RELEASE-NOTFOUND
 
+//Chemin vers le dossier des fichiers d'en-tête de ROOT
+ROOT_INCLUDE_DIR:FILEPATH=/usr/local/root/v5.34.32/include
+
 //Nom du fichier de la bibliothèque ROOT
 ROOT_LIBRARIES:STRING=Hist;Core
 
 //Chemin vers le dossier des fichiers d'en-tête de ROOT
-ROOT_PATH:FILEPATH=/usr/local/root/v5.34.32
+ROOT_LIB_DIR:FILEPATH=/usr/local/root/v5.34.32/lib
 
 
 ########################
