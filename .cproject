@@ -12,16 +12,16 @@
 					</externalSetting>
 				</externalSettings>
 				<extensions>
+					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
 					<extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
-					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-				<configuration artifactExtension="so" artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.sharedLib" buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug,org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.sharedLib" cleanCommand="rm -rf" description="" id="cdt.managedbuild.config.gnu.so.debug.1814402932" name="Debug" parent="cdt.managedbuild.config.gnu.so.debug">
+				<configuration artifactExtension="so" artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.sharedLib" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.sharedLib,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug" cleanCommand="rm -rf" description="" id="cdt.managedbuild.config.gnu.so.debug.1814402932" name="Debug" parent="cdt.managedbuild.config.gnu.so.debug">
 					<folderInfo id="cdt.managedbuild.config.gnu.so.debug.1814402932." name="/" resourcePath="">
 						<toolChain id="cdt.managedbuild.toolchain.gnu.so.debug.582170293" name="Linux GCC" superClass="cdt.managedbuild.toolchain.gnu.so.debug">
 							<targetPlatform id="cdt.managedbuild.target.gnu.platform.so.debug.1942400003" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.so.debug"/>
@@ -32,10 +32,11 @@
 								<option id="gnu.cpp.compiler.so.debug.option.debugging.level.1670272224" name="Debug Level" superClass="gnu.cpp.compiler.so.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.other.pic.1481293199" name="Position Independent Code (-fPIC)" superClass="gnu.cpp.compiler.option.other.pic" value="true" valueType="boolean"/>
 								<option id="gnu.cpp.compiler.option.include.paths.905458946" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${CLN_PATH}/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${QT_PATH}/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/NumA++/include}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ROOT_PATH}/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../${ROOT_INCLUDE_DIR}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../${CLN_INCLUDE_DIR}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../${QT_INCLUDE_DIR}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${SFML_INCLUDE_DIR}&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1399569935" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -49,12 +50,8 @@
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.so.debug.460326629" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.so.debug">
 								<option defaultValue="true" id="gnu.cpp.link.so.debug.option.shared.1932062549" name="Shared (-shared)" superClass="gnu.cpp.link.so.debug.option.shared" valueType="boolean"/>
-								<option id="gnu.cpp.link.option.paths.394327902" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/NumA++/lib}&quot;"/>
-								</option>
-								<option id="gnu.cpp.link.option.libs.1838264971" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
-									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="NumA++"/>
-								</option>
+								<option id="gnu.cpp.link.option.paths.394327902" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths"/>
+								<option id="gnu.cpp.link.option.libs.1838264971" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1568990480" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
