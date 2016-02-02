@@ -16,13 +16,12 @@
 
 #include "beans/Scale.h"
 
-namespace sf {
-class Mutex;
-} /* namespace sf */
+class ModuleObjectFactory;
+
+class ServiceObjectRegistry;
 
 class BaseObjectFactory;
 class BaseObjectRegistry;
-
 class LoggerManager;
 
 class Partons {
@@ -45,10 +44,13 @@ public:
     void setScale(double MuF2, double MuR2);
     Scale getScale() const;
 
+    BaseObjectRegistry* getBaseObjectRegistry() const;
+    ServiceObjectRegistry* getServiceObjectRegistry() const;
+    BaseObjectFactory* getBaseObjectFactory() const;
+    ModuleObjectFactory* getModuleObjectFactory() const;
+    LoggerManager* getLoggerManager() const;
+
 private:
-
-    static sf::Mutex m_mutex;
-
     /**
      * Private pointer of this class for a unique instance
      */
@@ -60,7 +62,9 @@ private:
     Partons();
 
     BaseObjectRegistry* m_pBaseObjectRegistry;
+    ServiceObjectRegistry* m_pServiceObjectRegistry;
     BaseObjectFactory* m_pBaseObjectFactory;
+    ModuleObjectFactory* m_pModuleObjectFactory;
     LoggerManager* m_pLoggerManager;
 
     std::string m_currentWorkingDirectoryPath;

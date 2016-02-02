@@ -20,16 +20,17 @@
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/modules/gpd/GK11Model.h"
 #include "../../../../include/partons/ModuleObjectFactory.h"
+#include "../../../../include/partons/Partons.h"
 #include "../../../../include/partons/services/GPDService.h"
 #include "../../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../../include/partons/utils/ParameterList.h"
 
 const unsigned int GK11ModelNoGluons::classId =
-        BaseObjectRegistry::getInstance()->registerBaseObject(
+        Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
                 new GK11ModelNoGluons("GK11ModelNoGluons"));
 
-GK11ModelNoGluons::GK11ModelNoGluons(const std::string &className) :
-        GPDModule(className) {
+GK11ModelNoGluons::GK11ModelNoGluons(const std::string &className)
+        : GPDModule(className) {
     pGPDService = NULL;
     GKmodel = NULL;
 
@@ -57,8 +58,8 @@ std::string GK11ModelNoGluons::toString() {
     return GPDModule::toString();
 }
 
-GK11ModelNoGluons::GK11ModelNoGluons(const GK11ModelNoGluons& other) :
-        GPDModule(other) {
+GK11ModelNoGluons::GK11ModelNoGluons(const GK11ModelNoGluons& other)
+        : GPDModule(other) {
 
     pGPDService = other.pGPDService;
     GKmodel = other.GKmodel;
@@ -70,9 +71,12 @@ void GK11ModelNoGluons::isModuleWellConfigured() {
 
 void GK11ModelNoGluons::initModule() {
 
-    pGPDService = ServiceObjectRegistry::getGPDService();
+    pGPDService =
+            Partons::getInstance()->getServiceObjectRegistry()->getGPDService();
 
-    GKmodel = ModuleObjectFactory::newGPDModule(GK11Model::classId);
+    //TODO Why ? It's alreeady a GPDModule !
+    GKmodel = Partons::getInstance()->getModuleObjectFactory()->newGPDModule(
+            GK11Model::classId);
 
     GPDModule::initModule();
 }

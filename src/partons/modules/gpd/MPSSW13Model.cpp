@@ -12,17 +12,18 @@
 #include "../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
+#include "../../../../include/partons/Partons.h"
 #include "../../../../include/partons/utils/mstwpdf.h"
 #include "../../../../include/partons/utils/PropertiesManager.h"
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int MPSSW13Model::classId =
-        BaseObjectRegistry::getInstance()->registerBaseObject(
+        Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
                 new MPSSW13Model("MPSSW13Model"));
 
-MPSSW13Model::MPSSW13Model(const std::string &className) :
-        GPDModule(className), MathIntegratorModule(), m_Forward(0), m_NbOfQuarkFlavor(
+MPSSW13Model::MPSSW13Model(const std::string &className)
+        : GPDModule(className), MathIntegratorModule(), m_Forward(0), m_NbOfQuarkFlavor(
                 2), m_NbOfColor(3), m_Mx(0.), m_CA(3.), m_CF(4. / 3.), m_TF(
                 1. / 2.), m_F1u(0.), m_F1d(0.), m_FD(0.), m_ProfileShapeVal(1.), m_ProfileShapeSea(
                 2.), m_ProfileShapeGlue(2.), m_QuarkDTerm(0.), m_GluonDTerm(0.) {
@@ -46,8 +47,8 @@ void MPSSW13Model::init() {
             NumA::MathIntegrator::GSL_ADAPTIVE_SINGULAR);
 }
 
-MPSSW13Model::MPSSW13Model(const MPSSW13Model& other) :
-        GPDModule(other), MathIntegratorModule(other) {
+MPSSW13Model::MPSSW13Model(const MPSSW13Model& other)
+        : GPDModule(other), MathIntegratorModule(other) {
     m_NbOfQuarkFlavor = other.m_NbOfQuarkFlavor;
     m_NbOfColor = other.m_NbOfColor;
     m_Mx = other.m_Mx;
@@ -600,7 +601,7 @@ double MPSSW13Model::IntegralxSmall2HuSea(std::vector<double> Var,
      pdf = m_Forward->cont.upv / absbeta;
      } else {
 
-     }*/  //  Possible source of the error, J.Wagner
+     }*/ //  Possible source of the error, J.Wagner
     Integral = Profile(m_ProfileShapeSea, beta, (m_x - beta) / m_xi);
     Integral += -Profile(m_ProfileShapeSea, beta, (m_x + beta) / m_xi);
     Integral *= pdf;

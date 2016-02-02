@@ -22,6 +22,8 @@
 #include "../modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
 #include "../ServiceObject.h"
 
+class ModuleObjectFactory;
+
 class DVCSConvolCoeffFunctionResultList;
 class GPDModule;
 
@@ -66,6 +68,8 @@ public:
 //            const std::string & filePath);
 
 private:
+    ModuleObjectFactory* m_pModuleObjectFactory;
+
     //TODO improve object copy
     DVCSConvolCoeffFunctionResult computeWithGPDModelTask(Task &task) const;
     ResultList<DVCSConvolCoeffFunctionResult> computeListWithGPDModelTask(

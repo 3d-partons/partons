@@ -7,12 +7,12 @@
 #include "../../../include/partons/beans/gpd/GPDResult.h"
 #include "../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../include/partons/beans/List.h"
-//#include "../../../include/partons/beans/observable/ObservableKinematic.h"
 #include "../../../include/partons/beans/ResultList.h"
 #include "../../../include/partons/BaseObjectRegistry.h"
 #include "../../../include/partons/modules/evolution/GPDEvolutionModule.h"
 #include "../../../include/partons/modules/GPDModule.h"
 #include "../../../include/partons/ModuleObjectFactory.h"
+#include "../../../include/partons/Partons.h"
 #include "../../../include/partons/services/GPDService.h"
 #include "../../../include/partons/utils/GenericType.h"
 #include "../../../include/partons/utils/ParameterList.h"
@@ -28,11 +28,12 @@ const std::string GPDService::GPD_SERVICE_COMPUTE_LIST_OF_GPD_MODEL =
 
 // Initialise [class]::classId with a unique name and selfregister this module into the global registry.
 const unsigned int GPDService::classId =
-        BaseObjectRegistry::getInstance()->registerBaseObject(
+        Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
                 new GPDService("GPDService"));
 
-GPDService::GPDService(const std::string &className) :
-        ServiceObject(className), m_pGPDKinematic(0), m_pGPDModule(0) {
+GPDService::GPDService(const std::string &className)
+        : ServiceObject(className), m_pGPDKinematic(0), m_pGPDModule(0), m_pModuleObjectFactory(
+                Partons::getInstance()->getModuleObjectFactory()) {
 }
 
 GPDService::~GPDService() {
@@ -61,7 +62,7 @@ void GPDService::computeTask(Task &task) {
         GPDModule* pGPDModule = 0;
 
         if (task.isAvailableParameterList("GPDModule")) {
-            pGPDModule = ModuleObjectFactory::newGPDModule(
+            pGPDModule = m_pModuleObjectFactory->newGPDModule(
                     task.getLastAvailableParameterList().get("id").toString());
             pGPDModule->configure(task.getLastAvailableParameterList());
         } else {
@@ -94,7 +95,7 @@ void GPDService::computeTask(Task &task) {
         GPDModule* pGPDModule = 0;
 
         if (task.isAvailableParameterList("GPDModule")) {
-            pGPDModule = ModuleObjectFactory::newGPDModule(
+            pGPDModule = m_pModuleObjectFactory->newGPDModule(
                     task.getLastAvailableParameterList().get("id").toString());
             pGPDModule->configure(task.getLastAvailableParameterList());
         } else {
@@ -106,7 +107,7 @@ void GPDService::computeTask(Task &task) {
         GPDEvolutionModule* pGPDEvolutionModule = 0;
 
         if (task.isAvailableParameterList("GPDEvolutionModule")) {
-            pGPDEvolutionModule = ModuleObjectFactory::newGPDEvolutionModule(
+            pGPDEvolutionModule = m_pModuleObjectFactory->newGPDEvolutionModule(
                     task.getLastAvailableParameterList().get("id").toString());
             pGPDEvolutionModule->configure(
                     task.getLastAvailableParameterList());
@@ -147,7 +148,7 @@ void GPDService::computeTask(Task &task) {
 
             for (unsigned int i = 0; i != listOfParameterList.size(); i++) {
                 listOfGPDModule.push_back(
-                        ModuleObjectFactory::newGPDModule(
+                        m_pModuleObjectFactory->newGPDModule(
                                 listOfParameterList[i].get("id").toString()));
                 listOfGPDModule[i]->configure(listOfParameterList[i]);
             }
@@ -236,7 +237,7 @@ ResultList<GPDResult> GPDService::computeManyKinematicOneModel(
 
     addTasks(listOfPacket);
 
-    initComputationalThread (pGPDModule);
+    initComputationalThread(pGPDModule);
     launchAllThreadAndWaitingFor();
 //
 //// compute GPDModule for each inputData

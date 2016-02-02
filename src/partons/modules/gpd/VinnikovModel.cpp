@@ -9,11 +9,12 @@
 
 #include <math.h>
 #include <stdio.h>
+//#include <stdlib.h>
+#include <cstdlib>
 #include <map>
+#include <stdexcept>
 #include <string>
 #include <utility>
-#include <stdlib.h>
-#include <stdexcept>
 
 #include "../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
@@ -21,10 +22,11 @@
 #include "../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
 #include "../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
+#include "../../../../include/partons/Partons.h"
 #include "../../../../include/partons/utils/ParameterList.h"
 
 const unsigned int VinnikovModel::classId =
-        BaseObjectRegistry::getInstance()->registerBaseObject(
+        Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
                 new VinnikovModel("VinnikovModel"));
 
 const double VinnikovModel::EPS_BETR = 1.E-8;

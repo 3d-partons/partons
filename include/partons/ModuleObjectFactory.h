@@ -14,68 +14,72 @@
 
 #include <string>
 
-class GapEquationSolverModule;
-
-class XiConverterModule;
-
-class ScaleModule;
+class Observable;
 
 class ActiveFlavorsModule;
-
+class BaseObjectFactory;
 class DoubleDistributionModule;
 class DVCSConvolCoeffFunctionModule;
 class DVCSModule;
+class GapEquationSolverModule;
 class GPDEvolutionModule;
 class GPDModule;
 class ProcessModule;
 class RunningAlphaStrongModule;
+class ScaleModule;
+class XiConverterModule;
 
 class ModuleObjectFactory {
 public:
+    friend class Partons;
 
-    static DoubleDistributionModule* newDoubleDistributionModule(
-            unsigned int classId);
-    static DoubleDistributionModule* newDoubleDistributionModule(
+    virtual ~ModuleObjectFactory();
+
+    DoubleDistributionModule* newDoubleDistributionModule(unsigned int classId);
+    DoubleDistributionModule* newDoubleDistributionModule(
             const std::string & className);
 
-    static GPDEvolutionModule* newGPDEvolutionModule(unsigned int classId);
-    static GPDEvolutionModule* newGPDEvolutionModule(
+    GPDEvolutionModule* newGPDEvolutionModule(unsigned int classId);
+    GPDEvolutionModule* newGPDEvolutionModule(const std::string & className);
+
+    GPDModule* newGPDModule(unsigned int classId);
+    GPDModule* newGPDModule(const std::string &className);
+
+    DVCSConvolCoeffFunctionModule* newDVCSConvolCoeffFunctionModule(
+            unsigned int classId);
+    DVCSConvolCoeffFunctionModule* newDVCSConvolCoeffFunctionModule(
+            const std::string &className);
+
+    DVCSModule* newDVCSModule(unsigned int classId);
+    DVCSModule* newDVCSModule(const std::string & className);
+
+    RunningAlphaStrongModule* newRunningAlphaStrongModule(unsigned int classId);
+    RunningAlphaStrongModule* newRunningAlphaStrongModule(
             const std::string & className);
 
-    static GPDModule* newGPDModule(unsigned int classId);
-    static GPDModule* newGPDModule(const std::string &className);
+    ProcessModule* newObservableModule(unsigned int classId);
+    ProcessModule* newObservableModule(const std::string &className);
 
-    static DVCSConvolCoeffFunctionModule* newDVCSConvolCoeffFunctionModule(
-            unsigned int classId);
-    static DVCSConvolCoeffFunctionModule* newDVCSConvolCoeffFunctionModule(
+    ActiveFlavorsModule* newActiveFlavorsModule(unsigned int classId);
+    ActiveFlavorsModule* newActiveFlavorsModule(const std::string &className);
+
+    ScaleModule* newScaleModule(unsigned int classId);
+    ScaleModule* newScaleModule(const std::string &className);
+
+    XiConverterModule* newXiConverterModule(unsigned int classId);
+    XiConverterModule* newXiConverterModule(const std::string &className);
+
+    GapEquationSolverModule* newGapEquationSolverModule(unsigned int classId);
+    GapEquationSolverModule* newGapEquationSolverModule(
             const std::string &className);
 
-    static DVCSModule* newDVCSModule(unsigned int classId);
-    static DVCSModule* newDVCSModule(const std::string & className);
+    Observable* newObservable(unsigned int classId);
+    Observable* newObservable(const std::string & className);
 
-    static RunningAlphaStrongModule* newRunningAlphaStrongModule(
-            unsigned int classId);
-    static RunningAlphaStrongModule* newRunningAlphaStrongModule(
-            const std::string & className);
+private:
+    BaseObjectFactory* m_pBaseObjectFactory;
 
-    static ProcessModule* newObservableModule(unsigned int classId);
-    static ProcessModule* newObservableModule(const std::string &className);
-
-    static ActiveFlavorsModule* newActiveFlavorsModule(unsigned int classId);
-    static ActiveFlavorsModule* newActiveFlavorsModule(
-            const std::string &className);
-
-    static ScaleModule* newScaleModule(unsigned int classId);
-    static ScaleModule* newScaleModule(const std::string &className);
-
-    static XiConverterModule* newXiConverterModule(unsigned int classId);
-    static XiConverterModule* newXiConverterModule(
-            const std::string &className);
-
-    static GapEquationSolverModule* newGapEquationSolverModule(
-            unsigned int classId);
-    static GapEquationSolverModule* newGapEquationSolverModule(
-            const std::string &className);
+    ModuleObjectFactory();
 };
 
 #endif /* MODULE_OBJECT_FACTORY_H */

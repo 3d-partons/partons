@@ -1,16 +1,17 @@
 #include "../../../include/partons/modules/GPDModule.h"
 
 #include <math.h>
+#include <SFML/System/Sleep.hpp>
+#include <SFML/System/Time.hpp>
 #include <iostream>
 #include <stdexcept>
 #include <utility>
 
-#include "/usr/local/sfml/v2.3.2/include/SFML/System/Sleep.hpp"
-#include "/usr/local/sfml/v2.3.2/include/SFML/System/Time.hpp"
 #include "../../../include/partons/beans/gpd/GPDResult.h"
 #include "../../../include/partons/beans/List.h"
 #include "../../../include/partons/beans/ResultList.h"
 #include "../../../include/partons/modules/evolution/GPDEvolutionModule.h"
+#include "../../../include/partons/Partons.h"
 #include "../../../include/partons/services/GPDService.h"
 #include "../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../include/partons/utils/GenericType.h"
@@ -20,14 +21,14 @@
 
 const std::string GPDModule::GPD_TYPE = "GPD_MODULE_GPD_TYPE";
 
-GPDModule::GPDModule(const std::string &className) :
-        ModuleObject(className), m_x(0.), m_xi(0.), m_t(0.), m_MuF2(0.), m_MuR2(
+GPDModule::GPDModule(const std::string &className)
+        : ModuleObject(className), m_x(0.), m_xi(0.), m_t(0.), m_MuF2(0.), m_MuR2(
                 0.), m_gpdType(GPDType::ALL), m_MuF2_ref(0.), m_nf(0), m_pGPDEvolutionModule(
                 0) {
 }
 
-GPDModule::GPDModule(const GPDModule &other) :
-        ModuleObject(other) {
+GPDModule::GPDModule(const GPDModule &other)
+        : ModuleObject(other) {
     m_x = other.m_x;
     m_xi = other.m_xi;
     m_t = other.m_t;
@@ -285,7 +286,8 @@ void GPDModule::run() {
     ResultList<GPDResult> results;
 
     try {
-        GPDService* pGPDService = ServiceObjectRegistry::getGPDService();
+        GPDService* pGPDService =
+                Partons::getInstance()->getServiceObjectRegistry()->getGPDService();
 
         while (!(pGPDService->isEmptyTaskQueue())) {
             GPDKinematic kinematic;

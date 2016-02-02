@@ -6,16 +6,17 @@
 
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
+#include "../../../../../include/partons/Partons.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int BMJ2012Model::classId =
-        BaseObjectRegistry::getInstance()->registerBaseObject(
+        Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
                 new BMJ2012Model("BMJ2012Model"));
 
 /*--------------------------------------- Constructors ---------------------------------*/
 
-BMJ2012Model::BMJ2012Model(const std::string &className) :
-        DVCSModule(className) {
+BMJ2012Model::BMJ2012Model(const std::string &className)
+        : DVCSModule(className) {
     m_phi1BMK = 0.;
     m_phi2BMK = 0.;
     m_PhiBMK = 0.;
@@ -61,8 +62,8 @@ BMJ2012Model::BMJ2012Model(const std::string &className) :
 BMJ2012Model::~BMJ2012Model() {
 }
 
-BMJ2012Model::BMJ2012Model(const BMJ2012Model& other) :
-        DVCSModule(other) {
+BMJ2012Model::BMJ2012Model(const BMJ2012Model& other)
+        : DVCSModule(other) {
     m_phi1BMK = other.m_phi1BMK;
     m_phi2BMK = other.m_phi2BMK;
     m_PhiBMK = other.m_PhiBMK;

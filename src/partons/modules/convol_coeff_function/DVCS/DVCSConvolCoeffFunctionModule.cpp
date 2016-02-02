@@ -8,6 +8,7 @@
 #include "../../../../../include/partons/modules/GPDModule.h"
 #include "../../../../../include/partons/modules/RunningAlphaStrongModule.h"
 #include "../../../../../include/partons/ModuleObjectFactory.h"
+#include "../../../../../include/partons/Partons.h"
 #include "../../../../../include/partons/utils/GenericType.h"
 #include "../../../../../include/partons/utils/ParameterList.h"
 #include "../../../../../include/partons/utils/stringUtils/Formatter.h"
@@ -16,8 +17,8 @@ const std::string DVCSConvolCoeffFunctionModule::GPD_MODULE_ID =
         "DVCS_CONVOL_COEFF_FUNCTION_GPD_MODULE_ID";
 
 DVCSConvolCoeffFunctionModule::DVCSConvolCoeffFunctionModule(
-        const std::string &className) :
-        ConvolCoeffFunctionModule(className), m_xi(0.), m_t(0.), m_Q2(0.), m_MuF2(
+        const std::string &className)
+        : ConvolCoeffFunctionModule(className), m_xi(0.), m_t(0.), m_Q2(0.), m_MuF2(
                 0.), m_MuR2(0.), m_nf(0), m_qcdOrderType(
                 PerturbativeQCDOrderType::UNDEFINED), m_currentGPDComputeType(
                 GPDType::UNDEFINED), m_gpdType(GPDType::UNDEFINED), m_pGPDModule(
@@ -26,8 +27,8 @@ DVCSConvolCoeffFunctionModule::DVCSConvolCoeffFunctionModule(
 }
 
 DVCSConvolCoeffFunctionModule::DVCSConvolCoeffFunctionModule(
-        const DVCSConvolCoeffFunctionModule &other) :
-        ConvolCoeffFunctionModule(other) {
+        const DVCSConvolCoeffFunctionModule &other)
+        : ConvolCoeffFunctionModule(other) {
     m_listOfCFFComputeFunctionAvailable =
             other.m_listOfCFFComputeFunctionAvailable;
     m_it = other.m_it;
@@ -72,8 +73,9 @@ DVCSConvolCoeffFunctionModule::~DVCSConvolCoeffFunctionModule() {
 }
 
 void DVCSConvolCoeffFunctionModule::init() {
-    m_pNfConvolCoeffFunction = ModuleObjectFactory::newActiveFlavorsModule(
-            NfFunctionExample::classId);
+    m_pNfConvolCoeffFunction =
+            Partons::getInstance()->getModuleObjectFactory()->newActiveFlavorsModule(
+                    NfFunctionExample::classId);
 }
 
 //TODO implement
@@ -243,8 +245,10 @@ void DVCSConvolCoeffFunctionModule::configure(ParameterList parameters) {
     ConvolCoeffFunctionModule::configure(parameters);
 
     if (parameters.isAvailable(DVCSConvolCoeffFunctionModule::GPD_MODULE_ID)) {
-        m_pGPDModule = ModuleObjectFactory::newGPDModule(
-                parameters.getLastAvailable().toUInt());
+        //TODO why create new GPDModule here ?
+        m_pGPDModule =
+                Partons::getInstance()->getModuleObjectFactory()->newGPDModule(
+                        parameters.getLastAvailable().toUInt());
 
         info(__func__,
                 Formatter() << DVCSConvolCoeffFunctionModule::GPD_MODULE_ID

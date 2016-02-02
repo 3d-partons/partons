@@ -11,8 +11,7 @@
  * @brief \<singleton\> Use for handle logs.
  */
 
-//#include <pthread.h>
-//#include <SFML/System/Mutex.hpp>
+#include <SFML/System/Mutex.hpp>
 #include <ctime>
 #include <map>
 #include <queue>
@@ -24,10 +23,6 @@
 #include "LoggerMessage.h"
 #include "LoggerPrintMode.h"
 
-namespace sf {
-class Mutex;
-} /* namespace sf */
-
 //TODO relatif folder for configFile
 
 const std::string ENABLE_NAME = "enable";
@@ -38,11 +33,14 @@ const std::string OUTPUT_LOG_FILE_PATH = "log.file.path";
 class LoggerManager: public Thread {
 public:
     /**
-     * Share a unique pointer of this class
+     * Private default constructor for a unique instance
      */
-    static LoggerManager* getInstance();
+    LoggerManager();
 
-    void delete_();
+    /**
+     * Default destructor
+     */
+    virtual ~LoggerManager();
 
     void init();
 
@@ -70,22 +68,7 @@ public:
     std::string toString();
 
 private:
-    static sf::Mutex m_mutex;
-
-    /**
-     * Private pointer of this class for a unique instance
-     */
-    static LoggerManager* m_pInstance;
-
-    /**
-     * Private default constructor for a unique instance
-     */
-    LoggerManager();
-
-    /**
-     * Default destructor
-     */
-    ~LoggerManager();
+    sf::Mutex m_mutex;
 
     std::string m_outputFilePath;
     LoggerLevel m_defaultLevel;

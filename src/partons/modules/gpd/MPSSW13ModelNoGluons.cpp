@@ -13,16 +13,17 @@
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/modules/gpd/MPSSW13Model.h"
 #include "../../../../include/partons/ModuleObjectFactory.h"
+#include "../../../../include/partons/Partons.h"
 #include "../../../../include/partons/services/GPDService.h"
 #include "../../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../../include/partons/utils/ParameterList.h"
 
 const unsigned int MPSSW13ModelNoGluons::classId =
-        BaseObjectRegistry::getInstance()->registerBaseObject(
+        Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
                 new MPSSW13ModelNoGluons("MPSSW13ModelNoGluons"));
 
-MPSSW13ModelNoGluons::MPSSW13ModelNoGluons(const std::string &className) :
-        GPDModule(className) {
+MPSSW13ModelNoGluons::MPSSW13ModelNoGluons(const std::string &className)
+        : GPDModule(className) {
     pGPDService = NULL;
     MPSSW13model = NULL;
 
@@ -44,8 +45,8 @@ std::string MPSSW13ModelNoGluons::toString() {
     return GPDModule::toString();
 }
 
-MPSSW13ModelNoGluons::MPSSW13ModelNoGluons(const MPSSW13ModelNoGluons& other) :
-        GPDModule(other) {
+MPSSW13ModelNoGluons::MPSSW13ModelNoGluons(const MPSSW13ModelNoGluons& other)
+        : GPDModule(other) {
 
     pGPDService = other.pGPDService;
     MPSSW13model = other.MPSSW13model;
@@ -57,9 +58,13 @@ void MPSSW13ModelNoGluons::isModuleWellConfigured() {
 
 void MPSSW13ModelNoGluons::initModule() {
 
-    pGPDService = ServiceObjectRegistry::getGPDService();
+    pGPDService =
+            Partons::getInstance()->getServiceObjectRegistry()->getGPDService();
 
-    MPSSW13model = ModuleObjectFactory::newGPDModule(MPSSW13Model::classId);
+    //TODO Why ? It's alreeady a GPDModule !
+    MPSSW13model =
+            Partons::getInstance()->getModuleObjectFactory()->newGPDModule(
+                    MPSSW13Model::classId);
 
     GPDModule::initModule();
 }

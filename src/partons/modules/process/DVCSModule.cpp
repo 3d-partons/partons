@@ -8,14 +8,15 @@
 #include "../../../../include/partons/modules/scale/Q2Multiplier.h"
 #include "../../../../include/partons/modules/xb_to_xi/XBToXi.h"
 #include "../../../../include/partons/ModuleObjectFactory.h"
+#include "../../../../include/partons/Partons.h"
 #include "../../../../include/partons/utils/GenericType.h"
 #include "../../../../include/partons/utils/ParameterList.h"
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 const std::string DVCSModule::PARAMETER_NAME_BEAM_ENERGY = "beam_energy";
 
-DVCSModule::DVCSModule(const std::string &className) :
-        ProcessModule(className), m_phi(0.), m_phiS(0.), m_phie(0.), m_phaseSpace(
+DVCSModule::DVCSModule(const std::string &className)
+        : ProcessModule(className), m_phi(0.), m_phiS(0.), m_phie(0.), m_phaseSpace(
                 0.), m_pObservable(0), m_pDVCSConvolCoeffFunctionModule(0), m_pScaleModule(
                 0), m_pXiConverterModule(0) {
 
@@ -25,8 +26,8 @@ DVCSModule::~DVCSModule() {
 
 }
 
-DVCSModule::DVCSModule(const DVCSModule& other) :
-        ProcessModule(other) {
+DVCSModule::DVCSModule(const DVCSModule& other)
+        : ProcessModule(other) {
     m_phi = other.m_phi;
     m_phiS = other.m_phiS;
     m_phie = other.m_phie;
@@ -62,10 +63,13 @@ DVCSModule::DVCSModule(const DVCSModule& other) :
 }
 
 void DVCSModule::init() {
-    m_pScaleModule = ModuleObjectFactory::newScaleModule(Q2Multiplier::classId);
+    m_pScaleModule =
+            Partons::getInstance()->getModuleObjectFactory()->newScaleModule(
+                    Q2Multiplier::classId);
 
-    m_pXiConverterModule = ModuleObjectFactory::newXiConverterModule(
-            XBToXi::classId);
+    m_pXiConverterModule =
+            Partons::getInstance()->getModuleObjectFactory()->newXiConverterModule(
+                    XBToXi::classId);
 }
 
 void DVCSModule::initModule() {

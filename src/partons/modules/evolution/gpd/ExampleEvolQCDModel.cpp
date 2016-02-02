@@ -1,18 +1,19 @@
 #include "../../../../../include/partons/modules/evolution/gpd/ExampleEvolQCDModel.h"
 
 #include "../../../../../include/partons/BaseObjectRegistry.h"
+#include "../../../../../include/partons/Partons.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int ExampleEvolQCDModel::classId =
-        BaseObjectRegistry::getInstance()->registerBaseObject(
+        Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
                 new ExampleEvolQCDModel("ExampleEvolQCDModel"));
 
-ExampleEvolQCDModel::ExampleEvolQCDModel(const std::string &className) :
-        GPDEvolutionModule(className) {
+ExampleEvolQCDModel::ExampleEvolQCDModel(const std::string &className)
+        : GPDEvolutionModule(className) {
 }
 
-ExampleEvolQCDModel::ExampleEvolQCDModel(const ExampleEvolQCDModel& other) :
-        GPDEvolutionModule(other) {
+ExampleEvolQCDModel::ExampleEvolQCDModel(const ExampleEvolQCDModel& other)
+        : GPDEvolutionModule(other) {
 }
 
 ExampleEvolQCDModel::~ExampleEvolQCDModel() {

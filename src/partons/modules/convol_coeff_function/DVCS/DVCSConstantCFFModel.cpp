@@ -8,6 +8,7 @@
 #include "../../../../../include/partons/modules/alphaS/RunningAlphaStrong.h"
 #include "../../../../../include/partons/modules/evolution/gpd/ExampleEvolQCDModel.h"
 #include "../../../../../include/partons/ModuleObjectFactory.h"
+#include "../../../../../include/partons/Partons.h"
 #include "../../../../../include/partons/utils/GenericType.h"
 #include "../../../../../include/partons/utils/ParameterList.h"
 #include "../../../../../include/partons/utils/stringUtils/Formatter.h"
@@ -15,13 +16,13 @@
 
 // Initialise [class]::classId with a unique name.
 const unsigned int DVCSConstantCFFModel::classId =
-        BaseObjectRegistry::getInstance()->registerBaseObject(
+        Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
                 new DVCSConstantCFFModel("DVCSConstantCFFModel"));
 
 const std::string DVCSConstantCFFModel::CFF_VALUES = "cff_values";
 
-DVCSConstantCFFModel::DVCSConstantCFFModel(const std::string &className) :
-        DVCSConvolCoeffFunctionModule(className) {
+DVCSConstantCFFModel::DVCSConstantCFFModel(const std::string &className)
+        : DVCSConvolCoeffFunctionModule(className) {
     m_CFF.assign(GPDType::END, 0.);
 
     for (int i = static_cast<int>(GPDType::H);
@@ -80,8 +81,8 @@ DVCSConstantCFFModel::DVCSConstantCFFModel(const std::string &className) :
 //                    &DVCSConstantCFFModel::computeCFF));
 }
 
-DVCSConstantCFFModel::DVCSConstantCFFModel(const DVCSConstantCFFModel &other) :
-        DVCSConvolCoeffFunctionModule(other) {
+DVCSConstantCFFModel::DVCSConstantCFFModel(const DVCSConstantCFFModel &other)
+        : DVCSConvolCoeffFunctionModule(other) {
     m_CFF = other.m_CFF;
 }
 
@@ -97,11 +98,12 @@ DVCSConstantCFFModel::~DVCSConstantCFFModel() {
 void DVCSConstantCFFModel::init() {
 
     m_pRunningAlphaStrongModule =
-            ModuleObjectFactory::newRunningAlphaStrongModule(
+            Partons::getInstance()->getModuleObjectFactory()->newRunningAlphaStrongModule(
                     RunningAlphaStrong::classId);
 
-    m_pNfConvolCoeffFunction = ModuleObjectFactory::newActiveFlavorsModule(
-            ExampleEvolQCDModel::classId);
+    m_pNfConvolCoeffFunction =
+            Partons::getInstance()->getModuleObjectFactory()->newActiveFlavorsModule(
+                    ExampleEvolQCDModel::classId);
 }
 
 void DVCSConstantCFFModel::initModule() {

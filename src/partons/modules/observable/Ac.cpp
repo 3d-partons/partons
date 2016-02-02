@@ -4,18 +4,20 @@
 
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/modules/ProcessModule.h"
+#include "../../../../include/partons/Partons.h"
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int Ac::classId =
-        BaseObjectRegistry::getInstance()->registerBaseObject(new Ac("Ac"));
+        Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
+                new Ac("Ac"));
 
-Ac::Ac(const std::string &className) :
-        Observable(className) {
+Ac::Ac(const std::string &className)
+        : Observable(className) {
 }
 
-Ac::Ac(const Ac& other) :
-        Observable(other) {
+Ac::Ac(const Ac& other)
+        : Observable(other) {
 }
 
 Ac::~Ac() {

@@ -15,16 +15,17 @@
 #include "../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
+#include "../../../../include/partons/Partons.h"
 #include "../../../../include/partons/utils/ParameterList.h"
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int GK11Model::classId =
-        BaseObjectRegistry::getInstance()->registerBaseObject(
+        Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
                 new GK11Model("GK11Model"));
 
-GK11Model::GK11Model(const std::string &className) :
-        GPDModule(className) {
+GK11Model::GK11Model(const std::string &className)
+        : GPDModule(className) {
     m_nf = 3;
     fL = 0.;
     m_MuF2_ref = 4.;
@@ -60,8 +61,8 @@ GK11Model::GK11Model(const std::string &className) :
             std::make_pair(GPDType::Et, &GPDModule::computeEt));
 }
 
-GK11Model::GK11Model(const GK11Model& other) :
-        GPDModule(other) {
+GK11Model::GK11Model(const GK11Model& other)
+        : GPDModule(other) {
     c1 = other.getC1();
     c2 = other.getC2();
     c3 = other.getC3();
@@ -198,7 +199,7 @@ PartonDistribution GK11Model::computeH() {
 
     fHuValMx = exp(b0 * m_t)
             * (c1 * Huval1mtab.at(0) + c2 * Huval1mtab.at(1)
-                    + c3 * Huval1mtab.at(2));  // See eq. (27);
+                    + c3 * Huval1mtab.at(2)); // See eq. (27);
 
 // d quark, valence part
 
@@ -322,7 +323,7 @@ PartonDistribution GK11Model::computeHt() {
 
 // d quark, valence part
 
-    c1 = -0.320 - 0.040 * fL;    // parameters from GK3 table 4
+    c1 = -0.320 - 0.040 * fL; // parameters from GK3 table 4
     c2 = -1.427 - 0.176 * fL;
     c3 = 0.692 - 0.068 * fL;
 
@@ -492,7 +493,7 @@ PartonDistribution GK11Model::computeEt() {
 // u quark, valence part
 
     Nu = 14.0;
-    c1 = Nu;      // parameters P.Kroll Maple file
+    c1 = Nu; // parameters P.Kroll Maple file
     c2 = -2. * Nu;
     c3 = Nu;
     c4 = 0.0;
@@ -511,7 +512,7 @@ PartonDistribution GK11Model::computeEt() {
 // d quark, valence part
 
     Nd = 4.0;
-    c1 = Nd;      // parameters P.Kroll Maple file
+    c1 = Nd; // parameters P.Kroll Maple file
     c2 = -2. * Nd;
     c3 = Nd;
     c4 = 0.0;
@@ -674,13 +675,13 @@ void GK11Model::calculateHKas() {
 
 // gluons
 
-    alpha = 0.15;  //slope of gluon trajectory
+    alpha = 0.15; //slope of gluon trajectory
     delta = 0.10 + 0.06 * fL;
     kHgluon = delta + alpha * m_t;
 
 // sea
 
-    alpha = 0.15;  // same as slope of gluon trajectory
+    alpha = 0.15; // same as slope of gluon trajectory
     delta = 1.1 + 0.06 * fL - 0.0027 * fL * fL;
     kHsea = delta + alpha * m_t;
 
@@ -1109,7 +1110,7 @@ void GK11Model::calculateHtKas() {
 
 // gluons
 
-    alpha = 0.15;  //slope of gluon trajectory
+    alpha = 0.15; //slope of gluon trajectory
     delta = -0.78 + 0.17 * fL;
     kHtgluon = delta + alpha * m_t;
 
@@ -1373,13 +1374,13 @@ void GK11Model::calculateEKas() {
 
 // gluons
 
-    alpha = 0.15;  //slope of gluon trajectory
+    alpha = 0.15; //slope of gluon trajectory
     delta = 0.10 + 0.06 * fL - 0.0027 * fL * fL;
     kEgluon = delta + alpha * m_t;
 
 // sea
 
-    alpha = 0.15;  // same as slope of gluon trajectory
+    alpha = 0.15; // same as slope of gluon trajectory
     delta = 1.1 + 0.06 * fL - 0.0027 * fL * fL;
     kEsea = delta + alpha * m_t;
 
@@ -1569,7 +1570,7 @@ double GK11Model::Et_pole(double x) {
 
 //TODO extraire les constantes si existantes
 
-    double dum = 0.;  //  Initialize to 0
+    double dum = 0.; //  Initialize to 0
     double eps;
     double eps2;
     double tmin;

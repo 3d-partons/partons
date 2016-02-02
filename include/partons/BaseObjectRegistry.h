@@ -18,26 +18,21 @@
  * This is achieved by requiring all modules to derive from a single parent class named BaseObject.
  */
 
-//TODO checked 21/01/2016 for multithreading : added mutex
-
 #include <stddef.h>
+#include <SFML/System/Mutex.hpp>
 #include <map>
 #include <string>
 
 #include "BaseObject.h"
 
-namespace sf {
-class Mutex;
-} /* namespace sf */
-
 class BaseObjectRegistry {
 public:
-    /**
-     * Share a unique pointer of this class
-     */
-    static BaseObjectRegistry* getInstance();
+    friend class Partons;
 
-    void delete_();
+    /**
+     * Default destructor
+     */
+    virtual ~BaseObjectRegistry();
 
     /**
      * Store a unique instance of a module identified by a unique string character key.
@@ -56,10 +51,10 @@ public:
 
     std::string toString();
 
-    size_t size() const;
+    size_t size();
 
 private:
-    static sf::Mutex m_mutex;
+    sf::Mutex m_mutex;
 
     std::map<unsigned int, BaseObject*> m_baseObjectList;
     std::map<unsigned int, BaseObject*>::iterator m_itBaseObjectList;
@@ -69,22 +64,12 @@ private:
 
     static unsigned int m_uniqueClassIdCounter;
 
-    unsigned int getUniqueClassId();
-
-    /**
-     * Private pointer of this class for a unique instance
-     */
-    static BaseObjectRegistry* m_pInstance;
-
     /**
      * Private default constructor for a unique instance
      */
     BaseObjectRegistry();
 
-    /**
-     * Default destructor
-     */
-    virtual ~BaseObjectRegistry();
+    unsigned int getUniqueClassId();
 
     bool isAvailable(const std::string &className);
 

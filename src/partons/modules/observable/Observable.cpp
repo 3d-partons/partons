@@ -1,12 +1,13 @@
 #include "../../../../include/partons/modules/observable/Observable.h"
 
+#include <SFML/System/Sleep.hpp>
+#include <SFML/System/Time.hpp>
 #include <exception>
 #include <iostream>
 
-#include "/usr/local/sfml/v2.3.2/include/SFML/System/Sleep.hpp"
-#include "/usr/local/sfml/v2.3.2/include/SFML/System/Time.hpp"
 #include "../../../../include/partons/beans/observable/ObservableResult.h"
 #include "../../../../include/partons/modules/ProcessModule.h"
+#include "../../../../include/partons/Partons.h"
 #include "../../../../include/partons/services/ObservableService.h"
 #include "../../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../../include/partons/utils/math/MathUtils.h"
@@ -15,15 +16,15 @@
 #include "../../../../include/partons/utils/thread/Packet.h"
 #include "../../../../include/partons/utils/type/PhysicalType.h"
 
-Observable::Observable(const std::string &className) :
-        ModuleObject(className), m_channel(ObservableChannel::UNDEFINED), m_beamHelicity(
+Observable::Observable(const std::string &className)
+        : ModuleObject(className), m_channel(ObservableChannel::UNDEFINED), m_beamHelicity(
                 0.), m_beamCharge(0.), m_targetPolarization(
                 NumA::Vector3D(0., 0., 0.)), m_observableType(
                 ObservableType::PHI), m_pProcess(0) {
 }
 
-Observable::Observable(const Observable& other) :
-        ModuleObject(other) {
+Observable::Observable(const Observable& other)
+        : ModuleObject(other) {
     m_channel = other.m_channel;
     m_beamHelicity = other.m_beamHelicity;
     m_beamCharge = other.m_beamCharge;
@@ -54,7 +55,7 @@ void Observable::run() {
 
         // Retrieve Observable service
         ObservableService* pObservableService =
-                ServiceObjectRegistry::getObservableService();
+                Partons::getInstance()->getServiceObjectRegistry()->getObservableService();
 
         while (!(pObservableService->isEmptyTaskQueue())) {
             ObservableKinematic observableKinematic;

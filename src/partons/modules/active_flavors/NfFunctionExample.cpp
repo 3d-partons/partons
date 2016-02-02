@@ -2,10 +2,11 @@
 
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
+#include "../../../../include/partons/Partons.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int NfFunctionExample::classId =
-        BaseObjectRegistry::getInstance()->registerBaseObject(
+        Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
                 new NfFunctionExample("NfFunctionExample"));
 
 NfFunctionExample::NfFunctionExample(const std::string &className) :

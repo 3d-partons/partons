@@ -5,16 +5,17 @@
 #include <QtCore/qstring.h>
 
 #include "../../../include/partons/BaseObjectRegistry.h"
+#include "../../../include/partons/Partons.h"
 #include "../../../include/partons/utils/plot2D/Plot2D.h"
 #include "../../../include/partons/utils/plot2D/Plot2DList.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int VizualisationService::classId =
-        BaseObjectRegistry::getInstance()->registerBaseObject(
+        Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
                 new VizualisationService("VizualisationService"));
 
-VizualisationService::VizualisationService(const std::string &className) :
-        ServiceObject(className) {
+VizualisationService::VizualisationService(const std::string &className)
+        : ServiceObject(className) {
 }
 
 VizualisationService::~VizualisationService() {

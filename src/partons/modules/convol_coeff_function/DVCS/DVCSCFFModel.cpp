@@ -20,16 +20,17 @@
 #include "../../../../../include/partons/modules/evolution/gpd/ExampleEvolQCDModel.h"
 #include "../../../../../include/partons/modules/GPDModule.h"
 #include "../../../../../include/partons/ModuleObjectFactory.h"
+#include "../../../../../include/partons/Partons.h"
 #include "../../../../../include/partons/utils/math/MathUtils.h"
 #include "../../../../../include/partons/utils/stringUtils/Formatter.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int DVCSCFFModel::classId =
-        BaseObjectRegistry::getInstance()->registerBaseObject(
+        Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
                 new DVCSCFFModel("DVCSCFFModel"));
 
-DVCSCFFModel::DVCSCFFModel(const std::string &className) :
-        DVCSConvolCoeffFunctionModule(className), m_Zeta(0.), m_logQ2OverMu2(
+DVCSCFFModel::DVCSCFFModel(const std::string &className)
+        : DVCSConvolCoeffFunctionModule(className), m_Zeta(0.), m_logQ2OverMu2(
                 0.), m_Q(0.), m_alphaSOver2Pi(0.), m_quarkDiagonal(0.), m_gluonDiagonal(
                 0.), m_realPartSubtractQuark(0.), m_imaginaryPartSubtractQuark(
                 0.), m_realPartSubtractGluon(0.), m_imaginaryPartSubtractGluon(
@@ -54,15 +55,16 @@ void DVCSCFFModel::init() {
             NumA::MathIntegrator::GSL_ADAPTIVE_SINGULAR);
 
     m_pRunningAlphaStrongModule =
-            ModuleObjectFactory::newRunningAlphaStrongModule(
+            Partons::getInstance()->getModuleObjectFactory()->newRunningAlphaStrongModule(
                     RunningAlphaStrong::classId);
 
-    m_pNfConvolCoeffFunction = ModuleObjectFactory::newActiveFlavorsModule(
-            ExampleEvolQCDModel::classId);
+    m_pNfConvolCoeffFunction =
+            Partons::getInstance()->getModuleObjectFactory()->newActiveFlavorsModule(
+                    ExampleEvolQCDModel::classId);
 }
 
-DVCSCFFModel::DVCSCFFModel(const DVCSCFFModel &other) :
-        DVCSConvolCoeffFunctionModule(other) {
+DVCSCFFModel::DVCSCFFModel(const DVCSCFFModel &other)
+        : DVCSConvolCoeffFunctionModule(other) {
     m_Zeta = other.m_Zeta;
     m_logQ2OverMu2 = other.m_logQ2OverMu2;
     m_Q = other.m_Q;

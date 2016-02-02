@@ -11,7 +11,7 @@
 #include "../../../include/partons/modules/scale/ScaleModule.h"
 #include "../../../include/partons/modules/xb_to_xi/XiConverterModule.h"
 #include "../../../include/partons/ModuleObjectFactory.h"
-#include "../../../include/partons/ObservableObjectFactory.h"
+#include "../../../include/partons/Partons.h"
 #include "../../../include/partons/utils/GenericType.h"
 #include "../../../include/partons/utils/ParameterList.h"
 #include "../../../include/partons/utils/stringUtils/Formatter.h"
@@ -27,11 +27,12 @@ const std::string ObservableService::FUNCTION_NAME_COMPUTE_MANY_KINEMATIC_ONE_MO
 
 // Initialise [class]::classId with a unique name.
 const unsigned int ObservableService::classId =
-        BaseObjectRegistry::getInstance()->registerBaseObject(
+        Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
                 new ObservableService("ObservableService"));
 
-ObservableService::ObservableService(const std::string &className) :
-        ServiceObject(className) {
+ObservableService::ObservableService(const std::string &className)
+        : ServiceObject(className), m_pModuleObjectFactory(
+                Partons::getInstance()->getModuleObjectFactory()) {
 
 }
 
@@ -123,7 +124,7 @@ ObservableResult ObservableService::computeDVCSObservableTask(Task& task) {
     ScaleModule* pScaleModule = 0;
 
     if (task.isAvailableParameterList("ScaleModule")) {
-        pScaleModule = ModuleObjectFactory::newScaleModule(
+        pScaleModule = m_pModuleObjectFactory->newScaleModule(
                 task.getLastAvailableParameterList().get("id").toString());
         pScaleModule->configure(task.getLastAvailableParameterList());
     } else {
@@ -136,7 +137,7 @@ ObservableResult ObservableService::computeDVCSObservableTask(Task& task) {
     XiConverterModule* pXiConverterModule = 0;
 
     if (task.isAvailableParameterList("XiConverterModule")) {
-        pXiConverterModule = ModuleObjectFactory::newXiConverterModule(
+        pXiConverterModule = m_pModuleObjectFactory->newXiConverterModule(
                 task.getLastAvailableParameterList().get("id").toString());
         pXiConverterModule->configure(task.getLastAvailableParameterList());
     } else {
@@ -161,7 +162,7 @@ ObservableResult ObservableService::computeDVCSObservableTask(Task& task) {
     Observable* pObservable = 0;
 
     if (task.isAvailableParameterList("Observable")) {
-        pObservable = ObservableObjectFactory::newObservable(
+        pObservable = m_pModuleObjectFactory->newObservable(
                 task.getLastAvailableParameterList().get("id").toString());
         pObservable->configure(task.getLastAvailableParameterList());
     } else {
@@ -173,7 +174,7 @@ ObservableResult ObservableService::computeDVCSObservableTask(Task& task) {
     GPDModule* pGPDModule = 0;
 
     if (task.isAvailableParameterList("GPDModule")) {
-        pGPDModule = ModuleObjectFactory::newGPDModule(
+        pGPDModule = m_pModuleObjectFactory->newGPDModule(
                 task.getLastAvailableParameterList().get("id").toString());
         pGPDModule->configure(task.getLastAvailableParameterList());
     } else {
@@ -186,7 +187,7 @@ ObservableResult ObservableService::computeDVCSObservableTask(Task& task) {
 
     if (task.isAvailableParameterList("DVCSConvolCoeffFunctionModule")) {
         pDVCSConvolCoeffFunctionModule =
-                ModuleObjectFactory::newDVCSConvolCoeffFunctionModule(
+                m_pModuleObjectFactory->newDVCSConvolCoeffFunctionModule(
                         task.getLastAvailableParameterList().get("id").toString());
         pDVCSConvolCoeffFunctionModule->configure(
                 task.getLastAvailableParameterList());
@@ -200,7 +201,7 @@ ObservableResult ObservableService::computeDVCSObservableTask(Task& task) {
     DVCSModule* pDVCSModule = 0;
 
     if (task.isAvailableParameterList("DVCSModule")) {
-        pDVCSModule = ModuleObjectFactory::newDVCSModule(
+        pDVCSModule = m_pModuleObjectFactory->newDVCSModule(
                 task.getLastAvailableParameterList().get("id").toString());
         pDVCSModule->configure(task.getLastAvailableParameterList());
     } else {
@@ -232,7 +233,7 @@ ResultList<ObservableResult> ObservableService::computeManyKinematicOneModelTask
     ScaleModule* pScaleModule = 0;
 
     if (task.isAvailableParameterList("ScaleModule")) {
-        pScaleModule = ModuleObjectFactory::newScaleModule(
+        pScaleModule = m_pModuleObjectFactory->newScaleModule(
                 task.getLastAvailableParameterList().get("id").toString());
         pScaleModule->configure(task.getLastAvailableParameterList());
     } else {
@@ -245,7 +246,7 @@ ResultList<ObservableResult> ObservableService::computeManyKinematicOneModelTask
     XiConverterModule* pXiConverterModule = 0;
 
     if (task.isAvailableParameterList("XiConverterModule")) {
-        pXiConverterModule = ModuleObjectFactory::newXiConverterModule(
+        pXiConverterModule = m_pModuleObjectFactory->newXiConverterModule(
                 task.getLastAvailableParameterList().get("id").toString());
         pXiConverterModule->configure(task.getLastAvailableParameterList());
     } else {
@@ -279,7 +280,7 @@ ResultList<ObservableResult> ObservableService::computeManyKinematicOneModelTask
     Observable* pObservable = 0;
 
     if (task.isAvailableParameterList("Observable")) {
-        pObservable = ObservableObjectFactory::newObservable(
+        pObservable = m_pModuleObjectFactory->newObservable(
                 task.getLastAvailableParameterList().get("id").toString());
         pObservable->configure(task.getLastAvailableParameterList());
     } else {
@@ -291,7 +292,7 @@ ResultList<ObservableResult> ObservableService::computeManyKinematicOneModelTask
     GPDModule* pGPDModule = 0;
 
     if (task.isAvailableParameterList("GPDModule")) {
-        pGPDModule = ModuleObjectFactory::newGPDModule(
+        pGPDModule = m_pModuleObjectFactory->newGPDModule(
                 task.getLastAvailableParameterList().get("id").toString());
         pGPDModule->configure(task.getLastAvailableParameterList());
     } else {
@@ -304,7 +305,7 @@ ResultList<ObservableResult> ObservableService::computeManyKinematicOneModelTask
 
     if (task.isAvailableParameterList("DVCSConvolCoeffFunctionModule")) {
         pDVCSConvolCoeffFunctionModule =
-                ModuleObjectFactory::newDVCSConvolCoeffFunctionModule(
+                m_pModuleObjectFactory->newDVCSConvolCoeffFunctionModule(
                         task.getLastAvailableParameterList().get("id").toString());
         pDVCSConvolCoeffFunctionModule->configure(
                 task.getLastAvailableParameterList());
@@ -318,7 +319,7 @@ ResultList<ObservableResult> ObservableService::computeManyKinematicOneModelTask
     DVCSModule* pDVCSModule = 0;
 
     if (task.isAvailableParameterList("DVCSModule")) {
-        pDVCSModule = ModuleObjectFactory::newDVCSModule(
+        pDVCSModule = m_pModuleObjectFactory->newDVCSModule(
                 task.getLastAvailableParameterList().get("id").toString());
         pDVCSModule->configure(task.getLastAvailableParameterList());
     } else {

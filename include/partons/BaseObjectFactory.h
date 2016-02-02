@@ -12,26 +12,20 @@
  * @brief
  */
 
-//TODO checked 21/01/2016 for multithreading : added mutex
+#include <SFML/System/Mutex.hpp>
+
+class BaseObjectRegistry;
 
 #include <map>
 #include <string>
 
 #include "BaseObject.h"
 
-class BaseObjectRegistry;
-namespace sf {
-class Mutex;
-} /* namespace sf */
-
 class BaseObjectFactory {
 public:
-    /**
-     * Share a unique pointer of this class
-     */
-    static BaseObjectFactory* getInstance();
+    friend class Partons;
 
-    void delete_();
+    virtual ~BaseObjectFactory();
 
     BaseObject* newBaseObject(unsigned int classId);
     BaseObject* newBaseObject(const std::string &className);
@@ -39,22 +33,12 @@ public:
     void removeFromStore(unsigned int baseObjectUniqueId);
 
 private:
-    static sf::Mutex m_mutex;
-
-    /**
-     * Private pointer of this class for a unique instance
-     */
-    static BaseObjectFactory* m_pInstance;
+    sf::Mutex m_mutex;
 
     /**
      * Private default constructor for a unique instance
      */
     BaseObjectFactory();
-
-    /**
-     * Default destructor
-     */
-    virtual ~BaseObjectFactory();
 
     /// Store BaseObject pointer created by the factory; used at the end of the program to delete orphan pointer.
     std::map<unsigned int, BaseObject*> m_pInstantiatedObject;

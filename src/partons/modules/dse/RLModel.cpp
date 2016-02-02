@@ -1,10 +1,11 @@
 #include "../../../../include/partons/modules/dse/RLModel.h"
 
 #include "../../../../include/partons/BaseObjectRegistry.h"
+#include "../../../../include/partons/Partons.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int RLModel::classId =
-        BaseObjectRegistry::getInstance()->registerBaseObject(
+        Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
                 new RLModel("RLModel"));
 
 RLModel::RLModel(const std::string &className)

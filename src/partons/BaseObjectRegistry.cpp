@@ -1,15 +1,9 @@
 #include "../../include/partons/BaseObjectRegistry.h"
 
 #include <SFML/System/Lock.hpp>
-#include <SFML/System/Mutex.hpp>
 #include <sstream>
 #include <stdexcept>
 #include <utility>
-
-sf::Mutex BaseObjectRegistry::m_mutex;
-
-// Global static pointer used to ensure a single instance of the class.
-BaseObjectRegistry* BaseObjectRegistry::m_pInstance = 0;
 
 unsigned int BaseObjectRegistry::m_uniqueClassIdCounter = 0;
 
@@ -29,26 +23,6 @@ BaseObjectRegistry::~BaseObjectRegistry() {
             (m_itBaseObjectList->second) = 0;
         }
     }
-} // mutex.unlock();
-
-void BaseObjectRegistry::delete_() {
-    sf::Lock lock(m_mutex); // mutex.lock()
-
-    if (m_pInstance) {
-        delete m_pInstance;
-        m_pInstance = 0;
-    }
-} // mutex.unlock();
-
-BaseObjectRegistry* BaseObjectRegistry::getInstance() {
-    sf::Lock lock(m_mutex); // mutex.lock()
-
-    // Only allow one instance of class to be generated.
-    if (!m_pInstance) {
-        m_pInstance = new BaseObjectRegistry();
-    }
-
-    return m_pInstance;
 } // mutex.unlock();
 
 unsigned int BaseObjectRegistry::getUniqueClassId() {
@@ -136,7 +110,7 @@ std::string BaseObjectRegistry::toString() {
     return os.str();
 } // mutex.unlock();
 
-size_t BaseObjectRegistry::size() const {
+size_t BaseObjectRegistry::size() {
     sf::Lock lock(m_mutex); // mutex.lock()
 
     return m_baseObjectList.size();

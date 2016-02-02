@@ -24,21 +24,25 @@ class VizualisationService;
 
 class ServiceObjectRegistry {
 public:
+    virtual ~ServiceObjectRegistry();
 
-    static ServiceObject* get(unsigned int classId);
-    static ServiceObject* get(const std::string &className);
+    ServiceObject* get(unsigned int classId) const;
+    ServiceObject* get(const std::string &className) const;
 
-    static GPDService* getGPDService();
-    static DVCSConvolCoeffFunctionService* getConvolCoeffFunctionService();
-    static ObservableService* getObservableService();
-    static VizualisationService* getVizualisationService();
-    static DoubleDistributionService* getDoubleDistributionService();
+    GPDService* getGPDService() const;
+    DVCSConvolCoeffFunctionService* getConvolCoeffFunctionService() const;
+    ObservableService* getObservableService() const;
+    VizualisationService* getVizualisationService() const;
+    DoubleDistributionService* getDoubleDistributionService() const;
 
 private:
+    friend class Partons;
 
-    static BaseObjectRegistry* m_pBaseObjectRegistry;
+    BaseObjectRegistry* m_pBaseObjectRegistry;
 
-    static void checkBaseObjectRegistryNullPointer();
+    ServiceObjectRegistry();
+
+    void checkBaseObjectRegistryNullPointer() const;
 };
 
 #endif /* SERVICE_OBJECT_REGISTRY_H */

@@ -3,15 +3,15 @@
 #include <stdexcept>
 
 #include "../../include/partons/BaseObjectFactory.h"
+#include "../../include/partons/Partons.h"
 #include "../../include/partons/utils/logger/LoggerManager.h"
 #include "../../include/partons/utils/stringUtils/Formatter.h"
 
 unsigned int BaseObject::m_uniqueObjectIdCounter = 0;
 
-BaseObject::BaseObject(const std::string &className) :
-        m_pLoggerManager(0), m_objectId(getUniqueObjectId()), m_className(
-                className) {
-    m_pLoggerManager = LoggerManager::getInstance();
+BaseObject::BaseObject(const std::string &className)
+        : m_objectId(getUniqueObjectId()), m_className(className), m_pLoggerManager(
+                Partons::getInstance()->getLoggerManager()) {
 }
 
 BaseObject::BaseObject(const BaseObject& other) {
@@ -27,7 +27,8 @@ BaseObject::~BaseObject() {
     // Nothing to destroy
 
     //Self removing from factory store if previously created by it
-    BaseObjectFactory::getInstance()->removeFromStore(getObjectId());
+    Partons::getInstance()->getBaseObjectFactory()->removeFromStore(
+            getObjectId());
 }
 
 void BaseObject::throwException(const std::string functionName,

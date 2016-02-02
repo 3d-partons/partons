@@ -5,12 +5,11 @@
 #include "../../../include/partons/database/convol_coeff_function/service/ConvolCoeffFunctionResultDaoService.h"
 #include "../../../include/partons/modules/GPDModule.h"
 #include "../../../include/partons/ModuleObjectFactory.h"
+#include "../../../include/partons/Partons.h"
 #include "../../../include/partons/utils/GenericType.h"
 #include "../../../include/partons/utils/ParameterList.h"
 #include "../../../include/partons/utils/stringUtils/Formatter.h"
 #include "../../../include/partons/utils/stringUtils/StringUtils.h"
-
-//#include "../beans/List.h"
 
 const std::string DVCSConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_WITH_GPD_MODEL =
         "computeWithGPDModel";
@@ -19,13 +18,14 @@ const std::string DVCSConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_LIST_WIT
 
 // Initialise [class]::classId with a unique name.
 const unsigned int DVCSConvolCoeffFunctionService::classId =
-        BaseObjectRegistry::getInstance()->registerBaseObject(
+        Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
                 new DVCSConvolCoeffFunctionService(
                         "DVCSConvolCoeffFunctionService"));
 
 DVCSConvolCoeffFunctionService::DVCSConvolCoeffFunctionService(
-        const std::string &className) :
-        ServiceObject(className) {
+        const std::string &className)
+        : ServiceObject(className), m_pModuleObjectFactory(
+                Partons::getInstance()->getModuleObjectFactory()) {
 
 }
 
@@ -121,7 +121,7 @@ DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionService::computeWithGPDMode
     //TODO How to handle CFF module without GPD module ?
 
     if (task.isAvailableParameterList("GPDModule")) {
-        pGPDModule = ModuleObjectFactory::newGPDModule(
+        pGPDModule = m_pModuleObjectFactory->newGPDModule(
                 task.getLastAvailableParameterList().get("id").toString());
         pGPDModule->configure(task.getLastAvailableParameterList());
     } else {
@@ -134,7 +134,7 @@ DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionService::computeWithGPDMode
 
     if (task.isAvailableParameterList("DVCSConvolCoeffFunctionModule")) {
         pDVCSConvolCoeffFunctionModule =
-                ModuleObjectFactory::newDVCSConvolCoeffFunctionModule(
+                m_pModuleObjectFactory->newDVCSConvolCoeffFunctionModule(
                         task.getLastAvailableParameterList().get("id").toString());
         pDVCSConvolCoeffFunctionModule->configure(
                 task.getLastAvailableParameterList());
@@ -175,7 +175,7 @@ ResultList<DVCSConvolCoeffFunctionResult> DVCSConvolCoeffFunctionService::comput
 
         for (unsigned int i = 0; i != listOfParameterList.size(); i++) {
             listOfModule.push_back(
-                    ModuleObjectFactory::newDVCSConvolCoeffFunctionModule(
+                    m_pModuleObjectFactory->newDVCSConvolCoeffFunctionModule(
                             listOfParameterList[i].get("id").toString()));
             listOfModule[i]->configure(listOfParameterList[i]);
         }
@@ -192,7 +192,7 @@ ResultList<DVCSConvolCoeffFunctionResult> DVCSConvolCoeffFunctionService::comput
     //TODO How to handle CFF module without GPD module ?
 
     if (task.isAvailableParameterList("GPDModule")) {
-        pGPDModule = ModuleObjectFactory::newGPDModule(
+        pGPDModule = m_pModuleObjectFactory->newGPDModule(
                 task.getLastAvailableParameterList().get("id").toString());
         pGPDModule->configure(task.getLastAvailableParameterList());
     } else {

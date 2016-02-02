@@ -1,5 +1,6 @@
 #include "../../include/partons/ScenarioManager.h"
 
+#include "../../include/partons/Partons.h"
 #include "../../include/partons/ServiceObject.h"
 #include "../../include/partons/ServiceObjectRegistry.h"
 #include "../../include/partons/utils/parser/xml/Attributs.h"
@@ -12,8 +13,8 @@ ScenarioManager* ScenarioManager::pInstance = 0;
 const std::string ScenarioManager::SCENARIO_NODE_NAME = "scenario";
 const std::string ScenarioManager::TASK_NODE_NAME = "task";
 
-ScenarioManager::ScenarioManager() :
-        BaseObject("ScenarioManager"), XMLParser() {
+ScenarioManager::ScenarioManager()
+        : BaseObject("ScenarioManager"), XMLParser() {
 }
 
 ScenarioManager* ScenarioManager::getInstance() {
@@ -42,7 +43,8 @@ void ScenarioManager::playScenario(const std::string &scenarioFilePath) {
     // compute each found tasks
     for (unsigned int i = 0; i < m_scenario.size(); i++) {
         Task task = m_scenario.getTask(i);
-        ServiceObjectRegistry::get(task.getServiceName())->computeTask(task);
+        Partons::getInstance()->getServiceObjectRegistry()->get(
+                task.getServiceName())->computeTask(task);
     }
 }
 

@@ -1,33 +1,33 @@
-/*
- * DVCSCFFVGGModel.cpp
- *
- *  Created on: Dec 20, 2015
- *      Author: Michel Guidal and Pawel Sznajder (IPNO)
- */
-
 #include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSCFFVGGModel.h"
 
-#include "../../../../../include/partons/BaseObjectRegistry.h"
-#include "../../../../../include/partons/ModuleObjectFactory.h"
-#include "../../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../../include/partons/beans/gpd/GPDResult.h"
+#include <NumA/integration/MathIntegrator.h>
+#include <cmath>
+#include <map>
+#include <stdexcept>
+#include <utility>
+
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
-#include "../../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
 #include "../../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
 #include "../../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
+#include "../../../../../include/partons/beans/PerturbativeQCDOrderType.h"
+#include "../../../../../include/partons/beans/QuarkFlavor.h"
+#include "../../../../../include/partons/BaseObjectRegistry.h"
+#include "../../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../../include/partons/modules/alphaS/RunningAlphaStrong.h"
 #include "../../../../../include/partons/modules/evolution/gpd/ExampleEvolQCDModel.h"
 #include "../../../../../include/partons/modules/GPDModule.h"
+#include "../../../../../include/partons/ModuleObjectFactory.h"
+#include "../../../../../include/partons/Partons.h"
 #include "../../../../../include/partons/utils/stringUtils/Formatter.h"
 
 const unsigned int DVCSCFFVGGModel::classId =
-        BaseObjectRegistry::getInstance()->registerBaseObject(
+        Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
                 new DVCSCFFVGGModel("DVCSCFFVGGModel"));
 
 const double DVCSCFFVGGModel::eps_cffint = 1.E-3;
 
-DVCSCFFVGGModel::DVCSCFFVGGModel(const std::string& className) :
-        DVCSConvolCoeffFunctionModule(className) {
+DVCSCFFVGGModel::DVCSCFFVGGModel(const std::string& className)
+        : DVCSConvolCoeffFunctionModule(className) {
 
     xixit = -1.;
 
@@ -53,20 +53,22 @@ DVCSCFFVGGModel* DVCSCFFVGGModel::clone() const {
 DVCSCFFVGGModel::~DVCSCFFVGGModel() {
 }
 
+//TODO init in mother class ? ; propagate init to mother class ?
 void DVCSCFFVGGModel::init() {
 
     m_mathIntegrator.setIntegrationMode(NumA::MathIntegrator::GLNP);
 
     m_pRunningAlphaStrongModule =
-            ModuleObjectFactory::newRunningAlphaStrongModule(
+            Partons::getInstance()->getModuleObjectFactory()->newRunningAlphaStrongModule(
                     RunningAlphaStrong::classId);
 
-    m_pNfConvolCoeffFunction = ModuleObjectFactory::newActiveFlavorsModule(
-            ExampleEvolQCDModel::classId);
+    m_pNfConvolCoeffFunction =
+            Partons::getInstance()->getModuleObjectFactory()->newActiveFlavorsModule(
+                    ExampleEvolQCDModel::classId);
 }
 
-DVCSCFFVGGModel::DVCSCFFVGGModel(const DVCSCFFVGGModel& other) :
-        DVCSConvolCoeffFunctionModule(other) {
+DVCSCFFVGGModel::DVCSCFFVGGModel(const DVCSCFFVGGModel& other)
+        : DVCSConvolCoeffFunctionModule(other) {
 
     xixit = other.xixit;
 }
@@ -147,7 +149,7 @@ std::complex<double> DVCSCFFVGGModel::computePolarized() {
     }
 
     return DVCSCFFVGGModel::computeUnpolarized();
- }
+}
 
 double DVCSCFFVGGModel::calculate_gpd_combination(GPDResult gpdResult) {
 

@@ -1,41 +1,24 @@
 #include "../../../../include/partons/utils/logger/LoggerManager.h"
 
 #include <SFML/System/Lock.hpp>
-#include <SFML/System/Mutex.hpp>
+#include <SFML/System/Sleep.hpp>
+#include <SFML/System/Time.hpp>
 #include <iostream>
 #include <utility>
 #include <vector>
 
-#include "/usr/local/sfml/v2.3.2/include/SFML/System/Sleep.hpp"
-#include "/usr/local/sfml/v2.3.2/include/SFML/System/Time.hpp"
 #include "../../../../include/partons/utils/fileUtils/FileUtils.h"
 #include "../../../../include/partons/utils/parser/IniFileParser.h"
 #include "../../../../include/partons/utils/PropertiesManager.h"
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
 #include "../../../../include/partons/utils/stringUtils/StringUtils.h"
 
-sf::Mutex LoggerManager::m_mutex;
-
-// Global static pointer used to ensure a single instance of the class.
-LoggerManager* LoggerManager::m_pInstance = 0;
-
 //TODO remplacer le nom de la propriété "log.file.path" par un static final string
-LoggerManager::LoggerManager() :
-        Thread(), m_outputFilePath("default.log"), m_defaultLevel(
+LoggerManager::LoggerManager()
+        : Thread(), m_outputFilePath("default.log"), m_defaultLevel(
                 LoggerLevel::INFO), m_printMode(LoggerPrintMode::COUT), m_active(
                 true) {
 }
-
-LoggerManager* LoggerManager::getInstance() {
-    sf::Lock lock(m_mutex); // mutex.lock()
-
-    // Only allow one instance of class to be generated.
-    if (!m_pInstance) {
-        m_pInstance = new LoggerManager();
-    }
-
-    return m_pInstance;
-} // mutex.unlock();
 
 LoggerManager::~LoggerManager() {
     sf::Lock lock(m_mutex); // mutex.lock()
@@ -46,15 +29,6 @@ LoggerManager::~LoggerManager() {
             delete (m_it->second);
             (m_it->second) = 0;
         }
-    }
-} // mutex.unlock();
-
-void LoggerManager::delete_() {
-    sf::Lock lock(m_mutex); // mutex.lock()
-
-    if (m_pInstance != 0) {
-        delete m_pInstance;
-        m_pInstance = 0;
     }
 } // mutex.unlock();
 
