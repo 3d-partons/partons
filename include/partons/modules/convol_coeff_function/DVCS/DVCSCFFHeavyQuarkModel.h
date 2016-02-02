@@ -14,6 +14,7 @@
 
 #include <complex>
 #include <string>
+#include <vector>
 
 #include "DVCSCFFModel.h"
 
@@ -39,7 +40,6 @@ protected:
 //    virtual void initModule();
 //    virtual void isModuleWellConfigured();
 
-
     virtual std::complex<double> computeUnpolarized();
     virtual std::complex<double> computePolarized();
 
@@ -57,10 +57,14 @@ private:
     std::complex<double> MassiveKernelGluonNLOV(double x);
     std::complex<double> computeIntegralsMassiveV();
     std::complex<double> computeIntegralsMassiveA();
-    double ConvolReKernelGluonMassiveV(double* x, double* params);
-    double ConvolImKernelGluonMassiveV(double* x, double* params);
-    double ConvolReKernelGluonMassiveA(double* x, double* params);
-    double ConvolImKernelGluonMassiveA(double* x, double* params);
+    double ConvolReKernelGluonMassiveV(std::vector<double> x,
+            std::vector<double> params);
+    double ConvolImKernelGluonMassiveV(std::vector<double> x,
+            std::vector<double> params);
+    double ConvolReKernelGluonMassiveA(std::vector<double> x,
+            std::vector<double> params);
+    double ConvolImKernelGluonMassiveA(std::vector<double> x,
+            std::vector<double> params);
 
 };
 

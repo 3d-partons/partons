@@ -13,6 +13,7 @@
  */
 
 #include <string>
+#include <vector>
 
 #include "../MathIntegratorModule.h"
 #include "Observable.h"
@@ -31,7 +32,10 @@ public:
     double compute();
 
 protected:
-    virtual double functionToIntegrate(double *x, double *params) = 0;
+    FourierObservable(const FourierObservable &other);
+
+    virtual double functionToIntegrate(std::vector<double> x,
+            std::vector<double> params) = 0;
 };
 
 #endif /* FOURIER_OBSERVABLE_H */

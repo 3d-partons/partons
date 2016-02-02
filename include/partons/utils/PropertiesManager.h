@@ -15,6 +15,10 @@
 
 #include "parser/IniFileParser.h"
 
+namespace sf {
+class Mutex;
+} /* namespace sf */
+
 class PropertiesManager {
 public:
 
@@ -36,6 +40,8 @@ public:
     std::string getString(const std::string & key);
 
 private:
+    static sf::Mutex m_mutex;
+
     static const std::string PARTONS_PROPERTIES_FILE_PATH;
 
     static PropertiesManager* pInstance; ///< Private pointer of this class for a unique instance

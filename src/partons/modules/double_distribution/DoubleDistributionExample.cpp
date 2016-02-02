@@ -1,6 +1,6 @@
 #include "../../../../include/partons/modules/double_distribution/DoubleDistributionExample.h"
 
-#include <NumA/MathIntegrator.h>
+#include <NumA/integration/MathIntegrator.h>
 #include <map>
 #include <utility>
 

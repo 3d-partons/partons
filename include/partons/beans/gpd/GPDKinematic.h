@@ -17,6 +17,8 @@
 #include "../kinematic/KinematicType.h"
 #include "../Kinematic.h"
 
+class Packet;
+
 class ComparisonReport;
 class ParameterList;
 class Tolerances;
@@ -62,6 +64,9 @@ public:
     ComparisonReport compare(const GPDKinematic &referenceObject,
             const Tolerances &tolerances) const;
 
+    void serialize(Packet &packet) const;
+    void unserialize(Packet &packet);
+
     // ##### GETTERS & SETTERS #####
 
     double getMuF2() const;
@@ -91,7 +96,7 @@ private:
     double m_MuR2;	///< Renormalization scale (in GeV^2)
 };
 
-//sf::Packet& operator <<(sf::Packet& packet, const GPDKinematic& object);
-//sf::Packet& operator >>(sf::Packet& packet, GPDKinematic& object);
+Packet& operator <<(Packet& packet, GPDKinematic& kinematic);
+Packet& operator >>(Packet& packet, GPDKinematic& kinematic);
 
 #endif /* GPD_KINEMATIC_H */

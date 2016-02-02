@@ -17,6 +17,20 @@ void Packet::append(const void* data, std::size_t sizeInBytes) {
     }
 }
 
+Packet& Packet::operator >>(bool& data) {
+    if (checkSize(sizeof(data))) {
+        data = *reinterpret_cast<const double*>(&m_data[m_readPos]);
+        m_readPos += sizeof(data);
+    }
+
+    return *this;
+}
+
+Packet& Packet::operator <<(bool data) {
+    append(&data, sizeof(data));
+    return *this;
+}
+
 Packet& Packet::operator >>(double &data) {
     if (checkSize(sizeof(data))) {
         data = *reinterpret_cast<const double*>(&m_data[m_readPos]);

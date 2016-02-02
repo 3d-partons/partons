@@ -16,6 +16,10 @@
 
 #include "beans/Scale.h"
 
+namespace sf {
+class Mutex;
+} /* namespace sf */
+
 class BaseObjectFactory;
 class BaseObjectRegistry;
 
@@ -41,9 +45,10 @@ public:
     void setScale(double MuF2, double MuR2);
     Scale getScale() const;
 
-    LoggerManager* getLoggerManager();
-
 private:
+
+    static sf::Mutex m_mutex;
+
     /**
      * Private pointer of this class for a unique instance
      */

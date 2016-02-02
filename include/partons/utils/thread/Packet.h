@@ -45,6 +45,7 @@ public:
     /// Overloads of operator >> to read data from the packet
     ///
     ////////////////////////////////////////////////////////////
+    Packet& operator >>(bool& data);
     Packet& operator >>(double& data);
     Packet& operator >>(unsigned int &data);
     Packet& operator >>(int &data);
@@ -56,6 +57,7 @@ public:
     /// Overloads of operator << to write data into the packet
     ///
     ////////////////////////////////////////////////////////////
+    Packet& operator <<(bool data);
     Packet& operator <<(double data);
     Packet& operator <<(unsigned int data);
     Packet& operator <<(int data);

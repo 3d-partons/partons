@@ -8,14 +8,11 @@
 #include "../../../../include/partons/modules/gpd/VGGModel.h"
 
 #include <math.h>
-//#include <stdio.h>
+#include <NumA/integration/MathIntegrator.h>
 #include <map>
 #include <stdexcept>
-#include <string>
 #include <utility>
-#include <vector>
 
-#include "../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
 #include "../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
 #include "../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
@@ -30,12 +27,13 @@ const unsigned int VGGModel::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new VGGModel("VGGModel"));
 
+//TODO try to avoid global variables
 const double VGGModel::eps_doubleint = 0.001;
 const double VGGModel::kappa_u = 1.6596;
 const double VGGModel::kappa_d = -2.0352;
 
 VGGModel::VGGModel(const std::string &className) :
-        GPDModule(className) {
+        GPDModule(className), MathIntegratorModule() {
 
     b_profile_val = -1.;
     b_profile_sea = -1.;
@@ -44,7 +42,6 @@ VGGModel::VGGModel(const std::string &className) :
     eta_e_largex_u_s = -1.;
     eta_e_largex_d_s = -1.;
 
-    m_mathIntegrator = 0;
     m_Forward = 0;
 
     gpd_s5 = GPDType::UNDEFINED;
@@ -59,11 +56,6 @@ VGGModel::VGGModel(const std::string &className) :
 }
 
 VGGModel::~VGGModel() {
-
-    if (m_mathIntegrator) {
-        delete m_mathIntegrator;
-        m_mathIntegrator = 0;
-    }
     if (m_Forward) {
         delete m_Forward;
         m_Forward = 0;
@@ -84,8 +76,9 @@ void VGGModel::init() {
     eta_e_largex_u_s = 1.713;
     eta_e_largex_d_s = 0.566;
 
-    m_mathIntegrator = new NumA::MathIntegrator();
-    m_mathIntegrator->setIntegrationMode(NumA::MathIntegrator::ROOT);
+    m_mathIntegrator.setIntegrationMode(
+            NumA::MathIntegrator::GSL_ADAPTIVE_SINGULAR);
+
     m_Forward = new c_mstwpdf(
             PropertiesManager::getInstance()->getString("grid.directory")
                     + "mstw2008nlo.00.dat");
@@ -99,7 +92,7 @@ std::string VGGModel::toString() {
 }
 
 VGGModel::VGGModel(const VGGModel& other) :
-        GPDModule(other) {
+        GPDModule(other), MathIntegratorModule(other) {
 
     b_profile_val = other.b_profile_val;
     b_profile_sea = other.b_profile_sea;
@@ -108,7 +101,6 @@ VGGModel::VGGModel(const VGGModel& other) :
     eta_e_largex_u_s = other.eta_e_largex_u_s;
     eta_e_largex_d_s = other.eta_e_largex_d_s;
 
-    m_mathIntegrator = other.m_mathIntegrator;
     m_Forward = other.m_Forward;
 
     gpd_s5 = other.gpd_s5;
@@ -137,10 +129,7 @@ void VGGModel::isModuleWellConfigured() {
     if (eta_e_largex_d_s == -1.)
         throw std::runtime_error("[VGGModel] Unknown eta_e_largex_d_s");
 
-    if (m_mathIntegrator == NULL)
-        throw std::runtime_error("[VGGModel] MathIntegration module is NULL");
-
-    if (m_mathIntegrator->getIntegrationMode()
+    if (m_mathIntegrator.getIntegrationMode()
             == NumA::MathIntegrator::UNDEFINED)
         throw std::runtime_error("[VGGModel] MathIntegrationMode is UNDEFINED");
 
@@ -233,13 +222,13 @@ PartonDistribution VGGModel::computeE() {
 
     flavour_s5 = upv;
     uVal = kappa_u * offforward_distr()
-            / m_mathIntegrator->integrateWithROOT(this,
-                    &VGGModel::int_mom2_up_valence_e, 0., 1., emptyParameters);
+            / m_mathIntegrator.integrate(this, &VGGModel::int_mom2_up_valence_e,
+                    0., 1., emptyParameters);
 
     flavour_s5 = dnv;
     dVal = kappa_d * offforward_distr()
-            / m_mathIntegrator->integrateWithROOT(this,
-                    &VGGModel::int_mom2_up_valence_e, 0., 1., emptyParameters);
+            / m_mathIntegrator.integrate(this, &VGGModel::int_mom2_up_valence_e,
+                    0., 1., emptyParameters);
 
     uSea = 0.;
     dSea = 0.;
@@ -291,8 +280,10 @@ double VGGModel::offforward_distr() {
     double ofpd;
 
     //integrated function according to variant
-    double (VGGModel::*f_dist)(double* a, double* b) = NULL;
-    double (VGGModel::*f_distMx)(double* a, double* b) = NULL;
+    double (VGGModel::*f_dist)(std::vector<double> a,
+            std::vector<double> b) = NULL;
+    double (VGGModel::*f_distMx)(std::vector<double> a,
+            std::vector<double> b) = NULL;
 
     //GPD
     switch (gpd_s5) {
@@ -325,25 +316,25 @@ double VGGModel::offforward_distr() {
     //three ranges of x
     if (x_s5 >= m_xi) {
 
-        ofpd = m_mathIntegrator->integrateWithROOT(this, f_dist,
+        ofpd = m_mathIntegrator.integrate(this, f_dist,
                 -(1. - x_s5) / (1. + m_xi), (1. - x_s5) / (1. - m_xi),
                 emptyParameters);
 
     } else if ((-m_xi < x_s5) && (x_s5 < m_xi)) {
 
-        ofpd = m_mathIntegrator->integrateWithROOT(this, f_dist,
+        ofpd = m_mathIntegrator.integrate(this, f_dist,
                 -(1. - x_s5) / (1. + m_xi), x_s5 / m_xi - eps_doubleint,
                 emptyParameters);
 
         if (flavour_s5 != upv && flavour_s5 != dnv) {
-            ofpd -= m_mathIntegrator->integrateWithROOT(this, f_distMx,
+            ofpd -= m_mathIntegrator.integrate(this, f_distMx,
                     -(1. + x_s5) / (1. + m_xi), -x_s5 / m_xi - eps_doubleint,
                     emptyParameters);
         }
 
     } else {
         if (flavour_s5 != upv && flavour_s5 != dnv) {
-            ofpd = -m_mathIntegrator->integrateWithROOT(this, f_distMx,
+            ofpd = -m_mathIntegrator.integrate(this, f_distMx,
                     -(1. + x_s5) / (1. + m_xi), (1. + x_s5) / (1. - m_xi),
                     emptyParameters);
         } else {
@@ -492,26 +483,31 @@ double VGGModel::symm_profile_function(double beta, double alpha,
             / pow(1. - fabs(beta), 2. * b_profile + 1.);
 }
 
-double VGGModel::int_symm_double_distr_reggeH(double* alpha, double* par) {
-    return symm_double_distr_reggeH(x_s5 - m_xi * (*alpha), *alpha);
+double VGGModel::int_symm_double_distr_reggeH(std::vector<double> alpha,
+        std::vector<double> par) {
+    return symm_double_distr_reggeH(x_s5 - m_xi * alpha[0], alpha[0]);
 }
 
-double VGGModel::int_symm_double_distr_reggeMxH(double* alpha, double* par) {
-    return symm_double_distr_reggeH(-x_s5 - m_xi * (*alpha), *alpha);
+double VGGModel::int_symm_double_distr_reggeMxH(std::vector<double> alpha,
+        std::vector<double> par) {
+    return symm_double_distr_reggeH(-x_s5 - m_xi * alpha[0], alpha[0]);
 }
 
-double VGGModel::int_symm_double_distr_reggeE(double* alpha, double* par) {
-    return symm_double_distr_reggeE(x_s5 - m_xi * (*alpha), *alpha);
+double VGGModel::int_symm_double_distr_reggeE(std::vector<double> alpha,
+        std::vector<double> par) {
+    return symm_double_distr_reggeE(x_s5 - m_xi * alpha[0], alpha[0]);
 }
 
-double VGGModel::int_symm_double_distr_reggeMxE(double* alpha, double* par) {
-    return symm_double_distr_reggeE(-x_s5 - m_xi * (*alpha), *alpha);
+double VGGModel::int_symm_double_distr_reggeMxE(std::vector<double> alpha,
+        std::vector<double> par) {
+    return symm_double_distr_reggeE(-x_s5 - m_xi * alpha[0], alpha[0]);
 }
 
-double VGGModel::int_mom2_up_valence_e(double* x, double* par) {
+double VGGModel::int_mom2_up_valence_e(std::vector<double> x,
+        std::vector<double> par) {
 
     //value
-    double beta = *x;
+    double beta = x[0];
 
     //check beta range
     if (beta <= 0.) {

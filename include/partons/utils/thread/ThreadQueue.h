@@ -12,7 +12,7 @@
  * @brief
  */
 
-#include <pthread.h>
+#include <SFML/System/Mutex.hpp>
 #include <queue>
 
 #include "../../beans/List.h"
@@ -28,12 +28,13 @@ public:
 
     Packet pop();
 
-    bool empty() const;
+    bool empty();
 
 private:
     std::queue<Packet> m_tasks;
 
-    pthread_mutex_t m_mutex;
+    //pthread_mutex_t m_mutex;
+    sf::Mutex m_mutex;
 };
 
 #endif /* THREAD_QUEUE_H */

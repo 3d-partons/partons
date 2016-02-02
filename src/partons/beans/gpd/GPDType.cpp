@@ -1,6 +1,8 @@
 #include "../../../../include/partons/beans/gpd/GPDType.h"
 
 #include "../../../../include/partons/utils/stringUtils/StringUtils.h"
+#include "../../../../include/partons/utils/thread/Packet.h"
+
 //#include "../../utils/GenericType.h"
 //#include "../../utils/ParameterList.h"
 
@@ -72,4 +74,24 @@ GPDType::Type GPDType::fromString(const std::string& gpdTypeStr) {
     }
 
     return gpdType;
+}
+
+void GPDType::serialize(Packet &packet) const {
+    packet << static_cast<int>(m_type);
+}
+
+void GPDType::unserialize(Packet &packet) {
+    int i = 0;
+    packet >> i;
+    m_type = static_cast<GPDType::Type>(i);
+}
+
+Packet& operator <<(Packet& packet, GPDType& gpdType) {
+    gpdType.serialize(packet);
+    return packet;
+}
+Packet& operator >>(Packet& packet, GPDType& gpdType) {
+
+    gpdType.unserialize(packet);
+    return packet;
 }

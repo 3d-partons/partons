@@ -12,7 +12,7 @@
  * @brief
  */
 
-#include <NumA/MathIntegrator.h>
+#include <NumA/integration/MathIntegrator.h>
 
 class MathIntegratorModule {
 public:

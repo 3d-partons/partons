@@ -1,7 +1,10 @@
 #include "../../../../include/partons/modules/observable/Observable.h"
 
-#include <unistd.h>
+#include <exception>
+#include <iostream>
 
+#include "/usr/local/sfml/v2.3.2/include/SFML/System/Sleep.hpp"
+#include "/usr/local/sfml/v2.3.2/include/SFML/System/Time.hpp"
 #include "../../../../include/partons/beans/observable/ObservableResult.h"
 #include "../../../../include/partons/modules/ProcessModule.h"
 #include "../../../../include/partons/services/ObservableService.h"
@@ -10,16 +13,17 @@
 #include "../../../../include/partons/utils/ParameterList.h"
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
 #include "../../../../include/partons/utils/thread/Packet.h"
+#include "../../../../include/partons/utils/type/PhysicalType.h"
 
 Observable::Observable(const std::string &className) :
-        BaseObject(className), m_channel(ObservableChannel::UNDEFINED), m_beamHelicity(
+        ModuleObject(className), m_channel(ObservableChannel::UNDEFINED), m_beamHelicity(
                 0.), m_beamCharge(0.), m_targetPolarization(
                 NumA::Vector3D(0., 0., 0.)), m_observableType(
                 ObservableType::PHI), m_pProcess(0) {
 }
 
 Observable::Observable(const Observable& other) :
-        BaseObject(other) {
+        ModuleObject(other) {
     m_channel = other.m_channel;
     m_beamHelicity = other.m_beamHelicity;
     m_beamCharge = other.m_beamCharge;
@@ -36,37 +40,55 @@ Observable::Observable(const Observable& other) :
 Observable::~Observable() {
 }
 
-void* Observable::run() {
+void Observable::initModule() {
 
-    // Retrieve Observable service
-    ObservableService* pObservableService =
-            ServiceObjectRegistry::getObservableService();
+}
 
-    while (!(pObservableService->isEmptyTaskQueue())) {
-        ObservableKinematic observableKinematic;
-        Packet packet = pObservableService->popTaskFormQueue();
-        packet >> observableKinematic;
+void Observable::isModuleWellConfigured() {
 
-        ObservableResult result = compute(observableKinematic);
+}
 
-        info(__func__,
-                Formatter() << "[Thread] id = " << getThreadId() << " "
-                        << result.toString());
+void Observable::run() {
 
-        //TODO replace by standard sleep ; multiplatform
-        usleep(30000);
+    try {
+
+        // Retrieve Observable service
+        ObservableService* pObservableService =
+                ServiceObjectRegistry::getObservableService();
+
+        while (!(pObservableService->isEmptyTaskQueue())) {
+            ObservableKinematic observableKinematic;
+            Packet packet = pObservableService->popTaskFormQueue();
+            packet >> observableKinematic;
+
+            ObservableResult result = compute(observableKinematic);
+
+//        info(__func__,
+//                Formatter() << "[Thread] id = " << getThreadId() << " "
+//                        << result.toString());
+
+//TODO replace by standard sleep ; multiplatform
+//usleep(30000);
+
+            sf::sleep(sf::milliseconds(3));
+        }
+
+//    info(__func__,
+//            Formatter() << "[Thread] id = " << getThreadId()
+//                    << " empty task list, terminated.");
+
+    } catch (std::exception &e) {
+        std::cerr << e.what() << std::endl;
     }
 
-    info(__func__,
-            Formatter() << "[Thread] id = " << getThreadId()
-                    << " empty task list, terminated.");
-
-    return 0;
 }
 
 ObservableResult Observable::compute(const ObservableKinematic &kinematic) {
+
+    info(__func__, Formatter() << getObjectId() << " " << kinematic.toString());
+
     return compute(kinematic.getXB(), kinematic.getT(), kinematic.getQ2(),
-            kinematic.getPhi());
+            kinematic.getPhi().getValue());
 }
 
 ObservableResult Observable::compute(double xB, double t, double Q2,
@@ -83,7 +105,7 @@ ObservableResult Observable::compute(double xB, double t, double Q2,
         observableResult = ObservableResult(getClassName(), compute());
         observableResult.setComputationModuleName(m_pProcess->getClassName());
         observableResult.setObservableType(m_observableType);
-        observableResult.setKinematic(ObservableKinematic(xB, t, Q2, phi));
+        observableResult.setKinematic(ObservableKinematic(xB, t, Q2));
 
     } else
     // check if this observable is a phi observable

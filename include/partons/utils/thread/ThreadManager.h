@@ -11,19 +11,19 @@
  */
 
 #include "../../beans/List.h"
-#include "Thread.h"
+#include "../../ModuleObject.h"
 
 class ThreadManager {
 public:
     ThreadManager();
     virtual ~ThreadManager();
 
-    void newThread(const unsigned int numberOfThread, Thread *pThread);
+    void newThread(const unsigned int numberOfThread,
+            ModuleObject *pModuleObject);
     void launchAllAndWaitingFor();
 
 private:
-
-    List<Thread*> m_listOfThreads;
+    List<ModuleObject*> m_listOfModuleObject;
 };
 
 #endif /* THREAD_MANAGER_H */

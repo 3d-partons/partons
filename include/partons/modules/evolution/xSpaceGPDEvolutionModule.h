@@ -13,6 +13,7 @@
  */
 
 #include <string>
+#include <vector>
 
 #include "../MathIntegratorModule.h"
 #include "GPDEvolutionModule.h"
@@ -33,7 +34,8 @@ protected:
     virtual void initModule();
     virtual void isModuleWellConfigured();
 
-    virtual double integratedNonSingletMuFDerivative(const NfInterval &nfInterval);
+    virtual double integratedNonSingletMuFDerivative(
+            const NfInterval &nfInterval);
     virtual double integratedSingletMuFDerivative(const NfInterval &nfInterval);
     virtual double integratedGluonMuFDerivative(const NfInterval &nfInterval);
 
@@ -45,9 +47,12 @@ protected:
     virtual double kernelSingletgg(double y) = 0;
 
 private:
-    double integrateNonSinglet(double* variables, double* parameters);
-    double integrateSinglet(double *variables, double *parameters);
-    double integrateGluon(double *variables, double *parameters);
+    double integrateNonSinglet(std::vector<double> variables,
+            std::vector<double> parameters);
+    double integrateSinglet(std::vector<double> variables,
+            std::vector<double> parameters);
+    double integrateGluon(std::vector<double> variables,
+            std::vector<double> parameters);
 };
 
 #endif /* X_SPACE_GPD_EVOLUTION_MODULE_H */

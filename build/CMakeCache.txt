@@ -27,7 +27,7 @@ CMAKE_AR:FILEPATH=/usr/bin/ar
 
 //Choose the type of build, options are: None(CMAKE_CXX_FLAGS or
 // CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel.
-CMAKE_BUILD_TYPE:STRING=
+CMAKE_BUILD_TYPE:STRING=Debug
 
 //Enable/Disable color output during build.
 CMAKE_COLOR_MAKEFILE:BOOL=ON
@@ -176,7 +176,7 @@ NUMA_LIB_DIR:FILEPATH=/home/debian/workspace/NumA++/lib
 PARTONS_BINARY_DIR:STATIC=/home/debian/workspace/PARTONS/build
 
 //Dependencies for the target
-PARTONS_LIB_DEPENDS:STATIC=general;/usr/lib/x86_64-linux-gnu/libQtGui.so;general;/usr/lib/x86_64-linux-gnu/libQtSql.so;general;/usr/lib/x86_64-linux-gnu/libQtCore.so;general;Hist;general;Core;general;NumA++;general;cln;
+PARTONS_LIB_DEPENDS:STATIC=general;/usr/lib/x86_64-linux-gnu/libQtGui.so;general;/usr/lib/x86_64-linux-gnu/libQtSql.so;general;/usr/lib/x86_64-linux-gnu/libQtCore.so;general;Hist;general;Core;general;NumA++;general;cln;general;sfml-system;
 
 //Value Computed by CMake
 PARTONS_SOURCE_DIR:STATIC=/home/debian/workspace/PARTONS
@@ -782,13 +782,19 @@ QT_WORLDTIMECLOCKPLUGIN_PLUGIN_DEBUG:FILEPATH=QT_WORLDTIMECLOCKPLUGIN_PLUGIN_DEB
 QT_WORLDTIMECLOCKPLUGIN_PLUGIN_RELEASE:FILEPATH=QT_WORLDTIMECLOCKPLUGIN_PLUGIN_RELEASE-NOTFOUND
 
 //Chemin vers le dossier des fichiers d'en-tête de ROOT
-ROOT_INCLUDE_DIR:FILEPATH=/usr/local/root/v5.34.32/include
+ROOT_INCLUDE_DIR:FILEPATH=/usr/local/root/v5.34.34/include
+
+//Chemin vers le dossier des fichiers d'en-tête de ROOT
+ROOT_LIB_DIR:FILEPATH=/usr/local/root/v5.34.34/lib
 
 //Nom du fichier de la bibliothèque ROOT
 ROOT_LIBRARIES:STRING=Hist;Core
 
-//Chemin vers le dossier des fichiers d'en-tête de ROOT
-ROOT_LIB_DIR:FILEPATH=/usr/local/root/v5.34.32/lib
+SFML_INCLUDE_DIR:FILEPATH=/usr/local/sfml/v2.3.2_c/include
+
+SFML_LIBRARIES:STRING=sfml-system
+
+SFML_LIB_DIR:FILEPATH=/usr/local/sfml/v2.3.2_c/lib
 
 
 ########################

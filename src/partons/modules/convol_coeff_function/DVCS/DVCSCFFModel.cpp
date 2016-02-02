@@ -1,7 +1,6 @@
 #include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSCFFModel.h"
 
-#include <NumA/MathIntegrator.h>
-#include <TMath.h>
+#include <NumA/integration/MathIntegrator.h>
 #include <cmath>
 #include <map>
 #include <stdexcept>
@@ -21,6 +20,7 @@
 #include "../../../../../include/partons/modules/evolution/gpd/ExampleEvolQCDModel.h"
 #include "../../../../../include/partons/modules/GPDModule.h"
 #include "../../../../../include/partons/ModuleObjectFactory.h"
+#include "../../../../../include/partons/utils/math/MathUtils.h"
 #include "../../../../../include/partons/utils/stringUtils/Formatter.h"
 
 // Initialise [class]::classId with a unique name.
@@ -50,7 +50,8 @@ DVCSCFFModel::DVCSCFFModel(const std::string &className) :
 
 //TODO Call mother init function
 void DVCSCFFModel::init() {
-    m_mathIntegrator.setIntegrationMode(NumA::MathIntegrator::ROOT);
+    m_mathIntegrator.setIntegrationMode(
+            NumA::MathIntegrator::GSL_ADAPTIVE_SINGULAR);
 
     m_pRunningAlphaStrongModule =
             ModuleObjectFactory::newRunningAlphaStrongModule(
@@ -211,7 +212,7 @@ void DVCSCFFModel::computeSubtractionFunctionsV() {
     double LogZeta = log(m_Zeta);
     double LogInvZeta = log((1. - m_Zeta) / m_Zeta);
     double LogInvZeta2 = LogInvZeta * LogInvZeta;
-    double DiLogInvZeta = TMath::DiLog(1. - 1. / m_Zeta);
+    double DiLogInvZeta = MathUtils::DiLog(1. - 1. / m_Zeta);
     double Pi2 = PI * PI;
 
     double RealPartSubtractQuarkLO; // Real part of eq. (B2)
@@ -293,7 +294,7 @@ void DVCSCFFModel::computeSubtractionFunctionsA() {
     double LogZeta = log(m_Zeta);
     double LogInvZeta = log((1. - m_Zeta) / m_Zeta);
     double LogInvZeta2 = LogInvZeta * LogInvZeta;
-    double DiLogInvZeta = TMath::DiLog(1. - 1. / m_Zeta);
+    double DiLogInvZeta = MathUtils::DiLog(1. - 1. / m_Zeta);
     double Pi2 = PI * PI;
 
     double RealPartSubtractQuarkLO; // Real part of eq. (B2)
@@ -421,29 +422,29 @@ std::complex<double> DVCSCFFModel::computeIntegralsV() {
 
     std::vector<double> emptyParameters;
 
-    IntegralRealPartKernelQuark1 = m_mathIntegrator.integrateWithROOT(this,
+    IntegralRealPartKernelQuark1 = m_mathIntegrator.integrate(this,
             &DVCSCFFModel::ConvolReKernelQuark1V, 0., +m_xi, emptyParameters);
 
-    IntegralRealPartKernelQuark2 = m_mathIntegrator.integrateWithROOT(this,
+    IntegralRealPartKernelQuark2 = m_mathIntegrator.integrate(this,
             &DVCSCFFModel::ConvolReKernelQuark2V, +m_xi, +1, emptyParameters);
 
-    IntegralImaginaryPartKernelQuark = m_mathIntegrator.integrateWithROOT(this,
+    IntegralImaginaryPartKernelQuark = m_mathIntegrator.integrate(this,
             &DVCSCFFModel::ConvolImKernelQuarkV, +m_xi, +1, emptyParameters);
 
     // Gluon sector
 
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
 
-        IntegralRealPartKernelGluon1 = m_mathIntegrator.integrateWithROOT(this,
+        IntegralRealPartKernelGluon1 = m_mathIntegrator.integrate(this,
                 &DVCSCFFModel::ConvolReKernelGluon1V, 0., +m_xi,
                 emptyParameters);
 
-        IntegralRealPartKernelGluon2 = m_mathIntegrator.integrateWithROOT(this,
+        IntegralRealPartKernelGluon2 = m_mathIntegrator.integrate(this,
                 &DVCSCFFModel::ConvolReKernelGluon2V, +m_xi, +1,
                 emptyParameters);
 
-        IntegralImaginaryPartKernelGluon = m_mathIntegrator.integrateWithROOT(
-                this, &DVCSCFFModel::ConvolImKernelGluonV, +m_xi, +1,
+        IntegralImaginaryPartKernelGluon = m_mathIntegrator.integrate(this,
+                &DVCSCFFModel::ConvolImKernelGluonV, +m_xi, +1,
                 emptyParameters);
     }
 
@@ -525,28 +526,28 @@ std::complex<double> DVCSCFFModel::computeIntegralsA() {
 
     std::vector<double> emptyParameters;
 
-    IntegralRealPartKernelQuark1 = m_mathIntegrator.integrateWithROOT(this,
+    IntegralRealPartKernelQuark1 = m_mathIntegrator.integrate(this,
             &DVCSCFFModel::ConvolReKernelQuark1A, 0., +m_xi, emptyParameters);
 
-    IntegralRealPartKernelQuark2 = m_mathIntegrator.integrateWithROOT(this,
+    IntegralRealPartKernelQuark2 = m_mathIntegrator.integrate(this,
             &DVCSCFFModel::ConvolReKernelQuark2A, +m_xi, +1, emptyParameters);
 
-    IntegralImaginaryPartKernelQuark = m_mathIntegrator.integrateWithROOT(this,
+    IntegralImaginaryPartKernelQuark = m_mathIntegrator.integrate(this,
             &DVCSCFFModel::ConvolImKernelQuarkA, +m_xi, +1, emptyParameters);
 
     // Gluon sector
 
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
-        IntegralRealPartKernelGluon1 = m_mathIntegrator.integrateWithROOT(this,
+        IntegralRealPartKernelGluon1 = m_mathIntegrator.integrate(this,
                 &DVCSCFFModel::ConvolReKernelGluon1A, 0., +m_xi,
                 emptyParameters);
 
-        IntegralRealPartKernelGluon2 = m_mathIntegrator.integrateWithROOT(this,
+        IntegralRealPartKernelGluon2 = m_mathIntegrator.integrate(this,
                 &DVCSCFFModel::ConvolReKernelGluon2A, +m_xi, +1,
                 emptyParameters);
 
-        IntegralImaginaryPartKernelGluon = m_mathIntegrator.integrateWithROOT(
-                this, &DVCSCFFModel::ConvolImKernelGluonA, +m_xi, +1,
+        IntegralImaginaryPartKernelGluon = m_mathIntegrator.integrate(this,
+                &DVCSCFFModel::ConvolImKernelGluonA, +m_xi, +1,
                 emptyParameters);
     }
 
@@ -588,10 +589,10 @@ std::complex<double> DVCSCFFModel::KernelQuarkNLOV(double x) {
     if (x < m_xi) {
 // remplacer z par x/xi
         LogOneMinusz = std::complex<double>(0., 0.);
-        LogOneMinusz = std::complex<double>(TMath::Log((1. - z) / 2.), 0.);
+        LogOneMinusz = std::complex<double>(log((1. - z) / 2.), 0.);
     }
     if (x > m_xi) {
-        LogOneMinusz = std::complex<double>(TMath::Log((z - 1.) / 2.), -PI);
+        LogOneMinusz = std::complex<double>(log((z - 1.) / 2.), -PI);
     }
 
     return KernelQuarkNLOA(x) - (m_CF / (1. + z)) * LogOneMinusz;
@@ -677,7 +678,8 @@ std::complex<double> DVCSCFFModel::KernelGluonA(double x) {
  * Expressions are modified in order to integrate between 0 and fXi, hence explicitely avoiding GPD behaviour at x = 0.
  *
  */
-double DVCSCFFModel::ConvolReKernelQuark1V(double* x, double* params) {
+double DVCSCFFModel::ConvolReKernelQuark1V(std::vector<double> x,
+        std::vector<double> params) {
     GPDResult gpdResult = m_pGPDModule->compute(x[0], m_xi, m_t, m_MuF2, m_MuR2,
             m_currentGPDComputeType);
 
@@ -703,7 +705,8 @@ double DVCSCFFModel::ConvolReKernelQuark1V(double* x, double* params) {
  * Equivalently x integration domain ranges between fXi and 1.
  *
  */
-double DVCSCFFModel::ConvolReKernelQuark2V(double* x, double* params) {
+double DVCSCFFModel::ConvolReKernelQuark2V(std::vector<double> x,
+        std::vector<double> params) {
 
     GPDResult gpdResult = m_pGPDModule->compute(x[0], m_xi, m_t, m_MuF2, m_MuR2,
             m_currentGPDComputeType);
@@ -731,7 +734,8 @@ double DVCSCFFModel::ConvolReKernelQuark2V(double* x, double* params) {
  * Equivalently x integration domain ranges between fXi and 1.
  *
  */
-double DVCSCFFModel::ConvolImKernelQuarkV(double* x, double* params) {
+double DVCSCFFModel::ConvolImKernelQuarkV(std::vector<double> x,
+        std::vector<double> params) {
     GPDResult gpdResult = m_pGPDModule->compute(x[0], m_xi, m_t, m_MuF2, m_MuR2,
             m_currentGPDComputeType);
 
@@ -758,7 +762,8 @@ double DVCSCFFModel::ConvolImKernelQuarkV(double* x, double* params) {
  * Expressions are modified in order to integrate between 0 and fXi, hence explicitely avoiding GPD behaviour at x = 0.
  *
  */
-double DVCSCFFModel::ConvolReKernelGluon1V(double* x, double* params) {
+double DVCSCFFModel::ConvolReKernelGluon1V(std::vector<double> x,
+        std::vector<double> params) {
     GPDResult gpdResult = m_pGPDModule->compute(x[0], m_xi, m_t, m_MuF2, m_MuR2,
             m_currentGPDComputeType);
 
@@ -784,7 +789,8 @@ double DVCSCFFModel::ConvolReKernelGluon1V(double* x, double* params) {
  * Equivalently x integration domain ranges between fXi and 1.
  *
  */
-double DVCSCFFModel::ConvolReKernelGluon2V(double* x, double* params) {
+double DVCSCFFModel::ConvolReKernelGluon2V(std::vector<double> x,
+        std::vector<double> params) {
     GPDResult gpdResult = m_pGPDModule->compute(x[0], m_xi, m_t, m_MuF2, m_MuR2,
             m_currentGPDComputeType);
 
@@ -811,7 +817,8 @@ double DVCSCFFModel::ConvolReKernelGluon2V(double* x, double* params) {
  * Equivalently x integration domain ranges between fXi and 1.
  *
  */
-double DVCSCFFModel::ConvolImKernelGluonV(double* x, double* params) {
+double DVCSCFFModel::ConvolImKernelGluonV(std::vector<double> x,
+        std::vector<double> params) {
     GPDResult gpdResult = m_pGPDModule->compute(x[0], m_xi, m_t, m_MuF2, m_MuR2,
             m_currentGPDComputeType);
 
@@ -836,10 +843,10 @@ std::complex<double> DVCSCFFModel::KernelGluonNLOV(double x) {
     std::complex<double> LogOneMinusz(0., 0.);
     if (x < m_xi) {
         // remplacer z par x/xi
-        LogOneMinusz = std::complex<double>(TMath::Log((1. - z) / 2.), 0.);
+        LogOneMinusz = std::complex<double>(log((1. - z) / 2.), 0.);
     }
     if (x > m_xi) {
-        LogOneMinusz = std::complex<double>(TMath::Log((z - 1.) / 2.), -PI);
+        LogOneMinusz = std::complex<double>(log((z - 1.) / 2.), -PI);
     }
 
     std::complex<double> GluonNLOV(LogOneMinusz);
@@ -862,10 +869,10 @@ std::complex<double> DVCSCFFModel::KernelGluonNLOA(double x) {
     std::complex<double> LogOneMinusz(0., 0.);
     if (x < m_xi) {
         // remplacer z par x/xi
-        LogOneMinusz = std::complex<double>(TMath::Log((1. - z) / 2.), 0.);
+        LogOneMinusz = std::complex<double>(log((1. - z) / 2.), 0.);
     }
     if (x > m_xi) {
-        LogOneMinusz = std::complex<double>(TMath::Log((z - 1.) / 2.), -PI);
+        LogOneMinusz = std::complex<double>(log((z - 1.) / 2.), -PI);
     }
 
     std::complex<double> GluonNLOA(LogOneMinusz);
@@ -883,10 +890,10 @@ std::complex<double> DVCSCFFModel::KernelQuarkNLOA(double x) {
     std::complex<double> LogOneMinusz(0., 0.);
     if (x < m_xi) {
         // remplacer z par x/xi
-        LogOneMinusz = std::complex<double>(TMath::Log((1. - z) / 2.), 0.);
+        LogOneMinusz = std::complex<double>(log((1. - z) / 2.), 0.);
     }
     if (x > m_xi) {
-        LogOneMinusz = std::complex<double>(TMath::Log((z - 1.) / 2.), -PI);
+        LogOneMinusz = std::complex<double>(log((z - 1.) / 2.), -PI);
     }
 
     std::complex<double> QuarkNLOA(m_logQ2OverMu2);
@@ -898,7 +905,8 @@ std::complex<double> DVCSCFFModel::KernelQuarkNLOA(double x) {
     return QuarkNLOA;
 }
 
-double DVCSCFFModel::ConvolReKernelQuark1A(double* x, double* params) {
+double DVCSCFFModel::ConvolReKernelQuark1A(std::vector<double> x,
+        std::vector<double> params) {
     GPDResult gpdResult = m_pGPDModule->compute(x[0], m_xi, m_t, m_MuF2, m_MuR2,
             m_currentGPDComputeType);
 
@@ -916,7 +924,8 @@ double DVCSCFFModel::ConvolReKernelQuark1A(double* x, double* params) {
     return Convol;
 }
 
-double DVCSCFFModel::ConvolReKernelQuark2A(double* x, double* params) {
+double DVCSCFFModel::ConvolReKernelQuark2A(std::vector<double> x,
+        std::vector<double> params) {
     GPDResult gpdResult = m_pGPDModule->compute(x[0], m_xi, m_t, m_MuF2, m_MuR2,
             m_currentGPDComputeType);
 
@@ -936,7 +945,8 @@ double DVCSCFFModel::ConvolReKernelQuark2A(double* x, double* params) {
     return Convol;
 }
 
-double DVCSCFFModel::ConvolImKernelQuarkA(double* x, double* params) {
+double DVCSCFFModel::ConvolImKernelQuarkA(std::vector<double> x,
+        std::vector<double> params) {
     GPDResult gpdResult = m_pGPDModule->compute(x[0], m_xi, m_t, m_MuF2, m_MuR2,
             m_currentGPDComputeType);
 
@@ -953,7 +963,8 @@ double DVCSCFFModel::ConvolImKernelQuarkA(double* x, double* params) {
     return Convol;
 }
 
-double DVCSCFFModel::ConvolReKernelGluon1A(double* x, double* params) {
+double DVCSCFFModel::ConvolReKernelGluon1A(std::vector<double> x,
+        std::vector<double> params) {
 
     debug(__func__, "Entered");
 
@@ -974,7 +985,8 @@ double DVCSCFFModel::ConvolReKernelGluon1A(double* x, double* params) {
     return Convol;
 }
 
-double DVCSCFFModel::ConvolReKernelGluon2A(double* x, double* params) {
+double DVCSCFFModel::ConvolReKernelGluon2A(std::vector<double> x,
+        std::vector<double> params) {
     GPDResult gpdResult = m_pGPDModule->compute(x[0], m_xi, m_t, m_MuF2, m_MuR2,
             m_currentGPDComputeType);
 
@@ -994,7 +1006,8 @@ double DVCSCFFModel::ConvolReKernelGluon2A(double* x, double* params) {
     return Convol;
 }
 
-double DVCSCFFModel::ConvolImKernelGluonA(double* x, double* params) {
+double DVCSCFFModel::ConvolImKernelGluonA(std::vector<double> x,
+        std::vector<double> params) {
     GPDResult gpdResult = m_pGPDModule->compute(x[0], m_xi, m_t, m_MuF2, m_MuR2,
             m_currentGPDComputeType);
 

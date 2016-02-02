@@ -8,12 +8,16 @@
 #ifndef VGGMODEL_H_
 #define VGGMODEL_H_
 
+#include <string>
+#include <vector>
+
+#include "../../beans/gpd/GPDType.h"
 #include "../GPDModule.h"
-#include <NumA/MathIntegrator.h>
+#include "../MathIntegratorModule.h"
 
 class c_mstwpdf;
 
-class VGGModel: public GPDModule {
+class VGGModel: public GPDModule, public MathIntegratorModule {
 
 public:
 
@@ -43,7 +47,9 @@ protected:
 
 private:
 
-    enum flavour{undefined, upv, upsea, dnv, dnsea}; //< flavour
+    enum flavour {
+        undefined, upv, upsea, dnv, dnsea
+    }; //< flavour
 
     static const double eps_doubleint; //< step to skip x = 0 singularity
     static const double kappa_u; //< anomalous magnetic moment of u quarks
@@ -58,7 +64,6 @@ private:
 
     c_mstwpdf* m_Forward;   //< pdfs
 
-    NumA::MathIntegrator* m_mathIntegrator; //< integration routine
     GPDType gpd_s5;
     flavour flavour_s5; //< flavour - internal variables used in integration
     double x_s5; //< x - internal variables used in integration
@@ -67,13 +72,18 @@ private:
     double symm_profile_function(double beta, double alpha, double b_profile); //< profile function
 
     double symm_double_distr_reggeH(double beta, double alpha); //< double distribution function for GPD H
-    double int_symm_double_distr_reggeH(double* alpha, double* par); //< wrapper for integration of double distribution at x for GPD H
-    double int_symm_double_distr_reggeMxH(double* alpha, double* par); //< wrapper for integration of double distribution at -x for GPD H
+    double int_symm_double_distr_reggeH(std::vector<double> alpha,
+            std::vector<double> par); //< wrapper for integration of double distribution at x for GPD H
+    double int_symm_double_distr_reggeMxH(std::vector<double> alpha,
+            std::vector<double> par); //< wrapper for integration of double distribution at -x for GPD H
 
     double symm_double_distr_reggeE(double beta, double alpha); //< double distribution function for GPD E
-    double int_symm_double_distr_reggeE(double* alpha, double* par); //< wrapper for integration of double distribution at x for GPD E
-    double int_symm_double_distr_reggeMxE(double* alpha, double* par); //< wrapper for integration of double distribution at -x for GPD E
-    double int_mom2_up_valence_e(double* x, double* par);   //< normalization function for GPD E
+    double int_symm_double_distr_reggeE(std::vector<double> alpha,
+            std::vector<double> par); //< wrapper for integration of double distribution at x for GPD E
+    double int_symm_double_distr_reggeMxE(std::vector<double> alpha,
+            std::vector<double> par); //< wrapper for integration of double distribution at -x for GPD E
+    double int_mom2_up_valence_e(std::vector<double> x,
+            std::vector<double> par);   //< normalization function for GPD E
 
     double test_pdf_down_val(double x); //< pdfs for cross-check purpose, parametrization of Martin, Roberts, Stirling, PRD 47 (1993) 867
     double test_pdf_up_val(double x);

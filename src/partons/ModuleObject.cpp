@@ -1,13 +1,13 @@
 #include "../../include/partons/ModuleObject.h"
 
+//#include "../../include/partons/utils/stringUtils/Formatter.h"
+
 ModuleObject::ModuleObject(const std::string &className) :
-        BaseObject(className) {
+        BaseObject(className), Thread() {
 }
 
 ModuleObject::ModuleObject(const ModuleObject &other) :
-        BaseObject(other) {
-//TODO copie constructor
-//m_parameters = other.m_parameters;
+        BaseObject(other), Thread(other) {
 }
 
 //TODO vérifier le cycle de vie des modules membres

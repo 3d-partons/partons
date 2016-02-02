@@ -1,6 +1,5 @@
 #include "../../../../../include/partons/modules/process/DVCS/GV2008Model.h"
 
-#include <TMath.h>
 #include <cmath>
 #include <complex>
 
@@ -77,7 +76,7 @@ void GV2008Model::initModule() {
                             + 4 * m_powerOfProtonMass[0] * m_powerOfQ[0]
                                     * m_xB2);
 
-    m_Omega = TMath::Log(m_y + sqrt(-1 + m_y) * sqrt(1 + m_y));
+    m_Omega = log(m_y + sqrt(-1 + m_y) * sqrt(1 + m_y));
 
     // m_phaseSpace
     m_phaseSpace = (pow(POSITRON_CHARGE, 6) * m_powerOfQ[0])
@@ -91,7 +90,7 @@ void GV2008Model::initModule() {
                                             4 * m_powerOfProtonMass[0]
                                                     * m_powerOfQ[0]
                                                     + m_powerOfQ[2] / m_xB2)
-                                            * TMath::CosH(m_Omega)) / 4., 2));
+                                            * cosh(m_Omega)) / 4., 2));
 
     // Timelike coordinate
 
@@ -171,7 +170,7 @@ void GV2008Model::initModule() {
 
     m_qpPerp = m_qpCM.getX();
 
-    m_thetag = TMath::ACos(m_qpCM.getZ() / m_qpCM.getE());
+    m_thetag = acos(m_qpCM.getZ() / m_qpCM.getE());
 
     debug(__func__, Formatter() << "m_phaseSpace = " << m_phaseSpace);
 
@@ -203,7 +202,7 @@ void GV2008Model::isModuleWellConfigured() {
     if (m_y < 1.) {
         error(__func__,
                 Formatter() << "ELab = " << m_E
-                        << " GeV is too small. TMath::CosH[ome]= " << m_y);
+                        << " GeV is too small. cosh[ome]= " << m_y);
     }
 
     //TODO mettre une contrainte sur les CFF dont on a besoin pour calculer le modele
@@ -216,21 +215,20 @@ double GV2008Model::SqrAmplBH(double beamHelicity, double beamCharge,
     double M0, M1, M2, M3;
 
     M0 = -(SigmaBHPol0[0]
-            - SigmaBHPol0[3] * cos(2. * m_phi) * (-1 + TMath::CosH(2 * m_Omega))
-            + SigmaBHPol0[1] * TMath::CosH(2 * m_Omega)
-            + SigmaBHPol0[2] * cos(m_phi) * TMath::SinH(2 * m_Omega))
+            - SigmaBHPol0[3] * cos(2. * m_phi) * (-1 + cosh(2 * m_Omega))
+            + SigmaBHPol0[1] * cosh(2 * m_Omega)
+            + SigmaBHPol0[2] * cos(m_phi) * sinh(2 * m_Omega))
             / (4. * DDDC * pow(m_t, 2));
 
-    M1 = -(SigmaBHPolX[0] * beamHelicity * TMath::CosH(m_Omega)
-            + SigmaBHPolX[1] * beamHelicity * cos(m_phi) * TMath::SinH(m_Omega))
+    M1 = -(SigmaBHPolX[0] * beamHelicity * cosh(m_Omega)
+            + SigmaBHPolX[1] * beamHelicity * cos(m_phi) * sinh(m_Omega))
             / (4. * DDDC * pow(m_t, 2));
 
-    M2 =
-            -(beamHelicity * SigmaBHPolY * TMath::Sin(m_phi)
-                    * TMath::SinH(m_Omega)) / (4. * DDDC * pow(m_t, 2));
+    M2 = -(beamHelicity * SigmaBHPolY * sin(m_phi) * sinh(m_Omega))
+            / (4. * DDDC * pow(m_t, 2));
 
-    M3 = -(SigmaBHPolZ[0] * beamHelicity * TMath::CosH(m_Omega)
-            + SigmaBHPolZ[1] * beamHelicity * cos(m_phi) * TMath::SinH(m_Omega))
+    M3 = -(SigmaBHPolZ[0] * beamHelicity * cosh(m_Omega)
+            + SigmaBHPolZ[1] * beamHelicity * cos(m_phi) * sinh(m_Omega))
             / (4. * DDDC * pow(m_t, 2));
 
     NumA::Vector3D vM(M1, M2, M3);
@@ -289,37 +287,29 @@ double GV2008Model::SqrAmplVCS(double beamHelicity, double beamCharge,
     double M0, M1, M2, M3;
 
     M0 = (SigmaVCSPol0[0]
-            - SigmaVCSPol0[3] * TMath::Cos(2 * m_phi)
-                    * (-1 + TMath::CosH(2 * m_Omega))
-            + SigmaVCSPol0[1] * TMath::CosH(2 * m_Omega)
-            + SigmaVCSPol0[4] * beamHelicity * TMath::Sin(m_phi)
-                    * TMath::SinH(m_Omega)
-            + SigmaVCSPol0[2] * TMath::Cos(m_phi) * TMath::SinH(2 * m_Omega))
+            - SigmaVCSPol0[3] * cos(2 * m_phi) * (-1 + cosh(2 * m_Omega))
+            + SigmaVCSPol0[1] * cosh(2 * m_Omega)
+            + SigmaVCSPol0[4] * beamHelicity * sin(m_phi) * sinh(m_Omega)
+            + SigmaVCSPol0[2] * cos(m_phi) * sinh(2 * m_Omega))
             / (2. * m_powerOfQ[0]);
 
-    M1 = (SigmaVCSPolX[0] * beamHelicity * TMath::CosH(m_Omega)
-            - SigmaVCSPolX[3] * (-1 + TMath::CosH(2 * m_Omega))
-                    * TMath::Sin(2 * m_phi)
-            + SigmaVCSPolX[1] * beamHelicity * TMath::Cos(m_phi)
-                    * TMath::SinH(m_Omega)
-            + SigmaVCSPolX[2] * TMath::Sin(m_phi) * TMath::SinH(2 * m_Omega))
+    M1 = (SigmaVCSPolX[0] * beamHelicity * cosh(m_Omega)
+            - SigmaVCSPolX[3] * (-1 + cosh(2 * m_Omega)) * sin(2 * m_phi)
+            + SigmaVCSPolX[1] * beamHelicity * cos(m_phi) * sinh(m_Omega)
+            + SigmaVCSPolX[2] * sin(m_phi) * sinh(2 * m_Omega))
             / (2. * m_powerOfQ[0]);
 
     M2 = (SigmaVCSPolY[1]
-            - SigmaVCSPolY[4] * TMath::Cos(2 * m_phi)
-                    * (-1 + TMath::CosH(2 * m_Omega))
-            + SigmaVCSPolY[2] * TMath::CosH(2 * m_Omega)
-            + SigmaVCSPolY[0] * beamHelicity * TMath::Sin(m_phi)
-                    * TMath::SinH(m_Omega)
-            + SigmaVCSPolY[3] * TMath::Cos(m_phi) * TMath::SinH(2 * m_Omega))
+            - SigmaVCSPolY[4] * cos(2 * m_phi) * (-1 + cosh(2 * m_Omega))
+            + SigmaVCSPolY[2] * cosh(2 * m_Omega)
+            + SigmaVCSPolY[0] * beamHelicity * sin(m_phi) * sinh(m_Omega)
+            + SigmaVCSPolY[3] * cos(m_phi) * sinh(2 * m_Omega))
             / (2. * m_powerOfQ[0]);
 
-    M3 = (SigmaVCSPolZ[0] * beamHelicity * TMath::CosH(m_Omega)
-            - SigmaVCSPolZ[3] * (-1 + TMath::CosH(2 * m_Omega))
-                    * TMath::Sin(2 * m_phi)
-            + SigmaVCSPolZ[1] * beamHelicity * TMath::Cos(m_phi)
-                    * TMath::SinH(m_Omega)
-            + SigmaVCSPolZ[2] * TMath::Sin(m_phi) * TMath::SinH(2 * m_Omega))
+    M3 = (SigmaVCSPolZ[0] * beamHelicity * cosh(m_Omega)
+            - SigmaVCSPolZ[3] * (-1 + cosh(2 * m_Omega)) * sin(2 * m_phi)
+            + SigmaVCSPolZ[1] * beamHelicity * cos(m_phi) * sinh(m_Omega)
+            + SigmaVCSPolZ[2] * sin(m_phi) * sinh(2 * m_Omega))
             / (2. * m_powerOfQ[0]);
 
     NumA::Vector3D vM(M1, M2, M3);
@@ -333,92 +323,76 @@ double GV2008Model::SqrAmplInterf(double beamHelicity, double beamCharge,
     double DDDC = DdirectDcrossed(m_phi);
     double M0, M1, M2, M3;
 
-    M0 =
-            -((beamCharge
-                    * (SigmaIPol0[0] * TMath::CosH(m_Omega)
-                            + SigmaIPol0[4] * TMath::Cos(2 * m_phi)
-                                    * (TMath::CosH(m_Omega)
-                                            - TMath::CosH(3 * m_Omega))
-                            + SigmaIPol0[1] * TMath::CosH(3 * m_Omega)
-                            - SigmaIPol0[7] * beamHelicity
-                                    * (-1 + TMath::CosH(2 * m_Omega))
-                                    * TMath::Sin(2 * m_phi)
-                            + SigmaIPol0[6] * beamHelicity * TMath::Sin(m_phi)
-                                    * TMath::SinH(2 * m_Omega)
-                            + (SigmaIPol0[5] * TMath::Cos(3 * m_phi)
-                                    * (3 * TMath::SinH(m_Omega)
-                                            - TMath::SinH(3 * m_Omega))) / 3.
-                            + TMath::Cos(m_phi)
-                                    * (SigmaIPol0[2] * TMath::SinH(m_Omega)
-                                            + SigmaIPol0[3]
-                                                    * TMath::SinH(3 * m_Omega))))
-                    / (DDDC * m_powerOfQ[0] * m_t));
+    M0 = -((beamCharge
+            * (SigmaIPol0[0] * cosh(m_Omega)
+                    + SigmaIPol0[4] * cos(2 * m_phi)
+                            * (cosh(m_Omega) - cosh(3 * m_Omega))
+                    + SigmaIPol0[1] * cosh(3 * m_Omega)
+                    - SigmaIPol0[7] * beamHelicity * (-1 + cosh(2 * m_Omega))
+                            * sin(2 * m_phi)
+                    + SigmaIPol0[6] * beamHelicity * sin(m_phi)
+                            * sinh(2 * m_Omega)
+                    + (SigmaIPol0[5] * cos(3 * m_phi)
+                            * (3 * sinh(m_Omega) - sinh(3 * m_Omega))) / 3.
+                    + cos(m_phi)
+                            * (SigmaIPol0[2] * sinh(m_Omega)
+                                    + SigmaIPol0[3] * sinh(3 * m_Omega))))
+            / (DDDC * m_powerOfQ[0] * m_t));
 
     M1 =
             -((beamCharge
-                    * (-(SigmaIPolX[7] * beamHelicity * TMath::Cos(2 * m_phi)
-                            * (-1 + TMath::CosH(2 * m_Omega)))
+                    * (-(SigmaIPolX[7] * beamHelicity * cos(2 * m_phi)
+                            * (-1 + cosh(2 * m_Omega)))
                             + beamHelicity
                                     * (SigmaIPolX[4]
-                                            + SigmaIPolX[5]
-                                                    * TMath::CosH(2 * m_Omega))
+                                            + SigmaIPolX[5] * cosh(2 * m_Omega))
                             + SigmaIPolX[2]
-                                    * (TMath::CosH(m_Omega)
-                                            - TMath::CosH(3 * m_Omega))
-                                    * TMath::Sin(2 * m_phi)
-                            + SigmaIPolX[6] * beamHelicity * TMath::Cos(m_phi)
-                                    * TMath::SinH(2 * m_Omega)
-                            + (SigmaIPolX[3] * TMath::Sin(3 * m_phi)
-                                    * (3 * TMath::SinH(m_Omega)
-                                            - TMath::SinH(3 * m_Omega))) / 3.
-                            + TMath::Sin(m_phi)
-                                    * (SigmaIPolX[0] * TMath::SinH(m_Omega)
-                                            + SigmaIPolX[1]
-                                                    * TMath::SinH(3 * m_Omega))))
+                                    * (cosh(m_Omega) - cosh(3 * m_Omega))
+                                    * sin(2 * m_phi)
+                            + SigmaIPolX[6] * beamHelicity * cos(m_phi)
+                                    * sinh(2 * m_Omega)
+                            + (SigmaIPolX[3] * sin(3 * m_phi)
+                                    * (3 * sinh(m_Omega) - sinh(3 * m_Omega)))
+                                    / 3.
+                            + sin(m_phi)
+                                    * (SigmaIPolX[0] * sinh(m_Omega)
+                                            + SigmaIPolX[1] * sinh(3 * m_Omega))))
                     / (DDDC * m_powerOfQ[0] * m_t));
 
-    M2 =
-            -((beamCharge
-                    * (SigmaIPolY[0] * TMath::CosH(m_Omega)
-                            + SigmaIPolY[4] * TMath::Cos(2 * m_phi)
-                                    * (TMath::CosH(m_Omega)
-                                            - TMath::CosH(3 * m_Omega))
-                            + SigmaIPolY[1] * TMath::CosH(3 * m_Omega)
-                            - SigmaIPolY[7] * beamHelicity
-                                    * (-1 + TMath::CosH(2 * m_Omega))
-                                    * TMath::Sin(2 * m_phi)
-                            + SigmaIPolY[6] * beamHelicity * TMath::Sin(m_phi)
-                                    * TMath::SinH(2 * m_Omega)
-                            + (SigmaIPolY[5] * TMath::Cos(3 * m_phi)
-                                    * (3 * TMath::SinH(m_Omega)
-                                            - TMath::SinH(3 * m_Omega))) / 3.
-                            + TMath::Cos(m_phi)
-                                    * (SigmaIPolY[2] * TMath::SinH(m_Omega)
-                                            + SigmaIPolY[3]
-                                                    * TMath::SinH(3 * m_Omega))))
-                    / (DDDC * m_powerOfQ[0] * m_t));
+    M2 = -((beamCharge
+            * (SigmaIPolY[0] * cosh(m_Omega)
+                    + SigmaIPolY[4] * cos(2 * m_phi)
+                            * (cosh(m_Omega) - cosh(3 * m_Omega))
+                    + SigmaIPolY[1] * cosh(3 * m_Omega)
+                    - SigmaIPolY[7] * beamHelicity * (-1 + cosh(2 * m_Omega))
+                            * sin(2 * m_phi)
+                    + SigmaIPolY[6] * beamHelicity * sin(m_phi)
+                            * sinh(2 * m_Omega)
+                    + (SigmaIPolY[5] * cos(3 * m_phi)
+                            * (3 * sinh(m_Omega) - sinh(3 * m_Omega))) / 3.
+                    + cos(m_phi)
+                            * (SigmaIPolY[2] * sinh(m_Omega)
+                                    + SigmaIPolY[3] * sinh(3 * m_Omega))))
+            / (DDDC * m_powerOfQ[0] * m_t));
 
     M3 =
             -((beamCharge
-                    * (-(SigmaIPolZ[7] * beamHelicity * TMath::Cos(2 * m_phi)
-                            * (-1 + TMath::CosH(2 * m_Omega)))
+                    * (-(SigmaIPolZ[7] * beamHelicity * cos(2 * m_phi)
+                            * (-1 + cosh(2 * m_Omega)))
                             + beamHelicity
                                     * (SigmaIPolZ[4]
-                                            + SigmaIPolZ[5]
-                                                    * TMath::CosH(2 * m_Omega))
+                                            + SigmaIPolZ[5] * cosh(2 * m_Omega))
                             + SigmaIPolZ[2]
-                                    * (TMath::CosH(m_Omega)
-                                            - TMath::CosH(3 * m_Omega))
-                                    * TMath::Sin(2 * m_phi)
-                            + SigmaIPolZ[6] * beamHelicity * TMath::Cos(m_phi)
-                                    * TMath::SinH(2 * m_Omega)
-                            + (SigmaIPolZ[3] * TMath::Sin(3 * m_phi)
-                                    * (3 * TMath::SinH(m_Omega)
-                                            - TMath::SinH(3 * m_Omega))) / 3.
-                            + TMath::Sin(m_phi)
-                                    * (SigmaIPolZ[0] * TMath::SinH(m_Omega)
-                                            + SigmaIPolZ[1]
-                                                    * TMath::SinH(3 * m_Omega))))
+                                    * (cosh(m_Omega) - cosh(3 * m_Omega))
+                                    * sin(2 * m_phi)
+                            + SigmaIPolZ[6] * beamHelicity * cos(m_phi)
+                                    * sinh(2 * m_Omega)
+                            + (SigmaIPolZ[3] * sin(3 * m_phi)
+                                    * (3 * sinh(m_Omega) - sinh(3 * m_Omega)))
+                                    / 3.
+                            + sin(m_phi)
+                                    * (SigmaIPolZ[0] * sinh(m_Omega)
+                                            + SigmaIPolZ[1] * sinh(3 * m_Omega))))
                     / (DDDC * m_powerOfQ[0] * m_t));
 
     NumA::Vector3D vM(M1, M2, M3);
@@ -473,14 +447,14 @@ void GV2008Model::MakeExactBHCrossSections() {
                     * sqrt(m_ppCM.getE() - PROTON_MASS)
                     - sqrt(m_pCM.getE() + PROTON_MASS)
                             * sqrt(m_ppCM.getE() + PROTON_MASS)) * sqrt(m_s)
-            * TMath::Cos(m_thetag / 2.))
+            * cos(m_thetag / 2.))
             / (PROTON_MASS * sqrt(m_powerOfQ[2] - 4 * m_s * m_t))
             - (2 * sqrt(2.) * (m_qCM.getZ() + m_qpCM.getE()) * Gm
                     * (sqrt(m_ppCM.getE() - PROTON_MASS)
                             * sqrt(m_pCM.getE() + PROTON_MASS)
                             + sqrt(m_pCM.getE() - PROTON_MASS)
                                     * sqrt(m_ppCM.getE() + PROTON_MASS))
-                    * sqrt(m_s) * TMath::Sin(m_thetag / 2.))
+                    * sqrt(m_s) * sin(m_thetag / 2.))
                     / sqrt(m_powerOfQ[2] - 4 * m_s * m_t);
     Jem[0][1] = -((F2
             * (sqrt(m_pCM.getE() - PROTON_MASS)
@@ -488,7 +462,7 @@ void GV2008Model::MakeExactBHCrossSections() {
                     - sqrt(m_pCM.getE() + PROTON_MASS)
                             * sqrt(m_ppCM.getE() + PROTON_MASS))
             * (2 * m_powerOfProtonMass[0] + m_powerOfQ[0] + 2 * m_s)
-            * sqrt(-(m_s * m_t)) * TMath::Cos(m_thetag / 2.))
+            * sqrt(-(m_s * m_t)) * cos(m_thetag / 2.))
             / (PROTON_MASS * sqrt(m_s) * sqrt(m_powerOfQ[2] - 4 * m_s * m_t)))
             - (8 * Gm
                     * (sqrt(m_ppCM.getE() - PROTON_MASS)
@@ -496,49 +470,48 @@ void GV2008Model::MakeExactBHCrossSections() {
                             + sqrt(m_pCM.getE() - PROTON_MASS)
                                     * sqrt(m_ppCM.getE() + PROTON_MASS)) * m_s
                     * sqrt(-m_t)
-                    * ((m_qCM.getZ() - m_qpCM.getZ())
-                            * TMath::Cos(m_thetag / 2.)
-                            - m_qpCM.getX() * TMath::Sin(m_thetag / 2.)))
+                    * ((m_qCM.getZ() - m_qpCM.getZ()) * cos(m_thetag / 2.)
+                            - m_qpCM.getX() * sin(m_thetag / 2.)))
                     / (m_powerOfQ[0] * sqrt(m_powerOfQ[2] - 4 * m_s * m_t));
     Jem[0][2] = (2 * sqrt(2.) * m_qCM.getZ() * m_qpCM.getX() * F2
             * (sqrt(m_pCM.getE() - PROTON_MASS)
                     * sqrt(m_ppCM.getE() - PROTON_MASS)
                     - sqrt(m_pCM.getE() + PROTON_MASS)
                             * sqrt(m_ppCM.getE() + PROTON_MASS)) * sqrt(m_s)
-            * TMath::Cos(m_thetag / 2.))
+            * cos(m_thetag / 2.))
             / (PROTON_MASS * sqrt(m_powerOfQ[2] - 4 * m_s * m_t))
             + (2 * sqrt(2.) * (m_qCM.getZ() + m_qpCM.getE()) * Gm
                     * (sqrt(m_ppCM.getE() - PROTON_MASS)
                             * sqrt(m_pCM.getE() + PROTON_MASS)
                             + sqrt(m_pCM.getE() - PROTON_MASS)
                                     * sqrt(m_ppCM.getE() + PROTON_MASS))
-                    * sqrt(m_s) * TMath::Sin(m_thetag / 2.))
+                    * sqrt(m_s) * sin(m_thetag / 2.))
                     / sqrt(m_powerOfQ[2] - 4 * m_s * m_t);
     Jem[1][0] = sqrt(2.) * Gm
             * (-(sqrt(m_ppCM.getE() - PROTON_MASS)
                     * sqrt(m_pCM.getE() + PROTON_MASS))
                     + sqrt(m_pCM.getE() - PROTON_MASS)
                             * sqrt(m_ppCM.getE() + PROTON_MASS))
-            * TMath::Cos(m_thetag / 2.);
+            * cos(m_thetag / 2.);
     Jem[1][1] = 0;
     Jem[1][2] = sqrt(2.) * Gm
             * (-(sqrt(m_ppCM.getE() - PROTON_MASS)
                     * sqrt(m_pCM.getE() + PROTON_MASS))
                     + sqrt(m_pCM.getE() - PROTON_MASS)
                             * sqrt(m_ppCM.getE() + PROTON_MASS))
-            * TMath::Cos(m_thetag / 2.);
+            * cos(m_thetag / 2.);
     Jem[2][0] = (2 * sqrt(2.) * (m_qCM.getZ() - m_qpCM.getE()) * Gm
             * (sqrt(m_ppCM.getE() - PROTON_MASS)
                     * sqrt(m_pCM.getE() + PROTON_MASS)
                     - sqrt(m_pCM.getE() - PROTON_MASS)
                             * sqrt(m_ppCM.getE() + PROTON_MASS)) * sqrt(m_s)
-            * TMath::Cos(m_thetag / 2.)) / sqrt(m_powerOfQ[2] - 4 * m_s * m_t)
+            * cos(m_thetag / 2.)) / sqrt(m_powerOfQ[2] - 4 * m_s * m_t)
             - (2 * sqrt(2.) * m_qCM.getZ() * m_qpCM.getX() * F2
                     * (sqrt(m_pCM.getE() - PROTON_MASS)
                             * sqrt(m_ppCM.getE() - PROTON_MASS)
                             + sqrt(m_pCM.getE() + PROTON_MASS)
                                     * sqrt(m_ppCM.getE() + PROTON_MASS))
-                    * sqrt(m_s) * TMath::Sin(m_thetag / 2.))
+                    * sqrt(m_s) * sin(m_thetag / 2.))
                     / (PROTON_MASS * sqrt(m_powerOfQ[2] - 4 * m_s * m_t));
     Jem[2][1] = -((F2
             * (sqrt(m_pCM.getE() - PROTON_MASS)
@@ -546,7 +519,7 @@ void GV2008Model::MakeExactBHCrossSections() {
                     + sqrt(m_pCM.getE() + PROTON_MASS)
                             * sqrt(m_ppCM.getE() + PROTON_MASS))
             * (2 * m_powerOfProtonMass[0] + m_powerOfQ[0] + 2 * m_s)
-            * sqrt(-(m_s * m_t)) * TMath::Sin(m_thetag / 2.))
+            * sqrt(-(m_s * m_t)) * sin(m_thetag / 2.))
             / (PROTON_MASS * sqrt(m_s) * sqrt(m_powerOfQ[2] - 4 * m_s * m_t)))
             - (8 * Gm
                     * (sqrt(m_ppCM.getE() - PROTON_MASS)
@@ -554,36 +527,36 @@ void GV2008Model::MakeExactBHCrossSections() {
                             - sqrt(m_pCM.getE() - PROTON_MASS)
                                     * sqrt(m_ppCM.getE() + PROTON_MASS)) * m_s
                     * sqrt(-m_t)
-                    * (m_qpCM.getX() * TMath::Cos(m_thetag / 2.)
+                    * (m_qpCM.getX() * cos(m_thetag / 2.)
                             + (m_qCM.getZ() - m_qpCM.getZ())
-                                    * TMath::Sin(m_thetag / 2.)))
+                                    * sin(m_thetag / 2.)))
                     / (m_powerOfQ[0] * sqrt(m_powerOfQ[2] - 4 * m_s * m_t));
     Jem[2][2] = (-2 * sqrt(2.) * (m_qCM.getZ() - m_qpCM.getE()) * Gm
             * (sqrt(m_ppCM.getE() - PROTON_MASS)
                     * sqrt(m_pCM.getE() + PROTON_MASS)
                     - sqrt(m_pCM.getE() - PROTON_MASS)
                             * sqrt(m_ppCM.getE() + PROTON_MASS)) * sqrt(m_s)
-            * TMath::Cos(m_thetag / 2.)) / sqrt(m_powerOfQ[2] - 4 * m_s * m_t)
+            * cos(m_thetag / 2.)) / sqrt(m_powerOfQ[2] - 4 * m_s * m_t)
             + (2 * sqrt(2.) * m_qCM.getZ() * m_qpCM.getX() * F2
                     * (sqrt(m_pCM.getE() - PROTON_MASS)
                             * sqrt(m_ppCM.getE() - PROTON_MASS)
                             + sqrt(m_pCM.getE() + PROTON_MASS)
                                     * sqrt(m_ppCM.getE() + PROTON_MASS))
-                    * sqrt(m_s) * TMath::Sin(m_thetag / 2.))
+                    * sqrt(m_s) * sin(m_thetag / 2.))
                     / (PROTON_MASS * sqrt(m_powerOfQ[2] - 4 * m_s * m_t));
     Jem[3][0] = sqrt(2.) * Gm
             * (sqrt(m_ppCM.getE() - PROTON_MASS)
                     * sqrt(m_pCM.getE() + PROTON_MASS)
                     + sqrt(m_pCM.getE() - PROTON_MASS)
                             * sqrt(m_ppCM.getE() + PROTON_MASS))
-            * TMath::Sin(m_thetag / 2.);
+            * sin(m_thetag / 2.);
     Jem[3][1] = 0;
     Jem[3][2] = sqrt(2.) * Gm
             * (sqrt(m_ppCM.getE() - PROTON_MASS)
                     * sqrt(m_pCM.getE() + PROTON_MASS)
                     + sqrt(m_pCM.getE() - PROTON_MASS)
                             * sqrt(m_ppCM.getE() + PROTON_MASS))
-            * TMath::Sin(m_thetag / 2.);
+            * sin(m_thetag / 2.);
 
     /*--------------------------------BH cross sections ------------------------------------*/
 
@@ -3075,15 +3048,14 @@ double GV2008Model::DdirectDcrossed(double phi) {
     DDDC = pow(m_powerOfQ[0] + m_t, 2) / 4.
             - pow(
                     (m_powerOfQ[0] * (m_powerOfQ[0] + m_t * (-1 + 2 * m_xB))
-                            * TMath::CosH(m_Omega))
+                            * cosh(m_Omega))
                             / (2.
                                     * sqrt(
                                             m_powerOfQ[2]
                                                     + 4 * m_powerOfProtonMass[0]
                                                             * m_powerOfQ[0]
                                                             * pow(m_xB, 2)))
-                            - m_Q * m_qpPerp * TMath::Cos(phi)
-                                    * TMath::SinH(m_Omega), 2);
+                            - m_Q * m_qpPerp * cos(phi) * sinh(m_Omega), 2);
 
     return DDDC;
 }

@@ -11,7 +11,8 @@
  * @brief \<singleton\> Use for handle logs.
  */
 
-#include <pthread.h>
+//#include <pthread.h>
+//#include <SFML/System/Mutex.hpp>
 #include <ctime>
 #include <map>
 #include <queue>
@@ -22,6 +23,10 @@
 #include "LoggerLevel.h"
 #include "LoggerMessage.h"
 #include "LoggerPrintMode.h"
+
+namespace sf {
+class Mutex;
+} /* namespace sf */
 
 //TODO relatif folder for configFile
 
@@ -47,7 +52,7 @@ public:
 
     void defineLevel(LoggerLevel loggerLevel);
 
-    void* run();
+    void run();
 
     void debug(const std::string & className, const std::string & functionName,
             const std::string & message);
@@ -65,6 +70,8 @@ public:
     std::string toString();
 
 private:
+    static sf::Mutex m_mutex;
+
     /**
      * Private pointer of this class for a unique instance
      */
@@ -79,8 +86,6 @@ private:
      * Default destructor
      */
     ~LoggerManager();
-
-    pthread_mutex_t m_mutex;
 
     std::string m_outputFilePath;
     LoggerLevel m_defaultLevel;

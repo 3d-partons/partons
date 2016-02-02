@@ -27,10 +27,11 @@
 #include <vector>
 
 #include "../GPDModule.h"
+#include "../MathIntegratorModule.h"
 
 class c_mstwpdf;
 
-class MPSSW13Model: public GPDModule {
+class MPSSW13Model: public GPDModule, public MathIntegratorModule {
 public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
@@ -89,26 +90,38 @@ private:
     void ComputeFormFactors();
 
     double Profile(double N, double alpha, double beta);
-    double IntegralHuVal(double* Var, double* Par);
-    double IntegralHuValMx(double* Var, double* Par);
-    double IntegralxLargeHuSea(double* Var, double* Par);
-    double IntegralxLargeHuSeaMx(double* Var, double* Par);
-    double IntegralxSmall1HuSea(double* Var, double* Par);
-    double IntegralxSmall2HuSea(double* Var, double* Par);
-    double IntegralHdVal(double* Var, double* Par);
-    double IntegralHdValMx(double* Var, double* Par);
-    double IntegralxLargeHdSea(double* Var, double* Par);
-    double IntegralxLargeHdSeaMx(double* Var, double* Par);
-    double IntegralxSmall1HdSea(double* Var, double* Par);
-    double IntegralxSmall2HdSea(double* Var, double* Par);
-    double IntegralxLargeHsSea(double* Var, double* Par);
-    double IntegralxLargeHsSeaMx(double* Var, double* Par);
-    double IntegralxSmall1HsSea(double* Var, double* Par);
-    double IntegralxSmall2HsSea(double* Var, double* Par);
-    double IntegralxLargeHg(double* Var, double* Par);
-    double IntegralxLargeHgMx(double* Var, double* Par);
-    double IntegralxSmall1Hg(double* Var, double* Par);
-    double IntegralxSmall2Hg(double* Var, double* Par);
+    double IntegralHuVal(std::vector<double> Var, std::vector<double> Par);
+    double IntegralHuValMx(std::vector<double> Var, std::vector<double> Par);
+    double IntegralxLargeHuSea(std::vector<double> Var,
+            std::vector<double> Par);
+    double IntegralxLargeHuSeaMx(std::vector<double> Var,
+            std::vector<double> Par);
+    double IntegralxSmall1HuSea(std::vector<double> Var,
+            std::vector<double> Par);
+    double IntegralxSmall2HuSea(std::vector<double> Var,
+            std::vector<double> Par);
+    double IntegralHdVal(std::vector<double> Var, std::vector<double> Par);
+    double IntegralHdValMx(std::vector<double> Var, std::vector<double> Par);
+    double IntegralxLargeHdSea(std::vector<double> Var,
+            std::vector<double> Par);
+    double IntegralxLargeHdSeaMx(std::vector<double> Var,
+            std::vector<double> Par);
+    double IntegralxSmall1HdSea(std::vector<double> Var,
+            std::vector<double> Par);
+    double IntegralxSmall2HdSea(std::vector<double> Var,
+            std::vector<double> Par);
+    double IntegralxLargeHsSea(std::vector<double> Var,
+            std::vector<double> Par);
+    double IntegralxLargeHsSeaMx(std::vector<double> Var,
+            std::vector<double> Par);
+    double IntegralxSmall1HsSea(std::vector<double> Var,
+            std::vector<double> Par);
+    double IntegralxSmall2HsSea(std::vector<double> Var,
+            std::vector<double> Par);
+    double IntegralxLargeHg(std::vector<double> Var, std::vector<double> Par);
+    double IntegralxLargeHgMx(std::vector<double> Var, std::vector<double> Par);
+    double IntegralxSmall1Hg(std::vector<double> Var, std::vector<double> Par);
+    double IntegralxSmall2Hg(std::vector<double> Var, std::vector<double> Par);
 
     double GammaQQ(const unsigned int nflavour, const unsigned int n);
     double GammaQG(const unsigned int nflavour, const unsigned int n);

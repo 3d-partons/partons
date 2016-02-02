@@ -47,6 +47,7 @@
 #define RUNNING_ALPHA_STRONG_H
 
 #include <string>
+#include <vector>
 
 #include "../RunningAlphaStrongModule.h"
 
@@ -92,7 +93,8 @@ private:
     void ComputeExpansionCoefficients(unsigned int NFlavour); ///< Beta function coefficients
     void ComputeLambdaQCD();                 ///< Lambda_QCD as a function of Nf
     void Running(double Mu, double Lambda, unsigned int NFlavour); ///< Strong coupling at four loops
-    double FindLambda(double* Lambda, double* Parameters); ///< Returns Lambda from alpha_s at scale Mu
+    double FindLambda(std::vector<double> Lambda,
+            std::vector<double> Parameters); ///< Returns Lambda from alpha_s at scale Mu
 
     unsigned int fNc;                      ///< Number of colours (SU(Nc))
 

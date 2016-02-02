@@ -11,14 +11,14 @@ int ObservableKinematicDaoService::insert(
         const ObservableKinematic &observableKinematic) const {
     return m_observableKinematicDao.insert(observableKinematic.getXB(),
             observableKinematic.getT(), observableKinematic.getQ2(),
-            observableKinematic.getPhi());
+            observableKinematic.getPhi().getValue());
 }
 
 int ObservableKinematicDaoService::getKinematicId(
         const ObservableKinematic& observableKinematic) const {
     return m_observableKinematicDao.select(observableKinematic.getXB(),
             observableKinematic.getT(), observableKinematic.getQ2(),
-            observableKinematic.getPhi());
+            observableKinematic.getPhi().getValue());
 }
 
 List<ObservableKinematic> ObservableKinematicDaoService::getKinematicListByComputationId(

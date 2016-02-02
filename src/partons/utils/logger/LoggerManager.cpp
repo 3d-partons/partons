@@ -1,35 +1,45 @@
 #include "../../../../include/partons/utils/logger/LoggerManager.h"
 
+#include <SFML/System/Lock.hpp>
+#include <SFML/System/Mutex.hpp>
 #include <iostream>
 #include <utility>
 #include <vector>
 
+#include "/usr/local/sfml/v2.3.2/include/SFML/System/Sleep.hpp"
+#include "/usr/local/sfml/v2.3.2/include/SFML/System/Time.hpp"
 #include "../../../../include/partons/utils/fileUtils/FileUtils.h"
 #include "../../../../include/partons/utils/parser/IniFileParser.h"
 #include "../../../../include/partons/utils/PropertiesManager.h"
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
 #include "../../../../include/partons/utils/stringUtils/StringUtils.h"
 
+sf::Mutex LoggerManager::m_mutex;
+
 // Global static pointer used to ensure a single instance of the class.
 LoggerManager* LoggerManager::m_pInstance = 0;
 
 //TODO remplacer le nom de la propriété "log.file.path" par un static final string
 LoggerManager::LoggerManager() :
-        m_outputFilePath("default.log"), m_defaultLevel(LoggerLevel::INFO), m_printMode(
-                LoggerPrintMode::COUT), m_active(true) {
-    pthread_mutex_init(&m_mutex, NULL);
+        Thread(), m_outputFilePath("default.log"), m_defaultLevel(
+                LoggerLevel::INFO), m_printMode(LoggerPrintMode::COUT), m_active(
+                true) {
 }
 
 LoggerManager* LoggerManager::getInstance() {
+    sf::Lock lock(m_mutex); // mutex.lock()
+
     // Only allow one instance of class to be generated.
     if (!m_pInstance) {
         m_pInstance = new LoggerManager();
     }
 
     return m_pInstance;
-}
+} // mutex.unlock();
 
 LoggerManager::~LoggerManager() {
+    sf::Lock lock(m_mutex); // mutex.lock()
+
     for (m_it = m_customClassLevels.begin(); m_it != m_customClassLevels.end();
             m_it++) {
         if (m_it->second) {
@@ -37,16 +47,16 @@ LoggerManager::~LoggerManager() {
             (m_it->second) = 0;
         }
     }
-
-    pthread_mutex_destroy(&m_mutex);
-}
+} // mutex.unlock();
 
 void LoggerManager::delete_() {
+    sf::Lock lock(m_mutex); // mutex.lock()
+
     if (m_pInstance != 0) {
         delete m_pInstance;
         m_pInstance = 0;
     }
-}
+} // mutex.unlock();
 
 void LoggerManager::init() {
     parseConfigurationFile(
@@ -125,27 +135,37 @@ void LoggerManager::parseConfigurationFile(const std::string &filePath) {
 }
 
 void LoggerManager::close() {
-    pthread_mutex_lock(&m_mutex);
+    sf::Lock lock(m_mutex); // mutex.lock()
+
     m_active = false;
-    pthread_mutex_unlock(&m_mutex);
-}
+} // mutex.unlock()
 
 void LoggerManager::defineLevel(LoggerLevel loggerLevel) {
+    sf::Lock lock(m_mutex); // mutex.lock()
+
     m_defaultLevel = loggerLevel;
-}
+} // mutex.unlock()
 
 void LoggerManager::update() {
     while (m_active) {
         while (!m_messageQueue.empty()) {
-            pthread_mutex_lock(&m_mutex);
+
+            m_mutex.lock();
+
             LoggerMessage loggerMsg = m_messageQueue.front();
             m_messageQueue.pop();
-            pthread_mutex_unlock(&m_mutex);
+
             handleMessage(loggerMsg);
+
+            m_mutex.unlock();
+
+            sf::sleep(sf::milliseconds(3));
         }
 
         //TODO Implementations of sleep or usleep with SIGALRM are non-conformant, per POSIX
         //usleep(30);
+
+        sf::sleep(sf::milliseconds(3));
     }
 
     std::cout << "[LoggerManager] terminated ..." << std::endl;
@@ -153,6 +173,8 @@ void LoggerManager::update() {
 
 //TODO check conditions to print
 bool LoggerManager::isLoggable(LoggerMessage loggerMessage) {
+    sf::Lock lock(m_mutex); // mutex.lock()
+
     bool result = true;
 
     // find if there is some custom policy for the desired class
@@ -192,7 +214,7 @@ bool LoggerManager::isLoggable(LoggerMessage loggerMessage) {
     }
 
     return result;
-}
+} // mutex.unlock()
 
 //TODO implementer les autres sorties de logging
 void LoggerManager::handleMessage(LoggerMessage loggerMessage) {
@@ -249,10 +271,8 @@ void LoggerManager::writeFile(const std::string &message) {
     FileUtils::writef(m_outputFilePath, message);
 }
 
-void* LoggerManager::run() {
+void LoggerManager::run() {
     update();
-
-    pthread_exit(NULL);
 }
 
 bool LoggerManager::isLoggableMessage(LoggerLevel loggerLevel) {
@@ -285,14 +305,16 @@ void LoggerManager::error(const std::string & className,
 
 //TODO remettre en place les mutex
 void LoggerManager::addMessageToQueue(LoggerMessage loggerMessage) {
-    pthread_mutex_lock(&m_mutex);
+    sf::Lock lock(m_mutex); // mutex.lock()
+
     if (m_active == true) {
         m_messageQueue.push(loggerMessage);
     }
-    pthread_mutex_unlock(&m_mutex);
-}
+} // mutex.unlock()
 
 std::string LoggerManager::toString() {
+    sf::Lock lock(m_mutex); // mutex.lock()
+
     Formatter formatter;
     formatter << "DefaultLevel = " << m_defaultLevel.toString() << "\n";
     formatter << "PrintMode = " << m_printMode.toString() << "\n";
@@ -304,8 +326,10 @@ std::string LoggerManager::toString() {
     }
 
     return formatter;
-}
+} // mutex.unlock()
 
 bool LoggerManager::isEmptyMessageQueue() {
+    sf::Lock lock(m_mutex); // mutex.lock()
+
     return m_messageQueue.empty();
-}
+} // mutex.unlock()

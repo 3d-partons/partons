@@ -13,8 +13,6 @@
 class Tolerances;
 class DoubleComparisonReport;
 
-# define M_PI           3.14159265358979323846  /* pi */
-
 class MathUtils {
 public:
     static double convertDegreeToRadian(double degree);
@@ -27,6 +25,9 @@ public:
 
     static DoubleComparisonReport compare(double lhs, double rhs,
             const Tolerances &tolerances);
+
+    static double DiLog(double x);
+
 };
 
 #endif /* MATH_UTILS_H */

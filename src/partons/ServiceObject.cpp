@@ -20,7 +20,7 @@ void ServiceObject::addTasks(const List<Packet>& tasks) {
     }
 }
 
-bool ServiceObject::isEmptyTaskQueue() const {
+bool ServiceObject::isEmptyTaskQueue() {
     return m_queueOfTask.empty();
 }
 
@@ -28,7 +28,7 @@ Packet ServiceObject::popTaskFormQueue() {
     return m_queueOfTask.pop();
 }
 
-void ServiceObject::initComputationalThread(Thread* pModuleObject) {
+void ServiceObject::initComputationalThread(ModuleObject* pModuleObject) {
 
     //TODO right cast from string to unsigned int ; currently it's string to int
     unsigned int nbOfThread = StringUtils::fromStringToInt(

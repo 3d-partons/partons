@@ -45,9 +45,7 @@
 
 #include "../../../../include/partons/modules/alphaS/RunningAlphaStrong.h"
 
-#include <Math/BrentRootFinder.h>
-#include <Math/WrappedTF1.h>
-#include <TF1.h>
+#include <NumA/root_finding/Brent.h>
 #include <cmath>
 #include <cstdlib>
 #include <stdexcept>
@@ -55,6 +53,8 @@
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
+
+//TODO remove exit(0) and other thing ; check code refactoring
 
 // Initialise [class]::classId with a unique name.
 const unsigned int RunningAlphaStrong::classId =
@@ -312,83 +312,55 @@ void RunningAlphaStrong::ComputeLambdaQCD() {
     double LambdaMax = 0.5; // Idem
     double AlphaTarget; // Solve at scale mu Running( mu, LambdaQCD(Nf), Nf ) == AlphaTarget
 
-    ROOT::Math::WrappedTF1* WrappedLambdaFinder;
+    NumA::Brent brentSolver;
 
-    TF1 LambdaFinder("FindLambda", this, &RunningAlphaStrong::FindLambda,
-            LambdaMin, LambdaMax, 3, "RunningAlphaStrong", "FindLambda");
-    ROOT::Math::BrentRootFinder Brent;
+    std::vector<double> parameters(3, 0.);
 
     // Find fLambdaQCD5 between LambdaMin and LambdaMax
     // Solve Running( fZBosonMass, fLambdaQCD5, 5 ) = fAlphaSMZ
 
-    AlphaTarget = fAlphaSMZ;
-    LambdaFinder.SetParameter(0, Z_BOSON_MASS);
-    LambdaFinder.SetParameter(1, fAlphaSMZ);
-    LambdaFinder.SetParameter(2, 5);
+    parameters.at(0) = Z_BOSON_MASS;
+    parameters.at(1) = fAlphaSMZ;
+    parameters.at(2) = 5;
 
-    WrappedLambdaFinder = new ROOT::Math::WrappedTF1(LambdaFinder);
-
-    Brent.SetFunction(*WrappedLambdaFinder, LambdaMin, LambdaMax);
-    Brent.Solve();
-    fLambdaQCD5 = Brent.Root();
-
-    delete WrappedLambdaFinder;
-    WrappedLambdaFinder = 0;
+    fLambdaQCD5 = brentSolver.solve(this, &RunningAlphaStrong::FindLambda,
+            parameters, LambdaMin, LambdaMax);
 
     // Find fLambdaQCD4 between fLambdaQCD5 and LambdaMax
     // Solve Running( fBottomQuarkMass, fLambdaQCD5, 5 ) = Running( fBottomQuarkMass, fLambdaQCD4, 4 )
 
     Running(QUARK_BOTTOM_MASS, fLambdaQCD5, 5);
-    AlphaTarget = fAlphaS;
-    LambdaFinder.SetParameter(0, QUARK_BOTTOM_MASS);
-    LambdaFinder.SetParameter(1, AlphaTarget);
-    LambdaFinder.SetParameter(2, 4);
 
-    WrappedLambdaFinder = new ROOT::Math::WrappedTF1(LambdaFinder);
+    parameters.at(0) = QUARK_BOTTOM_MASS;
+    parameters.at(1) = fAlphaS;
+    parameters.at(2) = 4;
 
-    Brent.SetFunction(*WrappedLambdaFinder, fLambdaQCD5, LambdaMax);
-    Brent.Solve();
-    fLambdaQCD4 = Brent.Root();
-
-    delete WrappedLambdaFinder;
-    WrappedLambdaFinder = 0;
+    fLambdaQCD4 = brentSolver.solve(this, &RunningAlphaStrong::FindLambda,
+            parameters, fLambdaQCD5, LambdaMax);
 
     // Find fLambdaQCD3 between fLambdaQCD4 and LambdaMax
     // Solve Running( fCharmQuarkMass, fLambdaQCD4, 4 ) = Running( fCharmQuarkMass, fLambdaQCD3, 3 )
 
     Running(QUARK_CHARM_MASS, fLambdaQCD4, 4);
-    AlphaTarget = fAlphaS;
-    LambdaFinder.SetParameter(0, QUARK_CHARM_MASS);
-    LambdaFinder.SetParameter(1, AlphaTarget);
-    LambdaFinder.SetParameter(2, 3);
 
-    WrappedLambdaFinder = new ROOT::Math::WrappedTF1(LambdaFinder);
+    parameters.at(0) = QUARK_CHARM_MASS;
+    parameters.at(1) = fAlphaS;
+    parameters.at(2) = 3;
 
-    Brent.SetFunction(*WrappedLambdaFinder, fLambdaQCD4, LambdaMax);
-    Brent.Solve();
-    fLambdaQCD3 = Brent.Root();
-
-    delete WrappedLambdaFinder;
-    WrappedLambdaFinder = 0;
+    fLambdaQCD3 = brentSolver.solve(this, &RunningAlphaStrong::FindLambda,
+            parameters, fLambdaQCD4, LambdaMax);
 
     // Find fLambdaQCD6 between LambdaMin and fLambdaQCD5
     // Solve Running( fTopQuarkMass, fLambdaQCD5, 5 ) = Running( fTopQuarkMass, fLambdaQCD6, 6 )
 
     Running(QUARK_TOP_MASS, fLambdaQCD5, 5);
-    AlphaTarget = fAlphaS;
-    LambdaFinder.SetParameter(0, QUARK_TOP_MASS);
-    LambdaFinder.SetParameter(1, AlphaTarget);
-    LambdaFinder.SetParameter(2, 6);
 
-    WrappedLambdaFinder = new ROOT::Math::WrappedTF1(LambdaFinder);
+    parameters.at(0) = QUARK_TOP_MASS;
+    parameters.at(1) = fAlphaS;
+    parameters.at(2) = 6;
 
-    Brent.SetFunction(*WrappedLambdaFinder, LambdaMin, fLambdaQCD5);
-    Brent.Solve();
-    fLambdaQCD6 = Brent.Root();
-
-    delete WrappedLambdaFinder;
-    WrappedLambdaFinder = 0;
-
+    fLambdaQCD6 = brentSolver.solve(this, &RunningAlphaStrong::FindLambda,
+            parameters, LambdaMin, fLambdaQCD5);
 }
 
 /*!
@@ -427,7 +399,8 @@ void RunningAlphaStrong::Running(double Mu, double Lambda,
  *    - Parameters[ 2 ] is the number of active flavours
  *
  */
-double RunningAlphaStrong::FindLambda(double* Lambda, double* Parameters) {
+double RunningAlphaStrong::FindLambda(std::vector<double> Lambda,
+        std::vector<double> Parameters) {
     unsigned int NFlavour = (unsigned int) Parameters[2];
 
     if ((NFlavour != 3) && (NFlavour != 4) && (NFlavour != 5)

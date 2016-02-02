@@ -13,6 +13,7 @@
  */
 
 #include <string>
+#include <vector>
 
 #include "FourierObservable.h"
 
@@ -39,7 +40,8 @@ protected:
 
     Observable* m_pAcObservable;
 
-    virtual double functionToIntegrate(double *x, double *params);
+    virtual double functionToIntegrate(std::vector<double> x,
+            std::vector<double> params);
 };
 
 #endif /* AC_COS_2_PHI_H */

@@ -10,7 +10,9 @@
  * @class Thread
  */
 
-#include <pthread.h>
+namespace sf {
+class Thread;
+} /* namespace sf */
 
 class Thread {
 public:
@@ -24,22 +26,22 @@ public:
      */
     virtual ~Thread();
 
-    int start();
-
     //TODO change it or suppress it
     virtual Thread* clone() const;
 
     /**
      * Main function executed by the thread
      */
-    virtual void* run();
+    virtual void run();
 
-    pthread_t getThreadId();
+    void launch();
+    void wait();
+
+protected:
+    Thread(const Thread &other);
 
 private:
-    pthread_attr_t m_attr;
-    pthread_t m_tid;
-    int m_running;
-    int m_detached;
+    sf::Thread* m_pThread;
 };
 #endif /* THREAD_H */
+

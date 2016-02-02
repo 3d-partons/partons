@@ -14,6 +14,8 @@
 
 #include <string>
 
+class Packet;
+
 class ParameterList;
 
 class GPDType {
@@ -23,9 +25,25 @@ public:
     static const std::string GPD_TYPE_DB_COLUMN_NAME;
 
     enum Type {
-        UNDEFINED = 0, ALL = 1, H = 2, E = 3, Ht = 4, Et = 5, HTrans = 6, ETrans = 7,
-        HtTrans = 8, EtTrans = 9, H3p = 10, E3p = 11, Ht3p = 12, Et3p = 13,
-        H3m = 14, E3m = 15, Ht3m = 16, Et3m = 17, END
+        UNDEFINED = 0,
+        ALL = 1,
+        H = 2,
+        E = 3,
+        Ht = 4,
+        Et = 5,
+        HTrans = 6,
+        ETrans = 7,
+        HtTrans = 8,
+        EtTrans = 9,
+        H3p = 10,
+        E3p = 11,
+        Ht3p = 12,
+        Et3p = 13,
+        H3m = 14,
+        E3m = 15,
+        Ht3m = 16,
+        Et3m = 17,
+        END
     };
 
     GPDType();
@@ -50,8 +68,14 @@ public:
 
     static GPDType::Type fromString(const std::string & gpdTypeStr);
 
+    void serialize(Packet &packet) const;
+    void unserialize(Packet &packet);
+
 private:
     GPDType::Type m_type;
 };
+
+Packet& operator <<(Packet& packet, GPDType& gpdType);
+Packet& operator >>(Packet& packet, GPDType& gpdType);
 
 #endif /* GPD_COMPUTE_TYPE_H */

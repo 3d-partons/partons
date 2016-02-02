@@ -43,11 +43,11 @@ public:
 
     void addTasks(const List<Packet> &tasks);
 
-    bool isEmptyTaskQueue() const;
+    bool isEmptyTaskQueue();
 
     Packet popTaskFormQueue();
 
-    void initComputationalThread(Thread* pModuleObject);
+    void initComputationalThread(ModuleObject* pModuleObject);
 
     void launchAllThreadAndWaitingFor();
 

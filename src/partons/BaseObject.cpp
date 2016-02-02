@@ -87,5 +87,6 @@ void BaseObject::warn(const std::string& functionName,
 void BaseObject::error(const std::string& functionName,
         const std::string& message) const {
     m_pLoggerManager->error(getClassName(), functionName, message);
-    throwException(functionName, message);
+    throwException(Formatter() << functionName << "[" << m_objectId << "]",
+            message);
 }

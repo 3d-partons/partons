@@ -14,11 +14,11 @@
 
 #include <string>
 
+#include "../../utils/type/PhysicalType.h"
 #include "../Kinematic.h"
 
-class Packet;
-
 class ComparisonReport;
+class Packet;
 class ParameterList;
 class Tolerances;
 
@@ -46,6 +46,8 @@ public:
      */
     ObservableKinematic(double xB, double t, double Q2, double phi);
 
+    ObservableKinematic(double xB, double t, double Q2);
+
     ObservableKinematic(const std::string &xB, const std::string &t,
             const std::string &Q2, const std::string &phi);
 
@@ -61,8 +63,6 @@ public:
      */
     virtual std::string toString() const;
 
-    const std::string toStringWithoutPhi() const;
-
     ComparisonReport compare(const ObservableKinematic &referenceObject,
             const Tolerances &tolerances) const;
 
@@ -74,7 +74,7 @@ public:
     void setT(double t);
     double getXB() const;
     void setXB(double xB);
-    double getPhi() const;
+    PhysicalType<double> getPhi() const;
     void setPhi(double phi);
 
     void serialize(Packet &packet) const;
@@ -85,7 +85,7 @@ private:
     double m_xB;    ///< Bjorken variable
     double m_t; ///< Mandelstam variable, momentum transfer on the hadron target (in GeV^2)
     double m_Q2;  ///< Virtuality of the photon in Born approximation (in GeV^2)
-    double m_phi; ///<  Angle between leptonic and hadronic planes (in degrees, Trento convention)
+    PhysicalType<double> m_phi; ///<  Angle between leptonic and hadronic planes (in degrees, Trento convention)
 };
 
 Packet& operator <<(Packet& packet, ObservableKinematic& observableKinematic);

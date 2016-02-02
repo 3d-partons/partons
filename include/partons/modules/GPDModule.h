@@ -52,6 +52,8 @@ public:
      */
     virtual GPDModule* clone() const = 0;
 
+    virtual void run();
+
     /**
      * Provides a generic method to configure all types of modules by passing a Parameters object.
      * (See ModuleObject class for more info).

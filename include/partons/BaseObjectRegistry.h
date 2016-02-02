@@ -18,10 +18,17 @@
  * This is achieved by requiring all modules to derive from a single parent class named BaseObject.
  */
 
+//TODO checked 21/01/2016 for multithreading : added mutex
+
+#include <stddef.h>
 #include <map>
 #include <string>
 
 #include "BaseObject.h"
+
+namespace sf {
+class Mutex;
+} /* namespace sf */
 
 class BaseObjectRegistry {
 public:
@@ -49,7 +56,11 @@ public:
 
     std::string toString();
 
+    size_t size() const;
+
 private:
+    static sf::Mutex m_mutex;
+
     std::map<unsigned int, BaseObject*> m_baseObjectList;
     std::map<unsigned int, BaseObject*>::iterator m_itBaseObjectList;
 

@@ -110,7 +110,7 @@ public:
      */
     ResultList<GPDResult> computeManyKinematicOneModel(
             const List<GPDKinematic> &gpdKinematicList,
-            GPDModule* pGPDModule) const;
+            GPDModule* pGPDModule);
 
 private:
 

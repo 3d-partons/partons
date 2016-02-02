@@ -12,12 +12,17 @@
  * @brief
  */
 
+//TODO checked 21/01/2016 for multithreading : added mutex
+
 #include <map>
 #include <string>
 
 #include "BaseObject.h"
 
 class BaseObjectRegistry;
+namespace sf {
+class Mutex;
+} /* namespace sf */
 
 class BaseObjectFactory {
 public:
@@ -34,6 +39,8 @@ public:
     void removeFromStore(unsigned int baseObjectUniqueId);
 
 private:
+    static sf::Mutex m_mutex;
+
     /**
      * Private pointer of this class for a unique instance
      */

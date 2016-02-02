@@ -13,17 +13,17 @@
  */
 
 #include <NumA/linear_algebra/vector/Vector3D.h>
+#include <pthread.h>
 #include <string>
 
 #include "../../beans/observable/ObservableChannel.h"
 #include "../../beans/observable/ObservableKinematic.h"
 #include "../../beans/observable/ObservableType.h"
-#include "../../utils/thread/Thread.h"
 #include "../process/DVCSModule.h"
 
 class ObservableResult;
 
-class Observable: public BaseObject, public Thread {
+class Observable: public ModuleObject /*, public Thread*/{
 
 public:
     Observable(const std::string &className);
@@ -38,6 +38,10 @@ public:
      * @return
      */
     virtual Observable* clone() const = 0;
+
+    virtual void initModule();
+
+    virtual void isModuleWellConfigured();
 
     /**
      * Provides a generic method to configure all types of modules by passing a Parameters object.
@@ -57,7 +61,7 @@ public:
 
     virtual double compute(ProcessModule* pDVCSModule, double phi);
 
-    virtual void* run();
+    virtual void run();
 
 // ##### GETTERS & SETTERS #####
 
@@ -92,6 +96,9 @@ protected:
     NumA::Vector3D m_targetPolarization;
 
     virtual double compute();
+
+private:
+    pthread_mutex_t m_mutex;
 };
 
 #endif /* OBSERVABLE_H */

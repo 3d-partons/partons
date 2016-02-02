@@ -19,8 +19,9 @@
 #include <string>
 
 #include "utils/ParameterList.h"
+#include "utils/thread/Thread.h"
 
-class ModuleObject: public BaseObject {
+class ModuleObject: public BaseObject, public Thread {
 public:
     /**
      * Constructor.

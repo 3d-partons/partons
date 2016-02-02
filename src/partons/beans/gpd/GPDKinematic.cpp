@@ -7,6 +7,7 @@
 #include "../../../../include/partons/utils/ParameterList.h"
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
 #include "../../../../include/partons/utils/test/ComparisonReport.h"
+#include "../../../../include/partons/utils/thread/Packet.h"
 
 const std::string GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_X = "x";
 const std::string GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI = "xi";
@@ -146,12 +147,24 @@ void GPDKinematic::setKinematicType(KinematicType::Type kinematicType) {
     m_kinematicType = kinematicType;
 }
 
-//sf::Packet& operator <<(sf::Packet& packet, const GPDKinematic& object) {
-//    return packet << object.m_x << object.m_xi << object.m_t << object.m_MuF
-//            << object.m_MuR;
-//}
-//
-//sf::Packet& operator >>(sf::Packet& packet, GPDKinematic& object) {
-//    return packet >> object.m_x >> object.m_xi >> object.m_t >> object.m_MuF
-//            >> object.m_MuR;
-//}
+void GPDKinematic::serialize(Packet &packet) const {
+    packet << m_x << m_xi << m_t << m_MuF2 << m_MuR2;
+}
+
+void GPDKinematic::unserialize(Packet &packet) {
+    packet >> m_x;
+    packet >> m_xi;
+    packet >> m_t;
+    packet >> m_MuF2;
+    packet >> m_MuR2;
+}
+
+Packet& operator <<(Packet& packet, GPDKinematic& kinematic) {
+    kinematic.serialize(packet);
+    return packet;
+}
+Packet& operator >>(Packet& packet, GPDKinematic& kinematic) {
+
+    kinematic.unserialize(packet);
+    return packet;
+}

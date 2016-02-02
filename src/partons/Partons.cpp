@@ -1,12 +1,7 @@
 #include "../../include/partons/Partons.h"
 
-#ifdef WIN32
-#include <windows.h>
-#else
-#include <unistd.h>
-#endif // win32
-
-#include <pthread.h>
+#include <SFML/System/Lock.hpp>
+#include <SFML/System/Mutex.hpp>
 
 #include "../../include/partons/BaseObjectFactory.h"
 #include "../../include/partons/BaseObjectRegistry.h"
@@ -14,6 +9,8 @@
 #include "../../include/partons/utils/logger/LoggerManager.h"
 #include "../../include/partons/utils/PropertiesManager.h"
 #include "../../include/partons/utils/stringUtils/StringUtils.h"
+
+sf::Mutex Partons::m_mutex;
 
 // Global static pointer used to ensure a single instance of the class.
 Partons* Partons::m_pInstance = 0;
@@ -27,20 +24,24 @@ Partons::Partons() :
 }
 
 Partons::~Partons() {
+    sf::Lock lock(m_mutex); // mutex.lock()
+
     if (m_pInstance) {
         delete m_pInstance;
         m_pInstance = 0;
     }
-}
+} // mutex.unlock()
 
 Partons* Partons::getInstance() {
+    sf::Lock lock(m_mutex); // mutex.lock()
+
     // Only allow one instance of class to be generated.
     if (!m_pInstance) {
         m_pInstance = new Partons();
     }
 
     return m_pInstance;
-}
+} // mutex.unlock()
 
 void Partons::init(char** argv) {
     // Get current working directory
@@ -59,47 +60,39 @@ void Partons::init(char** argv) {
     DatabaseManager::getInstance();
 
     // 4. Start logger's thread
-    m_pLoggerManager->start();
+    //m_pLoggerManager->start();
+    m_pLoggerManager->launch();
 }
 
 void Partons::close() {
-#ifdef WIN32
-    Sleep(milliseconds);
-#else
-    usleep(1000 * 1000);
-#endif // win32
-
-    //TODO test portability
-    while (!m_pLoggerManager->isEmptyMessageQueue()) {
-#ifdef WIN32
-        Sleep(milliseconds);
-#else
-        usleep(30 * 1000);
-#endif // win32
-    }
-    // Send close signal to logger
-    m_pLoggerManager->close();
-
-    // Wait the end of the Logger thread
-    void* result;
-    if (m_pLoggerManager != 0) {
-        pthread_join(m_pLoggerManager->getThreadId(), &result);
-    }
+    sf::Lock lock(m_mutex); // mutex.lock()
 
     DatabaseManager::getInstance()->close();
 
-    // Finally delete LoggerManager pointer
-    m_pLoggerManager->delete_();
-    m_pLoggerManager = 0;
+    if (m_pLoggerManager) {
+        // Send close signal to logger
+        m_pLoggerManager->close();
 
-    // Delete all objects instantiated by the factory
-    m_pBaseObjectFactory->delete_();
-    m_pBaseObjectFactory = 0;
+        // Wait the end of queue message
+        m_pLoggerManager->wait();
 
-    // Delete all objects stored in the registry
-    m_pBaseObjectRegistry->delete_();
-    m_pBaseObjectRegistry = 0;
-}
+        // Finally delete LoggerManager pointer
+        m_pLoggerManager->delete_();
+        m_pLoggerManager = 0;
+    }
+
+    if (m_pBaseObjectFactory) {
+        // Delete all objects instantiated by the factory
+        m_pBaseObjectFactory->delete_();
+        m_pBaseObjectFactory = 0;
+    }
+
+    if (m_pBaseObjectFactory) {
+        // Delete all objects stored in the registry
+        m_pBaseObjectRegistry->delete_();
+        m_pBaseObjectRegistry = 0;
+    }
+} // mutex.unlock()
 
 std::string Partons::getCurrentWorkingDirectory() {
     return m_currentWorkingDirectoryPath;
@@ -111,8 +104,4 @@ void Partons::setScale(double MuF2, double MuR2) {
 
 Scale Partons::getScale() const {
     return m_scale;
-}
-
-LoggerManager* Partons::getLoggerManager() {
-    return m_pLoggerManager;
 }

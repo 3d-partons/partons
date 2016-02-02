@@ -1,37 +1,38 @@
 #include "../../../../include/partons/utils/thread/ThreadQueue.h"
 
 #include <stddef.h>
+#include <SFML/System/Lock.hpp>
 
 ThreadQueue::ThreadQueue() {
-    pthread_mutex_init(&m_mutex, NULL);
 }
 
 ThreadQueue::~ThreadQueue() {
-    pthread_mutex_destroy(&m_mutex);
 }
 
 void ThreadQueue::push(const Packet& packet) {
-    pthread_mutex_lock(&m_mutex);
+    sf::Lock lock(m_mutex); // mutex.lock()
+
     m_tasks.push(packet);
-    pthread_mutex_unlock(&m_mutex);
-}
+} // mutex.unlock()
 
 void ThreadQueue::push(const List<Packet>& listOfPacket) {
-    pthread_mutex_lock(&m_mutex);
+    sf::Lock lock(m_mutex); // mutex.lock()
+
     for (size_t i = 0; i != listOfPacket.size(); i++) {
         m_tasks.push(listOfPacket[i]);
     }
-    pthread_mutex_unlock(&m_mutex);
-}
+} // mutex.unlock()
 
 Packet ThreadQueue::pop() {
-    pthread_mutex_lock(&m_mutex);
+    sf::Lock lock(m_mutex); // mutex.lock()
+
     Packet packet = m_tasks.front();
     m_tasks.pop();
-    pthread_mutex_unlock(&m_mutex);
     return packet;
-}
+} // mutex.unlock()
 
-bool ThreadQueue::empty() const {
+bool ThreadQueue::empty() {
+    sf::Lock lock(m_mutex); // mutex.lock()
+
     return m_tasks.empty();
-}
+} // mutex.unlock()

@@ -7,6 +7,7 @@
 #include "../../../include/partons/beans/gpd/GPDResult.h"
 #include "../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../include/partons/beans/List.h"
+//#include "../../../include/partons/beans/observable/ObservableKinematic.h"
 #include "../../../include/partons/beans/ResultList.h"
 #include "../../../include/partons/BaseObjectRegistry.h"
 #include "../../../include/partons/modules/evolution/GPDEvolutionModule.h"
@@ -17,6 +18,7 @@
 #include "../../../include/partons/utils/ParameterList.h"
 #include "../../../include/partons/utils/stringUtils/Formatter.h"
 #include "../../../include/partons/utils/stringUtils/StringUtils.h"
+#include "../../../include/partons/utils/thread/Packet.h"
 
 const std::string GPDService::GPD_SERVICE_COMPUTE_GPD_MODEL = "computeGPDModel";
 const std::string GPDService::GPD_SERVICE_COMPUTE_GPD_MODEL_WITH_EVOLUTION =
@@ -218,16 +220,31 @@ ResultList<GPDResult> GPDService::computeListOfGPDModelRestrictedByGPDType(
 }
 
 ResultList<GPDResult> GPDService::computeManyKinematicOneModel(
-        const List<GPDKinematic> &gpdKinematicList,
-        GPDModule* pGPDModule) const {
+        const List<GPDKinematic> &gpdKinematicList, GPDModule* pGPDModule) {
     ResultList<GPDResult> results;
 
-// compute GPDModule for each inputData
+    List<Packet> listOfPacket;
+    GPDType gpdType(GPDType::ALL);
+
     for (unsigned int i = 0; i != gpdKinematicList.size(); i++) {
-        results.add(
-                computeGPDModelRestrictedByGPDType(gpdKinematicList[i],
-                        pGPDModule, GPDType::ALL));
+        Packet packet;
+        GPDKinematic obsK;
+        obsK = gpdKinematicList[i];
+        packet << obsK << gpdType;
+        listOfPacket.add(packet);
     }
+
+    addTasks(listOfPacket);
+
+    initComputationalThread (pGPDModule);
+    launchAllThreadAndWaitingFor();
+//
+//// compute GPDModule for each inputData
+//    for (unsigned int i = 0; i != gpdKinematicList.size(); i++) {
+//        results.add(
+//                computeGPDModelRestrictedByGPDType(gpdKinematicList[i],
+//                        pGPDModule, GPDType::ALL));
+//    }
 
     return results;
 }

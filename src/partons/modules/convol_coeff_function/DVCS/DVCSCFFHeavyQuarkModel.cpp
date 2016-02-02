@@ -1,9 +1,8 @@
 #include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSCFFHeavyQuarkModel.h"
 
-#include <NumA/MathIntegrator.h>
+#include <NumA/integration/MathIntegrator.h>
 #include <cmath>
 #include <stdexcept>
-#include <vector>
 
 #include "../../../../../include/partons/beans/gpd/GPDResult.h"
 #include "../../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
@@ -80,12 +79,12 @@ std::complex<double> DVCSCFFHeavyQuarkModel::computeIntegralsMassiveV() {
     std::vector<double> emptyParameters;
 
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
-        IntegralRealPartMassive = m_mathIntegrator.integrateWithROOT(this,
+        IntegralRealPartMassive = m_mathIntegrator.integrate(this,
                 &DVCSCFFHeavyQuarkModel::ConvolReKernelGluonMassiveV, 0., +1.,
                 emptyParameters);
     }
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
-        IntegralImaginaryPartMassive = m_mathIntegrator.integrateWithROOT(this,
+        IntegralImaginaryPartMassive = m_mathIntegrator.integrate(this,
                 &DVCSCFFHeavyQuarkModel::ConvolImKernelGluonMassiveV, 0., +1.,
                 emptyParameters);
     }
@@ -119,13 +118,13 @@ std::complex<double> DVCSCFFHeavyQuarkModel::computeIntegralsMassiveA() {
     std::vector<double> emptyParameters;
 
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
-        IntegralRealPartMassive = m_mathIntegrator.integrateWithROOT(this,
+        IntegralRealPartMassive = m_mathIntegrator.integrate(this,
                 &DVCSCFFHeavyQuarkModel::ConvolReKernelGluonMassiveA, 0., +1.,
                 emptyParameters);
     }
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
 
-        IntegralImaginaryPartMassive = m_mathIntegrator.integrateWithROOT(this,
+        IntegralImaginaryPartMassive = m_mathIntegrator.integrate(this,
                 &DVCSCFFHeavyQuarkModel::ConvolImKernelGluonMassiveA, 0., +1.,
                 emptyParameters);
     }
@@ -156,8 +155,8 @@ std::complex<double> DVCSCFFHeavyQuarkModel::r(double s, double mq) {
     return (tmp_beta - 1.) / (tmp_beta + 1.);
 }
 
-double DVCSCFFHeavyQuarkModel::ConvolReKernelGluonMassiveV(double* x,
-        double* params) {
+double DVCSCFFHeavyQuarkModel::ConvolReKernelGluonMassiveV(
+        std::vector<double> x, std::vector<double> params) {
     GPDResult gpdResult = m_pGPDModule->compute(x[0], m_xi, m_t, m_MuF2, m_MuR2,
             m_currentGPDComputeType);
 
@@ -170,8 +169,8 @@ double DVCSCFFHeavyQuarkModel::ConvolReKernelGluonMassiveV(double* x,
     return Convol;
 }
 
-double DVCSCFFHeavyQuarkModel::ConvolImKernelGluonMassiveV(double* x,
-        double* params) {
+double DVCSCFFHeavyQuarkModel::ConvolImKernelGluonMassiveV(
+        std::vector<double> x, std::vector<double> params) {
     GPDResult gpdResult = m_pGPDModule->compute(x[0], m_xi, m_t, m_MuF2, m_MuR2,
             m_currentGPDComputeType);
 
@@ -184,8 +183,8 @@ double DVCSCFFHeavyQuarkModel::ConvolImKernelGluonMassiveV(double* x,
     return Convol;
 }
 
-double DVCSCFFHeavyQuarkModel::ConvolReKernelGluonMassiveA(double* x,
-        double* params) {
+double DVCSCFFHeavyQuarkModel::ConvolReKernelGluonMassiveA(
+        std::vector<double> x, std::vector<double> params) {
     GPDResult gpdResult = m_pGPDModule->compute(x[0], m_xi, m_t, m_MuF2, m_MuR2,
             m_currentGPDComputeType);
 
@@ -198,8 +197,8 @@ double DVCSCFFHeavyQuarkModel::ConvolReKernelGluonMassiveA(double* x,
     return Convol;
 }
 
-double DVCSCFFHeavyQuarkModel::ConvolImKernelGluonMassiveA(double* x,
-        double* params) {
+double DVCSCFFHeavyQuarkModel::ConvolImKernelGluonMassiveA(
+        std::vector<double> x, std::vector<double> params) {
     GPDResult gpdResult = m_pGPDModule->compute(x[0], m_xi, m_t, m_MuF2, m_MuR2,
             m_currentGPDComputeType);
 

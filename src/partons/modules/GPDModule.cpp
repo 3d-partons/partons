@@ -1,14 +1,22 @@
 #include "../../../include/partons/modules/GPDModule.h"
 
 #include <math.h>
+#include <iostream>
 #include <stdexcept>
 #include <utility>
 
+#include "/usr/local/sfml/v2.3.2/include/SFML/System/Sleep.hpp"
+#include "/usr/local/sfml/v2.3.2/include/SFML/System/Time.hpp"
 #include "../../../include/partons/beans/gpd/GPDResult.h"
+#include "../../../include/partons/beans/List.h"
+#include "../../../include/partons/beans/ResultList.h"
 #include "../../../include/partons/modules/evolution/GPDEvolutionModule.h"
+#include "../../../include/partons/services/GPDService.h"
+#include "../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../include/partons/utils/GenericType.h"
 #include "../../../include/partons/utils/ParameterList.h"
 #include "../../../include/partons/utils/stringUtils/Formatter.h"
+#include "../../../include/partons/utils/thread/Packet.h"
 
 const std::string GPDModule::GPD_TYPE = "GPD_MODULE_GPD_TYPE";
 
@@ -77,7 +85,9 @@ void GPDModule::isModuleWellConfigured() {
     }
 
     if (m_xi > 1. || m_xi < 0.) {
-        error(__func__, "Skewness should be in [0., +1.]");
+        error(__func__,
+                Formatter() << "Skewness should be in [0., +1.] m_xi = "
+                        << m_xi);
     }
 
     if (m_t > 0.) {
@@ -268,4 +278,31 @@ double GPDModule::getXi() const {
 
 void GPDModule::setXi(double xi) {
     m_xi = xi;
+}
+
+void GPDModule::run() {
+
+    ResultList<GPDResult> results;
+
+    try {
+        GPDService* pGPDService = ServiceObjectRegistry::getGPDService();
+
+        while (!(pGPDService->isEmptyTaskQueue())) {
+            GPDKinematic kinematic;
+            GPDType gpdType;
+
+            Packet packet = pGPDService->popTaskFormQueue();
+            packet >> kinematic;
+            packet >> gpdType;
+
+            results.add(compute(kinematic, gpdType, false));
+
+            sf::sleep(sf::milliseconds(3));
+        }
+    } catch (std::exception &e) {
+        std::cerr << e.what() << std::endl;
+    }
+
+    info(__func__,
+            Formatter() << "[" << getObjectId() << "]" << results.toString());
 }
