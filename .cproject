@@ -33,10 +33,10 @@
 								<option id="gnu.cpp.compiler.option.other.pic.1481293199" name="Position Independent Code (-fPIC)" superClass="gnu.cpp.compiler.option.other.pic" value="true" valueType="boolean"/>
 								<option id="gnu.cpp.compiler.option.include.paths.905458946" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/NumA++/include}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../${ROOT_INCLUDE_DIR}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../${CLN_INCLUDE_DIR}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../${QT_INCLUDE_DIR}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${SFML_INCLUDE_DIR}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ROOT_INCLUDE_DIR}&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1399569935" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>

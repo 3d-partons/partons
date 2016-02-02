@@ -8,6 +8,7 @@
  */
 
 #include "../../../../include/partons/modules/dse/GapEquationSolverModule.h"
+
 #include <NumA/integration/GLNPIntegrationMode.h>
 #include <cmath>
 
@@ -17,8 +18,8 @@
 #include "../../../../include/partons/utils/ParameterList.h"
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
-GapEquationSolverModule::GapEquationSolverModule(const std::string &className) :
-        ModuleObject(className) {
+GapEquationSolverModule::GapEquationSolverModule(const std::string &className)
+        : ModuleObject(className) {
     setLambda2(1.e5);
     setEpsilon2(1.e-4);
     m_mu = 19.;
@@ -36,8 +37,8 @@ GapEquationSolverModule::~GapEquationSolverModule() {
 }
 
 GapEquationSolverModule::GapEquationSolverModule(
-        const GapEquationSolverModule& other) :
-        ModuleObject(other) {
+        const GapEquationSolverModule& other)
+        : ModuleObject(other) {
     setLambda2(other.getLambda2());
     setEpsilon2(other.getEpsilon2());
     m_mu = other.getMu();
@@ -136,7 +137,8 @@ QuarkPropagator* GapEquationSolverModule::compute(
         }
         a.assign(m_N, 0.);
         b.assign(m_N, 0.);
-        diff_a = 0.; diff_b = 0.; // Difference between two iterations
+        diff_a = 0.;
+        diff_b = 0.; // Difference between two iterations
         for (unsigned int i = 0; i < m_N; i++) {
             for (unsigned int k = 0; k < m_N; k++) {
                 stored_T = quarkPropagator->T(i, chebRoots.at(k));
