@@ -11,9 +11,13 @@
 
 #include <cmath>
 
+#include "../../../../include/partons/utils/stringUtils/Formatter.h"
+
 QuarkPropagator::QuarkPropagator(unsigned int N, double m, double mu,
         double Lambda2, double epsilon2) :
-        QuarkPropagator("QuarkPropagator", N, m, mu, Lambda2, epsilon2) {
+        BaseObject("QuarkPropagator"), m_N(N), m_m(m), m_mu(mu) {
+    m_Lambda = sqrt(Lambda2);
+    m_epsilon = sqrt(epsilon2);
 }
 
 QuarkPropagator::QuarkPropagator(const std::string& className, unsigned int N,
@@ -65,4 +69,9 @@ double QuarkPropagator::getMu() const {
 
 void QuarkPropagator::setMu(double mu) {
     m_mu = mu;
+}
+
+//TODO Complete toString
+std::string QuarkPropagator::toString() const {
+    return Formatter() << "";
 }

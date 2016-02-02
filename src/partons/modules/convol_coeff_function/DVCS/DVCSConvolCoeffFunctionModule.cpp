@@ -68,6 +68,7 @@ DVCSConvolCoeffFunctionModule::DVCSConvolCoeffFunctionModule(
 }
 
 DVCSConvolCoeffFunctionModule::~DVCSConvolCoeffFunctionModule() {
+    //TODO Remove all pointers dependencies
 }
 
 void DVCSConvolCoeffFunctionModule::init() {

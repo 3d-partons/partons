@@ -48,6 +48,7 @@ DVCSCFFModel::DVCSCFFModel(const std::string &className) :
                     &DVCSConvolCoeffFunctionModule::computePolarized));
 }
 
+//TODO Call mother init function
 void DVCSCFFModel::init() {
     m_mathIntegrator.setIntegrationMode(NumA::MathIntegrator::ROOT);
 

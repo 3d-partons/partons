@@ -14,6 +14,8 @@
 
 #include <string>
 
+class GapEquationSolverModule;
+
 class XiConverterModule;
 
 class ScaleModule;
@@ -70,6 +72,10 @@ public:
     static XiConverterModule* newXiConverterModule(
             const std::string &className);
 
+    static GapEquationSolverModule* newGapEquationSolverModule(
+            unsigned int classId);
+    static GapEquationSolverModule* newGapEquationSolverModule(
+            const std::string &className);
 };
 
 #endif /* MODULE_OBJECT_FACTORY_H */

@@ -28,8 +28,16 @@ public:
      */
     virtual std::string toString() const;
 
+    virtual void setN(unsigned int n);
+
     virtual double evaluateA(double p2);
     virtual double evaluateB(double p2);
+
+    virtual double evaluateSigmaA(double p2);
+    virtual double evaluateSigmaM(double p2);
+
+    virtual double evaluateSigmaS(double p2);
+    virtual double evaluateSigmaV(double p2);
 
     const std::vector<double>& getCoeffsA() const;
     void setCoeffsA(const std::vector<double>& a);
@@ -41,26 +49,19 @@ public:
     const double getCoeffB(unsigned int i);
     void setCoeffB(unsigned int i, double b);
 
-    virtual void setMu(double mu);
-
-private:
-    std::vector<double> m_a; ///< coefficients of Sigma_A
-    std::vector<double> m_b; ///< coefficients of Sigma_M
-
-    double evaluateSigmaA(double p2);
-    double evaluateSigmaM(double p2);
-    void updateSigmaAM(double p2);
-    double computeSigmaA(double x);
-    double computeSigmaM(double x);
+    const std::vector<double>& getRoots() const;
 
     double T(unsigned int n, double x); ///< Evaluates Chebyshev polynomials T_n(x) for |x| < 1
 
     double stox(double p2); ///< Change of variable from s=p2 [GeV] to x in [-1,1]
     double xtos(double x); ///< Change of variable from x in [-1,1] to s=p2 [GeV]
 
-    double m_p2, m_x, m_xmu, m_SigmaAp2, m_SigmaAmu, m_SigmaMp2, m_SigmaMmu,
-            m_Ap2, m_Bp2; ///< Values stored to avoid redundant computations
-    bool m_change; ///< says it there was a change in the coefficients
+private:
+    std::vector<double> m_a; ///< coefficients of Sigma_A
+    std::vector<double> m_b; ///< coefficients of Sigma_M
+
+    std::vector<double> m_roots; ///< roots of T_N
+    //TODO Move Chebyshev utils to NumA
 };
 
 #endif /* QPBYCHEBYSHEV_H_ */

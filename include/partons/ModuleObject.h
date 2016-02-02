@@ -46,6 +46,7 @@ public:
     /**
      * Return the number of current parameters used for configure this module.
      */
+    //TODO Remove
     size_t getNbOfParameters();
 
     virtual ModuleObject* clone() const = 0;

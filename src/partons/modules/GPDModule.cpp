@@ -50,6 +50,7 @@ GPDModule::GPDModule(const GPDModule &other) :
 }
 
 GPDModule::~GPDModule() {
+    //TODO Remove GPDEvolution pointer
 }
 
 void GPDModule::configure(ParameterList parameters) {

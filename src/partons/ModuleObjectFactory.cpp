@@ -3,6 +3,7 @@
 #include "../../include/partons/BaseObjectFactory.h"
 #include "../../include/partons/modules/ActiveFlavorsModule.h"
 #include "../../include/partons/modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
+#include "../../include/partons/modules/dse/GapEquationSolverModule.h"
 #include "../../include/partons/modules/DoubleDistributionModule.h"
 #include "../../include/partons/modules/evolution/GPDEvolutionModule.h"
 #include "../../include/partons/modules/GPDModule.h"
@@ -120,5 +121,16 @@ XiConverterModule* ModuleObjectFactory::newXiConverterModule(
 XiConverterModule* ModuleObjectFactory::newXiConverterModule(
         const std::string &className) {
     return static_cast<XiConverterModule*>(BaseObjectFactory::getInstance()->newBaseObject(
+            className));
+}
+
+GapEquationSolverModule* ModuleObjectFactory::newGapEquationSolverModule(
+        unsigned int classId) {
+    return static_cast<GapEquationSolverModule*>(BaseObjectFactory::getInstance()->newBaseObject(
+            classId));
+}
+GapEquationSolverModule* ModuleObjectFactory::newGapEquationSolverModule(
+        const std::string &className) {
+    return static_cast<GapEquationSolverModule*>(BaseObjectFactory::getInstance()->newBaseObject(
             className));
 }

@@ -26,10 +26,17 @@ public:
     virtual std::string toString() const;
 
     unsigned int getN() const;
-    void setN(unsigned int n);
+    virtual void setN(unsigned int n);
 
-    virtual double evaluateA(double p2);
-    virtual double evaluateB(double p2);
+    virtual double evaluateA(double p2) = 0;
+    virtual double evaluateB(double p2) = 0;
+
+    virtual double evaluateSigmaA(double p2) = 0;
+    virtual double evaluateSigmaM(double p2) = 0;
+
+    virtual double evaluateSigmaS(double p2) = 0;
+    virtual double evaluateSigmaV(double p2) = 0;
+
     double getM() const;
     void setM(double m);
     double getEpsilon() const;
