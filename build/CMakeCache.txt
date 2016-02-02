@@ -784,17 +784,17 @@ QT_WORLDTIMECLOCKPLUGIN_PLUGIN_RELEASE:FILEPATH=QT_WORLDTIMECLOCKPLUGIN_PLUGIN_R
 //Chemin vers le dossier des fichiers d'en-tête de ROOT
 ROOT_INCLUDE_DIR:FILEPATH=/usr/local/root/v5.34.34/include
 
-//Chemin vers le dossier des fichiers d'en-tête de ROOT
-ROOT_LIB_DIR:FILEPATH=/usr/local/root/v5.34.34/lib
-
 //Nom du fichier de la bibliothèque ROOT
 ROOT_LIBRARIES:STRING=Hist;Core
 
-SFML_INCLUDE_DIR:FILEPATH=/usr/local/sfml/v2.3.2_c/include
+//Chemin vers le dossier des fichiers d'en-tête de ROOT
+ROOT_LIB_DIR:FILEPATH=/usr/local/root/v5.34.34/lib
+
+SFML_INCLUDE_DIR:FILEPATH=/usr/local/sfml/v2.3.2/include
 
 SFML_LIBRARIES:STRING=sfml-system
 
-SFML_LIB_DIR:FILEPATH=/usr/local/sfml/v2.3.2_c/lib
+SFML_LIB_DIR:FILEPATH=/usr/local/sfml/v2.3.2/lib
 
 
 ########################
