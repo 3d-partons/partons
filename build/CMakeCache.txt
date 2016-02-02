@@ -782,13 +782,13 @@ QT_WORLDTIMECLOCKPLUGIN_PLUGIN_DEBUG:FILEPATH=QT_WORLDTIMECLOCKPLUGIN_PLUGIN_DEB
 QT_WORLDTIMECLOCKPLUGIN_PLUGIN_RELEASE:FILEPATH=QT_WORLDTIMECLOCKPLUGIN_PLUGIN_RELEASE-NOTFOUND
 
 //Chemin vers le dossier des fichiers d'en-tête de ROOT
-ROOT_INCLUDE_DIR:FILEPATH=/usr/local/root/v5.34.34/include
+ROOT_INCLUDE_DIR:FILEPATH=/usr/local/root/v5.34.32/include
 
 //Nom du fichier de la bibliothèque ROOT
 ROOT_LIBRARIES:STRING=Hist;Core
 
 //Chemin vers le dossier des fichiers d'en-tête de ROOT
-ROOT_LIB_DIR:FILEPATH=/usr/local/root/v5.34.34/lib
+ROOT_LIB_DIR:FILEPATH=/usr/local/root/v5.34.32/lib
 
 SFML_INCLUDE_DIR:FILEPATH=/usr/local/sfml/v2.3.2/include
 
