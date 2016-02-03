@@ -30,8 +30,9 @@ class XiConverterModule;
 
 class ModuleObjectFactory {
 public:
-    friend class Partons;
-
+    /**
+     * Default destructor
+     */
     virtual ~ModuleObjectFactory();
 
     DoubleDistributionModule* newDoubleDistributionModule(unsigned int classId);
@@ -76,9 +77,19 @@ public:
     Observable* newObservable(const std::string & className);
 
 private:
-    BaseObjectFactory* m_pBaseObjectFactory;
+    // To allow only Partons class to create a new instance of this class.
+    // Used to avoid multiple singleton class and to avoid multithreading problem especially when getInstance() is called.
+    // There is a bad behaviour with first instance initialization and mutex.
+    friend class Partons;
 
+    /**
+     * Private default constructor to ensure the creation of a single instance of the class, managed by Parton's class.
+     *
+     * @param pBaseObjectFactory
+     */
     ModuleObjectFactory(BaseObjectFactory* pBaseObjectFactory);
+
+    BaseObjectFactory* m_pBaseObjectFactory;
 };
 
 #endif /* MODULE_OBJECT_FACTORY_H */

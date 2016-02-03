@@ -36,11 +36,19 @@ public:
     DoubleDistributionService* getDoubleDistributionService() const;
 
 private:
+    // To allow only Partons class to create a new instance of this class.
+    // Used to avoid multiple singleton class and to avoid multithreading problem especially when getInstance() is called.
+    // There is a bad behaviour with first instance initialization and mutex.
     friend class Partons;
 
-    BaseObjectRegistry* m_pBaseObjectRegistry;
-
+    /**
+     * Private default constructor to ensure the creation of a single instance of the class, managed by Parton's class.
+     *
+     * @param m_pBaseObjectRegistry
+     */
     ServiceObjectRegistry(BaseObjectRegistry* m_pBaseObjectRegistry);
+
+    BaseObjectRegistry* m_pBaseObjectRegistry;
 
     void checkBaseObjectRegistryNullPointer() const;
 };

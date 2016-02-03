@@ -43,6 +43,11 @@ Partons::~Partons() {
         m_pBaseObjectRegistry = 0;
     }
 
+    if (m_pBaseObjectRegistry) {
+        delete m_pBaseObjectRegistry;
+        m_pBaseObjectRegistry = 0;
+    }
+
     if (m_pLoggerManager) {
         delete m_pLoggerManager;
     }
@@ -88,14 +93,6 @@ void Partons::close() {
 
 std::string Partons::getCurrentWorkingDirectory() {
     return m_currentWorkingDirectoryPath;
-}
-
-void Partons::setScale(double MuF2, double MuR2) {
-    m_scale = Scale(MuF2, MuR2);
-}
-
-Scale Partons::getScale() const {
-    return m_scale;
 }
 
 BaseObjectRegistry* Partons::getBaseObjectRegistry() const {

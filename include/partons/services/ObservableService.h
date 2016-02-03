@@ -20,8 +20,6 @@
 #include "../beans/ResultList.h"
 #include "../ServiceObject.h"
 
-class ModuleObjectFactory;
-
 class DVCSConvolCoeffFunctionModule;
 class DVCSModule;
 class Observable;
@@ -63,8 +61,6 @@ public:
     virtual void computeTask(Task &task);
 
 private:
-    ModuleObjectFactory* m_pModuleObjectFactory;
-
     //TODO improve object copy
     ObservableResult computeDVCSObservableTask(Task &task);
     ResultList<ObservableResult> computeManyKinematicOneModelTask(Task &task);

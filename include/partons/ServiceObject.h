@@ -25,13 +25,16 @@
 #include "utils/thread/ThreadManager.h"
 #include "utils/thread/ThreadQueue.h"
 
-class Thread;
-
-class ThreadQueue;
+class ModuleObjectFactory;
 class Task;
 
 class ServiceObject: public BaseObject {
 public:
+    /**
+     * Default constructor
+     *
+     * @param className
+     */
     ServiceObject(const std::string &className);
 
     /**
@@ -51,9 +54,13 @@ public:
 
     void launchAllThreadAndWaitingFor();
 
+    virtual void init();
+
+protected:
+    ModuleObjectFactory* m_pModuleObjectFactory;
+
 private:
     ThreadQueue m_queueOfTask;
-
     ThreadManager m_threadManager;
 };
 

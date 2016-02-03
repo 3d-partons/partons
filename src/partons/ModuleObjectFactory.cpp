@@ -18,6 +18,8 @@ ModuleObjectFactory::ModuleObjectFactory(BaseObjectFactory* pBaseObjectFactory) 
 }
 
 ModuleObjectFactory::~ModuleObjectFactory() {
+    // Nothing to destroy
+    // m_pBaseObjectFactory pointer will be deleted by the Partons class
 }
 
 DoubleDistributionModule* ModuleObjectFactory::newDoubleDistributionModule(

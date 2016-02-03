@@ -20,7 +20,6 @@ LoggerManager* LoggerManager::getInstance() {
     if (!m_pInstance) {
         m_pInstance = new LoggerManager();
     }
-
     return m_pInstance;
 }
 
@@ -144,13 +143,9 @@ void LoggerManager::update() {
 
             m_mutex.unlock();
 
-            sf::sleep(sf::milliseconds(3));
+            sf::sleep(sf::microseconds(3));
         }
-
-        //TODO Implementations of sleep or usleep with SIGALRM are non-conformant, per POSIX
-        //usleep(30);
-
-        sf::sleep(sf::milliseconds(3));
+        sf::sleep(sf::microseconds(3));
     }
 
     std::cout << "[LoggerManager] terminated ..." << std::endl;

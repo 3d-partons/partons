@@ -1,9 +1,10 @@
 #include "../../include/partons/BaseObjectRegistry.h"
 
 #include <SFML/System/Lock.hpp>
-#include <sstream>
 #include <stdexcept>
 #include <utility>
+
+#include "../../include/partons/utils/stringUtils/Formatter.h"
 
 BaseObjectRegistry* BaseObjectRegistry::m_pInstance = 0;
 
@@ -13,11 +14,11 @@ BaseObjectRegistry* BaseObjectRegistry::getInstance() {
     if (!m_pInstance) {
         m_pInstance = new BaseObjectRegistry();
     }
-
     return m_pInstance;
 }
 
 BaseObjectRegistry::BaseObjectRegistry() {
+    // Nothing to do
 }
 
 BaseObjectRegistry::~BaseObjectRegistry() {
@@ -76,7 +77,6 @@ void BaseObjectRegistry::initBaseObject() {
     }
 } // mutex.unlock();
 
-//TODO check NULL pointer instead ?
 BaseObject* BaseObjectRegistry::get(unsigned int classId) {
     sf::Lock lock(m_mutex); // mutex.lock()
 
@@ -107,17 +107,17 @@ bool BaseObjectRegistry::isAvailable(const std::string &className) {
 std::string BaseObjectRegistry::toString() {
     sf::Lock lock(m_mutex); // mutex.lock()
 
-    std::ostringstream os;
-    os << "[ModuleObjectFactory]" << std::endl;
+    Formatter formatter;
+    formatter << "[ModuleObjectFactory]" << '\n';
     for (m_itBaseObjectList = m_baseObjectList.begin();
             m_itBaseObjectList != m_baseObjectList.end();
             m_itBaseObjectList++) {
         if ((m_itBaseObjectList->second) != 0) {
-            os << (m_itBaseObjectList->second)->toString() << std::endl;
+            formatter << (m_itBaseObjectList->second)->toString() << '\n';
         }
     }
 
-    return os.str();
+    return formatter.str();
 } // mutex.unlock();
 
 size_t BaseObjectRegistry::size() {

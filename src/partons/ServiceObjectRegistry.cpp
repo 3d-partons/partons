@@ -15,6 +15,8 @@ ServiceObjectRegistry::ServiceObjectRegistry(
 }
 
 ServiceObjectRegistry::~ServiceObjectRegistry() {
+    // Nothing to destroy
+    // m_pBaseObjectRegistry pointer will be deleted by the Partons class
 }
 
 ServiceObject* ServiceObjectRegistry::get(unsigned int classId) const {
@@ -31,18 +33,17 @@ ServiceObject* ServiceObjectRegistry::get(const std::string &className) const {
             className));
 }
 
-GPDService* ServiceObjectRegistry::getGPDService() const {
-    return static_cast<GPDService*>(get(GPDService::classId));
-}
-
 void ServiceObjectRegistry::checkBaseObjectRegistryNullPointer() const {
-    if (ServiceObjectRegistry::m_pBaseObjectRegistry == 0) {
+    if (!m_pBaseObjectRegistry) {
         throw std::runtime_error(
                 "[ServiceObjectRegistry::checkBaseObjectRegistryNullPointer] m_pBaseObjectRegistry is NULL pointer, cannot run application !");
     }
 }
 
-//TODO tester le cast BaseObject -> ServoceObject -> CoefficientFunctionObject
+GPDService* ServiceObjectRegistry::getGPDService() const {
+    return static_cast<GPDService*>(get(GPDService::classId));
+}
+
 DVCSConvolCoeffFunctionService* ServiceObjectRegistry::getConvolCoeffFunctionService() const {
     return static_cast<DVCSConvolCoeffFunctionService*>(get(
             DVCSConvolCoeffFunctionService::classId));

@@ -23,7 +23,9 @@ public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
     /**
-     * Sefault constructor
+     * Default constructor
+     *
+     * @param className
      */
     VizualisationService(const std::string &className);
 

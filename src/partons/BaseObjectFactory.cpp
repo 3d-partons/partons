@@ -10,6 +10,8 @@ BaseObjectFactory::BaseObjectFactory(BaseObjectRegistry* pBaseObjectRegistry) :
 }
 
 BaseObjectFactory::~BaseObjectFactory() {
+    // Nothing to destroy
+    // m_pBaseObjectRegistry pointer will be deleted by the Partons class
 }
 
 BaseObject* BaseObjectFactory::newBaseObject(unsigned int classId) {

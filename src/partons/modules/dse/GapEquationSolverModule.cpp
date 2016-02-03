@@ -19,17 +19,12 @@
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 GapEquationSolverModule::GapEquationSolverModule(const std::string &className) :
-        ModuleObject(className), m_gluonPropagator(0) {
+        ModuleObject(className), m_gluonPropagator(0), m_mu(19.), m_m(5.e-3), m_N(
+                50), m_Nx(120), m_Nz(32), m_tolerance(1.e-4), m_maxIter(20), m_Lambda2(
+                1.), m_epsilon2(1.) {
 
     setLambda2(1.e5);
     setEpsilon2(1.e-4);
-    m_mu = 19.;
-    m_m = 5.e-3;
-    m_N = 50;
-    m_Nx = 120;
-    m_Nz = 32;
-    m_tolerance = 1.e-4;
-    m_maxIter = 20;
 }
 
 GapEquationSolverModule::~GapEquationSolverModule() {
@@ -48,12 +43,15 @@ GapEquationSolverModule::GapEquationSolverModule(
     m_Nz = other.getNz();
     m_tolerance = other.getTolerance();
     m_maxIter = other.getMaxIter();
+}
 
+void GapEquationSolverModule::updateC() {
+    // Care divide by zero
+    m_C = (m_Lambda2 * m_epsilon2) * log(m_Lambda2 / m_epsilon2)
+            / (2. * pow(2. * PI, 3));
 }
 
 void GapEquationSolverModule::initModule() {
-    m_C = (m_Lambda2 * m_epsilon2) * log(m_Lambda2 / m_epsilon2)
-            / (2. * pow(2. * PI, 3));
 }
 
 void GapEquationSolverModule::isModuleWellConfigured() {
@@ -73,8 +71,6 @@ QuarkPropagator* GapEquationSolverModule::compute(
         GapEquationSolverModule::QPType qpType,
         GapEquationSolverModule::IterativeType iterativeType,
         GapEquationSolverModule::IntegrationType integrationType) {
-
-    initModule();
 
     // Gauss-Legendre integration //TODO Implement other cases
     NumA::GLNPIntegrationMode gaussLeg_x, gaussLeg_z;
@@ -201,6 +197,7 @@ double GapEquationSolverModule::getEpsilon2() const {
 void GapEquationSolverModule::setEpsilon2(double epsilon2) {
     m_epsilon2 = epsilon2;
     m_epsilon = sqrt(epsilon2);
+    updateC();
 }
 
 double GapEquationSolverModule::getLambda2() const {
@@ -210,6 +207,7 @@ double GapEquationSolverModule::getLambda2() const {
 void GapEquationSolverModule::setLambda2(double lambda2) {
     m_Lambda2 = lambda2;
     m_Lambda = sqrt(lambda2);
+    updateC();
 }
 
 double GapEquationSolverModule::getM() const {

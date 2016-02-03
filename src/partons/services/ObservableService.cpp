@@ -30,10 +30,8 @@ const unsigned int ObservableService::classId =
         Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
                 new ObservableService("ObservableService"));
 
-ObservableService::ObservableService(const std::string &className)
-        : ServiceObject(className), m_pModuleObjectFactory(
-                Partons::getInstance()->getModuleObjectFactory()) {
-
+ObservableService::ObservableService(const std::string &className) :
+        ServiceObject(className) {
 }
 
 ObservableService::~ObservableService() {

@@ -14,15 +14,11 @@
 
 #include <string>
 
-#include "beans/Scale.h"
-
-class ModuleObjectFactory;
-
-class ServiceObjectRegistry;
-
 class BaseObjectFactory;
 class BaseObjectRegistry;
 class LoggerManager;
+class ModuleObjectFactory;
+class ServiceObjectRegistry;
 
 class Partons {
 public:
@@ -40,9 +36,6 @@ public:
     void close();
 
     std::string getCurrentWorkingDirectory();
-
-    void setScale(double MuF2, double MuR2);
-    Scale getScale() const;
 
     BaseObjectRegistry* getBaseObjectRegistry() const;
     ServiceObjectRegistry* getServiceObjectRegistry() const;
@@ -68,8 +61,6 @@ private:
     LoggerManager* m_pLoggerManager;
 
     std::string m_currentWorkingDirectoryPath;
-
-    Scale m_scale;
 };
 
 #endif /* PARTONS_H */

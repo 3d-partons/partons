@@ -29,15 +29,8 @@ BaseObject::~BaseObject() {
             getObjectId());
 }
 
-void BaseObject::throwException(const std::string functionName,
-        const std::string errorMessage) const {
-    throw std::runtime_error(
-            Formatter() << "[" << getClassName() << "::" << functionName << "] "
-                    << errorMessage);
-}
-
 void BaseObject::init() {
-
+    // Nothing to do
 }
 
 std::string BaseObject::toString() const {
@@ -51,20 +44,6 @@ std::string BaseObject::toString() const {
 
 unsigned int BaseObject::getUniqueObjectId() {
     return BaseObject::m_uniqueObjectIdCounter++;
-}
-
-/* ===== GETTERS & SETTERS ===== */
-
-const std::string& BaseObject::getClassName() const {
-    return m_className;
-}
-
-unsigned int BaseObject::getObjectId() const {
-    return m_objectId;
-}
-
-void BaseObject::setObjectId(unsigned int objectId) {
-    m_objectId = objectId;
 }
 
 void BaseObject::info(const std::string& functionName,
@@ -88,4 +67,25 @@ void BaseObject::error(const std::string& functionName,
     LoggerManager::getInstance()->error(getClassName(), functionName, message);
     throwException(Formatter() << functionName << "[" << m_objectId << "]",
             message);
+}
+
+void BaseObject::throwException(const std::string functionName,
+        const std::string errorMessage) const {
+    throw std::runtime_error(
+            Formatter() << "[" << getClassName() << "::" << functionName << "] "
+                    << errorMessage);
+}
+
+/* ===== GETTERS & SETTERS ===== */
+
+const std::string& BaseObject::getClassName() const {
+    return m_className;
+}
+
+unsigned int BaseObject::getObjectId() const {
+    return m_objectId;
+}
+
+void BaseObject::setObjectId(unsigned int objectId) {
+    m_objectId = objectId;
 }

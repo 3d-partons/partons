@@ -23,10 +23,8 @@ const unsigned int DVCSConvolCoeffFunctionService::classId =
                         "DVCSConvolCoeffFunctionService"));
 
 DVCSConvolCoeffFunctionService::DVCSConvolCoeffFunctionService(
-        const std::string &className)
-        : ServiceObject(className), m_pModuleObjectFactory(
-                Partons::getInstance()->getModuleObjectFactory()) {
-
+        const std::string &className) :
+        ServiceObject(className) {
 }
 
 DVCSConvolCoeffFunctionService::~DVCSConvolCoeffFunctionService() {

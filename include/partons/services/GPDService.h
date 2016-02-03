@@ -23,8 +23,6 @@
 #include "../modules/GPDModule.h"
 #include "../ServiceObject.h"
 
-class ModuleObjectFactory;
-
 class GPDEvolutionModule;
 
 class GPDService: public ServiceObject {
@@ -114,8 +112,6 @@ public:
             const List<GPDKinematic> &gpdKinematicList, GPDModule* pGPDModule);
 
 private:
-    ModuleObjectFactory* m_pModuleObjectFactory;
-
     GPDKinematic* m_pGPDKinematic;
     GPDModule* m_pGPDModule;
 

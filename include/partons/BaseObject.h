@@ -64,9 +64,6 @@ protected:
      */
     BaseObject(const BaseObject& other);
 
-    void throwException(const std::string functionName,
-            const std::string errorMessage) const;
-
     void info(const std::string &functionName,
             const std::string &message) const;
 
@@ -78,6 +75,9 @@ protected:
 
     void error(const std::string &functionName,
             const std::string &message) const;
+
+    void throwException(const std::string functionName,
+            const std::string errorMessage) const;
 
 private:
     unsigned int m_objectId;

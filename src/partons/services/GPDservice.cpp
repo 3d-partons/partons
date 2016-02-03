@@ -31,9 +31,8 @@ const unsigned int GPDService::classId =
         Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
                 new GPDService("GPDService"));
 
-GPDService::GPDService(const std::string &className)
-        : ServiceObject(className), m_pGPDKinematic(0), m_pGPDModule(0), m_pModuleObjectFactory(
-                Partons::getInstance()->getModuleObjectFactory()) {
+GPDService::GPDService(const std::string &className) :
+        ServiceObject(className), m_pGPDKinematic(0), m_pGPDModule(0) {
 }
 
 GPDService::~GPDService() {

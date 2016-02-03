@@ -122,6 +122,8 @@ private:
     // Various function (model dependent)
     double F_func(double p2, double q2, double k2);
     double k2_func(double p2, double q2, double z);
+
+    void updateC();
 };
 
 #endif /* GAPEQUATIONSOLVER_H_ */

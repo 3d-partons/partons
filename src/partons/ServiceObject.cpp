@@ -2,16 +2,18 @@
 
 #include <stddef.h>
 
+#include "../../include/partons/Partons.h"
 #include "../../include/partons/utils/PropertiesManager.h"
 #include "../../include/partons/utils/stringUtils/Formatter.h"
 #include "../../include/partons/utils/stringUtils/StringUtils.h"
 
 ServiceObject::ServiceObject(const std::string &className) :
-        BaseObject(className) {
+        BaseObject(className), m_pModuleObjectFactory(0) {
 }
 
 ServiceObject::~ServiceObject() {
-// Nothing to destroy
+    // Nothing to destroy
+    // m_pModuleObjectFactory pointer will be deleted by the Partons class
 }
 
 void ServiceObject::addTasks(const List<Packet>& tasks) {
@@ -42,4 +44,13 @@ void ServiceObject::initComputationalThread(ModuleObject* pModuleObject) {
 
 void ServiceObject::launchAllThreadAndWaitingFor() {
     m_threadManager.launchAllAndWaitingFor();
+}
+
+void ServiceObject::init() {
+    BaseObject::init();
+
+    if (!m_pModuleObjectFactory) {
+        m_pModuleObjectFactory =
+                Partons::getInstance()->getModuleObjectFactory();
+    }
 }
