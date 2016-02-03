@@ -57,9 +57,9 @@ double GluonPropagator::evaluateG(double k2) {
             + 8. * PI * PI * 12. / (33. - 2. * m_Nf) * (1. - exp(-k2))
                     / (k2
                             * log(
-                                    exp(2) - 1.
+                                    exp(2.) - 1.
                                             + pow(
-                                                    1
+                                                    1.
                                                             + k2
                                                                     / (m_LambdaQCD
                                                                             * m_LambdaQCD),

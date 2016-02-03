@@ -73,14 +73,25 @@ QuarkPropagator* GapEquationSolverModule::compute(
         GapEquationSolverModule::QPType qpType,
         GapEquationSolverModule::IterativeType iterativeType,
         GapEquationSolverModule::IntegrationType integrationType) {
+
+    initModule();
+
     // Gauss-Legendre integration //TODO Implement other cases
     NumA::GLNPIntegrationMode gaussLeg_x, gaussLeg_z;
     gaussLeg_x.makeNodeAndWeightVectors(m_Nx);
     gaussLeg_z.makeNodeAndWeightVectors(m_Nz);
     std::vector<double> nodes_x = gaussLeg_x.getNodeNp();
     std::vector<double> weights_x = gaussLeg_x.getWeightNp();
+    // Test
+//    std::vector<double> nodes_z = gaussLeg_z.getNodeNp();
+//    std::vector<double> weights_z = gaussLeg_z.getWeightNp();
+//    Formatter formatter;
+//    formatter << "Taille des noeuds et poids : ";
+//    formatter << nodes_x.size() << " " << weights_x.size() << " "
+//            << nodes_z.size() << " " << weights_z.size();
+//    info(__func__, formatter.str());
 
-    // Chebyshev representation //TODO Implement other cases
+// Chebyshev representation //TODO Implement other cases
     QPbyChebyshev* pQuarkPropagator = new QPbyChebyshev(m_N, m_m, m_mu,
             m_Lambda2, m_epsilon2);
     std::vector<double> chebRoots = pQuarkPropagator->getRoots(); //TODO Move to NumA
@@ -150,10 +161,24 @@ QuarkPropagator* GapEquationSolverModule::compute(
             diff_a += pow(a.at(i) - pQuarkPropagator->getCoeffA(i), 2);
             diff_b += pow(b.at(i) - pQuarkPropagator->getCoeffB(i), 2);
         }
+
         noConvergence = (sqrt(diff_a) > m_tolerance)
                 || (sqrt(diff_b) > m_tolerance);
         pQuarkPropagator->setCoeffsA(a);
         pQuarkPropagator->setCoeffsB(b);
+
+        // Test
+//        Formatter formatter;
+//        formatter << "Iteration " << n << " :\n";
+//        formatter << "A : ";
+//        for (unsigned int i = 0; i < m_N; i++) {
+//            formatter << pQuarkPropagator->evaluateA(chebRoots_s.at(i)) << " ";
+//        }
+//        formatter << "\n" << "B : ";
+//        for (unsigned int i = 0; i < m_N; i++) {
+//            formatter << pQuarkPropagator->evaluateB(chebRoots_s.at(i)) << " ";
+//        }
+//        info(__func__, formatter.str());
     }
 
     return pQuarkPropagator;
@@ -250,7 +275,7 @@ double GapEquationSolverModule::ThetaA_func(std::vector<double> z,
 
     return sqrt(1 - z.at(0) * z.at(0))
             * m_gluonPropagator->evaluateG(k2_func(p2, q2, z.at(0)))
-            * F_func(p2, q2, z.at(0));
+            * F_func(p2, q2, k2_func(p2, q2, z.at(0)));
 }
 
 double GapEquationSolverModule::ThetaM_func(std::vector<double> z,
