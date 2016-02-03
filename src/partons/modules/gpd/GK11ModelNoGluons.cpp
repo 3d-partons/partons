@@ -26,11 +26,11 @@
 #include "../../../../include/partons/utils/ParameterList.h"
 
 const unsigned int GK11ModelNoGluons::classId =
-        Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
+        BaseObjectRegistry::getInstance()->registerBaseObject(
                 new GK11ModelNoGluons("GK11ModelNoGluons"));
 
-GK11ModelNoGluons::GK11ModelNoGluons(const std::string &className)
-        : GPDModule(className) {
+GK11ModelNoGluons::GK11ModelNoGluons(const std::string &className) :
+        GPDModule(className) {
     pGPDService = NULL;
     GKmodel = NULL;
 
@@ -58,8 +58,8 @@ std::string GK11ModelNoGluons::toString() {
     return GPDModule::toString();
 }
 
-GK11ModelNoGluons::GK11ModelNoGluons(const GK11ModelNoGluons& other)
-        : GPDModule(other) {
+GK11ModelNoGluons::GK11ModelNoGluons(const GK11ModelNoGluons& other) :
+        GPDModule(other) {
 
     pGPDService = other.pGPDService;
     GKmodel = other.GKmodel;

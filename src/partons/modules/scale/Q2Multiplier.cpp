@@ -2,7 +2,6 @@
 
 #include "../../../../include/partons/beans/Scale.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
-#include "../../../../include/partons/Partons.h"
 #include "../../../../include/partons/utils/GenericType.h"
 #include "../../../../include/partons/utils/ParameterList.h"
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
@@ -11,11 +10,11 @@ const std::string Q2Multiplier::PARAMETER_NAME_LAMBDA = "lambda";
 
 // Initialise [class]::classId with a unique name.
 const unsigned int Q2Multiplier::classId =
-        Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
+        BaseObjectRegistry::getInstance()->registerBaseObject(
                 new Q2Multiplier("Q2Multiplier"));
 
-Q2Multiplier::Q2Multiplier(const std::string &className)
-        : ScaleModule(className), m_lambda(1.) {
+Q2Multiplier::Q2Multiplier(const std::string &className) :
+        ScaleModule(className), m_lambda(1.) {
 }
 
 Q2Multiplier::~Q2Multiplier() {
@@ -36,8 +35,8 @@ Scale Q2Multiplier::compute(double Q2) {
     return Scale(scale, scale);
 }
 
-Q2Multiplier::Q2Multiplier(const Q2Multiplier& other)
-        : ScaleModule(other) {
+Q2Multiplier::Q2Multiplier(const Q2Multiplier& other) :
+        ScaleModule(other) {
     m_lambda = other.m_lambda;
 }
 

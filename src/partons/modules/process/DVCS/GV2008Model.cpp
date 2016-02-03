@@ -6,18 +6,17 @@
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../../include/partons/Partons.h"
 #include "../../../../../include/partons/utils/stringUtils/Formatter.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int GV2008Model::classId =
-        Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
+        BaseObjectRegistry::getInstance()->registerBaseObject(
                 new GV2008Model("GV2008Model"));
 
 /*--------------------------------------- Constructors ---------------------------------*/
 
-GV2008Model::GV2008Model(const std::string &className)
-        : DVCSModule(className), m_qCM(NumA::Vector4D(0., 0., 0., 0.)), m_pCM(
+GV2008Model::GV2008Model(const std::string &className) :
+        DVCSModule(className), m_qCM(NumA::Vector4D(0., 0., 0., 0.)), m_pCM(
                 NumA::Vector4D(0., 0., 0., 0.)), m_qpCM(
                 NumA::Vector4D(0., 0., 0., 0.)), m_ppCM(
                 NumA::Vector4D(0., 0., 0., 0.)) {
@@ -28,8 +27,8 @@ GV2008Model::GV2008Model(const std::string &className)
 GV2008Model::~GV2008Model() {
 }
 
-GV2008Model::GV2008Model(const GV2008Model& other)
-        : DVCSModule(other) {
+GV2008Model::GV2008Model(const GV2008Model& other) :
+        DVCSModule(other) {
     m_qCM = other.m_qCM;
     m_pCM = other.m_pCM;
     m_qpCM = other.m_qpCM;

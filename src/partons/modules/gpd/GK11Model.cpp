@@ -15,17 +15,16 @@
 #include "../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../include/partons/Partons.h"
 #include "../../../../include/partons/utils/ParameterList.h"
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int GK11Model::classId =
-        Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
+        BaseObjectRegistry::getInstance()->registerBaseObject(
                 new GK11Model("GK11Model"));
 
-GK11Model::GK11Model(const std::string &className)
-        : GPDModule(className) {
+GK11Model::GK11Model(const std::string &className) :
+        GPDModule(className) {
     m_nf = 3;
     fL = 0.;
     m_MuF2_ref = 4.;
@@ -61,8 +60,8 @@ GK11Model::GK11Model(const std::string &className)
             std::make_pair(GPDType::Et, &GPDModule::computeEt));
 }
 
-GK11Model::GK11Model(const GK11Model& other)
-        : GPDModule(other) {
+GK11Model::GK11Model(const GK11Model& other) :
+        GPDModule(other) {
     c1 = other.getC1();
     c2 = other.getC2();
     c3 = other.getC3();

@@ -12,12 +12,23 @@
 // Global static pointer used to ensure a single instance of the class.
 Partons* Partons::m_pInstance = 0;
 
-Partons::Partons()
-        : m_pBaseObjectRegistry(new BaseObjectRegistry()), m_pServiceObjectRegistry(
-                new ServiceObjectRegistry()), m_pBaseObjectFactory(
-                new BaseObjectFactory()), m_pModuleObjectFactory(
-                new ModuleObjectFactory()), m_pLoggerManager(
-                new LoggerManager()) {
+Partons* Partons::getInstance() {
+    // Only allow one instance of class to be generated.
+    if (!m_pInstance) {
+        m_pInstance = new Partons();
+    }
+
+    return m_pInstance;
+}
+
+Partons::Partons() :
+        m_pBaseObjectRegistry(BaseObjectRegistry::getInstance()), m_pServiceObjectRegistry(
+                0), m_pBaseObjectFactory(0), m_pModuleObjectFactory(0), m_pLoggerManager(
+                LoggerManager::getInstance()) {
+
+    m_pBaseObjectFactory = new BaseObjectFactory(m_pBaseObjectRegistry);
+    m_pModuleObjectFactory = new ModuleObjectFactory(m_pBaseObjectFactory);
+    m_pServiceObjectRegistry = new ServiceObjectRegistry(m_pBaseObjectRegistry);
 }
 
 Partons::~Partons() {
@@ -40,15 +51,6 @@ Partons::~Partons() {
         delete m_pInstance;
         m_pInstance = 0;
     }
-}
-
-Partons* Partons::getInstance() {
-    // Only allow one instance of class to be generated.
-    if (!m_pInstance) {
-        m_pInstance = new Partons();
-    }
-
-    return m_pInstance;
 }
 
 void Partons::init(char** argv) {

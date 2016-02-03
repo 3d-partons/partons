@@ -9,16 +9,15 @@
 #include "../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
 #include "../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
-#include "../../../../include/partons/Partons.h"
 
 // Initialise [class]::classId with a unique name and selfregister this module into the global registry.
 const unsigned int DoubleDistributionExample::classId =
-        Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
+        BaseObjectRegistry::getInstance()->registerBaseObject(
                 new DoubleDistributionExample("DoubleDistributionExample"));
 
 DoubleDistributionExample::DoubleDistributionExample(
-        const std::string &className)
-        : DoubleDistributionModule(className), MathIntegratorModule() {
+        const std::string &className) :
+        DoubleDistributionModule(className), MathIntegratorModule() {
 
     // Tell to parent class which dual distribution compute type are available for this model.
     // If there is just computeF() and computeG() available just remove computeK() line.
@@ -39,8 +38,8 @@ DoubleDistributionExample::~DoubleDistributionExample() {
 }
 
 DoubleDistributionExample::DoubleDistributionExample(
-        const DoubleDistributionExample& other)
-        : DoubleDistributionModule(other), MathIntegratorModule(other) {
+        const DoubleDistributionExample& other) :
+        DoubleDistributionModule(other), MathIntegratorModule(other) {
 
     // Copy each class variables ; see copy constructor from parent class "DualDistributionModule"
 }

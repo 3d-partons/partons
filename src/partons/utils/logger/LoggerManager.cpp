@@ -13,9 +13,20 @@
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
 #include "../../../../include/partons/utils/stringUtils/StringUtils.h"
 
+LoggerManager* LoggerManager::m_pInstance = 0;
+
+LoggerManager* LoggerManager::getInstance() {
+    // Only allow one instance of class to be generated.
+    if (!m_pInstance) {
+        m_pInstance = new LoggerManager();
+    }
+
+    return m_pInstance;
+}
+
 //TODO remplacer le nom de la propriété "log.file.path" par un static final string
-LoggerManager::LoggerManager()
-        : Thread(), m_outputFilePath("default.log"), m_defaultLevel(
+LoggerManager::LoggerManager() :
+        Thread(), m_outputFilePath("default.log"), m_defaultLevel(
                 LoggerLevel::INFO), m_printMode(LoggerPrintMode::COUT), m_active(
                 true) {
 }

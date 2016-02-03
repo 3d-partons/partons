@@ -19,11 +19,11 @@
 #include "../../../../include/partons/utils/ParameterList.h"
 
 const unsigned int MPSSW13ModelNoGluons::classId =
-        Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
+        BaseObjectRegistry::getInstance()->registerBaseObject(
                 new MPSSW13ModelNoGluons("MPSSW13ModelNoGluons"));
 
-MPSSW13ModelNoGluons::MPSSW13ModelNoGluons(const std::string &className)
-        : GPDModule(className) {
+MPSSW13ModelNoGluons::MPSSW13ModelNoGluons(const std::string &className) :
+        GPDModule(className) {
     pGPDService = NULL;
     MPSSW13model = NULL;
 
@@ -45,8 +45,8 @@ std::string MPSSW13ModelNoGluons::toString() {
     return GPDModule::toString();
 }
 
-MPSSW13ModelNoGluons::MPSSW13ModelNoGluons(const MPSSW13ModelNoGluons& other)
-        : GPDModule(other) {
+MPSSW13ModelNoGluons::MPSSW13ModelNoGluons(const MPSSW13ModelNoGluons& other) :
+        GPDModule(other) {
 
     pGPDService = other.pGPDService;
     MPSSW13model = other.MPSSW13model;

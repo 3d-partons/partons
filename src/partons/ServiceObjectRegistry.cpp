@@ -3,15 +3,15 @@
 #include <stdexcept>
 
 #include "../../include/partons/BaseObjectRegistry.h"
-#include "../../include/partons/Partons.h"
 #include "../../include/partons/services/DoubleDistributionService.h"
 #include "../../include/partons/services/DVCSConvolCoeffFunctionService.h"
 #include "../../include/partons/services/GPDService.h"
 #include "../../include/partons/services/ObservableService.h"
 #include "../../include/partons/services/VizualisationService.h"
 
-ServiceObjectRegistry::ServiceObjectRegistry()
-        : m_pBaseObjectRegistry(Partons::getInstance()->getBaseObjectRegistry()) {
+ServiceObjectRegistry::ServiceObjectRegistry(
+        BaseObjectRegistry* m_pBaseObjectRegistry) :
+        m_pBaseObjectRegistry(m_pBaseObjectRegistry) {
 }
 
 ServiceObjectRegistry::~ServiceObjectRegistry() {

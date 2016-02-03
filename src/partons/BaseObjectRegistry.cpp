@@ -5,7 +5,17 @@
 #include <stdexcept>
 #include <utility>
 
+BaseObjectRegistry* BaseObjectRegistry::m_pInstance = 0;
+
 unsigned int BaseObjectRegistry::m_uniqueClassIdCounter = 0;
+
+BaseObjectRegistry* BaseObjectRegistry::getInstance() {
+    if (!m_pInstance) {
+        m_pInstance = new BaseObjectRegistry();
+    }
+
+    return m_pInstance;
+}
 
 BaseObjectRegistry::BaseObjectRegistry() {
 }

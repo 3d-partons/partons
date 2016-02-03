@@ -16,13 +16,13 @@
 
 // Initialise [class]::classId with a unique name.
 const unsigned int DVCSConstantCFFModel::classId =
-        Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
+        BaseObjectRegistry::getInstance()->registerBaseObject(
                 new DVCSConstantCFFModel("DVCSConstantCFFModel"));
 
 const std::string DVCSConstantCFFModel::CFF_VALUES = "cff_values";
 
-DVCSConstantCFFModel::DVCSConstantCFFModel(const std::string &className)
-        : DVCSConvolCoeffFunctionModule(className) {
+DVCSConstantCFFModel::DVCSConstantCFFModel(const std::string &className) :
+        DVCSConvolCoeffFunctionModule(className) {
     m_CFF.assign(GPDType::END, 0.);
 
     for (int i = static_cast<int>(GPDType::H);
@@ -81,8 +81,8 @@ DVCSConstantCFFModel::DVCSConstantCFFModel(const std::string &className)
 //                    &DVCSConstantCFFModel::computeCFF));
 }
 
-DVCSConstantCFFModel::DVCSConstantCFFModel(const DVCSConstantCFFModel &other)
-        : DVCSConvolCoeffFunctionModule(other) {
+DVCSConstantCFFModel::DVCSConstantCFFModel(const DVCSConstantCFFModel &other) :
+        DVCSConvolCoeffFunctionModule(other) {
     m_CFF = other.m_CFF;
 }
 

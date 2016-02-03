@@ -5,7 +5,6 @@
 
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/modules/ProcessModule.h"
-#include "../../../../include/partons/Partons.h"
 #include "../../../../include/partons/utils/GenericType.h"
 #include "../../../../include/partons/utils/ParameterList.h"
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
@@ -20,16 +19,16 @@ const std::string CrossSectionObservable::PARAMETER_NAME_TARGET_POLARIZATION =
 
 // Initialise [class]::classId with a unique name.
 const unsigned int CrossSectionObservable::classId =
-        Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
+        BaseObjectRegistry::getInstance()->registerBaseObject(
                 new CrossSectionObservable("CrossSectionObservable"));
 
-CrossSectionObservable::CrossSectionObservable(const std::string &className)
-        : Observable(className) {
+CrossSectionObservable::CrossSectionObservable(const std::string &className) :
+        Observable(className) {
 }
 
 CrossSectionObservable::CrossSectionObservable(
-        const CrossSectionObservable& other)
-        : Observable(other) {
+        const CrossSectionObservable& other) :
+        Observable(other) {
 }
 
 CrossSectionObservable::~CrossSectionObservable() {

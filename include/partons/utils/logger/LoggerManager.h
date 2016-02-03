@@ -32,11 +32,7 @@ const std::string OUTPUT_LOG_FILE_PATH = "log.file.path";
 
 class LoggerManager: public Thread {
 public:
-    /**
-     * Private default constructor for a unique instance
-     */
-    LoggerManager();
-
+    static LoggerManager* getInstance();
     /**
      * Default destructor
      */
@@ -68,6 +64,14 @@ public:
     std::string toString();
 
 private:
+
+    static LoggerManager* m_pInstance;
+
+    /**
+     * Private default constructor for a unique instance
+     */
+    LoggerManager();
+
     sf::Mutex m_mutex;
 
     std::string m_outputFilePath;

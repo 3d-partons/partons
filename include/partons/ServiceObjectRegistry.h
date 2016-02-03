@@ -40,7 +40,7 @@ private:
 
     BaseObjectRegistry* m_pBaseObjectRegistry;
 
-    ServiceObjectRegistry();
+    ServiceObjectRegistry(BaseObjectRegistry* m_pBaseObjectRegistry);
 
     void checkBaseObjectRegistryNullPointer() const;
 };

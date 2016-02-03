@@ -12,10 +12,9 @@
 #include "../../include/partons/modules/RunningAlphaStrongModule.h"
 #include "../../include/partons/modules/scale/ScaleModule.h"
 #include "../../include/partons/modules/xb_to_xi/XiConverterModule.h"
-#include "../../include/partons/Partons.h"
 
-ModuleObjectFactory::ModuleObjectFactory()
-        : m_pBaseObjectFactory(Partons::getInstance()->getBaseObjectFactory()) {
+ModuleObjectFactory::ModuleObjectFactory(BaseObjectFactory* pBaseObjectFactory) :
+        m_pBaseObjectFactory(pBaseObjectFactory) {
 }
 
 ModuleObjectFactory::~ModuleObjectFactory() {

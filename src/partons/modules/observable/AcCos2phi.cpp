@@ -9,18 +9,18 @@
 
 // Initialise [class]::classId with a unique name.
 const unsigned int AcCos2phi::classId =
-        Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
+        BaseObjectRegistry::getInstance()->registerBaseObject(
                 new AcCos2phi("AcCos2phi"));
 
-AcCos2phi::AcCos2phi(const std::string &className)
-        : FourierObservable(className), m_pAcObservable(0) {
+AcCos2phi::AcCos2phi(const std::string &className) :
+        FourierObservable(className), m_pAcObservable(0) {
     m_pAcObservable =
             Partons::getInstance()->getModuleObjectFactory()->newObservable(
                     Ac::classId);
 }
 
-AcCos2phi::AcCos2phi(const AcCos2phi& other)
-        : FourierObservable(other) {
+AcCos2phi::AcCos2phi(const AcCos2phi& other) :
+        FourierObservable(other) {
     if (other.m_pAcObservable != 0) {
         m_pAcObservable = other.m_pAcObservable->clone();
     } else {

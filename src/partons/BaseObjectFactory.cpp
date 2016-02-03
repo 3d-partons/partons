@@ -1,14 +1,12 @@
 #include "../../include/partons/BaseObjectFactory.h"
 
 #include <SFML/System/Lock.hpp>
-//#include <SFML/System/Mutex.hpp>
 #include <utility>
 
 #include "../../include/partons/BaseObjectRegistry.h"
-#include "../../include/partons/Partons.h"
 
-BaseObjectFactory::BaseObjectFactory()
-        : m_pBaseObjectRegistry(Partons::getInstance()->getBaseObjectRegistry()) {
+BaseObjectFactory::BaseObjectFactory(BaseObjectRegistry* pBaseObjectRegistry) :
+        m_pBaseObjectRegistry(pBaseObjectRegistry) {
 }
 
 BaseObjectFactory::~BaseObjectFactory() {

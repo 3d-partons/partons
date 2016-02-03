@@ -8,15 +8,14 @@
 #include "../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
 #include "../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
-#include "../../../../include/partons/Partons.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int GK11NoQuarksModel::classId =
-        Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
+        BaseObjectRegistry::getInstance()->registerBaseObject(
                 new GK11NoQuarksModel("GK11NoQuarksModel"));
 
-GK11NoQuarksModel::GK11NoQuarksModel(const std::string& className)
-        : GK11Model(className) {
+GK11NoQuarksModel::GK11NoQuarksModel(const std::string& className) :
+        GK11Model(className) {
 }
 
 GK11NoQuarksModel::~GK11NoQuarksModel() {
@@ -26,8 +25,8 @@ GK11NoQuarksModel* GK11NoQuarksModel::clone() const {
     return new GK11NoQuarksModel(*this);
 }
 
-GK11NoQuarksModel::GK11NoQuarksModel(const GK11NoQuarksModel& other)
-        : GK11Model(other) {
+GK11NoQuarksModel::GK11NoQuarksModel(const GK11NoQuarksModel& other) :
+        GK11Model(other) {
 }
 
 PartonDistribution GK11NoQuarksModel::computeH() {

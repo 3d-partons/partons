@@ -1,15 +1,7 @@
-/*
- * VinnikovModel.cpp
- *
- *  Created on: Oct 1, 2015
- *      Author: Pawel Sznajder (NCBJ)
- */
-
 #include "../../../../include/partons/modules/gpd/VinnikovModel.h"
 
 #include <math.h>
 #include <stdio.h>
-//#include <stdlib.h>
 #include <cstdlib>
 #include <map>
 #include <stdexcept>
@@ -22,11 +14,10 @@
 #include "../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
 #include "../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
-#include "../../../../include/partons/Partons.h"
 #include "../../../../include/partons/utils/ParameterList.h"
 
 const unsigned int VinnikovModel::classId =
-        Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
+        BaseObjectRegistry::getInstance()->registerBaseObject(
                 new VinnikovModel("VinnikovModel"));
 
 const double VinnikovModel::EPS_BETR = 1.E-8;

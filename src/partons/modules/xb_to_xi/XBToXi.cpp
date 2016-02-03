@@ -1,15 +1,14 @@
 #include "../../../../include/partons/modules/xb_to_xi/XBToXi.h"
 
 #include "../../../../include/partons/BaseObjectRegistry.h"
-#include "../../../../include/partons/Partons.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int XBToXi::classId =
-        Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
+        BaseObjectRegistry::getInstance()->registerBaseObject(
                 new XBToXi("XBToXi"));
 
-XBToXi::XBToXi(const std::string &className)
-        : XiConverterModule(className) {
+XBToXi::XBToXi(const std::string &className) :
+        XiConverterModule(className) {
 }
 
 XBToXi::~XBToXi() {
@@ -26,8 +25,8 @@ double XBToXi::compute(double xB, double t, double Q2) {
     return (xB / (2 - xB));
 }
 
-XBToXi::XBToXi(const XBToXi& other)
-        : XiConverterModule(other) {
+XBToXi::XBToXi(const XBToXi& other) :
+        XiConverterModule(other) {
 }
 
 void XBToXi::initModule() {

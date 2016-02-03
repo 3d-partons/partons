@@ -21,13 +21,13 @@
 #include "../../../../../include/partons/utils/stringUtils/Formatter.h"
 
 const unsigned int DVCSCFFVGGModel::classId =
-        Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
+        BaseObjectRegistry::getInstance()->registerBaseObject(
                 new DVCSCFFVGGModel("DVCSCFFVGGModel"));
 
 const double DVCSCFFVGGModel::eps_cffint = 1.E-3;
 
-DVCSCFFVGGModel::DVCSCFFVGGModel(const std::string& className)
-        : DVCSConvolCoeffFunctionModule(className) {
+DVCSCFFVGGModel::DVCSCFFVGGModel(const std::string& className) :
+        DVCSConvolCoeffFunctionModule(className) {
 
     xixit = -1.;
 
@@ -67,8 +67,8 @@ void DVCSCFFVGGModel::init() {
                     ExampleEvolQCDModel::classId);
 }
 
-DVCSCFFVGGModel::DVCSCFFVGGModel(const DVCSCFFVGGModel& other)
-        : DVCSConvolCoeffFunctionModule(other) {
+DVCSCFFVGGModel::DVCSCFFVGGModel(const DVCSCFFVGGModel& other) :
+        DVCSConvolCoeffFunctionModule(other) {
 
     xixit = other.xixit;
 }

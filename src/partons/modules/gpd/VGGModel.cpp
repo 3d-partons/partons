@@ -1,10 +1,3 @@
-/*
- * VGGModel.cpp
- *
- *  Created on: Dec 10, 2015
- *      Author: Michel Guidal (IPNO) and Pawel Sznajder (IPNO)
- */
-
 #include "../../../../include/partons/modules/gpd/VGGModel.h"
 
 #include <math.h>
@@ -18,14 +11,13 @@
 #include "../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
 #include "../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
-#include "../../../../include/partons/Partons.h"
 #include "../../../../include/partons/utils/mstwpdf.h"
 #include "../../../../include/partons/utils/ParameterList.h"
 #include "../../../../include/partons/utils/PropertiesManager.h"
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 const unsigned int VGGModel::classId =
-        Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
+        BaseObjectRegistry::getInstance()->registerBaseObject(
                 new VGGModel("VGGModel"));
 
 //TODO try to avoid global variables
@@ -33,8 +25,8 @@ const double VGGModel::eps_doubleint = 0.001;
 const double VGGModel::kappa_u = 1.6596;
 const double VGGModel::kappa_d = -2.0352;
 
-VGGModel::VGGModel(const std::string &className)
-        : GPDModule(className), MathIntegratorModule() {
+VGGModel::VGGModel(const std::string &className) :
+        GPDModule(className), MathIntegratorModule() {
 
     b_profile_val = -1.;
     b_profile_sea = -1.;
@@ -92,8 +84,8 @@ std::string VGGModel::toString() {
     return GPDModule::toString();
 }
 
-VGGModel::VGGModel(const VGGModel& other)
-        : GPDModule(other), MathIntegratorModule(other) {
+VGGModel::VGGModel(const VGGModel& other) :
+        GPDModule(other), MathIntegratorModule(other) {
 
     b_profile_val = other.b_profile_val;
     b_profile_sea = other.b_profile_sea;

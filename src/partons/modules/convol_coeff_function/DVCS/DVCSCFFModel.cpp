@@ -26,11 +26,11 @@
 
 // Initialise [class]::classId with a unique name.
 const unsigned int DVCSCFFModel::classId =
-        Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
+        BaseObjectRegistry::getInstance()->registerBaseObject(
                 new DVCSCFFModel("DVCSCFFModel"));
 
-DVCSCFFModel::DVCSCFFModel(const std::string &className)
-        : DVCSConvolCoeffFunctionModule(className), m_Zeta(0.), m_logQ2OverMu2(
+DVCSCFFModel::DVCSCFFModel(const std::string &className) :
+        DVCSConvolCoeffFunctionModule(className), m_Zeta(0.), m_logQ2OverMu2(
                 0.), m_Q(0.), m_alphaSOver2Pi(0.), m_quarkDiagonal(0.), m_gluonDiagonal(
                 0.), m_realPartSubtractQuark(0.), m_imaginaryPartSubtractQuark(
                 0.), m_realPartSubtractGluon(0.), m_imaginaryPartSubtractGluon(
@@ -63,8 +63,8 @@ void DVCSCFFModel::init() {
                     ExampleEvolQCDModel::classId);
 }
 
-DVCSCFFModel::DVCSCFFModel(const DVCSCFFModel &other)
-        : DVCSConvolCoeffFunctionModule(other) {
+DVCSCFFModel::DVCSCFFModel(const DVCSCFFModel &other) :
+        DVCSConvolCoeffFunctionModule(other) {
     m_Zeta = other.m_Zeta;
     m_logQ2OverMu2 = other.m_logQ2OverMu2;
     m_Q = other.m_Q;

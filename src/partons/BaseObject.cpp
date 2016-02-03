@@ -9,15 +9,13 @@
 
 unsigned int BaseObject::m_uniqueObjectIdCounter = 0;
 
-BaseObject::BaseObject(const std::string &className)
-        : m_objectId(getUniqueObjectId()), m_className(className), m_pLoggerManager(
-                Partons::getInstance()->getLoggerManager()) {
+BaseObject::BaseObject(const std::string &className) :
+        m_objectId(getUniqueObjectId()), m_className(className) {
 }
 
 BaseObject::BaseObject(const BaseObject& other) {
     m_objectId = getUniqueObjectId();
     m_className = other.m_className;
-    m_pLoggerManager = other.m_pLoggerManager;
 }
 BaseObject* BaseObject::clone() const {
     return new BaseObject(*this);
@@ -71,23 +69,23 @@ void BaseObject::setObjectId(unsigned int objectId) {
 
 void BaseObject::info(const std::string& functionName,
         const std::string& message) const {
-    m_pLoggerManager->info(getClassName(), functionName, message);
+    LoggerManager::getInstance()->info(getClassName(), functionName, message);
 }
 
 void BaseObject::debug(const std::string& functionName,
         const std::string& message) const {
-    m_pLoggerManager->debug(getClassName(), functionName, message);
+    LoggerManager::getInstance()->debug(getClassName(), functionName, message);
 }
 
 void BaseObject::warn(const std::string& functionName,
         const std::string& message) const {
-    m_pLoggerManager->warn(getClassName(), functionName, message);
+    LoggerManager::getInstance()->warn(getClassName(), functionName, message);
 }
 
 //TODO remove error or throwException function from BaseObject class
 void BaseObject::error(const std::string& functionName,
         const std::string& message) const {
-    m_pLoggerManager->error(getClassName(), functionName, message);
+    LoggerManager::getInstance()->error(getClassName(), functionName, message);
     throwException(Formatter() << functionName << "[" << m_objectId << "]",
             message);
 }

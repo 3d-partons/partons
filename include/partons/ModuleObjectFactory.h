@@ -14,8 +14,6 @@
 
 #include <string>
 
-class Observable;
-
 class ActiveFlavorsModule;
 class BaseObjectFactory;
 class DoubleDistributionModule;
@@ -24,6 +22,7 @@ class DVCSModule;
 class GapEquationSolverModule;
 class GPDEvolutionModule;
 class GPDModule;
+class Observable;
 class ProcessModule;
 class RunningAlphaStrongModule;
 class ScaleModule;
@@ -79,7 +78,7 @@ public:
 private:
     BaseObjectFactory* m_pBaseObjectFactory;
 
-    ModuleObjectFactory();
+    ModuleObjectFactory(BaseObjectFactory* pBaseObjectFactory);
 };
 
 #endif /* MODULE_OBJECT_FACTORY_H */

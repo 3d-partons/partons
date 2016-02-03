@@ -17,8 +17,6 @@
 
 #include <string>
 
-class LoggerManager;
-
 class BaseObject {
 public:
 
@@ -82,8 +80,6 @@ protected:
             const std::string &message) const;
 
 private:
-    LoggerManager* m_pLoggerManager; ///< Pointer to LoggerManager class
-
     unsigned int m_objectId;
     std::string m_className; ///< String that represents class's name used by the LoggerManager's class for know the source of the output trace
 

@@ -13,13 +13,12 @@
  */
 
 #include <SFML/System/Mutex.hpp>
-
-class BaseObjectRegistry;
-
 #include <map>
 #include <string>
 
 #include "BaseObject.h"
+
+class BaseObjectRegistry;
 
 class BaseObjectFactory {
 public:
@@ -38,7 +37,7 @@ private:
     /**
      * Private default constructor for a unique instance
      */
-    BaseObjectFactory();
+    BaseObjectFactory(BaseObjectRegistry* pBaseObjectRegistry);
 
     /// Store BaseObject pointer created by the factory; used at the end of the program to delete orphan pointer.
     std::map<unsigned int, BaseObject*> m_pInstantiatedObject;

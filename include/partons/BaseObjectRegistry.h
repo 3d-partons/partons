@@ -27,7 +27,7 @@
 
 class BaseObjectRegistry {
 public:
-    friend class Partons;
+    static BaseObjectRegistry* getInstance();
 
     /**
      * Default destructor
@@ -54,6 +54,16 @@ public:
     size_t size();
 
 private:
+    /**
+     * Private pointer of this class for a unique instance
+     */
+    static BaseObjectRegistry* m_pInstance;
+
+    /**
+     * Private default constructor for a unique instance
+     */
+    BaseObjectRegistry();
+
     sf::Mutex m_mutex;
 
     std::map<unsigned int, BaseObject*> m_baseObjectList;
@@ -63,11 +73,6 @@ private:
     std::map<std::string, BaseObject*>::iterator m_itTranslate;
 
     static unsigned int m_uniqueClassIdCounter;
-
-    /**
-     * Private default constructor for a unique instance
-     */
-    BaseObjectRegistry();
 
     unsigned int getUniqueClassId();
 

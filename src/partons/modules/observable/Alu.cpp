@@ -4,19 +4,17 @@
 
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/modules/ProcessModule.h"
-#include "../../../../include/partons/Partons.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int Alu::classId =
-        Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
-                new Alu("Alu"));
+        BaseObjectRegistry::getInstance()->registerBaseObject(new Alu("Alu"));
 
-Alu::Alu(const std::string &className)
-        : Observable(className) {
+Alu::Alu(const std::string &className) :
+        Observable(className) {
 }
 
-Alu::Alu(const Alu& other)
-        : Observable(other) {
+Alu::Alu(const Alu& other) :
+        Observable(other) {
 }
 
 Alu::~Alu() {
