@@ -28,7 +28,7 @@ void QPbyChebyshev::setN(unsigned int n) {
     if (n > 0) {
         m_a.resize(n, 0.);
         m_b.resize(n, 0.);
-        m_roots.resize(n,0.);
+        m_roots.resize(n, 0.);
         for (int k = 0; k < n; k++) {
             m_roots.at(k) = cos((n - k - 0.5) * PI / n); //TODO Move to NumA
         }
@@ -135,7 +135,17 @@ double QPbyChebyshev::xtos(double x) {
 }
 
 std::string QPbyChebyshev::toString() const {
-    //TODO Write method
-    return Formatter() << "";
+    Formatter formatter;
+    formatter << "Coeffs a : ";
+    for (unsigned int i = 0; i < m_a.size(); i++) {
+        formatter << m_a.at(i) << " , ";
+    }
+    formatter << "\n";
+    formatter << "Coeffs b : ";
+    for (unsigned int i = 0; i < m_b.size(); i++) {
+        formatter << m_b.at(i) << " , ";
+    }
+    formatter << "\n";
+    return formatter;
 }
 

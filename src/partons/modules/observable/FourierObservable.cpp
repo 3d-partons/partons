@@ -1,7 +1,6 @@
 #include "../../../../include/partons/modules/observable/FourierObservable.h"
 
 #include <NumA/integration/MathIntegrator.h>
-#include <vector>
 
 #include "../../../../include/partons/beans/observable/ObservableType.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"

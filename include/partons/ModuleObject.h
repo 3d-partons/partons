@@ -57,7 +57,7 @@ public:
      *
      * @return a pre-formatted characters string
      */
-    virtual std::string toString();
+    virtual std::string toString() const;
 
     virtual void init();
 

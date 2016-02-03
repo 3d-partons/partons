@@ -18,8 +18,9 @@
 #include "../../../../include/partons/utils/ParameterList.h"
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
-GapEquationSolverModule::GapEquationSolverModule(const std::string &className)
-        : ModuleObject(className) {
+GapEquationSolverModule::GapEquationSolverModule(const std::string &className) :
+        ModuleObject(className), m_gluonPropagator(0) {
+
     setLambda2(1.e5);
     setEpsilon2(1.e-4);
     m_mu = 19.;
@@ -29,7 +30,6 @@ GapEquationSolverModule::GapEquationSolverModule(const std::string &className)
     m_Nz = 32;
     m_tolerance = 1.e-4;
     m_maxIter = 20;
-
 }
 
 GapEquationSolverModule::~GapEquationSolverModule() {
@@ -37,8 +37,8 @@ GapEquationSolverModule::~GapEquationSolverModule() {
 }
 
 GapEquationSolverModule::GapEquationSolverModule(
-        const GapEquationSolverModule& other)
-        : ModuleObject(other) {
+        const GapEquationSolverModule& other) :
+        ModuleObject(other) {
     setLambda2(other.getLambda2());
     setEpsilon2(other.getEpsilon2());
     m_mu = other.getMu();
@@ -63,7 +63,7 @@ void GapEquationSolverModule::configure(ParameterList parameters) {
     ModuleObject::configure(parameters);
 }
 
-std::string GapEquationSolverModule::toString() {
+std::string GapEquationSolverModule::toString() const {
     Formatter formatter;
     formatter << ModuleObject::toString();
     return formatter.str();
@@ -81,19 +81,19 @@ QuarkPropagator* GapEquationSolverModule::compute(
     std::vector<double> weights_x = gaussLeg_x.getWeightNp();
 
     // Chebyshev representation //TODO Implement other cases
-    QPbyChebyshev* quarkPropagator = new QPbyChebyshev(m_N, m_m, m_mu,
+    QPbyChebyshev* pQuarkPropagator = new QPbyChebyshev(m_N, m_m, m_mu,
             m_Lambda2, m_epsilon2);
-    std::vector<double> chebRoots = quarkPropagator->getRoots(); //TODO Move to NumA
+    std::vector<double> chebRoots = pQuarkPropagator->getRoots(); //TODO Move to NumA
 
     // Conversion between x and s
     std::vector<double> chebRoots_s(m_N, 0.);
     for (unsigned int i = 0; i < m_N; i++) {
-        chebRoots_s.at(i) = quarkPropagator->xtos(chebRoots.at(i));
+        chebRoots_s.at(i) = pQuarkPropagator->xtos(chebRoots.at(i));
     }
     std::vector<double> nodes_s(m_Nx, 0.);
     std::vector<double> C(m_Nx, 0.);
     for (unsigned int k = 0; k < m_Nx; k++) {
-        nodes_s.at(k) = quarkPropagator->xtos(nodes_x.at(k));
+        nodes_s.at(k) = pQuarkPropagator->xtos(nodes_x.at(k));
         C.at(k) = m_C * weights_x.at(k)
                 * exp(nodes_x.at(k) * log(m_Lambda2 / m_epsilon2));
     }
@@ -128,10 +128,10 @@ QuarkPropagator* GapEquationSolverModule::compute(
         for (unsigned int i = 0; i < m_N; i++) {
             for (unsigned int k = 0; k < m_Nx; k++) {
                 SigmaA.at(i) += C.at(k)
-                        * quarkPropagator->evaluateSigmaV(nodes_s.at(k))
+                        * pQuarkPropagator->evaluateSigmaV(nodes_s.at(k))
                         * ThetaA.at(i).at(k);
                 SigmaM.at(i) += C.at(k)
-                        * quarkPropagator->evaluateSigmaS(nodes_s.at(k))
+                        * pQuarkPropagator->evaluateSigmaS(nodes_s.at(k))
                         * ThetaM.at(i).at(k);
             }
         }
@@ -141,22 +141,22 @@ QuarkPropagator* GapEquationSolverModule::compute(
         diff_b = 0.; // Difference between two iterations
         for (unsigned int i = 0; i < m_N; i++) {
             for (unsigned int k = 0; k < m_N; k++) {
-                stored_T = quarkPropagator->T(i, chebRoots.at(k));
+                stored_T = pQuarkPropagator->T(i, chebRoots.at(k));
                 a.at(i) += stored_T * SigmaA.at(k);
                 b.at(i) += stored_T * SigmaM.at(k);
             }
             a.at(i) *= 2. / m_N;
             b.at(i) *= 2. / m_N;
-            diff_a += pow(a.at(i) - quarkPropagator->getCoeffA(i), 2);
-            diff_b += pow(b.at(i) - quarkPropagator->getCoeffB(i), 2);
+            diff_a += pow(a.at(i) - pQuarkPropagator->getCoeffA(i), 2);
+            diff_b += pow(b.at(i) - pQuarkPropagator->getCoeffB(i), 2);
         }
         noConvergence = (sqrt(diff_a) > m_tolerance)
                 || (sqrt(diff_b) > m_tolerance);
-        quarkPropagator->setCoeffsA(a);
-        quarkPropagator->setCoeffsB(b);
+        pQuarkPropagator->setCoeffsA(a);
+        pQuarkPropagator->setCoeffsB(b);
     }
 
-    return quarkPropagator;
+    return pQuarkPropagator;
 
 }
 

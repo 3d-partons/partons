@@ -73,5 +73,5 @@ void QuarkPropagator::setMu(double mu) {
 
 //TODO Complete toString
 std::string QuarkPropagator::toString() const {
-    return Formatter() << "";
+    return Formatter();
 }

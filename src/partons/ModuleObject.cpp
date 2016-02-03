@@ -27,7 +27,7 @@ size_t ModuleObject::getNbOfParameters() {
     return m_parameters.size();
 }
 
-std::string ModuleObject::toString() {
+std::string ModuleObject::toString() const {
     return BaseObject::toString();
 }
 

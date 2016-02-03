@@ -16,7 +16,6 @@
 #include "../../ModuleObject.h"
 
 class GluonPropagator;
-
 class QuarkPropagator;
 
 class GapEquationSolverModule: public ModuleObject {
@@ -38,7 +37,7 @@ public:
      *
      * @return a pre-formatted characters string
      */
-    virtual std::string toString();
+    virtual std::string toString() const;
 
     /**
      * Provides a generic method to configure all types of modules by passing a Parameters object.
