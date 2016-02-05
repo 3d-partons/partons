@@ -1,6 +1,7 @@
 #include "../../../../include/partons/modules/evolution/GPDEvolutionModule.h"
 
 #include <math.h>
+#include <NumA/linear_algebra/matrix/MatrixD.h>
 #include <iostream>
 
 #include "../../../../include/partons/beans/gpd/GPDResult.h"
@@ -14,23 +15,22 @@
 #include "../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../include/partons/Partons.h"
 #include "../../../../include/partons/utils/GenericType.h"
-#include "../../../../include/partons/utils/math/MatrixD.h"
 #include "../../../../include/partons/utils/ParameterList.h"
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
-MatrixD GPDEvolutionModule::conversionMatrix1(3, 3, //
+NumA::MatrixD GPDEvolutionModule::conversionMatrix1(3, 3, //
         1., 0., 0., //
         0., 1., 0., //
         0., 0., 1.); //
 
-MatrixD GPDEvolutionModule::conversionMatrix2(5, 5, //
+NumA::MatrixD GPDEvolutionModule::conversionMatrix2(5, 5, //
         1., 0., 0., 0., 0., //
         0., 1., 0., 1., 0., //
         0., 0., 1., 0., 0., //
         0., 1., 0., -1., 0., //
         0., 0., 0., 0., 1.); //
 
-MatrixD GPDEvolutionModule::conversionMatrix3(7, 7, //
+NumA::MatrixD GPDEvolutionModule::conversionMatrix3(7, 7, //
         1., 0., 0., 0., 0., 0., 0., //
         0., 1., 0., 1., 0., 1., 0., //
         0., 0., 1., 0., 0., 0., 0., //
@@ -39,7 +39,7 @@ MatrixD GPDEvolutionModule::conversionMatrix3(7, 7, //
         0., 1., 0., 1., 0., -2., 0., //
         0., 0., 0., 0., 0., 0., 1.); //
 
-MatrixD GPDEvolutionModule::conversionMatrix4(9, 9, //
+NumA::MatrixD GPDEvolutionModule::conversionMatrix4(9, 9, //
         1., 0., 0., 0., 0., 0., 0., 0., 0., //
         0., 1., 0., 1., 0., 1., 0., 1., 0., //
         0., 0., 1., 0., 0., 0., 0., 0., 0., //
@@ -50,7 +50,7 @@ MatrixD GPDEvolutionModule::conversionMatrix4(9, 9, //
         0., 1., 0., 1., 0., 1., 0., -3., 0., //
         0., 0., 0., 0., 0., 0., 0., 0., 1.); //
 
-MatrixD GPDEvolutionModule::conversionMatrix5(11, 11, //
+NumA::MatrixD GPDEvolutionModule::conversionMatrix5(11, 11, //
         1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., //
         0., 1., 0., 1., 0., 1., 0., 1., 0., 1., 0., //
         0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., //
@@ -63,7 +63,7 @@ MatrixD GPDEvolutionModule::conversionMatrix5(11, 11, //
         0., 1., 0., 1., 0., 1., 0., 1., 0., -4., 0., //
         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1.); //
 
-MatrixD GPDEvolutionModule::conversionMatrix6(13, 13, //
+NumA::MatrixD GPDEvolutionModule::conversionMatrix6(13, 13, //
         1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., //
         0., 1., 0., 1., 0., 1., 0., 1., 0., 1., 0., 1., 0., //
         0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., //
@@ -78,19 +78,19 @@ MatrixD GPDEvolutionModule::conversionMatrix6(13, 13, //
         0., 1., 0., 1., 0., 1., 0., 1., 0., 1., 0., -5., 0., //
         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1.); //
 
-MatrixD GPDEvolutionModule::invertMatrix1(3, 3, //
+NumA::MatrixD GPDEvolutionModule::invertMatrix1(3, 3, //
         1., 0., 0., //
         0., 1., 0., //
         0., 0., 1.); //
 
-MatrixD GPDEvolutionModule::invertMatrix2(5, 5, //
+NumA::MatrixD GPDEvolutionModule::invertMatrix2(5, 5, //
         1., 0., 0., 0., 0., //
         0., 1. / 2., 0., 1. / 2., 0., //
         0., 0., 1., 0., 0., //
         0., 1. / 2., 0., -1. / 2., 0., //
         0., 0., 0., 0., 1.); //
 
-MatrixD GPDEvolutionModule::invertMatrix3(7, 7, //
+NumA::MatrixD GPDEvolutionModule::invertMatrix3(7, 7, //
         1., 0., 0., 0., 0., 0., 0., //
         0., 1. / 3., 0., 1. / 2., 0., 1. / 6., 0., //
         0., 0., 1., 0., 0., 0., 0., //
@@ -99,7 +99,7 @@ MatrixD GPDEvolutionModule::invertMatrix3(7, 7, //
         0., 1. / 3., 0., 0., 0., -1. / 3., 0., //
         0., 0., 0., 0., 0., 0., 1.); //
 
-MatrixD GPDEvolutionModule::invertMatrix4(9, 9, //
+NumA::MatrixD GPDEvolutionModule::invertMatrix4(9, 9, //
         1., 0., 0., 0., 0., 0., 0., 0., 0., //
         0., 1. / 4., 0., 1. / 2., 0., 1. / 6., 0, 1. / 12., //
         0., 0., 1., 0., 0., 0., 0., 0., 0., //
@@ -110,7 +110,7 @@ MatrixD GPDEvolutionModule::invertMatrix4(9, 9, //
         0., 1. / 4., 0., 0., 0., 0., 0., -1. / 4., 0., //
         0., 0., 0., 0., 0., 0., 0., 0., 1.); //
 
-MatrixD GPDEvolutionModule::invertMatrix5(11, 11, //
+NumA::MatrixD GPDEvolutionModule::invertMatrix5(11, 11, //
         1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., //
         0., 1. / 5., 0., 1. / 2., 0., 1. / 6., 0., 1. / 12., 0., 1. / 20., 0., //
         0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., //
@@ -123,7 +123,7 @@ MatrixD GPDEvolutionModule::invertMatrix5(11, 11, //
         0., 1. / 5., 0., 0., 0., 0., 0., 0, 0., -1. / 5., 0., //
         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1.); //
 
-MatrixD GPDEvolutionModule::invertMatrix6(13,
+NumA::MatrixD GPDEvolutionModule::invertMatrix6(13,
         13, //
         1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
         0., //

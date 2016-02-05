@@ -26,8 +26,8 @@ public:
 
     virtual std::string toString() const;
 
-    virtual double evaluateAlpha(double k2);
-    virtual double evaluateG(double k2);
+    virtual double evaluateAlpha(double k2) const;
+    virtual double evaluateG(double k2) const;
     //TODO: Make pure virtual methods and move the MT model to a daughter class
 
     double getC() const;

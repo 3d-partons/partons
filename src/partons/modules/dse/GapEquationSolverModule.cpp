@@ -268,27 +268,20 @@ void GapEquationSolverModule::setTolerance(double tolerance) {
 
 double GapEquationSolverModule::ThetaA_func(std::vector<double> z,
         std::vector<double> parameters) {
-    double p2 = parameters.at(0);
-    double q2 = parameters.at(1);
-
-    return sqrt(1 - z.at(0) * z.at(0))
-            * m_gluonPropagator->evaluateG(k2_func(p2, q2, z.at(0)))
-            * F_func(p2, q2, k2_func(p2, q2, z.at(0)));
+    error(__func__,"Model dependent function must be implemented in daughter class!");
 }
 
 double GapEquationSolverModule::ThetaM_func(std::vector<double> z,
         std::vector<double> parameters) {
-    double p2 = parameters.at(0);
-    double q2 = parameters.at(1);
-
-    return sqrt(1 - z.at(0) * z.at(0)) * 4
-            * m_gluonPropagator->evaluateG(k2_func(p2, q2, z.at(0)));
+    error(__func__,"Model dependent function must be implemented in daughter class!");
 }
 
-double GapEquationSolverModule::F_func(double p2, double q2, double k2) {
-    return 4. / 3.
-            * ((p2 + q2) / 2. + (p2 - q2) * (p2 - q2) / 2. / (k2 + 1.e-16) - k2)
-            / (p2 + 1.e-16);
+double GapEquationSolverModule::F1_func(double p2, double q2, double k2) {
+    error(__func__,"Model dependent function must be implemented in daughter class!");
+}
+
+double GapEquationSolverModule::F2_func(double p2, double q2, double k2) {
+    error(__func__,"Model dependent function must be implemented in daughter class!");
 }
 
 double GapEquationSolverModule::k2_func(double p2, double q2, double z) {

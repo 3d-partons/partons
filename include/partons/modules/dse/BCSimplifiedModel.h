@@ -1,28 +1,28 @@
 /**
- * @file RLModel.h
+ * @file BCSimplifiedModel.h
  * @author Nabil CHOUIKA (SPhN / CEA Saclay)
- * @date Jan 26, 2016
+ * @date Feb 3, 2016
  * @version 1.0
  *
- * @class RLModel
+ * @class BCSimplifiedModel
  */
 
-#ifndef RLMODEL_H_
-#define RLMODEL_H_
+#ifndef BCSIMPLIFIEDMODEL_H_
+#define BCSIMPLIFIEDMODEL_H_
 
 #include <string>
 #include <vector>
 
 #include "GapEquationSolverModule.h"
 
-class RLModel: public GapEquationSolverModule {
+class BCSimplifiedModel: public GapEquationSolverModule {
 public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
-    RLModel(const std::string &className);
-    virtual ~RLModel();
+    BCSimplifiedModel(const std::string &className);
+    virtual ~BCSimplifiedModel();
 
-    virtual RLModel* clone() const;
+    virtual BCSimplifiedModel* clone() const;
 
 protected:
     /**
@@ -32,7 +32,7 @@ protected:
      *
      * @param other
      */
-    RLModel(const RLModel& other);
+    BCSimplifiedModel(const BCSimplifiedModel& other);
 
     virtual void initModule();
     virtual void isModuleWellConfigured();
@@ -47,4 +47,4 @@ protected:
     virtual double F2_func(double p2, double q2, double k2);
 };
 
-#endif /* RLMODEL_H_ */
+#endif /* BCSIMPLIFIEDMODEL_H_ */

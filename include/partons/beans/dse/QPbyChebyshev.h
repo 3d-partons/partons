@@ -30,31 +30,39 @@ public:
 
     virtual void setN(unsigned int n);
 
-    virtual double evaluateA(double p2);
-    virtual double evaluateB(double p2);
+    virtual double evaluateA(double p2) const;
+    virtual double evaluateB(double p2) const;
+    virtual double differentiateA(double p2, unsigned int j) const;
+    virtual double differentiateB(double p2, unsigned int j) const;
 
-    virtual double evaluateSigmaA(double p2);
-    virtual double evaluateSigmaM(double p2);
+    virtual double evaluateSigmaA(double p2) const;
+    virtual double evaluateSigmaM(double p2) const;
+    virtual double differentiateSigmaA(double p2, unsigned int j) const;
+    virtual double differentiateSigmaM(double p2, unsigned int j) const;
 
-    virtual double evaluateSigmaS(double p2);
-    virtual double evaluateSigmaV(double p2);
+    virtual double evaluateSigmaV(double p2) const;
+    virtual double evaluateSigmaS(double p2) const;
+    virtual double differentiateSigmaV_a(double p2, unsigned int j) const;
+    virtual double differentiateSigmaS_a(double p2, unsigned int j) const;
+    virtual double differentiateSigmaV_b(double p2, unsigned int j) const;
+    virtual double differentiateSigmaS_b(double p2, unsigned int j) const;
 
     const std::vector<double>& getCoeffsA() const;
     void setCoeffsA(const std::vector<double>& a);
-    const double getCoeffA(unsigned int i);
+    const double getCoeffA(unsigned int i) const;
     void setCoeffA(unsigned int i, double a);
 
     const std::vector<double>& getCoeffsB() const;
     void setCoeffsB(const std::vector<double>& b);
-    const double getCoeffB(unsigned int i);
+    const double getCoeffB(unsigned int i) const;
     void setCoeffB(unsigned int i, double b);
 
     const std::vector<double>& getRoots() const;
 
-    double T(unsigned int n, double x); ///< Evaluates Chebyshev polynomials T_n(x) for |x| < 1
+    double T(unsigned int n, double x) const; ///< Evaluates Chebyshev polynomials T_n(x) for |x| < 1
 
-    double stox(double p2); ///< Change of variable from s=p2 [GeV] to x in [-1,1]
-    double xtos(double x); ///< Change of variable from x in [-1,1] to s=p2 [GeV]
+    double stox(double p2) const; ///< Change of variable from s=p2 [GeV] to x in [-1,1]
+    double xtos(double x) const; ///< Change of variable from x in [-1,1] to s=p2 [GeV]
 
 private:
     std::vector<double> m_a; ///< coefficients of Sigma_A

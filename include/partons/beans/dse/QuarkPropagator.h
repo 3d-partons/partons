@@ -28,14 +28,22 @@ public:
     unsigned int getN() const;
     virtual void setN(unsigned int n);
 
-    virtual double evaluateA(double p2) = 0;
-    virtual double evaluateB(double p2) = 0;
+    virtual double evaluateA(double p2) const = 0;
+    virtual double evaluateB(double p2) const = 0;
+    virtual double differentiateA(double p2, unsigned int j) const = 0;
+    virtual double differentiateB(double p2, unsigned int j) const = 0;
 
-    virtual double evaluateSigmaA(double p2) = 0;
-    virtual double evaluateSigmaM(double p2) = 0;
+    virtual double evaluateSigmaA(double p2) const = 0;
+    virtual double evaluateSigmaM(double p2) const = 0;
+    virtual double differentiateSigmaA(double p2, unsigned int j) const = 0;
+    virtual double differentiateSigmaM(double p2, unsigned int j) const = 0;
 
-    virtual double evaluateSigmaS(double p2) = 0;
-    virtual double evaluateSigmaV(double p2) = 0;
+    virtual double evaluateSigmaV(double p2) const = 0;
+    virtual double evaluateSigmaS(double p2) const = 0;
+    virtual double differentiateSigmaV_a(double p2, unsigned int j) const = 0;
+    virtual double differentiateSigmaS_a(double p2, unsigned int j) const = 0;
+    virtual double differentiateSigmaV_b(double p2, unsigned int j) const = 0;
+    virtual double differentiateSigmaS_b(double p2, unsigned int j) const = 0;
 
     double getM() const;
     void setM(double m);

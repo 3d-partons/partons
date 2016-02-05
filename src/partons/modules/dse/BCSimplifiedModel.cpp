@@ -1,4 +1,4 @@
-#include "../../../../include/partons/modules/dse/RLModel.h"
+#include "../../../../include/partons/modules/dse/BCSimplifiedModel.h"
 
 #include <cmath>
 
@@ -6,35 +6,35 @@
 #include "../../../../include/partons/BaseObjectRegistry.h"
 
 // Initialise [class]::classId with a unique name.
-const unsigned int RLModel::classId =
+const unsigned int BCSimplifiedModel::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
-                new RLModel("RLModel"));
+                new BCSimplifiedModel("BCSimplifiedModel"));
 
-RLModel::RLModel(const std::string &className) :
+BCSimplifiedModel::BCSimplifiedModel(const std::string &className) :
         GapEquationSolverModule(className) {
 
 }
-RLModel::~RLModel() {
+BCSimplifiedModel::~BCSimplifiedModel() {
     // TODO Auto-generated destructor stub
 }
 
-RLModel::RLModel(const RLModel& other) :
+BCSimplifiedModel::BCSimplifiedModel(const BCSimplifiedModel& other) :
         GapEquationSolverModule(other) {
 }
 
-RLModel* RLModel::clone() const {
-    return new RLModel(*this);
+BCSimplifiedModel* BCSimplifiedModel::clone() const {
+    return new BCSimplifiedModel(*this);
 }
 
-void RLModel::initModule() {
+void BCSimplifiedModel::initModule() {
     GapEquationSolverModule::initModule();
 }
 
-void RLModel::isModuleWellConfigured() {
+void BCSimplifiedModel::isModuleWellConfigured() {
     GapEquationSolverModule::isModuleWellConfigured();
 }
 
-double RLModel::ThetaA_func(std::vector<double> z,
+double BCSimplifiedModel::ThetaA_func(std::vector<double> z,
         std::vector<double> parameters) {
     double p2 = parameters.at(0);
     double q2 = parameters.at(1);
@@ -44,7 +44,7 @@ double RLModel::ThetaA_func(std::vector<double> z,
             * F1_func(p2, q2, k2_func(p2, q2, z.at(0)));
 }
 
-double RLModel::ThetaM_func(std::vector<double> z,
+double BCSimplifiedModel::ThetaM_func(std::vector<double> z,
         std::vector<double> parameters) {
     double p2 = parameters.at(0);
     double q2 = parameters.at(1);
@@ -54,12 +54,12 @@ double RLModel::ThetaM_func(std::vector<double> z,
             * F2_func(p2, q2, k2_func(p2, q2, z.at(0)));
 }
 
-double RLModel::F1_func(double p2, double q2, double k2) {
+double BCSimplifiedModel::F1_func(double p2, double q2, double k2) {
     return 4. / 3.
             * ((p2 + q2) / 2. + (p2 - q2) * (p2 - q2) / 2. / (k2 + 1.e-16) - k2)
             / (p2 + 1.e-16);
 }
 
-double RLModel::F2_func(double p2, double q2, double k2) {
+double BCSimplifiedModel::F2_func(double p2, double q2, double k2) {
     return 4.;
 }

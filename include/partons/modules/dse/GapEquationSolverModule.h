@@ -80,9 +80,9 @@ public:
     const GluonPropagator* getGluonPropagator() const;
     void setGluonPropagator(const GluonPropagator* gluonPropagator);
 
-    QuarkPropagator* compute(GapEquationSolverModule::QPType qpType,
-            GapEquationSolverModule::IterativeType iterativeType,
-            GapEquationSolverModule::IntegrationType integrationType);
+    QuarkPropagator* compute(QPType qpType = Chebyshev,
+            IterativeType iterativeType = Naive,
+            IntegrationType integrationType = Legendre);
 
 protected:
     /**
@@ -94,6 +94,18 @@ protected:
 
     virtual void initModule();
     virtual void isModuleWellConfigured();
+
+    // Functions to integrate (virtual means model dependent and must be implemented in daughter class)
+    // Angular integrals
+    virtual double ThetaA_func(std::vector<double> z,
+            std::vector<double> parameters);
+    virtual double ThetaM_func(std::vector<double> z,
+            std::vector<double> parameters);
+
+    // Various functions (virtual means model dependent and must be implemented in daughter class)
+    virtual double F1_func(double p2, double q2, double k2);
+    virtual double F2_func(double p2, double q2, double k2);
+    double k2_func(double p2, double q2, double z);
 
 private:
     GluonPropagator* m_gluonPropagator;
@@ -112,16 +124,6 @@ private:
 
     // Stored calculations
     double m_C;
-
-    // Functions to integrate
-    // Angular integrals //TODO make pure virtual methods and implement in daughter class
-    double ThetaA_func(std::vector<double> z, std::vector<double> parameters);
-    double ThetaM_func(std::vector<double> z, std::vector<double> parameters);
-
-    //TODO make pure virtual methods and implement in daughter class
-    // Various function (model dependent)
-    double F_func(double p2, double q2, double k2);
-    double k2_func(double p2, double q2, double z);
 
     void updateC();
 };

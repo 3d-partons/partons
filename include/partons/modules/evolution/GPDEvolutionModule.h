@@ -24,11 +24,13 @@
 
 class ActiveFlavorsModule;
 class GPDModule;
-class MatrixD;
-class NfInterval;
 class PartonDistribution;
 class QuarkDistribution;
 class RunningAlphaStrongModule;
+namespace NumA {
+class MatrixD;
+} /* namespace NumA */
+
 
 class GPDEvolutionModule: public ModuleObject {
 public:
@@ -124,19 +126,19 @@ protected:
             const NfInterval &nfInterval) = 0;
 
 private:
-    static MatrixD conversionMatrix1;
-    static MatrixD conversionMatrix2;
-    static MatrixD conversionMatrix3;
-    static MatrixD conversionMatrix4;
-    static MatrixD conversionMatrix5;
-    static MatrixD conversionMatrix6;
+    static NumA::MatrixD conversionMatrix1;
+    static NumA::MatrixD conversionMatrix2;
+    static NumA::MatrixD conversionMatrix3;
+    static NumA::MatrixD conversionMatrix4;
+    static NumA::MatrixD conversionMatrix5;
+    static NumA::MatrixD conversionMatrix6;
 
-    static MatrixD invertMatrix1;
-    static MatrixD invertMatrix2;
-    static MatrixD invertMatrix3;
-    static MatrixD invertMatrix4;
-    static MatrixD invertMatrix5;
-    static MatrixD invertMatrix6;
+    static NumA::MatrixD invertMatrix1;
+    static NumA::MatrixD invertMatrix2;
+    static NumA::MatrixD invertMatrix3;
+    static NumA::MatrixD invertMatrix4;
+    static NumA::MatrixD invertMatrix5;
+    static NumA::MatrixD invertMatrix6;
 
     bool isRelativeTest(double MuF2, double MuF2_ref);
     bool isAbsoluteTest(double MuF2, double MuF2_ref);

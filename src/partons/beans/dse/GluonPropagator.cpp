@@ -48,11 +48,11 @@ std::string GluonPropagator::toString() const {
     return Formatter() << "";
 }
 
-double GluonPropagator::evaluateAlpha(double k2) {
+double GluonPropagator::evaluateAlpha(double k2) const {
     return k2 * evaluateG(k2) / (4 * PI);
 }
 
-double GluonPropagator::evaluateG(double k2) {
+double GluonPropagator::evaluateG(double k2) const {
     return 4. * PI * PI / pow(m_w, 6) * m_D * k2 * exp(-k2 / (m_w * m_w))
             + 8. * PI * PI * 12. / (33. - 2. * m_Nf) * (1. - exp(-k2))
                     / (k2

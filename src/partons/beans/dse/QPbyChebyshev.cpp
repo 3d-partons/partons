@@ -43,7 +43,7 @@ void QPbyChebyshev::setCoeffsA(const std::vector<double>& a) {
     m_a = a;
 }
 
-const double QPbyChebyshev::getCoeffA(unsigned int i) {
+const double QPbyChebyshev::getCoeffA(unsigned int i) const {
     return m_a.at(i);
 }
 
@@ -59,7 +59,7 @@ void QPbyChebyshev::setCoeffsB(const std::vector<double>& b) {
     m_b = b;
 }
 
-const double QPbyChebyshev::getCoeffB(unsigned int i) {
+const double QPbyChebyshev::getCoeffB(unsigned int i) const {
     return m_b.at(i);
 }
 
@@ -67,7 +67,7 @@ void QPbyChebyshev::setCoeffB(unsigned int i, double b) {
     m_b.at(i) = b;
 }
 
-double QPbyChebyshev::evaluateA(double p2) {
+double QPbyChebyshev::evaluateA(double p2) const {
     double A = 1.;
     double x = stox(p2);
     double xmu = stox(m_mu * m_mu);
@@ -78,7 +78,7 @@ double QPbyChebyshev::evaluateA(double p2) {
     return A;
 }
 
-double QPbyChebyshev::evaluateB(double p2) {
+double QPbyChebyshev::evaluateB(double p2) const {
     double B = m_m;
     double x = stox(p2);
     double xmu = stox(m_mu * m_mu);
@@ -89,19 +89,7 @@ double QPbyChebyshev::evaluateB(double p2) {
     return B;
 }
 
-double QPbyChebyshev::evaluateSigmaV(double p2) {
-    double A = evaluateA(p2);
-    double B = evaluateB(p2);
-    return A / (p2 * A * A + B * B);
-}
-
-double QPbyChebyshev::evaluateSigmaS(double p2) {
-    double A = evaluateA(p2);
-    double B = evaluateB(p2);
-    return B / (p2 * A * A + B * B);
-}
-
-double QPbyChebyshev::evaluateSigmaA(double p2) {
+double QPbyChebyshev::evaluateSigmaA(double p2) const {
     double SigmaA = (m_a.at(0)) / 2.;
     double x = stox(p2);
     for (unsigned int i = 1; i < m_a.size(); i++) {
@@ -110,7 +98,7 @@ double QPbyChebyshev::evaluateSigmaA(double p2) {
     return SigmaA;
 }
 
-double QPbyChebyshev::evaluateSigmaM(double p2) {
+double QPbyChebyshev::evaluateSigmaM(double p2) const {
     double SigmaM = (m_b.at(0)) / 2.;
     double x = stox(p2);
     for (unsigned int i = 1; i < m_b.size(); i++) {
@@ -119,7 +107,75 @@ double QPbyChebyshev::evaluateSigmaM(double p2) {
     return SigmaM;
 }
 
-double QPbyChebyshev::T(unsigned int n, double x) {
+double QPbyChebyshev::evaluateSigmaV(double p2) const {
+    double A = evaluateA(p2);
+    double B = evaluateB(p2);
+    return A / (p2 * A * A + B * B);
+}
+
+double QPbyChebyshev::evaluateSigmaS(double p2) const {
+    double A = evaluateA(p2);
+    double B = evaluateB(p2);
+    return B / (p2 * A * A + B * B);
+}
+
+double QPbyChebyshev::differentiateA(double p2, unsigned int j) const {
+    return T(j, stox(p2)) - T(j, stox(m_mu * m_mu));
+}
+
+double QPbyChebyshev::differentiateB(double p2, unsigned int j) const {
+    return T(j, stox(p2)) - T(j, stox(m_mu * m_mu));
+}
+
+double QPbyChebyshev::differentiateSigmaA(double p2, unsigned int j) const {
+    return T(j, stox(p2)) - 0.5 * (j == 0);
+}
+
+double QPbyChebyshev::differentiateSigmaM(double p2, unsigned int j) const {
+    return T(j, stox(p2)) - 0.5 * (j == 0);
+}
+
+double QPbyChebyshev::differentiateSigmaV_a(double p2, unsigned int j) const {
+    double A = evaluateA(p2);
+    double B = evaluateB(p2);
+    double Aprime = differentiateA(p2, j);
+    double A2 = A * A;
+    double B2 = B * B;
+    double denom = p2 * A2 + B2;
+
+    return Aprime * (B2 - p2 * A2) / (denom * denom);
+}
+
+double QPbyChebyshev::differentiateSigmaV_b(double p2, unsigned int j) const {
+    double A = evaluateA(p2);
+    double B = evaluateB(p2);
+    double Bprime = differentiateB(p2, j);
+    double denom = p2 * A * A + B * B;
+
+    return -2. * Bprime * A * B / (denom * denom);
+}
+
+double QPbyChebyshev::differentiateSigmaS_a(double p2, unsigned int j) const {
+    double A = evaluateA(p2);
+    double B = evaluateB(p2);
+    double Aprime = differentiateA(p2, j);
+    double denom = p2 * A * A + B * B;
+
+    return -2. * p2 * Aprime * A * B / (denom * denom);
+}
+
+double QPbyChebyshev::differentiateSigmaS_b(double p2, unsigned int j) const {
+    double A = evaluateA(p2);
+    double B = evaluateB(p2);
+    double Bprime = differentiateB(p2, j);
+    double A2 = A * A;
+    double B2 = B * B;
+    double denom = p2 * A2 + B2;
+
+    return Bprime * (p2 * A2 - B2) / (denom * denom);
+}
+
+double QPbyChebyshev::T(unsigned int n, double x) const {
     return cos(n * acos(x)); //TODO Move to NumA
 }
 
@@ -127,10 +183,11 @@ const std::vector<double>& QPbyChebyshev::getRoots() const {
     return m_roots;
 }
 
-double QPbyChebyshev::stox(double p2) {
+double QPbyChebyshev::stox(double p2) const {
     return log(p2 / (m_Lambda * m_epsilon)) / log(m_Lambda / m_epsilon);
 }
-double QPbyChebyshev::xtos(double x) {
+
+double QPbyChebyshev::xtos(double x) const {
     return m_Lambda * m_epsilon * exp(x * log(m_Lambda / m_epsilon));
 }
 
