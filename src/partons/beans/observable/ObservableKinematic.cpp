@@ -28,7 +28,7 @@ ObservableKinematic::ObservableKinematic(ParameterList &parameterList) :
     if (parameterList.isAvailable(ObservableKinematic::PARAMETER_NAME_XB)) {
         m_xB = parameterList.getLastAvailable().toDouble();
     } else {
-        throwException(__func__,
+        error(__func__,
                 Formatter() << "Missing parameter <"
                         << ObservableKinematic::PARAMETER_NAME_XB << ">");
     }
@@ -36,7 +36,7 @@ ObservableKinematic::ObservableKinematic(ParameterList &parameterList) :
     if (parameterList.isAvailable(ObservableKinematic::PARAMETER_NAME_T)) {
         m_t = parameterList.getLastAvailable().toDouble();
     } else {
-        throwException(__func__,
+        error(__func__,
                 Formatter() << "Missing parameter <"
                         << ObservableKinematic::PARAMETER_NAME_T << ">");
     }
@@ -44,7 +44,7 @@ ObservableKinematic::ObservableKinematic(ParameterList &parameterList) :
     if (parameterList.isAvailable(ObservableKinematic::PARAMETER_NAME_Q2)) {
         m_Q2 = parameterList.getLastAvailable().toDouble();
     } else {
-        throwException(__func__,
+        error(__func__,
                 Formatter() << "Missing parameter <"
                         << ObservableKinematic::PARAMETER_NAME_Q2 << ">");
     }
@@ -56,7 +56,7 @@ ObservableKinematic::ObservableKinematic(ParameterList &parameterList) :
 
     /*
      else {
-     throwException(__func__,
+     error(__func__,
      Formatter() << "Missing parameter <"
      << ObservableKinematic::PARAMETER_NAME_PHI << ">");
      }

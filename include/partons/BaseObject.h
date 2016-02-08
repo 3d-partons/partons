@@ -76,9 +76,6 @@ protected:
     void error(const std::string &functionName,
             const std::string &message) const;
 
-    void throwException(const std::string functionName,
-            const std::string errorMessage) const;
-
 private:
     unsigned int m_objectId;
     std::string m_className; ///< String that represents class's name used by the LoggerManager's class for know the source of the output trace
@@ -91,6 +88,9 @@ private:
      * @return incremented unsigned int ID.
      */
     unsigned int getUniqueObjectId();
+
+    void throwException(const std::string functionName,
+            const std::string errorMessage) const;
 };
 
 #endif /* BASE_OBJECT_H */

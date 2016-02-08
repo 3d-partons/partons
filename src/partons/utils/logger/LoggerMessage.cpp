@@ -1,5 +1,7 @@
 #include "../../../../include/partons/utils/logger/LoggerMessage.h"
 
+#include <sstream>
+
 LoggerMessage::LoggerMessage(LoggerLevel level, std::string classNameSource,
         std::string functionNameSource, std::string message) :
         m_level(level), m_time(std::time(0)), m_classNameSource(
@@ -49,4 +51,25 @@ LoggerLevel LoggerMessage::getLevel() const {
 
 void LoggerMessage::setLevel(LoggerLevel level) {
     m_level = level;
+}
+
+std::string LoggerMessage::formatDate(const time_t &time) const {
+
+    // see : http://stackoverflow.com/questions/16357999/current-date-and-time-as-string
+
+    struct tm* timeinfo;
+    char buffer[80];
+    timeinfo = localtime(&time);
+
+    strftime(buffer, 80, "%d-%m-%Y %I:%M:%S", timeinfo);
+
+    return std::string(buffer);
+}
+
+std::string LoggerMessage::toString() const {
+    std::stringstream sstream;
+    sstream << formatDate(m_time) << " [" << m_level.toString() << "] ("
+            << m_classNameSource << "::" << m_functionNameSource << ") "
+            << m_message;
+    return sstream.str();
 }

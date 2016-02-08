@@ -28,7 +28,7 @@ const QuarkDistribution& PartonDistribution::getQuarkDistribution(
             m_quarkDistributions.find(quarkFlavorType);
 
     if (it == m_quarkDistributions.end()) {
-        throwException(__func__,
+        error(__func__,
                 "Enable to find QuardDistribution object from QuarFlavorType = "
                         + QuarkFlavor(quarkFlavorType).getShortName());
     }

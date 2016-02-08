@@ -16,7 +16,6 @@
 #include "../../../include/partons/utils/ParameterList.h"
 #include "../../../include/partons/utils/stringUtils/Formatter.h"
 #include "../../../include/partons/utils/stringUtils/StringUtils.h"
-#include "../../../include/partons/utils/test/report/observable/ObservableResultListReport.h"
 #include "../../../include/partons/utils/thread/Packet.h"
 
 const std::string ObservableService::FUNCTION_NAME_COMPUTE_DVCS_OBSERVABLE =
@@ -49,8 +48,7 @@ void ObservableService::computeTask(Task &task) {
             ObservableService::FUNCTION_NAME_COMPUTE_MANY_KINEMATIC_ONE_MODEL)) {
         observableResultList = computeManyKinematicOneModelTask(task);
     } else {
-        throwException(__func__,
-                "unknown function name = " + task.getFunctionName());
+        error(__func__, "unknown function name = " + task.getFunctionName());
     }
 
     if (task.isStoreInDB()) {
@@ -126,7 +124,7 @@ ObservableResult ObservableService::computeDVCSObservableTask(Task& task) {
                 task.getLastAvailableParameterList().get("id").toString());
         pScaleModule->configure(task.getLastAvailableParameterList());
     } else {
-        throwException(__func__,
+        error(__func__,
                 Formatter() << "Missing object : <ScaleModule> for method "
                         << task.getFunctionName());
     }
@@ -139,7 +137,7 @@ ObservableResult ObservableService::computeDVCSObservableTask(Task& task) {
                 task.getLastAvailableParameterList().get("id").toString());
         pXiConverterModule->configure(task.getLastAvailableParameterList());
     } else {
-        throwException(__func__,
+        error(__func__,
                 Formatter()
                         << "Missing object : <XiConverterModule> for method "
                         << task.getFunctionName());
@@ -151,7 +149,7 @@ ObservableResult ObservableService::computeDVCSObservableTask(Task& task) {
     if (task.isAvailableParameterList("ObservableKinematic")) {
         kinematic = ObservableKinematic(task.getLastAvailableParameterList());
     } else {
-        throwException(__func__,
+        error(__func__,
                 Formatter()
                         << "Missing object : <ObservableKinematic> for method "
                         << task.getFunctionName());
@@ -164,7 +162,7 @@ ObservableResult ObservableService::computeDVCSObservableTask(Task& task) {
                 task.getLastAvailableParameterList().get("id").toString());
         pObservable->configure(task.getLastAvailableParameterList());
     } else {
-        throwException(__func__,
+        error(__func__,
                 Formatter() << "Missing object : <Observable> for method "
                         << task.getFunctionName());
     }
@@ -176,7 +174,7 @@ ObservableResult ObservableService::computeDVCSObservableTask(Task& task) {
                 task.getLastAvailableParameterList().get("id").toString());
         pGPDModule->configure(task.getLastAvailableParameterList());
     } else {
-        throwException(__func__,
+        error(__func__,
                 Formatter() << "Missing object : <GPDModule> for method "
                         << task.getFunctionName());
     }
@@ -190,7 +188,7 @@ ObservableResult ObservableService::computeDVCSObservableTask(Task& task) {
         pDVCSConvolCoeffFunctionModule->configure(
                 task.getLastAvailableParameterList());
     } else {
-        throwException(__func__,
+        error(__func__,
                 Formatter()
                         << "Missing object : <GPDEvolutionModule> for method "
                         << task.getFunctionName());
@@ -203,7 +201,7 @@ ObservableResult ObservableService::computeDVCSObservableTask(Task& task) {
                 task.getLastAvailableParameterList().get("id").toString());
         pDVCSModule->configure(task.getLastAvailableParameterList());
     } else {
-        throwException(__func__,
+        error(__func__,
                 Formatter() << "Missing object : <DVCSModule> for method "
                         << task.getFunctionName());
     }
@@ -235,7 +233,7 @@ ResultList<ObservableResult> ObservableService::computeManyKinematicOneModelTask
                 task.getLastAvailableParameterList().get("id").toString());
         pScaleModule->configure(task.getLastAvailableParameterList());
     } else {
-        throwException(__func__,
+        error(__func__,
                 Formatter() << "Missing object : <ScaleModule> for method "
                         << task.getFunctionName());
     }
@@ -248,7 +246,7 @@ ResultList<ObservableResult> ObservableService::computeManyKinematicOneModelTask
                 task.getLastAvailableParameterList().get("id").toString());
         pXiConverterModule->configure(task.getLastAvailableParameterList());
     } else {
-        throwException(__func__,
+        error(__func__,
                 Formatter()
                         << "Missing object : <XiConverterModule> for method "
                         << task.getFunctionName());
@@ -262,14 +260,14 @@ ResultList<ObservableResult> ObservableService::computeManyKinematicOneModelTask
             listOfKinematic = KinematicUtils::getObservableKinematicFromFile(
                     parameterList.getLastAvailable().toString());
         } else {
-            throwException(__func__,
+            error(__func__,
                     Formatter()
                             << "Missing parameter file in object <ObservableKinematic> for method "
                             << task.getFunctionName());
         }
 
     } else {
-        throwException(__func__,
+        error(__func__,
                 Formatter()
                         << "Missing object : <ObservableKinematic> for method "
                         << task.getFunctionName());
@@ -282,7 +280,7 @@ ResultList<ObservableResult> ObservableService::computeManyKinematicOneModelTask
                 task.getLastAvailableParameterList().get("id").toString());
         pObservable->configure(task.getLastAvailableParameterList());
     } else {
-        throwException(__func__,
+        error(__func__,
                 Formatter() << "Missing object : <Observable> for method "
                         << task.getFunctionName());
     }
@@ -294,7 +292,7 @@ ResultList<ObservableResult> ObservableService::computeManyKinematicOneModelTask
                 task.getLastAvailableParameterList().get("id").toString());
         pGPDModule->configure(task.getLastAvailableParameterList());
     } else {
-        throwException(__func__,
+        error(__func__,
                 Formatter() << "Missing object : <GPDModule> for method "
                         << task.getFunctionName());
     }
@@ -308,7 +306,7 @@ ResultList<ObservableResult> ObservableService::computeManyKinematicOneModelTask
         pDVCSConvolCoeffFunctionModule->configure(
                 task.getLastAvailableParameterList());
     } else {
-        throwException(__func__,
+        error(__func__,
                 Formatter()
                         << "Missing object : <GPDEvolutionModule> for method "
                         << task.getFunctionName());
@@ -321,7 +319,7 @@ ResultList<ObservableResult> ObservableService::computeManyKinematicOneModelTask
                 task.getLastAvailableParameterList().get("id").toString());
         pDVCSModule->configure(task.getLastAvailableParameterList());
     } else {
-        throwException(__func__,
+        error(__func__,
                 Formatter() << "Missing object : <DVCSModule> for method "
                         << task.getFunctionName());
     }
@@ -341,14 +339,4 @@ ResultList<ObservableResult> ObservableService::computeManyKinematicOneModelTask
                     << result.toString());
 
     return result;
-}
-
-//TODO remove ? : how to compare with XML scenario (automation) ?
-ObservableResultListReport ObservableService::compareResultList(
-        const ResultList<ObservableResult>& resultList_01,
-        const ResultList<ObservableResult>& resultList_02,
-        const Tolerances &tolerances) const {
-
-    //TODO implement
-    return ObservableResultListReport();
 }

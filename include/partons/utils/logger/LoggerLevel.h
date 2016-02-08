@@ -21,11 +21,11 @@ public:
         DEBUG = 0, INFO = 1, WARN = 2, ERROR = 3, OFF = 4, NONE = 5
     };
 
-    LoggerLevel(Type t)
-            : m_type(t) {
+    LoggerLevel(Type t) :
+            m_type(t) {
     }
 
-    std::string toString() {
+    std::string toString() const {
         switch (m_type) {
         case DEBUG:
             return "DEBUG";

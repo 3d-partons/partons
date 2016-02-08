@@ -14,6 +14,8 @@
 
 #include <string>
 
+class ComparisonService;
+
 class BaseObjectRegistry;
 class DoubleDistributionService;
 class DVCSConvolCoeffFunctionService;
@@ -34,6 +36,7 @@ public:
     ObservableService* getObservableService() const;
     VizualisationService* getVizualisationService() const;
     DoubleDistributionService* getDoubleDistributionService() const;
+    ComparisonService* getComparisonService() const;
 
 private:
     // To allow only Partons class to create a new instance of this class.

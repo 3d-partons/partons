@@ -1,10 +1,9 @@
-#include "/usr/local/sfml/v2.3.2/include/SFML/System/Thread.hpp"
 #include "../../../../include/partons/utils/thread/Thread.h"
 
 #include <SFML/System/Thread.hpp>
 
 Thread::Thread() :
-        m_pThread(new sf::Thread(&Thread::run, this)) {
+        m_pThread(new sf::Thread(&Thread::run, this))/*, m_isRunning(false)*/{
 }
 
 Thread::~Thread() {
@@ -24,10 +23,16 @@ void Thread::run() {
 
 void Thread::launch() {
     m_pThread->launch();
+    // m_isRunning = true;
 }
 
 void Thread::wait() {
+    // if (m_isRunning) {
+    // m_pThread->wait();
+    // }
+
     m_pThread->wait();
+
 }
 
 Thread::Thread(const Thread& other) {

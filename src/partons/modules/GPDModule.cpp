@@ -21,14 +21,14 @@
 
 const std::string GPDModule::GPD_TYPE = "GPD_MODULE_GPD_TYPE";
 
-GPDModule::GPDModule(const std::string &className)
-        : ModuleObject(className), m_x(0.), m_xi(0.), m_t(0.), m_MuF2(0.), m_MuR2(
+GPDModule::GPDModule(const std::string &className) :
+        ModuleObject(className), m_x(0.), m_xi(0.), m_t(0.), m_MuF2(0.), m_MuR2(
                 0.), m_gpdType(GPDType::ALL), m_MuF2_ref(0.), m_nf(0), m_pGPDEvolutionModule(
                 0) {
 }
 
-GPDModule::GPDModule(const GPDModule &other)
-        : ModuleObject(other) {
+GPDModule::GPDModule(const GPDModule &other) :
+        ModuleObject(other) {
     m_x = other.m_x;
     m_xi = other.m_xi;
     m_t = other.m_t;
@@ -181,7 +181,7 @@ GPDResult GPDModule::compute(double x, double xi, double t, double MuF2,
 
             gpdResult.addPartonDistribution(m_it->first, partonDistribution);
         } else {
-            throwException(__func__,
+            error(__func__,
                     Formatter() << "GPD(" << GPDType(m_gpdType).toString()
                             << ") is not available for this GPD model");
         }

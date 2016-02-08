@@ -50,6 +50,7 @@ Partons::~Partons() {
 
     if (m_pLoggerManager) {
         delete m_pLoggerManager;
+        m_pLoggerManager = 0;
     }
 
     if (m_pInstance) {
@@ -88,6 +89,9 @@ void Partons::close() {
 
         // Wait the end of queue message
         m_pLoggerManager->wait();
+
+        delete m_pLoggerManager;
+        m_pLoggerManager = 0;
     }
 }
 

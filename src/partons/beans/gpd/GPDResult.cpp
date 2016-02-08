@@ -71,7 +71,7 @@ List<PartonDistribution> GPDResult::getPartonDistributionList() const {
     return partonDistributionList;
 }
 
-std::string GPDResult::toString() {
+std::string GPDResult::toString() const {
     std::ostringstream os;
     std::map<GPDType::Type, PartonDistribution>::const_iterator it;
 

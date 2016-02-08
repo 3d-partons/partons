@@ -25,6 +25,13 @@ class FileUtils {
 public:
 
     static bool isReadable(const std::string & filePath);
+
+    static bool open(std::ofstream &fileOutputStream,
+            const std::string & filePath);
+    static void write(std::ofstream & fileOutputStream,
+            const std::string & str);
+    static void close(std::ofstream & fileOutputStream);
+
     static void write(const std::string & filePath, const std::string & str);
     static void writef(const std::string & filePath, const std::string & str);
     static std::string read(const std::string & filePath);

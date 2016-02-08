@@ -23,8 +23,6 @@
 class DVCSConvolCoeffFunctionModule;
 class DVCSModule;
 class Observable;
-class ObservableResultListReport;
-class Tolerances;
 
 class ObservableService: public ServiceObject {
 public:
@@ -52,11 +50,6 @@ public:
             const List<ObservableKinematic> & listOfKinematic,
             DVCSModule* pDVCSModule, Observable* pObservable,
             DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule);
-
-    ObservableResultListReport compareResultList(
-            const ResultList<ObservableResult> &resultList_01,
-            const ResultList<ObservableResult> &resultList_02,
-            const Tolerances &tolerances) const;
 
     virtual void computeTask(Task &task);
 

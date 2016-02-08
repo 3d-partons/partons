@@ -40,6 +40,8 @@ public:
 protected:
     Thread(const Thread &other);
 
+    // bool m_isRunning; /// Use to avoid segmentation fault when attempt to wait for a thread that is already terminated
+
 private:
     sf::Thread* m_pThread;
 };

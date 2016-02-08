@@ -21,8 +21,8 @@ const unsigned int MPSSW13Model::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new MPSSW13Model("MPSSW13Model"));
 
-MPSSW13Model::MPSSW13Model(const std::string &className)
-        : GPDModule(className), MathIntegratorModule(), m_Forward(0), m_NbOfQuarkFlavor(
+MPSSW13Model::MPSSW13Model(const std::string &className) :
+        GPDModule(className), MathIntegratorModule(), m_Forward(0), m_NbOfQuarkFlavor(
                 2), m_NbOfColor(3), m_Mx(0.), m_CA(3.), m_CF(4. / 3.), m_TF(
                 1. / 2.), m_F1u(0.), m_F1d(0.), m_FD(0.), m_ProfileShapeVal(1.), m_ProfileShapeSea(
                 2.), m_ProfileShapeGlue(2.), m_QuarkDTerm(0.), m_GluonDTerm(0.) {
@@ -46,8 +46,8 @@ void MPSSW13Model::init() {
             NumA::MathIntegrator::GSL_ADAPTIVE_SINGULAR);
 }
 
-MPSSW13Model::MPSSW13Model(const MPSSW13Model& other)
-        : GPDModule(other), MathIntegratorModule(other) {
+MPSSW13Model::MPSSW13Model(const MPSSW13Model& other) :
+        GPDModule(other), MathIntegratorModule(other) {
     m_NbOfQuarkFlavor = other.m_NbOfQuarkFlavor;
     m_NbOfColor = other.m_NbOfColor;
     m_Mx = other.m_Mx;
@@ -82,26 +82,26 @@ void MPSSW13Model::setParameters(std::vector<double> Parameters) {
     // TODO: Check general syntax of setParameters...
 
     if (Parameters.size() != 3) {
-        throwException(__func__, "Missing parameters !");
+        error(__func__, "Missing parameters !");
     }
 
     // Test known constraints on free parameters
     if (Parameters.at(0) < 1.) {
-        throwException(__func__,
+        error(__func__,
                 Formatter()
                         << "Exponent in valence profile function should be >= 1."
                         << '\n' << "Here exponent = " << Parameters.at(0)
                         << '\n');
     }
     if (Parameters.at(1) < 1.) {
-        throwException(__func__,
+        error(__func__,
                 Formatter()
                         << "Exponent in sea profile function should be >= 1."
                         << '\n' << "Here exponent = " << Parameters.at(1)
                         << '\n');
     }
     if (Parameters.at(2) < 1.) {
-        throwException(__func__,
+        error(__func__,
                 Formatter()
                         << "Exponent in glue profile function should be >= 1."
                         << '\n' << "Here exponent = " << Parameters.at(2)
@@ -429,7 +429,7 @@ double MPSSW13Model::Profile(double N, double beta, double alpha) {
 
 //    double alphaBeta = fabs(alpha) + fabs(beta);
 //    if (alphaBeta > 1.) {
-//        throwException(__func__,
+//        error(__func__,
 //                Formatter()
 //                        << "MPSSW13Model : Parameters of profile function should be in rhombus | alpha | + | beta | <= 1."
 //                        << '\n' << "Here alpha = " << alpha << " beta = "
@@ -449,7 +449,7 @@ double MPSSW13Model::Profile(double N, double beta, double alpha) {
 
 void MPSSW13Model::throwBetaException(const std::string &funcName,
         double betaValue) {
-    throwException(funcName,
+    error(funcName,
             Formatter()
                     << "Longitudinal momentum fraction should be in ] 0., +1. ]"
                     << '\n' << "Here beta = " << betaValue << '\n');

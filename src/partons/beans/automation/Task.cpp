@@ -14,8 +14,7 @@ const ParameterList& Task::getParameterList(
     std::map<std::string, ParameterList>::const_iterator it =
             m_functionParameters.find(className);
     if (it == m_functionParameters.end()) {
-        throwException(__func__,
-                "Missing parameters for className = " + className);
+        error(__func__, "Missing parameters for className = " + className);
     }
 
     return it->second;

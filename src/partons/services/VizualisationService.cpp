@@ -14,8 +14,8 @@ const unsigned int VizualisationService::classId =
         Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
                 new VizualisationService("VizualisationService"));
 
-VizualisationService::VizualisationService(const std::string &className)
-        : ServiceObject(className) {
+VizualisationService::VizualisationService(const std::string &className) :
+        ServiceObject(className) {
 }
 
 VizualisationService::~VizualisationService() {

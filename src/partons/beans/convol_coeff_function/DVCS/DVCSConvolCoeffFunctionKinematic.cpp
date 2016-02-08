@@ -19,7 +19,7 @@ DVCSConvolCoeffFunctionKinematic::DVCSConvolCoeffFunctionKinematic(
             GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI)) {
         m_xi = parameterList.getLastAvailable().toDouble();
     } else {
-        throwException(__func__,
+        error(__func__,
                 Formatter() << "Missing parameter <"
                         << GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI
                         << ">");
@@ -27,14 +27,14 @@ DVCSConvolCoeffFunctionKinematic::DVCSConvolCoeffFunctionKinematic(
     if (parameterList.isAvailable(ObservableKinematic::PARAMETER_NAME_T)) {
         m_t = parameterList.getLastAvailable().toDouble();
     } else {
-        throwException(__func__,
+        error(__func__,
                 Formatter() << "Missing parameter <"
                         << ObservableKinematic::PARAMETER_NAME_T << ">");
     }
     if (parameterList.isAvailable(ObservableKinematic::PARAMETER_NAME_Q2)) {
         m_Q2 = parameterList.getLastAvailable().toDouble();
     } else {
-        throwException(__func__,
+        error(__func__,
                 Formatter() << "Missing parameter <"
                         << ObservableKinematic::PARAMETER_NAME_Q2 << ">");
     }

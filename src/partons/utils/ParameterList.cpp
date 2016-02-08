@@ -14,7 +14,7 @@ GenericType ParameterList::get(const std::string& parameterName) const {
             parameterName);
 
     if (it == m_parameters.end()) {
-        throwException(__func__, "Missing parameter name = " + parameterName);
+        error(__func__, "Missing parameter name = " + parameterName);
     }
 
     return it->second;

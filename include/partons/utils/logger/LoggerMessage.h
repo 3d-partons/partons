@@ -12,6 +12,7 @@
  */
 
 #include <ctime>
+#include <iostream>
 #include <string>
 
 #include "LoggerLevel.h"
@@ -21,6 +22,8 @@ public:
     LoggerMessage(LoggerLevel level, std::string classNameSource,
             std::string functionNameSource, std::string message);
     ~LoggerMessage();
+
+    std::string formatDate(const time_t &time) const;
 
     const std::time_t& getTime() const;
     void setTime(std::time_t time);
@@ -33,6 +36,10 @@ public:
     LoggerLevel getLevel() const;
     void setLevel(LoggerLevel level);
 
+    void serialize(std::stringstream &sstream) const;
+
+    std::string toString() const;
+
 private:
     LoggerLevel m_level;
     std::time_t m_time;
@@ -40,5 +47,8 @@ private:
     std::string m_functionNameSource;
     std::string m_message;
 };
+
+std::stringstream& operator <<(std::stringstream& sstream,
+        LoggerMessage& loggerMessage);
 
 #endif /* LOGGER_MESSAGE_H */

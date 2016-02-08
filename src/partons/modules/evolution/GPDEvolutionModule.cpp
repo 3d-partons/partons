@@ -151,17 +151,16 @@ NumA::MatrixD GPDEvolutionModule::invertMatrix6(13,
         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1.); //
 
 //TODO quelles sont les valeurs par défauts lors de l'initialisation ?
-GPDEvolutionModule::GPDEvolutionModule(const std::string &className)
-        : ModuleObject(className), m_x(0), m_xi(0), m_t(0), m_MuF2(0), m_MuR2(
-                0), m_pGPDModule(0), m_qcdOrderType(
-                PerturbativeQCDOrderType::UNDEFINED), m_currentGPDComputeType(
+GPDEvolutionModule::GPDEvolutionModule(const std::string &className) :
+        ModuleObject(className), m_x(0), m_xi(0), m_t(0), m_MuF2(0), m_MuR2(0), m_pGPDModule(
+                0), m_qcdOrderType(PerturbativeQCDOrderType::UNDEFINED), m_currentGPDComputeType(
                 GPDType::UNDEFINED), m_pNfFunction(0), m_pNfEvolFunction(0), m_pRunningAlphaStrong(
                 0), m_scaleDistinction(0), m_nbXPoints(20), m_nbMuFPoints(1), m_epsilon(
                 0.01), m_alpha(0.1), m_currentNf(0), m_currentNonSingletIndex(0) {
 }
 
-GPDEvolutionModule::GPDEvolutionModule(const GPDEvolutionModule &other)
-        : ModuleObject(other) {
+GPDEvolutionModule::GPDEvolutionModule(const GPDEvolutionModule &other) :
+        ModuleObject(other) {
     m_x = other.m_x;
     m_xi = other.m_xi;
     m_t = other.m_t;
@@ -258,24 +257,24 @@ void GPDEvolutionModule::isModuleWellConfigured() {
     debug(__func__, "");
 
     if (m_pNfFunction == 0) {
-        throwException(__func__, "m_pNfFunction* is NULL");
+        error(__func__, "m_pNfFunction* is NULL");
     }
 
     if (m_pNfEvolFunction == 0) {
-        throwException(__func__, "m_pNfEvolFunction* is NULL");
+        error(__func__, "m_pNfEvolFunction* is NULL");
     }
 
     if (m_pGPDModule == 0) {
-        throwException(__func__, "GPDModule* is NULL");
+        error(__func__, "GPDModule* is NULL");
     }
 
     if (m_qcdOrderType == PerturbativeQCDOrderType::UNDEFINED) {
-        throwException(__func__, "QCDOrderType is UNDEFINED");
+        error(__func__, "QCDOrderType is UNDEFINED");
     }
 
     // Test range in MuF and MuF_ref
     if (m_MuF2 <= 0.) {
-        throwException(__func__,
+        error(__func__,
                 Formatter() << "m_MuF2 is out of range ;"
                         << "m_MuF2 should be >0. Here m_MuF2 = " << m_MuF2);
     }
@@ -710,17 +709,17 @@ void GPDEvolutionModule::setGpdModule(GPDModule* gpdModule) {
 //
 //double GPDEvolutionModule::nonSingletMuFDerivative(
 //        const NfInterval &nfInterval) {
-//    throwException(__func__, "Must be implemented in daugther class");
+//    error(__func__, "Must be implemented in daugther class");
 //    return 0.;
 //}
 //
 //double GPDEvolutionModule::singletMuFDerivative(const NfInterval &nfInterval) {
-//    throwException(__func__, "Must be implemented in daugther class");
+//    error(__func__, "Must be implemented in daugther class");
 //    return 0.;
 //}
 //
 //double GPDEvolutionModule::gluonMuFDerivative(const NfInterval &nfInterval) {
-//    throwException(__func__, "Must be implemented in daugther class");
+//    error(__func__, "Must be implemented in daugther class");
 //    return 0.;
 //}
 

@@ -38,7 +38,7 @@ public:
 
     List<PartonDistribution> getPartonDistributionList() const;
 
-    virtual std::string toString();
+    virtual std::string toString() const;
 
     ComparisonReport compare(const GPDResult &referenceObject,
             const Tolerances &tolerances) const;

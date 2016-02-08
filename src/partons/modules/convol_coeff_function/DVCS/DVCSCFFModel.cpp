@@ -16,11 +16,12 @@
 #include "../../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../../include/partons/modules/alphaS/RunningAlphaStrong.h"
-#include "../../../../../include/partons/modules/evolution/gpd/ExampleEvolQCDModel.h"
+//#include "../../../../../include/partons/modules/alphaS/RunningAlphaStrong.h"
+//#include "../../../../../include/partons/modules/evolution/gpd/ExampleEvolQCDModel.h"
 #include "../../../../../include/partons/modules/GPDModule.h"
-#include "../../../../../include/partons/ModuleObjectFactory.h"
-#include "../../../../../include/partons/Partons.h"
+#include "../../../../../include/partons/modules/RunningAlphaStrongModule.h"
+//#include "../../../../../include/partons/ModuleObjectFactory.h"
+//#include "../../../../../include/partons/Partons.h"
 #include "../../../../../include/partons/utils/math/MathUtils.h"
 #include "../../../../../include/partons/utils/stringUtils/Formatter.h"
 
@@ -51,16 +52,10 @@ DVCSCFFModel::DVCSCFFModel(const std::string &className) :
 
 //TODO Call mother init function
 void DVCSCFFModel::init() {
+    DVCSConvolCoeffFunctionModule::init();
+
     m_mathIntegrator.setIntegrationMode(
             NumA::MathIntegrator::GSL_ADAPTIVE_SINGULAR);
-
-    m_pRunningAlphaStrongModule =
-            Partons::getInstance()->getModuleObjectFactory()->newRunningAlphaStrongModule(
-                    RunningAlphaStrong::classId);
-
-    m_pNfConvolCoeffFunction =
-            Partons::getInstance()->getModuleObjectFactory()->newActiveFlavorsModule(
-                    ExampleEvolQCDModel::classId);
 }
 
 DVCSCFFModel::DVCSCFFModel(const DVCSCFFModel &other) :

@@ -56,7 +56,7 @@ DatabaseManager::DatabaseManager() :
                             "database.production.passwd").c_str()));
 
     if (!m_productionDatabase.open()) {
-        throwException(__func__,
+        error(__func__,
                 Formatter() << "Can't connect to database : "
                         << m_productionDatabase.lastError().text().toStdString());
     } else {
@@ -69,6 +69,7 @@ DatabaseManager::DatabaseManager() :
         for (int i = 0; i < model.rowCount(); ++i) {
             QSqlRecord record = model.record(i);
 
+            //TODO convert cout to logger
             std::cout << "col1 = "
                     << (record.value(0).toString()).toUtf8().constData()
                     << " - col2 = " << record.value(1).toInt() << std::endl;

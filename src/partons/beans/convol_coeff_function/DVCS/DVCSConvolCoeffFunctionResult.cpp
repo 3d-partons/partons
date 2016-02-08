@@ -26,7 +26,7 @@ std::complex<double> DVCSConvolCoeffFunctionResult::get(
         GPDType::Type gpdComputeType) {
     m_it = m_resultsByGPDType.find(gpdComputeType);
     if (m_it == m_resultsByGPDType.end()) {
-        throwException(__func__,
+        error(__func__,
                 Formatter() << "Cannot find result for GPDComputeType = "
                         << GPDType(gpdComputeType).toString());
     }

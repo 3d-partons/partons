@@ -12,16 +12,17 @@
  */
 
 #include <SFML/System/Mutex.hpp>
-#include <ctime>
+#include <iostream>
 #include <map>
-#include <queue>
 #include <string>
+#include <fstream>
 
 #include "../thread/Thread.h"
 #include "LoggerClassLevel.h"
 #include "LoggerLevel.h"
-#include "LoggerMessage.h"
 #include "LoggerPrintMode.h"
+
+class LoggerMessage;
 
 //TODO relatif folder for configFile
 
@@ -40,8 +41,6 @@ public:
 
     void init();
 
-    bool isEmptyMessageQueue();
-
     void close();
 
     void defineLevel(LoggerLevel loggerLevel);
@@ -57,11 +56,16 @@ public:
     void error(const std::string & className, const std::string & functionName,
             const std::string & message);
 
-    bool isLoggableMessage(LoggerLevel loggerLevel);
-
-    void addMessageToQueue(LoggerMessage loggerMessage);
+    void addMessageToBuffer(LoggerMessage loggerMessage);
 
     std::string toString();
+
+    bool isDebug() const;
+    bool isInfo() const;
+    bool isWarn() const;
+    bool isError() const;
+
+    void flushBuffer();
 
 private:
 
@@ -74,6 +78,7 @@ private:
 
     sf::Mutex m_mutex;
 
+    std::ofstream m_fileOutputStream;
     std::string m_outputFilePath;
     LoggerLevel m_defaultLevel;
     LoggerPrintMode m_printMode;
@@ -81,7 +86,7 @@ private:
     std::map<std::string, LoggerClassLevel*> m_customClassLevels;
     std::map<std::string, LoggerClassLevel*>::iterator m_it;
 
-    std::queue<LoggerMessage> m_messageQueue;
+    std::string m_buffer;
 
     bool m_active;
 
@@ -89,14 +94,10 @@ private:
 
     void update();
 
-    void handleMessage(LoggerMessage loggerMessage);
+    // bool isLoggable(LoggerMessage loggerMessage);
 
-    std::string formatDate(time_t time);
-
-    bool isLoggable(LoggerMessage loggerMessage);
-
-    void writeConsole(const std::string &message);
-    void writeFile(const std::string &message);
+    void writeConsole();
+    void writeFile();
 };
 
 #endif /* LOGGER_MANAGER_H */

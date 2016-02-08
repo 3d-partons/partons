@@ -53,7 +53,7 @@ void GPDService::computeTask(Task &task) {
         if (task.isAvailableParameterList("GPDKinematic")) {
             gpdKinematic = GPDKinematic(task.getLastAvailableParameterList());
         } else {
-            throwException(__func__,
+            error(__func__,
                     Formatter() << "Missing object : <GPDKinematic> for method "
                             << task.getFunctionName());
         }
@@ -65,7 +65,7 @@ void GPDService::computeTask(Task &task) {
                     task.getLastAvailableParameterList().get("id").toString());
             pGPDModule->configure(task.getLastAvailableParameterList());
         } else {
-            throwException(__func__,
+            error(__func__,
                     Formatter() << "Missing object : <GPDModule> for method "
                             << task.getFunctionName());
         }
@@ -86,7 +86,7 @@ void GPDService::computeTask(Task &task) {
         if (task.isAvailableParameterList("GPDKinematic")) {
             gpdKinematic = GPDKinematic(task.getLastAvailableParameterList());
         } else {
-            throwException(__func__,
+            error(__func__,
                     Formatter() << "Missing object : <GPDKinematic> for method "
                             << task.getFunctionName());
         }
@@ -98,7 +98,7 @@ void GPDService::computeTask(Task &task) {
                     task.getLastAvailableParameterList().get("id").toString());
             pGPDModule->configure(task.getLastAvailableParameterList());
         } else {
-            throwException(__func__,
+            error(__func__,
                     Formatter() << "Missing object : <GPDModule> for method "
                             << task.getFunctionName());
         }
@@ -111,7 +111,7 @@ void GPDService::computeTask(Task &task) {
             pGPDEvolutionModule->configure(
                     task.getLastAvailableParameterList());
         } else {
-            throwException(__func__,
+            error(__func__,
                     Formatter()
                             << "Missing object : <GPDEvolutionModule> for method "
                             << task.getFunctionName());
@@ -134,7 +134,7 @@ void GPDService::computeTask(Task &task) {
         if (task.isAvailableParameterList("GPDKinematic")) {
             gpdKinematic = GPDKinematic(task.getLastAvailableParameterList());
         } else {
-            throwException(__func__,
+            error(__func__,
                     Formatter() << "Missing object : <GPDKinematic> for method "
                             << task.getFunctionName());
         }
@@ -153,7 +153,7 @@ void GPDService::computeTask(Task &task) {
             }
 
         } else {
-            throwException(__func__,
+            error(__func__,
                     Formatter() << "Missing object : <GPDModule> for method "
                             << task.getFunctionName());
         }
@@ -165,8 +165,7 @@ void GPDService::computeTask(Task &task) {
                 Formatter() << task.getFunctionName() << "(" << ")" << '\n'
                         << results.toString());
     } else {
-        throwException(__func__,
-                "unknown function name = " + task.getFunctionName());
+        error(__func__, "unknown function name = " + task.getFunctionName());
     }
 }
 

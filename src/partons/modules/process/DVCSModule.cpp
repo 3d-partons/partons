@@ -15,8 +15,8 @@
 
 const std::string DVCSModule::PARAMETER_NAME_BEAM_ENERGY = "beam_energy";
 
-DVCSModule::DVCSModule(const std::string &className)
-        : ProcessModule(className), m_phi(0.), m_phiS(0.), m_phie(0.), m_phaseSpace(
+DVCSModule::DVCSModule(const std::string &className) :
+        ProcessModule(className), m_phi(0.), m_phiS(0.), m_phie(0.), m_phaseSpace(
                 0.), m_pObservable(0), m_pDVCSConvolCoeffFunctionModule(0), m_pScaleModule(
                 0), m_pXiConverterModule(0) {
 
@@ -26,8 +26,8 @@ DVCSModule::~DVCSModule() {
 
 }
 
-DVCSModule::DVCSModule(const DVCSModule& other)
-        : ProcessModule(other) {
+DVCSModule::DVCSModule(const DVCSModule& other) :
+        ProcessModule(other) {
     m_phi = other.m_phi;
     m_phiS = other.m_phiS;
     m_phie = other.m_phie;
@@ -86,12 +86,12 @@ void DVCSModule::initModule(double beamHelicity, double beamCharge,
 
 void DVCSModule::isModuleWellConfigured() {
     if (m_pScaleModule == 0) {
-        throwException(__func__,
+        error(__func__,
                 "m_pScaleModule is NULL pointer ; Use configure method to configure it");
     }
 
     if (m_pXiConverterModule == 0) {
-        throwException(__func__,
+        error(__func__,
                 "m_pXiConverterModule is NULL pointer ; Use configure method to configure it");
     }
 }

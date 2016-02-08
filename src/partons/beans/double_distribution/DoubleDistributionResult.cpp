@@ -28,7 +28,7 @@ const PartonDistribution& DoubleDistributionResult::getPartonDistribution(
             m_partonDistributions.find(doubleDistributionType);
 
     if (it == m_partonDistributions.end()) {
-        throwException(__func__,
+        error(__func__,
                 Formatter()
                         << "Enable to find PartonDistribution object from type = "
                         << DoubleDistributionType(doubleDistributionType).toString());

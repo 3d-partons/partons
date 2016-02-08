@@ -14,8 +14,8 @@
 
 #include <string>
 
-class Tolerances;
 class Differences;
+class Tolerances;
 
 class ComparisonData {
 public:
@@ -45,6 +45,7 @@ private:
     std::string m_variableValue;
     std::string m_variableValueReference;
 
+    // TODO Useful ?
     std::string m_additionalInfo;
 
     Tolerances* m_pTolerances;

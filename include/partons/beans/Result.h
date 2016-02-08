@@ -17,6 +17,9 @@
 
 #include "../BaseObject.h"
 
+class ComparisonReport;
+class Tolerances;
+
 class Result: public BaseObject {
 public:
     Result(const std::string &className);

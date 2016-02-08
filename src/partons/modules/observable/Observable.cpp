@@ -16,15 +16,15 @@
 #include "../../../../include/partons/utils/thread/Packet.h"
 #include "../../../../include/partons/utils/type/PhysicalType.h"
 
-Observable::Observable(const std::string &className)
-        : ModuleObject(className), m_channel(ObservableChannel::UNDEFINED), m_beamHelicity(
+Observable::Observable(const std::string &className) :
+        ModuleObject(className), m_channel(ObservableChannel::UNDEFINED), m_beamHelicity(
                 0.), m_beamCharge(0.), m_targetPolarization(
                 NumA::Vector3D(0., 0., 0.)), m_observableType(
                 ObservableType::PHI), m_pProcess(0) {
 }
 
-Observable::Observable(const Observable& other)
-        : ModuleObject(other) {
+Observable::Observable(const Observable& other) :
+        ModuleObject(other) {
     m_channel = other.m_channel;
     m_beamHelicity = other.m_beamHelicity;
     m_beamCharge = other.m_beamCharge;
@@ -121,7 +121,7 @@ ObservableResult Observable::compute(double xB, double t, double Q2,
     }
 
     else {
-        throwException(__func__,
+        error(__func__,
                 Formatter() << "Unknow observable type : "
                         << ObservableType(m_observableType).toString());
     }
@@ -130,14 +130,12 @@ ObservableResult Observable::compute(double xB, double t, double Q2,
 }
 
 double Observable::compute(ProcessModule* pDVCSModule, double phi) {
-    throwException(__func__,
-            "Nothing to do ; Must be implemented in daugther class");
+    error(__func__, "Nothing to do ; Must be implemented in daugther class");
     return 0.;
 }
 
 double Observable::compute() {
-    throwException(__func__,
-            "Nothing to do ; Must be implemented in daugther class");
+    error(__func__, "Nothing to do ; Must be implemented in daugther class");
     return 0.;
 
 }

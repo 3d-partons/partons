@@ -3,11 +3,12 @@
 #include <SFML/System/Lock.hpp>
 #include <SFML/System/Sleep.hpp>
 #include <SFML/System/Time.hpp>
-#include <iostream>
+#include <stdexcept>
 #include <utility>
 #include <vector>
 
 #include "../../../../include/partons/utils/fileUtils/FileUtils.h"
+#include "../../../../include/partons/utils/logger/LoggerMessage.h"
 #include "../../../../include/partons/utils/parser/IniFileParser.h"
 #include "../../../../include/partons/utils/PropertiesManager.h"
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
@@ -32,6 +33,12 @@ LoggerManager::LoggerManager() :
 
 LoggerManager::~LoggerManager() {
     sf::Lock lock(m_mutex); // mutex.lock()
+
+    // flush remaining buffer
+    flushBuffer();
+
+    //TODO close file when exception throw
+    FileUtils::close(m_fileOutputStream);
 
     for (m_it = m_customClassLevels.begin(); m_it != m_customClassLevels.end();
             m_it++) {
@@ -131,164 +138,137 @@ void LoggerManager::defineLevel(LoggerLevel loggerLevel) {
 } // mutex.unlock()
 
 void LoggerManager::update() {
-    while (m_active) {
-        while (!m_messageQueue.empty()) {
+    bool fileOpened = FileUtils::open(m_fileOutputStream, m_outputFilePath);
 
-            m_mutex.lock();
-
-            LoggerMessage loggerMsg = m_messageQueue.front();
-            m_messageQueue.pop();
-
-            handleMessage(loggerMsg);
-
-            m_mutex.unlock();
-
-            sf::sleep(sf::microseconds(3));
+    if (fileOpened) {
+        while (m_active) {
+            flushBuffer();
+            sf::sleep(sf::milliseconds(30));
         }
-        sf::sleep(sf::microseconds(3));
+    } else {
+        throw std::runtime_error(
+                Formatter() << "(LoggerManager::update) Cannot open log file = "
+                        << m_outputFilePath << "\n"
+                        << "LoggerManager terminated !");
     }
 
     std::cout << "[LoggerManager] terminated ..." << std::endl;
+
 }
 
-//TODO check conditions to print
-bool LoggerManager::isLoggable(LoggerMessage loggerMessage) {
+//TODO check conditions to print ; why not use ?
+//bool LoggerManager::isLoggable(LoggerMessage loggerMessage) {
+//    sf::Lock lock(m_mutex); // mutex.lock()
+//
+//    bool result = true;
+//
+//    // find if there is some custom policy for the desired class
+//    m_it = m_customClassLevels.find(loggerMessage.getClassNameSource());
+//    // if we find a result
+//    if (m_it != m_customClassLevels.end()) {
+//        LoggerLevel funcLevel = (m_it->second)->find(
+//                loggerMessage.getFunctionNameSource());
+//        // check if there is some custom policy for the desired function
+//        if (funcLevel.getType() != LoggerLevel::NONE) {
+//            if (loggerMessage.getLevel().getType()
+//                    < (m_it->second)->find(
+//                            loggerMessage.getFunctionNameSource()).getType()) {
+//                result = false;
+//            }
+//        }
+//        // else check if there is a custom default policy for the class
+//        else if ((m_it->second)->getDefaultClassLevel().getType()
+//                != LoggerLevel::NONE) {
+//            if (loggerMessage.getLevel().getType()
+//                    < (m_it->second)->getDefaultClassLevel().getType()) {
+//                // if true then don't log message
+//                result = false;
+//            }
+//
+//        }
+//        // if there is no default policy for the class use global policy
+//        else if (loggerMessage.getLevel().getType()
+//                < m_defaultLevel.getType()) {
+//            result = false;
+//        }
+//    }
+//    // else use global policy for the test
+//    else if (loggerMessage.getLevel().getType() < m_defaultLevel.getType()) {
+//        result = false;
+//
+//    }
+//
+//    return result;
+//} // mutex.unlock()
+
+void LoggerManager::flushBuffer() {
     sf::Lock lock(m_mutex); // mutex.lock()
 
-    bool result = true;
+    if (!m_buffer.empty()) {
 
-    // find if there is some custom policy for the desired class
-    m_it = m_customClassLevels.find(loggerMessage.getClassNameSource());
-    // if we find a result
-    if (m_it != m_customClassLevels.end()) {
-        LoggerLevel funcLevel = (m_it->second)->find(
-                loggerMessage.getFunctionNameSource());
-        // check if there is some custom policy for the desired function
-        if (funcLevel.getType() != LoggerLevel::NONE) {
-            if (loggerMessage.getLevel().getType()
-                    < (m_it->second)->find(
-                            loggerMessage.getFunctionNameSource()).getType()) {
-                result = false;
-            }
-        }
-        // else check if there is a custom default policy for the class
-        else if ((m_it->second)->getDefaultClassLevel().getType()
-                != LoggerLevel::NONE) {
-            if (loggerMessage.getLevel().getType()
-                    < (m_it->second)->getDefaultClassLevel().getType()) {
-                // if true then don't log message
-                result = false;
-            }
-
-        }
-        // if there is no default policy for the class use global policy
-        else if (loggerMessage.getLevel().getType()
-                < m_defaultLevel.getType()) {
-            result = false;
-        }
-    }
-    // else use global policy for the test
-    else if (loggerMessage.getLevel().getType() < m_defaultLevel.getType()) {
-        result = false;
-
-    }
-
-    return result;
-} // mutex.unlock()
-
-//TODO implementer les autres sorties de logging
-void LoggerManager::handleMessage(LoggerMessage loggerMessage) {
-
-    Formatter formattedMessage;
-
-    formattedMessage << formatDate(loggerMessage.getTime()) << " ["
-            << loggerMessage.getLevel().toString() << "] ("
-            << loggerMessage.getClassNameSource() << "::"
-
-            << loggerMessage.getFunctionNameSource() << ") "
-            << loggerMessage.getMessage();
-
-    if (isLoggable(loggerMessage)) {
         switch (m_printMode.getType()) {
         case LoggerPrintMode::COUT: {
-            writeConsole(formattedMessage.str());
+            writeConsole();
             break;
         }
         case LoggerPrintMode::FILE: {
-            writeFile(formattedMessage.str());
+            writeFile();
             break;
         }
         case LoggerPrintMode::BOTH: {
-            writeConsole(formattedMessage.str());
-            writeFile(formattedMessage.str());
+            writeFile();
+            writeConsole();
             break;
         }
         default:
             break;
         }
+
+        m_buffer.clear();
     }
+} // mutex.unlock()
+
+void LoggerManager::writeConsole() {
+    std::cout << m_buffer;
 }
 
-std::string LoggerManager::formatDate(time_t time) {
-
-    // see : http://stackoverflow.com/questions/16357999/current-date-and-time-as-string
-
-    struct tm* timeinfo;
-    char buffer[80];
-    timeinfo = localtime(&time);
-
-    strftime(buffer, 80, "%d-%m-%Y %I:%M:%S", timeinfo);
-
-    return std::string(buffer);
-}
-
-void LoggerManager::writeConsole(const std::string &message) {
-    std::cout << message << std::endl;
-}
-
-void LoggerManager::writeFile(const std::string &message) {
-
-    FileUtils::writef(m_outputFilePath, message);
+void LoggerManager::writeFile() {
+    FileUtils::write(m_fileOutputStream, m_buffer);
 }
 
 void LoggerManager::run() {
     update();
 }
 
-bool LoggerManager::isLoggableMessage(LoggerLevel loggerLevel) {
-    return (loggerLevel.getType() >= m_defaultLevel.getType()) ? true : false;
-}
-
 void LoggerManager::debug(const std::string & className,
         const std::string & functionName, const std::string & message) {
-    addMessageToQueue(
+    addMessageToBuffer(
             LoggerMessage(LoggerLevel::DEBUG, className, functionName,
                     message));
 }
 void LoggerManager::info(const std::string & className,
         const std::string & functionName, const std::string & message) {
-    addMessageToQueue(
+    addMessageToBuffer(
             LoggerMessage(LoggerLevel::INFO, className, functionName, message));
 
 }
 void LoggerManager::warn(const std::string & className,
         const std::string & functionName, const std::string & message) {
-    addMessageToQueue(
+    addMessageToBuffer(
             LoggerMessage(LoggerLevel::WARN, className, functionName, message));
 }
 void LoggerManager::error(const std::string & className,
         const std::string & functionName, const std::string & message) {
-    addMessageToQueue(
+    addMessageToBuffer(
             LoggerMessage(LoggerLevel::ERROR, className, functionName,
                     message));
 }
 
-//TODO remettre en place les mutex
-void LoggerManager::addMessageToQueue(LoggerMessage loggerMessage) {
+void LoggerManager::addMessageToBuffer(LoggerMessage loggerMessage) {
     sf::Lock lock(m_mutex); // mutex.lock()
 
     if (m_active == true) {
-        m_messageQueue.push(loggerMessage);
+        m_buffer += loggerMessage.toString() + '\n';
     }
 } // mutex.unlock()
 
@@ -308,8 +288,18 @@ std::string LoggerManager::toString() {
     return formatter;
 } // mutex.unlock()
 
-bool LoggerManager::isEmptyMessageQueue() {
-    sf::Lock lock(m_mutex); // mutex.lock()
+bool LoggerManager::isDebug() const {
+    return (LoggerLevel::DEBUG >= m_defaultLevel.getType()) ? true : false;
+}
 
-    return m_messageQueue.empty();
-} // mutex.unlock()
+bool LoggerManager::isInfo() const {
+    return (LoggerLevel::INFO >= m_defaultLevel.getType()) ? true : false;
+}
+
+bool LoggerManager::isWarn() const {
+    return (LoggerLevel::WARN >= m_defaultLevel.getType()) ? true : false;
+}
+
+bool LoggerManager::isError() const {
+    return (LoggerLevel::ERROR >= m_defaultLevel.getType()) ? true : false;
+}

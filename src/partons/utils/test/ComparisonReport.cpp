@@ -2,15 +2,16 @@
 
 #include <stddef.h>
 
-#include "../../../../include/partons/utils/compare/ComparisonData.h"
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 ComparisonReport::ComparisonReport() :
-        m_pParent(0), m_failed(false) {
+        m_pParent(0), m_failed(false), m_objectClassName(
+                "className is UNDEFINED"), m_context("context is UNDEFINED") {
 }
 
 ComparisonReport::ComparisonReport(const std::string &objectClassName) :
-        m_objectClassName(objectClassName), m_pParent(0) {
+        m_objectClassName(objectClassName), m_pParent(0), m_context(
+                "context is UNDEFINED") {
 
 }
 
@@ -20,7 +21,8 @@ ComparisonReport::ComparisonReport(const std::string& objectClassName,
 }
 
 ComparisonReport::ComparisonReport(bool comparisonResult) :
-        m_pParent(0), m_comparisonResult(comparisonResult) {
+        m_pParent(0), m_comparisonResult(comparisonResult), m_objectClassName(
+                "className is UNDEFINED"), m_context("context is UNDEFINED") {
 }
 
 ComparisonReport::~ComparisonReport() {

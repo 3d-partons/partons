@@ -69,3 +69,19 @@ std::ifstream::pos_type FileUtils::getFileSize(const std::string & filetPath) {
     std::ifstream file(filetPath.c_str(), std::ios::binary | std::ios::ate);
     return file.tellg();
 }
+
+bool FileUtils::open(std::ofstream &fileOutputStream,
+        const std::string & filePath) {
+    fileOutputStream.open(filePath.c_str(),
+            std::ofstream::out | std::ofstream::app);
+    return fileOutputStream.is_open();
+}
+
+void FileUtils::write(std::ofstream& fileOutputStream, const std::string& str) {
+    fileOutputStream << str;
+    fileOutputStream.flush();
+}
+
+void FileUtils::close(std::ofstream& fileOutputStream) {
+    fileOutputStream.close();
+}

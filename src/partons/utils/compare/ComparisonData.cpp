@@ -3,11 +3,6 @@
 #include "../../../../include/partons/utils/compare/Differences.h"
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
-//ComparisonData::ComparisonData() :
-//        m_pDifferences(0), m_variableName(StringUtils::EMPTY), m_additionalInfo(
-//                StringUtils::EMPTY) {
-//}
-
 ComparisonData::ComparisonData(bool isPassed, const std::string& variableName,
         const std::string& variableValue,
         const std::string& variableValueReference) :
@@ -27,6 +22,10 @@ ComparisonData::ComparisonData(bool isPassed, const std::string& variableName,
 }
 
 ComparisonData::~ComparisonData() {
+    if (m_pDifferences) {
+        delete m_pDifferences;
+        m_pDifferences = 0;
+    }
 }
 
 std::string ComparisonData::toString() const {
@@ -41,7 +40,7 @@ std::string ComparisonData::toString() const {
     formatter << " variableName = " << m_variableName << " with value = "
             << m_variableValue << " compared to = " << m_variableValueReference;
 
-    if (m_pDifferences != 0) {
+    if (m_pDifferences) {
         formatter << " " << m_pDifferences->toString();
     }
 

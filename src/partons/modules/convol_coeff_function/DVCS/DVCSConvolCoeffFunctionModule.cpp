@@ -4,9 +4,12 @@
 #include <utility>
 
 #include "../../../../../include/partons/beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
-#include "../../../../../include/partons/modules/active_flavors/NfFunctionExample.h"
+//#include "../../../../../include/partons/modules/active_flavors/NfFunctionExample.h"
+#include "../../../../../include/partons/modules/alphaS/RunningAlphaStrong.h"
+#include "../../../../../include/partons/modules/ActiveFlavorsModule.h"
+#include "../../../../../include/partons/modules/evolution/gpd/ExampleEvolQCDModel.h"
 #include "../../../../../include/partons/modules/GPDModule.h"
-#include "../../../../../include/partons/modules/RunningAlphaStrongModule.h"
+//#include "../../../../../include/partons/modules/RunningAlphaStrongModule.h"
 #include "../../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../../include/partons/Partons.h"
 #include "../../../../../include/partons/utils/GenericType.h"
@@ -17,8 +20,8 @@ const std::string DVCSConvolCoeffFunctionModule::GPD_MODULE_ID =
         "DVCS_CONVOL_COEFF_FUNCTION_GPD_MODULE_ID";
 
 DVCSConvolCoeffFunctionModule::DVCSConvolCoeffFunctionModule(
-        const std::string &className)
-        : ConvolCoeffFunctionModule(className), m_xi(0.), m_t(0.), m_Q2(0.), m_MuF2(
+        const std::string &className) :
+        ConvolCoeffFunctionModule(className), m_xi(0.), m_t(0.), m_Q2(0.), m_MuF2(
                 0.), m_MuR2(0.), m_nf(0), m_qcdOrderType(
                 PerturbativeQCDOrderType::UNDEFINED), m_currentGPDComputeType(
                 GPDType::UNDEFINED), m_gpdType(GPDType::UNDEFINED), m_pGPDModule(
@@ -27,8 +30,8 @@ DVCSConvolCoeffFunctionModule::DVCSConvolCoeffFunctionModule(
 }
 
 DVCSConvolCoeffFunctionModule::DVCSConvolCoeffFunctionModule(
-        const DVCSConvolCoeffFunctionModule &other)
-        : ConvolCoeffFunctionModule(other) {
+        const DVCSConvolCoeffFunctionModule &other) :
+        ConvolCoeffFunctionModule(other) {
     m_listOfCFFComputeFunctionAvailable =
             other.m_listOfCFFComputeFunctionAvailable;
     m_it = other.m_it;
@@ -73,9 +76,15 @@ DVCSConvolCoeffFunctionModule::~DVCSConvolCoeffFunctionModule() {
 }
 
 void DVCSConvolCoeffFunctionModule::init() {
+    ConvolCoeffFunctionModule::init();
+
+    m_pRunningAlphaStrongModule =
+            Partons::getInstance()->getModuleObjectFactory()->newRunningAlphaStrongModule(
+                    RunningAlphaStrong::classId);
+
     m_pNfConvolCoeffFunction =
             Partons::getInstance()->getModuleObjectFactory()->newActiveFlavorsModule(
-                    NfFunctionExample::classId);
+                    ExampleEvolQCDModel::classId);
 }
 
 //TODO implement
@@ -93,33 +102,33 @@ void DVCSConvolCoeffFunctionModule::isModuleWellConfigured() {
         Formatter formatter;
         formatter << "Input value of Xi = " << m_xi
                 << " do not lay between 0 and 1.";
-        throwException(__func__, formatter.str());
+        error(__func__, formatter.str());
     }
 
     // Test kinematic domain of t
     if (m_t > 0) {
         Formatter formatter;
         formatter << " Input value of t = " << m_t << " is not <= 0.";
-        throwException(__func__, formatter.str());
+        error(__func__, formatter.str());
     }
 
     // Test kinematic domain of Q2
     if (m_Q2 < 0) {
         Formatter formatter;
         formatter << "Input value of Q2 = " << m_Q2 << " is not > 0.";
-        throwException(__func__, formatter.str());
+        error(__func__, formatter.str());
     }
 
     if (m_pGPDModule == 0) {
-        throwException(__func__, "m_pGPDModule is NULL");
+        error(__func__, "m_pGPDModule is NULL");
     }
 
     if (m_pRunningAlphaStrongModule == 0) {
-        throwException(__func__, "m_pRunningAlphaStrongModule is NULL");
+        error(__func__, "m_pRunningAlphaStrongModule is NULL");
     }
 
     if (m_pNfConvolCoeffFunction == 0) {
-        throwException(__func__, "m_pNfConvolCoeffFunction is NULL");
+        error(__func__, "m_pNfConvolCoeffFunction is NULL");
     }
 }
 
@@ -166,7 +175,7 @@ DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionModule::compute(
             dvcsConvolCoeffFunctionResult.add(m_currentGPDComputeType,
                     ((*this).*(m_it->second))());
         } else {
-            throwException(__func__,
+            error(__func__,
                     Formatter()
                             << "Cannot run computation for this value of GPDType = "
                             << GPDType(m_gpdType).toString());

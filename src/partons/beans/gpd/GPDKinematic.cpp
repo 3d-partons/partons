@@ -33,7 +33,7 @@ GPDKinematic::GPDKinematic(ParameterList &parameterList) :
             GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_X)) {
         m_x = parameterList.getLastAvailable().toDouble();
     } else {
-        throwException(__func__,
+        error(__func__,
                 Formatter() << "Missing parameter <"
                         << GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_X << ">");
     }
@@ -41,7 +41,7 @@ GPDKinematic::GPDKinematic(ParameterList &parameterList) :
             GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI)) {
         m_xi = parameterList.getLastAvailable().toDouble();
     } else {
-        throwException(__func__,
+        error(__func__,
                 Formatter() << "Missing parameter <"
                         << GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI
                         << ">");
@@ -49,7 +49,7 @@ GPDKinematic::GPDKinematic(ParameterList &parameterList) :
     if (parameterList.isAvailable(ObservableKinematic::PARAMETER_NAME_T)) {
         m_t = parameterList.getLastAvailable().toDouble();
     } else {
-        throwException(__func__,
+        error(__func__,
                 Formatter() << "Missing parameter <"
                         << ObservableKinematic::PARAMETER_NAME_T << ">");
     }

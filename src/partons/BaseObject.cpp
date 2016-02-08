@@ -48,23 +48,40 @@ unsigned int BaseObject::getUniqueObjectId() {
 
 void BaseObject::info(const std::string& functionName,
         const std::string& message) const {
-    LoggerManager::getInstance()->info(getClassName(), functionName, message);
+    LoggerManager* pLoggerManager = LoggerManager::getInstance();
+
+    if (pLoggerManager->isInfo()) {
+        pLoggerManager->info(getClassName(), functionName, message);
+    }
 }
 
 void BaseObject::debug(const std::string& functionName,
         const std::string& message) const {
-    LoggerManager::getInstance()->debug(getClassName(), functionName, message);
+    LoggerManager* pLoggerManager = LoggerManager::getInstance();
+
+    if (pLoggerManager->isDebug()) {
+        pLoggerManager->debug(getClassName(), functionName, message);
+    }
 }
 
 void BaseObject::warn(const std::string& functionName,
         const std::string& message) const {
-    LoggerManager::getInstance()->warn(getClassName(), functionName, message);
+    LoggerManager* pLoggerManager = LoggerManager::getInstance();
+
+    if (pLoggerManager->isWarn()) {
+        pLoggerManager->warn(getClassName(), functionName, message);
+    }
 }
 
 //TODO remove error or throwException function from BaseObject class
 void BaseObject::error(const std::string& functionName,
         const std::string& message) const {
-    LoggerManager::getInstance()->error(getClassName(), functionName, message);
+    LoggerManager* pLoggerManager = LoggerManager::getInstance();
+
+    if (pLoggerManager->isError()) {
+        pLoggerManager->error(getClassName(), functionName, message);
+    }
+
     throwException(Formatter() << functionName << "[" << m_objectId << "]",
             message);
 }

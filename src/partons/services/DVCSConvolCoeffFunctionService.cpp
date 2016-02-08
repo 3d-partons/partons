@@ -43,8 +43,7 @@ void DVCSConvolCoeffFunctionService::computeTask(Task &task) {
             DVCSConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_LIST_WITH_GPD_MODEL)) {
         resultList = computeListWithGPDModelTask(task);
     } else {
-        throwException(__func__,
-                "unknown function name = " + task.getFunctionName());
+        error(__func__, "unknown function name = " + task.getFunctionName());
     }
 
     if (task.isStoreInDB()) {
@@ -108,7 +107,7 @@ DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionService::computeWithGPDMode
         kinematic = DVCSConvolCoeffFunctionKinematic(
                 task.getLastAvailableParameterList());
     } else {
-        throwException(__func__,
+        error(__func__,
                 Formatter()
                         << "Missing object : <DVCSConvolCoeffFunctionKinematic> for method "
                         << task.getFunctionName());
@@ -123,7 +122,7 @@ DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionService::computeWithGPDMode
                 task.getLastAvailableParameterList().get("id").toString());
         pGPDModule->configure(task.getLastAvailableParameterList());
     } else {
-        throwException(__func__,
+        error(__func__,
                 Formatter() << "Missing object : <GPDModule> for method "
                         << task.getFunctionName());
     }
@@ -137,7 +136,7 @@ DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionService::computeWithGPDMode
         pDVCSConvolCoeffFunctionModule->configure(
                 task.getLastAvailableParameterList());
     } else {
-        throwException(__func__,
+        error(__func__,
                 Formatter()
                         << "Missing object : <GPDEvolutionModule> for method "
                         << task.getFunctionName());
@@ -158,7 +157,7 @@ ResultList<DVCSConvolCoeffFunctionResult> DVCSConvolCoeffFunctionService::comput
         kinematic = DVCSConvolCoeffFunctionKinematic(
                 task.getLastAvailableParameterList());
     } else {
-        throwException(__func__,
+        error(__func__,
                 Formatter()
                         << "Missing object : <DVCSConvolCoeffFunctionKinematic> for method "
                         << task.getFunctionName());
@@ -179,7 +178,7 @@ ResultList<DVCSConvolCoeffFunctionResult> DVCSConvolCoeffFunctionService::comput
         }
 
     } else {
-        throwException(__func__,
+        error(__func__,
                 Formatter()
                         << "Missing object : <DVCSConvolCoeffFunctionModule> for method "
                         << task.getFunctionName());
@@ -194,7 +193,7 @@ ResultList<DVCSConvolCoeffFunctionResult> DVCSConvolCoeffFunctionService::comput
                 task.getLastAvailableParameterList().get("id").toString());
         pGPDModule->configure(task.getLastAvailableParameterList());
     } else {
-        throwException(__func__,
+        error(__func__,
                 Formatter() << "Missing object : <GPDModule> for method "
                         << task.getFunctionName());
     }
