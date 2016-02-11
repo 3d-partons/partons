@@ -1,6 +1,7 @@
 #include "../../../../include/partons/beans/dse/QPbyChebyshev.h"
 
 #include <cmath>
+#include <NumA/linear_algebra/vector/VectorD.h>
 
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
@@ -9,13 +10,24 @@ QPbyChebyshev::QPbyChebyshev(unsigned int N, double m, double mu,
         double Lambda2, double epsilon2) :
         QuarkPropagator("QPbyChebyshev", N, m, mu, Lambda2, epsilon2) {
     if (N > 0) {
-        m_a.assign(N, 0.);
-        m_b.assign(N, 0.);
+        m_a = NumA::VectorD(N);
+        m_b = NumA::VectorD(N);
         m_roots.assign(N, 0.);
         for (int k = 0; k < N; k++) {
             m_roots.at(k) = cos((N - k - 0.5) * PI / N);
         }
     }
+}
+
+QPbyChebyshev* QPbyChebyshev::clone() const {
+    return new QPbyChebyshev(*this);
+}
+
+QPbyChebyshev::QPbyChebyshev(const QPbyChebyshev& other) :
+        QuarkPropagator(other) {
+    m_a = other.getCoeffsA();
+    m_b = other.getCoeffsB();
+    m_roots = other.getRoots();
 }
 
 QPbyChebyshev::~QPbyChebyshev() {
@@ -25,46 +37,35 @@ QPbyChebyshev::~QPbyChebyshev() {
 void QPbyChebyshev::setN(unsigned int n) {
     QuarkPropagator::setN(n);
 
-    if (n > 0) {
-        m_a.resize(n, 0.);
-        m_b.resize(n, 0.);
-        m_roots.resize(n, 0.);
-        for (int k = 0; k < n; k++) {
-            m_roots.at(k) = cos((n - k - 0.5) * PI / n); //TODO Move to NumA
-        }
+    for (int k = 0; k < n; k++) {
+        m_roots.at(k) = cos((n - k - 0.5) * PI / n); //TODO Move to NumA
     }
 }
 
-const std::vector<double>& QPbyChebyshev::getCoeffsA() const {
-    return m_a;
+void QPbyChebyshev::setCoeffsAfromValueOnNodes(
+        const std::vector<double>& values) {
+    m_a.assign(m_N,0.);
+    double stored_T;
+    for (unsigned int i = 0; i < m_N; i++) {
+        for (unsigned int k = 0; k < m_N; k++) {
+            stored_T = cos(i * (m_N - k - 0.5) * PI / m_N);
+            m_a.at(i) += stored_T * values.at(k);
+        }
+        m_a.at(i) *= 2. / m_N;
+    }
 }
 
-void QPbyChebyshev::setCoeffsA(const std::vector<double>& a) {
-    m_a = a;
-}
-
-const double QPbyChebyshev::getCoeffA(unsigned int i) const {
-    return m_a.at(i);
-}
-
-void QPbyChebyshev::setCoeffA(unsigned int i, double a) {
-    m_a.at(i) = a;
-}
-
-const std::vector<double>& QPbyChebyshev::getCoeffsB() const {
-    return m_b;
-}
-
-void QPbyChebyshev::setCoeffsB(const std::vector<double>& b) {
-    m_b = b;
-}
-
-const double QPbyChebyshev::getCoeffB(unsigned int i) const {
-    return m_b.at(i);
-}
-
-void QPbyChebyshev::setCoeffB(unsigned int i, double b) {
-    m_b.at(i) = b;
+void QPbyChebyshev::setCoeffsBfromValueOnNodes(
+        const std::vector<double>& values) {
+    m_b.assign(m_N,0.);
+    double stored_T;
+    for (unsigned int i = 0; i < m_N; i++) {
+        for (unsigned int k = 0; k < m_N; k++) {
+            stored_T = cos(i * (m_N - k - 0.5) * PI / m_N);
+            m_b.at(i) += stored_T * values.at(k);
+        }
+        m_b.at(i) *= 2. / m_N;
+    }
 }
 
 double QPbyChebyshev::evaluateA(double p2) const {
@@ -179,10 +180,6 @@ double QPbyChebyshev::T(unsigned int n, double x) const {
     return cos(n * acos(x)); //TODO Move to NumA
 }
 
-const std::vector<double>& QPbyChebyshev::getRoots() const {
-    return m_roots;
-}
-
 double QPbyChebyshev::stox(double p2) const {
     return log(p2 / (m_Lambda * m_epsilon)) / log(m_Lambda / m_epsilon);
 }
@@ -205,4 +202,3 @@ std::string QPbyChebyshev::toString() const {
     formatter << "\n";
     return formatter;
 }
-

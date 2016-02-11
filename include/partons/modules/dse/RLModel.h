@@ -11,7 +11,6 @@
 #define RLMODEL_H_
 
 #include <string>
-#include <vector>
 
 #include "GapEquationSolverModule.h"
 
@@ -37,14 +36,15 @@ protected:
     virtual void initModule();
     virtual void isModuleWellConfigured();
 
-    // Functions to integrate (virtual means model dependent and must be implemented in daughter class)
-    // Angular integrals
-    virtual double ThetaA_func(std::vector<double> z, std::vector<double> parameters);
-    virtual double ThetaM_func(std::vector<double> z, std::vector<double> parameters);
-
     // Various functions (virtual means model dependent and must be implemented in daughter class)
-    virtual double F1_func(double p2, double q2, double k2);
-    virtual double F2_func(double p2, double q2, double k2);
+    virtual double F_A_func(double p2, double q2, double k2) const;
+    virtual double F_M_func(double p2, double q2, double k2) const;
+    virtual double H_A_func(double p2, double q2) const; ///< H_A function dependent on the iterated functions
+    virtual double H_M_func(double p2, double q2) const; ///< H_M function dependent on the iterated functions
+    virtual double H_A_deriv_a(double p2, double q2, unsigned int j) const;
+    virtual double H_M_deriv_a(double p2, double q2, unsigned int j) const;
+    virtual double H_A_deriv_b(double p2, double q2, unsigned int j) const;
+    virtual double H_M_deriv_b(double p2, double q2, unsigned int j) const;
 };
 
 #endif /* RLMODEL_H_ */

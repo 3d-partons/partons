@@ -17,9 +17,11 @@
 
 class QPbyChebyshev: public QuarkPropagator {
 public:
-    QPbyChebyshev(unsigned int N = 0, double m = 0.005, double mu = 19,
+    QPbyChebyshev(unsigned int N = 50, double m = 5.e-3, double mu = 19,
             double Lambda2 = 1.e5, double epsilon2 = 1.e-4);
     virtual ~QPbyChebyshev();
+
+    virtual QPbyChebyshev* clone() const;
 
     /**
      * Return a pre-formatted characters string for output visualization of class member's values
@@ -47,29 +49,18 @@ public:
     virtual double differentiateSigmaV_b(double p2, unsigned int j) const;
     virtual double differentiateSigmaS_b(double p2, unsigned int j) const;
 
-    const std::vector<double>& getCoeffsA() const;
-    void setCoeffsA(const std::vector<double>& a);
-    const double getCoeffA(unsigned int i) const;
-    void setCoeffA(unsigned int i, double a);
+    virtual double stox(double p2) const; ///< Change of variable from s=p2 [GeV] to x in [-1,1]
+    virtual double xtos(double x) const; ///< Change of variable from x in [-1,1] to s=p2 [GeV]
 
-    const std::vector<double>& getCoeffsB() const;
-    void setCoeffsB(const std::vector<double>& b);
-    const double getCoeffB(unsigned int i) const;
-    void setCoeffB(unsigned int i, double b);
+    virtual void setCoeffsAfromValueOnNodes(const std::vector<double>& values);
+    virtual void setCoeffsBfromValueOnNodes(const std::vector<double>& values);
 
-    const std::vector<double>& getRoots() const;
-
+    //TODO Move Chebyshev utils to NumA
     double T(unsigned int n, double x) const; ///< Evaluates Chebyshev polynomials T_n(x) for |x| < 1
 
-    double stox(double p2) const; ///< Change of variable from s=p2 [GeV] to x in [-1,1]
-    double xtos(double x) const; ///< Change of variable from x in [-1,1] to s=p2 [GeV]
+protected:
+    QPbyChebyshev(const QPbyChebyshev& other);
 
-private:
-    std::vector<double> m_a; ///< coefficients of Sigma_A
-    std::vector<double> m_b; ///< coefficients of Sigma_M
-
-    std::vector<double> m_roots; ///< roots of T_N
-    //TODO Move Chebyshev utils to NumA
 };
 
 #endif /* QPBYCHEBYSHEV_H_ */

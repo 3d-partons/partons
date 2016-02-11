@@ -1,8 +1,6 @@
 #include "../../../../include/partons/modules/dse/RLModel.h"
 
-#include <cmath>
-
-#include "../../../../include/partons/beans/dse/GluonPropagator.h"
+#include "../../../../include/partons/beans/dse/QuarkPropagator.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 
 // Initialise [class]::classId with a unique name.
@@ -34,32 +32,36 @@ void RLModel::isModuleWellConfigured() {
     GapEquationSolverModule::isModuleWellConfigured();
 }
 
-double RLModel::ThetaA_func(std::vector<double> z,
-        std::vector<double> parameters) {
-    double p2 = parameters.at(0);
-    double q2 = parameters.at(1);
-
-    return sqrt(1 - z.at(0) * z.at(0))
-            * getGluonPropagator()->evaluateG(k2_func(p2, q2, z.at(0)))
-            * F1_func(p2, q2, k2_func(p2, q2, z.at(0)));
-}
-
-double RLModel::ThetaM_func(std::vector<double> z,
-        std::vector<double> parameters) {
-    double p2 = parameters.at(0);
-    double q2 = parameters.at(1);
-
-    return sqrt(1 - z.at(0) * z.at(0))
-            * getGluonPropagator()->evaluateG(k2_func(p2, q2, z.at(0)))
-            * F2_func(p2, q2, k2_func(p2, q2, z.at(0)));
-}
-
-double RLModel::F1_func(double p2, double q2, double k2) {
+double RLModel::F_A_func(double p2, double q2, double k2) const {
     return 4. / 3.
             * ((p2 + q2) / 2. + (p2 - q2) * (p2 - q2) / 2. / (k2 + 1.e-16) - k2)
             / (p2 + 1.e-16);
 }
 
-double RLModel::F2_func(double p2, double q2, double k2) {
+double RLModel::F_M_func(double p2, double q2, double k2) const {
     return 4.;
+}
+
+double RLModel::H_A_func(double p2, double q2) const {
+    return getQuarkPropagator()->evaluateSigmaV(q2);
+}
+
+double RLModel::H_M_func(double p2, double q2) const {
+    return getQuarkPropagator()->evaluateSigmaS(q2);
+}
+
+double RLModel::H_A_deriv_a(double p2, double q2, unsigned int j) const {
+    return getQuarkPropagator()->differentiateSigmaV_a(q2,j);
+}
+
+double RLModel::H_M_deriv_a(double p2, double q2, unsigned int j) const {
+    return getQuarkPropagator()->differentiateSigmaS_a(q2,j);
+}
+
+double RLModel::H_A_deriv_b(double p2, double q2, unsigned int j) const {
+    return getQuarkPropagator()->differentiateSigmaV_b(q2,j);
+}
+
+double RLModel::H_M_deriv_b(double p2, double q2, unsigned int j) const {
+    return getQuarkPropagator()->differentiateSigmaS_b(q2,j);
 }

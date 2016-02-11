@@ -11,17 +11,21 @@
 #define QUARKPROPAGATOR_H_
 
 #include <string>
+#include <vector>
+#include <NumA/linear_algebra/vector/VectorD.h>
 
 #include "../../BaseObject.h"
 
 class QuarkPropagator: public BaseObject {
 public:
-    QuarkPropagator(unsigned int N = 0, double m = 0.005, double mu = 19,
+    QuarkPropagator(unsigned int N = 50, double m = 5.e-3, double mu = 19,
             double Lambda2 = 1.e5, double epsilon2 = 1.e-4);
-    QuarkPropagator(const std::string &className, unsigned int N = 0, double m =
-            0.005, double mu = 19, double Lambda2 = 1.e5, double epsilon2 =
+    QuarkPropagator(const std::string &className, unsigned int N = 50, double m =
+            5.e-3, double mu = 19, double Lambda2 = 1.e5, double epsilon2 =
             1.e-4);
     virtual ~QuarkPropagator();
+
+    virtual QuarkPropagator* clone() const = 0;
 
     virtual std::string toString() const;
 
@@ -45,21 +49,47 @@ public:
     virtual double differentiateSigmaV_b(double p2, unsigned int j) const = 0;
     virtual double differentiateSigmaS_b(double p2, unsigned int j) const = 0;
 
+    virtual double stox(double p2) const = 0; ///< Change of variable from s=p2 [GeV] to x
+    virtual double xtos(double x) const = 0; ///< Change of variable from x to s=p2 [GeV]
+
+    const std::vector<double>& getRoots() const; ///< Get roots of the expansion (e.g Chebyshev nodes)
+
+    const NumA::VectorD& getCoeffsA() const;
+    void setCoeffsA(const NumA::VectorD& a);
+    const double getCoeffA(unsigned int i) const;
+    void setCoeffA(unsigned int i, double a);
+    virtual void setCoeffsAfromValueOnNodes(const std::vector<double>& values) = 0;
+
+    const NumA::VectorD& getCoeffsB() const;
+    void setCoeffsB(const NumA::VectorD& b);
+    const double getCoeffB(unsigned int i) const;
+    void setCoeffB(unsigned int i, double b);
+    virtual void setCoeffsBfromValueOnNodes(const std::vector<double>& values) = 0;
+
     double getM() const;
     void setM(double m);
     double getEpsilon() const;
-    void setEpsilon(double epsilon);
+    double getEpsilon2() const;
+    void setEpsilon2(double epsilon2);
     double getLambda() const;
-    void setLambda(double lambda);
+    double getLambda2() const;
+    void setLambda2(double lambda2);
     double getMu() const;
     virtual void setMu(double mu);
 
 protected:
+    QuarkPropagator(const QuarkPropagator& other);
+
+    NumA::VectorD m_a; ///< coefficients of Sigma_A (or A)
+    NumA::VectorD m_b; ///< coefficients of Sigma_M (or B)
+
+    std::vector<double> m_roots; ///< roots of the expansion (e.g Chebyshev nodes)
+
     unsigned int m_N; ///< Number of values stored
     double m_mu; ///< renormalization point
     double m_m; ///< renormalized mass at renormalization point
-    double m_Lambda; ///< ultra-violet cut-off
-    double m_epsilon; ///< infra-red cut-off
+    double m_Lambda, m_Lambda2; ///< ultra-violet cut-off
+    double m_epsilon, m_epsilon2; ///< infra-red cut-off
 };
 
 #endif /* QUARKPROPAGATOR_H_ */
