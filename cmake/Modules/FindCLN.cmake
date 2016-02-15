@@ -43,10 +43,12 @@ endif()
 
 find_path(CLN_INCLUDE_DIR NAMES cln/cln.h
 			  HINTS ${_cln_INCLUDE_DIRS}
+			  /usr/local/cln/v1.3.4/include
 				$ENV{CLN_DIR}/include)
 find_library(CLN_LIBRARIES NAMES libcln cln
 			   HINTS ${_cln_LIBRARY_DIR}
 			         ${_cln_LIBRARY_DIRS}
+			         /usr/local/cln/v1.3.4/lib
 				 $ENV{CLN_DIR}/lib)
 
 if (CLN_INCLUDE_DIR)
