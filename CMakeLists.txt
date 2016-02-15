@@ -34,7 +34,8 @@ set(NUMA_LIBRARIES NumA++)
 # Inclusion des libraries
 INCLUDE_DIRECTORIES( ${QT_INCLUDE_DIRS} ${ROOT_INCLUDE_DIR} ${NUMA_INCLUDE_DIR} ${CLN_INCLUDE_DIR} ${SFML_INCLUDE_DIR})
 
-LINK_DIRECTORIES(${ROOT_LIB_DIR} ${NUMA_LIB_DIR} ${CLN_LIB_DIR} ${SFML_LIB_DIR})
+# Link libraries
+LINK_DIRECTORIES(${NUMA_LIB_DIR})
 
 #Inclusion des en-têtes publics
 include_directories(include)

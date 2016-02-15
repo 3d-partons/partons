@@ -10,6 +10,7 @@
         <delete dir="${build}/CMakeFiles" />
         <delete file="${build}/cmake_install.cmake" />
         <delete file="${build}/Makefile" />
+        <delete file="${build}/CMakeCache.txt" />
     </target>
 
     <target name="cmake">
