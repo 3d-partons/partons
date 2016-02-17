@@ -50,6 +50,22 @@ std::string DVCSConvolCoeffFunctionResult::toString() {
     return formatter.str();
 }
 
+std::vector<GPDType> DVCSConvolCoeffFunctionResult::listGPDTypeComputed() {
+    std::vector<GPDType> list;
+
+    std::map<GPDType::Type, std::complex<double> >::const_iterator it;
+
+    if (m_resultsByGPDType.size() != 0) {
+
+        for (it = m_resultsByGPDType.begin();
+                it != m_resultsByGPDType.end(); ++it) {
+            list.push_back(it->first);
+        }
+    }
+
+    return list;
+}
+
 const DVCSConvolCoeffFunctionKinematic& DVCSConvolCoeffFunctionResult::getKinematic() const {
     return m_kinematic;
 }

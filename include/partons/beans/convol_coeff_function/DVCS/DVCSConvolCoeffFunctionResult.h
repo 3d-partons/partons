@@ -13,6 +13,7 @@
  */
 
 #include <complex>
+#include <vector>
 #include <map>
 #include <string>
 
@@ -35,6 +36,8 @@ public:
     std::string toString();
 
 // ##### GETTERS & SETTERS #####
+
+    std::vector<GPDType> listGPDTypeComputed();
 
     const DVCSConvolCoeffFunctionKinematic& getKinematic() const;
     const std::map<GPDType::Type, std::complex<double> >& getResultsByGpdType() const;
