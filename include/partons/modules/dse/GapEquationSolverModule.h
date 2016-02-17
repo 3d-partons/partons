@@ -65,6 +65,11 @@ public:
     void setRelTolerance(double relTolerance);
     const Tolerances& getTolerance() const;
     void setTolerance(const Tolerances& tolerance);
+    double getAinit() const;
+    void setAinit(double ainit);
+    double getBinit() const;
+    void setBinit(double binit);
+
     const GluonPropagator* getGluonPropagator() const;
     void setGluonPropagator(const GluonPropagator* gluonPropagator);
     const QuarkPropagator* getQuarkPropagator() const;
@@ -112,6 +117,36 @@ protected:
     virtual double H_M_deriv_a(double p2, double q2, unsigned int j) const = 0;
     virtual double H_A_deriv_b(double p2, double q2, unsigned int j) const = 0;
     virtual double H_M_deriv_b(double p2, double q2, unsigned int j) const = 0;
+    virtual double H_A_func(double A_p2, double A_q2, double B_p2, double B_q2,
+            double sigmaV_p2, double sigmaV_q2, double sigmaS_p2,
+            double sigmaS_q2) const = 0; ///< H_A function dependent on the iterated functions
+    virtual double H_M_func(double A_p2, double A_q2, double B_p2, double B_q2,
+            double sigmaV_p2, double sigmaV_q2, double sigmaS_p2,
+            double sigmaS_q2) const = 0; ///< H_M function dependent on the iterated functions
+    virtual double H_A_deriv_a(double A_p2, double A_q2, double dA_p2,
+            double dA_q2, double B_p2, double B_q2, double sigmaV_p2,
+            double sigmaV_q2, double sigmaS_p2, double sigmaS_q2,
+            double dsigmaV_a_p2, double dsigmaV_b_p2, double dsigmaV_a_q2,
+            double dsigmaV_b_q2, double dsigmaS_a_p2, double dsigmaS_b_p2,
+            double dsigmaS_a_q2, double dsigmaS_b_q2) const = 0;
+    virtual double H_M_deriv_a(double A_p2, double A_q2, double dA_p2,
+            double dA_q2, double B_p2, double B_q2, double sigmaV_p2,
+            double sigmaV_q2, double sigmaS_p2, double sigmaS_q2,
+            double dsigmaV_a_p2, double dsigmaV_b_p2, double dsigmaV_a_q2,
+            double dsigmaV_b_q2, double dsigmaS_a_p2, double dsigmaS_b_p2,
+            double dsigmaS_a_q2, double dsigmaS_b_q2) const = 0;
+    virtual double H_A_deriv_b(double A_p2, double A_q2, double B_p2,
+            double B_q2, double dB_p2, double dB_q2, double sigmaV_p2,
+            double sigmaV_q2, double sigmaS_p2, double sigmaS_q2,
+            double dsigmaV_a_p2, double dsigmaV_b_p2, double dsigmaV_a_q2,
+            double dsigmaV_b_q2, double dsigmaS_a_p2, double dsigmaS_b_p2,
+            double dsigmaS_a_q2, double dsigmaS_b_q2) const = 0;
+    virtual double H_M_deriv_b(double A_p2, double A_q2, double B_p2,
+            double B_q2, double dB_p2, double dB_q2, double sigmaV_p2,
+            double sigmaV_q2, double sigmaS_p2, double sigmaS_q2,
+            double dsigmaV_a_p2, double dsigmaV_b_p2, double dsigmaV_a_q2,
+            double dsigmaV_b_q2, double dsigmaS_a_p2, double dsigmaS_b_p2,
+            double dsigmaS_a_q2, double dsigmaS_b_q2) const = 0;
     double k2_func(double p2, double q2, double z) const;
 
 private:
@@ -122,6 +157,7 @@ private:
     double m_epsilon2; ///< Indra-red cut-off
     double m_mu; ///< Renormalization point
     double m_m; ///< Renormalized mass
+    double m_Ainit, m_Binit; ///< Intialization for the Iterative Solver
 
     int m_N; ///< Number of values for representing the propagator
     int m_Nx; ///< Number of points for integration on x (momentum variable)
@@ -131,6 +167,7 @@ private:
     NumA::GLNPIntegrationMode m_quad_x; ///< Integration quadrature
     std::vector<double> m_nodes_x, m_nodes_s, m_weights_x; ///< Integration nodes and weights
     NumA::GLNPIntegrationMode m_quad_z; ///< Angular integration quadrature
+    std::vector<double> m_nodes_z, m_weights_z; ///< Angular integration nodes and weights
 
     Tolerances m_tolerance; ///< Convergence criterion
     int m_maxIter; ///< Max iterations if the criterion is not fulfilled

@@ -65,3 +65,51 @@ double RLModel::H_A_deriv_b(double p2, double q2, unsigned int j) const {
 double RLModel::H_M_deriv_b(double p2, double q2, unsigned int j) const {
     return getQuarkPropagator()->differentiateSigmaS_b(q2,j);
 }
+
+double RLModel::H_A_func(double A_p2, double A_q2, double B_p2, double B_q2,
+        double sigmaV_p2, double sigmaV_q2, double sigmaS_p2,
+        double sigmaS_q2) const {
+    return sigmaV_q2;
+}
+
+double RLModel::H_M_func(double A_p2, double A_q2, double B_p2, double B_q2,
+        double sigmaV_p2, double sigmaV_q2, double sigmaS_p2,
+        double sigmaS_q2) const {
+    return sigmaS_q2;
+}
+
+double RLModel::H_A_deriv_a(double A_p2, double A_q2, double dA_p2,
+        double dA_q2, double B_p2, double B_q2, double sigmaV_p2,
+        double sigmaV_q2, double sigmaS_p2, double sigmaS_q2,
+        double dsigmaV_a_p2, double dsigmaV_b_p2, double dsigmaV_a_q2,
+        double dsigmaV_b_q2, double dsigmaS_a_p2, double dsigmaS_b_p2,
+        double dsigmaS_a_q2, double dsigmaS_b_q2) const {
+    return dsigmaV_a_q2;
+}
+
+double RLModel::H_M_deriv_a(double A_p2, double A_q2, double dA_p2,
+        double dA_q2, double B_p2, double B_q2, double sigmaV_p2,
+        double sigmaV_q2, double sigmaS_p2, double sigmaS_q2,
+        double dsigmaV_a_p2, double dsigmaV_b_p2, double dsigmaV_a_q2,
+        double dsigmaV_b_q2, double dsigmaS_a_p2, double dsigmaS_b_p2,
+        double dsigmaS_a_q2, double dsigmaS_b_q2) const {
+    return dsigmaS_a_q2;
+}
+
+double RLModel::H_A_deriv_b(double A_p2, double A_q2, double B_p2, double B_q2,
+        double dB_p2, double dB_q2, double sigmaV_p2, double sigmaV_q2,
+        double sigmaS_p2, double sigmaS_q2, double dsigmaV_a_p2,
+        double dsigmaV_b_p2, double dsigmaV_a_q2, double dsigmaV_b_q2,
+        double dsigmaS_a_p2, double dsigmaS_b_p2, double dsigmaS_a_q2,
+        double dsigmaS_b_q2) const {
+    return dsigmaV_b_q2;
+}
+
+double RLModel::H_M_deriv_b(double A_p2, double A_q2, double B_p2, double B_q2,
+        double dB_p2, double dB_q2, double sigmaV_p2, double sigmaV_q2,
+        double sigmaS_p2, double sigmaS_q2, double dsigmaV_a_p2,
+        double dsigmaV_b_p2, double dsigmaV_a_q2, double dsigmaV_b_q2,
+        double dsigmaS_a_p2, double dsigmaS_b_p2, double dsigmaS_a_q2,
+        double dsigmaS_b_q2) const {
+    return dsigmaS_b_q2;
+}

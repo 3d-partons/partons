@@ -32,6 +32,10 @@ public:
 
     virtual void setN(unsigned int n);
 
+    virtual std::vector<double> evaluate(
+            const std::vector<QuarkPropagator::QPFunction> & listOfFunctions,
+            double p2, unsigned int j = 0) const;
+
     virtual double evaluateA(double p2) const;
     virtual double evaluateB(double p2) const;
     virtual double differentiateA(double p2, unsigned int j) const;
@@ -41,13 +45,6 @@ public:
     virtual double evaluateSigmaM(double p2) const;
     virtual double differentiateSigmaA(double p2, unsigned int j) const;
     virtual double differentiateSigmaM(double p2, unsigned int j) const;
-
-    virtual double evaluateSigmaV(double p2) const;
-    virtual double evaluateSigmaS(double p2) const;
-    virtual double differentiateSigmaV_a(double p2, unsigned int j) const;
-    virtual double differentiateSigmaS_a(double p2, unsigned int j) const;
-    virtual double differentiateSigmaV_b(double p2, unsigned int j) const;
-    virtual double differentiateSigmaS_b(double p2, unsigned int j) const;
 
     virtual double stox(double p2) const; ///< Change of variable from s=p2 [GeV] to x in [-1,1]
     virtual double xtos(double x) const; ///< Change of variable from x in [-1,1] to s=p2 [GeV]

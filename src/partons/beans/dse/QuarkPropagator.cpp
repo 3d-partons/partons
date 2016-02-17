@@ -136,6 +136,58 @@ void QuarkPropagator::setMu(double mu) {
     m_mu = mu;
 }
 
+double QuarkPropagator::evaluateSigmaV(double p2) const {
+    double A = evaluateA(p2);
+    double B = evaluateB(p2);
+    return A / (p2 * A * A + B * B);
+}
+
+double QuarkPropagator::evaluateSigmaS(double p2) const {
+    double A = evaluateA(p2);
+    double B = evaluateB(p2);
+    return B / (p2 * A * A + B * B);
+}
+
+double QuarkPropagator::differentiateSigmaV_a(double p2, unsigned int j) const {
+    double A = evaluateA(p2);
+    double B = evaluateB(p2);
+    double Aprime = differentiateA(p2, j);
+    double A2 = A * A;
+    double B2 = B * B;
+    double denom = p2 * A2 + B2;
+
+    return Aprime * (B2 - p2 * A2) / (denom * denom);
+}
+
+double QuarkPropagator::differentiateSigmaV_b(double p2, unsigned int j) const {
+    double A = evaluateA(p2);
+    double B = evaluateB(p2);
+    double Bprime = differentiateB(p2, j);
+    double denom = p2 * A * A + B * B;
+
+    return -2. * Bprime * A * B / (denom * denom);
+}
+
+double QuarkPropagator::differentiateSigmaS_a(double p2, unsigned int j) const {
+    double A = evaluateA(p2);
+    double B = evaluateB(p2);
+    double Aprime = differentiateA(p2, j);
+    double denom = p2 * A * A + B * B;
+
+    return -2. * p2 * Aprime * A * B / (denom * denom);
+}
+
+double QuarkPropagator::differentiateSigmaS_b(double p2, unsigned int j) const {
+    double A = evaluateA(p2);
+    double B = evaluateB(p2);
+    double Bprime = differentiateB(p2, j);
+    double A2 = A * A;
+    double B2 = B * B;
+    double denom = p2 * A2 + B2;
+
+    return Bprime * (p2 * A2 - B2) / (denom * denom);
+}
+
 //TODO Complete toString
 std::string QuarkPropagator::toString() const {
     return Formatter();

@@ -45,6 +45,36 @@ protected:
     virtual double H_M_deriv_a(double p2, double q2, unsigned int j) const;
     virtual double H_A_deriv_b(double p2, double q2, unsigned int j) const;
     virtual double H_M_deriv_b(double p2, double q2, unsigned int j) const;
+    virtual double H_A_func(double A_p2, double A_q2, double B_p2, double B_q2,
+            double sigmaV_p2, double sigmaV_q2, double sigmaS_p2,
+            double sigmaS_q2) const; ///< H_A function dependent on the iterated functions
+    virtual double H_M_func(double A_p2, double A_q2, double B_p2, double B_q2,
+            double sigmaV_p2, double sigmaV_q2, double sigmaS_p2,
+            double sigmaS_q2) const; ///< H_M function dependent on the iterated functions
+    virtual double H_A_deriv_a(double A_p2, double A_q2, double dA_p2,
+            double dA_q2, double B_p2, double B_q2, double sigmaV_p2,
+            double sigmaV_q2, double sigmaS_p2, double sigmaS_q2,
+            double dsigmaV_a_p2, double dsigmaV_b_p2, double dsigmaV_a_q2,
+            double dsigmaV_b_q2, double dsigmaS_a_p2, double dsigmaS_b_p2,
+            double dsigmaS_a_q2, double dsigmaS_b_q2) const;
+    virtual double H_M_deriv_a(double A_p2, double A_q2, double dA_p2,
+            double dA_q2, double B_p2, double B_q2, double sigmaV_p2,
+            double sigmaV_q2, double sigmaS_p2, double sigmaS_q2,
+            double dsigmaV_a_p2, double dsigmaV_b_p2, double dsigmaV_a_q2,
+            double dsigmaV_b_q2, double dsigmaS_a_p2, double dsigmaS_b_p2,
+            double dsigmaS_a_q2, double dsigmaS_b_q2) const;
+    virtual double H_A_deriv_b(double A_p2, double A_q2, double B_p2,
+            double B_q2, double dB_p2, double dB_q2, double sigmaV_p2,
+            double sigmaV_q2, double sigmaS_p2, double sigmaS_q2,
+            double dsigmaV_a_p2, double dsigmaV_b_p2, double dsigmaV_a_q2,
+            double dsigmaV_b_q2, double dsigmaS_a_p2, double dsigmaS_b_p2,
+            double dsigmaS_a_q2, double dsigmaS_b_q2) const;
+    virtual double H_M_deriv_b(double A_p2, double A_q2, double B_p2,
+            double B_q2, double dB_p2, double dB_q2, double sigmaV_p2,
+            double sigmaV_q2, double sigmaS_p2, double sigmaS_q2,
+            double dsigmaV_a_p2, double dsigmaV_b_p2, double dsigmaV_a_q2,
+            double dsigmaV_b_q2, double dsigmaS_a_p2, double dsigmaS_b_p2,
+            double dsigmaS_a_q2, double dsigmaS_b_q2) const;
 };
 
 #endif /* BCSIMPLIFIEDMODEL_H_ */

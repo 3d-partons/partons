@@ -20,17 +20,40 @@ class QuarkPropagator: public BaseObject {
 public:
     QuarkPropagator(unsigned int N = 50, double m = 5.e-3, double mu = 19,
             double Lambda2 = 1.e5, double epsilon2 = 1.e-4);
-    QuarkPropagator(const std::string &className, unsigned int N = 50, double m =
-            5.e-3, double mu = 19, double Lambda2 = 1.e5, double epsilon2 =
-            1.e-4);
+    QuarkPropagator(const std::string &className, unsigned int N = 50,
+            double m = 5.e-3, double mu = 19, double Lambda2 = 1.e5,
+            double epsilon2 = 1.e-4);
     virtual ~QuarkPropagator();
 
     virtual QuarkPropagator* clone() const = 0;
 
     virtual std::string toString() const;
 
+    enum QPFunction {
+        SigmaA = 0,
+        SigmaM,
+        A,
+        B,
+        sigmaV,
+        sigmaS,
+        dSigmaA,
+        dSigmaM,
+        dA,
+        dB,
+        dsigmaV_a,
+        dsigmaV_b,
+        dsigmaS_a,
+        dsigmaS_b,
+        ALL,
+        UNDEFINED
+    };
+
     unsigned int getN() const;
     virtual void setN(unsigned int n);
+
+    virtual std::vector<double> evaluate(
+            const std::vector<QuarkPropagator::QPFunction> & listOfFunctions,
+            double p2, unsigned int j = 0) const = 0;
 
     virtual double evaluateA(double p2) const = 0;
     virtual double evaluateB(double p2) const = 0;
@@ -42,12 +65,12 @@ public:
     virtual double differentiateSigmaA(double p2, unsigned int j) const = 0;
     virtual double differentiateSigmaM(double p2, unsigned int j) const = 0;
 
-    virtual double evaluateSigmaV(double p2) const = 0;
-    virtual double evaluateSigmaS(double p2) const = 0;
-    virtual double differentiateSigmaV_a(double p2, unsigned int j) const = 0;
-    virtual double differentiateSigmaS_a(double p2, unsigned int j) const = 0;
-    virtual double differentiateSigmaV_b(double p2, unsigned int j) const = 0;
-    virtual double differentiateSigmaS_b(double p2, unsigned int j) const = 0;
+    double evaluateSigmaV(double p2) const;
+    double evaluateSigmaS(double p2) const;
+    double differentiateSigmaV_a(double p2, unsigned int j) const;
+    double differentiateSigmaS_a(double p2, unsigned int j) const;
+    double differentiateSigmaV_b(double p2, unsigned int j) const;
+    double differentiateSigmaS_b(double p2, unsigned int j) const;
 
     virtual double stox(double p2) const = 0; ///< Change of variable from s=p2 [GeV] to x
     virtual double xtos(double x) const = 0; ///< Change of variable from x to s=p2 [GeV]
@@ -58,13 +81,15 @@ public:
     void setCoeffsA(const NumA::VectorD& a);
     const double getCoeffA(unsigned int i) const;
     void setCoeffA(unsigned int i, double a);
-    virtual void setCoeffsAfromValueOnNodes(const std::vector<double>& values) = 0;
+    virtual void setCoeffsAfromValueOnNodes(
+            const std::vector<double>& values) = 0;
 
     const NumA::VectorD& getCoeffsB() const;
     void setCoeffsB(const NumA::VectorD& b);
     const double getCoeffB(unsigned int i) const;
     void setCoeffB(unsigned int i, double b);
-    virtual void setCoeffsBfromValueOnNodes(const std::vector<double>& values) = 0;
+    virtual void setCoeffsBfromValueOnNodes(
+            const std::vector<double>& values) = 0;
 
     double getM() const;
     void setM(double m);

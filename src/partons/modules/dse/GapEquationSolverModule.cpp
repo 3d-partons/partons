@@ -23,7 +23,8 @@
 GapEquationSolverModule::GapEquationSolverModule(const std::string &className) :
         ModuleObject(className), m_gluonPropagator(0), m_quarkPropagator(0), m_mu(
                 19.), m_m(5.e-3), m_N(50), m_Nx(120), m_Nz(32), m_tolerance(
-                1.e-4, 1.e-3), m_maxIter(20), m_Lambda2(1.e5), m_epsilon2(1.e-4) {
+                1.e-4, 1.e-3), m_maxIter(20), m_Lambda2(1.e5), m_epsilon2(
+                1.e-4), m_Ainit(1.), m_Binit(m_m) {
 }
 
 GapEquationSolverModule::~GapEquationSolverModule() {
@@ -42,6 +43,8 @@ GapEquationSolverModule::GapEquationSolverModule(
     m_Nz = other.getNz();
     m_tolerance = other.getTolerance();
     m_maxIter = other.getMaxIter();
+    m_Ainit = other.getAinit();
+    m_Binit = other.getBinit();
     if (other.m_gluonPropagator != 0) {
         m_gluonPropagator = other.m_gluonPropagator->clone();
     }
@@ -62,10 +65,12 @@ void GapEquationSolverModule::initModule() {
         m_quad_z.makeNodeAndWeightVectors(m_Nz);
         m_nodes_x = m_quad_x.getNodeNp();
         m_weights_x = m_quad_x.getWeightNp();
+        m_nodes_z = m_quad_z.getNodeNp();
+        m_weights_z = m_quad_z.getWeightNp();
 
         // Propagator expansion's roots
         m_roots_x = m_quarkPropagator->getRoots();
-        m_roots_s.assign(m_N,0.);
+        m_roots_s.assign(m_N, 0.);
         for (unsigned int i = 0; i < m_N; i++) {
             m_roots_s.at(i) = m_quarkPropagator->xtos(m_roots_x.at(i));
         }
@@ -84,22 +89,28 @@ void GapEquationSolverModule::initModule() {
         // Angular Integrals
         m_ThetaA.assign(m_N, std::vector<double>(m_Nx, 0.));
         m_ThetaM.assign(m_N, std::vector<double>(m_Nx, 0.));
-        std::vector<double> parameters(2, 0.);
-        for (unsigned int i = 0; i < m_N; i++) {
-            parameters.at(0) = m_roots_s.at(i);
-            for (unsigned int k = 0; k < m_Nx; k++) {
-                parameters.at(1) = m_nodes_s.at(k);
-                m_ThetaA.at(i).at(k) = m_quad_z.integrate(this,
-                        &GapEquationSolverModule::ThetaA_func, -1., 1.,
-                        parameters, m_Nz);
-                m_ThetaM.at(i).at(k) = m_quad_z.integrate(this,
-                        &GapEquationSolverModule::ThetaM_func, -1., 1.,
-                        parameters, m_Nz);
+        double k2 = 0., G_k2 = 0., Cz = 0.;
+        for (unsigned int l = 0; l < m_Nz; l++) {
+            Cz = m_weights_z.at(l)
+                    * sqrt(1 - m_nodes_z.at(l) * m_nodes_z.at(l));
+            for (unsigned int i = 0; i < m_N; i++) {
+                for (unsigned int k = 0; k < m_Nx; k++) {
+                    k2 = k2_func(m_roots_s.at(i), m_nodes_s.at(k),
+                            m_nodes_z.at(l));
+                    G_k2 = getGluonPropagator()->evaluateG(k2);
+                    m_ThetaA.at(i).at(k) += Cz * G_k2
+                            * F_A_func(m_roots_s.at(i), m_nodes_s.at(k), k2);
+                    m_ThetaM.at(i).at(k) += Cz * G_k2
+                            * F_M_func(m_roots_s.at(i), m_nodes_s.at(k), k2);
+                }
             }
         }
     } else {
         error(__func__, "QuarkPropagator not defined!");
     }
+}
+
+void GapEquationSolverModule::isModuleWellConfigured() {
 }
 
 void GapEquationSolverModule::computeNewtonInteration() {
@@ -109,48 +120,232 @@ void GapEquationSolverModule::computeNewtonInteration() {
     NumA::MatrixD J_G_X0(N_newton, N_newton);
     double absDiff_a = 0., absDiff_b = 0., relDiff_a = 0., relDiff_b = 0.; // Difference between two iterations
     bool noConvergence = true; // Convergence test
+    std::vector<double> qpFunctionsAtRoots;
+    std::vector<double> qpFunctionsAtNodes;
+    std::vector<QuarkPropagator::QPFunction> qpFunctions;
+    std::vector<double> SigmaA_r, SigmaM_r, A_r, B_r, sigmaV_r, sigmaS_r;
+    std::vector<double> A_n, B_n, sigmaV_n, sigmaS_n;
+    std::vector<std::vector<double> > dSigmaA_r, dSigmaM_r, dA_r, dB_r,
+            dsigmaV_a_r, dsigmaV_b_r, dsigmaS_a_r, dsigmaS_b_r;
+    std::vector<std::vector<double> > dA_n, dB_n, dsigmaV_a_n, dsigmaV_b_n,
+            dsigmaS_a_n, dsigmaS_b_n;
+    double sigmaV2_r, sigmaS2_r, sigmaV2_n, sigmaS2_n;
     for (unsigned int n = 0; n < m_maxIter && noConvergence; n++) {
 
         G_X0.assign(N_newton, 0.);
         J_G_X0.assign(N_newton, N_newton, 0.);
-        for (unsigned int i = 0; i < m_N; i++) {
 
-            G_X0.at(i) = getQuarkPropagator()->evaluateSigmaA(m_roots_s.at(i));
-            G_X0.at(m_N + i) = getQuarkPropagator()->evaluateSigmaM(
+        SigmaA_r.assign(m_N, 0.);
+        SigmaM_r.assign(m_N, 0.);
+        A_r.assign(m_N, 0.);
+        B_r.assign(m_N, 0.);
+        sigmaV_r.assign(m_N, 0.);
+        sigmaS_r.assign(m_N, 0.);
+
+        dSigmaA_r.assign(m_N, std::vector<double>(m_N, 0.));
+        dSigmaM_r.assign(m_N, std::vector<double>(m_N, 0.));
+        dA_r.assign(m_N, std::vector<double>(m_N, 0.));
+        dB_r.assign(m_N, std::vector<double>(m_N, 0.));
+        dsigmaV_a_r.assign(m_N, std::vector<double>(m_N, 0.));
+        dsigmaV_b_r.assign(m_N, std::vector<double>(m_N, 0.));
+        dsigmaS_a_r.assign(m_N, std::vector<double>(m_N, 0.));
+        dsigmaS_b_r.assign(m_N, std::vector<double>(m_N, 0.));
+
+        A_n.assign(m_Nx, 0.);
+        B_n.assign(m_Nx, 0.);
+        sigmaV_n.assign(m_Nx, 0.);
+        sigmaS_n.assign(m_Nx, 0.);
+
+        dA_n.assign(m_Nx, std::vector<double>(m_N, 0.));
+        dB_n.assign(m_Nx, std::vector<double>(m_N, 0.));
+        dsigmaV_a_n.assign(m_Nx, std::vector<double>(m_N, 0.));
+        dsigmaV_b_n.assign(m_Nx, std::vector<double>(m_N, 0.));
+        dsigmaS_a_n.assign(m_Nx, std::vector<double>(m_N, 0.));
+        dsigmaS_b_n.assign(m_Nx, std::vector<double>(m_N, 0.));
+
+        for (unsigned int i = 0; i < m_N; i++) {
+            qpFunctions.assign(6, QuarkPropagator::SigmaA);
+            qpFunctions.at(1) = QuarkPropagator::SigmaM;
+            qpFunctions.at(2) = QuarkPropagator::A;
+            qpFunctions.at(3) = QuarkPropagator::B;
+            qpFunctions.at(4) = QuarkPropagator::sigmaV;
+            qpFunctions.at(5) = QuarkPropagator::sigmaS;
+            qpFunctionsAtRoots = getQuarkPropagator()->evaluate(qpFunctions,
                     m_roots_s.at(i));
-            for (unsigned int k = 0; k < m_Nx; k++) {
-                G_X0.at(i) -= m_C.at(k)
-                        * H_A_func(m_roots_s.at(i), m_nodes_s.at(k))
-                        * m_ThetaA.at(i).at(k);
-                G_X0.at(m_N + i) -= m_C.at(k)
-                        * H_M_func(m_roots_s.at(i), m_nodes_s.at(k))
-                        * m_ThetaM.at(i).at(k);
-            }
+            SigmaA_r.at(i) = qpFunctionsAtRoots.at(0);
+            SigmaM_r.at(i) = qpFunctionsAtRoots.at(1);
+            A_r.at(i) = qpFunctionsAtRoots.at(2);
+            B_r.at(i) = qpFunctionsAtRoots.at(3);
+            sigmaV_r.at(i) = qpFunctionsAtRoots.at(4);
+            sigmaS_r.at(i) = qpFunctionsAtRoots.at(5);
+            sigmaV2_r = sigmaV_r.at(i) * sigmaV_r.at(i);
+            sigmaS2_r = sigmaS_r.at(i) * sigmaS_r.at(i);
 
             for (unsigned int j = 0; j < m_N; j++) {
-                J_G_X0.at(i, j) = getQuarkPropagator()->differentiateSigmaA(
+                qpFunctions.assign(4, QuarkPropagator::dSigmaA);
+                qpFunctions.at(1) = QuarkPropagator::dSigmaM;
+                qpFunctions.at(2) = QuarkPropagator::dA;
+                qpFunctions.at(3) = QuarkPropagator::dB;
+                qpFunctionsAtRoots = getQuarkPropagator()->evaluate(qpFunctions,
                         m_roots_s.at(i), j);
-                J_G_X0.at(m_N + i, m_N + j) =
-                        getQuarkPropagator()->differentiateSigmaM(
-                                m_roots_s.at(i), j);
-                for (unsigned int k = 0; k < m_Nx; k++) {
-                    J_G_X0.at(i, j) -= m_C.at(k)
-                            * H_A_deriv_a(m_roots_s.at(i), m_nodes_s.at(k), j)
-                            * m_ThetaA.at(i).at(k);
-                    J_G_X0.at(m_N + i, j) -= m_C.at(k)
-                            * H_M_deriv_a(m_roots_s.at(i), m_nodes_s.at(k), j)
-                            * m_ThetaM.at(i).at(k);
-                    J_G_X0.at(i, m_N + j) -= m_C.at(k)
-                            * H_A_deriv_b(m_roots_s.at(i), m_nodes_s.at(k), j)
-                            * m_ThetaA.at(i).at(k);
-                    J_G_X0.at(m_N + i, m_N + j) -= m_C.at(k)
-                            * H_M_deriv_b(m_roots_s.at(i), m_nodes_s.at(k), j)
-                            * m_ThetaM.at(i).at(k);
-                }
+                dSigmaA_r.at(i).at(j) = qpFunctionsAtRoots.at(0);
+                dSigmaM_r.at(i).at(j) = qpFunctionsAtRoots.at(1);
+                dA_r.at(i).at(j) = qpFunctionsAtRoots.at(2);
+                dB_r.at(i).at(j) = qpFunctionsAtRoots.at(3);
+                dsigmaV_a_r.at(i).at(j) = dA_r.at(i).at(j)
+                        * (sigmaS2_r - m_roots_s.at(i) * sigmaV2_r);
+                dsigmaV_b_r.at(i).at(j) = -2 * dB_r.at(i).at(j) * sigmaV_r.at(i)
+                        * sigmaS_r.at(i);
+                dsigmaS_a_r.at(i).at(j) = -2 * m_roots_s.at(i)
+                        * dA_r.at(i).at(j) * sigmaV_r.at(i) * sigmaS_r.at(i);
+                dsigmaS_b_r.at(i).at(j) = dB_r.at(i).at(j)
+                        * (m_roots_s.at(i) * sigmaV2_r - sigmaS2_r);
             }
         }
-        X0 = NumA::VectorD::concatenate(
-                m_quarkPropagator->getCoeffsA(),
+
+        for (unsigned int k = 0; k < m_Nx; k++) {
+            qpFunctions.assign(4, QuarkPropagator::A);
+            qpFunctions.at(1) = QuarkPropagator::B;
+            qpFunctions.at(2) = QuarkPropagator::sigmaV;
+            qpFunctions.at(3) = QuarkPropagator::sigmaS;
+            qpFunctionsAtRoots = getQuarkPropagator()->evaluate(qpFunctions,
+                    m_nodes_s.at(k));
+            A_n.at(k) = qpFunctionsAtRoots.at(0);
+            B_n.at(k) = qpFunctionsAtRoots.at(1);
+            sigmaV_n.at(k) = qpFunctionsAtRoots.at(2);
+            sigmaS_n.at(k) = qpFunctionsAtRoots.at(3);
+            sigmaV2_n = sigmaV_n.at(k) * sigmaV_n.at(k);
+            sigmaS2_n = sigmaS_n.at(k) * sigmaS_n.at(k);
+
+            for (unsigned int j = 0; j < m_N; j++) {
+                qpFunctions.assign(2, QuarkPropagator::dA);
+                qpFunctions.at(1) = QuarkPropagator::dB;
+                qpFunctionsAtRoots = getQuarkPropagator()->evaluate(qpFunctions,
+                        m_nodes_s.at(k), j);
+                dA_n.at(k).at(j) = qpFunctionsAtRoots.at(0);
+                dB_n.at(k).at(j) = qpFunctionsAtRoots.at(1);
+                dsigmaV_a_n.at(k).at(j) = dA_n.at(k).at(j)
+                        * (sigmaS2_n - m_nodes_s.at(k) * sigmaV2_n);
+                dsigmaV_b_n.at(k).at(j) = -2 * dB_n.at(k).at(j) * sigmaV_n.at(k)
+                        * sigmaS_n.at(k);
+                dsigmaS_a_n.at(k).at(j) = -2 * m_nodes_s.at(k)
+                        * dA_n.at(k).at(j) * sigmaV_n.at(k) * sigmaS_n.at(k);
+                dsigmaS_b_n.at(k).at(j) = dB_n.at(k).at(j)
+                        * (m_nodes_s.at(k) * sigmaV2_n - sigmaS2_n);
+            }
+        }
+
+        for (unsigned int i = 0; i < m_N; i++) {
+
+            G_X0.at(i) = SigmaA_r.at(i);
+            G_X0.at(m_N + i) = SigmaM_r.at(i);
+            for (unsigned int k = 0; k < m_Nx; k++) {
+                G_X0.at(i) -= m_C.at(k)
+                        * H_A_func(A_r.at(i), A_n.at(k), B_r.at(i), B_n.at(k),
+                                sigmaV_r.at(i), sigmaV_n.at(k), sigmaS_r.at(i),
+                                sigmaS_n.at(k)) * m_ThetaA.at(i).at(k);
+                G_X0.at(m_N + i) -= m_C.at(k)
+                        * H_M_func(A_r.at(i), A_n.at(k), B_r.at(i), B_n.at(k),
+                                sigmaV_r.at(i), sigmaV_n.at(k), sigmaS_r.at(i),
+                                sigmaS_n.at(k)) * m_ThetaM.at(i).at(k);
+            }
+
+//            G_X0.at(i) = getQuarkPropagator()->evaluateSigmaA(m_roots_s.at(i));
+//            G_X0.at(m_N + i) = getQuarkPropagator()->evaluateSigmaM(
+//                    m_roots_s.at(i));
+//            for (unsigned int k = 0; k < m_Nx; k++) {
+//                G_X0.at(i) -= m_C.at(k)
+//                        * H_A_func(m_roots_s.at(i), m_nodes_s.at(k))
+//                        * m_ThetaA.at(i).at(k);
+//                G_X0.at(m_N + i) -= m_C.at(k)
+//                        * H_M_func(m_roots_s.at(i), m_nodes_s.at(k))
+//                        * m_ThetaM.at(i).at(k);
+//            }
+
+            for (unsigned int j = 0; j < m_N; j++) {
+                J_G_X0.at(i, j) = dSigmaA_r.at(i).at(j);
+                J_G_X0.at(m_N + i, m_N + j) = dSigmaM_r.at(i).at(j);
+                for (unsigned int k = 0; k < m_Nx; k++) {
+                    J_G_X0.at(i, j) -= m_C.at(k)
+                            * H_A_deriv_a(A_r.at(i), A_n.at(k),
+                                    dA_r.at(i).at(j), dA_n.at(k).at(j),
+                                    B_r.at(i), B_n.at(k), sigmaV_r.at(i),
+                                    sigmaV_n.at(k), sigmaS_r.at(i),
+                                    sigmaS_n.at(k), dsigmaV_a_r.at(i).at(j),
+                                    dsigmaV_b_r.at(i).at(j),
+                                    dsigmaV_a_n.at(k).at(j),
+                                    dsigmaV_b_n.at(k).at(j),
+                                    dsigmaS_a_r.at(i).at(j),
+                                    dsigmaS_b_r.at(i).at(j),
+                                    dsigmaS_a_n.at(k).at(j),
+                                    dsigmaS_b_n.at(k).at(j))
+                            * m_ThetaA.at(i).at(k);
+                    J_G_X0.at(m_N + i, j) -= m_C.at(k)
+                            * H_M_deriv_a(A_r.at(i), A_n.at(k),
+                                    dA_r.at(i).at(j), dA_n.at(k).at(j),
+                                    B_r.at(i), B_n.at(k), sigmaV_r.at(i),
+                                    sigmaV_n.at(k), sigmaS_r.at(i),
+                                    sigmaS_n.at(k), dsigmaV_a_r.at(i).at(j),
+                                    dsigmaV_b_r.at(i).at(j),
+                                    dsigmaV_a_n.at(k).at(j),
+                                    dsigmaV_b_n.at(k).at(j),
+                                    dsigmaS_a_r.at(i).at(j),
+                                    dsigmaS_b_r.at(i).at(j),
+                                    dsigmaS_a_n.at(k).at(j),
+                                    dsigmaS_b_n.at(k).at(j))
+                            * m_ThetaM.at(i).at(k);
+                    J_G_X0.at(i, m_N + j) -= m_C.at(k)
+                            * H_A_deriv_b(A_r.at(i), A_n.at(k), B_r.at(i),
+                                    B_n.at(k), dB_r.at(i).at(j),
+                                    dB_n.at(k).at(j), sigmaV_r.at(i),
+                                    sigmaV_n.at(k), sigmaS_r.at(i),
+                                    sigmaS_n.at(k), dsigmaV_a_r.at(i).at(j),
+                                    dsigmaV_b_r.at(i).at(j),
+                                    dsigmaV_a_n.at(k).at(j),
+                                    dsigmaV_b_n.at(k).at(j),
+                                    dsigmaS_a_r.at(i).at(j),
+                                    dsigmaS_b_r.at(i).at(j),
+                                    dsigmaS_a_n.at(k).at(j),
+                                    dsigmaS_b_n.at(k).at(j))
+                            * m_ThetaA.at(i).at(k);
+                    J_G_X0.at(m_N + i, m_N + j) -= m_C.at(k)
+                            * H_M_deriv_b(A_r.at(i), A_n.at(k), B_r.at(i),
+                                    B_n.at(k), dB_r.at(i).at(j),
+                                    dB_n.at(k).at(j), sigmaV_r.at(i),
+                                    sigmaV_n.at(k), sigmaS_r.at(i),
+                                    sigmaS_n.at(k), dsigmaV_a_r.at(i).at(j),
+                                    dsigmaV_b_r.at(i).at(j),
+                                    dsigmaV_a_n.at(k).at(j),
+                                    dsigmaV_b_n.at(k).at(j),
+                                    dsigmaS_a_r.at(i).at(j),
+                                    dsigmaS_b_r.at(i).at(j),
+                                    dsigmaS_a_n.at(k).at(j),
+                                    dsigmaS_b_n.at(k).at(j))
+                            * m_ThetaM.at(i).at(k);
+                }
+
+//                J_G_X0.at(i, j) = getQuarkPropagator()->differentiateSigmaA(
+//                        m_roots_s.at(i), j);
+//                J_G_X0.at(m_N + i, m_N + j) =
+//                        getQuarkPropagator()->differentiateSigmaM(
+//                                m_roots_s.at(i), j);
+//                for (unsigned int k = 0; k < m_Nx; k++) {
+//                    J_G_X0.at(i, j) -= m_C.at(k)
+//                            * H_A_deriv_a(m_roots_s.at(i), m_nodes_s.at(k), j)
+//                            * m_ThetaA.at(i).at(k);
+//                    J_G_X0.at(m_N + i, j) -= m_C.at(k)
+//                            * H_M_deriv_a(m_roots_s.at(i), m_nodes_s.at(k), j)
+//                            * m_ThetaM.at(i).at(k);
+//                    J_G_X0.at(i, m_N + j) -= m_C.at(k)
+//                            * H_A_deriv_b(m_roots_s.at(i), m_nodes_s.at(k), j)
+//                            * m_ThetaA.at(i).at(k);
+//                    J_G_X0.at(m_N + i, m_N + j) -= m_C.at(k)
+//                            * H_M_deriv_b(m_roots_s.at(i), m_nodes_s.at(k), j)
+//                            * m_ThetaM.at(i).at(k);
+//                }
+            }
+        }
+        X0 = NumA::VectorD::concatenate(m_quarkPropagator->getCoeffsA(),
                 m_quarkPropagator->getCoeffsB());
         X = newtonIteration.iterate(X0, G_X0, J_G_X0);
         a = X.sub(0, m_N);
@@ -232,9 +427,6 @@ void GapEquationSolverModule::computeIteration() {
         }
         info(__func__, formatter.str());
     }
-}
-
-void GapEquationSolverModule::isModuleWellConfigured() {
 }
 
 void GapEquationSolverModule::configure(ParameterList parameters) {
@@ -477,6 +669,22 @@ double GapEquationSolverModule::getRelTolerance() const {
 
 void GapEquationSolverModule::setRelTolerance(double relTolerance) {
     m_tolerance.setRelativeTolerance(relTolerance);
+}
+
+double GapEquationSolverModule::getAinit() const {
+    return m_Ainit;
+}
+
+void GapEquationSolverModule::setAinit(double ainit) {
+    m_Ainit = ainit;
+}
+
+double GapEquationSolverModule::getBinit() const {
+    return m_Binit;
+}
+
+void GapEquationSolverModule::setBinit(double binit) {
+    m_Binit = binit;
 }
 
 double GapEquationSolverModule::ThetaA_func(std::vector<double> z,
