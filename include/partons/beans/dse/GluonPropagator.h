@@ -22,14 +22,14 @@ public:
             double I = 5.8, double LambdaQCD = 0.234, int Nf = 4);
     virtual ~GluonPropagator();
 
-    virtual GluonPropagator* clone() const;
+    virtual GluonPropagator* clone() const = 0;
 
     virtual std::string toString() const;
 
     virtual double evaluateAlpha(double k2) const;
-    virtual double evaluateG(double k2) const;
-    //TODO: Make pure virtual methods and move the MT model to a daughter class
+    virtual double evaluateG(double k2) const = 0;
 
+    // TODO Use configure(ParameterList) instead because those parameters depend on the model (daughter class)
     double getC() const;
     void setC(double w, double c);
     double getD() const;
@@ -45,7 +45,7 @@ public:
 protected:
     GluonPropagator(const GluonPropagator& other);
 
-private:
+    // TODO Move those attributes to the MT model (daughter class) and use configure(ParameterList) to define them
     double m_w; ///<
     double m_D; ///<
     double m_c; ///<

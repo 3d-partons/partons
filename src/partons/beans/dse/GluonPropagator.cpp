@@ -35,35 +35,17 @@ GluonPropagator::GluonPropagator(const GluonPropagator& other) :
     m_Nf = other.getNf();
 }
 
-GluonPropagator* GluonPropagator::clone() const {
-    return new GluonPropagator(*this);
-}
-
 GluonPropagator::~GluonPropagator() {
     // TODO Auto-generated destructor stub
 }
 
 //TODO Complete toString
 std::string GluonPropagator::toString() const {
-    return Formatter() << "";
+    return Formatter() << BaseObject::toString();
 }
 
 double GluonPropagator::evaluateAlpha(double k2) const {
     return k2 * evaluateG(k2) / (4 * PI);
-}
-
-double GluonPropagator::evaluateG(double k2) const {
-    return 4. * PI * PI / pow(m_w, 6) * m_D * k2 * exp(-k2 / (m_w * m_w))
-            + 8. * PI * PI * 12. / (33. - 2. * m_Nf) * (1. - exp(-k2))
-                    / (k2
-                            * log(
-                                    exp(2.) - 1.
-                                            + pow(
-                                                    1.
-                                                            + k2
-                                                                    / (m_LambdaQCD
-                                                                            * m_LambdaQCD),
-                                                    2)));
 }
 
 double GluonPropagator::getC() const {
