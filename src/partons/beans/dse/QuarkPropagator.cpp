@@ -23,8 +23,8 @@ QuarkPropagator::QuarkPropagator(unsigned int N, double m, double mu,
 
 QuarkPropagator::QuarkPropagator(const std::string& className, unsigned int N,
         double m, double mu, double Lambda2, double epsilon2) :
-        BaseObject(className), m_N(N), m_m(m), m_mu(mu), m_Lambda2(
-                Lambda2), m_epsilon2(epsilon2) {
+        BaseObject(className), m_N(N), m_m(m), m_mu(mu), m_Lambda2(Lambda2), m_epsilon2(
+                epsilon2) {
     m_Lambda = sqrt(Lambda2);
     m_epsilon = sqrt(epsilon2);
 }
@@ -49,7 +49,14 @@ const NumA::VectorD& QuarkPropagator::getCoeffsA() const {
 }
 
 void QuarkPropagator::setCoeffsA(const NumA::VectorD& a) {
+    if (a.size() != m_N) {
+        error(__func__, "Size of vector a is wrong!");
+    }
     m_a = a;
+}
+
+void QuarkPropagator::setCoeffsA(double a) {
+    m_a.assign(m_N, a);
 }
 
 const double QuarkPropagator::getCoeffA(unsigned int i) const {
@@ -65,7 +72,14 @@ const NumA::VectorD& QuarkPropagator::getCoeffsB() const {
 }
 
 void QuarkPropagator::setCoeffsB(const NumA::VectorD& b) {
+    if (b.size() != m_N) {
+        error(__func__, "Size of vector b is wrong!");
+    }
     m_b = b;
+}
+
+void QuarkPropagator::setCoeffsB(double b) {
+    m_b.assign(m_N, b);
 }
 
 const double QuarkPropagator::getCoeffB(unsigned int i) const {

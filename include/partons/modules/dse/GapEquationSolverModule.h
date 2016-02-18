@@ -69,6 +69,7 @@ public:
     void setAinit(double ainit);
     double getBinit() const;
     void setBinit(double binit);
+    void reset();
 
     const GluonPropagator* getGluonPropagator() const;
     void setGluonPropagator(const GluonPropagator* gluonPropagator);
@@ -102,21 +103,10 @@ protected:
     virtual void computeNewtonInteration();
     virtual void computeIteration();
 
-    // Angular integrands (functions integrated in the angular integrals)
-    double ThetaA_func(std::vector<double> z,
-            std::vector<double> parameters) const;
-    double ThetaM_func(std::vector<double> z,
-            std::vector<double> parameters) const;
-
     // Various functions (virtual means model dependent and must be implemented in daughter class)
+    double k2_func(double p2, double q2, double z) const;
     virtual double F_A_func(double p2, double q2, double k2) const = 0; ///< Angular F_A function
     virtual double F_M_func(double p2, double q2, double k2) const = 0; ///< Angular F_M function
-    virtual double H_A_func(double p2, double q2) const = 0; ///< H_A function dependent on the iterated functions
-    virtual double H_M_func(double p2, double q2) const = 0; ///< H_M function dependent on the iterated functions
-    virtual double H_A_deriv_a(double p2, double q2, unsigned int j) const = 0;
-    virtual double H_M_deriv_a(double p2, double q2, unsigned int j) const = 0;
-    virtual double H_A_deriv_b(double p2, double q2, unsigned int j) const = 0;
-    virtual double H_M_deriv_b(double p2, double q2, unsigned int j) const = 0;
     virtual double H_A_func(double A_p2, double A_q2, double B_p2, double B_q2,
             double sigmaV_p2, double sigmaV_q2, double sigmaS_p2,
             double sigmaS_q2) const = 0; ///< H_A function dependent on the iterated functions
@@ -147,11 +137,10 @@ protected:
             double dsigmaV_a_p2, double dsigmaV_b_p2, double dsigmaV_a_q2,
             double dsigmaV_b_q2, double dsigmaS_a_p2, double dsigmaS_b_p2,
             double dsigmaS_a_q2, double dsigmaS_b_q2) const = 0;
-    double k2_func(double p2, double q2, double z) const;
 
 private:
     GluonPropagator* m_gluonPropagator; ///< GluonPropagator clone
-    QuarkPropagator* m_quarkPropagator; ///< QuarkPropagator clone
+    QuarkPropagator* m_quarkPropagator; ///< QuarkPropagator (pointer not cloned!)
 
     double m_Lambda2; ///< Ultra-violet cut-off
     double m_epsilon2; ///< Indra-red cut-off
@@ -171,6 +160,12 @@ private:
 
     Tolerances m_tolerance; ///< Convergence criterion
     int m_maxIter; ///< Max iterations if the criterion is not fulfilled
+    int m_iters; ///< Number of iterations used
+
+    // Keep track of changes
+    bool m_changeNx, m_changeNz; ///< Tests if there is a change in the quadrature to avoid recalculations
+    bool m_changeQP, m_changeGP; ///< Tests if there is a change in the propagator to avoid recalculations
+    bool m_changeInit; ///< Tests if there is a change in the init values of A and B, if so reset the iterations
 
     // Stored calculations
     std::vector<double> m_C; ///< Stored coefficients

@@ -79,6 +79,7 @@ public:
 
     const NumA::VectorD& getCoeffsA() const;
     void setCoeffsA(const NumA::VectorD& a);
+    void setCoeffsA(double a);
     const double getCoeffA(unsigned int i) const;
     void setCoeffA(unsigned int i, double a);
     virtual void setCoeffsAfromValueOnNodes(
@@ -86,6 +87,7 @@ public:
 
     const NumA::VectorD& getCoeffsB() const;
     void setCoeffsB(const NumA::VectorD& b);
+    void setCoeffsB(double b);
     const double getCoeffB(unsigned int i) const;
     void setCoeffB(unsigned int i, double b);
     virtual void setCoeffsBfromValueOnNodes(

@@ -42,48 +42,6 @@ double BCSimplifiedModel::F_M_func(double p2, double q2, double k2) const {
     return 2.;
 }
 
-double BCSimplifiedModel::H_A_func(double p2, double q2) const {
-    return getQuarkPropagator()->evaluateSigmaV(q2)
-            * (getQuarkPropagator()->evaluateA(p2)
-                    + getQuarkPropagator()->evaluateA(q2));
-}
-
-double BCSimplifiedModel::H_M_func(double p2, double q2) const {
-    return getQuarkPropagator()->evaluateSigmaS(q2)
-            * (getQuarkPropagator()->evaluateA(p2)
-                    + getQuarkPropagator()->evaluateA(q2));
-}
-
-double BCSimplifiedModel::H_A_deriv_a(double p2, double q2, unsigned int j) const {
-    return getQuarkPropagator()->differentiateSigmaV_a(q2, j)
-            * (getQuarkPropagator()->evaluateA(p2)
-                    + getQuarkPropagator()->evaluateA(q2))
-            + getQuarkPropagator()->evaluateSigmaV(q2)
-                    * (getQuarkPropagator()->differentiateA(p2, j)
-                            + getQuarkPropagator()->differentiateA(q2, j));
-}
-
-double BCSimplifiedModel::H_M_deriv_a(double p2, double q2, unsigned int j) const {
-    return getQuarkPropagator()->differentiateSigmaS_a(q2, j)
-            * (getQuarkPropagator()->evaluateA(p2)
-                    + getQuarkPropagator()->evaluateA(q2))
-            + getQuarkPropagator()->evaluateSigmaS(q2)
-                    * (getQuarkPropagator()->differentiateA(p2, j)
-                            + getQuarkPropagator()->differentiateA(q2, j));
-}
-
-double BCSimplifiedModel::H_A_deriv_b(double p2, double q2, unsigned int j) const {
-    return getQuarkPropagator()->differentiateSigmaV_b(q2, j)
-            * (getQuarkPropagator()->evaluateA(p2)
-                    + getQuarkPropagator()->evaluateA(q2));
-}
-
-double BCSimplifiedModel::H_M_deriv_b(double p2, double q2, unsigned int j) const {
-    return getQuarkPropagator()->differentiateSigmaS_b(q2, j)
-            * (getQuarkPropagator()->evaluateA(p2)
-                    + getQuarkPropagator()->evaluateA(q2));
-}
-
 double BCSimplifiedModel::H_A_func(double A_p2, double A_q2, double B_p2, double B_q2,
         double sigmaV_p2, double sigmaV_q2, double sigmaS_p2,
         double sigmaS_q2) const {

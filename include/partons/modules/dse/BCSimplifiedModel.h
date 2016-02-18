@@ -39,12 +39,6 @@ protected:
     // Various functions (virtual means model dependent and must be implemented in daughter class)
     virtual double F_A_func(double p2, double q2, double k2) const;
     virtual double F_M_func(double p2, double q2, double k2) const;
-    virtual double H_A_func(double p2, double q2) const; ///< H_A function dependent on the iterated functions
-    virtual double H_M_func(double p2, double q2) const; ///< H_M function dependent on the iterated functions
-    virtual double H_A_deriv_a(double p2, double q2, unsigned int j) const;
-    virtual double H_M_deriv_a(double p2, double q2, unsigned int j) const;
-    virtual double H_A_deriv_b(double p2, double q2, unsigned int j) const;
-    virtual double H_M_deriv_b(double p2, double q2, unsigned int j) const;
     virtual double H_A_func(double A_p2, double A_q2, double B_p2, double B_q2,
             double sigmaV_p2, double sigmaV_q2, double sigmaS_p2,
             double sigmaS_q2) const; ///< H_A function dependent on the iterated functions

@@ -14,7 +14,7 @@
 #include <NumA/linear_algebra/vector/VectorD.h>
 #include <NumA/root_finding/NewtonMD.h>
 
-#include "../../../../include/partons/beans/dse/GluonPropagator.h"
+#include "../../../../include/partons/beans/dse/GPMT.h"
 #include "../../../../include/partons/beans/dse/QuarkPropagator.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../include/partons/utils/ParameterList.h"
@@ -24,11 +24,14 @@ GapEquationSolverModule::GapEquationSolverModule(const std::string &className) :
         ModuleObject(className), m_gluonPropagator(0), m_quarkPropagator(0), m_mu(
                 19.), m_m(5.e-3), m_N(50), m_Nx(120), m_Nz(32), m_tolerance(
                 1.e-4, 1.e-3), m_maxIter(20), m_Lambda2(1.e5), m_epsilon2(
-                1.e-4), m_Ainit(1.), m_Binit(m_m) {
+                1.e-4), m_Ainit(1.), m_Binit(m_m), m_iters(0), m_changeQP(true), m_changeGP(
+                true), m_changeNx(true), m_changeNz(true), m_changeInit(false) {
 }
 
 GapEquationSolverModule::~GapEquationSolverModule() {
     // TODO Auto-generated destructor stub
+    delete m_gluonPropagator;
+    m_gluonPropagator = 0;
 }
 
 GapEquationSolverModule::GapEquationSolverModule(
@@ -45,8 +48,17 @@ GapEquationSolverModule::GapEquationSolverModule(
     m_maxIter = other.getMaxIter();
     m_Ainit = other.getAinit();
     m_Binit = other.getBinit();
+    m_iters = other.m_iters;
+    m_changeQP = other.m_changeQP;
+    m_changeGP = other.m_changeGP;
+    m_changeNx = other.m_changeNx;
+    m_changeNz = other.m_changeNz;
+    m_changeInit = other.m_changeInit;
     if (other.m_gluonPropagator != 0) {
         m_gluonPropagator = other.m_gluonPropagator->clone();
+    }
+    if (other.m_quarkPropagator != 0) {
+        m_quarkPropagator = other.m_quarkPropagator;
     }
 }
 
@@ -61,50 +73,76 @@ void GapEquationSolverModule::initModule() {
         setEpsilon2(m_quarkPropagator->getEpsilon2());
 
         // Gauss-Legendre integration //TODO Implement other cases
-        m_quad_x.makeNodeAndWeightVectors(m_Nx);
-        m_quad_z.makeNodeAndWeightVectors(m_Nz);
-        m_nodes_x = m_quad_x.getNodeNp();
-        m_weights_x = m_quad_x.getWeightNp();
-        m_nodes_z = m_quad_z.getNodeNp();
-        m_weights_z = m_quad_z.getWeightNp();
+        if (m_changeNx) {
+            m_quad_x.makeNodeAndWeightVectors(m_Nx);
+            m_nodes_x = m_quad_x.getNodeNp();
+            m_weights_x = m_quad_x.getWeightNp();
+        }
+        if (m_changeNz) {
+            m_quad_z.makeNodeAndWeightVectors(m_Nz);
+            m_nodes_z = m_quad_z.getNodeNp();
+            m_weights_z = m_quad_z.getWeightNp();
+        }
 
         // Propagator expansion's roots
-        m_roots_x = m_quarkPropagator->getRoots();
-        m_roots_s.assign(m_N, 0.);
-        for (unsigned int i = 0; i < m_N; i++) {
-            m_roots_s.at(i) = m_quarkPropagator->xtos(m_roots_x.at(i));
+        if (m_changeQP) {
+            m_roots_x = m_quarkPropagator->getRoots();
+            m_roots_s.assign(m_N, 0.);
+            for (unsigned int i = 0; i < m_N; i++) {
+                m_roots_s.at(i) = m_quarkPropagator->xtos(m_roots_x.at(i));
+            }
         }
 
         // Quadrature nodes and stored coefficients
-        m_nodes_s.assign(m_Nx, 0.);
-        m_C.assign(m_Nx, 0.);
-        double C = (m_Lambda2 * m_epsilon2) * log(m_Lambda2 / m_epsilon2)
-                / (2. * pow(2. * PI, 3));
-        for (unsigned int k = 0; k < m_Nx; k++) {
-            m_nodes_s.at(k) = m_quarkPropagator->xtos(m_nodes_x.at(k));
-            m_C.at(k) = C * m_weights_x.at(k)
-                    * exp(m_nodes_x.at(k) * log(m_Lambda2 / m_epsilon2));
+        if (m_changeQP || m_changeNx) {
+            m_nodes_s.assign(m_Nx, 0.);
+            m_C.assign(m_Nx, 0.);
+            double C = (m_Lambda2 * m_epsilon2) * log(m_Lambda2 / m_epsilon2)
+                    / (2. * pow(2. * PI, 3));
+            for (unsigned int k = 0; k < m_Nx; k++) {
+                m_nodes_s.at(k) = m_quarkPropagator->xtos(m_nodes_x.at(k));
+                m_C.at(k) = C * m_weights_x.at(k)
+                        * exp(m_nodes_x.at(k) * log(m_Lambda2 / m_epsilon2));
+            }
         }
 
         // Angular Integrals
-        m_ThetaA.assign(m_N, std::vector<double>(m_Nx, 0.));
-        m_ThetaM.assign(m_N, std::vector<double>(m_Nx, 0.));
-        double k2 = 0., G_k2 = 0., Cz = 0.;
-        for (unsigned int l = 0; l < m_Nz; l++) {
-            Cz = m_weights_z.at(l)
-                    * sqrt(1 - m_nodes_z.at(l) * m_nodes_z.at(l));
-            for (unsigned int i = 0; i < m_N; i++) {
-                for (unsigned int k = 0; k < m_Nx; k++) {
-                    k2 = k2_func(m_roots_s.at(i), m_nodes_s.at(k),
-                            m_nodes_z.at(l));
-                    G_k2 = getGluonPropagator()->evaluateG(k2);
-                    m_ThetaA.at(i).at(k) += Cz * G_k2
-                            * F_A_func(m_roots_s.at(i), m_nodes_s.at(k), k2);
-                    m_ThetaM.at(i).at(k) += Cz * G_k2
-                            * F_M_func(m_roots_s.at(i), m_nodes_s.at(k), k2);
+        if (m_changeQP || m_changeGP || m_changeNx || m_changeNz) {
+            m_ThetaA.assign(m_N, std::vector<double>(m_Nx, 0.));
+            m_ThetaM.assign(m_N, std::vector<double>(m_Nx, 0.));
+            double k2 = 0., G_k2 = 0., Cz = 0.;
+            if (m_gluonPropagator == 0) {
+                warn(__func__,
+                        "GluonPropagator not defined! Using default MT model instead.");
+                m_gluonPropagator = new GPMT();
+            }
+            for (unsigned int l = 0; l < m_Nz; l++) {
+                Cz = m_weights_z.at(l)
+                        * sqrt(1 - m_nodes_z.at(l) * m_nodes_z.at(l));
+                for (unsigned int i = 0; i < m_N; i++) {
+                    for (unsigned int k = 0; k < m_Nx; k++) {
+                        k2 = k2_func(m_roots_s.at(i), m_nodes_s.at(k),
+                                m_nodes_z.at(l));
+                        G_k2 = getGluonPropagator()->evaluateG(k2);
+                        m_ThetaA.at(i).at(k) += Cz * G_k2
+                                * F_A_func(m_roots_s.at(i), m_nodes_s.at(k),
+                                        k2);
+                        m_ThetaM.at(i).at(k) += Cz * G_k2
+                                * F_M_func(m_roots_s.at(i), m_nodes_s.at(k),
+                                        k2);
+                    }
                 }
             }
         }
+        if (m_changeInit) {
+            m_iters = 0;
+        }
+
+        m_changeQP = false;
+        m_changeGP = false;
+        m_changeNx = false;
+        m_changeNz = false;
+        m_changeInit = false;
     } else {
         error(__func__, "QuarkPropagator not defined!");
     }
@@ -129,16 +167,18 @@ void GapEquationSolverModule::computeNewtonInteration() {
             dsigmaV_a_r, dsigmaV_b_r, dsigmaS_a_r, dsigmaS_b_r;
     std::vector<std::vector<double> > dA_n, dB_n, dsigmaV_a_n, dsigmaV_b_n,
             dsigmaS_a_n, dsigmaS_b_n;
-    double sigmaV2_r, sigmaS2_r, sigmaV2_n, sigmaS2_n;
-    for (unsigned int n = 0; n < m_maxIter && noConvergence; n++) {
+    double denom_r, denom_n, sigmaV2_r, sigmaS2_r, sigmaV2_n, sigmaS2_n;
+
+    unsigned int n;
+    for (n = m_iters; n < m_maxIter && noConvergence; n++) {
 
         G_X0.assign(N_newton, 0.);
         J_G_X0.assign(N_newton, N_newton, 0.);
 
         SigmaA_r.assign(m_N, 0.);
         SigmaM_r.assign(m_N, 0.);
-        A_r.assign(m_N, 0.);
-        B_r.assign(m_N, 0.);
+        A_r.assign(m_N, m_Ainit);
+        B_r.assign(m_N, m_Binit);
         sigmaV_r.assign(m_N, 0.);
         sigmaS_r.assign(m_N, 0.);
 
@@ -151,8 +191,8 @@ void GapEquationSolverModule::computeNewtonInteration() {
         dsigmaS_a_r.assign(m_N, std::vector<double>(m_N, 0.));
         dsigmaS_b_r.assign(m_N, std::vector<double>(m_N, 0.));
 
-        A_n.assign(m_Nx, 0.);
-        B_n.assign(m_Nx, 0.);
+        A_n.assign(m_Nx, m_Ainit);
+        B_n.assign(m_Nx, m_Binit);
         sigmaV_n.assign(m_Nx, 0.);
         sigmaS_n.assign(m_Nx, 0.);
 
@@ -164,20 +204,23 @@ void GapEquationSolverModule::computeNewtonInteration() {
         dsigmaS_b_n.assign(m_Nx, std::vector<double>(m_N, 0.));
 
         for (unsigned int i = 0; i < m_N; i++) {
-            qpFunctions.assign(6, QuarkPropagator::SigmaA);
-            qpFunctions.at(1) = QuarkPropagator::SigmaM;
-            qpFunctions.at(2) = QuarkPropagator::A;
-            qpFunctions.at(3) = QuarkPropagator::B;
-            qpFunctions.at(4) = QuarkPropagator::sigmaV;
-            qpFunctions.at(5) = QuarkPropagator::sigmaS;
-            qpFunctionsAtRoots = getQuarkPropagator()->evaluate(qpFunctions,
-                    m_roots_s.at(i));
-            SigmaA_r.at(i) = qpFunctionsAtRoots.at(0);
-            SigmaM_r.at(i) = qpFunctionsAtRoots.at(1);
-            A_r.at(i) = qpFunctionsAtRoots.at(2);
-            B_r.at(i) = qpFunctionsAtRoots.at(3);
-            sigmaV_r.at(i) = qpFunctionsAtRoots.at(4);
-            sigmaS_r.at(i) = qpFunctionsAtRoots.at(5);
+            if (n > 0) {
+                qpFunctions.assign(4, QuarkPropagator::SigmaA);
+                qpFunctions.at(1) = QuarkPropagator::SigmaM;
+                qpFunctions.at(2) = QuarkPropagator::A;
+                qpFunctions.at(3) = QuarkPropagator::B;
+                qpFunctionsAtRoots = getQuarkPropagator()->evaluate(qpFunctions,
+                        m_roots_s.at(i));
+                SigmaA_r.at(i) = qpFunctionsAtRoots.at(0);
+                SigmaM_r.at(i) = qpFunctionsAtRoots.at(1);
+                A_r.at(i) = qpFunctionsAtRoots.at(2);
+                B_r.at(i) = qpFunctionsAtRoots.at(3);
+            }
+            denom_r = m_roots_s.at(i) * A_r.at(i) * A_r.at(i)
+                    + B_r.at(i) * B_r.at(i);
+            sigmaV_r.at(i) = A_r.at(i) / denom_r;
+            sigmaS_r.at(i) = B_r.at(i) / denom_r;
+
             sigmaV2_r = sigmaV_r.at(i) * sigmaV_r.at(i);
             sigmaS2_r = sigmaS_r.at(i) * sigmaS_r.at(i);
 
@@ -201,19 +244,23 @@ void GapEquationSolverModule::computeNewtonInteration() {
                 dsigmaS_b_r.at(i).at(j) = dB_r.at(i).at(j)
                         * (m_roots_s.at(i) * sigmaV2_r - sigmaS2_r);
             }
+
         }
 
         for (unsigned int k = 0; k < m_Nx; k++) {
-            qpFunctions.assign(4, QuarkPropagator::A);
-            qpFunctions.at(1) = QuarkPropagator::B;
-            qpFunctions.at(2) = QuarkPropagator::sigmaV;
-            qpFunctions.at(3) = QuarkPropagator::sigmaS;
-            qpFunctionsAtRoots = getQuarkPropagator()->evaluate(qpFunctions,
-                    m_nodes_s.at(k));
-            A_n.at(k) = qpFunctionsAtRoots.at(0);
-            B_n.at(k) = qpFunctionsAtRoots.at(1);
-            sigmaV_n.at(k) = qpFunctionsAtRoots.at(2);
-            sigmaS_n.at(k) = qpFunctionsAtRoots.at(3);
+            if (n > 0) {
+                qpFunctions.assign(2, QuarkPropagator::A);
+                qpFunctions.at(1) = QuarkPropagator::B;
+                qpFunctionsAtRoots = getQuarkPropagator()->evaluate(qpFunctions,
+                        m_nodes_s.at(k));
+                A_n.at(k) = qpFunctionsAtRoots.at(0);
+                B_n.at(k) = qpFunctionsAtRoots.at(1);
+            }
+            denom_n = m_nodes_s.at(k) * A_n.at(k) * A_n.at(k)
+                    + B_n.at(k) * B_n.at(k);
+            sigmaV_n.at(k) = A_n.at(k) / denom_n;
+            sigmaS_n.at(k) = B_n.at(k) / denom_n;
+
             sigmaV2_n = sigmaV_n.at(k) * sigmaV_n.at(k);
             sigmaS2_n = sigmaS_n.at(k) * sigmaS_n.at(k);
 
@@ -233,6 +280,7 @@ void GapEquationSolverModule::computeNewtonInteration() {
                 dsigmaS_b_n.at(k).at(j) = dB_n.at(k).at(j)
                         * (m_nodes_s.at(k) * sigmaV2_n - sigmaS2_n);
             }
+
         }
 
         for (unsigned int i = 0; i < m_N; i++) {
@@ -378,6 +426,8 @@ void GapEquationSolverModule::computeNewtonInteration() {
         }
         info(__func__, formatter.str());
     }
+
+    m_iters = n;
 }
 
 void GapEquationSolverModule::computeIteration() {
@@ -386,19 +436,70 @@ void GapEquationSolverModule::computeIteration() {
     double stored_T;
     double absDiff_a = 0., absDiff_b = 0., relDiff_a = 0., relDiff_b = 0.; // Difference between two iterations
     bool noConvergence = true; // Convergence test
-    for (unsigned int n = 0; n < m_maxIter && noConvergence; n++) {
+    std::vector<double> qpFunctionsAtRoots;
+    std::vector<double> qpFunctionsAtNodes;
+    std::vector<QuarkPropagator::QPFunction> qpFunctions;
+    std::vector<double> A_r, B_r, sigmaV_r, sigmaS_r;
+    std::vector<double> A_n, B_n, sigmaV_n, sigmaS_n;
+    double denom_r, denom_n;
+
+    unsigned int n;
+    for (n = m_iters; n < m_maxIter && noConvergence; n++) {
         a = m_quarkPropagator->getCoeffsA();
         b = m_quarkPropagator->getCoeffsB();
         SigmaA.assign(m_N, 0.);
         SigmaM.assign(m_N, 0.);
+
+        A_r.assign(m_N, m_Ainit);
+        B_r.assign(m_N, m_Binit);
+        sigmaV_r.assign(m_N, 0.);
+        sigmaS_r.assign(m_N, 0.);
+
+        A_n.assign(m_Nx, m_Ainit);
+        B_n.assign(m_Nx, m_Binit);
+        sigmaV_n.assign(m_Nx, 0.);
+        sigmaS_n.assign(m_Nx, 0.);
+
+        for (unsigned int i = 0; i < m_N; i++) {
+            if (n > 0) {
+                qpFunctions.assign(2, QuarkPropagator::A);
+                qpFunctions.at(1) = QuarkPropagator::B;
+                qpFunctionsAtRoots = getQuarkPropagator()->evaluate(qpFunctions,
+                        m_roots_s.at(i));
+                A_r.at(i) = qpFunctionsAtRoots.at(0);
+                B_r.at(i) = qpFunctionsAtRoots.at(1);
+            }
+            denom_r = m_roots_s.at(i) * A_r.at(i) * A_r.at(i)
+                    + B_r.at(i) * B_r.at(i);
+            sigmaV_r.at(i) = A_r.at(i) / denom_r;
+            sigmaS_r.at(i) = B_r.at(i) / denom_r;
+        }
+
+        for (unsigned int k = 0; k < m_Nx; k++) {
+            if (n > 0) {
+                qpFunctions.assign(2, QuarkPropagator::A);
+                qpFunctions.at(1) = QuarkPropagator::B;
+                qpFunctionsAtRoots = getQuarkPropagator()->evaluate(qpFunctions,
+                        m_nodes_s.at(k));
+                A_n.at(k) = qpFunctionsAtRoots.at(0);
+                B_n.at(k) = qpFunctionsAtRoots.at(1);
+            }
+            denom_n = m_nodes_s.at(k) * A_n.at(k) * A_n.at(k)
+                    + B_n.at(k) * B_n.at(k);
+            sigmaV_n.at(k) = A_n.at(k) / denom_n;
+            sigmaS_n.at(k) = B_n.at(k) / denom_n;
+        }
+
         for (unsigned int i = 0; i < m_N; i++) {
             for (unsigned int k = 0; k < m_Nx; k++) {
                 SigmaA.at(i) += m_C.at(k)
-                        * H_A_func(m_roots_s.at(i), m_nodes_s.at(k))
-                        * m_ThetaA.at(i).at(k);
+                        * H_A_func(A_r.at(i), A_n.at(k), B_r.at(i), B_n.at(k),
+                                sigmaV_r.at(i), sigmaV_n.at(k), sigmaS_r.at(i),
+                                sigmaS_n.at(k)) * m_ThetaA.at(i).at(k);
                 SigmaM.at(i) += m_C.at(k)
-                        * H_M_func(m_roots_s.at(i), m_nodes_s.at(k))
-                        * m_ThetaM.at(i).at(k);
+                        * H_M_func(A_r.at(i), A_n.at(k), B_r.at(i), B_n.at(k),
+                                sigmaV_r.at(i), sigmaV_n.at(k), sigmaS_r.at(i),
+                                sigmaS_n.at(k)) * m_ThetaM.at(i).at(k);
             }
         }
         m_quarkPropagator->setCoeffsAfromValueOnNodes(SigmaA);
@@ -427,6 +528,8 @@ void GapEquationSolverModule::computeIteration() {
         }
         info(__func__, formatter.str());
     }
+
+    m_iters = n;
 }
 
 void GapEquationSolverModule::configure(ParameterList parameters) {
@@ -566,7 +669,17 @@ const GluonPropagator* GapEquationSolverModule::getGluonPropagator() const {
 
 void GapEquationSolverModule::setGluonPropagator(
         const GluonPropagator* gluonPropagator) {
-    m_gluonPropagator = gluonPropagator->clone();
+    if (m_gluonPropagator != gluonPropagator) {
+        if (m_gluonPropagator != 0) {
+            delete m_gluonPropagator;
+            m_gluonPropagator = 0;
+        }
+        m_changeGP = true;
+        m_gluonPropagator = gluonPropagator->clone();
+    } else {
+        warn(__func__,
+                "Trying to set the GluonPropagator pointer with the same pointer, you're playing a dangerous game!");
+    }
 }
 
 const QuarkPropagator* GapEquationSolverModule::getQuarkPropagator() const {
@@ -575,7 +688,11 @@ const QuarkPropagator* GapEquationSolverModule::getQuarkPropagator() const {
 
 void GapEquationSolverModule::setQuarkPropagator(
         QuarkPropagator* quarkPropagator) {
-// /!\ Don't clone it as setGluonPropagator !!!! IT NEEDS TO BE THE SAME OBJECT!
+    m_changeQP = m_changeQP || (m_quarkPropagator != quarkPropagator)
+            || (m_quarkPropagator->getClassName()
+                    != quarkPropagator->getClassName());
+
+// /!\ Don't clone it as setGluonPropagator !!!! IT NEEDS TO BE THE SAME OBJECT! And do not destroy in the destructor!
     m_quarkPropagator = quarkPropagator;
 }
 
@@ -584,6 +701,10 @@ double GapEquationSolverModule::getEpsilon2() const {
 }
 
 void GapEquationSolverModule::setEpsilon2(double epsilon2) {
+    if (epsilon2 <= 0) {
+        error(__func__, "The IR cut-off must be positive (and small enough)!");
+    }
+    m_changeQP = m_changeQP || (epsilon2 != m_epsilon2);
     m_epsilon2 = epsilon2;
 }
 
@@ -592,6 +713,10 @@ double GapEquationSolverModule::getLambda2() const {
 }
 
 void GapEquationSolverModule::setLambda2(double lambda2) {
+    if (lambda2 <= 0) {
+        error(__func__, "The UV cut-off must be positive (and large enough)!");
+    }
+    m_changeQP = m_changeQP || (lambda2 != m_Lambda2);
     m_Lambda2 = lambda2;
 }
 
@@ -600,6 +725,10 @@ double GapEquationSolverModule::getM() const {
 }
 
 void GapEquationSolverModule::setM(double m) {
+    if (m <= 0) {
+        error(__func__, "The quark mass must be positive!");
+    }
+    m_changeQP = m_changeQP || (m != m_m);
     m_m = m;
 }
 
@@ -616,6 +745,11 @@ double GapEquationSolverModule::getMu() const {
 }
 
 void GapEquationSolverModule::setMu(double mu) {
+    if (mu <= 0) {
+        error(__func__,
+                "The renormalization point must be positive (and large enough)!");
+    }
+    m_changeQP = m_changeQP || (mu != m_mu);
     m_mu = mu;
 }
 
@@ -628,6 +762,7 @@ void GapEquationSolverModule::setN(int n) {
         error(__func__,
                 "The number of points representing the propagator must be positive!");
     }
+    m_changeQP = m_changeQP || (n != m_N);
     m_N = n;
 }
 
@@ -636,6 +771,10 @@ int GapEquationSolverModule::getNx() const {
 }
 
 void GapEquationSolverModule::setNx(int nx) {
+    if (nx <= 0) {
+        error(__func__, "The number of nodes of integration must be positive!");
+    }
+    m_changeNx = m_changeNx || (nx != m_Nx);
     m_Nx = nx;
 }
 
@@ -644,6 +783,10 @@ int GapEquationSolverModule::getNz() const {
 }
 
 void GapEquationSolverModule::setNz(int nz) {
+    if (nz <= 0) {
+        error(__func__, "The number of nodes of integration must be positive!");
+    }
+    m_changeNz = m_changeNz || (nz != m_Nz);
     m_Nz = nz;
 }
 
@@ -676,6 +819,7 @@ double GapEquationSolverModule::getAinit() const {
 }
 
 void GapEquationSolverModule::setAinit(double ainit) {
+    m_changeInit = m_changeInit || (ainit != m_Ainit);
     m_Ainit = ainit;
 }
 
@@ -684,27 +828,14 @@ double GapEquationSolverModule::getBinit() const {
 }
 
 void GapEquationSolverModule::setBinit(double binit) {
+    m_changeInit = m_changeInit || (binit != m_Binit);
     m_Binit = binit;
 }
 
-double GapEquationSolverModule::ThetaA_func(std::vector<double> z,
-        std::vector<double> parameters) const {
-    double p2 = parameters.at(0);
-    double q2 = parameters.at(1);
-
-    return sqrt(1 - z.at(0) * z.at(0))
-            * getGluonPropagator()->evaluateG(k2_func(p2, q2, z.at(0)))
-            * F_A_func(p2, q2, k2_func(p2, q2, z.at(0)));
-}
-
-double GapEquationSolverModule::ThetaM_func(std::vector<double> z,
-        std::vector<double> parameters) const {
-    double p2 = parameters.at(0);
-    double q2 = parameters.at(1);
-
-    return sqrt(1 - z.at(0) * z.at(0))
-            * getGluonPropagator()->evaluateG(k2_func(p2, q2, z.at(0)))
-            * F_M_func(p2, q2, k2_func(p2, q2, z.at(0)));
+void GapEquationSolverModule::reset() {
+    m_iters = 0;
+    m_quarkPropagator->setCoeffsA(0.);
+    m_quarkPropagator->setCoeffsB(0.);
 }
 
 double GapEquationSolverModule::k2_func(double p2, double q2, double z) const {
