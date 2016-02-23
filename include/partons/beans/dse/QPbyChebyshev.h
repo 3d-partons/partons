@@ -52,6 +52,7 @@ public:
     virtual void setCoeffsAfromValueOnNodes(const std::vector<double>& values);
     virtual void setCoeffsBfromValueOnNodes(const std::vector<double>& values);
 
+
     //TODO Move Chebyshev utils to NumA
     double T(unsigned int n, double x) const; ///< Evaluates Chebyshev polynomials T_n(x) for |x| < 1
 
