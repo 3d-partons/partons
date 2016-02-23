@@ -102,7 +102,7 @@ public:
     double getLambda2() const;
     void setLambda2(double lambda2);
     double getMu() const;
-    virtual void setMu(double mu);
+    void setMu(double mu);
 
 protected:
     QuarkPropagator(const QuarkPropagator& other);

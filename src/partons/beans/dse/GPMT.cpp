@@ -30,6 +30,7 @@ std::string GPMT::toString() const {
     return Formatter() << GluonPropagator::toString();
 }
 
+// TODO Store factors independent of k2 to avoid unnecessary recalculations
 double GPMT::evaluateG(double k2) const {
     return 4. * PI * PI / pow(m_w, 6) * m_D * k2 * exp(-k2 / (m_w * m_w))
             + 8. * PI * PI * 12. / (33. - 2. * m_Nf) * (1. - exp(-k2))
