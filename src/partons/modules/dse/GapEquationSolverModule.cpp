@@ -29,7 +29,6 @@ GapEquationSolverModule::GapEquationSolverModule(const std::string &className) :
 }
 
 GapEquationSolverModule::~GapEquationSolverModule() {
-    // TODO Auto-generated destructor stub
     delete m_gluonPropagator;
     m_gluonPropagator = 0;
 }
@@ -134,7 +133,7 @@ void GapEquationSolverModule::initModule() {
                 }
             }
         }
-        if (m_changeInit) {
+        if (m_changeInit || m_changeQP) {
             m_iters = 0;
         }
 
@@ -694,6 +693,12 @@ void GapEquationSolverModule::setQuarkPropagator(
 
 // /!\ Don't clone it as setGluonPropagator !!!! IT NEEDS TO BE THE SAME OBJECT! And do not destroy in the destructor!
     m_quarkPropagator = quarkPropagator;
+    setN(m_quarkPropagator->getN());
+    setMu(m_quarkPropagator->getMu());
+    setM(m_quarkPropagator->getM());
+    setLambda2(m_quarkPropagator->getLambda2());
+    setEpsilon2(m_quarkPropagator->getEpsilon2());
+    setBinit(m_quarkPropagator->getM());
 }
 
 double GapEquationSolverModule::getEpsilon2() const {
@@ -725,7 +730,7 @@ double GapEquationSolverModule::getM() const {
 }
 
 void GapEquationSolverModule::setM(double m) {
-    if (m <= 0) {
+    if (m < 0) {
         error(__func__, "The quark mass must be positive!");
     }
     m_changeQP = m_changeQP || (m != m_m);
