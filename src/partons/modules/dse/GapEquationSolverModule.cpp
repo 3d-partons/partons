@@ -413,17 +413,19 @@ void GapEquationSolverModule::computeNewtonInteration() {
         m_quarkPropagator->setCoeffsB(b);
 
         // Test
-        Formatter formatter;
-        formatter << "Iteration " << n << " :\n";
-        formatter << "A : ";
+        Formatter formatter1, formatter2, formatter3;
+        formatter1 << "Iteration " << n << ".";
+        formatter2 << "A : ";
         for (unsigned int i = 0; i < m_N; i++) {
-            formatter << m_quarkPropagator->evaluateA(m_roots_s.at(i)) << " ";
+            formatter2 << m_quarkPropagator->evaluateA(m_roots_s.at(i)) << " ";
         }
-        formatter << "\n" << "B : ";
+        formatter3 << "B : ";
         for (unsigned int i = 0; i < m_N; i++) {
-            formatter << m_quarkPropagator->evaluateB(m_roots_s.at(i)) << " ";
+            formatter3 << m_quarkPropagator->evaluateB(m_roots_s.at(i)) << " ";
         }
-        info(__func__, formatter.str());
+        info(__func__, formatter1.str());
+        debug(__func__, formatter2.str());
+        debug(__func__, formatter3.str());
     }
 
     m_iters = n;
@@ -515,17 +517,19 @@ void GapEquationSolverModule::computeIteration() {
                 || (relDiff_b > getRelTolerance());
 
         // Test
-        Formatter formatter;
-        formatter << "Iteration " << n << " :\n";
-        formatter << "A : ";
+        Formatter formatter1, formatter2, formatter3;
+        formatter1 << "Iteration " << n << ".";
+        formatter2 << "A : ";
         for (unsigned int i = 0; i < m_N; i++) {
-            formatter << m_quarkPropagator->evaluateA(m_roots_s.at(i)) << " ";
+            formatter2 << m_quarkPropagator->evaluateA(m_roots_s.at(i)) << " ";
         }
-        formatter << "\n" << "B : ";
+        formatter3 << "B : ";
         for (unsigned int i = 0; i < m_N; i++) {
-            formatter << m_quarkPropagator->evaluateB(m_roots_s.at(i)) << " ";
+            formatter3 << m_quarkPropagator->evaluateB(m_roots_s.at(i)) << " ";
         }
-        info(__func__, formatter.str());
+        info(__func__, formatter1.str());
+        debug(__func__, formatter2.str());
+        debug(__func__, formatter3.str());
     }
 
     m_iters = n;
@@ -545,52 +549,6 @@ void GapEquationSolverModule::compute(
         GapEquationSolverModule::IterativeType iterativeType) {
     initModule();
     isModuleWellConfigured();
-    // Test
-//    std::vector<double> nodes_z = gaussLeg_z.getNodeNp();
-//    std::vector<double> weights_z = gaussLeg_z.getWeightNp();
-//    Formatter formatter;
-//    formatter << "Taille des noeuds et poids : ";
-//    formatter << nodes_x.size() << " " << weights_x.size() << " "
-//            << nodes_z.size() << " " << weights_z.size();
-//    info(__func__, formatter.str());
-
-// Chebyshev representation //TODO Implement other cases
-//    QPbyChebyshev* pQuarkPropagator = new QPbyChebyshev(m_N, m_m, m_mu,
-//            m_Lambda2, m_epsilon2);
-//    setQuarkPropagator(pQuarkPropagator);
-//    std::vector<double> chebRoots = pQuarkPropagator->getRoots(); //TODO Move to NumA
-//
-//    // Conversion between x and s
-//    std::vector<double> chebRoots_s(m_N, 0.);
-//    for (unsigned int i = 0; i < m_N; i++) {
-//        chebRoots_s.at(i) = pQuarkPropagator->xtos(chebRoots.at(i));
-//    }
-//    std::vector<double> nodes_s(m_Nx, 0.);
-//    std::vector<double> C(m_Nx, 0.);
-//    for (unsigned int k = 0; k < m_Nx; k++) {
-//        nodes_s.at(k) = pQuarkPropagator->xtos(m_nodes_x.at(k));
-//        C.at(k) = m_C * m_weights_x.at(k)
-//                * exp(m_nodes_x.at(k) * log(m_Lambda2 / m_epsilon2));
-//    }
-//
-//    // Angular Integrals
-//    std::vector<std::vector<double> > ThetaA(m_N,
-//            std::vector<double>(m_Nx, 0.));
-//    std::vector<std::vector<double> > ThetaM(m_N,
-//            std::vector<double>(m_Nx, 0.));
-//    std::vector<double> parameters(2, 0.);
-//    for (unsigned int i = 0; i < m_N; i++) {
-//        parameters.at(0) = chebRoots_s.at(i);
-//        for (unsigned int k = 0; k < m_Nx; k++) {
-//            parameters.at(1) = nodes_s.at(k);
-//            ThetaA.at(i).at(k) = m_quad_z.integrate(this,
-//                    &GapEquationSolverModule::ThetaA_func, -1., 1., parameters,
-//                    m_Nz);
-//            ThetaM.at(i).at(k) = m_quad_z.integrate(this,
-//                    &GapEquationSolverModule::ThetaM_func, -1., 1., parameters,
-//                    m_Nz);
-//        }
-//    }
 
     switch (iterativeType) {
     case Newton:
@@ -601,64 +559,18 @@ void GapEquationSolverModule::compute(
         break;
     }
 
-//    // Natural iterative method //TODO Implement other cases
-//    std::vector<double> SigmaA, SigmaM;
-//    NumA::VectorD a, b;
-//    double stored_T;
-//    double absDiff_a = 0., absDiff_b = 0., relDiff_a = 0., relDiff_b = 0.; // Difference between two iterations
-//    bool noConvergence = true; // Convergence test
-//    for (unsigned int n = 0; n < m_maxIter && noConvergence; n++) {
-//        a = NumA::VectorD(m_N, 0.);
-//        b = NumA::VectorD(m_N, 0.);
-//
-//        SigmaA.assign(m_N, 0.);
-//        SigmaM.assign(m_N, 0.);
-//        for (unsigned int i = 0; i < m_N; i++) {
-//            for (unsigned int k = 0; k < m_Nx; k++) {
-//                SigmaA.at(i) += C.at(k)
-//                        * H_A_func(chebRoots_s.at(i), nodes_s.at(k))
-//                        * ThetaA.at(i).at(k);
-//                SigmaM.at(i) += C.at(k)
-//                        * H_M_func(chebRoots_s.at(i), nodes_s.at(k))
-//                        * ThetaM.at(i).at(k);
-//            }
-//        }
-//        for (unsigned int i = 0; i < m_N; i++) {
-//            for (unsigned int k = 0; k < m_N; k++) {
-//                stored_T = pQuarkPropagator->T(i, chebRoots.at(k));
-//                a.at(i) += stored_T * SigmaA.at(k);
-//                b.at(i) += stored_T * SigmaM.at(k);
-//            }
-//            a.at(i) *= 2. / m_N;
-//            b.at(i) *= 2. / m_N;
-//        }
-//        absDiff_a = (a - pQuarkPropagator->getCoeffsA()).norm();
-//        absDiff_b = (b - pQuarkPropagator->getCoeffsB()).norm();
-//        relDiff_a = absDiff_a
-//                / (pQuarkPropagator->getCoeffsA().norm() + 1.e-16);
-//        relDiff_b = absDiff_b
-//                / (pQuarkPropagator->getCoeffsB().norm() + 1.e-16);
-//
-//        noConvergence = (absDiff_a > getAbsTolerance())
-//                || (absDiff_b > getAbsTolerance())
-//                || (relDiff_a > getRelTolerance())
-//                || (relDiff_b > getRelTolerance());
-//        pQuarkPropagator->setCoeffsA(a);
-//        pQuarkPropagator->setCoeffsB(b);
-//
-//        // Test
-//        Formatter formatter;
-//        formatter << "Iteration " << n << " :\n";
-//        formatter << "A : ";
-//        for (unsigned int i = 0; i < m_N; i++) {
-//            formatter << pQuarkPropagator->evaluateA(chebRoots_s.at(i)) << " ";
-//        }
-//        formatter << "\n" << "B : ";
-//        for (unsigned int i = 0; i < m_N; i++) {
-//            formatter << pQuarkPropagator->evaluateB(chebRoots_s.at(i)) << " ";
-//        }
-//        info(__func__, formatter.str());
-//    }
+    // Write the result
+    info(__func__, "p2 [GeV] ; A ; B [GeV] ; M [GeV]");
+    double p2, A, B, M;
+    for (unsigned int i = 0; i < m_N; i++) {
+    	Formatter formatter;
+    	p2 = m_roots_s.at(i);
+    	A = m_quarkPropagator->evaluateA(p2);
+    	B = m_quarkPropagator->evaluateB(p2);
+    	M = B/A;
+        formatter << p2 << " ; " << A << " ; " << B << " ; " << M;
+        info(__func__, formatter.str());
+    }
 
 }
 

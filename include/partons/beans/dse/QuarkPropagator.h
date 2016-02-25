@@ -65,6 +65,8 @@ public:
     virtual double differentiateSigmaA(double p2, unsigned int j) const = 0;
     virtual double differentiateSigmaM(double p2, unsigned int j) const = 0;
 
+    double evaluateM(double p2) const;
+
     double evaluateSigmaV(double p2) const;
     double evaluateSigmaS(double p2) const;
     double differentiateSigmaV_a(double p2, unsigned int j) const;

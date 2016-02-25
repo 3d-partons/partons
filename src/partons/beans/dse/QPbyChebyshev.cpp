@@ -403,16 +403,5 @@ double QPbyChebyshev::xtos(double x) const {
 }
 
 std::string QPbyChebyshev::toString() const {
-    Formatter formatter;
-    formatter << "Coeffs a : ";
-    for (unsigned int i = 0; i < m_a.size(); i++) {
-        formatter << m_a.at(i) << " , ";
-    }
-    formatter << "\n";
-    formatter << "Coeffs b : ";
-    for (unsigned int i = 0; i < m_b.size(); i++) {
-        formatter << m_b.at(i) << " , ";
-    }
-    formatter << "\n";
-    return formatter;
+    return QuarkPropagator::toString();
 }
