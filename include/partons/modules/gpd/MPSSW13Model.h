@@ -29,6 +29,10 @@
 #include "../GPDModule.h"
 #include "../MathIntegratorModule.h"
 
+namespace NumA {
+class FunctionType1D;
+} /* namespace NumA */
+
 class c_mstwpdf;
 
 class MPSSW13Model: public GPDModule, public MathIntegratorModule {
@@ -90,38 +94,26 @@ private:
     void ComputeFormFactors();
 
     double Profile(double N, double alpha, double beta);
-    double IntegralHuVal(std::vector<double> Var, std::vector<double> Par);
-    double IntegralHuValMx(std::vector<double> Var, std::vector<double> Par);
-    double IntegralxLargeHuSea(std::vector<double> Var,
-            std::vector<double> Par);
-    double IntegralxLargeHuSeaMx(std::vector<double> Var,
-            std::vector<double> Par);
-    double IntegralxSmall1HuSea(std::vector<double> Var,
-            std::vector<double> Par);
-    double IntegralxSmall2HuSea(std::vector<double> Var,
-            std::vector<double> Par);
-    double IntegralHdVal(std::vector<double> Var, std::vector<double> Par);
-    double IntegralHdValMx(std::vector<double> Var, std::vector<double> Par);
-    double IntegralxLargeHdSea(std::vector<double> Var,
-            std::vector<double> Par);
-    double IntegralxLargeHdSeaMx(std::vector<double> Var,
-            std::vector<double> Par);
-    double IntegralxSmall1HdSea(std::vector<double> Var,
-            std::vector<double> Par);
-    double IntegralxSmall2HdSea(std::vector<double> Var,
-            std::vector<double> Par);
-    double IntegralxLargeHsSea(std::vector<double> Var,
-            std::vector<double> Par);
-    double IntegralxLargeHsSeaMx(std::vector<double> Var,
-            std::vector<double> Par);
-    double IntegralxSmall1HsSea(std::vector<double> Var,
-            std::vector<double> Par);
-    double IntegralxSmall2HsSea(std::vector<double> Var,
-            std::vector<double> Par);
-    double IntegralxLargeHg(std::vector<double> Var, std::vector<double> Par);
-    double IntegralxLargeHgMx(std::vector<double> Var, std::vector<double> Par);
-    double IntegralxSmall1Hg(std::vector<double> Var, std::vector<double> Par);
-    double IntegralxSmall2Hg(std::vector<double> Var, std::vector<double> Par);
+    double IntegralHuVal(double x, std::vector<double> Par);
+    double IntegralHuValMx(double x, std::vector<double> Par);
+    double IntegralxLargeHuSea(double x, std::vector<double> Par);
+    double IntegralxLargeHuSeaMx(double x, std::vector<double> Par);
+    double IntegralxSmall1HuSea(double x, std::vector<double> Par);
+    double IntegralxSmall2HuSea(double x, std::vector<double> Par);
+    double IntegralHdVal(double x, std::vector<double> Par);
+    double IntegralHdValMx(double x, std::vector<double> Par);
+    double IntegralxLargeHdSea(double x, std::vector<double> Par);
+    double IntegralxLargeHdSeaMx(double x, std::vector<double> Par);
+    double IntegralxSmall1HdSea(double x, std::vector<double> Par);
+    double IntegralxSmall2HdSea(double x, std::vector<double> Par);
+    double IntegralxLargeHsSea(double x, std::vector<double> Par);
+    double IntegralxLargeHsSeaMx(double x, std::vector<double> Par);
+    double IntegralxSmall1HsSea(double x, std::vector<double> Par);
+    double IntegralxSmall2HsSea(double x, std::vector<double> Par);
+    double IntegralxLargeHg(double x, std::vector<double> Par);
+    double IntegralxLargeHgMx(double x, std::vector<double> Par);
+    double IntegralxSmall1Hg(double x, std::vector<double> Par);
+    double IntegralxSmall2Hg(double x, std::vector<double> Par);
 
     double GammaQQ(const unsigned int nflavour, const unsigned int n);
     double GammaQG(const unsigned int nflavour, const unsigned int n);
@@ -135,6 +127,29 @@ private:
     virtual PartonDistribution computeH(); ///< Compute GPD H at considered kinematics
 
     void throwBetaException(const std::string &funcName, double betaValue);
+
+    NumA::FunctionType1D* m_pIntegralHuVal;
+    NumA::FunctionType1D* m_pIntegralHdVal;
+    NumA::FunctionType1D* m_pIntegralHuValMx;
+    NumA::FunctionType1D* m_pIntegralHdValMx;
+    NumA::FunctionType1D* m_pIntegralxLargeHuSea;
+    NumA::FunctionType1D* m_pIntegralxLargeHdSea;
+    NumA::FunctionType1D* m_pIntegralxSmall1HuSea;
+    NumA::FunctionType1D* m_pIntegralxSmall2HuSea;
+    NumA::FunctionType1D* m_pIntegralxSmall1HdSea;
+    NumA::FunctionType1D* m_pIntegralxSmall2HdSea;
+    NumA::FunctionType1D* m_pIntegralxLargeHuSeaMx;
+    NumA::FunctionType1D* m_pIntegralxLargeHdSeaMx;
+    NumA::FunctionType1D* m_pIntegralxLargeHsSea;
+    NumA::FunctionType1D* m_pIntegralxSmall1HsSea;
+    NumA::FunctionType1D* m_pIntegralxSmall2HsSea;
+    NumA::FunctionType1D* m_pIntegralxLargeHsSeaMx;
+    NumA::FunctionType1D* m_pIntegralxLargeHg;
+    NumA::FunctionType1D* m_pIntegralxSmall1Hg;
+    NumA::FunctionType1D* m_pIntegralxSmall2Hg;
+    NumA::FunctionType1D* m_pIntegralxLargeHgMx;
+
+    void initFunctorsForIntegrations();
 };
 
 #endif /* MPSSW13_H_ */

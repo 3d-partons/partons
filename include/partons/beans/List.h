@@ -18,13 +18,15 @@
 
 #include "../BaseObject.h"
 #include "../utils/compare/ComparisonMode.h"
-#include "../utils/compare/ComparisonReportList.h"
+#include "../utils/compare/ComparisonReport.h"
 #include "../utils/stringUtils/Formatter.h"
 #include "SortingMode.h"
 
-class SortingMode;
-
+namespace NumA {
 class Tolerances;
+} /* namespace NumA */
+
+class ComparisonReport;
 
 template<class T> class List: public BaseObject {
 public:
@@ -94,20 +96,19 @@ public:
         }
     }
 
-    ComparisonReportList compare(const List<T> &referenceObject,
-            const Tolerances &tolerances,
-            const ComparisonMode &comparisonMode) const {
+    void compare(ComparisonReport* pRootComparisonReport,
+            const List<T> &referenceObject, const NumA::Tolerances &tolerances,
+            const ComparisonMode &comparisonMode = ComparisonMode::EQUAL,
+            std::string parentObjectInfo = "") const {
 
-        ComparisonReportList reportList;
-        reportList.setTolerances(tolerances);
-        reportList.setComparisonMode(comparisonMode);
+        pRootComparisonReport->setTolerances(tolerances);
 
-        if (this->isEmpty() && referenceObject.isEmpty()) {
+        if ((this->isEmpty()) && referenceObject.isEmpty()) {
             warn(__func__, Formatter() << "Lists are empty");
         } else {
             // see : http://stackoverflow.com/a/9813792
             // TODO Don't work
-            reportList.setObjectTypeCompared(__PRETTY_FUNCTION__);
+            // reportList.setObjectTypeCompared(__PRETTY_FUNCTION__);
 
             switch (comparisonMode) {
             case ComparisonMode::INTERSECTION:
@@ -115,12 +116,15 @@ public:
             default:
                 // equal comparison by default
                 if (this->size() == referenceObject.size()) {
-                    reportList.setNumberOfComparedObjet(this->size());
+                    //reportList.setNumberOfComparedObjet(this->size());
 
                     for (size_t i = 0; i != this->size(); i++) {
-                        reportList.add(
-                                (this->m_data[i]).compare(referenceObject[i],
-                                        tolerances));
+                        // reportList.add(
+//                                (this->m_data[i]).compare(referenceObject[i],
+//                                        tolerances));
+
+                        (this->m_data[i]).compare(pRootComparisonReport,
+                                referenceObject[i], tolerances);
                     }
                 } else {
                     warn(__func__,
@@ -130,8 +134,6 @@ public:
             }
 
         }
-
-        return reportList;
     }
 
     void clear() {

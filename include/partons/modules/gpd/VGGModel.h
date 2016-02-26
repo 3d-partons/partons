@@ -15,6 +15,10 @@
 #include "../GPDModule.h"
 #include "../MathIntegratorModule.h"
 
+namespace NumA {
+class FunctionType1D;
+} /* namespace NumA */
+
 class c_mstwpdf;
 
 class VGGModel: public GPDModule, public MathIntegratorModule {
@@ -72,24 +76,25 @@ private:
     double symm_profile_function(double beta, double alpha, double b_profile); //< profile function
 
     double symm_double_distr_reggeH(double beta, double alpha); //< double distribution function for GPD H
-    double int_symm_double_distr_reggeH(std::vector<double> alpha,
-            std::vector<double> par); //< wrapper for integration of double distribution at x for GPD H
-    double int_symm_double_distr_reggeMxH(std::vector<double> alpha,
+    double int_symm_double_distr_reggeH(double alpha, std::vector<double> par); //< wrapper for integration of double distribution at x for GPD H
+    double int_symm_double_distr_reggeMxH(double alpha,
             std::vector<double> par); //< wrapper for integration of double distribution at -x for GPD H
 
     double symm_double_distr_reggeE(double beta, double alpha); //< double distribution function for GPD E
-    double int_symm_double_distr_reggeE(std::vector<double> alpha,
-            std::vector<double> par); //< wrapper for integration of double distribution at x for GPD E
-    double int_symm_double_distr_reggeMxE(std::vector<double> alpha,
+    double int_symm_double_distr_reggeE(double alpha, std::vector<double> par); //< wrapper for integration of double distribution at x for GPD E
+    double int_symm_double_distr_reggeMxE(double alpha,
             std::vector<double> par); //< wrapper for integration of double distribution at -x for GPD E
-    double int_mom2_up_valence_e(std::vector<double> x,
-            std::vector<double> par);   //< normalization function for GPD E
+    double int_mom2_up_valence_e(double x, std::vector<double> par); //< normalization function for GPD E
 
     double test_pdf_down_val(double x); //< pdfs for cross-check purpose, parametrization of Martin, Roberts, Stirling, PRD 47 (1993) 867
     double test_pdf_up_val(double x);
     double test_pdf_sea(double x);
     double test_pdf_up_bar(double x);
     double test_pdf_down_bar(double x);
+
+    NumA::FunctionType1D* m_pInt_mom2_up_valence_e;
+
+    void initFunctorsForIntegrations();
 };
 
 #endif /* VGGMODEL_H_ */

@@ -15,8 +15,13 @@
 
 #include <complex>
 #include <string>
+#include <vector>
 
 #include "DVCSConvolCoeffFunctionModule.h"
+
+namespace NumA {
+class FunctionType1D;
+} /* namespace NumA */
 
 class PartonDistribution;
 
@@ -79,22 +84,22 @@ private:
     virtual std::complex<double> KernelQuarkV(double x); ///< T^{q, V/A}, appendix A, eq. (A1)
     virtual std::complex<double> KernelGluonV(double x); ///< T^{g, V/A}, appendix A, eq. (A1)
 
-    virtual double ConvolReKernelQuark1V(std::vector<double> x, std::vector<double> params); ///< eq. (8), real part of amplitude, \int_0^zeta
-    virtual double ConvolReKernelQuark2V(std::vector<double> x, std::vector<double> params); ///< eq. (8), real part of amplitude, \int_zeta^1
-    virtual double ConvolImKernelQuarkV(std::vector<double> x, std::vector<double> params); ///< eq. (8), imaginary part of amplitude
-    virtual double ConvolReKernelGluon1V(std::vector<double> x, std::vector<double> params); ///< eq. (9), real part of amplitude, \int_0^zeta
-    virtual double ConvolReKernelGluon2V(std::vector<double> x, std::vector<double> params); ///< eq. (9), real part of amplitude, \int_zeta^1
-    virtual double ConvolImKernelGluonV(std::vector<double> x, std::vector<double> params); ///< eq. (9), imaginary part of amplitude
+    virtual double ConvolReKernelQuark1V(double x, std::vector<double> params); ///< eq. (8), real part of amplitude, \int_0^zeta
+    virtual double ConvolReKernelQuark2V(double x, std::vector<double> params); ///< eq. (8), real part of amplitude, \int_zeta^1
+    virtual double ConvolImKernelQuarkV(double x, std::vector<double> params); ///< eq. (8), imaginary part of amplitude
+    virtual double ConvolReKernelGluon1V(double x, std::vector<double> params); ///< eq. (9), real part of amplitude, \int_0^zeta
+    virtual double ConvolReKernelGluon2V(double x, std::vector<double> params); ///< eq. (9), real part of amplitude, \int_zeta^1
+    virtual double ConvolImKernelGluonV(double x, std::vector<double> params); ///< eq. (9), imaginary part of amplitude
 
     virtual std::complex<double> KernelQuarkA(double x); ///< T^{q, V/A}, appendix A, eq. (A1)
     virtual std::complex<double> KernelGluonA(double x); ///< T^{g, V/A}, appendix A, eq. (A1)
 
-    virtual double ConvolReKernelQuark1A(std::vector<double> x, std::vector<double> params); ///< eq. (8), real part of amplitude, \int_0^zeta
-    virtual double ConvolReKernelQuark2A(std::vector<double> x, std::vector<double> params); ///< eq. (8), real part of amplitude, \int_zeta^1
-    virtual double ConvolImKernelQuarkA(std::vector<double> x, std::vector<double> params); ///< eq. (8), imaginary part of amplitude
-    virtual double ConvolReKernelGluon1A(std::vector<double> x, std::vector<double> params); ///< eq. (9), real part of amplitude, \int_0^zeta
-    virtual double ConvolReKernelGluon2A(std::vector<double> x, std::vector<double> params); ///< eq. (9), real part of amplitude, \int_zeta^1
-    virtual double ConvolImKernelGluonA(std::vector<double> x, std::vector<double> params); ///< eq. (9), imaginary part of amplitude
+    virtual double ConvolReKernelQuark1A(double x, std::vector<double> params); ///< eq. (8), real part of amplitude, \int_0^zeta
+    virtual double ConvolReKernelQuark2A(double x, std::vector<double> params); ///< eq. (8), real part of amplitude, \int_zeta^1
+    virtual double ConvolImKernelQuarkA(double x, std::vector<double> params); ///< eq. (8), imaginary part of amplitude
+    virtual double ConvolReKernelGluon1A(double x, std::vector<double> params); ///< eq. (9), real part of amplitude, \int_0^zeta
+    virtual double ConvolReKernelGluon2A(double x, std::vector<double> params); ///< eq. (9), real part of amplitude, \int_zeta^1
+    virtual double ConvolImKernelGluonA(double x, std::vector<double> params); ///< eq. (9), imaginary part of amplitude
 
     std::complex<double> computeIntegralsV();
     std::complex<double> computeIntegralsA();
@@ -102,6 +107,20 @@ private:
     double computeSquareChargeAveragedGPD(
             const PartonDistribution &partonDistribution);
 
+    NumA::FunctionType1D* m_pConvolReKernelQuark1V;
+    NumA::FunctionType1D* m_pConvolReKernelQuark2V;
+    NumA::FunctionType1D* m_pConvolImKernelQuarkV;
+    NumA::FunctionType1D* m_pConvolReKernelGluon1V;
+    NumA::FunctionType1D* m_pConvolReKernelGluon2V;
+    NumA::FunctionType1D* m_pConvolImKernelGluonV;
+    NumA::FunctionType1D* m_pConvolReKernelQuark1A;
+    NumA::FunctionType1D* m_pConvolReKernelQuark2A;
+    NumA::FunctionType1D* m_pConvolImKernelQuarkA;
+    NumA::FunctionType1D* m_pConvolReKernelGluon1A;
+    NumA::FunctionType1D* m_pConvolReKernelGluon2A;
+    NumA::FunctionType1D* m_pConvolImKernelGluonA;
+
+    void initFunctorsForIntegrations();
 };
 
 #endif /* DVCS_CFF_MODULE_H */

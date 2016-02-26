@@ -15,12 +15,16 @@
 #include <string>
 
 class ComparisonData;
+namespace NumA {
 class Tolerances;
+} /* namespace NumA */
 
 class CompareUtils {
 public:
     static ComparisonData compareDouble(const std::string &variableName,
-            const double lhs, const double rhs, const Tolerances &tolerances);
+            const double lhs, const double rhs,
+            const NumA::Tolerances &tolerances,
+            const std::string &parentObjectInfo);
 };
 
 #endif /* COMPARE_UTILS_H */

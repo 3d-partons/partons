@@ -9,7 +9,7 @@
  *
  * @class GenericType
  *
- * @brief A complex object to handle differents simple type (like string, int, double, bool ...) into a unique stream.
+ * @brief A complex object to handle different simple type (like string, int, double, bool ...) into a unique stream.
  * It used to provide a way to handle generic type.
  * Then there is a method for each simple type that you want to get back.
  */

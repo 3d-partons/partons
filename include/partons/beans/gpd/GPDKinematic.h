@@ -17,11 +17,12 @@
 #include "../kinematic/KinematicType.h"
 #include "../Kinematic.h"
 
-class Packet;
-
 class ComparisonReport;
+class Packet;
 class ParameterList;
+namespace NumA {
 class Tolerances;
+} /* namespace NumA */
 
 class GPDKinematic: public Kinematic {
 public:
@@ -61,8 +62,8 @@ public:
      */
     virtual std::string toString() const;
 
-    ComparisonReport compare(const GPDKinematic &referenceObject,
-            const Tolerances &tolerances) const;
+//    ComparisonReport compare(const GPDKinematic &referenceObject,
+//            const NumA::Tolerances &tolerances) const;
 
     void serialize(Packet &packet) const;
     void unserialize(Packet &packet);

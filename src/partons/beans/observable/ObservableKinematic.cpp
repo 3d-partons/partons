@@ -2,11 +2,11 @@
 
 #include "../../../../include/partons/utils/compare/CompareUtils.h"
 #include "../../../../include/partons/utils/compare/ComparisonData.h"
+#include "../../../../include/partons/utils/compare/ComparisonReport.h"
 #include "../../../../include/partons/utils/GenericType.h"
 #include "../../../../include/partons/utils/ParameterList.h"
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
 #include "../../../../include/partons/utils/stringUtils/StringUtils.h"
-#include "../../../../include/partons/utils/test/ComparisonReport.h"
 #include "../../../../include/partons/utils/thread/Packet.h"
 #include "../../../../include/partons/utils/type/PhysicalUnit.h"
 
@@ -97,30 +97,30 @@ std::string ObservableKinematic::toString() const {
             << m_phi.toString();
 }
 
-ComparisonReport ObservableKinematic::compare(
-        const ObservableKinematic& referenceObject,
-        const Tolerances& tolerances) const {
-    ComparisonReport comparisonReport(getClassName());
-
-    ComparisonData xb_comparisonData = CompareUtils::compareDouble(
-            ObservableKinematic::PARAMETER_NAME_XB, getXB(),
-            referenceObject.getXB(), tolerances);
-    comparisonReport.addComparisonData(xb_comparisonData);
-
-    ComparisonData t_comparisonData = CompareUtils::compareDouble(
-            ObservableKinematic::PARAMETER_NAME_T, getT(),
-            referenceObject.getT(), tolerances);
-    comparisonReport.addComparisonData(t_comparisonData);
-
-    ComparisonData q2_comparisonData = CompareUtils::compareDouble(
-            ObservableKinematic::PARAMETER_NAME_Q2, getQ2(),
-            referenceObject.getQ2(), tolerances);
-    comparisonReport.addComparisonData(q2_comparisonData);
-
-    //TODO handle phi
-
-    return comparisonReport;
-}
+//ComparisonReport ObservableKinematic::compare(
+//        const ObservableKinematic& referenceObject,
+//        const NumA::Tolerances& tolerances) const {
+//    ComparisonReport comparisonReport(getClassName());
+//
+//    ComparisonData xb_comparisonData = CompareUtils::compareDouble(
+//            ObservableKinematic::PARAMETER_NAME_XB, getXB(),
+//            referenceObject.getXB(), tolerances);
+//    comparisonReport.addComparisonData(xb_comparisonData);
+//
+//    ComparisonData t_comparisonData = CompareUtils::compareDouble(
+//            ObservableKinematic::PARAMETER_NAME_T, getT(),
+//            referenceObject.getT(), tolerances);
+//    comparisonReport.addComparisonData(t_comparisonData);
+//
+//    ComparisonData q2_comparisonData = CompareUtils::compareDouble(
+//            ObservableKinematic::PARAMETER_NAME_Q2, getQ2(),
+//            referenceObject.getQ2(), tolerances);
+//    comparisonReport.addComparisonData(q2_comparisonData);
+//
+//    //TODO handle phi
+//
+//    return comparisonReport;
+//}
 
 // ##### GETTERS & SETTERS #####
 

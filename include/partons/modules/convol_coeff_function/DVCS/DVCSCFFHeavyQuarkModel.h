@@ -57,15 +57,17 @@ private:
     std::complex<double> MassiveKernelGluonNLOV(double x);
     std::complex<double> computeIntegralsMassiveV();
     std::complex<double> computeIntegralsMassiveA();
-    double ConvolReKernelGluonMassiveV(std::vector<double> x,
-            std::vector<double> params);
-    double ConvolImKernelGluonMassiveV(std::vector<double> x,
-            std::vector<double> params);
-    double ConvolReKernelGluonMassiveA(std::vector<double> x,
-            std::vector<double> params);
-    double ConvolImKernelGluonMassiveA(std::vector<double> x,
-            std::vector<double> params);
+    double ConvolReKernelGluonMassiveV(double x, std::vector<double> params);
+    double ConvolImKernelGluonMassiveV(double x, std::vector<double> params);
+    double ConvolReKernelGluonMassiveA(double x, std::vector<double> params);
+    double ConvolImKernelGluonMassiveA(double x, std::vector<double> params);
 
+    NumA::FunctionType1D* m_pConvolReKernelGluonMassiveV;
+    NumA::FunctionType1D* m_pConvolImKernelGluonMassiveV;
+    NumA::FunctionType1D* m_pConvolReKernelGluonMassiveA;
+    NumA::FunctionType1D* m_pConvolImKernelGluonMassiveA;
+
+    void initFunctorsForIntegrations();
 };
 
 #endif /* DVCS_CFF_HEAVY_QUARK_MODEL_H */

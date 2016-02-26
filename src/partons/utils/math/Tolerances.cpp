@@ -1,6 +1,8 @@
 #include "../../../../include/partons/utils/math/Tolerances.h"
 
-#include "../../../../include/partons/utils/math/MathUtils.h"
+#include <sstream>
+#include <stdexcept>
+
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 Tolerances::Tolerances() :
@@ -12,8 +14,8 @@ Tolerances::Tolerances(double absoluteTolerance, double relativeTolerance) :
         BaseObject("Tolerances"), m_absoluteTolerance(absoluteTolerance), m_relativeTolerance(
                 relativeTolerance) {
 
-    MathUtils::isPositiveDouble(absoluteTolerance);
-    MathUtils::isPositiveDouble(relativeTolerance);
+    isPositiveDouble(absoluteTolerance);
+    isPositiveDouble(relativeTolerance);
 }
 
 Tolerances::~Tolerances() {
@@ -24,7 +26,7 @@ double Tolerances::getAbsoluteTolerance() const {
 }
 
 void Tolerances::setAbsoluteTolerance(double absoluteTolerance) {
-    MathUtils::isPositiveDouble(absoluteTolerance);
+    isPositiveDouble(absoluteTolerance);
     m_absoluteTolerance = absoluteTolerance;
 }
 
@@ -33,8 +35,21 @@ double Tolerances::getRelativeTolerance() const {
 }
 
 void Tolerances::setRelativeTolerance(double relativeTolerance) {
-    MathUtils::isPositiveDouble(relativeTolerance);
+    isPositiveDouble(relativeTolerance);
     m_relativeTolerance = relativeTolerance;
+}
+
+void Tolerances::isPositiveDouble(double tolerance) {
+
+    // Check that tolerance is positive
+    std::ostringstream toleranceStream;
+    toleranceStream << tolerance;
+    std::string toleranceString = toleranceStream.str();
+    std::string ErrorMessage = "Tolerance should be >0. Here tolerance = "
+            + toleranceString;
+
+    if (tolerance <= 0.)
+        throw std::range_error(ErrorMessage);
 }
 
 std::string Tolerances::toString() const {

@@ -1,5 +1,6 @@
 #include "../../../../include/partons/modules/observable/Observable.h"
 
+#include <NumA/utils/MathUtils.h>
 #include <SFML/System/Sleep.hpp>
 #include <SFML/System/Time.hpp>
 #include <exception>
@@ -10,7 +11,6 @@
 #include "../../../../include/partons/Partons.h"
 #include "../../../../include/partons/services/ObservableService.h"
 #include "../../../../include/partons/ServiceObjectRegistry.h"
-#include "../../../../include/partons/utils/math/MathUtils.h"
 #include "../../../../include/partons/utils/ParameterList.h"
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
 #include "../../../../include/partons/utils/thread/Packet.h"
@@ -62,7 +62,7 @@ void Observable::run() {
             Packet packet = pObservableService->popTaskFormQueue();
             packet >> observableKinematic;
 
-            ObservableResult result = compute(observableKinematic);
+            pObservableService->add(compute(observableKinematic));
 
 //        info(__func__,
 //                Formatter() << "[Thread] id = " << getThreadId() << " "
@@ -114,7 +114,8 @@ ObservableResult Observable::compute(double xB, double t, double Q2,
 
         //TODO improve
         observableResult = ObservableResult(getClassName(),
-                compute(m_pProcess, MathUtils::convertDegreeToRadian(phi)));
+                compute(m_pProcess,
+                        NumA::MathUtils::convertDegreeToRadian(phi)));
         observableResult.setComputationModuleName(m_pProcess->getClassName());
         observableResult.setObservableType(m_observableType);
         observableResult.setKinematic(ObservableKinematic(xB, t, Q2, phi));

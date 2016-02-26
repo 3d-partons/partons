@@ -13,7 +13,12 @@
 #include <vector>
 
 #include "DVCSConvolCoeffFunctionModule.h"
-#include "../../../../../include/partons/beans/gpd/GPDResult.h"
+
+namespace NumA {
+class FunctionType1D;
+} /* namespace NumA */
+
+class GPDResult;
 
 class DVCSCFFVGGModel: public DVCSConvolCoeffFunctionModule {
 
@@ -47,9 +52,13 @@ private:
 
     double calculate_gpd_combination(GPDResult gpdResult); ///< compute combination of GPDs
     void calculate_xixit_value();   ///< compute GPDs at (xi, xi, t)
-    double intd_vector_part(std::vector<double> x, std::vector<double> par); ///< wrapper for integral of GPD over x for direct Faynman diagram
-    double intc_vector_part(std::vector<double> x, std::vector<double> par); ///< wrapper for integral of GPD over x for crossed Faynman diagram
+    double intd_vector_part(double x, std::vector<double> par); ///< wrapper for integral of GPD over x for direct Faynman diagram
+    double intc_vector_part(double x, std::vector<double> par); ///< wrapper for integral of GPD over x for crossed Faynman diagram
 
+    NumA::FunctionType1D* m_pIntd_vector_part;
+    NumA::FunctionType1D* m_pIntc_vector_part;
+
+    void initFunctorsForIntegrations();
 };
 
 #endif /* DVCSCFFVGGMODEL_H_ */

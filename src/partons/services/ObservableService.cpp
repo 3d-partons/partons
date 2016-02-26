@@ -30,7 +30,7 @@ const unsigned int ObservableService::classId =
                 new ObservableService("ObservableService"));
 
 ObservableService::ObservableService(const std::string &className) :
-        ServiceObject(className) {
+        ServiceObjectTyped(className) {
 }
 
 ObservableService::~ObservableService() {
@@ -110,6 +110,9 @@ ResultList<ObservableResult> ObservableService::computeManyKinematicOneModel(
     launchAllThreadAndWaitingFor();
 
     // ####################################################
+
+    results = getResultList(pDVCSModule->getClassName());
+    clearResultListBuffer();
 
     return results;
 }

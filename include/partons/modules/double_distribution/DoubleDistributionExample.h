@@ -18,6 +18,10 @@
 #include "../DoubleDistributionModule.h"
 #include "../MathIntegratorModule.h"
 
+namespace NumA {
+class FunctionType1D;
+} /* namespace NumA */
+
 class DoubleDistributionExample: public DoubleDistributionModule,
         public MathIntegratorModule {
 public:
@@ -44,8 +48,12 @@ protected:
     virtual void isModuleWellConfigured();
 
 private:
-    double integrateExample(std::vector<double> &variables,
+    double integrateExample(double x,
             std::vector<double> &parameters);
+
+    NumA::FunctionType1D* m_pIntegrateExample;
+
+    void initFunctorsForIntegrations();
 };
 
 #endif /* DOUBLE_DISTRIBUTION_EXAMPLE_H */

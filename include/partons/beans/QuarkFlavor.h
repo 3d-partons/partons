@@ -38,6 +38,8 @@ public:
 
     QuarkFlavor(Type type);
 
+    virtual ~QuarkFlavor();
+
     operator Type() const;
 
     std::string toString();

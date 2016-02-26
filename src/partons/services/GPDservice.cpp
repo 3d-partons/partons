@@ -14,6 +14,7 @@
 #include "../../../include/partons/ModuleObjectFactory.h"
 #include "../../../include/partons/Partons.h"
 #include "../../../include/partons/services/GPDService.h"
+#include "../../../include/partons/ServiceObjectTyped.h"
 #include "../../../include/partons/utils/GenericType.h"
 #include "../../../include/partons/utils/ParameterList.h"
 #include "../../../include/partons/utils/stringUtils/Formatter.h"
@@ -32,7 +33,7 @@ const unsigned int GPDService::classId =
                 new GPDService("GPDService"));
 
 GPDService::GPDService(const std::string &className) :
-        ServiceObject(className), m_pGPDKinematic(0), m_pGPDModule(0) {
+        ServiceObjectTyped(className), m_pGPDKinematic(0), m_pGPDModule(0) {
 }
 
 GPDService::~GPDService() {
@@ -244,6 +245,9 @@ ResultList<GPDResult> GPDService::computeManyKinematicOneModel(
 //                computeGPDModelRestrictedByGPDType(gpdKinematicList[i],
 //                        pGPDModule, GPDType::ALL));
 //    }
+
+    results = getResultList(pGPDModule->getClassName());
+    clearResultListBuffer();
 
     return results;
 }

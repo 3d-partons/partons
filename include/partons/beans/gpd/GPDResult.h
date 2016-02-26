@@ -40,8 +40,8 @@ public:
 
     virtual std::string toString() const;
 
-    ComparisonReport compare(const GPDResult &referenceObject,
-            const Tolerances &tolerances) const;
+//    ComparisonReport compare(const GPDResult &referenceObject,
+//            const NumA::Tolerances &tolerances) const;
 
     // ##### GETTERS & SETTERS #####
 

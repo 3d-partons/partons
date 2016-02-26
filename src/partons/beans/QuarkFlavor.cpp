@@ -71,3 +71,6 @@ QuarkFlavor::Type QuarkFlavor::getType() const {
 void QuarkFlavor::setType(Type type) {
     m_type = type;
 }
+
+QuarkFlavor::~QuarkFlavor() {
+}

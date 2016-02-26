@@ -36,8 +36,7 @@ AcCos2phi* AcCos2phi::clone() const {
 }
 
 //TODO check
-double AcCos2phi::functionToIntegrate(std::vector<double> x,
-        std::vector<double> params) {
+double AcCos2phi::functionToIntegrate(double x, std::vector<double> params) {
     // x[0] = phi
-    return m_pAcObservable->compute(m_pProcess, x[0]) * cos(2 * x[0]);
+    return m_pAcObservable->compute(m_pProcess, x) * cos(2 * x);
 }

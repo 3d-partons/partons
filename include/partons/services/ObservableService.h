@@ -18,13 +18,15 @@
 #include "../beans/observable/ObservableKinematic.h"
 #include "../beans/observable/ObservableResult.h"
 #include "../beans/ResultList.h"
-#include "../ServiceObject.h"
+#include "../ServiceObjectTyped.h"
+
+class Task;
 
 class DVCSConvolCoeffFunctionModule;
 class DVCSModule;
 class Observable;
 
-class ObservableService: public ServiceObject {
+class ObservableService: public ServiceObjectTyped<ObservableResult> {
 public:
     static const std::string FUNCTION_NAME_COMPUTE_DVCS_OBSERVABLE;
     static const std::string FUNCTION_NAME_COMPUTE_MANY_KINEMATIC_ONE_MODEL;
@@ -54,6 +56,7 @@ public:
     virtual void computeTask(Task &task);
 
 private:
+
     //TODO improve object copy
     ObservableResult computeDVCSObservableTask(Task &task);
     ResultList<ObservableResult> computeManyKinematicOneModelTask(Task &task);

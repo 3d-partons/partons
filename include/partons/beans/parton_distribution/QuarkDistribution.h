@@ -7,7 +7,9 @@
 #include "../QuarkFlavor.h"
 
 class ComparisonReport;
+namespace NumA {
 class Tolerances;
+} /* namespace NumA */
 
 class QuarkDistribution: public BaseObject {
 public:
@@ -24,8 +26,8 @@ public:
 
     virtual std::string toString() const;
 
-    ComparisonReport compare(const QuarkDistribution& referenceObject,
-            const Tolerances& tolerances) const;
+//    ComparisonReport compare(const QuarkDistribution& referenceObject,
+//            const NumA::Tolerances& tolerances) const;
 
     // ##### GETTERS & SETTERS #####
 

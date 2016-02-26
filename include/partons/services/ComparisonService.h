@@ -2,8 +2,7 @@
 
 #include "../ServiceObject.h"
 #include "../utils/compare/ComparisonMode.h"
-#include "../utils/compare/ComparisonReportList.h"
-#include "../utils/test/ComparisonReport.h"
+#include "../utils/compare/ComparisonReport.h"
 
 class ComparisonService: public ServiceObject {
 public:
@@ -21,19 +20,13 @@ public:
 
     virtual void computeTask(Task &task);
 
-    template<class T>
-    ComparisonReport compare(const T &lhs, const T &rhs,
-            const Tolerances &tolerances) const {
-        return lhs.compare(rhs, tolerances);
-    }
-
-    template<class T>
-    ComparisonReportList compareList(const T &objectToCompare,
-            const T &referenceObject, const Tolerances &tolerances,
-            const ComparisonMode &comparisonMode) const {
-        return objectToCompare.compare(referenceObject, tolerances,
-                comparisonMode);
-    }
+//    template<class T>
+//    ComparisonReport compare(const T &objectToCompare, const T &referenceObject,
+//            const NumA::Tolerances &tolerances,
+//            const ComparisonMode &comparisonMode) const {
+//        return objectToCompare.compare(referenceObject, tolerances,
+//                comparisonMode);
+//    }
 
 private:
 

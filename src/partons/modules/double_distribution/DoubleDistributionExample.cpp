@@ -1,6 +1,8 @@
 #include "../../../../include/partons/modules/double_distribution/DoubleDistributionExample.h"
 
-#include <NumA/integration/MathIntegrator.h>
+#include <NumA/integration/one_dimension/Functor1D.h>
+#include <NumA/integration/one_dimension/Integrator1D.h>
+#include <NumA/integration/one_dimension/IntegratorType1D.h>
 #include <map>
 #include <utility>
 
@@ -34,7 +36,16 @@ DoubleDistributionExample::DoubleDistributionExample(
 
 }
 
+void DoubleDistributionExample::initFunctorsForIntegrations() {
+    m_pIntegrateExample = NumA::Integrator1D::newIntegrationFunctor(this,
+            &DoubleDistributionExample::integrateExample);
+}
+
 DoubleDistributionExample::~DoubleDistributionExample() {
+    if (m_pIntegrateExample) {
+        delete m_pIntegrateExample;
+        m_pIntegrateExample = 0;
+    }
 }
 
 DoubleDistributionExample::DoubleDistributionExample(
@@ -42,6 +53,8 @@ DoubleDistributionExample::DoubleDistributionExample(
         DoubleDistributionModule(other), MathIntegratorModule(other) {
 
     // Copy each class variables ; see copy constructor from parent class "DualDistributionModule"
+
+    initFunctorsForIntegrations();
 }
 
 DoubleDistributionExample* DoubleDistributionExample::clone() const {
@@ -52,7 +65,8 @@ void DoubleDistributionExample::initModule() {
     // Before call parent init.
     DoubleDistributionModule::initModule();
 
-    m_mathIntegrator.setIntegrationMode(NumA::MathIntegrator::EXAMPLE);
+    m_mathIntegrator = NumA::Integrator1D::newIntegrator(
+            NumA::IntegratorType1D::GK21_ADAPTIVE);
 
     // Compute some variables depend from kinematic value before use this specific module.
     // See "src/modules/convolCoeffFunction/DVCSCFFModel::initModule()" for example.
@@ -77,8 +91,7 @@ PartonDistribution DoubleDistributionExample::computeF() {
 
     std::vector<double> parameters;
 
-    m_mathIntegrator.integrate(this,
-            &DoubleDistributionExample::integrateExample, -1., 1., parameters);
+    m_mathIntegrator->integrate(m_pIntegrateExample, -1., 1., parameters);
 
     partonDistribution.addQuarkDistribution(quarkDistribution_u);
     partonDistribution.addQuarkDistribution(quarkDistribution_d);
@@ -119,7 +132,7 @@ PartonDistribution DoubleDistributionExample::computeK() {
     return partonDistribution;
 }
 
-double DoubleDistributionExample::integrateExample(
-        std::vector<double>& variables, std::vector<double>& parameters) {
+double DoubleDistributionExample::integrateExample(double x,
+        std::vector<double>& parameters) {
     return 1.;
 }

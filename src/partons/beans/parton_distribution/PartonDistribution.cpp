@@ -3,9 +3,6 @@
 #include <sstream>
 #include <utility>
 
-#include "../../../../include/partons/utils/compare/ComparisonMode.h"
-#include "../../../../include/partons/utils/compare/ComparisonReportList.h"
-#include "../../../../include/partons/utils/test/ComparisonReport.h"
 
 PartonDistribution::PartonDistribution() :
         BaseObject("PartonDistribution") {
@@ -128,23 +125,23 @@ void PartonDistribution::addQuarkDistribution(
                     quarkDistribution));
 }
 
-ComparisonReport PartonDistribution::compare(
-        const PartonDistribution& referenceObject,
-        const Tolerances& tolerances) const {
-
-    ComparisonReport comparisonReport(getClassName(), toString());
-
-    // compare gluon distribution
-    comparisonReport.addChildren(
-            m_gluonDistribution.compare(referenceObject.getGluonDistribution(),
-                    tolerances));
-
-    // compare quark distribution list
-
-    comparisonReport.addChildren(
-            this->getListOfQuarkDistribution().compare(
-                    referenceObject.getListOfQuarkDistribution(), tolerances,
-                    ComparisonMode::EQUAL));
-
-    return comparisonReport;
-}
+//ComparisonReport PartonDistribution::compare(
+//        const PartonDistribution& referenceObject,
+//        const NumA::Tolerances& tolerances) const {
+//
+//    ComparisonReport comparisonReport(getClassName(), toString());
+//
+//    // compare gluon distribution
+//    comparisonReport.addChildren(
+//            m_gluonDistribution.compare(referenceObject.getGluonDistribution(),
+//                    tolerances));
+//
+//    // compare quark distribution list
+//
+//    comparisonReport.addChildren(
+//            this->getListOfQuarkDistribution().compare(
+//                    referenceObject.getListOfQuarkDistribution(), tolerances,
+//                    ComparisonMode::EQUAL));
+//
+//    return comparisonReport;
+//}

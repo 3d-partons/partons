@@ -12,7 +12,9 @@
  * @brief
  */
 
-#include <NumA/integration/MathIntegrator.h>
+namespace NumA {
+class Integrator1D;
+} /* namespace NumA */
 
 class MathIntegratorModule {
 public:
@@ -27,7 +29,7 @@ protected:
      */
     MathIntegratorModule(const MathIntegratorModule &other);
 
-    NumA::MathIntegrator m_mathIntegrator;
+    NumA::Integrator1D* m_mathIntegrator;
 };
 
 #endif /* MATH_INTEGRATOR_MODULE_H */

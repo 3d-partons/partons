@@ -707,11 +707,11 @@ void GapEquationSolverModule::setNz(int nz) {
     m_Nz = nz;
 }
 
-const Tolerances& GapEquationSolverModule::getTolerance() const {
+const NumA::Tolerances& GapEquationSolverModule::getTolerance() const {
     return m_tolerance;
 }
 
-void GapEquationSolverModule::setTolerance(const Tolerances& tolerance) {
+void GapEquationSolverModule::setTolerance(const NumA::Tolerances& tolerance) {
     m_tolerance = tolerance;
 }
 

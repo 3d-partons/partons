@@ -21,11 +21,11 @@
 #include "../beans/List.h"
 #include "../beans/ResultList.h"
 #include "../modules/GPDModule.h"
-#include "../ServiceObject.h"
+#include "../ServiceObjectTyped.h"
 
 class GPDEvolutionModule;
 
-class GPDService: public ServiceObject {
+class GPDService: public ServiceObjectTyped<GPDResult> {
 public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 

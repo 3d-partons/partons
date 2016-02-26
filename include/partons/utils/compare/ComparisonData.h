@@ -4,7 +4,7 @@
 /**
  * @file ComparisonData.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 01 December 2015
+ * @date 24 February 2016
  * @version 1.0
  *
  * @class ComparisonData
@@ -12,44 +12,38 @@
  * @brief
  */
 
+#include <NumA/utils/Differences.h>
 #include <string>
-
-class Differences;
-class Tolerances;
 
 class ComparisonData {
 public:
-    ComparisonData(bool isPassed, const std::string &variableName,
-            const std::string &variableValue,
-            const std::string &variableValueReference);
-
     ComparisonData(bool isPassed, const std::string& variableName,
             const std::string& variableValue,
-            const std::string& variableValueReference, Tolerances* pTolerances,
-            Differences* pDifferences);
+            const std::string& variableValueReference,
+            const NumA::Differences &differences,
+            const std::string &objectInfo);
 
     virtual ~ComparisonData();
 
     std::string toString() const;
 
-    void setAdditionalInfo(const std::string& additionalInfo);
-    void setVariableName(const std::string& variableName);
+    // #############################
+    // ##### GETTERS & SETTERS #####
+    // #############################
 
-    const std::string& getAdditionalInfo() const;
-    const std::string& getVariableName() const;
+    bool isIsComparisonPassed() const;
+    void setIsComparisonPassed(bool isComparisonPassed);
 
 private:
-    bool m_passed;
+    bool m_isComparisonPassed;
+
+    std::string m_objectInfo;
 
     std::string m_variableName;
     std::string m_variableValue;
     std::string m_variableValueReference;
 
-    // TODO Useful ?
-    std::string m_additionalInfo;
-
-    Tolerances* m_pTolerances;
-    Differences* m_pDifferences;
+    NumA::Differences m_differences;
 };
 
 #endif /* COMPARISON_DATA_H */

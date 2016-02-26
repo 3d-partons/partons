@@ -1,14 +1,15 @@
 #include "../../../../include/partons/utils/compare/CompareUtils.h"
 
+#include <NumA/utils/Differences.h>
+#include <NumA/utils/Tolerances.h>
 #include <cmath>
 
 #include "../../../../include/partons/utils/compare/ComparisonData.h"
-#include "../../../../include/partons/utils/compare/Differences.h"
-#include "../../../../include/partons/utils/math/Tolerances.h"
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 ComparisonData CompareUtils::compareDouble(const std::string &variableName,
-        const double lhs, const double rhs, const Tolerances &tolerances) {
+        const double lhs, const double rhs, const NumA::Tolerances &tolerances,
+        const std::string &parentObjectInfo) {
 
     bool comparisonResult = false;
 
@@ -30,6 +31,7 @@ ComparisonData CompareUtils::compareDouble(const std::string &variableName,
     }
 
     return ComparisonData(comparisonResult, variableName, Formatter() << lhs,
-            Formatter() << rhs, new Tolerances(tolerances),
-            new Differences(absoluteDifference, relativeDifference));
+            Formatter() << rhs,
+            NumA::Differences(absoluteDifference, relativeDifference),
+            parentObjectInfo);
 }

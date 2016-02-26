@@ -14,9 +14,8 @@
 
 #include <string>
 
-class ComparisonService;
-
 class BaseObjectRegistry;
+class ComparisonService;
 class DoubleDistributionService;
 class DVCSConvolCoeffFunctionService;
 class GPDService;

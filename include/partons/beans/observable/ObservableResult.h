@@ -27,10 +27,13 @@ public:
     ObservableResult(const std::string &observableName, double value);
     virtual ~ObservableResult();
 
-    virtual std::string toString();
+    virtual std::string toString() const;
+    virtual std::string getObjectInfo() const;
 
-    ComparisonReport compare(const ObservableResult &referenceObject,
-            const Tolerances &tolerances) const;
+    void compare(ComparisonReport* pRootComparisonReport,
+            const ObservableResult &referenceObject,
+            const NumA::Tolerances &tolerances, std::string parentObjectInfo =
+                    "") const;
 
     void setKinematic(const ObservableKinematic &kinematic);
     void setStatError(const ErrorBar& statError);

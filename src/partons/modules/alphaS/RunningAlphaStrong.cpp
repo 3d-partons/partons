@@ -399,7 +399,7 @@ void RunningAlphaStrong::Running(double Mu, double Lambda,
  *    - Parameters[ 2 ] is the number of active flavours
  *
  */
-double RunningAlphaStrong::FindLambda(std::vector<double> Lambda,
+double RunningAlphaStrong::FindLambda(double Lambda,
         std::vector<double> Parameters) {
     unsigned int NFlavour = (unsigned int) Parameters[2];
 
@@ -416,7 +416,7 @@ double RunningAlphaStrong::FindLambda(std::vector<double> Lambda,
         exit(-1);
     }
 
-    Running(Parameters[0], Lambda[0], NFlavour);
+    Running(Parameters[0], Lambda, NFlavour);
 
     return fAlphaS - Parameters[1];
 }

@@ -2,10 +2,6 @@
 
 #include <sstream>
 
-#include "../../../../include/partons/utils/compare/CompareUtils.h"
-#include "../../../../include/partons/utils/compare/ComparisonData.h"
-#include "../../../../include/partons/utils/test/ComparisonReport.h"
-
 const std::string QuarkDistribution::QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DISTRIBUTION =
         "quark_distribution";
 const std::string QuarkDistribution::QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DISTRIBUTION_PLUS =
@@ -99,17 +95,17 @@ void QuarkDistribution::setQuark(double quark) {
     this->quark = quark;
 }
 
-ComparisonReport QuarkDistribution::compare(
-        const QuarkDistribution& referenceObject,
-        const Tolerances& tolerances) const {
-    ComparisonReport comparisonReport(getClassName());
-
-    ComparisonData quark_distribution_plus_comparisonData =
-            CompareUtils::compareDouble(
-                    QuarkDistribution::QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DISTRIBUTION_PLUS,
-                    getQuarkDistributionPlus(),
-                    referenceObject.getQuarkDistributionPlus(), tolerances);
-    comparisonReport.addComparisonData(quark_distribution_plus_comparisonData);
-
-    return comparisonReport;
-}
+//ComparisonReport QuarkDistribution::compare(
+//        const QuarkDistribution& referenceObject,
+//        const NumA::Tolerances& tolerances) const {
+//    ComparisonReport comparisonReport(getClassName());
+//
+//    ComparisonData quark_distribution_plus_comparisonData =
+//            CompareUtils::compareDouble(
+//                    QuarkDistribution::QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DISTRIBUTION_PLUS,
+//                    getQuarkDistributionPlus(),
+//                    referenceObject.getQuarkDistributionPlus(), tolerances);
+//    comparisonReport.addComparisonData(quark_distribution_plus_comparisonData);
+//
+//    return comparisonReport;
+//}

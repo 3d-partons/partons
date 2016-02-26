@@ -4,11 +4,6 @@
 #include <stdexcept>
 #include <utility>
 
-#include "../../../../include/partons/utils/compare/ComparisonMode.h"
-#include "../../../../include/partons/utils/compare/ComparisonReportList.h"
-#include "../../../../include/partons/utils/stringUtils/Formatter.h"
-#include "../../../../include/partons/utils/test/ComparisonReport.h"
-
 const std::string GPDResult::GPD_RESULT_DB_TABLE_NAME = "gpd_result";
 
 GPDResult::GPDResult() :
@@ -103,19 +98,19 @@ void GPDResult::setKinematic(const GPDKinematic& kinematic) {
     m_kinematic = kinematic;
 }
 
-ComparisonReport GPDResult::compare(const GPDResult& referenceObject,
-        const Tolerances& tolerances) const {
-
-    ComparisonReport comparisonReport(getClassName(),
-            Formatter() << m_kinematic.toString());
-
-    //TODO replace hardcoded comparisonMode
-    ComparisonReportList partonDistributionReportList =
-            this->getPartonDistributionList().compare(
-                    referenceObject.getPartonDistributionList(), tolerances,
-                    ComparisonMode::EQUAL);
-
-    comparisonReport.addChildren(partonDistributionReportList);
-
-    return comparisonReport;
-}
+//ComparisonReport GPDResult::compare(const GPDResult& referenceObject,
+//        const NumA::Tolerances& tolerances) const {
+//
+//    ComparisonReport comparisonReport(getClassName(),
+//            Formatter() << m_kinematic.toString());
+//
+//    //TODO replace hardcoded comparisonMode
+//    ComparisonReportList partonDistributionReportList =
+//            this->getPartonDistributionList().compare(
+//                    referenceObject.getPartonDistributionList(), tolerances,
+//                    ComparisonMode::EQUAL);
+//
+//    comparisonReport.addChildren(partonDistributionReportList);
+//
+//    return comparisonReport;
+//}

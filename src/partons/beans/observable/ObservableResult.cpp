@@ -2,8 +2,8 @@
 
 #include "../../../../include/partons/utils/compare/CompareUtils.h"
 #include "../../../../include/partons/utils/compare/ComparisonData.h"
+#include "../../../../include/partons/utils/compare/ComparisonReport.h"
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
-#include "../../../../include/partons/utils/test/ComparisonReport.h"
 
 const std::string ObservableResult::PARAMETER_NAME_OBSERVABLE_VALUE =
         "observable value";
@@ -23,22 +23,27 @@ ObservableResult::ObservableResult(const std::string &observableName,
 ObservableResult::~ObservableResult() {
 }
 
-std::string ObservableResult::toString() {
+std::string ObservableResult::toString() const {
     return Formatter() << m_kinematic.toString() << " observable = " << m_value;
 }
 
-ComparisonReport ObservableResult::compare(
-        const ObservableResult& referenceObject,
-        const Tolerances& tolerances) const {
+void ObservableResult::compare(ComparisonReport* pRootComparisonReport,
+        const ObservableResult &referenceObject,
+        const NumA::Tolerances &tolerances,
+        std::string parentObjectInfo) const {
 
-    ComparisonReport comparisonReport(getClassName());
+    if (pRootComparisonReport) {
+        //TODO faire un test pour valider la cinématique associée ainsi que le type d'observable
 
-    ComparisonData xb_comparisonData = CompareUtils::compareDouble(
-            ObservableResult::PARAMETER_NAME_OBSERVABLE_VALUE, getValue(),
-            referenceObject.getValue(), tolerances);
-    comparisonReport.addComparisonData(xb_comparisonData);
+        ComparisonData xb_comparisonData = CompareUtils::compareDouble(
+                ObservableResult::PARAMETER_NAME_OBSERVABLE_VALUE, getValue(),
+                referenceObject.getValue(), tolerances,
+                Formatter() << parentObjectInfo << this->getObjectInfo());
 
-    return comparisonReport;
+        pRootComparisonReport->addComparisonData(xb_comparisonData);
+    } else {
+        error(__func__, "pRootComparisonReport is NULL");
+    }
 }
 
 // ##### GETTERS & SETTERS #####
@@ -93,4 +98,9 @@ void ObservableResult::setTotalError(double totalError) {
 
 void ObservableResult::setValue(double value) {
     m_value = value;
+}
+
+std::string ObservableResult::getObjectInfo() const {
+    return Formatter() << "Observable " << m_observableName
+            << " with kinematic( " << m_kinematic.toString() << ")";
 }

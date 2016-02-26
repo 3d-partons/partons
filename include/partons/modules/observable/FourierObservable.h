@@ -18,6 +18,10 @@
 #include "../MathIntegratorModule.h"
 #include "Observable.h"
 
+namespace NumA {
+class FunctionType1D;
+} /* namespace NumA */
+
 class FourierObservable: public Observable, public MathIntegratorModule {
 public:
     FourierObservable(const std::string &className);
@@ -34,8 +38,13 @@ public:
 protected:
     FourierObservable(const FourierObservable &other);
 
-    virtual double functionToIntegrate(std::vector<double> x,
+    virtual double functionToIntegrate(double x,
             std::vector<double> params) = 0;
+
+private:
+    NumA::FunctionType1D* m_pFunctionToIntegrate;
+
+    void initFunctorsForIntegrations();
 };
 
 #endif /* FOURIER_OBSERVABLE_H */

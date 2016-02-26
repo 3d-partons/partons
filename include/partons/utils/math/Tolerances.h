@@ -35,6 +35,8 @@ public:
 private:
     double m_absoluteTolerance;
     double m_relativeTolerance;
+
+    void isPositiveDouble(double tolerance);
 };
 
 #endif /* TOLERANCES_H_ */

@@ -20,7 +20,9 @@
 class ComparisonReport;
 class Packet;
 class ParameterList;
+namespace NumA {
 class Tolerances;
+} /* namespace NumA */
 
 class ObservableKinematic: public Kinematic {
 public:
@@ -63,8 +65,8 @@ public:
      */
     virtual std::string toString() const;
 
-    ComparisonReport compare(const ObservableKinematic &referenceObject,
-            const Tolerances &tolerances) const;
+//    ComparisonReport compare(const ObservableKinematic &referenceObject,
+//            const NumA::Tolerances &tolerances) const;
 
     // ##### GETTERS & SETTERS #####
 

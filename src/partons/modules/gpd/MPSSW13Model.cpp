@@ -1,6 +1,8 @@
 #include "../../../../include/partons/modules/gpd/MPSSW13Model.h"
 
-#include <NumA/integration/MathIntegrator.h>
+#include <NumA/integration/one_dimension/Functor1D.h>
+#include <NumA/integration/one_dimension/Integrator1D.h>
+#include <NumA/integration/one_dimension/IntegratorType1D.h>
 #include <cmath>
 #include <map>
 #include <utility>
@@ -33,6 +35,71 @@ MPSSW13Model::MPSSW13Model(const std::string &className) :
 
     m_listGPDComputeTypeAvailable.insert(
             std::make_pair(GPDType::H, &GPDModule::computeH));
+
+    initFunctorsForIntegrations();
+
+}
+
+void MPSSW13Model::initFunctorsForIntegrations() {
+    m_pIntegralHuVal = NumA::Integrator1D::newIntegrationFunctor(this,
+            &MPSSW13Model::IntegralHuVal);
+
+    m_pIntegralHdVal = NumA::Integrator1D::newIntegrationFunctor(this,
+            &MPSSW13Model::IntegralHdVal);
+
+    m_pIntegralHuValMx = NumA::Integrator1D::newIntegrationFunctor(this,
+            &MPSSW13Model::IntegralHuValMx);
+
+    m_pIntegralHdValMx = NumA::Integrator1D::newIntegrationFunctor(this,
+            &MPSSW13Model::IntegralHdValMx);
+
+    m_pIntegralxLargeHuSea = NumA::Integrator1D::newIntegrationFunctor(this,
+            &MPSSW13Model::IntegralxLargeHuSea);
+
+    m_pIntegralxLargeHdSea = NumA::Integrator1D::newIntegrationFunctor(this,
+            &MPSSW13Model::IntegralxLargeHdSea);
+
+    m_pIntegralxSmall1HuSea = NumA::Integrator1D::newIntegrationFunctor(this,
+            &MPSSW13Model::IntegralxSmall1HuSea);
+
+    m_pIntegralxSmall2HuSea = NumA::Integrator1D::newIntegrationFunctor(this,
+            &MPSSW13Model::IntegralxSmall2HuSea);
+
+    m_pIntegralxSmall1HdSea = NumA::Integrator1D::newIntegrationFunctor(this,
+            &MPSSW13Model::IntegralxSmall1HdSea);
+
+    m_pIntegralxSmall2HdSea = NumA::Integrator1D::newIntegrationFunctor(this,
+            &MPSSW13Model::IntegralxSmall2HdSea);
+
+    m_pIntegralxLargeHuSeaMx = NumA::Integrator1D::newIntegrationFunctor(this,
+            &MPSSW13Model::IntegralxLargeHuSeaMx);
+
+    m_pIntegralxLargeHdSeaMx = NumA::Integrator1D::newIntegrationFunctor(this,
+            &MPSSW13Model::IntegralxLargeHdSeaMx);
+
+    m_pIntegralxLargeHsSea = NumA::Integrator1D::newIntegrationFunctor(this,
+            &MPSSW13Model::IntegralxLargeHsSea);
+
+    m_pIntegralxSmall1HsSea = NumA::Integrator1D::newIntegrationFunctor(this,
+            &MPSSW13Model::IntegralxSmall1HsSea);
+
+    m_pIntegralxSmall2HsSea = NumA::Integrator1D::newIntegrationFunctor(this,
+            &MPSSW13Model::IntegralxSmall2HsSea);
+
+    m_pIntegralxLargeHsSeaMx = NumA::Integrator1D::newIntegrationFunctor(this,
+            &MPSSW13Model::IntegralxLargeHsSeaMx);
+
+    m_pIntegralxLargeHg = NumA::Integrator1D::newIntegrationFunctor(this,
+            &MPSSW13Model::IntegralxLargeHg);
+
+    m_pIntegralxSmall1Hg = NumA::Integrator1D::newIntegrationFunctor(this,
+            &MPSSW13Model::IntegralxSmall1Hg);
+
+    m_pIntegralxSmall2Hg = NumA::Integrator1D::newIntegrationFunctor(this,
+            &MPSSW13Model::IntegralxSmall2Hg);
+
+    m_pIntegralxLargeHgMx = NumA::Integrator1D::newIntegrationFunctor(this,
+            &MPSSW13Model::IntegralxLargeHgMx);
 }
 
 void MPSSW13Model::init() {
@@ -42,8 +109,8 @@ void MPSSW13Model::init() {
     // Central PDF set
     m_Forward = new c_mstwpdf(gridFilePath);
 
-    m_mathIntegrator.setIntegrationMode(
-            NumA::MathIntegrator::GSL_ADAPTIVE_SINGULAR);
+    m_mathIntegrator = NumA::Integrator1D::newIntegrator(
+            NumA::IntegratorType1D::GK21_ADAPTIVE);
 }
 
 MPSSW13Model::MPSSW13Model(const MPSSW13Model& other) :
@@ -65,6 +132,8 @@ MPSSW13Model::MPSSW13Model(const MPSSW13Model& other) :
 
     //TODO make a clone instance
     m_Forward = other.m_Forward;
+
+    initFunctorsForIntegrations();
 }
 
 MPSSW13Model* MPSSW13Model::clone() const {
@@ -75,6 +144,13 @@ MPSSW13Model::~MPSSW13Model() {
     if (m_Forward) {
         delete m_Forward;
         m_Forward = 0;
+    }
+
+    //TODO
+    // Destroy all functors
+    if (m_pIntegralHuVal) {
+        delete m_pIntegralHuVal;
+        m_pIntegralHuVal = 0;
     }
 }
 
@@ -455,16 +531,15 @@ void MPSSW13Model::throwBetaException(const std::string &funcName,
                     << '\n' << "Here beta = " << betaValue << '\n');
 }
 
-double MPSSW13Model::IntegralHuVal(std::vector<double> Var,
-        std::vector<double> Par) {
+double MPSSW13Model::IntegralHuVal(double x, std::vector<double> Par) {
     double Integral;
     double pdf, beta, absbeta;
 
-    beta = Var[0];
+    beta = x;
     absbeta = fabs(beta);
 
     if (beta <= 0 || beta > 1.) {
-        throwBetaException(__func__, Var[0]);
+        throwBetaException(__func__, x);
     }
 
 //  m_Forward->Setx( beta );
@@ -482,16 +557,15 @@ double MPSSW13Model::IntegralHuVal(std::vector<double> Var,
     return Integral;
 }
 
-double MPSSW13Model::IntegralHuValMx(std::vector<double> Var,
-        std::vector<double> Par) {
+double MPSSW13Model::IntegralHuValMx(double x, std::vector<double> Par) {
     double Integral;
     double pdf, beta, absbeta;
 
-    beta = Var[0];
+    beta = x;
     absbeta = fabs(beta);
 
     if (beta <= 0 || beta > 1.) {
-        throwBetaException(__func__, Var[0]);
+        throwBetaException(__func__, x);
     }
 
 //  m_Forward->Setx( beta );
@@ -509,16 +583,15 @@ double MPSSW13Model::IntegralHuValMx(std::vector<double> Var,
     return Integral;
 }
 
-double MPSSW13Model::IntegralxLargeHuSea(std::vector<double> Var,
-        std::vector<double> Par) {
+double MPSSW13Model::IntegralxLargeHuSea(double x, std::vector<double> Par) {
     double Integral;
     double pdf, beta, absbeta;
 
-    beta = Var[0];
+    beta = x;
     absbeta = fabs(beta);
 
     if (beta <= 0 || beta > 1.) {
-        throwBetaException(__func__, Var[0]);
+        throwBetaException(__func__, x);
     }
 
 //  m_Forward->Setx( beta );
@@ -532,16 +605,15 @@ double MPSSW13Model::IntegralxLargeHuSea(std::vector<double> Var,
     return Integral;
 }
 
-double MPSSW13Model::IntegralxLargeHuSeaMx(std::vector<double> Var,
-        std::vector<double> Par) {
+double MPSSW13Model::IntegralxLargeHuSeaMx(double x, std::vector<double> Par) {
     double Integral;
     double pdf, beta, absbeta;
 
-    beta = Var[0];
+    beta = x;
     absbeta = fabs(beta);
 
     if (beta <= 0 || beta > 1.) {
-        throwBetaException(__func__, Var[0]);
+        throwBetaException(__func__, x);
     }
 
 //  m_Forward->Setx( beta );
@@ -555,16 +627,15 @@ double MPSSW13Model::IntegralxLargeHuSeaMx(std::vector<double> Var,
     return Integral;
 }
 
-double MPSSW13Model::IntegralxSmall1HuSea(std::vector<double> Var,
-        std::vector<double> Par) {
+double MPSSW13Model::IntegralxSmall1HuSea(double x, std::vector<double> Par) {
     double Integral;
     double pdf, beta, absbeta;
 
-    beta = Var[0];
+    beta = x;
     absbeta = fabs(beta);
 
     if (beta <= 0 || beta > 1.) {
-        throwBetaException(__func__, Var[0]);
+        throwBetaException(__func__, x);
     }
 
 //  m_Forward->Setx( beta );
@@ -578,16 +649,15 @@ double MPSSW13Model::IntegralxSmall1HuSea(std::vector<double> Var,
     return Integral;
 }
 
-double MPSSW13Model::IntegralxSmall2HuSea(std::vector<double> Var,
-        std::vector<double> Par) {
+double MPSSW13Model::IntegralxSmall2HuSea(double x, std::vector<double> Par) {
     double Integral;
     double pdf, beta, absbeta;
 
-    beta = Var[0];
+    beta = x;
     absbeta = fabs(beta);
 
     if (beta <= 0 || beta > 1.) {
-        throwBetaException(__func__, Var[0]);
+        throwBetaException(__func__, x);
     }
 
 //  m_Forward->Setx( beta );
@@ -610,16 +680,15 @@ double MPSSW13Model::IntegralxSmall2HuSea(std::vector<double> Var,
     return Integral;
 }
 
-double MPSSW13Model::IntegralHdVal(std::vector<double> Var,
-        std::vector<double> Par) {
+double MPSSW13Model::IntegralHdVal(double x, std::vector<double> Par) {
     double Integral;
     double pdf, beta, absbeta;
 
-    beta = Var[0];
+    beta = x;
     absbeta = fabs(beta);
 
     if (beta <= 0 || beta > 1.) {
-        throwBetaException(__func__, Var[0]);
+        throwBetaException(__func__, x);
     }
 
 //  m_Forward->Setx( beta );
@@ -637,16 +706,15 @@ double MPSSW13Model::IntegralHdVal(std::vector<double> Var,
     return Integral;
 }
 
-double MPSSW13Model::IntegralHdValMx(std::vector<double> Var,
-        std::vector<double> Par) {
+double MPSSW13Model::IntegralHdValMx(double x, std::vector<double> Par) {
     double Integral;
     double pdf, beta, absbeta;
 
-    beta = Var[0];
+    beta = x;
     absbeta = fabs(beta);
 
     if (beta <= 0 || beta > 1.) {
-        throwBetaException(__func__, Var[0]);
+        throwBetaException(__func__, x);
     }
 
 //  m_Forward->Setx( beta );
@@ -664,16 +732,15 @@ double MPSSW13Model::IntegralHdValMx(std::vector<double> Var,
     return Integral;
 }
 
-double MPSSW13Model::IntegralxLargeHdSea(std::vector<double> Var,
-        std::vector<double> Par) {
+double MPSSW13Model::IntegralxLargeHdSea(double x, std::vector<double> Par) {
     double Integral;
     double pdf, beta, absbeta;
 
-    beta = Var[0];
+    beta = x;
     absbeta = fabs(beta);
 
     if (beta <= 0 || beta > 1.) {
-        throwBetaException(__func__, Var[0]);
+        throwBetaException(__func__, x);
     }
 
 //  m_Forward->Setx( beta );
@@ -687,16 +754,15 @@ double MPSSW13Model::IntegralxLargeHdSea(std::vector<double> Var,
     return Integral;
 }
 
-double MPSSW13Model::IntegralxLargeHdSeaMx(std::vector<double> Var,
-        std::vector<double> Par) {
+double MPSSW13Model::IntegralxLargeHdSeaMx(double x, std::vector<double> Par) {
     double Integral;
     double pdf, beta, absbeta;
 
-    beta = Var[0];
+    beta = x;
     absbeta = fabs(beta);
 
     if (beta <= 0 || beta > 1.) {
-        throwBetaException(__func__, Var[0]);
+        throwBetaException(__func__, x);
     }
 
 //  m_Forward->Setx( beta );
@@ -710,16 +776,15 @@ double MPSSW13Model::IntegralxLargeHdSeaMx(std::vector<double> Var,
     return Integral;
 }
 
-double MPSSW13Model::IntegralxSmall1HdSea(std::vector<double> Var,
-        std::vector<double> Par) {
+double MPSSW13Model::IntegralxSmall1HdSea(double x, std::vector<double> Par) {
     double Integral;
     double pdf, beta, absbeta;
 
-    beta = Var[0];
+    beta = x;
     absbeta = fabs(beta);
 
     if (beta <= 0 || beta > 1.) {
-        throwBetaException(__func__, Var[0]);
+        throwBetaException(__func__, x);
     }
 
 //  m_Forward->Setx( beta );
@@ -733,16 +798,15 @@ double MPSSW13Model::IntegralxSmall1HdSea(std::vector<double> Var,
     return Integral;
 }
 
-double MPSSW13Model::IntegralxSmall2HdSea(std::vector<double> Var,
-        std::vector<double> Par) {
+double MPSSW13Model::IntegralxSmall2HdSea(double x, std::vector<double> Par) {
     double Integral;
     double pdf, beta, absbeta;
 
-    beta = Var[0];
+    beta = x;
     absbeta = fabs(beta);
 
     if (beta <= 0 || beta > 1.) {
-        throwBetaException(__func__, Var[0]);
+        throwBetaException(__func__, x);
     }
 
 //  m_Forward->Setx( beta );
@@ -758,16 +822,15 @@ double MPSSW13Model::IntegralxSmall2HdSea(std::vector<double> Var,
     return Integral;
 }
 
-double MPSSW13Model::IntegralxLargeHsSea(std::vector<double> Var,
-        std::vector<double> Par) {
+double MPSSW13Model::IntegralxLargeHsSea(double x, std::vector<double> Par) {
     double Integral;
     double pdf, beta, absbeta;
 
-    beta = Var[0];
+    beta = x;
     absbeta = fabs(beta);
 
     if (beta <= 0 || beta > 1.) {
-        throwBetaException(__func__, Var[0]);
+        throwBetaException(__func__, x);
     }
 
 //  m_Forward->Setx( beta );
@@ -781,16 +844,15 @@ double MPSSW13Model::IntegralxLargeHsSea(std::vector<double> Var,
     return Integral;
 }
 
-double MPSSW13Model::IntegralxLargeHsSeaMx(std::vector<double> Var,
-        std::vector<double> Par) {
+double MPSSW13Model::IntegralxLargeHsSeaMx(double x, std::vector<double> Par) {
     double Integral;
     double pdf, beta, absbeta;
 
-    beta = Var[0];
+    beta = x;
     absbeta = fabs(beta);
 
     if (beta <= 0 || beta > 1.) {
-        throwBetaException(__func__, Var[0]);
+        throwBetaException(__func__, x);
     }
 
 //  m_Forward->Setx( beta );
@@ -804,16 +866,15 @@ double MPSSW13Model::IntegralxLargeHsSeaMx(std::vector<double> Var,
     return Integral;
 }
 
-double MPSSW13Model::IntegralxSmall1HsSea(std::vector<double> Var,
-        std::vector<double> Par) {
+double MPSSW13Model::IntegralxSmall1HsSea(double x, std::vector<double> Par) {
     double Integral;
     double pdf, beta, absbeta;
 
-    beta = Var[0];
+    beta = x;
     absbeta = fabs(beta);
 
     if (beta <= 0 || beta > 1.) {
-        throwBetaException(__func__, Var[0]);
+        throwBetaException(__func__, x);
     }
 
 //  m_Forward->Setx( beta );
@@ -831,16 +892,15 @@ double MPSSW13Model::IntegralxSmall1HsSea(std::vector<double> Var,
     return Integral;
 }
 
-double MPSSW13Model::IntegralxSmall2HsSea(std::vector<double> Var,
-        std::vector<double> Par) {
+double MPSSW13Model::IntegralxSmall2HsSea(double x, std::vector<double> Par) {
     double Integral;
     double pdf, beta, absbeta;
 
-    beta = Var[0];
+    beta = x;
     absbeta = fabs(beta);
 
     if (beta <= 0 || beta > 1.) {
-        throwBetaException(__func__, Var[0]);
+        throwBetaException(__func__, x);
     }
 
 //  m_Forward->Setx( beta );
@@ -860,16 +920,15 @@ double MPSSW13Model::IntegralxSmall2HsSea(std::vector<double> Var,
     return Integral;
 }
 
-double MPSSW13Model::IntegralxLargeHg(std::vector<double> Var,
-        std::vector<double> Par) {
+double MPSSW13Model::IntegralxLargeHg(double x, std::vector<double> Par) {
     double Integral;
     double pdf, beta, absbeta;
 
-    beta = Var[0];
+    beta = x;
     absbeta = fabs(beta);
 
     if (beta <= 0 || beta > 1.) {
-        throwBetaException(__func__, Var[0]);
+        throwBetaException(__func__, x);
     }
 
 //  m_Forward->Setx( beta );
@@ -884,16 +943,15 @@ double MPSSW13Model::IntegralxLargeHg(std::vector<double> Var,
     return Integral;
 }
 
-double MPSSW13Model::IntegralxLargeHgMx(std::vector<double> Var,
-        std::vector<double> Par) {
+double MPSSW13Model::IntegralxLargeHgMx(double x, std::vector<double> Par) {
     double Integral;
     double pdf, beta, absbeta;
 
-    beta = Var[0];
+    beta = x;
     absbeta = fabs(beta);
 
     if (beta <= 0 || beta > 1.) {
-        throwBetaException(__func__, Var[0]);
+        throwBetaException(__func__, x);
     }
 
 //  m_Forward->Setx( beta );
@@ -908,16 +966,15 @@ double MPSSW13Model::IntegralxLargeHgMx(std::vector<double> Var,
     return Integral;
 }
 
-double MPSSW13Model::IntegralxSmall1Hg(std::vector<double> Var,
-        std::vector<double> Par) {
+double MPSSW13Model::IntegralxSmall1Hg(double x, std::vector<double> Par) {
     double Integral;
     double pdf, beta, absbeta;
 
-    beta = Var[0];
+    beta = x;
     absbeta = fabs(beta);
 
     if (beta <= 0 || beta > 1.) {
-        throwBetaException(__func__, Var[0]);
+        throwBetaException(__func__, x);
     }
 
 //  m_Forward->Setx( beta );
@@ -932,16 +989,15 @@ double MPSSW13Model::IntegralxSmall1Hg(std::vector<double> Var,
     return Integral;
 }
 
-double MPSSW13Model::IntegralxSmall2Hg(std::vector<double> Var,
-        std::vector<double> Par) {
+double MPSSW13Model::IntegralxSmall2Hg(double x, std::vector<double> Par) {
     double Integral;
     double pdf, beta, absbeta;
 
-    beta = Var[0];
+    beta = x;
     absbeta = fabs(beta);
 
     if (beta <= 0 || beta > 1.) {
-        throwBetaException(__func__, Var[0]);
+        throwBetaException(__func__, x);
     }
 
 //  m_Forward->Setx( beta );
@@ -1115,22 +1171,22 @@ PartonDistribution MPSSW13Model::computeH() {
 
     if (m_x >= m_xi) {
         // Integration, u quark
-        HuVal = m_mathIntegrator.integrate(this, &MPSSW13Model::IntegralHuVal,
-                Beta1, Beta2, emptyParameters);
+        HuVal = m_mathIntegrator->integrate(m_pIntegralHuVal, Beta1, Beta2,
+                emptyParameters);
 
         // Integration, d quark
-        HdVal = m_mathIntegrator.integrate(this, &MPSSW13Model::IntegralHdVal,
-                Beta1, Beta2, emptyParameters);
+        HdVal = m_mathIntegrator->integrate(m_pIntegralHdVal, Beta1, Beta2,
+                emptyParameters);
     }
 
     if (fabs(m_x) < m_xi) {
         // Integration, u quark
-        HuVal = m_mathIntegrator.integrate(this, &MPSSW13Model::IntegralHuVal,
-                Eps, Beta2, emptyParameters);
+        HuVal = m_mathIntegrator->integrate(m_pIntegralHuVal, Eps, Beta2,
+                emptyParameters);
 
         // Integration, d quark
-        HdVal = m_mathIntegrator.integrate(this, &MPSSW13Model::IntegralHdVal,
-                Eps, Beta2, emptyParameters);
+        HdVal = m_mathIntegrator->integrate(m_pIntegralHdVal, Eps, Beta2,
+                emptyParameters);
     }
 
     ///////////////////////////////////////////////////////////////////////
@@ -1142,22 +1198,22 @@ PartonDistribution MPSSW13Model::computeH() {
 
     if (m_Mx >= m_xi) {
         // Integration, u quark
-        HuVal = m_mathIntegrator.integrate(this, &MPSSW13Model::IntegralHuValMx,
-                Beta1Mx, Beta2Mx, emptyParameters);
+        HuVal = m_mathIntegrator->integrate(m_pIntegralHuValMx, Beta1Mx,
+                Beta2Mx, emptyParameters);
 
         // Integration, d quark
-        HdVal = m_mathIntegrator.integrate(this, &MPSSW13Model::IntegralHdValMx,
-                Beta1Mx, Beta2Mx, emptyParameters);
+        HdVal = m_mathIntegrator->integrate(m_pIntegralHdValMx, Beta1Mx,
+                Beta2Mx, emptyParameters);
     }
 
     if (fabs(m_Mx) < m_xi) {
         // Integration, u quark
-        HuVal = m_mathIntegrator.integrate(this, &MPSSW13Model::IntegralHuValMx,
-                Eps, Beta2Mx, emptyParameters);
+        HuVal = m_mathIntegrator->integrate(m_pIntegralHuValMx, Eps, Beta2Mx,
+                emptyParameters);
 
         // Integration, d quark
-        HdVal = m_mathIntegrator.integrate(this, &MPSSW13Model::IntegralHdValMx,
-                Eps, Beta2Mx, emptyParameters);
+        HdVal = m_mathIntegrator->integrate(m_pIntegralHdValMx, Eps, Beta2Mx,
+                emptyParameters);
     }
 
     //////////////////////////////////
@@ -1169,46 +1225,38 @@ PartonDistribution MPSSW13Model::computeH() {
 
     if (m_x >= m_xi) {
         // Integration, u quark
-        HuSea = m_mathIntegrator.integrate(this,
-                &MPSSW13Model::IntegralxLargeHuSea, Beta1, Beta2,
-                emptyParameters);
+        HuSea = m_mathIntegrator->integrate(m_pIntegralxLargeHuSea, Beta1,
+                Beta2, emptyParameters);
 
         // Integration, d quark
-        HdSea = m_mathIntegrator.integrate(this,
-                &MPSSW13Model::IntegralxLargeHdSea, Beta1, Beta2,
-                emptyParameters);
+        HdSea = m_mathIntegrator->integrate(m_pIntegralxLargeHdSea, Beta1,
+                Beta2, emptyParameters);
     }
 
     if (fabs(m_x) < m_xi) {
         // Integration, u quark
-        HuSea = m_mathIntegrator.integrate(this,
-                &MPSSW13Model::IntegralxSmall1HuSea, Beta2Mx, Beta2,
-                emptyParameters);
+        HuSea = m_mathIntegrator->integrate(m_pIntegralxSmall1HuSea, Beta2Mx,
+                Beta2, emptyParameters);
 
-        HuSea += m_mathIntegrator.integrate(this,
-                &MPSSW13Model::IntegralxSmall2HuSea, Eps, Beta2Mx,
-                emptyParameters);
+        HuSea += m_mathIntegrator->integrate(m_pIntegralxSmall2HuSea, Eps,
+                Beta2Mx, emptyParameters);
 
         // Integration, d quark
-        HdSea = m_mathIntegrator.integrate(this,
-                &MPSSW13Model::IntegralxSmall1HdSea, Beta2Mx, Beta2,
-                emptyParameters);
+        HdSea = m_mathIntegrator->integrate(m_pIntegralxSmall1HdSea, Beta2Mx,
+                Beta2, emptyParameters);
 
-        HdSea += m_mathIntegrator.integrate(this,
-                &MPSSW13Model::IntegralxSmall2HdSea, Eps, Beta2Mx,
-                emptyParameters);
+        HdSea += m_mathIntegrator->integrate(m_pIntegralxSmall2HdSea, Eps,
+                Beta2Mx, emptyParameters);
     }
 
     if (m_x <= -m_xi) {
         // Integration, u quark
-        HuSea = -m_mathIntegrator.integrate(this,
-                &MPSSW13Model::IntegralxLargeHuSeaMx, Beta1Mx, Beta2Mx,
-                emptyParameters);
+        HuSea = -m_mathIntegrator->integrate(m_pIntegralxLargeHuSeaMx, Beta1Mx,
+                Beta2Mx, emptyParameters);
 
         // Integration, d quark
-        HdSea = -m_mathIntegrator.integrate(this,
-                &MPSSW13Model::IntegralxLargeHdSeaMx, Beta1Mx, Beta2Mx,
-                emptyParameters);
+        HdSea = -m_mathIntegrator->integrate(m_pIntegralxLargeHdSeaMx, Beta1Mx,
+                Beta2Mx, emptyParameters);
     }
 
 //    if (m_x > 0.) {
@@ -1228,25 +1276,21 @@ PartonDistribution MPSSW13Model::computeH() {
     double Hs = 0.;
 
     if (m_x >= m_xi) {
-        Hs = m_mathIntegrator.integrate(this,
-                &MPSSW13Model::IntegralxLargeHsSea, Beta1, Beta2,
+        Hs = m_mathIntegrator->integrate(m_pIntegralxLargeHsSea, Beta1, Beta2,
                 emptyParameters);
     }
 
     if (fabs(m_x) < m_xi) {
-        Hs = m_mathIntegrator.integrate(this,
-                &MPSSW13Model::IntegralxSmall1HsSea, Beta2Mx, Beta2,
-                emptyParameters);
+        Hs = m_mathIntegrator->integrate(m_pIntegralxSmall1HsSea, Beta2Mx,
+                Beta2, emptyParameters);
 
-        Hs += m_mathIntegrator.integrate(this,
-                &MPSSW13Model::IntegralxSmall2HsSea, Eps, Beta2Mx,
+        Hs += m_mathIntegrator->integrate(m_pIntegralxSmall2HsSea, Eps, Beta2Mx,
                 emptyParameters);
     }
 
     if (m_x <= -m_xi) {
-        Hs = -m_mathIntegrator.integrate(this,
-                &MPSSW13Model::IntegralxLargeHsSeaMx, Beta1Mx, Beta2Mx,
-                emptyParameters);
+        Hs = -m_mathIntegrator->integrate(m_pIntegralxLargeHsSeaMx, Beta1Mx,
+                Beta2Mx, emptyParameters);
     }
     quarkDistribution_s.setQuarkDistribution(Hs);
 
@@ -1257,23 +1301,23 @@ PartonDistribution MPSSW13Model::computeH() {
 
     if (m_x >= m_xi) {
         // Integration
-        Hg = m_mathIntegrator.integrate(this, &MPSSW13Model::IntegralxLargeHg,
-                Beta1, Beta2, emptyParameters);
+        Hg = m_mathIntegrator->integrate(m_pIntegralxLargeHg, Beta1, Beta2,
+                emptyParameters);
     }
 
     if (fabs(m_x) < m_xi) {
         // Integration
-        Hg = m_mathIntegrator.integrate(this, &MPSSW13Model::IntegralxSmall1Hg,
-                0., Beta2, emptyParameters);
+        Hg = m_mathIntegrator->integrate(m_pIntegralxSmall1Hg, 0., Beta2,
+                emptyParameters);
 
-        Hg += m_mathIntegrator.integrate(this, &MPSSW13Model::IntegralxSmall2Hg,
-                0., Beta2Mx, emptyParameters);
+        Hg += m_mathIntegrator->integrate(m_pIntegralxSmall2Hg, 0., Beta2Mx,
+                emptyParameters);
     }
 
     if (m_x <= -m_xi) {
         // Integration
-        Hg = m_mathIntegrator.integrate(this, &MPSSW13Model::IntegralxLargeHgMx,
-                Beta1Mx, Beta2Mx, emptyParameters);
+        Hg = m_mathIntegrator->integrate(m_pIntegralxLargeHgMx, Beta1Mx,
+                Beta2Mx, emptyParameters);
     }
 
     //Hg += m_GluonDTerm;

@@ -11,7 +11,6 @@
 #include "QuarkDistribution.h"
 
 class ComparisonReport;
-class Tolerances;
 
 class PartonDistribution: public BaseObject {
 public:
@@ -34,8 +33,8 @@ public:
 
     virtual std::string toString() const;
 
-    ComparisonReport compare(const PartonDistribution &referenceObject,
-            const Tolerances &tolerances) const;
+//    ComparisonReport compare(const PartonDistribution &referenceObject,
+//            const NumA::Tolerances &tolerances) const;
 
     // ##### GETTERS & SETTERS #####
 

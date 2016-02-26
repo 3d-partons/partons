@@ -1,11 +1,15 @@
 #include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSCFFVGGModel.h"
 
-#include <NumA/integration/MathIntegrator.h>
+#include <NumA/integration/one_dimension/Functor1D.h>
+#include <NumA/integration/one_dimension/GLNPIntegrator1D.h>
+#include <NumA/integration/one_dimension/IntegratorType1D.h>
+#include <NumA/utils/Parameters.h>
 #include <cmath>
 #include <map>
 #include <stdexcept>
 #include <utility>
 
+#include "../../../../../include/partons/beans/gpd/GPDResult.h"
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
 #include "../../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
@@ -44,6 +48,8 @@ DVCSCFFVGGModel::DVCSCFFVGGModel(const std::string& className) :
     m_listOfCFFComputeFunctionAvailable.insert(
             std::make_pair(GPDType::Et,
                     &DVCSConvolCoeffFunctionModule::computePolarized));
+
+    initFunctorsForIntegrations();
 }
 
 DVCSCFFVGGModel* DVCSCFFVGGModel::clone() const {
@@ -51,12 +57,32 @@ DVCSCFFVGGModel* DVCSCFFVGGModel::clone() const {
 }
 
 DVCSCFFVGGModel::~DVCSCFFVGGModel() {
+    if (m_pIntd_vector_part) {
+        delete m_pIntd_vector_part;
+        m_pIntd_vector_part = 0;
+    }
+
+    if (m_pIntc_vector_part) {
+        delete m_pIntc_vector_part;
+        m_pIntc_vector_part = 0;
+    }
+}
+
+void DVCSCFFVGGModel::initFunctorsForIntegrations() {
+    m_pIntd_vector_part = NumA::Integrator1D::newIntegrationFunctor(this,
+            &DVCSCFFVGGModel::intd_vector_part);
+    m_pIntc_vector_part = NumA::Integrator1D::newIntegrationFunctor(this,
+            &DVCSCFFVGGModel::intc_vector_part);
 }
 
 //TODO init in mother class ? ; propagate init to mother class ?
 void DVCSCFFVGGModel::init() {
 
-    m_mathIntegrator.setIntegrationMode(NumA::MathIntegrator::GLNP);
+    int n_int_steps = 100;
+    m_mathIntegrator = NumA::Integrator1D::newIntegrator(
+            NumA::IntegratorType1D::GLNP);
+    NumA::Parameters parameters(NumA::GLNPIntegrator1D::PARAM_NAME_N, 100);
+    m_mathIntegrator->configure(parameters);
 
     m_pRunningAlphaStrongModule =
             Partons::getInstance()->getModuleObjectFactory()->newRunningAlphaStrongModule(
@@ -71,6 +97,8 @@ DVCSCFFVGGModel::DVCSCFFVGGModel(const DVCSCFFVGGModel& other) :
         DVCSConvolCoeffFunctionModule(other) {
 
     xixit = other.xixit;
+
+    initFunctorsForIntegrations();
 }
 
 void DVCSCFFVGGModel::initModule() {
@@ -104,33 +132,27 @@ std::complex<double> DVCSCFFVGGModel::computeUnpolarized() {
 
     //parameters for the integration (zero-lenght vector in this case)
     std::vector<double> parameters;
-    int n_int_steps = 100;
 
     //direct Faynman diagram
-    double intd1 = m_mathIntegrator.integrate(this,
-            &DVCSCFFVGGModel::intd_vector_part, 0., m_xi - eps_cffint,
-            parameters, n_int_steps);
+    double intd1 = m_mathIntegrator->integrate(m_pIntd_vector_part, 0.,
+            m_xi - eps_cffint, parameters);
 
-    double intd2 = m_mathIntegrator.integrate(this,
-            &DVCSCFFVGGModel::intd_vector_part, m_xi - eps_cffint,
-            m_xi + eps_cffint, parameters, n_int_steps);
+    double intd2 = m_mathIntegrator->integrate(m_pIntd_vector_part,
+            m_xi - eps_cffint, m_xi + eps_cffint, parameters);
 
-    double intd3 = m_mathIntegrator.integrate(this,
-            &DVCSCFFVGGModel::intd_vector_part, m_xi + eps_cffint, 1.,
-            parameters, n_int_steps);
+    double intd3 = m_mathIntegrator->integrate(m_pIntd_vector_part,
+            m_xi + eps_cffint, 1., parameters);
 
     std::complex<double> direct(
             intd1 + intd2 + intd3 + xixit * log((1. - m_xi) / m_xi),
             -PI * xixit);
 
     //crossed Faynman diagram
-    double intc1 = m_mathIntegrator.integrate(this,
-            &DVCSCFFVGGModel::intc_vector_part, 0., m_xi, parameters,
-            n_int_steps);
+    double intc1 = m_mathIntegrator->integrate(m_pIntc_vector_part, 0., m_xi,
+            parameters);
 
-    double intc2 = m_mathIntegrator.integrate(this,
-            &DVCSCFFVGGModel::intc_vector_part, m_xi, 1., parameters,
-            n_int_steps);
+    double intc2 = m_mathIntegrator->integrate(m_pIntc_vector_part, m_xi, 1.,
+            parameters);
 
     std::complex<double> crossed(intc1 + intc2, 0.);
 
@@ -171,21 +193,19 @@ void DVCSCFFVGGModel::calculate_xixit_value() {
     xixit = calculate_gpd_combination(gpdResult);
 }
 
-double DVCSCFFVGGModel::intd_vector_part(std::vector<double> x,
-        std::vector<double> par) {
+double DVCSCFFVGGModel::intd_vector_part(double x, std::vector<double> par) {
 
-    GPDResult gpdResult = m_pGPDModule->compute(x[0], m_xi, m_t, m_MuF2, m_MuR2,
+    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF2, m_MuR2,
             m_currentGPDComputeType);
 
-    return (calculate_gpd_combination(gpdResult) - xixit) / (x[0] - m_xi);
+    return (calculate_gpd_combination(gpdResult) - xixit) / (x - m_xi);
 }
 
-double DVCSCFFVGGModel::intc_vector_part(std::vector<double> x,
-        std::vector<double> par) {
+double DVCSCFFVGGModel::intc_vector_part(double x, std::vector<double> par) {
 
-    GPDResult gpdResult = m_pGPDModule->compute(x[0], m_xi, m_t, m_MuF2, m_MuR2,
+    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF2, m_MuR2,
             m_currentGPDComputeType);
 
-    return calculate_gpd_combination(gpdResult) / (x[0] + m_xi);
+    return calculate_gpd_combination(gpdResult) / (x + m_xi);
 }
 
