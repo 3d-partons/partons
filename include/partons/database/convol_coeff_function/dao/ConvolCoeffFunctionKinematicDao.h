@@ -12,7 +12,7 @@
  * @brief
  */
 
-#include <Qt/qsqlquery.h>
+#include <QSqlQuery>
 
 #include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 

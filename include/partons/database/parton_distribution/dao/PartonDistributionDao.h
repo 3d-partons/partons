@@ -12,7 +12,7 @@
  * @brief
  */
 
-#include <Qt/qsqlquery.h>
+#include <QSqlQuery>
 
 #include "QuarkDistributionDao.h"
 

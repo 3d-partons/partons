@@ -13,7 +13,7 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 
  # this command finds Qt4 libraries and sets all required variables
 # note that it's Qt4, not QT4 or qt4
-FIND_PACKAGE( Qt4 COMPONENTS QtCore QtSql QtGui REQUIRED )
+FIND_PACKAGE( Qt4 REQUIRED QtCore QtSql QtGui )
 
  # add some useful macros and variables
 # (QT_USE_FILE is a variable defined by FIND_PACKAGE( Qt4 ) that contains a path to CMake script)

@@ -8,7 +8,7 @@
 #ifndef COMPLEX_DAO_H
 #define COMPLEX_DAO_H
 
-#include <Qt/qsqlquery.h>
+#include <QSqlQuery>
 #include <complex>
 
 #include "../../../BaseObject.h"
