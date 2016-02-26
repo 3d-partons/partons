@@ -1,9 +1,9 @@
 #include "../../../../../include/partons/database/convol_coeff_function/dao/ConvolCoeffFunctionKinematicDao.h"
 
-#include <Qt/qsqlerror.h>
-#include <Qt/qvariant.h>
-#include <QtCore/qstring.h>
-#include <QtSql/qsqlrecord.h>
+#include <QSqlError>
+#include <QVariant>
+#include <QString>
+#include <QSqlRecord>
 #include <string>
 
 #include "../../../../../include/partons/database/DatabaseManager.h"

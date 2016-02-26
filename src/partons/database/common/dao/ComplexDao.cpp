@@ -1,9 +1,9 @@
 #include "../../../../../include/partons/database/common/dao/ComplexDao.h"
 
-#include <Qt/qsqlerror.h>
-#include <Qt/qvariant.h>
-#include <QtCore/qstring.h>
-#include <QtSql/qsqlrecord.h>
+#include <QSqlError>
+#include <QVariant>
+#include <QString>
+#include <QSqlRecord>
 #include <string>
 
 #include "../../../../../include/partons/database/DatabaseManager.h"

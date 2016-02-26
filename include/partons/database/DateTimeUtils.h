@@ -12,8 +12,8 @@
  * @brief
  */
 
-#include <Qt/qdatetime.h>
-#include <QtCore/qstring.h>
+#include <QDateTime>
+#include <QString>
 #include <string>
 
 class DateTimeUtils {

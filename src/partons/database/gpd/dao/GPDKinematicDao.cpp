@@ -1,9 +1,9 @@
 #include "../../../../../include/partons/database/gpd/dao/GPDKinematicDao.h"
 
-#include <Qt/qsqlerror.h>
-#include <Qt/qvariant.h> // Needed by bindValue
-#include <QtCore/qstring.h>
-#include <QtSql/qsqlrecord.h>
+#include <QSqlError>
+#include <QVariant>
+#include <QString>
+#include <QSqlRecord>
 #include <string>
 
 #include "../../../../../include/partons/database/DatabaseManager.h"
