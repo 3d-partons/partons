@@ -1,9 +1,9 @@
 #include "../../../../../include/partons/database/convol_coeff_function/dao/ConvolCoeffFunctionResultDao.h"
 
-#include <QSqlError>
-#include <QVariant>
-#include <QString>
-#include <QSqlRecord>
+#include <QtSql/qsqlerror.h>
+#include <QtSql/qsqlrecord.h>
+#include <QtCore/qvariant.h>
+#include <QtCore/qstring.h>
 #include <complex>
 
 #include "../../../../../include/partons/beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"

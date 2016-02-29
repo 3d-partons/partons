@@ -1,11 +1,11 @@
 #include "../../../include/partons/database/DatabaseManager.h"
 
-#include <QByteArray>
-#include <QSqlError>
-#include <QVariant>
-#include <QString>
-#include <QSqlRecord>
-#include <QSqlTableModel>
+#include <QtSql/qsqlerror.h>
+#include <QtSql/qsqlrecord.h>
+#include <QtCore/qvariant.h>
+#include <QtCore/qstring.h>
+#include <QtCore/qbytearray.h>
+#include <QtSql/qsqltablemodel.h>
 #include <iostream>
 #include <string>
 

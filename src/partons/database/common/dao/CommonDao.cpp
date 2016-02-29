@@ -1,10 +1,10 @@
 #include "../../../../../include/partons/database/common/dao/CommonDao.h"
 
-#include <QDateTime>
-#include <QSqlError>
-#include <QSqlQuery>
-#include <QVariant>
-#include <QString>
+#include <QtCore/qdatetime.h>
+#include <QtSql/qsqlerror.h>
+#include <QtSql/qsqlquery.h>
+#include <QtCore/qvariant.h>
+#include <QtCore/qstring.h>
 #include <string>
 
 #include "../../../../../include/partons/database/DatabaseManager.h"

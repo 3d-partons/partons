@@ -12,7 +12,7 @@
  * @brief
  */
 
-#include <QSqlQuery>
+#include <QtSql/qsqlquery.h>
 
 #include "../../../beans/List.h"
 #include "../../../beans/observable/ObservableKinematic.h"

@@ -1,9 +1,9 @@
 #include "../../../../../include/partons/database/observable/dao/ObservableKinematicDao.h"
 
-#include <QSqlError>
-#include <QVariant>
-#include <QString>
-#include <QSqlRecord>
+#include <QtSql/qsqlerror.h>
+#include <QtSql/qsqlrecord.h>
+#include <QtCore/qvariant.h>
+#include <QtCore/qstring.h>
 #include <string>
 
 #include "../../../../../include/partons/database/DatabaseManager.h"

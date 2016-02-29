@@ -1,9 +1,9 @@
 #include "../../../../../include/partons/database/gpd/dao/GPDResultDao.h"
 
-#include <QSqlError>
-#include <QVariant>
-#include <QString>
-#include <QSqlRecord>
+#include <QtSql/qsqlerror.h>
+#include <QtSql/qsqlrecord.h>
+#include <QtCore/qvariant.h>
+#include <QtCore/qstring.h>
 
 #include "../../../../../include/partons/beans/gpd/GPDKinematic.h"
 #include "../../../../../include/partons/beans/gpd/GPDType.h"

@@ -1,9 +1,9 @@
 #include "../../../../../include/partons/database/parton_distribution/dao/QuarkDistributionDao.h"
 
-#include <QSqlError>
-#include <QVariant>
-#include <QString>
-#include <QSqlRecord>
+#include <QtSql/qsqlerror.h>
+#include <QtSql/qsqlrecord.h>
+#include <QtCore/qvariant.h>
+#include <QtCore/qstring.h>
 #include <string>
 
 #include "../../../../../include/partons/beans/QuarkFlavor.h"

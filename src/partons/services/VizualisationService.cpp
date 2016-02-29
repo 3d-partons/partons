@@ -1,8 +1,8 @@
 #include "../../../include/partons/services/VizualisationService.h"
 
-#include <QSqlQuery>
-#include <QVariant>
-#include <QString>
+#include <QtSql/qsqlquery.h>
+#include <QtCore/qvariant.h>
+#include <QtCore/qstring.h>
 
 #include "../../../include/partons/BaseObjectRegistry.h"
 #include "../../../include/partons/Partons.h"

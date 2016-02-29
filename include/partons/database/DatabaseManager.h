@@ -11,8 +11,8 @@
  * @brief
  */
 
-#include <QSqlQuery>
-#include <QSqlDatabase>
+#include <QtSql/qsqlquery.h>
+#include <QtSql/qsqldatabase.h>
 
 #include "../BaseObject.h"
 

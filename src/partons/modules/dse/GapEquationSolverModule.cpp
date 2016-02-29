@@ -560,7 +560,7 @@ void GapEquationSolverModule::compute(
     }
 
     // Write the result
-    info(__func__, "p2 [GeV] ; A ; B [GeV] ; M [GeV]");
+    info(__func__, "p2 [GeV^2] ; A ; B [GeV] ; M [GeV]");
     double p2, A, B, M;
     for (unsigned int i = 0; i < m_N; i++) {
     	Formatter formatter;
