@@ -40,6 +40,7 @@ public:
     virtual ~ServiceObjectTyped() {
     }
 
+    //TODO How to handle random computation from thread ? How to index results for later compare ?
     void add(const ResultType &result) {
         sf::Lock lock(m_mutexResultListBuffer); // mutex.lock()
 

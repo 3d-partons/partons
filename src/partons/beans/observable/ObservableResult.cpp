@@ -27,23 +27,20 @@ std::string ObservableResult::toString() const {
     return Formatter() << m_kinematic.toString() << " observable = " << m_value;
 }
 
-void ObservableResult::compare(ComparisonReport* pRootComparisonReport,
+void ObservableResult::compare(ComparisonReport &rootComparisonReport,
         const ObservableResult &referenceObject,
         const NumA::Tolerances &tolerances,
         std::string parentObjectInfo) const {
 
-    if (pRootComparisonReport) {
-        //TODO faire un test pour valider la cinématique associée ainsi que le type d'observable
+    //TODO faire un test pour valider la cinématique associée ainsi que le type d'observable
 
-        ComparisonData xb_comparisonData = CompareUtils::compareDouble(
-                ObservableResult::PARAMETER_NAME_OBSERVABLE_VALUE, getValue(),
-                referenceObject.getValue(), tolerances,
-                Formatter() << parentObjectInfo << this->getObjectInfo());
+    ComparisonData xb_comparisonData = CompareUtils::compareDouble(
+            ObservableResult::PARAMETER_NAME_OBSERVABLE_VALUE, getValue(),
+            referenceObject.getValue(), tolerances,
+            Formatter() << parentObjectInfo << this->getObjectInfo());
 
-        pRootComparisonReport->addComparisonData(xb_comparisonData);
-    } else {
-        error(__func__, "pRootComparisonReport is NULL");
-    }
+    rootComparisonReport.addComparisonData(xb_comparisonData);
+
 }
 
 // ##### GETTERS & SETTERS #####

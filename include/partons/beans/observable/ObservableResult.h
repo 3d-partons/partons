@@ -30,7 +30,7 @@ public:
     virtual std::string toString() const;
     virtual std::string getObjectInfo() const;
 
-    void compare(ComparisonReport* pRootComparisonReport,
+    void compare(ComparisonReport &rootComparisonReport,
             const ObservableResult &referenceObject,
             const NumA::Tolerances &tolerances, std::string parentObjectInfo =
                     "") const;

@@ -1,6 +1,7 @@
 #include "../../../../include/partons/utils/fileUtils/FileUtils.h"
 
 #include <sstream>
+#include <stdexcept>
 
 std::string FileUtils::EMPTY = "";
 
@@ -40,6 +41,10 @@ std::string FileUtils::read(const std::string & filePath) {
         file.close();
         // manipulations du buffer...
         str = buffer.str();
+    } else {
+        std::stringstream sstring;
+        sstring << "(FileUtils::read) Could not read file : " << filePath;
+        throw std::runtime_error(sstring.str());
     }
 
     return str;

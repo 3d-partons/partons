@@ -1,12 +1,12 @@
 #include "../../../include/partons/database/DatabaseManager.h"
 
-#include <QtSql/qsqlerror.h>
-#include <QtSql/qsqlrecord.h>
-#include <QtCore/qvariant.h>
+//#include <QtCore/qbytearray.h>
 #include <QtCore/qstring.h>
-#include <QtCore/qbytearray.h>
-#include <QtSql/qsqltablemodel.h>
-#include <iostream>
+//#include <QtCore/qvariant.h>
+#include <QtSql/qsqlerror.h>
+//#include <QtSql/qsqlrecord.h>
+//#include <QtSql/qsqltablemodel.h>
+//#include <iostream>
 #include <string>
 
 #include "../../../include/partons/utils/PropertiesManager.h"
@@ -61,19 +61,6 @@ DatabaseManager::DatabaseManager() :
                         << m_productionDatabase.lastError().text().toStdString());
     } else {
         info(__func__, "Database connection OK");
-
-        QSqlTableModel model;
-        model.setTable("tbl1");
-        model.select();
-
-        for (int i = 0; i < model.rowCount(); ++i) {
-            QSqlRecord record = model.record(i);
-
-            //TODO convert cout to logger
-            std::cout << "col1 = "
-                    << (record.value(0).toString()).toUtf8().constData()
-                    << " - col2 = " << record.value(1).toInt() << std::endl;
-        }
     }
 }
 

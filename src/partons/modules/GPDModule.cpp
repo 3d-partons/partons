@@ -8,12 +8,11 @@
 #include <utility>
 
 #include "../../../include/partons/beans/gpd/GPDResult.h"
-#include "../../../include/partons/beans/List.h"
-#include "../../../include/partons/beans/ResultList.h"
 #include "../../../include/partons/modules/evolution/GPDEvolutionModule.h"
 #include "../../../include/partons/Partons.h"
 #include "../../../include/partons/services/GPDService.h"
 #include "../../../include/partons/ServiceObjectRegistry.h"
+#include "../../../include/partons/ServiceObjectTyped.h"
 #include "../../../include/partons/utils/GenericType.h"
 #include "../../../include/partons/utils/ParameterList.h"
 #include "../../../include/partons/utils/stringUtils/Formatter.h"
@@ -282,9 +281,6 @@ void GPDModule::setXi(double xi) {
 }
 
 void GPDModule::run() {
-
-    ResultList<GPDResult> results;
-
     try {
         GPDService* pGPDService =
                 Partons::getInstance()->getServiceObjectRegistry()->getGPDService();
@@ -297,14 +293,11 @@ void GPDModule::run() {
             packet >> kinematic;
             packet >> gpdType;
 
-            results.add(compute(kinematic, gpdType, false));
+            pGPDService->add(compute(kinematic, gpdType, false));
 
             sf::sleep(sf::milliseconds(3));
         }
     } catch (std::exception &e) {
         std::cerr << e.what() << std::endl;
     }
-
-    info(__func__,
-            Formatter() << "[" << getObjectId() << "]" << results.toString());
 }

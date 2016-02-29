@@ -22,13 +22,13 @@ std::string ComparisonData::toString() const {
     formatter << m_objectInfo << '\n';
 
     if (m_isComparisonPassed) {
-        formatter << "[PASSED]";
+        formatter << "[PASSED] ";
     } else {
-        formatter << "[FAILED]";
+        formatter << "[FAILED] ";
     }
 
-    formatter << " variableName = " << m_variableName << " with value = "
-            << m_variableValue << " compared to = " << m_variableValueReference;
+    formatter << m_variableName << " with value = " << m_variableValue
+            << " compared to = " << m_variableValueReference;
 
     formatter << " " << m_differences.toString();
 

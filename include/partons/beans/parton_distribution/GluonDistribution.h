@@ -6,6 +6,7 @@
 #include "../../BaseObject.h"
 
 class ComparisonReport;
+
 namespace NumA {
 class Tolerances;
 } /* namespace NumA */
@@ -22,8 +23,10 @@ public:
 
     virtual std::string toString() const;
 
-//    ComparisonReport compare(const GluonDistribution &referenceObject,
-//            const NumA::Tolerances &tolerances) const;
+    void compare(ComparisonReport &rootComparisonReport,
+            const GluonDistribution &referenceObject,
+            const NumA::Tolerances &tolerances, std::string parentObjectInfo =
+                    "") const;
 
     // ##### GETTERS & SETTERS #####
 

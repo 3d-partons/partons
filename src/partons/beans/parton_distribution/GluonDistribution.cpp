@@ -2,6 +2,10 @@
 
 #include <sstream>
 
+#include "../../../../include/partons/utils/compare/CompareUtils.h"
+#include "../../../../include/partons/utils/compare/ComparisonData.h"
+#include "../../../../include/partons/utils/compare/ComparisonReport.h"
+#include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 const std::string GluonDistribution::GLUON_DISTRIBUTION_DB_COLUMN_NAME =
         "gluon_distribution";
@@ -48,18 +52,16 @@ void GluonDistribution::setNullObject(bool nullObject) {
     m_nullObject = nullObject;
 }
 
-//ComparisonReport GluonDistribution::compare(
-//        const GluonDistribution& referenceObject,
-//        const NumA::Tolerances& tolerances) const {
-//
-//    ComparisonReport comparisonReport(getClassName());
-//
-//    ComparisonData gluon_comparisonData =
-//            CompareUtils::compareDouble(
-//                    GluonDistribution::GLUON_DISTRIBUTION_PARAMETER_NAME_GLUON_DISTRIBUTION,
-//                    getGluonDistribution(),
-//                    referenceObject.getGluonDistribution(), tolerances);
-//    comparisonReport.addComparisonData(gluon_comparisonData);
-//
-//    return comparisonReport;
-//}
+void GluonDistribution::compare(ComparisonReport &rootComparisonReport,
+        const GluonDistribution &referenceObject,
+        const NumA::Tolerances &tolerances,
+        std::string parentObjectInfo) const {
+    ComparisonData gluon_value_comparisonData =
+            CompareUtils::compareDouble(
+                    GluonDistribution::GLUON_DISTRIBUTION_PARAMETER_NAME_GLUON_DISTRIBUTION,
+                    m_gluonDistribution, referenceObject.getGluonDistribution(),
+                    tolerances,
+                    Formatter() << parentObjectInfo << " " << getClassName());
+
+    rootComparisonReport.addComparisonData(gluon_value_comparisonData);
+}

@@ -26,8 +26,6 @@ namespace NumA {
 class Tolerances;
 } /* namespace NumA */
 
-class ComparisonReport;
-
 template<class T> class List: public BaseObject {
 public:
     List() :
@@ -96,12 +94,12 @@ public:
         }
     }
 
-    void compare(ComparisonReport* pRootComparisonReport,
+    void compare(ComparisonReport &rootComparisonReport,
             const List<T> &referenceObject, const NumA::Tolerances &tolerances,
             const ComparisonMode &comparisonMode = ComparisonMode::EQUAL,
             std::string parentObjectInfo = "") const {
 
-        pRootComparisonReport->setTolerances(tolerances);
+        rootComparisonReport.setTolerances(tolerances);
 
         if ((this->isEmpty()) && referenceObject.isEmpty()) {
             warn(__func__, Formatter() << "Lists are empty");
@@ -123,7 +121,7 @@ public:
 //                                (this->m_data[i]).compare(referenceObject[i],
 //                                        tolerances));
 
-                        (this->m_data[i]).compare(pRootComparisonReport,
+                        (this->m_data[i]).compare(rootComparisonReport,
                                 referenceObject[i], tolerances);
                     }
                 } else {

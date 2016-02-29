@@ -8,30 +8,41 @@ ComparisonReport::ComparisonReport() {
 
 }
 
+ComparisonReport::ComparisonReport(const std::string& environmentSetting,
+        const std::string& comparedObjectClassName,
+        const std::string& referenceObjectClassName) :
+        m_environmentSetting(environmentSetting), m_objectClassNameTested(
+                comparedObjectClassName), m_referenceObjectClassName(
+                referenceObjectClassName) {
+}
+
 ComparisonReport::~ComparisonReport() {
 }
 
 std::string ComparisonReport::toString() const {
+
     Formatter formatter;
 
-    formatter << "Environment setting = " << m_environmentConfiguration << '\n';
+    formatter << '\n' << "[Environment setting] \n" << m_environmentSetting
+            << '\n' << '\n';
 
-    formatter << "Module class name tested = " << m_moduleClassNameTested
+    formatter << "[Objects compared] \n" << m_objectClassNameTested
+            << " compared to " << m_referenceObjectClassName << '\n' << '\n';
+
+    formatter << "[Tolerances]" << '\n' << m_tolerances.toString() << '\n'
             << '\n';
-
-    formatter << "Tolerances : " << m_tolerances.toString() << '\n';
 
 //TODO ajouter un mode verbose pour supprimer l'affichage des tests réussi, ça n'a aucune utilité.
     formatter << "Number of objects compared with test PASSED = "
             << m_comparedDataPassed.size() << '\n';
     for (size_t i = 0; i != m_comparedDataPassed.size(); i++) {
-        formatter << m_comparedDataPassed[i].toString() << '\n';
+        formatter << m_comparedDataPassed[i].toString() << '\n' << '\n';
     }
 
-    formatter << "Number of objects compared with test FAILED = "
+    formatter << '\n' << "Number of objects compared with test FAILED = "
             << m_comparedDataFailed.size() << '\n';
     for (size_t i = 0; i != m_comparedDataFailed.size(); i++) {
-        formatter << m_comparedDataFailed[i].toString() << '\n';
+        formatter << m_comparedDataFailed[i].toString() << '\n' << '\n';
     }
 
     return formatter.str();

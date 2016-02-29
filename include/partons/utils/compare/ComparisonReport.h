@@ -21,6 +21,9 @@
 class ComparisonReport {
 public:
     ComparisonReport();
+    ComparisonReport(const std::string &environmentSetting,
+            const std::string &comparedObjectClassName,
+            const std::string &referenceObjectClassName);
     virtual ~ComparisonReport();
 
     void addComparisonData(const ComparisonData &comparisonData);
@@ -38,8 +41,9 @@ public:
 
 private:
     //TODO m_environmentConfiguration = read VM configuration and SVN revision number
-    std::string m_environmentConfiguration;
-    std::string m_moduleClassNameTested;
+    std::string m_environmentSetting;
+    std::string m_objectClassNameTested;
+    std::string m_referenceObjectClassName;
 
     std::vector<ComparisonData> m_comparedDataPassed;
     std::vector<ComparisonData> m_comparedDataFailed;

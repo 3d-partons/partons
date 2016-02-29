@@ -33,8 +33,10 @@ public:
 
     virtual std::string toString() const;
 
-//    ComparisonReport compare(const PartonDistribution &referenceObject,
-//            const NumA::Tolerances &tolerances) const;
+    void compare(ComparisonReport &rootComparisonReport,
+            const PartonDistribution &referenceObject,
+            const NumA::Tolerances &tolerances, std::string parentObjectInfo =
+                    "") const;
 
     // ##### GETTERS & SETTERS #####
 

@@ -18,6 +18,7 @@
 #include <vector>
 
 //TODO commentaire et documentation
+//TODO improve exception, error, function name, ...
 
 class FileUtils {
     static std::string EMPTY;

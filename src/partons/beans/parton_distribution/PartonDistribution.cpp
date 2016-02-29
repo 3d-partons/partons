@@ -3,6 +3,7 @@
 #include <sstream>
 #include <utility>
 
+#include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 PartonDistribution::PartonDistribution() :
         BaseObject("PartonDistribution") {
@@ -125,23 +126,22 @@ void PartonDistribution::addQuarkDistribution(
                     quarkDistribution));
 }
 
-//ComparisonReport PartonDistribution::compare(
-//        const PartonDistribution& referenceObject,
-//        const NumA::Tolerances& tolerances) const {
-//
-//    ComparisonReport comparisonReport(getClassName(), toString());
-//
-//    // compare gluon distribution
-//    comparisonReport.addChildren(
-//            m_gluonDistribution.compare(referenceObject.getGluonDistribution(),
-//                    tolerances));
-//
-//    // compare quark distribution list
-//
-//    comparisonReport.addChildren(
-//            this->getListOfQuarkDistribution().compare(
-//                    referenceObject.getListOfQuarkDistribution(), tolerances,
-//                    ComparisonMode::EQUAL));
-//
-//    return comparisonReport;
-//}
+void PartonDistribution::compare(ComparisonReport &rootComparisonReport,
+        const PartonDistribution &referenceObject,
+        const NumA::Tolerances &tolerances,
+        std::string parentObjectInfo) const {
+
+    // compare gluon distribution
+    this->m_gluonDistribution.compare(rootComparisonReport,
+            referenceObject.getGluonDistribution(), tolerances,
+            Formatter() << parentObjectInfo);
+
+    for (std::map<QuarkFlavor::Type, QuarkDistribution>::const_iterator it =
+            m_quarkDistributions.begin(); it != m_quarkDistributions.end();
+            it++) {
+        (it->second).compare(rootComparisonReport,
+                referenceObject.getQuarkDistribution((it->first)), tolerances,
+                Formatter() << parentObjectInfo << " "
+                        << QuarkFlavor(it->first).toString());
+    }
+}

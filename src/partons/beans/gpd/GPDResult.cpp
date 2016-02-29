@@ -4,6 +4,8 @@
 #include <stdexcept>
 #include <utility>
 
+#include "../../../../include/partons/utils/stringUtils/Formatter.h"
+
 const std::string GPDResult::GPD_RESULT_DB_TABLE_NAME = "gpd_result";
 
 GPDResult::GPDResult() :
@@ -98,19 +100,23 @@ void GPDResult::setKinematic(const GPDKinematic& kinematic) {
     m_kinematic = kinematic;
 }
 
-//ComparisonReport GPDResult::compare(const GPDResult& referenceObject,
-//        const NumA::Tolerances& tolerances) const {
-//
-//    ComparisonReport comparisonReport(getClassName(),
-//            Formatter() << m_kinematic.toString());
-//
-//    //TODO replace hardcoded comparisonMode
-//    ComparisonReportList partonDistributionReportList =
-//            this->getPartonDistributionList().compare(
-//                    referenceObject.getPartonDistributionList(), tolerances,
-//                    ComparisonMode::EQUAL);
-//
-//    comparisonReport.addChildren(partonDistributionReportList);
-//
-//    return comparisonReport;
-//}
+void GPDResult::compare(ComparisonReport &rootComparisonReport,
+        const GPDResult &referenceObject, const NumA::Tolerances &tolerances,
+        std::string parentObjectInfo) const {
+
+    //TODO faire un test pour valider la cinématique associée ainsi que le type d'observable
+
+    //TODO tester la taille des listes avant de faire le test
+    for (std::map<GPDType::Type, PartonDistribution>::const_iterator it =
+            m_partonDistributions.begin(); it != m_partonDistributions.end();
+            it++) {
+        (it->second).compare(rootComparisonReport,
+                referenceObject.getPartonDistribution((it->first)), tolerances,
+                Formatter() << parentObjectInfo << this->getObjectInfo() << " "
+                        << GPDType(it->first).toString());
+    }
+}
+
+std::string GPDResult::getObjectInfo() const {
+    return Formatter() << "GPD( " << m_kinematic.toString() << ")";
+}

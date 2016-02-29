@@ -39,9 +39,12 @@ public:
     List<PartonDistribution> getPartonDistributionList() const;
 
     virtual std::string toString() const;
+    virtual std::string getObjectInfo() const;
 
-//    ComparisonReport compare(const GPDResult &referenceObject,
-//            const NumA::Tolerances &tolerances) const;
+    void compare(ComparisonReport &rootComparisonReport,
+            const GPDResult &referenceObject,
+            const NumA::Tolerances &tolerances, std::string parentObjectInfo =
+                    "") const;
 
     // ##### GETTERS & SETTERS #####
 
