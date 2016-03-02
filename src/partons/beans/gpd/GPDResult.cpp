@@ -104,6 +104,8 @@ void GPDResult::compare(ComparisonReport &rootComparisonReport,
         const GPDResult &referenceObject, const NumA::Tolerances &tolerances,
         std::string parentObjectInfo) const {
 
+    debug(__func__, Formatter() << getPartonDistributionList().toString());
+
     //TODO faire un test pour valider la cinématique associée
 
     //TODO tester la taille des listes avant de faire le test

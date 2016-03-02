@@ -12,10 +12,10 @@
  */
 
 #include <SFML/System/Mutex.hpp>
+#include <fstream>
 #include <iostream>
 #include <map>
 #include <string>
-#include <fstream>
 
 #include "../thread/Thread.h"
 #include "LoggerClassLevel.h"
@@ -60,11 +60,6 @@ public:
 
     std::string toString();
 
-    bool isDebug() const;
-    bool isInfo() const;
-    bool isWarn() const;
-    bool isError() const;
-
     void flushBuffer();
 
 private:
@@ -94,7 +89,7 @@ private:
 
     void update();
 
-    // bool isLoggable(LoggerMessage loggerMessage);
+    bool isLoggable(LoggerMessage loggerMessage);
 
     void writeConsole();
     void writeFile();

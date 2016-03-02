@@ -156,50 +156,47 @@ void LoggerManager::update() {
 
 }
 
-//TODO check conditions to print ; why not use ?
-//bool LoggerManager::isLoggable(LoggerMessage loggerMessage) {
-//    sf::Lock lock(m_mutex); // mutex.lock()
-//
-//    bool result = true;
-//
-//    // find if there is some custom policy for the desired class
-//    m_it = m_customClassLevels.find(loggerMessage.getClassNameSource());
-//    // if we find a result
-//    if (m_it != m_customClassLevels.end()) {
-//        LoggerLevel funcLevel = (m_it->second)->find(
-//                loggerMessage.getFunctionNameSource());
-//        // check if there is some custom policy for the desired function
-//        if (funcLevel.getType() != LoggerLevel::NONE) {
-//            if (loggerMessage.getLevel().getType()
-//                    < (m_it->second)->find(
-//                            loggerMessage.getFunctionNameSource()).getType()) {
-//                result = false;
-//            }
-//        }
-//        // else check if there is a custom default policy for the class
-//        else if ((m_it->second)->getDefaultClassLevel().getType()
-//                != LoggerLevel::NONE) {
-//            if (loggerMessage.getLevel().getType()
-//                    < (m_it->second)->getDefaultClassLevel().getType()) {
-//                // if true then don't log message
-//                result = false;
-//            }
-//
-//        }
-//        // if there is no default policy for the class use global policy
-//        else if (loggerMessage.getLevel().getType()
-//                < m_defaultLevel.getType()) {
-//            result = false;
-//        }
-//    }
-//    // else use global policy for the test
-//    else if (loggerMessage.getLevel().getType() < m_defaultLevel.getType()) {
-//        result = false;
-//
-//    }
-//
-//    return result;
-//} // mutex.unlock()
+bool LoggerManager::isLoggable(LoggerMessage loggerMessage) {
+    bool result = true;
+
+    // find if there is some custom policy for the desired class
+    m_it = m_customClassLevels.find(loggerMessage.getClassNameSource());
+    // if we find a result
+    if (m_it != m_customClassLevels.end()) {
+        LoggerLevel funcLevel = (m_it->second)->find(
+                loggerMessage.getFunctionNameSource());
+        // check if there is some custom policy for the desired function
+        if (funcLevel.getType() != LoggerLevel::NONE) {
+            if (loggerMessage.getLevel().getType()
+                    < (m_it->second)->find(
+                            loggerMessage.getFunctionNameSource()).getType()) {
+                result = false;
+            }
+        }
+        // else check if there is a custom default policy for the class
+        else if ((m_it->second)->getDefaultClassLevel().getType()
+                != LoggerLevel::NONE) {
+            if (loggerMessage.getLevel().getType()
+                    < (m_it->second)->getDefaultClassLevel().getType()) {
+                // if true then don't log message
+                result = false;
+            }
+
+        }
+        // if there is no default policy for the class use global policy
+        else if (loggerMessage.getLevel().getType()
+                < m_defaultLevel.getType()) {
+            result = false;
+        }
+    }
+    // else use global policy for the test
+    else if (loggerMessage.getLevel().getType() < m_defaultLevel.getType()) {
+        result = false;
+
+    }
+
+    return result;
+}
 
 void LoggerManager::flushBuffer() {
     sf::Lock lock(m_mutex); // mutex.lock()
@@ -267,7 +264,7 @@ void LoggerManager::error(const std::string & className,
 void LoggerManager::addMessageToBuffer(LoggerMessage loggerMessage) {
     sf::Lock lock(m_mutex); // mutex.lock()
 
-    if (m_active == true) {
+    if (m_active == true && isLoggable(loggerMessage)) {
         m_buffer += loggerMessage.toString() + '\n';
     }
 } // mutex.unlock()
@@ -287,19 +284,3 @@ std::string LoggerManager::toString() {
 
     return formatter;
 } // mutex.unlock()
-
-bool LoggerManager::isDebug() const {
-    return (LoggerLevel::DEBUG >= m_defaultLevel.getType()) ? true : false;
-}
-
-bool LoggerManager::isInfo() const {
-    return (LoggerLevel::INFO >= m_defaultLevel.getType()) ? true : false;
-}
-
-bool LoggerManager::isWarn() const {
-    return (LoggerLevel::WARN >= m_defaultLevel.getType()) ? true : false;
-}
-
-bool LoggerManager::isError() const {
-    return (LoggerLevel::ERROR >= m_defaultLevel.getType()) ? true : false;
-}
