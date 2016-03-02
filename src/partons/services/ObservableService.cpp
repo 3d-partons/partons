@@ -67,6 +67,8 @@ void ObservableService::computeTask(Task &task) {
                             << "ObservableResultList object : insertion into database failed");
         }
     }
+
+    add(observableResultList);
 }
 
 ObservableResult ObservableService::computeDVCSObservable(

@@ -104,7 +104,7 @@ void GPDResult::compare(ComparisonReport &rootComparisonReport,
         const GPDResult &referenceObject, const NumA::Tolerances &tolerances,
         std::string parentObjectInfo) const {
 
-    //TODO faire un test pour valider la cinématique associée ainsi que le type d'observable
+    //TODO faire un test pour valider la cinématique associée
 
     //TODO tester la taille des listes avant de faire le test
     for (std::map<GPDType::Type, PartonDistribution>::const_iterator it =

@@ -9,10 +9,10 @@ ComparisonReport::ComparisonReport() {
 }
 
 ComparisonReport::ComparisonReport(const std::string& environmentSetting,
-        const std::string& comparedObjectClassName,
+        const std::string& objectClassNameTested,
         const std::string& referenceObjectClassName) :
         m_environmentSetting(environmentSetting), m_objectClassNameTested(
-                comparedObjectClassName), m_referenceObjectClassName(
+                objectClassNameTested), m_referenceObjectClassName(
                 referenceObjectClassName) {
 }
 

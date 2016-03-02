@@ -22,7 +22,7 @@ class ComparisonReport {
 public:
     ComparisonReport();
     ComparisonReport(const std::string &environmentSetting,
-            const std::string &comparedObjectClassName,
+            const std::string &objectClassNameTested,
             const std::string &referenceObjectClassName);
     virtual ~ComparisonReport();
 
