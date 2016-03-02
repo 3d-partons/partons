@@ -18,8 +18,6 @@ class GPMT: public GluonPropagator {
 public:
     GPMT(double w = 0.4, double I = 5.8, double LambdaQCD = 0.234,
             int Nf = 4);
-    GPMT(const std::string &className, double w = 0.4,
-            double I = 5.8, double LambdaQCD = 0.234, int Nf = 4);
     virtual ~GPMT();
 
     virtual GPMT* clone() const;
@@ -29,6 +27,8 @@ public:
     virtual double evaluateG(double k2) const;
 
 protected:
+    GPMT(const std::string &className, double w = 0.4,
+            double I = 5.8, double LambdaQCD = 0.234, int Nf = 4);
     GPMT(const GPMT& other);
 };
 

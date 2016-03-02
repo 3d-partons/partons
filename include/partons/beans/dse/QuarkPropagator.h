@@ -18,8 +18,6 @@
 
 class QuarkPropagator: public BaseObject {
 public:
-    QuarkPropagator(unsigned int N = 50, double m = 5.e-3, double mu = 19,
-            double Lambda2 = 1.e5, double epsilon2 = 1.e-4);
     QuarkPropagator(const std::string &className, unsigned int N = 50,
             double m = 5.e-3, double mu = 19, double Lambda2 = 1.e5,
             double epsilon2 = 1.e-4);
@@ -49,6 +47,12 @@ public:
     };
 
     unsigned int getN() const;
+    /**
+     * Must be reimplemented in the daughter class to assign m_roots !
+     * See QPbyChebyshev for example.
+     *
+     * @param n Order of the expansion
+     */
     virtual void setN(unsigned int n);
 
     virtual std::vector<double> evaluate(

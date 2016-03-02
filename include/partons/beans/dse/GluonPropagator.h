@@ -16,8 +16,6 @@
 
 class GluonPropagator: public BaseObject {
 public:
-    GluonPropagator(double w = 0.4, double I = 5.8, double LambdaQCD = 0.234,
-            int Nf = 4);
     GluonPropagator(const std::string &className, double w = 0.4,
             double I = 5.8, double LambdaQCD = 0.234, int Nf = 4);
     virtual ~GluonPropagator();

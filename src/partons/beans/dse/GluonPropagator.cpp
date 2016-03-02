@@ -14,11 +14,6 @@
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
-GluonPropagator::GluonPropagator(double w, double I, double LambdaQCD, int Nf) :
-        BaseObject("GluonPropagator"), m_LambdaQCD(LambdaQCD), m_Nf(Nf) {
-    setI(w, I);
-}
-
 GluonPropagator::GluonPropagator(const std::string& className, double w,
         double I, double LambdaQCD, int Nf) :
         BaseObject(className), m_LambdaQCD(LambdaQCD), m_Nf(Nf) {
