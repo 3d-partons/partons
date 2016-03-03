@@ -1,8 +1,8 @@
 #include "../../../../include/partons/beans/dse/QuarkGluonVertex.h"
 
-QuarkGluonVertex::QuarkGluonVertex(const std::string &className) :
-        BaseObject(className) {
-    m_v.assign(12, false);
+QuarkGluonVertex::QuarkGluonVertex(const std::string &className,
+        unsigned int numberOfBasisElements) :
+        BaseObject(className), m_N(numberOfBasisElements) {
 }
 
 QuarkGluonVertex::~QuarkGluonVertex() {
@@ -10,7 +10,7 @@ QuarkGluonVertex::~QuarkGluonVertex() {
 }
 
 QuarkGluonVertex::QuarkGluonVertex(const QuarkGluonVertex& other) :
-        BaseObject(other), m_v(other.m_v) {
+        BaseObject(other), m_N(other.m_N) {
 
 }
 
@@ -18,10 +18,12 @@ std::string QuarkGluonVertex::toString() const {
     return BaseObject::toString();
 }
 
-const std::vector<bool>& QuarkGluonVertex::getV() const {
-    return m_v;
+unsigned int QuarkGluonVertex::numberOfBasisElementsUsed() const {
+    return m_N;
 }
 
-void QuarkGluonVertex::setV(const std::vector<bool>& v) {
-    m_v = v;
+void QuarkGluonVertex::basisElementsWarning(const std::string& functionName) const {
+    warn(functionName, "Vertex used with more basis elements than supported!"
+            "Returned 0 for unsupported basis elements!"
+            "Beware unphysical result.");
 }

@@ -1,38 +1,32 @@
 /**
- * @file RLVertex.h
+ * @file BCSimplifiedVertex.h
  * @author Nabil Chouika (SPhN - CEA Saclay)
  * @date 2 mars 2016
  * @version 1.0
  *
- * @class RLVertex
- * @brief Rainbow-Ladder Vertex.
+ * @class BCSimplifiedVertex
+ * @brief Simplified Ball-Chiu Vertex.
  *
- * \f$ \Gamma^\mu = \gamma^\mu \f$.
+ * \f$ \Gamma_\mu = \gamma_\mu \frac{1}{2} \left( A \left(p^2 \right) + A \left( q^2 \right) \right) \f$.
  */
 
-#ifndef RLVERTEX_H_
-#define RLVERTEX_H_
-
-#include "RLVertex.h"
+#ifndef BCSIMPLIFIEDVERTEX_H_
+#define BCSIMPLIFIEDVERTEX_H_
 
 #include <string>
 
-#include "QuarkGluonVertex.h"
+#include "RLVertex.h"
 
-class RLVertex: public QuarkGluonVertex {
+class BCSimplifiedVertex: public RLVertex {
 public:
-    RLVertex();
-    virtual ~RLVertex();
+    BCSimplifiedVertex();
+    virtual ~BCSimplifiedVertex();
 
-    virtual RLVertex* clone() const;
+    virtual BCSimplifiedVertex* clone() const;
 
     virtual std::string toString() const;
 
     // Pure virtual methods to be implemented in daughter class.
-    virtual double F_A_func(unsigned int i, double p2, double q2,
-            double k2) const; ///< Angular F_A function
-    virtual double F_M_func(unsigned int i, double p2, double q2,
-            double k2) const; ///< Angular F_M function
     virtual double H_A_func(unsigned int i, double p2, double q2, double A_p2,
             double A_q2, double B_p2, double B_q2, double sigmaV_p2,
             double sigmaV_q2, double sigmaS_p2, double sigmaS_q2) const; ///< H_A function dependent on the iterated functions
@@ -51,8 +45,8 @@ public:
             double dsigmaV_q2, double dsigmaS_p2, double dsigmaS_q2) const; ///< Derivative of H_M wrt to A or B coefficients
 
 protected:
-    RLVertex(const std::string &className);
-    RLVertex(const RLVertex& other);
+    BCSimplifiedVertex(const std::string &className);
+    BCSimplifiedVertex(const BCSimplifiedVertex& other);
 };
 
-#endif /* RLVERTEX_H_ */
+#endif /* BCSIMPLIFIEDVERTEX_H_ */

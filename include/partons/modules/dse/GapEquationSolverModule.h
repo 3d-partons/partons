@@ -10,12 +10,14 @@
 #ifndef GAPEQUATIONSOLVER_H_
 #define GAPEQUATIONSOLVER_H_
 
-#include <NumA/integration/one_dimension/GLNPIntegrator1D.h>
-#include <NumA/utils/Tolerances.h>
 #include <string>
 #include <vector>
+#include <NumA/integration/one_dimension/GLNPIntegrator1D.h>
+#include <NumA/utils/Tolerances.h>
 
 #include "../../ModuleObject.h"
+
+class QuarkGluonVertex;
 
 class GluonPropagator;
 class QuarkPropagator;
@@ -75,6 +77,8 @@ public:
     void setGluonPropagator(const GluonPropagator* gluonPropagator);
     const QuarkPropagator* getQuarkPropagator() const;
     void setQuarkPropagator(QuarkPropagator* quarkPropagator);
+    const QuarkGluonVertex* getVertex() const;
+    void setVertex(const QuarkGluonVertex* vertex);
 
     virtual void compute(IterativeType iterativeType = Naive);
 
@@ -86,6 +90,7 @@ protected:
      */
     GapEquationSolverModule(const GapEquationSolverModule &other);
 
+    QuarkPropagator* getQuarkPropagator();
     double getEpsilon2() const;
     void setEpsilon2(double epsilon2);
     double getLambda2() const;
@@ -97,50 +102,44 @@ protected:
     int getN() const;
     void setN(int n);
 
+    const std::vector<double>& getC() const;
+    void setC(const std::vector<double>& c);
+    bool isChangedGp() const;
+    void setChangedGp(bool changedGp);
+    bool isChangedInit() const;
+    void setChangedInit(bool changedInit);
+    bool isChangedNx() const;
+    void setChangedNx(bool changedNx);
+    bool isChangedNz() const;
+    void setChangedNz(bool changedNz);
+    bool isChangedQp() const;
+    void setChangedQp(bool changedQp);
+    bool isChangedVertex() const;
+    void setChangedVertex(bool changedVertex);
+    int getIters() const;
+    void setIters(int iters);
+    const std::vector<double>& getNodesS() const;
+    const std::vector<double>& getNodesX() const;
+    const std::vector<double>& getNodesZ() const;
+    const std::vector<double>& getRootsS() const;
+    const std::vector<double>& getRootsX() const;
+    const std::vector<double>& getWeightsX() const;
+    const std::vector<double>& getWeightsZ() const;
+
     virtual void initModule();
     virtual void isModuleWellConfigured();
 
-    virtual void computeNewtonInteration();
-    virtual void computeIteration();
+    virtual void computeNewtonInteration() = 0;
+    virtual void computeIteration() = 0;
 
     // Various functions (virtual means model dependent and must be implemented in daughter class)
     double k2_func(double p2, double q2, double z) const;
-    virtual double F_A_func(double p2, double q2, double k2) const = 0; ///< Angular F_A function
-    virtual double F_M_func(double p2, double q2, double k2) const = 0; ///< Angular F_M function
-    virtual double H_A_func(double A_p2, double A_q2, double B_p2, double B_q2,
-            double sigmaV_p2, double sigmaV_q2, double sigmaS_p2,
-            double sigmaS_q2) const = 0; ///< H_A function dependent on the iterated functions
-    virtual double H_M_func(double A_p2, double A_q2, double B_p2, double B_q2,
-            double sigmaV_p2, double sigmaV_q2, double sigmaS_p2,
-            double sigmaS_q2) const = 0; ///< H_M function dependent on the iterated functions
-    virtual double H_A_deriv_a(double A_p2, double A_q2, double dA_p2,
-            double dA_q2, double B_p2, double B_q2, double sigmaV_p2,
-            double sigmaV_q2, double sigmaS_p2, double sigmaS_q2,
-            double dsigmaV_a_p2, double dsigmaV_b_p2, double dsigmaV_a_q2,
-            double dsigmaV_b_q2, double dsigmaS_a_p2, double dsigmaS_b_p2,
-            double dsigmaS_a_q2, double dsigmaS_b_q2) const = 0;
-    virtual double H_M_deriv_a(double A_p2, double A_q2, double dA_p2,
-            double dA_q2, double B_p2, double B_q2, double sigmaV_p2,
-            double sigmaV_q2, double sigmaS_p2, double sigmaS_q2,
-            double dsigmaV_a_p2, double dsigmaV_b_p2, double dsigmaV_a_q2,
-            double dsigmaV_b_q2, double dsigmaS_a_p2, double dsigmaS_b_p2,
-            double dsigmaS_a_q2, double dsigmaS_b_q2) const = 0;
-    virtual double H_A_deriv_b(double A_p2, double A_q2, double B_p2,
-            double B_q2, double dB_p2, double dB_q2, double sigmaV_p2,
-            double sigmaV_q2, double sigmaS_p2, double sigmaS_q2,
-            double dsigmaV_a_p2, double dsigmaV_b_p2, double dsigmaV_a_q2,
-            double dsigmaV_b_q2, double dsigmaS_a_p2, double dsigmaS_b_p2,
-            double dsigmaS_a_q2, double dsigmaS_b_q2) const = 0;
-    virtual double H_M_deriv_b(double A_p2, double A_q2, double B_p2,
-            double B_q2, double dB_p2, double dB_q2, double sigmaV_p2,
-            double sigmaV_q2, double sigmaS_p2, double sigmaS_q2,
-            double dsigmaV_a_p2, double dsigmaV_b_p2, double dsigmaV_a_q2,
-            double dsigmaV_b_q2, double dsigmaS_a_p2, double dsigmaS_b_p2,
-            double dsigmaS_a_q2, double dsigmaS_b_q2) const = 0;
+    double t2_func(double p2, double q2, double z) const;
 
 private:
     GluonPropagator* m_gluonPropagator; ///< GluonPropagator clone
     QuarkPropagator* m_quarkPropagator; ///< QuarkPropagator (pointer not cloned!)
+    QuarkGluonVertex* m_vertex; ///< Quark-Gluon Vertex clone
 
     double m_Lambda2; ///< Ultra-violet cut-off
     double m_epsilon2; ///< Indra-red cut-off
@@ -163,13 +162,12 @@ private:
     int m_iters; ///< Number of iterations used
 
     // Keep track of changes
-    bool m_changeNx, m_changeNz; ///< Tests if there is a change in the quadrature to avoid recalculations
-    bool m_changeQP, m_changeGP; ///< Tests if there is a change in the propagator to avoid recalculations
-    bool m_changeInit; ///< Tests if there is a change in the init values of A and B, if so reset the iterations
+    bool m_changedNx, m_changedNz; ///< Tests if there is a change in the quadrature to avoid recalculations
+    bool m_changedVertex, m_changedQP, m_changedGP; ///< Tests if there is a change in the propagator to avoid recalculations
+    bool m_changedInit; ///< Tests if there is a change in the init values of A and B, if so reset the iterations
 
     // Stored calculations
     std::vector<double> m_C; ///< Stored coefficients
-    std::vector<std::vector<double> > m_ThetaA, m_ThetaM; ///< Stored angular integrals
 };
 
 #endif /* GAPEQUATIONSOLVER_H_ */
