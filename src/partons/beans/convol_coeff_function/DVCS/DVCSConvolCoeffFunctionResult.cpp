@@ -2,6 +2,9 @@
 
 #include <utility>
 
+#include "../../../../../include/partons/utils/compare/CompareUtils.h"
+#include "../../../../../include/partons/utils/compare/ComparisonData.h"
+#include "../../../../../include/partons/utils/compare/ComparisonReport.h"
 #include "../../../../../include/partons/utils/stringUtils/Formatter.h"
 
 DVCSConvolCoeffFunctionResult::DVCSConvolCoeffFunctionResult() :
@@ -57,8 +60,8 @@ std::vector<GPDType> DVCSConvolCoeffFunctionResult::listGPDTypeComputed() {
 
     if (m_resultsByGPDType.size() != 0) {
 
-        for (it = m_resultsByGPDType.begin();
-                it != m_resultsByGPDType.end(); ++it) {
+        for (it = m_resultsByGPDType.begin(); it != m_resultsByGPDType.end();
+                ++it) {
             list.push_back(it->first);
         }
     }
@@ -75,13 +78,13 @@ void DVCSConvolCoeffFunctionResult::setKinematic(
     m_kinematic = kinematic;
 }
 
-bool DVCSConvolCoeffFunctionResult::isAvailable(GPDType gpdType) {
+bool DVCSConvolCoeffFunctionResult::isAvailable(GPDType::Type gpdType) {
     m_it = m_resultsByGPDType.find(gpdType);
 
     return (m_it != m_resultsByGPDType.end()) ? true : false;
 }
 
-std::complex<double> DVCSConvolCoeffFunctionResult::getLastAvailable() {
+std::complex<double> DVCSConvolCoeffFunctionResult::getLastAvailable() const {
     return m_it->second;
 }
 
@@ -92,4 +95,38 @@ const std::map<GPDType::Type, std::complex<double> >& DVCSConvolCoeffFunctionRes
 void DVCSConvolCoeffFunctionResult::setResultsByGpdType(
         const std::map<GPDType::Type, std::complex<double> >& resultsByGpdType) {
     m_resultsByGPDType = resultsByGpdType;
+}
+
+void DVCSConvolCoeffFunctionResult::compare(
+        ComparisonReport &rootComparisonReport,
+        const DVCSConvolCoeffFunctionResult &referenceObject,
+        const NumA::Tolerances &tolerances,
+        std::string parentObjectInfo) const {
+
+    //TODO faire un test pour valider la cinématique associée
+
+    //TODO tester la taille des listes avant de faire le test
+    for (std::map<GPDType::Type, std::complex<double> >::const_iterator it =
+            m_resultsByGPDType.begin(); it != m_resultsByGPDType.end(); it++) {
+
+        ComparisonData comparisonData = CompareUtils::compareComplex("",
+                it->second, referenceObject.getResult(it->first), tolerances,
+                Formatter() << parentObjectInfo << " "
+                        << GPDType(it->first).toString());
+        rootComparisonReport.addComparisonData(comparisonData);
+    }
+}
+
+const std::complex<double>& DVCSConvolCoeffFunctionResult::getResult(
+        GPDType::Type gpdType) const {
+    std::map<GPDType::Type, std::complex<double> >::const_iterator it =
+            m_resultsByGPDType.find(gpdType);
+
+    if (it == m_resultsByGPDType.end()) {
+        error(__func__,
+                Formatter() << "Cannot find complex value from GPDType = "
+                        << GPDType(gpdType).toString());
+    }
+
+    return (it->second);
 }

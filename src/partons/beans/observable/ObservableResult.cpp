@@ -4,9 +4,12 @@
 #include "../../../../include/partons/utils/compare/ComparisonData.h"
 #include "../../../../include/partons/utils/compare/ComparisonReport.h"
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
+#include "../../../../include/partons/utils/stringUtils/StringUtils.h"
 
 const std::string ObservableResult::PARAMETER_NAME_OBSERVABLE_VALUE =
         "observable value";
+
+const std::string ObservableResult::PARAMETER_NAME_TOTAL_ERROR = "total error";
 
 ObservableResult::ObservableResult() :
         Result("ObservableResult"), m_observableName("UNDEFINED"), m_value(0.), m_totalError(
@@ -32,15 +35,26 @@ void ObservableResult::compare(ComparisonReport &rootComparisonReport,
         const NumA::Tolerances &tolerances,
         std::string parentObjectInfo) const {
 
-    //TODO faire un test pour valider la cinématique associée ainsi que le type d'observable
+    //TODO faire un test pour valider la cinématique associée
+
+    if (m_observableType != referenceObject.getObservableType()
+            || !(StringUtils::equalsIgnoreCase(m_observableName,
+                    referenceObject.getObservableName()))) {
+        error(__func__,
+                "Cannot compare objects, they are different (different name or type)");
+    }
 
     ComparisonData xb_comparisonData = CompareUtils::compareDouble(
             ObservableResult::PARAMETER_NAME_OBSERVABLE_VALUE, getValue(),
             referenceObject.getValue(), tolerances,
             Formatter() << parentObjectInfo << this->getObjectInfo());
-
     rootComparisonReport.addComparisonData(xb_comparisonData);
 
+    ComparisonData total_error_comparisonData = CompareUtils::compareDouble(
+            ObservableResult::PARAMETER_NAME_TOTAL_ERROR, getTotalError(),
+            referenceObject.getTotalError(), tolerances,
+            Formatter() << parentObjectInfo << this->getObjectInfo());
+    rootComparisonReport.addComparisonData(total_error_comparisonData);
 }
 
 // ##### GETTERS & SETTERS #####

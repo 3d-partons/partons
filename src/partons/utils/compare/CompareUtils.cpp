@@ -35,3 +35,24 @@ ComparisonData CompareUtils::compareDouble(const std::string &variableName,
             NumA::Differences(absoluteDifference, relativeDifference),
             parentObjectInfo);
 }
+
+ComparisonData CompareUtils::compareComplex(const std::string& variableName,
+        const std::complex<double> lhs, const std::complex<double> rhs,
+        const NumA::Tolerances& tolerances,
+        const std::string& parentObjectInfo) {
+
+    bool comparisonResult = false;
+
+    double lhsNorm = std::norm(lhs);
+    double rhsNorm = std::norm(rhs);
+    double modulous = sqrt(lhsNorm);
+
+    if (lhsNorm == rhsNorm) {
+        comparisonResult = true;
+    }
+
+    //TODO replace Difference object by more useful object for complex norm/modulous
+    return ComparisonData(comparisonResult, variableName, Formatter() << lhs,
+            Formatter() << rhs, NumA::Differences(modulous, modulous),
+            parentObjectInfo);
+}

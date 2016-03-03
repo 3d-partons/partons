@@ -1,7 +1,6 @@
 #include "../../../../include/partons/beans/gpd/GPDResult.h"
 
 #include <sstream>
-#include <stdexcept>
 #include <utility>
 
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
@@ -30,9 +29,10 @@ const PartonDistribution& GPDResult::getPartonDistribution(
             m_partonDistributions.find(gpdType);
 
     if (it == m_partonDistributions.end()) {
-        throw std::runtime_error(
-                "[GPDResult::getPartonDistribution] Enable to find PartonDistribution object from GPDType = "
-                        + GPDType(gpdType).toString());
+        error(__func__,
+                Formatter()
+                        << "Cannot to find PartonDistribution object from GPDType = "
+                        << GPDType(gpdType).toString());
     }
 
     return (it->second);
@@ -103,8 +103,6 @@ void GPDResult::setKinematic(const GPDKinematic& kinematic) {
 void GPDResult::compare(ComparisonReport &rootComparisonReport,
         const GPDResult &referenceObject, const NumA::Tolerances &tolerances,
         std::string parentObjectInfo) const {
-
-    debug(__func__, Formatter() << getPartonDistributionList().toString());
 
     //TODO faire un test pour valider la cinématique associée
 

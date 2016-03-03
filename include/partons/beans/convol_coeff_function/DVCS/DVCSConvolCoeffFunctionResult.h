@@ -13,13 +13,17 @@
  */
 
 #include <complex>
-#include <vector>
 #include <map>
 #include <string>
+#include <vector>
 
 #include "../../gpd/GPDType.h"
 #include "../../Result.h"
 #include "DVCSConvolCoeffFunctionKinematic.h"
+
+namespace NumA {
+class Tolerances;
+} /* namespace NumA */
 
 class DVCSConvolCoeffFunctionResult: public Result {
 public:
@@ -30,8 +34,14 @@ public:
     void add(GPDType::Type gpdComputeType, std::complex<double> result);
     std::complex<double> get(GPDType::Type gpdComputeType);
 
-    bool isAvailable(GPDType gpdType);
-    std::complex<double> getLastAvailable();
+    bool isAvailable(GPDType::Type gpdType);
+    std::complex<double> getLastAvailable() const;
+    const std::complex<double>& getResult(GPDType::Type gpdType) const;
+
+    void compare(ComparisonReport &rootComparisonReport,
+            const DVCSConvolCoeffFunctionResult &referenceObject,
+            const NumA::Tolerances &tolerances,
+            std::string parentObjectInfo) const;
 
     std::string toString();
 

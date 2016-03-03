@@ -22,6 +22,7 @@
 class ObservableResult: public Result {
 public:
     static const std::string PARAMETER_NAME_OBSERVABLE_VALUE;
+    static const std::string PARAMETER_NAME_TOTAL_ERROR;
 
     ObservableResult();
     ObservableResult(const std::string &observableName, double value);

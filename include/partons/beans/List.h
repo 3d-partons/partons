@@ -109,26 +109,23 @@ public:
             // reportList.setObjectTypeCompared(__PRETTY_FUNCTION__);
 
             switch (comparisonMode) {
-            case ComparisonMode::INTERSECTION:
+            case ComparisonMode::INTERSECTION: {
+                //TODO implement
                 break;
-            default:
+            }
+            default: {
                 // equal comparison by default
                 if (this->size() == referenceObject.size()) {
-                    //reportList.setNumberOfComparedObjet(this->size());
-
                     for (size_t i = 0; i != this->size(); i++) {
-                        // reportList.add(
-//                                (this->m_data[i]).compare(referenceObject[i],
-//                                        tolerances));
-
                         (this->m_data[i]).compare(rootComparisonReport,
                                 referenceObject[i], tolerances);
                     }
                 } else {
                     warn(__func__,
-                            Formatter() << "Lists are not equal in size");
+                            Formatter() << "Lists are not equal in size ; EQUAL comparison mode cannot be performed");
                 }
                 break;
+            }
             }
 
         }

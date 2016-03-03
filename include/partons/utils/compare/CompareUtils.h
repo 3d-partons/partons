@@ -12,6 +12,7 @@
  * @brief
  */
 
+#include <complex>
 #include <string>
 
 class ComparisonData;
@@ -23,6 +24,11 @@ class CompareUtils {
 public:
     static ComparisonData compareDouble(const std::string &variableName,
             const double lhs, const double rhs,
+            const NumA::Tolerances &tolerances,
+            const std::string &parentObjectInfo);
+
+    static ComparisonData compareComplex(const std::string &variableName,
+            const std::complex<double> lhs, const std::complex<double> rhs,
             const NumA::Tolerances &tolerances,
             const std::string &parentObjectInfo);
 };
