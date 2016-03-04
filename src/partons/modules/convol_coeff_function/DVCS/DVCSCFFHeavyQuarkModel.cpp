@@ -3,7 +3,6 @@
 #include <NumA/integration/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <cmath>
-#include <stdexcept>
 
 #include "../../../../../include/partons/beans/gpd/GPDResult.h"
 #include "../../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
@@ -97,10 +96,10 @@ std::complex<double> DVCSCFFHeavyQuarkModel::computeIntegralsMassiveV() {
     if (m_qcdOrderType != PerturbativeQCDOrderType::LO
             && m_qcdOrderType != PerturbativeQCDOrderType::NLO) {
 
-        Formatter()
-                << "[DVCSCFFModule::computeIntegrals] Erroneous input perturbative QCD order can only be LO or NLO. Here Order = "
-                /*<< qcdOrderType.toString()*/;
-        throw std::runtime_error("");
+        error(__func__,
+                Formatter()
+                        << "Erroneous input perturbative QCD order can only be LO or NLO. Here Order = "
+                        << PerturbativeQCDOrderType(m_qcdOrderType).toString());
     }
 
     // Compute sum of active quark electric charges squared
@@ -133,11 +132,10 @@ std::complex<double> DVCSCFFHeavyQuarkModel::computeIntegralsMassiveA() {
 
     if (m_qcdOrderType != PerturbativeQCDOrderType::LO
             && m_qcdOrderType != PerturbativeQCDOrderType::NLO) {
-
-        Formatter()
-                << "[DVCSCFFModule::computeIntegrals] Erroneous input perturbative QCD order can only be LO or NLO. Here Order = "
-                /*<< qcdOrderType.toString()*/;
-        throw std::runtime_error("");
+        error(__func__,
+                Formatter()
+                        << "Erroneous input perturbative QCD order can only be LO or NLO. Here Order = "
+                        << PerturbativeQCDOrderType(m_qcdOrderType).toString());
     }
 
     // Compute sum of active quark electric charges squared
