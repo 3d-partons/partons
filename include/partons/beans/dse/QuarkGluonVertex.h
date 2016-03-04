@@ -33,26 +33,16 @@ public:
     unsigned int numberOfBasisElementsUsed() const;
 
     // Pure virtual methods to be implemented in daughter class.
-    virtual double F_A_func(unsigned int i, double p2, double q2,
-            double k2) const = 0; ///< Angular F_A function
-    virtual double F_M_func(unsigned int i, double p2, double q2,
-            double k2) const = 0; ///< Angular F_M function
-    virtual double H_A_func(unsigned int i, double p2, double q2, double A_p2,
+    virtual std::vector<double> Angular_Integrands(double p2, double q2,
+            double k2) const = 0; ///< Angular Integrands
+    virtual std::vector<double> Radial_Integrands(double p2, double q2, double A_p2,
             double A_q2, double B_p2, double B_q2, double sigmaV_p2,
-            double sigmaV_q2, double sigmaS_p2, double sigmaS_q2) const = 0; ///< H_A function dependent on the iterated functions
-    virtual double H_M_func(unsigned int i, double p2, double q2, double A_p2,
-            double A_q2, double B_p2, double B_q2, double sigmaV_p2,
-            double sigmaV_q2, double sigmaS_p2, double sigmaS_q2) const = 0; ///< H_M function dependent on the iterated functions
-    virtual double H_A_deriv(unsigned int i, double p2, double q2, double A_p2,
+            double sigmaV_q2, double sigmaS_p2, double sigmaS_q2) const = 0; ///< Radial Integrands
+    virtual std::vector<double> Radial_Integrands_deriv(double p2, double q2, double A_p2,
             double A_q2, double dA_p2, double dA_q2, double B_p2, double B_q2,
             double dB_p2, double dB_q2, double sigmaV_p2, double sigmaV_q2,
             double sigmaS_p2, double sigmaS_q2, double dsigmaV_p2,
-            double dsigmaV_q2, double dsigmaS_p2, double dsigmaS_q2) const = 0; ///< Derivative of H_A wrt to A or B coefficients
-    virtual double H_M_deriv(unsigned int i, double p2, double q2, double A_p2,
-            double A_q2, double dA_p2, double dA_q2, double B_p2, double B_q2,
-            double dB_p2, double dB_q2, double sigmaV_p2, double sigmaV_q2,
-            double sigmaS_p2, double sigmaS_q2, double dsigmaV_p2,
-            double dsigmaV_q2, double dsigmaS_p2, double dsigmaS_q2) const = 0; ///< Derivative of H_M wrt to A or B coefficients
+            double dsigmaV_q2, double dsigmaS_p2, double dsigmaS_q2) const = 0; ///< Derivatives of radial Integrands wrt to coefficient of A or B
 
 protected:
     QuarkGluonVertex(const QuarkGluonVertex& other);

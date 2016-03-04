@@ -39,6 +39,7 @@ void GapEqSeparableSolver::initModule() {
     if (isChangedQp() || isChangedVertex() || isChangedGp() || isChangedNx()
             || isChangedNz()) {
         double k2 = 0., G_k2 = 0., Cz = 0.;
+        std::vector<double> angular_integrands;
         m_ThetaA.assign(getVertex()->numberOfBasisElementsUsed(),
                 std::vector<std::vector<double> >(getN(),
                         std::vector<double>(getNx(), 0.)));
@@ -53,14 +54,17 @@ void GapEqSeparableSolver::initModule() {
                     k2 = k2_func(getRootsS().at(i), getNodesS().at(k),
                             getNodesZ().at(l));
                     G_k2 = getGluonPropagator()->evaluateG(k2);
+                    angular_integrands = getVertex()->Angular_Integrands(
+                            getRootsS().at(i), getNodesS().at(k), k2);
                     for (unsigned int j = 0;
                             j < getVertex()->numberOfBasisElementsUsed(); j++) {
                         m_ThetaA.at(j).at(i).at(k) += Cz * G_k2
-                                * getVertex()->F_A_func(j, getRootsS().at(i),
-                                        getNodesS().at(k), k2);
-                        m_ThetaM.at(j).at(i).at(k) += Cz * G_k2
-                                * getVertex()->F_M_func(j, getRootsS().at(i),
-                                        getNodesS().at(k), k2);
+                                * angular_integrands.at(j);
+                        m_ThetaM.at(j).at(i).at(k) +=
+                                Cz * G_k2
+                                        * angular_integrands.at(
+                                                j
+                                                        + getVertex()->numberOfBasisElementsUsed());
                     }
                 }
             }
@@ -83,7 +87,8 @@ void GapEqSeparableSolver::isModuleWellConfigured() {
 void GapEqSeparableSolver::computeNewtonInteration() {
     int N_newton = getN() * 2;
     NumA::NewtonMD newtonIteration(N_newton);
-    NumA::VectorD a(getN()), b(getN()), X(N_newton), X0(N_newton), G_X0(N_newton);
+    NumA::VectorD a(getN()), b(getN()), X(N_newton), X0(N_newton), G_X0(
+            N_newton);
     NumA::MatrixD J_G_X0(N_newton, N_newton);
     double absDiff_a = 0., absDiff_b = 0., relDiff_a = 0., relDiff_b = 0.; // Difference between two iterations
     bool noConvergence = true; // Convergence test
@@ -97,6 +102,8 @@ void GapEqSeparableSolver::computeNewtonInteration() {
     std::vector<std::vector<double> > dA_n, dB_n, dsigmaV_a_n, dsigmaV_b_n,
             dsigmaS_a_n, dsigmaS_b_n;
     double denom_r, denom_n, sigmaV2_r, sigmaS2_r, sigmaV2_n, sigmaS2_n;
+    std::vector<double> radial_integrands, radial_integrands_deriv_a,
+            radial_integrands_deriv_b;
 
     unsigned int n;
     for (n = getIters(); n < getMaxIter() && noConvergence; n++) {
@@ -217,22 +224,20 @@ void GapEqSeparableSolver::computeNewtonInteration() {
             G_X0.at(i) = SigmaA_r.at(i);
             G_X0.at(getN() + i) = SigmaM_r.at(i);
             for (unsigned int k = 0; k < getNx(); k++) {
+                radial_integrands = getVertex()->Radial_Integrands(
+                        getRootsS().at(i), getNodesS().at(k), A_r.at(i),
+                        A_n.at(k), B_r.at(i), B_n.at(k), sigmaV_r.at(i),
+                        sigmaV_n.at(k), sigmaS_r.at(i), sigmaS_n.at(k));
                 for (unsigned int l = 0;
                         l < getVertex()->numberOfBasisElementsUsed(); l++) {
-                    G_X0.at(i) -= getC().at(k)
-                            * getVertex()->H_A_func(l, getRootsS().at(i),
-                                    getNodesS().at(k), A_r.at(i), A_n.at(k),
-                                    B_r.at(i), B_n.at(k), sigmaV_r.at(i),
-                                    sigmaV_n.at(k), sigmaS_r.at(i),
-                                    sigmaS_n.at(k))
+                    G_X0.at(i) -= getC().at(k) * radial_integrands.at(l)
                             * m_ThetaA.at(l).at(i).at(k);
-                    G_X0.at(getN() + i) -= getC().at(k)
-                            * getVertex()->H_M_func(l, getRootsS().at(i),
-                                    getNodesS().at(k), A_r.at(i), A_n.at(k),
-                                    B_r.at(i), B_n.at(k), sigmaV_r.at(i),
-                                    sigmaV_n.at(k), sigmaS_r.at(i),
-                                    sigmaS_n.at(k))
-                            * m_ThetaM.at(l).at(i).at(k);
+                    G_X0.at(getN() + i) -=
+                            getC().at(k)
+                                    * radial_integrands.at(
+                                            l
+                                                    + getVertex()->numberOfBasisElementsUsed())
+                                    * m_ThetaM.at(l).at(i).at(k);
                 }
             }
 
@@ -240,56 +245,48 @@ void GapEqSeparableSolver::computeNewtonInteration() {
                 J_G_X0.at(i, j) = dSigmaA_r.at(i).at(j);
                 J_G_X0.at(getN() + i, getN() + j) = dSigmaM_r.at(i).at(j);
                 for (unsigned int k = 0; k < getNx(); k++) {
+                    radial_integrands_deriv_a =
+                            getVertex()->Radial_Integrands_deriv(
+                                    getRootsS().at(i), getNodesS().at(k),
+                                    A_r.at(i), A_n.at(k), dA_r.at(i).at(j),
+                                    dA_n.at(k).at(j), B_r.at(i), B_n.at(k), 0.,
+                                    0., sigmaV_r.at(i), sigmaV_n.at(k),
+                                    sigmaS_r.at(i), sigmaS_n.at(k),
+                                    dsigmaV_a_r.at(i).at(j),
+                                    dsigmaV_a_n.at(k).at(j),
+                                    dsigmaS_a_r.at(i).at(j),
+                                    dsigmaS_a_n.at(k).at(j));
+                    radial_integrands_deriv_b =
+                            getVertex()->Radial_Integrands_deriv(
+                                    getRootsS().at(i), getNodesS().at(k),
+                                    A_r.at(i), A_n.at(k), 0., 0., B_r.at(i),
+                                    B_n.at(k), dB_r.at(i).at(j),
+                                    dB_n.at(k).at(j), sigmaV_r.at(i),
+                                    sigmaV_n.at(k), sigmaS_r.at(i),
+                                    sigmaS_n.at(k), dsigmaV_b_r.at(i).at(j),
+                                    dsigmaV_b_n.at(k).at(j),
+                                    dsigmaS_b_r.at(i).at(j),
+                                    dsigmaS_b_n.at(k).at(j));
                     for (unsigned int l = 0;
                             l < getVertex()->numberOfBasisElementsUsed(); l++) {
                         J_G_X0.at(i, j) -= getC().at(k)
-                                * getVertex()->H_A_deriv(l, getRootsS().at(i),
-                                        getNodesS().at(k), A_r.at(i), A_n.at(k),
-                                        dA_r.at(i).at(j), dA_n.at(k).at(j),
-                                        B_r.at(i), B_n.at(k), 0., 0.,
-                                        sigmaV_r.at(i), sigmaV_n.at(k),
-                                        sigmaS_r.at(i), sigmaS_n.at(k),
-                                        dsigmaV_a_r.at(i).at(j),
-                                        dsigmaV_a_n.at(k).at(j),
-                                        dsigmaS_a_r.at(i).at(j),
-                                        dsigmaS_a_n.at(k).at(j))
+                                * radial_integrands_deriv_a.at(l)
                                 * m_ThetaA.at(l).at(i).at(k);
-                        J_G_X0.at(getN() + i, j) -= getC().at(k)
-                                * getVertex()->H_M_deriv(l, getRootsS().at(i),
-                                        getNodesS().at(k), A_r.at(i), A_n.at(k),
-                                        dA_r.at(i).at(j), dA_n.at(k).at(j),
-                                        B_r.at(i), B_n.at(k), 0., 0.,
-                                        sigmaV_r.at(i), sigmaV_n.at(k),
-                                        sigmaS_r.at(i), sigmaS_n.at(k),
-                                        dsigmaV_a_r.at(i).at(j),
-                                        dsigmaV_a_n.at(k).at(j),
-                                        dsigmaS_a_r.at(i).at(j),
-                                        dsigmaS_a_n.at(k).at(j))
-                                * m_ThetaM.at(l).at(i).at(k);
+                        J_G_X0.at(getN() + i, j) -=
+                                getC().at(k)
+                                        * radial_integrands_deriv_a.at(
+                                                l
+                                                        + getVertex()->numberOfBasisElementsUsed())
+                                        * m_ThetaM.at(l).at(i).at(k);
                         J_G_X0.at(i, getN() + j) -= getC().at(k)
-                                * getVertex()->H_A_deriv(l, getRootsS().at(i),
-                                        getNodesS().at(k), A_r.at(i), A_n.at(k),
-                                        0., 0., B_r.at(i), B_n.at(k),
-                                        dB_r.at(i).at(j), dB_n.at(k).at(j),
-                                        sigmaV_r.at(i), sigmaV_n.at(k),
-                                        sigmaS_r.at(i), sigmaS_n.at(k),
-                                        dsigmaV_b_r.at(i).at(j),
-                                        dsigmaV_b_n.at(k).at(j),
-                                        dsigmaS_b_r.at(i).at(j),
-                                        dsigmaS_b_n.at(k).at(j))
+                                * radial_integrands_deriv_b.at(l)
                                 * m_ThetaA.at(l).at(i).at(k);
-                        J_G_X0.at(getN() + i, getN() + j) -= getC().at(k)
-                                * getVertex()->H_M_deriv(l, getRootsS().at(i),
-                                        getNodesS().at(k), A_r.at(i), A_n.at(k),
-                                        0., 0., B_r.at(i), B_n.at(k),
-                                        dB_r.at(i).at(j), dB_n.at(k).at(j),
-                                        sigmaV_r.at(i), sigmaV_n.at(k),
-                                        sigmaS_r.at(i), sigmaS_n.at(k),
-                                        dsigmaV_b_r.at(i).at(j),
-                                        dsigmaV_b_n.at(k).at(j),
-                                        dsigmaS_b_r.at(i).at(j),
-                                        dsigmaS_b_n.at(k).at(j))
-                                * m_ThetaM.at(l).at(i).at(k);
+                        J_G_X0.at(getN() + i, getN() + j) -=
+                                getC().at(k)
+                                        * radial_integrands_deriv_b.at(
+                                                l
+                                                        + getVertex()->numberOfBasisElementsUsed())
+                                        * m_ThetaM.at(l).at(i).at(k);
                     }
                 }
             }
@@ -319,11 +316,13 @@ void GapEqSeparableSolver::computeNewtonInteration() {
         formatter1 << "Iteration " << n << ".";
         formatter2 << "A : ";
         for (unsigned int i = 0; i < getN(); i++) {
-            formatter2 << getQuarkPropagator()->evaluateA(getRootsS().at(i)) << " ";
+            formatter2 << getQuarkPropagator()->evaluateA(getRootsS().at(i))
+                    << " ";
         }
         formatter3 << "B : ";
         for (unsigned int i = 0; i < getN(); i++) {
-            formatter3 << getQuarkPropagator()->evaluateB(getRootsS().at(i)) << " ";
+            formatter3 << getQuarkPropagator()->evaluateB(getRootsS().at(i))
+                    << " ";
         }
         info(__func__, formatter1.str());
         debug(__func__, formatter2.str());
@@ -345,6 +344,7 @@ void GapEqSeparableSolver::computeIteration() {
     std::vector<double> A_r, B_r, sigmaV_r, sigmaS_r;
     std::vector<double> A_n, B_n, sigmaV_n, sigmaS_n;
     double denom_r, denom_n;
+    std::vector<double> radial_integrands;
 
     unsigned int n;
     for (n = getIters(); n < getMaxIter() && noConvergence; n++) {
@@ -395,22 +395,20 @@ void GapEqSeparableSolver::computeIteration() {
 
         for (unsigned int i = 0; i < getN(); i++) {
             for (unsigned int k = 0; k < getNx(); k++) {
+                radial_integrands = getVertex()->Radial_Integrands(
+                        getRootsS().at(i), getNodesS().at(k), A_r.at(i),
+                        A_n.at(k), B_r.at(i), B_n.at(k), sigmaV_r.at(i),
+                        sigmaV_n.at(k), sigmaS_r.at(i), sigmaS_n.at(k));
                 for (unsigned int j = 0;
                         j < getVertex()->numberOfBasisElementsUsed(); j++) {
-                    SigmaA.at(i) += getC().at(k)
-                            * getVertex()->H_A_func(j, getRootsS().at(i),
-                                    getNodesS().at(k), A_r.at(i), A_n.at(k),
-                                    B_r.at(i), B_n.at(k), sigmaV_r.at(i),
-                                    sigmaV_n.at(k), sigmaS_r.at(i),
-                                    sigmaS_n.at(k))
+                    SigmaA.at(i) += getC().at(k) * radial_integrands.at(j)
                             * m_ThetaA.at(j).at(i).at(k);
-                    SigmaM.at(i) += getC().at(k)
-                            * getVertex()->H_M_func(j, getRootsS().at(i),
-                                    getNodesS().at(k), A_r.at(i), A_n.at(k),
-                                    B_r.at(i), B_n.at(k), sigmaV_r.at(i),
-                                    sigmaV_n.at(k), sigmaS_r.at(i),
-                                    sigmaS_n.at(k))
-                            * m_ThetaM.at(j).at(i).at(k);
+                    SigmaM.at(i) +=
+                            getC().at(k)
+                                    * radial_integrands.at(
+                                            j
+                                                    + getVertex()->numberOfBasisElementsUsed())
+                                    * m_ThetaM.at(j).at(i).at(k);
                 }
             }
         }
@@ -432,11 +430,13 @@ void GapEqSeparableSolver::computeIteration() {
         formatter1 << "Iteration " << n << ".";
         formatter2 << "A : ";
         for (unsigned int i = 0; i < getN(); i++) {
-            formatter2 << getQuarkPropagator()->evaluateA(getRootsS().at(i)) << " ";
+            formatter2 << getQuarkPropagator()->evaluateA(getRootsS().at(i))
+                    << " ";
         }
         formatter3 << "B : ";
         for (unsigned int i = 0; i < getN(); i++) {
-            formatter3 << getQuarkPropagator()->evaluateB(getRootsS().at(i)) << " ";
+            formatter3 << getQuarkPropagator()->evaluateB(getRootsS().at(i))
+                    << " ";
         }
         info(__func__, formatter1.str());
         debug(__func__, formatter2.str());

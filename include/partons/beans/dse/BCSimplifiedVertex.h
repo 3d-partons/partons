@@ -27,22 +27,14 @@ public:
     virtual std::string toString() const;
 
     // Pure virtual methods to be implemented in daughter class.
-    virtual double H_A_func(unsigned int i, double p2, double q2, double A_p2,
+    virtual std::vector<double> Radial_Integrands(double p2, double q2, double A_p2,
             double A_q2, double B_p2, double B_q2, double sigmaV_p2,
-            double sigmaV_q2, double sigmaS_p2, double sigmaS_q2) const; ///< H_A function dependent on the iterated functions
-    virtual double H_M_func(unsigned int i, double p2, double q2, double A_p2,
-            double A_q2, double B_p2, double B_q2, double sigmaV_p2,
-            double sigmaV_q2, double sigmaS_p2, double sigmaS_q2) const; ///< H_M function dependent on the iterated functions
-    virtual double H_A_deriv(unsigned int i, double p2, double q2, double A_p2,
+            double sigmaV_q2, double sigmaS_p2, double sigmaS_q2) const; ///< Radial Integrands
+    virtual std::vector<double> Radial_Integrands_deriv(double p2, double q2, double A_p2,
             double A_q2, double dA_p2, double dA_q2, double B_p2, double B_q2,
             double dB_p2, double dB_q2, double sigmaV_p2, double sigmaV_q2,
             double sigmaS_p2, double sigmaS_q2, double dsigmaV_p2,
-            double dsigmaV_q2, double dsigmaS_p2, double dsigmaS_q2) const; ///< Derivative of H_A wrt to A or B coefficients
-    virtual double H_M_deriv(unsigned int i, double p2, double q2, double A_p2,
-            double A_q2, double dA_p2, double dA_q2, double B_p2, double B_q2,
-            double dB_p2, double dB_q2, double sigmaV_p2, double sigmaV_q2,
-            double sigmaS_p2, double sigmaS_q2, double dsigmaV_p2,
-            double dsigmaV_q2, double dsigmaS_p2, double dsigmaS_q2) const; ///< Derivative of H_M wrt to A or B coefficients
+            double dsigmaV_q2, double dsigmaS_p2, double dsigmaS_q2) const; ///< Derivatives of radial Integrands wrt to coefficient of A or B
 
 protected:
     BCSimplifiedVertex(const std::string &className);

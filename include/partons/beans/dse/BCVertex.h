@@ -1,30 +1,26 @@
 /**
- * @file RLVertex.h
+ * @file BCVertex.h
  * @author Nabil Chouika (SPhN - CEA Saclay)
- * @date 2 mars 2016
+ * @date 3 mars 2016
  * @version 1.0
  *
- * @class RLVertex
- * @brief Rainbow-Ladder Vertex.
- *
- * \f$ \Gamma^\mu = \gamma^\mu \f$.
+ * @class BCVertex
+ * @brief Ball-Chiu Vertex.
  */
 
-#ifndef RLVERTEX_H_
-#define RLVERTEX_H_
-
-#include "RLVertex.h"
+#ifndef BCVERTEX_H_
+#define BCVERTEX_H_
 
 #include <string>
 
 #include "QuarkGluonVertex.h"
 
-class RLVertex: public QuarkGluonVertex {
+class BCVertex: public QuarkGluonVertex {
 public:
-    RLVertex();
-    virtual ~RLVertex();
+    BCVertex();
+    virtual ~BCVertex();
 
-    virtual RLVertex* clone() const;
+    virtual BCVertex* clone() const;
 
     virtual std::string toString() const;
 
@@ -41,8 +37,8 @@ public:
             double dsigmaV_q2, double dsigmaS_p2, double dsigmaS_q2) const; ///< Derivatives of radial Integrands wrt to coefficient of A or B
 
 protected:
-    RLVertex(const std::string &className);
-    RLVertex(const RLVertex& other);
+    BCVertex(const std::string &className);
+    BCVertex(const BCVertex& other);
 };
 
-#endif /* RLVERTEX_H_ */
+#endif /* BCVERTEX_H_ */
