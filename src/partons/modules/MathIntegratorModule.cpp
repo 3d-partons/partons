@@ -16,9 +16,7 @@ MathIntegratorModule::~MathIntegratorModule() {
 
 MathIntegratorModule::MathIntegratorModule(const MathIntegratorModule& other) {
     if (other.m_mathIntegrator) {
-        // TODO remove hardcoded new
-        m_mathIntegrator = NumA::Integrator1D::newIntegrator(
-                NumA::IntegratorType1D::GK21_ADAPTIVE);
+        m_mathIntegrator = other.m_mathIntegrator->clone();
     } else {
         m_mathIntegrator = 0;
     }
