@@ -53,35 +53,34 @@ DVCSCFFModel::DVCSCFFModel(const std::string &className) :
 void DVCSCFFModel::init() {
     DVCSConvolCoeffFunctionModule::init();
 
-    m_mathIntegrator = NumA::Integrator1D::newIntegrator(
-            NumA::IntegratorType1D::GK21_ADAPTIVE);
+    setIntegrator(NumA::IntegratorType1D::GK21_ADAPTIVE);
 }
 
 void DVCSCFFModel::initFunctorsForIntegrations() {
-    m_pConvolReKernelQuark1V = NumA::Integrator1D::newIntegrationFunctor(
-            this, &DVCSCFFModel::ConvolReKernelQuark1V);
-    m_pConvolReKernelQuark2V = NumA::Integrator1D::newIntegrationFunctor(
-            this, &DVCSCFFModel::ConvolReKernelQuark2V);
-    m_pConvolImKernelQuarkV = NumA::Integrator1D::newIntegrationFunctor(
-            this, &DVCSCFFModel::ConvolImKernelQuarkV);
-    m_pConvolReKernelGluon1V = NumA::Integrator1D::newIntegrationFunctor(
-            this, &DVCSCFFModel::ConvolReKernelGluon1V);
-    m_pConvolReKernelGluon2V = NumA::Integrator1D::newIntegrationFunctor(
-            this, &DVCSCFFModel::ConvolReKernelGluon2V);
-    m_pConvolImKernelGluonV = NumA::Integrator1D::newIntegrationFunctor(
-            this, &DVCSCFFModel::ConvolImKernelGluonV);
-    m_pConvolReKernelQuark1A = NumA::Integrator1D::newIntegrationFunctor(
-            this, &DVCSCFFModel::ConvolReKernelQuark1A);
-    m_pConvolReKernelQuark2A = NumA::Integrator1D::newIntegrationFunctor(
-            this, &DVCSCFFModel::ConvolReKernelQuark2A);
-    m_pConvolImKernelQuarkA = NumA::Integrator1D::newIntegrationFunctor(
-            this, &DVCSCFFModel::ConvolImKernelQuarkA);
-    m_pConvolReKernelGluon1A = NumA::Integrator1D::newIntegrationFunctor(
-            this, &DVCSCFFModel::ConvolReKernelGluon1A);
-    m_pConvolReKernelGluon2A = NumA::Integrator1D::newIntegrationFunctor(
-            this, &DVCSCFFModel::ConvolReKernelGluon2A);
-    m_pConvolImKernelGluonA = NumA::Integrator1D::newIntegrationFunctor(
-            this, &DVCSCFFModel::ConvolImKernelGluonA);
+    m_pConvolReKernelQuark1V = NumA::Integrator1D::newIntegrationFunctor(this,
+            &DVCSCFFModel::ConvolReKernelQuark1V);
+    m_pConvolReKernelQuark2V = NumA::Integrator1D::newIntegrationFunctor(this,
+            &DVCSCFFModel::ConvolReKernelQuark2V);
+    m_pConvolImKernelQuarkV = NumA::Integrator1D::newIntegrationFunctor(this,
+            &DVCSCFFModel::ConvolImKernelQuarkV);
+    m_pConvolReKernelGluon1V = NumA::Integrator1D::newIntegrationFunctor(this,
+            &DVCSCFFModel::ConvolReKernelGluon1V);
+    m_pConvolReKernelGluon2V = NumA::Integrator1D::newIntegrationFunctor(this,
+            &DVCSCFFModel::ConvolReKernelGluon2V);
+    m_pConvolImKernelGluonV = NumA::Integrator1D::newIntegrationFunctor(this,
+            &DVCSCFFModel::ConvolImKernelGluonV);
+    m_pConvolReKernelQuark1A = NumA::Integrator1D::newIntegrationFunctor(this,
+            &DVCSCFFModel::ConvolReKernelQuark1A);
+    m_pConvolReKernelQuark2A = NumA::Integrator1D::newIntegrationFunctor(this,
+            &DVCSCFFModel::ConvolReKernelQuark2A);
+    m_pConvolImKernelQuarkA = NumA::Integrator1D::newIntegrationFunctor(this,
+            &DVCSCFFModel::ConvolImKernelQuarkA);
+    m_pConvolReKernelGluon1A = NumA::Integrator1D::newIntegrationFunctor(this,
+            &DVCSCFFModel::ConvolReKernelGluon1A);
+    m_pConvolReKernelGluon2A = NumA::Integrator1D::newIntegrationFunctor(this,
+            &DVCSCFFModel::ConvolReKernelGluon2A);
+    m_pConvolImKernelGluonA = NumA::Integrator1D::newIntegrationFunctor(this,
+            &DVCSCFFModel::ConvolImKernelGluonA);
 }
 
 DVCSCFFModel::DVCSCFFModel(const DVCSCFFModel &other) :
@@ -217,7 +216,7 @@ void DVCSCFFModel::isModuleWellConfigured() {
                         << "Erroneous input, perturbative QCD order can only be LO or NLO. Here Order = "
                         << PerturbativeQCDOrderType(m_qcdOrderType).toString());
     }
-    if (m_mathIntegrator == 0) {
+    if (getMathIntegrator() == 0) {
         throw std::runtime_error(
                 "[DVCSCFFModel] MathIntegrationMode is UNDEFINED");
     }
@@ -507,26 +506,26 @@ std::complex<double> DVCSCFFModel::computeIntegralsV() {
 
     std::vector<double> emptyParameters;
 
-    IntegralRealPartKernelQuark1 = m_mathIntegrator->integrate(
+    IntegralRealPartKernelQuark1 = integrate(
             m_pConvolReKernelQuark1V, 0., +m_xi, emptyParameters);
 
-    IntegralRealPartKernelQuark2 = m_mathIntegrator->integrate(
+    IntegralRealPartKernelQuark2 = integrate(
             m_pConvolReKernelQuark2V, +m_xi, +1, emptyParameters);
 
-    IntegralImaginaryPartKernelQuark = m_mathIntegrator->integrate(
+    IntegralImaginaryPartKernelQuark = integrate(
             m_pConvolImKernelQuarkV, +m_xi, +1, emptyParameters);
 
     // Gluon sector
 
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
 
-        IntegralRealPartKernelGluon1 = m_mathIntegrator->integrate(
+        IntegralRealPartKernelGluon1 = integrate(
                 m_pConvolReKernelGluon1V, 0., +m_xi, emptyParameters);
 
-        IntegralRealPartKernelGluon2 = m_mathIntegrator->integrate(
+        IntegralRealPartKernelGluon2 = integrate(
                 m_pConvolReKernelGluon2V, +m_xi, +1, emptyParameters);
 
-        IntegralImaginaryPartKernelGluon = m_mathIntegrator->integrate(
+        IntegralImaginaryPartKernelGluon = integrate(
                 m_pConvolImKernelGluonV, +m_xi, +1, emptyParameters);
     }
 
@@ -608,25 +607,25 @@ std::complex<double> DVCSCFFModel::computeIntegralsA() {
 
     std::vector<double> emptyParameters;
 
-    IntegralRealPartKernelQuark1 = m_mathIntegrator->integrate(
+    IntegralRealPartKernelQuark1 = integrate(
             m_pConvolReKernelQuark1A, 0., +m_xi, emptyParameters);
 
-    IntegralRealPartKernelQuark2 = m_mathIntegrator->integrate(
+    IntegralRealPartKernelQuark2 = integrate(
             m_pConvolReKernelQuark2A, +m_xi, +1, emptyParameters);
 
-    IntegralImaginaryPartKernelQuark = m_mathIntegrator->integrate(
+    IntegralImaginaryPartKernelQuark = integrate(
             m_pConvolImKernelQuarkA, +m_xi, +1, emptyParameters);
 
     // Gluon sector
 
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
-        IntegralRealPartKernelGluon1 = m_mathIntegrator->integrate(
+        IntegralRealPartKernelGluon1 = integrate(
                 m_pConvolReKernelGluon1A, 0., +m_xi, emptyParameters);
 
-        IntegralRealPartKernelGluon2 = m_mathIntegrator->integrate(
+        IntegralRealPartKernelGluon2 = integrate(
                 m_pConvolReKernelGluon2A, +m_xi, +1, emptyParameters);
 
-        IntegralImaginaryPartKernelGluon = m_mathIntegrator->integrate(
+        IntegralImaginaryPartKernelGluon = integrate(
                 m_pConvolImKernelGluonA, +m_xi, +1, emptyParameters);
     }
 

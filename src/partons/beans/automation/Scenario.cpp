@@ -46,12 +46,16 @@ void Scenario::setId(const std::string& id) {
     m_id = id;
 }
 
-size_t Scenario::size() {
+size_t Scenario::size() const {
     return m_tasks.size();
 }
 
 //TODO test range of i and throw exception
 const Task& Scenario::getTask(unsigned int i) const {
+    return m_tasks[i];
+}
+
+Task& Scenario::getTask(unsigned int i) {
     return m_tasks[i];
 }
 

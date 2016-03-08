@@ -3,6 +3,7 @@
 #include <stdexcept>
 
 #include "../../include/partons/BaseObjectRegistry.h"
+#include "../../include/partons/services/AutomationService.h"
 #include "../../include/partons/services/ComparisonService.h"
 #include "../../include/partons/services/DoubleDistributionService.h"
 #include "../../include/partons/services/DVCSConvolCoeffFunctionService.h"
@@ -65,4 +66,9 @@ DoubleDistributionService* ServiceObjectRegistry::getDoubleDistributionService()
 
 ComparisonService* ServiceObjectRegistry::getComparisonService() const {
     return static_cast<ComparisonService*>(get(ComparisonService::classId));
+}
+
+AutomationService* ServiceObjectRegistry::getAutomationService() const {
+    return static_cast<AutomationService*>(m_pBaseObjectRegistry->get(
+            AutomationService::classId));
 }

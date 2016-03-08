@@ -83,8 +83,7 @@ void VGGModel::init() {
     eta_e_largex_u_s = 1.713;
     eta_e_largex_d_s = 0.566;
 
-    m_mathIntegrator = NumA::Integrator1D::newIntegrator(
-            NumA::IntegratorType1D::GK21_ADAPTIVE);
+    setIntegrator(NumA::IntegratorType1D::GK21_ADAPTIVE);
 
     m_Forward = new c_mstwpdf(
             PropertiesManager::getInstance()->getString("grid.directory")
@@ -138,7 +137,7 @@ void VGGModel::isModuleWellConfigured() {
     if (eta_e_largex_d_s == -1.)
         throw std::runtime_error("[VGGModel] Unknown eta_e_largex_d_s");
 
-    if (m_mathIntegrator == 0)
+    if (getMathIntegrator() == 0)
         throw std::runtime_error("[VGGModel] MathIntegrationMode is UNDEFINED");
 
     if (m_Forward == NULL)
@@ -229,13 +228,11 @@ PartonDistribution VGGModel::computeE() {
     x_s5 = m_x;
     flavour_s5 = upv;
     uVal = kappa_u * offforward_distr()
-            / m_mathIntegrator->integrate(m_pInt_mom2_up_valence_e, 0., 1.,
-                    emptyParameters);
+            / integrate(m_pInt_mom2_up_valence_e, 0., 1., emptyParameters);
 
     flavour_s5 = dnv;
     dVal = kappa_d * offforward_distr()
-            / m_mathIntegrator->integrate(m_pInt_mom2_up_valence_e, 0., 1.,
-                    emptyParameters);
+            / integrate(m_pInt_mom2_up_valence_e, 0., 1., emptyParameters);
 
     uSea = 0.;
     dSea = 0.;
@@ -329,27 +326,25 @@ double VGGModel::offforward_distr() {
     //three ranges of x
     if (x_s5 >= m_xi) {
 
-        ofpd = m_mathIntegrator->integrate(f_dist_OneDimensionFunctionType,
+        ofpd = integrate(f_dist_OneDimensionFunctionType,
                 -(1. - x_s5) / (1. + m_xi), (1. - x_s5) / (1. - m_xi),
                 emptyParameters);
 
     } else if ((-m_xi < x_s5) && (x_s5 < m_xi)) {
 
-        ofpd = m_mathIntegrator->integrate(f_dist_OneDimensionFunctionType,
+        ofpd = integrate(f_dist_OneDimensionFunctionType,
                 -(1. - x_s5) / (1. + m_xi), x_s5 / m_xi - eps_doubleint,
                 emptyParameters);
 
         if (flavour_s5 != upv && flavour_s5 != dnv) {
-            ofpd -= m_mathIntegrator->integrate(
-                    f_distMx_OneDimensionFunctionType,
+            ofpd -= integrate(f_distMx_OneDimensionFunctionType,
                     -(1. + x_s5) / (1. + m_xi), -x_s5 / m_xi - eps_doubleint,
                     emptyParameters);
         }
 
     } else {
         if (flavour_s5 != upv && flavour_s5 != dnv) {
-            ofpd = -m_mathIntegrator->integrate(
-                    f_distMx_OneDimensionFunctionType,
+            ofpd = -integrate(f_distMx_OneDimensionFunctionType,
                     -(1. + x_s5) / (1. + m_xi), (1. + x_s5) / (1. - m_xi),
                     emptyParameters);
         } else {

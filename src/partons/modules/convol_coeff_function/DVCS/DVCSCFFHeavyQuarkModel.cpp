@@ -113,12 +113,12 @@ std::complex<double> DVCSCFFHeavyQuarkModel::computeIntegralsMassiveV() {
     std::vector<double> emptyParameters;
 
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
-        IntegralRealPartMassive = m_mathIntegrator->integrate(
-                m_pConvolReKernelGluonMassiveV, 0., +1., emptyParameters);
+        IntegralRealPartMassive = integrate(m_pConvolReKernelGluonMassiveV, 0.,
+                +1., emptyParameters);
     }
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
-        IntegralImaginaryPartMassive = m_mathIntegrator->integrate(
-                m_pConvolImKernelGluonMassiveV, 0., +1., emptyParameters);
+        IntegralImaginaryPartMassive = integrate(m_pConvolImKernelGluonMassiveV,
+                0., +1., emptyParameters);
     }
 
     return std::complex<double>(IntegralRealPartMassive,
@@ -149,13 +149,13 @@ std::complex<double> DVCSCFFHeavyQuarkModel::computeIntegralsMassiveA() {
     std::vector<double> emptyParameters;
 
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
-        IntegralRealPartMassive = m_mathIntegrator->integrate(
-                m_pConvolReKernelGluonMassiveA, 0., +1., emptyParameters);
+        IntegralRealPartMassive = integrate(m_pConvolReKernelGluonMassiveA, 0.,
+                +1., emptyParameters);
     }
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
 
-        IntegralImaginaryPartMassive = m_mathIntegrator->integrate(
-                m_pConvolImKernelGluonMassiveA, 0., +1., emptyParameters);
+        IntegralImaginaryPartMassive = integrate(m_pConvolImKernelGluonMassiveA,
+                0., +1., emptyParameters);
     }
 
     return std::complex<double>(IntegralRealPartMassive,

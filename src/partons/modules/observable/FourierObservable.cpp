@@ -10,9 +10,8 @@
 FourierObservable::FourierObservable(const std::string &className) :
         Observable(className), MathIntegratorModule(), m_pFunctionToIntegrate(0) {
     m_observableType = ObservableType::FOURIER;
-    m_mathIntegrator = NumA::Integrator1D::newIntegrator(
-            NumA::IntegratorType1D::GK21_ADAPTIVE);
 
+    setIntegrator(NumA::IntegratorType1D::GK21_ADAPTIVE);
     initFunctorsForIntegrations();
 }
 
@@ -37,6 +36,5 @@ FourierObservable::~FourierObservable() {
 double FourierObservable::compute() {
     std::vector<double> emptyParameters;
 
-    return m_mathIntegrator->integrate(m_pFunctionToIntegrate, 0., (2 * PI),
-            emptyParameters);
+    return integrate(m_pFunctionToIntegrate, 0., (2 * PI), emptyParameters);
 }

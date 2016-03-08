@@ -65,8 +65,7 @@ void DoubleDistributionExample::initModule() {
     // Before call parent init.
     DoubleDistributionModule::initModule();
 
-    m_mathIntegrator = NumA::Integrator1D::newIntegrator(
-            NumA::IntegratorType1D::GK21_ADAPTIVE);
+    setIntegrator(NumA::IntegratorType1D::GK21_ADAPTIVE);
 
     // Compute some variables depend from kinematic value before use this specific module.
     // See "src/modules/convolCoeffFunction/DVCSCFFModel::initModule()" for example.
@@ -91,7 +90,7 @@ PartonDistribution DoubleDistributionExample::computeF() {
 
     std::vector<double> parameters;
 
-    m_mathIntegrator->integrate(m_pIntegrateExample, -1., 1., parameters);
+    integrate(m_pIntegrateExample, -1., 1., parameters);
 
     partonDistribution.addQuarkDistribution(quarkDistribution_u);
     partonDistribution.addQuarkDistribution(quarkDistribution_d);

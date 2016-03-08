@@ -14,6 +14,8 @@
 
 #include <string>
 
+class ModuleObject;
+
 class ActiveFlavorsModule;
 class BaseObjectFactory;
 class DoubleDistributionModule;
@@ -34,6 +36,9 @@ public:
      * Default destructor
      */
     virtual ~ModuleObjectFactory();
+
+    ModuleObject* newModuleObject(const std::string& className);
+    ModuleObject* newModuleObject(unsigned int classId);
 
     DoubleDistributionModule* newDoubleDistributionModule(unsigned int classId);
     DoubleDistributionModule* newDoubleDistributionModule(

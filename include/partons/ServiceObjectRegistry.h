@@ -14,6 +14,8 @@
 
 #include <string>
 
+class AutomationService;
+
 class BaseObjectRegistry;
 class ComparisonService;
 class DoubleDistributionService;
@@ -36,6 +38,7 @@ public:
     VizualisationService* getVizualisationService() const;
     DoubleDistributionService* getDoubleDistributionService() const;
     ComparisonService* getComparisonService() const;
+    AutomationService* getAutomationService() const;
 
 private:
     // To allow only Partons class to create a new instance of this class.

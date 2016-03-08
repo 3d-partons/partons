@@ -3,12 +3,14 @@
 #include <stddef.h>
 
 #include "../../include/partons/Partons.h"
+#include "../../include/partons/ServiceObjectRegistry.h"
 #include "../../include/partons/utils/PropertiesManager.h"
 #include "../../include/partons/utils/stringUtils/Formatter.h"
 #include "../../include/partons/utils/stringUtils/StringUtils.h"
 
 ServiceObject::ServiceObject(const std::string &className) :
-        BaseObject(className), m_pModuleObjectFactory(0) {
+        BaseObject(className), m_pModuleObjectFactory(0), m_pAutomationService(
+                0) {
 }
 
 ServiceObject::~ServiceObject() {
@@ -52,5 +54,10 @@ void ServiceObject::init() {
     if (!m_pModuleObjectFactory) {
         m_pModuleObjectFactory =
                 Partons::getInstance()->getModuleObjectFactory();
+    }
+
+    if (!m_pAutomationService) {
+        m_pAutomationService =
+                Partons::getInstance()->getServiceObjectRegistry()->getAutomationService();
     }
 }

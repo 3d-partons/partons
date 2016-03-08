@@ -3,6 +3,8 @@
 #include <stddef.h>
 #include <vector>
 
+#include "../../../include/partons/database/gpd/service/GPDResultDaoService.h"
+
 List<GPDKinematic> GPDUtils::getKinematicListByIntervals(
         const NumA::Interval<double> &xInterval,
         const NumA::Interval<double> &xiInterval,
@@ -50,4 +52,9 @@ List<GPDKinematic> GPDUtils::getKinematicListFromResultList(
     }
 
     return kinematicList;
+}
+
+ResultList<GPDResult> GPDUtils::getResultListFromDatabase(int computationId) {
+    GPDResultDaoService service;
+    return service.getGPDResultListByComputationId(computationId);
 }

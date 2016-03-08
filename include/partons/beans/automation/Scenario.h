@@ -25,9 +25,11 @@ public:
     virtual ~Scenario();
 
     const Task& getTask(unsigned int i) const;
+    Task& getTask(unsigned int i);
+
     void add(const Task &task);
 
-    size_t size();
+    size_t size() const;
 
     time_t getDate() const;
     void setDate(time_t date);
@@ -35,7 +37,6 @@ public:
     void setDescription(const std::string& description);
     const std::string& getId() const;
     void setId(const std::string& id);
-
 private:
 
     std::string m_id;

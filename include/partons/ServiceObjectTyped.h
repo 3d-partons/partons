@@ -15,14 +15,15 @@
 #include <stddef.h>
 #include <SFML/System/Lock.hpp>
 #include <SFML/System/Mutex.hpp>
-#include <map>
 #include <string>
 
+#include "beans/automation/Scenario.h"
+#include "beans/List.h"
 #include "beans/ResultList.h"
+#include "services/AutomationService.h"
 #include "ServiceObject.h"
-#include "utils/stringUtils/Formatter.h"
 
-template<typename ResultType>
+template<typename KinematicType, typename ResultType>
 class ServiceObjectTyped: public ServiceObject {
 public:
     /**
@@ -40,44 +41,39 @@ public:
     virtual ~ServiceObjectTyped() {
     }
 
+    ResultList<ResultType> computeScenario(const std::string &scenarioFilePath,
+            List<KinematicType> &kinematicList) {
+        Scenario scenario = m_pAutomationService->parseScenarioFile(
+                scenarioFilePath);
+
+        m_kinematicListBuffer.add(kinematicList);
+
+        for (size_t i = 0; i != scenario.size(); i++) {
+            computeTask(scenario.getTask(i));
+        }
+
+        return flushResultList();
+    }
+
     //TODO How to handle random computation from thread ? How to index results for later compare ?
     void add(const ResultType &result) {
         sf::Lock lock(m_mutexResultListBuffer); // mutex.lock()
 
-        m_it = m_resultListBuffer.find(result.getComputationModuleName());
-
-        if (m_it != m_resultListBuffer.end()) {
-            (m_it->second).add(result);
-        } else {
-            ResultList<ResultType> tempObservableresultList;
-            tempObservableresultList.add(result);
-            m_resultListBuffer.insert(
-                    std::make_pair(result.getComputationModuleName(),
-                            tempObservableresultList));
-        }
+        m_resultListBuffer.add(result);
     } // mutex.unlock()
 
     void add(const ResultList<ResultType> &resultList) {
         sf::Lock lock(m_mutexResultListBuffer); // mutex.lock()
 
         for (size_t i = 0; i != resultList.size(); i++) {
-            add(resultList[i]);
+            m_resultListBuffer.add(resultList[i]);
         }
     } // mutex.unlock()
 
-    ResultList<ResultType> getResultList(const std::string &moduleClassName) {
+    ResultList<ResultType> getResultList() {
         sf::Lock lock(m_mutexResultListBuffer); // mutex.lock()
 
-        m_it = m_resultListBuffer.find(moduleClassName);
-
-        if (m_it != m_resultListBuffer.end()) {
-            return (m_it->second);
-        }
-
-        error(__func__,
-                Formatter() << "Missing results for module class name = "
-                        << moduleClassName);
-
+        return m_resultListBuffer;
     } // mutex.unlock()
 
     void clearResultListBuffer() {
@@ -86,12 +82,34 @@ public:
         m_resultListBuffer.clear();
     } // mutex.unlock()
 
-private:
+    ResultList<ResultType> computeScenario(Scenario& scenario) {
+        ResultList<ResultType> resultList;
+
+        for (size_t i = 0; i != scenario.size(); i++) {
+            computeTask(scenario.getTask(i));
+        }
+
+        resultList = getResultList();
+        clearResultListBuffer();
+
+        return resultList;
+    }
+
+    ResultList<ResultType> flushResultList() {
+        sf::Lock lock(m_mutexResultListBuffer); // mutex.lock()
+
+        ResultList<ResultType> resultList = m_resultListBuffer;
+        m_resultListBuffer.clear();
+
+        return resultList;
+    } // mutex.unlock()
+
+protected:
+    sf::Mutex m_mutexKinematicList;
     sf::Mutex m_mutexResultListBuffer;
 
-    // see http://stackoverflow.com/q/22213260
-    typename std::map<std::string, ResultList<ResultType> > m_resultListBuffer;
-    typename std::map<std::string, ResultList<ResultType> >::iterator m_it;
+    List<KinematicType> m_kinematicListBuffer;
+    ResultList<ResultType> m_resultListBuffer;
 
 };
 

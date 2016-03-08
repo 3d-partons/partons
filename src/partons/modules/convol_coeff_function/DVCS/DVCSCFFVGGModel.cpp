@@ -79,10 +79,10 @@ void DVCSCFFVGGModel::initFunctorsForIntegrations() {
 void DVCSCFFVGGModel::init() {
 
     int n_int_steps = 100;
-    m_mathIntegrator = NumA::Integrator1D::newIntegrator(
-            NumA::IntegratorType1D::GLNP);
+
+    setIntegrator(NumA::IntegratorType1D::GLNP);
     NumA::Parameters parameters(NumA::GLNPIntegrator1D::PARAM_NAME_N, 100);
-    m_mathIntegrator->configure(parameters);
+    configureIntegrator(parameters);
 
     m_pRunningAlphaStrongModule =
             Partons::getInstance()->getModuleObjectFactory()->newRunningAlphaStrongModule(
@@ -134,13 +134,13 @@ std::complex<double> DVCSCFFVGGModel::computeUnpolarized() {
     std::vector<double> parameters;
 
     //direct Faynman diagram
-    double intd1 = m_mathIntegrator->integrate(m_pIntd_vector_part, 0.,
+    double intd1 = integrate(m_pIntd_vector_part, 0.,
             m_xi - eps_cffint, parameters);
 
-    double intd2 = m_mathIntegrator->integrate(m_pIntd_vector_part,
+    double intd2 = integrate(m_pIntd_vector_part,
             m_xi - eps_cffint, m_xi + eps_cffint, parameters);
 
-    double intd3 = m_mathIntegrator->integrate(m_pIntd_vector_part,
+    double intd3 = integrate(m_pIntd_vector_part,
             m_xi + eps_cffint, 1., parameters);
 
     std::complex<double> direct(
@@ -148,10 +148,10 @@ std::complex<double> DVCSCFFVGGModel::computeUnpolarized() {
             -PI * xixit);
 
     //crossed Faynman diagram
-    double intc1 = m_mathIntegrator->integrate(m_pIntc_vector_part, 0., m_xi,
+    double intc1 = integrate(m_pIntc_vector_part, 0., m_xi,
             parameters);
 
-    double intc2 = m_mathIntegrator->integrate(m_pIntc_vector_part, m_xi, 1.,
+    double intc2 = integrate(m_pIntc_vector_part, m_xi, 1.,
             parameters);
 
     std::complex<double> crossed(intc1 + intc2, 0.);

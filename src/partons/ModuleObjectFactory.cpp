@@ -22,133 +22,124 @@ ModuleObjectFactory::~ModuleObjectFactory() {
     // m_pBaseObjectFactory pointer will be deleted by the Partons class
 }
 
+ModuleObject* ModuleObjectFactory::newModuleObject(unsigned int classId) {
+    return static_cast<ModuleObject*>(m_pBaseObjectFactory->newBaseObject(
+            classId));
+}
+
+ModuleObject* ModuleObjectFactory::newModuleObject(
+        const std::string& className) {
+    return static_cast<ModuleObject*>(m_pBaseObjectFactory->newBaseObject(
+            className));
+}
+
 DoubleDistributionModule* ModuleObjectFactory::newDoubleDistributionModule(
         unsigned int classId) {
-    return static_cast<DoubleDistributionModule*>(m_pBaseObjectFactory->newBaseObject(
-            classId));
+    return static_cast<DoubleDistributionModule*>(newModuleObject(classId));
 }
 
 DoubleDistributionModule* ModuleObjectFactory::newDoubleDistributionModule(
         const std::string& className) {
-    return static_cast<DoubleDistributionModule*>(m_pBaseObjectFactory->newBaseObject(
-            className));
+    return static_cast<DoubleDistributionModule*>(newModuleObject(className));
 }
 
 GPDEvolutionModule* ModuleObjectFactory::newGPDEvolutionModule(
         unsigned int classId) {
-    return static_cast<GPDEvolutionModule*>(m_pBaseObjectFactory->newBaseObject(
-            classId));
+    return static_cast<GPDEvolutionModule*>(newModuleObject(classId));
 }
 
 GPDEvolutionModule* ModuleObjectFactory::newGPDEvolutionModule(
         const std::string& className) {
-    return static_cast<GPDEvolutionModule*>(m_pBaseObjectFactory->newBaseObject(
-            className));
+    return static_cast<GPDEvolutionModule*>(newModuleObject(className));
 }
 
 GPDModule* ModuleObjectFactory::newGPDModule(unsigned int classId) {
-    return static_cast<GPDModule*>(m_pBaseObjectFactory->newBaseObject(classId));
+    return static_cast<GPDModule*>(newModuleObject(classId));
 }
 
 GPDModule* ModuleObjectFactory::newGPDModule(const std::string& className) {
-    return static_cast<GPDModule*>(m_pBaseObjectFactory->newBaseObject(
-            className));
+    return static_cast<GPDModule*>(newModuleObject(className));
 }
 
 DVCSConvolCoeffFunctionModule* ModuleObjectFactory::newDVCSConvolCoeffFunctionModule(
         unsigned int classId) {
-    return static_cast<DVCSConvolCoeffFunctionModule*>(m_pBaseObjectFactory->newBaseObject(
-            classId));
+    return static_cast<DVCSConvolCoeffFunctionModule*>(newModuleObject(classId));
 }
 
 DVCSConvolCoeffFunctionModule* ModuleObjectFactory::newDVCSConvolCoeffFunctionModule(
         const std::string& className) {
-    return static_cast<DVCSConvolCoeffFunctionModule*>(m_pBaseObjectFactory->newBaseObject(
+    return static_cast<DVCSConvolCoeffFunctionModule*>(newModuleObject(
             className));
 }
 
 ProcessModule* ModuleObjectFactory::newObservableModule(unsigned int classId) {
-    return static_cast<ProcessModule*>(m_pBaseObjectFactory->newBaseObject(
-            classId));
+    return static_cast<ProcessModule*>(newModuleObject(classId));
 }
 
 ProcessModule* ModuleObjectFactory::newObservableModule(
         const std::string& className) {
-    return static_cast<ProcessModule*>(m_pBaseObjectFactory->newBaseObject(
-            className));
+    return static_cast<ProcessModule*>(newModuleObject(className));
 }
 
 DVCSModule* ModuleObjectFactory::newDVCSModule(unsigned int classId) {
-    return static_cast<DVCSModule*>(m_pBaseObjectFactory->newBaseObject(classId));
+    return static_cast<DVCSModule*>(newModuleObject(classId));
 }
 
 DVCSModule* ModuleObjectFactory::newDVCSModule(const std::string& className) {
-    return static_cast<DVCSModule*>(m_pBaseObjectFactory->newBaseObject(
-            className));
+    return static_cast<DVCSModule*>(newModuleObject(className));
 }
 
 RunningAlphaStrongModule* ModuleObjectFactory::newRunningAlphaStrongModule(
         unsigned int classId) {
-    return static_cast<RunningAlphaStrongModule*>(m_pBaseObjectFactory->newBaseObject(
-            classId));
+    return static_cast<RunningAlphaStrongModule*>(newModuleObject(classId));
 }
 
 RunningAlphaStrongModule* ModuleObjectFactory::newRunningAlphaStrongModule(
         const std::string& className) {
-    return static_cast<RunningAlphaStrongModule*>(m_pBaseObjectFactory->newBaseObject(
-            className));
+    return static_cast<RunningAlphaStrongModule*>(newModuleObject(className));
 }
 
 ActiveFlavorsModule* ModuleObjectFactory::newActiveFlavorsModule(
         unsigned int classId) {
-    return static_cast<ActiveFlavorsModule*>(m_pBaseObjectFactory->newBaseObject(
-            classId));
+    return static_cast<ActiveFlavorsModule*>(newModuleObject(classId));
 }
 
 ActiveFlavorsModule* ModuleObjectFactory::newActiveFlavorsModule(
         const std::string &className) {
-    return static_cast<ActiveFlavorsModule*>(m_pBaseObjectFactory->newBaseObject(
-            className));
+    return static_cast<ActiveFlavorsModule*>(newModuleObject(className));
 }
 
 ScaleModule* ModuleObjectFactory::newScaleModule(unsigned int classId) {
-    return static_cast<ScaleModule*>(m_pBaseObjectFactory->newBaseObject(
-            classId));
+    return static_cast<ScaleModule*>(newModuleObject(classId));
 }
 
 ScaleModule* ModuleObjectFactory::newScaleModule(const std::string &className) {
-    return static_cast<ScaleModule*>(m_pBaseObjectFactory->newBaseObject(
-            className));
+    return static_cast<ScaleModule*>(newModuleObject(className));
 }
 
 XiConverterModule* ModuleObjectFactory::newXiConverterModule(
         unsigned int classId) {
-    return static_cast<XiConverterModule*>(m_pBaseObjectFactory->newBaseObject(
-            classId));
+    return static_cast<XiConverterModule*>(newModuleObject(classId));
 }
 XiConverterModule* ModuleObjectFactory::newXiConverterModule(
         const std::string &className) {
-    return static_cast<XiConverterModule*>(m_pBaseObjectFactory->newBaseObject(
-            className));
+    return static_cast<XiConverterModule*>(newModuleObject(className));
 }
 
 GapEquationSolverModule* ModuleObjectFactory::newGapEquationSolverModule(
         unsigned int classId) {
-    return static_cast<GapEquationSolverModule*>(m_pBaseObjectFactory->newBaseObject(
-            classId));
+    return static_cast<GapEquationSolverModule*>(newModuleObject(classId));
 }
 GapEquationSolverModule* ModuleObjectFactory::newGapEquationSolverModule(
         const std::string &className) {
-    return static_cast<GapEquationSolverModule*>(m_pBaseObjectFactory->newBaseObject(
-            className));
+    return static_cast<GapEquationSolverModule*>(newModuleObject(className));
 }
 
 Observable* ModuleObjectFactory::newObservable(unsigned int classId) {
-    return static_cast<Observable*>(m_pBaseObjectFactory->newBaseObject(classId));
+    return static_cast<Observable*>(newModuleObject(classId));
 }
 
 Observable* ModuleObjectFactory::newObservable(const std::string& className) {
-    return static_cast<Observable*>(m_pBaseObjectFactory->newBaseObject(
-            className));
+    return static_cast<Observable*>(newModuleObject(className));
 }
 

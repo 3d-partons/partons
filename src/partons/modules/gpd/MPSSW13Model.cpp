@@ -109,8 +109,7 @@ void MPSSW13Model::init() {
     // Central PDF set
     m_Forward = new c_mstwpdf(gridFilePath);
 
-    m_mathIntegrator = NumA::Integrator1D::newIntegrator(
-            NumA::IntegratorType1D::GK21_ADAPTIVE);
+    setIntegrator(NumA::IntegratorType1D::GK21_ADAPTIVE);
 }
 
 MPSSW13Model::MPSSW13Model(const MPSSW13Model& other) :
@@ -1171,22 +1170,18 @@ PartonDistribution MPSSW13Model::computeH() {
 
     if (m_x >= m_xi) {
         // Integration, u quark
-        HuVal = m_mathIntegrator->integrate(m_pIntegralHuVal, Beta1, Beta2,
-                emptyParameters);
+        HuVal = integrate(m_pIntegralHuVal, Beta1, Beta2, emptyParameters);
 
         // Integration, d quark
-        HdVal = m_mathIntegrator->integrate(m_pIntegralHdVal, Beta1, Beta2,
-                emptyParameters);
+        HdVal = integrate(m_pIntegralHdVal, Beta1, Beta2, emptyParameters);
     }
 
     if (fabs(m_x) < m_xi) {
         // Integration, u quark
-        HuVal = m_mathIntegrator->integrate(m_pIntegralHuVal, Eps, Beta2,
-                emptyParameters);
+        HuVal = integrate(m_pIntegralHuVal, Eps, Beta2, emptyParameters);
 
         // Integration, d quark
-        HdVal = m_mathIntegrator->integrate(m_pIntegralHdVal, Eps, Beta2,
-                emptyParameters);
+        HdVal = integrate(m_pIntegralHdVal, Eps, Beta2, emptyParameters);
     }
 
     ///////////////////////////////////////////////////////////////////////
@@ -1198,22 +1193,20 @@ PartonDistribution MPSSW13Model::computeH() {
 
     if (m_Mx >= m_xi) {
         // Integration, u quark
-        HuVal = m_mathIntegrator->integrate(m_pIntegralHuValMx, Beta1Mx,
-                Beta2Mx, emptyParameters);
+        HuVal = integrate(m_pIntegralHuValMx, Beta1Mx, Beta2Mx,
+                emptyParameters);
 
         // Integration, d quark
-        HdVal = m_mathIntegrator->integrate(m_pIntegralHdValMx, Beta1Mx,
-                Beta2Mx, emptyParameters);
+        HdVal = integrate(m_pIntegralHdValMx, Beta1Mx, Beta2Mx,
+                emptyParameters);
     }
 
     if (fabs(m_Mx) < m_xi) {
         // Integration, u quark
-        HuVal = m_mathIntegrator->integrate(m_pIntegralHuValMx, Eps, Beta2Mx,
-                emptyParameters);
+        HuVal = integrate(m_pIntegralHuValMx, Eps, Beta2Mx, emptyParameters);
 
         // Integration, d quark
-        HdVal = m_mathIntegrator->integrate(m_pIntegralHdValMx, Eps, Beta2Mx,
-                emptyParameters);
+        HdVal = integrate(m_pIntegralHdValMx, Eps, Beta2Mx, emptyParameters);
     }
 
     //////////////////////////////////
@@ -1225,38 +1218,38 @@ PartonDistribution MPSSW13Model::computeH() {
 
     if (m_x >= m_xi) {
         // Integration, u quark
-        HuSea = m_mathIntegrator->integrate(m_pIntegralxLargeHuSea, Beta1,
-                Beta2, emptyParameters);
+        HuSea = integrate(m_pIntegralxLargeHuSea, Beta1, Beta2,
+                emptyParameters);
 
         // Integration, d quark
-        HdSea = m_mathIntegrator->integrate(m_pIntegralxLargeHdSea, Beta1,
-                Beta2, emptyParameters);
+        HdSea = integrate(m_pIntegralxLargeHdSea, Beta1, Beta2,
+                emptyParameters);
     }
 
     if (fabs(m_x) < m_xi) {
         // Integration, u quark
-        HuSea = m_mathIntegrator->integrate(m_pIntegralxSmall1HuSea, Beta2Mx,
-                Beta2, emptyParameters);
+        HuSea = integrate(m_pIntegralxSmall1HuSea, Beta2Mx, Beta2,
+                emptyParameters);
 
-        HuSea += m_mathIntegrator->integrate(m_pIntegralxSmall2HuSea, Eps,
-                Beta2Mx, emptyParameters);
+        HuSea += integrate(m_pIntegralxSmall2HuSea, Eps, Beta2Mx,
+                emptyParameters);
 
         // Integration, d quark
-        HdSea = m_mathIntegrator->integrate(m_pIntegralxSmall1HdSea, Beta2Mx,
-                Beta2, emptyParameters);
+        HdSea = integrate(m_pIntegralxSmall1HdSea, Beta2Mx, Beta2,
+                emptyParameters);
 
-        HdSea += m_mathIntegrator->integrate(m_pIntegralxSmall2HdSea, Eps,
-                Beta2Mx, emptyParameters);
+        HdSea += integrate(m_pIntegralxSmall2HdSea, Eps, Beta2Mx,
+                emptyParameters);
     }
 
     if (m_x <= -m_xi) {
         // Integration, u quark
-        HuSea = -m_mathIntegrator->integrate(m_pIntegralxLargeHuSeaMx, Beta1Mx,
-                Beta2Mx, emptyParameters);
+        HuSea = -integrate(m_pIntegralxLargeHuSeaMx, Beta1Mx, Beta2Mx,
+                emptyParameters);
 
         // Integration, d quark
-        HdSea = -m_mathIntegrator->integrate(m_pIntegralxLargeHdSeaMx, Beta1Mx,
-                Beta2Mx, emptyParameters);
+        HdSea = -integrate(m_pIntegralxLargeHdSeaMx, Beta1Mx, Beta2Mx,
+                emptyParameters);
     }
 
 //    if (m_x > 0.) {
@@ -1276,21 +1269,19 @@ PartonDistribution MPSSW13Model::computeH() {
     double Hs = 0.;
 
     if (m_x >= m_xi) {
-        Hs = m_mathIntegrator->integrate(m_pIntegralxLargeHsSea, Beta1, Beta2,
-                emptyParameters);
+        Hs = integrate(m_pIntegralxLargeHsSea, Beta1, Beta2, emptyParameters);
     }
 
     if (fabs(m_x) < m_xi) {
-        Hs = m_mathIntegrator->integrate(m_pIntegralxSmall1HsSea, Beta2Mx,
-                Beta2, emptyParameters);
-
-        Hs += m_mathIntegrator->integrate(m_pIntegralxSmall2HsSea, Eps, Beta2Mx,
+        Hs = integrate(m_pIntegralxSmall1HsSea, Beta2Mx, Beta2,
                 emptyParameters);
+
+        Hs += integrate(m_pIntegralxSmall2HsSea, Eps, Beta2Mx, emptyParameters);
     }
 
     if (m_x <= -m_xi) {
-        Hs = -m_mathIntegrator->integrate(m_pIntegralxLargeHsSeaMx, Beta1Mx,
-                Beta2Mx, emptyParameters);
+        Hs = -integrate(m_pIntegralxLargeHsSeaMx, Beta1Mx, Beta2Mx,
+                emptyParameters);
     }
     quarkDistribution_s.setQuarkDistribution(Hs);
 
@@ -1301,23 +1292,20 @@ PartonDistribution MPSSW13Model::computeH() {
 
     if (m_x >= m_xi) {
         // Integration
-        Hg = m_mathIntegrator->integrate(m_pIntegralxLargeHg, Beta1, Beta2,
-                emptyParameters);
+        Hg = integrate(m_pIntegralxLargeHg, Beta1, Beta2, emptyParameters);
     }
 
     if (fabs(m_x) < m_xi) {
         // Integration
-        Hg = m_mathIntegrator->integrate(m_pIntegralxSmall1Hg, 0., Beta2,
-                emptyParameters);
+        Hg = integrate(m_pIntegralxSmall1Hg, 0., Beta2, emptyParameters);
 
-        Hg += m_mathIntegrator->integrate(m_pIntegralxSmall2Hg, 0., Beta2Mx,
-                emptyParameters);
+        Hg += integrate(m_pIntegralxSmall2Hg, 0., Beta2Mx, emptyParameters);
     }
 
     if (m_x <= -m_xi) {
         // Integration
-        Hg = m_mathIntegrator->integrate(m_pIntegralxLargeHgMx, Beta1Mx,
-                Beta2Mx, emptyParameters);
+        Hg = integrate(m_pIntegralxLargeHgMx, Beta1Mx, Beta2Mx,
+                emptyParameters);
     }
 
     //Hg += m_GluonDTerm;

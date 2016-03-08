@@ -15,6 +15,7 @@
 #include "../../../include/partons/Partons.h"
 #include "../../../include/partons/services/GPDService.h"
 #include "../../../include/partons/ServiceObjectTyped.h"
+#include "../../../include/partons/utils/compare/ComparisonReport.h"
 #include "../../../include/partons/utils/GenericType.h"
 #include "../../../include/partons/utils/ParameterList.h"
 #include "../../../include/partons/utils/stringUtils/Formatter.h"
@@ -53,7 +54,10 @@ void GPDService::computeTask(Task &task) {
 
         if (task.isAvailableParameterList("GPDKinematic")) {
             gpdKinematic = GPDKinematic(task.getLastAvailableParameterList());
-        } else {
+        } else if(!m_kinematicListBuffer.isEmpty())
+        {
+            //TODO que faire ?
+        }else{
             error(__func__,
                     Formatter() << "Missing object : <GPDKinematic> for method "
                             << task.getFunctionName());
@@ -118,14 +122,9 @@ void GPDService::computeTask(Task &task) {
                             << task.getFunctionName());
         }
 
-        GPDResult result = computeGPDModelWithEvolution(gpdKinematic,
-                pGPDModule, pGPDEvolutionModule);
-
-        info(__func__,
-                Formatter() << task.getFunctionName() << "("
-                        << pGPDModule->getClassName() << " , "
-                        << pGPDEvolutionModule->getClassName() << ")" << '\n'
-                        << result.toString());
+        add(
+                computeGPDModelWithEvolution(gpdKinematic, pGPDModule,
+                        pGPDEvolutionModule));
 
     } else if (StringUtils::equals(task.getFunctionName(),
             GPDService::GPD_SERVICE_COMPUTE_LIST_OF_GPD_MODEL)) {
@@ -159,12 +158,7 @@ void GPDService::computeTask(Task &task) {
                             << task.getFunctionName());
         }
 
-        ResultList<GPDResult> results = computeListOfGPDModel(gpdKinematic,
-                listOfGPDModule);
-
-        info(__func__,
-                Formatter() << task.getFunctionName() << "(" << ")" << '\n'
-                        << results.toString());
+        add(computeListOfGPDModel(gpdKinematic, listOfGPDModule));
     } else {
         error(__func__, "unknown function name = " + task.getFunctionName());
     }
@@ -246,8 +240,17 @@ ResultList<GPDResult> GPDService::computeManyKinematicOneModel(
 //                        pGPDModule, GPDType::ALL));
 //    }
 
-    results = getResultList(pGPDModule->getClassName());
+    results = getResultList();
     clearResultListBuffer();
 
     return results;
+}
+
+ComparisonReport GPDService::compareResultListToDatabase(
+        const std::string& scenarioTestFilePath) {
+    ComparisonReport comparisonReport;
+
+    Partons::getInstance()->getServiceObjectRegistry();
+
+    return comparisonReport;
 }

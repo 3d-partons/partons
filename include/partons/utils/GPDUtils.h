@@ -20,4 +20,6 @@ public:
 
     static List<GPDKinematic> getKinematicListFromResultList(
             const ResultList<GPDResult> &gpdResultList);
+
+    static ResultList<GPDResult> getResultListFromDatabase(int computationId);
 };

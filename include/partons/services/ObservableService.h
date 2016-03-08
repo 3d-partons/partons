@@ -26,7 +26,8 @@ class DVCSConvolCoeffFunctionModule;
 class DVCSModule;
 class Observable;
 
-class ObservableService: public ServiceObjectTyped<ObservableResult> {
+class ObservableService: public ServiceObjectTyped<ObservableKinematic,
+        ObservableResult> {
 public:
     static const std::string FUNCTION_NAME_COMPUTE_DVCS_OBSERVABLE;
     static const std::string FUNCTION_NAME_COMPUTE_MANY_KINEMATIC_ONE_MODEL;

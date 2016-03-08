@@ -25,7 +25,7 @@
 
 class GPDEvolutionModule;
 
-class GPDService: public ServiceObjectTyped<GPDResult> {
+class GPDService: public ServiceObjectTyped<GPDKinematic, GPDResult> {
 public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
@@ -110,6 +110,9 @@ public:
      */
     ResultList<GPDResult> computeManyKinematicOneModel(
             const List<GPDKinematic> &gpdKinematicList, GPDModule* pGPDModule);
+
+    ComparisonReport compareResultListToDatabase(
+            const std::string &scenarioTestFilePath);
 
 private:
     GPDKinematic* m_pGPDKinematic;

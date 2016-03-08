@@ -37,6 +37,7 @@ ObservableService::~ObservableService() {
 }
 
 //TODO implement all function
+//TODO check before executing computeTask if the service name equal current service class name to avoid computing method from another service
 void ObservableService::computeTask(Task &task) {
 
     ResultList<ObservableResult> observableResultList;
@@ -113,7 +114,7 @@ ResultList<ObservableResult> ObservableService::computeManyKinematicOneModel(
 
     // ####################################################
 
-    results = getResultList(pDVCSModule->getClassName());
+    results = getResultList();
     clearResultListBuffer();
 
     return results;

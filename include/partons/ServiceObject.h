@@ -25,6 +25,7 @@
 #include "utils/thread/ThreadManager.h"
 #include "utils/thread/ThreadQueue.h"
 
+class AutomationService;
 class ModuleObjectFactory;
 class Task;
 
@@ -58,6 +59,7 @@ public:
 
 protected:
     ModuleObjectFactory* m_pModuleObjectFactory;
+    AutomationService* m_pAutomationService;
 
 private:
     ThreadQueue m_queueOfTask;
