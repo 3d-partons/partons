@@ -4,12 +4,10 @@
 #include <utility>
 
 #include "../../../../../include/partons/beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
-//#include "../../../../../include/partons/modules/active_flavors/NfFunctionExample.h"
 #include "../../../../../include/partons/modules/alphaS/RunningAlphaStrong.h"
 #include "../../../../../include/partons/modules/ActiveFlavorsModule.h"
 #include "../../../../../include/partons/modules/evolution/gpd/ExampleEvolQCDModel.h"
 #include "../../../../../include/partons/modules/GPDModule.h"
-//#include "../../../../../include/partons/modules/RunningAlphaStrongModule.h"
 #include "../../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../../include/partons/Partons.h"
 #include "../../../../../include/partons/utils/GenericType.h"
@@ -255,9 +253,27 @@ void DVCSConvolCoeffFunctionModule::configure(ParameterList parameters) {
 
     if (parameters.isAvailable(DVCSConvolCoeffFunctionModule::GPD_MODULE_ID)) {
         //TODO why create new GPDModule here ?
-        m_pGPDModule =
-                Partons::getInstance()->getModuleObjectFactory()->newGPDModule(
-                        parameters.getLastAvailable().toUInt());
+        // TODO passer par le setter de m_pGPDModule pour affecter le nouveau module de GPD. Car il faut détruire le précédent pointer s'il existe. Pour libérer l'allocation mémoire avant d'affecter le nouveau.
+
+        //TODO tester l'imbrication des try/catch
+        //TODO Dangereux de construire le module GPD comme ça car on ne peut pas le configurer
+        try {
+            m_pGPDModule =
+                    Partons::getInstance()->getModuleObjectFactory()->newGPDModule(
+                            parameters.getLastAvailable().toUInt());
+        } catch (std::exception e) {
+            try {
+                m_pGPDModule =
+                        Partons::getInstance()->getModuleObjectFactory()->newGPDModule(
+                                parameters.getLastAvailable().toString());
+            } catch (std::exception e) {
+                error(__func__,
+                        Formatter()
+                                << "Cannot create GPDModule from data provided with parameter = "
+                                << DVCSConvolCoeffFunctionModule::GPD_MODULE_ID
+                                << e.what());
+            }
+        }
 
         info(__func__,
                 Formatter() << DVCSConvolCoeffFunctionModule::GPD_MODULE_ID
