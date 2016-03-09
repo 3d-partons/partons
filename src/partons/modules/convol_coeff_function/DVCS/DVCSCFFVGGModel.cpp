@@ -28,10 +28,8 @@ const unsigned int DVCSCFFVGGModel::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new DVCSCFFVGGModel("DVCSCFFVGGModel"));
 
-const double DVCSCFFVGGModel::eps_cffint = 1.E-3;
-
 DVCSCFFVGGModel::DVCSCFFVGGModel(const std::string& className) :
-        DVCSConvolCoeffFunctionModule(className) {
+        eps_cffint(1.E-3), DVCSConvolCoeffFunctionModule(className) {
 
     xixit = -1.;
 
@@ -57,6 +55,7 @@ DVCSCFFVGGModel* DVCSCFFVGGModel::clone() const {
 }
 
 DVCSCFFVGGModel::~DVCSCFFVGGModel() {
+
     if (m_pIntd_vector_part) {
         delete m_pIntd_vector_part;
         m_pIntd_vector_part = 0;
@@ -80,9 +79,12 @@ void DVCSCFFVGGModel::init() {
 
     int n_int_steps = 100;
 
-    setIntegrator(NumA::IntegratorType1D::GLNP);
-    NumA::Parameters parameters(NumA::GLNPIntegrator1D::PARAM_NAME_N, 100);
-    configureIntegrator(parameters);
+    //TODO changed temporary to the adaptive routine and GL currently does not work
+    setIntegrator(NumA::IntegratorType1D::GK21_ADAPTIVE);
+
+//    setIntegrator(NumA::IntegratorType1D::GLNP);
+//    NumA::Parameters parameters(NumA::GLNPIntegrator1D::PARAM_NAME_N, 100);
+//    configureIntegrator(parameters);
 
     m_pRunningAlphaStrongModule =
             Partons::getInstance()->getModuleObjectFactory()->newRunningAlphaStrongModule(
@@ -94,9 +96,23 @@ void DVCSCFFVGGModel::init() {
 }
 
 DVCSCFFVGGModel::DVCSCFFVGGModel(const DVCSCFFVGGModel& other) :
-        DVCSConvolCoeffFunctionModule(other) {
+        eps_cffint(1.E-3), DVCSConvolCoeffFunctionModule(other) {
 
     xixit = other.xixit;
+
+    //relate GPDs to functions
+    m_listOfCFFComputeFunctionAvailable.insert(
+            std::make_pair(GPDType::H,
+                    &DVCSConvolCoeffFunctionModule::computeUnpolarized));
+    m_listOfCFFComputeFunctionAvailable.insert(
+            std::make_pair(GPDType::E,
+                    &DVCSConvolCoeffFunctionModule::computeUnpolarized));
+    m_listOfCFFComputeFunctionAvailable.insert(
+            std::make_pair(GPDType::Ht,
+                    &DVCSConvolCoeffFunctionModule::computePolarized));
+    m_listOfCFFComputeFunctionAvailable.insert(
+            std::make_pair(GPDType::Et,
+                    &DVCSConvolCoeffFunctionModule::computePolarized));
 
     initFunctorsForIntegrations();
 }
@@ -113,64 +129,32 @@ std::complex<double> DVCSCFFVGGModel::computeUnpolarized() {
 
     //check pQCD order
     if (m_qcdOrderType != PerturbativeQCDOrderType::LO) {
-        throw std::runtime_error(
-                Formatter()
-                        << "[DVCSCFFVGGModel::computeUnpolarized()] Calculation not supported for pQCD order = "
+        error(__FUNCTION__,
+                Formatter() << "Calculation not supported for pQCD order = "
                         << PerturbativeQCDOrderType(m_qcdOrderType).toString());
-    }
-
-    //check allowed range of xi
-    if (m_xi - eps_cffint < 0. || m_xi + eps_cffint > 1.) {
-        throw std::runtime_error(
-                Formatter()
-                        << "[DVCSCFFVGGModel::computeUnpolarized()] Invalid xi +/- eps = "
-                        << m_xi - eps_cffint << "/" << m_xi + eps_cffint);
     }
 
     //calculate GPD at (xi, xi, t)
     calculate_xixit_value();
 
-    //parameters for the integration (zero-lenght vector in this case)
-    std::vector<double> parameters;
-
-    //direct Faynman diagram
-    double intd1 = integrate(m_pIntd_vector_part, 0.,
-            m_xi - eps_cffint, parameters);
-
-    double intd2 = integrate(m_pIntd_vector_part,
-            m_xi - eps_cffint, m_xi + eps_cffint, parameters);
-
-    double intd3 = integrate(m_pIntd_vector_part,
-            m_xi + eps_cffint, 1., parameters);
-
-    std::complex<double> direct(
-            intd1 + intd2 + intd3 + xixit * log((1. - m_xi) / m_xi),
-            -PI * xixit);
-
-    //crossed Faynman diagram
-    double intc1 = integrate(m_pIntc_vector_part, 0., m_xi,
-            parameters);
-
-    double intc2 = integrate(m_pIntc_vector_part, m_xi, 1.,
-            parameters);
-
-    std::complex<double> crossed(intc1 + intc2, 0.);
-
     //return
-    return direct + crossed;
+    return calculate_direct() + calculate_crossed();
 }
 
 std::complex<double> DVCSCFFVGGModel::computePolarized() {
 
     //check pQCD order
     if (m_qcdOrderType != PerturbativeQCDOrderType::LO) {
-        throw std::runtime_error(
-                Formatter()
-                        << "[DVCSCFFVGGModel::computePolarized()] Calculation not supported for pQCD order = "
+        error(__FUNCTION__,
+                Formatter() << "Calculation not supported for pQCD order = "
                         << PerturbativeQCDOrderType(m_qcdOrderType).toString());
     }
 
-    return DVCSCFFVGGModel::computeUnpolarized();
+    //calculate GPD at (xi, xi, t)
+    calculate_xixit_value();
+
+    //return
+    return calculate_direct() - calculate_crossed();
 }
 
 double DVCSCFFVGGModel::calculate_gpd_combination(GPDResult gpdResult) {
@@ -209,3 +193,54 @@ double DVCSCFFVGGModel::intc_vector_part(double x, std::vector<double> par) {
     return calculate_gpd_combination(gpdResult) / (x + m_xi);
 }
 
+std::complex<double> DVCSCFFVGGModel::calculate_direct() {
+
+    //check allowed range of xi
+    if (m_xi - eps_cffint < 0. || m_xi + eps_cffint > 1.) {
+        error(__FUNCTION__,
+                Formatter() << "Invalid xi +/- eps = " << m_xi - eps_cffint
+                        << "/" << m_xi + eps_cffint);
+    }
+
+    //parameters for the integration (zero-length vector in this case)
+    std::vector<double> parameters;
+    int n_int_steps = 100;
+
+    //direct Faynman diagram
+    double intd1 = integrate(m_pIntd_vector_part, 0., m_xi - eps_cffint,
+            parameters);
+
+    double intd2 = integrate(m_pIntd_vector_part, m_xi - eps_cffint,
+            m_xi + eps_cffint, parameters);
+
+    double intd3 = integrate(m_pIntd_vector_part, m_xi + eps_cffint, 1.,
+            parameters);
+
+    //return (multiplied by -1 to match the convention used by other CFF modules where 1/(xi-x) instead of 1/(x-xi) is used)
+    return -1.
+            * std::complex<double>(
+                    intd1 + intd2 + intd3 + xixit * log((1. - m_xi) / m_xi),
+                    -PI * xixit);
+}
+
+std::complex<double> DVCSCFFVGGModel::calculate_crossed() {
+
+    //check allowed range of xi
+    if (m_xi - eps_cffint < 0. || m_xi + eps_cffint > 1.) {
+        error(__FUNCTION__,
+                Formatter() << "Invalid xi +/- eps = " << m_xi - eps_cffint
+                        << "/" << m_xi + eps_cffint);
+    }
+
+    //parameters for the integration (zero-length vector in this case)
+    std::vector<double> parameters;
+    int n_int_steps = 100;
+
+    //crossed Faynman diagram
+    double intc1 = integrate(m_pIntc_vector_part, 0., m_xi, parameters);
+
+    double intc2 = integrate(m_pIntc_vector_part, m_xi, 1., parameters);
+
+    //return (multiplied by -1 to match the convention used by other CFF modules where 1/(xi-x) instead of 1/(x-xi) is used)
+    return -1. * std::complex<double>(intc1 + intc2, 0.);
+}

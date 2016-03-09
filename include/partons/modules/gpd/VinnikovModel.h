@@ -8,9 +8,11 @@
 #ifndef VINNIKOVMODEL_H_
 #define VINNIKOVMODEL_H_
 
+#include <string>
+
 #include "../GPDModule.h"
 
-class VinnikovModel : public GPDModule{
+class VinnikovModel: public GPDModule {
 
 public:
 
@@ -21,6 +23,8 @@ public:
     virtual ~VinnikovModel();
 
     virtual VinnikovModel* clone() const;
+
+    virtual void init();
 
     virtual void configure(ParameterList parameters);
 
@@ -38,24 +42,38 @@ protected:
 
 private:
 
-    static const double EPS_BETR;
-    static const int SIMP_INT;
+    const double EPS_BETR;
+    const int SIMP_INT;
 
-    double gpdh(int const i_part, double x, double const xi, double const t, int const n_par, double* const param);
+    double gpdh(int const i_part, double x, double const xi, double const t,
+            int const n_par, double* const param);
 
-    double gpdh_pol(int const i_part, double x, double const xi, double const t, int const n_par, double* const param);
+    double gpdh_pol(int const i_part, double x, double const xi, double const t,
+            int const n_par, double* const param);
 
-    double dd1(int const i_part, double const beta, double const x, double const xi, double const t, int const n_par, double* const param);
+    double dd1(int const i_part, double const beta, double const x,
+            double const xi, double const t, int const n_par,
+            double* const param);
 
-    double dd2(int const i_part, double const beta, double const x, double const xi, double const t, int const n_par, double* const param);
+    double dd2(int const i_part, double const beta, double const x,
+            double const xi, double const t, int const n_par,
+            double* const param);
 
-    double dd3(int const i_part, double const beta, double const x, double const xi, double const t, int const n_par, double* const param);
+    double dd3(int const i_part, double const beta, double const x,
+            double const xi, double const t, int const n_par,
+            double* const param);
 
-    double dd1_pol(int const i_part, double const beta, double const x, double const xi, double const t, int const n_par, double* const param);
+    double dd1_pol(int const i_part, double const beta, double const x,
+            double const xi, double const t, int const n_par,
+            double* const param);
 
-    double dd2_pol(int const i_part, double const beta, double const x, double const xi, double const t, int const n_par, double* const param);
+    double dd2_pol(int const i_part, double const beta, double const x,
+            double const xi, double const t, int const n_par,
+            double* const param);
 
-    double dd3_pol(int const i_part, double const beta, double const x, double const xi, double const t, int const n_par, double* const param);
+    double dd3_pol(int const i_part, double const beta, double const x,
+            double const xi, double const t, int const n_par,
+            double* const param);
 
     double uval(double const x, double const t);
 
@@ -81,7 +99,10 @@ private:
 
     double glu_pol(double const x, double const t);
 
-    double dd_int_simp(double const bmin, double const bmax, double (VinnikovModel::* dd)(int, double, double, double, double, int, double*), int const i_part, double const x, double const xi, double const t, int const n_par, double* param);
+    double dd_int_simp(double const bmin, double const bmax,
+            double (VinnikovModel::*dd)(int, double, double, double, double,
+                    int, double*), int const i_part, double const x,
+            double const xi, double const t, int const n_par, double* param);
 
     double gammf(double const x);
 
@@ -90,7 +111,7 @@ private:
     double power(double const x, double const y);
 
     int n_par;
-    double* param;
+    double param[6];
 
 };
 
