@@ -79,14 +79,14 @@ DVCSCFFHeavyQuarkModel::DVCSCFFHeavyQuarkModel(
 
 std::complex<double> DVCSCFFHeavyQuarkModel::computeUnpolarized() {
 
-//    return computeIntegralsMassiveV() +DVCSCFFModel::computeUnpolarized();
-    return computeIntegralsMassiveV();
+    return computeIntegralsMassiveV() + DVCSCFFModel::computeUnpolarized();
+//  return computeIntegralsMassiveV();
 }
 
 std::complex<double> DVCSCFFHeavyQuarkModel::computePolarized() {
 
-//    return computeIntegralsMassiveA()+DVCSCFFModel::computePolarized() ;
-    return computeIntegralsMassiveA();
+    return computeIntegralsMassiveA() + DVCSCFFModel::computePolarized();
+//  return computeIntegralsMassiveA();
 }
 
 std::complex<double> DVCSCFFHeavyQuarkModel::computeIntegralsMassiveV() {
@@ -115,8 +115,7 @@ std::complex<double> DVCSCFFHeavyQuarkModel::computeIntegralsMassiveV() {
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
         IntegralRealPartMassive = integrate(m_pConvolReKernelGluonMassiveV, 0.,
                 +1., emptyParameters);
-    }
-    if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
+
         IntegralImaginaryPartMassive = integrate(m_pConvolImKernelGluonMassiveV,
                 0., +1., emptyParameters);
     }
@@ -151,8 +150,6 @@ std::complex<double> DVCSCFFHeavyQuarkModel::computeIntegralsMassiveA() {
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
         IntegralRealPartMassive = integrate(m_pConvolReKernelGluonMassiveA, 0.,
                 +1., emptyParameters);
-    }
-    if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
 
         IntegralImaginaryPartMassive = integrate(m_pConvolImKernelGluonMassiveA,
                 0., +1., emptyParameters);
