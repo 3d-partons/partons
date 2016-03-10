@@ -97,7 +97,7 @@ void DVCSModule::isModuleWellConfigured() {
 }
 
 void DVCSModule::computeConvolCoeffFunction(double xB, double t, double Q2) {
-    if (isPreviousKinematicDifferent(xB, t, Q2)) {
+    if (isPreviousKinematicsDifferent(xB, t, Q2)) {
         // Compute scale from Q2
         Scale scale = m_pScaleModule->compute(Q2);
 
@@ -144,7 +144,7 @@ double DVCSModule::computeCrossSection(double beamHelicity, double beamCharge,
 }
 
 //TODO vérifier que la précision du double ne fausse pas le résultat
-bool DVCSModule::isPreviousKinematicDifferent(double xB, double t, double Q2) {
+bool DVCSModule::isPreviousKinematicsDifferent(double xB, double t, double Q2) {
     bool result = false;
     if (xB != m_xB || t != m_t || Q2 != m_Q2) {
         result = true;
@@ -158,6 +158,18 @@ DVCSConvolCoeffFunctionModule* DVCSModule::getDVCSConvolCoeffFunctionModule() co
 void DVCSModule::setDVCSConvolCoeffFunctionModule(
         DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule) {
     m_pDVCSConvolCoeffFunctionModule = pDVCSConvolCoeffFunctionModule;
+
+    resetPreviousKinematics();
+
+    info(__func__,
+            Formatter() << "DVCSConvolCoeffFunctionModule is set to : "
+                    << m_pDVCSConvolCoeffFunctionModule->getClassName());
+}
+
+void DVCSModule::resetPreviousKinematics() {
+    m_xB = 0.;
+    m_t = 0.;
+    m_Q2 = 0.;
 }
 
 std::complex<double> DVCSModule::getConvolCoeffFunctionValue(

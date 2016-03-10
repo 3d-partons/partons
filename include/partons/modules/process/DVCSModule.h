@@ -104,7 +104,8 @@ private:
 
     DVCSConvolCoeffFunctionModule* m_pDVCSConvolCoeffFunctionModule;
 
-    bool isPreviousKinematicDifferent(double xB, double t, double Q2);
+    bool isPreviousKinematicsDifferent(double xB, double t, double Q2);
+    void resetPreviousKinematics();
 };
 
 #endif /* DVCS_MODULE_H */
