@@ -18,20 +18,16 @@
 
 class QuarkPropagator: public BaseObject {
 public:
-    QuarkPropagator(const std::string &className, unsigned int N = 50,
-            double m = 5.e-3, double mu = 19, double Lambda2 = 1.e5,
-            double epsilon2 = 1.e-4);
     virtual ~QuarkPropagator();
 
     virtual QuarkPropagator* clone() const = 0;
-
-    virtual std::string toString() const;
 
     enum QPFunction {
         SigmaA = 0,
         SigmaM,
         A,
         B,
+        M,
         sigmaV,
         sigmaS,
         dSigmaA,
@@ -45,6 +41,10 @@ public:
         ALL,
         UNDEFINED
     };
+
+    virtual std::string toString() const;
+    virtual std::string toString(unsigned int Npoints, std::vector<QuarkPropagator::QPFunction> functions) const;
+    virtual std::string toString(unsigned int Npoints) const;
 
     unsigned int getN() const;
     /**
@@ -86,7 +86,7 @@ public:
     const NumA::VectorD& getCoeffsA() const;
     void setCoeffsA(const NumA::VectorD& a);
     void setCoeffsA(double a);
-    const double getCoeffA(unsigned int i) const;
+    double getCoeffA(unsigned int i) const;
     void setCoeffA(unsigned int i, double a);
     virtual void setCoeffsAfromValueOnNodes(
             const std::vector<double>& values) = 0;
@@ -94,7 +94,7 @@ public:
     const NumA::VectorD& getCoeffsB() const;
     void setCoeffsB(const NumA::VectorD& b);
     void setCoeffsB(double b);
-    const double getCoeffB(unsigned int i) const;
+    double getCoeffB(unsigned int i) const;
     void setCoeffB(unsigned int i, double b);
     virtual void setCoeffsBfromValueOnNodes(
             const std::vector<double>& values) = 0;
@@ -111,7 +111,12 @@ public:
     void setMu(double mu);
 
 protected:
+    QuarkPropagator(const std::string &className, unsigned int N = 50,
+            double m = 5.e-3, double mu = 19, double Lambda2 = 1.e5,
+            double epsilon2 = 1.e-4);
     QuarkPropagator(const QuarkPropagator& other);
+
+    std::string enumToString(QuarkPropagator::QPFunction function) const;
 
     NumA::VectorD m_a; ///< coefficients of Sigma_A (or A)
     NumA::VectorD m_b; ///< coefficients of Sigma_M (or B)

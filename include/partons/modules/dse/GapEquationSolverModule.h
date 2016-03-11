@@ -152,9 +152,9 @@ private:
     int m_Nz; ///< Number of points for integration on z (angular variable)
 
     std::vector<double> m_roots_x, m_roots_s; ///< Roots for the propagator's expansion (e.g. Chebyshev roots)
-    NumA::GLNPIntegrator1D m_quad_x; ///< Integration quadrature
+    NumA::QuadratureIntegrator1D* m_quad_x; ///< Integration quadrature
     std::vector<double> m_nodes_x, m_nodes_s, m_weights_x; ///< Integration nodes and weights
-    NumA::GLNPIntegrator1D m_quad_z; ///< Angular integration quadrature
+    NumA::QuadratureIntegrator1D* m_quad_z; ///< Angular integration quadrature
     std::vector<double> m_nodes_z, m_weights_z; ///< Angular integration nodes and weights
 
     NumA::Tolerances m_tolerance; ///< Convergence criterion

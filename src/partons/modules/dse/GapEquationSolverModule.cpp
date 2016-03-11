@@ -11,7 +11,7 @@
 
 #include <cmath>
 
-#include "../../../../include/partons/beans/dse/GPMT.h"
+#include "../../../../include/partons/beans/dse/MTGluonPropagator.h"
 #include "../../../../include/partons/beans/dse/QuarkPropagator.h"
 #include "../../../../include/partons/beans/dse/RLVertex.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
@@ -20,11 +20,11 @@
 
 GapEquationSolverModule::GapEquationSolverModule(const std::string &className) :
         ModuleObject(className), m_gluonPropagator(0), m_quarkPropagator(0), m_vertex(
-                0), m_mu(19.), m_m(5.e-3), m_N(50), m_Nx(120), m_Nz(32), m_tolerance(
-                1.e-4, 1.e-3), m_maxIter(20), m_Lambda2(1.e5), m_epsilon2(
-                1.e-4), m_Ainit(1.), m_Binit(m_m), m_iters(0), m_changedQP(true), m_changedGP(
-                true), m_changedVertex(true), m_changedNx(true), m_changedNz(true), m_changedInit(
-                false) {
+                0), m_quad_x(0), m_quad_z(0), m_mu(19.), m_m(5.e-3), m_N(50), m_Nx(
+                120), m_Nz(32), m_tolerance(1.e-4, 1.e-3), m_maxIter(20), m_Lambda2(
+                1.e5), m_epsilon2(1.e-4), m_Ainit(1.), m_Binit(m_m), m_iters(0), m_changedQP(
+                true), m_changedGP(true), m_changedVertex(true), m_changedNx(
+                true), m_changedNz(true), m_changedInit(false) {
 }
 
 GapEquationSolverModule::~GapEquationSolverModule() {
@@ -35,6 +35,13 @@ GapEquationSolverModule::~GapEquationSolverModule() {
     delete m_vertex;
     m_vertex = 0;
     // /!\ Do no delete QuarkPropagator! IT IS NOT A CLONE!
+
+    // Delete Momentum quadrature
+    delete m_quad_x;
+    m_quad_x = 0;
+    // Delete Angular quadrature
+    delete m_quad_z;
+    m_quad_z = 0;
 }
 
 GapEquationSolverModule::GapEquationSolverModule(
@@ -68,6 +75,12 @@ GapEquationSolverModule::GapEquationSolverModule(
     if (other.m_vertex != 0) {
         m_vertex = other.m_vertex->clone();
     }
+    if (other.m_quad_x != 0) {
+        m_quad_x = other.m_quad_x->clone();
+    }
+    if (other.m_quad_z != 0) {
+        m_quad_z = other.m_quad_z->clone();
+    }
 }
 
 void GapEquationSolverModule::initModule() {
@@ -87,7 +100,7 @@ void GapEquationSolverModule::initModule() {
     if (m_gluonPropagator == 0) {
         warn(__func__,
                 "GluonPropagator not defined! Using default Maris-Tandy (MT) model instead.");
-        m_gluonPropagator = new GPMT();
+        m_gluonPropagator = new MTGluonPropagator();
     }
     if (m_vertex == 0) {
         warn(__func__,
@@ -95,16 +108,28 @@ void GapEquationSolverModule::initModule() {
         m_vertex = new RLVertex();
     }
 
+    // Quadratures' default initialization if not available
+    if (m_quad_x == 0) {
+        warn(__func__,
+                "Momentum quadrature not defined! Using default Gauss-Legendre quadrature.");
+        m_quad_x = new NumA::GLNPIntegrator1D();
+    }
+    if (m_quad_z == 0) {
+        warn(__func__,
+                "Angular quadrature not defined! Using default Gauss-Legendre quadrature.");
+        m_quad_z = new NumA::GLNPIntegrator1D();
+    }
+
     // Gauss-Legendre integration //TODO Implement other cases
     if (m_changedNx) {
-        m_quad_x.makeNodeAndWeightVectors(m_Nx);
-        m_nodes_x = m_quad_x.getNodeNp();
-        m_weights_x = m_quad_x.getWeightNp();
+        m_quad_x->setN(m_Nx);
+        m_nodes_x = m_quad_x->getNodes();
+        m_weights_x = m_quad_x->getWeights();
     }
     if (m_changedNz) {
-        m_quad_z.makeNodeAndWeightVectors(m_Nz);
-        m_nodes_z = m_quad_z.getNodeNp();
-        m_weights_z = m_quad_z.getWeightNp();
+        m_quad_z->setN(m_Nz);
+        m_nodes_z = m_quad_z->getNodes();
+        m_weights_z = m_quad_z->getWeights();
     }
 
     // Propagator expansion's roots

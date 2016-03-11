@@ -5,6 +5,7 @@
  * @version 1.0
  *
  * @class GPMT
+ * @brief MT Gluon Propagator (Maris & Tandy).
  */
 
 #ifndef GPMT_H_
@@ -14,22 +15,24 @@
 
 #include "GluonPropagator.h"
 
-class GPMT: public GluonPropagator {
+class MTGluonPropagator: public GluonPropagator {
 public:
-    GPMT(double w = 0.4, double I = 5.8, double LambdaQCD = 0.234,
+    MTGluonPropagator(double w = 0.4, double I = 5.8, double LambdaQCD = 0.234,
             int Nf = 4);
-    virtual ~GPMT();
+    virtual ~MTGluonPropagator();
 
-    virtual GPMT* clone() const;
+    virtual MTGluonPropagator* clone() const;
 
     virtual std::string toString() const;
 
     virtual double evaluateG(double k2) const;
 
 protected:
-    GPMT(const std::string &className, double w = 0.4,
+    MTGluonPropagator(const std::string &className, double w = 0.4,
             double I = 5.8, double LambdaQCD = 0.234, int Nf = 4);
-    GPMT(const GPMT& other);
+    MTGluonPropagator(const MTGluonPropagator& other);
+
+    virtual void updateIR();
 };
 
 #endif /* GPMT_H_ */

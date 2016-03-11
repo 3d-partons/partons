@@ -1,32 +1,33 @@
 /**
- * @file BCSimplifiedVertex.h
+ * @file DBVertex.h
  * @author Nabil Chouika (SPhN - CEA Saclay)
- * @date 2 mars 2016
+ * @date 8 mars 2016
  * @version 1.0
  *
- * @class BCSimplifiedVertex
- * @brief Simplified Ball-Chiu Vertex.
- *
- * \f$ \Gamma_\mu = \gamma_\mu \frac{1}{2} \left( A \left(p^2 \right) + A \left( q^2 \right) \right) \f$.
+ * @class DBVertex
+ * @brief DCSB-improved vertex. See [arxiv:1207.5300], appendix A.2.
  */
 
-#ifndef BCSIMPLIFIEDVERTEX_H_
-#define BCSIMPLIFIEDVERTEX_H_
+#ifndef DBVERTEX_H_
+#define DBVERTEX_H_
 
 #include <string>
+#include <vector>
 
-#include "RLVertex.h"
+#include "BCVertex.h"
 
-class BCSimplifiedVertex: public RLVertex {
+class DBVertex: public BCVertex {
 public:
-    BCSimplifiedVertex();
-    virtual ~BCSimplifiedVertex();
+    DBVertex();
+    virtual ~DBVertex();
 
-    virtual BCSimplifiedVertex* clone() const;
+    virtual DBVertex* clone() const;
 
     virtual std::string toString() const;
 
     // Pure virtual methods to be implemented in daughter class.
+    virtual std::vector<double> Angular_Integrands(double p2, double q2,
+            double k2) const; ///< Angular Integrands
     virtual std::vector<double> Radial_Integrands(double p2, double q2, double A_p2,
             double A_q2, double B_p2, double B_q2, double sigmaV_p2,
             double sigmaV_q2, double sigmaS_p2, double sigmaS_q2) const; ///< Radial Integrands
@@ -37,8 +38,8 @@ public:
             double dsigmaV_q2, double dsigmaS_p2, double dsigmaS_q2) const; ///< Derivatives of radial Integrands wrt to coefficient of A or B
 
 protected:
-    BCSimplifiedVertex(const std::string &className, unsigned int numberOfBasisElements = 1);
-    BCSimplifiedVertex(const BCSimplifiedVertex& other);
+    DBVertex(const std::string &className, unsigned int numberOfBasisElements = 5);
+    DBVertex(const DBVertex& other);
 };
 
-#endif /* BCSIMPLIFIEDVERTEX_H_ */
+#endif /* DBVERTEX_H_ */

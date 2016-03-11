@@ -37,7 +37,7 @@ public:
             double dsigmaV_q2, double dsigmaS_p2, double dsigmaS_q2) const; ///< Derivatives of radial Integrands wrt to coefficient of A or B
 
 protected:
-    BCVertex(const std::string &className);
+    BCVertex(const std::string &className, unsigned int numberOfBasisElements = 3);
     BCVertex(const BCVertex& other);
 };
 

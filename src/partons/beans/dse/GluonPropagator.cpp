@@ -16,8 +16,12 @@
 
 GluonPropagator::GluonPropagator(const std::string& className, double w,
         double I, double LambdaQCD, int Nf) :
-        BaseObject(className), m_LambdaQCD(LambdaQCD), m_Nf(Nf) {
-    setI(w, I);
+        BaseObject(className), m_w(w), m_I(I), m_D(I * w * w), m_c(
+                I * w * w * w), m_LambdaQCD(LambdaQCD), m_Nf(Nf), m_factorPer(
+                0.), m_tau(exp(2) - 1.), m_LambdaQCD2(LambdaQCD * LambdaQCD), m_factorIR(
+                0.), m_w2(w * w) {
+    m_factorPer = 8. * PI * PI * 12. / (33. - 2. * Nf);
+    // /!\ m_factorIR needs to be initialized in the daughter class constructor!
 }
 
 GluonPropagator::GluonPropagator(const GluonPropagator& other) :
@@ -28,6 +32,11 @@ GluonPropagator::GluonPropagator(const GluonPropagator& other) :
     m_I = other.getI();
     m_LambdaQCD = other.getLambdaQCD();
     m_Nf = other.getNf();
+    m_factorPer = other.m_factorPer;
+    m_tau = other.m_tau;
+    m_LambdaQCD2 = other.m_LambdaQCD2;
+    m_factorIR = other.m_factorIR;
+    m_w2 = other.m_w2;
 }
 
 GluonPropagator::~GluonPropagator() {
@@ -43,6 +52,15 @@ double GluonPropagator::evaluateAlpha(double k2) const {
     return k2 * evaluateG(k2) / (4 * PI);
 }
 
+double GluonPropagator::evaluateGper(double k2) const {
+    return m_factorPer * (1. - exp(-k2))
+            / (k2 * log(m_tau + pow(1. + k2 / m_LambdaQCD2, 2)));
+}
+
+void GluonPropagator::updatePer() {
+    m_factorPer = 8. * PI * PI * 12. / (33. - 2. * m_Nf);
+}
+
 double GluonPropagator::getC() const {
     return m_c;
 }
@@ -52,9 +70,11 @@ void GluonPropagator::setC(double w, double c) {
         error(__func__, "w must be positive!");
     }
     m_w = w;
+    m_w2 = w * w;
     m_c = c;
     m_D = c / w;
     m_I = m_D / (w * w);
+    updateIR();
 }
 
 double GluonPropagator::getD() const {
@@ -66,9 +86,11 @@ void GluonPropagator::setD(double w, double D) {
         error(__func__, "w must be positive!");
     }
     m_w = w;
+    m_w2 = w * w;
     m_D = D;
     m_c = D * w;
     m_I = D / (w * w);
+    updateIR();
 }
 
 double GluonPropagator::getI() const {
@@ -80,9 +102,11 @@ void GluonPropagator::setI(double w, double I) {
         error(__func__, "w must be positive!");
     }
     m_w = w;
+    m_w2 = w * w;
     m_I = I;
     m_D = I * w * w;
     m_c = m_D * w;
+    updateIR();
 }
 
 double GluonPropagator::getLambdaQCD() const {
@@ -91,6 +115,8 @@ double GluonPropagator::getLambdaQCD() const {
 
 void GluonPropagator::setLambdaQCD(double lambdaQCD) {
     m_LambdaQCD = lambdaQCD;
+    m_LambdaQCD2 = lambdaQCD * lambdaQCD;
+    updatePer();
 }
 
 int GluonPropagator::getNf() const {
@@ -99,6 +125,7 @@ int GluonPropagator::getNf() const {
 
 void GluonPropagator::setNf(int nf) {
     m_Nf = nf;
+    updatePer();
 }
 
 double GluonPropagator::getW() const {

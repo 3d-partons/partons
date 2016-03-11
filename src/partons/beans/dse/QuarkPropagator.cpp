@@ -9,7 +9,9 @@
 
 #include "../../../../include/partons/beans/dse/QuarkPropagator.h"
 
+#include <algorithm>
 #include <cmath>
+#include <iterator>
 
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
@@ -51,7 +53,7 @@ void QuarkPropagator::setCoeffsA(double a) {
     m_a.assign(m_N, a);
 }
 
-const double QuarkPropagator::getCoeffA(unsigned int i) const {
+double QuarkPropagator::getCoeffA(unsigned int i) const {
     return m_a.at(i);
 }
 
@@ -74,7 +76,7 @@ void QuarkPropagator::setCoeffsB(double b) {
     m_b.assign(m_N, b);
 }
 
-const double QuarkPropagator::getCoeffB(unsigned int i) const {
+double QuarkPropagator::getCoeffB(unsigned int i) const {
     return m_b.at(i);
 }
 
@@ -200,19 +202,109 @@ double QuarkPropagator::differentiateSigmaS_b(double p2, unsigned int j) const {
     return Bprime * (p2 * A2 - B2) / (denom * denom);
 }
 
-//TODO Complete toString
 std::string QuarkPropagator::toString() const {
+    return toString(100);
+}
+
+std::string QuarkPropagator::toString(unsigned int Npoints) const {
+    std::vector<QuarkPropagator::QPFunction> functions(5, QuarkPropagator::A);
+    functions.at(1) = QuarkPropagator::B;
+    functions.at(2) = QuarkPropagator::M;
+    functions.at(3) = QuarkPropagator::sigmaV;
+    functions.at(4) = QuarkPropagator::sigmaS;
+    return toString(Npoints, functions);
+}
+
+
+std::string QuarkPropagator::toString(unsigned int Npoints,
+        std::vector<QuarkPropagator::QPFunction> functions) const {
+    double x = -1.;
+    double step = 2. / (Npoints - 1);
+    std::vector<double> p2(Npoints, 0.);
+    std::vector<std::vector<double> > values(Npoints,
+            std::vector<double>());
+    for (unsigned int i = 0; i < Npoints; i++) {
+        p2.at(i) = xtos(x);
+        values.at(i) = evaluate(functions, p2.at(i));
+        x = x + step;
+    }
+
     Formatter formatter;
     formatter << BaseObject::toString();
-    formatter << "Coeffs a : ";
-    for (unsigned int i = 0; i < m_a.size(); i++) {
-        formatter << m_a.at(i) << " , ";
+    formatter << "Results with " << Npoints << " momenta:\n";
+    formatter << "p2 [GeV^2]";
+    if (std::find(functions.begin(), functions.end(),
+            QuarkPropagator::ALL) < functions.end()) {
+        formatter << " ; " << enumToString(QuarkPropagator::ALL);
+    } else {
+        for (unsigned int j = 0; j < functions.size(); j++) {
+            formatter << " ; " << enumToString(functions.at(j));
+        }
     }
     formatter << "\n";
-    formatter << "Coeffs b : ";
-    for (unsigned int i = 0; i < m_b.size(); i++) {
-        formatter << m_b.at(i) << " , ";
+    for (unsigned int i = 0; i < Npoints; i++) {
+        formatter << p2.at(i);
+        for (unsigned int j = 0; j < values.at(i).size(); j++) {
+            formatter << " ; " << values.at(i).at(j);
+        }
+        formatter << "\n";
     }
-    formatter << "\n";
     return formatter.str();
+}
+
+std::string QuarkPropagator::enumToString(
+        QuarkPropagator::QPFunction function) const {
+    switch (function) {
+    case QuarkPropagator::SigmaA:
+        return "SigmaA";
+        break;
+    case QuarkPropagator::SigmaM:
+        return "SigmaM [GeV]";
+        break;
+    case QuarkPropagator::A:
+        return "A";
+        break;
+    case QuarkPropagator::B:
+        return "B [GeV]";
+        break;
+    case QuarkPropagator::M:
+        return "M [GeV]";
+        break;
+    case QuarkPropagator::sigmaV:
+        return "sigmaV [GeV^-2]";
+        break;
+    case QuarkPropagator::sigmaS:
+        return "sigmaS [GeV^-1]";
+        break;
+    case QuarkPropagator::dSigmaA:
+        return "dSigmaA";
+        break;
+    case QuarkPropagator::dSigmaM:
+        return "dSigmaM";
+        break;
+    case QuarkPropagator::dA:
+        return "dA";
+        break;
+    case QuarkPropagator::dB:
+        return "dB";
+        break;
+    case QuarkPropagator::dsigmaV_a:
+        return "dsigmaV_a [GeV^-2]";
+        break;
+    case QuarkPropagator::dsigmaV_b:
+        return "dsigmaV_b [GeV^-3]";
+        break;
+    case QuarkPropagator::dsigmaS_a:
+        return "dsigmaS_a [GeV^-1]";
+        break;
+    case QuarkPropagator::dsigmaS_b:
+        return "dsigmaS_b [GeV^-2]";
+        break;
+    case QuarkPropagator::ALL:
+        return "SigmaA ; SigmaM [GeV] ; A ; B [GeV] ; M [GeV] ; sigmaV [GeV^-2] ; sigmaS [GeV^-1] ; dSigmaA ; dSigmaM ; dA ; dB ; dsigmaV_a [GeV^-2] ; dsigmaV_b [GeV^-3] ; dsigmaS_a [GeV^-1] ; dsigmaS_b [GeV^-2]";
+        break;
+    default:
+        return "UNDEFINED";
+        break;
+    }
 }

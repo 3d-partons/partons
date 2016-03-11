@@ -16,8 +16,6 @@
 
 class GluonPropagator: public BaseObject {
 public:
-    GluonPropagator(const std::string &className, double w = 0.4,
-            double I = 5.8, double LambdaQCD = 0.234, int Nf = 4);
     virtual ~GluonPropagator();
 
     virtual GluonPropagator* clone() const = 0;
@@ -41,15 +39,25 @@ public:
     double getW() const;
 
 protected:
+    GluonPropagator(const std::string &className, double w = 0.4,
+            double I = 5.8, double LambdaQCD = 0.234, int Nf = 4);
     GluonPropagator(const GluonPropagator& other);
 
-    // TODO Move those attributes to the MT model (daughter class) and use configure(ParameterList) to define them
+    virtual double evaluateGper(double k2) const;
+    virtual void updatePer();
+    virtual void updateIR() = 0;
+
+    // TODO Move those attributes to the MT model (daughter class) and use configure(ParameterList) to define them? Not sure if needed.
     double m_w; ///<
     double m_D; ///<
     double m_c; ///<
     double m_I;
     double m_LambdaQCD; ///<
     int m_Nf; ///<
+
+    // Stored factors
+    double m_factorPer, m_tau, m_LambdaQCD2;
+    double m_factorIR, m_w2;
 
 };
 

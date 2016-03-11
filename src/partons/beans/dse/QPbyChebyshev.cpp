@@ -76,12 +76,12 @@ std::vector<double> QPbyChebyshev::evaluate(
 
     if (!listOfFunctions.empty()) {
 
-        bool b_SigmaA = false, b_SigmaM = false, b_A = false, b_B = false,
-                b_sigmaV = false, b_sigmaS = false, b_dSigmaA = false,
+        bool b_SigmaA = false, b_SigmaM = false, b_A = false, b_B = false, b_M =
+                false, b_sigmaV = false, b_sigmaS = false, b_dSigmaA = false,
                 b_dSigmaM = false, b_dA = false, b_dB = false, b_dsigmaV_a =
                         false, b_dsigmaV_b = false, b_dsigmaS_a = false,
                 b_dsigmaS_b = false;
-        unsigned int i_SigmaA, i_SigmaM, i_A, i_B, i_sigmaV, i_sigmaS,
+        unsigned int i_SigmaA, i_SigmaM, i_A, i_B, i_M, i_sigmaV, i_sigmaS,
                 i_dSigmaA, i_dSigmaM, i_dA, i_dB, i_dsigmaV_a, i_dsigmaV_b,
                 i_dsigmaS_a, i_dsigmaS_b;
 
@@ -89,13 +89,14 @@ std::vector<double> QPbyChebyshev::evaluate(
         if (std::find(listOfFunctions.begin(), listOfFunctions.end(),
                 QuarkPropagator::ALL) < listOfFunctions.end()) {
             result.assign(QuarkPropagator::ALL, 0.);
-            b_SigmaA = true, b_SigmaM = true, b_A = true, b_B = true, b_sigmaV =
-                    true, b_sigmaS = true, b_dSigmaA = true, b_dSigmaM = true, b_dA =
-                    true, b_dB = true, b_dsigmaV_a = true, b_dsigmaV_b = true, b_dsigmaS_a =
-                    true, b_dsigmaS_b = true;
+            b_SigmaA = true, b_SigmaM = true, b_A = true, b_B = true, b_M =
+                    true, b_sigmaV = true, b_sigmaS = true, b_dSigmaA = true, b_dSigmaM =
+                    true, b_dA = true, b_dB = true, b_dsigmaV_a = true, b_dsigmaV_b =
+                    true, b_dsigmaS_a = true, b_dsigmaS_b = true;
             i_SigmaA = QuarkPropagator::SigmaA, i_SigmaM =
                     QuarkPropagator::SigmaM, i_A = QuarkPropagator::A, i_B =
-                    QuarkPropagator::B, i_sigmaV = QuarkPropagator::sigmaV, i_sigmaS =
+                    QuarkPropagator::B, i_M =
+                            QuarkPropagator::M, i_sigmaV = QuarkPropagator::sigmaV, i_sigmaS =
                     QuarkPropagator::sigmaS, i_dSigmaA =
                     QuarkPropagator::dSigmaA, i_dSigmaM =
                     QuarkPropagator::dSigmaM, i_dA = QuarkPropagator::dA, i_dB =
@@ -123,6 +124,10 @@ std::vector<double> QPbyChebyshev::evaluate(
                 case QuarkPropagator::B:
                     b_B = true;
                     i_B = i;
+                    break;
+                case QuarkPropagator::M:
+                    b_M = true;
+                    i_M = i;
                     break;
                 case QuarkPropagator::sigmaV:
                     b_sigmaV = true;
@@ -171,24 +176,24 @@ std::vector<double> QPbyChebyshev::evaluate(
             }
         }
 
-        double SigmaA, SigmaM, A, B, sigmaV, sigmaS, dSigmaA, dSigmaM, dA, dB,
+        double SigmaA, SigmaM, A, B, M, sigmaV, sigmaS, dSigmaA, dSigmaM, dA, dB,
                 dsigmaV_a, dsigmaV_b, dsigmaS_a, dsigmaS_b;
         double A2, B2, denom, sigmaV2, sigmaS2;
         double xmu, x;
         std::vector<double> Tix(m_a.size(), 0.), Tixmu(m_a.size(), 0.);
 
         x = stox(p2);
-        if (b_A || b_B || b_sigmaV || b_sigmaS || b_dA || b_dB || b_dsigmaV_a
+        if (b_A || b_B || b_M || b_sigmaV || b_sigmaS || b_dA || b_dB || b_dsigmaV_a
                 || b_dsigmaV_b || b_dsigmaS_a || b_dsigmaS_b) {
             xmu = stox(m_mu * m_mu);
         }
 
-        if (b_SigmaA || b_SigmaM || b_A || b_B || b_sigmaV || b_sigmaS
+        if (b_SigmaA || b_SigmaM || b_A || b_B || b_M || b_sigmaV || b_sigmaS
                 || b_dsigmaV_a || b_dsigmaV_b || b_dsigmaS_a || b_dsigmaS_b) {
             for (unsigned int i = 1; i < m_a.size(); i++) {
                 Tix.at(i) = T(i, x);
             }
-            if (b_A || b_B || b_sigmaV || b_sigmaS || b_dsigmaV_a || b_dsigmaV_b
+            if (b_A || b_B || b_M || b_sigmaV || b_sigmaS || b_dsigmaV_a || b_dsigmaV_b
                     || b_dsigmaS_a || b_dsigmaS_b) {
                 for (unsigned int i = 1; i < m_a.size(); i++) {
                     Tixmu.at(i) = Tix.at(i) - T(i, xmu);
@@ -215,7 +220,7 @@ std::vector<double> QPbyChebyshev::evaluate(
             };
         }
 
-        if (b_A || b_sigmaV || b_sigmaS || b_dsigmaV_a || b_dsigmaV_b
+        if (b_A || b_M || b_sigmaV || b_sigmaS || b_dsigmaV_a || b_dsigmaV_b
                 || b_dsigmaS_a || b_dsigmaS_b) {
             A = 1.;
             for (unsigned int i = 1; i < m_a.size(); i++) {
@@ -223,12 +228,16 @@ std::vector<double> QPbyChebyshev::evaluate(
             };
         }
 
-        if (b_B || b_sigmaV || b_sigmaS || b_dsigmaV_a || b_dsigmaV_b
+        if (b_B || b_M || b_sigmaV || b_sigmaS || b_dsigmaV_a || b_dsigmaV_b
                 || b_dsigmaS_a || b_dsigmaS_b) {
             B = m_m;
             for (unsigned int i = 1; i < m_b.size(); i++) {
                 B += (m_b.at(i)) * Tixmu.at(i);
             };
+        }
+
+        if (b_M) {
+            M = B/A;
         }
 
         if (b_sigmaV || b_sigmaS || b_dsigmaV_a || b_dsigmaV_b || b_dsigmaS_a
@@ -285,51 +294,55 @@ std::vector<double> QPbyChebyshev::evaluate(
             dsigmaS_b = dB * (p2 * sigmaV2 - sigmaS2);
         }
 
-        if(b_SigmaA)
+        if (b_SigmaA)
             result.at(i_SigmaA) = SigmaA;
 
-        if(b_SigmaM)
+        if (b_SigmaM)
             result.at(i_SigmaM) = SigmaM;
 
-        if(b_A)
+        if (b_A)
             result.at(i_A) = A;
 
-        if(b_B)
+        if (b_B)
             result.at(i_B) = B;
 
-        if(b_sigmaV)
+        if (b_M)
+            result.at(i_M) = M;
+
+        if (b_sigmaV)
             result.at(i_sigmaV) = sigmaV;
 
         if (b_sigmaS)
             result.at(i_sigmaS) = sigmaS;
 
-        if(b_dSigmaA)
+        if (b_dSigmaA)
             result.at(i_dSigmaA) = dSigmaA;
 
-        if(b_dSigmaM)
+        if (b_dSigmaM)
             result.at(i_dSigmaM) = dSigmaM;
 
-        if(b_dA)
+        if (b_dA)
             result.at(i_dA) = dA;
 
-        if(b_dB)
+        if (b_dB)
             result.at(i_dB) = dB;
 
-        if(b_dsigmaV_a)
+        if (b_dsigmaV_a)
             result.at(i_dsigmaV_a) = dsigmaV_a;
 
-        if(b_dsigmaV_b)
+        if (b_dsigmaV_b)
             result.at(i_dsigmaV_b) = dsigmaV_b;
 
-        if(b_dsigmaS_a)
+        if (b_dsigmaS_a)
             result.at(i_dsigmaS_a) = dsigmaS_a;
 
-        if(b_dsigmaS_b)
+        if (b_dsigmaS_b)
             result.at(i_dsigmaS_b) = dsigmaS_b;
 
         return result;
     } else {
-        error(__func__, "No function to evaluate!");
+        return std::vector<double>();
+        warn(__func__, "No function to evaluate!");
     }
 
 }

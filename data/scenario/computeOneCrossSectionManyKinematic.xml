@@ -15,7 +15,7 @@
 
         <ObservableKinematic>
             <param name="file"
-                value="/home/debian/workspace/PARTONS/data/kinematics_compare_BMJ_GV_overQ2.dat" />
+                value="../PARTONS/data/kinematics_compare_BMJ_GV_overQ2.dat" />
         </ObservableKinematic>
 
         <Observable>
@@ -53,7 +53,7 @@
 
         <ObservableKinematic>
             <param name="file"
-                value="/home/debian/workspace/PARTONS/data/kinematics_compare_BMJ_GV_overQ2.dat" />
+                value="../PARTONS/data/kinematics_compare_BMJ_GV_overQ2.dat" />
         </ObservableKinematic>
 
         <Observable>
