@@ -30,7 +30,7 @@ public:
      */
     virtual ~RunningAlphaStrongModule();
 
-    virtual double compute(double Mu2) = 0;
+    double compute(double Mu2);
 
     unsigned int getNf() const;
     void setNf(unsigned int nf);
@@ -44,11 +44,19 @@ protected:
      */
     RunningAlphaStrongModule(const RunningAlphaStrongModule &other);
 
+    void preCompute(const double Mu2);
+
     virtual void initModule();
     virtual void isModuleWellConfigured();
 
+    bool isPreviousKinematicsDifferent(const double MuF2) const;
+
+    virtual double compute() = 0;
+
+    double m_Mu2;
     double m_Mu;            ///< Current renormalization scale (in GeV)
     unsigned int m_nf;      ///< Number of active flavours
+    double m_alphaS;
 };
 
 #endif /* MODULE_OBJECT_H */

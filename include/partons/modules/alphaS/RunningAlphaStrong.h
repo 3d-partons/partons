@@ -71,7 +71,7 @@ public:
 
     virtual ~RunningAlphaStrong();
 
-    virtual double compute(double Mu2);
+    virtual double compute();
 
     unsigned int GetColourNumber() const; ///< Returns number of colours (SU(Nc))
 

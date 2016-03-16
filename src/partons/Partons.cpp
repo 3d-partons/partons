@@ -52,11 +52,6 @@ Partons::~Partons() {
         m_pBaseObjectRegistry = 0;
     }
 
-    if (m_pLoggerManager) {
-        delete m_pLoggerManager;
-        m_pLoggerManager = 0;
-    }
-
     if (m_pEnvironmentConfiguration) {
         delete m_pEnvironmentConfiguration;
         m_pEnvironmentConfiguration = 0;
@@ -111,6 +106,11 @@ void Partons::close() {
 
         // Wait the end of queue message
         m_pLoggerManager->wait();
+    }
+
+    if (m_pLoggerManager) {
+        delete m_pLoggerManager;
+        m_pLoggerManager = 0;
     }
 }
 

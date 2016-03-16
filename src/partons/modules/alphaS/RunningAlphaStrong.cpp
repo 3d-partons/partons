@@ -48,7 +48,6 @@
 #include <NumA/root_finding/Brent.h>
 #include <cmath>
 #include <cstdlib>
-#include <stdexcept>
 
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
@@ -74,7 +73,6 @@ RunningAlphaStrong::RunningAlphaStrong(const std::string &className) :
                 0.) {
 }
 
-//TODO implement
 RunningAlphaStrong::RunningAlphaStrong(const RunningAlphaStrong &other) :
         RunningAlphaStrongModule(other) {
     fNc = other.fNc;
@@ -117,11 +115,7 @@ void RunningAlphaStrong::isModuleWellConfigured() {
 
 //TODO implement - Voir a remplacer ça par un arbre binaire pour les tests si pertinent
 //TODO Definir la masse des quarks au carré dans le fichier de constantes
-double RunningAlphaStrong::compute(double Mu2) {
-    initModule();
-    isModuleWellConfigured();
-
-    m_Mu = sqrt(Mu2);
+double RunningAlphaStrong::compute() {
 
     if (QUARK_STRANGE_MASS <= m_Mu && m_Mu < QUARK_CHARM_MASS) {
         m_nf = 3;
@@ -139,7 +133,8 @@ double RunningAlphaStrong::compute(double Mu2) {
         m_nf = 6;
     }
 
-    debug(__func__, Formatter() << "Mu2= " << Mu2 << "(GeV^2)   nf= " << m_nf);
+    debug(__func__,
+            Formatter() << "Mu2= " << m_Mu2 << "(GeV^2)   nf= " << m_nf);
 
     ComputeLambdaQCD();
 
@@ -165,8 +160,8 @@ double RunningAlphaStrong::compute(double Mu2) {
         break;
 
     default:
-        //TODO implement
-        throw std::runtime_error("RunningAlphaStrong::compute(Mu)");
+        error(__func__,
+                "Number of active flavours value must be between 3 and 6. Cannot find actual value of Lambda_QCD.");
     }
 
     debug(__func__, Formatter() << "Lambda= " << Lambda);
@@ -219,6 +214,7 @@ void RunningAlphaStrong::ComputeExpansionCoefficients(unsigned int NFlavour) {
     double TF2 = TF * TF;
     double TF3 = TF2 * TF;
 
+    //TODO replace exit(-1)
     if (NFlavour != 3 && NFlavour != 4 && NFlavour != 5 && NFlavour != 6) {
 //        cout
 //                << "RunningAlphaStrong : Erroneous input in RunningAlphaStrong::ComputeExpansionCoefficients."
