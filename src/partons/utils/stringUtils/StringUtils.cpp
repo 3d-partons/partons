@@ -1,12 +1,8 @@
 #include "../../../../include/partons/utils/stringUtils/StringUtils.h"
 
 #include <stddef.h>
-#include <algorithm> // pour transform#include <cctype>    // pour tolower et toupper#include <cstdlib>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>#include <iterator>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>#include <iterator>#include <cctype>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>#include <cctype>#include <cctype>#include <cstdlib>#include <cctype>#include <cctype>#include <cctype>#include <cstdlib>#include <iterator>#include <cctype>#include <cstdlib>#include <cctype>#include <cctype>#include <cstdlib>#include <cctype>#include <cctype>#include <cmath>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>#include <cctype>#include <cstdlib>#include <iterator>#include <cctype>#include <cstdlib>
+#include <algorithm> // pour transform#include <cctype>    // pour tolower et toupper#include <cctype>#include <cstdlib>
 #include <iterator>
-
-//#include <utility>
-
-//#include "Formatter.h"
 
 std::string StringUtils::EMPTY = "";
 

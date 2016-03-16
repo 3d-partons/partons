@@ -54,8 +54,6 @@
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
-//TODO remove exit(0) and other thing ; check code refactoring
-
 // Initialise [class]::classId with a unique name.
 const unsigned int RunningAlphaStrong::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
@@ -70,11 +68,10 @@ const unsigned int RunningAlphaStrong::classId =
  * 
  */
 RunningAlphaStrong::RunningAlphaStrong(const std::string &className) :
-        RunningAlphaStrongModule(className), fNc(3), fBeta0(2.08333), fBeta1(
-                3.20833), fBeta2(6.34925), fBeta3(31.3874), fB1(1.54), fB2(
-                3.04764), fB3(15.066), fLambdaQCD3(0.329939), fLambdaQCD4(
-                0.28914), fLambdaQCD5(0.208364), fLambdaQCD6(0.0878108), fAlphaSMZ(
-                0.1184), fAlphaS(0.303061) {
+        RunningAlphaStrongModule(className), fNc(3), fBeta0(0.), fBeta1(0.), fBeta2(
+                0.), fBeta3(0.), fB1(0.), fB2(0.), fB3(0.), fLambdaQCD3(0.), fLambdaQCD4(
+                0.), fLambdaQCD5(0.), fLambdaQCD6(0.), fAlphaSMZ(0.1184), fAlphaS(
+                0.) {
 }
 
 //TODO implement
@@ -108,19 +105,21 @@ RunningAlphaStrong* RunningAlphaStrong::clone() const {
 RunningAlphaStrong::~RunningAlphaStrong() {
 }
 
-//TODO implement
+// Strong coupling at M_Z, quark masses, beta function coefficients, Lambda_QCD and running scale take their default values.
 void RunningAlphaStrong::initModule() {
-
+    RunningAlphaStrongModule::initModule();
 }
 
 //TODO implement
 void RunningAlphaStrong::isModuleWellConfigured() {
-
+    RunningAlphaStrongModule::isModuleWellConfigured();
 }
 
 //TODO implement - Voir a remplacer ça par un arbre binaire pour les tests si pertinent
 //TODO Definir la masse des quarks au carré dans le fichier de constantes
 double RunningAlphaStrong::compute(double Mu2) {
+    initModule();
+    isModuleWellConfigured();
 
     m_Mu = sqrt(Mu2);
 
@@ -185,33 +184,6 @@ double RunningAlphaStrong::compute(double Mu2) {
  */
 unsigned int RunningAlphaStrong::GetColourNumber() const {
     return fNc;
-}
-
-/*!
- * \fn ResetToDefault()
- *
- * Strong coupling at M_Z, quark masses, beta function coefficients, Lambda_QCD and running scale take their default values.
- *
- */
-void RunningAlphaStrong::ResetToDefault() {
-    fBeta0 = 2.25;
-    fBeta1 = 4.;
-    fBeta2 = 10.0599;
-    fBeta3 = 47.228;
-
-    fB1 = 1.77778;
-    fB2 = 4.47106;
-    fB3 = 20.9902;
-
-    fLambdaQCD3 = 0.373;
-    fLambdaQCD4 = 0.305;
-    fLambdaQCD5 = 0.205;
-    fLambdaQCD6 = 0.100;
-
-    fAlphaS = 1.;
-    fAlphaSMZ = 0.1184;
-
-    m_nf = 4;
 }
 
 /*------------------------------ Private routines ----------------------------*/
@@ -310,7 +282,7 @@ void RunningAlphaStrong::ComputeExpansionCoefficients(unsigned int NFlavour) {
 void RunningAlphaStrong::ComputeLambdaQCD() {
     double LambdaMin = 0.05; // From current knowledge of LambdaQCD in MSbar scheme
     double LambdaMax = 0.5; // Idem
-    double AlphaTarget; // Solve at scale mu Running( mu, LambdaQCD(Nf), Nf ) == AlphaTarget
+    double AlphaTarget = 0.; // Solve at scale mu Running( mu, LambdaQCD(Nf), Nf ) == AlphaTarget
 
     NumA::Brent brentSolver;
 
@@ -403,17 +375,11 @@ double RunningAlphaStrong::FindLambda(double Lambda,
         std::vector<double> Parameters) {
     unsigned int NFlavour = (unsigned int) Parameters[2];
 
-    if ((NFlavour != 3) && (NFlavour != 4) && (NFlavour != 5)
-            && (NFlavour != 6)) {
-//        cout
-//                << "RunningAlphaStrong : Erroneous input in RunningAlphaStrong::FinLambda."
-//                << endl;
-//        cout
-//                << "RunningAlphaStrong : Number of active flavours has to be an integer between 3 and 6."
-//                << endl;
-//        cout << "RunningAlphaStrong : Here NFlavour = " << NFlavour << endl;
-//        cout << endl;
-        exit(-1);
+    if (NFlavour < 3 && NFlavour > 6) {
+        error(__func__,
+                Formatter()
+                        << "Erroneous input in RunningAlphaStrong::FinLambda. Number of active flavours has to be an integer between 3 and 6. Here NFlavour = "
+                        << NFlavour);
     }
 
     Running(Parameters[0], Lambda, NFlavour);

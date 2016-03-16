@@ -34,7 +34,7 @@ public:
 
     void delete_();
 
-    void playScenario(const std::string &scenarioFilePath);
+    void playScenario(const std::string &scenarioFileName);
 
     virtual void startElement(const std::string &elementName,
             Attributs attributes, const std::string &elementData);

@@ -12,36 +12,38 @@
  * @brief
  */
 
-//#include <stddef.h>
-#include <ctime>
-
+#include "Computation.h"
 #include "List.h"
 
 template<class T>
 class ResultList: public List<T> {
 public:
     ResultList() :
-            List<T>(), m_computationDateTime(time(0)) {
+            List<T>() {
     }
 
     virtual ~ResultList() {
     }
 
-    time_t getComputationDateTime() const {
-        return m_computationDateTime;
-    }
-
-    void setComputationDateTime(time_t computationDateTime) {
-        m_computationDateTime = computationDateTime;
-    }
-
     virtual void add(const T &data) {
         List<T>::add(data);
-        this->m_data.back().setComputationDateTime(m_computationDateTime);
+        this->m_data.back().getComputation().setDateTime(
+                getComputation().getDateTime());
+    }
+
+    // ##### GETTERS & SETTERS #####
+
+    const Computation& getComputation() const {
+        return m_computation;
+    }
+
+    void setComputation(const Computation& computation) {
+        m_computation = computation;
     }
 
 private:
-    time_t m_computationDateTime;
+
+    Computation m_computation;
 };
 
 #endif /* RESULT_LIST_H */

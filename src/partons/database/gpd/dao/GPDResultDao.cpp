@@ -1,16 +1,15 @@
 #include "../../../../../include/partons/database/gpd/dao/GPDResultDao.h"
 
+#include <QtCore/qstring.h>
+#include <QtCore/qvariant.h>
 #include <QtSql/qsqlerror.h>
 #include <QtSql/qsqlrecord.h>
-#include <QtCore/qvariant.h>
-#include <QtCore/qstring.h>
 
 #include "../../../../../include/partons/beans/gpd/GPDKinematic.h"
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
 #include "../../../../../include/partons/database/DatabaseManager.h"
 #include "../../../../../include/partons/utils/stringUtils/Formatter.h"
-//#include "../../../beans/List.h"
 
 GPDResultDao::GPDResultDao() :
         BaseObject("GPDResultDao") {
@@ -119,7 +118,7 @@ void GPDResultDao::fillGPDResultList(ResultList<GPDResult> &gpdResultList,
 
         gpdResult.setKinematic(m_gpdKinematicDao.getKinematicById(kinematicId));
         gpdResult.setComputationModuleName(computationModuleName);
-        gpdResult.setId(gpdResultId);
+        gpdResult.setIndexId(gpdResultId);
 
         fillGPDResult(gpdResult);
 
@@ -133,7 +132,7 @@ void GPDResultDao::fillGPDResult(GPDResult &gpdResult) const {
     query.prepare(
             "SELECT * FROM gpd_result_parton_distribution WHERE gpd_result_id = :gpdResultId");
 
-    query.bindValue(":gpdResultId", gpdResult.getId());
+    query.bindValue(":gpdResultId", gpdResult.getIndexId());
 
     if (query.exec()) {
 

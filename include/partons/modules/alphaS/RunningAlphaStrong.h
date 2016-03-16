@@ -75,8 +75,6 @@ public:
 
     unsigned int GetColourNumber() const; ///< Returns number of colours (SU(Nc))
 
-    void ResetToDefault(); ///< Back to default (PDG) values
-
 protected:
     /**
      * Copy constructor
@@ -85,7 +83,7 @@ protected:
      */
     RunningAlphaStrong(const RunningAlphaStrong &other);
 
-    virtual void initModule();
+    virtual void initModule(); ///< Back to default (PDG) values
     virtual void isModuleWellConfigured();
 
 private:

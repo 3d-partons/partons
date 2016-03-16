@@ -37,6 +37,8 @@ LoggerManager::~LoggerManager() {
     // flush remaining buffer
     flushBuffer();
 
+    std::cerr << "(LoggerManager::flushBuffer()) Buffer flushed" << std::endl;
+
     //TODO close file when exception throw
     FileUtils::close(m_fileOutputStream);
 
@@ -284,3 +286,4 @@ std::string LoggerManager::toString() {
 
     return formatter;
 } // mutex.unlock()
+

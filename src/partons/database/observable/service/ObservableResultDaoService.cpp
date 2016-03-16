@@ -4,6 +4,7 @@
 #include <stddef.h>
 #include <exception>
 
+#include "../../../../../include/partons/beans/Computation.h"
 #include "../../../../../include/partons/beans/List.h"
 #include "../../../../../include/partons/utils/math/ErrorBar.h"
 #include "../../../../../include/partons/utils/stringUtils/Formatter.h"
@@ -53,12 +54,12 @@ int ObservableResultDaoService::insertWithoutTransaction(
     }
 
     // Check if this computation date already exists and retrieve Id
-    int computationId = m_commonDaoService.getComputationId(
-            observableResult.getComputationDateTime());
+    int computationId = m_computationDaoService.getComputationIdByDateTime(
+            observableResult.getComputation().getDateTime());
     // If not, insert new entry in database and retrieve its id
     if (computationId == -1) {
-        computationId = m_commonDaoService.insertComputation(
-                observableResult.getComputationDateTime());
+        computationId = m_computationDaoService.insert(
+                observableResult.getComputation());
     }
 
     //Then store observableResult in database

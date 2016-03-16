@@ -1,5 +1,7 @@
 #include "../../../include/partons/services/DVCSConvolCoeffFunctionService.h"
 
+#include <stddef.h>
+
 #include "../../../include/partons/beans/automation/Task.h"
 #include "../../../include/partons/BaseObjectRegistry.h"
 #include "../../../include/partons/database/convol_coeff_function/service/ConvolCoeffFunctionResultDaoService.h"
@@ -200,6 +202,22 @@ ResultList<DVCSConvolCoeffFunctionResult> DVCSConvolCoeffFunctionService::comput
 
     ResultList<DVCSConvolCoeffFunctionResult> results = computeListWithGPDModel(
             kinematic, listOfModule, pGPDModule);
+
+    return results;
+}
+
+ResultList<DVCSConvolCoeffFunctionResult> DVCSConvolCoeffFunctionService::computeManyKinematicOneModel(
+        DVCSConvolCoeffFunctionModule* dvcsConvolCoeffFunctionModule,
+        GPDModule* _pGPDModule,
+        List<DVCSConvolCoeffFunctionKinematic>& kinematics) const {
+
+    ResultList<DVCSConvolCoeffFunctionResult> results;
+
+    for (size_t i = 0; i != kinematics.size(); i++) {
+        results.add(
+                computeWithGPDModel(dvcsConvolCoeffFunctionModule, _pGPDModule,
+                        kinematics[i]));
+    }
 
     return results;
 }

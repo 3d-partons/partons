@@ -14,7 +14,7 @@
 
 #include "../../../beans/gpd/GPDResult.h"
 #include "../../../beans/ResultList.h"
-#include "../../common/service/CommonDaoService.h"
+#include "../../common/service/ComputationDaoService.h"
 #include "../../parton_distribution/service/PartonDistributionDaoService.h"
 #include "../dao/GPDResultDao.h"
 #include "GPDKinematicDaoService.h"
@@ -35,7 +35,7 @@ private:
 
     GPDKinematicDaoService m_gpdKinematicDaoService;
     PartonDistributionDaoService m_partonDistributionDaoService;
-    CommonDaoService m_commonDaoService;
+    ComputationDaoService m_computationDaoService;
 
     int insertWithoutTransaction(const GPDResult &gpdResult) const;
 };

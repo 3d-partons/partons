@@ -37,7 +37,7 @@ std::string BaseObject::toString() const {
     Formatter formatter;
 
     formatter << "m_className = " << m_className << " - " << "m_objectId = "
-            << m_objectId << '\n';
+            << m_objectId;
 
     return formatter.str();
 }

@@ -18,6 +18,7 @@
 #include "../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
 #include "../beans/gpd/GPDType.h"
+#include "../beans/List.h"
 #include "../beans/ResultList.h"
 #include "../modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
 #include "../ServiceObject.h"
@@ -41,6 +42,11 @@ public:
     virtual ~DVCSConvolCoeffFunctionService();
 
     virtual void computeTask(Task &task);
+
+    ResultList<DVCSConvolCoeffFunctionResult> computeManyKinematicOneModel(
+            DVCSConvolCoeffFunctionModule* dvcsConvolCoeffFunctionModule,
+            GPDModule* _pGPDModule,
+            List<DVCSConvolCoeffFunctionKinematic> &kinematics) const;
 
     virtual DVCSConvolCoeffFunctionResult computeWithGPDModel(
             DVCSConvolCoeffFunctionModule* dvcsConvolCoeffFunctionModule,

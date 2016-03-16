@@ -5,6 +5,7 @@
 #include <map>
 #include <utility>
 
+#include "../../../../../include/partons/beans/Computation.h"
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../../include/partons/beans/List.h"
 #include "../../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
@@ -56,12 +57,12 @@ int GPDResultDaoService::insertWithoutTransaction(
     }
 
     // Check if this computation date already exists and retrieve Id
-    int computationId = m_commonDaoService.getComputationId(
-            gpdResult.getComputationDateTime());
+    int computationId = m_computationDaoService.getComputationIdByDateTime(
+            gpdResult.getComputation().getDateTime());
     // If not, insert new entry in database and retrieve its id
     if (computationId == -1) {
-        computationId = m_commonDaoService.insertComputation(
-                gpdResult.getComputationDateTime());
+        computationId = m_computationDaoService.insert(
+                gpdResult.getComputation());
     }
 
     // Insert new gpd_result entry in database

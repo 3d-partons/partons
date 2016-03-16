@@ -12,32 +12,30 @@
  * @brief
  */
 
-#include <ctime>
 #include <string>
 
-#include "../BaseObject.h"
+#include "Computation.h"
 
 class ComparisonReport;
 class Tolerances;
 
-class Result: public BaseObject {
+class Result: public DatabaseObject {
 public:
     Result(const std::string &className);
     virtual ~Result();
 
-    time_t getComputationDateTime() const;
-    const std::string& getComputationModuleName() const;
-    int getId() const;
+    // ##### GETTERS & SETTERS #####
 
-    void setComputationDateTime(time_t computationDateTime);
+    const std::string& getComputationModuleName() const;
     void setComputationModuleName(const std::string& moduleName);
-    void setId(int id);
+    const Computation& getComputation() const;
+    Computation& getComputation();
+    void setComputation(const Computation& computation);
 
 private:
-    std::string m_computationModuleName;
-    time_t m_computationDateTime;
+    Computation m_computation;
 
-    int m_id;
+    std::string m_computationModuleName;
 };
 
 #endif /* RESULT_H */

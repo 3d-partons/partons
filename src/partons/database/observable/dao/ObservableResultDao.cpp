@@ -1,16 +1,15 @@
 #include "../../../../../include/partons/database/observable/dao/ObservableResultDao.h"
 
+#include <QtCore/qstring.h>
+#include <QtCore/qvariant.h>
 #include <QtSql/qsqlerror.h>
 #include <QtSql/qsqlrecord.h>
-#include <QtCore/qvariant.h>
-#include <QtCore/qstring.h>
 
 #include "../../../../../include/partons/beans/observable/ObservableKinematic.h"
 #include "../../../../../include/partons/beans/observable/ObservableType.h"
 #include "../../../../../include/partons/database/DatabaseManager.h"
 #include "../../../../../include/partons/utils/math/ErrorBar.h"
 #include "../../../../../include/partons/utils/stringUtils/Formatter.h"
-//#include "../../../beans/List.h"
 
 ObservableResultDao::ObservableResultDao() :
         BaseObject("ObservableResultDao") {
@@ -128,7 +127,7 @@ void ObservableResultDao::fillObservableResultList(
         observableResult.setKinematic(
                 m_observableKinematicDao.getKinematicById(
                         query.value(field_kinematic_id).toInt()));
-        observableResult.setId(id);
+        observableResult.setIndexId(id);
 
         observableResultList.add(observableResult);
     }

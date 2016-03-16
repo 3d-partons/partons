@@ -1,13 +1,17 @@
 #include "../../include/partons/Partons.h"
 
+#include "../../include/partons/beans/system/EnvironmentConfiguration.h"
 #include "../../include/partons/BaseObjectFactory.h"
 #include "../../include/partons/BaseObjectRegistry.h"
 #include "../../include/partons/database/DatabaseManager.h"
 #include "../../include/partons/ModuleObjectFactory.h"
 #include "../../include/partons/ServiceObjectRegistry.h"
+#include "../../include/partons/utils/fileUtils/FileUtils.h"
 #include "../../include/partons/utils/logger/LoggerManager.h"
 #include "../../include/partons/utils/PropertiesManager.h"
 #include "../../include/partons/utils/stringUtils/StringUtils.h"
+
+class EnvironmentConfiguration;
 
 // Global static pointer used to ensure a single instance of the class.
 Partons* Partons::m_pInstance = 0;
@@ -24,7 +28,7 @@ Partons* Partons::getInstance() {
 Partons::Partons() :
         m_pBaseObjectRegistry(BaseObjectRegistry::getInstance()), m_pServiceObjectRegistry(
                 0), m_pBaseObjectFactory(0), m_pModuleObjectFactory(0), m_pLoggerManager(
-                LoggerManager::getInstance()) {
+                LoggerManager::getInstance()), m_pEnvironmentConfiguration(0) {
 
     m_pBaseObjectFactory = new BaseObjectFactory(m_pBaseObjectRegistry);
     m_pModuleObjectFactory = new ModuleObjectFactory(m_pBaseObjectFactory);
@@ -53,6 +57,11 @@ Partons::~Partons() {
         m_pLoggerManager = 0;
     }
 
+    if (m_pEnvironmentConfiguration) {
+        delete m_pEnvironmentConfiguration;
+        m_pEnvironmentConfiguration = 0;
+    }
+
     if (m_pInstance) {
         delete m_pInstance;
         m_pInstance = 0;
@@ -60,6 +69,7 @@ Partons::~Partons() {
 }
 
 void Partons::init(char** argv) {
+    //TODO check with windows system path, how to handle '/' & '\' characters
     // Get current working directory
     m_currentWorkingDirectoryPath = StringUtils::removeAfterLast(argv[0], '/');
 
@@ -78,6 +88,18 @@ void Partons::init(char** argv) {
     // 4. Start logger's thread
     //m_pLoggerManager->start();
     m_pLoggerManager->launch();
+
+    // 5. Retrieve environment configuration
+    retrieveEnvironmentConfiguration();
+}
+
+void Partons::retrieveEnvironmentConfiguration() {
+    std::string configuration = FileUtils::read(
+            PropertiesManager::getInstance()->getString(
+                    "environment.configuration.file.path"));
+    std::string md5 = "undefined";
+    m_pEnvironmentConfiguration = new EnvironmentConfiguration(configuration,
+            md5);
 }
 
 void Partons::close() {
@@ -89,9 +111,6 @@ void Partons::close() {
 
         // Wait the end of queue message
         m_pLoggerManager->wait();
-
-        delete m_pLoggerManager;
-        m_pLoggerManager = 0;
     }
 }
 
@@ -117,4 +136,8 @@ ModuleObjectFactory* Partons::getModuleObjectFactory() const {
 
 LoggerManager* Partons::getLoggerManager() const {
     return m_pLoggerManager;
+}
+
+EnvironmentConfiguration* Partons::getEnvironmentConfiguration() const {
+    return m_pEnvironmentConfiguration;
 }

@@ -17,7 +17,6 @@
 
 #include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
 #include "../../../beans/ResultList.h"
-#include "../../common/dao/ComplexDao.h"
 #include "ConvolCoeffFunctionKinematicDao.h"
 
 class ConvolCoeffFunctionResultDao: public BaseObject {
@@ -31,12 +30,11 @@ public:
     ResultList<DVCSConvolCoeffFunctionResult> getResultListByComputationId(
             const int computationId) const;
 
-    int insertIntoCCFResultComplex(const int gpdTypeId, const int ccfResultId,
-            const int complexId) const;
+    int insertIntoCCFResultComplex(const int realPart, const int imgPart,
+            const int gpdTypeId, const int ccfResultId) const;
 
 private:
     ConvolCoeffFunctionKinematicDao m_convolCoeffFunctionKinematicDao;
-    ComplexDao m_complexDao;
 
     void fillConvolCoeffFunctionResultList(
             ResultList<DVCSConvolCoeffFunctionResult> &resultList,

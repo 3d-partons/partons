@@ -7,6 +7,7 @@
 #include <map>
 #include <utility>
 
+#include "../../../../../include/partons/beans/Computation.h"
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../../include/partons/beans/List.h"
 #include "../../../../../include/partons/utils/stringUtils/Formatter.h"
@@ -56,32 +57,25 @@ int ConvolCoeffFunctionResultDaoService::insertWithoutTransaction(
     }
 
     // Check if this computation date already exists and retrieve Id
-    int computationId = m_commonDaoService.getComputationId(
-            result.getComputationDateTime());
+    int computationId = m_computationDaoService.getComputationIdByDateTime(
+            result.getComputation().getDateTime());
     // If not, insert new entry into database and retrieve its id
     if (computationId == -1) {
-        computationId = m_commonDaoService.insertComputation(
-                result.getComputationDateTime());
+        computationId = m_computationDaoService.insert(result.getComputation());
     }
 
+    // Insert new ccf_result entry into database and retrieve its id
     int resultId = m_convolCoeffFunctionResultDao.insert(
             result.getComputationModuleName(), kinematicId, computationId);
 
     std::map<GPDType::Type, std::complex<double> > resultsByGPDType =
             result.getResultsByGpdType();
-    std::map<GPDType::Type, std::complex<double> >::const_iterator it;
 
-    for (it = resultsByGPDType.begin(); it != resultsByGPDType.end(); it++) {
-
-        // Check if complex already exists
-        int complexId = m_complexDaoService.getComplexId((it->second));
-        if (complexId == -1) {
-            // If not, insert new entry into database and retrieve its id
-            complexId = m_complexDaoService.insert((it->second));
-        }
-
-        m_convolCoeffFunctionResultDao.insertIntoCCFResultComplex((it->first),
-                resultId, complexId);
+    for (std::map<GPDType::Type, std::complex<double> >::const_iterator it =
+            resultsByGPDType.begin(); it != resultsByGPDType.end(); it++) {
+        m_convolCoeffFunctionResultDao.insertIntoCCFResultComplex(
+                (it->second).real(), (it->second).imag(), (it->first),
+                resultId);
     }
 
     return computationId;

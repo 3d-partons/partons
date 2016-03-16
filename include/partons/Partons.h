@@ -16,6 +16,7 @@
 
 class BaseObjectFactory;
 class BaseObjectRegistry;
+class EnvironmentConfiguration;
 class LoggerManager;
 class ModuleObjectFactory;
 class ServiceObjectRegistry;
@@ -42,6 +43,7 @@ public:
     BaseObjectFactory* getBaseObjectFactory() const;
     ModuleObjectFactory* getModuleObjectFactory() const;
     LoggerManager* getLoggerManager() const;
+    EnvironmentConfiguration* getEnvironmentConfiguration() const;
 
 private:
     /**
@@ -61,6 +63,9 @@ private:
     LoggerManager* m_pLoggerManager;
 
     std::string m_currentWorkingDirectoryPath;
+    EnvironmentConfiguration* m_pEnvironmentConfiguration;
+
+    void retrieveEnvironmentConfiguration();
 };
 
 #endif /* PARTONS_H */

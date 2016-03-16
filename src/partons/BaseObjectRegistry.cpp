@@ -7,7 +7,6 @@
 #include "../../include/partons/utils/stringUtils/Formatter.h"
 
 BaseObjectRegistry* BaseObjectRegistry::m_pInstance = 0;
-
 unsigned int BaseObjectRegistry::m_uniqueClassIdCounter = 0;
 
 BaseObjectRegistry* BaseObjectRegistry::getInstance() {

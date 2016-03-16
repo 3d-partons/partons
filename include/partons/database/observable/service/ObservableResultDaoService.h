@@ -14,7 +14,7 @@
 
 #include "../../../beans/observable/ObservableResult.h"
 #include "../../../beans/ResultList.h"
-#include "../../common/service/CommonDaoService.h"
+#include "../../common/service/ComputationDaoService.h"
 #include "../dao/ObservableResultDao.h"
 #include "ObservableKinematicDaoService.h"
 
@@ -33,7 +33,7 @@ private:
     ObservableResultDao m_observableResultDao;
 
     ObservableKinematicDaoService m_observableKinematicDaoService;
-    CommonDaoService m_commonDaoService;
+    ComputationDaoService m_computationDaoService;
 
     int insertWithoutTransaction(
             const ObservableResult& observableResult) const;

@@ -34,6 +34,7 @@ const std::string OUTPUT_LOG_FILE_PATH = "log.file.path";
 class LoggerManager: public Thread {
 public:
     static LoggerManager* getInstance();
+
     /**
      * Default destructor
      */
@@ -63,7 +64,6 @@ public:
     void flushBuffer();
 
 private:
-
     static LoggerManager* m_pInstance;
 
     /**

@@ -27,7 +27,6 @@ public:
     static const std::string GPD_RESULT_DB_TABLE_NAME;
 
     GPDResult();
-    //GPDResult(GPDKinematic &gpdKinematic);
     virtual ~GPDResult();
 
     std::vector<GPDType> listGPDTypeComputed();

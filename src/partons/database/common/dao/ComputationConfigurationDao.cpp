@@ -1,32 +1,30 @@
-#include "../../../../../include/partons/database/common/dao/CommonDao.h"
+#include "../../../../../include/partons/database/common/dao/ComputationConfigurationDao.h"
 
-#include <QtCore/qdatetime.h>
+#include <QtCore/qstring.h>
+#include <QtCore/qvariant.h>
 #include <QtSql/qsqlerror.h>
 #include <QtSql/qsqlquery.h>
-#include <QtCore/qvariant.h>
-#include <QtCore/qstring.h>
-#include <string>
 
 #include "../../../../../include/partons/database/DatabaseManager.h"
 #include "../../../../../include/partons/utils/stringUtils/Formatter.h"
 
-CommonDao::CommonDao() :
-        BaseObject("CommonDao") {
+ComputationConfigurationDao::ComputationConfigurationDao() :
+        BaseObject("ComputationConfigurationDao") {
 }
 
-CommonDao::~CommonDao() {
+ComputationConfigurationDao::~ComputationConfigurationDao() {
 }
 
-int CommonDao::insertComputation(const time_t &dateTime) const {
+int ComputationConfigurationDao::insert(const std::string& xmlFile,
+        const std::string& md5) const {
     int result = -1;
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     query.prepare(
-            "INSERT INTO computation (computation_date) VALUES (:dateTime)");
+            "INSERT INTO computation_configuration (xml_file, md5) VALUES (:xmlFile, :md5)");
 
-    QDateTime qDateTime;
-    qDateTime.setTime_t(dateTime);
-    query.bindValue(":dateTime", qDateTime);
+    query.bindValue(":xmlFile", QString(xmlFile.c_str()));
+    query.bindValue(":md5", QString(md5.c_str()));
 
     if (query.exec()) {
         result = query.lastInsertId().toInt();
@@ -42,16 +40,14 @@ int CommonDao::insertComputation(const time_t &dateTime) const {
     return result;
 }
 
-int CommonDao::getComputationIdByDateTime(const time_t &dateTime) const {
+int ComputationConfigurationDao::getComputationConfigurationIdByMD5(
+        const std::string& md5) const {
     int result = -1;
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    query.prepare(
-            "SELECT id FROM computation WHERE computation_date = :dateTime");
+    query.prepare("SELECT id FROM computation_configuration WHERE md5 = :md5");
 
-    QDateTime qDateTime;
-    qDateTime.setTime_t(dateTime);
-    query.bindValue(":dateTime", qDateTime);
+    query.bindValue(":md5", QString(md5.c_str()));
 
     if (query.exec()) {
         if (query.first()) {

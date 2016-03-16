@@ -1,8 +1,25 @@
 /* SQLITE syntax */
 
+CREATE TABLE computation_configuration (
+id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+xml_file BLOB,
+md5 VARCHAR(32));
+
+CREATE TABLE environment_configuration (
+id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+store_date TIMESTAMP,
+configuration VARCHAR(255),
+md5 VARCHAR(32));
+
 CREATE TABLE computation (
 id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
-computation_date TIMESTAMP); /* Date and Time Datatype : TEXT as ISO8601 strings ("YYYY-MM-DD HH:MM:SS.SSS") */
+computation_date TIMESTAMP,
+environment_configuration_id INTEGER NOT NULL); /* Date and Time Datatype : TEXT as ISO8601 strings ("YYYY-MM-DD HH:MM:SS.SSS") */
+
+CREATE TABLE computation_configuration_computation (
+id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+computation_configuration_id INTEGER NOT NULL,
+computation_id INTEGER NOT NULL);
 
 CREATE TABLE gpd_type (
 id INTEGER NOT NULL PRIMARY KEY,
@@ -18,11 +35,6 @@ CREATE TABLE observable_type (
 id INTEGER NOT NULL PRIMARY KEY,
 short_name VARCHAR(10),
 long_name VARCHAR(255));
-
-CREATE TABLE complex (
-id INTEGER NOT NULL PRIMARY KEY,
-real_part DOUBLE NOT NULL,
-img_part DOUBLE NOT NULL);
 
 
 
