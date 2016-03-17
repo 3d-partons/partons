@@ -19,6 +19,11 @@
 #include "ObservableKinematic.h"
 #include "ObservableType.h"
 
+class ComparisonReport;
+namespace NumA {
+class Tolerances;
+} /* namespace NumA */
+
 class ObservableResult: public Result {
 public:
     static const std::string PARAMETER_NAME_OBSERVABLE_VALUE;

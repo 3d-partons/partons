@@ -16,6 +16,10 @@
 
 #include "ScaleModule.h"
 
+namespace ElemUtils {
+class Parameters;
+} /* namespace ElemUtils */
+
 class Q2Multiplier: public ScaleModule {
 public:
     static const std::string PARAMETER_NAME_LAMBDA;
@@ -33,7 +37,7 @@ public:
      *
      * @param parameters
      */
-    virtual void configure(ParameterList parameters);
+    virtual void configure(const ElemUtils::Parameters &parameters);
 
     virtual Scale compute(double Q2);
 

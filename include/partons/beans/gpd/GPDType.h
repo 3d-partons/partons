@@ -14,9 +14,9 @@
 
 #include <string>
 
+namespace ElemUtils {
 class Packet;
-
-class ParameterList;
+} /* namespace ElemUtils */
 
 class GPDType {
 
@@ -50,8 +50,6 @@ public:
 
     GPDType(Type type);
 
-//    GPDType(const ParameterList &parameters);
-
     /**
      * Copy constructor
      * @param other
@@ -68,14 +66,14 @@ public:
 
     static GPDType::Type fromString(const std::string & gpdTypeStr);
 
-    void serialize(Packet &packet) const;
-    void unserialize(Packet &packet);
+    void serialize(ElemUtils::Packet &packet) const;
+    void unserialize(ElemUtils::Packet &packet);
 
 private:
     GPDType::Type m_type;
 };
 
-Packet& operator <<(Packet& packet, GPDType& gpdType);
-Packet& operator >>(Packet& packet, GPDType& gpdType);
+ElemUtils::Packet& operator <<(ElemUtils::Packet& packet, GPDType& gpdType);
+ElemUtils::Packet& operator >>(ElemUtils::Packet& packet, GPDType& gpdType);
 
 #endif /* GPD_COMPUTE_TYPE_H */

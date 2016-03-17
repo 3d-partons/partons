@@ -1,9 +1,10 @@
 #include "../../../../include/partons/beans/automation/Scenario.h"
 
-#include "../../../../include/partons/utils/stringUtils/StringUtils.h"
+#include <ElementaryUtils/string_utils/StringUtils.h>
 
 Scenario::Scenario() :
-        m_id(StringUtils::EMPTY), m_date(), m_description(StringUtils::EMPTY) {
+        m_id(ElemUtils::StringUtils::EMPTY), m_date(), m_description(
+                ElemUtils::StringUtils::EMPTY) {
 }
 
 Scenario::~Scenario() {

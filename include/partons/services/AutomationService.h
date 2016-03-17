@@ -1,23 +1,25 @@
-/*
- * AutomationService.h
+#ifndef AUTOMATION_SERVICE_H
+#define AUTOMATION_SERVICE_H
+
+/**
+ * @file AutomationService.h
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
+ * @date 03 March 2016
+ * @version 1.0
  *
- *  Created on: Mar 3, 2016
- *      Author: debian
+ * @class AutomationService
+ *
+ * @brief
  */
 
-#ifndef AUTOMATIONSERVICE_H_
-#define AUTOMATIONSERVICE_H_
-
+#include <ElementaryUtils/parameters/Parameters.h>
+#include <ElementaryUtils/parser/XMLParser.h>
 #include <string>
 
 #include "../beans/automation/Scenario.h"
 #include "../beans/automation/Task.h"
-#include "../utils/parser/xml/XMLParser.h"
-#include "../utils/ParameterList.h"
 
-class Attributs;
-
-class AutomationService: public BaseObject, public XMLParser {
+class AutomationService: public BaseObject, public ElemUtils::XMLParser {
 public:
     static const std::string SCENARIO_NODE_NAME;
     static const std::string TASK_NODE_NAME;
@@ -42,12 +44,12 @@ private:
     // Temporary object
     Task m_task;
     // Temporary object
-    ParameterList m_parameterList;
+    ElemUtils::Parameters m_parameterList;
 
     // ##### XML PARSER METHOD #####
     virtual void startElement(const std::string &elementName,
-            Attributs attributes, const std::string &elementData);
+            ElemUtils::XMLAttributs attributes, const std::string &elementData);
     virtual void endElement(const std::string &elementName);
 };
 
-#endif /* AUTOMATIONSERVICE_H_ */
+#endif /* AUTOMATION_SERVICE_H */

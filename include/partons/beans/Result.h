@@ -16,9 +16,6 @@
 
 #include "Computation.h"
 
-class ComparisonReport;
-class Tolerances;
-
 class Result: public DatabaseObject {
 public:
     Result(const std::string &className);

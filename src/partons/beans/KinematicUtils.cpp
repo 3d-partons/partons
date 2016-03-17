@@ -1,37 +1,36 @@
 #include "../../../include/partons/beans/KinematicUtils.h"
 
+#include <ElementaryUtils/file_utils/FileUtils.h>
+#include <ElementaryUtils/string_utils/Formatter.h>
+#include <ElementaryUtils/string_utils/StringUtils.h>
 #include <stddef.h>
 #include <iostream>
 #include <stdexcept>
 #include <vector>
-
-#include "../../../include/partons/utils/fileUtils/FileUtils.h"
-#include "../../../include/partons/utils/stringUtils/Formatter.h"
-#include "../../../include/partons/utils/stringUtils/StringUtils.h"
 
 List<ObservableKinematic> KinematicUtils::getObservableKinematicFromFile(
         const std::string& filePath) {
 
     List<ObservableKinematic> observableKinematicList;
 
-    if (FileUtils::isReadable(filePath)) {
+    if (ElemUtils::FileUtils::isReadable(filePath)) {
 
-        std::vector<std::string> kinematicString = FileUtils::readByLine(
-                filePath);
+        std::vector<std::string> kinematicString =
+                ElemUtils::FileUtils::readByLine(filePath);
 
         if (kinematicString.empty()) {
             throw std::runtime_error(
-                    Formatter()
+                    ElemUtils::Formatter()
                             << "(KinematicUtils::getObservableKinematicFromFile) Empty kinematic input file : "
                             << filePath);
         }
 
         for (size_t i = 0; i != kinematicString.size(); i++) {
-            std::vector<std::string> kinematicValues = StringUtils::split(
-                    kinematicString[i], '|');
+            std::vector<std::string> kinematicValues =
+                    ElemUtils::StringUtils::split(kinematicString[i], '|');
             if (kinematicValues.size() < 4) {
                 throw std::runtime_error(
-                        Formatter()
+                        ElemUtils::Formatter()
                                 << "(KinematicUtils::getObservableKinematicFromFile) Missing column value in your kinematic input file : "
                                 << filePath
                                 << " ; You must provided 4 column : xB | t | Q2 | phi");

@@ -9,11 +9,10 @@
 
 #include "../../../../include/partons/beans/dse/QuarkPropagator.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <algorithm>
 #include <cmath>
 #include <iterator>
-
-#include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 QuarkPropagator::QuarkPropagator(const std::string& className, unsigned int N,
         double m, double mu, double Lambda2, double epsilon2) :
@@ -215,26 +214,24 @@ std::string QuarkPropagator::toString(unsigned int Npoints) const {
     return toString(Npoints, functions);
 }
 
-
 std::string QuarkPropagator::toString(unsigned int Npoints,
         std::vector<QuarkPropagator::QPFunction> functions) const {
     double x = -1.;
     double step = 2. / (Npoints - 1);
     std::vector<double> p2(Npoints, 0.);
-    std::vector<std::vector<double> > values(Npoints,
-            std::vector<double>());
+    std::vector<std::vector<double> > values(Npoints, std::vector<double>());
     for (unsigned int i = 0; i < Npoints; i++) {
         p2.at(i) = xtos(x);
         values.at(i) = evaluate(functions, p2.at(i));
         x = x + step;
     }
 
-    Formatter formatter;
+    ElemUtils::Formatter formatter;
     formatter << BaseObject::toString();
     formatter << "Results with " << Npoints << " momenta:\n";
     formatter << "p2 [GeV^2]";
-    if (std::find(functions.begin(), functions.end(),
-            QuarkPropagator::ALL) < functions.end()) {
+    if (std::find(functions.begin(), functions.end(), QuarkPropagator::ALL)
+            < functions.end()) {
         formatter << " ; " << enumToString(QuarkPropagator::ALL);
     } else {
         for (unsigned int j = 0; j < functions.size(); j++) {

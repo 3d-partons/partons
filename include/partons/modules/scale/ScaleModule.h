@@ -31,6 +31,8 @@ public:
 
     virtual Scale compute(double Q2) = 0;
 
+    void configure(const ElemUtils::Parameters &parameters);
+
 protected:
     /**
      * Copy constructor

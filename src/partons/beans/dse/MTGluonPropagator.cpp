@@ -1,9 +1,9 @@
 #include "../../../../include/partons/beans/dse/MTGluonPropagator.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <cmath>
 
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 MTGluonPropagator::MTGluonPropagator(double w, double I, double LambdaQCD,
         int Nf) :
@@ -30,7 +30,7 @@ MTGluonPropagator* MTGluonPropagator::clone() const {
 }
 
 std::string MTGluonPropagator::toString() const {
-    return Formatter() << GluonPropagator::toString();
+    return ElemUtils::Formatter() << GluonPropagator::toString();
 }
 
 // TODO Store factors independent of k2 to avoid unnecessary recalculations

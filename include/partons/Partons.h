@@ -17,9 +17,12 @@
 class BaseObjectFactory;
 class BaseObjectRegistry;
 class EnvironmentConfiguration;
-class LoggerManager;
 class ModuleObjectFactory;
 class ServiceObjectRegistry;
+
+namespace ElemUtils {
+class LoggerManager;
+} /* namespace ElemUtils */
 
 class Partons {
 public:
@@ -42,7 +45,7 @@ public:
     ServiceObjectRegistry* getServiceObjectRegistry() const;
     BaseObjectFactory* getBaseObjectFactory() const;
     ModuleObjectFactory* getModuleObjectFactory() const;
-    LoggerManager* getLoggerManager() const;
+    ElemUtils::LoggerManager* getLoggerManager() const;
     EnvironmentConfiguration* getEnvironmentConfiguration() const;
 
 private:
@@ -60,7 +63,7 @@ private:
     ServiceObjectRegistry* m_pServiceObjectRegistry;
     BaseObjectFactory* m_pBaseObjectFactory;
     ModuleObjectFactory* m_pModuleObjectFactory;
-    LoggerManager* m_pLoggerManager;
+    ElemUtils::LoggerManager* m_pLoggerManager;
 
     std::string m_currentWorkingDirectoryPath;
     EnvironmentConfiguration* m_pEnvironmentConfiguration;

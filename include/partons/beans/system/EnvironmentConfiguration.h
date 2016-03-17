@@ -32,7 +32,7 @@ public:
     void setMd5(const std::string& md5);
     time_t getStoreDate() const;
     void setStoreDate(time_t storeDate);
-    const std::string& getConfiguration() const;
+    std::string getConfiguration() const;
     void setConfiguration(const std::string& configuration);
 
 private:

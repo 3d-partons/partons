@@ -1,3 +1,8 @@
+#include <ElementaryUtils/parameters/GenericType.h>
+#include <ElementaryUtils/parameters/Parameters.h>
+#include <ElementaryUtils/string_utils/Formatter.h>
+#include <ElementaryUtils/string_utils/StringUtils.h>
+#include <ElementaryUtils/thread/Packet.h>
 #include <stddef.h>
 #include <string>
 #include <vector>
@@ -16,11 +21,6 @@
 #include "../../../include/partons/services/GPDService.h"
 #include "../../../include/partons/ServiceObjectTyped.h"
 #include "../../../include/partons/utils/compare/ComparisonReport.h"
-#include "../../../include/partons/utils/GenericType.h"
-#include "../../../include/partons/utils/ParameterList.h"
-#include "../../../include/partons/utils/stringUtils/Formatter.h"
-#include "../../../include/partons/utils/stringUtils/StringUtils.h"
-#include "../../../include/partons/utils/thread/Packet.h"
 
 const std::string GPDService::GPD_SERVICE_COMPUTE_GPD_MODEL = "computeGPDModel";
 const std::string GPDService::GPD_SERVICE_COMPUTE_GPD_MODEL_WITH_EVOLUTION =
@@ -46,78 +46,80 @@ GPDService::~GPDService() {
 //TODO supprimer les pojnteurs membres de la classe GPDService
 void GPDService::computeTask(Task &task) {
 
-    if (StringUtils::equals(task.getFunctionName(),
+    if (ElemUtils::StringUtils::equals(task.getFunctionName(),
             GPDService::GPD_SERVICE_COMPUTE_GPD_MODEL)) {
 
         //create a GPDKinematic and init it with a list of parameters
         GPDKinematic gpdKinematic;
 
-        if (task.isAvailableParameterList("GPDKinematic")) {
-            gpdKinematic = GPDKinematic(task.getLastAvailableParameterList());
-        } else if(!m_kinematicListBuffer.isEmpty())
-        {
+        if (task.isAvailableParameters("GPDKinematic")) {
+            gpdKinematic = GPDKinematic(task.getLastAvailableParameters());
+        } else if (!m_kinematicListBuffer.isEmpty()) {
             //TODO que faire ?
-        }else{
+        } else {
             error(__func__,
-                    Formatter() << "Missing object : <GPDKinematic> for method "
+                    ElemUtils::Formatter()
+                            << "Missing object : <GPDKinematic> for method "
                             << task.getFunctionName());
         }
 
         GPDModule* pGPDModule = 0;
 
-        if (task.isAvailableParameterList("GPDModule")) {
+        if (task.isAvailableParameters("GPDModule")) {
             pGPDModule = m_pModuleObjectFactory->newGPDModule(
-                    task.getLastAvailableParameterList().get("id").toString());
-            pGPDModule->configure(task.getLastAvailableParameterList());
+                    task.getLastAvailableParameters().get("id").toString());
+            pGPDModule->configure(task.getLastAvailableParameters());
         } else {
             error(__func__,
-                    Formatter() << "Missing object : <GPDModule> for method "
+                    ElemUtils::Formatter()
+                            << "Missing object : <GPDModule> for method "
                             << task.getFunctionName());
         }
 
         GPDResult result = computeGPDModel(gpdKinematic, pGPDModule);
 
         info(__func__,
-                Formatter() << task.getFunctionName() << "("
+                ElemUtils::Formatter() << task.getFunctionName() << "("
                         << pGPDModule->getClassName() << ")" << '\n'
                         << result.toString());
 
-    } else if (StringUtils::equals(task.getFunctionName(),
+    } else if (ElemUtils::StringUtils::equals(task.getFunctionName(),
             GPDService::GPD_SERVICE_COMPUTE_GPD_MODEL_WITH_EVOLUTION)) {
 
         //create a GPDKinematic and init it with a list of parameters
         GPDKinematic gpdKinematic;
 
-        if (task.isAvailableParameterList("GPDKinematic")) {
-            gpdKinematic = GPDKinematic(task.getLastAvailableParameterList());
+        if (task.isAvailableParameters("GPDKinematic")) {
+            gpdKinematic = GPDKinematic(task.getLastAvailableParameters());
         } else {
             error(__func__,
-                    Formatter() << "Missing object : <GPDKinematic> for method "
+                    ElemUtils::Formatter()
+                            << "Missing object : <GPDKinematic> for method "
                             << task.getFunctionName());
         }
 
         GPDModule* pGPDModule = 0;
 
-        if (task.isAvailableParameterList("GPDModule")) {
+        if (task.isAvailableParameters("GPDModule")) {
             pGPDModule = m_pModuleObjectFactory->newGPDModule(
-                    task.getLastAvailableParameterList().get("id").toString());
-            pGPDModule->configure(task.getLastAvailableParameterList());
+                    task.getLastAvailableParameters().get("id").toString());
+            pGPDModule->configure(task.getLastAvailableParameters());
         } else {
             error(__func__,
-                    Formatter() << "Missing object : <GPDModule> for method "
+                    ElemUtils::Formatter()
+                            << "Missing object : <GPDModule> for method "
                             << task.getFunctionName());
         }
 
         GPDEvolutionModule* pGPDEvolutionModule = 0;
 
-        if (task.isAvailableParameterList("GPDEvolutionModule")) {
+        if (task.isAvailableParameters("GPDEvolutionModule")) {
             pGPDEvolutionModule = m_pModuleObjectFactory->newGPDEvolutionModule(
-                    task.getLastAvailableParameterList().get("id").toString());
-            pGPDEvolutionModule->configure(
-                    task.getLastAvailableParameterList());
+                    task.getLastAvailableParameters().get("id").toString());
+            pGPDEvolutionModule->configure(task.getLastAvailableParameters());
         } else {
             error(__func__,
-                    Formatter()
+                    ElemUtils::Formatter()
                             << "Missing object : <GPDEvolutionModule> for method "
                             << task.getFunctionName());
         }
@@ -126,24 +128,25 @@ void GPDService::computeTask(Task &task) {
                 computeGPDModelWithEvolution(gpdKinematic, pGPDModule,
                         pGPDEvolutionModule));
 
-    } else if (StringUtils::equals(task.getFunctionName(),
+    } else if (ElemUtils::StringUtils::equals(task.getFunctionName(),
             GPDService::GPD_SERVICE_COMPUTE_LIST_OF_GPD_MODEL)) {
         //create a GPDKinematic and init it with a list of parameters
         GPDKinematic gpdKinematic;
 
-        if (task.isAvailableParameterList("GPDKinematic")) {
-            gpdKinematic = GPDKinematic(task.getLastAvailableParameterList());
+        if (task.isAvailableParameters("GPDKinematic")) {
+            gpdKinematic = GPDKinematic(task.getLastAvailableParameters());
         } else {
             error(__func__,
-                    Formatter() << "Missing object : <GPDKinematic> for method "
+                    ElemUtils::Formatter()
+                            << "Missing object : <GPDKinematic> for method "
                             << task.getFunctionName());
         }
 
         std::vector<GPDModule*> listOfGPDModule;
 
-        if (task.isAvailableParameterList("GPDModule")) {
-            std::vector<ParameterList> listOfParameterList =
-                    task.getListOfLastAvailableParameterList("GPDModule");
+        if (task.isAvailableParameters("GPDModule")) {
+            std::vector<ElemUtils::Parameters> listOfParameterList =
+                    task.getListOfLastAvailableParameters("GPDModule");
 
             for (unsigned int i = 0; i != listOfParameterList.size(); i++) {
                 listOfGPDModule.push_back(
@@ -154,7 +157,8 @@ void GPDService::computeTask(Task &task) {
 
         } else {
             error(__func__,
-                    Formatter() << "Missing object : <GPDModule> for method "
+                    ElemUtils::Formatter()
+                            << "Missing object : <GPDModule> for method "
                             << task.getFunctionName());
         }
 
@@ -217,11 +221,11 @@ ResultList<GPDResult> GPDService::computeManyKinematicOneModel(
         const List<GPDKinematic> &gpdKinematicList, GPDModule* pGPDModule) {
     ResultList<GPDResult> results;
 
-    List<Packet> listOfPacket;
+    List<ElemUtils::Packet> listOfPacket;
     GPDType gpdType(GPDType::ALL);
 
     for (unsigned int i = 0; i != gpdKinematicList.size(); i++) {
-        Packet packet;
+        ElemUtils::Packet packet;
         GPDKinematic obsK;
         obsK = gpdKinematicList[i];
         packet << obsK << gpdType;

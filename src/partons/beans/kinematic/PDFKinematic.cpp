@@ -1,6 +1,6 @@
 #include "../../../../include/partons/beans/kinematic/PDFKinematic.h"
 
-#include "../../../../include/partons/utils/stringUtils/Formatter.h"
+#include <ElementaryUtils/string_utils/Formatter.h>
 
 PDFKinematic::PDFKinematic() :
         m_x(0.), m_MuF(0.), m_MuR(0.) {
@@ -14,8 +14,8 @@ PDFKinematic::~PDFKinematic() {
 }
 
 std::string PDFKinematic::toString() {
-    return Formatter() << "m_x = " << m_x << " m_MuF = " << m_MuF << " m_MuR = "
-            << m_MuR;
+    return ElemUtils::Formatter() << "m_x = " << m_x << " m_MuF = " << m_MuF
+            << " m_MuR = " << m_MuR;
 }
 
 double PDFKinematic::getMuF() const {

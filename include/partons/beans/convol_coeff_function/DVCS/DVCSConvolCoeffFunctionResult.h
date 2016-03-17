@@ -21,6 +21,8 @@
 #include "../../Result.h"
 #include "DVCSConvolCoeffFunctionKinematic.h"
 
+class ComparisonReport;
+
 namespace NumA {
 class Tolerances;
 } /* namespace NumA */

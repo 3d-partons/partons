@@ -9,10 +9,10 @@
 
 #include "../../../../include/partons/beans/dse/GluonPropagator.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <cmath>
 
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 GluonPropagator::GluonPropagator(const std::string& className, double w,
         double I, double LambdaQCD, int Nf) :
@@ -45,7 +45,7 @@ GluonPropagator::~GluonPropagator() {
 
 //TODO Complete toString
 std::string GluonPropagator::toString() const {
-    return Formatter() << BaseObject::toString();
+    return ElemUtils::Formatter() << BaseObject::toString();
 }
 
 double GluonPropagator::evaluateAlpha(double k2) const {

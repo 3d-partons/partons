@@ -1,5 +1,9 @@
 #include "../../../include/partons/services/DVCSConvolCoeffFunctionService.h"
 
+#include <ElementaryUtils/parameters/GenericType.h>
+#include <ElementaryUtils/parameters/Parameters.h>
+#include <ElementaryUtils/string_utils/Formatter.h>
+#include <ElementaryUtils/string_utils/StringUtils.h>
 #include <stddef.h>
 
 #include "../../../include/partons/beans/automation/Task.h"
@@ -8,10 +12,6 @@
 #include "../../../include/partons/modules/GPDModule.h"
 #include "../../../include/partons/ModuleObjectFactory.h"
 #include "../../../include/partons/Partons.h"
-#include "../../../include/partons/utils/GenericType.h"
-#include "../../../include/partons/utils/ParameterList.h"
-#include "../../../include/partons/utils/stringUtils/Formatter.h"
-#include "../../../include/partons/utils/stringUtils/StringUtils.h"
 
 const std::string DVCSConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_WITH_GPD_MODEL =
         "computeWithGPDModel";
@@ -37,11 +37,11 @@ void DVCSConvolCoeffFunctionService::computeTask(Task &task) {
 
     ResultList<DVCSConvolCoeffFunctionResult> resultList;
 
-    if (StringUtils::equals(task.getFunctionName(),
+    if (ElemUtils::StringUtils::equals(task.getFunctionName(),
             DVCSConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_WITH_GPD_MODEL)) {
         resultList.add(computeWithGPDModelTask(task));
 
-    } else if (StringUtils::equals(task.getFunctionName(),
+    } else if (ElemUtils::StringUtils::equals(task.getFunctionName(),
             DVCSConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_LIST_WITH_GPD_MODEL)) {
         resultList = computeListWithGPDModelTask(task);
     } else {
@@ -55,12 +55,12 @@ void DVCSConvolCoeffFunctionService::computeTask(Task &task) {
 
         if (computationId != -1) {
             info(__func__,
-                    Formatter()
+                    ElemUtils::Formatter()
                             << "DVCSConvolCoeffFunctionResultList object has been stored in database with computation_id = "
                             << computationId);
         } else {
             error(__func__,
-                    Formatter()
+                    ElemUtils::Formatter()
                             << "DVCSConvolCoeffFunctionResultList object : insertion into database failed");
         }
     }
@@ -105,12 +105,12 @@ DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionService::computeWithGPDMode
     //create a kinematic and init it with a list of parameters
     DVCSConvolCoeffFunctionKinematic kinematic;
 
-    if (task.isAvailableParameterList("DVCSConvolCoeffFunctionKinematic")) {
+    if (task.isAvailableParameters("DVCSConvolCoeffFunctionKinematic")) {
         kinematic = DVCSConvolCoeffFunctionKinematic(
-                task.getLastAvailableParameterList());
+                task.getLastAvailableParameters());
     } else {
         error(__func__,
-                Formatter()
+                ElemUtils::Formatter()
                         << "Missing object : <DVCSConvolCoeffFunctionKinematic> for method "
                         << task.getFunctionName());
     }
@@ -119,27 +119,28 @@ DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionService::computeWithGPDMode
 
     //TODO How to handle CFF module without GPD module ?
 
-    if (task.isAvailableParameterList("GPDModule")) {
+    if (task.isAvailableParameters("GPDModule")) {
         pGPDModule = m_pModuleObjectFactory->newGPDModule(
-                task.getLastAvailableParameterList().get("id").toString());
-        pGPDModule->configure(task.getLastAvailableParameterList());
+                task.getLastAvailableParameters().get("id").toString());
+        pGPDModule->configure(task.getLastAvailableParameters());
     } else {
         error(__func__,
-                Formatter() << "Missing object : <GPDModule> for method "
+                ElemUtils::Formatter()
+                        << "Missing object : <GPDModule> for method "
                         << task.getFunctionName());
     }
 
     DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule = 0;
 
-    if (task.isAvailableParameterList("DVCSConvolCoeffFunctionModule")) {
+    if (task.isAvailableParameters("DVCSConvolCoeffFunctionModule")) {
         pDVCSConvolCoeffFunctionModule =
                 m_pModuleObjectFactory->newDVCSConvolCoeffFunctionModule(
-                        task.getLastAvailableParameterList().get("id").toString());
+                        task.getLastAvailableParameters().get("id").toString());
         pDVCSConvolCoeffFunctionModule->configure(
-                task.getLastAvailableParameterList());
+                task.getLastAvailableParameters());
     } else {
         error(__func__,
-                Formatter()
+                ElemUtils::Formatter()
                         << "Missing object : <GPDEvolutionModule> for method "
                         << task.getFunctionName());
     }
@@ -155,21 +156,21 @@ ResultList<DVCSConvolCoeffFunctionResult> DVCSConvolCoeffFunctionService::comput
     //create kinematic
     DVCSConvolCoeffFunctionKinematic kinematic;
 
-    if (task.isAvailableParameterList("DVCSConvolCoeffFunctionKinematic")) {
+    if (task.isAvailableParameters("DVCSConvolCoeffFunctionKinematic")) {
         kinematic = DVCSConvolCoeffFunctionKinematic(
-                task.getLastAvailableParameterList());
+                task.getLastAvailableParameters());
     } else {
         error(__func__,
-                Formatter()
+                ElemUtils::Formatter()
                         << "Missing object : <DVCSConvolCoeffFunctionKinematic> for method "
                         << task.getFunctionName());
     }
 
     std::vector<DVCSConvolCoeffFunctionModule*> listOfModule;
 
-    if (task.isAvailableParameterList("DVCSConvolCoeffFunctionModule")) {
-        std::vector<ParameterList> listOfParameterList =
-                task.getListOfLastAvailableParameterList(
+    if (task.isAvailableParameters("DVCSConvolCoeffFunctionModule")) {
+        std::vector<ElemUtils::Parameters> listOfParameterList =
+                task.getListOfLastAvailableParameters(
                         "DVCSConvolCoeffFunctionModule");
 
         for (unsigned int i = 0; i != listOfParameterList.size(); i++) {
@@ -181,7 +182,7 @@ ResultList<DVCSConvolCoeffFunctionResult> DVCSConvolCoeffFunctionService::comput
 
     } else {
         error(__func__,
-                Formatter()
+                ElemUtils::Formatter()
                         << "Missing object : <DVCSConvolCoeffFunctionModule> for method "
                         << task.getFunctionName());
     }
@@ -190,13 +191,14 @@ ResultList<DVCSConvolCoeffFunctionResult> DVCSConvolCoeffFunctionService::comput
 
     //TODO How to handle CFF module without GPD module ?
 
-    if (task.isAvailableParameterList("GPDModule")) {
+    if (task.isAvailableParameters("GPDModule")) {
         pGPDModule = m_pModuleObjectFactory->newGPDModule(
-                task.getLastAvailableParameterList().get("id").toString());
-        pGPDModule->configure(task.getLastAvailableParameterList());
+                task.getLastAvailableParameters().get("id").toString());
+        pGPDModule->configure(task.getLastAvailableParameters());
     } else {
         error(__func__,
-                Formatter() << "Missing object : <GPDModule> for method "
+                ElemUtils::Formatter()
+                        << "Missing object : <GPDModule> for method "
                         << task.getFunctionName());
     }
 
@@ -243,21 +245,21 @@ ResultList<DVCSConvolCoeffFunctionResult> DVCSConvolCoeffFunctionService::comput
 //        // for each entry
 //        for (unsigned int i = 0; i != fileLines.size(); i++) {
 //            // split string character with space character
-//            splitedLine = StringUtils::split(fileLines[i], ' ');
+//            splitedLine = ElemUtils::StringUtils::split(fileLines[i], ' ');
 //            // if there is 4 entry that's we have all parameters
 //            if (!splitedLine.empty() && splitedLine.size() == 4) {
 //                // store a new CFFInputData object
 //                data.insert(
 //                        std::pair<unsigned int, CFFInputData>(
-//                                StringUtils::fromStringToInt(splitedLine[0]),
+//                                ElemUtils::StringUtils::fromStringToInt(splitedLine[0]),
 //                                CFFInputData(
-//                                        StringUtils::fromStringToInt(
+//                                        ElemUtils::StringUtils::fromStringToInt(
 //                                                splitedLine[0]),
-//                                        StringUtils::fromStringToDouble(
+//                                        ElemUtils::StringUtils::fromStringToDouble(
 //                                                splitedLine[1]),
-//                                        StringUtils::fromStringToDouble(
+//                                        ElemUtils::StringUtils::fromStringToDouble(
 //                                                splitedLine[2]),
-//                                        StringUtils::fromStringToDouble(
+//                                        ElemUtils::StringUtils::fromStringToDouble(
 //                                                splitedLine[3]))));
 //            } else {
 //                //TODO missing arg
@@ -270,7 +272,7 @@ ResultList<DVCSConvolCoeffFunctionResult> DVCSConvolCoeffFunctionService::comput
 //                "UNREADABLE file: " + filePath);
 //
 //        throw std::runtime_error(
-//                Formatter()
+//                ElemUtils::Formatter()
 //                        << FileExceptionType(FileExceptionType::UNREADABLE).toString()
 //                        << " filePath: " << filePath); // implicitly cast to std::string
 //    }
@@ -290,17 +292,17 @@ ResultList<DVCSConvolCoeffFunctionResult> DVCSConvolCoeffFunctionService::comput
 //        // for each entry
 //        for (unsigned int i = 0; i != fileLines.size(); i++) {
 //            // split string character with space character
-//            splitedLine = StringUtils::split(fileLines[i], ' ');
+//            splitedLine = ElemUtils::StringUtils::split(fileLines[i], ' ');
 //            // if there is 4 entry that's we have all parameters
 //            if (!splitedLine.empty() && splitedLine.size() == 4) {
 //                // store a new CFFInputData object
 //                data.push_back(
 //
 //                        CFFInputData(
-//                                StringUtils::fromStringToInt(splitedLine[0]),
-//                                StringUtils::fromStringToDouble(splitedLine[1]),
-//                                StringUtils::fromStringToDouble(splitedLine[2]),
-//                                StringUtils::fromStringToDouble(
+//                                ElemUtils::StringUtils::fromStringToInt(splitedLine[0]),
+//                                ElemUtils::StringUtils::fromStringToDouble(splitedLine[1]),
+//                                ElemUtils::StringUtils::fromStringToDouble(splitedLine[2]),
+//                                ElemUtils::StringUtils::fromStringToDouble(
 //                                        splitedLine[3])));
 //            } else {
 //                //TODO missing arg
@@ -313,7 +315,7 @@ ResultList<DVCSConvolCoeffFunctionResult> DVCSConvolCoeffFunctionService::comput
 //                "UNREADABLE file: " + filePath);
 //
 //        throw std::runtime_error(
-//                Formatter()
+//                ElemUtils::Formatter()
 //                        << FileExceptionType(FileExceptionType::UNREADABLE).toString()
 //                        << " filePath: " << filePath); // implicitly cast to std::string
 //    }

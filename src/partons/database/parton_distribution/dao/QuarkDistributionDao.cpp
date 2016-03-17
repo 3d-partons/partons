@@ -1,14 +1,14 @@
 #include "../../../../../include/partons/database/parton_distribution/dao/QuarkDistributionDao.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
+#include <QtCore/qstring.h>
+#include <QtCore/qvariant.h>
 #include <QtSql/qsqlerror.h>
 #include <QtSql/qsqlrecord.h>
-#include <QtCore/qvariant.h>
-#include <QtCore/qstring.h>
 #include <string>
 
 #include "../../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../../include/partons/database/DatabaseManager.h"
-#include "../../../../../include/partons/utils/stringUtils/Formatter.h"
 
 QuarkDistributionDao::QuarkDistributionDao() :
         BaseObject("QuarkDistributionDao") {
@@ -36,7 +36,7 @@ int QuarkDistributionDao::insert(double quarkDistributionPlus,
         result = query.lastInsertId().toInt();
     } else {
         error(__func__,
-                Formatter() << query.lastError().text().toStdString()
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
     }
@@ -64,7 +64,7 @@ QuarkDistribution QuarkDistributionDao::getQuarkDistributionById(
 
     } else {
         error(__func__,
-                Formatter() << query.lastError().text().toStdString()
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
     }

@@ -1,5 +1,6 @@
 #include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSCFFModel.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/integration/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
@@ -20,7 +21,6 @@
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../../include/partons/modules/GPDModule.h"
 #include "../../../../../include/partons/modules/RunningAlphaStrongModule.h"
-#include "../../../../../include/partons/utils/stringUtils/Formatter.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int DVCSCFFModel::classId =
@@ -53,7 +53,7 @@ DVCSCFFModel::DVCSCFFModel(const std::string &className) :
 void DVCSCFFModel::init() {
     DVCSConvolCoeffFunctionModule::init();
 
-    setIntegrator(NumA::IntegratorType1D::GK21_ADAPTIVE);
+    setIntegrator(NumA::IntegratorType1D::DEXP);
 }
 
 void DVCSCFFModel::initFunctorsForIntegrations() {
@@ -192,10 +192,11 @@ void DVCSCFFModel::initModule() {
     m_alphaSOver2Pi = m_pRunningAlphaStrongModule->compute(m_MuR2) / (2. * PI);
 
     debug(__func__,
-            Formatter() << "m_Q2=" << m_Q2 << " m_Q= " << m_Q << " m_MuF2="
-                    << m_MuF2 << " m_Zeta= " << m_Zeta << " m_logQ2OverMu2="
-                    << m_logQ2OverMu2 << " m_nbOfActiveFlavour=" << m_nf
-                    << " m_alphaSOver2Pi=" << m_alphaSOver2Pi);
+            ElemUtils::Formatter() << "m_Q2=" << m_Q2 << " m_Q= " << m_Q
+                    << " m_MuF2=" << m_MuF2 << " m_Zeta= " << m_Zeta
+                    << " m_logQ2OverMu2=" << m_logQ2OverMu2
+                    << " m_nbOfActiveFlavour=" << m_nf << " m_alphaSOver2Pi="
+                    << m_alphaSOver2Pi);
 }
 
 void DVCSCFFModel::isModuleWellConfigured() {
@@ -212,7 +213,7 @@ void DVCSCFFModel::isModuleWellConfigured() {
             && m_qcdOrderType != PerturbativeQCDOrderType::NLO) {
 
         error(__func__,
-                Formatter()
+                ElemUtils::Formatter()
                         << "Erroneous input, perturbative QCD order can only be LO or NLO. Here Order = "
                         << PerturbativeQCDOrderType(m_qcdOrderType).toString());
     }
@@ -262,7 +263,7 @@ void DVCSCFFModel::computeDiagonalGPD() {
             * partonDistribution.getGluonDistribution().getGluonDistribution();
 
     //   debug( __func__,
-    //      	                Formatter()<<"    q diagonal = "<< m_quarkDiagonal <<"   g diagonal = "<< m_gluonDiagonal);
+    //      	                ElemUtils::Formatter()<<"    q diagonal = "<< m_quarkDiagonal <<"   g diagonal = "<< m_gluonDiagonal);
 
 }
 
@@ -469,7 +470,7 @@ std::complex<double> DVCSCFFModel::computeIntegralsV() {
     if (m_qcdOrderType != PerturbativeQCDOrderType::LO
             && m_qcdOrderType != PerturbativeQCDOrderType::NLO) {
 
-        Formatter()
+        ElemUtils::Formatter()
                 << "[DVCSCFFModule::computeIntegrals] Erroneous input perturbative QCD order can only be LO or NLO. Here Order = "
                 /*<< qcdOrderType.toString()*/;
         throw std::runtime_error("");
@@ -497,7 +498,7 @@ std::complex<double> DVCSCFFModel::computeIntegralsV() {
 
     default:
         throw std::runtime_error(
-                Formatter()
+                ElemUtils::Formatter()
                         << "[DVCSCFFModule::computeIntegrals] Erroneous input number of active quark flavours should be an integer between 3 and 6. Number of active quark flavours = "
                         << m_nf);
     }
@@ -506,27 +507,27 @@ std::complex<double> DVCSCFFModel::computeIntegralsV() {
 
     std::vector<double> emptyParameters;
 
-    IntegralRealPartKernelQuark1 = integrate(
-            m_pConvolReKernelQuark1V, 0., +m_xi, emptyParameters);
+    IntegralRealPartKernelQuark1 = integrate(m_pConvolReKernelQuark1V, 0.,
+            +m_xi, emptyParameters);
 
-    IntegralRealPartKernelQuark2 = integrate(
-            m_pConvolReKernelQuark2V, +m_xi, +1, emptyParameters);
+    IntegralRealPartKernelQuark2 = integrate(m_pConvolReKernelQuark2V, +m_xi,
+            +1, emptyParameters);
 
-    IntegralImaginaryPartKernelQuark = integrate(
-            m_pConvolImKernelQuarkV, +m_xi, +1, emptyParameters);
+    IntegralImaginaryPartKernelQuark = integrate(m_pConvolImKernelQuarkV, +m_xi,
+            +1, emptyParameters);
 
     // Gluon sector
 
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
 
-        IntegralRealPartKernelGluon1 = integrate(
-                m_pConvolReKernelGluon1V, 0., +m_xi, emptyParameters);
+        IntegralRealPartKernelGluon1 = integrate(m_pConvolReKernelGluon1V, 0.,
+                +m_xi, emptyParameters);
 
-        IntegralRealPartKernelGluon2 = integrate(
-                m_pConvolReKernelGluon2V, +m_xi, +1, emptyParameters);
+        IntegralRealPartKernelGluon2 = integrate(m_pConvolReKernelGluon2V,
+                +m_xi, +1, emptyParameters);
 
-        IntegralImaginaryPartKernelGluon = integrate(
-                m_pConvolImKernelGluonV, +m_xi, +1, emptyParameters);
+        IntegralImaginaryPartKernelGluon = integrate(m_pConvolImKernelGluonV,
+                +m_xi, +1, emptyParameters);
     }
 
     // Compute Subtraction constants (different at LO or NLO)
@@ -570,7 +571,7 @@ std::complex<double> DVCSCFFModel::computeIntegralsA() {
             && m_qcdOrderType != PerturbativeQCDOrderType::NLO) {
 
         throw std::runtime_error(
-                Formatter()
+                ElemUtils::Formatter()
                         << "[DVCSCFFModel::computeIntegralsA] Erroneous input perturbative QCD order can only be LO or NLO. Here Order = "
                         << PerturbativeQCDOrderType(m_qcdOrderType).toString());
 
@@ -598,7 +599,7 @@ std::complex<double> DVCSCFFModel::computeIntegralsA() {
 
     default:
         throw std::runtime_error(
-                Formatter()
+                ElemUtils::Formatter()
                         << "[DVCSCFFModel::computeIntegralsA] Erroneous input number of active quark flavours should be an integer between 3 and 6. Number of active quark flavours = "
                         << m_nf);
     }
@@ -607,26 +608,26 @@ std::complex<double> DVCSCFFModel::computeIntegralsA() {
 
     std::vector<double> emptyParameters;
 
-    IntegralRealPartKernelQuark1 = integrate(
-            m_pConvolReKernelQuark1A, 0., +m_xi, emptyParameters);
+    IntegralRealPartKernelQuark1 = integrate(m_pConvolReKernelQuark1A, 0.,
+            +m_xi, emptyParameters);
 
-    IntegralRealPartKernelQuark2 = integrate(
-            m_pConvolReKernelQuark2A, +m_xi, +1, emptyParameters);
+    IntegralRealPartKernelQuark2 = integrate(m_pConvolReKernelQuark2A, +m_xi,
+            +1, emptyParameters);
 
-    IntegralImaginaryPartKernelQuark = integrate(
-            m_pConvolImKernelQuarkA, +m_xi, +1, emptyParameters);
+    IntegralImaginaryPartKernelQuark = integrate(m_pConvolImKernelQuarkA, +m_xi,
+            +1, emptyParameters);
 
     // Gluon sector
 
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
-        IntegralRealPartKernelGluon1 = integrate(
-                m_pConvolReKernelGluon1A, 0., +m_xi, emptyParameters);
+        IntegralRealPartKernelGluon1 = integrate(m_pConvolReKernelGluon1A, 0.,
+                +m_xi, emptyParameters);
 
-        IntegralRealPartKernelGluon2 = integrate(
-                m_pConvolReKernelGluon2A, +m_xi, +1, emptyParameters);
+        IntegralRealPartKernelGluon2 = integrate(m_pConvolReKernelGluon2A,
+                +m_xi, +1, emptyParameters);
 
-        IntegralImaginaryPartKernelGluon = integrate(
-                m_pConvolImKernelGluonA, +m_xi, +1, emptyParameters);
+        IntegralImaginaryPartKernelGluon = integrate(m_pConvolImKernelGluonA,
+                +m_xi, +1, emptyParameters);
     }
 
     // Compute Subtraction constants (different at LO or NLO)
@@ -654,7 +655,7 @@ std::complex<double> DVCSCFFModel::computeIntegralsA() {
     //	cout << fpQCDOrder << "      ImaginaryPartCFF Gluon = " << SumSqrCharges * ( IntegralImaginaryPartKernelGluon + fGluonDiagonal * fImaginaryPartSubtractGluon ) << endl ;
     // Multiplication by SumSqrCharges corrects in mistake in eq. (9)
     debug(__func__,
-            Formatter() << "    integral RE = " << realPartCFF
+            ElemUtils::Formatter() << "    integral RE = " << realPartCFF
                     << "   Integral IM = " << imaginaryPartCFF);
 
     return std::complex<double>(realPartCFF, imaginaryPartCFF);
@@ -771,7 +772,8 @@ double DVCSCFFModel::ConvolReKernelQuark1V(double x,
 
     Convol /= m_xi; // In eq. (8), ( 2 - fZeta ) / fZeta = 1 / fXi
 
-    debug(__func__, Formatter() << "x = " << x << " | convol = " << Convol);
+    debug(__func__,
+            ElemUtils::Formatter() << "x = " << x << " | convol = " << Convol);
 
     return Convol;
 }
@@ -800,7 +802,8 @@ double DVCSCFFModel::ConvolReKernelQuark2V(double x,
 
     Convol /= m_xi; // In eq. (8), ( 2 - fZeta ) / fZeta = 1 / fXi
 
-    debug(__func__, Formatter() << "x = " << x << " | convol = " << Convol);
+    debug(__func__,
+            ElemUtils::Formatter() << "x = " << x << " | convol = " << Convol);
 
     return Convol;
 }
@@ -825,7 +828,8 @@ double DVCSCFFModel::ConvolImKernelQuarkV(double x,
     Convol *= KernelQuarkV(x).imag();
     Convol /= m_xi; // In eq. (8), ( 2 - fZeta ) / fZeta = 1 / fXi
 
-    debug(__func__, Formatter() << "x = " << x << " | convol = " << Convol);
+    debug(__func__,
+            ElemUtils::Formatter() << "x = " << x << " | convol = " << Convol);
 
     return Convol;
 }
@@ -855,7 +859,8 @@ double DVCSCFFModel::ConvolReKernelGluon1V(double x,
 
     Convol /= (m_xi * m_xi * m_nf);
 
-    debug(__func__, Formatter() << "x = " << x << " | convol = " << Convol);
+    debug(__func__,
+            ElemUtils::Formatter() << "x = " << x << " | convol = " << Convol);
 
     return Convol;
 }
@@ -883,7 +888,8 @@ double DVCSCFFModel::ConvolReKernelGluon2V(double x,
 
     Convol /= (m_xi * m_xi * m_nf); // In eq. (8), ( ( 2 - fZeta ) / fZeta )^2 = 1 / fXi^2
 
-    debug(__func__, Formatter() << "x = " << x << " | convol = " << Convol);
+    debug(__func__,
+            ElemUtils::Formatter() << "x = " << x << " | convol = " << Convol);
 
     return Convol;
 }
@@ -908,7 +914,8 @@ double DVCSCFFModel::ConvolImKernelGluonV(double x,
     Convol *= KernelGluonV(x).imag();
     Convol /= (m_xi * m_xi * m_nf); // In eq. (8), ( ( 2 - fZeta ) / fZeta )^2 = 1 / fXi^2
 
-    debug(__func__, Formatter() << "x = " << x << " | convol = " << Convol);
+    debug(__func__,
+            ElemUtils::Formatter() << "x = " << x << " | convol = " << Convol);
 
     return Convol;
 }
@@ -941,7 +948,7 @@ std::complex<double> DVCSCFFModel::KernelGluonNLOA(double x) {
     debug(__func__, "entered");
 //
 //    debug( __func__,
-//               Formatter() << "x= " << x );
+//               ElemUtils::Formatter() << "x= " << x );
 
     double z = x / m_xi;
     std::complex<double> LogOneMinusz(0., 0.);
@@ -997,7 +1004,8 @@ double DVCSCFFModel::ConvolReKernelQuark1A(double x,
 
     Convol /= m_xi; // In eq. (8), ( 2 - fZeta ) / fZeta = 1 / fXi
 
-    debug(__func__, Formatter() << "x = " << x << " | convol = " << Convol);
+    debug(__func__,
+            ElemUtils::Formatter() << "x = " << x << " | convol = " << Convol);
 
     return Convol;
 }
@@ -1018,7 +1026,8 @@ double DVCSCFFModel::ConvolReKernelQuark2A(double x,
 
     Convol /= m_xi; // In eq. (8), ( 2 - fZeta ) / fZeta = 1 / fXi
 
-    debug(__func__, Formatter() << "x = " << x << " | convol = " << Convol);
+    debug(__func__,
+            ElemUtils::Formatter() << "x = " << x << " | convol = " << Convol);
 
     return Convol;
 }
@@ -1036,7 +1045,8 @@ double DVCSCFFModel::ConvolImKernelQuarkA(double x,
     Convol *= KernelQuarkA(x).imag();
     Convol /= m_xi; // In eq. (8), ( 2 - fZeta ) / fZeta = 1 / fXi
 
-    debug(__func__, Formatter() << "x = " << x << " | convol = " << Convol);
+    debug(__func__,
+            ElemUtils::Formatter() << "x = " << x << " | convol = " << Convol);
 
     return Convol;
 }
@@ -1058,7 +1068,8 @@ double DVCSCFFModel::ConvolReKernelGluon1A(double x,
 
     Convol /= (m_xi * m_xi * m_nf);
 
-    debug(__func__, Formatter() << "x = " << x << " | convol = " << Convol);
+    debug(__func__,
+            ElemUtils::Formatter() << "x = " << x << " | convol = " << Convol);
 
     return Convol;
 }
@@ -1079,7 +1090,8 @@ double DVCSCFFModel::ConvolReKernelGluon2A(double x,
 
     Convol /= (m_xi * m_xi * m_nf); // In eq. (8), ( ( 2 - fZeta ) / fZeta )^2 = 1 / fXi^2
 
-    debug(__func__, Formatter() << "x = " << x << " | convol = " << Convol);
+    debug(__func__,
+            ElemUtils::Formatter() << "x = " << x << " | convol = " << Convol);
 
     return Convol;
 }
@@ -1097,7 +1109,8 @@ double DVCSCFFModel::ConvolImKernelGluonA(double x,
     Convol *= KernelGluonA(x).imag();
     Convol /= (m_xi * m_xi * m_nf); // In eq. (8), ( ( 2 - fZeta ) / fZeta )^2 = 1 / fXi^2
 
-    debug(__func__, Formatter() << "x = " << x << " | convol = " << Convol);
+    debug(__func__,
+            ElemUtils::Formatter() << "x = " << x << " | convol = " << Convol);
 
     return Convol;
 }

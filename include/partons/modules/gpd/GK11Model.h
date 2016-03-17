@@ -44,7 +44,7 @@ public:
 
     virtual GK11Model* clone() const;
 
-    virtual void configure(ParameterList parameters);
+    virtual void configure(const ElemUtils::Parameters &parameters);
 
     virtual std::string toString();
 

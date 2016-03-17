@@ -31,7 +31,6 @@ namespace NumA {
 class MatrixD;
 } /* namespace NumA */
 
-
 class GPDEvolutionModule: public ModuleObject {
 public:
     enum Type {
@@ -42,7 +41,7 @@ public:
     virtual ~GPDEvolutionModule();
     virtual GPDEvolutionModule* clone() const = 0;
 
-    virtual void configure(ParameterList parameters);
+    virtual void configure(const ElemUtils::Parameters &parameters);
 
     virtual void init();
 

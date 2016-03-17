@@ -1,10 +1,11 @@
 #include "../../../../../include/partons/beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 
+#include <ElementaryUtils/parameters/GenericType.h>
+#include <ElementaryUtils/parameters/Parameters.h>
+#include <ElementaryUtils/string_utils/Formatter.h>
+
 #include "../../../../../include/partons/beans/gpd/GPDKinematic.h"
 #include "../../../../../include/partons/beans/observable/ObservableKinematic.h"
-#include "../../../../../include/partons/utils/GenericType.h"
-#include "../../../../../include/partons/utils/ParameterList.h"
-#include "../../../../../include/partons/utils/stringUtils/Formatter.h"
 
 DVCSConvolCoeffFunctionKinematic::DVCSConvolCoeffFunctionKinematic() :
         Kinematic("DVCSConvolCoeffFunctionKinematic"), m_binId(0), m_xi(0.), m_t(
@@ -12,38 +13,37 @@ DVCSConvolCoeffFunctionKinematic::DVCSConvolCoeffFunctionKinematic() :
 }
 
 DVCSConvolCoeffFunctionKinematic::DVCSConvolCoeffFunctionKinematic(
-        ParameterList &parameterList) :
+        const ElemUtils::Parameters &parameters) :
         Kinematic("DVCSConvolCoeffFunctionKinematic"), m_binId(0), m_xi(0.), m_t(
                 0.), m_Q2(0.), m_MuF2(0.), m_MuR2(0.) {
-    if (parameterList.isAvailable(
-            GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI)) {
-        m_xi = parameterList.getLastAvailable().toDouble();
+    if (parameters.isAvailable(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI)) {
+        m_xi = parameters.getLastAvailable().toDouble();
     } else {
         error(__func__,
-                Formatter() << "Missing parameter <"
+                ElemUtils::Formatter() << "Missing parameter <"
                         << GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI
                         << ">");
     }
-    if (parameterList.isAvailable(ObservableKinematic::PARAMETER_NAME_T)) {
-        m_t = parameterList.getLastAvailable().toDouble();
+    if (parameters.isAvailable(ObservableKinematic::PARAMETER_NAME_T)) {
+        m_t = parameters.getLastAvailable().toDouble();
     } else {
         error(__func__,
-                Formatter() << "Missing parameter <"
+                ElemUtils::Formatter() << "Missing parameter <"
                         << ObservableKinematic::PARAMETER_NAME_T << ">");
     }
-    if (parameterList.isAvailable(ObservableKinematic::PARAMETER_NAME_Q2)) {
-        m_Q2 = parameterList.getLastAvailable().toDouble();
+    if (parameters.isAvailable(ObservableKinematic::PARAMETER_NAME_Q2)) {
+        m_Q2 = parameters.getLastAvailable().toDouble();
     } else {
         error(__func__,
-                Formatter() << "Missing parameter <"
+                ElemUtils::Formatter() << "Missing parameter <"
                         << ObservableKinematic::PARAMETER_NAME_Q2 << ">");
     }
 
     //TODO remove from kinematic
     m_MuF2 =
-            parameterList.get(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUF2).toDouble();
+            parameters.get(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUF2).toDouble();
     m_MuR2 =
-            parameterList.get(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUR2).toDouble();
+            parameters.get(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUR2).toDouble();
 }
 
 DVCSConvolCoeffFunctionKinematic::DVCSConvolCoeffFunctionKinematic(double xi,
@@ -63,9 +63,9 @@ DVCSConvolCoeffFunctionKinematic::~DVCSConvolCoeffFunctionKinematic() {
 }
 
 std::string DVCSConvolCoeffFunctionKinematic::toString() {
-    return Formatter() << "m_binId = " << m_binId << " m_xi = " << m_xi
-            << " m_t = " << m_t << " m_Q2 = " << m_Q2 << " m_MuF2 = " << m_MuF2
-            << " m_MuR2 = " << m_MuR2;
+    return ElemUtils::Formatter() << "m_binId = " << m_binId << " m_xi = "
+            << m_xi << " m_t = " << m_t << " m_Q2 = " << m_Q2 << " m_MuF2 = "
+            << m_MuF2 << " m_MuR2 = " << m_MuR2;
 }
 
 unsigned int DVCSConvolCoeffFunctionKinematic::getBinId() const {

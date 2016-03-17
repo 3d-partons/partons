@@ -1,5 +1,7 @@
 #include "../../../../include/partons/modules/gpd/MPSSW13Model.h"
 
+#include <ElementaryUtils/PropertiesManager.h>
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/integration/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
@@ -15,8 +17,6 @@
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../include/partons/utils/mstwpdf.h"
-#include "../../../../include/partons/utils/PropertiesManager.h"
-#include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int MPSSW13Model::classId =
@@ -103,8 +103,9 @@ void MPSSW13Model::initFunctorsForIntegrations() {
 }
 
 void MPSSW13Model::init() {
-    std::string gridFilePath = PropertiesManager::getInstance()->getString(
-            "grid.directory") + "mstw2008nlo.00.dat";
+    std::string gridFilePath =
+            ElemUtils::PropertiesManager::getInstance()->getString(
+                    "grid.directory") + "mstw2008nlo.00.dat";
 
     // Central PDF set
     m_Forward = new c_mstwpdf(gridFilePath);
@@ -163,21 +164,21 @@ void MPSSW13Model::setParameters(std::vector<double> Parameters) {
     // Test known constraints on free parameters
     if (Parameters.at(0) < 1.) {
         error(__func__,
-                Formatter()
+                ElemUtils::Formatter()
                         << "Exponent in valence profile function should be >= 1."
                         << '\n' << "Here exponent = " << Parameters.at(0)
                         << '\n');
     }
     if (Parameters.at(1) < 1.) {
         error(__func__,
-                Formatter()
+                ElemUtils::Formatter()
                         << "Exponent in sea profile function should be >= 1."
                         << '\n' << "Here exponent = " << Parameters.at(1)
                         << '\n');
     }
     if (Parameters.at(2) < 1.) {
         error(__func__,
-                Formatter()
+                ElemUtils::Formatter()
                         << "Exponent in glue profile function should be >= 1."
                         << '\n' << "Here exponent = " << Parameters.at(2)
                         << '\n');
@@ -505,7 +506,7 @@ double MPSSW13Model::Profile(double N, double beta, double alpha) {
 //    double alphaBeta = fabs(alpha) + fabs(beta);
 //    if (alphaBeta > 1.) {
 //        error(__func__,
-//                Formatter()
+//                ElemUtils::Formatter()
 //                        << "MPSSW13Model : Parameters of profile function should be in rhombus | alpha | + | beta | <= 1."
 //                        << '\n' << "Here alpha = " << alpha << " beta = "
 //                        << beta << " | alpha | + | beta | = " << alphaBeta
@@ -525,7 +526,7 @@ double MPSSW13Model::Profile(double N, double beta, double alpha) {
 void MPSSW13Model::throwBetaException(const std::string &funcName,
         double betaValue) {
     error(funcName,
-            Formatter()
+            ElemUtils::Formatter()
                     << "Longitudinal momentum fraction should be in ] 0., +1. ]"
                     << '\n' << "Here beta = " << betaValue << '\n');
 }
@@ -1067,7 +1068,7 @@ double MPSSW13Model::GammaGG(const unsigned int nflavour,
 void MPSSW13Model::initModule() {
     GPDModule::initModule();
 
-    debug(__func__, Formatter() << "fMuF2 = " << m_MuF2);
+    debug(__func__, ElemUtils::Formatter() << "fMuF2 = " << m_MuF2);
 }
 
 //TODO implement

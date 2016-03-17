@@ -45,13 +45,13 @@
 
 #include "../../../../include/partons/modules/alphaS/RunningAlphaStrong.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/root_finding/Brent.h>
 #include <cmath>
 #include <cstdlib>
 
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int RunningAlphaStrong::classId =
@@ -134,7 +134,8 @@ double RunningAlphaStrong::compute() {
     }
 
     debug(__func__,
-            Formatter() << "Mu2= " << m_Mu2 << "(GeV^2)   nf= " << m_nf);
+            ElemUtils::Formatter() << "Mu2= " << m_Mu2 << "(GeV^2)   nf= "
+                    << m_nf);
 
     ComputeLambdaQCD();
 
@@ -164,7 +165,7 @@ double RunningAlphaStrong::compute() {
                 "Number of active flavours value must be between 3 and 6. Cannot find actual value of Lambda_QCD.");
     }
 
-    debug(__func__, Formatter() << "Lambda= " << Lambda);
+    debug(__func__, ElemUtils::Formatter() << "Lambda= " << Lambda);
 
     Running(m_Mu, Lambda, m_nf);
 
@@ -373,7 +374,7 @@ double RunningAlphaStrong::FindLambda(double Lambda,
 
     if (NFlavour < 3 && NFlavour > 6) {
         error(__func__,
-                Formatter()
+                ElemUtils::Formatter()
                         << "Erroneous input in RunningAlphaStrong::FinLambda. Number of active flavours has to be an integer between 3 and 6. Here NFlavour = "
                         << NFlavour);
     }

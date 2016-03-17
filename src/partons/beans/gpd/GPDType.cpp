@@ -1,10 +1,7 @@
 #include "../../../../include/partons/beans/gpd/GPDType.h"
 
-#include "../../../../include/partons/utils/stringUtils/StringUtils.h"
-#include "../../../../include/partons/utils/thread/Packet.h"
-
-//#include "../../utils/GenericType.h"
-//#include "../../utils/ParameterList.h"
+#include <ElementaryUtils/string_utils/StringUtils.h>
+#include <ElementaryUtils/thread/Packet.h>
 
 const std::string GPDType::GPD_TYPE_DB_COLUMN_NAME = "gpd_type";
 
@@ -63,34 +60,34 @@ void GPDType::setType(Type type) {
 GPDType::Type GPDType::fromString(const std::string& gpdTypeStr) {
     GPDType::Type gpdType = GPDType::UNDEFINED;
 
-    if (StringUtils::equals(gpdTypeStr, "H")) {
+    if (ElemUtils::StringUtils::equals(gpdTypeStr, "H")) {
         gpdType = GPDType::H;
-    } else if (StringUtils::equals(gpdTypeStr, "Ht")) {
+    } else if (ElemUtils::StringUtils::equals(gpdTypeStr, "Ht")) {
         gpdType = GPDType::Ht;
-    } else if (StringUtils::equals(gpdTypeStr, "E")) {
+    } else if (ElemUtils::StringUtils::equals(gpdTypeStr, "E")) {
         gpdType = GPDType::E;
-    } else if (StringUtils::equals(gpdTypeStr, "Et")) {
+    } else if (ElemUtils::StringUtils::equals(gpdTypeStr, "Et")) {
         gpdType = GPDType::Et;
     }
 
     return gpdType;
 }
 
-void GPDType::serialize(Packet &packet) const {
+void GPDType::serialize(ElemUtils::Packet &packet) const {
     packet << static_cast<int>(m_type);
 }
 
-void GPDType::unserialize(Packet &packet) {
+void GPDType::unserialize(ElemUtils::Packet &packet) {
     int i = 0;
     packet >> i;
     m_type = static_cast<GPDType::Type>(i);
 }
 
-Packet& operator <<(Packet& packet, GPDType& gpdType) {
+ElemUtils::Packet& operator <<(ElemUtils::Packet& packet, GPDType& gpdType) {
     gpdType.serialize(packet);
     return packet;
 }
-Packet& operator >>(Packet& packet, GPDType& gpdType) {
+ElemUtils::Packet& operator >>(ElemUtils::Packet& packet, GPDType& gpdType) {
 
     gpdType.unserialize(packet);
     return packet;

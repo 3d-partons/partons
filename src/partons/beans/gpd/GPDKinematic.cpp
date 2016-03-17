@@ -1,10 +1,11 @@
 #include "../../../../include/partons/beans/gpd/GPDKinematic.h"
 
+#include <ElementaryUtils/parameters/GenericType.h>
+#include <ElementaryUtils/parameters/Parameters.h>
+#include <ElementaryUtils/string_utils/Formatter.h>
+#include <ElementaryUtils/thread/Packet.h>
+
 #include "../../../../include/partons/beans/observable/ObservableKinematic.h"
-#include "../../../../include/partons/utils/GenericType.h"
-#include "../../../../include/partons/utils/ParameterList.h"
-#include "../../../../include/partons/utils/stringUtils/Formatter.h"
-#include "../../../../include/partons/utils/thread/Packet.h"
 
 const std::string GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_X = "x";
 const std::string GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI = "xi";
@@ -22,47 +23,45 @@ GPDKinematic::GPDKinematic(double x, double xi, double t, double MuF2,
                 xi), m_t(t), m_MuF2(MuF2), m_MuR2(MuR2) {
 }
 
-GPDKinematic::GPDKinematic(ParameterList &parameterList) :
+GPDKinematic::GPDKinematic(const ElemUtils::Parameters &parameters) :
         Kinematic("GPDKinematic"), m_kinematicType(KinematicType::THEO), m_x(
                 0.), m_xi(0.), m_t(0.), m_MuF2(0.), m_MuR2(0.) {
 
-    if (parameterList.isAvailable(
-            GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_X)) {
-        m_x = parameterList.getLastAvailable().toDouble();
+    if (parameters.isAvailable(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_X)) {
+        m_x = parameters.getLastAvailable().toDouble();
     } else {
         error(__func__,
-                Formatter() << "Missing parameter <"
+                ElemUtils::Formatter() << "Missing parameter <"
                         << GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_X << ">");
     }
-    if (parameterList.isAvailable(
-            GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI)) {
-        m_xi = parameterList.getLastAvailable().toDouble();
+    if (parameters.isAvailable(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI)) {
+        m_xi = parameters.getLastAvailable().toDouble();
     } else {
         error(__func__,
-                Formatter() << "Missing parameter <"
+                ElemUtils::Formatter() << "Missing parameter <"
                         << GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI
                         << ">");
     }
-    if (parameterList.isAvailable(ObservableKinematic::PARAMETER_NAME_T)) {
-        m_t = parameterList.getLastAvailable().toDouble();
+    if (parameters.isAvailable(ObservableKinematic::PARAMETER_NAME_T)) {
+        m_t = parameters.getLastAvailable().toDouble();
     } else {
         error(__func__,
-                Formatter() << "Missing parameter <"
+                ElemUtils::Formatter() << "Missing parameter <"
                         << ObservableKinematic::PARAMETER_NAME_T << ">");
     }
 
     //TODO remove from kinematic
     m_MuF2 =
-            parameterList.get(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUF2).toDouble();
+            parameters.get(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUF2).toDouble();
     m_MuR2 =
-            parameterList.get(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUR2).toDouble();
+            parameters.get(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUR2).toDouble();
 }
 
 GPDKinematic::~GPDKinematic() {
 }
 
 std::string GPDKinematic::toString() const {
-    return Formatter() << Kinematic::toString() << " m_x = " << m_x
+    return ElemUtils::Formatter() << Kinematic::toString() << " m_x = " << m_x
             << " m_xi = " << m_xi << " m_t = " << m_t << " m_MuF2 = " << m_MuF2
             << "(Gev2) m_MuR2 = " << m_MuR2 << "(Gev2)";
 }
@@ -144,11 +143,11 @@ void GPDKinematic::setKinematicType(KinematicType::Type kinematicType) {
     m_kinematicType = kinematicType;
 }
 
-void GPDKinematic::serialize(Packet &packet) const {
+void GPDKinematic::serialize(ElemUtils::Packet &packet) const {
     packet << m_x << m_xi << m_t << m_MuF2 << m_MuR2;
 }
 
-void GPDKinematic::unserialize(Packet &packet) {
+void GPDKinematic::unserialize(ElemUtils::Packet &packet) {
     packet >> m_x;
     packet >> m_xi;
     packet >> m_t;
@@ -156,11 +155,13 @@ void GPDKinematic::unserialize(Packet &packet) {
     packet >> m_MuR2;
 }
 
-Packet& operator <<(Packet& packet, GPDKinematic& kinematic) {
+ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
+        GPDKinematic& kinematic) {
     kinematic.serialize(packet);
     return packet;
 }
-Packet& operator >>(Packet& packet, GPDKinematic& kinematic) {
+ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
+        GPDKinematic& kinematic) {
 
     kinematic.unserialize(packet);
     return packet;

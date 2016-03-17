@@ -1,10 +1,11 @@
 #include "../../../../include/partons/beans/observable/ObservableResult.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
+#include <ElementaryUtils/string_utils/StringUtils.h>
+
 #include "../../../../include/partons/utils/compare/CompareUtils.h"
 #include "../../../../include/partons/utils/compare/ComparisonData.h"
 #include "../../../../include/partons/utils/compare/ComparisonReport.h"
-#include "../../../../include/partons/utils/stringUtils/Formatter.h"
-#include "../../../../include/partons/utils/stringUtils/StringUtils.h"
 
 const std::string ObservableResult::PARAMETER_NAME_OBSERVABLE_VALUE =
         "observable value";
@@ -27,7 +28,8 @@ ObservableResult::~ObservableResult() {
 }
 
 std::string ObservableResult::toString() const {
-    return Formatter() << m_kinematic.toString() << " observable = " << m_value;
+    return ElemUtils::Formatter() << m_kinematic.toString() << " observable = "
+            << m_value;
 }
 
 void ObservableResult::compare(ComparisonReport &rootComparisonReport,
@@ -38,7 +40,7 @@ void ObservableResult::compare(ComparisonReport &rootComparisonReport,
     //TODO faire un test pour valider la cinématique associée
 
     if (m_observableType != referenceObject.getObservableType()
-            || !(StringUtils::equalsIgnoreCase(m_observableName,
+            || !(ElemUtils::StringUtils::equalsIgnoreCase(m_observableName,
                     referenceObject.getObservableName()))) {
         error(__func__,
                 "Cannot compare objects, they are different (different name or type)");
@@ -47,13 +49,15 @@ void ObservableResult::compare(ComparisonReport &rootComparisonReport,
     ComparisonData xb_comparisonData = CompareUtils::compareDouble(
             ObservableResult::PARAMETER_NAME_OBSERVABLE_VALUE, getValue(),
             referenceObject.getValue(), tolerances,
-            Formatter() << parentObjectInfo << this->getObjectInfo());
+            ElemUtils::Formatter() << parentObjectInfo
+                    << this->getObjectInfo());
     rootComparisonReport.addComparisonData(xb_comparisonData);
 
     ComparisonData total_error_comparisonData = CompareUtils::compareDouble(
             ObservableResult::PARAMETER_NAME_TOTAL_ERROR, getTotalError(),
             referenceObject.getTotalError(), tolerances,
-            Formatter() << parentObjectInfo << this->getObjectInfo());
+            ElemUtils::Formatter() << parentObjectInfo
+                    << this->getObjectInfo());
     rootComparisonReport.addComparisonData(total_error_comparisonData);
 }
 
@@ -112,6 +116,6 @@ void ObservableResult::setValue(double value) {
 }
 
 std::string ObservableResult::getObjectInfo() const {
-    return Formatter() << "Observable " << m_observableName
+    return ElemUtils::Formatter() << "Observable " << m_observableName
             << " with kinematic( " << m_kinematic.toString() << ")";
 }

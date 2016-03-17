@@ -1,12 +1,13 @@
 #include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSCFFVGGModel.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/integration/one_dimension/Functor1D.h>
-#include <NumA/integration/one_dimension/GLNPIntegrator1D.h>
+//#include <NumA/integration/one_dimension/GLNPIntegrator1D.h>
+#include <NumA/integration/one_dimension/Integrator1D.h>
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
-#include <NumA/utils/Parameters.h>
 #include <cmath>
 #include <map>
-#include <stdexcept>
+//#include <stdexcept>
 #include <utility>
 
 #include "../../../../../include/partons/beans/gpd/GPDResult.h"
@@ -22,7 +23,6 @@
 #include "../../../../../include/partons/modules/GPDModule.h"
 #include "../../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../../include/partons/Partons.h"
-#include "../../../../../include/partons/utils/stringUtils/Formatter.h"
 
 const unsigned int DVCSCFFVGGModel::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
@@ -83,7 +83,7 @@ void DVCSCFFVGGModel::init() {
     setIntegrator(NumA::IntegratorType1D::GK21_ADAPTIVE);
 
 //    setIntegrator(NumA::IntegratorType1D::GLNP);
-//    NumA::Parameters parameters(NumA::GLNPIntegrator1D::PARAM_NAME_N, 100);
+//    ElemUtils::Parameters parameters(NumA::GLNPIntegrator1D::PARAM_NAME_N, 100);
 //    configureIntegrator(parameters);
 
     m_pRunningAlphaStrongModule =
@@ -130,7 +130,8 @@ std::complex<double> DVCSCFFVGGModel::computeUnpolarized() {
     //check pQCD order
     if (m_qcdOrderType != PerturbativeQCDOrderType::LO) {
         error(__FUNCTION__,
-                Formatter() << "Calculation not supported for pQCD order = "
+                ElemUtils::Formatter()
+                        << "Calculation not supported for pQCD order = "
                         << PerturbativeQCDOrderType(m_qcdOrderType).toString());
     }
 
@@ -146,7 +147,8 @@ std::complex<double> DVCSCFFVGGModel::computePolarized() {
     //check pQCD order
     if (m_qcdOrderType != PerturbativeQCDOrderType::LO) {
         error(__FUNCTION__,
-                Formatter() << "Calculation not supported for pQCD order = "
+                ElemUtils::Formatter()
+                        << "Calculation not supported for pQCD order = "
                         << PerturbativeQCDOrderType(m_qcdOrderType).toString());
     }
 
@@ -198,8 +200,8 @@ std::complex<double> DVCSCFFVGGModel::calculate_direct() {
     //check allowed range of xi
     if (m_xi - eps_cffint < 0. || m_xi + eps_cffint > 1.) {
         error(__FUNCTION__,
-                Formatter() << "Invalid xi +/- eps = " << m_xi - eps_cffint
-                        << "/" << m_xi + eps_cffint);
+                ElemUtils::Formatter() << "Invalid xi +/- eps = "
+                        << m_xi - eps_cffint << "/" << m_xi + eps_cffint);
     }
 
     //parameters for the integration (zero-length vector in this case)
@@ -228,8 +230,8 @@ std::complex<double> DVCSCFFVGGModel::calculate_crossed() {
     //check allowed range of xi
     if (m_xi - eps_cffint < 0. || m_xi + eps_cffint > 1.) {
         error(__FUNCTION__,
-                Formatter() << "Invalid xi +/- eps = " << m_xi - eps_cffint
-                        << "/" << m_xi + eps_cffint);
+                ElemUtils::Formatter() << "Invalid xi +/- eps = "
+                        << m_xi - eps_cffint << "/" << m_xi + eps_cffint);
     }
 
     //parameters for the integration (zero-length vector in this case)

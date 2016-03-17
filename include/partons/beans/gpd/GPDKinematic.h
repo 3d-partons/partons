@@ -17,12 +17,10 @@
 #include "../kinematic/KinematicType.h"
 #include "../Kinematic.h"
 
-class ComparisonReport;
+namespace ElemUtils {
 class Packet;
-class ParameterList;
-namespace NumA {
-class Tolerances;
-} /* namespace NumA */
+class Parameters;
+} /* namespace ElemUtils */
 
 class GPDKinematic: public Kinematic {
 public:
@@ -48,7 +46,7 @@ public:
      */
     GPDKinematic(double x, double xi, double t, double MuF2, double MuR2);
 
-    GPDKinematic(ParameterList &parameterList);
+    GPDKinematic(const ElemUtils::Parameters &parameters);
 
     /**
      * Default destructor
@@ -65,8 +63,8 @@ public:
 //    ComparisonReport compare(const GPDKinematic &referenceObject,
 //            const NumA::Tolerances &tolerances) const;
 
-    void serialize(Packet &packet) const;
-    void unserialize(Packet &packet);
+    void serialize(ElemUtils::Packet &packet) const;
+    void unserialize(ElemUtils::Packet &packet);
 
     // ##### GETTERS & SETTERS #####
 
@@ -97,7 +95,9 @@ private:
     double m_MuR2;	///< Renormalization scale (in GeV^2)
 };
 
-Packet& operator <<(Packet& packet, GPDKinematic& kinematic);
-Packet& operator >>(Packet& packet, GPDKinematic& kinematic);
+ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
+        GPDKinematic& kinematic);
+ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
+        GPDKinematic& kinematic);
 
 #endif /* GPD_KINEMATIC_H */

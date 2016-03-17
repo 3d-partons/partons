@@ -1,11 +1,11 @@
 #include "../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <sstream>
 
 #include "../../../../include/partons/utils/compare/CompareUtils.h"
 #include "../../../../include/partons/utils/compare/ComparisonData.h"
 #include "../../../../include/partons/utils/compare/ComparisonReport.h"
-#include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 const std::string QuarkDistribution::QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DISTRIBUTION =
         "quark_distribution";
@@ -14,6 +14,7 @@ const std::string QuarkDistribution::QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DIS
 const std::string QuarkDistribution::QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DISTRIBUTION_MINUS =
         "quark_distribution_minus";
 
+//TODO initialise missing member
 QuarkDistribution::QuarkDistribution() :
         BaseObject("QuarkDistribution"), m_quarkFlavor(QuarkFlavor::UNDEFINED), m_quarkDistribution(
                 0.), m_quarkDistributionPlus(0.), m_quarkDistributionMinus(0.) {
@@ -109,21 +110,24 @@ void QuarkDistribution::compare(ComparisonReport &rootComparisonReport,
                     QuarkDistribution::QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DISTRIBUTION,
                     m_quarkDistribution, referenceObject.getQuarkDistribution(),
                     tolerances,
-                    Formatter() << parentObjectInfo << " " << getClassName());
+                    ElemUtils::Formatter() << parentObjectInfo << " "
+                            << getClassName());
 
     ComparisonData quark_distribution_plus_value_comparisonData =
             CompareUtils::compareDouble(
                     QuarkDistribution::QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DISTRIBUTION_PLUS,
                     m_quarkDistributionPlus,
                     referenceObject.getQuarkDistributionPlus(), tolerances,
-                    Formatter() << parentObjectInfo << " " << getClassName());
+                    ElemUtils::Formatter() << parentObjectInfo << " "
+                            << getClassName());
 
     ComparisonData quark_distribution_minus_value_comparisonData =
             CompareUtils::compareDouble(
                     QuarkDistribution::QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DISTRIBUTION_MINUS,
                     m_quarkDistributionMinus,
                     referenceObject.getQuarkDistributionMinus(), tolerances,
-                    Formatter() << parentObjectInfo << " " << getClassName());
+                    ElemUtils::Formatter() << parentObjectInfo << " "
+                            << getClassName());
 
     rootComparisonReport.addComparisonData(
             quark_distribution_value_comparisonData);

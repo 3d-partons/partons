@@ -1,6 +1,6 @@
 #include "../../../../include/partons/beans/active_flavors/NfInterval.h"
 
-#include "../../../../include/partons/utils/stringUtils/Formatter.h"
+#include <ElementaryUtils/string_utils/Formatter.h>
 
 NfInterval::NfInterval() :
         m_nf(0), m_lowerBound(0.), m_upperBound(0.), m_index(0) {
@@ -36,7 +36,7 @@ void NfInterval::setIndex(unsigned int index) {
 }
 
 std::string NfInterval::toString() {
-    Formatter formatter;
+    ElemUtils::Formatter formatter;
 
     formatter << "index" << m_index << '\n';
     formatter << "nf = " << m_nf << '\n';

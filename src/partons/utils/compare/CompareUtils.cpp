@@ -1,11 +1,11 @@
 #include "../../../../include/partons/utils/compare/CompareUtils.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/utils/Differences.h>
 #include <NumA/utils/Tolerances.h>
 #include <cmath>
 
 #include "../../../../include/partons/utils/compare/ComparisonData.h"
-#include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 ComparisonData CompareUtils::compareDouble(const std::string &variableName,
         const double lhs, const double rhs, const NumA::Tolerances &tolerances,
@@ -30,8 +30,8 @@ ComparisonData CompareUtils::compareDouble(const std::string &variableName,
         comparisonResult = true;
     }
 
-    return ComparisonData(comparisonResult, variableName, Formatter() << lhs,
-            Formatter() << rhs,
+    return ComparisonData(comparisonResult, variableName,
+            ElemUtils::Formatter() << lhs, ElemUtils::Formatter() << rhs,
             NumA::Differences(absoluteDifference, relativeDifference),
             parentObjectInfo);
 }
@@ -52,7 +52,7 @@ ComparisonData CompareUtils::compareComplex(const std::string& variableName,
     }
 
     //TODO replace Difference object by more useful object for complex norm/modulous
-    return ComparisonData(comparisonResult, variableName, Formatter() << lhs,
-            Formatter() << rhs, NumA::Differences(modulous, modulous),
-            parentObjectInfo);
+    return ComparisonData(comparisonResult, variableName,
+            ElemUtils::Formatter() << lhs, ElemUtils::Formatter() << rhs,
+            NumA::Differences(modulous, modulous), parentObjectInfo);
 }

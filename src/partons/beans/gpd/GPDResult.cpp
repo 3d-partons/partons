@@ -1,9 +1,8 @@
 #include "../../../../include/partons/beans/gpd/GPDResult.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <sstream>
 #include <utility>
-
-#include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 const std::string GPDResult::GPD_RESULT_DB_TABLE_NAME = "gpd_result";
 
@@ -30,7 +29,7 @@ const PartonDistribution& GPDResult::getPartonDistribution(
 
     if (it == m_partonDistributions.end()) {
         error(__func__,
-                Formatter()
+                ElemUtils::Formatter()
                         << "Cannot to find PartonDistribution object from GPDType = "
                         << GPDType(gpdType).toString());
     }
@@ -112,11 +111,12 @@ void GPDResult::compare(ComparisonReport &rootComparisonReport,
             it++) {
         (it->second).compare(rootComparisonReport,
                 referenceObject.getPartonDistribution((it->first)), tolerances,
-                Formatter() << parentObjectInfo << this->getObjectInfo() << " "
+                ElemUtils::Formatter() << parentObjectInfo
+                        << this->getObjectInfo() << " "
                         << GPDType(it->first).toString());
     }
 }
 
 std::string GPDResult::getObjectInfo() const {
-    return Formatter() << "GPD( " << m_kinematic.toString() << ")";
+    return ElemUtils::Formatter() << "GPD( " << m_kinematic.toString() << ")";
 }

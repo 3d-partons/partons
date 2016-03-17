@@ -1,5 +1,6 @@
 #include "../../../../../include/partons/database/convol_coeff_function/service/ConvolCoeffFunctionResultDaoService.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <QtSql/qsqldatabase.h>
 #include <stddef.h>
 #include <complex>
@@ -10,7 +11,6 @@
 #include "../../../../../include/partons/beans/Computation.h"
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../../include/partons/beans/List.h"
-#include "../../../../../include/partons/utils/stringUtils/Formatter.h"
 
 ConvolCoeffFunctionResultDaoService::ConvolCoeffFunctionResultDaoService() :
         BaseObject("ConvolCoeffFunctionResultDaoService") {
@@ -85,7 +85,8 @@ int ConvolCoeffFunctionResultDaoService::insert(
         const ResultList<DVCSConvolCoeffFunctionResult>& resultList) {
 
     info(__func__,
-            Formatter() << "Inserting object size = " << resultList.size());
+            ElemUtils::Formatter() << "Inserting object size = "
+                    << resultList.size());
 
     int result = -1;
 

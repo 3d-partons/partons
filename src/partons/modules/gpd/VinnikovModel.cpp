@@ -1,5 +1,6 @@
 #include "../../../../include/partons/modules/gpd/VinnikovModel.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <math.h>
 #include <cstdlib>
 #include <map>
@@ -11,15 +12,13 @@
 #include "../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
 #include "../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
-#include "../../../../include/partons/utils/ParameterList.h"
-#include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 const unsigned int VinnikovModel::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new VinnikovModel("VinnikovModel"));
 
 VinnikovModel::VinnikovModel(const std::string &className) :
-        EPS_BETR(1.E-8), SIMP_INT(100), GPDModule(className) {
+        GPDModule(className), EPS_BETR(1.E-8), SIMP_INT(100) {
 
     n_par = 1;
     for (int i = 0; i < 6; i++)
@@ -41,7 +40,8 @@ VinnikovModel* VinnikovModel::clone() const {
 void VinnikovModel::init() {
 }
 
-void VinnikovModel::configure(ParameterList parameters) {
+void VinnikovModel::configure(const ElemUtils::Parameters &parameters) {
+    GPDModule::configure(parameters);
 }
 
 std::string VinnikovModel::toString() {
@@ -247,13 +247,15 @@ double VinnikovModel::dd1(int const i_part, double const beta, double const x,
     if (alpha >= (1.0 - beta)) {
         if ((alpha + beta - 1.0) > EPS_BETR)
             warn(__FUNCTION__,
-                    Formatter() << "beta = " << beta << ", alpha = " << alpha);
+                    ElemUtils::Formatter() << "beta = " << beta << ", alpha = "
+                            << alpha);
         return 0.0;
     }
     if (alpha <= (-1.0 + beta)) {
         if ((alpha - beta + 1.0) < (-EPS_BETR))
             warn(__FUNCTION__,
-                    Formatter() << "beta = " << beta << ", alpha = " << alpha);
+                    ElemUtils::Formatter() << "beta = " << beta << ", alpha = "
+                            << alpha);
         return 0.0;
     }
 
@@ -273,7 +275,8 @@ double VinnikovModel::dd1(int const i_part, double const beta, double const x,
         return -pf * ssea(beta, t);
 
     warn(__FUNCTION__,
-            Formatter() << "ipart = " << i_part << " !={0,-1,1,-2,2,3}");
+            ElemUtils::Formatter() << "ipart = " << i_part
+                    << " !={0,-1,1,-2,2,3}");
     return 0.0;
 }
 
@@ -288,28 +291,28 @@ double VinnikovModel::dd2(int const i_part, double const beta, double const x,
     if (alpha1 >= 1.0 - beta) {
         if ((alpha1 - 1.0 + beta) > EPS_BETR)
             warn(__FUNCTION__,
-                    Formatter() << "beta = " << beta << ", alpha1 = "
+                    ElemUtils::Formatter() << "beta = " << beta << ", alpha1 = "
                             << alpha1);
         return 0.0;
     }
     if (alpha1 <= -1.0 + beta) {
         if ((alpha1 + 1.0 - beta) < -EPS_BETR)
             warn(__FUNCTION__,
-                    Formatter() << "beta = " << beta << ", alpha1 = "
+                    ElemUtils::Formatter() << "beta = " << beta << ", alpha1 = "
                             << alpha1);
         return 0.0;
     }
     if (alpha2 >= 1.0 - beta) {
         if ((alpha2 - 1.0 + beta) > EPS_BETR)
             warn(__FUNCTION__,
-                    Formatter() << "beta = " << beta << ", alpha2 = "
+                    ElemUtils::Formatter() << "beta = " << beta << ", alpha2 = "
                             << alpha2);
         return 0.0;
     }
     if (alpha2 <= -1.0 + beta) {
         if ((alpha2 + 1.0 - beta) < -EPS_BETR)
             warn(__FUNCTION__,
-                    Formatter() << "beta = " << beta << ", alpha2 = "
+                    ElemUtils::Formatter() << "beta = " << beta << ", alpha2 = "
                             << alpha2);
         return 0.0;
     }
@@ -337,7 +340,8 @@ double VinnikovModel::dd2(int const i_part, double const beta, double const x,
         return (pf2_sea - pf1_sea) * ssea(beta, t);
 
     warn(__FUNCTION__,
-            Formatter() << "ipart = " << i_part << " !={0,-1,1,-2,2,3}");
+            ElemUtils::Formatter() << "ipart = " << i_part
+                    << " !={0,-1,1,-2,2,3}");
     return 0.0;
 }
 
@@ -351,13 +355,15 @@ double VinnikovModel::dd3(int const i_part, double const beta, double const x,
     if (alpha >= (1.0 - beta)) {
         if ((alpha + beta - 1.0) > EPS_BETR)
             warn(__FUNCTION__,
-                    Formatter() << "beta = " << beta << ", alpha = " << alpha);
+                    ElemUtils::Formatter() << "beta = " << beta << ", alpha = "
+                            << alpha);
         return 0.0;
     }
     if (alpha <= (-1.0 + beta)) {
         if ((alpha + 1.0 - beta) < (-EPS_BETR))
             warn(__FUNCTION__,
-                    Formatter() << "beta = " << beta << ", alpha = " << alpha);
+                    ElemUtils::Formatter() << "beta = " << beta << ", alpha = "
+                            << alpha);
         return 0.0;
     }
 
@@ -383,13 +389,14 @@ double VinnikovModel::dd3(int const i_part, double const beta, double const x,
         return pf_sea * ssea(beta, t);
 
     warn(__FUNCTION__,
-            Formatter() << "ipart = " << i_part << " !={0,-1,1,-2,2,3}");
+            ElemUtils::Formatter() << "ipart = " << i_part
+                    << " !={0,-1,1,-2,2,3}");
     return 0.0;
 }
 
 double VinnikovModel::uval(double const x, double const t) {
     if (x <= 0.0) {
-        error(__FUNCTION__, Formatter() << "x = " << x << " < 0");
+        error(__FUNCTION__, ElemUtils::Formatter() << "x = " << x << " < 0");
     }
     // Diehl, Feldmann, Jakob, Kroll parameters
     double A_q = 1.22;
@@ -416,7 +423,7 @@ double VinnikovModel::uval(double const x, double const t) {
 
 double VinnikovModel::usea(double const x, double const t) {
     if (x <= 0.0 || x > 1.0) {
-        error(__FUNCTION__, Formatter() << "x = " << x << " < 0");
+        error(__FUNCTION__, ElemUtils::Formatter() << "x = " << x << " < 0");
     }
     if ((1.0 - x) < EPS_BETR)
         return 0.0;
@@ -445,7 +452,7 @@ double VinnikovModel::usea(double const x, double const t) {
 
 double VinnikovModel::dval(double const x, double const t) {
     if (x <= 0.0 || x > 1.0) {
-        error(__FUNCTION__, Formatter() << "x = " << x << " < 0");
+        error(__FUNCTION__, ElemUtils::Formatter() << "x = " << x << " < 0");
     }
     if ((1.0 - x) < EPS_BETR)
         return 0.0;
@@ -475,7 +482,7 @@ double VinnikovModel::dval(double const x, double const t) {
 
 double VinnikovModel::dsea(double const x, double const t) {
     if (x <= 0.0 || x > 1.0) {
-        error(__FUNCTION__, Formatter() << "x = " << x << " < 0");
+        error(__FUNCTION__, ElemUtils::Formatter() << "x = " << x << " < 0");
     }
     if ((1.0 - x) < EPS_BETR)
         return 0.0;
@@ -504,7 +511,7 @@ double VinnikovModel::dsea(double const x, double const t) {
 
 double VinnikovModel::ssea(double const x, double const t) {
     if (x <= 0.0 || x > 1.0) {
-        error(__FUNCTION__, Formatter() << "x = " << x << " < 0");
+        error(__FUNCTION__, ElemUtils::Formatter() << "x = " << x << " < 0");
     }
     if ((1.0 - x) < EPS_BETR)
         return 0.0;
@@ -527,7 +534,7 @@ double VinnikovModel::ssea(double const x, double const t) {
 
 double VinnikovModel::glu(double const x, double const t) {
     if (x <= 0.0 || x > 1.0) {
-        error(__FUNCTION__, Formatter() << "x = " << x << " < 0");
+        error(__FUNCTION__, ElemUtils::Formatter() << "x = " << x << " < 0");
     }
     if ((1.0 - x) < EPS_BETR)
         return 0.0;
@@ -552,12 +559,16 @@ double VinnikovModel::glu(double const x, double const t) {
 // for valence distributions includes t-dependence
 // see comments in gpdh.c
 
+//TODO make a unique return at the end of the function ; better for debbuging and avoid compilation warning.
+//TODO remove double* use vector instead
 double VinnikovModel::gpdh_pol(int const i_part, double x, double const xi,
         double const t, int const n_par, double* const param) {
-    if (x == xi)
+    if (x == xi) {
         x -= EPS_BETR;
-    if (x == -xi)
+    }
+    if (x == -xi) {
         x += EPS_BETR;
+    }
 
     if (x < -1.0) {
         if ((x + EPS_BETR) >= -1.0)
@@ -597,8 +608,9 @@ double VinnikovModel::gpdh_pol(int const i_part, double x, double const xi,
                 xi, t, n_par, param);
         return h / xi;
     }
-    if ((x - EPS_BETR) <= 1.0)
+    if ((x - EPS_BETR) <= 1.0) {
         return 0.0;
+    }
 }
 
 double VinnikovModel::dd1_pol(int const i_part, double const beta,
@@ -610,13 +622,15 @@ double VinnikovModel::dd1_pol(int const i_part, double const beta,
     if (alpha >= (1.0 - beta)) {
         if ((alpha + beta - 1.0) > EPS_BETR)
             warn(__FUNCTION__,
-                    Formatter() << "beta = " << beta << ", alpha = " << alpha);
+                    ElemUtils::Formatter() << "beta = " << beta << ", alpha = "
+                            << alpha);
         return 0.0;
     }
     if (alpha <= (-1.0 + beta)) {
         if ((alpha - beta + 1.0) < (-EPS_BETR))
             warn(__FUNCTION__,
-                    Formatter() << "beta = " << beta << ", alpha = " << alpha);
+                    ElemUtils::Formatter() << "beta = " << beta << ", alpha = "
+                            << alpha);
         return 0.0;
     }
 
@@ -636,7 +650,8 @@ double VinnikovModel::dd1_pol(int const i_part, double const beta,
         return pf * ssea_pol(beta, t);
 
     warn(__FUNCTION__,
-            Formatter() << "ipart = " << i_part << " !={0,-1,1,-2,2,3}");
+            ElemUtils::Formatter() << "ipart = " << i_part
+                    << " !={0,-1,1,-2,2,3}");
     return 0.0;
 }
 
@@ -652,28 +667,28 @@ double VinnikovModel::dd2_pol(int const i_part, double const beta,
     if (alpha1 >= 1.0 - beta) {
         if ((alpha1 - 1.0 + beta) > EPS_BETR)
             warn(__FUNCTION__,
-                    Formatter() << "beta = " << beta << ", alpha1 = "
+                    ElemUtils::Formatter() << "beta = " << beta << ", alpha1 = "
                             << alpha1);
         return 0.0;
     }
     if (alpha1 <= -1.0 + beta) {
         if ((alpha1 + 1.0 - beta) < -EPS_BETR)
             warn(__FUNCTION__,
-                    Formatter() << "beta = " << beta << ", alpha1 = "
+                    ElemUtils::Formatter() << "beta = " << beta << ", alpha1 = "
                             << alpha1);
         return 0.0;
     }
     if (alpha2 >= 1.0 - beta) {
         if ((alpha2 - 1.0 + beta) > EPS_BETR)
             warn(__FUNCTION__,
-                    Formatter() << "beta = " << beta << ", alpha2 = "
+                    ElemUtils::Formatter() << "beta = " << beta << ", alpha2 = "
                             << alpha2);
         return 0.0;
     }
     if (alpha2 <= -1.0 + beta) {
         if ((alpha2 + 1.0 - beta) < -EPS_BETR)
             warn(__FUNCTION__,
-                    Formatter() << "beta = " << beta << ", alpha2 = "
+                    ElemUtils::Formatter() << "beta = " << beta << ", alpha2 = "
                             << alpha2);
         return 0.0;
     }
@@ -701,7 +716,8 @@ double VinnikovModel::dd2_pol(int const i_part, double const beta,
         return (pf2_sea + pf1_sea) * ssea_pol(beta, t);
 
     warn(__FUNCTION__,
-            Formatter() << "ipart = " << i_part << " !={0,-1,1,-2,2,3}");
+            ElemUtils::Formatter() << "ipart = " << i_part
+                    << " !={0,-1,1,-2,2,3}");
     return 0.0;
 }
 
@@ -716,13 +732,15 @@ double VinnikovModel::dd3_pol(int const i_part, double const beta,
     if (alpha >= (1.0 - beta)) {
         if ((alpha + beta - 1.0) > EPS_BETR)
             warn(__FUNCTION__,
-                    Formatter() << "beta = " << beta << ", alpha = " << alpha);
+                    ElemUtils::Formatter() << "beta = " << beta << ", alpha = "
+                            << alpha);
         return 0.0;
     }
     if (alpha <= (-1.0 + beta)) {
         if ((alpha + 1.0 - beta) < (-EPS_BETR))
             warn(__FUNCTION__,
-                    Formatter() << "beta = " << beta << ", alpha = " << alpha);
+                    ElemUtils::Formatter() << "beta = " << beta << ", alpha = "
+                            << alpha);
         return 0.0;
     }
 
@@ -748,13 +766,14 @@ double VinnikovModel::dd3_pol(int const i_part, double const beta,
         return pf_sea * ssea_pol(beta, t);
 
     warn(__FUNCTION__,
-            Formatter() << "ipart = " << i_part << " !={0,-1,1,-2,2,3}");
+            ElemUtils::Formatter() << "ipart = " << i_part
+                    << " !={0,-1,1,-2,2,3}");
     return 0.0;
 }
 
 double VinnikovModel::uval_pol(double const x, double const t) {
     if (x <= 0.0) {
-        error(__FUNCTION__, Formatter() << "x = " << x << " < 0");
+        error(__FUNCTION__, ElemUtils::Formatter() << "x = " << x << " < 0");
     }
     // Diehl, Feldmann, Jakob, Kroll parameters
     double A_q = 1.22;
@@ -780,7 +799,7 @@ double VinnikovModel::uval_pol(double const x, double const t) {
 
 double VinnikovModel::usea_pol(double const x, double const t) {
     if (x <= 0.0 || x > 1.0) {
-        error(__FUNCTION__, Formatter() << "x = " << x << " < 0");
+        error(__FUNCTION__, ElemUtils::Formatter() << "x = " << x << " < 0");
     }
     if ((1.0 - x) < EPS_BETR)
         return 0.0;
@@ -800,7 +819,7 @@ double VinnikovModel::usea_pol(double const x, double const t) {
 
 double VinnikovModel::dval_pol(double const x, double const t) {
     if (x <= 0.0 || x > 1.0) {
-        error(__FUNCTION__, Formatter() << "x = " << x << " < 0");
+        error(__FUNCTION__, ElemUtils::Formatter() << "x = " << x << " < 0");
     }
     if ((1.0 - x) < EPS_BETR)
         return 0.0;
@@ -829,7 +848,7 @@ double VinnikovModel::dval_pol(double const x, double const t) {
 
 double VinnikovModel::dsea_pol(double const x, double const t) {
     if (x <= 0.0 || x > 1.0) {
-        error(__FUNCTION__, Formatter() << "x = " << x << " < 0");
+        error(__FUNCTION__, ElemUtils::Formatter() << "x = " << x << " < 0");
     }
     if ((1.0 - x) < EPS_BETR)
         return 0.0;
@@ -849,7 +868,7 @@ double VinnikovModel::dsea_pol(double const x, double const t) {
 
 double VinnikovModel::ssea_pol(double const x, double const t) {
     if (x <= 0.0 || x > 1.0) {
-        error(__FUNCTION__, Formatter() << "x = " << x << " < 0");
+        error(__FUNCTION__, ElemUtils::Formatter() << "x = " << x << " < 0");
     }
     if ((1.0 - x) < EPS_BETR)
         return 0.0;
@@ -869,7 +888,7 @@ double VinnikovModel::ssea_pol(double const x, double const t) {
 
 double VinnikovModel::glu_pol(double const x, double const t) {
     if (x <= 0.0 || x > 1.0) {
-        error(__FUNCTION__, Formatter() << "x = " << x << " < 0");
+        error(__FUNCTION__, ElemUtils::Formatter() << "x = " << x << " < 0");
     }
     if ((1.0 - x) < EPS_BETR)
         return 0.0;
@@ -936,7 +955,7 @@ double VinnikovModel::dd_int_simp(double const bmin, double const bmax,
 
     if ((SIMP_INT % 2) != 0) {
         error(__FUNCTION__,
-                Formatter() << "SIMP_INT = " << SIMP_INT
+                ElemUtils::Formatter() << "SIMP_INT = " << SIMP_INT
                         << " MUST BE EVEN, YOURS IS ODD");
     }
 

@@ -16,7 +16,6 @@
 #include "../../../../include/partons/Partons.h"
 #include "../../../../include/partons/services/GPDService.h"
 #include "../../../../include/partons/ServiceObjectRegistry.h"
-#include "../../../../include/partons/utils/ParameterList.h"
 
 const unsigned int MPSSW13ModelNoGluons::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
@@ -38,7 +37,8 @@ MPSSW13ModelNoGluons* MPSSW13ModelNoGluons::clone() const {
     return new MPSSW13ModelNoGluons(*this);
 }
 
-void MPSSW13ModelNoGluons::configure(ParameterList parameters) {
+void MPSSW13ModelNoGluons::configure(const ElemUtils::Parameters &parameters) {
+    GPDModule::configure(parameters);
 }
 
 std::string MPSSW13ModelNoGluons::toString() {

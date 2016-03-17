@@ -33,7 +33,7 @@ public:
 
     virtual void init();
 
-    virtual void configure(ParameterList parameters);
+    virtual void configure(const ElemUtils::Parameters &parameters);
 
     virtual std::complex<double> computeCFF();
 

@@ -11,16 +11,14 @@
  * @brief \<singleton\>
  */
 
+#include <ElementaryUtils/parameters/Parameters.h>
+#include <ElementaryUtils/parser/XMLParser.h>
 #include <string>
 
 #include "beans/automation/Scenario.h"
 #include "beans/automation/Task.h"
-#include "utils/parser/xml/XMLParser.h"
-#include "utils/ParameterList.h"
 
-class Attributs;
-
-class ScenarioManager: public BaseObject, public XMLParser {
+class ScenarioManager: public BaseObject, public ElemUtils::XMLParser {
 public:
     static const std::string SCENARIO_NODE_NAME;
     static const std::string TASK_NODE_NAME;
@@ -37,7 +35,7 @@ public:
     void playScenario(const std::string &scenarioFileName);
 
     virtual void startElement(const std::string &elementName,
-            Attributs attributes, const std::string &elementData);
+            ElemUtils::XMLAttributs attributes, const std::string &elementData);
     virtual void endElement(const std::string &elementName);
 
 private:
@@ -58,7 +56,7 @@ private:
     // Temporary object
     Task m_task;
     // Temporary object
-    ParameterList m_parameterList;
+    ElemUtils::Parameters m_parameterList;
 };
 
 #endif /* SCENARIO_MANAGER_H */

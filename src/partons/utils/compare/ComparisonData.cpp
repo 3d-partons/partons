@@ -1,6 +1,6 @@
 #include "../../../../include/partons/utils/compare/ComparisonData.h"
 
-#include "../../../../include/partons/utils/stringUtils/Formatter.h"
+#include <ElementaryUtils/string_utils/Formatter.h>
 
 ComparisonData::ComparisonData(bool isPassed, const std::string& variableName,
         const std::string& variableValue,
@@ -17,7 +17,7 @@ ComparisonData::~ComparisonData() {
 }
 
 std::string ComparisonData::toString() const {
-    Formatter formatter;
+    ElemUtils::Formatter formatter;
 
     formatter << m_objectInfo << '\n';
 

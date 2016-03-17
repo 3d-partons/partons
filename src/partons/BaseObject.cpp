@@ -1,11 +1,11 @@
 #include "../../include/partons/BaseObject.h"
 
+#include <ElementaryUtils/logger/LoggerManager.h>
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <stdexcept>
 
 #include "../../include/partons/BaseObjectFactory.h"
 #include "../../include/partons/Partons.h"
-#include "../../include/partons/utils/logger/LoggerManager.h"
-#include "../../include/partons/utils/stringUtils/Formatter.h"
 
 unsigned int BaseObject::m_uniqueObjectIdCounter = 0;
 
@@ -34,7 +34,7 @@ void BaseObject::init() {
 }
 
 std::string BaseObject::toString() const {
-    Formatter formatter;
+    ElemUtils::Formatter formatter;
 
     formatter << "m_className = " << m_className << " - " << "m_objectId = "
             << m_objectId;
@@ -48,21 +48,24 @@ unsigned int BaseObject::getUniqueObjectId() {
 
 void BaseObject::info(const std::string& functionName,
         const std::string& message) const {
-    LoggerManager* pLoggerManager = LoggerManager::getInstance();
+    ElemUtils::LoggerManager* pLoggerManager =
+            ElemUtils::LoggerManager::getInstance();
 
     pLoggerManager->info(getClassName(), functionName, message);
 }
 
 void BaseObject::debug(const std::string& functionName,
         const std::string& message) const {
-    LoggerManager* pLoggerManager = LoggerManager::getInstance();
+    ElemUtils::LoggerManager* pLoggerManager =
+            ElemUtils::LoggerManager::getInstance();
 
     pLoggerManager->debug(getClassName(), functionName, message);
 }
 
 void BaseObject::warn(const std::string& functionName,
         const std::string& message) const {
-    LoggerManager* pLoggerManager = LoggerManager::getInstance();
+    ElemUtils::LoggerManager* pLoggerManager =
+            ElemUtils::LoggerManager::getInstance();
 
     pLoggerManager->warn(getClassName(), functionName, message);
 }
@@ -70,19 +73,21 @@ void BaseObject::warn(const std::string& functionName,
 //TODO remove error or throwException function from BaseObject class
 void BaseObject::error(const std::string& functionName,
         const std::string& message) const {
-    LoggerManager* pLoggerManager = LoggerManager::getInstance();
+    ElemUtils::LoggerManager* pLoggerManager =
+            ElemUtils::LoggerManager::getInstance();
 
     pLoggerManager->error(getClassName(), functionName, message);
 
-    throwException(Formatter() << functionName << "[" << m_objectId << "]",
+    throwException(
+            ElemUtils::Formatter() << functionName << "[" << m_objectId << "]",
             message);
 }
 
 void BaseObject::throwException(const std::string functionName,
         const std::string errorMessage) const {
     throw std::runtime_error(
-            Formatter() << "[" << getClassName() << "::" << functionName << "] "
-                    << errorMessage);
+            ElemUtils::Formatter() << "[" << getClassName() << "::"
+                    << functionName << "] " << errorMessage);
 }
 
 /* ===== GETTERS & SETTERS ===== */

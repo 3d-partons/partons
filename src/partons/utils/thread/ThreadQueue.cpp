@@ -9,13 +9,13 @@ ThreadQueue::ThreadQueue() {
 ThreadQueue::~ThreadQueue() {
 }
 
-void ThreadQueue::push(const Packet& packet) {
+void ThreadQueue::push(const ElemUtils::Packet& packet) {
     sf::Lock lock(m_mutex); // mutex.lock()
 
     m_tasks.push(packet);
 } // mutex.unlock()
 
-void ThreadQueue::push(const List<Packet>& listOfPacket) {
+void ThreadQueue::push(const List<ElemUtils::Packet>& listOfPacket) {
     sf::Lock lock(m_mutex); // mutex.lock()
 
     for (size_t i = 0; i != listOfPacket.size(); i++) {
@@ -23,10 +23,10 @@ void ThreadQueue::push(const List<Packet>& listOfPacket) {
     }
 } // mutex.unlock()
 
-Packet ThreadQueue::pop() {
+ElemUtils::Packet ThreadQueue::pop() {
     sf::Lock lock(m_mutex); // mutex.lock()
 
-    Packet packet = m_tasks.front();
+    ElemUtils::Packet packet = m_tasks.front();
     m_tasks.pop();
     return packet;
 } // mutex.unlock()

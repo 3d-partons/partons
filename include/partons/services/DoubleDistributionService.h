@@ -33,7 +33,8 @@ public:
 
     virtual void computeTask(Task &task);
 
-    DoubleDistributionResult compute(const DoubleDistributionKinematic &kinematic,
+    DoubleDistributionResult compute(
+            const DoubleDistributionKinematic &kinematic,
             DoubleDistributionModule* pDoubleDistributionModule);
 };
 

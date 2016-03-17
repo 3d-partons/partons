@@ -10,8 +10,6 @@
 
 #include <string>
 
-//#include <src/modules/gpd/MPSSW13Model.h>
-//#include <src/services/GPDService.h>
 #include "../GPDModule.h"
 
 class GPDService;
@@ -28,7 +26,7 @@ public:
 
     virtual MPSSW13ModelNoGluons* clone() const;
 
-    virtual void configure(ParameterList parameters);
+    virtual void configure(const ElemUtils::Parameters &parameters);
 
     virtual std::string toString();
 

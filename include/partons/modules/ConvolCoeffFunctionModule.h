@@ -23,6 +23,8 @@ public:
     ConvolCoeffFunctionModule(const std::string &className);
     virtual ~ConvolCoeffFunctionModule();
 
+    virtual void configure(const ElemUtils::Parameters &parameters);
+
 protected:
     /**
      * Copy constructor

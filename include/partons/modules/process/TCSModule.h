@@ -12,7 +12,7 @@
  * @brief
  */
 
-#include "../ObservableModule.h"
+#include "../ProcessModule.h"
 
 class TCSModule: public ProcessModule {
 public:

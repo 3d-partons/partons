@@ -1,5 +1,6 @@
 #include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSCFFHeavyQuarkModel.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/integration/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <cmath>
@@ -11,7 +12,6 @@
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../../include/partons/modules/GPDModule.h"
-#include "../../../../../include/partons/utils/stringUtils/Formatter.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int DVCSCFFHeavyQuarkModel::classId =
@@ -97,7 +97,7 @@ std::complex<double> DVCSCFFHeavyQuarkModel::computeIntegralsMassiveV() {
             && m_qcdOrderType != PerturbativeQCDOrderType::NLO) {
 
         error(__func__,
-                Formatter()
+                ElemUtils::Formatter()
                         << "Erroneous input perturbative QCD order can only be LO or NLO. Here Order = "
                         << PerturbativeQCDOrderType(m_qcdOrderType).toString());
     }
@@ -132,7 +132,7 @@ std::complex<double> DVCSCFFHeavyQuarkModel::computeIntegralsMassiveA() {
     if (m_qcdOrderType != PerturbativeQCDOrderType::LO
             && m_qcdOrderType != PerturbativeQCDOrderType::NLO) {
         error(__func__,
-                Formatter()
+                ElemUtils::Formatter()
                         << "Erroneous input perturbative QCD order can only be LO or NLO. Here Order = "
                         << PerturbativeQCDOrderType(m_qcdOrderType).toString());
     }
@@ -291,7 +291,7 @@ std::complex<double> DVCSCFFHeavyQuarkModel::MassiveKernelGluonNLOA(double x) {
     GluonNLOA /= x * x;
 
     debug(__func__,
-            Formatter() << "x= " << x << "    GluonNLOA RE = "
+            ElemUtils::Formatter() << "x= " << x << "    GluonNLOA RE = "
                     << GluonNLOA.real() << "   GluonNLOA IM = "
                     << GluonNLOA.imag() << "  alphaSover2Pi = "
                     << m_alphaSOver2Pi);
@@ -358,7 +358,7 @@ std::complex<double> DVCSCFFHeavyQuarkModel::MassiveKernelGluonNLOV(double x) {
 
     }
 
-    debug(__func__, Formatter() << "x= " << x
+    debug(__func__, ElemUtils::Formatter() << "x= " << x
 //            << "    GluonNLOV RE = " << GluonNLOV.real()
 //            << "   GluonNLOV IM = "<< GluonNLOV.imag()
             << "  alphaSover2Pi = " << m_alphaSOver2Pi);

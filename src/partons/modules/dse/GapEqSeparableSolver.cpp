@@ -1,15 +1,15 @@
 #include "../../../../include/partons/modules/dse/GapEqSeparableSolver.h"
 
-#include <cmath>
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/linear_algebra/matrix/MatrixD.h>
 #include <NumA/linear_algebra/vector/VectorD.h>
 #include <NumA/root_finding/NewtonMD.h>
+#include <cmath>
 
 #include "../../../../include/partons/beans/dse/GluonPropagator.h"
 #include "../../../../include/partons/beans/dse/QuarkGluonVertex.h"
 #include "../../../../include/partons/beans/dse/QuarkPropagator.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
-#include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int GapEqSeparableSolver::classId =
@@ -312,7 +312,7 @@ void GapEqSeparableSolver::computeNewtonInteration() {
         getQuarkPropagator()->setCoeffsB(b);
 
         // Test
-        Formatter formatter1, formatter2, formatter3;
+        ElemUtils::Formatter formatter1, formatter2, formatter3;
         formatter1 << "Iteration " << n << ".";
         formatter2 << "A : ";
         for (unsigned int i = 0; i < getN(); i++) {
@@ -426,7 +426,7 @@ void GapEqSeparableSolver::computeIteration() {
                 || (relDiff_b > getRelTolerance());
 
         // Test
-        Formatter formatter1, formatter2, formatter3;
+        ElemUtils::Formatter formatter1, formatter2, formatter3;
         formatter1 << "Iteration " << n << ".";
         formatter2 << "A : ";
         for (unsigned int i = 0; i < getN(); i++) {

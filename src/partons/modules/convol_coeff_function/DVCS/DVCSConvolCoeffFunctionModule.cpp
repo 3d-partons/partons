@@ -1,5 +1,8 @@
 #include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
 
+#include <ElementaryUtils/parameters/GenericType.h>
+#include <ElementaryUtils/parameters/Parameters.h>
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <stdexcept>
 #include <utility>
 
@@ -10,9 +13,6 @@
 #include "../../../../../include/partons/modules/GPDModule.h"
 #include "../../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../../include/partons/Partons.h"
-#include "../../../../../include/partons/utils/GenericType.h"
-#include "../../../../../include/partons/utils/ParameterList.h"
-#include "../../../../../include/partons/utils/stringUtils/Formatter.h"
 
 const std::string DVCSConvolCoeffFunctionModule::GPD_MODULE_ID =
         "DVCS_CONVOL_COEFF_FUNCTION_GPD_MODULE_ID";
@@ -88,16 +88,16 @@ void DVCSConvolCoeffFunctionModule::init() {
 //TODO implement
 void DVCSConvolCoeffFunctionModule::initModule() {
 
-    debug(__func__, Formatter() << "executed");
+    debug(__func__, ElemUtils::Formatter() << "executed");
 }
 
 //TODO implement
 void DVCSConvolCoeffFunctionModule::isModuleWellConfigured() {
-    debug(__func__, Formatter() << "executed");
+    debug(__func__, ElemUtils::Formatter() << "executed");
 
     // Test kinematic domain of Xi
     if (m_xi < 0 || m_xi > 1) {
-        Formatter formatter;
+        ElemUtils::Formatter formatter;
         formatter << "Input value of Xi = " << m_xi
                 << " do not lay between 0 and 1.";
         error(__func__, formatter.str());
@@ -105,14 +105,14 @@ void DVCSConvolCoeffFunctionModule::isModuleWellConfigured() {
 
     // Test kinematic domain of t
     if (m_t > 0) {
-        Formatter formatter;
+        ElemUtils::Formatter formatter;
         formatter << " Input value of t = " << m_t << " is not <= 0.";
         error(__func__, formatter.str());
     }
 
     // Test kinematic domain of Q2
     if (m_Q2 < 0) {
-        Formatter formatter;
+        ElemUtils::Formatter formatter;
         formatter << "Input value of Q2 = " << m_Q2 << " is not > 0.";
         error(__func__, formatter.str());
     }
@@ -144,7 +144,8 @@ DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionModule::compute(
 
     //TODO voir a deplacer dans les services
     info(__func__,
-            Formatter() << "xi = " << xi << " t = " << t << " Q2 = " << Q2);
+            ElemUtils::Formatter() << "xi = " << xi << " t = " << t << " Q2 = "
+                    << Q2);
 
     DVCSConvolCoeffFunctionResult dvcsConvolCoeffFunctionResult;
 
@@ -156,7 +157,7 @@ DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionModule::compute(
             m_currentGPDComputeType = m_it->first;
 
             debug(__func__,
-                    Formatter() << "m_currentGPDComputeType = "
+                    ElemUtils::Formatter() << "m_currentGPDComputeType = "
                             << GPDType(m_currentGPDComputeType).toString());
 
             // call function storef in the base class map
@@ -174,7 +175,7 @@ DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionModule::compute(
                     ((*this).*(m_it->second))());
         } else {
             error(__func__,
-                    Formatter()
+                    ElemUtils::Formatter()
                             << "Cannot run computation for this value of GPDType = "
                             << GPDType(m_gpdType).toString());
         }
@@ -213,7 +214,8 @@ void DVCSConvolCoeffFunctionModule::preCompute(const double xi, const double t,
         const double Q2, const double MuF2, const double MuR2,
         GPDType::Type gpdComputeType) {
 
-    debug(__func__, Formatter() << "enter preCompute() function ...");
+    debug(__func__,
+            ElemUtils::Formatter() << "enter preCompute() function ...");
 
     m_xi = xi;
     m_t = t;
@@ -247,10 +249,8 @@ void DVCSConvolCoeffFunctionModule::setQCDOrderType(
 }
 
 //TODO handle string for XML file and native type from C++ code ; see QCD_ORDER_TYPE test
-void DVCSConvolCoeffFunctionModule::configure(ParameterList parameters) {
-    //TODO propager la configuration aussi vers le parent ; il se peut que ce soit lui qui porte le membre à configurer et non l'enfant !
-    ConvolCoeffFunctionModule::configure(parameters);
-
+void DVCSConvolCoeffFunctionModule::configure(
+        const ElemUtils::Parameters &parameters) {
     if (parameters.isAvailable(DVCSConvolCoeffFunctionModule::GPD_MODULE_ID)) {
         //TODO why create new GPDModule here ?
         // TODO passer par le setter de m_pGPDModule pour affecter le nouveau module de GPD. Car il faut détruire le précédent pointer s'il existe. Pour libérer l'allocation mémoire avant d'affecter le nouveau.
@@ -268,7 +268,7 @@ void DVCSConvolCoeffFunctionModule::configure(ParameterList parameters) {
                                 parameters.getLastAvailable().toString());
             } catch (std::exception e) {
                 error(__func__,
-                        Formatter()
+                        ElemUtils::Formatter()
                                 << "Cannot create GPDModule from data provided with parameter = "
                                 << DVCSConvolCoeffFunctionModule::GPD_MODULE_ID
                                 << e.what());
@@ -276,7 +276,8 @@ void DVCSConvolCoeffFunctionModule::configure(ParameterList parameters) {
         }
 
         info(__func__,
-                Formatter() << DVCSConvolCoeffFunctionModule::GPD_MODULE_ID
+                ElemUtils::Formatter()
+                        << DVCSConvolCoeffFunctionModule::GPD_MODULE_ID
                         << " configured with value = "
                         << m_pGPDModule->getClassName());
     }
@@ -295,9 +296,11 @@ void DVCSConvolCoeffFunctionModule::configure(ParameterList parameters) {
         }
 
         info(__func__,
-                Formatter()
+                ElemUtils::Formatter()
                         << PerturbativeQCDOrderType::PARAMETER_NAME_PERTURBATIVE_QCD_ORDER_TYPE
                         << " configured with value = "
                         << PerturbativeQCDOrderType(m_qcdOrderType).toString());
     }
+
+    ConvolCoeffFunctionModule::configure(parameters);
 }

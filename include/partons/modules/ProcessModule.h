@@ -41,6 +41,8 @@ public:
     virtual double computeCrossSection(double beamHelicity, double beamCharge,
             NumA::Vector3D targetPolarization, double phi) = 0;
 
+    virtual void configure(const ElemUtils::Parameters &parameters);
+
 protected:
     /**
      * Copy constructor

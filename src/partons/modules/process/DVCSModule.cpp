@@ -1,5 +1,8 @@
 #include "../../../../include/partons/modules/process/DVCSModule.h"
 
+#include <ElementaryUtils/parameters/GenericType.h>
+#include <ElementaryUtils/parameters/Parameters.h>
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/linear_algebra/vector/Vector3D.h>
 
 #include "../../../../include/partons/beans/Scale.h"
@@ -9,9 +12,6 @@
 #include "../../../../include/partons/modules/xb_to_xi/XBToXi.h"
 #include "../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../include/partons/Partons.h"
-#include "../../../../include/partons/utils/GenericType.h"
-#include "../../../../include/partons/utils/ParameterList.h"
-#include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 const std::string DVCSModule::PARAMETER_NAME_BEAM_ENERGY = "beam_energy";
 
@@ -109,7 +109,7 @@ void DVCSModule::computeConvolCoeffFunction(double xB, double t, double Q2) {
     }
 
     debug(__func__,
-            Formatter() << "m_dvcsConvolCoeffFunctionResult = "
+            ElemUtils::Formatter() << "m_dvcsConvolCoeffFunctionResult = "
                     << m_dvcsConvolCoeffFunctionResult.toString());
 
     m_xB = xB;
@@ -133,8 +133,8 @@ double DVCSModule::computeCrossSection(double beamHelicity, double beamCharge,
     m_phi = phi;
 
     debug(__func__,
-            Formatter() << "beamHelicity = " << beamHelicity << " beamCharge = "
-                    << beamCharge << " phi = " << m_phi);
+            ElemUtils::Formatter() << "beamHelicity = " << beamHelicity
+                    << " beamCharge = " << beamCharge << " phi = " << m_phi);
 
     initModule(beamHelicity, beamCharge, targetPolarization);
 
@@ -162,7 +162,8 @@ void DVCSModule::setDVCSConvolCoeffFunctionModule(
     resetPreviousKinematics();
 
     info(__func__,
-            Formatter() << "DVCSConvolCoeffFunctionModule is set to : "
+            ElemUtils::Formatter()
+                    << "DVCSConvolCoeffFunctionModule is set to : "
                     << m_pDVCSConvolCoeffFunctionModule->getClassName());
 }
 
@@ -183,14 +184,16 @@ std::complex<double> DVCSModule::getConvolCoeffFunctionValue(
     return result;
 }
 
-void DVCSModule::configure(ParameterList parameters) {
+void DVCSModule::configure(const ElemUtils::Parameters &parameters) {
     if (parameters.isAvailable(DVCSModule::PARAMETER_NAME_BEAM_ENERGY)) {
         m_E = parameters.getLastAvailable().toDouble();
 
         info(__func__,
-                Formatter() << DVCSModule::PARAMETER_NAME_BEAM_ENERGY
+                ElemUtils::Formatter() << DVCSModule::PARAMETER_NAME_BEAM_ENERGY
                         << " configured with value = " << m_E);
     }
+
+    ProcessModule::configure(parameters);
 }
 
 void DVCSModule::setPScaleModule(ScaleModule* pScaleModule) {

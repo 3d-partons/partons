@@ -15,14 +15,16 @@
  * ex : DVCSCFFModule is a module that evaluates the convolution of the GPD H with the hard scattering kernel at twist 2 necessary to the evaluation of DVCS scattering amplitudes.
  */
 
+#include <ElementaryUtils/thread/Thread.h>
 #include <string>
 
 #include "BaseObject.h"
-#include "utils/thread/Thread.h"
 
-class ParameterList;
+namespace ElemUtils {
+class Parameters;
+} /* namespace ElemUtils */
 
-class ModuleObject: public BaseObject, public Thread {
+class ModuleObject: public BaseObject, public ElemUtils::Thread {
 public:
     /**
      * Constructor.
@@ -43,7 +45,7 @@ public:
      *
      * @param parameters
      */
-    virtual void configure(ParameterList parameters);
+    virtual void configure(const ElemUtils::Parameters &parameters);
 
     virtual ModuleObject* clone() const = 0;
 

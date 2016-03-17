@@ -17,12 +17,9 @@
 #include "../../utils/type/PhysicalType.h"
 #include "../Kinematic.h"
 
-class ComparisonReport;
-class Packet;
-class ParameterList;
-namespace NumA {
-class Tolerances;
-} /* namespace NumA */
+namespace ElemUtils {
+class Parameters;
+} /* namespace ElemUtils */
 
 class ObservableKinematic: public Kinematic {
 public:
@@ -36,7 +33,7 @@ public:
      */
     ObservableKinematic();
 
-    ObservableKinematic(ParameterList &parameterList);
+    ObservableKinematic(const ElemUtils::Parameters &parameters);
 
     /**
      * Constructor
@@ -68,7 +65,7 @@ public:
 //    ComparisonReport compare(const ObservableKinematic &referenceObject,
 //            const NumA::Tolerances &tolerances) const;
 
-    // ##### GETTERS & SETTERS #####
+// ##### GETTERS & SETTERS #####
 
     double getQ2() const;
     void setQ2(double Q2);
@@ -79,8 +76,8 @@ public:
     PhysicalType<double> getPhi() const;
     void setPhi(double phi);
 
-    void serialize(Packet &packet) const;
-    void unserialize(Packet &packet);
+    void serialize(ElemUtils::Packet &packet) const;
+    void unserialize(ElemUtils::Packet &packet);
 
 private:
     // TODO : What do we do when we consider Fourier harmonics of DVCS observables?
@@ -90,7 +87,9 @@ private:
     PhysicalType<double> m_phi; ///<  Angle between leptonic and hadronic planes (in degrees, Trento convention)
 };
 
-Packet& operator <<(Packet& packet, ObservableKinematic& observableKinematic);
-Packet& operator >>(Packet& packet, ObservableKinematic& observableKinematic);
+ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
+        ObservableKinematic& observableKinematic);
+ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
+        ObservableKinematic& observableKinematic);
 
 #endif /* OBSERVABLE_KINEMATIC_H */

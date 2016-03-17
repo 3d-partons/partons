@@ -9,14 +9,14 @@
 
 #include "../../../../include/partons/modules/dse/GapEquationSolverModule.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
+#include <NumA/integration/one_dimension/GLNPIntegrator1D.h>
 #include <cmath>
 
 #include "../../../../include/partons/beans/dse/MTGluonPropagator.h"
 #include "../../../../include/partons/beans/dse/QuarkPropagator.h"
 #include "../../../../include/partons/beans/dse/RLVertex.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../include/partons/utils/ParameterList.h"
-#include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 GapEquationSolverModule::GapEquationSolverModule(const std::string &className) :
         ModuleObject(className), m_gluonPropagator(0), m_quarkPropagator(0), m_vertex(
@@ -173,14 +173,13 @@ void GapEquationSolverModule::initModule() {
 void GapEquationSolverModule::isModuleWellConfigured() {
 }
 
-void GapEquationSolverModule::configure(ParameterList parameters) {
+void GapEquationSolverModule::configure(
+        const ElemUtils::Parameters &parameters) {
     ModuleObject::configure(parameters);
 }
 
 std::string GapEquationSolverModule::toString() const {
-    Formatter formatter;
-    formatter << ModuleObject::toString();
-    return formatter.str();
+    return ElemUtils::Formatter() << ModuleObject::toString();
 }
 
 void GapEquationSolverModule::compute(
@@ -201,7 +200,7 @@ void GapEquationSolverModule::compute(
     info(__func__, "p2 [GeV^2] ; A ; B [GeV] ; M [GeV]");
     double p2, A, B, M;
     for (unsigned int i = 0; i < m_N; i++) {
-        Formatter formatter;
+        ElemUtils::Formatter formatter;
         p2 = m_roots_s.at(i);
         A = m_quarkPropagator->evaluateA(p2);
         B = m_quarkPropagator->evaluateB(p2);

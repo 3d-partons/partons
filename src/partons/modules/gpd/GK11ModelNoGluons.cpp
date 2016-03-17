@@ -1,10 +1,3 @@
-/*
- * GK11ModelNoGluons.cpp
- *
- *  Created on: Oct 5, 2015
- *      Author: Pawel Sznajder
- */
-
 #include "../../../../include/partons/modules/gpd/GK11ModelNoGluons.h"
 
 #include <map>
@@ -23,7 +16,6 @@
 #include "../../../../include/partons/Partons.h"
 #include "../../../../include/partons/services/GPDService.h"
 #include "../../../../include/partons/ServiceObjectRegistry.h"
-#include "../../../../include/partons/utils/ParameterList.h"
 
 const unsigned int GK11ModelNoGluons::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
@@ -51,7 +43,8 @@ GK11ModelNoGluons* GK11ModelNoGluons::clone() const {
     return new GK11ModelNoGluons(*this);
 }
 
-void GK11ModelNoGluons::configure(ParameterList parameters) {
+void GK11ModelNoGluons::configure(const ElemUtils::Parameters &parameters) {
+    GPDModule::configure(parameters);
 }
 
 std::string GK11ModelNoGluons::toString() {

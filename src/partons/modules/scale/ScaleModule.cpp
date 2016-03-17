@@ -19,3 +19,7 @@ void ScaleModule::initModule() {
 void ScaleModule::isModuleWellConfigured() {
     //TODO implement
 }
+
+void ScaleModule::configure(const ElemUtils::Parameters &parameters) {
+    ModuleObject::configure(parameters);
+}

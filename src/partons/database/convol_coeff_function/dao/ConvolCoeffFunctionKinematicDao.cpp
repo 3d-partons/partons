@@ -1,13 +1,13 @@
 #include "../../../../../include/partons/database/convol_coeff_function/dao/ConvolCoeffFunctionKinematicDao.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
+#include <QtCore/qstring.h>
+#include <QtCore/qvariant.h>
 #include <QtSql/qsqlerror.h>
 #include <QtSql/qsqlrecord.h>
-#include <QtCore/qvariant.h>
-#include <QtCore/qstring.h>
 #include <string>
 
 #include "../../../../../include/partons/database/DatabaseManager.h"
-#include "../../../../../include/partons/utils/stringUtils/Formatter.h"
 
 ConvolCoeffFunctionKinematicDao::ConvolCoeffFunctionKinematicDao() :
         BaseObject("ConvolCoeffFunctionKinematicDao") {
@@ -34,7 +34,7 @@ int ConvolCoeffFunctionKinematicDao::insert(double xi, double t, double Q2,
         result = query.lastInsertId().toInt();
     } else {
         error(__func__,
-                Formatter() << query.lastError().text().toStdString()
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
     }
@@ -64,7 +64,7 @@ int ConvolCoeffFunctionKinematicDao::select(double xi, double t, double Q2,
         }
     } else {
         error(__func__,
-                Formatter() << query.lastError().text().toStdString()
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
     }
@@ -90,7 +90,7 @@ DVCSConvolCoeffFunctionKinematic ConvolCoeffFunctionKinematicDao::getKinematicBy
         fillKinematicFromQuery(convolCoeffFunctionKinematic, query);
     } else {
         error(__func__,
-                Formatter() << query.lastError().text().toStdString()
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
     }

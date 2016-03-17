@@ -1,5 +1,6 @@
 #include "../../../../../include/partons/database/convol_coeff_function/dao/ConvolCoeffFunctionResultDao.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <QtCore/qstring.h>
 #include <QtCore/qvariant.h>
 #include <QtSql/qsqlerror.h>
@@ -9,7 +10,6 @@
 #include "../../../../../include/partons/beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../../include/partons/database/DatabaseManager.h"
-#include "../../../../../include/partons/utils/stringUtils/Formatter.h"
 
 ConvolCoeffFunctionResultDao::ConvolCoeffFunctionResultDao() :
         BaseObject("ConvolCoeffFunctionResultDao") {
@@ -38,7 +38,7 @@ int ConvolCoeffFunctionResultDao::insert(
         result = query.lastInsertId().toInt();
     } else {
         error(__func__,
-                Formatter() << query.lastError().text().toStdString()
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
     }
@@ -65,7 +65,7 @@ int ConvolCoeffFunctionResultDao::insertIntoCCFResultComplex(const int realPart,
         result = query.lastInsertId().toInt();
     } else {
         error(__func__,
-                Formatter() << query.lastError().text().toStdString()
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
     }
@@ -90,7 +90,7 @@ ResultList<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionResultDao::getResul
         fillConvolCoeffFunctionResultList(resultList, query);
     } else {
         error(__func__,
-                Formatter() << query.lastError().text().toStdString()
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
     }
@@ -157,7 +157,7 @@ void ConvolCoeffFunctionResultDao::fillConvolCoeffFunctionResult(
         }
     } else {
         error(__func__,
-                Formatter() << query.lastError().text().toStdString()
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
     }

@@ -1,5 +1,9 @@
 #include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSConstantCFFModel.h"
 
+#include <ElementaryUtils/parameters/GenericType.h>
+#include <ElementaryUtils/parameters/Parameters.h>
+#include <ElementaryUtils/string_utils/Formatter.h>
+#include <ElementaryUtils/string_utils/StringUtils.h>
 #include <map>
 #include <utility>
 
@@ -9,10 +13,6 @@
 #include "../../../../../include/partons/modules/evolution/gpd/ExampleEvolQCDModel.h"
 #include "../../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../../include/partons/Partons.h"
-#include "../../../../../include/partons/utils/GenericType.h"
-#include "../../../../../include/partons/utils/ParameterList.h"
-#include "../../../../../include/partons/utils/stringUtils/Formatter.h"
-#include "../../../../../include/partons/utils/stringUtils/StringUtils.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int DVCSConstantCFFModel::classId =
@@ -120,14 +120,12 @@ std::complex<double> DVCSConstantCFFModel::computeCFF() {
     return m_CFF[m_currentGPDComputeType];
 }
 
-void DVCSConstantCFFModel::configure(ParameterList parameters) {
-    DVCSConvolCoeffFunctionModule::configure(parameters);
-
+void DVCSConstantCFFModel::configure(const ElemUtils::Parameters &parameters) {
     if (parameters.isAvailable(DVCSConstantCFFModel::CFF_VALUES)) {
 
         std::string temp_str = parameters.getLastAvailable().toString();
         if (!temp_str.empty()) {
-            std::vector<std::string> CFFValues = StringUtils::split(
+            std::vector<std::string> CFFValues = ElemUtils::StringUtils::split(
                     parameters.getLastAvailable().toString(), '|');
 
             for (int i = 0;
@@ -139,14 +137,16 @@ void DVCSConstantCFFModel::configure(ParameterList parameters) {
                     i = i + 2) {
                 int j = static_cast<int>(GPDType::H) + i / 2;
                 m_CFF[j] = std::complex<double>(
-                        StringUtils::fromStringToDouble(CFFValues[i]),
+                        ElemUtils::StringUtils::fromStringToDouble(
+                                CFFValues[i]),
                         i + 1 < CFFValues.size() ?
-                                StringUtils::fromStringToDouble(
+                                ElemUtils::StringUtils::fromStringToDouble(
                                         CFFValues[i + 1]) :
                                 0.);
 
                 info(__func__,
-                        Formatter() << DVCSConstantCFFModel::CFF_VALUES
+                        ElemUtils::Formatter()
+                                << DVCSConstantCFFModel::CFF_VALUES
                                 << " of type "
                                 << GPDType(static_cast<GPDType::Type>(j)).toString()
                                 << " configured with value = "
@@ -155,4 +155,6 @@ void DVCSConstantCFFModel::configure(ParameterList parameters) {
             }
         }
     }
+
+    DVCSConvolCoeffFunctionModule::configure(parameters);
 }

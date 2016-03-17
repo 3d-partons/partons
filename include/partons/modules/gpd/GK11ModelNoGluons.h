@@ -26,7 +26,7 @@ public:
 
     virtual GK11ModelNoGluons* clone() const;
 
-    virtual void configure(ParameterList parameters);
+    virtual void configure(const ElemUtils::Parameters &parameters);
 
     virtual std::string toString();
 

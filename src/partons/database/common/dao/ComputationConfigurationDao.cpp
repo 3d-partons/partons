@@ -1,12 +1,12 @@
 #include "../../../../../include/partons/database/common/dao/ComputationConfigurationDao.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <QtCore/qstring.h>
 #include <QtCore/qvariant.h>
 #include <QtSql/qsqlerror.h>
 #include <QtSql/qsqlquery.h>
 
 #include "../../../../../include/partons/database/DatabaseManager.h"
-#include "../../../../../include/partons/utils/stringUtils/Formatter.h"
 
 ComputationConfigurationDao::ComputationConfigurationDao() :
         BaseObject("ComputationConfigurationDao") {
@@ -30,7 +30,7 @@ int ComputationConfigurationDao::insert(const std::string& xmlFile,
         result = query.lastInsertId().toInt();
     } else {
         error(__func__,
-                Formatter() << query.lastError().text().toStdString()
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
     }
@@ -55,7 +55,7 @@ int ComputationConfigurationDao::getComputationConfigurationIdByMD5(
         }
     } else {
         error(__func__,
-                Formatter() << query.lastError().text().toStdString()
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
     }

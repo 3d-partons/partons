@@ -1,10 +1,10 @@
 #include "../../../../include/partons/modules/observable/Ac.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/linear_algebra/vector/Vector3D.h>
 
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/modules/ProcessModule.h"
-#include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int Ac::classId =
@@ -29,7 +29,7 @@ Ac* Ac::clone() const {
 //TODO !!! division par zero !!!
 double Ac::compute(ProcessModule* pDVCSModule, double phi) {
 
-    debug(__func__, Formatter() << "phi = " << phi);
+    debug(__func__, ElemUtils::Formatter() << "phi = " << phi);
 
     double result = 0.;
 

@@ -39,7 +39,7 @@ public:
      *
      * @param parameters
      */
-    virtual void configure(ParameterList parameters);
+    virtual void configure(const ElemUtils::Parameters &parameters);
 
     void computeConvolCoeffFunction(double xB, double t, double Q2);
 

@@ -1,13 +1,13 @@
 #include "../../../../../include/partons/database/observable/dao/ObservableKinematicDao.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
+#include <QtCore/qstring.h>
+#include <QtCore/qvariant.h>
 #include <QtSql/qsqlerror.h>
 #include <QtSql/qsqlrecord.h>
-#include <QtCore/qvariant.h>
-#include <QtCore/qstring.h>
 #include <string>
 
 #include "../../../../../include/partons/database/DatabaseManager.h"
-#include "../../../../../include/partons/utils/stringUtils/Formatter.h"
 
 ObservableKinematicDao::ObservableKinematicDao() :
         BaseObject("ObservableKinematicDao") {
@@ -35,7 +35,7 @@ int ObservableKinematicDao::insert(double xB, double t, double Q2,
         result = query.lastInsertId().toInt();
     } else {
         error(__func__,
-                Formatter() << query.lastError().text().toStdString()
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
     }
@@ -64,7 +64,7 @@ int ObservableKinematicDao::select(double xB, double t, double Q2,
         }
     } else {
         error(__func__,
-                Formatter() << query.lastError().text().toStdString()
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
     }
@@ -89,7 +89,7 @@ List<ObservableKinematic> ObservableKinematicDao::getKinematicListByComputationI
         fillObservableKinematicList(observableKinematicList, query);
     } else {
         error(__func__,
-                Formatter() << query.lastError().text().toStdString()
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
     }
@@ -116,7 +116,7 @@ ObservableKinematic ObservableKinematicDao::getKinematicById(
         fillObservableKinematic(observableKinematic, query);
     } else {
         error(__func__,
-                Formatter() << query.lastError().text().toStdString()
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
     }

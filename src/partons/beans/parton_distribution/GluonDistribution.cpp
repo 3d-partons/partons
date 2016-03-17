@@ -1,11 +1,11 @@
 #include "../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <sstream>
 
 #include "../../../../include/partons/utils/compare/CompareUtils.h"
 #include "../../../../include/partons/utils/compare/ComparisonData.h"
 #include "../../../../include/partons/utils/compare/ComparisonReport.h"
-#include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 const std::string GluonDistribution::GLUON_DISTRIBUTION_DB_COLUMN_NAME =
         "gluon_distribution";
@@ -61,7 +61,8 @@ void GluonDistribution::compare(ComparisonReport &rootComparisonReport,
                     GluonDistribution::GLUON_DISTRIBUTION_PARAMETER_NAME_GLUON_DISTRIBUTION,
                     m_gluonDistribution, referenceObject.getGluonDistribution(),
                     tolerances,
-                    Formatter() << parentObjectInfo << " " << getClassName());
+                    ElemUtils::Formatter() << parentObjectInfo << " "
+                            << getClassName());
 
     rootComparisonReport.addComparisonData(gluon_value_comparisonData);
 }

@@ -31,11 +31,16 @@ set(NUMA_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/../NumA++/include")
 set(NUMA_LIB_DIR "${CMAKE_SOURCE_DIR}/../NumA++/lib")
 set(NUMA_LIBRARIES NumA++)
 
+# ElementaryUtils
+set(ELEMENTARY_UTILS_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/../ElementaryUtils/include")
+set(ELEMENTARY_UTILS_LIB_DIR "${CMAKE_SOURCE_DIR}/../ElementaryUtils/lib")
+set(ELEMENTARY_UTILS_LIBRARIES ElementaryUtils)
+
 # Inclusion des libraries
-INCLUDE_DIRECTORIES( ${QT_INCLUDE_DIRS} ${ROOT_INCLUDE_DIR} ${NUMA_INCLUDE_DIR} ${CLN_INCLUDE_DIR} ${SFML_INCLUDE_DIR})
+INCLUDE_DIRECTORIES( ${ELEMENTARY_UTILS_INCLUDE_DIR} ${QT_INCLUDE_DIRS} ${ROOT_INCLUDE_DIR} ${NUMA_INCLUDE_DIR} ${CLN_INCLUDE_DIR} ${SFML_INCLUDE_DIR})
 
 # Link libraries
-LINK_DIRECTORIES(${NUMA_LIB_DIR})
+LINK_DIRECTORIES(${ELEMENTARY_UTILS_LIB_DIR} ${NUMA_LIB_DIR})
 
 #Inclusion des en-têtes publics
 include_directories(include)
@@ -70,6 +75,8 @@ add_library(
 target_link_libraries(
 
         PARTONS
+
+        ${ELEMENTARY_UTILS_LIBRARIES}
 
          ${QT_LIBRARIES}
  

@@ -1,8 +1,6 @@
 #include <string>
 
 #include "../ServiceObject.h"
-#include "../utils/compare/ComparisonMode.h"
-#include "../utils/compare/ComparisonReport.h"
 
 class ComparisonService: public ServiceObject {
 public:

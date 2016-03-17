@@ -1,22 +1,19 @@
 #include "../../include/partons/ModuleObject.h"
 
-#include "../../include/partons/utils/ParameterList.h"
-
 ModuleObject::ModuleObject(const std::string &className) :
-        BaseObject(className), Thread() {
+        BaseObject(className), ElemUtils::Thread() {
 }
 
 ModuleObject::ModuleObject(const ModuleObject &other) :
-        BaseObject(other), Thread(other) {
+        BaseObject(other), ElemUtils::Thread(other) {
 }
 
 ModuleObject::~ModuleObject() {
     // Nothing to destroy
 }
 
-//TODO exception nothing to  configure
-void ModuleObject::configure(ParameterList parameters) {
-
+void ModuleObject::configure(const ElemUtils::Parameters &parameters) {
+    // Nothing to do
 }
 
 std::string ModuleObject::toString() const {

@@ -12,26 +12,26 @@
  * @brief
  */
 
+#include <ElementaryUtils/thread/Packet.h>
 #include <SFML/System/Mutex.hpp>
 #include <queue>
 
 #include "../../beans/List.h"
-#include "Packet.h"
 
 class ThreadQueue {
 public:
     ThreadQueue();
     virtual ~ThreadQueue();
 
-    void push(const Packet &packet);
-    void push(const List<Packet> &listOfPacket);
+    void push(const ElemUtils::Packet &packet);
+    void push(const List<ElemUtils::Packet> &listOfPacket);
 
-    Packet pop();
+    ElemUtils::Packet pop();
 
     bool empty();
 
 private:
-    std::queue<Packet> m_tasks;
+    std::queue<ElemUtils::Packet> m_tasks;
 
     //pthread_mutex_t m_mutex;
     sf::Mutex m_mutex;

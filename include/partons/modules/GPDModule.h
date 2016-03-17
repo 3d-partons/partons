@@ -60,7 +60,7 @@ public:
      *
      * @param parameters
      */
-    void virtual configure(ParameterList parameters);
+    void virtual configure(const ElemUtils::Parameters &parameters);
 
     virtual GPDResult compute(const GPDKinematic &kinematic,
             GPDType::Type gpdType, bool evolution = false);

@@ -1,8 +1,7 @@
 #include "../../../../include/partons/utils/compare/ComparisonReport.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <stddef.h>
-
-#include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 ComparisonReport::ComparisonReport() {
 
@@ -21,7 +20,7 @@ ComparisonReport::~ComparisonReport() {
 
 std::string ComparisonReport::toString() const {
 
-    Formatter formatter;
+    ElemUtils::Formatter formatter;
 
     formatter << '\n' << "[Environment setting] \n" << m_environmentSetting
             << '\n' << '\n';

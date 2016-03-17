@@ -1,9 +1,9 @@
 #include "../../../../include/partons/beans/dse/QCGluonPropagator.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <cmath>
 
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 QCGluonPropagator::QCGluonPropagator(double w, double I, double LambdaQCD,
         int Nf) :
@@ -30,7 +30,7 @@ QCGluonPropagator* QCGluonPropagator::clone() const {
 }
 
 std::string QCGluonPropagator::toString() const {
-    return Formatter() << GluonPropagator::toString();
+    return ElemUtils::Formatter() << GluonPropagator::toString();
 }
 
 // TODO Store factors independent of k2 to avoid unnecessary recalculations

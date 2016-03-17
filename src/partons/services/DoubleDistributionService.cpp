@@ -13,8 +13,8 @@ const unsigned int DoubleDistributionService::classId =
                 new DoubleDistributionService("DoubleDistributionService"));
 
 DoubleDistributionService::DoubleDistributionService(
-        const std::string &className)
-        : ServiceObject(className) {
+        const std::string &className) :
+        ServiceObject(className) {
 }
 
 DoubleDistributionService::~DoubleDistributionService() {

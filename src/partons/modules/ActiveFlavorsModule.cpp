@@ -1,8 +1,7 @@
 #include "../../../include/partons/modules/ActiveFlavorsModule.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <algorithm>
-
-#include "../../../include/partons/utils/stringUtils/Formatter.h"
 
 ActiveFlavorsModule::ActiveFlavorsModule(const std::string &className) :
         ModuleObject(className) {
@@ -128,7 +127,7 @@ void ActiveFlavorsModule::checkCurveIntegrity() {
 }
 
 std::string ActiveFlavorsModule::toString() {
-    Formatter formater;
+    ElemUtils::Formatter formater;
 
     for (unsigned int i = 0; i != m_nfFunctionOfMu.size(); i++)
         formater << m_nfFunctionOfMu[i].toString();

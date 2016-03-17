@@ -1,10 +1,11 @@
 #include "../../../../include/partons/modules/scale/Q2Multiplier.h"
 
+#include <ElementaryUtils/parameters/GenericType.h>
+#include <ElementaryUtils/parameters/Parameters.h>
+#include <ElementaryUtils/string_utils/Formatter.h>
+
 #include "../../../../include/partons/beans/Scale.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
-#include "../../../../include/partons/utils/GenericType.h"
-#include "../../../../include/partons/utils/ParameterList.h"
-#include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 const std::string Q2Multiplier::PARAMETER_NAME_LAMBDA = "lambda";
 
@@ -52,12 +53,14 @@ void Q2Multiplier::isModuleWellConfigured() {
 //    }
 }
 
-void Q2Multiplier::configure(ParameterList parameters) {
+void Q2Multiplier::configure(const ElemUtils::Parameters &parameters) {
     if (parameters.isAvailable(Q2Multiplier::PARAMETER_NAME_LAMBDA)) {
         m_lambda = parameters.getLastAvailable().toDouble();
 
         info(__func__,
-                Formatter() << Q2Multiplier::PARAMETER_NAME_LAMBDA
+                ElemUtils::Formatter() << Q2Multiplier::PARAMETER_NAME_LAMBDA
                         << " configured with value = " << m_lambda);
     }
+
+    ScaleModule::configure(parameters);
 }

@@ -15,10 +15,9 @@
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
 #include <vector>
 
-namespace NumA {
+namespace ElemUtils {
 class Parameters;
-} /* namespace NumA */
-
+} /* namespace ElemUtils */
 namespace NumA {
 class FunctionType1D;
 class Integrator1D;
@@ -42,7 +41,7 @@ protected:
     double integrate(NumA::FunctionType1D* pFunction, double a, double b,
             std::vector<double> &parameters);
 
-    void configureIntegrator(NumA::Parameters &parameters);
+    void configureIntegrator(const ElemUtils::Parameters &parameters);
 
     NumA::Integrator1D* getMathIntegrator();
 

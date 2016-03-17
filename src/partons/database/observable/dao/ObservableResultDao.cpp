@@ -1,5 +1,6 @@
 #include "../../../../../include/partons/database/observable/dao/ObservableResultDao.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <QtCore/qstring.h>
 #include <QtCore/qvariant.h>
 #include <QtSql/qsqlerror.h>
@@ -9,7 +10,6 @@
 #include "../../../../../include/partons/beans/observable/ObservableType.h"
 #include "../../../../../include/partons/database/DatabaseManager.h"
 #include "../../../../../include/partons/utils/math/ErrorBar.h"
-#include "../../../../../include/partons/utils/stringUtils/Formatter.h"
 
 ObservableResultDao::ObservableResultDao() :
         BaseObject("ObservableResultDao") {
@@ -47,7 +47,7 @@ int ObservableResultDao::insert(const std::string& observableName,
         result = query.lastInsertId().toInt();
     } else {
         error(__func__,
-                Formatter() << query.lastError().text().toStdString()
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
     }
@@ -73,7 +73,7 @@ ResultList<ObservableResult> ObservableResultDao::getObservableResultListByCompu
         fillObservableResultList(results, query);
     } else {
         error(__func__,
-                Formatter() << query.lastError().text().toStdString()
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
     }

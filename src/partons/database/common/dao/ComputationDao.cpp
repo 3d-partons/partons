@@ -1,5 +1,6 @@
 #include "../../../../../include/partons/database/common/dao/ComputationDao.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <QtCore/qdatetime.h>
 #include <QtCore/qstring.h>
 #include <QtCore/qvariant.h>
@@ -9,7 +10,6 @@
 
 #include "../../../../../include/partons/beans/Computation.h"
 #include "../../../../../include/partons/database/DatabaseManager.h"
-#include "../../../../../include/partons/utils/stringUtils/Formatter.h"
 
 ComputationDao::ComputationDao() :
         BaseObject("ComputationDao") {
@@ -35,7 +35,7 @@ int ComputationDao::insert(const time_t &dateTime,
         result = query.lastInsertId().toInt();
     } else {
         error(__func__,
-                Formatter() << query.lastError().text().toStdString()
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
     }
@@ -62,7 +62,7 @@ int ComputationDao::getComputationIdByDateTime(const time_t &dateTime) const {
         }
     } else {
         error(__func__,
-                Formatter() << query.lastError().text().toStdString()
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
     }
@@ -86,7 +86,8 @@ Computation ComputationDao::selectByIndexId(const int indexId) const {
         if (DatabaseManager::getNumberOfRows(query) != 0) {
             fillComputation(computation, query);
         } else {
-            warn(__func__, Formatter() << "No entry for id = " << indexId);
+            warn(__func__,
+                    ElemUtils::Formatter() << "No entry for id = " << indexId);
         }
     }
 
@@ -127,7 +128,7 @@ int ComputationDao::insertIntoComputationConfigurationComputation(
         result = query.lastInsertId().toInt();
     } else {
         error(__func__,
-                Formatter() << query.lastError().text().toStdString()
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
     }

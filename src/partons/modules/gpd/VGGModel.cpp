@@ -1,11 +1,12 @@
 #include "../../../../include/partons/modules/gpd/VGGModel.h"
 
+#include <ElementaryUtils/PropertiesManager.h>
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <math.h>
 #include <NumA/integration/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
 #include <map>
-#include <stdexcept>
 #include <utility>
 
 #include "../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
@@ -15,19 +16,16 @@
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../include/partons/utils/mstwpdf.h"
-#include "../../../../include/partons/utils/ParameterList.h"
-#include "../../../../include/partons/utils/PropertiesManager.h"
-#include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 const unsigned int VGGModel::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new VGGModel("VGGModel"));
 
 VGGModel::VGGModel(const std::string &className) :
-        eps_doubleint(0.001), kappa_u(1.6596), kappa_d(-2.0352), b_profile_val(
-                1.), b_profile_sea(1.), alphap_val(1.105), alphap_sea(1.105), eta_e_largex_u_s(
-                1.713), eta_e_largex_d_s(0.566), g_AXIAL(1.267), GPDModule(
-                className), MathIntegratorModule() {
+        GPDModule(className), eps_doubleint(0.001), kappa_u(1.6596), kappa_d(
+                -2.0352), b_profile_val(1.), b_profile_sea(1.), alphap_val(
+                1.105), alphap_sea(1.105), eta_e_largex_u_s(1.713), eta_e_largex_d_s(
+                0.566), g_AXIAL(1.267), MathIntegratorModule() {
 
     gpd_s5 = GPDType::UNDEFINED;
     flavour_s5 = UNDEFINED;
@@ -120,13 +118,14 @@ VGGModel* VGGModel::clone() const {
 void VGGModel::init() {
 
     m_Forward = new c_mstwpdf(
-            PropertiesManager::getInstance()->getString("grid.directory")
-                    + "mstw2008nlo.00.dat");
+            ElemUtils::PropertiesManager::getInstance()->getString(
+                    "grid.directory") + "mstw2008nlo.00.dat");
 
     setIntegrator(NumA::IntegratorType1D::GK21_ADAPTIVE);
 }
 
-void VGGModel::configure(ParameterList parameters) {
+void VGGModel::configure(const ElemUtils::Parameters &parameters) {
+    GPDModule: configure(parameters);
 }
 
 std::string VGGModel::toString() {
@@ -469,7 +468,7 @@ double VGGModel::offforward_distr() {
     default: {
 
         error(__FUNCTION__,
-                Formatter() << "GPD = " << gpd_s5 << " not defined");
+                ElemUtils::Formatter() << "GPD = " << gpd_s5 << " not defined");
     }
         break;
     }
@@ -511,8 +510,8 @@ double VGGModel::symm_double_distr_reggeH(double beta, double alpha) {
     if (beta <= 0.) {
 
         error(__FUNCTION__,
-                Formatter() << "alpha = " << alpha << ", beta = " << beta
-                        << ", argument 0 or negative");
+                ElemUtils::Formatter() << "alpha = " << alpha << ", beta = "
+                        << beta << ", argument 0 or negative");
     }
 
     //update and get pdf
@@ -563,7 +562,8 @@ double VGGModel::symm_double_distr_reggeH(double beta, double alpha) {
     default: {
 
         error(__FUNCTION__,
-                Formatter() << "Flavour = " << flavour_s5 << " not defined");
+                ElemUtils::Formatter() << "Flavour = " << flavour_s5
+                        << " not defined");
     }
         break;
 
@@ -579,8 +579,8 @@ double VGGModel::symm_double_distr_reggeE(double beta, double alpha) {
     if (beta <= 0.) {
 
         error(__FUNCTION__,
-                Formatter() << "alpha = " << alpha << ", beta = " << beta
-                        << ", argument 0 or negative");
+                ElemUtils::Formatter() << "alpha = " << alpha << ", beta = "
+                        << beta << ", argument 0 or negative");
     }
 
     //update and get pdf
@@ -615,7 +615,8 @@ double VGGModel::symm_double_distr_reggeE(double beta, double alpha) {
     default: {
 
         error(__FUNCTION__,
-                Formatter() << "Flavour = " << flavour_s5 << " not defined");
+                ElemUtils::Formatter() << "Flavour = " << flavour_s5
+                        << " not defined");
     }
         break;
 
@@ -670,7 +671,8 @@ double VGGModel::int_mom2_up_valence_e(double x, std::vector<double> par) {
     if (beta <= 0.) {
 
         error(__FUNCTION__,
-                Formatter() << "x = " << beta << ", argument 0 or negative");
+                ElemUtils::Formatter() << "x = " << beta
+                        << ", argument 0 or negative");
     }
 
     //update and get pdf
@@ -701,7 +703,8 @@ double VGGModel::int_mom2_up_valence_e(double x, std::vector<double> par) {
     default: {
 
         error(__FUNCTION__,
-                Formatter() << "Flavour = " << flavour_s5 << " not defined");
+                ElemUtils::Formatter() << "Flavour = " << flavour_s5
+                        << " not defined");
     }
         break;
 
@@ -735,7 +738,7 @@ double VGGModel::offforward_pol_distr() {
     default: {
 
         error(__FUNCTION__,
-                Formatter() << "GPD = " << gpd_s5 << " not defined");
+                ElemUtils::Formatter() << "GPD = " << gpd_s5 << " not defined");
     }
         break;
     }
@@ -791,8 +794,8 @@ double VGGModel::symm_double_distr_reggeHt(double beta, double alpha) {
     if (beta <= 0.) {
 
         error(__FUNCTION__,
-                Formatter() << "alpha = " << alpha << ", beta = " << beta
-                        << ", argument 0 or negative");
+                ElemUtils::Formatter() << "alpha = " << alpha << ", beta = "
+                        << beta << ", argument 0 or negative");
     }
 
     //update and get pdf
@@ -837,7 +840,8 @@ double VGGModel::symm_double_distr_reggeHt(double beta, double alpha) {
     default: {
 
         error(__FUNCTION__,
-                Formatter() << "Flavour = " << flavour_s5 << " not defined");
+                ElemUtils::Formatter() << "Flavour = " << flavour_s5
+                        << " not defined");
     }
         break;
 

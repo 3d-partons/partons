@@ -1,11 +1,11 @@
 #include "../../../../../include/partons/beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <utility>
 
 #include "../../../../../include/partons/utils/compare/CompareUtils.h"
 #include "../../../../../include/partons/utils/compare/ComparisonData.h"
 #include "../../../../../include/partons/utils/compare/ComparisonReport.h"
-#include "../../../../../include/partons/utils/stringUtils/Formatter.h"
 
 DVCSConvolCoeffFunctionResult::DVCSConvolCoeffFunctionResult() :
         Result("DVCSConvolCoeffFunctionResult") {
@@ -30,7 +30,8 @@ std::complex<double> DVCSConvolCoeffFunctionResult::get(
     m_it = m_resultsByGPDType.find(gpdComputeType);
     if (m_it == m_resultsByGPDType.end()) {
         error(__func__,
-                Formatter() << "Cannot find result for GPDComputeType = "
+                ElemUtils::Formatter()
+                        << "Cannot find result for GPDComputeType = "
                         << GPDType(gpdComputeType).toString());
     }
 
@@ -38,7 +39,7 @@ std::complex<double> DVCSConvolCoeffFunctionResult::get(
 }
 
 std::string DVCSConvolCoeffFunctionResult::toString() {
-    Formatter formatter;
+    ElemUtils::Formatter formatter;
     formatter << "[" << getClassName() << "] computed by "
             << getComputationModuleName() << '\n';
     formatter << "kinematic(" << m_kinematic.toString() << ") \n";
@@ -111,7 +112,7 @@ void DVCSConvolCoeffFunctionResult::compare(
 
         ComparisonData comparisonData = CompareUtils::compareComplex("",
                 it->second, referenceObject.getResult(it->first), tolerances,
-                Formatter() << parentObjectInfo << " "
+                ElemUtils::Formatter() << parentObjectInfo << " "
                         << GPDType(it->first).toString());
         rootComparisonReport.addComparisonData(comparisonData);
     }
@@ -124,7 +125,8 @@ const std::complex<double>& DVCSConvolCoeffFunctionResult::getResult(
 
     if (it == m_resultsByGPDType.end()) {
         error(__func__,
-                Formatter() << "Cannot find complex value from GPDType = "
+                ElemUtils::Formatter()
+                        << "Cannot find complex value from GPDType = "
                         << GPDType(gpdType).toString());
     }
 

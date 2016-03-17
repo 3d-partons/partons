@@ -1,6 +1,6 @@
 #include "../../../include/partons/beans/Kinematic.h"
 
-#include "../../../include/partons/utils/stringUtils/Formatter.h"
+#include <ElementaryUtils/string_utils/Formatter.h>
 
 Kinematic::Kinematic() :
         BaseObject("Kinematic"), m_id(-1) {
@@ -26,5 +26,5 @@ void Kinematic::setId(int id) {
 }
 
 std::string Kinematic::toString() const {
-    return Formatter() << "m_id = " << m_id;
+    return ElemUtils::Formatter() << "m_id = " << m_id;
 }

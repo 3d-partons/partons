@@ -1,13 +1,10 @@
 #include "../../../../include/partons/beans/observable/ObservableKinematic.h"
 
-#include "../../../../include/partons/utils/compare/CompareUtils.h"
-#include "../../../../include/partons/utils/compare/ComparisonData.h"
-#include "../../../../include/partons/utils/compare/ComparisonReport.h"
-#include "../../../../include/partons/utils/GenericType.h"
-#include "../../../../include/partons/utils/ParameterList.h"
-#include "../../../../include/partons/utils/stringUtils/Formatter.h"
-#include "../../../../include/partons/utils/stringUtils/StringUtils.h"
-#include "../../../../include/partons/utils/thread/Packet.h"
+#include <ElementaryUtils/parameters/GenericType.h>
+#include <ElementaryUtils/parameters/Parameters.h>
+#include <ElementaryUtils/string_utils/Formatter.h>
+#include <ElementaryUtils/string_utils/StringUtils.h>
+#include <ElementaryUtils/thread/Packet.h>
 #include "../../../../include/partons/utils/type/PhysicalUnit.h"
 
 const std::string ObservableKinematic::PARAMETER_NAME_XB = "xB";
@@ -21,36 +18,37 @@ ObservableKinematic::ObservableKinematic() :
                         PhysicalUnit(PhysicalUnit::DEGREE).getShortName())) {
 }
 
-ObservableKinematic::ObservableKinematic(ParameterList &parameterList) :
+ObservableKinematic::ObservableKinematic(
+        const ElemUtils::Parameters &parameters) :
         Kinematic("ObservableKinematic"), m_xB(0.), m_t(0.), m_Q2(0.), m_phi(
                 PhysicalType<double>(0.,
                         PhysicalUnit(PhysicalUnit::DEGREE).getShortName())) {
-    if (parameterList.isAvailable(ObservableKinematic::PARAMETER_NAME_XB)) {
-        m_xB = parameterList.getLastAvailable().toDouble();
+    if (parameters.isAvailable(ObservableKinematic::PARAMETER_NAME_XB)) {
+        m_xB = parameters.getLastAvailable().toDouble();
     } else {
         error(__func__,
-                Formatter() << "Missing parameter <"
+                ElemUtils::Formatter() << "Missing parameter <"
                         << ObservableKinematic::PARAMETER_NAME_XB << ">");
     }
 
-    if (parameterList.isAvailable(ObservableKinematic::PARAMETER_NAME_T)) {
-        m_t = parameterList.getLastAvailable().toDouble();
+    if (parameters.isAvailable(ObservableKinematic::PARAMETER_NAME_T)) {
+        m_t = parameters.getLastAvailable().toDouble();
     } else {
         error(__func__,
-                Formatter() << "Missing parameter <"
+                ElemUtils::Formatter() << "Missing parameter <"
                         << ObservableKinematic::PARAMETER_NAME_T << ">");
     }
 
-    if (parameterList.isAvailable(ObservableKinematic::PARAMETER_NAME_Q2)) {
-        m_Q2 = parameterList.getLastAvailable().toDouble();
+    if (parameters.isAvailable(ObservableKinematic::PARAMETER_NAME_Q2)) {
+        m_Q2 = parameters.getLastAvailable().toDouble();
     } else {
         error(__func__,
-                Formatter() << "Missing parameter <"
+                ElemUtils::Formatter() << "Missing parameter <"
                         << ObservableKinematic::PARAMETER_NAME_Q2 << ">");
     }
 
-    if (parameterList.isAvailable(ObservableKinematic::PARAMETER_NAME_PHI)) {
-        m_phi.setValue(parameterList.getLastAvailable().toDouble());
+    if (parameters.isAvailable(ObservableKinematic::PARAMETER_NAME_PHI)) {
+        m_phi.setValue(parameters.getLastAvailable().toDouble());
         m_phi.setInitialized(true);
     }
 
@@ -80,10 +78,11 @@ ObservableKinematic::ObservableKinematic(double xB, double t, double Q2) :
 ObservableKinematic::ObservableKinematic(const std::string &xB,
         const std::string &t, const std::string &Q2, const std::string &phi) :
         Kinematic("ObservableKinematic"), m_xB(
-                StringUtils::fromStringToDouble(xB)), m_t(
-                StringUtils::fromStringToDouble(t)), m_Q2(
-                StringUtils::fromStringToDouble(Q2)), m_phi(
-                PhysicalType<double>(StringUtils::fromStringToDouble(phi),
+                ElemUtils::StringUtils::fromStringToDouble(xB)), m_t(
+                ElemUtils::StringUtils::fromStringToDouble(t)), m_Q2(
+                ElemUtils::StringUtils::fromStringToDouble(Q2)), m_phi(
+                PhysicalType<double>(
+                        ElemUtils::StringUtils::fromStringToDouble(phi),
                         PhysicalUnit(PhysicalUnit::DEGREE).getShortName())) {
     m_phi.setInitialized(true);
 }
@@ -92,7 +91,7 @@ ObservableKinematic::~ObservableKinematic() {
 }
 
 std::string ObservableKinematic::toString() const {
-    return Formatter() << Kinematic::toString() << " m_xB = " << m_xB
+    return ElemUtils::Formatter() << Kinematic::toString() << " m_xB = " << m_xB
             << " m_t = " << m_t << " (GeV2) m_Q2 = " << m_Q2 << " (GeV2) phi = "
             << m_phi.toString();
 }
@@ -157,12 +156,12 @@ void ObservableKinematic::setPhi(double phi) {
 }
 
 //TODO serialize PhysicalType<T>
-void ObservableKinematic::serialize(Packet &packet) const {
+void ObservableKinematic::serialize(ElemUtils::Packet &packet) const {
     packet << m_xB << m_t << m_Q2 << m_phi.getValue();
 }
 
 //TODO serialize PhysicalType<T>
-void ObservableKinematic::unserialize(Packet &packet) {
+void ObservableKinematic::unserialize(ElemUtils::Packet &packet) {
     packet >> m_xB;
     packet >> m_t;
     packet >> m_Q2;
@@ -173,11 +172,13 @@ void ObservableKinematic::unserialize(Packet &packet) {
     m_phi.setValue(phi);
 }
 
-Packet& operator <<(Packet& packet, ObservableKinematic& observableKinematic) {
+ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
+        ObservableKinematic& observableKinematic) {
     observableKinematic.serialize(packet);
     return packet;
 }
-Packet& operator >>(Packet& packet, ObservableKinematic& observableKinematic) {
+ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
+        ObservableKinematic& observableKinematic) {
 
     observableKinematic.unserialize(packet);
     return packet;

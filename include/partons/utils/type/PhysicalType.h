@@ -12,12 +12,11 @@
  * @brief
  */
 
+#include <ElementaryUtils/string_utils/Formatter.h>
+#include <ElementaryUtils/thread/Packet.h>
 #include <sstream>
 #include <stdexcept>
 #include <string>
-
-#include "../stringUtils/Formatter.h"
-#include "../thread/Packet.h"
 
 template<class T>
 class PhysicalType {
@@ -61,7 +60,7 @@ public:
     }
 
     std::string toString() const {
-        Formatter formatter;
+        ElemUtils::Formatter formatter;
 
         if (m_initialized) {
             formatter << m_value << "(" << m_unit << ")";
@@ -74,11 +73,11 @@ public:
 
     /// Serialization
 
-    void serialize(Packet &packet) const {
+    void serialize(ElemUtils::Packet &packet) const {
         packet << m_initialized << m_value << m_unit;
     }
 
-    void unserialize(Packet &packet) {
+    void unserialize(ElemUtils::Packet &packet) {
         packet >> m_initialized;
         packet >> m_value;
         packet >> m_unit;
@@ -137,13 +136,15 @@ private:
 };
 
 template<class T>
-Packet& operator <<(Packet& packet, PhysicalType<T>& physicalType) {
+ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
+        PhysicalType<T>& physicalType) {
     physicalType.serialize(packet);
     return packet;
 }
 
 template<class T>
-Packet& operator >>(Packet& packet, PhysicalType<T>& physicalType) {
+ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
+        PhysicalType<T>& physicalType) {
     physicalType.unserialize(packet);
     return packet;
 }

@@ -12,7 +12,7 @@
  * @brief
  */
 
-#include "../ObservableModule.h"
+#include "../ProcessModule.h"
 
 class DVMPModule: public ProcessModule {
 public:

@@ -1,9 +1,8 @@
 #include "../../../../include/partons/beans/double_distribution/DoubleDistributionResult.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <sstream>
 #include <utility>
-
-#include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 DoubleDistributionResult::DoubleDistributionResult() :
         BaseObject("DualDistributionResult") {
@@ -29,7 +28,7 @@ const PartonDistribution& DoubleDistributionResult::getPartonDistribution(
 
     if (it == m_partonDistributions.end()) {
         error(__func__,
-                Formatter()
+                ElemUtils::Formatter()
                         << "Enable to find PartonDistribution object from type = "
                         << DoubleDistributionType(doubleDistributionType).toString());
 

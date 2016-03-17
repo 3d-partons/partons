@@ -1,12 +1,12 @@
 #include "../../../../../include/partons/modules/process/DVCS/GV2008Model.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <cmath>
 #include <complex>
 
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../../include/partons/utils/stringUtils/Formatter.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int GV2008Model::classId =
@@ -15,6 +15,7 @@ const unsigned int GV2008Model::classId =
 
 /*--------------------------------------- Constructors ---------------------------------*/
 
+//TODO add missing members initialization
 GV2008Model::GV2008Model(const std::string &className) :
         DVCSModule(className), m_qCM(NumA::Vector4D(0., 0., 0., 0.)), m_pCM(
                 NumA::Vector4D(0., 0., 0., 0.)), m_qpCM(
@@ -27,6 +28,7 @@ GV2008Model::GV2008Model(const std::string &className) :
 GV2008Model::~GV2008Model() {
 }
 
+//TODO add missing members initialization
 GV2008Model::GV2008Model(const GV2008Model& other) :
         DVCSModule(other) {
     m_qCM = other.m_qCM;
@@ -172,7 +174,8 @@ void GV2008Model::initModule() {
 
     m_thetag = acos(m_qpCM.getZ() / m_qpCM.getE());
 
-    debug(__func__, Formatter() << "m_phaseSpace = " << m_phaseSpace);
+    debug(__func__,
+            ElemUtils::Formatter() << "m_phaseSpace = " << m_phaseSpace);
 
     //TODO : disable computation if kinematic unchanged
 
@@ -187,7 +190,7 @@ void GV2008Model::isModuleWellConfigured() {
     DVCSModule::isModuleWellConfigured();
 
     if (!(m_xBMin < m_xB && m_xB < m_xBMax)) {
-        Formatter formater;
+        ElemUtils::Formatter formater;
 
         formater
                 << "Unrealistic kinematic configuration : m_xB isn't in the physical region !"
@@ -201,7 +204,7 @@ void GV2008Model::isModuleWellConfigured() {
 
     if (m_y < 1.) {
         error(__func__,
-                Formatter() << "ELab = " << m_E
+                ElemUtils::Formatter() << "ELab = " << m_E
                         << " GeV is too small. cosh[ome]= " << m_y);
     }
 

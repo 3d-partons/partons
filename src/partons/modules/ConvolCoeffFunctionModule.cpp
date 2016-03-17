@@ -12,3 +12,10 @@ ConvolCoeffFunctionModule::ConvolCoeffFunctionModule(
         const ConvolCoeffFunctionModule& other) :
         ModuleObject(other), MathIntegratorModule(other) {
 }
+
+void ConvolCoeffFunctionModule::configure(
+        const ElemUtils::Parameters &parameters) {
+    configureIntegrator(parameters);
+
+    ModuleObject::configure(parameters);
+}

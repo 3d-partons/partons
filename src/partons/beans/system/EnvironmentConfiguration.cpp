@@ -1,8 +1,11 @@
 #include "../../../../include/partons/beans/system/EnvironmentConfiguration.h"
 
+#include <ElementaryUtils/string_utils/MD5.h>
+#include <iostream>
+
 EnvironmentConfiguration::EnvironmentConfiguration() :
         DatabaseObject("EnvironmentConfiguration"), m_storeDate(time(0)), m_configuration(
-                " "), m_md5(" ") {
+                ""), m_md5("") {
 }
 
 EnvironmentConfiguration::EnvironmentConfiguration(
@@ -38,7 +41,9 @@ void EnvironmentConfiguration::setStoreDate(time_t storeDate) {
     m_storeDate = storeDate;
 }
 
-const std::string& EnvironmentConfiguration::getConfiguration() const {
+std::string EnvironmentConfiguration::getConfiguration() const {
+    ElemUtils::MD5 md5;
+    std::cerr << md5.convertToBitsString(m_configuration) << std::endl;
     return m_configuration;
 }
 

@@ -1,5 +1,6 @@
 #include "../../../../../include/partons/database/gpd/service/GPDResultDaoService.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <QtSql/qsqldatabase.h>
 #include <exception>
 #include <map>
@@ -9,7 +10,6 @@
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../../include/partons/beans/List.h"
 #include "../../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
-#include "../../../../../include/partons/utils/stringUtils/Formatter.h"
 
 GPDResultDaoService::GPDResultDaoService() :
         BaseObject("GPDResultDaoService") {
@@ -93,7 +93,8 @@ int GPDResultDaoService::insert(
         const ResultList<GPDResult> &gpdResultList) const {
 
     info(__func__,
-            Formatter() << "Inserting object size = " << gpdResultList.size());
+            ElemUtils::Formatter() << "Inserting object size = "
+                    << gpdResultList.size());
 
     int computationId = -1;
 

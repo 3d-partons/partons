@@ -10,12 +10,16 @@
 #ifndef GAPEQUATIONSOLVER_H_
 #define GAPEQUATIONSOLVER_H_
 
+//#include <NumA/integration/one_dimension/GLNPIntegrator1D.h>
+#include <NumA/utils/Tolerances.h>
 #include <string>
 #include <vector>
-#include <NumA/integration/one_dimension/GLNPIntegrator1D.h>
-#include <NumA/utils/Tolerances.h>
 
 #include "../../ModuleObject.h"
+
+namespace NumA {
+class QuadratureIntegrator1D;
+} /* namespace NumA */
 
 class QuarkGluonVertex;
 
@@ -49,7 +53,7 @@ public:
      *
      * @param parameters
      */
-    virtual void configure(ParameterList parameters);
+    virtual void configure(const ElemUtils::Parameters &parameters);
 
     enum IterativeType {
         Naive = 0, Newton = 1

@@ -16,12 +16,16 @@
 
 #include "../../Kinematic.h"
 
+namespace ElemUtils {
+class Parameters;
+} /* namespace ElemUtils */
+
 class ParameterList;
 
 class DVCSConvolCoeffFunctionKinematic: public Kinematic {
 public:
     DVCSConvolCoeffFunctionKinematic();
-    DVCSConvolCoeffFunctionKinematic(ParameterList &parameterList);
+    DVCSConvolCoeffFunctionKinematic(const ElemUtils::Parameters &parameters);
     DVCSConvolCoeffFunctionKinematic(double xi, double t, double Q2,
             double MuF2, double MuR2);
     DVCSConvolCoeffFunctionKinematic(unsigned int binId, double xi, double t,

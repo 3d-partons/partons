@@ -4,6 +4,7 @@
 #include <cln/float_class.h>
 #include <cln/floatformat.h>
 #include <cln/real.h>
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <cmath>
 #include <map>
 #include <utility>
@@ -15,14 +16,13 @@
 #include "../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../include/partons/utils/ParameterList.h"
-#include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int GK11Model::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new GK11Model("GK11Model"));
 
+//TODO initialise missing members
 GK11Model::GK11Model(const std::string &className) :
         GPDModule(className) {
     m_nf = 3;
@@ -127,9 +127,8 @@ GK11Model* GK11Model::clone() const {
 GK11Model::~GK11Model() {
 }
 
-void GK11Model::configure(ParameterList parameters) {
-    //TODO
-    // GPDModule::configure(parameters);
+void GK11Model::configure(const ElemUtils::Parameters &parameters) {
+    GPDModule::configure(parameters);
 }
 
 //TODO implement
@@ -144,7 +143,7 @@ void GK11Model::initModule() {
     fL = log(m_MuF2 / m_MuF2_ref); // Logarithmic dependence on the scale
 
     /*   debug(__func__,
-     Formatter() << "fMuF2 = " << fMuF2 << " fL = " << fL);*/
+     ElemUtils::Formatter() << "fMuF2 = " << fMuF2 << " fL = " << fL);*/
 }
 
 PartonDistribution GK11Model::computeH() {
@@ -286,8 +285,8 @@ PartonDistribution GK11Model::computeHt() {
                             + c3 * Hti1tab.at(2)));
 
     debug(__func__,
-            Formatter() << "c1 = " << c1 << ", c2 = " << c2 << ", c3 = " << c3
-                    << ", b0 = " << b0);
+            ElemUtils::Formatter() << "c1 = " << c1 << ", c2 = " << c2
+                    << ", c3 = " << c3 << ", b0 = " << b0);
 
 // s quark,  Ht_sea = 0 for GK
     quarkDistribution_s.setQuarkDistribution(0.);
@@ -309,9 +308,9 @@ PartonDistribution GK11Model::computeHt() {
 //      +  c4 * (3.-delta) * (2.-delta) * (1-delta)/(7.-delta)/(6.-delta)/(5.-delta) ) ;
 
     debug(__func__,
-            Formatter() << "c1 = " << c1 << ", c2 = " << c2 << ", c3 = " << c3
-                    << ", b0 = " << b0 << ", etau = " << etau << ", delta = "
-                    << delta << ", Nu = " << Nu);
+            ElemUtils::Formatter() << "c1 = " << c1 << ", c2 = " << c2
+                    << ", c3 = " << c3 << ", b0 = " << b0 << ", etau = " << etau
+                    << ", delta = " << delta << ", Nu = " << Nu);
 
     double uVal = etau / Nu * exp(b0 * m_t)
             * (c1 * Htuval1tab.at(0) + c2 * Htuval1tab.at(1)
@@ -336,9 +335,9 @@ PartonDistribution GK11Model::computeHt() {
     b0 = 0;
 
     debug(__func__,
-            Formatter() << "c1 = " << c1 << ", c2 = " << c2 << ", c3 = " << c3
-                    << ", b0 = " << b0 << ", etad = " << etad << ", Nd = "
-                    << Nd);
+            ElemUtils::Formatter() << "c1 = " << c1 << ", c2 = " << c2
+                    << ", c3 = " << c3 << ", b0 = " << b0 << ", etad = " << etad
+                    << ", Nd = " << Nd);
 
     double dVal = etad / Nd * exp(b0 * m_t)
             * (c1 * Htdval1tab.at(0) + c2 * Htdval1tab.at(1)
@@ -740,7 +739,7 @@ double GK11Model::Hs1(double x, double i, double k) {
     }
 
     /*    debug(__func__,
-     Formatter() << "(x=" << x << ", xi=" << m_xi << ", i=" << i
+     ElemUtils::Formatter() << "(x=" << x << ", xi=" << m_xi << ", i=" << i
      << ", k=" << k << ") dummy = " << dummy);*/
 
     return dummy;
@@ -939,7 +938,7 @@ double GK11Model::Hval1(double x, double i, double k) {
     }
 
     /*   debug(__func__,
-     Formatter() << "(x=" << x << ", xi=" << m_xi << ", i=" << i
+     ElemUtils::Formatter() << "(x=" << x << ", xi=" << m_xi << ", i=" << i
      << ", k=" << k << ") dummy = " << dummy);*/
 
     return dummy;
@@ -992,8 +991,8 @@ double GK11Model::Hval1_alt(double x, double i, double k) {
     dummy = double_approx(dummya);
 
     debug(__func__,
-            Formatter() << "(x=" << x << ", xi=" << m_xi << ", i=" << i
-                    << ", k=" << k << ") dummy = " << dummy);
+            ElemUtils::Formatter() << "(x=" << x << ", xi=" << m_xi << ", i="
+                    << i << ", k=" << k << ") dummy = " << dummy);
 
     return dummy;
 }
@@ -1035,8 +1034,8 @@ void GK11Model::calculateHtCoefs() {
 // No sea Ht for GK.
 
     debug(__func__,
-            Formatter() << "slow_sea = " << slow_sea << " slow_val = "
-                    << slow_val);
+            ElemUtils::Formatter() << "slow_sea = " << slow_sea
+                    << " slow_val = " << slow_val);
 
 //TODO permuter les conditions
 
@@ -1128,7 +1127,7 @@ void GK11Model::calculateHtKas() {
     kHtdval = kHtuval;
 
     debug(__func__,
-            Formatter() << "(t=" << m_t << ") kHtgluon=" << kHtgluon
+            ElemUtils::Formatter() << "(t=" << m_t << ") kHtgluon=" << kHtgluon
                     << " kHtsea=" << kHtsea << " kHtuval=" << kHtuval
                     << " kHtdval=" << kHtdval);
 }
@@ -1223,8 +1222,8 @@ double GK11Model::Hti1_alt(double x, double i, double k) {
     dummy = double_approx(dummya);
 
     debug(__func__,
-            Formatter() << "(x=" << x << ", xi=" << m_xi << ", i=" << i
-                    << ", k=" << k << ") dummy = " << dummy);
+            ElemUtils::Formatter() << "(x=" << x << ", xi=" << m_xi << ", i="
+                    << i << ", k=" << k << ") dummy = " << dummy);
 
     return dummy;
 }

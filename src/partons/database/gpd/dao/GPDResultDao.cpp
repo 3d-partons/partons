@@ -1,5 +1,6 @@
 #include "../../../../../include/partons/database/gpd/dao/GPDResultDao.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <QtCore/qstring.h>
 #include <QtCore/qvariant.h>
 #include <QtSql/qsqlerror.h>
@@ -9,7 +10,6 @@
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
 #include "../../../../../include/partons/database/DatabaseManager.h"
-#include "../../../../../include/partons/utils/stringUtils/Formatter.h"
 
 GPDResultDao::GPDResultDao() :
         BaseObject("GPDResultDao") {
@@ -35,7 +35,7 @@ int GPDResultDao::insertResult(const std::string &computationModuleName,
         result = query.lastInsertId().toInt();
     } else {
         error(__func__,
-                Formatter() << query.lastError().text().toStdString()
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
     }
@@ -63,7 +63,7 @@ int GPDResultDao::insertIntoGPDResultPartonDistributionTable(
         result = query.lastInsertId().toInt();
     } else {
         error(__func__,
-                Formatter() << query.lastError().text().toStdString()
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
     }
@@ -90,7 +90,7 @@ ResultList<GPDResult> GPDResultDao::getGPDResultListByComputationId(
             fillGPDResultList(resultList, query);
         } else {
             warn(__func__,
-                    Formatter() << "No entry for computationId = "
+                    ElemUtils::Formatter() << "No entry for computationId = "
                             << computationId);
         }
     }
@@ -152,7 +152,7 @@ void GPDResultDao::fillGPDResult(GPDResult &gpdResult) const {
         }
     } else {
         error(__func__,
-                Formatter() << query.lastError().text().toStdString()
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
     }

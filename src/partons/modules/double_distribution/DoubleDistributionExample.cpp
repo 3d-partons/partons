@@ -17,6 +17,7 @@ const unsigned int DoubleDistributionExample::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new DoubleDistributionExample("DoubleDistributionExample"));
 
+//TODO initialise missing member
 DoubleDistributionExample::DoubleDistributionExample(
         const std::string &className) :
         DoubleDistributionModule(className), MathIntegratorModule() {

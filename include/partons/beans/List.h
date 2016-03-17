@@ -12,6 +12,7 @@
  * @brief
  */
 
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <stddef.h>
 #include <string>
 #include <vector>
@@ -19,7 +20,6 @@
 #include "../BaseObject.h"
 #include "../utils/compare/ComparisonMode.h"
 #include "../utils/compare/ComparisonReport.h"
-#include "../utils/stringUtils/Formatter.h"
 #include "SortingMode.h"
 
 namespace NumA {
@@ -72,7 +72,7 @@ public:
     }
 
     std::string toString() {
-        Formatter formatter;
+        ElemUtils::Formatter formatter;
 
         for (size_t i = 0; i != m_data.size(); i++) {
             formatter << m_data[i].toString() << '\n';
@@ -102,7 +102,7 @@ public:
         rootComparisonReport.setTolerances(tolerances);
 
         if ((this->isEmpty()) && referenceObject.isEmpty()) {
-            warn(__func__, Formatter() << "Lists are empty");
+            warn(__func__, ElemUtils::Formatter() << "Lists are empty");
         } else {
             // see : http://stackoverflow.com/a/9813792
             // TODO Don't work
@@ -122,7 +122,8 @@ public:
                     }
                 } else {
                     warn(__func__,
-                            Formatter() << "Lists are not equal in size ; EQUAL comparison mode cannot be performed");
+                            ElemUtils::Formatter()
+                                    << "Lists are not equal in size ; EQUAL comparison mode cannot be performed");
                 }
                 break;
             }

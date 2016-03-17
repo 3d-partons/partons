@@ -18,10 +18,10 @@
  * like evaluating a GPD at a list of kinematic configurations, or evaluating several GPD models at the same input kinematic.
  */
 
+#include <ElementaryUtils/thread/Packet.h>
 #include <string>
 
 #include "beans/List.h"
-#include "utils/thread/Packet.h"
 #include "utils/thread/ThreadManager.h"
 #include "utils/thread/ThreadQueue.h"
 
@@ -45,11 +45,11 @@ public:
 
     virtual void computeTask(Task &task) = 0;
 
-    void addTasks(const List<Packet> &tasks);
+    void addTasks(const List<ElemUtils::Packet> &tasks);
 
     bool isEmptyTaskQueue();
 
-    Packet popTaskFormQueue();
+    ElemUtils::Packet popTaskFormQueue();
 
     void initComputationalThread(ModuleObject* pModuleObject);
 

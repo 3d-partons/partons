@@ -1,17 +1,16 @@
 #include "../../include/partons/Partons.h"
 
+#include <ElementaryUtils/file_utils/FileUtils.h>
+#include <ElementaryUtils/logger/LoggerManager.h>
+#include <ElementaryUtils/PropertiesManager.h>
+#include <ElementaryUtils/string_utils/StringUtils.h>
+
 #include "../../include/partons/beans/system/EnvironmentConfiguration.h"
 #include "../../include/partons/BaseObjectFactory.h"
 #include "../../include/partons/BaseObjectRegistry.h"
 #include "../../include/partons/database/DatabaseManager.h"
 #include "../../include/partons/ModuleObjectFactory.h"
 #include "../../include/partons/ServiceObjectRegistry.h"
-#include "../../include/partons/utils/fileUtils/FileUtils.h"
-#include "../../include/partons/utils/logger/LoggerManager.h"
-#include "../../include/partons/utils/PropertiesManager.h"
-#include "../../include/partons/utils/stringUtils/StringUtils.h"
-
-class EnvironmentConfiguration;
 
 // Global static pointer used to ensure a single instance of the class.
 Partons* Partons::m_pInstance = 0;
@@ -28,7 +27,8 @@ Partons* Partons::getInstance() {
 Partons::Partons() :
         m_pBaseObjectRegistry(BaseObjectRegistry::getInstance()), m_pServiceObjectRegistry(
                 0), m_pBaseObjectFactory(0), m_pModuleObjectFactory(0), m_pLoggerManager(
-                LoggerManager::getInstance()), m_pEnvironmentConfiguration(0) {
+                ElemUtils::LoggerManager::getInstance()), m_pEnvironmentConfiguration(
+                0) {
 
     m_pBaseObjectFactory = new BaseObjectFactory(m_pBaseObjectRegistry);
     m_pModuleObjectFactory = new ModuleObjectFactory(m_pBaseObjectFactory);
@@ -66,10 +66,12 @@ Partons::~Partons() {
 void Partons::init(char** argv) {
     //TODO check with windows system path, how to handle '/' & '\' characters
     // Get current working directory
-    m_currentWorkingDirectoryPath = StringUtils::removeAfterLast(argv[0], '/');
+    m_currentWorkingDirectoryPath = ElemUtils::StringUtils::removeAfterLast(
+            argv[0], '/');
 
     // 1. Init PropertiesManager to provides configurations
-    PropertiesManager::getInstance()->init(m_currentWorkingDirectoryPath);
+    ElemUtils::PropertiesManager::getInstance()->init(
+            m_currentWorkingDirectoryPath);
 
     // 2. Init the logger to trac info/warn/debug message
     m_pLoggerManager->init();
@@ -89,8 +91,8 @@ void Partons::init(char** argv) {
 }
 
 void Partons::retrieveEnvironmentConfiguration() {
-    std::string configuration = FileUtils::read(
-            PropertiesManager::getInstance()->getString(
+    std::string configuration = ElemUtils::FileUtils::read(
+            ElemUtils::PropertiesManager::getInstance()->getString(
                     "environment.configuration.file.path"));
     std::string md5 = "undefined";
     m_pEnvironmentConfiguration = new EnvironmentConfiguration(configuration,
@@ -134,7 +136,7 @@ ModuleObjectFactory* Partons::getModuleObjectFactory() const {
     return m_pModuleObjectFactory;
 }
 
-LoggerManager* Partons::getLoggerManager() const {
+ElemUtils::LoggerManager* Partons::getLoggerManager() const {
     return m_pLoggerManager;
 }
 

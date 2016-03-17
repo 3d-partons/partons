@@ -1,12 +1,11 @@
 #include "../../../../include/partons/beans/dse/QPbyChebyshev.h"
 
+#include <NumA/linear_algebra/vector/VectorD.h>
 #include <algorithm>
 #include <cmath>
 #include <iterator>
-#include <NumA/linear_algebra/vector/VectorD.h>
 
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 QPbyChebyshev::QPbyChebyshev(unsigned int N, double m, double mu,
         double Lambda2, double epsilon2) :
@@ -95,9 +94,8 @@ std::vector<double> QPbyChebyshev::evaluate(
                     true, b_dsigmaS_a = true, b_dsigmaS_b = true;
             i_SigmaA = QuarkPropagator::SigmaA, i_SigmaM =
                     QuarkPropagator::SigmaM, i_A = QuarkPropagator::A, i_B =
-                    QuarkPropagator::B, i_M =
-                            QuarkPropagator::M, i_sigmaV = QuarkPropagator::sigmaV, i_sigmaS =
-                    QuarkPropagator::sigmaS, i_dSigmaA =
+                    QuarkPropagator::B, i_M = QuarkPropagator::M, i_sigmaV =
+                    QuarkPropagator::sigmaV, i_sigmaS = QuarkPropagator::sigmaS, i_dSigmaA =
                     QuarkPropagator::dSigmaA, i_dSigmaM =
                     QuarkPropagator::dSigmaM, i_dA = QuarkPropagator::dA, i_dB =
                     QuarkPropagator::dB, i_dsigmaV_a =
@@ -176,15 +174,15 @@ std::vector<double> QPbyChebyshev::evaluate(
             }
         }
 
-        double SigmaA, SigmaM, A, B, M, sigmaV, sigmaS, dSigmaA, dSigmaM, dA, dB,
-                dsigmaV_a, dsigmaV_b, dsigmaS_a, dsigmaS_b;
+        double SigmaA, SigmaM, A, B, M, sigmaV, sigmaS, dSigmaA, dSigmaM, dA,
+                dB, dsigmaV_a, dsigmaV_b, dsigmaS_a, dsigmaS_b;
         double A2, B2, denom, sigmaV2, sigmaS2;
         double xmu, x;
         std::vector<double> Tix(m_a.size(), 0.), Tixmu(m_a.size(), 0.);
 
         x = stox(p2);
-        if (b_A || b_B || b_M || b_sigmaV || b_sigmaS || b_dA || b_dB || b_dsigmaV_a
-                || b_dsigmaV_b || b_dsigmaS_a || b_dsigmaS_b) {
+        if (b_A || b_B || b_M || b_sigmaV || b_sigmaS || b_dA || b_dB
+                || b_dsigmaV_a || b_dsigmaV_b || b_dsigmaS_a || b_dsigmaS_b) {
             xmu = stox(m_mu * m_mu);
         }
 
@@ -193,8 +191,8 @@ std::vector<double> QPbyChebyshev::evaluate(
             for (unsigned int i = 1; i < m_a.size(); i++) {
                 Tix.at(i) = T(i, x);
             }
-            if (b_A || b_B || b_M || b_sigmaV || b_sigmaS || b_dsigmaV_a || b_dsigmaV_b
-                    || b_dsigmaS_a || b_dsigmaS_b) {
+            if (b_A || b_B || b_M || b_sigmaV || b_sigmaS || b_dsigmaV_a
+                    || b_dsigmaV_b || b_dsigmaS_a || b_dsigmaS_b) {
                 for (unsigned int i = 1; i < m_a.size(); i++) {
                     Tixmu.at(i) = Tix.at(i) - T(i, xmu);
                 }
@@ -237,7 +235,7 @@ std::vector<double> QPbyChebyshev::evaluate(
         }
 
         if (b_M) {
-            M = B/A;
+            M = B / A;
         }
 
         if (b_sigmaV || b_sigmaS || b_dsigmaV_a || b_dsigmaV_b || b_dsigmaS_a

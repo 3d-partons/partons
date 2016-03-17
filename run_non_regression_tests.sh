@@ -10,7 +10,7 @@ OUTPUT_FILE="environment_configuration.dat"
 uname -a > $OUTPUT_FILE
 
 # Get first line printed by g++ --version command line
-g++ --version | sed -n 1p >> $OUTPUT_FILE
+g++ --version | sed -n 1p  >> $OUTPUT_FILE
 
 # Get QT4 version
 

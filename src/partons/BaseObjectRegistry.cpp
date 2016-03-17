@@ -1,10 +1,9 @@
 #include "../../include/partons/BaseObjectRegistry.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <SFML/System/Lock.hpp>
 #include <stdexcept>
 #include <utility>
-
-#include "../../include/partons/utils/stringUtils/Formatter.h"
 
 BaseObjectRegistry* BaseObjectRegistry::m_pInstance = 0;
 unsigned int BaseObjectRegistry::m_uniqueClassIdCounter = 0;
@@ -106,7 +105,7 @@ bool BaseObjectRegistry::isAvailable(const std::string &className) {
 std::string BaseObjectRegistry::toString() {
     sf::Lock lock(m_mutex); // mutex.lock()
 
-    Formatter formatter;
+    ElemUtils::Formatter formatter;
     formatter << "[ModuleObjectFactory]" << '\n';
     for (m_itBaseObjectList = m_baseObjectList.begin();
             m_itBaseObjectList != m_baseObjectList.end();

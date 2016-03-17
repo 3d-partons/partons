@@ -1,6 +1,6 @@
 #include "../../../../include/partons/beans/kinematic/GeneralizedFormFactorKinematic.h"
 
-#include "../../../../include/partons/utils/stringUtils/Formatter.h"
+#include <ElementaryUtils/string_utils/Formatter.h>
 
 GeneralizedFormFactorKinematic::GeneralizedFormFactorKinematic() :
         m_t(0.), m_MuF(0.), m_MuR(0.) {
@@ -15,8 +15,8 @@ GeneralizedFormFactorKinematic::~GeneralizedFormFactorKinematic() {
 }
 
 std::string GeneralizedFormFactorKinematic::toString() {
-    return Formatter() << "m_t = " << m_t << " m_MuF = " << m_MuF << " m_MuR = "
-            << m_MuR;
+    return ElemUtils::Formatter() << "m_t = " << m_t << " m_MuF = " << m_MuF
+            << " m_MuR = " << m_MuR;
 }
 
 double GeneralizedFormFactorKinematic::getMuF() const {

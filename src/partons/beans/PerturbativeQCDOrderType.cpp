@@ -1,6 +1,6 @@
 #include "../../../include/partons/beans/PerturbativeQCDOrderType.h"
 
-#include "../../../include/partons/utils/stringUtils/StringUtils.h"
+#include <ElementaryUtils/string_utils/StringUtils.h>
 
 const std::string PerturbativeQCDOrderType::PARAMETER_NAME_PERTURBATIVE_QCD_ORDER_TYPE =
         "qcd_order_type";
@@ -47,13 +47,13 @@ PerturbativeQCDOrderType::Type PerturbativeQCDOrderType::fromString(
         const std::string& gpdTypeStr) {
     PerturbativeQCDOrderType::Type gpdType = PerturbativeQCDOrderType::UNDEFINED;
 
-    if (StringUtils::equals(gpdTypeStr, "LO")) {
+    if (ElemUtils::StringUtils::equals(gpdTypeStr, "LO")) {
         gpdType = PerturbativeQCDOrderType::LO;
-    } else if (StringUtils::equals(gpdTypeStr, "NLO")) {
+    } else if (ElemUtils::StringUtils::equals(gpdTypeStr, "NLO")) {
         gpdType = PerturbativeQCDOrderType::NLO;
-    } else if (StringUtils::equals(gpdTypeStr, "LL")) {
+    } else if (ElemUtils::StringUtils::equals(gpdTypeStr, "LL")) {
         gpdType = PerturbativeQCDOrderType::LL;
-    } else if (StringUtils::equals(gpdTypeStr, "NLL")) {
+    } else if (ElemUtils::StringUtils::equals(gpdTypeStr, "NLL")) {
         gpdType = PerturbativeQCDOrderType::NLL;
     }
 

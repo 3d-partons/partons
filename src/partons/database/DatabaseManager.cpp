@@ -1,17 +1,11 @@
 #include "../../../include/partons/database/DatabaseManager.h"
 
-//#include <QtCore/qbytearray.h>
+#include <ElementaryUtils/PropertiesManager.h>
+#include <ElementaryUtils/string_utils/Formatter.h>
+#include <ElementaryUtils/string_utils/StringUtils.h>
 #include <QtCore/qstring.h>
-//#include <QtCore/qvariant.h>
 #include <QtSql/qsqlerror.h>
-//#include <QtSql/qsqlrecord.h>
-//#include <QtSql/qsqltablemodel.h>
-//#include <iostream>
 #include <string>
-
-#include "../../../include/partons/utils/PropertiesManager.h"
-#include "../../../include/partons/utils/stringUtils/Formatter.h"
-#include "../../../include/partons/utils/stringUtils/StringUtils.h"
 
 // Global static pointer used to ensure a single instance of the class.
 DatabaseManager* DatabaseManager::m_pInstance = 0;
@@ -27,11 +21,14 @@ const QSqlDatabase& DatabaseManager::getTestDatabase() const {
 DatabaseManager::DatabaseManager() :
         BaseObject("DatabaseManager") {
 
+    ElemUtils::PropertiesManager* pPropertiesManager =
+            ElemUtils::PropertiesManager::getInstance();
+
     //TODO replace by static const variable
-    std::string sqlDatabaseType = PropertiesManager::getInstance()->getString(
+    std::string sqlDatabaseType = pPropertiesManager->getString(
             "database.production.type");
 
-    if (StringUtils::equalsIgnoreCase(sqlDatabaseType, "MYSQL")) {
+    if (ElemUtils::StringUtils::equalsIgnoreCase(sqlDatabaseType, "MYSQL")) {
         m_productionDatabase = QSqlDatabase::addDatabase("QMYSQL");
 
     } else {
@@ -40,24 +37,20 @@ DatabaseManager::DatabaseManager() :
 
     m_productionDatabase.setDatabaseName(
             QString(
-                    PropertiesManager::getInstance()->getString(
-                            "database.production.dbname").c_str()));
+                    pPropertiesManager->getString("database.production.dbname").c_str()));
     m_productionDatabase.setHostName(
             QString(
-                    PropertiesManager::getInstance()->getString(
-                            "database.production.url").c_str()));
+                    pPropertiesManager->getString("database.production.url").c_str()));
     m_productionDatabase.setUserName(
             QString(
-                    PropertiesManager::getInstance()->getString(
-                            "database.production.user").c_str()));
+                    pPropertiesManager->getString("database.production.user").c_str()));
     m_productionDatabase.setPassword(
             QString(
-                    PropertiesManager::getInstance()->getString(
-                            "database.production.passwd").c_str()));
+                    pPropertiesManager->getString("database.production.passwd").c_str()));
 
     if (!m_productionDatabase.open()) {
         error(__func__,
-                Formatter() << "Can't connect to database : "
+                ElemUtils::Formatter() << "Can't connect to database : "
                         << m_productionDatabase.lastError().text().toStdString());
     } else {
         info(__func__, "Database connection OK");

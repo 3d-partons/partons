@@ -1,5 +1,6 @@
 #include "../../../../../include/partons/modules/process/DVCS/VGG1999Model.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/linear_algebra/vector/Vector3D.h>
 #include <cmath>
 #include <cstdio>
@@ -7,7 +8,6 @@
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../../include/partons/utils/stringUtils/Formatter.h"
 
 const unsigned int VGG1999Model::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
@@ -168,7 +168,7 @@ double VGG1999Model::CrossSectionMechanism(double beamHelicity,
     //transversely polarised target
     if (m_target_polarizationT != 0.) {
         error(__FUNCTION__,
-                Formatter()
+                ElemUtils::Formatter()
                         << "Transverse target polarisation and dependence on phi_s angle not implemented yet");
     }
 

@@ -1,5 +1,7 @@
 #include "../../../../include/partons/modules/observable/Observable.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
+#include <ElementaryUtils/thread/Packet.h>
 #include <NumA/utils/MathUtils.h>
 #include <SFML/System/Sleep.hpp>
 #include <SFML/System/Time.hpp>
@@ -11,9 +13,7 @@
 #include "../../../../include/partons/Partons.h"
 #include "../../../../include/partons/services/ObservableService.h"
 #include "../../../../include/partons/ServiceObjectRegistry.h"
-#include "../../../../include/partons/utils/ParameterList.h"
-#include "../../../../include/partons/utils/stringUtils/Formatter.h"
-#include "../../../../include/partons/utils/thread/Packet.h"
+#include "../../../../include/partons/ServiceObjectTyped.h"
 #include "../../../../include/partons/utils/type/PhysicalType.h"
 
 Observable::Observable(const std::string &className) :
@@ -59,7 +59,7 @@ void Observable::run() {
 
         while (!(pObservableService->isEmptyTaskQueue())) {
             ObservableKinematic observableKinematic;
-            Packet packet = pObservableService->popTaskFormQueue();
+            ElemUtils::Packet packet = pObservableService->popTaskFormQueue();
             packet >> observableKinematic;
 
             pObservableService->add(compute(observableKinematic));
@@ -86,7 +86,9 @@ void Observable::run() {
 
 ObservableResult Observable::compute(const ObservableKinematic &kinematic) {
 
-    info(__func__, Formatter() << getObjectId() << " " << kinematic.toString());
+    info(__func__,
+            ElemUtils::Formatter() << getObjectId() << " "
+                    << kinematic.toString());
 
     return compute(kinematic.getXB(), kinematic.getT(), kinematic.getQ2(),
             kinematic.getPhi().getValue());
@@ -123,7 +125,7 @@ ObservableResult Observable::compute(double xB, double t, double Q2,
 
     else {
         error(__func__,
-                Formatter() << "Unknow observable type : "
+                ElemUtils::Formatter() << "Unknow observable type : "
                         << ObservableType(m_observableType).toString());
     }
 
@@ -176,5 +178,6 @@ void Observable::setDVCSModule(ProcessModule* pDVCSModule) {
     m_pProcess = pDVCSModule;
 }
 
-void Observable::configure(ParameterList parameters) {
+void Observable::configure(const ElemUtils::Parameters &parameters) {
+    ModuleObject::configure(parameters);
 }

@@ -37,7 +37,8 @@ double MathIntegratorModule::integrate(NumA::FunctionType1D* pFunction,
     return m_mathIntegrator->integrate(pFunction, a, b, parameters);
 }
 
-void MathIntegratorModule::configureIntegrator(NumA::Parameters& parameters) {
+void MathIntegratorModule::configureIntegrator(
+        const ElemUtils::Parameters& parameters) {
     m_mathIntegrator->configure(parameters);
 }
 

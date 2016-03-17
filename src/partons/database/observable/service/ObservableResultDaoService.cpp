@@ -1,5 +1,6 @@
 #include "../../../../../include/partons/database/observable/service/ObservableResultDaoService.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <QtSql/qsqldatabase.h>
 #include <stddef.h>
 #include <exception>
@@ -7,7 +8,6 @@
 #include "../../../../../include/partons/beans/Computation.h"
 #include "../../../../../include/partons/beans/List.h"
 #include "../../../../../include/partons/utils/math/ErrorBar.h"
-#include "../../../../../include/partons/utils/stringUtils/Formatter.h"
 
 ObservableResultDaoService::ObservableResultDaoService() :
         BaseObject("ObservableResultDaoService") {
@@ -81,7 +81,7 @@ int ObservableResultDaoService::insert(
     int result = -1;
 
     info(__func__,
-            Formatter() << "Inserting object size = "
+            ElemUtils::Formatter() << "Inserting object size = "
                     << observableResultList.size());
 
     // For multiple query it's better to use transaction to guarantee database's integrity and performance

@@ -1,9 +1,8 @@
 #include "../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <sstream>
 #include <utility>
-
-#include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 PartonDistribution::PartonDistribution() :
         BaseObject("PartonDistribution") {
@@ -134,14 +133,14 @@ void PartonDistribution::compare(ComparisonReport &rootComparisonReport,
     // compare gluon distribution
     this->m_gluonDistribution.compare(rootComparisonReport,
             referenceObject.getGluonDistribution(), tolerances,
-            Formatter() << parentObjectInfo);
+            ElemUtils::Formatter() << parentObjectInfo);
 
     for (std::map<QuarkFlavor::Type, QuarkDistribution>::const_iterator it =
             m_quarkDistributions.begin(); it != m_quarkDistributions.end();
             it++) {
         (it->second).compare(rootComparisonReport,
                 referenceObject.getQuarkDistribution((it->first)), tolerances,
-                Formatter() << parentObjectInfo << " "
+                ElemUtils::Formatter() << parentObjectInfo << " "
                         << QuarkFlavor(it->first).toString());
     }
 }

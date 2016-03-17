@@ -1,5 +1,8 @@
 #include "../../../include/partons/modules/GPDModule.h"
 
+#include <ElementaryUtils/parameters/GenericType.h>
+#include <ElementaryUtils/parameters/Parameters.h>
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <math.h>
 #include <SFML/System/Sleep.hpp>
 #include <SFML/System/Time.hpp>
@@ -13,10 +16,6 @@
 #include "../../../include/partons/services/GPDService.h"
 #include "../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../include/partons/ServiceObjectTyped.h"
-#include "../../../include/partons/utils/GenericType.h"
-#include "../../../include/partons/utils/ParameterList.h"
-#include "../../../include/partons/utils/stringUtils/Formatter.h"
-#include "../../../include/partons/utils/thread/Packet.h"
 
 const std::string GPDModule::GPD_TYPE = "GPD_MODULE_GPD_TYPE";
 
@@ -61,21 +60,23 @@ GPDModule::~GPDModule() {
     //TODO Remove GPDEvolution pointer
 }
 
-void GPDModule::configure(ParameterList parameters) {
+void GPDModule::configure(const ElemUtils::Parameters &parameters) {
     if (parameters.isAvailable(GPDModule::GPD_TYPE)) {
         m_gpdType =
                 static_cast<GPDType::Type>(parameters.getLastAvailable().toUInt());
     }
+
+    ModuleObject::configure(parameters);
 }
 
 //TODO implement
 void GPDModule::initModule() {
-    debug(__func__, Formatter() << "executed");
+    debug(__func__, ElemUtils::Formatter() << "executed");
 }
 
 //TODO implement
 void GPDModule::isModuleWellConfigured() {
-    debug(__func__, Formatter() << "executed");
+    debug(__func__, ElemUtils::Formatter() << "executed");
 
     // Test variable range
 
@@ -86,8 +87,8 @@ void GPDModule::isModuleWellConfigured() {
 
     if (m_xi > 1. || m_xi < 0.) {
         error(__func__,
-                Formatter() << "Skewness should be in [0., +1.] m_xi = "
-                        << m_xi);
+                ElemUtils::Formatter()
+                        << "Skewness should be in [0., +1.] m_xi = " << m_xi);
     }
 
     if (m_t > 0.) {
@@ -109,9 +110,9 @@ void GPDModule::preCompute(double x, double xi, double t, double MuF,
     m_gpdType = gpdType;
 
     debug(__func__,
-            Formatter() << "x = " << m_x << "    xi = " << m_xi << "    t = "
-                    << m_t << " GeV2    MuF = " << m_MuF2 << " GeV    MuR = "
-                    << m_MuR2 << " GeV");
+            ElemUtils::Formatter() << "x = " << m_x << "    xi = " << m_xi
+                    << "    t = " << m_t << " GeV2    MuF = " << m_MuF2
+                    << " GeV    MuR = " << m_MuR2 << " GeV");
 
     // execute last child function (virtuality)
     initModule();
@@ -181,7 +182,8 @@ GPDResult GPDModule::compute(double x, double xi, double t, double MuF2,
             gpdResult.addPartonDistribution(m_it->first, partonDistribution);
         } else {
             error(__func__,
-                    Formatter() << "GPD(" << GPDType(m_gpdType).toString()
+                    ElemUtils::Formatter() << "GPD("
+                            << GPDType(m_gpdType).toString()
                             << ") is not available for this GPD model");
         }
         break;
@@ -191,7 +193,7 @@ GPDResult GPDModule::compute(double x, double xi, double t, double MuF2,
     gpdResult.setComputationModuleName(getClassName());
     gpdResult.setKinematic(GPDKinematic(x, xi, t, MuF2, MuR2));
 
-    debug(__func__, Formatter() << gpdResult.toString());
+    debug(__func__, ElemUtils::Formatter() << gpdResult.toString());
 
     return gpdResult;
 }
@@ -289,7 +291,7 @@ void GPDModule::run() {
             GPDKinematic kinematic;
             GPDType gpdType;
 
-            Packet packet = pGPDService->popTaskFormQueue();
+            ElemUtils::Packet packet = pGPDService->popTaskFormQueue();
             packet >> kinematic;
             packet >> gpdType;
 

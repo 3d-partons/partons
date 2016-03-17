@@ -11,30 +11,32 @@
  * @brief
  */
 
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <map>
 #include <string>
 #include <vector>
 
-#include "../../utils/ParameterList.h"
+#include "../../BaseObject.h"
 
 class Task: public BaseObject {
 public:
     Task();
     virtual ~Task();
 
-    void addParameterList(const std::string& className,
-            const ParameterList &parameterList);
-    const ParameterList& getParameterList(const std::string &className) const;
+    void addParameters(const std::string& className,
+            const ElemUtils::Parameters &parameters);
+    const ElemUtils::Parameters& getParameters(
+            const std::string &className) const;
 
     const std::string& getFunctionName() const;
     void setFunctionName(const std::string& functionName);
     const std::string& getServiceName() const;
     void setServiceName(const std::string& serviceName);
 
-    bool isAvailableParameterList(const std::string &className);
-    ParameterList& getLastAvailableParameterList() const;
+    bool isAvailableParameters(const std::string &className);
+    ElemUtils::Parameters& getLastAvailableParameters() const;
 
-    std::vector<ParameterList> getListOfLastAvailableParameterList(
+    std::vector<ElemUtils::Parameters> getListOfLastAvailableParameters(
             const std::string &className);
 
     bool isStoreInDB() const;
@@ -47,8 +49,8 @@ private:
 
     // std::string : className
     // ParameterList : parameters to create object from the class
-    std::multimap<std::string, ParameterList> m_functionParameters;
-    std::multimap<std::string, ParameterList>::iterator m_it;
+    std::multimap<std::string, ElemUtils::Parameters> m_functionParameters;
+    mutable std::multimap<std::string, ElemUtils::Parameters>::iterator m_it;
 };
 
 #endif /* TASK_H */

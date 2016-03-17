@@ -16,3 +16,7 @@ ProcessModule::ProcessModule(const ProcessModule &other) :
 
 ProcessModule::~ProcessModule() {
 }
+
+void ProcessModule::configure(const ElemUtils::Parameters &parameters) {
+    ModuleObject::configure(parameters);
+}

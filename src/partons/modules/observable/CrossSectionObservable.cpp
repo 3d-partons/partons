@@ -1,14 +1,14 @@
 #include "../../../../include/partons/modules/observable/CrossSectionObservable.h"
 
+#include <ElementaryUtils/parameters/GenericType.h>
+#include <ElementaryUtils/parameters/Parameters.h>
+#include <ElementaryUtils/string_utils/Formatter.h>
+#include <ElementaryUtils/string_utils/StringUtils.h>
 #include <NumA/linear_algebra/vector/Vector3D.h>
 #include <vector>
 
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/modules/ProcessModule.h"
-#include "../../../../include/partons/utils/GenericType.h"
-#include "../../../../include/partons/utils/ParameterList.h"
-#include "../../../../include/partons/utils/stringUtils/Formatter.h"
-#include "../../../../include/partons/utils/stringUtils/StringUtils.h"
 
 const std::string CrossSectionObservable::PARAMETER_NAME_BEAM_HELICITY =
         "beam_helicity";
@@ -48,13 +48,14 @@ double CrossSectionObservable::compute(ProcessModule* pDVCSModule, double phi) {
     return result;
 }
 
-void CrossSectionObservable::configure(ParameterList parameters) {
+void CrossSectionObservable::configure(
+        const ElemUtils::Parameters &parameters) {
     if (parameters.isAvailable(
             CrossSectionObservable::PARAMETER_NAME_BEAM_HELICITY)) {
         m_beamHelicity = parameters.getLastAvailable().toDouble();
 
         info(__func__,
-                Formatter()
+                ElemUtils::Formatter()
                         << CrossSectionObservable::PARAMETER_NAME_BEAM_HELICITY
                         << " configured with value = " << m_beamHelicity);
     }
@@ -63,7 +64,7 @@ void CrossSectionObservable::configure(ParameterList parameters) {
         m_beamCharge = parameters.getLastAvailable().toDouble();
 
         info(__func__,
-                Formatter()
+                ElemUtils::Formatter()
                         << CrossSectionObservable::PARAMETER_NAME_BEAM_CHARGE
                         << " configured with value = " << m_beamCharge);
     }
@@ -72,17 +73,21 @@ void CrossSectionObservable::configure(ParameterList parameters) {
 
         std::string temp_str = parameters.getLastAvailable().toString();
         if (!temp_str.empty()) {
-            std::vector<std::string> vectorPoints = StringUtils::split(
-                    parameters.getLastAvailable().toString(), '|');
+            std::vector<std::string> vectorPoints =
+                    ElemUtils::StringUtils::split(
+                            parameters.getLastAvailable().toString(), '|');
 
             if (vectorPoints.size() == 3) {
                 m_targetPolarization = NumA::Vector3D(
-                        StringUtils::fromStringToDouble(vectorPoints[0]),
-                        StringUtils::fromStringToDouble(vectorPoints[1]),
-                        StringUtils::fromStringToDouble(vectorPoints[2]));
+                        ElemUtils::StringUtils::fromStringToDouble(
+                                vectorPoints[0]),
+                        ElemUtils::StringUtils::fromStringToDouble(
+                                vectorPoints[1]),
+                        ElemUtils::StringUtils::fromStringToDouble(
+                                vectorPoints[2]));
 
                 info(__func__,
-                        Formatter()
+                        ElemUtils::Formatter()
                                 << CrossSectionObservable::PARAMETER_NAME_TARGET_POLARIZATION
                                 << " configured with value = "
                                 << m_targetPolarization.toString());
@@ -91,4 +96,6 @@ void CrossSectionObservable::configure(ParameterList parameters) {
             }
         }
     }
+
+    Observable::configure(parameters);
 }

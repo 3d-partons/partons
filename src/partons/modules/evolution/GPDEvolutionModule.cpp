@@ -1,5 +1,8 @@
 #include "../../../../include/partons/modules/evolution/GPDEvolutionModule.h"
 
+#include <ElementaryUtils/parameters/GenericType.h>
+#include <ElementaryUtils/parameters/Parameters.h>
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <math.h>
 #include <NumA/linear_algebra/matrix/MatrixD.h>
 #include <iostream>
@@ -14,9 +17,6 @@
 #include "../../../../include/partons/modules/GPDModule.h"
 #include "../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../include/partons/Partons.h"
-#include "../../../../include/partons/utils/GenericType.h"
-#include "../../../../include/partons/utils/ParameterList.h"
-#include "../../../../include/partons/utils/stringUtils/Formatter.h"
 
 NumA::MatrixD GPDEvolutionModule::conversionMatrix1(3, 3, //
         1., 0., 0., //
@@ -275,7 +275,7 @@ void GPDEvolutionModule::isModuleWellConfigured() {
     // Test range in MuF and MuF_ref
     if (m_MuF2 <= 0.) {
         error(__func__,
-                Formatter() << "m_MuF2 is out of range ;"
+                ElemUtils::Formatter() << "m_MuF2 is out of range ;"
                         << "m_MuF2 should be >0. Here m_MuF2 = " << m_MuF2);
     }
 }
@@ -306,7 +306,7 @@ bool GPDEvolutionModule::isRunnable(double MuF2, double MuF2_ref,
 
 bool GPDEvolutionModule::isRelativeTest(double MuF2, double MuF2_ref) {
     debug(__func__,
-            Formatter() << "MuF2 = " << MuF2 << "   MuF2_ref = " << MuF2_ref);
+            ElemUtils::Formatter() << "MuF2 = " << MuF2 << "   MuF2_ref = " << MuF2_ref);
 
     return (fabs(MuF2 - MuF2_ref) > (m_epsilon * MuF2_ref)) ? true : false;
 }
@@ -527,7 +527,7 @@ QuarkDistribution GPDEvolutionModule::makeFinalQuarkDistribution(
 
 double GPDEvolutionModule::calculateFq(double FPlus, double FMinus) {
     debug(__func__,
-            Formatter() << " FMinus = " << FMinus << "   FPlus = " << FPlus);
+            ElemUtils::Formatter() << " FMinus = " << FMinus << "   FPlus = " << FPlus);
 
     return (FMinus + FPlus) / 2.;
 }
@@ -676,18 +676,20 @@ double GPDEvolutionModule::nonSingletGPD(unsigned short nonSingletIndex,
     return convertBasis(vectorOfQuarkDistribution, currentNf, nonSingletIndex);
 }
 
-void GPDEvolutionModule::configure(ParameterList parameters) {
+void GPDEvolutionModule::configure(const ElemUtils::Parameters &parameters) {
     if (parameters.isAvailable(
             PerturbativeQCDOrderType::PARAMETER_NAME_PERTURBATIVE_QCD_ORDER_TYPE)) {
         m_qcdOrderType = PerturbativeQCDOrderType::fromString(
                 parameters.getLastAvailable().toString());
 
         info(__func__,
-                Formatter()
+                ElemUtils::Formatter()
                         << PerturbativeQCDOrderType::PARAMETER_NAME_PERTURBATIVE_QCD_ORDER_TYPE
                         << " configured with value = "
                         << PerturbativeQCDOrderType(m_qcdOrderType).toString());
     }
+
+    ModuleObject::configure(parameters);
 }
 
 PerturbativeQCDOrderType::Type GPDEvolutionModule::getQcdOrderType() const {
@@ -703,7 +705,7 @@ void GPDEvolutionModule::setGpdModule(GPDModule* gpdModule) {
     m_pGPDModule = gpdModule;
 
     debug(__func__,
-            Formatter() << "GPDModule = " << m_pGPDModule->getClassName());
+            ElemUtils::Formatter() << "GPDModule = " << m_pGPDModule->getClassName());
 }
 
 //
