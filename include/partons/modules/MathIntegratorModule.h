@@ -13,6 +13,7 @@
  */
 
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
+#include <string>
 #include <vector>
 
 namespace ElemUtils {
@@ -25,6 +26,8 @@ class Integrator1D;
 
 class MathIntegratorModule {
 public:
+    static const std::string PARAM_NAME_INTEGRATOR_TYPE;
+
     MathIntegratorModule();
     virtual ~MathIntegratorModule();
 

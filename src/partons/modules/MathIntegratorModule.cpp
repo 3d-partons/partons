@@ -1,6 +1,15 @@
 #include "../../../include/partons/modules/MathIntegratorModule.h"
 
+#include <ElementaryUtils/logger/LoggerManager.h>
+#include <ElementaryUtils/parameters/GenericType.h>
+#include <ElementaryUtils/parameters/Parameters.h>
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
+
+#include "../../../include/partons/Partons.h"
+
+const std::string MathIntegratorModule::PARAM_NAME_INTEGRATOR_TYPE =
+        "integrator_type";
 
 MathIntegratorModule::MathIntegratorModule() :
         m_mathIntegrator(0) {
@@ -39,6 +48,23 @@ double MathIntegratorModule::integrate(NumA::FunctionType1D* pFunction,
 
 void MathIntegratorModule::configureIntegrator(
         const ElemUtils::Parameters& parameters) {
+
+    if (parameters.isAvailable(
+            MathIntegratorModule::PARAM_NAME_INTEGRATOR_TYPE)) {
+
+        NumA::IntegratorType1D::Type integratorType =
+                static_cast<NumA::IntegratorType1D::Type>(parameters.getLastAvailable().toUInt());
+
+        setIntegrator(integratorType);
+
+        Partons::getInstance()->getLoggerManager()->info("MathIntegratorModule",
+                __func__,
+                ElemUtils::Formatter()
+                        << MathIntegratorModule::PARAM_NAME_INTEGRATOR_TYPE
+                        << " configured with value = "
+                        << NumA::IntegratorType1D(integratorType).toString());
+    }
+
     m_mathIntegrator->configure(parameters);
 }
 
