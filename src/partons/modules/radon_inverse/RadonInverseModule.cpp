@@ -1,16 +1,25 @@
-/*
- * RadonInverseModule.cpp
- *
- *  Created on: 18 Mar 2016
- *      Author: guest
- */
+#include "../../../../include/partons/modules/radon_inverse/RadonInverseModule.h"
 
-#include "../../../include/partons/modules/radon_inverse/RadonInverseModule.h"
+RadonInverseModule::RadonInverseModule() :
+        ModuleObject("RadonInverseModule") {
+}
 
+RadonInverseModule::~RadonInverseModule() {
+}
 
-// Constructor
-RadonInverse::RadonInverse(){}
+RadonInverseModule::RadonInverseModule(const RadonInverseModule& other) :
+        ModuleObject(other) {
+    //TODO implement
+}
 
+RadonInverseModule* RadonInverseModule::clone() const {
+    return new RadonInverseModule(*this);
+}
 
-//Destructor
-RadonInverse::~RadonInverse(){}
+void RadonInverseModule::initModule() {
+    //TODO implement
+}
+
+void RadonInverseModule::isModuleWellConfigured() {
+    //TODO implement
+}

@@ -37,10 +37,9 @@ public:
 
 private:
     time_t m_storeDate;
-    // configuration member is empty when object created from database to save possible large memory space
-    // user need to call EnvironmentConfigurationDaoService manually to get configuration by this object indexId
-    std::string m_configuration;
-    std::string m_md5;
+    //TODO add documentation about mutable
+    mutable std::string m_configuration;
+    mutable std::string m_md5;
 };
 
 #endif /* ENVIRONMENT_CONFIGURATION_H */

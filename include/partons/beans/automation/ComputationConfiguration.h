@@ -34,10 +34,9 @@ public:
     void setXmlFile(const std::string& xmlFile);
 
 private:
-    // xml file member is empty when object created from database to save possible large memory space
-    // user need to call ComputationConfigurationDaoService manually to get xml file by this object indexId
-    std::string m_xmlFile;
-    std::string m_md5;
+    //TODO documentation about mutable
+    mutable std::string m_xmlFile;
+    mutable std::string m_md5;
 };
 
 #endif /* COMPUTATION_CONFIGURATION_H */

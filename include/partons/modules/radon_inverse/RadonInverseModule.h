@@ -1,23 +1,42 @@
-/*
- * RadonInverseModule.h
+#ifndef RADON_INVERSE_MODULE_H
+#define RADON_INVERSE_MODULE_H
+
+/**
+ * @file RadonInverseModule.h
+ * @author Cedric MEZRAG
+ * @date 18 March 2016
+ * @version 1.0
  *
- *  Created on: 18 Mar 2016
- *      Author: guest
+ * @class RadonInverseModule
+ *
+ * @brief
  */
 
-#ifndef RADONINVERSEMODULE_H_
-#define RADONINVERSEMODULE_H_
+#include "../../ModuleObject.h"
 
-#include <include/partons/ModuleObject.h>
-
-class RadonInverse: public ModuleObject {
+class RadonInverseModule: public ModuleObject {
 public:
+    RadonInverseModule();
+    virtual ~RadonInverseModule();
 
-    explicit RadonInverse();
-    virtual ~RadonInverse();
+    /**
+     * Clone
+     *
+     * @return
+     */
+    virtual RadonInverseModule* clone() const;
+
+protected:
+    /**
+     * Copy constructor
+     */
+    RadonInverseModule(const RadonInverseModule &other);
+
+    virtual void initModule();
+    virtual void isModuleWellConfigured();
 
 private:
 
 };
 
-#endif /* RADONINVERSEMODULE_H_ */
+#endif /* RADON_INVERSE_MODULE_H */
