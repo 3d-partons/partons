@@ -12,11 +12,15 @@
  * @brief
  */
 
+#include <string>
+
 #include "../../ModuleObject.h"
 
 class RadonInverseModule: public ModuleObject {
 public:
-    RadonInverseModule();
+    static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
+
+    RadonInverseModule(const std::string &className);
     virtual ~RadonInverseModule();
 
     /**
@@ -26,8 +30,7 @@ public:
      */
     virtual RadonInverseModule* clone() const;
 
-
-
+    virtual void configure(const ElemUtils::Parameters &parameters);
 protected:
     /**
      * Copy constructor

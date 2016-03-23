@@ -1,5 +1,5 @@
-#ifndef LINEGENERATOR_H_
-#define LINEGENERATOR_H_
+#ifndef LINE_GENERATOR_H
+#define LINE_GENERATOR_H
 
 /**
  * @file LineGenerator.h
@@ -12,18 +12,15 @@
  * @brief
  */
 
-#include "../RadonInverseModule.h"
-
-
+#include "RadonInverseModule.h"
 
 class LineGenerator: public RadonInverseModule {
 public:
     LineGenerator();
     virtual ~LineGenerator();
 
-
 private:
 
 };
 
-#endif /* LINEGENERATOR_H_ */
+#endif /* LINE_GENERATOR_H */

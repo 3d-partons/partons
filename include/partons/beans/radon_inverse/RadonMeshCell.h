@@ -1,20 +1,22 @@
-/*
- * RadonMeshCell.h
+#ifndef RADON_MESH_CELL_H
+#define RADON_MESH_CELL_H
+
+/**
+ * @file RadonMeshCell.h
+ * @author Cedric MEZRAG
+ * @date 22 March 2016
+ * @version 1.0
  *
- *  Created on: 18 Mar 2016
- *      Author: guest
+ * @class RadonMeshCell
  */
 
-#ifndef RADONMESHCELL_H_
-#define RADONMESHCELL_H_
+#include "../../BaseObject.h"
 
-class RadonMeshCell : public BaseObject
-{
+class RadonMeshCell: public BaseObject {
+public:
     RadonMeshCell();
 
-void test();
+    void test();
 };
-
-
 
 #endif /* RADONMESHCELL_H_ */

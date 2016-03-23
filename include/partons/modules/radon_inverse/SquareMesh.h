@@ -1,26 +1,24 @@
-/*
- * SquareMesh.h
+#ifndef SQUARE_MESH_H
+#define SQUARE_MESH_H
+
+/**
+ * @file SquareMesh.h
+ * @author Cedric MEZRAG
+ * @date 22 March 2016
+ * @version 1.0
  *
- *  Created on: 22 Mar 2016
- *      Author: guest
+ * @class SquareMesh
  */
 
-#ifndef SQUAREMESH_H_
-#define SQUAREMESH_H_
+#include "../../BaseObject.h"
 
-#include "RadonInverseModule.h"
-
-
-
-class SquareMesh: public RadonInverseModule {
+class SquareMesh: public BaseObject {
 public:
     SquareMesh();
     virtual ~SquareMesh();
 
     void BuildMesh();
 
-
-
 };
 
-#endif /* SQUAREMESH_H_ */
+#endif /* SQUARE_MESH_H */
