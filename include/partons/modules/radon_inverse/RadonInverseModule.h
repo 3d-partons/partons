@@ -26,6 +26,8 @@ public:
      */
     virtual RadonInverseModule* clone() const;
 
+
+
 protected:
     /**
      * Copy constructor
@@ -36,7 +38,6 @@ protected:
     virtual void isModuleWellConfigured();
 
 private:
-
 };
 
 #endif /* RADON_INVERSE_MODULE_H */

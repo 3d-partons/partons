@@ -8,7 +8,12 @@
 #ifndef RADONMESHCELL_H_
 #define RADONMESHCELL_H_
 
+class RadonMeshCell : public BaseObject
+{
+    RadonMeshCell();
 
+void test();
+};
 
 
 
