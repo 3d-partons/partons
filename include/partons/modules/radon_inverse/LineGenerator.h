@@ -12,9 +12,9 @@
  * @brief
  */
 
-#include "RadonInverseModule.h"
+#include "../../BaseObject.h"
 
-class LineGenerator: public RadonInverseModule {
+class LineGenerator: public BaseObject {
 public:
     LineGenerator();
     virtual ~LineGenerator();
