@@ -1,13 +1,12 @@
 #include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSCFFVGGModel.h"
 
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/integration/one_dimension/Functor1D.h>
-//#include <NumA/integration/one_dimension/GLNPIntegrator1D.h>
-#include <NumA/integration/one_dimension/Integrator1D.h>
+#include <NumA/integration/one_dimension/GLNPIntegrator1D.h>
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
 #include <cmath>
 #include <map>
-//#include <stdexcept>
 #include <utility>
 
 #include "../../../../../include/partons/beans/gpd/GPDResult.h"
@@ -79,12 +78,9 @@ void DVCSCFFVGGModel::init() {
 
     int n_int_steps = 100;
 
-    //TODO changed temporary to the adaptive routine and GL currently does not work
-    setIntegrator(NumA::IntegratorType1D::GK21_ADAPTIVE);
-
-//    setIntegrator(NumA::IntegratorType1D::GLNP);
-//    ElemUtils::Parameters parameters(NumA::GLNPIntegrator1D::PARAM_NAME_N, 100);
-//    configureIntegrator(parameters);
+    setIntegrator(NumA::IntegratorType1D::GLNP);
+    ElemUtils::Parameters parameters(NumA::GLNPIntegrator1D::PARAM_NAME_N, 100);
+    configureIntegrator(parameters);
 
     m_pRunningAlphaStrongModule =
             Partons::getInstance()->getModuleObjectFactory()->newRunningAlphaStrongModule(
@@ -99,20 +95,6 @@ DVCSCFFVGGModel::DVCSCFFVGGModel(const DVCSCFFVGGModel& other) :
         eps_cffint(1.E-3), DVCSConvolCoeffFunctionModule(other) {
 
     xixit = other.xixit;
-
-    //relate GPDs to functions
-    m_listOfCFFComputeFunctionAvailable.insert(
-            std::make_pair(GPDType::H,
-                    &DVCSConvolCoeffFunctionModule::computeUnpolarized));
-    m_listOfCFFComputeFunctionAvailable.insert(
-            std::make_pair(GPDType::E,
-                    &DVCSConvolCoeffFunctionModule::computeUnpolarized));
-    m_listOfCFFComputeFunctionAvailable.insert(
-            std::make_pair(GPDType::Ht,
-                    &DVCSConvolCoeffFunctionModule::computePolarized));
-    m_listOfCFFComputeFunctionAvailable.insert(
-            std::make_pair(GPDType::Et,
-                    &DVCSConvolCoeffFunctionModule::computePolarized));
 
     initFunctorsForIntegrations();
 }
