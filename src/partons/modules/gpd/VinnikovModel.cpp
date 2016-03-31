@@ -54,11 +54,6 @@ VinnikovModel::VinnikovModel(const VinnikovModel& other) :
     n_par = other.n_par;
     for (int i = 0; i < 6; i++)
         param[i] = other.param[i];
-
-    m_listGPDComputeTypeAvailable.insert(
-            std::make_pair(GPDType::H, &GPDModule::computeH));
-    m_listGPDComputeTypeAvailable.insert(
-            std::make_pair(GPDType::Ht, &GPDModule::computeHt));
 }
 
 void VinnikovModel::isModuleWellConfigured() {
@@ -611,6 +606,8 @@ double VinnikovModel::gpdh_pol(int const i_part, double x, double const xi,
     if ((x - EPS_BETR) <= 1.0) {
         return 0.0;
     }
+
+    return 0.0;
 }
 
 double VinnikovModel::dd1_pol(int const i_part, double const beta,

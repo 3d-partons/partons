@@ -17,17 +17,11 @@ class VinnikovModel: public GPDModule {
 public:
 
     static const unsigned int classId;
-
     VinnikovModel(const std::string &className);
-
     virtual ~VinnikovModel();
-
     virtual VinnikovModel* clone() const;
-
     virtual void init();
-
     virtual void configure(const ElemUtils::Parameters &parameters);
-
     virtual std::string toString();
 
 protected:

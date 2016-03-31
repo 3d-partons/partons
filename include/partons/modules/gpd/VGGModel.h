@@ -25,17 +25,11 @@ class VGGModel: public GPDModule, public MathIntegratorModule {
 public:
 
     static const unsigned int classId;
-
     VGGModel(const std::string &className);
-
     virtual ~VGGModel();
-
     virtual VGGModel* clone() const;
-
     virtual void init();
-
     virtual void configure(const ElemUtils::Parameters &parameters);
-
     virtual std::string toString();
 
 protected:

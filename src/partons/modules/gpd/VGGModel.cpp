@@ -37,6 +37,12 @@ VGGModel::VGGModel(const std::string &className) :
     m_listGPDComputeTypeAvailable.insert(
             std::make_pair(GPDType::E, &GPDModule::computeE));
 
+    m_listGPDComputeTypeAvailable.insert(
+            std::make_pair(GPDType::Ht, &GPDModule::computeHt));
+
+    m_listGPDComputeTypeAvailable.insert(
+            std::make_pair(GPDType::Et, &GPDModule::computeEt));
+
     initFunctorsForIntegrations();
 }
 
@@ -125,7 +131,7 @@ void VGGModel::init() {
 }
 
 void VGGModel::configure(const ElemUtils::Parameters &parameters) {
-    GPDModule: configure(parameters);
+    GPDModule::configure(parameters);
 }
 
 std::string VGGModel::toString() {
@@ -144,12 +150,6 @@ VGGModel::VGGModel(const VGGModel& other) :
     gpd_s5 = other.gpd_s5;
     flavour_s5 = other.flavour_s5;
     x_s5 = other.x_s5;
-
-    m_listGPDComputeTypeAvailable.insert(
-            std::make_pair(GPDType::H, &GPDModule::computeH));
-
-    m_listGPDComputeTypeAvailable.insert(
-            std::make_pair(GPDType::E, &GPDModule::computeE));
 
     initFunctorsForIntegrations();
 }
