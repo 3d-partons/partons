@@ -1,5 +1,6 @@
 #include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSCFFVGGModel.h"
 
+#include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/integration/one_dimension/Functor1D.h>
@@ -27,9 +28,13 @@ const unsigned int DVCSCFFVGGModel::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new DVCSCFFVGGModel("DVCSCFFVGGModel"));
 
-DVCSCFFVGGModel::DVCSCFFVGGModel(const std::string& className) :
-        eps_cffint(1.E-3), DVCSConvolCoeffFunctionModule(className) {
+const std::string DVCSCFFVGGModel::PARAMETER_NAME_EPS =
+        "DVCSCFFVGGModel_Eps";
 
+DVCSCFFVGGModel::DVCSCFFVGGModel(const std::string& className) :
+        DVCSConvolCoeffFunctionModule(className) {
+
+    eps_cffint = 1.E-3;
     xixit = -1.;
 
     //relate GPDs to functions
@@ -76,10 +81,8 @@ void DVCSCFFVGGModel::initFunctorsForIntegrations() {
 //TODO init in mother class ? ; propagate init to mother class ?
 void DVCSCFFVGGModel::init() {
 
-    int n_int_steps = 100;
-
     setIntegrator(NumA::IntegratorType1D::GLNP);
-    ElemUtils::Parameters parameters(NumA::GLNPIntegrator1D::PARAM_NAME_N, 100);
+    ElemUtils::Parameters parameters(NumA::GLNPIntegrator1D::PARAM_NAME_N, 40);
     configureIntegrator(parameters);
 
     m_pRunningAlphaStrongModule =
@@ -91,9 +94,17 @@ void DVCSCFFVGGModel::init() {
                     ExampleEvolQCDModel::classId);
 }
 
-DVCSCFFVGGModel::DVCSCFFVGGModel(const DVCSCFFVGGModel& other) :
-        eps_cffint(1.E-3), DVCSConvolCoeffFunctionModule(other) {
+void DVCSCFFVGGModel::configure(const ElemUtils::Parameters &parameters) {
 
+    if (parameters.isAvailable(DVCSCFFVGGModel::PARAMETER_NAME_EPS)) {
+        eps_cffint = parameters.getLastAvailable().toDouble();
+    }
+}
+
+DVCSCFFVGGModel::DVCSCFFVGGModel(const DVCSCFFVGGModel& other) :
+        DVCSConvolCoeffFunctionModule(other) {
+
+    eps_cffint = other.eps_cffint;
     xixit = other.xixit;
 
     initFunctorsForIntegrations();
@@ -188,7 +199,6 @@ std::complex<double> DVCSCFFVGGModel::calculate_direct() {
 
     //parameters for the integration (zero-length vector in this case)
     std::vector<double> parameters;
-    int n_int_steps = 100;
 
     //direct Faynman diagram
     double intd1 = integrate(m_pIntd_vector_part, 0., m_xi - eps_cffint,
@@ -218,7 +228,6 @@ std::complex<double> DVCSCFFVGGModel::calculate_crossed() {
 
     //parameters for the integration (zero-length vector in this case)
     std::vector<double> parameters;
-    int n_int_steps = 100;
 
     //crossed Faynman diagram
     double intc1 = integrate(m_pIntc_vector_part, 0., m_xi, parameters);
