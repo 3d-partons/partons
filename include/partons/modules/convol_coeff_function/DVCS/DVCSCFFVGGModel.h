@@ -25,6 +25,8 @@ public:
 
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
+    static const std::string PARAMETER_NAME_EPS;
+
     DVCSCFFVGGModel(const std::string &className);  ///< constructor
 
     virtual DVCSCFFVGGModel* clone() const;    ///< clone
@@ -32,6 +34,8 @@ public:
     virtual ~DVCSCFFVGGModel(); ///< destructor
 
     virtual void init();    ///< init function
+
+    virtual void configure(const ElemUtils::Parameters &parameters);    ///< configure
 
 protected:
 
@@ -42,7 +46,7 @@ protected:
 
 private:
 
-    const double eps_cffint; ///< step to skip x = xi singularity
+    double eps_cffint; ///< step to skip x = xi singularity
 
     virtual std::complex<double> computeUnpolarized(); ///< compute CFF for unpolarized GPDs
     virtual std::complex<double> computePolarized(); ///< compute CFF for polarized GPDs
