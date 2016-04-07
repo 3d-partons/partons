@@ -4,18 +4,18 @@
 /**
  * @file BaseObjectRegistry.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 25 June 2015
+ * @date June 25, 2015
  * @version 1.0
  *
  * @class BaseObjectRegistry
  *
- * @brief The Registry is the analog of a phonebook, which lists all available modules identified by a unique id or by a unique string for translation. And only one species of each.
+ * @brief The Registry is the analog of a phonebook, which lists all available objects (modules or services most of the time) identified by a unique integer identifier or by a unique string (class name) for translation. And only one species of each.
  *
- * From the point of view of software engineering, it corresponds to the singleton design pattern which ensures that it is unique.
- * When a new module is created, the first thing to do is to call this unique instance, and to register the new module with a name provided by the developer of the module.
- * In turn the Registry gives a unique identifier encoded in a int variable for performance purposes.
- * Registry stores pointers to all modules in a generic way, i.e. whatever their nature are: pointers to GPDModule, to RunningAlphaStrongModule, to DoubleDistributionModule, etc.
- * This is achieved by requiring all modules to derive from a single parent class named BaseObject.
+ * From the point of view of software engineering, the registry corresponds to the singleton design pattern which ensures that it is unique.
+ * When a new module or services are created, the first thing to do is to call this unique instance, and to register the new module or services with a name provided by the developer the class.
+ * In turn the Registry gives a unique identifier encoded in a integer variable for performance purposes.
+ * Registry stores pointers to all objects in a generic way, i.e. whatever their nature are: pointers to GPDModule, to RunningAlphaStrongModule, to AutomationService, etc.
+ * This is achieved by requiring all objects to derive from a single parent class named BaseObject.
  */
 
 #include <stddef.h>
@@ -27,6 +27,11 @@
 
 class BaseObjectRegistry {
 public:
+    /**
+     * Static function to be able to retrieve a unique instance pointer of this class anywhere in the code.
+     *
+     * @return a unique instance of this class
+     */
     static BaseObjectRegistry* getInstance();
 
     /**
@@ -37,21 +42,47 @@ public:
     /**
      * Store a unique instance of a module identified by a unique string character key.
      * @param pBaseObject: an instance of the module built by its default constructor.
-     * @return A unique system identifier ; unsigned int.
+     * @return A unique identifier by class
      */
     unsigned int registerBaseObject(BaseObject * pBaseObject);
 
     /**
-     * We need to perform this task after self registered BaseObject to resolve dependencies between pointed objects.
+     * Some objects like modules depend on each other.
+     * But it is impossible to guarantee the order in which they are added to the registry will be made upon the resolution of statics variables (mechanism of self-registration)
+     * So we need to perform this task just before the use of PARTONS software to resolve dependencies between all kind of registered objects.
      */
     void initBaseObject();
 
-    BaseObject* get(unsigned int classId);
-    BaseObject* get(const std::string &className);
+    /**
+     * Try to find stored object identified by its unique class identifier.
+     *
+     * @param classId
+     * @return reference to object in memory or throw an exception
+     */
+    BaseObject* get(unsigned int classId) const;
 
-    std::string toString();
+    /**
+     * Try to find stored object identified by its class name.
+     *
+     * @param className
+     * @return reference to object in memory or throw an exception
+     */
+    BaseObject* get(const std::string &className) const;
 
-    size_t size();
+    /**
+     * Print information about current state of the registry (size of the registry, which objects are stored, ...)
+     *
+     * @return string
+     */
+    virtual std::string toString() const;
+
+    /**
+     * Return the size of the registry.
+     * How many objects are stored.
+     *
+     * @return registry size
+     */
+    size_t size() const;
 
 private:
     /**
@@ -64,19 +95,58 @@ private:
      */
     BaseObjectRegistry();
 
-    sf::Mutex m_mutex;
+    /**
+     * Because of PARTONS is a program using threads we must ensure that only one object manipulates the registry at the same time to avoid memory access violation.
+     * It's performed by a mechanism called mutex or semaphore.
+     */
+    mutable sf::Mutex m_mutex;
 
-    std::map<unsigned int, BaseObject*> m_baseObjectList;
-    std::map<unsigned int, BaseObject*>::iterator m_itBaseObjectList;
+    std::map<unsigned int, BaseObject*> m_baseObjectList; ///< list of registered objects identified by their unique integer identifier
+    mutable std::map<unsigned int, BaseObject*>::const_iterator m_itBaseObjectList; ///< iterator to handle previous list.
 
-    std::map<std::string, BaseObject*> m_translate;
-    std::map<std::string, BaseObject*>::iterator m_itTranslate;
+    std::map<std::string, BaseObject*> m_translateList; ///< list of registered objects identified by their class name.
+    mutable std::map<std::string, BaseObject*>::const_iterator m_itTranslate; ///< iterator to handle previous list.
 
-    static unsigned int m_uniqueClassIdCounter;
+    unsigned int m_uniqueClassIdCounter; ///< Increment unique class identifier
 
+    /**
+     * To performance purpose it's faster to compare two integers than two string when we search for an object in the registry.
+     * This method return a unique integer identifier when a new class object his added to the registry.
+     * It's just an integer incremented one by one.
+     *
+     * @return unique identifier by class
+     */
     unsigned int getUniqueClassId();
 
-    bool isAvailable(const std::string &className);
+    /**
+     * Try to find an object into the registry by its class name
+     *
+     * @param className
+     * @return true if class name found into registry, false else.
+     */
+    bool isAvailable(const std::string &className) const;
+
+    /**
+     * Try to find an object into the registry by its class identifier
+     *
+     * @param classId
+     * @return true if class name found into registry, false else.
+     */
+    bool isAvailable(const unsigned int classId) const;
+
+    /**
+     * Return last referenced object by the iterator on m_translateList.
+     *
+     * @return reference to the object in memory
+     */
+    BaseObject* getLastAvailableObjectIdentifiedByClassName() const;
+
+    /**
+     * Return last referenced object by the iterator on m_baseObjectList.
+     *
+     * @return reference to the object in memory
+     */
+    BaseObject* getLastAvailableObjectIdentifiedByClassId() const;
 
     // Stop the compiler generating methods of copy the object
     BaseObjectRegistry(BaseObjectRegistry const& other); // Not Implemented

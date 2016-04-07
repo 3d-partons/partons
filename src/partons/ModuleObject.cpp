@@ -21,5 +21,5 @@ std::string ModuleObject::toString() const {
 }
 
 void ModuleObject::init() {
-
+BaseObject::init();
 }

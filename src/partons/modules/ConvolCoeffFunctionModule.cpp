@@ -2,7 +2,7 @@
 
 ConvolCoeffFunctionModule::ConvolCoeffFunctionModule(
         const std::string &className) :
-        ModuleObject(className) {
+        ModuleObject(className), MathIntegratorModule() {
 }
 
 ConvolCoeffFunctionModule::~ConvolCoeffFunctionModule() {

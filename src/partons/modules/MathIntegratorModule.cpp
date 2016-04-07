@@ -13,7 +13,6 @@ const std::string MathIntegratorModule::PARAM_NAME_INTEGRATOR_TYPE =
 
 MathIntegratorModule::MathIntegratorModule() :
         m_mathIntegrator(0) {
-
 }
 
 MathIntegratorModule::~MathIntegratorModule() {
