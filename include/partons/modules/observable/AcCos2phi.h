@@ -32,6 +32,8 @@ public:
      */
     virtual AcCos2phi* clone() const;
 
+    virtual double compute();
+
 protected:
     /**
      * Copy constructor
@@ -40,7 +42,11 @@ protected:
 
     Observable* m_pAcObservable;
 
+    NumA::FunctionType1D* m_pFunctionToIntegrate;
+
     virtual double functionToIntegrate(double x, std::vector<double> params);
+
+    void initFunctorsForIntegrations();
 };
 
 #endif /* AC_COS_2_PHI_H */

@@ -4,7 +4,7 @@
 /**
  * @file FourierObservable.h
  * @author Bryan BERTHOU (CEA Saclay)
- * @date 28 September 2015
+ * @date September 28, 2015
  * @version 1.0
  *
  * @class FourierObservable
@@ -13,7 +13,6 @@
  */
 
 #include <string>
-#include <vector>
 
 #include "../MathIntegratorModule.h"
 #include "Observable.h"
@@ -33,18 +32,10 @@ public:
      */
     virtual Observable* clone() const = 0;
 
-    double compute();
+    virtual double compute() = 0;
 
 protected:
     FourierObservable(const FourierObservable &other);
-
-    virtual double functionToIntegrate(double x,
-            std::vector<double> params) = 0;
-
-private:
-    NumA::FunctionType1D* m_pFunctionToIntegrate;
-
-    void initFunctorsForIntegrations();
 };
 
 #endif /* FOURIER_OBSERVABLE_H */
