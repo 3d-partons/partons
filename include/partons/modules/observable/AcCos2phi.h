@@ -42,9 +42,10 @@ protected:
 
     Observable* m_pAcObservable;
 
-    NumA::FunctionType1D* m_pFunctionToIntegrate;
+    NumA::FunctionType1D* m_pFunctionToIntegrateAcObservable;
 
-    virtual double functionToIntegrate(double x, std::vector<double> params);
+    virtual double functionToIntegrateAcObservable(double x,
+            std::vector<double> params);
 
     void initFunctorsForIntegrations();
 };
