@@ -60,6 +60,8 @@ public:
     ObservableResult compute(double xB, double t, double Q2, double phi);
 
     virtual double compute(ProcessModule* pDVCSModule, double phi);
+    virtual double Num(ProcessModule* pDVCSModule, double phi);
+    virtual double Den(ProcessModule* pDVCSModule, double phi);
 
     virtual void run();
 

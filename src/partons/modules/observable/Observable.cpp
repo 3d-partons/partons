@@ -143,6 +143,17 @@ double Observable::compute() {
 
 }
 
+double Observable::Num(ProcessModule* pDVCSModule, double phi) {
+    error(__func__, "Nothing to do ; Must be implemented in daugther class");
+    return 0.;
+}
+
+double Observable::Den(ProcessModule* pDVCSModule, double phi) {
+    error(__func__, "Nothing to do ; Must be implemented in daugther class");
+    return 0.;
+}
+
+
 // ##### GETTERS & SETTERS #####
 
 double Observable::getBeamCharge() const {

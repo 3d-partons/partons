@@ -1,0 +1,96 @@
+#include "../../../../include/partons/modules/observable/AulSinPhi.h"
+
+#include <NumA/integration/one_dimension/Functor1D.h>
+#include <NumA/integration/one_dimension/Integrator1D.h>
+#include <cmath>
+#include <iostream>
+
+#include "../../../../include/partons/BaseObjectRegistry.h"
+#include "../../../../include/partons/FundamentalPhysicalConstants.h"
+#include "../../../../include/partons/modules/observable/Aul.h"
+#include "../../../../include/partons/ModuleObjectFactory.h"
+#include "../../../../include/partons/Partons.h"
+
+// Initialise [class]::classId with a unique name.
+const unsigned int AulSinPhi::classId =
+        BaseObjectRegistry::getInstance()->registerBaseObject(
+                new AulSinPhi("AulSinPhi"));
+
+AulSinPhi::AulSinPhi(const std::string &className) :
+        FourierObservable(className), m_pAulObservable(0), m_pFunctionToIntegrateNumObservable(
+                0),m_pFunctionToIntegrateDenObservable(
+                        0) {
+
+    m_pAulObservable =
+            Partons::getInstance()->getModuleObjectFactory()->newObservable(
+                    Aul::classId);
+
+    initFunctorsForIntegrations();
+}
+
+AulSinPhi::AulSinPhi(const AulSinPhi& other) :
+        FourierObservable(other) {
+    if (other.m_pAulObservable != 0) {
+        m_pAulObservable = other.m_pAulObservable->clone();
+    } else {
+        m_pAulObservable = 0;
+    }
+
+    initFunctorsForIntegrations();
+}
+
+AulSinPhi::~AulSinPhi() {
+    if (m_pFunctionToIntegrateNumObservable) {
+        delete m_pFunctionToIntegrateNumObservable;
+        m_pFunctionToIntegrateNumObservable = 0;
+    }
+
+    if (m_pFunctionToIntegrateDenObservable) {
+            delete m_pFunctionToIntegrateDenObservable;
+            m_pFunctionToIntegrateDenObservable = 0;
+        }
+
+}
+
+void AulSinPhi::initFunctorsForIntegrations() {
+    m_pFunctionToIntegrateNumObservable =
+            NumA::Integrator1D::newIntegrationFunctor(this,
+                    &AulSinPhi::functionToIntegrateNumObservable);
+    m_pFunctionToIntegrateDenObservable =
+            NumA::Integrator1D::newIntegrationFunctor(this,
+                    &AulSinPhi::functionToIntegrateDenObservable);
+
+
+}
+
+AulSinPhi* AulSinPhi::clone() const {
+    return new AulSinPhi(*this);
+}
+
+//TODO check
+double AulSinPhi::functionToIntegrateNumObservable(double x,
+        std::vector<double> params) {
+    // x[0] = phi
+    return m_pAulObservable->Num(m_pProcess, x) * sin(x);
+}
+
+double AulSinPhi::functionToIntegrateDenObservable(double x,
+        std::vector<double> params) {
+    // x[0] = phi
+    return m_pAulObservable->Den(m_pProcess, x);
+}
+
+
+double AulSinPhi::compute() {
+
+    std::vector<double> emptyParameters;
+    std::cout<<"qui!"<<std::endl;
+double N=integrate(m_pFunctionToIntegrateNumObservable, 0., (2 * PI),
+        emptyParameters);
+std::cout<<"qui2!"<<std::endl;
+double D=integrate(m_pFunctionToIntegrateDenObservable, 0., (2 * PI),
+        emptyParameters);
+std::cout<<"qui3!"<<std::endl;
+if(D!=0){return N/D;}
+else {return 2.0  ;}
+}

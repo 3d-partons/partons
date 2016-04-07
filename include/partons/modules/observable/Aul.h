@@ -31,6 +31,9 @@ public:
      */
     virtual Aul* clone() const;
 
+    virtual double Num(ProcessModule* pDVCSModule, double phi);
+    virtual double Den(ProcessModule* pDVCSModule, double phi);
+
     virtual double compute(ProcessModule* pDVCSModule, double phi);
 
 protected:
