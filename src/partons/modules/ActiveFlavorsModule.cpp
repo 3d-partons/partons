@@ -16,7 +16,7 @@ ActiveFlavorsModule::ActiveFlavorsModule(const ActiveFlavorsModule& other) :
     m_nfFunctionOfMu = other.m_nfFunctionOfMu;
 }
 
-void ActiveFlavorsModule::init() {
+void ActiveFlavorsModule::resolveObjectDependencies() {
     // sort vector of intervals by nf value
     std::sort(m_nfFunctionOfMu.begin(), m_nfFunctionOfMu.end());
 

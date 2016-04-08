@@ -102,7 +102,7 @@ void MPSSW13Model::initFunctorsForIntegrations() {
             &MPSSW13Model::IntegralxLargeHgMx);
 }
 
-void MPSSW13Model::init() {
+void MPSSW13Model::resolveObjectDependencies() {
     std::string gridFilePath =
             ElemUtils::PropertiesManager::getInstance()->getString(
                     "grid.directory") + "mstw2008nlo.00.dat";

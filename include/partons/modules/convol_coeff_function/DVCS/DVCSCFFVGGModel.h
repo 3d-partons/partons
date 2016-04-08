@@ -33,7 +33,7 @@ public:
 
     virtual ~DVCSCFFVGGModel(); ///< destructor
 
-    virtual void init();    ///< init function
+    virtual void resolveObjectDependencies();    ///< init function
 
     virtual void configure(const ElemUtils::Parameters &parameters);    ///< configure
 

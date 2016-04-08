@@ -29,7 +29,7 @@ BaseObject::~BaseObject() {
             getObjectId());
 }
 
-void BaseObject::init() {
+void BaseObject::resolveObjectDependencies() {
     // Nothing to do
 }
 

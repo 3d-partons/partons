@@ -62,7 +62,7 @@ DVCSModule::DVCSModule(const DVCSModule& other) :
     m_dvcsConvolCoeffFunctionResult = other.m_dvcsConvolCoeffFunctionResult;
 }
 
-void DVCSModule::init() {
+void DVCSModule::resolveObjectDependencies() {
     m_pScaleModule =
             Partons::getInstance()->getModuleObjectFactory()->newScaleModule(
                     Q2Multiplier::classId);

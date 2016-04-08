@@ -77,7 +77,7 @@ void Partons::init(char** argv) {
     m_pLoggerManager->init();
 
     // 3. Init each object stored in the registry
-    m_pBaseObjectRegistry->initBaseObject();
+    m_pBaseObjectRegistry->resolveBaseObjectDependencies();
 
     // Database connexion
     DatabaseManager::getInstance();

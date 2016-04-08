@@ -3,7 +3,6 @@
 #include <NumA/integration/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <cmath>
-#include <vector>
 
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
@@ -55,7 +54,7 @@ AulSinPhi::~AulSinPhi() {
 
 }
 
-void AulSinPhi::init() {
+void AulSinPhi::resolveObjectDependencies() {
     m_pAulObservable =
             static_cast<Aul*>(Partons::getInstance()->getModuleObjectFactory()->newObservable(
                     Aul::classId));

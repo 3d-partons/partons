@@ -34,7 +34,7 @@ public:
 
     virtual double compute();
 
-    virtual void init();
+    virtual void resolveObjectDependencies();
 
 protected:
     /**

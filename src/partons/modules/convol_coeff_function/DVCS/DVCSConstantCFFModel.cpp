@@ -95,7 +95,7 @@ DVCSConstantCFFModel::~DVCSConstantCFFModel() {
 }
 
 //TODO comment gérer la dépendance aux autres modules quand on en a pas besoin ? (voir erreur isWellConfigured)
-void DVCSConstantCFFModel::init() {
+void DVCSConstantCFFModel::resolveObjectDependencies() {
 
     m_pRunningAlphaStrongModule =
             Partons::getInstance()->getModuleObjectFactory()->newRunningAlphaStrongModule(

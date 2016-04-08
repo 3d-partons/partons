@@ -39,7 +39,7 @@ public:
      */
     virtual DVCSConvolCoeffFunctionModule* clone() const = 0;
 
-    virtual void init();
+    virtual void resolveObjectDependencies();
 
     virtual void configure(const ElemUtils::Parameters &parameters);
 

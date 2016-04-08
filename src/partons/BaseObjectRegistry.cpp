@@ -71,16 +71,16 @@ unsigned int BaseObjectRegistry::registerBaseObject(BaseObject * pBaseObject) {
     return classId;
 } // mutex.unlock();
 
-void BaseObjectRegistry::initBaseObject() {
+void BaseObjectRegistry::resolveBaseObjectDependencies() {
     sf::Lock lock(m_mutex); // mutex.lock()
 
     // Some objects depend of other so we need to make those references at NULL and assign pointers later.
-    // It's performed by the init() method of target object.
+    // It's performed by the resolveObjectDependencies() method of target object.
     // So loop over registry list to resolve objects dependancies
     for (std::map<unsigned int, BaseObject*>::const_iterator it =
             m_baseObjectList.begin(); it != m_baseObjectList.end(); it++) {
         if (it->second) {
-            (it->second)->init();
+            (it->second)->resolveObjectDependencies();
         } else {
             throw std::runtime_error(
                     ElemUtils::Formatter()

@@ -73,8 +73,8 @@ DVCSConvolCoeffFunctionModule::~DVCSConvolCoeffFunctionModule() {
     //TODO Remove all pointers dependencies
 }
 
-void DVCSConvolCoeffFunctionModule::init() {
-    ConvolCoeffFunctionModule::init();
+void DVCSConvolCoeffFunctionModule::resolveObjectDependencies() {
+    ConvolCoeffFunctionModule::resolveObjectDependencies();
 
     m_pRunningAlphaStrongModule =
             Partons::getInstance()->getModuleObjectFactory()->newRunningAlphaStrongModule(

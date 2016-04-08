@@ -40,7 +40,7 @@ public:
      */
     virtual BaseObject* clone() const;
 
-    virtual void init();
+    virtual void resolveObjectDependencies();
 
     /**
      * Return a pre-formatted characters string for output visualization of class member's values

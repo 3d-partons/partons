@@ -69,7 +69,7 @@ MMS13Model* MMS13Model::clone() const {
     return new MMS13Model(*this);
 }
 
-void MMS13Model::init() {
+void MMS13Model::resolveObjectDependencies() {
 
     m_Forward = new c_mstwpdf(
             ElemUtils::PropertiesManager::getInstance()->getString(

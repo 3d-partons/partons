@@ -217,7 +217,7 @@ GPDEvolutionModule::~GPDEvolutionModule() {
 }
 
 //TODO replace hardcoded active flavors module
-void GPDEvolutionModule::init() {
+void GPDEvolutionModule::resolveObjectDependencies() {
     m_pRunningAlphaStrong =
             Partons::getInstance()->getModuleObjectFactory()->newRunningAlphaStrongModule(
                     RunningAlphaStrong::classId);

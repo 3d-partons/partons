@@ -31,7 +31,7 @@ public:
     DVCSModule(const std::string &className);
     virtual ~DVCSModule();
 
-    virtual void init();
+    virtual void resolveObjectDependencies();
 
     /**
      * Provides a generic method to configure all types of modules by passing a Parameters object.

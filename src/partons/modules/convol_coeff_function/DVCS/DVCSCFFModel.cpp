@@ -50,8 +50,8 @@ DVCSCFFModel::DVCSCFFModel(const std::string &className) :
 }
 
 //TODO Call mother init function
-void DVCSCFFModel::init() {
-    DVCSConvolCoeffFunctionModule::init();
+void DVCSCFFModel::resolveObjectDependencies() {
+    DVCSConvolCoeffFunctionModule::resolveObjectDependencies();
 
     setIntegrator(NumA::IntegratorType1D::GK21_ADAPTIVE);
 }

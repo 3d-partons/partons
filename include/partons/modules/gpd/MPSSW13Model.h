@@ -44,7 +44,7 @@ public:
 
     virtual MPSSW13Model* clone() const;
 
-    virtual void init();
+    virtual void resolveObjectDependencies();
 
     void setParameters(std::vector<double> Parameters);
 

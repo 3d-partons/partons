@@ -79,7 +79,7 @@ void DVCSCFFVGGModel::initFunctorsForIntegrations() {
 }
 
 //TODO init in mother class ? ; propagate init to mother class ?
-void DVCSCFFVGGModel::init() {
+void DVCSCFFVGGModel::resolveObjectDependencies() {
 
     setIntegrator(NumA::IntegratorType1D::GLNP);
     ElemUtils::Parameters parameters(NumA::GLNPIntegrator1D::PARAM_NAME_N, 40);

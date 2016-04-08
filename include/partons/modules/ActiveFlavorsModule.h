@@ -31,7 +31,7 @@ public:
      */
     virtual ActiveFlavorsModule* clone() const = 0;
 
-    virtual void init();
+    virtual void resolveObjectDependencies();
 
     void addNfInterval(unsigned short nfValue, double lowerBound,
             double upperBound);

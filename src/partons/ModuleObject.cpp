@@ -20,6 +20,6 @@ std::string ModuleObject::toString() const {
     return BaseObject::toString();
 }
 
-void ModuleObject::init() {
-BaseObject::init();
+void ModuleObject::resolveObjectDependencies() {
+BaseObject::resolveObjectDependencies();
 }

@@ -49,8 +49,8 @@ void ServiceObject::launchAllThreadAndWaitingFor() {
     m_threadManager.launchAllAndWaitingFor();
 }
 
-void ServiceObject::init() {
-    BaseObject::init();
+void ServiceObject::resolveObjectDependencies() {
+    BaseObject::resolveObjectDependencies();
 
     if (!m_pModuleObjectFactory) {
         m_pModuleObjectFactory =

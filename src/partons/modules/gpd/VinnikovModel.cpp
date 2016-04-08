@@ -37,7 +37,7 @@ VinnikovModel* VinnikovModel::clone() const {
     return new VinnikovModel(*this);
 }
 
-void VinnikovModel::init() {
+void VinnikovModel::resolveObjectDependencies() {
 }
 
 void VinnikovModel::configure(const ElemUtils::Parameters &parameters) {

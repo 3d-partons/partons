@@ -55,7 +55,7 @@ public:
 
     void launchAllThreadAndWaitingFor();
 
-    virtual void init();
+    virtual void resolveObjectDependencies();
 
 protected:
     ModuleObjectFactory* m_pModuleObjectFactory;

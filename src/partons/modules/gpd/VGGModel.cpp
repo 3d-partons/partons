@@ -121,7 +121,7 @@ VGGModel* VGGModel::clone() const {
     return new VGGModel(*this);
 }
 
-void VGGModel::init() {
+void VGGModel::resolveObjectDependencies() {
 
     m_Forward = new c_mstwpdf(
             ElemUtils::PropertiesManager::getInstance()->getString(

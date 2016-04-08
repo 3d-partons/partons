@@ -51,7 +51,7 @@ public:
      * But it is impossible to guarantee the order in which they are added to the registry will be made upon the resolution of statics variables (mechanism of self-registration)
      * So we need to perform this task just before the use of PARTONS software to resolve dependencies between all kind of registered objects.
      */
-    void initBaseObject();
+    void resolveBaseObjectDependencies();
 
     /**
      * Try to find stored object identified by its unique class identifier.

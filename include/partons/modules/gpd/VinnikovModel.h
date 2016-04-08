@@ -20,7 +20,7 @@ public:
     VinnikovModel(const std::string &className);
     virtual ~VinnikovModel();
     virtual VinnikovModel* clone() const;
-    virtual void init();
+    virtual void resolveObjectDependencies();
     virtual void configure(const ElemUtils::Parameters &parameters);
     virtual std::string toString();
 

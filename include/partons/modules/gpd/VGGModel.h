@@ -28,7 +28,7 @@ public:
     VGGModel(const std::string &className);
     virtual ~VGGModel();
     virtual VGGModel* clone() const;
-    virtual void init();
+    virtual void resolveObjectDependencies();
     virtual void configure(const ElemUtils::Parameters &parameters);
     virtual std::string toString();
 

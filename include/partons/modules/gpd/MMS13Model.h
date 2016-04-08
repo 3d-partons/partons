@@ -29,7 +29,7 @@ public:
     MMS13Model(const std::string &className);
     virtual ~MMS13Model();
     virtual MMS13Model* clone() const;
-    virtual void init();
+    virtual void resolveObjectDependencies();
     virtual void configure(const ElemUtils::Parameters &parameters);
     virtual std::string toString();
 

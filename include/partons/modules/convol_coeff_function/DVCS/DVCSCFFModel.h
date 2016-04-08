@@ -36,7 +36,7 @@ public:
 
     virtual ~DVCSCFFModel();
 
-    virtual void init();
+    virtual void resolveObjectDependencies();
 
     // ##### GETTERS & SETTERS #####
 

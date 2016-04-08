@@ -56,7 +56,7 @@ public:
      */
     virtual std::string toString() const;
 
-    virtual void init();
+    virtual void resolveObjectDependencies();
 
 protected:
     /***

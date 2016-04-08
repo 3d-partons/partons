@@ -43,7 +43,7 @@ public:
 
     virtual void configure(const ElemUtils::Parameters &parameters);
 
-    virtual void init();
+    virtual void resolveObjectDependencies();
 
     PartonDistribution compute(double x, double xi, double t, double MuF2,
             double MuR2, GPDModule* pGPDModule, GPDType::Type gpdType);
