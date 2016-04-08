@@ -102,12 +102,9 @@ private:
     mutable sf::Mutex m_mutex;
 
     std::map<unsigned int, BaseObject*> m_baseObjectList; ///< list of registered objects identified by their unique integer identifier
-    mutable std::map<unsigned int, BaseObject*>::const_iterator m_itBaseObjectList; ///< iterator to handle previous list.
-
     std::map<std::string, BaseObject*> m_translateList; ///< list of registered objects identified by their class name.
-    mutable std::map<std::string, BaseObject*>::const_iterator m_itTranslate; ///< iterator to handle previous list.
 
-    unsigned int m_uniqueClassIdCounter; ///< Increment unique class identifier
+    static unsigned int m_uniqueClassIdCounter; ///< Increment unique class identifier
 
     /**
      * To performance purpose it's faster to compare two integers than two string when we search for an object in the registry.
@@ -122,17 +119,17 @@ private:
      * Try to find an object into the registry by its class name
      *
      * @param className
-     * @return true if class name found into registry, false else.
+     * @return pointer to object if class name found into registry, NULL else.
      */
-    bool isAvailable(const std::string &className) const;
+    BaseObject* isAvailable(const std::string &className) const;
 
     /**
      * Try to find an object into the registry by its class identifier
      *
      * @param classId
-     * @return true if class name found into registry, false else.
+     * @return pointer to object if class name found into registry, NULL else.
      */
-    bool isAvailable(const unsigned int classId) const;
+    BaseObject* isAvailable(const unsigned int classId) const;
 
     /**
      * Return last referenced object by the iterator on m_translateList.

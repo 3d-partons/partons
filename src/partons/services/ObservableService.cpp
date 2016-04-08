@@ -78,6 +78,7 @@ ObservableResult ObservableService::computeDVCSObservable(
         const ObservableKinematic &observableKinematic,
         DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule) const {
 
+    //TODO improve, replace by configuration.
     pDVCSModule->setDVCSConvolCoeffFunctionModule(
             pDVCSConvolCoeffFunctionModule);
     pObservable->setDVCSModule(pDVCSModule);
@@ -92,6 +93,7 @@ ResultList<ObservableResult> ObservableService::computeManyKinematicOneModel(
 
     ResultList<ObservableResult> results;
 
+    //TODO improve, replace by configuration.
     pDVCSModule->setDVCSConvolCoeffFunctionModule(
             pDVCSConvolCoeffFunctionModule);
     pObservable->setDVCSModule(pDVCSModule);

@@ -7,6 +7,8 @@
 
 BaseObjectRegistry* BaseObjectRegistry::m_pInstance = 0;
 
+unsigned int BaseObjectRegistry::m_uniqueClassIdCounter = 0;
+
 BaseObjectRegistry* BaseObjectRegistry::getInstance() {
     if (!m_pInstance) {
         m_pInstance = new BaseObjectRegistry();
@@ -14,8 +16,7 @@ BaseObjectRegistry* BaseObjectRegistry::getInstance() {
     return m_pInstance;
 }
 
-BaseObjectRegistry::BaseObjectRegistry() :
-        m_uniqueClassIdCounter(0) {
+BaseObjectRegistry::BaseObjectRegistry() {
 }
 
 BaseObjectRegistry::~BaseObjectRegistry() {
@@ -35,7 +36,7 @@ BaseObjectRegistry::~BaseObjectRegistry() {
 } // mutex.unlock();
 
 unsigned int BaseObjectRegistry::getUniqueClassId() {
-    return m_uniqueClassIdCounter++;
+    return BaseObjectRegistry::m_uniqueClassIdCounter++;
 }
 
 unsigned int BaseObjectRegistry::registerBaseObject(BaseObject * pBaseObject) {
@@ -46,10 +47,8 @@ unsigned int BaseObjectRegistry::registerBaseObject(BaseObject * pBaseObject) {
     unsigned int classId = 0;
 
     // First check if a previous instance of this class has been registered
-    m_itTranslate = m_translateList.find(pBaseObject->getClassName());
-
     // If not, store it.
-    if (m_itTranslate == m_translateList.end()) {
+    if (!isAvailable(pBaseObject->getClassName())) {
         // Retrieve the final class identifier
         classId = getUniqueClassId();
 
@@ -94,41 +93,46 @@ BaseObject* BaseObjectRegistry::get(unsigned int classId) const {
     sf::Lock lock(m_mutex); // mutex.lock()
 
     // if class identifier not found into the registry : throw exception
-    if (!isAvailable(classId)) {
+    BaseObject* pObject = isAvailable(classId);
+    if (!pObject) {
         throw std::runtime_error(
                 "(BaseObjectRegistry::get) Cannot found class identifier into the registry");
     }
 
-    return getLastAvailableObjectIdentifiedByClassId();
+    return pObject;
 } // mutex.unlock();
 
 BaseObject* BaseObjectRegistry::get(const std::string &className) const {
     sf::Lock lock(m_mutex); // mutex.lock()
 
     // if class name not found into the registry : throw exception
-    if (!isAvailable(className)) {
+    BaseObject* pObject = isAvailable(className);
+    if (!pObject) {
         throw std::runtime_error(
                 "(BaseObjectRegistry::get) Cannot found class name into the registry ; spell check className parameter or if your object is available for className = "
                         + className);
     }
 
-    return getLastAvailableObjectIdentifiedByClassName();
+    return pObject;
 } // mutex.unlock();
 
-bool BaseObjectRegistry::isAvailable(const std::string &className) const {
+BaseObject* BaseObjectRegistry::isAvailable(
+        const std::string &className) const {
     sf::Lock lock(m_mutex); // mutex.lock()
 
-    m_itTranslate = m_translateList.find(className);
+    std::map<std::string, BaseObject*>::const_iterator it =
+            m_translateList.find(className);
 
-    return (m_itTranslate == m_translateList.end()) ? false : true;
+    return (it == m_translateList.end()) ? 0 : it->second;
 } // mutex.unlock();
 
-bool BaseObjectRegistry::isAvailable(const unsigned int classId) const {
+BaseObject* BaseObjectRegistry::isAvailable(const unsigned int classId) const {
     sf::Lock lock(m_mutex); // mutex.lock()
 
-    m_itBaseObjectList = m_baseObjectList.find(classId);
+    std::map<unsigned int, BaseObject*>::const_iterator it =
+            m_baseObjectList.find(classId);
 
-    return (m_itBaseObjectList == m_baseObjectList.end()) ? false : true;
+    return (it == m_baseObjectList.end()) ? 0 : it->second;
 } // mutex.unlock();
 
 std::string BaseObjectRegistry::toString() const {
@@ -151,11 +155,3 @@ size_t BaseObjectRegistry::size() const {
 
     return m_baseObjectList.size();
 } // mutex.unlock();
-
-BaseObject* BaseObjectRegistry::getLastAvailableObjectIdentifiedByClassName() const {
-    return m_itTranslate->second;
-}
-
-BaseObject* BaseObjectRegistry::getLastAvailableObjectIdentifiedByClassId() const {
-    return m_itBaseObjectList->second;
-}

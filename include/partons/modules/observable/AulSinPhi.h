@@ -17,7 +17,7 @@
 
 #include "FourierObservable.h"
 
-class Observable;
+class Aul;
 
 class AulSinPhi: public FourierObservable {
 public:
@@ -34,13 +34,15 @@ public:
 
     virtual double compute();
 
+    virtual void init();
+
 protected:
     /**
      * Copy constructor
      */
     AulSinPhi(const AulSinPhi &other);
 
-    Observable* m_pAulObservable;
+    Aul* m_pAulObservable;
 
     NumA::FunctionType1D* m_pFunctionToIntegrateNumObservable;
     NumA::FunctionType1D* m_pFunctionToIntegrateDenObservable;
