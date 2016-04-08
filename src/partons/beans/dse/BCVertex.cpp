@@ -41,10 +41,14 @@ std::vector<double> BCVertex::Angular_Integrands(double p2, double q2,
                     - 0.5 * (p2 + q2) * (p2 + q2) / (p2 - q2)) / p2;
     angular_integrands.at(m_N) = 4.;
     angular_integrands.at(m_N + 1) = 4. / 3.
-            * (-((p2 - q2) / (2 * k2)) - k2 / (2 * (p2 - q2))
+            * (-((p2 - q2) / (2. * k2)) - k2 / (2. * (p2 - q2))
                     + (p2 + q2) / (p2 - q2));
-    angular_integrands.at(2) = -angular_integrands.at(m_N + 1) / p2;
-    angular_integrands.at(m_N + 2) = -angular_integrands.at(m_N + 1);
+    angular_integrands.at(2) = 4. / 3.
+            * (((p2 - q2) / (2. * k2)) + k2 / (2. * (p2 - q2))
+                    - (p2 + q2) / (p2 - q2)) / p2;
+    angular_integrands.at(m_N + 2) = 4. / 3.
+            * (((p2 - q2) / (2. * k2)) + k2 / (2. * (p2 - q2))
+                    - (p2 + q2) / (p2 - q2));
     return angular_integrands;
 }
 

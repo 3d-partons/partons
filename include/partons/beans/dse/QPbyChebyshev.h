@@ -12,6 +12,7 @@
 
 #include <string>
 #include <vector>
+#include <NumA/interpolation/Chebyshev.h>
 
 #include "QuarkPropagator.h"
 
@@ -30,35 +31,26 @@ public:
      */
     virtual std::string toString() const;
 
-    virtual void setN(unsigned int n);
-
     virtual std::vector<double> evaluate(
             const std::vector<QuarkPropagator::QPFunction> & listOfFunctions,
             double p2, unsigned int j = 0) const;
 
     virtual double evaluateA(double p2) const;
     virtual double evaluateB(double p2) const;
-    virtual double differentiateA(double p2, unsigned int j) const;
-    virtual double differentiateB(double p2, unsigned int j) const;
 
-    virtual double evaluateSigmaA(double p2) const;
-    virtual double evaluateSigmaM(double p2) const;
-    virtual double differentiateSigmaA(double p2, unsigned int j) const;
-    virtual double differentiateSigmaM(double p2, unsigned int j) const;
-
-    virtual double stox(double p2) const; ///< Change of variable from s=p2 [GeV] to x in [-1,1]
-    virtual double xtos(double x) const; ///< Change of variable from x in [-1,1] to s=p2 [GeV]
-
-    virtual void setCoeffsAfromValueOnNodes(const std::vector<double>& values);
-    virtual void setCoeffsBfromValueOnNodes(const std::vector<double>& values);
-
-
-    //TODO Move Chebyshev utils to NumA
-    double T(unsigned int n, double x) const; ///< Evaluates Chebyshev polynomials T_n(x) for |x| < 1
+    virtual NumA::VectorD getInterpolationVector(double x) const; ///< Interpolation vector: transforms the values on the nodes to a value on a given point.
+    virtual NumA::MatrixD getInterpolationMatrix(const NumA::VectorD& points) const; ///< Interpolation matrix: transforms the values on the nodes to values on given points.
 
 protected:
     QPbyChebyshev(const QPbyChebyshev& other);
 
+    virtual void updateA(); ///< Update the values of A on the nodes, by using the coefficients.
+    virtual void updateB(); ///< Update the values of B on the nodes, by using the coefficients.
+    virtual void updateCoeffsA(); ///< Update the coefficients of A, by using the values on the nodes.
+    virtual void updateCoeffsB(); ///< Update the coefficients of B, by using the values on the nodes.
+    virtual void updateInterpolation(); ///< Update the interpolation (nodes, etc) with the new value of N.
+
+    NumA::Chebyshev m_cheb;
 };
 
 #endif /* QPBYCHEBYSHEV_H_ */

@@ -45,7 +45,7 @@ GluonPropagator::~GluonPropagator() {
 
 //TODO Complete toString
 std::string GluonPropagator::toString() const {
-    return ElemUtils::Formatter() << BaseObject::toString();
+    return BaseObject::toString();
 }
 
 double GluonPropagator::evaluateAlpha(double k2) const {

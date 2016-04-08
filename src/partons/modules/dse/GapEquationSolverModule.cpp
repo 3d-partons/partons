@@ -9,10 +9,9 @@
 
 #include "../../../../include/partons/modules/dse/GapEquationSolverModule.h"
 
-#include <ElementaryUtils/string_utils/Formatter.h>
-#include <NumA/integration/one_dimension/GLNPIntegrator1D.h>
 #include <cmath>
-
+#include <ElementaryUtils/string_utils/Formatter.h>
+#include <NumA/integration/one_dimension/GaussLegendreIntegrator1D.h>
 #include "../../../../include/partons/beans/dse/MTGluonPropagator.h"
 #include "../../../../include/partons/beans/dse/QuarkPropagator.h"
 #include "../../../../include/partons/beans/dse/RLVertex.h"
@@ -20,11 +19,13 @@
 
 GapEquationSolverModule::GapEquationSolverModule(const std::string &className) :
         ModuleObject(className), m_gluonPropagator(0), m_quarkPropagator(0), m_vertex(
-                0), m_quad_x(0), m_quad_z(0), m_mu(19.), m_m(5.e-3), m_N(50), m_Nx(
-                120), m_Nz(32), m_tolerance(1.e-4, 1.e-3), m_maxIter(20), m_Lambda2(
-                1.e5), m_epsilon2(1.e-4), m_Ainit(1.), m_Binit(m_m), m_iters(0), m_changedQP(
-                true), m_changedGP(true), m_changedVertex(true), m_changedNx(
-                true), m_changedNz(true), m_changedInit(false) {
+                0), m_quad_x(0), m_quad_z(0), m_mu(19.), m_mu2(19 * 19), m_m(
+                5.e-3), m_N(50), m_2N(100), m_Nx(120), m_Nz(32), m_tolerance(
+                1.e-4, 1.e-3), m_maxIter(20), m_Lambda2(1.e5), m_epsilon2(
+                1.e-4), m_Ainit(1.), m_Binit(m_m), m_iters(0), m_converged(
+                false), m_changedQP(true), m_changedGP(true), m_changedVertex(
+                true), m_changedNx(true), m_changedNz(true), m_changedInit(
+                false) {
 }
 
 GapEquationSolverModule::~GapEquationSolverModule() {
@@ -48,11 +49,14 @@ GapEquationSolverModule::GapEquationSolverModule(
         const GapEquationSolverModule& other) :
         ModuleObject(other), m_quarkPropagator(0), m_gluonPropagator(0), m_vertex(
                 0) {
+    //TODO Add objects copy
     m_Lambda2 = other.getLambda2();
     m_epsilon2 = other.getEpsilon2();
     m_mu = other.getMu();
+    m_mu2 = other.getMu2();
     m_m = other.getM();
     m_N = other.getN();
+    m_2N = other.get2N();
     m_Nx = other.getNx();
     m_Nz = other.getNz();
     m_tolerance = other.getTolerance();
@@ -60,26 +64,33 @@ GapEquationSolverModule::GapEquationSolverModule(
     m_Ainit = other.getAinit();
     m_Binit = other.getBinit();
     m_iters = other.m_iters;
+    m_converged = other.m_converged;
     m_changedQP = other.m_changedQP;
     m_changedGP = other.m_changedGP;
     m_changedVertex = other.m_changedVertex;
     m_changedNx = other.m_changedNx;
     m_changedNz = other.m_changedNz;
     m_changedInit = other.m_changedInit;
+    m_quarkPropagator = other.m_quarkPropagator;
     if (other.m_gluonPropagator != 0) {
         m_gluonPropagator = other.m_gluonPropagator->clone();
-    }
-    if (other.m_quarkPropagator != 0) {
-        m_quarkPropagator = other.m_quarkPropagator;
+    } else {
+        m_gluonPropagator = 0;
     }
     if (other.m_vertex != 0) {
         m_vertex = other.m_vertex->clone();
+    } else {
+        m_vertex = 0;
     }
     if (other.m_quad_x != 0) {
         m_quad_x = other.m_quad_x->clone();
+    } else {
+        m_quad_x = 0;
     }
     if (other.m_quad_z != 0) {
         m_quad_z = other.m_quad_z->clone();
+    } else {
+        m_quad_z = 0;
     }
 }
 
@@ -112,15 +123,15 @@ void GapEquationSolverModule::initModule() {
     if (m_quad_x == 0) {
         warn(__func__,
                 "Momentum quadrature not defined! Using default Gauss-Legendre quadrature.");
-        m_quad_x = new NumA::GLNPIntegrator1D();
+        m_quad_x = new NumA::GaussLegendreIntegrator1D();
     }
     if (m_quad_z == 0) {
         warn(__func__,
                 "Angular quadrature not defined! Using default Gauss-Legendre quadrature.");
-        m_quad_z = new NumA::GLNPIntegrator1D();
+        m_quad_z = new NumA::GaussLegendreIntegrator1D();
     }
 
-    // Gauss-Legendre integration //TODO Implement other cases
+    // Quadrature nodes and weights
     if (m_changedNx) {
         m_quad_x->setN(m_Nx);
         m_nodes_x = m_quad_x->getNodes();
@@ -135,10 +146,15 @@ void GapEquationSolverModule::initModule() {
     // Propagator expansion's roots
     if (m_changedQP) {
         m_roots_x = m_quarkPropagator->getRoots();
-        m_roots_s.assign(m_N, 0.);
+        m_roots_s.assign(m_N + 1, 0.);
         for (unsigned int i = 0; i < m_N; i++) {
             m_roots_s.at(i) = m_quarkPropagator->xtos(m_roots_x.at(i));
         }
+        m_roots_s.at(m_N) = m_mu2;
+        m_interpolationMatrix = m_quarkPropagator->getInterpolationMatrix(
+                m_nodes_x);
+        m_interpolationMu = m_quarkPropagator->getInterpolationVector(
+                m_quarkPropagator->stox(m_mu2));
     }
 
     // Quadrature nodes and stored coefficients
@@ -156,18 +172,18 @@ void GapEquationSolverModule::initModule() {
 
     // Restart the iterations if necessary
     if (m_changedInit || m_changedQP) {
-        m_iters = 0;
+        reset();
     }
 
     // Set the booleans to false to not recompute things unnecessarily.
     // This part needs to be implemented in the daughter class!
     // DO NOT UNCOMMENT HERE, but copy it in the initModule of the daughter class.
-//    m_changeQP = false;
-//    m_changeGP = false;
-//    m_changeVertex = false;
-//    m_changeNx = false;
-//    m_changeNz = false;
-//    m_changeInit = false;
+//    setChangedQp(false);
+//    setChangedGp(false);
+//    setChangedVertex(false);
+//    setChangedNx(false);
+//    setChangedNz(false);
+//    setChangedInit(false);
 }
 
 void GapEquationSolverModule::isModuleWellConfigured() {
@@ -187,14 +203,19 @@ void GapEquationSolverModule::compute(
     initModule();
     isModuleWellConfigured();
 
-    switch (iterativeType) {
-    case Newton:
-        computeNewtonInteration();
-        break;
-    default:
-        computeIteration();
-        break;
-    }
+//    switch (iterativeType) {
+//    case Newton:
+//        computeNewtonIteration();
+//        break;
+//    case Broyden:
+//        computeBroydenIteration();
+//        break;
+//    default:
+//        computeIteration();
+//        break;
+//    }
+//    computeIterations(iterativeType);
+    computeBroydenIteration();
 
     // Write the result
     info(__func__, "p2 [GeV^2] ; A ; B [GeV] ; M [GeV]");
@@ -309,11 +330,11 @@ void GapEquationSolverModule::setM(double m) {
     m_m = m;
 }
 
-int GapEquationSolverModule::getMaxIter() const {
+unsigned int GapEquationSolverModule::getMaxIter() const {
     return m_maxIter;
 }
 
-void GapEquationSolverModule::setMaxIter(int maxIter) {
+void GapEquationSolverModule::setMaxIter(unsigned int maxIter) {
     m_maxIter = maxIter;
 }
 
@@ -328,26 +349,36 @@ void GapEquationSolverModule::setMu(double mu) {
     }
     m_changedQP = m_changedQP || (mu != m_mu);
     m_mu = mu;
+    m_mu2 = mu * mu;
 }
 
-int GapEquationSolverModule::getN() const {
+double GapEquationSolverModule::getMu2() const {
+    return m_mu2;
+}
+
+unsigned int GapEquationSolverModule::getN() const {
     return m_N;
 }
 
-void GapEquationSolverModule::setN(int n) {
+void GapEquationSolverModule::setN(unsigned int n) {
     if (n <= 0) {
         error(__func__,
                 "The number of points representing the propagator must be positive!");
     }
     m_changedQP = m_changedQP || (n != m_N);
     m_N = n;
+    m_2N = 2 * n;
 }
 
-int GapEquationSolverModule::getNx() const {
+unsigned int GapEquationSolverModule::get2N() const {
+    return m_2N;
+}
+
+unsigned int GapEquationSolverModule::getNx() const {
     return m_Nx;
 }
 
-void GapEquationSolverModule::setNx(int nx) {
+void GapEquationSolverModule::setNx(unsigned int nx) {
     if (nx <= 0) {
         error(__func__, "The number of nodes of integration must be positive!");
     }
@@ -355,11 +386,11 @@ void GapEquationSolverModule::setNx(int nx) {
     m_Nx = nx;
 }
 
-int GapEquationSolverModule::getNz() const {
+unsigned int GapEquationSolverModule::getNz() const {
     return m_Nz;
 }
 
-void GapEquationSolverModule::setNz(int nz) {
+void GapEquationSolverModule::setNz(unsigned int nz) {
     if (nz <= 0) {
         error(__func__, "The number of nodes of integration must be positive!");
     }
@@ -411,8 +442,9 @@ void GapEquationSolverModule::setBinit(double binit) {
 
 void GapEquationSolverModule::reset() {
     m_iters = 0;
-    m_quarkPropagator->setCoeffsA(0.);
-    m_quarkPropagator->setCoeffsB(0.);
+    m_quarkPropagator->setA(getAinit());
+    m_quarkPropagator->setB(getBinit());
+    setConverged(false);
 }
 
 double GapEquationSolverModule::k2_func(double p2, double q2, double z) const {
@@ -479,38 +511,89 @@ void GapEquationSolverModule::setChangedVertex(bool changedVertex) {
     m_changedVertex = changedVertex;
 }
 
-int GapEquationSolverModule::getIters() const {
+unsigned int GapEquationSolverModule::getIters() const {
     return m_iters;
 }
 
-void GapEquationSolverModule::setIters(int iters) {
+void GapEquationSolverModule::setIters(unsigned int iters) {
     m_iters = iters;
 }
 
-const std::vector<double>& GapEquationSolverModule::getNodesS() const {
+const NumA::VectorD& GapEquationSolverModule::getNodesS() const {
     return m_nodes_s;
 }
 
-const std::vector<double>& GapEquationSolverModule::getNodesX() const {
+const NumA::VectorD& GapEquationSolverModule::getNodesX() const {
     return m_nodes_x;
 }
 
-const std::vector<double>& GapEquationSolverModule::getNodesZ() const {
+const NumA::VectorD& GapEquationSolverModule::getNodesZ() const {
     return m_nodes_z;
 }
 
-const std::vector<double>& GapEquationSolverModule::getRootsS() const {
+const NumA::VectorD& GapEquationSolverModule::getRootsS() const {
     return m_roots_s;
 }
 
-const std::vector<double>& GapEquationSolverModule::getRootsX() const {
+const NumA::VectorD& GapEquationSolverModule::getRootsX() const {
     return m_roots_x;
 }
 
-const std::vector<double>& GapEquationSolverModule::getWeightsX() const {
+const NumA::VectorD& GapEquationSolverModule::getWeightsX() const {
     return m_weights_x;
 }
 
-const std::vector<double>& GapEquationSolverModule::getWeightsZ() const {
+const NumA::VectorD& GapEquationSolverModule::getWeightsZ() const {
     return m_weights_z;
+}
+
+bool GapEquationSolverModule::isConverged() const {
+    return m_converged;
+}
+
+void GapEquationSolverModule::setConverged(bool converged) {
+    m_converged = converged;
+}
+
+const NumA::Differences& GapEquationSolverModule::getDifference() const {
+    return m_difference;
+}
+
+void GapEquationSolverModule::setDifference(
+        const NumA::Differences& difference) {
+    m_difference = difference;
+}
+
+double GapEquationSolverModule::getAbsDifference() const {
+    return m_difference.getAbsoluteDifference();
+}
+
+double GapEquationSolverModule::getRelDifference() const {
+    return m_difference.getRelativeDifference();
+}
+
+void GapEquationSolverModule::setAbsDifference(double absDifference) {
+    m_difference.setAbsoluteDifference(absDifference);
+}
+
+void GapEquationSolverModule::setRelDifference(double relDifference) {
+    m_difference.setRelativeDifference(relDifference);
+}
+
+const NumA::MatrixD& GapEquationSolverModule::getInterpolationMatrix() const {
+    return m_interpolationMatrix;
+}
+
+void GapEquationSolverModule::setInterpolationMatrix(
+        const NumA::MatrixD& interpolationMatrix) {
+    m_interpolationMatrix = interpolationMatrix;
+}
+
+const NumA::VectorD& GapEquationSolverModule::getInterpolationMu() const {
+    return m_interpolationMu;
+}
+
+void GapEquationSolverModule::setInterpolationMu(
+        const NumA::VectorD& interpolationMu) {
+    m_interpolationMu = interpolationMu;
 }

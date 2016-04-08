@@ -4,11 +4,11 @@
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/integration/one_dimension/Functor1D.h>
-#include <NumA/integration/one_dimension/GLNPIntegrator1D.h>
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
 #include <cmath>
 #include <map>
 #include <utility>
+#include <NumA/integration/one_dimension/GaussLegendreIntegrator1D.h>
 
 #include "../../../../../include/partons/beans/gpd/GPDResult.h"
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
@@ -81,8 +81,8 @@ void DVCSCFFVGGModel::initFunctorsForIntegrations() {
 //TODO init in mother class ? ; propagate init to mother class ?
 void DVCSCFFVGGModel::resolveObjectDependencies() {
 
-    setIntegrator(NumA::IntegratorType1D::GLNP);
-    ElemUtils::Parameters parameters(NumA::GLNPIntegrator1D::PARAM_NAME_N, 40);
+    setIntegrator(NumA::IntegratorType1D::GaussLegendre);
+    ElemUtils::Parameters parameters(NumA::GaussLegendreIntegrator1D::PARAM_NAME_N, 40);
     configureIntegrator(parameters);
 
     m_pRunningAlphaStrongModule =

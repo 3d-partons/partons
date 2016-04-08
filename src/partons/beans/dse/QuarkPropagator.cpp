@@ -20,6 +20,13 @@ QuarkPropagator::QuarkPropagator(const std::string& className, unsigned int N,
                 epsilon2) {
     m_Lambda = sqrt(Lambda2);
     m_epsilon = sqrt(epsilon2);
+    if (N > 0) {
+        m_a.assign(N);
+        m_b.assign(N);
+        m_A.assign(N);
+        m_B.assign(N);
+        m_roots.assign(N);
+    }
 }
 
 QuarkPropagator::QuarkPropagator(const QuarkPropagator& other) :
@@ -27,14 +34,27 @@ QuarkPropagator::QuarkPropagator(const QuarkPropagator& other) :
     m_N = other.getN();
     m_mu = other.getMu();
     m_m = other.getM();
-    m_epsilon2 = getEpsilon2();
-    m_Lambda2 = getLambda2();
-    m_epsilon = getEpsilon();
-    m_Lambda = getLambda();
+    m_epsilon2 = other.getEpsilon2();
+    m_Lambda2 = other.getLambda2();
+    m_epsilon = other.getEpsilon();
+    m_Lambda = other.getLambda();
+    m_a = other.m_a;
+    m_b = other.m_b;
+    m_A = other.m_A;
+    m_B = other.m_B;
+    m_roots = other.m_roots;
 }
 
 QuarkPropagator::~QuarkPropagator() {
     // TODO Auto-generated destructor stub
+}
+
+double QuarkPropagator::stox(double p2) const {
+    return log(p2 / (m_Lambda * m_epsilon)) / log(m_Lambda / m_epsilon);
+}
+
+double QuarkPropagator::xtos(double x) const {
+    return m_Lambda * m_epsilon * exp(x * log(m_Lambda / m_epsilon));
 }
 
 const NumA::VectorD& QuarkPropagator::getCoeffsA() const {
@@ -46,18 +66,16 @@ void QuarkPropagator::setCoeffsA(const NumA::VectorD& a) {
         error(__func__, "Size of vector a is wrong!");
     }
     m_a = a;
+    updateA();
 }
 
 void QuarkPropagator::setCoeffsA(double a) {
     m_a.assign(m_N, a);
+    updateA();
 }
 
 double QuarkPropagator::getCoeffA(unsigned int i) const {
     return m_a.at(i);
-}
-
-void QuarkPropagator::setCoeffA(unsigned int i, double a) {
-    m_a.at(i) = a;
 }
 
 const NumA::VectorD& QuarkPropagator::getCoeffsB() const {
@@ -69,21 +87,19 @@ void QuarkPropagator::setCoeffsB(const NumA::VectorD& b) {
         error(__func__, "Size of vector b is wrong!");
     }
     m_b = b;
+    updateB();
 }
 
 void QuarkPropagator::setCoeffsB(double b) {
     m_b.assign(m_N, b);
+    updateB();
 }
 
 double QuarkPropagator::getCoeffB(unsigned int i) const {
     return m_b.at(i);
 }
 
-void QuarkPropagator::setCoeffB(unsigned int i, double b) {
-    m_b.at(i) = b;
-}
-
-const std::vector<double>& QuarkPropagator::getRoots() const {
+const NumA::VectorD& QuarkPropagator::getRoots() const {
     return m_roots;
 }
 
@@ -97,8 +113,11 @@ void QuarkPropagator::setN(unsigned int n) {
     if (n > 0) {
         m_a.resize(n, 0.);
         m_b.resize(n, 0.);
+        m_A.resize(n, 0.);
+        m_B.resize(n, 0.);
         m_roots.resize(n, 0.);
     }
+    updateInterpolation();
 }
 
 double QuarkPropagator::getM() const {
@@ -161,45 +180,45 @@ double QuarkPropagator::evaluateSigmaS(double p2) const {
     return B / (p2 * A * A + B * B);
 }
 
-double QuarkPropagator::differentiateSigmaV_a(double p2, unsigned int j) const {
-    double A = evaluateA(p2);
-    double B = evaluateB(p2);
-    double Aprime = differentiateA(p2, j);
-    double A2 = A * A;
-    double B2 = B * B;
-    double denom = p2 * A2 + B2;
-
-    return Aprime * (B2 - p2 * A2) / (denom * denom);
-}
-
-double QuarkPropagator::differentiateSigmaV_b(double p2, unsigned int j) const {
-    double A = evaluateA(p2);
-    double B = evaluateB(p2);
-    double Bprime = differentiateB(p2, j);
-    double denom = p2 * A * A + B * B;
-
-    return -2. * Bprime * A * B / (denom * denom);
-}
-
-double QuarkPropagator::differentiateSigmaS_a(double p2, unsigned int j) const {
-    double A = evaluateA(p2);
-    double B = evaluateB(p2);
-    double Aprime = differentiateA(p2, j);
-    double denom = p2 * A * A + B * B;
-
-    return -2. * p2 * Aprime * A * B / (denom * denom);
-}
-
-double QuarkPropagator::differentiateSigmaS_b(double p2, unsigned int j) const {
-    double A = evaluateA(p2);
-    double B = evaluateB(p2);
-    double Bprime = differentiateB(p2, j);
-    double A2 = A * A;
-    double B2 = B * B;
-    double denom = p2 * A2 + B2;
-
-    return Bprime * (p2 * A2 - B2) / (denom * denom);
-}
+//double QuarkPropagator::differentiateSigmaV_a(double p2, unsigned int j) const {
+//    double A = evaluateA(p2);
+//    double B = evaluateB(p2);
+//    double Aprime = differentiateA(p2, j);
+//    double A2 = A * A;
+//    double B2 = B * B;
+//    double denom = p2 * A2 + B2;
+//
+//    return Aprime * (B2 - p2 * A2) / (denom * denom);
+//}
+//
+//double QuarkPropagator::differentiateSigmaV_b(double p2, unsigned int j) const {
+//    double A = evaluateA(p2);
+//    double B = evaluateB(p2);
+//    double Bprime = differentiateB(p2, j);
+//    double denom = p2 * A * A + B * B;
+//
+//    return -2. * Bprime * A * B / (denom * denom);
+//}
+//
+//double QuarkPropagator::differentiateSigmaS_a(double p2, unsigned int j) const {
+//    double A = evaluateA(p2);
+//    double B = evaluateB(p2);
+//    double Aprime = differentiateA(p2, j);
+//    double denom = p2 * A * A + B * B;
+//
+//    return -2. * p2 * Aprime * A * B / (denom * denom);
+//}
+//
+//double QuarkPropagator::differentiateSigmaS_b(double p2, unsigned int j) const {
+//    double A = evaluateA(p2);
+//    double B = evaluateB(p2);
+//    double Bprime = differentiateB(p2, j);
+//    double A2 = A * A;
+//    double B2 = B * B;
+//    double denom = p2 * A2 + B2;
+//
+//    return Bprime * (p2 * A2 - B2) / (denom * denom);
+//}
 
 std::string QuarkPropagator::toString() const {
     return toString(100);
@@ -252,12 +271,6 @@ std::string QuarkPropagator::toString(unsigned int Npoints,
 std::string QuarkPropagator::enumToString(
         QuarkPropagator::QPFunction function) const {
     switch (function) {
-    case QuarkPropagator::SigmaA:
-        return "SigmaA";
-        break;
-    case QuarkPropagator::SigmaM:
-        return "SigmaM [GeV]";
-        break;
     case QuarkPropagator::A:
         return "A";
         break;
@@ -273,35 +286,53 @@ std::string QuarkPropagator::enumToString(
     case QuarkPropagator::sigmaS:
         return "sigmaS [GeV^-1]";
         break;
-    case QuarkPropagator::dSigmaA:
-        return "dSigmaA";
-        break;
-    case QuarkPropagator::dSigmaM:
-        return "dSigmaM";
-        break;
-    case QuarkPropagator::dA:
-        return "dA";
-        break;
-    case QuarkPropagator::dB:
-        return "dB";
-        break;
-    case QuarkPropagator::dsigmaV_a:
-        return "dsigmaV_a [GeV^-2]";
-        break;
-    case QuarkPropagator::dsigmaV_b:
-        return "dsigmaV_b [GeV^-3]";
-        break;
-    case QuarkPropagator::dsigmaS_a:
-        return "dsigmaS_a [GeV^-1]";
-        break;
-    case QuarkPropagator::dsigmaS_b:
-        return "dsigmaS_b [GeV^-2]";
-        break;
     case QuarkPropagator::ALL:
-        return "SigmaA ; SigmaM [GeV] ; A ; B [GeV] ; M [GeV] ; sigmaV [GeV^-2] ; sigmaS [GeV^-1] ; dSigmaA ; dSigmaM ; dA ; dB ; dsigmaV_a [GeV^-2] ; dsigmaV_b [GeV^-3] ; dsigmaS_a [GeV^-1] ; dsigmaS_b [GeV^-2]";
+        return "A ; B [GeV] ; M [GeV] ; sigmaV [GeV^-2] ; sigmaS [GeV^-1]";
         break;
     default:
         return "UNDEFINED";
         break;
     }
+}
+
+const NumA::VectorD& QuarkPropagator::getA() const {
+    return m_A;
+}
+
+void QuarkPropagator::setA(const NumA::VectorD& a) {
+    if (a.size() != m_N) {
+        error(__func__, "Size of vector a is wrong!");
+    }
+    m_A = a;
+    updateCoeffsA();
+}
+
+const NumA::VectorD& QuarkPropagator::getB() const {
+    return m_B;
+}
+
+void QuarkPropagator::setB(const NumA::VectorD& b) {
+    if (b.size() != m_N) {
+        error(__func__, "Size of vector b is wrong!");
+    }
+    m_B = b;
+    updateCoeffsB();
+}
+
+double QuarkPropagator::getA(unsigned int i) const {
+    return m_A[i];
+}
+
+void QuarkPropagator::setA(double a) {
+    m_A.assign(m_N, a);
+    updateCoeffsA();
+}
+
+double QuarkPropagator::getB(unsigned int i) const {
+    return m_B[i];
+}
+
+void QuarkPropagator::setB(double b) {
+    m_B.assign(m_N, b);
+    updateCoeffsB();
 }

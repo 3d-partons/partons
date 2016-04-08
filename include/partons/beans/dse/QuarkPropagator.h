@@ -23,21 +23,11 @@ public:
     virtual QuarkPropagator* clone() const = 0;
 
     enum QPFunction {
-        SigmaA = 0,
-        SigmaM,
-        A,
+        A = 0,
         B,
         M,
         sigmaV,
         sigmaS,
-        dSigmaA,
-        dSigmaM,
-        dA,
-        dB,
-        dsigmaV_a,
-        dsigmaV_b,
-        dsigmaS_a,
-        dsigmaS_b,
         ALL,
         UNDEFINED
     };
@@ -48,12 +38,12 @@ public:
 
     unsigned int getN() const;
     /**
-     * Must be reimplemented in the daughter class to assign m_roots !
-     * See QPbyChebyshev for example.
-     *
-     * @param n Order of the expansion
+     * Set the order of the expansion/interpolation.
+     * Calls a pure virtual method updateInterpolation() that must be implemented
+     * in the daughter class in order to update the nodes, etc.
+     * @param n Order of the expansion/interpolation
      */
-    virtual void setN(unsigned int n);
+    void setN(unsigned int n);
 
     virtual std::vector<double> evaluate(
             const std::vector<QuarkPropagator::QPFunction> & listOfFunctions,
@@ -61,43 +51,36 @@ public:
 
     virtual double evaluateA(double p2) const = 0;
     virtual double evaluateB(double p2) const = 0;
-    virtual double differentiateA(double p2, unsigned int j) const = 0;
-    virtual double differentiateB(double p2, unsigned int j) const = 0;
-
-    virtual double evaluateSigmaA(double p2) const = 0;
-    virtual double evaluateSigmaM(double p2) const = 0;
-    virtual double differentiateSigmaA(double p2, unsigned int j) const = 0;
-    virtual double differentiateSigmaM(double p2, unsigned int j) const = 0;
-
     double evaluateM(double p2) const;
-
     double evaluateSigmaV(double p2) const;
     double evaluateSigmaS(double p2) const;
-    double differentiateSigmaV_a(double p2, unsigned int j) const;
-    double differentiateSigmaS_a(double p2, unsigned int j) const;
-    double differentiateSigmaV_b(double p2, unsigned int j) const;
-    double differentiateSigmaS_b(double p2, unsigned int j) const;
 
-    virtual double stox(double p2) const = 0; ///< Change of variable from s=p2 [GeV] to x
-    virtual double xtos(double x) const = 0; ///< Change of variable from x to s=p2 [GeV]
+    virtual double stox(double p2) const; ///< Change of variable from s=p2 [GeV] to x in [-1,1]
+    virtual double xtos(double x) const; ///< Change of variable from x in [-1,1] to s=p2 [GeV]
 
-    const std::vector<double>& getRoots() const; ///< Get roots of the expansion (e.g Chebyshev nodes)
+    const NumA::VectorD& getRoots() const; ///< Get roots of the expansion (e.g Chebyshev nodes)
+    virtual NumA::VectorD getInterpolationVector(double x) const = 0; ///< Interpolation vector: transforms the values on the nodes to a value on a given point x.
+    virtual NumA::MatrixD getInterpolationMatrix(const NumA::VectorD& points) const = 0; ///< Interpolation matrix: transforms the values on the nodes to values on given points.
 
     const NumA::VectorD& getCoeffsA() const;
+    double getCoeffA(unsigned int i) const;
     void setCoeffsA(const NumA::VectorD& a);
     void setCoeffsA(double a);
-    double getCoeffA(unsigned int i) const;
-    void setCoeffA(unsigned int i, double a);
-    virtual void setCoeffsAfromValueOnNodes(
-            const std::vector<double>& values) = 0;
 
     const NumA::VectorD& getCoeffsB() const;
+    double getCoeffB(unsigned int i) const;
     void setCoeffsB(const NumA::VectorD& b);
     void setCoeffsB(double b);
-    double getCoeffB(unsigned int i) const;
-    void setCoeffB(unsigned int i, double b);
-    virtual void setCoeffsBfromValueOnNodes(
-            const std::vector<double>& values) = 0;
+
+    const NumA::VectorD& getA() const;
+    double getA(unsigned int i) const;
+    void setA(const NumA::VectorD& a);
+    void setA(double a);
+
+    const NumA::VectorD& getB() const;
+    double getB(unsigned int i) const;
+    void setB(const NumA::VectorD& b);
+    void setB(double b);
 
     double getM() const;
     void setM(double m);
@@ -116,12 +99,21 @@ protected:
             double epsilon2 = 1.e-4);
     QuarkPropagator(const QuarkPropagator& other);
 
+    virtual void updateA() = 0; ///< Update the values of A on the nodes, by using the coefficients.
+    virtual void updateB() = 0; ///< Update the values of B on the nodes, by using the coefficients.
+    virtual void updateCoeffsA() = 0; ///< Update the coefficients of A, by using the values on the nodes.
+    virtual void updateCoeffsB() = 0; ///< Update the coefficients of B, by using the values on the nodes.
+    virtual void updateInterpolation() = 0; ///< Update the interpolation (nodes, etc) with the new value of N.
+
     std::string enumToString(QuarkPropagator::QPFunction function) const;
 
-    NumA::VectorD m_a; ///< coefficients of Sigma_A (or A)
-    NumA::VectorD m_b; ///< coefficients of Sigma_M (or B)
+    NumA::VectorD m_a; ///< coefficients of A
+    NumA::VectorD m_b; ///< coefficients of B
 
-    std::vector<double> m_roots; ///< roots of the expansion (e.g Chebyshev nodes)
+    NumA::VectorD m_A; ///< values of A on the nodes/roots
+    NumA::VectorD m_B; ///< values of B on the nodes/roots
+
+    NumA::VectorD m_roots; ///< nodes/roots of the expansion (e.g Chebyshev nodes)
 
     unsigned int m_N; ///< Number of values stored
     double m_mu; ///< renormalization point

@@ -10,10 +10,13 @@
 #ifndef GAPEQUATIONSOLVER_H_
 #define GAPEQUATIONSOLVER_H_
 
-//#include <NumA/integration/one_dimension/GLNPIntegrator1D.h>
-#include <NumA/utils/Tolerances.h>
 #include <string>
 #include <vector>
+#include <NumA/integration/one_dimension/QuadratureIntegrator1D.h>
+#include <NumA/linear_algebra/matrix/MatrixD.h>
+#include <NumA/linear_algebra/vector/VectorD.h>
+#include <NumA/utils/Differences.h>
+#include <NumA/utils/Tolerances.h>
 
 #include "../../ModuleObject.h"
 
@@ -56,21 +59,25 @@ public:
     virtual void configure(const ElemUtils::Parameters &parameters);
 
     enum IterativeType {
-        Naive = 0, Newton = 1
+        Naive = 0, Broyden, Newton
     };
 
-    int getMaxIter() const;
-    void setMaxIter(int maxIter);
-    int getNx() const;
-    void setNx(int nx);
-    int getNz() const;
-    void setNz(int nz);
+    unsigned int getMaxIter() const;
+    void setMaxIter(unsigned int maxIter);
+    unsigned int getNx() const;
+    void setNx(unsigned int nx);
+    unsigned int getNz() const;
+    void setNz(unsigned int nz);
     double getAbsTolerance() const;
     void setAbsTolerance(double absTolerance);
     double getRelTolerance() const;
     void setRelTolerance(double relTolerance);
     const NumA::Tolerances& getTolerance() const;
     void setTolerance(const NumA::Tolerances& tolerance);
+    const NumA::Differences& getDifference() const;
+    double getAbsDifference() const;
+    double getRelDifference() const;
+    bool isConverged() const;
     double getAinit() const;
     void setAinit(double ainit);
     double getBinit() const;
@@ -103,8 +110,10 @@ protected:
     void setM(double m);
     double getMu() const;
     void setMu(double mu);
-    int getN() const;
-    void setN(int n);
+    double getMu2() const;
+    unsigned int getN() const;
+    void setN(unsigned int n);
+    unsigned int get2N() const;
 
     const std::vector<double>& getC() const;
     void setC(const std::vector<double>& c);
@@ -120,23 +129,35 @@ protected:
     void setChangedQp(bool changedQp);
     bool isChangedVertex() const;
     void setChangedVertex(bool changedVertex);
-    int getIters() const;
-    void setIters(int iters);
-    const std::vector<double>& getNodesS() const;
-    const std::vector<double>& getNodesX() const;
-    const std::vector<double>& getNodesZ() const;
-    const std::vector<double>& getRootsS() const;
-    const std::vector<double>& getRootsX() const;
-    const std::vector<double>& getWeightsX() const;
-    const std::vector<double>& getWeightsZ() const;
+    void setConverged(bool converged);
+    void setDifference(const NumA::Differences& difference);
+    void setAbsDifference(double absDifference);
+    void setRelDifference(double relDifference);
+    unsigned int getIters() const;
+    void setIters(unsigned int iters);
+    const NumA::VectorD& getNodesS() const;
+    const NumA::VectorD& getNodesX() const;
+    const NumA::VectorD& getNodesZ() const;
+    const NumA::VectorD& getRootsS() const;
+    const NumA::VectorD& getRootsX() const;
+    const NumA::VectorD& getWeightsX() const;
+    const NumA::VectorD& getWeightsZ() const;
+    const NumA::MatrixD& getInterpolationMatrix() const; ///< Interpolation matrix from the values on the expansion's nodes to the values on quadratures nodes.
+    void setInterpolationMatrix(const NumA::MatrixD& interpolationMatrix);
+    const NumA::VectorD& getInterpolationMu() const; ///< Interpolation from the values on the expansion's nodes to the value on the renormalization point.
+    void setInterpolationMu(const NumA::VectorD& interpolationMu);
 
     virtual void initModule();
     virtual void isModuleWellConfigured();
 
-    virtual void computeNewtonInteration() = 0;
-    virtual void computeIteration() = 0;
+//    virtual void computeNewtonIteration() = 0;
+    virtual void computeBroydenIteration() = 0;
+//    virtual void computeIteration() = 0;
+//    virtual void computeIterations(GapEquationSolverModule::IterativeType iterativeType = Naive) = 0;
 
     // Various functions (virtual means model dependent and must be implemented in daughter class)
+    virtual NumA::VectorD G_func(const NumA::VectorD& X) = 0; ///< Computes the function \f$ G \f$ of the non-linear problem \f$ G \left( X \right) = 0 \f$ .
+    virtual NumA::MatrixD J_G_func(const NumA::VectorD& X) = 0; ///< Computes the Jacobian matrix \f$ J_G \f$ of the non-linear problem \f$ G \left( X \right) = 0 \f$ .
     double k2_func(double p2, double q2, double z) const;
     double t2_func(double p2, double q2, double z) const;
 
@@ -148,22 +169,28 @@ private:
     double m_Lambda2; ///< Ultra-violet cut-off
     double m_epsilon2; ///< Indra-red cut-off
     double m_mu; ///< Renormalization point
+    double m_mu2; ///< Renormalization point squared
     double m_m; ///< Renormalized mass
-    double m_Ainit, m_Binit; ///< Intialization for the Iterative Solver
+    double m_Ainit, m_Binit; ///< Initialization for the Iterative Solver
 
-    int m_N; ///< Number of values for representing the propagator
-    int m_Nx; ///< Number of points for integration on x (momentum variable)
-    int m_Nz; ///< Number of points for integration on z (angular variable)
+    unsigned int m_N; ///< Number of values for representing the propagator
+    unsigned int m_2N; ///< Dimension of the problem: \f$ 2 N \f$.
+    unsigned int m_Nx; ///< Number of points for integration on x (momentum variable)
+    unsigned int m_Nz; ///< Number of points for integration on z (angular variable)
 
-    std::vector<double> m_roots_x, m_roots_s; ///< Roots for the propagator's expansion (e.g. Chebyshev roots)
+    NumA::VectorD m_roots_x, m_roots_s; ///< Roots for the propagator's expansion (e.g. Chebyshev roots)
+    NumA::MatrixD m_interpolationMatrix; ///< Interpolation matrix from the values on the expansion's nodes to the values on quadratures nodes.
+    NumA::VectorD m_interpolationMu; ///< Interpolation from the values on the expansion's nodes to the value on the renormalization point.
     NumA::QuadratureIntegrator1D* m_quad_x; ///< Integration quadrature
-    std::vector<double> m_nodes_x, m_nodes_s, m_weights_x; ///< Integration nodes and weights
+    NumA::VectorD m_nodes_x, m_nodes_s, m_weights_x; ///< Integration nodes and weights
     NumA::QuadratureIntegrator1D* m_quad_z; ///< Angular integration quadrature
-    std::vector<double> m_nodes_z, m_weights_z; ///< Angular integration nodes and weights
+    NumA::VectorD m_nodes_z, m_weights_z; ///< Angular integration nodes and weights
 
     NumA::Tolerances m_tolerance; ///< Convergence criterion
-    int m_maxIter; ///< Max iterations if the criterion is not fulfilled
-    int m_iters; ///< Number of iterations used
+    NumA::Differences m_difference; ///< Difference in A and B (norm 2)
+    unsigned int m_maxIter; ///< Max iterations if the criterion is not fulfilled
+    unsigned int m_iters; ///< Number of iterations used
+    bool m_converged; ///< Convergence boolean.
 
     // Keep track of changes
     bool m_changedNx, m_changedNz; ///< Tests if there is a change in the quadrature to avoid recalculations
