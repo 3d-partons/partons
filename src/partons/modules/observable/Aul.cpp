@@ -51,16 +51,14 @@ double Aul::compute(ProcessModule* pDVCSModule, double phi) {
 
     double result = 0.;
 
-    /*
-     double A = pDVCSModule->computeCrossSection(0, -1,
-     NumA::Vector3D(0., 0., +1.), phi);
+    double A = pDVCSModule->computeCrossSection(0, -1,
+            NumA::Vector3D(0., 0., +1.), phi);
 
-     double B = pDVCSModule->computeCrossSection(0, -1,
-     NumA::Vector3D(0., 0., -1.), phi);
-     */
+    double B = pDVCSModule->computeCrossSection(0, -1,
+            NumA::Vector3D(0., 0., -1.), phi);
 
     //TODO !!! division par zero !!!
-    result = this->Num(pDVCSModule, phi) / this->Den(pDVCSModule, phi);
+    result = (A - B) / (A + B);
 
     return result;
 }
