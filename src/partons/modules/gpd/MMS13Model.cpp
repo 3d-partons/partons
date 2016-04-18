@@ -131,9 +131,9 @@ PartonDistribution MMS13Model::computeH() {
 
     //calculate
     uVal = HpEDDVal(m_x, QuarkFlavor::UP, m_NHpE)
-            - EValPlus(m_x, QuarkFlavor::UP, m_NE) + DTerm(m_x);
+            - EValPlus(m_x, QuarkFlavor::UP, m_NE) + DTerm(m_x/m_xi);
     dVal = HpEDDVal(m_x, QuarkFlavor::DOWN, m_NHpE)
-            - EValPlus(m_x, QuarkFlavor::DOWN, m_NE) + DTerm(m_x);
+            - EValPlus(m_x, QuarkFlavor::DOWN, m_NE) + DTerm(m_x/m_xi);
 
     uSea = 0.;
     dSea = 0.;
@@ -142,9 +142,9 @@ PartonDistribution MMS13Model::computeH() {
     g = 0.;
 
     uValMx = HpEDDVal(Mx, QuarkFlavor::UP, m_NHpE)
-            - EValPlus(Mx, QuarkFlavor::UP, m_NE) + DTerm(Mx);
+            - EValPlus(Mx, QuarkFlavor::UP, m_NE) + DTerm(Mx/m_xi);
     dValMx = HpEDDVal(Mx, QuarkFlavor::DOWN, m_NHpE)
-            - EValPlus(Mx, QuarkFlavor::DOWN, m_NE) + DTerm(Mx);
+            - EValPlus(Mx, QuarkFlavor::DOWN, m_NE) + DTerm(Mx/m_xi);
 
     //store
     QuarkDistribution quarkDistribution_u(QuarkFlavor::UP);
@@ -155,13 +155,13 @@ PartonDistribution MMS13Model::computeH() {
     quarkDistribution_d.setQuarkDistribution(dVal + dSea);
     quarkDistribution_s.setQuarkDistribution(sSea);
 
-    quarkDistribution_u.setQuarkDistributionPlus(uVal + uValMx);
-    quarkDistribution_d.setQuarkDistributionPlus(dVal + dValMx);
-    quarkDistribution_s.setQuarkDistributionPlus(0.);
+    quarkDistribution_u.setQuarkDistributionPlus(uVal - uValMx + 2 * uSea);
+    quarkDistribution_d.setQuarkDistributionPlus(dVal - dValMx + 2 * dSea);
+    quarkDistribution_s.setQuarkDistributionPlus(2 * sSea);
 
-    quarkDistribution_u.setQuarkDistributionMinus(uVal - uValMx + 2 * uSea);
-    quarkDistribution_d.setQuarkDistributionMinus(dVal - dValMx + 2 * dSea);
-    quarkDistribution_s.setQuarkDistributionMinus(2 * sSea);
+    quarkDistribution_u.setQuarkDistributionMinus(uVal + uValMx);
+    quarkDistribution_d.setQuarkDistributionMinus(dVal + dValMx);
+    quarkDistribution_s.setQuarkDistributionMinus(0.);
 
     GluonDistribution gluonDistribution(g);
 
@@ -187,8 +187,8 @@ PartonDistribution MMS13Model::computeE() {
     double Mx = -m_x;
 
     //calculate
-    uVal = EValPlus(m_x, QuarkFlavor::UP, m_NE) - DTerm(m_x);
-    dVal = EValPlus(m_x, QuarkFlavor::DOWN, m_NE) - DTerm(m_x);
+    uVal = EValPlus(m_x, QuarkFlavor::UP, m_NE) - DTerm(m_x/m_xi);
+    dVal = EValPlus(m_x, QuarkFlavor::DOWN, m_NE) - DTerm(m_x/m_xi);
 
     uSea = 0.;
     dSea = 0.;
@@ -196,8 +196,8 @@ PartonDistribution MMS13Model::computeE() {
 
     g = 0.;
 
-    uValMx = EValPlus(Mx, QuarkFlavor::UP, m_NE) - DTerm(Mx);
-    dValMx = EValPlus(Mx, QuarkFlavor::DOWN, m_NE) - DTerm(Mx);
+    uValMx = EValPlus(Mx, QuarkFlavor::UP, m_NE) - DTerm(Mx/m_xi);
+    dValMx = EValPlus(Mx, QuarkFlavor::DOWN, m_NE) - DTerm(Mx/m_xi);
 
     //store
     QuarkDistribution quarkDistribution_u(QuarkFlavor::UP);
@@ -208,13 +208,13 @@ PartonDistribution MMS13Model::computeE() {
     quarkDistribution_d.setQuarkDistribution(dVal + dSea);
     quarkDistribution_s.setQuarkDistribution(sSea);
 
-    quarkDistribution_u.setQuarkDistributionPlus(uVal + uValMx);
-    quarkDistribution_d.setQuarkDistributionPlus(dVal + dValMx);
-    quarkDistribution_s.setQuarkDistributionPlus(0.);
+    quarkDistribution_u.setQuarkDistributionPlus(uVal - uValMx + 2 * uSea);
+    quarkDistribution_d.setQuarkDistributionPlus(dVal - dValMx + 2 * dSea);
+    quarkDistribution_s.setQuarkDistributionPlus(2 * sSea);
 
-    quarkDistribution_u.setQuarkDistributionMinus(uVal - uValMx + 2 * uSea);
-    quarkDistribution_d.setQuarkDistributionMinus(dVal - dValMx + 2 * dSea);
-    quarkDistribution_s.setQuarkDistributionMinus(2 * sSea);
+    quarkDistribution_u.setQuarkDistributionMinus(uVal + uValMx);
+    quarkDistribution_d.setQuarkDistributionMinus(dVal + dValMx);
+    quarkDistribution_s.setQuarkDistributionMinus(0.);
 
     GluonDistribution gluonDistribution(g);
 
@@ -337,13 +337,10 @@ double MMS13Model::profileFunction(double beta, double alpha, int N) {
             / tgamma(N + 1) / pow(1. - fabs(beta), 2 * N + 1) / sqrt(M_PI);
 }
 
-double MMS13Model::DTerm(double x) const {
+double MMS13Model::DTerm(double zeta) const {
 
-    if (fabs(x) < m_xi) {
-
-        double alpha = x / m_xi;
-
-        return m_C * alpha * (1. - pow(alpha, 2));
+    if (fabs(zeta) < 1.) {
+        return m_C * zeta * (1. - pow(zeta, 2));
     } else {
         return 0.;
     }

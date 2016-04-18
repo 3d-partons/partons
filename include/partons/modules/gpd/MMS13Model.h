@@ -56,7 +56,7 @@ private:
     double forwardEvalFunction(double beta, double kappa, double nu,
             double mu) const; ///< function to calculate forward limit of GPD E
     double profileFunction(double beta, double alpha, int N); ///< profile function
-    double DTerm(double x) const;    ///< D term
+    double DTerm(double zeta) const;    ///< D term
 
     double HpEDDVal(double x, QuarkFlavor::Type flavor, int N); ///< GPD H_DD + E_DD
     double IntHpEDDval(double beta, std::vector<double> par); ///< DD integral for H_DD + E_DD ((x-beta)/xi-alpha = 0 line)
