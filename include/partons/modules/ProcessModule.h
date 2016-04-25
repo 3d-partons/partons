@@ -4,17 +4,19 @@
 /**
  * @file ProcessModule.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 19 November 2014
+ * @date November 19, 2014
  * @version 1.0
- *
- * @class ProcessModule
- *
- * @brief
  */
 
 #include <string>
 
+#include "../beans/observable/ObservableChannel.h"
 #include "../ModuleObject.h"
+
+class ConvolCoeffFunctionModule;
+class Observable;
+class ScaleModule;
+class XiConverterModule;
 
 namespace NumA {
 class Vector3D;
@@ -22,8 +24,15 @@ class Vector3D;
 
 class Vector3D;
 
+/**
+ * @class ProcessModule
+ *
+ * @brief
+ */
 class ProcessModule: public ModuleObject {
 public:
+    static const std::string PARAMETER_NAME_BEAM_ENERGY;
+
     /**
      * Default constructor
      */
@@ -43,6 +52,13 @@ public:
 
     virtual void configure(const ElemUtils::Parameters &parameters);
 
+    virtual void setConvolCoeffFunctionModule(
+            ConvolCoeffFunctionModule* pConvolCoeffFunctionModule);
+
+    void SetBeamEnergy(double EBeam); ///< Sets beam energy
+
+    void setPScaleModule(ScaleModule* pScaleModule);
+    void setPXiConverterModule(XiConverterModule* pXiConverterModule);
 protected:
     /**
      * Copy constructor
@@ -51,6 +67,9 @@ protected:
      */
     ProcessModule(const ProcessModule &other);
 
+    //TODO doc
+    ObservableChannel::Type m_channel;
+
     // Invariant scalars
     double m_xB;        ///< Bjorken variable
     double m_t;     ///< Mandelstam variable (square of the 4-momentum transfer)
@@ -58,12 +77,25 @@ protected:
 
     double m_E;     ///< Beam energy in target rest frame
 
+    double m_phi;      ///<  Angle between leptonic and hadronic planes (radian)
+    double m_phiS;      ///<
+    double m_phie;      ///<
+
+    ScaleModule* m_pScaleModule;
+    XiConverterModule* m_pXiConverterModule;
+
     // Frame dependent scalars
 
     // 4-vectors defined in the CM frame
 
+    Observable* m_pObservable;
+    ConvolCoeffFunctionModule* m_pConvolCoeffFunctionModule;
+
+    bool isPreviousKinematicsDifferent(double xB, double t, double Q2);
+
 private:
 
+    void resetPreviousKinematics();
 };
 
 #endif /* PROCESS_MODULE_H */

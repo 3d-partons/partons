@@ -4,7 +4,7 @@
 /**
  * @file EnvironmentConfigurationDaoService.h
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 11 March 2016
+ * @date March 11, 2016
  * @version 1.0
  *
  * @class EnvironmentConfigurationDaoService
@@ -18,19 +18,32 @@
 
 class EnvironmentConfiguration;
 
+//TODO implement transactions and rollback mechanisms
 class EnvironmentConfigurationDaoService: public BaseObject {
 public:
+    /**
+     * Default constructor
+     */
     EnvironmentConfigurationDaoService();
+
+    /**
+     * Default destructor
+     */
     virtual ~EnvironmentConfigurationDaoService();
 
     int insert(const EnvironmentConfiguration &environmentConfiguration) const;
+
     EnvironmentConfiguration* selectByIndexId(const int indexId) const;
+
     void deleteByIndexId(const int indexId) const;
+
     std::string getConfigurationByIndexId(const int indexId) const;
-    int getEnvironmentConfigurationIdByMD5(const std::string &md5) const;
+
+    int getEnvironmentConfigurationIdByHashSum(
+            const std::string &hashSum) const;
 
 private:
-    EnvironmentConfigurationDao m_environmentConfigurationDao;
+    EnvironmentConfigurationDao m_environmentConfigurationDao; ///< reference to the right DAO object to perform database queries
 };
 
 #endif /* ENVIRONMENT_CONFIGURATION_DAO_SERVICE_H */

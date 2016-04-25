@@ -1,6 +1,7 @@
 #include "../../../../../include/partons/database/common/dao/EnvironmentConfigurationDao.h"
 
 #include <ElementaryUtils/string_utils/Formatter.h>
+#include <ElementaryUtils/string_utils/StringUtils.h>
 #include <QtCore/qdatetime.h>
 #include <QtCore/qstring.h>
 #include <QtCore/qvariant.h>
@@ -18,18 +19,18 @@ EnvironmentConfigurationDao::~EnvironmentConfigurationDao() {
 }
 
 int EnvironmentConfigurationDao::insert(const time_t& storeDate,
-        const std::string& configuration, const std::string& md5) const {
+        const std::string& configuration, const std::string& hashSum) const {
     int indexId = -1;
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     query.prepare(
-            "INSERT INTO environment_configuration (store_date, configuration, md5) VALUES (:storeDate, :configuration, :md5)");
+            "INSERT INTO environment_configuration (store_date, configuration, hash_sum) VALUES (:storeDate, :configuration, :hashSum)");
 
     QDateTime qStoreDate;
     qStoreDate.setTime_t(storeDate);
     query.bindValue(":storeDate", qStoreDate);
     query.bindValue(":configuration", QString(configuration.c_str()));
-    query.bindValue(":md5", QString(md5.c_str()));
+    query.bindValue(":hashSum", QString(hashSum.c_str()));
 
     if (query.exec()) {
         indexId = query.lastInsertId().toInt();
@@ -51,7 +52,7 @@ EnvironmentConfiguration* EnvironmentConfigurationDao::selectByIndexId(
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     query.prepare(
-            "SELECT id, store_date, md5 FROM environment_configuration WHERE id = :indexId");
+            "SELECT id, store_date, hash_sum FROM environment_configuration WHERE id = :indexId");
 
     query.bindValue(":indexId", indexId);
 
@@ -93,25 +94,26 @@ EnvironmentConfiguration* EnvironmentConfigurationDao::getEnvironmentConfigurati
         QSqlQuery& query) const {
 
     int field_id = query.record().indexOf("id");
-    int field_md5 = query.record().indexOf("md5");
+    int field_md5 = query.record().indexOf("hash_sum");
+    int field_store_date = query.record().indexOf("store_date");
 
     int indexId = query.value(field_id).toInt();
-    std::string md5 = query.value(field_md5).toString().toStdString();
+    std::string hashSum = query.value(field_md5).toString().toStdString();
+    time_t storeDate = query.value(field_store_date).toDateTime().toTime_t();
 
-    //TODO replace hardcoded value
-    time_t storeDate = time(0);
-
-    return new EnvironmentConfiguration(indexId, storeDate, "", md5);
+    return new EnvironmentConfiguration(indexId, storeDate,
+            ElemUtils::StringUtils::EMPTY, hashSum);
 }
 
 int EnvironmentConfigurationDao::getEnvironmentConfigurationIdByMD5(
-        const std::string& md5) const {
+        const std::string& hashSum) const {
     int indexId = -1;
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    query.prepare("SELECT id FROM environment_configuration WHERE md5 = :md5");
+    query.prepare(
+            "SELECT id FROM environment_configuration WHERE hash_sum = :hashSum");
 
-    query.bindValue(":md5", QString(md5.c_str()));
+    query.bindValue(":hashSum", QString(hashSum.c_str()));
 
     if (query.exec()) {
         if (query.first()) {
@@ -127,4 +129,31 @@ int EnvironmentConfigurationDao::getEnvironmentConfigurationIdByMD5(
     query.clear();
 
     return indexId;
+}
+
+std::string EnvironmentConfigurationDao::getConfigurationByIndexId(
+        const int indexId) const {
+    std::string configuration = ElemUtils::StringUtils::EMPTY;
+
+    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
+
+    query.prepare(
+            "SELECT configuration FROM environment_configuration WHERE id = :indexId");
+
+    query.bindValue(":indexId", indexId);
+
+    if (query.exec()) {
+        if (query.first()) {
+            configuration = query.value(0).toString().toStdString();
+        }
+    } else {
+        error(__func__,
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
+    }
+
+    query.clear();
+
+    return configuration;
 }

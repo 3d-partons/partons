@@ -36,6 +36,7 @@ class MDArray {
     size_t indexOf(size_t coordValue, va_list ap) const {
         size_t index = 0;
 
+        //TODO check index algorithm
         index += computeIntermediateIndex(coordValue, 1);
 
         for (unsigned int numDim = 2; numDim <= dims.size(); numDim++) {

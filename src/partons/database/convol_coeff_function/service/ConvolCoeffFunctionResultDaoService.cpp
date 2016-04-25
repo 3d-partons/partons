@@ -44,43 +44,6 @@ int ConvolCoeffFunctionResultDaoService::insert(
     return result;
 }
 
-int ConvolCoeffFunctionResultDaoService::insertWithoutTransaction(
-        const DVCSConvolCoeffFunctionResult& result) const {
-
-    // Check if this kinematic already exists
-    int kinematicId = m_convolCoeffFunctionKinematicDaoService.getKinematicId(
-            result.getKinematic());
-    // If not, insert new entry into database and retrieve its id
-    if (kinematicId == -1) {
-        kinematicId = m_convolCoeffFunctionKinematicDaoService.insert(
-                result.getKinematic());
-    }
-
-    // Check if this computation date already exists and retrieve Id
-    int computationId = m_computationDaoService.getComputationIdByDateTime(
-            result.getComputation().getDateTime());
-    // If not, insert new entry into database and retrieve its id
-    if (computationId == -1) {
-        computationId = m_computationDaoService.insert(result.getComputation());
-    }
-
-    // Insert new ccf_result entry into database and retrieve its id
-    int resultId = m_convolCoeffFunctionResultDao.insert(
-            result.getComputationModuleName(), kinematicId, computationId);
-
-    std::map<GPDType::Type, std::complex<double> > resultsByGPDType =
-            result.getResultsByGpdType();
-
-    for (std::map<GPDType::Type, std::complex<double> >::const_iterator it =
-            resultsByGPDType.begin(); it != resultsByGPDType.end(); it++) {
-        m_convolCoeffFunctionResultDao.insertIntoCCFResultComplex(
-                (it->second).real(), (it->second).imag(), (it->first),
-                resultId);
-    }
-
-    return computationId;
-}
-
 int ConvolCoeffFunctionResultDaoService::insert(
         const ResultList<DVCSConvolCoeffFunctionResult>& resultList) {
 
@@ -114,4 +77,44 @@ ResultList<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionResultDaoService::g
         const int computationId) const {
     return m_convolCoeffFunctionResultDao.getResultListByComputationId(
             computationId);
+}
+
+int ConvolCoeffFunctionResultDaoService::insertWithoutTransaction(
+        const DVCSConvolCoeffFunctionResult& result) const {
+
+    // Check if this kinematic already exists
+    int kinematicId =
+            m_convolCoeffFunctionKinematicDaoService.getIdByKinematicObject(
+                    result.getKinematic());
+    // If not, insert new entry into database and retrieve its id
+    if (kinematicId == -1) {
+        kinematicId = m_convolCoeffFunctionKinematicDaoService.insert(
+                result.getKinematic());
+    }
+
+    // Check if this computation date already exists
+    int computationId = m_computationDaoService.getComputationIdByDateTime(
+            result.getComputation().getDateTime());
+    // If not, insert new entry into database and retrieve its id
+    if (computationId == -1) {
+        computationId = m_computationDaoService.insertWithoutTransaction(result.getComputation());
+    }
+
+    // Insert new ccf_result entry into database and retrieve its id
+    int resultId = m_convolCoeffFunctionResultDao.insert(
+            result.getComputationModuleName(), kinematicId, computationId);
+
+    // Get all CCF results indexed by GPDType
+    std::map<GPDType::Type, std::complex<double> > resultsByGPDType =
+            result.getResultsByGpdType();
+
+    // Then loop over GPDType to store real part and imaginary part from CFF result into database.
+    for (std::map<GPDType::Type, std::complex<double> >::const_iterator it =
+            resultsByGPDType.begin(); it != resultsByGPDType.end(); it++) {
+        m_convolCoeffFunctionResultDao.insertIntoCCFResultComplex(
+                (it->second).real(), (it->second).imag(), (it->first),
+                resultId);
+    }
+
+    return computationId;
 }

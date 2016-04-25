@@ -4,42 +4,26 @@
 /**
  * @file EnvironmentConfiguration.h
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 09 March 2016
+ * @date March 09, 2016
  * @version 1.0
- *
- * @class EnvironmentConfiguration
- *
- * @brief
  */
 
 #include <ctime>
 #include <string>
 
-#include "../../database/DatabaseObject.h"
+#include "../../database/DatabaseFileObject.h"
 
-class EnvironmentConfiguration: public DatabaseObject {
+/**
+ * @class EnvironmentConfiguration
+ *
+ * @brief
+ */
+class EnvironmentConfiguration: public DatabaseFileObject {
 public:
     EnvironmentConfiguration();
-    EnvironmentConfiguration(const std::string &configuration,
-            const std::string &md5);
     EnvironmentConfiguration(int indexId, time_t storeDate,
-            const std::string &configuration, const std::string &md5);
+            const std::string &configuration, const std::string &hashSum);
     virtual ~EnvironmentConfiguration();
-
-    // ##### GETTERS & SETTERS #####
-
-    const std::string& getMd5() const;
-    void setMd5(const std::string& md5);
-    time_t getStoreDate() const;
-    void setStoreDate(time_t storeDate);
-    std::string getConfiguration() const;
-    void setConfiguration(const std::string& configuration);
-
-private:
-    time_t m_storeDate;
-    //TODO add documentation about mutable
-    mutable std::string m_configuration;
-    mutable std::string m_md5;
 };
 
 #endif /* ENVIRONMENT_CONFIGURATION_H */

@@ -4,6 +4,7 @@
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <cmath>
 
+#include "../../../../include/partons/beans/observable/ObservableChannel.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../include/partons/modules/observable/Ac.h"
@@ -21,6 +22,8 @@ AcCos2phi::AcCos2phi(const std::string &className) :
     m_pAcObservable =
             Partons::getInstance()->getModuleObjectFactory()->newObservable(
                     Ac::classId);
+
+    m_channel = ObservableChannel::DVCS;
 
     initFunctorsForIntegrations();
 }
@@ -57,7 +60,7 @@ AcCos2phi* AcCos2phi::clone() const {
 double AcCos2phi::functionToIntegrateAcObservable(double x,
         std::vector<double> params) {
     // x[0] = phi
-    return m_pAcObservable->compute(m_pProcess, x) * cos(2 * x);
+    return m_pAcObservable->compute(m_pProcessModule, x) * cos(2 * x);
 }
 
 double AcCos2phi::compute() {

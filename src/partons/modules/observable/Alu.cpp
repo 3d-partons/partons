@@ -2,6 +2,7 @@
 
 #include <NumA/linear_algebra/vector/Vector3D.h>
 
+#include "../../../../include/partons/beans/observable/ObservableChannel.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/modules/ProcessModule.h"
 
@@ -11,6 +12,7 @@ const unsigned int Alu::classId =
 
 Alu::Alu(const std::string &className) :
         Observable(className) {
+    m_channel = ObservableChannel::DVCS;
 }
 
 Alu::Alu(const Alu& other) :

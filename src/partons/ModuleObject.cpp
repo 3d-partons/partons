@@ -1,5 +1,7 @@
 #include "../../include/partons/ModuleObject.h"
 
+const std::string ModuleObject::CLASS_NAME = "className";
+
 ModuleObject::ModuleObject(const std::string &className) :
         BaseObject(className), ElemUtils::Thread() {
 }
@@ -21,5 +23,5 @@ std::string ModuleObject::toString() const {
 }
 
 void ModuleObject::resolveObjectDependencies() {
-BaseObject::resolveObjectDependencies();
+    BaseObject::resolveObjectDependencies();
 }

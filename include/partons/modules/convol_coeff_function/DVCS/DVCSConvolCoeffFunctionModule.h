@@ -4,32 +4,30 @@
 /**
  * @file DVCSConvolCoeffFunctionModule.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 22 July 2015
+ * @date July 22, 2015
  * @version 1.0
- *
- * @class DVCSConvolCoeffFunctionModule
- *
- * @brief
  */
 
 #include <complex>
 #include <map>
 #include <string>
 
-#include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
+//#include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "../../../beans/gpd/GPDType.h"
 #include "../../../beans/PerturbativeQCDOrderType.h"
 #include "../../ConvolCoeffFunctionModule.h"
 
 class ActiveFlavorsModule;
 class DVCSConvolCoeffFunctionResult;
-class GPDModule;
 class RunningAlphaStrongModule;
 
+/**
+ * @class DVCSConvolCoeffFunctionModule
+ *
+ * @brief
+ */
 class DVCSConvolCoeffFunctionModule: public ConvolCoeffFunctionModule {
 public:
-    static const std::string GPD_MODULE_ID;
-
     DVCSConvolCoeffFunctionModule(const std::string &className);
     virtual ~DVCSConvolCoeffFunctionModule();
 
@@ -43,10 +41,6 @@ public:
 
     virtual void configure(const ElemUtils::Parameters &parameters);
 
-    virtual DVCSConvolCoeffFunctionResult compute(
-            const DVCSConvolCoeffFunctionKinematic &kinematic,
-            GPDType::Type gpdType);
-
     virtual DVCSConvolCoeffFunctionResult compute(double xi, double t,
             double Q2, double MuF2, double MuR2, GPDType::Type gpdType);
 
@@ -56,8 +50,6 @@ public:
 
     // ##### GETTERS & SETTERS #####
 
-    const GPDModule* getGPDModule() const;
-    void setGPDModule(GPDModule* gpdModule);
     PerturbativeQCDOrderType::Type getQCDOrderType() const;
     void setQCDOrderType(PerturbativeQCDOrderType::Type qcdOrderType);
 
@@ -83,7 +75,6 @@ protected:
 
     unsigned int m_nf;
 
-    GPDModule* m_pGPDModule;
     RunningAlphaStrongModule* m_pRunningAlphaStrongModule;
 
     //TODO implement

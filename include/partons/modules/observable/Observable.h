@@ -75,8 +75,10 @@ public:
     void setBeamHelicity(double beamHelicity);
     const NumA::Vector3D& getTargetPolarization() const;
     void setTargetPolarization(const NumA::Vector3D& targetPolarization);
-    const ProcessModule* getDVCSModule() const;
-    void setDVCSModule(ProcessModule* pDVCSModule);
+    const ProcessModule* getProcessModule() const;
+    void setProcessModule(ProcessModule* pProcessModule);
+    ObservableChannel::Type getChannel() const;
+    void setChannel(ObservableChannel::Type channel);
 
 protected:
     /**
@@ -88,7 +90,7 @@ protected:
      */
     Observable(const Observable& other);
 
-    ProcessModule* m_pProcess;
+    ProcessModule* m_pProcessModule;
 
     //TODO doc
     ObservableChannel::Type m_channel;

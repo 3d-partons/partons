@@ -1,0 +1,70 @@
+#ifndef XML_PARSER_I_H
+#define XML_PARSER_I_H
+
+/**
+ * @file XMLParserI.h
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
+ * @date March 23, 2016
+ * @version 1.0
+ */
+
+#include <ElementaryUtils/parameters/Parameters.h>
+#include <string>
+
+#include "../../beans/automation/Scenario.h"
+#include "../../beans/automation/Task.h"
+
+class Scenario;
+
+/**
+ * @class XMLParserI
+ *
+ * @brief
+ */
+class XMLParserI: public BaseObject {
+public:
+    static const std::string SCENARIO_NODE_NAME;
+    static const std::string TASK_NODE_NAME;
+    static const std::string KINEMATICS_NODE_NAME;
+    static const std::string COMPUTATION_CONFIGURATION_NODE_NAME;
+    static const std::string MODULE_NODE_NAME;
+    static const std::string NODE_TYPE_ATTRIBUT_NAME;
+    static const std::string PARAM_NODE_NAME;
+    static const std::string TASK_SERVICE_ATTRIBUT_NAME;
+    static const std::string TASK_METHOD_ATTRIBUT_NAME;
+    static const std::string TASK_STORE_IN_DB_ATTRIBUT_NAME;
+    static const std::string PARAM_NAME_ATTRIBUT_NAME;
+    static const std::string PARAM_VALUE_ATTRIBUT_NAME;
+
+    /**
+     * Constructor
+     *
+     * @param className
+     */
+    XMLParserI(const std::string &className);
+
+    /**
+     * Destructor
+     */
+    virtual ~XMLParserI();
+
+    /**
+     *
+     * @param xmlFile
+     * @return
+     */
+    virtual Scenario parseScenarioXMLFile(const std::string &xmlFile) = 0;
+
+protected:
+    Scenario m_scenario; ///<
+    // Temporary object
+    Task m_task;    ///<
+    // Temporary object
+    std::string m_tempObjectType;
+    // Temporary object
+    ElemUtils::Parameters m_tempObjectParameters;    ///<
+    // Temporary object
+    unsigned int m_computationConfigurationXMLFileIndex;    ///<
+};
+
+#endif /* XML_PARSER_I_H */

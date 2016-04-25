@@ -18,6 +18,8 @@
 #include "../../../include/partons/modules/xb_to_xi/XiConverterModule.h"
 #include "../../../include/partons/ModuleObjectFactory.h"
 #include "../../../include/partons/Partons.h"
+#include "../../../include/partons/services/ConvolCoeffFunctionService.h"
+#include "../../../include/partons/ServiceObjectRegistry.h"
 
 const std::string ObservableService::FUNCTION_NAME_COMPUTE_DVCS_OBSERVABLE =
         "computeDVCSObservable";
@@ -45,7 +47,7 @@ void ObservableService::computeTask(Task &task) {
 
     if (ElemUtils::StringUtils::equals(task.getFunctionName(),
             ObservableService::FUNCTION_NAME_COMPUTE_DVCS_OBSERVABLE)) {
-        observableResultList.add(computeDVCSObservableTask(task));
+        observableResultList.add(computeObservableTask(task));
     } else if (ElemUtils::StringUtils::equals(task.getFunctionName(),
             ObservableService::FUNCTION_NAME_COMPUTE_MANY_KINEMATIC_ONE_MODEL)) {
         observableResultList = computeManyKinematicOneModelTask(task);
@@ -73,30 +75,11 @@ void ObservableService::computeTask(Task &task) {
     add(observableResultList);
 }
 
-ObservableResult ObservableService::computeDVCSObservable(
-        DVCSModule* pDVCSModule, Observable* pObservable,
-        const ObservableKinematic &observableKinematic,
-        DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule) const {
-
-    //TODO improve, replace by configuration.
-    pDVCSModule->setDVCSConvolCoeffFunctionModule(
-            pDVCSConvolCoeffFunctionModule);
-    pObservable->setDVCSModule(pDVCSModule);
-
-    return pObservable->compute(observableKinematic);
-}
-
 ResultList<ObservableResult> ObservableService::computeManyKinematicOneModel(
         const List<ObservableKinematic> & listOfKinematic,
-        DVCSModule* pDVCSModule, Observable* pObservable,
-        DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule) {
+        Observable* pObservable) {
 
     ResultList<ObservableResult> results;
-
-    //TODO improve, replace by configuration.
-    pDVCSModule->setDVCSConvolCoeffFunctionModule(
-            pDVCSConvolCoeffFunctionModule);
-    pObservable->setDVCSModule(pDVCSModule);
 
     // TODO voir s'il n'est pas possible de déplacer ça de manière générique dans la classe parent
 
@@ -123,35 +106,7 @@ ResultList<ObservableResult> ObservableService::computeManyKinematicOneModel(
     return results;
 }
 
-ObservableResult ObservableService::computeDVCSObservableTask(Task& task) {
-
-    // create ScaleModule
-    ScaleModule* pScaleModule = 0;
-
-    if (task.isAvailableParameters("ScaleModule")) {
-        pScaleModule = m_pModuleObjectFactory->newScaleModule(
-                task.getLastAvailableParameters().get("id").toString());
-        pScaleModule->configure(task.getLastAvailableParameters());
-    } else {
-        error(__func__,
-                ElemUtils::Formatter()
-                        << "Missing object : <ScaleModule> for method "
-                        << task.getFunctionName());
-    }
-
-    // create XiConverterModule
-    XiConverterModule* pXiConverterModule = 0;
-
-    if (task.isAvailableParameters("XiConverterModule")) {
-        pXiConverterModule = m_pModuleObjectFactory->newXiConverterModule(
-                task.getLastAvailableParameters().get("id").toString());
-        pXiConverterModule->configure(task.getLastAvailableParameters());
-    } else {
-        error(__func__,
-                ElemUtils::Formatter()
-                        << "Missing object : <XiConverterModule> for method "
-                        << task.getFunctionName());
-    }
+ObservableResult ObservableService::computeObservableTask(Task& task) {
 
     //create a GPDKinematic and init it with a list of parameters
     ObservableKinematic kinematic;
@@ -165,67 +120,9 @@ ObservableResult ObservableService::computeDVCSObservableTask(Task& task) {
                         << task.getFunctionName());
     }
 
-    Observable* pObservable = 0;
+    Observable* pObservable = newObservableModuleFromTask(task);
 
-    if (task.isAvailableParameters("Observable")) {
-        pObservable = m_pModuleObjectFactory->newObservable(
-                task.getLastAvailableParameters().get("id").toString());
-        pObservable->configure(task.getLastAvailableParameters());
-    } else {
-        error(__func__,
-                ElemUtils::Formatter()
-                        << "Missing object : <Observable> for method "
-                        << task.getFunctionName());
-    }
-
-    GPDModule* pGPDModule = 0;
-
-    if (task.isAvailableParameters("GPDModule")) {
-        pGPDModule = m_pModuleObjectFactory->newGPDModule(
-                task.getLastAvailableParameters().get("id").toString());
-        pGPDModule->configure(task.getLastAvailableParameters());
-    } else {
-        error(__func__,
-                ElemUtils::Formatter()
-                        << "Missing object : <GPDModule> for method "
-                        << task.getFunctionName());
-    }
-
-    DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule = 0;
-
-    if (task.isAvailableParameters("DVCSConvolCoeffFunctionModule")) {
-        pDVCSConvolCoeffFunctionModule =
-                m_pModuleObjectFactory->newDVCSConvolCoeffFunctionModule(
-                        task.getLastAvailableParameters().get("id").toString());
-        pDVCSConvolCoeffFunctionModule->configure(
-                task.getLastAvailableParameters());
-    } else {
-        error(__func__,
-                ElemUtils::Formatter()
-                        << "Missing object : <GPDEvolutionModule> for method "
-                        << task.getFunctionName());
-    }
-
-    DVCSModule* pDVCSModule = 0;
-
-    if (task.isAvailableParameters("DVCSModule")) {
-        pDVCSModule = m_pModuleObjectFactory->newDVCSModule(
-                task.getLastAvailableParameters().get("id").toString());
-        pDVCSModule->configure(task.getLastAvailableParameters());
-    } else {
-        error(__func__,
-                ElemUtils::Formatter()
-                        << "Missing object : <DVCSModule> for method "
-                        << task.getFunctionName());
-    }
-
-    //TODO how to remove it and autoconfigure ?
-    pDVCSConvolCoeffFunctionModule->setGPDModule(pGPDModule);
-    pDVCSModule->setPScaleModule(pScaleModule);
-    pDVCSModule->setPXiConverterModule(pXiConverterModule);
-
-    ObservableResult result = computeDVCSObservable(pDVCSModule, pObservable,
-            kinematic, pDVCSConvolCoeffFunctionModule);
+    ObservableResult result = computeObservable(kinematic, pObservable);
 
     info(__func__,
             ElemUtils::Formatter() << task.getFunctionName() << "("
@@ -237,34 +134,6 @@ ObservableResult ObservableService::computeDVCSObservableTask(Task& task) {
 
 ResultList<ObservableResult> ObservableService::computeManyKinematicOneModelTask(
         Task& task) {
-
-    // create ScaleModule
-    ScaleModule* pScaleModule = 0;
-
-    if (task.isAvailableParameters("ScaleModule")) {
-        pScaleModule = m_pModuleObjectFactory->newScaleModule(
-                task.getLastAvailableParameters().get("id").toString());
-        pScaleModule->configure(task.getLastAvailableParameters());
-    } else {
-        error(__func__,
-                ElemUtils::Formatter()
-                        << "Missing object : <ScaleModule> for method "
-                        << task.getFunctionName());
-    }
-
-    // create XiConverterModule
-    XiConverterModule* pXiConverterModule = 0;
-
-    if (task.isAvailableParameters("XiConverterModule")) {
-        pXiConverterModule = m_pModuleObjectFactory->newXiConverterModule(
-                task.getLastAvailableParameters().get("id").toString());
-        pXiConverterModule->configure(task.getLastAvailableParameters());
-    } else {
-        error(__func__,
-                ElemUtils::Formatter()
-                        << "Missing object : <XiConverterModule> for method "
-                        << task.getFunctionName());
-    }
 
     List<ObservableKinematic> listOfKinematic;
 
@@ -287,11 +156,72 @@ ResultList<ObservableResult> ObservableService::computeManyKinematicOneModelTask
                         << task.getFunctionName());
     }
 
+    Observable* pObservable = newObservableModuleFromTask(task);
+
+    ResultList<ObservableResult> result = computeManyKinematicOneModel(
+            listOfKinematic, pObservable);
+
+    info(__func__,
+            ElemUtils::Formatter() << task.getFunctionName() << "("
+                    << pObservable->getClassName() << ")" << '\n'
+                    << result.toString());
+
+    return result;
+}
+
+ObservableChannel::Type ObservableService::getObservableChannel(
+        const std::string& observableClassName) const {
+    BaseObjectRegistry* pBaseObjectRegistry =
+            Partons::getInstance()->getBaseObjectRegistry();
+
+    BaseObject* pTempBaseObject = pBaseObjectRegistry->get(observableClassName);
+    Observable* pTempObservable = static_cast<Observable*>(pTempBaseObject);
+
+    return pTempObservable->getChannel();
+}
+
+//TODO pour les listes au-dessus utiliser cette fonctionnalité pour ne pas dupliquer les implémentations
+//TODO refactoring string exception, wrong xml element name
+Observable* ObservableService::newObservableModuleFromTask(const Task& task) const {
+    // create ScaleModule
+    ScaleModule* pScaleModule = 0;
+
+    if (task.isAvailableParameters("ScaleModule")) {
+        pScaleModule =
+                m_pModuleObjectFactory->newScaleModule(
+                        task.getLastAvailableParameters().get(
+                                ModuleObject::CLASS_NAME).toString());
+        pScaleModule->configure(task.getLastAvailableParameters());
+    } else {
+        error(__func__,
+                ElemUtils::Formatter()
+                        << "Missing object : <ScaleModule> for method "
+                        << task.getFunctionName());
+    }
+
+    // create XiConverterModule
+    XiConverterModule* pXiConverterModule = 0;
+
+    if (task.isAvailableParameters("XiConverterModule")) {
+        pXiConverterModule =
+                m_pModuleObjectFactory->newXiConverterModule(
+                        task.getLastAvailableParameters().get(
+                                ModuleObject::CLASS_NAME).toString());
+        pXiConverterModule->configure(task.getLastAvailableParameters());
+    } else {
+        error(__func__,
+                ElemUtils::Formatter()
+                        << "Missing object : <XiConverterModule> for method "
+                        << task.getFunctionName());
+    }
+
     Observable* pObservable = 0;
 
     if (task.isAvailableParameters("Observable")) {
-        pObservable = m_pModuleObjectFactory->newObservable(
-                task.getLastAvailableParameters().get("id").toString());
+        pObservable =
+                m_pModuleObjectFactory->newObservable(
+                        task.getLastAvailableParameters().get(
+                                ModuleObject::CLASS_NAME).toString());
         pObservable->configure(task.getLastAvailableParameters());
     } else {
         error(__func__,
@@ -300,11 +230,61 @@ ResultList<ObservableResult> ObservableService::computeManyKinematicOneModelTask
                         << task.getFunctionName());
     }
 
+    ProcessModule* pProcessModule = newProcessModuleFromTask(task);
+
+    //TODO how to remove it and autoconfigure ?
+    pProcessModule->setPScaleModule(pScaleModule);
+    pProcessModule->setPXiConverterModule(pXiConverterModule);
+
+    pObservable->setProcessModule(pProcessModule);
+
+    return pObservable;
+}
+
+ObservableResult ObservableService::computeObservable(
+        const ObservableKinematic& observableKinematic,
+        Observable* pObservable) const {
+    return pObservable->compute(observableKinematic);
+}
+
+//TODO how to use it ?
+Observable* ObservableService::configureObservable(Observable* pObservable,
+        ProcessModule* pProcessModule,
+        ConvolCoeffFunctionModule* pConvolCoeffFunctionModule,
+        GPDModule* pGPDModule) const {
+
+    //TODO add test that check if there is a missing model for a specific Module
+
+    if (!pProcessModule) {
+        error(__func__,
+                "pProcessModule is NULL pointer ; cannot configure Observable");
+    } else {
+        //TODO add setter for ConvolCoeffFunction
+        //pProcessModule
+    }
+
+    if (!pObservable) {
+        error(__func__,
+                "pObservable is NULL pointer ; cannot configure Observable");
+    }
+
+    pProcessModule->setConvolCoeffFunctionModule(
+            Partons::getInstance()->getServiceObjectRegistry()->getConvolCoeffFunctionService()->configureConvolCoeffFunctionModule(
+                    pConvolCoeffFunctionModule, pGPDModule));
+
+    pObservable->setProcessModule(pProcessModule);
+
+    return pObservable;
+}
+
+ProcessModule* ObservableService::newProcessModuleFromTask(const Task& task) const {
     GPDModule* pGPDModule = 0;
 
     if (task.isAvailableParameters("GPDModule")) {
-        pGPDModule = m_pModuleObjectFactory->newGPDModule(
-                task.getLastAvailableParameters().get("id").toString());
+        pGPDModule =
+                m_pModuleObjectFactory->newGPDModule(
+                        task.getLastAvailableParameters().get(
+                                ModuleObject::CLASS_NAME).toString());
         pGPDModule->configure(task.getLastAvailableParameters());
     } else {
         error(__func__,
@@ -318,7 +298,8 @@ ResultList<ObservableResult> ObservableService::computeManyKinematicOneModelTask
     if (task.isAvailableParameters("DVCSConvolCoeffFunctionModule")) {
         pDVCSConvolCoeffFunctionModule =
                 m_pModuleObjectFactory->newDVCSConvolCoeffFunctionModule(
-                        task.getLastAvailableParameters().get("id").toString());
+                        task.getLastAvailableParameters().get(
+                                ModuleObject::CLASS_NAME).toString());
         pDVCSConvolCoeffFunctionModule->configure(
                 task.getLastAvailableParameters());
     } else {
@@ -331,8 +312,10 @@ ResultList<ObservableResult> ObservableService::computeManyKinematicOneModelTask
     DVCSModule* pDVCSModule = 0;
 
     if (task.isAvailableParameters("DVCSModule")) {
-        pDVCSModule = m_pModuleObjectFactory->newDVCSModule(
-                task.getLastAvailableParameters().get("id").toString());
+        pDVCSModule =
+                m_pModuleObjectFactory->newDVCSModule(
+                        task.getLastAvailableParameters().get(
+                                ModuleObject::CLASS_NAME).toString());
         pDVCSModule->configure(task.getLastAvailableParameters());
     } else {
         error(__func__,
@@ -342,18 +325,9 @@ ResultList<ObservableResult> ObservableService::computeManyKinematicOneModelTask
     }
 
     //TODO how to remove it and autoconfigure ?
-    pDVCSConvolCoeffFunctionModule->setGPDModule(pGPDModule);
-    pDVCSModule->setPScaleModule(pScaleModule);
-    pDVCSModule->setPXiConverterModule(pXiConverterModule);
+    pDVCSModule->setConvolCoeffFunctionModule(
+            Partons::getInstance()->getServiceObjectRegistry()->getConvolCoeffFunctionService()->configureConvolCoeffFunctionModule(
+                    pDVCSConvolCoeffFunctionModule, pGPDModule));
 
-    ResultList<ObservableResult> result = computeManyKinematicOneModel(
-            listOfKinematic, pDVCSModule, pObservable,
-            pDVCSConvolCoeffFunctionModule);
-
-    info(__func__,
-            ElemUtils::Formatter() << task.getFunctionName() << "("
-                    << pObservable->getClassName() << ")" << '\n'
-                    << result.toString());
-
-    return result;
+    return pDVCSModule;
 }

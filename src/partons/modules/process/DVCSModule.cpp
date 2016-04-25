@@ -1,25 +1,21 @@
 #include "../../../../include/partons/modules/process/DVCSModule.h"
 
-#include <ElementaryUtils/parameters/GenericType.h>
-#include <ElementaryUtils/parameters/Parameters.h>
+//#include <ElementaryUtils/parameters/GenericType.h>
+//#include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/linear_algebra/vector/Vector3D.h>
 
+#include "../../../../include/partons/beans/observable/ObservableChannel.h"
 #include "../../../../include/partons/beans/Scale.h"
 #include "../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
-#include "../../../../include/partons/modules/observable/Observable.h"
 #include "../../../../include/partons/modules/scale/Q2Multiplier.h"
 #include "../../../../include/partons/modules/xb_to_xi/XBToXi.h"
 #include "../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../include/partons/Partons.h"
 
-const std::string DVCSModule::PARAMETER_NAME_BEAM_ENERGY = "beam_energy";
-
 DVCSModule::DVCSModule(const std::string &className) :
-        ProcessModule(className), m_phi(0.), m_phiS(0.), m_phie(0.), m_phaseSpace(
-                0.), m_pObservable(0), m_pDVCSConvolCoeffFunctionModule(0), m_pScaleModule(
-                0), m_pXiConverterModule(0) {
-
+        ProcessModule(className), m_phaseSpace(0.) {
+    m_channel = ObservableChannel::DVCS;
 }
 
 DVCSModule::~DVCSModule() {
@@ -28,36 +24,7 @@ DVCSModule::~DVCSModule() {
 
 DVCSModule::DVCSModule(const DVCSModule& other) :
         ProcessModule(other) {
-    m_phi = other.m_phi;
-    m_phiS = other.m_phiS;
-    m_phie = other.m_phie;
-
     m_phaseSpace = other.m_phaseSpace;
-
-    if (other.m_pObservable != 0) {
-        m_pObservable = other.m_pObservable->clone();
-    } else {
-        m_pObservable = 0;
-    }
-
-    if (other.m_pDVCSConvolCoeffFunctionModule != 0) {
-        m_pDVCSConvolCoeffFunctionModule =
-                other.m_pDVCSConvolCoeffFunctionModule->clone();
-    } else {
-        m_pDVCSConvolCoeffFunctionModule = 0;
-    }
-
-    if (other.m_pScaleModule != 0) {
-        m_pScaleModule = other.m_pScaleModule->clone();
-    } else {
-        m_pScaleModule = 0;
-    }
-
-    if (other.m_pXiConverterModule != 0) {
-        m_pXiConverterModule = other.m_pXiConverterModule->clone();
-    } else {
-        m_pXiConverterModule = 0;
-    }
 
     m_dvcsConvolCoeffFunctionResult = other.m_dvcsConvolCoeffFunctionResult;
 }
@@ -101,9 +68,9 @@ void DVCSModule::computeConvolCoeffFunction(double xB, double t, double Q2) {
         // Compute scale from Q2
         Scale scale = m_pScaleModule->compute(Q2);
 
-        //TODO replace hard coded : convert xB to xi
+        //TODO Is it possible to move that into the ProcessModule->compute() mother class ?
         m_dvcsConvolCoeffFunctionResult =
-                m_pDVCSConvolCoeffFunctionModule->compute(
+                static_cast<DVCSConvolCoeffFunctionModule*>(m_pConvolCoeffFunctionModule)->compute(
                         m_pXiConverterModule->compute(xB, t, Q2), t, Q2,
                         scale.getMuF2(), scale.getMuR2(), GPDType::ALL);
     }
@@ -118,13 +85,6 @@ void DVCSModule::computeConvolCoeffFunction(double xB, double t, double Q2) {
 
     initModule();
     isModuleWellConfigured();
-}
-
-/*--------------------------- Function SetBeamEnergy(EBeam) ----------------------------*
- | Sets the beam energy in the laboratory frame.                                        |
- *--------------------------------------------------------------------------------------*/
-void DVCSModule::SetBeamEnergy(double EBeam) {
-    m_E = EBeam;
 }
 
 double DVCSModule::computeCrossSection(double beamHelicity, double beamCharge,
@@ -143,36 +103,6 @@ double DVCSModule::computeCrossSection(double beamHelicity, double beamCharge,
             + CrossSectionInterf(beamHelicity, beamCharge, targetPolarization);
 }
 
-//TODO vérifier que la précision du double ne fausse pas le résultat
-bool DVCSModule::isPreviousKinematicsDifferent(double xB, double t, double Q2) {
-    bool result = false;
-    if (xB != m_xB || t != m_t || Q2 != m_Q2) {
-        result = true;
-    }
-    return result;
-}
-
-DVCSConvolCoeffFunctionModule* DVCSModule::getDVCSConvolCoeffFunctionModule() const {
-    return m_pDVCSConvolCoeffFunctionModule;
-}
-void DVCSModule::setDVCSConvolCoeffFunctionModule(
-        DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule) {
-    m_pDVCSConvolCoeffFunctionModule = pDVCSConvolCoeffFunctionModule;
-
-    resetPreviousKinematics();
-
-    info(__func__,
-            ElemUtils::Formatter()
-                    << "DVCSConvolCoeffFunctionModule is set to : "
-                    << m_pDVCSConvolCoeffFunctionModule->getClassName());
-}
-
-void DVCSModule::resetPreviousKinematics() {
-    m_xB = 0.;
-    m_t = 0.;
-    m_Q2 = 0.;
-}
-
 std::complex<double> DVCSModule::getConvolCoeffFunctionValue(
         GPDType::Type gpdType) {
     std::complex<double> result = 0.;
@@ -185,21 +115,26 @@ std::complex<double> DVCSModule::getConvolCoeffFunctionValue(
 }
 
 void DVCSModule::configure(const ElemUtils::Parameters &parameters) {
-    if (parameters.isAvailable(DVCSModule::PARAMETER_NAME_BEAM_ENERGY)) {
-        m_E = parameters.getLastAvailable().toDouble();
-
-        info(__func__,
-                ElemUtils::Formatter() << DVCSModule::PARAMETER_NAME_BEAM_ENERGY
-                        << " configured with value = " << m_E);
-    }
-
     ProcessModule::configure(parameters);
 }
 
-void DVCSModule::setPScaleModule(ScaleModule* pScaleModule) {
-    m_pScaleModule = pScaleModule;
-}
+void DVCSModule::setConvolCoeffFunctionModule(
+        ConvolCoeffFunctionModule* pConvolCoeffFunctionModule) {
+    if (pConvolCoeffFunctionModule) {
+        if (pConvolCoeffFunctionModule->getChannel()
+                == ObservableChannel::DVCS) {
+            ProcessModule::setConvolCoeffFunctionModule(
+                    pConvolCoeffFunctionModule);
+        } else {
+            error(__func__,
+                    ElemUtils::Formatter()
+                            << "Cannot set ConvolCoeffFunctionModule, because its channel is different from ProcessModule : "
+                            << ObservableChannel(
+                                    pConvolCoeffFunctionModule->getChannel()).toString());
+        }
+    } else {
+        error(__func__,
+                "Cannot set ConvolCoeffFunctionModule, because it's a NULL pointer");
+    }
 
-void DVCSModule::setPXiConverterModule(XiConverterModule* pXiConverterModule) {
-    m_pXiConverterModule = pXiConverterModule;
 }

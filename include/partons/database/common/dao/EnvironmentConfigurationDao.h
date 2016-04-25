@@ -31,6 +31,7 @@ public:
     void deleteByIndexId(const int indexId) const;
 
     int getEnvironmentConfigurationIdByMD5(const std::string& md5) const;
+    std::string getConfigurationByIndexId(const int indexId) const;
 
 private:
     EnvironmentConfiguration* getEnvironmentConfigurationFromQuery(

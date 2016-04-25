@@ -4,6 +4,7 @@
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <cmath>
 
+#include "../../../../include/partons/beans/observable/ObservableChannel.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../include/partons/modules/observable/Aul.h"
@@ -26,6 +27,8 @@ AulSinPhi::AulSinPhi(const std::string &className) :
 //    m_pAulObservable =
 //            static_cast<Aul*>(Partons::getInstance()->getModuleObjectFactory()->newObservable(
 //                    Aul::classId));
+
+    m_channel = ObservableChannel::DVCS;
 
     initFunctorsForIntegrations();
 }
@@ -78,19 +81,19 @@ AulSinPhi* AulSinPhi::clone() const {
 double AulSinPhi::functionToIntegrateNumObservable(double x,
         std::vector<double> params) {
     // x[0] = phi
-    return m_pAulObservable->Num(m_pProcess, x) * sin(x);
+    return m_pAulObservable->Num(m_pProcessModule, x) * sin(x);
 }
 
 double AulSinPhi::functionToIntegrateDenObservable(double x,
         std::vector<double> params) {
     // x[0] = phi
-    return m_pAulObservable->Den(m_pProcess, x);
+    return m_pAulObservable->Den(m_pProcessModule, x);
 }
 
 double AulSinPhi::compute() {
 
     //TODO improve, replace by configuration.
-    m_pAulObservable->setDVCSModule(m_pProcess);
+    m_pAulObservable->setProcessModule(m_pProcessModule);
 
     std::vector<double> emptyParameters;
 

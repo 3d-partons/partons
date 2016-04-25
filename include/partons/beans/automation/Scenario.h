@@ -4,24 +4,32 @@
 /**
  * @file Scenario.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 30 January 2015
+ * @date January 30, 2015
  * @version 1.0
- *
+ */
+
+#include <stddef.h>
+#include <string>
+#include <vector>
+
+#include "../../database/DatabaseFileObject.h"
+#include "Task.h"
+
+/**
  * @class Scenario
  *
  * @brief
  */
-
-#include <stddef.h>
-#include <ctime>
-#include <string>
-#include <vector>
-
-#include "Task.h"
-
-class Scenario {
+class Scenario: public DatabaseFileObject {
 public:
+    /**
+     * Default constructor
+     */
     Scenario();
+
+    /**
+     * Destructor
+     */
     virtual ~Scenario();
 
     const Task& getTask(unsigned int i) const;
@@ -29,21 +37,24 @@ public:
 
     void add(const Task &task);
 
+    /**
+     * Return the number of tasks in this scenario.
+     *
+     * @return
+     */
     size_t size() const;
 
-    time_t getDate() const;
-    void setDate(time_t date);
     const std::string& getDescription() const;
     void setDescription(const std::string& description);
-    const std::string& getId() const;
-    void setId(const std::string& id);
+
+    virtual std::string toString() const;
+
+    const std::vector<Task>& getTasks() const;
+    void setTasks(const std::vector<Task>& tasks);
+
 private:
-
-    std::string m_id;
-    time_t m_date;
-    std::string m_description;
-
-    std::vector<Task> m_tasks;
+    std::string m_description; ///<
+    std::vector<Task> m_tasks; ///<
 };
 
 #endif /* SCENARIO_H */

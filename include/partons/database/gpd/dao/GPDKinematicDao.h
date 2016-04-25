@@ -15,6 +15,7 @@
 #include <QtSql/qsqlquery.h>
 
 #include "../../../beans/gpd/GPDKinematic.h"
+#include "../../../beans/List.h"
 
 class GPDKinematicDao: public BaseObject {
 public:
@@ -26,9 +27,13 @@ public:
     int select(double x, double xi, double t, double MuF2, double MuR2) const;
 
     GPDKinematic getKinematicById(const int id) const;
+    List<GPDKinematic> getKinematicListByComputationId(
+            const int computationId) const;
 
 private:
-    void getGPDKinematicFromQuery(GPDKinematic &gpdKinematic,
+    void fillGPDKinematicFromQuery(GPDKinematic &gpdKinematic,
+            QSqlQuery &query) const;
+    void fillGPDKinematicListFromQuery(List<GPDKinematic> &gpdKinematicList,
             QSqlQuery &query) const;
 };
 

@@ -45,11 +45,11 @@ int ObservableResultDaoService::insertWithoutTransaction(
         const ObservableResult& observableResult) const {
 
     // Check if this kinematic already exists
-    int kinematicId = m_observableKinematicDaoService.getKinematicId(
+    int kinematicId = m_observableKinematicDaoService.getIdByKinematicObject(
             observableResult.getKinematic());
     // If not, insert new entry in database and retrieve its id
     if (kinematicId == -1) {
-        kinematicId = m_observableKinematicDaoService.insert(
+        kinematicId = m_observableKinematicDaoService.insertWithoutTransaction(
                 observableResult.getKinematic());
     }
 
@@ -58,7 +58,7 @@ int ObservableResultDaoService::insertWithoutTransaction(
             observableResult.getComputation().getDateTime());
     // If not, insert new entry in database and retrieve its id
     if (computationId == -1) {
-        computationId = m_computationDaoService.insert(
+        computationId = m_computationDaoService.insertWithoutTransaction(
                 observableResult.getComputation());
     }
 
@@ -111,4 +111,9 @@ ResultList<ObservableResult> ObservableResultDaoService::getObservableResultList
         const int computationId) const {
     return m_observableResultDao.getObservableResultListByComputationId(
             computationId);
+}
+
+ResultList<ObservableResult> ObservableResultDaoService::getObservableResultListFromSQLQuery(
+        const std::string& sqlQuery) const {
+    return m_observableResultDao.getObservableResultListFromSQLQuery(sqlQuery);
 }

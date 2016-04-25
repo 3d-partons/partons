@@ -33,6 +33,9 @@ public:
     ResultList<ObservableResult> getObservableResultListByComputationId(
             const int computationId) const;
 
+    ResultList<ObservableResult> getObservableResultListFromSQLQuery(
+            const std::string &sqlQuery) const;
+
 private:
     ObservableKinematicDao m_observableKinematicDao;
 

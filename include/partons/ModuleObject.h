@@ -26,6 +26,8 @@ class Parameters;
 
 class ModuleObject: public BaseObject, public ElemUtils::Thread {
 public:
+    static const std::string CLASS_NAME;
+
     /**
      * Constructor.
      * See BaseObject class for more info about input parameter.

@@ -7,24 +7,21 @@
 #include <utility>
 
 #include "../../../../../include/partons/beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
+#include "../../../../../include/partons/beans/observable/ObservableChannel.h"
 #include "../../../../../include/partons/modules/alphaS/RunningAlphaStrong.h"
 #include "../../../../../include/partons/modules/ActiveFlavorsModule.h"
 #include "../../../../../include/partons/modules/evolution/gpd/ExampleEvolQCDModel.h"
-#include "../../../../../include/partons/modules/GPDModule.h"
 #include "../../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../../include/partons/Partons.h"
-
-const std::string DVCSConvolCoeffFunctionModule::GPD_MODULE_ID =
-        "DVCS_CONVOL_COEFF_FUNCTION_GPD_MODULE_ID";
 
 DVCSConvolCoeffFunctionModule::DVCSConvolCoeffFunctionModule(
         const std::string &className) :
         ConvolCoeffFunctionModule(className), m_xi(0.), m_t(0.), m_Q2(0.), m_MuF2(
                 0.), m_MuR2(0.), m_nf(0), m_qcdOrderType(
                 PerturbativeQCDOrderType::UNDEFINED), m_currentGPDComputeType(
-                GPDType::UNDEFINED), m_gpdType(GPDType::UNDEFINED), m_pGPDModule(
-                0), m_pRunningAlphaStrongModule(0), m_pNfConvolCoeffFunction(0) {
-
+                GPDType::UNDEFINED), m_gpdType(GPDType::UNDEFINED), m_pRunningAlphaStrongModule(
+                0), m_pNfConvolCoeffFunction(0) {
+    m_channel = ObservableChannel::DVCS;
 }
 
 DVCSConvolCoeffFunctionModule::DVCSConvolCoeffFunctionModule(
@@ -45,13 +42,6 @@ DVCSConvolCoeffFunctionModule::DVCSConvolCoeffFunctionModule(
     m_qcdOrderType = other.m_qcdOrderType;
     m_currentGPDComputeType = other.m_currentGPDComputeType;
     m_gpdType = other.m_gpdType;
-
-    if (other.m_pGPDModule != 0) {
-        // GPDModule is an abstract class, so it's impossible to use copy constructor to get a new instance of the object
-        m_pGPDModule = (other.m_pGPDModule)->clone();
-    } else {
-        m_pGPDModule = 0;
-    }
 
     if (other.m_pRunningAlphaStrongModule != 0) {
         // RunningAlphaStrongModule is an abstract class, so it's impossible to use copy constructor to get a new instance of the object
@@ -128,13 +118,6 @@ void DVCSConvolCoeffFunctionModule::isModuleWellConfigured() {
     if (m_pNfConvolCoeffFunction == 0) {
         error(__func__, "m_pNfConvolCoeffFunction is NULL");
     }
-}
-
-DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionModule::compute(
-        const DVCSConvolCoeffFunctionKinematic &kinematic,
-        GPDType::Type gpdType) {
-    return compute(kinematic.getXi(), kinematic.getT(), kinematic.getQ2(),
-            kinematic.getMuF2(), kinematic.getMuR2(), gpdType);
 }
 
 DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionModule::compute(
@@ -231,14 +214,6 @@ void DVCSConvolCoeffFunctionModule::preCompute(const double xi, const double t,
     isModuleWellConfigured();
 }
 
-const GPDModule* DVCSConvolCoeffFunctionModule::getGPDModule() const {
-    return m_pGPDModule;
-}
-
-void DVCSConvolCoeffFunctionModule::setGPDModule(GPDModule* gpdModule) {
-    m_pGPDModule = gpdModule;
-}
-
 PerturbativeQCDOrderType::Type DVCSConvolCoeffFunctionModule::getQCDOrderType() const {
     return m_qcdOrderType;
 }
@@ -251,36 +226,6 @@ void DVCSConvolCoeffFunctionModule::setQCDOrderType(
 //TODO handle string for XML file and native type from C++ code ; see QCD_ORDER_TYPE test
 void DVCSConvolCoeffFunctionModule::configure(
         const ElemUtils::Parameters &parameters) {
-    if (parameters.isAvailable(DVCSConvolCoeffFunctionModule::GPD_MODULE_ID)) {
-        //TODO why create new GPDModule here ?
-        // TODO passer par le setter de m_pGPDModule pour affecter le nouveau module de GPD. Car il faut détruire le précédent pointer s'il existe. Pour libérer l'allocation mémoire avant d'affecter le nouveau.
-
-        //TODO tester l'imbrication des try/catch
-        //TODO Dangereux de construire le module GPD comme ça car on ne peut pas le configurer
-        try {
-            m_pGPDModule =
-                    Partons::getInstance()->getModuleObjectFactory()->newGPDModule(
-                            parameters.getLastAvailable().toUInt());
-        } catch (std::exception e) {
-            try {
-                m_pGPDModule =
-                        Partons::getInstance()->getModuleObjectFactory()->newGPDModule(
-                                parameters.getLastAvailable().toString());
-            } catch (std::exception e) {
-                error(__func__,
-                        ElemUtils::Formatter()
-                                << "Cannot create GPDModule from data provided with parameter = "
-                                << DVCSConvolCoeffFunctionModule::GPD_MODULE_ID
-                                << e.what());
-            }
-        }
-
-        info(__func__,
-                ElemUtils::Formatter()
-                        << DVCSConvolCoeffFunctionModule::GPD_MODULE_ID
-                        << " configured with value = "
-                        << m_pGPDModule->getClassName());
-    }
 
     if (parameters.isAvailable(
             PerturbativeQCDOrderType::PARAMETER_NAME_PERTURBATIVE_QCD_ORDER_TYPE)) {

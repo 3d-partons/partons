@@ -3,11 +3,12 @@
 #include <stdexcept>
 
 #include "../../include/partons/BaseObjectRegistry.h"
-#include "../../include/partons/services/AutomationService.h"
+#include "../../include/partons/services/automation/AutomationService.h"
 #include "../../include/partons/services/ComparisonService.h"
+#include "../../include/partons/services/ConvolCoeffFunctionService.h"
 #include "../../include/partons/services/DoubleDistributionService.h"
-#include "../../include/partons/services/DVCSConvolCoeffFunctionService.h"
 #include "../../include/partons/services/GPDService.h"
+#include "../../include/partons/services/hash_sum/CryptographicHashService.h"
 #include "../../include/partons/services/ObservableService.h"
 #include "../../include/partons/services/VizualisationService.h"
 
@@ -46,9 +47,9 @@ GPDService* ServiceObjectRegistry::getGPDService() const {
     return static_cast<GPDService*>(get(GPDService::classId));
 }
 
-DVCSConvolCoeffFunctionService* ServiceObjectRegistry::getConvolCoeffFunctionService() const {
-    return static_cast<DVCSConvolCoeffFunctionService*>(get(
-            DVCSConvolCoeffFunctionService::classId));
+ConvolCoeffFunctionService* ServiceObjectRegistry::getConvolCoeffFunctionService() const {
+    return static_cast<ConvolCoeffFunctionService*>(get(
+            ConvolCoeffFunctionService::classId));
 }
 
 ObservableService* ServiceObjectRegistry::getObservableService() const {
@@ -71,4 +72,9 @@ ComparisonService* ServiceObjectRegistry::getComparisonService() const {
 AutomationService* ServiceObjectRegistry::getAutomationService() const {
     return static_cast<AutomationService*>(m_pBaseObjectRegistry->get(
             AutomationService::classId));
+}
+
+CryptographicHashService* ServiceObjectRegistry::getCryptographicHashService() const {
+    return static_cast<CryptographicHashService*>(m_pBaseObjectRegistry->get(
+            CryptographicHashService::classId));
 }

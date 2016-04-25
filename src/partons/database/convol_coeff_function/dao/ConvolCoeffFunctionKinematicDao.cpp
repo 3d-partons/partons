@@ -86,8 +86,9 @@ DVCSConvolCoeffFunctionKinematic ConvolCoeffFunctionKinematicDao::getKinematicBy
     query.bindValue(":id", id);
 
     if (query.exec()) {
-
-        fillKinematicFromQuery(convolCoeffFunctionKinematic, query);
+        if (query.first()) {
+            fillKinematicFromQuery(convolCoeffFunctionKinematic, query);
+        }
     } else {
         error(__func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
@@ -100,6 +101,44 @@ DVCSConvolCoeffFunctionKinematic ConvolCoeffFunctionKinematicDao::getKinematicBy
     return convolCoeffFunctionKinematic;
 }
 
+List<DVCSConvolCoeffFunctionKinematic> ConvolCoeffFunctionKinematicDao::getKinematicListByComputationId(
+        int computationId) const {
+    List<DVCSConvolCoeffFunctionKinematic> kinematicList;
+
+    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
+
+    query.prepare(
+            "SELECT k.id, k.xi, k.t, k.Q2, k.MuF2, k.MuR2 FROM convol_coeff_function_kinematic k, convol_coeff_function_result r WHERE r.computation_id = :computationId AND r.ccf_kinematic_id = k.id");
+
+    query.bindValue(":computationId", computationId);
+
+    if (query.exec()) {
+        if (DatabaseManager::getNumberOfRows(query) != 0) {
+            fillKinematicListFromQuery(kinematicList, query);
+        } else {
+            warn(__func__,
+                    ElemUtils::Formatter() << "No entry for computationId = "
+                            << computationId);
+        }
+    }
+
+    query.clear();
+
+    return kinematicList;
+}
+
+//TODO test implementation
+void ConvolCoeffFunctionKinematicDao::fillKinematicListFromQuery(
+        List<DVCSConvolCoeffFunctionKinematic>& kinematicList,
+        QSqlQuery& query) const {
+    while (query.next()) {
+        DVCSConvolCoeffFunctionKinematic kinematic;
+        fillKinematicFromQuery(kinematic, query);
+        kinematicList.add(kinematic);
+    }
+}
+
+//TODO test implementation
 void ConvolCoeffFunctionKinematicDao::fillKinematicFromQuery(
         DVCSConvolCoeffFunctionKinematic &kinematic, QSqlQuery &query) const {
 
@@ -110,16 +149,15 @@ void ConvolCoeffFunctionKinematicDao::fillKinematicFromQuery(
     int field_MuF2 = query.record().indexOf("MuF2");
     int field_MuR2 = query.record().indexOf("MuR2");
 
-    if (query.first()) {
+    int id = query.value(field_id).toInt();
+    double xi = query.value(field_xi).toDouble();
+    double t = query.value(field_t).toDouble();
+    double Q2 = query.value(field_Q2).toDouble();
+    double MuF2 = query.value(field_MuF2).toDouble();
+    double MuR2 = query.value(field_MuR2).toDouble();
 
-        int id = query.value(field_id).toInt();
-        double xi = query.value(field_xi).toDouble();
-        double t = query.value(field_t).toDouble();
-        double Q2 = query.value(field_Q2).toDouble();
-        double MuF2 = query.value(field_MuF2).toDouble();
-        double MuR2 = query.value(field_MuR2).toDouble();
+    kinematic = DVCSConvolCoeffFunctionKinematic(xi, t, Q2, MuF2, MuR2);
+    kinematic.setId(id);
 
-        kinematic = DVCSConvolCoeffFunctionKinematic(xi, t, Q2, MuF2, MuR2);
-        kinematic.setId(id);
-    }
 }
+

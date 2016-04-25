@@ -4,27 +4,30 @@
 /**
  * @file ObservableService.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 20 November 2014
+ * @date November 20, 2014
  * @version 1.0
- *
- * @class ObservableService
- *
- * @brief \<singleton\> Use for handle and compute some pre-configured CFF modules.
  */
 
 #include <string>
 
 #include "../beans/List.h"
+#include "../beans/observable/ObservableChannel.h"
 #include "../beans/observable/ObservableKinematic.h"
 #include "../beans/observable/ObservableResult.h"
 #include "../beans/ResultList.h"
 #include "../ServiceObjectTyped.h"
 
+class ConvolCoeffFunctionModule;
+class GPDModule;
+class Observable;
+class ProcessModule;
 class Task;
 
-class DVCSConvolCoeffFunctionModule;
-class DVCSModule;
-class Observable;
+/**
+ * @class ObservableService
+ *
+ * @brief \<singleton\> Use for handle and compute some pre-configured CFF modules.
+ */
 
 class ObservableService: public ServiceObjectTyped<ObservableKinematic,
         ObservableResult> {
@@ -44,22 +47,30 @@ public:
      */
     virtual ~ObservableService();
 
-    ObservableResult computeDVCSObservable(DVCSModule* pDVCSModule,
-            Observable* pObservable,
-            const ObservableKinematic &observableKinematic,
-            DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule) const;
-
     ResultList<ObservableResult> computeManyKinematicOneModel(
             const List<ObservableKinematic> & listOfKinematic,
-            DVCSModule* pDVCSModule, Observable* pObservable,
-            DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule);
+            Observable* pObservable);
 
     virtual void computeTask(Task &task);
 
-private:
+    ObservableChannel::Type getObservableChannel(
+            const std::string &observableClassName) const;
 
+    ObservableResult computeObservable(
+            const ObservableKinematic &observableKinematic,
+            Observable* pObservable) const;
+
+    Observable* configureObservable(Observable* pObservable,
+            ProcessModule* pProcessModule,
+            ConvolCoeffFunctionModule* pConvolCoeffFunctionModule,
+            GPDModule* pGPDModule) const;
+
+    Observable* newObservableModuleFromTask(const Task &task) const;
+    ProcessModule* newProcessModuleFromTask(const Task &task) const;
+
+private:
     //TODO improve object copy
-    ObservableResult computeDVCSObservableTask(Task &task);
+    ObservableResult computeObservableTask(Task &task);
     ResultList<ObservableResult> computeManyKinematicOneModelTask(Task &task);
 
 };

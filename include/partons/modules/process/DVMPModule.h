@@ -4,16 +4,17 @@
 /**
  * @file DVMPModule.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 17 November 2014
+ * @date November 17, 2014
  * @version 1.0
- *
- * @class DVMPModule
- *
- * @brief
  */
 
 #include "../ProcessModule.h"
 
+/**
+ * @class DVMPModule
+ *
+ * @brief
+ */
 class DVMPModule: public ProcessModule {
 public:
 

@@ -4,37 +4,45 @@
 /**
  * @file ComputationDaoService.h
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 02 November 2015
+ * @date November 02, 2015
  * @version 1.0
- *
- * @class ComputationDaoService
- *
- * @brief
  */
 
 #include <ctime>
 
 #include "../dao/ComputationDao.h"
-#include "ComputationConfigurationDaoService.h"
 #include "EnvironmentConfigurationDaoService.h"
+#include "ScenarioDaoService.h"
 
 class Computation;
-class ComputationConfiguration;
 
+/** @class ComputationDaoService
+ *
+ * @brief
+ */
 class ComputationDaoService: public BaseObject {
 public:
+    /**
+     * Default constructor
+     */
     ComputationDaoService();
+
+    /**
+     * Default destructor
+     */
     virtual ~ComputationDaoService();
 
-    int insert(const Computation &computation) const;
+    int insertWithoutTransaction(const Computation &computation) const;
+
     Computation selectByIndexId(const int indexId) const;
+
     int getComputationIdByDateTime(const time_t &dateTime) const;
 
 private:
-    ComputationDao m_computationDao;
+    ComputationDao m_computationDao; ///< reference to the right DAO object to perform database queries
 
     EnvironmentConfigurationDaoService m_environmentConfigurationDaoService;
-    ComputationConfigurationDaoService m_computationConfigurationDaoService;
+    ScenarioDaoService m_scenarioDaoService;
 };
 
 #endif /* COMMON_DAO_SERVICE_H */

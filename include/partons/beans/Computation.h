@@ -4,12 +4,8 @@
 /**
  * @file Computation.h
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 05 November 2015
+ * @date November 05, 2015
  * @version 1.0
- *
- * @class Computation
- *
- * @brief
  */
 
 #include <ctime>
@@ -17,31 +13,33 @@
 #include "../database/DatabaseObject.h"
 
 class EnvironmentConfiguration;
-class ComputationConfiguration;
+class Scenario;
 
+/** @class Computation
+ *
+ * @brief
+ */
 class Computation: public DatabaseObject {
 public:
     Computation();
-    Computation(int indexId, time_t dateTime,
-            ComputationConfiguration* pComputationConfiguration,
+    Computation(int indexId, time_t dateTime, Scenario* pScenario,
             EnvironmentConfiguration* pEnvironmentConfiguration);
     virtual ~Computation();
 
     // ##### GETTERS & SETTERS #####
 
-    const time_t getDateTime() const;
+    time_t getDateTime() const;
     void setDateTime(time_t dateTime);
-    ComputationConfiguration* getComputationConfiguration() const;
-    void setComputationConfiguration(
-            ComputationConfiguration* pComputationConfiguration);
     EnvironmentConfiguration* getEnvironmentConfiguration() const;
     void setEnvironmentConfiguration(
             EnvironmentConfiguration* pEnvironmentConfiguration);
+    Scenario* getScenario() const;
+    void setScenario(Scenario* pScenario);
 
 private:
     time_t m_dateTime;
 
-    ComputationConfiguration* m_pComputationConfiguration;
+    Scenario* m_pScenario;
     EnvironmentConfiguration* m_pEnvironmentConfiguration;
 };
 

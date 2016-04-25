@@ -20,7 +20,7 @@
 #include "beans/automation/Scenario.h"
 #include "beans/List.h"
 #include "beans/ResultList.h"
-#include "services/AutomationService.h"
+#include "services/automation/AutomationService.h"
 #include "ServiceObject.h"
 
 template<typename KinematicType, typename ResultType>
@@ -43,7 +43,7 @@ public:
 
     ResultList<ResultType> computeScenario(const std::string &scenarioFilePath,
             List<KinematicType> &kinematicList) {
-        Scenario scenario = m_pAutomationService->parseScenarioFile(
+        Scenario scenario = m_pAutomationService->parseScenarioXMLFile(
                 scenarioFilePath);
 
         m_kinematicListBuffer.add(kinematicList);

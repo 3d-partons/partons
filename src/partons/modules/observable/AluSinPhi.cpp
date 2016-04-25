@@ -3,8 +3,9 @@
 #include <NumA/integration/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <cmath>
-#include <vector>
+//#include <vector>
 
+#include "../../../../include/partons/beans/observable/ObservableChannel.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../include/partons/modules/observable/Alu.h"
@@ -27,6 +28,8 @@ AluSinPhi::AluSinPhi(const std::string &className) :
 //    m_pAluObservable =
 //            static_cast<Alu*>(Partons::getInstance()->getModuleObjectFactory()->newObservable(
 //                    Alu::classId));
+
+    m_channel = ObservableChannel::DVCS;
 
     initFunctorsForIntegrations();
 }
@@ -55,7 +58,7 @@ AluSinPhi::~AluSinPhi() {
 
 }
 
-void AluSinPhi::init() {
+void AluSinPhi::resolveObjectDependencies() {
     m_pAluObservable =
             static_cast<Alu*>(Partons::getInstance()->getModuleObjectFactory()->newObservable(
                     Alu::classId));
@@ -79,19 +82,19 @@ AluSinPhi* AluSinPhi::clone() const {
 double AluSinPhi::functionToIntegrateNumObservable(double x,
         std::vector<double> params) {
     // x[0] = phi
-    return m_pAluObservable->Num(m_pProcess, x) * sin(x);
+    return m_pAluObservable->Num(m_pProcessModule, x) * sin(x);
 }
 
 double AluSinPhi::functionToIntegrateDenObservable(double x,
         std::vector<double> params) {
     // x[0] = phi
-    return m_pAluObservable->Den(m_pProcess, x);
+    return m_pAluObservable->Den(m_pProcessModule, x);
 }
 
 double AluSinPhi::compute() {
 
     //TODO improve, replace by configuration.
-    m_pAluObservable->setDVCSModule(m_pProcess);
+    m_pAluObservable->setProcessModule(m_pProcessModule);
 
     std::vector<double> emptyParameters;
 

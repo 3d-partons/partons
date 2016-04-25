@@ -5,6 +5,7 @@
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <ElementaryUtils/thread/Packet.h>
+
 #include "../../../../include/partons/utils/type/PhysicalUnit.h"
 
 const std::string ObservableKinematic::PARAMETER_NAME_XB = "xB";
@@ -91,9 +92,15 @@ ObservableKinematic::~ObservableKinematic() {
 }
 
 std::string ObservableKinematic::toString() const {
-    return ElemUtils::Formatter() << Kinematic::toString() << " m_xB = " << m_xB
-            << " m_t = " << m_t << " (GeV2) m_Q2 = " << m_Q2 << " (GeV2) phi = "
-            << m_phi.toString();
+    ElemUtils::Formatter formatter;
+    formatter << Kinematic::toString() << " m_xB = " << m_xB << " m_t = " << m_t
+            << " (GeV2) m_Q2 = " << m_Q2 << " (GeV2)";
+
+    if (m_phi.isInitialized()) {
+        formatter << " phi = " << m_phi.toString();
+    }
+
+    return formatter.str();
 }
 
 //ComparisonReport ObservableKinematic::compare(

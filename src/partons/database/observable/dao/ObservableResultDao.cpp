@@ -83,6 +83,29 @@ ResultList<ObservableResult> ObservableResultDao::getObservableResultListByCompu
     return results;
 }
 
+ResultList<ObservableResult> ObservableResultDao::getObservableResultListFromSQLQuery(
+        const std::string& sqlQuery) const {
+    ResultList<ObservableResult> results;
+
+    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
+
+    query.prepare(QString(sqlQuery.c_str()));
+
+    if (query.exec()) {
+        fillObservableResultList(results, query);
+    } else {
+        error(__func__,
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
+    }
+
+    query.clear();
+
+    return results;
+}
+
+//TODO retrieve Computation object
 void ObservableResultDao::fillObservableResultList(
         ResultList<ObservableResult> &observableResultList,
         QSqlQuery& query) const {

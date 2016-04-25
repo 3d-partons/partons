@@ -15,11 +15,11 @@
 #include <string>
 
 class AutomationService;
-
 class BaseObjectRegistry;
 class ComparisonService;
+class CryptographicHashService;
 class DoubleDistributionService;
-class DVCSConvolCoeffFunctionService;
+class ConvolCoeffFunctionService;
 class GPDService;
 class ObservableService;
 class ServiceObject;
@@ -33,12 +33,13 @@ public:
     ServiceObject* get(const std::string &className) const;
 
     GPDService* getGPDService() const;
-    DVCSConvolCoeffFunctionService* getConvolCoeffFunctionService() const;
+    ConvolCoeffFunctionService* getConvolCoeffFunctionService() const;
     ObservableService* getObservableService() const;
     VizualisationService* getVizualisationService() const;
     DoubleDistributionService* getDoubleDistributionService() const;
     ComparisonService* getComparisonService() const;
     AutomationService* getAutomationService() const;
+    CryptographicHashService* getCryptographicHashService() const;
 
 private:
     // To allow only Partons class to create a new instance of this class.

@@ -4,21 +4,23 @@
 /**
  * @file ComputationDao.h
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 02 November 2015
+ * @date November 02, 2015
  * @version 1.0
- *
- * @class ComputationDao
- *
- * @brief
  */
 
 #include <QtSql/qsqlquery.h>
+#include <stddef.h>
 #include <ctime>
 
 #include "../../../BaseObject.h"
 
 class Computation;
 
+/**
+ * @class ComputationDao
+ *
+ * @brief
+ */
 class ComputationDao: public BaseObject {
 public:
     ComputationDao();
@@ -29,9 +31,8 @@ public:
     Computation selectByIndexId(const int indexId) const;
     int getComputationIdByDateTime(const time_t &dateTime) const;
 
-    int insertIntoComputationConfigurationComputation(
-            const int computationConfigurationId,
-            const int computationId) const;
+    int insertIntoScenarioComputation(const size_t scenarioTaskIndexNumber,
+            const int scenarioId, const int computationId) const;
 
 private:
     void fillComputation(Computation &computation, QSqlQuery &query) const;

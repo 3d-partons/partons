@@ -79,6 +79,7 @@ VALUES ('6', 'HALL A', 2);
 INSERT INTO experiment (id, process, experiment_type, year, reference, collaboration_id) 
 VALUES ('0', 'ep2epgamma', 'fixed target', '2006', 'nucl-ex/0607029 | private tables', '6');
 
+/*
 INSERT INTO observable_kinematic (id, bin_id, xB, t, Q2, phi) 
 VALUES ('0', '0', '0.36', '-0.17', '2.3', '7.5');
 
@@ -87,3 +88,4 @@ VALUES ('0', '2006-01-01 00:00:00.000');
 
 INSERT INTO observable_result (observable_name, observable_value, stat_error_lb, stat_error_ub, syst_error_lb, syst_error_ub, total_error, computation_module_name, observable_type_id, observable_kinematic_id, computation_id) 
 VALUES ('BSS', '0.0907029', '0.00274594', NULL, '0.00507936', NULL, '0', 'UNDEFINED', '0', '0', '0');
+*/

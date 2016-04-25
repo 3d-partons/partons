@@ -3,7 +3,7 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
     <xs:element name="scenario" type="scenarioType" />
-    
+
     <xs:element name="computation_configuration" type="computationConfigurationType" />
 
     <xs:complexType name="scenarioType">
@@ -23,9 +23,11 @@
 
     <xs:complexType name="taskType">
         <xs:sequence>
-            <xs:element name="kinematics" type="kinematicsType" />
+            <xs:element name="kinematics" type="kinematicsType"
+                minOccurs="0" />
             <xs:element name="computation_configuration"
-                type="computationConfigurationType" maxOccurs="1"/>
+                type="computationConfigurationType" minOccurs="0"
+                maxOccurs="1" />
         </xs:sequence>
         <xs:attribute name="service" type="xs:string" use="required" />
         <xs:attribute name="method" type="xs:string" use="required" />
@@ -54,7 +56,6 @@
                 minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
         <xs:attribute name="type" type="xs:string" use="required" />
-        <xs:attribute name="id" type="xs:string" use="required" />
     </xs:complexType>
 
 </xs:schema>

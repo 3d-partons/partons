@@ -1,24 +1,27 @@
 /* SQLITE syntax */
 
-CREATE TABLE computation_configuration (
+CREATE TABLE scenario (
 id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+store_date TIMESTAMP,
+description VARCHAR(255),
 xml_file BLOB,
-md5 VARCHAR(32));
+hash_sum VARCHAR(32));
 
 CREATE TABLE environment_configuration (
 id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 store_date TIMESTAMP,
 configuration VARCHAR(255),
-md5 VARCHAR(32));
+hash_sum VARCHAR(32));
 
 CREATE TABLE computation (
 id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
 computation_date TIMESTAMP,
 environment_configuration_id INTEGER NOT NULL); /* Date and Time Datatype : TEXT as ISO8601 strings ("YYYY-MM-DD HH:MM:SS.SSS") */
 
-CREATE TABLE computation_configuration_computation (
+CREATE TABLE scenario_computation (
 id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-computation_configuration_id INTEGER NOT NULL,
+scenario_task_index_number INTEGER,
+scenario_id INTEGER NOT NULL,
 computation_id INTEGER NOT NULL);
 
 CREATE TABLE gpd_type (

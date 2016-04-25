@@ -3,6 +3,7 @@
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/linear_algebra/vector/Vector3D.h>
 
+#include "../../../../include/partons/beans/observable/ObservableChannel.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/modules/ProcessModule.h"
 
@@ -12,6 +13,7 @@ const unsigned int Ac::classId =
 
 Ac::Ac(const std::string &className) :
         Observable(className) {
+    m_channel = ObservableChannel::DVCS;
 }
 
 Ac::Ac(const Ac& other) :

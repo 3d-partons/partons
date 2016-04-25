@@ -1,9 +1,10 @@
 #include "../../../../include/partons/beans/automation/Scenario.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 
 Scenario::Scenario() :
-        m_id(ElemUtils::StringUtils::EMPTY), m_date(), m_description(
+        DatabaseFileObject("Scenario"), m_description(
                 ElemUtils::StringUtils::EMPTY) {
 }
 
@@ -23,28 +24,12 @@ Scenario::~Scenario() {
 //    this->m_functionArgs = functionArgs;
 //}
 
-time_t Scenario::getDate() const {
-    return m_date;
-}
-
-void Scenario::setDate(time_t date) {
-    m_date = date;
-}
-
 const std::string& Scenario::getDescription() const {
     return m_description;
 }
 
 void Scenario::setDescription(const std::string& description) {
     m_description = description;
-}
-
-const std::string& Scenario::getId() const {
-    return m_id;
-}
-
-void Scenario::setId(const std::string& id) {
-    m_id = id;
 }
 
 size_t Scenario::size() const {
@@ -62,4 +47,24 @@ Task& Scenario::getTask(unsigned int i) {
 
 void Scenario::add(const Task& task) {
     m_tasks.push_back(task);
+}
+
+std::string Scenario::toString() const {
+    ElemUtils::Formatter formatter;
+
+    formatter << "Scenario description = " << m_description << '\n';
+
+    for (size_t i = 0; i != size(); i++) {
+        formatter << m_tasks[i].toString() << '\n';
+    }
+
+    return formatter.str();
+}
+
+const std::vector<Task>& Scenario::getTasks() const {
+    return m_tasks;
+}
+
+void Scenario::setTasks(const std::vector<Task>& tasks) {
+    m_tasks = tasks;
 }

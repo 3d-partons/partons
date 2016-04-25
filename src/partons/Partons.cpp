@@ -12,6 +12,8 @@
 #include "../../include/partons/ModuleObjectFactory.h"
 #include "../../include/partons/ServiceObjectRegistry.h"
 
+const std::string Partons::PROPERTIES_FILE_NAME = "partons.properties";
+
 // Global static pointer used to ensure a single instance of the class.
 Partons* Partons::m_pInstance = 0;
 
@@ -63,7 +65,8 @@ Partons::~Partons() {
     }
 }
 
-void Partons::init(char** argv) {
+void Partons::init(int argc, char** argv) {
+
     //TODO check with windows system path, how to handle '/' & '\' characters
     // Get current working directory
     m_currentWorkingDirectoryPath = ElemUtils::StringUtils::removeAfterLast(
@@ -71,7 +74,7 @@ void Partons::init(char** argv) {
 
     // 1. Init PropertiesManager to provides configurations
     ElemUtils::PropertiesManager::getInstance()->init(
-            m_currentWorkingDirectoryPath);
+            m_currentWorkingDirectoryPath + Partons::PROPERTIES_FILE_NAME);
 
     // 2. Init the logger to trac info/warn/debug message
     m_pLoggerManager->init();
@@ -95,8 +98,8 @@ void Partons::retrieveEnvironmentConfiguration() {
             ElemUtils::PropertiesManager::getInstance()->getString(
                     "environment.configuration.file.path"));
     std::string md5 = "undefined";
-    m_pEnvironmentConfiguration = new EnvironmentConfiguration(configuration,
-            md5);
+    m_pEnvironmentConfiguration = new EnvironmentConfiguration();
+    m_pEnvironmentConfiguration->setFile(configuration);
 }
 
 void Partons::close() {

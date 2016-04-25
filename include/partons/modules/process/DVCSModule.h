@@ -4,12 +4,8 @@
 /**
  * @file DVCSModule.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 19 November 2014
+ * @date November 19, 2014
  * @version 1.0
- *
- * @class DVCSModule
- *
- * @brief
  */
 
 #include <complex>
@@ -19,15 +15,13 @@
 #include "../../beans/gpd/GPDType.h"
 #include "../ProcessModule.h"
 
-class DVCSConvolCoeffFunctionModule;
-class Observable;
-class ScaleModule;
-class XiConverterModule;
-
+/**
+ * @class DVCSModule
+ *
+ * @brief
+ */
 class DVCSModule: public ProcessModule {
 public:
-    static const std::string PARAMETER_NAME_BEAM_ENERGY;
-
     DVCSModule(const std::string &className);
     virtual ~DVCSModule();
 
@@ -47,11 +41,8 @@ public:
     double computeCrossSection(double beamHelicity, double beamCharge,
             NumA::Vector3D targetPolarization, double phi);
 
-    DVCSConvolCoeffFunctionModule* getDVCSConvolCoeffFunctionModule() const;
-    void setDVCSConvolCoeffFunctionModule(
-            DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule);
-    void setPScaleModule(ScaleModule* pScaleModule);
-    void setPXiConverterModule(XiConverterModule* pXiConverterModule);
+    virtual void setConvolCoeffFunctionModule(
+            ConvolCoeffFunctionModule* pConvolCoeffFunctionModule);
 
 protected:
     /**
@@ -68,20 +59,9 @@ protected:
             NumA::Vector3D targetPolarization);
     virtual void isModuleWellConfigured();
 
-    void SetBeamEnergy(double EBeam); ///< Sets beam energy
-
-    double m_phi;      ///<  Angle between leptonic and hadronic planes (radian)
-    double m_phiS;      ///<
-    double m_phie;      ///<
-
     double m_phaseSpace;
 
-    Observable* m_pObservable;
     DVCSConvolCoeffFunctionResult m_dvcsConvolCoeffFunctionResult;
-
-    ScaleModule* m_pScaleModule;
-
-    XiConverterModule* m_pXiConverterModule;
 
     // Cross sections
     virtual double CrossSectionBH(double beamHelicity, double beamCharge,
@@ -99,13 +79,6 @@ protected:
     // Interference cross section
 
     std::complex<double> getConvolCoeffFunctionValue(GPDType::Type gpdType);
-
-private:
-
-    DVCSConvolCoeffFunctionModule* m_pDVCSConvolCoeffFunctionModule;
-
-    bool isPreviousKinematicsDifferent(double xB, double t, double Q2);
-    void resetPreviousKinematics();
 };
 
 #endif /* DVCS_MODULE_H */

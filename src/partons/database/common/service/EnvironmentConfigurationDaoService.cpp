@@ -13,8 +13,8 @@ int EnvironmentConfigurationDaoService::insert(
         const EnvironmentConfiguration& environmentConfiguration) const {
     return m_environmentConfigurationDao.insert(
             environmentConfiguration.getStoreDate(),
-            environmentConfiguration.getConfiguration(),
-            environmentConfiguration.getMd5());
+            environmentConfiguration.getFile(),
+            environmentConfiguration.getHashSum());
 }
 
 EnvironmentConfiguration* EnvironmentConfigurationDaoService::selectByIndexId(
@@ -24,8 +24,7 @@ EnvironmentConfiguration* EnvironmentConfigurationDaoService::selectByIndexId(
 
 std::string EnvironmentConfigurationDaoService::getConfigurationByIndexId(
         const int indexId) const {
-    //TODO implement
-    return "";
+    return m_environmentConfigurationDao.getConfigurationByIndexId(indexId);
 }
 
 void EnvironmentConfigurationDaoService::deleteByIndexId(
@@ -33,7 +32,8 @@ void EnvironmentConfigurationDaoService::deleteByIndexId(
     m_environmentConfigurationDao.deleteByIndexId(indexId);
 }
 
-int EnvironmentConfigurationDaoService::getEnvironmentConfigurationIdByMD5(
-        const std::string& md5) const {
-    return m_environmentConfigurationDao.getEnvironmentConfigurationIdByMD5(md5);
+int EnvironmentConfigurationDaoService::getEnvironmentConfigurationIdByHashSum(
+        const std::string& hashSum) const {
+    return m_environmentConfigurationDao.getEnvironmentConfigurationIdByMD5(
+            hashSum);
 }

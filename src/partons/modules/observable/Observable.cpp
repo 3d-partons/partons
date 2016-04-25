@@ -20,7 +20,7 @@ Observable::Observable(const std::string &className) :
         ModuleObject(className), m_channel(ObservableChannel::UNDEFINED), m_beamHelicity(
                 0.), m_beamCharge(0.), m_targetPolarization(
                 NumA::Vector3D(0., 0., 0.)), m_observableType(
-                ObservableType::PHI), m_pProcess(0) {
+                ObservableType::PHI), m_pProcessModule(0) {
 }
 
 Observable::Observable(const Observable& other) :
@@ -31,10 +31,10 @@ Observable::Observable(const Observable& other) :
     m_targetPolarization = other.m_targetPolarization;
     m_observableType = other.m_observableType;
 
-    if (other.m_pProcess != 0) {
-        m_pProcess = other.m_pProcess->clone();
+    if (other.m_pProcessModule != 0) {
+        m_pProcessModule = other.m_pProcessModule->clone();
     } else {
-        m_pProcess = 0;
+        m_pProcessModule = 0;
     }
 }
 
@@ -99,14 +99,15 @@ ObservableResult Observable::compute(double xB, double t, double Q2,
 
     ObservableResult observableResult;
 
-    m_pProcess->computeConvolCoeffFunction(xB, t, Q2);
+    m_pProcessModule->computeConvolCoeffFunction(xB, t, Q2);
 
     // check if this observable is a fourier observable
     if (m_observableType == ObservableType::FOURIER) {
 
         //TODO improve
         observableResult = ObservableResult(getClassName(), compute());
-        observableResult.setComputationModuleName(m_pProcess->getClassName());
+        observableResult.setComputationModuleName(
+                m_pProcessModule->getClassName());
         observableResult.setObservableType(m_observableType);
         observableResult.setKinematic(ObservableKinematic(xB, t, Q2));
 
@@ -116,9 +117,10 @@ ObservableResult Observable::compute(double xB, double t, double Q2,
 
         //TODO improve
         observableResult = ObservableResult(getClassName(),
-                compute(m_pProcess,
+                compute(m_pProcessModule,
                         NumA::MathUtils::convertDegreeToRadian(phi)));
-        observableResult.setComputationModuleName(m_pProcess->getClassName());
+        observableResult.setComputationModuleName(
+                m_pProcessModule->getClassName());
         observableResult.setObservableType(m_observableType);
         observableResult.setKinematic(ObservableKinematic(xB, t, Q2, phi));
     }
@@ -180,14 +182,22 @@ void Observable::setTargetPolarization(
     m_targetPolarization = targetPolarization;
 }
 
-const ProcessModule* Observable::getDVCSModule() const {
-    return m_pProcess;
+const ProcessModule* Observable::getProcessModule() const {
+    return m_pProcessModule;
 }
 
-void Observable::setDVCSModule(ProcessModule* pDVCSModule) {
-    m_pProcess = pDVCSModule;
+void Observable::setProcessModule(ProcessModule* pProcessModule) {
+    m_pProcessModule = pProcessModule;
 }
 
 void Observable::configure(const ElemUtils::Parameters &parameters) {
     ModuleObject::configure(parameters);
+}
+
+ObservableChannel::Type Observable::getChannel() const {
+    return m_channel;
+}
+
+void Observable::setChannel(ObservableChannel::Type channel) {
+    m_channel = channel;
 }

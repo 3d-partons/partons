@@ -4,17 +4,18 @@
 /**
  * @file ResultList.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 30 November 2015
+ * @date November 30, 2015
  * @version 1.0
- *
- * @class ResultList
- *
- * @brief
  */
 
 #include "Computation.h"
 #include "List.h"
 
+/**
+ * @class ResultList
+ *
+ * @brief
+ */
 template<class T>
 class ResultList: public List<T> {
 public:
@@ -42,7 +43,6 @@ public:
     }
 
 private:
-
     Computation m_computation;
 };
 

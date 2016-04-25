@@ -3,7 +3,7 @@
 <scenario date="2016-03-25"
     description="Ceci est un scenario de test qui a pour but d'utiliser le service GPD">
 
-    <task service="GPDService" method="computeGPDModel">
+    <task service="GPDService" method="computeGPDModel" storeInDB="0">
         <kinematics type="GPDKinematic">
             <param name="x" value="0.1" />
             <param name="xi" value="0.00050025" />
@@ -13,7 +13,9 @@
         </kinematics>
 
         <computation_configuration>
-            <module type="GPDModule" id="GK11Model" />
+            <module type="GPDModule">
+                <param name="className" value="GK11Model" />
+            </module>
         </computation_configuration>
     </task>
 
@@ -27,9 +29,13 @@
         </kinematics>
 
         <computation_configuration>
-            <module type="GPDModule" id="GK11Model" />
-            
-            <module type="GPDModule" id="MPSSW13Model" />
+            <module type="GPDModule">
+                <param name="className" value="GK11Model" />
+            </module>
+
+            <module type="GPDModule">
+                <param name="className" value="MPSSW13Model" />
+            </module>
         </computation_configuration>
     </task>
 
@@ -43,9 +49,12 @@
         </kinematics>
 
         <computation_configuration>
-            <module type="GPDModule" id="GK11Model" />
+            <module type="GPDModule">
+                <param name="className" value="GK11Model" />
+            </module>
 
-            <module type="GPDEvolutionModule" id="ExampleEvolQCDModel">
+            <module type="GPDEvolutionModule">
+    <param name="className" value="ExampleEvolQCDModel" />
                 <param name="qcd_order_type" value="LO" />
             </module>
         </computation_configuration>

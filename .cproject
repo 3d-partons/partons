@@ -63,6 +63,7 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
+					<fileInfo id="cdt.managedbuild.config.gnu.so.debug.1814402932.556470095" name="xmlSchema.xsd" rcbsApplicability="disable" resourcePath="data/automation/xmlSchema.xsd" toolsToInvoke=""/>
 					<sourceEntries>
 						<entry excluding="CMakeFiles" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>

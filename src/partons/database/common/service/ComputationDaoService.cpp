@@ -1,6 +1,10 @@
 #include "../../../../../include/partons/database/common/service/ComputationDaoService.h"
 
-#include "../../../../../include/partons/beans/automation/ComputationConfiguration.h"
+#include <stddef.h>
+#include <vector>
+
+#include "../../../../../include/partons/beans/automation/Scenario.h"
+#include "../../../../../include/partons/beans/automation/Task.h"
 #include "../../../../../include/partons/beans/Computation.h"
 #include "../../../../../include/partons/beans/system/EnvironmentConfiguration.h"
 
@@ -11,7 +15,8 @@ ComputationDaoService::ComputationDaoService() :
 ComputationDaoService::~ComputationDaoService() {
 }
 
-int ComputationDaoService::insert(const Computation &computation) const {
+int ComputationDaoService::insertWithoutTransaction(
+        const Computation &computation) const {
 
     int computationId = -1;
 
@@ -23,10 +28,10 @@ int ComputationDaoService::insert(const Computation &computation) const {
                 "EnvironmentConfiguration object from Computation object is NULL pointer ; missing object");
     }
 
-    // Check if environment computation object already exists in database ; compare md5
+    // Check if environment computation object already exists in database ; compare hash sum
     int environmentConfigurationId =
-            m_environmentConfigurationDaoService.getEnvironmentConfigurationIdByMD5(
-                    pEnvironmentConfiguration->getMd5());
+            m_environmentConfigurationDaoService.getEnvironmentConfigurationIdByHashSum(
+                    pEnvironmentConfiguration->getHashSum());
 
     // If not, insert new entry in database and retrieve its id
     if (environmentConfigurationId == -1) {
@@ -39,25 +44,28 @@ int ComputationDaoService::insert(const Computation &computation) const {
     computationId = m_computationDao.insert(computation.getDateTime(),
             environmentConfigurationId);
 
-    ComputationConfiguration* pComputationConfiguration =
-            computation.getComputationConfiguration();
+    Scenario* pScenario = computation.getScenario();
 
-    if (pComputationConfiguration) {
-        // Check if computation configuration object already exists in database ; compare md5
-        int computationConfigurationId =
-                m_computationConfigurationDaoService.getComputationConfigurationIdByMD5(
-                        pComputationConfiguration->getMd5());
+    if (pScenario) {
+        // Check if computation configuration object already exists in database ; compare hash sum
+        int scenarioId = m_scenarioDaoService.getScenarioIdByHashSum(
+                pScenario->getHashSum());
 
         // If not, insert new entry in database and retrieve its id
-        if (computationConfigurationId == -1) {
-            computationConfigurationId =
-                    m_computationConfigurationDaoService.insert(
-                            *pComputationConfiguration);
+        if (scenarioId == -1) {
+            scenarioId = m_scenarioDaoService.insert(*pScenario);
         }
 
-        // Insert new entry in the association table
-        m_computationDao.insertIntoComputationConfigurationComputation(
-                computationConfigurationId, computationId);
+        std::vector<Task> tasks = pScenario->getTasks();
+
+        for (size_t i = 0; i != tasks.size(); i++) {
+            // Insert new entry in the association table
+            m_computationDao.insertIntoScenarioComputation(i, scenarioId,
+                    computationId);
+        }
+    } else {
+        error(__func__,
+                "pScenario is NULL pointer ; This result has not been produced by a scenario ; It cannot be stored into the database.");
     }
 
     return computationId;

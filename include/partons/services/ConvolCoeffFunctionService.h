@@ -4,28 +4,29 @@
 /**
  * @file DVCSConvolCoeffFunctionService.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 07 Août 2014
+ * @date August 07, 2014
  * @version 1.0
- *
- * @class DVCSConvolCoeffFunctionService
- *
- * @brief \<singleton\> Use for handle and compute some pre-configured CFF modules.
  */
 
 #include <string>
-#include <vector>
 
 #include "../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
 #include "../beans/gpd/GPDType.h"
 #include "../beans/List.h"
 #include "../beans/ResultList.h"
-#include "../modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
 #include "../ServiceObject.h"
 
+class ConvolCoeffFunctionModule;
 class GPDModule;
 
-class DVCSConvolCoeffFunctionService: public ServiceObject {
+//TODO rename class name to ConvolCoeffFunctionService
+/**
+ * @class DVCSConvolCoeffFunctionService
+ *
+ * @brief \<singleton\> Use for handle and compute some pre-configured CFF modules.
+ */
+class ConvolCoeffFunctionService: public ServiceObject {
 public:
     static const std::string FUNCTION_NAME_COMPUTE_WITH_GPD_MODEL;
     static const std::string FUNCTION_NAME_COMPUTE_LIST_WITH_GPD_MODEL;
@@ -35,29 +36,34 @@ public:
     /**
      * Default constructor
      */
-    DVCSConvolCoeffFunctionService(const std::string &className);
+    ConvolCoeffFunctionService(const std::string &className);
     /**
      * Default destructor
      */
-    virtual ~DVCSConvolCoeffFunctionService();
+    virtual ~ConvolCoeffFunctionService();
 
     virtual void computeTask(Task &task);
 
     ResultList<DVCSConvolCoeffFunctionResult> computeManyKinematicOneModel(
-            DVCSConvolCoeffFunctionModule* dvcsConvolCoeffFunctionModule,
-            GPDModule* _pGPDModule,
-            List<DVCSConvolCoeffFunctionKinematic> &kinematics) const;
+            List<DVCSConvolCoeffFunctionKinematic> &kinematics,
+            ConvolCoeffFunctionModule* convolCoeffFunctionModule) const;
 
     virtual DVCSConvolCoeffFunctionResult computeWithGPDModel(
-            DVCSConvolCoeffFunctionModule* dvcsConvolCoeffFunctionModule,
-            GPDModule* _pGPDModule,
             const DVCSConvolCoeffFunctionKinematic &kinematic,
+            ConvolCoeffFunctionModule* convolCoeffFunctionModule,
             GPDType::Type gpdType = GPDType::ALL) const;
 
-    virtual ResultList<DVCSConvolCoeffFunctionResult> computeListWithGPDModel(
-            const DVCSConvolCoeffFunctionKinematic &kinematic,
-            std::vector<DVCSConvolCoeffFunctionModule*> listOfDVCSConvolCoeffFunctionModule,
-            GPDModule* _pGPDModule, GPDType::Type gpdType = GPDType::ALL) const;
+//    virtual ResultList<DVCSConvolCoeffFunctionResult> computeListWithGPDModel(
+//            const DVCSConvolCoeffFunctionKinematic &kinematic,
+//            std::vector<ConvolCoeffFunctionModule*> listOfDVCSConvolCoeffFunctionModule,
+//            GPDType::Type gpdType = GPDType::ALL) const;
+
+    ConvolCoeffFunctionModule* newConvolCoeffFunctionModule(
+            const Task &task) const;
+
+    ConvolCoeffFunctionModule* configureConvolCoeffFunctionModule(
+            ConvolCoeffFunctionModule* pConvolCoeffFunctionModule,
+            GPDModule* pGPDModule) const;
 
 //    std::vector<DVCSConvolCoeffFunctionResult> compute(
 //            std::vector<CFFInputData> ListOfCFFInputData,
@@ -73,8 +79,8 @@ public:
 private:
     //TODO improve object copy
     DVCSConvolCoeffFunctionResult computeWithGPDModelTask(Task &task) const;
-    ResultList<DVCSConvolCoeffFunctionResult> computeListWithGPDModelTask(
-            Task &task) const;
+//    ResultList<DVCSConvolCoeffFunctionResult> computeListWithGPDModelTask(
+//            Task &task) const;
 };
 
 #endif /* DVCS_CONVOL_COEFF_FUNCTION_SERVICE_H */

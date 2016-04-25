@@ -3,13 +3,9 @@
 
 /**
  * @file Partons.h
- * @author Bryan BERTHOU (CEA Saclay)
- * @date 21 April 2015
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
+ * @date April 21, 2015
  * @version 1.0
- *
- * @class Partons
- *
- * @brief
  */
 
 #include <string>
@@ -24,8 +20,15 @@ namespace ElemUtils {
 class LoggerManager;
 } /* namespace ElemUtils */
 
+/**
+ * @class Partons
+ *
+ * @brief
+ */
 class Partons {
 public:
+    static const std::string PROPERTIES_FILE_NAME;
+
     /**
      * Share a unique pointer of this class
      */
@@ -36,7 +39,7 @@ public:
      */
     virtual ~Partons();
 
-    void init(char** argv);
+    void init(int argc, char** argv);
     void close();
 
     std::string getCurrentWorkingDirectory();

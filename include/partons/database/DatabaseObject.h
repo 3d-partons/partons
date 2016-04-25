@@ -4,22 +4,39 @@
 /**
  * @file DatabaseObject.h
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 11 March 2016
+ * @date March 11, 2016
  * @version 1.0
- *
- * @class DatabaseObject
- *
- * @brief
  */
 
 #include <string>
 
 #include "../BaseObject.h"
 
+/**
+ * @class DatabaseObject
+ *
+ * @brief
+ */
 class DatabaseObject: public BaseObject {
 public:
+    /**
+     * Constructor
+     *
+     * @param className
+     */
     DatabaseObject(const std::string &className);
+
+    /**
+     * Constructor
+     *
+     * @param className
+     * @param indexId
+     */
     DatabaseObject(const std::string &className, int indexId);
+
+    /**
+     * Destructor
+     */
     virtual ~DatabaseObject();
 
     // ##### GETTERS & SETTERS #####
@@ -28,7 +45,7 @@ public:
     void setIndexId(int indexId);
 
 private:
-    int m_indexId;
+    int m_indexId; ///<
 };
 
 #endif /* DATABASE_OBJECT_H */

@@ -47,12 +47,12 @@ int GPDResultDaoService::insertWithoutTransaction(
         const GPDResult &gpdResult) const {
 
     // Check if this gpd_kinematic already exists
-    int gpdKinematicId = m_gpdKinematicDaoService.select(
+    int gpdKinematicId = m_gpdKinematicDaoService.getIdByKinematicObject(
             gpdResult.getKinematic());
 
     // If not, insert new entry in database and retrieve its id
     if (gpdKinematicId == -1) {
-        gpdKinematicId = m_gpdKinematicDaoService.insert(
+        gpdKinematicId = m_gpdKinematicDaoService.insertWithoutTransaction(
                 gpdResult.getKinematic());
     }
 
@@ -61,7 +61,7 @@ int GPDResultDaoService::insertWithoutTransaction(
             gpdResult.getComputation().getDateTime());
     // If not, insert new entry in database and retrieve its id
     if (computationId == -1) {
-        computationId = m_computationDaoService.insert(
+        computationId = m_computationDaoService.insertWithoutTransaction(
                 gpdResult.getComputation());
     }
 
@@ -70,18 +70,22 @@ int GPDResultDaoService::insertWithoutTransaction(
             gpdResult.getComputationModuleName(), gpdKinematicId,
             computationId);
 
+    // Get all PartonDistribution objects indexed by GPDType
     std::map<GPDType::Type, PartonDistribution> partonDistributionMap =
             gpdResult.getPartonDistributions();
 
+    // Defined a parton_distribution_id
     int partonDistributionId = -1;
 
+    // Then loop over GPDType to store PartonDistribution objets into database.
     for (std::map<GPDType::Type, PartonDistribution>::const_iterator it =
             partonDistributionMap.begin(); it != partonDistributionMap.end();
             it++) {
-        PartonDistribution partonDistribution = (it->second);
+        // Insert new PartonDistribution object into database ; retrieve its id
         partonDistributionId = m_partonDistributionDaoService.insert(
-                partonDistribution);
+                (it->second));
 
+        // Fill gpd_result_parton_distribution association table with previous retrieved ids.
         m_gpdResultDao.insertIntoGPDResultPartonDistributionTable((it->first),
                 gpdResultId, partonDistributionId);
     }
