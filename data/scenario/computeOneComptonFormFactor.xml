@@ -1,25 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 
-<scenario id="03" date=""
-    description="Example : computation of one convol coeff function model (DVCSCFF) with GPD model (GK11)">
+<scenario date="2016-04-14" description="Example : computation of one convol coeff function model (DVCSCFF) with GPD model (GK11)">
 
-    <task service="DVCSConvolCoeffFunctionService" method="computeWithGPDModel">
-        <DVCSConvolCoeffFunctionKinematic>
+    <task service="ConvolCoeffFunctionService" method="computeWithGPDModel" storeInDB="0">
+        <kinematics type="DVCSConvolCoeffFunctionKinematic">
             <param name="xi" value="0.0088933952793878" />
             <param name="t" value="-0.1346" />
             <param name="Q2" value="1.5557" />
             <param name="MuF2" value="4" />
             <param name="MuR2" value="4" />
-        </DVCSConvolCoeffFunctionKinematic>
+        </kinematics>
 
-        <GPDModule>
-            <param name="id" value="GK11Model" />
-        </GPDModule>
+        <computation_configuration>
+            <module type="GPDModule">
+                <param name="className" value="GK11Model" />
+            </module>
 
-        <DVCSConvolCoeffFunctionModule>
-            <param name="id" value="DVCSCFFHeavyQuarkModel" />
-            <param name="qcd_order_type" value="NLO" />
-        </DVCSConvolCoeffFunctionModule>
+            <module type="DVCSConvolCoeffFunctionModule">
+                <param name="className" value="DVCSCFFHeavyQuarkModel" />
+                <param name="qcd_order_type" value="NLO" />
+            </module>
+        </computation_configuration>
     </task>
 
 </scenario>

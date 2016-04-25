@@ -1,4 +1,4 @@
-#include "ResourceManager.h"
+#include "../../include/partons/ResourceManager.h"
 
 ResourceManager::ResourceManager() {
     // TODO Auto-generated constructor stub

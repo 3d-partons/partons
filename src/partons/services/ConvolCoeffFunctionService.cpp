@@ -23,7 +23,7 @@ const std::string ConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_LIST_WITH_GP
 const unsigned int ConvolCoeffFunctionService::classId =
         Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
                 new ConvolCoeffFunctionService(
-                        "DVCSConvolCoeffFunctionService"));
+                        "ConvolCoeffFunctionService"));
 
 ConvolCoeffFunctionService::ConvolCoeffFunctionService(
         const std::string &className) :

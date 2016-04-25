@@ -11,8 +11,8 @@
 #include <map>
 #include <string>
 
-#include "partons/beans/automation/Scenario.h"
-#include "partons/beans/system/EnvironmentConfiguration.h"
+#include "beans/automation/Scenario.h"
+#include "beans/system/EnvironmentConfiguration.h"
 
 /**
  * @class ResourceManager

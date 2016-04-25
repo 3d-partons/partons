@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 
-<scenario id="04" date=""
-    description="Example : computation of one observable(Alu) with GV2008 DVCS model">
+<scenario date="2016-04-14" description="Example : computation of one observable(Alu) with GV2008 DVCS model">
 
-    <task service="ObservableService" method="computeDVCSObservable">
-        <ScaleModule>
-            <param name="id" value="Q2Multiplier" />
-            <param name="lambda" value="1" />
-        </ScaleModule>
-
-        <XiConverterModule>
-            <param name="id" value="XBToXi" />
-        </XiConverterModule>
-
-        <ObservableKinematic>
+    <task service="ObservableService" method="computeObservable" storeInDB="0">
+        <kinematics type="ObservableKinematic">
             <param name="xB" value="0.1763" />
             <param name="t" value="-0.1346" />
             <param name="Q2" value="1.3651" />
             <param name="phi" value="7.5" />
-        </ObservableKinematic>
+        </kinematics>
 
-        <Observable>
-            <param name="id" value="Alu" />
-        </Observable>
+        <computation_configuration>
+            <module type="GPDModule">
+                <param name="className" value="GK11Model" />
+            </module>
 
-        <DVCSModule>
-            <param name="id" value="GV2008Model" />
-            <param name="beam_energy" value="5.77" />
-        </DVCSModule>
+            <module type="DVCSConvolCoeffFunctionModule">
+                <param name="className" value="DVCSCFFModel" />
+                <param name="qcd_order_type" value="LO" />
+            </module>
 
-        <DVCSConvolCoeffFunctionModule>
-            <param name="id" value="DVCSCFFModel" />
-            <param name="qcd_order_type" value="LO" />
-        </DVCSConvolCoeffFunctionModule>
+            <module type="DVCSModule">
+                <param name="className" value="GV2008Model" />
+                <param name="beam_energy" value="5.77" />
+            </module>
 
-        <GPDModule>
-            <param name="id" value="GK11Model" />
-        </GPDModule>
+            <module type="Observable">
+                <param name="className" value="Alu" />
+            </module>
+
+            <module type="ScaleModule">
+                <param name="className" value="Q2Multiplier" />
+                <param name="lambda" value="1" />
+            </module>
+
+            <module type="XiConverterModule">
+                <param name="className" value="XBToXi" />
+            </module>
+        </computation_configuration>
     </task>
-
 </scenario>
