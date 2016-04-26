@@ -36,6 +36,7 @@ public:
     // ##### GETTERS & SETTERS #####
 
     const std::string& getFile() const;
+
     void setFile(const std::string& file);
     const std::string& getHashSum() const;
     void setHashSum(const std::string& hashSum);
@@ -43,6 +44,9 @@ public:
     void setStoreDate(time_t storeDate);
     const std::string& getFilePath() const;
     void setFilePath(const std::string& filePath);
+
+protected:
+    virtual std::string fillFile() const = 0;
 
 private:
     CryptographicHashService* m_pCryptographicHashService; ///<
@@ -52,6 +56,7 @@ private:
     mutable std::string m_hashSum; ///<
 
     std::string m_filePath; ///<
+
     /**
      *
      */

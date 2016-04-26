@@ -50,10 +50,11 @@ public:
 
     /**
      *
-     * @param xmlFile
+     * @param xmlDocument
      * @return
      */
-    virtual Scenario parseScenarioXMLFile(const std::string &xmlFile) = 0;
+    virtual Scenario parseXMLDocument(
+            const std::string &xmlDocument) = 0;
 
 protected:
     Scenario m_scenario; ///<

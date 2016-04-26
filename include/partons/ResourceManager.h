@@ -19,10 +19,14 @@
  *
  * @brief
  */
-class ResourceManager {
+class ResourceManager: public BaseObject {
 public:
     ResourceManager();
     virtual ~ResourceManager();
+
+    Scenario* registerScenario(const Scenario &scneario);
+    EnvironmentConfiguration* registerEnvironmentConfiguration(
+            const EnvironmentConfiguration &environmentConfiguration);
 
     Scenario* getScenario(const std::string &hash_sum) const;
     EnvironmentConfiguration* getEnvironmentConfiguration(
@@ -33,6 +37,7 @@ private:
     std::map<std::string, Scenario*> m_scenarioResourceList;
     // key = hash sum file
     std::map<std::string, EnvironmentConfiguration*> m_environmentConfigurationResourceList;
+
 };
 
 #endif /* RESOURCE_MANAGER_H */

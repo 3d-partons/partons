@@ -90,3 +90,28 @@ std::string ScenarioDao::getXMLFileByIndexId(const int indexId) const {
 
     return xmlFile;
 }
+
+int ScenarioDao::getScenarioIdByComputationId(const int computationId) const {
+    int result = -1;
+    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
+
+    query.prepare(
+            "SELECT computation_id FROM scenario_computation WHERE computation_id = :computationId");
+
+    query.bindValue(":computationId", computationId);
+
+    if (query.exec()) {
+        if (query.first()) {
+            result = query.value(0).toInt();
+        }
+    } else {
+        error(__func__,
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
+    }
+
+    query.clear();
+
+    return result;
+}

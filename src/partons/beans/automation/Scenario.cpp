@@ -3,6 +3,8 @@
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 
+#include "../../../../include/partons/database/common/service/ScenarioDaoService.h"
+
 Scenario::Scenario() :
         DatabaseFileObject("Scenario"), m_description(
                 ElemUtils::StringUtils::EMPTY) {
@@ -10,19 +12,6 @@ Scenario::Scenario() :
 
 Scenario::~Scenario() {
 }
-
-//void Scenario::addFunctionArg(std::string argName, void* argValue) {
-//    m_functionArgs.insert(std::make_pair(argName, argValue));
-//}
-//
-//const std::map<std::string, void*>& Scenario::getFunctionArgs() const {
-//    return m_functionArgs;
-//}
-//
-//void Scenario::setFunctionArgs(
-//        const std::map<std::string, void*>& functionArgs) {
-//    this->m_functionArgs = functionArgs;
-//}
 
 const std::string& Scenario::getDescription() const {
     return m_description;
@@ -67,4 +56,9 @@ const std::vector<Task>& Scenario::getTasks() const {
 
 void Scenario::setTasks(const std::vector<Task>& tasks) {
     m_tasks = tasks;
+}
+
+std::string Scenario::fillFile() const {
+    ScenarioDaoService scenarioDaoService;
+    return scenarioDaoService.getXMLFileByIndexId(getIndexId());
 }

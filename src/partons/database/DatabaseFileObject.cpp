@@ -3,7 +3,6 @@
 #include <ElementaryUtils/file_utils/FileUtils.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 
-#include "../../../include/partons/database/common/service/EnvironmentConfigurationDaoService.h"
 #include "../../../include/partons/Partons.h"
 #include "../../../include/partons/services/hash_sum/CryptographicHashService.h"
 #include "../../../include/partons/ServiceObjectRegistry.h"
@@ -26,8 +25,7 @@ void DatabaseFileObject::setCryptographicHashService() {
 
 const std::string& DatabaseFileObject::getFile() const {
     if ((getIndexId() != -1) && (m_file.empty())) {
-        EnvironmentConfigurationDaoService daoService;
-        m_file = daoService.getConfigurationByIndexId(getIndexId());
+        m_file = fillFile();
     } else if ((getIndexId() == -1) && (m_file.empty())
             && (!m_filePath.empty())) {
         m_file = ElemUtils::FileUtils::read(m_filePath);
@@ -42,6 +40,7 @@ void DatabaseFileObject::setFile(const std::string& file) {
     m_file = file;
 }
 
+//TODO better handle error
 const std::string& DatabaseFileObject::getHashSum() const {
     if ((m_hashSum.empty()) && (!m_file.empty())) {
 

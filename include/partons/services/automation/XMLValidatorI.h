@@ -6,31 +6,24 @@
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date March 23, 2016
  * @version 1.0
- *
- * @class XMLValidatorI
- *
- * @brief
  */
 
 #include <string>
 
 #include "../../BaseObject.h"
 
+/**
+ * @class XMLValidatorI
+ *
+ * @brief
+ */
 class XMLValidatorI: public BaseObject {
 public:
     XMLValidatorI(const std::string &className);
     virtual ~XMLValidatorI();
 
-    virtual void init();
-
-    virtual bool isValidXMLFile(const std::string &xmlFilePath) const = 0;
-
-    const std::string& getXmlSchemaFilePath() const;
-
-private:
-    static const std::string PROPERTY_NAME_XML_SCHEMA_FILE_PATH;
-
-    std::string m_xmlSchemaFilePath;
+    virtual bool isValidXMLDocument(const std::string xmlSchemaStream,
+            const std::string &xmlDocumentStream) const = 0;
 };
 
 #endif /* XML_VALIDATOR_I_H */

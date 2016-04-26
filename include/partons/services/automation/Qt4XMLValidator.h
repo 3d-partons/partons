@@ -22,7 +22,8 @@ public:
     Qt4XMLValidator();
     virtual ~Qt4XMLValidator();
 
-    virtual bool isValidXMLFile(const std::string &xmlFilePath) const;
+    virtual bool isValidXMLDocument(const std::string xmlSchemaStream,
+            const std::string &xmlDocumentStream) const;
 
     static void myMessageOutput(QtMsgType type, const char *msg);
 };

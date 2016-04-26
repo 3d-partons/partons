@@ -30,6 +30,8 @@ public:
 
     std::string getXMLFileByIndexId(const int indexId) const;
 
+    int getScenarioIdByComputationId(const int computationId) const;
+
 private:
 
     ScenarioDao m_scenarioDao; ///< reference to the right DAO object to perform database queries

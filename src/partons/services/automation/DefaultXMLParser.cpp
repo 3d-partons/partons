@@ -15,12 +15,9 @@ DefaultXMLParser::DefaultXMLParser() :
 DefaultXMLParser::~DefaultXMLParser() {
 }
 
-Scenario DefaultXMLParser::parseScenarioXMLFile(
-        const std::string& xmlFilePath) {
+Scenario DefaultXMLParser::parseXMLDocument(const std::string& xmlDocument) {
     // parse XML file
-    analyse(xmlFilePath);
-
-    m_scenario.setFilePath(xmlFilePath);
+    analyse(xmlDocument);
 
     return m_scenario;
 }

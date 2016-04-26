@@ -1,7 +1,5 @@
 #include "../../../include/partons/beans/Computation.h"
 
-#include "../../../include/partons/beans/automation/Scenario.h"
-#include "../../../include/partons/beans/system/EnvironmentConfiguration.h"
 #include "../../../include/partons/Partons.h"
 
 Computation::Computation() :
@@ -18,19 +16,16 @@ Computation::Computation(int indexId, time_t dateTime, Scenario* pScenario,
                 pEnvironmentConfiguration) {
 }
 
-Computation::~Computation() {
-    // if (indexId != -1) it means that Computation object come from database so we need to destroy related objects.
-    if (getIndexId() != -1) {
-        if (m_pScenario) {
-            delete m_pScenario;
-            m_pScenario = 0;
-        }
+Computation::Computation(const Computation &other) :
+        DatabaseObject(other) {
+    m_dateTime = other.m_dateTime;
+    m_pScenario = other.m_pScenario;
+    m_pEnvironmentConfiguration = other.m_pEnvironmentConfiguration;
+}
 
-        if (m_pEnvironmentConfiguration) {
-            delete m_pEnvironmentConfiguration;
-            m_pEnvironmentConfiguration = 0;
-        }
-    }
+Computation::~Computation() {
+    // Nothing to do
+    // Members pointers are handle by ResourceManager.
 }
 
 time_t Computation::getDateTime() const {

@@ -50,10 +50,18 @@ public:
      * Open and validate XML file with XML schema file.
      * Then parse it and return string representation of this file into a Scenario object.
      *
-     * @param scenarioFilePath
+     * @param xmlFilePath
      * @return string representation of XML file into a Scenario object
      */
-    Scenario parseScenarioXMLFile(const std::string &scenarioFilePath) const;
+    Scenario parseXMLFile(const std::string &xmlFilePath) const;
+
+    /**
+     *
+     *
+     * @param xmlDocument
+     * @return
+     */
+    Scenario parseXMLDocument(const std::string &xmlDocument) const;
 
     /**
      * Open and validate XML file with XML schema file.
@@ -72,17 +80,13 @@ public:
     void playScenario(const Scenario &scenario) const;
 
 private:
+    static const std::string PROPERTY_NAME_XML_SCHEMA_FILE_PATH;
+    std::string m_xmlSchemaFilePath;
+
     XMLValidatorI* m_pXMLValidatorI; ///< Specific interface to allow the plug or unplug xml validator (see AutomationService constructor) for third party libraries. Helpful for developers to avoid code rewriting and for more flexibility.
     XMLParserI* m_pXMLParserI; ///< Specific interface to allow the plug or unplug xml parser (see AutomationService constructor) for third party libraries. Helpful for developers to avoid code rewriting and for more flexibility.
 
-    /**
-     * XMLValidatorI interface validate XML file with XML schema.
-     *
-     * @param xmlFilePath
-     * @return true if XML file match XML schema, false else.
-     */
-    bool isValidComputationConfigurationXMLFile(
-            const std::string &xmlFilePath) const;
+    const std::string& getXmlSchemaFilePath() const;
 };
 
 #endif /* AUTOMATION_SERVICE_H */

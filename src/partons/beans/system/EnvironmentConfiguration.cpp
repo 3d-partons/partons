@@ -1,5 +1,7 @@
 #include "../../../../include/partons/beans/system/EnvironmentConfiguration.h"
 
+#include "../../../../include/partons/database/common/service/EnvironmentConfigurationDaoService.h"
+
 EnvironmentConfiguration::EnvironmentConfiguration() :
         DatabaseFileObject("EnvironmentConfiguration") {
 }
@@ -12,4 +14,9 @@ EnvironmentConfiguration::EnvironmentConfiguration(int indexId,
 }
 
 EnvironmentConfiguration::~EnvironmentConfiguration() {
+}
+
+std::string EnvironmentConfiguration::fillFile() const {
+    EnvironmentConfigurationDaoService daoService;
+    return daoService.getConfigurationByIndexId(getIndexId());
 }

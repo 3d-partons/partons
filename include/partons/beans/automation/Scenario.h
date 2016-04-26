@@ -52,6 +52,9 @@ public:
     const std::vector<Task>& getTasks() const;
     void setTasks(const std::vector<Task>& tasks);
 
+protected:
+    virtual std::string fillFile() const;
+
 private:
     std::string m_description; ///<
     std::vector<Task> m_tasks; ///<

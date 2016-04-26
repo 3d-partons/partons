@@ -21,9 +21,32 @@ class Scenario;
  */
 class Computation: public DatabaseObject {
 public:
+    /**
+     * Default constructor
+     */
     Computation();
+
+    /**
+     * Copy constructor
+     *
+     * @param other
+     */
+    Computation(const Computation &other);
+
+    /**
+     * Constructor
+     *
+     * @param indexId
+     * @param dateTime
+     * @param pScenario
+     * @param pEnvironmentConfiguration
+     */
     Computation(int indexId, time_t dateTime, Scenario* pScenario,
             EnvironmentConfiguration* pEnvironmentConfiguration);
+
+    /**
+     * Default destructor
+     */
     virtual ~Computation();
 
     // ##### GETTERS & SETTERS #####

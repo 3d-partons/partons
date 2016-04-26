@@ -1,13 +1,13 @@
 #include "../../../../include/partons/services/automation/Qt4XMLValidator.h"
 
 #include <ElementaryUtils/logger/LoggerManager.h>
-#include <QtCore/qdebug.h>
-#include <QtCore/qfile.h>
-#include <QtCore/qiodevice.h>
+#include <ElementaryUtils/string_utils/Formatter.h>
+#include <QtCore/qbytearray.h>
 #include <QtCore/qstring.h>
-#include <QtCore/qurl.h>
 #include <QtXmlPatterns/qxmlschema.h>
 #include <QtXmlPatterns/qxmlschemavalidator.h>
+
+#include "../../../../include/partons/services/automation/Qt4MessageHandler.h"
 
 Qt4XMLValidator::Qt4XMLValidator() :
         XMLValidatorI("Qt4XMLValidator") {
@@ -16,37 +16,34 @@ Qt4XMLValidator::Qt4XMLValidator() :
 Qt4XMLValidator::~Qt4XMLValidator() {
 }
 
-//TODO return info about errors if document invalid
-bool Qt4XMLValidator::isValidXMLFile(const std::string& xmlFilePath) const {
+bool Qt4XMLValidator::isValidXMLDocument(const std::string xmlSchemaStream,
+        const std::string &xmlDocumentStream) const {
 
-    std::string xmlSchemaFilePath = getXmlSchemaFilePath();
-
-    if (xmlSchemaFilePath.empty()) {
-        error(__func__, "XML schema file path is empty !");
+    if (xmlSchemaStream.empty()) {
+        error(__func__, "XML schema is empty.");
+    }
+    if (xmlDocumentStream.empty()) {
+        error(__func__, "XML document is empty.");
     }
 
+    const QByteArray schemaData = QString(xmlSchemaStream.c_str()).toUtf8();
+    const QByteArray xmldata = QString(xmlDocumentStream.c_str()).toUtf8();
+
+    Qt4MessageHandler messageHandler;
     bool isValid = false;
 
-    QUrl schemaUrl = QUrl::fromLocalFile(QString(xmlSchemaFilePath.c_str()));
-
     QXmlSchema qSchema;
-    qSchema.load(schemaUrl);
+    qSchema.setMessageHandler(&messageHandler);
+    qSchema.load(schemaData);
 
     if (qSchema.isValid()) {
-        QFile file(xmlFilePath.c_str());
-        file.open(QIODevice::ReadOnly);
-
         QXmlSchemaValidator validator(qSchema);
-        isValid = validator.validate(&file,
-                QUrl::fromLocalFile(file.fileName()));
+        isValid = validator.validate(xmldata);
 
-        if (isValid) {
-            info(__func__, "instance document is valid");
-            qDebug() << "instance document is valid";
-        } else {
-            qDebug() << "instance document is invalid";
-            error(__func__, "instance document is invalid");
-
+        if (!isValid) {
+            error(__func__,
+                    ElemUtils::Formatter() << "XML document is invalid : "
+                            << messageHandler.statusMessage());
         }
     }
 

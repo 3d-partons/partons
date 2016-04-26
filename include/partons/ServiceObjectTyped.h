@@ -43,7 +43,7 @@ public:
 
     ResultList<ResultType> computeScenario(const std::string &scenarioFilePath,
             List<KinematicType> &kinematicList) {
-        Scenario scenario = m_pAutomationService->parseScenarioXMLFile(
+        Scenario scenario = m_pAutomationService->parseXMLFile(
                 scenarioFilePath);
 
         m_kinematicListBuffer.add(kinematicList);

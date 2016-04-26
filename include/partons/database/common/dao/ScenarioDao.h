@@ -26,6 +26,8 @@ public:
             const std::string &xmlFile, const std::string &hashSum) const;
     int getScnearioIdByHashSum(const std::string &hashSum) const;
     std::string getXMLFileByIndexId(const int indexId) const;
+
+    int getScenarioIdByComputationId(const int computationId) const;
 };
 
 #endif /* SCENARIO_DAO_H */
