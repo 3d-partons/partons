@@ -4,11 +4,11 @@
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/integration/one_dimension/Functor1D.h>
+#include <NumA/integration/one_dimension/GaussLegendreIntegrator1D.h>
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
 #include <cmath>
 #include <map>
 #include <utility>
-#include <NumA/integration/one_dimension/GaussLegendreIntegrator1D.h>
 
 #include "../../../../../include/partons/beans/gpd/GPDResult.h"
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
@@ -18,8 +18,9 @@
 #include "../../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
+#include "../../../../../include/partons/modules/active_flavors/NfFunctionExample.h"
 #include "../../../../../include/partons/modules/alphaS/RunningAlphaStrong.h"
-#include "../../../../../include/partons/modules/evolution/gpd/ExampleEvolQCDModel.h"
+//#include "../../../../../include/partons/modules/evolution/gpd/ExampleEvolQCDModel.h"
 #include "../../../../../include/partons/modules/GPDModule.h"
 #include "../../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../../include/partons/Partons.h"
@@ -28,8 +29,7 @@ const unsigned int DVCSCFFVGGModel::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new DVCSCFFVGGModel("DVCSCFFVGGModel"));
 
-const std::string DVCSCFFVGGModel::PARAMETER_NAME_EPS =
-        "DVCSCFFVGGModel_Eps";
+const std::string DVCSCFFVGGModel::PARAMETER_NAME_EPS = "DVCSCFFVGGModel_Eps";
 
 DVCSCFFVGGModel::DVCSCFFVGGModel(const std::string& className) :
         DVCSConvolCoeffFunctionModule(className) {
@@ -82,7 +82,8 @@ void DVCSCFFVGGModel::initFunctorsForIntegrations() {
 void DVCSCFFVGGModel::resolveObjectDependencies() {
 
     setIntegrator(NumA::IntegratorType1D::GaussLegendre);
-    ElemUtils::Parameters parameters(NumA::GaussLegendreIntegrator1D::PARAM_NAME_N, 40);
+    ElemUtils::Parameters parameters(
+            NumA::GaussLegendreIntegrator1D::PARAM_NAME_N, 40);
     configureIntegrator(parameters);
 
     m_pRunningAlphaStrongModule =
@@ -91,7 +92,7 @@ void DVCSCFFVGGModel::resolveObjectDependencies() {
 
     m_pNfConvolCoeffFunction =
             Partons::getInstance()->getModuleObjectFactory()->newActiveFlavorsModule(
-                    ExampleEvolQCDModel::classId);
+                    NfFunctionExample::classId);
 }
 
 void DVCSCFFVGGModel::configure(const ElemUtils::Parameters &parameters) {
