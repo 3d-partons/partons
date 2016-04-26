@@ -9,8 +9,8 @@
 
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../../include/partons/BaseObjectRegistry.h"
+#include "../../../../../include/partons/modules/active_flavors/NfFunctionExample.h"
 #include "../../../../../include/partons/modules/alphaS/RunningAlphaStrong.h"
-#include "../../../../../include/partons/modules/evolution/gpd/ExampleEvolQCDModel.h"
 #include "../../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../../include/partons/Partons.h"
 
@@ -103,7 +103,7 @@ void DVCSConstantCFFModel::resolveObjectDependencies() {
 
     m_pNfConvolCoeffFunction =
             Partons::getInstance()->getModuleObjectFactory()->newActiveFlavorsModule(
-                    ExampleEvolQCDModel::classId);
+                    NfFunctionExample::classId);
 }
 
 void DVCSConstantCFFModel::initModule() {

@@ -6,11 +6,12 @@
 #include <stdexcept>
 #include <utility>
 
+#include "../../../../../include/partons/beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "../../../../../include/partons/beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
 #include "../../../../../include/partons/beans/observable/ObservableChannel.h"
+#include "../../../../../include/partons/modules/active_flavors/NfFunctionExample.h"
 #include "../../../../../include/partons/modules/alphaS/RunningAlphaStrong.h"
 #include "../../../../../include/partons/modules/ActiveFlavorsModule.h"
-#include "../../../../../include/partons/modules/evolution/gpd/ExampleEvolQCDModel.h"
 #include "../../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../../include/partons/Partons.h"
 
@@ -72,7 +73,7 @@ void DVCSConvolCoeffFunctionModule::resolveObjectDependencies() {
 
     m_pNfConvolCoeffFunction =
             Partons::getInstance()->getModuleObjectFactory()->newActiveFlavorsModule(
-                    ExampleEvolQCDModel::classId);
+                    NfFunctionExample::classId);
 }
 
 //TODO implement
