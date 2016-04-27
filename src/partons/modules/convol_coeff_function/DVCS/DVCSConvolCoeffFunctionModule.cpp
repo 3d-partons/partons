@@ -237,8 +237,8 @@ void DVCSConvolCoeffFunctionModule::configure(
 
         } catch (const std::exception &e) {
             // if an exception is raised it means that it's a string configuration value
-            m_qcdOrderType = PerturbativeQCDOrderType::fromString(
-                    parameters.getLastAvailable().toString());
+            m_qcdOrderType = PerturbativeQCDOrderType(
+                    parameters.getLastAvailable().toString()).getType();
         }
 
         info(__func__,

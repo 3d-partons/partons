@@ -280,3 +280,7 @@ ComparisonReport GPDService::compareResultListToDatabase(
 
     return comparisonReport;
 }
+
+GPDModule* GPDService::newGPDModuleFromTask(const Task& task) const {
+
+}

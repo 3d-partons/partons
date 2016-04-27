@@ -2,16 +2,19 @@
 #define PERTURBATIVE_QCD_ORDER_TYPE_H
 
 /**
- * @file QCDOrderType.h
+ * @file PerturbativeQCDOrderType.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 16 July 2014
+ * @date July 16, 2014
  * @version 1.0
+ */
+
+#include <string>
+
+#include "../BaseObject.h"
+
+/**
+ * @class PerturbativeQCDOrderType
  *
- * @class QCDOrderType
- *
- * @brief
- *
- * @class QCDOrderType
  * @brief Defines available orders of perturbative QCD computations.\n
  * Current values are:\n
  * - UNDEFINED: empty field\n
@@ -21,10 +24,7 @@
  * - LL: Leading Logarithm\n
  * - NLL: Next-to-Leading Logarithm\n
  */
-
-#include <string>
-
-class PerturbativeQCDOrderType {
+class PerturbativeQCDOrderType: public BaseObject {
 
 public:
     static const std::string PARAMETER_NAME_PERTURBATIVE_QCD_ORDER_TYPE;
@@ -37,14 +37,13 @@ public:
 
     PerturbativeQCDOrderType(Type type);
 
+    PerturbativeQCDOrderType(const std::string &perturbativeQCDOrderTypeString);
+
     const std::string toString();
 
     PerturbativeQCDOrderType::Type getType() const;
 
     void setType(Type type);
-
-    static PerturbativeQCDOrderType::Type fromString(
-            const std::string& gpdTypeStr);
 
 private:
     PerturbativeQCDOrderType::Type m_type;

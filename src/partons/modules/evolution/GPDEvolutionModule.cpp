@@ -306,7 +306,8 @@ bool GPDEvolutionModule::isRunnable(double MuF2, double MuF2_ref,
 
 bool GPDEvolutionModule::isRelativeTest(double MuF2, double MuF2_ref) {
     debug(__func__,
-            ElemUtils::Formatter() << "MuF2 = " << MuF2 << "   MuF2_ref = " << MuF2_ref);
+            ElemUtils::Formatter() << "MuF2 = " << MuF2 << "   MuF2_ref = "
+                    << MuF2_ref);
 
     return (fabs(MuF2 - MuF2_ref) > (m_epsilon * MuF2_ref)) ? true : false;
 }
@@ -527,7 +528,8 @@ QuarkDistribution GPDEvolutionModule::makeFinalQuarkDistribution(
 
 double GPDEvolutionModule::calculateFq(double FPlus, double FMinus) {
     debug(__func__,
-            ElemUtils::Formatter() << " FMinus = " << FMinus << "   FPlus = " << FPlus);
+            ElemUtils::Formatter() << " FMinus = " << FMinus << "   FPlus = "
+                    << FPlus);
 
     return (FMinus + FPlus) / 2.;
 }
@@ -679,8 +681,8 @@ double GPDEvolutionModule::nonSingletGPD(unsigned short nonSingletIndex,
 void GPDEvolutionModule::configure(const ElemUtils::Parameters &parameters) {
     if (parameters.isAvailable(
             PerturbativeQCDOrderType::PARAMETER_NAME_PERTURBATIVE_QCD_ORDER_TYPE)) {
-        m_qcdOrderType = PerturbativeQCDOrderType::fromString(
-                parameters.getLastAvailable().toString());
+        m_qcdOrderType = PerturbativeQCDOrderType(
+                parameters.getLastAvailable().toString()).getType();
 
         info(__func__,
                 ElemUtils::Formatter()
@@ -705,7 +707,8 @@ void GPDEvolutionModule::setGpdModule(GPDModule* gpdModule) {
     m_pGPDModule = gpdModule;
 
     debug(__func__,
-            ElemUtils::Formatter() << "GPDModule = " << m_pGPDModule->getClassName());
+            ElemUtils::Formatter() << "GPDModule = "
+                    << m_pGPDModule->getClassName());
 }
 
 //

@@ -78,6 +78,11 @@ std::string ScenarioDao::getXMLFileByIndexId(const int indexId) const {
     if (query.exec()) {
         if (query.first()) {
             xmlFile = query.value(0).toString().toStdString();
+        } else {
+            error(__func__,
+                    ElemUtils::Formatter()
+                            << "Cannot found result for scenarioId = "
+                            << indexId);
         }
     } else {
         error(__func__,

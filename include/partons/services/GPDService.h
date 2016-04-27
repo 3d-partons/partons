@@ -114,6 +114,8 @@ public:
     ComparisonReport compareResultListToDatabase(
             const std::string &scenarioTestFilePath);
 
+    GPDModule* newGPDModuleFromTask(const Task &task) const;
+
 private:
     GPDKinematic* m_pGPDKinematic;
     GPDModule* m_pGPDModule;

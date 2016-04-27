@@ -13,6 +13,7 @@
  */
 
 #include <ElementaryUtils/string_utils/Formatter.h>
+#include <ElementaryUtils/string_utils/StringUtils.h>
 #include <stddef.h>
 #include <string>
 #include <vector>
@@ -97,7 +98,7 @@ public:
     void compare(ComparisonReport &rootComparisonReport,
             const List<T> &referenceObject, const NumA::Tolerances &tolerances,
             const ComparisonMode &comparisonMode = ComparisonMode::EQUAL,
-            std::string parentObjectInfo = "") const {
+            std::string parentObjectInfo = ElemUtils::StringUtils::EMPTY) const {
 
         rootComparisonReport.setTolerances(tolerances);
 
