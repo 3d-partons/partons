@@ -6,17 +6,17 @@
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date September 09, 2014
  * @version 1.0
- *
- * @class BaseObject
+ */
+
+#include <string>
+
+/** @class BaseObject
  *
  * @brief BaseObject is the ”zeroth-level-object” of the architecture.
  *
  * Any C++ object in PARTONS can inherit of it.
  * It also carries information on the identity of a specific object to transmit an explicit message to the logger (i.e. understandable by a human being, not an address in memory).
  */
-
-#include <string>
-
 class BaseObject {
 public:
 

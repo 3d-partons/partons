@@ -79,3 +79,7 @@ int ComputationDaoService::getComputationIdByDateTime(
 Computation ComputationDaoService::selectByIndexId(const int indexId) const {
     return m_computationDao.selectByIndexId(indexId);
 }
+
+bool ComputationDaoService::isAvailable(const int computationId) const {
+    return m_computationDao.isAvailable(computationId);
+}

@@ -38,6 +38,8 @@ public:
 
     int getComputationIdByDateTime(const time_t &dateTime) const;
 
+    bool isAvailable(const int computationId) const;
+
 private:
     ComputationDao m_computationDao; ///< reference to the right DAO object to perform database queries
 

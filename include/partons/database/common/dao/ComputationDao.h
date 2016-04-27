@@ -34,6 +34,8 @@ public:
     int insertIntoScenarioComputation(const size_t scenarioTaskIndexNumber,
             const int scenarioId, const int computationId) const;
 
+    bool isAvailable(const int computationId) const;
+
 private:
     void fillComputation(Computation &computation, QSqlQuery &query) const;
 };

@@ -101,7 +101,7 @@ int ScenarioDao::getScenarioIdByComputationId(const int computationId) const {
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     query.prepare(
-            "SELECT computation_id FROM scenario_computation WHERE computation_id = :computationId");
+            "SELECT scenario_id FROM scenario_computation WHERE computation_id = :computationId;");
 
     query.bindValue(":computationId", computationId);
 

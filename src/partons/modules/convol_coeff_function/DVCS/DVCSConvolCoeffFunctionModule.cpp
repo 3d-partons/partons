@@ -126,7 +126,7 @@ DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionModule::compute(
         const double MuR2, GPDType::Type gpdComputeType) {
     preCompute(xi, t, Q2, MuF2, MuR2, gpdComputeType);
 
-    //TODO voir a deplacer dans les services
+    //TODO voir a deplacer dans les services ce message d'info
     info(__func__,
             ElemUtils::Formatter() << "xi = " << xi << " t = " << t << " Q2 = "
                     << Q2);

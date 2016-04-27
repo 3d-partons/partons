@@ -138,3 +138,28 @@ int ComputationDao::insertIntoScenarioComputation(
 
     return result;
 }
+
+bool ComputationDao::isAvailable(const int computationId) const {
+    bool result = false;
+    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
+
+    query.prepare(
+            "SELECT id FROM computation WHERE id = :computationId");
+
+    query.bindValue(":computationId", computationId);
+
+    if (query.exec()) {
+        if (query.first()) {
+            result = true;
+        }
+    } else {
+        error(__func__,
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
+    }
+
+    query.clear();
+
+    return result;
+}

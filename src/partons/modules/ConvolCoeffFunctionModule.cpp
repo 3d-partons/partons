@@ -51,7 +51,7 @@ void ConvolCoeffFunctionModule::configure(
         // TODO passer par le setter de m_pGPDModule pour affecter le nouveau module de GPD. Car il faut détruire le précédent pointer s'il existe. Pour libérer l'allocation mémoire avant d'affecter le nouveau.
 
         //TODO tester l'imbrication des try/catch
-        //TODO Dangereux de construire le module GPD comme ça car on ne peut pas le configurer
+        //TODO !!! Dangereux de construire le module GPD comme ça car on ne peut pas le configurer !!!!
         try {
             m_pGPDModule =
                     Partons::getInstance()->getModuleObjectFactory()->newGPDModule(

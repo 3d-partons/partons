@@ -24,6 +24,7 @@ class ActiveFlavorsModule: public ModuleObject {
 public:
     ActiveFlavorsModule(const std::string &className);
     virtual ~ActiveFlavorsModule();
+
     /**
      * Clone
      *
