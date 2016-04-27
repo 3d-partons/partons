@@ -4,14 +4,11 @@
 /**
  * @file ObservableResult.h
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 21 September 2015
+ * @date September 21, 2015
  * @version 1.0
- *
- * @class ObservableResult
- *
- * @brief
  */
 
+#include <ElementaryUtils/string_utils/StringUtils.h>
 #include <string>
 
 #include "../../utils/math/ErrorBar.h"
@@ -24,6 +21,11 @@ namespace NumA {
 class Tolerances;
 } /* namespace NumA */
 
+/**
+ * @class ObservableResult
+ *
+ * @brief
+ */
 class ObservableResult: public Result {
 public:
     static const std::string PARAMETER_NAME_OBSERVABLE_VALUE;
@@ -39,7 +41,7 @@ public:
     void compare(ComparisonReport &rootComparisonReport,
             const ObservableResult &referenceObject,
             const NumA::Tolerances &tolerances, std::string parentObjectInfo =
-                    "") const;
+                    ElemUtils::StringUtils::EMPTY) const;
 
     void setKinematic(const ObservableKinematic &kinematic);
     void setStatError(const ErrorBar& statError);
@@ -65,6 +67,7 @@ private:
     ErrorBar m_statError;
     ErrorBar m_systError;
 
+    //TODO add a proxy to retrieve it from database.
     ObservableKinematic m_kinematic;
 
     ObservableType::Type m_observableType;

@@ -12,6 +12,7 @@
  * @brief
  */
 
+#include <ElementaryUtils/string_utils/StringUtils.h>
 #include <complex>
 #include <map>
 #include <string>
@@ -42,8 +43,8 @@ public:
 
     void compare(ComparisonReport &rootComparisonReport,
             const DVCSConvolCoeffFunctionResult &referenceObject,
-            const NumA::Tolerances &tolerances,
-            std::string parentObjectInfo) const;
+            const NumA::Tolerances &tolerances, std::string parentObjectInfo =
+                    ElemUtils::StringUtils::EMPTY) const;
 
     std::string toString();
 
