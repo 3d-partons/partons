@@ -1194,20 +1194,20 @@ PartonDistribution MPSSW13Model::computeH() {
 
     if (m_Mx >= m_xi) {
         // Integration, u quark
-        HuVal = integrate(m_pIntegralHuValMx, Beta1Mx, Beta2Mx,
+        HuValMx = integrate(m_pIntegralHuValMx, Beta1Mx, Beta2Mx,
                 emptyParameters);
 
         // Integration, d quark
-        HdVal = integrate(m_pIntegralHdValMx, Beta1Mx, Beta2Mx,
+        HdValMx = integrate(m_pIntegralHdValMx, Beta1Mx, Beta2Mx,
                 emptyParameters);
     }
 
     if (fabs(m_Mx) < m_xi) {
         // Integration, u quark
-        HuVal = integrate(m_pIntegralHuValMx, Eps, Beta2Mx, emptyParameters);
+        HuValMx = integrate(m_pIntegralHuValMx, Eps, Beta2Mx, emptyParameters);
 
         // Integration, d quark
-        HdVal = integrate(m_pIntegralHdValMx, Eps, Beta2Mx, emptyParameters);
+        HdValMx = integrate(m_pIntegralHdValMx, Eps, Beta2Mx, emptyParameters);
     }
 
     //////////////////////////////////
