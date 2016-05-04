@@ -110,7 +110,7 @@ void MPSSW13Model::resolveObjectDependencies() {
     // Central PDF set
     m_Forward = new c_mstwpdf(gridFilePath);
 
-    setIntegrator(NumA::IntegratorType1D::GK21_ADAPTIVE);
+    setIntegrator(NumA::IntegratorType1D::DEXP);
 }
 
 MPSSW13Model::MPSSW13Model(const MPSSW13Model& other) :
@@ -1159,7 +1159,7 @@ PartonDistribution MPSSW13Model::computeH() {
 
     // Form factors and D-Terms
     ComputeFormFactors();
-    ComputeDTerms();
+//    ComputeDTerms();
 
     //////////////////////////////////////////////////////
     //   u and d quarks, valence part evaluated at fx   //
@@ -1309,7 +1309,6 @@ PartonDistribution MPSSW13Model::computeH() {
                 emptyParameters);
     }
 
-    //Hg += m_GluonDTerm;
     GluonDistribution gluonDistribution(Hg);
 
     //////////////////////////////////////////

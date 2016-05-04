@@ -53,7 +53,7 @@ DVCSCFFModel::DVCSCFFModel(const std::string &className) :
 void DVCSCFFModel::resolveObjectDependencies() {
     DVCSConvolCoeffFunctionModule::resolveObjectDependencies();
 
-    setIntegrator(NumA::IntegratorType1D::GK21_ADAPTIVE);
+    setIntegrator(NumA::IntegratorType1D::DEXP);
 }
 
 void DVCSCFFModel::initFunctorsForIntegrations() {

@@ -75,7 +75,7 @@ void MMS13Model::resolveObjectDependencies() {
             ElemUtils::PropertiesManager::getInstance()->getString(
                     "grid.directory") + "mstw2008nlo.00.dat");
 
-    setIntegrator(NumA::IntegratorType1D::GK21_ADAPTIVE);
+    setIntegrator(NumA::IntegratorType1D::DEXP);
 }
 
 void MMS13Model::configure(const ElemUtils::Parameters &parameters) {

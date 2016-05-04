@@ -127,7 +127,7 @@ void VGGModel::resolveObjectDependencies() {
             ElemUtils::PropertiesManager::getInstance()->getString(
                     "grid.directory") + "mstw2008nlo.00.dat");
 
-    setIntegrator(NumA::IntegratorType1D::GK21_ADAPTIVE);
+    setIntegrator(NumA::IntegratorType1D::DEXP);
 }
 
 void VGGModel::configure(const ElemUtils::Parameters &parameters) {
@@ -237,20 +237,17 @@ PartonDistribution VGGModel::computeE() {
     double uVal, uSea, dVal, dSea, sSea, g;
     double uValMx, dValMx;
 
-    //integrated function according to variant
-    NumA::FunctionType1D* functor = m_pint_mom2_up_valence_e;
-
     std::vector<double> emptyParameters;
 
     //GPDs for x
     x_s5 = m_x;
     flavour_s5 = UP_VAL;
     uVal = kappa_u * offforward_distr()
-            / integrate(functor, 0., 1., emptyParameters);
+            / integrate(m_pint_mom2_up_valence_e, 0., 1., emptyParameters);
 
     flavour_s5 = DOWN_VAL;
     dVal = kappa_d * offforward_distr()
-            / integrate(functor, 0., 1., emptyParameters);
+            / integrate(m_pint_mom2_up_valence_e, 0., 1., emptyParameters);
 
     uSea = 0.;
     dSea = 0.;
@@ -261,10 +258,12 @@ PartonDistribution VGGModel::computeE() {
     x_s5 = -m_x;
 
     flavour_s5 = UP_VAL;
-    uValMx = offforward_distr();
+    uValMx = kappa_u * offforward_distr()
+            / integrate(m_pint_mom2_up_valence_e, 0., 1., emptyParameters);
 
     flavour_s5 = DOWN_VAL;
-    dValMx = offforward_distr();
+    dValMx = kappa_d * offforward_distr()
+            / integrate(m_pint_mom2_up_valence_e, 0., 1., emptyParameters);
 
     //store results
     QuarkDistribution quarkDistribution_u(QuarkFlavor::UP);
@@ -292,13 +291,13 @@ PartonDistribution VGGModel::computeE() {
     partonDistribution.addQuarkDistribution(quarkDistribution_d);
     partonDistribution.addQuarkDistribution(quarkDistribution_s);
 
-    //clean
-    if (functor != 0) {
-        delete functor;
-        functor = 0;
-    }
+//    //clean
+//    if (functor != 0) {
+//        delete functor;
+//        functor = 0;
+//    }
 
-    //return
+//return
     return partonDistribution;
 }
 
@@ -477,7 +476,7 @@ double VGGModel::offforward_distr() {
     if (x_s5 >= m_xi) {
 
         ofpd = integrate(functor, -(1. - x_s5) / (1. + m_xi),
-                (1. - x_s5) / (1. - m_xi), emptyParameters);
+                (1. - x_s5) / (1. - m_xi) - eps_doubleint, emptyParameters);
 
     } else if ((-m_xi < x_s5) && (x_s5 < m_xi)) {
 
@@ -494,7 +493,7 @@ double VGGModel::offforward_distr() {
         if (flavour_s5 != UP_VAL && flavour_s5 != DOWN_VAL) {
 
             ofpd = -integrate(functorMx, -(1. + x_s5) / (1. + m_xi),
-                    (1. + x_s5) / (1. - m_xi), emptyParameters);
+                    (1. + x_s5) / (1. - m_xi) - eps_doubleint, emptyParameters);
         } else {
             ofpd = 0.;
         }
@@ -696,7 +695,6 @@ double VGGModel::int_mom2_up_valence_e(double x, std::vector<double> par) {
         pdf = m_Forward->cont.dnv / beta;
         //pdf = test_pdf_down_val(beta);
         eta_e_largex_s = eta_e_largex_d_s;
-
     }
         break;
 
@@ -746,7 +744,7 @@ double VGGModel::offforward_pol_distr() {
     //three ranges of x
     if (x_s5 >= m_xi) {
 
-        ofpd = integrate(functor, 0., (1. - x_s5) / (1. - m_xi),
+        ofpd = integrate(functor, 0., (1. - x_s5) / (1. - m_xi) - eps_doubleint,
                 emptyParameters);
 
     } else if ((-m_xi < x_s5) && (x_s5 < m_xi)) {
@@ -764,7 +762,7 @@ double VGGModel::offforward_pol_distr() {
     } else {
         if (flavour_s5 != UP_VAL && flavour_s5 != DOWN_VAL) {
 
-            ofpd = integrate(functorMx, 0., (1. + x_s5) / (1. - m_xi),
+            ofpd = integrate(functorMx, 0., (1. + x_s5) / (1. - m_xi) - eps_doubleint,
                     emptyParameters);
         } else {
             ofpd = 0.;
