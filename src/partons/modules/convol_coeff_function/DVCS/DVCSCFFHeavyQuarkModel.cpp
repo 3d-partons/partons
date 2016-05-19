@@ -162,16 +162,16 @@ std::complex<double> DVCSCFFHeavyQuarkModel::computeIntegralsMassiveA() {
 std::complex<double> DVCSCFFHeavyQuarkModel::beta(double s, double mq) {
     std::complex<double> tmp_beta;
     if (s < 0) {
-        tmp_beta.real() = std::sqrt(1. - 4. * mq * mq / s);
-        tmp_beta.imag() = 0.;
+        tmp_beta.real(std::sqrt(1. - 4. * mq * mq / s));
+        tmp_beta.imag(0.);
     }
     if ((s > 0) && (s < 4. * mq * mq)) {
-        tmp_beta.real() = 0.;
-        tmp_beta.imag() = std::sqrt(-1. + 4. * mq * mq / s);
+        tmp_beta.real(0.);
+        tmp_beta.imag(std::sqrt(-1. + 4. * mq * mq / s));
     }
     if (s >= 4 * mq * mq) {
-        tmp_beta.real() = std::sqrt(1. - 4. * mq * mq / s);
-        tmp_beta.imag() = 0.;
+        tmp_beta.real(std::sqrt(1. - 4. * mq * mq / s));
+        tmp_beta.imag(0.);
     }
     return tmp_beta;
 }
@@ -254,12 +254,12 @@ std::complex<double> DVCSCFFHeavyQuarkModel::MassiveKernelGluonNLOA(double x) {
     std::complex<double> GluonNLOAb(0.0, 0.0);
 
     if (z == 1.) {
-        GluonNLOA.real() = 1.0;
-        GluonNLOA.imag() = 0.;
+        GluonNLOA.real(1.0);
+        GluonNLOA.imag(0.);
     }
     if (z == -1.) {
-        GluonNLOA.real() = -1.0;
-        GluonNLOA.imag() = 0.;
+        GluonNLOA.real(-1.0);
+        GluonNLOA.imag(0.);
     }
 
     ///////////////// c(z)
@@ -316,12 +316,12 @@ std::complex<double> DVCSCFFHeavyQuarkModel::MassiveKernelGluonNLOV(double x) {
         m_rq = r(-m_Q2, mq);
 
         if (z == 1.) {
-            GluonNLOV.real() = 0.0;
-            GluonNLOV.imag() = 0.;
+            GluonNLOV.real(0.);
+            GluonNLOV.imag(0.);
         }
         if (z == -1.) {
-            GluonNLOV.real() = 0.0;
-            GluonNLOV.imag() = 0.;
+            GluonNLOV.real(0.);
+            GluonNLOV.imag(0.);
         }
         if ((z != 1.) && (z != -1.)) {
 ////////////////// c(z)
