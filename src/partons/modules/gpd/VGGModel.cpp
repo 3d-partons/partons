@@ -22,10 +22,9 @@ const unsigned int VGGModel::classId =
                 new VGGModel("VGGModel"));
 
 VGGModel::VGGModel(const std::string &className) :
-        GPDModule(className), eps_doubleint(0.001), kappa_u(1.6596), kappa_d(
-                -2.0352), b_profile_val(1.), b_profile_sea(1.), alphap_val(
-                1.105), alphap_sea(1.105), eta_e_largex_u_s(1.713), eta_e_largex_d_s(
-                0.566), g_AXIAL(1.267), MathIntegratorModule() {
+        GPDModule(className), kappa_u(1.6596), kappa_d(-2.0352), b_profile_val(
+                1.), b_profile_sea(1.), alphap_val(1.105), alphap_sea(1.105), eta_e_largex_u_s(
+                1.713), eta_e_largex_d_s(0.566), g_AXIAL(1.267), MathIntegratorModule() {
 
     gpd_s5 = GPDType::UNDEFINED;
     flavour_s5 = UNDEFINED;
@@ -139,10 +138,10 @@ std::string VGGModel::toString() {
 }
 
 VGGModel::VGGModel(const VGGModel& other) :
-        eps_doubleint(0.001), kappa_u(1.6596), kappa_d(-2.0352), b_profile_val(
-                1.), b_profile_sea(1.), alphap_val(1.105), alphap_sea(1.105), eta_e_largex_u_s(
-                1.713), eta_e_largex_d_s(0.566), g_AXIAL(1.267), GPDModule(
-                other), MathIntegratorModule(other) {
+        kappa_u(1.6596), kappa_d(-2.0352), b_profile_val(1.), b_profile_sea(1.), alphap_val(
+                1.105), alphap_sea(1.105), eta_e_largex_u_s(1.713), eta_e_largex_d_s(
+                0.566), g_AXIAL(1.267), GPDModule(other), MathIntegratorModule(
+                other) {
 
     //TODO one should copy this object (requires copy constructor of c_mstwpdf, not done now at it will be replaced by a PDF service)
     m_Forward = other.m_Forward;
@@ -291,13 +290,7 @@ PartonDistribution VGGModel::computeE() {
     partonDistribution.addQuarkDistribution(quarkDistribution_d);
     partonDistribution.addQuarkDistribution(quarkDistribution_s);
 
-//    //clean
-//    if (functor != 0) {
-//        delete functor;
-//        functor = 0;
-//    }
-
-//return
+    //return
     return partonDistribution;
 }
 
@@ -447,6 +440,9 @@ double VGGModel::offforward_distr() {
 
     std::vector<double> emptyParameters;
 
+    //epsilon
+    double eps_doubleint;
+
     //GPD
     switch (gpd_s5) {
 
@@ -454,6 +450,8 @@ double VGGModel::offforward_distr() {
 
         functor = m_pint_symm_double_distr_reggeH;
         functorMx = m_pint_symm_double_distr_reggeMxH;
+
+        eps_doubleint = 1.E-3;
     }
         break;
 
@@ -461,6 +459,8 @@ double VGGModel::offforward_distr() {
 
         functor = m_pint_symm_double_distr_reggeE;
         functorMx = m_pint_symm_double_distr_reggeMxE;
+
+        eps_doubleint = 1.E-5;
     }
         break;
 
@@ -476,7 +476,7 @@ double VGGModel::offforward_distr() {
     if (x_s5 >= m_xi) {
 
         ofpd = integrate(functor, -(1. - x_s5) / (1. + m_xi),
-                (1. - x_s5) / (1. - m_xi) - eps_doubleint, emptyParameters);
+                (1. - x_s5) / (1. - m_xi), emptyParameters);
 
     } else if ((-m_xi < x_s5) && (x_s5 < m_xi)) {
 
@@ -493,7 +493,7 @@ double VGGModel::offforward_distr() {
         if (flavour_s5 != UP_VAL && flavour_s5 != DOWN_VAL) {
 
             ofpd = -integrate(functorMx, -(1. + x_s5) / (1. + m_xi),
-                    (1. + x_s5) / (1. - m_xi) - eps_doubleint, emptyParameters);
+                    (1. + x_s5) / (1. - m_xi), emptyParameters);
         } else {
             ofpd = 0.;
         }
@@ -525,7 +525,7 @@ double VGGModel::symm_double_distr_reggeH(double beta, double alpha) {
     case UP_VAL: {
 
         pdf = m_Forward->cont.upv / beta;
-        //pdf = test_pdf_up_val(beta);
+//        pdf = test_pdf_up_val(beta);
         b_profile = b_profile_val;
         funcbetat = pow(1. / fabs(beta), (1. - beta) * alphap_val * m_t);
     }
@@ -534,7 +534,7 @@ double VGGModel::symm_double_distr_reggeH(double beta, double alpha) {
     case DOWN_VAL: {
 
         pdf = m_Forward->cont.dnv / beta;
-        //pdf = test_pdf_down_val(beta);
+//        pdf = test_pdf_down_val(beta);
         b_profile = b_profile_val;
         funcbetat = pow(1. / fabs(beta), (1. - beta) * alphap_val * m_t);
     }
@@ -543,7 +543,7 @@ double VGGModel::symm_double_distr_reggeH(double beta, double alpha) {
     case UP_SEA: {
 
         pdf = m_Forward->cont.usea / beta;
-        //pdf = test_pdf_up_bar(beta);
+//        pdf = test_pdf_up_bar(beta);
         b_profile = b_profile_sea;
         funcbetat = pow(1. / fabs(beta), (1. - beta) * alphap_sea * m_t);
     }
@@ -552,7 +552,7 @@ double VGGModel::symm_double_distr_reggeH(double beta, double alpha) {
     case DOWN_SEA: {
 
         pdf = m_Forward->cont.dsea / beta;
-        //pdf = test_pdf_down_bar(beta);
+//        pdf = test_pdf_down_bar(beta);
         b_profile = b_profile_sea;
         funcbetat = pow(1. / fabs(beta), (1. - beta) * alphap_sea * m_t);
     }
@@ -594,7 +594,7 @@ double VGGModel::symm_double_distr_reggeE(double beta, double alpha) {
     case UP_VAL: {
 
         pdf = m_Forward->cont.upv / beta;
-        //pdf = test_pdf_up_val(beta);
+//        pdf = test_pdf_up_val(beta);
         b_profile = b_profile_val;
         funcbetat = pow(1. - beta, eta_e_largex_u_s)
                 * pow(1. / fabs(beta), (1. - beta) * alphap_val * m_t);
@@ -604,7 +604,7 @@ double VGGModel::symm_double_distr_reggeE(double beta, double alpha) {
     case DOWN_VAL: {
 
         pdf = m_Forward->cont.dnv / beta;
-        //pdf = test_pdf_down_val(beta);
+//        pdf = test_pdf_down_val(beta);
         b_profile = b_profile_val;
         funcbetat = pow(1. - beta, eta_e_largex_d_s)
                 * pow(1. / fabs(beta), (1. - beta) * alphap_val * m_t);
@@ -661,10 +661,7 @@ double VGGModel::int_symm_double_distr_reggeMxE(double alpha,
     return symm_double_distr_reggeE(-x_s5 - m_xi * alpha, alpha);
 }
 
-double VGGModel::int_mom2_up_valence_e(double x, std::vector<double> par) {
-
-    //value
-    double beta = x;
+double VGGModel::int_mom2_up_valence_e(double beta, std::vector<double> par) {
 
     //check beta range
     if (beta <= 0.) {
@@ -685,7 +682,7 @@ double VGGModel::int_mom2_up_valence_e(double x, std::vector<double> par) {
     case UP_VAL: {
 
         pdf = m_Forward->cont.upv / beta;
-        //pdf = test_pdf_up_val(beta);
+//        pdf = test_pdf_up_val(beta);
         eta_e_largex_s = eta_e_largex_u_s;
     }
         break;
@@ -693,8 +690,9 @@ double VGGModel::int_mom2_up_valence_e(double x, std::vector<double> par) {
     case DOWN_VAL: {
 
         pdf = m_Forward->cont.dnv / beta;
-        //pdf = test_pdf_down_val(beta);
+//        pdf = test_pdf_down_val(beta);
         eta_e_largex_s = eta_e_largex_d_s;
+
     }
         break;
 
@@ -723,6 +721,9 @@ double VGGModel::offforward_pol_distr() {
 
     std::vector<double> emptyParameters;
 
+    //epsilon
+    double eps_doubleint;
+
     //GPD
     switch (gpd_s5) {
 
@@ -730,6 +731,8 @@ double VGGModel::offforward_pol_distr() {
 
         functor = m_pint_symm_double_distr_reggeHt;
         functorMx = m_pint_symm_double_distr_reggeMxHt;
+
+        eps_doubleint = 1.E-3;
     }
         break;
 
@@ -744,7 +747,7 @@ double VGGModel::offforward_pol_distr() {
     //three ranges of x
     if (x_s5 >= m_xi) {
 
-        ofpd = integrate(functor, 0., (1. - x_s5) / (1. - m_xi) - eps_doubleint,
+        ofpd = integrate(functor, 0., (1. - x_s5) / (1. - m_xi),
                 emptyParameters);
 
     } else if ((-m_xi < x_s5) && (x_s5 < m_xi)) {
@@ -762,7 +765,7 @@ double VGGModel::offforward_pol_distr() {
     } else {
         if (flavour_s5 != UP_VAL && flavour_s5 != DOWN_VAL) {
 
-            ofpd = integrate(functorMx, 0., (1. + x_s5) / (1. - m_xi) - eps_doubleint,
+            ofpd = integrate(functorMx, 0., (1. + x_s5) / (1. - m_xi),
                     emptyParameters);
         } else {
             ofpd = 0.;
@@ -796,9 +799,7 @@ double VGGModel::symm_double_distr_reggeHt(double beta, double alpha) {
                         << beta << ", argument 0 or negative");
     }
 
-    //update and get pdf
-    m_Forward->update(beta, sqrt(m_MuF2));
-
+    //get pdf
     double pdf = -1.;
     double b_profile = -1.;
     double funcbetat = -1.;

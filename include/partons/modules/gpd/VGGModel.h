@@ -55,7 +55,6 @@ private:
         STRANGE = 5
     }; ///< flavour
 
-    const double eps_doubleint; ///< step to skip x = 0 singularity
     const double kappa_u; ///< anomalous magnetic moment of u quarks
     const double kappa_d; ///< anomalous magnetic moment of d quarks
 
@@ -86,7 +85,7 @@ private:
     double int_symm_double_distr_reggeE(double alpha, std::vector<double> par); ///< wrapper for integration of double distribution at x for GPD E
     double int_symm_double_distr_reggeMxE(double alpha,
             std::vector<double> par); ///< wrapper for integration of double distribution at -x for GPD E
-    double int_mom2_up_valence_e(double x, std::vector<double> par); ///< normalization function for GPD E
+    double int_mom2_up_valence_e(double beta, std::vector<double> par); ///< normalization function for GPD E
 
     double symm_double_distr_reggeHt(double beta, double alpha); ///< double distribution function for GPD Ht
     double int_symm_double_distr_reggeHt(double alpha, std::vector<double> par); ///< wrapper for integration of double distribution at x for GPD Ht
