@@ -243,14 +243,26 @@ private:
 
     void initFunctorsForIntegrations();
     double IntegralHuVal(double x, std::vector<double> Par);
-    double IntegralHdVal(double x, std::vector<double> Par);
+    double IntegralHdValBp(double x, std::vector<double> Par);
+    double IntegralHdValBm(double x, std::vector<double> Par);
+    double IntegralHuValMx(double x, std::vector<double> Par);
+    double IntegralHdValMx(double x, std::vector<double> Par);
     double IntegralHg(double x, std::vector<double> Par);
     double IntegralHs(double x, std::vector<double> Par);
+    double IntegralHsBm(double x, std::vector<double> Par);
 
+
+
+    void throwBetaException(const std::string &funcName, double betaValue);
     NumA::FunctionType1D* m_pIntegralHuVal;
-    NumA::FunctionType1D* m_pIntegralHdVal;
+    NumA::FunctionType1D* m_pIntegralHdValBp;
+    NumA::FunctionType1D* m_pIntegralHdValBm;
+    NumA::FunctionType1D* m_pIntegralHuValMx;
+    NumA::FunctionType1D* m_pIntegralHdValMx;
     NumA::FunctionType1D* m_pIntegralHg;
     NumA::FunctionType1D* m_pIntegralHs;
+    NumA::FunctionType1D* m_pIntegralHsBm;
+
 };
 
 #endif /* GK11_MODEL_H */

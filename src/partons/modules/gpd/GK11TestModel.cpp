@@ -17,6 +17,9 @@
 #include <cmath>
 #include <map>
 #include <utility>
+#include <cstdio>
+#include <exception>
+#include <iostream>
 #include <NumA/integration/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
@@ -170,15 +173,34 @@ void GK11TestModel::initFunctorsForIntegrations() {
     m_pIntegralHuVal = NumA::Integrator1D::newIntegrationFunctor(this,
             &GK11TestModel::IntegralHuVal);
 
-    m_pIntegralHdVal = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralHdVal);
+    m_pIntegralHdValBp = NumA::Integrator1D::newIntegrationFunctor(this,
+            &GK11TestModel::IntegralHdValBp);
+
+    m_pIntegralHdValBm = NumA::Integrator1D::newIntegrationFunctor(this,
+            &GK11TestModel::IntegralHdValBm);
 
     m_pIntegralHg = NumA::Integrator1D::newIntegrationFunctor(this,
             &GK11TestModel::IntegralHg);
 
     m_pIntegralHs = NumA::Integrator1D::newIntegrationFunctor(this,
             &GK11TestModel::IntegralHs);
+    m_pIntegralHsBm = NumA::Integrator1D::newIntegrationFunctor(this,
+            &GK11TestModel::IntegralHsBm);
 
+    m_pIntegralHuValMx = NumA::Integrator1D::newIntegrationFunctor(this,
+            &GK11TestModel::IntegralHuValMx);
+
+    m_pIntegralHdValMx = NumA::Integrator1D::newIntegrationFunctor(this,
+            &GK11TestModel::IntegralHdValMx);
+
+}
+
+void GK11TestModel::throwBetaException(const std::string &funcName,
+        double betaValue) {
+    error(funcName,
+            ElemUtils::Formatter()
+                    << "Longitudinal momentum fraction should be in ] 0., +1. ]"
+                    << '\n' << "Here beta = " << betaValue << '\n');
 }
 
 double GK11TestModel::Profile(double N, double beta, double alpha) {
@@ -206,33 +228,194 @@ double GK11TestModel::Profile(double N, double beta, double alpha) {
     return profile;
 }
 
-
-
 double GK11TestModel::PDFexp(double N, double beta, double* coeff) {
-    double sum = 0;
-    for (int i = 0; i < 4; i++) {
-        sum = sum + coeff[i] * pow(beta, i / 2);
-    }
-    return pow(beta, -coeff[4]) * pow((1. - beta), 2 * N + 1) * sum;
+
+    return pow(beta, -coeff[4]) * pow((1. - beta), 2 * N + 1)
+            * (coeff[0] + coeff[1] * sqrt(beta) + coeff[2] * beta
+                    + coeff[3] * beta * sqrt(beta));
+
 }
 
-double GK11TestModel::IntegralHuVal(double x, std::vector<double> Par){return 3;}
-double GK11TestModel::IntegralHdVal(double x, std::vector<double> Par){return 3;}
-double GK11TestModel::IntegralHs(double x, std::vector<double> Par){return 3;}
-
-double GK11TestModel::IntegralHg(double x, std::vector<double> Par){
+double GK11TestModel::IntegralHuVal(double x, std::vector<double> Par) {
     double Integral;
     double pdf, beta, absbeta, alpha;
 
     beta = x;
-    alpha =(beta - m_x)/m_xi;
+    alpha = (m_x - beta) / m_xi;
     absbeta = fabs(beta);
 
+    c1 = 1.52 + 0.248 * fL; // See eq. (27)
+    c2 = 2.88 - 0.94 * fL; // See eq. (27)
+    c3 = -0.095 * fL; // See eq. (27)
+    c4 = 0;
+    d0 = 0.48;
+    double coeff[5] = { c1, c2, c3, c4, d0 };
+    b0 = 0; // See p. 15
+    alphaP = 0.9;
 
-//TODO implement function
-   /* if (beta <= 0 || beta > 1.) {
-        throwBetaException(__func__, x);
-    }*/
+    Integral = exp(b0 * m_t) * pow(absbeta, -alphaP * m_t)
+            * PDFexp(1, beta, coeff) * Profile(1, beta, alpha);
+
+    return Integral;
+
+}
+
+double GK11TestModel::IntegralHuValMx(double x, std::vector<double> Par) {
+    double Integral;
+    double pdf, beta, absbeta, alpha;
+
+    beta = x;
+    alpha = (m_Mx - beta) / m_xi;
+    absbeta = fabs(beta);
+
+    c1 = 1.52 + 0.248 * fL; // See eq. (27)
+    c2 = 2.88 - 0.94 * fL; // See eq. (27)
+    c3 = -0.095 * fL; // See eq. (27)
+    c4 = 0;
+    d0 = 0.48;
+    double coeff[5] = { c1, c2, c3, c4, d0 };
+    b0 = 0; // See p. 15
+    alphaP = 0.9;
+
+    Integral = exp(b0 * m_t) * pow(absbeta, -alphaP * m_t)
+            * PDFexp(1, beta, coeff) * Profile(1, beta, alpha);
+
+    return Integral;
+
+}
+double GK11TestModel::IntegralHdValBp(double x, std::vector<double> Par) {
+    double Integral;
+    double pdf, beta, absbeta, alpha;
+
+    beta = x;
+    alpha = (m_x - beta) / m_xi;
+    absbeta = fabs(beta);
+
+    c1 = 0.76 + 0.248 * fL; // See table 1 p. 12
+    c2 = 3.11 - 1.36 * fL; // See table 1 p. 12
+    c3 = -3.99 + 1.15 * fL; // See table 1 p. 12
+    c4 = 0;
+    d0 = 0.48;
+    double coeff[5] = { c1, c2, c3, c4, d0 };
+    alphaP = 0.9;
+    b0 = 0; // See p. 15
+
+    Integral =exp(b0 * m_t) * pow(absbeta, -alphaP * m_t)
+                    * PDFexp(1, absbeta, coeff) * Profile(1, beta, alpha);
+
+    return Integral;
+
+}
+
+double GK11TestModel::IntegralHdValBm(double x, std::vector<double> Par) {
+    double Integral;
+    double pdf, beta, absbeta, alpha;
+
+    beta = -x;
+    alpha = (m_x - beta) / m_xi;
+    absbeta = fabs(beta);
+
+    c1 = 0.76 + 0.248 * fL; // See table 1 p. 12
+    c2 = 3.11 - 1.36 * fL; // See table 1 p. 12
+    c3 = -3.99 + 1.15 * fL; // See table 1 p. 12
+    c4 = 0;
+    d0 = 0.48;
+    double coeff[5] = { c1, c2, c3, c4, d0 };
+    alphaP = 0.9;
+    b0 = 0; // See p. 15
+
+    Integral = exp(b0 * m_t) * pow(absbeta, -alphaP * m_t)
+                    * PDFexp(1, absbeta, coeff) * Profile(1, beta, alpha);
+    return Integral;
+
+}
+
+double GK11TestModel::IntegralHdValMx(double x, std::vector<double> Par) {
+    double Integral;
+    double pdf, beta, absbeta, alpha;
+
+    beta = x;
+    alpha = (m_Mx - beta) / m_xi;
+    absbeta = fabs(beta);
+
+    c1 = 0.76 + 0.248 * fL; // See table 1 p. 12
+    c2 = 3.11 - 1.36 * fL; // See table 1 p. 12
+    c3 = -3.99 + 1.15 * fL; // See table 1 p. 12
+    c4 = 0;
+    d0 = 0.48;
+    double coeff[5] = { c1, c2, c3, c4, d0 };
+    alphaP = 0.9;
+    b0 = 0; // See p. 15
+
+    Integral = exp(b0 * m_t) * pow(absbeta, -alphaP * m_t)
+            * PDFexp(1, beta, coeff) * Profile(1, beta, alpha);
+
+    return Integral;
+
+}
+double GK11TestModel::IntegralHs(double x, std::vector<double> Par) {
+    double Integral;
+    double pdf, beta, absbeta, alpha;
+
+    beta = x;
+    alpha = (m_x - beta) / m_xi;
+    absbeta = fabs(beta);
+    /*    if (beta <= 0 || beta > 1.) {
+     throwBetaException(__func__, x);
+     }*/
+    c1 = 0.123 + 0.0003 * fL; // See table 1 p. 12
+    c2 = -0.327 - 0.004 * fL; // See table 1 p. 12
+    c3 = 0.692 - 0.068 * fL; // See table 1 p. 12
+    c4 = -0.486 + 0.038 * fL; // See table 1 p. 12
+    b0 = 2.58 + 0.25 * log(0.880354 / (0.880354 + m_MuF2)); // See eq. (39) p. 14
+    d0 = 1 + 0.10 + 0.06 * fL - 0.0027 * fL * fL;
+    alphaP = 0.15;
+    double coeff[5] = { c1, c2, c3, c4, d0 };
+
+    Integral = exp(b0 * m_t) * pow(absbeta, -alphaP * m_t)
+            * PDFexp(2, absbeta, coeff) * Profile(2, beta, alpha);
+
+    return Integral;
+
+}
+
+double GK11TestModel::IntegralHsBm(double x, std::vector<double> Par) {
+    double Integral;
+    double pdf, beta, absbeta, alpha;
+
+    beta = -x;
+    alpha = (m_x - beta) / m_xi;
+    absbeta = fabs(beta);
+    /*    if (beta <= 0 || beta > 1.) {
+     throwBetaException(__func__, x);
+     }*/
+    c1 = 0.123 + 0.0003 * fL; // See table 1 p. 12
+    c2 = -0.327 - 0.004 * fL; // See table 1 p. 12
+    c3 = 0.692 - 0.068 * fL; // See table 1 p. 12
+    c4 = -0.486 + 0.038 * fL; // See table 1 p. 12
+    b0 = 2.58 + 0.25 * log(0.880354 / (0.880354 + m_MuF2)); // See eq. (39) p. 14
+    d0 = 1 + 0.10 + 0.06 * fL - 0.0027 * fL * fL;
+    alphaP = 0.15;
+    double coeff[5] = { c1, c2, c3, c4, d0 };
+
+    Integral = exp(b0 * m_t) * pow(absbeta, -alphaP * m_t) * (beta / absbeta)
+            * PDFexp(2, absbeta, coeff) * Profile(2, beta, alpha);
+
+    return Integral;
+
+}
+
+double GK11TestModel::IntegralHg(double x, std::vector<double> Par) {
+    double Integral;
+    double beta, absbeta, alpha;
+
+    beta = x;
+    alpha = (m_x - beta) / m_xi;
+    absbeta = fabs(beta);
+
+    /*   if (beta <= 0 || beta > 1.) {
+     throwBetaException(__func__, x);
+     }*/
     c1 = 2.23 + 0.362 * fL; // See table 1 p. 12
     c2 = 5.43 - 7.0 * fL; // See table 1 p. 12
     c3 = -34.0 + 22.5 * fL; // See table 1 p. 12
@@ -242,7 +425,8 @@ double GK11TestModel::IntegralHg(double x, std::vector<double> Par){
     alphaP = 0.15;
     double coeff[5] = { c1, c2, c3, c4, d0 };
 
-    Integral = exp(b0*m_t)*pow(absbeta, -alphaP*m_t)*PDFexp(2,beta,coeff)*Profile(2,beta,alpha);
+    Integral = exp(b0 * m_t) * pow(absbeta, -alphaP * m_t)
+            * PDFexp(2, absbeta, coeff) * Profile(2, beta, alpha);
 
     return Integral;
 
@@ -261,6 +445,9 @@ PartonDistribution GK11TestModel::computeH() {
     double Beta1 = (m_x - m_xi) / (1. - m_xi); // eq. (54) in A. Radyushkin's paper
     double Beta2 = (m_x + m_xi) / (1. + m_xi); // eq. (54) in A. Radyushkin's paper
 
+    double Beta3 = (m_x - m_xi) / (1 + m_xi);
+    double Beta4 = (m_x + m_xi) / (1 - m_xi);
+
     double Beta1Mx = (m_Mx - m_xi) / (1. - m_xi); // eq. (54) in A. Radyushkin's paper
     double Beta2Mx = (m_Mx + m_xi) / (1. + m_xi); // eq. (54) in A. Radyushkin's paper
 
@@ -271,83 +458,107 @@ PartonDistribution GK11TestModel::computeH() {
 
 // Gluons
 
-    c1 = 2.23 + 0.362 * fL; // See table 1 p. 12
-    c2 = 5.43 - 7.0 * fL; // See table 1 p. 12
-    c3 = -34.0 + 22.5 * fL; // See table 1 p. 12
-    c4 = 40.6 - 21.6 * fL; // See table 1 p. 12
-    b0 = 2.58 + 0.25 * log(0.880354 / (0.880354 + m_MuF2)); // See eq. (39) p. 14
-    d0 = 0.10 + 0.06 * fL - 0.0027 * fL * fL;
-    alphaP = 0.15;
-    double coeff[5] = { c1, c2, c3, c4, d0 };
-
     double Hg = 0.;
 
     if (m_x >= m_xi) {
         // Integration
         Hg = integrate(m_pIntegralHg, Beta1, Beta2, emptyParameters);
+        Hg /= m_xi;
     }
 
     if (fabs(m_x) < m_xi) {
         // Integration
         Hg = integrate(m_pIntegralHg, 0., Beta2, emptyParameters);
 
-        Hg += integrate(m_pIntegralHg, 0., Beta2Mx, emptyParameters);
+        Hg += integrate(m_pIntegralHg,  Beta3, 0.,emptyParameters);
+
+        Hg /= m_xi;
+
     }
 
     if (m_x <= -m_xi) {
         // Integration
-        Hg = integrate(m_pIntegralHg, Beta1Mx, Beta2Mx, emptyParameters);
+        Hg = integrate(m_pIntegralHg, Beta3, Beta4, emptyParameters);
+        Hg /= m_xi;
     }
 
     GluonDistribution gluonDistribution(Hg);
 
 // s quark
+    double Hs = 0;
 
-    c1 = 0.123 + 0.0003 * fL; // See table 1 p. 12
-    c2 = -0.327 - 0.004 * fL; // See table 1 p. 12
-    c3 = 0.692 - 0.068 * fL; // See table 1 p. 12
-    c4 = -0.486 + 0.038 * fL; // See table 1 p. 12
-    b0 = 2.58 + 0.25 * log(0.880354 / (0.880354 + m_MuF2)); // See eq. (39) p. 14
-    d0 = 1 + coeff[4];
-    alphaP = 0.15;
-   //  coeff = {c1,c2,c3,c4,d0};
 
-    /*quarkDistribution_s.setQuarkDistribution(
-     exp(b0 * m_t)
-     * (c1 * Hs1tab.at(0) + c2 * Hs1tab.at(1) + c3 * Hs1tab.at(2)
-     + c4 * Hs1tab.at(3))); // See eq. (27)*/
+    if (m_x >= m_xi) {
+        Hs = integrate(m_pIntegralHs, Beta1, Beta2, emptyParameters);
+        Hs /= m_xi;
+    }
 
-// u quark, valence part
-    c1 = 1.52 + 0.248 * fL; // See eq. (27)
-    c2 = 2.88 - 0.94 * fL; // See eq. (27)
-    c3 = -0.095 * fL; // See eq. (27)
+    if (fabs(m_x) < m_xi) {
+        Hs = integrate(m_pIntegralHs, 0., Beta2, emptyParameters);
 
-    b0 = 0; // See p. 15
-    alphaP = 0.9;
-    double uVal = exp(b0 * m_t)
-            * (c1 * Huval1tab.at(0) + c2 * Huval1tab.at(1)
-                    + c3 * Huval1tab.at(2)); // See eq. (27)
+        Hs -= integrate(m_pIntegralHs, Beta3, 0., emptyParameters);
+        Hs /= m_xi;
 
-    fHuValMx = exp(b0 * m_t)
-            * (c1 * Huval1mtab.at(0) + c2 * Huval1mtab.at(1)
-                    + c3 * Huval1mtab.at(2)); // See eq. (27);
 
-// d quark, valence part
+    }
 
-    c1 = 0.76 + 0.248 * fL; // See table 1 p. 12
-    c2 = 3.11 - 1.36 * fL; // See table 1 p. 12
-    c3 = -3.99 + 1.15 * fL; // See table 1 p. 12
-    alphaP = 0.9;
-    b0 = 0; // See p. 15
+    if (m_x <= -m_xi) {
+        Hs = -integrate(m_pIntegralHs, Beta3, Beta4, emptyParameters);
+        Hs /= m_xi;
 
-    double dVal = exp(b0 * m_t)
-            * (c1 * Hdval1tab.at(0) + c2 * Hdval1tab.at(1)
-                    + c3 * Hdval1tab.at(2)); // See eq. (27)
+    }
 
-    // C'est HqVal (-x)
-    fHdValMx = exp(b0 * m_t)
-            * (c1 * Hdval1mtab.at(0) + c2 * Hdval1mtab.at(1)
-                    + c3 * Hdval1mtab.at(2)); // See eq. (27)
+    quarkDistribution_s.setQuarkDistribution(Hs);
+
+// u-d quark, valence part evaluated at fx
+
+    double HuVal = 0.;
+    double HdVal = 0.;
+
+    if (m_x >= m_xi) {
+        // Integration, u quark
+        HuVal = integrate(m_pIntegralHuVal, Beta1, Beta2, emptyParameters);
+        HuVal/=m_xi;
+        // Integration, d quark
+        HdVal = integrate(m_pIntegralHdValBp, Beta1, Beta2, emptyParameters);
+
+        HdVal /= m_xi;
+    }
+
+    if (fabs(m_x) < m_xi) {
+        // Integration, u quark
+        HuVal = integrate(m_pIntegralHuVal, Eps, Beta2, emptyParameters);
+        HuVal/=m_xi;
+        // Integration, d quark
+        HdVal = integrate(m_pIntegralHdValBp, Eps, Beta2, emptyParameters);
+
+        HdVal/=m_xi;
+    }
+
+    ///////////////////////////////////////////////////////////////////////
+    //   u and d quarks, valence part evaluated at fMx (instead of fx)   //
+    ///////////////////////////////////////////////////////////////////////
+
+    double HuValMx = 0.;
+    double HdValMx = 0.;
+
+    if (m_Mx >= m_xi) {
+        // Integration, u quark
+        HuValMx = integrate(m_pIntegralHuValMx, Beta1Mx, Beta2Mx,
+                emptyParameters);
+
+        // Integration, d quark
+        HdValMx = integrate(m_pIntegralHdValMx, Beta1Mx, Beta2Mx,
+                emptyParameters);
+    }
+
+    if (fabs(m_Mx) < m_xi) {
+        // Integration, u quark
+        HuValMx = integrate(m_pIntegralHuValMx, Eps, Beta2Mx, emptyParameters);
+
+        // Integration, d quark
+        HdValMx = integrate(m_pIntegralHdValMx, Eps, Beta2Mx, emptyParameters);
+    }
 
 // u and d quarks, sea part
 
@@ -358,8 +569,8 @@ PartonDistribution GK11TestModel::computeH() {
 
 // u and d quarks, valence + sea parts
 
-    quarkDistribution_u.setQuarkDistribution(uVal + uSea);
-    quarkDistribution_d.setQuarkDistribution(dVal + dSea);
+    quarkDistribution_u.setQuarkDistribution(HuVal + uSea);
+    quarkDistribution_d.setQuarkDistribution(HdVal + dSea);
 
 // H, charge singlet
 
@@ -373,14 +584,14 @@ PartonDistribution GK11TestModel::computeH() {
 //                    + S2_ELEC_CHARGE * pGPDQuarkFlavorData_s->getHq());
 
     // Set Hq(+)
-    quarkDistribution_u.setQuarkDistributionPlus(uVal - fHuValMx + 2 * uSea);
-    quarkDistribution_d.setQuarkDistributionPlus(dVal - fHdValMx + 2 * dSea);
+    quarkDistribution_u.setQuarkDistributionPlus(HuVal - HuValMx + 2 * uSea);
+    quarkDistribution_d.setQuarkDistributionPlus(HdVal - HdValMx + 2 * dSea);
     quarkDistribution_s.setQuarkDistributionPlus(
             2 * quarkDistribution_s.getQuarkDistribution());
 
     // Set Hq(-)
-    quarkDistribution_u.setQuarkDistributionMinus(uVal + fHuValMx);
-    quarkDistribution_d.setQuarkDistributionMinus(dVal + fHdValMx);
+    quarkDistribution_u.setQuarkDistributionMinus(HuVal + HuValMx);
+    quarkDistribution_d.setQuarkDistributionMinus(HdVal + HdValMx);
     quarkDistribution_s.setQuarkDistributionMinus(0.);
 
     partonDistribution.setGluonDistribution(gluonDistribution);
