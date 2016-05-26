@@ -16,6 +16,7 @@
 #include "../beans/List.h"
 #include "common/service/ComputationDaoService.h"
 #include "common/service/ResultInfoDaoService.h"
+#include "common/service/ScenarioDaoService.h"
 #include "gpd/dao/GPDResultDao.h"
 #include "gpd/service/GPDKinematicDaoService.h"
 #include "parton_distribution/service/PartonDistributionDaoService.h"
@@ -29,14 +30,20 @@ public:
 
 private:
     int m_lastComputationId;
+    int m_lastGPDKinematicId;
     int m_lastGPDResultId;
     int m_lastPartonDistributionId;
     int m_lastQuarkDistributionId;
+    int m_lastPartonDistributionQuarkDistributionId;
+    int m_lastGPDResultPartonDistributionId;
 
     std::string m_gpdResultDatabaseFile;
+    std::string m_gpdKinematicDatabaseFile;
     std::string m_computationDatabaseFile;
     std::string m_parton_distribution_table;
     std::string m_gpd_result_parton_distribution_table;
+    std::string m_parton_distribution_quark_distribution_table;
+    std::string m_quark_distribution_table;
 
     GPDResultDao m_gpdResultDao; ///< reference to the right DAO object to perform database queries
 
@@ -46,6 +53,7 @@ private:
 
     //TODO remove unused member.
     ComputationDaoService m_computationDaoService; ///< reference to be able to generate computationId and store ComputationConfiguration object and EnvironmentConfiguration object related to the result.
+    ScenarioDaoService m_scenarioDaoService;
 
     /**
      * Insert into the database a new GPDResult object without using transactions mechanisms.
@@ -57,6 +65,7 @@ private:
     int insertWithoutTransaction(const GPDResult &gpdResult) const;
 
     mutable std::pair<time_t, int> m_previousComputationId;
+    mutable std::pair<std::string, int> m_previousScenarioId;
 };
 
 #endif /* RESULTDAOSERVICE_H_ */
