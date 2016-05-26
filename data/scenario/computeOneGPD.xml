@@ -2,7 +2,7 @@
 
 <scenario date="2016-03-25" description="Example : computation of one GPD model (GK11) without evolution">
 
-    <task service="GPDService" method="computeGPDModel" storeInDB="1">
+    <task service="GPDService" method="computeGPDModel" storeInDB="0">
         <kinematics type="GPDKinematic">
             <param name="x" value="0.1" />
             <param name="xi" value="0.00050025" />
