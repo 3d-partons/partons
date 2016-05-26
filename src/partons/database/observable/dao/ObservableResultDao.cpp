@@ -57,10 +57,10 @@ int ObservableResultDao::insert(const std::string& observableName,
     return result;
 }
 
-ResultList<ObservableResult> ObservableResultDao::getObservableResultListByComputationId(
+List<ObservableResult> ObservableResultDao::getObservableResultListByComputationId(
         const int computationId) const {
 
-    ResultList<ObservableResult> results;
+    List<ObservableResult> results;
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
@@ -83,9 +83,9 @@ ResultList<ObservableResult> ObservableResultDao::getObservableResultListByCompu
     return results;
 }
 
-ResultList<ObservableResult> ObservableResultDao::getObservableResultListFromSQLQuery(
+List<ObservableResult> ObservableResultDao::getObservableResultListFromSQLQuery(
         const std::string& sqlQuery) const {
-    ResultList<ObservableResult> results;
+    List<ObservableResult> results;
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
@@ -107,8 +107,7 @@ ResultList<ObservableResult> ObservableResultDao::getObservableResultListFromSQL
 
 //TODO retrieve Computation object
 void ObservableResultDao::fillObservableResultList(
-        ResultList<ObservableResult> &observableResultList,
-        QSqlQuery& query) const {
+        List<ObservableResult> &observableResultList, QSqlQuery& query) const {
 
     int field_id = query.record().indexOf("id");
     int field_observable_name = query.record().indexOf("observable_name");
@@ -136,6 +135,8 @@ void ObservableResultDao::fillObservableResultList(
                 query.value(field_stat_error_lb).toDouble());
         ErrorBar systError(query.value(field_syst_error_ub).toDouble(),
                 query.value(field_syst_error_lb).toDouble());
+
+        //TODO create ResultInfo, Computation, ...
 
         ObservableResult observableResult;
 

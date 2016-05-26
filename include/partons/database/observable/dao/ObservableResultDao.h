@@ -15,8 +15,8 @@
 #include <QtSql/qsqlquery.h>
 #include <string>
 
+#include "../../../beans/List.h"
 #include "../../../beans/observable/ObservableResult.h"
-#include "../../../beans/ResultList.h"
 #include "ObservableKinematicDao.h"
 
 class ObservableResultDao: public BaseObject {
@@ -30,17 +30,16 @@ public:
             const std::string &computationModuleName, int observableTypeId,
             int kinematicId, int computationId) const;
 
-    ResultList<ObservableResult> getObservableResultListByComputationId(
+    List<ObservableResult> getObservableResultListByComputationId(
             const int computationId) const;
 
-    ResultList<ObservableResult> getObservableResultListFromSQLQuery(
+    List<ObservableResult> getObservableResultListFromSQLQuery(
             const std::string &sqlQuery) const;
 
 private:
     ObservableKinematicDao m_observableKinematicDao;
 
-    void fillObservableResultList(
-            ResultList<ObservableResult> &observableResultList,
+    void fillObservableResultList(List<ObservableResult> &observableResultList,
             QSqlQuery& query) const;
 };
 

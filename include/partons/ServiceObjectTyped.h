@@ -19,7 +19,6 @@
 
 #include "beans/automation/Scenario.h"
 #include "beans/List.h"
-#include "beans/ResultList.h"
 #include "services/automation/AutomationService.h"
 #include "ServiceObject.h"
 
@@ -41,7 +40,7 @@ public:
     virtual ~ServiceObjectTyped() {
     }
 
-    ResultList<ResultType> computeScenario(const std::string &scenarioFilePath,
+    List<ResultType> computeScenario(const std::string &scenarioFilePath,
             List<KinematicType> &kinematicList) {
         Scenario scenario = m_pAutomationService->parseXMLFile(
                 scenarioFilePath);
@@ -62,7 +61,7 @@ public:
         m_resultListBuffer.add(result);
     } // mutex.unlock()
 
-    void add(const ResultList<ResultType> &resultList) {
+    void add(const List<ResultType> &resultList) {
         sf::Lock lock(m_mutexResultListBuffer); // mutex.lock()
 
         for (size_t i = 0; i != resultList.size(); i++) {
@@ -70,7 +69,7 @@ public:
         }
     } // mutex.unlock()
 
-    ResultList<ResultType> getResultList() {
+    List<ResultType> getResultList() {
         sf::Lock lock(m_mutexResultListBuffer); // mutex.lock()
 
         return m_resultListBuffer;
@@ -82,8 +81,8 @@ public:
         m_resultListBuffer.clear();
     } // mutex.unlock()
 
-    ResultList<ResultType> computeScenario(Scenario& scenario) {
-        ResultList<ResultType> resultList;
+    List<ResultType> computeScenario(Scenario& scenario) {
+        List<ResultType> resultList;
 
         for (size_t i = 0; i != scenario.size(); i++) {
             computeTask(scenario.getTask(i));
@@ -95,10 +94,10 @@ public:
         return resultList;
     }
 
-    ResultList<ResultType> flushResultList() {
+    List<ResultType> flushResultList() {
         sf::Lock lock(m_mutexResultListBuffer); // mutex.lock()
 
-        ResultList<ResultType> resultList = m_resultListBuffer;
+        List<ResultType> resultList = m_resultListBuffer;
         m_resultListBuffer.clear();
 
         return resultList;
@@ -109,7 +108,7 @@ protected:
     sf::Mutex m_mutexResultListBuffer;
 
     List<KinematicType> m_kinematicListBuffer;
-    ResultList<ResultType> m_resultListBuffer;
+    List<ResultType> m_resultListBuffer;
 
 };
 

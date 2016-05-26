@@ -28,10 +28,22 @@ public:
      */
     DatabaseFileObject(const std::string &className);
 
+    DatabaseFileObject(const std::string &className, const int indexId,
+            const time_t storeDate, const std::string& filePath,
+            const std::string& hashSum, const std::string& file);
+
+    /**
+     * Copy constructor
+     * @param other
+     */
+    DatabaseFileObject(const DatabaseFileObject &other);
+
     /**
      * Destructor
      */
     virtual ~DatabaseFileObject();
+
+    virtual std::string toString() const;
 
     // ##### GETTERS & SETTERS #####
 

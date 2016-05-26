@@ -1,6 +1,7 @@
 #include "../../../include/partons/database/DatabaseFileObject.h"
 
 #include <ElementaryUtils/file_utils/FileUtils.h>
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 
 #include "../../../include/partons/Partons.h"
@@ -13,6 +14,25 @@ DatabaseFileObject::DatabaseFileObject(const std::string& className) :
                 ElemUtils::StringUtils::EMPTY), m_filePath(
                 ElemUtils::StringUtils::EMPTY) {
     setCryptographicHashService();
+}
+
+DatabaseFileObject::DatabaseFileObject(const std::string& className,
+        const int indexId, const time_t storeDate, const std::string& filePath,
+        const std::string& hashSum, const std::string& file) :
+        DatabaseObject(className, indexId), m_pCryptographicHashService(0), m_storeDate(
+                storeDate), m_filePath(filePath), m_hashSum(hashSum), m_file(
+                file) {
+    setCryptographicHashService();
+}
+
+DatabaseFileObject::DatabaseFileObject(const DatabaseFileObject &other) :
+        DatabaseObject(other) {
+    m_pCryptographicHashService = other.m_pCryptographicHashService;
+
+    m_storeDate = other.m_storeDate;
+    m_file = other.m_file;
+    m_hashSum = other.m_hashSum;
+    m_filePath = other.m_filePath;
 }
 
 DatabaseFileObject::~DatabaseFileObject() {
@@ -42,11 +62,13 @@ void DatabaseFileObject::setFile(const std::string& file) {
 
 //TODO better handle error
 const std::string& DatabaseFileObject::getHashSum() const {
-    if ((m_hashSum.empty()) && (!m_file.empty())) {
-
-        m_hashSum = m_pCryptographicHashService->generateSHA1HashSum(m_file);
-    } else {
-        warn(__func__, "Cannot compute Hash Sum; m_file is empty.");
+    if (m_hashSum.empty()) {
+        if (getFile().empty()) {
+            warn(__func__, "Cannot compute Hash Sum; m_file is empty.");
+        } else {
+            m_hashSum = m_pCryptographicHashService->generateSHA1HashSum(
+                    m_file);
+        }
     }
 
     return m_hashSum;
@@ -70,4 +92,15 @@ const std::string& DatabaseFileObject::getFilePath() const {
 
 void DatabaseFileObject::setFilePath(const std::string& filePath) {
     m_filePath = filePath;
+}
+
+std::string DatabaseFileObject::toString() const {
+    ElemUtils::Formatter formatter;
+
+    formatter << "StoreData = " << getStoreDate() << '\n';
+    formatter << "HashSum = " << getHashSum() << '\n';
+    formatter << "FilePath = " << getFilePath() << '\n';
+    formatter << "File = " << getFile() << '\n';
+
+    return formatter;
 }

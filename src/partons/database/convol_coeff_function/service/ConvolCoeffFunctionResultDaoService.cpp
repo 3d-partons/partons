@@ -10,7 +10,8 @@
 
 #include "../../../../../include/partons/beans/Computation.h"
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
-#include "../../../../../include/partons/beans/List.h"
+//#include "../../../../../include/partons/beans/List.h"
+#include "../../../../../include/partons/beans/system/ResultInfo.h"
 
 ConvolCoeffFunctionResultDaoService::ConvolCoeffFunctionResultDaoService() :
         BaseObject("ConvolCoeffFunctionResultDaoService") {
@@ -45,7 +46,7 @@ int ConvolCoeffFunctionResultDaoService::insert(
 }
 
 int ConvolCoeffFunctionResultDaoService::insert(
-        const ResultList<DVCSConvolCoeffFunctionResult>& resultList) {
+        const List<DVCSConvolCoeffFunctionResult>& resultList) {
 
     info(__func__,
             ElemUtils::Formatter() << "Inserting object size = "
@@ -73,7 +74,7 @@ int ConvolCoeffFunctionResultDaoService::insert(
     return result;
 }
 
-ResultList<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionResultDaoService::getResultListByComputationId(
+List<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionResultDaoService::getResultListByComputationId(
         const int computationId) const {
     return m_convolCoeffFunctionResultDao.getResultListByComputationId(
             computationId);
@@ -94,10 +95,11 @@ int ConvolCoeffFunctionResultDaoService::insertWithoutTransaction(
 
     // Check if this computation date already exists
     int computationId = m_computationDaoService.getComputationIdByDateTime(
-            result.getComputation().getDateTime());
+            result.getResultInfo().getComputation().getDateTime());
     // If not, insert new entry into database and retrieve its id
     if (computationId == -1) {
-        computationId = m_computationDaoService.insertWithoutTransaction(result.getComputation());
+        computationId = m_computationDaoService.insertWithoutTransaction(
+                result.getResultInfo().getComputation());
     }
 
     // Insert new ccf_result entry into database and retrieve its id

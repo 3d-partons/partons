@@ -12,9 +12,6 @@
 
 #include "../database/DatabaseObject.h"
 
-class EnvironmentConfiguration;
-class Scenario;
-
 /** @class Computation
  *
  * @brief
@@ -38,11 +35,8 @@ public:
      *
      * @param indexId
      * @param dateTime
-     * @param pScenario
-     * @param pEnvironmentConfiguration
      */
-    Computation(int indexId, time_t dateTime, Scenario* pScenario,
-            EnvironmentConfiguration* pEnvironmentConfiguration);
+    Computation(int indexId, time_t dateTime);
 
     /**
      * Default destructor
@@ -53,17 +47,9 @@ public:
 
     time_t getDateTime() const;
     void setDateTime(time_t dateTime);
-    EnvironmentConfiguration* getEnvironmentConfiguration() const;
-    void setEnvironmentConfiguration(
-            EnvironmentConfiguration* pEnvironmentConfiguration);
-    Scenario* getScenario() const;
-    void setScenario(Scenario* pScenario);
 
 private:
     time_t m_dateTime;
-
-    Scenario* m_pScenario;
-    EnvironmentConfiguration* m_pEnvironmentConfiguration;
 };
 
 #endif /* COMPUTATION_H */

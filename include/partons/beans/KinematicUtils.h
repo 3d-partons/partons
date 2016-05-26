@@ -10,12 +10,16 @@
 
 #include <string>
 
+#include "gpd/GPDKinematic.h"
 #include "List.h"
 #include "observable/ObservableKinematic.h"
 
 class KinematicUtils {
 public:
     static List<ObservableKinematic> getObservableKinematicFromFile(
+            const std::string &filePath);
+
+    static List<GPDKinematic> getGPDKinematicFromFile(
             const std::string &filePath);
 };
 

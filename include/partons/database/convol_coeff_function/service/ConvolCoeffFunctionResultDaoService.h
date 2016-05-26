@@ -16,7 +16,7 @@
  */
 
 #include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
-#include "../../../beans/ResultList.h"
+#include "../../../beans/List.h"
 #include "../../common/service/ComputationDaoService.h"
 #include "../dao/ConvolCoeffFunctionResultDao.h"
 #include "ConvolCoeffFunctionKinematicDaoService.h"
@@ -47,7 +47,7 @@ public:
      * @param resultList
      * @return unique id related to the last entry inserted into the database
      */
-    int insert(const ResultList<DVCSConvolCoeffFunctionResult> &resultList);
+    int insert(const List<DVCSConvolCoeffFunctionResult> &resultList);
 
     /**
      * Return a list of DVCSConvolCoeffFunctionResult objects from the database identified by a specific computation identifier.
@@ -55,7 +55,7 @@ public:
      * @param computationId
      * @return list of DVCSConvolCoeffFunctionResult objects.
      */
-    ResultList<DVCSConvolCoeffFunctionResult> getResultListByComputationId(
+    List<DVCSConvolCoeffFunctionResult> getResultListByComputationId(
             const int computationId) const;
 
 private:

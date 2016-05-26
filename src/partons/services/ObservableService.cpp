@@ -43,7 +43,7 @@ ObservableService::~ObservableService() {
 //TODO check before executing computeTask if the service name equal current service class name to avoid computing method from another service
 void ObservableService::computeTask(Task &task) {
 
-    ResultList<ObservableResult> observableResultList;
+    List<ObservableResult> observableResultList;
 
     if (ElemUtils::StringUtils::equals(task.getFunctionName(),
             ObservableService::FUNCTION_NAME_COMPUTE_DVCS_OBSERVABLE)) {
@@ -75,11 +75,11 @@ void ObservableService::computeTask(Task &task) {
     add(observableResultList);
 }
 
-ResultList<ObservableResult> ObservableService::computeManyKinematicOneModel(
+List<ObservableResult> ObservableService::computeManyKinematicOneModel(
         const List<ObservableKinematic> & listOfKinematic,
         Observable* pObservable) {
 
-    ResultList<ObservableResult> results;
+    List<ObservableResult> results;
 
     // TODO voir s'il n'est pas possible de déplacer ça de manière générique dans la classe parent
 
@@ -108,7 +108,7 @@ ResultList<ObservableResult> ObservableService::computeManyKinematicOneModel(
 
 ObservableResult ObservableService::computeObservableTask(Task& task) {
 
-    //create a GPDKinematic and init it with a list of parameters
+    //create a Kinematic and init it with a list of parameters
     ObservableKinematic kinematic;
 
     if (task.isAvailableParameters("ObservableKinematic")) {
@@ -132,7 +132,7 @@ ObservableResult ObservableService::computeObservableTask(Task& task) {
     return result;
 }
 
-ResultList<ObservableResult> ObservableService::computeManyKinematicOneModelTask(
+List<ObservableResult> ObservableService::computeManyKinematicOneModelTask(
         Task& task) {
 
     List<ObservableKinematic> listOfKinematic;
@@ -158,7 +158,7 @@ ResultList<ObservableResult> ObservableService::computeManyKinematicOneModelTask
 
     Observable* pObservable = newObservableModuleFromTask(task);
 
-    ResultList<ObservableResult> result = computeManyKinematicOneModel(
+    List<ObservableResult> result = computeManyKinematicOneModel(
             listOfKinematic, pObservable);
 
     info(__func__,
@@ -182,7 +182,8 @@ ObservableChannel::Type ObservableService::getObservableChannel(
 
 //TODO pour les listes au-dessus utiliser cette fonctionnalité pour ne pas dupliquer les implémentations
 //TODO refactoring string exception, wrong xml element name
-Observable* ObservableService::newObservableModuleFromTask(const Task& task) const {
+Observable* ObservableService::newObservableModuleFromTask(
+        const Task& task) const {
     // create ScaleModule
     ScaleModule* pScaleModule = 0;
 
@@ -277,7 +278,8 @@ Observable* ObservableService::configureObservable(Observable* pObservable,
     return pObservable;
 }
 
-ProcessModule* ObservableService::newProcessModuleFromTask(const Task& task) const {
+ProcessModule* ObservableService::newProcessModuleFromTask(
+        const Task& task) const {
     GPDModule* pGPDModule = 0;
 
     if (task.isAvailableParameters("GPDModule")) {

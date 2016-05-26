@@ -6,7 +6,7 @@
 #include <exception>
 
 #include "../../../../../include/partons/beans/Computation.h"
-#include "../../../../../include/partons/beans/List.h"
+#include "../../../../../include/partons/beans/system/ResultInfo.h"
 #include "../../../../../include/partons/utils/math/ErrorBar.h"
 
 ObservableResultDaoService::ObservableResultDaoService() :
@@ -55,11 +55,11 @@ int ObservableResultDaoService::insertWithoutTransaction(
 
     // Check if this computation date already exists and retrieve Id
     int computationId = m_computationDaoService.getComputationIdByDateTime(
-            observableResult.getComputation().getDateTime());
+            observableResult.getResultInfo().getComputation().getDateTime());
     // If not, insert new entry in database and retrieve its id
     if (computationId == -1) {
         computationId = m_computationDaoService.insertWithoutTransaction(
-                observableResult.getComputation());
+                observableResult.getResultInfo().getComputation());
     }
 
     //Then store observableResult in database
@@ -77,7 +77,7 @@ int ObservableResultDaoService::insertWithoutTransaction(
 }
 
 int ObservableResultDaoService::insert(
-        const ResultList<ObservableResult> &observableResultList) {
+        const List<ObservableResult> &observableResultList) {
     int result = -1;
 
     info(__func__,
@@ -107,13 +107,13 @@ int ObservableResultDaoService::insert(
     return result;
 }
 
-ResultList<ObservableResult> ObservableResultDaoService::getObservableResultListByComputationId(
+List<ObservableResult> ObservableResultDaoService::getObservableResultListByComputationId(
         const int computationId) const {
     return m_observableResultDao.getObservableResultListByComputationId(
             computationId);
 }
 
-ResultList<ObservableResult> ObservableResultDaoService::getObservableResultListFromSQLQuery(
+List<ObservableResult> ObservableResultDaoService::getObservableResultListFromSQLQuery(
         const std::string& sqlQuery) const {
     return m_observableResultDao.getObservableResultListFromSQLQuery(sqlQuery);
 }

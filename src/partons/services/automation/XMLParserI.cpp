@@ -15,7 +15,8 @@ const std::string XMLParserI::PARAM_NAME_ATTRIBUT_NAME = "name";
 const std::string XMLParserI::PARAM_VALUE_ATTRIBUT_NAME = "value";
 
 XMLParserI::XMLParserI(const std::string &className) :
-        BaseObject(className), m_computationConfigurationXMLFileIndex(0) {
+        BaseObject(className), m_pScenario(0), m_computationConfigurationXMLFileIndex(
+                0) {
 }
 
 XMLParserI::~XMLParserI() {

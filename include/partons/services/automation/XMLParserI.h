@@ -11,7 +11,6 @@
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <string>
 
-#include "../../beans/automation/Scenario.h"
 #include "../../beans/automation/Task.h"
 
 class Scenario;
@@ -53,11 +52,10 @@ public:
      * @param xmlDocument
      * @return
      */
-    virtual Scenario parseXMLDocument(
-            const std::string &xmlDocument) = 0;
+    virtual Scenario* parseScenario(Scenario* pSenario) = 0;
 
 protected:
-    Scenario m_scenario; ///<
+    Scenario* m_pScenario; ///<
     // Temporary object
     Task m_task;    ///<
     // Temporary object

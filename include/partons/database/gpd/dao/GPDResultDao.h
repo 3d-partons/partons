@@ -16,7 +16,7 @@
 #include <string>
 
 #include "../../../beans/gpd/GPDResult.h"
-#include "../../../beans/ResultList.h"
+#include "../../../beans/List.h"
 #include "../../parton_distribution/dao/PartonDistributionDao.h"
 #include "GPDKinematicDao.h"
 
@@ -31,14 +31,14 @@ public:
     int insertIntoGPDResultPartonDistributionTable(const int gpdTypeId,
             const int gpdResultId, const int partonDistributionId) const;
 
-    ResultList<GPDResult> getGPDResultListByComputationId(
+    List<GPDResult> getGPDResultListByComputationId(
             const int computationId) const;
 
 private:
     GPDKinematicDao m_gpdKinematicDao;
     PartonDistributionDao m_partonDistributionDao;
 
-    void fillGPDResultList(ResultList<GPDResult> &gpdResultList,
+    void fillGPDResultList(List<GPDResult> &gpdResultList,
             QSqlQuery &query) const;
 
     // a supprimer

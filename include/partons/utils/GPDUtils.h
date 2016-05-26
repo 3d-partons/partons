@@ -4,7 +4,6 @@
 #include "../beans/gpd/GPDKinematic.h"
 #include "../beans/gpd/GPDResult.h"
 #include "../beans/List.h"
-#include "../beans/ResultList.h"
 
 class GPDUtils {
 public:
@@ -19,7 +18,7 @@ public:
             const std::string &filePath);
 
     static List<GPDKinematic> getKinematicListFromResultList(
-            const ResultList<GPDResult> &gpdResultList);
+            const List<GPDResult> &gpdResultList);
 
-    static ResultList<GPDResult> getResultListFromDatabase(int computationId);
+    static List<GPDResult> getResultListFromDatabase(int computationId);
 };

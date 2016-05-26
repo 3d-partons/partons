@@ -14,7 +14,6 @@
 #include "../beans/observable/ObservableChannel.h"
 #include "../beans/observable/ObservableKinematic.h"
 #include "../beans/observable/ObservableResult.h"
-#include "../beans/ResultList.h"
 #include "../ServiceObjectTyped.h"
 
 class ConvolCoeffFunctionModule;
@@ -47,7 +46,7 @@ public:
      */
     virtual ~ObservableService();
 
-    ResultList<ObservableResult> computeManyKinematicOneModel(
+    List<ObservableResult> computeManyKinematicOneModel(
             const List<ObservableKinematic> & listOfKinematic,
             Observable* pObservable);
 
@@ -71,7 +70,7 @@ public:
 private:
     //TODO improve object copy
     ObservableResult computeObservableTask(Task &task);
-    ResultList<ObservableResult> computeManyKinematicOneModelTask(Task &task);
+    List<ObservableResult> computeManyKinematicOneModelTask(Task &task);
 
 };
 

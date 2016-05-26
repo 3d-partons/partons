@@ -34,6 +34,8 @@ public:
      */
     DatabaseObject(const std::string &className, int indexId);
 
+    DatabaseObject(const DatabaseObject &other);
+
     /**
      * Destructor
      */

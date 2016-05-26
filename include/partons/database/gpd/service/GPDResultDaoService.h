@@ -15,9 +15,15 @@
  * And they improve querying speed by using transaction and commit mechanisms for a large amount of simultaneous queries.
  */
 
+//#include <ctime>
+//#include <utility>
+#include <ctime>
+#include <utility>
+
 #include "../../../beans/gpd/GPDResult.h"
-#include "../../../beans/ResultList.h"
+#include "../../../beans/List.h"
 #include "../../common/service/ComputationDaoService.h"
+#include "../../common/service/ResultInfoDaoService.h"
 #include "../../parton_distribution/service/PartonDistributionDaoService.h"
 #include "../dao/GPDResultDao.h"
 #include "GPDKinematicDaoService.h"
@@ -48,7 +54,7 @@ public:
      * @param gpdResultList
      * @return unique id related to the last entry inserted into the database
      */
-    int insert(const ResultList<GPDResult> &gpdResultList) const;
+    int insert(const List<GPDResult> &gpdResultList) const;
 
     /**
      * Return a list of GPDResult objects from the database identified by a specific computation identifier.
@@ -56,7 +62,7 @@ public:
      * @param computationId
      * @return list of GPDResult objects.
      */
-    ResultList<GPDResult> getGPDResultListByComputationId(
+    List<GPDResult> getGPDResultListByComputationId(
             const int computationId) const;
 
 private:
@@ -64,6 +70,9 @@ private:
 
     GPDKinematicDaoService m_gpdKinematicDaoService; ///< reference to be able to store kinematic object related to the result.
     PartonDistributionDaoService m_partonDistributionDaoService; ///< reference to be able to store PartonDistribution object and link it to the result.
+    ResultInfoDaoService m_resultInfoDaoService;
+
+    //TODO remove unused member.
     ComputationDaoService m_computationDaoService; ///< reference to be able to generate computationId and store ComputationConfiguration object and EnvironmentConfiguration object related to the result.
 
     /**
@@ -74,6 +83,8 @@ private:
      * @return unique id related to the new entry inserted into the database
      */
     int insertWithoutTransaction(const GPDResult &gpdResult) const;
+
+    mutable std::pair<time_t, int> m_previousComputationId;
 };
 
 #endif /* GPD_RESULT_DAO_SERVICE */

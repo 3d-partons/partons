@@ -20,6 +20,10 @@
 
 #include "../../BaseObject.h"
 
+class ResourceManager;
+
+class CryptographicHashService;
+
 class ComputationConfigurationParameters;
 class Scenario;
 class XMLParserI;
@@ -53,7 +57,7 @@ public:
      * @param xmlFilePath
      * @return string representation of XML file into a Scenario object
      */
-    Scenario parseXMLFile(const std::string &xmlFilePath) const;
+    Scenario* parseXMLFile(const std::string &xmlFilePath) const;
 
     /**
      *
@@ -61,7 +65,7 @@ public:
      * @param xmlDocument
      * @return
      */
-    Scenario parseXMLDocument(const std::string &xmlDocument) const;
+    Scenario* parseScenario(Scenario* pScenario) const;
 
     /**
      * Open and validate XML file with XML schema file.
@@ -77,16 +81,19 @@ public:
      *
      * @param scenario
      */
-    void playScenario(const Scenario &scenario) const;
+    void playScenario(Scenario* pScenario) const;
 
 private:
     static const std::string PROPERTY_NAME_XML_SCHEMA_FILE_PATH;
-    std::string m_xmlSchemaFilePath;
+    std::string m_xmlSchemaFile;
 
     XMLValidatorI* m_pXMLValidatorI; ///< Specific interface to allow the plug or unplug xml validator (see AutomationService constructor) for third party libraries. Helpful for developers to avoid code rewriting and for more flexibility.
     XMLParserI* m_pXMLParserI; ///< Specific interface to allow the plug or unplug xml parser (see AutomationService constructor) for third party libraries. Helpful for developers to avoid code rewriting and for more flexibility.
 
-    const std::string& getXmlSchemaFilePath() const;
+    CryptographicHashService* m_pCryptographicHashService;
+    ResourceManager* m_pResourceManager;
+
+    const std::string& getXmlSchemaFile() const;
 };
 
 #endif /* AUTOMATION_SERVICE_H */

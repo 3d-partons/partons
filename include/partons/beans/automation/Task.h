@@ -13,6 +13,8 @@
 
 #include "../../BaseObject.h"
 
+class Scenario;
+
 /**
  * @class Task
  *
@@ -46,7 +48,12 @@ public:
     unsigned int getScenarioTaskIndexNumber() const;
     void setScenarioTaskIndexNumber(unsigned int scenarioTaskIndexNumber);
 
+    Scenario* getScenario() const;
+    void setScenario(Scenario* pScenario);
+
 private:
+    Scenario* m_pScenario; ///< reference to the scenario that hold this task.
+
     std::string m_serviceName; ///<
     std::string m_functionName; ///<
     bool m_storeInDB; ///<

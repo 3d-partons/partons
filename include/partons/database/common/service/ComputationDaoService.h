@@ -12,7 +12,6 @@
 
 #include "../dao/ComputationDao.h"
 #include "EnvironmentConfigurationDaoService.h"
-#include "ScenarioDaoService.h"
 
 class Computation;
 
@@ -44,7 +43,6 @@ private:
     ComputationDao m_computationDao; ///< reference to the right DAO object to perform database queries
 
     EnvironmentConfigurationDaoService m_environmentConfigurationDaoService;
-    ScenarioDaoService m_scenarioDaoService;
 };
 
 #endif /* COMMON_DAO_SERVICE_H */

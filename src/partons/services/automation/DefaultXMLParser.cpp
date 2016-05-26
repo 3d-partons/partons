@@ -15,11 +15,17 @@ DefaultXMLParser::DefaultXMLParser() :
 DefaultXMLParser::~DefaultXMLParser() {
 }
 
-Scenario DefaultXMLParser::parseXMLDocument(const std::string& xmlDocument) {
-    // parse XML file
-    analyse(xmlDocument);
+Scenario* DefaultXMLParser::parseScenario(Scenario* pScenario) {
+    if (!pScenario) {
+        error(__func__, "Scenario provided pointer is NULL");
+    }
 
-    return m_scenario;
+    m_pScenario = pScenario;
+
+    // parse XML file
+    analyse(pScenario->getFile());
+
+    return m_pScenario;
 }
 
 void DefaultXMLParser::startElement(const std::string &elementName,
@@ -35,11 +41,9 @@ void DefaultXMLParser::startElement(const std::string &elementName,
     // then retrieve its description attribute
     if (ElemUtils::StringUtils::equals(elementName,
             XMLParserI::SCENARIO_NODE_NAME)) {
-        m_scenario = Scenario();
-
         std::string scenarioDescription = attributes.getStringValueOf(
                 "description");
-        m_scenario.setDescription(scenarioDescription);
+        m_pScenario->setDescription(scenarioDescription);
 
         //TODO how to get date format ?
     }
@@ -101,8 +105,8 @@ void DefaultXMLParser::endElement(const std::string& elementName) {
     // If the end node task is reached is that the temporary task is fill and it can be stored into the scenario.
     if (ElemUtils::StringUtils::equals(elementName,
             XMLParserI::TASK_NODE_NAME)) {
-        m_task.setScenarioTaskIndexNumber(m_scenario.size());
-        m_scenario.add(m_task);
+        m_task.setScenarioTaskIndexNumber(m_pScenario->size());
+        m_pScenario->add(m_task);
     }
 
     // else it's that the object parameterization is over and it can be stored into the temporary task object

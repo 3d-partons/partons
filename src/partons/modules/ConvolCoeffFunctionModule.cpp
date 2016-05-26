@@ -44,6 +44,7 @@ ConvolCoeffFunctionModule::ConvolCoeffFunctionModule(
 
 void ConvolCoeffFunctionModule::configure(
         const ElemUtils::Parameters &parameters) {
+    // Propagate parameters to the IntegrationModule object to configure integration routine.
     configureIntegrator(parameters);
 
     if (parameters.isAvailable(ConvolCoeffFunctionModule::GPD_MODULE_ID)) {

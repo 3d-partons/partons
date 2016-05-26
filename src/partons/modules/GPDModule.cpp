@@ -3,9 +3,10 @@
 #include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
+#include <ElementaryUtils/thread/Packet.h>
 #include <math.h>
-#include <SFML/System/Sleep.hpp>
-#include <SFML/System/Time.hpp>
+//#include <SFML/System/Sleep.hpp>
+//#include <SFML/System/Time.hpp>
 #include <iostream>
 #include <stdexcept>
 #include <utility>
@@ -295,9 +296,12 @@ void GPDModule::run() {
             packet >> kinematic;
             packet >> gpdType;
 
+            info(__func__, kinematic.toString());
+
             pGPDService->add(compute(kinematic, gpdType, false));
 
-            sf::sleep(sf::milliseconds(3));
+            //TODO useful to do a sleep ?
+            // sf::sleep(sf::milliseconds(3));
         }
     } catch (std::exception &e) {
         std::cerr << e.what() << std::endl;

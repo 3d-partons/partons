@@ -3,6 +3,7 @@
 #include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
+#include <ElementaryUtils/string_utils/StringUtils.h>
 #include <ElementaryUtils/thread/Packet.h>
 
 #include "../../../../include/partons/beans/observable/ObservableKinematic.h"
@@ -21,6 +22,17 @@ GPDKinematic::GPDKinematic(double x, double xi, double t, double MuF2,
         double MuR2) :
         Kinematic("GPDKinematic"), m_kinematicType(KinematicType::THEO), m_x(x), m_xi(
                 xi), m_t(t), m_MuF2(MuF2), m_MuR2(MuR2) {
+}
+
+GPDKinematic::GPDKinematic(const std::string& x, const std::string& xi,
+        const std::string& t, const std::string& MuF2, const std::string& MuR2) :
+        Kinematic("GPDKinematic"), m_kinematicType(KinematicType::THEO), m_x(
+                ElemUtils::StringUtils::fromStringToDouble(x)), m_xi(
+                ElemUtils::StringUtils::fromStringToDouble(xi)), m_t(
+                ElemUtils::StringUtils::fromStringToDouble(t)), m_MuF2(
+                ElemUtils::StringUtils::fromStringToDouble(MuF2)), m_MuR2(
+                ElemUtils::StringUtils::fromStringToDouble(MuR2)) {
+
 }
 
 GPDKinematic::GPDKinematic(const ElemUtils::Parameters &parameters) :

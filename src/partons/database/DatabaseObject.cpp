@@ -8,6 +8,11 @@ DatabaseObject::DatabaseObject(const std::string &className, int indexId) :
         BaseObject(className), m_indexId(indexId) {
 }
 
+DatabaseObject::DatabaseObject(const DatabaseObject &other) :
+        BaseObject(other) {
+    m_indexId = other.m_indexId;
+}
+
 DatabaseObject::~DatabaseObject() {
 }
 

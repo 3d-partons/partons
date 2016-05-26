@@ -114,7 +114,7 @@ void ComputationDao::fillComputation(Computation &computation,
 }
 
 int ComputationDao::insertIntoScenarioComputation(
-        const size_t scenarioTaskIndexNumber, const int scenarioId,
+        const unsigned int scenarioTaskIndexNumber, const int scenarioId,
         const int computationId) const {
     int result = -1;
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
@@ -122,6 +122,7 @@ int ComputationDao::insertIntoScenarioComputation(
     query.prepare(
             "INSERT INTO scenario_computation (scenario_task_index_number, scenario_id, computation_id) VALUES (:scenarioTaskIndexNumber, :scenarioId, :computationId)");
 
+    query.bindValue(":scenarioTaskIndexNumber", scenarioTaskIndexNumber);
     query.bindValue(":scenarioId", scenarioId);
     query.bindValue(":computationId", computationId);
 

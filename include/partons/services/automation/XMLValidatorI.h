@@ -22,7 +22,7 @@ public:
     XMLValidatorI(const std::string &className);
     virtual ~XMLValidatorI();
 
-    virtual bool isValidXMLDocument(const std::string xmlSchemaStream,
+    virtual bool isValidXMLDocument(const std::string &xmlSchemaStream,
             const std::string &xmlDocumentStream) const = 0;
 };
 

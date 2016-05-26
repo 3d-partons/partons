@@ -44,7 +44,7 @@ List<GPDKinematic> GPDUtils::getKinematicListFromFile(
 }
 
 List<GPDKinematic> GPDUtils::getKinematicListFromResultList(
-        const ResultList<GPDResult>& gpdResultList) {
+        const List<GPDResult>& gpdResultList) {
     List<GPDKinematic> kinematicList;
 
     for (size_t i = 0; i != gpdResultList.size(); i++) {
@@ -54,7 +54,7 @@ List<GPDKinematic> GPDUtils::getKinematicListFromResultList(
     return kinematicList;
 }
 
-ResultList<GPDResult> GPDUtils::getResultListFromDatabase(int computationId) {
+List<GPDResult> GPDUtils::getResultListFromDatabase(int computationId) {
     GPDResultDaoService service;
     return service.getGPDResultListByComputationId(computationId);
 }

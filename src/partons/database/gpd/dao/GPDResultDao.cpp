@@ -73,9 +73,9 @@ int GPDResultDao::insertIntoGPDResultPartonDistributionTable(
     return result;
 }
 
-ResultList<GPDResult> GPDResultDao::getGPDResultListByComputationId(
+List<GPDResult> GPDResultDao::getGPDResultListByComputationId(
         const int computationId) const {
-    ResultList<GPDResult> resultList;
+    List<GPDResult> resultList;
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
@@ -100,7 +100,7 @@ ResultList<GPDResult> GPDResultDao::getGPDResultListByComputationId(
     return resultList;
 }
 
-void GPDResultDao::fillGPDResultList(ResultList<GPDResult> &gpdResultList,
+void GPDResultDao::fillGPDResultList(List<GPDResult> &gpdResultList,
         QSqlQuery &query) const {
 
     int f_gpd_result_id = query.record().indexOf("id");
@@ -113,6 +113,8 @@ void GPDResultDao::fillGPDResultList(ResultList<GPDResult> &gpdResultList,
         int kinematicId = query.value(f_kinematic_id).toInt();
         std::string computationModuleName = query.value(
                 f_computation_module_name).toString().toStdString();
+
+        //TODO create Computation, ResultInfo, ...
 
         GPDResult gpdResult;
 

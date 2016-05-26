@@ -16,7 +16,7 @@ Qt4XMLValidator::Qt4XMLValidator() :
 Qt4XMLValidator::~Qt4XMLValidator() {
 }
 
-bool Qt4XMLValidator::isValidXMLDocument(const std::string xmlSchemaStream,
+bool Qt4XMLValidator::isValidXMLDocument(const std::string &xmlSchemaStream,
         const std::string &xmlDocumentStream) const {
 
     if (xmlSchemaStream.empty()) {

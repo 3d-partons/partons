@@ -9,6 +9,7 @@
  */
 
 #include <stddef.h>
+#include <ctime>
 #include <string>
 #include <vector>
 
@@ -26,6 +27,16 @@ public:
      * Default constructor
      */
     Scenario();
+
+    /**
+     * Copy constructor
+     * @param other
+     */
+    Scenario(const Scenario &other);
+
+    Scenario(const int indexId, const std::string &description,
+            const time_t storeDate, const std::string& filePath,
+            const std::string &hashSum, const std::string &file);
 
     /**
      * Destructor

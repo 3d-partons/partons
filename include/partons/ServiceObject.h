@@ -22,6 +22,7 @@
 #include <string>
 
 #include "beans/List.h"
+#include "beans/Result.h"
 #include "utils/thread/ThreadManager.h"
 #include "utils/thread/ThreadQueue.h"
 

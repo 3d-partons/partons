@@ -22,7 +22,7 @@ public:
     DefaultXMLParser();
     virtual ~DefaultXMLParser();
 
-    virtual Scenario parseXMLDocument(const std::string &xmlDocument);
+    virtual Scenario* parseScenario(Scenario* pScenario);
 
     virtual void startElement(const std::string &elementName,
             ElemUtils::XMLAttributs attributes, const std::string &elementData);

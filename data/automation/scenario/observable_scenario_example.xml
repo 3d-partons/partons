@@ -11,6 +11,13 @@
         </kinematics>
 
         <computation_configuration>
+            <module type="GPDEvolutionModule">
+                <param name="className" value="Vinnikov" />
+                <module type="AlhpaSModule">
+                    <param name="constant" value="4" />
+                </module>
+            </module>
+
             <module type="GPDModule">
                 <param name="className" value="GK11Model" />
             </module>

@@ -10,8 +10,8 @@
 
 #include <string>
 
+#include "../../../beans/List.h"
 #include "../../../beans/observable/ObservableResult.h"
-#include "../../../beans/ResultList.h"
 #include "../../common/service/ComputationDaoService.h"
 #include "../dao/ObservableResultDao.h"
 #include "ObservableKinematicDaoService.h"
@@ -49,7 +49,7 @@ public:
      * @param observableResultList
      * @return unique id related to the last entry inserted into the database
      */
-    int insert(const ResultList<ObservableResult> &observableResultList);
+    int insert(const List<ObservableResult> &observableResultList);
 
     /**
      * Return a list of ObservableResult objects from the database identified by a specific computation identifier.
@@ -57,7 +57,7 @@ public:
      * @param computationId
      * @return list of ObservableResult objects.
      */
-    ResultList<ObservableResult> getObservableResultListByComputationId(
+    List<ObservableResult> getObservableResultListByComputationId(
             const int computationId) const;
 
     /**
@@ -66,7 +66,7 @@ public:
      * @param sqlQuery
      * @return
      */
-    ResultList<ObservableResult> getObservableResultListFromSQLQuery(
+    List<ObservableResult> getObservableResultListFromSQLQuery(
             const std::string &sqlQuery) const;
 
 private:

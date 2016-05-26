@@ -36,7 +36,7 @@ ConvolCoeffFunctionService::~ConvolCoeffFunctionService() {
 //TODO implement
 void ConvolCoeffFunctionService::computeTask(Task &task) {
 
-    ResultList<DVCSConvolCoeffFunctionResult> resultList;
+    List<DVCSConvolCoeffFunctionResult> resultList;
 
     if (ElemUtils::StringUtils::equals(task.getFunctionName(),
             ConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_WITH_GPD_MODEL)) {
@@ -125,7 +125,7 @@ DVCSConvolCoeffFunctionResult ConvolCoeffFunctionService::computeWithGPDModelTas
     }
 
     ConvolCoeffFunctionModule* pConvolCoeffFunctionModule =
-            newConvolCoeffFunctionModule(task);
+            newConvolCoeffFunctionModuleFromTask(task);
 
     DVCSConvolCoeffFunctionResult result = computeWithGPDModel(kinematic,
             pConvolCoeffFunctionModule);
@@ -192,11 +192,11 @@ DVCSConvolCoeffFunctionResult ConvolCoeffFunctionService::computeWithGPDModelTas
 //    return results;
 //}
 
-ResultList<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionService::computeManyKinematicOneModel(
+List<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionService::computeManyKinematicOneModel(
         List<DVCSConvolCoeffFunctionKinematic> &kinematics,
         ConvolCoeffFunctionModule* convolCoeffFunctionModule) const {
 
-    ResultList<DVCSConvolCoeffFunctionResult> results;
+    List<DVCSConvolCoeffFunctionResult> results;
 
     for (size_t i = 0; i != kinematics.size(); i++) {
         results.add(
@@ -206,7 +206,7 @@ ResultList<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionService::computeMan
     return results;
 }
 
-ConvolCoeffFunctionModule* ConvolCoeffFunctionService::newConvolCoeffFunctionModule(
+ConvolCoeffFunctionModule* ConvolCoeffFunctionService::newConvolCoeffFunctionModuleFromTask(
         const Task& task) const {
     GPDModule* pGPDModule = 0;
 

@@ -9,7 +9,7 @@
  */
 
 #include <QtSql/qsqlquery.h>
-#include <stddef.h>
+//#include <stddef.h>
 #include <ctime>
 
 #include "../../../BaseObject.h"
@@ -31,8 +31,9 @@ public:
     Computation selectByIndexId(const int indexId) const;
     int getComputationIdByDateTime(const time_t &dateTime) const;
 
-    int insertIntoScenarioComputation(const size_t scenarioTaskIndexNumber,
-            const int scenarioId, const int computationId) const;
+    int insertIntoScenarioComputation(
+            const unsigned int scenarioTaskIndexNumber, const int scenarioId,
+            const int computationId) const;
 
     bool isAvailable(const int computationId) const;
 

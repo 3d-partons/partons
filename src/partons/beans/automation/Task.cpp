@@ -3,7 +3,8 @@
 #include <ElementaryUtils/string_utils/Formatter.h>
 
 Task::Task() :
-        BaseObject("Task"), m_storeInDB(false), m_scenarioTaskIndexNumber(0) {
+        BaseObject("Task"), m_pScenario(0), m_storeInDB(false), m_scenarioTaskIndexNumber(
+                0) {
 }
 
 Task::~Task() {
@@ -49,4 +50,12 @@ unsigned int Task::getScenarioTaskIndexNumber() const {
 
 void Task::setScenarioTaskIndexNumber(unsigned int scenarioTaskIndexNumber) {
     m_scenarioTaskIndexNumber = scenarioTaskIndexNumber;
+}
+
+Scenario* Task::getScenario() const {
+    return m_pScenario;
+}
+
+void Task::setScenario(Scenario* pScenario) {
+    m_pScenario = pScenario;
 }

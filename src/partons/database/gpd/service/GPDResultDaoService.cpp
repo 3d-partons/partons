@@ -4,15 +4,15 @@
 #include <QtSql/qsqldatabase.h>
 #include <exception>
 #include <map>
-#include <utility>
 
 #include "../../../../../include/partons/beans/Computation.h"
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
-#include "../../../../../include/partons/beans/List.h"
 #include "../../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
+#include "../../../../../include/partons/beans/system/ResultInfo.h"
 
 GPDResultDaoService::GPDResultDaoService() :
-        BaseObject("GPDResultDaoService") {
+        BaseObject("GPDResultDaoService"), m_previousComputationId(
+                std::make_pair<time_t, int>(0, -1)) {
 }
 
 GPDResultDaoService::~GPDResultDaoService() {
@@ -27,7 +27,6 @@ int GPDResultDaoService::insert(const GPDResult &gpdResult) const {
     QSqlDatabase::database().transaction();
 
     try {
-
         computationId = insertWithoutTransaction(gpdResult);
 
         // If there is no exception we can commit all query
@@ -43,8 +42,37 @@ int GPDResultDaoService::insert(const GPDResult &gpdResult) const {
     return computationId;
 }
 
+//int GPDResultDaoService::insertWithoutTransactionResultList(
+//        const ResultList<GPDResult> &gpdResultList) const {
+//
+//
+//
+//}
+
 int GPDResultDaoService::insertWithoutTransaction(
         const GPDResult &gpdResult) const {
+
+    int computationId = -1;
+    time_t computationDateTime =
+            gpdResult.getResultInfo().getComputation().getDateTime();
+
+    // Check if previousComputationId stored is not the same as current
+    if (computationDateTime == m_previousComputationId.first) {
+        computationId = m_previousComputationId.second;
+    } else {
+        // Check if this computation date already exists and retrieve Id
+        computationId = m_computationDaoService.getComputationIdByDateTime(
+                computationDateTime);
+
+        // If not, insert new entry in database and retrieve its id
+        if (computationId == -1) {
+            computationId = m_resultInfoDaoService.insertWithoutTransaction(
+                    gpdResult.getResultInfo());
+        }
+
+        m_previousComputationId = std::make_pair<time_t, int>(
+                computationDateTime, computationId);
+    }
 
     // Check if this gpd_kinematic already exists
     int gpdKinematicId = m_gpdKinematicDaoService.getIdByKinematicObject(
@@ -54,15 +82,6 @@ int GPDResultDaoService::insertWithoutTransaction(
     if (gpdKinematicId == -1) {
         gpdKinematicId = m_gpdKinematicDaoService.insertWithoutTransaction(
                 gpdResult.getKinematic());
-    }
-
-    // Check if this computation date already exists and retrieve Id
-    int computationId = m_computationDaoService.getComputationIdByDateTime(
-            gpdResult.getComputation().getDateTime());
-    // If not, insert new entry in database and retrieve its id
-    if (computationId == -1) {
-        computationId = m_computationDaoService.insertWithoutTransaction(
-                gpdResult.getComputation());
     }
 
     // Insert new gpd_result entry in database
@@ -93,8 +112,7 @@ int GPDResultDaoService::insertWithoutTransaction(
     return computationId;
 }
 
-int GPDResultDaoService::insert(
-        const ResultList<GPDResult> &gpdResultList) const {
+int GPDResultDaoService::insert(const List<GPDResult> &gpdResultList) const {
 
     info(__func__,
             ElemUtils::Formatter() << "Inserting object size = "
@@ -102,6 +120,15 @@ int GPDResultDaoService::insert(
 
     int computationId = -1;
 
+//    unsigned int batchSize = 250;
+//    unsigned int startListIndex = 0;
+//    unsigned int numberOfIteration = gpdResultList.size() / batchSize();
+//
+//    for()
+//    {
+//
+//    }
+//
     // For multiple query it's better to use transaction to guarantee database's integrity and performance
     QSqlDatabase::database().transaction();
 
@@ -125,7 +152,7 @@ int GPDResultDaoService::insert(
     return computationId;
 }
 
-ResultList<GPDResult> GPDResultDaoService::getGPDResultListByComputationId(
+List<GPDResult> GPDResultDaoService::getGPDResultListByComputationId(
         const int computationId) const {
     return m_gpdResultDao.getGPDResultListByComputationId(computationId);
 }

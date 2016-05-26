@@ -16,7 +16,7 @@
 #include <string>
 
 #include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
-#include "../../../beans/ResultList.h"
+#include "../../../beans/List.h"
 #include "ConvolCoeffFunctionKinematicDao.h"
 
 class ConvolCoeffFunctionResultDao: public BaseObject {
@@ -27,7 +27,7 @@ public:
     int insert(const std::string &computationModuleName, const int kinematicId,
             const int computationId) const;
 
-    ResultList<DVCSConvolCoeffFunctionResult> getResultListByComputationId(
+    List<DVCSConvolCoeffFunctionResult> getResultListByComputationId(
             const int computationId) const;
 
     int insertIntoCCFResultComplex(const int realPart, const int imgPart,
@@ -37,7 +37,7 @@ private:
     ConvolCoeffFunctionKinematicDao m_convolCoeffFunctionKinematicDao;
 
     void fillConvolCoeffFunctionResultList(
-            ResultList<DVCSConvolCoeffFunctionResult> &resultList,
+            List<DVCSConvolCoeffFunctionResult> &resultList,
             QSqlQuery& query) const;
 
     void fillConvolCoeffFunctionResult(

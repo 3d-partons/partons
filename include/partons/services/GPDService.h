@@ -19,7 +19,6 @@
 #include "../beans/gpd/GPDResult.h"
 #include "../beans/gpd/GPDType.h"
 #include "../beans/List.h"
-#include "../beans/ResultList.h"
 #include "../modules/GPDModule.h"
 #include "../ServiceObjectTyped.h"
 
@@ -32,6 +31,7 @@ public:
     static const std::string GPD_SERVICE_COMPUTE_GPD_MODEL;
     static const std::string GPD_SERVICE_COMPUTE_GPD_MODEL_WITH_EVOLUTION;
     static const std::string GPD_SERVICE_COMPUTE_LIST_OF_GPD_MODEL;
+    static const std::string GPD_SERVICE_COMPUTE_MANY_KINEMATIC_ONE_MODEL;
 
     /**
      * Default constructor
@@ -86,8 +86,7 @@ public:
      * @param listOfGPDToCompute
      * @return
      */
-    ResultList<GPDResult> computeListOfGPDModel(
-            const GPDKinematic &gpdKinematic,
+    List<GPDResult> computeListOfGPDModel(const GPDKinematic &gpdKinematic,
             std::vector<GPDModule*> &listOfGPDToCompute);
 
     /**
@@ -97,7 +96,7 @@ public:
      * @param gpdType
      * @return
      */
-    ResultList<GPDResult> computeListOfGPDModelRestrictedByGPDType(
+    List<GPDResult> computeListOfGPDModelRestrictedByGPDType(
             const GPDKinematic &gpdKinematic,
             std::vector<GPDModule*> &listOfGPDToCompute, GPDType gpdType);
 
@@ -108,7 +107,7 @@ public:
      * @param pGPDModule
      * @return
      */
-    ResultList<GPDResult> computeManyKinematicOneModel(
+    List<GPDResult> computeManyKinematicOneModel(
             const List<GPDKinematic> &gpdKinematicList, GPDModule* pGPDModule);
 
     ComparisonReport compareResultListToDatabase(
@@ -119,6 +118,15 @@ public:
 private:
     GPDKinematic* m_pGPDKinematic;
     GPDModule* m_pGPDModule;
+
+    void updateResultInfo(GPDResult &result,
+            const ResultInfo &resultInfo) const;
+
+    void updateResultInfo(List<GPDResult> &resultList,
+            const ResultInfo &resultInfo) const;
+
+    GPDResult computeGPDTask(Task &task);
+    List<GPDResult> computeManyKinematicOneModelTask(Task &task);
 
     // GPDResult computeGPDModel(const Task &task);
 };

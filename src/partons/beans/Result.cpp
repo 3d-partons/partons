@@ -1,7 +1,15 @@
 #include "../../../include/partons/beans/Result.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
+
 Result::Result(const std::string &className) :
         DatabaseObject(className), m_computationModuleName("UNDEFINED") {
+}
+
+Result::Result(const Result &other) :
+        DatabaseObject(other) {
+    m_resultInfo = other.m_resultInfo;
+    m_computationModuleName = other.m_computationModuleName;
 }
 
 Result::~Result() {
@@ -15,14 +23,18 @@ const std::string& Result::getComputationModuleName() const {
     return m_computationModuleName;
 }
 
-const Computation& Result::getComputation() const {
-    return m_computation;
+const ResultInfo& Result::getResultInfo() const {
+    return m_resultInfo;
 }
 
-Computation& Result::getComputation() {
-    return m_computation;
+void Result::setResultInfo(const ResultInfo& resultInfo) {
+    m_resultInfo = resultInfo;
 }
 
-void Result::setComputation(const Computation& computation) {
-    m_computation = computation;
+std::string Result::toString() const {
+    ElemUtils::Formatter formatter;
+
+    formatter << m_resultInfo.toString() << '\n';
+
+    return formatter.str();
 }

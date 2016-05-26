@@ -2,13 +2,9 @@
 
 <scenario date="2016-03-25" description="Example : computation of one GPD model (GK11) without evolution">
 
-    <task service="GPDService" method="computeGPDModel" storeInDB="1">
+    <task service="GPDService" method="computeManyKinematicOneModel" storeInDB="1">
         <kinematics type="GPDKinematic">
-            <param name="x" value="0.1" />
-            <param name="xi" value="0.00050025" />
-            <param name="t" value="-0.3" />
-            <param name="MuF2" value="8" />
-            <param name="MuR2" value="8" />
+            <param name="file" value="/home/debian/Downloads/4Bryan/random_kinematics_GK11Module.dat" />
         </kinematics>
 
         <computation_configuration>

@@ -14,7 +14,6 @@
 #include "../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
 #include "../beans/gpd/GPDType.h"
 #include "../beans/List.h"
-#include "../beans/ResultList.h"
 #include "../ServiceObject.h"
 
 class ConvolCoeffFunctionModule;
@@ -44,7 +43,7 @@ public:
 
     virtual void computeTask(Task &task);
 
-    ResultList<DVCSConvolCoeffFunctionResult> computeManyKinematicOneModel(
+    List<DVCSConvolCoeffFunctionResult> computeManyKinematicOneModel(
             List<DVCSConvolCoeffFunctionKinematic> &kinematics,
             ConvolCoeffFunctionModule* convolCoeffFunctionModule) const;
 
@@ -58,7 +57,7 @@ public:
 //            std::vector<ConvolCoeffFunctionModule*> listOfDVCSConvolCoeffFunctionModule,
 //            GPDType::Type gpdType = GPDType::ALL) const;
 
-    ConvolCoeffFunctionModule* newConvolCoeffFunctionModule(
+    ConvolCoeffFunctionModule* newConvolCoeffFunctionModuleFromTask(
             const Task &task) const;
 
     ConvolCoeffFunctionModule* configureConvolCoeffFunctionModule(

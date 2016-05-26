@@ -1,13 +1,18 @@
 #include "../../../../include/partons/beans/gpd/GPDResult.h"
 
 #include <ElementaryUtils/string_utils/Formatter.h>
-#include <sstream>
 #include <utility>
 
 const std::string GPDResult::GPD_RESULT_DB_TABLE_NAME = "gpd_result";
 
 GPDResult::GPDResult() :
         Result("GPDResult") {
+}
+
+GPDResult::GPDResult(const GPDResult &other) :
+        Result(other) {
+    m_kinematic = other.m_kinematic;
+    m_partonDistributions = other.m_partonDistributions;
 }
 
 GPDResult::~GPDResult() {
@@ -68,18 +73,20 @@ List<PartonDistribution> GPDResult::getPartonDistributionList() const {
 }
 
 std::string GPDResult::toString() const {
-    std::ostringstream os;
+    ElemUtils::Formatter formatter;
     std::map<GPDType::Type, PartonDistribution>::const_iterator it;
+
+    formatter << Result::toString() << '\n';
 
     for (it = m_partonDistributions.begin(); it != m_partonDistributions.end();
             it++) {
         //os << "ComputedBy: " << m_computedByGPDModuleId << std::endl;
-        os << "GPD_" << GPDType(it->first).toString() << std::endl;
-        os << (it->second).toString();
-        os << std::endl;
+        formatter << "GPD_" << GPDType(it->first).toString() << '\n';
+        formatter << (it->second).toString();
+        formatter << '\n';
     }
 
-    return os.str();
+    return formatter.str();
 }
 
 const std::map<GPDType::Type, PartonDistribution>& GPDResult::getPartonDistributions() const {

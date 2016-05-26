@@ -10,6 +10,19 @@ Scenario::Scenario() :
                 ElemUtils::StringUtils::EMPTY) {
 }
 
+Scenario::Scenario(const int indexId, const std::string &description,
+        const time_t storeDate, const std::string& filePath,
+        const std::string& hashSum, const std::string& file) :
+        DatabaseFileObject("Scenario", indexId, storeDate, filePath, hashSum,
+                file), m_description(description) {
+}
+
+Scenario::Scenario(const Scenario &other) :
+        DatabaseFileObject(other) {
+    m_description = other.m_description;
+    m_tasks = other.m_tasks;
+}
+
 Scenario::~Scenario() {
 }
 
@@ -36,12 +49,21 @@ Task& Scenario::getTask(unsigned int i) {
 
 void Scenario::add(const Task& task) {
     m_tasks.push_back(task);
+
+    // For the last inserted Task, update its Scenario pointers.
+    m_tasks.back().setScenario(this);
+
+    // For the last inserted Task, update its task index number.
+    m_tasks.back().setScenarioTaskIndexNumber(this->size() - 1);
 }
 
 std::string Scenario::toString() const {
     ElemUtils::Formatter formatter;
 
-    formatter << "Scenario description = " << m_description << '\n';
+    formatter << "[" << getClassName() << "]\n";
+    formatter << DatabaseFileObject::toString() << "\n";
+
+    formatter << "Description = " << m_description << '\n';
 
     for (size_t i = 0; i != size(); i++) {
         formatter << m_tasks[i].toString() << '\n';
@@ -62,3 +84,4 @@ std::string Scenario::fillFile() const {
     ScenarioDaoService scenarioDaoService;
     return scenarioDaoService.getXMLFileByIndexId(getIndexId());
 }
+

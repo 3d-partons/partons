@@ -75,9 +75,9 @@ int ConvolCoeffFunctionResultDao::insertIntoCCFResultComplex(const int realPart,
     return result;
 }
 
-ResultList<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionResultDao::getResultListByComputationId(
+List<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionResultDao::getResultListByComputationId(
         const int computationId) const {
-    ResultList<DVCSConvolCoeffFunctionResult> resultList;
+    List<DVCSConvolCoeffFunctionResult> resultList;
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
@@ -101,7 +101,7 @@ ResultList<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionResultDao::getResul
 }
 
 void ConvolCoeffFunctionResultDao::fillConvolCoeffFunctionResultList(
-        ResultList<DVCSConvolCoeffFunctionResult> &resultList,
+        List<DVCSConvolCoeffFunctionResult> &resultList,
         QSqlQuery& query) const {
 
     int field_id = query.record().indexOf("id");
@@ -114,6 +114,8 @@ void ConvolCoeffFunctionResultDao::fillConvolCoeffFunctionResultList(
         int kinematicId = query.value(field_kinematic_id).toInt();
         std::string computationModuleName = query.value(
                 field_computation_module_name).toString().toStdString();
+
+        //TODO create ResultInfo, Computation, ...
 
         DVCSConvolCoeffFunctionResult convolCoeffFunctionResult;
 

@@ -25,3 +25,9 @@ g++ --version | sed -n 1p  >> $OUTPUT_FILE
 
 
 # Get CLN version
+
+# SVN revision number for PARTONS
+echo "PARTONS" >> $OUTPUT_FILE | svn info https://dsm-trac.cea.fr/svn/prophet/DEVELOPMENT/PARTONS/ --username bberthou | grep Revision >> $OUTPUT_FILE
+
+# SVN revision number for UNIX
+echo "NumA++" >> $OUTPUT_FILE | svn info https://dsm-trac.cea.fr/svn/prophet/DEVELOPMENT/NumA++/ --username bberthou | grep Revision >> $OUTPUT_FILE
