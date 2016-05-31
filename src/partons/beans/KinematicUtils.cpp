@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <vector>
 
+//TODO Mieux gérer les exceptions pour quelles soient affichées dans le logger.
 List<ObservableKinematic> KinematicUtils::getObservableKinematicFromFile(
         const std::string& filePath) {
 
@@ -26,19 +27,25 @@ List<ObservableKinematic> KinematicUtils::getObservableKinematicFromFile(
         }
 
         for (size_t i = 0; i != kinematicString.size(); i++) {
-            std::vector<std::string> kinematicValues =
-                    ElemUtils::StringUtils::split(kinematicString[i], '|');
-            if (kinematicValues.size() < 4) {
-                throw std::runtime_error(
-                        ElemUtils::Formatter()
-                                << "(KinematicUtils::getObservableKinematicFromFile) Missing column value in your kinematic input file : "
-                                << filePath
-                                << " ; You must provided 4 column : xB | t | Q2 | phi");
-            }
 
-            observableKinematicList.add(
-                    ObservableKinematic(kinematicValues[0], kinematicValues[1],
-                            kinematicValues[2], kinematicValues[3]));
+            // process if line is not empty.
+            if (!kinematicString[i].empty()) {
+
+                std::vector<std::string> kinematicValues =
+                        ElemUtils::StringUtils::split(kinematicString[i], '|');
+                if (kinematicValues.size() < 4) {
+                    throw std::runtime_error(
+                            ElemUtils::Formatter()
+                                    << "(KinematicUtils::getObservableKinematicFromFile) Missing column value in your kinematic input file : "
+                                    << filePath
+                                    << " ; You must provided 4 column : xB | t | Q2 | phi");
+                }
+
+                observableKinematicList.add(
+                        ObservableKinematic(kinematicValues[0],
+                                kinematicValues[1], kinematicValues[2],
+                                kinematicValues[3]));
+            }
 
         }
     } else {
@@ -67,20 +74,27 @@ List<GPDKinematic> KinematicUtils::getGPDKinematicFromFile(
         }
 
         for (size_t i = 0; i != kinematicString.size(); i++) {
-            std::vector<std::string> kinematicValues =
-                    ElemUtils::StringUtils::split(kinematicString[i], '|');
-            if (kinematicValues.size() < 5) {
-                throw std::runtime_error(
-                        ElemUtils::Formatter()
-                                << "(KinematicUtils::getGPDKinematicFromFile) Missing column value in your kinematic input file : "
-                                << filePath
-                                << " ; You must provided 5 column : x | xi | t | MuF2 | MuR2");
-            }
 
-            gpdKinematicList.add(
-                    GPDKinematic(kinematicValues[0], kinematicValues[1],
-                            kinematicValues[2], kinematicValues[3],
-                            kinematicValues[4]));
+            // process if line is not empty.
+            if (!kinematicString[i].empty()) {
+
+                std::vector<std::string> kinematicValues =
+                        ElemUtils::StringUtils::split(kinematicString[i], '|');
+                if (kinematicValues.size() < 5) {
+                    throw std::runtime_error(
+                            ElemUtils::Formatter()
+                                    << "(KinematicUtils::getGPDKinematicFromFile) Line "
+                                    << i
+                                    << ". Missing column value in your kinematic input file : "
+                                    << filePath
+                                    << " ; You must provided 5 column : x | xi | t | MuF2 | MuR2");
+                }
+
+                gpdKinematicList.add(
+                        GPDKinematic(kinematicValues[0], kinematicValues[1],
+                                kinematicValues[2], kinematicValues[3],
+                                kinematicValues[4]));
+            }
 
         }
     } else {

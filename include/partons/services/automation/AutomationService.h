@@ -68,13 +68,14 @@ public:
      */
 //    ComputationConfigurationParameters readComputationConfigurationXMLFile(
 //            const std::string &xmlFilePath);
-
     //TODO doxygen documentation
     /**
      *
      * @param scenario
      */
     void playScenario(Scenario* pScenario) const;
+
+    Scenario* parseScenario(Scenario* pScenario) const;
 
 private:
     static const std::string PROPERTY_NAME_XML_SCHEMA_FILE_PATH;
@@ -87,8 +88,6 @@ private:
     ResourceManager* m_pResourceManager;
 
     const std::string& getXmlSchemaFile() const;
-
-    Scenario* parseScenario(Scenario* pScenario) const;
 };
 
 #endif /* AUTOMATION_SERVICE_H */

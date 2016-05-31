@@ -36,6 +36,7 @@ private:
     int m_lastQuarkDistributionId;
     int m_lastPartonDistributionQuarkDistributionId;
     int m_lastGPDResultPartonDistributionId;
+    int m_lastScenarioComputation;
 
     std::string m_gpdResultDatabaseFile;
     std::string m_gpdKinematicDatabaseFile;
@@ -44,6 +45,7 @@ private:
     std::string m_gpd_result_parton_distribution_table;
     std::string m_parton_distribution_quark_distribution_table;
     std::string m_quark_distribution_table;
+    std::string m_scenario_computation_table;
 
     GPDResultDao m_gpdResultDao; ///< reference to the right DAO object to perform database queries
 

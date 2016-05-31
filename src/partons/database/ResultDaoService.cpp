@@ -27,7 +27,7 @@ ResultDaoService::ResultDaoService() :
         BaseObject("ResultDaoService"), m_lastComputationId(-1), m_lastGPDKinematicId(
                 -1), m_lastGPDResultId(-1), m_lastPartonDistributionId(-1), m_lastQuarkDistributionId(
                 -1), m_lastGPDResultPartonDistributionId(-1), m_lastPartonDistributionQuarkDistributionId(
-                -1), m_previousComputationId(
+                -1), m_lastScenarioComputation(-1), m_previousComputationId(
                 std::make_pair<time_t, int>(0, -1)), m_previousScenarioId(
                 std::make_pair<std::string, int>(ElemUtils::StringUtils::EMPTY,
                         -1)) {
@@ -118,6 +118,18 @@ ResultDaoService::ResultDaoService() :
                         << query.executedQuery().toStdString());
     }
     query.clear();
+
+    if (query.exec("SELECT COUNT(id) FROM scenario_computation;")) {
+        if (query.first()) {
+            m_lastScenarioComputation = query.value(0).toInt();
+        }
+    } else {
+        error(__func__,
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
+    }
+    query.clear();
 }
 
 ResultDaoService::~ResultDaoService() {
@@ -176,6 +188,16 @@ bool ResultDaoService::insert(const List<GPDResult>& result) {
                         << computationId << ","
                         << qDateTime.toString(Qt::ISODate).toStdString() << ","
                         << scenarioId << '\n';
+
+                // Fill scenario_computation association table.
+                m_lastScenarioComputation++;
+                m_scenario_computation_table +=
+                        ElemUtils::Formatter() << m_lastScenarioComputation
+                                << ","
+                                << result[i].getResultInfo().getScenarioTaskIndexNumber()
+                                << "," << scenarioId << "," << computationId
+                                << '\n';
+
             }
 
             m_previousComputationId = std::make_pair<time_t, int>(
@@ -276,6 +298,9 @@ bool ResultDaoService::insert(const List<GPDResult>& result) {
     ElemUtils::FileUtils::write(
             "/home/debian/temp/gpd_result_parton_distribution_table.csv",
             m_gpd_result_parton_distribution_table);
+    ElemUtils::FileUtils::write(
+            "/home/debian/temp/scenario_computation_table.csv",
+            m_scenario_computation_table);
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
@@ -349,28 +374,38 @@ bool ResultDaoService::insert(const List<GPDResult>& result) {
     }
     query.clear();
 
+    if (query.exec(
+            "LOAD DATA INFILE '/home/debian/temp/scenario_computation_table.csv' INTO TABLE scenario_computation FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n';")) {
+    } else {
+        error(__func__,
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
+                        << " for sql query m_scenario_computation_table = "
+                        << query.executedQuery().toStdString());
+    }
+    query.clear();
+
     info(__func__, "Insertion done !");
 
-    if (ElemUtils::FileUtils::remove(
-            "/home/debian/temp/computationDatabaseFile.csv")) {
-        info(__func__,
-                ElemUtils::Formatter()
-                        << "File successfully deleted : computationDatabaseFile.csv");
-    } else {
-        //TODO implementing
-    }
-
-    ElemUtils::FileUtils::remove(
-            "/home/debian/temp/gpdKinematicDatabaseFile.csv");
-    ElemUtils::FileUtils::remove("/home/debian/temp/gpdResultDatabaseFile.csv");
-    ElemUtils::FileUtils::remove(
-            "/home/debian/temp/parton_distribution_table.csv");
-    ElemUtils::FileUtils::remove(
-            "/home/debian/temp/quark_distribution_table.csv");
-    ElemUtils::FileUtils::remove(
-            "/home/debian/temp/parton_distribution_quark_distribution_table.csv");
-    ElemUtils::FileUtils::remove(
-            "/home/debian/temp/gpd_result_parton_distribution_table.csv");
+//    if (ElemUtils::FileUtils::remove(
+//            "/home/debian/temp/computationDatabaseFile.csv")) {
+//        info(__func__,
+//                ElemUtils::Formatter()
+//                        << "File successfully deleted : computationDatabaseFile.csv");
+//    } else {
+//        //TODO implementing
+//    }
+//
+//    ElemUtils::FileUtils::remove(
+//            "/home/debian/temp/gpdKinematicDatabaseFile.csv");
+//    ElemUtils::FileUtils::remove("/home/debian/temp/gpdResultDatabaseFile.csv");
+//    ElemUtils::FileUtils::remove(
+//            "/home/debian/temp/parton_distribution_table.csv");
+//    ElemUtils::FileUtils::remove(
+//            "/home/debian/temp/quark_distribution_table.csv");
+//    ElemUtils::FileUtils::remove(
+//            "/home/debian/temp/parton_distribution_quark_distribution_table.csv");
+//    ElemUtils::FileUtils::remove(
+//            "/home/debian/temp/gpd_result_parton_distribution_table.csv");
 
     return isInserted;
 }
