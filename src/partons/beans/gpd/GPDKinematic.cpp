@@ -1,6 +1,6 @@
 #include "../../../../include/partons/beans/gpd/GPDKinematic.h"
 
-#include <ElementaryUtils/parameters/GenericType.h>
+//#include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
@@ -24,15 +24,22 @@ GPDKinematic::GPDKinematic(double x, double xi, double t, double MuF2,
                 xi), m_t(t), m_MuF2(MuF2), m_MuR2(MuR2) {
 }
 
-GPDKinematic::GPDKinematic(const std::string& x, const std::string& xi,
-        const std::string& t, const std::string& MuF2, const std::string& MuR2) :
-        Kinematic("GPDKinematic"), m_kinematicType(KinematicType::THEO), m_x(
-                ElemUtils::StringUtils::fromStringToDouble(x)), m_xi(
-                ElemUtils::StringUtils::fromStringToDouble(xi)), m_t(
-                ElemUtils::StringUtils::fromStringToDouble(t)), m_MuF2(
-                ElemUtils::StringUtils::fromStringToDouble(MuF2)), m_MuR2(
-                ElemUtils::StringUtils::fromStringToDouble(MuR2)) {
+//GPDKinematic::GPDKinematic(const std::string& x, const std::string& xi,
+//        const std::string& t, const std::string& MuF2, const std::string& MuR2) :
+//        Kinematic("GPDKinematic"), m_kinematicType(KinematicType::THEO), m_x(
+//                ElemUtils::StringUtils::fromStringToDouble(x)), m_xi(
+//                ElemUtils::StringUtils::fromStringToDouble(xi)), m_t(
+//                ElemUtils::StringUtils::fromStringToDouble(t)), m_MuF2(
+//                ElemUtils::StringUtils::fromStringToDouble(MuF2)), m_MuR2(
+//                ElemUtils::StringUtils::fromStringToDouble(MuR2)) {
+//}
 
+GPDKinematic::GPDKinematic(const ElemUtils::GenericType& x,
+        const ElemUtils::GenericType& xi, const ElemUtils::GenericType& t,
+        const ElemUtils::GenericType& MuF2, const ElemUtils::GenericType& MuR2) :
+        Kinematic("GPDKinematic"), m_kinematicType(KinematicType::THEO), m_x(
+                x.toDouble()), m_xi(xi.toDouble()), m_t(t.toDouble()), m_MuF2(
+                MuF2.toDouble()), m_MuR2(MuR2.toDouble()) {
 }
 
 GPDKinematic::GPDKinematic(const ElemUtils::Parameters &parameters) :

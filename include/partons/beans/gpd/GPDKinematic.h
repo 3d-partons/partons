@@ -12,6 +12,7 @@
  * @brief Class representing the kinematic variables for a GPD model.
  */
 
+#include <ElementaryUtils/parameters/GenericType.h>
 #include <string>
 
 #include "../kinematic/KinematicType.h"
@@ -46,9 +47,14 @@ public:
      */
     GPDKinematic(double x, double xi, double t, double MuF2, double MuR2);
 
-    GPDKinematic(const std::string &x, const std::string &xi,
-            const std::string &t, const std::string &MuF2,
-            const std::string &MuR2);
+//    GPDKinematic(const std::string &x, const std::string &xi,
+//            const std::string &t, const std::string &MuF2,
+//            const std::string &MuR2);
+
+    GPDKinematic(const ElemUtils::GenericType &x,
+            const ElemUtils::GenericType &xi, const ElemUtils::GenericType &t,
+            const ElemUtils::GenericType &MuF2,
+            const ElemUtils::GenericType &MuR2);
 
     GPDKinematic(const ElemUtils::Parameters &parameters);
 
