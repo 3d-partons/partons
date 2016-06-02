@@ -20,7 +20,7 @@
 
 class ComparisonReport {
 public:
-    ComparisonReport();
+    ComparisonReport(const NumA::Tolerances &tolerances);
     ComparisonReport(const std::string &environmentSetting,
             const std::string &objectClassNameTested,
             const std::string &referenceObjectClassName);
@@ -40,7 +40,6 @@ public:
     void setTolerances(const NumA::Tolerances& tolerances);
 
 private:
-    //TODO m_environmentConfiguration = read VM configuration and SVN revision number
     std::string m_environmentSetting;
     std::string m_objectClassNameTested;
     std::string m_referenceObjectClassName;

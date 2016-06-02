@@ -105,7 +105,7 @@ EnvironmentConfiguration* EnvironmentConfigurationDao::getEnvironmentConfigurati
             ElemUtils::StringUtils::EMPTY, hashSum);
 }
 
-int EnvironmentConfigurationDao::getEnvironmentConfigurationIdByMD5(
+int EnvironmentConfigurationDao::getEnvironmentConfigurationIdByHashSum(
         const std::string& hashSum) const {
     int indexId = -1;
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());

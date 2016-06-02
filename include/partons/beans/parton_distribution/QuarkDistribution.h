@@ -4,12 +4,10 @@
 #include <string>
 
 #include "../../BaseObject.h"
+#include "../../utils/compare/ComparisonReport.h"
 #include "../QuarkFlavor.h"
 
 class ComparisonReport;
-namespace NumA {
-class Tolerances;
-} /* namespace NumA */
 
 class QuarkDistribution: public BaseObject {
 public:
@@ -28,8 +26,7 @@ public:
 
     void compare(ComparisonReport &rootComparisonReport,
             const QuarkDistribution &referenceObject,
-            const NumA::Tolerances &tolerances, std::string parentObjectInfo =
-                    "") const;
+            std::string parentObjectInfo = "") const;
 
     // ##### GETTERS & SETTERS #####
 

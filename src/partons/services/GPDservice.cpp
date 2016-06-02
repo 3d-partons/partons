@@ -16,7 +16,6 @@
 #include "../../../include/partons/beans/List.h"
 #include "../../../include/partons/beans/system/ResultInfo.h"
 #include "../../../include/partons/BaseObjectRegistry.h"
-//#include "../../../include/partons/database/gpd/service/GPDResultDaoService.h"
 #include "../../../include/partons/database/ResultDaoService.h"
 #include "../../../include/partons/modules/evolution/GPDEvolutionModule.h"
 #include "../../../include/partons/modules/GPDModule.h"
@@ -25,7 +24,6 @@
 #include "../../../include/partons/ResourceManager.h"
 #include "../../../include/partons/services/GPDService.h"
 #include "../../../include/partons/ServiceObjectTyped.h"
-#include "../../../include/partons/utils/compare/ComparisonReport.h"
 
 const std::string GPDService::GPD_SERVICE_COMPUTE_GPD_MODEL = "computeGPDModel";
 const std::string GPDService::GPD_SERVICE_COMPUTE_GPD_MODEL_WITH_EVOLUTION =
@@ -267,14 +265,14 @@ List<GPDResult> GPDService::computeManyKinematicOneModel(
     return results;
 }
 
-ComparisonReport GPDService::compareResultListToDatabase(
-        const std::string& scenarioTestFilePath) {
-    ComparisonReport comparisonReport;
-
-    Partons::getInstance()->getServiceObjectRegistry();
-
-    return comparisonReport;
-}
+//ComparisonReport GPDService::compareResultListToDatabase(
+//        const std::string& scenarioTestFilePath) {
+//    ComparisonReport comparisonReport;
+//
+//    Partons::getInstance()->getServiceObjectRegistry();
+//
+//    return comparisonReport;
+//}
 
 GPDModule* GPDService::newGPDModuleFromTask(const Task& task) const {
     GPDModule* pGPDModule = 0;

@@ -1,11 +1,9 @@
 #include "../../../../include/partons/beans/observable/ObservableResult.h"
 
 #include <ElementaryUtils/string_utils/Formatter.h>
-#include <ElementaryUtils/string_utils/StringUtils.h>
 
 #include "../../../../include/partons/utils/compare/CompareUtils.h"
 #include "../../../../include/partons/utils/compare/ComparisonData.h"
-#include "../../../../include/partons/utils/compare/ComparisonReport.h"
 
 const std::string ObservableResult::PARAMETER_NAME_OBSERVABLE_VALUE =
         "observable value";
@@ -34,7 +32,6 @@ std::string ObservableResult::toString() const {
 
 void ObservableResult::compare(ComparisonReport &rootComparisonReport,
         const ObservableResult &referenceObject,
-        const NumA::Tolerances &tolerances,
         std::string parentObjectInfo) const {
 
     //TODO faire un test pour valider la cinématique associée
@@ -48,14 +45,15 @@ void ObservableResult::compare(ComparisonReport &rootComparisonReport,
 
     ComparisonData xb_comparisonData = CompareUtils::compareDouble(
             ObservableResult::PARAMETER_NAME_OBSERVABLE_VALUE, getValue(),
-            referenceObject.getValue(), tolerances,
+            referenceObject.getValue(), rootComparisonReport.getTolerances(),
             ElemUtils::Formatter() << parentObjectInfo
                     << this->getObjectInfo());
     rootComparisonReport.addComparisonData(xb_comparisonData);
 
     ComparisonData total_error_comparisonData = CompareUtils::compareDouble(
             ObservableResult::PARAMETER_NAME_TOTAL_ERROR, getTotalError(),
-            referenceObject.getTotalError(), tolerances,
+            referenceObject.getTotalError(),
+            rootComparisonReport.getTolerances(),
             ElemUtils::Formatter() << parentObjectInfo
                     << this->getObjectInfo());
     rootComparisonReport.addComparisonData(total_error_comparisonData);

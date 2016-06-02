@@ -18,15 +18,12 @@
 #include <string>
 #include <vector>
 
+#include "../../../utils/compare/ComparisonReport.h"
 #include "../../gpd/GPDType.h"
 #include "../../Result.h"
 #include "DVCSConvolCoeffFunctionKinematic.h"
 
 class ComparisonReport;
-
-namespace NumA {
-class Tolerances;
-} /* namespace NumA */
 
 class DVCSConvolCoeffFunctionResult: public Result {
 public:
@@ -43,8 +40,7 @@ public:
 
     void compare(ComparisonReport &rootComparisonReport,
             const DVCSConvolCoeffFunctionResult &referenceObject,
-            const NumA::Tolerances &tolerances, std::string parentObjectInfo =
-                    ElemUtils::StringUtils::EMPTY) const;
+            std::string parentObjectInfo = ElemUtils::StringUtils::EMPTY) const;
 
     std::string toString();
 

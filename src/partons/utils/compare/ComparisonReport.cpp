@@ -1,10 +1,18 @@
 #include "../../../../include/partons/utils/compare/ComparisonReport.h"
 
 #include <ElementaryUtils/string_utils/Formatter.h>
+#include <ElementaryUtils/string_utils/StringUtils.h>
 #include <stddef.h>
 
-ComparisonReport::ComparisonReport() {
+#include "../../../../include/partons/beans/system/EnvironmentConfiguration.h"
+#include "../../../../include/partons/Partons.h"
 
+ComparisonReport::ComparisonReport(const NumA::Tolerances &tolerances) :
+        m_environmentSetting(ElemUtils::StringUtils::EMPTY), m_objectClassNameTested(
+                ElemUtils::StringUtils::EMPTY), m_referenceObjectClassName(
+                ElemUtils::StringUtils::EMPTY), m_tolerances(tolerances) {
+    m_environmentSetting =
+            Partons::getInstance()->getEnvironmentConfiguration()->getFile();
 }
 
 ComparisonReport::ComparisonReport(const std::string& environmentSetting,
@@ -13,6 +21,7 @@ ComparisonReport::ComparisonReport(const std::string& environmentSetting,
         m_environmentSetting(environmentSetting), m_objectClassNameTested(
                 objectClassNameTested), m_referenceObjectClassName(
                 referenceObjectClassName) {
+    Partons::getInstance()->getEnvironmentConfiguration()->getFile();
 }
 
 ComparisonReport::~ComparisonReport() {

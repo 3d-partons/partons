@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include "../../utils/compare/ComparisonReport.h"
 #include "../List.h"
 #include "../QuarkFlavor.h"
 #include "GluonDistribution.h"
@@ -35,8 +36,7 @@ public:
 
     void compare(ComparisonReport &rootComparisonReport,
             const PartonDistribution &referenceObject,
-            const NumA::Tolerances &tolerances, std::string parentObjectInfo =
-                    "") const;
+            std::string parentObjectInfo = "") const;
 
     // ##### GETTERS & SETTERS #####
 

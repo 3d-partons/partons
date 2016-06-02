@@ -5,7 +5,6 @@
 
 #include "../../../../include/partons/utils/compare/CompareUtils.h"
 #include "../../../../include/partons/utils/compare/ComparisonData.h"
-#include "../../../../include/partons/utils/compare/ComparisonReport.h"
 
 const std::string QuarkDistribution::QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DISTRIBUTION =
         "quark_distribution";
@@ -103,13 +102,12 @@ void QuarkDistribution::setQuark(double quark) {
 
 void QuarkDistribution::compare(ComparisonReport &rootComparisonReport,
         const QuarkDistribution &referenceObject,
-        const NumA::Tolerances &tolerances,
         std::string parentObjectInfo) const {
     ComparisonData quark_distribution_value_comparisonData =
             CompareUtils::compareDouble(
                     QuarkDistribution::QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DISTRIBUTION,
                     m_quarkDistribution, referenceObject.getQuarkDistribution(),
-                    tolerances,
+                    rootComparisonReport.getTolerances(),
                     ElemUtils::Formatter() << parentObjectInfo << " "
                             << getClassName());
 
@@ -117,7 +115,8 @@ void QuarkDistribution::compare(ComparisonReport &rootComparisonReport,
             CompareUtils::compareDouble(
                     QuarkDistribution::QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DISTRIBUTION_PLUS,
                     m_quarkDistributionPlus,
-                    referenceObject.getQuarkDistributionPlus(), tolerances,
+                    referenceObject.getQuarkDistributionPlus(),
+                    rootComparisonReport.getTolerances(),
                     ElemUtils::Formatter() << parentObjectInfo << " "
                             << getClassName());
 
@@ -125,7 +124,8 @@ void QuarkDistribution::compare(ComparisonReport &rootComparisonReport,
             CompareUtils::compareDouble(
                     QuarkDistribution::QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DISTRIBUTION_MINUS,
                     m_quarkDistributionMinus,
-                    referenceObject.getQuarkDistributionMinus(), tolerances,
+                    referenceObject.getQuarkDistributionMinus(),
+                    rootComparisonReport.getTolerances(),
                     ElemUtils::Formatter() << parentObjectInfo << " "
                             << getClassName());
 
@@ -136,18 +136,3 @@ void QuarkDistribution::compare(ComparisonReport &rootComparisonReport,
     rootComparisonReport.addComparisonData(
             quark_distribution_minus_value_comparisonData);
 }
-
-//ComparisonReport QuarkDistribution::compare(
-//        const QuarkDistribution& referenceObject,
-//        const NumA::Tolerances& tolerances) const {
-//    ComparisonReport comparisonReport(getClassName());
-//
-//    ComparisonData quark_distribution_plus_comparisonData =
-//            CompareUtils::compareDouble(
-//                    QuarkDistribution::QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DISTRIBUTION_PLUS,
-//                    getQuarkDistributionPlus(),
-//                    referenceObject.getQuarkDistributionPlus(), tolerances);
-//    comparisonReport.addComparisonData(quark_distribution_plus_comparisonData);
-//
-//    return comparisonReport;
-//}

@@ -20,8 +20,6 @@ namespace ElemUtils {
 class Parameters;
 } /* namespace ElemUtils */
 
-class ParameterList;
-
 class DVCSConvolCoeffFunctionKinematic: public Kinematic {
 public:
     DVCSConvolCoeffFunctionKinematic();

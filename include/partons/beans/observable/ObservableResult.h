@@ -11,15 +11,13 @@
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <string>
 
+#include "../../utils/compare/ComparisonReport.h"
 #include "../../utils/math/ErrorBar.h"
 #include "../Result.h"
 #include "ObservableKinematic.h"
 #include "ObservableType.h"
 
 class ComparisonReport;
-namespace NumA {
-class Tolerances;
-} /* namespace NumA */
 
 /**
  * @class ObservableResult
@@ -40,8 +38,7 @@ public:
 
     void compare(ComparisonReport &rootComparisonReport,
             const ObservableResult &referenceObject,
-            const NumA::Tolerances &tolerances, std::string parentObjectInfo =
-                    ElemUtils::StringUtils::EMPTY) const;
+            std::string parentObjectInfo = ElemUtils::StringUtils::EMPTY) const;
 
     void setKinematic(const ObservableKinematic &kinematic);
     void setStatError(const ErrorBar& statError);

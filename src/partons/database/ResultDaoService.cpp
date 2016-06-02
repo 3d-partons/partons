@@ -1,6 +1,7 @@
 #include "../../../include/partons/database/ResultDaoService.h"
 
 #include <ElementaryUtils/file_utils/FileUtils.h>
+#include <ElementaryUtils/PropertiesManager.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <QtCore/qdatetime.h>
@@ -19,8 +20,10 @@
 #include "../../../include/partons/beans/parton_distribution/PartonDistribution.h"
 #include "../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
 #include "../../../include/partons/beans/QuarkFlavor.h"
+#include "../../../include/partons/beans/system/EnvironmentConfiguration.h"
 #include "../../../include/partons/beans/system/ResultInfo.h"
 #include "../../../include/partons/database/DatabaseManager.h"
+#include "../../../include/partons/Partons.h"
 #include "../../../include/partons/ResourceManager.h"
 
 ResultDaoService::ResultDaoService() :
@@ -30,7 +33,13 @@ ResultDaoService::ResultDaoService() :
                 -1), m_lastScenarioComputation(-1), m_previousComputationId(
                 std::make_pair<time_t, int>(0, -1)), m_previousScenarioId(
                 std::make_pair<std::string, int>(ElemUtils::StringUtils::EMPTY,
+                        -1)), m_previousEnvConfId(
+                std::make_pair<std::string, int>(ElemUtils::StringUtils::EMPTY,
                         -1)) {
+
+    m_temporaryFolderPath =
+            ElemUtils::PropertiesManager::getInstance()->getString(
+                    "temporary.working.directory.path");
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
     if (query.exec("SELECT COUNT(id) FROM computation;")) {
@@ -139,7 +148,32 @@ ResultDaoService::~ResultDaoService() {
 bool ResultDaoService::insert(const List<GPDResult>& result) {
     bool isInserted = false;
 
+    info(__func__, "Prepare data before inserting them into database ...");
+
     for (unsigned int i = 0; i != result.size(); i++) {
+
+        int environmentConfigurationId = -1;
+        std::string envConfHashSum =
+                Partons::getInstance()->getEnvironmentConfiguration()->getHashSum();
+
+        // Check if previousEnvConfId stored is not the same as current
+        if (envConfHashSum == m_previousEnvConfId.first) {
+            environmentConfigurationId = m_previousEnvConfId.second;
+        } else {
+            environmentConfigurationId =
+                    m_environmentConfigurationDaoService.getEnvironmentConfigurationIdByHashSum(
+                            envConfHashSum);
+
+            // If not, insert new entry in database and retrieve its id
+            if (environmentConfigurationId == -1) {
+                environmentConfigurationId =
+                        m_environmentConfigurationDaoService.insert(
+                                *(Partons::getInstance()->getEnvironmentConfiguration()));
+            }
+
+            m_previousEnvConfId = std::make_pair<std::string, int>(
+                    envConfHashSum, environmentConfigurationId);
+        }
 
         int scenarioId = -1;
         std::string scenarioHashSum =
@@ -149,7 +183,6 @@ bool ResultDaoService::insert(const List<GPDResult>& result) {
         if (scenarioHashSum == m_previousScenarioId.first) {
             scenarioId = m_previousComputationId.second;
         } else {
-            // Check if this computation date already exists and retrieve Id
             scenarioId = m_scenarioDaoService.getScenarioIdByHashSum(
                     scenarioHashSum);
 
@@ -187,7 +220,7 @@ bool ResultDaoService::insert(const List<GPDResult>& result) {
                 m_computationDatabaseFile += ElemUtils::Formatter()
                         << computationId << ","
                         << qDateTime.toString(Qt::ISODate).toStdString() << ","
-                        << scenarioId << '\n';
+                        << m_previousEnvConfId.second << '\n';
 
                 // Fill scenario_computation association table.
                 m_lastScenarioComputation++;
@@ -279,33 +312,40 @@ bool ResultDaoService::insert(const List<GPDResult>& result) {
 //    warn(__func__, ElemUtils::Formatter() << m_gpdResultDatabaseFile << '\n');
 //    warn(__func__, ElemUtils::Formatter() << m_computationDatabaseFile << '\n');
 
+    info(__func__, "Wrinting temporary data files ...");
+
     ElemUtils::FileUtils::write(
-            "/home/debian/temp/gpdKinematicDatabaseFile.csv",
+            m_temporaryFolderPath + "/gpdKinematicDatabaseFile.csv",
             m_gpdKinematicDatabaseFile);
-    ElemUtils::FileUtils::write("/home/debian/temp/gpdResultDatabaseFile.csv",
+    ElemUtils::FileUtils::write(
+            m_temporaryFolderPath + "/gpdResultDatabaseFile.csv",
             m_gpdResultDatabaseFile);
-    ElemUtils::FileUtils::write("/home/debian/temp/computationDatabaseFile.csv",
+    ElemUtils::FileUtils::write(
+            m_temporaryFolderPath + "/computationDatabaseFile.csv",
             m_computationDatabaseFile);
     ElemUtils::FileUtils::write(
-            "/home/debian/temp/parton_distribution_table.csv",
+            m_temporaryFolderPath + "/parton_distribution_table.csv",
             m_parton_distribution_table);
     ElemUtils::FileUtils::write(
-            "/home/debian/temp/quark_distribution_table.csv",
+            m_temporaryFolderPath + "/quark_distribution_table.csv",
             m_quark_distribution_table);
     ElemUtils::FileUtils::write(
-            "/home/debian/temp/parton_distribution_quark_distribution_table.csv",
+            m_temporaryFolderPath
+                    + "/parton_distribution_quark_distribution_table.csv",
             m_parton_distribution_quark_distribution_table);
     ElemUtils::FileUtils::write(
-            "/home/debian/temp/gpd_result_parton_distribution_table.csv",
+            m_temporaryFolderPath + "/gpd_result_parton_distribution_table.csv",
             m_gpd_result_parton_distribution_table);
     ElemUtils::FileUtils::write(
-            "/home/debian/temp/scenario_computation_table.csv",
+            m_temporaryFolderPath + "/scenario_computation_table.csv",
             m_scenario_computation_table);
+
+    info(__func__, "Inserting data into database ...");
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     if (query.exec(
-            "LOAD DATA INFILE '/home/debian/temp/computationDatabaseFile.csv' INTO TABLE computation FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n';")) {
+            prepareInsertQuery("computationDatabaseFile.csv", "computation"))) {
     } else {
         error(__func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
@@ -315,7 +355,8 @@ bool ResultDaoService::insert(const List<GPDResult>& result) {
     query.clear();
 
     if (query.exec(
-            "LOAD DATA INFILE '/home/debian/temp/gpdKinematicDatabaseFile.csv' INTO TABLE gpd_kinematic FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n';")) {
+            prepareInsertQuery("gpdKinematicDatabaseFile.csv",
+                    "gpd_kinematic"))) {
     } else {
         error(__func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
@@ -325,7 +366,7 @@ bool ResultDaoService::insert(const List<GPDResult>& result) {
     query.clear();
 
     if (query.exec(
-            "LOAD DATA INFILE '/home/debian/temp/gpdResultDatabaseFile.csv' INTO TABLE gpd_result FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n';")) {
+            prepareInsertQuery("gpdResultDatabaseFile.csv", "gpd_result"))) {
     } else {
         error(__func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
@@ -335,7 +376,8 @@ bool ResultDaoService::insert(const List<GPDResult>& result) {
     query.clear();
 
     if (query.exec(
-            "LOAD DATA INFILE '/home/debian/temp/parton_distribution_table.csv' INTO TABLE parton_distribution FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n';")) {
+            prepareInsertQuery("parton_distribution_table.csv",
+                    "parton_distribution"))) {
     } else {
         error(__func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
@@ -345,7 +387,8 @@ bool ResultDaoService::insert(const List<GPDResult>& result) {
     query.clear();
 
     if (query.exec(
-            "LOAD DATA INFILE '/home/debian/temp/quark_distribution_table.csv' INTO TABLE quark_distribution FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n';")) {
+            prepareInsertQuery("quark_distribution_table.csv",
+                    "quark_distribution"))) {
     } else {
         error(__func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
@@ -355,7 +398,9 @@ bool ResultDaoService::insert(const List<GPDResult>& result) {
     query.clear();
 
     if (query.exec(
-            "LOAD DATA INFILE '/home/debian/temp/parton_distribution_quark_distribution_table.csv' INTO TABLE parton_distribution_quark_distribution FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n';")) {
+            prepareInsertQuery(
+                    "parton_distribution_quark_distribution_table.csv",
+                    "parton_distribution_quark_distribution"))) {
     } else {
         error(__func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
@@ -365,7 +410,8 @@ bool ResultDaoService::insert(const List<GPDResult>& result) {
     query.clear();
 
     if (query.exec(
-            "LOAD DATA INFILE '/home/debian/temp/gpd_result_parton_distribution_table.csv' INTO TABLE gpd_result_parton_distribution FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n';")) {
+            prepareInsertQuery("gpd_result_parton_distribution_table.csv",
+                    "gpd_result_parton_distribution"))) {
     } else {
         error(__func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
@@ -375,7 +421,8 @@ bool ResultDaoService::insert(const List<GPDResult>& result) {
     query.clear();
 
     if (query.exec(
-            "LOAD DATA INFILE '/home/debian/temp/scenario_computation_table.csv' INTO TABLE scenario_computation FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n';")) {
+            prepareInsertQuery("scenario_computation_table.csv",
+                    "scenario_computation"))) {
     } else {
         error(__func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
@@ -386,26 +433,45 @@ bool ResultDaoService::insert(const List<GPDResult>& result) {
 
     info(__func__, "Insertion done !");
 
-//    if (ElemUtils::FileUtils::remove(
-//            "/home/debian/temp/computationDatabaseFile.csv")) {
-//        info(__func__,
-//                ElemUtils::Formatter()
-//                        << "File successfully deleted : computationDatabaseFile.csv");
-//    } else {
-//        //TODO implementing
-//    }
-//
-//    ElemUtils::FileUtils::remove(
-//            "/home/debian/temp/gpdKinematicDatabaseFile.csv");
-//    ElemUtils::FileUtils::remove("/home/debian/temp/gpdResultDatabaseFile.csv");
-//    ElemUtils::FileUtils::remove(
-//            "/home/debian/temp/parton_distribution_table.csv");
-//    ElemUtils::FileUtils::remove(
-//            "/home/debian/temp/quark_distribution_table.csv");
-//    ElemUtils::FileUtils::remove(
-//            "/home/debian/temp/parton_distribution_quark_distribution_table.csv");
-//    ElemUtils::FileUtils::remove(
-//            "/home/debian/temp/gpd_result_parton_distribution_table.csv");
+    info(__func__, "Deleting temporary files ...");
+
+    if (ElemUtils::FileUtils::remove(
+            m_temporaryFolderPath + "/computationDatabaseFile.csv")) {
+        info(__func__,
+                ElemUtils::Formatter()
+                        << "File successfully deleted : computationDatabaseFile.csv");
+    } else {
+        //TODO implementing
+    }
+
+    ElemUtils::FileUtils::remove(
+            m_temporaryFolderPath + "/gpdKinematicDatabaseFile.csv");
+    ElemUtils::FileUtils::remove(
+            m_temporaryFolderPath + "/gpdResultDatabaseFile.csv");
+    ElemUtils::FileUtils::remove(
+            m_temporaryFolderPath + "/parton_distribution_table.csv");
+    ElemUtils::FileUtils::remove(
+            m_temporaryFolderPath + "/quark_distribution_table.csv");
+    ElemUtils::FileUtils::remove(
+            m_temporaryFolderPath
+                    + "/parton_distribution_quark_distribution_table.csv");
+    ElemUtils::FileUtils::remove(
+            m_temporaryFolderPath
+                    + "/gpd_result_parton_distribution_table.csv");
+    ElemUtils::FileUtils::remove(
+            m_temporaryFolderPath + "/scenario_computation_table.csv");
+
+    info(__func__, "Done !");
 
     return isInserted;
+}
+
+QString ResultDaoService::prepareInsertQuery(const std::string &fileName,
+        const std::string &tableName) {
+    ElemUtils::Formatter formatter;
+    formatter << "LOAD DATA INFILE '" << m_temporaryFolderPath << "/"
+            << fileName << "' INTO TABLE " << tableName
+            << " FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n';";
+
+    return QString::fromUtf8(formatter.str().c_str());
 }

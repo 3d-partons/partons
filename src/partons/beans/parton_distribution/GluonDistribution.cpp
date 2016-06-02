@@ -1,11 +1,9 @@
 #include "../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
 
 #include <ElementaryUtils/string_utils/Formatter.h>
-#include <sstream>
 
 #include "../../../../include/partons/utils/compare/CompareUtils.h"
 #include "../../../../include/partons/utils/compare/ComparisonData.h"
-#include "../../../../include/partons/utils/compare/ComparisonReport.h"
 
 const std::string GluonDistribution::GLUON_DISTRIBUTION_DB_COLUMN_NAME =
         "gluon_distribution";
@@ -28,11 +26,8 @@ GluonDistribution::~GluonDistribution() {
 }
 
 std::string GluonDistribution::toString() const {
-    std::ostringstream os;
-
-    os << "GluonDistribution = " << m_gluonDistribution << std::endl;
-
-    return os.str();
+    return ElemUtils::Formatter() << "GluonDistribution = "
+            << m_gluonDistribution << '\n';
 }
 
 double GluonDistribution::getGluonDistribution() const {
@@ -54,13 +49,12 @@ void GluonDistribution::setNullObject(bool nullObject) {
 
 void GluonDistribution::compare(ComparisonReport &rootComparisonReport,
         const GluonDistribution &referenceObject,
-        const NumA::Tolerances &tolerances,
         std::string parentObjectInfo) const {
     ComparisonData gluon_value_comparisonData =
             CompareUtils::compareDouble(
                     GluonDistribution::GLUON_DISTRIBUTION_PARAMETER_NAME_GLUON_DISTRIBUTION,
                     m_gluonDistribution, referenceObject.getGluonDistribution(),
-                    tolerances,
+                    rootComparisonReport.getTolerances(),
                     ElemUtils::Formatter() << parentObjectInfo << " "
                             << getClassName());
 

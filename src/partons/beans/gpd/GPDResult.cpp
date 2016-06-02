@@ -107,8 +107,7 @@ void GPDResult::setKinematic(const GPDKinematic& kinematic) {
 }
 
 void GPDResult::compare(ComparisonReport &rootComparisonReport,
-        const GPDResult &referenceObject, const NumA::Tolerances &tolerances,
-        std::string parentObjectInfo) const {
+        const GPDResult &referenceObject, std::string parentObjectInfo) const {
 
     //TODO faire un test pour valider la cinématique associée
 
@@ -117,7 +116,7 @@ void GPDResult::compare(ComparisonReport &rootComparisonReport,
             m_partonDistributions.begin(); it != m_partonDistributions.end();
             it++) {
         (it->second).compare(rootComparisonReport,
-                referenceObject.getPartonDistribution((it->first)), tolerances,
+                referenceObject.getPartonDistribution((it->first)),
                 ElemUtils::Formatter() << parentObjectInfo
                         << this->getObjectInfo() << " "
                         << GPDType(it->first).toString());

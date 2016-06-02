@@ -127,19 +127,18 @@ void PartonDistribution::addQuarkDistribution(
 
 void PartonDistribution::compare(ComparisonReport &rootComparisonReport,
         const PartonDistribution &referenceObject,
-        const NumA::Tolerances &tolerances,
         std::string parentObjectInfo) const {
 
     // compare gluon distribution
     this->m_gluonDistribution.compare(rootComparisonReport,
-            referenceObject.getGluonDistribution(), tolerances,
+            referenceObject.getGluonDistribution(),
             ElemUtils::Formatter() << parentObjectInfo);
 
     for (std::map<QuarkFlavor::Type, QuarkDistribution>::const_iterator it =
             m_quarkDistributions.begin(); it != m_quarkDistributions.end();
             it++) {
         (it->second).compare(rootComparisonReport,
-                referenceObject.getQuarkDistribution((it->first)), tolerances,
+                referenceObject.getQuarkDistribution((it->first)),
                 ElemUtils::Formatter() << parentObjectInfo << " "
                         << QuarkFlavor(it->first).toString());
     }

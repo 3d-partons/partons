@@ -23,10 +23,6 @@
 #include "../utils/compare/ComparisonReport.h"
 #include "SortingMode.h"
 
-namespace NumA {
-class Tolerances;
-} /* namespace NumA */
-
 template<class T> class List: public BaseObject {
 public:
     List() :
@@ -96,11 +92,9 @@ public:
     }
 
     void compare(ComparisonReport &rootComparisonReport,
-            const List<T> &referenceObject, const NumA::Tolerances &tolerances,
+            const List<T> &referenceObject,
             const ComparisonMode &comparisonMode = ComparisonMode::EQUAL,
             std::string parentObjectInfo = ElemUtils::StringUtils::EMPTY) const {
-
-        rootComparisonReport.setTolerances(tolerances);
 
         if ((this->isEmpty()) && referenceObject.isEmpty()) {
             warn(__func__, ElemUtils::Formatter() << "Lists are empty");
@@ -119,7 +113,7 @@ public:
                 if (this->size() == referenceObject.size()) {
                     for (size_t i = 0; i != this->size(); i++) {
                         (this->m_data[i]).compare(rootComparisonReport,
-                                referenceObject[i], tolerances);
+                                referenceObject[i]);
                     }
                 } else {
                     warn(__func__,

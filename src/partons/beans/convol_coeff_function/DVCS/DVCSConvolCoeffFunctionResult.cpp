@@ -1,11 +1,8 @@
-#include "../../../../../include/partons/beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
-
 #include <ElementaryUtils/string_utils/Formatter.h>
+#include <include/partons/beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h>
+#include <include/partons/utils/compare/CompareUtils.h>
+#include <include/partons/utils/compare/ComparisonData.h>
 #include <utility>
-
-#include "../../../../../include/partons/utils/compare/CompareUtils.h"
-#include "../../../../../include/partons/utils/compare/ComparisonData.h"
-#include "../../../../../include/partons/utils/compare/ComparisonReport.h"
 
 DVCSConvolCoeffFunctionResult::DVCSConvolCoeffFunctionResult() :
         Result("DVCSConvolCoeffFunctionResult") {
@@ -101,7 +98,6 @@ void DVCSConvolCoeffFunctionResult::setResultsByGpdType(
 void DVCSConvolCoeffFunctionResult::compare(
         ComparisonReport &rootComparisonReport,
         const DVCSConvolCoeffFunctionResult &referenceObject,
-        const NumA::Tolerances &tolerances,
         std::string parentObjectInfo) const {
 
     //TODO faire un test pour valider la cinématique associée
@@ -111,7 +107,8 @@ void DVCSConvolCoeffFunctionResult::compare(
             m_resultsByGPDType.begin(); it != m_resultsByGPDType.end(); it++) {
 
         ComparisonData comparisonData = CompareUtils::compareComplex("",
-                it->second, referenceObject.getResult(it->first), tolerances,
+                it->second, referenceObject.getResult(it->first),
+                rootComparisonReport.getTolerances(),
                 ElemUtils::Formatter() << parentObjectInfo << " "
                         << GPDType(it->first).toString());
         rootComparisonReport.addComparisonData(comparisonData);

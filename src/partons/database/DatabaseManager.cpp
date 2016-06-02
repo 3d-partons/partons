@@ -1,8 +1,8 @@
-#include "../../../include/partons/database/DatabaseManager.h"
-
+#include <ElementaryUtils/file_utils/FileUtils.h>
 #include <ElementaryUtils/PropertiesManager.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
+#include <include/partons/database/DatabaseManager.h>
 #include <QtCore/qstring.h>
 #include <QtSql/qsqlerror.h>
 #include <string>
@@ -28,16 +28,28 @@ DatabaseManager::DatabaseManager() :
     std::string sqlDatabaseType = pPropertiesManager->getString(
             "database.production.type");
 
+    std::string sqlDatabaseName = pPropertiesManager->getString(
+            "database.production.dbname");
+
     if (ElemUtils::StringUtils::equalsIgnoreCase(sqlDatabaseType, "MYSQL")) {
         m_productionDatabase = QSqlDatabase::addDatabase("QMYSQL");
 
-    } else {
+    } else if (ElemUtils::StringUtils::equalsIgnoreCase(sqlDatabaseType,
+            "SQLITE")) {
         m_productionDatabase = QSqlDatabase::addDatabase("QSQLITE");
+        if (!(ElemUtils::FileUtils::isReadable(sqlDatabaseName))) {
+            error(__func__,
+                    ElemUtils::Formatter()
+                            << "Cannot read SQLITE database file ; corrupt or missing file : "
+                            << sqlDatabaseName
+                            << ", please check your properties file");
+        }
+    } else {
+        error(__func__,
+                "Unknown database type, please check your properties file");
     }
 
-    m_productionDatabase.setDatabaseName(
-            QString(
-                    pPropertiesManager->getString("database.production.dbname").c_str()));
+    m_productionDatabase.setDatabaseName(QString(sqlDatabaseName.c_str()));
     m_productionDatabase.setHostName(
             QString(
                     pPropertiesManager->getString("database.production.url").c_str()));

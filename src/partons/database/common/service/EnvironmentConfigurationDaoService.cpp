@@ -34,6 +34,6 @@ void EnvironmentConfigurationDaoService::deleteByIndexId(
 
 int EnvironmentConfigurationDaoService::getEnvironmentConfigurationIdByHashSum(
         const std::string& hashSum) const {
-    return m_environmentConfigurationDao.getEnvironmentConfigurationIdByMD5(
+    return m_environmentConfigurationDao.getEnvironmentConfigurationIdByHashSum(
             hashSum);
 }

@@ -16,6 +16,7 @@
 #include <string>
 #include <vector>
 
+#include "../../utils/compare/ComparisonReport.h"
 #include "../List.h"
 #include "../parton_distribution/PartonDistribution.h"
 #include "../Result.h"
@@ -43,8 +44,7 @@ public:
 
     void compare(ComparisonReport &rootComparisonReport,
             const GPDResult &referenceObject,
-            const NumA::Tolerances &tolerances, std::string parentObjectInfo =
-                    "") const;
+            std::string parentObjectInfo = "") const;
 
     // ##### GETTERS & SETTERS #####
 
