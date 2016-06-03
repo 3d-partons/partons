@@ -8,7 +8,6 @@
 #ifndef GKK11TESTMODEL_H_
 #define GKK11TESTMODEL_H_
 
-
 /**
  * @file GK11Model.h
  * @author Bryan BERTHOU (CEA Saclay)
@@ -150,7 +149,7 @@ protected:
     double b0; // Exponential t-dependence (eq. (22))
     double fL;
     double d0; //exponent appearing in PDF expasion (eq. (26))
-    double alphaP;//coefficient for t and beta -dependence (eq. 22)
+    double alphaP; //coefficient for t and beta -dependence (eq. 22)
 
     std::vector<double> Hi1tab;               ///< Hi1(i=0,0.5,1,1.5) for gluons
 
@@ -239,29 +238,67 @@ private:
     double Etval1_alt(double x, double i, double k);
 
     double Profile(double N, double alpha, double beta);
-    double PDFexp(double N, double beta, double* coeff);
+    double GKPdfAnsatz(double N, double beta, double* coeff);
+    double GKtDependentsDD(double beta, double alpha);
+    double GKtDependentuValDD(double beta, double alpha);
+    double GKtDependentdValDD(double beta, double alpha);
+    double GKtDependentgDD(double beta, double alpha);
 
     void initFunctorsForIntegrations();
-    double IntegralHuVal(double x, std::vector<double> Par);
+//    double IntegralHuVal(double x, std::vector<double> Par);
     double IntegralHdValBp(double x, std::vector<double> Par);
     double IntegralHdValBm(double x, std::vector<double> Par);
-    double IntegralHuValMx(double x, std::vector<double> Par);
-    double IntegralHdValMx(double x, std::vector<double> Par);
+//    double IntegralHuValMx(double x, std::vector<double> Par);
+//    double IntegralHdValMx(double x, std::vector<double> Par);
     double IntegralHg(double x, std::vector<double> Par);
     double IntegralHs(double x, std::vector<double> Par);
     double IntegralHsBm(double x, std::vector<double> Par);
 
-
+    double IntegralHuVal(double x, std::vector<double> Par);
+    double IntegralHuValMx(double x, std::vector<double> Par);
+    double IntegralHdVal(double x, std::vector<double> Par);
+    double IntegralHdValMx(double x, std::vector<double> Par);
+    double IntegralxLargeHsSea(double x, std::vector<double> Par);
+    double IntegralxLargeHsSeaMx(double x, std::vector<double> Par);
+    double IntegralxSmallHsSea(double x, std::vector<double> Par);
+    double IntegralxSmall1HsSea(double x, std::vector<double> Par);
+    double IntegralxSmall2HsSea(double x, std::vector<double> Par);
+    double IntegralxLargeHg(double x, std::vector<double> Par);
+    double IntegralxLargeHgMx(double x, std::vector<double> Par);
+    double IntegralxSmall1Hg(double x, std::vector<double> Par);
+    double IntegralxSmall2Hg(double x, std::vector<double> Par);
 
     void throwBetaException(const std::string &funcName, double betaValue);
-    NumA::FunctionType1D* m_pIntegralHuVal;
+//    NumA::FunctionType1D* m_pIntegralHuVal;
     NumA::FunctionType1D* m_pIntegralHdValBp;
     NumA::FunctionType1D* m_pIntegralHdValBm;
-    NumA::FunctionType1D* m_pIntegralHuValMx;
-    NumA::FunctionType1D* m_pIntegralHdValMx;
+//    NumA::FunctionType1D* m_pIntegralHuValMx;
+//    NumA::FunctionType1D* m_pIntegralHdValMx;
     NumA::FunctionType1D* m_pIntegralHg;
     NumA::FunctionType1D* m_pIntegralHs;
     NumA::FunctionType1D* m_pIntegralHsBm;
+
+    NumA::FunctionType1D* m_pIntegralHuVal;
+    NumA::FunctionType1D* m_pIntegralHdVal;
+    NumA::FunctionType1D* m_pIntegralHuValMx;
+    NumA::FunctionType1D* m_pIntegralHdValMx;
+    NumA::FunctionType1D* m_pIntegralxLargeHuSea;
+    NumA::FunctionType1D* m_pIntegralxLargeHdSea;
+    NumA::FunctionType1D* m_pIntegralxSmall1HuSea;
+    NumA::FunctionType1D* m_pIntegralxSmall2HuSea;
+    NumA::FunctionType1D* m_pIntegralxSmall1HdSea;
+    NumA::FunctionType1D* m_pIntegralxSmall2HdSea;
+    NumA::FunctionType1D* m_pIntegralxLargeHuSeaMx;
+    NumA::FunctionType1D* m_pIntegralxLargeHdSeaMx;
+    NumA::FunctionType1D* m_pIntegralxLargeHsSea;
+    NumA::FunctionType1D* m_pIntegralxSmallHsSea;
+    NumA::FunctionType1D* m_pIntegralxSmall1HsSea;
+    NumA::FunctionType1D* m_pIntegralxSmall2HsSea;
+    NumA::FunctionType1D* m_pIntegralxLargeHsSeaMx;
+    NumA::FunctionType1D* m_pIntegralxLargeHg;
+    NumA::FunctionType1D* m_pIntegralxSmall1Hg;
+    NumA::FunctionType1D* m_pIntegralxSmall2Hg;
+    NumA::FunctionType1D* m_pIntegralxLargeHgMx;
 
 };
 
