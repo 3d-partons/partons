@@ -5,13 +5,13 @@ id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
 store_date TIMESTAMP,
 description VARCHAR(255),
 xml_file BLOB,
-hash_sum VARCHAR(32));
+hash_sum VARCHAR(40));
 
 CREATE TABLE environment_configuration (
 id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
 store_date TIMESTAMP,
 configuration VARCHAR(255),
-hash_sum VARCHAR(32));
+hash_sum VARCHAR(40));
 
 CREATE TABLE computation (
 id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, 

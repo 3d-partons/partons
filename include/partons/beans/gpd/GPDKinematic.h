@@ -95,6 +95,9 @@ public:
 //            const GPDKinematic& object);
 //    friend sf::Packet& operator >>(sf::Packet& packet, GPDKinematic& object);
 
+protected:
+    virtual void updateHashSum() const;
+
 private:
     KinematicType::Type m_kinematicType;
 

@@ -91,3 +91,7 @@ double DVCSConvolCoeffFunctionKinematic::getT() const {
 double DVCSConvolCoeffFunctionKinematic::getXi() const {
     return m_xi;
 }
+
+void DVCSConvolCoeffFunctionKinematic::updateHashSum() const {
+    //TODO
+}

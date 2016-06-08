@@ -29,9 +29,15 @@ public:
 
     int getId() const;
     void setId(int id);
+    const std::string& getHashSum() const;
+    void setHashSum(const std::string& hashSum) const;
+
+protected:
+    virtual void updateHashSum() const = 0;
 
 private:
     int m_id;
+   mutable std::string m_hashSum;
 };
 
 #endif /* KINEMATIC_H */

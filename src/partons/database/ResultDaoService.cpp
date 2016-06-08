@@ -238,8 +238,11 @@ bool ResultDaoService::insert(const List<GPDResult>& result) {
         }
 
         GPDKinematic kinematic = result[i].getKinematic();
-        int kinematicId = m_gpdKinematicDaoService.getIdByKinematicObject(
-                kinematic);
+//        int kinematicId = m_gpdKinematicDaoService.getIdByKinematicObject(
+//                kinematic);
+
+        int kinematicId = m_gpdKinematicDaoService.getKinematicIdByHashSum(
+                kinematic.getHashSum());
 
         if (kinematicId == -1) {
             m_lastGPDKinematicId++;
@@ -248,8 +251,8 @@ bool ResultDaoService::insert(const List<GPDResult>& result) {
             m_gpdKinematicDatabaseFile += ElemUtils::Formatter()
                     << m_lastGPDKinematicId << "," << kinematic.getX() << ","
                     << kinematic.getXi() << "," << kinematic.getT() << ","
-                    << kinematic.getMuF2() << "," << kinematic.getMuR2()
-                    << '\n';
+                    << kinematic.getMuF2() << "," << kinematic.getMuR2() << ","
+                    << kinematic.getHashSum() << '\n';
         }
 
         m_lastGPDResultId++;

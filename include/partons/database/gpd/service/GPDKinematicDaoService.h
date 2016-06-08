@@ -15,6 +15,8 @@
  * And they improve querying speed by using transaction and commit mechanisms for a large amount of simultaneous queries.
  */
 
+#include <string>
+
 #include "../../../beans/gpd/GPDKinematic.h"
 #include "../../../beans/List.h"
 #include "../dao/GPDKinematicDao.h"
@@ -73,6 +75,8 @@ public:
      */
     List<GPDKinematic> getKinematicListByComputationId(
             const int computationId) const;
+
+    int getKinematicIdByHashSum(const std::string &hashSum) const;
 
 private:
     friend class GPDResultDaoService; ///< allow GPDResultDaoService to call private member function insertWithoutTransaction(...)

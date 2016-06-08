@@ -1,12 +1,13 @@
 #include "../../../../include/partons/beans/gpd/GPDKinematic.h"
 
-//#include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
-#include <ElementaryUtils/string_utils/StringUtils.h>
 #include <ElementaryUtils/thread/Packet.h>
 
 #include "../../../../include/partons/beans/observable/ObservableKinematic.h"
+#include "../../../../include/partons/Partons.h"
+#include "../../../../include/partons/services/hash_sum/CryptographicHashService.h"
+#include "../../../../include/partons/ServiceObjectRegistry.h"
 
 const std::string GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_X = "x";
 const std::string GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI = "xi";
@@ -111,6 +112,13 @@ std::string GPDKinematic::toString() const {
 //
 //    return comparisonReport;
 //}
+
+void GPDKinematic::updateHashSum() const {
+    setHashSum(
+            Partons::getInstance()->getServiceObjectRegistry()->getCryptographicHashService()->generateSHA1HashSum(
+                    ElemUtils::Formatter() << m_x << m_xi << m_t << m_MuF2
+                            << m_MuR2));
+}
 
 // ##### GETTERS & SETTERS #####
 

@@ -33,7 +33,7 @@ const unsigned int ObservableService::classId =
                 new ObservableService("ObservableService"));
 
 ObservableService::ObservableService(const std::string &className) :
-        ServiceObjectTyped(className) {
+        ServiceObjectTyped<ObservableKinematic, ObservableResult>(className) {
 }
 
 ObservableService::~ObservableService() {

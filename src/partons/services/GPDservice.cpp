@@ -39,7 +39,8 @@ const unsigned int GPDService::classId =
                 new GPDService("GPDService"));
 
 GPDService::GPDService(const std::string &className) :
-        ServiceObjectTyped(className), m_pGPDKinematic(0), m_pGPDModule(0) {
+        ServiceObjectTyped<GPDKinematic, GPDResult>(className), m_pGPDKinematic(
+                0), m_pGPDModule(0) {
 }
 
 GPDService::~GPDService() {

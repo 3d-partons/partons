@@ -5,7 +5,6 @@
 #include <QtCore/qvariant.h>
 #include <QtSql/qsqlerror.h>
 #include <QtSql/qsqlrecord.h>
-#include <string>
 
 #include "../../../../../include/partons/database/DatabaseManager.h"
 
@@ -157,4 +156,28 @@ void GPDKinematicDao::fillGPDKinematicListFromQuery(
         fillGPDKinematicFromQuery(gpdKinematic, query);
         gpdKinematicList.add(gpdKinematic);
     }
+}
+
+int GPDKinematicDao::getKinematicIdByHashSum(const std::string& hashSum) const {
+    int result = -1;
+    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
+
+    query.prepare("SELECT id FROM gpd_kinematic WHERE hash_sum = :hashSum");
+
+    query.bindValue(":hashSum", QString(hashSum.c_str()));
+
+    if (query.exec()) {
+        if (query.first()) {
+            result = query.value(0).toInt();
+        }
+    } else {
+        error(__func__,
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
+    }
+
+    query.clear();
+
+    return result;
 }

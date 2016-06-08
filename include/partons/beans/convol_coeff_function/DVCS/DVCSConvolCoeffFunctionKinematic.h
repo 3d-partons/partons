@@ -40,6 +40,9 @@ public:
     double getT() const;
     double getXi() const;
 
+protected:
+    virtual void updateHashSum() const;
+
 private:
     unsigned int m_binId;
     double m_xi;    ///< Skewness

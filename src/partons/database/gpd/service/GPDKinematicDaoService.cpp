@@ -80,3 +80,8 @@ int GPDKinematicDaoService::insertWithoutTransaction(
     return m_GPDKinematicDao.insert(gpdKinematic.getX(), gpdKinematic.getXi(),
             gpdKinematic.getT(), gpdKinematic.getMuF2(), gpdKinematic.getMuR2());
 }
+
+int GPDKinematicDaoService::getKinematicIdByHashSum(
+        const std::string& hashSum) const {
+    return m_GPDKinematicDao.getKinematicIdByHashSum(hashSum);
+}

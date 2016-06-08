@@ -190,3 +190,7 @@ ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
     observableKinematic.unserialize(packet);
     return packet;
 }
+
+void ObservableKinematic::updateHashSum() const {
+    //TODO
+}

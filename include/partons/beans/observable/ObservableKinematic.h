@@ -79,6 +79,9 @@ public:
     void serialize(ElemUtils::Packet &packet) const;
     void unserialize(ElemUtils::Packet &packet);
 
+protected:
+    virtual void updateHashSum() const;
+
 private:
     // TODO : What do we do when we consider Fourier harmonics of DVCS observables?
     double m_xB;    ///< Bjorken variable

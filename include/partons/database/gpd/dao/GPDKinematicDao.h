@@ -13,6 +13,7 @@
  */
 
 #include <QtSql/qsqlquery.h>
+#include <string>
 
 #include "../../../beans/gpd/GPDKinematic.h"
 #include "../../../beans/List.h"
@@ -29,6 +30,8 @@ public:
     GPDKinematic getKinematicById(const int id) const;
     List<GPDKinematic> getKinematicListByComputationId(
             const int computationId) const;
+
+    int getKinematicIdByHashSum(const std::string &hashSum) const;
 
 private:
     void fillGPDKinematicFromQuery(GPDKinematic &gpdKinematic,
