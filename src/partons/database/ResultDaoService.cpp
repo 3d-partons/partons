@@ -287,10 +287,11 @@ bool ResultDaoService::insert(const List<GPDResult>& result) {
                 m_lastQuarkDistributionId++;
 
                 m_quark_distribution_table += ElemUtils::Formatter()
-                        << m_lastQuarkDistributionId << "," << (it_qd->first)
-                        << "," << (it_qd->second).getQuarkDistribution() << ","
+                        << m_lastQuarkDistributionId << ","
+                        << (it_qd->second).getQuarkDistributionPlus() << ","
                         << (it_qd->second).getQuarkDistributionMinus() << ","
-                        << (it_qd->second).getQuarkDistributionPlus() << '\n';
+                        << (it_qd->second).getQuarkDistribution() << ","
+                        << (it_qd->first) << '\n';
 
                 // fill association table "parton_distribution_quark_distribution"
                 m_lastPartonDistributionQuarkDistributionId++;
