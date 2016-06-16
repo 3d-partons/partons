@@ -239,7 +239,10 @@ private:
 
     double Profile(double N, double alpha, double beta);
     double GKPdfAnsatz(double N, double beta, double* coeff);
+    double GKPdfAnsatz_t(double N, double beta, double* coeff);
     double GKtDependentsDD(double beta, double alpha);
+    double GKtDependentuDD_t(double beta, double alpha);
+    double GKtDependentdDD_t(double beta, double alpha);
     double GKtDependentuValDD(double beta, double alpha);
     double GKtDependentdValDD(double beta, double alpha);
     double GKtDependentgDD(double beta, double alpha);
@@ -255,7 +258,11 @@ private:
     double IntegralHsBm(double x, std::vector<double> Par);
 
     double IntegralHuVal(double x, std::vector<double> Par);
+    double IntegralHtuVal(double x, std::vector<double> Par);
+    double IntegralHtdVal(double x, std::vector<double> Par);
     double IntegralHuValMx(double x, std::vector<double> Par);
+    double IntegralHtuValMx(double x, std::vector<double> Par);
+    double IntegralHtdValMx(double x, std::vector<double> Par);
     double IntegralHdVal(double x, std::vector<double> Par);
     double IntegralHdValMx(double x, std::vector<double> Par);
     double IntegralxLargeHsSea(double x, std::vector<double> Par);
@@ -279,9 +286,13 @@ private:
     NumA::FunctionType1D* m_pIntegralHsBm;
 
     NumA::FunctionType1D* m_pIntegralHuVal;
+    NumA::FunctionType1D* m_pIntegralHtuVal;
     NumA::FunctionType1D* m_pIntegralHdVal;
+    NumA::FunctionType1D* m_pIntegralHtdVal;
     NumA::FunctionType1D* m_pIntegralHuValMx;
+    NumA::FunctionType1D* m_pIntegralHtuValMx;
     NumA::FunctionType1D* m_pIntegralHdValMx;
+    NumA::FunctionType1D* m_pIntegralHtdValMx;
     NumA::FunctionType1D* m_pIntegralxLargeHuSea;
     NumA::FunctionType1D* m_pIntegralxLargeHdSea;
     NumA::FunctionType1D* m_pIntegralxSmall1HuSea;
