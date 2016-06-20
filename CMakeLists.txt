@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 2.6)
 
 project(PARTONS CXX)
 
+# Force C++98
+add_definitions(-std=c++98)
+
 # Tell CMake to run moc when necessary:
 set(CMAKE_AUTOMOC ON)
   
