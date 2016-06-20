@@ -247,6 +247,16 @@ private:
     double GKtDependentdValDD(double beta, double alpha);
     double GKtDependentgDD(double beta, double alpha);
 
+    //DD E
+    double GKtDependentDD_EuVal(double beta, double alpha);
+    double GKtDependentDD_EdVal(double beta, double alpha);
+    double GKtDependentDD_Es(double beta, double alpha);
+    double GKtDependentDD_Eg(double beta, double alpha);
+    //DD Et
+    double GKtDependentDD_EtuVal(double beta, double alpha);
+    double GKtDependentDD_EtdVal(double beta, double alpha);
+
+
     void initFunctorsForIntegrations();
 //    double IntegralHuVal(double x, std::vector<double> Par);
     double IntegralHdValBp(double x, std::vector<double> Par);
@@ -274,16 +284,30 @@ private:
     double IntegralxLargeHgMx(double x, std::vector<double> Par);
     double IntegralxSmall1Hg(double x, std::vector<double> Par);
     double IntegralxSmall2Hg(double x, std::vector<double> Par);
+//integrals for E
+    double IntegralEuVal(double x, std::vector<double> Par);
+    double IntegralEdVal(double x, std::vector<double> Par);
+    double IntegralEuValMx(double x, std::vector<double> Par);
+    double IntegralEdValMx(double x, std::vector<double> Par);
+    double IntegralxLargeEsSea(double x, std::vector<double> Par);
+    double IntegralxLargeEsSeaMx(double x, std::vector<double> Par);
+    double IntegralxSmallEsSea(double x, std::vector<double> Par);
+    double IntegralxSmall1EsSea(double x, std::vector<double> Par);
+    double IntegralxSmall2EsSea(double x, std::vector<double> Par);
+
+    double IntegralxLargeEgSea(double x, std::vector<double> Par);
+    double IntegralxLargeEgSeaMx(double x, std::vector<double> Par);
+ //   double IntegralxSmallEgSea(double x, std::vector<double> Par);
+    double IntegralxSmall1EgSea(double x, std::vector<double> Par);
+    double IntegralxSmall2EgSea(double x, std::vector<double> Par);
+//integrals for Et
+    double IntegralEtuVal(double x, std::vector<double> Par);
+    double IntegralEtdVal(double x, std::vector<double> Par);
+    double IntegralEtuValMx(double x, std::vector<double> Par);
+    double IntegralEtdValMx(double x, std::vector<double> Par);
 
     void throwBetaException(const std::string &funcName, double betaValue);
-//    NumA::FunctionType1D* m_pIntegralHuVal;
-    NumA::FunctionType1D* m_pIntegralHdValBp;
-    NumA::FunctionType1D* m_pIntegralHdValBm;
-//    NumA::FunctionType1D* m_pIntegralHuValMx;
-//    NumA::FunctionType1D* m_pIntegralHdValMx;
-    NumA::FunctionType1D* m_pIntegralHg;
-    NumA::FunctionType1D* m_pIntegralHs;
-    NumA::FunctionType1D* m_pIntegralHsBm;
+
 
     NumA::FunctionType1D* m_pIntegralHuVal;
     NumA::FunctionType1D* m_pIntegralHtuVal;
@@ -310,6 +334,25 @@ private:
     NumA::FunctionType1D* m_pIntegralxSmall1Hg;
     NumA::FunctionType1D* m_pIntegralxSmall2Hg;
     NumA::FunctionType1D* m_pIntegralxLargeHgMx;
+
+    NumA::FunctionType1D* m_pIntegralEuVal;
+    NumA::FunctionType1D* m_pIntegralEdVal;
+    NumA::FunctionType1D* m_pIntegralEuValMx;
+    NumA::FunctionType1D* m_pIntegralEdValMx;
+    NumA::FunctionType1D* m_pIntegralxLargeEsSea;
+    NumA::FunctionType1D* m_pIntegralxLargeEsSeaMx;
+    NumA::FunctionType1D* m_pIntegralxSmallEsSea;
+    NumA::FunctionType1D* m_pIntegralxSmall1EsSea;
+    NumA::FunctionType1D* m_pIntegralxSmall2EsSea;
+    NumA::FunctionType1D* m_pIntegralxLargeEgSea;
+    NumA::FunctionType1D* m_pIntegralxLargeEgSeaMx;
+    NumA::FunctionType1D* m_pIntegralxSmall1EgSea;
+    NumA::FunctionType1D* m_pIntegralxSmall2EgSea;
+
+    NumA::FunctionType1D* m_pIntegralEtuVal;
+    NumA::FunctionType1D* m_pIntegralEtdVal;
+    NumA::FunctionType1D* m_pIntegralEtuValMx;
+    NumA::FunctionType1D* m_pIntegralEtdValMx;
 
 };
 
