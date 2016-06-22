@@ -3,7 +3,9 @@
 #include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
+#include <ElementaryUtils/thread/Packet.h>
 #include <exception>
+#include <iostream>
 #include <string>
 
 #include "../../../include/partons/beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
@@ -14,6 +16,9 @@
 #include "../../../include/partons/modules/GPDModule.h"
 #include "../../../include/partons/ModuleObjectFactory.h"
 #include "../../../include/partons/Partons.h"
+#include "../../../include/partons/services/ConvolCoeffFunctionService.h"
+#include "../../../include/partons/ServiceObjectRegistry.h"
+#include "../../../include/partons/ServiceObjectTyped.h"
 
 //TODO change string value
 const std::string ConvolCoeffFunctionModule::GPD_MODULE_ID =
@@ -81,11 +86,40 @@ void ConvolCoeffFunctionModule::configure(
     ModuleObject::configure(parameters);
 }
 
+void ConvolCoeffFunctionModule::run() {
+    try {
+        ConvolCoeffFunctionService* pService =
+                Partons::getInstance()->getServiceObjectRegistry()->getConvolCoeffFunctionService();
+
+        while (!(pService->isEmptyTaskQueue())) {
+            DVCSConvolCoeffFunctionKinematic kinematic;
+            GPDType gpdType;
+
+            ElemUtils::Packet packet = pService->popTaskFormQueue();
+            packet >> kinematic;
+            packet >> gpdType;
+
+            info(__func__, kinematic.toString());
+
+            pService->add(compute(kinematic, gpdType));
+
+            //TODO useful to do a sleep ?
+            // sf::sleep(sf::milliseconds(3));
+        }
+    } catch (std::exception &e) {
+        std::cerr << e.what() << std::endl;
+    }
+}
+
 DVCSConvolCoeffFunctionResult ConvolCoeffFunctionModule::compute(
         const DVCSConvolCoeffFunctionKinematic &kinematic,
         GPDType::Type gpdType) {
-    return compute(kinematic.getXi(), kinematic.getT(), kinematic.getQ2(),
-            kinematic.getMuF2(), kinematic.getMuR2(), gpdType);
+    DVCSConvolCoeffFunctionResult result = compute(kinematic.getXi(),
+            kinematic.getT(), kinematic.getQ2(), kinematic.getMuF2(),
+            kinematic.getMuR2(), gpdType);
+    result.setKinematic(kinematic);
+
+    return result;
 }
 
 const GPDModule* ConvolCoeffFunctionModule::getGPDModule() const {

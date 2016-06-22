@@ -15,13 +15,15 @@
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <stddef.h>
+#include <algorithm> //needed for sort
 #include <string>
 #include <vector>
 
 #include "../BaseObject.h"
 #include "../utils/compare/ComparisonMode.h"
 #include "../utils/compare/ComparisonReport.h"
-#include "SortingMode.h"
+
+//#include "SortingMode.h"
 
 template<class T> class List: public BaseObject {
 public:
@@ -79,16 +81,20 @@ public:
     }
 
     //TODO implement
-    void sort(const SortingMode &sortingMode) {
-        switch (sortingMode.getType()) {
-        case SortingMode::ASCENDING: {
+//    void sort(const SortingMode &sortingMode) {
+//        switch (sortingMode.getType()) {
+//        case SortingMode::ASCENDING: {
+//
+//            break;
+//        }
+//        case SortingMode::DESCENDING: {
+//            break;
+//        }
+//        }
+//    }
 
-            break;
-        }
-        case SortingMode::DESCENDING: {
-            break;
-        }
-        }
+    void sort() {
+        std::sort(m_data.begin(), m_data.end());
     }
 
     void compare(ComparisonReport &rootComparisonReport,
@@ -129,6 +135,10 @@ public:
 
     void clear() {
         m_data.clear();
+    }
+
+    void resize(size_t n) {
+        m_data.resize(n);
     }
 
 protected:

@@ -26,6 +26,8 @@ List<ObservableKinematic> KinematicUtils::getObservableKinematicFromFile(
                             << filePath);
         }
 
+        ObservableKinematic kinematic;
+
         for (size_t i = 0; i != kinematicString.size(); i++) {
 
             // process if line is not empty.
@@ -41,10 +43,12 @@ List<ObservableKinematic> KinematicUtils::getObservableKinematicFromFile(
                                     << " ; You must provided 4 column : xB | t | Q2 | phi");
                 }
 
-                observableKinematicList.add(
-                        ObservableKinematic(kinematicValues[0],
-                                kinematicValues[1], kinematicValues[2],
-                                kinematicValues[3]));
+                kinematic = ObservableKinematic(kinematicValues[0],
+                        kinematicValues[1], kinematicValues[2],
+                        kinematicValues[3]);
+                kinematic.setListEntryPosition(observableKinematicList.size());
+
+                observableKinematicList.add(kinematic);
             }
 
         }
@@ -73,6 +77,8 @@ List<GPDKinematic> KinematicUtils::getGPDKinematicFromFile(
                             << filePath);
         }
 
+        GPDKinematic kinematic;
+
         for (size_t i = 0; i != kinematicString.size(); i++) {
 
             // process if line is not empty.
@@ -90,10 +96,12 @@ List<GPDKinematic> KinematicUtils::getGPDKinematicFromFile(
                                     << " ; You must provided 5 column : x | xi | t | MuF2 | MuR2");
                 }
 
-                gpdKinematicList.add(
-                        GPDKinematic(kinematicValues[0], kinematicValues[1],
-                                kinematicValues[2], kinematicValues[3],
-                                kinematicValues[4]));
+                kinematic = GPDKinematic(kinematicValues[0], kinematicValues[1],
+                        kinematicValues[2], kinematicValues[3],
+                        kinematicValues[4]);
+                kinematic.setListEntryPosition(gpdKinematicList.size());
+
+                gpdKinematicList.add(kinematic);
             }
 
         }
@@ -104,4 +112,57 @@ List<GPDKinematic> KinematicUtils::getGPDKinematicFromFile(
     }
 
     return gpdKinematicList;
+}
+
+List<DVCSConvolCoeffFunctionKinematic> KinematicUtils::getCCFKinematicFromFile(
+        const std::string& filePath) {
+    List<DVCSConvolCoeffFunctionKinematic> kinematicList;
+
+    if (ElemUtils::FileUtils::isReadable(filePath)) {
+
+        std::vector<std::string> kinematicString =
+                ElemUtils::FileUtils::readByLine(filePath);
+
+        if (kinematicString.empty()) {
+            throw std::runtime_error(
+                    ElemUtils::Formatter()
+                            << "(KinematicUtils::getCCFKinematicFromFile) Empty kinematic input file : "
+                            << filePath);
+        }
+
+        DVCSConvolCoeffFunctionKinematic kinematic;
+
+        for (size_t i = 0; i != kinematicString.size(); i++) {
+
+            // process if line is not empty.
+            if (!kinematicString[i].empty()) {
+
+                std::vector<std::string> kinematicValues =
+                        ElemUtils::StringUtils::split(kinematicString[i], '|');
+                if (kinematicValues.size() < 5) {
+                    throw std::runtime_error(
+                            ElemUtils::Formatter()
+                                    << "(KinematicUtils::getCCFKinematicFromFile) Line "
+                                    << i
+                                    << ". Missing column value in your kinematic input file : "
+                                    << filePath
+                                    << " ; You must provided 5 column : xi | t | Q2 | MuF2 | MuR2");
+                }
+
+                kinematic = DVCSConvolCoeffFunctionKinematic(kinematicValues[0],
+                        kinematicValues[1], kinematicValues[2],
+                        kinematicValues[3], kinematicValues[4]);
+                kinematic.setListEntryPosition(kinematicList.size());
+
+                kinematicList.add(kinematic);
+            }
+
+        }
+    } else {
+        //TODO print error with logger : cannot open file;
+
+        std::cerr << "Cannot open file : " << filePath << std::endl;
+    }
+
+    return kinematicList;
 }

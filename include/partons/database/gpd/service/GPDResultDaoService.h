@@ -15,20 +15,18 @@
  * And they improve querying speed by using transaction and commit mechanisms for a large amount of simultaneous queries.
  */
 
-//#include <ctime>
-//#include <utility>
-#include <ctime>
-#include <utility>
+#include <string>
 
 #include "../../../beans/gpd/GPDResult.h"
 #include "../../../beans/List.h"
 #include "../../common/service/ComputationDaoService.h"
 #include "../../common/service/ResultInfoDaoService.h"
 #include "../../parton_distribution/service/PartonDistributionDaoService.h"
+#include "../../ResultDaoService.h"
 #include "../dao/GPDResultDao.h"
 #include "GPDKinematicDaoService.h"
 
-class GPDResultDaoService: public BaseObject {
+class GPDResultDaoService: public ResultDaoService {
 public:
     /**
      * Default constructor
@@ -52,9 +50,9 @@ public:
      * Insert into database a list of GPDResult objects with transactions mechanisms.
      *
      * @param gpdResultList
-     * @return unique id related to the last entry inserted into the database
+     * @return
      */
-    int insert(const List<GPDResult> &gpdResultList) const;
+    bool insert(const List<GPDResult> &gpdResultList);
 
     /**
      * Return a list of GPDResult objects from the database identified by a specific computation identifier.
@@ -66,25 +64,33 @@ public:
             const int computationId) const;
 
 private:
+    int m_lastGPDKinematicId;
+    int m_lastGPDResultId;
+    int m_lastPartonDistributionId;
+    int m_lastQuarkDistributionId;
+    int m_lastPartonDistributionQuarkDistributionId;
+    int m_lastGPDResultPartonDistributionId;
+
+    std::string m_gpdResultDatabaseFile;
+    std::string m_gpdKinematicDatabaseFile;
+    std::string m_parton_distribution_table;
+    std::string m_gpd_result_parton_distribution_table;
+    std::string m_parton_distribution_quark_distribution_table;
+    std::string m_quark_distribution_table;
+
     GPDResultDao m_gpdResultDao; ///< reference to the right DAO object to perform database queries
 
     GPDKinematicDaoService m_gpdKinematicDaoService; ///< reference to be able to store kinematic object related to the result.
     PartonDistributionDaoService m_partonDistributionDaoService; ///< reference to be able to store PartonDistribution object and link it to the result.
-    ResultInfoDaoService m_resultInfoDaoService;
 
-    //TODO remove unused member.
-    ComputationDaoService m_computationDaoService; ///< reference to be able to generate computationId and store ComputationConfiguration object and EnvironmentConfiguration object related to the result.
-
-    /**
-     * Insert into the database a new GPDResult object without using transactions mechanisms.
-     * Helpful when dealing with a ResultList<GPDResult> object, because transactions are already performed earlier.
-     *
-     * @param gpdResult
-     * @return unique id related to the new entry inserted into the database
-     */
-    int insertWithoutTransaction(const GPDResult &gpdResult) const;
-
-    mutable std::pair<time_t, int> m_previousComputationId;
+//    /**
+//     * Insert into the database a new GPDResult object without using transactions mechanisms.
+//     * Helpful when dealing with a ResultList<GPDResult> object, because transactions are already performed earlier.
+//     *
+//     * @param gpdResult
+//     * @return unique id related to the new entry inserted into the database
+//     */
+//    int insertWithoutTransaction(const GPDResult &gpdResult) const;
 };
 
 #endif /* GPD_RESULT_DAO_SERVICE */

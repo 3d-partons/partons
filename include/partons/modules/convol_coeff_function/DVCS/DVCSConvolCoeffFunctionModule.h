@@ -12,7 +12,6 @@
 #include <map>
 #include <string>
 
-//#include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "../../../beans/gpd/GPDType.h"
 #include "../../../beans/PerturbativeQCDOrderType.h"
 #include "../../ConvolCoeffFunctionModule.h"

@@ -13,6 +13,7 @@
  */
 
 #include <QtSql/qsqlquery.h>
+#include <string>
 
 #include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "../../../beans/List.h"
@@ -30,6 +31,8 @@ public:
 
     List<DVCSConvolCoeffFunctionKinematic> getKinematicListByComputationId(
             int computationId) const;
+
+    int getKinematicIdByHashSum(const std::string &hashSum) const;
 
 private:
     void fillKinematicListFromQuery(

@@ -40,6 +40,9 @@ public:
             const ObservableResult &referenceObject,
             std::string parentObjectInfo = ElemUtils::StringUtils::EMPTY) const;
 
+    // use by std::sort function
+    bool operator <(const ObservableResult &other) const;
+
     void setKinematic(const ObservableKinematic &kinematic);
     void setStatError(const ErrorBar& statError);
     void setSystError(const ErrorBar& systError);

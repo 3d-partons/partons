@@ -2,34 +2,23 @@
 
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
-
-Kinematic::Kinematic() :
-        BaseObject("Kinematic"), m_id(-1), m_hashSum(
-                ElemUtils::StringUtils::EMPTY) {
-}
+#include <ElementaryUtils/thread/Packet.h>
 
 Kinematic::Kinematic(const std::string &className) :
-        BaseObject(className), m_id(-1), m_hashSum(
+        DatabaseObject(className), m_listEntryPosition(-1), m_hashSum(
                 ElemUtils::StringUtils::EMPTY) {
 }
 
 Kinematic::~Kinematic() {
 }
 
-int Kinematic::getId() const {
-    return m_id;
-}
-
 bool Kinematic::operator <(const Kinematic& other) const {
-    return (m_id < other.m_id);
-}
-
-void Kinematic::setId(int id) {
-    m_id = id;
+    return (m_listEntryPosition < other.m_listEntryPosition);
 }
 
 std::string Kinematic::toString() const {
-    return ElemUtils::Formatter() << "m_id = " << m_id;
+    return ElemUtils::Formatter() << "listEntryPosition = "
+            << m_listEntryPosition;
 }
 
 const std::string& Kinematic::getHashSum() const {
@@ -41,4 +30,32 @@ const std::string& Kinematic::getHashSum() const {
 
 void Kinematic::setHashSum(const std::string& hashSum) const {
     m_hashSum = hashSum;
+}
+
+int Kinematic::getListEntryPosition() const {
+    return m_listEntryPosition;
+}
+
+void Kinematic::setListEntryPosition(int listEntryPosition) {
+    m_listEntryPosition = listEntryPosition;
+}
+
+void Kinematic::serialize(ElemUtils::Packet& packet) const {
+    packet << m_listEntryPosition;
+}
+
+void Kinematic::unserialize(ElemUtils::Packet& packet) {
+    packet >> m_listEntryPosition;
+}
+
+ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
+        Kinematic& kinematic) {
+    kinematic.serialize(packet);
+    return packet;
+}
+
+ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
+        Kinematic& kinematic) {
+    kinematic.unserialize(packet);
+    return packet;
 }

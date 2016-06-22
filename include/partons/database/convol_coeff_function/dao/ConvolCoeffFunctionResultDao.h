@@ -4,7 +4,7 @@
 /**
  * @file ConvolCoeffFunctionResultDao.h
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 05 November 2015
+ * @date November 05, 2015
  * @version 1.0
  *
  * @class ConvolCoeffFunctionResultDao
@@ -39,9 +39,6 @@ private:
     void fillConvolCoeffFunctionResultList(
             List<DVCSConvolCoeffFunctionResult> &resultList,
             QSqlQuery& query) const;
-
-    void fillConvolCoeffFunctionResult(
-            DVCSConvolCoeffFunctionResult &convolCoeffFunctionResult) const;
 };
 
 #endif /* CONVOL_COEFF_FUNCTION_RESULT_DAO_H */

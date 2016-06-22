@@ -11,7 +11,6 @@
 #include "../../../../../include/partons/beans/observable/ObservableChannel.h"
 #include "../../../../../include/partons/modules/active_flavors/NfFunctionExample.h"
 #include "../../../../../include/partons/modules/alphaS/RunningAlphaStrong.h"
-#include "../../../../../include/partons/modules/ActiveFlavorsModule.h"
 #include "../../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../../include/partons/Partons.h"
 
@@ -125,11 +124,6 @@ DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionModule::compute(
         const double xi, const double t, const double Q2, const double MuF2,
         const double MuR2, GPDType::Type gpdComputeType) {
     preCompute(xi, t, Q2, MuF2, MuR2, gpdComputeType);
-
-    //TODO voir a deplacer dans les services ce message d'info
-    info(__func__,
-            ElemUtils::Formatter() << "xi = " << xi << " t = " << t << " Q2 = "
-                    << Q2);
 
     DVCSConvolCoeffFunctionResult dvcsConvolCoeffFunctionResult;
 

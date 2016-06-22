@@ -1,11 +1,14 @@
 #include "../../../../../include/partons/beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 
-#include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
+#include <ElementaryUtils/thread/Packet.h>
 
 #include "../../../../../include/partons/beans/gpd/GPDKinematic.h"
 #include "../../../../../include/partons/beans/observable/ObservableKinematic.h"
+#include "../../../../../include/partons/Partons.h"
+#include "../../../../../include/partons/services/hash_sum/CryptographicHashService.h"
+#include "../../../../../include/partons/ServiceObjectRegistry.h"
 
 DVCSConvolCoeffFunctionKinematic::DVCSConvolCoeffFunctionKinematic() :
         Kinematic("DVCSConvolCoeffFunctionKinematic"), m_binId(0), m_xi(0.), m_t(
@@ -59,13 +62,23 @@ DVCSConvolCoeffFunctionKinematic::DVCSConvolCoeffFunctionKinematic(
                 t), m_Q2(Q2), m_MuF2(MuF2), m_MuR2(MuR2) {
 }
 
+DVCSConvolCoeffFunctionKinematic::DVCSConvolCoeffFunctionKinematic(
+        const ElemUtils::GenericType &xi, const ElemUtils::GenericType &t,
+        const ElemUtils::GenericType &Q2, const ElemUtils::GenericType &MuF2,
+        const ElemUtils::GenericType &MuR2) :
+        Kinematic("DVCSConvolCoeffFunctionKinematic"), m_xi(xi.toDouble()), m_t(
+                t.toDouble()), m_Q2(Q2.toDouble()), m_MuF2(MuF2.toDouble()), m_MuR2(
+                MuR2.toDouble()) {
+
+}
+
 DVCSConvolCoeffFunctionKinematic::~DVCSConvolCoeffFunctionKinematic() {
 }
 
 std::string DVCSConvolCoeffFunctionKinematic::toString() {
-    return ElemUtils::Formatter() << "m_binId = " << m_binId << " m_xi = "
-            << m_xi << " m_t = " << m_t << " m_Q2 = " << m_Q2 << " m_MuF2 = "
-            << m_MuF2 << " m_MuR2 = " << m_MuR2;
+    return ElemUtils::Formatter() << Kinematic::toString() << " m_binId = "
+            << m_binId << " m_xi = " << m_xi << " m_t = " << m_t << " m_Q2 = "
+            << m_Q2 << " m_MuF2 = " << m_MuF2 << " m_MuR2 = " << m_MuR2;
 }
 
 unsigned int DVCSConvolCoeffFunctionKinematic::getBinId() const {
@@ -93,5 +106,37 @@ double DVCSConvolCoeffFunctionKinematic::getXi() const {
 }
 
 void DVCSConvolCoeffFunctionKinematic::updateHashSum() const {
-    //TODO
+    setHashSum(
+            Partons::getInstance()->getServiceObjectRegistry()->getCryptographicHashService()->generateSHA1HashSum(
+                    ElemUtils::Formatter() << m_xi << m_t << m_Q2 << m_MuF2
+                            << m_MuR2));
+}
+
+void DVCSConvolCoeffFunctionKinematic::serialize(
+        ElemUtils::Packet& packet) const {
+    Kinematic::serialize(packet);
+
+    packet << m_xi << m_t << m_Q2 << m_MuF2 << m_MuR2;
+}
+
+void DVCSConvolCoeffFunctionKinematic::unserialize(ElemUtils::Packet& packet) {
+    Kinematic::unserialize(packet);
+
+    packet >> m_xi;
+    packet >> m_t;
+    packet >> m_Q2;
+    packet >> m_MuF2;
+    packet >> m_MuR2;
+}
+
+ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
+        DVCSConvolCoeffFunctionKinematic& kinematic) {
+    kinematic.serialize(packet);
+    return packet;
+}
+ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
+        DVCSConvolCoeffFunctionKinematic& kinematic) {
+
+    kinematic.unserialize(packet);
+    return packet;
 }

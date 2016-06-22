@@ -164,11 +164,15 @@ void ObservableKinematic::setPhi(double phi) {
 
 //TODO serialize PhysicalType<T>
 void ObservableKinematic::serialize(ElemUtils::Packet &packet) const {
+    Kinematic::serialize(packet);
+
     packet << m_xB << m_t << m_Q2 << m_phi.getValue();
 }
 
 //TODO serialize PhysicalType<T>
 void ObservableKinematic::unserialize(ElemUtils::Packet &packet) {
+    Kinematic::unserialize(packet);
+
     packet >> m_xB;
     packet >> m_t;
     packet >> m_Q2;

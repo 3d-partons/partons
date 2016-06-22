@@ -111,13 +111,21 @@ void GPDResult::compare(ComparisonReport &rootComparisonReport,
 
     //TODO faire un test pour valider la cinématique associée
 
-    //TODO tester la taille des listes avant de faire le test
+    if (size() != referenceObject.size()) {
+        error(__func__,
+                ElemUtils::Formatter()
+                        << "Cannot perform comparison between parton distribution map because they are not equal in size ; With GPDResult index id = "
+                        << referenceObject.getIndexId() << '\n' << toString()
+                        << '\n' << referenceObject.toString());
+    }
+
     for (std::map<GPDType::Type, PartonDistribution>::const_iterator it =
             m_partonDistributions.begin(); it != m_partonDistributions.end();
             it++) {
         (it->second).compare(rootComparisonReport,
                 referenceObject.getPartonDistribution((it->first)),
-                ElemUtils::Formatter() << parentObjectInfo
+                ElemUtils::Formatter() << parentObjectInfo << " IndexId = "
+                        << referenceObject.getIndexId() << " "
                         << this->getObjectInfo() << " "
                         << GPDType(it->first).toString());
     }
@@ -125,4 +133,28 @@ void GPDResult::compare(ComparisonReport &rootComparisonReport,
 
 std::string GPDResult::getObjectInfo() const {
     return ElemUtils::Formatter() << "GPD( " << m_kinematic.toString() << ")";
+}
+
+bool GPDResult::isAvailable(const GPDType::Type& gpdType) const {
+    bool result = false;
+
+    m_it = m_partonDistributions.find(gpdType);
+
+    if (m_it != m_partonDistributions.end()) {
+        result = true;
+    }
+
+    return result;
+}
+
+PartonDistribution& GPDResult::getLastAvailable() const {
+    return const_cast<PartonDistribution&>(m_it->second);
+}
+
+size_t GPDResult::size() const {
+    return m_partonDistributions.size();
+}
+
+bool GPDResult::operator <(const GPDResult& other) const {
+    return (m_kinematic < other.m_kinematic);
 }

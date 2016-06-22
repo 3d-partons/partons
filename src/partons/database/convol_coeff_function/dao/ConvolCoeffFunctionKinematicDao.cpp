@@ -5,7 +5,6 @@
 #include <QtCore/qvariant.h>
 #include <QtSql/qsqlerror.h>
 #include <QtSql/qsqlrecord.h>
-#include <string>
 
 #include "../../../../../include/partons/database/DatabaseManager.h"
 
@@ -157,7 +156,32 @@ void ConvolCoeffFunctionKinematicDao::fillKinematicFromQuery(
     double MuR2 = query.value(field_MuR2).toDouble();
 
     kinematic = DVCSConvolCoeffFunctionKinematic(xi, t, Q2, MuF2, MuR2);
-    kinematic.setId(id);
+    kinematic.setIndexId(id);
 
 }
 
+int ConvolCoeffFunctionKinematicDao::getKinematicIdByHashSum(
+        const std::string& hashSum) const {
+    int result = -1;
+    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
+
+    query.prepare(
+            "SELECT ccf_kinematic_id FROM ccf_kinematic WHERE hash_sum = :hashSum");
+
+    query.bindValue(":hashSum", QString(hashSum.c_str()));
+
+    if (query.exec()) {
+        if (query.first()) {
+            result = query.value(0).toInt();
+        }
+    } else {
+        error(__func__,
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
+    }
+
+    query.clear();
+
+    return result;
+}

@@ -83,3 +83,8 @@ List<DVCSConvolCoeffFunctionKinematic> ConvolCoeffFunctionKinematicDaoService::g
     return m_convolCoeffFunctionKinematicDao.getKinematicListByComputationId(
             computationId);
 }
+
+int ConvolCoeffFunctionKinematicDaoService::getKinematicIdByHashSum(
+        const std::string& hashSum) const {
+    return m_convolCoeffFunctionKinematicDao.getKinematicIdByHashSum(hashSum);
+}

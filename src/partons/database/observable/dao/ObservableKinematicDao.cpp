@@ -143,7 +143,7 @@ void ObservableKinematicDao::fillObservableKinematic(
         double phi = query.value(field_phi).toDouble();
 
         observableKinematic = ObservableKinematic(xB, t, Q2, phi);
-        observableKinematic.setId(id);
+        observableKinematic.setIndexId(id);
     }
 }
 

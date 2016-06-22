@@ -171,10 +171,17 @@ void GPDKinematic::setKinematicType(KinematicType::Type kinematicType) {
 }
 
 void GPDKinematic::serialize(ElemUtils::Packet &packet) const {
+    Kinematic::serialize(packet);
     packet << m_x << m_xi << m_t << m_MuF2 << m_MuR2;
 }
 
 void GPDKinematic::unserialize(ElemUtils::Packet &packet) {
+//    int tempListEntryPosition;
+//    packet >> tempListEntryPosition;
+//    setListEntryPosition(tempListEntryPosition);
+
+    Kinematic::unserialize(packet);
+
     packet >> m_x;
     packet >> m_xi;
     packet >> m_t;

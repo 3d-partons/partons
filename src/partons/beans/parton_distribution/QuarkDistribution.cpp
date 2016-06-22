@@ -15,19 +15,20 @@ const std::string QuarkDistribution::QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DIS
 
 //TODO initialise missing member
 QuarkDistribution::QuarkDistribution() :
-        BaseObject("QuarkDistribution"), m_quarkFlavor(QuarkFlavor::UNDEFINED), m_quarkDistribution(
-                0.), m_quarkDistributionPlus(0.), m_quarkDistributionMinus(0.) {
+        DatabaseObject("QuarkDistribution"), m_quarkFlavor(
+                QuarkFlavor::UNDEFINED), m_quarkDistribution(0.), m_quarkDistributionPlus(
+                0.), m_quarkDistributionMinus(0.) {
 }
 
 QuarkDistribution::QuarkDistribution(QuarkFlavor::Type quarkFlavor) :
-        BaseObject("QuarkDistribution"), m_quarkFlavor(quarkFlavor), m_quarkDistribution(
+        DatabaseObject("QuarkDistribution"), m_quarkFlavor(quarkFlavor), m_quarkDistribution(
                 0.), m_quarkDistributionPlus(0.), m_quarkDistributionMinus(0.) {
 }
 
 QuarkDistribution::QuarkDistribution(QuarkFlavor::Type quarkFlavor,
         double quarkDistribution, double quarkDistributionPlus,
         double quarkDistributionMinus) :
-        BaseObject("QuarkDistribution"), m_quarkFlavor(quarkFlavor), m_quarkDistribution(
+        DatabaseObject("QuarkDistribution"), m_quarkFlavor(quarkFlavor), m_quarkDistribution(
                 quarkDistribution), m_quarkDistributionPlus(
                 quarkDistributionPlus), m_quarkDistributionMinus(
                 quarkDistributionMinus) {

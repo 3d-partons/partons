@@ -41,6 +41,8 @@ public:
 
     virtual void configure(const ElemUtils::Parameters &parameters);
 
+    virtual void run();
+
     virtual DVCSConvolCoeffFunctionResult compute(
             const DVCSConvolCoeffFunctionKinematic &kinematic,
             GPDType::Type gpdType);

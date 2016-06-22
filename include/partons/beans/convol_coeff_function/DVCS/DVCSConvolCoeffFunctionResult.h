@@ -20,6 +20,7 @@
 
 #include "../../../utils/compare/ComparisonReport.h"
 #include "../../gpd/GPDType.h"
+#include "../../observable/ObservableChannel.h"
 #include "../../Result.h"
 #include "DVCSConvolCoeffFunctionKinematic.h"
 
@@ -44,6 +45,9 @@ public:
 
     std::string toString();
 
+    // use by std::sort function
+    bool operator <(const DVCSConvolCoeffFunctionResult &other) const;
+
 // ##### GETTERS & SETTERS #####
 
     std::vector<GPDType> listGPDTypeComputed();
@@ -54,8 +58,12 @@ public:
     void setKinematic(const DVCSConvolCoeffFunctionKinematic& kinematic);
     void setResultsByGpdType(
             const std::map<GPDType::Type, std::complex<double> >& resultsByGpdType);
+    const ObservableChannel& getChannel() const;
+    void setChannel(const ObservableChannel& channel);
 
 private:
+    ObservableChannel m_channel;
+
     DVCSConvolCoeffFunctionKinematic m_kinematic;
 
     std::map<GPDType::Type, std::complex<double> > m_resultsByGPDType;

@@ -18,10 +18,11 @@
 #include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
 #include "../../../beans/List.h"
 #include "../../common/service/ComputationDaoService.h"
+#include "../../ResultDaoService.h"
 #include "../dao/ConvolCoeffFunctionResultDao.h"
 #include "ConvolCoeffFunctionKinematicDaoService.h"
 
-class ConvolCoeffFunctionResultDaoService: public BaseObject {
+class ConvolCoeffFunctionResultDaoService: public ResultDaoService {
 public:
     /**
      * Default constructor
@@ -45,9 +46,9 @@ public:
      * Insert into database a list of DVCSConvolCoeffFunctionResult objects with transactions mechanisms.
      *
      * @param resultList
-     * @return unique id related to the last entry inserted into the database
+     * @return
      */
-    int insert(const List<DVCSConvolCoeffFunctionResult> &resultList);
+    bool insert(const List<DVCSConvolCoeffFunctionResult> &resultList);
 
     /**
      * Return a list of DVCSConvolCoeffFunctionResult objects from the database identified by a specific computation identifier.
@@ -73,6 +74,15 @@ private:
      */
     int insertWithoutTransaction(
             const DVCSConvolCoeffFunctionResult &result) const;
+
+    int m_lastComputationId;
+    int m_lastCCFKinematicId;
+    int m_lastCCFResultId;
+    int m_lastCCFResultComplexId;
+
+    std::string m_ccfKinematicTableFile;
+    std::string m_ccfResultTableFile;
+    std::string m_ccfResultComplexTableFile;
 };
 
 #endif /* CONVOL_COEFF_FUNCTION_RESULT_DAO_SERVICE_H */

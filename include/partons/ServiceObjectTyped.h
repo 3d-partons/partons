@@ -4,12 +4,8 @@
 /**
  * @file ServiceObjectTyped.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 26 February 2016
+ * @date February 26, 2016
  * @version 1.0
- *
- * @class ServiceObjectTyped
- *
- * @brief
  */
 
 #include <stddef.h>
@@ -22,6 +18,10 @@
 #include "services/automation/AutomationService.h"
 #include "ServiceObject.h"
 
+/** @class ServiceObjectTyped
+ *
+ * @brief
+ */
 template<typename KinematicType, typename ResultType>
 class ServiceObjectTyped: public ServiceObject {
 public:
@@ -67,6 +67,12 @@ public:
         for (size_t i = 0; i != resultList.size(); i++) {
             m_resultListBuffer.add(resultList[i]);
         }
+    } // mutex.unlock()
+
+    void sortResultList() {
+        sf::Lock lock(m_mutexResultListBuffer); // mutex.lock()
+
+        m_resultListBuffer.sort();
     } // mutex.unlock()
 
     List<ResultType> getResultList() {

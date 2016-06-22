@@ -2,7 +2,7 @@
 #define DVCS_CONVOL_COEFF_FUNCTION_SERVICE_H
 
 /**
- * @file DVCSConvolCoeffFunctionService.h
+ * @file ConvolCoeffFunctionService.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date August 07, 2014
  * @version 1.0
@@ -14,21 +14,23 @@
 #include "../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
 #include "../beans/gpd/GPDType.h"
 #include "../beans/List.h"
-#include "../ServiceObject.h"
+#include "../ServiceObjectTyped.h"
 
 class ConvolCoeffFunctionModule;
 class GPDModule;
+class GPDService;
 
-//TODO rename class name to ConvolCoeffFunctionService
 /**
- * @class DVCSConvolCoeffFunctionService
+ * @class ConvolCoeffFunctionService
  *
  * @brief \<singleton\> Use for handle and compute some pre-configured CFF modules.
  */
-class ConvolCoeffFunctionService: public ServiceObject {
+class ConvolCoeffFunctionService: public ServiceObjectTyped<
+        DVCSConvolCoeffFunctionKinematic, DVCSConvolCoeffFunctionResult> {
 public:
     static const std::string FUNCTION_NAME_COMPUTE_WITH_GPD_MODEL;
     static const std::string FUNCTION_NAME_COMPUTE_LIST_WITH_GPD_MODEL;
+    static const std::string FUNCTION_NAME_COMPUTE_MANY_KINEMATIC_ONE_MODEL;
 
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
@@ -41,11 +43,13 @@ public:
      */
     virtual ~ConvolCoeffFunctionService();
 
+//    virtual void resolveObjectDependencies();
+
     virtual void computeTask(Task &task);
 
     List<DVCSConvolCoeffFunctionResult> computeManyKinematicOneModel(
             List<DVCSConvolCoeffFunctionKinematic> &kinematics,
-            ConvolCoeffFunctionModule* convolCoeffFunctionModule) const;
+            ConvolCoeffFunctionModule* pConvolCoeffFunctionModule);
 
     virtual DVCSConvolCoeffFunctionResult computeWithGPDModel(
             const DVCSConvolCoeffFunctionKinematic &kinematic,
@@ -76,10 +80,18 @@ public:
 //            const std::string & filePath);
 
 private:
+    GPDService* m_pGPDService;
+
     //TODO improve object copy
     DVCSConvolCoeffFunctionResult computeWithGPDModelTask(Task &task) const;
-//    ResultList<DVCSConvolCoeffFunctionResult> computeListWithGPDModelTask(
-//            Task &task) const;
+    List<DVCSConvolCoeffFunctionResult> computeManyKinematicOneModelTask(
+            Task& task);
+
+    void updateResultInfo(List<DVCSConvolCoeffFunctionResult>& resultList,
+            const ResultInfo &resultInfo) const;
+
+    void updateResultInfo(DVCSConvolCoeffFunctionResult &result,
+            const ResultInfo &resultInfo) const;
 };
 
 #endif /* DVCS_CONVOL_COEFF_FUNCTION_SERVICE_H */

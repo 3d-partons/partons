@@ -12,11 +12,13 @@
  * @brief
  */
 
+#include <ElementaryUtils/parameters/GenericType.h>
 #include <string>
 
 #include "../../Kinematic.h"
 
 namespace ElemUtils {
+class Packet;
 class Parameters;
 } /* namespace ElemUtils */
 
@@ -29,9 +31,17 @@ public:
     DVCSConvolCoeffFunctionKinematic(unsigned int binId, double xi, double t,
             double Q2, double MuF2, double MuR2);
 
+    DVCSConvolCoeffFunctionKinematic(const ElemUtils::GenericType &xi,
+            const ElemUtils::GenericType &t, const ElemUtils::GenericType &Q2,
+            const ElemUtils::GenericType &MuF2,
+            const ElemUtils::GenericType &MuR2);
+
     virtual ~DVCSConvolCoeffFunctionKinematic();
 
     virtual std::string toString();
+
+    void serialize(ElemUtils::Packet &packet) const;
+    void unserialize(ElemUtils::Packet &packet);
 
     unsigned int getBinId() const;
     double getMuF2() const;
@@ -51,5 +61,10 @@ private:
     double m_MuF2;   ///< Factorization scale (in GeV^2)
     double m_MuR2;   ///< Renormalization scale (in GeV^2)
 };
+
+ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
+        DVCSConvolCoeffFunctionKinematic& kinematic);
+ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
+        DVCSConvolCoeffFunctionKinematic& kinematic);
 
 #endif /* DVCS_CONVOL_COEFF_FUNCTION_KINEMATIC_H */

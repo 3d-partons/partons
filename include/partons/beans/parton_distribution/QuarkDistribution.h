@@ -3,13 +3,13 @@
 
 #include <string>
 
-#include "../../BaseObject.h"
+#include "../../database/DatabaseObject.h"
 #include "../../utils/compare/ComparisonReport.h"
 #include "../QuarkFlavor.h"
 
 class ComparisonReport;
 
-class QuarkDistribution: public BaseObject {
+class QuarkDistribution: public DatabaseObject {
 public:
 
     static const std::string QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DISTRIBUTION;

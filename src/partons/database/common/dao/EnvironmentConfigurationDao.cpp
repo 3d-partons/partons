@@ -52,7 +52,7 @@ EnvironmentConfiguration* EnvironmentConfigurationDao::selectByIndexId(
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     query.prepare(
-            "SELECT id, store_date, hash_sum FROM environment_configuration WHERE id = :indexId");
+            "SELECT environment_configuration_id, store_date, hash_sum FROM environment_configuration WHERE environment_configuration_id = :indexId");
 
     query.bindValue(":indexId", indexId);
 
@@ -75,7 +75,7 @@ EnvironmentConfiguration* EnvironmentConfigurationDao::selectByIndexId(
 void EnvironmentConfigurationDao::deleteByIndexId(const int indexId) const {
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    query.prepare("DELETE FROM environment_configuration WHERE id = :indexId");
+    query.prepare("DELETE FROM environment_configuration WHERE environment_configuration_id = :indexId");
 
     query.bindValue(":indexId", indexId);
 
@@ -93,7 +93,7 @@ void EnvironmentConfigurationDao::deleteByIndexId(const int indexId) const {
 EnvironmentConfiguration* EnvironmentConfigurationDao::getEnvironmentConfigurationFromQuery(
         QSqlQuery& query) const {
 
-    int field_id = query.record().indexOf("id");
+    int field_id = query.record().indexOf("environment_configuration_id");
     int field_md5 = query.record().indexOf("hash_sum");
     int field_store_date = query.record().indexOf("store_date");
 
@@ -111,7 +111,7 @@ int EnvironmentConfigurationDao::getEnvironmentConfigurationIdByHashSum(
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     query.prepare(
-            "SELECT id FROM environment_configuration WHERE hash_sum = :hashSum");
+            "SELECT environment_configuration_id FROM environment_configuration WHERE hash_sum = :hashSum");
 
     query.bindValue(":hashSum", QString(hashSum.c_str()));
 
@@ -138,7 +138,7 @@ std::string EnvironmentConfigurationDao::getConfigurationByIndexId(
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     query.prepare(
-            "SELECT configuration FROM environment_configuration WHERE id = :indexId");
+            "SELECT configuration FROM environment_configuration WHERE environment_configuration_id = :indexId");
 
     query.bindValue(":indexId", indexId);
 

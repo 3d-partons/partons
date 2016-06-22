@@ -4,21 +4,25 @@
 /**
  * @file Kinematic.h
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 17 November 2015
+ * @date November 17, 2015
  * @version 1.0
- *
- * @class Kinematic
- *
- * @brief
  */
 
 #include <string>
 
-#include "../BaseObject.h"
+#include "../database/DatabaseObject.h"
 
-class Kinematic: public BaseObject {
+namespace ElemUtils {
+class Packet;
+} /* namespace ElemUtils */
+
+/**
+ * @class Kinematic
+ *
+ * @brief
+ */
+class Kinematic: public DatabaseObject {
 public:
-    Kinematic();
     Kinematic(const std::string &className);
     virtual ~Kinematic();
 
@@ -27,8 +31,12 @@ public:
     // use by std::sort function
     bool operator <(const Kinematic &other) const;
 
-    int getId() const;
-    void setId(int id);
+    void serialize(ElemUtils::Packet &packet) const;
+    void unserialize(ElemUtils::Packet &packet);
+
+    int getListEntryPosition() const;
+    void setListEntryPosition(int listEntryPosition);
+
     const std::string& getHashSum() const;
     void setHashSum(const std::string& hashSum) const;
 
@@ -36,8 +44,11 @@ protected:
     virtual void updateHashSum() const = 0;
 
 private:
-    int m_id;
-   mutable std::string m_hashSum;
+    int m_listEntryPosition;
+    mutable std::string m_hashSum;
 };
+
+ElemUtils::Packet& operator <<(ElemUtils::Packet& packet, Kinematic& kinematic);
+ElemUtils::Packet& operator >>(ElemUtils::Packet& packet, Kinematic& kinematic);
 
 #endif /* KINEMATIC_H */

@@ -1,17 +1,21 @@
+#include "../../../../../include/partons/beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
+
 #include <ElementaryUtils/string_utils/Formatter.h>
-#include <include/partons/beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h>
-#include <include/partons/utils/compare/CompareUtils.h>
-#include <include/partons/utils/compare/ComparisonData.h>
 #include <utility>
 
+#include "../../../../../include/partons/utils/compare/CompareUtils.h"
+#include "../../../../../include/partons/utils/compare/ComparisonData.h"
+
 DVCSConvolCoeffFunctionResult::DVCSConvolCoeffFunctionResult() :
-        Result("DVCSConvolCoeffFunctionResult") {
+        Result("DVCSConvolCoeffFunctionResult"), m_channel(
+                ObservableChannel::DVCS) {
 
 }
 
 DVCSConvolCoeffFunctionResult::DVCSConvolCoeffFunctionResult(
         DVCSConvolCoeffFunctionKinematic kinematic) :
-        Result("DVCSConvolCoeffFunctionResult"), m_kinematic(kinematic) {
+        Result("DVCSConvolCoeffFunctionResult"), m_channel(
+                ObservableChannel::DVCS), m_kinematic(kinematic) {
 }
 
 DVCSConvolCoeffFunctionResult::~DVCSConvolCoeffFunctionResult() {
@@ -128,4 +132,18 @@ const std::complex<double>& DVCSConvolCoeffFunctionResult::getResult(
     }
 
     return (it->second);
+}
+
+const ObservableChannel& DVCSConvolCoeffFunctionResult::getChannel() const {
+    return m_channel;
+}
+
+void DVCSConvolCoeffFunctionResult::setChannel(
+        const ObservableChannel& channel) {
+    m_channel = channel;
+}
+
+bool DVCSConvolCoeffFunctionResult::operator <(
+        const DVCSConvolCoeffFunctionResult& other) const {
+    return (m_kinematic < other.m_kinematic);
 }

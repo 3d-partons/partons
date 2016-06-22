@@ -1,15 +1,20 @@
-/*
- * KinematicUtils.h
- *
- *  Created on: Nov 27, 2015
- *      Author: debian
- */
+#ifndef KINEMATIC_UTILS_H
+#define KINEMATIC_UTILS_H
 
-#ifndef KINEMATICUTILS_H_
-#define KINEMATICUTILS_H_
+/**
+ * @file KinematicUtils.h
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
+ * @date November 27, 2015
+ * @version 1.0
+ *
+ * @class KinematicUtils
+ *
+ * @brief
+ */
 
 #include <string>
 
+#include "convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "gpd/GPDKinematic.h"
 #include "List.h"
 #include "observable/ObservableKinematic.h"
@@ -20,6 +25,9 @@ public:
             const std::string &filePath);
 
     static List<GPDKinematic> getGPDKinematicFromFile(
+            const std::string &filePath);
+
+    static List<DVCSConvolCoeffFunctionKinematic> getCCFKinematicFromFile(
             const std::string &filePath);
 };
 

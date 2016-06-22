@@ -117,3 +117,7 @@ std::string ObservableResult::getObjectInfo() const {
     return ElemUtils::Formatter() << "Observable " << m_observableName
             << " with kinematic( " << m_kinematic.toString() << ")";
 }
+
+bool ObservableResult::operator <(const ObservableResult& other) const {
+    return (m_kinematic < other.m_kinematic);
+}

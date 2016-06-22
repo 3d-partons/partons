@@ -16,7 +16,7 @@
 #include "../../../include/partons/beans/List.h"
 #include "../../../include/partons/beans/system/ResultInfo.h"
 #include "../../../include/partons/BaseObjectRegistry.h"
-#include "../../../include/partons/database/ResultDaoService.h"
+#include "../../../include/partons/database/gpd/service/GPDResultDaoService.h"
 #include "../../../include/partons/modules/evolution/GPDEvolutionModule.h"
 #include "../../../include/partons/modules/GPDModule.h"
 #include "../../../include/partons/ModuleObjectFactory.h"
@@ -172,8 +172,9 @@ void GPDService::computeTask(Task &task) {
 //                            << "Failed to insert List of GPD result into database");
 //        }
 
-        ResultDaoService resultDaoService;
-        resultDaoService.insert(resultList);
+//TODO refactoring
+        GPDResultDaoService gpdResultDaoService;
+        gpdResultDaoService.insert(resultList);
     }
 
     m_resultListBuffer = resultList;
@@ -252,6 +253,8 @@ List<GPDResult> GPDService::computeManyKinematicOneModel(
 
     initComputationalThread(pGPDModule);
     launchAllThreadAndWaitingFor();
+
+    sortResultList();
 //
 //// compute GPDModule for each inputData
 //    for (unsigned int i = 0; i != gpdKinematicList.size(); i++) {

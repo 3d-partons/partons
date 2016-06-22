@@ -15,6 +15,8 @@
  * And they improve querying speed by using transaction and commit mechanisms for a large amount of simultaneous queries.
  */
 
+#include <string>
+
 #include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "../../../beans/List.h"
 #include "../dao/ConvolCoeffFunctionKinematicDao.h"
@@ -73,6 +75,8 @@ public:
      */
     List<DVCSConvolCoeffFunctionKinematic> getKinematicListByComputationId(
             int computationId) const;
+
+    int getKinematicIdByHashSum(const std::string &hashSum) const;
 
 private:
     friend class ConvolCoeffFunctionResultDaoService; ///< allow ConvolCoeffFunctionResultDaoService to call private member function insertWithoutTransaction(...)

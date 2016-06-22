@@ -1,20 +1,68 @@
 #include "../../../../../include/partons/database/convol_coeff_function/service/ConvolCoeffFunctionResultDaoService.h"
 
 #include <ElementaryUtils/string_utils/Formatter.h>
+#include <ElementaryUtils/string_utils/StringUtils.h>
+#include <QtCore/qstring.h>
+#include <QtCore/qvariant.h>
 #include <QtSql/qsqldatabase.h>
-#include <stddef.h>
+#include <QtSql/qsqlerror.h>
+#include <QtSql/qsqlquery.h>
 #include <complex>
 #include <exception>
 #include <map>
+#include <string>
 #include <utility>
 
+#include "../../../../../include/partons/beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "../../../../../include/partons/beans/Computation.h"
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
-//#include "../../../../../include/partons/beans/List.h"
+#include "../../../../../include/partons/beans/observable/ObservableChannel.h"
 #include "../../../../../include/partons/beans/system/ResultInfo.h"
+#include "../../../../../include/partons/database/DatabaseManager.h"
 
 ConvolCoeffFunctionResultDaoService::ConvolCoeffFunctionResultDaoService() :
-        BaseObject("ConvolCoeffFunctionResultDaoService") {
+        ResultDaoService("ConvolCoeffFunctionResultDaoService"), m_lastComputationId(
+                -1), m_lastCCFKinematicId(-1), m_lastCCFResultId(-1), m_lastCCFResultComplexId(
+                -1), m_ccfKinematicTableFile(ElemUtils::StringUtils::EMPTY), m_ccfResultTableFile(
+                ElemUtils::StringUtils::EMPTY) {
+    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
+
+    if (query.exec("SELECT COUNT(ccf_kinematic_id) FROM ccf_kinematic;")) {
+        if (query.first()) {
+            m_lastCCFKinematicId = query.value(0).toInt();
+        }
+    } else {
+        error(__func__,
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
+    }
+    query.clear();
+
+    if (query.exec("SELECT COUNT(ccf_result_id) FROM ccf_result;")) {
+        if (query.first()) {
+            m_lastCCFResultId = query.value(0).toInt();
+        }
+    } else {
+        error(__func__,
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
+    }
+    query.clear();
+
+    if (query.exec(
+            "SELECT COUNT(ccf_result_complex_id) FROM ccf_result_complex;")) {
+        if (query.first()) {
+            m_lastCCFResultComplexId = query.value(0).toInt();
+        }
+    } else {
+        error(__func__,
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
+    }
+    query.clear();
 }
 
 ConvolCoeffFunctionResultDaoService::~ConvolCoeffFunctionResultDaoService() {
@@ -45,33 +93,95 @@ int ConvolCoeffFunctionResultDaoService::insert(
     return result;
 }
 
-int ConvolCoeffFunctionResultDaoService::insert(
+//int ConvolCoeffFunctionResultDaoService::insert(
+//        const List<DVCSConvolCoeffFunctionResult>& resultList) {
+//
+//    info(__func__,
+//            ElemUtils::Formatter() << "Inserting object size = "
+//                    << resultList.size());
+//
+//    int result = -1;
+//
+//    // For multiple query it's better to use transaction to guarantee database's integrity and performance
+//    QSqlDatabase::database().transaction();
+//
+//    try {
+//        // for each result
+//        for (size_t i = 0; i != resultList.size(); i++) {
+//            result = insertWithoutTransaction(resultList[i]);
+//        }
+//
+//        // If there is no exception we can commit all query
+//        QSqlDatabase::database().commit();
+//
+//    } catch (std::exception &e) {
+//        // Else return database in a stable state : n-1
+//        QSqlDatabase::database().rollback();
+//    }
+//
+//    return result;
+//}
+
+bool ConvolCoeffFunctionResultDaoService::insert(
         const List<DVCSConvolCoeffFunctionResult>& resultList) {
+    bool inserted = false;
 
-    info(__func__,
-            ElemUtils::Formatter() << "Inserting object size = "
-                    << resultList.size());
+    info(__func__, "Prepare data before inserting them into database ...");
 
-    int result = -1;
+    for (unsigned int i = 0; i != resultList.size(); i++) {
 
-    // For multiple query it's better to use transaction to guarantee database's integrity and performance
-    QSqlDatabase::database().transaction();
+        prepareCommonTablesFromResultInfo(resultList[i].getResultInfo());
 
-    try {
-        // for each result
-        for (size_t i = 0; i != resultList.size(); i++) {
-            result = insertWithoutTransaction(resultList[i]);
+        DVCSConvolCoeffFunctionKinematic kinematic =
+                resultList[i].getKinematic();
+
+        int kinematicId =
+                m_convolCoeffFunctionKinematicDaoService.getKinematicIdByHashSum(
+                        kinematic.getHashSum());
+
+        if (kinematicId == -1) {
+            m_lastCCFKinematicId++;
+            kinematicId = m_lastCCFKinematicId;
+
+            m_ccfKinematicTableFile += ElemUtils::Formatter()
+                    << m_lastCCFKinematicId << "," << kinematic.getXi() << ","
+                    << kinematic.getT() << "," << kinematic.getQ2() << ","
+                    << kinematic.getMuF2() << "," << kinematic.getMuR2() << ","
+                    << kinematic.getHashSum() << '\n';
         }
 
-        // If there is no exception we can commit all query
-        QSqlDatabase::database().commit();
+        m_lastCCFResultId++;
+        m_ccfResultTableFile += ElemUtils::Formatter() << m_lastCCFResultId
+                << "," << resultList[i].getComputationModuleName() << ","
+                << resultList[i].getChannel().getType() << "," << kinematicId
+                << "," << m_previousComputationId.second << '\n';
 
-    } catch (std::exception &e) {
-        // Else return database in a stable state : n-1
-        QSqlDatabase::database().rollback();
+        std::map<GPDType::Type, std::complex<double> > resultsByGPDType =
+                resultList[i].getResultsByGpdType();
+
+        for (std::map<GPDType::Type, std::complex<double> >::const_iterator it =
+                resultsByGPDType.begin(); it != resultsByGPDType.end(); it++) {
+
+            m_lastCCFResultComplexId++;
+            m_ccfResultComplexTableFile += ElemUtils::Formatter()
+                    << m_lastCCFResultComplexId << "," << (it->first) << ","
+                    << (it->second).real() << "," << (it->second).imag() << ","
+                    << m_lastCCFResultId << '\n';
+        }
     }
 
-    return result;
+    insertCommonDataIntoDatabaseTables();
+
+    insertDataIntoDatabaseTables("ccfKinematicTableFile.csv",
+            m_ccfKinematicTableFile, "ccf_kinematic");
+    insertDataIntoDatabaseTables("ccfResultTableFile.csv", m_ccfResultTableFile,
+            "ccf_result");
+    insertDataIntoDatabaseTables("ccfResultComplexTableFile.csv",
+            m_ccfResultComplexTableFile, "ccf_result_complex");
+
+    info(__func__, "Done !");
+
+    return inserted;
 }
 
 List<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionResultDaoService::getResultListByComputationId(

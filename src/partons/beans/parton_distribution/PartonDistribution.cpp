@@ -4,8 +4,10 @@
 #include <sstream>
 #include <utility>
 
+#include "../../../../include/partons/database/DatabaseObject.h"
+
 PartonDistribution::PartonDistribution() :
-        BaseObject("PartonDistribution") {
+        DatabaseObject("PartonDistribution") {
 }
 
 PartonDistribution::~PartonDistribution() {

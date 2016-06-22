@@ -18,7 +18,7 @@
 
             <module type="DVCSConvolCoeffFunctionModule">
                 <param name="className" value="DVCSCFFHeavyQuarkModel" />
-                <param name="qcd_order_type" value="NLO" />
+                <param name="qcd_order_type" value="LO" />
             </module>
         </computation_configuration>
     </task>

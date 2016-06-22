@@ -50,7 +50,7 @@ int ComputationDao::getComputationIdByDateTime(const time_t &dateTime) const {
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     query.prepare(
-            "SELECT id FROM computation WHERE computation_date = :dateTime");
+            "SELECT computation_id FROM computation WHERE computation_date = :dateTime");
 
     QDateTime qDateTime;
     qDateTime.setTime_t(dateTime);
@@ -77,7 +77,7 @@ Computation ComputationDao::selectByIndexId(const int indexId) const {
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    query.prepare("SELECT * FROM computation WHERE id = :indexId");
+    query.prepare("SELECT * FROM computation WHERE computation_id = :indexId");
 
     query.bindValue(":indexId", indexId);
 
@@ -98,7 +98,7 @@ Computation ComputationDao::selectByIndexId(const int indexId) const {
 
 void ComputationDao::fillComputation(Computation &computation,
         QSqlQuery &query) const {
-    int field_id = query.record().indexOf("id");
+    int field_id = query.record().indexOf("computation_id");
     int field_computation_date = query.record().indexOf("computation_date");
 
     while (query.next()) {
@@ -145,7 +145,7 @@ bool ComputationDao::isAvailable(const int computationId) const {
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     query.prepare(
-            "SELECT id FROM computation WHERE id = :computationId");
+            "SELECT computation_id FROM computation WHERE computation_id = :computationId");
 
     query.bindValue(":computationId", computationId);
 

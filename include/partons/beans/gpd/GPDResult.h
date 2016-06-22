@@ -12,6 +12,7 @@
  * @brief
  */
 
+#include <stddef.h>
 #include <map>
 #include <string>
 #include <vector>
@@ -46,6 +47,14 @@ public:
             const GPDResult &referenceObject,
             std::string parentObjectInfo = "") const;
 
+    bool isAvailable(const GPDType::Type &gpdType) const;
+    PartonDistribution& getLastAvailable() const;
+
+    size_t size() const;
+
+    // use by std::sort function
+    bool operator <(const GPDResult &other) const;
+
     // ##### GETTERS & SETTERS #####
 
     const std::map<GPDType::Type, PartonDistribution>& getPartonDistributions() const;
@@ -56,7 +65,8 @@ public:
 
 private:
     std::map<GPDType::Type, PartonDistribution> m_partonDistributions;
-    //std::map<GPDType::Type, PartonDistribution>::iterator m_it;
+
+    mutable std::map<GPDType::Type, PartonDistribution>::const_iterator m_it;
 
     GPDKinematic m_kinematic;
 };

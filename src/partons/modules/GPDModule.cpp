@@ -5,8 +5,6 @@
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/thread/Packet.h>
 #include <math.h>
-//#include <SFML/System/Sleep.hpp>
-//#include <SFML/System/Time.hpp>
 #include <iostream>
 #include <stdexcept>
 #include <utility>
@@ -296,7 +294,9 @@ void GPDModule::run() {
             packet >> kinematic;
             packet >> gpdType;
 
-            info(__func__, kinematic.toString());
+            info(__func__,
+                    ElemUtils::Formatter() << "objectId = " << getObjectId()
+                            << " " << kinematic.toString());
 
             pGPDService->add(compute(kinematic, gpdType, false));
 

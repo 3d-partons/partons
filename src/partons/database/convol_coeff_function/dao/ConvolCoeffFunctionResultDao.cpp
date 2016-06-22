@@ -7,7 +7,6 @@
 #include <QtSql/qsqlrecord.h>
 #include <complex>
 
-#include "../../../../../include/partons/beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../../include/partons/database/DatabaseManager.h"
 
@@ -82,12 +81,19 @@ List<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionResultDao::getResultListB
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     query.prepare(
-            "SELECT * FROM ccf_result WHERE computation_id = :computationId;");
+            "SELECT * FROM ccf_result_view WHERE computation_id = :computationId;");
 
     query.bindValue(":computationId", computationId);
 
     if (query.exec()) {
-        fillConvolCoeffFunctionResultList(resultList, query);
+        if (DatabaseManager::getNumberOfRows(query) != 0) {
+            fillConvolCoeffFunctionResultList(resultList, query);
+        } else {
+            warn(__func__,
+                    ElemUtils::Formatter()
+                            << "No entries found for computationId = "
+                            << computationId);
+        }
     } else {
         error(__func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
@@ -104,65 +110,51 @@ void ConvolCoeffFunctionResultDao::fillConvolCoeffFunctionResultList(
         List<DVCSConvolCoeffFunctionResult> &resultList,
         QSqlQuery& query) const {
 
-    int field_id = query.record().indexOf("id");
-    int field_kinematic_id = query.record().indexOf("ccf_kinematic_id");
-    int field_computation_module_name = query.record().indexOf(
+    info(__func__, "Preparing retrieved data ...");
+
+    int ccf_result_id_field = query.record().indexOf("ccf_result_id");
+    int computation_module_name_field = query.record().indexOf(
             "computation_module_name");
+    int channel_id_field = query.record().indexOf("channel_id");
+    int gpd_type_id_field = query.record().indexOf(" gpd_type_id");
+    int real_part_field = query.record().indexOf("real_part");
+    int img_part_field = query.record().indexOf("img_part");
+    int computation_id_field = query.record().indexOf("computation_id");
+
+    DVCSConvolCoeffFunctionResult previousResult;
+    GPDType tempGPDType;
+    std::complex<double> tempComplex;
+
+    int tempGPDResultId = -1;
 
     while (query.next()) {
-        int id = query.value(field_id).toInt();
-        int kinematicId = query.value(field_kinematic_id).toInt();
-        std::string computationModuleName = query.value(
-                field_computation_module_name).toString().toStdString();
 
         //TODO create ResultInfo, Computation, ...
+        //TODO join kinematic
 
-        DVCSConvolCoeffFunctionResult convolCoeffFunctionResult;
+        tempGPDType =
+                GPDType(
+                        static_cast<GPDType::Type>(query.value(
+                                gpd_type_id_field).toInt()));
 
-        convolCoeffFunctionResult.setKinematic(
-                m_convolCoeffFunctionKinematicDao.getKinematicById(
-                        kinematicId));
-        convolCoeffFunctionResult.setComputationModuleName(
-                computationModuleName);
-        convolCoeffFunctionResult.setIndexId(id);
+        tempComplex.real(query.value(real_part_field).toDouble());
+        tempComplex.imag(query.value(img_part_field).toDouble());
 
-        fillConvolCoeffFunctionResult(convolCoeffFunctionResult);
+        if (tempGPDResultId != previousResult.getIndexId()) {
 
-        resultList.add(convolCoeffFunctionResult);
-    }
-}
+            if (previousResult.getIndexId() != -1) {
+                resultList.add(previousResult);
+            }
 
-void ConvolCoeffFunctionResultDao::fillConvolCoeffFunctionResult(
-        DVCSConvolCoeffFunctionResult &convolCoeffFunctionResult) const {
-    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
-
-    query.prepare(
-            "SELECT * FROM ccf_result_complex WHERE ccf_result_id = :resultId");
-
-    query.bindValue(":resultId", convolCoeffFunctionResult.getIndexId());
-
-    if (query.exec()) {
-
-        int field_gpd_type_id = query.record().indexOf("gpd_type_id");
-        int field_real_part = query.record().indexOf("real_part");
-        int field_img_part = query.record().indexOf("img_part");
-
-        while (query.next()) {
-            int gpd_type_id = query.value(field_gpd_type_id).toInt();
-            double realPart = query.value(field_real_part).toDouble();
-            double imgPart = query.value(field_img_part).toDouble();
-
-            std::complex<double> complex(realPart, imgPart);
-
-            convolCoeffFunctionResult.add(
-                    static_cast<GPDType::Type>(gpd_type_id), complex);
+            tempGPDResultId = query.value(ccf_result_id_field).toInt();
+            previousResult = DVCSConvolCoeffFunctionResult();
+            previousResult.setIndexId(tempGPDResultId);
+            previousResult.setComputationModuleName(
+                    query.value(computation_module_name_field).toString().toStdString());
         }
-    } else {
-        error(__func__,
-                ElemUtils::Formatter() << query.lastError().text().toStdString()
-                        << " for sql query = "
-                        << query.executedQuery().toStdString());
+
+        previousResult.add(tempGPDType.getType(), tempComplex);
     }
 
-    query.clear();
+    resultList.add(previousResult);
 }

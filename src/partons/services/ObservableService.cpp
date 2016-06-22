@@ -98,8 +98,9 @@ List<ObservableResult> ObservableService::computeManyKinematicOneModel(
     initComputationalThread(pObservable);
     launchAllThreadAndWaitingFor();
 
-    // ####################################################
+// ####################################################
 
+    sortResultList();
     results = getResultList();
     clearResultListBuffer();
 

@@ -48,7 +48,7 @@ int ScenarioDao::getScenarioIdByHashSum(const std::string& hashSum) const {
     int result = -1;
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    query.prepare("SELECT id FROM scenario WHERE hash_sum = :hashSum");
+    query.prepare("SELECT scenario_id FROM scenario WHERE hash_sum = :hashSum");
 
     query.bindValue(":hashSum", QString(hashSum.c_str()));
 
@@ -73,7 +73,7 @@ std::string ScenarioDao::getXMLFileByIndexId(const int indexId) const {
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    query.prepare("SELECT xml_file FROM scenario WHERE id = :indexId");
+    query.prepare("SELECT xml_file FROM scenario WHERE scenario_id = :indexId");
 
     query.bindValue(":indexId", indexId);
 
@@ -127,7 +127,7 @@ std::string ScenarioDao::getHashSumById(const int scenarioId) {
     std::string result = ElemUtils::StringUtils::EMPTY;
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    query.prepare("SELECT hash_sum FROM scenario WHERE id = :scenarioId;");
+    query.prepare("SELECT hash_sum FROM scenario WHERE scenario_id = :scenarioId;");
 
     query.bindValue(":scenarioId", scenarioId);
 
@@ -156,7 +156,7 @@ Scenario* ScenarioDao::getScenarioById(const int scenarioId) {
     Scenario* pScenario = 0;
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    query.prepare("SELECT * FROM scenario WHERE id = :scenarioId");
+    query.prepare("SELECT * FROM scenario WHERE scenario_id = :scenarioId");
 
     query.bindValue(":scenarioId", scenarioId);
 

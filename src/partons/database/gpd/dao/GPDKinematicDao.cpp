@@ -52,7 +52,7 @@ int GPDKinematicDao::select(double x, double xi, double t, double MuF2,
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     query.prepare(
-            "SELECT id FROM gpd_kinematic WHERE x = :x AND xi = :xi AND t = :t AND MuF2 = :MuF2 AND MuR2 = :MuR2");
+            "SELECT gpd_kinematic_id FROM gpd_kinematic WHERE x = :x AND xi = :xi AND t = :t AND MuF2 = :MuF2 AND MuR2 = :MuR2");
 
     query.bindValue(":x", x);
     query.bindValue(":xi", xi);
@@ -81,7 +81,7 @@ GPDKinematic GPDKinematicDao::getKinematicById(const int id) const {
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    query.prepare("SELECT * FROM gpd_kinematic WHERE id = :id");
+    query.prepare("SELECT * FROM gpd_kinematic WHERE gpd_kinematic_id = :id");
 
     query.bindValue(":id", id);
 
@@ -108,7 +108,7 @@ List<GPDKinematic> GPDKinematicDao::getKinematicListByComputationId(
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     query.prepare(
-            "SELECT k.id, k.x, k.xi, k.t, k.MuF2, k.MuR2 FROM gpd_kinematic k, gpd_result r WHERE r.computation_id = :computationId AND r.gpd_kinematic_id = k.id");
+            "SELECT k.gpd_kinematic_id, k.x, k.xi, k.t, k.MuF2, k.MuR2 FROM gpd_kinematic k, gpd_result r WHERE r.computation_id = :computationId AND r.gpd_kinematic_id = k.gpd_kinematic_id");
 
     query.bindValue(":computationId", computationId);
 
@@ -130,7 +130,7 @@ List<GPDKinematic> GPDKinematicDao::getKinematicListByComputationId(
 //TODO test implementation
 void GPDKinematicDao::fillGPDKinematicFromQuery(GPDKinematic &gpdKinematic,
         QSqlQuery& query) const {
-    int field_id = query.record().indexOf("id");
+    int field_id = query.record().indexOf("gpd_kinematic_id");
     int field_x = query.record().indexOf("x");
     int field_xi = query.record().indexOf("xi");
     int field_t = query.record().indexOf("t");
@@ -145,7 +145,7 @@ void GPDKinematicDao::fillGPDKinematicFromQuery(GPDKinematic &gpdKinematic,
     double MuR2 = query.value(field_MuR2).toDouble();
 
     gpdKinematic = GPDKinematic(x, xi, t, MuF2, MuR2);
-    gpdKinematic.setId(id);
+    gpdKinematic.setIndexId(id);
 }
 
 //TODO test implementation
@@ -162,7 +162,8 @@ int GPDKinematicDao::getKinematicIdByHashSum(const std::string& hashSum) const {
     int result = -1;
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    query.prepare("SELECT id FROM gpd_kinematic WHERE hash_sum = :hashSum");
+    query.prepare(
+            "SELECT gpd_kinematic_id FROM gpd_kinematic WHERE hash_sum = :hashSum");
 
     query.bindValue(":hashSum", QString(hashSum.c_str()));
 
