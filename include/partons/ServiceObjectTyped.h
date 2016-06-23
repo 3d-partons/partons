@@ -8,12 +8,14 @@
  * @version 1.0
  */
 
+#include <ElementaryUtils/string_utils/StringUtils.h>
 #include <stddef.h>
 #include <SFML/System/Lock.hpp>
 #include <SFML/System/Mutex.hpp>
 #include <string>
 
 #include "beans/automation/Scenario.h"
+#include "beans/automation/Task.h"
 #include "beans/List.h"
 #include "services/automation/AutomationService.h"
 #include "ServiceObject.h"
@@ -116,6 +118,18 @@ protected:
     List<KinematicType> m_kinematicListBuffer;
     List<ResultType> m_resultListBuffer;
 
+    void computeTask(Task &task) {
+        if (ElemUtils::StringUtils::equals(task.getFunctionName(),
+                "printResults")) {
+            printResultListBuffer();
+        }
+    }
+
+    void printResultListBuffer() {
+        for (unsigned int i = 0; i != m_resultListBuffer.size(); i++) {
+            info(__func__, m_resultListBuffer[i].toString());
+        }
+    }
 };
 
 #endif /* SERVICE_OBJECT_TYPED_H */

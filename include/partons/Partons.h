@@ -72,6 +72,8 @@ private:
     EnvironmentConfiguration* m_pEnvironmentConfiguration;
 
     void retrieveEnvironmentConfiguration();
+
+    void checkMandatoryFiles();
 };
 
 #endif /* PARTONS_H */

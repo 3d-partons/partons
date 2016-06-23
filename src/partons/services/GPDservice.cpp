@@ -53,6 +53,8 @@ GPDService::~GPDService() {
 //TODO redefinition des tests de selection des cinematiques et autres modules
 void GPDService::computeTask(Task &task) {
 
+    ServiceObjectTyped<GPDKinematic, GPDResult>::computeTask(task);
+
     List<GPDResult> resultList;
 
     //TODO refactoring scenario handling

@@ -52,6 +52,9 @@ ConvolCoeffFunctionService::~ConvolCoeffFunctionService() {
 //TODO implement
 void ConvolCoeffFunctionService::computeTask(Task &task) {
 
+    ServiceObjectTyped<DVCSConvolCoeffFunctionKinematic,
+            DVCSConvolCoeffFunctionResult>::computeTask(task);
+
     List<DVCSConvolCoeffFunctionResult> resultList;
 
     if (ElemUtils::StringUtils::equals(task.getFunctionName(),
@@ -237,7 +240,7 @@ List<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionService::computeManyKinem
     results = getResultList();
 
     //TODO remove comment
-  //  clearResultListBuffer();
+    //  clearResultListBuffer();
 
     return results;
 }

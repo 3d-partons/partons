@@ -3,7 +3,9 @@
 #include <ElementaryUtils/file_utils/FileUtils.h>
 #include <ElementaryUtils/logger/LoggerManager.h>
 #include <ElementaryUtils/PropertiesManager.h>
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
+#include <stdexcept>
 
 #include "../../include/partons/beans/system/EnvironmentConfiguration.h"
 #include "../../include/partons/BaseObjectFactory.h"
@@ -65,12 +67,24 @@ Partons::~Partons() {
     }
 }
 
+void Partons::checkMandatoryFiles() {
+    if (!ElemUtils::FileUtils::isReadable(
+            m_currentWorkingDirectoryPath + Partons::PROPERTIES_FILE_NAME)) {
+        throw std::runtime_error(
+                ElemUtils::Formatter() << "Missing configuration file "
+                        << Partons::PROPERTIES_FILE_NAME << " in folder "
+                        << m_currentWorkingDirectoryPath);
+    }
+}
+
 void Partons::init(int argc, char** argv) {
 
     //TODO check with windows system path, how to handle '/' & '\' characters
     // Get current working directory
     m_currentWorkingDirectoryPath = ElemUtils::StringUtils::removeAfterLast(
             argv[0], '/');
+
+    checkMandatoryFiles();
 
     // 1. Init PropertiesManager to provides configurations
     ElemUtils::PropertiesManager::getInstance()->init(

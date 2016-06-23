@@ -16,7 +16,8 @@
 #include "../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
 #include "../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
-#include "../../../../include/partons/utils/mstwpdf.h"
+#include "../../../../include/partons/utils/MSTWPDF.h"
+#include "../../../../include/partons/utils/PartonContent.h"
 
 const unsigned int MMS13Model::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
@@ -27,7 +28,7 @@ const std::string MMS13Model::PARAMETER_NAME_MMS13MODEL_NE = "MMS13Model_NE";
 const std::string MMS13Model::PARAMETER_NAME_MMS13MODEL_C = "MMS13Model_C";
 
 MMS13Model::MMS13Model(const std::string &className) :
-        GPDModule(className), MathIntegratorModule() {
+        GPDModule(className), MathIntegratorModule(), m_pForward(0) {
 
     m_NE = 1;
     m_NHpE = 1;
@@ -44,9 +45,9 @@ MMS13Model::MMS13Model(const std::string &className) :
 
 MMS13Model::~MMS13Model() {
 
-    if (m_Forward) {
-        delete m_Forward;
-        m_Forward = 0;
+    if (m_pForward) {
+        delete m_pForward;
+        m_pForward = 0;
     }
 }
 
@@ -71,7 +72,8 @@ MMS13Model* MMS13Model::clone() const {
 
 void MMS13Model::resolveObjectDependencies() {
 
-    m_Forward = new c_mstwpdf(
+    m_pForward = new MSTWPDF();
+    m_pForward->init(
             ElemUtils::PropertiesManager::getInstance()->getString(
                     "grid.directory") + "mstw2008nlo.00.dat");
 
@@ -107,7 +109,7 @@ MMS13Model::MMS13Model(const MMS13Model& other) :
     m_C = other.m_C;
 
     //TODO one should copy this object (requires copy constructor of c_mstwpdf, not done now at it will be replaced by a PDF service)
-    m_Forward = other.m_Forward;
+    m_pForward = other.m_pForward;
 
     initFunctorsForIntegrations();
 }
@@ -131,9 +133,9 @@ PartonDistribution MMS13Model::computeH() {
 
     //calculate
     uVal = HpEDDVal(m_x, QuarkFlavor::UP, m_NHpE)
-            - EValPlus(m_x, QuarkFlavor::UP, m_NE) + DTerm(m_x/m_xi);
+            - EValPlus(m_x, QuarkFlavor::UP, m_NE) + DTerm(m_x / m_xi);
     dVal = HpEDDVal(m_x, QuarkFlavor::DOWN, m_NHpE)
-            - EValPlus(m_x, QuarkFlavor::DOWN, m_NE) + DTerm(m_x/m_xi);
+            - EValPlus(m_x, QuarkFlavor::DOWN, m_NE) + DTerm(m_x / m_xi);
 
     uSea = 0.;
     dSea = 0.;
@@ -142,9 +144,9 @@ PartonDistribution MMS13Model::computeH() {
     g = 0.;
 
     uValMx = HpEDDVal(Mx, QuarkFlavor::UP, m_NHpE)
-            - EValPlus(Mx, QuarkFlavor::UP, m_NE) + DTerm(Mx/m_xi);
+            - EValPlus(Mx, QuarkFlavor::UP, m_NE) + DTerm(Mx / m_xi);
     dValMx = HpEDDVal(Mx, QuarkFlavor::DOWN, m_NHpE)
-            - EValPlus(Mx, QuarkFlavor::DOWN, m_NE) + DTerm(Mx/m_xi);
+            - EValPlus(Mx, QuarkFlavor::DOWN, m_NE) + DTerm(Mx / m_xi);
 
     //store
     QuarkDistribution quarkDistribution_u(QuarkFlavor::UP);
@@ -187,8 +189,8 @@ PartonDistribution MMS13Model::computeE() {
     double Mx = -m_x;
 
     //calculate
-    uVal = EValPlus(m_x, QuarkFlavor::UP, m_NE) - DTerm(m_x/m_xi);
-    dVal = EValPlus(m_x, QuarkFlavor::DOWN, m_NE) - DTerm(m_x/m_xi);
+    uVal = EValPlus(m_x, QuarkFlavor::UP, m_NE) - DTerm(m_x / m_xi);
+    dVal = EValPlus(m_x, QuarkFlavor::DOWN, m_NE) - DTerm(m_x / m_xi);
 
     uSea = 0.;
     dSea = 0.;
@@ -196,8 +198,8 @@ PartonDistribution MMS13Model::computeE() {
 
     g = 0.;
 
-    uValMx = EValPlus(Mx, QuarkFlavor::UP, m_NE) - DTerm(Mx/m_xi);
-    dValMx = EValPlus(Mx, QuarkFlavor::DOWN, m_NE) - DTerm(Mx/m_xi);
+    uValMx = EValPlus(Mx, QuarkFlavor::UP, m_NE) - DTerm(Mx / m_xi);
+    dValMx = EValPlus(Mx, QuarkFlavor::DOWN, m_NE) - DTerm(Mx / m_xi);
 
     //store
     QuarkDistribution quarkDistribution_u(QuarkFlavor::UP);
@@ -240,7 +242,7 @@ double MMS13Model::forwardHval(double beta, QuarkFlavor::Type flavor) const {
     double alpha_prim;
 
     //update pdf
-    m_Forward->update(beta, sqrt(m_MuF2));
+    m_pForward->update(beta, sqrt(m_MuF2));
 
     //check flavor
     switch (flavor) {
@@ -249,7 +251,8 @@ double MMS13Model::forwardHval(double beta, QuarkFlavor::Type flavor) const {
 
         alpha_prim = 0.9;
 
-        return pow(beta, -1 * alpha_prim * m_t) * m_Forward->cont.upv / beta;
+        return pow(beta, -1 * alpha_prim * m_t)
+                * m_pForward->getPartonContent().getUpv() / beta;
     }
         break;
 
@@ -257,7 +260,8 @@ double MMS13Model::forwardHval(double beta, QuarkFlavor::Type flavor) const {
 
         alpha_prim = 0.9;
 
-        return pow(beta, -1 * alpha_prim * m_t) * m_Forward->cont.dnv / beta;
+        return pow(beta, -1 * alpha_prim * m_t)
+                * m_pForward->getPartonContent().getDnv() / beta;
     }
         break;
 

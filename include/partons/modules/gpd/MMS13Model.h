@@ -1,12 +1,12 @@
-/*
- * MMS13Model.h
- *
- *  Created on: Mar 29, 2015
- *      Author: Pawel Sznajder (IPNO)
- */
+#ifndef MMS13_MODEL_H
+#define MMS13_MODEL_H
 
-#ifndef MMS13MODEL_H_
-#define MMS13MODEL_H_
+/**
+ * @file MMS13Model.h
+ * @author: Pawel Sznajder (IPNO)
+ * @date March 29, 2015
+ * @version 1.0
+ */
 
 #include <string>
 #include <vector>
@@ -15,8 +15,13 @@
 #include "../GPDModule.h"
 #include "../MathIntegratorModule.h"
 
-class c_mstwpdf;
+class MSTWPDF;
 
+/**
+ * @class MMS13Model
+ *
+ * @brief
+ */
 class MMS13Model: public GPDModule, public MathIntegratorModule {
 
 public:
@@ -49,7 +54,7 @@ private:
     int m_NE;   ///< profile parameter for GPD E
     double m_C; ///<
 
-    c_mstwpdf* m_Forward;   ///< pdfs
+    MSTWPDF* m_pForward;   ///< pdfs
 
     double forwardHval(double beta, QuarkFlavor::Type flavor) const; ///< forward limit of GPD H
     double forwardEval(double beta, QuarkFlavor::Type flavor) const; ///< forward limit of GPD E
@@ -74,4 +79,4 @@ private:
     void initFunctorsForIntegrations();
 };
 
-#endif /* MMS13MODEL_H_ */
+#endif /* MMS13_MODEL_H */

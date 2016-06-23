@@ -43,6 +43,9 @@ ObservableService::~ObservableService() {
 //TODO check before executing computeTask if the service name equal current service class name to avoid computing method from another service
 void ObservableService::computeTask(Task &task) {
 
+    ServiceObjectTyped<ObservableKinematic, ObservableResult>::computeTask(
+            task);
+
     List<ObservableResult> observableResultList;
 
     if (ElemUtils::StringUtils::equals(task.getFunctionName(),
@@ -125,10 +128,10 @@ ObservableResult ObservableService::computeObservableTask(Task& task) {
 
     ObservableResult result = computeObservable(kinematic, pObservable);
 
-    info(__func__,
-            ElemUtils::Formatter() << task.getFunctionName() << "("
-                    << pObservable->getClassName() << ")" << '\n'
-                    << result.toString());
+//    info(__func__,
+//            ElemUtils::Formatter() << task.getFunctionName() << "("
+//                    << pObservable->getClassName() << ")" << '\n'
+//                    << result.toString());
 
     return result;
 }
@@ -162,10 +165,10 @@ List<ObservableResult> ObservableService::computeManyKinematicOneModelTask(
     List<ObservableResult> result = computeManyKinematicOneModel(
             listOfKinematic, pObservable);
 
-    info(__func__,
-            ElemUtils::Formatter() << task.getFunctionName() << "("
-                    << pObservable->getClassName() << ")" << '\n'
-                    << result.toString());
+//    info(__func__,
+//            ElemUtils::Formatter() << task.getFunctionName() << "("
+//                    << pObservable->getClassName() << ")" << '\n'
+//                    << result.toString());
 
     return result;
 }
