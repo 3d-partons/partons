@@ -118,11 +118,15 @@ protected:
     List<KinematicType> m_kinematicListBuffer;
     List<ResultType> m_resultListBuffer;
 
-    void computeTask(Task &task) {
+    bool computeGeneralTask(Task &task) {
+        bool isEvaluated = false;
         if (ElemUtils::StringUtils::equals(task.getFunctionName(),
                 "printResults")) {
             printResultListBuffer();
+            isEvaluated = true;
         }
+
+        return isEvaluated;
     }
 
     void printResultListBuffer() {

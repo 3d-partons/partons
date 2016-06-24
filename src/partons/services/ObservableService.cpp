@@ -42,10 +42,6 @@ ObservableService::~ObservableService() {
 //TODO implement all function
 //TODO check before executing computeTask if the service name equal current service class name to avoid computing method from another service
 void ObservableService::computeTask(Task &task) {
-
-    ServiceObjectTyped<ObservableKinematic, ObservableResult>::computeTask(
-            task);
-
     List<ObservableResult> observableResultList;
 
     if (ElemUtils::StringUtils::equals(task.getFunctionName(),
@@ -54,7 +50,8 @@ void ObservableService::computeTask(Task &task) {
     } else if (ElemUtils::StringUtils::equals(task.getFunctionName(),
             ObservableService::FUNCTION_NAME_COMPUTE_MANY_KINEMATIC_ONE_MODEL)) {
         observableResultList = computeManyKinematicOneModelTask(task);
-    } else {
+    } else if (!ServiceObjectTyped<ObservableKinematic, ObservableResult>::computeGeneralTask(
+            task)) {
         error(__func__, "unknown function name = " + task.getFunctionName());
     }
 

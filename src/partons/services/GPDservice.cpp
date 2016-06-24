@@ -52,9 +52,6 @@ GPDService::~GPDService() {
 //TODO supprimer les pojnteurs membres de la classe GPDService
 //TODO redefinition des tests de selection des cinematiques et autres modules
 void GPDService::computeTask(Task &task) {
-
-    ServiceObjectTyped<GPDKinematic, GPDResult>::computeTask(task);
-
     List<GPDResult> resultList;
 
     //TODO refactoring scenario handling
@@ -137,9 +134,8 @@ void GPDService::computeTask(Task &task) {
     } else if (ElemUtils::StringUtils::equals(task.getFunctionName(),
             GPDService::GPD_SERVICE_COMPUTE_MANY_KINEMATIC_ONE_MODEL)) {
         resultList.add(computeManyKinematicOneModelTask(task));
-    }
-
-    else {
+    } else if (!ServiceObjectTyped<GPDKinematic, GPDResult>::computeGeneralTask(
+            task)) {
         error(__func__, "unknown function name = " + task.getFunctionName());
     }
 
@@ -227,7 +223,7 @@ List<GPDResult> GPDService::computeListOfGPDModelRestrictedByGPDType(
                         listOfGPDToCompute[i], gpdType));
     }
 
-    // return a list of outputData (one outputData by GPDModule computed)
+// return a list of outputData (one outputData by GPDModule computed)
     return results;
 }
 
@@ -296,9 +292,9 @@ GPDModule* GPDService::newGPDModuleFromTask(const Task& task) const {
                         << task.getFunctionName());
     }
 
-    //TODO how to deal with evolution module ?
+//TODO how to deal with evolution module ?
 
-    //TODO how to handle many GPD module ?
+//TODO how to handle many GPD module ?
 
     return pGPDModule;
 }
@@ -316,7 +312,7 @@ void GPDService::updateResultInfo(List<GPDResult>& resultList,
 }
 
 GPDResult GPDService::computeGPDTask(Task& task) {
-    //create a GPDKinematic and init it with a list of parameters
+//create a GPDKinematic and init it with a list of parameters
     GPDKinematic gpdKinematic;
 
     if (task.isAvailableParameters("GPDKinematic")) {

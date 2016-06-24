@@ -51,10 +51,6 @@ ConvolCoeffFunctionService::~ConvolCoeffFunctionService() {
 
 //TODO implement
 void ConvolCoeffFunctionService::computeTask(Task &task) {
-
-    ServiceObjectTyped<DVCSConvolCoeffFunctionKinematic,
-            DVCSConvolCoeffFunctionResult>::computeTask(task);
-
     List<DVCSConvolCoeffFunctionResult> resultList;
 
     if (ElemUtils::StringUtils::equals(task.getFunctionName(),
@@ -68,7 +64,8 @@ void ConvolCoeffFunctionService::computeTask(Task &task) {
     } else if (ElemUtils::StringUtils::equals(task.getFunctionName(),
             ConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_MANY_KINEMATIC_ONE_MODEL)) {
         resultList = computeManyKinematicOneModelTask(task);
-    } else {
+    } else if (!ServiceObjectTyped<DVCSConvolCoeffFunctionKinematic,
+            DVCSConvolCoeffFunctionResult>::computeGeneralTask(task)) {
         error(__func__, "unknown function name = " + task.getFunctionName());
     }
 
