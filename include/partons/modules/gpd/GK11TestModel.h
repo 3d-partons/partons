@@ -247,6 +247,8 @@ private:
     double GKtDependentdValDD(double beta, double alpha);
     double GKtDependentgDD(double beta, double alpha);
 
+    double GKtDependentHtgDD(double beta, double alpha);
+
     //DD E
     double GKtDependentDD_EuVal(double beta, double alpha);
     double GKtDependentDD_EdVal(double beta, double alpha);
@@ -284,6 +286,12 @@ private:
     double IntegralxLargeHgMx(double x, std::vector<double> Par);
     double IntegralxSmall1Hg(double x, std::vector<double> Par);
     double IntegralxSmall2Hg(double x, std::vector<double> Par);
+//integrals for Ht
+    double IntegralxLargeHtg(double x, std::vector<double> Par);
+    double IntegralxLargeHtgMx(double x, std::vector<double> Par);
+    double IntegralxSmall1Htg(double x, std::vector<double> Par);
+    double IntegralxSmall2Htg(double x, std::vector<double> Par);
+
 //integrals for E
     double IntegralEuVal(double x, std::vector<double> Par);
     double IntegralEdVal(double x, std::vector<double> Par);
@@ -334,6 +342,11 @@ private:
     NumA::FunctionType1D* m_pIntegralxSmall1Hg;
     NumA::FunctionType1D* m_pIntegralxSmall2Hg;
     NumA::FunctionType1D* m_pIntegralxLargeHgMx;
+
+    NumA::FunctionType1D* m_pIntegralxLargeHtg;
+    NumA::FunctionType1D* m_pIntegralxSmall1Htg;
+    NumA::FunctionType1D* m_pIntegralxSmall2Htg;
+    NumA::FunctionType1D* m_pIntegralxLargeHtgMx;
 
     NumA::FunctionType1D* m_pIntegralEuVal;
     NumA::FunctionType1D* m_pIntegralEdVal;
