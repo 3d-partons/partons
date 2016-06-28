@@ -6,6 +6,7 @@
 #include <QtSql/qsqlerror.h>
 #include <QtSql/qsqlrecord.h>
 
+#include "../../../../../include/partons/database/Database.h"
 #include "../../../../../include/partons/database/DatabaseManager.h"
 
 GPDKinematicDao::GPDKinematicDao() :
@@ -21,8 +22,11 @@ int GPDKinematicDao::insert(double x, double xi, double t, double MuF2,
     int result = -1;
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    query.prepare(
-            "INSERT INTO gpd_kinematic (x, xi, t, MuF2, MuR2) VALUES (:x, :xi, :t, :MuF2, :MuR2)");
+    ElemUtils::Formatter formatter;
+    formatter << "INSERT INTO " << Database::TABLE_NAME_GPD_KINEMATIC
+            << " (x, xi, t, MuF2, MuR2) VALUES (:x, :xi, :t, :MuF2, :MuR2)";
+
+    query.prepare(QString(formatter.str().c_str()));
 
     query.bindValue(":x", x);
     query.bindValue(":xi", xi);
@@ -51,8 +55,12 @@ int GPDKinematicDao::select(double x, double xi, double t, double MuF2,
     int result = -1;
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    query.prepare(
-            "SELECT gpd_kinematic_id FROM gpd_kinematic WHERE x = :x AND xi = :xi AND t = :t AND MuF2 = :MuF2 AND MuR2 = :MuR2");
+    ElemUtils::Formatter formatter;
+    formatter << "SELECT " << Database::COLUMN_NAME_GPD_KINEMATIC_ID << " FROM "
+            << Database::TABLE_NAME_GPD_KINEMATIC
+            << " WHERE x = :x AND xi = :xi AND t = :t AND MuF2 = :MuF2 AND MuR2 = :MuR2";
+
+    query.prepare(QString(formatter.str().c_str()));
 
     query.bindValue(":x", x);
     query.bindValue(":xi", xi);
@@ -81,7 +89,11 @@ GPDKinematic GPDKinematicDao::getKinematicById(const int id) const {
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    query.prepare("SELECT * FROM gpd_kinematic WHERE gpd_kinematic_id = :id");
+    ElemUtils::Formatter formatter;
+    formatter << "SELECT * FROM " << Database::TABLE_NAME_GPD_KINEMATIC
+            << " WHERE " << Database::COLUMN_NAME_GPD_KINEMATIC_ID << " = :id";
+
+    query.prepare(QString(formatter.str().c_str()));
 
     query.bindValue(":id", id);
 
@@ -107,8 +119,16 @@ List<GPDKinematic> GPDKinematicDao::getKinematicListByComputationId(
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    query.prepare(
-            "SELECT k.gpd_kinematic_id, k.x, k.xi, k.t, k.MuF2, k.MuR2 FROM gpd_kinematic k, gpd_result r WHERE r.computation_id = :computationId AND r.gpd_kinematic_id = k.gpd_kinematic_id");
+    ElemUtils::Formatter formatter;
+    formatter << "SELECT k." << Database::COLUMN_NAME_GPD_KINEMATIC_ID
+            << ", k.x, k.xi, k.t, k.MuF2, k.MuR2 FROM "
+            << Database::TABLE_NAME_GPD_KINEMATIC << " k, "
+            << Database::TABLE_NAME_GPD_RESULT
+            << " r WHERE r.computation_id = :computationId AND r."
+            << Database::COLUMN_NAME_GPD_KINEMATIC_ID << " = k."
+            << Database::COLUMN_NAME_GPD_KINEMATIC_ID;
+
+    query.prepare(QString(formatter.str().c_str()));
 
     query.bindValue(":computationId", computationId);
 
@@ -130,7 +150,8 @@ List<GPDKinematic> GPDKinematicDao::getKinematicListByComputationId(
 //TODO test implementation
 void GPDKinematicDao::fillGPDKinematicFromQuery(GPDKinematic &gpdKinematic,
         QSqlQuery& query) const {
-    int field_id = query.record().indexOf("gpd_kinematic_id");
+    int field_id = query.record().indexOf(
+            QString(Database::COLUMN_NAME_GPD_KINEMATIC_ID.c_str()));
     int field_x = query.record().indexOf("x");
     int field_xi = query.record().indexOf("xi");
     int field_t = query.record().indexOf("t");
@@ -162,8 +183,12 @@ int GPDKinematicDao::getKinematicIdByHashSum(const std::string& hashSum) const {
     int result = -1;
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    query.prepare(
-            "SELECT gpd_kinematic_id FROM gpd_kinematic WHERE hash_sum = :hashSum");
+    ElemUtils::Formatter formatter;
+    formatter << "SELECT " << Database::COLUMN_NAME_GPD_KINEMATIC_ID << " FROM "
+            << Database::TABLE_NAME_GPD_KINEMATIC
+            << " WHERE hash_sum = :hashSum";
+
+    query.prepare(QString(formatter.str().c_str()));
 
     query.bindValue(":hashSum", QString(hashSum.c_str()));
 
