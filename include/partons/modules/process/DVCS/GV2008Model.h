@@ -70,7 +70,7 @@ private:
     std::vector<double> m_powerOfProtonMass;
 
     // Variable used in the computation of Omega;
-    double m_y;
+    double m_yGV;
     double m_xB2;
 
     double m_xBMin, m_xBMax;

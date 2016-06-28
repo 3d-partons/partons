@@ -75,18 +75,16 @@ protected:
     double m_t;     ///< Mandelstam variable (square of the 4-momentum transfer)
     double m_Q2;    ///< Virtuality of the photon
 
+    // Frame dependent scalars
     double m_E;     ///< Beam energy in target rest frame
 
+    // Angles in Trento convention
     double m_phi;      ///<  Angle between leptonic and hadronic planes (radian)
-    double m_phiS;      ///<
-    double m_phie;      ///<
+    double m_phiS;      ///< Angle of the target transverse polarization
+    double m_phie;      //TODO What's this?! It's the equivalent of phiS but for GV. Redundant!
 
     ScaleModule* m_pScaleModule;
     XiConverterModule* m_pXiConverterModule;
-
-    // Frame dependent scalars
-
-    // 4-vectors defined in the CM frame
 
     Observable* m_pObservable;
     ConvolCoeffFunctionModule* m_pConvolCoeffFunctionModule;

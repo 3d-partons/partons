@@ -72,13 +72,13 @@ void GV2008Model::initModule() {
 
     // Omega
 
-    m_y = (-m_powerOfQ[0] + 4 * m_E * PROTON_MASS * m_xB)
+    m_yGV = (-m_powerOfQ[0] + 4 * m_E * PROTON_MASS * m_xB)
             / sqrt(
                     m_powerOfQ[2]
                             + 4 * m_powerOfProtonMass[0] * m_powerOfQ[0]
                                     * m_xB2);
 
-    m_Omega = log(m_y + sqrt(-1 + m_y) * sqrt(1 + m_y));
+    m_Omega = log(m_yGV + sqrt(-1 + m_yGV) * sqrt(1 + m_yGV));
 
     // m_phaseSpace
     m_phaseSpace = (pow(POSITRON_CHARGE, 6) * m_powerOfQ[0])
@@ -202,10 +202,10 @@ void GV2008Model::isModuleWellConfigured() {
         error(__func__, formater.str());
     }
 
-    if (m_y < 1.) {
+    if (m_yGV < 1.) {
         error(__func__,
                 ElemUtils::Formatter() << "ELab = " << m_E
-                        << " GeV is too small. cosh[ome]= " << m_y);
+                        << " GeV is too small. cosh[ome]= " << m_yGV);
     }
 
     //TODO mettre une contrainte sur les CFF dont on a besoin pour calculer le modele

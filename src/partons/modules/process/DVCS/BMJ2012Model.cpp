@@ -23,17 +23,15 @@ BMJ2012Model::BMJ2012Model(const std::string &className) :
     m_Lambda = 0.;
     m_lambda = 0.;
     m_xB2 = 0.;
-    m_y.assign(3, 0.);
+    m_yBMJ.assign(3, 0.);
     m_Q.assign(4, 0.);
     m_xBtQ2.assign(3, 0.);
     m_M.assign(2, 0.);
-    m_epsilon.assign(2, 0.);
+    m_epsilonBMJ.assign(2, 0.);
     m_epsroot.assign(6, 0.);
     m_K.assign(2, 0.);
     m_Kt.assign(2, 0.);
     m_Delta2.assign(2, 0.);
-    m_Delta2_min = 0.;
-    m_Delta2_max = 0.;
     m_cBH.assign(3, std::vector<double>(3, 0.));
     m_s1BHTP = 0.;
     m_P1 = 0.;
@@ -70,17 +68,15 @@ BMJ2012Model::BMJ2012Model(const BMJ2012Model& other) :
     m_Lambda = other.m_Lambda;
     m_lambda = other.m_lambda;
     m_xB2 = other.m_xB2;
-    m_y = other.m_y;
+    m_yBMJ = other.m_yBMJ;
     m_Q = other.m_Q;
     m_xBtQ2 = other.m_xBtQ2;
     m_M = other.m_M;
-    m_epsilon = other.m_epsilon;
+    m_epsilonBMJ = other.m_epsilonBMJ;
     m_epsroot = other.m_epsroot;
     m_K = other.m_K;
     m_Kt = other.m_Kt;
     m_Delta2 = other.m_Delta2;
-    m_Delta2_min = other.m_Delta2_min;
-    m_Delta2_max = other.m_Delta2_max;
     m_cBH = other.m_cBH;
     m_s1BHTP = other.m_s1BHTP;
     m_P1 = other.m_P1;
@@ -120,32 +116,28 @@ void BMJ2012Model::initModule() {
     m_xBtQ2[2] = m_xBtQ2[1] * m_xBtQ2[0];
     m_M[0] = PROTON_MASS; // 0.938271998 // Test Maxime;
     m_M[1] = m_M[0] * m_M[0];
-    m_y[0] = m_Q2 / (2 * m_xB * m_M[0] * m_E);
-    m_y[1] = m_y[0] * m_y[0];
-    m_y[2] = m_y[0] * m_y[1];
-    m_epsilon[0] = 2 * m_xB * m_M[0] / m_Q[0];
-    m_epsilon[1] = m_epsilon[0] * m_epsilon[0];
-    m_epsroot[1] = 1 + m_epsilon[1];
+    m_yBMJ[0] = m_y;
+    m_yBMJ[1] = m_yBMJ[0] * m_yBMJ[0];
+    m_yBMJ[2] = m_yBMJ[0] * m_yBMJ[1];
+    m_epsilonBMJ[0] = m_epsilon;
+    m_epsilonBMJ[1] = m_epsilonBMJ[0] * m_epsilonBMJ[0];
+    m_epsroot[1] = 1 + m_epsilonBMJ[1];
     m_epsroot[0] = sqrt(m_epsroot[1]);
     m_epsroot[2] = m_epsroot[1] * m_epsroot[0];
     m_epsroot[3] = m_epsroot[1] * m_epsroot[1];
     m_epsroot[4] = m_epsroot[2] * m_epsroot[1];
     m_epsroot[5] = m_epsroot[2] * m_epsroot[2];
-    m_Delta2_min = -m_Q2 * (2 * (1 - m_xB) * (1 - m_epsroot[0]) + m_epsilon[1])
-            / (4 * m_xB * (1 - m_xB) + m_epsilon[1]);
-    m_Delta2_max = -m_Q2 * (2 * (1 - m_xB) * (1 + m_epsroot[0]) + m_epsilon[1])
-            / (4 * m_xB * (1 - m_xB) + m_epsilon[1]);
     m_K[1] = -(m_t / m_Q2) * (1 - m_xB)
-            * (1 - m_y[0] - m_y[1] * m_epsilon[1] / 4)
-            * (1 - m_Delta2_min / m_t)
+            * (1 - m_yBMJ[0] - m_yBMJ[1] * m_epsilonBMJ[1] / 4)
+            * (1 - m_tmin / m_t)
             * (m_epsroot[0]
-                    + (4 * m_xB * (1 - m_xB) + m_epsilon[1]) / (4 * (1 - m_xB))
-                            * (m_t - m_Delta2_min) / m_Q2);
+                    + (4 * m_xB * (1 - m_xB) + m_epsilonBMJ[1]) / (4 * (1 - m_xB))
+                            * (m_t - m_tmin) / m_Q2);
     m_K[0] = sqrt(m_K[1]);
-    m_Kt[1] = ((1 - m_xB) * m_xB + m_epsilon[1] / 4.) * (m_Delta2_min - m_t)
-            * (m_t - m_Delta2_max) / m_Q2;
+    m_Kt[1] = ((1 - m_xB) * m_xB + m_epsilonBMJ[1] / 4.) * (m_tmin - m_t)
+            * (m_t - m_tmax) / m_Q2;
     m_Kt[0] = sqrt(m_Kt[1]);
-    // double K = sqrt(1 - m_y[0] - m_epsilon[1] * m_y[1] / 4.) * m_Kt[0] / m_Q[0]; // Test
+    // double K = sqrt(1 - m_yBMJ[0] - m_epsilonBMJ[1] * m_yBMJ[1] / 4.) * m_Kt[0] / m_Q[0]; // Test
 
     // Dirac and Pauli form factors
     computeFormFactors();
@@ -157,7 +149,7 @@ void BMJ2012Model::initModule() {
     computeAngularCoeffsInterf();
 
     // Phase space
-    m_phaseSpace = m_xB * m_y[1] / (1024 * pow(PI, 5) * m_Q[3] * m_epsroot[0]);
+    m_phaseSpace = m_xB * m_yBMJ[1] / (1024 * pow(PI, 5) * m_Q[3] * m_epsroot[0]);
 
 }
 
@@ -172,9 +164,9 @@ void BMJ2012Model::initModule(double beamHelicity, double beamCharge,
 
     //define the Lepton propagators
     double Delta2Q2 = m_t / m_Q2;
-    double yeps = m_y[0] * (1. + m_epsilon[1]);
-    double J = (1. - m_y[0] - m_y[0] * m_epsilon[1] / 2.) * (1. + Delta2Q2)
-            - (1. - m_xB) * (2. - m_y[0]) * Delta2Q2;
+    double yeps = m_yBMJ[0] * (1. + m_epsilonBMJ[1]);
+    double J = (1. - m_yBMJ[0] - m_yBMJ[0] * m_epsilonBMJ[1] / 2.) * (1. + Delta2Q2)
+            - (1. - m_xB) * (2. - m_yBMJ[0]) * Delta2Q2;
     m_P1 = -(J + 2. * m_K[0] * cos(m_phi1BMK)) / yeps;
     m_P2 = 1. + Delta2Q2 - m_P1;
 
@@ -256,7 +248,7 @@ void BMJ2012Model::computeCFFs() {
     double A = -sqrt(2.) * m_Kt[0] / (m_epsroot[0] * m_Q[0] * m_xBtQ2[0]);
     m_cF[2][0] = A * m_xB
             * (1 + 2. * m_xB * (4 * m_M[1] - m_t) / (m_Q2 * m_xBtQ2[0]));
-    m_cF[2][1] = A * (4. * m_xB2 * m_M[1] - (2. * m_xB + m_epsilon[1]) * m_t)
+    m_cF[2][1] = A * (4. * m_xB2 * m_M[1] - (2. * m_xB + m_epsilonBMJ[1]) * m_t)
             / (2. * m_M[1] * m_xBtQ2[0]);
     m_cF[2][2] = A * 2. * m_xB / m_xBtQ2[0]
             * (1 + 2. * m_xB2 * (4 * m_M[1] - m_t) / (m_Q2 * m_xBtQ2[0]));
@@ -321,38 +313,38 @@ void BMJ2012Model::computeFourierCoeffsBH() {
 
     // Unpolarized Fourier coefficients
     m_cBH[0][0] = 8. * m_K[1]
-            * ((2. + 3. * m_epsilon[1]) * F1MinusDeltaF2 / Delta2Q2
+            * ((2. + 3. * m_epsilonBMJ[1]) * F1MinusDeltaF2 / Delta2Q2
                     + 2. * m_xB2 * F1PlusF22)
-            + pow((2. - m_y[0]), 2)
-                    * ((2. + m_epsilon[1])
+            + pow((2. - m_yBMJ[0]), 2)
+                    * ((2. + m_epsilonBMJ[1])
                             * ((m_xB2 / Delta2M2) * pow((1. + Delta2Q2), 2)
                                     + 4. * (1. - m_xB) * (1. + m_xB * Delta2Q2))
                             * F1MinusDeltaF2
                             + (4. * m_xB2)
                                     * (m_xB
-                                            + (1. - m_xB + m_epsilon[1] / 2.)
+                                            + (1. - m_xB + m_epsilonBMJ[1] / 2.)
                                                     * pow((1. - Delta2Q2), 2)
                                             - m_xB * (1. - 2. * m_xB)
                                                     * m_Delta2[1] / m_Q[3])
                                     * F1PlusF22)
-            + 8. * (1. + m_epsilon[1])
-                    * (1. - m_y[0] - m_epsilon[1] * m_y[1] / 4.)
-                    * (2. * m_epsilon[1] * (1. - Delta2M2) * F1MinusDeltaF2
+            + 8. * (1. + m_epsilonBMJ[1])
+                    * (1. - m_yBMJ[0] - m_epsilonBMJ[1] * m_yBMJ[1] / 4.)
+                    * (2. * m_epsilonBMJ[1] * (1. - Delta2M2) * F1MinusDeltaF2
                             - m_xB2 * pow((1. - Delta2Q2), 2) * F1PlusF22);
-    m_cBH[0][1] = 8. * m_K[0] * (2. - m_y[0])
-            * ((m_xB2 / Delta2M2 - 2. * m_xB - m_epsilon[1]) * F1MinusDeltaF2
+    m_cBH[0][1] = 8. * m_K[0] * (2. - m_yBMJ[0])
+            * ((m_xB2 / Delta2M2 - 2. * m_xB - m_epsilonBMJ[1]) * F1MinusDeltaF2
                     + 2. * m_xB2 * (1. - (1. - 2. * m_xB) * Delta2Q2)
                             * F1PlusF22);
     m_cBH[0][2] = 8. * m_xB2 * m_K[1]
             * (F1MinusDeltaF2 / Delta2M2 + 2. * F1PlusF22);
 
     // LP Fourier coefficients
-    double C1 = 8. * m_lambda * m_xB * m_y[0] * m_epsroot[0] * F1PlusF2
+    double C1 = 8. * m_lambda * m_xB * m_yBMJ[0] * m_epsroot[0] * F1PlusF2
             / (1. - Delta2M2);
-    m_cBH[1][0] = C1 * (2. - m_y[0])
+    m_cBH[1][0] = C1 * (2. - m_yBMJ[0])
             * (0.5 * (m_xB / 2. * (1. - Delta2Q2) - Delta2M2)
                     * (2. - m_xB - 2. * pow((1 - m_xB), 2) * Delta2Q2
-                            + m_epsilon[1] * (1. - Delta2Q2)
+                            + m_epsilonBMJ[1] * (1. - Delta2Q2)
                             - m_xB * (1. - 2. * m_xB) * m_Delta2[1] / m_Q[3])
                     * F1PlusF2
                     + (1. - (1. - m_xB) * Delta2Q2)
@@ -367,46 +359,46 @@ void BMJ2012Model::computeFourierCoeffsBH() {
                             * F1PlusDeltaF2);
 
     // TP Fourier coefficients
-    double C2 = sqrt(1. - m_y[0] - m_epsilon[1] * m_y[1] / 4.);
-    m_cBH[2][0] = -8. * m_lambda * cos(m_phi2BMK) * (2. - m_y[0]) * m_y[0] / MQ
+    double C2 = sqrt(1. - m_yBMJ[0] - m_epsilonBMJ[1] * m_yBMJ[1] / 4.);
+    m_cBH[2][0] = -8. * m_lambda * cos(m_phi2BMK) * (2. - m_yBMJ[0]) * m_yBMJ[0] / MQ
             * m_epsroot[0] * m_K[0] / C2 * F1PlusF2
             * (m_xB * m_xB2 * pow(MQ, 2) * (1. - Delta2Q2) * F1PlusF2
                     + (1. - (1. - m_xB) * Delta2Q2)
                             * (m_xB2 / (4. * Delta2M2) * (1. - Delta2Q2) * F1
                                     + m_xB / 2. * F2));
-    m_cBH[2][1] = -16 * m_lambda * cos(m_phi2BMK) * m_xB * m_y[0] * C2 * MQ
+    m_cBH[2][1] = -16 * m_lambda * cos(m_phi2BMK) * m_xB * m_yBMJ[0] * C2 * MQ
             * m_epsroot[0] * F1PlusF2
             * (2. * m_K[1] / (Delta2Q2 * pow(C2, 2))
                     * (m_xB * (1. - Delta2Q2) * F1 + Delta2M2 * F2)
-                    + (1. + m_epsilon[1]) * m_xB * (1. - Delta2Q2)
+                    + (1. + m_epsilonBMJ[1]) * m_xB * (1. - Delta2Q2)
                             * F1PlusDeltaF2);
-    m_s1BHTP = 16. * m_lambda * sin(m_phi2BMK) * m_y[0] * m_xB2 * C2 * MQ
+    m_s1BHTP = 16. * m_lambda * sin(m_phi2BMK) * m_yBMJ[0] * m_xB2 * C2 * MQ
             * m_epsroot[2] * (1. - Delta2Q2) * F1PlusF2 * F1PlusDeltaF2;
 }
 
 void BMJ2012Model::computeFourierCoeffsVCS() {
     double C1, C2;
-    C2 = 1. - m_y[0] - m_epsilon[1] * m_y[1] / 4.;
+    C2 = 1. - m_yBMJ[0] - m_epsilonBMJ[1] * m_yBMJ[1] / 4.;
     C1 = sqrt(C2);
 
     // Unpolarized Fourier coeffs
-    m_cVCS[0][0] = (2 * (2 - 2 * m_y[0] + m_y[1] * (1. + m_epsilon[1] / 2.))
+    m_cVCS[0][0] = (2 * (2 - 2 * m_yBMJ[0] + m_yBMJ[1] * (1. + m_epsilonBMJ[1] / 2.))
             * C_VCS(0, 1, 1, 1, 1, -1, 1, -1, 1).real()
             + 8 * C2 * C_VCS(0, 0, 1, 0, 1).real()) / m_epsroot[1];
-    m_cVCS[0][1] = 4 * sqrt(2.) * C1 / m_epsroot[1] * (2 - m_y[0])
+    m_cVCS[0][1] = 4 * sqrt(2.) * C1 / m_epsroot[1] * (2 - m_yBMJ[0])
             * C_VCS(0, 0, 1, 1, 1, -1, 1).real();
     m_sVCS[0][1] = 4 * sqrt(2.) * C1 / m_epsroot[1]
-            * (-m_lambda * m_y[0] * m_epsroot[0])
+            * (-m_lambda * m_yBMJ[0] * m_epsroot[0])
             * C_VCS(0, 0, 1, 1, 1, -1, 1).imag();
     m_cVCS[0][2] = 8 * C2 / m_epsroot[1] * C_VCS(0, -1, 1, 1, 1).real();
 
     // Longitudinally polarized Fourier coeffs
-    m_cVCS[1][0] = 2 * m_lambda * m_y[0] * (2 - m_y[0]) / m_epsroot[1]
+    m_cVCS[1][0] = 2 * m_lambda * m_yBMJ[0] * (2 - m_yBMJ[0]) / m_epsroot[1]
             * C_VCS(1, 1, 1, 1, 1, -1, 1, -1, 1).real();
     m_cVCS[1][1] = -4 * sqrt(2.) * C1 / m_epsroot[2]
-            * (-m_lambda * m_y[0] * m_epsroot[0])
+            * (-m_lambda * m_yBMJ[0] * m_epsroot[0])
             * C_VCS(1, 0, 1, 1, 1, -1, 1).real();
-    m_sVCS[1][1] = -4 * sqrt(2.) * C1 / m_epsroot[2] * (2 - m_y[0])
+    m_sVCS[1][1] = -4 * sqrt(2.) * C1 / m_epsroot[2] * (2 - m_yBMJ[0])
             * C_VCS(1, 0, 1, 1, 1, -1, 1).imag();
     m_sVCS[1][2] = -8 * C2 / m_epsroot[2] * C_VCS(1, -1, 1, 1, 1).imag();
 
@@ -414,27 +406,27 @@ void BMJ2012Model::computeFourierCoeffsVCS() {
     m_cVCS[2][0] =
             m_Kt[0] / m_M[0] / m_epsroot[1]
                     * (-4 * C2 * sin(m_phi2BMK) * C_VCS(3, 0, 1, 0, 1).imag()
-                            + (2 - m_y[0])
-                                    * (m_lambda * cos(m_phi2BMK) * m_y[0]
+                            + (2 - m_yBMJ[0])
+                                    * (m_lambda * cos(m_phi2BMK) * m_yBMJ[0]
                                             * C_VCS(2, 1, 1, 1, 1, -1, 1, -1, 1).real()
                                             - sin(m_phi2BMK)
-                                                    * (2 - 2 * m_y[0]
-                                                            + m_y[1]
+                                                    * (2 - 2 * m_yBMJ[0]
+                                                            + m_yBMJ[1]
                                                                     * (1.
-                                                                            + m_epsilon[1]
+                                                                            + m_epsilonBMJ[1]
                                                                                     / 2.))
-                                                    / (2. - m_y[0])
+                                                    / (2. - m_yBMJ[0])
                                                     * C_VCS(3, 1, 1, 1, 1, -1,
                                                             1, -1, 1).imag()));
     m_cVCS[2][1] = -2 * sqrt(2.) * C1 / m_epsroot[1] * m_Kt[0] / m_M[0]
-            * (cos(m_phi2BMK) * (-m_lambda * m_y[0])
+            * (cos(m_phi2BMK) * (-m_lambda * m_yBMJ[0])
                     * C_VCS(2, 0, 1, 1, 1, -1, 1).real()
-                    + sin(m_phi2BMK) * (2 - m_y[0])
+                    + sin(m_phi2BMK) * (2 - m_yBMJ[0])
                             * C_VCS(3, 0, 1, 1, 1, -1, 1).imag());
     m_sVCS[2][1] = -2 * sqrt(2.) * C1 / m_epsroot[1] * m_Kt[0] / m_M[0]
-            * (cos(m_phi2BMK) * (2 - m_y[0]) / m_epsroot[0]
+            * (cos(m_phi2BMK) * (2 - m_yBMJ[0]) / m_epsroot[0]
                     * C_VCS(2, 0, 1, 1, 1, -1, 1).imag()
-                    + sin(m_phi2BMK) * (m_lambda * m_y[0] * m_epsroot[0])
+                    + sin(m_phi2BMK) * (m_lambda * m_yBMJ[0] * m_epsroot[0])
                             * C_VCS(3, 0, 1, 1, 1, -1, 1).real());
     m_cVCS[2][2] = -4 * C2 / m_epsroot[2] * m_Kt[0] / m_M[0] * m_epsroot[0]
             * sin(m_phi2BMK) * C_VCS(3, -1, 1, 1, 1).imag();
@@ -445,11 +437,11 @@ void BMJ2012Model::computeFourierCoeffsVCS() {
 void BMJ2012Model::computeAngularCoeffsInterf() {
     double tQ2 = m_t / m_Q2;
     double Kt2Q2 = m_Kt[1] / m_Q2;
-    double tp = m_t - m_Delta2_min;
+    double tp = m_t - m_tmin;
     double tpQ2 = tp / m_Q2;
-    double C2 = 1. - m_y[0] - m_epsilon[1] * m_y[1] / 4.;
+    double C2 = 1. - m_yBMJ[0] - m_epsilonBMJ[1] * m_yBMJ[1] / 4.;
     double C1 = sqrt(C2);
-    double B2 = 2. - 2 * m_y[0] + m_y[1] + m_epsilon[1] * m_y[1] / 2.;
+    double B2 = 2. - 2 * m_yBMJ[0] + m_yBMJ[1] + m_epsilonBMJ[1] * m_yBMJ[1] / 2.;
 
     /* Unpolarized and TP- target
      * Angulars coeffs C and S
@@ -457,28 +449,28 @@ void BMJ2012Model::computeAngularCoeffsInterf() {
 
     // C++ coefficients
     m_C[0][0][0] =
-            -4 * (2. - m_y[0]) * (1. + m_epsroot[0]) / m_epsroot[3]
-                    * (Kt2Q2 * (2. - m_y[0]) * (2. - m_y[0]) / m_epsroot[0]
+            -4 * (2. - m_yBMJ[0]) * (1. + m_epsroot[0]) / m_epsroot[3]
+                    * (Kt2Q2 * (2. - m_yBMJ[0]) * (2. - m_yBMJ[0]) / m_epsroot[0]
                             + tQ2 * C2 * (2 - m_xB)
                                     * (1.
                                             + (2 * m_xB
                                                     * (2 - m_xB
                                                             + (m_epsroot[0] - 1.)
                                                                     / 2.
-                                                            + m_epsilon[1]
+                                                            + m_epsilonBMJ[1]
                                                                     / (2 * m_xB))
-                                                    * tQ2 + m_epsilon[1])
+                                                    * tQ2 + m_epsilonBMJ[1])
                                                     / ((2. - m_xB)
                                                             * (1 + m_epsroot[0]))));
-    m_C[0][1][0] = 8 * (2. - m_y[0]) * m_xB * tQ2 / m_epsroot[3]
-            * (Kt2Q2 * (2. - m_y[0]) * (2. - m_y[0]) / m_epsroot[0]
+    m_C[0][1][0] = 8 * (2. - m_yBMJ[0]) * m_xB * tQ2 / m_epsroot[3]
+            * (Kt2Q2 * (2. - m_yBMJ[0]) * (2. - m_yBMJ[0]) / m_epsroot[0]
                     + C2 * (1 + m_epsroot[0]) / 2. * (1. + tQ2)
                             * (1.
                                     + (m_epsroot[0] - 1. + 2 * m_xB) * tQ2
                                             / (1 + m_epsroot[0])));
     m_C[0][2][0] =
-            8 * (2. - m_y[0]) * tQ2 / m_epsroot[3]
-                    * (Kt2Q2 * (2. - m_y[0]) * (2. - m_y[0]) / m_epsroot[0]
+            8 * (2. - m_yBMJ[0]) * tQ2 / m_epsroot[3]
+                    * (Kt2Q2 * (2. - m_yBMJ[0]) * (2. - m_yBMJ[0]) / m_epsroot[0]
                             * (1 + m_epsroot[0] - 2 * m_xB) / 2.
                             - C2
                                     * (2 * Kt2Q2
@@ -495,173 +487,173 @@ void BMJ2012Model::computeAngularCoeffsInterf() {
                                                                     * tQ2)));
     m_C[0][0][1] = -16 * m_K[0] * C2 / m_epsroot[4]
             * ((1. + (1. - m_xB) * (m_epsroot[0] - 1.) / (2 * m_xB)
-                    + m_epsilon[1] / (4 * m_xB)) * m_xB * tQ2
-                    - 3 * m_epsilon[1] / 4.)
-            - 4 * m_K[0] * B2 * (1. + m_epsroot[0] - m_epsilon[1])
+                    + m_epsilonBMJ[1] / (4 * m_xB)) * m_xB * tQ2
+                    - 3 * m_epsilonBMJ[1] / 4.)
+            - 4 * m_K[0] * B2 * (1. + m_epsroot[0] - m_epsilonBMJ[1])
                     / m_epsroot[4]
                     * (1. - (1. - 3 * m_xB) * tQ2
-                            + (1. - m_epsroot[0] + 3 * m_epsilon[1]) * m_xB
-                                    * tQ2 / (1. + m_epsroot[0] - m_epsilon[1]));
+                            + (1. - m_epsroot[0] + 3 * m_epsilonBMJ[1]) * m_xB
+                                    * tQ2 / (1. + m_epsroot[0] - m_epsilonBMJ[1]));
     m_C[0][1][1] = 16 * m_K[0] * m_xB * tQ2 / m_epsroot[4]
-            * ((2. - m_y[0]) * (2. - m_y[0]) * (1. - (1. - 2 * m_xB) * tQ2)
+            * ((2. - m_yBMJ[0]) * (2. - m_yBMJ[0]) * (1. - (1. - 2 * m_xB) * tQ2)
                     + C2 * (1 + m_epsroot[0] - 2 * m_xB) * tpQ2 / 2.);
     m_C[0][2][1] = -16 * m_K[0] * tQ2 / m_epsroot[3]
             * (C2
                     * (1. - (1. - 2 * m_xB) * tQ2
-                            + (4 * m_xB * (1. - m_xB) + m_epsilon[1]) * tpQ2
+                            + (4 * m_xB * (1. - m_xB) + m_epsilonBMJ[1]) * tpQ2
                                     / (4 * m_epsroot[0]))
-                    - (2. - m_y[0]) * (2. - m_y[0])
+                    - (2. - m_yBMJ[0]) * (2. - m_yBMJ[0])
                             * (1. - m_xB / 2.
                                     + (1 + m_epsroot[0] - 2 * m_xB) / 4.
                                             * (1. - tQ2)
-                                    + (4 * m_xB * (1. - m_xB) + m_epsilon[1])
+                                    + (4 * m_xB * (1. - m_xB) + m_epsilonBMJ[1])
                                             * tpQ2 / (2 * m_epsroot[0])));
-    m_C[0][0][2] = 8 * (2. - m_y[0]) * C2 / m_epsroot[3]
-            * (2 * m_epsilon[1] * Kt2Q2 / (m_epsroot[0] + m_epsroot[1])
+    m_C[0][0][2] = 8 * (2. - m_yBMJ[0]) * C2 / m_epsroot[3]
+            * (2 * m_epsilonBMJ[1] * Kt2Q2 / (m_epsroot[0] + m_epsroot[1])
                     + m_xB * tQ2 * tpQ2
                             * (1. - m_xB - (m_epsroot[0] - 1.) / 2.
-                                    + m_epsilon[1] / (2 * m_xB)));
-    m_C[0][1][2] = 8 * (2. - m_y[0]) * C2 * m_xB * tQ2 / m_epsroot[3]
+                                    + m_epsilonBMJ[1] / (2 * m_xB)));
+    m_C[0][1][2] = 8 * (2. - m_yBMJ[0]) * C2 * m_xB * tQ2 / m_epsroot[3]
             * (4 * Kt2Q2 / m_epsroot[0]
                     + (1. + m_epsroot[0] - 2 * m_xB) / 2. * (1 + tQ2) * tpQ2);
-    m_C[0][2][2] = 4 * (2. - m_y[0]) * C2 * tQ2 / m_epsroot[3]
+    m_C[0][2][2] = 4 * (2. - m_yBMJ[0]) * C2 * tQ2 / m_epsroot[3]
             * (4 * (1. - 2 * m_xB) * Kt2Q2 / m_epsroot[0]
-                    - (3. - m_epsroot[0] - 2 * m_xB + m_epsilon[1] / m_xB)
+                    - (3. - m_epsroot[0] - 2 * m_xB + m_epsilonBMJ[1] / m_xB)
                             * m_xB * tpQ2);
     m_C[0][0][3] = -8 * m_K[0] * C2 * (m_epsroot[0] - 1.) / m_epsroot[4]
             * ((1. - m_xB) * tQ2 + (m_epsroot[0] - 1.) / 2. * (1 + tQ2));
     m_C[0][1][3] = -8 * m_K[0] * C2 * m_xB * tQ2 / m_epsroot[4]
             * (m_epsroot[0] - 1. + (1. + m_epsroot[0] - 2 * m_xB) * tQ2);
     m_C[0][2][3] = 16 * m_K[0] * C2 * tQ2 * tpQ2 / m_epsroot[4]
-            * (m_xB * (1. - m_xB) + m_epsilon[1] / 4.);
+            * (m_xB * (1. - m_xB) + m_epsilonBMJ[1] / 4.);
 
     // S++ coefficients
     m_S[0][0][1] =
-            8 * m_K[0] * (2. - m_y[0]) * m_y[0] / m_epsroot[1]
+            8 * m_K[0] * (2. - m_yBMJ[0]) * m_yBMJ[0] / m_epsroot[1]
                     * (1.
                             + (1. - m_xB + (m_epsroot[0] - 1.) / 2.)
                                     / m_epsroot[1] * tpQ2);
-    m_S[0][1][1] = -8 * m_K[0] * (2. - m_y[0]) * m_y[0] * m_xB * tQ2
+    m_S[0][1][1] = -8 * m_K[0] * (2. - m_yBMJ[0]) * m_yBMJ[0] * m_xB * tQ2
             / m_epsroot[3]
             * (m_epsroot[0] - 1. + (1. + m_epsroot[0] - 2 * m_xB) * tQ2);
-    m_S[0][2][1] = 8 * m_K[0] * (2. - m_y[0]) * m_y[0] * tQ2 / m_epsroot[1]
+    m_S[0][2][1] = 8 * m_K[0] * (2. - m_yBMJ[0]) * m_yBMJ[0] * tQ2 / m_epsroot[1]
             * (1.
                     - (1. - 2 * m_xB) * (1. + m_epsroot[0] - 2 * m_xB)
                             / (2 * m_epsroot[1]) * tpQ2);
-    m_S[0][0][2] = -4 * C2 * m_y[0] / m_epsroot[2]
+    m_S[0][0][2] = -4 * C2 * m_yBMJ[0] / m_epsroot[2]
             * (1. + m_epsroot[0] - 2 * m_xB) * tpQ2
-            * ((m_epsilon[1] - m_xB * (m_epsroot[0] - 1.))
+            * ((m_epsilonBMJ[1] - m_xB * (m_epsroot[0] - 1.))
                     / (1. + m_epsroot[0] - 2 * m_xB)
-                    - (2 * m_xB + m_epsilon[1]) * tpQ2 / (2 * m_epsroot[0]));
-    m_S[0][1][2] = -4 * C2 * m_y[0] * m_xB * tQ2 / m_epsroot[3]
+                    - (2 * m_xB + m_epsilonBMJ[1]) * tpQ2 / (2 * m_epsroot[0]));
+    m_S[0][1][2] = -4 * C2 * m_yBMJ[0] * m_xB * tQ2 / m_epsroot[3]
             * (1. - (1. - 2 * m_xB) * tQ2)
             * (m_epsroot[0] - 1. + (1. + m_epsroot[0] - 2 * m_xB) * tQ2);
-    m_S[0][2][2] = -8 * C2 * m_y[0] * tQ2 * tpQ2 / m_epsroot[3]
-            * (1. - m_xB / 2. + 3 * m_epsilon[1] / 4.)
+    m_S[0][2][2] = -8 * C2 * m_yBMJ[0] * tQ2 * tpQ2 / m_epsroot[3]
+            * (1. - m_xB / 2. + 3 * m_epsilonBMJ[1] / 4.)
             * (1. + m_epsroot[0] - 2 * m_xB)
             * (1.
-                    + (4 * (1 - m_xB) * m_xB + m_epsilon[1])
-                            / (4. - 2 * m_xB + 3 * m_epsilon[1]) * tQ2);
+                    + (4 * (1 - m_xB) * m_xB + m_epsilonBMJ[1])
+                            / (4. - 2 * m_xB + 3 * m_epsilonBMJ[1]) * tQ2);
 
     // C0+
-    m_C[2][0][0] = 12 * sqrt(2.) * m_K[0] * (2. - m_y[0]) * C1 / m_epsroot[4]
-            * (m_epsilon[1] + (2. - 6 * m_xB - m_epsilon[1]) / 3. * tQ2);
-    m_C[2][1][0] = 24 * sqrt(2.) * m_K[0] * (2. - m_y[0]) * C1 * m_xB * tQ2
+    m_C[2][0][0] = 12 * sqrt(2.) * m_K[0] * (2. - m_yBMJ[0]) * C1 / m_epsroot[4]
+            * (m_epsilonBMJ[1] + (2. - 6 * m_xB - m_epsilonBMJ[1]) / 3. * tQ2);
+    m_C[2][1][0] = 24 * sqrt(2.) * m_K[0] * (2. - m_yBMJ[0]) * C1 * m_xB * tQ2
             / m_epsroot[4] * (1. - (1. - 2 * m_xB) * tQ2);
-    m_C[2][2][0] = 4 * sqrt(2.) * m_K[0] * (2. - m_y[0]) * C1 * tQ2
-            / m_epsroot[4] * (8. - 6 * m_xB + 5 * m_epsilon[1])
+    m_C[2][2][0] = 4 * sqrt(2.) * m_K[0] * (2. - m_yBMJ[0]) * C1 * tQ2
+            / m_epsroot[4] * (8. - 6 * m_xB + 5 * m_epsilonBMJ[1])
             * (1.
-                    - tQ2 * (2. - 12 * m_xB * (1. - m_xB) - m_epsilon[1])
-                            / (8. - 6 * m_xB + 5 * m_epsilon[1]));
+                    - tQ2 * (2. - 12 * m_xB * (1. - m_xB) - m_epsilonBMJ[1])
+                            / (8. - 6 * m_xB + 5 * m_epsilonBMJ[1]));
     m_C[2][0][1] = 8 * sqrt(2.) * C1 / m_epsroot[3]
-            * ((2. - m_y[0]) * (2. - m_y[0]) * tpQ2
+            * ((2. - m_yBMJ[0]) * (2. - m_yBMJ[0]) * tpQ2
                     * (1. - m_xB
-                            + ((1. - m_xB) * m_xB + m_epsilon[1] / 4.)
+                            + ((1. - m_xB) * m_xB + m_epsilonBMJ[1] / 4.)
                                     / m_epsroot[0] * tpQ2)
                     + C2 / m_epsroot[0] * (1. - (1. - 2 * m_xB) * tQ2)
-                            * (m_epsilon[1]
-                                    - 2 * (1. + m_epsilon[1] / (2 * m_xB))
+                            * (m_epsilonBMJ[1]
+                                    - 2 * (1. + m_epsilonBMJ[1] / (2 * m_xB))
                                             * m_xB * tQ2));
     m_C[2][1][1] = 16 * sqrt(2.) * C1 * m_xB * tQ2 / m_epsroot[4]
-            * (Kt2Q2 * (2. - m_y[0]) * (2. - m_y[0])
+            * (Kt2Q2 * (2. - m_yBMJ[0]) * (2. - m_yBMJ[0])
                     + pow(1. - (1. - 2 * m_xB) * tQ2, 2) * C2);
     m_C[2][2][1] = 8 * sqrt(2.) * C1 * tQ2 / m_epsroot[4]
-            * (Kt2Q2 * (1. - 2 * m_xB) * (2. - m_y[0]) * (2. - m_y[0])
+            * (Kt2Q2 * (1. - 2 * m_xB) * (2. - m_yBMJ[0]) * (2. - m_yBMJ[0])
                     + (1. - (1. - 2 * m_xB) * tQ2) * C2
-                            * (4. - 2 * m_xB + 3 * m_epsilon[1]
+                            * (4. - 2 * m_xB + 3 * m_epsilonBMJ[1]
                                     + tQ2
                                             * (4 * m_xB * (1. - m_xB)
-                                                    + m_epsilon[1])));
-    m_C[2][0][2] = -8 * sqrt(2.) * m_K[0] * (2. - m_y[0]) * C1 / m_epsroot[4]
-            * (1. + m_epsilon[1] / 2.)
+                                                    + m_epsilonBMJ[1])));
+    m_C[2][0][2] = -8 * sqrt(2.) * m_K[0] * (2. - m_yBMJ[0]) * C1 / m_epsroot[4]
+            * (1. + m_epsilonBMJ[1] / 2.)
             * (1.
-                    + (1. + m_epsilon[1] / (2 * m_xB))
-                            / (1. + m_epsilon[1] / 2.) * m_xB * tQ2);
-    m_C[2][1][2] = 8 * sqrt(2.) * m_K[0] * (2. - m_y[0]) * C1 * m_xB * tQ2
+                    + (1. + m_epsilonBMJ[1] / (2 * m_xB))
+                            / (1. + m_epsilonBMJ[1] / 2.) * m_xB * tQ2);
+    m_C[2][1][2] = 8 * sqrt(2.) * m_K[0] * (2. - m_yBMJ[0]) * C1 * m_xB * tQ2
             / m_epsroot[4] * (1. - (1. - 2 * m_xB) * tQ2);
-    m_C[2][2][2] = 8 * sqrt(2.) * m_K[0] * (2. - m_y[0]) * C1 * tQ2
+    m_C[2][2][2] = 8 * sqrt(2.) * m_K[0] * (2. - m_yBMJ[0]) * C1 * tQ2
             / m_epsroot[3]
             * (1. - m_xB
-                    + tpQ2 / 2. * (4 * m_xB * (1. - m_xB) + m_epsilon[1])
+                    + tpQ2 / 2. * (4 * m_xB * (1. - m_xB) + m_epsilonBMJ[1])
                             / m_epsroot[0]);
 
     // S0+
-    m_S[2][0][1] = 8 * sqrt(2.) * (2. - m_y[0]) * m_y[0] * C1 * Kt2Q2
+    m_S[2][0][1] = 8 * sqrt(2.) * (2. - m_yBMJ[0]) * m_yBMJ[0] * C1 * Kt2Q2
             / m_epsroot[3];
-    m_S[2][1][1] = 4 * sqrt(2.) * (2. - m_y[0]) * m_y[0] * C1 * m_xB * tQ2
+    m_S[2][1][1] = 4 * sqrt(2.) * (2. - m_yBMJ[0]) * m_yBMJ[0] * C1 * m_xB * tQ2
             / m_epsroot[3]
             * (4 * (1. - m_xB) * tQ2 * (1 + m_xB * tQ2)
-                    + m_epsilon[1] * (1 + tQ2) * (1 + tQ2));
-    m_S[2][2][1] = -8 * sqrt(2.) * (2. - m_y[0]) * m_y[0] * (1. - 2 * m_xB) * C1
+                    + m_epsilonBMJ[1] * (1 + tQ2) * (1 + tQ2));
+    m_S[2][2][1] = -8 * sqrt(2.) * (2. - m_yBMJ[0]) * m_yBMJ[0] * (1. - 2 * m_xB) * C1
             * tQ2 * Kt2Q2 / m_epsroot[3];
-    m_S[2][0][2] = 8 * sqrt(2.) * m_K[0] * m_y[0] * C1
-            * (1. + m_epsilon[1] / 2.) / m_epsroot[3]
+    m_S[2][0][2] = 8 * sqrt(2.) * m_K[0] * m_yBMJ[0] * C1
+            * (1. + m_epsilonBMJ[1] / 2.) / m_epsroot[3]
             * (1.
-                    + (1. + m_epsilon[1] / (2 * m_xB))
-                            / (1. + m_epsilon[1] / 2.) * m_xB * tQ2);
-    m_S[2][1][2] = -8 * sqrt(2.) * m_K[0] * m_y[0] * C1 * m_xB * tQ2
+                    + (1. + m_epsilonBMJ[1] / (2 * m_xB))
+                            / (1. + m_epsilonBMJ[1] / 2.) * m_xB * tQ2);
+    m_S[2][1][2] = -8 * sqrt(2.) * m_K[0] * m_yBMJ[0] * C1 * m_xB * tQ2
             / m_epsroot[3] * (1. - (1. - 2 * m_xB) * tQ2);
-    m_S[2][2][2] = -2 * sqrt(2.) * m_K[0] * m_y[0] * C1 * tQ2 / m_epsroot[3]
-            * (4. - 4 * m_xB + 2 * m_epsilon[1]
-                    + 2 * tQ2 * (4 * m_xB * (1. - m_xB) + m_epsilon[1]));
+    m_S[2][2][2] = -2 * sqrt(2.) * m_K[0] * m_yBMJ[0] * C1 * tQ2 / m_epsroot[3]
+            * (4. - 4 * m_xB + 2 * m_epsilonBMJ[1]
+                    + 2 * tQ2 * (4 * m_xB * (1. - m_xB) + m_epsilonBMJ[1]));
 
     // C-+
-    m_C[1][0][0] = 8 * (2. - m_y[0]) / m_epsroot[2]
-            * ((2. - m_y[0]) * (2. - m_y[0]) * (m_epsroot[0] - 1.)
+    m_C[1][0][0] = 8 * (2. - m_yBMJ[0]) / m_epsroot[2]
+            * ((2. - m_yBMJ[0]) * (2. - m_yBMJ[0]) * (m_epsroot[0] - 1.)
                     / (2 * m_epsroot[1]) * Kt2Q2
                     + C2 / m_epsroot[0]
                             * (1. - m_xB - (m_epsroot[0] - 1.) / 2.
-                                    + m_epsilon[1] / (2 * m_xB)) * m_xB * tQ2
+                                    + m_epsilonBMJ[1] / (2 * m_xB)) * m_xB * tQ2
                             * tpQ2);
-    m_C[1][1][0] = 4 * (2. - m_y[0]) * m_xB * tQ2 / m_epsroot[4]
+    m_C[1][1][0] = 4 * (2. - m_yBMJ[0]) * m_xB * tQ2 / m_epsroot[4]
             * (2 * Kt2Q2 * B2
                     - (1. - (1. - 2 * m_xB) * tQ2) * C2
                             * (m_epsroot[0] - 1.
                                     + (m_epsroot[0] + 1. - 2 * m_xB) * tQ2));
     m_C[1][2][0] =
-            4 * (2. - m_y[0]) * tQ2 / m_epsroot[3]
+            4 * (2. - m_yBMJ[0]) * tQ2 / m_epsroot[3]
                     * (tpQ2 * C2
-                            * (2 * m_xB2 - m_epsilon[1] - 3 * m_xB
+                            * (2 * m_xB2 - m_epsilonBMJ[1] - 3 * m_xB
                                     + m_xB * m_epsroot[0])
                             + Kt2Q2 / m_epsroot[0]
                                     * (4.
-                                            - 2 * m_xB * (2. - m_y[0])
-                                                    * (2. - m_y[0]) - 4 * m_y[0]
-                                            + m_y[1] - m_y[1] * m_epsroot[2]));
+                                            - 2 * m_xB * (2. - m_yBMJ[0])
+                                                    * (2. - m_yBMJ[0]) - 4 * m_yBMJ[0]
+                                            + m_yBMJ[1] - m_yBMJ[1] * m_epsroot[2]));
     m_C[1][0][1] =
             8 * m_K[0] / m_epsroot[2]
-                    * ((2. - m_y[0]) * (2. - m_y[0]) * (2. - m_epsroot[0])
+                    * ((2. - m_yBMJ[0]) * (2. - m_yBMJ[0]) * (2. - m_epsroot[0])
                             / m_epsroot[1]
-                            * ((m_epsroot[0] - 1. + m_epsilon[1])
+                            * ((m_epsroot[0] - 1. + m_epsilonBMJ[1])
                                     / (2 * (2. - m_epsroot[0])) * (1. - tQ2)
                                     - m_xB * tQ2)
                             + 2 * C2 / m_epsroot[0]
-                                    * ((1. - m_epsroot[0] + m_epsilon[1] / 2.)
+                                    * ((1. - m_epsroot[0] + m_epsilonBMJ[1] / 2.)
                                             / (2 * m_epsroot[0])
                                             + tQ2
                                                     * (1. - 3 * m_xB / 2.
                                                             + (m_xB
-                                                                    + m_epsilon[1]
+                                                                    + m_epsilonBMJ[1]
                                                                             / 2.)
                                                                     / (2
                                                                             * m_epsroot[0]))));
@@ -675,17 +667,17 @@ void BMJ2012Model::computeAngularCoeffsInterf() {
     m_C[1][2][1] =
             4 * m_K[0] * tQ2 / m_epsroot[4]
                     * (B2
-                            * (5. - 4 * m_xB + 3 * m_epsilon[1] - m_epsroot[0]
+                            * (5. - 4 * m_xB + 3 * m_epsilonBMJ[1] - m_epsroot[0]
                                     - tQ2
-                                            * (1. - m_epsilon[1] - m_epsroot[0]
+                                            * (1. - m_epsilonBMJ[1] - m_epsroot[0]
                                                     - 2 * m_xB
                                                             * (4. - 4 * m_xB
                                                                     - m_epsroot[0])))
                             + C2
-                                    * (8. + 5 * m_epsilon[1] - 6 * m_xB
+                                    * (8. + 5 * m_epsilonBMJ[1] - 6 * m_xB
                                             + 2 * m_xB * m_epsroot[0]
                                             - tQ2
-                                                    * (2. - m_epsilon[1]
+                                                    * (2. - m_epsilonBMJ[1]
                                                             + 2 * m_epsroot[0]
                                                             - 4 * m_xB
                                                                     * (3.
@@ -693,7 +685,7 @@ void BMJ2012Model::computeAngularCoeffsInterf() {
                                                                                     * m_xB
                                                                             + m_epsroot[0]))));
     m_C[1][0][2] =
-            4 * (2. - m_y[0]) * C2 * (1. + m_epsroot[0]) / m_epsroot[4]
+            4 * (2. - m_yBMJ[0]) * C2 * (1. + m_epsroot[0]) / m_epsroot[4]
                     * ((2. - 3 * m_xB) * tQ2
                             + (1. - 2 * m_xB
                                     + 2 * (1. - m_xB) / (1. + m_epsroot[0]))
@@ -701,58 +693,58 @@ void BMJ2012Model::computeAngularCoeffsInterf() {
                             + (1.
                                     + (m_epsroot[0] + m_xB + (1. - m_xB) * tQ2)
                                             / (1. + m_epsroot[0]) * tQ2)
-                                    * m_epsilon[1]);
-    m_C[1][1][2] = 4 * (2. - m_y[0]) * C2 * m_xB * tQ2 / m_epsroot[4]
+                                    * m_epsilonBMJ[1]);
+    m_C[1][1][2] = 4 * (2. - m_yBMJ[0]) * C2 * m_xB * tQ2 / m_epsroot[4]
             * (4 * Kt2Q2 + 1. + m_epsroot[0]
                     + tQ2
                             * ((1. - 2 * m_xB) * (1. - 2 * m_xB - m_epsroot[0])
                                     * tQ2 - 2. + 4 * m_xB
                                     + 2 * m_xB * m_epsroot[0]));
     m_C[1][2][2] =
-            16 * (2. - m_y[0]) * C2 * tQ2 / m_epsroot[2]
+            16 * (2. - m_yBMJ[0]) * C2 * tQ2 / m_epsroot[2]
                     * (Kt2Q2 * (1. - 2 * m_xB) / m_epsroot[1]
                             - (1. - m_xB)
-                                    / (4 * m_xB * (1. - m_xB) + m_epsilon[1])
-                                    * (2 * m_xB2 - m_epsilon[1] - 3 * m_xB
+                                    / (4 * m_xB * (1. - m_xB) + m_epsilonBMJ[1])
+                                    * (2 * m_xB2 - m_epsilonBMJ[1] - 3 * m_xB
                                             - m_xB * m_epsroot[0])
                             - tpQ2
-                                    * (2 * m_xB2 - m_epsilon[1] - 3 * m_xB
+                                    * (2 * m_xB2 - m_epsilonBMJ[1] - 3 * m_xB
                                             - m_xB * m_epsroot[0])
                                     / (4 * m_epsroot[0]));
-    m_C[1][0][3] = -8 * m_K[0] * C2 * (1. + m_epsroot[0] + m_epsilon[1] / 2.)
+    m_C[1][0][3] = -8 * m_K[0] * C2 * (1. + m_epsroot[0] + m_epsilonBMJ[1] / 2.)
             / m_epsroot[4]
             * (1.
-                    + (1. + m_epsroot[0] + m_epsilon[1] / (2 * m_xB))
-                            / (1. + m_epsroot[0] + m_epsilon[1] / 2) * m_xB
+                    + (1. + m_epsroot[0] + m_epsilonBMJ[1] / (2 * m_xB))
+                            / (1. + m_epsroot[0] + m_epsilonBMJ[1] / 2) * m_xB
                             * tQ2);
     m_C[1][1][3] = 8 * m_K[0] * C2 * m_xB * tQ2 / m_epsroot[4]
             * (1. + m_epsroot[0])
             * (1. - tQ2 * (1. - 2 * m_xB - m_epsroot[0]) / (1. + m_epsroot[0]));
     m_C[1][2][3] = 16 * m_K[0] * C2 * tQ2 / m_epsroot[3]
             * (1. - m_xB
-                    + tpQ2 * (4 * m_xB * (1. - m_xB) + m_epsilon[1])
+                    + tpQ2 * (4 * m_xB * (1. - m_xB) + m_epsilonBMJ[1])
                             / (4 * m_epsroot[0]));
 
     // S-+
-    m_S[1][0][1] = 4 * m_K[0] * (2. - m_y[0]) * m_y[0] / m_epsroot[3]
-            * (1. - m_epsroot[0] + 2 * m_epsilon[1]
+    m_S[1][0][1] = 4 * m_K[0] * (2. - m_yBMJ[0]) * m_yBMJ[0] / m_epsroot[3]
+            * (1. - m_epsroot[0] + 2 * m_epsilonBMJ[1]
                     - 2 * (1. + (m_epsroot[0] - 1.) / (2 * m_xB)) * m_xB * tQ2);
-    m_S[1][1][1] = 8 * m_K[0] * (2. - m_y[0]) * m_y[0] * m_xB * tQ2
+    m_S[1][1][1] = 8 * m_K[0] * (2. - m_yBMJ[0]) * m_yBMJ[0] * m_xB * tQ2
             / m_epsroot[3] * (1. + m_epsroot[0])
             * (1. - tQ2 * (1. - 2 * m_xB - m_epsroot[0]) / (1. + m_epsroot[0]));
-    m_S[1][2][1] = 4 * m_K[0] * (2. - m_y[0]) * m_y[0] * tQ2 / m_epsroot[3]
-            * (3. + 2 * m_epsilon[1] + m_epsroot[0]
+    m_S[1][2][1] = 4 * m_K[0] * (2. - m_yBMJ[0]) * m_yBMJ[0] * tQ2 / m_epsroot[3]
+            * (3. + 2 * m_epsilonBMJ[1] + m_epsroot[0]
                     - 2 * m_xB * (1. + m_epsroot[0])
                     - tQ2 * (1. - 2 * m_xB) * (1. - 2 * m_xB - m_epsroot[0]));
-    m_S[1][0][2] = 2 * m_y[0] * C2 * (1. + m_epsroot[0]) / m_epsroot[3]
-            * (m_epsilon[1] - 2 * (1. + m_epsilon[1] / (2 * m_xB)) * m_xB * tQ2)
+    m_S[1][0][2] = 2 * m_yBMJ[0] * C2 * (1. + m_epsroot[0]) / m_epsroot[3]
+            * (m_epsilonBMJ[1] - 2 * (1. + m_epsilonBMJ[1] / (2 * m_xB)) * m_xB * tQ2)
             * (1. + (m_epsroot[0] - 1. + 2 * m_xB) / (1. + m_epsroot[0]) * tQ2);
-    m_S[1][1][2] = 4 * m_y[0] * C2 * m_xB * tQ2 / m_epsroot[3]
+    m_S[1][1][2] = 4 * m_yBMJ[0] * C2 * m_xB * tQ2 / m_epsroot[3]
             * (1. + m_epsroot[0]) * (1. - (1. - 2 * m_xB) * tQ2)
             * (1. - tQ2 * (1. - 2 * m_xB - m_epsroot[0]) / (1. + m_epsroot[0]));
-    m_S[1][2][2] = 2 * m_y[0] * C2 * tQ2 / m_epsroot[3]
-            * (4. - 2 * m_xB + 3 * m_epsilon[1]
-                    + tQ2 * (4 * m_xB * (1. - m_xB) + m_epsilon[1]))
+    m_S[1][2][2] = 2 * m_yBMJ[0] * C2 * tQ2 / m_epsroot[3]
+            * (4. - 2 * m_xB + 3 * m_epsilonBMJ[1]
+                    + tQ2 * (4 * m_xB * (1. - m_xB) + m_epsilonBMJ[1]))
             * (1. + m_epsroot[0] - tQ2 * (1. - 2 * m_xB - m_epsroot[0]));
 
     /* LP and TP+ target
@@ -760,55 +752,55 @@ void BMJ2012Model::computeAngularCoeffsInterf() {
      */
 
     // dC++ coefficients
-    m_dC[0][0][0] = -4 * m_y[0] * (1. + m_epsroot[0]) / m_epsroot[4]
-            * ((2. - m_y[0]) * (2. - m_y[0]) * Kt2Q2
-                    + C2 * (m_xB * tQ2 - (1. - tQ2) * m_epsilon[1] / 2.)
+    m_dC[0][0][0] = -4 * m_yBMJ[0] * (1. + m_epsroot[0]) / m_epsroot[4]
+            * ((2. - m_yBMJ[0]) * (2. - m_yBMJ[0]) * Kt2Q2
+                    + C2 * (m_xB * tQ2 - (1. - tQ2) * m_epsilonBMJ[1] / 2.)
                             * (1.
                                     + (m_epsroot[0] - 1. + 2 * m_xB)
                                             / (1. + m_epsroot[0]) * tQ2));
-    m_dC[0][1][0] = 4 * m_y[0] * (1. + m_epsroot[0]) * tQ2 / m_epsroot[4]
-            * ((2. - m_y[0]) * (2. - m_y[0]) * (1. + m_epsroot[0] - 2 * m_xB)
+    m_dC[0][1][0] = 4 * m_yBMJ[0] * (1. + m_epsroot[0]) * tQ2 / m_epsroot[4]
+            * ((2. - m_yBMJ[0]) * (2. - m_yBMJ[0]) * (1. + m_epsroot[0] - 2 * m_xB)
                     * Kt2Q2 / (1. + m_epsroot[0])
-                    + C2 * (2. - m_xB + 3 * m_epsilon[1] / 2.)
+                    + C2 * (2. - m_xB + 3 * m_epsilonBMJ[1] / 2.)
                             * (1.
-                                    + (4 * (1. - m_xB) * m_xB + m_epsilon[1])
-                                            / (4. - 2 * m_xB + 3 * m_epsilon[1])
+                                    + (4 * (1. - m_xB) * m_xB + m_epsilonBMJ[1])
+                                            / (4. - 2 * m_xB + 3 * m_epsilonBMJ[1])
                                             * tQ2)
                             * (1.
                                     + (m_epsroot[0] - 1. + 2 * m_xB)
                                             / (1. + m_epsroot[0]) * tQ2));
-    m_dC[0][2][0] = 4 * m_y[0] * m_xB * tQ2 / m_epsroot[4]
-            * (2 * (2. - m_y[0]) * (2. - m_y[0]) * Kt2Q2
+    m_dC[0][2][0] = 4 * m_yBMJ[0] * m_xB * tQ2 / m_epsroot[4]
+            * (2 * (2. - m_yBMJ[0]) * (2. - m_yBMJ[0]) * Kt2Q2
                     + C2 * (1. + m_epsroot[0]) * (1. - (1. - 2 * m_xB) * tQ2)
                             * (1.
                                     + (m_epsroot[0] - 1. + 2 * m_xB)
                                             / (1. + m_epsroot[0]) * tQ2));
     m_dC[0][0][1] =
-            -4 * m_K[0] * m_y[0] * (2. - m_y[0])
-                    * (1. + m_epsroot[0] - m_epsilon[1]) / m_epsroot[4]
+            -4 * m_K[0] * m_yBMJ[0] * (2. - m_yBMJ[0])
+                    * (1. + m_epsroot[0] - m_epsilonBMJ[1]) / m_epsroot[4]
                     * (1.
                             - (1.
                                     - 2 * m_xB * (2. + m_epsroot[0])
-                                            / (1. + m_epsroot[0] - m_epsilon[1]))
+                                            / (1. + m_epsroot[0] - m_epsilonBMJ[1]))
                                     * tQ2);
-    m_dC[0][1][1] = 8 * m_K[0] * m_y[0] * (2. - m_y[0])
+    m_dC[0][1][1] = 8 * m_K[0] * m_yBMJ[0] * (2. - m_yBMJ[0])
             * (m_epsroot[0] + 2 * (1. - m_xB)) * tQ2 / m_epsroot[3]
             * (1.
-                    - (1. + (1. - m_epsilon[1]) / m_epsroot[0]
+                    - (1. + (1. - m_epsilonBMJ[1]) / m_epsroot[0]
                             - 2 * m_xB * (1. + 4 * (1. - m_xB) / m_epsroot[0]))
                             * tpQ2 / (2 * (m_epsroot[0] + 2 * (1. - m_xB))));
-    m_dC[0][2][1] = 16 * m_K[0] * m_y[0] * (2. - m_y[0]) * m_xB * tQ2
+    m_dC[0][2][1] = 16 * m_K[0] * m_yBMJ[0] * (2. - m_yBMJ[0]) * m_xB * tQ2
             / m_epsroot[4] * (1. - (1. - 2 * m_xB) * tQ2);
-    m_dC[0][0][2] = -4 * m_y[0] * C2 / m_epsroot[4]
-            * (m_xB * tQ2 - (1. - tQ2) * m_epsilon[1] / 2.)
+    m_dC[0][0][2] = -4 * m_yBMJ[0] * C2 / m_epsroot[4]
+            * (m_xB * tQ2 - (1. - tQ2) * m_epsilonBMJ[1] / 2.)
             * (1. - m_epsroot[0] - (1. + m_epsroot[0] - 2 * m_xB) * tQ2);
-    m_dC[0][1][2] = -2 * m_y[0] * C2 / m_epsroot[4]
-            * (4. - 2 * m_xB + 3 * m_epsilon[1]) * tQ2
+    m_dC[0][1][2] = -2 * m_yBMJ[0] * C2 / m_epsroot[4]
+            * (4. - 2 * m_xB + 3 * m_epsilonBMJ[1]) * tQ2
             * (1.
-                    + (4 * (1. - m_xB) * m_xB + m_epsilon[1])
-                            / (4. - 2 * m_xB + 3 * m_epsilon[1]) * tQ2)
+                    + (4 * (1. - m_xB) * m_xB + m_epsilonBMJ[1])
+                            / (4. - 2 * m_xB + 3 * m_epsilonBMJ[1]) * tQ2)
             * (m_epsroot[0] - 1. + (1. + m_epsroot[0] - 2 * m_xB) * tQ2);
-    m_dC[0][2][2] = 4 * m_y[0] * C2 * m_xB * tQ2 / m_epsroot[4]
+    m_dC[0][2][2] = 4 * m_yBMJ[0] * C2 * m_xB * tQ2 / m_epsroot[4]
             * (1. - (1. - 2 * m_xB) * tQ2)
             * (1. - m_epsroot[0] - (1. + m_epsroot[0] - 2 * m_xB) * tQ2);
 
@@ -819,8 +811,8 @@ void BMJ2012Model::computeAngularCoeffsInterf() {
                             + (1. + m_epsroot[0] - 2 * m_xB)
                                     / (1. + m_epsroot[0]) * tQ2)
                     + 8 * m_K[0] * C2 / m_epsroot[5]
-                            * (3 * m_epsilon[1] / 2.
-                                    + (1. - m_epsroot[0] - m_epsilon[1] / 2.
+                            * (3 * m_epsilonBMJ[1] / 2.
+                                    + (1. - m_epsroot[0] - m_epsilonBMJ[1] / 2.
                                             - m_xB * (3. - m_epsroot[0])) * tQ2);
     m_dS[0][1][1] = 8 * m_K[0] * B2 * tQ2 / m_epsroot[3]
             * (1.
@@ -828,141 +820,141 @@ void BMJ2012Model::computeAngularCoeffsInterf() {
                             / (2 * m_epsroot[1]))
             + 32 * m_K[0] * C2 / m_epsroot[5]
                     * (1. - (3. + m_epsroot[0]) * m_xB / 4.
-                            + 5 * m_epsilon[1] / 8.) * tQ2
+                            + 5 * m_epsilonBMJ[1] / 8.) * tQ2
                     * (1.
-                            - (1. - m_epsroot[0] - m_epsilon[1] / 2.
+                            - (1. - m_epsroot[0] - m_epsilonBMJ[1] / 2.
                                     - 2 * m_xB
                                             * (3 * (1. - m_xB) - m_epsroot[0]))
                                     * tQ2
                                     / (4. - m_xB * (m_epsroot[0] + 3.)
-                                            + 5 * m_epsilon[1] / 2.));
+                                            + 5 * m_epsilonBMJ[1] / 2.));
     m_dS[0][2][1] = -8 * m_K[0] * B2 * m_xB * tQ2 / m_epsroot[5]
             * (m_epsroot[0] - 1. + (1. + m_epsroot[0] - 2 * m_xB) * tQ2)
             + 8 * m_K[0] * C2 * (3. + m_epsroot[0]) * m_xB * tQ2 / m_epsroot[5]
                     * (1.
                             - (3. - m_epsroot[0] - 6 * m_xB) * tQ2
                                     / (3. + m_epsroot[0]));
-    m_dS[0][0][2] = -4 * (2. - m_y[0]) * C2 / m_epsroot[4]
+    m_dS[0][0][2] = -4 * (2. - m_yBMJ[0]) * C2 / m_epsroot[4]
             * (4 * Kt2Q2 / m_epsroot[0]
                     + (1. + m_epsroot[0] - 2 * m_xB)
                             * (1. + m_epsroot[0] + m_xB * tQ2) * tpQ2);
-    m_dS[0][1][2] = 4 * (2. - m_y[0]) * C2 * tQ2 / m_epsroot[4]
+    m_dS[0][1][2] = 4 * (2. - m_yBMJ[0]) * C2 * tQ2 / m_epsroot[4]
             * (4 * (1. - 2 * m_xB) * Kt2Q2 / m_epsroot[0]
-                    - (3. - m_epsroot[0] - 2 * m_xB + m_epsilon[1] / m_xB)
+                    - (3. - m_epsroot[0] - 2 * m_xB + m_epsilonBMJ[1] / m_xB)
                             * m_xB * tpQ2);
-    m_dS[0][2][2] = 4 * (2. - m_y[0]) * C2 * m_xB * tQ2 / m_epsroot[5]
+    m_dS[0][2][2] = 4 * (2. - m_yBMJ[0]) * C2 * m_xB * tQ2 / m_epsroot[5]
             * (4 * Kt2Q2
                     - (1. + m_epsroot[0] - 2 * m_xB)
                             * (1. - (1. - 2 * m_xB) * tQ2) * tpQ2);
     m_dS[0][0][3] = -4 * m_K[0] * C2 / m_epsroot[5]
             * (1. + m_epsroot[0] - 2 * m_xB) / (1. + m_epsroot[0])
-            * m_epsilon[1] * tpQ2;
+            * m_epsilonBMJ[1] * tpQ2;
     m_dS[0][1][3] = 4 * m_K[0] * C2 / m_epsroot[5]
-            * (4 * (1. - m_xB) * m_xB + m_epsilon[1]) * tQ2 * tpQ2;
+            * (4 * (1. - m_xB) * m_xB + m_epsilonBMJ[1]) * tQ2 * tpQ2;
     m_dS[0][2][3] = -8 * m_K[0] * C2 / m_epsroot[5]
             * (1. + m_epsroot[0] - 2 * m_xB) * m_xB * tQ2 * tpQ2;
 
     // dC0+
-    m_dC[2][0][0] = 8 * sqrt(2.) * m_K[0] * (1. - m_xB) * m_y[0] * C1 * tQ2
+    m_dC[2][0][0] = 8 * sqrt(2.) * m_K[0] * (1. - m_xB) * m_yBMJ[0] * C1 * tQ2
             / m_epsroot[3];
-    m_dC[2][1][0] = 8 * sqrt(2.) * m_K[0] * m_y[0] * C1 * tQ2 / m_epsroot[3]
+    m_dC[2][1][0] = 8 * sqrt(2.) * m_K[0] * m_yBMJ[0] * C1 * tQ2 / m_epsroot[3]
             * (m_xB - tQ2 * (1. - 2 * m_xB));
-    m_dC[2][2][0] = -8 * sqrt(2.) * m_K[0] * m_y[0] * C1 * m_xB * tQ2
+    m_dC[2][2][0] = -8 * sqrt(2.) * m_K[0] * m_yBMJ[0] * C1 * m_xB * tQ2
             / m_epsroot[3] * (1. + tQ2);
-    m_dC[2][0][1] = -8 * sqrt(2.) * m_y[0] * (2. - m_y[0]) * C1 * Kt2Q2
+    m_dC[2][0][1] = -8 * sqrt(2.) * m_yBMJ[0] * (2. - m_yBMJ[0]) * C1 * Kt2Q2
             / m_epsroot[3];
-    m_dC[2][1][1] = 8 * sqrt(2.) * m_y[0] * (2. - m_y[0]) * C1 * tQ2 * Kt2Q2
+    m_dC[2][1][1] = 8 * sqrt(2.) * m_yBMJ[0] * (2. - m_yBMJ[0]) * C1 * tQ2 * Kt2Q2
             / m_epsroot[3];
     m_dC[2][2][1] = 0.;
-    m_dC[2][0][2] = -8 * sqrt(2.) * m_K[0] * m_y[0] * C1 * (1. + m_xB * tQ2)
+    m_dC[2][0][2] = -8 * sqrt(2.) * m_K[0] * m_yBMJ[0] * C1 * (1. + m_xB * tQ2)
             / m_epsroot[3];
-    m_dC[2][1][2] = 8 * sqrt(2.) * m_K[0] * m_y[0] * (1. - m_xB) * C1 * tQ2
+    m_dC[2][1][2] = 8 * sqrt(2.) * m_K[0] * m_yBMJ[0] * (1. - m_xB) * C1 * tQ2
             / m_epsroot[3];
-    m_dC[2][2][2] = 8 * sqrt(2.) * m_K[0] * m_y[0] * C1 * m_xB * tQ2
+    m_dC[2][2][2] = 8 * sqrt(2.) * m_K[0] * m_yBMJ[0] * C1 * m_xB * tQ2
             / m_epsroot[3] * (1. + tQ2);
 
     // dS0+
     m_dS[2][0][1] = 8 * sqrt(2.) * C1 / m_epsroot[4]
-            * (Kt2Q2 * (2. - m_y[0]) * (2. - m_y[0])
+            * (Kt2Q2 * (2. - m_yBMJ[0]) * (2. - m_yBMJ[0])
                     + (1. + tQ2) * C2
-                            * (2 * m_xB * tQ2 - (1. - tQ2) * m_epsilon[1]));
+                            * (2 * m_xB * tQ2 - (1. - tQ2) * m_epsilonBMJ[1]));
     m_dS[2][1][1] = -8 * sqrt(2.) * C1 * tQ2 / m_epsroot[4]
-            * (Kt2Q2 * (2. - m_y[0]) * (2. - m_y[0])
+            * (Kt2Q2 * (2. - m_yBMJ[0]) * (2. - m_yBMJ[0])
                     + (1. + tQ2) * C2
-                            * (4. - 2 * m_xB + 3 * m_epsilon[1]
+                            * (4. - 2 * m_xB + 3 * m_epsilonBMJ[1]
                                     + tQ2
                                             * (4 * m_xB * (1. - m_xB)
-                                                    + m_epsilon[1])));
+                                                    + m_epsilonBMJ[1])));
     m_dS[2][2][1] = -16 * sqrt(2.) * C1 * C2 * m_xB * tQ2 / m_epsroot[4]
             * (1. + tQ2) * (1. - (1. - 2 * m_xB) * tQ2);
-    m_dS[2][0][2] = 8 * sqrt(2.) * m_K[0] * (2. - m_y[0]) * C1 / m_epsroot[4]
+    m_dS[2][0][2] = 8 * sqrt(2.) * m_K[0] * (2. - m_yBMJ[0]) * C1 / m_epsroot[4]
             * (1. + m_xB * tQ2);
-    m_dS[2][1][2] = -8 * sqrt(2.) * m_K[0] * (2. - m_y[0]) * (1. - m_xB) * C1
+    m_dS[2][1][2] = -8 * sqrt(2.) * m_K[0] * (2. - m_yBMJ[0]) * (1. - m_xB) * C1
             * tQ2 / m_epsroot[4];
-    m_dS[2][2][2] = -8 * sqrt(2.) * m_K[0] * (2. - m_y[0]) * C1 * m_xB * tQ2
+    m_dS[2][2][2] = -8 * sqrt(2.) * m_K[0] * (2. - m_yBMJ[0]) * C1 * m_xB * tQ2
             * (1. + tQ2) / m_epsroot[4];
 
     // dC-+
-    m_dC[1][0][0] = 4 * m_y[0] / m_epsroot[4]
-            * (Kt2Q2 * (2. - m_y[0]) * (2. - m_y[0]) * (1. - m_epsroot[0])
-                    + C2 / 2. * (2 * m_xB * tQ2 - (1. - tQ2) * m_epsilon[1])
+    m_dC[1][0][0] = 4 * m_yBMJ[0] / m_epsroot[4]
+            * (Kt2Q2 * (2. - m_yBMJ[0]) * (2. - m_yBMJ[0]) * (1. - m_epsroot[0])
+                    + C2 / 2. * (2 * m_xB * tQ2 - (1. - tQ2) * m_epsilonBMJ[1])
                             * (1. - m_epsroot[0]
                                     - tQ2 * (1. - 2 * m_xB + m_epsroot[0])));
-    m_dC[1][1][0] = 2 * m_y[0] * tQ2 / m_epsroot[4]
-            * ((4. - 2 * m_xB + 3 * m_epsilon[1]) * C2
+    m_dC[1][1][0] = 2 * m_yBMJ[0] * tQ2 / m_epsroot[4]
+            * ((4. - 2 * m_xB + 3 * m_epsilonBMJ[1]) * C2
                     * (1.
-                            + tQ2 * (4 * m_xB * (1. - m_xB) + m_epsilon[1])
-                                    / (4. - 2 * m_xB + 3 * m_epsilon[1]))
+                            + tQ2 * (4 * m_xB * (1. - m_xB) + m_epsilonBMJ[1])
+                                    / (4. - 2 * m_xB + 3 * m_epsilonBMJ[1]))
                     * (m_epsroot[0] - 1. + tQ2 * (1. - 2 * m_xB + m_epsroot[0]))
-                    + 2 * (2. - m_y[0]) * (2. - m_y[0])
+                    + 2 * (2. - m_yBMJ[0]) * (2. - m_yBMJ[0])
                             * (m_epsroot[0] - 1. + 2 * m_xB) * Kt2Q2);
-    m_dC[1][2][0] = 4 * m_xB * m_y[0] * tQ2 / m_epsroot[4]
-            * (2 * (2. - m_y[0]) * (2. - m_y[0])
+    m_dC[1][2][0] = 4 * m_xB * m_yBMJ[0] * tQ2 / m_epsroot[4]
+            * (2 * (2. - m_yBMJ[0]) * (2. - m_yBMJ[0])
                     * ((1. - m_xB) * tQ2 * (1. + m_xB * tQ2)
-                            + (1. + tQ2) * (1. + tQ2) * m_epsilon[1] / 4.)
+                            + (1. + tQ2) * (1. + tQ2) * m_epsilonBMJ[1] / 4.)
                     - C2 * (1. - (1. - 2 * m_xB) * tQ2)
                             * (1. - m_epsroot[0]
                                     - tQ2 * (1. + m_epsroot[0] - 2 * m_xB)));
-    m_dC[1][0][1] = 4 * m_K[0] * m_y[0] * (2. - m_y[0]) / m_epsroot[4]
-            * (1. - m_epsilon[1] - m_epsroot[0]
+    m_dC[1][0][1] = 4 * m_K[0] * m_yBMJ[0] * (2. - m_yBMJ[0]) / m_epsroot[4]
+            * (1. - m_epsilonBMJ[1] - m_epsroot[0]
                     - tQ2
-                            * (1. - m_epsilon[1] - m_epsroot[0]
+                            * (1. - m_epsilonBMJ[1] - m_epsroot[0]
                                     - 2 * m_xB * (2. - m_epsroot[0])));
     m_dC[1][1][1] =
-            -4 * m_K[0] * m_y[0] * (2. - m_y[0]) * tQ2 / m_epsroot[4]
-                    * (5. - 4 * m_xB + 3 * m_epsilon[1] - m_epsroot[0]
+            -4 * m_K[0] * m_yBMJ[0] * (2. - m_yBMJ[0]) * tQ2 / m_epsroot[4]
+                    * (5. - 4 * m_xB + 3 * m_epsilonBMJ[1] - m_epsroot[0]
                             - tQ2
-                                    * (1. - m_epsilon[1] - m_epsroot[0]
+                                    * (1. - m_epsilonBMJ[1] - m_epsroot[0]
                                             - 2 * m_xB
                                                     * (4. - 4 * m_xB
                                                             - m_epsroot[0])));
-    m_dC[1][2][1] = -16 * m_K[0] * m_xB * m_y[0] * (2. - m_y[0]) * tQ2
+    m_dC[1][2][1] = -16 * m_K[0] * m_xB * m_yBMJ[0] * (2. - m_yBMJ[0]) * tQ2
             / m_epsroot[4] * (1. - (1. - 2 * m_xB) * tQ2);
-    m_dC[1][0][2] = -2 * m_y[0] * C2 / m_epsroot[4]
-            * (m_epsilon[1] * (1. + m_epsroot[0])
+    m_dC[1][0][2] = -2 * m_yBMJ[0] * C2 / m_epsroot[4]
+            * (m_epsilonBMJ[1] * (1. + m_epsroot[0])
                     - 2 * tQ2
-                            * ((1. - m_xB) * m_epsilon[1]
+                            * ((1. - m_xB) * m_epsilonBMJ[1]
                                     + m_xB * (1. + m_epsroot[0]))
-                    + tQ2 * tQ2 * (2 * m_xB + m_epsilon[1])
+                    + tQ2 * tQ2 * (2 * m_xB + m_epsilonBMJ[1])
                             * (1. - 2 * m_xB - m_epsroot[0]));
-    m_dC[1][1][2] = -2 * m_y[0] * C2 * tQ2 / m_epsroot[4]
-            * (4. - 2 * m_xB + 3 * m_epsilon[1]
-                    + tQ2 * (4 * m_xB * (1. - m_xB) + m_epsilon[1]))
+    m_dC[1][1][2] = -2 * m_yBMJ[0] * C2 * tQ2 / m_epsroot[4]
+            * (4. - 2 * m_xB + 3 * m_epsilonBMJ[1]
+                    + tQ2 * (4 * m_xB * (1. - m_xB) + m_epsilonBMJ[1]))
             * (1. + m_epsroot[0] - tQ2 * (1. - m_epsroot[0] - 2 * m_xB));
-    m_dC[1][2][2] = -4 * m_xB * m_y[0] * C2 * tQ2 / m_epsroot[4]
+    m_dC[1][2][2] = -4 * m_xB * m_yBMJ[0] * C2 * tQ2 / m_epsroot[4]
             * (1. - (1. - 2 * m_xB) * tQ2)
             * (1. + m_epsroot[0] - tQ2 * (1. - m_epsroot[0] - 2 * m_xB));
 
     // dS-+
     m_dS[1][0][1] =
             -4 * m_K[0] / m_epsroot[5]
-                    * ((2. - m_y[0]) * (2. - m_y[0])
-                            * (1 + 2 * m_epsilon[1] - m_epsroot[0]
+                    * ((2. - m_yBMJ[0]) * (2. - m_yBMJ[0])
+                            * (1 + 2 * m_epsilonBMJ[1] - m_epsroot[0]
                                     + tQ2 * (1. - 2 * m_xB - m_epsroot[0]))
                             - C2
-                                    * (2. + m_epsilon[1] - 2 * m_epsroot[0]
+                                    * (2. + m_epsilonBMJ[1] - 2 * m_epsroot[0]
                                             + tQ2
-                                                    * (m_epsilon[1]
+                                                    * (m_epsilonBMJ[1]
                                                             - 4 * m_epsroot[0]
                                                             + 2 * m_xB
                                                                     * (1.
@@ -970,15 +962,15 @@ void BMJ2012Model::computeAngularCoeffsInterf() {
     m_dS[1][1][1] =
             -4 * m_K[0] * tQ2 / m_epsroot[5]
                     * (B2
-                            * (3. + 2 * m_epsilon[1] + m_epsroot[0]
+                            * (3. + 2 * m_epsilonBMJ[1] + m_epsroot[0]
                                     - 2 * m_xB * (1. + m_epsroot[0])
                                     - tQ2 * (1. - 2 * m_xB)
                                             * (1. - 2 * m_xB - m_epsroot[0]))
                             + C2
-                                    * (8. + 5 * m_epsilon[1]
+                                    * (8. + 5 * m_epsilonBMJ[1]
                                             - 2 * m_xB * (3. - m_epsroot[0])
                                             - tQ2
-                                                    * (2. - m_epsilon[1]
+                                                    * (2. - m_epsilonBMJ[1]
                                                             + 2 * m_epsroot[0]
                                                             - 12 * m_xB
                                                                     * (1. - m_xB)
@@ -992,34 +984,34 @@ void BMJ2012Model::computeAngularCoeffsInterf() {
                     - 8 * m_K[0] * C2 * m_xB * tQ2 / m_epsroot[5]
                             * (3. - m_epsroot[0]
                                     - tQ2 * (3. + m_epsroot[0] - 6 * m_xB));
-    m_dS[1][0][2] = -4 * (2. - m_y[0]) * C2 / m_epsroot[5]
+    m_dS[1][0][2] = -4 * (2. - m_yBMJ[0]) * C2 / m_epsroot[5]
             * (tQ2 * tQ2
-                    * (m_epsilon[1] - 2 * m_xB2 * (2. + m_epsroot[0])
-                            + m_xB * (3. - m_epsilon[1] + m_epsroot[0]))
-                    + m_epsilon[1] * (1. + m_epsroot[0])
+                    * (m_epsilonBMJ[1] - 2 * m_xB2 * (2. + m_epsroot[0])
+                            + m_xB * (3. - m_epsilonBMJ[1] + m_epsroot[0]))
+                    + m_epsilonBMJ[1] * (1. + m_epsroot[0])
                     + tQ2
                             * (2. + 2 * m_epsroot[0]
-                                    + m_epsilon[1] * m_epsroot[0]
+                                    + m_epsilonBMJ[1] * m_epsroot[0]
                                     - m_xB
-                                            * (3. - m_epsilon[1]
+                                            * (3. - m_epsilonBMJ[1]
                                                     + 3 * m_epsroot[0])));
-    m_dS[1][1][2] = -4 * (2. - m_y[0]) * C2 * tQ2 / m_epsroot[4]
-            * ((2. - m_xB) * (1. + m_epsroot[0]) + m_epsilon[1]
+    m_dS[1][1][2] = -4 * (2. - m_yBMJ[0]) * C2 * tQ2 / m_epsroot[4]
+            * ((2. - m_xB) * (1. + m_epsroot[0]) + m_epsilonBMJ[1]
                     + 4 * Kt2Q2 * (1. - 2 * m_xB) / m_epsroot[0]
                     + tQ2
-                            * (m_epsilon[1]
+                            * (m_epsilonBMJ[1]
                                     + m_xB * (3. - 2 * m_xB + m_epsroot[0])));
-    m_dS[1][2][2] = -4 * (2. - m_y[0]) * C2 * m_xB * tQ2 / m_epsroot[5]
+    m_dS[1][2][2] = -4 * (2. - m_yBMJ[0]) * C2 * m_xB * tQ2 / m_epsroot[5]
             * (1. + 4 * Kt2Q2 + m_epsroot[0]
                     - 2 * tQ2 * (1. - 2 * m_xB - m_xB * m_epsroot[0])
                     + tQ2 * tQ2 * (1. - 2 * m_xB)
                             * (1. - 2 * m_xB - m_epsroot[0]));
     m_dS[1][0][3] = 4 * m_K[0] * C2 / m_epsroot[5]
-            * (2. + m_epsilon[1] + 2 * m_epsroot[0]
-                    + tQ2 * (m_epsilon[1] + 2 * m_xB * (1. + m_epsroot[0])));
+            * (2. + m_epsilonBMJ[1] + 2 * m_epsroot[0]
+                    + tQ2 * (m_epsilonBMJ[1] + 2 * m_xB * (1. + m_epsroot[0])));
     m_dS[1][1][3] = -4 * m_K[0] * C2 * tQ2 / m_epsroot[4]
             * (4. - 4 * m_xB
-                    + tpQ2 * (4 * m_xB * (1. - m_xB) + m_epsilon[1])
+                    + tpQ2 * (4 * m_xB * (1. - m_xB) + m_epsilonBMJ[1])
                             / m_epsroot[0]);
     m_dS[1][2][3] = -8 * m_K[0] * C2 * m_xB * tQ2 / m_epsroot[5]
             * (1. + m_epsroot[0] - tQ2 * (1. - 2 * m_xB - m_epsroot[0]));
@@ -1121,7 +1113,7 @@ std::complex<double> BMJ2012Model::C_VCS(unsigned int S, int a1, int b1, int a2,
     if (S == 0) {
         return 4. * (1 - m_xB) * (1 + m_xB * tQ2) / m_xBtQ2[1]
                 * (H1 * conj(H2) + Ht1 * conj(Ht2))
-                + (2 + tQ2) * m_epsilon[1] / m_xBtQ2[1] * Ht1 * conj(Ht2)
+                + (2 + tQ2) * m_epsilonBMJ[1] / m_xBtQ2[1] * Ht1 * conj(Ht2)
                 - m_t / (4 * m_M[1]) * E1 * conj(E2)
                 - m_xB2 / m_xBtQ2[1]
                         * (pow(1 + tQ2, 2)
@@ -1130,13 +1122,13 @@ std::complex<double> BMJ2012Model::C_VCS(unsigned int S, int a1, int b1, int a2,
                                 + m_t / (4 * m_M[1]) * Et1 * conj(Et2));
     } else if (S == 1) {
         return (4 * (1 - m_xB) * (1 + m_xB * tQ2)
-                + 2 * (3. / 2. - m_xB + tQ2 / 2.) * m_epsilon[1]) / m_xBtQ2[1]
+                + 2 * (3. / 2. - m_xB + tQ2 / 2.) * m_epsilonBMJ[1]) / m_xBtQ2[1]
                 * (H1 * conj(Ht2) + Ht1 * conj(H2))
                 - m_xB2 * (1. - (1 - 2 * m_xB) * tQ2) / m_xBtQ2[1]
                         * (H1 * conj(Et2) + Et1 * conj(H2) + Ht1 * conj(E2)
                                 + E1 * conj(Ht2))
                 - (4 * m_xB * (1. - m_xB) * (1 + m_xB * tQ2) * tQ2
-                        + m_xB * (1 + tQ2) * (1 + tQ2) * m_epsilon[1])
+                        + m_xB * (1 + tQ2) * (1 + tQ2) * m_epsilonBMJ[1])
                         / (2 * m_xBtQ2[1]) * (Ht1 * conj(E2) + E1 * conj(Ht2))
                 - m_xB / m_xBtQ2[0]
                         * (m_xB2 * (1 + tQ2) * (1 + tQ2) / (2 * m_xBtQ2[0])
@@ -1147,7 +1139,7 @@ std::complex<double> BMJ2012Model::C_VCS(unsigned int S, int a1, int b1, int a2,
                 * (m_xB * (H1 * conj(Et2) + Et1 * conj(H2))
                         + 4 * m_xB * (1 - 2 * m_xB) * m_M[1] / m_Q2
                                 * (H1 * conj(Ht2) + Ht1 * conj(H2))
-                        - (m_xBtQ2[0] + (3. + tQ2) * m_epsilon[1] / 2.)
+                        - (m_xBtQ2[0] + (3. + tQ2) * m_epsilonBMJ[1] / 2.)
                                 * (Ht1 * conj(E2) + E1 * conj(Ht2))
                         + m_xB2 / 2. * (1 - tQ2)
                                 * (E1 * conj(Et2) + Et1 * conj(E2)));
@@ -1234,7 +1226,7 @@ std::complex<double> BMJ2012Model::C_I(unsigned int S, int a, int b,
         } else if (VA == "A") {
             return -xBF1PlusF2
                     * ((2 - m_xB + 2 * m_xB * m_t / m_Q2
-                            + (3 + m_t / m_Q2 - m_t / m_M[1]) * m_epsilon[1]
+                            + (3 + m_t / m_Q2 - m_t / m_M[1]) * m_epsilonBMJ[1]
                                     / 2.) * Ht
                             - m_xB / 2.
                                     * (m_xB * (1 - m_t / m_Q2)
@@ -1337,7 +1329,7 @@ double BMJ2012Model::SqrAmplBH(double beamHelicity, double beamCharge,
         NumA::Vector3D targetPolarization) {
 
     double A = pow(POSITRON_CHARGE, 6)
-            / (m_xB2 * m_y[1] * m_epsroot[3] * m_t * m_P1 * m_P2);
+            / (m_xB2 * m_yBMJ[1] * m_epsroot[3] * m_t * m_P1 * m_P2);
 
     double result = 0.;
     for (int n = 0; n < 3; n++) {
@@ -1353,7 +1345,7 @@ double BMJ2012Model::SqrAmplBH(double beamHelicity, double beamCharge,
 double BMJ2012Model::SqrAmplVCS(double beamHelicity, double beamCharge,
         NumA::Vector3D targetPolarization) {
 
-    double A = pow(POSITRON_CHARGE, 6) / (m_y[1] * m_Q2);
+    double A = pow(POSITRON_CHARGE, 6) / (m_yBMJ[1] * m_Q2);
 
     double result = 0.;
     for (int n(0); n < 3; n++) {
@@ -1371,7 +1363,7 @@ double BMJ2012Model::SqrAmplInterf(double beamHelicity, double beamCharge,
         NumA::Vector3D targetPolarization) {
 
     double A = -beamCharge * pow(POSITRON_CHARGE, 6)
-            / (m_xB * m_y[2] * m_t * m_P1 * m_P2);
+            / (m_xB * m_yBMJ[2] * m_t * m_P1 * m_P2);
 
     double result = 0.;
     for (int n(0); n < 4; n++) {

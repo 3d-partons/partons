@@ -69,17 +69,15 @@ private:
     std::vector<double> m_xBtQ2;
     std::vector<double> m_M; ///< Proton mass
                              ///< m_M[0] = M, m_M[1] = M^2, etc...
-    std::vector<double> m_y; ///< Lepton energy fraction
+    std::vector<double> m_yBMJ; ///< Lepton energy fraction
                              ///< m_y[0] = y, m_y[1] = y^2, etc...
-    std::vector<double> m_epsilon; ///<
+    std::vector<double> m_epsilonBMJ; ///<
                                    ///< m_epsilon[0] = epsilon, m_epsilon[1] = epsilon^2, etc...
     std::vector<double> m_epsroot; ///< sqrt(1+epsilon^2)
     std::vector<double> m_K, m_Kt; ///< Kinematical factors K and K tilde
     ///< m_K[0] = K, m_K[1] = K^2, etc...
     std::vector<double> m_Delta2; ///< Mandelstam variable t
                                   ///< m_Delta2[0] = t, m_Delta2[1] = Delta^4 = t^2, etc...
-    double m_Delta2_min; ///< minimum of t
-    double m_Delta2_max; ///< max of t
 
     double m_P1, m_P2; ///< Lepton propagators
 
