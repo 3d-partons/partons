@@ -31,7 +31,7 @@
 #include "../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
-
+#include <iostream>
 // Initialise [class]::classId with a unique name.
 const unsigned int GK11TestModel::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
@@ -448,12 +448,15 @@ double GK11TestModel::GKtDependentuDD_t(double beta, double alpha) {
     d0 = 0.48;
     alphaP = 0.45;
     double alphaH = d0 + alphaP * m_t;
+
     double coeff[5] = { c1, c2, c3, c4, d0 };
     double A = tgamma(1 - d0) * tgamma(4) / tgamma(5 - d0) // as in arXiv:1210.6975v3 pag 9 eq 31.
             * (coeff[0] + coeff[1] * (1 - d0) / (5 - d0)
                     + coeff[2] * (2 - d0) * (1 - d0) / ((6 - d0) * (5 - d0)));
-    return exp(b0 * m_t) * pow(absbeta, -alphaH * m_t)
+
+    return exp(b0 * m_t) * pow(absbeta, -alphaH)/pow(absbeta, -d0)
             * GKPdfAnsatz_t(1, absbeta, coeff) * Profile(1, beta, alpha) / A;
+
 }
 //DD for Ht
 
@@ -479,7 +482,7 @@ double GK11TestModel::GKtDependentdDD_t(double beta, double alpha) {
             * (coeff[0] + coeff[1] * (1 - d0) / (5 - d0)
                     + coeff[2] * (2 - d0) * (1 - d0) / ((6 - d0) * (5 - d0)));
 
-    return exp(b0 * m_t) * pow(absbeta, -alphaH * m_t)
+    return exp(b0 * m_t) * pow(absbeta, -alphaH )/pow(absbeta, -d0)
             * GKPdfAnsatz_t(1, absbeta, coeff) * Profile(1, beta, alpha) / A;
 
 }
@@ -501,11 +504,9 @@ double GK11TestModel::GKtDependentHtgDD(double beta, double alpha) {
     double alphaH = d0 + alphaP * m_t;
     double coeff[5] = { c1, c2, c3, c4, d0 };
 
-    double A = tgamma(1 - d0) * tgamma(4) / tgamma(5 - d0) // as in arXiv:1210.6975v3 pag 9 eq 31.
-            * (coeff[0] + coeff[1] * (1 - d0) / (5 - d0)
-                    + coeff[2] * (2 - d0) * (1 - d0) / ((6 - d0) * (5 - d0)));
 
-    return exp(b0 * m_t) * pow(absbeta, -alphaH * m_t)
+
+    return exp(b0 * m_t) * pow(absbeta, -alphaH)/pow(absbeta, -d0)
             * GKPdfAnsatz_tg(2, absbeta, coeff) * Profile(2, beta, alpha);
 
 }
