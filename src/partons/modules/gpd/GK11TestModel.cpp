@@ -337,6 +337,13 @@ double GK11TestModel::GKPdfAnsatz_t(double N, double beta, double* coeff) {
             * (coeff[0] + coeff[1] * beta + coeff[2] * beta * beta) * coeff[3];
 }
 
+double GK11TestModel::GKPdfAnsatz_tg(double N, double beta, double* coeff) {
+// as in arXiv:1210.6975v3 pag 9
+    return pow(beta, -coeff[4]) * pow((1. - beta), 2 * N + 1)
+
+            * (coeff[0] + coeff[1] * sqrt(beta) + coeff[2] * beta ) * coeff[3];
+}
+
 //DD for H
 double GK11TestModel::GKtDependentsDD(double beta, double alpha) {
     double absbeta = fabs(beta);
@@ -499,7 +506,7 @@ double GK11TestModel::GKtDependentHtgDD(double beta, double alpha) {
                     + coeff[2] * (2 - d0) * (1 - d0) / ((6 - d0) * (5 - d0)));
 
     return exp(b0 * m_t) * pow(absbeta, -alphaH * m_t)
-            * GKPdfAnsatz_t(2, absbeta, coeff) * Profile(2, beta, alpha) / A;
+            * GKPdfAnsatz_tg(2, absbeta, coeff) * Profile(2, beta, alpha);
 
 }
 //DD for E
@@ -996,18 +1003,18 @@ double GK11TestModel::IntegralxLargeHtg(double beta, std::vector<double> Par) {
         throwBetaException(__func__, beta);
     }
 
-    return beta * GKtDependentHtgDD(beta, alpha) / m_xi;
+    return GKtDependentHtgDD(beta, alpha) / m_xi;
 }
 
 double GK11TestModel::IntegralxLargeHtgMx(double beta,
         std::vector<double> Par) {
-    double alpha = (m_x + beta) / m_xi;
+    double alpha = (m_Mx - beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
         throwBetaException(__func__, beta);
     }
 
-    return beta * GKtDependentHtgDD(beta, alpha) / m_xi;
+    return  GKtDependentHtgDD(beta, alpha) / m_xi;
 }
 
 double GK11TestModel::IntegralxSmall1Htg(double beta, std::vector<double> Par) {
@@ -1017,17 +1024,17 @@ double GK11TestModel::IntegralxSmall1Htg(double beta, std::vector<double> Par) {
         throwBetaException(__func__, beta);
     }
 
-    return beta * GKtDependentHtgDD(beta, alpha) / m_xi;
+    return  GKtDependentHtgDD(beta, alpha) / m_xi;
 }
 
 double GK11TestModel::IntegralxSmall2Htg(double beta, std::vector<double> Par) {
-    double alpha = (m_x + beta) / m_xi;
+    double alpha = (m_Mx - beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
         throwBetaException(__func__, beta);
     }
 
-    return beta * GKtDependentHtgDD(beta, alpha) / m_xi;
+    return GKtDependentHtgDD(beta, alpha) / m_xi;
 }
 
 PartonDistribution GK11TestModel::computeH() {
@@ -1216,9 +1223,24 @@ PartonDistribution GK11TestModel::computeHt() {
     }
 
     if (fabs(m_x) < m_xi) {
+
+        if(m_x>0){
         Htg = integrate(m_pIntegralxSmall1Htg, Eps, Beta2, emptyParameters);
-        Htg += integrate(m_pIntegralxSmall2Htg, Eps, Beta2Mx, emptyParameters);
+
+        Htg -= integrate(m_pIntegralxSmall2Htg, Eps, Beta2Mx, emptyParameters);
+        }
+
+        if(m_x<0){
+
+
+        Htg = integrate(m_pIntegralxSmall2Htg, Eps, Beta2Mx, emptyParameters);
+
+        Htg -= integrate(m_pIntegralxSmall1Htg, Eps, Beta2, emptyParameters);
+        }
+
     }
+
+
 
     if (m_x <= -m_xi) {
         // Integration

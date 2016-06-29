@@ -240,6 +240,7 @@ private:
     double Profile(double N, double alpha, double beta);
     double GKPdfAnsatz(double N, double beta, double* coeff);
     double GKPdfAnsatz_t(double N, double beta, double* coeff);
+    double GKPdfAnsatz_tg(double N, double beta, double* coeff);
     double GKtDependentsDD(double beta, double alpha);
     double GKtDependentuDD_t(double beta, double alpha);
     double GKtDependentdDD_t(double beta, double alpha);
