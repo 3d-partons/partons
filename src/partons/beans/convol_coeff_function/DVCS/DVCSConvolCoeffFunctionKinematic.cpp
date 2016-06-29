@@ -153,6 +153,7 @@ void DVCSConvolCoeffFunctionKinematic::setMuF2(double MuF2) {
 void DVCSConvolCoeffFunctionKinematic::setMuR2(double MuR2) {
     m_MuR2 = MuR2;
     updateHashSum();
+
 }
 
 void DVCSConvolCoeffFunctionKinematic::setQ2(double Q2) {
