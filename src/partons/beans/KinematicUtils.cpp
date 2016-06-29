@@ -1,14 +1,13 @@
 #include "../../../include/partons/beans/KinematicUtils.h"
 
 #include <ElementaryUtils/file_utils/FileUtils.h>
+#include <ElementaryUtils/logger/LoggerManager.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <stddef.h>
-#include <iostream>
-#include <stdexcept>
-#include <vector>
 
-//TODO Mieux gérer les exceptions pour quelles soient affichées dans le logger.
+#include "../../../include/partons/Partons.h"
+
 List<ObservableKinematic> KinematicUtils::getObservableKinematicFromFile(
         const std::string& filePath) {
 
@@ -19,12 +18,9 @@ List<ObservableKinematic> KinematicUtils::getObservableKinematicFromFile(
         std::vector<std::string> kinematicString =
                 ElemUtils::FileUtils::readByLine(filePath);
 
-        if (kinematicString.empty()) {
-            throw std::runtime_error(
-                    ElemUtils::Formatter()
-                            << "(KinematicUtils::getObservableKinematicFromFile) Empty kinematic input file : "
-                            << filePath);
-        }
+        //TODO est-ce que le vector à une taille > 0 s'il y a un retour chariot dans le fichier et que celui-ci est vide ?
+        checkEmptyInputFile("getObservableKinematicFromFile", kinematicString,
+                filePath);
 
         ObservableKinematic kinematic;
 
@@ -36,9 +32,10 @@ List<ObservableKinematic> KinematicUtils::getObservableKinematicFromFile(
                 std::vector<std::string> kinematicValues =
                         ElemUtils::StringUtils::split(kinematicString[i], '|');
                 if (kinematicValues.size() < 4) {
-                    throw std::runtime_error(
+
+                    error("getObservableKinematicFromFile",
                             ElemUtils::Formatter()
-                                    << "(KinematicUtils::getObservableKinematicFromFile) Missing column value in your kinematic input file : "
+                                    << "Missing column value in your kinematic input file : "
                                     << filePath
                                     << " ; You must provided 4 column : xB | t | Q2 | phi");
                 }
@@ -53,9 +50,7 @@ List<ObservableKinematic> KinematicUtils::getObservableKinematicFromFile(
 
         }
     } else {
-        //TODO print error with logger : cannot open file;
-
-        std::cerr << "Cannot open file : " << filePath << std::endl;
+        errorCannotOpenFile("getObservableKinematicFromFile", filePath);
     }
 
     return observableKinematicList;
@@ -70,12 +65,8 @@ List<GPDKinematic> KinematicUtils::getGPDKinematicFromFile(
         std::vector<std::string> kinematicString =
                 ElemUtils::FileUtils::readByLine(filePath);
 
-        if (kinematicString.empty()) {
-            throw std::runtime_error(
-                    ElemUtils::Formatter()
-                            << "(KinematicUtils::getObservableKinematicFromFile) Empty kinematic input file : "
-                            << filePath);
-        }
+        checkEmptyInputFile("getGPDKinematicFromFile", kinematicString,
+                filePath);
 
         GPDKinematic kinematic;
 
@@ -87,10 +78,8 @@ List<GPDKinematic> KinematicUtils::getGPDKinematicFromFile(
                 std::vector<std::string> kinematicValues =
                         ElemUtils::StringUtils::split(kinematicString[i], '|');
                 if (kinematicValues.size() < 5) {
-                    throw std::runtime_error(
-                            ElemUtils::Formatter()
-                                    << "(KinematicUtils::getGPDKinematicFromFile) Line "
-                                    << i
+                    error("getGPDKinematicFromFile",
+                            ElemUtils::Formatter() << "Line " << i
                                     << ". Missing column value in your kinematic input file : "
                                     << filePath
                                     << " ; You must provided 5 column : x | xi | t | MuF2 | MuR2");
@@ -106,9 +95,7 @@ List<GPDKinematic> KinematicUtils::getGPDKinematicFromFile(
 
         }
     } else {
-        //TODO print error with logger : cannot open file;
-
-        std::cerr << "Cannot open file : " << filePath << std::endl;
+        errorCannotOpenFile("getGPDKinematicFromFile", filePath);
     }
 
     return gpdKinematicList;
@@ -123,12 +110,8 @@ List<DVCSConvolCoeffFunctionKinematic> KinematicUtils::getCCFKinematicFromFile(
         std::vector<std::string> kinematicString =
                 ElemUtils::FileUtils::readByLine(filePath);
 
-        if (kinematicString.empty()) {
-            throw std::runtime_error(
-                    ElemUtils::Formatter()
-                            << "(KinematicUtils::getCCFKinematicFromFile) Empty kinematic input file : "
-                            << filePath);
-        }
+        checkEmptyInputFile("getCCFKinematicFromFile", kinematicString,
+                filePath);
 
         DVCSConvolCoeffFunctionKinematic kinematic;
 
@@ -140,10 +123,9 @@ List<DVCSConvolCoeffFunctionKinematic> KinematicUtils::getCCFKinematicFromFile(
                 std::vector<std::string> kinematicValues =
                         ElemUtils::StringUtils::split(kinematicString[i], '|');
                 if (kinematicValues.size() < 5) {
-                    throw std::runtime_error(
-                            ElemUtils::Formatter()
-                                    << "(KinematicUtils::getCCFKinematicFromFile) Line "
-                                    << i
+
+                    error("getCCFKinematicFromFile",
+                            ElemUtils::Formatter() << "Line " << i
                                     << ". Missing column value in your kinematic input file : "
                                     << filePath
                                     << " ; You must provided 5 column : xi | t | Q2 | MuF2 | MuR2");
@@ -159,10 +141,30 @@ List<DVCSConvolCoeffFunctionKinematic> KinematicUtils::getCCFKinematicFromFile(
 
         }
     } else {
-        //TODO print error with logger : cannot open file;
-
-        std::cerr << "Cannot open file : " << filePath << std::endl;
+        errorCannotOpenFile("getCCFKinematicFromFile", filePath);
     }
 
     return kinematicList;
+}
+
+void KinematicUtils::error(const std::string &funcName,
+        const std::string &msg) {
+    Partons::getInstance()->getLoggerManager()->error("KinematicUtils",
+            funcName, msg);
+}
+
+void KinematicUtils::errorCannotOpenFile(const std::string &funcName,
+        const std::string &msg) {
+    error(funcName, ElemUtils::Formatter() << "Cannot open file " << msg);
+}
+
+void KinematicUtils::checkEmptyInputFile(const std::string &funcName,
+        const std::vector<std::string> &kinematicString,
+        const std::string &filePath) {
+
+    if (kinematicString.empty()) {
+        error(__func__,
+                ElemUtils::Formatter() << "Empty kinematic input file : "
+                        << filePath);
+    }
 }

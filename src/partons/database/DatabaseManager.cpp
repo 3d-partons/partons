@@ -1,8 +1,9 @@
+#include "../../../include/partons/database/DatabaseManager.h"
+
 #include <ElementaryUtils/file_utils/FileUtils.h>
 #include <ElementaryUtils/PropertiesManager.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
-#include <include/partons/database/DatabaseManager.h>
 #include <QtCore/qstring.h>
 #include <QtSql/qsqlerror.h>
 #include <string>
@@ -10,7 +11,19 @@
 // Global static pointer used to ensure a single instance of the class.
 DatabaseManager* DatabaseManager::m_pInstance = 0;
 
-const QSqlDatabase& DatabaseManager::getProductionDatabase() const {
+const QSqlDatabase& DatabaseManager::getProductionDatabase() {
+
+    if (!m_productionDatabase.isOpen()) {
+        warn(__func__, "Database connection is gone away");
+        if (!m_productionDatabase.open()) {
+            error(__func__,
+                    ElemUtils::Formatter() << "Cannot re-open database : "
+                            << m_productionDatabase.lastError().text().toStdString());
+        } else {
+            info(__func__, "Database connection has been re-open");
+        }
+    }
+
     return m_productionDatabase;
 }
 

@@ -9,6 +9,7 @@
 #include <string>
 
 #include "../../../../../include/partons/beans/Computation.h"
+#include "../../../../../include/partons/database/Database.h"
 #include "../../../../../include/partons/database/DatabaseManager.h"
 
 ComputationDao::ComputationDao() :
@@ -23,8 +24,11 @@ int ComputationDao::insert(const time_t &dateTime,
     int result = -1;
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    query.prepare(
-            "INSERT INTO computation (computation_date, environment_configuration_id) VALUES (:dateTime, :environmentConfigurationId)");
+    ElemUtils::Formatter formatter;
+    formatter << "INSERT INTO " << Database::TABLE_NAME_COMPUTATION
+            << " (computation_date, environment_configuration_id) VALUES (:dateTime, :environmentConfigurationId)";
+
+    query.prepare(QString(formatter.str().c_str()));
 
     QDateTime qDateTime;
     qDateTime.setTime_t(dateTime);
@@ -49,8 +53,12 @@ int ComputationDao::getComputationIdByDateTime(const time_t &dateTime) const {
     int result = -1;
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    query.prepare(
-            "SELECT computation_id FROM computation WHERE computation_date = :dateTime");
+    ElemUtils::Formatter formatter;
+    formatter << "SELECT " << Database::COLUMN_NAME_COMPUTATION_ID << " FROM "
+            << Database::TABLE_NAME_COMPUTATION
+            << " WHERE computation_date = :dateTime";
+
+    query.prepare(QString(formatter.str().c_str()));
 
     QDateTime qDateTime;
     qDateTime.setTime_t(dateTime);
@@ -77,7 +85,12 @@ Computation ComputationDao::selectByIndexId(const int indexId) const {
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    query.prepare("SELECT * FROM computation WHERE computation_id = :indexId");
+    ElemUtils::Formatter formatter;
+    formatter << "SELECT * FROM " << Database::TABLE_NAME_COMPUTATION
+            << " WHERE " << Database::COLUMN_NAME_COMPUTATION_ID
+            << " = :indexId";
+
+    query.prepare(QString(formatter.str().c_str()));
 
     query.bindValue(":indexId", indexId);
 
@@ -98,7 +111,8 @@ Computation ComputationDao::selectByIndexId(const int indexId) const {
 
 void ComputationDao::fillComputation(Computation &computation,
         QSqlQuery &query) const {
-    int field_id = query.record().indexOf("computation_id");
+    int field_id = query.record().indexOf(
+            QString(Database::COLUMN_NAME_COMPUTATION_ID.c_str()));
     int field_computation_date = query.record().indexOf("computation_date");
 
     while (query.next()) {
@@ -144,8 +158,12 @@ bool ComputationDao::isAvailable(const int computationId) const {
     bool result = false;
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    query.prepare(
-            "SELECT computation_id FROM computation WHERE computation_id = :computationId");
+    ElemUtils::Formatter formatter;
+    formatter << "SELECT " << Database::COLUMN_NAME_COMPUTATION_ID << " FROM "
+            << Database::TABLE_NAME_COMPUTATION << " WHERE "
+            << Database::COLUMN_NAME_COMPUTATION_ID << " = :computationId";
+
+    query.prepare(QString(formatter.str().c_str()));
 
     query.bindValue(":computationId", computationId);
 

@@ -26,8 +26,8 @@ const std::string ConvolCoeffFunctionModule::GPD_MODULE_ID =
 
 ConvolCoeffFunctionModule::ConvolCoeffFunctionModule(
         const std::string &className) :
-        ModuleObject(className), MathIntegratorModule(), m_pGPDModule(0), m_channel(
-                ObservableChannel::UNDEFINED) {
+        ModuleObject(className), m_isGPDModuleDependent(true), MathIntegratorModule(), m_pGPDModule(
+                0), m_channel(ObservableChannel::UNDEFINED) {
 }
 
 ConvolCoeffFunctionModule::~ConvolCoeffFunctionModule() {
@@ -37,6 +37,7 @@ ConvolCoeffFunctionModule::ConvolCoeffFunctionModule(
         const ConvolCoeffFunctionModule& other) :
         ModuleObject(other), MathIntegratorModule(other) {
 
+    m_isGPDModuleDependent = other.m_isGPDModuleDependent;
     m_channel = other.m_channel;
 
     if (other.m_pGPDModule != 0) {
@@ -136,4 +137,13 @@ ObservableChannel::Type ConvolCoeffFunctionModule::getChannel() const {
 
 void ConvolCoeffFunctionModule::setChannel(ObservableChannel::Type channel) {
     m_channel = channel;
+}
+
+bool ConvolCoeffFunctionModule::isGPDModuleDependent() const {
+    return m_isGPDModuleDependent;
+}
+
+void ConvolCoeffFunctionModule::setIsGPDModuleDependent(
+        bool isGPDModuleDependent) {
+    m_isGPDModuleDependent = isGPDModuleDependent;
 }

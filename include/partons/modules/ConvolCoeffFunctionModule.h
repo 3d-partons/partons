@@ -17,7 +17,6 @@
 #include "MathIntegratorModule.h"
 
 class DVCSConvolCoeffFunctionResult;
-
 class GPDModule;
 
 /**
@@ -56,6 +55,8 @@ public:
     void setGPDModule(GPDModule* gpdModule);
     ObservableChannel::Type getChannel() const;
     void setChannel(ObservableChannel::Type channel);
+    bool isGPDModuleDependent() const;
+    void setIsGPDModuleDependent(bool isGPDModuleDependent);
 
 protected:
     /**
@@ -67,6 +68,9 @@ protected:
     ObservableChannel::Type m_channel;
 
     GPDModule* m_pGPDModule;
+
+private:
+    bool m_isGPDModuleDependent;
 };
 
 #endif /* CONVOL_COEFF_FUNCTION_MODULE_H */

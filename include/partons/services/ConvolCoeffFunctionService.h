@@ -43,8 +43,6 @@ public:
      */
     virtual ~ConvolCoeffFunctionService();
 
-//    virtual void resolveObjectDependencies();
-
     virtual void computeTask(Task &task);
 
     List<DVCSConvolCoeffFunctionResult> computeManyKinematicOneModel(

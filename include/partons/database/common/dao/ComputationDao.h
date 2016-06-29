@@ -9,7 +9,6 @@
  */
 
 #include <QtSql/qsqlquery.h>
-//#include <stddef.h>
 #include <ctime>
 
 #include "../../../BaseObject.h"

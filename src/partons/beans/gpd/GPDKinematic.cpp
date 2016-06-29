@@ -128,6 +128,7 @@ double GPDKinematic::getMuF2() const {
 
 void GPDKinematic::setMuF2(double muF2) {
     m_MuF2 = muF2;
+    updateHashSum();
 }
 
 double GPDKinematic::getMuR2() const {
@@ -136,6 +137,7 @@ double GPDKinematic::getMuR2() const {
 
 void GPDKinematic::setMuR2(double muR2) {
     m_MuR2 = muR2;
+    updateHashSum();
 }
 
 double GPDKinematic::getX() const {
@@ -144,6 +146,7 @@ double GPDKinematic::getX() const {
 
 void GPDKinematic::setX(double x) {
     m_x = x;
+    updateHashSum();
 }
 
 double GPDKinematic::getXi() const {
@@ -152,6 +155,7 @@ double GPDKinematic::getXi() const {
 
 void GPDKinematic::setXi(double xi) {
     m_xi = xi;
+    updateHashSum();
 }
 
 double GPDKinematic::getT() const {
@@ -160,6 +164,7 @@ double GPDKinematic::getT() const {
 
 void GPDKinematic::setT(double t) {
     m_t = t;
+    updateHashSum();
 }
 
 KinematicType::Type GPDKinematic::getKinematicType() const {

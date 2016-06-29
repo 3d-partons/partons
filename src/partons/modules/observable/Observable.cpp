@@ -42,11 +42,11 @@ Observable::~Observable() {
 }
 
 void Observable::initModule() {
-
+//TODO implement
 }
 
 void Observable::isModuleWellConfigured() {
-
+    //TODO implement
 }
 
 void Observable::run() {

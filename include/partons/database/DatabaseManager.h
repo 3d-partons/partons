@@ -42,7 +42,7 @@ public:
 
     // ##### GETTERS & SETTERS #####
 
-    const QSqlDatabase& getProductionDatabase() const;
+    const QSqlDatabase& getProductionDatabase();
     const QSqlDatabase& getTestDatabase() const;
 
 private:

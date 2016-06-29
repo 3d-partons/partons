@@ -13,6 +13,7 @@
  */
 
 #include <string>
+#include <vector>
 
 #include "convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "gpd/GPDKinematic.h"
@@ -28,6 +29,14 @@ public:
             const std::string &filePath);
 
     static List<DVCSConvolCoeffFunctionKinematic> getCCFKinematicFromFile(
+            const std::string &filePath);
+
+private:
+    static void error(const std::string &funcName, const std::string &msg);
+    static void errorCannotOpenFile(const std::string &funcName,
+            const std::string &msg);
+    static void checkEmptyInputFile(const std::string &funcName,
+            const std::vector<std::string> &kinematicString,
             const std::string &filePath);
 };
 

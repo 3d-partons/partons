@@ -140,3 +140,32 @@ ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
     kinematic.unserialize(packet);
     return packet;
 }
+
+void DVCSConvolCoeffFunctionKinematic::setBinId(unsigned int binId) {
+    m_binId = binId;
+}
+
+void DVCSConvolCoeffFunctionKinematic::setMuF2(double MuF2) {
+    m_MuF2 = MuF2;
+    updateHashSum();
+}
+
+void DVCSConvolCoeffFunctionKinematic::setMuR2(double MuR2) {
+    m_MuR2 = MuR2;
+    updateHashSum();
+}
+
+void DVCSConvolCoeffFunctionKinematic::setQ2(double Q2) {
+    m_Q2 = Q2;
+    updateHashSum();
+}
+
+void DVCSConvolCoeffFunctionKinematic::setT(double t) {
+    m_t = t;
+    updateHashSum();
+}
+
+void DVCSConvolCoeffFunctionKinematic::setXi(double xi) {
+    m_xi = xi;
+    updateHashSum();
+}

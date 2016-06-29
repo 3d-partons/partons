@@ -81,30 +81,28 @@ void DVCSConvolCoeffFunctionModule::initModule() {
     debug(__func__, ElemUtils::Formatter() << "executed");
 }
 
-//TODO implement
 void DVCSConvolCoeffFunctionModule::isModuleWellConfigured() {
     debug(__func__, ElemUtils::Formatter() << "executed");
 
     // Test kinematic domain of Xi
     if (m_xi < 0 || m_xi > 1) {
-        ElemUtils::Formatter formatter;
-        formatter << "Input value of Xi = " << m_xi
-                << " do not lay between 0 and 1.";
-        error(__func__, formatter.str());
+        warn(__func__,
+                ElemUtils::Formatter() << "Input value of Xi = " << m_xi
+                        << " do not lay between 0 and 1.");
     }
 
     // Test kinematic domain of t
     if (m_t > 0) {
-        ElemUtils::Formatter formatter;
-        formatter << " Input value of t = " << m_t << " is not <= 0.";
-        error(__func__, formatter.str());
+        warn(__func__,
+                ElemUtils::Formatter() << " Input value of t = " << m_t
+                        << " is not <= 0.");
     }
 
     // Test kinematic domain of Q2
     if (m_Q2 < 0) {
-        ElemUtils::Formatter formatter;
-        formatter << "Input value of Q2 = " << m_Q2 << " is not > 0.";
-        error(__func__, formatter.str());
+        warn(__func__,
+                ElemUtils::Formatter() << "Input value of Q2 = " << m_Q2
+                        << " is not > 0.");
     }
 
     if (m_pGPDModule == 0) {

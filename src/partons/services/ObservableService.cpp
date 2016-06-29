@@ -257,17 +257,20 @@ Observable* ObservableService::configureObservable(Observable* pObservable,
 
     //TODO add test that check if there is a missing model for a specific Module
 
-    if (!pProcessModule) {
+    if (pProcessModule == 0) {
         error(__func__,
                 "pProcessModule is NULL pointer ; cannot configure Observable");
-    } else {
-        //TODO add setter for ConvolCoeffFunction
-        //pProcessModule
     }
 
-    if (!pObservable) {
+    if (pObservable == 0) {
         error(__func__,
                 "pObservable is NULL pointer ; cannot configure Observable");
+    }
+
+    //TODO est-ce qu'un ProcessModule peut tourner sans ConvolCoeffFunctionModule ?
+    if (pConvolCoeffFunctionModule == 0) {
+        error(__func__,
+                "pConvolCoeffFunctionModule is NULL pointer ; cannot configure Observable");
     }
 
     pProcessModule->setConvolCoeffFunctionModule(

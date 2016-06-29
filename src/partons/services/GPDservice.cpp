@@ -24,6 +24,7 @@
 #include "../../../include/partons/ResourceManager.h"
 #include "../../../include/partons/services/GPDService.h"
 #include "../../../include/partons/ServiceObjectTyped.h"
+#include "../../../include/partons/utils/exceptions/GPDModuleNullPointerException.h"
 
 const std::string GPDService::GPD_SERVICE_COMPUTE_GPD_MODEL = "computeGPDModel";
 const std::string GPDService::GPD_SERVICE_COMPUTE_GPD_MODEL_WITH_EVOLUTION =
@@ -285,16 +286,22 @@ GPDModule* GPDService::newGPDModuleFromTask(const Task& task) const {
                         task.getLastAvailableParameters().get(
                                 ModuleObject::CLASS_NAME).toString());
         pGPDModule->configure(task.getLastAvailableParameters());
-    } else {
-        error(__func__,
-                ElemUtils::Formatter()
-                        << "Check case or missing object <module type=\"GPDModule\"> for method "
-                        << task.getFunctionName());
     }
 
 //TODO how to deal with evolution module ?
 
 //TODO how to handle many GPD module ?
+
+    return configureGPDModule(pGPDModule);
+}
+
+GPDModule* GPDService::configureGPDModule(GPDModule* pGPDModule) const {
+
+    if (pGPDModule == 0) {
+        throw GPDModuleNullPointerException(
+                "You have not provided any GPDModule");
+        // throwException(__func__, "You have not provided any GPDModule");
+    }
 
     return pGPDModule;
 }

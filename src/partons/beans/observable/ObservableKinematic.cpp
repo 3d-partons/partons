@@ -136,6 +136,7 @@ double ObservableKinematic::getQ2() const {
 
 void ObservableKinematic::setQ2(double Q2) {
     m_Q2 = Q2;
+    updateHashSum();
 }
 
 double ObservableKinematic::getT() const {
@@ -144,6 +145,7 @@ double ObservableKinematic::getT() const {
 
 void ObservableKinematic::setT(double t) {
     m_t = t;
+    updateHashSum();
 }
 
 double ObservableKinematic::getXB() const {
@@ -152,6 +154,7 @@ double ObservableKinematic::getXB() const {
 
 void ObservableKinematic::setXB(double xB) {
     m_xB = xB;
+    updateHashSum();
 }
 
 PhysicalType<double> ObservableKinematic::getPhi() const {

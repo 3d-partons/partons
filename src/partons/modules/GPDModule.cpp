@@ -73,29 +73,28 @@ void GPDModule::initModule() {
     debug(__func__, ElemUtils::Formatter() << "executed");
 }
 
-//TODO implement
 void GPDModule::isModuleWellConfigured() {
     debug(__func__, ElemUtils::Formatter() << "executed");
 
     // Test variable range
 
     if (fabs(m_x) > 1.) {
-        error(__func__,
+        warn(__func__,
                 "Longitudinal momentum fraction should be in [-1., +1.]");
     }
 
     if (m_xi > 1. || m_xi < 0.) {
-        error(__func__,
+        warn(__func__,
                 ElemUtils::Formatter()
                         << "Skewness should be in [0., +1.] m_xi = " << m_xi);
     }
 
     if (m_t > 0.) {
-        error(__func__, "Nucleon momentum transfer should be <= 0.");
+        warn(__func__, "Nucleon momentum transfer should be <= 0.");
     }
 
     if (m_MuF2 < 0.) {
-        error(__func__, "Square of factorization scale should be > 0.");
+        warn(__func__, "Square of factorization scale should be > 0.");
     }
 }
 

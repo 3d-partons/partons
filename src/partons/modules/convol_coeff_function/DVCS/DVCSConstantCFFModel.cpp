@@ -23,6 +23,8 @@ const std::string DVCSConstantCFFModel::CFF_VALUES = "cff_values";
 
 DVCSConstantCFFModel::DVCSConstantCFFModel(const std::string &className) :
         DVCSConvolCoeffFunctionModule(className) {
+    setIsGPDModuleDependent(false);
+
     m_CFF.assign(GPDType::END, 0.);
 
     for (int i = static_cast<int>(GPDType::H);

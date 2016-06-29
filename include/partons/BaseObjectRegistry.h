@@ -6,16 +6,6 @@
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date June 25, 2015
  * @version 1.0
- *
- * @class BaseObjectRegistry
- *
- * @brief The Registry is the analog of a phonebook, which lists all available objects (modules or services most of the time) identified by a unique integer identifier or by a unique string (class name) for translation. And only one species of each.
- *
- * From the point of view of software engineering, the registry corresponds to the singleton design pattern which ensures that it is unique.
- * When a new module or services are created, the first thing to do is to call this unique instance, and to register the new module or services with a name provided by the developer the class.
- * In turn the Registry gives a unique identifier encoded in a integer variable for performance purposes.
- * Registry stores pointers to all objects in a generic way, i.e. whatever their nature are: pointers to GPDModule, to RunningAlphaStrongModule, to AutomationService, etc.
- * This is achieved by requiring all objects to derive from a single parent class named BaseObject.
  */
 
 #include <stddef.h>
@@ -25,6 +15,16 @@
 
 #include "BaseObject.h"
 
+/** @class BaseObjectRegistry
+ *
+ * @brief The Registry is the analog of a phonebook, which lists all available objects (modules or services most of the time) identified by a unique integer identifier or by a unique string (class name) for translation. And only one species of each.
+ *
+ * From the point of view of software engineering, the registry corresponds to the singleton design pattern which ensures that it is unique.
+ * When a new module or services are created, the first thing to do is to call this unique instance, and to register the new module or services with a name provided by the developer the class.
+ * In turn the Registry gives a unique identifier encoded in a integer variable for performance purposes.
+ * Registry stores pointers to all objects in a generic way, i.e. whatever their nature are: pointers to GPDModule, to RunningAlphaStrongModule, to AutomationService, etc.
+ * This is achieved by requiring all objects to derive from a single parent class named BaseObject.
+ */
 class BaseObjectRegistry {
 public:
     /**

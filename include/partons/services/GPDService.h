@@ -115,6 +115,8 @@ public:
 
     GPDModule* newGPDModuleFromTask(const Task &task) const;
 
+    GPDModule* configureGPDModule(GPDModule* pGPDModule) const;
+
 private:
     GPDKinematic* m_pGPDKinematic;
     GPDModule* m_pGPDModule;

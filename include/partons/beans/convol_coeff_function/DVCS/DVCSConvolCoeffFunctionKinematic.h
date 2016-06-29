@@ -49,6 +49,12 @@ public:
     double getQ2() const;
     double getT() const;
     double getXi() const;
+    void setBinId(unsigned int binId);
+    void setMuF2(double muF2);
+    void setMuR2(double muR2);
+    void setQ2(double q2);
+    void setT(double t);
+    void setXi(double xi);
 
 protected:
     virtual void updateHashSum() const;

@@ -17,6 +17,9 @@
  */
 class Database {
 public:
+    static const std::string TABLE_NAME_COMPUTATION;
+    static const std::string COLUMN_NAME_COMPUTATION_ID;
+
     static const std::string TABLE_NAME_GPD_KINEMATIC;
     static const std::string COLUMN_NAME_GPD_KINEMATIC_ID;
 
