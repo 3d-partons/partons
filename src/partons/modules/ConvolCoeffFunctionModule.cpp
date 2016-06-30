@@ -123,7 +123,7 @@ DVCSConvolCoeffFunctionResult ConvolCoeffFunctionModule::compute(
     return result;
 }
 
-const GPDModule* ConvolCoeffFunctionModule::getGPDModule() const {
+GPDModule* ConvolCoeffFunctionModule::getGPDModule() const {
     return m_pGPDModule;
 }
 

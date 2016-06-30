@@ -61,8 +61,9 @@ public:
 
     Observable* configureObservable(Observable* pObservable,
             ProcessModule* pProcessModule,
-            ConvolCoeffFunctionModule* pConvolCoeffFunctionModule,
-            GPDModule* pGPDModule) const;
+            ConvolCoeffFunctionModule* pConvolCoeffFunctionModule) const;
+    ProcessModule* configureProcessModule(ProcessModule* pProcessModule,
+            ConvolCoeffFunctionModule* pConvolCoeffFunctionModule) const;
 
     Observable* newObservableModuleFromTask(const Task &task) const;
     ProcessModule* newProcessModuleFromTask(const Task &task) const;

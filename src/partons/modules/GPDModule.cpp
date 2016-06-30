@@ -152,6 +152,8 @@ GPDResult GPDModule::compute(double x, double xi, double t, double MuF2,
         for (m_it = m_listGPDComputeTypeAvailable.begin();
                 m_it != m_listGPDComputeTypeAvailable.end(); m_it++) {
 
+            m_gpdType = (m_it->first);
+
             PartonDistribution partonDistribution;
 
             if (evolution) {

@@ -79,12 +79,9 @@ void CrossSectionObservable::configure(
 
             if (vectorPoints.size() == 3) {
                 m_targetPolarization = NumA::Vector3D(
-                        ElemUtils::StringUtils::fromStringToDouble(
-                                vectorPoints[0]),
-                        ElemUtils::StringUtils::fromStringToDouble(
-                                vectorPoints[1]),
-                        ElemUtils::StringUtils::fromStringToDouble(
-                                vectorPoints[2]));
+                        ElemUtils::GenericType(vectorPoints[0]).toDouble(),
+                        ElemUtils::GenericType(vectorPoints[1]).toDouble(),
+                        ElemUtils::GenericType(vectorPoints[2]).toDouble());
 
                 info(__func__,
                         ElemUtils::Formatter()

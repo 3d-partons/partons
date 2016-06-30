@@ -51,7 +51,7 @@ public:
 
     // ##### GETTERS & SETTERS #####
 
-    const GPDModule* getGPDModule() const;
+    GPDModule* getGPDModule() const;
     void setGPDModule(GPDModule* gpdModule);
     ObservableChannel::Type getChannel() const;
     void setChannel(ObservableChannel::Type channel);

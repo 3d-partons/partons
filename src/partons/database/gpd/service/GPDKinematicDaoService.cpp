@@ -57,7 +57,6 @@ int GPDKinematicDaoService::insert(
     }
 
     return gpdKinematicId;
-
 }
 
 int GPDKinematicDaoService::getIdByKinematicObject(
@@ -84,4 +83,8 @@ int GPDKinematicDaoService::insertWithoutTransaction(
 int GPDKinematicDaoService::getKinematicIdByHashSum(
         const std::string& hashSum) const {
     return m_GPDKinematicDao.getKinematicIdByHashSum(hashSum);
+}
+
+int GPDKinematicDaoService::executeCustomQuery(const double x) const {
+    return m_GPDKinematicDao.executeCustomQuery(x);
 }

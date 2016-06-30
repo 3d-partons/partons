@@ -19,6 +19,7 @@
 #include "../../../include/partons/ResourceManager.h"
 #include "../../../include/partons/services/GPDService.h"
 #include "../../../include/partons/ServiceObjectRegistry.h"
+#include "../../../include/partons/utils/exceptions/CCFModuleNullPointerException.h"
 #include "../../../include/partons/utils/exceptions/GPDModuleNullPointerException.h"
 
 const std::string ConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_WITH_GPD_MODEL =
@@ -228,14 +229,14 @@ List<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionService::computeManyKinem
 ConvolCoeffFunctionModule* ConvolCoeffFunctionService::newConvolCoeffFunctionModuleFromTask(
         const Task& task) const {
 
-    DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule = 0;
+    DVCSConvolCoeffFunctionModule* pConvolCoeffFunctionModule = 0;
 
     if (task.isAvailableParameters("DVCSConvolCoeffFunctionModule")) {
-        pDVCSConvolCoeffFunctionModule =
+        pConvolCoeffFunctionModule =
                 m_pModuleObjectFactory->newDVCSConvolCoeffFunctionModule(
                         task.getLastAvailableParameters().get(
                                 ModuleObject::CLASS_NAME).toString());
-        pDVCSConvolCoeffFunctionModule->configure(
+        pConvolCoeffFunctionModule->configure(
                 task.getLastAvailableParameters());
     }
 
@@ -251,7 +252,7 @@ ConvolCoeffFunctionModule* ConvolCoeffFunctionService::newConvolCoeffFunctionMod
         // So just catch the exception and continue to run the program.
     }
 
-    return configureConvolCoeffFunctionModule(pDVCSConvolCoeffFunctionModule,
+    return configureConvolCoeffFunctionModule(pConvolCoeffFunctionModule,
             pGPDModule);
 }
 
@@ -260,7 +261,8 @@ ConvolCoeffFunctionModule* ConvolCoeffFunctionService::configureConvolCoeffFunct
         GPDModule* pGPDModule) const {
 
     if (pConvolCoeffFunctionModule == 0) {
-        error(__func__, "You have not provided any ConvolCoeffFunctionModule");
+        throw CCFModuleNullPointerException(
+                "You have not provided any ConvolCoeffFunctionModule");
     }
 
     if (pConvolCoeffFunctionModule->isGPDModuleDependent()) {

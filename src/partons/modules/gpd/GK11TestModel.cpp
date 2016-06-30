@@ -7,22 +7,21 @@
 
 #include "../../../../include/partons/modules/gpd/GK11TestModel.h"
 
-#include "../../../../include/partons/modules/gpd/GK11TestModel.h"
-
 #include <cln/float.h>
 #include <cln/float_class.h>
 #include <cln/floatformat.h>
 #include <cln/real.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
-#include <cmath>
-#include <map>
-#include <utility>
-#include <cstdio>
-#include <exception>
-#include <iostream>
 #include <NumA/integration/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
+#include <algorithm>
+#include <cmath>
+//#include <cstdio>
+//#include <exception>
+//#include <iostream>
+#include <map>
+#include <utility>
 
 #include "../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
@@ -31,7 +30,7 @@
 #include "../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
-#include <iostream>
+
 // Initialise [class]::classId with a unique name.
 const unsigned int GK11TestModel::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
@@ -234,17 +233,19 @@ void GK11TestModel::throwBetaException(const std::string &funcName,
 }
 //Profile function
 double GK11TestModel::Profile(double N, double beta, double alpha) {
-    double profile;
+    double profile = 0.;
     double ProfileShape = N;
     double TwiceProfileShapePlus1 = 2. * ProfileShape + 1;
 
     double alphaBeta = fabs(alpha) + fabs(beta);
     if (alphaBeta > 1.) {
+
         error(__func__,
                 ElemUtils::Formatter()
                         << "GK11TestModel: Parameters of profile function should be in rhombus | alpha | + | beta | <= 1."
                         << '\n' << "Here alpha = " << alpha << " beta = "
                         << beta << " | alpha | + | beta | = " << alphaBeta
+                        << " for GPD " << GPDType(m_gpdType).toString()
                         << '\n');
     }
 

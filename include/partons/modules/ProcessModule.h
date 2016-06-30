@@ -59,6 +59,9 @@ public:
 
     void setPScaleModule(ScaleModule* pScaleModule);
     void setPXiConverterModule(XiConverterModule* pXiConverterModule);
+    bool isCCFModuleDependent() const;
+    void isCCFModuleDependent(bool isCcfModuleDependent);
+
 protected:
     /**
      * Copy constructor
@@ -81,7 +84,7 @@ protected:
     // Angles in Trento convention
     double m_phi;      ///<  Angle between leptonic and hadronic planes (radian)
     double m_phiS;      ///< Angle of the target transverse polarization
-    double m_phie;      //TODO What's this?! It's the equivalent of phiS but for GV. Redundant!
+    double m_phie; //TODO What's this?! It's the equivalent of phiS but for GV. Redundant!
 
     ScaleModule* m_pScaleModule;
     XiConverterModule* m_pXiConverterModule;
@@ -92,6 +95,7 @@ protected:
     bool isPreviousKinematicsDifferent(double xB, double t, double Q2);
 
 private:
+    bool m_isCCFModuleDependent;
 
     void resetPreviousKinematics();
 };

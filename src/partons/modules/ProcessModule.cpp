@@ -13,14 +13,16 @@
 const std::string ProcessModule::PARAMETER_NAME_BEAM_ENERGY = "beam_energy";
 
 ProcessModule::ProcessModule(const std::string &className) :
-        ModuleObject(className), m_phi(0.), m_phiS(0.), m_phie(0.), m_xB(0.), m_t(
-                0.), m_Q2(0.), m_E(0.), m_pScaleModule(0), m_pXiConverterModule(
-                0), m_pObservable(0), m_pConvolCoeffFunctionModule(0), m_channel(
-                ObservableChannel::UNDEFINED) {
+        ModuleObject(className), m_isCCFModuleDependent(true), m_phi(0.), m_phiS(
+                0.), m_phie(0.), m_xB(0.), m_t(0.), m_Q2(0.), m_E(0.), m_pScaleModule(
+                0), m_pXiConverterModule(0), m_pObservable(0), m_pConvolCoeffFunctionModule(
+                0), m_channel(ObservableChannel::UNDEFINED) {
 }
 
 ProcessModule::ProcessModule(const ProcessModule &other) :
         ModuleObject(other) {
+    m_isCCFModuleDependent = other.m_isCCFModuleDependent;
+
     m_channel = other.m_channel;
 
     m_xB = other.m_xB;
@@ -125,4 +127,12 @@ void ProcessModule::setPScaleModule(ScaleModule* pScaleModule) {
 void ProcessModule::setPXiConverterModule(
         XiConverterModule* pXiConverterModule) {
     m_pXiConverterModule = pXiConverterModule;
+}
+
+bool ProcessModule::isCCFModuleDependent() const {
+    return m_isCCFModuleDependent;
+}
+
+void ProcessModule::isCCFModuleDependent(bool isCcfModuleDependent) {
+    m_isCCFModuleDependent = isCcfModuleDependent;
 }

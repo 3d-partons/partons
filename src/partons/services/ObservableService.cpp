@@ -10,8 +10,7 @@
 #include "../../../include/partons/beans/KinematicUtils.h"
 #include "../../../include/partons/BaseObjectRegistry.h"
 #include "../../../include/partons/database/observable/service/ObservableResultDaoService.h"
-#include "../../../include/partons/modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
-#include "../../../include/partons/modules/GPDModule.h"
+//#include "../../../include/partons/modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
 #include "../../../include/partons/modules/observable/Observable.h"
 #include "../../../include/partons/modules/process/DVCSModule.h"
 #include "../../../include/partons/modules/scale/ScaleModule.h"
@@ -20,6 +19,7 @@
 #include "../../../include/partons/Partons.h"
 #include "../../../include/partons/services/ConvolCoeffFunctionService.h"
 #include "../../../include/partons/ServiceObjectRegistry.h"
+#include "../../../include/partons/utils/exceptions/CCFModuleNullPointerException.h"
 
 const std::string ObservableService::FUNCTION_NAME_COMPUTE_DVCS_OBSERVABLE =
         "computeDVCSObservable";
@@ -181,6 +181,12 @@ ObservableChannel::Type ObservableService::getObservableChannel(
     return pTempObservable->getChannel();
 }
 
+ObservableResult ObservableService::computeObservable(
+        const ObservableKinematic& observableKinematic,
+        Observable* pObservable) const {
+    return pObservable->compute(observableKinematic);
+}
+
 //TODO pour les listes au-dessus utiliser cette fonctionnalité pour ne pas dupliquer les implémentations
 //TODO refactoring string exception, wrong xml element name
 Observable* ObservableService::newObservableModuleFromTask(
@@ -243,78 +249,8 @@ Observable* ObservableService::newObservableModuleFromTask(
     return pObservable;
 }
 
-ObservableResult ObservableService::computeObservable(
-        const ObservableKinematic& observableKinematic,
-        Observable* pObservable) const {
-    return pObservable->compute(observableKinematic);
-}
-
-//TODO how to use it ?
-Observable* ObservableService::configureObservable(Observable* pObservable,
-        ProcessModule* pProcessModule,
-        ConvolCoeffFunctionModule* pConvolCoeffFunctionModule,
-        GPDModule* pGPDModule) const {
-
-    //TODO add test that check if there is a missing model for a specific Module
-
-    if (pProcessModule == 0) {
-        error(__func__,
-                "pProcessModule is NULL pointer ; cannot configure Observable");
-    }
-
-    if (pObservable == 0) {
-        error(__func__,
-                "pObservable is NULL pointer ; cannot configure Observable");
-    }
-
-    //TODO est-ce qu'un ProcessModule peut tourner sans ConvolCoeffFunctionModule ?
-    if (pConvolCoeffFunctionModule == 0) {
-        error(__func__,
-                "pConvolCoeffFunctionModule is NULL pointer ; cannot configure Observable");
-    }
-
-    pProcessModule->setConvolCoeffFunctionModule(
-            Partons::getInstance()->getServiceObjectRegistry()->getConvolCoeffFunctionService()->configureConvolCoeffFunctionModule(
-                    pConvolCoeffFunctionModule, pGPDModule));
-
-    pObservable->setProcessModule(pProcessModule);
-
-    return pObservable;
-}
-
 ProcessModule* ObservableService::newProcessModuleFromTask(
         const Task& task) const {
-    GPDModule* pGPDModule = 0;
-
-    if (task.isAvailableParameters("GPDModule")) {
-        pGPDModule =
-                m_pModuleObjectFactory->newGPDModule(
-                        task.getLastAvailableParameters().get(
-                                ModuleObject::CLASS_NAME).toString());
-        pGPDModule->configure(task.getLastAvailableParameters());
-    } else {
-        error(__func__,
-                ElemUtils::Formatter()
-                        << "Missing object : <GPDModule> for method "
-                        << task.getFunctionName());
-    }
-
-    DVCSConvolCoeffFunctionModule* pDVCSConvolCoeffFunctionModule = 0;
-
-    if (task.isAvailableParameters("DVCSConvolCoeffFunctionModule")) {
-        pDVCSConvolCoeffFunctionModule =
-                m_pModuleObjectFactory->newDVCSConvolCoeffFunctionModule(
-                        task.getLastAvailableParameters().get(
-                                ModuleObject::CLASS_NAME).toString());
-        pDVCSConvolCoeffFunctionModule->configure(
-                task.getLastAvailableParameters());
-    } else {
-        error(__func__,
-                ElemUtils::Formatter()
-                        << "Missing object : <GPDEvolutionModule> for method "
-                        << task.getFunctionName());
-    }
-
     DVCSModule* pDVCSModule = 0;
 
     if (task.isAvailableParameters("DVCSModule")) {
@@ -323,17 +259,53 @@ ProcessModule* ObservableService::newProcessModuleFromTask(
                         task.getLastAvailableParameters().get(
                                 ModuleObject::CLASS_NAME).toString());
         pDVCSModule->configure(task.getLastAvailableParameters());
-    } else {
-        error(__func__,
-                ElemUtils::Formatter()
-                        << "Missing object : <DVCSModule> for method "
-                        << task.getFunctionName());
     }
 
-    //TODO how to remove it and autoconfigure ?
-    pDVCSModule->setConvolCoeffFunctionModule(
-            Partons::getInstance()->getServiceObjectRegistry()->getConvolCoeffFunctionService()->configureConvolCoeffFunctionModule(
-                    pDVCSConvolCoeffFunctionModule, pGPDModule));
+    ConvolCoeffFunctionModule* pConvolCoeffFunctionModule = 0;
 
-    return pDVCSModule;
+    try {
+        pConvolCoeffFunctionModule =
+                Partons::getInstance()->getServiceObjectRegistry()->getConvolCoeffFunctionService()->newConvolCoeffFunctionModuleFromTask(
+                        task);
+    } catch (const CCFModuleNullPointerException &e) {
+        // Nothing to do.
+        // An exception is raised if <ConvolCoeffFunctionModule> element cannot be found in the task parameterList, but in this case a ProcessModule can be ConvolCoeffFunctionModule independent.
+        // So just catch the exception and continue to run the program.
+    }
+
+    return configureProcessModule(pDVCSModule, pConvolCoeffFunctionModule);
+}
+
+Observable* ObservableService::configureObservable(Observable* pObservable,
+        ProcessModule* pProcessModule,
+        ConvolCoeffFunctionModule* pConvolCoeffFunctionModule) const {
+
+    if (pObservable == 0) {
+        error(__func__, "You have not provided any Observable");
+    }
+
+    configureProcessModule(pProcessModule, pConvolCoeffFunctionModule);
+
+    return pObservable;
+}
+
+ProcessModule* ObservableService::configureProcessModule(
+        ProcessModule* pProcessModule,
+        ConvolCoeffFunctionModule* pConvolCoeffFunctionModule) const {
+
+    if (pProcessModule == 0) {
+        error(__func__, "You have not provided any ProcessModule");
+    }
+
+    if (pProcessModule->isCCFModuleDependent()) {
+        if (pConvolCoeffFunctionModule == 0) {
+            error(__func__,
+                    "This ProcessModule is ConvolCoeffFunctionModule dependent but you have not provided any ConvolCoeffFunctionModule");
+        }
+
+        pProcessModule->setConvolCoeffFunctionModule(
+                pConvolCoeffFunctionModule);
+    }
+
+    return pProcessModule;
 }

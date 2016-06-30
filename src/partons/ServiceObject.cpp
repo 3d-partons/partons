@@ -1,8 +1,8 @@
 #include "../../include/partons/ServiceObject.h"
 
+#include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/PropertiesManager.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
-#include <ElementaryUtils/string_utils/StringUtils.h>
 #include <stddef.h>
 
 #include "../../include/partons/Partons.h"
@@ -33,11 +33,9 @@ ElemUtils::Packet ServiceObject::popTaskFormQueue() {
 }
 
 void ServiceObject::initComputationalThread(ModuleObject* pModuleObject) {
-
-    //TODO right cast from string to unsigned int ; currently it's string to int
-    unsigned int nbOfThread = ElemUtils::StringUtils::fromStringToInt(
+    unsigned int nbOfThread = ElemUtils::GenericType(
             ElemUtils::PropertiesManager::getInstance()->getString(
-                    "computation.nb.processor"));
+                    "computation.nb.processor")).toUInt();
 
     info(__func__,
             ElemUtils::Formatter() << "Creation of thread : " << nbOfThread);

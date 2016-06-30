@@ -207,3 +207,27 @@ int GPDKinematicDao::getKinematicIdByHashSum(const std::string& hashSum) const {
 
     return result;
 }
+
+int GPDKinematicDao::executeCustomQuery(const double x) const {
+    int result = -1;
+    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
+
+    query.prepare("SELECT COUNT(*) FROM gpd_kinematic WHERE x = :x");
+
+    query.bindValue(":x", x);
+
+    if (query.exec()) {
+        if (query.first()) {
+            result = query.value(0).toInt();
+        }
+    } else {
+        error(__func__,
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
+    }
+
+    query.clear();
+
+    return result;
+}

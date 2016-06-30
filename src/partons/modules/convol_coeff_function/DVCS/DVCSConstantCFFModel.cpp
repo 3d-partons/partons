@@ -9,10 +9,11 @@
 
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../../include/partons/BaseObjectRegistry.h"
-#include "../../../../../include/partons/modules/active_flavors/NfFunctionExample.h"
-#include "../../../../../include/partons/modules/alphaS/RunningAlphaStrong.h"
-#include "../../../../../include/partons/ModuleObjectFactory.h"
-#include "../../../../../include/partons/Partons.h"
+
+//#include "../../../../../include/partons/modules/active_flavors/NfFunctionExample.h"
+//#include "../../../../../include/partons/modules/alphaS/RunningAlphaStrong.h"
+//#include "../../../../../include/partons/ModuleObjectFactory.h"
+//#include "../../../../../include/partons/Partons.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int DVCSConstantCFFModel::classId =
@@ -126,13 +127,12 @@ void DVCSConstantCFFModel::configure(const ElemUtils::Parameters &parameters) {
                                                     - static_cast<int>(GPDType::H));
                     i = i + 2) {
                 int j = static_cast<int>(GPDType::H) + i / 2;
-                m_CFF[j] = std::complex<double>(
-                        ElemUtils::StringUtils::fromStringToDouble(
-                                CFFValues[i]),
-                        i + 1 < CFFValues.size() ?
-                                ElemUtils::StringUtils::fromStringToDouble(
-                                        CFFValues[i + 1]) :
-                                0.);
+                m_CFF[j] =
+                        std::complex<double>(
+                                ElemUtils::GenericType(CFFValues[i]).toDouble(),
+                                i + 1 < CFFValues.size() ?
+                                        ElemUtils::GenericType(CFFValues[i + 1]).toDouble() :
+                                        0.);
 
                 info(__func__,
                         ElemUtils::Formatter()
