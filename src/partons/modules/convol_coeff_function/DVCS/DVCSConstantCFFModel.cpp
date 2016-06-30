@@ -96,18 +96,6 @@ DVCSConstantCFFModel* DVCSConstantCFFModel::clone() const {
 DVCSConstantCFFModel::~DVCSConstantCFFModel() {
 }
 
-//TODO comment gérer la dépendance aux autres modules quand on en a pas besoin ? (voir erreur isWellConfigured)
-void DVCSConstantCFFModel::resolveObjectDependencies() {
-
-    m_pRunningAlphaStrongModule =
-            Partons::getInstance()->getModuleObjectFactory()->newRunningAlphaStrongModule(
-                    RunningAlphaStrong::classId);
-
-    m_pNfConvolCoeffFunction =
-            Partons::getInstance()->getModuleObjectFactory()->newActiveFlavorsModule(
-                    NfFunctionExample::classId);
-}
-
 void DVCSConstantCFFModel::initModule() {
     // init parent module before
     DVCSConvolCoeffFunctionModule::initModule();

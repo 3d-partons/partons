@@ -55,7 +55,7 @@ public:
     virtual void setConvolCoeffFunctionModule(
             ConvolCoeffFunctionModule* pConvolCoeffFunctionModule);
 
-    void SetBeamEnergy(double EBeam); ///< Sets beam energy
+    void setBeamEnergy(double EBeam); ///< Sets beam energy
 
     void setPScaleModule(ScaleModule* pScaleModule);
     void setPXiConverterModule(XiConverterModule* pXiConverterModule);

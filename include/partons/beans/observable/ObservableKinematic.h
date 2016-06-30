@@ -13,6 +13,7 @@
  */
 
 #include <string>
+#include <ElementaryUtils/parameters/GenericType.h>
 
 #include "../../utils/type/PhysicalType.h"
 #include "../Kinematic.h"
@@ -47,8 +48,9 @@ public:
 
     ObservableKinematic(double xB, double t, double Q2);
 
-    ObservableKinematic(const std::string &xB, const std::string &t,
-            const std::string &Q2, const std::string &phi);
+    ObservableKinematic(const ElemUtils::GenericType& xB,
+            const ElemUtils::GenericType& t, const ElemUtils::GenericType& Q2,
+            const ElemUtils::GenericType& phi);
 
     /**
      * Default destructor

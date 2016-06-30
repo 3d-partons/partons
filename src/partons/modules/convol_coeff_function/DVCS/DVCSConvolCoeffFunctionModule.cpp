@@ -105,7 +105,7 @@ void DVCSConvolCoeffFunctionModule::isModuleWellConfigured() {
                         << " is not > 0.");
     }
 
-    if (m_pGPDModule == 0) {
+    if (isGPDModuleDependent() && m_pGPDModule == 0) {
         error(__func__, "m_pGPDModule is NULL");
     }
 

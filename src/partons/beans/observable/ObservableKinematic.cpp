@@ -76,14 +76,12 @@ ObservableKinematic::ObservableKinematic(double xB, double t, double Q2) :
                         PhysicalUnit(PhysicalUnit::DEGREE).getShortName())) {
 }
 
-ObservableKinematic::ObservableKinematic(const std::string &xB,
-        const std::string &t, const std::string &Q2, const std::string &phi) :
-        Kinematic("ObservableKinematic"), m_xB(
-                ElemUtils::StringUtils::fromStringToDouble(xB)), m_t(
-                ElemUtils::StringUtils::fromStringToDouble(t)), m_Q2(
-                ElemUtils::StringUtils::fromStringToDouble(Q2)), m_phi(
-                PhysicalType<double>(
-                        ElemUtils::StringUtils::fromStringToDouble(phi),
+ObservableKinematic::ObservableKinematic(const ElemUtils::GenericType& xB,
+        const ElemUtils::GenericType& t, const ElemUtils::GenericType& Q2,
+        const ElemUtils::GenericType& phi) :
+        Kinematic("ObservableKinematic"), m_xB(xB.toDouble()), m_t(
+                t.toDouble()), m_Q2(Q2.toDouble()), m_phi(
+                PhysicalType<double>(phi.toDouble(),
                         PhysicalUnit(PhysicalUnit::DEGREE).getShortName())) {
     m_phi.setInitialized(true);
 }

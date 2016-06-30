@@ -86,7 +86,7 @@ void ProcessModule::configure(const ElemUtils::Parameters &parameters) {
 /*--------------------------- Function SetBeamEnergy(EBeam) ----------------------------*
  | Sets the beam energy in the laboratory frame.                                        |
  *--------------------------------------------------------------------------------------*/
-void ProcessModule::SetBeamEnergy(double EBeam) {
+void ProcessModule::setBeamEnergy(double EBeam) {
     m_E = EBeam;
 }
 

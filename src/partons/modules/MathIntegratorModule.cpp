@@ -64,7 +64,9 @@ void MathIntegratorModule::configureIntegrator(
                         << NumA::IntegratorType1D(integratorType).toString());
     }
 
-    m_mathIntegrator->configure(parameters);
+    if (m_mathIntegrator) {
+        m_mathIntegrator->configure(parameters);
+    }
 }
 
 NumA::Integrator1D* MathIntegratorModule::getMathIntegrator() {
