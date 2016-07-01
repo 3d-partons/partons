@@ -13,7 +13,7 @@
 #include "../../beans/List.h"
 #include "../../ModuleObject.h"
 
-class ThreadManager {
+class ThreadManager: public BaseObject {
 public:
     ThreadManager();
     virtual ~ThreadManager();
@@ -21,6 +21,8 @@ public:
     void newThread(const unsigned int numberOfThread,
             ModuleObject *pModuleObject);
     void launchAllAndWaitingFor();
+
+    void clearAllThread();
 
 private:
     List<ModuleObject*> m_listOfModuleObject;

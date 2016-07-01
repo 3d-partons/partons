@@ -108,7 +108,8 @@ public:
      * @return
      */
     List<GPDResult> computeManyKinematicOneModel(
-            const List<GPDKinematic> &gpdKinematicList, GPDModule* pGPDModule);
+            const List<GPDKinematic> &gpdKinematicList, GPDModule* pGPDModule,
+            const bool storeInDB = 0);
 
 //    ComparisonReport compareResultListToDatabase(
 //            const std::string &scenarioTestFilePath);
@@ -120,12 +121,6 @@ public:
 private:
     GPDKinematic* m_pGPDKinematic;
     GPDModule* m_pGPDModule;
-
-    void updateResultInfo(GPDResult &result,
-            const ResultInfo &resultInfo) const;
-
-    void updateResultInfo(List<GPDResult> &resultList,
-            const ResultInfo &resultInfo) const;
 
     GPDResult computeGPDTask(Task &task);
     List<GPDResult> computeManyKinematicOneModelTask(Task &task);

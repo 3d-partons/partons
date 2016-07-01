@@ -47,7 +47,8 @@ public:
 
     List<DVCSConvolCoeffFunctionResult> computeManyKinematicOneModel(
             List<DVCSConvolCoeffFunctionKinematic> &kinematics,
-            ConvolCoeffFunctionModule* pConvolCoeffFunctionModule);
+            ConvolCoeffFunctionModule* pConvolCoeffFunctionModule,
+            const bool storeInDB = 0);
 
     virtual DVCSConvolCoeffFunctionResult computeWithGPDModel(
             const DVCSConvolCoeffFunctionKinematic &kinematic,
@@ -84,12 +85,6 @@ private:
     DVCSConvolCoeffFunctionResult computeWithGPDModelTask(Task &task) const;
     List<DVCSConvolCoeffFunctionResult> computeManyKinematicOneModelTask(
             Task& task);
-
-    void updateResultInfo(List<DVCSConvolCoeffFunctionResult>& resultList,
-            const ResultInfo &resultInfo) const;
-
-    void updateResultInfo(DVCSConvolCoeffFunctionResult &result,
-            const ResultInfo &resultInfo) const;
 };
 
 #endif /* DVCS_CONVOL_COEFF_FUNCTION_SERVICE_H */

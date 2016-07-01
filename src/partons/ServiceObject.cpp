@@ -47,6 +47,10 @@ void ServiceObject::launchAllThreadAndWaitingFor() {
     m_threadManager.launchAllAndWaitingFor();
 }
 
+void ServiceObject::clearAllThread() {
+    m_threadManager.clearAllThread();
+}
+
 void ServiceObject::resolveObjectDependencies() {
     BaseObject::resolveObjectDependencies();
 

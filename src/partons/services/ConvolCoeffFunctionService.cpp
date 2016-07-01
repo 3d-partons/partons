@@ -5,7 +5,6 @@
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <ElementaryUtils/thread/Packet.h>
-#include <stddef.h>
 
 #include "../../../include/partons/beans/automation/Scenario.h"
 #include "../../../include/partons/beans/automation/Task.h"
@@ -47,64 +46,54 @@ ConvolCoeffFunctionService::~ConvolCoeffFunctionService() {
 void ConvolCoeffFunctionService::computeTask(Task &task) {
     List<DVCSConvolCoeffFunctionResult> resultList;
 
-    if (ElemUtils::StringUtils::equals(task.getFunctionName(),
-            ConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_WITH_GPD_MODEL)) {
-        resultList.add(computeWithGPDModelTask(task));
-
-    } else if (ElemUtils::StringUtils::equals(task.getFunctionName(),
-            ConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_LIST_WITH_GPD_MODEL)) {
-        //TODO implement
-        // resultList = computeListWithGPDModelTask(task);
-    } else if (ElemUtils::StringUtils::equals(task.getFunctionName(),
-            ConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_MANY_KINEMATIC_ONE_MODEL)) {
-        resultList = computeManyKinematicOneModelTask(task);
-    } else if (!ServiceObjectTyped<DVCSConvolCoeffFunctionKinematic,
-            DVCSConvolCoeffFunctionResult>::computeGeneralTask(task)) {
-        error(__func__, "unknown function name = " + task.getFunctionName());
-    }
-
     //TODO Je pense qu'il est possible de supprimer l'étape registerScenario() car par construction il doit toujours exister dans le ResourceManager;
-    ResultInfo resultInfo;
-    resultInfo.setScenarioTaskIndexNumber(task.getScenarioTaskIndexNumber());
+    m_resultInfo = ResultInfo();
+    m_resultInfo.setScenarioTaskIndexNumber(task.getScenarioTaskIndexNumber());
     Scenario * tempSenario = ResourceManager::getInstance()->registerScenario(
             task.getScenario());
 
     if (tempSenario) {
-        resultInfo.setScenarioHashSum(tempSenario->getHashSum());
+        m_resultInfo.setScenarioHashSum(tempSenario->getHashSum());
     }
 
-    updateResultInfo(resultList, resultInfo);
+    if (ElemUtils::StringUtils::equals(task.getFunctionName(),
+            ConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_MANY_KINEMATIC_ONE_MODEL)) {
+        resultList = computeManyKinematicOneModelTask(task);
+    } else {
 
-    if (task.isStoreInDB()) {
-        ConvolCoeffFunctionResultDaoService convolCoeffFunctionResultDaoService;
-        int computationId = convolCoeffFunctionResultDaoService.insert(
-                resultList);
+        if (ElemUtils::StringUtils::equals(task.getFunctionName(),
+                ConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_WITH_GPD_MODEL)) {
+            resultList.add(computeWithGPDModelTask(task));
 
-        if (computationId != -1) {
-            info(__func__,
-                    ElemUtils::Formatter()
-                            << "DVCSConvolCoeffFunctionResultList object has been stored in database with computation_id = "
-                            << computationId);
-        } else {
+        } else if (ElemUtils::StringUtils::equals(task.getFunctionName(),
+                ConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_LIST_WITH_GPD_MODEL)) {
+            //TODO implement
+            // resultList = computeListWithGPDModelTask(task);
+        } else if (!ServiceObjectTyped<DVCSConvolCoeffFunctionKinematic,
+                DVCSConvolCoeffFunctionResult>::computeGeneralTask(task)) {
             error(__func__,
-                    ElemUtils::Formatter()
-                            << "DVCSConvolCoeffFunctionResultList object : insertion into database failed");
+                    "unknown function name = " + task.getFunctionName());
+        }
+
+        updateResultInfo(resultList, m_resultInfo);
+
+        if (task.isStoreInDB()) {
+            ConvolCoeffFunctionResultDaoService convolCoeffFunctionResultDaoService;
+            int computationId = convolCoeffFunctionResultDaoService.insert(
+                    resultList);
+
+            if (computationId != -1) {
+                info(__func__,
+                        ElemUtils::Formatter()
+                                << "DVCSConvolCoeffFunctionResultList object has been stored in database with computation_id = "
+                                << computationId);
+            } else {
+                error(__func__,
+                        ElemUtils::Formatter()
+                                << "DVCSConvolCoeffFunctionResultList object : insertion into database failed");
+            }
         }
     }
-}
-
-void ConvolCoeffFunctionService::updateResultInfo(
-        List<DVCSConvolCoeffFunctionResult>& resultList,
-        const ResultInfo &resultInfo) const {
-    for (size_t i = 0; i != resultList.size(); i++) {
-        updateResultInfo(resultList[i], resultInfo);
-    }
-}
-
-void ConvolCoeffFunctionService::updateResultInfo(
-        DVCSConvolCoeffFunctionResult &result,
-        const ResultInfo &resultInfo) const {
-    result.setResultInfo(resultInfo);
 }
 
 //TODO implementer
@@ -188,12 +177,13 @@ List<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionService::computeManyKinem
             newConvolCoeffFunctionModuleFromTask(task);
 
     return computeManyKinematicOneModel(listOfKinematic,
-            pConvolCoeffFunctionModule);
+            pConvolCoeffFunctionModule, task.isStoreInDB());
 }
 
 List<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionService::computeManyKinematicOneModel(
         List<DVCSConvolCoeffFunctionKinematic> &kinematics,
-        ConvolCoeffFunctionModule* pConvolCoeffFunctionModule) {
+        ConvolCoeffFunctionModule* pConvolCoeffFunctionModule,
+        const bool storeInDB) {
 
     info(__func__,
             ElemUtils::Formatter() << kinematics.size() << " will be computed");
@@ -203,25 +193,45 @@ List<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionService::computeManyKinem
     List<ElemUtils::Packet> listOfPacket;
     GPDType gpdType(GPDType::ALL);
 
-    for (unsigned int i = 0; i != kinematics.size(); i++) {
-        ElemUtils::Packet packet;
-        DVCSConvolCoeffFunctionKinematic kinematic;
-        kinematic = kinematics[i];
-        packet << kinematic << gpdType;
-        listOfPacket.add(packet);
+    initComputationalThread(pConvolCoeffFunctionModule);
+
+    //TODO remove hardcoded value ; use properties file
+    unsigned int batchSize = 1000;
+
+    unsigned int i = 0;
+    unsigned int j = 0;
+
+    while (i != kinematics.size()) {
+        listOfPacket.clear();
+        j = 0;
+
+        while ((j != batchSize) && (i != kinematics.size())) {
+            ElemUtils::Packet packet;
+            DVCSConvolCoeffFunctionKinematic kinematic;
+            kinematic = kinematics[i];
+            packet << kinematic << gpdType;
+            listOfPacket.add(packet);
+            i++;
+            j++;
+        }
+
+        addTasks(listOfPacket);
+        launchAllThreadAndWaitingFor();
+        sortResultList();
+
+        updateResultInfo(getResultList(), m_resultInfo);
+
+        if (storeInDB) {
+            ConvolCoeffFunctionResultDaoService convolCoeffFunctionResultDaoService;
+            convolCoeffFunctionResultDaoService.insert(getResultList());
+        } else {
+            results.add(getResultList());
+        }
+
+        clearResultListBuffer();
     }
 
-    addTasks(listOfPacket);
-
-    initComputationalThread(pConvolCoeffFunctionModule);
-    launchAllThreadAndWaitingFor();
-
-    sortResultList();
-
-    results = getResultList();
-
-    //TODO remove comment
-    //  clearResultListBuffer();
+    clearAllThread();
 
     return results;
 }

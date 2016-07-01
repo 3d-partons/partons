@@ -1,6 +1,7 @@
 #include "../../../../include/partons/utils/thread/ThreadManager.h"
 
-ThreadManager::ThreadManager() {
+ThreadManager::ThreadManager() :
+        BaseObject("ThreadManager") {
 }
 
 ThreadManager::~ThreadManager() {
@@ -17,6 +18,10 @@ void ThreadManager::newThread(const unsigned int numberOfThread,
 //TODO gerer lors d'une exception l'arret et la cloture des thread en cours
 void ThreadManager::launchAllAndWaitingFor() {
 
+    if (m_listOfModuleObject.size() == 0) {
+        error(__func__, "List of instantiated thread(s) is empty");
+    }
+
     // start all thread one by one
     for (unsigned int i = 0; i != m_listOfModuleObject.size(); i++) {
         m_listOfModuleObject[i]->launch();
@@ -26,7 +31,9 @@ void ThreadManager::launchAllAndWaitingFor() {
     for (unsigned int i = 0; i != m_listOfModuleObject.size(); i++) {
         m_listOfModuleObject[i]->wait();
     }
+}
 
+void ThreadManager::clearAllThread() {
     // delete previous instantiated thread
     m_listOfModuleObject.clear();
 }

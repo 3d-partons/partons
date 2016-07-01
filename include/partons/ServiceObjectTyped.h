@@ -17,6 +17,7 @@
 #include "beans/automation/Scenario.h"
 #include "beans/automation/Task.h"
 #include "beans/List.h"
+#include "beans/system/ResultInfo.h"
 #include "services/automation/AutomationService.h"
 #include "ServiceObject.h"
 
@@ -89,6 +90,12 @@ public:
         m_resultListBuffer.clear();
     } // mutex.unlock()
 
+    void clearKinematicListBuffer() {
+        sf::Lock lock(m_mutexKinematicList); // mutex.lock()
+
+        m_kinematicListBuffer.clear();
+    } // mutex.unlock()
+
     List<ResultType> computeScenario(Scenario& scenario) {
         List<ResultType> resultList;
 
@@ -118,6 +125,8 @@ protected:
     List<KinematicType> m_kinematicListBuffer;
     List<ResultType> m_resultListBuffer;
 
+    ResultInfo m_resultInfo;
+
     bool computeGeneralTask(Task &task) {
         bool isEvaluated = false;
         if (ElemUtils::StringUtils::equals(task.getFunctionName(),
@@ -132,6 +141,17 @@ protected:
     void printResultListBuffer() {
         for (unsigned int i = 0; i != m_resultListBuffer.size(); i++) {
             info(__func__, m_resultListBuffer[i].toString());
+        }
+    }
+
+    void updateResultInfo(ResultType &result, const ResultInfo &resultInfo) {
+        result.setResultInfo(resultInfo);
+    }
+
+    void updateResultInfo(List<ResultType> &resultList,
+            const ResultInfo &resultInfo) {
+        for (size_t i = 0; i != resultList.size(); i++) {
+            updateResultInfo(resultList[i], resultInfo);
         }
     }
 };
