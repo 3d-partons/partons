@@ -21,8 +21,8 @@
 #include "../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../include/partons/utils/exceptions/CCFModuleNullPointerException.h"
 
-const std::string ObservableService::FUNCTION_NAME_COMPUTE_DVCS_OBSERVABLE =
-        "computeDVCSObservable";
+const std::string ObservableService::FUNCTION_NAME_COMPUTE_OBSERVABLE =
+        "computeObservable";
 
 const std::string ObservableService::FUNCTION_NAME_COMPUTE_MANY_KINEMATIC_ONE_MODEL =
         "computeManyKinematicOneModel";
@@ -45,7 +45,7 @@ void ObservableService::computeTask(Task &task) {
     List<ObservableResult> observableResultList;
 
     if (ElemUtils::StringUtils::equals(task.getFunctionName(),
-            ObservableService::FUNCTION_NAME_COMPUTE_DVCS_OBSERVABLE)) {
+            ObservableService::FUNCTION_NAME_COMPUTE_OBSERVABLE)) {
         observableResultList.add(computeObservableTask(task));
     } else if (ElemUtils::StringUtils::equals(task.getFunctionName(),
             ObservableService::FUNCTION_NAME_COMPUTE_MANY_KINEMATIC_ONE_MODEL)) {
