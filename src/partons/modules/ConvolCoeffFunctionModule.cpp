@@ -100,7 +100,9 @@ void ConvolCoeffFunctionModule::run() {
             packet >> kinematic;
             packet >> gpdType;
 
-            info(__func__, kinematic.toString());
+            info(__func__,
+                    ElemUtils::Formatter() << "objectId = " << getObjectId()
+                            << " " << kinematic.toString());
 
             pService->add(compute(kinematic, gpdType));
 

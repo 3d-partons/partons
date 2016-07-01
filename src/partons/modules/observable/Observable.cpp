@@ -58,11 +58,15 @@ void Observable::run() {
                 Partons::getInstance()->getServiceObjectRegistry()->getObservableService();
 
         while (!(pObservableService->isEmptyTaskQueue())) {
-            ObservableKinematic observableKinematic;
+            ObservableKinematic kinematic;
             ElemUtils::Packet packet = pObservableService->popTaskFormQueue();
-            packet >> observableKinematic;
+            packet >> kinematic;
 
-            pObservableService->add(compute(observableKinematic));
+            info(__func__,
+                    ElemUtils::Formatter() << "objectId = " << getObjectId()
+                            << " " << kinematic.toString());
+
+            pObservableService->add(compute(kinematic));
 
 //        info(__func__,
 //                Formatter() << "[Thread] id = " << getThreadId() << " "
@@ -86,12 +90,11 @@ void Observable::run() {
 
 ObservableResult Observable::compute(const ObservableKinematic &kinematic) {
 
-    info(__func__,
-            ElemUtils::Formatter() << getObjectId() << " "
-                    << kinematic.toString());
+    ObservableResult result = compute(kinematic.getXB(), kinematic.getT(),
+            kinematic.getQ2(), kinematic.getPhi().getValue());
+    result.setKinematic(kinematic);
 
-    return compute(kinematic.getXB(), kinematic.getT(), kinematic.getQ2(),
-            kinematic.getPhi().getValue());
+    return result;
 }
 
 ObservableResult Observable::compute(double xB, double t, double Q2,

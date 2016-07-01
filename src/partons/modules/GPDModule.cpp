@@ -121,8 +121,12 @@ void GPDModule::preCompute(double x, double xi, double t, double MuF,
 
 GPDResult GPDModule::compute(const GPDKinematic &kinematic,
         GPDType::Type gpdType, bool evolution) {
-    return compute(kinematic.getX(), kinematic.getXi(), kinematic.getT(),
-            kinematic.getMuF2(), kinematic.getMuR2(), gpdType, evolution);
+    GPDResult result = compute(kinematic.getX(), kinematic.getXi(),
+            kinematic.getT(), kinematic.getMuF2(), kinematic.getMuR2(), gpdType,
+            evolution);
+    result.setKinematic(kinematic);
+
+    return result;
 }
 
 GPDResult GPDModule::compute(double x, double xi, double t, double MuF2,
