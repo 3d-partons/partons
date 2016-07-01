@@ -113,7 +113,7 @@ List<GPDResult> GPDResultDao::getGPDResultListByComputationId(
 
     //TODO check view
     query.prepare(
-                "SELECT * FROM gpd_result_view WHERE gr.computation_id = :computationId");
+                "SELECT * FROM gpd_result_view WHERE computation_id = :computationId");
 
     query.bindValue(":computationId", computationId);
 
