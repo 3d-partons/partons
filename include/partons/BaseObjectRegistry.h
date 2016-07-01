@@ -84,6 +84,9 @@ public:
      */
     size_t size() const;
 
+    unsigned int getObjectClassIdByClassName(
+            const std::string &className);
+
 private:
     /**
      * Private pointer of this class for a unique instance
@@ -103,6 +106,7 @@ private:
 
     std::map<unsigned int, BaseObject*> m_baseObjectList; ///< list of registered objects identified by their unique integer identifier
     std::map<std::string, BaseObject*> m_translateList; ///< list of registered objects identified by their class name.
+    std::map<std::string, unsigned int> m_classIdByClassName;
 
     static unsigned int m_uniqueClassIdCounter; ///< Increment unique class identifier
 

@@ -58,6 +58,9 @@ unsigned int BaseObjectRegistry::registerBaseObject(BaseObject * pBaseObject) {
                         pBaseObject));
         m_baseObjectList.insert(
                 std::pair<unsigned int, BaseObject*>(classId, pBaseObject));
+        m_classIdByClassName.insert(
+                std::pair<std::string, unsigned int>(
+                        pBaseObject->getClassName(), classId));
     }
     // Else, throw an exception
     else {
@@ -155,3 +158,11 @@ size_t BaseObjectRegistry::size() const {
 
     return m_baseObjectList.size();
 } // mutex.unlock();
+
+unsigned int BaseObjectRegistry::getObjectClassIdByClassName(
+        const std::string& className) {
+    std::map<std::string, unsigned int>::const_iterator it =
+            m_classIdByClassName.find(className);
+
+    return (it == m_classIdByClassName.end()) ? 0 : it->second;
+}

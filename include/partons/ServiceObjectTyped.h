@@ -77,7 +77,7 @@ public:
         m_resultListBuffer.sort();
     } // mutex.unlock()
 
-    List<ResultType> getResultList() {
+    List<ResultType>& getResultList() {
         sf::Lock lock(m_mutexResultListBuffer); // mutex.lock()
 
         return m_resultListBuffer;

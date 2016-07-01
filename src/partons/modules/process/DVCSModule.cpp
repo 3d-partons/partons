@@ -1,13 +1,15 @@
 #include "../../../../include/partons/modules/process/DVCSModule.h"
 
-#include <cmath>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/linear_algebra/vector/Vector3D.h>
+#include <cmath>
 
 #include "../../../../include/partons/beans/observable/ObservableChannel.h"
 #include "../../../../include/partons/beans/Scale.h"
+#include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
+#include "../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSConstantCFFModel.h"
+//#include "../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
 #include "../../../../include/partons/modules/scale/Q2Multiplier.h"
 #include "../../../../include/partons/modules/xb_to_xi/XBToXi.h"
 #include "../../../../include/partons/ModuleObjectFactory.h"
@@ -109,7 +111,10 @@ void DVCSModule::isModuleWellConfigured() {
 }
 
 void DVCSModule::computeConvolCoeffFunction(double xB, double t, double Q2) {
-    if (isPreviousKinematicsDifferent(xB, t, Q2)) {
+    if (isPreviousKinematicsDifferent(xB, t, Q2)
+            || (BaseObjectRegistry::getInstance()->getObjectClassIdByClassName(
+                    m_pConvolCoeffFunctionModule->getClassName())
+                    == DVCSConstantCFFModel::classId)) {
         // Compute scale from Q2
         Scale scale = m_pScaleModule->compute(Q2);
 

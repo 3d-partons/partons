@@ -243,7 +243,9 @@ int GPDResultDaoService::insert(const GPDResult &gpdResult) const {
 bool GPDResultDaoService::insert(const List<GPDResult> &resultList) {
     bool inserted = false;
 
-    info(__func__, "Prepare data before inserting them into database ...");
+    info(__func__,
+            ElemUtils::Formatter() << resultList.size()
+                    << " results will be inserted into database; Prepare data before inserting them ...");
 
     for (unsigned int i = 0; i != resultList.size(); i++) {
 

@@ -31,7 +31,7 @@ class Task;
 class ObservableService: public ServiceObjectTyped<ObservableKinematic,
         ObservableResult> {
 public:
-    static const std::string FUNCTION_NAME_COMPUTE_DVCS_OBSERVABLE;
+    static const std::string FUNCTION_NAME_COMPUTE_OBSERVABLE;
     static const std::string FUNCTION_NAME_COMPUTE_MANY_KINEMATIC_ONE_MODEL;
 
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.

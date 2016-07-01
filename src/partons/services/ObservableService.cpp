@@ -10,7 +10,6 @@
 #include "../../../include/partons/beans/KinematicUtils.h"
 #include "../../../include/partons/BaseObjectRegistry.h"
 #include "../../../include/partons/database/observable/service/ObservableResultDaoService.h"
-//#include "../../../include/partons/modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
 #include "../../../include/partons/modules/observable/Observable.h"
 #include "../../../include/partons/modules/process/DVCSModule.h"
 #include "../../../include/partons/modules/scale/ScaleModule.h"
