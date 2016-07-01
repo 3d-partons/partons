@@ -286,6 +286,8 @@ Observable* ObservableService::configureObservable(Observable* pObservable,
 
     configureProcessModule(pProcessModule, pConvolCoeffFunctionModule);
 
+    pObservable->setProcessModule(pProcessModule);
+
     return pObservable;
 }
 
