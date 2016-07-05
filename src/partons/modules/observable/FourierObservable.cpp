@@ -8,7 +8,7 @@ FourierObservable::FourierObservable(const std::string &className) :
         Observable(className), MathIntegratorModule() {
     m_observableType = ObservableType::FOURIER;
 
-    setIntegrator(NumA::IntegratorType1D::GK21_ADAPTIVE);
+    setIntegrator(NumA::IntegratorType1D::DEXP);
 }
 
 FourierObservable::FourierObservable(const FourierObservable& other) :

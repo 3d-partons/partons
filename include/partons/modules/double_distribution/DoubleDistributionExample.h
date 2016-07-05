@@ -32,6 +32,8 @@ public:
 
     virtual DoubleDistributionExample* clone() const;
 
+    virtual void resolveObjectDependencies();
+
     virtual PartonDistribution computeF();
     virtual PartonDistribution computeG();
     virtual PartonDistribution computeK();
@@ -48,8 +50,7 @@ protected:
     virtual void isModuleWellConfigured();
 
 private:
-    double integrateExample(double x,
-            std::vector<double> &parameters);
+    double integrateExample(double x, std::vector<double> &parameters);
 
     NumA::FunctionType1D* m_pIntegrateExample;
 

@@ -66,8 +66,6 @@ void DoubleDistributionExample::initModule() {
     // Before call parent init.
     DoubleDistributionModule::initModule();
 
-    setIntegrator(NumA::IntegratorType1D::GK21_ADAPTIVE);
-
     // Compute some variables depend from kinematic value before use this specific module.
     // See "src/modules/convolCoeffFunction/DVCSCFFModel::initModule()" for example.
 }
@@ -135,4 +133,10 @@ PartonDistribution DoubleDistributionExample::computeK() {
 double DoubleDistributionExample::integrateExample(double x,
         std::vector<double>& parameters) {
     return 1.;
+}
+
+void DoubleDistributionExample::resolveObjectDependencies() {
+
+    setIntegrator(NumA::IntegratorType1D::DEXP);
+
 }
