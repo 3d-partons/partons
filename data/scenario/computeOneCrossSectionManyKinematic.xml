@@ -2,14 +2,25 @@
 
 <scenario date="2016-04-14" description="">
 
-    <task service="ObservableService" method="computeManyKinematicOneModel" storeInDB="0">
+    <task service="ObservableService" method="computeManyKinematicOneModel"
+        storeInDB="0">
         <kinematics type="ObservableKinematic">
-            <param name="file" value="/home/debian/workspace/PARTONS/data/kinematics_compare_BMJ_GV_overQ2.dat" />
+            <param name="file"
+                value="/home/debian/workspace/PARTONS/data/kinematics_compare_BMJ_GV_overQ2.dat" />
         </kinematics>
 
         <computation_configuration>
-            <module type="GPDModule">
-                <param name="className" value="GK11Model" />
+            <module type="Observable">
+                <param name="className" value="CrossSectionObservable" />
+                <param name="beam_helicity" value="1" />
+                <param name="beam_charge" value="-1" />
+                <param name="target_polarization" value="0.5|0.2|0.3" />
+            </module>
+
+
+            <module type="DVCSModule">
+                <param name="className" value="BMJ2012Model" />
+                <param name="beam_energy" value="400" />
             </module>
 
             <module type="DVCSConvolCoeffFunctionModule">
@@ -18,16 +29,8 @@
                 <param name="cff_values" value="0|0|0|0|0|0|1" />
             </module>
 
-            <module type="DVCSModule">
-                <param name="className" value="BMJ2012Model" />
-                <param name="beam_energy" value="400" />
-            </module>
-
-            <module type="Observable">
-                <param name="className" value="CrossSectionObservable" />
-                <param name="beam_helicity" value="1" />
-                <param name="beam_charge" value="-1" />
-                <param name="target_polarization" value="0.5|0.2|0.3" />
+            <module type="GPDModule">
+                <param name="className" value="GK11Model" />
             </module>
 
             <module type="ScaleModule">
@@ -41,9 +44,11 @@
         </computation_configuration>
     </task>
 
-    <task service="ObservableService" method="computeManyKinematicOneModel" storeInDB="0">
+    <task service="ObservableService" method="computeManyKinematicOneModel"
+        storeInDB="0">
         <kinematics type="ObservableKinematic">
-            <param name="file" value="/home/debian/workspace/PARTONS/data/kinematics_compare_BMJ_GV_overQ2.dat" />
+            <param name="file"
+                value="/home/debian/workspace/PARTONS/data/kinematics_compare_BMJ_GV_overQ2.dat" />
         </kinematics>
 
         <computation_configuration>
