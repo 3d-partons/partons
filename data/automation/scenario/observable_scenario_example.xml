@@ -2,8 +2,9 @@
 
 <scenario date="2016-04-14" description="How to compute an observable">
 
-    <task service="ObservableService" method="computeDVCSObservable"
+    <task service="ObservableService" method="computeObservable"
         storeInDB="0">
+        
         <kinematics type="ObservableKinematic">
             <param name="xB" value="0.1763" />
             <param name="t" value="-0.1346" />
@@ -11,15 +12,13 @@
         </kinematics>
 
         <computation_configuration>
-            <module type="GPDEvolutionModule">
-                <param name="className" value="Vinnikov" />
-                <module type="AlhpaSModule">
-                    <param name="constant" value="4" />
-                </module>
+            <module type="Observable">
+                <param name="className" value="AcCos2phi" />
             </module>
-
-            <module type="GPDModule">
-                <param name="className" value="GK11Model" />
+            
+            <module type="DVCSModule">
+                <param name="className" value="GV2008Model" />
+                <param name="beam_energy" value="5.77" />
             </module>
 
             <module type="DVCSConvolCoeffFunctionModule">
@@ -27,13 +26,8 @@
                 <param name="qcd_order_type" value="LO" />
             </module>
 
-            <module type="DVCSModule">
-                <param name="className" value="GV2008Model" />
-                <param name="beam_energy" value="5.77" />
-            </module>
-
-            <module type="Observable">
-                <param name="className" value="AcCos2phi" />
+            <module type="GPDModule">
+                <param name="className" value="GK11Model" />
             </module>
 
             <module type="ScaleModule">
@@ -45,5 +39,6 @@
                 <param name="className" value="XBToXi" />
             </module>
         </computation_configuration>
+        
     </task>
 </scenario>

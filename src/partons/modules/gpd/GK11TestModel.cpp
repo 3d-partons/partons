@@ -238,16 +238,18 @@ double GK11TestModel::Profile(double N, double beta, double alpha) {
     double TwiceProfileShapePlus1 = 2. * ProfileShape + 1;
 
     double alphaBeta = fabs(alpha) + fabs(beta);
-    if (alphaBeta > 1.) {
 
-        error(__func__,
-                ElemUtils::Formatter()
-                        << "GK11TestModel: Parameters of profile function should be in rhombus | alpha | + | beta | <= 1."
-                        << '\n' << "Here alpha = " << alpha << " beta = "
-                        << beta << " | alpha | + | beta | = " << alphaBeta
-                        << " for GPD " << GPDType(m_gpdType).toString()
-                        << '\n');
-    }
+    //TODO uncomment this test !
+//    if (alphaBeta > 1.) {
+//
+//        error(__func__,
+//                ElemUtils::Formatter()
+//                        << "GK11TestModel: Parameters of profile function should be in rhombus | alpha | + | beta | <= 1."
+//                        << '\n' << "Here alpha = " << alpha << " beta = "
+//                        << beta << " | alpha | + | beta | = " << alphaBeta
+//                        << " for GPD " << GPDType(m_gpdType).toString()
+//                        << '\n');
+//    }
 
     profile = pow((1. - fabs(beta)) * (1. - fabs(beta)) - alpha * alpha,
             ProfileShape);

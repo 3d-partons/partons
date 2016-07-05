@@ -4,12 +4,8 @@
 /**
  * @file ComparisonReport.h
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 25 February 2016
+ * @date February 25, 2016
  * @version 1.0
- *
- * @class ComparisonReport
- *
- * @brief
  */
 
 #include <NumA/utils/Tolerances.h>
@@ -18,6 +14,11 @@
 
 #include "ComparisonData.h"
 
+/**
+ * @class ComparisonReport
+ *
+ * @brief
+ */
 class ComparisonReport {
 public:
     ComparisonReport(const NumA::Tolerances &tolerances);
@@ -29,6 +30,8 @@ public:
     void addComparisonData(const ComparisonData &comparisonData);
 
     std::string toString() const;
+
+    void clearComparedData();
 
     // #############################
     // ##### GETTERS & SETTERS #####
@@ -48,6 +51,9 @@ private:
     std::vector<ComparisonData> m_comparedDataFailed;
 
     NumA::Tolerances m_tolerances;
+
+    unsigned int m_numberOfComparedDataPassed;
+    unsigned int m_numberOfComparedDataFailed;
 };
 
 #endif /* COMPARISON_REPORT_H */

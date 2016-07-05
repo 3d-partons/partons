@@ -4,18 +4,14 @@
 /**
  * @file List.h
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 26 November 2015
+ * @date November 26, 2015
  * @version 1.0
- *
- * @class List
- *
- * @brief
  */
 
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <stddef.h>
-#include <algorithm> //needed for sort
+#include <algorithm>    // std::sort
 #include <string>
 #include <vector>
 
@@ -23,8 +19,11 @@
 #include "../utils/compare/ComparisonMode.h"
 #include "../utils/compare/ComparisonReport.h"
 
-//#include "SortingMode.h"
-
+/**
+ * @class List
+ *
+ * @brief
+ */
 template<class T> class List: public BaseObject {
 public:
     List() :
@@ -115,17 +114,38 @@ public:
                 break;
             }
             default: {
-                // equal comparison by default
-                if (this->size() == referenceObject.size()) {
-                    for (size_t i = 0; i != this->size(); i++) {
+
+                //TODO remove hardcoded value ; use properties file
+                unsigned int batchSize = 1000;
+
+                unsigned int i = 0;
+                unsigned int j = 0;
+
+                while (i != referenceObject.size()) {
+                    j = 0;
+
+                    while ((j != batchSize) && (i != referenceObject.size())) {
                         (this->m_data[i]).compare(rootComparisonReport,
                                 referenceObject[i]);
+                        i++;
+                        j++;
                     }
-                } else {
-                    warn(__func__,
-                            ElemUtils::Formatter()
-                                    << "Lists are not equal in size ; EQUAL comparison mode cannot be performed");
+
+                    info(__func__, rootComparisonReport.toString());
+                    rootComparisonReport.clearComparedData();
                 }
+
+//                // equal comparison by default
+//                if (this->size() == referenceObject.size()) {
+//                    for (size_t i = 0; i != this->size(); i++) {
+//                        (this->m_data[i]).compare(rootComparisonReport,
+//                                referenceObject[i]);
+//                    }
+//                } else {
+//                    warn(__func__,
+//                            ElemUtils::Formatter()
+//                                    << "Lists are not equal in size ; EQUAL comparison mode cannot be performed");
+//                }
                 break;
             }
             }
@@ -143,6 +163,7 @@ public:
 
 protected:
     std::vector<T> m_data;
-};
+}
+;
 
 #endif /* LIST_H */

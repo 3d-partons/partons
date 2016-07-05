@@ -10,7 +10,8 @@
 ComparisonReport::ComparisonReport(const NumA::Tolerances &tolerances) :
         m_environmentSetting(ElemUtils::StringUtils::EMPTY), m_objectClassNameTested(
                 ElemUtils::StringUtils::EMPTY), m_referenceObjectClassName(
-                ElemUtils::StringUtils::EMPTY), m_tolerances(tolerances) {
+                ElemUtils::StringUtils::EMPTY), m_tolerances(tolerances), m_numberOfComparedDataFailed(
+                0), m_numberOfComparedDataPassed(0) {
     m_environmentSetting =
             Partons::getInstance()->getEnvironmentConfiguration()->getFile();
 }
@@ -20,7 +21,8 @@ ComparisonReport::ComparisonReport(const std::string& environmentSetting,
         const std::string& referenceObjectClassName) :
         m_environmentSetting(environmentSetting), m_objectClassNameTested(
                 objectClassNameTested), m_referenceObjectClassName(
-                referenceObjectClassName) {
+                referenceObjectClassName), m_numberOfComparedDataFailed(0), m_numberOfComparedDataPassed(
+                0) {
     Partons::getInstance()->getEnvironmentConfiguration()->getFile();
 }
 
@@ -42,13 +44,13 @@ std::string ComparisonReport::toString() const {
 
 //TODO ajouter un mode verbose pour supprimer l'affichage des tests réussi, ça n'a aucune utilité.
     formatter << "Number of objects compared with test PASSED = "
-            << m_comparedDataPassed.size() << '\n';
-    for (size_t i = 0; i != m_comparedDataPassed.size(); i++) {
-        formatter << m_comparedDataPassed[i].toString() << '\n' << '\n';
-    }
+            << m_numberOfComparedDataPassed << '\n';
+//    for (size_t i = 0; i != m_comparedDataPassed.size(); i++) {
+//        formatter << m_comparedDataPassed[i].toString() << '\n' << '\n';
+//    }
 
     formatter << '\n' << "Number of objects compared with test FAILED = "
-            << m_comparedDataFailed.size() << '\n';
+            << m_numberOfComparedDataFailed << '\n';
     for (size_t i = 0; i != m_comparedDataFailed.size(); i++) {
         formatter << m_comparedDataFailed[i].toString() << '\n' << '\n';
     }
@@ -67,11 +69,18 @@ void ComparisonReport::setTolerances(const NumA::Tolerances& tolerances) {
 void ComparisonReport::addComparisonData(const ComparisonData& comparisonData) {
     if (comparisonData.isIsComparisonPassed()) {
         m_comparedDataPassed.push_back(comparisonData);
+        m_numberOfComparedDataPassed += 1;
     } else {
         m_comparedDataFailed.push_back(comparisonData);
+        m_numberOfComparedDataFailed += 1;
     }
 }
 
 bool ComparisonReport::isPassed() const {
-    return (m_comparedDataFailed.size() == 0) ? true : false;
+    return (m_numberOfComparedDataFailed == 0) ? true : false;
+}
+
+void ComparisonReport::clearComparedData() {
+    m_comparedDataFailed.clear();
+    m_comparedDataPassed.clear();
 }
