@@ -16,8 +16,8 @@
 #include "../../../../include/partons/Partons.h"
 
 DVCSModule::DVCSModule(const std::string &className) :
-        ProcessModule(className), m_phaseSpace(0.), m_tmin(0.), m_tmax(0.), m_y(
-                0.), m_epsilon(0.) {
+        ProcessModule(className), m_phaseSpace(0.), m_tmin(0.), m_tmax(0.), m_xBmin(
+                0), m_y(0.), m_epsilon(0.) {
     m_channel = ObservableChannel::DVCS;
 }
 
@@ -30,6 +30,7 @@ DVCSModule::DVCSModule(const DVCSModule& other) :
     m_phaseSpace = other.m_phaseSpace;
     m_tmin = other.m_tmin;
     m_tmax = other.m_tmax;
+    m_xBmin = other.m_xBmin;
     m_y = other.m_y;
     m_epsilon = other.m_epsilon;
 
@@ -54,6 +55,7 @@ void DVCSModule::initModule() {
     double tfactor = -m_Q2 / (4 * m_xB * (1 - m_xB) + eps2);
     m_tmin = tfactor * (2 * (1 - m_xB) * (1 - epsroot) + eps2);
     m_tmax = tfactor * (2 * (1 - m_xB) * (1 + epsroot) + eps2);
+    m_xBmin = 2 * m_Q2 * m_E / PROTON_MASS / (4 * m_E * m_E - m_Q2);
 
     debug(__func__, "Entered function.");
 }
@@ -66,10 +68,10 @@ void DVCSModule::initModule(double beamHelicity, double beamCharge,
 
 void DVCSModule::isModuleWellConfigured() {
     // Test kinematic domain of xB
-    if (m_xB < 0 || m_xB > 1) {
+    if (m_xB < m_xBmin || m_xB > 1) {
         ElemUtils::Formatter formatter;
         formatter << "Input value of xB = " << m_xB
-                << " do not lay between 0 and 1.";
+                << " does not lay between xBmin = " << m_xBmin << " and 1.";
         warn(__func__, formatter.str());
     }
 
@@ -93,8 +95,8 @@ void DVCSModule::isModuleWellConfigured() {
     if (m_y < 0 || m_y > 1) {
         ElemUtils::Formatter formatter;
         formatter << "Input value of y = " << m_y
-                << " (lepton energy fraction) do not lay between 0 and 1.";
-        error(__func__, formatter.str());
+                << " (lepton energy fraction) does not lay between 0 and 1.";
+        warn(__func__, formatter.str());
     }
 
     if (m_pScaleModule == 0) {

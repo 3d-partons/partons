@@ -136,8 +136,7 @@ void DVCSConstantCFFModel::configure(const ElemUtils::Parameters &parameters) {
 
                 info(__func__,
                         ElemUtils::Formatter()
-                                << DVCSConstantCFFModel::CFF_VALUES
-                                << " of type "
+                                << "CFF of type "
                                 << GPDType(static_cast<GPDType::Type>(j)).toString()
                                 << " configured with value = "
                                 << m_CFF[j].real() << " + i*"

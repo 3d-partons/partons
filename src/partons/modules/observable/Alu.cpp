@@ -28,21 +28,23 @@ Alu* Alu::clone() const {
 
 double Alu::Num(ProcessModule* pDVCSModule, double phi) {
 
-    double A = pDVCSModule->computeCrossSection(0, -1,
-            NumA::Vector3D(0., 0., +1.), phi);
+    double A = pDVCSModule->computeCrossSection(+1, -1,
+            NumA::Vector3D(0., 0., 0.), phi);
 
-    double B = pDVCSModule->computeCrossSection(0, -1,
-            NumA::Vector3D(0., 0., -1.), phi);
+    double B = pDVCSModule->computeCrossSection(-1, -1,
+            NumA::Vector3D(0., 0., 0.), phi);
+
     return A - B;
 }
 
 double Alu::Den(ProcessModule* pDVCSModule, double phi) {
 
-    double A = pDVCSModule->computeCrossSection(0, -1,
-            NumA::Vector3D(0., 0., +1.), phi);
+    double A = pDVCSModule->computeCrossSection(+1, -1,
+            NumA::Vector3D(0., 0., 0.), phi);
 
-    double B = pDVCSModule->computeCrossSection(0, -1,
-            NumA::Vector3D(0., 0., -1.), phi);
+    double B = pDVCSModule->computeCrossSection(-1, -1,
+            NumA::Vector3D(0., 0., 0.), phi);
+
     return A + B;
 }
 // optimisation remplacement des multiples appels similaires par A - B / A + B

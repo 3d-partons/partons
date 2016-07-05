@@ -62,6 +62,7 @@ protected:
     double m_phaseSpace;
     double m_tmin; ///< minimum of t
     double m_tmax; ///< max of t
+    double m_xBmin; ///< minimum of xB
     double m_y; ///< Lepton energy fraction
     double m_epsilon; ///<
 

@@ -189,21 +189,22 @@ void GV2008Model::isModuleWellConfigured() {
     //check mother class
     DVCSModule::isModuleWellConfigured();
 
-    if (!(m_xBMin < m_xB && m_xB < m_xBMax)) {
-        ElemUtils::Formatter formater;
-
-        formater
-                << "Unrealistic kinematic configuration : m_xB isn't in the physical region !"
-                << '\n';
-        formater << " m_xB = " << m_xB << '\n';
-        formater << "m_xBMin = " << m_xBMin << '\n';
-        formater << "m_xBMax = " << m_xBMax << '\n';
-
-        error(__func__, formater.str());
-    }
+    // Commented out because xBmin is implemented now in the parent class DVCSModule and xBmax is wrong anyway (it should be 1).
+//    if (!(m_xBMin < m_xB && m_xB < m_xBMax)) {
+//        ElemUtils::Formatter formater;
+//
+//        formater
+//                << "Unrealistic kinematic configuration : m_xB isn't in the physical region !"
+//                << '\n';
+//        formater << " m_xB = " << m_xB << '\n';
+//        formater << "m_xBMin = " << m_xBMin << '\n';
+//        formater << "m_xBMax = " << m_xBMax << '\n';
+//
+//        error(__func__, formater.str());
+//    }
 
     if (m_yGV < 1.) {
-        error(__func__,
+        warn(__func__,
                 ElemUtils::Formatter() << "ELab = " << m_E
                         << " GeV is too small. cosh[ome]= " << m_yGV);
     }
