@@ -10,7 +10,6 @@
 #include <complex>
 #include <exception>
 #include <map>
-#include <string>
 #include <utility>
 
 #include "../../../../../include/partons/beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
@@ -21,9 +20,9 @@
 #include "../../../../../include/partons/database/DatabaseManager.h"
 
 ConvolCoeffFunctionResultDaoService::ConvolCoeffFunctionResultDaoService() :
-        ResultDaoService("ConvolCoeffFunctionResultDaoService"), m_lastComputationId(
-                -1), m_lastCCFKinematicId(-1), m_lastCCFResultId(-1), m_lastCCFResultComplexId(
-                -1), m_ccfKinematicTableFile(ElemUtils::StringUtils::EMPTY), m_ccfResultTableFile(
+        ResultDaoService("ConvolCoeffFunctionResultDaoService"), m_lastCCFKinematicId(
+                -1), m_lastCCFResultId(-1), m_lastCCFResultComplexId(-1), m_ccfKinematicTableFile(
+                ElemUtils::StringUtils::EMPTY), m_ccfResultTableFile(
                 ElemUtils::StringUtils::EMPTY) {
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
@@ -93,39 +92,8 @@ int ConvolCoeffFunctionResultDaoService::insert(
     return result;
 }
 
-//int ConvolCoeffFunctionResultDaoService::insert(
-//        const List<DVCSConvolCoeffFunctionResult>& resultList) {
-//
-//    info(__func__,
-//            ElemUtils::Formatter() << "Inserting object size = "
-//                    << resultList.size());
-//
-//    int result = -1;
-//
-//    // For multiple query it's better to use transaction to guarantee database's integrity and performance
-//    QSqlDatabase::database().transaction();
-//
-//    try {
-//        // for each result
-//        for (size_t i = 0; i != resultList.size(); i++) {
-//            result = insertWithoutTransaction(resultList[i]);
-//        }
-//
-//        // If there is no exception we can commit all query
-//        QSqlDatabase::database().commit();
-//
-//    } catch (std::exception &e) {
-//        // Else return database in a stable state : n-1
-//        QSqlDatabase::database().rollback();
-//    }
-//
-//    return result;
-//}
-
-bool ConvolCoeffFunctionResultDaoService::insert(
+int ConvolCoeffFunctionResultDaoService::insert(
         const List<DVCSConvolCoeffFunctionResult>& resultList) {
-    bool inserted = false;
-
     info(__func__, "Prepare data before inserting them into database ...");
 
     for (unsigned int i = 0; i != resultList.size(); i++) {
@@ -181,13 +149,25 @@ bool ConvolCoeffFunctionResultDaoService::insert(
 
     info(__func__, "Done !");
 
-    return inserted;
+    return getLastComputationId();
 }
 
 List<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionResultDaoService::getResultListByComputationId(
         const int computationId) const {
     return m_convolCoeffFunctionResultDao.getResultListByComputationId(
             computationId);
+    ResultInfo resultInfo = m_resultInfoDaoService.getResultInfoByComputationId(
+            computationId);
+
+    List<DVCSConvolCoeffFunctionResult> results =
+            m_convolCoeffFunctionResultDao.getResultListByComputationId(
+                    computationId);
+
+    for (unsigned int i = 0; i != results.size(); i++) {
+        results[i].setResultInfo(resultInfo);
+    }
+
+    return results;
 }
 
 int ConvolCoeffFunctionResultDaoService::insertWithoutTransaction(

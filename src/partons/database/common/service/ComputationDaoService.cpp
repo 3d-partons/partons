@@ -49,8 +49,8 @@ int ComputationDaoService::getComputationIdByDateTime(
     return m_computationDao.getComputationIdByDateTime(dateTime);
 }
 
-Computation ComputationDaoService::selectByIndexId(const int indexId) const {
-    return m_computationDao.selectByIndexId(indexId);
+Computation ComputationDaoService::getByComputationId(const int indexId) const {
+    return m_computationDao.getByComputationId(indexId);
 }
 
 bool ComputationDaoService::isAvailable(const int computationId) const {

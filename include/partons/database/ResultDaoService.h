@@ -29,6 +29,8 @@ public:
 
     bool insert(const List<GPDResult> &result);
 
+    int getLastComputationId() const;
+
 protected:
     std::pair<time_t, int> m_previousComputationId;
 

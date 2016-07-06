@@ -19,7 +19,6 @@
 
 #include "../../../beans/gpd/GPDResult.h"
 #include "../../../beans/List.h"
-#include "../../common/service/ComputationDaoService.h"
 #include "../../common/service/ResultInfoDaoService.h"
 #include "../../parton_distribution/service/PartonDistributionDaoService.h"
 #include "../../ResultDaoService.h"
@@ -44,7 +43,7 @@ public:
      * @param gpdResult
      * @return unique id related to the new entry inserted into the database
      */
-    int insert(const GPDResult &gpdResult) const;
+    int insert(const GPDResult &gpdResult);
 
     /**
      * Insert into database a list of GPDResult objects with transactions mechanisms.
@@ -52,7 +51,7 @@ public:
      * @param gpdResultList
      * @return
      */
-    bool insert(const List<GPDResult> &gpdResultList);
+    int insert(const List<GPDResult> &gpdResultList);
 
     /**
      * Return a list of GPDResult objects from the database identified by a specific computation identifier.
@@ -82,6 +81,8 @@ private:
 
     GPDKinematicDaoService m_gpdKinematicDaoService; ///< reference to be able to store kinematic object related to the result.
     PartonDistributionDaoService m_partonDistributionDaoService; ///< reference to be able to store PartonDistribution object and link it to the result.
+
+    ResultInfoDaoService m_resultInfoDaoService;
 
 //    /**
 //     * Insert into the database a new GPDResult object without using transactions mechanisms.

@@ -6,16 +6,16 @@ GRANT SELECT, INSERT, UPDATE, DELETE, FILE ON *.* TO 'partons'@'localhost';
 
 CREATE TABLE scenario (
 scenario_id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
-store_date TIMESTAMP,
-description VARCHAR(255),
-xml_file BLOB,
-hash_sum VARCHAR(40));
+scenario_store_date TIMESTAMP,
+scenario_description VARCHAR(255),
+scenario_xml_file BLOB,
+scenario_hash_sum VARCHAR(40));
 
 CREATE TABLE environment_configuration (
-environment_configuration_id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
-store_date TIMESTAMP,
-configuration VARCHAR(255),
-hash_sum VARCHAR(40));
+env_conf_id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+env_conf_store_date TIMESTAMP,
+env_conf_configuration VARCHAR(255),
+env_conf_hash_sum VARCHAR(40));
 
 CREATE TABLE computation (
 computation_id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY, 
@@ -43,6 +43,14 @@ observable_type_id INTEGER NOT NULL PRIMARY KEY,
 short_name VARCHAR(10),
 long_name VARCHAR(255));
 
+
+CREATE VIEW result_info_view AS
+SELECT c.computation_id, c.computation_date, sc.scenario_task_index_number, ec.env_conf_hash_sum, s.scenario_hash_sum
+FROM computation c
+INNER JOIN environment_configuration ec ON ec.environment_configuration_id = c.environment_configuration_id
+INNER JOIN scenario_computation sc ON sc.computation_id = c.computation_id
+INNER JOIN scenario s ON sc.scenario_id = s.scenario_id
+ORDER BY c.computation_id;
 
 
 INSERT INTO gpd_type (gpd_type_id, short_name, long_name)
@@ -96,4 +104,3 @@ VALUES ('1', 'PHI', 'PHI');
 
 INSERT INTO observable_type (observable_type_id, short_name, long_name)
 VALUES ('2', 'FOURIER', 'FOURIER');
-

@@ -9,6 +9,7 @@
 #include <QtSql/qsqlrecord.h>
 
 #include "../../../../../include/partons/beans/system/EnvironmentConfiguration.h"
+#include "../../../../../include/partons/database/Database.h"
 #include "../../../../../include/partons/database/DatabaseManager.h"
 
 EnvironmentConfigurationDao::EnvironmentConfigurationDao() :
@@ -23,8 +24,14 @@ int EnvironmentConfigurationDao::insert(const time_t& storeDate,
     int indexId = -1;
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    query.prepare(
-            "INSERT INTO environment_configuration (store_date, configuration, hash_sum) VALUES (:storeDate, :configuration, :hashSum)");
+    ElemUtils::Formatter formatter;
+    formatter << "INSERT INTO "
+            << Database::TABLE_NAME_ENVIRONMENT_CONFIGURATION
+            << " (store_date, configuration, "
+            << Database::COLUMN_NAME_ENVIRONMENT_CONFIGURATION_HASH_SUM
+            << ") VALUES (:storeDate, :configuration, :hashSum)";
+
+    query.prepare(QString(formatter.str().c_str()));
 
     QDateTime qStoreDate;
     qStoreDate.setTime_t(storeDate);
@@ -51,8 +58,13 @@ EnvironmentConfiguration* EnvironmentConfigurationDao::selectByIndexId(
     EnvironmentConfiguration* pResult = 0;
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    query.prepare(
-            "SELECT environment_configuration_id, store_date, hash_sum FROM environment_configuration WHERE environment_configuration_id = :indexId");
+    ElemUtils::Formatter formatter;
+    formatter << "SELECT * FROM "
+            << Database::TABLE_NAME_ENVIRONMENT_CONFIGURATION << " WHERE "
+            << Database::COLUMN_NAME_ENVIRONMENT_CONFIGURATION_ID
+            << " = :indexId";
+
+    query.prepare(QString(formatter.str().c_str()));
 
     query.bindValue(":indexId", indexId);
 
@@ -75,7 +87,8 @@ EnvironmentConfiguration* EnvironmentConfigurationDao::selectByIndexId(
 void EnvironmentConfigurationDao::deleteByIndexId(const int indexId) const {
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    query.prepare("DELETE FROM environment_configuration WHERE environment_configuration_id = :indexId");
+    query.prepare(
+            "DELETE FROM environment_configuration WHERE environment_configuration_id = :indexId");
 
     query.bindValue(":indexId", indexId);
 
@@ -93,8 +106,10 @@ void EnvironmentConfigurationDao::deleteByIndexId(const int indexId) const {
 EnvironmentConfiguration* EnvironmentConfigurationDao::getEnvironmentConfigurationFromQuery(
         QSqlQuery& query) const {
 
-    int field_id = query.record().indexOf("environment_configuration_id");
-    int field_md5 = query.record().indexOf("hash_sum");
+    int field_id = query.record().indexOf(
+            Database::COLUMN_NAME_ENVIRONMENT_CONFIGURATION_ID.c_str());
+    int field_md5 = query.record().indexOf(
+            Database::COLUMN_NAME_ENVIRONMENT_CONFIGURATION_HASH_SUM.c_str());
     int field_store_date = query.record().indexOf("store_date");
 
     int indexId = query.value(field_id).toInt();
@@ -110,8 +125,14 @@ int EnvironmentConfigurationDao::getEnvironmentConfigurationIdByHashSum(
     int indexId = -1;
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    query.prepare(
-            "SELECT environment_configuration_id FROM environment_configuration WHERE hash_sum = :hashSum");
+    ElemUtils::Formatter formatter;
+    formatter << "SELECT " << Database::COLUMN_NAME_ENVIRONMENT_CONFIGURATION_ID
+            << " FROM " << Database::TABLE_NAME_ENVIRONMENT_CONFIGURATION
+            << " WHERE "
+            << Database::COLUMN_NAME_ENVIRONMENT_CONFIGURATION_HASH_SUM
+            << " = :hashSum";
+
+    query.prepare(QString(formatter.str().c_str()));
 
     query.bindValue(":hashSum", QString(hashSum.c_str()));
 
@@ -136,9 +157,13 @@ std::string EnvironmentConfigurationDao::getConfigurationByIndexId(
     std::string configuration = ElemUtils::StringUtils::EMPTY;
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
+    ElemUtils::Formatter formatter;
+    formatter << "SELECT configuration FROM "
+            << Database::TABLE_NAME_ENVIRONMENT_CONFIGURATION << " WHERE "
+            << Database::COLUMN_NAME_ENVIRONMENT_CONFIGURATION_ID
+            << " = :indexId";
 
-    query.prepare(
-            "SELECT configuration FROM environment_configuration WHERE environment_configuration_id = :indexId");
+    query.prepare(QString(formatter.str().c_str()));
 
     query.bindValue(":indexId", indexId);
 

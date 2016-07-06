@@ -9,6 +9,7 @@
 #define RESULTINFODAOSERVICE_H_
 
 #include "../dao/ComputationDao.h"
+#include "../dao/ResultInfoDao.h"
 #include "ComputationDaoService.h"
 #include "EnvironmentConfigurationDaoService.h"
 #include "ScenarioDaoService.h"
@@ -21,8 +22,11 @@ public:
     virtual ~ResultInfoDaoService();
 
     int insertWithoutTransaction(const ResultInfo &resultInfo) const;
+    ResultInfo getResultInfoByComputationId(const int computationId) const;
 
 private:
+    ResultInfoDao m_resultInfoDao;
+
     ComputationDaoService m_computationDaoService;
     ScenarioDaoService m_scenarioDaoService;
     EnvironmentConfigurationDaoService m_environmentConfigurationDaoService;

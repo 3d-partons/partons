@@ -15,9 +15,12 @@
  * And they improve querying speed by using transaction and commit mechanisms for a large amount of simultaneous queries.
  */
 
+#include <string>
+
 #include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
 #include "../../../beans/List.h"
 #include "../../common/service/ComputationDaoService.h"
+#include "../../common/service/ResultInfoDaoService.h"
 #include "../../ResultDaoService.h"
 #include "../dao/ConvolCoeffFunctionResultDao.h"
 #include "ConvolCoeffFunctionKinematicDaoService.h"
@@ -48,7 +51,7 @@ public:
      * @param resultList
      * @return
      */
-    bool insert(const List<DVCSConvolCoeffFunctionResult> &resultList);
+    int insert(const List<DVCSConvolCoeffFunctionResult> &resultList);
 
     /**
      * Return a list of DVCSConvolCoeffFunctionResult objects from the database identified by a specific computation identifier.
@@ -75,7 +78,6 @@ private:
     int insertWithoutTransaction(
             const DVCSConvolCoeffFunctionResult &result) const;
 
-    int m_lastComputationId;
     int m_lastCCFKinematicId;
     int m_lastCCFResultId;
     int m_lastCCFResultComplexId;
@@ -83,6 +85,8 @@ private:
     std::string m_ccfKinematicTableFile;
     std::string m_ccfResultTableFile;
     std::string m_ccfResultComplexTableFile;
+
+    ResultInfoDaoService m_resultInfoDaoService;
 };
 
 #endif /* CONVOL_COEFF_FUNCTION_RESULT_DAO_SERVICE_H */

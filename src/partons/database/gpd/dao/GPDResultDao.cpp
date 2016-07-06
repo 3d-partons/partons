@@ -111,9 +111,9 @@ List<GPDResult> GPDResultDao::getGPDResultListByComputationId(
 //    query.prepare(
 //            "SELECT gr.id, pd.id, gr.computation_module_name, grpd.gpd_type_id, pd.gluon_distribution_value, qd.quark_flavor_id, qd.quark_distribution, qd.quark_distribution_plus, qd.quark_distribution_minus FROM gpd_result gr INNER JOIN computation c ON gr.computation_id = c.id INNER JOIN gpd_result_parton_distribution grpd ON gr.id = grpd.gpd_result_id INNER JOIN parton_distribution pd ON grpd.parton_distribution_id = pd.id INNER JOIN parton_distribution_quark_distribution pdqd ON pd.id = pdqd.parton_distribution_id INNER JOIN quark_distribution qd ON pdqd.quark_distribution_id = qd.id WHERE gr.computation_id = :computationId ORDER BY gr.id");
 
-    //TODO check view
+//TODO check view
     query.prepare(
-                "SELECT * FROM gpd_result_view WHERE computation_id = :computationId");
+            "SELECT * FROM gpd_result_view WHERE computation_id = :computationId");
 
     query.bindValue(":computationId", computationId);
 
@@ -173,8 +173,6 @@ void GPDResultDao::fillGPDResultList(List<GPDResult> &gpdResultList,
         QSqlQuery &query) const {
 
     info(__func__, "Preparing retrieved data ...");
-
-    //TODO create Computation, ResultInfo, ...
 
     GPDResult previousGPDResult;
     PartonDistribution previousPartonDistribution;

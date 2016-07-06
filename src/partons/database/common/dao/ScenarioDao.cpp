@@ -8,6 +8,7 @@
 #include <QtSql/qsqlerror.h>
 #include <QtSql/qsqlquery.h>
 
+#include "../../../../../include/partons/database/Database.h"
 #include "../../../../../include/partons/database/DatabaseManager.h"
 #include "../../../../../include/partons/ResourceManager.h"
 
@@ -23,8 +24,13 @@ int ScenarioDao::insertWithoutTransaction(const std::string &description,
     int result = -1;
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    query.prepare(
-            "INSERT INTO scenario (description, xml_file, hash_sum) VALUES (:description, :xmlFile, :hashSum)");
+    ElemUtils::Formatter formatter;
+    formatter << "INSERT INTO " << Database::TABLE_NAME_SCENARIO
+            << " (description, xml_file, "
+            << Database::COLUMN_NAME_SCENARIO_HASH_SUM
+            << ") VALUES (:description, :xmlFile, :hashSum)";
+
+    query.prepare(QString(formatter.str().c_str()));
 
     query.bindValue("description", QString(description.c_str()));
     query.bindValue(":xmlFile", QString(xmlFile.c_str()));
@@ -48,7 +54,12 @@ int ScenarioDao::getScenarioIdByHashSum(const std::string& hashSum) const {
     int result = -1;
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    query.prepare("SELECT scenario_id FROM scenario WHERE hash_sum = :hashSum");
+    ElemUtils::Formatter formatter;
+    formatter << "SELECT " << Database::COLUMN_NAME_SCENARIO_ID << " FROM "
+            << Database::TABLE_NAME_SCENARIO << " WHERE "
+            << Database::COLUMN_NAME_SCENARIO_HASH_SUM << " = :hashSum";
+
+    query.prepare(QString(formatter.str().c_str()));
 
     query.bindValue(":hashSum", QString(hashSum.c_str()));
 
@@ -73,7 +84,11 @@ std::string ScenarioDao::getXMLFileByIndexId(const int indexId) const {
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    query.prepare("SELECT xml_file FROM scenario WHERE scenario_id = :indexId");
+    ElemUtils::Formatter formatter;
+    formatter << "SELECT xml_file FROM " << Database::TABLE_NAME_SCENARIO
+            << " WHERE " << Database::COLUMN_NAME_SCENARIO_ID << " = :indexId";
+
+    query.prepare(QString(formatter.str().c_str()));
 
     query.bindValue(":indexId", indexId);
 
@@ -102,10 +117,12 @@ int ScenarioDao::getScenarioIdByComputationId(const int computationId) const {
     int result = -1;
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    query.prepare(
-            "SELECT scenario_id FROM scenario_computation WHERE computation_id = :computationId;");
+    ElemUtils::Formatter formatter;
+    formatter << "SELECT " << Database::COLUMN_NAME_SCENARIO_ID
+            << " FROM scenario_computation WHERE "
+            << Database::COLUMN_NAME_COMPUTATION_ID << " = :computationId";
 
-    query.bindValue(":computationId", computationId);
+    query.prepare(QString(formatter.str().c_str()));
 
     if (query.exec()) {
         if (query.first()) {
@@ -127,7 +144,12 @@ std::string ScenarioDao::getHashSumById(const int scenarioId) {
     std::string result = ElemUtils::StringUtils::EMPTY;
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    query.prepare("SELECT hash_sum FROM scenario WHERE scenario_id = :scenarioId;");
+    ElemUtils::Formatter formatter;
+    formatter << "SELECT " << Database::COLUMN_NAME_SCENARIO_HASH_SUM
+            << " FROM " << Database::TABLE_NAME_SCENARIO << " WHERE "
+            << Database::COLUMN_NAME_SCENARIO_ID << " = :scenarioId";
+
+    query.prepare(QString(formatter.str().c_str()));
 
     query.bindValue(":scenarioId", scenarioId);
 
@@ -156,7 +178,11 @@ Scenario* ScenarioDao::getScenarioById(const int scenarioId) {
     Scenario* pScenario = 0;
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    query.prepare("SELECT * FROM scenario WHERE scenario_id = :scenarioId");
+    ElemUtils::Formatter formatter;
+    formatter << "SELECT * FROM " << Database::TABLE_NAME_SCENARIO << " WHERE "
+            << Database::COLUMN_NAME_SCENARIO_ID << " = :scenarioId";
+
+    query.prepare(QString(formatter.str().c_str()));
 
     query.bindValue(":scenarioId", scenarioId);
 

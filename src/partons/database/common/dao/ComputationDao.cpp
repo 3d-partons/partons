@@ -80,7 +80,7 @@ int ComputationDao::getComputationIdByDateTime(const time_t &dateTime) const {
     return result;
 }
 
-Computation ComputationDao::selectByIndexId(const int indexId) const {
+Computation ComputationDao::getByComputationId(const int indexId) const {
     Computation computation;
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());

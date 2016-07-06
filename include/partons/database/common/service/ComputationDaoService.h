@@ -33,7 +33,7 @@ public:
 
     int insertWithoutTransaction(const Computation &computation) const;
 
-    Computation selectByIndexId(const int indexId) const;
+    Computation getByComputationId(const int indexId) const;
 
     int getComputationIdByDateTime(const time_t &dateTime) const;
 

@@ -193,7 +193,7 @@ PartonDistribution GK11ModelNoGluons::computeE() {
 
     //calculate GK11
     GPDResult gpdResult = pGPDService->computeGPDModelRestrictedByGPDType(
-            gpdKinematic, GKmodel, GPDType::H);
+            gpdKinematic, GKmodel, GPDType::E);
 
     //set
     QuarkDistribution quarkDistribution_u(QuarkFlavor::UP);
@@ -249,7 +249,7 @@ PartonDistribution GK11ModelNoGluons::computeEt() {
 
     //calculate GK11
     GPDResult gpdResult = pGPDService->computeGPDModelRestrictedByGPDType(
-            gpdKinematic, GKmodel, GPDType::H);
+            gpdKinematic, GKmodel, GPDType::Et);
 
     //set
     QuarkDistribution quarkDistribution_u(QuarkFlavor::UP);
@@ -297,4 +297,3 @@ PartonDistribution GK11ModelNoGluons::computeEt() {
 
     return partonDistribution;
 }
-

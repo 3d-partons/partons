@@ -52,3 +52,8 @@ int ResultInfoDaoService::insertWithoutTransaction(
 
     return computationId;
 }
+
+ResultInfo ResultInfoDaoService::getResultInfoByComputationId(
+        const int computationId) const {
+    return m_resultInfoDao.getResultInfoByComputationId(computationId);
+}

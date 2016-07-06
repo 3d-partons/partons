@@ -205,3 +205,6 @@ QString ResultDaoService::prepareInsertQuery(const std::string &fileName,
     return QString::fromUtf8(formatter.str().c_str());
 }
 
+int ResultDaoService::getLastComputationId() const {
+    return m_lastComputationId;
+}

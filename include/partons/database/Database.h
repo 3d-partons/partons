@@ -24,6 +24,14 @@ public:
     static const std::string COLUMN_NAME_GPD_KINEMATIC_ID;
 
     static const std::string TABLE_NAME_GPD_RESULT;
+
+    static const std::string TABLE_NAME_SCENARIO;
+    static const std::string COLUMN_NAME_SCENARIO_ID;
+    static const std::string COLUMN_NAME_SCENARIO_HASH_SUM;
+
+    static const std::string TABLE_NAME_ENVIRONMENT_CONFIGURATION;
+    static const std::string COLUMN_NAME_ENVIRONMENT_CONFIGURATION_ID;
+    static const std::string COLUMN_NAME_ENVIRONMENT_CONFIGURATION_HASH_SUM;
 };
 
 #endif /* DATABASE_H */

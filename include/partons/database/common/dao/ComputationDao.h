@@ -27,7 +27,7 @@ public:
 
     int insert(const time_t &dateTime,
             const int environmentConfigurationId) const;
-    Computation selectByIndexId(const int indexId) const;
+    Computation getByComputationId(const int indexId) const;
     int getComputationIdByDateTime(const time_t &dateTime) const;
 
     int insertIntoScenarioComputation(
