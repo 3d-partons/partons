@@ -4,12 +4,8 @@
 /**
  * @file Observable.h
  * @author Bryan BERTHOU (CEA Saclay)
- * @date 25 November 2014
+ * @date November 25, 2014
  * @version 1.0
- *
- * @class Observable
- *
- * @brief
  */
 
 #include <NumA/linear_algebra/vector/Vector3D.h>
@@ -23,8 +19,12 @@
 
 class ObservableResult;
 
-class Observable: public ModuleObject /*, public Thread*/{
-
+/**
+ * @class Observable
+ *
+ * @brief
+ */
+class Observable: public ModuleObject {
 public:
     Observable(const std::string &className);
 
