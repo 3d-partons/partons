@@ -60,16 +60,6 @@ public:
     Scenario* parseXMLFile(const std::string &xmlFilePath) const;
 
     /**
-     * Open and validate XML file with XML schema file.
-     * Then parse it and return string representation of the configuration of a module from XML file into a ComputationConfigurationParameters object.
-     *
-     * @param xmlFilePath
-     * @return string representation of XML file into a ComputationConfigurationParameters object
-     */
-//    ComputationConfigurationParameters readComputationConfigurationXMLFile(
-//            const std::string &xmlFilePath);
-    //TODO doxygen documentation
-    /**
      *
      * @param scenario
      */

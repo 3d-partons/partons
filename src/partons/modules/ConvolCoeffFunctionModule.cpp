@@ -1,28 +1,16 @@
 #include "../../../include/partons/modules/ConvolCoeffFunctionModule.h"
 
-#include <ElementaryUtils/parameters/GenericType.h>
-#include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/thread/Packet.h>
 #include <exception>
 #include <iostream>
-#include <string>
 
-#include "../../../include/partons/beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "../../../include/partons/beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
-#include "../../../include/partons/beans/gpd/GPDType.h"
-#include "../../../include/partons/beans/observable/ObservableChannel.h"
-#include "../../../include/partons/modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
 #include "../../../include/partons/modules/GPDModule.h"
-#include "../../../include/partons/ModuleObjectFactory.h"
 #include "../../../include/partons/Partons.h"
 #include "../../../include/partons/services/ConvolCoeffFunctionService.h"
 #include "../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../include/partons/ServiceObjectTyped.h"
-
-//TODO change string value
-const std::string ConvolCoeffFunctionModule::GPD_MODULE_ID =
-        "DVCS_CONVOL_COEFF_FUNCTION_GPD_MODULE_ID";
 
 ConvolCoeffFunctionModule::ConvolCoeffFunctionModule(
         const std::string &className) :
@@ -52,37 +40,6 @@ void ConvolCoeffFunctionModule::configure(
         const ElemUtils::Parameters &parameters) {
     // Propagate parameters to the IntegrationModule object to configure integration routine.
     configureIntegrator(parameters);
-
-    if (parameters.isAvailable(ConvolCoeffFunctionModule::GPD_MODULE_ID)) {
-        //TODO why create new GPDModule here ?
-        // TODO passer par le setter de m_pGPDModule pour affecter le nouveau module de GPD. Car il faut détruire le précédent pointer s'il existe. Pour libérer l'allocation mémoire avant d'affecter le nouveau.
-
-        //TODO tester l'imbrication des try/catch
-        //TODO !!! Dangereux de construire le module GPD comme ça car on ne peut pas le configurer !!!!
-        try {
-            m_pGPDModule =
-                    Partons::getInstance()->getModuleObjectFactory()->newGPDModule(
-                            parameters.getLastAvailable().toUInt());
-        } catch (const std::exception &e) {
-            try {
-                m_pGPDModule =
-                        Partons::getInstance()->getModuleObjectFactory()->newGPDModule(
-                                parameters.getLastAvailable().toString());
-            } catch (std::exception e) {
-                error(__func__,
-                        ElemUtils::Formatter()
-                                << "Cannot create GPDModule from data provided with parameter = "
-                                << DVCSConvolCoeffFunctionModule::GPD_MODULE_ID
-                                << e.what());
-            }
-        }
-
-        info(__func__,
-                ElemUtils::Formatter()
-                        << DVCSConvolCoeffFunctionModule::GPD_MODULE_ID
-                        << " configured with value = "
-                        << m_pGPDModule->getClassName());
-    }
 
     ModuleObject::configure(parameters);
 }

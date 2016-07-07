@@ -27,8 +27,6 @@ class GPDModule;
 class ConvolCoeffFunctionModule: public ModuleObject,
         public MathIntegratorModule {
 public:
-    static const std::string GPD_MODULE_ID;
-
     ConvolCoeffFunctionModule(const std::string &className);
     virtual ~ConvolCoeffFunctionModule();
 

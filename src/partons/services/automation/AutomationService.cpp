@@ -103,19 +103,6 @@ Scenario* AutomationService::parseScenario(Scenario* pScenario) const {
     return pScenario;
 }
 
-//ComputationConfigurationParameters AutomationService::readComputationConfigurationXMLFile(
-//        const std::string& xmlFilePath) {
-//
-////    if (!m_pXMLValidatorI->isValidXMLFile(xmlFilePath)) {
-////        error(__func__, "Invalid XML file");
-////    }
-//
-//    m_pXMLValidatorI->isValidXMLFile(xmlFilePath);
-//
-//    //TODO implement
-//    // return m_pXMLParserI->parseComputationConfigurationXMLFile(xmlFilePath);
-//}
-
 void AutomationService::playScenario(Scenario* pScenario) const {
     // compute each tasks found
 
