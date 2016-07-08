@@ -5,10 +5,10 @@
 
     <task service="ObservableService" method="computeObservable" storeInDB="0">
         <kinematics type="ObservableKinematic">
-            <param name="xB" value="0.99" />
-            <param name="t" value="-1." />
-            <param name="Q2" value="1." />
-            <param name="phi" value="51.428571428571431" />
+            <param name="xB" value="0.36" />
+            <param name="t" value="-0.23" />
+            <param name="Q2" value="2." />
+            <param name="phi" value="7.5" />
         </kinematics>
 
         <computation_configuration>
@@ -18,12 +18,12 @@
 
             <module type="DVCSConvolCoeffFunctionModule">
                 <param name="className" value="DVCSConstantCFFModel" />
-                <param name="cff_values" value="0|0|1|1|2|0|0|1" />
+                <param name="cff_values" value="1." />
             </module>
 
             <module type="DVCSModule">
                 <param name="className" value="BMJ2012Model" />
-                <param name="beam_energy" value="1.e6" />
+                <param name="beam_energy" value="5.55" />
             </module>
 
             <module type="Observable">

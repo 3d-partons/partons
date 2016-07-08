@@ -1,25 +1,60 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 
-<scenario date="2016-04-25" description="Comparison of Alu with LO and NLO.">
+<scenario date="2016-07-08" description="Comparison of Alu with GK11 and VGG.">
+
+<!--     <task service="ObservableService" method="computeManyKinematicOneModel" storeInDB="0"> -->
+<!--         <kinematics type="ObservableKinematic"> -->
+<!--             <param name="file" value="../PARTONS/data/Alu_Daria.dat" /> -->
+<!--         </kinematics> -->
+
+<!--         <computation_configuration> -->
+<!--             <module type="GPDModule"> -->
+<!--                 <param name="className" value="GK11Model" /> -->
+<!--             </module> -->
+
+<!--             <module type="DVCSConvolCoeffFunctionModule"> -->
+<!--                 <param name="className" value="DVCSCFFModel" /> -->
+<!--                 <param name="qcd_order_type" value="NLO" /> -->
+<!--             </module> -->
+
+<!--             <module type="DVCSModule"> -->
+<!--                 <param name="className" value="BMJ2012Model" /> -->
+<!--                 <param name="beam_energy" value="1066" /> -->
+<!--             </module> -->
+
+<!--             <module type="Observable"> -->
+<!--                 <param name="className" value="Alu" /> -->
+<!--             </module> -->
+
+<!--             <module type="ScaleModule"> -->
+<!--                 <param name="className" value="Q2Multiplier" /> -->
+<!--                 <param name="lambda" value="1" /> -->
+<!--             </module> -->
+
+<!--             <module type="XiConverterModule"> -->
+<!--                 <param name="className" value="XBToXi" /> -->
+<!--             </module> -->
+<!--         </computation_configuration> -->
+<!--     </task> -->
 
     <task service="ObservableService" method="computeManyKinematicOneModel" storeInDB="0">
         <kinematics type="ObservableKinematic">
-            <param name="file" value="../PARTONS/data/phi.dat" />
+            <param name="file" value="../PARTONS/data/Alu_Daria.dat" />
         </kinematics>
 
         <computation_configuration>
             <module type="GPDModule">
-                <param name="className" value="GK11Model" />
+                <param name="className" value="VGGModel" />
             </module>
 
             <module type="DVCSConvolCoeffFunctionModule">
                 <param name="className" value="DVCSCFFModel" />
-                <param name="qcd_order_type" value="LO" />
+                <param name="qcd_order_type" value="NLO" />
             </module>
 
             <module type="DVCSModule">
                 <param name="className" value="BMJ2012Model" />
-                <param name="beam_energy" value="11" />
+                <param name="beam_energy" value="1066" />
             </module>
 
             <module type="Observable">

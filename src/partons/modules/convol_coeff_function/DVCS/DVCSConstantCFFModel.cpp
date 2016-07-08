@@ -117,7 +117,7 @@ void DVCSConstantCFFModel::configure(const ElemUtils::Parameters &parameters) {
         std::string temp_str = parameters.getLastAvailable().toString();
         if (!temp_str.empty()) {
             std::vector<std::string> CFFValues = ElemUtils::StringUtils::split(
-                    parameters.getLastAvailable().toString(), '|');
+                    temp_str, '|');
 
             for (int i = 0;
                     i < CFFValues.size()
