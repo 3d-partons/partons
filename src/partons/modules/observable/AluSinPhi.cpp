@@ -3,7 +3,6 @@
 #include <NumA/integration/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <cmath>
-//#include <vector>
 
 #include "../../../../include/partons/beans/observable/ObservableChannel.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
@@ -18,16 +17,12 @@ const unsigned int AluSinPhi::classId =
                 new AluSinPhi("AluSinPhi"));
 
 AluSinPhi::AluSinPhi(const std::string &className) :
-        FourierObservable(className), m_pAluObservable(0), m_pFunctionToIntegrateNumObservable(
-                0), m_pFunctionToIntegrateDenObservable(0) {
+        FourierObservable(className), m_pAluObservable(0), m_pFunctionToIntegrateObservable(
+                0) {
 
-//    Observable* pObs =
-//            Partons::getInstance()->getModuleObjectFactory()->newObservable(
-//                    Alu::classId);
-//
-//    m_pAluObservable =
-//            static_cast<Alu*>(Partons::getInstance()->getModuleObjectFactory()->newObservable(
-//                    Alu::classId));
+    m_pAluObservable =
+            Partons::getInstance()->getModuleObjectFactory()->newObservable(
+                    Alu::classId);
 
     m_channel = ObservableChannel::DVCS;
 
@@ -46,14 +41,9 @@ AluSinPhi::AluSinPhi(const AluSinPhi& other) :
 }
 
 AluSinPhi::~AluSinPhi() {
-    if (m_pFunctionToIntegrateNumObservable) {
-        delete m_pFunctionToIntegrateNumObservable;
-        m_pFunctionToIntegrateNumObservable = 0;
-    }
-
-    if (m_pFunctionToIntegrateDenObservable) {
-        delete m_pFunctionToIntegrateDenObservable;
-        m_pFunctionToIntegrateDenObservable = 0;
+    if (m_pFunctionToIntegrateObservable) {
+        delete m_pFunctionToIntegrateObservable;
+        m_pFunctionToIntegrateObservable = 0;
     }
 
 }
@@ -65,13 +55,9 @@ void AluSinPhi::resolveObjectDependencies() {
 }
 
 void AluSinPhi::initFunctorsForIntegrations() {
-    m_pFunctionToIntegrateNumObservable =
+    m_pFunctionToIntegrateObservable =
             NumA::Integrator1D::newIntegrationFunctor(this,
-                    &AluSinPhi::functionToIntegrateNumObservable);
-    m_pFunctionToIntegrateDenObservable =
-            NumA::Integrator1D::newIntegrationFunctor(this,
-                    &AluSinPhi::functionToIntegrateDenObservable);
-
+                    &AluSinPhi::functionToIntegrateObservable);
 }
 
 AluSinPhi* AluSinPhi::clone() const {
@@ -79,32 +65,20 @@ AluSinPhi* AluSinPhi::clone() const {
 }
 
 ////TODO check
-double AluSinPhi::functionToIntegrateNumObservable(double x,
+double AluSinPhi::functionToIntegrateObservable(double x,
         std::vector<double> params) {
     // x[0] = phi
-    return m_pAluObservable->Num(m_pProcessModule, x) * sin(x);
-}
-
-double AluSinPhi::functionToIntegrateDenObservable(double x,
-        std::vector<double> params) {
-    // x[0] = phi
-    return m_pAluObservable->Den(m_pProcessModule, x);
+    return m_pAluObservable->compute(m_pProcessModule, x) * sin(x);
 }
 
 double AluSinPhi::compute() {
 
     //TODO improve, replace by configuration.
-    m_pAluObservable->setProcessModule(m_pProcessModule);
+    //   m_pAluObservable->setProcessModule(m_pProcessModule);
 
     std::vector<double> emptyParameters;
 
-    double N = integrate(m_pFunctionToIntegrateNumObservable, 0., (2 * PI),
-            emptyParameters);
-    double D = integrate(m_pFunctionToIntegrateDenObservable, 0., (2 * PI),
-            emptyParameters);
-    if (D != 0) {
-        return N / D;
-    } else {
-        return 2.0;
-    }
+    return integrate(m_pFunctionToIntegrateObservable, 0., (2 * PI),
+            emptyParameters) / cos(-1);
+
 }

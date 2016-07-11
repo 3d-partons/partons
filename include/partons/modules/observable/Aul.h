@@ -3,8 +3,8 @@
 
 /**
  * @file Aul.h
- * @author Luca COLANERI (IPNO ORSAY)
- * @date 5 April 2016
+ * @author Bryan BERTHOU (CEA Saclay)
+ * @date 28 November 2014
  * @version 1.0
  *
  * @class Aul
@@ -30,9 +30,6 @@ public:
      * @return
      */
     virtual Aul* clone() const;
-
-    virtual double Num(ProcessModule* pDVCSModule, double phi);
-    virtual double Den(ProcessModule* pDVCSModule, double phi);
 
     virtual double compute(ProcessModule* pDVCSModule, double phi);
 

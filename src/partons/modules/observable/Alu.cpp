@@ -5,7 +5,7 @@
 #include "../../../../include/partons/beans/observable/ObservableChannel.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/modules/ProcessModule.h"
-
+#include <iostream>
 // Initialise [class]::classId with a unique name.
 const unsigned int Alu::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(new Alu("Alu"));
@@ -26,37 +26,10 @@ Alu* Alu::clone() const {
     return new Alu(*this);
 }
 
-double Alu::Num(ProcessModule* pDVCSModule, double phi) {
 
-    double A = pDVCSModule->computeCrossSection(+1, -1,
-            NumA::Vector3D(0., 0., 0.), phi);
-
-    double B = pDVCSModule->computeCrossSection(-1, -1,
-            NumA::Vector3D(0., 0., 0.), phi);
-
-    return A - B;
-}
-
-double Alu::Den(ProcessModule* pDVCSModule, double phi) {
-
-    double A = pDVCSModule->computeCrossSection(+1, -1,
-            NumA::Vector3D(0., 0., 0.), phi);
-
-    double B = pDVCSModule->computeCrossSection(-1, -1,
-            NumA::Vector3D(0., 0., 0.), phi);
-
-    return A + B;
-}
 // optimisation remplacement des multiples appels similaires par A - B / A + B
 double Alu::compute(ProcessModule* pDVCSModule, double phi) {
-    //    double result = (pDVCSModule->computeCrossSection(+1, -1,
-    //            NumA::Vector3D(0., 0., 0.), phi)
-    //            - pDVCSModule->computeCrossSection(-1, -1,
-    //                    NumA::Vector3D(0., 0., 0.), phi))
-    //            / (pDVCSModule->computeCrossSection(+1, -1,
-    //                    NumA::Vector3D(0., 0., 0.), phi)
-    //                    + pDVCSModule->computeCrossSection(-1, -1,
-    //                            NumA::Vector3D(0., 0., 0.), phi));
+
 
     double result = 0.;
 
@@ -65,6 +38,8 @@ double Alu::compute(ProcessModule* pDVCSModule, double phi) {
 
     double B = pDVCSModule->computeCrossSection(-1, -1,
             NumA::Vector3D(0., 0., 0.), phi);
+
+
 
     //TODO !!! division par zero !!!
     result = (A - B) / (A + B);

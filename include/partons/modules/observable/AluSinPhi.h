@@ -17,7 +17,7 @@
 
 #include "FourierObservable.h"
 
-class Alu;
+class Observable;
 
 class AluSinPhi: public FourierObservable {
 public:
@@ -42,15 +42,14 @@ protected:
      */
     AluSinPhi(const AluSinPhi &other);
 
-    Alu* m_pAluObservable;
+    Observable* m_pAluObservable;
 
-    NumA::FunctionType1D* m_pFunctionToIntegrateNumObservable;
-    NumA::FunctionType1D* m_pFunctionToIntegrateDenObservable;
+    NumA::FunctionType1D* m_pFunctionToIntegrateObservable;
 
-    virtual double functionToIntegrateNumObservable(double x,
+
+    virtual double functionToIntegrateObservable(double x,
             std::vector<double> params);
-    virtual double functionToIntegrateDenObservable(double x,
-            std::vector<double> params);
+
 
     void initFunctorsForIntegrations();
 };
