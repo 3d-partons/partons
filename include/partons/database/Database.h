@@ -27,6 +27,9 @@ public:
 
     static const std::string TABLE_NAME_SCENARIO;
     static const std::string COLUMN_NAME_SCENARIO_ID;
+    static const std::string COLUMN_NAME_SCENARIO_STORE_DATE;
+    static const std::string COLUMN_NAME_SCENARIO_DESCRIPTION;
+    static const std::string COLUMN_NAME_SCENARIO_XML_FILE;
     static const std::string COLUMN_NAME_SCENARIO_HASH_SUM;
 
     static const std::string TABLE_NAME_ENVIRONMENT_CONFIGURATION;

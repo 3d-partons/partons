@@ -25,8 +25,9 @@ int ScenarioDao::insertWithoutTransaction(const std::string &description,
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     ElemUtils::Formatter formatter;
-    formatter << "INSERT INTO " << Database::TABLE_NAME_SCENARIO
-            << " (description, xml_file, "
+    formatter << "INSERT INTO " << Database::TABLE_NAME_SCENARIO << " ("
+            << Database::COLUMN_NAME_SCENARIO_DESCRIPTION << ","
+            << Database::COLUMN_NAME_SCENARIO_XML_FILE << ", "
             << Database::COLUMN_NAME_SCENARIO_HASH_SUM
             << ") VALUES (:description, :xmlFile, :hashSum)";
 
@@ -85,8 +86,9 @@ std::string ScenarioDao::getXMLFileByIndexId(const int indexId) const {
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     ElemUtils::Formatter formatter;
-    formatter << "SELECT xml_file FROM " << Database::TABLE_NAME_SCENARIO
-            << " WHERE " << Database::COLUMN_NAME_SCENARIO_ID << " = :indexId";
+    formatter << "SELECT " << Database::COLUMN_NAME_SCENARIO_XML_FILE
+            << " FROM " << Database::TABLE_NAME_SCENARIO << " WHERE "
+            << Database::COLUMN_NAME_SCENARIO_ID << " = :indexId";
 
     query.prepare(QString(formatter.str().c_str()));
 
