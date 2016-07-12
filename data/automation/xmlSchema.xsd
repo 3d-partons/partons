@@ -23,6 +23,8 @@
 
     <xs:complexType name="taskType">
         <xs:sequence>
+  	    <xs:element name="task_param" type="taskParamType"
+                minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="kinematics" type="kinematicsType"
                 minOccurs="0" />
             <xs:element name="computation_configuration"
@@ -51,6 +53,14 @@
     </xs:complexType>
 
     <xs:complexType name="moduleType">
+        <xs:sequence>
+            <xs:element name="param" type="paramType"
+                minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="type" type="xs:string" use="required" />
+    </xs:complexType>
+
+ <xs:complexType name="taskParamType">
         <xs:sequence>
             <xs:element name="param" type="paramType"
                 minOccurs="0" maxOccurs="unbounded" />
