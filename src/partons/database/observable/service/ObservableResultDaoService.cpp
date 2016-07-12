@@ -8,6 +8,7 @@
 #include "../../../../../include/partons/beans/Computation.h"
 #include "../../../../../include/partons/beans/system/ResultInfo.h"
 #include "../../../../../include/partons/utils/math/ErrorBar.h"
+#include "../../../../../include/partons/utils/plot2D/Plot2DList.h"
 
 ObservableResultDaoService::ObservableResultDaoService() :
         BaseObject("ObservableResultDaoService") {
@@ -116,4 +117,9 @@ List<ObservableResult> ObservableResultDaoService::getObservableResultListByComp
 List<ObservableResult> ObservableResultDaoService::getObservableResultListFromSQLQuery(
         const std::string& sqlQuery) const {
     return m_observableResultDao.getObservableResultListFromSQLQuery(sqlQuery);
+}
+
+Plot2DList ObservableResultDaoService::getPlot2DListFromCustomQuery(
+        const std::string& sqlQuery) const {
+    return m_observableResultDao.getPlot2DListFromCustomQuery(sqlQuery);
 }

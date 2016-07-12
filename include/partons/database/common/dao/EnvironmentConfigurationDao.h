@@ -3,13 +3,9 @@
 
 /**
  * @file EnvironmentConfigurationDao.h
- * @author: Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 11 March 2016
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
+ * @date March 11, 2016
  * @version 1.0
- *
- * @class EnvironmentConfigurationDao
- *
- * @brief
  */
 
 #include <QtSql/qsqlquery.h>
@@ -20,6 +16,11 @@
 
 class EnvironmentConfiguration;
 
+/**
+ * @class EnvironmentConfigurationDao
+ *
+ * @brief
+ */
 class EnvironmentConfigurationDao: public BaseObject {
 public:
     EnvironmentConfigurationDao();

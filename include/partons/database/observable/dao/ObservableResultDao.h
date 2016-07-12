@@ -19,6 +19,8 @@
 #include "../../../beans/observable/ObservableResult.h"
 #include "ObservableKinematicDao.h"
 
+class Plot2DList;
+
 class ObservableResultDao: public BaseObject {
 public:
     ObservableResultDao();
@@ -35,6 +37,8 @@ public:
 
     List<ObservableResult> getObservableResultListFromSQLQuery(
             const std::string &sqlQuery) const;
+
+    Plot2DList getPlot2DListFromCustomQuery(const std::string &sqlQuery) const;
 
 private:
     ObservableKinematicDao m_observableKinematicDao;

@@ -16,6 +16,8 @@
 #include "../dao/ObservableResultDao.h"
 #include "ObservableKinematicDaoService.h"
 
+class Plot2DList;
+
 /** @class ObservableResultDaoService
  *
  * @brief Its role is to deal with ObervableResult C++ object and related tables from the database.
@@ -68,6 +70,8 @@ public:
      */
     List<ObservableResult> getObservableResultListFromSQLQuery(
             const std::string &sqlQuery) const;
+
+    Plot2DList getPlot2DListFromCustomQuery(const std::string &sqlQuery) const;
 
 private:
     ObservableResultDao m_observableResultDao; ///< reference to the right DAO object to perform database queries

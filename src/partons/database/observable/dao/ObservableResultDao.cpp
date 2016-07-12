@@ -10,6 +10,8 @@
 #include "../../../../../include/partons/beans/observable/ObservableType.h"
 #include "../../../../../include/partons/database/DatabaseManager.h"
 #include "../../../../../include/partons/utils/math/ErrorBar.h"
+#include "../../../../../include/partons/utils/plot2D/Plot2D.h"
+#include "../../../../../include/partons/utils/plot2D/Plot2DList.h"
 
 ObservableResultDao::ObservableResultDao() :
         BaseObject("ObservableResultDao") {
@@ -155,4 +157,30 @@ void ObservableResultDao::fillObservableResultList(
 
         observableResultList.add(observableResult);
     }
+}
+
+Plot2DList ObservableResultDao::getPlot2DListFromCustomQuery(
+        const std::string& sqlQuery) const {
+    Plot2DList plot2DList;
+
+    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
+
+    query.prepare(QString(sqlQuery.c_str()));
+
+    if (query.exec()) {
+        while (query.next()) {
+            plot2DList.addPlot2D(
+                    Plot2D(query.value(0).toDouble(),
+                            query.value(1).toDouble()));
+        }
+    } else {
+        error(__func__,
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
+    }
+
+    query.clear();
+
+    return plot2DList;
 }
