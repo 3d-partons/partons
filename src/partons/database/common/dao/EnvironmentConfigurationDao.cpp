@@ -26,9 +26,10 @@ int EnvironmentConfigurationDao::insert(const time_t& storeDate,
 
     ElemUtils::Formatter formatter;
     formatter << "INSERT INTO "
-            << Database::TABLE_NAME_ENVIRONMENT_CONFIGURATION
-            << " (store_date, configuration, "
-            << Database::COLUMN_NAME_ENVIRONMENT_CONFIGURATION_HASH_SUM
+            << Database::TABLE_NAME_ENVIRONMENT_CONFIGURATION << " ("
+            << Database::COLUMN_NAME_ENVIRONMENT_CONFIGURATION_STORE_DATE << ","
+            << Database::COLUMN_NAME_ENVIRONMENT_CONFIGURATION_CONFIGURATION
+            << ", " << Database::COLUMN_NAME_ENVIRONMENT_CONFIGURATION_HASH_SUM
             << ") VALUES (:storeDate, :configuration, :hashSum)";
 
     query.prepare(QString(formatter.str().c_str()));
@@ -158,9 +159,10 @@ std::string EnvironmentConfigurationDao::getConfigurationByIndexId(
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
     ElemUtils::Formatter formatter;
-    formatter << "SELECT configuration FROM "
-            << Database::TABLE_NAME_ENVIRONMENT_CONFIGURATION << " WHERE "
-            << Database::COLUMN_NAME_ENVIRONMENT_CONFIGURATION_ID
+    formatter << "SELECT "
+            << Database::COLUMN_NAME_ENVIRONMENT_CONFIGURATION_CONFIGURATION
+            << " FROM " << Database::TABLE_NAME_ENVIRONMENT_CONFIGURATION
+            << " WHERE " << Database::COLUMN_NAME_ENVIRONMENT_CONFIGURATION_ID
             << " = :indexId";
 
     query.prepare(QString(formatter.str().c_str()));

@@ -16,5 +16,9 @@ const std::string Database::TABLE_NAME_ENVIRONMENT_CONFIGURATION =
         "environment_configuration";
 const std::string Database::COLUMN_NAME_ENVIRONMENT_CONFIGURATION_ID =
         "env_conf_id";
+const std::string Database::COLUMN_NAME_ENVIRONMENT_CONFIGURATION_STORE_DATE =
+        "env_conf_store_date";
+const std::string Database::COLUMN_NAME_ENVIRONMENT_CONFIGURATION_CONFIGURATION =
+        "env_conf_configuration";
 const std::string Database::COLUMN_NAME_ENVIRONMENT_CONFIGURATION_HASH_SUM =
         "env_conf_hash_sum";

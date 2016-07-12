@@ -31,7 +31,10 @@ public:
 
     static const std::string TABLE_NAME_ENVIRONMENT_CONFIGURATION;
     static const std::string COLUMN_NAME_ENVIRONMENT_CONFIGURATION_ID;
+    static const std::string COLUMN_NAME_ENVIRONMENT_CONFIGURATION_STORE_DATE;
+    static const std::string COLUMN_NAME_ENVIRONMENT_CONFIGURATION_CONFIGURATION;
     static const std::string COLUMN_NAME_ENVIRONMENT_CONFIGURATION_HASH_SUM;
+
 };
 
 #endif /* DATABASE_H */
