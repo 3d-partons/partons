@@ -15,6 +15,6 @@ const std::string Database::COLUMN_NAME_SCENARIO_HASH_SUM = "scenario_hash_sum";
 const std::string Database::TABLE_NAME_ENVIRONMENT_CONFIGURATION =
         "environment_configuration";
 const std::string Database::COLUMN_NAME_ENVIRONMENT_CONFIGURATION_ID =
-        "environment_configuration_id";
+        "env_conf_id";
 const std::string Database::COLUMN_NAME_ENVIRONMENT_CONFIGURATION_HASH_SUM =
         "env_conf_hash_sum";

@@ -28,6 +28,8 @@
 template<typename KinematicType, typename ResultType>
 class ServiceObjectTyped: public ServiceObject {
 public:
+    static const std::string SERVICE_OBJECT_PRINT_RESULTS;
+
     /**
      * Default constructor
      *
@@ -41,20 +43,6 @@ public:
      * Default destructor
      */
     virtual ~ServiceObjectTyped() {
-    }
-
-    List<ResultType> computeScenario(const std::string &scenarioFilePath,
-            List<KinematicType> &kinematicList) {
-        Scenario scenario = m_pAutomationService->parseXMLFile(
-                scenarioFilePath);
-
-        m_kinematicListBuffer.add(kinematicList);
-
-        for (size_t i = 0; i != scenario.size(); i++) {
-            computeTask(scenario.getTask(i));
-        }
-
-        return flushResultList();
     }
 
     //TODO How to handle random computation from thread ? How to index results for later compare ?
@@ -130,7 +118,7 @@ protected:
     bool computeGeneralTask(Task &task) {
         bool isEvaluated = false;
         if (ElemUtils::StringUtils::equals(task.getFunctionName(),
-                "printResults")) {
+                SERVICE_OBJECT_PRINT_RESULTS)) {
             printResultListBuffer();
             isEvaluated = true;
         }
@@ -155,5 +143,9 @@ protected:
         }
     }
 };
+
+template<typename KinematicType, typename ResultType>
+const std::string ServiceObjectTyped<KinematicType, ResultType>::SERVICE_OBJECT_PRINT_RESULTS =
+        "printResults";
 
 #endif /* SERVICE_OBJECT_TYPED_H */
