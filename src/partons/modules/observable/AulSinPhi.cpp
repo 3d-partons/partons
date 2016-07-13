@@ -17,13 +17,7 @@ const unsigned int AulSinPhi::classId =
                 new AulSinPhi("AulSinPhi"));
 
 AulSinPhi::AulSinPhi(const std::string &className) :
-        FourierObservable(className), m_pAulObservable(0), m_pFunctionToIntegrateObservable(
-                0) {
-
-    m_pAulObservable =
-            Partons::getInstance()->getModuleObjectFactory()->newObservable(
-                    Aul::classId);
-
+        FourierObservable(className), m_pFunctionToIntegrateObservable(0) {
     m_channel = ObservableChannel::DVCS;
 
     initFunctorsForIntegrations();
@@ -31,12 +25,6 @@ AulSinPhi::AulSinPhi(const std::string &className) :
 
 AulSinPhi::AulSinPhi(const AulSinPhi& other) :
         FourierObservable(other) {
-    if (other.m_pAulObservable != 0) {
-        m_pAulObservable = other.m_pAulObservable->clone();
-    } else {
-        m_pAulObservable = 0;
-    }
-
     initFunctorsForIntegrations();
 }
 
@@ -49,9 +37,9 @@ AulSinPhi::~AulSinPhi() {
 }
 
 void AulSinPhi::resolveObjectDependencies() {
-    m_pAulObservable =
-            static_cast<Aul*>(Partons::getInstance()->getModuleObjectFactory()->newObservable(
-                    Aul::classId));
+    m_pPhiObservable =
+            Partons::getInstance()->getModuleObjectFactory()->newObservable(
+                    Aul::classId);
 }
 
 void AulSinPhi::initFunctorsForIntegrations() {
@@ -68,7 +56,7 @@ AulSinPhi* AulSinPhi::clone() const {
 double AulSinPhi::functionToIntegrateObservable(double x,
         std::vector<double> params) {
     // x[0] = phi
-    return m_pAulObservable->compute(x) * sin(x);
+    return m_pPhiObservable->compute(x) * sin(x);
 }
 
 double AulSinPhi::compute() {

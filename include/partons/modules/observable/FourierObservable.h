@@ -34,8 +34,12 @@ public:
 
     virtual double compute() = 0;
 
+    virtual void setProcessModule(ProcessModule* pProcessModule);
+
 protected:
     FourierObservable(const FourierObservable &other);
+
+    Observable* m_pPhiObservable;
 };
 
 #endif /* FOURIER_OBSERVABLE_H */

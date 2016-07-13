@@ -79,7 +79,7 @@ public:
     const NumA::Vector3D& getTargetPolarization() const;
     void setTargetPolarization(const NumA::Vector3D& targetPolarization);
     const ProcessModule* getProcessModule() const;
-    void setProcessModule(ProcessModule* pProcessModule);
+    virtual void setProcessModule(ProcessModule* pProcessModule);
     ObservableChannel::Type getChannel() const;
     void setChannel(ObservableChannel::Type channel);
 

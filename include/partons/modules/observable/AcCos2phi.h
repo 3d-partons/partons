@@ -33,13 +33,13 @@ public:
 
     virtual double compute();
 
+    virtual void resolveObjectDependencies();
+
 protected:
     /**
      * Copy constructor
      */
     AcCos2phi(const AcCos2phi &other);
-
-    Observable* m_pAcObservable;
 
     NumA::FunctionType1D* m_pFunctionToIntegrateAcObservable;
 

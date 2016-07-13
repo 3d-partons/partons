@@ -41,8 +41,6 @@ protected:
      */
     AluSinPhi(const AluSinPhi &other);
 
-    Observable* m_pAluObservable;
-
     NumA::FunctionType1D* m_pFunctionToIntegrateObservable;
 
     virtual double functionToIntegrateObservable(double x,

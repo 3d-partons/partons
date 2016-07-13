@@ -17,12 +17,7 @@ const unsigned int AcCos2phi::classId =
                 new AcCos2phi("AcCos2phi"));
 
 AcCos2phi::AcCos2phi(const std::string &className) :
-        FourierObservable(className), m_pAcObservable(0), m_pFunctionToIntegrateAcObservable(
-                0) {
-    m_pAcObservable =
-            Partons::getInstance()->getModuleObjectFactory()->newObservable(
-                    Ac::classId);
-
+        FourierObservable(className), m_pFunctionToIntegrateAcObservable(0) {
     m_channel = ObservableChannel::DVCS;
 
     initFunctorsForIntegrations();
@@ -30,11 +25,8 @@ AcCos2phi::AcCos2phi(const std::string &className) :
 
 AcCos2phi::AcCos2phi(const AcCos2phi& other) :
         FourierObservable(other) {
-    if (other.m_pAcObservable != 0) {
-        m_pAcObservable = other.m_pAcObservable->clone();
-    } else {
-        m_pAcObservable = 0;
-    }
+
+    m_pFunctionToIntegrateAcObservable = 0;
 
     initFunctorsForIntegrations();
 }
@@ -44,6 +36,12 @@ AcCos2phi::~AcCos2phi() {
         delete m_pFunctionToIntegrateAcObservable;
         m_pFunctionToIntegrateAcObservable = 0;
     }
+}
+
+void AcCos2phi::resolveObjectDependencies() {
+    m_pPhiObservable =
+            Partons::getInstance()->getModuleObjectFactory()->newObservable(
+                    Ac::classId);
 }
 
 void AcCos2phi::initFunctorsForIntegrations() {
@@ -60,7 +58,7 @@ AcCos2phi* AcCos2phi::clone() const {
 double AcCos2phi::functionToIntegrateAcObservable(double x,
         std::vector<double> params) {
     // x[0] = phi
-    return m_pAcObservable->compute(x) * cos(2 * x);
+    return m_pPhiObservable->compute(x) * cos(2 * x);
 }
 
 double AcCos2phi::compute() {
