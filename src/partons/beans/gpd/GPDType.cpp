@@ -60,7 +60,9 @@ void GPDType::setType(Type type) {
 GPDType::Type GPDType::fromString(const std::string& gpdTypeStr) {
     GPDType::Type gpdType = GPDType::UNDEFINED;
 
-    if (ElemUtils::StringUtils::equals(gpdTypeStr, "H")) {
+    if (ElemUtils::StringUtils::equals(gpdTypeStr, "ALL")) {
+        gpdType = GPDType::ALL;
+    } else if (ElemUtils::StringUtils::equals(gpdTypeStr, "H")) {
         gpdType = GPDType::H;
     } else if (ElemUtils::StringUtils::equals(gpdTypeStr, "Ht")) {
         gpdType = GPDType::Ht;
@@ -69,6 +71,8 @@ GPDType::Type GPDType::fromString(const std::string& gpdTypeStr) {
     } else if (ElemUtils::StringUtils::equals(gpdTypeStr, "Et")) {
         gpdType = GPDType::Et;
     }
+
+    //TODO add missing stuff
 
     return gpdType;
 }

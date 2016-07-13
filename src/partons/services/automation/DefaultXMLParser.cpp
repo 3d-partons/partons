@@ -95,7 +95,10 @@ void DefaultXMLParser::startElement(const std::string &elementName,
                         XMLParserI::PARAM_NAME_ATTRIBUT_NAME),
                 attributes.getStringValueOf(
                         XMLParserI::PARAM_VALUE_ATTRIBUT_NAME));
-    } else if (ElemUtils::StringUtils::equals(elementName, "task_param")) {
+    }
+
+    // if reached start element node is task_param
+    else if (ElemUtils::StringUtils::equals(elementName, "task_param")) {
         m_tempObjectType = attributes.getStringValueOf(
                 XMLParserI::NODE_TYPE_ATTRIBUT_NAME);
     }

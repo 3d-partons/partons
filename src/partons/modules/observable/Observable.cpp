@@ -92,7 +92,7 @@ ObservableResult Observable::compute(double xB, double t, double Q2, double phi,
 
     ObservableResult observableResult;
 
-    m_pProcessModule->computeConvolCoeffFunction(xB, t, Q2);
+    m_pProcessModule->computeConvolCoeffFunction(xB, t, Q2, gpdType);
 
     // check if this observable is a fourier observable
     if (m_observableType == ObservableType::FOURIER) {
