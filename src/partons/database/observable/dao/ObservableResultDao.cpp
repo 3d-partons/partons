@@ -8,6 +8,7 @@
 
 #include "../../../../../include/partons/beans/observable/ObservableKinematic.h"
 #include "../../../../../include/partons/beans/observable/ObservableType.h"
+#include "../../../../../include/partons/database/Database.h"
 #include "../../../../../include/partons/database/DatabaseManager.h"
 #include "../../../../../include/partons/utils/math/ErrorBar.h"
 #include "../../../../../include/partons/utils/plot2D/Plot2D.h"
@@ -111,7 +112,8 @@ List<ObservableResult> ObservableResultDao::getObservableResultListFromSQLQuery(
 void ObservableResultDao::fillObservableResultList(
         List<ObservableResult> &observableResultList, QSqlQuery& query) const {
 
-    int field_id = query.record().indexOf("id");
+    int field_id = query.record().indexOf(
+            QString(Database::COLUMN_NAME_OBSERVABLE_RESULT_ID.c_str()));
     int field_observable_name = query.record().indexOf("observable_name");
     int field_observable_value = query.record().indexOf("observable_value");
     int field_stat_error_lb = query.record().indexOf("stat_error_lb");
@@ -122,7 +124,8 @@ void ObservableResultDao::fillObservableResultList(
     int field_computation_module_name = query.record().indexOf(
             "computation_module_name");
     int field_observable_type_id = query.record().indexOf("observable_type_id");
-    int field_kinematic_id = query.record().indexOf("observable_kinematic_id");
+    int field_kinematic_id = query.record().indexOf(
+            QString(Database::COLUMN_NAME_OBSERVABLE_KINEMATIC_ID.c_str()));
 
     while (query.next()) {
         int id = query.value(field_id).toInt();

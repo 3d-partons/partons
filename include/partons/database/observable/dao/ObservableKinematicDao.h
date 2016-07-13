@@ -4,12 +4,8 @@
 /**
  * @file ObservableKinematicDao.h
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 02 November 2015
+ * @date November 02, 2015
  * @version 1.0
- *
- * @class ObservableKinematicDao
- *
- * @brief
  */
 
 #include <QtSql/qsqlquery.h>
@@ -17,6 +13,11 @@
 #include "../../../beans/List.h"
 #include "../../../beans/observable/ObservableKinematic.h"
 
+/**
+ * @class ObservableKinematicDao
+ *
+ * @brief
+ */
 class ObservableKinematicDao: public BaseObject {
 public:
     ObservableKinematicDao();

@@ -4,12 +4,8 @@
 /**
  * @file ObservableResultDao.h
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 02 November 2015
+ * @date November 02, 2015
  * @version 1.0
- *
- * @class ObservableResultDao
- *
- * @brief
  */
 
 #include <QtSql/qsqlquery.h>
@@ -21,6 +17,11 @@
 
 class Plot2DList;
 
+/**
+ * @class ObservableResultDao
+ *
+ * @brief
+ */
 class ObservableResultDao: public BaseObject {
 public:
     ObservableResultDao();

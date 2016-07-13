@@ -1,24 +1,24 @@
 /* MySQL syntax */
 
 CREATE TABLE laboratory (
-id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, 
-name VARCHAR(255));
+laboratory_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, 
+laboratory_name VARCHAR(255));
 
 CREATE TABLE collaboration (
-id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, 
-name VARCHAR(255),
+collaboration_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, 
+collaboration_name VARCHAR(255),
 laboratory_id INTEGER);
 
 CREATE TABLE experiment (
-id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, 
-process VARCHAR(255), 
+experiment_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, 
+experiment_process VARCHAR(255), 
 experiment_type VARCHAR(255), 
-year INTEGER(4), 
-reference VARCHAR(255),
+experiment_year INTEGER(4), 
+experiment_reference VARCHAR(255),
 collaboration_id INTEGER);
 
 CREATE TABLE observable_kinematic (
-id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+observable_kinematic_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
 bin_id INTEGER NOT NULL, 
 xB DOUBLE NOT NULL, 
 t DOUBLE NOT NULL, 
@@ -27,7 +27,7 @@ phi DOUBLE NOT NULL,
 experiment_id INTEGER);
 
 CREATE TABLE observable_result (
-id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,  
+observable_result_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,  
 observable_name VARCHAR(255) NOT NULL, 
 observable_value DOUBLE NOT NULL, 
 stat_error_lb DOUBLE,
@@ -39,3 +39,36 @@ computation_module_name VARCHAR(255) NOT NULL,
 observable_type_id INTEGER NOT NULL,
 observable_kinematic_id INTEGER NOT NULL,
 computation_id INTEGER NOT NULL);
+
+
+
+CREATE VIEW observable_kinematic_view AS 
+SELECT obr.computation_id, obk.observable_kinematic_id, obk.xB, obk.t, obk.Q2, obk.phi
+FROM observable_result obr
+INNER JOIN observable_kinematic obk ON obr.observable_kinematic_id = obk.observable_kinematic_id
+INNER JOIN computation c ON obr.computation_id = c.computation_id
+ORDER BY obr.observable_result_id;
+
+
+
+INSERT INTO collaboration (collaboration_id, collaboration_name, laboratory_id) 
+VALUES ('0', 'COMPASS', 0);
+
+INSERT INTO collaboration (collaboration_id, collaboration_name, laboratory_id) 
+VALUES ('1', 'H1', 1);
+
+INSERT INTO collaboration (collaboration_id, collaboration_name, laboratory_id) 
+VALUES ('2', 'HERMES', 1);
+
+INSERT INTO collaboration (collaboration_id, collaboration_name, laboratory_id) 
+VALUES ('3', 'HERA', 1);
+
+INSERT INTO collaboration (collaboration_id, collaboration_name, laboratory_id) 
+VALUES ('4', 'ZEUS', 1);
+
+INSERT INTO collaboration (collaboration_id, collaboration_name, laboratory_id) 
+VALUES ('5', 'CLAS', 2);
+
+INSERT INTO collaboration (collaboration_id, collaboration_name, laboratory_id) 
+VALUES ('6', 'HALL A', 2);
+

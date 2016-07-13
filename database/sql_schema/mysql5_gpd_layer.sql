@@ -46,5 +46,24 @@ CREATE INDEX pdqd_index_b ON parton_distribution_quark_distribution (parton_dist
 
 
 CREATE VIEW gpd_result_view AS 
-SELECT gr.gpd_result_id, pd.parton_distribution_id, gr.computation_module_name, grpd.gpd_type_id, pd.gluon_distribution_value, qd.quark_flavor_id, qd.quark_distribution, qd.quark_distribution_plus, qd.quark_distribution_minus, gr.computation_id FROM gpd_result gr INNER JOIN computation c ON gr.computation_id = c.computation_id INNER JOIN gpd_result_parton_distribution grpd ON gr.gpd_result_id = grpd.gpd_result_id INNER JOIN parton_distribution pd ON grpd.parton_distribution_id = pd.parton_distribution_id INNER JOIN parton_distribution_quark_distribution pdqd ON pd.parton_distribution_id = pdqd.parton_distribution_id INNER JOIN quark_distribution qd ON pdqd.quark_distribution_id = qd.quark_distribution_id ORDER BY gr.gpd_result_id;
+SELECT gr.gpd_result_id, pd.parton_distribution_id, gr.computation_module_name, grpd.gpd_type_id, pd.gluon_distribution_value, qd.quark_flavor_id, qd.quark_distribution, qd.quark_distribution_plus, qd.quark_distribution_minus, gr.computation_id
+FROM gpd_result gr
+INNER JOIN computation c ON gr.computation_id = c.computation_id
+INNER JOIN gpd_result_parton_distribution grpd ON gr.gpd_result_id = grpd.gpd_result_id
+INNER JOIN parton_distribution pd ON grpd.parton_distribution_id = pd.parton_distribution_id
+INNER JOIN parton_distribution_quark_distribution pdqd ON pd.parton_distribution_id = pdqd.parton_distribution_id
+INNER JOIN quark_distribution qd ON pdqd.quark_distribution_id = qd.quark_distribution_id
+ORDER BY gr.gpd_result_id;
 
+CREATE VIEW gpd_result_2d_plot_view AS 
+SELECT gr.computation_id, gk.gpd_kinematic_id, gk.x, gk.xi, gk.t, gk.MuF2, gk.MuR2, gr.gpd_result_id, gr.computation_module_name, gt.gpd_type_short_name, pd.gluon_distribution_value, qf.quark_flavor_short_name, qd.quark_distribution, qd.quark_distribution_plus, qd.quark_distribution_minus
+FROM gpd_result gr
+INNER JOIN gpd_kinematic gk ON gr.gpd_kinematic_id = gk.gpd_kinematic_id
+INNER JOIN computation c ON gr.computation_id = c.computation_id
+INNER JOIN gpd_result_parton_distribution grpd ON gr.gpd_result_id = grpd.gpd_result_id
+INNER JOIN parton_distribution pd ON grpd.parton_distribution_id = pd.parton_distribution_id
+INNER JOIN parton_distribution_quark_distribution pdqd ON pd.parton_distribution_id = pdqd.parton_distribution_id
+INNER JOIN quark_distribution qd ON pdqd.quark_distribution_id = qd.quark_distribution_id
+INNER JOIN gpd_type gt ON grpd.gpd_type_id = gt.gpd_type_id
+INNER JOIN quark_flavor qf ON qd.quark_flavor_id = qf.quark_flavor_id
+ORDER BY gr.gpd_result_id;
