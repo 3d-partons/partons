@@ -25,7 +25,7 @@ class Parameters;
 
 class GPDKinematic: public Kinematic {
 public:
-    //TODO why missing T ?
+    //TODO The alias of T is defined in another class (Observable)
     static const std::string GPD_KINEMATIC_PARAMETER_NAME_X;
     static const std::string GPD_KINEMATIC_PARAMETER_NAME_XI;
     static const std::string GPD_KINEMATIC_PARAMETER_NAME_MUF2;

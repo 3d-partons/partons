@@ -1,13 +1,12 @@
-#include "../../../include/partons/services/VizualisationService.h"
-
+#include <include/partons/beans/List.h>
+#include <include/partons/BaseObjectRegistry.h>
+#include <include/partons/Partons.h>
+#include <include/partons/services/VizualisationService.h>
+#include <include/partons/utils/plot2D/Plot2D.h>
+#include <include/partons/utils/plot2D/Plot2DList.h>
 #include <QtCore/qstring.h>
 #include <QtCore/qvariant.h>
 #include <QtSql/qsqlquery.h>
-
-#include "../../../include/partons/BaseObjectRegistry.h"
-#include "../../../include/partons/Partons.h"
-#include "../../../include/partons/utils/plot2D/Plot2D.h"
-#include "../../../include/partons/utils/plot2D/Plot2DList.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int VizualisationService::classId =
@@ -36,7 +35,7 @@ Plot2DList VizualisationService::getplot2DFromSQLQuery(
 
     if (query.exec()) {
         while (query.next()) {
-            plot2DList.addPlot2D(
+            plot2DList.add(
                     Plot2D(query.value(0).toDouble(),
                             query.value(1).toDouble()));
         }

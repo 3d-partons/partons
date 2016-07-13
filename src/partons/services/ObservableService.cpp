@@ -1,30 +1,36 @@
-#include "../../../include/partons/services/ObservableService.h"
+//#include <ElementaryUtils/parameters/GenericType.h>
 
-#include <ElementaryUtils/parameters/GenericType.h>
+#include <ElementaryUtils/file_utils/FileUtils.h>
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <ElementaryUtils/thread/Packet.h>
+#include <include/partons/beans/automation/Task.h>
+#include <include/partons/beans/KinematicUtils.h>
+#include <include/partons/BaseObjectRegistry.h>
+#include <include/partons/database/observable/service/ObservableResultDaoService.h>
+#include <include/partons/modules/observable/Observable.h>
+#include <include/partons/modules/process/DVCSModule.h>
+#include <include/partons/modules/scale/ScaleModule.h>
+#include <include/partons/modules/xb_to_xi/XiConverterModule.h>
+#include <include/partons/ModuleObjectFactory.h>
+#include <include/partons/Partons.h>
+#include <include/partons/services/ConvolCoeffFunctionService.h>
+#include <include/partons/services/ObservableService.h>
+#include <include/partons/ServiceObjectRegistry.h>
+#include <include/partons/utils/exceptions/CCFModuleNullPointerException.h>
+#include <include/partons/utils/plot2D/Plot2DList.h>
 
-#include "../../../include/partons/beans/automation/Task.h"
-#include "../../../include/partons/beans/KinematicUtils.h"
-#include "../../../include/partons/BaseObjectRegistry.h"
-#include "../../../include/partons/database/observable/service/ObservableResultDaoService.h"
-#include "../../../include/partons/modules/observable/Observable.h"
-#include "../../../include/partons/modules/process/DVCSModule.h"
-#include "../../../include/partons/modules/scale/ScaleModule.h"
-#include "../../../include/partons/modules/xb_to_xi/XiConverterModule.h"
-#include "../../../include/partons/ModuleObjectFactory.h"
-#include "../../../include/partons/Partons.h"
-#include "../../../include/partons/services/ConvolCoeffFunctionService.h"
-#include "../../../include/partons/ServiceObjectRegistry.h"
-#include "../../../include/partons/utils/exceptions/CCFModuleNullPointerException.h"
+//#include <sys/select.h>
 
 const std::string ObservableService::FUNCTION_NAME_COMPUTE_OBSERVABLE =
         "computeObservable";
 
 const std::string ObservableService::FUNCTION_NAME_COMPUTE_MANY_KINEMATIC_ONE_MODEL =
         "computeManyKinematicOneModel";
+
+const std::string ObservableService::FUNCTION_NAME_GENERATE_PLOT_FILE =
+        "generatePlotFile";
 
 // Initialise [class]::classId with a unique name.
 const unsigned int ObservableService::classId =
@@ -49,6 +55,9 @@ void ObservableService::computeTask(Task &task) {
     } else if (ElemUtils::StringUtils::equals(task.getFunctionName(),
             ObservableService::FUNCTION_NAME_COMPUTE_MANY_KINEMATIC_ONE_MODEL)) {
         observableResultList = computeManyKinematicOneModelTask(task);
+    } else if (ElemUtils::StringUtils::equals(task.getFunctionName(),
+            ObservableService::FUNCTION_NAME_GENERATE_PLOT_FILE)) {
+        generatePlotFileTask(task);
     } else if (!ServiceObjectTyped<ObservableKinematic, ObservableResult>::computeGeneralTask(
             task)) {
         error(__func__, "unknown function name = " + task.getFunctionName());
@@ -309,4 +318,83 @@ ProcessModule* ObservableService::configureProcessModule(
     }
 
     return pProcessModule;
+}
+
+void ObservableService::generatePlotFileTask(Task& task) {
+
+    std::string filePath = ElemUtils::StringUtils::EMPTY;
+
+    std::vector<std::string> selectParams;
+    std::vector<ElemUtils::GenericType> whereParams;
+
+    if (task.isAvailableParameters("output")) {
+        filePath = task.getLastAvailableParameters().get("filePath").toString();
+    } else {
+        error(__func__,
+                "The output-type parameter is missing in the xml file ");
+    }
+    if (task.isAvailableParameters("select")) {
+        selectParams.push_back(
+                task.getLastAvailableParameters().get("xPlot").toString());
+        selectParams.push_back(
+                task.getLastAvailableParameters().get("yPlot").toString());
+    } else {
+        error(__func__,
+                "The select-type parameter is missing in the xml file ");
+    }
+    if (task.isAvailableParameters("where")) {
+        whereParams.push_back(task.getLastAvailableParameters().get("xB"));
+        whereParams.push_back(task.getLastAvailableParameters().get("t"));
+        whereParams.push_back(task.getLastAvailableParameters().get("Q2"));
+        whereParams.push_back(
+                task.getLastAvailableParameters().get("computation_id"));
+    } else {
+        error(__func__, "The where-type parameter is missing in the xml file ");
+    }
+
+    generatePlotFile(filePath, selectParams, whereParams);
+
+}
+
+void ObservableService::generatePlotFile(const std::string& filePath,
+        std::vector<std::string>& selectParams,
+        std::vector<ElemUtils::GenericType>& whereParams) const {
+
+    ObservableResultDaoService observableResultDaoService;
+
+    ElemUtils::Formatter formatter;
+
+    formatter << "SELECT ";
+
+    for (unsigned int i = 0; i != selectParams.size(); i++) {
+        formatter << selectParams[i];
+        if (i + 1 < selectParams.size()) {
+            formatter << ", ";
+        }
+    }
+
+    formatter << " FROM observable_plot_2d_view WHERE xB = "
+            << whereParams[0].toDouble() << " AND t = "
+            << whereParams[1].toDouble() << " AND Q2 = "
+            << whereParams[2].toDouble() << " AND computation_id = "
+            << whereParams[3].toInt();
+
+    debug(__func__, formatter.str());
+
+    Plot2DList plot2DList =
+            observableResultDaoService.getPlot2DListFromCustomQuery(
+                    formatter.str());
+
+    if (plot2DList.isEmpty()) {
+        warn(__func__,
+                "There is no coincidence all over the database with the given parameters");
+    } else {
+        info(__func__,
+                ElemUtils::Formatter() << plot2DList.size()
+                        << " data in coincidence with the given parameters have been found in the database and written in the file : "
+                        << filePath);
+
+    }
+
+    ElemUtils::FileUtils::writef(filePath, plot2DList.toStringPlotFile(' '));
 }

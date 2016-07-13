@@ -1,23 +1,21 @@
-#include "../../../../include/partons/utils/plot2D/Plot2DList.h"
+#include <ElementaryUtils/string_utils/Formatter.h>
+#include <include/partons/utils/plot2D/Plot2DList.h>
 
-Plot2DList::Plot2DList() {
+Plot2DList::Plot2DList() : List<Plot2D>() {
 
 }
-Plot2DList::Plot2DList(const std::vector<Plot2D> &plots) {
-    m_plots = plots;
-}
+
 Plot2DList::~Plot2DList() {
 
 }
 
-void Plot2DList::addPlot2D(const Plot2D &plot2D) {
-    m_plots.push_back(plot2D);
-}
+std::string Plot2DList::toStringPlotFile(const char &splitChar) const {
+    ElemUtils::Formatter formatter;
 
-const std::vector<Plot2D>& Plot2DList::getPlots() const {
-    return m_plots;
-}
+    for (unsigned int i = 0; i != size(); i++) {
+        formatter << m_data[i].getX() << splitChar << m_data[i].getY()
+                << '\n';
+    }
 
-void Plot2DList::setPlots(const std::vector<Plot2D>& plots) {
-    m_plots = plots;
+    return formatter.str();
 }

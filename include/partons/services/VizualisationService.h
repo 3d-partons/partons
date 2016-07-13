@@ -12,9 +12,8 @@
  * @brief
  */
 
+#include <include/partons/ServiceObject.h>
 #include <string>
-
-#include "../ServiceObject.h"
 
 class Plot2DList;
 

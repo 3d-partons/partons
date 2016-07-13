@@ -8,13 +8,14 @@
  * @version 1.0
  */
 
+#include <ElementaryUtils/parameters/GenericType.h>
+#include <include/partons/beans/List.h>
+#include <include/partons/beans/observable/ObservableChannel.h>
+#include <include/partons/beans/observable/ObservableKinematic.h>
+#include <include/partons/beans/observable/ObservableResult.h>
+#include <include/partons/ServiceObjectTyped.h>
 #include <string>
-
-#include "../beans/List.h"
-#include "../beans/observable/ObservableChannel.h"
-#include "../beans/observable/ObservableKinematic.h"
-#include "../beans/observable/ObservableResult.h"
-#include "../ServiceObjectTyped.h"
+#include <vector>
 
 class ConvolCoeffFunctionModule;
 class GPDModule;
@@ -33,6 +34,7 @@ class ObservableService: public ServiceObjectTyped<ObservableKinematic,
 public:
     static const std::string FUNCTION_NAME_COMPUTE_OBSERVABLE;
     static const std::string FUNCTION_NAME_COMPUTE_MANY_KINEMATIC_ONE_MODEL;
+    static const std::string FUNCTION_NAME_GENERATE_PLOT_FILE;
 
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
@@ -59,9 +61,14 @@ public:
             const ObservableKinematic &observableKinematic,
             Observable* pObservable) const;
 
+    void generatePlotFile(const std::string &filePath,
+            std::vector<std::string> &selectParams,
+            std::vector<ElemUtils::GenericType> &whereParams) const;
+
     Observable* configureObservable(Observable* pObservable,
             ProcessModule* pProcessModule,
             ConvolCoeffFunctionModule* pConvolCoeffFunctionModule) const;
+
     ProcessModule* configureProcessModule(ProcessModule* pProcessModule,
             ConvolCoeffFunctionModule* pConvolCoeffFunctionModule) const;
 
@@ -72,6 +79,7 @@ private:
     //TODO improve object copy
     ObservableResult computeObservableTask(Task &task);
     List<ObservableResult> computeManyKinematicOneModelTask(Task &task);
+    void generatePlotFileTask(Task &task);
 
 };
 
