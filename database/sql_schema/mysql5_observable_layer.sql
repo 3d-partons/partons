@@ -49,6 +49,12 @@ INNER JOIN observable_kinematic obk ON obr.observable_kinematic_id = obk.observa
 INNER JOIN computation c ON obr.computation_id = c.computation_id
 ORDER BY obr.observable_result_id;
 
+CREATE VIEW observable_plot_2d_view AS
+SELECT obr.computation_id, obr.observable_result_id, obk.xB, obk.t, obk.Q2, obk.phi, obr.observable_value
+FROM observable_kinematic obk
+INNER JOIN observable_result obr ON obr.observable_kinematic_id = obk.observable_kinematic_id
+ORDER BY obr.observable_result_id;
+
 
 
 INSERT INTO collaboration (collaboration_id, collaboration_name, laboratory_id) 
