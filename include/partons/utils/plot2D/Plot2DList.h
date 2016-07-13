@@ -8,9 +8,10 @@
  * @version 1.0
  */
 
-#include <include/partons/beans/List.h>
-#include <include/partons/utils/plot2D/Plot2D.h>
 #include <string>
+
+#include "../../beans/List.h"
+#include "Plot2D.h"
 
 /**
  * @class Plot2DList

@@ -4,12 +4,8 @@
 /**
  * @file GPDKinematic.h
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 26 November 2014
+ * @date November 26, 2014
  * @version 1.0
- *
- * @class GPDKinematic
- *
- * @brief Class representing the kinematic variables for a GPD model.
  */
 
 #include <ElementaryUtils/parameters/GenericType.h>
@@ -23,6 +19,11 @@ class Packet;
 class Parameters;
 } /* namespace ElemUtils */
 
+/**
+ * @class GPDKinematic
+ *
+ * @brief Class representing the kinematic variables for a GPD model.
+ */
 class GPDKinematic: public Kinematic {
 public:
     //TODO The alias of T is defined in another class (Observable)

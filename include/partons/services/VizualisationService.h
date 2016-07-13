@@ -4,19 +4,21 @@
 /**
  * @file VizualisationService.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 06 May 2015
+ * @date May 06, 2015
  * @version 1.0
- *
+ */
+
+#include <string>
+
+#include "../ServiceObject.h"
+
+class Plot2DList;
+
+/**
  * @class VizualisationService
  *
  * @brief
  */
-
-#include <include/partons/ServiceObject.h>
-#include <string>
-
-class Plot2DList;
-
 class VizualisationService: public ServiceObject {
 public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.

@@ -1,12 +1,14 @@
-#include <include/partons/beans/List.h>
-#include <include/partons/BaseObjectRegistry.h>
-#include <include/partons/Partons.h>
-#include <include/partons/services/VizualisationService.h>
-#include <include/partons/utils/plot2D/Plot2D.h>
-#include <include/partons/utils/plot2D/Plot2DList.h>
+#include "../../../include/partons/services/VizualisationService.h"
+
 #include <QtCore/qstring.h>
 #include <QtCore/qvariant.h>
 #include <QtSql/qsqlquery.h>
+
+#include "../../../include/partons/beans/List.h"
+#include "../../../include/partons/BaseObjectRegistry.h"
+#include "../../../include/partons/Partons.h"
+#include "../../../include/partons/utils/plot2D/Plot2D.h"
+#include "../../../include/partons/utils/plot2D/Plot2DList.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int VizualisationService::classId =

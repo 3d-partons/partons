@@ -172,7 +172,7 @@ Plot2DList ObservableResultDao::getPlot2DListFromCustomQuery(
 
     if (query.exec()) {
         while (query.next()) {
-            plot2DList.addPlot2D(
+            plot2DList.add(
                     Plot2D(query.value(0).toDouble(),
                             query.value(1).toDouble()));
         }

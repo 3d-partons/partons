@@ -9,13 +9,14 @@
  */
 
 #include <ElementaryUtils/parameters/GenericType.h>
-#include <include/partons/beans/List.h>
-#include <include/partons/beans/observable/ObservableChannel.h>
-#include <include/partons/beans/observable/ObservableKinematic.h>
-#include <include/partons/beans/observable/ObservableResult.h>
-#include <include/partons/ServiceObjectTyped.h>
 #include <string>
 #include <vector>
+
+#include "../beans/List.h"
+#include "../beans/observable/ObservableChannel.h"
+#include "../beans/observable/ObservableKinematic.h"
+#include "../beans/observable/ObservableResult.h"
+#include "../ServiceObjectTyped.h"
 
 class ConvolCoeffFunctionModule;
 class GPDModule;

@@ -1,25 +1,25 @@
-//#include <ElementaryUtils/parameters/GenericType.h>
+#include "../../../include/partons/services/ObservableService.h"
 
 #include <ElementaryUtils/file_utils/FileUtils.h>
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <ElementaryUtils/thread/Packet.h>
-#include <include/partons/beans/automation/Task.h>
-#include <include/partons/beans/KinematicUtils.h>
-#include <include/partons/BaseObjectRegistry.h>
-#include <include/partons/database/observable/service/ObservableResultDaoService.h>
-#include <include/partons/modules/observable/Observable.h>
-#include <include/partons/modules/process/DVCSModule.h>
-#include <include/partons/modules/scale/ScaleModule.h>
-#include <include/partons/modules/xb_to_xi/XiConverterModule.h>
-#include <include/partons/ModuleObjectFactory.h>
-#include <include/partons/Partons.h>
-#include <include/partons/services/ConvolCoeffFunctionService.h>
-#include <include/partons/services/ObservableService.h>
-#include <include/partons/ServiceObjectRegistry.h>
-#include <include/partons/utils/exceptions/CCFModuleNullPointerException.h>
-#include <include/partons/utils/plot2D/Plot2DList.h>
+
+#include "../../../include/partons/beans/automation/Task.h"
+#include "../../../include/partons/beans/KinematicUtils.h"
+#include "../../../include/partons/BaseObjectRegistry.h"
+#include "../../../include/partons/database/observable/service/ObservableResultDaoService.h"
+#include "../../../include/partons/modules/observable/Observable.h"
+#include "../../../include/partons/modules/process/DVCSModule.h"
+#include "../../../include/partons/modules/scale/ScaleModule.h"
+#include "../../../include/partons/modules/xb_to_xi/XiConverterModule.h"
+#include "../../../include/partons/ModuleObjectFactory.h"
+#include "../../../include/partons/Partons.h"
+#include "../../../include/partons/services/ConvolCoeffFunctionService.h"
+#include "../../../include/partons/ServiceObjectRegistry.h"
+#include "../../../include/partons/utils/exceptions/CCFModuleNullPointerException.h"
+#include "../../../include/partons/utils/plot2D/Plot2DList.h"
 
 //#include <sys/select.h>
 
