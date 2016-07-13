@@ -3,8 +3,6 @@
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/thread/Packet.h>
 #include <NumA/utils/MathUtils.h>
-#include <SFML/System/Sleep.hpp>
-#include <SFML/System/Time.hpp>
 #include <exception>
 #include <iostream>
 
@@ -59,28 +57,19 @@ void Observable::run() {
 
         while (!(pObservableService->isEmptyTaskQueue())) {
             ObservableKinematic kinematic;
+            GPDType gpdType;
             ElemUtils::Packet packet = pObservableService->popTaskFormQueue();
             packet >> kinematic;
+            packet >> gpdType;
 
             info(__func__,
                     ElemUtils::Formatter() << "objectId = " << getObjectId()
                             << " " << kinematic.toString());
 
-            pObservableService->add(compute(kinematic));
+            pObservableService->add(compute(kinematic, gpdType.getType()));
 
-//        info(__func__,
-//                Formatter() << "[Thread] id = " << getThreadId() << " "
-//                        << result.toString());
-
-//TODO replace by standard sleep ; multiplatform
-//usleep(30000);
-
-            sf::sleep(sf::milliseconds(3));
+            // sf::sleep(sf::milliseconds(3));
         }
-
-//    info(__func__,
-//            Formatter() << "[Thread] id = " << getThreadId()
-//                    << " empty task list, terminated.");
 
     } catch (std::exception &e) {
         std::cerr << e.what() << std::endl;
@@ -88,17 +77,18 @@ void Observable::run() {
 
 }
 
-ObservableResult Observable::compute(const ObservableKinematic &kinematic) {
+ObservableResult Observable::compute(const ObservableKinematic &kinematic,
+        const GPDType::Type gpdType) {
 
     ObservableResult result = compute(kinematic.getXB(), kinematic.getT(),
-            kinematic.getQ2(), kinematic.getPhi().getValue());
+            kinematic.getQ2(), kinematic.getPhi().getValue(), gpdType);
     result.setKinematic(kinematic);
 
     return result;
 }
 
-ObservableResult Observable::compute(double xB, double t, double Q2,
-        double phi) {
+ObservableResult Observable::compute(double xB, double t, double Q2, double phi,
+        const GPDType::Type gpdType) {
 
     ObservableResult observableResult;
 
@@ -120,8 +110,7 @@ ObservableResult Observable::compute(double xB, double t, double Q2,
 
         //TODO improve
         observableResult = ObservableResult(getClassName(),
-                compute(m_pProcessModule,
-                        NumA::MathUtils::convertDegreeToRadian(phi)));
+                compute(NumA::MathUtils::convertDegreeToRadian(phi)));
         observableResult.setComputationModuleName(
                 m_pProcessModule->getClassName());
         observableResult.setObservableType(m_observableType);
@@ -137,7 +126,7 @@ ObservableResult Observable::compute(double xB, double t, double Q2,
     return observableResult;
 }
 
-double Observable::compute(ProcessModule* pDVCSModule, double phi) {
+double Observable::compute(double phi) {
     error(__func__, "Nothing to do ; Must be implemented in daugther class");
     return 0.;
 }

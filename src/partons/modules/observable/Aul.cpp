@@ -26,15 +26,14 @@ Aul* Aul::clone() const {
     return new Aul(*this);
 }
 
-
-double Aul::compute(ProcessModule* pDVCSModule, double phi) {
+double Aul::compute(double phi) {
 
     double result = 0.;
 
-    double A = pDVCSModule->computeCrossSection(0, -1,
+    double A = m_pProcessModule->computeCrossSection(0, -1,
             NumA::Vector3D(0., 0., +1.), phi);
 
-    double B = pDVCSModule->computeCrossSection(0, -1,
+    double B = m_pProcessModule->computeCrossSection(0, -1,
             NumA::Vector3D(0., 0., -1.), phi);
 
     //TODO !!! division par zero !!!

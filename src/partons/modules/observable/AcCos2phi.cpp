@@ -60,7 +60,7 @@ AcCos2phi* AcCos2phi::clone() const {
 double AcCos2phi::functionToIntegrateAcObservable(double x,
         std::vector<double> params) {
     // x[0] = phi
-    return m_pAcObservable->compute(m_pProcessModule, x) * cos(2 * x);
+    return m_pAcObservable->compute(x) * cos(2 * x);
 }
 
 double AcCos2phi::compute() {

@@ -21,8 +21,6 @@
 #include "../../../include/partons/utils/exceptions/CCFModuleNullPointerException.h"
 #include "../../../include/partons/utils/plot2D/Plot2DList.h"
 
-//#include <sys/select.h>
-
 const std::string ObservableService::FUNCTION_NAME_COMPUTE_OBSERVABLE =
         "computeObservable";
 
@@ -85,7 +83,7 @@ void ObservableService::computeTask(Task &task) {
 
 List<ObservableResult> ObservableService::computeManyKinematicOneModel(
         const List<ObservableKinematic> & listOfKinematic,
-        Observable* pObservable) {
+        Observable* pObservable, const GPDType::Type gpdType) {
 
     List<ObservableResult> results;
 
@@ -97,7 +95,7 @@ List<ObservableResult> ObservableService::computeManyKinematicOneModel(
         ElemUtils::Packet packet;
         ObservableKinematic obsK;
         obsK = listOfKinematic[i];
-        packet << obsK;
+        packet << obsK << GPDType(gpdType);
         listOfPacket.add(packet);
     }
 
@@ -109,8 +107,11 @@ List<ObservableResult> ObservableService::computeManyKinematicOneModel(
 // ####################################################
 
     sortResultList();
+
     results = getResultList();
+
     clearResultListBuffer();
+    clearKinematicListBuffer();
 
     return results;
 }
@@ -129,16 +130,16 @@ ObservableResult ObservableService::computeObservableTask(Task& task) {
                         << task.getFunctionName());
     }
 
+    GPDType::Type gpdType = GPDType::ALL;
+
+    if (task.isAvailableParameters("GPDType")) {
+        gpdType = static_cast<GPDType::Type>(ObservableKinematic(
+                task.getLastAvailableParameters().get("type").toUInt()));
+    }
+
     Observable* pObservable = newObservableModuleFromTask(task);
 
-    ObservableResult result = computeObservable(kinematic, pObservable);
-
-//    info(__func__,
-//            ElemUtils::Formatter() << task.getFunctionName() << "("
-//                    << pObservable->getClassName() << ")" << '\n'
-//                    << result.toString());
-
-    return result;
+    return computeObservable(kinematic, pObservable, gpdType);
 }
 
 List<ObservableResult> ObservableService::computeManyKinematicOneModelTask(
@@ -165,17 +166,16 @@ List<ObservableResult> ObservableService::computeManyKinematicOneModelTask(
                         << task.getFunctionName());
     }
 
+    GPDType::Type gpdType = GPDType::ALL;
+
+    if (task.isAvailableParameters("GPDType")) {
+        gpdType = static_cast<GPDType::Type>(ObservableKinematic(
+                task.getLastAvailableParameters().get("type").toUInt()));
+    }
+
     Observable* pObservable = newObservableModuleFromTask(task);
 
-    List<ObservableResult> result = computeManyKinematicOneModel(
-            listOfKinematic, pObservable);
-
-//    info(__func__,
-//            ElemUtils::Formatter() << task.getFunctionName() << "("
-//                    << pObservable->getClassName() << ")" << '\n'
-//                    << result.toString());
-
-    return result;
+    return computeManyKinematicOneModel(listOfKinematic, pObservable, gpdType);
 }
 
 ObservableChannel::Type ObservableService::getObservableChannel(
@@ -190,9 +190,9 @@ ObservableChannel::Type ObservableService::getObservableChannel(
 }
 
 ObservableResult ObservableService::computeObservable(
-        const ObservableKinematic& observableKinematic,
-        Observable* pObservable) const {
-    return pObservable->compute(observableKinematic);
+        const ObservableKinematic& observableKinematic, Observable* pObservable,
+        const GPDType::Type gpdType) const {
+    return pObservable->compute(observableKinematic, gpdType);
 }
 
 //TODO pour les listes au-dessus utiliser cette fonctionnalité pour ne pas dupliquer les implémentations
@@ -396,5 +396,5 @@ void ObservableService::generatePlotFile(const std::string& filePath,
 
     }
 
-    ElemUtils::FileUtils::writef(filePath, plot2DList.toStringPlotFile(' '));
+    ElemUtils::FileUtils::writeLine(filePath, plot2DList.toStringPlotFile(' '));
 }

@@ -38,12 +38,12 @@ CrossSectionObservable* CrossSectionObservable::clone() const {
     return new CrossSectionObservable(*this);
 }
 
-double CrossSectionObservable::compute(ProcessModule* pDVCSModule, double phi) {
+double CrossSectionObservable::compute(double phi) {
 //    double result = pDVCSModule->computeCrossSection(+1, -1,
 //            Vector3D(0., 1., 0.), phi);
 //    return result;
 
-    double result = pDVCSModule->computeCrossSection(m_beamHelicity,
+    double result = m_pProcessModule->computeCrossSection(m_beamHelicity,
             m_beamCharge, m_targetPolarization, phi);
     return result;
 }

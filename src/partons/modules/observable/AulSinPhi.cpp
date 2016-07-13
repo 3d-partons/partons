@@ -68,7 +68,7 @@ AulSinPhi* AulSinPhi::clone() const {
 double AulSinPhi::functionToIntegrateObservable(double x,
         std::vector<double> params) {
     // x[0] = phi
-    return m_pAulObservable->compute(m_pProcessModule, x) * sin(x);
+    return m_pAulObservable->compute(x) * sin(x);
 }
 
 double AulSinPhi::compute() {

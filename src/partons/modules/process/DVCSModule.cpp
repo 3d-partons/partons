@@ -112,7 +112,8 @@ void DVCSModule::isModuleWellConfigured() {
     debug(__func__, "Entered function.");
 }
 
-void DVCSModule::computeConvolCoeffFunction(double xB, double t, double Q2) {
+void DVCSModule::computeConvolCoeffFunction(double xB, double t, double Q2,
+        const GPDType::Type gpdType) {
     if (isPreviousKinematicsDifferent(xB, t, Q2)
             || (BaseObjectRegistry::getInstance()->getObjectClassIdByClassName(
                     m_pConvolCoeffFunctionModule->getClassName())
@@ -124,7 +125,7 @@ void DVCSModule::computeConvolCoeffFunction(double xB, double t, double Q2) {
         m_dvcsConvolCoeffFunctionResult =
                 static_cast<DVCSConvolCoeffFunctionModule*>(m_pConvolCoeffFunctionModule)->compute(
                         m_pXiConverterModule->compute(xB, t, Q2), t, Q2,
-                        scale.getMuF2(), scale.getMuR2(), GPDType::ALL);
+                        scale.getMuF2(), scale.getMuR2(), gpdType);
     }
 
     debug(__func__,

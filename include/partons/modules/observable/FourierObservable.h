@@ -3,7 +3,7 @@
 
 /**
  * @file FourierObservable.h
- * @author Bryan BERTHOU (CEA Saclay)
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date September 28, 2015
  * @version 1.0
  *

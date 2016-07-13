@@ -3,21 +3,20 @@
 
 /**
  * @file Aul.h
- * @author Bryan BERTHOU (CEA Saclay)
- * @date 28 November 2014
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
+ * @date November 28, 2014
  * @version 1.0
- *
- * @class Aul
- *
- * @brief
  */
 
 #include <string>
 
 #include "Observable.h"
 
-class ProcessModule;
-
+/**
+ * @class Aul
+ *
+ * @brief
+ */
 class Aul: public Observable {
 public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
@@ -31,7 +30,7 @@ public:
      */
     virtual Aul* clone() const;
 
-    virtual double compute(ProcessModule* pDVCSModule, double phi);
+    virtual double compute(double phi);
 
 protected:
     /**

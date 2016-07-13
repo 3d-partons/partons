@@ -35,7 +35,8 @@ public:
      */
     virtual void configure(const ElemUtils::Parameters &parameters);
 
-    void computeConvolCoeffFunction(double xB, double t, double Q2);
+    void computeConvolCoeffFunction(double xB, double t, double Q2,
+            const GPDType::Type gpdType = GPDType::ALL);
 
     // TODO convert double to integer
     double computeCrossSection(double beamHelicity, double beamCharge,

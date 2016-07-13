@@ -12,6 +12,7 @@
 #include <string>
 #include <vector>
 
+#include "../beans/gpd/GPDType.h"
 #include "../beans/List.h"
 #include "../beans/observable/ObservableChannel.h"
 #include "../beans/observable/ObservableKinematic.h"
@@ -51,7 +52,8 @@ public:
 
     List<ObservableResult> computeManyKinematicOneModel(
             const List<ObservableKinematic> & listOfKinematic,
-            Observable* pObservable);
+            Observable* pObservable,
+            const GPDType::Type gpdType = GPDType::ALL);
 
     virtual void computeTask(Task &task);
 
@@ -60,7 +62,8 @@ public:
 
     ObservableResult computeObservable(
             const ObservableKinematic &observableKinematic,
-            Observable* pObservable) const;
+            Observable* pObservable,
+            const GPDType::Type gpdType = GPDType::ALL) const;
 
     void generatePlotFile(const std::string &filePath,
             std::vector<std::string> &selectParams,

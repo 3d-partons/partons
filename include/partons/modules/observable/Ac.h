@@ -3,21 +3,20 @@
 
 /**
  * @file Ac.h
- * @author Bryan BERTHOU (CEA Saclay)
- * @date 25 November 2014
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
+ * @date November 25, 2014
  * @version 1.0
- *
- * @class Ac
- *
- * @brief
  */
 
 #include <string>
 
 #include "Observable.h"
 
-class ProcessModule;
-
+/**
+ * @class Ac
+ *
+ * @brief
+ */
 class Ac: public Observable {
 public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
@@ -31,7 +30,7 @@ public:
      */
     virtual Ac* clone() const;
 
-    virtual double compute(ProcessModule* pDVCSModule, double phi);
+    virtual double compute(double phi);
 
 protected:
     /**

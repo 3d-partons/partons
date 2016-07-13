@@ -29,22 +29,22 @@ Ac* Ac::clone() const {
 
 //TODO vérifier
 //TODO !!! division par zero !!!
-double Ac::compute(ProcessModule* pDVCSModule, double phi) {
+double Ac::compute(double phi) {
 
     debug(__func__, ElemUtils::Formatter() << "phi = " << phi);
 
     double result = 0.;
 
-    result = ((pDVCSModule->computeCrossSection(+1, +1,
+    result = ((m_pProcessModule->computeCrossSection(+1, +1,
             NumA::Vector3D(0., 0., 0.), phi)
-            + pDVCSModule->computeCrossSection(-1, +1,
+            + m_pProcessModule->computeCrossSection(-1, +1,
                     NumA::Vector3D(0., 0., 0.), phi))
-            - ((pDVCSModule->computeCrossSection(+1, -1,
+            - ((m_pProcessModule->computeCrossSection(+1, -1,
                     NumA::Vector3D(0., 0., 0.), phi)
-                    + pDVCSModule->computeCrossSection(-1, -1,
+                    + m_pProcessModule->computeCrossSection(-1, -1,
                             NumA::Vector3D(0., 0., 0.), phi))))
             / (4.
-                    * (pDVCSModule->computeCrossSection(0., 0.,
+                    * (m_pProcessModule->computeCrossSection(0., 0.,
                             NumA::Vector3D(0., 0., 0.), phi)));
     return result;
 }

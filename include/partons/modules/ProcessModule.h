@@ -10,6 +10,7 @@
 
 #include <string>
 
+#include "../beans/gpd/GPDType.h"
 #include "../beans/observable/ObservableChannel.h"
 #include "../ModuleObject.h"
 
@@ -45,7 +46,8 @@ public:
      */
     virtual ~ProcessModule();
 
-    virtual void computeConvolCoeffFunction(double xB, double t, double Q2) = 0;
+    virtual void computeConvolCoeffFunction(double xB, double t, double Q2,
+            const GPDType::Type gpdType = GPDType::ALL) = 0;
 
     virtual double computeCrossSection(double beamHelicity, double beamCharge,
             NumA::Vector3D targetPolarization, double phi) = 0;

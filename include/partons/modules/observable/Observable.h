@@ -3,7 +3,7 @@
 
 /**
  * @file Observable.h
- * @author Bryan BERTHOU (CEA Saclay)
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date November 25, 2014
  * @version 1.0
  */
@@ -12,6 +12,7 @@
 #include <pthread.h>
 #include <string>
 
+#include "../../beans/gpd/GPDType.h"
 #include "../../beans/observable/ObservableChannel.h"
 #include "../../beans/observable/ObservableKinematic.h"
 #include "../../beans/observable/ObservableType.h"
@@ -55,11 +56,13 @@ public:
 
     double beamCharge, NumA::Vector3D targetPolarization);
 
-    ObservableResult compute(const ObservableKinematic &kinematic);
+    ObservableResult compute(const ObservableKinematic &kinematic,
+            const GPDType::Type gpdType = GPDType::ALL);
 
-    ObservableResult compute(double xB, double t, double Q2, double phi);
+    ObservableResult compute(double xB, double t, double Q2, double phi,
+            const GPDType::Type gpdType = GPDType::ALL);
 
-    virtual double compute(ProcessModule* pDVCSModule, double phi);
+    virtual double compute(double phi);
 
     // TODO clean
 //    virtual double Num(ProcessModule* pDVCSModule, double phi);

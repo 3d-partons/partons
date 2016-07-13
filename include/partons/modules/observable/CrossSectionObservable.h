@@ -4,18 +4,19 @@
 /**
  * @file CrossSectionObservable.h
  * @author Nabil CHOUIKA (SPhN / CEA Saclay)
- * @date 15 October 2015
+ * @date October 15, 2015
  * @version 1.0
- *
- * @class CrossSectionObservable
- *
- * @brief
  */
 
 #include <string>
 
 #include "Observable.h"
 
+/**
+ * @class CrossSectionObservable
+ *
+ * @brief
+ */
 class CrossSectionObservable: public Observable {
 public:
     static const std::string PARAMETER_NAME_BEAM_HELICITY;
@@ -33,7 +34,7 @@ public:
      */
     virtual CrossSectionObservable* clone() const;
 
-    virtual double compute(ProcessModule* pDVCSModule, double phi);
+    virtual double compute(double phi);
 
     /**
      * Provides a generic method to configure all types of modules by passing a Parameters object.

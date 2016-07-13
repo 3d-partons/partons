@@ -4,12 +4,8 @@
 /**
  * @file AluSinPhi.h
  * @author Bryan BERTHOU (CEA Saclay)
- * @date 28 September 2015
+ * @date September 28, 2015
  * @version 1.0
- *
- * @class AluSinPhi
- *
- * @brief
  */
 
 #include <string>
@@ -17,8 +13,11 @@
 
 #include "FourierObservable.h"
 
-class Observable;
-
+/**
+ * @class AluSinPhi
+ *
+ * @brief
+ */
 class AluSinPhi: public FourierObservable {
 public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
@@ -46,10 +45,8 @@ protected:
 
     NumA::FunctionType1D* m_pFunctionToIntegrateObservable;
 
-
     virtual double functionToIntegrateObservable(double x,
             std::vector<double> params);
-
 
     void initFunctorsForIntegrations();
 };
