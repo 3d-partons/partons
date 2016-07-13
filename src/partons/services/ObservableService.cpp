@@ -133,8 +133,9 @@ ObservableResult ObservableService::computeObservableTask(Task& task) {
     GPDType::Type gpdType = GPDType::ALL;
 
     if (task.isAvailableParameters("GPDType")) {
-        gpdType = static_cast<GPDType::Type>(ObservableKinematic(
-                task.getLastAvailableParameters().get("type").toUInt()));
+        gpdType =
+                static_cast<GPDType::Type>(task.getLastAvailableParameters().get(
+                        "type").toUInt());
     }
 
     Observable* pObservable = newObservableModuleFromTask(task);
@@ -169,8 +170,9 @@ List<ObservableResult> ObservableService::computeManyKinematicOneModelTask(
     GPDType::Type gpdType = GPDType::ALL;
 
     if (task.isAvailableParameters("GPDType")) {
-        gpdType = static_cast<GPDType::Type>(ObservableKinematic(
-                task.getLastAvailableParameters().get("type").toUInt()));
+        gpdType =
+                static_cast<GPDType::Type>(task.getLastAvailableParameters().get(
+                        "type").toUInt());
     }
 
     Observable* pObservable = newObservableModuleFromTask(task);
