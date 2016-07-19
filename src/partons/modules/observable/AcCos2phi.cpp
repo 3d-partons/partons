@@ -65,5 +65,5 @@ double AcCos2phi::compute() {
     std::vector<double> emptyParameters;
 
     return integrate(m_pFunctionToIntegrateAcObservable, 0., (2 * PI),
-            emptyParameters);
+            emptyParameters)/PI;
 }
