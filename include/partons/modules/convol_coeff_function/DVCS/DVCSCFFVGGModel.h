@@ -19,50 +19,82 @@ class FunctionType1D;
 }
 class GPDResult;
 
+/**
+ * VGG DVCS/CFF model
+ *
+ * Model implemented for the cross-check between original VGG code and PARTONS VGG1999Model process module.
+ * It is not recommended to use this model for the values xi < 0.01 as a loss of numerical precision may appear.
+ */
 class DVCSCFFVGGModel: public DVCSConvolCoeffFunctionModule {
 
 public:
 
+    static const std::string PARAMETER_NAME_EPS; ///< Name of parameter to set #eps_cffint via configure()
+
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
-    static const std::string PARAMETER_NAME_EPS;
-
+    /** Constructor
+     @param className Name of this class
+     */
     DVCSCFFVGGModel(const std::string &className);  ///< constructor
 
-    virtual DVCSCFFVGGModel* clone() const;    ///< clone
-
-    virtual ~DVCSCFFVGGModel(); ///< destructor
-
-    virtual void resolveObjectDependencies();    ///< init function
-
-    virtual void configure(const ElemUtils::Parameters &parameters);    ///< configure
+    virtual DVCSCFFVGGModel* clone() const;
+    virtual ~DVCSCFFVGGModel();
+    virtual void resolveObjectDependencies();
+    virtual void configure(const ElemUtils::Parameters &parameters);
 
 protected:
 
+    /** Copy constructor
+     @param other Object to be copied
+     */
     DVCSCFFVGGModel(const DVCSCFFVGGModel &other);  ///< copy constructor
 
-    virtual void initModule();  ///< init module
-    virtual void isModuleWellConfigured();  ///< check if well configured
+    virtual void initModule();
+    virtual void isModuleWellConfigured();
 
 private:
 
-    double eps_cffint; ///< step to skip x = xi singularity
+    double eps_cffint; ///< Step to avoid the evaluation at x = xi
+    double xixit; ///< Value of GPD at (xi, xi, t)
 
-    virtual std::complex<double> computeUnpolarized(); ///< compute CFF for unpolarized GPDs
-    virtual std::complex<double> computePolarized(); ///< compute CFF for polarized GPDs
+    virtual std::complex<double> computeUnpolarized();
+    virtual std::complex<double> computePolarized();
 
-    double xixit;   ///< value of GPD at (xi, xi, t)
+    /** Calculate contribution coming from the direct diagram
+     */
+    std::complex<double> calculate_direct();
 
-    std::complex<double> calculate_direct(); ///< calculate contribution from direct Feynman diagram
-    std::complex<double> calculate_crossed(); ///< calculate contribution from crossed Feynman diagram
-    double calculate_gpd_combination(GPDResult gpdResult); ///< compute combination of GPDs
-    void calculate_xixit_value();   ///< compute GPDs at (xi, xi, t)
-    double intd_vector_part(double x, std::vector<double> par); ///< wrapper for integral of GPD over x for direct Feynman diagram
-    double intc_vector_part(double x, std::vector<double> par); ///< wrapper for integral of GPD over x for crossed Feynman diagram
+    /** Calculate contribution coming from the crossed diagram
+     */
+    std::complex<double> calculate_crossed();
 
-    NumA::FunctionType1D* m_pIntd_vector_part;
-    NumA::FunctionType1D* m_pIntc_vector_part;
+    /** Compute sum of singlet combinations of GPDs weighted by quark charges
+     * @param gpdResult Singlet combinations to be calculated
+     */
+    double calculate_gpd_combination(GPDResult gpdResult);
 
+    /** Compute GPDs at (xi, xi, t)
+     */
+    void calculate_xixit_value();
+
+    /** Wrapper for the x integral and the direct diagram
+     * @param x GPD variable
+     * @param par Additional parameters
+     */
+    double intd_vector_part(double x, std::vector<double> par);
+
+    /** Wrapper for the x integral and the crossed diagram
+     * @param x GPD variable
+     * @param par Additional parameters
+     */
+    double intc_vector_part(double x, std::vector<double> par);
+
+    NumA::FunctionType1D* m_pIntd_vector_part; ///< Functor related to intd_vector_part()
+    NumA::FunctionType1D* m_pIntc_vector_part; ///< Functor related to intc_vector_part()
+
+    /** Initialize functors
+     */
     void initFunctorsForIntegrations();
 };
 
