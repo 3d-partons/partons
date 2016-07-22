@@ -115,8 +115,8 @@ private:
     //ALGEBRA
 
     /** Initialize four vector from energy and momentum
-     * @param a Energy
-     * @param b Momentum vector
+     * @param a Input energy
+     * @param b Input momentum vector
      */
     NumA::VectorComplex4D V4ini(std::complex<double> a,
             NumA::VectorComplex3D b);
@@ -136,7 +136,7 @@ private:
 
     /** Gamma5 matrix
      */
-    NumA::MatrixComplex4D dirac_gamma5(); ///< gamma5 matrix
+    NumA::MatrixComplex4D dirac_gamma5();
 
     /** Metric signature
      * @param mu, nu Dimension indices
@@ -150,7 +150,7 @@ private:
     NumA::VectorComplex3D pauli(double row, double col);
 
     /** Dirac adjoint
-     * @param a Dirac spinor
+     * @param a Input dirac spinor
      */
     NumA::VectorComplex4D spinor_adj(NumA::VectorComplex4D a);
 
@@ -163,12 +163,12 @@ private:
             NumA::MatrixComplex4D m, NumA::VectorComplex4D r);
 
     /** Contraction of four vector with gamma matrix
-     * @param a Four vector
+     * @param a Input four vector
      */
     NumA::MatrixComplex4D fvec_slash(NumA::VectorComplex4D a);
 
     /** Contraction of two four vectors
-     * @param a, b Four vectors
+     * @param a, b Input four vectors
      */
     std::complex<double> V4mul(NumA::VectorComplex4D a,
             NumA::VectorComplex4D b);
@@ -179,18 +179,18 @@ private:
     std::complex<double> Cinv(std::complex<double> z);
 
     /** Helicity spinor for a particle with momentum, mass 0 and helicity +/-
-     * @param p Momentum
-     * @param hel Helicity
+     * @param p Input momentum
+     * @param hel Input helicity
      */
     NumA::VectorComplex4D spinor_hel(momentum3 p, double hel);
 
     /** Polar angle for given vector
-     * @param t Vector
+     * @param t Input vector
      */
     double polar_angle(NumA::VectorComplex3D t);
 
     /** Azimuthal angle for given vector
-     * @param t Vector
+     * @param t Input vector
      */
     double azimut_angle(NumA::VectorComplex3D t);
 
@@ -289,7 +289,7 @@ private:
     //OTHERS
 
     /** Convert nb to GeV-2
-     * @param nb Input
+     * @param nb Input cross section in nb
      */
     double nbToGeVm2conversion(double nb);
 
