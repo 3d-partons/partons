@@ -13,9 +13,9 @@
 #include "Observable.h"
 
 /**
- * @class All
+ * double longitudinal target spin asymmetry
  *
- * @brief
+ * described in 1210.6975v3 [hep-ph] eq. (51)
  */
 class All: public Observable {
 public:
@@ -30,7 +30,7 @@ public:
      */
     virtual All* clone() const;
 
-    virtual double compute(double phi);
+    virtual double compute(double phi); ///< calculate cross sections with various helicities and beam charge and combine them to obtain the asymmetry
 
 protected:
     /**

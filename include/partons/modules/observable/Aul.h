@@ -14,8 +14,9 @@
 
 /**
  * @class Aul
- *
+ * target longitudianl spin asymmetry
  * @brief
+ * described in 1210.6975v3 [hep-ph] eq. (50)
  */
 class Aul: public Observable {
 public:

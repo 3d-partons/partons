@@ -15,8 +15,9 @@
 
 /**
  * @class AluiSin1phi
- *
+ * 1st Fourier sin coefficient of Interference contribution of beam spin asymmetry
  * @brief
+ * described in 1210.6975v3 [hep-ph] eq. (46) + (54)
  */
 class AluiSin1phi: public FourierObservable {
 public:

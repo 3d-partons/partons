@@ -15,8 +15,9 @@
 
 /**
  * @class AluDVCSSin1phi
- *
+ * 1st Fourier sin coefficient of DVCS contribution of beam spin asymmetry
  * @brief
+ * described in 1210.6975v3 [hep-ph] eq. (47) + (54)
  */
 class AluDVCSSin1phi: public FourierObservable {
 public:

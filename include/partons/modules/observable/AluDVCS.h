@@ -14,8 +14,9 @@
 
 /**
  * @class AluDVCS
- *
+ * DVCS contribution to beam spin asymmetry
  * @brief
+ * described in 1210.6975v3 [hep-ph] eq. (47)
  */
 class AluDVCS: public Observable {
 public:

@@ -14,9 +14,10 @@
 #include "FourierObservable.h"
 
 /**
- * @class AluiSin2phi
- *
+ * @class AluiSin1phi
+ * 2nd Fourier sin coefficient of Interference contribution of beam spin asymmetry
  * @brief
+ * described in 1210.6975v3 [hep-ph] eq. (46) + (54)
  */
 class AluiSin2phi: public FourierObservable {
 public:

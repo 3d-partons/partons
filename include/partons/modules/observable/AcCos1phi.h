@@ -13,7 +13,14 @@
 
 #include "FourierObservable.h"
 
-
+/**
+ * @class AcCos1phi
+ *
+ *
+ * 1st Fourier cos coefficient of Charge Asymmetry
+ *
+ * described in 1210.6975v3 [hep-ph] eq. (54)
+ */
 class AcCos1phi: public FourierObservable {
 public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.

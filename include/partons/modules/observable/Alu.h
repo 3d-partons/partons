@@ -14,8 +14,9 @@
 
 /**
  * @class Alu
- *
+ * Beam spin asymmetry
  * @brief
+ * described in 1210.6975v3 [hep-ph] eq. (48)
  */
 class Alu: public Observable {
 public:

@@ -14,9 +14,10 @@
 #include "FourierObservable.h"
 
 /**
- * @class AluSinPhi
- *
+ * @class AluiSin1phi
+ * 1st Fourier sin coefficient of beam spin asymmetry
  * @brief
+ * described in 1210.6975v3 [hep-ph] eq. (48) + (54)
  */
 class AluSinPhi: public FourierObservable {
 public:

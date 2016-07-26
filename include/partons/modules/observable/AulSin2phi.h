@@ -15,8 +15,9 @@
 
 /**
  * @class AulSin2phi
- *
+ * 2nd Fourier sin coefficient of target longitudinal spin asymmetry
  * @brief
+ * described in 1210.6975v3 [hep-ph] eq. (50) + (54)
  */
 class AulSin2phi: public FourierObservable {
 public:

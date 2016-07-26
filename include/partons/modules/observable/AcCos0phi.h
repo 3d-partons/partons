@@ -16,7 +16,10 @@
 /**
  * @class AcCos0phi
  *
- * @brief
+ *
+ * 0th fourier cos coefficient of Charge Asymmetry
+ *
+ * described in 1210.6975v3 [hep-ph] eq. (54)
  */
 class AcCos0phi: public FourierObservable {
 public:

@@ -16,7 +16,10 @@
 /**
  * @class AllCos0phi
  *
- * @brief
+ *
+ * 0th Fourier cos coefficient of double longitudinal target spin asymmetry Asymmetry
+ *
+ * described in 1210.6975v3 [hep-ph] eq. (51) + (54)
  */
 class AllCos0phi: public FourierObservable {
 public:
