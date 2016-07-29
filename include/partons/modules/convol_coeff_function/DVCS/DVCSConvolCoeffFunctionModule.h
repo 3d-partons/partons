@@ -11,6 +11,7 @@
 #include <complex>
 #include <map>
 #include <string>
+#include <vector>
 
 #include "../../../beans/gpd/GPDType.h"
 #include "../../../beans/PerturbativeQCDOrderType.h"
@@ -46,6 +47,8 @@ public:
     virtual std::complex<double> computeUnpolarized();
     virtual std::complex<double> computePolarized();
     virtual std::complex<double> computeCFF();
+
+    std::vector<GPDType::Type> getListOfAvailableGPDTypeForComputation() const;
 
     // ##### GETTERS & SETTERS #####
 

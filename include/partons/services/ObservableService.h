@@ -8,9 +8,7 @@
  * @version 1.0
  */
 
-#include <ElementaryUtils/parameters/GenericType.h>
 #include <string>
-#include <vector>
 
 #include "../beans/gpd/GPDType.h"
 #include "../beans/List.h"
@@ -50,6 +48,11 @@ public:
      */
     virtual ~ObservableService();
 
+    ObservableResult computeObservable(
+            const ObservableKinematic &observableKinematic,
+            Observable* pObservable,
+            const GPDType::Type gpdType = GPDType::ALL) const;
+
     List<ObservableResult> computeManyKinematicOneModel(
             const List<ObservableKinematic> & listOfKinematic,
             Observable* pObservable,
@@ -60,14 +63,8 @@ public:
     ObservableChannel::Type getObservableChannel(
             const std::string &observableClassName) const;
 
-    ObservableResult computeObservable(
-            const ObservableKinematic &observableKinematic,
-            Observable* pObservable,
-            const GPDType::Type gpdType = GPDType::ALL) const;
-
-    void generatePlotFile(const std::string &filePath,
-            std::vector<std::string> &selectParams,
-            std::vector<ElemUtils::GenericType> &whereParams) const;
+    void generatePlotFile(const std::string& filePath,
+            const std::string &sqlQuery, const char splitChar) const;
 
     Observable* configureObservable(Observable* pObservable,
             ProcessModule* pProcessModule,

@@ -312,3 +312,15 @@ void GPDModule::run() {
         std::cerr << e.what() << std::endl;
     }
 }
+
+std::vector<GPDType::Type> GPDModule::getListOfAvailableGPDTypeForComputation() const {
+    std::map<GPDType::Type, PartonDistribution (GPDModule::*)()>::const_iterator it;
+    std::vector<GPDType::Type> listOfAvailableGPDTypeForComputation;
+
+    for (it = m_listGPDComputeTypeAvailable.begin();
+            it != m_listGPDComputeTypeAvailable.end(); it++) {
+        listOfAvailableGPDTypeForComputation.push_back(it->first);
+    }
+
+    return listOfAvailableGPDTypeForComputation;
+}

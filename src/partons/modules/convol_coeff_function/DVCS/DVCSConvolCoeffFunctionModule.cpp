@@ -242,3 +242,16 @@ void DVCSConvolCoeffFunctionModule::configure(
 
     ConvolCoeffFunctionModule::configure(parameters);
 }
+
+std::vector<GPDType::Type> DVCSConvolCoeffFunctionModule::getListOfAvailableGPDTypeForComputation() const {
+    std::map<GPDType::Type,
+            std::complex<double> (DVCSConvolCoeffFunctionModule::*)()>::const_iterator it;
+    std::vector<GPDType::Type> listOfAvailableGPDTypeForComputation;
+
+    for (it = m_listOfCFFComputeFunctionAvailable.begin();
+            it != m_listOfCFFComputeFunctionAvailable.end(); it++) {
+        listOfAvailableGPDTypeForComputation.push_back(it->first);
+    }
+
+    return listOfAvailableGPDTypeForComputation;
+}

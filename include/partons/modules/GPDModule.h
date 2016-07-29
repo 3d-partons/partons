@@ -4,15 +4,13 @@
 /**
  * @file GPDModule.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 06 Aout 2014
+ * @date August 06, 2014
  * @version 1.0
- *
- * @class GPDModule
- * @brief Abstract class that provides skeleton to implement a Generalized Parton Distributions (GPD) module.
  */
 
 #include <map>
 #include <string>
+#include <vector>
 
 #include "../beans/gpd/GPDKinematic.h"
 #include "../beans/gpd/GPDType.h"
@@ -22,6 +20,10 @@
 class GPDEvolutionModule;
 class GPDResult;
 
+/**
+ * @class GPDModule
+ * @brief Abstract class that provides skeleton to implement a Generalized Parton Distributions (GPD) module.
+ */
 class GPDModule: public ModuleObject {
 public:
 
@@ -106,6 +108,8 @@ public:
     double getXi() const;
     void setXi(double xi);
 
+    std::vector<GPDType::Type> getListOfAvailableGPDTypeForComputation() const;
+
 protected:
     double m_x;
     double m_xi;
@@ -147,6 +151,8 @@ protected:
 
     std::map<GPDType::Type, PartonDistribution (GPDModule::*)()> m_listGPDComputeTypeAvailable;
     std::map<GPDType::Type, PartonDistribution (GPDModule::*)()>::iterator m_it;
+
+    // std::vector<GPDType::Type> m_listOfAvailableGPDTypeForComputation;
 };
 
 #endif /* GPD_MODULE_H */

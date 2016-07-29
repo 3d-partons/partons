@@ -1,6 +1,7 @@
 #include "../../../include/partons/services/ObservableService.h"
 
 #include <ElementaryUtils/file_utils/FileUtils.h>
+#include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
@@ -321,69 +322,17 @@ ProcessModule* ObservableService::configureProcessModule(
 }
 
 void ObservableService::generatePlotFileTask(Task& task) {
-
-    std::string filePath = ElemUtils::StringUtils::EMPTY;
-
-    std::vector<std::string> selectParams;
-    std::vector<ElemUtils::GenericType> whereParams;
-
-    if (task.isAvailableParameters("output")) {
-        filePath = task.getLastAvailableParameters().get("filePath").toString();
-    } else {
-        error(__func__,
-                "The output-type parameter is missing in the xml file ");
-    }
-    if (task.isAvailableParameters("select")) {
-        selectParams.push_back(
-                task.getLastAvailableParameters().get("xPlot").toString());
-        selectParams.push_back(
-                task.getLastAvailableParameters().get("yPlot").toString());
-    } else {
-        error(__func__,
-                "The select-type parameter is missing in the xml file ");
-    }
-    if (task.isAvailableParameters("where")) {
-        whereParams.push_back(task.getLastAvailableParameters().get("xB"));
-        whereParams.push_back(task.getLastAvailableParameters().get("t"));
-        whereParams.push_back(task.getLastAvailableParameters().get("Q2"));
-        whereParams.push_back(
-                task.getLastAvailableParameters().get("computation_id"));
-    } else {
-        error(__func__, "The where-type parameter is missing in the xml file ");
-    }
-
-    generatePlotFile(filePath, selectParams, whereParams);
-
+    generatePlotFile(getOutputFilePathForPlotFileTask(task),
+            generateSQLQueryForPlotFileTask(task, "observable_plot_2d_view"),
+            ' ');
 }
 
 void ObservableService::generatePlotFile(const std::string& filePath,
-        std::vector<std::string>& selectParams,
-        std::vector<ElemUtils::GenericType>& whereParams) const {
-
+        const std::string &sqlQuery, const char splitChar) const {
     ObservableResultDaoService observableResultDaoService;
 
-    ElemUtils::Formatter formatter;
-
-    formatter << "SELECT ";
-
-    for (unsigned int i = 0; i != selectParams.size(); i++) {
-        formatter << selectParams[i];
-        if (i + 1 < selectParams.size()) {
-            formatter << ", ";
-        }
-    }
-
-    formatter << " FROM observable_plot_2d_view WHERE xB = "
-            << whereParams[0].toDouble() << " AND t = "
-            << whereParams[1].toDouble() << " AND Q2 = "
-            << whereParams[2].toDouble() << " AND computation_id = "
-            << whereParams[3].toInt();
-
-    debug(__func__, formatter.str());
-
     Plot2DList plot2DList =
-            observableResultDaoService.getPlot2DListFromCustomQuery(
-                    formatter.str());
+            observableResultDaoService.getPlot2DListFromCustomQuery(sqlQuery);
 
     if (plot2DList.isEmpty()) {
         warn(__func__,
@@ -396,5 +345,6 @@ void ObservableService::generatePlotFile(const std::string& filePath,
 
     }
 
-    ElemUtils::FileUtils::writeLine(filePath, plot2DList.toStringPlotFile(' '));
+    ElemUtils::FileUtils::writeLine(filePath,
+            plot2DList.toStringPlotFile(splitChar));
 }
