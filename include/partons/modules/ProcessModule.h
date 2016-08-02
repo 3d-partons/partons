@@ -64,6 +64,8 @@ public:
     bool isCCFModuleDependent() const;
     void isCCFModuleDependent(bool isCcfModuleDependent);
 
+    ConvolCoeffFunctionModule* getConvolCoeffFunctionModule() const;
+
 protected:
     /**
      * Copy constructor

@@ -136,3 +136,7 @@ bool ProcessModule::isCCFModuleDependent() const {
 void ProcessModule::isCCFModuleDependent(bool isCcfModuleDependent) {
     m_isCCFModuleDependent = isCcfModuleDependent;
 }
+
+ConvolCoeffFunctionModule* ProcessModule::getConvolCoeffFunctionModule() const {
+    return m_pConvolCoeffFunctionModule;
+}
