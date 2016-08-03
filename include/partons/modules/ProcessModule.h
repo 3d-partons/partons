@@ -15,7 +15,6 @@
 #include "../ModuleObject.h"
 
 class ConvolCoeffFunctionModule;
-class Observable;
 class ScaleModule;
 class XiConverterModule;
 
@@ -93,7 +92,6 @@ protected:
     ScaleModule* m_pScaleModule;
     XiConverterModule* m_pXiConverterModule;
 
-    Observable* m_pObservable;
     ConvolCoeffFunctionModule* m_pConvolCoeffFunctionModule;
 
     bool isPreviousKinematicsDifferent(double xB, double t, double Q2);

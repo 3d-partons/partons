@@ -4,37 +4,41 @@
 /**
  * @file PhysicalType.h
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 20 January 2016
+ * @date January 20, 2016
  * @version 1.0
- *
- * @class PhysicalType
- *
- * @brief
  */
 
 #include <ElementaryUtils/string_utils/Formatter.h>
+#include <ElementaryUtils/string_utils/StringUtils.h>
 #include <ElementaryUtils/thread/Packet.h>
 #include <sstream>
 #include <stdexcept>
 #include <string>
 
+/**
+ * @class PhysicalType
+ *
+ * @brief
+ */
 template<class T>
 class PhysicalType {
 public:
+    static const std::string PHYSICAL_TYPE_NONE_UNIT;
+
     PhysicalType() :
-            m_initialized(false), m_value(), m_unit("none") {
+            m_initialized(false), m_value(), m_unit(PHYSICAL_TYPE_NONE_UNIT) {
     }
     PhysicalType(T value) :
-            m_initialized(false), m_value(value), m_unit("none") {
+            m_initialized(true), m_value(value), m_unit(PHYSICAL_TYPE_NONE_UNIT) {
     }
 
     PhysicalType(const std::string &stringValue) :
-            m_initialized(false), m_unit("none") {
+            m_initialized(false), m_unit(PHYSICAL_TYPE_NONE_UNIT) {
         fromStdString(stringValue);
     }
 
     PhysicalType(T value, const std::string &unit) :
-            m_initialized(false), m_value(value), m_unit(unit) {
+            m_initialized(true), m_value(value), m_unit(unit) {
     }
 
     PhysicalType(const std::string &stringValue, const std::string &unit) :
@@ -53,7 +57,7 @@ public:
         // if conversion failed then print an exception
         if ((sstream >> m_value).fail()) {
             throw std::runtime_error(
-                    "[PhysicalBaseType::fromString] cast from std::string to T failed ! ");
+                    "(PhysicalBaseType::fromStdString) cast from std::string to type<T> failed ! ");
         }
 
         m_initialized = true;
@@ -63,9 +67,13 @@ public:
         ElemUtils::Formatter formatter;
 
         if (m_initialized) {
-            formatter << m_value << "(" << m_unit << ")";
+            formatter << m_value;
+            if (!ElemUtils::StringUtils::equalsIgnoreCase(m_unit,
+                    PHYSICAL_TYPE_NONE_UNIT)) {
+                formatter << "(" << m_unit << ")";
+            }
         } else {
-            formatter << "nan";
+            formatter << "not initialized";
         }
 
         return formatter.str();
@@ -134,6 +142,9 @@ private:
     T m_value;
     std::string m_unit;
 };
+
+template<class T>
+const std::string PhysicalType<T>::PHYSICAL_TYPE_NONE_UNIT = "none";
 
 template<class T>
 ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,

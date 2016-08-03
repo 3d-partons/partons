@@ -67,8 +67,7 @@ public:
             const std::string &sqlQuery, const char splitChar) const;
 
     Observable* configureObservable(Observable* pObservable,
-            ProcessModule* pProcessModule,
-            ConvolCoeffFunctionModule* pConvolCoeffFunctionModule) const;
+            ProcessModule* pProcessModule) const;
 
     ProcessModule* configureProcessModule(ProcessModule* pProcessModule,
             ConvolCoeffFunctionModule* pConvolCoeffFunctionModule) const;

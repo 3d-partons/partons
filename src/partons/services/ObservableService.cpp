@@ -253,9 +253,7 @@ Observable* ObservableService::newObservableModuleFromTask(
     pProcessModule->setPScaleModule(pScaleModule);
     pProcessModule->setPXiConverterModule(pXiConverterModule);
 
-    pObservable->setProcessModule(pProcessModule);
-
-    return pObservable;
+    return configureObservable(pObservable, pProcessModule);
 }
 
 ProcessModule* ObservableService::newProcessModuleFromTask(
@@ -286,14 +284,11 @@ ProcessModule* ObservableService::newProcessModuleFromTask(
 }
 
 Observable* ObservableService::configureObservable(Observable* pObservable,
-        ProcessModule* pProcessModule,
-        ConvolCoeffFunctionModule* pConvolCoeffFunctionModule) const {
+        ProcessModule* pProcessModule) const {
 
     if (pObservable == 0) {
         error(__func__, "You have not provided any Observable");
     }
-
-    configureProcessModule(pProcessModule, pConvolCoeffFunctionModule);
 
     pObservable->setProcessModule(pProcessModule);
 

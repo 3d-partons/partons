@@ -55,6 +55,9 @@ void Observable::run() {
         ObservableService* pObservableService =
                 Partons::getInstance()->getServiceObjectRegistry()->getObservableService();
 
+        //TODO remove this hack to resolve problem after cloning a FourierObservable by the ThreadManager.
+        setProcessModule(getProcessModule());
+
         while (!(pObservableService->isEmptyTaskQueue())) {
             ObservableKinematic kinematic;
             GPDType gpdType;
@@ -174,12 +177,16 @@ void Observable::setTargetPolarization(
     m_targetPolarization = targetPolarization;
 }
 
-const ProcessModule* Observable::getProcessModule() const {
+ProcessModule* Observable::getProcessModule() const {
     return m_pProcessModule;
 }
 
 void Observable::setProcessModule(ProcessModule* pProcessModule) {
     m_pProcessModule = pProcessModule;
+
+    warn(__func__,
+            ElemUtils::Formatter() << "has been set with "
+                    << pProcessModule->getClassName());
 }
 
 void Observable::configure(const ElemUtils::Parameters &parameters) {

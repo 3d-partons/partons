@@ -15,6 +15,8 @@ FourierObservable::FourierObservable(const FourierObservable& other) :
         Observable(other), MathIntegratorModule(other), m_pPhiObservable(0) {
     if (other.m_pPhiObservable != 0) {
         m_pPhiObservable = other.m_pPhiObservable->clone();
+    } else {
+        m_pPhiObservable = 0;
     }
 }
 
@@ -26,9 +28,7 @@ void FourierObservable::setProcessModule(ProcessModule* pProcessModule) {
 
     if (m_pPhiObservable != 0) {
         m_pPhiObservable->setProcessModule(pProcessModule);
-    }
-    else
-    {
+    } else {
         error(__func__, "m_pPhiObservable is NULL pointer");
     }
 }

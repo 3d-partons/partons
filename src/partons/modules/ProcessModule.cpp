@@ -6,7 +6,6 @@
 #include <exception>
 
 #include "../../../include/partons/modules/ConvolCoeffFunctionModule.h"
-#include "../../../include/partons/modules/observable/Observable.h"
 #include "../../../include/partons/modules/scale/ScaleModule.h"
 #include "../../../include/partons/modules/xb_to_xi/XiConverterModule.h"
 
@@ -15,8 +14,8 @@ const std::string ProcessModule::PARAMETER_NAME_BEAM_ENERGY = "beam_energy";
 ProcessModule::ProcessModule(const std::string &className) :
         ModuleObject(className), m_isCCFModuleDependent(true), m_phi(0.), m_phiS(
                 0.), m_phie(0.), m_xB(0.), m_t(0.), m_Q2(0.), m_E(0.), m_pScaleModule(
-                0), m_pXiConverterModule(0), m_pObservable(0), m_pConvolCoeffFunctionModule(
-                0), m_channel(ObservableChannel::UNDEFINED) {
+                0), m_pXiConverterModule(0), m_pConvolCoeffFunctionModule(0), m_channel(
+                ObservableChannel::UNDEFINED) {
 }
 
 ProcessModule::ProcessModule(const ProcessModule &other) :
@@ -45,12 +44,6 @@ ProcessModule::ProcessModule(const ProcessModule &other) :
         m_pXiConverterModule = other.m_pXiConverterModule->clone();
     } else {
         m_pXiConverterModule = 0;
-    }
-
-    if (other.m_pObservable != 0) {
-        m_pObservable = other.m_pObservable->clone();
-    } else {
-        m_pObservable = 0;
     }
 
     if (other.m_pConvolCoeffFunctionModule != 0) {
