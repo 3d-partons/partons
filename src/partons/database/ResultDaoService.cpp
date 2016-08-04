@@ -1,6 +1,7 @@
 #include "../../../include/partons/database/ResultDaoService.h"
 
 #include <ElementaryUtils/file_utils/FileUtils.h>
+#include <ElementaryUtils/logger/LoggerManager.h>
 #include <ElementaryUtils/PropertiesManager.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
@@ -212,7 +213,7 @@ int ResultDaoService::getLastComputationId() const {
 }
 
 Plot2DList ResultDaoService::getPlot2DListFromCustomQuery(
-        const std::string& sqlQuery) const {
+        const std::string& sqlQuery) {
     Plot2DList plot2DList;
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
@@ -226,7 +227,8 @@ Plot2DList ResultDaoService::getPlot2DListFromCustomQuery(
                             query.value(1).toDouble()));
         }
     } else {
-        error(__func__,
+        Partons::getInstance()->getLoggerManager()->error("ResultDaoService",
+                __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());

@@ -9,6 +9,7 @@
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <stddef.h>
 
+#include "../../include/partons/beans/automation/Task.h"
 #include "../../include/partons/database/ResultDaoService.h"
 #include "../../include/partons/Partons.h"
 #include "../../include/partons/ServiceObjectRegistry.h"
@@ -134,9 +135,7 @@ std::string ServiceObject::getOutputFilePathForPlotFileTask(Task& task) const {
 
 void ServiceObject::generatePlotFile(const std::string& filePath,
         const std::string& sqlQuery, const char splitChar) const {
-    ResultDaoService resultDaoService;
-
-    Plot2DList plot2DList = resultDaoService.getPlot2DListFromCustomQuery(
+    Plot2DList plot2DList = ResultDaoService::getPlot2DListFromCustomQuery(
             sqlQuery);
 
     if (plot2DList.isEmpty()) {

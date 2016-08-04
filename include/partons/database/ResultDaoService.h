@@ -26,12 +26,15 @@ class Plot2DList;
 
 class ResultDaoService: public BaseObject {
 public:
+    ResultDaoService();
     ResultDaoService(const std::string &className);
     virtual ~ResultDaoService();
 
     bool insert(const List<GPDResult> &result);
 
     int getLastComputationId() const;
+
+    static Plot2DList getPlot2DListFromCustomQuery(const std::string &sqlQuery);
 
 protected:
     std::pair<time_t, int> m_previousComputationId;
@@ -48,8 +51,6 @@ protected:
 
     QString prepareInsertQuery(const std::string &fileName,
             const std::string &tableName);
-
-    Plot2DList getPlot2DListFromCustomQuery(const std::string &sqlQuery) const;
 
 private:
     std::string m_temporaryFolderPath;
