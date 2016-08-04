@@ -2,12 +2,14 @@
 
 #include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/parameters/Parameters.h>
+#include <ElementaryUtils/PropertiesManager.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <ElementaryUtils/thread/Packet.h>
 
 #include "../../../include/partons/beans/automation/Task.h"
 #include "../../../include/partons/beans/KinematicUtils.h"
+#include "../../../include/partons/beans/system/ResultInfo.h"
 #include "../../../include/partons/BaseObjectRegistry.h"
 #include "../../../include/partons/database/observable/service/ObservableResultDaoService.h"
 #include "../../../include/partons/modules/observable/Observable.h"
@@ -41,76 +43,112 @@ ObservableService::ObservableService(const std::string &className) :
 ObservableService::~ObservableService() {
 }
 
+void ObservableService::resolveObjectDependencies() {
+    ServiceObject::resolveObjectDependencies();
+
+    try {
+        m_batchSize = ElemUtils::GenericType(
+                ElemUtils::PropertiesManager::getInstance()->getString(
+                        "observable.service.batch.size")).toUInt();
+    } catch (const std::exception &e) {
+        error(__func__, ElemUtils::Formatter() << e.what());
+    }
+}
+
 //TODO implement all function
 //TODO check before executing computeTask if the service name equal current service class name to avoid computing method from another service
 void ObservableService::computeTask(Task &task) {
-    List<ObservableResult> observableResultList;
+    List<ObservableResult> resultList;
 
     if (ElemUtils::StringUtils::equals(task.getFunctionName(),
-            ObservableService::FUNCTION_NAME_COMPUTE_OBSERVABLE)) {
-        observableResultList.add(computeObservableTask(task));
-    } else if (ElemUtils::StringUtils::equals(task.getFunctionName(),
             ObservableService::FUNCTION_NAME_COMPUTE_MANY_KINEMATIC_ONE_MODEL)) {
-        observableResultList = computeManyKinematicOneModelTask(task);
-    } else if (ElemUtils::StringUtils::equals(task.getFunctionName(),
-            ObservableService::FUNCTION_NAME_GENERATE_PLOT_FILE)) {
-        generatePlotFileTask(task);
-    } else if (!ServiceObjectTyped<ObservableKinematic, ObservableResult>::computeGeneralTask(
-            task)) {
-        error(__func__, "unknown function name = " + task.getFunctionName());
-    }
+        resultList = computeManyKinematicOneModelTask(task);
+    } else {
 
-    if (task.isStoreInDB()) {
-        ObservableResultDaoService observableResultDaoService;
-        int computationId = observableResultDaoService.insert(
-                observableResultList);
-
-        if (computationId != -1) {
-            info(__func__,
-                    ElemUtils::Formatter()
-                            << "ObservableResultList object has been stored in database with computation_id = "
-                            << computationId);
-        } else {
+        if (ElemUtils::StringUtils::equals(task.getFunctionName(),
+                ObservableService::FUNCTION_NAME_COMPUTE_OBSERVABLE)) {
+            resultList.add(computeObservableTask(task));
+        } else if (ElemUtils::StringUtils::equals(task.getFunctionName(),
+                ObservableService::FUNCTION_NAME_GENERATE_PLOT_FILE)) {
+            generatePlotFileTask(task);
+        } else if (!ServiceObjectTyped<ObservableKinematic, ObservableResult>::computeGeneralTask(
+                task)) {
             error(__func__,
-                    ElemUtils::Formatter()
-                            << "ObservableResultList object : insertion into database failed");
+                    "unknown function name = " + task.getFunctionName());
+        }
+
+        if (task.isStoreInDB()) {
+            ObservableResultDaoService observableResultDaoService;
+            int computationId = observableResultDaoService.insert(resultList);
+
+            if (computationId != -1) {
+                info(__func__,
+                        ElemUtils::Formatter()
+                                << "ObservableResultList object has been stored in database with computation_id = "
+                                << computationId);
+            } else {
+                error(__func__,
+                        ElemUtils::Formatter()
+                                << "ObservableResultList object : insertion into database failed");
+            }
         }
     }
 
-    add(observableResultList);
+    m_resultListBuffer = resultList;
 }
 
 List<ObservableResult> ObservableService::computeManyKinematicOneModel(
         const List<ObservableKinematic> & listOfKinematic,
-        Observable* pObservable, const GPDType::Type gpdType) {
-
-    List<ObservableResult> results;
+        Observable* pObservable, const GPDType::Type gpdType,
+        const bool storeInDB) {
 
     // TODO voir s'il n'est pas possible de déplacer ça de manière générique dans la classe parent
 
+    info(__func__,
+            ElemUtils::Formatter() << listOfKinematic.size()
+                    << " will be computed");
+
+    List<ObservableResult> results;
     List<ElemUtils::Packet> listOfPacket;
 
-    for (unsigned int i = 0; i != listOfKinematic.size(); i++) {
-        ElemUtils::Packet packet;
-        ObservableKinematic obsK;
-        obsK = listOfKinematic[i];
-        packet << obsK << GPDType(gpdType);
-        listOfPacket.add(packet);
-    }
-
-    addTasks(listOfPacket);
-
     initComputationalThread(pObservable);
-    launchAllThreadAndWaitingFor();
 
-// ####################################################
+    // ##### Batch feature start section #####
+    unsigned int i = 0;
+    unsigned int j = 0;
 
-    sortResultList();
+    while (i != listOfKinematic.size()) {
+        listOfPacket.clear();
+        j = 0;
 
-    results = getResultList();
+        while ((j != m_batchSize) && (i != listOfKinematic.size())) {
+            ElemUtils::Packet packet;
+            ObservableKinematic obsK;
+            obsK = listOfKinematic[i];
+            packet << obsK << GPDType(gpdType);
+            listOfPacket.add(packet);
+            i++;
+            j++;
+        }
 
-    clearResultListBuffer();
-    clearKinematicListBuffer();
+        addTasks(listOfPacket);
+        launchAllThreadAndWaitingFor();
+        sortResultList();
+
+        updateResultInfo(getResultList(), m_resultInfo);
+
+        if (storeInDB) {
+            ObservableResultDaoService resultDaoService;
+            resultDaoService.insert(getResultList());
+        } else {
+            results.add(getResultList());
+        }
+
+        clearResultListBuffer();
+    }
+    // ##### Batch feature end section #####
+
+    clearAllThread();
 
     return results;
 }

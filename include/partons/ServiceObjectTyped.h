@@ -18,7 +18,6 @@
 #include "beans/automation/Task.h"
 #include "beans/List.h"
 #include "beans/system/ResultInfo.h"
-#include "services/automation/AutomationService.h"
 #include "ServiceObject.h"
 
 /** @class ServiceObjectTyped
@@ -36,7 +35,7 @@ public:
      * @param className
      */
     ServiceObjectTyped(const std::string &className) :
-            ServiceObject(className) {
+            ServiceObject(className), m_batchSize(1000) {
     }
 
     /**
@@ -107,6 +106,8 @@ public:
     } // mutex.unlock()
 
 protected:
+    unsigned int m_batchSize;
+
     sf::Mutex m_mutexKinematicList;
     sf::Mutex m_mutexResultListBuffer;
 

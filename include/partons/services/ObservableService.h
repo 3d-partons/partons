@@ -47,6 +47,8 @@ public:
      */
     virtual ~ObservableService();
 
+    void resolveObjectDependencies();
+
     ObservableResult computeObservable(
             const ObservableKinematic &observableKinematic,
             Observable* pObservable,
@@ -54,8 +56,8 @@ public:
 
     List<ObservableResult> computeManyKinematicOneModel(
             const List<ObservableKinematic> & listOfKinematic,
-            Observable* pObservable,
-            const GPDType::Type gpdType = GPDType::ALL);
+            Observable* pObservable, const GPDType::Type gpdType = GPDType::ALL,
+            const bool storeInDB = false);
 
     virtual void computeTask(Task &task);
 

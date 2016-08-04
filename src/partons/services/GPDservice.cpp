@@ -1,5 +1,6 @@
 #include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/parameters/Parameters.h>
+#include <ElementaryUtils/PropertiesManager.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <ElementaryUtils/thread/Packet.h>
@@ -47,6 +48,18 @@ GPDService::GPDService(const std::string &className) :
 }
 
 GPDService::~GPDService() {
+}
+
+void GPDService::resolveObjectDependencies() {
+    ServiceObject::resolveObjectDependencies();
+
+    try {
+        m_batchSize = ElemUtils::GenericType(
+                ElemUtils::PropertiesManager::getInstance()->getString(
+                        "gpd.service.batch.size")).toUInt();
+    } catch (const std::exception &e) {
+        error(__func__, ElemUtils::Formatter() << e.what());
+    }
 }
 
 //TODO ParameterList use isAvailable function and throw exception if missing parameter
@@ -252,9 +265,7 @@ List<GPDResult> GPDService::computeManyKinematicOneModel(
 
     initComputationalThread(pGPDModule);
 
-    //TODO remove hardcoded value ; use properties file
-    unsigned int batchSize = 1000;
-
+    // ##### Batch feature start section #####
     unsigned int i = 0;
     unsigned int j = 0;
 
@@ -262,7 +273,7 @@ List<GPDResult> GPDService::computeManyKinematicOneModel(
         listOfPacket.clear();
         j = 0;
 
-        while ((j != batchSize) && (i != gpdKinematicList.size())) {
+        while ((j != m_batchSize) && (i != gpdKinematicList.size())) {
             ElemUtils::Packet packet;
             GPDKinematic obsK;
             obsK = gpdKinematicList[i];
@@ -287,6 +298,7 @@ List<GPDResult> GPDService::computeManyKinematicOneModel(
 
         clearResultListBuffer();
     }
+    // ##### Batch feature end section #####
 
     clearAllThread();
 

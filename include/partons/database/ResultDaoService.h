@@ -26,7 +26,6 @@ class Plot2DList;
 
 class ResultDaoService: public BaseObject {
 public:
-    ResultDaoService();
     ResultDaoService(const std::string &className);
     virtual ~ResultDaoService();
 

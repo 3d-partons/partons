@@ -2,6 +2,7 @@
 
 #include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/parameters/Parameters.h>
+#include <ElementaryUtils/PropertiesManager.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <ElementaryUtils/thread/Packet.h>
@@ -42,6 +43,18 @@ ConvolCoeffFunctionService::ConvolCoeffFunctionService(
 }
 
 ConvolCoeffFunctionService::~ConvolCoeffFunctionService() {
+}
+
+void ConvolCoeffFunctionService::resolveObjectDependencies() {
+    ServiceObject::resolveObjectDependencies();
+
+    try {
+        m_batchSize = ElemUtils::GenericType(
+                ElemUtils::PropertiesManager::getInstance()->getString(
+                        "ccf.service.batch.size")).toUInt();
+    } catch (const std::exception &e) {
+        error(__func__, ElemUtils::Formatter() << e.what());
+    }
 }
 
 //TODO implement
@@ -200,9 +213,7 @@ List<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionService::computeManyKinem
 
     initComputationalThread(pConvolCoeffFunctionModule);
 
-    //TODO remove hardcoded value ; use properties file
-    unsigned int batchSize = 1000;
-
+    // ##### Batch feature start section #####
     unsigned int i = 0;
     unsigned int j = 0;
 
@@ -210,7 +221,7 @@ List<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionService::computeManyKinem
         listOfPacket.clear();
         j = 0;
 
-        while ((j != batchSize) && (i != kinematics.size())) {
+        while ((j != m_batchSize) && (i != kinematics.size())) {
             ElemUtils::Packet packet;
             DVCSConvolCoeffFunctionKinematic kinematic;
             kinematic = kinematics[i];
@@ -235,6 +246,7 @@ List<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionService::computeManyKinem
 
         clearResultListBuffer();
     }
+    // ##### Batch feature end section #####
 
     clearAllThread();
 

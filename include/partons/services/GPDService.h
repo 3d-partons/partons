@@ -44,6 +44,8 @@ public:
      */
     virtual ~GPDService();
 
+    virtual void resolveObjectDependencies();
+
     virtual void computeTask(Task &task);
 
     /**
