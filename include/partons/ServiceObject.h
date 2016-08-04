@@ -64,6 +64,9 @@ public:
             const ElemUtils::Parameters& selectParams,
             const ElemUtils::Parameters& whereParams) const;
 
+    void generatePlotFile(const std::string& filePath,
+            const std::string &sqlQuery, const char splitChar) const;
+
 protected:
     ModuleObjectFactory* m_pModuleObjectFactory;
     AutomationService* m_pAutomationService;

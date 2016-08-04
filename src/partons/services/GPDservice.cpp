@@ -33,6 +33,8 @@ const std::string GPDService::GPD_SERVICE_COMPUTE_LIST_OF_GPD_MODEL =
         "computeListOfGPDModel";
 const std::string GPDService::GPD_SERVICE_COMPUTE_MANY_KINEMATIC_ONE_MODEL =
         "computeManyKinematicOneModel";
+const std::string GPDService::FUNCTION_NAME_GENERATE_PLOT_FILE =
+        "generatePlotFile";
 
 // Initialise [class]::classId with a unique name and selfregister this module into the global registry.
 const unsigned int GPDService::classId =
@@ -150,6 +152,9 @@ void GPDService::computeTask(Task &task) {
 
             resultList.add(
                     computeListOfGPDModel(gpdKinematic, listOfGPDModule));
+        } else if (ElemUtils::StringUtils::equals(task.getFunctionName(),
+                GPDService::FUNCTION_NAME_GENERATE_PLOT_FILE)) {
+            generatePlotFileTask(task);
         } else if (!ServiceObjectTyped<GPDKinematic, GPDResult>::computeGeneralTask(
                 task)) {
             error(__func__,
@@ -378,4 +383,9 @@ List<GPDResult> GPDService::computeManyKinematicOneModelTask(Task& task) {
 //                       << result.toString());
 
     return result;
+}
+
+void GPDService::generatePlotFileTask(Task& task) {
+    generatePlotFile(getOutputFilePathForPlotFileTask(task),
+            generateSQLQueryForPlotFileTask(task, "gpd_plot_2d_view"), ' ');
 }

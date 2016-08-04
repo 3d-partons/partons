@@ -34,3 +34,21 @@ INNER JOIN computation c ON ccfr.computation_id = c.computation_id
 INNER JOIN ccf_result_complex ccfrc ON ccfr.ccf_result_id = ccfrc.ccf_result_id
 ORDER BY ccfr.ccf_result_id;
 
+/* Specific view to filter on CCF results to make a plot */
+CREATE VIEW ccf_plot_2d_view AS
+SELECT ccfr.computation_id, ccfk.ccf_kinematic_id, ccfk.xi, ccfk.t, ccfk.Q2, ccfk.MuF2, ccfk.MuR2, ccfr.ccf_result_id, oc.observable_channel_short_name, ccfr.computation_module_name, gt.gpd_type_short_name, ccfrc.real_part, ccfrc.img_part
+FROM ccf_kinematic ccfk
+INNER JOIN ccf_result ccfr ON ccfr.ccf_kinematic_id = ccfk.ccf_kinematic_id
+INNER JOIN ccf_result_complex ccfrc ON ccfrc.ccf_result_id = ccfr.ccf_result_id
+INNER JOIN gpd_type gt ON ccfrc.gpd_type_id = gt.gpd_type_id
+INNER JOIN observable_channel oc ON ccfr.channel_id = oc.observable_channel_id
+ORDER BY ccfr.ccf_result_id;
+/*
+Output example :
++----------------+------------------+------+---+----+------+------+---------------+-------------------------------+-------------------------+---------------------+--------------------+----------------------+
+| computation_id | ccf_kinematic_id | xi   | t | Q2 | MuF2 | MuR2 | ccf_result_id | observable_channel_short_name | computation_module_name | gpd_type_short_name | real_part          | img_part             |
++----------------+------------------+------+---+----+------+------+---------------+-------------------------------+-------------------------+---------------------+--------------------+----------------------+
+|              6 |                1 | 0.99 | 0 |  1 |    1 |    1 |             1 | DVCS                          | DVCSCFFModel            | H                   | 1.0830598567370253 | 0.022937106659652748 |
++----------------+------------------+------+---+----+------+------+---------------+-------------------------------+-------------------------+---------------------+--------------------+----------------------+
+*/
+

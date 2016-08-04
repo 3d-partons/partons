@@ -32,6 +32,7 @@ public:
     static const std::string GPD_SERVICE_COMPUTE_GPD_MODEL_WITH_EVOLUTION;
     static const std::string GPD_SERVICE_COMPUTE_LIST_OF_GPD_MODEL;
     static const std::string GPD_SERVICE_COMPUTE_MANY_KINEMATIC_ONE_MODEL;
+    static const std::string FUNCTION_NAME_GENERATE_PLOT_FILE;
 
     /**
      * Default constructor
@@ -124,6 +125,7 @@ private:
 
     GPDResult computeGPDTask(Task &task);
     List<GPDResult> computeManyKinematicOneModelTask(Task &task);
+    void generatePlotFileTask(Task &task);
 
     // GPDResult computeGPDModel(const Task &task);
 };

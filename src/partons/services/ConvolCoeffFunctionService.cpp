@@ -27,6 +27,8 @@ const std::string ConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_LIST_WITH_GP
         "computeListWithGPDModel";
 const std::string ConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_MANY_KINEMATIC_ONE_MODEL =
         "computeManyKinematicOneModel";
+const std::string ConvolCoeffFunctionService::FUNCTION_NAME_GENERATE_PLOT_FILE =
+        "generatePlotFile";
 
 // Initialise [class]::classId with a unique name.
 const unsigned int ConvolCoeffFunctionService::classId =
@@ -69,6 +71,9 @@ void ConvolCoeffFunctionService::computeTask(Task &task) {
                 ConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_LIST_WITH_GPD_MODEL)) {
             //TODO implement
             // resultList = computeListWithGPDModelTask(task);
+        } else if (ElemUtils::StringUtils::equals(task.getFunctionName(),
+                ConvolCoeffFunctionService::FUNCTION_NAME_GENERATE_PLOT_FILE)) {
+            generatePlotFileTask(task);
         } else if (!ServiceObjectTyped<DVCSConvolCoeffFunctionKinematic,
                 DVCSConvolCoeffFunctionResult>::computeGeneralTask(task)) {
             error(__func__,
@@ -286,4 +291,9 @@ ConvolCoeffFunctionModule* ConvolCoeffFunctionService::configureConvolCoeffFunct
     }
 
     return pConvolCoeffFunctionModule;
+}
+
+void ConvolCoeffFunctionService::generatePlotFileTask(Task& task) {
+    generatePlotFile(getOutputFilePathForPlotFileTask(task),
+            generateSQLQueryForPlotFileTask(task, "ccf_plot_2d_view"), ' ');
 }

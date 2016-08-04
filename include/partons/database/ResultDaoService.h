@@ -22,6 +22,8 @@
 #include "common/service/EnvironmentConfigurationDaoService.h"
 #include "common/service/ScenarioDaoService.h"
 
+class Plot2DList;
+
 class ResultDaoService: public BaseObject {
 public:
     ResultDaoService(const std::string &className);
@@ -46,6 +48,8 @@ protected:
 
     QString prepareInsertQuery(const std::string &fileName,
             const std::string &tableName);
+
+    Plot2DList getPlot2DListFromCustomQuery(const std::string &sqlQuery) const;
 
 private:
     std::string m_temporaryFolderPath;

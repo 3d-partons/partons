@@ -45,6 +45,10 @@ observable_type_id INTEGER NOT NULL PRIMARY KEY,
 observable_type_short_name VARCHAR(10),
 observable_type_long_name VARCHAR(255));
 
+CREATE TABLE observable_channel (
+observable_channel_id INTEGER NOT NULL PRIMARY KEY,
+observable_channel_short_name VARCHAR(10),
+observable_channel_long_name VARCHAR(255));
 
 
 CREATE VIEW result_info_view AS
@@ -108,3 +112,20 @@ VALUES ('1', 'PHI', 'PHI');
 
 INSERT INTO observable_type (observable_type_id, observable_type_short_name, observable_type_long_name)
 VALUES ('2', 'FOURIER', 'FOURIER');
+
+
+
+INSERT INTO observable_channel (observable_channel_id, observable_channel_short_name, observable_channel_long_name)
+VALUES ('0', 'UNDEFINED', 'UNDEFINED');
+
+INSERT INTO observable_channel (observable_channel_id, observable_channel_short_name, observable_channel_long_name)
+VALUES ('1', 'DVCS', 'DVCS');
+
+INSERT INTO observable_channel (observable_channel_id, observable_channel_short_name, observable_channel_long_name)
+VALUES ('2', 'DVMP', 'DVMP');
+
+INSERT INTO observable_channel (observable_channel_id, observable_channel_short_name, observable_channel_long_name)
+VALUES ('3', 'TCS', 'TCS');
+
+
+

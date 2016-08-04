@@ -1,6 +1,5 @@
 #include "../../../include/partons/services/ObservableService.h"
 
-#include <ElementaryUtils/file_utils/FileUtils.h>
 #include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
@@ -20,7 +19,6 @@
 #include "../../../include/partons/services/ConvolCoeffFunctionService.h"
 #include "../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../include/partons/utils/exceptions/CCFModuleNullPointerException.h"
-#include "../../../include/partons/utils/plot2D/Plot2DList.h"
 
 const std::string ObservableService::FUNCTION_NAME_COMPUTE_OBSERVABLE =
         "computeObservable";
@@ -320,26 +318,4 @@ void ObservableService::generatePlotFileTask(Task& task) {
     generatePlotFile(getOutputFilePathForPlotFileTask(task),
             generateSQLQueryForPlotFileTask(task, "observable_plot_2d_view"),
             ' ');
-}
-
-void ObservableService::generatePlotFile(const std::string& filePath,
-        const std::string &sqlQuery, const char splitChar) const {
-    ObservableResultDaoService observableResultDaoService;
-
-    Plot2DList plot2DList =
-            observableResultDaoService.getPlot2DListFromCustomQuery(sqlQuery);
-
-    if (plot2DList.isEmpty()) {
-        warn(__func__,
-                "There is no coincidence all over the database with the given parameters");
-    } else {
-        info(__func__,
-                ElemUtils::Formatter() << plot2DList.size()
-                        << " data in coincidence with the given parameters have been found in the database and written in the file : "
-                        << filePath);
-
-    }
-
-    ElemUtils::FileUtils::writeLine(filePath,
-            plot2DList.toStringPlotFile(splitChar));
 }

@@ -41,22 +41,6 @@ observable_kinematic_id INTEGER NOT NULL,
 computation_id INTEGER NOT NULL);
 
 
-
-CREATE VIEW observable_kinematic_view AS 
-SELECT obr.computation_id, obk.observable_kinematic_id, obk.xB, obk.t, obk.Q2, obk.phi
-FROM observable_result obr
-INNER JOIN observable_kinematic obk ON obr.observable_kinematic_id = obk.observable_kinematic_id
-INNER JOIN computation c ON obr.computation_id = c.computation_id
-ORDER BY obr.observable_result_id;
-
-CREATE VIEW observable_plot_2d_view AS
-SELECT obr.computation_id, obr.observable_result_id, obk.xB, obk.t, obk.Q2, obk.phi, obr.observable_value
-FROM observable_kinematic obk
-INNER JOIN observable_result obr ON obr.observable_kinematic_id = obk.observable_kinematic_id
-ORDER BY obr.observable_result_id;
-
-
-
 INSERT INTO collaboration (collaboration_id, collaboration_name, laboratory_id) 
 VALUES ('0', 'COMPASS', 0);
 
@@ -77,4 +61,29 @@ VALUES ('5', 'CLAS', 2);
 
 INSERT INTO collaboration (collaboration_id, collaboration_name, laboratory_id) 
 VALUES ('6', 'HALL A', 2);
+
+
+
+CREATE VIEW observable_kinematic_view AS 
+SELECT obr.computation_id, obk.observable_kinematic_id, obk.xB, obk.t, obk.Q2, obk.phi
+FROM observable_result obr
+INNER JOIN observable_kinematic obk ON obr.observable_kinematic_id = obk.observable_kinematic_id
+INNER JOIN computation c ON obr.computation_id = c.computation_id
+ORDER BY obr.observable_result_id;
+
+/* Specific view to filter on Observable results to make a plot */
+CREATE VIEW observable_plot_2d_view AS
+SELECT obr.computation_id, obk.observable_kinematic_id, obk.xB, obk.t, obk.Q2, obk.phi, obr.observable_result_id, obr.computation_module_name, obr.observable_name, obr.observable_value
+FROM observable_kinematic obk
+INNER JOIN observable_result obr ON obr.observable_kinematic_id = obk.observable_kinematic_id
+ORDER BY obr.observable_result_id;
+/*
+Output example :
++----------------+-------------------------+------+-------+------+-----+----------------------+-------------------------+-----------------+------------------+
+| computation_id | observable_kinematic_id | xB   | t     | Q2   | phi | observable_result_id | computation_module_name | observable_name | observable_value |
++----------------+-------------------------+------+-------+------+-----+----------------------+-------------------------+-----------------+------------------+
+|              1 |                       1 | 1.68 | 0.194 | 0.11 |  25 |                    1 | experimental data       | Aul             |             0.44 |
++----------------+-------------------------+------+-------+------+-----+----------------------+-------------------------+-----------------+------------------+
+*/
+
 

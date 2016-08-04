@@ -1,5 +1,6 @@
 #include "../../include/partons/ServiceObject.h"
 
+#include <ElementaryUtils/file_utils/FileUtils.h>
 #include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/parameters/MultimapParameters.h>
 #include <ElementaryUtils/parameters/Parameters.h>
@@ -8,9 +9,10 @@
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <stddef.h>
 
+#include "../../include/partons/database/ResultDaoService.h"
 #include "../../include/partons/Partons.h"
 #include "../../include/partons/ServiceObjectRegistry.h"
-#include "../../include/partons/beans/automation/Task.h"
+#include "../../include/partons/utils/plot2D/Plot2DList.h"
 
 ServiceObject::ServiceObject(const std::string &className) :
         BaseObject(className), m_pModuleObjectFactory(0), m_pAutomationService(
@@ -128,4 +130,26 @@ std::string ServiceObject::getOutputFilePathForPlotFileTask(Task& task) const {
     }
 
     return filePath;
+}
+
+void ServiceObject::generatePlotFile(const std::string& filePath,
+        const std::string& sqlQuery, const char splitChar) const {
+    ResultDaoService resultDaoService;
+
+    Plot2DList plot2DList = resultDaoService.getPlot2DListFromCustomQuery(
+            sqlQuery);
+
+    if (plot2DList.isEmpty()) {
+        warn(__func__,
+                "There is no coincidence all over the database with the given parameters");
+    } else {
+        info(__func__,
+                ElemUtils::Formatter() << plot2DList.size()
+                        << " data in coincidence with the given parameters have been found in the database and written in the file : "
+                        << filePath);
+
+    }
+
+    ElemUtils::FileUtils::writeLine(filePath,
+            plot2DList.toStringPlotFile(splitChar));
 }

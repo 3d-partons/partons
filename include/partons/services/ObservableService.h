@@ -18,7 +18,6 @@
 #include "../ServiceObjectTyped.h"
 
 class ConvolCoeffFunctionModule;
-class GPDModule;
 class Observable;
 class ProcessModule;
 class Task;
@@ -62,9 +61,6 @@ public:
 
     ObservableChannel::Type getObservableChannel(
             const std::string &observableClassName) const;
-
-    void generatePlotFile(const std::string& filePath,
-            const std::string &sqlQuery, const char splitChar) const;
 
     Observable* configureObservable(Observable* pObservable,
             ProcessModule* pProcessModule) const;

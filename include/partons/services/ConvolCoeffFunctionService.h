@@ -31,6 +31,7 @@ public:
     static const std::string FUNCTION_NAME_COMPUTE_WITH_GPD_MODEL;
     static const std::string FUNCTION_NAME_COMPUTE_LIST_WITH_GPD_MODEL;
     static const std::string FUNCTION_NAME_COMPUTE_MANY_KINEMATIC_ONE_MODEL;
+    static const std::string FUNCTION_NAME_GENERATE_PLOT_FILE;
 
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
@@ -85,6 +86,7 @@ private:
     DVCSConvolCoeffFunctionResult computeWithGPDModelTask(Task &task) const;
     List<DVCSConvolCoeffFunctionResult> computeManyKinematicOneModelTask(
             Task& task);
+    void generatePlotFileTask(Task &task);
 };
 
 #endif /* DVCS_CONVOL_COEFF_FUNCTION_SERVICE_H */
