@@ -5,9 +5,9 @@
 
     <task service="ObservableService" method="computeObservable" storeInDB="0">
         <kinematics type="ObservableKinematic">
-            <param name="xB" value="0.36" />
-            <param name="t" value="-0.23" />
-            <param name="Q2" value="2." />
+            <param name="xB" value="0.3" />
+            <param name="t" value="-0.1" />
+            <param name="Q2" value="4" />
             <param name="phi" value="7.5" />
         </kinematics>
 
@@ -23,10 +23,11 @@
 
             <module type="DVCSModule">
                 <param name="className" value="BMJ2012Model" />
-                <param name="beam_energy" value="5.55" />
+                <param name="beam_energy" value="4" />
             </module>
 
             <module type="Observable">
+<!--                 <param name="className" value="Alu" /> -->
                 <param name="className" value="CrossSectionObservable" />
                 <param name="beam_helicity" value="1" />
                 <param name="beam_charge" value="1" />

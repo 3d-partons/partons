@@ -72,7 +72,7 @@
         </computation_configuration>
     </task>
     
-    <task service="ObservableService" method="printResults" storeInDB="0">
+    <task service="ObservableService" method="printResults">
     </task>
 
 <!--     <task service="ObservableService" method="computeManyKinematicOneModel" storeInDB="0"> -->
