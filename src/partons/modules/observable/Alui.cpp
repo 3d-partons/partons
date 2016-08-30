@@ -43,11 +43,9 @@ double Alui::compute(double phi) {
     double SigmaMM = m_pProcessModule->computeCrossSection(-1, -1,
             NumA::Vector3D(0., 0., 0.), phi);
 
-    double SigmaUU = m_pProcessModule->computeCrossSection(0., 0,
-            NumA::Vector3D(0., 0., 0.), phi);
-
     //TODO !!! division par zero !!!
-    result = ((SigmaPP - SigmaPM) - (SigmaMP - SigmaMM)) / (4 * SigmaUU);
+    result = ((SigmaPP - SigmaPM) - (SigmaMP - SigmaMM))
+            / (SigmaPP + SigmaPM + SigmaMP + SigmaMM);
 
     return result;
 }

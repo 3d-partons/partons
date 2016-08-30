@@ -47,7 +47,7 @@ double AluDVCS::compute(double phi) {
             NumA::Vector3D(0., 0., 0.), phi);
 
     //TODO !!! division par zero !!!
-    result = ((SigmaPP - SigmaPM) + (SigmaMP - SigmaMM)) / (4 * SigmaUU);
+    result = ((SigmaPP + SigmaPM) - (SigmaMP + SigmaMM)) / (4 * SigmaUU);
 
     return result;
 }

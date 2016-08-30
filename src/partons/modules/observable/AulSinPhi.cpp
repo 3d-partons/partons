@@ -66,6 +66,6 @@ double AulSinPhi::compute() {
     std::vector<double> emptyParameters;
 
     return integrate(m_pFunctionToIntegrateObservable, 0., (2 * PI),
-            emptyParameters) / cos(-1);
+            emptyParameters) / PI;
 
 }
