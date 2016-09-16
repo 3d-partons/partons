@@ -151,28 +151,51 @@ double VGG1999Model::CrossSectionMechanism(double beamHelicity,
     //return
     double result = 0.;
 
-    //+/- configurations
-    double plus, minus;
+    //polarization z (longidudinal)
+    if(m_target_polarizationL != 0.){
+      
+        m_proton_spinor_orientation = z;
 
-    //longitudinaly polarised target
-    m_proton_spinor_orientation = z;
+        double resultZp = 0.;
+        double resultZm = 0.;
 
-    plus = v_compton_doublepol_cross_inv(beamCharge, mechanism, beamHelicity,
-            0.5);
-    minus = v_compton_doublepol_cross_inv(beamCharge, mechanism, beamHelicity,
-            -0.5);
+        if(m_target_polarizationL != -1.) resultZp = v_compton_doublepol_cross_inv(beamCharge, mechanism, beamHelicity,  0.5); 
+        if(m_target_polarizationL !=  1.) resultZm = v_compton_doublepol_cross_inv(beamCharge, mechanism, beamHelicity, -0.5); 
 
-    result += 0.5 * (1. + m_target_polarizationL) * plus
-            + 0.5 * (1. - m_target_polarizationL) * minus;
-
-    //transversely polarised target
-    if (m_target_polarizationT != 0.) {
-        error(__FUNCTION__,
-                ElemUtils::Formatter()
-                        << "Transverse target polarisation and dependence on phi_s angle not implemented yet");
+        result += 0.5 * (1. + m_target_polarizationL) * resultZp 
+                + 0.5 * (1. - m_target_polarizationL) * resultZm;
     }
 
-    printf("PROCESS: %d RESULT: %f\n", mechanism, nbToGeVm2conversion(result));
+    //polarization x (transverse)
+    if(m_target_polarizationT_x != 0.){
+      
+        m_proton_spinor_orientation = x;
+
+        double resultXp = 0.;
+        double resultXm = 0.;
+
+        if(m_target_polarizationT_x != -1.) resultXp = v_compton_doublepol_cross_inv(beamCharge, mechanism, beamHelicity,  0.5); 
+        if(m_target_polarizationT_x !=  1.) resultXm = v_compton_doublepol_cross_inv(beamCharge, mechanism, beamHelicity, -0.5); 
+
+        result += 0.5 * (1. + m_target_polarizationT_x) * resultXp 
+                + 0.5 * (1. - m_target_polarizationT_x) * resultXm;
+    }
+
+    //polarization y (transverse)
+    if(m_target_polarizationT_y != 0.){
+      
+        m_proton_spinor_orientation = y;
+
+        double resultYp = 0.;
+        double resultYm = 0.;
+
+        if(m_target_polarizationT_y != -1.) resultYp = v_compton_doublepol_cross_inv(beamCharge, mechanism, beamHelicity,  0.5); 
+        if(m_target_polarizationT_y !=  1.) resultYm = v_compton_doublepol_cross_inv(beamCharge, mechanism, beamHelicity, -0.5); 
+
+        result += 0.5 * (1. + m_target_polarizationT_y) * resultYp 
+                + 0.5 * (1. - m_target_polarizationT_y) * resultYm;
+    }
+
     //convert nb to GeV-2 and return
     return nbToGeVm2conversion(result);
 }
@@ -1005,9 +1028,6 @@ std::complex<double> VGG1999Model::AmplitudeBH(int mu, double el_hel,
     //virtual photon emitted by proton
     momentum4 q4_proton = p4_out - p4_in;
 
-    //outgoing photon virtuality
-    double qp_sqr = V4mul(q4_out, q4_out).real();
-
     //spinor of incoming lepton
     spinor spinor_e_in = spinor_hel(k_in, el_hel);
 
@@ -1036,8 +1056,7 @@ std::complex<double> VGG1999Model::AmplitudeBH(int mu, double el_hel,
                                                 0.)))
                                 * Cinv(
                                         ((-2. * V4mul(k4_in, q4_out))
-                                                + std::complex<double>(qp_sqr,
-                                                        0.)))).Mult(
+                                                ))).Mult(
                                 dirac_gamma(mu)))
 
                         +
@@ -1049,8 +1068,7 @@ std::complex<double> VGG1999Model::AmplitudeBH(int mu, double el_hel,
                                                         ELECTRON_MASS, 0.)))
                                         * Cinv(
                                                 ((2. * V4mul(k4_out, q4_out))
-                                                        + std::complex<double>(
-                                                                qp_sqr, 0.)))).Mult(
+                                                        ))).Mult(
                                         dirac_gamma(nu)));
 
         electron_part = spinleft_mat_spinright(spinor_e_out, ee_2gamma,
@@ -1090,11 +1108,6 @@ std::complex<double> VGG1999Model::v_compton_t_matrix_hel(double leptcharge,
         break;
     }
 
-    case 3: {
-        return (AmplitudeBH(mu, el_hel, sp_in, sp_out)
-                + (leptcharge * AmplitudeDVCS(mu, el_hel, sp_in, sp_out)));
-    }
-
     default: {
         return std::complex<double>(0., 0.);
         break;
@@ -1131,42 +1144,106 @@ double VGG1999Model::v_compton_doublepol_sqrampl(double leptcharge,
 
     //loop over outgoing proton helicities
     double t_incr;
-    std::complex<double> t_matrix_mu;
+    std::complex<double> t_matrix_mu[3];
 
     for (double sp_out = -.5; sp_out <= .5; sp_out += 1.) {
 
-        std::complex<double> t_matrix_x = std::complex<double>(0., 0.);
-        std::complex<double> t_matrix_y = std::complex<double>(0., 0.);
-        std::complex<double> t_matrix_0 = std::complex<double>(0., 0.);
+        std::complex<double> t_matrix_x[3];
+        std::complex<double> t_matrix_y[3];
 
         for (int mu = 0; mu <= 3; mu++) {
 
-            t_matrix_mu = v_compton_t_matrix_hel(leptcharge, mechanism, mu,
-                    el_hel, sp_in, sp_out);
+   switch (mechanism) {
 
-            t_matrix_x =
-                    (t_matrix_x
+    case 1: {
+          t_matrix_mu[0] = v_compton_t_matrix_hel(leptcharge, 1, mu,
+                                     el_hel, sp_in, sp_out);
+          t_matrix_mu[1] = std::complex<double>(0., 0.);
+          t_matrix_mu[2] = std::complex<double>(0., 0.);
+        break;
+    }
+
+    case 2: {
+          t_matrix_mu[0] = std::complex<double>(0., 0.);
+          t_matrix_mu[1] = v_compton_t_matrix_hel(leptcharge, 2, mu,
+                                     el_hel, sp_in, sp_out);
+          t_matrix_mu[2] = std::complex<double>(0., 0.);
+        break;
+    }
+
+    case 3: {
+          t_matrix_mu[0] = v_compton_t_matrix_hel(leptcharge, 1, mu,
+                                     el_hel, sp_in, sp_out);
+          t_matrix_mu[1] = v_compton_t_matrix_hel(leptcharge, 2, mu,
+                                     el_hel, sp_in, sp_out);
+          t_matrix_mu[2] = t_matrix_mu[0] + (leptcharge * t_matrix_mu[1]);
+        break;
+    }
+
+    default: {
+          t_matrix_mu[0] = std::complex<double>(0., 0.);
+          t_matrix_mu[1] = std::complex<double>(0., 0.);
+          t_matrix_mu[2] = std::complex<double>(0., 0.);
+        break;
+    }
+    }
+
+
+
+            for(int p = 0; p < 3; p++){
+
+               t_matrix_x[p] =
+                    (t_matrix_x[p]
                             + (metric(mu, mu)
-                                    * (t_matrix_mu
+                                    * (t_matrix_mu[p]
                                             * std::conj(
                                                     pol4_ph_x.GetElement(mu)))));
-            t_matrix_y =
-                    (t_matrix_y
+               t_matrix_y[p] =
+                    (t_matrix_y[p]
                             + (metric(mu, mu)
-                                    * (t_matrix_mu
+                                    * (t_matrix_mu[p]
                                             * std::conj(
                                                     pol4_ph_y.GetElement(mu)))));
-
+            }
         }
 
-        t_incr = (((t_matrix_x * std::conj(t_matrix_x))
-                + (t_matrix_y * std::conj(t_matrix_y)))
-                + (t_matrix_0 * std::conj(t_matrix_0))).real();
+   switch (mechanism) {
+
+    case 1: {
+         t_incr = (((t_matrix_x[0] * std::conj(t_matrix_x[0]))
+                + (t_matrix_y[0] * std::conj(t_matrix_y[0])))).real();
+        break;
+    }
+
+    case 2: {
+         t_incr = (((t_matrix_x[1] * std::conj(t_matrix_x[1]))
+                + (t_matrix_y[1] * std::conj(t_matrix_y[1])))).real();
+        break;
+    }
+
+    case 3: {
+         t_incr = (((t_matrix_x[2] * std::conj(t_matrix_x[2]))
+                + (t_matrix_y[2] * std::conj(t_matrix_y[2])))).real();
+
+         t_incr -= (((t_matrix_x[0] * std::conj(t_matrix_x[0]))
+                + (t_matrix_y[0] * std::conj(t_matrix_y[0])))).real();
+
+         t_incr -= (((t_matrix_x[1] * std::conj(t_matrix_x[1]))
+                + (t_matrix_y[1] * std::conj(t_matrix_y[1])))).real();
+        break;
+    }
+
+    default: {
+        t_incr = 0.;
+        break;
+    }
+    }
+
+
 
         tmat += t_incr;
 
     }
-    return tmat;
 
     //return
     return tmat;
@@ -1196,7 +1273,13 @@ std::complex<double> VGG1999Model::J_DVCS(int mu, int nu, double sp_in,
     std::complex<double> cffE = getConvolCoeffFunctionValue(GPDType::E);
     std::complex<double> cffHt = getConvolCoeffFunctionValue(GPDType::Ht);
     std::complex<double> cffEt = getConvolCoeffFunctionValue(GPDType::Et);
-
+    
+    //convert to convention used in original the code
+    cffH *= -1;
+    cffE *= -1;
+    cffHt *= -1;
+    cffEt *= -1;
+    
     //"avarage" 4momentum of proton
     momentum4 p4_av = ((p4_in + p4_out) * 0.5);
 
