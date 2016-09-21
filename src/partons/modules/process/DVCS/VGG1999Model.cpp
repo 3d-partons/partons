@@ -151,49 +151,65 @@ double VGG1999Model::CrossSectionMechanism(double beamHelicity,
     //return
     double result = 0.;
 
-    //polarization z (longidudinal)
-    if(m_target_polarizationL != 0.){
-      
+    //unpolarized target
+    if(m_target_polarization == 0.){
+       
         m_proton_spinor_orientation = z;
 
         double resultZp = 0.;
         double resultZm = 0.;
 
-        if(m_target_polarizationL != -1.) resultZp = v_compton_doublepol_cross_inv(beamCharge, mechanism, beamHelicity,  0.5); 
-        if(m_target_polarizationL !=  1.) resultZm = v_compton_doublepol_cross_inv(beamCharge, mechanism, beamHelicity, -0.5); 
+        resultZp = v_compton_doublepol_cross_inv(beamCharge, mechanism, beamHelicity,  0.5); 
+        resultZm = v_compton_doublepol_cross_inv(beamCharge, mechanism, beamHelicity, -0.5); 
 
-        result += 0.5 * (1. + m_target_polarizationL) * resultZp 
-                + 0.5 * (1. - m_target_polarizationL) * resultZm;
-    }
-
-    //polarization x (transverse)
-    if(m_target_polarizationT_x != 0.){
-      
-        m_proton_spinor_orientation = x;
-
-        double resultXp = 0.;
-        double resultXm = 0.;
-
-        if(m_target_polarizationT_x != -1.) resultXp = v_compton_doublepol_cross_inv(beamCharge, mechanism, beamHelicity,  0.5); 
-        if(m_target_polarizationT_x !=  1.) resultXm = v_compton_doublepol_cross_inv(beamCharge, mechanism, beamHelicity, -0.5); 
-
-        result += 0.5 * (1. + m_target_polarizationT_x) * resultXp 
-                + 0.5 * (1. - m_target_polarizationT_x) * resultXm;
-    }
-
-    //polarization y (transverse)
-    if(m_target_polarizationT_y != 0.){
-      
-        m_proton_spinor_orientation = y;
-
-        double resultYp = 0.;
-        double resultYm = 0.;
-
-        if(m_target_polarizationT_y != -1.) resultYp = v_compton_doublepol_cross_inv(beamCharge, mechanism, beamHelicity,  0.5); 
-        if(m_target_polarizationT_y !=  1.) resultYm = v_compton_doublepol_cross_inv(beamCharge, mechanism, beamHelicity, -0.5); 
-
-        result += 0.5 * (1. + m_target_polarizationT_y) * resultYp 
-                + 0.5 * (1. - m_target_polarizationT_y) * resultYm;
+        result += 0.5 * resultZp 
+                + 0.5 * resultZm;
+    }else{
+    
+        //polarization x (transverse)
+        if(m_target_polarizationT_x != 0.){
+          
+            m_proton_spinor_orientation = x;
+    
+            double resultXp = 0.;
+            double resultXm = 0.;
+    
+            if(m_target_polarizationT_x != -1.) resultXp = v_compton_doublepol_cross_inv(beamCharge, mechanism, beamHelicity,  0.5); 
+            if(m_target_polarizationT_x !=  1.) resultXm = v_compton_doublepol_cross_inv(beamCharge, mechanism, beamHelicity, -0.5); 
+    
+            result += 0.5 * (1. + m_target_polarizationT_x) * resultXp 
+                    + 0.5 * (1. - m_target_polarizationT_x) * resultXm;
+        }
+    
+        //polarization y (transverse)
+        if(m_target_polarizationT_y != 0.){
+          
+            m_proton_spinor_orientation = y;
+    
+            double resultYp = 0.;
+            double resultYm = 0.;
+    
+            if(m_target_polarizationT_y != -1.) resultYp = v_compton_doublepol_cross_inv(beamCharge, mechanism, beamHelicity,  0.5); 
+            if(m_target_polarizationT_y !=  1.) resultYm = v_compton_doublepol_cross_inv(beamCharge, mechanism, beamHelicity, -0.5); 
+    
+            result += 0.5 * (1. + m_target_polarizationT_y) * resultYp 
+                    + 0.5 * (1. - m_target_polarizationT_y) * resultYm;
+        }
+    
+        //polarization z (longidudinal)
+        if(m_target_polarizationL != 0.){
+          
+            m_proton_spinor_orientation = z;
+    
+            double resultZp = 0.;
+            double resultZm = 0.;
+    
+            if(m_target_polarizationL != -1.) resultZp = v_compton_doublepol_cross_inv(beamCharge, mechanism, beamHelicity,  0.5); 
+            if(m_target_polarizationL !=  1.) resultZm = v_compton_doublepol_cross_inv(beamCharge, mechanism, beamHelicity, -0.5); 
+    
+            result += 0.5 * (1. + m_target_polarizationL) * resultZp 
+                    + 0.5 * (1. - m_target_polarizationL) * resultZm;
+        }
     }
 
     //convert nb to GeV-2 and return
