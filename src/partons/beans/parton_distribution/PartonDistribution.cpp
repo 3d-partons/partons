@@ -11,8 +11,7 @@ PartonDistribution::PartonDistribution() :
 PartonDistribution::PartonDistribution(const PartonDistribution &other) :
         BaseObject(other) {
     m_gluonDistribution = other.m_gluonDistribution;
-
-    //TODO copy map of quark distribition
+    m_quarkDistributions = other.m_quarkDistributions;
 }
 
 PartonDistribution::~PartonDistribution() {
