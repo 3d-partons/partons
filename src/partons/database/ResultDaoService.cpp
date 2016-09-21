@@ -1,6 +1,7 @@
 #include "../../../include/partons/database/ResultDaoService.h"
 
 #include <ElementaryUtils/file_utils/FileUtils.h>
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/logger/LoggerManager.h>
 #include <ElementaryUtils/PropertiesManager.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
@@ -178,7 +179,7 @@ void ResultDaoService::loadDataInFileIntoTable(const std::string& fileName,
 
     if (query.exec(prepareInsertQuery(fileName, tableName))) {
     } else {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(),__func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query m_scenario_computation_table = "
                         << query.executedQuery().toStdString());

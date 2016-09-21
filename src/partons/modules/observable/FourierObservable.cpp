@@ -1,5 +1,6 @@
 #include "../../../../include/partons/modules/observable/FourierObservable.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
 
 #include "../../../../include/partons/beans/observable/ObservableType.h"
@@ -29,6 +30,7 @@ void FourierObservable::setProcessModule(ProcessModule* pProcessModule) {
     if (m_pPhiObservable != 0) {
         m_pPhiObservable->setProcessModule(pProcessModule);
     } else {
-        error(__func__, "m_pPhiObservable is NULL pointer");
+        ElemUtils::CustomException(getClassName(), __func__,
+                "m_pPhiObservable is NULL pointer");
     }
 }

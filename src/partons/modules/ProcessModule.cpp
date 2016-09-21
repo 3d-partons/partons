@@ -1,9 +1,9 @@
 #include "../../../include/partons/modules/ProcessModule.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
-#include <exception>
 
 #include "../../../include/partons/modules/ConvolCoeffFunctionModule.h"
 #include "../../../include/partons/modules/scale/ScaleModule.h"
@@ -68,7 +68,7 @@ void ProcessModule::configure(const ElemUtils::Parameters &parameters) {
                             << ProcessModule::PARAMETER_NAME_BEAM_ENERGY
                             << " configured with value = " << m_E);
         } catch (const std::exception &e) {
-            error(__func__,
+            ElemUtils::CustomException(getClassName(), __func__,
                     ElemUtils::Formatter() << "For parameter "
                             << ProcessModule::PARAMETER_NAME_BEAM_ENERGY << " "
                             << e.what());

@@ -1,12 +1,12 @@
 #include "../../../include/partons/modules/GPDModule.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/thread/Packet.h>
 #include <math.h>
 #include <iostream>
-#include <stdexcept>
 #include <utility>
 
 #include "../../../include/partons/beans/gpd/GPDResult.h"
@@ -15,8 +15,6 @@
 #include "../../../include/partons/services/GPDService.h"
 #include "../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../include/partons/ServiceObjectTyped.h"
-
-//#include "../../../include/partons/ServiceObjectTyped.h"
 
 const std::string GPDModule::GPD_TYPE = "GPD_MODULE_GPD_TYPE";
 
@@ -160,7 +158,7 @@ PartonDistribution GPDModule::compute(double x, double xi, double t,
             partonDistribution = ((*this).*(m_it->second))();
         }
     } else {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "GPD("
                         << GPDType(m_gpdType).toString()
                         << ") is not available for this GPD model");

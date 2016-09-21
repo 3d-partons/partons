@@ -1,5 +1,7 @@
 #include "../../../../include/partons/utils/thread/ThreadManager.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
+
 ThreadManager::ThreadManager() :
         BaseObject("ThreadManager") {
 }
@@ -19,7 +21,7 @@ void ThreadManager::newThread(const unsigned int numberOfThread,
 void ThreadManager::launchAllAndWaitingFor() {
 
     if (m_listOfModuleObject.size() == 0) {
-        error(__func__, "List of instantiated thread(s) is empty");
+        ElemUtils::CustomException(getClassName(),__func__, "List of instantiated thread(s) is empty");
     }
 
     // start all thread one by one

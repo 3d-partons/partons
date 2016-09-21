@@ -1,7 +1,7 @@
 #include "../../../include/partons/database/DatabaseManager.h"
 
 #include <ElementaryUtils/file_utils/FileUtils.h>
-//#include <ElementaryUtils/logger/LoggerManager.h>
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/PropertiesManager.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
@@ -19,7 +19,7 @@ const QSqlDatabase& DatabaseManager::getProductionDatabase() {
     if (!m_productionDatabase.isOpen()) {
         warn(__func__, "Database connection is gone away");
         if (!m_productionDatabase.open()) {
-            error(__func__,
+            ElemUtils::CustomException(getClassName(), __func__,
                     ElemUtils::Formatter() << "Cannot re-open database : "
                             << m_productionDatabase.lastError().text().toStdString());
         } else {
@@ -54,14 +54,14 @@ DatabaseManager::DatabaseManager() :
             "SQLITE")) {
         m_productionDatabase = QSqlDatabase::addDatabase("QSQLITE");
         if (!(ElemUtils::FileUtils::isReadable(sqlDatabaseName))) {
-            error(__func__,
+            ElemUtils::CustomException(getClassName(), __func__,
                     ElemUtils::Formatter()
                             << "Cannot read SQLITE database file ; corrupt or missing file : "
                             << sqlDatabaseName
                             << ", please check your properties file");
         }
     } else {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 "Unknown database type, please check your properties file");
     }
 
@@ -77,7 +77,7 @@ DatabaseManager::DatabaseManager() :
                     pPropertiesManager->getString("database.production.passwd").c_str()));
 
     if (!m_productionDatabase.open()) {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "Can't connect to database : "
                         << m_productionDatabase.lastError().text().toStdString());
     } else {

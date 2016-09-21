@@ -45,6 +45,7 @@
 
 #include "../../../../include/partons/modules/alphaS/RunningAlphaStrong.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/root_finding/Brent.h>
 #include <cmath>
@@ -161,7 +162,7 @@ double RunningAlphaStrong::compute() {
         break;
 
     default:
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 "Number of active flavours value must be between 3 and 6. Cannot find actual value of Lambda_QCD.");
     }
 
@@ -373,7 +374,7 @@ double RunningAlphaStrong::FindLambda(double Lambda,
     unsigned int NFlavour = (unsigned int) Parameters[2];
 
     if (NFlavour < 3 && NFlavour > 6) {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
                         << "Erroneous input in RunningAlphaStrong::FinLambda. Number of active flavours has to be an integer between 3 and 6. Here NFlavour = "
                         << NFlavour);

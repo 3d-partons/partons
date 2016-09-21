@@ -1,5 +1,6 @@
 #include "../../../../../include/partons/database/parton_distribution/dao/QuarkDistributionDao.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <QtCore/qstring.h>
 #include <QtCore/qvariant.h>
@@ -35,7 +36,7 @@ int QuarkDistributionDao::insert(double quarkDistributionPlus,
     if (query.exec()) {
         result = query.lastInsertId().toInt();
     } else {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(),__func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
@@ -63,7 +64,7 @@ QuarkDistribution QuarkDistributionDao::getQuarkDistributionById(
         fillQuarkDistributionFromQuery(quarkDistribution, query);
 
     } else {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(),__func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());

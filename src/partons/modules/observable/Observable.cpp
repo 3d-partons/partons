@@ -1,9 +1,10 @@
 #include "../../../../include/partons/modules/observable/Observable.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/thread/Packet.h>
 #include <NumA/utils/MathUtils.h>
-#include <exception>
+//#include <exception>
 #include <iostream>
 
 #include "../../../../include/partons/beans/observable/ObservableResult.h"
@@ -121,7 +122,7 @@ ObservableResult Observable::compute(double xB, double t, double Q2, double phi,
     }
 
     else {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "Unknow observable type : "
                         << ObservableType(m_observableType).toString());
     }
@@ -130,12 +131,14 @@ ObservableResult Observable::compute(double xB, double t, double Q2, double phi,
 }
 
 double Observable::compute(double phi) {
-    error(__func__, "Nothing to do ; Must be implemented in daugther class");
+    ElemUtils::CustomException(getClassName(), __func__,
+            "Nothing to do ; Must be implemented in daugther class");
     return 0.;
 }
 
 double Observable::compute() {
-    error(__func__, "Nothing to do ; Must be implemented in daugther class");
+    ElemUtils::CustomException(getClassName(), __func__,
+            "Nothing to do ; Must be implemented in daugther class");
     return 0.;
 
 }

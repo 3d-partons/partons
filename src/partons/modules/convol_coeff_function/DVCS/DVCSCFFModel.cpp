@@ -1,5 +1,6 @@
 #include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSCFFModel.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/integration/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
@@ -7,10 +8,8 @@
 #include <NumA/utils/MathUtils.h>
 #include <cmath>
 #include <map>
-#include <stdexcept>
 #include <utility>
 
-//#include "../../../../../include/partons/beans/gpd/GPDResult.h"
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
 #include "../../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
@@ -204,26 +203,28 @@ void DVCSCFFModel::isModuleWellConfigured() {
     DVCSConvolCoeffFunctionModule::isModuleWellConfigured();
 
     if (m_pGPDModule == 0) {
-        throw std::runtime_error("[DVCSCFFModel] GPDModule* is NULL");
+        ElemUtils::CustomException(getClassName(), __func__,
+                "GPDModule* is NULL");
     }
     if (m_qcdOrderType == PerturbativeQCDOrderType::UNDEFINED) {
-        throw std::runtime_error("[DVCSCFFModel] QCDOrderType is UNDEFINED");
+        ElemUtils::CustomException(getClassName(), __func__,
+                "QCDOrderType is UNDEFINED");
     }
     if (m_qcdOrderType != PerturbativeQCDOrderType::LO
             && m_qcdOrderType != PerturbativeQCDOrderType::NLO) {
 
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
                         << "Erroneous input, perturbative QCD order can only be LO or NLO. Here Order = "
                         << PerturbativeQCDOrderType(m_qcdOrderType).toString());
     }
     if (getMathIntegrator() == 0) {
-        throw std::runtime_error(
-                "[DVCSCFFModel] MathIntegrationMode is UNDEFINED");
+        ElemUtils::CustomException(getClassName(), __func__,
+                "MathIntegrationMode is UNDEFINED");
     }
     if (m_pRunningAlphaStrongModule == 0) {
-        throw std::runtime_error(
-                "[DVCSCFFModel] RunningAlphaStrongModule* is NULL");
+        ElemUtils::CustomException(getClassName(), __func__,
+                "RunningAlphaStrongModule* is NULL");
     }
 }
 
@@ -471,6 +472,7 @@ std::complex<double> DVCSCFFModel::computeIntegralsV() {
         ElemUtils::Formatter()
                 << "[DVCSCFFModule::computeIntegrals] Erroneous input perturbative QCD order can only be LO or NLO. Here Order = "
                 /*<< qcdOrderType.toString()*/;
+        //TODO
         throw std::runtime_error("");
     }
 
@@ -495,9 +497,9 @@ std::complex<double> DVCSCFFModel::computeIntegralsV() {
         break;
 
     default:
-        throw std::runtime_error(
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
-                        << "[DVCSCFFModule::computeIntegrals] Erroneous input number of active quark flavours should be an integer between 3 and 6. Number of active quark flavours = "
+                        << "Erroneous input number of active quark flavours should be an integer between 3 and 6. Number of active quark flavours = "
                         << m_nf);
     }
 
@@ -568,9 +570,9 @@ std::complex<double> DVCSCFFModel::computeIntegralsA() {
     if (m_qcdOrderType != PerturbativeQCDOrderType::LO
             && m_qcdOrderType != PerturbativeQCDOrderType::NLO) {
 
-        throw std::runtime_error(
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
-                        << "[DVCSCFFModel::computeIntegralsA] Erroneous input perturbative QCD order can only be LO or NLO. Here Order = "
+                        << "Erroneous input perturbative QCD order can only be LO or NLO. Here Order = "
                         << PerturbativeQCDOrderType(m_qcdOrderType).toString());
 
     }
@@ -596,9 +598,9 @@ std::complex<double> DVCSCFFModel::computeIntegralsA() {
         break;
 
     default:
-        throw std::runtime_error(
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
-                        << "[DVCSCFFModel::computeIntegralsA] Erroneous input number of active quark flavours should be an integer between 3 and 6. Number of active quark flavours = "
+                        << "Erroneous input number of active quark flavours should be an integer between 3 and 6. Number of active quark flavours = "
                         << m_nf);
     }
 

@@ -1,5 +1,6 @@
 #include "../../../../include/partons/modules/gpd/MPSSW13Model.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/PropertiesManager.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/integration/one_dimension/Functor1D.h>
@@ -158,26 +159,27 @@ void MPSSW13Model::setParameters(std::vector<double> Parameters) {
     // TODO: Check general syntax of setParameters...
 
     if (Parameters.size() != 3) {
-        error(__func__, "Missing parameters !");
+        ElemUtils::CustomException(getClassName(), __func__,
+                "Missing parameters !");
     }
 
     // Test known constraints on free parameters
     if (Parameters.at(0) < 1.) {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
                         << "Exponent in valence profile function should be >= 1."
                         << '\n' << "Here exponent = " << Parameters.at(0)
                         << '\n');
     }
     if (Parameters.at(1) < 1.) {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
                         << "Exponent in sea profile function should be >= 1."
                         << '\n' << "Here exponent = " << Parameters.at(1)
                         << '\n');
     }
     if (Parameters.at(2) < 1.) {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
                         << "Exponent in glue profile function should be >= 1."
                         << '\n' << "Here exponent = " << Parameters.at(2)
@@ -525,7 +527,7 @@ double MPSSW13Model::Profile(double N, double beta, double alpha) {
 
 void MPSSW13Model::throwBetaException(const std::string &funcName,
         double betaValue) {
-    error(funcName,
+    ElemUtils::CustomException(getClassName(), funcName,
             ElemUtils::Formatter()
                     << "Longitudinal momentum fraction should be in ] 0., +1. ]"
                     << '\n' << "Here beta = " << betaValue << '\n');

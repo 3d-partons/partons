@@ -1,5 +1,6 @@
 #include "../../../../include/partons/services/automation/Qt4XMLValidator.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/logger/LoggerManager.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <QtCore/qbytearray.h>
@@ -20,10 +21,10 @@ bool Qt4XMLValidator::isValidXMLDocument(const std::string &xmlSchemaStream,
         const std::string &xmlDocumentStream) const {
 
     if (xmlSchemaStream.empty()) {
-        error(__func__, "XML schema is empty.");
+        ElemUtils::CustomException(getClassName(),__func__, "XML schema is empty.");
     }
     if (xmlDocumentStream.empty()) {
-        error(__func__, "XML document is empty.");
+        ElemUtils::CustomException(getClassName(),__func__, "XML document is empty.");
     }
 
     const QByteArray schemaData = QString(xmlSchemaStream.c_str()).toUtf8();
@@ -41,7 +42,7 @@ bool Qt4XMLValidator::isValidXMLDocument(const std::string &xmlSchemaStream,
         isValid = validator.validate(xmldata);
 
         if (!isValid) {
-            error(__func__,
+            ElemUtils::CustomException(getClassName(),__func__,
                     ElemUtils::Formatter() << "XML document is invalid : "
                             << messageHandler.statusMessage());
         }

@@ -1,9 +1,11 @@
 #include "../../../../include/partons/beans/radon_inverse/RadonMeshCell.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
+
 RadonMeshCell::RadonMeshCell() :
         BaseObject("RadonMeshCell") {
 }
 
 void RadonMeshCell::test() {
-    error(__func__, "mon texte");
+    throw ElemUtils::CustomException(getClassName(), __func__, "mon texte");
 }

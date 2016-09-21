@@ -1,5 +1,7 @@
 #include "../../../../../include/partons/database/common/service/ResultInfoDaoService.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
+
 #include "../../../../../include/partons/beans/automation/Scenario.h"
 #include "../../../../../include/partons/beans/Computation.h"
 #include "../../../../../include/partons/beans/system/ResultInfo.h"
@@ -34,7 +36,7 @@ int ResultInfoDaoService::insertWithoutTransaction(
                             resultInfo.getScenarioHashSum())));
         }
     } else {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(),__func__,
                 "pScenario is NULL pointer ; This result has not been produced by a scenario ; It cannot be stored into the database.");
     }
 

@@ -1,6 +1,7 @@
 #include "../../../../include/partons/services/automation/AutomationService.h"
 
 #include <ElementaryUtils/file_utils/FileUtils.h>
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/PropertiesManager.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <stddef.h>
@@ -87,12 +88,12 @@ Scenario* AutomationService::parseXMLFile(
 
 Scenario* AutomationService::parseScenario(Scenario* pScenario) const {
     if (!pScenario) {
-        error(__func__, "Scenario provided pointer is NULL");
+        ElemUtils::CustomException(getClassName(),__func__, "Scenario provided pointer is NULL");
     }
 
     if (!(m_pXMLValidatorI->isValidXMLDocument(getXmlSchemaFile(),
             pScenario->getFile()))) {
-        error(__func__, "invalid scenario XML");
+        ElemUtils::CustomException(getClassName(),__func__, "invalid scenario XML");
     }
 
     // if task list is empty, then parse XML file to fill task list.

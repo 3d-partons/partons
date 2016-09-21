@@ -1,5 +1,6 @@
 #include "../../../../../include/partons/database/convol_coeff_function/dao/ConvolCoeffFunctionResultDao.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <QtCore/qstring.h>
 #include <QtCore/qvariant.h>
@@ -37,7 +38,7 @@ int ConvolCoeffFunctionResultDao::insert(
     if (query.exec()) {
         result = query.lastInsertId().toInt();
     } else {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
@@ -62,7 +63,7 @@ int ConvolCoeffFunctionResultDao::insertIntoCCFResultComplex(const int realPart,
     if (query.exec()) {
         result = query.lastInsertId().toInt();
     } else {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());

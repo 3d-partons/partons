@@ -1,5 +1,6 @@
 #include "../../../../include/partons/modules/evolution/GPDEvolutionModule.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
@@ -7,7 +8,6 @@
 #include <NumA/linear_algebra/matrix/MatrixD.h>
 #include <iostream>
 
-//#include "../../../../include/partons/beans/gpd/GPDResult.h"
 #include "../../../../include/partons/beans/List.h"
 #include "../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
 #include "../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
@@ -249,7 +249,7 @@ void GPDEvolutionModule::preCompute(double x, double xi, double t, double MuF2,
 
 //TODO logger
 void GPDEvolutionModule::initModule() {
-    debug(__func__, "");
+    debug(__func__, "Processing ...");
 }
 
 //TODO ajouter les tests manquants
@@ -257,24 +257,28 @@ void GPDEvolutionModule::isModuleWellConfigured() {
     debug(__func__, "");
 
     if (m_pNfFunction == 0) {
-        error(__func__, "m_pNfFunction* is NULL");
+        ElemUtils::CustomException(getClassName(), __func__,
+                "m_pNfFunction* is NULL");
     }
 
     if (m_pNfEvolFunction == 0) {
-        error(__func__, "m_pNfEvolFunction* is NULL");
+        ElemUtils::CustomException(getClassName(), __func__,
+                "m_pNfEvolFunction* is NULL");
     }
 
     if (m_pGPDModule == 0) {
-        error(__func__, "GPDModule* is NULL");
+        ElemUtils::CustomException(getClassName(), __func__,
+                "GPDModule* is NULL");
     }
 
     if (m_qcdOrderType == PerturbativeQCDOrderType::UNDEFINED) {
-        error(__func__, "QCDOrderType is UNDEFINED");
+        ElemUtils::CustomException(getClassName(), __func__,
+                "QCDOrderType is UNDEFINED");
     }
 
     // Test range in MuF and MuF_ref
     if (m_MuF2 <= 0.) {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "m_MuF2 is out of range ;"
                         << "m_MuF2 should be >0. Here m_MuF2 = " << m_MuF2);
     }

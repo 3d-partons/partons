@@ -1,5 +1,6 @@
 #include "../../../include/partons/modules/ActiveFlavorsModule.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <algorithm>
 
@@ -101,7 +102,8 @@ void ActiveFlavorsModule::isModuleWellConfigured() {
 void ActiveFlavorsModule::checkCurveIntegrity() {
     // first vector must have at least one entry
     if (m_nfFunctionOfMu.empty()) {
-        error(__func__, "there is no nfInterval defined");
+        ElemUtils::CustomException(getClassName(), __func__,
+                "there is no nfInterval defined");
     }
 
     double previousNf = 0;
@@ -110,7 +112,8 @@ void ActiveFlavorsModule::checkCurveIntegrity() {
         // check NF between 1 and 6
         if ((m_nfFunctionOfMu[i].getNf() < 1)
                 || (m_nfFunctionOfMu[i].getNf() > 6)) {
-            error(__func__, "nf out of range ; must be  0 < nf < 7");
+            ElemUtils::CustomException(getClassName(), __func__,
+                    "nf out of range ; must be  0 < nf < 7");
         }
 
         //check if nf is contigus step by 1
@@ -118,7 +121,8 @@ void ActiveFlavorsModule::checkCurveIntegrity() {
             previousNf = m_nfFunctionOfMu[i].getNf();
         } else {
             if (m_nfFunctionOfMu[i].getNf() != (previousNf + 1)) {
-                error(__func__, "nf not contigus step by 1");
+                ElemUtils::CustomException(getClassName(), __func__,
+                        "nf not contigus step by 1");
             }
             previousNf = m_nfFunctionOfMu[i].getNf();
         }

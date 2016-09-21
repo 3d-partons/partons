@@ -1,9 +1,9 @@
 #include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
-#include <stdexcept>
 #include <utility>
 
 #include "../../../../../include/partons/beans/observable/ObservableChannel.h"
@@ -103,15 +103,18 @@ void DVCSConvolCoeffFunctionModule::isModuleWellConfigured() {
     }
 
     if (isGPDModuleDependent() && m_pGPDModule == 0) {
-        error(__func__, "m_pGPDModule is NULL");
+        ElemUtils::CustomException(getClassName(), __func__,
+                "m_pGPDModule is NULL");
     }
 
     if (m_pRunningAlphaStrongModule == 0) {
-        error(__func__, "m_pRunningAlphaStrongModule is NULL");
+        ElemUtils::CustomException(getClassName(), __func__,
+                "m_pRunningAlphaStrongModule is NULL");
     }
 
     if (m_pNfConvolCoeffFunction == 0) {
-        error(__func__, "m_pNfConvolCoeffFunction is NULL");
+        ElemUtils::CustomException(getClassName(), __func__,
+                "m_pNfConvolCoeffFunction is NULL");
     }
 }
 
@@ -129,7 +132,7 @@ std::complex<double> DVCSConvolCoeffFunctionModule::compute(const double xi,
         result = ((*this).*(m_it->second))();
 
     } else {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "GPD("
                         << GPDType(gpdComputeType).toString()
                         << ") is not available for this  model");
@@ -139,21 +142,18 @@ std::complex<double> DVCSConvolCoeffFunctionModule::compute(const double xi,
 }
 
 std::complex<double> DVCSConvolCoeffFunctionModule::computeUnpolarized() {
-    throw std::runtime_error(
-            "[CFFModule::computeUnpolarized] check your child implementation : "
-                    + getClassName());
+    ElemUtils::CustomException(getClassName(), __func__,
+            "Check your child implementation : " + getClassName());
 }
 
 std::complex<double> DVCSConvolCoeffFunctionModule::computePolarized() {
-    throw std::runtime_error(
-            "[CFFModule::computeUnpolarized] check your child implementation : "
-                    + getClassName());
+    ElemUtils::CustomException(getClassName(), __func__,
+            "Check your child implementation : " + getClassName());
 }
 
 std::complex<double> DVCSConvolCoeffFunctionModule::computeCFF() {
-    throw std::runtime_error(
-            "[CFFModule::computeCFF] check your child implementation : "
-                    + getClassName());
+    ElemUtils::CustomException(getClassName(), __func__,
+            "Check your child implementation : " + getClassName());
 }
 
 void DVCSConvolCoeffFunctionModule::preCompute(const double xi, const double t,

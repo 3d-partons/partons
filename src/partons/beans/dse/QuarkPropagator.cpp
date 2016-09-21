@@ -9,6 +9,7 @@
 
 #include "../../../../include/partons/beans/dse/QuarkPropagator.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <algorithm>
 #include <cmath>
@@ -63,7 +64,8 @@ const NumA::VectorD& QuarkPropagator::getCoeffsA() const {
 
 void QuarkPropagator::setCoeffsA(const NumA::VectorD& a) {
     if (a.size() != m_N) {
-        error(__func__, "Size of vector a is wrong!");
+        ElemUtils::CustomException(getClassName(), __func__,
+                "Size of vector a is wrong!");
     }
     m_a = a;
     updateA();
@@ -84,7 +86,8 @@ const NumA::VectorD& QuarkPropagator::getCoeffsB() const {
 
 void QuarkPropagator::setCoeffsB(const NumA::VectorD& b) {
     if (b.size() != m_N) {
-        error(__func__, "Size of vector b is wrong!");
+        ElemUtils::CustomException(getClassName(), __func__,
+                "Size of vector b is wrong!");
     }
     m_b = b;
     updateB();
@@ -301,7 +304,8 @@ const NumA::VectorD& QuarkPropagator::getA() const {
 
 void QuarkPropagator::setA(const NumA::VectorD& a) {
     if (a.size() != m_N) {
-        error(__func__, "Size of vector a is wrong!");
+        ElemUtils::CustomException(getClassName(), __func__,
+                "Size of vector a is wrong!");
     }
     m_A = a;
     updateCoeffsA();
@@ -313,7 +317,8 @@ const NumA::VectorD& QuarkPropagator::getB() const {
 
 void QuarkPropagator::setB(const NumA::VectorD& b) {
     if (b.size() != m_N) {
-        error(__func__, "Size of vector b is wrong!");
+        ElemUtils::CustomException(getClassName(), __func__,
+                "Size of vector b is wrong!");
     }
     m_B = b;
     updateCoeffsB();

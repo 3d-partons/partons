@@ -1,5 +1,6 @@
 #include "../../../../../include/partons/database/convol_coeff_function/dao/ConvolCoeffFunctionKinematicDao.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <QtCore/qstring.h>
 #include <QtCore/qvariant.h>
@@ -35,7 +36,7 @@ int ConvolCoeffFunctionKinematicDao::insert(double xi, double t, double Q2,
     if (query.exec()) {
         result = query.lastInsertId().toInt();
     } else {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());

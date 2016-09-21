@@ -1,5 +1,6 @@
 #include "../../../../../include/partons/database/common/dao/ComputationDao.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <QtCore/qdatetime.h>
 #include <QtCore/qstring.h>
@@ -40,7 +41,7 @@ int ComputationDao::insert(const time_t &dateTime,
 
         result = query.lastInsertId().toInt();
     } else {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
@@ -130,7 +131,7 @@ int ComputationDao::insertIntoScenarioComputation(
 
         result = query.lastInsertId().toInt();
     } else {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());

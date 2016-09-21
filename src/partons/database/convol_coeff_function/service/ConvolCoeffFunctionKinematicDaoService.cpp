@@ -1,7 +1,7 @@
 #include "../../../../../include/partons/database/convol_coeff_function/service/ConvolCoeffFunctionKinematicDaoService.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <QtSql/qsqldatabase.h>
-#include <exception>
 
 ConvolCoeffFunctionKinematicDaoService::ConvolCoeffFunctionKinematicDaoService() :
         BaseObject("ConvolCoeffFunctionKinematicDaoService") {
@@ -24,7 +24,7 @@ int ConvolCoeffFunctionKinematicDaoService::insert(
         QSqlDatabase::database().commit();
 
     } catch (std::exception &e) {
-        error(__func__, e.what());
+        ElemUtils::CustomException(getClassName(), __func__, e.what());
 
         // Else return database in a stable state : n-1
         QSqlDatabase::database().rollback();
@@ -50,7 +50,7 @@ int ConvolCoeffFunctionKinematicDaoService::insert(
         QSqlDatabase::database().commit();
 
     } catch (std::exception &e) {
-        error(__func__, e.what());
+        ElemUtils::CustomException(getClassName(), __func__, e.what());
 
         // Else return database in a stable state : n-1
         QSqlDatabase::database().rollback();

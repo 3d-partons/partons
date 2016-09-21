@@ -1,5 +1,6 @@
 #include "../../../../include/partons/modules/gpd/MMS13Model.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/PropertiesManager.h>
@@ -235,7 +236,8 @@ double MMS13Model::forwardHval(double beta, QuarkFlavor::Type flavor) const {
 
     //check x
     if (beta <= 0.) {
-        error(__FUNCTION__, ElemUtils::Formatter() << "Illegal x " << beta);
+        ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << "Illegal x " << beta);
     }
 
     //parameters
@@ -266,7 +268,7 @@ double MMS13Model::forwardHval(double beta, QuarkFlavor::Type flavor) const {
         break;
 
     default: {
-        error(__FUNCTION__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "Flavor "
                         << QuarkFlavor(flavor).toString()
                         << " not supported by this function");
@@ -282,7 +284,8 @@ double MMS13Model::forwardEval(double beta, QuarkFlavor::Type flavor) const {
 
     //check x
     if (beta <= 0.) {
-        error(__FUNCTION__, ElemUtils::Formatter() << "Illegal x " << beta);
+        ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << "Illegal x " << beta);
     }
 
     //parameters
@@ -318,7 +321,7 @@ double MMS13Model::forwardEval(double beta, QuarkFlavor::Type flavor) const {
         break;
 
     default: {
-        error(__FUNCTION__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "Flavor "
                         << QuarkFlavor(flavor).toString()
                         << " not supported by this function");

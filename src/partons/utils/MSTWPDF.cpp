@@ -1,5 +1,6 @@
 #include "../../../include/partons/utils/MSTWPDF.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <stddef.h>
 #include <algorithm>
@@ -193,7 +194,7 @@ void MSTWPDF::init(const std::string &gridFilePath) {
     data_file.open(gridFilePath.c_str());
 
     if (data_file.fail()) {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "Error opening " << gridFilePath);
     }
 

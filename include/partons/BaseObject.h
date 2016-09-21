@@ -86,12 +86,6 @@ protected:
     void warn(const std::string &functionName,
             const std::string &message) const;
 
-    void error(const std::string &functionName,
-            const std::string &message) const;
-
-    void throwException(const std::string functionName,
-            const std::string errorMessage) const;
-
     void errorMissingParameter(const std::string &parameterName) const;
 
 private:

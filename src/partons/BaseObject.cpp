@@ -2,7 +2,6 @@
 
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/logger/LoggerManager.h>
-//#include <ElementaryUtils/PropertiesManager.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/thread/Packet.h>
 
@@ -72,26 +71,6 @@ void BaseObject::warn(const std::string& functionName,
             ElemUtils::LoggerManager::getInstance();
 
     pLoggerManager->warn(getClassName(), functionName, message);
-}
-
-//TODO remove error or throwException function from BaseObject class
-void BaseObject::error(const std::string& functionName,
-        const std::string& message) const {
-    ElemUtils::LoggerManager* pLoggerManager =
-            ElemUtils::LoggerManager::getInstance();
-
-    pLoggerManager->error(getClassName(), functionName, message);
-
-    throwException(
-            ElemUtils::Formatter() << functionName << "[" << m_objectId << "]",
-            message);
-}
-
-void BaseObject::throwException(const std::string functionName,
-        const std::string errorMessage) const {
-    throw std::runtime_error(
-            ElemUtils::Formatter() << "[" << getClassName() << "::"
-                    << functionName << "] " << errorMessage);
 }
 
 /* ===== GETTERS & SETTERS ===== */

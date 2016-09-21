@@ -1,5 +1,6 @@
 #include "../../../../../include/partons/database/convol_coeff_function/service/ConvolCoeffFunctionResultDaoService.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <QtCore/qstring.h>
@@ -8,7 +9,6 @@
 #include <QtSql/qsqlerror.h>
 #include <QtSql/qsqlquery.h>
 #include <complex>
-#include <exception>
 #include <map>
 #include <utility>
 
@@ -31,7 +31,7 @@ ConvolCoeffFunctionResultDaoService::ConvolCoeffFunctionResultDaoService() :
             m_lastCCFKinematicId = query.value(0).toInt();
         }
     } else {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
@@ -43,7 +43,7 @@ ConvolCoeffFunctionResultDaoService::ConvolCoeffFunctionResultDaoService() :
             m_lastCCFResultId = query.value(0).toInt();
         }
     } else {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
@@ -56,7 +56,7 @@ ConvolCoeffFunctionResultDaoService::ConvolCoeffFunctionResultDaoService() :
             m_lastCCFResultComplexId = query.value(0).toInt();
         }
     } else {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
@@ -83,7 +83,7 @@ int ConvolCoeffFunctionResultDaoService::insert(
         QSqlDatabase::database().commit();
 
     } catch (std::exception &e) {
-        error(__func__, e.what());
+        ElemUtils::CustomException(getClassName(), __func__, e.what());
 
         // Else return database in a stable state : n-1
         QSqlDatabase::database().rollback();

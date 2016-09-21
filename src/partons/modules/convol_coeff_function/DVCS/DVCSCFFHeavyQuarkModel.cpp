@@ -1,11 +1,11 @@
 #include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSCFFHeavyQuarkModel.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/integration/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <cmath>
 
-//#include "../../../../../include/partons/beans/gpd/GPDResult.h"
 #include "../../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
 #include "../../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
 #include "../../../../../include/partons/beans/PerturbativeQCDOrderType.h"
@@ -96,7 +96,7 @@ std::complex<double> DVCSCFFHeavyQuarkModel::computeIntegralsMassiveV() {
     if (m_qcdOrderType != PerturbativeQCDOrderType::LO
             && m_qcdOrderType != PerturbativeQCDOrderType::NLO) {
 
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
                         << "Erroneous input perturbative QCD order can only be LO or NLO. Here Order = "
                         << PerturbativeQCDOrderType(m_qcdOrderType).toString());
@@ -131,7 +131,7 @@ std::complex<double> DVCSCFFHeavyQuarkModel::computeIntegralsMassiveA() {
 
     if (m_qcdOrderType != PerturbativeQCDOrderType::LO
             && m_qcdOrderType != PerturbativeQCDOrderType::NLO) {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
                         << "Erroneous input perturbative QCD order can only be LO or NLO. Here Order = "
                         << PerturbativeQCDOrderType(m_qcdOrderType).toString());

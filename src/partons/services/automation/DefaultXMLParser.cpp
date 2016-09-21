@@ -1,5 +1,6 @@
 #include "../../../../include/partons/services/automation/DefaultXMLParser.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/parser/XMLAttributs.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
@@ -17,7 +18,8 @@ DefaultXMLParser::~DefaultXMLParser() {
 
 Scenario* DefaultXMLParser::parseScenario(Scenario* pScenario) {
     if (!pScenario) {
-        error(__func__, "Scenario provided pointer is NULL");
+        ElemUtils::CustomException(getClassName(), __func__,
+                "Scenario provided pointer is NULL");
     }
 
     m_pScenario = pScenario;

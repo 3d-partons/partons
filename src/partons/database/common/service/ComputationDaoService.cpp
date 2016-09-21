@@ -1,5 +1,7 @@
 #include "../../../../../include/partons/database/common/service/ComputationDaoService.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
+
 #include "../../../../../include/partons/beans/Computation.h"
 #include "../../../../../include/partons/beans/system/EnvironmentConfiguration.h"
 #include "../../../../../include/partons/Partons.h"
@@ -21,7 +23,7 @@ int ComputationDaoService::insertWithoutTransaction(
             Partons::getInstance()->getEnvironmentConfiguration();
 
     if (pEnvironmentConfiguration == 0) {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(),__func__,
                 "EnvironmentConfiguration object from Computation object is NULL pointer ; missing object");
     }
 

@@ -1,5 +1,6 @@
 #include "../../../../../include/partons/database/common/dao/EnvironmentConfigurationDao.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <QtCore/qdatetime.h>
@@ -45,7 +46,7 @@ int EnvironmentConfigurationDao::insert(const time_t& storeDate,
 
         indexId = query.lastInsertId().toInt();
     } else {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
@@ -91,7 +92,7 @@ void EnvironmentConfigurationDao::deleteByIndexId(const int indexId) const {
 
         //TODO add a confirm message
     } else {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());

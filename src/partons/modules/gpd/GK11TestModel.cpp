@@ -1,25 +1,12 @@
-/*
- * GKK11TestModule.cpp
- *
- *  Created on: May 17, 2016
- *      Author: debian
- */
-
 #include "../../../../include/partons/modules/gpd/GK11TestModel.h"
 
-#include <cln/float.h>
-#include <cln/float_class.h>
-#include <cln/floatformat.h>
-#include <cln/real.h>
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/integration/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
 #include <algorithm>
 #include <cmath>
-//#include <cstdio>
-//#include <exception>
-//#include <iostream>
 #include <map>
 #include <utility>
 
@@ -226,7 +213,7 @@ void GK11TestModel::initFunctorsForIntegrations() {
 
 void GK11TestModel::throwBetaException(const std::string &funcName,
         double betaValue) {
-    error(funcName,
+    ElemUtils::CustomException(getClassName(), funcName,
             ElemUtils::Formatter()
                     << "Longitudinal momentum fraction should be in ] 0., +1. ]"
                     << '\n' << "Here beta = " << betaValue << '\n');
@@ -700,8 +687,6 @@ double GK11TestModel::IntegralxSmall2EsSea(double beta,
         throwBetaException(__func__, beta);
     }
 
-
-
     return GKtDependentDD_Es(beta, (m_x + beta) / m_xi) / m_xi;
 }
 
@@ -877,8 +862,6 @@ double GK11TestModel::IntegralxSmall2HsSea(double beta,
     if (beta <= 0 || beta > 1.) {
         throwBetaException(__func__, beta);
     }
-
-
 
     return GKtDependentsDD(beta, (m_x + beta) / m_xi) / m_xi;
 }
@@ -1093,8 +1076,6 @@ PartonDistribution GK11TestModel::computeH() {
 
     quarkDistribution_u.setQuarkDistribution(HuVal + uSea);
     quarkDistribution_d.setQuarkDistribution(HdVal + dSea);
-
-
 
 // Set Hq(+)
     quarkDistribution_u.setQuarkDistributionPlus(HuVal - HuValMx + 2 * uSea);
@@ -1510,8 +1491,6 @@ PartonDistribution GK11TestModel::computeEt() {
 
     return partonDistribution;
 }
-
-
 
 double GK11TestModel::Et_pole(double x) {
 

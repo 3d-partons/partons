@@ -1,8 +1,9 @@
 #include "../../../../include/partons/modules/dse/GapEqSeparableSolver.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
+#include <NumA/linear_algebra/linear_system/LinearSystem.h>
 #include <NumA/linear_algebra/matrix/MatrixD.h>
-#include <NumA/linear_algebra/vector/VectorD.h>
 #include <NumA/root_finding/NewtonMD.h>
 #include <cmath>
 
@@ -357,7 +358,7 @@ void GapEqSeparableSolver::isModuleWellConfigured() {
 //}
 
 void GapEqSeparableSolver::computeBroydenIteration() {
-    NumA::NewtonMD newtonIteration(get2N(),NumA::LinearSystem::FullQR);
+    NumA::NewtonMD newtonIteration(get2N(), NumA::LinearSystem::FullQR);
 
     unsigned int n;
     bool noConvergence = true;
@@ -1104,7 +1105,7 @@ void GapEqSeparableSolver::computeBroydenIteration() {
 
 NumA::VectorD GapEqSeparableSolver::G_func(const NumA::VectorD& X) {
     if (X.size() != get2N()) {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 (ElemUtils::Formatter() << "Size of X (" << X.size()
                         << ") is wrong. It should be 2*N = " << get2N() << ".").str());
     }

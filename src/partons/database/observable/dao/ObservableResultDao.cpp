@@ -1,5 +1,6 @@
 #include "../../../../../include/partons/database/observable/dao/ObservableResultDao.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <QtCore/qstring.h>
 #include <QtCore/qvariant.h>
@@ -47,7 +48,7 @@ int ObservableResultDao::insert(const std::string& observableName,
     if (query.exec()) {
         result = query.lastInsertId().toInt();
     } else {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
@@ -73,7 +74,7 @@ List<ObservableResult> ObservableResultDao::getObservableResultListByComputation
     if (query.exec()) {
         fillObservableResultList(results, query);
     } else {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
@@ -95,7 +96,7 @@ List<ObservableResult> ObservableResultDao::getObservableResultListFromSQLQuery(
     if (query.exec()) {
         fillObservableResultList(results, query);
     } else {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());

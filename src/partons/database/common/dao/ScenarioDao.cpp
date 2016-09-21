@@ -1,5 +1,6 @@
 #include "../../../../../include/partons/database/common/dao/ScenarioDao.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <QtCore/qdatetime.h>
@@ -42,7 +43,7 @@ int ScenarioDao::insertWithoutTransaction(const std::string &description,
 
         result = query.lastInsertId().toInt();
     } else {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());

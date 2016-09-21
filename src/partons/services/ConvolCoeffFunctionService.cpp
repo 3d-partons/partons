@@ -109,7 +109,7 @@ void ConvolCoeffFunctionService::computeTask(Task &task) {
                                 << "DVCSConvolCoeffFunctionResultList object has been stored in database with computation_id = "
                                 << computationId);
             } else {
-                error(__func__,
+                ElemUtils::CustomException(getClassName(), __func__,
                         ElemUtils::Formatter()
                                 << "DVCSConvolCoeffFunctionResultList object : insertion into database failed");
             }
@@ -167,7 +167,7 @@ DVCSConvolCoeffFunctionResult ConvolCoeffFunctionService::computeWithGPDModelTas
         kinematic = DVCSConvolCoeffFunctionKinematic(
                 task.getLastAvailableParameters());
     } else {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
                         << "Missing object : <DVCSConvolCoeffFunctionKinematic> for method "
                         << task.getFunctionName());
@@ -192,13 +192,13 @@ List<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionService::computeManyKinem
             listOfKinematic = KinematicUtils().getCCFKinematicFromFile(
                     parameters.getLastAvailable().toString());
         } else {
-            error(__func__,
+            ElemUtils::CustomException(getClassName(), __func__,
                     ElemUtils::Formatter()
                             << "Missing parameter file in object <DVCSConvolCoeffFunctionKinematic> for method "
                             << task.getFunctionName());
         }
     } else {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
                         << "Missing object : <GPDKinematic> for method "
                         << task.getFunctionName());
@@ -324,7 +324,7 @@ ConvolCoeffFunctionModule* ConvolCoeffFunctionService::configureConvolCoeffFunct
 
     if (pConvolCoeffFunctionModule->isGPDModuleDependent()) {
         if (pGPDModule == 0) {
-            error(__func__,
+            ElemUtils::CustomException(getClassName(), __func__,
                     "This ConvolCoeffFunctionModule is GPDModule dependent but you have not provided any GPDModule");
         }
 

@@ -1,9 +1,9 @@
 #include "../../../../include/partons/modules/process/DVCSModule.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/linear_algebra/vector/Vector3D.h>
 #include <cmath>
-#include <exception>
 
 #include "../../../../include/partons/beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "../../../../include/partons/beans/observable/ObservableChannel.h"
@@ -103,12 +103,12 @@ void DVCSModule::isModuleWellConfigured() {
     }
 
     if (m_pScaleModule == 0) {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 "m_pScaleModule is NULL pointer ; Use configure method to configure it");
     }
 
     if (m_pXiConverterModule == 0) {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 "m_pXiConverterModule is NULL pointer ; Use configure method to configure it");
     }
 
@@ -203,14 +203,14 @@ void DVCSModule::setConvolCoeffFunctionModule(
             ProcessModule::setConvolCoeffFunctionModule(
                     pConvolCoeffFunctionModule);
         } else {
-            error(__func__,
+            ElemUtils::CustomException(getClassName(), __func__,
                     ElemUtils::Formatter()
                             << "Cannot set ConvolCoeffFunctionModule, because its channel is different from ProcessModule : "
                             << ObservableChannel(
                                     pConvolCoeffFunctionModule->getChannel()).toString());
         }
     } else {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 "Cannot set ConvolCoeffFunctionModule, because it's a NULL pointer");
     }
 

@@ -1,7 +1,7 @@
 #include "../../../../../include/partons/database/parton_distribution/service/PartonDistributionDaoService.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <QtSql/qsqldatabase.h>
-#include <exception>
 #include <map>
 #include <utility>
 
@@ -32,7 +32,7 @@ int PartonDistributionDaoService::insert(
         QSqlDatabase::database().commit();
 
     } catch (std::exception &e) {
-        error(__func__, e.what());
+        ElemUtils::CustomException(getClassName(), __func__, e.what());
 
         // Else return database in a stable state : n-1
         QSqlDatabase::database().rollback();

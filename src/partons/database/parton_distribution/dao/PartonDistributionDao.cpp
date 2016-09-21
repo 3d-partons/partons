@@ -1,5 +1,6 @@
 #include "../../../../../include/partons/database/parton_distribution/dao/PartonDistributionDao.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <QtCore/qstring.h>
 #include <QtCore/qvariant.h>
@@ -31,7 +32,7 @@ int PartonDistributionDao::insert(double gluonDistributionValue) const {
     if (query.exec()) {
         result = query.lastInsertId().toInt();
     } else {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
@@ -56,7 +57,7 @@ int PartonDistributionDao::insertIntoPartonDistributionQuarkDistributionTable(
     if (query.exec()) {
         result = query.lastInsertId().toInt();
     } else {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
@@ -82,7 +83,7 @@ PartonDistribution PartonDistributionDao::getPartonDistributionById(
     if (query.exec()) {
         fillPartonDistributionFromQuery(partonDistribution, query);
     } else {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
@@ -136,7 +137,7 @@ void PartonDistributionDao::fillPartonDistribution(
                             query.value(f_quark_distribution_id).toInt()));
         }
     } else {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());

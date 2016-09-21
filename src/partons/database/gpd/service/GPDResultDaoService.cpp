@@ -1,5 +1,6 @@
 #include "../../../../../include/partons/database/gpd/service/GPDResultDaoService.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <QtCore/qstring.h>
 #include <QtCore/qvariant.h>
@@ -30,7 +31,7 @@ GPDResultDaoService::GPDResultDaoService() :
             m_lastGPDKinematicId = query.value(0).toInt();
         }
     } else {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(),__func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
@@ -42,7 +43,7 @@ GPDResultDaoService::GPDResultDaoService() :
             m_lastGPDResultId = query.value(0).toInt();
         }
     } else {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(),__func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
@@ -55,7 +56,7 @@ GPDResultDaoService::GPDResultDaoService() :
             m_lastPartonDistributionId = query.value(0).toInt();
         }
     } else {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(),__func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
@@ -68,7 +69,7 @@ GPDResultDaoService::GPDResultDaoService() :
             m_lastQuarkDistributionId = query.value(0).toInt();
         }
     } else {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(),__func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
@@ -82,7 +83,7 @@ GPDResultDaoService::GPDResultDaoService() :
                     query.value(0).toInt();
         }
     } else {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(),__func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
@@ -95,7 +96,7 @@ GPDResultDaoService::GPDResultDaoService() :
             m_lastGPDResultPartonDistributionId = query.value(0).toInt();
         }
     } else {
-        error(__func__,
+        ElemUtils::CustomException(getClassName(),__func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
