@@ -10,15 +10,14 @@
 
 #include <map>
 #include <string>
-#include <vector>
 
 #include "../beans/gpd/GPDKinematic.h"
 #include "../beans/gpd/GPDType.h"
+#include "../beans/List.h"
 #include "../beans/parton_distribution/PartonDistribution.h"
 #include "../ModuleObject.h"
 
 class GPDEvolutionModule;
-class GPDResult;
 
 /**
  * @class GPDModule
@@ -64,8 +63,8 @@ public:
      */
     void virtual configure(const ElemUtils::Parameters &parameters);
 
-    virtual GPDResult compute(const GPDKinematic &kinematic,
-            GPDType::Type gpdType, bool evolution = false);
+    virtual PartonDistribution compute(const GPDKinematic &kinematic,
+            GPDType gpdType, bool evolution = false);
 
     /**
      * Virtual method, computes GPD with some input parameters.
@@ -80,8 +79,9 @@ public:
      * @return Return results in an GPDOutputData class.
      * Contains GPD results for each flavor of quarks and for each GPDs (H, Ht, E, Et, ...) if computable.
      */
-    virtual GPDResult compute(double x, double xi, double t, double MuF2,
-            double MuR2, GPDType::Type gpdType, bool evolution = false);
+    virtual PartonDistribution compute(double x, double xi, double t,
+            double MuF2, double MuR2, GPDType::Type gpdType, bool evolution =
+                    false);
 
     virtual PartonDistribution computeH();
     virtual PartonDistribution computeE();
@@ -108,7 +108,7 @@ public:
     double getXi() const;
     void setXi(double xi);
 
-    std::vector<GPDType::Type> getListOfAvailableGPDTypeForComputation() const;
+    List<GPDType> getListOfAvailableGPDTypeForComputation() const;
 
 protected:
     double m_x;

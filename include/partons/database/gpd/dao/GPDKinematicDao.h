@@ -33,8 +33,6 @@ public:
 
     int getKinematicIdByHashSum(const std::string &hashSum) const;
 
-    int executeCustomQuery(const double x) const;
-
 private:
     void fillGPDKinematicFromQuery(GPDKinematic &gpdKinematic,
             QSqlQuery &query) const;

@@ -35,6 +35,8 @@ int GPDKinematicDao::insert(double x, double xi, double t, double MuF2,
     query.bindValue(":MuR2", MuR2);
 
     if (query.exec()) {
+        debug(__func__, Database::getLastExecutedQuery(query));
+
         result = query.lastInsertId().toInt();
     } else {
         //TODO move implementation in mother classe for avoid code redondance
@@ -43,8 +45,6 @@ int GPDKinematicDao::insert(double x, double xi, double t, double MuF2,
                         << " for sql query = "
                         << query.executedQuery().toStdString());
     }
-
-    query.clear();
 
     return result;
 }
@@ -61,25 +61,16 @@ int GPDKinematicDao::select(double x, double xi, double t, double MuF2,
             << " WHERE x = :x AND xi = :xi AND t = :t AND MuF2 = :MuF2 AND MuR2 = :MuR2";
 
     query.prepare(QString(formatter.str().c_str()));
-
     query.bindValue(":x", x);
     query.bindValue(":xi", xi);
     query.bindValue(":t", t);
     query.bindValue(":MuF2", MuF2);
     query.bindValue(":MuR2", MuR2);
 
-    if (query.exec()) {
-        if (query.first()) {
-            result = query.value(0).toInt();
-        }
-    } else {
-        error(__func__,
-                ElemUtils::Formatter() << query.lastError().text().toStdString()
-                        << " for sql query = "
-                        << query.executedQuery().toStdString());
-    }
+    Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query);
 
-    query.clear();
+    result = query.value(0).toInt();
 
     return result;
 }
@@ -94,27 +85,20 @@ GPDKinematic GPDKinematicDao::getKinematicById(const int id) const {
             << " WHERE " << Database::COLUMN_NAME_GPD_KINEMATIC_ID << " = :id";
 
     query.prepare(QString(formatter.str().c_str()));
-
     query.bindValue(":id", id);
 
-    if (query.exec()) {
-        if (query.first()) {
-            fillGPDKinematicFromQuery(gpdKinematic, query);
-        }
-    } else {
-        error(__func__,
-                ElemUtils::Formatter() << query.lastError().text().toStdString()
-                        << " for sql query = "
-                        << query.executedQuery().toStdString());
-    }
+    Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query);
 
-    query.clear();
+    fillGPDKinematicFromQuery(gpdKinematic, query);
 
     return gpdKinematic;
 }
 
 List<GPDKinematic> GPDKinematicDao::getKinematicListByComputationId(
         const int computationId) const {
+    debug(__func__, "Processing ...");
+
     List<GPDKinematic> kinematicList;
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
@@ -129,20 +113,12 @@ List<GPDKinematic> GPDKinematicDao::getKinematicListByComputationId(
             << Database::COLUMN_NAME_GPD_KINEMATIC_ID;
 
     query.prepare(QString(formatter.str().c_str()));
+    query.bindValue(":computationId", QVariant(computationId));
 
-    query.bindValue(":computationId", computationId);
+    Database::checkManyResults(getClassName(), __func__,
+            Database::execSelectQuery(query), query);
 
-    if (query.exec()) {
-        if (DatabaseManager::getNumberOfRows(query) != 0) {
-            fillGPDKinematicListFromQuery(kinematicList, query);
-        } else {
-            warn(__func__,
-                    ElemUtils::Formatter() << "No entry for computationId = "
-                            << computationId);
-        }
-    }
-
-    query.clear();
+    fillGPDKinematicListFromQuery(kinematicList, query);
 
     return kinematicList;
 }
@@ -172,6 +148,8 @@ void GPDKinematicDao::fillGPDKinematicFromQuery(GPDKinematic &gpdKinematic,
 //TODO test implementation
 void GPDKinematicDao::fillGPDKinematicListFromQuery(
         List<GPDKinematic>& gpdKinematicList, QSqlQuery& query) const {
+    debug(__func__, "Processing ...");
+
     while (query.next()) {
         GPDKinematic gpdKinematic;
         fillGPDKinematicFromQuery(gpdKinematic, query);
@@ -189,45 +167,12 @@ int GPDKinematicDao::getKinematicIdByHashSum(const std::string& hashSum) const {
             << " WHERE hash_sum = :hashSum";
 
     query.prepare(QString(formatter.str().c_str()));
-
     query.bindValue(":hashSum", QString(hashSum.c_str()));
 
-    if (query.exec()) {
-        if (query.first()) {
-            result = query.value(0).toInt();
-        }
-    } else {
-        error(__func__,
-                ElemUtils::Formatter() << query.lastError().text().toStdString()
-                        << " for sql query = "
-                        << query.executedQuery().toStdString());
-    }
+    Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query);
 
-    query.clear();
-
-    return result;
-}
-
-int GPDKinematicDao::executeCustomQuery(const double x) const {
-    int result = -1;
-    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
-
-    query.prepare("SELECT COUNT(*) FROM gpd_kinematic WHERE x = :x");
-
-    query.bindValue(":x", x);
-
-    if (query.exec()) {
-        if (query.first()) {
-            result = query.value(0).toInt();
-        }
-    } else {
-        error(__func__,
-                ElemUtils::Formatter() << query.lastError().text().toStdString()
-                        << " for sql query = "
-                        << query.executedQuery().toStdString());
-    }
-
-    query.clear();
+    result = query.value(0).toInt();
 
     return result;
 }

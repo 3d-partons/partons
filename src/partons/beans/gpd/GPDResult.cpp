@@ -1,5 +1,6 @@
 #include "../../../../include/partons/beans/gpd/GPDResult.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <utility>
 
@@ -33,7 +34,7 @@ const PartonDistribution& GPDResult::getPartonDistribution(
             m_partonDistributions.find(gpdType);
 
     if (it == m_partonDistributions.end()) {
-        error(__func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
                         << "Cannot to find PartonDistribution object from GPDType = "
                         << GPDType(gpdType).toString());
@@ -76,7 +77,9 @@ std::string GPDResult::toString() const {
     ElemUtils::Formatter formatter;
     std::map<GPDType::Type, PartonDistribution>::const_iterator it;
 
-    formatter << Result::toString() << '\n';
+    formatter << BaseObject::toString() << '\n';
+
+    formatter << "[PartonDistributionList]" << '\n';
 
     for (it = m_partonDistributions.begin(); it != m_partonDistributions.end();
             it++) {
@@ -112,7 +115,7 @@ void GPDResult::compare(ComparisonReport &rootComparisonReport,
     //TODO faire un test pour valider la cinématique associée
 
     if (size() != referenceObject.size()) {
-        error(__func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
                         << "Cannot perform comparison between parton distribution map because they are not equal in size ; With GPDResult index id = "
                         << referenceObject.getIndexId() << '\n' << toString()
@@ -124,8 +127,7 @@ void GPDResult::compare(ComparisonReport &rootComparisonReport,
             it++) {
         (it->second).compare(rootComparisonReport,
                 referenceObject.getPartonDistribution((it->first)),
-                ElemUtils::Formatter() << parentObjectInfo << " IndexId = "
-                        << referenceObject.getIndexId() << " "
+                ElemUtils::Formatter() << parentObjectInfo << " "
                         << this->getObjectInfo() << " "
                         << GPDType(it->first).toString());
     }

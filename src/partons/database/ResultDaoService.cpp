@@ -16,6 +16,7 @@
 #include "../../../include/partons/beans/Computation.h"
 #include "../../../include/partons/beans/system/EnvironmentConfiguration.h"
 #include "../../../include/partons/beans/system/ResultInfo.h"
+#include "../../../include/partons/database/Database.h"
 #include "../../../include/partons/database/DatabaseManager.h"
 #include "../../../include/partons/Partons.h"
 #include "../../../include/partons/ResourceManager.h"
@@ -38,29 +39,24 @@ ResultDaoService::ResultDaoService(const std::string &className) :
                     "temporary.working.directory.path");
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
-    if (query.exec("SELECT COUNT(computation_id) FROM computation;")) {
-        if (query.first()) {
-            m_lastComputationId = query.value(0).toInt();
-        }
-    } else {
-        error(__func__,
-                ElemUtils::Formatter() << query.lastError().text().toStdString()
-                        << " for sql query = "
-                        << query.executedQuery().toStdString());
-    }
+
+    query.prepare("SELECT COUNT(computation_id) FROM computation");
+
+    Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query);
+
+    m_lastComputationId = query.value(0).toInt();
+
     query.clear();
 
-    if (query.exec(
-            "SELECT COUNT(scenario_computation_id) FROM scenario_computation;")) {
-        if (query.first()) {
-            m_lastScenarioComputation = query.value(0).toInt();
-        }
-    } else {
-        error(__func__,
-                ElemUtils::Formatter() << query.lastError().text().toStdString()
-                        << " for sql query = "
-                        << query.executedQuery().toStdString());
-    }
+    query.prepare(
+            "SELECT COUNT(scenario_computation_id) FROM scenario_computation");
+
+    Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query);
+
+    m_lastScenarioComputation = query.value(0).toInt();
+
     query.clear();
 
 }
@@ -221,6 +217,7 @@ Plot2DList ResultDaoService::getPlot2DListFromCustomQuery(
     query.prepare(QString(sqlQuery.c_str()));
 
     if (query.exec()) {
+        query.first();
         while (query.next()) {
             plot2DList.add(
                     Plot2D(query.value(0).toDouble(),

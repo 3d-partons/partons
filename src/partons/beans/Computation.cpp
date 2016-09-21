@@ -1,15 +1,16 @@
 #include "../../../include/partons/beans/Computation.h"
 
 Computation::Computation() :
-        DatabaseObject("Computation"), m_dateTime(time(0)) {
+        BaseObject("Computation"), m_dateTime(time(0)) {
 }
 
 Computation::Computation(int indexId, time_t dateTime) :
-        DatabaseObject("Computation", indexId), m_dateTime(dateTime) {
+        BaseObject("Computation"), m_dateTime(dateTime) {
+    setIndexId(indexId);
 }
 
 Computation::Computation(const Computation &other) :
-        DatabaseObject(other) {
+        BaseObject(other) {
     m_dateTime = other.m_dateTime;
 }
 

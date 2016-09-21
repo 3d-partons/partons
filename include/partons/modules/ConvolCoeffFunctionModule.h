@@ -8,10 +8,12 @@
  * @version 1.0
  */
 
+#include <complex>
 #include <string>
 
 #include "../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "../beans/gpd/GPDType.h"
+#include "../beans/List.h"
 #include "../beans/observable/ObservableChannel.h"
 #include "../ModuleObject.h"
 #include "MathIntegratorModule.h"
@@ -40,12 +42,14 @@ public:
 
     virtual void run();
 
-    virtual DVCSConvolCoeffFunctionResult compute(
+    virtual std::complex<double> compute(
             const DVCSConvolCoeffFunctionKinematic &kinematic,
             GPDType::Type gpdType);
 
-    virtual DVCSConvolCoeffFunctionResult compute(double xi, double t,
-            double Q2, double MuF2, double MuR2, GPDType::Type gpdType) = 0;
+    virtual std::complex<double> compute(double xi, double t, double Q2,
+            double MuF2, double MuR2, GPDType::Type gpdType) = 0;
+
+    virtual List<GPDType> getListOfAvailableGPDTypeForComputation() const = 0;
 
     // ##### GETTERS & SETTERS #####
 

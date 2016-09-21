@@ -36,6 +36,8 @@ public:
 
     QuarkFlavor();
 
+    QuarkFlavor(const QuarkFlavor &other);
+
     QuarkFlavor(Type type);
 
     virtual ~QuarkFlavor();

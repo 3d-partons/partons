@@ -1,12 +1,17 @@
 #include "../../../include/partons/beans/KinematicUtils.h"
 
 #include <ElementaryUtils/file_utils/FileUtils.h>
-#include <ElementaryUtils/logger/LoggerManager.h>
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <stddef.h>
 
-#include "../../../include/partons/Partons.h"
+KinematicUtils::KinematicUtils() :
+        BaseObject("KinematicUtils") {
+}
+
+KinematicUtils::~KinematicUtils() {
+}
 
 List<ObservableKinematic> KinematicUtils::getObservableKinematicFromFile(
         const std::string& filePath) {
@@ -43,7 +48,7 @@ List<ObservableKinematic> KinematicUtils::getObservableKinematicFromFile(
                 kinematic = ObservableKinematic(kinematicValues[0],
                         kinematicValues[1], kinematicValues[2],
                         kinematicValues[3]);
-                kinematic.setListEntryPosition(observableKinematicList.size());
+                kinematic.setIndexId(observableKinematicList.size());
 
                 observableKinematicList.add(kinematic);
             }
@@ -88,7 +93,7 @@ List<GPDKinematic> KinematicUtils::getGPDKinematicFromFile(
                 kinematic = GPDKinematic(kinematicValues[0], kinematicValues[1],
                         kinematicValues[2], kinematicValues[3],
                         kinematicValues[4]);
-                kinematic.setListEntryPosition(gpdKinematicList.size());
+                kinematic.setIndexId(gpdKinematicList.size());
 
                 gpdKinematicList.add(kinematic);
             }
@@ -134,7 +139,7 @@ List<DVCSConvolCoeffFunctionKinematic> KinematicUtils::getCCFKinematicFromFile(
                 kinematic = DVCSConvolCoeffFunctionKinematic(kinematicValues[0],
                         kinematicValues[1], kinematicValues[2],
                         kinematicValues[3], kinematicValues[4]);
-                kinematic.setListEntryPosition(kinematicList.size());
+                kinematic.setIndexId(kinematicList.size());
 
                 kinematicList.add(kinematic);
             }
@@ -149,8 +154,7 @@ List<DVCSConvolCoeffFunctionKinematic> KinematicUtils::getCCFKinematicFromFile(
 
 void KinematicUtils::error(const std::string &funcName,
         const std::string &msg) {
-    Partons::getInstance()->getLoggerManager()->error("KinematicUtils",
-            funcName, msg);
+    throw ElemUtils::CustomException(getClassName(), __func__, msg);
 }
 
 void KinematicUtils::errorCannotOpenFile(const std::string &funcName,

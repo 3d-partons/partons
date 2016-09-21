@@ -34,6 +34,7 @@ public:
     static const std::string TASK_STORE_IN_DB_ATTRIBUT_NAME;
     static const std::string PARAM_NAME_ATTRIBUT_NAME;
     static const std::string PARAM_VALUE_ATTRIBUT_NAME;
+    static const std::string TASK_PARAM_NODE_NAME;
 
     /**
      * Constructor

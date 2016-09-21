@@ -48,15 +48,16 @@ public:
 
     virtual void computeTask(Task &task);
 
-    List<DVCSConvolCoeffFunctionResult> computeManyKinematicOneModel(
+    List<DVCSConvolCoeffFunctionResult> computeForOneCCFModelAndManyKinematics(
             List<DVCSConvolCoeffFunctionKinematic> &kinematics,
             ConvolCoeffFunctionModule* pConvolCoeffFunctionModule,
+            const List<GPDType> &gpdTypeList = List<GPDType>(),
             const bool storeInDB = 0);
 
-    virtual DVCSConvolCoeffFunctionResult computeWithGPDModel(
+    virtual DVCSConvolCoeffFunctionResult computeForOneCCFModel(
             const DVCSConvolCoeffFunctionKinematic &kinematic,
             ConvolCoeffFunctionModule* convolCoeffFunctionModule,
-            GPDType::Type gpdType = GPDType::ALL) const;
+            const List<GPDType> & gpdTypeList = List<GPDType>()) const;
 
 //    virtual ResultList<DVCSConvolCoeffFunctionResult> computeListWithGPDModel(
 //            const DVCSConvolCoeffFunctionKinematic &kinematic,
@@ -89,6 +90,10 @@ private:
     List<DVCSConvolCoeffFunctionResult> computeManyKinematicOneModelTask(
             Task& task);
     void generatePlotFileTask(Task &task);
+
+    List<GPDType> getFinalGPDTypeList(
+            ConvolCoeffFunctionModule* pConvolCoeffFunctionModule,
+            const List<GPDType> &gpdTypeList) const;
 };
 
 #endif /* DVCS_CONVOL_COEFF_FUNCTION_SERVICE_H */

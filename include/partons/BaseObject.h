@@ -10,6 +10,10 @@
 
 #include <string>
 
+namespace ElemUtils {
+class Packet;
+} /* namespace ElemUtils */
+
 /** @class BaseObject
  *
  * @brief BaseObject is the ”zeroth-level-object” of the architecture.
@@ -50,11 +54,20 @@ public:
     //TODO propagade const every daugther class
     virtual std::string toString() const;
 
+    void serialize(ElemUtils::Packet &packet) const;
+    void unserialize(ElemUtils::Packet &packet);
+
+    bool operator <(const BaseObject& other) const;
+
     // ##### GETTERS & SETTERS #####
 
     const std::string& getClassName() const;
+
     unsigned int getObjectId() const;
     void setObjectId(unsigned int objectId);
+
+    int getIndexId() const;
+    void setIndexId(int indexId);
 
 protected:
     /**
@@ -79,9 +92,13 @@ protected:
     void throwException(const std::string functionName,
             const std::string errorMessage) const;
 
+    void errorMissingParameter(const std::string &parameterName) const;
+
 private:
     unsigned int m_objectId;
     std::string m_className; ///< String that represents class's name used by the LoggerManager's class for know the source of the output trace
+
+    int m_indexId;
 
     static unsigned int m_uniqueObjectIdCounter;
 
@@ -92,5 +109,8 @@ private:
      */
     unsigned int getUniqueObjectId();
 };
+
+ElemUtils::Packet& operator <<(ElemUtils::Packet& packet, BaseObject& object);
+ElemUtils::Packet& operator >>(ElemUtils::Packet& packet, BaseObject& object);
 
 #endif /* BASE_OBJECT_H */

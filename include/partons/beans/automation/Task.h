@@ -44,9 +44,10 @@ public:
     const ElemUtils::MultimapParameters& getObjectsParameters() const;
     ElemUtils::MultimapParameters& getObjectsParameters();
 
-    virtual std::string toString() const;
     unsigned int getScenarioTaskIndexNumber() const;
     void setScenarioTaskIndexNumber(unsigned int scenarioTaskIndexNumber);
+
+    virtual std::string toString() const;
 
     Scenario* getScenario() const;
     void setScenario(Scenario* pScenario);

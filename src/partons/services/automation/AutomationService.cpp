@@ -104,12 +104,10 @@ Scenario* AutomationService::parseScenario(Scenario* pScenario) const {
 }
 
 void AutomationService::playScenario(Scenario* pScenario) const {
-    // compute each tasks found
-
     if (pScenario->size() == 0) {
         warn(__func__, "There is no task to perform in this scenario");
     } else {
-
+        // compute each tasks found
         for (size_t i = 0; i < pScenario->size(); i++) {
             Task task = pScenario->getTask(i);
             Partons::getInstance()->getServiceObjectRegistry()->get(

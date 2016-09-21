@@ -13,6 +13,8 @@
 #include <algorithm>
 #include <vector>
 
+#include "../beans/List.h"
+
 //TODO tester les fonctions de la classe. Je ne sais pas si elles sont correctes.
 class VectorUtils {
 public:
@@ -30,6 +32,22 @@ public:
                 std::back_inserter(result));
 
         return result;
+    }
+
+    template<typename T>
+    static List<T> intersection(const List<T> & lhs, const List<T> & rhs) {
+        std::vector<T> result;
+
+        std::vector<T> lhsData = lhs.getData();
+        std::vector<T> rhsData = rhs.getData();
+
+        std::sort(lhsData.begin(), lhsData.end());
+        std::sort(rhsData.begin(), rhsData.end());
+
+        std::set_intersection(lhsData.begin(), lhsData.end(), rhsData.begin(),
+                rhsData.end(), std::back_inserter(result));
+
+        return List<T>(result);
     }
 };
 

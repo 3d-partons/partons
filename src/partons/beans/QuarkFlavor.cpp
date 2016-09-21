@@ -7,6 +7,10 @@ QuarkFlavor::QuarkFlavor() :
         m_type(QuarkFlavor::UNDEFINED) {
 }
 
+QuarkFlavor::QuarkFlavor(const QuarkFlavor& other) {
+    m_type = other.m_type;
+}
+
 QuarkFlavor::QuarkFlavor(Type type) :
         m_type(type) {
 }

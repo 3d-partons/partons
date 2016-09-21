@@ -8,6 +8,7 @@
  * @version 1.0
  */
 
+#include <QtSql/qsqlquery.h>
 #include <string>
 
 /**
@@ -19,6 +20,7 @@ class Database {
 public:
     static const std::string TABLE_NAME_COMPUTATION;
     static const std::string COLUMN_NAME_COMPUTATION_ID;
+    static const std::string COLUMN_NAME_COMPUTATION_MODULE_NAME;
 
     static const std::string TABLE_NAME_SCENARIO;
     static const std::string COLUMN_NAME_SCENARIO_ID;
@@ -37,12 +39,49 @@ public:
     static const std::string COLUMN_NAME_GPD_KINEMATIC_ID;
 
     static const std::string TABLE_NAME_GPD_RESULT;
+    static const std::string COLUMN_NAME_GPD_RESULT_ID;
+
+    static const std::string COLUMN_NAME_PARTON_DISTRIBUTION_ID;
 
     static const std::string TABLE_NAME_OBSERVABLE_KINEMATIC;
     static const std::string COLUMN_NAME_OBSERVABLE_KINEMATIC_ID;
 
     static const std::string TABLE_NAME_OBSERVABLE_RESULT;
     static const std::string COLUMN_NAME_OBSERVABLE_RESULT_ID;
+
+    static const std::string COLUMN_NAME_GPD_TYPE_ID;
+
+    static const std::string COLUMN_NAME_GLUON_DISTRIBUTION;
+
+    static const std::string COLUMN_NAME_QUARK_FLAVOR_ID;
+
+    static const std::string COLUMN_NAME_QUARK_DISTRIBUTION;
+    static const std::string COLUMN_NAME_QUARK_DISTRIBUTION_PLUS;
+    static const std::string COLUMN_NAME_QUARK_DISTRIBUTION_MINUS;
+
+    static const std::string TABLE_NAME_CCF_KINEMATIC;
+    static const std::string COLUMN_NAME_CCF_KINEMATIC_ID;
+
+    static const std::string TABLE_NAME_CCF_RESULT;
+    static const std::string COLUMN_NAME_CCF_RESULT_ID;
+    /**
+     * http://stackoverflow.com/a/26500811
+     *
+     * query.size() is not supported with SQLite. But you can get the number of rows with a workaround.
+     *
+     * @param query
+     * @return
+     */
+    static int getNumberOfRows(QSqlQuery &query);
+
+    static int execSelectQuery(QSqlQuery& query);
+    static std::string getLastExecutedQuery(const QSqlQuery& query);
+    static void checkUniqueResult(const std::string &className,
+            const std::string &funcName, const unsigned int resultSize,
+            const QSqlQuery& query);
+    static void checkManyResults(const std::string &className,
+            const std::string &funcName, const unsigned int resultSize,
+            const QSqlQuery& query);
 };
 
 #endif /* DATABASE_H */

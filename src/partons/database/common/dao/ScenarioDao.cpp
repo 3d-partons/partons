@@ -38,6 +38,8 @@ int ScenarioDao::insertWithoutTransaction(const std::string &description,
     query.bindValue(":hashSum", QString(hashSum.c_str()));
 
     if (query.exec()) {
+        debug(__func__, Database::getLastExecutedQuery(query));
+
         result = query.lastInsertId().toInt();
     } else {
         error(__func__,
@@ -64,18 +66,10 @@ int ScenarioDao::getScenarioIdByHashSum(const std::string& hashSum) const {
 
     query.bindValue(":hashSum", QString(hashSum.c_str()));
 
-    if (query.exec()) {
-        if (query.first()) {
-            result = query.value(0).toInt();
-        }
-    } else {
-        error(__func__,
-                ElemUtils::Formatter() << query.lastError().text().toStdString()
-                        << " for sql query = "
-                        << query.executedQuery().toStdString());
-    }
+    Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query);
 
-    query.clear();
+    result = query.value(0).toInt();
 
     return result;
 }
@@ -91,26 +85,12 @@ std::string ScenarioDao::getXMLFileByIndexId(const int indexId) const {
             << Database::COLUMN_NAME_SCENARIO_ID << " = :indexId";
 
     query.prepare(QString(formatter.str().c_str()));
-
     query.bindValue(":indexId", indexId);
 
-    if (query.exec()) {
-        if (query.first()) {
-            xmlFile = query.value(0).toString().toStdString();
-        } else {
-            error(__func__,
-                    ElemUtils::Formatter()
-                            << "Cannot found result for scenarioId = "
-                            << indexId);
-        }
-    } else {
-        error(__func__,
-                ElemUtils::Formatter() << query.lastError().text().toStdString()
-                        << " for sql query = "
-                        << query.executedQuery().toStdString());
-    }
+    Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query);
 
-    query.clear();
+    xmlFile = query.value(0).toString().toStdString();
 
     return xmlFile;
 }
@@ -125,19 +105,12 @@ int ScenarioDao::getScenarioIdByComputationId(const int computationId) const {
             << Database::COLUMN_NAME_COMPUTATION_ID << " = :computationId";
 
     query.prepare(QString(formatter.str().c_str()));
+    query.bindValue(":computationId", computationId);
 
-    if (query.exec()) {
-        if (query.first()) {
-            result = query.value(0).toInt();
-        }
-    } else {
-        error(__func__,
-                ElemUtils::Formatter() << query.lastError().text().toStdString()
-                        << " for sql query = "
-                        << query.executedQuery().toStdString());
-    }
+    Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query);
 
-    query.clear();
+    result = query.value(0).toInt();
 
     return result;
 }
@@ -152,26 +125,12 @@ std::string ScenarioDao::getHashSumById(const int scenarioId) {
             << Database::COLUMN_NAME_SCENARIO_ID << " = :scenarioId";
 
     query.prepare(QString(formatter.str().c_str()));
-
     query.bindValue(":scenarioId", scenarioId);
 
-    if (query.exec()) {
-        if (query.first()) {
-            result = query.value(0).toString().toStdString();
-        } else {
-            error(__func__,
-                    ElemUtils::Formatter()
-                            << "Cannot found scenario into database with id = "
-                            << scenarioId);
-        }
-    } else {
-        error(__func__,
-                ElemUtils::Formatter() << query.lastError().text().toStdString()
-                        << " for sql query = "
-                        << query.executedQuery().toStdString());
-    }
+    Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query);
 
-    query.clear();
+    result = query.value(0).toString().toStdString();
 
     return result;
 }
@@ -185,32 +144,17 @@ Scenario* ScenarioDao::getScenarioById(const int scenarioId) {
             << Database::COLUMN_NAME_SCENARIO_ID << " = :scenarioId";
 
     query.prepare(QString(formatter.str().c_str()));
-
     query.bindValue(":scenarioId", scenarioId);
 
-    if (query.exec()) {
-        if (query.first()) {
-            pScenario = ResourceManager::getInstance()->registerScenario(
-                    query.value(0).toInt(),
-                    query.value(2).toString().toStdString(),
-                    query.value(1).toDateTime().toTime_t(),
-                    ElemUtils::StringUtils::EMPTY,
-                    query.value(4).toString().toStdString(),
-                    query.value(3).toString().toStdString());
-        } else {
-            error(__func__,
-                    ElemUtils::Formatter()
-                            << "Cannot found scenario into database with id = "
-                            << scenarioId);
-        }
-    } else {
-        error(__func__,
-                ElemUtils::Formatter() << query.lastError().text().toStdString()
-                        << " for sql query = "
-                        << query.executedQuery().toStdString());
-    }
+    Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query);
 
-    query.clear();
+    pScenario = ResourceManager::getInstance()->registerScenario(
+            query.value(0).toInt(), query.value(2).toString().toStdString(),
+            query.value(1).toDateTime().toTime_t(),
+            ElemUtils::StringUtils::EMPTY,
+            query.value(4).toString().toStdString(),
+            query.value(3).toString().toStdString());
 
     return pScenario;
 }

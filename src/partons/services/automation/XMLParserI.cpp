@@ -13,6 +13,7 @@ const std::string XMLParserI::TASK_METHOD_ATTRIBUT_NAME = "method";
 const std::string XMLParserI::TASK_STORE_IN_DB_ATTRIBUT_NAME = "storeInDB";
 const std::string XMLParserI::PARAM_NAME_ATTRIBUT_NAME = "name";
 const std::string XMLParserI::PARAM_VALUE_ATTRIBUT_NAME = "value";
+const std::string XMLParserI::TASK_PARAM_NODE_NAME = "task_param";
 
 XMLParserI::XMLParserI(const std::string &className) :
         BaseObject(className), m_pScenario(0), m_computationConfigurationXMLFileIndex(

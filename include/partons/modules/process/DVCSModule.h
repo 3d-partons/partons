@@ -13,6 +13,7 @@
 
 #include "../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
 #include "../../beans/gpd/GPDType.h"
+#include "../../beans/List.h"
 #include "../ProcessModule.h"
 
 /**
@@ -36,7 +37,7 @@ public:
     virtual void configure(const ElemUtils::Parameters &parameters);
 
     void computeConvolCoeffFunction(double xB, double t, double Q2,
-            const GPDType::Type gpdType = GPDType::ALL);
+            const List<GPDType> & gpdType = List<GPDType>());
 
     // TODO convert double to integer
     double computeCrossSection(double beamHelicity, double beamCharge,

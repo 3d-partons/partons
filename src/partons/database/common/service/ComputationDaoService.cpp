@@ -54,5 +54,6 @@ Computation ComputationDaoService::getByComputationId(const int indexId) const {
 }
 
 bool ComputationDaoService::isAvailable(const int computationId) const {
+    debug(__func__, "Processing ...");
     return m_computationDao.isAvailable(computationId);
 }

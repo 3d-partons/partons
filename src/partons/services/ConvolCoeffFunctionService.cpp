@@ -1,11 +1,13 @@
 #include "../../../include/partons/services/ConvolCoeffFunctionService.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/PropertiesManager.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <ElementaryUtils/thread/Packet.h>
+#include <complex>
 
 #include "../../../include/partons/beans/automation/Scenario.h"
 #include "../../../include/partons/beans/automation/Task.h"
@@ -14,6 +16,7 @@
 #include "../../../include/partons/BaseObjectRegistry.h"
 #include "../../../include/partons/database/convol_coeff_function/service/ConvolCoeffFunctionResultDaoService.h"
 #include "../../../include/partons/modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
+#include "../../../include/partons/modules/GPDModule.h"
 #include "../../../include/partons/ModuleObjectFactory.h"
 #include "../../../include/partons/Partons.h"
 #include "../../../include/partons/ResourceManager.h"
@@ -21,6 +24,7 @@
 #include "../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../include/partons/utils/exceptions/CCFModuleNullPointerException.h"
 #include "../../../include/partons/utils/exceptions/GPDModuleNullPointerException.h"
+#include "../../../include/partons/utils/VectorUtils.h"
 
 const std::string ConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_WITH_GPD_MODEL =
         "computeWithGPDModel";
@@ -53,7 +57,7 @@ void ConvolCoeffFunctionService::resolveObjectDependencies() {
                 ElemUtils::PropertiesManager::getInstance()->getString(
                         "ccf.service.batch.size")).toUInt();
     } catch (const std::exception &e) {
-        error(__func__, ElemUtils::Formatter() << e.what());
+        throw ElemUtils::CustomException(getClassName(), __func__, e.what());
     }
 }
 
@@ -89,8 +93,7 @@ void ConvolCoeffFunctionService::computeTask(Task &task) {
             generatePlotFileTask(task);
         } else if (!ServiceObjectTyped<DVCSConvolCoeffFunctionKinematic,
                 DVCSConvolCoeffFunctionResult>::computeGeneralTask(task)) {
-            error(__func__,
-                    "unknown function name = " + task.getFunctionName());
+            errorUnknownMethod(task);
         }
 
         updateResultInfo(resultList, m_resultInfo);
@@ -114,14 +117,24 @@ void ConvolCoeffFunctionService::computeTask(Task &task) {
     }
 }
 
-//TODO implementer
-DVCSConvolCoeffFunctionResult ConvolCoeffFunctionService::computeWithGPDModel(
+DVCSConvolCoeffFunctionResult ConvolCoeffFunctionService::computeForOneCCFModel(
         const DVCSConvolCoeffFunctionKinematic &kinematic,
-        ConvolCoeffFunctionModule* convolCoeffFunctionModule,
-        GPDType::Type gpdType) const {
+        ConvolCoeffFunctionModule* pConvolCoeffFunctionModule,
+        const List<GPDType> & gpdTypeList) const {
 
-    DVCSConvolCoeffFunctionResult result = convolCoeffFunctionModule->compute(
-            kinematic, gpdType);
+    List<GPDType> restrictedByGPDTypeListFinal = getFinalGPDTypeList(
+            pConvolCoeffFunctionModule, gpdTypeList);
+
+    DVCSConvolCoeffFunctionResult result;
+
+    for (unsigned int i = 0; i != restrictedByGPDTypeListFinal.size(); i++) {
+        result.add(restrictedByGPDTypeListFinal[i],
+                pConvolCoeffFunctionModule->compute(kinematic,
+                        restrictedByGPDTypeListFinal[i]));
+    }
+
+    result.setKinematic(kinematic);
+    result.setComputationModuleName(pConvolCoeffFunctionModule->getClassName());
 
     return result;
 }
@@ -163,7 +176,7 @@ DVCSConvolCoeffFunctionResult ConvolCoeffFunctionService::computeWithGPDModelTas
     ConvolCoeffFunctionModule* pConvolCoeffFunctionModule =
             newConvolCoeffFunctionModuleFromTask(task);
 
-    DVCSConvolCoeffFunctionResult result = computeWithGPDModel(kinematic,
+    DVCSConvolCoeffFunctionResult result = computeForOneCCFModel(kinematic,
             pConvolCoeffFunctionModule);
 
     return result;
@@ -176,7 +189,7 @@ List<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionService::computeManyKinem
     if (task.isAvailableParameters("DVCSConvolCoeffFunctionKinematic")) {
         ElemUtils::Parameters parameters = task.getLastAvailableParameters();
         if (parameters.isAvailable("file")) {
-            listOfKinematic = KinematicUtils::getCCFKinematicFromFile(
+            listOfKinematic = KinematicUtils().getCCFKinematicFromFile(
                     parameters.getLastAvailable().toString());
         } else {
             error(__func__,
@@ -191,64 +204,81 @@ List<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionService::computeManyKinem
                         << task.getFunctionName());
     }
 
+    List<GPDType> gpdTypeList = getGPDTypeListFromTask(task);
+
     ConvolCoeffFunctionModule* pConvolCoeffFunctionModule =
             newConvolCoeffFunctionModuleFromTask(task);
 
-    return computeManyKinematicOneModel(listOfKinematic,
-            pConvolCoeffFunctionModule, task.isStoreInDB());
+    return computeForOneCCFModelAndManyKinematics(listOfKinematic,
+            pConvolCoeffFunctionModule, gpdTypeList, task.isStoreInDB());
 }
 
-List<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionService::computeManyKinematicOneModel(
+List<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionService::computeForOneCCFModelAndManyKinematics(
         List<DVCSConvolCoeffFunctionKinematic> &kinematics,
         ConvolCoeffFunctionModule* pConvolCoeffFunctionModule,
-        const bool storeInDB) {
+        const List<GPDType> &gpdTypeList, const bool storeInDB) {
+    debug(__func__, "Processing ...");
 
     info(__func__,
-            ElemUtils::Formatter() << kinematics.size() << " will be computed");
+            ElemUtils::Formatter() << kinematics.size()
+                    << " CCF kinematic(s) will be computed");
 
     List<DVCSConvolCoeffFunctionResult> results;
 
     List<ElemUtils::Packet> listOfPacket;
-    GPDType gpdType(GPDType::ALL);
+    List<GPDType> finalGPDTypeList = getFinalGPDTypeList(
+            pConvolCoeffFunctionModule, gpdTypeList);
 
-    initComputationalThread(pConvolCoeffFunctionModule);
+    if (finalGPDTypeList.size() != 0) {
 
-    // ##### Batch feature start section #####
-    unsigned int i = 0;
-    unsigned int j = 0;
+        initComputationalThread(pConvolCoeffFunctionModule);
 
-    while (i != kinematics.size()) {
-        listOfPacket.clear();
-        j = 0;
+        info(__func__, "Thread(s) running ...");
 
-        while ((j != m_batchSize) && (i != kinematics.size())) {
-            ElemUtils::Packet packet;
-            DVCSConvolCoeffFunctionKinematic kinematic;
-            kinematic = kinematics[i];
-            packet << kinematic << gpdType;
-            listOfPacket.add(packet);
-            i++;
-            j++;
+        // ##### Batch feature start section #####
+        unsigned int i = 0;
+        unsigned int j = 0;
+
+        while (i != kinematics.size()) {
+            listOfPacket.clear();
+            j = 0;
+
+            while ((j != m_batchSize) && (i != kinematics.size())) {
+                ElemUtils::Packet packet;
+                DVCSConvolCoeffFunctionKinematic kinematic;
+                kinematic = kinematics[i];
+                packet << kinematic << finalGPDTypeList;
+                listOfPacket.add(packet);
+                i++;
+                j++;
+            }
+
+            addTasks(listOfPacket);
+            launchAllThreadAndWaitingFor();
+            sortResultList();
+
+            info(__func__,
+                    ElemUtils::Formatter() << "Kinematic(s) already computed : "
+                            << i);
+
+            updateResultInfo(getResultList(), m_resultInfo);
+
+            if (storeInDB) {
+                ConvolCoeffFunctionResultDaoService convolCoeffFunctionResultDaoService;
+                convolCoeffFunctionResultDaoService.insert(getResultList());
+            } else {
+                results.add(getResultList());
+            }
+
+            clearResultListBuffer();
         }
+        // ##### Batch feature end section #####
 
-        addTasks(listOfPacket);
-        launchAllThreadAndWaitingFor();
-        sortResultList();
-
-        updateResultInfo(getResultList(), m_resultInfo);
-
-        if (storeInDB) {
-            ConvolCoeffFunctionResultDaoService convolCoeffFunctionResultDaoService;
-            convolCoeffFunctionResultDaoService.insert(getResultList());
-        } else {
-            results.add(getResultList());
-        }
-
-        clearResultListBuffer();
+        clearAllThread();
+    } else {
+        info(__func__,
+                "Nothing to compute with your computation configuration ; there is no GPDType available");
     }
-    // ##### Batch feature end section #####
-
-    clearAllThread();
 
     return results;
 }
@@ -308,4 +338,33 @@ ConvolCoeffFunctionModule* ConvolCoeffFunctionService::configureConvolCoeffFunct
 void ConvolCoeffFunctionService::generatePlotFileTask(Task& task) {
     generatePlotFile(getOutputFilePathForPlotFileTask(task),
             generateSQLQueryForPlotFileTask(task, "ccf_plot_2d_view"), ' ');
+}
+
+List<GPDType> ConvolCoeffFunctionService::getFinalGPDTypeList(
+        ConvolCoeffFunctionModule* pConvolCoeffFunctionModule,
+        const List<GPDType> &gpdTypeList) const {
+
+    List<GPDType> availableGPDTypeForCCFModel = gpdTypeList;
+
+    availableGPDTypeForCCFModel =
+            pConvolCoeffFunctionModule->getListOfAvailableGPDTypeForComputation();
+
+    // intersection between available GPDType for this CCF model and GPDType asked
+    if (!gpdTypeList.isEmpty()) {
+        availableGPDTypeForCCFModel = VectorUtils::intersection(
+                availableGPDTypeForCCFModel, gpdTypeList);
+    }
+
+    // if this CCF model is GPD model dependent we need to perform another intersection with GPDType available for this GPD model
+    if (pConvolCoeffFunctionModule->isGPDModuleDependent()) {
+        availableGPDTypeForCCFModel =
+                VectorUtils::intersection(availableGPDTypeForCCFModel,
+                        pConvolCoeffFunctionModule->getGPDModule()->getListOfAvailableGPDTypeForComputation());
+    }
+
+    info(__func__,
+            ElemUtils::Formatter() << availableGPDTypeForCCFModel.size()
+                    << " GPDType will be computed");
+
+    return availableGPDTypeForCCFModel;
 }

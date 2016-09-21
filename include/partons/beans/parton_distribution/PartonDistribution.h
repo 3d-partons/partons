@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 
-#include "../../database/DatabaseObject.h"
 #include "../../utils/compare/ComparisonReport.h"
 #include "../List.h"
 #include "../QuarkFlavor.h"
@@ -14,9 +13,10 @@
 
 class ComparisonReport;
 
-class PartonDistribution: public DatabaseObject {
+class PartonDistribution: public BaseObject {
 public:
     PartonDistribution();
+    PartonDistribution(const PartonDistribution &other);
 
     virtual ~PartonDistribution();
 

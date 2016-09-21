@@ -139,6 +139,8 @@ protected:
 
     void updateResultInfo(List<ResultType> &resultList,
             const ResultInfo &resultInfo) {
+        debug(__func__, "Processing ...");
+
         for (size_t i = 0; i != resultList.size(); i++) {
             updateResultInfo(resultList[i], resultInfo);
         }

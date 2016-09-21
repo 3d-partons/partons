@@ -78,8 +78,6 @@ public:
 
     int getKinematicIdByHashSum(const std::string &hashSum) const;
 
-    int executeCustomQuery(const double x) const;
-
 private:
     friend class GPDResultDaoService; ///< allow GPDResultDaoService to call private member function insertWithoutTransaction(...)
 

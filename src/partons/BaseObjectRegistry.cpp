@@ -1,8 +1,8 @@
 #include "../../include/partons/BaseObjectRegistry.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <SFML/System/Lock.hpp>
-#include <stdexcept>
 #include <utility>
 
 BaseObjectRegistry* BaseObjectRegistry::m_pInstance = 0;
@@ -64,9 +64,9 @@ unsigned int BaseObjectRegistry::registerBaseObject(BaseObject * pBaseObject) {
     }
     // Else, throw an exception
     else {
-        throw std::runtime_error(
+        throw ElemUtils::CustomException("BaseObjectRegistry", __func__,
                 ElemUtils::Formatter()
-                        << "(BaseObjectRegistry::registerModule) Module class name is already in the registry - Please check your class name = "
+                        << "Module class name is already in the registry - Please check your class name = "
                         << pBaseObject->getClassName());
     }
 
@@ -85,9 +85,8 @@ void BaseObjectRegistry::resolveBaseObjectDependencies() {
         if (it->second) {
             (it->second)->resolveObjectDependencies();
         } else {
-            throw std::runtime_error(
-                    ElemUtils::Formatter()
-                            << "(BaseObjectRegistry::initBaseObject) Registry is corrupted some objects pointers are NULL");
+            throw ElemUtils::CustomException("BaseObjectRegistry", __func__,
+                    "Registry is corrupted some objects pointers are NULL");
         }
     }
 } // mutex.unlock();
@@ -98,8 +97,8 @@ BaseObject* BaseObjectRegistry::get(unsigned int classId) const {
     // if class identifier not found into the registry : throw exception
     BaseObject* pObject = isAvailable(classId);
     if (!pObject) {
-        throw std::runtime_error(
-                "(BaseObjectRegistry::get) Cannot found class identifier into the registry");
+        throw ElemUtils::CustomException("BaseObjectRegistry", __func__,
+                "Cannot found class identifier into the registry");
     }
 
     return pObject;
@@ -111,9 +110,10 @@ BaseObject* BaseObjectRegistry::get(const std::string &className) const {
     // if class name not found into the registry : throw exception
     BaseObject* pObject = isAvailable(className);
     if (!pObject) {
-        throw std::runtime_error(
-                "(BaseObjectRegistry::get) Cannot found class name into the registry ; spell check className parameter or if your object is available for className = "
-                        + className);
+        throw ElemUtils::CustomException("BaseObjectRegistry", __func__,
+                ElemUtils::Formatter()
+                        << "Cannot found class name into the registry ; spell check className parameter or if your object is available for className = "
+                        << className);
     }
 
     return pObject;

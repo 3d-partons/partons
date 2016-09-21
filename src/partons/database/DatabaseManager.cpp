@@ -1,12 +1,15 @@
 #include "../../../include/partons/database/DatabaseManager.h"
 
 #include <ElementaryUtils/file_utils/FileUtils.h>
+//#include <ElementaryUtils/logger/LoggerManager.h>
 #include <ElementaryUtils/PropertiesManager.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <QtCore/qstring.h>
 #include <QtSql/qsqlerror.h>
 #include <string>
+
+//#include "../../../include/partons/Partons.h"
 
 // Global static pointer used to ensure a single instance of the class.
 DatabaseManager* DatabaseManager::m_pInstance = 0;
@@ -108,16 +111,4 @@ void DatabaseManager::close() {
     // See : http://stackoverflow.com/questions/9519736/warning-remove-database
     m_productionDatabase = QSqlDatabase();
     m_productionDatabase.removeDatabase(connection);
-}
-
-int DatabaseManager::getNumberOfRows(QSqlQuery& query) {
-    int numberOfRows = 0;
-
-    if (query.last()) {
-        numberOfRows = query.at() + 1;
-        query.first();
-        query.previous();
-    }
-
-    return numberOfRows;
 }

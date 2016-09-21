@@ -14,6 +14,8 @@
 
 #include <string>
 
+#include "../List.h"
+
 namespace ElemUtils {
 class Packet;
 } /* namespace ElemUtils */
@@ -64,10 +66,16 @@ public:
 
     void setType(Type type);
 
-    static GPDType::Type fromString(const std::string & gpdTypeStr);
-
     void serialize(ElemUtils::Packet &packet) const;
     void unserialize(ElemUtils::Packet &packet);
+
+    // use by std::sort function
+    bool operator <(const GPDType &other) const;
+
+    static GPDType::Type fromString(const std::string & gpdTypeStr);
+
+    static List<GPDType> getListOfGPDTypeFromString(
+            const std::string &gpdTypeListAsString);
 
 private:
     GPDType::Type m_type;

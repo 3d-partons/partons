@@ -2,7 +2,7 @@
 
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
-#include <stddef.h>
+//#include <stddef.h>
 
 #include "../../../../include/partons/beans/system/EnvironmentConfiguration.h"
 #include "../../../../include/partons/Partons.h"
@@ -83,4 +83,30 @@ bool ComparisonReport::isPassed() const {
 void ComparisonReport::clearComparedData() {
     m_comparedDataFailed.clear();
     m_comparedDataPassed.clear();
+}
+
+std::string ComparisonReport::showComparedDataFailed() const {
+    ElemUtils::Formatter formatter;
+
+    for (size_t i = 0; i != m_comparedDataFailed.size(); i++) {
+        formatter << m_comparedDataFailed[i].toString() << '\n' << '\n';
+    }
+
+    return formatter.str();
+}
+
+std::string ComparisonReport::showComparisonStats() const {
+    ElemUtils::Formatter formatter;
+
+    formatter << "Number of objects compared with test PASSED = "
+            << m_numberOfComparedDataPassed << '\n';
+
+    formatter << '\n' << "Number of objects compared with test FAILED = "
+            << m_numberOfComparedDataFailed << '\n';
+
+    return formatter.str();
+}
+
+size_t ComparisonReport::sizeOfComparedDataFailed() const {
+    return m_comparedDataFailed.size();
 }

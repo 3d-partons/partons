@@ -10,13 +10,13 @@
 
 #include <ctime>
 
-#include "../database/DatabaseObject.h"
+#include "../BaseObject.h"
 
 /** @class Computation
  *
  * @brief
  */
-class Computation: public DatabaseObject {
+class Computation: public BaseObject {
 public:
     /**
      * Default constructor

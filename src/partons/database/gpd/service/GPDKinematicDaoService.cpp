@@ -1,5 +1,6 @@
 #include "../../../../../include/partons/database/gpd/service/GPDKinematicDaoService.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <QtSql/qsqldatabase.h>
 #include <exception>
 
@@ -71,6 +72,11 @@ GPDKinematic GPDKinematicDaoService::getKinematicById(const int id) const {
 
 List<GPDKinematic> GPDKinematicDaoService::getKinematicListByComputationId(
         const int computationId) const {
+    debug(__func__, "Processing ...");
+    info(__func__,
+            ElemUtils::Formatter()
+                    << "Searching in database for GPD kinematic(s) with computation id = "
+                    << computationId << " ...");
     return m_GPDKinematicDao.getKinematicListByComputationId(computationId);
 }
 
@@ -83,8 +89,4 @@ int GPDKinematicDaoService::insertWithoutTransaction(
 int GPDKinematicDaoService::getKinematicIdByHashSum(
         const std::string& hashSum) const {
     return m_GPDKinematicDao.getKinematicIdByHashSum(hashSum);
-}
-
-int GPDKinematicDaoService::executeCustomQuery(const double x) const {
-    return m_GPDKinematicDao.executeCustomQuery(x);
 }

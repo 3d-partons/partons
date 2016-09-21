@@ -39,7 +39,9 @@ std::string Task::toString() const {
     ElemUtils::Formatter formatter;
 
     formatter << "Service name = " << m_serviceName << " function name = "
-            << m_functionName;
+            << m_functionName << '\n' << "[Parameters]" << '\n';
+
+    formatter << MultimapParameters::toString();
 
     return formatter.str();
 }

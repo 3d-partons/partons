@@ -10,11 +10,6 @@
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 
-//#include "../../../../../include/partons/modules/active_flavors/NfFunctionExample.h"
-//#include "../../../../../include/partons/modules/alphaS/RunningAlphaStrong.h"
-//#include "../../../../../include/partons/ModuleObjectFactory.h"
-//#include "../../../../../include/partons/Partons.h"
-
 // Initialise [class]::classId with a unique name.
 const unsigned int DVCSConstantCFFModel::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
@@ -135,8 +130,7 @@ void DVCSConstantCFFModel::configure(const ElemUtils::Parameters &parameters) {
                                         0.);
 
                 info(__func__,
-                        ElemUtils::Formatter()
-                                << "CFF of type "
+                        ElemUtils::Formatter() << "CFF of type "
                                 << GPDType(static_cast<GPDType::Type>(j)).toString()
                                 << " configured with value = "
                                 << m_CFF[j].real() << " + i*"

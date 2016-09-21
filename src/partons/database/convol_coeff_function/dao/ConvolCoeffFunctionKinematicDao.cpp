@@ -6,6 +6,7 @@
 #include <QtSql/qsqlerror.h>
 #include <QtSql/qsqlrecord.h>
 
+#include "../../../../../include/partons/database/Database.h"
 #include "../../../../../include/partons/database/DatabaseManager.h"
 
 ConvolCoeffFunctionKinematicDao::ConvolCoeffFunctionKinematicDao() :
@@ -20,9 +21,11 @@ int ConvolCoeffFunctionKinematicDao::insert(double xi, double t, double Q2,
     int result = -1;
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    query.prepare(
-            "INSERT INTO convol_coeff_function_kinematic (xi, t, Q2, MuF2, MuR2) VALUES (:xi, :t, :Q2, :MuF2, :MuR2)");
+    ElemUtils::Formatter formatter;
+    formatter << "INSERT INTO " << Database::TABLE_NAME_CCF_KINEMATIC
+            << " (xi, t, Q2, MuF2, MuR2) VALUES (:xi, :t, :Q2, :MuF2, :MuR2);";
 
+    query.prepare(QString(formatter.str().c_str()));
     query.bindValue(":xi", xi);
     query.bindValue(":t", t);
     query.bindValue(":Q2", Q2);
@@ -38,8 +41,6 @@ int ConvolCoeffFunctionKinematicDao::insert(double xi, double t, double Q2,
                         << query.executedQuery().toStdString());
     }
 
-    query.clear();
-
     return result;
 }
 
@@ -48,27 +49,22 @@ int ConvolCoeffFunctionKinematicDao::select(double xi, double t, double Q2,
     int result = -1;
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    query.prepare(
-            "SELECT id FROM convol_coeff_function_kinematic WHERE xi = :xi AND t = :t AND Q2 = :Q2 AND MuF2 = :MuF2 AND MuR2 = :MuR2");
+    ElemUtils::Formatter formatter;
+    formatter << "SELECT " << Database::COLUMN_NAME_CCF_KINEMATIC_ID << " FROM "
+            << Database::TABLE_NAME_CCF_KINEMATIC
+            << " WHERE xi = :xi AND t = :t AND Q2 = :Q2 AND MuF2 = :MuF2 AND MuR2 = :MuR2;";
 
+    query.prepare(QString(formatter.str().c_str()));
     query.bindValue(":xi", xi);
     query.bindValue(":t", t);
     query.bindValue(":Q2", Q2);
     query.bindValue(":MuF2", MuF2);
     query.bindValue(":MuR2", MuR2);
 
-    if (query.exec()) {
-        if (query.first()) {
-            result = query.value(0).toInt();
-        }
-    } else {
-        error(__func__,
-                ElemUtils::Formatter() << query.lastError().text().toStdString()
-                        << " for sql query = "
-                        << query.executedQuery().toStdString());
-    }
+    Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query);
 
-    query.clear();
+    result = query.value(0).toInt();
 
     return result;
 }
@@ -79,23 +75,17 @@ DVCSConvolCoeffFunctionKinematic ConvolCoeffFunctionKinematicDao::getKinematicBy
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    query.prepare(
-            "SELECT * FROM convol_coeff_function_kinematic WHERE id = :id;");
+    ElemUtils::Formatter formatter;
+    formatter << "SELECT * FROM " << Database::TABLE_NAME_CCF_KINEMATIC
+            << " WHERE " << Database::COLUMN_NAME_CCF_KINEMATIC_ID << " = :id;";
 
+    query.prepare(QString(formatter.str().c_str()));
     query.bindValue(":id", id);
 
-    if (query.exec()) {
-        if (query.first()) {
-            fillKinematicFromQuery(convolCoeffFunctionKinematic, query);
-        }
-    } else {
-        error(__func__,
-                ElemUtils::Formatter() << query.lastError().text().toStdString()
-                        << " for sql query = "
-                        << query.executedQuery().toStdString());
-    }
+    Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query);
 
-    query.clear();
+    fillKinematicFromQuery(convolCoeffFunctionKinematic, query);
 
     return convolCoeffFunctionKinematic;
 }
@@ -106,22 +96,23 @@ List<DVCSConvolCoeffFunctionKinematic> ConvolCoeffFunctionKinematicDao::getKinem
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    query.prepare(
-            "SELECT k.id, k.xi, k.t, k.Q2, k.MuF2, k.MuR2 FROM convol_coeff_function_kinematic k, convol_coeff_function_result r WHERE r.computation_id = :computationId AND r.ccf_kinematic_id = k.id");
+    ElemUtils::Formatter formatter;
+    formatter << "SELECT ccfk." << Database::COLUMN_NAME_CCF_KINEMATIC_ID
+            << ", ccfk.xi, ccfk.t, ccfk.Q2, ccfk.MuF2, ccfk.MuR2 FROM "
+            << Database::TABLE_NAME_CCF_KINEMATIC << " ccfk, "
+            << Database::TABLE_NAME_CCF_RESULT << " ccfr WHERE ccfr."
+            << Database::COLUMN_NAME_COMPUTATION_ID
+            << " = :computationId AND ccfr."
+            << Database::COLUMN_NAME_CCF_RESULT_ID << " = ccfk."
+            << Database::COLUMN_NAME_CCF_KINEMATIC_ID << ";";
 
+    query.prepare(QString(formatter.str().c_str()));
     query.bindValue(":computationId", computationId);
 
-    if (query.exec()) {
-        if (DatabaseManager::getNumberOfRows(query) != 0) {
-            fillKinematicListFromQuery(kinematicList, query);
-        } else {
-            warn(__func__,
-                    ElemUtils::Formatter() << "No entry for computationId = "
-                            << computationId);
-        }
-    }
+    Database::checkManyResults(getClassName(), __func__,
+            Database::execSelectQuery(query), query);
 
-    query.clear();
+    fillKinematicListFromQuery(kinematicList, query);
 
     return kinematicList;
 }
@@ -141,7 +132,8 @@ void ConvolCoeffFunctionKinematicDao::fillKinematicListFromQuery(
 void ConvolCoeffFunctionKinematicDao::fillKinematicFromQuery(
         DVCSConvolCoeffFunctionKinematic &kinematic, QSqlQuery &query) const {
 
-    int field_id = query.record().indexOf("id");
+    int field_id = query.record().indexOf(
+            QString(Database::COLUMN_NAME_CCF_KINEMATIC_ID.c_str()));
     int field_xi = query.record().indexOf("xi");
     int field_t = query.record().indexOf("t");
     int field_Q2 = query.record().indexOf("Q2");
@@ -165,23 +157,18 @@ int ConvolCoeffFunctionKinematicDao::getKinematicIdByHashSum(
     int result = -1;
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    query.prepare(
-            "SELECT ccf_kinematic_id FROM ccf_kinematic WHERE hash_sum = :hashSum");
+    ElemUtils::Formatter formatter;
+    formatter << "SELECT " << Database::COLUMN_NAME_CCF_KINEMATIC_ID << " FROM "
+            << Database::TABLE_NAME_CCF_KINEMATIC
+            << " WHERE hash_sum = :hashSum;";
 
+    query.prepare(QString(formatter.str().c_str()));
     query.bindValue(":hashSum", QString(hashSum.c_str()));
 
-    if (query.exec()) {
-        if (query.first()) {
-            result = query.value(0).toInt();
-        }
-    } else {
-        error(__func__,
-                ElemUtils::Formatter() << query.lastError().text().toStdString()
-                        << " for sql query = "
-                        << query.executedQuery().toStdString());
-    }
+    Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query);
 
-    query.clear();
+    result = query.value(0).toInt();
 
     return result;
 }

@@ -11,6 +11,7 @@
 #include <ElementaryUtils/thread/Packet.h>
 #include <string>
 
+#include "beans/gpd/GPDType.h"
 #include "beans/List.h"
 #include "utils/thread/ThreadManager.h"
 #include "utils/thread/ThreadQueue.h"
@@ -75,6 +76,10 @@ protected:
             const std::string &tableName) const;
 
     std::string getOutputFilePathForPlotFileTask(Task &task) const;
+
+    List<GPDType> getGPDTypeListFromTask(Task &task) const;
+
+    void errorUnknownMethod(const Task &task) const;
 
 private:
     ThreadQueue m_queueOfTask;

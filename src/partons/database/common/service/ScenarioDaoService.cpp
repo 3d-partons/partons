@@ -27,10 +27,14 @@ std::string ScenarioDaoService::getXMLFileByIndexId(const int indexId) const {
 
 int ScenarioDaoService::getScenarioIdByComputationId(
         const int computationId) const {
+    debug(__func__, "Processing ...");
+
     return m_scenarioDao.getScenarioIdByComputationId(computationId);
 }
 
 Scenario* ScenarioDaoService::getScenarioById(const int scenarioId) {
+    debug(__func__, "Processing ...");
+
     Scenario* pScenario = 0;
 
     std::string scenarioHashSum = getHashSumById(scenarioId);

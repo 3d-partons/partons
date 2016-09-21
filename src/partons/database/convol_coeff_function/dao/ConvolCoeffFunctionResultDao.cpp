@@ -8,6 +8,7 @@
 #include <complex>
 
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
+#include "../../../../../include/partons/database/Database.h"
 #include "../../../../../include/partons/database/DatabaseManager.h"
 
 ConvolCoeffFunctionResultDao::ConvolCoeffFunctionResultDao() :
@@ -42,8 +43,6 @@ int ConvolCoeffFunctionResultDao::insert(
                         << query.executedQuery().toStdString());
     }
 
-    query.clear();
-
     return result;
 }
 
@@ -69,8 +68,6 @@ int ConvolCoeffFunctionResultDao::insertIntoCCFResultComplex(const int realPart,
                         << query.executedQuery().toStdString());
     }
 
-    query.clear();
-
     return result;
 }
 
@@ -85,23 +82,10 @@ List<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionResultDao::getResultListB
 
     query.bindValue(":computationId", computationId);
 
-    if (query.exec()) {
-        if (DatabaseManager::getNumberOfRows(query) != 0) {
-            fillConvolCoeffFunctionResultList(resultList, query);
-        } else {
-            warn(__func__,
-                    ElemUtils::Formatter()
-                            << "No entries found for computationId = "
-                            << computationId);
-        }
-    } else {
-        error(__func__,
-                ElemUtils::Formatter() << query.lastError().text().toStdString()
-                        << " for sql query = "
-                        << query.executedQuery().toStdString());
-    }
+    Database::checkManyResults(getClassName(), __func__,
+            Database::execSelectQuery(query), query);
 
-    query.clear();
+    fillConvolCoeffFunctionResultList(resultList, query);
 
     return resultList;
 }
@@ -112,49 +96,69 @@ void ConvolCoeffFunctionResultDao::fillConvolCoeffFunctionResultList(
 
     info(__func__, "Preparing retrieved data ...");
 
-    int ccf_result_id_field = query.record().indexOf("ccf_result_id");
+    int ccf_result_id_field = query.record().indexOf(
+            QString(Database::COLUMN_NAME_CCF_RESULT_ID.c_str()));
     int computation_module_name_field = query.record().indexOf(
-            "computation_module_name");
+
+    QString(Database::COLUMN_NAME_COMPUTATION_MODULE_NAME.c_str()));
     int channel_id_field = query.record().indexOf("channel_id");
-    int gpd_type_id_field = query.record().indexOf(" gpd_type_id");
+    int gpd_type_id_field = query.record().indexOf(
+            QString(Database::COLUMN_NAME_GPD_TYPE_ID.c_str()));
     int real_part_field = query.record().indexOf("real_part");
     int img_part_field = query.record().indexOf("img_part");
-    int computation_id_field = query.record().indexOf("computation_id");
+    int computation_id_field = query.record().indexOf(
+            QString(Database::COLUMN_NAME_COMPUTATION_ID.c_str()));
 
-    DVCSConvolCoeffFunctionResult previousResult;
-    GPDType tempGPDType;
-    std::complex<double> tempComplex;
+    DVCSConvolCoeffFunctionResult ccfResult;
+    std::complex<double> complexValue;
 
-    int tempGPDResultId = -1;
+    int currentCCFResultId = -1;
+    int currentGPDTypeId = -1;
+
+    if (query.first()) {
+
+        // retrieve gpd_type_id
+        currentGPDTypeId = query.value(gpd_type_id_field).toInt();
+
+        // retrieve ccf_result_id
+        currentCCFResultId = query.value(ccf_result_id_field).toInt();
+
+        ccfResult.setIndexId(currentCCFResultId);
+
+        complexValue = std::complex<double>(
+                query.value(real_part_field).toDouble(),
+                query.value(img_part_field).toDouble());
+
+        ccfResult.add(static_cast<GPDType::Type>(currentGPDTypeId),
+                complexValue);
+    }
 
     while (query.next()) {
 
         //TODO create ResultInfo, Computation, ...
         //TODO join kinematic
 
-        tempGPDType =
-                GPDType(
-                        static_cast<GPDType::Type>(query.value(
-                                gpd_type_id_field).toInt()));
+        // retrieve gpd_type_id
+        currentGPDTypeId = query.value(gpd_type_id_field).toInt();
 
-        tempComplex.real(query.value(real_part_field).toDouble());
-        tempComplex.imag(query.value(img_part_field).toDouble());
+        // retrieve ccf_result_id
+        currentCCFResultId = query.value(ccf_result_id_field).toInt();
 
-        if (tempGPDResultId != previousResult.getIndexId()) {
-
-            if (previousResult.getIndexId() != -1) {
-                resultList.add(previousResult);
-            }
-
-            tempGPDResultId = query.value(ccf_result_id_field).toInt();
-            previousResult = DVCSConvolCoeffFunctionResult();
-            previousResult.setIndexId(tempGPDResultId);
-            previousResult.setComputationModuleName(
-                    query.value(computation_module_name_field).toString().toStdString());
+        if (currentCCFResultId != ccfResult.getIndexId()) {
+            resultList.add(ccfResult);
+            ccfResult = DVCSConvolCoeffFunctionResult();
+            ccfResult.setIndexId(currentCCFResultId);
         }
 
-        previousResult.add(tempGPDType.getType(), tempComplex);
+        complexValue = std::complex<double>(
+                query.value(real_part_field).toDouble(),
+                query.value(img_part_field).toDouble());
+
+        ccfResult.add(static_cast<GPDType::Type>(currentGPDTypeId),
+                complexValue);
     }
 
-    resultList.add(previousResult);
+    resultList.add(ccfResult);
+
+    info(__func__, "Done !");
 }

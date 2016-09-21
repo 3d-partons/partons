@@ -11,9 +11,9 @@
 #include <complex>
 #include <map>
 #include <string>
-#include <vector>
 
 #include "../../../beans/gpd/GPDType.h"
+#include "../../../beans/List.h"
 #include "../../../beans/PerturbativeQCDOrderType.h"
 #include "../../ConvolCoeffFunctionModule.h"
 
@@ -41,14 +41,14 @@ public:
 
     virtual void configure(const ElemUtils::Parameters &parameters);
 
-    virtual DVCSConvolCoeffFunctionResult compute(double xi, double t,
-            double Q2, double MuF2, double MuR2, GPDType::Type gpdType);
+    virtual std::complex<double> compute(double xi, double t, double Q2,
+            double MuF2, double MuR2, GPDType::Type gpdType);
 
     virtual std::complex<double> computeUnpolarized();
     virtual std::complex<double> computePolarized();
     virtual std::complex<double> computeCFF();
 
-    std::vector<GPDType::Type> getListOfAvailableGPDTypeForComputation() const;
+    virtual List<GPDType> getListOfAvailableGPDTypeForComputation() const;
 
     // ##### GETTERS & SETTERS #####
 
@@ -84,7 +84,6 @@ protected:
 
     PerturbativeQCDOrderType::Type m_qcdOrderType;
     GPDType::Type m_currentGPDComputeType;
-    GPDType::Type m_gpdType;
 
     virtual void initModule();
     virtual void isModuleWellConfigured();

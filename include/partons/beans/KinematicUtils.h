@@ -20,22 +20,24 @@
 #include "List.h"
 #include "observable/ObservableKinematic.h"
 
-class KinematicUtils {
+class KinematicUtils: public BaseObject {
 public:
-    static List<ObservableKinematic> getObservableKinematicFromFile(
+    KinematicUtils();
+    virtual ~KinematicUtils();
+
+    List<ObservableKinematic> getObservableKinematicFromFile(
             const std::string &filePath);
 
-    static List<GPDKinematic> getGPDKinematicFromFile(
-            const std::string &filePath);
+    List<GPDKinematic> getGPDKinematicFromFile(const std::string &filePath);
 
-    static List<DVCSConvolCoeffFunctionKinematic> getCCFKinematicFromFile(
+    List<DVCSConvolCoeffFunctionKinematic> getCCFKinematicFromFile(
             const std::string &filePath);
 
 private:
-    static void error(const std::string &funcName, const std::string &msg);
-    static void errorCannotOpenFile(const std::string &funcName,
+    void error(const std::string &funcName, const std::string &msg);
+    void errorCannotOpenFile(const std::string &funcName,
             const std::string &msg);
-    static void checkEmptyInputFile(const std::string &funcName,
+    void checkEmptyInputFile(const std::string &funcName,
             const std::vector<std::string> &kinematicString,
             const std::string &filePath);
 };

@@ -4,17 +4,13 @@
 #include <utility>
 
 #include "../../../../include/partons/beans/gpd/GPDKinematic.h"
-#include "../../../../include/partons/beans/gpd/GPDResult.h"
 #include "../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
 #include "../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
-#include "../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
-#include "../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/modules/gpd/GK11Model.h"
 #include "../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../include/partons/Partons.h"
-#include "../../../../include/partons/services/GPDService.h"
 #include "../../../../include/partons/ServiceObjectRegistry.h"
 
 const unsigned int GK11ModelNoGluons::classId =
@@ -80,52 +76,10 @@ PartonDistribution GK11ModelNoGluons::computeH() {
     GPDKinematic gpdKinematic(m_x, m_xi, m_t, m_MuF2, m_MuR2);
 
     //calculate GK11
-    GPDResult gpdResult = pGPDService->computeGPDModelRestrictedByGPDType(
-            gpdKinematic, GKmodel, GPDType::H);
-
-    //set
-    QuarkDistribution quarkDistribution_u(QuarkFlavor::UP);
-    QuarkDistribution quarkDistribution_d(QuarkFlavor::DOWN);
-    QuarkDistribution quarkDistribution_s(QuarkFlavor::STRANGE);
-
-    quarkDistribution_u.setQuarkDistribution(
-            gpdResult.getPartonDistribution(GPDType::H).getQuarkDistribution(
-                    QuarkFlavor::UP).getQuarkDistribution());
-    quarkDistribution_d.setQuarkDistribution(
-            gpdResult.getPartonDistribution(GPDType::H).getQuarkDistribution(
-                    QuarkFlavor::DOWN).getQuarkDistribution());
-    quarkDistribution_s.setQuarkDistribution(
-            gpdResult.getPartonDistribution(GPDType::H).getQuarkDistribution(
-                    QuarkFlavor::STRANGE).getQuarkDistribution());
-
-    quarkDistribution_u.setQuarkDistributionPlus(
-            gpdResult.getPartonDistribution(GPDType::H).getQuarkDistribution(
-                    QuarkFlavor::UP).getQuarkDistributionPlus());
-    quarkDistribution_d.setQuarkDistributionPlus(
-            gpdResult.getPartonDistribution(GPDType::H).getQuarkDistribution(
-                    QuarkFlavor::DOWN).getQuarkDistributionPlus());
-    quarkDistribution_s.setQuarkDistributionPlus(
-            gpdResult.getPartonDistribution(GPDType::H).getQuarkDistribution(
-                    QuarkFlavor::STRANGE).getQuarkDistributionPlus());
-
-    quarkDistribution_u.setQuarkDistributionMinus(
-            gpdResult.getPartonDistribution(GPDType::H).getQuarkDistribution(
-                    QuarkFlavor::UP).getQuarkDistributionMinus());
-    quarkDistribution_d.setQuarkDistributionMinus(
-            gpdResult.getPartonDistribution(GPDType::H).getQuarkDistribution(
-                    QuarkFlavor::DOWN).getQuarkDistributionMinus());
-    quarkDistribution_s.setQuarkDistributionMinus(
-            gpdResult.getPartonDistribution(GPDType::H).getQuarkDistribution(
-                    QuarkFlavor::STRANGE).getQuarkDistributionMinus());
-
-    GluonDistribution gluonDistribution(0.);
-
-    PartonDistribution partonDistribution;
-
-    partonDistribution.setGluonDistribution(gluonDistribution);
-    partonDistribution.addQuarkDistribution(quarkDistribution_u);
-    partonDistribution.addQuarkDistribution(quarkDistribution_d);
-    partonDistribution.addQuarkDistribution(quarkDistribution_s);
+    PartonDistribution partonDistribution = GKmodel->compute(gpdKinematic,
+            GPDType(GPDType::H), false);
+    //set gluon distribution to 0.
+    partonDistribution.setGluonDistribution(GluonDistribution(0.));
 
     return partonDistribution;
 }
@@ -136,52 +90,10 @@ PartonDistribution GK11ModelNoGluons::computeHt() {
     GPDKinematic gpdKinematic(m_x, m_xi, m_t, m_MuF2, m_MuR2);
 
     //calculate GK11
-    GPDResult gpdResult = pGPDService->computeGPDModelRestrictedByGPDType(
-            gpdKinematic, GKmodel, GPDType::Ht);
-
-    //set
-    QuarkDistribution quarkDistribution_u(QuarkFlavor::UP);
-    QuarkDistribution quarkDistribution_d(QuarkFlavor::DOWN);
-    QuarkDistribution quarkDistribution_s(QuarkFlavor::STRANGE);
-
-    quarkDistribution_u.setQuarkDistribution(
-            gpdResult.getPartonDistribution(GPDType::Ht).getQuarkDistribution(
-                    QuarkFlavor::UP).getQuarkDistribution());
-    quarkDistribution_d.setQuarkDistribution(
-            gpdResult.getPartonDistribution(GPDType::Ht).getQuarkDistribution(
-                    QuarkFlavor::DOWN).getQuarkDistribution());
-    quarkDistribution_s.setQuarkDistribution(
-            gpdResult.getPartonDistribution(GPDType::Ht).getQuarkDistribution(
-                    QuarkFlavor::STRANGE).getQuarkDistribution());
-
-    quarkDistribution_u.setQuarkDistributionPlus(
-            gpdResult.getPartonDistribution(GPDType::Ht).getQuarkDistribution(
-                    QuarkFlavor::UP).getQuarkDistributionPlus());
-    quarkDistribution_d.setQuarkDistributionPlus(
-            gpdResult.getPartonDistribution(GPDType::Ht).getQuarkDistribution(
-                    QuarkFlavor::DOWN).getQuarkDistributionPlus());
-    quarkDistribution_s.setQuarkDistributionPlus(
-            gpdResult.getPartonDistribution(GPDType::Ht).getQuarkDistribution(
-                    QuarkFlavor::STRANGE).getQuarkDistributionPlus());
-
-    quarkDistribution_u.setQuarkDistributionMinus(
-            gpdResult.getPartonDistribution(GPDType::Ht).getQuarkDistribution(
-                    QuarkFlavor::UP).getQuarkDistributionMinus());
-    quarkDistribution_d.setQuarkDistributionMinus(
-            gpdResult.getPartonDistribution(GPDType::Ht).getQuarkDistribution(
-                    QuarkFlavor::DOWN).getQuarkDistributionMinus());
-    quarkDistribution_s.setQuarkDistributionMinus(
-            gpdResult.getPartonDistribution(GPDType::Ht).getQuarkDistribution(
-                    QuarkFlavor::STRANGE).getQuarkDistributionMinus());
-
-    GluonDistribution gluonDistribution(0.);
-
-    PartonDistribution partonDistribution;
-
-    partonDistribution.setGluonDistribution(gluonDistribution);
-    partonDistribution.addQuarkDistribution(quarkDistribution_u);
-    partonDistribution.addQuarkDistribution(quarkDistribution_d);
-    partonDistribution.addQuarkDistribution(quarkDistribution_s);
+    PartonDistribution partonDistribution = GKmodel->compute(gpdKinematic,
+            GPDType(GPDType::Ht), false);
+    //set gluon distribution to 0.
+    partonDistribution.setGluonDistribution(GluonDistribution(0.));
 
     return partonDistribution;
 }
@@ -192,52 +104,10 @@ PartonDistribution GK11ModelNoGluons::computeE() {
     GPDKinematic gpdKinematic(m_x, m_xi, m_t, m_MuF2, m_MuR2);
 
     //calculate GK11
-    GPDResult gpdResult = pGPDService->computeGPDModelRestrictedByGPDType(
-            gpdKinematic, GKmodel, GPDType::E);
-
-    //set
-    QuarkDistribution quarkDistribution_u(QuarkFlavor::UP);
-    QuarkDistribution quarkDistribution_d(QuarkFlavor::DOWN);
-    QuarkDistribution quarkDistribution_s(QuarkFlavor::STRANGE);
-
-    quarkDistribution_u.setQuarkDistribution(
-            gpdResult.getPartonDistribution(GPDType::E).getQuarkDistribution(
-                    QuarkFlavor::UP).getQuarkDistribution());
-    quarkDistribution_d.setQuarkDistribution(
-            gpdResult.getPartonDistribution(GPDType::E).getQuarkDistribution(
-                    QuarkFlavor::DOWN).getQuarkDistribution());
-    quarkDistribution_s.setQuarkDistribution(
-            gpdResult.getPartonDistribution(GPDType::E).getQuarkDistribution(
-                    QuarkFlavor::STRANGE).getQuarkDistribution());
-
-    quarkDistribution_u.setQuarkDistributionPlus(
-            gpdResult.getPartonDistribution(GPDType::E).getQuarkDistribution(
-                    QuarkFlavor::UP).getQuarkDistributionPlus());
-    quarkDistribution_d.setQuarkDistributionPlus(
-            gpdResult.getPartonDistribution(GPDType::E).getQuarkDistribution(
-                    QuarkFlavor::DOWN).getQuarkDistributionPlus());
-    quarkDistribution_s.setQuarkDistributionPlus(
-            gpdResult.getPartonDistribution(GPDType::E).getQuarkDistribution(
-                    QuarkFlavor::STRANGE).getQuarkDistributionPlus());
-
-    quarkDistribution_u.setQuarkDistributionMinus(
-            gpdResult.getPartonDistribution(GPDType::E).getQuarkDistribution(
-                    QuarkFlavor::UP).getQuarkDistributionMinus());
-    quarkDistribution_d.setQuarkDistributionMinus(
-            gpdResult.getPartonDistribution(GPDType::E).getQuarkDistribution(
-                    QuarkFlavor::DOWN).getQuarkDistributionMinus());
-    quarkDistribution_s.setQuarkDistributionMinus(
-            gpdResult.getPartonDistribution(GPDType::E).getQuarkDistribution(
-                    QuarkFlavor::STRANGE).getQuarkDistributionMinus());
-
-    GluonDistribution gluonDistribution(0.);
-
-    PartonDistribution partonDistribution;
-
-    partonDistribution.setGluonDistribution(gluonDistribution);
-    partonDistribution.addQuarkDistribution(quarkDistribution_u);
-    partonDistribution.addQuarkDistribution(quarkDistribution_d);
-    partonDistribution.addQuarkDistribution(quarkDistribution_s);
+    PartonDistribution partonDistribution = GKmodel->compute(gpdKinematic,
+            GPDType(GPDType::E), false);
+    //set gluon distribution to 0.
+    partonDistribution.setGluonDistribution(GluonDistribution(0.));
 
     return partonDistribution;
 }
@@ -248,52 +118,10 @@ PartonDistribution GK11ModelNoGluons::computeEt() {
     GPDKinematic gpdKinematic(m_x, m_xi, m_t, m_MuF2, m_MuR2);
 
     //calculate GK11
-    GPDResult gpdResult = pGPDService->computeGPDModelRestrictedByGPDType(
-            gpdKinematic, GKmodel, GPDType::Et);
-
-    //set
-    QuarkDistribution quarkDistribution_u(QuarkFlavor::UP);
-    QuarkDistribution quarkDistribution_d(QuarkFlavor::DOWN);
-    QuarkDistribution quarkDistribution_s(QuarkFlavor::STRANGE);
-
-    quarkDistribution_u.setQuarkDistribution(
-            gpdResult.getPartonDistribution(GPDType::Et).getQuarkDistribution(
-                    QuarkFlavor::UP).getQuarkDistribution());
-    quarkDistribution_d.setQuarkDistribution(
-            gpdResult.getPartonDistribution(GPDType::Et).getQuarkDistribution(
-                    QuarkFlavor::DOWN).getQuarkDistribution());
-    quarkDistribution_s.setQuarkDistribution(
-            gpdResult.getPartonDistribution(GPDType::Et).getQuarkDistribution(
-                    QuarkFlavor::STRANGE).getQuarkDistribution());
-
-    quarkDistribution_u.setQuarkDistributionPlus(
-            gpdResult.getPartonDistribution(GPDType::Et).getQuarkDistribution(
-                    QuarkFlavor::UP).getQuarkDistributionPlus());
-    quarkDistribution_d.setQuarkDistributionPlus(
-            gpdResult.getPartonDistribution(GPDType::Et).getQuarkDistribution(
-                    QuarkFlavor::DOWN).getQuarkDistributionPlus());
-    quarkDistribution_s.setQuarkDistributionPlus(
-            gpdResult.getPartonDistribution(GPDType::Et).getQuarkDistribution(
-                    QuarkFlavor::STRANGE).getQuarkDistributionPlus());
-
-    quarkDistribution_u.setQuarkDistributionMinus(
-            gpdResult.getPartonDistribution(GPDType::Et).getQuarkDistribution(
-                    QuarkFlavor::UP).getQuarkDistributionMinus());
-    quarkDistribution_d.setQuarkDistributionMinus(
-            gpdResult.getPartonDistribution(GPDType::Et).getQuarkDistribution(
-                    QuarkFlavor::DOWN).getQuarkDistributionMinus());
-    quarkDistribution_s.setQuarkDistributionMinus(
-            gpdResult.getPartonDistribution(GPDType::Et).getQuarkDistribution(
-                    QuarkFlavor::STRANGE).getQuarkDistributionMinus());
-
-    GluonDistribution gluonDistribution(0.);
-
-    PartonDistribution partonDistribution;
-
-    partonDistribution.setGluonDistribution(gluonDistribution);
-    partonDistribution.addQuarkDistribution(quarkDistribution_u);
-    partonDistribution.addQuarkDistribution(quarkDistribution_d);
-    partonDistribution.addQuarkDistribution(quarkDistribution_s);
+    PartonDistribution partonDistribution = GKmodel->compute(gpdKinematic,
+            GPDType(GPDType::Et), false);
+    //set gluon distribution to 0.
+    partonDistribution.setGluonDistribution(GluonDistribution(0.));
 
     return partonDistribution;
 }

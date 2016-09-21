@@ -36,6 +36,8 @@ int ComputationDao::insert(const time_t &dateTime,
     query.bindValue(":environmentConfigurationId", environmentConfigurationId);
 
     if (query.exec()) {
+        debug(__func__, Database::getLastExecutedQuery(query));
+
         result = query.lastInsertId().toInt();
     } else {
         error(__func__,
@@ -64,18 +66,10 @@ int ComputationDao::getComputationIdByDateTime(const time_t &dateTime) const {
     qDateTime.setTime_t(dateTime);
     query.bindValue(":dateTime", qDateTime);
 
-    if (query.exec()) {
-        if (query.first()) {
-            result = query.value(0).toInt();
-        }
-    } else {
-        error(__func__,
-                ElemUtils::Formatter() << query.lastError().text().toStdString()
-                        << " for sql query = "
-                        << query.executedQuery().toStdString());
-    }
+    Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query);
 
-    query.clear();
+    result = query.value(0).toInt();
 
     return result;
 }
@@ -94,17 +88,10 @@ Computation ComputationDao::getByComputationId(const int indexId) const {
 
     query.bindValue(":indexId", indexId);
 
-    if (query.exec()) {
-        // TODO implement this test in other dao classes
-        if (DatabaseManager::getNumberOfRows(query) != 0) {
-            fillComputation(computation, query);
-        } else {
-            warn(__func__,
-                    ElemUtils::Formatter() << "No entry for id = " << indexId);
-        }
-    }
+    Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query);
 
-    query.clear();
+    fillComputation(computation, query);
 
     return computation;
 }
@@ -115,16 +102,14 @@ void ComputationDao::fillComputation(Computation &computation,
             QString(Database::COLUMN_NAME_COMPUTATION_ID.c_str()));
     int field_computation_date = query.record().indexOf("computation_date");
 
-    while (query.next()) {
-        int id = query.value(field_id).toInt();
-        QDateTime qComputationDate =
-                query.value(field_computation_date).toDateTime();
+    int id = query.value(field_id).toInt();
+    QDateTime qComputationDate =
+            query.value(field_computation_date).toDateTime();
 
-        computation.setIndexId(id);
-        computation.setDateTime(qComputationDate.toTime_t());
-        //TODO implement environment and configuration
-        //TODO implement computation configuration
-    }
+    computation.setIndexId(id);
+    computation.setDateTime(qComputationDate.toTime_t());
+    //TODO implement environment and configuration
+    //TODO implement computation configuration
 }
 
 int ComputationDao::insertIntoScenarioComputation(
@@ -141,6 +126,8 @@ int ComputationDao::insertIntoScenarioComputation(
     query.bindValue(":computationId", computationId);
 
     if (query.exec()) {
+        debug(__func__, Database::getLastExecutedQuery(query));
+
         result = query.lastInsertId().toInt();
     } else {
         error(__func__,
@@ -164,21 +151,11 @@ bool ComputationDao::isAvailable(const int computationId) const {
             << Database::COLUMN_NAME_COMPUTATION_ID << " = :computationId";
 
     query.prepare(QString(formatter.str().c_str()));
-
     query.bindValue(":computationId", computationId);
 
-    if (query.exec()) {
-        if (query.first()) {
-            result = true;
-        }
-    } else {
-        error(__func__,
-                ElemUtils::Formatter() << query.lastError().text().toStdString()
-                        << " for sql query = "
-                        << query.executedQuery().toStdString());
+    if (Database::execSelectQuery(query) == 1) {
+        result = true;
     }
-
-    query.clear();
 
     return result;
 }

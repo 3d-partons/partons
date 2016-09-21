@@ -1,11 +1,12 @@
 #include "../../include/partons/Partons.h"
 
 #include <ElementaryUtils/file_utils/FileUtils.h>
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/logger/LoggerManager.h>
 #include <ElementaryUtils/PropertiesManager.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
-#include <stdexcept>
+//#include <stdexcept>
 
 #include "../../include/partons/beans/system/EnvironmentConfiguration.h"
 #include "../../include/partons/BaseObjectFactory.h"
@@ -70,7 +71,7 @@ Partons::~Partons() {
 void Partons::checkMandatoryFiles() {
     if (!ElemUtils::FileUtils::isReadable(
             m_currentWorkingDirectoryPath + Partons::PROPERTIES_FILE_NAME)) {
-        throw std::runtime_error(
+        throw ElemUtils::CustomException("Partons", __func__,
                 ElemUtils::Formatter() << "Missing configuration file "
                         << Partons::PROPERTIES_FILE_NAME << " in folder "
                         << m_currentWorkingDirectoryPath);

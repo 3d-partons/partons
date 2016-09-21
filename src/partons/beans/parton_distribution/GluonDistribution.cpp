@@ -16,6 +16,12 @@ GluonDistribution::GluonDistribution() :
                 true) {
 }
 
+GluonDistribution::GluonDistribution(const GluonDistribution &other) :
+        BaseObject(other) {
+    m_gluonDistribution = other.m_gluonDistribution;
+    m_nullObject = other.m_nullObject;
+}
+
 GluonDistribution::GluonDistribution(double gluonDistribution) :
         BaseObject("GluonDistribution"), m_gluonDistribution(gluonDistribution), m_nullObject(
                 false) {

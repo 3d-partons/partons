@@ -48,6 +48,11 @@ public:
 
     virtual void computeTask(Task &task);
 
+//    GPDResult computeGPDModel_two(const GPDKinematic &gpdKinematic,
+//            GPDModule* pGPDModule,
+//            std::vector<GPDType::Type> restrictedByGPDTypeList = std::vector<
+//                    GPDType::Type>());
+
     /**
      * Computes GPD model at specific kinematic
      *
@@ -56,19 +61,8 @@ public:
      * @return
      */
     GPDResult computeGPDModel(const GPDKinematic &gpdKinematic,
-            GPDModule* pGPDModule);
-
-    /**
-     * Computes the GPD model at specific kinematic, restricted by a GPD's type
-     *
-     * @param gpdKinematic
-     * @param pGPDModule
-     * @param gpdType
-     * @return
-     */
-    GPDResult computeGPDModelRestrictedByGPDType(
-            const GPDKinematic &gpdKinematic, GPDModule* pGPDModule,
-            GPDType::Type gpdType) const;
+            GPDModule* pGPDModule, const List<GPDType> & gpdType =
+                    List<GPDType>()) const;
 
     /**
      * Computes GPD model at specific kinematic with a QCD evolution model.
@@ -112,6 +106,7 @@ public:
      */
     List<GPDResult> computeManyKinematicOneModel(
             const List<GPDKinematic> &gpdKinematicList, GPDModule* pGPDModule,
+            const List<GPDType> &gpdTypeList = List<GPDType>(),
             const bool storeInDB = 0);
 
 //    ComparisonReport compareResultListToDatabase(
@@ -129,7 +124,8 @@ private:
     List<GPDResult> computeManyKinematicOneModelTask(Task &task);
     void generatePlotFileTask(Task &task);
 
-    // GPDResult computeGPDModel(const Task &task);
+    List<GPDType> getFinalGPDTypeList(GPDModule* pGPDModule,
+            const List<GPDType> &gpdTypeList) const;
 };
 
 #endif /* GPD_SERVICE_H */

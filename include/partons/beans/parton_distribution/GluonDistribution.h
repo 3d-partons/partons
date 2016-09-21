@@ -15,6 +15,7 @@ public:
     static const std::string GLUON_DISTRIBUTION_PARAMETER_NAME_GLUON_DISTRIBUTION;
 
     GluonDistribution();
+    GluonDistribution(const GluonDistribution &other);
     GluonDistribution(double gluonDistribution);
     virtual ~GluonDistribution();
 

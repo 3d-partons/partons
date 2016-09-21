@@ -4,7 +4,6 @@
 #include <QtCore/qdatetime.h>
 #include <QtCore/qstring.h>
 #include <QtCore/qvariant.h>
-#include <QtSql/qsqlerror.h>
 #include <QtSql/qsqlrecord.h>
 #include <string>
 
@@ -22,6 +21,8 @@ ResultInfoDao::~ResultInfoDao() {
 
 ResultInfo ResultInfoDao::getResultInfoByComputationId(
         const int computationId) const {
+    debug(__func__, "Processing ...");
+
     ResultInfo result;
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
@@ -31,32 +32,19 @@ ResultInfo ResultInfoDao::getResultInfoByComputationId(
             << Database::COLUMN_NAME_COMPUTATION_ID << " = :computationId;";
 
     query.prepare(QString(formatter.str().c_str()));
-
     query.bindValue(":computationId", computationId);
 
-    if (query.exec()) {
-        if (DatabaseManager::getNumberOfRows(query) != 0) {
-            fillResultInfo(result, query);
-        } else {
-            warn(__func__,
-                    ElemUtils::Formatter()
-                            << "No entries found for computationId = "
-                            << computationId);
-        }
-    } else {
-        error(__func__,
-                ElemUtils::Formatter() << query.lastError().text().toStdString()
-                        << " for sql query = "
-                        << query.executedQuery().toStdString());
-    }
+    Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query);
 
-    query.clear();
+    fillResultInfo(result, query);
 
     return result;
 }
 
 void ResultInfoDao::fillResultInfo(ResultInfo &resultInfo,
         QSqlQuery& query) const {
+    debug(__func__, "Processing ...");
 
     int f_computationId = query.record().indexOf(
             QString(Database::COLUMN_NAME_COMPUTATION_ID.c_str()));

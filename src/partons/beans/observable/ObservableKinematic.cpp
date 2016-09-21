@@ -1,9 +1,9 @@
 #include "../../../../include/partons/beans/observable/ObservableKinematic.h"
 
-#include <ElementaryUtils/parameters/GenericType.h>
+//#include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
-#include <ElementaryUtils/string_utils/StringUtils.h>
+//#include <ElementaryUtils/string_utils/StringUtils.h>
 #include <ElementaryUtils/thread/Packet.h>
 
 #include "../../../../include/partons/utils/type/PhysicalUnit.h"
@@ -27,25 +27,19 @@ ObservableKinematic::ObservableKinematic(
     if (parameters.isAvailable(ObservableKinematic::PARAMETER_NAME_XB)) {
         m_xB = parameters.getLastAvailable().toDouble();
     } else {
-        error(__func__,
-                ElemUtils::Formatter() << "Missing parameter <"
-                        << ObservableKinematic::PARAMETER_NAME_XB << ">");
+        errorMissingParameter(ObservableKinematic::PARAMETER_NAME_XB);
     }
 
     if (parameters.isAvailable(ObservableKinematic::PARAMETER_NAME_T)) {
         m_t = parameters.getLastAvailable().toDouble();
     } else {
-        error(__func__,
-                ElemUtils::Formatter() << "Missing parameter <"
-                        << ObservableKinematic::PARAMETER_NAME_T << ">");
+        errorMissingParameter(ObservableKinematic::PARAMETER_NAME_T);
     }
 
     if (parameters.isAvailable(ObservableKinematic::PARAMETER_NAME_Q2)) {
         m_Q2 = parameters.getLastAvailable().toDouble();
     } else {
-        error(__func__,
-                ElemUtils::Formatter() << "Missing parameter <"
-                        << ObservableKinematic::PARAMETER_NAME_Q2 << ">");
+        errorMissingParameter(ObservableKinematic::PARAMETER_NAME_Q2);
     }
 
     if (parameters.isAvailable(ObservableKinematic::PARAMETER_NAME_PHI)) {

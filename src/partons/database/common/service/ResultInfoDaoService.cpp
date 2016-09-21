@@ -55,5 +55,7 @@ int ResultInfoDaoService::insertWithoutTransaction(
 
 ResultInfo ResultInfoDaoService::getResultInfoByComputationId(
         const int computationId) const {
+    debug(__func__, "Processing ...");
+
     return m_resultInfoDao.getResultInfoByComputationId(computationId);
 }

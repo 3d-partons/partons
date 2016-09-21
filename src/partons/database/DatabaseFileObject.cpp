@@ -9,7 +9,7 @@
 #include "../../../include/partons/ServiceObjectRegistry.h"
 
 DatabaseFileObject::DatabaseFileObject(const std::string& className) :
-        DatabaseObject(className), m_pCryptographicHashService(0), m_storeDate(
+        BaseObject(className), m_pCryptographicHashService(0), m_storeDate(
                 time(0)), m_file(ElemUtils::StringUtils::EMPTY), m_hashSum(
                 ElemUtils::StringUtils::EMPTY), m_filePath(
                 ElemUtils::StringUtils::EMPTY) {
@@ -19,14 +19,15 @@ DatabaseFileObject::DatabaseFileObject(const std::string& className) :
 DatabaseFileObject::DatabaseFileObject(const std::string& className,
         const int indexId, const time_t storeDate, const std::string& filePath,
         const std::string& hashSum, const std::string& file) :
-        DatabaseObject(className, indexId), m_pCryptographicHashService(0), m_storeDate(
+        BaseObject(className), m_pCryptographicHashService(0), m_storeDate(
                 storeDate), m_filePath(filePath), m_hashSum(hashSum), m_file(
                 file) {
+    setIndexId(indexId);
     setCryptographicHashService();
 }
 
 DatabaseFileObject::DatabaseFileObject(const DatabaseFileObject &other) :
-        DatabaseObject(other) {
+        BaseObject(other) {
     m_pCryptographicHashService = other.m_pCryptographicHashService;
 
     m_storeDate = other.m_storeDate;

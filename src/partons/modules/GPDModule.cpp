@@ -16,6 +16,8 @@
 #include "../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../include/partons/ServiceObjectTyped.h"
 
+//#include "../../../include/partons/ServiceObjectTyped.h"
+
 const std::string GPDModule::GPD_TYPE = "GPD_MODULE_GPD_TYPE";
 
 GPDModule::GPDModule(const std::string &className) :
@@ -119,18 +121,15 @@ void GPDModule::preCompute(double x, double xi, double t, double MuF,
     isModuleWellConfigured();
 }
 
-GPDResult GPDModule::compute(const GPDKinematic &kinematic,
-        GPDType::Type gpdType, bool evolution) {
-    GPDResult result = compute(kinematic.getX(), kinematic.getXi(),
-            kinematic.getT(), kinematic.getMuF2(), kinematic.getMuR2(), gpdType,
+PartonDistribution GPDModule::compute(const GPDKinematic &kinematic,
+        GPDType gpdType, bool evolution) {
+    return compute(kinematic.getX(), kinematic.getXi(), kinematic.getT(),
+            kinematic.getMuF2(), kinematic.getMuR2(), gpdType.getType(),
             evolution);
-    result.setKinematic(kinematic);
-
-    return result;
 }
 
-GPDResult GPDModule::compute(double x, double xi, double t, double MuF2,
-        double MuR2, GPDType::Type gpdType, bool evolution) {
+PartonDistribution GPDModule::compute(double x, double xi, double t,
+        double MuF2, double MuR2, GPDType::Type gpdType, bool evolution) {
 
     preCompute(x, xi, t, MuF2, MuR2, gpdType);
 
@@ -150,56 +149,26 @@ GPDResult GPDModule::compute(double x, double xi, double t, double MuF2,
         }
     }
 
-    GPDResult gpdResult;
-    switch (m_gpdType) {
-    case GPDType::ALL: {
-        for (m_it = m_listGPDComputeTypeAvailable.begin();
-                m_it != m_listGPDComputeTypeAvailable.end(); m_it++) {
+    PartonDistribution partonDistribution;
+    m_it = m_listGPDComputeTypeAvailable.find(m_gpdType);
+    if (m_it != m_listGPDComputeTypeAvailable.end()) {
 
-            m_gpdType = (m_it->first);
-
-            PartonDistribution partonDistribution;
-
-            if (evolution) {
-                partonDistribution = m_pGPDEvolutionModule->compute(m_x, m_xi,
-                        m_t, m_MuF2, m_MuR2, this, (m_it->first));
-            } else {
-                partonDistribution = ((*this).*(m_it->second))();
-            }
-
-            gpdResult.addPartonDistribution(m_it->first, partonDistribution);
-        }
-        break;
-    }
-    default: {
-        m_it = m_listGPDComputeTypeAvailable.find(m_gpdType);
-        if (m_it != m_listGPDComputeTypeAvailable.end()) {
-            PartonDistribution partonDistribution;
-
-            if (evolution) {
-                partonDistribution = m_pGPDEvolutionModule->compute(m_x, m_xi,
-                        m_t, m_MuF2, m_MuR2, this, (m_it->first));
-            } else {
-                partonDistribution = ((*this).*(m_it->second))();
-            }
-
-            gpdResult.addPartonDistribution(m_it->first, partonDistribution);
+        if (evolution) {
+            partonDistribution = m_pGPDEvolutionModule->compute(m_x, m_xi, m_t,
+                    m_MuF2, m_MuR2, this, (m_it->first));
         } else {
-            error(__func__,
-                    ElemUtils::Formatter() << "GPD("
-                            << GPDType(m_gpdType).toString()
-                            << ") is not available for this GPD model");
+            partonDistribution = ((*this).*(m_it->second))();
         }
-        break;
+    } else {
+        error(__func__,
+                ElemUtils::Formatter() << "GPD("
+                        << GPDType(m_gpdType).toString()
+                        << ") is not available for this GPD model");
     }
-    }
 
-    gpdResult.setComputationModuleName(getClassName());
-    gpdResult.setKinematic(GPDKinematic(x, xi, t, MuF2, MuR2));
+    debug(__func__, ElemUtils::Formatter() << partonDistribution.toString());
 
-    debug(__func__, ElemUtils::Formatter() << gpdResult.toString());
-
-    return gpdResult;
+    return partonDistribution;
 }
 
 //TODO implement
@@ -293,33 +262,46 @@ void GPDModule::run() {
 
         while (!(pGPDService->isEmptyTaskQueue())) {
             GPDKinematic kinematic;
-            GPDType gpdType;
+            List<GPDType> gpdTypeList;
 
             ElemUtils::Packet packet = pGPDService->popTaskFormQueue();
             packet >> kinematic;
-            packet >> gpdType;
+            packet >> gpdTypeList;
 
-            info(__func__,
+            debug(__func__,
                     ElemUtils::Formatter() << "objectId = " << getObjectId()
                             << " " << kinematic.toString());
 
-            pGPDService->add(compute(kinematic, gpdType, false));
+            GPDResult gpdResult;
+            gpdResult.setKinematic(kinematic);
+            gpdResult.setComputationModuleName(getClassName());
+
+            //Helpful to sort later if kinematic is coming from database
+            gpdResult.setIndexId(kinematic.getIndexId());
+
+            for (unsigned int i = 0; i != gpdTypeList.size(); i++) {
+                gpdResult.addPartonDistribution(gpdTypeList[i].getType(),
+                        compute(kinematic, gpdTypeList[i].getType(), false));
+            }
+
+            pGPDService->add(gpdResult);
 
             //TODO useful to do a sleep ?
             // sf::sleep(sf::milliseconds(3));
         }
     } catch (std::exception &e) {
+        //TODO : Is it possible to print an error log message ?
         std::cerr << e.what() << std::endl;
     }
 }
 
-std::vector<GPDType::Type> GPDModule::getListOfAvailableGPDTypeForComputation() const {
+List<GPDType> GPDModule::getListOfAvailableGPDTypeForComputation() const {
     std::map<GPDType::Type, PartonDistribution (GPDModule::*)()>::const_iterator it;
-    std::vector<GPDType::Type> listOfAvailableGPDTypeForComputation;
+    List<GPDType> listOfAvailableGPDTypeForComputation;
 
     for (it = m_listGPDComputeTypeAvailable.begin();
             it != m_listGPDComputeTypeAvailable.end(); it++) {
-        listOfAvailableGPDTypeForComputation.push_back(it->first);
+        listOfAvailableGPDTypeForComputation.add(it->first);
     }
 
     return listOfAvailableGPDTypeForComputation;

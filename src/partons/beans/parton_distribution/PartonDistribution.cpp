@@ -1,13 +1,18 @@
 #include "../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
-#include <sstream>
 #include <utility>
 
-#include "../../../../include/partons/database/DatabaseObject.h"
-
 PartonDistribution::PartonDistribution() :
-        DatabaseObject("PartonDistribution") {
+        BaseObject("PartonDistribution") {
+}
+
+PartonDistribution::PartonDistribution(const PartonDistribution &other) :
+        BaseObject(other) {
+    m_gluonDistribution = other.m_gluonDistribution;
+
+    //TODO copy map of quark distribition
 }
 
 PartonDistribution::~PartonDistribution() {
@@ -27,9 +32,10 @@ const QuarkDistribution& PartonDistribution::getQuarkDistribution(
             m_quarkDistributions.find(quarkFlavorType);
 
     if (it == m_quarkDistributions.end()) {
-        error(__func__,
-                "Enable to find QuardDistribution object from QuarFlavorType = "
-                        + QuarkFlavor(quarkFlavorType).getShortName());
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter()
+                        << "Enable to find QuardDistribution object from QuarFlavorType = "
+                        << QuarkFlavor(quarkFlavorType).getShortName());
     }
 
     return (it->second);
@@ -67,17 +73,19 @@ List<QuarkDistribution> PartonDistribution::getListOfQuarkDistribution() const {
 }
 
 std::string PartonDistribution::toString() const {
-    std::ostringstream os;
+    ElemUtils::Formatter formatter;
 
-    os << m_gluonDistribution.toString();
+    formatter << BaseObject::toString() << '\n';
+
+    formatter << m_gluonDistribution.toString();
 
     for (std::map<QuarkFlavor::Type, QuarkDistribution>::const_iterator it =
             m_quarkDistributions.begin(); it != m_quarkDistributions.end();
             it++) {
-        os << (it->second).toString();
+        formatter << (it->second).toString();
     }
 
-    return os.str();
+    return formatter.str();
 }
 
 const GluonDistribution& PartonDistribution::getGluonDistribution() const {
@@ -123,7 +131,7 @@ double PartonDistribution::getSinglet() {
 void PartonDistribution::addQuarkDistribution(
         QuarkDistribution& quarkDistribution) {
     m_quarkDistributions.insert(
-            std::make_pair(quarkDistribution.getQuarkFlavor(),
+            std::make_pair(quarkDistribution.getQuarkFlavor().getType(),
                     quarkDistribution));
 }
 

@@ -11,7 +11,7 @@
 #include <ctime>
 #include <string>
 
-#include "DatabaseObject.h"
+#include "../BaseObject.h"
 
 class CryptographicHashService;
 
@@ -20,7 +20,7 @@ class CryptographicHashService;
  *
  * @brief
  */
-class DatabaseFileObject: public DatabaseObject {
+class DatabaseFileObject: public BaseObject {
 public:
     /**
      *

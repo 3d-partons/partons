@@ -1,6 +1,7 @@
 #include "../../include/partons/ServiceObjectRegistry.h"
 
-#include <stdexcept>
+#include <ElementaryUtils/logger/CustomException.h>
+//#include <stdexcept>
 
 #include "../../include/partons/BaseObjectRegistry.h"
 #include "../../include/partons/services/automation/AutomationService.h"
@@ -38,8 +39,8 @@ ServiceObject* ServiceObjectRegistry::get(const std::string &className) const {
 
 void ServiceObjectRegistry::checkBaseObjectRegistryNullPointer() const {
     if (!m_pBaseObjectRegistry) {
-        throw std::runtime_error(
-                "[ServiceObjectRegistry::checkBaseObjectRegistryNullPointer] m_pBaseObjectRegistry is NULL pointer, cannot run application !");
+        throw ElemUtils::CustomException("ServiceObjectRegistry", __func__,
+                "m_pBaseObjectRegistry is NULL pointer, cannot run application !");
     }
 }
 

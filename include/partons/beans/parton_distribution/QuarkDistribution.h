@@ -3,13 +3,11 @@
 
 #include <string>
 
-#include "../../database/DatabaseObject.h"
+#include "../../BaseObject.h"
 #include "../../utils/compare/ComparisonReport.h"
 #include "../QuarkFlavor.h"
 
-class ComparisonReport;
-
-class QuarkDistribution: public DatabaseObject {
+class QuarkDistribution: public BaseObject {
 public:
 
     static const std::string QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DISTRIBUTION;
@@ -17,6 +15,7 @@ public:
     static const std::string QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DISTRIBUTION_MINUS;
 
     QuarkDistribution();
+    QuarkDistribution(const QuarkDistribution &other);
     QuarkDistribution(QuarkFlavor::Type quarkFlavor);
     QuarkDistribution(QuarkFlavor::Type quarkFlavor, double quarkDistribution,
             double quarkDistributionPlus, double quarkDistributionMinus);
@@ -40,8 +39,8 @@ public:
     void setQuarkDistributionMinus(double quarkDistributionMinus);
     double getQuark() const;
     void setQuark(double quark);
-    QuarkFlavor::Type getQuarkFlavor() const;
-    void setQuarkFlavor(QuarkFlavor::Type quarkFlavorType);
+    QuarkFlavor getQuarkFlavor() const;
+    void setQuarkFlavor(QuarkFlavor quarkFlavorType);
 
 private:
     QuarkFlavor m_quarkFlavor;

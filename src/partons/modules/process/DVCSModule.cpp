@@ -5,6 +5,7 @@
 #include <cmath>
 #include <exception>
 
+#include "../../../../include/partons/beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "../../../../include/partons/beans/observable/ObservableChannel.h"
 #include "../../../../include/partons/beans/Scale.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
@@ -14,6 +15,8 @@
 #include "../../../../include/partons/modules/xb_to_xi/XBToXi.h"
 #include "../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../include/partons/Partons.h"
+#include "../../../../include/partons/services/ConvolCoeffFunctionService.h"
+#include "../../../../include/partons/ServiceObjectRegistry.h"
 
 DVCSModule::DVCSModule(const std::string &className) :
         ProcessModule(className), m_phaseSpace(0.), m_tmin(0.), m_tmax(0.), m_xBmin(
@@ -113,7 +116,7 @@ void DVCSModule::isModuleWellConfigured() {
 }
 
 void DVCSModule::computeConvolCoeffFunction(double xB, double t, double Q2,
-        const GPDType::Type gpdType) {
+        const List<GPDType> & gpdType) {
     if (isPreviousKinematicsDifferent(xB, t, Q2)
             || (BaseObjectRegistry::getInstance()->getObjectClassIdByClassName(
                     m_pConvolCoeffFunctionModule->getClassName())
@@ -122,10 +125,26 @@ void DVCSModule::computeConvolCoeffFunction(double xB, double t, double Q2,
         Scale scale = m_pScaleModule->compute(Q2);
 
         //TODO Is it possible to move that into the ProcessModule->compute() mother class ?
+        //TODO propagate change
+//        m_dvcsConvolCoeffFunctionResult = m_pConvolCoeffFunctionModule->compute(
+//                m_pXiConverterModule->compute(xB, t, Q2), t, Q2,
+//                scale.getMuF2(), scale.getMuR2(), gpdType);
+
+        //m_dvcsConvolCoeffFunctionResult = DVCSConvolCoeffFunctionResult();
+
         m_dvcsConvolCoeffFunctionResult =
-                static_cast<DVCSConvolCoeffFunctionModule*>(m_pConvolCoeffFunctionModule)->compute(
-                        m_pXiConverterModule->compute(xB, t, Q2), t, Q2,
-                        scale.getMuF2(), scale.getMuR2(), gpdType);
+                Partons::getInstance()->getServiceObjectRegistry()->getConvolCoeffFunctionService()->computeForOneCCFModel(
+                        DVCSConvolCoeffFunctionKinematic(
+                                m_pXiConverterModule->compute(xB, t, Q2), t, Q2,
+                                scale.getMuF2(), scale.getMuR2()),
+                        m_pConvolCoeffFunctionModule, gpdType);
+//
+//        for(unsigned int i=0;;)
+//        {
+//            m_dvcsConvolCoeffFunctionResult.add(gpdType, m_pConvolCoeffFunctionModule->compute(
+//                    m_pXiConverterModule->compute(xB, t, Q2), t, Q2,
+//                    scale.getMuF2(), scale.getMuR2(), gpdType));
+//        }
     }
 
     debug(__func__,

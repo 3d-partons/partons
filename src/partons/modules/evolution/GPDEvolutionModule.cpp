@@ -7,7 +7,7 @@
 #include <NumA/linear_algebra/matrix/MatrixD.h>
 #include <iostream>
 
-#include "../../../../include/partons/beans/gpd/GPDResult.h"
+//#include "../../../../include/partons/beans/gpd/GPDResult.h"
 #include "../../../../include/partons/beans/List.h"
 #include "../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
 #include "../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
@@ -571,7 +571,6 @@ void GPDEvolutionModule::evolutionR(double x,
                 m_invertedIntervals[indexCurrentInterval].getLowerBound();
         m_partonDistributionFlavorBase = makeVectorOfGPDCombinations(
                 m_pGPDModule->compute(x, m_xi, m_t, MuF2_ref, MuF2_ref,
-                        m_currentGPDComputeType).getPartonDistribution(
                         m_currentGPDComputeType));
     } else {
         evolutionR(x, indexCurrentInterval - 1);
@@ -666,8 +665,7 @@ void GPDEvolutionModule::resizeVectorOfGPDCombination(
 double GPDEvolutionModule::nonSingletGPD(unsigned short nonSingletIndex,
         unsigned short currentNf, double y, double MuF2) {
     PartonDistribution partonDistribution = m_pGPDModule->compute(y, m_xi, m_t,
-            MuF2, m_MuR2, m_currentGPDComputeType).getPartonDistribution(
-            m_currentGPDComputeType);
+            MuF2, m_MuR2, m_currentGPDComputeType);
 
     NumA::VectorD vectorOfQuarkDistribution = makeVectorOfGPDCombinations(
             partonDistribution);

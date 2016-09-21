@@ -1,5 +1,6 @@
 #include "../../../../../include/partons/beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <utility>
 
@@ -30,7 +31,7 @@ std::complex<double> DVCSConvolCoeffFunctionResult::get(
         GPDType::Type gpdComputeType) {
     m_it = m_resultsByGPDType.find(gpdComputeType);
     if (m_it == m_resultsByGPDType.end()) {
-        error(__func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
                         << "Cannot find result for GPDComputeType = "
                         << GPDType(gpdComputeType).toString());
@@ -125,7 +126,7 @@ const std::complex<double>& DVCSConvolCoeffFunctionResult::getResult(
             m_resultsByGPDType.find(gpdType);
 
     if (it == m_resultsByGPDType.end()) {
-        error(__func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
                         << "Cannot find complex value from GPDType = "
                         << GPDType(gpdType).toString());

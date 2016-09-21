@@ -10,6 +10,7 @@
 
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
+#include <ElementaryUtils/thread/Packet.h>
 #include <stddef.h>
 #include <algorithm>    // std::sort
 #include <string>
@@ -28,6 +29,13 @@ template<class T> class List: public BaseObject {
 public:
     List() :
             BaseObject("List") {
+    }
+
+    List(std::vector<T> &stdVector) :
+            BaseObject("List") {
+        for (unsigned int i = 0; i != stdVector.size(); i++) {
+            this->add(stdVector[i]);
+        }
     }
 
     virtual ~List() {
@@ -96,6 +104,10 @@ public:
         std::sort(m_data.begin(), m_data.end());
     }
 
+    std::vector<T> getData() const {
+        return m_data;
+    }
+
     void compare(ComparisonReport &rootComparisonReport,
             const List<T> &referenceObject,
             const ComparisonMode &comparisonMode = ComparisonMode::EQUAL,
@@ -131,9 +143,14 @@ public:
                         j++;
                     }
 
-                    info(__func__, rootComparisonReport.toString());
+                    if (rootComparisonReport.sizeOfComparedDataFailed() != 0) {
+                        info(__func__,
+                                rootComparisonReport.showComparedDataFailed());
+                    }
                     rootComparisonReport.clearComparedData();
                 }
+
+                info(__func__, rootComparisonReport.showComparisonStats());
 
 //                // equal comparison by default
 //                if (this->size() == referenceObject.size()) {
@@ -161,9 +178,40 @@ public:
         m_data.resize(n);
     }
 
+    void serialize(ElemUtils::Packet &packet) const {
+        packet << static_cast<unsigned int>(size());
+
+        for (size_t i = 0; i != size(); i++) {
+            packet << m_data[i];
+        }
+    }
+
+    void unserialize(ElemUtils::Packet &packet) {
+        unsigned int packetSize;
+        packet >> packetSize;
+
+        for (size_t i = 0; i != packetSize; i++) {
+            T data;
+            packet >> data;
+            add(data);
+        }
+    }
+
 protected:
     std::vector<T> m_data;
+
+};
+
+template<class T>
+ElemUtils::Packet& operator <<(ElemUtils::Packet& packet, List<T>& list) {
+    list.serialize(packet);
+    return packet;
 }
-;
+
+template<class T>
+ElemUtils::Packet& operator >>(ElemUtils::Packet& packet, List<T>& list) {
+    list.unserialize(packet);
+    return packet;
+}
 
 #endif /* LIST_H */

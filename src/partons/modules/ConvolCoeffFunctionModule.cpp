@@ -51,17 +51,29 @@ void ConvolCoeffFunctionModule::run() {
 
         while (!(pService->isEmptyTaskQueue())) {
             DVCSConvolCoeffFunctionKinematic kinematic;
-            GPDType gpdType;
+            List<GPDType> gpdTypeList;
 
             ElemUtils::Packet packet = pService->popTaskFormQueue();
             packet >> kinematic;
-            packet >> gpdType;
+            packet >> gpdTypeList;
 
-            info(__func__,
+            debug(__func__,
                     ElemUtils::Formatter() << "objectId = " << getObjectId()
                             << " " << kinematic.toString());
 
-            pService->add(compute(kinematic, gpdType));
+            DVCSConvolCoeffFunctionResult result;
+            result.setKinematic(kinematic);
+            result.setComputationModuleName(getClassName());
+
+            //Helpful to sort later if kinematic is coming from database
+            result.setIndexId(kinematic.getIndexId());
+
+            for (unsigned int i = 0; i != gpdTypeList.size(); i++) {
+                result.add(gpdTypeList[i].getType(),
+                        compute(kinematic, gpdTypeList[i].getType()));
+            }
+
+            pService->add(result);
 
             //TODO useful to do a sleep ?
             // sf::sleep(sf::milliseconds(3));
@@ -71,15 +83,12 @@ void ConvolCoeffFunctionModule::run() {
     }
 }
 
-DVCSConvolCoeffFunctionResult ConvolCoeffFunctionModule::compute(
+std::complex<double> ConvolCoeffFunctionModule::compute(
         const DVCSConvolCoeffFunctionKinematic &kinematic,
         GPDType::Type gpdType) {
-    DVCSConvolCoeffFunctionResult result = compute(kinematic.getXi(),
-            kinematic.getT(), kinematic.getQ2(), kinematic.getMuF2(),
-            kinematic.getMuR2(), gpdType);
-    result.setKinematic(kinematic);
 
-    return result;
+    return compute(kinematic.getXi(), kinematic.getT(), kinematic.getQ2(),
+            kinematic.getMuF2(), kinematic.getMuR2(), gpdType);
 }
 
 GPDModule* ConvolCoeffFunctionModule::getGPDModule() const {

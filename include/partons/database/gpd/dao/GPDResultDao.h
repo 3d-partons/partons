@@ -43,7 +43,7 @@ private:
 
     // a supprimer
 
-    void fillGPDResult(GPDResult &gpdResult) const;
+   // void fillGPDResult(GPDResult &gpdResult) const;
 };
 
 #endif /* GPD_RESULT_DAO */

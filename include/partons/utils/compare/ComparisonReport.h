@@ -9,6 +9,7 @@
  */
 
 #include <NumA/utils/Tolerances.h>
+#include <stddef.h>
 #include <string>
 #include <vector>
 
@@ -31,6 +32,9 @@ public:
 
     std::string toString() const;
 
+    std::string showComparedDataFailed() const;
+    std::string showComparisonStats() const;
+
     void clearComparedData();
 
     // #############################
@@ -41,6 +45,7 @@ public:
 
     const NumA::Tolerances& getTolerances() const;
     void setTolerances(const NumA::Tolerances& tolerances);
+    size_t sizeOfComparedDataFailed() const;
 
 private:
     std::string m_environmentSetting;

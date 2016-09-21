@@ -10,7 +10,7 @@
 
 #include <string>
 
-#include "../database/DatabaseObject.h"
+#include "../BaseObject.h"
 
 namespace ElemUtils {
 class Packet;
@@ -21,21 +21,24 @@ class Packet;
  *
  * @brief
  */
-class Kinematic: public DatabaseObject {
+class Kinematic: public BaseObject {
 public:
     Kinematic(const std::string &className);
+
+    Kinematic(const Kinematic &other);
+
     virtual ~Kinematic();
 
     virtual std::string toString() const;
 
     // use by std::sort function
-    bool operator <(const Kinematic &other) const;
+    // bool operator <(const Kinematic &other) const;
 
     void serialize(ElemUtils::Packet &packet) const;
     void unserialize(ElemUtils::Packet &packet);
 
-    int getListEntryPosition() const;
-    void setListEntryPosition(int listEntryPosition);
+//    int getListEntryPosition() const;
+//    void setListEntryPosition(int listEntryPosition);
 
     const std::string& getHashSum() const;
     void setHashSum(const std::string& hashSum) const;
@@ -44,7 +47,7 @@ protected:
     virtual void updateHashSum() const = 0;
 
 private:
-    int m_listEntryPosition;
+    //int m_listEntryPosition;
     mutable std::string m_hashSum;
 };
 

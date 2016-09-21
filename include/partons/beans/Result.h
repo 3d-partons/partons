@@ -14,10 +14,9 @@
 
 #include <string>
 
-#include "../database/DatabaseObject.h"
 #include "system/ResultInfo.h"
 
-class Result: public DatabaseObject {
+class Result: public BaseObject {
 public:
     Result(const std::string &className);
 

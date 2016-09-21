@@ -1,10 +1,10 @@
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/PropertiesManager.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <ElementaryUtils/thread/Packet.h>
-#include <stddef.h>
 #include <string>
 #include <vector>
 
@@ -15,6 +15,7 @@
 #include "../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../include/partons/beans/KinematicUtils.h"
 #include "../../../include/partons/beans/List.h"
+#include "../../../include/partons/beans/parton_distribution/PartonDistribution.h"
 #include "../../../include/partons/beans/system/ResultInfo.h"
 #include "../../../include/partons/BaseObjectRegistry.h"
 #include "../../../include/partons/database/gpd/service/GPDResultDaoService.h"
@@ -26,6 +27,7 @@
 #include "../../../include/partons/services/GPDService.h"
 #include "../../../include/partons/ServiceObjectTyped.h"
 #include "../../../include/partons/utils/exceptions/GPDModuleNullPointerException.h"
+#include "../../../include/partons/utils/VectorUtils.h"
 
 const std::string GPDService::GPD_SERVICE_COMPUTE_GPD_MODEL = "computeGPDModel";
 const std::string GPDService::GPD_SERVICE_COMPUTE_GPD_MODEL_WITH_EVOLUTION =
@@ -58,7 +60,7 @@ void GPDService::resolveObjectDependencies() {
                 ElemUtils::PropertiesManager::getInstance()->getString(
                         "gpd.service.batch.size")).toUInt();
     } catch (const std::exception &e) {
-        error(__func__, ElemUtils::Formatter() << e.what());
+        throw ElemUtils::CustomException(getClassName(), __func__, e.what());
     }
 }
 
@@ -68,6 +70,7 @@ void GPDService::resolveObjectDependencies() {
 //TODO supprimer les pojnteurs membres de la classe GPDService
 //TODO redefinition des tests de selection des cinematiques et autres modules
 void GPDService::computeTask(Task &task) {
+    debug(__func__, "Processing ...");
 
     m_resultInfo = ResultInfo();
     m_resultInfo.setScenarioTaskIndexNumber(task.getScenarioTaskIndexNumber());
@@ -170,8 +173,7 @@ void GPDService::computeTask(Task &task) {
             generatePlotFileTask(task);
         } else if (!ServiceObjectTyped<GPDKinematic, GPDResult>::computeGeneralTask(
                 task)) {
-            error(__func__,
-                    "unknown function name = " + task.getFunctionName());
+            errorUnknownMethod(task);
         }
 
         updateResultInfo(resultList, m_resultInfo);
@@ -201,11 +203,21 @@ void GPDService::computeTask(Task &task) {
     m_resultListBuffer = resultList;
 }
 
-GPDResult GPDService::computeGPDModelRestrictedByGPDType(
-        const GPDKinematic &gpdKinematic, GPDModule* pGPDModule,
-        GPDType::Type gpdType) const {
+GPDResult GPDService::computeGPDModel(const GPDKinematic &gpdKinematic,
+        GPDModule* pGPDModule, const List<GPDType> & gpdTypeList) const {
+    GPDResult gpdResult;
 
-    GPDResult gpdResult = pGPDModule->compute(gpdKinematic, gpdType);
+    List<GPDType> restrictedByGPDTypeListFinal = getFinalGPDTypeList(pGPDModule,
+            gpdTypeList);
+
+    for (unsigned int i = 0; i != restrictedByGPDTypeListFinal.size(); i++) {
+        gpdResult.addPartonDistribution(restrictedByGPDTypeListFinal[i],
+                pGPDModule->compute(gpdKinematic,
+                        restrictedByGPDTypeListFinal[i]));
+    }
+
+    gpdResult.setKinematic(gpdKinematic);
+    gpdResult.setComputationModuleName(pGPDModule->getClassName());
 
     return gpdResult;
 }
@@ -215,17 +227,13 @@ GPDResult GPDService::computeGPDModelWithEvolution(
         GPDEvolutionModule* pEvolQCDModule, GPDType::Type gpdType) {
     pGPDModule->setEvolQcdModule(pEvolQCDModule);
 
-    GPDResult gpdResult = pGPDModule->compute(gpdKinematic.getX(),
-            gpdKinematic.getXi(), gpdKinematic.getT(), gpdKinematic.getMuF2(),
-            gpdKinematic.getMuR2(), gpdType, true);
+    GPDResult gpdResult;
+    gpdResult.addPartonDistribution(gpdType,
+            pGPDModule->compute(gpdKinematic.getX(), gpdKinematic.getXi(),
+                    gpdKinematic.getT(), gpdKinematic.getMuF2(),
+                    gpdKinematic.getMuR2(), gpdType, true));
 
     return gpdResult;
-}
-
-GPDResult GPDService::computeGPDModel(const GPDKinematic &gpdKinematic,
-        GPDModule* pGPDModule) {
-    return computeGPDModelRestrictedByGPDType(gpdKinematic, pGPDModule,
-            GPDType::ALL);
 }
 
 List<GPDResult> GPDService::computeListOfGPDModel(
@@ -240,11 +248,11 @@ List<GPDResult> GPDService::computeListOfGPDModelRestrictedByGPDType(
         std::vector<GPDModule*> &listOfGPDToCompute, GPDType gpdType) {
     List<GPDResult> results;
 
-    for (size_t i = 0; i != listOfGPDToCompute.size(); i++) {
-        results.add(
-                computeGPDModelRestrictedByGPDType(gpdKinematic,
-                        listOfGPDToCompute[i], gpdType));
-    }
+    //TODO enable
+//    for (size_t i = 0; i != listOfGPDToCompute.size(); i++) {
+//        results.add(
+//                computeGPDModel(gpdKinematic, listOfGPDToCompute[i], gpdType));
+//    }
 
 // return a list of outputData (one outputData by GPDModule computed)
     return results;
@@ -252,55 +260,71 @@ List<GPDResult> GPDService::computeListOfGPDModelRestrictedByGPDType(
 
 List<GPDResult> GPDService::computeManyKinematicOneModel(
         const List<GPDKinematic> &gpdKinematicList, GPDModule* pGPDModule,
-        const bool storeInDB) {
+        const List<GPDType> &gpdTypeList, const bool storeInDB) {
+    debug(__func__, "Processing ...");
 
     info(__func__,
             ElemUtils::Formatter() << gpdKinematicList.size()
-                    << " will be computed");
+                    << " GPD kinematic(s) will be computed");
 
     List<GPDResult> results;
     List<ElemUtils::Packet> listOfPacket;
 
-    GPDType gpdType(GPDType::ALL);
+    List<GPDType> finalGPDTypeList = getFinalGPDTypeList(pGPDModule,
+            gpdTypeList);
 
-    initComputationalThread(pGPDModule);
+    if (finalGPDTypeList.size() != 0) {
 
-    // ##### Batch feature start section #####
-    unsigned int i = 0;
-    unsigned int j = 0;
+        initComputationalThread(pGPDModule);
 
-    while (i != gpdKinematicList.size()) {
-        listOfPacket.clear();
-        j = 0;
+        info(__func__, "Thread(s) running ...");
 
-        while ((j != m_batchSize) && (i != gpdKinematicList.size())) {
-            ElemUtils::Packet packet;
-            GPDKinematic obsK;
-            obsK = gpdKinematicList[i];
-            packet << obsK << gpdType;
-            listOfPacket.add(packet);
-            i++;
-            j++;
+        // ##### Batch feature start section #####
+        unsigned int i = 0;
+        unsigned int j = 0;
+
+        while (i != gpdKinematicList.size()) {
+            listOfPacket.clear();
+            j = 0;
+
+            while ((j != m_batchSize) && (i != gpdKinematicList.size())) {
+                ElemUtils::Packet packet;
+                GPDKinematic kineamtic;
+                kineamtic = gpdKinematicList[i];
+                packet << kineamtic << finalGPDTypeList;
+                listOfPacket.add(packet);
+                i++;
+                j++;
+            }
+
+            addTasks(listOfPacket);
+
+            launchAllThreadAndWaitingFor();
+            sortResultList();
+
+            info(__func__,
+                    ElemUtils::Formatter() << "Kinematic(s) already computed : "
+                            << i);
+
+            updateResultInfo(getResultList(), m_resultInfo);
+
+            if (storeInDB) {
+                GPDResultDaoService gpdResultDaoService;
+                gpdResultDaoService.insert(getResultList());
+            } else {
+                results.add(getResultList());
+            }
+
+            clearResultListBuffer();
         }
+        // ##### Batch feature end section #####
 
-        addTasks(listOfPacket);
-        launchAllThreadAndWaitingFor();
-        sortResultList();
+        clearAllThread();
 
-        updateResultInfo(getResultList(), m_resultInfo);
-
-        if (storeInDB) {
-            GPDResultDaoService gpdResultDaoService;
-            gpdResultDaoService.insert(getResultList());
-        } else {
-            results.add(getResultList());
-        }
-
-        clearResultListBuffer();
+    } else {
+        info(__func__,
+                "Nothing to compute with your computation configuration ; there is no GPDType available");
     }
-    // ##### Batch feature end section #####
-
-    clearAllThread();
 
     return results;
 }
@@ -369,7 +393,7 @@ List<GPDResult> GPDService::computeManyKinematicOneModelTask(Task& task) {
     if (task.isAvailableParameters("GPDKinematic")) {
         ElemUtils::Parameters parameters = task.getLastAvailableParameters();
         if (parameters.isAvailable("file")) {
-            listOfKinematic = KinematicUtils::getGPDKinematicFromFile(
+            listOfKinematic = KinematicUtils().getGPDKinematicFromFile(
                     parameters.getLastAvailable().toString());
         } else {
             error(__func__,
@@ -384,10 +408,12 @@ List<GPDResult> GPDService::computeManyKinematicOneModelTask(Task& task) {
                         << task.getFunctionName());
     }
 
+    List<GPDType> gpdTypeList = getGPDTypeListFromTask(task);
+
     GPDModule* pGPDModule = newGPDModuleFromTask(task);
 
     List<GPDResult> result = computeManyKinematicOneModel(listOfKinematic,
-            pGPDModule, task.isStoreInDB());
+            pGPDModule, gpdTypeList, task.isStoreInDB());
 
 //       info(__func__,
 //               ElemUtils::Formatter() << task.getFunctionName() << "("
@@ -400,4 +426,24 @@ List<GPDResult> GPDService::computeManyKinematicOneModelTask(Task& task) {
 void GPDService::generatePlotFileTask(Task& task) {
     generatePlotFile(getOutputFilePathForPlotFileTask(task),
             generateSQLQueryForPlotFileTask(task, "gpd_plot_2d_view"), ' ');
+}
+
+List<GPDType> GPDService::getFinalGPDTypeList(GPDModule* pGPDModule,
+        const List<GPDType> &gpdTypeList) const {
+
+    List<GPDType> restrictedByGPDTypeListFinal = gpdTypeList;
+
+    restrictedByGPDTypeListFinal =
+            pGPDModule->getListOfAvailableGPDTypeForComputation();
+
+    if (!gpdTypeList.isEmpty()) {
+        restrictedByGPDTypeListFinal = VectorUtils::intersection(
+                restrictedByGPDTypeListFinal, gpdTypeList);
+    }
+
+    info(__func__,
+            ElemUtils::Formatter() << restrictedByGPDTypeListFinal.size()
+                    << " GPDType will be computed");
+
+    return restrictedByGPDTypeListFinal;
 }

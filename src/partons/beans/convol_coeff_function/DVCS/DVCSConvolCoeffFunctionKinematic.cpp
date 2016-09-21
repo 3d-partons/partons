@@ -22,24 +22,17 @@ DVCSConvolCoeffFunctionKinematic::DVCSConvolCoeffFunctionKinematic(
     if (parameters.isAvailable(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI)) {
         m_xi = parameters.getLastAvailable().toDouble();
     } else {
-        error(__func__,
-                ElemUtils::Formatter() << "Missing parameter <"
-                        << GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI
-                        << ">");
+        errorMissingParameter(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI);
     }
     if (parameters.isAvailable(ObservableKinematic::PARAMETER_NAME_T)) {
         m_t = parameters.getLastAvailable().toDouble();
     } else {
-        error(__func__,
-                ElemUtils::Formatter() << "Missing parameter <"
-                        << ObservableKinematic::PARAMETER_NAME_T << ">");
+        errorMissingParameter(ObservableKinematic::PARAMETER_NAME_T);
     }
     if (parameters.isAvailable(ObservableKinematic::PARAMETER_NAME_Q2)) {
         m_Q2 = parameters.getLastAvailable().toDouble();
     } else {
-        error(__func__,
-                ElemUtils::Formatter() << "Missing parameter <"
-                        << ObservableKinematic::PARAMETER_NAME_Q2 << ">");
+        errorMissingParameter(ObservableKinematic::PARAMETER_NAME_Q2);
     }
 
     //TODO remove from kinematic

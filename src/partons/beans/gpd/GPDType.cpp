@@ -2,6 +2,7 @@
 
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <ElementaryUtils/thread/Packet.h>
+#include <vector>
 
 const std::string GPDType::GPD_TYPE_DB_COLUMN_NAME = "gpd_type";
 
@@ -95,4 +96,22 @@ ElemUtils::Packet& operator >>(ElemUtils::Packet& packet, GPDType& gpdType) {
 
     gpdType.unserialize(packet);
     return packet;
+}
+
+bool GPDType::operator <(const GPDType& other) const {
+    return (m_type < other.m_type);
+}
+
+List<GPDType> GPDType::getListOfGPDTypeFromString(
+        const std::string& gpdTypeListAsString) {
+    List<GPDType> gpdTypeList;
+
+    std::vector<std::string> vectorOfGPDTypeList =
+            ElemUtils::StringUtils::split(gpdTypeListAsString, '|');
+
+    for (unsigned int i = 0; i != vectorOfGPDTypeList.size(); i++) {
+        gpdTypeList.add(GPDType::fromString(vectorOfGPDTypeList[i]));
+    }
+
+    return gpdTypeList;
 }

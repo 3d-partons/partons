@@ -22,6 +22,7 @@ GPDResultDaoService::GPDResultDaoService() :
                 -1), m_lastPartonDistributionId(-1), m_lastQuarkDistributionId(
                 -1), m_lastGPDResultPartonDistributionId(-1), m_lastPartonDistributionQuarkDistributionId(
                 -1) {
+    debug(__func__, "Processing ...");
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
     if (query.exec("SELECT COUNT(gpd_kinematic_id) FROM gpd_kinematic;")) {
@@ -223,6 +224,13 @@ int GPDResultDaoService::insert(const List<GPDResult> &resultList) {
 
 List<GPDResult> GPDResultDaoService::getGPDResultListByComputationId(
         const int computationId) const {
+    debug(__func__, "Processing ...");
+
+    info(__func__,
+            ElemUtils::Formatter()
+                    << "Searching in database for GPD result(s) with computation id = "
+                    << computationId << " ...");
+
     ResultInfo resultInfo = m_resultInfoDaoService.getResultInfoByComputationId(
             computationId);
     List<GPDResult> results = m_gpdResultDao.getGPDResultListByComputationId(

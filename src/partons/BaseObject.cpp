@@ -1,8 +1,10 @@
 #include "../../include/partons/BaseObject.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/logger/LoggerManager.h>
+//#include <ElementaryUtils/PropertiesManager.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
-#include <stdexcept>
+#include <ElementaryUtils/thread/Packet.h>
 
 #include "../../include/partons/BaseObjectFactory.h"
 #include "../../include/partons/Partons.h"
@@ -10,12 +12,13 @@
 unsigned int BaseObject::m_uniqueObjectIdCounter = 0;
 
 BaseObject::BaseObject(const std::string &className) :
-        m_objectId(getUniqueObjectId()), m_className(className) {
+        m_objectId(getUniqueObjectId()), m_className(className), m_indexId(-1) {
 }
 
 BaseObject::BaseObject(const BaseObject& other) {
     m_objectId = getUniqueObjectId();
     m_className = other.m_className;
+    m_indexId = other.m_indexId;
 }
 BaseObject* BaseObject::clone() const {
     return new BaseObject(*this);
@@ -38,7 +41,7 @@ std::string BaseObject::toString() const {
 
     formatter << "[" << getClassName() << "]\n";
     formatter << "m_className = " << m_className << " - " << "m_objectId = "
-            << m_objectId << '\n';
+            << m_objectId << " indexId = " << m_indexId << '\n';
 
     return formatter.str();
 }
@@ -103,4 +106,41 @@ unsigned int BaseObject::getObjectId() const {
 
 void BaseObject::setObjectId(unsigned int objectId) {
     m_objectId = objectId;
+}
+
+int BaseObject::getIndexId() const {
+    return m_indexId;
+}
+
+void BaseObject::setIndexId(int indexId) {
+    m_indexId = indexId;
+}
+
+bool BaseObject::operator <(const BaseObject& other) const {
+    return (m_indexId < other.m_indexId);
+}
+
+void BaseObject::serialize(ElemUtils::Packet& packet) const {
+    packet << m_className << m_indexId;
+}
+
+void BaseObject::unserialize(ElemUtils::Packet& packet) {
+    packet >> m_className;
+    packet >> m_indexId;
+}
+
+ElemUtils::Packet& operator <<(ElemUtils::Packet& packet, BaseObject& object) {
+    object.serialize(packet);
+    return packet;
+}
+
+ElemUtils::Packet& operator >>(ElemUtils::Packet& packet, BaseObject& object) {
+    object.unserialize(packet);
+    return packet;
+}
+
+void BaseObject::errorMissingParameter(const std::string& parameterName) const {
+    throw ElemUtils::CustomException(m_className, __func__,
+            ElemUtils::Formatter() << "Missing parameter name = "
+                    << parameterName);
 }

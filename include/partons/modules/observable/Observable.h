@@ -13,6 +13,7 @@
 #include <string>
 
 #include "../../beans/gpd/GPDType.h"
+#include "../../beans/List.h"
 #include "../../beans/observable/ObservableChannel.h"
 #include "../../beans/observable/ObservableKinematic.h"
 #include "../../beans/observable/ObservableType.h"
@@ -57,10 +58,10 @@ public:
     double beamCharge, NumA::Vector3D targetPolarization);
 
     ObservableResult compute(const ObservableKinematic &kinematic,
-            const GPDType::Type gpdType = GPDType::ALL);
+            const List<GPDType> & gpdType = List<GPDType>());
 
     ObservableResult compute(double xB, double t, double Q2, double phi,
-            const GPDType::Type gpdType = GPDType::ALL);
+            const List<GPDType> & gpdType = List<GPDType>());
 
     virtual double compute(double phi);
 

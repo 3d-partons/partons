@@ -3,11 +3,11 @@
 #include <ElementaryUtils/string_utils/Formatter.h>
 
 Result::Result(const std::string &className) :
-        DatabaseObject(className), m_computationModuleName("UNDEFINED") {
+        BaseObject(className), m_computationModuleName("UNDEFINED") {
 }
 
 Result::Result(const Result &other) :
-        DatabaseObject(other) {
+        BaseObject(other) {
     m_resultInfo = other.m_resultInfo;
     m_computationModuleName = other.m_computationModuleName;
 }

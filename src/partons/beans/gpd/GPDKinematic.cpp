@@ -19,6 +19,16 @@ GPDKinematic::GPDKinematic() :
                 0.), m_xi(0.), m_t(0.), m_MuF2(0.), m_MuR2(0.) {
 }
 
+GPDKinematic::GPDKinematic(const GPDKinematic& other) :
+        Kinematic(other) {
+    m_kinematicType = other.m_kinematicType;
+    m_x = other.m_x;
+    m_xi = other.m_xi;
+    m_t = other.m_t;
+    m_MuF2 = other.m_MuF2;
+    m_MuR2 = other.m_MuR2;
+}
+
 GPDKinematic::GPDKinematic(double x, double xi, double t, double MuF2,
         double MuR2) :
         Kinematic("GPDKinematic"), m_kinematicType(KinematicType::THEO), m_x(x), m_xi(
@@ -50,24 +60,17 @@ GPDKinematic::GPDKinematic(const ElemUtils::Parameters &parameters) :
     if (parameters.isAvailable(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_X)) {
         m_x = parameters.getLastAvailable().toDouble();
     } else {
-        error(__func__,
-                ElemUtils::Formatter() << "Missing parameter <"
-                        << GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_X << ">");
+        errorMissingParameter(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_X);
     }
     if (parameters.isAvailable(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI)) {
         m_xi = parameters.getLastAvailable().toDouble();
     } else {
-        error(__func__,
-                ElemUtils::Formatter() << "Missing parameter <"
-                        << GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI
-                        << ">");
+        errorMissingParameter(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI);
     }
     if (parameters.isAvailable(ObservableKinematic::PARAMETER_NAME_T)) {
         m_t = parameters.getLastAvailable().toDouble();
     } else {
-        error(__func__,
-                ElemUtils::Formatter() << "Missing parameter <"
-                        << ObservableKinematic::PARAMETER_NAME_T << ">");
+        errorMissingParameter(ObservableKinematic::PARAMETER_NAME_T);
     }
 
     //TODO remove from kinematic
@@ -201,7 +204,7 @@ ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
 }
 ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
         GPDKinematic& kinematic) {
-
     kinematic.unserialize(packet);
     return packet;
 }
+

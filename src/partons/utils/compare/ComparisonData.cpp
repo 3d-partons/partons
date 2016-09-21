@@ -27,8 +27,8 @@ std::string ComparisonData::toString() const {
         formatter << "[FAILED] ";
     }
 
-    formatter << m_variableName << " = " << m_variableValue << " compared to = "
-            << m_variableValueReference;
+    formatter << m_variableName << " = " << m_variableValue << " (computed) compared to = "
+            << m_variableValueReference << " (reference)";
 
     formatter << " " << m_differences.toString();
 

@@ -10,7 +10,7 @@
 #include <map>
 #include <utility>
 
-#include "../../../../../include/partons/beans/gpd/GPDResult.h"
+//#include "../../../../../include/partons/beans/gpd/GPDResult.h"
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
 #include "../../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
@@ -20,7 +20,6 @@
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../../include/partons/modules/active_flavors/NfFunctionExample.h"
 #include "../../../../../include/partons/modules/alphaS/RunningAlphaStrong.h"
-//#include "../../../../../include/partons/modules/evolution/gpd/ExampleEvolQCDModel.h"
 #include "../../../../../include/partons/modules/GPDModule.h"
 #include "../../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../../include/partons/Partons.h"
@@ -153,40 +152,39 @@ std::complex<double> DVCSCFFVGGModel::computePolarized() {
     return calculate_direct() - calculate_crossed();
 }
 
-double DVCSCFFVGGModel::calculate_gpd_combination(GPDResult gpdResult) {
+double DVCSCFFVGGModel::calculate_gpd_combination(
+        const PartonDistribution &partonDistribution) {
 
-    return gpdResult.getPartonDistribution(m_currentGPDComputeType).getQuarkDistribution(
-            QuarkFlavor::UP).getQuarkDistributionPlus() * U2_ELEC_CHARGE
-            + gpdResult.getPartonDistribution(m_currentGPDComputeType).getQuarkDistribution(
-                    QuarkFlavor::DOWN).getQuarkDistributionPlus()
+    return partonDistribution.getQuarkDistribution(QuarkFlavor::UP).getQuarkDistributionPlus()
+            * U2_ELEC_CHARGE
+            + partonDistribution.getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistributionPlus()
                     * D2_ELEC_CHARGE
-            + gpdResult.getPartonDistribution(m_currentGPDComputeType).getQuarkDistribution(
-                    QuarkFlavor::STRANGE).getQuarkDistributionPlus()
+            + partonDistribution.getQuarkDistribution(QuarkFlavor::STRANGE).getQuarkDistributionPlus()
                     * S2_ELEC_CHARGE;
 }
 
 void DVCSCFFVGGModel::calculate_xixit_value() {
 
-    GPDResult gpdResult = m_pGPDModule->compute(m_xi, m_xi, m_t, m_MuF2, m_MuR2,
-            m_currentGPDComputeType);
+    PartonDistribution partonDistribution = m_pGPDModule->compute(m_xi, m_xi,
+            m_t, m_MuF2, m_MuR2, m_currentGPDComputeType);
 
-    xixit = calculate_gpd_combination(gpdResult);
+    xixit = calculate_gpd_combination(partonDistribution);
 }
 
 double DVCSCFFVGGModel::intd_vector_part(double x, std::vector<double> par) {
 
-    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF2, m_MuR2,
-            m_currentGPDComputeType);
+    PartonDistribution partonDistribution = m_pGPDModule->compute(x, m_xi, m_t,
+            m_MuF2, m_MuR2, m_currentGPDComputeType);
 
-    return (calculate_gpd_combination(gpdResult) - xixit) / (x - m_xi);
+    return (calculate_gpd_combination(partonDistribution) - xixit) / (x - m_xi);
 }
 
 double DVCSCFFVGGModel::intc_vector_part(double x, std::vector<double> par) {
 
-    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF2, m_MuR2,
-            m_currentGPDComputeType);
+    PartonDistribution partonDistribution = m_pGPDModule->compute(x, m_xi, m_t,
+            m_MuF2, m_MuR2, m_currentGPDComputeType);
 
-    return calculate_gpd_combination(gpdResult) / (x + m_xi);
+    return calculate_gpd_combination(partonDistribution) / (x + m_xi);
 }
 
 std::complex<double> DVCSCFFVGGModel::calculate_direct() {

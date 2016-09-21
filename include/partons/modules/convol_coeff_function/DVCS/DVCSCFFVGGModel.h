@@ -14,10 +14,11 @@
 
 #include "DVCSConvolCoeffFunctionModule.h"
 
+class PartonDistribution;
+
 namespace NumA {
 class FunctionType1D;
 }
-class GPDResult;
 
 /**
  * VGG DVCS/CFF model
@@ -72,7 +73,8 @@ private:
     /** Compute sum of singlet combinations of GPDs weighted by quark charges
      * @param gpdResult Singlet combinations to be calculated
      */
-    double calculate_gpd_combination(GPDResult gpdResult);
+    double calculate_gpd_combination(
+            const PartonDistribution &partonDistribution);
 
     /** Compute GPDs at (xi, xi, t)
      */

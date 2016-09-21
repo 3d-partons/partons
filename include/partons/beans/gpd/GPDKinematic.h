@@ -38,6 +38,12 @@ public:
     GPDKinematic();
 
     /**
+     * Copy constructor
+     * @param other
+     */
+    GPDKinematic(const GPDKinematic &other);
+
+    /**
      * Constructor
      *
      * @param x Longitudinal momentum fraction of the active parton

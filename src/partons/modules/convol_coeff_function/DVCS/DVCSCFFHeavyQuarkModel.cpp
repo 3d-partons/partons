@@ -5,7 +5,7 @@
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <cmath>
 
-#include "../../../../../include/partons/beans/gpd/GPDResult.h"
+//#include "../../../../../include/partons/beans/gpd/GPDResult.h"
 #include "../../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
 #include "../../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
 #include "../../../../../include/partons/beans/PerturbativeQCDOrderType.h"
@@ -183,13 +183,12 @@ std::complex<double> DVCSCFFHeavyQuarkModel::r(double s, double mq) {
 
 double DVCSCFFHeavyQuarkModel::ConvolReKernelGluonMassiveV(double x,
         std::vector<double> params) {
-    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF2, m_MuR2,
-            m_currentGPDComputeType);
+    PartonDistribution partonDistribution = m_pGPDModule->compute(x, m_xi, m_t,
+            m_MuF2, m_MuR2, m_currentGPDComputeType);
 
     // GPD evaluated at x = x[ 0 ]
-    double EvalGPD =
-            2
-                    * gpdResult.getPartonDistribution(m_currentGPDComputeType).getGluonDistribution().getGluonDistribution();
+    double EvalGPD = 2
+            * partonDistribution.getGluonDistribution().getGluonDistribution();
 
     double Convol = (EvalGPD) * MassiveKernelGluonNLOV(x).real();
     return Convol;
@@ -197,13 +196,12 @@ double DVCSCFFHeavyQuarkModel::ConvolReKernelGluonMassiveV(double x,
 
 double DVCSCFFHeavyQuarkModel::ConvolImKernelGluonMassiveV(double x,
         std::vector<double> params) {
-    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF2, m_MuR2,
-            m_currentGPDComputeType);
+    PartonDistribution partonDistribution = m_pGPDModule->compute(x, m_xi, m_t,
+            m_MuF2, m_MuR2, m_currentGPDComputeType);
 
     // GPD evaluated at x = x[ 0 ]
-    double EvalGPD =
-            2
-                    * gpdResult.getPartonDistribution(m_currentGPDComputeType).getGluonDistribution().getGluonDistribution();
+    double EvalGPD = 2
+            * partonDistribution.getGluonDistribution().getGluonDistribution();
 
     double Convol = (EvalGPD) * MassiveKernelGluonNLOV(x).imag();
     return Convol;
@@ -211,13 +209,12 @@ double DVCSCFFHeavyQuarkModel::ConvolImKernelGluonMassiveV(double x,
 
 double DVCSCFFHeavyQuarkModel::ConvolReKernelGluonMassiveA(double x,
         std::vector<double> params) {
-    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF2, m_MuR2,
-            m_currentGPDComputeType);
+    PartonDistribution partonDistribution = m_pGPDModule->compute(x, m_xi, m_t,
+            m_MuF2, m_MuR2, m_currentGPDComputeType);
 
     // GPD evaluated at x = x[ 0 ]
-    double EvalGPD =
-            2
-                    * gpdResult.getPartonDistribution(m_currentGPDComputeType).getGluonDistribution().getGluonDistribution();
+    double EvalGPD = 2
+            * partonDistribution.getGluonDistribution().getGluonDistribution();
 
     double Convol = (EvalGPD) * MassiveKernelGluonNLOA(x).real();
     return Convol;
@@ -225,13 +222,12 @@ double DVCSCFFHeavyQuarkModel::ConvolReKernelGluonMassiveA(double x,
 
 double DVCSCFFHeavyQuarkModel::ConvolImKernelGluonMassiveA(double x,
         std::vector<double> params) {
-    GPDResult gpdResult = m_pGPDModule->compute(x, m_xi, m_t, m_MuF2, m_MuR2,
-            m_currentGPDComputeType);
+    PartonDistribution partonDistribution = m_pGPDModule->compute(x, m_xi, m_t,
+            m_MuF2, m_MuR2, m_currentGPDComputeType);
 
     // GPD evaluated at x = x[ 0 ]
-    double EvalGPD =
-            2
-                    * gpdResult.getPartonDistribution(m_currentGPDComputeType).getGluonDistribution().getGluonDistribution();
+    double EvalGPD = 2
+            * partonDistribution.getGluonDistribution().getGluonDistribution();
 
     double Convol = (EvalGPD) * MassiveKernelGluonNLOA(x).imag();
     return Convol;

@@ -13,22 +13,31 @@ const std::string QuarkDistribution::QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DIS
 const std::string QuarkDistribution::QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DISTRIBUTION_MINUS =
         "quark_distribution_minus";
 
+QuarkDistribution::QuarkDistribution(const QuarkDistribution &other) :
+        BaseObject(other) {
+    m_quarkFlavor = other.m_quarkFlavor;
+    m_quarkDistribution = other.m_quarkDistribution;
+    m_quarkDistributionPlus = other.m_quarkDistributionPlus;
+    m_quarkDistributionMinus = other.m_quarkDistributionMinus;
+
+    //TODO add missing stuff
+}
+
 //TODO initialise missing member
 QuarkDistribution::QuarkDistribution() :
-        DatabaseObject("QuarkDistribution"), m_quarkFlavor(
-                QuarkFlavor::UNDEFINED), m_quarkDistribution(0.), m_quarkDistributionPlus(
-                0.), m_quarkDistributionMinus(0.) {
+        BaseObject("QuarkDistribution"), m_quarkFlavor(QuarkFlavor::UNDEFINED), m_quarkDistribution(
+                0.), m_quarkDistributionPlus(0.), m_quarkDistributionMinus(0.) {
 }
 
 QuarkDistribution::QuarkDistribution(QuarkFlavor::Type quarkFlavor) :
-        DatabaseObject("QuarkDistribution"), m_quarkFlavor(quarkFlavor), m_quarkDistribution(
+        BaseObject("QuarkDistribution"), m_quarkFlavor(quarkFlavor), m_quarkDistribution(
                 0.), m_quarkDistributionPlus(0.), m_quarkDistributionMinus(0.) {
 }
 
 QuarkDistribution::QuarkDistribution(QuarkFlavor::Type quarkFlavor,
         double quarkDistribution, double quarkDistributionPlus,
         double quarkDistributionMinus) :
-        DatabaseObject("QuarkDistribution"), m_quarkFlavor(quarkFlavor), m_quarkDistribution(
+        BaseObject("QuarkDistribution"), m_quarkFlavor(quarkFlavor), m_quarkDistribution(
                 quarkDistribution), m_quarkDistributionPlus(
                 quarkDistributionPlus), m_quarkDistributionMinus(
                 quarkDistributionMinus) {
@@ -85,11 +94,11 @@ void QuarkDistribution::setQuarkDistributionMinus(
     m_quarkDistributionMinus = quarkDistributionMinus;
 }
 
-QuarkFlavor::Type QuarkDistribution::getQuarkFlavor() const {
+QuarkFlavor QuarkDistribution::getQuarkFlavor() const {
     return m_quarkFlavor;
 }
 
-void QuarkDistribution::setQuarkFlavor(QuarkFlavor::Type quarkFlavorType) {
+void QuarkDistribution::setQuarkFlavor(QuarkFlavor quarkFlavorType) {
     m_quarkFlavor = quarkFlavorType;
 }
 

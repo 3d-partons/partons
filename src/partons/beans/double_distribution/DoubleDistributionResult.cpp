@@ -1,5 +1,6 @@
 #include "../../../../include/partons/beans/double_distribution/DoubleDistributionResult.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <sstream>
 #include <utility>
@@ -27,11 +28,10 @@ const PartonDistribution& DoubleDistributionResult::getPartonDistribution(
             m_partonDistributions.find(doubleDistributionType);
 
     if (it == m_partonDistributions.end()) {
-        error(__func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
                         << "Enable to find PartonDistribution object from type = "
                         << DoubleDistributionType(doubleDistributionType).toString());
-
     }
 
     return (it->second);

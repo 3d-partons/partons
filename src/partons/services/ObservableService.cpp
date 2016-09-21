@@ -1,5 +1,6 @@
 #include "../../../include/partons/services/ObservableService.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/PropertiesManager.h>
@@ -51,7 +52,7 @@ void ObservableService::resolveObjectDependencies() {
                 ElemUtils::PropertiesManager::getInstance()->getString(
                         "observable.service.batch.size")).toUInt();
     } catch (const std::exception &e) {
-        error(__func__, ElemUtils::Formatter() << e.what());
+        throw ElemUtils::CustomException(getClassName(), __func__, e.what());
     }
 }
 
@@ -73,8 +74,7 @@ void ObservableService::computeTask(Task &task) {
             generatePlotFileTask(task);
         } else if (!ServiceObjectTyped<ObservableKinematic, ObservableResult>::computeGeneralTask(
                 task)) {
-            error(__func__,
-                    "unknown function name = " + task.getFunctionName());
+            errorUnknownMethod(task);
         }
 
         if (task.isStoreInDB()) {
@@ -87,9 +87,8 @@ void ObservableService::computeTask(Task &task) {
                                 << "ObservableResultList object has been stored in database with computation_id = "
                                 << computationId);
             } else {
-                error(__func__,
-                        ElemUtils::Formatter()
-                                << "ObservableResultList object : insertion into database failed");
+                throw ElemUtils::CustomException(getClassName(), __func__,
+                        "ObservableResultList object : insertion into database failed");
             }
         }
     }
@@ -99,7 +98,7 @@ void ObservableService::computeTask(Task &task) {
 
 List<ObservableResult> ObservableService::computeManyKinematicOneModel(
         const List<ObservableKinematic> & listOfKinematic,
-        Observable* pObservable, const GPDType::Type gpdType,
+        Observable* pObservable, const List<GPDType> & listOfGPDType,
         const bool storeInDB) {
 
     // TODO voir s'il n'est pas possible de déplacer ça de manière générique dans la classe parent
@@ -110,6 +109,7 @@ List<ObservableResult> ObservableService::computeManyKinematicOneModel(
 
     List<ObservableResult> results;
     List<ElemUtils::Packet> listOfPacket;
+    List<GPDType> finalListOfGPDType = listOfGPDType;
 
     initComputationalThread(pObservable);
 
@@ -123,9 +123,9 @@ List<ObservableResult> ObservableService::computeManyKinematicOneModel(
 
         while ((j != m_batchSize) && (i != listOfKinematic.size())) {
             ElemUtils::Packet packet;
-            ObservableKinematic obsK;
-            obsK = listOfKinematic[i];
-            packet << obsK << GPDType(gpdType);
+            ObservableKinematic kinematic;
+            kinematic = listOfKinematic[i];
+            packet << kinematic << finalListOfGPDType;
             listOfPacket.add(packet);
             i++;
             j++;
@@ -167,16 +167,16 @@ ObservableResult ObservableService::computeObservableTask(Task& task) {
                         << task.getFunctionName());
     }
 
-    GPDType::Type gpdType = GPDType::ALL;
-
-    if (task.isAvailableParameters("GPDType")) {
-        gpdType = GPDType().fromString(
-                task.getLastAvailableParameters().get("type").toString());
+    List<GPDType> listOfGPDType;
+    try {
+        listOfGPDType = getGPDTypeListFromTask(task);
+    } catch (const ElemUtils::CustomException &e) {
+        //Nothing to do
     }
 
     Observable* pObservable = newObservableModuleFromTask(task);
 
-    return computeObservable(kinematic, pObservable, gpdType);
+    return computeObservable(kinematic, pObservable, listOfGPDType);
 }
 
 List<ObservableResult> ObservableService::computeManyKinematicOneModelTask(
@@ -187,7 +187,7 @@ List<ObservableResult> ObservableService::computeManyKinematicOneModelTask(
     if (task.isAvailableParameters("ObservableKinematic")) {
         ElemUtils::Parameters parameters = task.getLastAvailableParameters();
         if (parameters.isAvailable("file")) {
-            listOfKinematic = KinematicUtils::getObservableKinematicFromFile(
+            listOfKinematic = KinematicUtils().getObservableKinematicFromFile(
                     parameters.getLastAvailable().toString());
         } else {
             error(__func__,
@@ -203,16 +203,17 @@ List<ObservableResult> ObservableService::computeManyKinematicOneModelTask(
                         << task.getFunctionName());
     }
 
-    GPDType::Type gpdType = GPDType::ALL;
-
-    if (task.isAvailableParameters("GPDType")) {
-        gpdType = GPDType().fromString(
-                task.getLastAvailableParameters().get("type").toString());
+    List<GPDType> listOfGPDType;
+    try {
+        listOfGPDType = getGPDTypeListFromTask(task);
+    } catch (const ElemUtils::CustomException &e) {
+        //Nothing to do
     }
 
     Observable* pObservable = newObservableModuleFromTask(task);
 
-    return computeManyKinematicOneModel(listOfKinematic, pObservable, gpdType);
+    return computeManyKinematicOneModel(listOfKinematic, pObservable,
+            listOfGPDType);
 }
 
 ObservableChannel::Type ObservableService::getObservableChannel(
@@ -228,8 +229,8 @@ ObservableChannel::Type ObservableService::getObservableChannel(
 
 ObservableResult ObservableService::computeObservable(
         const ObservableKinematic& observableKinematic, Observable* pObservable,
-        const GPDType::Type gpdType) const {
-    return pObservable->compute(observableKinematic, gpdType);
+        const List<GPDType> & listOfGPDType) const {
+    return pObservable->compute(observableKinematic, listOfGPDType);
 }
 
 //TODO pour les listes au-dessus utiliser cette fonctionnalité pour ne pas dupliquer les implémentations

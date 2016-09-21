@@ -1,5 +1,6 @@
 #include "../../../../include/partons/beans/observable/ObservableResult.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 
 #include "../../../../include/partons/utils/compare/CompareUtils.h"
@@ -39,7 +40,7 @@ void ObservableResult::compare(ComparisonReport &rootComparisonReport,
     if (m_observableType != referenceObject.getObservableType()
             || !(ElemUtils::StringUtils::equalsIgnoreCase(m_observableName,
                     referenceObject.getObservableName()))) {
-        error(__func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 "Cannot compare objects, they are different (different name or type)");
     }
 

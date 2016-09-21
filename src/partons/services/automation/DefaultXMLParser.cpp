@@ -98,7 +98,8 @@ void DefaultXMLParser::startElement(const std::string &elementName,
     }
 
     // if reached start element node is task_param
-    else if (ElemUtils::StringUtils::equals(elementName, "task_param")) {
+    else if (ElemUtils::StringUtils::equals(elementName,
+            XMLParserI::TASK_PARAM_NODE_NAME)) {
         m_tempObjectType = attributes.getStringValueOf(
                 XMLParserI::NODE_TYPE_ATTRIBUT_NAME);
     }
@@ -120,7 +121,8 @@ void DefaultXMLParser::endElement(const std::string& elementName) {
             XMLParserI::KINEMATICS_NODE_NAME)
             || ElemUtils::StringUtils::equals(elementName,
                     XMLParserI::MODULE_NODE_NAME)
-            || ElemUtils::StringUtils::equals(elementName, "task_param")) {
+            || ElemUtils::StringUtils::equals(elementName,
+                    XMLParserI::TASK_PARAM_NODE_NAME)) {
         m_task.addParameters(m_tempObjectType, m_tempObjectParameters);
 
         // temporary parameterList object need to be cleared for the next object parameterization

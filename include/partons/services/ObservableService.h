@@ -52,11 +52,12 @@ public:
     ObservableResult computeObservable(
             const ObservableKinematic &observableKinematic,
             Observable* pObservable,
-            const GPDType::Type gpdType = GPDType::ALL) const;
+            const List<GPDType> & listOfGPDType = List<GPDType>()) const;
 
     List<ObservableResult> computeManyKinematicOneModel(
             const List<ObservableKinematic> & listOfKinematic,
-            Observable* pObservable, const GPDType::Type gpdType = GPDType::ALL,
+            Observable* pObservable,
+            const List<GPDType> & listOfGPDType = List<GPDType>(),
             const bool storeInDB = false);
 
     virtual void computeTask(Task &task);

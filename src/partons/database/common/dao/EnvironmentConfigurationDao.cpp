@@ -41,6 +41,8 @@ int EnvironmentConfigurationDao::insert(const time_t& storeDate,
     query.bindValue(":hashSum", QString(hashSum.c_str()));
 
     if (query.exec()) {
+        debug(__func__, Database::getLastExecutedQuery(query));
+
         indexId = query.lastInsertId().toInt();
     } else {
         error(__func__,
@@ -66,21 +68,12 @@ EnvironmentConfiguration* EnvironmentConfigurationDao::selectByIndexId(
             << " = :indexId";
 
     query.prepare(QString(formatter.str().c_str()));
-
     query.bindValue(":indexId", indexId);
 
-    if (query.exec()) {
-        if (query.first()) {
-            pResult = getEnvironmentConfigurationFromQuery(query);
-        }
-    } else {
-        error(__func__,
-                ElemUtils::Formatter() << query.lastError().text().toStdString()
-                        << " for sql query = "
-                        << query.executedQuery().toStdString());
-    }
+    Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query);
 
-    query.clear();
+    pResult = getEnvironmentConfigurationFromQuery(query);
 
     return pResult;
 }
@@ -94,6 +87,9 @@ void EnvironmentConfigurationDao::deleteByIndexId(const int indexId) const {
     query.bindValue(":indexId", indexId);
 
     if (query.exec()) {
+        debug(__func__, Database::getLastExecutedQuery(query));
+
+        //TODO add a confirm message
     } else {
         error(__func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
@@ -134,21 +130,12 @@ int EnvironmentConfigurationDao::getEnvironmentConfigurationIdByHashSum(
             << " = :hashSum";
 
     query.prepare(QString(formatter.str().c_str()));
-
     query.bindValue(":hashSum", QString(hashSum.c_str()));
 
-    if (query.exec()) {
-        if (query.first()) {
-            indexId = query.value(0).toInt();
-        }
-    } else {
-        error(__func__,
-                ElemUtils::Formatter() << query.lastError().text().toStdString()
-                        << " for sql query = "
-                        << query.executedQuery().toStdString());
-    }
+    Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query);
 
-    query.clear();
+    indexId = query.value(0).toInt();
 
     return indexId;
 }
@@ -166,21 +153,12 @@ std::string EnvironmentConfigurationDao::getConfigurationByIndexId(
             << " = :indexId";
 
     query.prepare(QString(formatter.str().c_str()));
-
     query.bindValue(":indexId", indexId);
 
-    if (query.exec()) {
-        if (query.first()) {
-            configuration = query.value(0).toString().toStdString();
-        }
-    } else {
-        error(__func__,
-                ElemUtils::Formatter() << query.lastError().text().toStdString()
-                        << " for sql query = "
-                        << query.executedQuery().toStdString());
-    }
+    Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query);
 
-    query.clear();
+    configuration = query.value(0).toString().toStdString();
 
     return configuration;
 }

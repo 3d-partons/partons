@@ -60,7 +60,7 @@ void Observable::run() {
 
         while (!(pObservableService->isEmptyTaskQueue())) {
             ObservableKinematic kinematic;
-            GPDType gpdType;
+            List<GPDType> gpdType;
             ElemUtils::Packet packet = pObservableService->popTaskFormQueue();
             packet >> kinematic;
             packet >> gpdType;
@@ -69,7 +69,7 @@ void Observable::run() {
                     ElemUtils::Formatter() << "objectId = " << getObjectId()
                             << " " << kinematic.toString());
 
-            pObservableService->add(compute(kinematic, gpdType.getType()));
+            pObservableService->add(compute(kinematic, gpdType));
 
             // sf::sleep(sf::milliseconds(3));
         }
@@ -81,7 +81,7 @@ void Observable::run() {
 }
 
 ObservableResult Observable::compute(const ObservableKinematic &kinematic,
-        const GPDType::Type gpdType) {
+        const List<GPDType> & gpdType) {
 
     ObservableResult result = compute(kinematic.getXB(), kinematic.getT(),
             kinematic.getQ2(), kinematic.getPhi().getValue(), gpdType);
@@ -91,7 +91,7 @@ ObservableResult Observable::compute(const ObservableKinematic &kinematic,
 }
 
 ObservableResult Observable::compute(double xB, double t, double Q2, double phi,
-        const GPDType::Type gpdType) {
+        const List<GPDType> & gpdType) {
 
     ObservableResult observableResult;
 

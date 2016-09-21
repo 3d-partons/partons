@@ -36,6 +36,7 @@ Plot2DList VizualisationService::getplot2DFromSQLQuery(
     query.prepare(QString(sqlQuery.c_str()));
 
     if (query.exec()) {
+        query.first();
         while (query.next()) {
             plot2DList.add(
                     Plot2D(query.value(0).toDouble(),

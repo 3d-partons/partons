@@ -1,17 +1,19 @@
 #include "../../include/partons/ServiceObject.h"
 
 #include <ElementaryUtils/file_utils/FileUtils.h>
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/parameters/GenericType.h>
-#include <ElementaryUtils/parameters/MultimapParameters.h>
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/PropertiesManager.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <stddef.h>
 
+#include "../../include/partons/beans/automation/Scenario.h"
 #include "../../include/partons/beans/automation/Task.h"
 #include "../../include/partons/database/ResultDaoService.h"
 #include "../../include/partons/Partons.h"
+#include "../../include/partons/services/automation/XMLParserI.h"
 #include "../../include/partons/ServiceObjectRegistry.h"
 #include "../../include/partons/utils/plot2D/Plot2DList.h"
 
@@ -79,13 +81,14 @@ std::string ServiceObject::generateSQLQueryForPlotFileTask(Task &task,
     if (task.isAvailableParameters("select")) {
         selectParams = task.getLastAvailableParameters();
     } else {
-        error(__func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 "The select-type parameter is missing in the xml file ");
     }
     if (task.isAvailableParameters("where")) {
         whereParams = task.getLastAvailableParameters();
     } else {
-        error(__func__, "The where-type parameter is missing in the xml file");
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                "The where-type parameter is missing in the xml file");
     }
 
     return generateSQLQueryForPlotFile(tableName, selectParams, whereParams);
@@ -102,7 +105,7 @@ std::string ServiceObject::generateSQLQueryForPlotFile(
         formatter << selectParams.get("xPlot").toString() << ", "
                 << selectParams.get("yPlot").toString();
     } else {
-        error(__func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 "Missing xPlot or yPlot parameter in select-type xml element");
     }
 
@@ -127,7 +130,8 @@ std::string ServiceObject::getOutputFilePathForPlotFileTask(Task& task) const {
     if (task.isAvailableParameters("output")) {
         filePath = task.getLastAvailableParameters().get("filePath").toString();
     } else {
-        error(__func__, "The output-type parameter is missing in the xml file");
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                "The output-type parameter is missing in the xml file");
     }
 
     return filePath;
@@ -151,4 +155,43 @@ void ServiceObject::generatePlotFile(const std::string& filePath,
 
     ElemUtils::FileUtils::writeLine(filePath,
             plot2DList.toStringPlotFile(splitChar));
+}
+
+List<GPDType> ServiceObject::getGPDTypeListFromTask(Task& task) const {
+
+    debug(__func__, task.toString());
+
+    List<GPDType> gpdTypeList;
+
+    //TODO replace by static variable
+    if (task.isAvailableParameters("GPDType")) {
+        try {
+            //TODO replace string GPDType by static variable
+            gpdTypeList = GPDType::getListOfGPDTypeFromString(
+                    task.getLastAvailableParameters().get("value").toString());
+        } catch (const std::exception &e) {
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    ElemUtils::Formatter() << e.what() << " for <"
+                            << XMLParserI::TASK_PARAM_NODE_NAME
+                            << " type=\"GPDType\"> element. Please check your XML file.");
+        }
+    } else {
+        debug(__func__, "No task_param XML element");
+    }
+
+    debug(__func__,
+            ElemUtils::Formatter() << "GPDTypeList size = "
+                    << gpdTypeList.size());
+
+    return gpdTypeList;
+}
+
+void ServiceObject::errorUnknownMethod(const Task& task) const {
+    throw ElemUtils::CustomException(getClassName(), __func__,
+            ElemUtils::Formatter() << "Unknown method = \""
+                    << task.getFunctionName()
+                    << "\" ; Please check task number ["
+                    << task.getScenarioTaskIndexNumber()
+                    << "] in your scenario file = \""
+                    << task.getScenario()->getFilePath() << "\"");
 }

@@ -11,6 +11,7 @@
 #include "../../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
 #include "../../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
 #include "../../../../../include/partons/beans/QuarkFlavor.h"
+#include "../../../../../include/partons/database/Database.h"
 #include "../../../../../include/partons/database/DatabaseManager.h"
 
 GPDResultDao::GPDResultDao() :
@@ -42,8 +43,6 @@ int GPDResultDao::insertResult(const std::string &computationModuleName,
                         << query.executedQuery().toStdString());
     }
 
-    query.clear();
-
     return result;
 }
 
@@ -61,49 +60,18 @@ int GPDResultDao::insertIntoGPDResultPartonDistributionTable(
     query.bindValue(":gpdResultId", gpdResultId);
     query.bindValue(":partonDistributionId", partonDistributionId);
 
-    if (query.exec()) {
-        result = query.lastInsertId().toInt();
-    } else {
-        error(__func__,
-                ElemUtils::Formatter() << query.lastError().text().toStdString()
-                        << " for sql query = "
-                        << query.executedQuery().toStdString());
-    }
+    Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query);
 
-    query.clear();
+    result = query.lastInsertId().toInt();
 
     return result;
 }
 
-//List<GPDResult> GPDResultDao::getGPDResultListByComputationId(
-//        const int computationId) const {
-//    List<GPDResult> resultList;
-//
-//    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
-//
-//    query.prepare(
-//            "SELECT * FROM gpd_result WHERE computation_id = :computationId");
-//
-//    query.bindValue(":computationId", computationId);
-//
-//    if (query.exec()) {
-//        // TODO implement this test in other dao classes
-//        if (DatabaseManager::getNumberOfRows(query) != 0) {
-//            fillGPDResultList(resultList, query);
-//        } else {
-//            warn(__func__,
-//                    ElemUtils::Formatter() << "No entry for computationId = "
-//                            << computationId);
-//        }
-//    }
-//
-//    query.clear();
-//
-//    return resultList;
-//}
-
 List<GPDResult> GPDResultDao::getGPDResultListByComputationId(
         const int computationId) const {
+    debug(__func__, "Processing ...");
+
     List<GPDResult> resultList;
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
@@ -119,158 +87,128 @@ List<GPDResult> GPDResultDao::getGPDResultListByComputationId(
 
     info(__func__, "Executing query ...");
 
-    if (query.exec()) {
-        // TODO implement this test in other dao classes
-        if (DatabaseManager::getNumberOfRows(query) != 0) {
-            fillGPDResultList(resultList, query);
-        } else {
-            warn(__func__,
-                    ElemUtils::Formatter()
-                            << "No entries found for computationId = "
-                            << computationId);
-        }
-    } else {
-        error(__func__,
-                ElemUtils::Formatter() << query.lastError().text().toStdString()
-                        << " for sql query = "
-                        << query.executedQuery().toStdString());
-    }
+    Database::checkManyResults(getClassName(), __func__,
+            Database::execSelectQuery(query), query);
 
-    query.clear();
+    fillGPDResultList(resultList, query);
 
     return resultList;
 }
 
-//void GPDResultDao::fillGPDResultList(List<GPDResult> &gpdResultList,
-//        QSqlQuery &query) const {
-//
-//    int f_gpd_result_id = query.record().indexOf("id");
-//    int f_computation_module_name = query.record().indexOf(
-//            "computation_module_name");
-//    int f_kinematic_id = query.record().indexOf("gpd_kinematic_id");
-//
-//    while (query.next()) {
-//        int gpdResultId = query.value(f_gpd_result_id).toInt();
-//        int kinematicId = query.value(f_kinematic_id).toInt();
-//        std::string computationModuleName = query.value(
-//                f_computation_module_name).toString().toStdString();
-//
-//        //TODO create Computation, ResultInfo, ...
-//
-//        GPDResult gpdResult;
-//
-//        gpdResult.setKinematic(m_gpdKinematicDao.getKinematicById(kinematicId));
-//        gpdResult.setComputationModuleName(computationModuleName);
-//        gpdResult.setIndexId(gpdResultId);
-//
-//        fillGPDResult(gpdResult);
-//
-//        gpdResultList.add(gpdResult);
-//    }
-//}
-
+//TODO refactoring : remove redundancies
 void GPDResultDao::fillGPDResultList(List<GPDResult> &gpdResultList,
         QSqlQuery &query) const {
 
     info(__func__, "Preparing retrieved data ...");
 
-    GPDResult previousGPDResult;
-    PartonDistribution previousPartonDistribution;
-    GPDType previousGPDType;
+    int field_gpd_result_id = query.record().indexOf(
+            QString(Database::COLUMN_NAME_GPD_RESULT_ID.c_str()));
+    int field_parton_distribution_id = query.record().indexOf(
+            QString(Database::COLUMN_NAME_PARTON_DISTRIBUTION_ID.c_str()));
+    int field_computation_module_name = query.record().indexOf(
+            QString(Database::COLUMN_NAME_COMPUTATION_MODULE_NAME.c_str()));
+    int field_gpd_type_id = query.record().indexOf(
+            QString(Database::COLUMN_NAME_GPD_TYPE_ID.c_str()));
+    int field_gluon_distribution = query.record().indexOf(
+            QString(Database::COLUMN_NAME_GLUON_DISTRIBUTION.c_str()));
+    int field_quark_flavor_id = query.record().indexOf(
+            QString(Database::COLUMN_NAME_QUARK_FLAVOR_ID.c_str()));
+    int field_quark_distribution = query.record().indexOf(
+            QString(Database::COLUMN_NAME_QUARK_DISTRIBUTION.c_str()));
+    int field_quark_distribution_plus = query.record().indexOf(
+            QString(Database::COLUMN_NAME_QUARK_DISTRIBUTION_PLUS.c_str()));
+    int field_quark_distribution_minus = query.record().indexOf(
+            QString(Database::COLUMN_NAME_QUARK_DISTRIBUTION_MINUS.c_str()));
 
-    int tempGPDResultId = -1;
-    int tempPartonDistributionId = -1;
+    GPDResult gpdResult;
+    PartonDistribution partonDistribution;
 
-    GPDType tempGPDType;
-    QuarkFlavor tempQuarkFlavor;
-    QuarkDistribution tempQuarkDistribution;
+    int currentGPDResultId = -1;
+    int currentPartonDistributionId = -1;
+    int previousGPDTypeId = -1;
+
+    if (query.first()) {
+        // retrieve gpd_type_id
+        previousGPDTypeId = query.value(field_gpd_type_id).toInt();
+
+        // retrieve parton_distribution_id
+        currentPartonDistributionId =
+                query.value(field_parton_distribution_id).toInt();
+
+        // retrieve gpd_result_id
+        currentGPDResultId = query.value(field_gpd_result_id).toInt();
+
+        gpdResult.setIndexId(currentGPDResultId);
+
+        partonDistribution.setIndexId(currentPartonDistributionId);
+        partonDistribution.setGluonDistribution(
+                GluonDistribution(
+                        query.value(field_gluon_distribution).toDouble()));
+
+        QuarkDistribution quarkDistribution = QuarkDistribution(
+                static_cast<QuarkFlavor::Type>(query.value(
+                        field_quark_flavor_id).toInt()),
+                query.value(field_quark_distribution).toDouble(),
+                query.value(field_quark_distribution_plus).toDouble(),
+                query.value(field_quark_distribution_minus).toDouble());
+
+        // retrieve QuarkDistribution with quark_flavor_id, quark_distribution, quark_distribution_plus & quark_distribution_minus
+        partonDistribution.addQuarkDistribution(quarkDistribution);
+    }
 
     while (query.next()) {
+        // retrieve parton_distribution_id
+        currentPartonDistributionId =
+                query.value(field_parton_distribution_id).toInt();
 
-        tempQuarkFlavor = QuarkFlavor(
-                static_cast<QuarkFlavor::Type>(query.value(5).toInt()));
-        tempGPDType = GPDType(
-                static_cast<GPDType::Type>(query.value(3).toInt()));
+        // retrieve gpd_result_id
+        currentGPDResultId = query.value(field_gpd_result_id).toInt();
 
-        tempGPDResultId = query.value(0).toInt();
-        tempPartonDistributionId = query.value(1).toInt();
+        if (currentGPDResultId != gpdResult.getIndexId()) {
+            gpdResult.addPartonDistribution(
+                    static_cast<GPDType::Type>(previousGPDTypeId),
+                    partonDistribution);
 
-        tempQuarkDistribution =
-                QuarkDistribution(
-                        QuarkFlavor(
-                                static_cast<QuarkFlavor::Type>(query.value(5).toInt())).getType(),
-                        query.value(6).toDouble(), query.value(7).toDouble(),
-                        query.value(8).toDouble());
+            partonDistribution = PartonDistribution();
+            partonDistribution.setIndexId(currentPartonDistributionId);
+            partonDistribution.setGluonDistribution(
+                    GluonDistribution(
+                            query.value(field_gluon_distribution).toDouble()));
 
-        if (tempGPDResultId != previousGPDResult.getIndexId()) {
-
-            if (previousGPDResult.getIndexId() != -1) {
-                previousGPDResult.addPartonDistribution(previousGPDType,
-                        previousPartonDistribution);
-                gpdResultList.add(previousGPDResult);
-            }
-
-            previousGPDResult = GPDResult();
-            previousGPDResult.setIndexId(tempGPDResultId);
-            previousGPDResult.setComputationModuleName(
-                    query.value(2).toString().toStdString());
+            gpdResultList.add(gpdResult);
+            gpdResult = GPDResult();
+            gpdResult.setIndexId(currentGPDResultId);
         }
 
-        if (tempPartonDistributionId
-                != previousPartonDistribution.getIndexId()) {
-
-            if (previousPartonDistribution.getIndexId() != -1) {
-                previousGPDResult.addPartonDistribution(previousGPDType,
-                        previousPartonDistribution);
-            }
-
-            previousGPDType = tempGPDType;
-            previousPartonDistribution = PartonDistribution();
-            previousPartonDistribution.setIndexId(tempPartonDistributionId);
-            previousPartonDistribution.setGluonDistribution(
-                    GluonDistribution(query.value(4).toDouble()));
+        if (currentPartonDistributionId != partonDistribution.getIndexId()) {
+            gpdResult.addPartonDistribution(
+                    static_cast<GPDType::Type>(previousGPDTypeId),
+                    partonDistribution);
+            partonDistribution = PartonDistribution();
+            partonDistribution.setIndexId(currentPartonDistributionId);
+            partonDistribution.setGluonDistribution(
+                    GluonDistribution(
+                            query.value(field_gluon_distribution).toDouble()));
         }
 
-        previousPartonDistribution.addQuarkDistribution(tempQuarkDistribution);
+        QuarkDistribution quarkDistribution = QuarkDistribution(
+                static_cast<QuarkFlavor::Type>(query.value(
+                        field_quark_flavor_id).toInt()),
+                query.value(field_quark_distribution).toDouble(),
+                query.value(field_quark_distribution_plus).toDouble(),
+                query.value(field_quark_distribution_minus).toDouble());
+
+        // retrieve QuarkDistribution with quark_flavor_id, quark_distribution, quark_distribution_plus & quark_distribution_minus
+        partonDistribution.addQuarkDistribution(quarkDistribution);
+
+        // store gpd_type_id as previous value
+        previousGPDTypeId = query.value(field_gpd_type_id).toInt();
     }
 
-    previousGPDResult.addPartonDistribution(previousGPDType,
-            previousPartonDistribution);
-    gpdResultList.add(previousGPDResult);
+    // store last parsed result
+    gpdResult.addPartonDistribution(
+            static_cast<GPDType::Type>(previousGPDTypeId), partonDistribution);
+    gpdResultList.add(gpdResult);
 
     info(__func__, "Done !");
-}
-
-void GPDResultDao::fillGPDResult(GPDResult &gpdResult) const {
-    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
-
-    query.prepare(
-            "SELECT * FROM gpd_result_parton_distribution WHERE gpd_result_id = :gpdResultId");
-
-    query.bindValue(":gpdResultId", gpdResult.getIndexId());
-
-    if (query.exec()) {
-
-        int field_gpd_type_id = query.record().indexOf("gpd_type_id");
-        int field_parton_distribution_id = query.record().indexOf(
-                "parton_distribution_id");
-
-        while (query.next()) {
-            int gpd_type_id = query.value(field_gpd_type_id).toInt();
-            int parton_distribution_id = query.value(
-                    field_parton_distribution_id).toInt();
-
-            gpdResult.addPartonDistribution(
-                    static_cast<GPDType::Type>(gpd_type_id),
-                    m_partonDistributionDao.getPartonDistributionById(
-                            parton_distribution_id));
-        }
-    } else {
-        error(__func__,
-                ElemUtils::Formatter() << query.lastError().text().toStdString()
-                        << " for sql query = "
-                        << query.executedQuery().toStdString());
-    }
-
-    query.clear();
 }
