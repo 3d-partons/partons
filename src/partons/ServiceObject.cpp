@@ -8,6 +8,7 @@
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <stddef.h>
+#include <iostream>
 
 #include "../../include/partons/beans/automation/Scenario.h"
 #include "../../include/partons/beans/automation/Task.h"
@@ -153,8 +154,18 @@ void ServiceObject::generatePlotFile(const std::string& filePath,
 
     }
 
-    ElemUtils::FileUtils::writeLine(filePath,
+    std::ofstream fileOutputStream;
+
+    if (!ElemUtils::FileUtils::open(fileOutputStream, filePath)) {
+        ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << "Cannot open \"" << filePath
+                        << "\" to store plot values");
+    }
+
+    ElemUtils::FileUtils::writeAndFlush(fileOutputStream,
             plot2DList.toStringPlotFile(splitChar));
+
+    ElemUtils::FileUtils::close(fileOutputStream);
 }
 
 List<GPDType> ServiceObject::getGPDTypeListFromTask(Task& task) const {

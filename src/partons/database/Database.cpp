@@ -159,6 +159,8 @@ void Database::checkUniqueResult(const std::string &className,
     }
 }
 
+//TODO REFACTOR ERROR MSG !! USE CUSTOMEXCEPTION INSTEAD !!
+
 void Database::checkManyResults(const std::string &className,
         const std::string &funcName, const unsigned int resultSize,
         const QSqlQuery& query) {

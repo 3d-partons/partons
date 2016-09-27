@@ -1,6 +1,5 @@
 #include "../../../include/partons/database/DatabaseManager.h"
 
-#include <ElementaryUtils/file_utils/FileUtils.h>
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/PropertiesManager.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
@@ -8,8 +7,6 @@
 #include <QtCore/qstring.h>
 #include <QtSql/qsqlerror.h>
 #include <string>
-
-//#include "../../../include/partons/Partons.h"
 
 // Global static pointer used to ensure a single instance of the class.
 DatabaseManager* DatabaseManager::m_pInstance = 0;
@@ -49,17 +46,6 @@ DatabaseManager::DatabaseManager() :
 
     if (ElemUtils::StringUtils::equalsIgnoreCase(sqlDatabaseType, "MYSQL")) {
         m_productionDatabase = QSqlDatabase::addDatabase("QMYSQL");
-
-    } else if (ElemUtils::StringUtils::equalsIgnoreCase(sqlDatabaseType,
-            "SQLITE")) {
-        m_productionDatabase = QSqlDatabase::addDatabase("QSQLITE");
-        if (!(ElemUtils::FileUtils::isReadable(sqlDatabaseName))) {
-            ElemUtils::CustomException(getClassName(), __func__,
-                    ElemUtils::Formatter()
-                            << "Cannot read SQLITE database file ; corrupt or missing file : "
-                            << sqlDatabaseName
-                            << ", please check your properties file");
-        }
     } else {
         ElemUtils::CustomException(getClassName(), __func__,
                 "Unknown database type, please check your properties file");

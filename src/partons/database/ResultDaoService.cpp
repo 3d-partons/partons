@@ -2,7 +2,6 @@
 
 #include <ElementaryUtils/file_utils/FileUtils.h>
 #include <ElementaryUtils/logger/CustomException.h>
-#include <ElementaryUtils/logger/LoggerManager.h>
 #include <ElementaryUtils/PropertiesManager.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
@@ -12,6 +11,7 @@
 #include <QtCore/qvariant.h>
 #include <QtSql/qsqlerror.h>
 #include <QtSql/qsqlquery.h>
+#include <iostream>
 
 #include "../../../include/partons/beans/automation/Scenario.h"
 #include "../../../include/partons/beans/Computation.h"
@@ -151,26 +151,46 @@ void ResultDaoService::prepareCommonTablesFromResultInfo(
 
 void ResultDaoService::insertDataIntoDatabaseTables(const std::string& fileName,
         std::string &string, const std::string &tableName) {
-
-    info(__func__,
-            ElemUtils::Formatter() << "Filling database table [" << tableName
-                    << "]");
-
     // keep file path
     std::string filePath = ElemUtils::Formatter() << m_temporaryFolderPath
             << "/" << fileName;
 
-    // write string into temporary file
-    ElemUtils::FileUtils::write(filePath, string);
+    try {
+        std::ofstream fileOutputStream;
 
-    // free string memory
-    string = ElemUtils::StringUtils::EMPTY;
+        if (!ElemUtils::FileUtils::open(fileOutputStream, filePath)) {
+            ElemUtils::CustomException(getClassName(), __func__,
+                    ElemUtils::Formatter() << "Cannot open \"" << filePath
+                            << "\"");
+        }
 
-    // inject temporary file into right database table
-    loadDataInFileIntoTable(fileName, tableName);
+        ElemUtils::FileUtils::writeAndFlush(fileOutputStream, string);
 
-    // remove temporary file
-    ElemUtils::FileUtils::remove(filePath);
+        ElemUtils::FileUtils::close(fileOutputStream);
+
+        // free string memory
+        string = ElemUtils::StringUtils::EMPTY;
+
+        info(__func__,
+                ElemUtils::Formatter() << "Filling database table ["
+                        << tableName << "]");
+
+        // inject temporary file into right database table
+        loadDataInFileIntoTable(fileName, tableName);
+
+        // remove temporary file
+        ElemUtils::FileUtils::remove(filePath);
+
+        // If something wrong append
+    } catch (const ElemUtils::CustomException &e) {
+        if (ElemUtils::FileUtils::isReadable(filePath)) {
+            // remove temporary file
+            ElemUtils::FileUtils::remove(filePath);
+        }
+
+        // throw again the same exception to propagate the error and allow other method to perform their clean (ex : transaction/rollback/...)
+        throw ElemUtils::CustomException(e);
+    }
 }
 
 void ResultDaoService::loadDataInFileIntoTable(const std::string& fileName,
@@ -179,9 +199,9 @@ void ResultDaoService::loadDataInFileIntoTable(const std::string& fileName,
 
     if (query.exec(prepareInsertQuery(fileName, tableName))) {
     } else {
-        ElemUtils::CustomException(getClassName(),__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
-                        << " for sql query m_scenario_computation_table = "
+                        << " for sql query = "
                         << query.executedQuery().toStdString());
     }
 
@@ -217,19 +237,17 @@ Plot2DList ResultDaoService::getPlot2DListFromCustomQuery(
 
     query.prepare(QString(sqlQuery.c_str()));
 
-    if (query.exec()) {
-        query.first();
-        while (query.next()) {
+    Database::checkManyResults("ResultDaoService", __func__,
+            Database::execSelectQuery(query), query);
+
+    if (query.first()) {
+        do {
             plot2DList.add(
                     Plot2D(query.value(0).toDouble(),
                             query.value(1).toDouble()));
-        }
+        } while (query.next());
     } else {
-        Partons::getInstance()->getLoggerManager()->error("ResultDaoService",
-                __func__,
-                ElemUtils::Formatter() << query.lastError().text().toStdString()
-                        << " for sql query = "
-                        << query.executedQuery().toStdString());
+        //TODO print warning
     }
 
     query.clear();
