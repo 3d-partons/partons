@@ -1,5 +1,6 @@
 #include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSConstantCFFModel.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
@@ -31,14 +32,16 @@ DVCSConstantCFFModel::DVCSConstantCFFModel(const std::string &className) :
     setIsGPDModuleDependent(false);
 
     //initialize
-    m_CFF.clear();
+    m_CFFs.clear();
 
     //insert and assign
     for (int i = static_cast<int>(GPDType::H);
             i < static_cast<int>(GPDType::END); i++) {
 
         //insert to map
-        m_CFF.insert(std::make_pair(static_cast<GPDType::Type>(i), std::complex<double>(0., 0.)));
+        m_CFFs.insert(
+                std::make_pair(static_cast<GPDType::Type>(i),
+                        std::complex<double>(0., 0.)));
 
         //assign function
         m_listOfCFFComputeFunctionAvailable.insert(
@@ -49,7 +52,7 @@ DVCSConstantCFFModel::DVCSConstantCFFModel(const std::string &className) :
 
 DVCSConstantCFFModel::DVCSConstantCFFModel(const DVCSConstantCFFModel &other) :
         DVCSConvolCoeffFunctionModule(other) {
-    m_CFF = other.m_CFF;
+    m_CFFs = other.m_CFFs;
 }
 
 DVCSConstantCFFModel* DVCSConstantCFFModel::clone() const {
@@ -74,10 +77,10 @@ void DVCSConstantCFFModel::isModuleWellConfigured() {
 
 std::complex<double> DVCSConstantCFFModel::computeCFF() {
 
-    std::map<GPDType::Type, std::complex<double> >::iterator it = m_CFF.find(
+    std::map<GPDType::Type, std::complex<double> >::iterator it = m_CFFs.find(
             m_currentGPDComputeType);
 
-    if (it == m_CFF.end()) {
+    if (it == m_CFFs.end()) {
 
         warn(__func__,
                 ElemUtils::Formatter() << "CFF of type "
@@ -95,12 +98,18 @@ void DVCSConstantCFFModel::configure(const ElemUtils::Parameters &parameters) {
 
     //clear
     for (std::map<GPDType::Type, std::complex<double> >::iterator it =
-            m_CFF.begin(); it != m_CFF.end(); it++) {
+            m_CFFs.begin(); it != m_CFFs.end(); it++) {
         (it->second) = std::complex<double>(0., 0.);
     }
 
+    //check if set via all
+    bool isSetViaAll = false;
+
     // several CFFs
     if (parameters.isAvailable(DVCSConstantCFFModel::CFF_VALUES)) {
+
+        //is set via all
+        isSetViaAll = true;
 
         // to string
         std::string temp_str = parameters.getLastAvailable().toString();
@@ -114,13 +123,13 @@ void DVCSConstantCFFModel::configure(const ElemUtils::Parameters &parameters) {
 
             // iterator
             std::map<GPDType::Type, std::complex<double> >::iterator it =
-                    m_CFF.begin();
+                    m_CFFs.begin();
 
             // assign
             for (int i = 0; i < CFFValues.size(); i++) {
 
                 //check if not end
-                if (it == m_CFF.end()) {
+                if (it == m_CFFs.end()) {
 
                     warn(__func__,
                             ElemUtils::Formatter()
@@ -166,27 +175,43 @@ void DVCSConstantCFFModel::configure(const ElemUtils::Parameters &parameters) {
 
     // single CFFs
     if (parameters.isAvailable(DVCSConstantCFFModel::CFF_H_Re)) {
+        if (isSetViaAll)
+            printErrorInConfigure(DVCSConstantCFFModel::CFF_H_Re);
         configureValue(GPDType::H, 1, parameters.getLastAvailable());
     }
     if (parameters.isAvailable(DVCSConstantCFFModel::CFF_H_Im)) {
+        if (isSetViaAll)
+            printErrorInConfigure(DVCSConstantCFFModel::CFF_H_Im);
         configureValue(GPDType::H, 0, parameters.getLastAvailable());
     }
     if (parameters.isAvailable(DVCSConstantCFFModel::CFF_E_Re)) {
+        if (isSetViaAll)
+            printErrorInConfigure(DVCSConstantCFFModel::CFF_E_Re);
         configureValue(GPDType::E, 1, parameters.getLastAvailable());
     }
     if (parameters.isAvailable(DVCSConstantCFFModel::CFF_E_Im)) {
+        if (isSetViaAll)
+            printErrorInConfigure(DVCSConstantCFFModel::CFF_E_Im);
         configureValue(GPDType::E, 0, parameters.getLastAvailable());
     }
     if (parameters.isAvailable(DVCSConstantCFFModel::CFF_Ht_Re)) {
+        if (isSetViaAll)
+            printErrorInConfigure(DVCSConstantCFFModel::CFF_Ht_Re);
         configureValue(GPDType::Ht, 1, parameters.getLastAvailable());
     }
     if (parameters.isAvailable(DVCSConstantCFFModel::CFF_Ht_Im)) {
+        if (isSetViaAll)
+            printErrorInConfigure(DVCSConstantCFFModel::CFF_Ht_Im);
         configureValue(GPDType::Ht, 0, parameters.getLastAvailable());
     }
     if (parameters.isAvailable(DVCSConstantCFFModel::CFF_Et_Re)) {
+        if (isSetViaAll)
+            printErrorInConfigure(DVCSConstantCFFModel::CFF_Et_Re);
         configureValue(GPDType::Et, 1, parameters.getLastAvailable());
     }
     if (parameters.isAvailable(DVCSConstantCFFModel::CFF_Et_Im)) {
+        if (isSetViaAll)
+            printErrorInConfigure(DVCSConstantCFFModel::CFF_Et_Im);
         configureValue(GPDType::Et, 0, parameters.getLastAvailable());
     }
 
@@ -194,15 +219,22 @@ void DVCSConstantCFFModel::configure(const ElemUtils::Parameters &parameters) {
     DVCSConvolCoeffFunctionModule::configure(parameters);
 }
 
+void DVCSConstantCFFModel::printErrorInConfigure(const std::string& key) const {
+    ElemUtils::CustomException(getClassName(), __func__,
+            ElemUtils::Formatter() << "Ambiguous way of setting CFF values via "
+                    << DVCSConstantCFFModel::CFF_VALUES << " and " << key
+                    << " keys");
+}
+
 void DVCSConstantCFFModel::configureValue(GPDType::Type gpdType,
         bool isRealPart, const ElemUtils::GenericType& value) {
 
     //iterator
-    std::map<GPDType::Type, std::complex<double> >::iterator it = m_CFF.find(
+    std::map<GPDType::Type, std::complex<double> >::iterator it = m_CFFs.find(
             gpdType);
 
     //check if not end
-    if (it == m_CFF.end()) {
+    if (it == m_CFFs.end()) {
 
         warn(__func__,
                 ElemUtils::Formatter() << "CFF of type "
@@ -222,9 +254,55 @@ void DVCSConstantCFFModel::configureValue(GPDType::Type gpdType,
 
     //status
     info(__func__,
-            ElemUtils::Formatter() << ((isRealPart) ?
-                    ("Real") :
-                    ("Imaginary")) << " part of CFF type "
-                            << GPDType(gpdType).toString()
-                            << " configured with value = " << valueDouble);
+            ElemUtils::Formatter() << ((isRealPart) ? ("Real") : ("Imaginary"))
+                    << " part of CFF type " << GPDType(gpdType).toString()
+                    << " configured with value = " << valueDouble);
+}
+
+const std::map<GPDType::Type, std::complex<double> >& DVCSConstantCFFModel::getCFFs() const {
+    return m_CFFs;
+}
+
+void DVCSConstantCFFModel::setCFFs(
+        const std::map<GPDType::Type, std::complex<double> >& cffs) {
+    m_CFFs = cffs;
+}
+
+const std::complex<double>& DVCSConstantCFFModel::getCFF(GPDType::Type gpdType) const {
+
+    //iterator
+    std::map<GPDType::Type, std::complex<double> >::const_iterator it = m_CFFs.find(
+            gpdType);
+
+    //check if not end
+    if (it == m_CFFs.end()) {
+
+        warn(__func__,
+                ElemUtils::Formatter() << "CFF of type "
+                        << GPDType(gpdType).toString()
+                        << " is not supported by this class");
+    }
+
+    //return
+    return it->second;
+}
+
+void DVCSConstantCFFModel::setCFF(GPDType::Type gpdType,
+        const std::complex<double>& cff) {
+
+    //iterator
+    std::map<GPDType::Type, std::complex<double> >::iterator it = m_CFFs.find(
+            gpdType);
+
+    //check if not end
+    if (it == m_CFFs.end()) {
+
+        warn(__func__,
+                ElemUtils::Formatter() << "CFF of type "
+                        << GPDType(gpdType).toString()
+                        << " is not supported by this class");
+    }
+
+    //set
+    it->second = cff;
 }

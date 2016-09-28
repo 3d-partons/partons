@@ -59,6 +59,30 @@ public:
     virtual void configure(const ElemUtils::Parameters &parameters);
     virtual std::complex<double> computeCFF();
 
+    /**
+     * Get map containing CFFs
+     */
+    const std::map<GPDType::Type, std::complex<double> >& getCFFs() const;
+
+    /**
+     * Set map containing CFFs
+     @param cff Map to be set
+     */
+    void setCFFs(const std::map<GPDType::Type, std::complex<double> >& cffs);
+
+    /**
+     * Get specific CFF
+     @param gpdType type of CFF to be get
+     */
+    const std::complex<double>& getCFF(GPDType::Type gpdType) const;
+
+    /**
+     * Set specific CFF
+     @param gpdType type of CFF to be set
+     @param cff CFF to be set
+     */
+    void setCFF(GPDType::Type gpdType, const std::complex<double>& cff);
+
 protected:
 
     /**
@@ -73,6 +97,12 @@ protected:
 private:
 
     /**
+     * Print error in configure in case of setting CFFs via ambiguous keys
+     @param key Name of key to help localize error
+     */
+    void printErrorInConfigure(const std::string& key) const;
+
+    /**
      * Set single value in configure
      @param gpdType CFF type to be set
      @param isRealPart True if real part to be set
@@ -84,7 +114,7 @@ private:
      * CFFs stored by type of GPD
      * See GPDType.h
      */
-    std::map<GPDType::Type, std::complex<double> > m_CFF;
+    std::map<GPDType::Type, std::complex<double> > m_CFFs;
 };
 
 #endif /* DVCS_CONSTANT_CFF_MODULE_H */
