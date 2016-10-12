@@ -82,7 +82,7 @@ std::complex<double> DVCSConstantCFFModel::computeCFF() {
 
     if (it == m_CFFs.end()) {
 
-        warn(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "CFF of type "
                         << GPDType(m_currentGPDComputeType).toString()
                         << " is not supported by this class");
@@ -236,7 +236,7 @@ void DVCSConstantCFFModel::configureValue(GPDType::Type gpdType,
     //check if not end
     if (it == m_CFFs.end()) {
 
-        warn(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "CFF of type "
                         << GPDType(gpdType).toString()
                         << " is not supported by this class");
@@ -268,16 +268,17 @@ void DVCSConstantCFFModel::setCFFs(
     m_CFFs = cffs;
 }
 
-const std::complex<double>& DVCSConstantCFFModel::getCFF(GPDType::Type gpdType) const {
+const std::complex<double>& DVCSConstantCFFModel::getCFF(
+        GPDType::Type gpdType) const {
 
     //iterator
-    std::map<GPDType::Type, std::complex<double> >::const_iterator it = m_CFFs.find(
-            gpdType);
+    std::map<GPDType::Type, std::complex<double> >::const_iterator it =
+            m_CFFs.find(gpdType);
 
     //check if not end
     if (it == m_CFFs.end()) {
 
-        warn(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "CFF of type "
                         << GPDType(gpdType).toString()
                         << " is not supported by this class");
@@ -297,7 +298,7 @@ void DVCSConstantCFFModel::setCFF(GPDType::Type gpdType,
     //check if not end
     if (it == m_CFFs.end()) {
 
-        warn(__func__,
+        ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "CFF of type "
                         << GPDType(gpdType).toString()
                         << " is not supported by this class");
