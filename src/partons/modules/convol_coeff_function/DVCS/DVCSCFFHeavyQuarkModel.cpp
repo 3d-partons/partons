@@ -80,7 +80,7 @@ DVCSCFFHeavyQuarkModel::DVCSCFFHeavyQuarkModel(
 std::complex<double> DVCSCFFHeavyQuarkModel::computeUnpolarized() {
 
     return computeIntegralsMassiveV() + DVCSCFFModel::computeUnpolarized();
-//  return computeIntegralsMassiveV();
+//    return computeIntegralsMassiveV();
 }
 
 std::complex<double> DVCSCFFHeavyQuarkModel::computePolarized() {
@@ -217,7 +217,7 @@ double DVCSCFFHeavyQuarkModel::ConvolReKernelGluonMassiveA(double x,
             * partonDistribution.getGluonDistribution().getGluonDistribution();
 
     double Convol = (EvalGPD) * MassiveKernelGluonNLOA(x).real();
-    return -Convol;
+    return Convol;
 }
 
 double DVCSCFFHeavyQuarkModel::ConvolImKernelGluonMassiveA(double x,
@@ -230,7 +230,7 @@ double DVCSCFFHeavyQuarkModel::ConvolImKernelGluonMassiveA(double x,
             * partonDistribution.getGluonDistribution().getGluonDistribution();
 
     double Convol = (EvalGPD) * MassiveKernelGluonNLOA(x).imag();
-    return -Convol;
+    return Convol;
 }
 
 std::complex<double> DVCSCFFHeavyQuarkModel::MassiveKernelGluonNLOA(double x) {
