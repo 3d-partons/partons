@@ -9,7 +9,6 @@
 #include <ElementaryUtils/thread/Packet.h>
 #include <complex>
 
-#include "../../../include/partons/beans/automation/Scenario.h"
 #include "../../../include/partons/beans/automation/Task.h"
 #include "../../../include/partons/beans/KinematicUtils.h"
 #include "../../../include/partons/beans/system/ResultInfo.h"
@@ -19,7 +18,6 @@
 #include "../../../include/partons/modules/GPDModule.h"
 #include "../../../include/partons/ModuleObjectFactory.h"
 #include "../../../include/partons/Partons.h"
-#include "../../../include/partons/ResourceManager.h"
 #include "../../../include/partons/services/GPDService.h"
 #include "../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../include/partons/utils/exceptions/CCFModuleNullPointerException.h"
@@ -63,17 +61,10 @@ void ConvolCoeffFunctionService::resolveObjectDependencies() {
 
 //TODO implement
 void ConvolCoeffFunctionService::computeTask(Task &task) {
+    ServiceObjectTyped<DVCSConvolCoeffFunctionKinematic,
+            DVCSConvolCoeffFunctionResult>::computeTask(task);
+
     List<DVCSConvolCoeffFunctionResult> resultList;
-
-    //TODO Je pense qu'il est possible de supprimer l'étape registerScenario() car par construction il doit toujours exister dans le ResourceManager;
-    m_resultInfo = ResultInfo();
-    m_resultInfo.setScenarioTaskIndexNumber(task.getScenarioTaskIndexNumber());
-    Scenario * tempSenario = ResourceManager::getInstance()->registerScenario(
-            task.getScenario());
-
-    if (tempSenario) {
-        m_resultInfo.setScenarioHashSum(tempSenario->getHashSum());
-    }
 
     if (ElemUtils::StringUtils::equals(task.getFunctionName(),
             ConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_MANY_KINEMATIC_ONE_MODEL)) {

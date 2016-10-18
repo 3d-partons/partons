@@ -1,5 +1,6 @@
 #include "../../../include/partons/database/Database.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/logger/LoggerManager.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <QtCore/qmap.h>
@@ -98,13 +99,13 @@ int Database::execSelectQuery(QSqlQuery& query) {
                 getLastExecutedQuery(query));
 
         if (!query.isSelect()) {
-            pLoggerManager->error("Database", __func__,
+            throw ElemUtils::CustomException("Database", __func__,
                     ElemUtils::Formatter()
                             << "Executed query is not a SELECT query ; please check your implementation");
         }
 
         if (!query.isActive()) {
-            pLoggerManager->error("Database", __func__,
+            throw ElemUtils::CustomException("Database", __func__,
                     ElemUtils::Formatter()
                             << "Current query is inactive ; Cannot perfom next task(s) on it : "
                             << getLastExecutedQuery(query));
@@ -116,11 +117,9 @@ int Database::execSelectQuery(QSqlQuery& query) {
             }
         }
     } else {
-        pLoggerManager->error("Database", __func__,
+        throw ElemUtils::CustomException("Database", __func__,
                 ElemUtils::Formatter() << "Cannot execute query : "
-                        << getLastExecutedQuery(query));
-        pLoggerManager->error("Database", __func__,
-                ElemUtils::Formatter() << "because : "
+                        << getLastExecutedQuery(query) << " because : "
                         << query.lastError().text().toStdString());
     }
 
@@ -140,19 +139,16 @@ std::string Database::getLastExecutedQuery(const QSqlQuery& query) {
 void Database::checkUniqueResult(const std::string &className,
         const std::string &funcName, const unsigned int resultSize,
         const QSqlQuery& query) {
-    ElemUtils::LoggerManager* pLoggerManager =
-            Partons::getInstance()->getLoggerManager();
 
     if (resultSize != 0) {
         if (resultSize != 1) {
-            pLoggerManager->error(className, funcName,
-                    "More than 1 result have been found ; there is an integrity problem in your database");
-            pLoggerManager->error(className, __func__,
-                    ElemUtils::Formatter() << "for query : "
+            throw ElemUtils::CustomException(className, funcName,
+                    ElemUtils::Formatter()
+                            << "More than 1 result have been found ; there is an integrity problem in your database for query : "
                             << getLastExecutedQuery(query));
         }
     } else {
-        pLoggerManager->error(className, funcName,
+        throw ElemUtils::CustomException(className, funcName,
                 ElemUtils::Formatter()
                         << "Cannot found any result with query : "
                         << getLastExecutedQuery(query));
@@ -165,7 +161,7 @@ void Database::checkManyResults(const std::string &className,
         const std::string &funcName, const unsigned int resultSize,
         const QSqlQuery& query) {
     if (resultSize == 0) {
-        Partons::getInstance()->getLoggerManager()->error(className, funcName,
+        throw ElemUtils::CustomException(className, funcName,
                 ElemUtils::Formatter()
                         << "Cannot found any result with query : "
                         << getLastExecutedQuery(query));

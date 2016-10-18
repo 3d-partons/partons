@@ -67,10 +67,14 @@ int ScenarioDao::getScenarioIdByHashSum(const std::string& hashSum) const {
 
     query.bindValue(":hashSum", QString(hashSum.c_str()));
 
-    Database::checkUniqueResult(getClassName(), __func__,
-            Database::execSelectQuery(query), query);
+    try {
+        Database::checkUniqueResult(getClassName(), __func__,
+                Database::execSelectQuery(query), query);
 
-    result = query.value(0).toInt();
+        result = query.value(0).toInt();
+    } catch (const ElemUtils::CustomException &e) {
+        //Nothing to do
+    }
 
     return result;
 }

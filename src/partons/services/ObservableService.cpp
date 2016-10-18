@@ -59,6 +59,9 @@ void ObservableService::resolveObjectDependencies() {
 //TODO implement all function
 //TODO check before executing computeTask if the service name equal current service class name to avoid computing method from another service
 void ObservableService::computeTask(Task &task) {
+    ServiceObjectTyped<ObservableKinematic, ObservableResult>::computeTask(
+            task);
+
     List<ObservableResult> resultList;
 
     if (ElemUtils::StringUtils::equals(task.getFunctionName(),
@@ -213,7 +216,7 @@ List<ObservableResult> ObservableService::computeManyKinematicOneModelTask(
     Observable* pObservable = newObservableModuleFromTask(task);
 
     return computeManyKinematicOneModel(listOfKinematic, pObservable,
-            listOfGPDType);
+            listOfGPDType, task.isStoreInDB());
 }
 
 ObservableChannel::Type ObservableService::getObservableChannel(

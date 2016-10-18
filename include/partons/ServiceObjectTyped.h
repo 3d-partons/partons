@@ -8,6 +8,7 @@
  * @version 1.0
  */
 
+#include <ElementaryUtils/PropertiesManager.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <stddef.h>
 #include <SFML/System/Lock.hpp>
@@ -18,6 +19,7 @@
 #include "beans/automation/Task.h"
 #include "beans/List.h"
 #include "beans/system/ResultInfo.h"
+#include "ResourceManager.h"
 #include "ServiceObject.h"
 
 /** @class ServiceObjectTyped
@@ -104,6 +106,19 @@ public:
 
         return resultList;
     } // mutex.unlock()
+
+    virtual void computeTask(Task &task) {
+        m_resultInfo = ResultInfo();
+        m_resultInfo.setScenarioTaskIndexNumber(
+                task.getScenarioTaskIndexNumber());
+        Scenario * tempSenario =
+                ResourceManager::getInstance()->registerScenario(
+                        task.getScenario());
+
+        if (tempSenario) {
+            m_resultInfo.setScenarioHashSum(tempSenario->getHashSum());
+        }
+    }
 
 protected:
     unsigned int m_batchSize;

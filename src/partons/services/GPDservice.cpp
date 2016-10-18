@@ -8,7 +8,6 @@
 #include <string>
 #include <vector>
 
-#include "../../../include/partons/beans/automation/Scenario.h"
 #include "../../../include/partons/beans/automation/Task.h"
 #include "../../../include/partons/beans/gpd/GPDKinematic.h"
 #include "../../../include/partons/beans/gpd/GPDResult.h"
@@ -23,7 +22,6 @@
 #include "../../../include/partons/modules/GPDModule.h"
 #include "../../../include/partons/ModuleObjectFactory.h"
 #include "../../../include/partons/Partons.h"
-#include "../../../include/partons/ResourceManager.h"
 #include "../../../include/partons/services/GPDService.h"
 #include "../../../include/partons/ServiceObjectTyped.h"
 #include "../../../include/partons/utils/exceptions/GPDModuleNullPointerException.h"
@@ -72,14 +70,7 @@ void GPDService::resolveObjectDependencies() {
 void GPDService::computeTask(Task &task) {
     debug(__func__, "Processing ...");
 
-    m_resultInfo = ResultInfo();
-    m_resultInfo.setScenarioTaskIndexNumber(task.getScenarioTaskIndexNumber());
-    Scenario * tempSenario = ResourceManager::getInstance()->registerScenario(
-            task.getScenario());
-
-    if (tempSenario) {
-        m_resultInfo.setScenarioHashSum(tempSenario->getHashSum());
-    }
+    ServiceObjectTyped<GPDKinematic, GPDResult>::computeTask(task);
 
     List<GPDResult> resultList;
 

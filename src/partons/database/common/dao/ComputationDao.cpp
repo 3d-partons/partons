@@ -67,10 +67,14 @@ int ComputationDao::getComputationIdByDateTime(const time_t &dateTime) const {
     qDateTime.setTime_t(dateTime);
     query.bindValue(":dateTime", qDateTime);
 
-    Database::checkUniqueResult(getClassName(), __func__,
-            Database::execSelectQuery(query), query);
+    try {
+        Database::checkUniqueResult(getClassName(), __func__,
+                Database::execSelectQuery(query), query);
 
-    result = query.value(0).toInt();
+        result = query.value(0).toInt();
+    } catch (const ElemUtils::CustomException &e) {
+        //Nothing to do
+    }
 
     return result;
 }
