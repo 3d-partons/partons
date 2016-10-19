@@ -169,7 +169,7 @@ double VGG1999Model::CrossSectionMechanism(double beamHelicity,
         //polarization x (transverse)
         if(m_target_polarizationT_x != 0.){
           
-            m_proton_spinor_orientation = x;
+            m_proton_spinor_orientation = VGG1999Model::x;
     
             double resultXp = 0.;
             double resultXm = 0.;
@@ -184,7 +184,7 @@ double VGG1999Model::CrossSectionMechanism(double beamHelicity,
         //polarization y (transverse)
         if(m_target_polarizationT_y != 0.){
           
-            m_proton_spinor_orientation = y;
+            m_proton_spinor_orientation = VGG1999Model::y;
     
             double resultYp = 0.;
             double resultYm = 0.;
@@ -199,7 +199,7 @@ double VGG1999Model::CrossSectionMechanism(double beamHelicity,
         //polarization z (longidudinal)
         if(m_target_polarizationL != 0.){
           
-            m_proton_spinor_orientation = z;
+            m_proton_spinor_orientation = VGG1999Model::z;
     
             double resultZp = 0.;
             double resultZm = 0.;
@@ -1272,7 +1272,7 @@ double VGG1999Model::v_compton_doublepol_cross_inv(double leptcharge,
     double unit_conv = pow(.197, 2.) * pow(10., 7.);
 
     //return
-    return unit_conv * (1. / pow(2. * PI, 4.)) / 32. * m_xB * pow(m_y, 2.)
+    return unit_conv * (1. / pow(2. * PI, 5.)) / 32. * m_xB * pow(m_y, 2.)
             / pow(m_Q2, 2.) / sqrt(1. + pow(2. * PROTON_MASS * m_xB, 2.) / m_Q2)
             * v_compton_doublepol_sqrampl(leptcharge, mechanism, el_hel, sp_in);
 
