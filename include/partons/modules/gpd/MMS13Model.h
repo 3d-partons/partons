@@ -43,6 +43,11 @@ public:
     virtual void configure(const ElemUtils::Parameters &parameters);
     virtual std::string toString();
 
+    /** D term function
+     @param zeta Variable equals x/xi
+     */
+    double DTerm(double zeta) const;
+
 protected:
 
     /** Copy constructor
@@ -90,11 +95,6 @@ private:
      @param N Profile parameter
      */
     double profileFunction(double beta, double alpha, int N);
-
-    /** D term function
-     @param zeta Variable equals x/xi
-     */
-    double DTerm(double zeta) const;
 
     /** H_DD + E_DD component
      @param x GPD variable

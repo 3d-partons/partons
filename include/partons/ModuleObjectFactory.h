@@ -14,6 +14,9 @@
 
 #include <string>
 
+class GPDBorderFunctionModule;
+class GPDSubtractionConstantModule;
+
 class ModuleObject;
 
 class ActiveFlavorsModule;
@@ -49,6 +52,15 @@ public:
 
     GPDModule* newGPDModule(unsigned int classId);
     GPDModule* newGPDModule(const std::string &className);
+
+    GPDBorderFunctionModule* newGPDBorderFunctionModule(unsigned int classId);
+    GPDBorderFunctionModule* newGPDBorderFunctionModule(
+            const std::string &className);
+
+    GPDSubtractionConstantModule* newGPDSubtractionConstantModule(
+            unsigned int classId);
+    GPDSubtractionConstantModule* newGPDSubtractionConstantModule(
+            const std::string &className);
 
     DVCSConvolCoeffFunctionModule* newDVCSConvolCoeffFunctionModule(
             unsigned int classId);

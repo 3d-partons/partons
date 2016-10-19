@@ -6,7 +6,8 @@
 #include "../../include/partons/modules/dse/GapEquationSolverModule.h"
 #include "../../include/partons/modules/DoubleDistributionModule.h"
 #include "../../include/partons/modules/evolution/GPDEvolutionModule.h"
-#include "../../include/partons/modules/GPDModule.h"
+#include "../../include/partons/modules/GPDBorderFunctionModule.h"
+#include "../../include/partons/modules/GPDSubtractionConstantModule.h"
 #include "../../include/partons/modules/observable/Observable.h"
 #include "../../include/partons/modules/process/DVCSModule.h"
 #include "../../include/partons/modules/RunningAlphaStrongModule.h"
@@ -59,6 +60,26 @@ GPDModule* ModuleObjectFactory::newGPDModule(unsigned int classId) {
 
 GPDModule* ModuleObjectFactory::newGPDModule(const std::string& className) {
     return static_cast<GPDModule*>(newModuleObject(className));
+}
+
+GPDBorderFunctionModule* ModuleObjectFactory::newGPDBorderFunctionModule(
+        unsigned int classId) {
+    return static_cast<GPDBorderFunctionModule*>(newModuleObject(classId));
+}
+
+GPDBorderFunctionModule* ModuleObjectFactory::newGPDBorderFunctionModule(
+        const std::string& className) {
+    return static_cast<GPDBorderFunctionModule*>(newModuleObject(className));
+}
+
+GPDSubtractionConstantModule* ModuleObjectFactory::newGPDSubtractionConstantModule(
+        unsigned int classId) {
+    return static_cast<GPDSubtractionConstantModule*>(newModuleObject(classId));
+}
+
+GPDSubtractionConstantModule* ModuleObjectFactory::newGPDSubtractionConstantModule(
+        const std::string& className) {
+    return static_cast<GPDSubtractionConstantModule*>(newModuleObject(className));
 }
 
 DVCSConvolCoeffFunctionModule* ModuleObjectFactory::newDVCSConvolCoeffFunctionModule(
