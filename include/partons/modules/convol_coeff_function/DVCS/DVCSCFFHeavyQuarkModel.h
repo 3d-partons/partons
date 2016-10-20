@@ -29,6 +29,8 @@ public:
 
     virtual ~DVCSCFFHeavyQuarkModel();
 
+    virtual void resolveObjectDependencies();
+
 protected:
     /**
      * Copy constructor

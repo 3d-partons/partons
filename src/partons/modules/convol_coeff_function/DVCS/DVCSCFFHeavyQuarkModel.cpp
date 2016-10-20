@@ -54,6 +54,12 @@ DVCSCFFHeavyQuarkModel::~DVCSCFFHeavyQuarkModel() {
     }
 }
 
+void DVCSCFFHeavyQuarkModel::resolveObjectDependencies() {
+    DVCSConvolCoeffFunctionModule::resolveObjectDependencies();
+
+    setIntegrator(NumA::IntegratorType1D::DEXP);
+}
+
 void DVCSCFFHeavyQuarkModel::initFunctorsForIntegrations() {
     m_pConvolReKernelGluonMassiveV = NumA::Integrator1D::newIntegrationFunctor(
             this, &DVCSCFFHeavyQuarkModel::ConvolReKernelGluonMassiveV);
