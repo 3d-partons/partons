@@ -39,7 +39,19 @@ public:
      */
     virtual ~Partons();
 
+    /**
+     * Must be called before any other thing.
+     * It initializes each mandatory bloc in right order.
+     *
+     * @param argc
+     * @param argv
+     */
     void init(int argc, char** argv);
+
+    /**
+     * Called at the very end of the code.
+     * Send close order to the LoggerManager and wait to the end of the job (flush of the logger buffer) before free memory.
+     */
     void close();
 
     std::string getCurrentWorkingDirectory();
@@ -71,8 +83,14 @@ private:
     std::string m_currentWorkingDirectoryPath;
     EnvironmentConfiguration* m_pEnvironmentConfiguration;
 
+    /**
+     *
+     */
     void retrieveEnvironmentConfiguration();
 
+    /**
+     * Check if "partons.properties" file path is readable. Throw exception else.
+     */
     void checkMandatoryFiles();
 };
 

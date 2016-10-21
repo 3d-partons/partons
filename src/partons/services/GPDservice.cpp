@@ -301,7 +301,11 @@ List<GPDResult> GPDService::computeManyKinematicOneModel(
 
             if (storeInDB) {
                 GPDResultDaoService gpdResultDaoService;
-                gpdResultDaoService.insert(getResultList());
+
+                info(__func__,
+                        ElemUtils::Formatter()
+                                << "Results have been stored with computation_id = "
+                                << gpdResultDaoService.insert(getResultList()));
             } else {
                 results.add(getResultList());
             }

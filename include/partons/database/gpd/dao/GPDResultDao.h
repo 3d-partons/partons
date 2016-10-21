@@ -4,13 +4,9 @@
 /**
  * @file GPDResultDao.h
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 13 November 2015
+ * @date November 13, 2015
  * @version 1.0
- *
- * @class GPDResultDao
- *
- * @brief
- */
+*/
 
 #include <QtSql/qsqlquery.h>
 #include <string>
@@ -20,6 +16,11 @@
 #include "../../parton_distribution/dao/PartonDistributionDao.h"
 #include "GPDKinematicDao.h"
 
+/**
+ * @class GPDResultDao
+ *
+ * @brief
+ */
 class GPDResultDao: public BaseObject {
 public:
     GPDResultDao();

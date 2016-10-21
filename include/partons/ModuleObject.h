@@ -4,15 +4,8 @@
 /**
  * @file ModuleObject.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 06 Aout 2014
+ * @date Aout 06, 2014
  * @version 1.0
- *
- * @class ModuleObject
- *
- * @brief Super class of all module types - A module is a class that performs a specific compute task
- *
- * ex : GK11Model is a module that computes only GPDq(x, xi, t, MuF, MuR) defined by Kroll-Goloskokov in 2011 \n
- * ex : DVCSCFFModule is a module that evaluates the convolution of the GPD H with the hard scattering kernel at twist 2 necessary to the evaluation of DVCS scattering amplitudes.
  */
 
 #include <ElementaryUtils/thread/Thread.h>
@@ -24,6 +17,15 @@ namespace ElemUtils {
 class Parameters;
 } /* namespace ElemUtils */
 
+/**
+ * @class ModuleObject
+ *
+ * @brief Super class of all module types - A module is a class that performs a specific compute task
+ * A ModuleObject can be threaded. See services for more details.
+ *
+ * ex : GK11Model is a module that computes only GPDq(x, xi, t, MuF, MuR) defined by Kroll-Goloskokov in 2011 \n
+ * ex : DVCSCFFModule is a module that evaluates the convolution of the GPD H with the hard scattering kernel at twist 2 necessary to the evaluation of DVCS scattering amplitudes.
+ */
 class ModuleObject: public BaseObject, public ElemUtils::Thread {
 public:
     static const std::string CLASS_NAME;
@@ -49,6 +51,9 @@ public:
      */
     virtual void configure(const ElemUtils::Parameters &parameters);
 
+    /**
+     * See documentation about this method in BaseObject class for more details.
+     */
     virtual ModuleObject* clone() const = 0;
 
     /**
@@ -58,6 +63,9 @@ public:
      */
     virtual std::string toString() const;
 
+    /**
+     * See documentation about this method in BaseObject class for more details.
+     */
     virtual void resolveObjectDependencies();
 
 protected:

@@ -32,6 +32,9 @@ public:
      */
     static ResourceManager* getInstance();
 
+    /**
+     * Default destructor
+     */
     virtual ~ResourceManager();
 
     Scenario* getScenarioByHashSum(const std::string &hashSum) const;

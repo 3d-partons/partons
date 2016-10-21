@@ -59,7 +59,7 @@ public:
     /**
      * Destructor
      */
-    ~GPDBorderFunctionKinematic();
+    virtual ~GPDBorderFunctionKinematic();
 
     virtual std::string toString() const;
 

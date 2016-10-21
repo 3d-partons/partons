@@ -4,12 +4,8 @@
 /**
  * @file ModuleObjectFactory.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 02 July 2015
+ * @date July 02, 2015
  * @version 1.0
- *
- * @class ModuleObjectFactory
- *
- * @brief
  */
 
 #include <string>
@@ -33,6 +29,12 @@ class RunningAlphaStrongModule;
 class ScaleModule;
 class XiConverterModule;
 
+/**
+ * @class ModuleObjectFactory
+ *
+ * @brief It's a specialization of the BaseObjectFactory to get intermediate abstract module class specialization to be able to use directly more sophisticated method (like compute(...)).
+ * It only casts BaseObject pointer to desired abstract module class type.
+ */
 class ModuleObjectFactory {
 public:
     /**
@@ -106,7 +108,7 @@ private:
      */
     ModuleObjectFactory(BaseObjectFactory* pBaseObjectFactory);
 
-    BaseObjectFactory* m_pBaseObjectFactory;
+    BaseObjectFactory* m_pBaseObjectFactory; ///< Pointer to BaseObjectFactory to get cloned object's pointer.
 };
 
 #endif /* MODULE_OBJECT_FACTORY_H */

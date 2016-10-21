@@ -54,14 +54,14 @@ observable_channel_long_name VARCHAR(255));
 CREATE VIEW result_info_view AS
 SELECT c.computation_id, c.computation_date, sc.scenario_task_index_number, ec.env_conf_hash_sum, s.scenario_hash_sum
 FROM computation c
-INNER JOIN environment_configuration ec ON ec.environment_configuration_id = c.environment_configuration_id
+INNER JOIN environment_configuration ec ON ec.env_conf_id = c.environment_configuration_id
 INNER JOIN scenario_computation sc ON sc.computation_id = c.computation_id
 INNER JOIN scenario s ON sc.scenario_id = s.scenario_id
 ORDER BY c.computation_id;
 
 
 
-INSERT INTO gpd_type (gpd_type_id, short_name, gpd_type_long_name)
+INSERT INTO gpd_type (gpd_type_id, gpd_type_short_name, gpd_type_long_name)
 VALUES ('0', 'UNDEFINED', 'UNDEFINED');
 
 INSERT INTO gpd_type (gpd_type_id, gpd_type_short_name, gpd_type_long_name)

@@ -5,7 +5,7 @@ laboratory_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
 laboratory_name VARCHAR(255));
 
 CREATE TABLE collaboration (
-collaboration_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, 
+collaboration_id INTEGER NOT NULL PRIMARY KEY, 
 collaboration_name VARCHAR(255),
 laboratory_id INTEGER);
 

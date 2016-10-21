@@ -256,7 +256,12 @@ List<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionService::computeForOneCCF
 
             if (storeInDB) {
                 ConvolCoeffFunctionResultDaoService convolCoeffFunctionResultDaoService;
-                convolCoeffFunctionResultDaoService.insert(getResultList());
+
+                info(__func__,
+                        ElemUtils::Formatter()
+                                << "Results have been stored with computation_id = "
+                                << convolCoeffFunctionResultDaoService.insert(
+                                        getResultList()));
             } else {
                 results.add(getResultList());
             }

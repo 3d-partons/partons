@@ -17,6 +17,7 @@ ResultInfoDaoService::~ResultInfoDaoService() {
     // TODO Auto-generated destructor stub
 }
 
+//TODO remove no longer used
 int ResultInfoDaoService::insertWithoutTransaction(
         const ResultInfo& resultInfo) const {
 
