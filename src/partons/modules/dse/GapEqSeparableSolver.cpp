@@ -2,10 +2,10 @@
 
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
-#include <NumA/linear_algebra/linear_system/LinearSystem.h>
 #include <NumA/linear_algebra/matrix/MatrixD.h>
 #include <NumA/root_finding/NewtonMD.h>
 #include <cmath>
+#include <NumA/linear_algebra/eigen/LinAlgUtils.h>
 
 #include "../../../../include/partons/beans/dse/GluonPropagator.h"
 #include "../../../../include/partons/beans/dse/QuarkGluonVertex.h"
@@ -358,7 +358,7 @@ void GapEqSeparableSolver::isModuleWellConfigured() {
 //}
 
 void GapEqSeparableSolver::computeBroydenIteration() {
-    NumA::NewtonMD newtonIteration(get2N(), NumA::LinearSystem::FullQR);
+    NumA::NewtonMD newtonIteration(get2N(), NumA::LinAlgUtils::FullQR);
 
     unsigned int n;
     bool noConvergence = true;

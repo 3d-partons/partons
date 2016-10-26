@@ -1,16 +1,20 @@
 #include "../../../include/partons/modules/DoubleDistributionModule.h"
 
+#include <utility>
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
-#include <utility>
 
 #include "../../../include/partons/beans/double_distribution/DoubleDistributionResult.h"
+#include "../../../include/partons/modules/overlap/IncompleteGPDModule.h"
+#include "../../../include/partons/modules/radon_inverse/RadonInverseModule.h"
 
 DoubleDistributionModule::DoubleDistributionModule(const std::string& className) :
         ModuleObject(className), m_beta(0.), m_alpha(0.), m_t(0.), m_MuF2(0.), m_MuR2(
-                0.), m_doubleDistributionType(DoubleDistributionType::UNDEFINED) {
+                0.), m_doubleDistributionType(
+                DoubleDistributionType::UNDEFINED), m_inversionDependent(false), m_pRadonInverse(
+                0), m_pIncompleteGPD(0) {
 
-    m_listOfAvailableDualDistributionFunctions.insert(
+    m_listOfAvailableDoubleDistributionFunctions.insert(
             std::make_pair(DoubleDistributionType::F,
                     &DoubleDistributionModule::computeF));
 }
@@ -27,6 +31,19 @@ DoubleDistributionModule::DoubleDistributionModule(
     m_MuF2 = other.m_MuF2;
     m_MuR2 = other.m_MuR2;
     m_doubleDistributionType = other.m_doubleDistributionType;
+    m_inversionDependent = other.m_inversionDependent;
+
+    if (other.m_pRadonInverse != 0) {
+        m_pRadonInverse = (other.m_pRadonInverse)->clone();
+    } else {
+        m_pRadonInverse = 0;
+    }
+
+    if (other.m_pIncompleteGPD != 0) {
+        m_pIncompleteGPD = (other.m_pIncompleteGPD)->clone();
+    } else {
+        m_pIncompleteGPD = 0;
+    }
 }
 
 void DoubleDistributionModule::preCompute(double beta, double alpha, double t,
@@ -55,8 +72,8 @@ DoubleDistributionResult DoubleDistributionModule::compute(double beta,
     DoubleDistributionResult result;
     switch (m_doubleDistributionType) {
     case DoubleDistributionType::ALL: {
-        for (m_it = m_listOfAvailableDualDistributionFunctions.begin();
-                m_it != m_listOfAvailableDualDistributionFunctions.end();
+        for (m_it = m_listOfAvailableDoubleDistributionFunctions.begin();
+                m_it != m_listOfAvailableDoubleDistributionFunctions.end();
                 m_it++) {
             PartonDistribution partonDistribution = ((*this).*(m_it->second))();
 
@@ -65,9 +82,9 @@ DoubleDistributionResult DoubleDistributionModule::compute(double beta,
         break;
     }
     default: {
-        m_it = m_listOfAvailableDualDistributionFunctions.find(
+        m_it = m_listOfAvailableDoubleDistributionFunctions.find(
                 m_doubleDistributionType);
-        if (m_it != m_listOfAvailableDualDistributionFunctions.end()) {
+        if (m_it != m_listOfAvailableDoubleDistributionFunctions.end()) {
             PartonDistribution partonDistribution = ((*this).*(m_it->second))();
 
             result.addPartonDistribution(m_it->first, partonDistribution);
@@ -108,4 +125,83 @@ PartonDistribution DoubleDistributionModule::computeK() {
     ElemUtils::CustomException(getClassName(), __func__,
             ElemUtils::Formatter()
                     << "Cannot run this function from SUperClass, you must define it in a ChildClass");
+}
+
+bool DoubleDistributionModule::isInversionDependent() const {
+    return m_inversionDependent;
+}
+
+void DoubleDistributionModule::setInversionDependent(bool inversionDependent) {
+    m_inversionDependent = inversionDependent;
+}
+
+double DoubleDistributionModule::getAlpha() const {
+    return m_alpha;
+}
+
+void DoubleDistributionModule::setAlpha(double alpha) {
+    m_alpha = alpha;
+}
+
+double DoubleDistributionModule::getBeta() const {
+    return m_beta;
+}
+
+void DoubleDistributionModule::setBeta(double beta) {
+    m_beta = beta;
+}
+
+double DoubleDistributionModule::getMuF2() const {
+    return m_MuF2;
+}
+
+void DoubleDistributionModule::setMuF2(double muF2) {
+    m_MuF2 = muF2;
+}
+
+double DoubleDistributionModule::getMuR2() const {
+    return m_MuR2;
+}
+
+void DoubleDistributionModule::setMuR2(double muR2) {
+    m_MuR2 = muR2;
+}
+
+double DoubleDistributionModule::getT() const {
+    return m_t;
+}
+
+void DoubleDistributionModule::setT(double t) {
+    m_t = t;
+}
+
+List<DoubleDistributionType> DoubleDistributionModule::getListOfAvailableDDTypeForComputation() const {
+    std::map<DoubleDistributionType::Type,
+            PartonDistribution (DoubleDistributionModule::*)()>::const_iterator it;
+    List<DoubleDistributionType> listOfAvailableDDTypeForComputation;
+
+    for (it = m_listOfAvailableDoubleDistributionFunctions.begin();
+            it != m_listOfAvailableDoubleDistributionFunctions.end(); it++) {
+        listOfAvailableDDTypeForComputation.add(it->first);
+    }
+
+    return listOfAvailableDDTypeForComputation;
+}
+
+RadonInverseModule* DoubleDistributionModule::getRadonInverseModule() const {
+    return m_pRadonInverse;
+}
+
+void DoubleDistributionModule::setRadonInverseModule(
+        RadonInverseModule* pRadonInverse) {
+    m_pRadonInverse = pRadonInverse;
+}
+
+IncompleteGPDModule* DoubleDistributionModule::getIncompleteGPDModule() const {
+    return m_pIncompleteGPD;
+}
+
+void DoubleDistributionModule::setIncompleteGPDModule(
+        IncompleteGPDModule* pIncompleteGPD) {
+    m_pIncompleteGPD = pIncompleteGPD;
 }

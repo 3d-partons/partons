@@ -3,12 +3,12 @@
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/PropertiesManager.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
-#include <NumA/integration/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
 #include <cmath>
 #include <map>
 #include <utility>
+#include <NumA/functor/one_dimension/Functor1D.h>
 
 #include "../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../include/partons/beans/parton_distribution/GluonDistribution.h"

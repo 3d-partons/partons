@@ -2,9 +2,9 @@
 
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
-#include <NumA/integration/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <cmath>
+#include <NumA/functor/one_dimension/Functor1D.h>
 
 #include "../../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
 #include "../../../../../include/partons/beans/parton_distribution/PartonDistribution.h"

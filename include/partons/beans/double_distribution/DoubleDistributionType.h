@@ -17,7 +17,7 @@
 class DoubleDistributionType {
 public:
     enum Type {
-        UNDEFINED, ALL, F, G, K
+        UNDEFINED, ALL, F, G, K, fM, fP
     };
 
     DoubleDistributionType();

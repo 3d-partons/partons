@@ -23,16 +23,16 @@ QuarkDistribution::QuarkDistribution(const QuarkDistribution &other) :
     //TODO add missing stuff
 }
 
-//TODO initialise missing member
-QuarkDistribution::QuarkDistribution() :
-        BaseObject("QuarkDistribution"), m_quarkFlavor(QuarkFlavor::UNDEFINED), m_quarkDistribution(
-                0.), m_quarkDistributionPlus(0.), m_quarkDistributionMinus(0.) {
-}
+////TODO initialise missing member
+//QuarkDistribution::QuarkDistribution() :
+//        BaseObject("QuarkDistribution"), m_quarkFlavor(QuarkFlavor::UNDEFINED), m_quarkDistribution(
+//                0.), m_quarkDistributionPlus(0.), m_quarkDistributionMinus(0.) {
+//}
 
-QuarkDistribution::QuarkDistribution(QuarkFlavor::Type quarkFlavor) :
-        BaseObject("QuarkDistribution"), m_quarkFlavor(quarkFlavor), m_quarkDistribution(
-                0.), m_quarkDistributionPlus(0.), m_quarkDistributionMinus(0.) {
-}
+//QuarkDistribution::QuarkDistribution(QuarkFlavor::Type quarkFlavor) :
+//        BaseObject("QuarkDistribution"), m_quarkFlavor(quarkFlavor), m_quarkDistribution(
+//                0.), m_quarkDistributionPlus(0.), m_quarkDistributionMinus(0.) {
+//}
 
 QuarkDistribution::QuarkDistribution(QuarkFlavor::Type quarkFlavor,
         double quarkDistribution, double quarkDistributionPlus,

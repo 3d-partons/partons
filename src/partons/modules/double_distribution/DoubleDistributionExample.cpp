@@ -1,10 +1,10 @@
 #include "../../../../include/partons/modules/double_distribution/DoubleDistributionExample.h"
 
-#include <NumA/integration/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
 #include <map>
 #include <utility>
+#include <NumA/functor/one_dimension/Functor1D.h>
 
 #include "../../../../include/partons/beans/double_distribution/DoubleDistributionType.h"
 #include "../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
@@ -25,15 +25,17 @@ DoubleDistributionExample::DoubleDistributionExample(
     // Tell to parent class which dual distribution compute type are available for this model.
     // If there is just computeF() and computeG() available just remove computeK() line.
 
-    m_listOfAvailableDualDistributionFunctions.insert(
+    m_listOfAvailableDoubleDistributionFunctions.insert(
             std::make_pair(DoubleDistributionType::F,
                     &DoubleDistributionModule::computeF));
-    m_listOfAvailableDualDistributionFunctions.insert(
+    m_listOfAvailableDoubleDistributionFunctions.insert(
             std::make_pair(DoubleDistributionType::G,
                     &DoubleDistributionModule::computeG));
-    m_listOfAvailableDualDistributionFunctions.insert(
+    m_listOfAvailableDoubleDistributionFunctions.insert(
             std::make_pair(DoubleDistributionType::K,
                     &DoubleDistributionModule::computeK));
+
+    initFunctorsForIntegrations();
 
 }
 

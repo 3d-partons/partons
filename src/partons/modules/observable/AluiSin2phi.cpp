@@ -1,8 +1,8 @@
 #include "../../../../include/partons/modules/observable/AluiSin2phi.h"
 
-#include <NumA/integration/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <cmath>
+#include <NumA/functor/one_dimension/Functor1D.h>
 
 #include "../../../../include/partons/beans/observable/ObservableChannel.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"

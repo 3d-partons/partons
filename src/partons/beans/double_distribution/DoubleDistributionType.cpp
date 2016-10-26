@@ -31,6 +31,12 @@ std::string DoubleDistributionType::toString() {
     case K:
         return "K";
         break;
+    case fM:
+        return "fM";
+        break;
+    case fP:
+        return "fP";
+        break;
     default:
         return "UNDEFINED";
     }

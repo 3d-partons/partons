@@ -9,7 +9,9 @@
 #include "../../include/partons/modules/GPDBorderFunctionModule.h"
 #include "../../include/partons/modules/GPDSubtractionConstantModule.h"
 #include "../../include/partons/modules/observable/Observable.h"
+#include "../../include/partons/modules/overlap/IncompleteGPDModule.h"
 #include "../../include/partons/modules/process/DVCSModule.h"
+#include "../../include/partons/modules/radon_inverse/RadonInverseModule.h"
 #include "../../include/partons/modules/RunningAlphaStrongModule.h"
 #include "../../include/partons/modules/scale/ScaleModule.h"
 #include "../../include/partons/modules/xb_to_xi/XiConverterModule.h"
@@ -164,3 +166,22 @@ Observable* ModuleObjectFactory::newObservable(const std::string& className) {
     return static_cast<Observable*>(newModuleObject(className));
 }
 
+IncompleteGPDModule* ModuleObjectFactory::newIncompleteGPDModule(
+        unsigned int classId) {
+    return static_cast<IncompleteGPDModule*>(newModuleObject(classId));
+}
+
+IncompleteGPDModule* ModuleObjectFactory::newIncompleteGPDModule(
+        const std::string& className) {
+    return static_cast<IncompleteGPDModule*>(newModuleObject(className));
+}
+
+RadonInverseModule* ModuleObjectFactory::newRadonMatrixModule(
+        unsigned int classId) {
+    return static_cast<RadonInverseModule*>(newModuleObject(classId));
+}
+
+RadonInverseModule* ModuleObjectFactory::newRadonMatrixModule(
+        const std::string& className) {
+    return static_cast<RadonInverseModule*>(newModuleObject(className));
+}

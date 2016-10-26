@@ -4,22 +4,30 @@
 /**
  * @file DoubleDistributionModule.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
+ * @author Nabil Chouika (Irfu/SPhN, CEA Saclay)
  * @date 30 July 2015
  * @version 1.0
- *
- * @class DoubleDistributionModule
- *
- * @brief
  */
 
 #include <map>
 #include <string>
 
 #include "../beans/double_distribution/DoubleDistributionType.h"
+#include "../beans/List.h"
 #include "../beans/parton_distribution/PartonDistribution.h"
 #include "../ModuleObject.h"
 
+class IncompleteGPDModule;
+
+class RadonInverseModule;
+
 class DoubleDistributionResult;
+
+/**
+ * @class DoubleDistributionModule
+ *
+ * @brief
+ */
 
 class DoubleDistributionModule: public ModuleObject {
 public:
@@ -51,9 +59,29 @@ public:
     virtual PartonDistribution computeG();
     virtual PartonDistribution computeK();
 
+    bool isInversionDependent() const;
+    void setInversionDependent(bool inversionDependent);
+    RadonInverseModule* getRadonInverseModule() const;
+    void setRadonInverseModule(RadonInverseModule* pRadonInverse);
+    IncompleteGPDModule* getIncompleteGPDModule() const;
+    void setIncompleteGPDModule(IncompleteGPDModule* pIncompleteGPD);
+
+    double getAlpha() const;
+    void setAlpha(double alpha);
+    double getBeta() const;
+    void setBeta(double beta);
+    double getMuF2() const;
+    void setMuF2(double muF2);
+    double getMuR2() const;
+    void setMuR2(double muR2);
+    double getT() const;
+    void setT(double t);
+
+    List<DoubleDistributionType> getListOfAvailableDDTypeForComputation() const;
+
 protected:
     std::map<DoubleDistributionType::Type,
-            PartonDistribution (DoubleDistributionModule::*)()> m_listOfAvailableDualDistributionFunctions;
+            PartonDistribution (DoubleDistributionModule::*)()> m_listOfAvailableDoubleDistributionFunctions;
     std::map<DoubleDistributionType::Type,
             PartonDistribution (DoubleDistributionModule::*)()>::iterator m_it;
 
@@ -70,7 +98,10 @@ protected:
     virtual void initModule();
     virtual void isModuleWellConfigured();
 
-private:
+    bool m_inversionDependent;
+    RadonInverseModule* m_pRadonInverse;
+    IncompleteGPDModule* m_pIncompleteGPD;
+
     double m_beta;
     double m_alpha;
     double m_t;

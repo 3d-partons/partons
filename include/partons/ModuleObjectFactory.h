@@ -24,6 +24,8 @@ class GapEquationSolverModule;
 class GPDEvolutionModule;
 class GPDModule;
 class Observable;
+class IncompleteGPDModule;
+class RadonInverseModule;
 class ProcessModule;
 class RunningAlphaStrongModule;
 class ScaleModule;
@@ -44,6 +46,14 @@ public:
 
     ModuleObject* newModuleObject(const std::string& className);
     ModuleObject* newModuleObject(unsigned int classId);
+
+    IncompleteGPDModule* newIncompleteGPDModule(unsigned int classId);
+    IncompleteGPDModule* newIncompleteGPDModule(
+            const std::string & className);
+
+    RadonInverseModule* newRadonMatrixModule(unsigned int classId);
+    RadonInverseModule* newRadonMatrixModule(
+            const std::string & className);
 
     DoubleDistributionModule* newDoubleDistributionModule(unsigned int classId);
     DoubleDistributionModule* newDoubleDistributionModule(

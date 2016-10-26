@@ -5,7 +5,7 @@
 #include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
-#include <NumA/integration/one_dimension/Functor1D.h>
+#include <NumA/functor/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
 #include <cmath>

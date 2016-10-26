@@ -7,7 +7,7 @@
 
 #include "../../../../include/partons/modules/gpd_subtraction_constant/MMS13SubtractionConstantModel.h"
 
-#include <NumA/integration/one_dimension/Functor1D.h>
+#include <NumA/functor/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
 #include <cmath>

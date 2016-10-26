@@ -14,11 +14,11 @@ public:
     static const std::string QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DISTRIBUTION_PLUS;
     static const std::string QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DISTRIBUTION_MINUS;
 
-    QuarkDistribution();
+    //QuarkDistribution(); // Not needed because the other constructor uses default values now
     QuarkDistribution(const QuarkDistribution &other);
-    QuarkDistribution(QuarkFlavor::Type quarkFlavor);
-    QuarkDistribution(QuarkFlavor::Type quarkFlavor, double quarkDistribution,
-            double quarkDistributionPlus, double quarkDistributionMinus);
+    //QuarkDistribution(QuarkFlavor::Type quarkFlavor); // Not needed because the other constructor uses default values now
+    QuarkDistribution(QuarkFlavor::Type quarkFlavor = QuarkFlavor::UNDEFINED, double quarkDistribution = 0.,
+            double quarkDistributionPlus = 0., double quarkDistributionMinus = 0.);
     virtual ~QuarkDistribution();
 
     virtual std::string toString() const;
