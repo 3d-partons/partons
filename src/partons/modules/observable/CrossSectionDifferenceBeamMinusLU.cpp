@@ -40,9 +40,10 @@ double CrossSectionDifferenceBeamMinusLU::compute(double phi) {
     double B = m_pProcessModule->computeCrossSection(-1., -1,
             NumA::Vector3D(0., 0., 0.), phi);
 
-    result = A - B;
+    result = 0.5*(A - B);
 
     result *= 2 * M_PI; //integrate over transversely polarized target dependence to obtain 4-fold differential cross-section
+    result *= 0.3894 * 1.E6; //change to nb
 
     return result;
 }
