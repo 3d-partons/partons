@@ -47,6 +47,7 @@ double CrossSectionBeamMinusUU::compute(double phi) {
     result = (A + B + C + D) / 4.;
 
     result *= 2 * M_PI; //integrate over transversely polarized target dependence to obtain 4-fold differential cross-section
+    result *= 0.3894 * 1.E6; //change to nb
 
     return result;
 }
