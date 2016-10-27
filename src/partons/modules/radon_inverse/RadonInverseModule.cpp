@@ -23,6 +23,10 @@ RadonInverseModule::RadonInverseModule(const RadonInverseModule& other) :
     m_pGPDFunction = other.m_pGPDFunction;
     m_gauge = other.m_gauge;
     m_gaugeInVector = other.m_gaugeInVector;
+    m_radonMatrix = other.m_radonMatrix;
+    m_gpdVector = other.m_gpdVector;
+    m_ddVector = other.m_ddVector;
+    m_gpdNodes = other.m_gpdNodes;
 }
 
 void RadonInverseModule::initModule() {
@@ -103,6 +107,9 @@ void RadonInverseModule::buildSystem() {
 void RadonInverseModule::buildSystem(NumA::FunctionTypeMD* pGPDFunction) {
     setGPDFunction(pGPDFunction);
     buildSystem();
+}
+
+void RadonInverseModule::solve() {
 }
 
 size_t RadonInverseModule::getN() const {

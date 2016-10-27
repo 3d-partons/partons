@@ -1,5 +1,6 @@
 #include "../../../../include/partons/modules/radon_inverse/RandBFConstPW.h"
 
+#include <cmath>
 #include <cstdlib>
 #include <ctime>
 #include <NumA/linear_algebra/eigen/LinAlgUtils.h>
@@ -17,7 +18,7 @@ const unsigned int RandBFConstPW::classId =
 
 RandBFConstPW::RandBFConstPW(const std::string &className) :
         RadonInverseModule(className), m_valence(true), m_alphaEven(true), m_triangular(
-                true) {
+                true), m_step(0) {
 }
 
 RandBFConstPW::~RandBFConstPW() {
@@ -25,10 +26,15 @@ RandBFConstPW::~RandBFConstPW() {
 
 RandBFConstPW::RandBFConstPW(const RandBFConstPW& other) :
         RadonInverseModule(other) {
-    //TODO implement
     m_valence = other.m_valence;
     m_alphaEven = other.m_alphaEven;
     m_triangular = other.m_triangular;
+    m_step = other.m_step;
+    m_nodes = other.m_nodes;
+    m_ddResult = other.m_ddResult;
+    m_indicesUsed = other.m_indicesUsed;
+    m_indicesSym = other.m_indicesSym;
+    m_indicesFixed = other.m_indicesFixed;
 }
 
 RandBFConstPW* RandBFConstPW::clone() const {
@@ -143,7 +149,24 @@ void RandBFConstPW::buildIndices() {
 void RandBFConstPW::buildMesh() {
     m_nodes = NumA::Interval<double>::computeNodes(-DD_DOMAIN_HALF_EDGE,
             DD_DOMAIN_HALF_EDGE, m_N + 1);
+    m_step = 2 * DD_DOMAIN_HALF_EDGE / m_N;
     buildIndices();
+}
+
+void RandBFConstPW::solve() {
+    RadonInverseModule::solve();
+    m_ddResult.assign(m_N, m_N);
+    size_t i, j;
+    for (size_t k = 0; k < m_n; k++) {
+        i = static_cast<long int>(m_indicesUsed[k].first);
+        j = static_cast<long int>(m_indicesUsed[k].second);
+        m_ddResult.at(i, j) = m_ddVector[k];
+    }
+    for (size_t k = 0; k < m_indicesSym.size(); k++) {
+        i = static_cast<long int>(m_indicesSym[k].first);
+        j = static_cast<long int>(m_indicesSym[k].second);
+        m_ddResult.at(i, j) = m_ddResult.at(m_N - j - 1, m_N - i - 1);
+    }
 }
 
 double RandBFConstPW::GPDOfMeshElement(double x, double xi, size_t i,
@@ -169,5 +192,28 @@ double RandBFConstPW::GPDOfMeshElement(double x, double xi, size_t i,
         }
     }
     return result;
+}
+
+double RandBFConstPW::computeDD(double beta, double alpha) {
+    double u = (beta + alpha) * DD_DOMAIN_HALF_EDGE;
+    double v = (-beta + alpha) * DD_DOMAIN_HALF_EDGE;
+    size_t i = floor((u - m_nodes[0]) / m_step);
+    size_t j = floor((v - m_nodes[0]) / m_step);
+    return m_ddResult.at(i, j);
+}
+
+double RandBFConstPW::computeGPD(double x, double xi) {
+    NumA::VectorD gpdMesh;
+    gpdMesh = NumA::VectorD(m_n);
+    size_t i, j;
+    for (size_t k = 0; k < m_n; k++) {
+        i = static_cast<long int>(m_indicesUsed[k].first);
+        j = static_cast<long int>(m_indicesUsed[k].second);
+        gpdMesh[k] = GPDOfMeshElement(x, xi, i, j);
+        if (isAlphaEven() and (i + j != m_N - 1)) {
+            gpdMesh[k] += GPDOfMeshElement(x, xi, m_N - j - 1, m_N - i - 1);
+        }
+    }
+    return gpdMesh * m_ddVector;
 }
 

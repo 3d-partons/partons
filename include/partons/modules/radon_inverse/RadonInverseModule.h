@@ -57,6 +57,11 @@ public:
     virtual void buildGPDVector();
     virtual void buildGPDVector(NumA::FunctionTypeMD* pGPDFunction);
 
+    virtual void solve();
+
+    virtual double computeDD(double beta, double alpha) = 0;
+    virtual double computeGPD(double x, double xi) = 0;
+
     NumA::FunctionTypeMD* getGPDFunction() const;
     void setGPDFunction(NumA::FunctionTypeMD* pGPDFunction);
 

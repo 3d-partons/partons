@@ -12,6 +12,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <NumA/linear_algebra/matrix/MatrixD.h>
 
 #include "RadonInverseModule.h"
 
@@ -38,6 +39,11 @@ public:
 
     virtual void buildMatrix(size_t maxiter = 0);
 
+    virtual void solve();
+
+    virtual double computeDD(double beta, double alpha);
+    virtual double computeGPD(double x, double xi);
+
     bool isAlphaEven() const;
     void setAlphaEven(bool alphaEven);
     bool isValence() const;
@@ -63,6 +69,7 @@ protected:
      */
     virtual void buildMesh();
     std::vector<double> m_nodes; ///< Nodes in the u and v directions.
+    double m_step; ///< Discretization step in in u and v directions, i.e. size of a cell.
     /**
      * Builds the indices used (or not), with respect to the constraints (parity, valence, etc).
      */
@@ -80,6 +87,8 @@ protected:
      * @return
      */
     virtual double GPDOfMeshElement(double x, double xi, size_t i, size_t j);
+
+    NumA::MatrixD m_ddResult; ///< Result of the discretized DD on the mesh.
 
 private:
 };
