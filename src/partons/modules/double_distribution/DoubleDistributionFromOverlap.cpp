@@ -4,12 +4,14 @@
 #include <utility>
 
 #include "../../../../include/partons/beans/double_distribution/DoubleDistributionType.h"
+#include "../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 
 // Initialise [class]::classId with a unique name and selfregister this module into the global registry.
 const unsigned int DoubleDistributionFromOverlap::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
-                new DoubleDistributionFromOverlap("DoubleDistributionFromOverlap"));
+                new DoubleDistributionFromOverlap(
+                        "DoubleDistributionFromOverlap"));
 
 DoubleDistributionFromOverlap::DoubleDistributionFromOverlap(
         const std::string &className) :
@@ -36,13 +38,16 @@ DoubleDistributionFromOverlap::~DoubleDistributionFromOverlap() {
 
 DoubleDistributionFromOverlap::DoubleDistributionFromOverlap(
         const DoubleDistributionFromOverlap& other) :
-        DoubleDistributionModule(other){
+        DoubleDistributionModule(other) {
 
     // Copy each class variables ; see copy constructor from parent class "DualDistributionModule"
 }
 
 DoubleDistributionFromOverlap* DoubleDistributionFromOverlap::clone() const {
     return new DoubleDistributionFromOverlap(*this);
+}
+
+void DoubleDistributionFromOverlap::resolveObjectDependencies() {
 }
 
 void DoubleDistributionFromOverlap::initModule() {
