@@ -50,7 +50,7 @@ public:
     /**
      * Get subtraction constant module
      */
-    const GPDSubtractionConstantModule* getSubtractionConstantModule() const;
+    GPDSubtractionConstantModule* getSubtractionConstantModule() const;
 
     /**
      * Set subtraction constant module
