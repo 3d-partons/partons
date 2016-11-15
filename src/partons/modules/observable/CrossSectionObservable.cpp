@@ -38,7 +38,7 @@ CrossSectionObservable* CrossSectionObservable::clone() const {
     return new CrossSectionObservable(*this);
 }
 
-double CrossSectionObservable::compute(double phi) {
+double CrossSectionObservable::computePhiObservable(double phi) {
 //    double result = pDVCSModule->computeCrossSection(+1, -1,
 //            Vector3D(0., 1., 0.), phi);
 //    return result;
@@ -71,11 +71,11 @@ void CrossSectionObservable::configure(
     if (parameters.isAvailable(
             CrossSectionObservable::PARAMETER_NAME_TARGET_POLARIZATION)) {
 
-        std::string temp_str = parameters.getLastAvailable().toString();
+        std::string temp_str = parameters.getLastAvailable().getString();
         if (!temp_str.empty()) {
             std::vector<std::string> vectorPoints =
                     ElemUtils::StringUtils::split(
-                            parameters.getLastAvailable().toString(), '|');
+                            parameters.getLastAvailable().getString(), '|');
 
             if (vectorPoints.size() == 3) {
                 m_targetPolarization = NumA::Vector3D(

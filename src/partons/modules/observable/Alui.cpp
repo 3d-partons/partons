@@ -27,7 +27,7 @@ Alui* Alui::clone() const {
 }
 
 // optimisation remplacement des multiples appels similaires par A - B / A + B
-double Alui::compute(double phi) {
+double Alui::computePhiObservable(double phi) {
 
     double result = 0.;
 

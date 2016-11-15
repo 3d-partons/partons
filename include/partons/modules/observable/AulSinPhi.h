@@ -11,14 +11,15 @@
 #include <string>
 #include <vector>
 
-#include "FourierObservable.h"
+#include "../MathIntegratorModule.h"
+#include "Aul.h"
 
 /**
  * @class AulSinPhi
  *
  * @brief
  */
-class AulSinPhi: public FourierObservable {
+class AulSinPhi: public Aul, public MathIntegratorModule {
 public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
@@ -31,9 +32,7 @@ public:
      */
     virtual AulSinPhi* clone() const;
 
-    virtual double compute();
-
-    virtual void resolveObjectDependencies();
+    virtual double computeFourierObservable();
 
 protected:
     /**

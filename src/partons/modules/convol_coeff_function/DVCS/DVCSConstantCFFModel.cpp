@@ -1,7 +1,8 @@
 #include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSConstantCFFModel.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
-#include <ElementaryUtils/parameters/GenericType.h>
+//#include <ElementaryUtils/parameters/GenericType.h>
+#include <ElementaryUtils/parameters/Parameter.h>
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
@@ -82,7 +83,7 @@ std::complex<double> DVCSConstantCFFModel::computeCFF() {
 
     if (it == m_CFFs.end()) {
 
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "CFF of type "
                         << GPDType(m_currentGPDComputeType).toString()
                         << " is not supported by this class");
@@ -112,7 +113,7 @@ void DVCSConstantCFFModel::configure(const ElemUtils::Parameters &parameters) {
         isSetViaAll = true;
 
         // to string
-        std::string temp_str = parameters.getLastAvailable().toString();
+        std::string temp_str = parameters.getLastAvailable().getString();
 
         // check if not empty
         if (!temp_str.empty()) {
@@ -220,7 +221,7 @@ void DVCSConstantCFFModel::configure(const ElemUtils::Parameters &parameters) {
 }
 
 void DVCSConstantCFFModel::printErrorInConfigure(const std::string& key) const {
-    ElemUtils::CustomException(getClassName(), __func__,
+    throw ElemUtils::CustomException(getClassName(), __func__,
             ElemUtils::Formatter() << "Ambiguous way of setting CFF values via "
                     << DVCSConstantCFFModel::CFF_VALUES << " and " << key
                     << " keys");
@@ -236,7 +237,7 @@ void DVCSConstantCFFModel::configureValue(GPDType::Type gpdType,
     //check if not end
     if (it == m_CFFs.end()) {
 
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "CFF of type "
                         << GPDType(gpdType).toString()
                         << " is not supported by this class");
@@ -278,7 +279,7 @@ const std::complex<double>& DVCSConstantCFFModel::getCFF(
     //check if not end
     if (it == m_CFFs.end()) {
 
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "CFF of type "
                         << GPDType(gpdType).toString()
                         << " is not supported by this class");
@@ -298,7 +299,7 @@ void DVCSConstantCFFModel::setCFF(GPDType::Type gpdType,
     //check if not end
     if (it == m_CFFs.end()) {
 
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "CFF of type "
                         << GPDType(gpdType).toString()
                         << " is not supported by this class");

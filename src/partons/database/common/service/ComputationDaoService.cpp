@@ -23,7 +23,7 @@ int ComputationDaoService::insertWithoutTransaction(
             Partons::getInstance()->getEnvironmentConfiguration();
 
     if (pEnvironmentConfiguration == 0) {
-        ElemUtils::CustomException(getClassName(),__func__,
+        throw ElemUtils::CustomException(getClassName(),__func__,
                 "EnvironmentConfiguration object from Computation object is NULL pointer ; missing object");
     }
 

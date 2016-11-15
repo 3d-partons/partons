@@ -16,7 +16,7 @@ const QSqlDatabase& DatabaseManager::getProductionDatabase() {
     if (!m_productionDatabase.isOpen()) {
         warn(__func__, "Database connection is gone away");
         if (!m_productionDatabase.open()) {
-            ElemUtils::CustomException(getClassName(), __func__,
+            throw ElemUtils::CustomException(getClassName(), __func__,
                     ElemUtils::Formatter() << "Cannot re-open database : "
                             << m_productionDatabase.lastError().text().toStdString());
         } else {
@@ -47,7 +47,7 @@ DatabaseManager::DatabaseManager() :
     if (ElemUtils::StringUtils::equalsIgnoreCase(sqlDatabaseType, "MYSQL")) {
         m_productionDatabase = QSqlDatabase::addDatabase("QMYSQL");
     } else {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 "Unknown database type, please check your properties file");
     }
 
@@ -63,7 +63,7 @@ DatabaseManager::DatabaseManager() :
                     pPropertiesManager->getString("database.production.passwd").c_str()));
 
     if (!m_productionDatabase.open()) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "Can't connect to database : "
                         << m_productionDatabase.lastError().text().toStdString());
     } else {

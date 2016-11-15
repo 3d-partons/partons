@@ -12,6 +12,7 @@
  * @brief
  */
 
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <string>
 
 #include "ScaleModule.h"

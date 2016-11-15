@@ -11,7 +11,8 @@
 #include <string>
 #include <vector>
 
-#include "FourierObservable.h"
+#include "../MathIntegratorModule.h"
+#include "AluDVCS.h"
 
 /**
  * @class AluDVCSSin1phi
@@ -19,7 +20,7 @@
  * @brief
  * described in 1210.6975v3 [hep-ph] eq. (47) + (54)
  */
-class AluDVCSSin1phi: public FourierObservable {
+class AluDVCSSin1phi: public AluDVCS, public MathIntegratorModule {
 public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
@@ -32,9 +33,7 @@ public:
      */
     virtual AluDVCSSin1phi* clone() const;
 
-    virtual double compute();
-
-    virtual void resolveObjectDependencies();
+    virtual double computeFourierObservable();
 
 protected:
     /**

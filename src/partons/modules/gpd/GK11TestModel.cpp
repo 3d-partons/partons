@@ -1,6 +1,7 @@
 #include "../../../../include/partons/modules/gpd/GK11TestModel.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
@@ -213,7 +214,7 @@ void GK11TestModel::initFunctorsForIntegrations() {
 
 void GK11TestModel::throwBetaException(const std::string &funcName,
         double betaValue) {
-    ElemUtils::CustomException(getClassName(), funcName,
+    throw ElemUtils::CustomException(getClassName(), funcName,
             ElemUtils::Formatter()
                     << "Longitudinal momentum fraction should be in ] 0., +1. ]"
                     << '\n' << "Here beta = " << betaValue << '\n');

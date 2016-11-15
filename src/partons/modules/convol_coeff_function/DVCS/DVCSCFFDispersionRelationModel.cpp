@@ -3,7 +3,6 @@
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/logger/LoggerManager.h>
 #include <ElementaryUtils/parameters/GenericType.h>
-#include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/functor/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
@@ -109,12 +108,12 @@ void DVCSCFFDispersionRelationModel::configure(
 
         m_pSubtractionConstantModule =
                 Partons::getInstance()->getModuleObjectFactory()->newGPDSubtractionConstantModule(
-                        parameters.getLastAvailable().toString());
+                        parameters.getLastAvailable().getString());
 
         Partons::getInstance()->getLoggerManager()->info(getClassName(),
                 __func__,
                 ElemUtils::Formatter() << "Subtraction constant module set to "
-                        << parameters.getLastAvailable().toString());
+                        << parameters.getLastAvailable().getString());
     }
 
     DVCSConvolCoeffFunctionModule::configure(parameters);
@@ -143,7 +142,7 @@ std::complex<double> DVCSCFFDispersionRelationModel::computeUnpolarized() {
 
     //check pQCD order
     if (m_qcdOrderType != PerturbativeQCDOrderType::LO) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
                         << "Calculation not supported for pQCD order = "
                         << PerturbativeQCDOrderType(m_qcdOrderType).toString());
@@ -151,7 +150,7 @@ std::complex<double> DVCSCFFDispersionRelationModel::computeUnpolarized() {
 
     //check if null
     if (m_pSubtractionConstantModule == 0) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 "SubtractionConstantModule not set");
     }
 
@@ -186,7 +185,7 @@ std::complex<double> DVCSCFFDispersionRelationModel::computePolarized() {
 
     //check pQCD order
     if (m_qcdOrderType != PerturbativeQCDOrderType::LO) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
                         << "Calculation not supported for pQCD order = "
                         << PerturbativeQCDOrderType(m_qcdOrderType).toString());
@@ -240,7 +239,7 @@ double DVCSCFFDispersionRelationModel::dispersionRelationIntegralPartDiagonalB(
     return computeSquareChargeAveragedGPD(xi) / (m_xi + xi);
 }
 
-const GPDSubtractionConstantModule* DVCSCFFDispersionRelationModel::getSubtractionConstantModule() const {
+GPDSubtractionConstantModule* DVCSCFFDispersionRelationModel::getSubtractionConstantModule() const {
     return m_pSubtractionConstantModule;
 }
 

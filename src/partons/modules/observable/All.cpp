@@ -27,7 +27,7 @@ All* All::clone() const {
 }
 
 
-double All::compute(double phi) {
+double All::computePhiObservable(double phi) {
 
     double result = 0.;
 

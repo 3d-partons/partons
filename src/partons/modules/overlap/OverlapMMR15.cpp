@@ -5,6 +5,9 @@
 #include <utility>
 
 #include "../../../../include/partons/beans/gpd/GPDType.h"
+#include "../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
+#include "../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
+#include "../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 
 // Initialise [class]::classId with a unique name.
@@ -15,8 +18,6 @@ const unsigned int OverlapMMR15::classId =
 //TODO initialise missing members
 OverlapMMR15::OverlapMMR15(const std::string &className) :
         IncompleteGPDModule(className) {
-    setKinematicRegion(DGLAP_REGION);
-
     m_listGPDComputeTypeAvailable.insert(
             std::make_pair(GPDType::H, &IncompleteGPDModule::computeH));
 }
@@ -44,6 +45,13 @@ void OverlapMMR15::isModuleWellConfigured() {
 
 bool OverlapMMR15::isInKinematicRegion(double x, double xi) {
     return (fabs(x) >= fabs(xi) and fabs(x) <= 1);
+}
+
+void OverlapMMR15::resolveObjectDependencies() {
+    // Cause of random static variable resolution
+    // Kinematic region must be set after the resolution of all static variables
+    // Cannot be done into the constructor.
+    setKinematicRegion(IncompleteGPDModule::DGLAP_REGION);
 }
 
 void OverlapMMR15::initModule() {

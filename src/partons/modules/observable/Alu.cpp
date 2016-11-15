@@ -27,7 +27,7 @@ Alu* Alu::clone() const {
 }
 
 // optimisation remplacement des multiples appels similaires par A - B / A + B
-double Alu::compute(double phi) {
+double Alu::computePhiObservable(double phi) {
     double result = 0.;
 
     double A = m_pProcessModule->computeCrossSection(+1, -1,

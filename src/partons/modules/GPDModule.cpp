@@ -2,7 +2,6 @@
 
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/parameters/GenericType.h>
-#include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/thread/Packet.h>
 #include <math.h>
@@ -11,10 +10,13 @@
 
 #include "../../../include/partons/beans/gpd/GPDResult.h"
 #include "../../../include/partons/modules/evolution/GPDEvolutionModule.h"
+#include "../../../include/partons/ModuleObjectFactory.h"
 #include "../../../include/partons/Partons.h"
 #include "../../../include/partons/services/GPDService.h"
 #include "../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../include/partons/ServiceObjectTyped.h"
+
+const std::string GPDModule::GPD_MODULE_CLASS_NAME = "GPDModule";
 
 const std::string GPDModule::GPD_TYPE = "GPD_MODULE_GPD_TYPE";
 
@@ -56,7 +58,10 @@ GPDModule::GPDModule(const GPDModule &other) :
 }
 
 GPDModule::~GPDModule() {
-    //TODO Remove GPDEvolution pointer
+    if (m_pGPDEvolutionModule) {
+        delete m_pGPDEvolutionModule;
+        m_pGPDEvolutionModule = 0;
+    }
 }
 
 void GPDModule::configure(const ElemUtils::Parameters &parameters) {
@@ -158,7 +163,7 @@ PartonDistribution GPDModule::compute(double x, double xi, double t,
             partonDistribution = ((*this).*(m_it->second))();
         }
     } else {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "GPD("
                         << GPDType(m_gpdType).toString()
                         << ") is not available for this GPD model");
@@ -169,21 +174,24 @@ PartonDistribution GPDModule::compute(double x, double xi, double t,
     return partonDistribution;
 }
 
-//TODO implement
 PartonDistribution GPDModule::computeH() {
-    throw std::runtime_error("");
+    throw ElemUtils::CustomException(getClassName(), __func__,
+            "Check your implementation  ; must be implemented in daughter class");
 }
 
 PartonDistribution GPDModule::computeE() {
-    throw std::runtime_error("");
+    throw ElemUtils::CustomException(getClassName(), __func__,
+            "Check your implementation  ; must be implemented in daughter class");
 }
 
 PartonDistribution GPDModule::computeHt() {
-    throw std::runtime_error("");
+    throw ElemUtils::CustomException(getClassName(), __func__,
+            "Check your implementation  ; must be implemented in daughter class");
 }
 
 PartonDistribution GPDModule::computeEt() {
-    throw std::runtime_error("");
+    throw ElemUtils::CustomException(getClassName(), __func__,
+            "Check your implementation  ; must be implemented in daughter class");
 }
 
 unsigned int GPDModule::getNf() const {
@@ -303,4 +311,67 @@ List<GPDType> GPDModule::getListOfAvailableGPDTypeForComputation() const {
     }
 
     return listOfAvailableGPDTypeForComputation;
+}
+
+//TODO replace hardcoded module name
+//void GPDModule::prepareComputationConfiguration(
+//        const List<ElemUtils::Parameter>& moduleNameList,
+//        const unsigned int level) {
+//    if (level < moduleNameList.size()) {
+//        if (ElemUtils::StringUtils::equals(moduleNameList[level].getName(),
+//                "GPDEvolutionModule")) {
+//            prepareGPDEvolutionModule(moduleNameList, level);
+//        }
+//    }
+//}
+//
+//void GPDModule::prepareGPDEvolutionModule(
+//        const List<ElemUtils::Parameter>& moduleNameList, unsigned int level) {
+//    if (m_pGPDEvolutionModule) {
+//        if (!ElemUtils::StringUtils::equals(
+//                m_pGPDEvolutionModule->getClassName(),
+//                moduleNameList[level].getString())) {
+//            delete m_pGPDEvolutionModule;
+//            m_pGPDEvolutionModule = 0;
+//        }
+//    }
+//
+//    if (!m_pGPDEvolutionModule) {
+//        m_pGPDEvolutionModule =
+//                Partons::getInstance()->getModuleObjectFactory()->newGPDEvolutionModule(
+//                        moduleNameList[level].getString());
+//    }
+//
+//    // m_pGPDEvolutionModule->prepareComputationConfiguration(moduleNameList, ++level);
+//}
+
+void GPDModule::prepareSubModules(
+        const std::map<std::string, BaseObjectData>& subModulesData) {
+
+    std::map<std::string, BaseObjectData>::const_iterator it;
+
+    it = subModulesData.find(
+            GPDEvolutionModule::GPD_EVOLUTION_MODULE_CLASS_NAME);
+
+    if (it != subModulesData.end()) {
+        if (m_pGPDEvolutionModule) {
+            delete m_pGPDEvolutionModule;
+            m_pGPDEvolutionModule = 0;
+        }
+        if (!m_pGPDEvolutionModule) {
+            m_pGPDEvolutionModule =
+                    Partons::getInstance()->getModuleObjectFactory()->newGPDEvolutionModule(
+                            (it->second).getModuleClassName());
+
+            info(__func__,
+                    ElemUtils::Formatter()
+                            << "Configure with GPDEvolutionModule = "
+                            << m_pGPDEvolutionModule->getClassName());
+
+            m_pGPDEvolutionModule->configure((it->second).getParameters());
+
+            //TODO implement
+            // m_pGPDEvolutionModule->prepareSubModules((it->second).getSubModules());
+        }
+    }
 }

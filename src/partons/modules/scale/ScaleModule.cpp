@@ -1,5 +1,7 @@
 #include "../../../../include/partons/modules/scale/ScaleModule.h"
 
+const std::string ScaleModule::SCALE_MODULE_CLASS_NAME = "ScaleModule";
+
 ScaleModule::ScaleModule(const std::string &className) :
         ModuleObject(className) {
 }
@@ -22,4 +24,9 @@ void ScaleModule::isModuleWellConfigured() {
 
 void ScaleModule::configure(const ElemUtils::Parameters &parameters) {
     ModuleObject::configure(parameters);
+}
+
+void ScaleModule::prepareSubModules(
+        const std::map<std::string, BaseObjectData>& subModulesData) {
+    // Nothing to do.
 }

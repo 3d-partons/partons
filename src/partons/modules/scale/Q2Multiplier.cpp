@@ -1,7 +1,6 @@
 #include "../../../../include/partons/modules/scale/Q2Multiplier.h"
 
 #include <ElementaryUtils/parameters/GenericType.h>
-#include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 
 #include "../../../../include/partons/beans/Scale.h"
@@ -47,10 +46,6 @@ void Q2Multiplier::initModule() {
 
 void Q2Multiplier::isModuleWellConfigured() {
     ScaleModule::isModuleWellConfigured();
-
-//    if (m_lambda == 1.) {
-//        warn(__func__, Formatter() << "m_lambda = " << m_lambda);
-//    }
 }
 
 void Q2Multiplier::configure(const ElemUtils::Parameters &parameters) {

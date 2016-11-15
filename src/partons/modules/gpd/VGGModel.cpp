@@ -1,6 +1,7 @@
 #include "../../../../include/partons/modules/gpd/VGGModel.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/PropertiesManager.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <math.h>
@@ -467,7 +468,7 @@ double VGGModel::offforward_distr() {
 
     default: {
 
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "GPD = " << gpd_s5 << " not defined");
     }
         break;
@@ -509,7 +510,7 @@ double VGGModel::symm_double_distr_reggeH(double beta, double alpha) {
     //check beta range
     if (beta <= 0.) {
 
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "alpha = " << alpha << ", beta = "
                         << beta << ", argument 0 or negative");
     }
@@ -561,7 +562,7 @@ double VGGModel::symm_double_distr_reggeH(double beta, double alpha) {
 
     default: {
 
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "Flavour = " << flavour_s5
                         << " not defined");
     }
@@ -578,7 +579,7 @@ double VGGModel::symm_double_distr_reggeE(double beta, double alpha) {
     //check beta range
     if (beta <= 0.) {
 
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "alpha = " << alpha << ", beta = "
                         << beta << ", argument 0 or negative");
     }
@@ -614,7 +615,7 @@ double VGGModel::symm_double_distr_reggeE(double beta, double alpha) {
 
     default: {
 
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "Flavour = " << flavour_s5
                         << " not defined");
     }
@@ -667,7 +668,7 @@ double VGGModel::int_mom2_up_valence_e(double beta, std::vector<double> par) {
     //check beta range
     if (beta <= 0.) {
 
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "x = " << beta
                         << ", argument 0 or negative");
     }
@@ -699,7 +700,7 @@ double VGGModel::int_mom2_up_valence_e(double beta, std::vector<double> par) {
 
     default: {
 
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "Flavour = " << flavour_s5
                         << " not defined");
     }
@@ -739,7 +740,7 @@ double VGGModel::offforward_pol_distr() {
 
     default: {
 
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "GPD = " << gpd_s5 << " not defined");
     }
         break;
@@ -795,7 +796,7 @@ double VGGModel::symm_double_distr_reggeHt(double beta, double alpha) {
     //check beta range
     if (beta <= 0.) {
 
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "alpha = " << alpha << ", beta = "
                         << beta << ", argument 0 or negative");
     }
@@ -839,7 +840,7 @@ double VGGModel::symm_double_distr_reggeHt(double beta, double alpha) {
 
     default: {
 
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "Flavour = " << flavour_s5
                         << " not defined");
     }

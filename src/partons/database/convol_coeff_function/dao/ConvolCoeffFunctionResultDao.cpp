@@ -38,7 +38,7 @@ int ConvolCoeffFunctionResultDao::insert(
     if (query.exec()) {
         result = query.lastInsertId().toInt();
     } else {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
@@ -63,7 +63,7 @@ int ConvolCoeffFunctionResultDao::insertIntoCCFResultComplex(const int realPart,
     if (query.exec()) {
         result = query.lastInsertId().toInt();
     } else {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());

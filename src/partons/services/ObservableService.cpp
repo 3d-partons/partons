@@ -8,6 +8,7 @@
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <ElementaryUtils/thread/Packet.h>
 
+#include "../../../include/partons/beans/automation/BaseObjectData.h"
 #include "../../../include/partons/beans/automation/Task.h"
 #include "../../../include/partons/beans/KinematicUtils.h"
 #include "../../../include/partons/beans/system/ResultInfo.h"
@@ -15,13 +16,12 @@
 #include "../../../include/partons/database/observable/service/ObservableResultDaoService.h"
 #include "../../../include/partons/modules/observable/Observable.h"
 #include "../../../include/partons/modules/process/DVCSModule.h"
-#include "../../../include/partons/modules/scale/ScaleModule.h"
-#include "../../../include/partons/modules/xb_to_xi/XiConverterModule.h"
 #include "../../../include/partons/ModuleObjectFactory.h"
 #include "../../../include/partons/Partons.h"
-#include "../../../include/partons/services/ConvolCoeffFunctionService.h"
-#include "../../../include/partons/ServiceObjectRegistry.h"
-#include "../../../include/partons/utils/exceptions/CCFModuleNullPointerException.h"
+
+//#include "../../../include/partons/services/ConvolCoeffFunctionService.h"
+//#include "../../../include/partons/ServiceObjectRegistry.h"
+//#include "../../../include/partons/utils/exceptions/CCFModuleNullPointerException.h"
 
 const std::string ObservableService::FUNCTION_NAME_COMPUTE_OBSERVABLE =
         "computeObservable";
@@ -159,21 +159,13 @@ List<ObservableResult> ObservableService::computeManyKinematicOneModel(
 ObservableResult ObservableService::computeObservableTask(Task& task) {
 
     //create a Kinematic and init it with a list of parameters
-    ObservableKinematic kinematic;
-
-    if (task.isAvailableParameters("ObservableKinematic")) {
-        kinematic = ObservableKinematic(task.getLastAvailableParameters());
-    } else {
-        ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter()
-                        << "Missing object : <ObservableKinematic> for method "
-                        << task.getFunctionName());
-    }
+    ObservableKinematic kinematic = newKinematicFromTask(task);
 
     List<GPDType> listOfGPDType;
     try {
         listOfGPDType = getGPDTypeListFromTask(task);
     } catch (const ElemUtils::CustomException &e) {
+        //TODO why ?
         //Nothing to do
     }
 
@@ -185,26 +177,8 @@ ObservableResult ObservableService::computeObservableTask(Task& task) {
 List<ObservableResult> ObservableService::computeManyKinematicOneModelTask(
         Task& task) {
 
-    List<ObservableKinematic> listOfKinematic;
-
-    if (task.isAvailableParameters("ObservableKinematic")) {
-        ElemUtils::Parameters parameters = task.getLastAvailableParameters();
-        if (parameters.isAvailable("file")) {
-            listOfKinematic = KinematicUtils().getObservableKinematicFromFile(
-                    parameters.getLastAvailable().toString());
-        } else {
-            ElemUtils::CustomException(getClassName(), __func__,
-                    ElemUtils::Formatter()
-                            << "Missing parameter file in object <ObservableKinematic> for method "
-                            << task.getFunctionName());
-        }
-
-    } else {
-        ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter()
-                        << "Missing object : <ObservableKinematic> for method "
-                        << task.getFunctionName());
-    }
+    List<ObservableKinematic> listOfKinematic = newListOfKinematicFromTask(
+            task);
 
     List<GPDType> listOfGPDType;
     try {
@@ -240,126 +214,226 @@ ObservableResult ObservableService::computeObservable(
 //TODO refactoring string exception, wrong xml element name
 Observable* ObservableService::newObservableModuleFromTask(
         const Task& task) const {
-    // create ScaleModule
-    ScaleModule* pScaleModule = 0;
-
-    if (task.isAvailableParameters("ScaleModule")) {
-        pScaleModule =
-                m_pModuleObjectFactory->newScaleModule(
-                        task.getLastAvailableParameters().get(
-                                ModuleObject::CLASS_NAME).toString());
-        pScaleModule->configure(task.getLastAvailableParameters());
-    } else {
-        ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter()
-                        << "Missing object : <ScaleModule> for method "
-                        << task.getFunctionName());
-    }
-
-    // create XiConverterModule
-    XiConverterModule* pXiConverterModule = 0;
-
-    if (task.isAvailableParameters("XiConverterModule")) {
-        pXiConverterModule =
-                m_pModuleObjectFactory->newXiConverterModule(
-                        task.getLastAvailableParameters().get(
-                                ModuleObject::CLASS_NAME).toString());
-        pXiConverterModule->configure(task.getLastAvailableParameters());
-    } else {
-        ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter()
-                        << "Missing object : <XiConverterModule> for method "
-                        << task.getFunctionName());
-    }
 
     Observable* pObservable = 0;
 
-    if (task.isAvailableParameters("Observable")) {
+    //TODO remove hardcoded string
+    if (ElemUtils::StringUtils::equals(
+            task.getModuleComputationConfiguration().getModuleType(),
+            "Observable")) {
         pObservable =
-                m_pModuleObjectFactory->newObservable(
-                        task.getLastAvailableParameters().get(
-                                ModuleObject::CLASS_NAME).toString());
-        pObservable->configure(task.getLastAvailableParameters());
+                Partons::getInstance()->getModuleObjectFactory()->newObservable(
+                        task.getModuleComputationConfiguration().getModuleClassName());
+
+        pObservable->configure(
+                task.getModuleComputationConfiguration().getParameters());
+
+        pObservable->prepareSubModules(
+                task.getModuleComputationConfiguration().getSubModules());
     } else {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
-                        << "Missing object : <Observable> for method "
-                        << task.getFunctionName());
+                        << "You have not provided any Observable");
     }
 
-    ProcessModule* pProcessModule = newProcessModuleFromTask(task);
+    return pObservable;
 
-    //TODO how to remove it and autoconfigure ?
-    pProcessModule->setPScaleModule(pScaleModule);
-    pProcessModule->setPXiConverterModule(pXiConverterModule);
-
-    return configureObservable(pObservable, pProcessModule);
+//    // create ScaleModule
+//    ScaleModule* pScaleModule = 0;
+//
+//    if (task.isAvailableParameters("ScaleModule")) {
+//        pScaleModule =
+//                m_pModuleObjectFactory->newScaleModule(
+//                        task.getLastAvailableParameters().get(
+//                                ModuleObject::CLASS_NAME).getString());
+//        pScaleModule->configure(task.getLastAvailableParameters());
+//    } else {
+//       throw ElemUtils::CustomException(getClassName(), __func__,
+//                ElemUtils::Formatter()
+//                        << "Missing object : <ScaleModule> for method "
+//                        << task.getFunctionName());
+//    }
+//
+//    // create XiConverterModule
+//    XiConverterModule* pXiConverterModule = 0;
+//
+//    if (task.isAvailableParameters("XiConverterModule")) {
+//        pXiConverterModule =
+//                m_pModuleObjectFactory->newXiConverterModule(
+//                        task.getLastAvailableParameters().get(
+//                                ModuleObject::CLASS_NAME).getString());
+//        pXiConverterModule->configure(task.getLastAvailableParameters());
+//    } else {
+//       throw ElemUtils::CustomException(getClassName(), __func__,
+//                ElemUtils::Formatter()
+//                        << "Missing object : <XiConverterModule> for method "
+//                        << task.getFunctionName());
+//    }
+//
+//    Observable* pObservable = 0;
+//
+//    if (task.isAvailableParameters("Observable")) {
+//        pObservable =
+//                m_pModuleObjectFactory->newObservable(
+//                        task.getLastAvailableParameters().get(
+//                                ModuleObject::CLASS_NAME).getString());
+//        pObservable->configure(task.getLastAvailableParameters());
+//    } else {
+//       throw ElemUtils::CustomException(getClassName(), __func__,
+//                ElemUtils::Formatter()
+//                        << "Missing object : <Observable> for method "
+//                        << task.getFunctionName());
+//    }
+//
+//    ProcessModule* pProcessModule = newProcessModuleFromTask(task);
+//
+//    //TODO how to remove it and autoconfigure ?
+//    pProcessModule->setPScaleModule(pScaleModule);
+//    pProcessModule->setPXiConverterModule(pXiConverterModule);
+//
+//    return configureObservable(pObservable, pProcessModule);
 }
 
 ProcessModule* ObservableService::newProcessModuleFromTask(
         const Task& task) const {
-    DVCSModule* pDVCSModule = 0;
+    DVCSModule* pProcessModule = 0;
 
-    if (task.isAvailableParameters("DVCSModule")) {
-        pDVCSModule =
-                m_pModuleObjectFactory->newDVCSModule(
-                        task.getLastAvailableParameters().get(
-                                ModuleObject::CLASS_NAME).toString());
-        pDVCSModule->configure(task.getLastAvailableParameters());
-    }
+    //TODO remove hardcoded string
+    if (ElemUtils::StringUtils::equals(
+            task.getModuleComputationConfiguration().getModuleType(),
+            "ProcessModule")) {
+        pProcessModule =
+                Partons::getInstance()->getModuleObjectFactory()->newProcessModule(
+                        task.getModuleComputationConfiguration().getModuleClassName());
 
-    ConvolCoeffFunctionModule* pConvolCoeffFunctionModule = 0;
+        pProcessModule->configure(
+                task.getModuleComputationConfiguration().getParameters());
 
-    try {
-        pConvolCoeffFunctionModule =
-                Partons::getInstance()->getServiceObjectRegistry()->getConvolCoeffFunctionService()->newConvolCoeffFunctionModuleFromTask(
-                        task);
-    } catch (const CCFModuleNullPointerException &e) {
-        // Nothing to do.
-        // An exception is raised if <ConvolCoeffFunctionModule> element cannot be found in the task parameterList, but in this case a ProcessModule can be ConvolCoeffFunctionModule independent.
-        // So just catch the exception and continue to run the program.
-    }
-
-    return configureProcessModule(pDVCSModule, pConvolCoeffFunctionModule);
-}
-
-Observable* ObservableService::configureObservable(Observable* pObservable,
-        ProcessModule* pProcessModule) const {
-
-    if (pObservable == 0) {
-        ElemUtils::CustomException(getClassName(), __func__,
-                "You have not provided any Observable");
-    }
-
-    pObservable->setProcessModule(pProcessModule);
-
-    return pObservable;
-}
-
-ProcessModule* ObservableService::configureProcessModule(
-        ProcessModule* pProcessModule,
-        ConvolCoeffFunctionModule* pConvolCoeffFunctionModule) const {
-
-    if (pProcessModule == 0) {
-        ElemUtils::CustomException(getClassName(), __func__,
-                "You have not provided any ProcessModule");
-    }
-
-    if (pProcessModule->isCCFModuleDependent()) {
-        if (pConvolCoeffFunctionModule == 0) {
-            ElemUtils::CustomException(getClassName(), __func__,
-                    "This ProcessModule is ConvolCoeffFunctionModule dependent but you have not provided any ConvolCoeffFunctionModule");
-        }
-
-        pProcessModule->setConvolCoeffFunctionModule(
-                pConvolCoeffFunctionModule);
+        pProcessModule->prepareSubModules(
+                task.getModuleComputationConfiguration().getSubModules());
+    } else {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter()
+                        << "You have not provided any ProcessModule");
     }
 
     return pProcessModule;
+
+//    DVCSModule* pDVCSModule = 0;
+//
+//    if (task.isAvailableParameters("DVCSModule")) {
+//        pDVCSModule =
+//                m_pModuleObjectFactory->newDVCSModule(
+//                        task.getLastAvailableParameters().get(
+//                                ModuleObject::CLASS_NAME).getString());
+//        pDVCSModule->configure(task.getLastAvailableParameters());
+//    }
+//
+//    ConvolCoeffFunctionModule* pConvolCoeffFunctionModule = 0;
+//
+//    try {
+//        pConvolCoeffFunctionModule =
+//                Partons::getInstance()->getServiceObjectRegistry()->getConvolCoeffFunctionService()->newConvolCoeffFunctionModuleFromTask(
+//                        task);
+//    } catch (const CCFModuleNullPointerException &e) {
+//        // Nothing to do.
+//        // An exception is raised if <ConvolCoeffFunctionModule> element cannot be found in the task parameterList, but in this case a ProcessModule can be ConvolCoeffFunctionModule independent.
+//        // So just catch the exception and continue to run the program.
+//    }
+//
+//    return configureProcessModule(pDVCSModule, pConvolCoeffFunctionModule);
 }
+
+//Observable* ObservableService::configureObservable(Observable* pObservable,
+//        ProcessModule* pProcessModule) const {
+//
+//    if (pObservable == 0) {
+//       throw ElemUtils::CustomException(getClassName(), __func__,
+//                "You have not provided any Observable");
+//    }
+//
+//    pObservable->setProcessModule(pProcessModule);
+//
+//    return pObservable;
+//}
+//
+//ProcessModule* ObservableService::configureProcessModule(
+//        ProcessModule* pProcessModule,
+//        ConvolCoeffFunctionModule* pConvolCoeffFunctionModule) const {
+//
+//    if (pProcessModule == 0) {
+//       throw ElemUtils::CustomException(getClassName(), __func__,
+//                "You have not provided any ProcessModule");
+//    }
+//
+//    if (pProcessModule->isCCFModuleDependent()) {
+//        if (pConvolCoeffFunctionModule == 0) {
+//          throw  ElemUtils::CustomException(getClassName(), __func__,
+//                    "This ProcessModule is ConvolCoeffFunctionModule dependent but you have not provided any ConvolCoeffFunctionModule");
+//        }
+//
+//        pProcessModule->setConvolCoeffFunctionModule(
+//                pConvolCoeffFunctionModule);
+//    }
+//
+//    return pProcessModule;
+//}
 
 void ObservableService::generatePlotFileTask(Task& task) {
     generatePlotFile(getOutputFilePathForPlotFileTask(task),
             generateSQLQueryForPlotFileTask(task, "observable_plot_2d_view"),
             ' ');
+}
+
+//TODO remove hardcoded string
+ObservableKinematic ObservableService::newKinematicFromTask(
+        const Task& task) const {
+    //create a kinematic and init it with a list of parameters
+    ObservableKinematic kinematic;
+
+    if (ElemUtils::StringUtils::equals(
+            task.getKinematicsData().getModuleClassName(),
+            "ObservableKinematic")) {
+        kinematic = ObservableKinematic(
+                task.getKinematicsData().getParameters());
+    } else {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter()
+                        << "Missing object : <ObservableKinematic> for method "
+                        << task.getFunctionName());
+    }
+
+    return kinematic;
+}
+
+//TODO remove hardcoded string
+List<ObservableKinematic> ObservableService::newListOfKinematicFromTask(
+        const Task& task) const {
+
+    List<ObservableKinematic> listOfKinematic;
+
+    if (ElemUtils::StringUtils::equals(
+            task.getKinematicsData().getModuleClassName(),
+            "ObservableKinematic")) {
+
+        ElemUtils::Parameters parameters =
+                task.getKinematicsData().getParameters();
+
+        if (task.getKinematicsData().getParameters().isAvailable("file")) {
+            listOfKinematic = KinematicUtils().getObservableKinematicFromFile(
+                    parameters.getLastAvailable().getString());
+        } else {
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    ElemUtils::Formatter()
+                            << "Missing parameter file in object <ObservableKinematic> for method "
+                            << task.getFunctionName());
+        }
+    } else {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter()
+                        << "Missing object : <ObservableKinematic> for method "
+                        << task.getFunctionName());
+    }
+
+    return listOfKinematic;
 }

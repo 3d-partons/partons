@@ -10,7 +10,6 @@
 #include "../../../../include/partons/beans/dse/GluonPropagator.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
-//#include <ElementaryUtils/string_utils/Formatter.h>
 #include <cmath>
 
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
@@ -68,7 +67,7 @@ double GluonPropagator::getC() const {
 
 void GluonPropagator::setC(double w, double c) {
     if (w <= 0.) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 "w must be positive!");
     }
     m_w = w;
@@ -85,7 +84,7 @@ double GluonPropagator::getD() const {
 
 void GluonPropagator::setD(double w, double D) {
     if (w <= 0.) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 "w must be positive!");
     }
     m_w = w;
@@ -102,7 +101,7 @@ double GluonPropagator::getI() const {
 
 void GluonPropagator::setI(double w, double I) {
     if (w <= 0.) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 "w must be positive!");
     }
     m_w = w;

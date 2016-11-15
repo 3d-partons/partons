@@ -8,10 +8,9 @@
  * @version 1.0
  */
 
-#include <ElementaryUtils/parameters/MultimapParameters.h>
 #include <string>
 
-#include "../../BaseObject.h"
+#include "BaseObjectData.h"
 
 class Scenario;
 
@@ -20,7 +19,7 @@ class Scenario;
  *
  * @brief
  */
-class Task: public BaseObject, public ElemUtils::MultimapParameters {
+class Task: public BaseObject {
 public:
     /**
      * Default constructor
@@ -32,6 +31,10 @@ public:
      */
     virtual ~Task();
 
+    virtual std::string toString() const;
+
+    // ##### GETTERS & SETTERS #####
+
     const std::string& getFunctionName() const;
     void setFunctionName(const std::string& functionName);
 
@@ -41,16 +44,21 @@ public:
     bool isStoreInDB() const;
     void setStoreInDB(bool storeInDb);
 
-    const ElemUtils::MultimapParameters& getObjectsParameters() const;
-    ElemUtils::MultimapParameters& getObjectsParameters();
-
     unsigned int getScenarioTaskIndexNumber() const;
     void setScenarioTaskIndexNumber(unsigned int scenarioTaskIndexNumber);
 
-    virtual std::string toString() const;
-
     Scenario* getScenario() const;
     void setScenario(Scenario* pScenario);
+
+    const BaseObjectData& getModuleComputationConfiguration() const;
+    void setModuleComputationConfiguration(
+            const BaseObjectData& moduleComputationConfiguration);
+
+    const BaseObjectData& getKinematicsData() const;
+    void setKinematicsData(const BaseObjectData& kinematicsData);
+
+    const BaseObjectData& getTaskParameters() const;
+    void setTaskParameters(const BaseObjectData& taskParameters);
 
 private:
     Scenario* m_pScenario; ///< reference to the scenario that hold this task.
@@ -60,6 +68,10 @@ private:
     bool m_storeInDB; ///<
 
     unsigned int m_scenarioTaskIndexNumber;
+
+    BaseObjectData m_moduleComputationConfiguration;
+    BaseObjectData m_kinematicsData;
+    BaseObjectData m_taskParameters;
 };
 
 #endif /* TASK_H */

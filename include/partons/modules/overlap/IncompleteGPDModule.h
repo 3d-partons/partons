@@ -8,9 +8,11 @@
 #ifndef INCOMPLETEGPDMODULE_H_
 #define INCOMPLETEGPDMODULE_H_
 
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <map>
 #include <string>
 
+#include "../../beans/automation/BaseObjectData.h"
 #include "../../beans/gpd/GPDKinematic.h"
 #include "../../beans/gpd/GPDType.h"
 #include "../../beans/List.h"
@@ -80,6 +82,9 @@ public:
     virtual PartonDistribution computeEt();
 
     virtual std::string toString();
+
+    void prepareSubModules(
+            const std::map<std::string, BaseObjectData>& subModulesData);
 
     // ##### GETTERS & SETTERS #####
 

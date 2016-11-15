@@ -31,7 +31,7 @@ ConvolCoeffFunctionResultDaoService::ConvolCoeffFunctionResultDaoService() :
             m_lastCCFKinematicId = query.value(0).toInt();
         }
     } else {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
@@ -43,7 +43,7 @@ ConvolCoeffFunctionResultDaoService::ConvolCoeffFunctionResultDaoService() :
             m_lastCCFResultId = query.value(0).toInt();
         }
     } else {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
@@ -56,7 +56,7 @@ ConvolCoeffFunctionResultDaoService::ConvolCoeffFunctionResultDaoService() :
             m_lastCCFResultComplexId = query.value(0).toInt();
         }
     } else {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
@@ -83,7 +83,7 @@ int ConvolCoeffFunctionResultDaoService::insert(
         QSqlDatabase::database().commit();
 
     } catch (std::exception &e) {
-        ElemUtils::CustomException(getClassName(), __func__, e.what());
+        throw ElemUtils::CustomException(getClassName(), __func__, e.what());
 
         // Else return database in a stable state : n-1
         QSqlDatabase::database().rollback();

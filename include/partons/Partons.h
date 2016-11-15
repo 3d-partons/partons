@@ -63,6 +63,8 @@ public:
     ElemUtils::LoggerManager* getLoggerManager() const;
     EnvironmentConfiguration* getEnvironmentConfiguration() const;
 
+    //TODO vérifier tous les ElemUtils::CustomException des fois il manque la directive throw.
+
 private:
     /**
      * Private pointer of this class for a unique instance

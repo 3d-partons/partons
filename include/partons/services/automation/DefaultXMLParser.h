@@ -6,10 +6,6 @@
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date April 01, 2016
  * @version 1.0
- *
- * @class DefaultXMLParser
- *
- * @brief
  */
 
 #include <ElementaryUtils/parser/XMLParser.h>
@@ -17,6 +13,11 @@
 
 #include "XMLParserI.h"
 
+/**
+ * @class DefaultXMLParser
+ *
+ * @brief
+ */
 class DefaultXMLParser: public XMLParserI, public ElemUtils::XMLParser {
 public:
     DefaultXMLParser();
@@ -28,6 +29,9 @@ public:
             ElemUtils::XMLAttributs attributes, const std::string &elementData);
 
     virtual void endElement(const std::string &elementName);
+
+private:
+    bool m_isModuleNodePreviouslyCreated;
 };
 
 #endif /* DEFAULT_XML_PARSER_H */

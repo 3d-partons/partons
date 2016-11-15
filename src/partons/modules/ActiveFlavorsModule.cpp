@@ -102,7 +102,7 @@ void ActiveFlavorsModule::isModuleWellConfigured() {
 void ActiveFlavorsModule::checkCurveIntegrity() {
     // first vector must have at least one entry
     if (m_nfFunctionOfMu.empty()) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 "there is no nfInterval defined");
     }
 
@@ -112,7 +112,7 @@ void ActiveFlavorsModule::checkCurveIntegrity() {
         // check NF between 1 and 6
         if ((m_nfFunctionOfMu[i].getNf() < 1)
                 || (m_nfFunctionOfMu[i].getNf() > 6)) {
-            ElemUtils::CustomException(getClassName(), __func__,
+            throw ElemUtils::CustomException(getClassName(), __func__,
                     "nf out of range ; must be  0 < nf < 7");
         }
 
@@ -121,7 +121,7 @@ void ActiveFlavorsModule::checkCurveIntegrity() {
             previousNf = m_nfFunctionOfMu[i].getNf();
         } else {
             if (m_nfFunctionOfMu[i].getNf() != (previousNf + 1)) {
-                ElemUtils::CustomException(getClassName(), __func__,
+                throw ElemUtils::CustomException(getClassName(), __func__,
                         "nf not contigus step by 1");
             }
             previousNf = m_nfFunctionOfMu[i].getNf();
@@ -136,4 +136,9 @@ std::string ActiveFlavorsModule::toString() {
     for (unsigned int i = 0; i != m_nfFunctionOfMu.size(); i++)
         formater << m_nfFunctionOfMu[i].toString();
     return formater.str();
+}
+
+void ActiveFlavorsModule::prepareSubModules(
+        const std::map<std::string, BaseObjectData>& subModulesData) {
+    // Nothing to do.
 }

@@ -11,7 +11,7 @@
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <utility>
 
-#include "../../../include/partons/beans/parton_distribution/PartonDistribution.h"
+//#include "../../../include/partons/beans/parton_distribution/PartonDistribution.h"
 
 GPDSubtractionConstantModule::GPDSubtractionConstantModule(
         const std::string& className) :
@@ -46,7 +46,7 @@ double GPDSubtractionConstantModule::compute(double xi, double t, double MuF2,
     } else {
 
         //print error
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "GPD(" << GPDType(gpdType).toString()
                         << ") is not available for this GPD model");
     }
@@ -63,7 +63,7 @@ double GPDSubtractionConstantModule::compute(
 
 double GPDSubtractionConstantModule::computeH() {
 
-    ElemUtils::CustomException(getClassName(), __func__,
+    throw ElemUtils::CustomException(getClassName(), __func__,
             ElemUtils::Formatter() << "Definition in mother class undefined");
 
     return 0.;
@@ -71,7 +71,7 @@ double GPDSubtractionConstantModule::computeH() {
 
 double GPDSubtractionConstantModule::computeE() {
 
-    ElemUtils::CustomException(getClassName(), __func__,
+    throw ElemUtils::CustomException(getClassName(), __func__,
             ElemUtils::Formatter() << "Definition in mother class undefined");
 
     return 0.;
@@ -79,7 +79,7 @@ double GPDSubtractionConstantModule::computeE() {
 
 double GPDSubtractionConstantModule::computeHt() {
 
-    ElemUtils::CustomException(getClassName(), __func__,
+    throw ElemUtils::CustomException(getClassName(), __func__,
             ElemUtils::Formatter() << "Definition in mother class undefined");
 
     return 0.;
@@ -87,7 +87,7 @@ double GPDSubtractionConstantModule::computeHt() {
 
 double GPDSubtractionConstantModule::computeEt() {
 
-    ElemUtils::CustomException(getClassName(), __func__,
+    throw ElemUtils::CustomException(getClassName(), __func__,
             ElemUtils::Formatter() << "Definition in mother class undefined");
 
     return 0.;
@@ -172,4 +172,9 @@ void GPDSubtractionConstantModule::preCompute(double xi, double t, double MuF2,
 
     //check if well configured
     isModuleWellConfigured();
+}
+
+void GPDSubtractionConstantModule::prepareSubModules(
+        const std::map<std::string, BaseObjectData>& subModulesData) {
+    // Nothing to do.
 }

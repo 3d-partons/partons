@@ -122,7 +122,7 @@ std::complex<double> DVCSCFFVGGModel::computeUnpolarized() {
 
     //check pQCD order
     if (m_qcdOrderType != PerturbativeQCDOrderType::LO) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
                         << "Calculation not supported for pQCD order = "
                         << PerturbativeQCDOrderType(m_qcdOrderType).toString());
@@ -139,7 +139,7 @@ std::complex<double> DVCSCFFVGGModel::computePolarized() {
 
     //check pQCD order
     if (m_qcdOrderType != PerturbativeQCDOrderType::LO) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
                         << "Calculation not supported for pQCD order = "
                         << PerturbativeQCDOrderType(m_qcdOrderType).toString());
@@ -191,7 +191,7 @@ std::complex<double> DVCSCFFVGGModel::calculate_direct() {
 
     //check allowed range of xi
     if (m_xi - eps_cffint < 0. || m_xi + eps_cffint > 1.) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "Invalid xi +/- eps = "
                         << m_xi - eps_cffint << "/" << m_xi + eps_cffint);
     }
@@ -220,7 +220,7 @@ std::complex<double> DVCSCFFVGGModel::calculate_crossed() {
 
     //check allowed range of xi
     if (m_xi - eps_cffint < 0. || m_xi + eps_cffint > 1.) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "Invalid xi +/- eps = "
                         << m_xi - eps_cffint << "/" << m_xi + eps_cffint);
     }

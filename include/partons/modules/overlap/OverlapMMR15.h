@@ -8,6 +8,7 @@
 #ifndef OVERLAPMMR2015_H_
 #define OVERLAPMMR2015_H_
 
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <string>
 
 #include "IncompleteGPDModule.h"
@@ -41,6 +42,8 @@ public:
     virtual PartonDistribution computeH(); ///< Compute GPD H
 
     virtual bool isInKinematicRegion(double x, double xi); ///< Defines the limited kinematic region of the model
+
+    virtual void resolveObjectDependencies();
 
 protected:
     /**

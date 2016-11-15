@@ -5,28 +5,25 @@
  * @file RadonInverseModule.h
  * @author Cedric MEZRAG
  * @author Nabil Chouika (Irfu/SPhN, CEA Saclay)
- * @date 18 March 2016
+ * @date March 18, 2016
  * @version 1.0
  */
 
-#include <string>
-#include <utility>
-#include <vector>
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <NumA/linear_algebra/matrix/MatrixD.h>
 #include <NumA/linear_algebra/vector/VectorD.h>
 #include <stddef.h>
+#include <map>
+#include <string>
+#include <utility>
+#include <vector>
 
+#include "../../beans/automation/BaseObjectData.h"
 #include "../../beans/double_distribution/DDGauge.h"
 #include "../../ModuleObject.h"
 
 namespace NumA {
 class FunctionTypeMD;
-} /* namespace NumA */
-
-class IncompleteGPDModule;
-
-namespace NumA {
-class MatrixD;
 } /* namespace NumA */
 
 /**
@@ -72,6 +69,9 @@ public:
     void setGauge(const DDGauge& gauge);
     bool isGaugeInVector() const;
     void setGaugeInVector(bool gaugeInVector);
+
+    virtual void prepareSubModules(
+            const std::map<std::string, BaseObjectData>& subModulesData);
 
 protected:
     /**

@@ -2,7 +2,6 @@
 
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/parameters/GenericType.h>
-#include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <math.h>
 #include <NumA/linear_algebra/matrix/MatrixD.h>
@@ -150,6 +149,9 @@ NumA::MatrixD GPDEvolutionModule::invertMatrix6(13,
         0., 1. / 6., 0., 0., 0., 0., 0., 0., 0., 0., 0., -1. / 6., 0., //
         0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1.); //
 
+const std::string GPDEvolutionModule::GPD_EVOLUTION_MODULE_CLASS_NAME =
+        "GPDEvolutionModule";
+
 //TODO quelles sont les valeurs par défauts lors de l'initialisation ?
 GPDEvolutionModule::GPDEvolutionModule(const std::string &className) :
         ModuleObject(className), m_x(0), m_xi(0), m_t(0), m_MuF2(0), m_MuR2(0), m_pGPDModule(
@@ -257,28 +259,28 @@ void GPDEvolutionModule::isModuleWellConfigured() {
     debug(__func__, "");
 
     if (m_pNfFunction == 0) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 "m_pNfFunction* is NULL");
     }
 
     if (m_pNfEvolFunction == 0) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 "m_pNfEvolFunction* is NULL");
     }
 
     if (m_pGPDModule == 0) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 "GPDModule* is NULL");
     }
 
     if (m_qcdOrderType == PerturbativeQCDOrderType::UNDEFINED) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 "QCDOrderType is UNDEFINED");
     }
 
     // Test range in MuF and MuF_ref
     if (m_MuF2 <= 0.) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "m_MuF2 is out of range ;"
                         << "m_MuF2 should be >0. Here m_MuF2 = " << m_MuF2);
     }
@@ -684,7 +686,7 @@ void GPDEvolutionModule::configure(const ElemUtils::Parameters &parameters) {
     if (parameters.isAvailable(
             PerturbativeQCDOrderType::PARAMETER_NAME_PERTURBATIVE_QCD_ORDER_TYPE)) {
         m_qcdOrderType = PerturbativeQCDOrderType(
-                parameters.getLastAvailable().toString()).getType();
+                parameters.getLastAvailable().getString()).getType();
 
         info(__func__,
                 ElemUtils::Formatter()
@@ -713,6 +715,11 @@ void GPDEvolutionModule::setGpdModule(GPDModule* gpdModule) {
                     << m_pGPDModule->getClassName());
 }
 
+void GPDEvolutionModule::prepareSubModules(
+        const std::map<std::string, BaseObjectData>& subModulesData) {
+    throw ElemUtils::CustomException(getClassName(), __func__,
+            "TODO : implement");
+}
 //
 //double GPDEvolutionModule::nonSingletMuFDerivative(
 //        const NfInterval &nfInterval) {

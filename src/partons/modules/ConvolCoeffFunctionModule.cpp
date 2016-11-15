@@ -1,16 +1,21 @@
 #include "../../../include/partons/modules/ConvolCoeffFunctionModule.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/thread/Packet.h>
-#include <exception>
 #include <iostream>
+#include <utility>
 
 #include "../../../include/partons/beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
 #include "../../../include/partons/modules/GPDModule.h"
+#include "../../../include/partons/ModuleObjectFactory.h"
 #include "../../../include/partons/Partons.h"
 #include "../../../include/partons/services/ConvolCoeffFunctionService.h"
 #include "../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../include/partons/ServiceObjectTyped.h"
+
+const std::string ConvolCoeffFunctionModule::CONVOL_COEFF_FUNCTION_MODULE_CLASS_NAME =
+        "ConvolCoeffFunctionModule";
 
 ConvolCoeffFunctionModule::ConvolCoeffFunctionModule(
         const std::string &className) :
@@ -19,6 +24,10 @@ ConvolCoeffFunctionModule::ConvolCoeffFunctionModule(
 }
 
 ConvolCoeffFunctionModule::~ConvolCoeffFunctionModule() {
+    if (m_pGPDModule) {
+        delete m_pGPDModule;
+        m_pGPDModule = 0;
+    }
 }
 
 ConvolCoeffFunctionModule::ConvolCoeffFunctionModule(
@@ -79,6 +88,7 @@ void ConvolCoeffFunctionModule::run() {
             // sf::sleep(sf::milliseconds(3));
         }
     } catch (std::exception &e) {
+        //TODO remove and improve
         std::cerr << e.what() << std::endl;
     }
 }
@@ -114,4 +124,38 @@ bool ConvolCoeffFunctionModule::isGPDModuleDependent() const {
 void ConvolCoeffFunctionModule::setIsGPDModuleDependent(
         bool isGPDModuleDependent) {
     m_isGPDModuleDependent = isGPDModuleDependent;
+}
+
+void ConvolCoeffFunctionModule::prepareSubModules(
+        const std::map<std::string, BaseObjectData>& subModulesData) {
+
+    std::map<std::string, BaseObjectData>::const_iterator it;
+
+    if (isGPDModuleDependent()) {
+        it = subModulesData.find(GPDModule::GPD_MODULE_CLASS_NAME);
+
+        if (it != subModulesData.end()) {
+            if (m_pGPDModule) {
+                delete m_pGPDModule;
+                m_pGPDModule = 0;
+            }
+            if (!m_pGPDModule) {
+                m_pGPDModule =
+                        Partons::getInstance()->getModuleObjectFactory()->newGPDModule(
+                                (it->second).getModuleClassName());
+
+                info(__func__,
+                        ElemUtils::Formatter() << "Configure with GPDModule = "
+                                << m_pGPDModule->getClassName());
+
+                m_pGPDModule->configure((it->second).getParameters());
+
+                m_pGPDModule->prepareSubModules((it->second).getSubModules());
+            }
+        } else {
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    ElemUtils::Formatter() << getClassName()
+                            << " is GPDModule dependent and you have not provided one");
+        }
+    }
 }

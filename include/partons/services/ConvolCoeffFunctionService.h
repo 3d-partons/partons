@@ -64,12 +64,12 @@ public:
 //            std::vector<ConvolCoeffFunctionModule*> listOfDVCSConvolCoeffFunctionModule,
 //            GPDType::Type gpdType = GPDType::ALL) const;
 
-    ConvolCoeffFunctionModule* newConvolCoeffFunctionModuleFromTask(
-            const Task &task) const;
-
-    ConvolCoeffFunctionModule* configureConvolCoeffFunctionModule(
-            ConvolCoeffFunctionModule* pConvolCoeffFunctionModule,
-            GPDModule* pGPDModule) const;
+//    ConvolCoeffFunctionModule* newConvolCoeffFunctionModuleFromTask(
+//            const Task &task) const;
+//
+//    ConvolCoeffFunctionModule* configureConvolCoeffFunctionModule(
+//            ConvolCoeffFunctionModule* pConvolCoeffFunctionModule,
+//            GPDModule* pGPDModule) const;
 
 //    std::vector<DVCSConvolCoeffFunctionResult> compute(
 //            std::vector<CFFInputData> ListOfCFFInputData,
@@ -81,6 +81,14 @@ public:
 //
 //    std::vector<CFFInputData> getListOfCFFInputDataFromFile(
 //            const std::string & filePath);
+
+    ConvolCoeffFunctionModule* newConvolCoeffFunctionModuleFromTask(
+            const Task &task) const;
+
+    DVCSConvolCoeffFunctionKinematic newKinematicFromTask(
+            const Task &task) const;
+    List<DVCSConvolCoeffFunctionKinematic> newListOfKinematicFromTask(
+            const Task &task) const;
 
 private:
     GPDService* m_pGPDService;
@@ -94,6 +102,11 @@ private:
     List<GPDType> getFinalGPDTypeList(
             ConvolCoeffFunctionModule* pConvolCoeffFunctionModule,
             const List<GPDType> &gpdTypeList) const;
+
+//    ConvolCoeffFunctionModule* prepareComputationConfiguration(
+//            const List<List<ElemUtils::Parameter> >& moduleNameList,
+//            unsigned int level = 0) const;
+
 };
 
 #endif /* DVCS_CONVOL_COEFF_FUNCTION_SERVICE_H */

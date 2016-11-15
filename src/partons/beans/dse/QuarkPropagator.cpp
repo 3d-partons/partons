@@ -64,7 +64,7 @@ const NumA::VectorD& QuarkPropagator::getCoeffsA() const {
 
 void QuarkPropagator::setCoeffsA(const NumA::VectorD& a) {
     if (a.size() != m_N) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 "Size of vector a is wrong!");
     }
     m_a = a;
@@ -86,7 +86,7 @@ const NumA::VectorD& QuarkPropagator::getCoeffsB() const {
 
 void QuarkPropagator::setCoeffsB(const NumA::VectorD& b) {
     if (b.size() != m_N) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 "Size of vector b is wrong!");
     }
     m_b = b;
@@ -304,7 +304,7 @@ const NumA::VectorD& QuarkPropagator::getA() const {
 
 void QuarkPropagator::setA(const NumA::VectorD& a) {
     if (a.size() != m_N) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 "Size of vector a is wrong!");
     }
     m_A = a;
@@ -317,7 +317,7 @@ const NumA::VectorD& QuarkPropagator::getB() const {
 
 void QuarkPropagator::setB(const NumA::VectorD& b) {
     if (b.size() != m_N) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 "Size of vector b is wrong!");
     }
     m_B = b;

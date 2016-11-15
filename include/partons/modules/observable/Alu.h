@@ -31,7 +31,7 @@ public:
      */
     virtual Alu* clone() const;
 
-    virtual double compute(double phi);
+    virtual double computePhiObservable(double phi);
 
 protected:
     /**

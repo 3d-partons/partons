@@ -1,11 +1,12 @@
 #include "../../../include/partons/modules/DoubleDistributionModule.h"
 
-#include <utility>
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
+#include <utility>
 
 #include "../../../include/partons/beans/double_distribution/DoubleDistributionResult.h"
 #include "../../../include/partons/modules/overlap/IncompleteGPDModule.h"
+
 #include "../../../include/partons/modules/radon_inverse/RadonInverseModule.h"
 
 DoubleDistributionModule::DoubleDistributionModule(const std::string& className) :
@@ -204,4 +205,10 @@ IncompleteGPDModule* DoubleDistributionModule::getIncompleteGPDModule() const {
 void DoubleDistributionModule::setIncompleteGPDModule(
         IncompleteGPDModule* pIncompleteGPD) {
     m_pIncompleteGPD = pIncompleteGPD;
+}
+
+void DoubleDistributionModule::prepareSubModules(
+        const std::map<std::string, BaseObjectData>& subModulesData) {
+    throw ElemUtils::CustomException(getClassName(), __func__,
+            "TODO : implement");
 }

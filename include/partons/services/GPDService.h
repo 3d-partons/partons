@@ -4,12 +4,8 @@
 /**
  * @file GPDService.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 04 Aout 2014
+ * @date Aout 04, 2014
  * @version 1.0
- *
- * @class GPDService
- *
- * @brief \<singleton\> Use for handle and compute some pre-configured GPD models.
  */
 
 #include <string>
@@ -24,6 +20,11 @@
 
 class GPDEvolutionModule;
 
+/**
+ * @class GPDService
+ *
+ * @brief \<singleton\> Use for handle and compute some pre-configured GPD models.
+ */
 class GPDService: public ServiceObjectTyped<GPDKinematic, GPDResult> {
 public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
@@ -114,7 +115,10 @@ public:
 
     GPDModule* newGPDModuleFromTask(const Task &task) const;
 
-    GPDModule* configureGPDModule(GPDModule* pGPDModule) const;
+    // GPDModule* configureGPDModule(GPDModule* pGPDModule) const;
+
+    GPDKinematic newKinematicFromTask(const Task &task) const;
+    List<GPDKinematic> newListOfKinematicFromTask(const Task &task) const;
 
 private:
     GPDKinematic* m_pGPDKinematic;

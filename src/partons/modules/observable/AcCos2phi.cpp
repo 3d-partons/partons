@@ -1,15 +1,14 @@
 #include "../../../../include/partons/modules/observable/AcCos2phi.h"
 
 #include <NumA/integration/one_dimension/Integrator1D.h>
+#include <NumA/integration/one_dimension/IntegratorType1D.h>
 #include <cmath>
 #include <NumA/functor/one_dimension/Functor1D.h>
 
 #include "../../../../include/partons/beans/observable/ObservableChannel.h"
+#include "../../../../include/partons/beans/observable/ObservableType.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../include/partons/modules/observable/Ac.h"
-#include "../../../../include/partons/ModuleObjectFactory.h"
-#include "../../../../include/partons/Partons.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int AcCos2phi::classId =
@@ -17,53 +16,50 @@ const unsigned int AcCos2phi::classId =
                 new AcCos2phi("AcCos2phi"));
 
 AcCos2phi::AcCos2phi(const std::string &className) :
-        FourierObservable(className), m_pFunctionToIntegrateAcObservable(0) {
+        Ac(className), MathIntegratorModule(), m_pFunctionToIntegrateObservable(
+                0) {
+
+    m_observableType = ObservableType::FOURIER;
     m_channel = ObservableChannel::DVCS;
+
+    setIntegrator(NumA::IntegratorType1D::DEXP);
 
     initFunctorsForIntegrations();
 }
 
 AcCos2phi::AcCos2phi(const AcCos2phi& other) :
-        FourierObservable(other) {
+        Ac(other), MathIntegratorModule(other) {
 
-    m_pFunctionToIntegrateAcObservable = 0;
+    m_pFunctionToIntegrateObservable = 0;
 
     initFunctorsForIntegrations();
 }
 
 AcCos2phi::~AcCos2phi() {
-    if (m_pFunctionToIntegrateAcObservable) {
-        delete m_pFunctionToIntegrateAcObservable;
-        m_pFunctionToIntegrateAcObservable = 0;
+    if (m_pFunctionToIntegrateObservable) {
+        delete m_pFunctionToIntegrateObservable;
+        m_pFunctionToIntegrateObservable = 0;
     }
 }
 
-void AcCos2phi::resolveObjectDependencies() {
-    m_pPhiObservable =
-            Partons::getInstance()->getModuleObjectFactory()->newObservable(
-                    Ac::classId);
-}
-
 void AcCos2phi::initFunctorsForIntegrations() {
-    m_pFunctionToIntegrateAcObservable =
+    m_pFunctionToIntegrateObservable =
             NumA::Integrator1D::newIntegrationFunctor(this,
-                    &AcCos2phi::functionToIntegrateAcObservable);
+                    &AcCos2phi::functionToIntegrateObservable);
 }
 
 AcCos2phi* AcCos2phi::clone() const {
     return new AcCos2phi(*this);
 }
 
-//TODO check
-double AcCos2phi::functionToIntegrateAcObservable(double x,
+double AcCos2phi::functionToIntegrateObservable(double x,
         std::vector<double> params) {
-    // x[0] = phi
-    return m_pPhiObservable->compute(x) * cos(2 * x);
+    return Ac::computePhiObservable(x) * cos(2 * x);
 }
 
-double AcCos2phi::compute() {
+double AcCos2phi::computeFourierObservable() {
     std::vector<double> emptyParameters;
 
-    return integrate(m_pFunctionToIntegrateAcObservable, 0., (2 * PI),
-            emptyParameters)/PI;
+    return integrate(m_pFunctionToIntegrateObservable, 0., (2 * PI),
+            emptyParameters) / PI;
 }

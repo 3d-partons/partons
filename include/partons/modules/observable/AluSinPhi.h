@@ -11,7 +11,8 @@
 #include <string>
 #include <vector>
 
-#include "FourierObservable.h"
+#include "../MathIntegratorModule.h"
+#include "Alu.h"
 
 /**
  * @class AluiSin1phi
@@ -19,7 +20,7 @@
  * @brief
  * described in 1210.6975v3 [hep-ph] eq. (48) + (54)
  */
-class AluSinPhi: public FourierObservable {
+class AluSinPhi: public Alu, public MathIntegratorModule {
 public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
@@ -32,9 +33,7 @@ public:
      */
     virtual AluSinPhi* clone() const;
 
-    virtual double compute();
-
-    virtual void resolveObjectDependencies();
+    virtual double computeFourierObservable();
 
 protected:
     /**

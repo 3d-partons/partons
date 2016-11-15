@@ -8,10 +8,12 @@
  * @version 1.0
  */
 
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/thread/Thread.h>
+#include <map>
 #include <string>
 
-#include "BaseObject.h"
+#include "beans/automation/BaseObjectData.h"
 
 namespace ElemUtils {
 class Parameters;
@@ -67,6 +69,9 @@ public:
      * See documentation about this method in BaseObject class for more details.
      */
     virtual void resolveObjectDependencies();
+
+    virtual void prepareSubModules(
+            const std::map<std::string, BaseObjectData>& subModulesData) = 0;
 
 protected:
     /***

@@ -1,12 +1,3 @@
-/**
- * @file GapEquationSolverModule.cpp
- * @author Nabil CHOUIKA (SPhN / CEA Saclay)
- * @date Jan 22, 2016
- * @version 1.0
- *
- * @class GapEquationSolverModule
- */
-
 #include "../../../../include/partons/modules/dse/GapEquationSolverModule.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
@@ -106,7 +97,7 @@ void GapEquationSolverModule::initModule() {
         setLambda2(m_quarkPropagator->getLambda2());
         setEpsilon2(m_quarkPropagator->getEpsilon2());
     } else {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 "QuarkPropagator not defined!");
     }
 
@@ -303,7 +294,7 @@ double GapEquationSolverModule::getEpsilon2() const {
 
 void GapEquationSolverModule::setEpsilon2(double epsilon2) {
     if (epsilon2 <= 0) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 "The IR cut-off must be positive (and small enough)!");
     }
     m_changedQP = m_changedQP || (epsilon2 != m_epsilon2);
@@ -316,7 +307,7 @@ double GapEquationSolverModule::getLambda2() const {
 
 void GapEquationSolverModule::setLambda2(double lambda2) {
     if (lambda2 <= 0) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 "The UV cut-off must be positive (and large enough)!");
     }
     m_changedQP = m_changedQP || (lambda2 != m_Lambda2);
@@ -329,7 +320,7 @@ double GapEquationSolverModule::getM() const {
 
 void GapEquationSolverModule::setM(double m) {
     if (m < 0) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 "The quark mass must be positive!");
     }
     m_changedQP = m_changedQP || (m != m_m);
@@ -350,7 +341,7 @@ double GapEquationSolverModule::getMu() const {
 
 void GapEquationSolverModule::setMu(double mu) {
     if (mu <= 0) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 "The renormalization point must be positive (and large enough)!");
     }
     m_changedQP = m_changedQP || (mu != m_mu);
@@ -368,7 +359,7 @@ unsigned int GapEquationSolverModule::getN() const {
 
 void GapEquationSolverModule::setN(unsigned int n) {
     if (n <= 0) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 "The number of points representing the propagator must be positive!");
     }
     m_changedQP = m_changedQP || (n != m_N);
@@ -386,7 +377,7 @@ unsigned int GapEquationSolverModule::getNx() const {
 
 void GapEquationSolverModule::setNx(unsigned int nx) {
     if (nx <= 0) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 "The number of nodes of integration must be positive!");
     }
     m_changedNx = m_changedNx || (nx != m_Nx);
@@ -399,7 +390,7 @@ unsigned int GapEquationSolverModule::getNz() const {
 
 void GapEquationSolverModule::setNz(unsigned int nz) {
     if (nz <= 0) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 "The number of nodes of integration must be positive!");
     }
     m_changedNz = m_changedNz || (nz != m_Nz);
@@ -604,4 +595,10 @@ const NumA::VectorD& GapEquationSolverModule::getInterpolationMu() const {
 void GapEquationSolverModule::setInterpolationMu(
         const NumA::VectorD& interpolationMu) {
     m_interpolationMu = interpolationMu;
+}
+
+void GapEquationSolverModule::prepareSubModules(
+        const std::map<std::string, BaseObjectData>& subModulesData) {
+    throw ElemUtils::CustomException(getClassName(), __func__,
+            "TODO : implement");
 }

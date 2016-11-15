@@ -12,16 +12,15 @@
 #include <map>
 #include <string>
 
+#include "../beans/automation/BaseObjectData.h"
 #include "../beans/double_distribution/DoubleDistributionType.h"
 #include "../beans/List.h"
 #include "../beans/parton_distribution/PartonDistribution.h"
 #include "../ModuleObject.h"
 
-class IncompleteGPDModule;
-
-class RadonInverseModule;
-
 class DoubleDistributionResult;
+class IncompleteGPDModule;
+class RadonInverseModule;
 
 /**
  * @class DoubleDistributionModule
@@ -78,6 +77,9 @@ public:
     void setT(double t);
 
     List<DoubleDistributionType> getListOfAvailableDDTypeForComputation() const;
+
+    void prepareSubModules(
+            const std::map<std::string, BaseObjectData>& subModulesData);
 
 protected:
     std::map<DoubleDistributionType::Type,

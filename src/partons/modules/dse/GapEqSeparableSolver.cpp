@@ -1105,7 +1105,7 @@ void GapEqSeparableSolver::computeBroydenIteration() {
 
 NumA::VectorD GapEqSeparableSolver::G_func(const NumA::VectorD& X) {
     if (X.size() != get2N()) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 (ElemUtils::Formatter() << "Size of X (" << X.size()
                         << ") is wrong. It should be 2*N = " << get2N() << ".").str());
     }

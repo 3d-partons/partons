@@ -159,7 +159,7 @@ void ResultDaoService::insertDataIntoDatabaseTables(const std::string& fileName,
         std::ofstream fileOutputStream;
 
         if (!ElemUtils::FileUtils::open(fileOutputStream, filePath)) {
-            ElemUtils::CustomException(getClassName(), __func__,
+            throw ElemUtils::CustomException(getClassName(), __func__,
                     ElemUtils::Formatter() << "Cannot open \"" << filePath
                             << "\"");
         }
@@ -199,7 +199,7 @@ void ResultDaoService::loadDataInFileIntoTable(const std::string& fileName,
 
     if (query.exec(prepareInsertQuery(fileName, tableName))) {
     } else {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());

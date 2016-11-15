@@ -29,7 +29,7 @@ Ac* Ac::clone() const {
 
 //TODO vérifier
 //TODO !!! division par zero !!!
-double Ac::compute(double phi) {
+double Ac::computePhiObservable(double phi) {
 
     debug(__func__, ElemUtils::Formatter() << "phi = " << phi);
 

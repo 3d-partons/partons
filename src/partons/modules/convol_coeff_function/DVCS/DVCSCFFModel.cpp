@@ -203,27 +203,27 @@ void DVCSCFFModel::isModuleWellConfigured() {
     DVCSConvolCoeffFunctionModule::isModuleWellConfigured();
 
     if (m_pGPDModule == 0) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 "GPDModule* is NULL");
     }
     if (m_qcdOrderType == PerturbativeQCDOrderType::UNDEFINED) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 "QCDOrderType is UNDEFINED");
     }
     if (m_qcdOrderType != PerturbativeQCDOrderType::LO
             && m_qcdOrderType != PerturbativeQCDOrderType::NLO) {
 
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
                         << "Erroneous input, perturbative QCD order can only be LO or NLO. Here Order = "
                         << PerturbativeQCDOrderType(m_qcdOrderType).toString());
     }
     if (getMathIntegrator() == 0) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 "MathIntegrationMode is UNDEFINED");
     }
     if (m_pRunningAlphaStrongModule == 0) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 "RunningAlphaStrongModule* is NULL");
     }
 }
@@ -468,12 +468,10 @@ std::complex<double> DVCSCFFModel::computeIntegralsV() {
 
     if (m_qcdOrderType != PerturbativeQCDOrderType::LO
             && m_qcdOrderType != PerturbativeQCDOrderType::NLO) {
-
-        ElemUtils::Formatter()
-                << "[DVCSCFFModule::computeIntegrals] Erroneous input perturbative QCD order can only be LO or NLO. Here Order = "
-                /*<< qcdOrderType.toString()*/;
-        //TODO
-        throw std::runtime_error("");
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter()
+                        << "Erroneous input perturbative QCD order can only be LO or NLO. Here Order = "
+                        << PerturbativeQCDOrderType(m_qcdOrderType).toString());
     }
 
     // Compute sum of active quark electric charges squared
@@ -497,7 +495,7 @@ std::complex<double> DVCSCFFModel::computeIntegralsV() {
         break;
 
     default:
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
                         << "Erroneous input number of active quark flavours should be an integer between 3 and 6. Number of active quark flavours = "
                         << m_nf);
@@ -570,7 +568,7 @@ std::complex<double> DVCSCFFModel::computeIntegralsA() {
     if (m_qcdOrderType != PerturbativeQCDOrderType::LO
             && m_qcdOrderType != PerturbativeQCDOrderType::NLO) {
 
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
                         << "Erroneous input perturbative QCD order can only be LO or NLO. Here Order = "
                         << PerturbativeQCDOrderType(m_qcdOrderType).toString());
@@ -598,7 +596,7 @@ std::complex<double> DVCSCFFModel::computeIntegralsA() {
         break;
 
     default:
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
                         << "Erroneous input number of active quark flavours should be an integer between 3 and 6. Number of active quark flavours = "
                         << m_nf);

@@ -10,23 +10,21 @@
 
 #include <string>
 
-class GPDBorderFunctionModule;
-class GPDSubtractionConstantModule;
-
-class ModuleObject;
-
 class ActiveFlavorsModule;
 class BaseObjectFactory;
 class DoubleDistributionModule;
 class DVCSConvolCoeffFunctionModule;
 class DVCSModule;
 class GapEquationSolverModule;
+class GPDBorderFunctionModule;
 class GPDEvolutionModule;
 class GPDModule;
-class Observable;
+class GPDSubtractionConstantModule;
 class IncompleteGPDModule;
-class RadonInverseModule;
+class ModuleObject;
+class Observable;
 class ProcessModule;
+class RadonInverseModule;
 class RunningAlphaStrongModule;
 class ScaleModule;
 class XiConverterModule;
@@ -48,12 +46,10 @@ public:
     ModuleObject* newModuleObject(unsigned int classId);
 
     IncompleteGPDModule* newIncompleteGPDModule(unsigned int classId);
-    IncompleteGPDModule* newIncompleteGPDModule(
-            const std::string & className);
+    IncompleteGPDModule* newIncompleteGPDModule(const std::string & className);
 
     RadonInverseModule* newRadonMatrixModule(unsigned int classId);
-    RadonInverseModule* newRadonMatrixModule(
-            const std::string & className);
+    RadonInverseModule* newRadonMatrixModule(const std::string & className);
 
     DoubleDistributionModule* newDoubleDistributionModule(unsigned int classId);
     DoubleDistributionModule* newDoubleDistributionModule(
@@ -79,8 +75,8 @@ public:
     DVCSConvolCoeffFunctionModule* newDVCSConvolCoeffFunctionModule(
             const std::string &className);
 
-    DVCSModule* newDVCSModule(unsigned int classId);
-    DVCSModule* newDVCSModule(const std::string & className);
+    DVCSModule* newProcessModule(unsigned int classId);
+    DVCSModule* newProcessModule(const std::string & className);
 
     RunningAlphaStrongModule* newRunningAlphaStrongModule(unsigned int classId);
     RunningAlphaStrongModule* newRunningAlphaStrongModule(

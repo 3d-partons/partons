@@ -1,15 +1,14 @@
 #include "../../../../include/partons/modules/observable/AluSinPhi.h"
 
 #include <NumA/integration/one_dimension/Integrator1D.h>
+#include <NumA/integration/one_dimension/IntegratorType1D.h>
 #include <cmath>
 #include <NumA/functor/one_dimension/Functor1D.h>
 
 #include "../../../../include/partons/beans/observable/ObservableChannel.h"
+#include "../../../../include/partons/beans/observable/ObservableType.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../include/partons/modules/observable/Alu.h"
-#include "../../../../include/partons/ModuleObjectFactory.h"
-#include "../../../../include/partons/Partons.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int AluSinPhi::classId =
@@ -17,15 +16,19 @@ const unsigned int AluSinPhi::classId =
                 new AluSinPhi("AluSinPhi"));
 
 AluSinPhi::AluSinPhi(const std::string &className) :
-        FourierObservable(className), m_pFunctionToIntegrateObservable(0) {
+        Alu(className), MathIntegratorModule(), m_pFunctionToIntegrateObservable(
+                0) {
 
+    m_observableType = ObservableType::FOURIER;
     m_channel = ObservableChannel::DVCS;
+
+    setIntegrator(NumA::IntegratorType1D::DEXP);
 
     initFunctorsForIntegrations();
 }
 
 AluSinPhi::AluSinPhi(const AluSinPhi& other) :
-        FourierObservable(other) {
+        Alu(other), MathIntegratorModule(other) {
     initFunctorsForIntegrations();
 }
 
@@ -35,12 +38,6 @@ AluSinPhi::~AluSinPhi() {
         m_pFunctionToIntegrateObservable = 0;
     }
 
-}
-
-void AluSinPhi::resolveObjectDependencies() {
-    m_pPhiObservable =
-            Partons::getInstance()->getModuleObjectFactory()->newObservable(
-                    Alu::classId);
 }
 
 void AluSinPhi::initFunctorsForIntegrations() {
@@ -53,20 +50,14 @@ AluSinPhi* AluSinPhi::clone() const {
     return new AluSinPhi(*this);
 }
 
-////TODO check
 double AluSinPhi::functionToIntegrateObservable(double x,
         std::vector<double> params) {
-    return m_pPhiObservable->compute(x) * sin(x);
+    return Alu::computePhiObservable(x) * sin(x);
 }
 
-double AluSinPhi::compute() {
-
-    //TODO improve, replace by configuration.
-    //   m_pAluObservable->setProcessModule(m_pProcessModule);
-
+double AluSinPhi::computeFourierObservable() {
     std::vector<double> emptyParameters;
 
     return integrate(m_pFunctionToIntegrateObservable, 0., (2 * PI),
             emptyParameters) / PI;
-
 }

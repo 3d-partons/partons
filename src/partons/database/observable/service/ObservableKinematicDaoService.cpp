@@ -26,7 +26,7 @@ int ObservableKinematicDaoService::insert(
         QSqlDatabase::database().commit();
 
     } catch (std::exception &e) {
-        ElemUtils::CustomException(getClassName(),__func__, e.what());
+        throw ElemUtils::CustomException(getClassName(), __func__, e.what());
 
         // Else return database in a stable state : n-1
         QSqlDatabase::database().rollback();
@@ -53,7 +53,7 @@ int ObservableKinematicDaoService::insert(
         QSqlDatabase::database().commit();
 
     } catch (std::exception &e) {
-        ElemUtils::CustomException(getClassName(),__func__, e.what());
+        throw ElemUtils::CustomException(getClassName(), __func__, e.what());
 
         // Else return database in a stable state : n-1
         QSqlDatabase::database().rollback();

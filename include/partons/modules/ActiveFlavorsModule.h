@@ -4,22 +4,25 @@
 /**
  * @file ActiveFlavorsModule.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 07 August 2015
+ * @date August 07, 2015
  * @version 1.0
- *
- * @class ActiveFlavorsModule
- *
- * @brief
  */
 
+#include <map>
 #include <string>
 #include <vector>
 
 #include "../beans/active_flavors/NfInterval.h"
+#include "../beans/automation/BaseObjectData.h"
 #include "../ModuleObject.h"
 
 class NfInterval;
 
+/**
+ * @class ActiveFlavorsModule
+ *
+ * @brief
+ */
 class ActiveFlavorsModule: public ModuleObject {
 public:
     ActiveFlavorsModule(const std::string &className);
@@ -45,6 +48,9 @@ public:
      * @return a pre-formatted characters string
      */
     virtual std::string toString();
+
+    virtual void prepareSubModules(
+            const std::map<std::string, BaseObjectData>& subModulesData);
 
 protected:
     /**

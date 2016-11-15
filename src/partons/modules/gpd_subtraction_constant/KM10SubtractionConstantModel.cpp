@@ -1,10 +1,3 @@
-/*
- * KM10SubtractionConstantModel.cpp
- *
- *  Created on: Oct 18, 2016
- *      Author: Pawel Sznajder (IPNO)
- */
-
 #include "../../../../include/partons/modules/gpd_subtraction_constant/KM10SubtractionConstantModel.h"
 
 #include <cmath>

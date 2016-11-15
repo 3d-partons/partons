@@ -8,9 +8,11 @@
 #ifndef MMS13SUBTRACTIONCONSTANTMODEL_H_
 #define MMS13SUBTRACTIONCONSTANTMODEL_H_
 
+#include <map>
 #include <string>
 #include <vector>
 
+#include "../../beans/automation/BaseObjectData.h"
 #include "../GPDSubtractionConstantModule.h"
 #include "../MathIntegratorModule.h"
 
@@ -40,6 +42,9 @@ public:
     virtual MMS13SubtractionConstantModel* clone() const;
 
     virtual void resolveObjectDependencies();
+
+    virtual void prepareSubModules(
+            const std::map<std::string, BaseObjectData>& subModulesData);
 
 protected:
 

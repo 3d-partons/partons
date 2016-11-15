@@ -2,12 +2,16 @@
 
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/parameters/GenericType.h>
-#include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
+#include <utility>
 
-#include "../../../include/partons/modules/ConvolCoeffFunctionModule.h"
+#include "../../../include/partons/modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
 #include "../../../include/partons/modules/scale/ScaleModule.h"
 #include "../../../include/partons/modules/xb_to_xi/XiConverterModule.h"
+#include "../../../include/partons/ModuleObjectFactory.h"
+#include "../../../include/partons/Partons.h"
+
+const std::string ProcessModule::PROCESS_MODULE_CLASS_NAME = "ProcessModule";
 
 const std::string ProcessModule::PARAMETER_NAME_BEAM_ENERGY = "beam_energy";
 
@@ -55,6 +59,20 @@ ProcessModule::ProcessModule(const ProcessModule &other) :
 }
 
 ProcessModule::~ProcessModule() {
+    if (m_pConvolCoeffFunctionModule != 0) {
+        delete m_pConvolCoeffFunctionModule;
+        m_pConvolCoeffFunctionModule = 0;
+    }
+
+    if (m_pScaleModule != 0) {
+        delete m_pScaleModule;
+        m_pScaleModule = 0;
+    }
+
+    if (m_pXiConverterModule != 0) {
+        delete m_pXiConverterModule;
+        m_pXiConverterModule = 0;
+    }
 }
 
 void ProcessModule::configure(const ElemUtils::Parameters &parameters) {
@@ -68,7 +86,7 @@ void ProcessModule::configure(const ElemUtils::Parameters &parameters) {
                             << ProcessModule::PARAMETER_NAME_BEAM_ENERGY
                             << " configured with value = " << m_E);
         } catch (const std::exception &e) {
-            ElemUtils::CustomException(getClassName(), __func__,
+            throw ElemUtils::CustomException(getClassName(), __func__,
                     ElemUtils::Formatter() << "For parameter "
                             << ProcessModule::PARAMETER_NAME_BEAM_ENERGY << " "
                             << e.what());
@@ -132,4 +150,97 @@ void ProcessModule::isCCFModuleDependent(bool isCcfModuleDependent) {
 
 ConvolCoeffFunctionModule* ProcessModule::getConvolCoeffFunctionModule() const {
     return m_pConvolCoeffFunctionModule;
+}
+
+void ProcessModule::prepareSubModules(
+        const std::map<std::string, BaseObjectData>& subModulesData) {
+
+    std::map<std::string, BaseObjectData>::const_iterator it;
+
+    it = subModulesData.find(ScaleModule::SCALE_MODULE_CLASS_NAME);
+
+    if (it != subModulesData.end()) {
+        if (m_pScaleModule) {
+            delete m_pScaleModule;
+            m_pScaleModule = 0;
+        }
+        if (!m_pScaleModule) {
+            m_pScaleModule =
+                    Partons::getInstance()->getModuleObjectFactory()->newScaleModule(
+                            (it->second).getModuleClassName());
+
+            info(__func__,
+                    ElemUtils::Formatter() << "Configure with ScaleModule = "
+                            << m_pScaleModule->getClassName());
+
+            m_pScaleModule->configure((it->second).getParameters());
+
+            m_pScaleModule->prepareSubModules((it->second).getSubModules());
+        }
+    } else {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << getClassName()
+                        << " is ScaleModule dependent and you have not provided one");
+    }
+
+    it = subModulesData.find(XiConverterModule::XI_CONVERTER_MODULE_CLASS_NAME);
+
+    if (it != subModulesData.end()) {
+        if (m_pXiConverterModule) {
+            delete m_pXiConverterModule;
+            m_pXiConverterModule = 0;
+        }
+        if (!m_pXiConverterModule) {
+            m_pXiConverterModule =
+                    Partons::getInstance()->getModuleObjectFactory()->newXiConverterModule(
+                            (it->second).getModuleClassName());
+
+            info(__func__,
+                    ElemUtils::Formatter()
+                            << "Configure with XiConverterModule = "
+                            << m_pXiConverterModule->getClassName());
+
+            m_pXiConverterModule->configure((it->second).getParameters());
+
+            m_pXiConverterModule->prepareSubModules(
+                    (it->second).getSubModules());
+        }
+    } else {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << getClassName()
+                        << " is XiConverterModule dependent and you have not provided one");
+    }
+
+    if (isCCFModuleDependent()) {
+        it =
+                subModulesData.find(
+                        ConvolCoeffFunctionModule::CONVOL_COEFF_FUNCTION_MODULE_CLASS_NAME);
+
+        if (it != subModulesData.end()) {
+            if (m_pConvolCoeffFunctionModule) {
+                delete m_pConvolCoeffFunctionModule;
+                m_pConvolCoeffFunctionModule = 0;
+            }
+            if (!m_pConvolCoeffFunctionModule) {
+                m_pConvolCoeffFunctionModule =
+                        Partons::getInstance()->getModuleObjectFactory()->newDVCSConvolCoeffFunctionModule(
+                                (it->second).getModuleClassName());
+
+                info(__func__,
+                        ElemUtils::Formatter()
+                                << "Configure with ConvolCoeffFunctionModule = "
+                                << m_pConvolCoeffFunctionModule->getClassName());
+
+                m_pConvolCoeffFunctionModule->configure(
+                        (it->second).getParameters());
+
+                m_pConvolCoeffFunctionModule->prepareSubModules(
+                        (it->second).getSubModules());
+            }
+        } else {
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    ElemUtils::Formatter() << getClassName()
+                            << " is ConvolCoeffFunctionModule dependent and you have not provided one");
+        }
+    }
 }

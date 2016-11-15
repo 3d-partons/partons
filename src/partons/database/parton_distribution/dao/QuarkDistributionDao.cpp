@@ -36,7 +36,7 @@ int QuarkDistributionDao::insert(double quarkDistributionPlus,
     if (query.exec()) {
         result = query.lastInsertId().toInt();
     } else {
-        ElemUtils::CustomException(getClassName(),__func__,
+        throw ElemUtils::CustomException(getClassName(),__func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
@@ -64,7 +64,7 @@ QuarkDistribution QuarkDistributionDao::getQuarkDistributionById(
         fillQuarkDistributionFromQuery(quarkDistribution, query);
 
     } else {
-        ElemUtils::CustomException(getClassName(),__func__,
+        throw ElemUtils::CustomException(getClassName(),__func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());

@@ -65,11 +65,15 @@ public:
     ObservableChannel::Type getObservableChannel(
             const std::string &observableClassName) const;
 
-    Observable* configureObservable(Observable* pObservable,
-            ProcessModule* pProcessModule) const;
+//    Observable* configureObservable(Observable* pObservable,
+//            ProcessModule* pProcessModule) const;
+//
+//    ProcessModule* configureProcessModule(ProcessModule* pProcessModule,
+//            ConvolCoeffFunctionModule* pConvolCoeffFunctionModule) const;
 
-    ProcessModule* configureProcessModule(ProcessModule* pProcessModule,
-            ConvolCoeffFunctionModule* pConvolCoeffFunctionModule) const;
+    ObservableKinematic newKinematicFromTask(const Task &task) const;
+    List<ObservableKinematic> newListOfKinematicFromTask(
+            const Task &task) const;
 
     Observable* newObservableModuleFromTask(const Task &task) const;
     ProcessModule* newProcessModuleFromTask(const Task &task) const;

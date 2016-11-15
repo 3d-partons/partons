@@ -4,19 +4,18 @@
 /**
  * @file GPDEvolutionModule.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 01 September 2015
+ * @date September 01, 2015
  * @version 1.0
- *
- * @class GPDEvolutionModule
- *
- * @brief
  */
 
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <NumA/linear_algebra/vector/VectorD.h>
+#include <map>
 #include <string>
 #include <vector>
 
 #include "../../beans/active_flavors/NfInterval.h"
+#include "../../beans/automation/BaseObjectData.h"
 #include "../../beans/gpd/GPDType.h"
 #include "../../beans/PerturbativeQCDOrderType.h"
 #include "../../beans/QuarkFlavor.h"
@@ -31,8 +30,17 @@ namespace NumA {
 class MatrixD;
 } /* namespace NumA */
 
+/**
+ * @class GPDEvolutionModule
+ *
+ * @brief
+ */
+
 class GPDEvolutionModule: public ModuleObject {
 public:
+
+    static const std::string GPD_EVOLUTION_MODULE_CLASS_NAME;
+
     enum Type {
         RELATIVE, ABSOLUTE, BOTH
     };
@@ -53,6 +61,9 @@ public:
      */
     bool isRunnable(double MuF2, double MuF2_ref,
             GPDEvolutionModule::Type testType);
+
+    virtual void prepareSubModules(
+            const std::map<std::string, BaseObjectData>& subModulesData);
 
     // ##### GETTERS & SETTERS #####
 

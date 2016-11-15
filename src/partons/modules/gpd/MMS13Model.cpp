@@ -236,7 +236,7 @@ double MMS13Model::forwardHval(double beta, QuarkFlavor::Type flavor) const {
 
     //check x
     if (beta <= 0.) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "Illegal x " << beta);
     }
 
@@ -268,7 +268,7 @@ double MMS13Model::forwardHval(double beta, QuarkFlavor::Type flavor) const {
         break;
 
     default: {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "Flavor "
                         << QuarkFlavor(flavor).toString()
                         << " not supported by this function");
@@ -284,7 +284,7 @@ double MMS13Model::forwardEval(double beta, QuarkFlavor::Type flavor) const {
 
     //check x
     if (beta <= 0.) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "Illegal x " << beta);
     }
 
@@ -321,7 +321,7 @@ double MMS13Model::forwardEval(double beta, QuarkFlavor::Type flavor) const {
         break;
 
     default: {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "Flavor "
                         << QuarkFlavor(flavor).toString()
                         << " not supported by this function");

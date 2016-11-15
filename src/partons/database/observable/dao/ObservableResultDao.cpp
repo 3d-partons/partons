@@ -48,7 +48,7 @@ int ObservableResultDao::insert(const std::string& observableName,
     if (query.exec()) {
         result = query.lastInsertId().toInt();
     } else {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
@@ -74,7 +74,7 @@ List<ObservableResult> ObservableResultDao::getObservableResultListByComputation
     if (query.exec()) {
         fillObservableResultList(results, query);
     } else {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
@@ -96,7 +96,7 @@ List<ObservableResult> ObservableResultDao::getObservableResultListFromSQLQuery(
     if (query.exec()) {
         fillObservableResultList(results, query);
     } else {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());

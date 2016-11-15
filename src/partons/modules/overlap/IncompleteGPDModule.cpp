@@ -1,10 +1,9 @@
 #include "../../../../include/partons/modules/overlap/IncompleteGPDModule.h"
 
-//#include <cmath>
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/parameters/GenericType.h>
-#include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
+#include <utility>
 
 #include "../../../../include/partons/modules/GPDModule.h"
 
@@ -200,4 +199,10 @@ const std::string& IncompleteGPDModule::getKinematicRegion() const {
 void IncompleteGPDModule::setKinematicRegion(
         const std::string& kinematicRegion) {
     m_kinematicRegion = kinematicRegion;
+}
+
+void IncompleteGPDModule::prepareSubModules(
+        const std::map<std::string, BaseObjectData>& subModulesData) {
+    throw ElemUtils::CustomException(getClassName(), __func__,
+            "TODO : implement");
 }

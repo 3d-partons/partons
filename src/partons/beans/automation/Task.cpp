@@ -41,8 +41,6 @@ std::string Task::toString() const {
     formatter << "Service name = " << m_serviceName << " function name = "
             << m_functionName << '\n' << "[Parameters]" << '\n';
 
-    formatter << MultimapParameters::toString();
-
     return formatter.str();
 }
 
@@ -60,4 +58,35 @@ Scenario* Task::getScenario() const {
 
 void Task::setScenario(Scenario* pScenario) {
     m_pScenario = pScenario;
+}
+
+const BaseObjectData& Task::getModuleComputationConfiguration() const {
+    return m_moduleComputationConfiguration;
+}
+
+void Task::setModuleComputationConfiguration(
+        const BaseObjectData& moduleComputationConfiguration) {
+    m_moduleComputationConfiguration = moduleComputationConfiguration;
+
+    debug(__func__,
+            ElemUtils::Formatter()
+                    << "Task's moduleComputationConfiguration member has been updating with value : "
+                    << '\n' << moduleComputationConfiguration.toString());
+}
+
+const BaseObjectData& Task::getKinematicsData() const {
+    return m_kinematicsData;
+}
+
+void Task::setKinematicsData(
+        const BaseObjectData& kinematicsData) {
+    m_kinematicsData = kinematicsData;
+}
+
+const BaseObjectData& Task::getTaskParameters() const {
+    return m_taskParameters;
+}
+
+void Task::setTaskParameters(const BaseObjectData& taskParameters) {
+    m_taskParameters = taskParameters;
 }

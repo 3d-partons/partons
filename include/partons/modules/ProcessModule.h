@@ -8,8 +8,11 @@
  * @version 1.0
  */
 
+#include <ElementaryUtils/parameters/Parameters.h>
+#include <map>
 #include <string>
 
+#include "../beans/automation/BaseObjectData.h"
 #include "../beans/gpd/GPDType.h"
 #include "../beans/List.h"
 #include "../beans/observable/ObservableChannel.h"
@@ -32,6 +35,8 @@ class Vector3D;
  */
 class ProcessModule: public ModuleObject {
 public:
+    static const std::string PROCESS_MODULE_CLASS_NAME;
+
     static const std::string PARAMETER_NAME_BEAM_ENERGY;
 
     /**
@@ -65,6 +70,9 @@ public:
     void isCCFModuleDependent(bool isCcfModuleDependent);
 
     ConvolCoeffFunctionModule* getConvolCoeffFunctionModule() const;
+
+    virtual void prepareSubModules(
+            const std::map<std::string, BaseObjectData>& subModulesData);
 
 protected:
     /**

@@ -48,7 +48,7 @@ public:
 
     /**
      * Get H_M_sub parameter
-    */
+     */
     double getParHMSub() const;
 
     /**

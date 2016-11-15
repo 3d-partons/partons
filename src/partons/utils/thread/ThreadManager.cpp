@@ -21,7 +21,8 @@ void ThreadManager::newThread(const unsigned int numberOfThread,
 void ThreadManager::launchAllAndWaitingFor() {
 
     if (m_listOfModuleObject.size() == 0) {
-        ElemUtils::CustomException(getClassName(),__func__, "List of instantiated thread(s) is empty");
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                "List of instantiated thread(s) is empty");
     }
 
     // start all thread one by one

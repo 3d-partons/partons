@@ -46,7 +46,7 @@ int EnvironmentConfigurationDao::insert(const time_t& storeDate,
 
         indexId = query.lastInsertId().toInt();
     } else {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
@@ -92,7 +92,7 @@ void EnvironmentConfigurationDao::deleteByIndexId(const int indexId) const {
 
         //TODO add a confirm message
     } else {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());

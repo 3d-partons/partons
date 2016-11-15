@@ -39,7 +39,7 @@ int ObservableKinematicDao::insert(double xB, double t, double Q2,
     if (query.exec()) {
         result = query.lastInsertId().toInt();
     } else {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
@@ -72,7 +72,7 @@ int ObservableKinematicDao::select(double xB, double t, double Q2,
             result = query.value(0).toInt();
         }
     } else {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
@@ -100,7 +100,7 @@ List<ObservableKinematic> ObservableKinematicDao::getKinematicListByComputationI
     if (query.exec()) {
         fillObservableKinematicList(observableKinematicList, query);
     } else {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
@@ -131,7 +131,7 @@ ObservableKinematic ObservableKinematicDao::getKinematicById(
     if (query.exec()) {
         fillObservableKinematic(observableKinematic, query);
     } else {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());

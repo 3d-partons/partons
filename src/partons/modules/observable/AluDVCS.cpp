@@ -27,7 +27,7 @@ AluDVCS* AluDVCS::clone() const {
 }
 
 // optimisation remplacement des multiples appels similaires par A - B / A + B
-double AluDVCS::compute(double phi) {
+double AluDVCS::computePhiObservable(double phi) {
 
     double result = 0.;
 

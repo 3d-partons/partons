@@ -4,22 +4,28 @@
 /**
  * @file ScaleModule.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 28 October 2015
+ * @date October 28, 2015
  * @version 1.0
- *
- * @class ScaleModule
- *
- * @brief
  */
 
+#include <ElementaryUtils/parameters/Parameters.h>
+#include <map>
 #include <string>
 
+#include "../../beans/automation/BaseObjectData.h"
 #include "../../ModuleObject.h"
 
 class Scale;
 
+/**
+ * @class ScaleModule
+ *
+ * @brief
+ */
 class ScaleModule: public ModuleObject {
 public:
+    static const std::string SCALE_MODULE_CLASS_NAME;
+
     ScaleModule(const std::string &className);
     virtual ~ScaleModule();
     /**
@@ -32,6 +38,9 @@ public:
     virtual Scale compute(double Q2) = 0;
 
     virtual void configure(const ElemUtils::Parameters &parameters);
+
+    virtual void prepareSubModules(
+            const std::map<std::string, BaseObjectData>& subModulesData);
 
 protected:
     /**

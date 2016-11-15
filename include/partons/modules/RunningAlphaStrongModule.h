@@ -12,8 +12,10 @@
  * @brief
  */
 
+#include <map>
 #include <string>
 
+#include "../beans/automation/BaseObjectData.h"
 #include "../ModuleObject.h"
 
 class RunningAlphaStrongModule: public ModuleObject {
@@ -34,6 +36,9 @@ public:
 
     unsigned int getNf() const;
     void setNf(unsigned int nf);
+
+    virtual void prepareSubModules(
+            const std::map<std::string, BaseObjectData>& subModulesData);
 
 protected:
 

@@ -1,17 +1,9 @@
-/*
- * MMS13SubtractionConstantModel.cpp
- *
- *  Created on: Oct 18, 2016
- *      Author: Pawel Sznajder (IPNO)
- */
-
 #include "../../../../include/partons/modules/gpd_subtraction_constant/MMS13SubtractionConstantModel.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <NumA/functor/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
-#include <cmath>
-#include <map>
 #include <utility>
 
 #include "../../../../include/partons/beans/gpd/GPDType.h"
@@ -94,4 +86,10 @@ double MMS13SubtractionConstantModel::computeE() {
 double MMS13SubtractionConstantModel::dTermIntegral(double zeta,
         std::vector<double> par) {
     return m_pMMS13Model->DTerm(zeta) / (1. - zeta);
+}
+
+void MMS13SubtractionConstantModel::prepareSubModules(
+        const std::map<std::string, BaseObjectData>& subModulesData) {
+    throw ElemUtils::CustomException(getClassName(), __func__,
+            "TODO : implement");
 }

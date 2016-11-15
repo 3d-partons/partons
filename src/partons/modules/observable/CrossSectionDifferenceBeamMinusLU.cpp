@@ -30,7 +30,7 @@ CrossSectionDifferenceBeamMinusLU* CrossSectionDifferenceBeamMinusLU::clone() co
     return new CrossSectionDifferenceBeamMinusLU(*this);
 }
 
-double CrossSectionDifferenceBeamMinusLU::compute(double phi) {
+double CrossSectionDifferenceBeamMinusLU::computePhiObservable(double phi) {
 
     double result = 0.;
 

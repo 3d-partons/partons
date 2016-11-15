@@ -32,7 +32,7 @@ int PartonDistributionDao::insert(double gluonDistributionValue) const {
     if (query.exec()) {
         result = query.lastInsertId().toInt();
     } else {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
@@ -57,7 +57,7 @@ int PartonDistributionDao::insertIntoPartonDistributionQuarkDistributionTable(
     if (query.exec()) {
         result = query.lastInsertId().toInt();
     } else {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
@@ -83,7 +83,7 @@ PartonDistribution PartonDistributionDao::getPartonDistributionById(
     if (query.exec()) {
         fillPartonDistributionFromQuery(partonDistribution, query);
     } else {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());
@@ -137,7 +137,7 @@ void PartonDistributionDao::fillPartonDistribution(
                             query.value(f_quark_distribution_id).toInt()));
         }
     } else {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());

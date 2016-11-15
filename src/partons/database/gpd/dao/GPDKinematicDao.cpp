@@ -41,7 +41,7 @@ int GPDKinematicDao::insert(double x, double xi, double t, double MuF2,
         result = query.lastInsertId().toInt();
     } else {
         //TODO move implementation in mother classe for avoid code redondance
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
                         << query.executedQuery().toStdString());

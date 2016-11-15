@@ -9,6 +9,7 @@
 #include <ElementaryUtils/thread/Packet.h>
 #include <complex>
 
+#include "../../../include/partons/beans/automation/BaseObjectData.h"
 #include "../../../include/partons/beans/automation/Task.h"
 #include "../../../include/partons/beans/KinematicUtils.h"
 #include "../../../include/partons/beans/system/ResultInfo.h"
@@ -18,10 +19,6 @@
 #include "../../../include/partons/modules/GPDModule.h"
 #include "../../../include/partons/ModuleObjectFactory.h"
 #include "../../../include/partons/Partons.h"
-#include "../../../include/partons/services/GPDService.h"
-#include "../../../include/partons/ServiceObjectRegistry.h"
-#include "../../../include/partons/utils/exceptions/CCFModuleNullPointerException.h"
-#include "../../../include/partons/utils/exceptions/GPDModuleNullPointerException.h"
 #include "../../../include/partons/utils/VectorUtils.h"
 
 const std::string ConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_WITH_GPD_MODEL =
@@ -100,7 +97,7 @@ void ConvolCoeffFunctionService::computeTask(Task &task) {
                                 << "DVCSConvolCoeffFunctionResultList object has been stored in database with computation_id = "
                                 << computationId);
             } else {
-                ElemUtils::CustomException(getClassName(), __func__,
+                throw ElemUtils::CustomException(getClassName(), __func__,
                         ElemUtils::Formatter()
                                 << "DVCSConvolCoeffFunctionResultList object : insertion into database failed");
             }
@@ -152,17 +149,20 @@ DVCSConvolCoeffFunctionResult ConvolCoeffFunctionService::computeWithGPDModelTas
         Task& task) const {
 
     //create a kinematic and init it with a list of parameters
-    DVCSConvolCoeffFunctionKinematic kinematic;
+    DVCSConvolCoeffFunctionKinematic kinematic = newKinematicFromTask(task);
 
-    if (task.isAvailableParameters("DVCSConvolCoeffFunctionKinematic")) {
-        kinematic = DVCSConvolCoeffFunctionKinematic(
-                task.getLastAvailableParameters());
-    } else {
-        ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter()
-                        << "Missing object : <DVCSConvolCoeffFunctionKinematic> for method "
-                        << task.getFunctionName());
-    }
+//    if (task.isAvailableParameters("DVCSConvolCoeffFunctionKinematic")) {
+//        kinematic = DVCSConvolCoeffFunctionKinematic(
+//                task.getLastAvailableParameters());
+//    } else {
+//       throw ElemUtils::CustomException(getClassName(), __func__,
+//                ElemUtils::Formatter()
+//                        << "Missing object : <DVCSConvolCoeffFunctionKinematic> for method "
+//                        << task.getFunctionName());
+//    }
+
+//    ConvolCoeffFunctionModule* pConvolCoeffFunctionModule =
+//            newConvolCoeffFunctionModuleFromTask(task);
 
     ConvolCoeffFunctionModule* pConvolCoeffFunctionModule =
             newConvolCoeffFunctionModuleFromTask(task);
@@ -170,30 +170,18 @@ DVCSConvolCoeffFunctionResult ConvolCoeffFunctionService::computeWithGPDModelTas
     DVCSConvolCoeffFunctionResult result = computeForOneCCFModel(kinematic,
             pConvolCoeffFunctionModule);
 
+    if (pConvolCoeffFunctionModule) {
+        delete pConvolCoeffFunctionModule;
+        pConvolCoeffFunctionModule = 0;
+    }
+
     return result;
 }
 
 List<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionService::computeManyKinematicOneModelTask(
         Task& task) {
-    List<DVCSConvolCoeffFunctionKinematic> listOfKinematic;
-
-    if (task.isAvailableParameters("DVCSConvolCoeffFunctionKinematic")) {
-        ElemUtils::Parameters parameters = task.getLastAvailableParameters();
-        if (parameters.isAvailable("file")) {
-            listOfKinematic = KinematicUtils().getCCFKinematicFromFile(
-                    parameters.getLastAvailable().toString());
-        } else {
-            ElemUtils::CustomException(getClassName(), __func__,
-                    ElemUtils::Formatter()
-                            << "Missing parameter file in object <DVCSConvolCoeffFunctionKinematic> for method "
-                            << task.getFunctionName());
-        }
-    } else {
-        ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter()
-                        << "Missing object : <GPDKinematic> for method "
-                        << task.getFunctionName());
-    }
+    List<DVCSConvolCoeffFunctionKinematic> listOfKinematic =
+            newListOfKinematicFromTask(task);
 
     List<GPDType> gpdTypeList = getGPDTypeListFromTask(task);
 
@@ -279,57 +267,57 @@ List<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionService::computeForOneCCF
     return results;
 }
 
-ConvolCoeffFunctionModule* ConvolCoeffFunctionService::newConvolCoeffFunctionModuleFromTask(
-        const Task& task) const {
-
-    DVCSConvolCoeffFunctionModule* pConvolCoeffFunctionModule = 0;
-
-    if (task.isAvailableParameters("DVCSConvolCoeffFunctionModule")) {
-        pConvolCoeffFunctionModule =
-                m_pModuleObjectFactory->newDVCSConvolCoeffFunctionModule(
-                        task.getLastAvailableParameters().get(
-                                ModuleObject::CLASS_NAME).toString());
-        pConvolCoeffFunctionModule->configure(
-                task.getLastAvailableParameters());
-    }
-
-    GPDModule* pGPDModule = 0;
-
-    try {
-        pGPDModule =
-                Partons::getInstance()->getServiceObjectRegistry()->getGPDService()->newGPDModuleFromTask(
-                        task);
-    } catch (const GPDModuleNullPointerException &e) {
-        // Nothing to do.
-        // An exception is raised if <GPDModule> element cannot be found in the task parameterList, but in this case a DVCSConvolCoeffFunctionModule can be GPDModule independent.
-        // So just catch the exception and continue to run the program.
-    }
-
-    return configureConvolCoeffFunctionModule(pConvolCoeffFunctionModule,
-            pGPDModule);
-}
-
-ConvolCoeffFunctionModule* ConvolCoeffFunctionService::configureConvolCoeffFunctionModule(
-        ConvolCoeffFunctionModule* pConvolCoeffFunctionModule,
-        GPDModule* pGPDModule) const {
-
-    if (pConvolCoeffFunctionModule == 0) {
-        throw CCFModuleNullPointerException(
-                "You have not provided any ConvolCoeffFunctionModule");
-    }
-
-    if (pConvolCoeffFunctionModule->isGPDModuleDependent()) {
-        if (pGPDModule == 0) {
-            ElemUtils::CustomException(getClassName(), __func__,
-                    "This ConvolCoeffFunctionModule is GPDModule dependent but you have not provided any GPDModule");
-        }
-
-        // set gpd module to dvcs convol coeff function module
-        pConvolCoeffFunctionModule->setGPDModule(pGPDModule);
-    }
-
-    return pConvolCoeffFunctionModule;
-}
+//ConvolCoeffFunctionModule* ConvolCoeffFunctionService::newConvolCoeffFunctionModuleFromTask(
+//        const Task& task) const {
+//
+//    DVCSConvolCoeffFunctionModule* pConvolCoeffFunctionModule = 0;
+//
+//    if (task.isAvailableParameters("DVCSConvolCoeffFunctionModule")) {
+//        pConvolCoeffFunctionModule =
+//                m_pModuleObjectFactory->newDVCSConvolCoeffFunctionModule(
+//                        task.getLastAvailableParameters().get(
+//                                ModuleObject::CLASS_NAME).getString());
+//        pConvolCoeffFunctionModule->configure(
+//                task.getLastAvailableParameters());
+//    }
+//
+//    GPDModule* pGPDModule = 0;
+//
+//    try {
+//        pGPDModule =
+//                Partons::getInstance()->getServiceObjectRegistry()->getGPDService()->newGPDModuleFromTask(
+//                        task);
+//    } catch (const GPDModuleNullPointerException &e) {
+//        // Nothing to do.
+//        // An exception is raised if <GPDModule> element cannot be found in the task parameterList, but in this case a DVCSConvolCoeffFunctionModule can be GPDModule independent.
+//        // So just catch the exception and continue to run the program.
+//    }
+//
+//    return configureConvolCoeffFunctionModule(pConvolCoeffFunctionModule,
+//            pGPDModule);
+//}
+//
+//ConvolCoeffFunctionModule* ConvolCoeffFunctionService::configureConvolCoeffFunctionModule(
+//        ConvolCoeffFunctionModule* pConvolCoeffFunctionModule,
+//        GPDModule* pGPDModule) const {
+//
+//    if (pConvolCoeffFunctionModule == 0) {
+//        throw CCFModuleNullPointerException(
+//                "You have not provided any ConvolCoeffFunctionModule");
+//    }
+//
+//    if (pConvolCoeffFunctionModule->isGPDModuleDependent()) {
+//        if (pGPDModule == 0) {
+//           throw ElemUtils::CustomException(getClassName(), __func__,
+//                    "This ConvolCoeffFunctionModule is GPDModule dependent but you have not provided any GPDModule");
+//        }
+//
+//        // set gpd module to dvcs convol coeff function module
+//        pConvolCoeffFunctionModule->setGPDModule(pGPDModule);
+//    }
+//
+//    return pConvolCoeffFunctionModule;
+//}
 
 void ConvolCoeffFunctionService::generatePlotFileTask(Task& task) {
     generatePlotFile(getOutputFilePathForPlotFileTask(task),
@@ -363,4 +351,115 @@ List<GPDType> ConvolCoeffFunctionService::getFinalGPDTypeList(
                     << " GPDType will be computed");
 
     return availableGPDTypeForCCFModel;
+}
+
+//ConvolCoeffFunctionModule* ConvolCoeffFunctionService::prepareComputationConfiguration(
+//        const List<List<ElemUtils::Parameter> >& moduleNameList,
+//        unsigned int level) const {
+//
+//    ConvolCoeffFunctionModule* pConvolCoeffFunctionModule = 0;
+//
+//    if (moduleNameList.size() != 0) {
+//        for (unsigned int i = 0; i != moduleNameList.size(); i++) {
+//            if (level < moduleNameList[i].size()) {
+//                //TODO remove hardcoded string
+//                if (ElemUtils::StringUtils::equals(
+//                        moduleNameList.get(i)[level].getName(),
+//                        "DVCSConvolCoeffFunctionModule")) {
+//
+//                    pConvolCoeffFunctionModule =
+//                            Partons::getInstance()->getModuleObjectFactory()->newDVCSConvolCoeffFunctionModule(
+//                                    moduleNameList.get(i)[level].getString());
+//                } else {
+//                    throw ElemUtils::CustomException(getClassName(), __func__,
+//                            "You have not provided any ConvolCoeffFunctionModule");
+//                }
+//            }
+//
+//            pConvolCoeffFunctionModule->prepareComputationConfiguration(
+//                    moduleNameList[i], ++level);
+//        }
+//    } else {
+//        throw ElemUtils::CustomException(getClassName(), __func__,
+//                "You have not provided any ConvolCoeffFunctionModule");
+//    }
+//
+//    return pConvolCoeffFunctionModule;
+//}
+
+ConvolCoeffFunctionModule* ConvolCoeffFunctionService::newConvolCoeffFunctionModuleFromTask(
+        const Task &task) const {
+    ConvolCoeffFunctionModule* pConvolCoeffFunctionModule = 0;
+
+    //TODO remove hardcoded string
+    if (ElemUtils::StringUtils::equals(
+            task.getModuleComputationConfiguration().getModuleType(),
+            "DVCSConvolCoeffFunctionModule")) {
+        pConvolCoeffFunctionModule =
+                Partons::getInstance()->getModuleObjectFactory()->newDVCSConvolCoeffFunctionModule(
+                        task.getModuleComputationConfiguration().getModuleClassName());
+
+        pConvolCoeffFunctionModule->configure(
+                task.getModuleComputationConfiguration().getParameters());
+
+        pConvolCoeffFunctionModule->prepareSubModules(
+                task.getModuleComputationConfiguration().getSubModules());
+    } else {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter()
+                        << "You have not provided any ConvolCoeffFunctionModule");
+    }
+
+    return pConvolCoeffFunctionModule;
+}
+
+//TODO remove hardcoded string
+DVCSConvolCoeffFunctionKinematic ConvolCoeffFunctionService::newKinematicFromTask(
+        const Task& task) const {
+    DVCSConvolCoeffFunctionKinematic kinematic;
+
+    if (ElemUtils::StringUtils::equals(
+            task.getKinematicsData().getModuleClassName(),
+            "DVCSConvolCoeffFunctionKinematic")) {
+        kinematic = DVCSConvolCoeffFunctionKinematic(
+                task.getKinematicsData().getParameters());
+    } else {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter()
+                        << "Missing object : <DVCSConvolCoeffFunctionKinematic> for method "
+                        << task.getFunctionName());
+    }
+
+    return kinematic;
+}
+
+//TODO remove hardcoded string
+List<DVCSConvolCoeffFunctionKinematic> ConvolCoeffFunctionService::newListOfKinematicFromTask(
+        const Task& task) const {
+    List<DVCSConvolCoeffFunctionKinematic> listOfKinematic;
+
+    if (ElemUtils::StringUtils::equals(
+            task.getKinematicsData().getModuleClassName(),
+            "DVCSConvolCoeffFunctionKinematic")) {
+
+        ElemUtils::Parameters parameters =
+                task.getKinematicsData().getParameters();
+
+        if (task.getKinematicsData().getParameters().isAvailable("file")) {
+            listOfKinematic = KinematicUtils().getCCFKinematicFromFile(
+                    parameters.getLastAvailable().getString());
+        } else {
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    ElemUtils::Formatter()
+                            << "Missing parameter file in object <DVCSConvolCoeffFunctionKinematic> for method "
+                            << task.getFunctionName());
+        }
+    } else {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter()
+                        << "Missing object : <DVCSConvolCoeffFunctionKinematic> for method "
+                        << task.getFunctionName());
+    }
+
+    return listOfKinematic;
 }

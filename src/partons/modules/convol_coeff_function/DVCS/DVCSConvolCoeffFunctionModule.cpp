@@ -103,17 +103,17 @@ void DVCSConvolCoeffFunctionModule::isModuleWellConfigured() {
     }
 
     if (isGPDModuleDependent() && m_pGPDModule == 0) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 "m_pGPDModule is NULL");
     }
 
     if (m_pRunningAlphaStrongModule == 0) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 "m_pRunningAlphaStrongModule is NULL");
     }
 
     if (m_pNfConvolCoeffFunction == 0) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 "m_pNfConvolCoeffFunction is NULL");
     }
 }
@@ -132,7 +132,7 @@ std::complex<double> DVCSConvolCoeffFunctionModule::compute(const double xi,
         result = ((*this).*(m_it->second))();
 
     } else {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "GPD("
                         << GPDType(gpdComputeType).toString()
                         << ") is not available for this  model");
@@ -142,17 +142,17 @@ std::complex<double> DVCSConvolCoeffFunctionModule::compute(const double xi,
 }
 
 std::complex<double> DVCSConvolCoeffFunctionModule::computeUnpolarized() {
-    ElemUtils::CustomException(getClassName(), __func__,
+    throw ElemUtils::CustomException(getClassName(), __func__,
             "Check your child implementation : " + getClassName());
 }
 
 std::complex<double> DVCSConvolCoeffFunctionModule::computePolarized() {
-    ElemUtils::CustomException(getClassName(), __func__,
+    throw ElemUtils::CustomException(getClassName(), __func__,
             "Check your child implementation : " + getClassName());
 }
 
 std::complex<double> DVCSConvolCoeffFunctionModule::computeCFF() {
-    ElemUtils::CustomException(getClassName(), __func__,
+    throw ElemUtils::CustomException(getClassName(), __func__,
             "Check your child implementation : " + getClassName());
 }
 
@@ -161,7 +161,8 @@ void DVCSConvolCoeffFunctionModule::preCompute(const double xi, const double t,
         GPDType::Type gpdComputeType) {
 
     debug(__func__,
-            ElemUtils::Formatter() << "enter preCompute() function ...");
+            ElemUtils::Formatter() << "xi=" << xi << " t=" << t << " Q2=" << Q2
+                    << " MuF2=" << MuF2 << " MuR2=" << MuR2);
 
     m_xi = xi;
     m_t = t;
@@ -200,7 +201,7 @@ void DVCSConvolCoeffFunctionModule::configure(
         } catch (const std::exception &e) {
             // if an exception is raised it means that it's a string configuration value
             m_qcdOrderType = PerturbativeQCDOrderType(
-                    parameters.getLastAvailable().toString()).getType();
+                    parameters.getLastAvailable().getString()).getType();
         }
 
         info(__func__,

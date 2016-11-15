@@ -1,6 +1,7 @@
 #include "../../../../include/partons/modules/gpd/VinnikovModel.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <math.h>
 #include <cstdlib>
@@ -392,7 +393,7 @@ double VinnikovModel::dd3(int const i_part, double const beta, double const x,
 
 double VinnikovModel::uval(double const x, double const t) {
     if (x <= 0.0) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "x = " << x << " < 0");
     }
     // Diehl, Feldmann, Jakob, Kroll parameters
@@ -420,7 +421,7 @@ double VinnikovModel::uval(double const x, double const t) {
 
 double VinnikovModel::usea(double const x, double const t) {
     if (x <= 0.0 || x > 1.0) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "x = " << x << " < 0");
     }
     if ((1.0 - x) < EPS_BETR)
@@ -450,7 +451,7 @@ double VinnikovModel::usea(double const x, double const t) {
 
 double VinnikovModel::dval(double const x, double const t) {
     if (x <= 0.0 || x > 1.0) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "x = " << x << " < 0");
     }
     if ((1.0 - x) < EPS_BETR)
@@ -481,7 +482,7 @@ double VinnikovModel::dval(double const x, double const t) {
 
 double VinnikovModel::dsea(double const x, double const t) {
     if (x <= 0.0 || x > 1.0) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "x = " << x << " < 0");
     }
     if ((1.0 - x) < EPS_BETR)
@@ -511,7 +512,7 @@ double VinnikovModel::dsea(double const x, double const t) {
 
 double VinnikovModel::ssea(double const x, double const t) {
     if (x <= 0.0 || x > 1.0) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "x = " << x << " < 0");
     }
     if ((1.0 - x) < EPS_BETR)
@@ -535,7 +536,7 @@ double VinnikovModel::ssea(double const x, double const t) {
 
 double VinnikovModel::glu(double const x, double const t) {
     if (x <= 0.0 || x > 1.0) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "x = " << x << " < 0");
     }
     if ((1.0 - x) < EPS_BETR)
@@ -777,7 +778,7 @@ double VinnikovModel::dd3_pol(int const i_part, double const beta,
 
 double VinnikovModel::uval_pol(double const x, double const t) {
     if (x <= 0.0) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "x = " << x << " < 0");
     }
     // Diehl, Feldmann, Jakob, Kroll parameters
@@ -804,7 +805,7 @@ double VinnikovModel::uval_pol(double const x, double const t) {
 
 double VinnikovModel::usea_pol(double const x, double const t) {
     if (x <= 0.0 || x > 1.0) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "x = " << x << " < 0");
     }
     if ((1.0 - x) < EPS_BETR)
@@ -825,7 +826,7 @@ double VinnikovModel::usea_pol(double const x, double const t) {
 
 double VinnikovModel::dval_pol(double const x, double const t) {
     if (x <= 0.0 || x > 1.0) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "x = " << x << " < 0");
     }
     if ((1.0 - x) < EPS_BETR)
@@ -855,7 +856,7 @@ double VinnikovModel::dval_pol(double const x, double const t) {
 
 double VinnikovModel::dsea_pol(double const x, double const t) {
     if (x <= 0.0 || x > 1.0) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "x = " << x << " < 0");
     }
     if ((1.0 - x) < EPS_BETR)
@@ -876,7 +877,7 @@ double VinnikovModel::dsea_pol(double const x, double const t) {
 
 double VinnikovModel::ssea_pol(double const x, double const t) {
     if (x <= 0.0 || x > 1.0) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "x = " << x << " < 0");
     }
     if ((1.0 - x) < EPS_BETR)
@@ -897,7 +898,7 @@ double VinnikovModel::ssea_pol(double const x, double const t) {
 
 double VinnikovModel::glu_pol(double const x, double const t) {
     if (x <= 0.0 || x > 1.0) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "x = " << x << " < 0");
     }
     if ((1.0 - x) < EPS_BETR)
@@ -964,7 +965,7 @@ double VinnikovModel::dd_int_simp(double const bmin, double const bmax,
                         param);
 
     if ((SIMP_INT % 2) != 0) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "SIMP_INT = " << SIMP_INT
                         << " MUST BE EVEN, YOURS IS ODD");
     }

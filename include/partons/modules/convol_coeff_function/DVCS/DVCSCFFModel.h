@@ -5,12 +5,8 @@
  * @file DVCSCFFModel.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @author Hervé MOUTARDE (SPhN / CEA Saclay)
- * @date 08 September 2014
+ * @date September 08, 2014
  * @version 1.0
- *
- * @class DVCSCFFModel
- *
- * @brief
  */
 
 #include <complex>
@@ -25,6 +21,11 @@ class FunctionType1D;
 
 class PartonDistribution;
 
+/**
+ * @class DVCSCFFModel
+ *
+ * @brief
+ */
 class DVCSCFFModel: public DVCSConvolCoeffFunctionModule {
 public:
 

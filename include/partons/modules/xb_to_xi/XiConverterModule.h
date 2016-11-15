@@ -4,20 +4,25 @@
 /**
  * @file XiConverterModule.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 05 October 2015
+ * @date October 05, 2015
  * @version 1.0
- *
+ */
+
+#include <map>
+#include <string>
+
+#include "../../beans/automation/BaseObjectData.h"
+#include "../../ModuleObject.h"
+
+/**
  * @class XiConverterModule
  *
  * @brief
  */
-
-#include <string>
-
-#include "../../ModuleObject.h"
-
 class XiConverterModule: public ModuleObject {
 public:
+    static const std::string XI_CONVERTER_MODULE_CLASS_NAME;
+
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
     XiConverterModule(const std::string &className);
@@ -26,6 +31,9 @@ public:
     virtual XiConverterModule* clone() const = 0;
 
     virtual double compute(double xB, double t, double Q2) = 0;
+
+    virtual void prepareSubModules(
+            const std::map<std::string, BaseObjectData>& subModulesData);
 protected:
     /**
      * Copy constructor

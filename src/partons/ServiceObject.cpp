@@ -10,6 +10,7 @@
 #include <stddef.h>
 #include <iostream>
 
+#include "../../include/partons/beans/automation/BaseObjectData.h"
 #include "../../include/partons/beans/automation/Scenario.h"
 #include "../../include/partons/beans/automation/Task.h"
 #include "../../include/partons/database/ResultDaoService.h"
@@ -79,14 +80,29 @@ std::string ServiceObject::generateSQLQueryForPlotFileTask(Task &task,
         const std::string &tableName) const {
     ElemUtils::Parameters selectParams, whereParams;
 
-    if (task.isAvailableParameters("select")) {
-        selectParams = task.getLastAvailableParameters();
+//    if (task.isAvailableParameters("select")) {
+//        selectParams = task.getLastAvailableParameters();
+//    } else {
+//        throw ElemUtils::CustomException(getClassName(), __func__,
+//                "The select-type parameter is missing in the xml file ");
+//    }
+//    if (task.isAvailableParameters("where")) {
+//        whereParams = task.getLastAvailableParameters();
+//    } else {
+//        throw ElemUtils::CustomException(getClassName(), __func__,
+//                "The where-type parameter is missing in the xml file");
+//    }
+
+    if (task.getTaskParameters().isAvailableSubModule("select")) {
+        selectParams =
+                task.getTaskParameters().getLastAvailable().getParameters();
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
                 "The select-type parameter is missing in the xml file ");
     }
-    if (task.isAvailableParameters("where")) {
-        whereParams = task.getLastAvailableParameters();
+    if (task.getTaskParameters().isAvailableSubModule("where")) {
+        whereParams =
+                task.getTaskParameters().getLastAvailable().getParameters();
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
                 "The where-type parameter is missing in the xml file");
@@ -103,8 +119,8 @@ std::string ServiceObject::generateSQLQueryForPlotFile(
     formatter << "SELECT ";
 
     if (selectParams.size() == 2) {
-        formatter << selectParams.get("xPlot").toString() << ", "
-                << selectParams.get("yPlot").toString();
+        formatter << selectParams.get("xPlot").getString() << ", "
+                << selectParams.get("yPlot").getString();
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
                 "Missing xPlot or yPlot parameter in select-type xml element");
@@ -113,8 +129,7 @@ std::string ServiceObject::generateSQLQueryForPlotFile(
     formatter << " FROM " << tableName << " WHERE ";
 
     for (unsigned int i = 0; i != whereParams.size(); i++) {
-        formatter << whereParams.key(i) << " = "
-                << whereParams.value(i).toString();
+        formatter << whereParams.key(i) << " = " << whereParams.stringValue(i);
         if (i + 1 < whereParams.size()) {
             formatter << " AND ";
         }
@@ -128,8 +143,10 @@ std::string ServiceObject::generateSQLQueryForPlotFile(
 std::string ServiceObject::getOutputFilePathForPlotFileTask(Task& task) const {
     std::string filePath = ElemUtils::StringUtils::EMPTY;
 
-    if (task.isAvailableParameters("output")) {
-        filePath = task.getLastAvailableParameters().get("filePath").toString();
+    if (task.getTaskParameters().isAvailableSubModule("output")) {
+        filePath =
+                task.getTaskParameters().getLastAvailable().getParameters().get(
+                        "filePath").getString();
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
                 "The output-type parameter is missing in the xml file");
@@ -157,7 +174,7 @@ void ServiceObject::generatePlotFile(const std::string& filePath,
     std::ofstream fileOutputStream;
 
     if (!ElemUtils::FileUtils::open(fileOutputStream, filePath)) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "Cannot open \"" << filePath
                         << "\" to store plot values");
     }
@@ -175,11 +192,13 @@ List<GPDType> ServiceObject::getGPDTypeListFromTask(Task& task) const {
     List<GPDType> gpdTypeList;
 
     //TODO replace by static variable
-    if (task.isAvailableParameters("GPDType")) {
+    if (task.getTaskParameters().isAvailableSubModule("GPDType")) {
         try {
             //TODO replace string GPDType by static variable
-            gpdTypeList = GPDType::getListOfGPDTypeFromString(
-                    task.getLastAvailableParameters().get("value").toString());
+            gpdTypeList =
+                    GPDType::getListOfGPDTypeFromString(
+                            task.getTaskParameters().getLastAvailable().getParameters().get(
+                                    "value").getString());
         } catch (const std::exception &e) {
             throw ElemUtils::CustomException(getClassName(), __func__,
                     ElemUtils::Formatter() << e.what() << " for <"

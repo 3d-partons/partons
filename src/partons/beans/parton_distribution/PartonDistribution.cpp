@@ -115,8 +115,8 @@ double PartonDistribution::getSinglet() {
     }
 
 //    if (m_nbOfQuarkFlavor == 0) {
-//           throw std::runtime_error(
-//                   "[GK11Model::computeSinglet] divided by ZERO !");
+//           throw ElemUtils::CustomException(getClassName,__func__,
+//                   "Divided by ZERO !");
 //       }
 //
 //       result = quarkDistribution_u.getQuarkDistributionPlus()

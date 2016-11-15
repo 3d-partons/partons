@@ -194,7 +194,7 @@ void MSTWPDF::init(const std::string &gridFilePath) {
     data_file.open(gridFilePath.c_str());
 
     if (data_file.fail()) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "Error opening " << gridFilePath);
     }
 

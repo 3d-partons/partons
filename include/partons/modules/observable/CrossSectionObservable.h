@@ -34,7 +34,7 @@ public:
      */
     virtual CrossSectionObservable* clone() const;
 
-    virtual double compute(double phi);
+    virtual double computePhiObservable(double phi);
 
     /**
      * Provides a generic method to configure all types of modules by passing a Parameters object.

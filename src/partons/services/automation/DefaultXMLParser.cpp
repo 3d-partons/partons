@@ -1,16 +1,18 @@
 #include "../../../../include/partons/services/automation/DefaultXMLParser.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
-#include <ElementaryUtils/parameters/Parameters.h>
+#include <ElementaryUtils/parameters/Parameter.h>
 #include <ElementaryUtils/parser/XMLAttributs.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 
+#include "../../../../include/partons/beans/automation/BaseObjectData.h"
 #include "../../../../include/partons/beans/automation/Scenario.h"
 #include "../../../../include/partons/beans/automation/Task.h"
+#include "../../../../include/partons/beans/List.h"
 
 DefaultXMLParser::DefaultXMLParser() :
-        XMLParserI("DefaultXMLParser") {
+        XMLParserI("DefaultXMLParser"), m_isModuleNodePreviouslyCreated(false) {
 }
 
 DefaultXMLParser::~DefaultXMLParser() {
@@ -18,7 +20,7 @@ DefaultXMLParser::~DefaultXMLParser() {
 
 Scenario* DefaultXMLParser::parseScenario(Scenario* pScenario) {
     if (!pScenario) {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 "Scenario provided pointer is NULL");
     }
 
@@ -76,34 +78,78 @@ void DefaultXMLParser::startElement(const std::string &elementName,
     // then retrieve its type attribute
     else if (ElemUtils::StringUtils::equals(elementName,
             XMLParserI::KINEMATICS_NODE_NAME)) {
-        m_tempObjectType = attributes.getStringValueOf(
-                XMLParserI::NODE_TYPE_ATTRIBUT_NAME);
+        m_kinematicsData = BaseObjectData(XMLParserI::KINEMATICS_NODE_NAME,
+                attributes.getStringValueOf(
+                        XMLParserI::NODE_MODULE_TYPE_ATTRIBUT_NAME));
+        m_currentModuleHierarchy.add(&m_kinematicsData);
     }
 
     // if reached start element node is module
     // then retrieve its type attribute
     else if (ElemUtils::StringUtils::equals(elementName,
             XMLParserI::MODULE_NODE_NAME)) {
-        m_tempObjectType = attributes.getStringValueOf(
-                XMLParserI::NODE_TYPE_ATTRIBUT_NAME);
+        m_isModuleNodePreviouslyCreated = true;
+
+        std::string moduleType = attributes.getStringValueOf(
+                XMLParserI::NODE_MODULE_TYPE_ATTRIBUT_NAME);
+
+        std::string moduleClassName = attributes.getStringValueOf(
+                XMLParserI::NODE_MODULE_NAME_ATTRIBUT_NAME);
+
+        if (m_currentModuleHierarchy.size() == 0) {
+            m_modulesData = BaseObjectData(moduleType, moduleClassName);
+            m_currentModuleHierarchy.add(&m_modulesData);
+
+            debug(__func__,
+                    ElemUtils::Formatter() << m_modulesData.getModuleType()
+                            << "[" << m_modulesData.getModuleClassName()
+                            << "] added");
+        } else {
+            try {
+                m_currentModuleHierarchy.add(
+                        &m_currentModuleHierarchy.getLast()->addSubModule(
+                                moduleType, moduleClassName));
+            } catch (const ElemUtils::CustomException &e) {
+                throw ElemUtils::CustomException(getClassName(), __func__,
+                        ElemUtils::Formatter() << e.what() << " : "
+                                << elementName);
+            }
+        }
     }
 
     // if reached start element node is param
     // then retrieve its name and value attributes and add them into the temporary parameters list.
     else if (ElemUtils::StringUtils::equals(elementName,
             XMLParserI::PARAM_NODE_NAME)) {
-        m_tempObjectParameters.add(
-                attributes.getStringValueOf(
-                        XMLParserI::PARAM_NAME_ATTRIBUT_NAME),
-                attributes.getStringValueOf(
-                        XMLParserI::PARAM_VALUE_ATTRIBUT_NAME));
+        try {
+            m_currentModuleHierarchy.getLast()->addParameter(
+                    ElemUtils::Parameter(
+                            attributes.getStringValueOf(
+                                    XMLParserI::PARAM_NAME_ATTRIBUT_NAME),
+                            attributes.getStringValueOf(
+                                    XMLParserI::PARAM_VALUE_ATTRIBUT_NAME)));
+        } catch (const ElemUtils::CustomException &e) {
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    ElemUtils::Formatter() << e.what() << " : " << elementName
+                            << " : "
+                            << attributes.getStringValueOf(
+                                    XMLParserI::PARAM_NAME_ATTRIBUT_NAME)
+                            << " : "
+                            << attributes.getStringValueOf(
+                                    XMLParserI::PARAM_VALUE_ATTRIBUT_NAME));
+        }
     }
 
     // if reached start element node is task_param
     else if (ElemUtils::StringUtils::equals(elementName,
             XMLParserI::TASK_PARAM_NODE_NAME)) {
-        m_tempObjectType = attributes.getStringValueOf(
-                XMLParserI::NODE_TYPE_ATTRIBUT_NAME);
+
+        std::string taskParamType = attributes.getStringValueOf(
+                XMLParserI::NODE_MODULE_TYPE_ATTRIBUT_NAME);
+
+        m_currentModuleHierarchy.add(
+                &(m_taskParametersData.addSubModule(taskParamType,
+                        taskParamType)));
     }
 }
 
@@ -114,20 +160,45 @@ void DefaultXMLParser::endElement(const std::string& elementName) {
     // If the end node task is reached is that the temporary task is fill and it can be stored into the scenario.
     if (ElemUtils::StringUtils::equals(elementName,
             XMLParserI::TASK_NODE_NAME)) {
+
         m_task.setScenarioTaskIndexNumber(m_pScenario->size());
+        m_task.setModuleComputationConfiguration(m_modulesData);
+        m_task.setTaskParameters(m_taskParametersData);
         m_pScenario->add(m_task);
+
+        //clear previous temporary data
+        m_kinematicsData = BaseObjectData();
+        m_modulesData = BaseObjectData();
+        m_taskParametersData = BaseObjectData();
     }
 
     // else it's that the object parameterization is over and it can be stored into the temporary task object
     else if (ElemUtils::StringUtils::equals(elementName,
             XMLParserI::KINEMATICS_NODE_NAME)
             || ElemUtils::StringUtils::equals(elementName,
-                    XMLParserI::MODULE_NODE_NAME)
-            || ElemUtils::StringUtils::equals(elementName,
                     XMLParserI::TASK_PARAM_NODE_NAME)) {
-        m_task.addParameters(m_tempObjectType, m_tempObjectParameters);
 
-        // temporary parameterList object need to be cleared for the next object parameterization
-        m_tempObjectParameters.clear();
+        try {
+            m_currentModuleHierarchy.removeLast();
+        } catch (const ElemUtils::CustomException &e) {
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    e.what());
+        }
+
+        m_task.setKinematicsData(m_kinematicsData);
+    }
+
+    else if (ElemUtils::StringUtils::equals(elementName,
+            XMLParserI::MODULE_NODE_NAME)) {
+        if (m_isModuleNodePreviouslyCreated) {
+            m_isModuleNodePreviouslyCreated = false;
+        }
+
+        try {
+            m_currentModuleHierarchy.removeLast();
+        } catch (const ElemUtils::CustomException &e) {
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    e.what());
+        }
     }
 }

@@ -11,7 +11,8 @@
 #include <string>
 #include <vector>
 
-#include "FourierObservable.h"
+#include "../MathIntegratorModule.h"
+#include "All.h"
 
 /**
  * @class AllCos2phi
@@ -21,7 +22,7 @@
  *
  * described in 1210.6975v3 [hep-ph] eq. (51) + (54)
  */
-class AllCos2phi: public FourierObservable {
+class AllCos2phi: public All, public MathIntegratorModule {
 public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
@@ -34,9 +35,7 @@ public:
      */
     virtual AllCos2phi* clone() const;
 
-    virtual double compute();
-
-    virtual void resolveObjectDependencies();
+    virtual double computeFourierObservable();
 
 protected:
     /**
@@ -44,9 +43,9 @@ protected:
      */
     AllCos2phi(const AllCos2phi &other);
 
-    NumA::FunctionType1D* m_pFunctionToIntegrateAllObservable;
+    NumA::FunctionType1D* m_pFunctionToIntegrateObservable;
 
-    virtual double functionToIntegrateAllObservable(double x,
+    virtual double functionToIntegrateObservable(double x,
             std::vector<double> params);
 
     void initFunctorsForIntegrations();

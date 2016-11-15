@@ -8,6 +8,7 @@
 #ifndef DVCSCFFDISPERSIONRELATIONMODEL_H_
 #define DVCSCFFDISPERSIONRELATIONMODEL_H_
 
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <complex>
 #include <string>
 #include <vector>

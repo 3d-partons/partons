@@ -8,9 +8,11 @@
 #ifndef GPDSUBTRACTIONCONSTANTMODULE_H_
 #define GPDSUBTRACTIONCONSTANTMODULE_H_
 
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <map>
 #include <string>
 
+#include "../beans/automation/BaseObjectData.h"
 #include "../beans/gpd/GPDBorderFunctionKinematic.h"
 #include "../beans/gpd/GPDType.h"
 #include "../beans/List.h"
@@ -85,6 +87,9 @@ public:
 
     virtual void configure(const ElemUtils::Parameters &parameters);
     virtual std::string toString() const;
+
+    virtual void prepareSubModules(
+            const std::map<std::string, BaseObjectData>& subModulesData);
 
 protected:
 

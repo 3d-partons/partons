@@ -8,6 +8,7 @@
  * @version 1.0
  */
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <ElementaryUtils/thread/Packet.h>
@@ -81,7 +82,8 @@ public:
         ElemUtils::Formatter formatter;
 
         for (size_t i = 0; i != m_data.size(); i++) {
-            formatter << m_data[i].toString() << '\n';
+            formatter << "List[index] = " << i << '\n' << m_data[i].toString()
+                    << '\n';
         }
 
         return formatter.str();
@@ -176,6 +178,18 @@ public:
 
     void resize(size_t n) {
         m_data.resize(n);
+    }
+
+    void removeLast() {
+        m_data.pop_back();
+    }
+
+    const T& getLast() const {
+
+        return (size() > 0) ?
+                m_data[size() - 1] :
+                throw ElemUtils::CustomException(getClassName(), __func__,
+                        "Cannot get the last object because the list is empty");
     }
 
     void serialize(ElemUtils::Packet &packet) const {

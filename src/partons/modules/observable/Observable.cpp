@@ -4,11 +4,11 @@
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/thread/Packet.h>
 #include <NumA/utils/MathUtils.h>
-//#include <exception>
 #include <iostream>
+#include <utility>
 
 #include "../../../../include/partons/beans/observable/ObservableResult.h"
-#include "../../../../include/partons/modules/ProcessModule.h"
+#include "../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../include/partons/Partons.h"
 #include "../../../../include/partons/services/ObservableService.h"
 #include "../../../../include/partons/ServiceObjectRegistry.h"
@@ -38,6 +38,10 @@ Observable::Observable(const Observable& other) :
 }
 
 Observable::~Observable() {
+    if (m_pProcessModule != 0) {
+        delete m_pProcessModule;
+        m_pProcessModule = 0;
+    }
 }
 
 void Observable::initModule() {
@@ -102,7 +106,8 @@ ObservableResult Observable::compute(double xB, double t, double Q2, double phi,
     if (m_observableType == ObservableType::FOURIER) {
 
         //TODO improve
-        observableResult = ObservableResult(getClassName(), compute());
+        observableResult = ObservableResult(getClassName(),
+                computeFourierObservable());
         observableResult.setComputationModuleName(
                 m_pProcessModule->getClassName());
         observableResult.setObservableType(m_observableType);
@@ -114,7 +119,8 @@ ObservableResult Observable::compute(double xB, double t, double Q2, double phi,
 
         //TODO improve
         observableResult = ObservableResult(getClassName(),
-                compute(NumA::MathUtils::convertDegreeToRadian(phi)));
+                computePhiObservable(
+                        NumA::MathUtils::convertDegreeToRadian(phi)));
         observableResult.setComputationModuleName(
                 m_pProcessModule->getClassName());
         observableResult.setObservableType(m_observableType);
@@ -122,7 +128,7 @@ ObservableResult Observable::compute(double xB, double t, double Q2, double phi,
     }
 
     else {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "Unknow observable type : "
                         << ObservableType(m_observableType).toString());
     }
@@ -130,14 +136,14 @@ ObservableResult Observable::compute(double xB, double t, double Q2, double phi,
     return observableResult;
 }
 
-double Observable::compute(double phi) {
-    ElemUtils::CustomException(getClassName(), __func__,
+double Observable::computePhiObservable(double phi) {
+    throw ElemUtils::CustomException(getClassName(), __func__,
             "Nothing to do ; Must be implemented in daugther class");
     return 0.;
 }
 
-double Observable::compute() {
-    ElemUtils::CustomException(getClassName(), __func__,
+double Observable::computeFourierObservable() {
+    throw ElemUtils::CustomException(getClassName(), __func__,
             "Nothing to do ; Must be implemented in daugther class");
     return 0.;
 
@@ -152,6 +158,34 @@ double Observable::compute() {
 //    error(__func__, "Nothing to do ; Must be implemented in daugther class");
 //    return 0.;
 //}
+
+void Observable::prepareSubModules(
+        const std::map<std::string, BaseObjectData>& subModulesData) {
+
+    std::map<std::string, BaseObjectData>::const_iterator it;
+
+    it = subModulesData.find(ProcessModule::PROCESS_MODULE_CLASS_NAME);
+
+    if (it != subModulesData.end()) {
+        if (m_pProcessModule) {
+            delete m_pProcessModule;
+            m_pProcessModule = 0;
+        }
+        if (!m_pProcessModule) {
+            m_pProcessModule =
+                    Partons::getInstance()->getModuleObjectFactory()->newProcessModule(
+                            (it->second).getModuleClassName());
+
+            info(__func__,
+                    ElemUtils::Formatter() << "Configure with ProcessModule = "
+                            << m_pProcessModule->getClassName());
+
+            m_pProcessModule->configure((it->second).getParameters());
+
+            m_pProcessModule->prepareSubModules((it->second).getSubModules());
+        }
+    }
+}
 
 // ##### GETTERS & SETTERS #####
 

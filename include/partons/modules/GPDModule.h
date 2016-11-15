@@ -8,9 +8,11 @@
  * @version 1.0
  */
 
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <map>
 #include <string>
 
+#include "../beans/automation/BaseObjectData.h"
 #include "../beans/gpd/GPDKinematic.h"
 #include "../beans/gpd/GPDType.h"
 #include "../beans/List.h"
@@ -26,6 +28,7 @@ class GPDEvolutionModule;
 class GPDModule: public ModuleObject {
 public:
 
+    static const std::string GPD_MODULE_CLASS_NAME;
     static const std::string GPD_TYPE;
 
     //TODO delete
@@ -110,6 +113,13 @@ public:
 
     List<GPDType> getListOfAvailableGPDTypeForComputation() const;
 
+//    void prepareComputationConfiguration(
+//            const List<ElemUtils::Parameter> &moduleNameList,
+//            const unsigned int level = 0);
+
+    void prepareSubModules(
+            const std::map<std::string, BaseObjectData>& subModulesData);
+
 protected:
     double m_x;
     double m_xi;
@@ -153,6 +163,11 @@ protected:
     std::map<GPDType::Type, PartonDistribution (GPDModule::*)()>::iterator m_it;
 
     // std::vector<GPDType::Type> m_listOfAvailableGPDTypeForComputation;
+
+private:
+//    void prepareGPDEvolutionModule(
+//            const List<ElemUtils::Parameter> &moduleNameList,
+//            unsigned int level = 0);
 };
 
 #endif /* GPD_MODULE_H */

@@ -8,9 +8,12 @@
  * @version 1.0
  */
 
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <complex>
+#include <map>
 #include <string>
 
+#include "../beans/automation/BaseObjectData.h"
 #include "../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "../beans/gpd/GPDType.h"
 #include "../beans/List.h"
@@ -18,7 +21,6 @@
 #include "../ModuleObject.h"
 #include "MathIntegratorModule.h"
 
-class DVCSConvolCoeffFunctionResult;
 class GPDModule;
 
 /**
@@ -29,6 +31,8 @@ class GPDModule;
 class ConvolCoeffFunctionModule: public ModuleObject,
         public MathIntegratorModule {
 public:
+    static const std::string CONVOL_COEFF_FUNCTION_MODULE_CLASS_NAME;
+
     ConvolCoeffFunctionModule(const std::string &className);
     virtual ~ConvolCoeffFunctionModule();
 
@@ -54,11 +58,17 @@ public:
     // ##### GETTERS & SETTERS #####
 
     GPDModule* getGPDModule() const;
+
+    //TODO move to private
     void setGPDModule(GPDModule* gpdModule);
+
     ObservableChannel::Type getChannel() const;
     void setChannel(ObservableChannel::Type channel);
     bool isGPDModuleDependent() const;
     void setIsGPDModuleDependent(bool isGPDModuleDependent);
+
+    void prepareSubModules(
+            const std::map<std::string, BaseObjectData>& subModulesData);
 
 protected:
     /**

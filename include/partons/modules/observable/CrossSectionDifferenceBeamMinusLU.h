@@ -16,7 +16,7 @@ public:
 
     virtual CrossSectionDifferenceBeamMinusLU* clone() const;
 
-    virtual double compute(double phi);
+    virtual double computePhiObservable(double phi);
 
 protected:
 

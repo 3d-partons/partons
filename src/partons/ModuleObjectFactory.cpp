@@ -104,11 +104,12 @@ ProcessModule* ModuleObjectFactory::newObservableModule(
     return static_cast<ProcessModule*>(newModuleObject(className));
 }
 
-DVCSModule* ModuleObjectFactory::newDVCSModule(unsigned int classId) {
+DVCSModule* ModuleObjectFactory::newProcessModule(unsigned int classId) {
     return static_cast<DVCSModule*>(newModuleObject(classId));
 }
 
-DVCSModule* ModuleObjectFactory::newDVCSModule(const std::string& className) {
+DVCSModule* ModuleObjectFactory::newProcessModule(
+        const std::string& className) {
     return static_cast<DVCSModule*>(newModuleObject(className));
 }
 

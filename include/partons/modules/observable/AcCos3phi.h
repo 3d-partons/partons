@@ -11,7 +11,8 @@
 #include <string>
 #include <vector>
 
-#include "FourierObservable.h"
+#include "../MathIntegratorModule.h"
+#include "Ac.h"
 
 /**
  * @class AcCos3phi
@@ -21,7 +22,7 @@
  *
  * described in 1210.6975v3 [hep-ph] eq. (54)
  */
-class AcCos3phi: public FourierObservable {
+class AcCos3phi: public Ac, public MathIntegratorModule {
 public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
@@ -34,9 +35,7 @@ public:
      */
     virtual AcCos3phi* clone() const;
 
-    virtual double compute();
-
-    virtual void resolveObjectDependencies();
+    virtual double computeFourierObservable();
 
 protected:
     /**
@@ -44,9 +43,9 @@ protected:
      */
     AcCos3phi(const AcCos3phi &other);
 
-    NumA::FunctionType1D* m_pFunctionToIntegrateAcObservable;
+    NumA::FunctionType1D* m_pFunctionToIntegrateObservable;
 
-    virtual double functionToIntegrateAcObservable(double x,
+    virtual double functionToIntegrateObservable(double x,
             std::vector<double> params);
 
     void initFunctorsForIntegrations();

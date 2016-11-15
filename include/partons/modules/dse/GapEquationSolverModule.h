@@ -3,21 +3,21 @@
  * @author Nabil CHOUIKA (SPhN / CEA Saclay)
  * @date Jan 22, 2016
  * @version 1.0
- *
- * @class GapEquationSolverModule
  */
 
 #ifndef GAPEQUATIONSOLVER_H_
 #define GAPEQUATIONSOLVER_H_
 
-#include <string>
-#include <vector>
-#include <NumA/integration/one_dimension/QuadratureIntegrator1D.h>
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <NumA/linear_algebra/matrix/MatrixD.h>
 #include <NumA/linear_algebra/vector/VectorD.h>
 #include <NumA/utils/Differences.h>
 #include <NumA/utils/Tolerances.h>
+#include <map>
+#include <string>
+#include <vector>
 
+#include "../../beans/automation/BaseObjectData.h"
 #include "../../ModuleObject.h"
 
 namespace NumA {
@@ -29,6 +29,9 @@ class QuarkGluonVertex;
 class GluonPropagator;
 class QuarkPropagator;
 
+/**
+ * @class GapEquationSolverModule
+ */
 class GapEquationSolverModule: public ModuleObject {
 public:
     /**
@@ -92,6 +95,9 @@ public:
     void setVertex(const QuarkGluonVertex* vertex);
 
     virtual void compute(IterativeType iterativeType = Naive);
+
+    virtual void prepareSubModules(
+            const std::map<std::string, BaseObjectData>& subModulesData);
 
 protected:
     /**

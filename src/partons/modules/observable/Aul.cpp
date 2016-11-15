@@ -26,7 +26,7 @@ Aul* Aul::clone() const {
     return new Aul(*this);
 }
 
-double Aul::compute(double phi) {
+double Aul::computePhiObservable(double phi) {
 
     double result = 0.;
 

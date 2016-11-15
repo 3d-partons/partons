@@ -37,7 +37,7 @@ int ResultInfoDaoService::insertWithoutTransaction(
                             resultInfo.getScenarioHashSum())));
         }
     } else {
-        ElemUtils::CustomException(getClassName(),__func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 "pScenario is NULL pointer ; This result has not been produced by a scenario ; It cannot be stored into the database.");
     }
 

@@ -8,10 +8,13 @@
  * @version 1.0
  */
 
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <NumA/linear_algebra/vector/Vector3D.h>
 #include <pthread.h>
+#include <map>
 #include <string>
 
+#include "../../beans/automation/BaseObjectData.h"
 #include "../../beans/gpd/GPDType.h"
 #include "../../beans/List.h"
 #include "../../beans/observable/ObservableChannel.h"
@@ -63,13 +66,16 @@ public:
     ObservableResult compute(double xB, double t, double Q2, double phi,
             const List<GPDType> & gpdType = List<GPDType>());
 
-    virtual double compute(double phi);
+    virtual double computePhiObservable(double phi);
 
     // TODO clean
 //    virtual double Num(ProcessModule* pDVCSModule, double phi);
 //    virtual double Den(ProcessModule* pDVCSModule, double phi);
 
     virtual void run();
+
+    virtual void prepareSubModules(
+            const std::map<std::string, BaseObjectData>& subModulesData);
 
 // ##### GETTERS & SETTERS #####
 
@@ -105,7 +111,7 @@ protected:
 
     NumA::Vector3D m_targetPolarization;
 
-    virtual double compute();
+    virtual double computeFourierObservable();
 
 private:
     pthread_mutex_t m_mutex;

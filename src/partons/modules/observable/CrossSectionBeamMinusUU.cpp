@@ -28,7 +28,7 @@ CrossSectionBeamMinusUU* CrossSectionBeamMinusUU::clone() const {
     return new CrossSectionBeamMinusUU(*this);
 }
 
-double CrossSectionBeamMinusUU::compute(double phi) {
+double CrossSectionBeamMinusUU::computePhiObservable(double phi) {
 
     double result = 0.;
 

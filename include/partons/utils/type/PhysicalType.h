@@ -8,12 +8,14 @@
  * @version 1.0
  */
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <ElementaryUtils/thread/Packet.h>
 #include <sstream>
-#include <stdexcept>
 #include <string>
+
+#include "../../BaseObject.h"
 
 /**
  * @class PhysicalType
@@ -21,28 +23,32 @@
  * @brief
  */
 template<class T>
-class PhysicalType {
+class PhysicalType: public BaseObject {
 public:
     static const std::string PHYSICAL_TYPE_NONE_UNIT;
 
     PhysicalType() :
-            m_initialized(false), m_value(), m_unit(PHYSICAL_TYPE_NONE_UNIT) {
+            BaseObject("PhysicalType"), m_initialized(false), m_value(), m_unit(
+                    PHYSICAL_TYPE_NONE_UNIT) {
     }
     PhysicalType(T value) :
-            m_initialized(true), m_value(value), m_unit(PHYSICAL_TYPE_NONE_UNIT) {
+            BaseObject("PhysicalType"), m_initialized(true), m_value(value), m_unit(
+                    PHYSICAL_TYPE_NONE_UNIT) {
     }
 
     PhysicalType(const std::string &stringValue) :
-            m_initialized(false), m_unit(PHYSICAL_TYPE_NONE_UNIT) {
+            BaseObject("PhysicalType"), m_initialized(false), m_unit(
+                    PHYSICAL_TYPE_NONE_UNIT) {
         fromStdString(stringValue);
     }
 
     PhysicalType(T value, const std::string &unit) :
-            m_initialized(true), m_value(value), m_unit(unit) {
+            BaseObject("PhysicalType"), m_initialized(true), m_value(value), m_unit(
+                    unit) {
     }
 
     PhysicalType(const std::string &stringValue, const std::string &unit) :
-            m_initialized(false), m_unit(unit) {
+            BaseObject("PhysicalType"), m_initialized(false), m_unit(unit) {
         fromStdString(stringValue);
     }
 
@@ -56,8 +62,8 @@ public:
 
         // if conversion failed then print an exception
         if ((sstream >> m_value).fail()) {
-            throw std::runtime_error(
-                    "(PhysicalBaseType::fromStdString) cast from std::string to type<T> failed ! ");
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    "Cast from std::string to type<T> failed !");
         }
 
         m_initialized = true;

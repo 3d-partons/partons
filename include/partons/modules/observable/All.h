@@ -30,7 +30,7 @@ public:
      */
     virtual All* clone() const;
 
-    virtual double compute(double phi); ///< calculate cross sections with various helicities and beam charge and combine them to obtain the asymmetry
+    virtual double computePhiObservable(double phi); ///< calculate cross sections with various helicities and beam charge and combine them to obtain the asymmetry
 
 protected:
     /**

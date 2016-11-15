@@ -1,8 +1,8 @@
 #include "../../../../include/partons/modules/radon_inverse/RadonInverseModule.h"
 
-#include <cmath>
 #include <ElementaryUtils/logger/CustomException.h>
 #include <NumA/functor/multi_dimension/FunctionTypeMD.h>
+#include <cmath>
 
 const double RadonInverseModule::DD_DOMAIN_HALF_EDGE = 1. / sqrt(2.);
 
@@ -89,7 +89,7 @@ void RadonInverseModule::buildGPDVector() {
             }
         }
     } else {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 "GPD Function not defined!");
     }
 }
@@ -120,4 +120,10 @@ void RadonInverseModule::setN(size_t N) {
     m_N = N;
     buildMesh();
     m_gpdNodes.reserve(5 * m_n);
+}
+
+void RadonInverseModule::prepareSubModules(
+        const std::map<std::string, BaseObjectData>& subModulesData) {
+    throw ElemUtils::CustomException(getClassName(), __func__,
+            "TODO : implement");
 }
