@@ -98,6 +98,10 @@ ObservableResult Observable::compute(const ObservableKinematic &kinematic,
 ObservableResult Observable::compute(double xB, double t, double Q2, double phi,
         const List<GPDType> & gpdType) {
 
+    debug(__func__,
+            ElemUtils::Formatter() << "Processing ... xB = " << xB << " t = "
+                    << t << " Q2 = " << Q2 << " phi = " << phi);
+
     ObservableResult observableResult;
 
     m_pProcessModule->computeConvolCoeffFunction(xB, t, Q2, gpdType);
@@ -221,9 +225,11 @@ ProcessModule* Observable::getProcessModule() const {
 void Observable::setProcessModule(ProcessModule* pProcessModule) {
     m_pProcessModule = pProcessModule;
 
-    warn(__func__,
-            ElemUtils::Formatter() << "has been set with "
-                    << pProcessModule->getClassName());
+    if (pProcessModule != 0) {
+        warn(__func__,
+                ElemUtils::Formatter() << "has been set with "
+                        << pProcessModule->getClassName());
+    }
 }
 
 void Observable::configure(const ElemUtils::Parameters &parameters) {

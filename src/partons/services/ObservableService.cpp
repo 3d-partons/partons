@@ -314,8 +314,13 @@ ProcessModule* ObservableService::newProcessModuleFromTask(
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
-                        << "You have not provided any ProcessModule");
+                        << "You have not provided any ProcessModule ; Or check case in your XML file");
     }
+
+    debug(__func__,
+            ElemUtils::Formatter() << "Process module ("
+                    << pProcessModule->getClassName()
+                    << ") created from task.");
 
     return pProcessModule;
 
