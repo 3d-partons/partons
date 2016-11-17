@@ -29,6 +29,8 @@ Scenario* DefaultXMLParser::parseScenario(Scenario* pScenario) {
     // parse XML file
     analyse(pScenario->getFile());
 
+    debug(__func__, pScenario->toString());
+
     return m_pScenario;
 }
 
@@ -117,6 +119,46 @@ void DefaultXMLParser::startElement(const std::string &elementName,
         }
     }
 
+    // if reached start element node is task_param
+    else if (ElemUtils::StringUtils::equals(elementName,
+            XMLParserI::TASK_PARAM_NODE_NAME)) {
+
+        std::string taskParamType = attributes.getStringValueOf(
+                XMLParserI::NODE_MODULE_TYPE_ATTRIBUT_NAME);
+
+        m_currentModuleHierarchy.add(
+                &(m_taskParametersData.addSubModule(taskParamType,
+                        taskParamType)));
+    }
+}
+
+void DefaultXMLParser::emptyStartElement(const std::string &elementName,
+        ElemUtils::XMLAttributs attributes) {
+
+    debug(__func__,
+            ElemUtils::Formatter() << "EmptyStartElementName = "
+                    << elementName);
+    debug(__func__,
+            ElemUtils::Formatter() << "Attributs : \n"
+                    << attributes.toString());
+
+    if (ElemUtils::StringUtils::equals(elementName,
+            XMLParserI::MODULE_NODE_NAME)) {
+
+        std::string moduleType = attributes.getStringValueOf(
+                XMLParserI::NODE_MODULE_TYPE_ATTRIBUT_NAME);
+
+        std::string moduleClassName = attributes.getStringValueOf(
+                XMLParserI::NODE_MODULE_NAME_ATTRIBUT_NAME);
+
+        try {
+            m_currentModuleHierarchy.getLast()->addSubModule(moduleType,
+                    moduleClassName);
+        } catch (const ElemUtils::CustomException &e) {
+            m_modulesData = BaseObjectData(moduleType, moduleClassName);
+        }
+    }
+
     // if reached start element node is param
     // then retrieve its name and value attributes and add them into the temporary parameters list.
     else if (ElemUtils::StringUtils::equals(elementName,
@@ -140,19 +182,7 @@ void DefaultXMLParser::startElement(const std::string &elementName,
         }
     }
 
-    // if reached start element node is task_param
-    else if (ElemUtils::StringUtils::equals(elementName,
-            XMLParserI::TASK_PARAM_NODE_NAME)) {
-
-        std::string taskParamType = attributes.getStringValueOf(
-                XMLParserI::NODE_MODULE_TYPE_ATTRIBUT_NAME);
-
-        m_currentModuleHierarchy.add(
-                &(m_taskParametersData.addSubModule(taskParamType,
-                        taskParamType)));
-    }
 }
-
 void DefaultXMLParser::endElement(const std::string& elementName) {
     debug(__func__,
             ElemUtils::Formatter() << "EndElementName = " << elementName);

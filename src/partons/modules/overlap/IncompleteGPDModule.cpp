@@ -108,7 +108,7 @@ PartonDistribution IncompleteGPDModule::compute(double x, double xi, double t,
     if (m_it != m_listGPDComputeTypeAvailable.end()) {
         partonDistribution = ((*this).*(m_it->second))();
     } else {
-        ElemUtils::CustomException(getClassName(), __func__,
+        throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "GPD("
                         << GPDType(m_gpdType).toString()
                         << ") is not available for this GPD model");

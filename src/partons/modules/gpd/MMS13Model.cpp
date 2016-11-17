@@ -70,7 +70,7 @@ void MMS13Model::initFunctorsForIntegrations() {
 MMS13Model* MMS13Model::clone() const {
     return new MMS13Model(*this);
 }
-
+//TODO clone MSTWPDF instead of hardcoded new
 void MMS13Model::resolveObjectDependencies() {
 
     m_pForward = new MSTWPDF();

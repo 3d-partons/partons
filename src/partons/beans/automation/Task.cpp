@@ -41,6 +41,8 @@ std::string Task::toString() const {
     formatter << "Service name = " << m_serviceName << " function name = "
             << m_functionName << '\n' << "[Parameters]" << '\n';
 
+    formatter << m_moduleComputationConfiguration.toString();
+
     return formatter.str();
 }
 
@@ -78,8 +80,7 @@ const BaseObjectData& Task::getKinematicsData() const {
     return m_kinematicsData;
 }
 
-void Task::setKinematicsData(
-        const BaseObjectData& kinematicsData) {
+void Task::setKinematicsData(const BaseObjectData& kinematicsData) {
     m_kinematicsData = kinematicsData;
 }
 

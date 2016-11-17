@@ -28,6 +28,9 @@ public:
     virtual void startElement(const std::string &elementName,
             ElemUtils::XMLAttributs attributes, const std::string &elementData);
 
+    virtual void emptyStartElement(const std::string &elementName,
+            ElemUtils::XMLAttributs attributes);
+
     virtual void endElement(const std::string &elementName);
 
 private:

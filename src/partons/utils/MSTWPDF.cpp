@@ -30,6 +30,9 @@ MSTWPDF::~MSTWPDF() {
 }
 
 void MSTWPDF::init(const std::string &gridFilePath) {
+
+    info(__func__, ElemUtils::Formatter() << "gridFilePath = " << gridFilePath);
+
     int i, n, m, k, l, j; // counters
     double dtemp;
 
