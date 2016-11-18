@@ -129,7 +129,8 @@ std::string ServiceObject::generateSQLQueryForPlotFile(
     formatter << " FROM " << tableName << " WHERE ";
 
     for (unsigned int i = 0; i != whereParams.size(); i++) {
-        formatter << whereParams.key(i) << " = " << whereParams.stringValue(i);
+        formatter << whereParams.key(i) << " = '" << whereParams.stringValue(i)
+                << "'";
         if (i + 1 < whereParams.size()) {
             formatter << " AND ";
         }
