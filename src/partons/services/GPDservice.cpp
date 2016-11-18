@@ -439,12 +439,10 @@ List<GPDKinematic> GPDService::newListOfKinematicFromTask(
     if (ElemUtils::StringUtils::equals(
             task.getKinematicsData().getModuleClassName(), "GPDKinematic")) {
 
-        ElemUtils::Parameters parameters =
-                task.getKinematicsData().getParameters();
-
         if (task.getKinematicsData().getParameters().isAvailable("file")) {
-            listOfKinematic = KinematicUtils().getGPDKinematicFromFile(
-                    parameters.getLastAvailable().getString());
+            listOfKinematic =
+                    KinematicUtils().getGPDKinematicFromFile(
+                            task.getKinematicsData().getParameters().getLastAvailable().getString());
         } else {
             throw ElemUtils::CustomException(getClassName(), __func__,
                     ElemUtils::Formatter()

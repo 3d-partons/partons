@@ -421,12 +421,10 @@ List<ObservableKinematic> ObservableService::newListOfKinematicFromTask(
             task.getKinematicsData().getModuleClassName(),
             "ObservableKinematic")) {
 
-        ElemUtils::Parameters parameters =
-                task.getKinematicsData().getParameters();
-
         if (task.getKinematicsData().getParameters().isAvailable("file")) {
-            listOfKinematic = KinematicUtils().getObservableKinematicFromFile(
-                    parameters.getLastAvailable().getString());
+            listOfKinematic =
+                    KinematicUtils().getObservableKinematicFromFile(
+                            task.getKinematicsData().getParameters().getLastAvailable().getString());
         } else {
             throw ElemUtils::CustomException(getClassName(), __func__,
                     ElemUtils::Formatter()

@@ -41,6 +41,8 @@ std::string Task::toString() const {
     formatter << "Service name = " << m_serviceName << " function name = "
             << m_functionName << '\n' << "[Parameters]" << '\n';
 
+    formatter << m_kinematicsData.toString();
+
     formatter << m_moduleComputationConfiguration.toString();
 
     return formatter.str();

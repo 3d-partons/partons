@@ -394,7 +394,7 @@ ConvolCoeffFunctionModule* ConvolCoeffFunctionService::newConvolCoeffFunctionMod
     //TODO remove hardcoded string
     if (ElemUtils::StringUtils::equals(
             task.getModuleComputationConfiguration().getModuleType(),
-            "DVCSConvolCoeffFunctionModule")) {
+            "ConvolCoeffFunctionModule")) {
         pConvolCoeffFunctionModule =
                 Partons::getInstance()->getModuleObjectFactory()->newDVCSConvolCoeffFunctionModule(
                         task.getModuleComputationConfiguration().getModuleClassName());
@@ -442,12 +442,10 @@ List<DVCSConvolCoeffFunctionKinematic> ConvolCoeffFunctionService::newListOfKine
             task.getKinematicsData().getModuleClassName(),
             "DVCSConvolCoeffFunctionKinematic")) {
 
-        ElemUtils::Parameters parameters =
-                task.getKinematicsData().getParameters();
-
         if (task.getKinematicsData().getParameters().isAvailable("file")) {
-            listOfKinematic = KinematicUtils().getCCFKinematicFromFile(
-                    parameters.getLastAvailable().getString());
+            listOfKinematic =
+                    KinematicUtils().getCCFKinematicFromFile(
+                            task.getKinematicsData().getParameters().getLastAvailable().getString());
         } else {
             throw ElemUtils::CustomException(getClassName(), __func__,
                     ElemUtils::Formatter()
