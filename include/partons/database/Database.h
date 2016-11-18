@@ -76,7 +76,7 @@ public:
 
     static int execSelectQuery(QSqlQuery& query);
     static std::string getLastExecutedQuery(const QSqlQuery& query);
-    static void checkUniqueResult(const std::string &className,
+    static unsigned int checkUniqueResult(const std::string &className,
             const std::string &funcName, const unsigned int resultSize,
             const QSqlQuery& query);
     static void checkManyResults(const std::string &className,

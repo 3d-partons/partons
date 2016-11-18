@@ -133,13 +133,9 @@ int EnvironmentConfigurationDao::getEnvironmentConfigurationIdByHashSum(
     query.prepare(QString(formatter.str().c_str()));
     query.bindValue(":hashSum", QString(hashSum.c_str()));
 
-    try {
-        Database::checkUniqueResult(getClassName(), __func__,
-                Database::execSelectQuery(query), query);
-
+    if (Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query) != 0) {
         indexId = query.value(0).toInt();
-    } catch (const ElemUtils::CustomException &e) {
-        //Nothing to do
     }
 
     return indexId;

@@ -166,10 +166,10 @@ int ConvolCoeffFunctionKinematicDao::getKinematicIdByHashSum(
     query.prepare(QString(formatter.str().c_str()));
     query.bindValue(":hashSum", QString(hashSum.c_str()));
 
-    Database::checkUniqueResult(getClassName(), __func__,
-            Database::execSelectQuery(query), query);
-
-    result = query.value(0).toInt();
+    if (Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query) != 0) {
+        result = query.value(0).toInt();
+    }
 
     return result;
 }

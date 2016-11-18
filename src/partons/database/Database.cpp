@@ -136,7 +136,7 @@ std::string Database::getLastExecutedQuery(const QSqlQuery& query) {
     return str.toStdString();
 }
 
-void Database::checkUniqueResult(const std::string &className,
+unsigned int Database::checkUniqueResult(const std::string &className,
         const std::string &funcName, const unsigned int resultSize,
         const QSqlQuery& query) {
 
@@ -147,12 +147,15 @@ void Database::checkUniqueResult(const std::string &className,
                             << "More than 1 result have been found ; there is an integrity problem in your database for query : "
                             << getLastExecutedQuery(query));
         }
-    } else {
-        throw ElemUtils::CustomException(className, funcName,
-                ElemUtils::Formatter()
-                        << "Cannot found any result with query : "
-                        << getLastExecutedQuery(query));
     }
+//    else {
+//        throw ElemUtils::CustomException(className, funcName,
+//                ElemUtils::Formatter()
+//                        << "Cannot found any result with query : "
+//                        << getLastExecutedQuery(query));
+//    }
+
+    return resultSize;
 }
 
 //TODO REFACTOR ERROR MSG !! USE CUSTOMEXCEPTION INSTEAD !!

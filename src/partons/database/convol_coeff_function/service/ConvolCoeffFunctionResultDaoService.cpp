@@ -95,6 +95,9 @@ int ConvolCoeffFunctionResultDaoService::insert(
 int ConvolCoeffFunctionResultDaoService::insert(
         const List<DVCSConvolCoeffFunctionResult>& resultList) {
     info(__func__, "Prepare data before inserting them into database ...");
+    info(__func__,
+            ElemUtils::Formatter() << resultList.size()
+                    << " ConvolCoeffFunctionResult(s) will be inserted ...");
 
     for (unsigned int i = 0; i != resultList.size(); i++) {
 
