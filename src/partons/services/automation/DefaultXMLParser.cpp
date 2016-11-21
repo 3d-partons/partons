@@ -1,8 +1,8 @@
 #include "../../../../include/partons/services/automation/DefaultXMLParser.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
+//#include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/parameters/Parameter.h>
-#include <ElementaryUtils/parser/XMLAttributs.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 
@@ -35,7 +35,7 @@ Scenario* DefaultXMLParser::parseScenario(Scenario* pScenario) {
 }
 
 void DefaultXMLParser::startElement(const std::string &elementName,
-        ElemUtils::XMLAttributs attributes, const std::string &elementData) {
+        ElemUtils::Parameters attributes, const std::string &elementData) {
 
     debug(__func__,
             ElemUtils::Formatter() << "StartElementName = " << elementName);
@@ -47,9 +47,10 @@ void DefaultXMLParser::startElement(const std::string &elementName,
     // then retrieve its description attribute
     if (ElemUtils::StringUtils::equals(elementName,
             XMLParserI::SCENARIO_NODE_NAME)) {
-        std::string scenarioDescription = attributes.getStringValueOf(
-                "description");
-        m_pScenario->setDescription(scenarioDescription);
+        if (attributes.isAvailable("description")) {
+            m_pScenario->setDescription(
+                    attributes.getLastAvailable().getString());
+        }
 
         //TODO how to get date format ?
     }
@@ -61,18 +62,15 @@ void DefaultXMLParser::startElement(const std::string &elementName,
         // create a new temporary Task objet.
         m_task = Task();
 
-        m_task.setServiceName(
-                attributes.getStringValueOf(
-                        XMLParserI::TASK_SERVICE_ATTRIBUT_NAME));
-        m_task.setFunctionName(
-                attributes.getStringValueOf(
-                        XMLParserI::TASK_METHOD_ATTRIBUT_NAME));
-
+        if (attributes.isAvailable(XMLParserI::TASK_SERVICE_ATTRIBUT_NAME)) {
+            m_task.setServiceName(attributes.getLastAvailable().getString());
+        }
+        if (attributes.isAvailable(XMLParserI::TASK_METHOD_ATTRIBUT_NAME)) {
+            m_task.setFunctionName(attributes.getLastAvailable().getString());
+        }
         if (attributes.isAvailable(
                 XMLParserI::TASK_STORE_IN_DB_ATTRIBUT_NAME)) {
-            m_task.setStoreInDB(
-                    attributes.getBooleanValueOf(
-                            XMLParserI::TASK_STORE_IN_DB_ATTRIBUT_NAME));
+            m_task.setStoreInDB(attributes.getLastAvailable().toBoolean());
         }
     }
 
@@ -80,9 +78,13 @@ void DefaultXMLParser::startElement(const std::string &elementName,
     // then retrieve its type attribute
     else if (ElemUtils::StringUtils::equals(elementName,
             XMLParserI::KINEMATICS_NODE_NAME)) {
-        m_kinematicsData = BaseObjectData(XMLParserI::KINEMATICS_NODE_NAME,
-                attributes.getStringValueOf(
-                        XMLParserI::NODE_MODULE_TYPE_ATTRIBUT_NAME));
+        if (attributes.isAvailable(
+                XMLParserI::NODE_MODULE_TYPE_ATTRIBUT_NAME)) {
+            m_kinematicsData = BaseObjectData(
+                    attributes.getLastAvailable().getString(),
+                    attributes.getLastAvailable().getString());
+        }
+
         m_currentModuleHierarchy.add(&m_kinematicsData);
     }
 
@@ -92,11 +94,17 @@ void DefaultXMLParser::startElement(const std::string &elementName,
             XMLParserI::MODULE_NODE_NAME)) {
         m_isModuleNodePreviouslyCreated = true;
 
-        std::string moduleType = attributes.getStringValueOf(
-                XMLParserI::NODE_MODULE_TYPE_ATTRIBUT_NAME);
+        std::string moduleType = ElemUtils::StringUtils::EMPTY;
+        std::string moduleClassName = ElemUtils::StringUtils::EMPTY;
 
-        std::string moduleClassName = attributes.getStringValueOf(
-                XMLParserI::NODE_MODULE_NAME_ATTRIBUT_NAME);
+        if (attributes.isAvailable(
+                XMLParserI::NODE_MODULE_TYPE_ATTRIBUT_NAME)) {
+            moduleType = attributes.getLastAvailable().getString();
+        }
+        if (attributes.isAvailable(
+                XMLParserI::NODE_MODULE_NAME_ATTRIBUT_NAME)) {
+            moduleClassName = attributes.getLastAvailable().getString();
+        }
 
         if (m_currentModuleHierarchy.size() == 0) {
             m_modulesData = BaseObjectData(moduleType, moduleClassName);
@@ -123,17 +131,20 @@ void DefaultXMLParser::startElement(const std::string &elementName,
     else if (ElemUtils::StringUtils::equals(elementName,
             XMLParserI::TASK_PARAM_NODE_NAME)) {
 
-        std::string taskParamType = attributes.getStringValueOf(
-                XMLParserI::NODE_MODULE_TYPE_ATTRIBUT_NAME);
+        if (attributes.isAvailable(
+                XMLParserI::NODE_MODULE_TYPE_ATTRIBUT_NAME)) {
 
-        m_currentModuleHierarchy.add(
-                &(m_taskParametersData.addSubModule(taskParamType,
-                        taskParamType)));
+            m_currentModuleHierarchy.add(
+                    &(m_taskParametersData.addSubModule(
+                            attributes.getLastAvailable().getString(),
+                            attributes.getLastAvailable().getString())));
+        }
+
     }
 }
 
 void DefaultXMLParser::emptyStartElement(const std::string &elementName,
-        ElemUtils::XMLAttributs attributes) {
+        ElemUtils::Parameters attributes) {
 
     debug(__func__,
             ElemUtils::Formatter() << "EmptyStartElementName = "
@@ -145,11 +156,17 @@ void DefaultXMLParser::emptyStartElement(const std::string &elementName,
     if (ElemUtils::StringUtils::equals(elementName,
             XMLParserI::MODULE_NODE_NAME)) {
 
-        std::string moduleType = attributes.getStringValueOf(
-                XMLParserI::NODE_MODULE_TYPE_ATTRIBUT_NAME);
+        std::string moduleType = ElemUtils::StringUtils::EMPTY;
+        std::string moduleClassName = ElemUtils::StringUtils::EMPTY;
 
-        std::string moduleClassName = attributes.getStringValueOf(
-                XMLParserI::NODE_MODULE_NAME_ATTRIBUT_NAME);
+        if (attributes.isAvailable(
+                XMLParserI::NODE_MODULE_TYPE_ATTRIBUT_NAME)) {
+            moduleType = attributes.getLastAvailable().getString();
+        }
+        if (attributes.isAvailable(
+                XMLParserI::NODE_MODULE_NAME_ATTRIBUT_NAME)) {
+            moduleClassName = attributes.getLastAvailable().getString();
+        }
 
         try {
             m_currentModuleHierarchy.getLast()->addSubModule(moduleType,
@@ -164,21 +181,24 @@ void DefaultXMLParser::emptyStartElement(const std::string &elementName,
     else if (ElemUtils::StringUtils::equals(elementName,
             XMLParserI::PARAM_NODE_NAME)) {
         try {
+
+            std::string paramName = ElemUtils::StringUtils::EMPTY;
+            std::string paramValue = ElemUtils::StringUtils::EMPTY;
+
+            if (attributes.isAvailable(XMLParserI::PARAM_NAME_ATTRIBUT_NAME)) {
+                paramName = attributes.getLastAvailable().getString();
+            }
+            if (attributes.isAvailable(XMLParserI::PARAM_VALUE_ATTRIBUT_NAME)) {
+                paramValue = attributes.getLastAvailable().getString();
+            }
+
             m_currentModuleHierarchy.getLast()->addParameter(
-                    ElemUtils::Parameter(
-                            attributes.getStringValueOf(
-                                    XMLParserI::PARAM_NAME_ATTRIBUT_NAME),
-                            attributes.getStringValueOf(
-                                    XMLParserI::PARAM_VALUE_ATTRIBUT_NAME)));
+                    ElemUtils::Parameter(paramName, paramValue));
+
         } catch (const ElemUtils::CustomException &e) {
             throw ElemUtils::CustomException(getClassName(), __func__,
                     ElemUtils::Formatter() << e.what() << " : " << elementName
-                            << " : "
-                            << attributes.getStringValueOf(
-                                    XMLParserI::PARAM_NAME_ATTRIBUT_NAME)
-                            << " : "
-                            << attributes.getStringValueOf(
-                                    XMLParserI::PARAM_VALUE_ATTRIBUT_NAME));
+                            << " : " << attributes.toString());
         }
     }
 

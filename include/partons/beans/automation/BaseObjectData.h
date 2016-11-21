@@ -32,6 +32,7 @@ public:
     BaseObjectData& addSubModule(const std::string &moduleType,
             const std::string &moduleClassName);
     void addParameter(const ElemUtils::Parameter &parameter);
+    void addParameters(const ElemUtils::Parameters &parameters);
 
     bool isAvailableSubModule(const std::string &moduleClassType) const;
     const BaseObjectData& getLastAvailable() const; /// Care ! Use it after isAvailable() to ensure that the iterator is in the map range.

@@ -42,6 +42,10 @@ void BaseObjectData::addParameter(const ElemUtils::Parameter& parameter) {
     m_parameters.add(parameter);
 }
 
+void BaseObjectData::addParameters(const ElemUtils::Parameters& parameters) {
+    m_parameters.add(parameters);
+}
+
 std::string BaseObjectData::toString() const {
     ElemUtils::Formatter formatter;
 

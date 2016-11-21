@@ -8,6 +8,7 @@
  * @version 1.0
  */
 
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/parser/XMLParser.h>
 #include <string>
 
@@ -26,10 +27,10 @@ public:
     virtual Scenario* parseScenario(Scenario* pScenario);
 
     virtual void startElement(const std::string &elementName,
-            ElemUtils::XMLAttributs attributes, const std::string &elementData);
+            ElemUtils::Parameters attributes, const std::string &elementData);
 
     virtual void emptyStartElement(const std::string &elementName,
-            ElemUtils::XMLAttributs attributes);
+            ElemUtils::Parameters attributes);
 
     virtual void endElement(const std::string &elementName);
 
