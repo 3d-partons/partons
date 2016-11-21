@@ -188,10 +188,11 @@ public:
 
     const T& getLast() const {
 
-        return (size() > 0) ?
-                m_data[size() - 1] :
-                throw ElemUtils::CustomException(getClassName(), __func__,
-                        "Cannot get the last object because the list is empty");
+        if (size() > 0)
+            return m_data[size() - 1];
+        else
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    "Cannot get the last object because the list is empty");
     }
 
     void serialize(ElemUtils::Packet &packet) const {

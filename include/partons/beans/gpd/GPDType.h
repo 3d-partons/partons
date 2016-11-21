@@ -58,6 +58,9 @@ public:
      */
     GPDType(const GPDType &other);
 
+    /**
+     * Automatic cast to enum.
+     */
     operator Type() const;
 
     std::string toString();
