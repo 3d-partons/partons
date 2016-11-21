@@ -28,5 +28,7 @@ void ScaleModule::configure(const ElemUtils::Parameters &parameters) {
 
 void ScaleModule::prepareSubModules(
         const std::map<std::string, BaseObjectData>& subModulesData) {
+    ModuleObject::prepareSubModules(subModulesData);
+
     // Nothing to do.
 }

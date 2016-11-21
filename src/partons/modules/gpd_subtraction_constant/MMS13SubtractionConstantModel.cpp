@@ -1,6 +1,5 @@
 #include "../../../../include/partons/modules/gpd_subtraction_constant/MMS13SubtractionConstantModel.h"
 
-#include <ElementaryUtils/logger/CustomException.h>
 #include <NumA/functor/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
@@ -90,6 +89,5 @@ double MMS13SubtractionConstantModel::dTermIntegral(double zeta,
 
 void MMS13SubtractionConstantModel::prepareSubModules(
         const std::map<std::string, BaseObjectData>& subModulesData) {
-    throw ElemUtils::CustomException(getClassName(), __func__,
-            "TODO : implement");
+    GPDSubtractionConstantModule::prepareSubModules(subModulesData);
 }

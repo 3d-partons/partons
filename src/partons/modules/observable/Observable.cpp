@@ -166,6 +166,8 @@ double Observable::computeFourierObservable() {
 void Observable::prepareSubModules(
         const std::map<std::string, BaseObjectData>& subModulesData) {
 
+    ModuleObject::prepareSubModules(subModulesData);
+
     std::map<std::string, BaseObjectData>::const_iterator it;
 
     it = subModulesData.find(ProcessModule::PROCESS_MODULE_CLASS_NAME);

@@ -159,3 +159,30 @@ Scenario* ScenarioDao::getScenarioById(const int scenarioId) {
 
     return pScenario;
 }
+
+void ScenarioDao::updateScenarioFile(const int scenarioId,
+        const std::string& file, const std::string& hashSum) {
+    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
+
+    ElemUtils::Formatter formatter;
+    formatter << "UPDATE " << Database::TABLE_NAME_SCENARIO << " SET "
+            << Database::COLUMN_NAME_SCENARIO_XML_FILE << " = :file, "
+            << Database::COLUMN_NAME_SCENARIO_HASH_SUM << " = :hashSum WHERE "
+            << Database::COLUMN_NAME_SCENARIO_ID << " = :scenarioId";
+
+    query.prepare(QString(formatter.str().c_str()));
+    query.bindValue(":scenarioId", scenarioId);
+    query.bindValue(":file", QString(file.c_str()));
+    query.bindValue(":hashSum", QString(hashSum.c_str()));
+
+    if (query.exec()) {
+        debug(__func__, Database::getLastExecutedQuery(query));
+    } else {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << Database::getLastExecutedQuery(query));
+    }
+
+    query.clear();
+}

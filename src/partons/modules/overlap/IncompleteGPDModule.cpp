@@ -203,6 +203,5 @@ void IncompleteGPDModule::setKinematicRegion(
 
 void IncompleteGPDModule::prepareSubModules(
         const std::map<std::string, BaseObjectData>& subModulesData) {
-    throw ElemUtils::CustomException(getClassName(), __func__,
-            "TODO : implement");
+    ModuleObject::prepareSubModules(subModulesData);
 }

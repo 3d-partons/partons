@@ -6,7 +6,6 @@
 
 #include "../../../include/partons/beans/double_distribution/DoubleDistributionResult.h"
 #include "../../../include/partons/modules/overlap/IncompleteGPDModule.h"
-
 #include "../../../include/partons/modules/radon_inverse/RadonInverseModule.h"
 
 DoubleDistributionModule::DoubleDistributionModule(const std::string& className) :
@@ -209,6 +208,5 @@ void DoubleDistributionModule::setIncompleteGPDModule(
 
 void DoubleDistributionModule::prepareSubModules(
         const std::map<std::string, BaseObjectData>& subModulesData) {
-    throw ElemUtils::CustomException(getClassName(), __func__,
-            "TODO : implement");
+    ModuleObject::prepareSubModules(subModulesData);
 }

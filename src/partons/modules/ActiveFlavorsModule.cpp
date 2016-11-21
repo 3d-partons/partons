@@ -140,5 +140,7 @@ std::string ActiveFlavorsModule::toString() {
 
 void ActiveFlavorsModule::prepareSubModules(
         const std::map<std::string, BaseObjectData>& subModulesData) {
+    ModuleObject::prepareSubModules(subModulesData);
+
     // Nothing to do.
 }

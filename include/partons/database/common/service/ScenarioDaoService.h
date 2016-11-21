@@ -37,6 +37,8 @@ public:
 
     std::string getHashSumById(const int scenarioId);
 
+    void updateScenarioFile(const int scenarioId, const std::string &file);
+
 private:
 
     ScenarioDao m_scenarioDao; ///< reference to the right DAO object to perform database queries

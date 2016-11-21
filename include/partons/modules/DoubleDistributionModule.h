@@ -78,7 +78,7 @@ public:
 
     List<DoubleDistributionType> getListOfAvailableDDTypeForComputation() const;
 
-    void prepareSubModules(
+    virtual void prepareSubModules(
             const std::map<std::string, BaseObjectData>& subModulesData);
 
 protected:

@@ -1,6 +1,7 @@
 #include "../../../include/partons/database/DatabaseManager.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
+#include <ElementaryUtils/logger/LoggerManager.h>
 #include <ElementaryUtils/PropertiesManager.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
@@ -81,6 +82,7 @@ DatabaseManager::~DatabaseManager() {
 DatabaseManager* DatabaseManager::getInstance() {
     // Only allow one instance of class to be generated.
     if (!m_pInstance) {
+        ElemUtils::LoggerManager::getInstance()->info("DatabaseManager", __func__, "NULL pointer");
         m_pInstance = new DatabaseManager();
     }
 

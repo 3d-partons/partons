@@ -34,6 +34,9 @@ public:
     std::string getHashSumById(const int scenarioId);
 
     Scenario* getScenarioById(const int scenarioId);
+
+    void updateScenarioFile(const int scenarioId, const std::string& file,
+            const std::string &hashSum);
 };
 
 #endif /* SCENARIO_DAO_H */

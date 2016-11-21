@@ -25,3 +25,8 @@ std::string ModuleObject::toString() const {
 void ModuleObject::resolveObjectDependencies() {
     BaseObject::resolveObjectDependencies();
 }
+
+void ModuleObject::prepareSubModules(
+        const std::map<std::string, BaseObjectData>& subModulesData) {
+    // NOthing to do.
+}

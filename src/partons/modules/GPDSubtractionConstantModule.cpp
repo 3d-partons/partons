@@ -176,5 +176,7 @@ void GPDSubtractionConstantModule::preCompute(double xi, double t, double MuF2,
 
 void GPDSubtractionConstantModule::prepareSubModules(
         const std::map<std::string, BaseObjectData>& subModulesData) {
+    ModuleObject::prepareSubModules(subModulesData);
+
     // Nothing to do.
 }

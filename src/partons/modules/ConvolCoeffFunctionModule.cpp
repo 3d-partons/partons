@@ -24,10 +24,10 @@ ConvolCoeffFunctionModule::ConvolCoeffFunctionModule(
 }
 
 ConvolCoeffFunctionModule::~ConvolCoeffFunctionModule() {
-    if (m_pGPDModule) {
-        delete m_pGPDModule;
-        m_pGPDModule = 0;
-    }
+//    if (m_pGPDModule) {
+//        delete m_pGPDModule;
+//        m_pGPDModule = 0;
+//    }
 }
 
 ConvolCoeffFunctionModule::ConvolCoeffFunctionModule(
@@ -128,6 +128,8 @@ void ConvolCoeffFunctionModule::setIsGPDModuleDependent(
 
 void ConvolCoeffFunctionModule::prepareSubModules(
         const std::map<std::string, BaseObjectData>& subModulesData) {
+
+    ModuleObject::prepareSubModules(subModulesData);
 
     std::map<std::string, BaseObjectData>::const_iterator it;
 

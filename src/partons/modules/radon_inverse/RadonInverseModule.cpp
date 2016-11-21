@@ -124,6 +124,5 @@ void RadonInverseModule::setN(size_t N) {
 
 void RadonInverseModule::prepareSubModules(
         const std::map<std::string, BaseObjectData>& subModulesData) {
-    throw ElemUtils::CustomException(getClassName(), __func__,
-            "TODO : implement");
+    ModuleObject::prepareSubModules(subModulesData);
 }

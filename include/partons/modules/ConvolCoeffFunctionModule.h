@@ -59,7 +59,6 @@ public:
 
     GPDModule* getGPDModule() const;
 
-    //TODO move to private
     void setGPDModule(GPDModule* gpdModule);
 
     ObservableChannel::Type getChannel() const;
@@ -67,7 +66,7 @@ public:
     bool isGPDModuleDependent() const;
     void setIsGPDModuleDependent(bool isGPDModuleDependent);
 
-    void prepareSubModules(
+    virtual void prepareSubModules(
             const std::map<std::string, BaseObjectData>& subModulesData);
 
 protected:

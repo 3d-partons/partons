@@ -1,7 +1,10 @@
 #include "../../../../../include/partons/database/common/service/ScenarioDaoService.h"
 
 #include "../../../../../include/partons/beans/automation/Scenario.h"
+#include "../../../../../include/partons/Partons.h"
 #include "../../../../../include/partons/ResourceManager.h"
+#include "../../../../../include/partons/services/hash_sum/CryptographicHashService.h"
+#include "../../../../../include/partons/ServiceObjectRegistry.h"
 
 ScenarioDaoService::ScenarioDaoService() :
         BaseObject("ScenarioDaoService") {
@@ -50,4 +53,12 @@ Scenario* ScenarioDaoService::getScenarioById(const int scenarioId) {
 
 std::string ScenarioDaoService::getHashSumById(const int scenarioId) {
     return m_scenarioDao.getHashSumById(scenarioId);
+}
+
+void ScenarioDaoService::updateScenarioFile(const int scenarioId,
+        const std::string& file) {
+    std::string hashSum =
+            Partons::getInstance()->getServiceObjectRegistry()->getCryptographicHashService()->generateSHA1HashSum(
+                    file);
+    m_scenarioDao.updateScenarioFile(scenarioId, file, hashSum);
 }

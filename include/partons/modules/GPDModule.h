@@ -117,7 +117,7 @@ public:
 //            const List<ElemUtils::Parameter> &moduleNameList,
 //            const unsigned int level = 0);
 
-    void prepareSubModules(
+    virtual void prepareSubModules(
             const std::map<std::string, BaseObjectData>& subModulesData);
 
 protected:

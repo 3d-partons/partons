@@ -145,6 +145,8 @@ public:
                         j++;
                     }
 
+                    info(__func__, rootComparisonReport.showComparisonStats());
+
                     if (rootComparisonReport.sizeOfComparedDataFailed() != 0) {
                         info(__func__,
                                 rootComparisonReport.showComparedDataFailed());

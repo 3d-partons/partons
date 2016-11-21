@@ -71,7 +71,7 @@ public:
     virtual void resolveObjectDependencies();
 
     virtual void prepareSubModules(
-            const std::map<std::string, BaseObjectData>& subModulesData) = 0;
+            const std::map<std::string, BaseObjectData>& subModulesData);
 
 protected:
     /***

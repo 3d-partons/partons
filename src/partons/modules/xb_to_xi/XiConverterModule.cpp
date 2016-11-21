@@ -22,5 +22,7 @@ void XiConverterModule::initModule() {
 
 void XiConverterModule::prepareSubModules(
         const std::map<std::string, BaseObjectData>& subModulesData) {
+    ModuleObject::prepareSubModules(subModulesData);
+
     // Nothing to do.
 }

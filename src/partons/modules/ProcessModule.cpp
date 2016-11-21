@@ -155,6 +155,8 @@ ConvolCoeffFunctionModule* ProcessModule::getConvolCoeffFunctionModule() const {
 void ProcessModule::prepareSubModules(
         const std::map<std::string, BaseObjectData>& subModulesData) {
 
+    ModuleObject::prepareSubModules(subModulesData);
+
     std::map<std::string, BaseObjectData>::const_iterator it;
 
     it = subModulesData.find(ScaleModule::SCALE_MODULE_CLASS_NAME);

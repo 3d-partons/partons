@@ -1,7 +1,7 @@
 #include "../../../../include/partons/modules/evolution/GPDEvolutionModule.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
-#include <ElementaryUtils/parameters/GenericType.h>
+//#include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <math.h>
 #include <NumA/linear_algebra/matrix/MatrixD.h>
@@ -717,8 +717,7 @@ void GPDEvolutionModule::setGpdModule(GPDModule* gpdModule) {
 
 void GPDEvolutionModule::prepareSubModules(
         const std::map<std::string, BaseObjectData>& subModulesData) {
-    throw ElemUtils::CustomException(getClassName(), __func__,
-            "TODO : implement");
+    ModuleObject::prepareSubModules(subModulesData);
 }
 //
 //double GPDEvolutionModule::nonSingletMuFDerivative(

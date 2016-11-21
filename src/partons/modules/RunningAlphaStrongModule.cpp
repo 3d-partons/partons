@@ -64,5 +64,7 @@ double RunningAlphaStrongModule::compute(double Mu2) {
 
 void RunningAlphaStrongModule::prepareSubModules(
         const std::map<std::string, BaseObjectData>& subModulesData) {
+    ModuleObject::prepareSubModules(subModulesData);
+
     // Nothing to do.
 }
