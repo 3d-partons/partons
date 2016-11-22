@@ -20,7 +20,7 @@ GV2008Model::GV2008Model(const std::string &className) :
         DVCSModule(className), m_qCM(NumA::Vector4D(0., 0., 0., 0.)), m_pCM(
                 NumA::Vector4D(0., 0., 0., 0.)), m_qpCM(
                 NumA::Vector4D(0., 0., 0., 0.)), m_ppCM(
-                NumA::Vector4D(0., 0., 0., 0.)) {
+                NumA::Vector4D(0., 0., 0., 0.)), m_phiGV(0.) {
 }
 
 /*-------------------------------------- Destructor ------------------------------------*/
@@ -68,7 +68,7 @@ void GV2008Model::initModule() {
     // The value of m_xBMin comes from the requirement of omega to be real, and the value of m_xBMax expresses the fact that s >= 0.
     m_xBMin = 2. * m_E * m_powerOfQ[0]
             / (PROTON_MASS * (4 * pow(m_E, 2) - m_powerOfQ[0]));
-    m_xBMax = m_powerOfQ[0] / (m_powerOfQ[0] - m_powerOfProtonMass[0]);
+    m_xBMax = m_powerOfQ[0] / (m_powerOfQ[0] - m_powerOfProtonMass[0]); // This is wrong! It should be 1.
 
     // Omega
 
@@ -184,6 +184,16 @@ void GV2008Model::initModule() {
     MakeExactVCSAndInterfCrossSections();
 }
 
+void GV2008Model::initModule(double beamHelicity, double beamCharge,
+        NumA::Vector3D targetPolarization) {
+
+    //init mother class
+    DVCSModule::initModule(beamHelicity, beamCharge, targetPolarization);
+
+    // define the GV angle
+    m_phiGV = -m_phi;
+}
+
 void GV2008Model::isModuleWellConfigured() {
 
     //check mother class
@@ -215,24 +225,24 @@ void GV2008Model::isModuleWellConfigured() {
 double GV2008Model::SqrAmplBH(double beamHelicity, double beamCharge,
         NumA::Vector3D targetPolarization) {
 
-    double DDDC = DdirectDcrossed(m_phi);
+    double DDDC = DdirectDcrossed(m_phiGV);
     double M0, M1, M2, M3;
 
     M0 = -(SigmaBHPol0[0]
-            - SigmaBHPol0[3] * cos(2. * m_phi) * (-1 + cosh(2 * m_Omega))
+            - SigmaBHPol0[3] * cos(2. * m_phiGV) * (-1 + cosh(2 * m_Omega))
             + SigmaBHPol0[1] * cosh(2 * m_Omega)
-            + SigmaBHPol0[2] * cos(m_phi) * sinh(2 * m_Omega))
+            + SigmaBHPol0[2] * cos(m_phiGV) * sinh(2 * m_Omega))
             / (4. * DDDC * pow(m_t, 2));
 
     M1 = -(SigmaBHPolX[0] * beamHelicity * cosh(m_Omega)
-            + SigmaBHPolX[1] * beamHelicity * cos(m_phi) * sinh(m_Omega))
+            + SigmaBHPolX[1] * beamHelicity * cos(m_phiGV) * sinh(m_Omega))
             / (4. * DDDC * pow(m_t, 2));
 
-    M2 = -(beamHelicity * SigmaBHPolY * sin(m_phi) * sinh(m_Omega))
+    M2 = -(beamHelicity * SigmaBHPolY * sin(m_phiGV) * sinh(m_Omega))
             / (4. * DDDC * pow(m_t, 2));
 
     M3 = -(SigmaBHPolZ[0] * beamHelicity * cosh(m_Omega)
-            + SigmaBHPolZ[1] * beamHelicity * cos(m_phi) * sinh(m_Omega))
+            + SigmaBHPolZ[1] * beamHelicity * cos(m_phiGV) * sinh(m_Omega))
             / (4. * DDDC * pow(m_t, 2));
 
     NumA::Vector3D vM(M1, M2, M3);
@@ -291,29 +301,29 @@ double GV2008Model::SqrAmplVCS(double beamHelicity, double beamCharge,
     double M0, M1, M2, M3;
 
     M0 = (SigmaVCSPol0[0]
-            - SigmaVCSPol0[3] * cos(2 * m_phi) * (-1 + cosh(2 * m_Omega))
+            - SigmaVCSPol0[3] * cos(2 * m_phiGV) * (-1 + cosh(2 * m_Omega))
             + SigmaVCSPol0[1] * cosh(2 * m_Omega)
-            + SigmaVCSPol0[4] * beamHelicity * sin(m_phi) * sinh(m_Omega)
-            + SigmaVCSPol0[2] * cos(m_phi) * sinh(2 * m_Omega))
+            + SigmaVCSPol0[4] * beamHelicity * sin(m_phiGV) * sinh(m_Omega)
+            + SigmaVCSPol0[2] * cos(m_phiGV) * sinh(2 * m_Omega))
             / (2. * m_powerOfQ[0]);
 
     M1 = (SigmaVCSPolX[0] * beamHelicity * cosh(m_Omega)
-            - SigmaVCSPolX[3] * (-1 + cosh(2 * m_Omega)) * sin(2 * m_phi)
-            + SigmaVCSPolX[1] * beamHelicity * cos(m_phi) * sinh(m_Omega)
-            + SigmaVCSPolX[2] * sin(m_phi) * sinh(2 * m_Omega))
+            - SigmaVCSPolX[3] * (-1 + cosh(2 * m_Omega)) * sin(2 * m_phiGV)
+            + SigmaVCSPolX[1] * beamHelicity * cos(m_phiGV) * sinh(m_Omega)
+            + SigmaVCSPolX[2] * sin(m_phiGV) * sinh(2 * m_Omega))
             / (2. * m_powerOfQ[0]);
 
     M2 = (SigmaVCSPolY[1]
-            - SigmaVCSPolY[4] * cos(2 * m_phi) * (-1 + cosh(2 * m_Omega))
+            - SigmaVCSPolY[4] * cos(2 * m_phiGV) * (-1 + cosh(2 * m_Omega))
             + SigmaVCSPolY[2] * cosh(2 * m_Omega)
-            + SigmaVCSPolY[0] * beamHelicity * sin(m_phi) * sinh(m_Omega)
-            + SigmaVCSPolY[3] * cos(m_phi) * sinh(2 * m_Omega))
+            + SigmaVCSPolY[0] * beamHelicity * sin(m_phiGV) * sinh(m_Omega)
+            + SigmaVCSPolY[3] * cos(m_phiGV) * sinh(2 * m_Omega))
             / (2. * m_powerOfQ[0]);
 
     M3 = (SigmaVCSPolZ[0] * beamHelicity * cosh(m_Omega)
-            - SigmaVCSPolZ[3] * (-1 + cosh(2 * m_Omega)) * sin(2 * m_phi)
-            + SigmaVCSPolZ[1] * beamHelicity * cos(m_phi) * sinh(m_Omega)
-            + SigmaVCSPolZ[2] * sin(m_phi) * sinh(2 * m_Omega))
+            - SigmaVCSPolZ[3] * (-1 + cosh(2 * m_Omega)) * sin(2 * m_phiGV)
+            + SigmaVCSPolZ[1] * beamHelicity * cos(m_phiGV) * sinh(m_Omega)
+            + SigmaVCSPolZ[2] * sin(m_phiGV) * sinh(2 * m_Omega))
             / (2. * m_powerOfQ[0]);
 
     NumA::Vector3D vM(M1, M2, M3);
@@ -324,77 +334,77 @@ double GV2008Model::SqrAmplVCS(double beamHelicity, double beamCharge,
 double GV2008Model::SqrAmplInterf(double beamHelicity, double beamCharge,
         NumA::Vector3D targetPolarization) {
 
-    double DDDC = DdirectDcrossed(m_phi);
+    double DDDC = DdirectDcrossed(m_phiGV);
     double M0, M1, M2, M3;
 
     M0 = -((beamCharge
             * (SigmaIPol0[0] * cosh(m_Omega)
-                    + SigmaIPol0[4] * cos(2 * m_phi)
+                    + SigmaIPol0[4] * cos(2 * m_phiGV)
                             * (cosh(m_Omega) - cosh(3 * m_Omega))
                     + SigmaIPol0[1] * cosh(3 * m_Omega)
                     - SigmaIPol0[7] * beamHelicity * (-1 + cosh(2 * m_Omega))
-                            * sin(2 * m_phi)
-                    + SigmaIPol0[6] * beamHelicity * sin(m_phi)
+                            * sin(2 * m_phiGV)
+                    + SigmaIPol0[6] * beamHelicity * sin(m_phiGV)
                             * sinh(2 * m_Omega)
-                    + (SigmaIPol0[5] * cos(3 * m_phi)
+                    + (SigmaIPol0[5] * cos(3 * m_phiGV)
                             * (3 * sinh(m_Omega) - sinh(3 * m_Omega))) / 3.
-                    + cos(m_phi)
+                    + cos(m_phiGV)
                             * (SigmaIPol0[2] * sinh(m_Omega)
                                     + SigmaIPol0[3] * sinh(3 * m_Omega))))
             / (DDDC * m_powerOfQ[0] * m_t));
 
     M1 =
             -((beamCharge
-                    * (-(SigmaIPolX[7] * beamHelicity * cos(2 * m_phi)
+                    * (-(SigmaIPolX[7] * beamHelicity * cos(2 * m_phiGV)
                             * (-1 + cosh(2 * m_Omega)))
                             + beamHelicity
                                     * (SigmaIPolX[4]
                                             + SigmaIPolX[5] * cosh(2 * m_Omega))
                             + SigmaIPolX[2]
                                     * (cosh(m_Omega) - cosh(3 * m_Omega))
-                                    * sin(2 * m_phi)
-                            + SigmaIPolX[6] * beamHelicity * cos(m_phi)
+                                    * sin(2 * m_phiGV)
+                            + SigmaIPolX[6] * beamHelicity * cos(m_phiGV)
                                     * sinh(2 * m_Omega)
-                            + (SigmaIPolX[3] * sin(3 * m_phi)
+                            + (SigmaIPolX[3] * sin(3 * m_phiGV)
                                     * (3 * sinh(m_Omega) - sinh(3 * m_Omega)))
                                     / 3.
-                            + sin(m_phi)
+                            + sin(m_phiGV)
                                     * (SigmaIPolX[0] * sinh(m_Omega)
                                             + SigmaIPolX[1] * sinh(3 * m_Omega))))
                     / (DDDC * m_powerOfQ[0] * m_t));
 
     M2 = -((beamCharge
             * (SigmaIPolY[0] * cosh(m_Omega)
-                    + SigmaIPolY[4] * cos(2 * m_phi)
+                    + SigmaIPolY[4] * cos(2 * m_phiGV)
                             * (cosh(m_Omega) - cosh(3 * m_Omega))
                     + SigmaIPolY[1] * cosh(3 * m_Omega)
                     - SigmaIPolY[7] * beamHelicity * (-1 + cosh(2 * m_Omega))
-                            * sin(2 * m_phi)
-                    + SigmaIPolY[6] * beamHelicity * sin(m_phi)
+                            * sin(2 * m_phiGV)
+                    + SigmaIPolY[6] * beamHelicity * sin(m_phiGV)
                             * sinh(2 * m_Omega)
-                    + (SigmaIPolY[5] * cos(3 * m_phi)
+                    + (SigmaIPolY[5] * cos(3 * m_phiGV)
                             * (3 * sinh(m_Omega) - sinh(3 * m_Omega))) / 3.
-                    + cos(m_phi)
+                    + cos(m_phiGV)
                             * (SigmaIPolY[2] * sinh(m_Omega)
                                     + SigmaIPolY[3] * sinh(3 * m_Omega))))
             / (DDDC * m_powerOfQ[0] * m_t));
 
     M3 =
             -((beamCharge
-                    * (-(SigmaIPolZ[7] * beamHelicity * cos(2 * m_phi)
+                    * (-(SigmaIPolZ[7] * beamHelicity * cos(2 * m_phiGV)
                             * (-1 + cosh(2 * m_Omega)))
                             + beamHelicity
                                     * (SigmaIPolZ[4]
                                             + SigmaIPolZ[5] * cosh(2 * m_Omega))
                             + SigmaIPolZ[2]
                                     * (cosh(m_Omega) - cosh(3 * m_Omega))
-                                    * sin(2 * m_phi)
-                            + SigmaIPolZ[6] * beamHelicity * cos(m_phi)
+                                    * sin(2 * m_phiGV)
+                            + SigmaIPolZ[6] * beamHelicity * cos(m_phiGV)
                                     * sinh(2 * m_Omega)
-                            + (SigmaIPolZ[3] * sin(3 * m_phi)
+                            + (SigmaIPolZ[3] * sin(3 * m_phiGV)
                                     * (3 * sinh(m_Omega) - sinh(3 * m_Omega)))
                                     / 3.
-                            + sin(m_phi)
+                            + sin(m_phiGV)
                                     * (SigmaIPolZ[0] * sinh(m_Omega)
                                             + SigmaIPolZ[1] * sinh(3 * m_Omega))))
                     / (DDDC * m_powerOfQ[0] * m_t));

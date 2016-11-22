@@ -96,7 +96,7 @@ protected:
     // Angles in Trento convention
     double m_phi;      ///<  Angle between leptonic and hadronic planes (radian)
     double m_phiS;      ///< Angle of the target transverse polarization
-    double m_phie; //TODO What's this?! It's the equivalent of phiS but for GV. Redundant!
+    double m_phie; //TODO What's this?! It's the equivalent of phiS but for GV. Redundant! TODO: Remove it!
 
     ScaleModule* m_pScaleModule;
     XiConverterModule* m_pXiConverterModule;

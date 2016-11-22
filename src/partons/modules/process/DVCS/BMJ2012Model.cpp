@@ -192,8 +192,9 @@ void BMJ2012Model::defineAngles(const NumA::Vector3D &targetPolarization) {
     double Py = targetPolarization.getY();
     double Pz = targetPolarization.getZ();
 
-    double Sx = Px * cos(-m_phi) - Py * sin(-m_phi);
-    double Sy = -(Px * sin(-m_phi) + Py * cos(-m_phi));
+    // m_phi is considered in the Trento convention here.
+    double Sx = Px * cos(m_phi) - Py * sin(m_phi);
+    double Sy = -(Px * sin(m_phi) + Py * cos(m_phi));
     double Sz = -Pz;
 
     m_Lambda = sqrt(Sx * Sx + Sy * Sy + Sz * Sz);
@@ -221,7 +222,7 @@ void BMJ2012Model::defineAngles(const NumA::Vector3D &targetPolarization) {
         }
     }
 
-    m_phi1BMK = PI + m_phi;
+    m_phi1BMK = PI - m_phi;
     m_phi2BMK = m_PhiBMK - m_phi1BMK;
 }
 

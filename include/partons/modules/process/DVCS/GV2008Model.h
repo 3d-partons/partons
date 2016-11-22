@@ -51,9 +51,13 @@ protected:
     GV2008Model(const GV2008Model& other);
 
     virtual void initModule();
+    virtual void initModule(double beamHelicity, double beamCharge,
+            NumA::Vector3D targetPolarization);
     virtual void isModuleWellConfigured();
 
 private:
+
+    double m_phiGV; ///< Angle between hadronic and leptonic planes (opposite sign of the phi angle of Trento)
 
     // Store each power of Q
     // [0] = Q2

@@ -89,7 +89,7 @@ DoubleDistributionResult DoubleDistributionModule::compute(double beta,
 
             result.addPartonDistribution(m_it->first, partonDistribution);
         } else {
-            ElemUtils::CustomException(getClassName(), __func__,
+            throw ElemUtils::CustomException(getClassName(), __func__,
                     ElemUtils::Formatter()
                             << DoubleDistributionType(m_doubleDistributionType).toString()
                             << " is not available for this model");
@@ -110,19 +110,19 @@ void DoubleDistributionModule::isModuleWellConfigured() {
 }
 
 PartonDistribution DoubleDistributionModule::computeF() {
-    ElemUtils::CustomException(getClassName(), __func__,
+    throw ElemUtils::CustomException(getClassName(), __func__,
             ElemUtils::Formatter()
                     << "Cannot run this function from SUperClass, you must define it in a ChildClass");
 }
 
 PartonDistribution DoubleDistributionModule::computeG() {
-    ElemUtils::CustomException(getClassName(), __func__,
+    throw ElemUtils::CustomException(getClassName(), __func__,
             ElemUtils::Formatter()
                     << "Cannot run this function from SUperClass, you must define it in a ChildClass");
 }
 
 PartonDistribution DoubleDistributionModule::computeK() {
-    ElemUtils::CustomException(getClassName(), __func__,
+    throw ElemUtils::CustomException(getClassName(), __func__,
             ElemUtils::Formatter()
                     << "Cannot run this function from SUperClass, you must define it in a ChildClass");
 }
