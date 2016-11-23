@@ -5,8 +5,7 @@
 #include <NumA/linear_algebra/matrix/MatrixD.h>
 #include <NumA/root_finding/NewtonMD.h>
 #include <cmath>
-#include <NumA/linear_algebra/eigen/LinAlgUtils.h>
-
+#include <NumA/linear_algebra/LinAlgUtils.h>
 #include "../../../../include/partons/beans/dse/GluonPropagator.h"
 #include "../../../../include/partons/beans/dse/QuarkGluonVertex.h"
 #include "../../../../include/partons/beans/dse/QuarkPropagator.h"

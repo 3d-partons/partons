@@ -1,31 +1,31 @@
-#include "../../../../include/partons/modules/radon_inverse/RandBFConstPW.h"
+#include "../../../../include/partons/modules/radon_inverse/RandomRadonConstPW.h"
 
-#include <ElementaryUtils/parameters/Parameters.h>
-#include <NumA/linear_algebra/eigen/LinAlgUtils.h>
-#include <NumA/linear_algebra/vector/VectorD.h>
-#include <NumA/utils/Interval.h>
 #include <cmath>
 #include <cstdlib>
 #include <ctime>
+#include <ElementaryUtils/parameters/Parameters.h>
+#include <NumA/linear_algebra/LinAlgUtils.h>
+#include <NumA/linear_algebra/vector/VectorD.h>
+#include <NumA/utils/Interval.h>
 
 #include "../../../../include/partons/beans/double_distribution/DDGauge.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/utils/radon/RadonTools.h"
 
 // Initialise [class]::classId with a unique name.
-const unsigned int RandBFConstPW::classId =
+const unsigned int RandomRadonConstPW::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
-                new RandBFConstPW("RandBFInverse"));
+                new RandomRadonConstPW("RandBFInverse"));
 
-RandBFConstPW::RandBFConstPW(const std::string &className) :
+RandomRadonConstPW::RandomRadonConstPW(const std::string &className) :
         RadonInverseModule(className), m_valence(true), m_alphaEven(true), m_triangular(
                 true), m_step(0) {
 }
 
-RandBFConstPW::~RandBFConstPW() {
+RandomRadonConstPW::~RandomRadonConstPW() {
 }
 
-RandBFConstPW::RandBFConstPW(const RandBFConstPW& other) :
+RandomRadonConstPW::RandomRadonConstPW(const RandomRadonConstPW& other) :
         RadonInverseModule(other) {
     m_valence = other.m_valence;
     m_alphaEven = other.m_alphaEven;
@@ -38,35 +38,35 @@ RandBFConstPW::RandBFConstPW(const RandBFConstPW& other) :
     m_indicesFixed = other.m_indicesFixed;
 }
 
-RandBFConstPW* RandBFConstPW::clone() const {
-    return new RandBFConstPW(*this);
+RandomRadonConstPW* RandomRadonConstPW::clone() const {
+    return new RandomRadonConstPW(*this);
 }
 
-void RandBFConstPW::configure(const ElemUtils::Parameters& parameters) {
+void RandomRadonConstPW::configure(const ElemUtils::Parameters& parameters) {
 }
 
-void RandBFConstPW::initModule() {
+void RandomRadonConstPW::initModule() {
     //TODO implement
     RadonInverseModule::initModule();
 }
 
-void RandBFConstPW::isModuleWellConfigured() {
+void RandomRadonConstPW::isModuleWellConfigured() {
     //TODO implement
     RadonInverseModule::isModuleWellConfigured();
 }
 
-void RandBFConstPW::buildMatrix(size_t maxiter) {
-    //TODO random algorithm
-    if (maxiter == 0)
-        maxiter = m_n * 10;
+void RandomRadonConstPW::buildMatrix(size_t rows) {
+    if (rows == 0)
+        m_m = m_n * 4;
+    else
+        m_m = rows;
     m_rank = 0;
-    m_radonMatrix = NumA::MatrixD();
+    m_radonMatrix = NumA::MatrixD(m_m, m_n);
     m_gpdNodes = std::vector<std::pair<double, double> >();
-    size_t it = 0;
     NumA::VectorD currentLine;
     double x, y, xi;
     srand(time(NULL));
-    while (m_rank < m_n and it < maxiter) {
+    for (size_t it = 0; it < m_m; it++) {
         if (isValence()) {
             x = (rand() / (double) RAND_MAX);
         } else {
@@ -74,54 +74,51 @@ void RandBFConstPW::buildMatrix(size_t maxiter) {
         }
         y = (rand() / (double) RAND_MAX) * 2 - 1.;
         xi = x * y;
-        currentLine = NumA::VectorD(m_n);
         size_t i, j;
         for (size_t k = 0; k < m_n; k++) {
             i = static_cast<long int>(m_indicesUsed[k].first);
             j = static_cast<long int>(m_indicesUsed[k].second);
-            currentLine[k] = GPDOfMeshElement(x, xi, i, j);
+            m_radonMatrix.at(it, k) = GPDOfMeshElement(x, xi, i, j);
             if (isAlphaEven() and (i + j != m_N - 1)) {
-                currentLine[k] += GPDOfMeshElement(x, xi, m_N - j - 1,
+                m_radonMatrix.at(it, k) += GPDOfMeshElement(x, xi, m_N - j - 1,
                         m_N - i - 1);
             }
         }
-        m_radonMatrix.appendLine(currentLine);
-        m_rank = NumA::LinAlgUtils::rank(
-                m_radonMatrix.transpose() * m_radonMatrix);
+//        m_rank = NumA::LinAlgUtils::rank(
+//                m_radonMatrix.transpose() * m_radonMatrix);
         m_gpdNodes.push_back(std::make_pair(x, xi));
-        it++;
     }
     m_m = m_gpdNodes.size();
     m_rank = NumA::LinAlgUtils::rank(m_radonMatrix);
 }
 
-bool RandBFConstPW::isAlphaEven() const {
+bool RandomRadonConstPW::isAlphaEven() const {
     return m_alphaEven;
 }
 
-void RandBFConstPW::setAlphaEven(bool alphaEven) {
+void RandomRadonConstPW::setAlphaEven(bool alphaEven) {
     if (m_alphaEven != alphaEven) {
         m_alphaEven = alphaEven;
         buildIndices();
     }
 }
 
-bool RandBFConstPW::isValence() const {
+bool RandomRadonConstPW::isValence() const {
     return m_valence;
 }
 
-void RandBFConstPW::setValence(bool valence) {
+void RandomRadonConstPW::setValence(bool valence) {
     if (m_valence != valence) {
         m_valence = valence;
         buildIndices();
     }
 }
 
-bool RandBFConstPW::isTriangular() const {
+bool RandomRadonConstPW::isTriangular() const {
     return m_triangular;
 }
 
-void RandBFConstPW::setTriangular(bool triangular) {
+void RandomRadonConstPW::setTriangular(bool triangular) {
     if (m_triangular != triangular) {
         m_triangular = triangular;
         info(__func__,
@@ -129,9 +126,9 @@ void RandBFConstPW::setTriangular(bool triangular) {
     }
 }
 
-void RandBFConstPW::buildIndices() {
+void RandomRadonConstPW::buildIndices() {
     for (size_t i = 0; i < m_N; i++) {
-        for (size_t j = 0; j < m_N; i++) {
+        for (size_t j = 0; j < m_N; j++) {
             if ((i + 1 > j) or !isValence()) {
                 if ((i + 1 + j + 1 > m_N) or !isAlphaEven()) {
                     m_indicesUsed.push_back(std::make_pair(i, j));
@@ -147,14 +144,14 @@ void RandBFConstPW::buildIndices() {
     m_ddVector.assign(m_n);
 }
 
-void RandBFConstPW::buildMesh() {
+void RandomRadonConstPW::buildMesh() {
     m_nodes = NumA::Interval<double>::computeNodes(-DD_DOMAIN_HALF_EDGE,
             DD_DOMAIN_HALF_EDGE, m_N + 1);
     m_step = 2 * DD_DOMAIN_HALF_EDGE / m_N;
     buildIndices();
 }
 
-void RandBFConstPW::solve() {
+void RandomRadonConstPW::solve() {
     RadonInverseModule::solve();
     m_ddResult.assign(m_N, m_N);
     size_t i, j;
@@ -170,7 +167,7 @@ void RandBFConstPW::solve() {
     }
 }
 
-double RandBFConstPW::GPDOfMeshElement(double x, double xi, size_t i,
+double RandomRadonConstPW::GPDOfMeshElement(double x, double xi, size_t i,
         size_t j) {
     double result;
     if (isTriangular() and isValence() and (i == j)) {
@@ -195,7 +192,7 @@ double RandBFConstPW::GPDOfMeshElement(double x, double xi, size_t i,
     return result;
 }
 
-double RandBFConstPW::computeDD(double beta, double alpha) {
+double RandomRadonConstPW::computeDD(double beta, double alpha) {
     double u = (beta + alpha) * DD_DOMAIN_HALF_EDGE;
     double v = (-beta + alpha) * DD_DOMAIN_HALF_EDGE;
     size_t i = floor((u - m_nodes[0]) / m_step);
@@ -203,7 +200,7 @@ double RandBFConstPW::computeDD(double beta, double alpha) {
     return m_ddResult.at(i, j);
 }
 
-double RandBFConstPW::computeGPD(double x, double xi) {
+double RandomRadonConstPW::computeGPD(double x, double xi) {
     NumA::VectorD gpdMesh;
     gpdMesh = NumA::VectorD(m_n);
     size_t i, j;

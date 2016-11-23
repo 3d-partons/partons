@@ -8,8 +8,9 @@
 #ifndef OVERLAPMMR2015_H_
 #define OVERLAPMMR2015_H_
 
-#include <ElementaryUtils/parameters/Parameters.h>
 #include <string>
+#include <ElementaryUtils/parameters/Parameters.h>
+#include <NumA/linear_algebra/vector/VectorD.h>
 
 #include "IncompleteGPDModule.h"
 
@@ -41,7 +42,7 @@ public:
 
     virtual PartonDistribution computeH(); ///< Compute GPD H
 
-    virtual bool isInKinematicRegion(double x, double xi); ///< Defines the limited kinematic region of the model
+    virtual bool isInKinematicRegion(double x, double xi); ///< Defines the limited kinematic region of the model.
 
     virtual void resolveObjectDependencies();
 
@@ -54,6 +55,8 @@ protected:
      * @param other
      */
     OverlapMMR15(const OverlapMMR15& other);
+
+    double incompleteH(NumA::VectorD& x_xi, std::vector<double>&); ///< Returns the GPD in the DGLAP region. Used to define a functor.
 
     virtual void isModuleWellConfigured();
     virtual void initModule();

@@ -8,9 +8,9 @@
 #ifndef INCOMPLETEGPDMODULE_H_
 #define INCOMPLETEGPDMODULE_H_
 
-#include <ElementaryUtils/parameters/Parameters.h>
 #include <map>
 #include <string>
+#include <ElementaryUtils/parameters/Parameters.h>
 
 #include "../../beans/automation/BaseObjectData.h"
 #include "../../beans/gpd/GPDKinematic.h"
@@ -18,6 +18,12 @@
 #include "../../beans/List.h"
 #include "../../beans/parton_distribution/PartonDistribution.h"
 #include "../../ModuleObject.h"
+
+namespace NumA {
+class FunctionTypeMD;
+} /* namespace NumA */
+
+class RadonInverseModule;
 
 /**
  * @class IncompleteGPDModule
@@ -106,6 +112,11 @@ public:
     const std::string& getKinematicRegion() const;
     void setKinematicRegion(const std::string& kinematicRegion);
 
+    bool isInversionDependent() const;
+    RadonInverseModule* getRadonInverseModule() const;
+    void setRadonInverseModule(RadonInverseModule* pRadonInverse);
+    bool isInversionDone() const;
+
 protected:
     double m_x;
     double m_xi;
@@ -125,6 +136,12 @@ protected:
 
     virtual void initModule();
     virtual void isModuleWellConfigured();
+
+    void setInversionDependent(bool inversionDependent);
+    bool m_inversionDependent;
+    bool m_inversionDone;
+    RadonInverseModule* m_pRadonInverse;
+    NumA::FunctionTypeMD* m_pIncompleteGPDFunction;
 
     /**
      *

@@ -1,18 +1,20 @@
 #include "../../../../include/partons/modules/overlap/IncompleteGPDModule.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
-#include <ElementaryUtils/parameters/GenericType.h>
+#include <ElementaryUtils/parameters/Parameter.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
-#include <utility>
+//#include <NumA/functor/multi_dimension/FunctionTypeMD.h>
 
 #include "../../../../include/partons/modules/GPDModule.h"
+#include "../../../../include/partons/modules/radon_inverse/RadonInverseModule.h"
 
 const std::string IncompleteGPDModule::DGLAP_REGION = "DGLAP";
 const std::string IncompleteGPDModule::ERBL_REGION = "ERBL";
 
 IncompleteGPDModule::IncompleteGPDModule(const std::string &className) :
         ModuleObject(className), m_x(0.), m_xi(0.), m_t(0.), m_MuF2(0.), m_MuR2(
-                0.), m_gpdType(GPDType::ALL) {
+                0.), m_gpdType(GPDType::ALL), m_inversionDependent(false), m_inversionDone(
+                false), m_pRadonInverse(0), m_pIncompleteGPDFunction(0) {
 }
 
 IncompleteGPDModule::IncompleteGPDModule(const IncompleteGPDModule &other) :
@@ -26,6 +28,17 @@ IncompleteGPDModule::IncompleteGPDModule(const IncompleteGPDModule &other) :
     m_gpdType = other.m_gpdType;
 
     m_kinematicRegion = other.m_kinematicRegion;
+
+    m_inversionDependent = other.m_inversionDependent;
+    m_inversionDone = other.m_inversionDone;
+
+    if (other.m_pRadonInverse != 0) {
+        m_pRadonInverse = (other.m_pRadonInverse)->clone();
+    } else {
+        m_pRadonInverse = 0;
+    }
+
+    m_pIncompleteGPDFunction = other.m_pIncompleteGPDFunction;
 
     m_listGPDComputeTypeAvailable = other.m_listGPDComputeTypeAvailable;
     m_it = other.m_it;
@@ -47,6 +60,12 @@ void IncompleteGPDModule::configure(const ElemUtils::Parameters &parameters) {
 //TODO implement
 void IncompleteGPDModule::initModule() {
     debug(__func__, ElemUtils::Formatter() << "executed");
+
+    if (isInversionDependent() && !isInversionDone()) {
+        m_pRadonInverse->buildSystem(m_pIncompleteGPDFunction);
+        m_pRadonInverse->solve();
+        m_inversionDone = true;
+    }
 }
 
 void IncompleteGPDModule::isModuleWellConfigured() {
@@ -54,12 +73,13 @@ void IncompleteGPDModule::isModuleWellConfigured() {
 
     // Test variable range
 
-    if (!isInKinematicRegion(m_x, m_xi)) {
+    if (!isInKinematicRegion(m_x, m_xi) && !isInversionDone()) {
         warn(__func__,
                 ElemUtils::Formatter()
                         << "x and xi are not in the kinematic region "
                         << getKinematicRegion() << " described by the module "
-                        << getClassName());
+                        << getClassName()
+                        << ". Inverse Radon Transform will probably be needed.");
     }
 
     if (m_t > 0.) {
@@ -73,6 +93,7 @@ void IncompleteGPDModule::isModuleWellConfigured() {
 
 void IncompleteGPDModule::preCompute(double x, double xi, double t, double MuF,
         double MuR, GPDType::Type gpdType) {
+    m_inversionDone = m_inversionDone && (t != m_t);
     m_x = x;
     m_xi = xi;
     m_t = t;
@@ -121,19 +142,23 @@ PartonDistribution IncompleteGPDModule::compute(double x, double xi, double t,
 
 //TODO implement
 PartonDistribution IncompleteGPDModule::computeH() {
-    throw std::runtime_error("");
+    throw ElemUtils::CustomException(getClassName(), __func__,
+            "Check your implementation  ; must be implemented in daughter class");
 }
 
 PartonDistribution IncompleteGPDModule::computeE() {
-    throw std::runtime_error("");
+    throw ElemUtils::CustomException(getClassName(), __func__,
+            "Check your implementation  ; must be implemented in daughter class");
 }
 
 PartonDistribution IncompleteGPDModule::computeHt() {
-    throw std::runtime_error("");
+    throw ElemUtils::CustomException(getClassName(), __func__,
+            "Check your implementation  ; must be implemented in daughter class");
 }
 
 PartonDistribution IncompleteGPDModule::computeEt() {
-    throw std::runtime_error("");
+    throw ElemUtils::CustomException(getClassName(), __func__,
+            "Check your implementation  ; must be implemented in daughter class");
 }
 
 std::string IncompleteGPDModule::toString() {
@@ -199,6 +224,27 @@ const std::string& IncompleteGPDModule::getKinematicRegion() const {
 void IncompleteGPDModule::setKinematicRegion(
         const std::string& kinematicRegion) {
     m_kinematicRegion = kinematicRegion;
+}
+
+RadonInverseModule* IncompleteGPDModule::getRadonInverseModule() const {
+    return m_pRadonInverse;
+}
+
+void IncompleteGPDModule::setRadonInverseModule(
+        RadonInverseModule* pRadonInverse) {
+    m_pRadonInverse = pRadonInverse;
+}
+
+bool IncompleteGPDModule::isInversionDependent() const {
+    return m_inversionDependent;
+}
+
+void IncompleteGPDModule::setInversionDependent(bool inversionDependent) {
+    m_inversionDependent = inversionDependent;
+}
+
+bool IncompleteGPDModule::isInversionDone() const {
+    return m_inversionDone;
 }
 
 void IncompleteGPDModule::prepareSubModules(

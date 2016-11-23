@@ -1,12 +1,12 @@
 /**
- * @file RandBFConstPW.h
+ * @file RandomRadonConstPW.h
  * @author Nabil Chouika (Irfu/SPhN, CEA Saclay)
  * @date 5 oct. 2016
  * @version 1.0
  */
 
-#ifndef RANDBFCONSTPW_H_
-#define RANDBFCONSTPW_H_
+#ifndef RANDOMRADONCONSTPW_H_
+#define RANDOMRADONCONSTPW_H_
 
 #include <cstddef>
 #include <string>
@@ -17,27 +17,27 @@
 #include "RadonInverseModule.h"
 
 /**
- * @class RandBFConstPW
- * @brief Radon inversion with a brute-force randomly generated matrix and piece-wise constant basis functions.
+ * @class RandomRadonConstPW
+ * @brief Radon inversion with a randomly generated matrix for piece-wise constant basis functions.
  */
 
-class RandBFConstPW: RadonInverseModule {
+class RandomRadonConstPW: RadonInverseModule {
 public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
-    RandBFConstPW(const std::string &className);
-    virtual ~RandBFConstPW();
+    RandomRadonConstPW(const std::string &className);
+    virtual ~RandomRadonConstPW();
 
     /**
      * Clone
      *
      * @return
      */
-    virtual RandBFConstPW* clone() const;
+    virtual RandomRadonConstPW* clone() const;
 
     virtual void configure(const ElemUtils::Parameters &parameters);
 
-    virtual void buildMatrix(size_t maxiter = 0);
+    virtual void buildMatrix(size_t rows = 0);
 
     virtual void solve();
 
@@ -55,7 +55,7 @@ protected:
     /**
      * Copy constructor
      */
-    RandBFConstPW(const RandBFConstPW &other);
+    RandomRadonConstPW(const RandomRadonConstPW &other);
 
     virtual void initModule();
     virtual void isModuleWellConfigured();
@@ -93,4 +93,4 @@ protected:
 private:
 };
 
-#endif /* RANDBFCONSTPW_H_ */
+#endif /* RANDOMRADONCONSTPW_H_ */

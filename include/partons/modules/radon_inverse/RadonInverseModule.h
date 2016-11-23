@@ -9,14 +9,15 @@
  * @version 1.0
  */
 
-#include <ElementaryUtils/parameters/Parameters.h>
-#include <NumA/linear_algebra/matrix/MatrixD.h>
-#include <NumA/linear_algebra/vector/VectorD.h>
-#include <stddef.h>
 #include <map>
 #include <string>
 #include <utility>
 #include <vector>
+#include <ElementaryUtils/parameters/Parameters.h>
+#include <NumA/linear_algebra/matrix/MatrixD.h>
+#include <NumA/linear_algebra/vector/VectorD.h>
+#include <NumA/linear_algebra/least_squares/lsmrDense.h>
+#include <stddef.h>
 
 #include "../../beans/automation/BaseObjectData.h"
 #include "../../beans/double_distribution/DDGauge.h"
@@ -50,7 +51,7 @@ public:
 
     virtual void buildSystem();
     virtual void buildSystem(NumA::FunctionTypeMD* pGPDFunction);
-    virtual void buildMatrix(size_t maxiter = 0) = 0;
+    virtual void buildMatrix(size_t rows = 0) = 0;
     virtual void buildGPDVector();
     virtual void buildGPDVector(NumA::FunctionTypeMD* pGPDFunction);
 
@@ -69,6 +70,11 @@ public:
     void setGauge(const DDGauge& gauge);
     bool isGaugeInVector() const;
     void setGaugeInVector(bool gaugeInVector);
+
+    size_t getMaxiter() const;
+    void setMaxiter(size_t maxiter);
+    double getTolerance() const;
+    void setTolerance(double tolerance);
 
     virtual void prepareSubModules(
             const std::map<std::string, BaseObjectData>& subModulesData);
@@ -93,6 +99,10 @@ protected:
     size_t m_rank; ///< Rank of the Radon Matrix.
     size_t m_n; ///< Number of unknowns, i.e. size of m_ddVector;
     size_t m_m; ///< Number of equations, i.e. size of m_gpdVector;
+
+    NumA::lsmrDense m_solver; ///< Linear solver. TODO: Use a more general object to allow for different solvers.
+    double m_tolerance; ///< Tolerance for the iterative solver.
+    size_t m_maxiter; ///< Maximum number of iterations.
 
     /**
      * Builds the mesh (cells) in the DD domain.

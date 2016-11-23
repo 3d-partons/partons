@@ -3,12 +3,16 @@
 #include <cmath>
 #include <map>
 #include <utility>
+#include <ElementaryUtils/logger/CustomException.h>
+#include <NumA/functor/multi_dimension/FunctorMD.h>
+#include <NumA/linear_algebra/vector/Vector2D.h>
+#include <NumA/utils/FunctorUtils.h>
 
 #include "../../../../include/partons/beans/gpd/GPDType.h"
-#include "../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
 #include "../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
 #include "../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
+#include "../../../../include/partons/modules/radon_inverse/RadonInverseModule.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int OverlapMMR15::classId =
@@ -18,6 +22,9 @@ const unsigned int OverlapMMR15::classId =
 //TODO initialise missing members
 OverlapMMR15::OverlapMMR15(const std::string &className) :
         IncompleteGPDModule(className) {
+    setInversionDependent(true);
+    m_pIncompleteGPDFunction = NumA::FunctorUtils::newFunctorMD(this,
+            &OverlapMMR15::incompleteH);
     m_listGPDComputeTypeAvailable.insert(
             std::make_pair(GPDType::H, &IncompleteGPDModule::computeH));
 }
@@ -58,16 +65,31 @@ void OverlapMMR15::initModule() {
     IncompleteGPDModule::initModule();
 }
 
+double OverlapMMR15::incompleteH(NumA::VectorD& x_xi, std::vector<double>&) {
+    if (x_xi.size() != 2)
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                "Array (x,xi) should be of two dimensions.");
+    double x = x_xi[0];
+    double xi = x_xi[1];
+    if (x >= 0) {
+        return 30 * (1 - x) * (1 - x) * (x * x - xi * xi)
+                / ((1 - xi * xi) * (1 - xi * xi));
+    } else {
+        return 0.;
+    }
+}
+
 PartonDistribution OverlapMMR15::computeH() {
     PartonDistribution partonDistribution;
 
     double H;
 
-    if (m_x >= 0) {
-        H = 30 * (1 - m_x) * (1 - m_x) * (m_x * m_x - m_xi * m_xi)
-                / ((1 - m_xi * m_xi) * (1 - m_xi * m_xi));
+    if (isInKinematicRegion(m_x, m_xi)) {
+        NumA::VectorD x_xi = NumA::Vector2D(m_x,m_xi);
+        H = (*m_pIncompleteGPDFunction)(x_xi);
     } else {
-        H = 0.;
+        //TODO Radon Inverse
+        H = m_pRadonInverse->computeGPD(m_x, m_xi);
     }
 
     partonDistribution.addQuarkDistribution(

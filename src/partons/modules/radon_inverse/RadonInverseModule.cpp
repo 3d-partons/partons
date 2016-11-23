@@ -1,14 +1,16 @@
 #include "../../../../include/partons/modules/radon_inverse/RadonInverseModule.h"
 
-#include <ElementaryUtils/logger/CustomException.h>
-#include <NumA/functor/multi_dimension/FunctionTypeMD.h>
 #include <cmath>
+#include <ElementaryUtils/logger/CustomException.h>
+#include <ElementaryUtils/string_utils/Formatter.h>
+#include <NumA/functor/multi_dimension/FunctionTypeMD.h>
 
 const double RadonInverseModule::DD_DOMAIN_HALF_EDGE = 1. / sqrt(2.);
 
 RadonInverseModule::RadonInverseModule(const std::string &className) :
         ModuleObject(className), m_N(0), m_rank(0), m_m(0), m_n(0), m_pGPDFunction(
-                0), m_gauge(DDGauge::Pobylitsa), m_gaugeInVector(true) {
+                0), m_gauge(DDGauge::Pobylitsa), m_gaugeInVector(true), m_tolerance(
+                1.e-16), m_maxiter(0) {
 }
 
 RadonInverseModule::~RadonInverseModule() {
@@ -27,6 +29,9 @@ RadonInverseModule::RadonInverseModule(const RadonInverseModule& other) :
     m_gpdVector = other.m_gpdVector;
     m_ddVector = other.m_ddVector;
     m_gpdNodes = other.m_gpdNodes;
+    m_solver = other.m_solver;
+    m_tolerance = other.m_tolerance;
+    m_maxiter = other.m_maxiter;
 }
 
 void RadonInverseModule::initModule() {
@@ -110,6 +115,21 @@ void RadonInverseModule::buildSystem(NumA::FunctionTypeMD* pGPDFunction) {
 }
 
 void RadonInverseModule::solve() {
+    ElemUtils::Formatter formatter;
+
+    // Initialize solver
+    m_solver.setOutputStream(formatter);
+    m_solver.setToleranceA(m_tolerance);
+    m_solver.setToleranceB(m_tolerance);
+    if (m_maxiter <= 0)
+        m_maxiter = 4 * m_n;
+    m_solver.setMaximumNumberOfIterations(m_maxiter);
+    m_solver.setMatrix(m_radonMatrix);
+
+    // Solve
+    m_solver.solve(m_m, m_n, m_gpdVector, m_ddVector);
+
+    debug(__func__, formatter);
 }
 
 size_t RadonInverseModule::getN() const {
@@ -125,4 +145,20 @@ void RadonInverseModule::setN(size_t N) {
 void RadonInverseModule::prepareSubModules(
         const std::map<std::string, BaseObjectData>& subModulesData) {
     ModuleObject::prepareSubModules(subModulesData);
+}
+
+size_t RadonInverseModule::getMaxiter() const {
+    return m_maxiter;
+}
+
+void RadonInverseModule::setMaxiter(size_t maxiter) {
+    m_maxiter = maxiter;
+}
+
+double RadonInverseModule::getTolerance() const {
+    return m_tolerance;
+}
+
+void RadonInverseModule::setTolerance(double tolerance) {
+    m_tolerance = tolerance;
 }
