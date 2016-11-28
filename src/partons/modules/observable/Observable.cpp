@@ -39,7 +39,7 @@ Observable::Observable(const Observable& other) :
 
 Observable::~Observable() {
     if (m_pProcessModule != 0) {
-        delete m_pProcessModule;
+        setProcessModule(0);
         m_pProcessModule = 0;
     }
 }
@@ -174,7 +174,7 @@ void Observable::prepareSubModules(
 
     if (it != subModulesData.end()) {
         if (m_pProcessModule) {
-            delete m_pProcessModule;
+            setProcessModule(0);
             m_pProcessModule = 0;
         }
         if (!m_pProcessModule) {
@@ -225,12 +225,19 @@ ProcessModule* Observable::getProcessModule() const {
 }
 
 void Observable::setProcessModule(ProcessModule* pProcessModule) {
+    m_pModuleObjectFactory->updateModulePointerReference(m_pProcessModule,
+            pProcessModule);
     m_pProcessModule = pProcessModule;
 
     if (pProcessModule != 0) {
         warn(__func__,
                 ElemUtils::Formatter() << "has been set with "
                         << pProcessModule->getClassName());
+    } else {
+        if (pProcessModule != 0) {
+            warn(__func__, "has been set with 0");
+
+        }
     }
 }
 

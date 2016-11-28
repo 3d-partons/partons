@@ -20,6 +20,8 @@
 
 class RunningAlphaStrongModule: public ModuleObject {
 public:
+    static const std::string RUNNING_ALPHA_STRONG_MODULE_CLASS_NAME;
+
     /**
      * Default constructor
      */

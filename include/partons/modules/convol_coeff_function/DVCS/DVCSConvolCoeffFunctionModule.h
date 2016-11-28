@@ -8,10 +8,12 @@
  * @version 1.0
  */
 
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <complex>
 #include <map>
 #include <string>
 
+#include "../../../beans/automation/BaseObjectData.h"
 #include "../../../beans/gpd/GPDType.h"
 #include "../../../beans/List.h"
 #include "../../../beans/PerturbativeQCDOrderType.h"
@@ -50,10 +52,17 @@ public:
 
     virtual List<GPDType> getListOfAvailableGPDTypeForComputation() const;
 
+    virtual void prepareSubModules(
+            const std::map<std::string, BaseObjectData>& subModulesData);
+
     // ##### GETTERS & SETTERS #####
 
     PerturbativeQCDOrderType::Type getQCDOrderType() const;
     void setQCDOrderType(PerturbativeQCDOrderType::Type qcdOrderType);
+
+    void setNfConvolCoeffFunction(ActiveFlavorsModule* pNfConvolCoeffFunction);
+    void setRunningAlphaStrongModule(
+            RunningAlphaStrongModule* pRunningAlphaStrongModule);
 
 protected:
 
@@ -79,7 +88,6 @@ protected:
 
     RunningAlphaStrongModule* m_pRunningAlphaStrongModule;
 
-    //TODO implement
     ActiveFlavorsModule* m_pNfConvolCoeffFunction;
 
     PerturbativeQCDOrderType::Type m_qcdOrderType;

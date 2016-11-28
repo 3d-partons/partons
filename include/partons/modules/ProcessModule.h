@@ -64,8 +64,8 @@ public:
 
     void setBeamEnergy(double EBeam); ///< Sets beam energy
 
-    void setPScaleModule(ScaleModule* pScaleModule);
-    void setPXiConverterModule(XiConverterModule* pXiConverterModule);
+    void setScaleModule(ScaleModule* pScaleModule);
+    void setXiConverterModule(XiConverterModule* pXiConverterModule);
     bool isCCFModuleDependent() const;
     void isCCFModuleDependent(bool isCcfModuleDependent);
 

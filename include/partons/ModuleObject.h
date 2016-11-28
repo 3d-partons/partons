@@ -15,6 +15,8 @@
 
 #include "beans/automation/BaseObjectData.h"
 
+class ModuleObjectFactory;
+
 namespace ElemUtils {
 class Parameters;
 } /* namespace ElemUtils */
@@ -73,7 +75,13 @@ public:
     virtual void prepareSubModules(
             const std::map<std::string, BaseObjectData>& subModulesData);
 
+    unsigned int getReferenceModuleId() const;
+    void setReferenceModuleId(unsigned int referenceModuleId);
+
 protected:
+    //TODO comment
+    ModuleObjectFactory* m_pModuleObjectFactory;
+
     /***
      * Copy constructor
      * @param other
@@ -91,6 +99,9 @@ protected:
      * Children must define and override it.
      */
     virtual void isModuleWellConfigured() = 0;
+
+private:
+    unsigned int m_referenceModuleId;
 };
 
 #endif /* BASE_MODULE_H */

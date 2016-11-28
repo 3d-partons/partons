@@ -1,13 +1,15 @@
-/*
- * VGGModel.h
- *
- *  Created on: Dec 10, 2015
- *      Author: Michel Guidal (IPNO) and Pawel Sznajder (IPNO)
+#ifndef VGG_MODEL_H
+#define VGG_MODEL_H
+
+/**
+ * @file VGGModel.h
+ * @author  Michel Guidal (IPNO)
+ * @author Pawel Sznajder (IPNO)
+ * @date December 10, 2015
+ * @version 1.0
  */
 
-#ifndef VGGMODEL_H_
-#define VGGMODEL_H_
-
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <string>
 #include <vector>
 
@@ -15,13 +17,13 @@
 #include "../GPDModule.h"
 #include "../MathIntegratorModule.h"
 
+class MSTWPDF;
 namespace NumA {
 class FunctionType1D;
-}
-class c_mstwpdf;
+} /* namespace NumA */
 
 /**
- * VGG GPD model
+ * @class VGGModel
  *
  * For the reference see:
  * - Prog. Part. Nucl. Phys. 47, 401 (2001)
@@ -87,7 +89,7 @@ private:
     const double eta_e_largex_d_s; ///< Shape parameter for GPD E^dVal
     const double g_AXIAL; ///< Axial coupling constant of the nucleon
 
-    c_mstwpdf* m_Forward; ///< Pointer to MSTW PDFs
+    MSTWPDF* m_Forward; ///< Pointer to MSTW PDFs
 
     GPDType gpd_s5; ///< GPD Type for the current computation (internal variables used for the integration)
     flavour flavour_s5; ///< Flavor for the current computation  (internal variables used for the integration)
@@ -241,4 +243,4 @@ private:
     void initFunctorsForIntegrations();
 };
 
-#endif /* VGGMODEL_H_ */
+#endif /* VGG_MODEL_H */

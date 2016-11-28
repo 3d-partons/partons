@@ -2,6 +2,9 @@
 
 #include <cmath>
 
+const std::string RunningAlphaStrongModule::RUNNING_ALPHA_STRONG_MODULE_CLASS_NAME =
+        "RunningAlphaStrongModule";
+
 RunningAlphaStrongModule::RunningAlphaStrongModule(const std::string &className) :
         ModuleObject(className), m_Mu2(0.), m_Mu(0.), m_nf(0), m_alphaS(0.) {
 

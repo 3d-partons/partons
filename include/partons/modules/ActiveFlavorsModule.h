@@ -25,6 +25,8 @@ class NfInterval;
  */
 class ActiveFlavorsModule: public ModuleObject {
 public:
+    static const std::string ACTIVE_FLAVORS_MODULE_CLASS_NAME;
+
     ActiveFlavorsModule(const std::string &className);
     virtual ~ActiveFlavorsModule();
 

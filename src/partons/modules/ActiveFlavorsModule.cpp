@@ -4,6 +4,9 @@
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <algorithm>
 
+const std::string ActiveFlavorsModule::ACTIVE_FLAVORS_MODULE_CLASS_NAME =
+        "ActiveFlavorsModule";
+
 ActiveFlavorsModule::ActiveFlavorsModule(const std::string &className) :
         ModuleObject(className) {
 }

@@ -107,7 +107,7 @@ DVCSCFFModel* DVCSCFFModel::clone() const {
 
 //TODO comment gérer le cycle de vie des modules membres
 DVCSCFFModel::~DVCSCFFModel() {
-//
+    //
 //    if (m_pMathIntegratorModule) {
 //        delete m_pMathIntegratorModule;
 //        m_pMathIntegratorModule = 0;

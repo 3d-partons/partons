@@ -19,10 +19,6 @@
 #include "../../../include/partons/ModuleObjectFactory.h"
 #include "../../../include/partons/Partons.h"
 
-//#include "../../../include/partons/services/ConvolCoeffFunctionService.h"
-//#include "../../../include/partons/ServiceObjectRegistry.h"
-//#include "../../../include/partons/utils/exceptions/CCFModuleNullPointerException.h"
-
 const std::string ObservableService::FUNCTION_NAME_COMPUTE_OBSERVABLE =
         "computeObservable";
 
@@ -171,12 +167,18 @@ ObservableResult ObservableService::computeObservableTask(Task& task) {
 
     Observable* pObservable = newObservableModuleFromTask(task);
 
-    return computeObservable(kinematic, pObservable, listOfGPDType);
+    ObservableResult result = computeObservable(kinematic, pObservable,
+            listOfGPDType);
+
+    // Remove reference to pObservable pointer.
+    m_pModuleObjectFactory->updateModulePointerReference(pObservable, 0);
+    pObservable = 0;
+
+    return result;
 }
 
 List<ObservableResult> ObservableService::computeManyKinematicOneModelTask(
         Task& task) {
-
     List<ObservableKinematic> listOfKinematic = newListOfKinematicFromTask(
             task);
 
@@ -189,8 +191,14 @@ List<ObservableResult> ObservableService::computeManyKinematicOneModelTask(
 
     Observable* pObservable = newObservableModuleFromTask(task);
 
-    return computeManyKinematicOneModel(listOfKinematic, pObservable,
-            listOfGPDType, task.isStoreInDB());
+    List<ObservableResult> results = computeManyKinematicOneModel(
+            listOfKinematic, pObservable, listOfGPDType, task.isStoreInDB());
+
+    // Remove reference to pObservable pointer.
+    m_pModuleObjectFactory->updateModulePointerReference(pObservable, 0);
+    pObservable = 0;
+
+    return results;
 }
 
 ObservableChannel::Type ObservableService::getObservableChannel(

@@ -360,10 +360,9 @@ GPDResult GPDService::computeGPDTask(Task& task) {
 
     GPDResult gpdResult = computeGPDModel(gpdKinematic, pGPDModule);
 
-    if (pGPDModule != 0) {
-        delete pGPDModule;
-        pGPDModule = 0;
-    }
+    // Remove reference to pGPDModule pointer.
+    m_pModuleObjectFactory->updateModulePointerReference(pGPDModule, 0);
+    pGPDModule = 0;
 
     return gpdResult;
 }
@@ -383,11 +382,9 @@ List<GPDResult> GPDService::computeManyKinematicOneModelTask(Task& task) {
 //                       << pGPDModule->getClassName() << ")" << '\n'
 //                       << result.toString());
 
-    if (pGPDModule != 0) {
-        delete pGPDModule;
-        pGPDModule = 0;
-    }
-
+// Remove reference to pGPDModule pointer.
+    m_pModuleObjectFactory->updateModulePointerReference(pGPDModule, 0);
+    pGPDModule = 0;
     return result;
 }
 

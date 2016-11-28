@@ -170,16 +170,18 @@ DVCSConvolCoeffFunctionResult ConvolCoeffFunctionService::computeWithGPDModelTas
     DVCSConvolCoeffFunctionResult result = computeForOneCCFModel(kinematic,
             pConvolCoeffFunctionModule);
 
-    if (pConvolCoeffFunctionModule) {
-        delete pConvolCoeffFunctionModule;
-        pConvolCoeffFunctionModule = 0;
-    }
+    // Remove reference to pConvolCoeffFunctionModule pointer.
+    m_pModuleObjectFactory->updateModulePointerReference(
+            pConvolCoeffFunctionModule, 0);
+    pConvolCoeffFunctionModule = 0;
 
     return result;
 }
 
 List<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionService::computeManyKinematicOneModelTask(
         Task& task) {
+    List<DVCSConvolCoeffFunctionResult> results;
+
     List<DVCSConvolCoeffFunctionKinematic> listOfKinematic =
             newListOfKinematicFromTask(task);
 
@@ -188,8 +190,15 @@ List<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionService::computeManyKinem
     ConvolCoeffFunctionModule* pConvolCoeffFunctionModule =
             newConvolCoeffFunctionModuleFromTask(task);
 
-    return computeForOneCCFModelAndManyKinematics(listOfKinematic,
+    results = computeForOneCCFModelAndManyKinematics(listOfKinematic,
             pConvolCoeffFunctionModule, gpdTypeList, task.isStoreInDB());
+
+    // Remove reference to pConvolCoeffFunctionModule pointer.
+    m_pModuleObjectFactory->updateModulePointerReference(
+            pConvolCoeffFunctionModule, 0);
+    pConvolCoeffFunctionModule = 0;
+
+    return results;
 }
 
 List<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionService::computeForOneCCFModelAndManyKinematics(

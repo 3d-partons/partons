@@ -59,7 +59,7 @@ GPDModule::GPDModule(const GPDModule &other) :
 
 GPDModule::~GPDModule() {
     if (m_pGPDEvolutionModule) {
-        delete m_pGPDEvolutionModule;
+        setEvolQcdModule(0);
         m_pGPDEvolutionModule = 0;
     }
 }
@@ -207,10 +207,9 @@ const GPDEvolutionModule* GPDModule::getEvolQcdModule() const {
 }
 
 void GPDModule::setEvolQcdModule(GPDEvolutionModule* pEvolQcdModule) {
+    m_pModuleObjectFactory->updateModulePointerReference(m_pGPDEvolutionModule,
+            pEvolQcdModule);
     m_pGPDEvolutionModule = pEvolQcdModule;
-    if (m_pGPDEvolutionModule != 0) {
-        m_pGPDEvolutionModule->setGpdModule(this);
-    }
 }
 
 double GPDModule::getMuF2Ref() const {
@@ -357,7 +356,7 @@ void GPDModule::prepareSubModules(
 
     if (it != subModulesData.end()) {
         if (m_pGPDEvolutionModule) {
-            delete m_pGPDEvolutionModule;
+            setEvolQcdModule(0);
             m_pGPDEvolutionModule = 0;
         }
         if (!m_pGPDEvolutionModule) {

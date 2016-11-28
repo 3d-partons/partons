@@ -24,10 +24,8 @@ ConvolCoeffFunctionModule::ConvolCoeffFunctionModule(
 }
 
 ConvolCoeffFunctionModule::~ConvolCoeffFunctionModule() {
-//    if (m_pGPDModule) {
-//        delete m_pGPDModule;
-//        m_pGPDModule = 0;
-//    }
+    // Remove reference to our current GPDModule pointer.
+    setGPDModule(0);
 }
 
 ConvolCoeffFunctionModule::ConvolCoeffFunctionModule(
@@ -106,6 +104,8 @@ GPDModule* ConvolCoeffFunctionModule::getGPDModule() const {
 }
 
 void ConvolCoeffFunctionModule::setGPDModule(GPDModule* gpdModule) {
+    m_pModuleObjectFactory->updateModulePointerReference(m_pGPDModule,
+            gpdModule);
     m_pGPDModule = gpdModule;
 }
 
@@ -137,17 +137,16 @@ void ConvolCoeffFunctionModule::prepareSubModules(
         it = subModulesData.find(GPDModule::GPD_MODULE_CLASS_NAME);
 
         if (it != subModulesData.end()) {
-            if (m_pGPDModule) {
-                delete m_pGPDModule;
-                m_pGPDModule = 0;
+            if (m_pGPDModule != 0) {
+                setGPDModule(0);
             }
-            if (!m_pGPDModule) {
+            if (m_pGPDModule == 0) {
                 m_pGPDModule =
                         Partons::getInstance()->getModuleObjectFactory()->newGPDModule(
                                 (it->second).getModuleClassName());
 
                 info(__func__,
-                        ElemUtils::Formatter() << "Configure with GPDModule = "
+                        ElemUtils::Formatter() << "Configured with GPDModule = "
                                 << m_pGPDModule->getClassName());
 
                 m_pGPDModule->configure((it->second).getParameters());

@@ -1,9 +1,9 @@
 #include "../../../../include/partons/modules/overlap/IncompleteGPDModule.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
-#include <ElementaryUtils/parameters/Parameter.h>
+#include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
-//#include <NumA/functor/multi_dimension/FunctionTypeMD.h>
+#include <utility>
 
 #include "../../../../include/partons/modules/GPDModule.h"
 #include "../../../../include/partons/modules/radon_inverse/RadonInverseModule.h"
@@ -140,10 +140,10 @@ PartonDistribution IncompleteGPDModule::compute(double x, double xi, double t,
     return partonDistribution;
 }
 
-//TODO implement
 PartonDistribution IncompleteGPDModule::computeH() {
     throw ElemUtils::CustomException(getClassName(), __func__,
             "Check your implementation  ; must be implemented in daughter class");
+
 }
 
 PartonDistribution IncompleteGPDModule::computeE() {

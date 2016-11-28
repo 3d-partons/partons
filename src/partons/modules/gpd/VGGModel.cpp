@@ -1,7 +1,6 @@
 #include "../../../../include/partons/modules/gpd/VGGModel.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
-#include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/PropertiesManager.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <math.h>
@@ -17,7 +16,8 @@
 #include "../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../include/partons/utils/mstwpdf.h"
+#include "../../../../include/partons/utils/MSTWPDF.h"
+#include "../../../../include/partons/utils/PartonContent.h"
 
 const unsigned int VGGModel::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
@@ -26,7 +26,7 @@ const unsigned int VGGModel::classId =
 VGGModel::VGGModel(const std::string &className) :
         GPDModule(className), kappa_u(1.6596), kappa_d(-2.0352), b_profile_val(
                 1.), b_profile_sea(1.), alphap_val(1.105), alphap_sea(1.105), eta_e_largex_u_s(
-                1.713), eta_e_largex_d_s(0.566), g_AXIAL(1.267), MathIntegratorModule() {
+                1.713), eta_e_largex_d_s(0.566), g_AXIAL(1.267), m_Forward(0), MathIntegratorModule() {
 
     gpd_s5 = GPDType::UNDEFINED;
     flavour_s5 = UNDEFINED;
@@ -43,6 +43,25 @@ VGGModel::VGGModel(const std::string &className) :
 
     m_listGPDComputeTypeAvailable.insert(
             std::make_pair(GPDType::Et, &GPDModule::computeEt));
+
+    initFunctorsForIntegrations();
+}
+
+VGGModel::VGGModel(const VGGModel& other) :
+        kappa_u(1.6596), kappa_d(-2.0352), b_profile_val(1.), b_profile_sea(1.), alphap_val(
+                1.105), alphap_sea(1.105), eta_e_largex_u_s(1.713), eta_e_largex_d_s(
+                0.566), g_AXIAL(1.267), GPDModule(other), MathIntegratorModule(
+                other) {
+
+    //TODO make a clone instance ; create MSTWPDF as a module.
+    m_Forward = new MSTWPDF();
+    m_Forward->init(
+            ElemUtils::PropertiesManager::getInstance()->getString(
+                    "grid.directory") + "mstw2008nlo.00.dat");
+
+    gpd_s5 = other.gpd_s5;
+    flavour_s5 = other.flavour_s5;
+    x_s5 = other.x_s5;
 
     initFunctorsForIntegrations();
 }
@@ -123,11 +142,6 @@ VGGModel* VGGModel::clone() const {
 }
 
 void VGGModel::resolveObjectDependencies() {
-
-    m_Forward = new c_mstwpdf(
-            ElemUtils::PropertiesManager::getInstance()->getString(
-                    "grid.directory") + "mstw2008nlo.00.dat");
-
     setIntegrator(NumA::IntegratorType1D::DEXP);
 }
 
@@ -137,22 +151,6 @@ void VGGModel::configure(const ElemUtils::Parameters &parameters) {
 
 std::string VGGModel::toString() {
     return GPDModule::toString();
-}
-
-VGGModel::VGGModel(const VGGModel& other) :
-        kappa_u(1.6596), kappa_d(-2.0352), b_profile_val(1.), b_profile_sea(1.), alphap_val(
-                1.105), alphap_sea(1.105), eta_e_largex_u_s(1.713), eta_e_largex_d_s(
-                0.566), g_AXIAL(1.267), GPDModule(other), MathIntegratorModule(
-                other) {
-
-    //TODO one should copy this object (requires copy constructor of c_mstwpdf, not done now at it will be replaced by a PDF service)
-    m_Forward = other.m_Forward;
-
-    gpd_s5 = other.gpd_s5;
-    flavour_s5 = other.flavour_s5;
-    x_s5 = other.x_s5;
-
-    initFunctorsForIntegrations();
 }
 
 void VGGModel::isModuleWellConfigured() {
@@ -526,7 +524,7 @@ double VGGModel::symm_double_distr_reggeH(double beta, double alpha) {
 
     case UP_VAL: {
 
-        pdf = m_Forward->cont.upv / beta;
+        pdf = m_Forward->getPartonContent().getUpv() / beta;
 //        pdf = test_pdf_up_val(beta);
         b_profile = b_profile_val;
         funcbetat = pow(1. / fabs(beta), (1. - beta) * alphap_val * m_t);
@@ -535,7 +533,7 @@ double VGGModel::symm_double_distr_reggeH(double beta, double alpha) {
 
     case DOWN_VAL: {
 
-        pdf = m_Forward->cont.dnv / beta;
+        pdf = m_Forward->getPartonContent().getDnv() / beta;
 //        pdf = test_pdf_down_val(beta);
         b_profile = b_profile_val;
         funcbetat = pow(1. / fabs(beta), (1. - beta) * alphap_val * m_t);
@@ -544,7 +542,7 @@ double VGGModel::symm_double_distr_reggeH(double beta, double alpha) {
 
     case UP_SEA: {
 
-        pdf = m_Forward->cont.usea / beta;
+        pdf = m_Forward->getPartonContent().getUsea() / beta;
 //        pdf = test_pdf_up_bar(beta);
         b_profile = b_profile_sea;
         funcbetat = pow(1. / fabs(beta), (1. - beta) * alphap_sea * m_t);
@@ -553,7 +551,7 @@ double VGGModel::symm_double_distr_reggeH(double beta, double alpha) {
 
     case DOWN_SEA: {
 
-        pdf = m_Forward->cont.dsea / beta;
+        pdf = m_Forward->getPartonContent().getDsea() / beta;
 //        pdf = test_pdf_down_bar(beta);
         b_profile = b_profile_sea;
         funcbetat = pow(1. / fabs(beta), (1. - beta) * alphap_sea * m_t);
@@ -595,7 +593,7 @@ double VGGModel::symm_double_distr_reggeE(double beta, double alpha) {
 
     case UP_VAL: {
 
-        pdf = m_Forward->cont.upv / beta;
+        pdf = m_Forward->getPartonContent().getUpv() / beta;
 //        pdf = test_pdf_up_val(beta);
         b_profile = b_profile_val;
         funcbetat = pow(1. - beta, eta_e_largex_u_s)
@@ -605,7 +603,7 @@ double VGGModel::symm_double_distr_reggeE(double beta, double alpha) {
 
     case DOWN_VAL: {
 
-        pdf = m_Forward->cont.dnv / beta;
+        pdf = m_Forward->getPartonContent().getDnv() / beta;
 //        pdf = test_pdf_down_val(beta);
         b_profile = b_profile_val;
         funcbetat = pow(1. - beta, eta_e_largex_d_s)
@@ -683,7 +681,7 @@ double VGGModel::int_mom2_up_valence_e(double beta, std::vector<double> par) {
 
     case UP_VAL: {
 
-        pdf = m_Forward->cont.upv / beta;
+        pdf = m_Forward->getPartonContent().getUpv() / beta;
 //        pdf = test_pdf_up_val(beta);
         eta_e_largex_s = eta_e_largex_u_s;
     }
@@ -691,7 +689,7 @@ double VGGModel::int_mom2_up_valence_e(double beta, std::vector<double> par) {
 
     case DOWN_VAL: {
 
-        pdf = m_Forward->cont.dnv / beta;
+        pdf = m_Forward->getPartonContent().getDnv() / beta;
 //        pdf = test_pdf_down_val(beta);
         eta_e_largex_s = eta_e_largex_d_s;
 

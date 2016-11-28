@@ -8,7 +8,10 @@
  * @version 1.0
  */
 
+#include <map>
 #include <string>
+
+#include "ModuleObjectReference.h"
 
 class ActiveFlavorsModule;
 class BaseObjectFactory;
@@ -35,7 +38,7 @@ class XiConverterModule;
  * @brief It's a specialization of the BaseObjectFactory to get intermediate abstract module class specialization to be able to use directly more sophisticated method (like compute(...)).
  * It only casts BaseObject pointer to desired abstract module class type.
  */
-class ModuleObjectFactory {
+class ModuleObjectFactory: public BaseObject {
 public:
     /**
      * Default destructor
@@ -101,6 +104,11 @@ public:
     Observable* newObservable(unsigned int classId);
     Observable* newObservable(const std::string & className);
 
+    void updateModulePointerReference(ModuleObject* pModuleObjectTarget,
+            ModuleObject* pModuleObjectSource);
+
+    virtual std::string toString() const;
+
 private:
     // To allow only Partons class to create a new instance of this class.
     // Used to avoid multiple singleton class and to avoid multithreading problem especially when getInstance() is called.
@@ -115,6 +123,16 @@ private:
     ModuleObjectFactory(BaseObjectFactory* pBaseObjectFactory);
 
     BaseObjectFactory* m_pBaseObjectFactory; ///< Pointer to BaseObjectFactory to get cloned object's pointer.
+
+    /**
+     * std::map<BaseObject::m_objectId, ModuleObjectReference>
+     * Store ModuleObject pointer created by the ModuleObjectFactory; used to handle references and life cycle of module pointer during execution of the program.
+     */
+    std::map<unsigned int, ModuleObjectReference*> m_instantiatedModuleObject;
+
+    void store(ModuleObject* pModuleObject);
+
+    //void remove(ModuleObject* pModuleObject);
 };
 
 #endif /* MODULE_OBJECT_FACTORY_H */

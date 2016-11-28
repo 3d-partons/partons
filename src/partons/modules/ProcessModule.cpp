@@ -59,20 +59,24 @@ ProcessModule::ProcessModule(const ProcessModule &other) :
 }
 
 ProcessModule::~ProcessModule() {
-    if (m_pConvolCoeffFunctionModule != 0) {
-        delete m_pConvolCoeffFunctionModule;
-        m_pConvolCoeffFunctionModule = 0;
-    }
+//    if (m_pConvolCoeffFunctionModule != 0) {
+//        delete m_pConvolCoeffFunctionModule;
+//        m_pConvolCoeffFunctionModule = 0;
+//    }
+//
+//    if (m_pScaleModule != 0) {
+//        delete m_pScaleModule;
+//        m_pScaleModule = 0;
+//    }
+//
+//    if (m_pXiConverterModule != 0) {
+//        delete m_pXiConverterModule;
+//        m_pXiConverterModule = 0;
+//    }
 
-    if (m_pScaleModule != 0) {
-        delete m_pScaleModule;
-        m_pScaleModule = 0;
-    }
-
-    if (m_pXiConverterModule != 0) {
-        delete m_pXiConverterModule;
-        m_pXiConverterModule = 0;
-    }
+    setConvolCoeffFunctionModule(0);
+    setXiConverterModule(0);
+    setScaleModule(0);
 }
 
 void ProcessModule::configure(const ElemUtils::Parameters &parameters) {
@@ -122,20 +126,27 @@ void ProcessModule::resetPreviousKinematics() {
 void ProcessModule::setConvolCoeffFunctionModule(
         ConvolCoeffFunctionModule* pConvolCoeffFunctionModule) {
 
+    m_pModuleObjectFactory->updateModulePointerReference(
+            m_pConvolCoeffFunctionModule, pConvolCoeffFunctionModule);
     m_pConvolCoeffFunctionModule = pConvolCoeffFunctionModule;
 
-    info(__func__,
-            ElemUtils::Formatter() << "ConvolCoeffFunctionModule is set to : "
-                    << pConvolCoeffFunctionModule->getClassName());
+    if (m_pConvolCoeffFunctionModule != 0) {
+        info(__func__,
+                ElemUtils::Formatter()
+                        << "ConvolCoeffFunctionModule is set to : "
+                        << pConvolCoeffFunctionModule->getClassName());
+    } else {
+        info(__func__, "ConvolCoeffFunctionModule is set to : 0");
+    }
 
     resetPreviousKinematics();
 }
 
-void ProcessModule::setPScaleModule(ScaleModule* pScaleModule) {
+void ProcessModule::setScaleModule(ScaleModule* pScaleModule) {
     m_pScaleModule = pScaleModule;
 }
 
-void ProcessModule::setPXiConverterModule(
+void ProcessModule::setXiConverterModule(
         XiConverterModule* pXiConverterModule) {
     m_pXiConverterModule = pXiConverterModule;
 }
@@ -163,7 +174,7 @@ void ProcessModule::prepareSubModules(
 
     if (it != subModulesData.end()) {
         if (m_pScaleModule) {
-            delete m_pScaleModule;
+            setScaleModule(0);
             m_pScaleModule = 0;
         }
         if (!m_pScaleModule) {
@@ -189,7 +200,7 @@ void ProcessModule::prepareSubModules(
 
     if (it != subModulesData.end()) {
         if (m_pXiConverterModule) {
-            delete m_pXiConverterModule;
+            setXiConverterModule(0);
             m_pXiConverterModule = 0;
         }
         if (!m_pXiConverterModule) {
@@ -220,7 +231,7 @@ void ProcessModule::prepareSubModules(
 
         if (it != subModulesData.end()) {
             if (m_pConvolCoeffFunctionModule) {
-                delete m_pConvolCoeffFunctionModule;
+                setConvolCoeffFunctionModule(0);
                 m_pConvolCoeffFunctionModule = 0;
             }
             if (!m_pConvolCoeffFunctionModule) {

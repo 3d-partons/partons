@@ -5,12 +5,12 @@
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/PropertiesManager.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
+#include <NumA/functor/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
 #include <cmath>
 #include <map>
 #include <utility>
-#include <NumA/functor/one_dimension/Functor1D.h>
 
 #include "../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
@@ -44,6 +44,22 @@ MMS13Model::MMS13Model(const std::string &className) :
     initFunctorsForIntegrations();
 }
 
+MMS13Model::MMS13Model(const MMS13Model& other) :
+        GPDModule(other), MathIntegratorModule(other) {
+
+    m_NE = other.m_NE;
+    m_NHpE = other.m_NHpE;
+    m_C = other.m_C;
+
+    //TODO make a clone instance ; create MSTWPDF as a module.
+    m_pForward = new MSTWPDF();
+    m_pForward->init(
+            ElemUtils::PropertiesManager::getInstance()->getString(
+                    "grid.directory") + "mstw2008nlo.00.dat");
+
+    initFunctorsForIntegrations();
+}
+
 MMS13Model::~MMS13Model() {
 
     if (m_pForward) {
@@ -72,12 +88,6 @@ MMS13Model* MMS13Model::clone() const {
 }
 //TODO clone MSTWPDF instead of hardcoded new
 void MMS13Model::resolveObjectDependencies() {
-
-    m_pForward = new MSTWPDF();
-    m_pForward->init(
-            ElemUtils::PropertiesManager::getInstance()->getString(
-                    "grid.directory") + "mstw2008nlo.00.dat");
-
     setIntegrator(NumA::IntegratorType1D::DEXP);
 }
 
@@ -100,19 +110,6 @@ void MMS13Model::configure(const ElemUtils::Parameters &parameters) {
 
 std::string MMS13Model::toString() {
     return GPDModule::toString();
-}
-
-MMS13Model::MMS13Model(const MMS13Model& other) :
-        GPDModule(other), MathIntegratorModule(other) {
-
-    m_NE = other.m_NE;
-    m_NHpE = other.m_NHpE;
-    m_C = other.m_C;
-
-    //TODO one should copy this object (requires copy constructor of c_mstwpdf, not done now at it will be replaced by a PDF service)
-    m_pForward = other.m_pForward;
-
-    initFunctorsForIntegrations();
 }
 
 void MMS13Model::isModuleWellConfigured() {

@@ -9,9 +9,11 @@
 #include <fstream>
 #include <iostream>
 
-//TODO add missing stuff not initialized
 MSTWPDF::MSTWPDF() :
-        BaseObject("MSTWPDF"), warn(false), fatal(true), np(12), nx(64), nq(48) {
+        BaseObject("MSTWPDF"), warn(false), fatal(true), np(12), nx(64), nq(48), qsqmax(
+                0.), alphaSMZ(0.), xmax(0.), xmin(0.), alphaSorder(0), qsqmin(
+                0), distance(0.), tolerance(0.), mCharm(0.), alphaSQ0(0.), mBottom(
+                0.), alphaSnfmax(0), nqc0(0), nqb0(0) {
 
     xx.resize(nx + 1);
     qq.resize(nq + 1);

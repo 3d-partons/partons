@@ -1,12 +1,12 @@
-/*
- * MPSSW13Model.h
- *
- *  Created on: Nov 11, 2014
- *      Author: Herve Moutarde (CEA/Irfu, Saclay)
- */
-
 #ifndef MPSSW13_MODEL_H
 #define MPSSW13_MODEL_H
+
+/**
+ * @file VGGModel.h
+ * @author Herve Moutarde (CEA/Irfu, Saclay)
+ * @date November 11, 2014
+ * @version 1.0
+ */
 
 #include <string>
 #include <vector>
@@ -14,13 +14,13 @@
 #include "../GPDModule.h"
 #include "../MathIntegratorModule.h"
 
+class MSTWPDF;
 namespace NumA {
 class FunctionType1D;
-}
-class c_mstwpdf;
+} /* namespace NumA */
 
 /**
- * MPSSW13 GPD model
+ * @class MPSSW13Model
  *
  * For the reference see hep-ph/1301.3819
  *
@@ -97,7 +97,7 @@ private:
     double m_QuarkDTerm; ///< Value of D term for quarks
     double m_GluonDTerm; ///< Value of D term for gluons
 
-    c_mstwpdf* m_Forward; ///< Pointer to MSTW PDFs
+    MSTWPDF* m_Forward; ///< Pointer to MSTW PDFs
 
     /** Compute D terms
      */

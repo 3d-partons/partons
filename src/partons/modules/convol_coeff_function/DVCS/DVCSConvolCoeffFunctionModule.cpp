@@ -2,7 +2,6 @@
 
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/parameters/GenericType.h>
-#include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <utility>
 
@@ -57,7 +56,15 @@ DVCSConvolCoeffFunctionModule::DVCSConvolCoeffFunctionModule(
 }
 
 DVCSConvolCoeffFunctionModule::~DVCSConvolCoeffFunctionModule() {
-    //TODO Remove all pointers dependencies
+    if (m_pRunningAlphaStrongModule != 0) {
+        setRunningAlphaStrongModule(0);
+        m_pRunningAlphaStrongModule = 0;
+    }
+
+    if (m_pNfConvolCoeffFunction != 0) {
+        setNfConvolCoeffFunction(0);
+        m_pNfConvolCoeffFunction = 0;
+    }
 }
 
 void DVCSConvolCoeffFunctionModule::resolveObjectDependencies() {
@@ -225,4 +232,70 @@ List<GPDType> DVCSConvolCoeffFunctionModule::getListOfAvailableGPDTypeForComputa
     }
 
     return listOfAvailableGPDTypeForComputation;
+}
+
+void DVCSConvolCoeffFunctionModule::setNfConvolCoeffFunction(
+        ActiveFlavorsModule* pNfConvolCoeffFunction) {
+    m_pModuleObjectFactory->updateModulePointerReference(
+            m_pNfConvolCoeffFunction, pNfConvolCoeffFunction);
+    m_pNfConvolCoeffFunction = pNfConvolCoeffFunction;
+}
+
+void DVCSConvolCoeffFunctionModule::setRunningAlphaStrongModule(
+        RunningAlphaStrongModule* pRunningAlphaStrongModule) {
+    m_pModuleObjectFactory->updateModulePointerReference(
+            m_pRunningAlphaStrongModule, pRunningAlphaStrongModule);
+    m_pRunningAlphaStrongModule = pRunningAlphaStrongModule;
+}
+
+void DVCSConvolCoeffFunctionModule::prepareSubModules(
+        const std::map<std::string, BaseObjectData>& subModulesData) {
+    ConvolCoeffFunctionModule::prepareSubModules(subModulesData);
+
+    std::map<std::string, BaseObjectData>::const_iterator it;
+
+    it = subModulesData.find(
+            RunningAlphaStrongModule::RUNNING_ALPHA_STRONG_MODULE_CLASS_NAME);
+
+    if (it != subModulesData.end()) {
+        if (m_pRunningAlphaStrongModule != 0) {
+            setRunningAlphaStrongModule(0);
+            m_pRunningAlphaStrongModule = 0;
+        }
+        if (!m_pRunningAlphaStrongModule) {
+            m_pRunningAlphaStrongModule =
+                    Partons::getInstance()->getModuleObjectFactory()->newRunningAlphaStrongModule(
+                            (it->second).getModuleClassName());
+
+            info(__func__,
+                    ElemUtils::Formatter()
+                            << "Configure with RunningAlphaStrongModule = "
+                            << m_pRunningAlphaStrongModule->getClassName());
+
+            m_pRunningAlphaStrongModule->configure(
+                    (it->second).getParameters());
+        }
+    }
+
+    it = subModulesData.find(
+            ActiveFlavorsModule::ACTIVE_FLAVORS_MODULE_CLASS_NAME);
+
+    if (it != subModulesData.end()) {
+        if (m_pNfConvolCoeffFunction != 0) {
+            setRunningAlphaStrongModule(0);
+            m_pNfConvolCoeffFunction = 0;
+        }
+        if (!m_pNfConvolCoeffFunction) {
+            m_pNfConvolCoeffFunction =
+                    Partons::getInstance()->getModuleObjectFactory()->newActiveFlavorsModule(
+                            (it->second).getModuleClassName());
+
+            info(__func__,
+                    ElemUtils::Formatter()
+                            << "Configure with ActiveFlavorsModule = "
+                            << m_pNfConvolCoeffFunction->getClassName());
+
+            m_pNfConvolCoeffFunction->configure((it->second).getParameters());
+        }
+    }
 }

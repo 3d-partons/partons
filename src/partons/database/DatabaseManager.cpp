@@ -1,7 +1,6 @@
 #include "../../../include/partons/database/DatabaseManager.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
-//#include <ElementaryUtils/logger/LoggerManager.h>
 #include <ElementaryUtils/PropertiesManager.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
@@ -19,7 +18,8 @@ const QSqlDatabase& DatabaseManager::getProductionDatabase() {
         if (!m_productionDatabase.open()) {
             throw ElemUtils::CustomException(getClassName(), __func__,
                     ElemUtils::Formatter() << "Cannot re-open database : "
-                            << m_productionDatabase.lastError().text().toStdString());
+                            << m_productionDatabase.lastError().text().toStdString()
+                            << " or you have no MySQL database installed");
         } else {
             info(__func__, "Database connection has been re-open");
         }
