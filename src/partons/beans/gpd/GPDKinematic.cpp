@@ -84,9 +84,9 @@ GPDKinematic::~GPDKinematic() {
 }
 
 std::string GPDKinematic::toString() const {
-    return ElemUtils::Formatter() << Kinematic::toString() << " m_x = " << m_x
-            << " m_xi = " << m_xi << " m_t = " << m_t << " m_MuF2 = " << m_MuF2
-            << "(Gev2) m_MuR2 = " << m_MuR2 << "(Gev2)";
+    return ElemUtils::Formatter() << Kinematic::toString() << "\n" << "m_x = "
+            << m_x << " m_xi = " << m_xi << " m_t = " << m_t << " m_MuF2 = "
+            << m_MuF2 << "(Gev2) m_MuR2 = " << m_MuR2 << "(Gev2)";
 }
 
 //ComparisonReport GPDKinematic::compare(const GPDKinematic& referenceObject,
@@ -208,3 +208,11 @@ ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
     return packet;
 }
 
+//bool GPDKinematic::operator <(const GPDKinematic& other) const {
+//    return (getIndexId() < other.getIndexId())
+//            || (getIndexId() == other.getIndexId() && m_x < other.getX())
+//            || (m_x == other.getX() && m_xi < other.getXi())
+//            || (m_xi == other.getXi() && m_t < other.getT())
+//            || (m_t == other.getT() && m_MuF2 < other.getMuF2())
+//            || (m_MuF2 == other.getMuF2() && m_MuR2 < other.getMuR2());
+//}

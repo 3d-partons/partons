@@ -103,13 +103,13 @@ void GPDModule::isModuleWellConfigured() {
     }
 }
 
-void GPDModule::preCompute(double x, double xi, double t, double MuF,
-        double MuR, GPDType::Type gpdType) {
+void GPDModule::preCompute(double x, double xi, double t, double MuF2,
+        double MuR2, GPDType::Type gpdType) {
     m_x = x;
     m_xi = xi;
     m_t = t;
-    m_MuF2 = MuF;
-    m_MuR2 = MuR;
+    m_MuF2 = MuF2;
+    m_MuR2 = MuR2;
     m_gpdType = gpdType;
 
     debug(__func__,

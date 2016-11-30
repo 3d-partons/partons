@@ -79,6 +79,8 @@ std::string GPDResult::toString() const {
 
     formatter << BaseObject::toString() << '\n';
 
+    formatter << m_kinematic.toString() << '\n';
+
     formatter << "[PartonDistributionList]" << '\n';
 
     for (it = m_partonDistributions.begin(); it != m_partonDistributions.end();

@@ -156,7 +156,7 @@ protected:
      * @param MuR2
      * @param gpdComputeType
      */
-    void preCompute(double x, double xi, double t, double MuF2, double MuR2,
+    virtual void preCompute(double x, double xi, double t, double MuF2, double MuR2,
             GPDType::Type gpdType);
 
     std::map<GPDType::Type, PartonDistribution (GPDModule::*)()> m_listGPDComputeTypeAvailable;

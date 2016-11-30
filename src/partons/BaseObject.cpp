@@ -44,7 +44,7 @@ std::string BaseObject::toString() const {
 
     formatter << "[" << getClassName() << "]\n";
     formatter << "m_className = " << m_className << " - " << "m_objectId = "
-            << m_objectId << " indexId = " << m_indexId << '\n';
+            << m_objectId << " indexId = " << m_indexId;
 
     return formatter.str();
 }
@@ -100,7 +100,8 @@ void BaseObject::setIndexId(int indexId) {
 }
 
 bool BaseObject::operator <(const BaseObject& other) const {
-    return (m_indexId < other.m_indexId);
+    return (m_indexId < other.m_indexId)
+            || (m_indexId == other.m_indexId && m_objectId < other.m_objectId);
 }
 
 void BaseObject::serialize(ElemUtils::Packet& packet) const {

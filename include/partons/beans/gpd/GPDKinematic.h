@@ -83,6 +83,14 @@ public:
     void serialize(ElemUtils::Packet &packet) const;
     void unserialize(ElemUtils::Packet &packet);
 
+//    /**
+//     * Overload of < operator to sort GPDKinematic object by its stored values (x, xi, etc).
+//     *
+//     * @param other
+//     * @return
+//     */
+//    bool operator <(const GPDKinematic& other) const;
+
     // ##### GETTERS & SETTERS #####
 
     double getMuF2() const;
