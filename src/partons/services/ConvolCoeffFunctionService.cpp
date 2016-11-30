@@ -103,6 +103,8 @@ void ConvolCoeffFunctionService::computeTask(Task &task) {
             }
         }
     }
+
+    m_resultListBuffer = resultList;
 }
 
 DVCSConvolCoeffFunctionResult ConvolCoeffFunctionService::computeForOneCCFModel(
@@ -209,7 +211,8 @@ List<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionService::computeForOneCCF
 
     info(__func__,
             ElemUtils::Formatter() << kinematics.size()
-                    << " CCF kinematic(s) will be computed");
+                    << " CCF kinematic(s) will be computed with "
+                    << pConvolCoeffFunctionModule->getClassName());
 
     List<DVCSConvolCoeffFunctionResult> results;
 

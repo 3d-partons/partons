@@ -4,15 +4,12 @@
 /**
  * @file DVCSConvolCoeffFunctionKinematic.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 22 July 2015
+ * @date July 22, 2015
  * @version 1.0
- *
- * @class DVCSConvolCoeffFunctionKinematic
- *
- * @brief
  */
 
 #include <ElementaryUtils/parameters/GenericType.h>
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <string>
 
 #include "../../Kinematic.h"
@@ -22,6 +19,11 @@ class Packet;
 class Parameters;
 } /* namespace ElemUtils */
 
+/**
+ * @class DVCSConvolCoeffFunctionKinematic
+ *
+ * @brief
+ */
 class DVCSConvolCoeffFunctionKinematic: public Kinematic {
 public:
     DVCSConvolCoeffFunctionKinematic();
@@ -38,7 +40,7 @@ public:
 
     virtual ~DVCSConvolCoeffFunctionKinematic();
 
-    virtual std::string toString();
+    virtual std::string toString() const;
 
     void serialize(ElemUtils::Packet &packet) const;
     void unserialize(ElemUtils::Packet &packet);

@@ -104,7 +104,8 @@ List<ObservableResult> ObservableService::computeManyKinematicOneModel(
 
     info(__func__,
             ElemUtils::Formatter() << listOfKinematic.size()
-                    << " will be computed");
+                    << " observable kinematic(s) will be computed with "
+                    << pObservable->getClassName());
 
     List<ObservableResult> results;
     List<ElemUtils::Packet> listOfPacket;

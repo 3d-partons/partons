@@ -246,7 +246,8 @@ List<GPDResult> GPDService::computeManyKinematicOneModel(
 
     info(__func__,
             ElemUtils::Formatter() << gpdKinematicList.size()
-                    << " GPD kinematic(s) will be computed");
+                    << " GPD kinematic(s) will be computed with "
+                    << pGPDModule->getClassName());
 
     List<GPDResult> results;
     List<ElemUtils::Packet> listOfPacket;

@@ -68,7 +68,7 @@ DVCSConvolCoeffFunctionKinematic::DVCSConvolCoeffFunctionKinematic(
 DVCSConvolCoeffFunctionKinematic::~DVCSConvolCoeffFunctionKinematic() {
 }
 
-std::string DVCSConvolCoeffFunctionKinematic::toString() {
+std::string DVCSConvolCoeffFunctionKinematic::toString() const {
     return ElemUtils::Formatter() << Kinematic::toString() << " m_binId = "
             << m_binId << " m_xi = " << m_xi << " m_t = " << m_t << " m_Q2 = "
             << m_Q2 << " m_MuF2 = " << m_MuF2 << " m_MuR2 = " << m_MuR2;

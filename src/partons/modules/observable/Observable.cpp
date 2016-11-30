@@ -60,9 +60,6 @@ void Observable::run() {
         ObservableService* pObservableService =
                 Partons::getInstance()->getServiceObjectRegistry()->getObservableService();
 
-        //TODO remove this hack to resolve problem after cloning a FourierObservable by the ThreadManager.
-        setProcessModule(getProcessModule());
-
         while (!(pObservableService->isEmptyTaskQueue())) {
             ObservableKinematic kinematic;
             List<GPDType> gpdType;
@@ -183,7 +180,7 @@ void Observable::prepareSubModules(
                             (it->second).getModuleClassName());
 
             info(__func__,
-                    ElemUtils::Formatter() << "Configure with ProcessModule = "
+                    ElemUtils::Formatter() << "Configured with ProcessModule = "
                             << m_pProcessModule->getClassName());
 
             m_pProcessModule->configure((it->second).getParameters());
@@ -229,15 +226,12 @@ void Observable::setProcessModule(ProcessModule* pProcessModule) {
             pProcessModule);
     m_pProcessModule = pProcessModule;
 
-    if (pProcessModule != 0) {
-        warn(__func__,
-                ElemUtils::Formatter() << "has been set with "
-                        << pProcessModule->getClassName());
+    if (m_pProcessModule != 0) {
+        info(__func__,
+                ElemUtils::Formatter() << "ProcessModule is set to : "
+                        << m_pProcessModule->getClassName());
     } else {
-        if (pProcessModule != 0) {
-            warn(__func__, "has been set with 0");
-
-        }
+        info(__func__, "ProcessModule is set to : 0");
     }
 }
 

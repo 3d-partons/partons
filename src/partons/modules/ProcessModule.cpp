@@ -59,24 +59,20 @@ ProcessModule::ProcessModule(const ProcessModule &other) :
 }
 
 ProcessModule::~ProcessModule() {
-//    if (m_pConvolCoeffFunctionModule != 0) {
-//        delete m_pConvolCoeffFunctionModule;
-//        m_pConvolCoeffFunctionModule = 0;
-//    }
-//
-//    if (m_pScaleModule != 0) {
-//        delete m_pScaleModule;
-//        m_pScaleModule = 0;
-//    }
-//
-//    if (m_pXiConverterModule != 0) {
-//        delete m_pXiConverterModule;
-//        m_pXiConverterModule = 0;
-//    }
+    if (m_pConvolCoeffFunctionModule != 0) {
+        setConvolCoeffFunctionModule(0);
+        m_pConvolCoeffFunctionModule = 0;
+    }
 
-    setConvolCoeffFunctionModule(0);
-    setXiConverterModule(0);
-    setScaleModule(0);
+    if (m_pScaleModule != 0) {
+        setScaleModule(0);
+        m_pScaleModule = 0;
+    }
+
+    if (m_pXiConverterModule != 0) {
+        setXiConverterModule(0);
+        m_pXiConverterModule = 0;
+    }
 }
 
 void ProcessModule::configure(const ElemUtils::Parameters &parameters) {
@@ -183,7 +179,7 @@ void ProcessModule::prepareSubModules(
                             (it->second).getModuleClassName());
 
             info(__func__,
-                    ElemUtils::Formatter() << "Configure with ScaleModule = "
+                    ElemUtils::Formatter() << "Configured with ScaleModule = "
                             << m_pScaleModule->getClassName());
 
             m_pScaleModule->configure((it->second).getParameters());
@@ -210,7 +206,7 @@ void ProcessModule::prepareSubModules(
 
             info(__func__,
                     ElemUtils::Formatter()
-                            << "Configure with XiConverterModule = "
+                            << "Configured with XiConverterModule = "
                             << m_pXiConverterModule->getClassName());
 
             m_pXiConverterModule->configure((it->second).getParameters());
@@ -241,7 +237,7 @@ void ProcessModule::prepareSubModules(
 
                 info(__func__,
                         ElemUtils::Formatter()
-                                << "Configure with ConvolCoeffFunctionModule = "
+                                << "Configured with ConvolCoeffFunctionModule = "
                                 << m_pConvolCoeffFunctionModule->getClassName());
 
                 m_pConvolCoeffFunctionModule->configure(

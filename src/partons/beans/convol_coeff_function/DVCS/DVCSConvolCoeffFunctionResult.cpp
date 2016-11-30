@@ -40,17 +40,18 @@ std::complex<double> DVCSConvolCoeffFunctionResult::get(
     return m_it->second;
 }
 
-std::string DVCSConvolCoeffFunctionResult::toString() {
+std::string DVCSConvolCoeffFunctionResult::toString() const {
+    std::map<GPDType::Type, std::complex<double> >::const_iterator it;
+
     ElemUtils::Formatter formatter;
     formatter << "[" << getClassName() << "] computed by "
             << getComputationModuleName() << '\n';
     formatter << "kinematic(" << m_kinematic.toString() << ") \n";
 
-    for (m_it = m_resultsByGPDType.begin(); m_it != m_resultsByGPDType.end();
-            m_it++) {
-        formatter << " CFF_" << GPDType(m_it->first).toString() << " = "
-                << (m_it->second).real() << " ; " << (m_it->second).imag()
-                << "\n";
+    for (it = m_resultsByGPDType.begin(); it != m_resultsByGPDType.end();
+            it++) {
+        formatter << " CFF_" << GPDType(it->first).toString() << " = "
+                << (it->second).real() << " ; " << (it->second).imag() << "\n";
     }
 
     return formatter.str();

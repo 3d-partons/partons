@@ -36,6 +36,87 @@ ModuleObjectFactory::~ModuleObjectFactory() {
     // m_pBaseObjectFactory pointer will be deleted by the Partons class
 }
 
+void ModuleObjectFactory::updateModulePointerReference(
+        ModuleObject* pModuleObjectTarget, ModuleObject* pModuleObjectSource) {
+    std::map<unsigned int, ModuleObjectReference*>::iterator m_it;
+
+    // Check if source pointer is not NULL
+    if (pModuleObjectSource != 0) {
+        // If not, retrieve the referenced object from the map
+        m_it = m_instantiatedModuleObject.find(
+                pModuleObjectSource->getReferenceModuleId());
+
+        // If there is no match
+        if (m_it == m_instantiatedModuleObject.end()) {
+            warn(__func__,
+                    ElemUtils::Formatter()
+                            << "Missing reference in m_pInstantiatedModuleObject for referenceObjectId = "
+                            << pModuleObjectSource->getReferenceModuleId()
+                            << " with className = "
+                            << pModuleObjectSource->getClassName()
+                            << " ; Check your code implementation maybe there is a problem with your pointer memory handling ; This missing pointer reference will be add to the ModuleObjectFactory instanciated object list");
+
+            // Missing reference pointer need to be add to the ObjectModuleFactory instanciated object list.
+            store(pModuleObjectSource);
+        }
+
+        // Increment the number of the reference to the source object ; because we will assign it to the target pointer.
+        (m_it->second)->incCounter();
+    }
+
+    // If target pointer is not NULL.
+    // It seems that it's referenced and we need to remove one reference to this object because we will assign from the source object.
+    if (pModuleObjectTarget != 0) {
+        m_it = m_instantiatedModuleObject.find(
+                pModuleObjectTarget->getReferenceModuleId());
+
+        if (m_it != m_instantiatedModuleObject.end()) {
+            (m_it->second)->decCounter();
+
+            // Add check if the number of reference for the target pointer reach 0 (zero)
+            if ((m_it->second)->getNumberOfReference() == 0) {
+                debug(__func__,
+                        ElemUtils::Formatter() << "Object("
+                                << (m_it->second)->getModuleObjectPointer()->getClassName()
+                                << ") referenced with referenceObjectId("
+                                << (m_it->second)->getModuleObjectPointer()->getReferenceModuleId()
+                                << ") removed from ModuleObjectFactory instanciated object list");
+
+                delete (m_it->second);
+                (m_it->second) = 0;
+
+                // Delete target object from memory
+                m_instantiatedModuleObject.erase(m_it);
+            }
+        }
+    }
+}
+
+void ModuleObjectFactory::store(ModuleObject* pModuleObject) {
+    debug(__func__,
+            ElemUtils::Formatter() << "Storing ModuleObject ("
+                    << pModuleObject->getClassName()
+                    << ") with referenceObjectId("
+                    << pModuleObject->getReferenceModuleId() << ")");
+
+    m_instantiatedModuleObject.insert(
+            std::make_pair(pModuleObject->getReferenceModuleId(),
+                    new ModuleObjectReference(pModuleObject)));
+}
+
+std::string ModuleObjectFactory::toString() const {
+    ElemUtils::Formatter formatter;
+
+    std::map<unsigned int, ModuleObjectReference*>::const_iterator it;
+
+    for (it = m_instantiatedModuleObject.begin();
+            it != m_instantiatedModuleObject.end(); it++) {
+        formatter << (it->second)->toString() << '\n';
+    }
+
+    return formatter.str();
+}
+
 ModuleObject* ModuleObjectFactory::newModuleObject(unsigned int classId) {
     ModuleObject* pModuleObject =
             static_cast<ModuleObject*>(m_pBaseObjectFactory->newBaseObject(
@@ -206,87 +287,4 @@ RadonInverseModule* ModuleObjectFactory::newRadonMatrixModule(
 RadonInverseModule* ModuleObjectFactory::newRadonMatrixModule(
         const std::string& className) {
     return static_cast<RadonInverseModule*>(newModuleObject(className));
-}
-
-void ModuleObjectFactory::updateModulePointerReference(
-        ModuleObject* pModuleObjectTarget, ModuleObject* pModuleObjectSource) {
-    std::map<unsigned int, ModuleObjectReference*>::iterator m_it;
-
-    // Check if source pointer is not NULL
-    if (pModuleObjectSource != 0) {
-        // If not, retrieve the referenced object from the map
-        m_it = m_instantiatedModuleObject.find(
-                pModuleObjectSource->getReferenceModuleId());
-
-        // If there is no match
-        if (m_it == m_instantiatedModuleObject.end()) {
-            warn(__func__,
-                    ElemUtils::Formatter()
-                            << "Missing reference in m_pInstantiatedModuleObject for referenceObjectId = "
-                            << pModuleObjectSource->getReferenceModuleId()
-                            << " with className = "
-                            << pModuleObjectSource->getClassName()
-                            << " ; Check your code implementation maybe there is a problem with your pointer memory handling ; This missing pointer reference will be add to the ModuleObjectFactory instanciated object list");
-
-            // Missing reference pointer need to be add to the ObjectModuleFactory instanciated object list.
-            store(pModuleObjectSource);
-        }
-
-        // Increment the number of the reference to the source object ; because we will assign it to the target pointer.
-        (m_it->second)->incCounter();
-    }
-
-    // If target pointer is not NULL.
-    // It seems that it's referenced and we need to remove one reference to this object because we will assign from the source object.
-    if (pModuleObjectTarget != 0) {
-        m_it = m_instantiatedModuleObject.find(
-                pModuleObjectTarget->getReferenceModuleId());
-
-        if (m_it != m_instantiatedModuleObject.end()) {
-            (m_it->second)->decCounter();
-
-            // Add check if the number of reference for the target pointer reach 0 (zero)
-            if ((m_it->second)->getNumberOfReference() == 0) {
-                debug(__func__,
-                        ElemUtils::Formatter() << "Object("
-                                << (m_it->second)->getModuleObjectPointer()->getClassName()
-                                << ") referenced with referenceObjectId("
-                                << (m_it->second)->getModuleObjectPointer()->getReferenceModuleId()
-                                << ") removed from ModuleObjectFactory instanciated object list");
-
-                delete (m_it->second);
-                (m_it->second) = 0;
-
-                // Delete target object from memory
-                m_instantiatedModuleObject.erase(m_it);
-            }
-        }
-    }
-
-    // debug(__func__, toString());
-}
-
-void ModuleObjectFactory::store(ModuleObject* pModuleObject) {
-    debug(__func__,
-            ElemUtils::Formatter() << "Storing ModuleObject ("
-                    << pModuleObject->getClassName()
-                    << ") with referenceObjectId("
-                    << pModuleObject->getReferenceModuleId() << ")");
-
-    m_instantiatedModuleObject.insert(
-            std::make_pair(pModuleObject->getReferenceModuleId(),
-                    new ModuleObjectReference(pModuleObject)));
-}
-
-std::string ModuleObjectFactory::toString() const {
-    ElemUtils::Formatter formatter;
-
-    std::map<unsigned int, ModuleObjectReference*>::const_iterator it;
-
-    for (it = m_instantiatedModuleObject.begin();
-            it != m_instantiatedModuleObject.end(); it++) {
-        formatter << (it->second)->toString() << '\n';
-    }
-
-    return formatter.str();
 }

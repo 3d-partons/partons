@@ -130,9 +130,12 @@ private:
      */
     std::map<unsigned int, ModuleObjectReference*> m_instantiatedModuleObject;
 
+    /**
+     * Store a new ModuleObjectReference from the provided ModuleObject pointer.
+     *
+     * @param pModuleObject
+     */
     void store(ModuleObject* pModuleObject);
-
-    //void remove(ModuleObject* pModuleObject);
 };
 
 #endif /* MODULE_OBJECT_FACTORY_H */

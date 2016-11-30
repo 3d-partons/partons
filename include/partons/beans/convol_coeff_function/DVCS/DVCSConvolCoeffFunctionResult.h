@@ -43,7 +43,7 @@ public:
             const DVCSConvolCoeffFunctionResult &referenceObject,
             std::string parentObjectInfo = ElemUtils::StringUtils::EMPTY) const;
 
-    std::string toString();
+    virtual std::string toString() const;
 
     // use by std::sort function
     bool operator <(const DVCSConvolCoeffFunctionResult &other) const;
