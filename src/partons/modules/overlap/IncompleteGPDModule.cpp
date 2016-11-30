@@ -12,20 +12,20 @@ const std::string IncompleteGPDModule::DGLAP_REGION = "DGLAP";
 const std::string IncompleteGPDModule::ERBL_REGION = "ERBL";
 
 IncompleteGPDModule::IncompleteGPDModule(const std::string &className) :
-        ModuleObject(className), m_x(0.), m_xi(0.), m_t(0.), m_MuF2(0.), m_MuR2(
-                0.), m_gpdType(GPDType::ALL), m_inversionDependent(false), m_inversionDone(
+        GPDModule(className), /*m_x(0.), m_xi(0.), m_t(0.), m_MuF2(0.), m_MuR2(
+         0.), m_gpdType(GPDType::ALL),*/m_inversionDependent(false), m_inversionDone(
                 false), m_pRadonInverse(0), m_pIncompleteGPDFunction(0) {
 }
 
 IncompleteGPDModule::IncompleteGPDModule(const IncompleteGPDModule &other) :
-        ModuleObject(other) {
-    m_x = other.m_x;
-    m_xi = other.m_xi;
-    m_t = other.m_t;
-    m_MuF2 = other.m_MuF2;
-    m_MuR2 = other.m_MuR2;
-
-    m_gpdType = other.m_gpdType;
+        GPDModule(other) {
+//    m_x = other.m_x;
+//    m_xi = other.m_xi;
+//    m_t = other.m_t;
+//    m_MuF2 = other.m_MuF2;
+//    m_MuR2 = other.m_MuR2;
+//
+//    m_gpdType = other.m_gpdType;
 
     m_kinematicRegion = other.m_kinematicRegion;
 
@@ -40,8 +40,8 @@ IncompleteGPDModule::IncompleteGPDModule(const IncompleteGPDModule &other) :
 
     m_pIncompleteGPDFunction = other.m_pIncompleteGPDFunction;
 
-    m_listGPDComputeTypeAvailable = other.m_listGPDComputeTypeAvailable;
-    m_it = other.m_it;
+//    m_listGPDComputeTypeAvailable = other.m_listGPDComputeTypeAvailable;
+//    m_it = other.m_it;
 }
 
 IncompleteGPDModule::~IncompleteGPDModule() {
@@ -49,27 +49,28 @@ IncompleteGPDModule::~IncompleteGPDModule() {
 }
 
 void IncompleteGPDModule::configure(const ElemUtils::Parameters &parameters) {
-    if (parameters.isAvailable(GPDModule::GPD_TYPE)) {
-        m_gpdType =
-                static_cast<GPDType::Type>(parameters.getLastAvailable().toUInt());
-    }
+//    if (parameters.isAvailable(GPDModule::GPD_TYPE)) {
+//        m_gpdType =
+//                static_cast<GPDType::Type>(parameters.getLastAvailable().toUInt());
+//    }
 
-    ModuleObject::configure(parameters);
+    GPDModule::configure(parameters);
 }
 
 //TODO implement
 void IncompleteGPDModule::initModule() {
-    debug(__func__, ElemUtils::Formatter() << "executed");
+    GPDModule::initModule();
+//    debug(__func__, ElemUtils::Formatter() << "executed");
 
     if (isInversionDependent() && !isInversionDone()) {
-        m_pRadonInverse->buildSystem(m_pIncompleteGPDFunction);
-        m_pRadonInverse->solve();
+        m_pRadonInverse->compute(m_pIncompleteGPDFunction);
         m_inversionDone = true;
     }
 }
 
 void IncompleteGPDModule::isModuleWellConfigured() {
-    debug(__func__, ElemUtils::Formatter() << "executed");
+    GPDModule::isModuleWellConfigured();
+    //    debug(__func__, ElemUtils::Formatter() << "executed");
 
     // Test variable range
 
@@ -82,140 +83,142 @@ void IncompleteGPDModule::isModuleWellConfigured() {
                         << ". Inverse Radon Transform will probably be needed.");
     }
 
-    if (m_t > 0.) {
-        warn(__func__, "Nucleon momentum transfer should be <= 0.");
-    }
-
-    if (m_MuF2 < 0.) {
-        warn(__func__, "Square of factorization scale should be >= 0.");
-    }
+//    if (m_t > 0.) {
+//        warn(__func__, "Nucleon momentum transfer should be <= 0.");
+//    }
+//
+//    if (m_MuF2 < 0.) {
+//        warn(__func__, "Square of factorization scale should be >= 0.");
+//    }
 }
 
-void IncompleteGPDModule::preCompute(double x, double xi, double t, double MuF,
-        double MuR, GPDType::Type gpdType) {
-    m_inversionDone = m_inversionDone && (t != m_t);
-    m_x = x;
-    m_xi = xi;
-    m_t = t;
-    m_MuF2 = MuF;
-    m_MuR2 = MuR;
-    m_gpdType = gpdType;
+void IncompleteGPDModule::preCompute(double x, double xi, double t, double MuF2,
+        double MuR2, GPDType::Type gpdType) {
+    m_inversionDone = m_inversionDone && (t == m_t) && (MuF2 == m_MuF2)
+            && (MuR2 == m_MuR2);
+    GPDModule::preCompute(x, xi, t, MuF2, MuR2, gpdType);
 
-    debug(__func__,
-            ElemUtils::Formatter() << "x = " << m_x << "    xi = " << m_xi
-                    << "    t = " << m_t << " GeV2    MuF = " << m_MuF2
-                    << " GeV    MuR = " << m_MuR2 << " GeV");
-
-    // execute last child function (virtuality)
-    initModule();
-
-    // execute last child function (virtuality)
-    isModuleWellConfigured();
+//    m_x = x;
+//    m_xi = xi;
+//    m_t = t;
+//    m_MuF2 = MuF;
+//    m_MuR2 = MuR;
+//    m_gpdType = gpdType;
+//
+//    debug(__func__,
+//            ElemUtils::Formatter() << "x = " << m_x << "    xi = " << m_xi
+//                    << "    t = " << m_t << " GeV2    MuF = " << m_MuF2
+//                    << " GeV    MuR = " << m_MuR2 << " GeV");
+//
+//    // execute last child function (virtuality)
+//    initModule();
+//
+//    // execute last child function (virtuality)
+//    isModuleWellConfigured();
 }
 
-PartonDistribution IncompleteGPDModule::compute(const GPDKinematic &kinematic,
-        GPDType gpdType) {
-    return compute(kinematic.getX(), kinematic.getXi(), kinematic.getT(),
-            kinematic.getMuF2(), kinematic.getMuR2(), gpdType.getType());
-}
+//PartonDistribution IncompleteGPDModule::compute(const GPDKinematic &kinematic,
+//        GPDType gpdType) {
+//    return compute(kinematic.getX(), kinematic.getXi(), kinematic.getT(),
+//            kinematic.getMuF2(), kinematic.getMuR2(), gpdType.getType());
+//}
 
-PartonDistribution IncompleteGPDModule::compute(double x, double xi, double t,
-        double MuF2, double MuR2, GPDType::Type gpdType) {
+//PartonDistribution IncompleteGPDModule::compute(double x, double xi, double t,
+//        double MuF2, double MuR2, GPDType::Type gpdType) {
+//
+//    preCompute(x, xi, t, MuF2, MuR2, gpdType);
+//
+//    PartonDistribution partonDistribution;
+//    m_it = m_listGPDComputeTypeAvailable.find(m_gpdType);
+//    if (m_it != m_listGPDComputeTypeAvailable.end()) {
+//        partonDistribution = ((*this).*(m_it->second))();
+//    } else {
+//        throw ElemUtils::CustomException(getClassName(), __func__,
+//                ElemUtils::Formatter() << "GPD("
+//                        << GPDType(m_gpdType).toString()
+//                        << ") is not available for this GPD model");
+//    }
+//
+//    debug(__func__, ElemUtils::Formatter() << partonDistribution.toString());
+//
+//    return partonDistribution;
+//}
 
-    preCompute(x, xi, t, MuF2, MuR2, gpdType);
-
-    PartonDistribution partonDistribution;
-    m_it = m_listGPDComputeTypeAvailable.find(m_gpdType);
-    if (m_it != m_listGPDComputeTypeAvailable.end()) {
-        partonDistribution = ((*this).*(m_it->second))();
-    } else {
-        throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter() << "GPD("
-                        << GPDType(m_gpdType).toString()
-                        << ") is not available for this GPD model");
-    }
-
-    debug(__func__, ElemUtils::Formatter() << partonDistribution.toString());
-
-    return partonDistribution;
-}
-
-PartonDistribution IncompleteGPDModule::computeH() {
-    throw ElemUtils::CustomException(getClassName(), __func__,
-            "Check your implementation  ; must be implemented in daughter class");
-
-}
-
-PartonDistribution IncompleteGPDModule::computeE() {
-    throw ElemUtils::CustomException(getClassName(), __func__,
-            "Check your implementation  ; must be implemented in daughter class");
-}
-
-PartonDistribution IncompleteGPDModule::computeHt() {
-    throw ElemUtils::CustomException(getClassName(), __func__,
-            "Check your implementation  ; must be implemented in daughter class");
-}
-
-PartonDistribution IncompleteGPDModule::computeEt() {
-    throw ElemUtils::CustomException(getClassName(), __func__,
-            "Check your implementation  ; must be implemented in daughter class");
-}
+//PartonDistribution IncompleteGPDModule::computeH() {
+//    throw ElemUtils::CustomException(getClassName(), __func__,
+//            "Check your implementation  ; must be implemented in daughter class");
+//}
+//
+//PartonDistribution IncompleteGPDModule::computeE() {
+//    throw ElemUtils::CustomException(getClassName(), __func__,
+//            "Check your implementation  ; must be implemented in daughter class");
+//}
+//
+//PartonDistribution IncompleteGPDModule::computeHt() {
+//    throw ElemUtils::CustomException(getClassName(), __func__,
+//            "Check your implementation  ; must be implemented in daughter class");
+//}
+//
+//PartonDistribution IncompleteGPDModule::computeEt() {
+//    throw ElemUtils::CustomException(getClassName(), __func__,
+//            "Check your implementation  ; must be implemented in daughter class");
+//}
 
 std::string IncompleteGPDModule::toString() {
-    return ModuleObject::toString();
+    return GPDModule::toString();
 }
 
-double IncompleteGPDModule::getMuF2() const {
-    return m_MuF2;
-}
+//double IncompleteGPDModule::getMuF2() const {
+//    return m_MuF2;
+//}
+//
+//void IncompleteGPDModule::setMuF2(double muF2) {
+//    m_MuF2 = muF2;
+//}
+//
+//double IncompleteGPDModule::getMuR2() const {
+//    return m_MuR2;
+//}
+//
+//void IncompleteGPDModule::setMuR2(double muR2) {
+//    m_MuR2 = muR2;
+//}
+//
+//double IncompleteGPDModule::getT() const {
+//    return m_t;
+//}
+//
+//void IncompleteGPDModule::setT(double t) {
+//    m_t = t;
+//}
+//
+//double IncompleteGPDModule::getX() const {
+//    return m_x;
+//}
+//
+//void IncompleteGPDModule::setX(double x) {
+//    m_x = x;
+//}
+//
+//double IncompleteGPDModule::getXi() const {
+//    return m_xi;
+//}
+//
+//void IncompleteGPDModule::setXi(double xi) {
+//    m_xi = xi;
+//}
 
-void IncompleteGPDModule::setMuF2(double muF2) {
-    m_MuF2 = muF2;
-}
-
-double IncompleteGPDModule::getMuR2() const {
-    return m_MuR2;
-}
-
-void IncompleteGPDModule::setMuR2(double muR2) {
-    m_MuR2 = muR2;
-}
-
-double IncompleteGPDModule::getT() const {
-    return m_t;
-}
-
-void IncompleteGPDModule::setT(double t) {
-    m_t = t;
-}
-
-double IncompleteGPDModule::getX() const {
-    return m_x;
-}
-
-void IncompleteGPDModule::setX(double x) {
-    m_x = x;
-}
-
-double IncompleteGPDModule::getXi() const {
-    return m_xi;
-}
-
-void IncompleteGPDModule::setXi(double xi) {
-    m_xi = xi;
-}
-
-List<GPDType> IncompleteGPDModule::getListOfAvailableGPDTypeForComputation() const {
-    std::map<GPDType::Type, PartonDistribution (IncompleteGPDModule::*)()>::const_iterator it;
-    List<GPDType> listOfAvailableGPDTypeForComputation;
-
-    for (it = m_listGPDComputeTypeAvailable.begin();
-            it != m_listGPDComputeTypeAvailable.end(); it++) {
-        listOfAvailableGPDTypeForComputation.add(it->first);
-    }
-
-    return listOfAvailableGPDTypeForComputation;
-}
+//List<GPDType> IncompleteGPDModule::getListOfAvailableGPDTypeForComputation() const {
+//    std::map<GPDType::Type, PartonDistribution (IncompleteGPDModule::*)()>::const_iterator it;
+//    List<GPDType> listOfAvailableGPDTypeForComputation;
+//
+//    for (it = m_listGPDComputeTypeAvailable.begin();
+//            it != m_listGPDComputeTypeAvailable.end(); it++) {
+//        listOfAvailableGPDTypeForComputation.add(it->first);
+//    }
+//
+//    return listOfAvailableGPDTypeForComputation;
+//}
 
 const std::string& IncompleteGPDModule::getKinematicRegion() const {
     return m_kinematicRegion;
@@ -249,5 +252,5 @@ bool IncompleteGPDModule::isInversionDone() const {
 
 void IncompleteGPDModule::prepareSubModules(
         const std::map<std::string, BaseObjectData>& subModulesData) {
-    ModuleObject::prepareSubModules(subModulesData);
+    GPDModule::prepareSubModules(subModulesData);
 }

@@ -33,7 +33,7 @@ const QuarkDistribution& PartonDistribution::getQuarkDistribution(
     if (it == m_quarkDistributions.end()) {
         throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
-                        << "Enable to find QuardDistribution object from QuarFlavorType = "
+                        << "Unable to find QuardDistribution object from QuarFlavorType = "
                         << QuarkFlavor(quarkFlavorType).getShortName());
     }
 

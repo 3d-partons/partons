@@ -17,7 +17,8 @@
 #include "../../beans/gpd/GPDType.h"
 #include "../../beans/List.h"
 #include "../../beans/parton_distribution/PartonDistribution.h"
-#include "../../ModuleObject.h"
+//#include "../../ModuleObject.h"
+#include "../GPDModule.h"
 
 namespace NumA {
 class FunctionTypeMD;
@@ -30,7 +31,7 @@ class RadonInverseModule;
  * @brief GPD in the DGLAP region obtained from an Overlap of Light-cone Wave-functions.
  */
 
-class IncompleteGPDModule: public ModuleObject {
+class IncompleteGPDModule: public GPDModule {
 public:
     static const std::string DGLAP_REGION;
     static const std::string ERBL_REGION;
@@ -63,8 +64,8 @@ public:
      */
     void virtual configure(const ElemUtils::Parameters &parameters);
 
-    virtual PartonDistribution compute(const GPDKinematic &kinematic,
-            GPDType gpdType);
+//    virtual PartonDistribution compute(const GPDKinematic &kinematic,
+//            GPDType gpdType);
 
     /**
      * Virtual method, computes GPD with some input parameters.
@@ -79,13 +80,13 @@ public:
      * @return Return results in an GPDOutputData class.
      * Contains GPD results for each flavor of quarks and for each GPDs (H, Ht, E, Et, ...) if computable.
      */
-    virtual PartonDistribution compute(double x, double xi, double t,
-            double MuF2, double MuR2, GPDType::Type gpdType);
+//    virtual PartonDistribution compute(double x, double xi, double t,
+//            double MuF2, double MuR2, GPDType::Type gpdType);
 
-    virtual PartonDistribution computeH();
-    virtual PartonDistribution computeE();
-    virtual PartonDistribution computeHt();
-    virtual PartonDistribution computeEt();
+//    virtual PartonDistribution computeH();
+//    virtual PartonDistribution computeE();
+//    virtual PartonDistribution computeHt();
+//    virtual PartonDistribution computeEt();
 
     virtual std::string toString();
 
@@ -94,18 +95,18 @@ public:
 
     // ##### GETTERS & SETTERS #####
 
-    double getMuF2() const;
-    void setMuF2(double muF2);
-    double getMuR2() const;
-    void setMuR2(double muR2);
-    double getT() const;
-    void setT(double t);
-    double getX() const;
-    void setX(double x);
-    double getXi() const;
-    void setXi(double xi);
+//    double getMuF2() const;
+//    void setMuF2(double muF2);
+//    double getMuR2() const;
+//    void setMuR2(double muR2);
+//    double getT() const;
+//    void setT(double t);
+//    double getX() const;
+//    void setX(double x);
+//    double getXi() const;
+//    void setXi(double xi);
 
-    List<GPDType> getListOfAvailableGPDTypeForComputation() const;
+//    List<GPDType> getListOfAvailableGPDTypeForComputation() const;
 
     // Kinematical region
     virtual bool isInKinematicRegion(double x, double xi) = 0; ///< Defines the limited kinematic region of the model
@@ -118,12 +119,12 @@ public:
     bool isInversionDone() const;
 
 protected:
-    double m_x;
-    double m_xi;
-    double m_t;
-    double m_MuF2;
-    double m_MuR2;
-    GPDType::Type m_gpdType;
+//    double m_x;
+//    double m_xi;
+//    double m_t;
+//    double m_MuF2;
+//    double m_MuR2;
+//    GPDType::Type m_gpdType;
 
     std::string m_kinematicRegion;
 
@@ -156,8 +157,8 @@ protected:
     void preCompute(double x, double xi, double t, double MuF2, double MuR2,
             GPDType::Type gpdType);
 
-    std::map<GPDType::Type, PartonDistribution (IncompleteGPDModule::*)()> m_listGPDComputeTypeAvailable;
-    std::map<GPDType::Type, PartonDistribution (IncompleteGPDModule::*)()>::iterator m_it;
+//    std::map<GPDType::Type, PartonDistribution (IncompleteGPDModule::*)()> m_listGPDComputeTypeAvailable;
+//    std::map<GPDType::Type, PartonDistribution (IncompleteGPDModule::*)()>::iterator m_it;
 };
 
 #endif /* INCOMPLETEGPDMODULE_H_ */

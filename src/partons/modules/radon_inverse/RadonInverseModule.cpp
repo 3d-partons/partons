@@ -10,7 +10,7 @@ const double RadonInverseModule::DD_DOMAIN_HALF_EDGE = 1. / sqrt(2.);
 RadonInverseModule::RadonInverseModule(const std::string &className) :
         ModuleObject(className), m_N(0), m_rank(0), m_m(0), m_n(0), m_pGPDFunction(
                 0), m_gauge(DDGauge::Pobylitsa), m_gaugeInVector(true), m_tolerance(
-                1.e-16), m_maxiter(0) {
+                1.e-16), m_maxiter(0), m_matrixBuilt(false) {
 }
 
 RadonInverseModule::~RadonInverseModule() {
@@ -32,6 +32,7 @@ RadonInverseModule::RadonInverseModule(const RadonInverseModule& other) :
     m_solver = other.m_solver;
     m_tolerance = other.m_tolerance;
     m_maxiter = other.m_maxiter;
+    m_matrixBuilt = other.m_matrixBuilt;
 }
 
 void RadonInverseModule::initModule() {
@@ -105,7 +106,8 @@ void RadonInverseModule::buildGPDVector(NumA::FunctionTypeMD* pGPDFunction) {
 }
 
 void RadonInverseModule::buildSystem() {
-    buildMatrix();
+    if (!isMatrixBuilt())
+        buildMatrix();
     buildGPDVector();
 }
 
@@ -115,7 +117,10 @@ void RadonInverseModule::buildSystem(NumA::FunctionTypeMD* pGPDFunction) {
 }
 
 void RadonInverseModule::solve() {
+    info(__func__, "Solving the linear system...");
+
     ElemUtils::Formatter formatter;
+    formatter << "LOGS of the solver:\n";
 
     // Initialize solver
     m_solver.setOutputStream(formatter);
@@ -129,7 +134,25 @@ void RadonInverseModule::solve() {
     // Solve
     m_solver.solve(m_m, m_n, m_gpdVector, m_ddVector);
 
+    unsigned int stop_reason = m_solver.getStoppingReason();
+    std::string stop_message;
+    if (stop_reason == 3 or stop_reason >= 6)
+        stop_message = "Solver failed (see DEBUG logs for details).";
+    else
+        stop_message = "Problem solved.";
+    info(__func__, stop_message);
+
     debug(__func__, formatter);
+}
+
+void RadonInverseModule::compute() {
+    buildSystem();
+    solve();
+}
+
+void RadonInverseModule::compute(NumA::FunctionTypeMD* pGPDFunction) {
+    setGPDFunction(pGPDFunction);
+    compute();
 }
 
 size_t RadonInverseModule::getN() const {
@@ -161,4 +184,20 @@ double RadonInverseModule::getTolerance() const {
 
 void RadonInverseModule::setTolerance(double tolerance) {
     m_tolerance = tolerance;
+}
+
+bool RadonInverseModule::isMatrixBuilt() const {
+    return m_matrixBuilt;
+}
+
+size_t RadonInverseModule::getRows() const {
+    return m_m;
+}
+
+size_t RadonInverseModule::getRank() const {
+    return m_rank;
+}
+
+size_t RadonInverseModule::getCols() const {
+    return m_n;
 }

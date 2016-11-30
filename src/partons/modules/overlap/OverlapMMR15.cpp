@@ -82,20 +82,25 @@ double OverlapMMR15::incompleteH(NumA::VectorD& x_xi, std::vector<double>&) {
 PartonDistribution OverlapMMR15::computeH() {
     PartonDistribution partonDistribution;
 
-    double H;
+    double Hu, Hd;
 
     if (isInKinematicRegion(m_x, m_xi)) {
-        NumA::VectorD x_xi = NumA::Vector2D(m_x,m_xi);
-        H = (*m_pIncompleteGPDFunction)(x_xi);
+        NumA::VectorD x_xi = NumA::Vector2D(m_x, m_xi);
+        Hu = (*m_pIncompleteGPDFunction)(x_xi);
+        x_xi[0] = -m_x;
+        Hd = -(*m_pIncompleteGPDFunction)(x_xi);
     } else {
         //TODO Radon Inverse
-        H = m_pRadonInverse->computeGPD(m_x, m_xi);
+        Hu = m_pRadonInverse->computeGPD(m_x, m_xi);
+        Hd = -m_pRadonInverse->computeGPD(-m_x, m_xi);
     }
 
     partonDistribution.addQuarkDistribution(
-            QuarkDistribution(QuarkFlavor::UP, H));
+            QuarkDistribution(QuarkFlavor::UP, Hu, Hu + Hd, Hu - Hd));
     partonDistribution.addQuarkDistribution(
-            QuarkDistribution(QuarkFlavor::DOWN, H));
+            QuarkDistribution(QuarkFlavor::DOWN, Hd, Hd + Hu, Hd - Hu));
+    partonDistribution.addQuarkDistribution(
+            QuarkDistribution(QuarkFlavor::STRANGE, 0., 0., 0.));
     return partonDistribution;
 }
 

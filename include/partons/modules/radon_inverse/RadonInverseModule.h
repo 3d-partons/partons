@@ -57,20 +57,35 @@ public:
 
     virtual void solve();
 
+    /**
+     * Main compute method: builds the system (if needed) and solves it.
+     * Calls buildSystem() and solve().
+     */
+    virtual void compute();
+    /**
+     * Main compute method: builds the system (if needed) and solves it.
+     * Calls buildSystem() and solve().
+     * @param pGPDFunction GPD function to invert (functor).
+     */
+    virtual void compute(NumA::FunctionTypeMD* pGPDFunction);
+
     virtual double computeDD(double beta, double alpha) = 0;
     virtual double computeGPD(double x, double xi) = 0;
 
+    // ##### GETTERS & SETTERS #####
+
     NumA::FunctionTypeMD* getGPDFunction() const;
     void setGPDFunction(NumA::FunctionTypeMD* pGPDFunction);
-
     size_t getN() const;
     void setN(size_t N);
-
+    size_t getRows() const;
+    size_t getCols() const;
+    size_t getRank() const;
+    bool isMatrixBuilt() const;
     const DDGauge& getGauge() const;
     void setGauge(const DDGauge& gauge);
     bool isGaugeInVector() const;
     void setGaugeInVector(bool gaugeInVector);
-
     size_t getMaxiter() const;
     void setMaxiter(size_t maxiter);
     double getTolerance() const;
@@ -108,6 +123,8 @@ protected:
      * Builds the mesh (cells) in the DD domain.
      */
     virtual void buildMesh() = 0;
+
+    bool m_matrixBuilt; ///< True if the matrix is already built and doesn't need to be rebuilt.
 
     DDGauge m_gauge; ///< Gauge used for the inversion.
     bool m_gaugeInVector; ///< True if the 1CDD gauge factor is taken into account in the GPD (divided by the factor), False if it is in the matrix (multiplied by the factor).

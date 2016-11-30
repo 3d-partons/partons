@@ -44,8 +44,8 @@ public:
     virtual double computeDD(double beta, double alpha);
     virtual double computeGPD(double x, double xi);
 
-    bool isAlphaEven() const;
-    void setAlphaEven(bool alphaEven);
+    bool isQuarkGPD() const;
+    void setQuarkGPD(bool quarkGPD);
     bool isValence() const;
     void setValence(bool valence);
     bool isTriangular() const;
@@ -60,7 +60,7 @@ protected:
     virtual void initModule();
     virtual void isModuleWellConfigured();
 
-    bool m_valence; ///< True if the GPD is valence.
+    bool m_quarkGPD; ///< True if the GPD has a quark support (zero on DGLAP negative).
     bool m_alphaEven; ///< True if the parity in alpha is constrained.
     bool m_triangular; ///< True if the mesh is triangular around beta=0.
 
