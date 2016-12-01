@@ -4,8 +4,6 @@
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <QtSql/qsqldatabase.h>
 
-//#include <exception>
-
 GPDKinematicDaoService::GPDKinematicDaoService() :
         BaseObject("GPDKinematicDaoService") {
 
@@ -26,11 +24,11 @@ int GPDKinematicDaoService::insert(const GPDKinematic &gpdKinematic) const {
         // If there is no exception we can commit all query
         QSqlDatabase::database().commit();
 
-    } catch (std::exception &e) {
-        throw ElemUtils::CustomException(getClassName(), __func__, e.what());
-
+    } catch (const std::exception &e) {
         // Else return database in a stable state : n-1
         QSqlDatabase::database().rollback();
+
+        throw ElemUtils::CustomException(getClassName(), __func__, e.what());
     }
 
     return gpdKinematicId;
@@ -52,11 +50,11 @@ int GPDKinematicDaoService::insert(
         // If there is no exception we can commit all query
         QSqlDatabase::database().commit();
 
-    } catch (std::exception &e) {
-        throw ElemUtils::CustomException(getClassName(), __func__, e.what());
-
+    } catch (const std::exception &e) {
         // Else return database in a stable state : n-1
         QSqlDatabase::database().rollback();
+
+        throw ElemUtils::CustomException(getClassName(), __func__, e.what());
     }
 
     return gpdKinematicId;

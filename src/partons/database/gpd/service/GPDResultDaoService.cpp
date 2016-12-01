@@ -4,6 +4,7 @@
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <QtCore/qstring.h>
 #include <QtCore/qvariant.h>
+#include <QtSql/qsqldatabase.h>
 #include <QtSql/qsqlerror.h>
 #include <QtSql/qsqlquery.h>
 #include <map>
@@ -116,109 +117,128 @@ int GPDResultDaoService::insert(const GPDResult &gpdResult) {
 }
 
 int GPDResultDaoService::insert(const List<GPDResult> &resultList) {
-    info(__func__,
-            ElemUtils::Formatter() << resultList.size()
-                    << " results will be inserted into database; Prepare data before inserting them ...");
+    // For multiple query it's better to use transaction to guarantee database's integrity and performance
+    QSqlDatabase::database().transaction();
 
-    for (unsigned int i = 0; i != resultList.size(); i++) {
+    try {
+        info(__func__,
+                ElemUtils::Formatter() << resultList.size()
+                        << " results will be inserted into database; Prepare data before inserting them ...");
 
-        prepareCommonTablesFromResultInfo(resultList[i].getResultInfo());
+        for (unsigned int i = 0; i != resultList.size(); i++) {
 
-        GPDKinematic kinematic = resultList[i].getKinematic();
+            prepareCommonTablesFromResultInfo(resultList[i].getResultInfo());
+
+            GPDKinematic kinematic = resultList[i].getKinematic();
 //        int kinematicId = m_gpdKinematicDaoService.getIdByKinematicObject(
 //                kinematic);
 
-        int kinematicId = m_gpdKinematicDaoService.getKinematicIdByHashSum(
-                kinematic.getHashSum());
+            int kinematicId = m_gpdKinematicDaoService.getKinematicIdByHashSum(
+                    kinematic.getHashSum());
 
-        if (kinematicId == -1) {
-            m_lastGPDKinematicId++;
-            kinematicId = m_lastGPDKinematicId;
+            if (kinematicId == -1) {
+                m_lastGPDKinematicId++;
+                kinematicId = m_lastGPDKinematicId;
 
-            m_gpdKinematicDatabaseFile += ElemUtils::Formatter()
-                    << m_lastGPDKinematicId << "," << kinematic.getX() << ","
-                    << kinematic.getXi() << "," << kinematic.getT() << ","
-                    << kinematic.getMuF2() << "," << kinematic.getMuR2() << ","
-                    << kinematic.getHashSum() << '\n';
-        }
-
-        m_lastGPDResultId++;
-        m_gpdResultDatabaseFile += ElemUtils::Formatter() << m_lastGPDResultId
-                << "," << resultList[i].getComputationModuleName() << ","
-                << kinematicId << "," << m_previousComputationId.second << '\n';
-
-        // Get all PartonDistribution objects indexed by GPDType
-        std::map<GPDType::Type, PartonDistribution> partonDistributionMap =
-                resultList[i].getPartonDistributions();
-
-        // Then loop over GPDType to store PartonDistribution objets into database.
-        for (std::map<GPDType::Type, PartonDistribution>::const_iterator it =
-                partonDistributionMap.begin();
-                it != partonDistributionMap.end(); it++) {
-
-            m_lastPartonDistributionId++;
-
-            m_parton_distribution_table +=
-                    ElemUtils::Formatter() << m_lastPartonDistributionId << ","
-                            << (it->second).getGluonDistribution().getGluonDistribution()
-                            << '\n';
-
-            std::map<QuarkFlavor::Type, QuarkDistribution> quarkDistributionList =
-                    (it->second).getQuarkDistributions();
-
-            for (std::map<QuarkFlavor::Type, QuarkDistribution>::const_iterator it_qd =
-                    quarkDistributionList.begin();
-                    it_qd != quarkDistributionList.end(); it_qd++) {
-
-                // insert QuarkDistribution object
-                m_lastQuarkDistributionId++;
-
-                m_quark_distribution_table += ElemUtils::Formatter()
-                        << m_lastQuarkDistributionId << ","
-                        << (it_qd->second).getQuarkDistributionPlus() << ","
-                        << (it_qd->second).getQuarkDistributionMinus() << ","
-                        << (it_qd->second).getQuarkDistribution() << ","
-                        << (it_qd->first) << '\n';
-
-                // fill association table "parton_distribution_quark_distribution"
-                m_lastPartonDistributionQuarkDistributionId++;
-
-                m_parton_distribution_quark_distribution_table +=
-                        ElemUtils::Formatter()
-                                << m_lastPartonDistributionQuarkDistributionId
-                                << "," << m_lastPartonDistributionId << ","
-                                << m_lastQuarkDistributionId << '\n';
+                m_gpdKinematicDatabaseFile += ElemUtils::Formatter()
+                        << m_lastGPDKinematicId << "," << kinematic.getX()
+                        << "," << kinematic.getXi() << "," << kinematic.getT()
+                        << "," << kinematic.getMuF2() << ","
+                        << kinematic.getMuR2() << "," << kinematic.getHashSum()
+                        << '\n';
             }
 
-            // Fill gpd_result_parton_distribution association table with previous retrieved ids.
-            m_lastGPDResultPartonDistributionId++;
+            m_lastGPDResultId++;
+            m_gpdResultDatabaseFile += ElemUtils::Formatter()
+                    << m_lastGPDResultId << ","
+                    << resultList[i].getComputationModuleName() << ","
+                    << kinematicId << "," << m_previousComputationId.second
+                    << '\n';
 
-            m_gpd_result_parton_distribution_table += ElemUtils::Formatter()
-                    << m_lastGPDResultPartonDistributionId << "," << (it->first)
-                    << "," << m_lastGPDResultId << ","
-                    << m_lastPartonDistributionId << '\n';
+            // Get all PartonDistribution objects indexed by GPDType
+            std::map<GPDType::Type, PartonDistribution> partonDistributionMap =
+                    resultList[i].getPartonDistributions();
+
+            // Then loop over GPDType to store PartonDistribution objets into database.
+            for (std::map<GPDType::Type, PartonDistribution>::const_iterator it =
+                    partonDistributionMap.begin();
+                    it != partonDistributionMap.end(); it++) {
+
+                m_lastPartonDistributionId++;
+
+                m_parton_distribution_table +=
+                        ElemUtils::Formatter() << m_lastPartonDistributionId
+                                << ","
+                                << (it->second).getGluonDistribution().getGluonDistribution()
+                                << '\n';
+
+                std::map<QuarkFlavor::Type, QuarkDistribution> quarkDistributionList =
+                        (it->second).getQuarkDistributions();
+
+                for (std::map<QuarkFlavor::Type, QuarkDistribution>::const_iterator it_qd =
+                        quarkDistributionList.begin();
+                        it_qd != quarkDistributionList.end(); it_qd++) {
+
+                    // insert QuarkDistribution object
+                    m_lastQuarkDistributionId++;
+
+                    m_quark_distribution_table += ElemUtils::Formatter()
+                            << m_lastQuarkDistributionId << ","
+                            << (it_qd->second).getQuarkDistributionPlus() << ","
+                            << (it_qd->second).getQuarkDistributionMinus()
+                            << "," << (it_qd->second).getQuarkDistribution()
+                            << "," << (it_qd->first) << '\n';
+
+                    // fill association table "parton_distribution_quark_distribution"
+                    m_lastPartonDistributionQuarkDistributionId++;
+
+                    m_parton_distribution_quark_distribution_table +=
+                            ElemUtils::Formatter()
+                                    << m_lastPartonDistributionQuarkDistributionId
+                                    << "," << m_lastPartonDistributionId << ","
+                                    << m_lastQuarkDistributionId << '\n';
+                }
+
+                // Fill gpd_result_parton_distribution association table with previous retrieved ids.
+                m_lastGPDResultPartonDistributionId++;
+
+                m_gpd_result_parton_distribution_table += ElemUtils::Formatter()
+                        << m_lastGPDResultPartonDistributionId << ","
+                        << (it->first) << "," << m_lastGPDResultId << ","
+                        << m_lastPartonDistributionId << '\n';
+            }
         }
+
+        insertCommonDataIntoDatabaseTables();
+
+        insertDataIntoDatabaseTables("gpdKinematicDatabaseFile.csv",
+                m_gpdKinematicDatabaseFile, "gpd_kinematic");
+        insertDataIntoDatabaseTables("gpdResultDatabaseFile.csv",
+                m_gpdResultDatabaseFile, "gpd_result");
+        insertDataIntoDatabaseTables("partonDistributionDatabaseFile.csv",
+                m_parton_distribution_table, "parton_distribution");
+        insertDataIntoDatabaseTables("quarkDistributionDatabaseFile.csv",
+                m_quark_distribution_table, "quark_distribution");
+        insertDataIntoDatabaseTables(
+                "gpdResultPartonDistributionDatabaseFile.csv",
+                m_gpd_result_parton_distribution_table,
+                "gpd_result_parton_distribution");
+        insertDataIntoDatabaseTables(
+                "partonDistributionQuarkDistributionDatabaseFile.csv",
+                m_parton_distribution_quark_distribution_table,
+                "parton_distribution_quark_distribution");
+
+        // If there is no exception we can commit all query
+        QSqlDatabase::database().commit();
+
+        info(__func__, "Done !");
+
+    } catch (const std::exception &e) {
+        // Else return database in a stable state : n-1
+        QSqlDatabase::database().rollback();
+
+        throw ElemUtils::CustomException(getClassName(), __func__, e.what());
     }
-
-    insertCommonDataIntoDatabaseTables();
-
-    insertDataIntoDatabaseTables("gpdKinematicDatabaseFile.csv",
-            m_gpdKinematicDatabaseFile, "gpd_kinematic");
-    insertDataIntoDatabaseTables("gpdResultDatabaseFile.csv",
-            m_gpdResultDatabaseFile, "gpd_result");
-    insertDataIntoDatabaseTables("partonDistributionDatabaseFile.csv",
-            m_parton_distribution_table, "parton_distribution");
-    insertDataIntoDatabaseTables("quarkDistributionDatabaseFile.csv",
-            m_quark_distribution_table, "quark_distribution");
-    insertDataIntoDatabaseTables("gpdResultPartonDistributionDatabaseFile.csv",
-            m_gpd_result_parton_distribution_table,
-            "gpd_result_parton_distribution");
-    insertDataIntoDatabaseTables(
-            "partonDistributionQuarkDistributionDatabaseFile.csv",
-            m_parton_distribution_quark_distribution_table,
-            "parton_distribution_quark_distribution");
-
-    info(__func__, "Done !");
 
     return getLastComputationId();
 }

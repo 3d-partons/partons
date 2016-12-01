@@ -69,88 +69,85 @@ ConvolCoeffFunctionResultDaoService::~ConvolCoeffFunctionResultDaoService() {
 
 int ConvolCoeffFunctionResultDaoService::insert(
         const DVCSConvolCoeffFunctionResult &dvcsConvolCoeffFunctionResult) {
+    List<DVCSConvolCoeffFunctionResult> results;
+    results.add(results);
 
-    int result = -1;
-
-    // For multiple query it's better to use transaction to guarantee database's integrity and performance
-    QSqlDatabase::database().transaction();
-
-    try {
-
-        result = insertWithoutTransaction(dvcsConvolCoeffFunctionResult);
-
-        // If there is no exception we can commit all query
-        QSqlDatabase::database().commit();
-
-    } catch (std::exception &e) {
-        throw ElemUtils::CustomException(getClassName(), __func__, e.what());
-
-        // Else return database in a stable state : n-1
-        QSqlDatabase::database().rollback();
-    }
-
-    return result;
+    return insert(results);
 }
 
 int ConvolCoeffFunctionResultDaoService::insert(
         const List<DVCSConvolCoeffFunctionResult>& resultList) {
-    info(__func__, "Prepare data before inserting them into database ...");
-    info(__func__,
-            ElemUtils::Formatter() << resultList.size()
-                    << " ConvolCoeffFunctionResult(s) will be inserted ...");
+    // For multiple query it's better to use transaction to guarantee database's integrity and performance
+    QSqlDatabase::database().transaction();
 
-    for (unsigned int i = 0; i != resultList.size(); i++) {
+    try {
+        info(__func__, "Prepare data before inserting them into database ...");
+        info(__func__,
+                ElemUtils::Formatter() << resultList.size()
+                        << " ConvolCoeffFunctionResult(s) will be inserted ...");
 
-        prepareCommonTablesFromResultInfo(resultList[i].getResultInfo());
+        for (unsigned int i = 0; i != resultList.size(); i++) {
 
-        DVCSConvolCoeffFunctionKinematic kinematic =
-                resultList[i].getKinematic();
+            prepareCommonTablesFromResultInfo(resultList[i].getResultInfo());
 
-        int kinematicId =
-                m_convolCoeffFunctionKinematicDaoService.getKinematicIdByHashSum(
-                        kinematic.getHashSum());
+            DVCSConvolCoeffFunctionKinematic kinematic =
+                    resultList[i].getKinematic();
 
-        if (kinematicId == -1) {
-            m_lastCCFKinematicId++;
-            kinematicId = m_lastCCFKinematicId;
+            int kinematicId =
+                    m_convolCoeffFunctionKinematicDaoService.getKinematicIdByHashSum(
+                            kinematic.getHashSum());
 
-            m_ccfKinematicTableFile += ElemUtils::Formatter()
-                    << m_lastCCFKinematicId << "," << kinematic.getXi() << ","
-                    << kinematic.getT() << "," << kinematic.getQ2() << ","
-                    << kinematic.getMuF2() << "," << kinematic.getMuR2() << ","
-                    << kinematic.getHashSum() << '\n';
+            if (kinematicId == -1) {
+                m_lastCCFKinematicId++;
+                kinematicId = m_lastCCFKinematicId;
+
+                m_ccfKinematicTableFile += ElemUtils::Formatter()
+                        << m_lastCCFKinematicId << "," << kinematic.getXi()
+                        << "," << kinematic.getT() << "," << kinematic.getQ2()
+                        << "," << kinematic.getMuF2() << ","
+                        << kinematic.getMuR2() << "," << kinematic.getHashSum()
+                        << '\n';
+            }
+
+            m_lastCCFResultId++;
+            m_ccfResultTableFile += ElemUtils::Formatter() << m_lastCCFResultId
+                    << "," << resultList[i].getComputationModuleName() << ","
+                    << resultList[i].getChannel().getType() << ","
+                    << kinematicId << "," << m_previousComputationId.second
+                    << '\n';
+
+            std::map<GPDType::Type, std::complex<double> > resultsByGPDType =
+                    resultList[i].getResultsByGpdType();
+
+            for (std::map<GPDType::Type, std::complex<double> >::const_iterator it =
+                    resultsByGPDType.begin(); it != resultsByGPDType.end();
+                    it++) {
+
+                m_lastCCFResultComplexId++;
+                m_ccfResultComplexTableFile += ElemUtils::Formatter()
+                        << m_lastCCFResultComplexId << "," << (it->first) << ","
+                        << (it->second).real() << "," << (it->second).imag()
+                        << "," << m_lastCCFResultId << '\n';
+            }
         }
 
-        m_lastCCFResultId++;
-        m_ccfResultTableFile += ElemUtils::Formatter() << m_lastCCFResultId
-                << "," << resultList[i].getComputationModuleName() << ","
-                << resultList[i].getChannel().getType() << "," << kinematicId
-                << "," << m_previousComputationId.second << '\n';
+        insertCommonDataIntoDatabaseTables();
 
-        std::map<GPDType::Type, std::complex<double> > resultsByGPDType =
-                resultList[i].getResultsByGpdType();
+        insertDataIntoDatabaseTables("ccfKinematicTableFile.csv",
+                m_ccfKinematicTableFile, "ccf_kinematic");
+        insertDataIntoDatabaseTables("ccfResultTableFile.csv",
+                m_ccfResultTableFile, "ccf_result");
+        insertDataIntoDatabaseTables("ccfResultComplexTableFile.csv",
+                m_ccfResultComplexTableFile, "ccf_result_complex");
 
-        for (std::map<GPDType::Type, std::complex<double> >::const_iterator it =
-                resultsByGPDType.begin(); it != resultsByGPDType.end(); it++) {
+        info(__func__, "Done !");
 
-            m_lastCCFResultComplexId++;
-            m_ccfResultComplexTableFile += ElemUtils::Formatter()
-                    << m_lastCCFResultComplexId << "," << (it->first) << ","
-                    << (it->second).real() << "," << (it->second).imag() << ","
-                    << m_lastCCFResultId << '\n';
-        }
+    } catch (const std::exception &e) {
+        // Else return database in a stable state : n-1
+        QSqlDatabase::database().rollback();
+
+        throw ElemUtils::CustomException(getClassName(), __func__, e.what());
     }
-
-    insertCommonDataIntoDatabaseTables();
-
-    insertDataIntoDatabaseTables("ccfKinematicTableFile.csv",
-            m_ccfKinematicTableFile, "ccf_kinematic");
-    insertDataIntoDatabaseTables("ccfResultTableFile.csv", m_ccfResultTableFile,
-            "ccf_result");
-    insertDataIntoDatabaseTables("ccfResultComplexTableFile.csv",
-            m_ccfResultComplexTableFile, "ccf_result_complex");
-
-    info(__func__, "Done !");
 
     return getLastComputationId();
 }
