@@ -11,65 +11,8 @@
 // Global static pointer used to ensure a single instance of the class.
 DatabaseManager* DatabaseManager::m_pInstance = 0;
 
-const QSqlDatabase& DatabaseManager::getProductionDatabase() {
-
-    if (!m_productionDatabase.isOpen()) {
-        warn(__func__, "Database connection is gone away");
-        if (!m_productionDatabase.open()) {
-            throw ElemUtils::CustomException(getClassName(), __func__,
-                    ElemUtils::Formatter() << "Cannot re-open database : "
-                            << m_productionDatabase.lastError().text().toStdString()
-                            << " or you have no MySQL database installed");
-        } else {
-            info(__func__, "Database connection has been re-open");
-        }
-    }
-
-    return m_productionDatabase;
-}
-
-const QSqlDatabase& DatabaseManager::getTestDatabase() const {
-    return m_testDatabase;
-}
-
 DatabaseManager::DatabaseManager() :
         BaseObject("DatabaseManager") {
-
-    ElemUtils::PropertiesManager* pPropertiesManager =
-            ElemUtils::PropertiesManager::getInstance();
-
-    //TODO replace by static const variable
-    std::string sqlDatabaseType = pPropertiesManager->getString(
-            "database.production.type");
-
-    std::string sqlDatabaseName = pPropertiesManager->getString(
-            "database.production.dbname");
-
-    if (ElemUtils::StringUtils::equalsIgnoreCase(sqlDatabaseType, "MYSQL")) {
-        m_productionDatabase = QSqlDatabase::addDatabase("QMYSQL");
-    } else {
-        throw ElemUtils::CustomException(getClassName(), __func__,
-                "Unknown database type, please check your properties file");
-    }
-
-    m_productionDatabase.setDatabaseName(QString(sqlDatabaseName.c_str()));
-    m_productionDatabase.setHostName(
-            QString(
-                    pPropertiesManager->getString("database.production.url").c_str()));
-    m_productionDatabase.setUserName(
-            QString(
-                    pPropertiesManager->getString("database.production.user").c_str()));
-    m_productionDatabase.setPassword(
-            QString(
-                    pPropertiesManager->getString("database.production.passwd").c_str()));
-
-    if (!m_productionDatabase.open()) {
-        throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter() << "Can't connect to database : "
-                        << m_productionDatabase.lastError().text().toStdString());
-    } else {
-        info(__func__, "Database connection OK");
-    }
 }
 
 DatabaseManager::~DatabaseManager() {
@@ -88,6 +31,54 @@ DatabaseManager* DatabaseManager::getInstance() {
     return m_pInstance;
 }
 
+void DatabaseManager::init() {
+    try {
+        ElemUtils::PropertiesManager* pPropertiesManager =
+                ElemUtils::PropertiesManager::getInstance();
+
+        //TODO replace by static const variable
+        std::string sqlDatabaseType = pPropertiesManager->getString(
+                "database.production.type");
+
+        std::string sqlDatabaseName = pPropertiesManager->getString(
+                "database.production.dbname");
+
+        if (ElemUtils::StringUtils::equalsIgnoreCase(sqlDatabaseType,
+                "MYSQL")) {
+            m_productionDatabase = QSqlDatabase::addDatabase("QMYSQL");
+        } else {
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    "Unknown database type, please check your properties file");
+        }
+
+        m_productionDatabase.setDatabaseName(QString(sqlDatabaseName.c_str()));
+        m_productionDatabase.setHostName(
+                QString(
+                        pPropertiesManager->getString("database.production.url").c_str()));
+        m_productionDatabase.setUserName(
+                QString(
+                        pPropertiesManager->getString(
+                                "database.production.user").c_str()));
+        m_productionDatabase.setPassword(
+                QString(
+                        pPropertiesManager->getString(
+                                "database.production.passwd").c_str()));
+
+        if (!m_productionDatabase.open()) {
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    ElemUtils::Formatter() << "Can't connect to database : "
+                            << m_productionDatabase.lastError().text().toStdString());
+        } else {
+            info(__func__, "Database connection OK");
+        }
+    } catch (const std::exception &e) {
+        warn(__func__,
+                ElemUtils::Formatter()
+                        << "MYSQL database is currently not available ; Check your connection properties in partons.properties ; Or check if MYSQL server is installed -> "
+                        << e.what());
+    }
+}
+
 void DatabaseManager::close() {
     QString connection;
     connection = m_productionDatabase.connectionName();
@@ -98,4 +89,21 @@ void DatabaseManager::close() {
     // See : http://stackoverflow.com/questions/9519736/warning-remove-database
     m_productionDatabase = QSqlDatabase();
     m_productionDatabase.removeDatabase(connection);
+}
+
+const QSqlDatabase& DatabaseManager::getProductionDatabase() {
+
+    if (!m_productionDatabase.isOpen()) {
+        warn(__func__, "Database connection is gone away");
+        if (!m_productionDatabase.open()) {
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    ElemUtils::Formatter() << "Cannot re-open database : "
+                            << m_productionDatabase.lastError().text().toStdString()
+                            << " or you have no MySQL database installed");
+        } else {
+            info(__func__, "Database connection has been re-open");
+        }
+    }
+
+    return m_productionDatabase;
 }

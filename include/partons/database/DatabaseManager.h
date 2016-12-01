@@ -27,12 +27,13 @@ public:
      */
     virtual ~DatabaseManager();
 
+    void init();
+
     void close();
 
     // ##### GETTERS & SETTERS #####
 
     const QSqlDatabase& getProductionDatabase();
-    const QSqlDatabase& getTestDatabase() const;
 
 private:
 

@@ -10,6 +10,8 @@
 
 #include <string>
 
+class DatabaseManager;
+
 class BaseObjectFactory;
 class BaseObjectRegistry;
 class EnvironmentConfiguration;
@@ -81,6 +83,7 @@ private:
     BaseObjectFactory* m_pBaseObjectFactory;
     ModuleObjectFactory* m_pModuleObjectFactory;
     ElemUtils::LoggerManager* m_pLoggerManager;
+    DatabaseManager* m_pDatabaseManager;
 
     std::string m_currentWorkingDirectoryPath;
     EnvironmentConfiguration* m_pEnvironmentConfiguration;

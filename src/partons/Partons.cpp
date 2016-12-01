@@ -31,8 +31,8 @@ Partons* Partons::getInstance() {
 Partons::Partons() :
         m_pBaseObjectRegistry(BaseObjectRegistry::getInstance()), m_pServiceObjectRegistry(
                 0), m_pBaseObjectFactory(0), m_pModuleObjectFactory(0), m_pLoggerManager(
-                ElemUtils::LoggerManager::getInstance()), m_pEnvironmentConfiguration(
-                0) {
+                ElemUtils::LoggerManager::getInstance()), m_pDatabaseManager(
+                DatabaseManager::getInstance()), m_pEnvironmentConfiguration(0) {
 
     m_pBaseObjectFactory = new BaseObjectFactory(m_pBaseObjectRegistry);
     m_pModuleObjectFactory = new ModuleObjectFactory(m_pBaseObjectFactory);
@@ -97,7 +97,7 @@ void Partons::init(int argc, char** argv) {
     m_pBaseObjectRegistry->resolveBaseObjectDependencies();
 
     // Database connexion
-    DatabaseManager::getInstance();
+    DatabaseManager::getInstance()->init();
 
     // 4. Start logger's thread
     //m_pLoggerManager->start();
@@ -118,6 +118,11 @@ void Partons::retrieveEnvironmentConfiguration() {
 
 void Partons::close() {
     DatabaseManager::getInstance()->close();
+
+    if (m_pDatabaseManager) {
+        delete m_pDatabaseManager;
+        m_pDatabaseManager = 0;
+    }
 
     if (m_pLoggerManager) {
         // Send close signal to logger
