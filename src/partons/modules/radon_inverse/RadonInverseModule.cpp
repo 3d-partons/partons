@@ -4,6 +4,7 @@
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/functor/multi_dimension/FunctionTypeMD.h>
+#include <NumA/linear_algebra/LinAlgUtils.h>
 
 const double RadonInverseModule::DD_DOMAIN_HALF_EDGE = 1. / sqrt(2.);
 
@@ -119,22 +120,22 @@ void RadonInverseModule::buildSystem(NumA::FunctionTypeMD* pGPDFunction) {
 void RadonInverseModule::solve() {
     info(__func__, "Solving the linear system...");
 
+        if (m_maxiter <= 0)
+            m_maxiter = 4 * m_n;
+
     ElemUtils::Formatter formatter;
     formatter << "LOGS of the solver:\n";
 
     // Initialize solver
-    m_solver.setOutputStream(formatter);
+    m_solver.setOutput(formatter);
     m_solver.setToleranceA(m_tolerance);
     m_solver.setToleranceB(m_tolerance);
-    if (m_maxiter <= 0)
-        m_maxiter = 4 * m_n;
-    m_solver.setMaximumNumberOfIterations(m_maxiter);
-    m_solver.setMatrix(m_radonMatrix);
+    m_solver.setMaximumIerations(m_maxiter);
 
     // Solve
-    m_solver.solve(m_m, m_n, m_gpdVector, m_ddVector);
+    m_ddVector = m_solver.solve(m_radonMatrix, m_gpdVector);
 
-    unsigned int stop_reason = m_solver.getStoppingReason();
+    unsigned int stop_reason = m_solver.getStoppingCase();
     std::string stop_message;
     if (stop_reason == 3 or stop_reason >= 6)
         stop_message = "Solver failed (see DEBUG logs for details).";

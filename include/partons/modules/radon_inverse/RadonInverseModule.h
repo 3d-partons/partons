@@ -16,7 +16,7 @@
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <NumA/linear_algebra/matrix/MatrixD.h>
 #include <NumA/linear_algebra/vector/VectorD.h>
-#include <NumA/linear_algebra/least_squares/lsmrDense.h>
+#include <NumA/linear_algebra/least_squares/LSMRSolver.h>
 #include <stddef.h>
 
 #include "../../beans/automation/BaseObjectData.h"
@@ -115,7 +115,7 @@ protected:
     size_t m_n; ///< Number of unknowns, i.e. size of m_ddVector;
     size_t m_m; ///< Number of equations, i.e. size of m_gpdVector;
 
-    NumA::lsmrDense m_solver; ///< Linear solver. TODO: Use a more general object to allow for different solvers.
+    NumA::LSMRSolver m_solver; ///< Linear solver. TODO: Use a more general object to allow for different solvers.
     double m_tolerance; ///< Tolerance for the iterative solver.
     size_t m_maxiter; ///< Maximum number of iterations.
 
