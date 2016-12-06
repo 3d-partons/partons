@@ -117,12 +117,13 @@ void Partons::retrieveEnvironmentConfiguration() {
 }
 
 void Partons::close() {
-    DatabaseManager::getInstance()->close();
+    m_pDatabaseManager->close();
 
-    if (m_pDatabaseManager) {
-        delete m_pDatabaseManager;
-        m_pDatabaseManager = 0;
-    }
+    //TODO Segmentation fault, why? Qt asynchronous?
+//    if (m_pDatabaseManager) {
+//        delete m_pDatabaseManager;
+//        m_pDatabaseManager = 0;
+//    }
 
     if (m_pLoggerManager) {
         // Send close signal to logger
