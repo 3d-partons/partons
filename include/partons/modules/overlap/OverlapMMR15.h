@@ -9,6 +9,7 @@
 #define OVERLAPMMR2015_H_
 
 #include <string>
+#include <vector>
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <NumA/linear_algebra/vector/VectorD.h>
 
@@ -56,7 +57,8 @@ protected:
      */
     OverlapMMR15(const OverlapMMR15& other);
 
-    double incompleteH(NumA::VectorD& x_xi, std::vector<double>&); ///< Returns the GPD in the DGLAP region. Used to define a functor.
+    double incompleteH(double x, double xi); ///< Returns the GPD in the DGLAP region.
+    double functorH(NumA::VectorD& x_xi, std::vector<double>&); ///< Returns the GPD in the DGLAP region. Used to define a functor.
 
     virtual void isModuleWellConfigured();
     virtual void initModule();

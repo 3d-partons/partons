@@ -110,8 +110,7 @@ void DVCSCFFDispersionRelationModel::configure(
                 Partons::getInstance()->getModuleObjectFactory()->newGPDSubtractionConstantModule(
                         parameters.getLastAvailable().getString());
 
-        Partons::getInstance()->getLoggerManager()->info(getClassName(),
-                __func__,
+        info(__func__,
                 ElemUtils::Formatter() << "Subtraction constant module set to "
                         << parameters.getLastAvailable().getString());
     }

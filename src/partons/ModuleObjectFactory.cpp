@@ -279,12 +279,12 @@ IncompleteGPDModule* ModuleObjectFactory::newIncompleteGPDModule(
     return static_cast<IncompleteGPDModule*>(newModuleObject(className));
 }
 
-RadonInverseModule* ModuleObjectFactory::newRadonMatrixModule(
+RadonInverseModule* ModuleObjectFactory::newRadonInverseModule(
         unsigned int classId) {
     return static_cast<RadonInverseModule*>(newModuleObject(classId));
 }
 
-RadonInverseModule* ModuleObjectFactory::newRadonMatrixModule(
+RadonInverseModule* ModuleObjectFactory::newRadonInverseModule(
         const std::string& className) {
     return static_cast<RadonInverseModule*>(newModuleObject(className));
 }

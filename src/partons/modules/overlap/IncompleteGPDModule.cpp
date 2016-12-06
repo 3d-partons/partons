@@ -1,12 +1,14 @@
 #include "../../../../include/partons/modules/overlap/IncompleteGPDModule.h"
 
+//#include <utility>
 #include <ElementaryUtils/logger/CustomException.h>
-#include <ElementaryUtils/parameters/GenericType.h>
+//#include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
-#include <utility>
 
-#include "../../../../include/partons/modules/GPDModule.h"
+//#include "../../../../include/partons/modules/GPDModule.h"
 #include "../../../../include/partons/modules/radon_inverse/RadonInverseModule.h"
+#include "../../../../include/partons/ModuleObjectFactory.h"
+#include "../../../../include/partons/Partons.h"
 
 const std::string IncompleteGPDModule::DGLAP_REGION = "DGLAP";
 const std::string IncompleteGPDModule::ERBL_REGION = "ERBL";
@@ -235,6 +237,8 @@ RadonInverseModule* IncompleteGPDModule::getRadonInverseModule() const {
 
 void IncompleteGPDModule::setRadonInverseModule(
         RadonInverseModule* pRadonInverse) {
+    m_pModuleObjectFactory->updateModulePointerReference(m_pRadonInverse,
+            pRadonInverse);
     m_pRadonInverse = pRadonInverse;
 }
 
@@ -253,4 +257,36 @@ bool IncompleteGPDModule::isInversionDone() const {
 void IncompleteGPDModule::prepareSubModules(
         const std::map<std::string, BaseObjectData>& subModulesData) {
     GPDModule::prepareSubModules(subModulesData);
+
+    std::map<std::string, BaseObjectData>::const_iterator it;
+
+    it = subModulesData.find(
+            RadonInverseModule::RADON_INVERSE_MODULE_CLASS_NAME);
+
+    if (isInversionDependent()) {
+        if (it != subModulesData.end()) {
+            if (m_pRadonInverse) {
+                setRadonInverseModule(0);
+            }
+            if (!m_pRadonInverse) {
+                m_pRadonInverse =
+                        Partons::getInstance()->getModuleObjectFactory()->newRadonInverseModule(
+                                (it->second).getModuleClassName());
+
+                info(__func__,
+                        ElemUtils::Formatter()
+                                << "Configured with RadonInverseModule = "
+                                << m_pRadonInverse->getClassName());
+
+                m_pRadonInverse->configure((it->second).getParameters());
+
+                m_pRadonInverse->prepareSubModules(
+                        (it->second).getSubModules());
+            }
+        } else {
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    ElemUtils::Formatter() << getClassName()
+                            << " is RadonInverseModule dependent and you have not provided one!");
+        }
+    }
 }

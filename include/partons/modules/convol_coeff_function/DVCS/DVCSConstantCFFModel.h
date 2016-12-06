@@ -15,7 +15,8 @@
 #include <complex>
 #include <map>
 #include <string>
-//#include <vector>
+#include <ElementaryUtils/parameters/GenericType.h>
+#include <ElementaryUtils/parameters/Parameters.h>
 
 #include "../../../beans/gpd/GPDType.h"
 #include "DVCSConvolCoeffFunctionModule.h"
@@ -29,16 +30,16 @@ public:
 
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
-    static const std::string CFF_VALUES; ///< Key name to set several CFFs via automation
+    static const std::string PARAMETER_NAME_CFF_VALUES; ///< Key name to set several CFFs via automation
 
-    static const std::string CFF_H_Re; ///< Key name to set real part of CFF H via automation
-    static const std::string CFF_H_Im; ///< Key name to set imaginary part of CFF H via automation
-    static const std::string CFF_E_Re; ///< Key name to set real part of CFF E via automation
-    static const std::string CFF_E_Im; ///< Key name to set imaginary part of CFF E via automation
-    static const std::string CFF_Ht_Re; ///< Key name to set real part of CFF Ht via automation
-    static const std::string CFF_Ht_Im; ///< Key name to set imaginary part of CFF Ht via automation
-    static const std::string CFF_Et_Re; ///< Key name to set real part of CFF Et via automation
-    static const std::string CFF_Et_Im; ///< Key name to set imaginary part of CFF Et via automation
+    static const std::string PARAMETER_NAME_CFF_H_Re; ///< Key name to set real part of CFF H via automation
+    static const std::string PARAMETER_NAME_CFF_H_Im; ///< Key name to set imaginary part of CFF H via automation
+    static const std::string PARAMETER_NAME_CFF_E_Re; ///< Key name to set real part of CFF E via automation
+    static const std::string PARAMETER_NAME_CFF_E_Im; ///< Key name to set imaginary part of CFF E via automation
+    static const std::string PARAMETER_NAME_CFF_Ht_Re; ///< Key name to set real part of CFF Ht via automation
+    static const std::string PARAMETER_NAME_CFF_Ht_Im; ///< Key name to set imaginary part of CFF Ht via automation
+    static const std::string PARAMETER_NAME_CFF_Et_Re; ///< Key name to set real part of CFF Et via automation
+    static const std::string PARAMETER_NAME_CFF_Et_Im; ///< Key name to set imaginary part of CFF Et via automation
 
     /**
      * Default constructor
@@ -108,7 +109,8 @@ private:
      @param isRealPart True if real part to be set
      @param value Value to be set
      */
-    void configureValue(GPDType::Type gpdType, bool isRealPart, const ElemUtils::GenericType& value);
+    void configureValue(GPDType::Type gpdType, bool isRealPart,
+            const ElemUtils::GenericType& value);
 
     /**
      * CFFs stored by type of GPD

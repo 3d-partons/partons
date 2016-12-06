@@ -23,11 +23,14 @@ public:
 
     DDGauge();
     DDGauge(DDGauge::Type type);
+    DDGauge(const std::string& gaugeStr);
     virtual ~DDGauge();
 
     operator Type() const;
 
     std::string toString();
+
+    static DDGauge::Type fromString(const std::string& gaugeStr);
 
 private:
     DDGauge::Type m_type;

@@ -216,7 +216,7 @@ double GPDModule::getMuF2Ref() const {
     return m_MuF2_ref;
 }
 
-std::string GPDModule::toString() {
+std::string GPDModule::toString() const {
     return ModuleObject::toString();
 }
 
@@ -357,7 +357,6 @@ void GPDModule::prepareSubModules(
     if (it != subModulesData.end()) {
         if (m_pGPDEvolutionModule) {
             setEvolQcdModule(0);
-            m_pGPDEvolutionModule = 0;
         }
         if (!m_pGPDEvolutionModule) {
             m_pGPDEvolutionModule =

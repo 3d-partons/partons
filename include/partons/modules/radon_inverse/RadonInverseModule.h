@@ -14,9 +14,9 @@
 #include <utility>
 #include <vector>
 #include <ElementaryUtils/parameters/Parameters.h>
+#include <NumA/linear_algebra/least_squares/LSMRSolver.h>
 #include <NumA/linear_algebra/matrix/MatrixD.h>
 #include <NumA/linear_algebra/vector/VectorD.h>
-#include <NumA/linear_algebra/least_squares/LSMRSolver.h>
 #include <stddef.h>
 
 #include "../../beans/automation/BaseObjectData.h"
@@ -35,6 +35,12 @@ class FunctionTypeMD;
 
 class RadonInverseModule: public ModuleObject {
 public:
+    static const std::string RADON_INVERSE_MODULE_CLASS_NAME;
+    static const std::string PARAMETER_NAME_MESH_SIZE;
+    static const std::string PARAMETER_NAME_GAUGE;
+    static const std::string PARAMETER_NAME_GAUGE_IN_VECTOR;
+    static const std::string PARAMETER_NAME_MAXIMUM_ITERATIONS;
+    static const std::string PARAMETER_NAME_TOLERANCE;
     static const double DD_DOMAIN_HALF_EDGE;
 
     RadonInverseModule(const std::string &className);
@@ -86,8 +92,8 @@ public:
     void setGauge(const DDGauge& gauge);
     bool isGaugeInVector() const;
     void setGaugeInVector(bool gaugeInVector);
-    size_t getMaxiter() const;
-    void setMaxiter(size_t maxiter);
+    size_t getMaximumIterations() const;
+    void setMaximumIterations(size_t maxiter);
     double getTolerance() const;
     void setTolerance(double tolerance);
 

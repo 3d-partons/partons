@@ -3,9 +3,9 @@
 #include <cmath>
 #include <map>
 #include <utility>
+//#include <vector>
 #include <ElementaryUtils/logger/CustomException.h>
 #include <NumA/functor/multi_dimension/FunctorMD.h>
-#include <NumA/linear_algebra/vector/Vector2D.h>
 #include <NumA/utils/FunctorUtils.h>
 
 #include "../../../../include/partons/beans/gpd/GPDType.h"
@@ -24,7 +24,7 @@ OverlapMMR15::OverlapMMR15(const std::string &className) :
         IncompleteGPDModule(className) {
     setInversionDependent(true);
     m_pIncompleteGPDFunction = NumA::FunctorUtils::newFunctorMD(this,
-            &OverlapMMR15::incompleteH);
+            &OverlapMMR15::functorH);
     m_listGPDComputeTypeAvailable.insert(
             std::make_pair(GPDType::H, &IncompleteGPDModule::computeH));
 }
@@ -65,18 +65,24 @@ void OverlapMMR15::initModule() {
     IncompleteGPDModule::initModule();
 }
 
-double OverlapMMR15::incompleteH(NumA::VectorD& x_xi, std::vector<double>&) {
+double OverlapMMR15::incompleteH(double x, double xi) {
+    if (x >= 0) {
+        double xi2 = xi * xi;
+        double x1 = 1 - x;
+        double xi21 = 1 - xi2;
+        return 30 * x1 * x1 * (x * x - xi2) / (xi21 * xi21);
+    } else {
+        return 0.;
+    }
+}
+
+double OverlapMMR15::functorH(NumA::VectorD& x_xi, std::vector<double>&) {
     if (x_xi.size() != 2)
         throw ElemUtils::CustomException(getClassName(), __func__,
                 "Array (x,xi) should be of two dimensions.");
     double x = x_xi[0];
     double xi = x_xi[1];
-    if (x >= 0) {
-        return 30 * (1 - x) * (1 - x) * (x * x - xi * xi)
-                / ((1 - xi * xi) * (1 - xi * xi));
-    } else {
-        return 0.;
-    }
+    return incompleteH(x, xi);
 }
 
 PartonDistribution OverlapMMR15::computeH() {
@@ -85,10 +91,8 @@ PartonDistribution OverlapMMR15::computeH() {
     double Hu, Hd;
 
     if (isInKinematicRegion(m_x, m_xi)) {
-        NumA::VectorD x_xi = NumA::Vector2D(m_x, m_xi);
-        Hu = (*m_pIncompleteGPDFunction)(x_xi);
-        x_xi[0] = -m_x;
-        Hd = -(*m_pIncompleteGPDFunction)(x_xi);
+        Hu = incompleteH(m_x, m_xi);
+        Hd = -incompleteH(-m_x, m_xi);
     } else {
         //TODO Radon Inverse
         Hu = m_pRadonInverse->computeGPD(m_x, m_xi);
@@ -107,4 +111,3 @@ PartonDistribution OverlapMMR15::computeH() {
 std::string OverlapMMR15::toString() {
     return IncompleteGPDModule::toString();
 }
-

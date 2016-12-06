@@ -17,16 +17,16 @@ const unsigned int DVCSConstantCFFModel::classId =
                 new DVCSConstantCFFModel("DVCSConstantCFFModel"));
 
 // set key names
-const std::string DVCSConstantCFFModel::CFF_VALUES = "cff_values";
+const std::string DVCSConstantCFFModel::PARAMETER_NAME_CFF_VALUES = "cff_values";
 
-const std::string DVCSConstantCFFModel::CFF_H_Re = "cff_value_H_Re";
-const std::string DVCSConstantCFFModel::CFF_H_Im = "cff_value_H_Im";
-const std::string DVCSConstantCFFModel::CFF_E_Re = "cff_value_E_Re";
-const std::string DVCSConstantCFFModel::CFF_E_Im = "cff_value_E_Im";
-const std::string DVCSConstantCFFModel::CFF_Ht_Re = "cff_value_Ht_Re";
-const std::string DVCSConstantCFFModel::CFF_Ht_Im = "cff_value_Ht_Im";
-const std::string DVCSConstantCFFModel::CFF_Et_Re = "cff_value_Et_Re";
-const std::string DVCSConstantCFFModel::CFF_Et_Im = "cff_value_Et_Im";
+const std::string DVCSConstantCFFModel::PARAMETER_NAME_CFF_H_Re = "cff_value_H_Re";
+const std::string DVCSConstantCFFModel::PARAMETER_NAME_CFF_H_Im = "cff_value_H_Im";
+const std::string DVCSConstantCFFModel::PARAMETER_NAME_CFF_E_Re = "cff_value_E_Re";
+const std::string DVCSConstantCFFModel::PARAMETER_NAME_CFF_E_Im = "cff_value_E_Im";
+const std::string DVCSConstantCFFModel::PARAMETER_NAME_CFF_Ht_Re = "cff_value_Ht_Re";
+const std::string DVCSConstantCFFModel::PARAMETER_NAME_CFF_Ht_Im = "cff_value_Ht_Im";
+const std::string DVCSConstantCFFModel::PARAMETER_NAME_CFF_Et_Re = "cff_value_Et_Re";
+const std::string DVCSConstantCFFModel::PARAMETER_NAME_CFF_Et_Im = "cff_value_Et_Im";
 
 DVCSConstantCFFModel::DVCSConstantCFFModel(const std::string &className) :
         DVCSConvolCoeffFunctionModule(className) {
@@ -107,7 +107,7 @@ void DVCSConstantCFFModel::configure(const ElemUtils::Parameters &parameters) {
     bool isSetViaAll = false;
 
     // several CFFs
-    if (parameters.isAvailable(DVCSConstantCFFModel::CFF_VALUES)) {
+    if (parameters.isAvailable(DVCSConstantCFFModel::PARAMETER_NAME_CFF_VALUES)) {
 
         //is set via all
         isSetViaAll = true;
@@ -135,7 +135,7 @@ void DVCSConstantCFFModel::configure(const ElemUtils::Parameters &parameters) {
                     warn(__func__,
                             ElemUtils::Formatter()
                                     << "Too many elements for key "
-                                    << DVCSConstantCFFModel::CFF_VALUES
+                                    << DVCSConstantCFFModel::PARAMETER_NAME_CFF_VALUES
                                     << ", additional elements will be ignored");
                     break;
                 }
@@ -170,49 +170,49 @@ void DVCSConstantCFFModel::configure(const ElemUtils::Parameters &parameters) {
         } else {
             warn(__func__,
                     ElemUtils::Formatter() << "String for "
-                            << DVCSConstantCFFModel::CFF_VALUES << " is empty");
+                            << DVCSConstantCFFModel::PARAMETER_NAME_CFF_VALUES << " is empty");
         }
     }
 
     // single CFFs
-    if (parameters.isAvailable(DVCSConstantCFFModel::CFF_H_Re)) {
+    if (parameters.isAvailable(DVCSConstantCFFModel::PARAMETER_NAME_CFF_H_Re)) {
         if (isSetViaAll)
-            printErrorInConfigure(DVCSConstantCFFModel::CFF_H_Re);
+            printErrorInConfigure(DVCSConstantCFFModel::PARAMETER_NAME_CFF_H_Re);
         configureValue(GPDType::H, 1, parameters.getLastAvailable());
     }
-    if (parameters.isAvailable(DVCSConstantCFFModel::CFF_H_Im)) {
+    if (parameters.isAvailable(DVCSConstantCFFModel::PARAMETER_NAME_CFF_H_Im)) {
         if (isSetViaAll)
-            printErrorInConfigure(DVCSConstantCFFModel::CFF_H_Im);
+            printErrorInConfigure(DVCSConstantCFFModel::PARAMETER_NAME_CFF_H_Im);
         configureValue(GPDType::H, 0, parameters.getLastAvailable());
     }
-    if (parameters.isAvailable(DVCSConstantCFFModel::CFF_E_Re)) {
+    if (parameters.isAvailable(DVCSConstantCFFModel::PARAMETER_NAME_CFF_E_Re)) {
         if (isSetViaAll)
-            printErrorInConfigure(DVCSConstantCFFModel::CFF_E_Re);
+            printErrorInConfigure(DVCSConstantCFFModel::PARAMETER_NAME_CFF_E_Re);
         configureValue(GPDType::E, 1, parameters.getLastAvailable());
     }
-    if (parameters.isAvailable(DVCSConstantCFFModel::CFF_E_Im)) {
+    if (parameters.isAvailable(DVCSConstantCFFModel::PARAMETER_NAME_CFF_E_Im)) {
         if (isSetViaAll)
-            printErrorInConfigure(DVCSConstantCFFModel::CFF_E_Im);
+            printErrorInConfigure(DVCSConstantCFFModel::PARAMETER_NAME_CFF_E_Im);
         configureValue(GPDType::E, 0, parameters.getLastAvailable());
     }
-    if (parameters.isAvailable(DVCSConstantCFFModel::CFF_Ht_Re)) {
+    if (parameters.isAvailable(DVCSConstantCFFModel::PARAMETER_NAME_CFF_Ht_Re)) {
         if (isSetViaAll)
-            printErrorInConfigure(DVCSConstantCFFModel::CFF_Ht_Re);
+            printErrorInConfigure(DVCSConstantCFFModel::PARAMETER_NAME_CFF_Ht_Re);
         configureValue(GPDType::Ht, 1, parameters.getLastAvailable());
     }
-    if (parameters.isAvailable(DVCSConstantCFFModel::CFF_Ht_Im)) {
+    if (parameters.isAvailable(DVCSConstantCFFModel::PARAMETER_NAME_CFF_Ht_Im)) {
         if (isSetViaAll)
-            printErrorInConfigure(DVCSConstantCFFModel::CFF_Ht_Im);
+            printErrorInConfigure(DVCSConstantCFFModel::PARAMETER_NAME_CFF_Ht_Im);
         configureValue(GPDType::Ht, 0, parameters.getLastAvailable());
     }
-    if (parameters.isAvailable(DVCSConstantCFFModel::CFF_Et_Re)) {
+    if (parameters.isAvailable(DVCSConstantCFFModel::PARAMETER_NAME_CFF_Et_Re)) {
         if (isSetViaAll)
-            printErrorInConfigure(DVCSConstantCFFModel::CFF_Et_Re);
+            printErrorInConfigure(DVCSConstantCFFModel::PARAMETER_NAME_CFF_Et_Re);
         configureValue(GPDType::Et, 1, parameters.getLastAvailable());
     }
-    if (parameters.isAvailable(DVCSConstantCFFModel::CFF_Et_Im)) {
+    if (parameters.isAvailable(DVCSConstantCFFModel::PARAMETER_NAME_CFF_Et_Im)) {
         if (isSetViaAll)
-            printErrorInConfigure(DVCSConstantCFFModel::CFF_Et_Im);
+            printErrorInConfigure(DVCSConstantCFFModel::PARAMETER_NAME_CFF_Et_Im);
         configureValue(GPDType::Et, 0, parameters.getLastAvailable());
     }
 
@@ -223,7 +223,7 @@ void DVCSConstantCFFModel::configure(const ElemUtils::Parameters &parameters) {
 void DVCSConstantCFFModel::printErrorInConfigure(const std::string& key) const {
     throw ElemUtils::CustomException(getClassName(), __func__,
             ElemUtils::Formatter() << "Ambiguous way of setting CFF values via "
-                    << DVCSConstantCFFModel::CFF_VALUES << " and " << key
+                    << DVCSConstantCFFModel::PARAMETER_NAME_CFF_VALUES << " and " << key
                     << " keys");
 }
 

@@ -6,6 +6,13 @@
 #include <NumA/functor/multi_dimension/FunctionTypeMD.h>
 #include <NumA/linear_algebra/LinAlgUtils.h>
 
+const std::string RadonInverseModule::RADON_INVERSE_MODULE_CLASS_NAME = "RadonInverseModule";
+const std::string RadonInverseModule::PARAMETER_NAME_MESH_SIZE = "mesh_size";
+const std::string RadonInverseModule::PARAMETER_NAME_GAUGE = "gauge";
+const std::string RadonInverseModule::PARAMETER_NAME_GAUGE_IN_VECTOR = "gauge_in_vector";
+const std::string RadonInverseModule::PARAMETER_NAME_MAXIMUM_ITERATIONS = "max_iter";
+const std::string RadonInverseModule::PARAMETER_NAME_TOLERANCE = "tolerance";
+
 const double RadonInverseModule::DD_DOMAIN_HALF_EDGE = 1. / sqrt(2.);
 
 RadonInverseModule::RadonInverseModule(const std::string &className) :
@@ -41,6 +48,23 @@ void RadonInverseModule::initModule() {
 }
 
 void RadonInverseModule::configure(const ElemUtils::Parameters& parameters) {
+    ModuleObject::configure(parameters);
+
+    if (parameters.isAvailable(RadonInverseModule::PARAMETER_NAME_MESH_SIZE)) {
+        setN(parameters.getLastAvailable().toSize_t());
+    }
+    if (parameters.isAvailable(RadonInverseModule::PARAMETER_NAME_GAUGE)) {
+        setGauge(DDGauge(parameters.getLastAvailable().getString()));
+    }
+    if (parameters.isAvailable(RadonInverseModule::PARAMETER_NAME_GAUGE_IN_VECTOR)) {
+        setGaugeInVector(parameters.getLastAvailable().toBoolean());
+    }
+    if (parameters.isAvailable(RadonInverseModule::PARAMETER_NAME_MAXIMUM_ITERATIONS)) {
+        setMaximumIterations(parameters.getLastAvailable().toSize_t());
+    }
+    if (parameters.isAvailable(RadonInverseModule::PARAMETER_NAME_TOLERANCE)) {
+        setTolerance(parameters.getLastAvailable().toDouble());
+    }
 }
 
 const DDGauge& RadonInverseModule::getGauge() const {
@@ -166,16 +190,11 @@ void RadonInverseModule::setN(size_t N) {
     m_gpdNodes.reserve(5 * m_n);
 }
 
-void RadonInverseModule::prepareSubModules(
-        const std::map<std::string, BaseObjectData>& subModulesData) {
-    ModuleObject::prepareSubModules(subModulesData);
-}
-
-size_t RadonInverseModule::getMaxiter() const {
+size_t RadonInverseModule::getMaximumIterations() const {
     return m_maxiter;
 }
 
-void RadonInverseModule::setMaxiter(size_t maxiter) {
+void RadonInverseModule::setMaximumIterations(size_t maxiter) {
     m_maxiter = maxiter;
 }
 
@@ -201,4 +220,11 @@ size_t RadonInverseModule::getRank() const {
 
 size_t RadonInverseModule::getCols() const {
     return m_n;
+}
+
+void RadonInverseModule::prepareSubModules(
+        const std::map<std::string, BaseObjectData>& subModulesData) {
+    ModuleObject::prepareSubModules(subModulesData);
+
+
 }

@@ -51,8 +51,8 @@ public:
     IncompleteGPDModule* newIncompleteGPDModule(unsigned int classId);
     IncompleteGPDModule* newIncompleteGPDModule(const std::string & className);
 
-    RadonInverseModule* newRadonMatrixModule(unsigned int classId);
-    RadonInverseModule* newRadonMatrixModule(const std::string & className);
+    RadonInverseModule* newRadonInverseModule(unsigned int classId);
+    RadonInverseModule* newRadonInverseModule(const std::string & className);
 
     DoubleDistributionModule* newDoubleDistributionModule(unsigned int classId);
     DoubleDistributionModule* newDoubleDistributionModule(

@@ -91,7 +91,7 @@ public:
     virtual PartonDistribution computeHt();
     virtual PartonDistribution computeEt();
 
-    virtual std::string toString();
+    virtual std::string toString() const;
 
     // ##### GETTERS & SETTERS #####
 

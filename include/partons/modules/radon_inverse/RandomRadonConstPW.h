@@ -25,6 +25,10 @@ class RandomRadonConstPW: RadonInverseModule {
 public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
+    static const std::string PARAMETER_NAME_QUARK_GPD;
+    static const std::string PARAMETER_NAME_ALPHA_EVEN;
+    static const std::string PARAMETER_NAME_TRIANGULAR;
+
     RandomRadonConstPW(const std::string &className);
     virtual ~RandomRadonConstPW();
 
@@ -44,10 +48,10 @@ public:
     virtual double computeDD(double beta, double alpha);
     virtual double computeGPD(double x, double xi);
 
+    bool isAlphaEven() const;
+    void setAlphaEven(bool alphaEven);
     bool isQuarkGPD() const;
     void setQuarkGPD(bool quarkGPD);
-    bool isValence() const;
-    void setValence(bool valence);
     bool isTriangular() const;
     void setTriangular(bool triangular);
 
