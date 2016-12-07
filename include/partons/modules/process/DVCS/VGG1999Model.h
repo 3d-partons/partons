@@ -285,14 +285,6 @@ private:
      */
     double v_compton_doublepol_sqrampl(double leptcharge, int mechanism,
             double el_hel, double sp_in);
-
-    //OTHERS
-
-    /** Convert nb to GeV-2
-     * @param nb Input cross section in nb
-     */
-    double nbToGeVm2conversion(double nb);
-
 };
 
 #endif /* VGG_1999_MODEL_H */
