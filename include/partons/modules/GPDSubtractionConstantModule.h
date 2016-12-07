@@ -26,6 +26,11 @@ class GPDSubtractionConstantModule: public ModuleObject {
 public:
 
     /**
+     * Class name used by automation
+     */
+    static const std::string GPD_SUBTRACTION_CONSTANT_MODULE_CLASS_NAME;
+
+    /**
      * Default constructor
      * @param className
      */
@@ -39,7 +44,7 @@ public:
     /**
      * Clone
      */
-    virtual GPDSubtractionConstantModule* clone() const = 0;
+    virtual GPDSubtractionConstantModule* clone() const;
 
     /**
      * Compute for given kinematics and GPD type

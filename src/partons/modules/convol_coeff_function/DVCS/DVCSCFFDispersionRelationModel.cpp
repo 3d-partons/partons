@@ -1,8 +1,6 @@
 #include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSCFFDispersionRelationModel.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
-#include <ElementaryUtils/logger/LoggerManager.h>
-#include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/functor/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
@@ -11,6 +9,7 @@
 #include <map>
 #include <utility>
 
+#include "../../../../../include/partons/beans/automation/BaseObjectData.h"
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
 #include "../../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
@@ -24,9 +23,6 @@
 #include "../../../../../include/partons/modules/GPDSubtractionConstantModule.h"
 #include "../../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../../include/partons/Partons.h"
-
-const std::string DVCSCFFDispersionRelationModel::SUBTRACTION_CONSTANT_MODULE_NAME =
-        "subtraction_constant_module_name";
 
 const unsigned int DVCSCFFDispersionRelationModel::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
@@ -63,6 +59,11 @@ DVCSCFFDispersionRelationModel* DVCSCFFDispersionRelationModel::clone() const {
 }
 
 DVCSCFFDispersionRelationModel::~DVCSCFFDispersionRelationModel() {
+
+    if (m_pSubtractionConstantModule) {
+        delete m_pSubtractionConstantModule;
+        m_pSubtractionConstantModule = 0;
+    }
 
     if (m_p_int_dispersionRelationIntegralPartDiagonalA) {
         delete m_p_int_dispersionRelationIntegralPartDiagonalA;
@@ -102,20 +103,39 @@ void DVCSCFFDispersionRelationModel::resolveObjectDependencies() {
 
 void DVCSCFFDispersionRelationModel::configure(
         const ElemUtils::Parameters &parameters) {
+    DVCSConvolCoeffFunctionModule::configure(parameters);
+}
 
-    if (parameters.isAvailable(
-            DVCSCFFDispersionRelationModel::SUBTRACTION_CONSTANT_MODULE_NAME)) {
+void DVCSCFFDispersionRelationModel::prepareSubModules(
+        const std::map<std::string, BaseObjectData>& subModulesData) {
+
+    //mother
+    DVCSConvolCoeffFunctionModule::prepareSubModules(subModulesData);
+
+    //search
+    std::map<std::string, BaseObjectData>::const_iterator it =
+            subModulesData.find(
+                    GPDSubtractionConstantModule::GPD_SUBTRACTION_CONSTANT_MODULE_CLASS_NAME);
+
+    //check if there
+    if (it != subModulesData.end()) {
+
+        if (m_pSubtractionConstantModule) {
+            delete m_pSubtractionConstantModule;
+            m_pSubtractionConstantModule = 0;
+        }
 
         m_pSubtractionConstantModule =
                 Partons::getInstance()->getModuleObjectFactory()->newGPDSubtractionConstantModule(
-                        parameters.getLastAvailable().getString());
+                        (it->second).getModuleClassName());
 
         info(__func__,
-                ElemUtils::Formatter() << "Subtraction constant module set to "
-                        << parameters.getLastAvailable().getString());
-    }
+                ElemUtils::Formatter()
+                        << "Configured with GPDSubtractionConstantModule = "
+                        << m_pSubtractionConstantModule->getClassName());
 
-    DVCSConvolCoeffFunctionModule::configure(parameters);
+        m_pSubtractionConstantModule->configure((it->second).getParameters());
+    }
 }
 
 DVCSCFFDispersionRelationModel::DVCSCFFDispersionRelationModel(
@@ -123,7 +143,12 @@ DVCSCFFDispersionRelationModel::DVCSCFFDispersionRelationModel(
         DVCSConvolCoeffFunctionModule(other) {
 
     //copy
-    m_pSubtractionConstantModule = other.m_pSubtractionConstantModule;
+    if (other.m_pSubtractionConstantModule) {
+        m_pSubtractionConstantModule =
+                other.m_pSubtractionConstantModule->clone();
+    } else {
+        m_pSubtractionConstantModule = 0;
+    }
 
     //initialize
     initFunctorsForIntegrations();
@@ -134,6 +159,12 @@ void DVCSCFFDispersionRelationModel::initModule() {
 }
 
 void DVCSCFFDispersionRelationModel::isModuleWellConfigured() {
+
+    if (!m_pSubtractionConstantModule) {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                "SubtractionConstantModule not set");
+    }
+
     DVCSConvolCoeffFunctionModule::isModuleWellConfigured();
 }
 
@@ -169,9 +200,6 @@ std::complex<double> DVCSCFFDispersionRelationModel::computeUnpolarized() {
     //subtraction constant
     double Sub = m_pSubtractionConstantModule->compute(m_xi, m_t, m_MuF2,
             m_MuR2, m_currentGPDComputeType);
-
-    Partons::getInstance()->getLoggerManager()->info(getClassName(), __func__,
-            ElemUtils::Formatter() << "Subtraction constant: " << Sub);
 
     //imaginary part
     double Im = M_PI * computeSquareChargeAveragedGPD(m_xi);

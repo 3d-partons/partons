@@ -11,7 +11,7 @@
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <utility>
 
-//#include "../../../include/partons/beans/parton_distribution/PartonDistribution.h"
+const std::string GPDSubtractionConstantModule::GPD_SUBTRACTION_CONSTANT_MODULE_CLASS_NAME = "GPDSubtractionConstantModule";
 
 GPDSubtractionConstantModule::GPDSubtractionConstantModule(
         const std::string& className) :
@@ -20,6 +20,10 @@ GPDSubtractionConstantModule::GPDSubtractionConstantModule(
 }
 
 GPDSubtractionConstantModule::~GPDSubtractionConstantModule() {
+}
+
+GPDSubtractionConstantModule* GPDSubtractionConstantModule::clone() const{
+    return new GPDSubtractionConstantModule(*this);
 }
 
 void GPDSubtractionConstantModule::configure(

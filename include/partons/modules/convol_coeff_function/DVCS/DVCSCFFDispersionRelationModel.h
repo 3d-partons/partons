@@ -30,8 +30,6 @@ class DVCSCFFDispersionRelationModel: public DVCSConvolCoeffFunctionModule {
 
 public:
 
-    static const std::string SUBTRACTION_CONSTANT_MODULE_NAME; ///< Name of subtraction constant module to be set via configure
-
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
     /** Constructor
@@ -47,6 +45,8 @@ public:
     virtual DVCSCFFDispersionRelationModel* clone() const;
     virtual void resolveObjectDependencies();
     virtual void configure(const ElemUtils::Parameters &parameters);
+    virtual void prepareSubModules(
+            const std::map<std::string, BaseObjectData>& subModulesData);
 
     /**
      * Get subtraction constant module
