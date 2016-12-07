@@ -113,8 +113,10 @@ void DVCSCFFDispersionRelationModel::prepareSubModules(
     DVCSConvolCoeffFunctionModule::prepareSubModules(subModulesData);
 
     //search
-    std::map<std::string, BaseObjectData>::const_iterator it =
-            subModulesData.find(
+    std::map<std::string, BaseObjectData>::const_iterator it;
+
+    //GPD subtraction constant module
+    it = subModulesData.find(
                     GPDSubtractionConstantModule::GPD_SUBTRACTION_CONSTANT_MODULE_CLASS_NAME);
 
     //check if there
@@ -135,6 +137,7 @@ void DVCSCFFDispersionRelationModel::prepareSubModules(
                         << m_pSubtractionConstantModule->getClassName());
 
         m_pSubtractionConstantModule->configure((it->second).getParameters());
+        m_pSubtractionConstantModule->prepareSubModules((it->second).getSubModules());
     }
 }
 
