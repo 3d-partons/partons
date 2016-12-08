@@ -60,10 +60,7 @@ DVCSCFFDispersionRelationModel* DVCSCFFDispersionRelationModel::clone() const {
 
 DVCSCFFDispersionRelationModel::~DVCSCFFDispersionRelationModel() {
 
-    if (m_pSubtractionConstantModule) {
-        delete m_pSubtractionConstantModule;
-        m_pSubtractionConstantModule = 0;
-    }
+    setSubtractionConstantModule(0);
 
     if (m_p_int_dispersionRelationIntegralPartDiagonalA) {
         delete m_p_int_dispersionRelationIntegralPartDiagonalA;
@@ -116,28 +113,36 @@ void DVCSCFFDispersionRelationModel::prepareSubModules(
     std::map<std::string, BaseObjectData>::const_iterator it;
 
     //GPD subtraction constant module
-    it = subModulesData.find(
+    it =
+            subModulesData.find(
                     GPDSubtractionConstantModule::GPD_SUBTRACTION_CONSTANT_MODULE_CLASS_NAME);
 
     //check if there
     if (it != subModulesData.end()) {
 
-        if (m_pSubtractionConstantModule) {
-            delete m_pSubtractionConstantModule;
-            m_pSubtractionConstantModule = 0;
+        if (m_pSubtractionConstantModule != 0) {
+            setSubtractionConstantModule(0);
         }
 
-        m_pSubtractionConstantModule =
-                Partons::getInstance()->getModuleObjectFactory()->newGPDSubtractionConstantModule(
-                        (it->second).getModuleClassName());
+        if (m_pSubtractionConstantModule == 0) {
+            m_pSubtractionConstantModule =
+                    Partons::getInstance()->getModuleObjectFactory()->newGPDSubtractionConstantModule(
+                            (it->second).getModuleClassName());
 
-        info(__func__,
-                ElemUtils::Formatter()
-                        << "Configured with GPDSubtractionConstantModule = "
-                        << m_pSubtractionConstantModule->getClassName());
+            info(__func__,
+                    ElemUtils::Formatter()
+                            << "Configured with GPDSubtractionConstantModule = "
+                            << m_pSubtractionConstantModule->getClassName());
 
-        m_pSubtractionConstantModule->configure((it->second).getParameters());
-        m_pSubtractionConstantModule->prepareSubModules((it->second).getSubModules());
+            m_pSubtractionConstantModule->configure(
+                    (it->second).getParameters());
+            m_pSubtractionConstantModule->prepareSubModules(
+                    (it->second).getSubModules());
+        } else {
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    ElemUtils::Formatter() << getClassName()
+                            << " is GPDSubtractionConstantModule dependent and you have not provided one");
+        }
     }
 }
 
@@ -275,5 +280,8 @@ GPDSubtractionConstantModule* DVCSCFFDispersionRelationModel::getSubtractionCons
 
 void DVCSCFFDispersionRelationModel::setSubtractionConstantModule(
         GPDSubtractionConstantModule* subtractionConstantModule) {
+
+    m_pModuleObjectFactory->updateModulePointerReference(
+            m_pSubtractionConstantModule, subtractionConstantModule);
     m_pSubtractionConstantModule = subtractionConstantModule;
 }
