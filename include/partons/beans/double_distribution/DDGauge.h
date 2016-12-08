@@ -28,7 +28,7 @@ public:
 
     operator Type() const;
 
-    std::string toString();
+    std::string toString() const;
 
     static DDGauge::Type fromString(const std::string& gaugeStr);
 

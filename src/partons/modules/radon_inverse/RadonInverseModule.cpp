@@ -2,15 +2,19 @@
 
 #include <cmath>
 #include <ElementaryUtils/logger/CustomException.h>
+#include <ElementaryUtils/parameters/Parameter.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/functor/multi_dimension/FunctionTypeMD.h>
-#include <NumA/linear_algebra/LinAlgUtils.h>
+//#include <NumA/linear_algebra/LinAlgUtils.h>
 
-const std::string RadonInverseModule::RADON_INVERSE_MODULE_CLASS_NAME = "RadonInverseModule";
+const std::string RadonInverseModule::RADON_INVERSE_MODULE_CLASS_NAME =
+        "RadonInverseModule";
 const std::string RadonInverseModule::PARAMETER_NAME_MESH_SIZE = "mesh_size";
 const std::string RadonInverseModule::PARAMETER_NAME_GAUGE = "gauge";
-const std::string RadonInverseModule::PARAMETER_NAME_GAUGE_IN_VECTOR = "gauge_in_vector";
-const std::string RadonInverseModule::PARAMETER_NAME_MAXIMUM_ITERATIONS = "max_iter";
+const std::string RadonInverseModule::PARAMETER_NAME_GAUGE_IN_VECTOR =
+        "gauge_in_vector";
+const std::string RadonInverseModule::PARAMETER_NAME_MAXIMUM_ITERATIONS =
+        "max_iter";
 const std::string RadonInverseModule::PARAMETER_NAME_TOLERANCE = "tolerance";
 
 const double RadonInverseModule::DD_DOMAIN_HALF_EDGE = 1. / sqrt(2.);
@@ -52,18 +56,49 @@ void RadonInverseModule::configure(const ElemUtils::Parameters& parameters) {
 
     if (parameters.isAvailable(RadonInverseModule::PARAMETER_NAME_MESH_SIZE)) {
         setN(parameters.getLastAvailable().toSize_t());
+
+        info(__func__,
+                ElemUtils::Formatter()
+                        << RadonInverseModule::PARAMETER_NAME_MESH_SIZE
+                        << " configured with value = " << getN() << ".");
     }
     if (parameters.isAvailable(RadonInverseModule::PARAMETER_NAME_GAUGE)) {
         setGauge(DDGauge(parameters.getLastAvailable().getString()));
+
+        info(__func__,
+                ElemUtils::Formatter()
+                        << RadonInverseModule::PARAMETER_NAME_GAUGE
+                        << " configured with value = " << getGauge().toString()
+                        << ".");
     }
-    if (parameters.isAvailable(RadonInverseModule::PARAMETER_NAME_GAUGE_IN_VECTOR)) {
+    if (parameters.isAvailable(
+            RadonInverseModule::PARAMETER_NAME_GAUGE_IN_VECTOR)) {
         setGaugeInVector(parameters.getLastAvailable().toBoolean());
+
+        info(__func__,
+                ElemUtils::Formatter()
+                        << RadonInverseModule::PARAMETER_NAME_GAUGE_IN_VECTOR
+                        << " configured with value = " << isGaugeInVector()
+                        << ".");
     }
-    if (parameters.isAvailable(RadonInverseModule::PARAMETER_NAME_MAXIMUM_ITERATIONS)) {
+    if (parameters.isAvailable(
+            RadonInverseModule::PARAMETER_NAME_MAXIMUM_ITERATIONS)) {
         setMaximumIterations(parameters.getLastAvailable().toSize_t());
+
+        info(__func__,
+                ElemUtils::Formatter()
+                        << RadonInverseModule::PARAMETER_NAME_MAXIMUM_ITERATIONS
+                        << " configured with value = " << getMaximumIterations()
+                        << ".");
     }
     if (parameters.isAvailable(RadonInverseModule::PARAMETER_NAME_TOLERANCE)) {
         setTolerance(parameters.getLastAvailable().toDouble());
+
+        info(__func__,
+                ElemUtils::Formatter()
+                        << RadonInverseModule::PARAMETER_NAME_TOLERANCE
+                        << " configured with value = " << getTolerance()
+                        << ".");
     }
 }
 
@@ -144,8 +179,8 @@ void RadonInverseModule::buildSystem(NumA::FunctionTypeMD* pGPDFunction) {
 void RadonInverseModule::solve() {
     info(__func__, "Solving the linear system...");
 
-        if (m_maxiter <= 0)
-            m_maxiter = 4 * m_n;
+    if (m_maxiter <= 0)
+        m_maxiter = 4 * m_n;
 
     ElemUtils::Formatter formatter;
     formatter << "LOGS of the solver:\n";
@@ -225,6 +260,5 @@ size_t RadonInverseModule::getCols() const {
 void RadonInverseModule::prepareSubModules(
         const std::map<std::string, BaseObjectData>& subModulesData) {
     ModuleObject::prepareSubModules(subModulesData);
-
 
 }

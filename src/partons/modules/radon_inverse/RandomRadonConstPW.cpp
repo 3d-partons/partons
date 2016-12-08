@@ -52,12 +52,28 @@ void RandomRadonConstPW::configure(const ElemUtils::Parameters& parameters) {
 
     if (parameters.isAvailable(RandomRadonConstPW::PARAMETER_NAME_QUARK_GPD)) {
         setQuarkGPD(parameters.getLastAvailable().toBoolean());
+
+        info(__func__,
+                ElemUtils::Formatter()
+                        << RandomRadonConstPW::PARAMETER_NAME_QUARK_GPD
+                        << " configured with value = " << isQuarkGPD() << ".");
     }
     if (parameters.isAvailable(RandomRadonConstPW::PARAMETER_NAME_ALPHA_EVEN)) {
         setAlphaEven(parameters.getLastAvailable().toBoolean());
+
+        info(__func__,
+                ElemUtils::Formatter()
+                        << RandomRadonConstPW::PARAMETER_NAME_ALPHA_EVEN
+                        << " configured with value = " << isAlphaEven() << ".");
     }
     if (parameters.isAvailable(RandomRadonConstPW::PARAMETER_NAME_TRIANGULAR)) {
         setTriangular(parameters.getLastAvailable().toBoolean());
+
+        info(__func__,
+                ElemUtils::Formatter()
+                        << RandomRadonConstPW::PARAMETER_NAME_TRIANGULAR
+                        << " configured with value = " << isTriangular()
+                        << ".");
     }
 }
 

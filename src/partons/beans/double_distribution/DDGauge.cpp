@@ -21,7 +21,7 @@ DDGauge::operator DDGauge::Type() const {
     return m_type;
 }
 
-std::string DDGauge::toString() {
+std::string DDGauge::toString() const {
 
     switch (m_type) {
     case BMKS:
