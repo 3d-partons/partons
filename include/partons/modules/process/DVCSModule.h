@@ -36,7 +36,7 @@ public:
      */
     virtual void configure(const ElemUtils::Parameters &parameters);
 
-    void computeConvolCoeffFunction(double xB, double t, double Q2,
+    void computeConvolCoeffFunction(double xB, double t, double Q2, double E,
             const List<GPDType> & gpdType = List<GPDType>());
 
     // TODO convert double to integer

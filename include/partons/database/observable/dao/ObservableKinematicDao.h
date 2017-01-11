@@ -23,9 +23,9 @@ public:
     ObservableKinematicDao();
     virtual ~ObservableKinematicDao();
 
-    int insert(double xB, double t, double Q2, double phi) const;
+    int insert(double xB, double t, double Q2, double E, double phi) const;
 
-    int select(double xB, double t, double Q2, double phi) const;
+    int select(double xB, double t, double Q2, double E, double phi) const;
 
     List<ObservableKinematic> getKinematicListByComputationId(
             int computationId) const;

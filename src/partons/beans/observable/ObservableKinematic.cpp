@@ -12,16 +12,17 @@ const std::string ObservableKinematic::PARAMETER_NAME_XB = "xB";
 const std::string ObservableKinematic::PARAMETER_NAME_T = "t";
 const std::string ObservableKinematic::PARAMETER_NAME_Q2 = "Q2";
 const std::string ObservableKinematic::PARAMETER_NAME_PHI = "phi";
+const std::string ObservableKinematic::PARAMETER_NAME_BEAM_ENERGY = "E";
 
 ObservableKinematic::ObservableKinematic() :
-        Kinematic("ObservableKinematic"), m_xB(0.), m_t(0.), m_Q2(0.), m_phi(
+        Kinematic("ObservableKinematic"), m_xB(0.), m_t(0.), m_Q2(0.), m_E(0.), m_phi(
                 PhysicalType<double>(0.,
                         PhysicalUnit(PhysicalUnit::DEGREE).getShortName())) {
 }
 
 ObservableKinematic::ObservableKinematic(
         const ElemUtils::Parameters &parameters) :
-        Kinematic("ObservableKinematic"), m_xB(0.), m_t(0.), m_Q2(0.), m_phi(
+        Kinematic("ObservableKinematic"), m_xB(0.), m_t(0.), m_Q2(0.), m_E(0.), m_phi(
                 PhysicalType<double>(0.,
                         PhysicalUnit(PhysicalUnit::DEGREE).getShortName())) {
     if (parameters.isAvailable(ObservableKinematic::PARAMETER_NAME_XB)) {
@@ -42,6 +43,13 @@ ObservableKinematic::ObservableKinematic(
         errorMissingParameter(ObservableKinematic::PARAMETER_NAME_Q2);
     }
 
+    if (parameters.isAvailable(
+            ObservableKinematic::PARAMETER_NAME_BEAM_ENERGY)) {
+        m_E = parameters.getLastAvailable().toDouble();
+    } else {
+        errorMissingParameter(ObservableKinematic::PARAMETER_NAME_BEAM_ENERGY);
+    }
+
     if (parameters.isAvailable(ObservableKinematic::PARAMETER_NAME_PHI)) {
         m_phi.setValue(parameters.getLastAvailable().toDouble());
         m_phi.setInitialized(true);
@@ -57,24 +65,25 @@ ObservableKinematic::ObservableKinematic(
 }
 
 ObservableKinematic::ObservableKinematic(double xB, double t, double Q2,
-        double phi) :
-        Kinematic("ObservableKinematic"), m_xB(xB), m_t(t), m_Q2(Q2), m_phi(
+        double E, double phi) :
+        Kinematic("ObservableKinematic"), m_xB(xB), m_t(t), m_Q2(Q2), m_E(E), m_phi(
                 PhysicalType<double>(phi,
                         PhysicalUnit(PhysicalUnit::DEGREE).getShortName())) {
     m_phi.setInitialized(true);
 }
 
-ObservableKinematic::ObservableKinematic(double xB, double t, double Q2) :
-        Kinematic("ObservableKinematic"), m_xB(xB), m_t(t), m_Q2(Q2), m_phi(
+ObservableKinematic::ObservableKinematic(double xB, double t, double Q2,
+        double E) :
+        Kinematic("ObservableKinematic"), m_xB(xB), m_t(t), m_Q2(Q2), m_E(E), m_phi(
                 PhysicalType<double>(0.,
                         PhysicalUnit(PhysicalUnit::DEGREE).getShortName())) {
 }
 
 ObservableKinematic::ObservableKinematic(const ElemUtils::GenericType& xB,
         const ElemUtils::GenericType& t, const ElemUtils::GenericType& Q2,
-        const ElemUtils::GenericType& phi) :
+        const ElemUtils::GenericType& E, const ElemUtils::GenericType& phi) :
         Kinematic("ObservableKinematic"), m_xB(xB.toDouble()), m_t(
-                t.toDouble()), m_Q2(Q2.toDouble()), m_phi(
+                t.toDouble()), m_Q2(Q2.toDouble()), m_E(E.toDouble()), m_phi(
                 PhysicalType<double>(phi.toDouble(),
                         PhysicalUnit(PhysicalUnit::DEGREE).getShortName())) {
     m_phi.setInitialized(true);
@@ -86,7 +95,7 @@ ObservableKinematic::~ObservableKinematic() {
 std::string ObservableKinematic::toString() const {
     ElemUtils::Formatter formatter;
     formatter << Kinematic::toString() << " m_xB = " << m_xB << " m_t = " << m_t
-            << " (GeV2) m_Q2 = " << m_Q2 << " (GeV2)";
+            << " (GeV2) m_Q2 = " << m_Q2 << " (GeV2) m_E = " << m_E << " (GeV)";
 
     if (m_phi.isInitialized()) {
         formatter << " phi = " << m_phi.toString();
@@ -149,6 +158,15 @@ void ObservableKinematic::setXB(double xB) {
     updateHashSum();
 }
 
+double ObservableKinematic::getE() const {
+    return m_E;
+}
+
+void ObservableKinematic::setE(double E) {
+    m_E = E;
+    updateHashSum();
+}
+
 PhysicalType<double> ObservableKinematic::getPhi() const {
     return m_phi;
 }
@@ -161,7 +179,7 @@ void ObservableKinematic::setPhi(double phi) {
 void ObservableKinematic::serialize(ElemUtils::Packet &packet) const {
     Kinematic::serialize(packet);
 
-    packet << m_xB << m_t << m_Q2 << m_phi.getValue();
+    packet << m_xB << m_t << m_Q2 << m_E << m_phi.getValue();
 }
 
 //TODO serialize PhysicalType<T>
@@ -171,6 +189,7 @@ void ObservableKinematic::unserialize(ElemUtils::Packet &packet) {
     packet >> m_xB;
     packet >> m_t;
     packet >> m_Q2;
+    packet >> m_E;
 
     double phi = 0.;
     packet >> phi;

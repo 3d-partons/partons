@@ -76,7 +76,7 @@ public:
             formatter << m_value;
             if (!ElemUtils::StringUtils::equalsIgnoreCase(m_unit,
                     PHYSICAL_TYPE_NONE_UNIT)) {
-                formatter << "(" << m_unit << ")";
+                formatter << " (" << m_unit << ")";
             }
         } else {
             formatter << "not initialized";

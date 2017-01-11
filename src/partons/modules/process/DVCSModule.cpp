@@ -95,6 +95,13 @@ void DVCSModule::isModuleWellConfigured() {
         warn(__func__, formatter.str());
     }
 
+    // Test kinematic domain of E
+    if (m_E < 0) {
+        ElemUtils::Formatter formatter;
+        formatter << "Input value of E = " << m_E << " is not > 0.";
+        warn(__func__, formatter.str());
+    }
+
     // Test kinematic domain of beam energy
     if (m_y < 0 || m_y > 1) {
         ElemUtils::Formatter formatter;
@@ -117,7 +124,7 @@ void DVCSModule::isModuleWellConfigured() {
 }
 
 void DVCSModule::computeConvolCoeffFunction(double xB, double t, double Q2,
-        const List<GPDType> & gpdType) {
+        double E, const List<GPDType> & gpdType) {
     if (isPreviousKinematicsDifferent(xB, t, Q2)
             || (BaseObjectRegistry::getInstance()->getObjectClassIdByClassName(
                     m_pConvolCoeffFunctionModule->getClassName())
@@ -155,6 +162,8 @@ void DVCSModule::computeConvolCoeffFunction(double xB, double t, double Q2,
     m_xB = xB;
     m_t = t;
     m_Q2 = Q2;
+
+    m_E = E;
 
     initModule();
     isModuleWellConfigured();

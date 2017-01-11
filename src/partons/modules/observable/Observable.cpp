@@ -86,22 +86,23 @@ ObservableResult Observable::compute(const ObservableKinematic &kinematic,
         const List<GPDType> & gpdType) {
 
     ObservableResult result = compute(kinematic.getXB(), kinematic.getT(),
-            kinematic.getQ2(), kinematic.getPhi().getValue(), gpdType);
+            kinematic.getQ2(), kinematic.getE(), kinematic.getPhi().getValue(),
+            gpdType);
     result.setKinematic(kinematic);
 
     return result;
 }
 
-ObservableResult Observable::compute(double xB, double t, double Q2, double phi,
-        const List<GPDType> & gpdType) {
+ObservableResult Observable::compute(double xB, double t, double Q2, double E,
+        double phi, const List<GPDType> & gpdType) {
 
     debug(__func__,
             ElemUtils::Formatter() << "Processing ... xB = " << xB << " t = "
-                    << t << " Q2 = " << Q2 << " phi = " << phi);
+                    << t << " Q2 = " << Q2 << " E = " << E << " phi = " << phi);
 
     ObservableResult observableResult;
 
-    m_pProcessModule->computeConvolCoeffFunction(xB, t, Q2, gpdType);
+    m_pProcessModule->computeConvolCoeffFunction(xB, t, Q2, E, gpdType);
 
     // check if this observable is a fourier observable
     if (m_observableType == ObservableType::FOURIER) {
@@ -112,7 +113,7 @@ ObservableResult Observable::compute(double xB, double t, double Q2, double phi,
         observableResult.setComputationModuleName(
                 m_pProcessModule->getClassName());
         observableResult.setObservableType(m_observableType);
-        observableResult.setKinematic(ObservableKinematic(xB, t, Q2));
+        observableResult.setKinematic(ObservableKinematic(xB, t, Q2, E));
 
     } else
     // check if this observable is a phi observable
@@ -125,7 +126,7 @@ ObservableResult Observable::compute(double xB, double t, double Q2, double phi,
         observableResult.setComputationModuleName(
                 m_pProcessModule->getClassName());
         observableResult.setObservableType(m_observableType);
-        observableResult.setKinematic(ObservableKinematic(xB, t, Q2, phi));
+        observableResult.setKinematic(ObservableKinematic(xB, t, Q2, E, phi));
     }
 
     else {

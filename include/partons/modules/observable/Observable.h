@@ -63,8 +63,8 @@ public:
     ObservableResult compute(const ObservableKinematic &kinematic,
             const List<GPDType> & gpdType = List<GPDType>());
 
-    ObservableResult compute(double xB, double t, double Q2, double phi,
-            const List<GPDType> & gpdType = List<GPDType>());
+    ObservableResult compute(double xB, double t, double Q2, double E,
+            double phi, const List<GPDType> & gpdType = List<GPDType>());
 
     virtual double computePhiObservable(double phi);
 

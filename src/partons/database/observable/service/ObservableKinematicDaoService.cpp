@@ -66,7 +66,7 @@ int ObservableKinematicDaoService::getIdByKinematicObject(
         const ObservableKinematic& observableKinematic) const {
     return m_observableKinematicDao.select(observableKinematic.getXB(),
             observableKinematic.getT(), observableKinematic.getQ2(),
-            observableKinematic.getPhi().getValue());
+            observableKinematic.getE(), observableKinematic.getPhi().getValue());
 }
 
 List<ObservableKinematic> ObservableKinematicDaoService::getKinematicListByComputationId(
@@ -84,5 +84,5 @@ int ObservableKinematicDaoService::insertWithoutTransaction(
         const ObservableKinematic& observableKinematic) const {
     return m_observableKinematicDao.insert(observableKinematic.getXB(),
             observableKinematic.getT(), observableKinematic.getQ2(),
-            observableKinematic.getPhi().getValue());
+            observableKinematic.getE(), observableKinematic.getPhi().getValue());
 }

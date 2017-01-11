@@ -28,6 +28,7 @@ public:
     static const std::string PARAMETER_NAME_T;
     static const std::string PARAMETER_NAME_Q2;
     static const std::string PARAMETER_NAME_PHI;
+    static const std::string PARAMETER_NAME_BEAM_ENERGY;
 
     /**
      * Default constructor
@@ -42,15 +43,16 @@ public:
      * @param xB Bjorken variable
      * @param t Mandelstam variable, momentum transfer on the hadron target (in GeV^2)
      * @param Q2 Virtuality of the photon in Born approximation (in GeV^2)
-     * @param phi angle between leptonic and hadronic planes (in degrees, Trento convention)
+     * @param E Beam energy (in GeV)
+     * @param phi Angle between leptonic and hadronic planes (in degrees, Trento convention)
      */
-    ObservableKinematic(double xB, double t, double Q2, double phi);
+    ObservableKinematic(double xB, double t, double Q2, double E, double phi);
 
-    ObservableKinematic(double xB, double t, double Q2);
+    ObservableKinematic(double xB, double t, double Q2, double E);
 
     ObservableKinematic(const ElemUtils::GenericType& xB,
             const ElemUtils::GenericType& t, const ElemUtils::GenericType& Q2,
-            const ElemUtils::GenericType& phi);
+            const ElemUtils::GenericType& E, const ElemUtils::GenericType& phi);
 
     /**
      * Default destructor
@@ -75,6 +77,8 @@ public:
     void setT(double t);
     double getXB() const;
     void setXB(double xB);
+    double getE() const;
+    void setE(double E);
     PhysicalType<double> getPhi() const;
     void setPhi(double phi);
 
@@ -89,6 +93,7 @@ private:
     double m_xB;    ///< Bjorken variable
     double m_t; ///< Mandelstam variable, momentum transfer on the hadron target (in GeV^2)
     double m_Q2;  ///< Virtuality of the photon in Born approximation (in GeV^2)
+    double m_E;  ///< Beam energy (in GeV)
     PhysicalType<double> m_phi; ///<  Angle between leptonic and hadronic planes (in degrees, Trento convention)
 };
 

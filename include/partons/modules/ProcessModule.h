@@ -37,8 +37,6 @@ class ProcessModule: public ModuleObject {
 public:
     static const std::string PROCESS_MODULE_CLASS_NAME;
 
-    static const std::string PARAMETER_NAME_BEAM_ENERGY;
-
     /**
      * Default constructor
      */
@@ -52,7 +50,7 @@ public:
     virtual ~ProcessModule();
 
     virtual void computeConvolCoeffFunction(double xB, double t, double Q2,
-            const List<GPDType> & gpdType = List<GPDType>()) = 0;
+            double E, const List<GPDType> & gpdType = List<GPDType>()) = 0;
 
     virtual double computeCrossSection(double beamHelicity, double beamCharge,
             NumA::Vector3D targetPolarization, double phi) = 0;
@@ -61,8 +59,6 @@ public:
 
     virtual void setConvolCoeffFunctionModule(
             ConvolCoeffFunctionModule* pConvolCoeffFunctionModule);
-
-    void setBeamEnergy(double EBeam); ///< Sets beam energy
 
     void setScaleModule(ScaleModule* pScaleModule);
     void setXiConverterModule(XiConverterModule* pXiConverterModule);

@@ -36,18 +36,18 @@ List<ObservableKinematic> KinematicUtils::getObservableKinematicFromFile(
 
                 std::vector<std::string> kinematicValues =
                         ElemUtils::StringUtils::split(kinematicString[i], '|');
-                if (kinematicValues.size() < 4) {
+                if (kinematicValues.size() < 5) {
 
                     error("getObservableKinematicFromFile",
                             ElemUtils::Formatter()
                                     << "Missing column value in your kinematic input file : "
                                     << filePath
-                                    << " ; You must provided 4 column : xB | t | Q2 | phi");
+                                    << " ; You must provided 5 column : xB | t | Q2 | E | phi");
                 }
 
                 kinematic = ObservableKinematic(kinematicValues[0],
                         kinematicValues[1], kinematicValues[2],
-                        kinematicValues[3]);
+                        kinematicValues[3], kinematicValues[4]);
                 kinematic.setIndexId(observableKinematicList.size());
 
                 observableKinematicList.add(kinematic);

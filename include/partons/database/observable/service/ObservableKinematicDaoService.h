@@ -50,7 +50,7 @@ public:
     int insert(const List<ObservableKinematic> &observableKinematicList) const;
 
     /**
-     * Try to find an entry in observable_kinematic table that match with xB, t and Q2 values.
+     * Try to find an entry in observable_kinematic table that match with xB, t, Q2, E and phi values.
      *
      * @param observableKinematic
      * @return unique id related to entry that match with ObservableKinematic object or -1 if couldn't find it.

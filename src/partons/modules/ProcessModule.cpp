@@ -13,8 +13,6 @@
 
 const std::string ProcessModule::PROCESS_MODULE_CLASS_NAME = "ProcessModule";
 
-const std::string ProcessModule::PARAMETER_NAME_BEAM_ENERGY = "beam_energy";
-
 ProcessModule::ProcessModule(const std::string &className) :
         ModuleObject(className), m_isCCFModuleDependent(true), m_phi(0.), m_phiS(
                 0.), m_phie(0.), m_xB(0.), m_t(0.), m_Q2(0.), m_E(0.), m_pScaleModule(
@@ -76,31 +74,7 @@ ProcessModule::~ProcessModule() {
 }
 
 void ProcessModule::configure(const ElemUtils::Parameters &parameters) {
-
-    if (parameters.isAvailable(ProcessModule::PARAMETER_NAME_BEAM_ENERGY)) {
-        try {
-            m_E = parameters.getLastAvailable().toDouble();
-
-            info(__func__,
-                    ElemUtils::Formatter()
-                            << ProcessModule::PARAMETER_NAME_BEAM_ENERGY
-                            << " configured with value = " << m_E);
-        } catch (const std::exception &e) {
-            throw ElemUtils::CustomException(getClassName(), __func__,
-                    ElemUtils::Formatter() << "For parameter "
-                            << ProcessModule::PARAMETER_NAME_BEAM_ENERGY << " "
-                            << e.what());
-        }
-    }
-
     ModuleObject::configure(parameters);
-}
-
-/*--------------------------- Function SetBeamEnergy(EBeam) ----------------------------*
- | Sets the beam energy in the laboratory frame.                                        |
- *--------------------------------------------------------------------------------------*/
-void ProcessModule::setBeamEnergy(double EBeam) {
-    m_E = EBeam;
 }
 
 //TODO vérifier que la précision du double ne fausse pas le résultat
