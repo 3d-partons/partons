@@ -16,6 +16,9 @@
  *
  *
  * August 2015 : Tested and approved by Pawel Sznajder
+ *
+ * 21/02/2017  delta for gluons (line 1376) has been modified with respect to GK11 to match with the expression of eq. 34 in   arXiv:0708.3569 [hep-ph] and the fact that delta_g = delta_s-1
+ *
  */
 
 #include <string>
