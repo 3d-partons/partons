@@ -2,99 +2,133 @@
 
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
+#include <ElementaryUtils/string_utils/StringUtils.h>
+#include <QtCore/qstring.h>
+#include <QtCore/qvariant.h>
 #include <QtSql/qsqldatabase.h>
-#include <stddef.h>
+#include <QtSql/qsqlerror.h>
+#include <QtSql/qsqlquery.h>
+#include <utility>
 
-#include "../../../../../include/partons/beans/Computation.h"
-#include "../../../../../include/partons/beans/system/ResultInfo.h"
+#include "../../../../../include/partons/beans/observable/ObservableKinematic.h"
+#include "../../../../../include/partons/database/Database.h"
+#include "../../../../../include/partons/database/DatabaseManager.h"
 #include "../../../../../include/partons/utils/math/ErrorBar.h"
+#include "../../../../../include/partons/utils/type/PhysicalType.h"
 
 ObservableResultDaoService::ObservableResultDaoService() :
-        BaseObject("ObservableResultDaoService") {
+        ResultDaoService("ObservableResultDaoService"), m_lastObservableKinematicId(
+                -1), m_lastObservableResultId(-1), m_observableKinematicTableFile(
+                ElemUtils::StringUtils::EMPTY), m_observableResultTableFile(
+                ElemUtils::StringUtils::EMPTY) {
+    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
+
+    ElemUtils::Formatter formatter;
+    formatter << "SELECT COUNT("
+            << Database::COLUMN_NAME_OBSERVABLE_KINEMATIC_ID << ") FROM "
+            << Database::TABLE_NAME_OBSERVABLE_KINEMATIC;
+
+    if (query.exec(QString(formatter.str().c_str()))) {
+        if (query.first()) {
+            m_lastObservableKinematicId = query.value(0).toInt();
+        }
+    } else {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
+    }
+    formatter.clear();
+    query.clear();
+
+    formatter << "SELECT COUNT(" << Database::COLUMN_NAME_OBSERVABLE_RESULT_ID
+            << ") FROM " << Database::TABLE_NAME_OBSERVABLE_RESULT;
+
+    if (query.exec(QString(formatter.str().c_str()))) {
+        if (query.first()) {
+            m_lastObservableResultId = query.value(0).toInt();
+        }
+    } else {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
+    }
+    formatter.clear();
+    query.clear();
 }
 
 ObservableResultDaoService::~ObservableResultDaoService() {
 }
 
 int ObservableResultDaoService::insert(
-        const ObservableResult &observableResult) const {
+        const ObservableResult &observableResult) {
 
-    int result = -1;
+    List<ObservableResult> results;
+    results.add(observableResult);
 
-    // For multiple query it's better to use transaction to guarantee database's integrity and performance
-    QSqlDatabase::database().transaction();
-
-    try {
-
-        result = insertWithoutTransaction(observableResult);
-
-        // If there is no exception we can commit all query
-        QSqlDatabase::database().commit();
-
-    } catch (const std::exception &e) {
-        // Else return database in a stable state : n-1
-        QSqlDatabase::database().rollback();
-
-        throw ElemUtils::CustomException(getClassName(), __func__, e.what());
-    }
-
-    return result;
-}
-
-int ObservableResultDaoService::insertWithoutTransaction(
-        const ObservableResult& observableResult) const {
-
-    // Check if this kinematic already exists
-    int kinematicId = m_observableKinematicDaoService.getIdByKinematicObject(
-            observableResult.getKinematic());
-    // If not, insert new entry in database and retrieve its id
-    if (kinematicId == -1) {
-        kinematicId = m_observableKinematicDaoService.insertWithoutTransaction(
-                observableResult.getKinematic());
-    }
-
-    // Check if this computation date already exists and retrieve Id
-    int computationId = m_computationDaoService.getComputationIdByDateTime(
-            observableResult.getResultInfo().getComputation().getDateTime());
-    // If not, insert new entry in database and retrieve its id
-    if (computationId == -1) {
-        computationId = m_computationDaoService.insertWithoutTransaction(
-                observableResult.getResultInfo().getComputation());
-    }
-
-    //Then store observableResult in database
-    m_observableResultDao.insert(observableResult.getObservableName(),
-            observableResult.getValue(),
-            observableResult.getStatError().getLowerBound(),
-            observableResult.getStatError().getUpperBound(),
-            observableResult.getSystError().getLowerBound(),
-            observableResult.getSystError().getUpperBound(),
-            observableResult.getTotalError(),
-            observableResult.getComputationModuleName(),
-            observableResult.getObservableType(), kinematicId, computationId);
-
-    return computationId;
+    return insert(results);
 }
 
 int ObservableResultDaoService::insert(
-        const List<ObservableResult> &observableResultList) {
-    int result = -1;
-
-    info(__func__,
-            ElemUtils::Formatter() << "Inserting object size = "
-                    << observableResultList.size());
-
+        const List<ObservableResult> &resultList) {
     // For multiple query it's better to use transaction to guarantee database's integrity and performance
     QSqlDatabase::database().transaction();
 
     try {
-        // for each result
-        for (size_t i = 0; i != observableResultList.size(); i++) {
-            result = insertWithoutTransaction(observableResultList[i]);
+        info(__func__, "Prepare data before inserting them into database ...");
+        info(__func__,
+                ElemUtils::Formatter() << resultList.size()
+                        << " ObservableResult(s) will be inserted ...");
+
+        for (unsigned int i = 0; i != resultList.size(); i++) {
+            prepareCommonTablesFromResultInfo(resultList[i].getResultInfo());
+
+            ObservableKinematic kinematic = resultList[i].getKinematic();
+
+            int kinematicId =
+                    m_observableKinematicDaoService.getKinematicIdByHashSum(
+                            kinematic.getHashSum());
+
+            if (kinematicId == -1) {
+                m_lastObservableKinematicId++;
+                kinematicId = m_lastObservableKinematicId;
+
+                //TODO remove hardcoded 0 values
+                m_observableKinematicTableFile += ElemUtils::Formatter()
+                        << m_lastObservableKinematicId << "," << 0 << ","
+                        << kinematic.getXB() << "," << kinematic.getT() << ","
+                        << kinematic.getQ2() << "," << kinematic.getE() << ","
+                        << kinematic.getPhi().getValue() << "," << 0 << ","
+                        << kinematic.getHashSum() << '\n';
+            }
+
+            m_lastObservableResultId++;
+            m_observableResultTableFile += ElemUtils::Formatter()
+                    << m_lastObservableResultId << ","
+                    << resultList[i].getObservableName() << ","
+                    << resultList[i].getValue() << ","
+                    << resultList[i].getStatError().getLowerBound() << ","
+                    << resultList[i].getStatError().getUpperBound() << ","
+                    << resultList[i].getSystError().getLowerBound() << ","
+                    << resultList[i].getSystError().getUpperBound() << ","
+                    << resultList[i].getTotalError() << ","
+                    << resultList[i].getComputationModuleName() << ","
+                    << resultList[i].getObservableType() << "," << kinematicId
+                    << "," << m_previousComputationId.second << '\n';
         }
+
+        insertCommonDataIntoDatabaseTables();
+
+        insertDataIntoDatabaseTables("observableKinematicTableFile.csv",
+                m_observableKinematicTableFile, "observable_kinematic");
+        insertDataIntoDatabaseTables("observableResultTableFile.csv",
+                m_observableResultTableFile, "observable_result");
 
         // If there is no exception we can commit all query
         QSqlDatabase::database().commit();
+
+        info(__func__, "Done !");
 
     } catch (const std::exception &e) {
         // Else return database in a stable state : n-1
@@ -103,7 +137,7 @@ int ObservableResultDaoService::insert(
         throw ElemUtils::CustomException(getClassName(), __func__, e.what());
     }
 
-    return result;
+    return getLastComputationId();
 }
 
 List<ObservableResult> ObservableResultDaoService::getObservableResultListByComputationId(

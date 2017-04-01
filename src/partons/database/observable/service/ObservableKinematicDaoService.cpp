@@ -86,3 +86,8 @@ int ObservableKinematicDaoService::insertWithoutTransaction(
             observableKinematic.getT(), observableKinematic.getQ2(),
             observableKinematic.getE(), observableKinematic.getPhi().getValue());
 }
+
+int ObservableKinematicDaoService::getKinematicIdByHashSum(
+        const std::string& hashSum) const {
+    return m_observableKinematicDao.getKinematicIdByHashSum(hashSum);
+}

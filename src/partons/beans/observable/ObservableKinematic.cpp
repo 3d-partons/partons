@@ -1,11 +1,12 @@
 #include "../../../../include/partons/beans/observable/ObservableKinematic.h"
 
-//#include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
-//#include <ElementaryUtils/string_utils/StringUtils.h>
 #include <ElementaryUtils/thread/Packet.h>
 
+#include "../../../../include/partons/Partons.h"
+#include "../../../../include/partons/services/hash_sum/CryptographicHashService.h"
+#include "../../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../../include/partons/utils/type/PhysicalUnit.h"
 
 const std::string ObservableKinematic::PARAMETER_NAME_XB = "xB";
@@ -173,6 +174,7 @@ PhysicalType<double> ObservableKinematic::getPhi() const {
 
 void ObservableKinematic::setPhi(double phi) {
     m_phi = phi;
+    updateHashSum();
 }
 
 //TODO serialize PhysicalType<T>
@@ -210,5 +212,8 @@ ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
 }
 
 void ObservableKinematic::updateHashSum() const {
-    //TODO
+    setHashSum(
+            Partons::getInstance()->getServiceObjectRegistry()->getCryptographicHashService()->generateSHA1HashSum(
+                    ElemUtils::Formatter() << m_xB << m_t << m_Q2 << m_E
+                            << m_phi.getValue()));
 }

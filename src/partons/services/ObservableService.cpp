@@ -76,6 +76,8 @@ void ObservableService::computeTask(Task &task) {
             errorUnknownMethod(task);
         }
 
+        updateResultInfo(resultList, m_resultInfo);
+
         if (task.isStoreInDB()) {
             ObservableResultDaoService observableResultDaoService;
             int computationId = observableResultDaoService.insert(resultList);
@@ -104,14 +106,18 @@ List<ObservableResult> ObservableService::computeManyKinematicOneModel(
 
     info(__func__,
             ElemUtils::Formatter() << listOfKinematic.size()
-                    << " observable kinematic(s) will be computed with "
+                    << " Observable kinematic(s) will be computed with "
                     << pObservable->getClassName());
 
     List<ObservableResult> results;
     List<ElemUtils::Packet> listOfPacket;
     List<GPDType> finalListOfGPDType = listOfGPDType;
 
+    //TODO implement getFinalGPDTypeList() check CCFService
+    // if (finalListOfGPDType.size() != 0) {
     initComputationalThread(pObservable);
+
+    info(__func__, "Thread(s) running ...");
 
     // ##### Batch feature start section #####
     unsigned int i = 0;
@@ -139,7 +145,11 @@ List<ObservableResult> ObservableService::computeManyKinematicOneModel(
 
         if (storeInDB) {
             ObservableResultDaoService resultDaoService;
-            resultDaoService.insert(getResultList());
+
+            info(__func__,
+                    ElemUtils::Formatter()
+                            << "Results have been stored with computation_id = "
+                            << resultDaoService.insert(getResultList()));
         } else {
             results.add(getResultList());
         }
@@ -149,6 +159,13 @@ List<ObservableResult> ObservableService::computeManyKinematicOneModel(
     // ##### Batch feature end section #####
 
     clearAllThread();
+
+    /*
+     } else {
+     info(__func__,
+     "Nothing to compute with your computation configuration ; there is no GPDType available");
+     }
+     */
 
     return results;
 }

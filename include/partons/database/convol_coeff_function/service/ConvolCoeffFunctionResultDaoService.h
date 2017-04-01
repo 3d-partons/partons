@@ -68,16 +68,6 @@ private:
     ConvolCoeffFunctionKinematicDaoService m_convolCoeffFunctionKinematicDaoService; ///< reference to be able to store kinematic object related to the result.
     ComputationDaoService m_computationDaoService; ///< reference to be able to generate computationId and store ComputationConfiguration object and EnvironmentConfiguration object related to the result.
 
-    /**
-     * Insert into the database a new DVCSConvolCoeffFunctionResult object without using transactions mechanisms.
-     * Helpful when dealing with a ResultList<DVCSConvolCoeffFunctionResult> object, because transactions are already performed earlier.
-     *
-     * @param result
-     * @return unique id related to the new entry inserted into the database
-     */
-    int insertWithoutTransaction(
-            const DVCSConvolCoeffFunctionResult &result) const;
-
     int m_lastCCFKinematicId;
     int m_lastCCFResultId;
     int m_lastCCFResultComplexId;

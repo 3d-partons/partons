@@ -25,7 +25,9 @@ t DOUBLE NOT NULL,
 Q2 DOUBLE NOT NULL, 
 E DOUBLE NOT NULL, 
 phi DOUBLE NOT NULL,
-experiment_id INTEGER);
+experiment_id INTEGER,
+hash_sum VARCHAR(40) NOT NULL);
+CREATE INDEX observable_kinematic_index ON observable_kinematic (hash_sum);
 
 CREATE TABLE observable_result (
 observable_result_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,  

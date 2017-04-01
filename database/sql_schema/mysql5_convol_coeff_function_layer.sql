@@ -7,7 +7,7 @@ t DOUBLE NOT NULL,
 Q2 DOUBLE NOT NULL,
 MuF2 DOUBLE NOT NULL,
 MuR2 DOUBLE NOT NULL,
-hash_sum VARCHAR(40));
+hash_sum VARCHAR(40) NOT NULL);
 CREATE INDEX ccf_kinematic_index ON ccf_kinematic (hash_sum);
 
 CREATE TABLE ccf_result (

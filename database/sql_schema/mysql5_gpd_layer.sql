@@ -7,7 +7,7 @@ xi DOUBLE,
 t DOUBLE,
 MuF2 DOUBLE,
 MuR2 DOUBLE,
-hash_sum VARCHAR(40));
+hash_sum VARCHAR(40) NOT NULL);
 CREATE INDEX gpd_kinematic_index ON gpd_kinematic (hash_sum);
 
 CREATE TABLE gpd_result (

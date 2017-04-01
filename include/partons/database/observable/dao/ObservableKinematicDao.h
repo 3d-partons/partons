@@ -9,6 +9,7 @@
  */
 
 #include <QtSql/qsqlquery.h>
+#include <string>
 
 #include "../../../beans/List.h"
 #include "../../../beans/observable/ObservableKinematic.h"
@@ -32,11 +33,13 @@ public:
 
     ObservableKinematic getKinematicById(const int kinematicId) const;
 
+    int getKinematicIdByHashSum(const std::string &hashSum) const;
+
 private:
-    void fillObservableKinematic(ObservableKinematic &observableKinematic,
+    void fillKinematicFromQuery(ObservableKinematic &observableKinematic,
             QSqlQuery &query) const;
 
-    void fillObservableKinematicList(
+    void fillObservableKinematicListFromQuery(
             List<ObservableKinematic> &observableKinematicList,
             QSqlQuery &query) const;
 };

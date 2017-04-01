@@ -15,6 +15,8 @@
  * And they improve querying speed by using transaction and commit mechanisms for a large amount of simultaneous queries.
  */
 
+#include <string>
+
 #include "../../../beans/List.h"
 #include "../../../beans/observable/ObservableKinematic.h"
 #include "../dao/ObservableKinematicDao.h"
@@ -74,6 +76,8 @@ public:
      * @return ObservableKinematic object fill with data from database tables or a default ObservableKinematic object if couldn't find it.
      */
     ObservableKinematic getKinematicById(const int kinematicId) const;
+
+    int getKinematicIdByHashSum(const std::string &hashSum) const;
 
 private:
     friend class ObservableResultDaoService; ///< allow ObservableResultDaoService to call private member function insertWithoutTransaction(...)

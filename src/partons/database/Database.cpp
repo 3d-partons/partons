@@ -52,6 +52,8 @@ const std::string Database::COLUMN_NAME_OBSERVABLE_KINEMATIC_ID =
 const std::string Database::TABLE_NAME_OBSERVABLE_RESULT = "observable_result";
 const std::string Database::COLUMN_NAME_OBSERVABLE_RESULT_ID =
         "observable_result_id";
+const std::string Database::COLUMN_NAME_OBSERVABLE_NAME = "observable_name";
+const std::string Database::COLUMN_NAME_OBSERVABLE_VALUE = "observable_value";
 
 const std::string Database::COLUMN_NAME_GPD_TYPE_ID = "gpd_type_id";
 
@@ -169,4 +171,40 @@ void Database::checkManyResults(const std::string &className,
                         << "Cannot found any result with query : "
                         << getLastExecutedQuery(query));
     }
+}
+
+std::string Database::getPreFormatedColumnNamesFromVector(
+        const std::vector<std::string>& columnNames) {
+    ElemUtils::Formatter formatter;
+
+    for (unsigned int i = 0; i != columnNames.size(); i++) {
+        if (i == 0) {
+            formatter << "(" << columnNames[i];
+        } else {
+            formatter << ", " << columnNames[i];
+        }
+
+    }
+
+    formatter << ")";
+
+    return formatter.str();
+}
+
+std::string Database::getPreFormatedColumnValuesFromVector(
+        const std::vector<std::string>& columnValues) {
+    ElemUtils::Formatter formatter;
+
+    for (unsigned int i = 0; i != columnValues.size(); i++) {
+        if (i == 0) {
+            formatter << "VALUES (" << columnValues[i];
+        } else {
+            formatter << ", " << columnValues[i];
+        }
+
+    }
+
+    formatter << ")";
+
+    return formatter.str();
 }

@@ -6,7 +6,6 @@
 #include <QtCore/qvariant.h>
 #include <QtSql/qsqlerror.h>
 #include <QtSql/qsqlrecord.h>
-#include <string>
 
 #include "../../../../../include/partons/database/Database.h"
 #include "../../../../../include/partons/database/DatabaseManager.h"
@@ -69,49 +68,12 @@ int ObservableKinematicDao::select(double xB, double t, double Q2, double E,
     query.bindValue(":E", E);
     query.bindValue(":phi", phi);
 
-    if (query.exec()) {
-        if (query.first()) {
-            result = query.value(0).toInt();
-        }
-    } else {
-        throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter() << query.lastError().text().toStdString()
-                        << " for sql query = "
-                        << query.executedQuery().toStdString());
-    }
+    Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query);
 
-    query.clear();
+    result = query.value(0).toInt();
 
     return result;
-}
-
-List<ObservableKinematic> ObservableKinematicDao::getKinematicListByComputationId(
-        int computationId) const {
-
-    List<ObservableKinematic> observableKinematicList;
-    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
-
-    ElemUtils::Formatter formatter;
-    formatter << "SELECT * FROM observable_kinematic_view WHERE "
-            << Database::COLUMN_NAME_COMPUTATION_ID << " = :computationId";
-
-    query.prepare(QString(formatter.str().c_str()));
-
-    query.bindValue(":computationId", computationId);
-
-    if (query.exec()) {
-        fillObservableKinematicList(observableKinematicList, query);
-    } else {
-        throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter() << query.lastError().text().toStdString()
-                        << " for sql query = "
-                        << query.executedQuery().toStdString());
-    }
-
-    query.clear();
-
-    return observableKinematicList;
-
 }
 
 ObservableKinematic ObservableKinematicDao::getKinematicById(
@@ -127,24 +89,38 @@ ObservableKinematic ObservableKinematicDao::getKinematicById(
             << " = :kinematicId";
 
     query.prepare(QString(formatter.str().c_str()));
-
     query.bindValue(":kinematicId", kinematicId);
 
-    if (query.exec()) {
-        fillObservableKinematic(observableKinematic, query);
-    } else {
-        throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter() << query.lastError().text().toStdString()
-                        << " for sql query = "
-                        << query.executedQuery().toStdString());
-    }
+    Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query);
 
-    query.clear();
+    fillKinematicFromQuery(observableKinematic, query);
 
     return observableKinematic;
 }
 
-void ObservableKinematicDao::fillObservableKinematic(
+List<ObservableKinematic> ObservableKinematicDao::getKinematicListByComputationId(
+        int computationId) const {
+
+    List<ObservableKinematic> observableKinematicList;
+    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
+
+    ElemUtils::Formatter formatter;
+    formatter << "SELECT * FROM observable_kinematic_view WHERE "
+            << Database::COLUMN_NAME_COMPUTATION_ID << " = :computationId";
+
+    query.prepare(QString(formatter.str().c_str()));
+    query.bindValue(":computationId", computationId);
+
+    Database::checkManyResults(getClassName(), __func__,
+            Database::execSelectQuery(query), query);
+
+    fillObservableKinematicListFromQuery(observableKinematicList, query);
+
+    return observableKinematicList;
+}
+
+void ObservableKinematicDao::fillKinematicFromQuery(
         ObservableKinematic &observableKinematic, QSqlQuery &query) const {
 
     int field_id = query.record().indexOf(
@@ -168,12 +144,33 @@ void ObservableKinematicDao::fillObservableKinematic(
     }
 }
 
-void ObservableKinematicDao::fillObservableKinematicList(
+void ObservableKinematicDao::fillObservableKinematicListFromQuery(
         List<ObservableKinematic>& observableKinematicList,
         QSqlQuery& query) const {
     while (query.next()) {
         ObservableKinematic observableKinematic;
-        fillObservableKinematic(observableKinematic, query);
+        fillKinematicFromQuery(observableKinematic, query);
         observableKinematicList.add(observableKinematic);
     }
+}
+
+int ObservableKinematicDao::getKinematicIdByHashSum(
+        const std::string& hashSum) const {
+    int result = -1;
+    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
+
+    ElemUtils::Formatter formatter;
+    formatter << "SELECT " << Database::COLUMN_NAME_OBSERVABLE_KINEMATIC_ID
+            << " FROM " << Database::TABLE_NAME_OBSERVABLE_KINEMATIC
+            << " WHERE hash_sum = :hashSum;";
+
+    query.prepare(QString(formatter.str().c_str()));
+    query.bindValue(":hashSum", QString(hashSum.c_str()));
+
+    if (Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query) != 0) {
+        result = query.value(0).toInt();
+    }
+
+    return result;
 }

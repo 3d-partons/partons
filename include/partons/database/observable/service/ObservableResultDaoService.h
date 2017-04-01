@@ -13,6 +13,8 @@
 #include "../../../beans/List.h"
 #include "../../../beans/observable/ObservableResult.h"
 #include "../../common/service/ComputationDaoService.h"
+#include "../../common/service/ResultInfoDaoService.h"
+#include "../../ResultDaoService.h"
 #include "../dao/ObservableResultDao.h"
 #include "ObservableKinematicDaoService.h"
 
@@ -23,7 +25,7 @@
  * Therefore database services ensure the integrity of the database by using transaction and rollback mechanisms if something wrong append : the database will stay always in a stable state.
  * And they improve querying speed by using transaction and commit mechanisms for a large amount of simultaneous queries.
  */
-class ObservableResultDaoService: public BaseObject {
+class ObservableResultDaoService: public ResultDaoService {
 public:
     /**
      * Default constructor
@@ -41,7 +43,7 @@ public:
      * @param observableResult
      * @return unique id related to the new entry inserted into the database
      */
-    int insert(const ObservableResult &observableResult) const;
+    int insert(const ObservableResult &observableResult);
 
     /**
      * Insert into database a list of ObservableResult objects with transactions mechanisms.
@@ -49,7 +51,7 @@ public:
      * @param observableResultList
      * @return unique id related to the last entry inserted into the database
      */
-    int insert(const List<ObservableResult> &observableResultList);
+    int insert(const List<ObservableResult> &resultList);
 
     /**
      * Return a list of ObservableResult objects from the database identified by a specific computation identifier.
@@ -75,15 +77,13 @@ private:
     ObservableKinematicDaoService m_observableKinematicDaoService; ///< reference to be able to store kinematic object related to the result.
     ComputationDaoService m_computationDaoService; ///< reference to be able to generate computationId and store ComputationConfiguration object and EnvironmentConfiguration object related to the result.
 
-    /**
-     * Insert into the database a new ObservableResult object without using transactions mechanisms.
-     * Helpful when dealing with a ResultList<ObservableResult> object, because transactions are already performed earlier.
-     *
-     * @param observableResult
-     * @return unique id related to the new entry inserted into the database
-     */
-    int insertWithoutTransaction(
-            const ObservableResult& observableResult) const;
+    int m_lastObservableKinematicId;
+    int m_lastObservableResultId;
+
+    std::string m_observableKinematicTableFile;
+    std::string m_observableResultTableFile;
+
+    ResultInfoDaoService m_resultInfoDaoService;
 };
 
 #endif /* OBSERVABLE_RESULT_DAO_SERVICE_H */

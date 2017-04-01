@@ -6,6 +6,7 @@
 #include <QtCore/qvariant.h>
 #include <QtSql/qsqlerror.h>
 #include <QtSql/qsqlrecord.h>
+#include <vector>
 
 #include "../../../../../include/partons/beans/observable/ObservableKinematic.h"
 #include "../../../../../include/partons/beans/observable/ObservableType.h"
@@ -29,21 +30,55 @@ int ObservableResultDao::insert(const std::string& observableName,
     int result = -1;
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    query.prepare(
-            "INSERT INTO observable_result (observable_name, observable_value, stat_error_lb, stat_error_ub, syst_error_lb, syst_error_ub, total_error, computation_module_name, observable_type_id, observable_kinematic_id, computation_id)  VALUES (:observable_name, :observable_value, :stat_error_lb, :stat_error_ub, :syst_error_lb, :syst_error_ub, :total_error, :computationModuleName, :observableTypeId, :observable_kinematic_id, :computation_id)");
+    std::vector<std::string> names, values;
 
-    query.bindValue(":observable_name", QString(observableName.c_str()));
-    query.bindValue(":observable_value", observableValue);
-    query.bindValue(":stat_error_lb", statErrorLB);
-    query.bindValue(":stat_error_ub", statErrorUB);
-    query.bindValue(":syst_error_lb", systErrorLB);
-    query.bindValue(":syst_error_ub", systErrorUB);
-    query.bindValue(":total_error", errorTotal);
-    query.bindValue(":computationModuleName",
+    names.push_back(Database::COLUMN_NAME_OBSERVABLE_NAME);
+    names.push_back(Database::COLUMN_NAME_OBSERVABLE_VALUE);
+    names.push_back("stat_error_lb");
+    names.push_back("stat_error_ub");
+    names.push_back("syst_error_lb");
+    names.push_back("syst_error_ub");
+    names.push_back("total_error");
+    names.push_back(Database::COLUMN_NAME_COMPUTATION_MODULE_NAME);
+    names.push_back("observable_type_id");
+    names.push_back(Database::COLUMN_NAME_OBSERVABLE_KINEMATIC_ID);
+    names.push_back(Database::COLUMN_NAME_COMPUTATION_ID);
+
+    values.push_back(":observable_name");
+    values.push_back(":observable_value");
+    values.push_back(":stat_error_lb");
+    values.push_back(":stat_error_ub");
+    values.push_back(":syst_error_lb");
+    values.push_back(":syst_error_ub");
+    values.push_back(":total_error");
+    values.push_back(":computationModuleName");
+    values.push_back(":observableTypeId");
+    values.push_back(":observable_kinematic_id");
+    values.push_back(":computation_id");
+
+    ElemUtils::Formatter formatter;
+    formatter << "INSERT INTO " << Database::TABLE_NAME_OBSERVABLE_RESULT
+            << Database::getPreFormatedColumnNamesFromVector(names)
+            << Database::getPreFormatedColumnValuesFromVector(values);
+
+    query.prepare(QString(formatter.str().c_str()));
+
+    query.bindValue(QString(values[0].c_str()),
+            QString(observableName.c_str()));
+    query.bindValue(QString(values[1].c_str()), observableValue);
+    query.bindValue(QString(values[2].c_str()), statErrorLB);
+    query.bindValue(QString(values[3].c_str()), statErrorUB);
+    query.bindValue(QString(values[4].c_str()), systErrorLB);
+    query.bindValue(QString(values[5].c_str()), systErrorUB);
+    query.bindValue(QString(values[6].c_str()), errorTotal);
+    query.bindValue(QString(values[7].c_str()),
             QString(computationModuleName.c_str()));
-    query.bindValue(":observableTypeId", observableTypeId);
-    query.bindValue(":observable_kinematic_id", kinematicId);
-    query.bindValue(":computation_id", computationId);
+    query.bindValue(QString(values[8].c_str()), observableTypeId);
+    query.bindValue(QString(values[9].c_str()), kinematicId);
+    query.bindValue(QString(values[10].c_str()), computationId);
+
+    names.clear();
+    values.clear();
 
     if (query.exec()) {
         result = query.lastInsertId().toInt();
@@ -71,14 +106,10 @@ List<ObservableResult> ObservableResultDao::getObservableResultListByComputation
 
     query.bindValue(":computationId", computationId);
 
-    if (query.exec()) {
-        fillObservableResultList(results, query);
-    } else {
-        throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter() << query.lastError().text().toStdString()
-                        << " for sql query = "
-                        << query.executedQuery().toStdString());
-    }
+    Database::checkManyResults(getClassName(), __func__,
+            Database::execSelectQuery(query), query);
+
+    fillObservableResultList(results, query);
 
     query.clear();
 

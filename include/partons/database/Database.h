@@ -10,6 +10,7 @@
 
 #include <QtSql/qsqlquery.h>
 #include <string>
+#include <vector>
 
 /**
  * @class Database
@@ -48,6 +49,8 @@ public:
 
     static const std::string TABLE_NAME_OBSERVABLE_RESULT;
     static const std::string COLUMN_NAME_OBSERVABLE_RESULT_ID;
+    static const std::string COLUMN_NAME_OBSERVABLE_NAME;
+    static const std::string COLUMN_NAME_OBSERVABLE_VALUE;
 
     static const std::string COLUMN_NAME_GPD_TYPE_ID;
 
@@ -64,6 +67,8 @@ public:
 
     static const std::string TABLE_NAME_CCF_RESULT;
     static const std::string COLUMN_NAME_CCF_RESULT_ID;
+
+    //TODO remove; SQLite not used anymore
     /**
      * http://stackoverflow.com/a/26500811
      *
@@ -75,13 +80,22 @@ public:
     static int getNumberOfRows(QSqlQuery &query);
 
     static int execSelectQuery(QSqlQuery& query);
+
     static std::string getLastExecutedQuery(const QSqlQuery& query);
+
     static unsigned int checkUniqueResult(const std::string &className,
             const std::string &funcName, const unsigned int resultSize,
             const QSqlQuery& query);
+
     static void checkManyResults(const std::string &className,
             const std::string &funcName, const unsigned int resultSize,
             const QSqlQuery& query);
+
+    static std::string getPreFormatedColumnNamesFromVector(
+            const std::vector<std::string> &columnNames);
+
+    static std::string getPreFormatedColumnValuesFromVector(
+            const std::vector<std::string> &columnValues);
 };
 
 #endif /* DATABASE_H */

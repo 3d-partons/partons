@@ -24,6 +24,7 @@ public:
     ConvolCoeffFunctionResultDao();
     virtual ~ConvolCoeffFunctionResultDao();
 
+    //TODO remove ; unused
     int insert(const std::string &computationModuleName, const int kinematicId,
             const int computationId) const;
 
