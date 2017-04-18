@@ -70,6 +70,8 @@ public:
     virtual void prepareSubModules(
             const std::map<std::string, BaseObjectData>& subModulesData);
 
+    void resetPreviousKinematics();
+
 protected:
     /**
      * Copy constructor
@@ -103,8 +105,6 @@ protected:
 
 private:
     bool m_isCCFModuleDependent;
-
-    void resetPreviousKinematics();
 };
 
 #endif /* PROCESS_MODULE_H */
