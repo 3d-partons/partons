@@ -29,21 +29,25 @@ FIND_PACKAGE( ROOT COMPONENTS Core Hist REQUIRED)
 find_package(SFML COMPONENTS system REQUIRED)
 find_package(CLN REQUIRED)
 
-# NumA++
-set(NUMA_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/../NumA++/include")
-set(NUMA_LIB_DIR "${CMAKE_SOURCE_DIR}/../NumA++/lib")
-set(NUMA_LIBRARIES NumA++)
-
 # ElementaryUtils
-set(ELEMENTARY_UTILS_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/../ElementaryUtils/include")
-set(ELEMENTARY_UTILS_LIB_DIR "${CMAKE_SOURCE_DIR}/../ElementaryUtils/lib")
-set(ELEMENTARY_UTILS_LIBRARIES ElementaryUtils)
+FIND_PACKAGE(ElementaryUtils REQUIRED)
+# Awful hack not need anymore:
+#set(ELEMENTARY_UTILS_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/../ElementaryUtils/include")
+#set(ELEMENTARY_UTILS_LIB_DIR "${CMAKE_SOURCE_DIR}/../ElementaryUtils/lib")
+#set(ELEMENTARY_UTILS_LIBRARIES ElementaryUtils)
+
+# NumA++
+FIND_PACKAGE(NumA++ REQUIRED)
+# Awful hack not need anymore:
+#set(NUMA_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/../NumA++/include")
+#set(NUMA_LIB_DIR "${CMAKE_SOURCE_DIR}/../NumA++/lib")
+#set(NUMA_LIBRARIES NumA++)
 
 # Inclusion des libraries
 INCLUDE_DIRECTORIES( ${ELEMENTARY_UTILS_INCLUDE_DIR} ${QT_INCLUDE_DIRS} ${ROOT_INCLUDE_DIR} ${NUMA_INCLUDE_DIR} ${CLN_INCLUDE_DIR} ${SFML_INCLUDE_DIR})
 
-# Link libraries
-LINK_DIRECTORIES(${ELEMENTARY_UTILS_LIB_DIR} ${NUMA_LIB_DIR})
+# Link libraries  # not needed anymore
+# link_directories(${ELEMENTARY_UTILS_LIB_DIR} ${NUMA_LIB_DIR})
 
 #Inclusion des en-têtes publics
 include_directories(include)
@@ -91,3 +95,7 @@ target_link_libraries(
 
          ${SFML_LIBRARIES}
 )
+
+# Installation
+install (TARGETS PARTONS DESTINATION lib/PARTONS)
+install (DIRECTORY include/ DESTINATION include/PARTONS)
