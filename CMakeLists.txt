@@ -97,5 +97,8 @@ target_link_libraries(
 )
 
 # Installation
-install (TARGETS PARTONS DESTINATION lib/PARTONS)
+install (TARGETS PARTONS 
+        RUNTIME DESTINATION bin/PARTONS
+        LIBRARY DESTINATION lib/PARTONS
+        ARCHIVE DESTINATION lib/static/PARTONS)
 install (DIRECTORY include/ DESTINATION include/PARTONS)
