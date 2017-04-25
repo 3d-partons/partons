@@ -6,6 +6,7 @@
  * @author Luca COLANERI (IPNO)
  * @date July 18, 2015
  * @version 1.0
+ * @brief integrates differential cross section over \f$ \phi \f$ at given kinematic: \f$ d\sigma(x_{B},t,Q^2) = \int_{0}^{2\pi}d\sigma(x_{B},t,Q^2,\phi) \f$
  */
 
 #include <string>
@@ -16,11 +17,7 @@
 
 /**
  * @class PhiIntegratedCrossSection
- *
- *
- * 0th Fourier cos coefficient of double longitudinal target spin asymmetry Asymmetry
- *
- * described in 1210.6975v3 [hep-ph] eq. (51) + (54)
+ * @brief integrates differential cross section over \f$ \phi \f$ at given kinematic: \f$ d\sigma(x_{B},t,Q^2) = \int_{0}^{2\pi}d\sigma(x_{B},t,Q^2,\phi) \f$
  */
 class PhiIntegratedCrossSection: public CrossSectionObservable, public MathIntegratorModule {
 public:

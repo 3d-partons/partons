@@ -6,6 +6,7 @@
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date November 28, 2014
  * @version 1.0
+ * @brief target longitudinal spin asymmetry: \f$ A_{UL}(\phi)= \frac{[d\sigma^{\leftarrow \Rightarrow} + d\sigma^{\rightarrow \Rightarrow} ] - [d\sigma^{\leftarrow \Leftarrow} + d\sigma^{\rightarrow \Leftarrow} ]  }{[d\sigma^{\leftarrow \Rightarrow} + d\sigma^{\rightarrow \Rightarrow} ] - [d\sigma^{\leftarrow \Leftarrow} + d\sigma^{\rightarrow \Leftarrow} ]   }\f$
  */
 
 #include <string>
@@ -14,8 +15,8 @@
 
 /**
  * @class Aul
- * target longitudianl spin asymmetry
- * @brief
+ * @brief target longitudinal spin asymmetry: \f$ A_{UL}(\phi)= \frac{[d\sigma^{\leftarrow \Rightarrow} + d\sigma^{\rightarrow \Rightarrow} ] - [d\sigma^{\leftarrow \Leftarrow} + d\sigma^{\rightarrow \Leftarrow} ]  }{[d\sigma^{\leftarrow \Rightarrow} + d\sigma^{\rightarrow \Rightarrow} ] - [d\sigma^{\leftarrow \Leftarrow} + d\sigma^{\rightarrow \Leftarrow} ]   }\f$
+ *
  * described in 1210.6975v3 [hep-ph] eq. (50)
  */
 class Aul: public Observable {

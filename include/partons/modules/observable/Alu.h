@@ -6,6 +6,7 @@
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date November 28, 2014
  * @version 1.0
+ * @brief \f$ A_{LU}(\phi)= \frac{d\sigma^{\rightarrow}- d\sigma^{\leftarrow}}{d\sigma^{\rightarrow} + d\sigma^{\leftarrow}} \f$
  */
 
 #include <string>
@@ -14,8 +15,8 @@
 
 /**
  * @class Alu
- * Beam spin asymmetry
- * @brief
+ * @brief Beam spin asymmetry: \f$ A_{LU}(\phi)= \frac{d\sigma^{\rightarrow}- d\sigma^{\leftarrow}}{d\sigma^{\rightarrow} + d\sigma^{\leftarrow}} \f$
+ *
  * described in 1210.6975v3 [hep-ph] eq. (48)
  */
 class Alu: public Observable {

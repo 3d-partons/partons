@@ -2,10 +2,12 @@
 #define AC_COS_2_PHI_H
 
 /**
- * @file AcCos2phi.h
+ * @class AcCos2phi
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date September 28, 2015
  * @version 1.0
+ * @brief 2nd fourier moment of charge asymmetry (\f$ N=\frac{1}{2\pi}\f$ in case n=0 ,\f$ N=\frac{1}{\pi}\f$ otherwise ): \f$ A_{C}^{\cos(n\phi)}=N \int _{0}^{2*\pi} d\phi A_{C}(\phi)\cos(n\phi) \f$
+ *
  */
 
 #include <string>

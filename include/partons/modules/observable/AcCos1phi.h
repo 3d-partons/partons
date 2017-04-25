@@ -2,10 +2,11 @@
 #define AC_COS_1_PHI_H
 
 /**
- * @file AcCos1phi.h
+ * @class AcCos1phi
  * @author Luca COLANERI (IPNO)
  * @date July 18, 2016
  * @version 1.0
+ * @brief 1st fourier moment of charge asymmetry (\f$ N=\frac{1}{2\pi}\f$ in case n=0 ,\f$ N=\frac{1}{\pi}\f$ otherwise ): \f$ A_{C}^{\cos(n\phi)}=N \int _{0}^{2*\pi} d\phi A_{C}(\phi)\cos(n\phi) \f$
  */
 
 #include <string>

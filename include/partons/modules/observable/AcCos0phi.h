@@ -2,10 +2,11 @@
 #define AC_COS_0_PHI_H
 
 /**
- * @file AcCos1phi.h
+ * @file AcCos0phi.h
  * @author Luca COLANERI (IPNO)
- * @date July 18, 2016
+ * @date April 24, 2017
  * @version 1.0
+ * @brief 0th fourier moment of charge asymmetry (\f$ N=\frac{1}{2\pi}\f$ in case n=0 ,\f$ N=\frac{1}{\pi}\f$ otherwise ): \f$ A_{C}^{\cos(n\phi)}=N \int _{0}^{2*\pi} d\phi A_{C}(\phi)\cos(n\phi) \f$
  */
 
 #include <string>
@@ -17,10 +18,11 @@
 /**
  * @class AcCos0phi
  *
- *
- * 0th fourier cos coefficient of Charge Asymmetry
+ *@brief 0th fourier moment of charge asymmetry (\f$ N=\frac{1}{2\pi}\f$ in case n=0 ,\f$ N=\frac{1}{\pi}\f$ otherwise ): \f$ A_{C}^{\cos(n\phi)}=N \int _{0}^{2*\pi} d\phi A_{C}(\phi)\cos(n\phi) \f$
  *
  * described in 1210.6975v3 [hep-ph] eq. (54)
+ *
+ *
  */
 class AcCos0phi: public Ac, public MathIntegratorModule {
 public:

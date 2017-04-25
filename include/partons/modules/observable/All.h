@@ -2,10 +2,12 @@
 #define ALL_H
 
 /**
+ *
  * @file All.h
  * @author Luca COLANERI (IPNO)
  * @date July 18, 2016
  * @version 1.0
+ * @brief  longitudinal target-beam spin asymmetry: \f$ A_{LL}(\phi)= \frac{[d\sigma^{\rightarrow \Rightarrow} + d\sigma^{\leftarrow \leftarrow} ] - [d\sigma^{\leftarrow \Rightarrow} + d\sigma^{\rightarrow \leftarrow} ]  }{[d\sigma^{\rightarrow \Rightarrow} + d\sigma^{\leftarrow \leftarrow} ] + [d\sigma^{\leftarrow \Rightarrow} + d\sigma^{\rightarrow \leftarrow} ]   }\f$
  */
 
 #include <string>
@@ -13,7 +15,10 @@
 #include "Observable.h"
 
 /**
- * double longitudinal target spin asymmetry
+ * @class All
+ * @brief  longitudinal target-beam spin asymmetry: \f$ A_{LL}(\phi)= \frac{[d\sigma^{\rightarrow \Rightarrow} + d\sigma^{\leftarrow \leftarrow} ] - [d\sigma^{\leftarrow \Rightarrow} + d\sigma^{\rightarrow \leftarrow} ]  }{[d\sigma^{\rightarrow \Rightarrow} + d\sigma^{\leftarrow \leftarrow} ] + [d\sigma^{\leftarrow \Rightarrow} + d\sigma^{\rightarrow \leftarrow} ]   }\f$
+ *
+ * double longitudinal target spin asymmetry, implemented only for electron beams
  *
  * described in 1210.6975v3 [hep-ph] eq. (51)
  */

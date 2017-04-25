@@ -6,6 +6,7 @@
  * @author Luca COLANERI (IPNO)
  * @date July 18, 2016
  * @version 1.0
+ * @brief 2nd Fourier sin coefficient of target longitudinal spin asymmetry: (\f$ N=\frac{1}{2\pi}\f$ in case n=0 ,\f$ N=\frac{1}{\pi}\f$ otherwise ): \f$ A_{UL}^{\sin(n\phi)}=N \int _{0}^{2*\pi} d\phi A_{UL}(\phi)\sin(n\phi) \f$
  */
 
 #include <string>
@@ -16,8 +17,8 @@
 
 /**
  * @class AulSin2phi
- * 2nd Fourier sin coefficient of target longitudinal spin asymmetry
- * @brief
+ * @brief 2nd Fourier sin coefficient of target longitudinal spin asymmetry: (\f$ N=\frac{1}{2\pi}\f$ in case n=0 ,\f$ N=\frac{1}{\pi}\f$ otherwise ): \f$ A_{UL}^{\sin(n\phi)}=N \int _{0}^{2*\pi} d\phi A_{UL}(\phi)\sin(n\phi) \f$
+ *
  * described in 1210.6975v3 [hep-ph] eq. (50) + (54)
  */
 class AulSin2phi: public Aul, public MathIntegratorModule {

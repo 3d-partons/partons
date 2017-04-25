@@ -14,8 +14,9 @@
 
 /**
  * @class Ac
+ * @brief  Beam charge asymmetry: \f$ A_{C}(\phi)=\frac{1}{4d\sigma_{UU}(\phi)} \left[(d\sigma^{\rightarrow +} + d\sigma^{\leftarrow +} ) - ( d\sigma^{\rightarrow -} + d\sigma^{\leftarrow -}  ) \right]\f$
  *
- * @brief
+ * definition reference: arXiv:1210.6975v4 [hep-ph] eq. 45
  */
 class Ac: public Observable {
 public:
