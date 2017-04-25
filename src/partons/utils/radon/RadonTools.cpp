@@ -25,8 +25,7 @@ double RadonTools::GPDOfLowerTriangleCell(double x, double xi, double u1,
     if (xi == 0.) {
         return (x * sqrt(2.) + v1 >= u1 && x * sqrt(2.) + v1 <= u2) ?
                 (u2 - sqrt(2.) * x - v1) * sqrt(2.) : 0.;
-    }
-    if (xi == 1.) {
+    } else if (xi == 1.) {
         return (x / sqrt(2.) >= u1 && x / sqrt(2.) <= u2) ?
                 (x / sqrt(2.) - u1) / sqrt(2.) : 0.;
     } else if (xi == -1.) {
