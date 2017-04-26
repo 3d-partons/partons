@@ -45,29 +45,29 @@ public:
     virtual BaseObject* clone() const;
 
     /**
-     * Because of the initialization step order of the program, objects are registered in a total random order and some objects depend others.
-     * So to avoid pointer resolution order problem, this method is called by the BaseObjectRegistery after that all objects are well registered in it.
+     * Because of the initialization step order of the program, objects are registered in a total random order and some objects depend on others.
+     * To avoid the problem of pointer resolution order, this method is called by the BaseObjectRegistery after all objects are well registered in it.
      * See BaseObjectRegistry class documentation for more details.
      */
     virtual void resolveObjectDependencies();
 
     /**
-     * Return a pre-formatted characters string for output visualization of class member's values
+     * Return a pre-formatted characters string for output visualization of class member's values.
      *
-     * @return a pre-formatted characters string
+     * @return a pre-formatted characters string.
      */
     //TODO propagade const every daugther class
     virtual std::string toString() const;
 
     /**
-     * Use to split a complex C++ object into a concat of simple type.
+     * Used to split a complex C++ object into a concatenation of simple types.
      *
      * @param packet
      */
     void serialize(ElemUtils::Packet &packet) const;
 
     /**
-     * Use to rebuild a complex C++ object from a concat of simple type.
+     * Used to rebuild a complex C++ object from a concatenation of simple type.
      *
      * @param packet
      */

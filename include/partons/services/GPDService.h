@@ -23,7 +23,7 @@ class GPDEvolutionModule;
 /**
  * @class GPDService
  *
- * @brief \<singleton\> Use for handle and compute some pre-configured GPD models.
+ * @brief \<singleton\> Used to handle and compute some pre-configured GPD models. See tutorial (TODO: add link to tutorial).
  */
 class GPDService: public ServiceObjectTyped<GPDKinematic, GPDResult> {
 public:
@@ -36,17 +36,24 @@ public:
     static const std::string FUNCTION_NAME_GENERATE_PLOT_FILE;
 
     /**
-     * Default constructor
+     * Default constructor used by the registry. Do not use directly!
      */
     GPDService(const std::string &className);
 
     /**
-     * Default destructor
+     * Default destructor.
      */
     virtual ~GPDService();
 
+    /**
+     * See parent class for details.
+     */
     virtual void resolveObjectDependencies();
 
+    /**
+     * Method used in automation to compute given tasks.
+     * @param task Automation task to compute.
+     */
     virtual void computeTask(Task &task);
 
 //    GPDResult computeGPDModel_two(const GPDKinematic &gpdKinematic,
@@ -54,12 +61,14 @@ public:
 //            std::vector<GPDType::Type> restrictedByGPDTypeList = std::vector<
 //                    GPDType::Type>());
 
+
     /**
-     * Computes GPD model at specific kinematic
+     * Computes GPD model at specific kinematics.
      *
-     * @param gpdKinematic
-     * @param pGPDModule
-     * @return
+     * @param gpdKinematic GPD kinematic.
+     * @param pGPDModule GPDModule to use.
+     * @param gpdType List of GPDType to compute. Default: all the GPDTypes available with the GPDModule.
+     * @return GPDResult
      */
     GPDResult computeGPDModel(const GPDKinematic &gpdKinematic,
             GPDModule* pGPDModule, const List<GPDType> & gpdType =
@@ -68,42 +77,47 @@ public:
     /**
      * Computes GPD model at specific kinematic with a QCD evolution model.
      *
-     * @param pGPDModule
-     * @param pEvolQCDModule
-     * @param gpdKinematic
-     * @param gpdType
-     * @return
+     * @param gpdKinematic GPD kinematic.
+     * @param pGPDModule GPDModule to use.
+     * @param pEvolQCDModule Evolution module to use.
+     * @param gpdType List of GPDType to compute. Default: all the GPDTypes available with the GPDModule.
+     * @return GPDResult.
      */
     GPDResult computeGPDModelWithEvolution(const GPDKinematic &gpdKinematic,
             GPDModule* pGPDModule, GPDEvolutionModule* pEvolQCDModule,
             GPDType::Type gpdType = GPDType::ALL);
 
     /**
+     * Computes several GPDModels at specific kinematics.
      *
-     * @param gpdKinematic
-     * @param listOfGPDToCompute
-     * @return
+     * @param gpdKinematic GPD kinematic.
+     * @param listOfGPDToCompute List of GPDModules to use.
+     * @return List of GPDResults.
      */
     List<GPDResult> computeListOfGPDModel(const GPDKinematic &gpdKinematic,
             std::vector<GPDModule*> &listOfGPDToCompute);
 
     /**
+     * Computes several GPDModels at specific kinematics, restricted by GPDType.
      *
-     * @param gpdKinematic
-     * @param listOfGPDToCompute
-     * @param gpdType
-     * @return
+     * @param gpdKinematic GPD kinematic.
+     * @param listOfGPDToCompute List of GPDModules to use.
+     * @param gpdType GPDType to compute.
+     * @return List of GPDResults.
      */
     List<GPDResult> computeListOfGPDModelRestrictedByGPDType(
             const GPDKinematic &gpdKinematic,
             std::vector<GPDModule*> &listOfGPDToCompute, GPDType gpdType);
 
+
     /**
-     * Computes GPD model by a kinematics list
+     * Computes a GPD model for a list of kinematics.
      *
-     * @param listOfGPDKinematic
-     * @param pGPDModule
-     * @return
+     * @param gpdKinematicList List of GPDKinematics.
+     * @param pGPDModule GPDModule to use for the computation.
+     * @param gpdTypeList List of GPDType to compute. Default: all the GPDTypes available with the GPDModule.
+     * @param storeInDB Boolean to store the results and kinematics on the database. Default: false.
+     * @return List of GPDResults.
      */
     List<GPDResult> computeManyKinematicOneModel(
             const List<GPDKinematic> &gpdKinematicList, GPDModule* pGPDModule,
@@ -113,11 +127,29 @@ public:
 //    ComparisonReport compareResultListToDatabase(
 //            const std::string &scenarioTestFilePath);
 
+    /**
+     * Devises the GPDModule from an automation task.
+     *
+     * @param task Automation task.
+     * @return GPDModule pointer.
+     */
     GPDModule* newGPDModuleFromTask(const Task &task) const;
 
     // GPDModule* configureGPDModule(GPDModule* pGPDModule) const;
 
+    /**
+     * Devises the GPD kinematics from an automation task.
+     *
+     * @param task Automation task.
+     * @return GPD kinematics.
+     */
     GPDKinematic newKinematicFromTask(const Task &task) const;
+    /**
+     * Devises the GPD kinematics from an automation task.
+     *
+     * @param task Automation task.
+     * @return List of GPD kinematics.
+     */
     List<GPDKinematic> newListOfKinematicFromTask(const Task &task) const;
 
 private:

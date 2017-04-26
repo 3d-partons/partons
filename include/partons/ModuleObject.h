@@ -24,11 +24,11 @@ class Parameters;
 /**
  * @class ModuleObject
  *
- * @brief Super class of all module types - A module is a class that performs a specific compute task
+ * @brief Super class of all module types - A module is a class that performs a specific compute task.
  * A ModuleObject can be threaded. See services for more details.
  *
- * ex : GK11Model is a module that computes only GPDq(x, xi, t, MuF, MuR) defined by Kroll-Goloskokov in 2011 \n
- * ex : DVCSCFFModule is a module that evaluates the convolution of the GPD H with the hard scattering kernel at twist 2 necessary to the evaluation of DVCS scattering amplitudes.
+ * ex : GK11Model is a module that computes only GPDq(x, xi, t, MuF, MuR) defined by Kroll-Goloskokov in 2011. \n
+ * ex : DVCSCFFModel is a module that evaluates the convolution of the GPD H with the hard scattering kernel at twist 2 necessary to the evaluation of DVCS scattering amplitudes.
  */
 class ModuleObject: public BaseObject, public ElemUtils::Thread {
 public:
@@ -37,6 +37,8 @@ public:
     /**
      * Constructor.
      * See BaseObject class for more info about input parameter.
+     *
+     * Needn't be used directly. Use the ModuleObjectFactory to clone a module instead!
      *
      * @param className class's name of child class.
      */
@@ -49,21 +51,21 @@ public:
 
     /**
      * Provides a generic method to configure all types of modules by passing a Parameters object.
-     * Parameters class represents a list of couples key/value (see Parameters class documentation for more info)
+     * Parameters class represents a list of couples key/value (see Parameters class documentation for more info).
      *
      * @param parameters
      */
     virtual void configure(const ElemUtils::Parameters &parameters);
 
     /**
-     * See documentation about this method in BaseObject class for more details.
+     * See documentation about this method in BaseObject class for more details: BaseObject::clone.
      */
     virtual ModuleObject* clone() const = 0;
 
     /**
-     * Return a pre-formatted characters string for output visualization of class member's values
+     * Return a pre-formatted characters string for output visualization of class member's values.
      *
-     * @return a pre-formatted characters string
+     * @return a pre-formatted characters string.
      */
     virtual std::string toString() const;
 
@@ -72,6 +74,12 @@ public:
      */
     virtual void resolveObjectDependencies();
 
+    /**
+     * Method used in automation to prepare all the modules used by this current module and configure them recursively.
+     * The recursion is linked to the imbrication in XML files. \n
+     * Can be implemented in the child class if it needs modules not needed by the parent class. But there must be first a call to the parent method.
+     * @param subModulesData Data used to retrieve the needed modules and their configuration.
+     */
     virtual void prepareSubModules(
             const std::map<std::string, BaseObjectData>& subModulesData);
 
@@ -79,14 +87,16 @@ public:
     void setReferenceModuleId(unsigned int referenceModuleId);
 
 protected:
-    //TODO comment
-    ModuleObjectFactory* m_pModuleObjectFactory;
-
     /***
-     * Copy constructor
+     * Copy constructor.
+     * Used by the factory to clone modules, shouldn't be used directly.
+     *
      * @param other
      */
     ModuleObject(const ModuleObject &other);
+
+    //TODO comment
+    ModuleObjectFactory* m_pModuleObjectFactory;
 
     /**
      * Pure virtual function that provides skeleton for module initialization.

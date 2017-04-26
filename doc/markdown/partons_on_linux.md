@@ -4,7 +4,7 @@ This tutorial is for building PARTONS on Linux. It describes the procedure for a
 
 [TOC]
 
-# Installing the libraries # {#linux_libraries}
+# Installing the external libraries # {#linux_libraries}
 
 %All the needed libraries can be accessed through the package manager:
 
@@ -34,9 +34,9 @@ You obviously need SVN (Subversion) too in order to retrieve the sources. So ins
 sudo apt-get install subversion
 ~~~~~~~~~~~~~
 
-# Building the projects #  {#linux_build}
+# Building the source code #  {#linux_build}
 
-This section is for building the projects without IDE. Skip it and go [below](@ref linux_eclipse) if you want to use Eclipse.
+This section is for building the projects without IDE. Skip it and go to [the last section](@ref linux_eclipse) if you want to use Eclipse.
 
 We will detail the procedure in the case of NumA++. For the other projects, it's exactly the same.
 
@@ -47,11 +47,11 @@ cd /whatever/directory/you/like
 svn checkout --username#your_SVN_username https://dsm-trac.cea.fr/svn/prophet/DEVELOPMENT/NumA++
 ~~~~~~~~~~~~~
 
-Now, go the subdirectory ` and call the following cmake command:
+Now, go the subdirectory `build/` and call the following cmake command:
 
 ~~~~~~~~~~~~~{.sh}
 cd NumA++/build/
-cmake -G"Unix Makefiles" ../ -DCMAKE_BUILD_TYPE#Debug
+cmake -G"Unix Makefiles" ../ -DCMAKE_BUILD_TYPE=Debug
 ~~~~~~~~~~~~~
 
 You can replace `-DCMAKE_BUILD_TYPE=Debug` by `-DCMAKE_BUILD_TYPE=Release` to speed up the execution, if you don't need the debugger.
@@ -62,9 +62,29 @@ If everything went fine, you can build the project:
 make
 ~~~~~~~~~~~~~
 
-Bravo, you won! If not, sorry, you'll have to work harder.
+You can repeat this for all the projects such as Elementary\_Utils, PARTONS or PARTONS_release.
 
-You can repeat this for all the projects such as PARTONS, PARTONS_exe, etc.
+# Installing the PARTONS libraries {#linux_install}
+
+You can keep the generated shared libraries Elementary\_Utils, NumA++ and PARTONS as it is in their source folder (the commande `make` will create if not present a folder `lib/` with the resulting shared library), and use them from there, or you can install these libraries if you wish, with the command:
+
+~~~~~~~~~~~~~{.sh}
+make install
+~~~~~~~~~~~~~
+
+done in the same build directory as before. But this is optional. By default, cmake chooses system folders for this installation (such as `/usr/` or `/usr/local/`). You will need root privileges to install to these folders (use `sudo make install` or `su` to grant access if you have it). If you wish to install to local user folders (somewhere in `/home` for example) without root access, you will need to change the cmake variable `CMAKE_INSTALL_PREFIX` to do so. For example, when running cmake (in the example [above](@ref linux_build)):
+
+~~~~~~~~~~~~~{.sh}
+cmake -G"Unix Makefiles" ../ -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX="/home/youruser/somefolder"
+~~~~~~~~~~~~~
+
+This will allow you to install the headers to `/home/youruser/somefolder/include/PARTONS` and the shared libraries to `/home/youruser/somefolder/lib/PARTONS` instead of probably `/usr/local/include/PARTONS` and `/usr/local/lib/PARTONS`, once you use the command `make install`.
+
+# Building your own project using PARTONS {#linux_buildperso}
+
+PARTONS_release is meant as an example of project making use of the PARTONS libraries. You can use it as a template for your own projects.
+
+In particular, you can adapt the CMakeLists.txt already present in PARTONS_release, and use the same FindXXXX.cmake scripts found in the folder `cmake/Modules`.
 
 # Using Eclipse # {#linux_eclipse}
 

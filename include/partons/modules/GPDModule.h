@@ -23,7 +23,7 @@ class GPDEvolutionModule;
 
 /**
  * @class GPDModule
- * @brief Abstract class that provides skeleton to implement a Generalized Parton Distributions (GPD) module.
+ * @brief Abstract class that provides a skeleton to implement a Generalized Parton Distributions (GPD) module.
  */
 class GPDModule: public ModuleObject {
 public:
@@ -38,9 +38,9 @@ public:
 
     /**
      * Constructor.
-     * See BaseObject class for more info about input parameter.
+     * See BaseObject::BaseObject and ModuleObject::ModuleObject for more details.
      *
-     * @param className class's name of child class.
+     * @param className name of child class.
      */
     GPDModule(const std::string &className);
 
@@ -50,9 +50,9 @@ public:
     virtual ~GPDModule();
 
     /**
-     * Clone
+     * Clone. See BaseObject::clone for more details.
      *
-     * @return
+     * @return GPDModule pointer.
      */
     virtual GPDModule* clone() const = 0;
 
@@ -66,6 +66,16 @@ public:
      */
     void virtual configure(const ElemUtils::Parameters &parameters);
 
+    /**
+     * Virtual method, computes GPD with some input parameters.
+     *
+     * @param kinematic GPD kinematics object.
+     * @param gpdType H, Ht, E, Et, ... or ALL. See GPDType for more details.
+     * @param evolution Boolean to use evolution. Default: false.
+     *
+     * @return PartonDistribution object.
+     * Contains results for each flavor of partons.
+     */
     virtual PartonDistribution compute(const GPDKinematic &kinematic,
             GPDType gpdType, bool evolution = false);
 
@@ -75,22 +85,51 @@ public:
      * @param x Bjorken variable
      * @param xi longitudinal momentum
      * @param t momentum transfer (Mandelstam variable)
-     * @param MuF2 Factorisation
-     * @param MuR2 Re-normalisation
-     * @param gpdComputeType H, Ht, E, Et, ... or ALL. See GPDComputeType for more details.
+     * @param MuF2 Factorization scale.
+     * @param MuR2 Renormalization scale.
+     * @param gpdType H, Ht, E, Et, ... or ALL. See GPDType for more details.
+     * @param evolution Boolean to use evolution. Default: false.
      *
-     * @return Return results in an GPDOutputData class.
-     * Contains GPD results for each flavor of quarks and for each GPDs (H, Ht, E, Et, ...) if computable.
+     * @return PartonDistribution object.
+     * Contains results for each flavor of partons.
      */
     virtual PartonDistribution compute(double x, double xi, double t,
             double MuF2, double MuR2, GPDType::Type gpdType, bool evolution =
                     false);
 
+    /**
+     * This method can be implemented in the child class if the GPD H is available to compute.
+     *
+     * @return PartonDistribution object.
+     * Contains results for each flavor of partons.
+     */
     virtual PartonDistribution computeH();
+    /**
+     * This method can be implemented in the child class if the GPD E is available to compute.
+     *
+     * @return PartonDistribution object.
+     * Contains results for each flavor of partons.
+     */
     virtual PartonDistribution computeE();
+    /**
+     * This method can be implemented in the child class if the GPD Ht is available to compute.
+     *
+     * @return PartonDistribution object.
+     * Contains results for each flavor of partons.
+     */
     virtual PartonDistribution computeHt();
+    /**
+     * This method can be implemented in the child class if the GPD Et is available to compute.
+     *
+     * @return PartonDistribution object.
+     * Contains results for each flavor of partons.
+     */
     virtual PartonDistribution computeEt();
 
+    /**
+     * See documentation in parent class.
+     * @return std::string
+     */
     virtual std::string toString() const;
 
     // ##### GETTERS & SETTERS #####
@@ -111,6 +150,10 @@ public:
     double getXi() const;
     void setXi(double xi);
 
+    /**
+     *
+     * @return List of available GPDTypes in the model considered. This list is set in the child class.
+     */
     List<GPDType> getListOfAvailableGPDTypeForComputation() const;
 
 //    void prepareComputationConfiguration(
