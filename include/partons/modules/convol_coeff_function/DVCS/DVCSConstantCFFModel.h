@@ -67,7 +67,7 @@ public:
 
     /**
      * Set map containing CFFs
-     @param cff Map to be set
+     * @param cffs Map to be set
      */
     void setCFFs(const std::map<GPDType::Type, std::complex<double> >& cffs);
 
