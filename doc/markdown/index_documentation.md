@@ -1,6 +1,6 @@
-# PARTONS Documentation                         {#mainpage}
+# PARTONS Documentation                          {#mainpage}
 
-Documentation that will appear on the main page.
+The first section helps you set up a functioning PARTONS environment, while the following section(s) are needed to understand how to use and develop with PARTONS. <img src='../images/logo_partons.jpg' alt='PARTONS' style='float:right;max-width:60%;height:auto' />
 
 # Starting with PARTONS #
 
@@ -20,4 +20,14 @@ Documentation that will appear on the main page.
 
 [Using PARTONS with Eclipse IDE](@ref eclipse).
 
-![Texte alternatif](../images/logo_partons.jpg "texte pour le titre, facultatif")
+# How to use PARTONS #
+
+## Services ##
+
+[Using services to compute GPDs, Observables, etc](@ref services).
+
+## Modules ##
+
+[How to add your own models to pre-existing modules](@ref models).
+
+[How to add new modules](@ref modules).

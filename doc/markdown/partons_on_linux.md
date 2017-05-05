@@ -38,19 +38,21 @@ sudo apt-get install subversion
 
 This section is for building the projects without IDE. Skip it and go to [the last section](@ref linux_eclipse) if you want to use Eclipse.
 
-We will detail the procedure in the case of NumA++. For the other projects, it's exactly the same.
+We will detail the procedure in the case of ElementaryUtils. For the other projects, it's exactly the same.
 
 First, you need to `checkout` the project (or `update` it if already available):
 
 ~~~~~~~~~~~~~{.sh}
 cd /whatever/directory/you/like
-svn checkout --username#your_SVN_username https://dsm-trac.cea.fr/svn/prophet/DEVELOPMENT/NumA++
+svn checkout --username#your_SVN_username https://dsm-trac.cea.fr/svn/prophet/DEVELOPMENT/ElementaryUtils/trunk ElementaryUtils
 ~~~~~~~~~~~~~
+
+if you want to use the trunk branch. For other branches, adapt the path (e.g. for the release branch, use the path `branches/branch-release` instead of `trunk`).
 
 Now, go the subdirectory `build/` and call the following cmake command:
 
 ~~~~~~~~~~~~~{.sh}
-cd NumA++/build/
+cd ElementaryUtils/build/
 cmake -G"Unix Makefiles" ../ -DCMAKE_BUILD_TYPE=Debug
 ~~~~~~~~~~~~~
 
@@ -62,11 +64,11 @@ If everything went fine, you can build the project:
 make
 ~~~~~~~~~~~~~
 
-You can repeat this for all the projects such as Elementary\_Utils, PARTONS or PARTONS_release.
+You can repeat this for all the projects such as NumA++, PARTONS or PARTONS_release. The dependencies follow this order.
 
 # Installing the PARTONS libraries {#linux_install}
 
-You can keep the generated shared libraries Elementary\_Utils, NumA++ and PARTONS as it is in their source folder (the commande `make` will create if not present a folder `lib/` with the resulting shared library), and use them from there, or you can install these libraries if you wish, with the command:
+You can keep the generated shared libraries ElementaryUtils, NumA++ and PARTONS as it is in their source folder (the command `make` will create if not present a folder `lib/` with the resulting shared library), and use them from there, or you can install these libraries if you wish, with the command:
 
 ~~~~~~~~~~~~~{.sh}
 make install
