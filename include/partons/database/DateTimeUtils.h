@@ -9,7 +9,9 @@
  *
  * @class DateTimeUtils
  *
- * @brief
+ * @brief Time format utilities used by database services.
+ *
+ * Utilities dealing with time formats used by database services. In particular tools to retrieve current time in SQL format are availible.
  */
 
 #include <QtCore/qdatetime.h>
@@ -19,6 +21,11 @@
 class DateTimeUtils {
 
 public:
+
+    /**
+     * Get current time in format recognizable by SQL.
+     * @return String containing time in "yyyy-MM-dd hh:mm:ss" format.
+     */
     static std::string getCurrentSQLDateTime() {
         QDateTime dateTime = QDateTime::currentDateTime();
         return dateTime.toString("yyyy-MM-dd hh:mm:ss").toStdString();

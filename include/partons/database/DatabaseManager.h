@@ -8,31 +8,42 @@
  * @version 1.0
  *
  * @class DatabaseManager
- * @brief
+ *
+ * @brief Manager for database handling.
+ *
+ * It is responsible for database handling, including initialization, giving the access and closing.
  */
 
+#include <include/partons/BaseObject.h>
 #include <QtSql/qsqldatabase.h>
-
-#include "../BaseObject.h"
 
 class DatabaseManager: BaseObject {
 public:
+
     /**
-     * Share a unique pointer of this class
+     * Share a unique pointer of this class.
      */
     static DatabaseManager* getInstance();
 
     /**
-     * Default destructor
+     * Destructor.
      */
     virtual ~DatabaseManager();
 
+    /**
+     * Initialize manager - open connection to the database.
+     */
     void init();
 
+    /**
+     * Close manager - close connection to the database.
+     */
     void close();
 
-    // ##### GETTERS & SETTERS #####
-
+    /**
+     * Get reference to DatabaseManager::m_productionDatabase.
+     * @return Requested reference.
+     */
     const QSqlDatabase& getProductionDatabase();
 
 private:
@@ -47,7 +58,15 @@ private:
      */
     DatabaseManager();
 
+    /**
+     * The database represented by QSqlDatabase object.
+     */
     QSqlDatabase m_productionDatabase;
+
+    //TODO Test database not used - to be removed?
+    /**
+     * Test database.
+     */
     QSqlDatabase m_testDatabase;
 };
 
