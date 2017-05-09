@@ -6,19 +6,21 @@
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date April 13, 2015
  * @version 1.0
- *
+ */
+
+#include <string>
+
+#include "../../../BaseObject.h"
+
+class Scenario;
+
+/**
  * @class ScenarioDao
  *
  * @brief Scenario information Data Access Object (DAO).
  *
  * This DAO is used to insert, select and delete scenario information from the database. This class in not intended to be used by regular users who should deal with ScenarioDaoService instead.
  */
-
-#include <include/partons/BaseObject.h>
-#include <string>
-
-class Scenario;
-
 class ScenarioDao: public BaseObject {
 public:
 

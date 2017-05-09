@@ -6,7 +6,15 @@
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
  * @date May 05, 2015
  * @version 1.0
- *
+ */
+
+#include <string>
+
+#include "../../../beans/gpd/GPDKinematic.h"
+#include "../../../beans/List.h"
+#include "../dao/GPDKinematicDao.h"
+
+/**
  * @class GPDKinematicDaoService
  *
  * @brief GPD kinematics Data Access Object (DAO) service.
@@ -37,12 +45,6 @@
  ElemUtils::Formatter() << "Extracted: " << gpdKinematicsExtracted.toString());
  \endcode
  */
-
-#include <include/partons/beans/gpd/GPDKinematic.h>
-#include <include/partons/beans/List.h>
-#include <include/partons/database/gpd/dao/GPDKinematicDao.h>
-#include <string>
-
 class GPDKinematicDaoService: public BaseObject {
 
 public:

@@ -6,7 +6,14 @@
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 05 May 2015
  * @version 1.0
- *
+ */
+
+#include "../dao/PartonDistributionDao.h"
+#include "../dao/QuarkDistributionDao.h"
+
+class PartonDistribution;
+
+/**
  * @class PartonDistributionDaoService
  *
  * @brief Parton distribution Data Access Object (DAO) service.
@@ -15,12 +22,6 @@
  *
  * With this service you can insert, select or remove parton distribution from the database. It ensures the integrity of the database by using transaction and rollback mechanisms - if something wrong happened, the database will stay always in a stable state. In addition, it improves querying speed by using transaction and commit mechanisms for a large amount of simultaneous queries.
  */
-
-#include <include/partons/database/parton_distribution/dao/PartonDistributionDao.h>
-#include <include/partons/database/parton_distribution/dao/QuarkDistributionDao.h>
-
-class PartonDistribution;
-
 class PartonDistributionDaoService: public BaseObject {
 public:
 

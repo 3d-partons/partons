@@ -6,7 +6,19 @@
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
  * @date November 05, 2015
  * @version 1.0
- *
+ */
+
+#include <string>
+
+#include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
+#include "../../../beans/List.h"
+#include "../../common/service/ComputationDaoService.h"
+#include "../../common/service/ResultInfoDaoService.h"
+#include "../../ResultDaoService.h"
+#include "../dao/ConvolCoeffFunctionResultDao.h"
+#include "ConvolCoeffFunctionKinematicDaoService.h"
+
+/**
  * @class ConvolCoeffFunctionResultDaoService
  *
  * @brief Compton form factor (CFF) result Data Access Object (DAO) service.
@@ -57,16 +69,6 @@
  ElemUtils::Formatter() << "Extracted: " << cffResultExtracted.toString());
  \endcode
  */
-
-#include <include/partons/beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h>
-#include <include/partons/beans/List.h>
-#include <include/partons/database/common/service/ComputationDaoService.h>
-#include <include/partons/database/common/service/ResultInfoDaoService.h>
-#include <include/partons/database/convol_coeff_function/dao/ConvolCoeffFunctionResultDao.h>
-#include <include/partons/database/convol_coeff_function/service/ConvolCoeffFunctionKinematicDaoService.h>
-#include <include/partons/database/ResultDaoService.h>
-#include <string>
-
 class ConvolCoeffFunctionResultDaoService: public ResultDaoService {
 public:
 

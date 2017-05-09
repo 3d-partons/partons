@@ -6,18 +6,19 @@
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date June 25, 2016
  * @version 1.0
- *
- * @class Database
- *
- * @brief Basic object storing database information.
- *
- * It stores names of tables and columns used in all kinds of database queries. In addition, it provides a set of useful tools for handling the queries.
  */
 
 #include <QtSql/qsqlquery.h>
 #include <string>
 #include <vector>
 
+/**
+ * @class Database
+ *
+ * @brief Basic object storing database information.
+ *
+ * It stores names of tables and columns used in all kinds of database queries. In addition, it provides a set of useful tools for handling the queries.
+ */
 class Database {
 public:
 

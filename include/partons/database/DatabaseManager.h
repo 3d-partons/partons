@@ -6,17 +6,19 @@
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 20 April 2015
  * @version 1.0
- *
+ */
+
+#include <QtSql/qsqldatabase.h>
+
+#include "../BaseObject.h"
+
+/**
  * @class DatabaseManager
  *
  * @brief Manager for database handling.
  *
  * It is responsible for database handling, including initialization, giving the access and closing.
  */
-
-#include <include/partons/BaseObject.h>
-#include <QtSql/qsqldatabase.h>
-
 class DatabaseManager: BaseObject {
 public:
 

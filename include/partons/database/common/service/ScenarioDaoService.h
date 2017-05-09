@@ -6,7 +6,16 @@
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date April 12, 2015
  * @version 1.0
- *
+ */
+
+#include <string>
+
+#include "../dao/ScenarioDao.h"
+
+class ResourceManager;
+class Scenario;
+
+/**
  * @class ScenarioDaoService
  *
  * @brief Scenario information Data Access Object (DAO) service.
@@ -15,13 +24,6 @@
  *
  * With this service you can insert, select or remove scenario information from the database. It ensures the integrity of the database by using transaction and rollback mechanisms - if something wrong happened, the database will stay always in a stable state. In addition, it improves querying speed by using transaction and commit mechanisms for a large amount of simultaneous queries.
  */
-
-#include <include/partons/database/common/dao/ScenarioDao.h>
-#include <string>
-
-class ResourceManager;
-class Scenario;
-
 class ScenarioDaoService: public BaseObject {
 public:
 

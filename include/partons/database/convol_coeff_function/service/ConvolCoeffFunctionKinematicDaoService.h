@@ -6,7 +6,15 @@
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
  * @date November 05, 2015
  * @version 1.0
- *
+ */
+
+#include <string>
+
+#include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
+#include "../../../beans/List.h"
+#include "../dao/ConvolCoeffFunctionKinematicDao.h"
+
+/**
  * @class ConvolCoeffFunctionKinematicDaoService
  *
  * @brief Compton form factor (CFF) kinematics Data Access Object (DAO) service.
@@ -37,12 +45,6 @@
  ElemUtils::Formatter() << "Extracted: " << dvcsConvolCoeffFunctionKinematicExtracted.toString());
  \endcode
  */
-
-#include <include/partons/beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h>
-#include <include/partons/beans/List.h>
-#include <include/partons/database/convol_coeff_function/dao/ConvolCoeffFunctionKinematicDao.h>
-#include <string>
-
 class ConvolCoeffFunctionKinematicDaoService: public BaseObject {
 public:
 

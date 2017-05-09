@@ -1,24 +1,26 @@
+#ifndef RESULTINFODAO_H_
+#define RESULTINFODAO_H_
+
 /**
  * @file ResultInfoDao.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date July 6, 2016
  * @version 1.0
- *
+ */
+
+#include <QtSql/qsqlquery.h>
+
+#include "../../../BaseObject.h"
+
+class ResultInfo;
+
+/**
  * @class ResultInfoDao
  *
  * @brief Result information Data Access Object (DAO).
  *
  * This DAO is used to insert, select and delete result information from the database. This class in not intended to be used by regular users who should deal with ResultInfoDaoService instead.
  */
-
-#ifndef RESULTINFODAO_H_
-#define RESULTINFODAO_H_
-
-#include <include/partons/BaseObject.h>
-#include <QtSql/qsqlquery.h>
-
-class ResultInfo;
-
 class ResultInfoDao: public BaseObject {
 public:
 

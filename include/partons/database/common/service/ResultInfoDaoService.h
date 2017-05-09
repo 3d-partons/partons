@@ -1,9 +1,20 @@
-/*
- * ResultInfoDaoService.h
- *
- *  Created on: May 23, 2016
- *      Author: debian
+#ifndef RESULTINFODAOSERVICE_H_
+#define RESULTINFODAOSERVICE_H_
+
+/**
+ * @file ResultInfoDaoService.h
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
+ * @date May 23, 2016
+ * @version 1.0
  */
+
+#include "../dao/ComputationDao.h"
+#include "../dao/ResultInfoDao.h"
+#include "ComputationDaoService.h"
+#include "EnvironmentConfigurationDaoService.h"
+#include "ScenarioDaoService.h"
+
+class ResultInfo;
 
 /**
  * @class ResultInfoDaoService
@@ -14,18 +25,6 @@
  *
  * With this service you can insert, select or remove result information from the database. It ensures the integrity of the database by using transaction and rollback mechanisms - if something wrong happened, the database will stay always in a stable state. In addition, it improves querying speed by using transaction and commit mechanisms for a large amount of simultaneous queries.
  */
-
-#ifndef RESULTINFODAOSERVICE_H_
-#define RESULTINFODAOSERVICE_H_
-
-#include <include/partons/database/common/dao/ComputationDao.h>
-#include <include/partons/database/common/dao/ResultInfoDao.h>
-#include <include/partons/database/common/service/ComputationDaoService.h>
-#include <include/partons/database/common/service/EnvironmentConfigurationDaoService.h>
-#include <include/partons/database/common/service/ScenarioDaoService.h>
-
-class ResultInfo;
-
 class ResultInfoDaoService: public BaseObject {
 public:
 

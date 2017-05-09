@@ -6,7 +6,15 @@
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
  * @date November 02, 2015
  * @version 1.0
- *
+ */
+
+#include <string>
+
+#include "../../../beans/List.h"
+#include "../../../beans/observable/ObservableKinematic.h"
+#include "../dao/ObservableKinematicDao.h"
+
+/**
  * @class ObservableKinematicDaoService
  *
  * @brief Observable kinematics Data Access Object (DAO) service.
@@ -37,14 +45,6 @@
  ElemUtils::Formatter() << "Extracted: " << observableKinematicExtracted.toString());
  \endcode
  */
-
-#include <include/partons/beans/List.h>
-#include <include/partons/beans/observable/ObservableKinematic.h>
-#include <include/partons/database/observable/dao/ObservableKinematicDao.h>
-#include <string>
-
-class ObservableKinematicList;
-
 class ObservableKinematicDaoService: public BaseObject {
 public:
 

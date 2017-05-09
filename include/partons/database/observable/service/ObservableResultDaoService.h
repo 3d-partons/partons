@@ -6,7 +6,19 @@
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
  * @date November 02, 2015
  * @version 1.0
- *
+ */
+
+#include <string>
+
+#include "../../../beans/List.h"
+#include "../../../beans/observable/ObservableResult.h"
+#include "../../common/service/ComputationDaoService.h"
+#include "../../common/service/ResultInfoDaoService.h"
+#include "../../ResultDaoService.h"
+#include "../dao/ObservableResultDao.h"
+#include "ObservableKinematicDaoService.h"
+
+/**
  * @class ObservableResultDaoService
  *
  * @brief Observable result Data Access Object (DAO) service.
@@ -69,16 +81,6 @@
  ElemUtils::Formatter() << "Extracted: " << observableResultExtracted.toString());
  \endcode
  */
-
-#include <include/partons/beans/List.h>
-#include <include/partons/beans/observable/ObservableResult.h>
-#include <include/partons/database/common/service/ComputationDaoService.h>
-#include <include/partons/database/common/service/ResultInfoDaoService.h>
-#include <include/partons/database/observable/dao/ObservableResultDao.h>
-#include <include/partons/database/observable/service/ObservableKinematicDaoService.h>
-#include <include/partons/database/ResultDaoService.h>
-#include <string>
-
 class ObservableResultDaoService: public ResultDaoService {
 public:
 

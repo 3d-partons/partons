@@ -6,7 +6,19 @@
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
  * @date November 13, 2015
  * @version 1.0
- *
+ */
+
+#include <string>
+
+#include "../../../beans/gpd/GPDResult.h"
+#include "../../../beans/List.h"
+#include "../../common/service/ResultInfoDaoService.h"
+#include "../../parton_distribution/service/PartonDistributionDaoService.h"
+#include "../../ResultDaoService.h"
+#include "../dao/GPDResultDao.h"
+#include "GPDKinematicDaoService.h"
+
+/**
  * @class GPDResultDaoService
  *
  * @brief GPD result Data Access Object (DAO) service.
@@ -52,16 +64,6 @@
  ElemUtils::Formatter() << "Extracted: " << gpdResultExtracted.toString());
  \endcode
  */
-
-#include <include/partons/beans/gpd/GPDResult.h>
-#include <include/partons/beans/List.h>
-#include <include/partons/database/common/service/ResultInfoDaoService.h>
-#include <include/partons/database/gpd/dao/GPDResultDao.h>
-#include <include/partons/database/gpd/service/GPDKinematicDaoService.h>
-#include <include/partons/database/parton_distribution/service/PartonDistributionDaoService.h>
-#include <include/partons/database/ResultDaoService.h>
-#include <string>
-
 class GPDResultDaoService: public ResultDaoService {
 public:
 

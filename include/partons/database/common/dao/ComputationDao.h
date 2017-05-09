@@ -6,20 +6,22 @@
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
  * @date November 02, 2015
  * @version 1.0
- *
+ */
+
+#include <QtSql/qsqlquery.h>
+#include <ctime>
+
+#include "../../../BaseObject.h"
+
+class Computation;
+
+/**
  * @class ComputationDao
  *
  * @brief Computation information Data Access Object (DAO).
  *
  * This DAO is used to insert, select and delete computation information from the database. This class in not intended to be used by regular users who should deal with ComputationDaoService instead.
  */
-
-#include <include/partons/BaseObject.h>
-#include <QtSql/qsqlquery.h>
-#include <ctime>
-
-class Computation;
-
 class ComputationDao: public BaseObject {
 
 public:

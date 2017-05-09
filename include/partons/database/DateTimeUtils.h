@@ -6,18 +6,19 @@
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 28 May 2015
  * @version 1.0
- *
- * @class DateTimeUtils
- *
- * @brief Time format utilities used by database services.
- *
- * Utilities dealing with time formats used by database services. In particular tools to retrieve current time in SQL format are availible.
  */
 
 #include <QtCore/qdatetime.h>
 #include <QtCore/qstring.h>
 #include <string>
 
+/**
+ * @class DateTimeUtils
+ *
+ * @brief Time format utilities used by database services.
+ *
+ * Utilities dealing with time formats used by database services. In particular tools to retrieve current time in SQL format are availible.
+ */
 class DateTimeUtils {
 
 public:

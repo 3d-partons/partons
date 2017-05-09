@@ -6,19 +6,21 @@
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 05 May 2015
  * @version 1.0
- *
+ */
+
+#include <QtSql/qsqlquery.h>
+
+#include "QuarkDistributionDao.h"
+
+class PartonDistribution;
+
+/**
  * @class PartonDistributionDao
  *
  * @brief Parton distribution Data Access Object (DAO).
  *
  * This DAO is used to insert, select and delete parton distributions from the database. This class in not intended to be used by regular users who should deal with PartonDistributionDaoService instead.
  */
-
-#include <include/partons/database/parton_distribution/dao/QuarkDistributionDao.h>
-#include <QtSql/qsqlquery.h>
-
-class PartonDistribution;
-
 class PartonDistributionDao: public BaseObject {
 public:
 

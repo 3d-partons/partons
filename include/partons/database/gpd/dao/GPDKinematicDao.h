@@ -6,19 +6,21 @@
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 05 May 2015
  * @version 1.0
- *
+ */
+
+#include <QtSql/qsqlquery.h>
+#include <string>
+
+#include "../../../beans/gpd/GPDKinematic.h"
+#include "../../../beans/List.h"
+
+/**
  * @class GPDKinematicDao
  *
  * @brief GPD kinematics Data Access Object (DAO).
  *
  * This DAO is used to insert, select and delete GPD kinematics from the database. This class in not intended to be used by regular users who should deal with GPDKinematicDaoService instead.
  */
-
-#include <include/partons/beans/gpd/GPDKinematic.h>
-#include <include/partons/beans/List.h>
-#include <QtSql/qsqlquery.h>
-#include <string>
-
 class GPDKinematicDao: public BaseObject {
 public:
 

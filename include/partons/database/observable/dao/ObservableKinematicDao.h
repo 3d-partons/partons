@@ -6,19 +6,21 @@
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
  * @date November 02, 2015
  * @version 1.0
- *
+ */
+
+#include <QtSql/qsqlquery.h>
+#include <string>
+
+#include "../../../beans/List.h"
+#include "../../../beans/observable/ObservableKinematic.h"
+
+/**
  * @class ObservableKinematicDao
  *
  * @brief Observable kinematics Data Access Object (DAO).
  *
  * This DAO is used to insert, select and delete observable kinematics from the database. This class in not intended to be used by regular users who should deal with ObservableKinematicDaoService instead.
  */
-
-#include <include/partons/beans/List.h>
-#include <include/partons/beans/observable/ObservableKinematic.h>
-#include <QtSql/qsqlquery.h>
-#include <string>
-
 class ObservableKinematicDao: public BaseObject {
 public:
 

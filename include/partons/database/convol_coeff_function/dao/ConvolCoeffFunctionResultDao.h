@@ -6,20 +6,22 @@
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
  * @date November 05, 2015
  * @version 1.0
- *
+ */
+
+#include <QtSql/qsqlquery.h>
+#include <string>
+
+#include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
+#include "../../../beans/List.h"
+#include "ConvolCoeffFunctionKinematicDao.h"
+
+/**
  * @class ConvolCoeffFunctionResultDao
  *
  * @brief Compton form factor (CFF) result Data Access Object (DAO).
  *
  * This DAO is used to insert, select and delete CFF results from the database. This class in not intended to be used by regular users who should deal with ConvolCoeffFunctionResultDaoService instead.
  */
-
-#include <include/partons/beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h>
-#include <include/partons/beans/List.h>
-#include <include/partons/database/convol_coeff_function/dao/ConvolCoeffFunctionKinematicDao.h>
-#include <QtSql/qsqlquery.h>
-#include <string>
-
 class ConvolCoeffFunctionResultDao: public BaseObject {
 public:
 

@@ -6,21 +6,23 @@
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date March 11, 2016
  * @version 1.0
-*
+ */
+
+#include <QtSql/qsqlquery.h>
+#include <ctime>
+#include <string>
+
+#include "../../../BaseObject.h"
+
+class EnvironmentConfiguration;
+
+/**
  * @class EnvironmentConfigurationDao
  *
  * @brief Environment configuration Data Access Object (DAO).
  *
  * This DAO is used to insert, select and delete environment configurations from the database. This class in not intended to be used by regular users who should deal with EnvironmentConfigurationDaoService instead.
  */
-
-#include <include/partons/BaseObject.h>
-#include <QtSql/qsqlquery.h>
-#include <ctime>
-#include <string>
-
-class EnvironmentConfiguration;
-
 class EnvironmentConfigurationDao: public BaseObject {
 public:
 
@@ -48,7 +50,7 @@ public:
      * Try to find an entry in the database containing environment configuration that matches with given unique id value.
      * @param indexId Unique id of database entry to be found.
      * @return Pointer to EnvironmentConfiguration object filled with the retrieved data or null pointer if couldn't find it.
-    */
+     */
     EnvironmentConfiguration* selectByIndexId(const int indexId) const;
 
     /**

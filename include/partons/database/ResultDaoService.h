@@ -6,25 +6,26 @@
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
  * @date May 25, 2016
  * @version 1.0
- *
+ */
+
+#include <ctime>
+#include <string>
+#include <utility>
+
+#include "common/service/ComputationDaoService.h"
+#include "common/service/EnvironmentConfigurationDaoService.h"
+#include "common/service/ScenarioDaoService.h"
+
+class Plot2DList;
+class ResultInfo;
+
+/**
  * @class ResultDaoService
  *
  * @brief Use temporary CSV file before insert data into database.
  *
  * It uses temporary CSV file before insert data into database.
  */
-
-#include <include/partons/beans/gpd/GPDResult.h>
-#include <include/partons/beans/List.h>
-#include <include/partons/database/common/service/ComputationDaoService.h>
-#include <include/partons/database/common/service/EnvironmentConfigurationDaoService.h>
-#include <include/partons/database/common/service/ScenarioDaoService.h>
-#include <ctime>
-#include <string>
-#include <utility>
-
-class Plot2DList;
-
 class ResultDaoService: public BaseObject {
 public:
 
@@ -54,7 +55,7 @@ public:
 
 protected:
 
-    std::pair<time_t, int> m_previousComputationId;  ///< Unique id of the last processed computation information with corresponding time.
+    std::pair<time_t, int> m_previousComputationId; ///< Unique id of the last processed computation information with corresponding time.
 
     /**
      * Prepare computation information and scenario information to be inserted into database.

@@ -6,21 +6,23 @@
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
  * @date November 13, 2015
  * @version 1.0
- *
+ */
+
+#include <QtSql/qsqlquery.h>
+#include <string>
+
+#include "../../../beans/gpd/GPDResult.h"
+#include "../../../beans/List.h"
+#include "../../parton_distribution/dao/PartonDistributionDao.h"
+#include "GPDKinematicDao.h"
+
+/**
  * @class GPDResultDao
  *
  * @brief GPD result Data Access Object (DAO).
  *
  * This DAO is used to insert, select and delete GPD results from the database. This class in not intended to be used by regular users who should deal with GPDResultDaoService instead.
  */
-
-#include <include/partons/beans/gpd/GPDResult.h>
-#include <include/partons/beans/List.h>
-#include <include/partons/database/gpd/dao/GPDKinematicDao.h>
-#include <include/partons/database/parton_distribution/dao/PartonDistributionDao.h>
-#include <QtSql/qsqlquery.h>
-#include <string>
-
 class GPDResultDao: public BaseObject {
 public:
 

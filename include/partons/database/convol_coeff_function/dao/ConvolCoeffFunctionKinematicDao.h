@@ -6,19 +6,21 @@
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 05 November 2015
  * @version 1.0
- *
+ */
+
+#include <QtSql/qsqlquery.h>
+#include <string>
+
+#include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
+#include "../../../beans/List.h"
+
+/**
  * @class ConvolCoeffFunctionKinematicDao
  *
  * @brief Compton form factor (CFF) kinematics Data Access Object (DAO).
  *
  * This DAO is used to insert, select and delete CFF kinematics from the database. This class in not intended to be used by regular users who should deal with ConvolCoeffFunctionKinematicDaoService instead.
  */
-
-#include <include/partons/beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h>
-#include <include/partons/beans/List.h>
-#include <QtSql/qsqlquery.h>
-#include <string>
-
 class ConvolCoeffFunctionKinematicDao: public BaseObject {
 public:
 

@@ -6,20 +6,22 @@
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date April 12, 2015
  * @version 1.0
- *
+ */
+
+#include <ctime>
+#include <string>
+
+#include "../BaseObject.h"
+
+class CryptographicHashService;
+
+/**
  * @class DatabaseFileObject
  *
  * @brief Base class for those representing files in database.
  *
  * It is the base class for those representing files that can be stored in the database. It provides a set of useful tools for those objects.
  */
-
-#include <include/partons/BaseObject.h>
-#include <ctime>
-#include <string>
-
-class CryptographicHashService;
-
 class DatabaseFileObject: public BaseObject {
 public:
 
