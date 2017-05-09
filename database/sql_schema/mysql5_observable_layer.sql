@@ -5,7 +5,7 @@ laboratory_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
 laboratory_name VARCHAR(255));
 
 CREATE TABLE collaboration (
-collaboration_id INTEGER NOT NULL PRIMARY KEY, 
+collaboration_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, 
 collaboration_name VARCHAR(255),
 laboratory_id INTEGER);
 
@@ -42,30 +42,6 @@ computation_module_name VARCHAR(255) NOT NULL,
 observable_type_id INTEGER NOT NULL,
 observable_kinematic_id INTEGER NOT NULL,
 computation_id INTEGER NOT NULL);
-
-
-INSERT INTO collaboration (collaboration_id, collaboration_name, laboratory_id) 
-VALUES ('0', 'COMPASS', 0);
-
-INSERT INTO collaboration (collaboration_id, collaboration_name, laboratory_id) 
-VALUES ('1', 'H1', 1);
-
-INSERT INTO collaboration (collaboration_id, collaboration_name, laboratory_id) 
-VALUES ('2', 'HERMES', 1);
-
-INSERT INTO collaboration (collaboration_id, collaboration_name, laboratory_id) 
-VALUES ('3', 'HERA', 1);
-
-INSERT INTO collaboration (collaboration_id, collaboration_name, laboratory_id) 
-VALUES ('4', 'ZEUS', 1);
-
-INSERT INTO collaboration (collaboration_id, collaboration_name, laboratory_id) 
-VALUES ('5', 'CLAS', 2);
-
-INSERT INTO collaboration (collaboration_id, collaboration_name, laboratory_id) 
-VALUES ('6', 'HALL A', 2);
-
-
 
 CREATE VIEW observable_kinematic_view AS 
 SELECT obr.computation_id, obk.observable_kinematic_id, obk.xB, obk.t, obk.Q2, obk.E, obk.phi
