@@ -23,7 +23,7 @@ class GPDService;
 /**
  * @class ConvolCoeffFunctionService
  *
- * @brief \<singleton\> Use for handle and compute some pre-configured CFF modules.
+ * @brief \<singleton\> Used to handle and compute some pre-configured CCF modules. See also the general tutorial on [Computation Services](@ref services_computation).
  */
 class ConvolCoeffFunctionService: public ServiceObjectTyped<
         DVCSConvolCoeffFunctionKinematic, DVCSConvolCoeffFunctionResult> {
@@ -36,24 +36,46 @@ public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
     /**
-     * Default constructor
+     * Default constructor.
      */
     ConvolCoeffFunctionService(const std::string &className);
     /**
-     * Default destructor
+     * Default destructor.
      */
     virtual ~ConvolCoeffFunctionService();
 
+    /**
+     * See parent class for details.
+     */
     void resolveObjectDependencies();
 
+    /**
+     * Method used in automation to compute given tasks.
+     * @param task Automation task to compute.
+     */
     virtual void computeTask(Task &task);
 
+    /**
+     * Computes a CCF Model for a list of kinematics.
+     * @param kinematics List of kinematics.
+     * @param pConvolCoeffFunctionModule CCF model to use for the computation.
+     * @param gpdTypeList List of GPDType to compute. Default: all the GPDTypes available with (both) the ConvolCoeffFunctionModule (AND the underlying GPDModule, if any).
+     * @param storeInDB Boolean to store the results and kinematics on the database. Default: false.
+     * @return List of DVCSConvolCoeffFunctionResult.
+     */
     List<DVCSConvolCoeffFunctionResult> computeForOneCCFModelAndManyKinematics(
             List<DVCSConvolCoeffFunctionKinematic> &kinematics,
             ConvolCoeffFunctionModule* pConvolCoeffFunctionModule,
             const List<GPDType> &gpdTypeList = List<GPDType>(),
             const bool storeInDB = 0);
 
+    /**
+     * Computes a ConvolCoeffFunctionModule at specific kinematics.
+     * @param kinematic CCF Kinematics.
+     * @param convolCoeffFunctionModule CCF model to use for the computation.
+     * @param gpdTypeList List of GPDType to compute. Default: all the GPDTypes available with (both) the ConvolCoeffFunctionModule (AND the underlying GPDModule, if any).
+     * @return DVCSConvolCoeffFunctionResult.
+     */
     virtual DVCSConvolCoeffFunctionResult computeForOneCCFModel(
             const DVCSConvolCoeffFunctionKinematic &kinematic,
             ConvolCoeffFunctionModule* convolCoeffFunctionModule,
@@ -82,11 +104,26 @@ public:
 //    std::vector<CFFInputData> getListOfCFFInputDataFromFile(
 //            const std::string & filePath);
 
+    /**
+     * Uses an automation task (XML file) to configure a ConvolCoeffFunctionModule.
+     * @param task
+     * @return Pre-configured ConvolCoeffFunctionModule.
+     */
     ConvolCoeffFunctionModule* newConvolCoeffFunctionModuleFromTask(
             const Task &task) const;
 
+    /**
+     * Uses an automation task (XML file) to set specific kinematics.
+     * @param task
+     * @return CCF kinematics.
+     */
     DVCSConvolCoeffFunctionKinematic newKinematicFromTask(
             const Task &task) const;
+    /**
+     * Uses an automation task (XML file) to set a list of kinematics.
+     * @param task
+     * @return List of CCF kinematics.
+     */
     List<DVCSConvolCoeffFunctionKinematic> newListOfKinematicFromTask(
             const Task &task) const;
 

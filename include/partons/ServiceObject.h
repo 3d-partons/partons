@@ -34,17 +34,22 @@ class Task;
 class ServiceObject: public BaseObject {
 public:
     /**
-     * Default constructor
+     * Default constructor.
      *
      * @param className
      */
     ServiceObject(const std::string &className);
 
     /**
-     * Default destructor
+     * Default destructor.
      */
     virtual ~ServiceObject();
 
+    /**
+     * Method used in automation to compute given tasks.
+     * Implemented in child classes.
+     * @param task Automation task to compute.
+     */
     virtual void computeTask(Task &task) = 0;
 
     void addTasks(const List<ElemUtils::Packet> &tasks);

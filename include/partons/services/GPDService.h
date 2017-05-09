@@ -23,7 +23,7 @@ class GPDEvolutionModule;
 /**
  * @class GPDService
  *
- * @brief \<singleton\> Used to handle and compute some pre-configured GPD models. See tutorial (TODO: add link to tutorial).
+ * @brief \<singleton\> Used to handle and compute some pre-configured GPD models. See [tutorial](@ref services_computation).
  */
 class GPDService: public ServiceObjectTyped<GPDKinematic, GPDResult> {
 public:

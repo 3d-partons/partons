@@ -25,7 +25,7 @@ class Task;
 /**
  * @class ObservableService
  *
- * @brief \<singleton\> Use for handle and compute some pre-configured CFF modules.
+ * @brief \<singleton\> Used to handle and compute some pre-configured Observables. See also the general tutorial on [Computation Services](@ref services_computation).
  */
 
 class ObservableService: public ServiceObjectTyped<ObservableKinematic,
@@ -38,30 +38,57 @@ public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
     /**
-     * Default constructor
+     * Default constructor.
      */
     ObservableService(const std::string &className);
 
     /**
-     * Default destructor
+     * Default destructor.
      */
     virtual ~ObservableService();
 
+    /**
+     * See parent class for details.
+     */
     void resolveObjectDependencies();
 
+    /**
+     * Computes an Observable at specific kinematics.
+     * @param observableKinematic Kinematics.
+     * @param pObservable Observable to compute.
+     * @param listOfGPDType List of GPDType to compute. Default: all the GPDTypes available with (both) the underlying ConvolCoeffFunctionModule (AND the underlying GPDModule, if any).
+     * @return ObservableResult.
+     */
     ObservableResult computeObservable(
             const ObservableKinematic &observableKinematic,
             Observable* pObservable,
             const List<GPDType> & listOfGPDType = List<GPDType>()) const;
 
+    /**
+     * Computes an Observable for a list of kinematics.
+     * @param listOfKinematic List of kinematics.
+     * @param pObservable Observable to compute.
+     * @param listOfGPDType List of GPDType to compute. Default: all the GPDTypes available with (both) the underlying ConvolCoeffFunctionModule (AND the underlying GPDModule, if any).
+     * @param storeInDB Boolean to store the results and kinematics on the database. Default: false.
+     * @return List of ObservableResult.
+     */
     List<ObservableResult> computeManyKinematicOneModel(
             const List<ObservableKinematic> & listOfKinematic,
             Observable* pObservable,
             const List<GPDType> & listOfGPDType = List<GPDType>(),
             const bool storeInDB = false);
 
+    /**
+     * Method used in automation to compute given tasks.
+     * @param task Automation task to compute.
+     */
     virtual void computeTask(Task &task);
 
+    /**
+     * @brief Returns the channel of a given Observable.\ E.g.\ DVCS.
+     * @param observableClassName Class name of the Observable.
+     * @return ObservableChannel.
+     */
     ObservableChannel::Type getObservableChannel(
             const std::string &observableClassName) const;
 
@@ -71,11 +98,31 @@ public:
 //    ProcessModule* configureProcessModule(ProcessModule* pProcessModule,
 //            ConvolCoeffFunctionModule* pConvolCoeffFunctionModule) const;
 
+    /**
+     * Uses an automation task (XML file) to set specific kinematics.
+     * @param task
+     * @return Observable kinematics.
+     */
     ObservableKinematic newKinematicFromTask(const Task &task) const;
+    /**
+     * Uses an automation task (XML file) to set a list of kinematics.
+     * @param task
+     * @return List of Observable kinematics.
+     */
     List<ObservableKinematic> newListOfKinematicFromTask(
             const Task &task) const;
 
+    /**
+     * Uses an automation task (XML file) to configure an Observable.
+     * @param task
+     * @return Pre-configured Observable.
+     */
     Observable* newObservableModuleFromTask(const Task &task) const;
+    /**
+     * @brief Uses an automation task (XML file) to configure a ProcessModule, e.g.\ a DVCSModule.
+     * @param task
+     * @return Pre-configured ProcessModule.
+     */
     ProcessModule* newProcessModuleFromTask(const Task &task) const;
 
 private:

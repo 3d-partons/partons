@@ -32,7 +32,7 @@ public:
     static const std::string SERVICE_OBJECT_PRINT_RESULTS;
 
     /**
-     * Default constructor
+     * Default constructor.
      *
      * @param className
      */
@@ -41,7 +41,7 @@ public:
     }
 
     /**
-     * Default destructor
+     * Default destructor.
      */
     virtual ~ServiceObjectTyped() {
     }
@@ -107,6 +107,11 @@ public:
         return resultList;
     } // mutex.unlock()
 
+    /**
+     * Method used in automation to compute given tasks.
+     * Method called when overwritten.
+     * @param task Automation task to compute.
+     */
     virtual void computeTask(Task &task) {
         m_resultInfo = ResultInfo();
         m_resultInfo.setScenarioTaskIndexNumber(

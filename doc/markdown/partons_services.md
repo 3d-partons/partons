@@ -117,7 +117,7 @@ GPDModule* pGPDModule = pGPDService->newGPDModule(computationConfiguration);
 
 # Database # {#services_database}
 
-* Database services are developed to store complex C++ objects into database and get back those objects from database tables in a simple way for the user, without knowing about SQL query language or database scheme.
+* Database services are developed to store complex C++ objects into database and get back those objects from database tables in a simple way for the user, without knowing about SQL query language or database schema.
 * They ensure the integrity of the database by using transaction and rollback mechanisms if something wrong happens : the database will always stay in a stable state.
 * They improve querying speed by using transaction and commit mechanisms for a large amount of simultaneous queries.
 
