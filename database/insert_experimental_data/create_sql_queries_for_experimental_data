@@ -1,0 +1,169 @@
+#!/usr/bin/awk -f
+
+BEGIN    {  
+
+   #check if exit without END
+   exit_now = 0;
+
+   #check if first experimental point
+   first_experimental_point = 0;
+
+   #output file name
+   OUTPUT_FILE="output.sql";
+
+   #check if exist
+   if( system( "[ -f "OUTPUT_FILE" ] " )  == 0 )
+   {
+         printf("Output file %s exists\n", OUTPUT_FILE);
+         printf("Overwrite? [y/N] ")
+         getline decision < "-"
+
+         if(decision == "y"){
+            printf("") > OUTPUT_FILE;
+         }
+         else if(decision == "n"){
+            exit_now = 1;
+            exit;
+         }
+         else{
+            exit_now = 1;
+            exit;
+         }
+   }
+
+   #variables to check the consistency
+   LABORATORY_SET = 0;
+   COLLABORATION_SET = 0;
+   EXPERIMENT_SET = 0;
+
+   #variables to print the status
+   LABORATORY_NAME = "";
+   COLLABORATION_NAME = "";
+   EXPERIMENT_YEAR = "";
+   EXPERIMENT_PROCESS = "";
+   EXPERIMENT_TYPE = "";
+   EXPERIMENT_REFERENCE = "";
+}
+
+{ 
+
+   #skip empty lines
+   if(match($0, /^$/) == 1){
+      next;
+   }
+
+   #skip lines containing white characters
+   if(match($0, /^ *$/) != 0){
+      next;
+   }
+
+   #skip comments
+   if(index($0, "#") == 1){
+      next;
+   }
+
+   #laboratory name
+   if($1 == "LABORATORY"){
+
+      split($0, str_array, "\"");
+      LABORATORY_NAME = str_array[2];
+
+      printf("INSERT INTO laboratory(laboratory_name) SELECT * FROM (SELECT '%s') AS tmp WHERE NOT EXISTS (SELECT * FROM laboratory WHERE laboratory_name = '%s') LIMIT 1;\n", LABORATORY_NAME, LABORATORY_NAME) >> OUTPUT_FILE;
+      printf("SELECT laboratory_id INTO @last_laboratory_id FROM laboratory WHERE laboratory_name = '%s';\n", LABORATORY_NAME) >> OUTPUT_FILE;
+
+      LABORATORY_SET = 1;
+   }
+
+   #collaboration name
+   else if($1 == "COLLABORATION"){
+
+      if(LABORATORY_SET == 0){
+         print("Error: Laboratory name should be set prior collaboration name");
+         exit_now = 1;
+         exit;
+      }
+
+      split($0, str_array, "\"");
+      COLLABORATION_NAME = str_array[2];
+
+      printf("INSERT INTO collaboration(collaboration_name, laboratory_id) SELECT * FROM (SELECT '%s', @last_laboratory_id) AS tmp WHERE NOT EXISTS (SELECT * FROM collaboration WHERE (collaboration_name = '%s' AND laboratory_id = @last_laboratory_id)) LIMIT 1;\n", COLLABORATION_NAME, COLLABORATION_NAME) >> OUTPUT_FILE;
+      printf("SELECT collaboration_id INTO @last_collaboration_id FROM collaboration WHERE (collaboration_name = '%s' AND laboratory_id = @last_laboratory_id);\n", COLLABORATION_NAME) >> OUTPUT_FILE;
+
+      COLLABORATION_SET = 1;
+   }
+
+   #experiment
+   else if($1 == "EXPERIMENT"){
+
+      if(COLLABORATION_SET == 0){
+         print("Error: Collaboration name should be set prior experiment information");
+         exit_now = 1;
+         exit;
+      }
+
+      split($0, str_array, "\"");
+      EXPERIMENT_YEAR = str_array[2];
+      EXPERIMENT_PROCESS = str_array[4];
+      EXPERIMENT_TYPE = str_array[6];
+      EXPERIMENT_REFERENCE = str_array[8];
+
+      printf("INSERT INTO experiment(experiment_year, experiment_process, experiment_type, experiment_reference, collaboration_id) SELECT * FROM (SELECT '%s', '%s', '%s', '%s', @last_collaboration_id) AS tmp WHERE NOT EXISTS (SELECT * FROM experiment WHERE experiment_year = '%s' AND experiment_process = '%s' AND experiment_type = '%s' AND experiment_reference = '%s' AND collaboration_id = @last_collaboration_id) LIMIT 1;\n", EXPERIMENT_YEAR, EXPERIMENT_PROCESS, EXPERIMENT_TYPE, EXPERIMENT_REFERENCE, EXPERIMENT_YEAR, EXPERIMENT_PROCESS, EXPERIMENT_TYPE, EXPERIMENT_REFERENCE) >> OUTPUT_FILE;
+      printf("SELECT experiment_id INTO @last_experiment_id FROM experiment WHERE (experiment_year = '%s' AND experiment_process = '%s' AND experiment_type = '%s' AND experiment_reference = '%s' AND collaboration_id = @last_collaboration_id);\n", EXPERIMENT_YEAR, EXPERIMENT_PROCESS, EXPERIMENT_TYPE, EXPERIMENT_REFERENCE) >> OUTPUT_FILE;
+
+      EXPERIMENT_SET = 1;
+   }
+
+   #points
+   else{
+
+      if(EXPERIMENT_SET == 0){
+         print("Error: Experiment information should be set prior experiment data");
+         exit_now = 1;
+         exit;
+      }
+
+      if($9 <= 0. || $10 <= 0.){
+         print("Error: One of statistic uncertainties <= 0");
+         exit_now = 1;
+         exit;
+      }
+
+      if($11 < 0. || $12 < 0.){
+         print("Error: One of systematic uncertainties < 0");
+         exit_now = 1;
+         exit;
+      }
+
+      printf("INSERT INTO observable_kinematic (bin_id,xB,t,Q2,E,phi,experiment_id) VALUES(%d, %.5f, %.5f, %.5f, %.5f, %.5f, @last_experiment_id);\n", $1, $2, $3, $4, $5, $6) >> OUTPUT_FILE;
+      printf("SET @last_observable_kinematic_id = LAST_INSERT_ID();\n") >> OUTPUT_FILE;
+      printf("INSERT INTO observable_result(observable_name,observable_value,stat_error_lb,stat_error_ub,syst_error_lb,syst_error_ub,total_error,observable_kinematic_id) VALUES ('%s', %.5f, %.5f, %.5f, %.5f, %.5f, %.5f, @last_observable_kinematic_id);\n", $7, $8, $9, $10, $11, $12, $13) >> OUTPUT_FILE;
+
+      if(first_experimental_point == 0){
+
+         printf("SET @first_observable_result_id = LAST_INSERT_ID();\n") >> OUTPUT_FILE;
+
+         first_experimental_point = 1;
+      }
+   }
+}
+
+END      {  
+
+   #check if exit without END
+   if(exit_now == 1) exit;
+
+   #print id of first and last inerted points in MySQL
+   printf("SET @last_observable_result_id = LAST_INSERT_ID();\n") >> OUTPUT_FILE;
+   printf("SELECT @first_observable_result_id,@last_observable_result_id;\n") >> OUTPUT_FILE;
+
+   #print status
+   printf("Recognized names:\n");
+   printf("\tlaboratory name: %s\n", LABORATORY_NAME);
+   printf("\tcollaboration name: %s\n", COLLABORATION_NAME);
+   printf("\texperiment year: %s\n", EXPERIMENT_YEAR);
+   printf("\texperiment process: %s\n", EXPERIMENT_PROCESS);
+   printf("\texperiment type: %s\n", EXPERIMENT_TYPE);
+   printf("\texperiment reference: %s\n", EXPERIMENT_REFERENCE);
+
+}
+

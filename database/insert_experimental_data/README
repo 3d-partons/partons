@@ -1,0 +1,34 @@
+---------------------------
+General information
+---------------------------
+This folder contains the script called 'create_sql_queries_for_experimental_data' that can be used to import experimental data into MySQL database. The script uses an input card containing the basic information about the measurement to be inserted and the experimental data itself. It produces a set of MySQL queries that act on 'laboratory', 'collaboration', 'experiment', 'observable_kinematic' and 'observable_result' tables of 'partons' database. For the three first tables it is checked if the new data do not double the existing entries (in the case of repetition the existing entries are used). 
+
+The script was written has been tested under GNU Awk 4.1.3.  
+
+---------------------------
+Structure of the input card
+---------------------------
+The input card should follow the following structure (check 'CLAS_ALU_asymmetries.dat' for example):
+
+1) provide measurement information (keep information in quotation marks where indicated):
+   LABORATORY     "name" 
+   COLLABORATION  "name"
+   EXPERIMENT     "year"   "process"   "type"   "reference"
+
+2) provide experimental points (as many as you want):
+   bin_index   xB    t     Q2    Ebeam    phi      observable_name   value     stat-     stat+      sys-      sys+      err_tot
+
+If you want to use single quotation mark, you must to escape it, e.g. "e\' + p\' + gamma" instead of "e' + p' + gamma".
+
+---------------------------
+Usage
+----------------------------
+Run the script in the following way:
+   ./create_sql_queries_for_experimental_data your_input_card.dat
+
+It will produce 'output.sql' file containing MySQL queries to be inserted into 'partons' database at your MySQL server. To insert the file do like this:
+   mysql -u your_sql_user -p
+   use partons;
+   source output.sql;
+
+If you are using the virtual machine provided by PARTONS team, set MySQL user to 'partons' with the password 'partons'.
