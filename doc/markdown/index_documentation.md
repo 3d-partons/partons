@@ -1,4 +1,4 @@
-# PARTONS Documentation                          {#mainpage}
+# Main Page                          {#mainpage}
 
 The first section helps you set up a functioning PARTONS environment, while the following section(s) are needed to understand how to use and develop with PARTONS. <img src='../images/logo_partons.jpg' alt='PARTONS' style='float:right;max-width:60%;height:auto' />
 

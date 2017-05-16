@@ -2,6 +2,8 @@
 
 This tutorial will help you code with/in PARTONS with the Eclipse CDT IDE.
 
+**TODO: This tutorial is crap, it needs to be rewritten for Git and for the user instead of the developer.**
+
 [TOC]
 
 # Configuring Eclipse for PARTONS {#eclipse_configure}

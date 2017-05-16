@@ -4,7 +4,9 @@ This tutorial is for building PARTONS on Linux. It describes the procedure for a
 
 [TOC]
 
-# Installing the external libraries # {#linux_libraries}
+# Setup # {#linux_setup}
+
+## Installing the external libraries ## {#linux_libraries}
 
 %All the needed libraries can be accessed through the package manager:
 
@@ -12,7 +14,7 @@ This tutorial is for building PARTONS on Linux. It describes the procedure for a
 sudo apt-get install libeigen3-dev libcln-dev libsfml-dev libqt4-dev libqt4-sql-mysql root-system
 ~~~~~~~~~~~~~
 
-You can use any of your favourite dpkg front-ends (apt, aptitude, apt-get...), but be sure that it installs recommended packages as dependencies. In particular, we need the MathMore module of ROOT (package `libroot-math-mathmore-dev`).
+You can use any of your favorite dpkg front-ends (apt, aptitude, apt-get...), but be sure that it installs recommended packages as dependencies. In particular, we need the MathMore module of ROOT (package `libroot-math-mathmore-dev`).
 
 On Debian, you might want to use `su -` to switch to `root` first, instead of the ubuntu way of using `sudo` directly from your current user.
 
@@ -20,7 +22,7 @@ For an old Debian, it might be necessary to build libraries from source (a recen
 
 If you do build libraries yourself from sources, be sure to use the default paths for the installation. Otherwise, the CMake scripts might not work.
 
-# CMake and SVN # {#linux_cmake_svn}
+## CMake ## {#linux_cmake}
 
 CMake is the main tool to achieve multi-platform compilation. Install it with your package manager:
 
@@ -28,11 +30,28 @@ CMake is the main tool to achieve multi-platform compilation. Install it with yo
 sudo apt-get install cmake
 ~~~~~~~~~~~~~
 
-You obviously need SVN (Subversion) too in order to retrieve the sources. So install it too if not already available:
+## Source code ## {#linux_source}
+
+If you want to retrieve directly the sources from our GitLab repository, you obviously need Git. So install it too if not already available:
 
 ~~~~~~~~~~~~~{.sh}
-sudo apt-get install subversion
+sudo apt-get install git
 ~~~~~~~~~~~~~
+
+You can then go to a folder of your liking and clone the repository of **PARTONS** (and of its needed dependencies ; **ElementaryUtils** and **NumA++**):
+
+~~~~~~~~~~~~~{.sh}
+cd /path/to/some/directory
+GIT_SSL_NO_VERIFY=true git clone https://drf-gitlab.cea.fr/partons/elementary-utils.git --branch v1
+GIT_SSL_NO_VERIFY=true git clone https://drf-gitlab.cea.fr/partons/numa.git --branch v1
+GIT_SSL_NO_VERIFY=true git clone https://drf-gitlab.cea.fr/partons/partons.git --branch v1
+~~~~~~~~~~~~~
+
+The option `--branch` is needed to checkout the *release* branch (in that case the first version). If you want to checkout `master`, don't use the option.
+
+The option `GIT_SSL_NO_VERIFY=true` is needed because the CEA certificate is often not recognized.
+
+You can also just download the source code of those projects from [GitLab](https://drf-gitlab.cea.fr/partons/) or our website. **TODO: add link to website when available.**
 
 # Building the source code #  {#linux_build}
 
@@ -40,19 +59,10 @@ This section is for building the projects without IDE. Skip it and go to [the la
 
 We will detail the procedure in the case of ElementaryUtils. For the other projects, it's exactly the same.
 
-First, you need to `checkout` the project (or `update` it if already available):
+Go to the subdirectory `build/` of the project and call the following cmake command:
 
 ~~~~~~~~~~~~~{.sh}
-cd /whatever/directory/you/like
-svn checkout --username#your_SVN_username https://dsm-trac.cea.fr/svn/prophet/DEVELOPMENT/ElementaryUtils/trunk ElementaryUtils
-~~~~~~~~~~~~~
-
-if you want to use the trunk branch. For other branches, adapt the path (e.g. for the release branch, use the path `branches/branch-release` instead of `trunk`).
-
-Now, go the subdirectory `build/` and call the following cmake command:
-
-~~~~~~~~~~~~~{.sh}
-cd ElementaryUtils/build/
+cd elementary-utils/build/
 cmake -G"Unix Makefiles" ../ -DCMAKE_BUILD_TYPE=Debug
 ~~~~~~~~~~~~~
 
@@ -64,7 +74,9 @@ If everything went fine, you can build the project:
 make
 ~~~~~~~~~~~~~
 
-You can repeat this for all the projects such as NumA++, PARTONS or PARTONS_release. The dependencies follow this order.
+You can repeat this for the other projects NumA++ and PARTONS. The dependencies follow this order.
+
+Note that if you intend to use the installation described in the following sections, you may want to install ElementaryUtils before building NumA++ (and installing NumA++ before building PARTONS) so that each subsequent library uses the installed headers and shared library instead of the temporary ones located in the source folder and that may be removed after the installation.
 
 # Installing the PARTONS libraries {#linux_install}
 
@@ -84,7 +96,7 @@ This will allow you to install the headers to `/home/youruser/somefolder/include
 
 # Building your own project using PARTONS {#linux_buildperso}
 
-PARTONS_release is meant as an example of project making use of the PARTONS libraries. You can use it as a template for your own projects.
+The project [partons-example](https://drf-gitlab.cea.fr/partons/partons.git) is meant as an example of project making use of the PARTONS libraries. You can use it as a template for your own projects.
 
 In particular, you can adapt the CMakeLists.txt already present in PARTONS_release, and use the same FindXXXX.cmake scripts found in the folder `cmake/Modules`.
 
@@ -93,7 +105,7 @@ In particular, you can adapt the CMakeLists.txt already present in PARTONS_relea
 You can install the IDE Eclipse CDT (and some useful plugins) with:
 
 ~~~~~~~~~~~~~{.sh}
-sudo apt-get install eclipse-cdt eclipse-subclipse eclipse-eclox
+sudo apt-get install eclipse-cdt eclipse-egit eclipse-eclox
 ~~~~~~~~~~~~~
 
 You can see the [Eclipse](@ref eclipse) tutorial for how to configure Eclipse for PARTONS and use it as IDE.
