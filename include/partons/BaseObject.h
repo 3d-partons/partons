@@ -34,12 +34,12 @@ public:
     BaseObject(const std::string &className);
 
     /**
-     * Default destructor
+     * Default destructor.
      */
     virtual ~BaseObject();
 
     /**
-     * Virtual clone function to allow factory to clone all derived members object stored in the BaseObjectRegistry.
+     * Virtual clone function to allow the factory to clone all derived members object stored in the BaseObjectRegistry.
      * @return
      */
     virtual BaseObject* clone() const;
@@ -56,8 +56,7 @@ public:
      *
      * @return a pre-formatted characters string.
      */
-    //TODO propagade const every daugther class
-    virtual std::string toString() const;
+    virtual std::string toString() const; //TODO propagade const every daugther class
 
     /**
      * Used to split a complex C++ object into a concatenation of simple types.
@@ -93,7 +92,7 @@ public:
 
 protected:
     /**
-     * Copy constructor
+     * Copy constructor.
      *
      * @param other
      */
@@ -118,7 +117,7 @@ protected:
             const std::string &message) const;
 
     /**
-     * Print warn message into logger.
+     * Print warning message into logger.
      *
      * @param functionName
      * @param message

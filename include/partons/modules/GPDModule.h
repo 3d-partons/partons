@@ -58,12 +58,6 @@ public:
 
     virtual void run();
 
-    /**
-     * Provides a generic method to configure all types of modules by passing a Parameters object.
-     * (See ModuleObject class for more info).
-     *
-     * @param parameters
-     */
     void virtual configure(const ElemUtils::Parameters &parameters);
 
     /**
@@ -126,10 +120,6 @@ public:
      */
     virtual PartonDistribution computeEt();
 
-    /**
-     * See documentation in parent class.
-     * @return std::string
-     */
     virtual std::string toString() const;
 
     // ##### GETTERS & SETTERS #####

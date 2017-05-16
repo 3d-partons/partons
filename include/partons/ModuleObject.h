@@ -57,9 +57,6 @@ public:
      */
     virtual void configure(const ElemUtils::Parameters &parameters);
 
-    /**
-     * See documentation about this method in BaseObject class for more details: BaseObject::clone.
-     */
     virtual ModuleObject* clone() const = 0;
 
     /**
@@ -69,9 +66,6 @@ public:
      */
     virtual std::string toString() const;
 
-    /**
-     * See documentation about this method in BaseObject class for more details.
-     */
     virtual void resolveObjectDependencies();
 
     /**
