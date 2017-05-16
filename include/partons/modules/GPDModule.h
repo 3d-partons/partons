@@ -45,15 +45,10 @@ public:
     GPDModule(const std::string &className);
 
     /**
-     * Default destructor
+     * Default destructor.
      */
     virtual ~GPDModule();
 
-    /**
-     * Clone. See BaseObject::clone for more details.
-     *
-     * @return GPDModule pointer.
-     */
     virtual GPDModule* clone() const = 0;
 
     virtual void run();
@@ -170,7 +165,7 @@ protected:
     GPDEvolutionModule* m_pGPDEvolutionModule;
 
     /**
-     * Copy constructor
+     * Copy constructor.
      *
      * @param other
      */
@@ -180,18 +175,22 @@ protected:
     virtual void isModuleWellConfigured();
 
     /**
-     *
-     *
+     * Method called at the start of the compute method to test the input.
+     * Calls initModule and isModuleWellConfigured.
      * @param x
      * @param xi
      * @param t
      * @param MuF2
      * @param MuR2
-     * @param gpdComputeType
+     * @param gpdType
      */
     virtual void preCompute(double x, double xi, double t, double MuF2, double MuR2,
             GPDType::Type gpdType);
 
+    /**
+     * List of GPD types that can be computed by the child class.
+     * Needs to be set in the constructor of the child class, with the corresponding methods to be used.
+     */
     std::map<GPDType::Type, PartonDistribution (GPDModule::*)()> m_listGPDComputeTypeAvailable;
     std::map<GPDType::Type, PartonDistribution (GPDModule::*)()>::iterator m_it;
 

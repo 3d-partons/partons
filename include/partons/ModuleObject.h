@@ -45,7 +45,7 @@ public:
     ModuleObject(const std::string &className);
 
     /**
-     * Default destructor
+     * Default destructor.
      */
     virtual ~ModuleObject();
 
