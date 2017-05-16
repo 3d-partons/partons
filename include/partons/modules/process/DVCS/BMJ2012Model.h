@@ -1,6 +1,13 @@
 #ifndef BMJ_2012_MODEL_H
 #define BMJ_2012_MODEL_H
 
+/**
+ * @file BMJ2012Model.h
+ * @author Nabil CHOUIKA (SPhN / CEA Saclay)
+ * @date 07 October 2015
+ * @version 1.0
+ */
+
 #include <complex>
 #include <string>
 #include <vector>
@@ -9,32 +16,31 @@
 #include "../DVCSModule.h"
 
 /**
- * @file BMJ2012Model.h
- * @author Nabil CHOUIKA (SPhN / CEA Saclay)
- * @date 07 October 2015
- * @version 1.0
- *
  * @class BMJ2012Model
+ *
+ * Module for the DVCS process using the Belitsky-Müller set of formulas.
+ *
+ * Code based on the published papers:\n
+ * - arxiv:hep-ph/0112108 @cite Belitsky2001ns for the BH amplitude ;\n
+ * - arxiv:1212.6674 @cite Belitsky2012ch for the DVCS amplitude and interference.
  */
-
 class BMJ2012Model: public DVCSModule {
 public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
+    /**
+     * Constructor.
+     * See BaseObject::BaseObject and ModuleObject::ModuleObject for more details.
+     *
+     * @param className name of child class.
+     */
     BMJ2012Model(const std::string &className);
+    /**
+     * Default destructor.
+     */
     virtual ~BMJ2012Model();
 
     virtual BMJ2012Model* clone() const;
-
-    // Cross sections
-    virtual double CrossSectionBH(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization); ///< Bethe Heitler cross section
-
-    virtual double CrossSectionVCS(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization); ///< Virtual Compton Scattering cross section
-
-    virtual double CrossSectionInterf(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization); ///< Interference cross section
 
 protected:
     /**
@@ -50,6 +56,16 @@ protected:
     virtual void initModule(double beamHelicity, double beamCharge,
             NumA::Vector3D targetPolarization);
     virtual void isModuleWellConfigured();
+
+    // Cross sections
+    virtual double CrossSectionBH(double beamHelicity, double beamCharge,
+            NumA::Vector3D targetPolarization); ///< Bethe Heitler cross section
+
+    virtual double CrossSectionVCS(double beamHelicity, double beamCharge,
+            NumA::Vector3D targetPolarization); ///< Virtual Compton Scattering cross section
+
+    virtual double CrossSectionInterf(double beamHelicity, double beamCharge,
+            NumA::Vector3D targetPolarization); ///< Interference cross section
 
 private:
 
@@ -70,9 +86,9 @@ private:
     std::vector<double> m_M; ///< Proton mass
                              ///< m_M[0] = M, m_M[1] = M^2, etc...
     std::vector<double> m_yBMJ; ///< Lepton energy fraction
-                             ///< m_y[0] = y, m_y[1] = y^2, etc...
+                                ///< m_y[0] = y, m_y[1] = y^2, etc...
     std::vector<double> m_epsilonBMJ; ///<
-                                   ///< m_epsilon[0] = epsilon, m_epsilon[1] = epsilon^2, etc...
+                                      ///< m_epsilon[0] = epsilon, m_epsilon[1] = epsilon^2, etc...
     std::vector<double> m_epsroot; ///< sqrt(1+epsilon^2)
     std::vector<double> m_K, m_Kt; ///< Kinematical factors K and K tilde
     ///< m_K[0] = K, m_K[1] = K^2, etc...

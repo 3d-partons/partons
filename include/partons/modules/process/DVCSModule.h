@@ -23,17 +23,20 @@
  */
 class DVCSModule: public ProcessModule {
 public:
+    /**
+     * Constructor.
+     * See BaseObject::BaseObject and ModuleObject::ModuleObject for more details.
+     *
+     * @param className name of child class.
+     */
     DVCSModule(const std::string &className);
+    /**
+     * Default destructor.
+     */
     virtual ~DVCSModule();
 
     virtual void resolveObjectDependencies();
 
-    /**
-     * Provides a generic method to configure all types of modules by passing a Parameters object.
-     * (See ModuleObject class for more info).
-     *
-     * @param parameters
-     */
     virtual void configure(const ElemUtils::Parameters &parameters);
 
     void computeConvolCoeffFunction(double xB, double t, double Q2, double E,

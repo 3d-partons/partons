@@ -31,32 +31,54 @@ class Vector3D;
 /**
  * @class ProcessModule
  *
- * @brief
+ * @brief Generic class for computing the cross section of an experimental process.
+ * The different channels are child classes, e.g. DVCSModule.
  */
 class ProcessModule: public ModuleObject {
 public:
     static const std::string PROCESS_MODULE_CLASS_NAME;
 
     /**
-     * Default constructor
+     * Default constructor.
      */
     ProcessModule(const std::string &className);
 
     virtual ProcessModule* clone() const = 0;
 
     /**
-     * Default destructor
+     * Default destructor.
      */
     virtual ~ProcessModule();
 
+    /**
+     * Computes the coefficient functions associated to the process.
+     * Must be implemented in the child class, by calling a ConvolCoeffFunctionModule.
+     * @param xB Bjorken x variable.
+     * @param t Momentum transfer squared.
+     * @param Q2 Virtuality.
+     * @param E Beam energy.
+     * @param gpdType List of GPD types to be used for the coefficient functions.
+     */
     virtual void computeConvolCoeffFunction(double xB, double t, double Q2,
             double E, const List<GPDType> & gpdType = List<GPDType>()) = 0;
 
+    /**
+     * Computes the cross section. Must be implemented in the child class.
+     * @param beamHelicity Helicity of the beam.
+     * @param beamCharge Charge of the beam.
+     * @param targetPolarization Polarization of the target.
+     * @param phi Angle between the hadronic and leptonic planes.
+     * @return
+     */
     virtual double computeCrossSection(double beamHelicity, double beamCharge,
             NumA::Vector3D targetPolarization, double phi) = 0;
 
     virtual void configure(const ElemUtils::Parameters &parameters);
 
+    /**
+     * Sets a given ConvolCoeffFunctionModule.
+     * @param pConvolCoeffFunctionModule
+     */
     virtual void setConvolCoeffFunctionModule(
             ConvolCoeffFunctionModule* pConvolCoeffFunctionModule);
 
@@ -74,7 +96,7 @@ public:
 
 protected:
     /**
-     * Copy constructor
+     * Copy constructor.
      *
      * @param other
      */

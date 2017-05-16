@@ -30,13 +30,18 @@ class RunningAlphaStrongModule;
  */
 class DVCSConvolCoeffFunctionModule: public ConvolCoeffFunctionModule {
 public:
+    /**
+     * Constructor.
+     * See BaseObject::BaseObject and ModuleObject::ModuleObject for more details.
+     *
+     * @param className name of child class.
+     */
     DVCSConvolCoeffFunctionModule(const std::string &className);
+    /**
+     * Default destructor.
+     */
     virtual ~DVCSConvolCoeffFunctionModule();
 
-    /**
-     * Virtual clone function to allow factory to copy all derived members
-     * @return
-     */
     virtual DVCSConvolCoeffFunctionModule* clone() const = 0;
 
     virtual void resolveObjectDependencies();
@@ -46,8 +51,23 @@ public:
     virtual std::complex<double> compute(double xi, double t, double Q2,
             double MuF2, double MuR2, GPDType::Type gpdType);
 
+    /**
+     * Method to compute some CFFs.
+     * Can be implemented and used in child class, if needed.
+     * @return Complex result.
+     */
     virtual std::complex<double> computeUnpolarized();
+    /**
+     * Method to compute some CFFs.
+     * Can be implemented and used in child class, if needed.
+     * @return Complex result.
+     */
     virtual std::complex<double> computePolarized();
+    /**
+     * Method to compute some CFFs.
+     * Can be implemented and used in child class, if needed.
+     * @return Complex result.
+     */
     virtual std::complex<double> computeCFF();
 
     virtual List<GPDType> getListOfAvailableGPDTypeForComputation() const;
@@ -58,6 +78,10 @@ public:
     // ##### GETTERS & SETTERS #####
 
     PerturbativeQCDOrderType::Type getQCDOrderType() const;
+    /**
+     * Defines the order of the perturbative QCD computation.
+     * @param qcdOrderType
+     */
     void setQCDOrderType(PerturbativeQCDOrderType::Type qcdOrderType);
 
     void setNfConvolCoeffFunction(ActiveFlavorsModule* pNfConvolCoeffFunction);
@@ -67,7 +91,7 @@ public:
 protected:
 
     /**
-     * Copy constructor
+     * Copy constructor.
      *
      * @param other
      */

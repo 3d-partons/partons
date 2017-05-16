@@ -10,7 +10,9 @@
 #include "../DVCSModule.h"
 
 /**
- * VGG process model for DVCS
+ * @class VGG1999Model
+ *
+ * VGG process model for DVCS.
  *
  * For the reference see:
  * - Prog. Part. Nucl. Phys. 47, 401 (2001)
@@ -18,7 +20,7 @@
  * - Phys. Rev. D 60, 094017 (1999).
  * - Phys. Rev. D 72, 054013 (2005).
  *
- * Module based on the original code received from M. Guidal as a private communication
+ * Module based on the original code received from M. Guidal as a private communication.
  */
 class VGG1999Model: public DVCSModule {
 

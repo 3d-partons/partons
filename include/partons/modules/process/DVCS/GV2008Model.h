@@ -4,12 +4,11 @@
 /**
  * @file GV2008Model.h
  * @author Hervé MOUTARDE (SPhN / CEA Saclay)
- * @date unknow
  * @version 1.0
  *
  * @class GV2008Model
  *
- * @brief 25-09-2015 (Bryan BERTHOU) : refactoring
+ * @date 25-09-2015 (Bryan BERTHOU) : refactoring
  */
 
 #include <NumA/linear_algebra/vector/Vector4D.h>
@@ -18,6 +17,11 @@
 
 #include "../DVCSModule.h"
 
+/**
+ * @class GV2008Model
+ *
+ * Module for the DVCS process using the unpublished Guichon-Vanderhagen set of formulas.
+ */
 class GV2008Model: public DVCSModule {
 public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
