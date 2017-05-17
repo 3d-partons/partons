@@ -6,19 +6,7 @@
  * @author Bryan BERTHOU (CEA Saclay)
  * @author Herve MOUTARDE (CEA Saclay)
  * @date 2014
- * @version 2.0
- *
- * @class GK16Model
- *
- * @brief A module that implements GPD as defined by Kroll-Goloskokov model in 2011.
- *
- * !!!! Use tgamma() instead of gamma() (see: http://stackoverflow.com/questions/18116376/what-is-the-definition-for-gammadouble-x-and-why-is-it-different-on-two-gcc-ve)
- *
- *
- * August 2015 : Tested and approved by Pawel Sznajder
- *
- * 21/02/2017  delta for gluons (line 1376) has been modified with respect to GK11 to match with the expression of eq. 34 in   arXiv:0708.3569 [hep-ph] and the fact that delta_g = delta_s-1
- *
+ * @version 1.0
  */
 
 #include <string>
@@ -28,20 +16,31 @@
 
 //TODO finir les messages de debug dans toutes les fonctions
 //TODO supprimer au maximum les pointers qui ne sont pas obligatoires
+// !!!! Use tgamma() instead of gamma() (see: http://stackoverflow.com/questions/18116376/what-is-the-definition-for-gammadouble-x-and-why-is-it-different-on-two-gcc-ve)
 
+/**
+ * @class GK16Model
+ *
+ * @brief A module that implements GPD as defined by Kroll-Goloskokov model in 2011.
+ *
+ * August 2015 : Tested and approved by Pawel Sznajder.
+ *
+ * November 2016 : Update from GK11 to GK16 to correct pion pole issue in  Et by Luca Colaneri and Pawel Sznajder.
+ *
+ */
 class GK16Model: public GPDModule {
 public:
 
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
     /**
-     * Default constructor
+     * Default constructor.
      */
     // GK16Model();
     GK16Model(const std::string &className);
 
     /**
-     * Default destructor
+     * Default destructor.
      */
     virtual ~GK16Model();
 
@@ -112,9 +111,9 @@ public:
 
 protected:
     /**
-     * Copy constructor
+     * Copy constructor.
      *
-     * Use by the factory
+     * Used by the factory.
      *
      * @param other
      */
@@ -125,10 +124,10 @@ protected:
 
     //GPDResultData compute(GPDComputeType gpdComputeType);
 
-    virtual PartonDistribution computeH(); ///< Compute GPD H at considered kinematics
-    virtual PartonDistribution computeE(); ///< Compute GPD E at considered kinematics
-    virtual PartonDistribution computeHt(); ///< Compute GPD Ht at considered kinematics
-    virtual PartonDistribution computeEt(); ///< Compute GPD Et at considered kinematics
+    virtual PartonDistribution computeH();
+    virtual PartonDistribution computeE();
+    virtual PartonDistribution computeHt();
+    virtual PartonDistribution computeEt();
 
 //    double computeSinglet(const QuarkDistribution &quarkDistribution_u,
 //            const QuarkDistribution &quarkDistribution_d,
@@ -158,25 +157,25 @@ private:
     double fEtuValMx;                                         ///< HuVal( - fx )
     double fEtdValMx;                                         ///< HdVal( - fx )
 
-    double kHgluon;                   ///< Exponent of correlated x-t dependence
-    double kHsea;                     ///< Exponent of correlated x-t dependence
-    double kHuval;                    ///< Exponent of correlated x-t dependence
-    double kHdval;                    ///< Exponent of correlated x-t dependence
+    double kHgluon;                   ///< Exponent of correlated x-t dependence.
+    double kHsea;                     ///< Exponent of correlated x-t dependence.
+    double kHuval;                    ///< Exponent of correlated x-t dependence.
+    double kHdval;                    ///< Exponent of correlated x-t dependence.
 
-    double kEgluon;                   ///< Exponent of correlated x-t dependence
-    double kEsea;                     ///< Exponent of correlated x-t dependence
-    double kEuval;                    ///< Exponent of correlated x-t dependence
-    double kEdval;                    ///< Exponent of correlated x-t dependence
+    double kEgluon;                   ///< Exponent of correlated x-t dependence.
+    double kEsea;                     ///< Exponent of correlated x-t dependence.
+    double kEuval;                    ///< Exponent of correlated x-t dependence.
+    double kEdval;                    ///< Exponent of correlated x-t dependence.
 
-    double kHtgluon;                  ///< Exponent of correlated x-t dependence
-    double kHtsea;                    ///< Exponent of correlated x-t dependence
-    double kHtuval;                   ///< Exponent of correlated x-t dependence
-    double kHtdval;                   ///< Exponent of correlated x-t dependence
+    double kHtgluon;                  ///< Exponent of correlated x-t dependence.
+    double kHtsea;                    ///< Exponent of correlated x-t dependence.
+    double kHtuval;                   ///< Exponent of correlated x-t dependence.
+    double kHtdval;                   ///< Exponent of correlated x-t dependence.
 
-    double kEtgluon;                  ///< Exponent of correlated x-t dependence
-    double kEtsea;                    ///< Exponent of correlated x-t dependence
-    double kEtuval;                   ///< Exponent of correlated x-t dependence
-    double kEtdval;                   ///< Exponent of correlated x-t dependence
+    double kEtgluon;                  ///< Exponent of correlated x-t dependence.
+    double kEtsea;                    ///< Exponent of correlated x-t dependence.
+    double kEtuval;                   ///< Exponent of correlated x-t dependence.
+    double kEtdval;                   ///< Exponent of correlated x-t dependence.
 
     std::vector<double> Huval1tab;           ///< Hval1(i=0,0.5,1) for valence u
     std::vector<double> Hdval1tab;           ///< Hval1(i=0,0.5,1) for valence d
@@ -207,7 +206,7 @@ private:
     void calculateHtKas();
     void calculateEtKas();
 
-    double Et_pole(double x); ///< Pion pole contribution to Et
+    double Et_pole(double x); ///< Pion pole contribution to Et.
 
     double Hi1(double x, double i, double k);
     double Hs1(double x, double i, double k);

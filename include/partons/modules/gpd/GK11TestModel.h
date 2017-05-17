@@ -41,13 +41,13 @@ public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
     /**
-     * Default constructor
+     * Default constructor.
      */
     // GK11Model();
     GK11TestModel(const std::string &className);
 
     /**
-     * Default destructor
+     * Default destructor.
      */
     virtual ~GK11TestModel();
 
@@ -61,9 +61,9 @@ public:
 
 protected:
     /**
-     * Copy constructor
+     * Copy constructor.
      *
-     * Use by the factory
+     * Use by the factory.
      *
      * @param other
      */
@@ -74,10 +74,10 @@ protected:
 
     //GPDResultData compute(GPDComputeType gpdComputeType);
 
-    virtual PartonDistribution computeH(); ///< Compute GPD H at considered kinematics
-    virtual PartonDistribution computeE(); ///< Compute GPD E at considered kinematics
-    virtual PartonDistribution computeHt(); ///< Compute GPD Ht at considered kinematics
-    virtual PartonDistribution computeEt(); ///< Compute GPD Et at considered kinematics
+    virtual PartonDistribution computeH();
+    virtual PartonDistribution computeE();
+    virtual PartonDistribution computeHt();
+    virtual PartonDistribution computeEt();
 
 //    double computeSinglet(const QuarkDistribution &quarkDistribution_u,
 //            const QuarkDistribution &quarkDistribution_d,

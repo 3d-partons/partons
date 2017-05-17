@@ -77,6 +77,10 @@ public:
 
     // ##### GETTERS & SETTERS #####
 
+    /**
+     *
+     * @return Order of the perturbative QCD computation.
+     */
     PerturbativeQCDOrderType::Type getQCDOrderType() const;
     /**
      * Defines the order of the perturbative QCD computation.
@@ -85,6 +89,10 @@ public:
     void setQCDOrderType(PerturbativeQCDOrderType::Type qcdOrderType);
 
     void setNfConvolCoeffFunction(ActiveFlavorsModule* pNfConvolCoeffFunction);
+    /**
+     *
+     * @param pRunningAlphaStrongModule Pointer to the running coupling module to be used.
+     */
     void setRunningAlphaStrongModule(
             RunningAlphaStrongModule* pRunningAlphaStrongModule);
 

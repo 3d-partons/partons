@@ -6,16 +6,7 @@
  * @author Bryan BERTHOU (CEA Saclay)
  * @author Herve MOUTARDE (CEA Saclay)
  * @date 2014
- * @version 2.0
- *
- * @class GK11Model
- *
- * @brief A module that implements GPD as defined by Kroll-Goloskokov model in 2011.
- *
- * !!!! Use tgamma() instead of gamma() (see: http://stackoverflow.com/questions/18116376/what-is-the-definition-for-gammadouble-x-and-why-is-it-different-on-two-gcc-ve)
- *
- *
- * August 2015 : Tested and approved by Pawel Sznajder
+ * @version 1.0
  */
 
 #include <string>
@@ -25,20 +16,27 @@
 
 //TODO finir les messages de debug dans toutes les fonctions
 //TODO supprimer au maximum les pointers qui ne sont pas obligatoires
+// !!!! Use tgamma() instead of gamma() (see: http://stackoverflow.com/questions/18116376/what-is-the-definition-for-gammadouble-x-and-why-is-it-different-on-two-gcc-ve)
 
+/**
+ * @class GK11Model
+ *
+ * @brief A module that implements GPD as defined by Kroll-Goloskokov model in 2011.
+ *
+ * August 2015 : Tested and approved by Pawel Sznajder.
+ */
 class GK11Model: public GPDModule {
 public:
 
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
     /**
-     * Default constructor
+     * Default constructor.
      */
-    // GK11Model();
     GK11Model(const std::string &className);
 
     /**
-     * Default destructor
+     * Default destructor.
      */
     virtual ~GK11Model();
 
@@ -109,9 +107,9 @@ public:
 
 protected:
     /**
-     * Copy constructor
+     * Copy constructor.
      *
-     * Use by the factory
+     * Used by the factory.
      *
      * @param other
      */
@@ -122,10 +120,10 @@ protected:
 
     //GPDResultData compute(GPDComputeType gpdComputeType);
 
-    virtual PartonDistribution computeH(); ///< Compute GPD H at considered kinematics
-    virtual PartonDistribution computeE(); ///< Compute GPD E at considered kinematics
-    virtual PartonDistribution computeHt(); ///< Compute GPD Ht at considered kinematics
-    virtual PartonDistribution computeEt(); ///< Compute GPD Et at considered kinematics
+    virtual PartonDistribution computeH();
+    virtual PartonDistribution computeE();
+    virtual PartonDistribution computeHt();
+    virtual PartonDistribution computeEt();
 
 //    double computeSinglet(const QuarkDistribution &quarkDistribution_u,
 //            const QuarkDistribution &quarkDistribution_d,

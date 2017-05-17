@@ -27,7 +27,7 @@ public:
 
 protected:
     /**
-     * Copy constructor
+     * Copy constructor.
      */
     NfFunctionExample(const NfFunctionExample &other);
 

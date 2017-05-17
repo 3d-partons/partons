@@ -1371,7 +1371,6 @@ void GK16Model::calculateEKas() {
     double alpha, delta;
 
 // gluons
-////// delta has been modified with respect to GK11 to match with the expression of eq. 34 in   arXiv:0708.3569 [hep-ph] and the fact that delta_g = delta_s-1
     alpha = 0.15; //slope of gluon trajectory
     delta = 0.10 + 0.06 * fL - 0.0027 * fL * fL;
     kEgluon = delta + alpha * m_t;

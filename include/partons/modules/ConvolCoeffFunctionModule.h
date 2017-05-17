@@ -26,7 +26,9 @@ class GPDModule;
 /**
  * @class ConvolCoeffFunctionModule
  *
- * @brief
+ * @brief Abstract class that provides a skeleton to implement a Convolution of Coefficient Function module.
+ * It must be derived into child classes for different channels.
+ * E.g. for DVCS, it is derived into DVCSConvolCoeffFunctionModule, that is a Compton Form Factor module.
  */
 class ConvolCoeffFunctionModule: public ModuleObject,
         public MathIntegratorModule {
@@ -84,13 +86,36 @@ public:
 
     // ##### GETTERS & SETTERS #####
 
+    /**
+     *
+     * @return Pointer to the underlying GPD module.
+     */
     GPDModule* getGPDModule() const;
-
+    /**
+     *
+     * @param gpdModule Pointer to the underlying GPD module.
+     */
     void setGPDModule(GPDModule* gpdModule);
 
+    /**
+     *
+     * @return Type of channel (i.e. experimental process).
+     */
     ObservableChannel::Type getChannel() const;
+    /**
+     *
+     * @param channel Type of channel (i.e. experimental process).
+     */
     void setChannel(ObservableChannel::Type channel);
+    /**
+     *
+     * @return Boolean (true if this CCF module depends on a GPD module).
+     */
     bool isGPDModuleDependent() const;
+    /**
+     *
+     * @param isGPDModuleDependent Boolean (true if this CCF module depends on a GPD module).
+     */
     void setIsGPDModuleDependent(bool isGPDModuleDependent);
 
     virtual void prepareSubModules(
@@ -103,12 +128,12 @@ protected:
     ConvolCoeffFunctionModule(const ConvolCoeffFunctionModule &other);
 
     //TODO doc
-    ObservableChannel::Type m_channel;
+    ObservableChannel::Type m_channel; ///< Type of channel (i.e. experimental process).
 
-    GPDModule* m_pGPDModule;
+    GPDModule* m_pGPDModule; ///< Pointer to the underlying GPD module.
 
 private:
-    bool m_isGPDModuleDependent;
+    bool m_isGPDModuleDependent; ///< Boolean (true if this CCF module depends on a GPD module).
 };
 
 #endif /* CONVOL_COEFF_FUNCTION_MODULE_H */

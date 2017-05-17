@@ -44,9 +44,9 @@ public:
 
 protected:
     /**
-     * Copy constructor
+     * Copy constructor.
      *
-     * Use by the factory
+     * Used by the factory.
      *
      * @param other
      */

@@ -119,20 +119,80 @@ public:
 
     // ##### GETTERS & SETTERS #####
 
+    /**
+     *
+     * @return Number of quark flavors.
+     */
     unsigned int getNf() const;
+    /**
+     *
+     * @param nf Number of quark flavors.
+     */
     void setNf(unsigned int nf);
+    /**
+     *
+     * @return Pointer to the underlying GPD Evolution module.
+     */
     const GPDEvolutionModule* getEvolQcdModule() const;
+    /**
+     *
+     * @param pEvolQcdModule Pointer to the underlying GPD Evolution module.
+     */
     void setEvolQcdModule(GPDEvolutionModule* pEvolQcdModule);
+    /**
+     *
+     * @return Reference factorization scale used by the GPD model before evolution.
+     */
     double getMuF2Ref() const;
+    /**
+     *
+     * @return Factorization scale.
+     */
     double getMuF2() const;
+    /**
+     *
+     * @param muF2 Factorization scale.
+     */
     void setMuF2(double muF2);
+    /**
+     *
+     * @return Renormalization scale.
+     */
     double getMuR2() const;
+    /**
+     *
+     * @param muR2 Renormalization scale.
+     */
     void setMuR2(double muR2);
+    /**
+     *
+     * @return Mandelstam variable, momentum transfer on the hadron target (in GeV^2).
+     */
     double getT() const;
+    /**
+     *
+     * @param t Mandelstam variable, momentum transfer on the hadron target (in GeV^2).
+     */
     void setT(double t);
+    /**
+     *
+     * @return Longitudinal momentum fraction of the active parton.
+     */
     double getX() const;
+    /**
+     *
+     * @param x Longitudinal momentum fraction of the active parton.
+     */
     void setX(double x);
+    /**
+     *
+     * @return Skewness.
+     */
     double getXi() const;
+    /**
+     *
+     * @param xi Skewness.
+     */
     void setXi(double xi);
 
     /**
@@ -149,20 +209,20 @@ public:
             const std::map<std::string, BaseObjectData>& subModulesData);
 
 protected:
-    double m_x;
-    double m_xi;
-    double m_t;
-    double m_MuF2;
-    double m_MuR2;
-    GPDType::Type m_gpdType;
+    double m_x; ///< Longitudinal momentum fraction of the active parton.
+    double m_xi; ///< Skewness.
+    double m_t; ///< Mandelstam variable, momentum transfer on the hadron target (in GeV^2).
+    double m_MuF2; ///< Factorization scale.
+    double m_MuR2; ///< Reference factorization scale used by the GPD model before evolution.
+    GPDType::Type m_gpdType; ///< H, Ht, E, Et, ... or ALL. See GPDType for more details.
 
     //TODO initialize
-    double m_MuF2_ref;
+    double m_MuF2_ref; ///< Reference factorization scale used by the GPD model before evolution.
     //TODO faire référence à la revue pour la notation (petit) nf
-    unsigned int m_nf;
+    unsigned int m_nf; ///< Number of flavors.
 
     //PDFModule* m_pPDFModule;
-    GPDEvolutionModule* m_pGPDEvolutionModule;
+    GPDEvolutionModule* m_pGPDEvolutionModule; ///< Pointer to the underlying GPD Evolution module.
 
     /**
      * Copy constructor.
