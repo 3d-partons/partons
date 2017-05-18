@@ -29,6 +29,8 @@ class GPDModule;
  * @brief Abstract class that provides a skeleton to implement a Convolution of Coefficient Function module.
  * It must be derived into child classes for different channels.
  * E.g. for DVCS, it is derived into DVCSConvolCoeffFunctionModule, that is a Compton Form Factor module.
+ *
+ * It is best to use this module with the corresponding service: ConvolCoeffFunctionService, as explained in the tutorial [Computation Services](@ref services_computation).
  */
 class ConvolCoeffFunctionModule: public ModuleObject,
         public MathIntegratorModule {
@@ -65,6 +67,7 @@ public:
 
     /**
      * Computes the coefficient functions at given kinematics.
+     * Must be implemented in child class.
      * @param xi Skewness.
      * @param t Mandelstam variable, momentum transfer on the hadron target (in GeV^2).
      * @param Q2 Virtuality of the photon in Born approximation (in GeV^2).
@@ -77,8 +80,6 @@ public:
             double MuF2, double MuR2, GPDType::Type gpdType) = 0;
 
     /**
-     * @brief
-     *
      * Must be implemented in child class.
      * @return List of GPD/CCF types the child class can compute.
      */

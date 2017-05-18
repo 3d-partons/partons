@@ -108,7 +108,7 @@ void MMS13Model::configure(const ElemUtils::Parameters &parameters) {
     }
 }
 
-std::string MMS13Model::toString() {
+std::string MMS13Model::toString() const {
     return GPDModule::toString();
 }
 

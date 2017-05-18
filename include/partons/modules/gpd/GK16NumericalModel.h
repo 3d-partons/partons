@@ -23,9 +23,11 @@
  *
  * @brief A module that implements GPD as defined by Kroll-Goloskokov model in 2011.
  *
- * TODO: Add references to papers.
- *
  * Modified from GK16Model to perform numerical integration (and remove cln dependency).
+ *
+ * Available GPD types: H, E, Ht, Et.
+ *
+ * TODO: Add references to papers.
  *
  * May 2017 : Update to correct pion pole issue in Et as in GK16Model.
  *
@@ -50,7 +52,7 @@ public:
 
     virtual void configure(const ElemUtils::Parameters &parameters);
 
-    virtual std::string toString();
+    virtual std::string toString() const;
 
 
 

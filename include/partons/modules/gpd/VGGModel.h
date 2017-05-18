@@ -32,6 +32,8 @@ class FunctionType1D;
  * - Phys. Rev. D 72, 054013 (2005).
  *
  * Module based on the original code received from M. Guidal as a private communication.
+ *
+ * Available GPD types: H, E, Ht, Et.
  */
 class VGGModel: public GPDModule, public MathIntegratorModule {
 
@@ -51,7 +53,7 @@ public:
     virtual VGGModel* clone() const;
     virtual void resolveObjectDependencies();
     virtual void configure(const ElemUtils::Parameters &parameters);
-    virtual std::string toString();
+    virtual std::string toString() const;
 
 protected:
 

@@ -21,6 +21,8 @@ class MSTWPDF;
  * @class MMS13Model
  *
  * Mezrag-Moutarde-Sabatié GPD model. For the reference, see arxiv:1304.7645 @cite Mezrag:2013mya.
+ *
+ * Available GPD types: H, E.
  */
 class MMS13Model: public GPDModule, public MathIntegratorModule {
 
@@ -44,7 +46,7 @@ public:
     virtual MMS13Model* clone() const;
     virtual void resolveObjectDependencies();
     virtual void configure(const ElemUtils::Parameters &parameters);
-    virtual std::string toString();
+    virtual std::string toString() const;
 
     /** D term function.
      @param zeta Variable equals x/xi.

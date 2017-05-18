@@ -23,17 +23,19 @@ class GPDEvolutionModule;
 /**
  * @class GPDService
  *
- * @brief \<singleton\> Used to handle and compute some pre-configured GPD models. See [tutorial](@ref services_computation).
+ * @brief \<singleton\> Used to handle and compute some pre-configured GPD models.
+ *
+ * See [tutorial](@ref services_computation).
  */
 class GPDService: public ServiceObjectTyped<GPDKinematic, GPDResult> {
 public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
-    static const std::string GPD_SERVICE_COMPUTE_GPD_MODEL;
-    static const std::string GPD_SERVICE_COMPUTE_GPD_MODEL_WITH_EVOLUTION;
-    static const std::string GPD_SERVICE_COMPUTE_LIST_OF_GPD_MODEL;
-    static const std::string GPD_SERVICE_COMPUTE_MANY_KINEMATIC_ONE_MODEL;
-    static const std::string FUNCTION_NAME_GENERATE_PLOT_FILE;
+    static const std::string GPD_SERVICE_COMPUTE_GPD_MODEL; ///< Name of the XML task used to compute a GPD at given kinematics.
+    static const std::string GPD_SERVICE_COMPUTE_GPD_MODEL_WITH_EVOLUTION; ///< Name of the XML task used to compute a GPD with evolution.
+    static const std::string GPD_SERVICE_COMPUTE_LIST_OF_GPD_MODEL; //TODO What's this?!
+    static const std::string GPD_SERVICE_COMPUTE_MANY_KINEMATIC_ONE_MODEL; ///< Name of the XML task used to compute GPDs for a list of kinematics.
+    static const std::string FUNCTION_NAME_GENERATE_PLOT_FILE; ///< Name of the XML task used for generating a data file ready for plotting.
 
     /**
      * Default constructor used by the registry. Do not use directly!
@@ -153,13 +155,33 @@ public:
     List<GPDKinematic> newListOfKinematicFromTask(const Task &task) const;
 
 private:
-    GPDKinematic* m_pGPDKinematic;
-    GPDModule* m_pGPDModule;
+    GPDKinematic* m_pGPDKinematic; //TODO What's that?!
+    GPDModule* m_pGPDModule; ///< Pointer to the currently used GPD module.
 
+    /**
+     * Method used in the automated interface to compute GPD.
+     * @param task Automated XML task.
+     * @return GPDResult object.
+     */
     GPDResult computeGPDTask(Task &task);
+    /**
+     * Method used in the automated interface to compute GPDs for a list of kinematics.
+     * @param task Automated XML task.
+     * @return List of GPD results.
+     */
     List<GPDResult> computeManyKinematicOneModelTask(Task &task);
+    /**
+     * Method used in the automated interface to generate a data file ready for plotting.
+     * @param task Automated XML task.
+     */
     void generatePlotFileTask(Task &task);
 
+    /**
+     * Method used to derive an intersection of available GPD types from the various underlying modules.
+     * @param pGPDModule GPDModule used for the computation.
+     * @param gpdTypeList List of desired GPD types to compute.
+     * @return List of GPD types.
+     */
     List<GPDType> getFinalGPDTypeList(GPDModule* pGPDModule,
             const List<GPDType> &gpdTypeList) const;
 };

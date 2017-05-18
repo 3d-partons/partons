@@ -1533,6 +1533,6 @@ double GK16NumericalModel::Et_pole(double x) {
     return dum;
 }
 
-std::string GK16NumericalModel::toString() {
+std::string GK16NumericalModel::toString() const {
     return GPDModule::toString();
 }

@@ -1884,6 +1884,6 @@ double GK16Model::getHuval() const {
     return kHuval;
 }
 
-std::string GK16Model::toString() {
+std::string GK16Model::toString() const {
     return GPDModule::toString();
 }

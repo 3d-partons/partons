@@ -1,16 +1,12 @@
+#ifndef DVCS_CFF_HEAVY_QUARK_MODEL_H
+#define DVCS_CFF_HEAVY_QUARK_MODEL_H
+
 /**
  * @file DVCSCFFHeavyQuarkModel.h
  * @author jakub
  * @date 11 February 2015
  * @version 1.0
- *
- * @class DVCSCFFHeavyQuarkModel
- *
- * @brief
  */
-
-#ifndef DVCS_CFF_HEAVY_QUARK_MODEL_H
-#define DVCS_CFF_HEAVY_QUARK_MODEL_H
 
 #include <complex>
 #include <string>
@@ -18,15 +14,31 @@
 
 #include "DVCSCFFModel.h"
 
+/**
+ * @class DVCSCFFHeavyQuarkModel
+ *
+ * TODO: Add description.
+ *
+ * Available CFF types: H, E, Ht, Et.
+ */
 class DVCSCFFHeavyQuarkModel: public DVCSCFFModel {
 public:
 
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
+    /**
+     * Constructor.
+     *
+     * See BaseObject::BaseObject and ModuleObject::ModuleObject for more details.
+     * @param className Name of last child class.
+     */
     DVCSCFFHeavyQuarkModel(const std::string &className);
 
     virtual DVCSCFFHeavyQuarkModel* clone() const;
 
+    /**
+     * Default destructor.
+     */
     virtual ~DVCSCFFHeavyQuarkModel();
 
     virtual void resolveObjectDependencies();
@@ -36,7 +48,6 @@ protected:
      * Copy constructor
      * @param other
      */
-
     DVCSCFFHeavyQuarkModel(const DVCSCFFHeavyQuarkModel &other);
 
 //    virtual void initModule();
@@ -69,7 +80,7 @@ private:
     NumA::FunctionType1D* m_pConvolReKernelGluonMassiveA;
     NumA::FunctionType1D* m_pConvolImKernelGluonMassiveA;
 
-    void initFunctorsForIntegrations();
+    void initFunctorsForIntegrations(); ///< Initialize functors.
 };
 
 #endif /* DVCS_CFF_HEAVY_QUARK_MODEL_H */

@@ -23,15 +23,17 @@ class GPDService;
 /**
  * @class ConvolCoeffFunctionService
  *
- * @brief \<singleton\> Used to handle and compute some pre-configured CCF modules. See also the general tutorial on [Computation Services](@ref services_computation).
+ * @brief \<singleton\> Used to handle and compute some pre-configured CCF modules.
+ *
+ * See also the general tutorial on [Computation Services](@ref services_computation).
  */
 class ConvolCoeffFunctionService: public ServiceObjectTyped<
         DVCSConvolCoeffFunctionKinematic, DVCSConvolCoeffFunctionResult> {
 public:
-    static const std::string FUNCTION_NAME_COMPUTE_WITH_GPD_MODEL;
-    static const std::string FUNCTION_NAME_COMPUTE_LIST_WITH_GPD_MODEL;
-    static const std::string FUNCTION_NAME_COMPUTE_MANY_KINEMATIC_ONE_MODEL;
-    static const std::string FUNCTION_NAME_GENERATE_PLOT_FILE;
+    static const std::string FUNCTION_NAME_COMPUTE_WITH_GPD_MODEL; ///< Name of the XML task used for computing a CCF.
+    static const std::string FUNCTION_NAME_COMPUTE_LIST_WITH_GPD_MODEL; //TODO What's this?!
+    static const std::string FUNCTION_NAME_COMPUTE_MANY_KINEMATIC_ONE_MODEL; ///< Name of the XML task used for computing CCFs with a list of kinematics.
+    static const std::string FUNCTION_NAME_GENERATE_PLOT_FILE; ///< Name of the XML task used for generating a data file ready for plotting.
 
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
@@ -128,14 +130,34 @@ public:
             const Task &task) const;
 
 private:
-    GPDService* m_pGPDService;
+    GPDService* m_pGPDService; ///< Pointer to the singleton GPDService, used in case the CCF modules have an underlying GPD module.
 
     //TODO improve object copy
+    /**
+     * Method used in the automated interface to compute CCF.
+     * @param task Automated XML task.
+     * @return DVCSConvolCoeffFunctionResult object.
+     */
     DVCSConvolCoeffFunctionResult computeWithGPDModelTask(Task &task) const;
+    /**
+     * Method used in the automated interface to compute CCFs for a list of kinematics.
+     * @param task Automated XML task.
+     * @return List of DVCSConvolCoeffFunctionResult objects.
+     */
     List<DVCSConvolCoeffFunctionResult> computeManyKinematicOneModelTask(
             Task& task);
+    /**
+     * Method used in the automated interface to generate a data file ready for plotting.
+     * @param task Automated XML task.
+     */
     void generatePlotFileTask(Task &task);
 
+    /**
+     * Method used to derive an intersection of available GPD types from the various underlying modules.
+     * @param pConvolCoeffFunctionModule ConvolCoeffFunctionModule used for the computation.
+     * @param gpdTypeList List of desired GPD types to compute.
+     * @return List of GPD types.
+     */
     List<GPDType> getFinalGPDTypeList(
             ConvolCoeffFunctionModule* pConvolCoeffFunctionModule,
             const List<GPDType> &gpdTypeList) const;

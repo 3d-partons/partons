@@ -18,6 +18,8 @@
  * Module based on the original code from http://hepdata.cedar.ac.uk/pdfs
  *
  * For the reference, see arxiv:hep-ph/0604248 @cite Vinnikov:2006xw.
+ *
+ * Available GPD types: H, Ht.
  */
 class VinnikovModel: public GPDModule {
 
@@ -37,7 +39,7 @@ public:
     virtual VinnikovModel* clone() const;
     virtual void resolveObjectDependencies();
     virtual void configure(const ElemUtils::Parameters &parameters);
-    virtual std::string toString();
+    virtual std::string toString() const;
 
 protected:
 

@@ -1,12 +1,13 @@
-/*
- * DVCSCFFVGGModel.h
- *
- *  Created on: Dec 20, 2015
- *      Author: Michel Guidal and Pawel Sznajder (IPNO)
- */
-
 #ifndef DVCSCFFVGGMODEL_H_
 #define DVCSCFFVGGMODEL_H_
+
+/**
+ * @file DVCSCFFVGGModel.h
+ * @author Pawel Sznajder (IPNO)
+ * @author Michel Guidal (IPNO)
+ * @date Dec 20, 2015
+ * @version 1.0
+ */
 
 #include <complex>
 #include <string>
@@ -21,10 +22,14 @@ class FunctionType1D;
 }
 
 /**
- * VGG DVCS/CFF model
+ * @class DVCSCFFVGGModel
+ *
+ * VGG DVCS/CFF model.
  *
  * Model implemented for the cross-check between original VGG code and PARTONS VGG1999Model process module.
  * It is not recommended to use this model for the values xi < 0.01 as a loss of numerical precision may appear.
+ *
+ * Available CFF types: H, E, Ht, Et.
  */
 class DVCSCFFVGGModel: public DVCSConvolCoeffFunctionModule {
 
@@ -34,20 +39,26 @@ public:
 
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
-    /** Constructor
-     @param className Name of this class
+    /**
+     * Constructor.
+     *
+     * See BaseObject::BaseObject and ModuleObject::ModuleObject for more details.
+     * @param className Name of last child class.
      */
     DVCSCFFVGGModel(const std::string &className);  ///< constructor
 
     virtual DVCSCFFVGGModel* clone() const;
+    /**
+     * Default destructor.
+     */
     virtual ~DVCSCFFVGGModel();
     virtual void resolveObjectDependencies();
     virtual void configure(const ElemUtils::Parameters &parameters);
 
 protected:
 
-    /** Copy constructor
-     @param other Object to be copied
+    /** Copy constructor.
+     @param other Object to be copied.
      */
     DVCSCFFVGGModel(const DVCSCFFVGGModel &other);  ///< copy constructor
 
@@ -71,7 +82,7 @@ private:
     std::complex<double> calculate_crossed();
 
     /** Compute sum of singlet combinations of GPDs weighted by quark charges
-     * @param gpdResult Singlet combinations to be calculated
+     * @param partonDistribution Singlet combinations to be calculated
      */
     double calculate_gpd_combination(
             const PartonDistribution &partonDistribution);

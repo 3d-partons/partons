@@ -26,7 +26,9 @@ class RunningAlphaStrongModule;
 /**
  * @class DVCSConvolCoeffFunctionModule
  *
- * @brief
+ * @brief Abstract class that provides a skeleton to implement a Compton Form Factor (CFF) module.
+ *
+ * It is best to use this module with the corresponding service: ConvolCoeffFunctionService, as explained in the tutorial [Computation Services](@ref services_computation).
  */
 class DVCSConvolCoeffFunctionModule: public ConvolCoeffFunctionModule {
 public:
@@ -106,28 +108,38 @@ protected:
     DVCSConvolCoeffFunctionModule(const DVCSConvolCoeffFunctionModule &other);
 
     std::map<GPDType::Type,
-            std::complex<double> (DVCSConvolCoeffFunctionModule::*)()> m_listOfCFFComputeFunctionAvailable;
+            std::complex<double> (DVCSConvolCoeffFunctionModule::*)()> m_listOfCFFComputeFunctionAvailable; ///< List of GPD/CFF types the child class can compute.
     std::map<GPDType::Type,
             std::complex<double> (DVCSConvolCoeffFunctionModule::*)()>::iterator m_it;
 
-    double m_xi;
-    double m_t;
-    double m_Q2;
-    double m_MuF2;
-    double m_MuR2;
+    double m_xi; ///< Skewness.
+    double m_t; ///< Mandelstam variable, momentum transfer on the hadron target (in GeV^2).
+    double m_Q2; ///< Virtuality of the photon (in GeV^2).
+    double m_MuF2; ///< Factorization scale (in GeV^2).
+    double m_MuR2; ///< Renormalization scale (in GeV^2)
 
-    unsigned int m_nf;
+    unsigned int m_nf; ///< Number of flavors.
 
-    RunningAlphaStrongModule* m_pRunningAlphaStrongModule;
+    RunningAlphaStrongModule* m_pRunningAlphaStrongModule; ///< Pointer to the running coupling module to be used.
 
     ActiveFlavorsModule* m_pNfConvolCoeffFunction;
 
-    PerturbativeQCDOrderType::Type m_qcdOrderType;
-    GPDType::Type m_currentGPDComputeType;
+    PerturbativeQCDOrderType::Type m_qcdOrderType; ///< Order of the perturbative QCD computation.
+    GPDType::Type m_currentGPDComputeType; ///< GPDType of the current CFF computation.
 
     virtual void initModule();
     virtual void isModuleWellConfigured();
 
+    /**
+     * Method called at the start of the compute method to test the input.
+     * Calls initModule and isModuleWellConfigured.
+     * @param xi Skewness.
+     * @param t Mandelstam variable, momentum transfer on the hadron target (in GeV^2).
+     * @param Q2 Virtuality of the photon (in GeV^2).
+     * @param MuF2 Factorization scale (in GeV^2).
+     * @param MuR2 Renormalization scale (in GeV^2)
+     * @param gpdType GPDType of the CFF computation.
+     */
     void preCompute(double xi, double t, double Q2, double MuF2, double MuR2,
             GPDType::Type gpdType);
 };

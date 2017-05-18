@@ -25,6 +25,8 @@ class FunctionType1D;
  * Module based on the original code (TBDP class) received from H.\ Moutarde as a private communication.
  *
  * For the reference, see arxiv:1301.3819 @cite Moutarde:2013qs.
+ *
+ * Available GPD types: H.
  */
 class MPSSW13Model: public GPDModule, public MathIntegratorModule {
 

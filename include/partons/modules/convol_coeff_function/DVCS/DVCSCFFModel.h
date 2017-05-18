@@ -24,17 +24,27 @@ class PartonDistribution;
 /**
  * @class DVCSCFFModel
  *
- * @brief
+ * TODO: Add description.
+ *
+ * Available CFF types: H, E, Ht, Et.
  */
 class DVCSCFFModel: public DVCSConvolCoeffFunctionModule {
 public:
 
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
+    /**
+     * Constructor.
+     * See BaseObject::BaseObject and ModuleObject::ModuleObject for more details.
+     * @param className Name of last child class.
+     */
     DVCSCFFModel(const std::string &className);
 
     virtual DVCSCFFModel* clone() const;
 
+    /**
+     * Default destructor.
+     */
     virtual ~DVCSCFFModel();
 
     virtual void resolveObjectDependencies();
@@ -43,7 +53,7 @@ public:
 
 protected:
     /**
-     * Copy constructor
+     * Copy constructor.
      * @param other
      */
     DVCSCFFModel(const DVCSCFFModel &other);
@@ -121,7 +131,7 @@ private:
     NumA::FunctionType1D* m_pConvolReKernelGluon2A;
     NumA::FunctionType1D* m_pConvolImKernelGluonA;
 
-    void initFunctorsForIntegrations();
+    void initFunctorsForIntegrations(); ///< Initialize functors.
 };
 
 #endif /* DVCS_CFF_MODULE_H */

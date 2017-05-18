@@ -25,6 +25,8 @@
  *
  * Has cln dependencies, which is not a thread-safe library. DO NOT USE THIS MODEL WITH THREADS!!
  *
+ * Available GPD types: H, E, Ht, Et.
+ *
  * TODO: Add references to papers.
  *
  * August 2015 : Tested and approved by Pawel Sznajder.
@@ -52,7 +54,7 @@ public:
 
     virtual void configure(const ElemUtils::Parameters &parameters);
 
-    virtual std::string toString();
+    virtual std::string toString() const;
 
     // ##### GETTERS & SETTERS #####
 

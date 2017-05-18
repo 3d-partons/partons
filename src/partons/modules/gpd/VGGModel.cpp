@@ -149,7 +149,7 @@ void VGGModel::configure(const ElemUtils::Parameters &parameters) {
     GPDModule::configure(parameters);
 }
 
-std::string VGGModel::toString() {
+std::string VGGModel::toString() const {
     return GPDModule::toString();
 }
 

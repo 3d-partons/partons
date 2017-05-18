@@ -46,7 +46,7 @@ void VinnikovModel::configure(const ElemUtils::Parameters &parameters) {
     GPDModule::configure(parameters);
 }
 
-std::string VinnikovModel::toString() {
+std::string VinnikovModel::toString() const {
     return GPDModule::toString();
 }
 

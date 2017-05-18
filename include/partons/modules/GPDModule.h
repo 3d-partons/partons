@@ -24,6 +24,8 @@ class GPDEvolutionModule;
 /**
  * @class GPDModule
  * @brief Abstract class that provides a skeleton to implement a Generalized Parton Distributions (GPD) module.
+ *
+ * It is best to use this module with the corresponding service: GPDService, as explained in the tutorial [Computation Services](@ref services_computation).
  */
 class GPDModule: public ModuleObject {
 public:
@@ -71,9 +73,9 @@ public:
     /**
      * Virtual method, computes GPD with some input parameters.
      *
-     * @param x Bjorken variable
-     * @param xi longitudinal momentum
-     * @param t momentum transfer (Mandelstam variable)
+     * @param x Longitudinal momentum fraction of the active parton.
+     * @param xi Skewness.
+     * @param t Mandelstam variable, momentum transfer on the hadron target (in GeV^2).
      * @param MuF2 Factorization scale.
      * @param MuR2 Renormalization scale.
      * @param gpdType H, Ht, E, Et, ... or ALL. See GPDType for more details.
@@ -213,7 +215,7 @@ protected:
     double m_xi; ///< Skewness.
     double m_t; ///< Mandelstam variable, momentum transfer on the hadron target (in GeV^2).
     double m_MuF2; ///< Factorization scale.
-    double m_MuR2; ///< Reference factorization scale used by the GPD model before evolution.
+    double m_MuR2; ///< Renormalization scale.
     GPDType::Type m_gpdType; ///< H, Ht, E, Et, ... or ALL. See GPDType for more details.
 
     //TODO initialize
@@ -237,11 +239,11 @@ protected:
     /**
      * Method called at the start of the compute method to test the input.
      * Calls initModule and isModuleWellConfigured.
-     * @param x
-     * @param xi
-     * @param t
-     * @param MuF2
-     * @param MuR2
+     * @param x Longitudinal momentum fraction of the active parton.
+     * @param xi Skewness.
+     * @param t Mandelstam variable, momentum transfer on the hadron target (in GeV^2).
+     * @param MuF2 Factorization scale.
+     * @param MuR2 Renormalization scale.
      * @param gpdType
      */
     virtual void preCompute(double x, double xi, double t, double MuF2, double MuR2,
