@@ -3,7 +3,7 @@
 
 /**
  * @file MMS13Model.h
- * @author: Pawel Sznajder (IPNO)
+ * @author Pawel Sznajder (IPNO)
  * @date March 29, 2015
  * @version 1.0
  */
@@ -20,7 +20,7 @@ class MSTWPDF;
 /**
  * @class MMS13Model
  *
- * Mezrag-Moutarde-Sabatié GPD model. For the reference, see hep-ph/1304.7645.
+ * Mezrag-Moutarde-Sabatié GPD model. For the reference, see arxiv:1304.7645 @cite Mezrag:2013mya.
  */
 class MMS13Model: public GPDModule, public MathIntegratorModule {
 

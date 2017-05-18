@@ -1,5 +1,3 @@
-#include "../../../../include/partons/modules/gpd/GK11TestModel.h"
-
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
@@ -18,14 +16,15 @@
 #include "../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
+#include "../../../../include/partons/modules/gpd/GK16NumericalModel.h"
 
 // Initialise [class]::classId with a unique name.
-const unsigned int GK11TestModel::classId =
+const unsigned int GK16NumericalModel::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
-                new GK11TestModel("GK11TestModel"));
+                new GK16NumericalModel("GK11TestModel"));
 
 //TODO initialise missing members
-GK11TestModel::GK11TestModel(const std::string &className) :
+GK16NumericalModel::GK16NumericalModel(const std::string &className) :
         GPDModule(className) {
     m_nf = 3;
     fL = 0.;
@@ -44,7 +43,7 @@ GK11TestModel::GK11TestModel(const std::string &className) :
     initFunctorsForIntegrations();
 }
 
-GK11TestModel::GK11TestModel(const GK11TestModel& other) :
+GK16NumericalModel::GK16NumericalModel(const GK16NumericalModel& other) :
         GPDModule(other) {
     c1 = other.c1;
     c2 = other.c2;
@@ -62,24 +61,24 @@ GK11TestModel::GK11TestModel(const GK11TestModel& other) :
     initFunctorsForIntegrations();
 }
 
-GK11TestModel* GK11TestModel::clone() const {
-    return new GK11TestModel(*this);
+GK16NumericalModel* GK16NumericalModel::clone() const {
+    return new GK16NumericalModel(*this);
 }
 
-GK11TestModel::~GK11TestModel() {
+GK16NumericalModel::~GK16NumericalModel() {
 }
 
-void GK11TestModel::configure(const ElemUtils::Parameters &parameters) {
+void GK16NumericalModel::configure(const ElemUtils::Parameters &parameters) {
     GPDModule::configure(parameters);
 }
 
 //TODO implement
-void GK11TestModel::isModuleWellConfigured() {
+void GK16NumericalModel::isModuleWellConfigured() {
     GPDModule::isModuleWellConfigured();
 
 }
 
-void GK11TestModel::initModule() {
+void GK16NumericalModel::initModule() {
     GPDModule::initModule();
 
     fL = log(m_MuF2 / m_MuF2_ref); // Logarithmic dependence on the scale
@@ -88,131 +87,131 @@ void GK11TestModel::initModule() {
      ElemUtils::Formatter() << "fMuF2 = " << fMuF2 << " fL = " << fL);*/
 }
 
-void GK11TestModel::initFunctorsForIntegrations() {
+void GK16NumericalModel::initFunctorsForIntegrations() {
     setIntegrator(NumA::IntegratorType1D::DEXP);
 
 //Integrators for H
 
     m_pIntegralHuVal = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralHuVal);
+            &GK16NumericalModel::IntegralHuVal);
 
     m_pIntegralHdVal = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralHdVal);
+            &GK16NumericalModel::IntegralHdVal);
 
     m_pIntegralHuValMx = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralHuValMx);
+            &GK16NumericalModel::IntegralHuValMx);
 
     m_pIntegralHdValMx = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralHdValMx);
+            &GK16NumericalModel::IntegralHdValMx);
 
     m_pIntegralxLargeHsSea = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralxLargeHsSea);
+            &GK16NumericalModel::IntegralxLargeHsSea);
 
     m_pIntegralxSmallHsSea = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralxSmallHsSea);
+            &GK16NumericalModel::IntegralxSmallHsSea);
 
     m_pIntegralxSmall1HsSea = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralxSmall1HsSea);
+            &GK16NumericalModel::IntegralxSmall1HsSea);
 
     m_pIntegralxSmall2HsSea = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralxSmall2HsSea);
+            &GK16NumericalModel::IntegralxSmall2HsSea);
 
     m_pIntegralxLargeHsSeaMx = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralxLargeHsSeaMx);
+            &GK16NumericalModel::IntegralxLargeHsSeaMx);
 
     m_pIntegralxLargeHg = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralxLargeHg);
+            &GK16NumericalModel::IntegralxLargeHg);
 
     m_pIntegralxSmall1Hg = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralxSmall1Hg);
+            &GK16NumericalModel::IntegralxSmall1Hg);
 
     m_pIntegralxSmall2Hg = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralxSmall2Hg);
+            &GK16NumericalModel::IntegralxSmall2Hg);
 
     m_pIntegralxLargeHgMx = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralxLargeHgMx);
+            &GK16NumericalModel::IntegralxLargeHgMx);
 
     //integrators for Ht
 
     m_pIntegralHtuVal = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralHtuVal);
+            &GK16NumericalModel::IntegralHtuVal);
 
     m_pIntegralHtdVal = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralHtdVal);
+            &GK16NumericalModel::IntegralHtdVal);
 
     m_pIntegralHtuValMx = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralHtuValMx);
+            &GK16NumericalModel::IntegralHtuValMx);
 
     m_pIntegralHtdValMx = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralHtdValMx);
+            &GK16NumericalModel::IntegralHtdValMx);
 
     m_pIntegralxLargeHtg = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralxLargeHtg);
+            &GK16NumericalModel::IntegralxLargeHtg);
 
     m_pIntegralxSmall1Htg = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralxSmall1Htg);
+            &GK16NumericalModel::IntegralxSmall1Htg);
 
     m_pIntegralxSmall2Htg = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralxSmall2Htg);
+            &GK16NumericalModel::IntegralxSmall2Htg);
 
     m_pIntegralxLargeHtgMx = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralxLargeHtgMx);
+            &GK16NumericalModel::IntegralxLargeHtgMx);
 
 //integrators for E
 
     m_pIntegralEuVal = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralEuVal);
+            &GK16NumericalModel::IntegralEuVal);
 
     m_pIntegralEdVal = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralEdVal);
+            &GK16NumericalModel::IntegralEdVal);
 
     m_pIntegralEuValMx = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralEuValMx);
+            &GK16NumericalModel::IntegralEuValMx);
 
     m_pIntegralEdValMx = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralEdValMx);
+            &GK16NumericalModel::IntegralEdValMx);
 
     m_pIntegralxLargeEsSea = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralxLargeEsSea);
+            &GK16NumericalModel::IntegralxLargeEsSea);
     m_pIntegralxLargeEsSeaMx = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralxLargeEsSeaMx);
+            &GK16NumericalModel::IntegralxLargeEsSeaMx);
 
     m_pIntegralxSmallEsSea = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralxSmallEsSea);
+            &GK16NumericalModel::IntegralxSmallEsSea);
 
     m_pIntegralxSmall1EsSea = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralxSmall1EsSea);
+            &GK16NumericalModel::IntegralxSmall1EsSea);
 
     m_pIntegralxSmall2EsSea = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralxSmall2EsSea);
+            &GK16NumericalModel::IntegralxSmall2EsSea);
 
     m_pIntegralxLargeEgSea = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralxLargeEgSea);
+            &GK16NumericalModel::IntegralxLargeEgSea);
     m_pIntegralxLargeEgSeaMx = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralxLargeEgSeaMx);
+            &GK16NumericalModel::IntegralxLargeEgSeaMx);
 
     m_pIntegralxSmall1EgSea = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralxSmall1EgSea);
+            &GK16NumericalModel::IntegralxSmall1EgSea);
 
     m_pIntegralxSmall2EgSea = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralxSmall2EgSea);
+            &GK16NumericalModel::IntegralxSmall2EgSea);
 
     //integrators for Et
 
     m_pIntegralEtuVal = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralEtuVal);
+            &GK16NumericalModel::IntegralEtuVal);
 
     m_pIntegralEtdVal = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralEtdVal);
+            &GK16NumericalModel::IntegralEtdVal);
 
     m_pIntegralEtuValMx = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralEtuValMx);
+            &GK16NumericalModel::IntegralEtuValMx);
 
     m_pIntegralEtdValMx = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GK11TestModel::IntegralEtdValMx);
+            &GK16NumericalModel::IntegralEtdValMx);
 }
 
-void GK11TestModel::throwBetaException(const std::string &funcName,
+void GK16NumericalModel::throwBetaException(const std::string &funcName,
         double betaValue) {
     throw ElemUtils::CustomException(getClassName(), funcName,
             ElemUtils::Formatter()
@@ -220,7 +219,7 @@ void GK11TestModel::throwBetaException(const std::string &funcName,
                     << '\n' << "Here beta = " << betaValue << '\n');
 }
 //Profile function
-double GK11TestModel::Profile(double N, double beta, double alpha) {
+double GK16NumericalModel::Profile(double N, double beta, double alpha) {
     double profile = 0.;
     double ProfileShape = N;
     double TwiceProfileShapePlus1 = 2. * ProfileShape + 1;
@@ -249,20 +248,20 @@ double GK11TestModel::Profile(double N, double beta, double alpha) {
     return profile;
 }
 //forward limit ansatz for H
-double GK11TestModel::GKPdfAnsatz(double N, double beta, double* coeff) {
+double GK16NumericalModel::GKPdfAnsatz(double N, double beta, double* coeff) {
 
     return pow(beta, -coeff[4]) * pow((1. - beta), 2 * N + 1)
             * (coeff[0] + coeff[1] * sqrt(beta) + coeff[2] * beta
                     + coeff[3] * beta * sqrt(beta));
 }
 //Forward limit ansatz for Ht
-double GK11TestModel::GKPdfAnsatz_t(double N, double beta, double* coeff) {
+double GK16NumericalModel::GKPdfAnsatz_t(double N, double beta, double* coeff) {
 // as in arXiv:1210.6975v3 pag 9
     return pow(beta, -coeff[4]) * pow((1. - beta), 2 * N + 1)
             * (coeff[0] + coeff[1] * beta + coeff[2] * beta * beta) * coeff[3];
 }
 
-double GK11TestModel::GKPdfAnsatz_tg(double N, double beta, double* coeff) {
+double GK16NumericalModel::GKPdfAnsatz_tg(double N, double beta, double* coeff) {
 // as in arXiv:1210.6975v3 pag 9
     return pow(beta, -coeff[4]) * pow((1. - beta), 2 * N + 1)
 
@@ -270,7 +269,7 @@ double GK11TestModel::GKPdfAnsatz_tg(double N, double beta, double* coeff) {
 }
 
 //DD for H
-double GK11TestModel::GKtDependentsDD(double beta, double alpha) {
+double GK16NumericalModel::GKtDependentsDD(double beta, double alpha) {
     double absbeta = fabs(beta);
     /*    if (beta <= 0 || beta > 1.) {
      throwBetaException(__func__, x);
@@ -287,7 +286,7 @@ double GK11TestModel::GKtDependentsDD(double beta, double alpha) {
     return exp(b0 * m_t) * pow(absbeta, -alphaP * m_t)
             * GKPdfAnsatz(2, absbeta, coeff) * Profile(2, beta, alpha);
 }
-double GK11TestModel::GKtDependentuValDD(double beta, double alpha) {
+double GK16NumericalModel::GKtDependentuValDD(double beta, double alpha) {
     double absbeta = fabs(beta);
     double uValDD;
     /*    if (beta <= 0 || beta > 1.) {
@@ -311,7 +310,7 @@ double GK11TestModel::GKtDependentuValDD(double beta, double alpha) {
     return uValDD;
 }
 
-double GK11TestModel::GKtDependentdValDD(double beta, double alpha) {
+double GK16NumericalModel::GKtDependentdValDD(double beta, double alpha) {
     double absbeta = fabs(beta);
     double dValDD;
     /*    if (beta <= 0 || beta > 1.) {
@@ -336,7 +335,7 @@ double GK11TestModel::GKtDependentdValDD(double beta, double alpha) {
     return dValDD;
 }
 
-double GK11TestModel::GKtDependentgDD(double beta, double alpha) {
+double GK16NumericalModel::GKtDependentgDD(double beta, double alpha) {
     double absbeta = fabs(beta);
     /*    if (beta <= 0 || beta > 1.) {
      throwBetaException(__func__, x);
@@ -355,7 +354,7 @@ double GK11TestModel::GKtDependentgDD(double beta, double alpha) {
             * GKPdfAnsatz(2, absbeta, coeff) * Profile(2, beta, alpha);
 }
 
-double GK11TestModel::GKtDependentuDD_t(double beta, double alpha) {
+double GK16NumericalModel::GKtDependentuDD_t(double beta, double alpha) {
     double absbeta = fabs(beta);
     /*    if (beta <= 0 || beta > 1.) {
      throwBetaException(__func__, x);
@@ -385,7 +384,7 @@ double GK11TestModel::GKtDependentuDD_t(double beta, double alpha) {
 }
 //DD for Ht
 
-double GK11TestModel::GKtDependentdDD_t(double beta, double alpha) {
+double GK16NumericalModel::GKtDependentdDD_t(double beta, double alpha) {
     double absbeta = fabs(beta);
     /*    if (beta <= 0 || beta > 1.) {
      throwBetaException(__func__, x);
@@ -412,7 +411,7 @@ double GK11TestModel::GKtDependentdDD_t(double beta, double alpha) {
 
 }
 
-double GK11TestModel::GKtDependentHtgDD(double beta, double alpha) {
+double GK16NumericalModel::GKtDependentHtgDD(double beta, double alpha) {
 
     double absbeta = fabs(beta);
 
@@ -434,7 +433,7 @@ double GK11TestModel::GKtDependentHtgDD(double beta, double alpha) {
 
 }
 //DD for E
-double GK11TestModel::GKtDependentDD_EuVal(double beta, double alpha) {
+double GK16NumericalModel::GKtDependentDD_EuVal(double beta, double alpha) {
     double absbeta = fabs(beta);
 
     double EuVal;
@@ -456,7 +455,7 @@ double GK11TestModel::GKtDependentDD_EuVal(double beta, double alpha) {
 
 }
 
-double GK11TestModel::GKtDependentDD_EdVal(double beta, double alpha) {
+double GK16NumericalModel::GKtDependentDD_EdVal(double beta, double alpha) {
     double absbeta = fabs(beta);
 
     double EdVal;
@@ -478,7 +477,7 @@ double GK11TestModel::GKtDependentDD_EdVal(double beta, double alpha) {
 
 }
 
-double GK11TestModel::GKtDependentDD_Es(double beta, double alpha) {
+double GK16NumericalModel::GKtDependentDD_Es(double beta, double alpha) {
     double absbeta = fabs(beta);
     double Es;
     double betas = 7;
@@ -495,7 +494,7 @@ double GK11TestModel::GKtDependentDD_Es(double beta, double alpha) {
 
 }
 
-double GK11TestModel::GKtDependentDD_Eg(double beta, double alpha) {
+double GK16NumericalModel::GKtDependentDD_Eg(double beta, double alpha) {
     double absbeta = fabs(beta);
     double Eg;
     double betag = 6;
@@ -512,7 +511,7 @@ double GK11TestModel::GKtDependentDD_Eg(double beta, double alpha) {
 
 }
 //DDs for Et
-double GK11TestModel::GKtDependentDD_EtuVal(double beta, double alpha) {
+double GK16NumericalModel::GKtDependentDD_EtuVal(double beta, double alpha) {
     double absbeta = fabs(beta);
     double EtuVal;
     double N = 14;
@@ -532,7 +531,7 @@ double GK11TestModel::GKtDependentDD_EtuVal(double beta, double alpha) {
 
 }
 
-double GK11TestModel::GKtDependentDD_EtdVal(double beta, double alpha) {
+double GK16NumericalModel::GKtDependentDD_EtdVal(double beta, double alpha) {
     double absbeta = fabs(beta);
     double EduVal;
     double N = 4;
@@ -552,7 +551,7 @@ double GK11TestModel::GKtDependentDD_EtdVal(double beta, double alpha) {
 }
 
 //Integrals for GPD Et
-double GK11TestModel::IntegralEtuVal(double beta, std::vector<double> Par) {
+double GK16NumericalModel::IntegralEtuVal(double beta, std::vector<double> Par) {
     double alpha = (m_x - beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -563,7 +562,7 @@ double GK11TestModel::IntegralEtuVal(double beta, std::vector<double> Par) {
 
 }
 
-double GK11TestModel::IntegralEtdVal(double beta, std::vector<double> Par) {
+double GK16NumericalModel::IntegralEtdVal(double beta, std::vector<double> Par) {
     double alpha = (m_x - beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -574,7 +573,7 @@ double GK11TestModel::IntegralEtdVal(double beta, std::vector<double> Par) {
 
 }
 
-double GK11TestModel::IntegralEtuValMx(double beta, std::vector<double> Par) {
+double GK16NumericalModel::IntegralEtuValMx(double beta, std::vector<double> Par) {
     double alpha = (m_Mx - beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -585,7 +584,7 @@ double GK11TestModel::IntegralEtuValMx(double beta, std::vector<double> Par) {
 
 }
 
-double GK11TestModel::IntegralEtdValMx(double beta, std::vector<double> Par) {
+double GK16NumericalModel::IntegralEtdValMx(double beta, std::vector<double> Par) {
     double alpha = (m_Mx - beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -597,7 +596,7 @@ double GK11TestModel::IntegralEtdValMx(double beta, std::vector<double> Par) {
 }
 
 //Integrals for GPD E
-double GK11TestModel::IntegralEuVal(double beta, std::vector<double> Par) {
+double GK16NumericalModel::IntegralEuVal(double beta, std::vector<double> Par) {
     double alpha = (m_x - beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -608,7 +607,7 @@ double GK11TestModel::IntegralEuVal(double beta, std::vector<double> Par) {
 
 }
 
-double GK11TestModel::IntegralEdVal(double beta, std::vector<double> Par) {
+double GK16NumericalModel::IntegralEdVal(double beta, std::vector<double> Par) {
     double alpha = (m_x - beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -619,7 +618,7 @@ double GK11TestModel::IntegralEdVal(double beta, std::vector<double> Par) {
 
 }
 
-double GK11TestModel::IntegralEuValMx(double beta, std::vector<double> Par) {
+double GK16NumericalModel::IntegralEuValMx(double beta, std::vector<double> Par) {
     double alpha = (m_Mx - beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -630,7 +629,7 @@ double GK11TestModel::IntegralEuValMx(double beta, std::vector<double> Par) {
 
 }
 
-double GK11TestModel::IntegralEdValMx(double beta, std::vector<double> Par) {
+double GK16NumericalModel::IntegralEdValMx(double beta, std::vector<double> Par) {
     double alpha = (m_Mx - beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -641,7 +640,7 @@ double GK11TestModel::IntegralEdValMx(double beta, std::vector<double> Par) {
 
 }
 
-double GK11TestModel::IntegralxLargeEsSea(double beta,
+double GK16NumericalModel::IntegralxLargeEsSea(double beta,
         std::vector<double> Par) {
     double alpha = (m_x - beta) / m_xi;
 
@@ -652,7 +651,7 @@ double GK11TestModel::IntegralxLargeEsSea(double beta,
     return GKtDependentDD_Es(beta, alpha) / m_xi;
 }
 
-double GK11TestModel::IntegralxLargeEsSeaMx(double beta,
+double GK16NumericalModel::IntegralxLargeEsSeaMx(double beta,
         std::vector<double> Par) {
     double alpha = (m_x + beta) / m_xi;
 
@@ -663,13 +662,13 @@ double GK11TestModel::IntegralxLargeEsSeaMx(double beta,
     return GKtDependentDD_Es(beta, alpha) / m_xi;
 }
 
-double GK11TestModel::IntegralxSmallEsSea(double beta,
+double GK16NumericalModel::IntegralxSmallEsSea(double beta,
         std::vector<double> Par) {
     return (GKtDependentDD_Es(beta, (m_x - beta) / m_xi)
             - GKtDependentDD_Es(beta, (m_x + beta) / m_xi)) / m_xi;
 }
 
-double GK11TestModel::IntegralxSmall1EsSea(double beta,
+double GK16NumericalModel::IntegralxSmall1EsSea(double beta,
         std::vector<double> Par) {
     double alpha = (m_x - beta) / m_xi;
 
@@ -680,7 +679,7 @@ double GK11TestModel::IntegralxSmall1EsSea(double beta,
     return GKtDependentDD_Es(beta, alpha) / m_xi;
 }
 
-double GK11TestModel::IntegralxSmall2EsSea(double beta,
+double GK16NumericalModel::IntegralxSmall2EsSea(double beta,
         std::vector<double> Par) {
     double Integral;
 
@@ -691,7 +690,7 @@ double GK11TestModel::IntegralxSmall2EsSea(double beta,
     return GKtDependentDD_Es(beta, (m_x + beta) / m_xi) / m_xi;
 }
 
-double GK11TestModel::IntegralxLargeEgSea(double beta,
+double GK16NumericalModel::IntegralxLargeEgSea(double beta,
         std::vector<double> Par) {
     double alpha = (m_x - beta) / m_xi;
 
@@ -702,7 +701,7 @@ double GK11TestModel::IntegralxLargeEgSea(double beta,
     return GKtDependentDD_Eg(beta, alpha) / m_xi;
 }
 
-double GK11TestModel::IntegralxLargeEgSeaMx(double beta,
+double GK16NumericalModel::IntegralxLargeEgSeaMx(double beta,
         std::vector<double> Par) {
     double alpha = (m_x + beta) / m_xi;
 
@@ -713,7 +712,7 @@ double GK11TestModel::IntegralxLargeEgSeaMx(double beta,
     return GKtDependentDD_Eg(beta, alpha) / m_xi;
 }
 
-double GK11TestModel::IntegralxSmall1EgSea(double beta,
+double GK16NumericalModel::IntegralxSmall1EgSea(double beta,
         std::vector<double> Par) {
     double alpha = (m_x - beta) / m_xi;
 
@@ -724,7 +723,7 @@ double GK11TestModel::IntegralxSmall1EgSea(double beta,
     return GKtDependentDD_Eg(beta, alpha) / m_xi;
 }
 
-double GK11TestModel::IntegralxSmall2EgSea(double beta,
+double GK16NumericalModel::IntegralxSmall2EgSea(double beta,
         std::vector<double> Par) {
     double alpha = (m_x + beta) / m_xi;
 
@@ -736,7 +735,7 @@ double GK11TestModel::IntegralxSmall2EgSea(double beta,
 }
 
 //inetgrals for H
-double GK11TestModel::IntegralHuVal(double beta, std::vector<double> Par) {
+double GK16NumericalModel::IntegralHuVal(double beta, std::vector<double> Par) {
     double alpha = (m_x - beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -747,7 +746,7 @@ double GK11TestModel::IntegralHuVal(double beta, std::vector<double> Par) {
 
 }
 
-double GK11TestModel::IntegralHuValMx(double beta, std::vector<double> Par) {
+double GK16NumericalModel::IntegralHuValMx(double beta, std::vector<double> Par) {
     double alpha = (m_Mx - beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -757,7 +756,7 @@ double GK11TestModel::IntegralHuValMx(double beta, std::vector<double> Par) {
     return GKtDependentuValDD(beta, alpha) / m_xi;
 }
 
-double GK11TestModel::IntegralHdVal(double beta, std::vector<double> Par) {
+double GK16NumericalModel::IntegralHdVal(double beta, std::vector<double> Par) {
     double alpha = (m_x - beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -767,7 +766,7 @@ double GK11TestModel::IntegralHdVal(double beta, std::vector<double> Par) {
     return GKtDependentdValDD(beta, alpha) / m_xi;
 }
 
-double GK11TestModel::IntegralHdValMx(double beta, std::vector<double> Par) {
+double GK16NumericalModel::IntegralHdValMx(double beta, std::vector<double> Par) {
     double alpha = (m_Mx - beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -777,7 +776,7 @@ double GK11TestModel::IntegralHdValMx(double beta, std::vector<double> Par) {
     return GKtDependentdValDD(beta, alpha) / m_xi;
 }
 
-double GK11TestModel::IntegralxLargeHg(double beta, std::vector<double> Par) {
+double GK16NumericalModel::IntegralxLargeHg(double beta, std::vector<double> Par) {
     double alpha = (m_x - beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -787,7 +786,7 @@ double GK11TestModel::IntegralxLargeHg(double beta, std::vector<double> Par) {
     return beta * GKtDependentgDD(beta, alpha) / m_xi;
 }
 
-double GK11TestModel::IntegralxLargeHgMx(double beta, std::vector<double> Par) {
+double GK16NumericalModel::IntegralxLargeHgMx(double beta, std::vector<double> Par) {
     double alpha = (m_x + beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -797,7 +796,7 @@ double GK11TestModel::IntegralxLargeHgMx(double beta, std::vector<double> Par) {
     return beta * GKtDependentgDD(beta, alpha) / m_xi;
 }
 
-double GK11TestModel::IntegralxSmall1Hg(double beta, std::vector<double> Par) {
+double GK16NumericalModel::IntegralxSmall1Hg(double beta, std::vector<double> Par) {
     double alpha = (m_x - beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -807,7 +806,7 @@ double GK11TestModel::IntegralxSmall1Hg(double beta, std::vector<double> Par) {
     return beta * GKtDependentgDD(beta, alpha) / m_xi;
 }
 
-double GK11TestModel::IntegralxSmall2Hg(double beta, std::vector<double> Par) {
+double GK16NumericalModel::IntegralxSmall2Hg(double beta, std::vector<double> Par) {
     double alpha = (m_x + beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -817,7 +816,7 @@ double GK11TestModel::IntegralxSmall2Hg(double beta, std::vector<double> Par) {
     return beta * GKtDependentgDD(beta, alpha) / m_xi;
 }
 
-double GK11TestModel::IntegralxLargeHsSea(double beta,
+double GK16NumericalModel::IntegralxLargeHsSea(double beta,
         std::vector<double> Par) {
     double alpha = (m_x - beta) / m_xi;
 
@@ -828,7 +827,7 @@ double GK11TestModel::IntegralxLargeHsSea(double beta,
     return GKtDependentsDD(beta, alpha) / m_xi;
 }
 
-double GK11TestModel::IntegralxLargeHsSeaMx(double beta,
+double GK16NumericalModel::IntegralxLargeHsSeaMx(double beta,
         std::vector<double> Par) {
     double alpha = (m_x + beta) / m_xi;
 
@@ -839,13 +838,13 @@ double GK11TestModel::IntegralxLargeHsSeaMx(double beta,
     return GKtDependentsDD(beta, alpha) / m_xi;
 }
 
-double GK11TestModel::IntegralxSmallHsSea(double beta,
+double GK16NumericalModel::IntegralxSmallHsSea(double beta,
         std::vector<double> Par) {
     return (GKtDependentsDD(beta, (m_x - beta) / m_xi)
             - GKtDependentsDD(beta, (m_x + beta) / m_xi)) / m_xi;
 }
 
-double GK11TestModel::IntegralxSmall1HsSea(double beta,
+double GK16NumericalModel::IntegralxSmall1HsSea(double beta,
         std::vector<double> Par) {
     double alpha = (m_x - beta) / m_xi;
 
@@ -856,7 +855,7 @@ double GK11TestModel::IntegralxSmall1HsSea(double beta,
     return GKtDependentsDD(beta, alpha) / m_xi;
 }
 
-double GK11TestModel::IntegralxSmall2HsSea(double beta,
+double GK16NumericalModel::IntegralxSmall2HsSea(double beta,
         std::vector<double> Par) {
     double Integral;
 
@@ -868,7 +867,7 @@ double GK11TestModel::IntegralxSmall2HsSea(double beta,
 }
 
 //Integrals for Ht
-double GK11TestModel::IntegralHtuVal(double beta, std::vector<double> Par) {
+double GK16NumericalModel::IntegralHtuVal(double beta, std::vector<double> Par) {
     double alpha = (m_x - beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -879,7 +878,7 @@ double GK11TestModel::IntegralHtuVal(double beta, std::vector<double> Par) {
 
 }
 
-double GK11TestModel::IntegralHtdVal(double beta, std::vector<double> Par) {
+double GK16NumericalModel::IntegralHtdVal(double beta, std::vector<double> Par) {
     double alpha = (m_x - beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -890,7 +889,7 @@ double GK11TestModel::IntegralHtdVal(double beta, std::vector<double> Par) {
 
 }
 
-double GK11TestModel::IntegralHtuValMx(double beta, std::vector<double> Par) {
+double GK16NumericalModel::IntegralHtuValMx(double beta, std::vector<double> Par) {
     double alpha = (m_Mx - beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -901,7 +900,7 @@ double GK11TestModel::IntegralHtuValMx(double beta, std::vector<double> Par) {
 
 }
 
-double GK11TestModel::IntegralHtdValMx(double beta, std::vector<double> Par) {
+double GK16NumericalModel::IntegralHtdValMx(double beta, std::vector<double> Par) {
     double alpha = (m_Mx - beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -912,7 +911,7 @@ double GK11TestModel::IntegralHtdValMx(double beta, std::vector<double> Par) {
 
 }
 
-double GK11TestModel::IntegralxLargeHtg(double beta, std::vector<double> Par) {
+double GK16NumericalModel::IntegralxLargeHtg(double beta, std::vector<double> Par) {
     double alpha = (m_x - beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -922,7 +921,7 @@ double GK11TestModel::IntegralxLargeHtg(double beta, std::vector<double> Par) {
     return GKtDependentHtgDD(beta, alpha) / m_xi;
 }
 
-double GK11TestModel::IntegralxLargeHtgMx(double beta,
+double GK16NumericalModel::IntegralxLargeHtgMx(double beta,
         std::vector<double> Par) {
     double alpha = (m_Mx - beta) / m_xi;
 
@@ -933,7 +932,7 @@ double GK11TestModel::IntegralxLargeHtgMx(double beta,
     return GKtDependentHtgDD(beta, alpha) / m_xi;
 }
 
-double GK11TestModel::IntegralxSmall1Htg(double beta, std::vector<double> Par) {
+double GK16NumericalModel::IntegralxSmall1Htg(double beta, std::vector<double> Par) {
     double alpha = (m_x - beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -943,7 +942,7 @@ double GK11TestModel::IntegralxSmall1Htg(double beta, std::vector<double> Par) {
     return GKtDependentHtgDD(beta, alpha) / m_xi;
 }
 
-double GK11TestModel::IntegralxSmall2Htg(double beta, std::vector<double> Par) {
+double GK16NumericalModel::IntegralxSmall2Htg(double beta, std::vector<double> Par) {
     double alpha = (m_Mx - beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -953,7 +952,7 @@ double GK11TestModel::IntegralxSmall2Htg(double beta, std::vector<double> Par) {
     return GKtDependentHtgDD(beta, alpha) / m_xi;
 }
 
-PartonDistribution GK11TestModel::computeH() {
+PartonDistribution GK16NumericalModel::computeH() {
     PartonDistribution partonDistribution;
 
     QuarkDistribution quarkDistribution_u(QuarkFlavor::UP);
@@ -1097,7 +1096,7 @@ PartonDistribution GK11TestModel::computeH() {
     return partonDistribution;
 }
 
-PartonDistribution GK11TestModel::computeHt() {
+PartonDistribution GK16NumericalModel::computeHt() {
 
     debug(__func__, "Entered function ...");
 
@@ -1233,7 +1232,7 @@ PartonDistribution GK11TestModel::computeHt() {
     return partonDistribution;
 }
 
-PartonDistribution GK11TestModel::computeE() {
+PartonDistribution GK16NumericalModel::computeE() {
     PartonDistribution partonDistribution;
 
     QuarkDistribution quarkDistribution_u(QuarkFlavor::UP);
@@ -1379,7 +1378,7 @@ PartonDistribution GK11TestModel::computeE() {
     return partonDistribution;
 }
 
-PartonDistribution GK11TestModel::computeEt() {
+PartonDistribution GK16NumericalModel::computeEt() {
     PartonDistribution partonDistribution;
 
     QuarkDistribution quarkDistribution_u(QuarkFlavor::UP);
@@ -1493,7 +1492,7 @@ PartonDistribution GK11TestModel::computeEt() {
     return partonDistribution;
 }
 
-double GK11TestModel::Et_pole(double x) {
+double GK16NumericalModel::Et_pole(double x) {
 
 //TODO extraire les constantes si existantes
 
@@ -1518,7 +1517,7 @@ double GK11TestModel::Et_pole(double x) {
 
     if (eps < 1 && (4. * xbj * (1. - xbj) + eps2) != 0) {
 
-        tmin = -Q2 * (2. * (1. - xbj) * (1 - sqrt(1. - eps2)) + eps2)
+        tmin = -Q2 * (2. * (1. - xbj) * (1 - sqrt(1. + eps2)) + eps2)
                 / (4. * xbj * (1. - xbj) + eps2);
         FpiNN = (Lambda_N2 - MPi2) / (Lambda_N2 - (m_t - tmin));
         Fp = -PROTON_MASS * f_pi * (2. * sqrt(2.) * gpiNN * FpiNN)
@@ -1534,6 +1533,6 @@ double GK11TestModel::Et_pole(double x) {
     return dum;
 }
 
-std::string GK11TestModel::toString() {
+std::string GK16NumericalModel::toString() {
     return GPDModule::toString();
 }

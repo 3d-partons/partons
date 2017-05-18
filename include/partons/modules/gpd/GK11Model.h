@@ -23,6 +23,8 @@
  *
  * @brief A module that implements GPD as defined by Kroll-Goloskokov model in 2011.
  *
+ * Has cln dependencies, which is not a thread-safe library. DO NOT USE THIS MODEL WITH THREADS!!
+ *
  * August 2015 : Tested and approved by Pawel Sznajder.
  */
 class GK11Model: public GPDModule {

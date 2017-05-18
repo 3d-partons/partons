@@ -22,9 +22,9 @@ class FunctionType1D;
 /**
  * @class MPSSW13Model
  *
- * Module based on the original code (TBDP class) received from H. Moutarde as a private communication.
+ * Module based on the original code (TBDP class) received from H.\ Moutarde as a private communication.
  *
- * For the reference, see hep-ph/1301.3819.
+ * For the reference, see arxiv:1301.3819 @cite Moutarde:2013qs.
  */
 class MPSSW13Model: public GPDModule, public MathIntegratorModule {
 

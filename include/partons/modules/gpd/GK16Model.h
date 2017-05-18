@@ -23,9 +23,13 @@
  *
  * @brief A module that implements GPD as defined by Kroll-Goloskokov model in 2011.
  *
+ * Has cln dependencies, which is not a thread-safe library. DO NOT USE THIS MODEL WITH THREADS!!
+ *
+ * TODO: Add references to papers.
+ *
  * August 2015 : Tested and approved by Pawel Sznajder.
  *
- * November 2016 : Update from GK11 to GK16 to correct pion pole issue in  Et by Luca Colaneri and Pawel Sznajder.
+ * November 2016 : Update from GK11 to GK16 to correct pion pole issue in Et by Luca Colaneri and Pawel Sznajder.
  *
  */
 class GK16Model: public GPDModule {

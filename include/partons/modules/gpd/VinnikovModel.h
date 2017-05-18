@@ -17,7 +17,7 @@
  *
  * Module based on the original code from http://hepdata.cedar.ac.uk/pdfs
  *
- * For the reference, see hep-ph/0604248.
+ * For the reference, see arxiv:hep-ph/0604248 @cite Vinnikov:2006xw.
  */
 class VinnikovModel: public GPDModule {
 
