@@ -1,30 +1,13 @@
-/*
- * GKK11TestModule.h
- *
- *  Created on: May 17, 2016
- *      Author: debian
- */
-
-#ifndef GKK11TESTMODEL_H_
-#define GKK11TESTMODEL_H_
+#ifndef GK16NUMERICALMODEL_H_
+#define GK16NUMERICALMODEL_H_
 
 /**
- * @file GK11Model.h
+ * @file GK16NumericalModel.h
  * @author Bryan BERTHOU (CEA Saclay)
  * @author Herve MOUTARDE (CEA Saclay)
  * @author Luca COLANERI (IPNOrsay)
  * @date 2016
- * @version 3.0
- *
- * @class GK11TestModel
- *
- * @brief A module that implements GPD as defined by Kroll-Goloskokov model in 2011. Modified to perform numerical integration
- *
- *
- * !!!! Use tgamma() instead of gamma() (see: http://stackoverflow.com/questions/18116376/what-is-the-definition-for-gammadouble-x-and-why-is-it-different-on-two-gcc-ve)
- *
- *
- * August 2015 : Tested and approved by Pawel Sznajder
+ * @version 1.0
  */
 
 #include <string>
@@ -35,7 +18,17 @@
 //TODO finir les messages de debug dans toutes les fonctions
 //TODO supprimer au maximum les pointers qui ne sont pas obligatoires
 
-class GK11TestModel: public GPDModule, public MathIntegratorModule {
+/**
+ * @class GK16NumericalModel
+ *
+ * @brief A module that implements GPD as defined by Kroll-Goloskokov model in 2011.
+ *
+ * Modified to perform numerical integration (and remove cln dependency).
+ *
+ * May 2017 : Update to correct pion pole issue in Et as in GK16Model.
+ *
+ */
+class GK16NumericalModel: public GPDModule, public MathIntegratorModule {
 public:
 
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
@@ -44,14 +37,14 @@ public:
      * Default constructor.
      */
     // GK11Model();
-    GK11TestModel(const std::string &className);
+    GK16NumericalModel(const std::string &className);
 
     /**
      * Default destructor.
      */
-    virtual ~GK11TestModel();
+    virtual ~GK16NumericalModel();
 
-    virtual GK11TestModel* clone() const;
+    virtual GK16NumericalModel* clone() const;
 
     virtual void configure(const ElemUtils::Parameters &parameters);
 
@@ -67,7 +60,7 @@ protected:
      *
      * @param other
      */
-    GK11TestModel(const GK11TestModel& other);
+    GK16NumericalModel(const GK16NumericalModel& other);
 
     virtual void isModuleWellConfigured();
     virtual void initModule();
@@ -231,4 +224,4 @@ private:
 
 };
 
-#endif /* GK11_MODEL_H */
+#endif /* GK16NUMERICALMODEL_H_ */
