@@ -6,8 +6,6 @@
  * @author Hervé MOUTARDE (SPhN / CEA Saclay)
  * @version 1.0
  *
- * @class GV2008Model
- *
  * @date 25-09-2015 (Bryan BERTHOU) : refactoring
  */
 
@@ -26,23 +24,19 @@ class GV2008Model: public DVCSModule {
 public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
+    /**
+     * Constructor.
+     * See BaseObject::BaseObject and ModuleObject::ModuleObject for more details.
+     *
+     * @param className name of child class.
+     */
     GV2008Model(const std::string &className);
+    /**
+     * Default destructor.
+     */
     virtual ~GV2008Model();
 
     virtual GV2008Model* clone() const;
-
-    // Cross sections
-    virtual double CrossSectionBH(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization);
-    // Bethe Heitler cross section
-
-    virtual double CrossSectionVCS(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization);
-    // Virtual Compton Scattering cross section
-
-    virtual double CrossSectionInterf(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization);
-    // Interference cross section
 
 protected:
     /**
@@ -59,9 +53,22 @@ protected:
             NumA::Vector3D targetPolarization);
     virtual void isModuleWellConfigured();
 
+    // Cross sections
+    virtual double CrossSectionBH(double beamHelicity, double beamCharge,
+            NumA::Vector3D targetPolarization);
+    // Bethe Heitler cross section
+
+    virtual double CrossSectionVCS(double beamHelicity, double beamCharge,
+            NumA::Vector3D targetPolarization);
+    // Virtual Compton Scattering cross section
+
+    virtual double CrossSectionInterf(double beamHelicity, double beamCharge,
+            NumA::Vector3D targetPolarization);
+    // Interference cross section
+
 private:
 
-    double m_phiGV; ///< Angle between hadronic and leptonic planes (opposite sign of the phi angle of Trento)
+    double m_phiGV; ///< Angle between hadronic and leptonic planes (opposite sign of the phi angle of Trento).
 
     // Store each power of Q
     // [0] = Q2
@@ -79,9 +86,9 @@ private:
 
     // Variable used in the computation of Omega;
     double m_yGV;
-    double m_xB2;
+    double m_xB2; ///< Square of @f$ x_B @f$.
 
-    double m_xBMin, m_xBMax;
+    double m_xBMin, m_xBMax; // Should be removed. xBMin already in DVCSModule and xBMax is wrong.
 
     /*---------------------------------- Tests variables -----------------------------------*/
 
@@ -93,76 +100,73 @@ private:
 
     // Frame dependent scalars
     //double m_E; // Beam energy
-    double m_thetag; // Angle between real and virtual photons
-    double m_qpPerp; // Component (here x-axis) of the real photon 3-momentum orthogonal
-                     // to the virtual photon trajectory (here z-axis) in the
-                     // hadronic plane (here xz-plane)
-    double m_Ur[100]; // Coefficients of the expansion of the interference cross section
-                      // wrt (combinations of) helicity amplitudes
-    double m_Omega; // (Fonction of) the linear polarization rate
+    double m_thetag; ///< Angle between real and virtual photons.
+    double m_qpPerp; ///< Component (here x-axis) of the real photon 3-momentum orthogonal
+                     ///< to the virtual photon trajectory (here z-axis) in the
+                     ///< hadronic plane (here xz-plane).
+    double m_Ur[100]; ///< Coefficients of the expansion of the interference cross section
+                      ///< wrt (combinations of) helicity amplitudes.
+    double m_Omega; ///< (Function of) the linear polarization rate.
 
     // Invariant scalars
-    double m_s; // Mandelstam variable (square of the total incoming 4-momentum)
-    double m_Q;  // Photon virtual mass i.e. square root of Q2
+    double m_s; ///< Mandelstam variable (square of the total incoming 4-momentum).
+    double m_Q;  ///< Photon virtual mass i.e.\ square root of Q2.
 
     // 4-vectors defined in the CM frame :
-    NumA::Vector4D m_qCM; // Virtual photon (propagates along z-axis)
-    NumA::Vector4D m_pCM; // Incoming proton (propagates along z-axis)
-    NumA::Vector4D m_qpCM; // Real photon (defines hadronic plane xz)
-    NumA::Vector4D m_ppCM; // Outgoing proton
+    NumA::Vector4D m_qCM; ///< Virtual photon (propagates along z-axis). 4-vector defined in the CM frame.
+    NumA::Vector4D m_pCM; ///< Incoming proton (propagates along z-axis). 4-vector defined in the CM frame.
+    NumA::Vector4D m_qpCM; ///< Real photon (defines hadronic plane xz). 4-vector defined in the CM frame.
+    NumA::Vector4D m_ppCM; ///< Outgoing proton. 4-vector defined in the CM frame.
 
     /*------------------------ (Combinations of) helicity amplitudes -----------------------*/
 
-    double Jem[4][3]; // Helicity amplitudes of the interference process assuming the
-                      // real photon has helicity +1.
-    double RMvcs[4][3]; //  Real part of the helicity amplitudes of the VCS process
-                        //assuming the real photon has helicity +1.
-    double IMvcs[4][3]; //  Imaginary part of the helicity amplitudes of the VCS process
-                        // assuming the real photon has helicity +1.
+    double Jem[4][3]; ///< Helicity amplitudes of the interference process assuming the
+                      ///< real photon has helicity +1.
+    double RMvcs[4][3]; ///<  Real part of the helicity amplitudes of the VCS process
+                        ///< assuming the real photon has helicity +1.
+    double IMvcs[4][3]; ///<  Imaginary part of the helicity amplitudes of the VCS process
+                        ///< assuming the real photon has helicity +1.
 
     /*------------------ Expansion of cross sections for harmonic analysis -----------------*/
 
                         // Bethe Heitler process
-    double SigmaBHPol0[4]; // coefficients for the unpolarized cross section
-    double SigmaBHPolX[2]; // coefficients for the x-polarized cross section
-    double SigmaBHPolY; // coefficient for the y-polarized cross section
-    double SigmaBHPolZ[2]; // coefficients for the z-polarized cross section
+    double SigmaBHPol0[4]; ///< Coefficients for the unpolarized cross section of the Bethe-Heitler process.
+    double SigmaBHPolX[2]; ///< Coefficients for the x-polarized cross section of the Bethe-Heitler process.
+    double SigmaBHPolY; ///< Coefficient for the y-polarized cross section of the Bethe-Heitler process.
+    double SigmaBHPolZ[2]; ///< Coefficients for the z-polarized cross section of the Bethe-Heitler process.
 
     // Virtual Compton Scattering process
 
-    double SigmaVCSPol0[5]; // coefficients for the unpolarized cross section
-    double SigmaVCSPolX[4]; // coefficients for the x-polarized cross section
-    double SigmaVCSPolY[5]; // coefficients for the y-polarized cross section
-    double SigmaVCSPolZ[4]; // coefficients for the z-polarized cross section
+    double SigmaVCSPol0[5]; ///< Coefficients for the unpolarized cross section of the Virtual Compton Scattering process.
+    double SigmaVCSPolX[4]; ///< Coefficients for the x-polarized cross section of the Virtual Compton Scattering process.
+    double SigmaVCSPolY[5]; ///< Coefficients for the y-polarized cross section of the Virtual Compton Scattering process.
+    double SigmaVCSPolZ[4]; ///< Coefficients for the z-polarized cross section of the Virtual Compton Scattering process.
 
     // Interference
 
-    double SigmaIPol0[8]; // coefficients for the unpolarized cross section
-    double SigmaIPolX[8]; // coefficients for the x-polarized cross section
-    double SigmaIPolY[8]; // coefficients for the x-polarized cross section
-    double SigmaIPolZ[8]; // coefficients for the x-polarized cross section
+    double SigmaIPol0[8]; ///< Coefficients for the unpolarized cross section (interference term).
+    double SigmaIPolX[8]; ///< Coefficients for the x-polarized cross section (interference term).
+    double SigmaIPolY[8]; ///< Coefficients for the x-polarized cross section (interference term).
+    double SigmaIPolZ[8]; ///< Coefficients for the x-polarized cross section (interference term).
 
     /*-------------------------------------- Methods ---------------------------------------*/
 
     // Initialisations
-    void MakeExactBHCrossSections();
-    // Fills the Jem and SigmaBHPol. arrays
+    void MakeExactBHCrossSections(); ///< Fills the Jem and SigmaBHPol arrays.
 
-    void MakeExactVCSAndInterfCrossSections();
-    // Fills the Ur, SigmaVCSPol. and SigmaIPol. arrays
+    void MakeExactVCSAndInterfCrossSections(); ///< Fills the Ur, SigmaVCSPol and SigmaIPol arrays.
 
-    double DdirectDcrossed(double phi);
-    // Denominator of the Bethe Heitler cross section
+    double DdirectDcrossed(double phi); ///< Denominator of the Bethe Heitler cross section.
 
     double SqrAmplBH(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization);
+            NumA::Vector3D targetPolarization); ///< Returns the squared amplitude of Bethe Heitler process.
 
     double SqrAmplVCSAndInterf(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization);
+            NumA::Vector3D targetPolarization); ///< Sum of the squared amplitude of VCS process and interference term.
     double SqrAmplVCS(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization);
+            NumA::Vector3D targetPolarization); ///< Returns the squared amplitude of VCS process.
     double SqrAmplInterf(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization);
+            NumA::Vector3D targetPolarization); ///< Returns the interference term of the squared amplitude.
 
     void MakeVCSHelicityAmplitudes();
 
