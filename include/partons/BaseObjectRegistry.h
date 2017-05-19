@@ -20,7 +20,7 @@
  * @brief The Registry is the analog of a phonebook, which lists all available objects (modules or services most of the time) identified by a unique integer identifier or by a unique string (class name) for translation. And only one species of each.
  *
  * From the point of view of software engineering, the registry corresponds to the singleton design pattern which ensures that it is unique.
- * When a new module or services are created, the first thing to do is to call this unique instance, and to register the new module or services with a name provided by the developer the class.
+ * When a new module or services are created, the first thing to do is to call this unique instance, and to register the new module or services with a name provided by the developer of the class.
  * In turn the Registry gives a unique identifier encoded in a integer variable for performance purposes.
  * Registry stores pointers to all objects in a generic way, i.e. whatever their nature are: pointers to GPDModule, to RunningAlphaStrongModule, to AutomationService, etc.
  * This is achieved by requiring all objects to derive from a single parent class named BaseObject.
@@ -70,7 +70,7 @@ public:
     BaseObject* get(const std::string &className) const;
 
     /**
-     * Print information about current state of the registry (size of the registry, which objects are stored, ...)
+     * Print information about current state of the registry (size of the registry, which objects are stored, ...).
      *
      * @return string
      */
@@ -80,7 +80,7 @@ public:
      * Return the size of the registry.
      * How many objects are stored.
      *
-     * @return registry size
+     * @return Registry size.
      */
     size_t size() const;
 
@@ -89,12 +89,12 @@ public:
 
 private:
     /**
-     * Private pointer of this class for a unique instance
+     * Private pointer of this class for a unique instance.
      */
     static BaseObjectRegistry* m_pInstance;
 
     /**
-     * Private default constructor for a unique instance
+     * Private default constructor for a unique instance.
      */
     BaseObjectRegistry();
 
@@ -104,48 +104,48 @@ private:
      */
     mutable sf::Mutex m_mutex;
 
-    std::map<unsigned int, BaseObject*> m_baseObjectList; ///< list of registered objects identified by their unique integer identifier
-    std::map<std::string, BaseObject*> m_translateList; ///< list of registered objects identified by their class name.
-    std::map<std::string, unsigned int> m_classIdByClassName;
+    std::map<unsigned int, BaseObject*> m_baseObjectList; ///< List of registered objects identified by their unique integer identifier.
+    std::map<std::string, BaseObject*> m_translateList; ///< List of registered objects identified by their class name.
+    std::map<std::string, unsigned int> m_classIdByClassName; ///< Translation map between class id and class name.
 
-    static unsigned int m_uniqueClassIdCounter; ///< Increment unique class identifier
+    static unsigned int m_uniqueClassIdCounter; ///< Increment unique class identifier.
 
     /**
-     * To performance purpose it's faster to compare two integers than two string when we search for an object in the registry.
-     * This method return a unique integer identifier when a new class object his added to the registry.
+     * For performance purposes, it's faster to compare two integers than two strings when we search for an object in the registry.
+     * This method return a unique integer identifier when a new class object is added to the registry.
      * It's just an integer incremented one by one.
      *
-     * @return unique identifier by class
+     * @return Unique identifier by class.
      */
     unsigned int getUniqueClassId();
 
     /**
-     * Try to find an object into the registry by its class name
+     * Try to find an object into the registry by its class name.
      *
      * @param className
-     * @return pointer to object if class name found into registry, NULL else.
+     * @return Pointer to object if class name found into registry, NULL else.
      */
     BaseObject* isAvailable(const std::string &className) const;
 
     /**
-     * Try to find an object into the registry by its class identifier
+     * Try to find an object into the registry by its class identifier.
      *
      * @param classId
-     * @return pointer to object if class name found into registry, NULL else.
+     * @return Pointer to object if class name found into registry, NULL else.
      */
     BaseObject* isAvailable(const unsigned int classId) const;
 
     /**
      * Return last referenced object by the iterator on m_translateList.
      *
-     * @return reference to the object in memory
+     * @return Reference to the object in memory.
      */
     BaseObject* getLastAvailableObjectIdentifiedByClassName() const;
 
     /**
      * Return last referenced object by the iterator on m_baseObjectList.
      *
-     * @return reference to the object in memory
+     * @return Reference to the object in memory.
      */
     BaseObject* getLastAvailableObjectIdentifiedByClassId() const;
 

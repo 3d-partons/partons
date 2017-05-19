@@ -82,12 +82,32 @@ public:
 
     // ##### GETTERS & SETTERS #####
 
+    /**
+     *
+     * @return Name of last child class.
+     */
     const std::string& getClassName() const;
 
+    /**
+     *
+     * @return Unique id identifying each object.
+     */
     unsigned int getObjectId() const;
+    /**
+     *
+     * @param objectId Unique id identifying each object.
+     */
     void setObjectId(unsigned int objectId);
 
+    /**
+     *
+     * @return Integer used when object is created from database. It is related to the id column value in the right database table.
+     */
     int getIndexId() const;
+    /**
+     *
+     * @param indexId Integer used when object is created from database. It is related to the id column value in the right database table.
+     */
     void setIndexId(int indexId);
 
 protected:
@@ -101,8 +121,8 @@ protected:
     /**
      * Print info message into logger.
      *
-     * @param functionName
-     * @param message
+     * @param functionName Name of the function throwing an information. Use \_\_func\_\_ to set it automatically.
+     * @param message Message to the logger.
      */
     void info(const std::string &functionName,
             const std::string &message) const;
@@ -110,8 +130,8 @@ protected:
     /**
      * Print debug message into logger.
      *
-     * @param functionName
-     * @param message
+     * @param functionName ame of the function throwing an information. Use \_\_func\_\_ to set it automatically.
+     * @param message Message to the logger.
      */
     void debug(const std::string &functionName,
             const std::string &message) const;
@@ -119,8 +139,8 @@ protected:
     /**
      * Print warning message into logger.
      *
-     * @param functionName
-     * @param message
+     * @param functionName ame of the function throwing an information. Use \_\_func\_\_ to set it automatically.
+     * @param message Message to the logger.
      */
     void warn(const std::string &functionName,
             const std::string &message) const;
@@ -133,8 +153,8 @@ protected:
     void errorMissingParameter(const std::string &parameterName) const;
 
 private:
-    unsigned int m_objectId;
-    std::string m_className; ///< String that represents class's name used by the LoggerManager's class for know the source of the output trace
+    unsigned int m_objectId; ///< Unique id identifying each object.
+    std::string m_className; ///< String that represents class's name used by the LoggerManager's class to know the source of the output trace.
 
     int m_indexId; ///< Integer used when object is created from database. It is related to the id column value in the right database table.
 

@@ -19,19 +19,19 @@ class BaseObjectRegistry;
 /**
  * @class BaseObjectFactory
  *
- * @brief Cette classe n'est instenciable que par la classe Partons pour éviter des erreur à l'initialisation du programme.
- * Fournis un clone de l'objet (sous la forme d'un pointer BaseObject), identifié par son nom de classe, stocké dans la BaseObjectResgistry.
- * De plus, un pointer vers chaque objet instancié est mémorisé pour sa destruction ultérieur si l'objet se retrouve orphelin.
+ * @brief Provides a clone (returned as a BaseObject pointer) of an object identified by its class name and previously stored in the BaseObjectRegistry.
+ * Furthermore, a pointer to each clone is registered in order to destroy it later on if it becomes orphan.
+ * This class is only instantiable by the class Partons to avoid any error at the initialization of the program.
  */
 class BaseObjectFactory {
 public:
     /**
-     * Default destructor
+     * Default destructor.
      */
     virtual ~BaseObjectFactory();
 
     /**
-     * Provide a clone of the desired object class stored in the registry identified by its integer identifier.
+     * Provides a clone of the desired object class stored in the registry identified by its integer identifier.
      *
      * @param classId
      * @return
@@ -39,7 +39,7 @@ public:
     BaseObject* newBaseObject(unsigned int classId);
 
     /**
-     * Provide a clone of the desired object class stored in the registry identified by its string class name.
+     * Provides a clone of the desired object class stored in the registry identified by its string class name.
      *
      * @param classId
      * @return
@@ -49,7 +49,7 @@ public:
     /**
      *
      *
-     * @param baseObjectUniqueId
+     * @param baseObjectUniqueId Unique id identifying each object.
      */
     void removeFromStore(unsigned int baseObjectUniqueId);
 

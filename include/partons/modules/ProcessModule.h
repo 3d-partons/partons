@@ -36,7 +36,7 @@ class Vector3D;
  */
 class ProcessModule: public ModuleObject {
 public:
-    static const std::string PROCESS_MODULE_CLASS_NAME; ///< Name of the module in XML automation.
+    static const std::string PROCESS_MODULE_CLASS_NAME; ///< Type of the module in XML automation.
 
     /**
      * Default constructor.

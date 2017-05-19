@@ -27,9 +27,15 @@ class Integrator1D;
  */
 class MathIntegratorModule {
 public:
-    static const std::string PARAM_NAME_INTEGRATOR_TYPE;
+    static const std::string PARAM_NAME_INTEGRATOR_TYPE; ///< Parameter used in configureIntegrator() or XML automation to set the type of integrator.
 
+    /**
+     * Default constructor.
+     */
     MathIntegratorModule();
+    /**
+     * Default destructor.
+     */
     virtual ~MathIntegratorModule();
 
 protected:
@@ -65,10 +71,14 @@ protected:
      */
     void configureIntegrator(const ElemUtils::Parameters &parameters);
 
+    /**
+     *
+     * @return Integration routine. Pointer to NumA::Integrator1D object.
+     */
     NumA::Integrator1D* getMathIntegrator();
 
 private:
-    NumA::Integrator1D* m_mathIntegrator;
+    NumA::Integrator1D* m_mathIntegrator; ///< Integration routine. Pointer to NumA::Integrator1D object.
 };
 
 #endif /* MATH_INTEGRATOR_MODULE_H */

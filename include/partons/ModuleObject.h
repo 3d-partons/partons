@@ -32,7 +32,7 @@ class Parameters;
  */
 class ModuleObject: public BaseObject, public ElemUtils::Thread {
 public:
-    static const std::string CLASS_NAME;
+    static const std::string CLASS_NAME; //TODO What's this?!
 
     /**
      * Constructor.
@@ -53,17 +53,12 @@ public:
      * Provides a generic method to configure all types of modules by passing a Parameters object.
      * Parameters class represents a list of couples key/value (see Parameters class documentation for more info).
      *
-     * @param parameters
+     * @param parameters ElemUtils::Parameters object.
      */
     virtual void configure(const ElemUtils::Parameters &parameters);
 
     virtual ModuleObject* clone() const = 0;
 
-    /**
-     * Return a pre-formatted characters string for output visualization of class member's values.
-     *
-     * @return a pre-formatted characters string.
-     */
     virtual std::string toString() const;
 
     virtual void resolveObjectDependencies();

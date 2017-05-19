@@ -30,8 +30,8 @@ class GPDEvolutionModule;
 class GPDModule: public ModuleObject {
 public:
 
-    static const std::string GPD_MODULE_CLASS_NAME;
-    static const std::string GPD_TYPE;
+    static const std::string GPD_MODULE_CLASS_NAME; ///< Type of the module in XML automation.
+    static const std::string GPD_TYPE; ///< Parameter used in configure() or XML automation to set the type of the GPD to compute.
 
     //TODO delete
     enum Keys {

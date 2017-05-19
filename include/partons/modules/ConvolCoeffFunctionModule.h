@@ -35,7 +35,7 @@ class GPDModule;
 class ConvolCoeffFunctionModule: public ModuleObject,
         public MathIntegratorModule {
 public:
-    static const std::string CONVOL_COEFF_FUNCTION_MODULE_CLASS_NAME;
+    static const std::string CONVOL_COEFF_FUNCTION_MODULE_CLASS_NAME; ///< Type of the module in XML automation.
 
     /**
      * Constructor.
