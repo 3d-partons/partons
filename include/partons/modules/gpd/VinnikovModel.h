@@ -27,8 +27,11 @@ public:
 
     static const unsigned int classId; ///< ID assigned by BaseObjectRegistry.
 
-    /** Constructor.
-     @param className Name of this class.
+    /**
+     * Constructor.
+     * See BaseObject::BaseObject and ModuleObject::ModuleObject for more details.
+     *
+     * @param className name of child class.
      */
     VinnikovModel(const std::string &className);
 

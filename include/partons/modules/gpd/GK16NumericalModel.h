@@ -23,11 +23,18 @@
  *
  * @brief A module that implements GPD as defined by Kroll-Goloskokov model in 2011.
  *
+ * This model is defined in the series of references:
+ * - arxiv:hep-ph/0611290 \cite Goloskokov:2006hr ;
+ * - arxiv:0708.3569 \cite Goloskokov:2007nt ;
+ * - arxiv:0809.4126 \cite Goloskokov:2008ib ;
+ * - arxiv:0906.0460 \cite Goloskokov:2009ia ;
+ * - arxiv:1106.4897 \cite Goloskokov:2011rd ;
+ * - arxiv:1210.6975 \cite Kroll2012sm ;
+ * - arxiv:1407.1141 \cite Goloskokov:2014ika.
+ *
  * Modified from GK16Model to perform numerical integration (and remove cln dependency).
  *
  * Available GPD types: H, E, Ht, Et.
- *
- * TODO: Add references to papers.
  *
  * May 2017 : Update to correct pion pole issue in Et as in GK16Model.
  *
@@ -38,9 +45,11 @@ public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
     /**
-     * Default constructor.
+     * Constructor.
+     * See BaseObject::BaseObject and ModuleObject::ModuleObject for more details.
+     *
+     * @param className name of child class.
      */
-    // GK11Model();
     GK16NumericalModel(const std::string &className);
 
     /**

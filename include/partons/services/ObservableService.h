@@ -25,15 +25,17 @@ class Task;
 /**
  * @class ObservableService
  *
- * @brief \<singleton\> Used to handle and compute some pre-configured Observables. See also the general tutorial on [Computation Services](@ref services_computation).
+ * @brief \<singleton\> Used to handle and compute some pre-configured Observables.
+ *
+ * See also the general tutorial on [Computation Services](@ref services_computation).
  */
 
 class ObservableService: public ServiceObjectTyped<ObservableKinematic,
         ObservableResult> {
 public:
-    static const std::string FUNCTION_NAME_COMPUTE_OBSERVABLE;
-    static const std::string FUNCTION_NAME_COMPUTE_MANY_KINEMATIC_ONE_MODEL;
-    static const std::string FUNCTION_NAME_GENERATE_PLOT_FILE;
+    static const std::string FUNCTION_NAME_COMPUTE_OBSERVABLE; ///< Name of the XML task used to compute an Observable at given kinematics.
+    static const std::string FUNCTION_NAME_COMPUTE_MANY_KINEMATIC_ONE_MODEL; ///< Name of the XML task used to compute an Observable for a list of kinematics.
+    static const std::string FUNCTION_NAME_GENERATE_PLOT_FILE; ///< Name of the XML task used for generating a data file ready for plotting.
 
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
@@ -127,8 +129,22 @@ public:
 
 private:
     //TODO improve object copy
+    /**
+     * Method used in the automated interface to compute an Observable.
+     * @param task Automated XML task.
+     * @return ObservableResult object.
+     */
     ObservableResult computeObservableTask(Task &task);
+    /**
+     * Method used in the automated interface to compute an Observable for a list of kinematics.
+     * @param task Automated XML task.
+     * @return List of ObservableResult.
+     */
     List<ObservableResult> computeManyKinematicOneModelTask(Task &task);
+    /**
+     * Method used in the automated interface to generate a data file ready for plotting.
+     * @param task Automated XML task.
+     */
     void generatePlotFileTask(Task &task);
 
 };

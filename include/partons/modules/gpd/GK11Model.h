@@ -23,6 +23,15 @@
  *
  * @brief A module that implements GPD as defined by Kroll-Goloskokov model in 2011.
  *
+ * This model is defined in the series of references:
+ * - arxiv:hep-ph/0611290 \cite Goloskokov:2006hr ;
+ * - arxiv:0708.3569 \cite Goloskokov:2007nt ;
+ * - arxiv:0809.4126 \cite Goloskokov:2008ib ;
+ * - arxiv:0906.0460 \cite Goloskokov:2009ia ;
+ * - arxiv:1106.4897 \cite Goloskokov:2011rd ;
+ * - arxiv:1210.6975 \cite Kroll2012sm ;
+ * - arxiv:1407.1141 \cite Goloskokov:2014ika.
+ *
  * Has cln dependencies, which is not a thread-safe library. DO NOT USE THIS MODEL WITH THREADS!!
  *
  * Available GPD types: H, E, Ht, Et.
@@ -35,7 +44,10 @@ public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
     /**
-     * Default constructor.
+     * Constructor.
+     * See BaseObject::BaseObject and ModuleObject::ModuleObject for more details.
+     *
+     * @param className name of child class.
      */
     GK11Model(const std::string &className);
 

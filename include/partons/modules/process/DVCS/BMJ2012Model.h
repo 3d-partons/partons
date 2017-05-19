@@ -20,8 +20,8 @@
  *
  * Module for the DVCS process using the Belitsky-Müller set of formulas.
  *
- * Code based on the published papers:\n
- * - arxiv:hep-ph/0112108 @cite Belitsky2001ns for the BH amplitude ;\n
+ * Code based on the published papers:
+ * - arxiv:hep-ph/0112108 @cite Belitsky2001ns for the BH amplitude ;
  * - arxiv:1212.6674 @cite Belitsky2012ch for the DVCS amplitude and interference.
  */
 class BMJ2012Model: public DVCSModule {
@@ -205,11 +205,11 @@ private:
     std::complex<double> S_I(unsigned int S, unsigned int n, int a, int b);
 
     double SqrAmplBH(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization); ///< Returns the squared amplitude of Bethe Heitler process
+            NumA::Vector3D targetPolarization); ///< Returns the squared amplitude of Bethe Heitler process.
     double SqrAmplVCS(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization); ///< Returns the squared amplitude of VCS process
+            NumA::Vector3D targetPolarization); ///< Returns the squared amplitude of VCS process.
     double SqrAmplInterf(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization); ///< Returns the interference term of the squared amplitude
+            NumA::Vector3D targetPolarization); ///< Returns the interference term of the squared amplitude.
 };
 
 #endif /* BMJ_2012_MODEL_H */
