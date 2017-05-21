@@ -6,10 +6,6 @@
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 30 July 2014
  * @version 1.0
- *
- * @class GPDType
- *
- * @brief
  */
 
 #include <string>
@@ -20,41 +16,85 @@ namespace ElemUtils {
 class Packet;
 } /* namespace ElemUtils */
 
+/**
+ * @class GPDType
+ *
+ * @brief Definition of enumeration values for GPD types.
+ *
+ * This class defines a set of enumeration values that are used to distinguish between GPD types. In addition, a declared object of this class is always associated to one GPD type (see GPDType::m_type), so member functions can act on it. E.g.
+ \code{.cpp}
+ //this is single enum variable - nothing to play with
+ GPDType::Type enum_variable = GPDType::H;
+
+ //this is declared object
+ GPDType enum_object;
+
+ //let us assign some type (default is GPDType::UNDEFINED)
+ enum_object.setType(enum_variable);
+
+ //with objects you can use available functions, e.g. you can represent enumeration type by a corresponding string
+ std::string enum_string_1 = enum_object.toString();
+
+ //you can achieve some basic operations without the explicit declaration of objects by using the assignment constructor
+ std::string enum_string_2 = GPDType(GPDType::E).toString();
+
+ Partons::getInstance()->getLoggerManager()->info("example", __func__, ElemUtils::Formatter() << "GPD type is: " << enum_string_1);
+ Partons::getInstance()->getLoggerManager()->info("example", __func__, ElemUtils::Formatter() << "GPD type is: " << enum_string_2);
+ \endcode
+ which gives via Logger:
+ \code
+ 20-05-2017 11:58:23 [INFO] (example::main) GPD type is: H
+ 20-05-2017 11:58:23 [INFO] (example::main) GPD type is: E
+ \endcode
+ */
 class GPDType {
 
 public:
 
+    /**
+     * Name of table in the database corresponding to this class.
+     */
     static const std::string GPD_TYPE_DB_COLUMN_NAME;
 
+    /**
+     * Definition of enumerate values corresponding to GPD types.
+     */
     enum Type {
-        UNDEFINED = 0,
-        ALL = 1,
-        H = 2,
-        E = 3,
-        Ht = 4,
-        Et = 5,
-        HTrans = 6,
-        ETrans = 7,
-        HtTrans = 8,
-        EtTrans = 9,
-        H3p = 10,
-        E3p = 11,
-        Ht3p = 12,
-        Et3p = 13,
-        H3m = 14,
-        E3m = 15,
-        Ht3m = 16,
-        Et3m = 17,
-        END
+        UNDEFINED = 0, //!< Undefined type.
+        ALL = 1,     //!< All-like type, useful to indicate all available types.
+        H = 2,        //!< Twist-2 GPD \f$H\f$
+        E = 3,        //!< Twist-2 GPD \f$E\f$
+        Ht = 4,       //!< Twist-2 GPD \f$\tilde{H}\f$
+        Et = 5,       //!< Twist-2 GPD \f$\tilde{E}\f$
+        HTrans = 6,   //!< Twist-2 GPD \f$H_{T}\f$
+        ETrans = 7,   //!< Twist-2 GPD \f$E_{T}\f$
+        HtTrans = 8,  //!< Twist-2 GPD \f$\tilde{H}_{T}\f$
+        EtTrans = 9,  //!< Twist-2 GPD \f$\tilde{E}_{T}\f$
+        H3p = 10,     //!< Twist-3 GPD \f$H_{3}^{+}\f$
+        E3p = 11,     //!< Twist-3 GPD \f$E_{3}^{+}\f$
+        Ht3p = 12,    //!< Twist-3 GPD \f$\tilde{H}_{3}^{+}\f$
+        Et3p = 13,    //!< Twist-3 GPD \f$\tilde{E}_{3}^{+}\f$
+        H3m = 14,     //!< Twist-3 GPD \f$H_{3}^{-}\f$
+        E3m = 15,     //!< Twist-3 GPD \f$E_{3}^{-}\f$
+        Ht3m = 16,    //!< Twist-3 GPD \f$\tilde{H}_{3}^{-}\f$
+        Et3m = 17,    //!< Twist-3 GPD \f$\tilde{E}_{3}^{-}\f$
+        END       //!< End-like type, useful to define loops over all GPD types.
     };
 
+    /**
+     * Default constructor.
+     */
     GPDType();
 
+    /**
+     * Assignment constructor.
+     * @param type Type to be assigned.
+     */
     GPDType(Type type);
 
     /**
-     * Copy constructor
-     * @param other
+     * Copy constructor.
+     * @param other Object to be copied.
      */
     GPDType(const GPDType &other);
 
@@ -63,28 +103,77 @@ public:
      */
     operator Type() const;
 
+    /**
+     * Get string representation of type being assigned to a declared object of this class.
+     * @return String representation of assigned type, like "H" for GPDType::H.
+     */
     std::string toString();
 
-    GPDType::Type getType() const;
-
-    void setType(Type type);
-
+    /**
+     * Serialize into given Packet.
+     * @param packet Target Packet.
+     */
     void serialize(ElemUtils::Packet &packet) const;
+
+    /**
+     * Retrieve data from given Packet.
+     * @param packet Input Packet.
+     */
     void unserialize(ElemUtils::Packet &packet);
 
-    // use by std::sort function
+    /**
+     * Relation operator that checks if the value of left operand is less than the value of right operand (based on values assigned in the definition of GPDType::Type).
+     * Used by std::sort function.
+     * @param other Right hand value.
+     * @return True if the value of left operand is less than the value of right operand, otherwise false.
+     */
     bool operator <(const GPDType &other) const;
 
+    /**
+     * Try to match GPD type from given string.
+     * @param gpdTypeStr String to be matched.
+     * @return Matched type or GPDType::UNDEFINED if unable to match.
+     */
     static GPDType::Type fromString(const std::string & gpdTypeStr);
 
+    /**
+     * Try to match list of GPD types from given string. Types should be separated by the pipe symbol, e.g. "H|E|..."
+     * @param gpdTypeListAsString String to be matched.
+     * @return List of matched GPDType objects.
+     */
     static List<GPDType> getListOfGPDTypeFromString(
             const std::string &gpdTypeListAsString);
 
+    //********************************************************
+    //*** SETTERS AND GETTERS ********************************
+    //********************************************************
+
+    /**
+     * Get type being assigned to a declared object of this class.
+     */
+    GPDType::Type getType() const;
+
+    /**
+     * Assign type to a declared object of this class.
+     */
+    void setType(Type type);
+
 private:
+
+    /**
+     * Type associated to a declared object of this class.
+     */
     GPDType::Type m_type;
 };
 
+/**
+ * Stream operator to serialize class into Packet. See also GPDType::serialize().
+ */
 ElemUtils::Packet& operator <<(ElemUtils::Packet& packet, GPDType& gpdType);
+
+/**
+ * Stream operator to retrieve class from Packet. See also GPDType::unserialize().
+ */
 ElemUtils::Packet& operator >>(ElemUtils::Packet& packet, GPDType& gpdType);
 
 #endif /* GPD_COMPUTE_TYPE_H */

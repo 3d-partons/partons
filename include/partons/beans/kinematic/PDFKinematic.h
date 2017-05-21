@@ -6,10 +6,6 @@
  * @author: H. Moutarde (CEA/Irfu, Saclay)
  * @date 26 November 2014
  * @version 1.0
- *
- * @class GPDKinematic
- *
- * @brief Class representing the kinematic variables for a GPD model.
  */
 
 #include <string>
