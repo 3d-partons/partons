@@ -61,14 +61,6 @@ std::string QuarkDistribution::toString() const {
     return os.str();
 }
 
-double QuarkDistribution::getAntiQuark() const {
-    return antiQuark;
-}
-
-void QuarkDistribution::setAntiQuark(double antiQuark) {
-    this->antiQuark = antiQuark;
-}
-
 double QuarkDistribution::getQuarkDistribution() const {
     return m_quarkDistribution;
 }
@@ -100,14 +92,6 @@ QuarkFlavor QuarkDistribution::getQuarkFlavor() const {
 
 void QuarkDistribution::setQuarkFlavor(QuarkFlavor quarkFlavorType) {
     m_quarkFlavor = quarkFlavorType;
-}
-
-double QuarkDistribution::getQuark() const {
-    return quark;
-}
-
-void QuarkDistribution::setQuark(double quark) {
-    this->quark = quark;
 }
 
 void QuarkDistribution::compare(ComparisonReport &rootComparisonReport,
