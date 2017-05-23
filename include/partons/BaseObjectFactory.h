@@ -20,7 +20,7 @@ class BaseObjectRegistry;
  * @class BaseObjectFactory
  *
  * @brief Provides a clone (returned as a BaseObject pointer) of an object identified by its class name and previously stored in the BaseObjectRegistry.
- * Furthermore, a pointer to each clone is registered in order to destroy it later on if it becomes orphan.
+ * Furthermore, a pointer to each clone is registered in order to destroy it later on if it becomes orphan.\n
  * This class is only instantiable by the class Partons to avoid any error at the initialization of the program.
  */
 class BaseObjectFactory {
@@ -47,7 +47,7 @@ public:
     BaseObject* newBaseObject(const std::string &className);
 
     /**
-     *
+     * Remove an object from the factory.
      *
      * @param baseObjectUniqueId Unique id identifying each object.
      */

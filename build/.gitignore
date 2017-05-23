@@ -1,7 +1,3 @@
-/CMakeCache.txt
-/CMakeFiles/
-/Makefile
-/PARTONS_automoc.cpp
-/build.log
-/cmake_install.cmake
-/PARTONS_autogen/
+*
+*/
+!.gitignore
