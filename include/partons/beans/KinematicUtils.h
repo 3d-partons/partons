@@ -6,10 +6,6 @@
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date November 27, 2015
  * @version 1.0
- *
- * @class KinematicUtils
- *
- * @brief
  */
 
 #include <string>
@@ -20,23 +16,74 @@
 #include "List.h"
 #include "observable/ObservableKinematic.h"
 
+/**
+ * @class KinematicUtils
+ *
+ * @brief Set of utilization tools to handle kinematic-like classes.
+ *
+ * This class is used as a container for utilization tools to handle kinematic-like classes.
+ * It provides in particular tools to parse text files in order to create a set of kinematic-like objects.
+ */
 class KinematicUtils: public BaseObject {
+
 public:
+
+    /**
+     * Default constructor.
+     */
     KinematicUtils();
+
+    /**
+     * Destructor.
+     */
     virtual ~KinematicUtils();
 
+    /**
+     * Parse a text file in order to retrieve a list of ObservableKinematic objects.
+     * @param filePath Path to file to be parsed.
+     * @return List of extracted ObservableKinematic objects.
+     */
     List<ObservableKinematic> getObservableKinematicFromFile(
             const std::string &filePath);
 
+    /**
+     * Parse a text file in order to retrieve a list of GPDKinematic objects.
+     * @param filePath Path to file to be parsed.
+     * @return List of extracted GPDKinematic objects.
+     */
     List<GPDKinematic> getGPDKinematicFromFile(const std::string &filePath);
 
+    /**
+     * Parse a text file in order to retrieve a list of DVCSConvolCoeffFunctionKinematic objects.
+     * @param filePath Path to file to be parsed.
+     * @return List of extracted DVCSConvolCoeffFunctionKinematic objects.
+     */
     List<DVCSConvolCoeffFunctionKinematic> getCCFKinematicFromFile(
             const std::string &filePath);
 
 private:
+
+    /**
+     * Throw a custom error.
+     * @param funcName Name of function where the error has appeared.
+     * @param msg User readable message to be thrown.
+     */
     void error(const std::string &funcName, const std::string &msg);
+
+    /**
+     * Throw an error when unable to open a file.
+     * @param funcName Name of function where the error has appeared.
+     * @param msg User readable message to be thrown.
+     */
     void errorCannotOpenFile(const std::string &funcName,
             const std::string &msg);
+
+    /**
+     * Check if content of a file is empty. If yes, throw an error.
+     * @param funcName Name of function where the check is performed.
+     * @param kinematicString Content of file.
+     * @param filePath Path to file.
+     */
     void checkEmptyInputFile(const std::string &funcName,
             const std::vector<std::string> &kinematicString,
             const std::string &filePath);
