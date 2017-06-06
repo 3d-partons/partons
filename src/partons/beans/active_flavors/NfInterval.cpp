@@ -35,7 +35,7 @@ void NfInterval::setIndex(unsigned int index) {
     m_index = index;
 }
 
-std::string NfInterval::toString() {
+std::string NfInterval::toString() const{
     ElemUtils::Formatter formatter;
 
     formatter << "index" << m_index << '\n';

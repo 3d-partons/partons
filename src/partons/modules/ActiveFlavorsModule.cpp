@@ -133,7 +133,7 @@ void ActiveFlavorsModule::checkCurveIntegrity() {
 
 }
 
-std::string ActiveFlavorsModule::toString() {
+std::string ActiveFlavorsModule::toString() const{
     ElemUtils::Formatter formater;
 
     for (unsigned int i = 0; i != m_nfFunctionOfMu.size(); i++)

@@ -24,8 +24,8 @@ KM10SubtractionConstantModel::KM10SubtractionConstantModel(
             std::make_pair(GPDType::E,
                     &GPDSubtractionConstantModule::computeE));
 
-    m_par_H_C = 0.;
-    m_par_H_M_sub = 0.;
+    m_par_H_C = 6.;          //Eq. (112)
+    m_par_H_M_sub = 1.5;     //Eq. (112)
 }
 
 KM10SubtractionConstantModel::~KM10SubtractionConstantModel() {
@@ -49,20 +49,4 @@ double KM10SubtractionConstantModel::computeH() {
 
 double KM10SubtractionConstantModel::computeE() {
     return -1 * computeH();
-}
-
-double KM10SubtractionConstantModel::getParHC() const {
-    return m_par_H_C;
-}
-
-void KM10SubtractionConstantModel::setParHC(double parHC) {
-    m_par_H_C = parHC;
-}
-
-double KM10SubtractionConstantModel::getParHMSub() const {
-    return m_par_H_M_sub;
-}
-
-void KM10SubtractionConstantModel::setParHMSub(double parHMSub) {
-    m_par_H_M_sub = parHMSub;
 }

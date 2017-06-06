@@ -53,7 +53,7 @@ PartonDistribution GPDBorderFunctionModule::computeEt() {
     return GPDModule::computeEt();
 }
 
-std::string GPDBorderFunctionModule::toString() {
+std::string GPDBorderFunctionModule::toString() const{
     return GPDModule::toString();
 }
 

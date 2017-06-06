@@ -213,7 +213,7 @@ std::complex<double> DVCSCFFDispersionRelationModel::computeUnpolarized() {
     double Im = M_PI * computeSquareChargeAveragedGPD(m_xi);
 
     //return
-    return std::complex<double>(Re + Sub, Im);
+    return std::complex<double>(Re - Sub, Im);
 }
 
 std::complex<double> DVCSCFFDispersionRelationModel::computePolarized() {

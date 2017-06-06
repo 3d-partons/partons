@@ -1,20 +1,20 @@
 /*--------------------------- RunningAlphaStrong.cxx ------------------------*/
 
-/*!
- * \file RunningAlphaStrong.cxx
- * \class RunningAlphaStrong
- * \brief C++ class evaluating the ruuning of the strong coupling constant.
- * \author H. Moutarde (Irfu/SPhN, CEA-Saclay),
+/*
+ * RunningAlphaStrong.cxx
+ * RunningAlphaStrong
+ * C++ class evaluating the ruuning of the strong coupling constant.
+ * H. Moutarde (Irfu/SPhN, CEA-Saclay),
  *		First version.
- * \date July 13th, 2011.
- * 
+ * July 13th, 2011.
+ *
  *
  * Remarks :
  *
  * 1. Unit is GeV.
- * 
+ *
  * 2. Since perturbation theory is not reliable below 1 GeV, the running scale should be higher than this limit. However computations in quark models often require evolution from a very low scale, comparable to (and a little higher than) Lambda_QCD with three active flavours. Hence in this program the running scale should be greater than Lambda_QCD( Nf = 3 ).
- * 
+ *
  * 3. The program takes alpha_s( MZ ) and quark masses (c, b and t) as inputs and computes the evolution downwards to get LambdaQCD for different numbers of active flavours. Then alpha_s is computed at the required scale.
  *
  * 4. See Particle Data Group for quark masses and alpha_s(MZ) :
@@ -22,8 +22,8 @@
  *
  * 5. The matching of the evaluations of the strong coupling constant with different numbers of active flavours at a given threshold is described in :
  *    - Y. Schroder and M. Steinhauser, "Four-Loop Decoupling Relations for the Strong Coupling", JHEP 0601 (2006) 051.
- *    - K.G. Chetyrkin, J.H. Kuhn and C. Sturm, "QCD Decoupling at Four Loops", Nucl. Phys. B744 (2006) 121. 
- *    CAUTION : NOT YET !!!  
+ *    - K.G. Chetyrkin, J.H. Kuhn and C. Sturm, "QCD Decoupling at Four Loops", Nucl. Phys. B744 (2006) 121.
+ *    CAUTION : NOT YET !!!
  *
  * 6. The convention for the QCD beta function is the following :
  *    d alpha_s(nf)/d ln(mu^2) = Beta ( alpha_s ) = - sum_{n=1}^\infty Beta_{n-1} * ( alpha_s / pi )^(n+1)
@@ -31,8 +31,8 @@
  * 7. One can vary the number of colours to work with YM SU(Nc) with Nc != 3.
  *
  *
- * TODO : 
- * 
+ * TODO :
+ *
  * 1. Matching of alpha at an heavy quark theshold after Schroder, Chetyrkin et al.
  *
  * 2. Making the verbose mode really verbose.
@@ -61,11 +61,11 @@ const unsigned int RunningAlphaStrong::classId =
 
 /*------------------------------- Public routines ----------------------------*/
 
-/*!
+/*
  * \fn RunningAlphaStrong::RunningAlphaStrong( string pQCD, bool Verbose )
- * 
+ *
  * Default constructor.
- * 
+ *
  */
 RunningAlphaStrong::RunningAlphaStrong(const std::string &className) :
         RunningAlphaStrongModule(className), fNc(3), fBeta0(0.), fBeta1(0.), fBeta2(
@@ -96,8 +96,8 @@ RunningAlphaStrong* RunningAlphaStrong::clone() const {
     return new RunningAlphaStrong(*this);
 }
 
-/**
- * 
+/*
+ *
  * Default destructor.
  *
  */
@@ -173,9 +173,9 @@ double RunningAlphaStrong::compute() {
     return fAlphaS;
 }
 
-/*!
+/*
  * \fn GetColourNumber ()
- * 
+ *
  * General SU(Nc) theory even if using experimental input values (Alpha_S(M_Z), quark masses) becomes dubious if Nc != 3.
  *
  */
@@ -185,7 +185,7 @@ unsigned int RunningAlphaStrong::GetColourNumber() const {
 
 /*------------------------------ Private routines ----------------------------*/
 
-/*!
+/*
  * \fn ComputeExpansionCoefficients( unsigned int NFlavour )
  * 
  * Computes the coefficient of the expansion of the QCD beta function. 
@@ -268,7 +268,7 @@ void RunningAlphaStrong::ComputeExpansionCoefficients(unsigned int NFlavour) {
     fB3 = fBeta3 / fBeta0;
 }
 
-/*!
+/*
  * \fn ComputeLambdaQCD()
  *
  * Computes Lambda_QCD as a function of the number of active flavours. 
@@ -359,7 +359,7 @@ void RunningAlphaStrong::Running(double Mu, double Lambda,
     fAlphaS *= PI;
 }
 
-/*!
+/*
  * \fn FindLambda( double Lambda, double* Parameters )
  *
  * Equation alpha_s( Mu, Lambda ) - alpha  = 0 to get Lambda from the value alpha of the strong coupling constant at scale Mu.
