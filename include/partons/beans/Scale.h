@@ -12,6 +12,8 @@
  * @brief
  */
 
+#include <string>
+
 #include "../BaseObject.h"
 
 /**
@@ -94,6 +96,8 @@ public:
      * Set squared value of renormalization scale.
      */
     void setMuR2(double muR2);
+
+    virtual std::string toString() const;
 
 private:
 
