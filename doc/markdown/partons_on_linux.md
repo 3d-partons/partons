@@ -42,16 +42,16 @@ You can then go to a folder of your liking and clone the repository of **PARTONS
 
 ~~~~~~~~~~~~~{.sh}
 cd /path/to/some/directory
-GIT_SSL_NO_VERIFY=true git clone https://drf-gitlab.cea.fr/partons/elementary-utils.git --branch v1
-GIT_SSL_NO_VERIFY=true git clone https://drf-gitlab.cea.fr/partons/numa.git --branch v1
-GIT_SSL_NO_VERIFY=true git clone https://drf-gitlab.cea.fr/partons/partons.git --branch v1
+GIT_SSL_NO_VERIFY=true git clone https://drf-gitlab.cea.fr/partons/core/elementary-utils.git --branch v1
+GIT_SSL_NO_VERIFY=true git clone https://drf-gitlab.cea.fr/partons/core/numa.git --branch v1
+GIT_SSL_NO_VERIFY=true git clone https://drf-gitlab.cea.fr/partons/core/partons.git --branch v1
 ~~~~~~~~~~~~~
 
 The option `--branch` is needed to checkout the *release* branch (in that case the first version). If you want to checkout `master`, don't use the option.
 
 The option `GIT_SSL_NO_VERIFY=true` is needed because the CEA certificate is often not recognized.
 
-You can also just download the source code of those projects from [GitLab](https://drf-gitlab.cea.fr/partons/) or our website. **TODO: add link to website when available.**
+You can also just download the source code of those projects from [GitLab](https://drf-gitlab.cea.fr/partons/core/) or our website. **TODO: add link to website when available.**
 
 # Building the source code #  {#linux_build}
 
@@ -99,6 +99,8 @@ This will allow you to install the headers to `/home/youruser/somefolder/include
 The project [partons-example](https://drf-gitlab.cea.fr/partons/partons.git) is meant as an example of project making use of the PARTONS libraries. You can use it as a template for your own projects.
 
 In particular, you can adapt the CMakeLists.txt already present in PARTONS_release, and use the same FindXXXX.cmake scripts found in the folder `cmake/Modules`.
+
+You should also find the configuration files `partons.properties` and `logger.cfg` that you will have to adapt with your paths.
 
 # Using Eclipse # {#linux_eclipse}
 
