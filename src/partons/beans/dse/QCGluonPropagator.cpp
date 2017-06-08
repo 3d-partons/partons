@@ -8,13 +8,13 @@
 QCGluonPropagator::QCGluonPropagator(double w, double I, double LambdaQCD,
         int Nf) :
         GluonPropagator("QCGluonPropagator", w, I, LambdaQCD, Nf) {
-    m_factorIR = 8. * PI * PI / pow(m_w, 4) * m_D;
+    m_factorIR = 8. * Constant::PI * Constant::PI / pow(m_w, 4) * m_D;
 }
 
 QCGluonPropagator::QCGluonPropagator(const std::string& className, double w,
         double I, double LambdaQCD, int Nf) :
         GluonPropagator(className, w, I, LambdaQCD, Nf) {
-    m_factorIR = 8. * PI * PI / pow(m_w, 4) * m_D;
+    m_factorIR = 8. * Constant::PI * Constant::PI / pow(m_w, 4) * m_D;
 }
 
 QCGluonPropagator::QCGluonPropagator(const QCGluonPropagator& other) :
@@ -39,5 +39,5 @@ double QCGluonPropagator::evaluateG(double k2) const {
 }
 
 void QCGluonPropagator::updateIR() {
-    m_factorIR = 8. * PI * PI / pow(m_w, 4) * m_D;
+    m_factorIR = 8. * Constant::PI * Constant::PI / pow(m_w, 4) * m_D;
 }

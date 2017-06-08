@@ -19,20 +19,40 @@
 //TODO modifier pour qu'il ne s'utilise pas avant 2 dimensions
 
 /**
- * @class MSTWPDF
+ * @class MDArray
  *
- * @brief Multi-dimentional optimized array. Data stored in one dimension.
+ * @brief Multidimensional optimized array.
  *
- * @example Instantiation of MDArray : std::vector<size_t> dims;
- *                          dims.push_back(4);
- *                          dims.push_back(4);
- *                          dims.push_back(4);
- *                          MDArray<double> myArray(dims, 1.) - A 4x4x4 array fill with 1. (Fill with 0. by default).
- *          Accessing value : myArray(1,2,3) - Return value at index [1][2][3] of the 4x4x4 array
- *          Setting value : myArray(1,2,3) = 5. - Set value 5. at index [1][2][3] of the 4x4x4 array
+ * This class acts as a STL-like container to store multidimensional data in a single vector only (here, std::vector).
+ * The usage of this class is illustrated by the following example:
+ \code{.cpp}
+ //initialize MDArray object
+ //in this example it will store 4x4x4 array
+ //initial value for all elements will be 1.
+ std::vector<size_t> dims;
+ dims.push_back(4);
+ dims.push_back(4);
+ dims.push_back(4);
+
+ MDArray<double> myArray(dims, 1.);
+
+ //set value at (1, 2, 3) coordinate
+ myArray(1, 2, 3) = 5.2;
+
+ //access values at (1, 2, 3) coordinate
+ double value = myArray(1, 2, 3);
+
+ //print
+ Partons::getInstance()->getLoggerManager()->info("example", __func__, ElemUtils::Formatter() << "Value at (1, 2, 3) is: " << value);
+ \endcode
+ which gives via Logger:
+ \code
+ 07-06-2017 08:37:42 [INFO] (example::main) Value at (1, 2, 3) is: 5.2
+ \endcode
  */
 template<typename T>
 class MDArray {
+
 public:
 
     //TODO voir comment supprimer le constructeur par défaut pour s'approcher de la classe std::vector.
@@ -42,28 +62,11 @@ public:
     MDArray() {
         dims.push_back(0);
     }
-    ;
-
-    /**
-     * !!! Use only with One Dimention Array
-     *
-     * @param value
-     */
-    void push_back(T value) {
-        if (dims.size() == 1) {
-            data.push_back(value);
-            dims[0] = data.size();
-        } else {
-            throw std::logic_error(
-                    "[MDArray] Unable to perform push_back() action : cause you handle a multi dimentional array ! - Action non permitted -");
-        }
-    }
 
     /**
      * Constructor.
-     *
-     * @param _dims : an array with all the dimension size
-     * @param initValue : value that fills array
+     * @param _dims Vector containing array dimension sizes.
+     * @param initValue Initialization element to be used to fill this array.
      */
     MDArray(std::vector<size_t> _dims, const T & initValue = T()) :
             dims(_dims) {
@@ -76,7 +79,7 @@ public:
     }
 
     /**
-     * Default destructor.
+     * Destructor.
      */
     ~MDArray() {
         dims.clear();
@@ -84,27 +87,49 @@ public:
     }
 
     /**
-     *
-     * @return size of the data array
+     * Push back one element.
+     * To be used only with one dimensional arrays.
+     * @param value Element to be pushed back.
+     */
+    void push_back(T value) {
+        if (dims.size() == 1) {
+            data.push_back(value);
+            dims[0] = data.size();
+        } else {
+            throw std::logic_error(
+                    "[MDArray] Unable to perform push_back() action : cause you handle a multi dimentional array ! - Action non permitted -");
+        }
+    }
+
+    /**
+     * Get size of the data array.
      */
     const size_t getSize() {
         return data.size();
     }
 
-// () accessor for setting value at target index
+    /**
+     * () accessor for setting value at target index.
+     */
     T & operator()(size_t coordValue, ...) {
         va_list ap;
         va_start(ap, coordValue);
         return data[indexOf(coordValue, ap)];
     }
 
-// () accessor for getting value at target index
+    /**
+     * () accessor for getting value at target index.
+     */
     T const & operator()(size_t coordValue, ...) const {
         va_list ap;
         va_start(ap, coordValue);
         return data[indexOf(coordValue, ap)];
     }
 
+    /**
+     * Get string representing the array data.
+     * @return
+     */
     std::string toString() const {
         ElemUtils::Formatter formatter;
 
@@ -116,12 +141,20 @@ public:
     }
 
 private:
-    // Store each dimension size
+
+    /**
+     * Vector containing array dimension sizes.
+     */
     std::vector<size_t> dims;
-    // Store all data
+
+    /**
+     * Array data.
+     */
     std::vector<T> data;
 
-    // Return index of specifics coordinates. Transform x,y,z,... coordinates to index x.
+    /**
+     * Return index of specifics coordinates. Transform x,y,z,... coordinates to index x.
+     */
     size_t indexOf(size_t coordValue, va_list ap) const {
         size_t index = 0;
 
@@ -137,7 +170,9 @@ private:
         return index;
     }
 
-    // Compute intermediate index value.
+    /**
+     * Compute intermediate index value.
+     */
     size_t computeIntermediateIndex(size_t coordValue,
             unsigned int numDim) const {
         size_t tempIndex = coordValue;

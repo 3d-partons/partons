@@ -114,7 +114,7 @@ void BMJ2012Model::initModule() {
     m_xBtQ2[0] = 2 - m_xB + m_xB * m_t / m_Q2;
     m_xBtQ2[1] = m_xBtQ2[0] * m_xBtQ2[0];
     m_xBtQ2[2] = m_xBtQ2[1] * m_xBtQ2[0];
-    m_M[0] = PROTON_MASS; // 0.938271998 // Test Maxime;
+    m_M[0] = Constant::PROTON_MASS; // 0.938271998 // Test Maxime;
     m_M[1] = m_M[0] * m_M[0];
     m_yBMJ[0] = m_y;
     m_yBMJ[1] = m_yBMJ[0] * m_yBMJ[0];
@@ -149,7 +149,7 @@ void BMJ2012Model::initModule() {
     computeAngularCoeffsInterf();
 
     // Phase space
-    m_phaseSpace = m_xB * m_yBMJ[1] / (1024 * pow(PI, 5) * m_Q[3] * m_epsroot[0]);
+    m_phaseSpace = m_xB * m_yBMJ[1] / (1024 * pow(Constant::PI, 5) * m_Q[3] * m_epsroot[0]);
 
 }
 
@@ -208,21 +208,21 @@ void BMJ2012Model::defineAngles(const NumA::Vector3D &targetPolarization) {
             double sinPhi = Sy / sintheta / m_Lambda;
             double cosPhi = Sx / sintheta / m_Lambda;
             if (cosPhi == 0.) {
-                m_PhiBMK = ((sinPhi > 0.) - (sinPhi < 0.)) * PI / 2;
+                m_PhiBMK = ((sinPhi > 0.) - (sinPhi < 0.)) * Constant::PI / 2;
             } else {
                 m_PhiBMK = atan(Sy / Sx);
                 if (cosPhi <= 0.) {
                     if (sinPhi < 0.) {
-                        m_PhiBMK = m_PhiBMK - PI;
+                        m_PhiBMK = m_PhiBMK - Constant::PI;
                     } else {
-                        m_PhiBMK = m_PhiBMK + PI;
+                        m_PhiBMK = m_PhiBMK + Constant::PI;
                     }
                 }
             }
         }
     }
 
-    m_phi1BMK = PI - m_phi;
+    m_phi1BMK = Constant::PI - m_phi;
     m_phi2BMK = m_PhiBMK - m_phi1BMK;
 }
 
@@ -1329,7 +1329,7 @@ std::complex<double> BMJ2012Model::S_I(unsigned int S, unsigned int n, int a,
 double BMJ2012Model::SqrAmplBH(double beamHelicity, double beamCharge,
         NumA::Vector3D targetPolarization) {
 
-    double A = pow(POSITRON_CHARGE, 6)
+    double A = pow(Constant::POSITRON_CHARGE, 6)
             / (m_xB2 * m_yBMJ[1] * m_epsroot[3] * m_t * m_P1 * m_P2);
 
     double result = 0.;
@@ -1346,7 +1346,7 @@ double BMJ2012Model::SqrAmplBH(double beamHelicity, double beamCharge,
 double BMJ2012Model::SqrAmplVCS(double beamHelicity, double beamCharge,
         NumA::Vector3D targetPolarization) {
 
-    double A = pow(POSITRON_CHARGE, 6) / (m_yBMJ[1] * m_Q2);
+    double A = pow(Constant::POSITRON_CHARGE, 6) / (m_yBMJ[1] * m_Q2);
 
     double result = 0.;
     for (int n(0); n < 3; n++) {
@@ -1363,7 +1363,7 @@ double BMJ2012Model::SqrAmplVCS(double beamHelicity, double beamCharge,
 double BMJ2012Model::SqrAmplInterf(double beamHelicity, double beamCharge,
         NumA::Vector3D targetPolarization) {
 
-    double A = -beamCharge * pow(POSITRON_CHARGE, 6)
+    double A = -beamCharge * pow(Constant::POSITRON_CHARGE, 6)
             / (m_xB * m_yBMJ[2] * m_t * m_P1 * m_P2);
 
     double result = 0.;

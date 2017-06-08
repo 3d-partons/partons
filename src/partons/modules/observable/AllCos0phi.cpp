@@ -60,6 +60,6 @@ double AllCos0phi::functionToIntegrateObservable(double x,
 double AllCos0phi::computeFourierObservable() {
     std::vector<double> emptyParameters;
 
-    return integrate(m_pFunctionToIntegrateObservable, 0., (2 * PI),
-            emptyParameters) / (2 * PI);
+    return integrate(m_pFunctionToIntegrateObservable, 0., (2 * Constant::PI),
+            emptyParameters) / (2 * Constant::PI);
 }

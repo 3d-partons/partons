@@ -20,7 +20,7 @@ GluonPropagator::GluonPropagator(const std::string& className, double w,
                 I * w * w * w), m_LambdaQCD(LambdaQCD), m_Nf(Nf), m_factorPer(
                 0.), m_tau(exp(2) - 1.), m_LambdaQCD2(LambdaQCD * LambdaQCD), m_factorIR(
                 0.), m_w2(w * w) {
-    m_factorPer = 8. * PI * PI * 12. / (33. - 2. * Nf);
+    m_factorPer = 8. * Constant::PI * Constant::PI * 12. / (33. - 2. * Nf);
     // /!\ m_factorIR needs to be initialized in the daughter class constructor!
 }
 
@@ -49,7 +49,7 @@ std::string GluonPropagator::toString() const {
 }
 
 double GluonPropagator::evaluateAlpha(double k2) const {
-    return k2 * evaluateG(k2) / (4 * PI);
+    return k2 * evaluateG(k2) / (4 * Constant::PI);
 }
 
 double GluonPropagator::evaluateGper(double k2) const {
@@ -58,7 +58,7 @@ double GluonPropagator::evaluateGper(double k2) const {
 }
 
 void GluonPropagator::updatePer() {
-    m_factorPer = 8. * PI * PI * 12. / (33. - 2. * m_Nf);
+    m_factorPer = 8. * Constant::PI * Constant::PI * 12. / (33. - 2. * m_Nf);
 }
 
 double GluonPropagator::getC() const {

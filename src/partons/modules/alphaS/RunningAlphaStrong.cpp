@@ -118,19 +118,19 @@ void RunningAlphaStrong::isModuleWellConfigured() {
 //TODO Definir la masse des quarks au carré dans le fichier de constantes
 double RunningAlphaStrong::compute() {
 
-    if (QUARK_STRANGE_MASS <= m_Mu && m_Mu < QUARK_CHARM_MASS) {
+    if (Constant::QUARK_STRANGE_MASS <= m_Mu && m_Mu < Constant::QUARK_CHARM_MASS) {
         m_nf = 3;
     }
 
-    else if (QUARK_CHARM_MASS <= m_Mu && m_Mu < QUARK_BOTTOM_MASS) {
+    else if (Constant::QUARK_CHARM_MASS <= m_Mu && m_Mu < Constant::QUARK_BOTTOM_MASS) {
         m_nf = 4;
     }
 
-    else if (QUARK_BOTTOM_MASS <= m_Mu && m_Mu < QUARK_TOP_MASS) {
+    else if (Constant::QUARK_BOTTOM_MASS <= m_Mu && m_Mu < Constant::QUARK_TOP_MASS) {
         m_nf = 5;
     }
 
-    else if (QUARK_TOP_MASS <= m_Mu) {
+    else if (Constant::QUARK_TOP_MASS <= m_Mu) {
         m_nf = 6;
     }
 
@@ -199,7 +199,7 @@ unsigned int RunningAlphaStrong::GetColourNumber() const {
  * 
  */
 void RunningAlphaStrong::ComputeExpansionCoefficients(unsigned int NFlavour) {
-    double Zeta3 = ZETA_3;
+    double Zeta3 = Constant::ZETA_3;
     double NFlavour2 = NFlavour * NFlavour;
     double NFlavour3 = NFlavour2 * NFlavour;
 
@@ -289,7 +289,7 @@ void RunningAlphaStrong::ComputeLambdaQCD() {
     // Find fLambdaQCD5 between LambdaMin and LambdaMax
     // Solve Running( fZBosonMass, fLambdaQCD5, 5 ) = fAlphaSMZ
 
-    parameters.at(0) = Z_BOSON_MASS;
+    parameters.at(0) = Constant::Z_BOSON_MASS;
     parameters.at(1) = fAlphaSMZ;
     parameters.at(2) = 5;
 
@@ -299,9 +299,9 @@ void RunningAlphaStrong::ComputeLambdaQCD() {
     // Find fLambdaQCD4 between fLambdaQCD5 and LambdaMax
     // Solve Running( fBottomQuarkMass, fLambdaQCD5, 5 ) = Running( fBottomQuarkMass, fLambdaQCD4, 4 )
 
-    Running(QUARK_BOTTOM_MASS, fLambdaQCD5, 5);
+    Running(Constant::QUARK_BOTTOM_MASS, fLambdaQCD5, 5);
 
-    parameters.at(0) = QUARK_BOTTOM_MASS;
+    parameters.at(0) = Constant::QUARK_BOTTOM_MASS;
     parameters.at(1) = fAlphaS;
     parameters.at(2) = 4;
 
@@ -311,9 +311,9 @@ void RunningAlphaStrong::ComputeLambdaQCD() {
     // Find fLambdaQCD3 between fLambdaQCD4 and LambdaMax
     // Solve Running( fCharmQuarkMass, fLambdaQCD4, 4 ) = Running( fCharmQuarkMass, fLambdaQCD3, 3 )
 
-    Running(QUARK_CHARM_MASS, fLambdaQCD4, 4);
+    Running(Constant::QUARK_CHARM_MASS, fLambdaQCD4, 4);
 
-    parameters.at(0) = QUARK_CHARM_MASS;
+    parameters.at(0) = Constant::QUARK_CHARM_MASS;
     parameters.at(1) = fAlphaS;
     parameters.at(2) = 3;
 
@@ -323,9 +323,9 @@ void RunningAlphaStrong::ComputeLambdaQCD() {
     // Find fLambdaQCD6 between LambdaMin and fLambdaQCD5
     // Solve Running( fTopQuarkMass, fLambdaQCD5, 5 ) = Running( fTopQuarkMass, fLambdaQCD6, 6 )
 
-    Running(QUARK_TOP_MASS, fLambdaQCD5, 5);
+    Running(Constant::QUARK_TOP_MASS, fLambdaQCD5, 5);
 
-    parameters.at(0) = QUARK_TOP_MASS;
+    parameters.at(0) = Constant::QUARK_TOP_MASS;
     parameters.at(1) = fAlphaS;
     parameters.at(2) = 6;
 
@@ -356,7 +356,7 @@ void RunningAlphaStrong::Running(double Mu, double Lambda,
                                             + 2. * lt - 1. / 2.)
                                     - 3. * fB1 * fB2 * lt + fB3 / 2.);
 
-    fAlphaS *= PI;
+    fAlphaS *= Constant::PI;
 }
 
 /*

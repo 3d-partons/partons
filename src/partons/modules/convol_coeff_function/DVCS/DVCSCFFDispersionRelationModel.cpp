@@ -210,7 +210,7 @@ std::complex<double> DVCSCFFDispersionRelationModel::computeUnpolarized() {
             m_MuR2, m_currentGPDComputeType);
 
     //imaginary part
-    double Im = M_PI * computeSquareChargeAveragedGPD(m_xi);
+    double Im = Constant::PI * computeSquareChargeAveragedGPD(m_xi);
 
     //return
     return std::complex<double>(Re - Sub, Im);
@@ -241,7 +241,7 @@ std::complex<double> DVCSCFFDispersionRelationModel::computePolarized() {
     Re += computeSquareChargeAveragedGPD(m_xi) * (log(m_xi) - log(1. - m_xi));
 
     //imaginary part
-    double Im = M_PI * computeSquareChargeAveragedGPD(m_xi);
+    double Im = Constant::PI * computeSquareChargeAveragedGPD(m_xi);
 
     //return
     return std::complex<double>(Re, Im);
@@ -256,11 +256,11 @@ double DVCSCFFDispersionRelationModel::computeSquareChargeAveragedGPD(
 
     //return singlet combination
     return partonDistribution.getQuarkDistribution(QuarkFlavor::UP).getQuarkDistributionPlus()
-            * U2_ELEC_CHARGE
+            * Constant::U2_ELEC_CHARGE
             + partonDistribution.getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistributionPlus()
-                    * D2_ELEC_CHARGE
+                    * Constant::D2_ELEC_CHARGE
             + partonDistribution.getQuarkDistribution(QuarkFlavor::STRANGE).getQuarkDistributionPlus()
-                    * S2_ELEC_CHARGE;
+                    * Constant::S2_ELEC_CHARGE;
 }
 
 double DVCSCFFDispersionRelationModel::dispersionRelationIntegralPartDiagonalA(

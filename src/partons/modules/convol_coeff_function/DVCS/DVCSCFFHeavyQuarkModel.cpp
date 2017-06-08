@@ -244,7 +244,7 @@ std::complex<double> DVCSCFFHeavyQuarkModel::MassiveKernelGluonNLOA(double x) {
 //    m_pLoggerManager->debug(getClassName(), __func__, "entered");
 // TODO Add a massless part
     double z = m_xi / x;
-    double mq = QUARK_CHARM_MASS;
+    double mq = Constant::QUARK_CHARM_MASS;
     double s = -m_Q2 * (z - 1.) / 2. / z;
     double SumSqrCharges; // Sum of square of electric charges of active quark flavours
 
@@ -288,7 +288,7 @@ std::complex<double> DVCSCFFHeavyQuarkModel::MassiveKernelGluonNLOA(double x) {
         GluonNLOAb *= (m_TF / 2. / (z + 1.) / (z + 1.));
     }
 
-    GluonNLOA = m_alphaSOver2Pi * C_ELEC_CHARGE * C_ELEC_CHARGE
+    GluonNLOA = m_alphaSOver2Pi * Constant::C_ELEC_CHARGE * Constant::C_ELEC_CHARGE
             * (GluonNLOAa - GluonNLOAb);
     ;
     GluonNLOA /= x * x;
@@ -304,7 +304,7 @@ std::complex<double> DVCSCFFHeavyQuarkModel::MassiveKernelGluonNLOA(double x) {
 
 std::complex<double> DVCSCFFHeavyQuarkModel::MassiveKernelGluonNLOV(double x) {
     double z = -m_xi / x;
-    double mq = QUARK_CHARM_MASS;
+    double mq = Constant::QUARK_CHARM_MASS;
     double s = -m_Q2 * (z - 1.) / 2. / z;
     double eta = mq * mq / m_Q2;
     double SumSqrCharges; // Sum of square of electric charges of active quark flavours
@@ -355,7 +355,7 @@ std::complex<double> DVCSCFFHeavyQuarkModel::MassiveKernelGluonNLOV(double x) {
 
         }
 
-        GluonNLOV = m_alphaSOver2Pi * C_ELEC_CHARGE * C_ELEC_CHARGE
+        GluonNLOV = m_alphaSOver2Pi * Constant::C_ELEC_CHARGE * Constant::C_ELEC_CHARGE
                 * (GluonNLOVa + GluonNLOVb);
         GluonNLOV /= x * x;
 

@@ -58,6 +58,6 @@ double AulSinPhi::functionToIntegrateObservable(double x,
 double AulSinPhi::computeFourierObservable() {
     std::vector<double> emptyParameters;
 
-    return integrate(m_pFunctionToIntegrateObservable, 0., (2 * PI),
-            emptyParameters) / PI;
+    return integrate(m_pFunctionToIntegrateObservable, 0., (2 * Constant::PI),
+            emptyParameters) / Constant::PI;
 }

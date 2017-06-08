@@ -60,6 +60,6 @@ double AcCos2phi::functionToIntegrateObservable(double x,
 double AcCos2phi::computeFourierObservable() {
     std::vector<double> emptyParameters;
 
-    return integrate(m_pFunctionToIntegrateObservable, 0., (2 * PI),
-            emptyParameters) / PI;
+    return integrate(m_pFunctionToIntegrateObservable, 0., (2 * Constant::PI),
+            emptyParameters) / Constant::PI;
 }

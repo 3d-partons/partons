@@ -989,6 +989,6 @@ double VGGModel::form_factor_G_P(double t) {
 
     double M_pion = 0.13498;
 
-    return g_AXIAL * pow(2. * PROTON_MASS, 2) / (-t + pow(M_pion, 2));
+    return g_AXIAL * pow(2. * Constant::PROTON_MASS, 2) / (-t + pow(M_pion, 2));
 }
 

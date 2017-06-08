@@ -1,10 +1,10 @@
 #include "../../../../include/partons/modules/observable/CrossSectionDifferenceBeamMinusLU.h"
 
 #include <NumA/linear_algebra/vector/Vector3D.h>
-#include <cmath>
 
 #include "../../../../include/partons/beans/observable/ObservableChannel.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
+#include "../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../include/partons/modules/ProcessModule.h"
 
 const unsigned int CrossSectionDifferenceBeamMinusLU::classId =
@@ -42,7 +42,7 @@ double CrossSectionDifferenceBeamMinusLU::computePhiObservable(double phi) {
 
     result = 0.5*(A - B);
 
-    result *= 2 * M_PI; //integrate over transversely polarized target dependence to obtain 4-fold differential cross-section
+    result *= 2 * Constant::PI; //integrate over transversely polarized target dependence to obtain 4-fold differential cross-section
     result *= 0.3894 * 1.E6; //change to nb
 
     return result;

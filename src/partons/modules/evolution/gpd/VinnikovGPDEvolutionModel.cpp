@@ -182,7 +182,7 @@
 //    double dummygpd[4 * m_sizeXGrid + 1];
 //    double dummyx[4 * m_sizeXGrid + 1];
 //    double dt = (LnMuF2Final - LnMuF2Initial) / ((double) m_sizeMuF2Grid);
-//    double one_twopi = 1.0 / (2.0 * PI);
+//    double one_twopi = 1.0 / (2.0 * Constant::PI);
 //
 //    debug(__func__, Formatter() << "one_twopi = " << one_twopi);
 //
@@ -286,7 +286,7 @@
 //    double k3_g[2 * m_sizeXGrid + 1], k4_g[2 * m_sizeXGrid + 1];
 //    double gpd_q_aux[2 * m_sizeXGrid + 1], gpd_g_aux[2 * m_sizeXGrid + 1];
 //    double dt = (m_LnMuF2 - m_LnMuF2_ref) / ((double) m_nbMuFPoints);
-//    double one_twopi = 1.0 / (2.0 * PI);
+//    double one_twopi = 1.0 / (2.0 * Constant::PI);
 //
 //    debug(__func__, Formatter() << "one_twopi = " << one_twopi);
 //
@@ -543,7 +543,7 @@
 //        break;
 //    }
 //
-//    if ((alpha = 4.0 * M_PI / (B0 * L)
+//    if ((alpha = 4.0 * Constant::PI / (B0 * L)
 //            * (1.0 - 2.0 * B1 * log(L) / (B0 * B0 * L))) > 1.0) {
 //        printf("WARNING (alpha_s.c): alpha_s =%9.2e\n", alpha);
 //    }

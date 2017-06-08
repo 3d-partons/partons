@@ -17,6 +17,7 @@
 #include "../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
 #include "../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
+#include "../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../include/partons/utils/MSTWPDF.h"
 #include "../../../../include/partons/utils/PartonContent.h"
 
@@ -338,7 +339,7 @@ double MMS13Model::forwardEvalFunction(double beta, double kappa, double nu,
 
 double MMS13Model::profileFunction(double beta, double alpha, int N) {
     return tgamma(N + 1.5) * pow(pow(1. - fabs(beta), 2) - pow(alpha, 2), N)
-            / tgamma(N + 1) / pow(1. - fabs(beta), 2 * N + 1) / sqrt(M_PI);
+            / tgamma(N + 1) / pow(1. - fabs(beta), 2 * N + 1) / sqrt(Constant::PI);
 }
 
 double MMS13Model::DTerm(double zeta) const {

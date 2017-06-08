@@ -257,7 +257,7 @@ void MPSSW13Model::ComputeDTerms() {
     lt = log(t);
 
     AlphaS0 = 1. / (Beta0[0] * t); // - Beta1[ 0 ] * lt / ( ( Beta0[ 0 ] * t ) * ( Beta0[ 0 ] * t ) ) ;
-    AlphaS0 *= PI;
+    AlphaS0 *= Constant::PI;
 
     //////////////////////////////////////////////////////////////////////////
     //   Strong Running coupling at charm threshold MuActiveFlavourSwitch   //
@@ -267,7 +267,7 @@ void MPSSW13Model::ComputeDTerms() {
     lt = log(t);
 
     AlphaSMuSwitch = 1. / (Beta0[0] * t); // - Beta1[ 0 ] * lt / ( ( Beta0[ 0 ] * t ) * ( Beta0[ 0 ] * t ) ) ;
-    AlphaSMuSwitch *= PI;
+    AlphaSMuSwitch *= Constant::PI;
 
     ///////////////////////////////////////////////////////
     //   Strong Running coupling at current scale fMuR   //
@@ -283,7 +283,7 @@ void MPSSW13Model::ComputeDTerms() {
         lt = log(t);
         AlphaS = 1. / (Beta0[1] * t); // - Beta1[  1 ] * lt / ( ( Beta0[ 1 ] * t ) * ( Beta0[ 1 ] * t ) ) ;
     }
-    AlphaS *= PI;
+    AlphaS *= Constant::PI;
 
     /////////////////////////////////////
     //   Gegenbauer polynomials C3/2   //
@@ -467,7 +467,7 @@ void MPSSW13Model::ComputeFormFactors() {
     const double Mun = -1.91315; // Neutron magnetic moment (Nucl. Phys. B32 (1971) 221)
     const double MassScaleProton2 = 0.71; // Mass scale for t-dep of Gep (in GeV^2)
     const double MV2 = 0.84 * 0.84;
-    double tau = m_t / (4. * PROTON_MASS * PROTON_MASS);
+    double tau = m_t / (4. * Constant::PROTON_MASS * Constant::PROTON_MASS);
 
     // Sachs form factors
     Gep = 1. / ((1. - m_t / MV2) * (1. - m_t / MV2));

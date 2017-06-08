@@ -2,8 +2,44 @@
 
 PartonContent::PartonContent() :
         BaseObject("PartonContent") {
-    // TODO Auto-generated constructor stub
 
+    upv = 0.;
+    dnv = 0.;
+    usea = 0.;
+    dsea = 0.;
+    str = 0.;
+    sbar = 0.;
+    chm = 0.;
+    cbar = 0.;
+    bot = 0.;
+    bbar = 0.;
+    top = 0.;
+    tbar = 0.;
+    glu = 0.;
+    phot = 0.;
+}
+
+PartonContent::PartonContent(const PartonContent& other) :
+        BaseObject(other) {
+
+    upv = other.upv;
+    dnv = other.dnv;
+    usea = other.usea;
+    dsea = other.dsea;
+    str = other.str;
+    sbar = other.sbar;
+    chm = other.chm;
+    cbar = other.cbar;
+    bot = other.bot;
+    bbar = other.bbar;
+    top = other.top;
+    tbar = other.tbar;
+    glu = other.glu;
+    phot = other.phot;
+}
+
+PartonContent* PartonContent::clone() const{
+    return new PartonContent(*this);
 }
 
 PartonContent::~PartonContent() {
@@ -103,4 +139,20 @@ double PartonContent::getUsea() const {
 
 void PartonContent::setUsea(double usea) {
     this->usea = usea;
+}
+
+double PartonContent::getTbar() const {
+    return tbar;
+}
+
+void PartonContent::setTbar(double tbar) {
+    this->tbar = tbar;
+}
+
+double PartonContent::getTop() const {
+    return top;
+}
+
+void PartonContent::setTop(double top) {
+    this->top = top;
 }

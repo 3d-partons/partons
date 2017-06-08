@@ -234,13 +234,13 @@ void VGG1999Model::fillInternalVariables(NumA::Vector3D targetPolarization) {
     //VARIABLES
 
     //nu
-    m_nu = m_Q2 / (2. * PROTON_MASS * m_xB);
+    m_nu = m_Q2 / (2. * Constant::PROTON_MASS * m_xB);
 
     //y
     m_y = m_nu / m_E;
 
     //s
-    m_s = pow(PROTON_MASS, 2) - m_Q2 + 2. * PROTON_MASS * m_nu;
+    m_s = pow(Constant::PROTON_MASS, 2) - m_Q2 + 2. * Constant::PROTON_MASS * m_nu;
 
     //xi
     m_xi = m_xB / (2. - m_xB);
@@ -257,7 +257,7 @@ void VGG1999Model::fillInternalVariables(NumA::Vector3D targetPolarization) {
     q_in_mom = sqrt(m_Q2 + pow(m_nu, 2.));
 
     //momentum of outgoing photon
-    q_out_mom = (m_s + m_t + m_Q2 - pow(PROTON_MASS, 2.)) / (2. * PROTON_MASS);
+    q_out_mom = (m_s + m_t + m_Q2 - pow(Constant::PROTON_MASS, 2.)) / (2. * Constant::PROTON_MASS);
 
     //ENERGIES
 
@@ -271,7 +271,7 @@ void VGG1999Model::fillInternalVariables(NumA::Vector3D targetPolarization) {
     q_in_en = m_nu;
 
     //energy of incoming proton
-    p_in_en = PROTON_MASS;
+    p_in_en = Constant::PROTON_MASS;
 
     //energy of outgoing photon
     q_out_en = q_out_mom;
@@ -319,7 +319,7 @@ void VGG1999Model::fillInternalVariables(NumA::Vector3D targetPolarization) {
     p_out = q_in - q_out;
 
     //energy of outgoing proton
-    p_out_en = sqrt(pow(p_out.Mag(), 2) + pow(PROTON_MASS, 2));
+    p_out_en = sqrt(pow(p_out.Mag(), 2) + pow(Constant::PROTON_MASS, 2));
 
     //LERENTZ VECTORS
 
@@ -779,9 +779,9 @@ double VGG1999Model::azimut_angle(NumA::VectorComplex3D t) {
     if (t.GetElement(0).real() == 0.) {
 
         if (t.GetElement(1).real() >= 0.)
-            return .5 * PI;
+            return .5 * Constant::PI;
         else
-            return 1.5 * PI;
+            return 1.5 * Constant::PI;
 
     } else {
 
@@ -790,20 +790,20 @@ double VGG1999Model::azimut_angle(NumA::VectorComplex3D t) {
             if (t.GetElement(1).real() >= 0.)
                 return atan(t.GetElement(1).real() / t.GetElement(0).real());
             else
-                return (2 * PI
+                return (2 * Constant::PI
                         - atan(
                                 fabs(
                                         t.GetElement(1).real()
                                                 / t.GetElement(0).real())));
         } else {
             if (t.GetElement(1).real() >= 0.)
-                return (PI
+                return (Constant::PI
                         - atan(
                                 fabs(
                                         t.GetElement(1).real()
                                                 / t.GetElement(0).real())));
             else
-                return (PI
+                return (Constant::PI
                         + atan(
                                 fabs(
                                         t.GetElement(1).real()
@@ -1010,11 +1010,11 @@ NumA::MatrixComplex4D VGG1999Model::gamma_NN_vertex(int mu,
     double G_E = G_M / P_MAGN * (1. - 0.13 * (Q_sqr - 0.04));
 
     //Dirac form factor
-    double ff_F1 = (Q_sqr / pow(2. * PROTON_MASS, 2.) * G_M + G_E)
-            / (1. + Q_sqr / pow(2. * PROTON_MASS, 2.));
+    double ff_F1 = (Q_sqr / pow(2. * Constant::PROTON_MASS, 2.) * G_M + G_E)
+            / (1. + Q_sqr / pow(2. * Constant::PROTON_MASS, 2.));
 
     //Pauli form factor
-    double ff_F2 = (G_M - G_E) / (1. + Q_sqr / pow(2. * PROTON_MASS, 2.));
+    double ff_F2 = (G_M - G_E) / (1. + Q_sqr / pow(2. * Constant::PROTON_MASS, 2.));
 
     //Dirac part
     NumA::MatrixComplex4D dirac = dirac_gamma(mu)
@@ -1033,7 +1033,7 @@ NumA::MatrixComplex4D VGG1999Model::gamma_NN_vertex(int mu,
                         * (q.GetElement(nu2)
                                 * std::complex<double>(0.0,
                                         metric(nu1, nu2) * ff_F2
-                                                / (2. * PROTON_MASS)));
+                                                / (2. * Constant::PROTON_MASS)));
             }
             pauli = pauli + pauli_incr;
 
@@ -1064,10 +1064,10 @@ std::complex<double> VGG1999Model::AmplitudeBH(int mu, double el_hel,
     spinor spinor_e_out = spinor_hel(k_out, el_hel);
 
     //spinor of incoming proton
-    spinor spinor_p_in = spinor_pos(p_in, PROTON_MASS, sp_in);
+    spinor spinor_p_in = spinor_pos(p_in, Constant::PROTON_MASS, sp_in);
 
     //spinor of outgoing proton
-    spinor spinor_p_out = spinor_pos(p_out, PROTON_MASS, sp_out);
+    spinor spinor_p_out = spinor_pos(p_out, Constant::PROTON_MASS, sp_out);
 
     //calculate result
     spinorMatrix ee_2gamma;
@@ -1080,7 +1080,7 @@ std::complex<double> VGG1999Model::AmplitudeBH(int mu, double el_hel,
         ee_2gamma = dirac_gamma(nu).Mult(
                 (((fvec_slash(k4_in) - fvec_slash(q4_out))
                         + (unit_spinor_mat()
-                                * std::complex<double>(ELECTRON_MASS, 0.)))
+                                * std::complex<double>(Constant::ELECTRON_MASS, 0.)))
                         * Cinv(((-2. * V4mul(k4_in, q4_out))))).Mult(
                         dirac_gamma(mu)))
 
@@ -1089,7 +1089,7 @@ std::complex<double> VGG1999Model::AmplitudeBH(int mu, double el_hel,
                 dirac_gamma(mu).Mult(
                         (((fvec_slash(k4_out) + fvec_slash(q4_out))
                                 + (unit_spinor_mat()
-                                        * std::complex<double>(ELECTRON_MASS,
+                                        * std::complex<double>(Constant::ELECTRON_MASS,
                                                 0.)))
                                 * Cinv(((2. * V4mul(k4_out, q4_out))))).Mult(
                                 dirac_gamma(nu)));
@@ -1102,13 +1102,13 @@ std::complex<double> VGG1999Model::AmplitudeBH(int mu, double el_hel,
         e_times_p = e_times_p + e_times_p_incr;
     }
 
-    //electric charge with pow(e, 2) / (4 * PI) = 1 / 137
+    //electric charge with pow(e, 2) / (4 * Constant::PI) = 1 / 137
     double ELEC = 0.302862;
 
     //calculate phasespace and include in result
     result =
-            (-sqrt(k_in_mom * k_out_mom) * sqrt(p_in_en + PROTON_MASS)
-                    * sqrt(p_out_en + PROTON_MASS) * pow(ELEC, 3.)
+            (-sqrt(k_in_mom * k_out_mom) * sqrt(p_in_en + Constant::PROTON_MASS)
+                    * sqrt(p_out_en + Constant::PROTON_MASS) * pow(ELEC, 3.)
                     / four_mom_transf_sqr) * e_times_p;
 
     //return
@@ -1274,8 +1274,8 @@ double VGG1999Model::v_compton_doublepol_cross_inv(double leptcharge,
         int mechanism, double el_hel, double sp_in) {
 
     //return
-    return (1. / pow(2. * PI, 5.)) / 32. * m_xB * pow(m_y, 2.) / pow(m_Q2, 2.)
-            / sqrt(1. + pow(2. * PROTON_MASS * m_xB, 2.) / m_Q2)
+    return (1. / pow(2. * Constant::PI, 5.)) / 32. * m_xB * pow(m_y, 2.) / pow(m_Q2, 2.)
+            / sqrt(1. + pow(2. * Constant::PROTON_MASS * m_xB, 2.) / m_Q2)
             * v_compton_doublepol_sqrampl(leptcharge, mechanism, el_hel, sp_in);
 
 }
@@ -1308,7 +1308,7 @@ std::complex<double> VGG1999Model::J_DVCS(int mu, int nu, double sp_in,
     double delta_sqr = V4mul(delta, delta).real();
 
     //?
-    double Mb_sqr = pow(PROTON_MASS, 2.) - 0.25 * delta_sqr;
+    double Mb_sqr = pow(Constant::PROTON_MASS, 2.) - 0.25 * delta_sqr;
 
     //?
     momentum4 p4_sud = (((p4_av * (m_Q2 / (4. * m_xi)))
@@ -1331,10 +1331,10 @@ std::complex<double> VGG1999Model::J_DVCS(int mu, int nu, double sp_in,
     std::complex<double> eps_perp_gaugecorr = std::complex<double>(0., 0.);
 
     //spinor of incomming proton
-    spinor spinor_p_in = spinor_pos(p_in, PROTON_MASS, sp_in);
+    spinor spinor_p_in = spinor_pos(p_in, Constant::PROTON_MASS, sp_in);
 
     //spinor ofoutgoing proton
-    spinor spinor_p_out = spinor_pos(p_out, PROTON_MASS, sp_out);
+    spinor spinor_p_out = spinor_pos(p_out, Constant::PROTON_MASS, sp_out);
 
     //matrix element
     std::complex<double> me_gammaplus = spinleft_mat_spinright(spinor_p_out,
@@ -1352,7 +1352,7 @@ std::complex<double> VGG1999Model::J_DVCS(int mu, int nu, double sp_in,
                             * (std::complex<double>(0.,
                                     metric(kappa, kappa)
                                             * metric(lambda, lambda)
-                                            / (2. * PROTON_MASS))
+                                            / (2. * Constant::PROTON_MASS))
                                     * (n4_sud.GetElement(kappa)
                                             * delta.GetElement(lambda)))));
 
@@ -1395,7 +1395,7 @@ std::complex<double> VGG1999Model::J_DVCS(int mu, int nu, double sp_in,
 
     std::complex<double> dvcs_twist2ps_struct = (std::complex<double>(0., -0.5)
             * (((eps_perp + eps_perp_gaugecorr)) * me_pseudoscalar))
-            * V4mul(delta, n4_sud) / (2. * PROTON_MASS);
+            * V4mul(delta, n4_sud) / (2. * Constant::PROTON_MASS);
 
     //return
     result = dvcs_twist2vec_struct * cffH + dvcs_twist2tensor_struct * cffE
@@ -1432,12 +1432,12 @@ std::complex<double> VGG1999Model::AmplitudeDVCS(int mu, double el_hel,
         e_times_p = (e_times_p + e_times_p_incr);
     }
 
-    //electric charge with pow(e, 2) / (4 * PI) = 1 / 137
+    //electric charge with pow(e, 2) / (4 * Constant::PI) = 1 / 137
     double ELEC = 0.302862;
 
     //calculate phasespace and include in result
-    result = ((-sqrt(k_in_mom * k_out_mom) * sqrt(p_in_en + PROTON_MASS)
-            * sqrt(p_out_en + PROTON_MASS) * pow(ELEC, 3.) / m_Q2) * e_times_p);
+    result = ((-sqrt(k_in_mom * k_out_mom) * sqrt(p_in_en + Constant::PROTON_MASS)
+            * sqrt(p_out_en + Constant::PROTON_MASS) * pow(ELEC, 3.) / m_Q2) * e_times_p);
 
     //return
     return result;

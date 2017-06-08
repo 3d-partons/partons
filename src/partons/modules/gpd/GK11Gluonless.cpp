@@ -228,13 +228,13 @@ PartonDistribution GK11Gluonless::computeH() {
 // H, charge singlet
 
 //    pGPD_H->setSquareChargeAveraged(
-//            U2_ELEC_CHARGE
+//            Constant::U2_ELEC_CHARGE
 //                    * (pGPDQuarkFlavorData_u->getSea()
 //                            + pGPDQuarkFlavorData_u->getValence())
-//                    + D2_ELEC_CHARGE
+//                    + Constant::D2_ELEC_CHARGE
 //                            * (pGPDQuarkFlavorData_d->getSea()
 //                                    + pGPDQuarkFlavorData_d->getValence())
-//                    + S2_ELEC_CHARGE * pGPDQuarkFlavorData_s->getHq());
+//                    + Constant::S2_ELEC_CHARGE * pGPDQuarkFlavorData_s->getHq());
 
     // Set Hq(+)
     quarkDistribution_u.setQuarkDistributionPlus(uVal - fHuValMx + 2 * uSea);
@@ -1569,7 +1569,7 @@ double GK11Gluonless::Et_pole(double x) {
     double Q2 = m_MuF2;
     double tOverQ2 = m_t / Q2;
     double y = (x + m_xi) / 2. / m_xi;
-    double MPi2 = PI_ZERO_MASS * PI_ZERO_MASS;
+    double MPi2 = Constant::PI_ZERO_MASS * Constant::PI_ZERO_MASS;
     double gpiNN = 13.4;
     double f_pi = 0.131; // f_pi=0.131 GeV from paper. Actually 130.4 from PDG (Jul2010)
     double Lambda_N2 = 0.51 * 0.51;
@@ -1577,7 +1577,7 @@ double GK11Gluonless::Et_pole(double x) {
     double FpiNN;
 
     xbj = 2. * m_xi / (m_xi - tOverQ2 * m_xi + 1. + tOverQ2 * 0.5);
-    eps = 2. * xbj * PROTON_MASS / sqrt(Q2);
+    eps = 2. * xbj * Constant::PROTON_MASS / sqrt(Q2);
     eps2 = eps * eps;
 
     if (eps < 1 && (4. * xbj * (1. - xbj) + eps2) != 0) {
@@ -1585,7 +1585,7 @@ double GK11Gluonless::Et_pole(double x) {
         tmin = -Q2 * (2. * (1. - xbj) * (1 - sqrt(1. + eps2)) + eps2)
                 / (4. * xbj * (1. - xbj) + eps2);
         FpiNN = (Lambda_N2 - MPi2) / (Lambda_N2 - (m_t - tmin));
-        Fp = -PROTON_MASS * f_pi * (2. * sqrt(2.) * gpiNN * FpiNN)
+        Fp = -Constant::PROTON_MASS * f_pi * (2. * sqrt(2.) * gpiNN * FpiNN)
                 / (m_t - MPi2);
 
         if (x < m_xi && x > -m_xi && m_t < tmin) {

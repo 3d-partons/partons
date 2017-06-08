@@ -5,6 +5,7 @@
 #include <cmath>
 
 #include "../../../../include/partons/BaseObjectRegistry.h"
+#include "../../../../include/partons/FundamentalPhysicalConstants.h"
 
 const unsigned int RunningAlphaStrongVinnikov::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
@@ -64,7 +65,7 @@ double RunningAlphaStrongVinnikov::compute() {
                 "N_F not between 3 and 5");
     }
 
-    m_alphaS = 4.0 * M_PI / (B0 * L)
+    m_alphaS = 4.0 * Constant::PI / (B0 * L)
             * (1.0 - 2.0 * B1 * log(L) / (B0 * B0 * L));
 
     if (m_alphaS > 1.0)

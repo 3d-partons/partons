@@ -156,7 +156,7 @@ void GapEquationSolverModule::initModule() {
         m_nodes_s.assign(m_Nx, 0.);
         m_C.assign(m_Nx, 0.);
         double C = (m_Lambda2 * m_epsilon2) * log(m_Lambda2 / m_epsilon2)
-                / (2. * pow(2. * PI, 3));
+                / (2. * pow(2. * Constant::PI, 3));
         for (unsigned int k = 0; k < m_Nx; k++) {
             m_nodes_s.at(k) = m_quarkPropagator->xtos(m_nodes_x.at(k));
             m_C.at(k) = C * m_weights_x.at(k)

@@ -55,10 +55,10 @@ void GV2008Model::initModule() {
     m_powerOfQ.push_back(pow(m_Q, 5));
 
     m_powerOfProtonMass = std::vector<double>();
-    m_powerOfProtonMass.push_back(pow(PROTON_MASS, 2));
-    m_powerOfProtonMass.push_back(pow(PROTON_MASS, 4));
-    m_powerOfProtonMass.push_back(pow(PROTON_MASS, 6));
-    m_powerOfProtonMass.push_back(pow(PROTON_MASS, 8));
+    m_powerOfProtonMass.push_back(pow(Constant::PROTON_MASS, 2));
+    m_powerOfProtonMass.push_back(pow(Constant::PROTON_MASS, 4));
+    m_powerOfProtonMass.push_back(pow(Constant::PROTON_MASS, 6));
+    m_powerOfProtonMass.push_back(pow(Constant::PROTON_MASS, 8));
 
     m_xB2 = m_xB * m_xB;
 
@@ -67,12 +67,12 @@ void GV2008Model::initModule() {
     // Boundaries on the m_xB physical region
     // The value of m_xBMin comes from the requirement of omega to be real, and the value of m_xBMax expresses the fact that s >= 0.
     m_xBMin = 2. * m_E * m_powerOfQ[0]
-            / (PROTON_MASS * (4 * pow(m_E, 2) - m_powerOfQ[0]));
+            / (Constant::PROTON_MASS * (4 * pow(m_E, 2) - m_powerOfQ[0]));
     m_xBMax = m_powerOfQ[0] / (m_powerOfQ[0] - m_powerOfProtonMass[0]); // This is wrong! It should be 1.
 
     // Omega
 
-    m_yGV = (-m_powerOfQ[0] + 4 * m_E * PROTON_MASS * m_xB)
+    m_yGV = (-m_powerOfQ[0] + 4 * m_E * Constant::PROTON_MASS * m_xB)
             / sqrt(
                     m_powerOfQ[2]
                             + 4 * m_powerOfProtonMass[0] * m_powerOfQ[0]
@@ -81,8 +81,8 @@ void GV2008Model::initModule() {
     m_Omega = log(m_yGV + sqrt(-1 + m_yGV) * sqrt(1 + m_yGV));
 
     // m_phaseSpace
-    m_phaseSpace = (pow(POSITRON_CHARGE, 6) * m_powerOfQ[0])
-            / (4096. * pow(PI, 5)
+    m_phaseSpace = (pow(Constant::POSITRON_CHARGE, 6) * m_powerOfQ[0])
+            / (4096. * pow(Constant::PI, 5)
                     * sqrt(
                             4 * m_powerOfProtonMass[0] * m_powerOfQ[0]
                                     + m_powerOfQ[2] / m_xB2) * m_xB2
@@ -270,10 +270,10 @@ void GV2008Model::MakeVCSHelicityAmplitudes() {
     RMvcs[1][0] = 0;
     RMvcs[1][1] = 0;
     RMvcs[1][2] = -((m_qpPerp * CFF_Et.real() * m_xB)
-            / (sqrt(1 - m_xB) * (-2 * PROTON_MASS + PROTON_MASS * m_xB)));
+            / (sqrt(1 - m_xB) * (-2 * Constant::PROTON_MASS + Constant::PROTON_MASS * m_xB)));
     RMvcs[2][0] = 0;
     RMvcs[2][1] = 0;
-    RMvcs[2][2] = (m_qpPerp * CFF_E.real()) / (PROTON_MASS * sqrt(1 - m_xB));
+    RMvcs[2][2] = (m_qpPerp * CFF_E.real()) / (Constant::PROTON_MASS * sqrt(1 - m_xB));
     RMvcs[3][0] = 0;
     RMvcs[3][1] = 0;
     RMvcs[3][2] = -((-4 * CFF_Ht.real() * (-1 + m_xB)
@@ -286,10 +286,10 @@ void GV2008Model::MakeVCSHelicityAmplitudes() {
     IMvcs[1][0] = 0;
     IMvcs[1][1] = 0;
     IMvcs[1][2] = -((CFF_Et.imag() * m_qpPerp * m_xB)
-            / (sqrt(1 - m_xB) * (-2 * PROTON_MASS + PROTON_MASS * m_xB)));
+            / (sqrt(1 - m_xB) * (-2 * Constant::PROTON_MASS + Constant::PROTON_MASS * m_xB)));
     IMvcs[2][0] = 0;
     IMvcs[2][1] = 0;
-    IMvcs[2][2] = (CFF_E.imag() * m_qpPerp) / (PROTON_MASS * sqrt(1 - m_xB));
+    IMvcs[2][2] = (CFF_E.imag() * m_qpPerp) / (Constant::PROTON_MASS * sqrt(1 - m_xB));
     IMvcs[3][0] = 0;
     IMvcs[3][1] = 0;
     IMvcs[3][2] = -((-4 * CFF_Ht.imag() * (-1 + m_xB)
@@ -457,119 +457,119 @@ void GV2008Model::MakeExactBHCrossSections() {
     /*----------------- Helicity amplitudes of the interference process --------------------*/
 
     Jem[0][0] = (-2 * sqrt(2.) * m_qCM.getZ() * m_qpCM.getX() * F2
-            * (sqrt(m_pCM.getE() - PROTON_MASS)
-                    * sqrt(m_ppCM.getE() - PROTON_MASS)
-                    - sqrt(m_pCM.getE() + PROTON_MASS)
-                            * sqrt(m_ppCM.getE() + PROTON_MASS)) * sqrt(m_s)
+            * (sqrt(m_pCM.getE() - Constant::PROTON_MASS)
+                    * sqrt(m_ppCM.getE() - Constant::PROTON_MASS)
+                    - sqrt(m_pCM.getE() + Constant::PROTON_MASS)
+                            * sqrt(m_ppCM.getE() + Constant::PROTON_MASS)) * sqrt(m_s)
             * cos(m_thetag / 2.))
-            / (PROTON_MASS * sqrt(m_powerOfQ[2] - 4 * m_s * m_t))
+            / (Constant::PROTON_MASS * sqrt(m_powerOfQ[2] - 4 * m_s * m_t))
             - (2 * sqrt(2.) * (m_qCM.getZ() + m_qpCM.getE()) * Gm
-                    * (sqrt(m_ppCM.getE() - PROTON_MASS)
-                            * sqrt(m_pCM.getE() + PROTON_MASS)
-                            + sqrt(m_pCM.getE() - PROTON_MASS)
-                                    * sqrt(m_ppCM.getE() + PROTON_MASS))
+                    * (sqrt(m_ppCM.getE() - Constant::PROTON_MASS)
+                            * sqrt(m_pCM.getE() + Constant::PROTON_MASS)
+                            + sqrt(m_pCM.getE() - Constant::PROTON_MASS)
+                                    * sqrt(m_ppCM.getE() + Constant::PROTON_MASS))
                     * sqrt(m_s) * sin(m_thetag / 2.))
                     / sqrt(m_powerOfQ[2] - 4 * m_s * m_t);
     Jem[0][1] = -((F2
-            * (sqrt(m_pCM.getE() - PROTON_MASS)
-                    * sqrt(m_ppCM.getE() - PROTON_MASS)
-                    - sqrt(m_pCM.getE() + PROTON_MASS)
-                            * sqrt(m_ppCM.getE() + PROTON_MASS))
+            * (sqrt(m_pCM.getE() - Constant::PROTON_MASS)
+                    * sqrt(m_ppCM.getE() - Constant::PROTON_MASS)
+                    - sqrt(m_pCM.getE() + Constant::PROTON_MASS)
+                            * sqrt(m_ppCM.getE() + Constant::PROTON_MASS))
             * (2 * m_powerOfProtonMass[0] + m_powerOfQ[0] + 2 * m_s)
             * sqrt(-(m_s * m_t)) * cos(m_thetag / 2.))
-            / (PROTON_MASS * sqrt(m_s) * sqrt(m_powerOfQ[2] - 4 * m_s * m_t)))
+            / (Constant::PROTON_MASS * sqrt(m_s) * sqrt(m_powerOfQ[2] - 4 * m_s * m_t)))
             - (8 * Gm
-                    * (sqrt(m_ppCM.getE() - PROTON_MASS)
-                            * sqrt(m_pCM.getE() + PROTON_MASS)
-                            + sqrt(m_pCM.getE() - PROTON_MASS)
-                                    * sqrt(m_ppCM.getE() + PROTON_MASS)) * m_s
+                    * (sqrt(m_ppCM.getE() - Constant::PROTON_MASS)
+                            * sqrt(m_pCM.getE() + Constant::PROTON_MASS)
+                            + sqrt(m_pCM.getE() - Constant::PROTON_MASS)
+                                    * sqrt(m_ppCM.getE() + Constant::PROTON_MASS)) * m_s
                     * sqrt(-m_t)
                     * ((m_qCM.getZ() - m_qpCM.getZ()) * cos(m_thetag / 2.)
                             - m_qpCM.getX() * sin(m_thetag / 2.)))
                     / (m_powerOfQ[0] * sqrt(m_powerOfQ[2] - 4 * m_s * m_t));
     Jem[0][2] = (2 * sqrt(2.) * m_qCM.getZ() * m_qpCM.getX() * F2
-            * (sqrt(m_pCM.getE() - PROTON_MASS)
-                    * sqrt(m_ppCM.getE() - PROTON_MASS)
-                    - sqrt(m_pCM.getE() + PROTON_MASS)
-                            * sqrt(m_ppCM.getE() + PROTON_MASS)) * sqrt(m_s)
+            * (sqrt(m_pCM.getE() - Constant::PROTON_MASS)
+                    * sqrt(m_ppCM.getE() - Constant::PROTON_MASS)
+                    - sqrt(m_pCM.getE() + Constant::PROTON_MASS)
+                            * sqrt(m_ppCM.getE() + Constant::PROTON_MASS)) * sqrt(m_s)
             * cos(m_thetag / 2.))
-            / (PROTON_MASS * sqrt(m_powerOfQ[2] - 4 * m_s * m_t))
+            / (Constant::PROTON_MASS * sqrt(m_powerOfQ[2] - 4 * m_s * m_t))
             + (2 * sqrt(2.) * (m_qCM.getZ() + m_qpCM.getE()) * Gm
-                    * (sqrt(m_ppCM.getE() - PROTON_MASS)
-                            * sqrt(m_pCM.getE() + PROTON_MASS)
-                            + sqrt(m_pCM.getE() - PROTON_MASS)
-                                    * sqrt(m_ppCM.getE() + PROTON_MASS))
+                    * (sqrt(m_ppCM.getE() - Constant::PROTON_MASS)
+                            * sqrt(m_pCM.getE() + Constant::PROTON_MASS)
+                            + sqrt(m_pCM.getE() - Constant::PROTON_MASS)
+                                    * sqrt(m_ppCM.getE() + Constant::PROTON_MASS))
                     * sqrt(m_s) * sin(m_thetag / 2.))
                     / sqrt(m_powerOfQ[2] - 4 * m_s * m_t);
     Jem[1][0] = sqrt(2.) * Gm
-            * (-(sqrt(m_ppCM.getE() - PROTON_MASS)
-                    * sqrt(m_pCM.getE() + PROTON_MASS))
-                    + sqrt(m_pCM.getE() - PROTON_MASS)
-                            * sqrt(m_ppCM.getE() + PROTON_MASS))
+            * (-(sqrt(m_ppCM.getE() - Constant::PROTON_MASS)
+                    * sqrt(m_pCM.getE() + Constant::PROTON_MASS))
+                    + sqrt(m_pCM.getE() - Constant::PROTON_MASS)
+                            * sqrt(m_ppCM.getE() + Constant::PROTON_MASS))
             * cos(m_thetag / 2.);
     Jem[1][1] = 0;
     Jem[1][2] = sqrt(2.) * Gm
-            * (-(sqrt(m_ppCM.getE() - PROTON_MASS)
-                    * sqrt(m_pCM.getE() + PROTON_MASS))
-                    + sqrt(m_pCM.getE() - PROTON_MASS)
-                            * sqrt(m_ppCM.getE() + PROTON_MASS))
+            * (-(sqrt(m_ppCM.getE() - Constant::PROTON_MASS)
+                    * sqrt(m_pCM.getE() + Constant::PROTON_MASS))
+                    + sqrt(m_pCM.getE() - Constant::PROTON_MASS)
+                            * sqrt(m_ppCM.getE() + Constant::PROTON_MASS))
             * cos(m_thetag / 2.);
     Jem[2][0] = (2 * sqrt(2.) * (m_qCM.getZ() - m_qpCM.getE()) * Gm
-            * (sqrt(m_ppCM.getE() - PROTON_MASS)
-                    * sqrt(m_pCM.getE() + PROTON_MASS)
-                    - sqrt(m_pCM.getE() - PROTON_MASS)
-                            * sqrt(m_ppCM.getE() + PROTON_MASS)) * sqrt(m_s)
+            * (sqrt(m_ppCM.getE() - Constant::PROTON_MASS)
+                    * sqrt(m_pCM.getE() + Constant::PROTON_MASS)
+                    - sqrt(m_pCM.getE() - Constant::PROTON_MASS)
+                            * sqrt(m_ppCM.getE() + Constant::PROTON_MASS)) * sqrt(m_s)
             * cos(m_thetag / 2.)) / sqrt(m_powerOfQ[2] - 4 * m_s * m_t)
             - (2 * sqrt(2.) * m_qCM.getZ() * m_qpCM.getX() * F2
-                    * (sqrt(m_pCM.getE() - PROTON_MASS)
-                            * sqrt(m_ppCM.getE() - PROTON_MASS)
-                            + sqrt(m_pCM.getE() + PROTON_MASS)
-                                    * sqrt(m_ppCM.getE() + PROTON_MASS))
+                    * (sqrt(m_pCM.getE() - Constant::PROTON_MASS)
+                            * sqrt(m_ppCM.getE() - Constant::PROTON_MASS)
+                            + sqrt(m_pCM.getE() + Constant::PROTON_MASS)
+                                    * sqrt(m_ppCM.getE() + Constant::PROTON_MASS))
                     * sqrt(m_s) * sin(m_thetag / 2.))
-                    / (PROTON_MASS * sqrt(m_powerOfQ[2] - 4 * m_s * m_t));
+                    / (Constant::PROTON_MASS * sqrt(m_powerOfQ[2] - 4 * m_s * m_t));
     Jem[2][1] = -((F2
-            * (sqrt(m_pCM.getE() - PROTON_MASS)
-                    * sqrt(m_ppCM.getE() - PROTON_MASS)
-                    + sqrt(m_pCM.getE() + PROTON_MASS)
-                            * sqrt(m_ppCM.getE() + PROTON_MASS))
+            * (sqrt(m_pCM.getE() - Constant::PROTON_MASS)
+                    * sqrt(m_ppCM.getE() - Constant::PROTON_MASS)
+                    + sqrt(m_pCM.getE() + Constant::PROTON_MASS)
+                            * sqrt(m_ppCM.getE() + Constant::PROTON_MASS))
             * (2 * m_powerOfProtonMass[0] + m_powerOfQ[0] + 2 * m_s)
             * sqrt(-(m_s * m_t)) * sin(m_thetag / 2.))
-            / (PROTON_MASS * sqrt(m_s) * sqrt(m_powerOfQ[2] - 4 * m_s * m_t)))
+            / (Constant::PROTON_MASS * sqrt(m_s) * sqrt(m_powerOfQ[2] - 4 * m_s * m_t)))
             - (8 * Gm
-                    * (sqrt(m_ppCM.getE() - PROTON_MASS)
-                            * sqrt(m_pCM.getE() + PROTON_MASS)
-                            - sqrt(m_pCM.getE() - PROTON_MASS)
-                                    * sqrt(m_ppCM.getE() + PROTON_MASS)) * m_s
+                    * (sqrt(m_ppCM.getE() - Constant::PROTON_MASS)
+                            * sqrt(m_pCM.getE() + Constant::PROTON_MASS)
+                            - sqrt(m_pCM.getE() - Constant::PROTON_MASS)
+                                    * sqrt(m_ppCM.getE() + Constant::PROTON_MASS)) * m_s
                     * sqrt(-m_t)
                     * (m_qpCM.getX() * cos(m_thetag / 2.)
                             + (m_qCM.getZ() - m_qpCM.getZ())
                                     * sin(m_thetag / 2.)))
                     / (m_powerOfQ[0] * sqrt(m_powerOfQ[2] - 4 * m_s * m_t));
     Jem[2][2] = (-2 * sqrt(2.) * (m_qCM.getZ() - m_qpCM.getE()) * Gm
-            * (sqrt(m_ppCM.getE() - PROTON_MASS)
-                    * sqrt(m_pCM.getE() + PROTON_MASS)
-                    - sqrt(m_pCM.getE() - PROTON_MASS)
-                            * sqrt(m_ppCM.getE() + PROTON_MASS)) * sqrt(m_s)
+            * (sqrt(m_ppCM.getE() - Constant::PROTON_MASS)
+                    * sqrt(m_pCM.getE() + Constant::PROTON_MASS)
+                    - sqrt(m_pCM.getE() - Constant::PROTON_MASS)
+                            * sqrt(m_ppCM.getE() + Constant::PROTON_MASS)) * sqrt(m_s)
             * cos(m_thetag / 2.)) / sqrt(m_powerOfQ[2] - 4 * m_s * m_t)
             + (2 * sqrt(2.) * m_qCM.getZ() * m_qpCM.getX() * F2
-                    * (sqrt(m_pCM.getE() - PROTON_MASS)
-                            * sqrt(m_ppCM.getE() - PROTON_MASS)
-                            + sqrt(m_pCM.getE() + PROTON_MASS)
-                                    * sqrt(m_ppCM.getE() + PROTON_MASS))
+                    * (sqrt(m_pCM.getE() - Constant::PROTON_MASS)
+                            * sqrt(m_ppCM.getE() - Constant::PROTON_MASS)
+                            + sqrt(m_pCM.getE() + Constant::PROTON_MASS)
+                                    * sqrt(m_ppCM.getE() + Constant::PROTON_MASS))
                     * sqrt(m_s) * sin(m_thetag / 2.))
-                    / (PROTON_MASS * sqrt(m_powerOfQ[2] - 4 * m_s * m_t));
+                    / (Constant::PROTON_MASS * sqrt(m_powerOfQ[2] - 4 * m_s * m_t));
     Jem[3][0] = sqrt(2.) * Gm
-            * (sqrt(m_ppCM.getE() - PROTON_MASS)
-                    * sqrt(m_pCM.getE() + PROTON_MASS)
-                    + sqrt(m_pCM.getE() - PROTON_MASS)
-                            * sqrt(m_ppCM.getE() + PROTON_MASS))
+            * (sqrt(m_ppCM.getE() - Constant::PROTON_MASS)
+                    * sqrt(m_pCM.getE() + Constant::PROTON_MASS)
+                    + sqrt(m_pCM.getE() - Constant::PROTON_MASS)
+                            * sqrt(m_ppCM.getE() + Constant::PROTON_MASS))
             * sin(m_thetag / 2.);
     Jem[3][1] = 0;
     Jem[3][2] = sqrt(2.) * Gm
-            * (sqrt(m_ppCM.getE() - PROTON_MASS)
-                    * sqrt(m_pCM.getE() + PROTON_MASS)
-                    + sqrt(m_pCM.getE() - PROTON_MASS)
-                            * sqrt(m_ppCM.getE() + PROTON_MASS))
+            * (sqrt(m_ppCM.getE() - Constant::PROTON_MASS)
+                    * sqrt(m_pCM.getE() + Constant::PROTON_MASS)
+                    + sqrt(m_pCM.getE() - Constant::PROTON_MASS)
+                            * sqrt(m_ppCM.getE() + Constant::PROTON_MASS))
             * sin(m_thetag / 2.);
 
     /*--------------------------------BH cross sections ------------------------------------*/
@@ -796,14 +796,14 @@ void GV2008Model::MakeExactBHCrossSections() {
                     + pow(m_powerOfQ[0] + m_s, 2))
                     * (4 * m_powerOfProtonMass[0] - m_t));
     SigmaBHPolX[0] =
-            (64 * Ge * Gm * PROTON_MASS * m_qpPerp
+            (64 * Ge * Gm * Constant::PROTON_MASS * m_qpPerp
                     * (-(m_powerOfQ[0] * (m_powerOfQ[0] + m_s))
                             + m_powerOfProtonMass[0] * (m_powerOfQ[0] - m_t)
                             + m_s * m_t)
                     * (2 * m_powerOfProtonMass[0] * m_powerOfQ[0]
                             - (m_powerOfProtonMass[0] + m_powerOfQ[0] + m_s)
                                     * m_t)
-                    + 32 * pow(Gm, 2) * PROTON_MASS * m_qpPerp * m_t
+                    + 32 * pow(Gm, 2) * Constant::PROTON_MASS * m_qpPerp * m_t
                             * (-pow(m_Q, 6) - 3 * m_powerOfQ[2] * m_s
                                     - 2 * m_powerOfProtonMass[1]
                                             * (m_powerOfQ[0] - m_t)
@@ -821,7 +821,7 @@ void GV2008Model::MakeExactBHCrossSections() {
                                             * (m_powerOfQ[0] - m_s)
                                     + pow(m_powerOfQ[0] + m_s, 2))
                             * (4 * m_powerOfProtonMass[0] - m_t));
-    SigmaBHPolX[1] = (32 * Ge * Gm * PROTON_MASS * m_Q
+    SigmaBHPolX[1] = (32 * Ge * Gm * Constant::PROTON_MASS * m_Q
             * (-2 * m_powerOfProtonMass[0] * m_powerOfQ[0]
                     + (m_powerOfProtonMass[0] + m_powerOfQ[0] + m_s) * m_t)
             * (4 * m_powerOfProtonMass[0] * m_powerOfQ[2]
@@ -830,7 +830,7 @@ void GV2008Model::MakeExactBHCrossSections() {
                             * m_t
                     + (m_powerOfProtonMass[0] + m_powerOfQ[0] + 3 * m_s)
                             * pow(m_t, 2))
-            + 64 * pow(Gm, 2) * PROTON_MASS * m_Q
+            + 64 * pow(Gm, 2) * Constant::PROTON_MASS * m_Q
                     * (m_powerOfProtonMass[0] - m_s - m_t) * m_t
                     * (m_powerOfProtonMass[1] * m_t
                             + m_s * m_t * (m_powerOfQ[0] + m_s + m_t)
@@ -841,7 +841,7 @@ void GV2008Model::MakeExactBHCrossSections() {
                     + 2 * m_powerOfProtonMass[0] * (m_powerOfQ[0] - m_s)
                     + pow(m_powerOfQ[0] + m_s, 2))
                     * (4 * m_powerOfProtonMass[0] - m_t));
-    SigmaBHPolY = 32 * Ge * Gm * PROTON_MASS * m_Q * (m_powerOfQ[0] - m_t)
+    SigmaBHPolY = 32 * Ge * Gm * Constant::PROTON_MASS * m_Q * (m_powerOfQ[0] - m_t)
             * m_t;
     SigmaBHPolZ[0] =
             (-128 * Ge * Gm * m_powerOfProtonMass[0]

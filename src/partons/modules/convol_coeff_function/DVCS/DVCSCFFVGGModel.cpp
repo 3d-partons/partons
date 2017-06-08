@@ -156,11 +156,11 @@ double DVCSCFFVGGModel::calculate_gpd_combination(
         const PartonDistribution &partonDistribution) {
 
     return partonDistribution.getQuarkDistribution(QuarkFlavor::UP).getQuarkDistributionPlus()
-            * U2_ELEC_CHARGE
+            * Constant::U2_ELEC_CHARGE
             + partonDistribution.getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistributionPlus()
-                    * D2_ELEC_CHARGE
+                    * Constant::D2_ELEC_CHARGE
             + partonDistribution.getQuarkDistribution(QuarkFlavor::STRANGE).getQuarkDistributionPlus()
-                    * S2_ELEC_CHARGE;
+                    * Constant::S2_ELEC_CHARGE;
 }
 
 void DVCSCFFVGGModel::calculate_xixit_value() {
@@ -213,7 +213,7 @@ std::complex<double> DVCSCFFVGGModel::calculate_direct() {
     return -1.
             * std::complex<double>(
                     intd1 + intd2 + intd3 + xixit * log((1. - m_xi) / m_xi),
-                    -PI * xixit);
+                    -Constant::PI * xixit);
 }
 
 std::complex<double> DVCSCFFVGGModel::calculate_crossed() {

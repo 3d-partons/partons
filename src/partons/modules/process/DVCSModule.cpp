@@ -52,14 +52,14 @@ void DVCSModule::resolveObjectDependencies() {
 }
 
 void DVCSModule::initModule() {
-    m_epsilon = 2 * m_xB * PROTON_MASS / sqrt(m_Q2);
-    m_y = m_Q2 / (2 * m_xB * PROTON_MASS * m_E);
+    m_epsilon = 2 * m_xB * Constant::PROTON_MASS / sqrt(m_Q2);
+    m_y = m_Q2 / (2 * m_xB * Constant::PROTON_MASS * m_E);
     double eps2 = m_epsilon * m_epsilon;
     double epsroot = sqrt(1 + eps2);
     double tfactor = -m_Q2 / (4 * m_xB * (1 - m_xB) + eps2);
     m_tmin = tfactor * (2 * (1 - m_xB) * (1 - epsroot) + eps2);
     m_tmax = tfactor * (2 * (1 - m_xB) * (1 + epsroot) + eps2);
-    m_xBmin = 2 * m_Q2 * m_E / PROTON_MASS / (4 * m_E * m_E - m_Q2);
+    m_xBmin = 2 * m_Q2 * m_E / Constant::PROTON_MASS / (4 * m_E * m_E - m_Q2);
 
     debug(__func__, "Entered function.");
 }
