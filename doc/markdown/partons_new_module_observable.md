@@ -1,4 +1,4 @@
-# New observable module {#newmodule_templates_dvcsobservable}
+# New DVCS observable module {#newmodule_templates_dvcsobservable}
 
 [TOC]
 
