@@ -1,4 +1,4 @@
-# New module {#newmodule}
+# Adding a new model {#newmodule}
 
 [TOC]
 
