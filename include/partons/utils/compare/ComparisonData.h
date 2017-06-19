@@ -6,44 +6,92 @@
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 24 February 2016
  * @version 1.0
- *
- * @class ComparisonData
- *
- * @brief
  */
 
 #include <NumA/utils/Differences.h>
 #include <string>
-
+/**
+ * @class ComparisonData
+ *
+ * @brief Comparison report for single data point.
+ *
+ * This class stores a comparison result for a single data point.
+ */
 class ComparisonData {
+
 public:
-    ComparisonData(bool isPassed, const std::string& variableName,
-            const std::string& variableValue,
-            const std::string& variableValueReference,
-            const NumA::Differences &differences,
-            const std::string &objectInfo);
 
-    virtual ~ComparisonData();
+	/**
+	 * Constructor.
+	 * @param isPassed Boolean value indicating if the comparison is passed.
+	 * @param variableName Name of variable.
+	 * @param variableValue Value of variable.
+	 * @param variableValueReference Reference value of variable.
+	 * @param differences Difference.
+	 * @param objectInfo Information on object being compared.
+	 */
+	ComparisonData(bool isPassed, const std::string& variableName,
+			const std::string& variableValue,
+			const std::string& variableValueReference,
+			const NumA::Differences &differences,
+			const std::string &objectInfo);
 
-    std::string toString() const;
+	/**
+	 * Destructor.
+	 */
+	virtual ~ComparisonData();
 
-    // #############################
-    // ##### GETTERS & SETTERS #####
-    // #############################
+    /**
+     * Return a pre-formatted characters string for output visualization of class member's values.
+     * @return Pre-formatted characters string.
+     */
+	std::string toString() const;
 
-    bool isIsComparisonPassed() const;
-    void setIsComparisonPassed(bool isComparisonPassed);
+	//********************************************************
+	//*** SETTERS AND GETTERS ********************************
+	//********************************************************
+
+	/**
+	 * Check if the comparison is passed.
+	 */
+	bool isIsComparisonPassed() const;
+
+	/**
+	 * Set if the comparison is passed.
+	 */
+	void setIsComparisonPassed(bool isComparisonPassed);
 
 private:
-    bool m_isComparisonPassed;
 
-    std::string m_objectInfo;
+	/**
+	 * Boolean value indicating if the comparison is passed.
+	 */
+	bool m_isComparisonPassed;
 
-    std::string m_variableName;
-    std::string m_variableValue;
-    std::string m_variableValueReference;
+	/**
+	 * Name of variable.
+	 */
+	std::string m_variableName;
 
-    NumA::Differences m_differences;
+	/**
+	 * Value of variable.
+	 */
+	std::string m_variableValue;
+
+	/**
+	 * Reference value of variable.
+	 */
+	std::string m_variableValueReference;
+
+	/**
+	 * Difference.
+	 */
+	NumA::Differences m_differences;
+
+	/**
+	 * Information on object being compared.
+	 */
+	std::string m_objectInfo;
 };
 
 #endif /* COMPARISON_DATA_H */

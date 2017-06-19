@@ -14,16 +14,32 @@
 /**
  * @class GPDModuleNullPointerException
  *
- * @brief
+ * @brief Exception to indicate missing GPD module.
+ *
+ * This class acts as an exception used whenever needed to indicate a missing GPD module in the computation configuration.
  */
 class GPDModuleNullPointerException: public std::exception {
+
 public:
+
+	/**
+	 * Constructor.
+	 * @param msg Message to be assigned to this exception.
+	 */
     GPDModuleNullPointerException(const std::string &msg);
+
+    /**
+     * Destructor.
+     */
     virtual ~GPDModuleNullPointerException() throw ();
 
     virtual const char* what() const throw ();
 
 private:
+
+    /**
+     * Message assigned to this exception.
+     */
     std::string m_msg;
 };
 
