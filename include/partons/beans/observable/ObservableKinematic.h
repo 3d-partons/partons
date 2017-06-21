@@ -50,7 +50,7 @@ class Parameters;
  pDVCSModule->setConvolCoeffFunctionModule(pDVCSCFFModule);
 
  //load observable module with BaseModuleFactory
- Observable* pObservable = Partons::getInstance()->getModuleObjectFactory()->newObservable(All::classId);
+ Observable* pObservable = Partons::getInstance()->getModuleObjectFactory()->newObservable(DVCSAllMinus::classId);
 
  //configure observable module
  pObservable->setProcessModule(pDVCSModule);
