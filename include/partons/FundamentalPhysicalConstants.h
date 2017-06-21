@@ -12,9 +12,10 @@
 namespace Constant {
 
 /**
-* @brief Definition of useful mathematical, physical, etc. constants.
+* @namespace Constant
+* @brief Definition of useful mathematical, physical, etc.\ constants.
 *
-* This header file defines a set of useful mathematical, physical, etc. constant to be used in PARTONS.
+* This header file defines a set of useful mathematical, physical, etc.\ constants to be used in PARTONS.
 */
 
 // Mathematical constants

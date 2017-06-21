@@ -10,7 +10,7 @@
 
 #include <string>
 
-#include "Qt4CryptographicHash.h"
+#include "CryptographicHashI.h"
 
 /**
  * @class Qt4CryptographicHash
