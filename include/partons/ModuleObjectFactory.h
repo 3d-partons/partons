@@ -173,13 +173,13 @@ public:
      * @param classId Unique identifier of last child class.
      * @return DVCSModule pointer.
      */
-    DVCSModule* newProcessModule(unsigned int classId);
+    DVCSModule* newDVCSModule(unsigned int classId);
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a DVCSModule.
      * @param className Name of last child class.
      * @return DVCSModule pointer.
      */
-    DVCSModule* newProcessModule(const std::string & className);
+    DVCSModule* newDVCSModule(const std::string & className);
 
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a RunningAlphaStrongModule.
@@ -200,13 +200,13 @@ public:
      * @param classId Unique identifier of last child class.
      * @return ProcessModule pointer.
      */
-    ProcessModule* newObservableModule(unsigned int classId);
+    ProcessModule* newProcessModule(unsigned int classId);
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a ProcessModule.
      * @param className Name of last child class.
      * @return ProcessModule pointer.
      */
-    ProcessModule* newObservableModule(const std::string &className);
+    ProcessModule* newProcessModule(const std::string &className);
 
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a ActiveFlavorsModule.
