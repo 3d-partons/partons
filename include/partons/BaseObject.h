@@ -92,11 +92,6 @@ public:
      * @return Unique id identifying each object.
      */
     unsigned int getObjectId() const;
-    /**
-     *
-     * @param objectId Unique id identifying each object.
-     */
-    void setObjectId(unsigned int objectId);
 
     /**
      *
