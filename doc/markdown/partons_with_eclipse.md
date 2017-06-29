@@ -55,6 +55,14 @@ Now you can build each PARTONS project separately. Just remember to do this in t
 
 ![](../images/eclipse_ant.png "Ant")
 
+If you are using Mac you may encounter the following error: 
+~~~~~~~~~~~~~{.py}
+Execute failed: java.io.IOException: Cannot run program "cmake" (in directory "..."): error=13, Permission denied
+~~~~~~~~~~~~~
+which appears as Eclipse is unable to localize CMake executable. To solve this problem right-click on one of entries in `Ant` view and navigate through the menu: `Run us` > `External Tools Configurations`. In the new window select `Environment` tab. Click on `Select` button that will call another window. Select `PATH` variable and click on `OK` button. Modify value by adding a path to `cmake` executable, most likely `/usr/local/bin`. Unless CMake is installed in a custom place, you can get this path by running `which cmake` in your terminal. 
+![](../images/eclipse_ant_mac_trouble.png "Ant trouble")
+With `PATH` variable modified, click on `Apply` button and `Close` one to finish.
+
 ## Run configuration {#eclipse_preparation_run}
 
 You can run PARTONS within Eclipse, which is useful if you prefer to not use the console. To achieve that, right-click in `Project Explorer` view on the name of PARTONS execution project (`partons-exe`) and select: `Run As` > `Run Configurations`. A new window will appear. Select `C/C++ Application` in the list of the left side of this window and press on `New lunch configuration` button. Set `C/C++ Application` to `PARTONS_exe` executable file:
