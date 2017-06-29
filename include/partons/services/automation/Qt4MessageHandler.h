@@ -8,7 +8,7 @@
  * @version 1.0
  */
 
-#include <Qt/qsourcelocation.h>
+#include <QtXmlPatterns/qsourcelocation.h>
 #include <QtCore/qglobal.h>
 #include <QtCore/qstring.h>
 #include <QtCore/qurl.h>
