@@ -16,7 +16,6 @@ set(CMAKE_AUTOMOC ON)
   
 # as moc files are generated in the binary dir, tell cmake to always look for includes there
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 
 # FIND LIBRARIES ===========================================================================
 
@@ -43,7 +42,7 @@ find_package(ElementaryUtils REQUIRED)
 find_package(NumA++ REQUIRED)
 
 # directories containing headers 
-include_directories( ${ELEMENTARY_UTILS_INCLUDE_DIR} ${QT_INCLUDE_DIRS} ${NUMA_INCLUDE_DIR} ${CLN_INCLUDE_DIR} ${SFML_INCLUDE_DIR})
+include_directories(${QT_INCLUDE_DIRS} ${SFML_INCLUDE_DIR} ${CLN_INCLUDE_DIR} ${ELEMENTARY_UTILS_INCLUDE_DIR} ${NUMA_INCLUDE_DIR})
 include_directories(include)
 
 # FINALIZE ==================================================================================
@@ -60,6 +59,8 @@ file(
 
 
 # define target library
+set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib)
+
 add_library(
 
         PARTONS
@@ -74,15 +75,15 @@ target_link_libraries(
 
 		PARTONS
 
-        ${ELEMENTARY_UTILS_LIBRARIES}
-
 		${QT_LIBRARIES}
           
+        ${SFML_LIBRARIES}
+          
+        ${CLN_LIBRARIES}
+          
+        ${ELEMENTARY_UTILS_LIBRARIES}
+          
 		${NUMA_LIBRARIES}
-         
-		${CLN_LIBRARIES}
-
-		${SFML_LIBRARIES}
 )
 
 # install
