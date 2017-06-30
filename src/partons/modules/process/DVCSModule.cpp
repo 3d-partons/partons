@@ -11,9 +11,9 @@
 #include "../../../../include/partons/beans/Scale.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSConstantCFFModel.h"
-#include "../../../../include/partons/modules/scale/Q2Multiplier.h"
-#include "../../../../include/partons/modules/xb_to_xi/XBToXi.h"
+#include "../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSCFFConstant.h"
+#include "../../../../include/partons/modules/scale/ScaleQ2Multiplier.h"
+#include "../../../../include/partons/modules/xb_to_xi/XiConverterXBToXi.h"
 #include "../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../include/partons/Partons.h"
 #include "../../../../include/partons/services/ConvolCoeffFunctionService.h"
@@ -44,11 +44,11 @@ DVCSModule::DVCSModule(const DVCSModule& other) :
 void DVCSModule::resolveObjectDependencies() {
     m_pScaleModule =
             Partons::getInstance()->getModuleObjectFactory()->newScaleModule(
-                    Q2Multiplier::classId);
+                    ScaleQ2Multiplier::classId);
 
     m_pXiConverterModule =
             Partons::getInstance()->getModuleObjectFactory()->newXiConverterModule(
-                    XBToXi::classId);
+                    XiConverterXBToXi::classId);
 }
 
 void DVCSModule::initModule() {
@@ -128,7 +128,7 @@ void DVCSModule::computeConvolCoeffFunction(double xB, double t, double Q2,
     if (isPreviousKinematicsDifferent(xB, t, Q2)
             || (BaseObjectRegistry::getInstance()->getObjectClassIdByClassName(
                     m_pConvolCoeffFunctionModule->getClassName())
-                    == DVCSConstantCFFModel::classId)) {
+                    == DVCSCFFConstant::classId)) {
         // Compute scale from Q2
         Scale scale = m_pScaleModule->compute(Q2);
 

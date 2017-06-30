@@ -11,8 +11,8 @@
 #include "../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
 #include "../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
 #include "../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
-#include "../../../../include/partons/modules/active_flavors/NfFunctionExample.h"
-#include "../../../../include/partons/modules/alphaS/RunningAlphaStrong.h"
+#include "../../../../include/partons/modules/active_flavors/ActiveFlavorsQuarkMasses.h"
+#include "../../../../include/partons/modules/alphaS/RunningAlphaStrongStandard.h"
 #include "../../../../include/partons/modules/GPDModule.h"
 #include "../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../include/partons/Partons.h"
@@ -222,15 +222,15 @@ GPDEvolutionModule::~GPDEvolutionModule() {
 void GPDEvolutionModule::resolveObjectDependencies() {
     m_pRunningAlphaStrong =
             Partons::getInstance()->getModuleObjectFactory()->newRunningAlphaStrongModule(
-                    RunningAlphaStrong::classId);
+                    RunningAlphaStrongStandard::classId);
 
     m_pNfFunction =
             Partons::getInstance()->getModuleObjectFactory()->newActiveFlavorsModule(
-                    NfFunctionExample::classId);
+                    ActiveFlavorsQuarkMasses::classId);
 
     m_pNfEvolFunction =
             Partons::getInstance()->getModuleObjectFactory()->newActiveFlavorsModule(
-                    NfFunctionExample::classId);
+                    ActiveFlavorsQuarkMasses::classId);
 }
 
 //TODO logger

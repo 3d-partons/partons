@@ -6,8 +6,8 @@
 #include <utility>
 
 #include "../../../../../include/partons/beans/observable/ObservableChannel.h"
-#include "../../../../../include/partons/modules/active_flavors/NfFunctionExample.h"
-#include "../../../../../include/partons/modules/alphaS/RunningAlphaStrong.h"
+#include "../../../../../include/partons/modules/active_flavors/ActiveFlavorsQuarkMasses.h"
+#include "../../../../../include/partons/modules/alphaS/RunningAlphaStrongStandard.h"
 #include "../../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../../include/partons/Partons.h"
 
@@ -72,11 +72,11 @@ void DVCSConvolCoeffFunctionModule::resolveObjectDependencies() {
 
     m_pRunningAlphaStrongModule =
             Partons::getInstance()->getModuleObjectFactory()->newRunningAlphaStrongModule(
-                    RunningAlphaStrong::classId);
+                    RunningAlphaStrongStandard::classId);
 
     m_pNfConvolCoeffFunction =
             Partons::getInstance()->getModuleObjectFactory()->newActiveFlavorsModule(
-                    NfFunctionExample::classId);
+                    ActiveFlavorsQuarkMasses::classId);
 }
 
 //TODO implement
