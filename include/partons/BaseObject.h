@@ -27,7 +27,6 @@ public:
     /**
      * Constructor.
      * Takes a string parameter that represents the class's name of the child instance class.
-     * Class's name value is set automatically by the child constructor with typeid(*this).name() method.
      *
      * @param className class's name of child class.
      */
@@ -93,11 +92,6 @@ public:
      * @return Unique id identifying each object.
      */
     unsigned int getObjectId() const;
-    /**
-     *
-     * @param objectId Unique id identifying each object.
-     */
-    void setObjectId(unsigned int objectId);
 
     /**
      *

@@ -197,20 +197,20 @@ DVCSConvolCoeffFunctionModule* ModuleObjectFactory::newDVCSConvolCoeffFunctionMo
             className));
 }
 
-ProcessModule* ModuleObjectFactory::newObservableModule(unsigned int classId) {
+ProcessModule* ModuleObjectFactory::newProcessModule(unsigned int classId) {
     return static_cast<ProcessModule*>(newModuleObject(classId));
 }
 
-ProcessModule* ModuleObjectFactory::newObservableModule(
+ProcessModule* ModuleObjectFactory::newProcessModule(
         const std::string& className) {
     return static_cast<ProcessModule*>(newModuleObject(className));
 }
 
-DVCSModule* ModuleObjectFactory::newProcessModule(unsigned int classId) {
+DVCSModule* ModuleObjectFactory::newDVCSModule(unsigned int classId) {
     return static_cast<DVCSModule*>(newModuleObject(classId));
 }
 
-DVCSModule* ModuleObjectFactory::newProcessModule(
+DVCSModule* ModuleObjectFactory::newDVCSModule(
         const std::string& className) {
     return static_cast<DVCSModule*>(newModuleObject(className));
 }

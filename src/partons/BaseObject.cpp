@@ -87,10 +87,6 @@ unsigned int BaseObject::getObjectId() const {
     return m_objectId;
 }
 
-void BaseObject::setObjectId(unsigned int objectId) {
-    m_objectId = objectId;
-}
-
 int BaseObject::getIndexId() const {
     return m_indexId;
 }
