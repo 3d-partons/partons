@@ -4,7 +4,7 @@
 
 # Header file template {#newmodule_templates_dvcscff_h}
 
-For a detailed description of each virtual function we refer to its documentation, which is available after left-clicking on the function name. A short explanation is also available after hovering your mouse pointer on the name.  
+For a detailed description of each virtual function we refer to its documentation, which is available after left-clicking on the function name. A short explanation is also provided by hovering your mouse pointer on the name.  
 
 ~~~~~~~~~~~~~{.cpp}
 class MyCFFModel: public DVCSConvolCoeffFunctionModule {
@@ -121,7 +121,7 @@ std::complex<double> MyCFFModel::computePolarized() {
 
 These are the most useful variables defined in the abstract classes. They are crucial for the implementation of new CFF modules.
 
-* DVCSConvolCoeffFunctionModule::m_xi, DVCSConvolCoeffFunctionModule::m_t, DVCSConvolCoeffFunctionModule::m_MuF2, DVCSConvolCoeffFunctionModule::m_MuR2: indicate CFF kinematics being currently evaluated 
+* DVCSConvolCoeffFunctionModule::m_xi, DVCSConvolCoeffFunctionModule::m_t, DVCSConvolCoeffFunctionModule::m_MuF2, DVCSConvolCoeffFunctionModule::m_MuR2: indicate CFF kinematics being evaluated 
 * DVCSConvolCoeffFunctionModule::m_currentGPDComputeType: indicate GPD type being evaluated 
 * DVCSConvolCoeffFunctionModule::m_qcdOrderType: indicate pQCD order being evaluated 
 * ConvolCoeffFunctionModule::m_pGPDModule: pointer to GPD module being used 

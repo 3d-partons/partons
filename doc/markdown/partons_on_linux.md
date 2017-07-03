@@ -1,4 +1,6 @@
-# PARTONS on GNU/Linux          {#linux}
+# PARTONS on GNU/Linux {#linux}
+
+# Introduction {#linux_intro}
 
 This tutorial is for building PARTONS on Linux. It describes the procedure for a Debian-like distribution (Ubuntu, etc). For RPM-based distros, it shouldn't be too different.
 

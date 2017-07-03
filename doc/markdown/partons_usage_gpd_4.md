@@ -10,7 +10,7 @@ generatePlotFile
 
 # Description {#usage_gpd_4_description}
 
-This task is used to create a file to be used in 1D plotting of GPD results with the data taken from the database. Two independant variables, acting as 'x' and 'y' in the plotting, are selected via `<task_param type="select"></task_param>` block. A set of requirerment, which can be used to select e.g. GPD type, quark flavor, computation id, etc., is defined via `<task_param type="where"></task_param>` block. The output file path is selected via `<task_param type="output"></task_param>` block. 
+This task is used to create a file to be used in 1D plotting of GPD results with the data taken from the database. Two independent variables, acting as 'x' and 'y' in the plotting, are selected via `<task_param type="select"></task_param>` block. A set of requirement, which can be used to select e.g. GPD type, quark flavor, computation id, etc., is defined via `<task_param type="where"></task_param>` block. The output file path is selected via `<task_param type="output"></task_param>` block. 
 
 The most important variables to be selected in the plotting and to be used to restrict the selected data are:
 | Name | Description | Type | Possible values |
