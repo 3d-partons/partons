@@ -2,9 +2,13 @@
 
 [TOC]
 
+# Introduction {#newmodule_templates_dvcsobservable_intro}
+
 The implementation of this type of modules is slightly different for \f$\phi\f$-dependent observables (distinguished by `ObservableType::PHI`) and for those \f$\phi\f$-integrated (distinguished by `ObservableType::FOURIER`). The good practice is to implement first a given \f$\phi\f$-dependent observable and then as many \f$\phi\f$-integrated derivatives as needed. This is illustrated by the following templates.  
 
 We are using the one-observable-is-one-module policy. It means that each module should correspond to only one physics observable. Therefore, such characteristic of observable as beam charge, Fourier modulation type etc. can not be set from the outside (e.g. via `configure()` method), but it must be a genuine property encoded in the module. The policy is in particular crucial for the database integrity, as observable names stored in the database allow to correspond appropriate PARTONS modules. Therefore, both the names and the modules must be unambiguous. 
+
+<hr>
 
 # Header file template (phi-dependent observable) {#newmodule_templates_dvcsobservable_hdep}
 

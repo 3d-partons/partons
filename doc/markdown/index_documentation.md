@@ -11,17 +11,19 @@ PARTONS is a C++ software framework, dedicated to the phenomenology of Generaliz
 This framework should be useful not only for theorists to develop new models but also to interpret existing measurements and even design
 new experiments. For the example of the use of PARTONS to fit the high precision DVCS data look [here](@ref talks_publ_dis2017).
 
+<hr>
+
 # Get PARTONS {#mainpage_get}
 
 This section helps you set up a functioning PARTONS environment, while the following sections are needed to understand how to use and develop with PARTONS. 
 
-## With a virtual machine ######
+## With a virtual machine {#mainpage_get_vm} 
 
 You can use our provided virtual machine with an out-of-the-box PARTONS runtime and development environment. This is the easiest way to start your experience with PARTONS.
 
 [Using PARTONS with our provided Virtual Machine](@ref vm).
 
-## On your own machine ######
+## On your own machine {#mainpage_get_indep} 
 
 If you want to build PARTONS on your own machine then you should use one of following options:
 
@@ -29,12 +31,13 @@ If you want to build PARTONS on your own machine then you should use one of foll
 
 [Using PARTONS on Mac OS X](@ref mac).
 
-
-## Configuration  ######
+## Configuration {#mainpage_get_conf} 
 
 If you are using [our virtual machine](@ref vm), all configuration files will be set up and you will be able to run PARTONS as it was out-of-the-box there. However, if you have installed PARTONS at your own machine, you may need to set up these files manually.
 
 [Manual configuration](@ref config).
+
+<hr>
 
 # How to use PARTONS {#mainpage_howtouse}
 
@@ -46,24 +49,26 @@ If you want to extend PARTONS for your own purposes, you can create your own mod
 
 Simple example of PARTONS usage with XML files - XXXX. How to get the text file with a numbers.
 
+<hr>
 
 # Talks and publications {#mainpage_talks}
 
 You can find the list of the talks and publications on PARTONS [here](@ref talks_publ).
 
+<hr>
+
 # Acknowledgments {#mainpage_acknow}
 
 This work on PARTONS was supported in part by the Commissariat l’Energie Atomique et aux Energies Alternatives, by the French National Research Agency (ANR) grant ANR- 12-MONU-0008-01 and U.S. Department of Energy, Office of Science, Office of Nuclear Physics, under contract no. DE-AC02-06CH11357
+
+<hr>
 
 # Licences {#mainpage_licences}
 
 ??!!
 
+<hr>
+
 # Contact and newsletter {#mainpage_contact}
 
 Description of the PARTONS developement team and contacts can be found [here](@ref contact). If you would like to be informed on the new versions of PARTONS, sign up for the [newsletter](@ref contact_newsletter).
-
-
-
-
-

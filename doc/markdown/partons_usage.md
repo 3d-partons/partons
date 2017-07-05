@@ -1,5 +1,7 @@
 # PARTONS usage {#usage}
 
+[TOC]
+
 # Introduction {#usage_intro}
 
 This wiki page demonstrates how to use PARTONS. At this point you should have your own version of PARTONS available: either compiled at own your system ([Linux](@ref linux) or [Mac](@ref mac)), or accessible through [our virtual machine ](@ref vm). To run PARTONS properly, make sure to set up properly [the configuration files](@ref config). Note also, that some tasks described here require [MySQL server](@ref database) to be available and pre-configured to work with PARTONS. 
@@ -11,6 +13,8 @@ We provide two ways of using Services (and therefore of using PARTONS). The firs
 One can distinguish three types of Services. 1) System services are used to perform basic operations, like calling for new objects, parsing XML scenarios, handling threads, etc. These services are used mainly by the developers and will not be discussed here any further. 2) Database services are used to handle the database and perform such operations as insertion, selection and deletion of data. These services are used mainly by the developers and they are described in [this wiki page](@ref database). 3) Computation services are used to perform all kinds of computational tasks. They have been designed to be used by PARTONS users and they are explained here. 
 
 PARTONS benefit from a layered structure corresponding to the factorized nature of a GPD-oriented computation. We distinguish three layers - each one coming with its own computation service. These are: 1) GPD layer with GPDService 2) CFF layer with ConvolCoeffFunctionService and 3) observable layer with ObservableService. When a computation is performed, higher layers call lower ones automatically. The responsibility of PARTONS user is to only set all required physics assumptions, such as GPD model, order of pQCD approximation, etc.
+
+<hr>
 
 # XML interface remarks {#usage_xml}
 
@@ -72,7 +76,10 @@ Let us analyze the structure of this scenario step-by-step:
 ![](../images/module_structure.png "Module structure used by PARTONS")
 * Each module can be configured by a set of `<param/>` self-closing tags. This is our way of transferring data from XML scenario to a specific PARTONS module. 
 
+<hr>
+
 # C++ interface remarks {#usage_cpp}
+
 These are the most important remarks on the usage of PARTONS C++ interface. Due to a complexity of this subject, we recommend you to study examples provided in [this section](#usage_tasks) and in `parons-exe` project. 
 * For any code writing and further development we strongly recommend you to use Eclipse. See [this wiki page](#eclipse) for a tutorial and more information.
 * PARTONS uses the registry mechanism. Registry is the analog of a phone book, which lists all available modules. From the software engineering point of view, it corresponds to the singleton design pattern, which ensures that it is unique. When during the execution a new module is created, the first thing to do is to call this unique instance, and to register this new module with the class name provided by the developer. In return Registry gives a unique identifier encoded in an integer variable. The class appliance may be returned by Registry either by the class name or by this unique id. E.g. to get a new appliance of `GK11Model` we use:
@@ -113,6 +120,8 @@ which gives:
 ~~~~~~~~~~~~~
 Here we have shown how to use Logger outside a class that inherits from BaseObject.
 
+<hr>
+
 # Services and available tasks {#usage_tasks}
 
 This table summarizes all tasks available in computation services. For a given task, click on the corresponding link in the `Details` column for more information. 
@@ -124,7 +133,9 @@ This table summarizes all tasks available in computation services. For a given t
 | `GPDService`    | `printResults`                       | Print out result to std ouput                    | [link](@ref usage_gpd_3)    	|
 | `GPDService`    | `generatePlotFile`                   | Generate plot file from data stored in database  | [link](@ref usage_gpd_4)    	|
 |                 |                                      |                                                  |         						|
-| `ConvolCoeffFunctionService` | ...                     | ...                                              | ...     						|                                        
+| `ConvolCoeffFunctionService` | ...                     | ...                                              | ...     						|
+
+<hr>
 
 # Available modules {#usage_modules} 
 

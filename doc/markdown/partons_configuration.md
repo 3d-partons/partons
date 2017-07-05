@@ -13,6 +13,8 @@ There are three PARTONS configuration files that you may be interested in:
 
 All of these files are described in the following.
 
+<hr>
+
 # partons.properties {#config_main}
 
 This is the main configuration file of PARTONS to be placed together with the executable file. All options are explained here in the comments starting with the hash symbol '#':

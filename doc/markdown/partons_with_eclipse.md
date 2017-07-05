@@ -6,6 +6,8 @@
 
 This tutorial demonstrates how to use Eclipse CDT IDE in your work with PARTONS. Eclipse is a very powerful tool that significantly improves the efficiency of code development. Due to the possibility of using plugins, Eclipse may be also used as a support for e.g. code commenting and revision controlling. 
 
+<hr>
+
 # Preparation of Eclipse to work with PARTONS {#eclipse_preparation}
 
 If you are using [our virtual machine](@ref vm), you may skip this section, as Eclipse provided there is fully configured to work with PARTONS. However, if you want to use your own installation, presumptively without using the virtualization technology, tips found here will help you to configure Eclipse properly. 
@@ -72,6 +74,8 @@ if you prefer to not use the console, you can run PARTONS within Eclipse. To ach
 ![](../images/eclipse_run.png "Add new run configuration")
 
 Click on `Apply` button and `Run` if you want to run PARTONS immediately. Latter, use `Run` icon in Eclipse menu whenever you want to run PARTONS (you may need to customize the toolbar to make this icon visible). 
+
+<hr>
 
 # Tips of using Eclipse {#eclipse_tips}
 

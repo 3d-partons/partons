@@ -1,0 +1,111 @@
+/* change area width */
+#titlearea, #main-nav, div.header, div.contents, hr.footer, address.footer, div.navpath{	
+ 	display: block;
+  	margin: 0px auto 0px auto;
+  	width: 85%;
+}
+
+/* justify text*/
+p, ul {
+	text-align: justify;
+}
+
+/* fonts of titles */
+h1, .h1, h2, .h2, h3, .h3{
+    	font-weight: 400;
+}
+
+.title {
+	font-size: 200%;
+	font-weight: 400;
+}
+
+/* align header title */
+div.headertitle, div.title{
+	padding-left: 0.0em;
+	margin-left: 0.0em;
+}
+
+div.title{
+	padding-left: 0.0em;
+	margin-left: 0.0em;
+}
+
+/* remove line in header */
+#titlearea{
+	border-bottom: 0px;
+}
+
+/* remove color from header */
+div.header{
+        background-image: none;
+        background-repeat: initial;
+	background-color: #FFFFFF;
+}
+
+/* color of the last hr */
+hr {
+        border-top: 1px solid #C4CFE5;
+}
+
+/* code */
+code {
+	background-color: #fcefed;
+	color: #c74a36;
+}
+
+/* correct lists as there is too much space on the left side */
+ul { 
+   	margin-left: 0px; 
+   	padding-left: 2em; 
+}
+
+/* toc background color */
+div.toc {
+	background-color: #fbfcfd;
+}
+
+/* prevent overlaping between code lines and toc */
+div.fragment {
+   	overflow: hidden;
+}
+
+/* correct buttons in class index */
+div.ah, span.ah {
+	background-image: none; 
+	background-color: #2d4068;
+
+	border-radius: 0.99em;
+	-webkit-border-radius: 0.99em;
+	-moz-border-radius: 0.99em;
+
+	box-shadow: none; 
+	-webkit-box-shadow: none; 
+	-moz-box-shadow: none; 
+}
+
+/* font of PARTONS title */
+#projectname {
+    	color: #34455f;
+}
+
+/* font of PARTONS description */
+#projectbrief {
+	font: 160% Tahoma, Arial,sans-serif;
+    	color: #34455f;
+    	margin: 0px 0px 0px 20px;
+}
+
+/* navigation bar in NumA, etc. */
+.navpath ul {
+    	background-image: none;
+    	background-repeat: initial;
+    	background-position: 0px;
+    	border: solid 1px #34455f;
+}
+
+.navpath li{
+    background-image: none;
+    background-repeat: initial;
+    background-position: initial;
+}

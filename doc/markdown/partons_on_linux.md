@@ -1,14 +1,16 @@
 # PARTONS on GNU/Linux {#linux}
 
+[TOC]
+
 # Introduction {#linux_intro}
 
 This tutorial is for building PARTONS on Linux. It describes the procedure for a Debian-like distribution (Ubuntu, etc). For RPM-based distros, it shouldn't be too different.
 
-[TOC]
+<hr>
 
-# Setup # {#linux_setup}
+# Setup {#linux_setup}
 
-## Installing the external libraries ## {#linux_libraries}
+## Installing the external libraries {#linux_libraries}
 
 %All the needed libraries can be accessed through the package manager:
 
@@ -24,7 +26,7 @@ For an old Debian, it might be necessary to build libraries from source (a recen
 
 If you do build libraries yourself from sources, be sure to use the default paths for the installation. Otherwise, the CMake scripts might not work.
 
-## CMake ## {#linux_cmake}
+## CMake {#linux_cmake}
 
 CMake is the main tool to achieve multi-platform compilation. Install it with your package manager:
 
@@ -32,7 +34,7 @@ CMake is the main tool to achieve multi-platform compilation. Install it with yo
 sudo apt-get install cmake
 ~~~~~~~~~~~~~
 
-## Source code ## {#linux_source}
+## Source code {#linux_source}
 
 If you want to retrieve directly the sources from our GitLab repository, you obviously need Git. So install it too if not already available:
 
@@ -55,7 +57,9 @@ The option `GIT_SSL_NO_VERIFY=true` is needed because the CEA certificate is oft
 
 You can also just download the source code of those projects from [GitLab](https://drf-gitlab.cea.fr/partons/core/) or our website. **TODO: add link to website when available.**
 
-# Building the source code #  {#linux_build}
+<hr>
+
+# Building the source code {#linux_build}
 
 This section is for building the projects without IDE. Skip it and go to [the last section](@ref linux_eclipse) if you want to use Eclipse.
 
@@ -80,6 +84,8 @@ You can repeat this for the other projects NumA++ and PARTONS. The dependencies 
 
 Note that if you intend to use the installation described in the following sections, you may want to install ElementaryUtils before building NumA++ (and installing NumA++ before building PARTONS) so that each subsequent library uses the installed headers and shared library instead of the temporary ones located in the source folder and that may be removed after the installation.
 
+<hr>
+
 # Installing the PARTONS libraries {#linux_install}
 
 You can keep the generated shared libraries ElementaryUtils, NumA++ and PARTONS as it is in their source folder (the command `make` will create if not present a folder `lib/` with the resulting shared library), and use them from there, or you can install these libraries if you wish, with the command:
@@ -96,6 +102,8 @@ cmake -G"Unix Makefiles" ../ -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX="/h
 
 This will allow you to install the headers to `/home/youruser/somefolder/include/PARTONS` and the shared libraries to `/home/youruser/somefolder/lib/PARTONS` instead of probably `/usr/local/include/PARTONS` and `/usr/local/lib/PARTONS`, once you use the command `make install`.
 
+<hr>
+
 # Building your own project using PARTONS {#linux_buildperso}
 
 The project [partons-example](https://drf-gitlab.cea.fr/partons/partons.git) is meant as an example of project making use of the PARTONS libraries. You can use it as a template for your own projects.
@@ -104,7 +112,9 @@ In particular, you can adapt the CMakeLists.txt already present in PARTONS_relea
 
 You should also find the configuration files `partons.properties` and `logger.cfg` that you will have to adapt with your paths.
 
-# Using Eclipse # {#linux_eclipse}
+<hr>
+
+# Using Eclipse {#linux_eclipse}
 
 You can install the IDE Eclipse CDT (and some useful plugins) with:
 

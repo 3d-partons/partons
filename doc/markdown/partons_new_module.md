@@ -6,6 +6,8 @@
 
 PARTONS was conceived with the idea that anyone can plug his own models at any level of the computation chain. And this should be achieved without modifying the PARTONS library - one just need to write a class (in his own project) that inherits from an abstract class of a given type and implement virtual functions. This wiki page gives some hints on the creation of such new modules. In particular, it provides templates that illustrate structures to be understood and filled with the code by the developers.  
 
+<hr>
+
 # General remarks {#newmodule_remarks}
 
 * Before any attempt of code writing, read [this wiki page](@ref usage) explaining the usage of PARTONS via C++ interface.
@@ -87,12 +89,16 @@ Something new in C
 
 * Module naming should be unambiguous and as straightforward as possible. However, it should be also informative, as the names will be used by the users to distinguish between many modules of a given type. For all modules except the observables we are using the following naming scheme: `ModuleType` + `UniqueName`, e.g. `DVCSProcessBMJ12`, `DVCSCFFHeavyQuark`, `GPDVinnikov06`. For observables we have: `ProcessType` + `ObservableName` + `BeamCharge` (+ `FourierModulation`), e.g. `DVCSAULMinus`, `DVCSAULMinusSin2Phi`.
 
+<hr>
+
 # Templates for new modules {#newmodule_templates}
 
 * [new GPD module template](@ref newmodule_templates_gpd) 
 * [new DVCS CFF module template](@ref newmodule_templates_dvcscff) 
 * [new DVCS process module template](@ref newmodule_templates_dvcsprocess) 
 * [new DVCS observable template](@ref newmodule_templates_dvcsobservable) 
+
+<hr>
 
 # How to use new module {#newmodule_usage}
 

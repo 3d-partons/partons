@@ -12,7 +12,9 @@ When working with PARTONS one may want to use SQL database for these reasons (th
 
 This wiki page explains how to set up your own SQL database and connect PARTONS to it. In addition, it illustrates how to perform transactions between this database and PARTONS and it gives some remarks on the storing of experimental data.
 
-# Database set-up # {#database_setup}
+<hr>
+
+# Database set-up {#database_setup}
 
 Currently we support only MySQL databases.
 
@@ -70,7 +72,9 @@ SOURCE mysql5_observable_layer.sql;
 ~~~~~~~~~~~~~
 Here, we have set the name of database and the name of user and his password as `partons`. Note however, that you may modify these parameters freely - you just need to set them correctly in the PARTONS configuration to enable the connection.  
 
-# Connect PARTONS to your database # {#database_connection}
+<hr>
+
+# Connect PARTONS to your database {#database_connection}
 
 The connection parameters should be set in [the main configuration file of PARTONS](@ref config), i.e. the one called _partons.properties_. Analyze these examples that illustrate the configuration used to establish the connection to either a local (your computer) and or a remote MySQL server.
 
@@ -92,7 +96,7 @@ database.production.user = your_sql_user_name
 database.production.passwd = your_sql_user_password
 ~~~~~~~~~~~~~
 
-# Database design # {#database_design}
+# Database design {#database_design}
 
 The database design reflects the layered structure used in PARTONS, with tables corresponding to C++ objects and rows corresponding to appliances of those objects. There exist also tables storing general information on performed computations. The database design is explained here separately for the common tables and each of the layers by a single UML graph: 
 
@@ -101,7 +105,9 @@ The database design reflects the layered structure used in PARTONS, with tables 
 * [database design of cff layer](@ref database_design_3)
 * [database design of observable layer](@ref database_design_4)
 
-# PARTONS database interface # {#database_interface}
+<hr>
+
+# PARTONS database interface {#database_interface}
 
 PARTONS database interface is provided by Services. Services are developed in order to either store or retrieve complex C++ objects from database tables in a simple and generic way. They are designed in a way that allows to perform SQL transactions by users who do not know SQL query language and the database design. Services use the Qt management of connectors, which are the third-party libraries allowing transactions with specific database types. The involvement of Qt makes possible to send the same SQL request to databases of different types (MySQL, SQLite, ...). With transaction and rollback mechanisms, Services ensure the integrity of database being currently used - if something wrong happens, the database always stays in a stable state. In addition, Services improve querying speed by using transaction and commit mechanisms for a large number of simultaneous queries.
 
@@ -174,7 +180,9 @@ int id = gpdResultDaoService.insert(gpdResult);
 ~~~~~~~~~~~~~
 For the list of all possible operations provided by Services see their documentation. Note, that the documentation contains a number of additional examples. 
 
-# Store experimental data in database # {#database_experimentaldata}
+<hr>
+
+# Store experimental data in database {#database_experimentaldata}
 
 The design of PARTONS database allows to store experimental data. Not only kinematics and results with uncertainties, but also information concerning related experiments can be stored in the database. These information can be used latter to make systematic comparisons with theoretical predictions, where experimental data are easily selected with a list of user-defined criteria. To introduce a new set of experimental data into the database, one can use scripts provided by our team, to be found in _database/insert_exp_data_ folder of PARTONS copy. We refer to _database/insert_exp_data/README_ file for more information.
 
