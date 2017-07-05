@@ -44,7 +44,7 @@ When working with PARTONS one may want to use SQL database. Learn how to do this
 
 If you want to extend PARTONS for your own purposes, you can create your own modules (for example new GPD model, new hard scattering kernel or new observable). Learn how to do it [here](@ref newmodule).
 
-Simple example of PARTONS usage with XML files - XXXXX. How to get the text file with a numbers.
+Simple example of PARTONS usage with XML files - XXXX. How to get the text file with a numbers.
 
 
 # Talks and publications {#mainpage_talks}
