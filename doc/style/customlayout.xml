@@ -20,10 +20,10 @@
       <tab type="globals" visible="no" title="" intro=""/>
     </tab>
     <tab type="examples" visible="no" title="" intro=""/>  
-    <tab type="user" url="index.html" title="Main Page"/>
+    <tab type="user" url="../../../partons/doc/html/index.html" title="Main Page"/>
     <tab type="usergroup" title="Classes">
-    	<tab type="user" url="annotated.html" title="Class List"/>
-    	<tab type="user" url="classes.html" title="Class Index"/>
+    	<tab type="user" url="../../../partons/doc/html/annotated.html" title="Class List"/>
+    	<tab type="user" url="../../../partons/doc/html/classes.html" title="Class Index"/>
     	<tab type="usergroup" title="ElementaryUtils">
     		<tab type="user" url="../../../elementary-utils/doc/html/annotated.html" title="Class List"/>
     		<tab type="user" url="../../../elementary-utils/doc/html/classes.html" title="Class Index"/>
