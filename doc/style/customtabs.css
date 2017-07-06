@@ -1,0 +1,266 @@
+/* Mobile first layout SmartMenus Core CSS (it's not recommended editing these rules)
+   You need this once per page no matter how many menu trees or different themes you use.
+-------------------------------------------------------------------------------------------*/
+
+.sm{position:relative;z-index:9999;}
+.sm,.sm ul,.sm li{display:block;list-style:none;margin:0;padding:0;line-height:normal;direction:ltr;text-align:left;-webkit-tap-highlight-color:rgba(0,0,0,0);}
+.sm-rtl,.sm-rtl ul,.sm-rtl li{direction:rtl;text-align:right;}
+.sm>li>h1,.sm>li>h2,.sm>li>h3,.sm>li>h4,.sm>li>h5,.sm>li>h6{margin:0;padding:0;}
+.sm ul{display:none;}
+.sm li,.sm a{position:relative;}
+.sm a{display:block;}
+.sm a.disabled{cursor:not-allowed;}
+.sm:after{content:"\00a0";display:block;height:0;font:0px/0 serif;clear:both;visibility:hidden;overflow:hidden;}
+.sm,.sm *,.sm *:before,.sm *:after{-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box;}
+
+/* from https://www.smartmenus.org/about/themes */
+
+.sm-dox {
+  border: 0px solid #6c86ae;
+  background: #34455f;
+  -moz-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.25);
+  -webkit-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.25);
+}
+.sm-dox a, .sm-dox a:hover, .sm-dox a:focus, .sm-dox a:active {
+  padding: 13px 20px;
+  /* make room for the toggle button (sub indicator) */
+  padding-right: 58px;
+  color: #f0f2f7;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 17px;
+  font-weight: normal;
+  line-height: 17px;
+  text-decoration: none;
+}
+.sm-dox a.current {
+  background: #f0f2f7;
+  color: #34455f;
+}
+.sm-dox a.disabled {
+  color: #10151d;
+}
+.sm-dox a span.sub-arrow {
+  position: absolute;
+  top: 50%;
+  margin-top: -17px;
+  left: auto;
+  right: 4px;
+  width: 34px;
+  height: 34px;
+  overflow: hidden;
+  font: bold 15px/34px monospace !important;
+  text-align: center;
+  text-shadow: none;
+  background: rgba(0, 0, 0, 0.08);
+}
+.sm-dox a.highlighted span.sub-arrow:before {
+  display: block;
+  content: '-';
+}
+.sm-dox li {
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+.sm-dox > li:first-child {
+  border-top: 0;
+}
+.sm-dox ul {
+  background: rgba(0, 0, 0, 0.1);
+}
+.sm-dox ul a, .sm-dox ul a:hover, .sm-dox ul a:focus, .sm-dox ul a:active {
+  font-size: 15px;
+  border-left: 8px solid transparent;
+}
+.sm-dox ul ul a,
+.sm-dox ul ul a:hover,
+.sm-dox ul ul a:focus,
+.sm-dox ul ul a:active {
+  border-left: 16px solid transparent;
+}
+.sm-dox ul ul ul a,
+.sm-dox ul ul ul a:hover,
+.sm-dox ul ul ul a:focus,
+.sm-dox ul ul ul a:active {
+  border-left: 24px solid transparent;
+}
+.sm-dox ul ul ul ul a,
+.sm-dox ul ul ul ul a:hover,
+.sm-dox ul ul ul ul a:focus,
+.sm-dox ul ul ul ul a:active {
+  border-left: 32px solid transparent;
+}
+.sm-dox ul ul ul ul ul a,
+.sm-dox ul ul ul ul ul a:hover,
+.sm-dox ul ul ul ul ul a:focus,
+.sm-dox ul ul ul ul ul a:active {
+  border-left: 40px solid transparent;
+}
+
+@media (min-width: 768px) {
+  /* Switch to desktop layout
+  -----------------------------------------------
+     These transform the menu tree from
+     collapsible to desktop (navbar + dropdowns)
+  -----------------------------------------------*/
+  /* start... (it's not recommended editing these rules) */
+  .sm-dox ul {
+    position: absolute;
+    width: 12em;
+  }
+
+  .sm-dox li {
+    float: left;
+  }
+
+  .sm-dox.sm-rtl li {
+    float: right;
+  }
+
+  .sm-dox ul li, .sm-dox.sm-rtl ul li, .sm-dox.sm-vertical li {
+    float: none;
+  }
+
+  .sm-dox a {
+    white-space: nowrap;
+  }
+
+  .sm-dox ul a, .sm-dox.sm-vertical a {
+    white-space: normal;
+  }
+
+  .sm-dox .sm-nowrap > li > a, .sm-dox .sm-nowrap > li > :not(ul) a {
+    white-space: nowrap;
+  }
+
+  /* ...end */
+  .sm-dox {
+    background: #34455f;
+  }
+  .sm-dox a, .sm-dox a:hover, .sm-dox a:focus, .sm-dox a:active, .sm-dox a.highlighted {
+    padding: 12px 22px;
+    color: #f0f2f7;
+  }
+  .sm-dox a:hover, .sm-dox a:focus, .sm-dox a:active, .sm-dox a.highlighted {
+    background: #465d80;
+  }
+  .sm-dox a.current {
+    background: #f0f2f7;
+    color: #34455f;
+  }
+  .sm-dox a.disabled {
+    background: #34455f;
+    color: #10151d;
+  }
+  .sm-dox a.has-submenu {
+    padding-right: 36px;
+  }
+  .sm-dox a span.sub-arrow {
+    top: 50%;
+    margin-top: -8px;
+    right: 22px;
+    width: 8px;
+    height: 16px;
+    font: 15px/16px monospace !important;
+    background: transparent;
+  }
+  .sm-dox a.highlighted span.sub-arrow:before {
+    display: none;
+  }
+  .sm-dox > li {
+    border-top: 0;
+    border-left: 0px solid #465d80;
+  }
+  .sm-dox > li:first-child {
+    border-left: 0;
+  }
+  .sm-dox ul {
+    border: 0px solid #6c86ae;
+    background: #34455f;
+    -moz-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.25);
+    -webkit-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.25);
+  }
+  .sm-dox ul a {
+    border: 0 !important;
+  }
+  .sm-dox ul a.has-submenu {
+    padding-right: 22px;
+  }
+  .sm-dox ul a span.sub-arrow {
+    right: auto;
+    margin-left: -14px;
+  }
+  .sm-dox ul > li {
+    border-left: 0;
+    border-top: 0px solid #465d80;
+  }
+  .sm-dox ul > li:first-child {
+    border-top: 0;
+  }
+  .sm-dox span.scroll-up,
+  .sm-dox span.scroll-down {
+    position: absolute;
+    display: none;
+    visibility: hidden;
+    overflow: hidden;
+    background: #34455f;
+    height: 20px;
+  }
+  .sm-dox span.scroll-up-arrow, .sm-dox span.scroll-down-arrow {
+    position: absolute;
+    top: -2px;
+    left: 50%;
+    margin-left: -8px;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    border-width: 8px;
+    border-style: dashed dashed solid dashed;
+    border-color: transparent transparent #f0f2f7 transparent;
+  }
+  .sm-dox span.scroll-down-arrow {
+    top: 6px;
+    border-style: solid dashed dashed dashed;
+    border-color: #f0f2f7 transparent transparent transparent;
+  }
+  .sm-dox.sm-rtl a.has-submenu {
+    padding-right: 22px;
+    padding-left: 36px;
+  }
+  .sm-dox.sm-rtl a span.sub-arrow {
+    right: auto;
+    left: 22px;
+  }
+  .sm-dox.sm-rtl.sm-vertical a.has-submenu {
+    padding: 12px 22px;
+  }
+  .sm-dox.sm-rtl.sm-vertical a span.sub-arrow {
+    right: 22px;
+    margin-right: -14px;
+  }
+  .sm-dox.sm-rtl > li:first-child {
+    border-left: 0px solid #465d80;
+  }
+  .sm-dox.sm-rtl > li:last-child {
+    border-left: 0;
+  }
+  .sm-dox.sm-rtl ul a.has-submenu {
+    padding: 12px 22px;
+  }
+  .sm-dox.sm-rtl ul a span.sub-arrow {
+    right: 22px;
+    margin-right: -14px;
+  }
+  .sm-dox.sm-vertical a span.sub-arrow {
+    right: auto;
+    margin-left: -14px;
+  }
+  .sm-dox.sm-vertical li {
+    border-left: 0;
+    border-top: 0px solid #465d80;
+  }
+  .sm-dox.sm-vertical > li:first-child {
+    border-top: 0;
+  }
+}
+

@@ -322,7 +322,7 @@ Observable* ObservableService::newObservableModuleFromTask(
 
 ProcessModule* ObservableService::newProcessModuleFromTask(
         const Task& task) const {
-    DVCSModule* pProcessModule = 0;
+    ProcessModule* pProcessModule = 0;
 
     //TODO remove hardcoded string
     if (ElemUtils::StringUtils::equals(
