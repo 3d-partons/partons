@@ -1,11 +1,5 @@
 /* MYSQL syntax */
 
-/* FILE privilege is to be able to execute LOAD DATA INFILE query */
-CREATE USER 'partons'@'localhost' IDENTIFIED BY 'partons';
-GRANT SELECT, INSERT, UPDATE, DELETE, FILE ON *.* TO 'partons'@'localhost';
-
-
-
 CREATE TABLE scenario (
 scenario_id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
 scenario_store_date TIMESTAMP,
