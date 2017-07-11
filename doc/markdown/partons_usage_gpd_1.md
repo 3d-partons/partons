@@ -10,7 +10,7 @@ computeGPDModel
 
 # Description {#usage_gpd_1_description}
 
-This task is used to evaluate a given GPD model with defined kinematics. You can define any number of kinematic points, just replicate as many `<kinematics type="GPDKinematic"></kinematics>` blocks as you want. 
+This task is used to evaluate a given GPD model with signle kinematics.
 
 # Example {#usage_gpd_1_example}  
 
