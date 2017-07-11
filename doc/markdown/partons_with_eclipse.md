@@ -10,16 +10,16 @@ This tutorial demonstrates how to use Eclipse CDT IDE in your work with PARTONS.
 
 # Preparation of Eclipse to work with PARTONS {#eclipse_preparation}
 
-If you are using [our virtual machine](@ref vm), you may skip this section, as Eclipse provided there is fully configured to work with PARTONS. However, if you want to use your own installation, presumptively without using the virtualization technology, tips found here will help you to configure Eclipse properly. 
+If you are using [our virtual machine](@ref vm), you may skip this section and go directly to the [summary](@ref eclipse_summary), as Eclipse provided there is fully configured to work with PARTONS. However, if you want to use your own installation, without the virtual machine, the tutorial found in this section will help you configure Eclipse properly. 
 
 ## Installation {#eclipse_preparation_installation}
 
-You will need Eclipse (platform base), Eclipse CDT (support for C++) and EGit (plugin for Git revision control). At Linux systems the installation of those component can be achieved by using repositories:
+You will need Eclipse (platform base), Eclipse CDT (support for C++) and EGit (plugin for Git revision control, if you want to clone the repositories directly from within Eclipse). At Linux systems the installation of those component can be achieved by using repositories:
 ~~~~~~~~~~~~~{.sh}
 # on Debian-like (Debian, Ubuntu, etc.) distribution
 sudo apt-get install eclipse-cdt eclipse-egit 
 ~~~~~~~~~~~~~
-For other Linux distributions and operating systems some adjustments to the installation receipt may be needed. You will need also all libraries required by the compilation of PARTONS. This subject is however covered in the wiki pages explaining the installation of PARTONS on [Linux](@ref linux) or [Mac](@ref mac). 
+For other Linux distributions and operating systems some adjustments may be needed. You will need also all libraries required by the compilation of PARTONS. This subject is however covered in the wiki pages explaining the installation of PARTONS on [Linux](@ref linux) or [Mac](@ref mac). 
 
 ## Get PARTONS code {#eclipse_preparation_git} 
 
@@ -36,7 +36,7 @@ To download PARTONS code open `Git Repositories` view by navigating through the 
 Click on `Next` button. You should be able to select now the branch that you want to download, most probably the one corresponding to the latest release of PARTONS. With the branch selected, click on `Next` button. Make sure that `Import all existing Eclipse project after clone finishes` option is selected. Click on `Finish` button. You should see now the imported project in `Project Explorer` view. Repeat the procedure for all other PARTONS projects:
 * `%https://drf-gitlab.cea.fr/partons/core/elementary-utils.git`
 * `%https://drf-gitlab.cea.fr/partons/core/numa.git`
-* `%https://drf-gitlab.cea.fr/partons/core/partons-exe.git`
+* `%https://drf-gitlab.cea.fr/partons/core/partons-example.git`
 
 ## Set development environment {#eclipse_preparation_libs}
 
@@ -50,13 +50,24 @@ Navigate through the Eclipse menu: `Window` > `Preferences` > `C/C++` > `Build` 
 
 The build is based on CMake, which is a cross-platform make system. Make sure to have it installed at your computer (command `cmake` should be available in the terminal). If CMake is missing, we refer to the wiki pages explaining the installation of PARTONS on [Linux](@ref linux) or [Mac](@ref mac).  
 
-The build is automatized by Ant scripts, which are small XML files to chain the call of CMake. Those scripts are called `build.xml` and they can be found in each PARTONS project. Open Eclipse `Ant` view by navigating through the Eclipse menu: `Window` > `Show View` > `Ant` (the last one may be hidden in `Other`). Click on `Add Buildfiles` button, select and expand the list for the first PARTONS project, select `build.xml` and finish with `OK` button. Repeat this procedure for all other PARTONS projects. 
+The build is automatized by Ant scripts, which are small XML files scripting the call to `cmake`, `make`, etc. Those scripts are called `build.xml` and they can be found in each PARTONS project. Open Eclipse `Ant` view by navigating through the Eclipse menu: `Window` > `Show View` > `Ant` (the last one may be hidden in `Other`). Click on `Add Buildfiles` button, select and expand the list for the first PARTONS project, select `build.xml` and finish with `OK` button. Alternatively, you can also simply drag and drop the `build.xml` file to the Ant view. Repeat this procedure for all other PARTONS projects. 
 
-You can build now each of PARTONS projects separately. Just remember to do this in the following order: 1) `elementary-utils`, 2) `numa`, 3) `partons`, 4) `partons-exe`. In `Ant` view expand a given entry, and double click to perform one of available operations:
+You can build now each of PARTONS projects separately. Just remember to do this in the following order: 1) `elementary-utils`, 2) `numa`, 3) `partons`, 4) `partons-example`. In `Ant` view, expand a given entry, and double click to perform one of available operations:
 
 ![](../images/eclipse_ant.png "Ant")
 
-If you are using Mac you may encounter this error: 
+## Run configuration {#eclipse_preparation_run}
+
+If you prefer to not use the console, you can run PARTONS within Eclipse. To achieve this, right-click in `Project Explorer` view on the name of PARTONS executable project (`partons-example`) and select: `Run As` > `Run Configurations`. A new window will appear. Select `C/C++ Application` in the list on the left side of this window and press on `New lunch configuration` button. Set `C/C++ Application` to `PARTONS_example` executable file:
+
+![](../images/eclipse_run.png "Add new run configuration")
+
+Click on `Apply` button and `Run` if you want to run PARTONS immediately. Latter, use `Run` icon in Eclipse menu whenever you want to run PARTONS (you may need to customize the toolbar to make this icon visible). 
+
+## Troubleshooting {#eclipse_troubleshooting}
+
+* If the Ant view is not available within Eclipse, install the Eclipse Java Development Tools: either with `Help` > `Eclipse Marketplace` or `Help` > `Install New Software`.
+* If you are using Mac you may encounter this error: 
 ~~~~~~~~~~~~~{.sh}
 Execute failed: java.io.IOException: Cannot run program "cmake" (in directory "..."): error=13, Permission denied
 ~~~~~~~~~~~~~
@@ -67,13 +78,10 @@ which cmake
 in your terminal. With `PATH` variable modified, click on `Apply` button and `Close` one to finish.
 ![](../images/eclipse_ant_mac_trouble.png "Ant trouble")
 
-## Run configuration {#eclipse_preparation_run}
+## Summary {#eclipse_summary}
 
-if you prefer to not use the console, you can run PARTONS within Eclipse. To achieve this, right-click in `Project Explorer` view on the name of PARTONS execution project (`partons-exe`) and select: `Run As` > `Run Configurations`. A new window will appear. Select `C/C++ Application` in the list on the left side of this window and press on `New lunch configuration` button. Set `C/C++ Application` to `PARTONS_exe` executable file:
-
-![](../images/eclipse_run.png "Add new run configuration")
-
-Click on `Apply` button and `Run` if you want to run PARTONS immediately. Latter, use `Run` icon in Eclipse menu whenever you want to run PARTONS (you may need to customize the toolbar to make this icon visible). 
+* To build a project, use the *Ant* view and select the `build` routine for the said project.
+* To run an executable project, use the **Run** icon of Eclipse and select the said project.
 
 <hr>
 
