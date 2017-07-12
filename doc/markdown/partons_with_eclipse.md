@@ -96,7 +96,7 @@ Click on **Apply** button and **Run** if you want to run PARTONS immediately. La
 
 * If the Ant view is not available within Eclipse, install the Eclipse Java Development Tools: either with **Help** > **Eclipse Marketplace** or **Help** > **Install New Software**.
 
-* If you are using Mac you may encounter this error: 
+* If you are using Mac you may encounter this error when using `cmake` via *Ant* scripts: 
 ~~~~~~~~~~~~~{.sh}
 Execute failed: java.io.IOException: Cannot run program "cmake" (in directory "..."): error=13, Permission denied
 ~~~~~~~~~~~~~
