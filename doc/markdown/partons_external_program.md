@@ -6,10 +6,10 @@ It is highly recommended to first read the [tutorial](@ref usage) explaining the
 
 # PARTONS_example {#partons-example}
 
-For this tutorial, it is useful to have the example project `partons-example` already set up. It will serve as illustration, and you can base your own program on it for a start.
+For this tutorial, it is useful to have the example project [`partons-example`](https://drf-gitlab.cea.fr/partons/core/partons-example) already set up. It will serve as illustration, and you can base your own program on it for a start.
 
 If you are using our Virtual Machine, the project is already set up in the IDE Eclipse.
-To set it up in your own machine, you can follow the tutorial [here](@ref eclipse). It is also useful to read the tutorial on how to build and install PARTONS before, either for [Linux](@ref linux) or [Mac](@ref mac).
+To set it up in your own machine, you can follow the Eclipse tutorial [here](@ref eclipse). It is also useful to read the tutorial on how to build and install PARTONS before, either for [Linux](@ref linux) or [Mac](@ref mac).
 
 This executable program serves as an out of the box tool to run XML scenarios (see the next section). It also features several C++ examples in the file `examples.cpp`.
 
@@ -35,6 +35,10 @@ Scenario* pScenario = pAutomationService->parseXMLFile(
 pAutomationService->playScenario(pScenario);
 ```
 In `partons-example`, it is of course more interesting because the path of the file is defined in the argument, so there is no need to hard-code it and rebuild the project when you change your computation.
+
+To use command-line arguments within Eclipse, you can right-click on the project in the **Project Explorer view**, then **Run as** > **Run Configurations** and then under **C/C++ Application** > **PARTONS_example** (or whatever the name of your project), go the **Arguments** tab and add there the paths to the XML scenarios you want to launch:
+
+![](../images/eclipse_run_arguments.png "Eclipse run configurations - arguments")
 
 [comment]: # (The following was in the old documentation, but it doesn't seem to be implemented... I commented it out for now.)
 
@@ -86,3 +90,13 @@ int main(int argc, char** argv) {
 Some remarks:
 * It is not mandatory but still highly recommended to keep the `try`-`catch` mechanism, in order to catch exceptions and display with the Logger the associated error messages.
 * `Partons` is a singleton object that serves to initialize all the other singletons (registry, factory, services, logger, etc) and configure them accordingly. You should have well set up configurations files at this point for this initialization to work. See the [tutorial](@ref config) about the configuration.
+* The following includes are necessary for the fraction of code displayed above:
+```cpp
+#include <ElementaryUtils/logger/CustomException.h>
+#include <ElementaryUtils/logger/LoggerManager.h>
+#include <partons/Partons.h>
+#include <QtCore/qcoreapplication.h> // or <QCoreApplication>
+```
+Be sure to include all the needed headers. Eclipse can do it for you automatically with `Ctrl`+`Shift`+`O` if it was configured correctly as in the related [tutorial](@ref eclipse).
+* You can organize your code as you wish, with your own classes and functions. If you wish to inherit modules from PARTONS to use your own physics models, you can read the corresponding [tutorial](@ref newmodule).
+

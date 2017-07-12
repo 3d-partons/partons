@@ -121,7 +121,7 @@ We will consider again a simple example (computing a GPD at single kinematics):
 GPDService* pGPDService = Partons::getInstance()->getServiceObjectRegistry()->getGPDService();
 
 // Create GPD module with the ModuleObjectFactory, here it is a specific MMS13 model
-GPDModule* pGPDModel =Partons::getInstance()->getModuleObjectFactory()->newGPDModule(MMS13Model::classId);
+GPDModule* pGPDModel = Partons::getInstance()->getModuleObjectFactory()->newGPDModule(MMS13Model::classId);
 
 // Create a GPDKinematic(x, xi, t, MuF, MuR) object
 GPDKinematic gpdKinematic(-0.99, 0.99, 0., 1., 1.);
