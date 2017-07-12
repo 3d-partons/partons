@@ -12,7 +12,9 @@ PARTONS was conceived with the idea that anyone can plug his own models at any l
 
 To better understand the following remarks, please take a look in parallel at the examples listed in the following [section](@ref newmodule_templates).
 
-* Before any attempt of code writing, read [this wiki page](@ref usage) explaining the usage of PARTONS via C++ interface.
+* Before any attempt of code writing, read this [tutorial](@ref usage) explaining the usage of PARTONS via C++ interface.
+
+* The child class that will represent your own module can be written in your external program, even though it inherits from a PARTONS library abstract class. This [tutorial](@ref external_program) deals with external programs and should be read before.
 
 * PARTONS uses the registry/factory mechanism. This imposes several requirements to be fulfilled by a module:
 1. It must have `static const unsigned int classId` member initialized by `BaseObjectRegistry::registerBaseObject()` and a default constructor taking the module name, so it can be correctly registered in Registry ;
@@ -113,4 +115,14 @@ double integrationResult = integrate(m_pFunctorForIntegrationFunction, min, max,
 
 # How to use new module {#newmodule_usage}
 
-After a proper building of your PARTONS-related project, you may use a new module as any other in PARTONS. See [this wiki page](@ref usage) for more information.
+After a proper building of your PARTONS-related project, you may use a new module as any other in PARTONS.
+
+If we consider for example the first example of GPD module:
+
+```cpp
+// Clone GPD module with the ModuleObjectFactory from our own custom module
+GPDModule* pGPDModel = Partons::getInstance()->getModuleObjectFactory()->newGPDModule(MyGPDModel::classId);
+```
+
+ See the aforementioned [tutorial](@ref usage) for more details.
+
