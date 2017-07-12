@@ -82,7 +82,7 @@ make
 
 You can repeat this for the other projects NumA++ and PARTONS. The dependencies follow this order.
 
-Note that if you intend to use the installation described in the following sections, you may want to install ElementaryUtils before building NumA++ (and installing NumA++ before building PARTONS) so that each subsequent library uses the installed headers and shared library instead of the temporary ones located in the source folder and that may be removed after the installation.
+Note that if you intend to use the installation described in the following section, you may want to install ElementaryUtils before building NumA++ (and installing NumA++ before building PARTONS) so that each subsequent library uses the installed headers and shared library instead of the temporary ones located in the source folder and that may be removed after the installation.
 
 <hr>
 
@@ -106,11 +106,11 @@ This will allow you to install the headers to `/home/youruser/somefolder/include
 
 # Building your own project using PARTONS {#linux_buildperso}
 
-The project [partons-example](https://drf-gitlab.cea.fr/partons/partons.git) is meant as an example of project making use of the PARTONS libraries. You can use it as a template for your own projects.
+The project [partons-example](https://drf-gitlab.cea.fr/partons/core/partons-example) is meant as an example of project making use of the PARTONS libraries. You can use it as a template for your own projects.
 
 In particular, you can adapt the CMakeLists.txt already present in PARTONS_release, and use the same FindXXXX.cmake scripts found in the folder `cmake/Modules`.
 
-You should also find the configuration files `partons.properties` and `logger.cfg` that you will have to adapt with your paths.
+You should also find the configuration files `partons.properties` and `logger.cfg` that you will have to adapt with your paths. See the [tutorial](@ref config) about the configuration.
 
 <hr>
 
