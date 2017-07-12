@@ -15,10 +15,10 @@ This tutorial is for building PARTONS on Linux. It describes the procedure for a
 %All the needed libraries can be accessed through the package manager:
 
 ~~~~~~~~~~~~~{.sh}
-sudo apt-get install libeigen3-dev libcln-dev libsfml-dev libqt4-dev libqt4-sql-mysql root-system
+sudo apt-get install libeigen3-dev libcln-dev libsfml-dev libqt4-dev libqt4-sql-mysql
 ~~~~~~~~~~~~~
 
-You can use any of your favorite dpkg front-ends (apt, aptitude, apt-get...), but be sure that it installs recommended packages as dependencies. In particular, we need the MathMore module of ROOT (package `libroot-math-mathmore-dev`).
+You can use any of your favorite dpkg front-ends (apt, aptitude, apt-get...), but be sure that it installs recommended packages as dependencies.
 
 On Debian, you might want to use `su -` to switch to `root` first, instead of the ubuntu way of using `sudo` directly from your current user.
 
