@@ -6,10 +6,9 @@
 
 <img src='../images/logo_partons.jpg' alt='PARTONS' style='float:right;max-width:15%;height:auto' />
 
-PARTONS is a C++ software framework, dedicated to the phenomenology of Generalized Parton Distributions. PARTONS provides a necessary bridge between models of Generalized Parton Distributions and experimental data measured in various exclusive channels. Detailed description of the project can be found here: https://arxiv.org/abs/1512.06174
+PARTONS is a C++ software framework, dedicated to the phenomenology of Generalized Parton Distributions. PARTONS provides a necessary bridge between models of Generalized Parton Distributions and experimental data measured in various exclusive channels. Detailed description of the project can be found here: [arxiv:1512.06174](https://arxiv.org/abs/1512.06174) @cite Berthou:2015oaw.
 
-This framework should be useful not only for theorists to develop new models but also to interpret existing measurements and even design
-new experiments. For the example of the use of PARTONS to fit the high precision DVCS data look [here](@ref talks_publ_dis2017).
+This framework should be useful not only for theorists to develop new models but also to interpret existing measurements and even design new experiments. For an example of the use of PARTONS to fit the high precision DVCS data, look [here](@ref talks_publ_dis2017).
 
 <hr>
 
@@ -25,7 +24,7 @@ You can use our provided virtual machine with an out-of-the-box PARTONS runtime 
 
 ## On your own machine {#mainpage_get_indep} 
 
-If you want to build PARTONS on your own machine then you should use one of following options:
+If you want to build PARTONS on your own machine then you should use one of following tutorials:
 
 [Using PARTONS on GNU/Linux](@ref linux).
 
@@ -33,19 +32,35 @@ If you want to build PARTONS on your own machine then you should use one of foll
 
 ## Configuration {#mainpage_get_conf} 
 
-If you are using [our virtual machine](@ref vm), all configuration files will be set up and you will be able to run PARTONS as it was out-of-the-box there. However, if you have installed PARTONS at your own machine, you may need to set up these files manually.
+If you are using [our virtual machine](@ref vm), all configuration files will been set up and you will be able to run PARTONS as it was out-of-the-box there. However, if you have installed PARTONS at your own machine, you may need to set up these files manually:
 
 [Manual configuration](@ref config).
+
+## Development environment {#mainpage_eclipse}
+
+Likewise, if you use PARTONS on your own machine, you may want to configure an IDE such as Eclipse (already set up on the VM) for an optimal development with PARTONS:
+
+[Using Eclipse CDT with PARTONS](@ref eclipse).
 
 <hr>
 
 # How to use PARTONS {#mainpage_howtouse}
 
-At this point you should have your own version of PARTONS available. Read the short [tutorial](@ref usage) how to use PARTONS. We provide two methods: using simple [input XML files](@ref usage_xml), or using PARTON's library and its headers to write a standalone [program](@ref usage_cpp).
+At this point you should have your own version of PARTONS available. You can read this short tutorial below on how to use PARTONS. We provide two methods: using simple [input XML files](@ref usage_xml), or using the PARTONS library and its headers to write a stand-alone [program](@ref usage_cpp):
 
-When working with PARTONS one may want to use SQL database. Learn how to do this [here](@ref database).
+[Using PARTONS library](@ref usage).
 
-If you want to extend PARTONS for your own purposes, you can create your own modules (for example new GPD model, new hard scattering kernel or new observable). Learn how to do it [here](@ref newmodule).
+For the practical aspects of running your program, this tutorial uses an example project to guide you through it:
+
+[Writing you own program using PARTONS](@ref external_program).
+
+When working with PARTONS, one may want to use a SQL database. Learn how to do this with the following tutorial:
+
+[Database tutorial](@ref database).
+
+If you want to extend PARTONS for your own purposes, you can create your own modules (for example a new GPD model, new hard scattering kernel or new observable):
+
+[Writing you own modules](@ref newmodule).
 
 Simple example of PARTONS usage with XML files - XXXX. How to get the text file with a numbers.
 

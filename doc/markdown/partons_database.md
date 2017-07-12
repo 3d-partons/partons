@@ -1,4 +1,4 @@
-# Database {#database}
+# %Database {#database}
 
 [TOC]
 
@@ -100,10 +100,10 @@ database.production.passwd = your_sql_user_password
 
 The database design reflects the layered structure used in PARTONS, with tables corresponding to C++ objects and rows corresponding to appliances of those objects. There exist also tables storing general information on performed computations. The database design is explained here separately for the common tables and each of the layers by a single UML graph: 
 
-* [database design of tables used by all layers](@ref database_design_1) 
-* [database design of gpd layer](@ref database_design_2)
-* [database design of cff layer](@ref database_design_3)
-* [database design of observable layer](@ref database_design_4)
+* [Database design of tables used by all layers](@ref database_design_1).
+* [Database design of gpd layer](@ref database_design_2).
+* [Database design of cff layer](@ref database_design_3).
+* [Database design of observable layer](@ref database_design_4).
 
 <hr>
 
@@ -140,7 +140,7 @@ This example illustrates how to store a single GPD result into the database via 
 </scenario>
 ~~~~~~~~~~~~~
 
-In [C++ interface](@ref usage) users use Services explicitly. Each Service may be seen as a bridge between a single physics-related object and a corresponding SQL table (see [Database design](#database_design) section). Services are listed in the following table together with the aforementioned correspondence:
+In [C++ interface](@ref usage) users use Services explicitly. Each Service may be seen as a bridge between a single physics-related object and a corresponding SQL table (see [Database design](@ref database_design) section). Services are listed in the following table together with the aforementioned correspondence:
 | Service | Corresponding C++ object | Corresponding SQL table name |
 | :---- | :---- | :---- |
 | GPDKinematicDaoService | GPDKinematic | [gpd_kinematic](md_partons_database_design_2.html) |
