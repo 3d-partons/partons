@@ -24,11 +24,13 @@ PARTONS benefits from a layered structure corresponding to the factorized nature
 
 When a computation is performed, higher layers call lower ones automatically. The responsibility of a PARTONS user is only to set all required physical assumptions, such as GPD model, order of pQCD approximation, etc.
 
+The [first section](@ref usage_xml) explains how to write an XML file, whereas the practical aspects of running these files is left to [another tutorial](@ref use_xml_interface). The second section explains how to make use of the C++ library directly while again the practical aspects of writing an external program are left to the aforementioned [tutorial](@ref write_external_program).
+
 <hr>
 
 # XML interface {#usage_xml}
 
-We refer to a set of physics assumptions as scenario. In this section we demonstrate how a single scenario can be encoded in an input XML file to be evaluated by PARTONS. 
+We refer to a set of physics assumptions as scenario. In this section we demonstrate how a single scenario can be encoded in an input XML file to be evaluated by PARTONS.
 
 ## Example {#usage_xml_example}
 
@@ -174,30 +176,6 @@ which gives:
 26-06-2017 02:20:28 [INFO] (SomeClass::someFunction) We have: 1.12 2 0 ddd
 ~~~~~~~~~~~~~
 Here we have shown how to use the Logger outside a class that inherits from BaseObject.
-
-# Use the XML interface in your C++ project {#usage_cpp_xml}
-
-This section will explain how to use the Automation services of PARTONS to read the aforementioned XML files. The example project `partons-example` already implements this and lets you use a given XML file just by giving its path as an argument to the executable, *e.g*
-```sh
-./partons-example path/to/XML/file.xml
-```
-
-The relevant corresponding code (adapted to be self-contained) is the following:
-```cpp
-// Retrieve automation service
-AutomationService* pAutomationService =
-                pPartons->getServiceObjectRegistry()->getAutomationService();
-// Parse XML file
-Scenario* pScenario = pAutomationService->parseXMLFile(
-                    "path/to/XML/file.xml");
-// Play scenario
-pAutomationService->playScenario(pScenario);
-```
-In `partons-example`, it is of course more interesting because the path of the file is defined in the argument, so there is no need to hard-code it and rebuild the project when you change your computation.
-
-[comment]: # (The following was in the old documentation, but it doesn't seem to be implemented... I commented it out for now.)
-
-[comment]: # (Alternatively, you can read an XML file but only consider the configuration of the modules, and then treat the rest within the C++ interface. Here is an example)
 
 <hr>
 
