@@ -92,3 +92,5 @@ install(TARGETS PARTONS
         LIBRARY DESTINATION lib/PARTONS
 		ARCHIVE DESTINATION lib/static/PARTONS)
 install(DIRECTORY include/ DESTINATION include/PARTONS)
+install(FILES data/automation/xmlSchema.xsd DESTINATION share/PARTONS)
+install(DIRECTORY data/grid/ DESTINATION share/PARTONS/grid)
