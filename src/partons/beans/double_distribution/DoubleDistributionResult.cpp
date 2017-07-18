@@ -37,7 +37,7 @@ const PartonDistribution& DoubleDistributionResult::getPartonDistribution(
     return (it->second);
 }
 
-std::string DoubleDistributionResult::toString() {
+std::string DoubleDistributionResult::toString() const {
     std::ostringstream os;
     std::map<DoubleDistributionType::Type, PartonDistribution>::const_iterator it;
 

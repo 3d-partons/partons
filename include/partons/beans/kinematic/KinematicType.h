@@ -77,7 +77,7 @@ public:
      * Get string representation of type being assigned to a declared object of this class.
      * @return String representation of assigned type, like "THEO" for KinematicType::THEO.
      */
-    std::string toString();
+    std::string toString() const;
 
     //********************************************************
     //*** SETTERS AND GETTERS ********************************

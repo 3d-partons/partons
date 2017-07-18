@@ -88,7 +88,7 @@ public:
 //    virtual PartonDistribution computeHt();
 //    virtual PartonDistribution computeEt();
 
-    virtual std::string toString();
+    virtual std::string toString() const;
 
     void prepareSubModules(
             const std::map<std::string, BaseObjectData>& subModulesData);

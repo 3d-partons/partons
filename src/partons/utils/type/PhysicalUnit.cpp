@@ -12,7 +12,7 @@ PhysicalUnit::operator PhysicalUnit::Type() const {
     return m_type;
 }
 
-std::string PhysicalUnit::toString() {
+std::string PhysicalUnit::toString() const {
     switch (m_type) {
     case GEV:
         return "GEV";

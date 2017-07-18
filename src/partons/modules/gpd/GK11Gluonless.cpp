@@ -1878,6 +1878,6 @@ double GK11Gluonless::getHuval() const {
     return kHuval;
 }
 
-std::string GK11Gluonless::toString() {
+std::string GK11Gluonless::toString() const {
     return GPDModule::toString();
 }

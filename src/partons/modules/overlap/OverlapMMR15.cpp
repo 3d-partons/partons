@@ -108,6 +108,6 @@ PartonDistribution OverlapMMR15::computeH() {
     return partonDistribution;
 }
 
-std::string OverlapMMR15::toString() {
+std::string OverlapMMR15::toString() const {
     return IncompleteGPDModule::toString();
 }
