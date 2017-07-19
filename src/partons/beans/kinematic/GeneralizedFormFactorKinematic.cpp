@@ -14,7 +14,7 @@ GeneralizedFormFactorKinematic::GeneralizedFormFactorKinematic(double t,
 GeneralizedFormFactorKinematic::~GeneralizedFormFactorKinematic() {
 }
 
-std::string GeneralizedFormFactorKinematic::toString() {
+std::string GeneralizedFormFactorKinematic::toString() const {
     return ElemUtils::Formatter() << "m_t = " << m_t << " m_MuF = " << m_MuF
             << " m_MuR = " << m_MuR;
 }

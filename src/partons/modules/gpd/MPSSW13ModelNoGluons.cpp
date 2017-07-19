@@ -41,7 +41,7 @@ void MPSSW13ModelNoGluons::configure(const ElemUtils::Parameters &parameters) {
     GPDModule::configure(parameters);
 }
 
-std::string MPSSW13ModelNoGluons::toString() {
+std::string MPSSW13ModelNoGluons::toString() const {
     return GPDModule::toString();
 }
 

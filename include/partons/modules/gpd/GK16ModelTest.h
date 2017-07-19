@@ -47,7 +47,7 @@ public:
 
     virtual void configure(const ElemUtils::Parameters &parameters);
 
-    virtual std::string toString();
+    virtual std::string toString() const;
 
     // ##### GETTERS & SETTERS #####
 

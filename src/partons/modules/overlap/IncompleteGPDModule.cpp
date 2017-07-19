@@ -166,7 +166,7 @@ void IncompleteGPDModule::preCompute(double x, double xi, double t, double MuF2,
 //            "Check your implementation  ; must be implemented in daughter class");
 //}
 
-std::string IncompleteGPDModule::toString() {
+std::string IncompleteGPDModule::toString() const {
     return GPDModule::toString();
 }
 

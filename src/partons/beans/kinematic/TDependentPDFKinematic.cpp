@@ -14,7 +14,7 @@ TDependentPDFKinematic::TDependentPDFKinematic(double x, double t, double MuF,
 TDependentPDFKinematic::~TDependentPDFKinematic() {
 }
 
-std::string TDependentPDFKinematic::toString() {
+std::string TDependentPDFKinematic::toString() const {
     return ElemUtils::Formatter() << "m_x = " << m_x << "m_t = " << m_t
             << " m_MuF = " << m_MuF << " m_MuR = " << m_MuR;
 }

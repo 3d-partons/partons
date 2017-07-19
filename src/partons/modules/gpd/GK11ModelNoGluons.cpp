@@ -43,7 +43,7 @@ void GK11ModelNoGluons::configure(const ElemUtils::Parameters &parameters) {
     GPDModule::configure(parameters);
 }
 
-std::string GK11ModelNoGluons::toString() {
+std::string GK11ModelNoGluons::toString() const {
     return GPDModule::toString();
 }
 

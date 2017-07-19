@@ -1897,6 +1897,6 @@ double GK11ModelOnlyGluons::getHuval() const {
     return kHuval;
 }
 
-std::string GK11ModelOnlyGluons::toString() {
+std::string GK11ModelOnlyGluons::toString() const {
     return GPDModule::toString();
 }

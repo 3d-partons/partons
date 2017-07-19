@@ -11,7 +11,7 @@ SortingMode::operator SortingMode::Type() const {
     return m_type;
 }
 
-std::string SortingMode::toString() {
+std::string SortingMode::toString() const {
     switch (m_type) {
     case ASCENDING:
         return "ASCENDING";

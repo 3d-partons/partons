@@ -71,7 +71,7 @@ public:
      * Get string representation of type being assigned to a declared object of this class.
      * @return String representation of assigned type, like "ASCENDING" for SortingMode::ASCENDING.
      */
-    std::string toString();
+    std::string toString() const;
 
     /**
      * Get short name representation of type being assigned to a declared object of this class.

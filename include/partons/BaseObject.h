@@ -55,7 +55,7 @@ public:
      *
      * @return a pre-formatted characters string.
      */
-    virtual std::string toString() const; //TODO propagate const in every daugther class
+    virtual std::string toString() const;
 
     /**
      * Used to split a complex C++ object into a concatenation of simple types.

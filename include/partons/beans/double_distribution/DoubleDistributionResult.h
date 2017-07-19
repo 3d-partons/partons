@@ -30,7 +30,7 @@ public:
     const PartonDistribution& getPartonDistribution(
             DoubleDistributionType::Type doubleDistributionType) const;
 
-    std::string toString();
+    virtual std::string toString() const;
 
 private:
     std::map<DoubleDistributionType::Type, PartonDistribution> m_partonDistributions;

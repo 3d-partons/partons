@@ -18,7 +18,7 @@ QuarkFlavor::operator QuarkFlavor::Type() const {
     return m_type;
 }
 
-std::string QuarkFlavor::toString() {
+std::string QuarkFlavor::toString() const {
     switch (m_type) {
     case UP:
         return "UP";
