@@ -12,82 +12,101 @@
 #include "../../../../include/partons/Partons.h"
 
 const unsigned int MMS13SubtractionConstantModel::classId =
-        BaseObjectRegistry::getInstance()->registerBaseObject(
-                new MMS13SubtractionConstantModel(
-                        "MMS13SubtractionConstantModel"));
+		BaseObjectRegistry::getInstance()->registerBaseObject(
+				new MMS13SubtractionConstantModel(
+						"MMS13SubtractionConstantModel"));
 
 MMS13SubtractionConstantModel::MMS13SubtractionConstantModel(
-        const std::string& className) :
-        GPDSubtractionConstantModule(className), MathIntegratorModule() {
+		const std::string& className) :
+		GPDSubtractionConstantModule(className), MathIntegratorModule() {
 
-    m_pMMS13Model = 0;
+	m_pMMS13Model = 0;
 
-    m_listGPDComputeTypeAvailable.insert(
-            std::make_pair(GPDType::H,
-                    &GPDSubtractionConstantModule::computeH));
+	m_listGPDComputeTypeAvailable.insert(
+			std::make_pair(GPDType::H,
+					&GPDSubtractionConstantModule::computeH));
 
-    m_listGPDComputeTypeAvailable.insert(
-            std::make_pair(GPDType::E,
-                    &GPDSubtractionConstantModule::computeE));
+	m_listGPDComputeTypeAvailable.insert(
+			std::make_pair(GPDType::E,
+					&GPDSubtractionConstantModule::computeE));
 
-    initFunctorsForIntegrations();
+	initFunctorsForIntegrations();
 }
 
 MMS13SubtractionConstantModel::~MMS13SubtractionConstantModel() {
 
-    if (m_p_int_dTermIntegral) {
-        delete m_p_int_dTermIntegral;
-        m_p_int_dTermIntegral = 0;
-    }
+	if (m_p_int_dTermIntegral) {
+		delete m_p_int_dTermIntegral;
+		m_p_int_dTermIntegral = 0;
+	}
 }
 
 MMS13SubtractionConstantModel* MMS13SubtractionConstantModel::clone() const {
-    return new MMS13SubtractionConstantModel(*this);
+	return new MMS13SubtractionConstantModel(*this);
+}
+
+void MMS13SubtractionConstantModel::configure(
+		const ElemUtils::Parameters& parameters) {
+
+	GPDSubtractionConstantModule::configure(parameters);
+	MathIntegratorModule::configureIntegrator(parameters);
+}
+
+std::string MMS13SubtractionConstantModel::toString() const {
+	return GPDSubtractionConstantModule::toString();
 }
 
 void MMS13SubtractionConstantModel::resolveObjectDependencies() {
 
-    setIntegrator(NumA::IntegratorType1D::DEXP);
+	setIntegrator(NumA::IntegratorType1D::DEXP);
 
-    m_pMMS13Model =
-            static_cast<MMS13Model*>(Partons::getInstance()->getModuleObjectFactory()->newGPDModule(
-                    MMS13Model::classId));
+	m_pMMS13Model =
+			static_cast<MMS13Model*>(Partons::getInstance()->getModuleObjectFactory()->newGPDModule(
+					MMS13Model::classId));
+}
+
+void MMS13SubtractionConstantModel::prepareSubModules(
+		const std::map<std::string, BaseObjectData>& subModulesData) {
+	GPDSubtractionConstantModule::prepareSubModules(subModulesData);
+}
+
+void MMS13SubtractionConstantModel::initModule() {
+	GPDSubtractionConstantModule::initModule();
+}
+
+void MMS13SubtractionConstantModel::isModuleWellConfigured() {
+	GPDSubtractionConstantModule::isModuleWellConfigured();
 }
 
 void MMS13SubtractionConstantModel::initFunctorsForIntegrations() {
-    m_p_int_dTermIntegral = NumA::Integrator1D::newIntegrationFunctor(this,
-            &MMS13SubtractionConstantModel::dTermIntegral);
+	m_p_int_dTermIntegral = NumA::Integrator1D::newIntegrationFunctor(this,
+			&MMS13SubtractionConstantModel::dTermIntegral);
 }
 
 MMS13SubtractionConstantModel::MMS13SubtractionConstantModel(
-        const MMS13SubtractionConstantModel& other) :
-        GPDSubtractionConstantModule(other), MathIntegratorModule(other) {
+		const MMS13SubtractionConstantModel& other) :
+		GPDSubtractionConstantModule(other), MathIntegratorModule(other) {
 
-    m_pMMS13Model = other.m_pMMS13Model;
+	m_pMMS13Model = other.m_pMMS13Model;
 
-    initFunctorsForIntegrations();
+	initFunctorsForIntegrations();
 }
 
 double MMS13SubtractionConstantModel::computeH() {
 
-    std::vector<double> parameters;
-    //TODO H, E, etc nie potrzebne
-    //TODO dodac const gdzie sie da w ostatniej pracy
-    return integrate(m_p_int_dTermIntegral, -1., 1., parameters);
+	std::vector<double> parameters;
+	//TODO H, E, etc nie potrzebne
+	//TODO dodac const gdzie sie da w ostatniej pracy
+	return integrate(m_p_int_dTermIntegral, -1., 1., parameters);
 }
 
 double MMS13SubtractionConstantModel::computeE() {
 
-    std::vector<double> parameters;
-    return -1 * integrate(m_p_int_dTermIntegral, -1., 1., parameters);
+	std::vector<double> parameters;
+	return -1 * integrate(m_p_int_dTermIntegral, -1., 1., parameters);
 }
 
 double MMS13SubtractionConstantModel::dTermIntegral(double zeta,
-        std::vector<double> par) {
-    return m_pMMS13Model->DTerm(zeta) / (1. - zeta);
-}
-
-void MMS13SubtractionConstantModel::prepareSubModules(
-        const std::map<std::string, BaseObjectData>& subModulesData) {
-    GPDSubtractionConstantModule::prepareSubModules(subModulesData);
+		std::vector<double> par) {
+	return m_pMMS13Model->DTerm(zeta) / (1. - zeta);
 }

@@ -141,6 +141,12 @@ void MPSSW13WithDTermModel::resolveObjectDependencies() {
     setIntegrator(NumA::IntegratorType1D::DEXP);
 }
 
+void MPSSW13WithDTermModel::configure(const ElemUtils::Parameters &parameters){
+
+	GPDModule::configure(parameters);
+	MathIntegratorModule::configureIntegrator(parameters);
+}
+
 MPSSW13WithDTermModel* MPSSW13WithDTermModel::clone() const {
     return new MPSSW13WithDTermModel(*this);
 }

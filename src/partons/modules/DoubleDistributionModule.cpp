@@ -206,6 +206,10 @@ void DoubleDistributionModule::setIncompleteGPDModule(
     m_pIncompleteGPD = pIncompleteGPD;
 }
 
+void DoubleDistributionModule::configure(const ElemUtils::Parameters &parameters){
+	ModuleObject::configure(parameters);
+}
+
 void DoubleDistributionModule::prepareSubModules(
         const std::map<std::string, BaseObjectData>& subModulesData) {
     ModuleObject::prepareSubModules(subModulesData);

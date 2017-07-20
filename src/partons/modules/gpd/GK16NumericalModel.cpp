@@ -25,7 +25,7 @@ const unsigned int GK16NumericalModel::classId =
 
 //TODO initialise missing members
 GK16NumericalModel::GK16NumericalModel(const std::string &className) :
-        GPDModule(className) {
+        GPDModule(className), MathIntegratorModule() {
     m_nf = 3;
     fL = 0.;
     m_MuF2_ref = 4.;
@@ -39,12 +39,11 @@ GK16NumericalModel::GK16NumericalModel(const std::string &className) :
     m_listGPDComputeTypeAvailable.insert(
             std::make_pair(GPDType::Et, &GPDModule::computeEt));
 
-    MathIntegratorModule();
     initFunctorsForIntegrations();
 }
 
 GK16NumericalModel::GK16NumericalModel(const GK16NumericalModel& other) :
-        GPDModule(other) {
+        GPDModule(other), MathIntegratorModule(other) {
     c1 = other.c1;
     c2 = other.c2;
     c3 = other.c3;
@@ -57,7 +56,6 @@ GK16NumericalModel::GK16NumericalModel(const GK16NumericalModel& other) :
     kappa_s = other.kappa_s;
     fL = other.fL;
 
-    MathIntegratorModule();
     initFunctorsForIntegrations();
 }
 
@@ -69,7 +67,9 @@ GK16NumericalModel::~GK16NumericalModel() {
 }
 
 void GK16NumericalModel::configure(const ElemUtils::Parameters &parameters) {
+
     GPDModule::configure(parameters);
+    MathIntegratorModule::configureIntegrator(parameters);
 }
 
 //TODO implement

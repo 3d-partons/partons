@@ -38,6 +38,10 @@ public:
     virtual PartonDistribution computeG();
     virtual PartonDistribution computeK();
 
+    virtual void configure(const ElemUtils::Parameters &parameters);
+    virtual void prepareSubModules(
+            const std::map<std::string, BaseObjectData>& subModulesData);
+
 protected:
     /**
      * Copy constructor

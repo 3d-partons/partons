@@ -141,6 +141,12 @@ void MPSSW13Model::resolveObjectDependencies() {
     setIntegrator(NumA::IntegratorType1D::DEXP);
 }
 
+void MPSSW13Model::configure(const ElemUtils::Parameters &parameters){
+
+	GPDModule::configure(parameters);
+	MathIntegratorModule::configureIntegrator(parameters);
+}
+
 MPSSW13Model* MPSSW13Model::clone() const {
     return new MPSSW13Model(*this);
 }
