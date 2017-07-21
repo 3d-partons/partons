@@ -2,7 +2,7 @@
 #define DVCSAUTSINPHIMPHISCOS0PHI_H
 
 /**
- * @file DVCSAutSinPhiMPhiSCos0Phi.h
+ * @file DVCSAutSinPhiMPhisCos0Phi.h
  * @author Luca COLANERI (IPNO)
  * @date July 18, 2016
  * @version 1.0
@@ -12,10 +12,10 @@
 #include <vector>
 
 #include "../../../MathIntegratorModule.h"
-#include "DVCSAutSinPhiMPhiS.h"
+#include "DVCSAutSinPhiMPhis.h"
 
 /**
- * @class DVCSAutSinPhiMPhiSCos0Phi
+ * @class DVCSAutSinPhiMPhisCos0Phi
  *
  * @brief 0th Fourier moment of transverse target beam asymmetry for negative beam charge.
  *
@@ -27,9 +27,9 @@
  * \int_{0}^{2\pi} d\phi A_{UT}^{\sin(\phi-\phi_{S})}(x_{B}, t, Q^2, \phi) \cos(0\phi)
  * \f$
  *
- * where \f$A_{UT}^{\sin(\phi-\phi_{S})}(x_{B}, t, Q^2, \phi)\f$ is defined in DVCSAutSinPhiMPhiS.
+ * where \f$A_{UT}^{\sin(\phi-\phi_{S})}(x_{B}, t, Q^2, \phi)\f$ is defined in DVCSAutSinPhiMPhis.
  */
-class DVCSAutSinPhiMPhiSCos0Phi: public DVCSAutSinPhiMPhiS,
+class DVCSAutSinPhiMPhisCos0Phi: public DVCSAutSinPhiMPhis,
         public MathIntegratorModule {
 
 public:
@@ -43,14 +43,14 @@ public:
      * Constructor.
      * @param className Name of class.
      */
-    DVCSAutSinPhiMPhiSCos0Phi(const std::string &className);
+    DVCSAutSinPhiMPhisCos0Phi(const std::string &className);
 
     /**
      * Destructor.
      */
-    virtual ~DVCSAutSinPhiMPhiSCos0Phi();
+    virtual ~DVCSAutSinPhiMPhisCos0Phi();
 
-    virtual DVCSAutSinPhiMPhiSCos0Phi* clone() const;
+    virtual DVCSAutSinPhiMPhisCos0Phi* clone() const;
     virtual double computeFourierObservable();
 
 protected:
@@ -59,7 +59,7 @@ protected:
      * Copy constructor.
      * @param other Object to be copied.
      */
-    DVCSAutSinPhiMPhiSCos0Phi(const DVCSAutSinPhiMPhiSCos0Phi &other);
+    DVCSAutSinPhiMPhisCos0Phi(const DVCSAutSinPhiMPhisCos0Phi &other);
 
     /**
      * Functor to perform the integration.

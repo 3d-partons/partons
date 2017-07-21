@@ -1,4 +1,4 @@
-#include "../../../../../../include/partons/modules/observable/DVCS/cross_section_difference/DVCSCrossSectionDifferenceLUMinus.h"
+#include "../../../../../../include/partons/modules/observable/DVCS/cross_section/DVCSCrossSectionDifferenceLUMinus.h"
 
 #include <NumA/linear_algebra/vector/Vector3D.h>
 

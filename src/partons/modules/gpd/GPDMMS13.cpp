@@ -94,6 +94,7 @@ void GPDMMS13::resolveObjectDependencies() {
 void GPDMMS13::configure(const ElemUtils::Parameters &parameters) {
 
     GPDModule::configure(parameters);
+    MathIntegratorModule::configureIntegrator(parameters);
 
     if (parameters.isAvailable(GPDMMS13::PARAMETER_NAME_MMS13MODEL_NHpE)) {
         m_NHpE = parameters.getLastAvailable().toInt();

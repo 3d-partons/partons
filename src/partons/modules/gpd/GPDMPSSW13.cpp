@@ -140,6 +140,12 @@ void GPDMPSSW13::resolveObjectDependencies() {
     setIntegrator(NumA::IntegratorType1D::DEXP);
 }
 
+void GPDMPSSW13::configure(const ElemUtils::Parameters &parameters){
+
+	GPDModule::configure(parameters);
+	MathIntegratorModule::configureIntegrator(parameters);
+}
+
 GPDMPSSW13* GPDMPSSW13::clone() const {
     return new GPDMPSSW13(*this);
 }

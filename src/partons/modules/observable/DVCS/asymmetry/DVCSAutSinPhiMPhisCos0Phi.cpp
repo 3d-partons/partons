@@ -1,5 +1,3 @@
-#include "../../../../../../include/partons/modules/observable/DVCS/asymmetry/DVCSAutSinPhiMPhiSCos0Phi.h"
-
 #include <NumA/functor/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
@@ -9,14 +7,15 @@
 #include "../../../../../../include/partons/beans/observable/ObservableType.h"
 #include "../../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../../include/partons/FundamentalPhysicalConstants.h"
+#include "../../../../../../include/partons/modules/observable/DVCS/asymmetry/DVCSAutSinPhiMPhisCos0Phi.h"
 
-const unsigned int DVCSAutSinPhiMPhiSCos0Phi::classId =
+const unsigned int DVCSAutSinPhiMPhisCos0Phi::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
-                new DVCSAutSinPhiMPhiSCos0Phi("DVCSAutSinPhiMPhiSCos0Phi"));
+                new DVCSAutSinPhiMPhisCos0Phi("DVCSAutSinPhiMPhisCos0Phi"));
 
-DVCSAutSinPhiMPhiSCos0Phi::DVCSAutSinPhiMPhiSCos0Phi(
+DVCSAutSinPhiMPhisCos0Phi::DVCSAutSinPhiMPhisCos0Phi(
         const std::string &className) :
-        DVCSAutSinPhiMPhiS(className), MathIntegratorModule(), m_pFunctionToIntegrateObservable(
+        DVCSAutSinPhiMPhis(className), MathIntegratorModule(), m_pFunctionToIntegrateObservable(
                 0) {
 
     m_observableType = ObservableType::FOURIER;
@@ -26,15 +25,15 @@ DVCSAutSinPhiMPhiSCos0Phi::DVCSAutSinPhiMPhiSCos0Phi(
     initFunctorsForIntegrations();
 }
 
-DVCSAutSinPhiMPhiSCos0Phi::DVCSAutSinPhiMPhiSCos0Phi(
-        const DVCSAutSinPhiMPhiSCos0Phi& other) :
-        DVCSAutSinPhiMPhiS(other), MathIntegratorModule(other) {
+DVCSAutSinPhiMPhisCos0Phi::DVCSAutSinPhiMPhisCos0Phi(
+        const DVCSAutSinPhiMPhisCos0Phi& other) :
+        DVCSAutSinPhiMPhis(other), MathIntegratorModule(other) {
 
     m_pFunctionToIntegrateObservable = 0;
     initFunctorsForIntegrations();
 }
 
-DVCSAutSinPhiMPhiSCos0Phi::~DVCSAutSinPhiMPhiSCos0Phi() {
+DVCSAutSinPhiMPhisCos0Phi::~DVCSAutSinPhiMPhisCos0Phi() {
 
     if (m_pFunctionToIntegrateObservable) {
         delete m_pFunctionToIntegrateObservable;
@@ -42,22 +41,22 @@ DVCSAutSinPhiMPhiSCos0Phi::~DVCSAutSinPhiMPhiSCos0Phi() {
     }
 }
 
-void DVCSAutSinPhiMPhiSCos0Phi::initFunctorsForIntegrations() {
+void DVCSAutSinPhiMPhisCos0Phi::initFunctorsForIntegrations() {
     m_pFunctionToIntegrateObservable =
             NumA::Integrator1D::newIntegrationFunctor(this,
-                    &DVCSAutSinPhiMPhiSCos0Phi::functionToIntegrateObservable);
+                    &DVCSAutSinPhiMPhisCos0Phi::functionToIntegrateObservable);
 }
 
-DVCSAutSinPhiMPhiSCos0Phi* DVCSAutSinPhiMPhiSCos0Phi::clone() const {
-    return new DVCSAutSinPhiMPhiSCos0Phi(*this);
+DVCSAutSinPhiMPhisCos0Phi* DVCSAutSinPhiMPhisCos0Phi::clone() const {
+    return new DVCSAutSinPhiMPhisCos0Phi(*this);
 }
 
-double DVCSAutSinPhiMPhiSCos0Phi::functionToIntegrateObservable(double x,
+double DVCSAutSinPhiMPhisCos0Phi::functionToIntegrateObservable(double x,
         std::vector<double> params) {
-    return DVCSAutSinPhiMPhiS::computePhiObservable(x) * cos(x);
+    return DVCSAutSinPhiMPhis::computePhiObservable(x) * cos(x);
 }
 
-double DVCSAutSinPhiMPhiSCos0Phi::computeFourierObservable() {
+double DVCSAutSinPhiMPhisCos0Phi::computeFourierObservable() {
 
     std::vector<double> emptyParameters;
 

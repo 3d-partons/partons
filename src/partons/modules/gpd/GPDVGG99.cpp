@@ -145,7 +145,9 @@ void GPDVGG99::resolveObjectDependencies() {
 }
 
 void GPDVGG99::configure(const ElemUtils::Parameters &parameters) {
+
     GPDModule::configure(parameters);
+    MathIntegratorModule::configureIntegrator(parameters);
 }
 
 std::string GPDVGG99::toString() const {

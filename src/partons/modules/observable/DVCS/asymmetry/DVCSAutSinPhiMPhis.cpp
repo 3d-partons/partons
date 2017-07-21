@@ -1,32 +1,31 @@
-#include "../../../../../../include/partons/modules/observable/DVCS/asymmetry/DVCSAutSinPhiMPhiS.h"
-
 #include <NumA/linear_algebra/vector/Vector3D.h>
 
 #include "../../../../../../include/partons/beans/observable/ObservableChannel.h"
 #include "../../../../../../include/partons/BaseObjectRegistry.h"
+#include "../../../../../../include/partons/modules/observable/DVCS/asymmetry/DVCSAutSinPhiMPhis.h"
 #include "../../../../../../include/partons/modules/ProcessModule.h"
 
-const unsigned int DVCSAutSinPhiMPhiS::classId =
+const unsigned int DVCSAutSinPhiMPhis::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
-                new DVCSAutSinPhiMPhiS("DVCSAutSinPhiMPhiS"));
+                new DVCSAutSinPhiMPhis("DVCSAutSinPhiMPhis"));
 
-DVCSAutSinPhiMPhiS::DVCSAutSinPhiMPhiS(const std::string &className) :
+DVCSAutSinPhiMPhis::DVCSAutSinPhiMPhis(const std::string &className) :
         Observable(className) {
     m_channel = ObservableChannel::DVCS;
 }
 
-DVCSAutSinPhiMPhiS::DVCSAutSinPhiMPhiS(const DVCSAutSinPhiMPhiS& other) :
+DVCSAutSinPhiMPhis::DVCSAutSinPhiMPhis(const DVCSAutSinPhiMPhis& other) :
         Observable(other) {
 }
 
-DVCSAutSinPhiMPhiS::~DVCSAutSinPhiMPhiS() {
+DVCSAutSinPhiMPhis::~DVCSAutSinPhiMPhis() {
 }
 
-DVCSAutSinPhiMPhiS* DVCSAutSinPhiMPhiS::clone() const {
-    return new DVCSAutSinPhiMPhiS(*this);
+DVCSAutSinPhiMPhis* DVCSAutSinPhiMPhis::clone() const {
+    return new DVCSAutSinPhiMPhis(*this);
 }
 
-double DVCSAutSinPhiMPhiS::computePhiObservable(double phi) {
+double DVCSAutSinPhiMPhis::computePhiObservable(double phi) {
 
     double A = m_pProcessModule->computeCrossSection(+1, -1,
             NumA::Vector3D(0., -1., 0.), phi);

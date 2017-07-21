@@ -2,7 +2,7 @@
 #define DVCSAUTSINPHIMPHIS_H
 
 /**
- * @file DVCSAutSinPhiMPhiS.h
+ * @file DVCSAutSinPhiMPhis.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date November 28, 2014
  * @version 1.0
@@ -13,7 +13,7 @@
 #include "../../Observable.h"
 
 /**
- * @class DVCSAutSinPhiMPhiS
+ * @class DVCSAutSinPhiMPhis
  * @brief Transverse target beam asymmetry for negative beam charge.
  *
  * Definition:<br>
@@ -30,7 +30,7 @@
  * where:
  * \f$\sigma_{t_{h}}^{b_{h} b_{c}}\f$ is single photon production cross-section (DVCS, BH and Int) for target helicity denoted by \f$t_{h}\f$, beam helicity denoted by \f$b_{h}\f$ and beam charge denoted by \f$b_{c}\f$.
  */
-class DVCSAutSinPhiMPhiS: public Observable {
+class DVCSAutSinPhiMPhis: public Observable {
 
 public:
 
@@ -43,14 +43,14 @@ public:
      * Constructor.
      * @param className Name of class.
      */
-    DVCSAutSinPhiMPhiS(const std::string &className);
+    DVCSAutSinPhiMPhis(const std::string &className);
 
     /**
      * Destructor.
      */
-    virtual ~DVCSAutSinPhiMPhiS();
+    virtual ~DVCSAutSinPhiMPhis();
 
-    virtual DVCSAutSinPhiMPhiS* clone() const;
+    virtual DVCSAutSinPhiMPhis* clone() const;
     virtual double computePhiObservable(double phi);
 
 protected:
@@ -59,7 +59,7 @@ protected:
      * Copy constructor.
      * @param other Object to be copied.
      */
-    DVCSAutSinPhiMPhiS(const DVCSAutSinPhiMPhiS &other);
+    DVCSAutSinPhiMPhis(const DVCSAutSinPhiMPhis &other);
 };
 
 #endif /* DVCSAUTSINPHIMPHIS_H */
