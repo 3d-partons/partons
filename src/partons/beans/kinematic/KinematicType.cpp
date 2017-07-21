@@ -16,7 +16,7 @@ KinematicType::operator KinematicType::Type() const {
     return m_type;
 }
 
-std::string KinematicType::toString() {
+std::string KinematicType::toString() const {
     switch (m_type) {
     case THEO:
         return "THEO";

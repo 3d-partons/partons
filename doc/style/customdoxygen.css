@@ -96,6 +96,12 @@ div.ah, span.ah {
     	margin: 0px 0px 0px 20px;
 }
 
+/* layout of PARTONS logo */
+#projectlogo {
+    vertical-align: middle;
+    text-align: right;
+}
+
 /* navigation bar in NumA, etc. */
 .navpath ul {
     	background-image: none;

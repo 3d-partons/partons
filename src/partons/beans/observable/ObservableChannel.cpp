@@ -11,7 +11,7 @@ ObservableChannel::operator ObservableChannel::Type() const {
     return m_type;
 }
 
-std::string ObservableChannel::toString() {
+std::string ObservableChannel::toString() const {
     switch (m_type) {
     case DVCS:
         return "DVCS";

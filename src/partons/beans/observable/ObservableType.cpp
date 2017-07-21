@@ -11,7 +11,7 @@ ObservableType::operator ObservableType::Type() const {
     return m_type;
 }
 
-std::string ObservableType::toString() {
+std::string ObservableType::toString() const {
     switch (m_type) {
     case PHI:
         return "PHI";

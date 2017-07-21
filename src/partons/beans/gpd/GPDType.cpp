@@ -31,7 +31,7 @@ GPDType::operator GPDType::Type() const {
     return m_type;
 }
 
-std::string GPDType::toString() {
+std::string GPDType::toString() const {
     switch (m_type) {
     case H:
         return "H";

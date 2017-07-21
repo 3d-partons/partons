@@ -16,7 +16,7 @@ DoubleDistributionType::operator DoubleDistributionType::Type() const {
     return m_type;
 }
 
-std::string DoubleDistributionType::toString() {
+std::string DoubleDistributionType::toString() const {
 
     switch (m_type) {
     case ALL:

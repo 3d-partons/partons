@@ -26,7 +26,7 @@ public:
 
     operator Type() const;
 
-    std::string toString();
+    std::string toString() const;
 
 private:
     DoubleDistributionType::Type m_type;

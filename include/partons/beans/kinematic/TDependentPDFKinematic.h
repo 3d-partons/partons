@@ -46,7 +46,7 @@ public:
 
     // ##### GETTERS & SETTERS #####
 
-    virtual std::string toString();
+    virtual std::string toString() const;
 	double getMuF() const;
 	void setMuF(double muF);
 	double getMuR() const;

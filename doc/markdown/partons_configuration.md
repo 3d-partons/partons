@@ -11,15 +11,15 @@ There are three PARTONS configuration files that you may be interested in:
 * `logger.cfg`: configuration of Logger
 * `environment_configuration.dat`: environment configuration information
 
-All of these files are described in the following.
+%All of these files are described in the following.
 
 <hr>
 
 # partons.properties {#config_main}
 
-This is the main configuration file of PARTONS to be placed together with the executable file. All options are explained here in the comments starting with the hash symbol '#':
+This is the main configuration file of PARTONS to be placed together with the executable file. %All options are explained here in the comments starting with the hash symbol '#':
 
-~~~~~~~~~~~~~{.sh}
+```py
 # PATHS #
 
 # Path to the configuration file of Logger 
@@ -58,12 +58,13 @@ computation.nb.processor = 1
 gpd.service.batch.size = 10000
 ccf.service.batch.size = 1000
 observable.service.batch.size = 1000
-~~~~~~~~~~~~~
+```
 
 # logger.cfg {#config_logger}
 
-This is the configuration file of Logger. The path to this file should be set in `partons.properties` via `log.file.path` option. All options are explained here in the comments starting with the hash symbol '#':
-~~~~~~~~~~~~~{.sh}
+This is the configuration file of Logger. The path to this file should be set in `partons.properties` via `log.file.path` option. %All options are explained here in the comments starting with the hash symbol `#`:
+
+```py
 # Enable Logger: 
 # true   - Logger enabled
 # false  - Logger disabled
@@ -88,12 +89,13 @@ print.mode = BOTH
 
 # Path to the directory containing Logger output text files 
 log.folder.path = bin
-~~~~~~~~~~~~~
+```
 
 # environment_configuration.dat {#config_env}
 
 This file contains environment configuration information. The path to this file should be set in `partons.properties` via `environment.configuration.file.path` option. The main purpose of this file is to store its content in the database during the insertion of data, so latter one can easily reproduce the used computational environment. The file must be set by the user and its content may look as follows:
-~~~~~~~~~~~~~{.sh}
+
+```sh
 system: Linux partonsVM 3.16.0-4-amd64 #1 SMP Debian 3.16.43-2 (2017-04-30) x86_64 GNU/Linux
 g++: 4.9.2
 root: 5.34/19
@@ -104,9 +106,11 @@ cln: 1.3.4
 git elementary-utils: master/2e0e9ee721aa46262545fa9963e935073f829e3e
 git numa: master/c13779a34c4847b67cf2f55d12c58fde8c78696b
 git partons: master/72bdcfc08c6dd7d8ec8386dc0d36449b4fd28fad
-~~~~~~~~~~~~~
+```
+
 The content was obtained with this script run under Linux:
-~~~~~~~~~~~~~{.sh}
+
+```py
 #!/bin/bash
 
 #paths
@@ -136,4 +140,4 @@ echo "cln: `pkg-config --modversion cln`"
 echo "git elementary-utils: $GIT_ELEM_UTILS"
 echo "git numa: $GIT_NUMA"
 echo "git partons: $GIT_PARTONS"
-~~~~~~~~~~~~~
+```

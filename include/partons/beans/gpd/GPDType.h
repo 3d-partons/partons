@@ -107,7 +107,7 @@ public:
      * Get string representation of type being assigned to a declared object of this class.
      * @return String representation of assigned type, like "H" for GPDType::H.
      */
-    std::string toString();
+    std::string toString() const;
 
     /**
      * Serialize into given Packet.

@@ -12,11 +12,11 @@ computeManyKinematicOneModel
 
 This task is used to evaluate a given GPD model with kinematics defined in a text file. 
 
-The text file may contain one or more lines, with each of them corresponding to a single GPD kinematics described by the format:
+The text file may contain one or more lines, with each one corresponding to a single set of GPD kinematics described by the format:
 ~~~~~~~~~~~~~{.xml} 
 x|xi|t|muF2|muR2
 ~~~~~~~~~~~~~
-that is by the values of \f$x\f$, \f$\xi\f$, \f$t\f$, \f$\mu_{F}^{2}\f$ and \f$\mu_{R}^{2}\f$ variables separated by the pipe symbol ("|").
+that is by the values of \f$x\f$, \f$\xi\f$, \f$t\f$, \f$\mu_{F}^{2}\f$ and \f$\mu_{R}^{2}\f$ variables separated by the pipe symbol `|`.
 
 # Example {#usage_gpd_2_example} 
 

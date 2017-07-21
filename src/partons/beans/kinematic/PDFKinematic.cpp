@@ -13,7 +13,7 @@ PDFKinematic::PDFKinematic(double x, double MuF, double MuR) :
 PDFKinematic::~PDFKinematic() {
 }
 
-std::string PDFKinematic::toString() {
+std::string PDFKinematic::toString() const {
     return ElemUtils::Formatter() << "m_x = " << m_x << " m_MuF = " << m_MuF
             << " m_MuR = " << m_MuR;
 }
