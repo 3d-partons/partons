@@ -26,7 +26,6 @@ const unsigned int GK16NumericalModel::classId =
 //TODO initialise missing members
 GK16NumericalModel::GK16NumericalModel(const std::string &className) :
         GPDModule(className), MathIntegratorModule() {
-    m_nf = 3;
     fL = 0.;
     m_MuF2_ref = 4.;
 
