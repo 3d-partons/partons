@@ -154,18 +154,18 @@ private:
 } /* namespace PARTONS */
 
 template<class T>
-const std::string PhysicalType<T>::PHYSICAL_TYPE_NONE_UNIT = "none";
+const std::string PARTONS::PhysicalType<T>::PHYSICAL_TYPE_NONE_UNIT = "none";
 
 template<class T>
 ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
-        PhysicalType<T>& physicalType) {
+        PARTONS::PhysicalType<T>& physicalType) {
     physicalType.serialize(packet);
     return packet;
 }
 
 template<class T>
 ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
-        PhysicalType<T>& physicalType) {
+        PARTONS::PhysicalType<T>& physicalType) {
     physicalType.unserialize(packet);
     return packet;
 }
@@ -173,77 +173,77 @@ ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
 /// Comparison operators
 
 template<class T>
-inline bool operator==(PhysicalType<T> const &lhs, PhysicalType<T> const &rhs) {
+inline bool operator==(PARTONS::PhysicalType<T> const &lhs, PARTONS::PhysicalType<T> const &rhs) {
     return lhs.getValue() == rhs.getValue();
 }
 template<class T>
-inline bool operator!=(PhysicalType<T> const &lhs, PhysicalType<T> const &rhs) {
+inline bool operator!=(PARTONS::PhysicalType<T> const &lhs, PARTONS::PhysicalType<T> const &rhs) {
     return lhs.getValue() != rhs.getValue();
 }
 template<class T>
-inline bool operator<(PhysicalType<T> const &lhs, PhysicalType<T> const &rhs) {
+inline bool operator<(PARTONS::PhysicalType<T> const &lhs, PARTONS::PhysicalType<T> const &rhs) {
     return lhs.getValue() < rhs.getValue();
 }
 template<class T>
-inline bool operator>(PhysicalType<T> const &lhs, PhysicalType<T> const &rhs) {
+inline bool operator>(PARTONS::PhysicalType<T> const &lhs, PARTONS::PhysicalType<T> const &rhs) {
     return lhs.getValue() > rhs.getValue();
 }
 template<class T>
-inline bool operator<=(PhysicalType<T> const &lhs, PhysicalType<T> const &rhs) {
+inline bool operator<=(PARTONS::PhysicalType<T> const &lhs, PARTONS::PhysicalType<T> const &rhs) {
     return lhs.getValue() <= rhs.getValue();
 }
 template<class T>
-inline bool operator>=(PhysicalType<T> const &lhs, PhysicalType<T> const &rhs) {
+inline bool operator>=(PARTONS::PhysicalType<T> const &lhs, PARTONS::PhysicalType<T> const &rhs) {
     return lhs.getValue() >= rhs.getValue();
 }
 
 template<class T>
-inline bool operator==(PhysicalType<T> const &lhs, T const &rhs) {
+inline bool operator==(PARTONS::PhysicalType<T> const &lhs, T const &rhs) {
     return lhs.getValue() == rhs;
 }
 template<class T>
-inline bool operator!=(PhysicalType<T> const &lhs, T const &rhs) {
+inline bool operator!=(PARTONS::PhysicalType<T> const &lhs, T const &rhs) {
     return lhs.getValue() != rhs;
 }
 template<class T>
-inline bool operator<(PhysicalType<T> const &lhs, T const &rhs) {
+inline bool operator<(PARTONS::PhysicalType<T> const &lhs, T const &rhs) {
     return lhs.getValue() < rhs;
 }
 template<class T>
-inline bool operator>(PhysicalType<T> const &lhs, T const &rhs) {
+inline bool operator>(PARTONS::PhysicalType<T> const &lhs, T const &rhs) {
     return lhs.getValue() > rhs;
 }
 template<class T>
-inline bool operator<=(PhysicalType<T> const &lhs, T const &rhs) {
+inline bool operator<=(PARTONS::PhysicalType<T> const &lhs, T const &rhs) {
     return lhs.getValue() <= rhs;
 }
 template<class T>
-inline bool operator>=(PhysicalType<T> const &lhs, T const &rhs) {
+inline bool operator>=(PARTONS::PhysicalType<T> const &lhs, T const &rhs) {
     return lhs.getValue() >= rhs;
 }
 
 template<class T>
-inline bool operator==(T const &lhs, PhysicalType<T> const &rhs) {
+inline bool operator==(T const &lhs, PARTONS::PhysicalType<T> const &rhs) {
     return lhs == rhs.getValue();
 }
 template<class T>
-inline bool operator!=(T const &lhs, PhysicalType<T> const &rhs) {
+inline bool operator!=(T const &lhs, PARTONS::PhysicalType<T> const &rhs) {
     return lhs != rhs.getValue();
 }
 template<class T>
-inline bool operator<(T const &lhs, PhysicalType<T> const &rhs) {
+inline bool operator<(T const &lhs, PARTONS::PhysicalType<T> const &rhs) {
     return lhs < rhs.getValue();
 }
 template<class T>
-inline bool operator>(T const &lhs, PhysicalType<T> const &rhs) {
+inline bool operator>(T const &lhs, PARTONS::PhysicalType<T> const &rhs) {
     return lhs > rhs.getValue();
 }
 template<class T>
-inline bool operator<=(T const &lhs, PhysicalType<T> const &rhs) {
+inline bool operator<=(T const &lhs, PARTONS::PhysicalType<T> const &rhs) {
     return lhs <= rhs.getValue();
 }
 template<class T>
-inline bool operator>=(T const &lhs, PhysicalType<T> const &rhs) {
+inline bool operator>=(T const &lhs, PARTONS::PhysicalType<T> const &rhs) {
     return lhs >= rhs.getValue();
 }
 
@@ -253,58 +253,58 @@ inline bool operator>=(T const &lhs, PhysicalType<T> const &rhs) {
 //TODO use setters for avoid problem with m_initialized value
 
 template<class T>
-inline PhysicalType<T> operator+(PhysicalType<T> const &lhs,
-        PhysicalType<T> const &rhs) {
-    return PhysicalType<T>(lhs.getValue() + rhs.getValue(), lhs.getUnit());
+inline PARTONS::PhysicalType<T> operator+(PARTONS::PhysicalType<T> const &lhs,
+        PARTONS::PhysicalType<T> const &rhs) {
+    return PARTONS::PhysicalType<T>(lhs.getValue() + rhs.getValue(), lhs.getUnit());
 }
 template<class T>
-inline PhysicalType<T> operator-(PhysicalType<T> const &lhs,
-        PhysicalType<T> const &rhs) {
-    return PhysicalType<T>(lhs.getValue() - rhs.getValue(), lhs.getUnit());
+inline PARTONS::PhysicalType<T> operator-(PARTONS::PhysicalType<T> const &lhs,
+        PARTONS::PhysicalType<T> const &rhs) {
+    return PARTONS::PhysicalType<T>(lhs.getValue() - rhs.getValue(), lhs.getUnit());
 }
 template<class T>
-inline PhysicalType<T> operator*(PhysicalType<T> const &lhs,
-        PhysicalType<T> const &rhs) {
-    return PhysicalType<T>(lhs.getValue() * rhs.getValue(), lhs.getUnit());
+inline PARTONS::PhysicalType<T> operator*(PARTONS::PhysicalType<T> const &lhs,
+        PARTONS::PhysicalType<T> const &rhs) {
+    return PARTONS::PhysicalType<T>(lhs.getValue() * rhs.getValue(), lhs.getUnit());
 }
 template<class T>
-inline PhysicalType<T> operator/(PhysicalType<T> const &lhs,
-        PhysicalType<T> const &rhs) {
-    return PhysicalType<T>(lhs.getValue() / rhs.getValue(), lhs.getUnit());
-}
-
-template<class T>
-inline PhysicalType<T> operator+(PhysicalType<T> const &lhs, T const &rhs) {
-    return PhysicalType<T>(lhs.getValue() + rhs, lhs.getUnit());
-}
-template<class T>
-inline PhysicalType<T> operator-(PhysicalType<T> const &lhs, T const &rhs) {
-    return PhysicalType<T>(lhs.getValue() - rhs, lhs.getUnit());
-}
-template<class T>
-inline PhysicalType<T> operator*(PhysicalType<T> const &lhs, T const &rhs) {
-    return PhysicalType<T>(lhs.getValue() * rhs, lhs.getUnit());
-}
-template<class T>
-inline PhysicalType<T> operator/(PhysicalType<T> const &lhs, T const &rhs) {
-    return PhysicalType<T>(lhs.getValue() / rhs, lhs.getUnit());
+inline PARTONS::PhysicalType<T> operator/(PARTONS::PhysicalType<T> const &lhs,
+        PARTONS::PhysicalType<T> const &rhs) {
+    return PARTONS::PhysicalType<T>(lhs.getValue() / rhs.getValue(), lhs.getUnit());
 }
 
 template<class T>
-inline PhysicalType<T> operator+(T const &lhs, PhysicalType<T> const &rhs) {
-    return PhysicalType<T>(lhs + rhs.getValue(), rhs.getUnit());
+inline PARTONS::PhysicalType<T> operator+(PARTONS::PhysicalType<T> const &lhs, T const &rhs) {
+    return PARTONS::PhysicalType<T>(lhs.getValue() + rhs, lhs.getUnit());
 }
 template<class T>
-inline PhysicalType<T> operator-(T const &lhs, PhysicalType<T> const &rhs) {
-    return PhysicalType<T>(lhs - rhs.getValue(), rhs.getUnit());
+inline PARTONS::PhysicalType<T> operator-(PARTONS::PhysicalType<T> const &lhs, T const &rhs) {
+    return PARTONS::PhysicalType<T>(lhs.getValue() - rhs, lhs.getUnit());
 }
 template<class T>
-inline PhysicalType<T> operator*(T const &lhs, PhysicalType<T> const &rhs) {
-    return PhysicalType<T>(lhs * rhs.getValue(), rhs.getUnit());
+inline PARTONS::PhysicalType<T> operator*(PARTONS::PhysicalType<T> const &lhs, T const &rhs) {
+    return PARTONS::PhysicalType<T>(lhs.getValue() * rhs, lhs.getUnit()); //WRONG! TODO
 }
 template<class T>
-inline PhysicalType<T> operator/(T const &lhs, PhysicalType<T> const &rhs) {
-    return PhysicalType<T>(lhs / rhs.getValue(), rhs.getUnit());
+inline PARTONS::PhysicalType<T> operator/(PARTONS::PhysicalType<T> const &lhs, T const &rhs) {
+    return PARTONS::PhysicalType<T>(lhs.getValue() / rhs, lhs.getUnit()); //WRONG! TODO
+}
+
+template<class T>
+inline PARTONS::PhysicalType<T> operator+(T const &lhs, PARTONS::PhysicalType<T> const &rhs) {
+    return PARTONS::PhysicalType<T>(lhs + rhs.getValue(), rhs.getUnit());
+}
+template<class T>
+inline PARTONS::PhysicalType<T> operator-(T const &lhs, PARTONS::PhysicalType<T> const &rhs) {
+    return PARTONS::PhysicalType<T>(lhs - rhs.getValue(), rhs.getUnit());
+}
+template<class T>
+inline PARTONS::PhysicalType<T> operator*(T const &lhs, PARTONS::PhysicalType<T> const &rhs) {
+    return PARTONS::PhysicalType<T>(lhs * rhs.getValue(), rhs.getUnit()); //WRONG! TODO
+}
+template<class T>
+inline PARTONS::PhysicalType<T> operator/(T const &lhs, PARTONS::PhysicalType<T> const &rhs) {
+    return PARTONS::PhysicalType<T>(lhs / rhs.getValue(), rhs.getUnit()); //WRONG! TODO
 }
 
 #endif /* PHYSICAL_TYPE_H */

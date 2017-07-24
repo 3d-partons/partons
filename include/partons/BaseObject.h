@@ -166,7 +166,7 @@ private:
 
 } /* namespace PARTONS */
 
-ElemUtils::Packet& operator <<(ElemUtils::Packet& packet, BaseObject& object);
-ElemUtils::Packet& operator >>(ElemUtils::Packet& packet, BaseObject& object);
+ElemUtils::Packet& operator <<(ElemUtils::Packet& packet, PARTONS::BaseObject& object);
+ElemUtils::Packet& operator >>(ElemUtils::Packet& packet, PARTONS::BaseObject& object);
 
 #endif /* BASE_OBJECT_H */

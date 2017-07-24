@@ -169,10 +169,10 @@ protected:
     }
 };
 
-} /* namespace PARTONS */
-
 template<typename KinematicType, typename ResultType>
 const std::string ServiceObjectTyped<KinematicType, ResultType>::SERVICE_OBJECT_PRINT_RESULTS =
         "printResults";
+
+} /* namespace PARTONS */
 
 #endif /* SERVICE_OBJECT_TYPED_H */

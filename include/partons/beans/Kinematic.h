@@ -94,11 +94,11 @@ private:
 /**
  * Stream operator to serialize class into Packet. See also Kinematic::serialize().
  */
-ElemUtils::Packet& operator <<(ElemUtils::Packet& packet, Kinematic& kinematic);
+ElemUtils::Packet& operator <<(ElemUtils::Packet& packet, PARTONS::Kinematic& kinematic);
 
 /**
  * Stream operator to retrieve class from Packet. See also Kinematic::unserialize().
  */
-ElemUtils::Packet& operator >>(ElemUtils::Packet& packet, Kinematic& kinematic);
+ElemUtils::Packet& operator >>(ElemUtils::Packet& packet, PARTONS::Kinematic& kinematic);
 
 #endif /* KINEMATIC_H */

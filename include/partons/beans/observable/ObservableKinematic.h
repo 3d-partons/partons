@@ -261,12 +261,12 @@ private:
  * Stream operator to serialize class into Packet. See also GPDType::serialize().
  */
 ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
-        ObservableKinematic& observableKinematic);
+        PARTONS::ObservableKinematic& observableKinematic);
 
 /**
  * Stream operator to retrieve class from Packet. See also GPDType::unserialize().
  */
 ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
-        ObservableKinematic& observableKinematic);
+        PARTONS::ObservableKinematic& observableKinematic);
 
 #endif /* OBSERVABLE_KINEMATIC_H */

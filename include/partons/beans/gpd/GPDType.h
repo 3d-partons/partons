@@ -173,11 +173,11 @@ private:
 /**
  * Stream operator to serialize class into Packet. See also GPDType::serialize().
  */
-ElemUtils::Packet& operator <<(ElemUtils::Packet& packet, GPDType& gpdType);
+ElemUtils::Packet& operator <<(ElemUtils::Packet& packet, PARTONS::GPDType& gpdType);
 
 /**
  * Stream operator to retrieve class from Packet. See also GPDType::unserialize().
  */
-ElemUtils::Packet& operator >>(ElemUtils::Packet& packet, GPDType& gpdType);
+ElemUtils::Packet& operator >>(ElemUtils::Packet& packet, PARTONS::GPDType& gpdType);
 
 #endif /* GPD_COMPUTE_TYPE_H */
