@@ -5,6 +5,9 @@
 
 #include "../../../../include/partons/database/common/service/ScenarioDaoService.h"
 
+namespace PARTONS {
+
+
 Scenario::Scenario() :
         DatabaseFileObject("Scenario"), m_description(
                 ElemUtils::StringUtils::EMPTY) {
@@ -85,3 +88,5 @@ std::string Scenario::fillFile() const {
     return scenarioDaoService.getXMLFileByIndexId(getIndexId());
 }
 
+
+} /* namespace PARTONS */

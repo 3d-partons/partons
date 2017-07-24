@@ -4,6 +4,9 @@
 #include <ElementaryUtils/thread/Packet.h>
 #include <vector>
 
+namespace PARTONS {
+
+
 const std::string GPDType::GPD_TYPE_DB_COLUMN_NAME = "gpd_type";
 
 GPDType::GPDType() :
@@ -115,3 +118,5 @@ List<GPDType> GPDType::getListOfGPDTypeFromString(
 
     return gpdTypeList;
 }
+
+} /* namespace PARTONS */

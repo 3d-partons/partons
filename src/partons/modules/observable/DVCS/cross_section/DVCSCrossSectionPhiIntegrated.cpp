@@ -9,6 +9,9 @@
 #include "../../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../../include/partons/FundamentalPhysicalConstants.h"
 
+namespace PARTONS {
+
+
 // Initialise [class]::classId with a unique name.
 const unsigned int DVCSCrossSectionPhiIntegrated::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
@@ -68,3 +71,5 @@ double DVCSCrossSectionPhiIntegrated::computeFourierObservable() {
     return integrate(m_pFunctionToIntegrateObservable, 0., (2 * Constant::PI),
             emptyParameters);
 }
+
+} /* namespace PARTONS */

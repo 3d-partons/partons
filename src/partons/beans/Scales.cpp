@@ -3,6 +3,9 @@
 #include "../../../include/partons/beans/Kinematic.h"
 #include "../../../include/partons/beans/Scales.h"
 
+namespace PARTONS {
+
+
 Scales::Scales() :
         BaseObject("Scale"), m_MuF2(0.), m_MuR2(0.) {
 }
@@ -35,3 +38,5 @@ std::string Scales::toString() const {
     return ElemUtils::Formatter() << "m_MuF2 = " << m_MuF2 << " (GeV2) m_MuR2 = "
             << m_MuR2 << " (GeV2)";
 }
+
+} /* namespace PARTONS */

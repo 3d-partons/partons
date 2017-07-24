@@ -13,6 +13,9 @@
 #include "../../../../../include/partons/database/DatabaseManager.h"
 #include "../../../../../include/partons/ResourceManager.h"
 
+namespace PARTONS {
+
+
 ScenarioDao::ScenarioDao() :
         BaseObject("ScenarioDao") {
 }
@@ -186,3 +189,5 @@ void ScenarioDao::updateScenarioFile(const int scenarioId,
 
     query.clear();
 }
+
+} /* namespace PARTONS */

@@ -4,6 +4,9 @@
 #include <QtCore/qcryptographichash.h>
 #include <QtCore/qstring.h>
 
+namespace PARTONS {
+
+
 Qt4CryptographicHash::Qt4CryptographicHash() :
         CryptographicHashI("Qt4CryptographicHash") {
 }
@@ -19,3 +22,5 @@ std::string Qt4CryptographicHash::generateSHA1HashSum(
 
     return QString(hashSum.toHex()).toStdString();
 }
+
+} /* namespace PARTONS */

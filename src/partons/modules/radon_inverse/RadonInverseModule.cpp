@@ -7,6 +7,9 @@
 #include <NumA/functor/multi_dimension/FunctionTypeMD.h>
 //#include <NumA/linear_algebra/LinAlgUtils.h>
 
+namespace PARTONS {
+
+
 const std::string RadonInverseModule::RADON_INVERSE_MODULE_CLASS_NAME =
         "RadonInverseModule";
 const std::string RadonInverseModule::PARAMETER_NAME_MESH_SIZE = "mesh_size";
@@ -262,3 +265,5 @@ void RadonInverseModule::prepareSubModules(
     ModuleObject::prepareSubModules(subModulesData);
 
 }
+
+} /* namespace PARTONS */

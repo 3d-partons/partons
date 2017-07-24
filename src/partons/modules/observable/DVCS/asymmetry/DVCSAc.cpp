@@ -7,6 +7,9 @@
 #include "../../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../../include/partons/modules/process/ProcessModule.h"
 
+namespace PARTONS {
+
+
 const unsigned int DVCSAc::classId =
 		BaseObjectRegistry::getInstance()->registerBaseObject(
 				new DVCSAc("DVCSAc"));
@@ -53,3 +56,5 @@ double DVCSAc::computePhiObservable(double phi) {
 
 	return ((A + B) - (C + D)) / ((A + B) + (C + D));
 }
+
+} /* namespace PARTONS */

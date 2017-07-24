@@ -1,5 +1,8 @@
 #include "../../../../include/partons/modules/scales/ScalesModule.h"
 
+namespace PARTONS {
+
+
 const std::string ScalesModule::SCALES_MODULE_CLASS_NAME = "ScalesModule";
 
 ScalesModule::ScalesModule(const std::string &className) :
@@ -32,3 +35,5 @@ void ScalesModule::prepareSubModules(
 
     // Nothing to do.
 }
+
+} /* namespace PARTONS */

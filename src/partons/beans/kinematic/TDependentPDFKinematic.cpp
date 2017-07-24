@@ -2,6 +2,9 @@
 
 #include <ElementaryUtils/string_utils/Formatter.h>
 
+namespace PARTONS {
+
+
 TDependentPDFKinematic::TDependentPDFKinematic() :
         m_x(0.), m_t(0.), m_MuF(0.), m_MuR(0.) {
 }
@@ -50,3 +53,5 @@ double TDependentPDFKinematic::getX() const {
 void TDependentPDFKinematic::setX(double x) {
     m_x = x;
 }
+
+} /* namespace PARTONS */

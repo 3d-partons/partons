@@ -15,6 +15,9 @@
 #include <cmath>
 #include <iterator>
 
+namespace PARTONS {
+
+
 QuarkPropagator::QuarkPropagator(const std::string& className, unsigned int N,
         double m, double mu, double Lambda2, double epsilon2) :
         BaseObject(className), m_N(N), m_m(m), m_mu(mu), m_Lambda2(Lambda2), m_epsilon2(
@@ -341,3 +344,5 @@ void QuarkPropagator::setB(double b) {
     m_B.assign(m_N, b);
     updateCoeffsB();
 }
+
+} /* namespace PARTONS */

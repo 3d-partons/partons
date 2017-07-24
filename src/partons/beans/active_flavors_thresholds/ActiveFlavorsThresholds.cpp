@@ -2,6 +2,9 @@
 
 #include <ElementaryUtils/string_utils/Formatter.h>
 
+namespace PARTONS {
+
+
 
 ActiveFlavorsThresholds::ActiveFlavorsThresholds() :
         m_nf(0), m_lowerBound(0.), m_upperBound(0.), m_index(0) {
@@ -62,3 +65,5 @@ double ActiveFlavorsThresholds::getUpperBound() const {
 void ActiveFlavorsThresholds::setUpperBound(double upperBound) {
     m_upperBound = upperBound;
 }
+
+} /* namespace PARTONS */

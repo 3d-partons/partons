@@ -6,6 +6,9 @@
 #include "../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 
+namespace PARTONS {
+
+
 const unsigned int GPDSubtractionConstantKM10::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new GPDSubtractionConstantKM10(
@@ -49,3 +52,5 @@ double GPDSubtractionConstantKM10::computeH() {
 double GPDSubtractionConstantKM10::computeE() {
     return -1 * computeH();
 }
+
+} /* namespace PARTONS */

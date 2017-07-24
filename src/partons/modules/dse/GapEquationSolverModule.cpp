@@ -10,6 +10,9 @@
 #include "../../../../include/partons/beans/dse/RLVertex.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
 
+namespace PARTONS {
+
+
 GapEquationSolverModule::GapEquationSolverModule(const std::string &className) :
         ModuleObject(className), m_gluonPropagator(0), m_quarkPropagator(0), m_vertex(
                 0), m_quad_x(0), m_quad_z(0), m_mu(19.), m_mu2(19 * 19), m_m(
@@ -601,3 +604,5 @@ void GapEquationSolverModule::prepareSubModules(
         const std::map<std::string, BaseObjectData>& subModulesData) {
     ModuleObject::prepareSubModules(subModulesData);
 }
+
+} /* namespace PARTONS */

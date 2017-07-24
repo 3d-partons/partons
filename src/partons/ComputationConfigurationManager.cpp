@@ -1,4 +1,7 @@
 //#include "../../include/partons/ComputationConfigurationManager.h"
+
+namespace PARTONS {
+
 //
 //// Global static pointer used to ensure a single instance of the class.
 //ComputationConfigurationManager* ComputationConfigurationManager::pInstance = 0;
@@ -20,3 +23,5 @@
 //
 //    return pInstance;
 //}
+
+} /* namespace PARTONS */

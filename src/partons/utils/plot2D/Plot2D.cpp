@@ -1,5 +1,8 @@
 #include "../../../../include/partons/utils/plot2D/Plot2D.h"
 
+namespace PARTONS {
+
+
 Plot2D::Plot2D() :
         m_x(0.), m_y(0.) {
 }
@@ -27,3 +30,5 @@ double Plot2D::getY() const {
 void Plot2D::setY(double y) {
     m_y = y;
 }
+
+} /* namespace PARTONS */

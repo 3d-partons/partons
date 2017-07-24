@@ -18,6 +18,9 @@
 #include "../../../../../include/partons/beans/system/ResultInfo.h"
 #include "../../../../../include/partons/database/DatabaseManager.h"
 
+namespace PARTONS {
+
+
 ConvolCoeffFunctionResultDaoService::ConvolCoeffFunctionResultDaoService() :
         ResultDaoService("ConvolCoeffFunctionResultDaoService"), m_lastCCFKinematicId(
                 -1), m_lastCCFResultId(-1), m_lastCCFResultComplexId(-1), m_ccfKinematicTableFile(
@@ -170,3 +173,5 @@ List<DVCSConvolCoeffFunctionResult> ConvolCoeffFunctionResultDaoService::getResu
 
     return results;
 }
+
+} /* namespace PARTONS */

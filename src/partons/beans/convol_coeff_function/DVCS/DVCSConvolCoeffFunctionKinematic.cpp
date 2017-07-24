@@ -10,6 +10,9 @@
 #include "../../../../../include/partons/services/hash_sum/CryptographicHashService.h"
 #include "../../../../../include/partons/ServiceObjectRegistry.h"
 
+namespace PARTONS {
+
+
 DVCSConvolCoeffFunctionKinematic::DVCSConvolCoeffFunctionKinematic() :
         Kinematic("DVCSConvolCoeffFunctionKinematic"), m_binId(0), m_xi(0.), m_t(
                 0.), m_Q2(0.), m_MuF2(0.), m_MuR2(0.) {
@@ -162,3 +165,5 @@ void DVCSConvolCoeffFunctionKinematic::setXi(double xi) {
     m_xi = xi;
     updateHashSum();
 }
+
+} /* namespace PARTONS */

@@ -14,6 +14,9 @@
 #include "../../include/partons/ModuleObjectFactory.h"
 #include "../../include/partons/ServiceObjectRegistry.h"
 
+namespace PARTONS {
+
+
 const std::string Partons::PROPERTIES_FILE_NAME = "partons.properties";
 
 // Global static pointer used to ensure a single instance of the class.
@@ -166,3 +169,5 @@ ElemUtils::LoggerManager* Partons::getLoggerManager() const {
 EnvironmentConfiguration* Partons::getEnvironmentConfiguration() const {
     return m_pEnvironmentConfiguration;
 }
+
+} /* namespace PARTONS */

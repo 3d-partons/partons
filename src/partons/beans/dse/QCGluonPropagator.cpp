@@ -5,6 +5,9 @@
 
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
 
+namespace PARTONS {
+
+
 QCGluonPropagator::QCGluonPropagator(double w, double I, double LambdaQCD,
         int Nf) :
         GluonPropagator("QCGluonPropagator", w, I, LambdaQCD, Nf) {
@@ -41,3 +44,5 @@ double QCGluonPropagator::evaluateG(double k2) const {
 void QCGluonPropagator::updateIR() {
     m_factorIR = 8. * Constant::PI * Constant::PI / pow(m_w, 4) * m_D;
 }
+
+} /* namespace PARTONS */

@@ -9,6 +9,9 @@
 
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 
+namespace PARTONS {
+
+
 const unsigned int DVCSCFFConstant::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new DVCSCFFConstant("DVCSCFFConstant"));
@@ -305,3 +308,5 @@ void DVCSCFFConstant::setCFF(GPDType::Type gpdType,
     //set
     it->second = cff;
 }
+
+} /* namespace PARTONS */

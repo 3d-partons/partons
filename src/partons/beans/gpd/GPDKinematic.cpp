@@ -9,6 +9,9 @@
 #include "../../../../include/partons/services/hash_sum/CryptographicHashService.h"
 #include "../../../../include/partons/ServiceObjectRegistry.h"
 
+namespace PARTONS {
+
+
 const std::string GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_X = "x";
 const std::string GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI = "xi";
 const std::string GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUF2 = "MuF2";
@@ -216,3 +219,5 @@ ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
 //            || (m_t == other.getT() && m_MuF2 < other.getMuF2())
 //            || (m_MuF2 == other.getMuF2() && m_MuR2 < other.getMuR2());
 //}
+
+} /* namespace PARTONS */

@@ -3,6 +3,9 @@
 #include <stddef.h>
 #include <SFML/System/Lock.hpp>
 
+namespace PARTONS {
+
+
 ThreadQueue::ThreadQueue() {
 }
 
@@ -36,3 +39,5 @@ bool ThreadQueue::empty() {
 
     return m_tasks.empty();
 } // mutex.unlock()
+
+} /* namespace PARTONS */

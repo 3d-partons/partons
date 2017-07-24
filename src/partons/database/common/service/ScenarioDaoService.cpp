@@ -6,6 +6,9 @@
 #include "../../../../../include/partons/services/hash_sum/CryptographicHashService.h"
 #include "../../../../../include/partons/ServiceObjectRegistry.h"
 
+namespace PARTONS {
+
+
 ScenarioDaoService::ScenarioDaoService() :
         BaseObject("ScenarioDaoService") {
     m_pResourceManager = ResourceManager::getInstance();
@@ -62,3 +65,5 @@ void ScenarioDaoService::updateScenarioFile(const int scenarioId,
                     file);
     m_scenarioDao.updateScenarioFile(scenarioId, file, hashSum);
 }
+
+} /* namespace PARTONS */

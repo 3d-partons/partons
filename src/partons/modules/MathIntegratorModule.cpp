@@ -9,6 +9,9 @@
 
 #include "../../../include/partons/Partons.h"
 
+namespace PARTONS {
+
+
 const std::string MathIntegratorModule::PARAM_NAME_INTEGRATOR_TYPE =
 		"integrator_type";
 
@@ -73,3 +76,5 @@ void MathIntegratorModule::configureIntegrator(
 NumA::Integrator1D* MathIntegratorModule::getMathIntegrator() {
 	return m_mathIntegrator;
 }
+
+} /* namespace PARTONS */

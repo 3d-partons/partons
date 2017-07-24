@@ -3,6 +3,9 @@
 #include <algorithm>
 #include <cmath>
 
+namespace PARTONS {
+
+
 double RadonTools::GPDOfSquareCell(double x, double xi, double u1, double u2,
         double v1, double v2) {
     if (xi == 1.) {
@@ -51,3 +54,5 @@ double RadonTools::GPDOfLowerTriangleCell(double x, double xi, double u1,
         return sqrt(2.) / fabs(1. - xi) * std::max(0., u_max - u_min);
     }
 }
+
+} /* namespace PARTONS */

@@ -13,6 +13,9 @@
 #include "../../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../../include/partons/ServiceObjectTyped.h"
 
+namespace PARTONS {
+
+
 const std::string ConvolCoeffFunctionModule::CONVOL_COEFF_FUNCTION_MODULE_CLASS_NAME =
         "ConvolCoeffFunctionModule";
 
@@ -159,3 +162,5 @@ void ConvolCoeffFunctionModule::prepareSubModules(
         }
     }
 }
+
+} /* namespace PARTONS */

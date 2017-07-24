@@ -15,6 +15,9 @@
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
 
+namespace PARTONS {
+
+
 const unsigned int GPDGK11::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new GPDGK11("GPDGK11"));
@@ -1883,3 +1886,5 @@ double GPDGK11::getHuval() const {
 std::string GPDGK11::toString() const {
     return GPDModule::toString();
 }
+
+} /* namespace PARTONS */

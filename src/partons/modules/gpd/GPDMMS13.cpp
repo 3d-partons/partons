@@ -19,6 +19,9 @@
 #include "../../../../include/partons/utils/MSTWPDF.h"
 #include "../../../../include/partons/utils/PartonContent.h"
 
+namespace PARTONS {
+
+
 const unsigned int GPDMMS13::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new GPDMMS13("GPDMMS13"));
@@ -446,3 +449,5 @@ double GPDMMS13::IntEvalPlusB(double beta, std::vector<double> par) {
             * profileFunction(beta, par[0] / m_xi, int(par[2])) / beta;
 }
 
+
+} /* namespace PARTONS */

@@ -19,6 +19,9 @@
 #include "../../include/partons/modules/scales/ScalesModule.h"
 #include "../../include/partons/modules/xi_converter/XiConverterModule.h"
 
+namespace PARTONS {
+
+
 ModuleObjectFactory::ModuleObjectFactory(BaseObjectFactory* pBaseObjectFactory) :
         BaseObject("ModuleObjectFactory"), m_pBaseObjectFactory(
                 pBaseObjectFactory) {
@@ -288,3 +291,5 @@ RadonInverseModule* ModuleObjectFactory::newRadonInverseModule(
         const std::string& className) {
     return static_cast<RadonInverseModule*>(newModuleObject(className));
 }
+
+} /* namespace PARTONS */

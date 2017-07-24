@@ -7,6 +7,9 @@
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
 
+namespace PARTONS {
+
+
 const unsigned int DVCSProcessBMJ12::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new DVCSProcessBMJ12("DVCSProcessBMJ12"));
@@ -1394,3 +1397,5 @@ double DVCSProcessBMJ12::CrossSectionInterf(double beamHelicity, double beamChar
     return SqrAmplInterf(beamHelicity, beamCharge, targetPolarization)
             * m_phaseSpace;
 }
+
+} /* namespace PARTONS */

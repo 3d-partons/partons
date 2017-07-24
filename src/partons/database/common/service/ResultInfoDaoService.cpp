@@ -7,6 +7,9 @@
 #include "../../../../../include/partons/beans/system/ResultInfo.h"
 #include "../../../../../include/partons/ResourceManager.h"
 
+namespace PARTONS {
+
+
 ResultInfoDaoService::ResultInfoDaoService() :
         BaseObject("ResultInfoDaoService") {
     // TODO Auto-generated constructor stub
@@ -62,3 +65,5 @@ ResultInfo ResultInfoDaoService::getResultInfoByComputationId(
 
     return m_resultInfoDao.getResultInfoByComputationId(computationId);
 }
+
+} /* namespace PARTONS */

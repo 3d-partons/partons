@@ -19,6 +19,9 @@
 #include "../../../include/partons/Partons.h"
 #include "../../../include/partons/utils/VectorUtils.h"
 
+namespace PARTONS {
+
+
 const std::string ConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_WITH_GPD_MODEL =
         "computeWithGPDModel";
 const std::string ConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_LIST_WITH_GPD_MODEL =
@@ -471,3 +474,5 @@ List<DVCSConvolCoeffFunctionKinematic> ConvolCoeffFunctionService::newListOfKine
 
     return listOfKinematic;
 }
+
+} /* namespace PARTONS */

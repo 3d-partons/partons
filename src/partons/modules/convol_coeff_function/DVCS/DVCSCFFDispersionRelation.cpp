@@ -21,6 +21,9 @@
 #include "../../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../../include/partons/Partons.h"
 
+namespace PARTONS {
+
+
 const unsigned int DVCSCFFDispersionRelation::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new DVCSCFFDispersionRelation(
@@ -283,3 +286,5 @@ void DVCSCFFDispersionRelation::setSubtractionConstantModule(
             m_pSubtractionConstantModule, subtractionConstantModule);
     m_pSubtractionConstantModule = subtractionConstantModule;
 }
+
+} /* namespace PARTONS */

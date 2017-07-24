@@ -7,6 +7,9 @@
 #include "../../../../include/partons/beans/system/EnvironmentConfiguration.h"
 #include "../../../../include/partons/Partons.h"
 
+namespace PARTONS {
+
+
 ComparisonReport::ComparisonReport(const NumA::Tolerances &tolerances) :
         m_environmentSetting(ElemUtils::StringUtils::EMPTY), m_objectClassNameTested(
                 ElemUtils::StringUtils::EMPTY), m_referenceObjectClassName(
@@ -110,3 +113,5 @@ std::string ComparisonReport::showComparisonStats() const {
 size_t ComparisonReport::sizeOfComparedDataFailed() const {
     return m_comparedDataFailed.size();
 }
+
+} /* namespace PARTONS */

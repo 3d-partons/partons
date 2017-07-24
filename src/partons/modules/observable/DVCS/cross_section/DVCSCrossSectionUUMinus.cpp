@@ -7,6 +7,9 @@
 #include "../../../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../../../include/partons/modules/process/ProcessModule.h"
 
+namespace PARTONS {
+
+
 const unsigned int DVCSCrossSectionUUMinus::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new DVCSCrossSectionUUMinus("DVCSCrossSectionUUMinus"));
@@ -52,3 +55,5 @@ double DVCSCrossSectionUUMinus::computePhiObservable(double phi) {
 
     return result;
 }
+
+} /* namespace PARTONS */

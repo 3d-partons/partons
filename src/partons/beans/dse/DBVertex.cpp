@@ -1,5 +1,8 @@
 #include "../../../../include/partons/beans/dse/DBVertex.h"
 
+namespace PARTONS {
+
+
 DBVertex::DBVertex() :
         BCVertex("DBVertex", 5) {
 }
@@ -100,3 +103,5 @@ std::vector<double> DBVertex::Radial_Integrands_deriv(double p2, double q2,
     radial_integrands_deriv.at(m_N + 4) = dsigmaV_q2 * (B_p2 - B_q2) + sigmaV_q2 * (dB_p2 - dB_q2);
     return radial_integrands_deriv;
 }
+
+} /* namespace PARTONS */

@@ -7,6 +7,9 @@
 
 #include "../../../../include/partons/utils/compare/ComparisonData.h"
 
+namespace PARTONS {
+
+
 ComparisonData CompareUtils::compareDouble(const std::string &variableName,
         const double lhs, const double rhs, const NumA::Tolerances &tolerances,
         const std::string &parentObjectInfo) {
@@ -56,3 +59,5 @@ ComparisonData CompareUtils::compareComplex(const std::string& variableName,
             ElemUtils::Formatter() << lhs, ElemUtils::Formatter() << rhs,
             NumA::Differences(modulous, modulous), parentObjectInfo);
 }
+
+} /* namespace PARTONS */

@@ -1,5 +1,8 @@
 #include "../../../include/partons/beans/QuarkFlavor.h"
 
+namespace PARTONS {
+
+
 const std::string QuarkFlavor::QUARK_FLAVOR_TYPE_DB_COLUMN_NAME =
         "quark_flavor_type";
 
@@ -78,3 +81,5 @@ void QuarkFlavor::setType(Type type) {
 
 QuarkFlavor::~QuarkFlavor() {
 }
+
+} /* namespace PARTONS */

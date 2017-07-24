@@ -5,6 +5,9 @@
 #include <SFML/System/Lock.hpp>
 #include <utility>
 
+namespace PARTONS {
+
+
 BaseObjectRegistry* BaseObjectRegistry::m_pInstance = 0;
 
 unsigned int BaseObjectRegistry::m_uniqueClassIdCounter = 0;
@@ -166,3 +169,5 @@ unsigned int BaseObjectRegistry::getObjectClassIdByClassName(
 
     return (it == m_classIdByClassName.end()) ? 0 : it->second;
 }
+
+} /* namespace PARTONS */

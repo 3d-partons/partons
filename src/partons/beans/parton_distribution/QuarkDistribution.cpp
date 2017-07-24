@@ -6,6 +6,9 @@
 #include "../../../../include/partons/utils/compare/CompareUtils.h"
 #include "../../../../include/partons/utils/compare/ComparisonData.h"
 
+namespace PARTONS {
+
+
 const std::string QuarkDistribution::QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DISTRIBUTION =
         "quark_distribution";
 const std::string QuarkDistribution::QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DISTRIBUTION_PLUS =
@@ -130,3 +133,5 @@ void QuarkDistribution::compare(ComparisonReport &rootComparisonReport,
     rootComparisonReport.addComparisonData(
             quark_distribution_minus_value_comparisonData);
 }
+
+} /* namespace PARTONS */

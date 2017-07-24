@@ -5,6 +5,9 @@
 #include <sstream>
 #include <utility>
 
+namespace PARTONS {
+
+
 DoubleDistributionResult::DoubleDistributionResult() :
         BaseObject("DualDistributionResult") {
 }
@@ -51,3 +54,5 @@ std::string DoubleDistributionResult::toString() const {
 
     return os.str();
 }
+
+} /* namespace PARTONS */

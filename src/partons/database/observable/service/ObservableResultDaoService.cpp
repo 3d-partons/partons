@@ -16,6 +16,9 @@
 #include "../../../../../include/partons/utils/math/ErrorBar.h"
 #include "../../../../../include/partons/utils/type/PhysicalType.h"
 
+namespace PARTONS {
+
+
 ObservableResultDaoService::ObservableResultDaoService() :
         ResultDaoService("ObservableResultDaoService"), m_lastObservableKinematicId(
                 -1), m_lastObservableResultId(-1), m_observableKinematicTableFile(
@@ -150,3 +153,5 @@ List<ObservableResult> ObservableResultDaoService::getObservableResultListFromSQ
         const std::string& sqlQuery) const {
     return m_observableResultDao.getObservableResultListFromSQLQuery(sqlQuery);
 }
+
+} /* namespace PARTONS */

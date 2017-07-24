@@ -18,6 +18,9 @@
 #include "../../../../../include/partons/services/ConvolCoeffFunctionService.h"
 #include "../../../../../include/partons/ServiceObjectRegistry.h"
 
+namespace PARTONS {
+
+
 DVCSModule::DVCSModule(const std::string &className) :
         ProcessModule(className), m_phaseSpace(0.), m_tmin(0.), m_tmax(0.), m_xBmin(
                 0), m_y(0.), m_epsilon(0.) {
@@ -224,3 +227,5 @@ void DVCSModule::setConvolCoeffFunctionModule(
     }
 
 }
+
+} /* namespace PARTONS */

@@ -8,6 +8,9 @@
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
 
+namespace PARTONS {
+
+
 const unsigned int DVCSProcessGV08::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new DVCSProcessGV08("DVCSProcessGV08"));
@@ -3090,3 +3093,5 @@ double DVCSProcessGV08::CrossSectionInterf(double beamHelicity, double beamCharg
     return SqrAmplInterf(beamHelicity, beamCharge, targetPolarization)
             * m_phaseSpace;
 }
+
+} /* namespace PARTONS */

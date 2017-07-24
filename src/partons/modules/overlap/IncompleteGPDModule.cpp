@@ -8,6 +8,9 @@
 #include "../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../include/partons/Partons.h"
 
+namespace PARTONS {
+
+
 const std::string IncompleteGPDModule::DGLAP_REGION = "DGLAP";
 const std::string IncompleteGPDModule::ERBL_REGION = "ERBL";
 
@@ -288,3 +291,5 @@ void IncompleteGPDModule::prepareSubModules(
         }
     }
 }
+
+} /* namespace PARTONS */

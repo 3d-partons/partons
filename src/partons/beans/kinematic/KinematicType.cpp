@@ -1,5 +1,8 @@
 #include "../../../../include/partons/beans/kinematic/KinematicType.h"
 
+namespace PARTONS {
+
+
 KinematicType::KinematicType() :
         m_type(KinematicType::UNDEFINED) {
 }
@@ -36,3 +39,5 @@ KinematicType::Type KinematicType::getType() const {
 void KinematicType::setType(Type type) {
     m_type = type;
 }
+
+} /* namespace PARTONS */

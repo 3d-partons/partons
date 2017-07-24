@@ -12,6 +12,9 @@
 #include "../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 
+namespace PARTONS {
+
+
 const unsigned int GPDVinnikov06::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new GPDVinnikov06("GPDVinnikov06"));
@@ -990,3 +993,5 @@ double GPDVinnikov06::dd_int_simp(double const bmin, double const bmax,
     return integr;
 }
 
+
+} /* namespace PARTONS */

@@ -2,6 +2,9 @@
 
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 
+namespace PARTONS {
+
+
 // Initialise [class]::classId with a unique name.
 const unsigned int ExampleEvolQCDModel::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
@@ -44,3 +47,5 @@ double ExampleEvolQCDModel::integratedGluonMuFDerivative(
         const ActiveFlavorsThresholds& nfInterval) {
     return 1.;
 }
+
+} /* namespace PARTONS */

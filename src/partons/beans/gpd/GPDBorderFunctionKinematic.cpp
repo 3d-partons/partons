@@ -11,6 +11,9 @@
 
 #include "../../../../include/partons/beans/observable/ObservableKinematic.h"
 
+namespace PARTONS {
+
+
 GPDBorderFunctionKinematic::GPDBorderFunctionKinematic() :
         GPDKinematic() {
 }
@@ -65,3 +68,5 @@ std::string GPDBorderFunctionKinematic::toString() const {
 void GPDBorderFunctionKinematic::updateHashSum() const {
     GPDKinematic::updateHashSum();
 }
+
+} /* namespace PARTONS */

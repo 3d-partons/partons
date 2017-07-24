@@ -18,6 +18,9 @@
 #include "../../../../include/partons/utils/MSTWPDF.h"
 #include "../../../../include/partons/utils/PartonContent.h"
 
+namespace PARTONS {
+
+
 const unsigned int GPDMPSSW13::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new GPDMPSSW13("GPDMPSSW13"));
@@ -1330,3 +1333,5 @@ PartonDistribution GPDMPSSW13::computeH() {
 
     return partonDistribution;
 }
+
+} /* namespace PARTONS */

@@ -6,6 +6,9 @@
 #include "../../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../../include/partons/modules/process/ProcessModule.h"
 
+namespace PARTONS {
+
+
 const unsigned int DVCSAluInt::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new DVCSAluInt("DVCSAluInt"));
@@ -52,3 +55,5 @@ double DVCSAluInt::computePhiObservable(double phi) {
 
     return ((A - B) - (C - D)) / ((A - B) + (C - D));
 }
+
+} /* namespace PARTONS */

@@ -5,6 +5,9 @@
 
 #include "../../../../../include/partons/utils/type/PhysicalType.h"
 
+namespace PARTONS {
+
+
 ObservableKinematicDaoService::ObservableKinematicDaoService() :
         BaseObject("ObservableKinematicDaoService") {
 }
@@ -91,3 +94,5 @@ int ObservableKinematicDaoService::getKinematicIdByHashSum(
         const std::string& hashSum) const {
     return m_observableKinematicDao.getKinematicIdByHashSum(hashSum);
 }
+
+} /* namespace PARTONS */

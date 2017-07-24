@@ -2,6 +2,9 @@
 
 #include <ElementaryUtils/string_utils/StringUtils.h>
 
+namespace PARTONS {
+
+
 GPDModuleNullPointerException::GPDModuleNullPointerException(
         const std::string &msg) :
         std::exception(), m_msg(ElemUtils::StringUtils::EMPTY) {
@@ -13,3 +16,5 @@ GPDModuleNullPointerException::~GPDModuleNullPointerException() throw () {
 const char* GPDModuleNullPointerException::what() const throw () {
     return m_msg.c_str();
 }
+
+} /* namespace PARTONS */

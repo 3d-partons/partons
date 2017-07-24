@@ -10,6 +10,9 @@
 #include "../../../include/partons/utils/plot2D/Plot2D.h"
 #include "../../../include/partons/utils/plot2D/Plot2DList.h"
 
+namespace PARTONS {
+
+
 // Initialise [class]::classId with a unique name.
 const unsigned int VizualisationService::classId =
         Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
@@ -46,3 +49,5 @@ Plot2DList VizualisationService::getplot2DFromSQLQuery(
 
     return plot2DList;
 }
+
+} /* namespace PARTONS */

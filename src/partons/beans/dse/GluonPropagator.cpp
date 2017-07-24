@@ -14,6 +14,9 @@
 
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
 
+namespace PARTONS {
+
+
 GluonPropagator::GluonPropagator(const std::string& className, double w,
         double I, double LambdaQCD, int Nf) :
         BaseObject(className), m_w(w), m_I(I), m_D(I * w * w), m_c(
@@ -134,3 +137,5 @@ void GluonPropagator::setNf(int nf) {
 double GluonPropagator::getW() const {
     return m_w;
 }
+
+} /* namespace PARTONS */

@@ -6,6 +6,9 @@
 #include "../../../../include/partons/beans/Scales.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 
+namespace PARTONS {
+
+
 const std::string ScalesQ2Multiplier::PARAMETER_NAME_LAMBDA = "lambda";
 
 const unsigned int ScalesQ2Multiplier::classId =
@@ -58,3 +61,5 @@ void ScalesQ2Multiplier::configure(const ElemUtils::Parameters &parameters) {
 
     ScalesModule::configure(parameters);
 }
+
+} /* namespace PARTONS */

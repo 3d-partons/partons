@@ -10,6 +10,9 @@
 #include "../../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../../include/partons/FundamentalPhysicalConstants.h"
 
+namespace PARTONS {
+
+
 const unsigned int DVCSAulMinusSin1Phi::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new DVCSAulMinusSin1Phi("DVCSAulMinusSin1Phi"));
@@ -66,3 +69,5 @@ double DVCSAulMinusSin1Phi::computeFourierObservable() {
     return integrate(m_pFunctionToIntegrateObservable, 0., (2 * Constant::PI),
             emptyParameters) / Constant::PI;
 }
+
+} /* namespace PARTONS */

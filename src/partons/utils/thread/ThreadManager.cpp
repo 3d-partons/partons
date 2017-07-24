@@ -2,6 +2,9 @@
 
 #include <ElementaryUtils/logger/CustomException.h>
 
+namespace PARTONS {
+
+
 ThreadManager::ThreadManager() :
         BaseObject("ThreadManager") {
 }
@@ -40,3 +43,5 @@ void ThreadManager::clearAllThread() {
     // delete previous instantiated thread
     m_listOfModuleObject.clear();
 }
+
+} /* namespace PARTONS */

@@ -8,6 +8,9 @@
 #include "../../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../../include/partons/modules/process/ProcessModule.h"
 
+namespace PARTONS {
+
+
 const std::string DVCSCrossSection::PARAMETER_NAME_BEAM_HELICITY =
         "beam_helicity";
 const std::string DVCSCrossSection::PARAMETER_NAME_BEAM_CHARGE =
@@ -90,3 +93,5 @@ double DVCSCrossSection::computePhiObservable(double phi) {
             m_beamCharge, m_targetPolarization, phi);
     return result;
 }
+
+} /* namespace PARTONS */

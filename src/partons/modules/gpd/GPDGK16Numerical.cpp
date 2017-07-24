@@ -16,6 +16,9 @@
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
 
+namespace PARTONS {
+
+
 const unsigned int GPDGK16Numerical::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new GPDGK16Numerical("GPDGK16Numerical"));
@@ -1533,3 +1536,5 @@ double GPDGK16Numerical::Et_pole(double x) {
 std::string GPDGK16Numerical::toString() const {
     return GPDModule::toString();
 }
+
+} /* namespace PARTONS */

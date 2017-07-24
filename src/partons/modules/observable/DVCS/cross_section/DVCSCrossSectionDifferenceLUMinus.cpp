@@ -7,6 +7,9 @@
 #include "../../../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../../../include/partons/modules/process/ProcessModule.h"
 
+namespace PARTONS {
+
+
 const unsigned int DVCSCrossSectionDifferenceLUMinus::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new DVCSCrossSectionDifferenceLUMinus(
@@ -54,3 +57,5 @@ double DVCSCrossSectionDifferenceLUMinus::computePhiObservable(double phi) {
 
     return result;
 }
+
+} /* namespace PARTONS */

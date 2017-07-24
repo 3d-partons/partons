@@ -2,6 +2,9 @@
 
 #include <ElementaryUtils/string_utils/Formatter.h>
 
+namespace PARTONS {
+
+
 Task::Task() :
         BaseObject("Task"), m_pScenario(0), m_storeInDB(false), m_scenarioTaskIndexNumber(
                 0) {
@@ -93,3 +96,5 @@ const BaseObjectData& Task::getTaskParameters() const {
 void Task::setTaskParameters(const BaseObjectData& taskParameters) {
     m_taskParameters = taskParameters;
 }
+
+} /* namespace PARTONS */

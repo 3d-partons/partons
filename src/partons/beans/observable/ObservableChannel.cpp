@@ -1,5 +1,8 @@
 #include "../../../../include/partons/beans/observable/ObservableChannel.h"
 
+namespace PARTONS {
+
+
 ObservableChannel::ObservableChannel() :
         m_type(ObservableChannel::UNDEFINED) {
 }
@@ -53,3 +56,5 @@ void ObservableChannel::setType(Type type) {
 
 ObservableChannel::~ObservableChannel() {
 }
+
+} /* namespace PARTONS */
