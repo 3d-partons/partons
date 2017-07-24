@@ -15,6 +15,8 @@
 #include "../../../beans/gpd/GPDType.h"
 #include "DVCSModule.h"
 
+namespace PARTONS {
+
 /**
  * @class DVCSProcessBMJ12
  *
@@ -217,5 +219,7 @@ private:
     double SqrAmplInterf(double beamHelicity, double beamCharge,
             NumA::Vector3D targetPolarization); ///< Returns the interference term of the squared amplitude.
 };
+
+} /* namespace PARTONS */
 
 #endif /* DVCS_PROCESS_BMJ12_H */

@@ -12,11 +12,15 @@
 
 #include "../../BaseObject.h"
 
+namespace PARTONS {
+
 class RadonMeshCell: public BaseObject {
 public:
     RadonMeshCell();
 
     void test();
 };
+
+} /* namespace PARTONS */
 
 #endif /* RADONMESHCELL_H_ */

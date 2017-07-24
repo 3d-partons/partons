@@ -14,6 +14,8 @@
 #include "../../../beans/gpd/GPDKinematic.h"
 #include "../../../beans/List.h"
 
+namespace PARTONS {
+
 /**
  * @class GPDKinematicDao
  *
@@ -96,5 +98,7 @@ private:
     void fillGPDKinematicListFromQuery(List<GPDKinematic> &gpdKinematicList,
             QSqlQuery &query) const;
 };
+
+} /* namespace PARTONS */
 
 #endif /* GPD_KINEMATIC_DAO */

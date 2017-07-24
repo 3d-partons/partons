@@ -25,6 +25,8 @@ namespace NumA {
 class FunctionType1D;
 } /* namespace NumA */
 
+namespace PARTONS {
+
 class DoubleDistributionExample: public DoubleDistributionModule,
         public MathIntegratorModule {
 public:
@@ -63,5 +65,7 @@ private:
 
     void initFunctorsForIntegrations();
 };
+
+} /* namespace PARTONS */
 
 #endif /* DOUBLE_DISTRIBUTION_EXAMPLE_H */

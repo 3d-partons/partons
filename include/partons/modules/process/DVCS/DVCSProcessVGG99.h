@@ -17,6 +17,8 @@
 
 #include "DVCSModule.h"
 
+namespace PARTONS {
+
 /**
  * @class DVCSProcessVGG99
  *
@@ -302,5 +304,7 @@ private:
     double v_compton_doublepol_sqrampl(double leptcharge, int mechanism,
             double el_hel, double sp_in);
 };
+
+} /* namespace PARTONS */
 
 #endif /* DVCS_PROCESS_VGG99_H */

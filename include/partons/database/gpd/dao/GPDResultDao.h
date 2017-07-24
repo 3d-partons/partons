@@ -16,6 +16,8 @@
 #include "../../parton_distribution/dao/PartonDistributionDao.h"
 #include "GPDKinematicDao.h"
 
+namespace PARTONS {
+
 /**
  * @class GPDResultDao
  *
@@ -87,5 +89,7 @@ private:
     // a supprimer
     // void fillGPDResult(GPDResult &gpdResult) const;
 };
+
+} /* namespace PARTONS */
 
 #endif /* GPD_RESULT_DAO */

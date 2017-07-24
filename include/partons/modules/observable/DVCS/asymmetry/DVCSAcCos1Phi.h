@@ -15,6 +15,8 @@
 #include "../../../MathIntegratorModule.h"
 #include "DVCSAc.h"
 
+namespace PARTONS {
+
 /**
  * @class DVCSAcCos1Phi
  *
@@ -78,5 +80,7 @@ protected:
      */
     void initFunctorsForIntegrations();
 };
+
+} /* namespace PARTONS */
 
 #endif /* DVCSACCOS1PHI_H */

@@ -15,11 +15,13 @@
 
 #include "beans/automation/BaseObjectData.h"
 
-class ModuleObjectFactory;
-
 namespace ElemUtils {
 class Parameters;
 } /* namespace ElemUtils */
+
+namespace PARTONS {
+
+class ModuleObjectFactory;
 
 /**
  * @class ModuleObject
@@ -102,5 +104,7 @@ protected:
 private:
     unsigned int m_referenceModuleId;
 };
+
+} /* namespace PARTONS */
 
 #endif /* MODULE_OBJECT_H */

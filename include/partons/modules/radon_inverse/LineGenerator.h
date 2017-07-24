@@ -14,6 +14,8 @@
 
 #include "../../BaseObject.h"
 
+namespace PARTONS {
+
 class LineGenerator: public BaseObject {
 public:
     LineGenerator();
@@ -22,5 +24,7 @@ public:
 private:
 
 };
+
+} /* namespace PARTONS */
 
 #endif /* LINE_GENERATOR_H */

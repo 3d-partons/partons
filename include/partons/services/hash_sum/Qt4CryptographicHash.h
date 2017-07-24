@@ -12,6 +12,8 @@
 
 #include "CryptographicHashI.h"
 
+namespace PARTONS {
+
 /**
  * @class Qt4CryptographicHash
  *
@@ -35,5 +37,7 @@ public:
 
     virtual std::string generateSHA1HashSum(const std::string &string) const;
 };
+
+} /* namespace PARTONS */
 
 #endif /* QT4_CRYPTOGRAPHIC_HASH_H */

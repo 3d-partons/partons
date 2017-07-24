@@ -16,6 +16,8 @@
 
 #include "RadonInverseModule.h"
 
+namespace PARTONS {
+
 /**
  * @class RandomRadonConstPW
  * @brief Radon inversion with a randomly generated matrix for piece-wise constant basis functions.
@@ -96,5 +98,7 @@ protected:
 
 private:
 };
+
+} /* namespace PARTONS */
 
 #endif /* RANDOMRADONCONSTPW_H_ */

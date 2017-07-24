@@ -10,6 +10,8 @@
 
 #include <string>
 
+namespace PARTONS {
+
 /**
  * @class KinematicType
  *
@@ -100,5 +102,7 @@ private:
      */
     KinematicType::Type m_type;
 };
+
+} /* namespace PARTONS */
 
 #endif /* KINEMATIC_TYPE_H */

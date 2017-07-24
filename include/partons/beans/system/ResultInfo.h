@@ -12,6 +12,8 @@
 
 #include "../Computation.h"
 
+namespace PARTONS {
+
 /**
  * @class ResultInfo
  *
@@ -108,5 +110,7 @@ private:
      */
     unsigned int m_scenarioTaskIndexNumber;
 };
+
+} /* namespace PARTONS */
 
 #endif /* RESULT_INFO_H */

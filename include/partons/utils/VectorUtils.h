@@ -6,8 +6,6 @@
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 30 June 2015
  * @version 1.0
- *
- * @class VectorUtils
  */
 
 #include <algorithm>
@@ -15,6 +13,11 @@
 
 #include "../beans/List.h"
 
+namespace PARTONS {
+
+/**
+ * @class VectorUtils
+ */
 //TODO tester les fonctions de la classe. Je ne sais pas si elles sont correctes.
 class VectorUtils {
 public:
@@ -50,5 +53,7 @@ public:
         return List<T>(result);
     }
 };
+
+} /* namespace PARTONS */
 
 #endif /* VECTOR_UTILS_H */

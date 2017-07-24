@@ -11,6 +11,8 @@
 #include <exception>
 #include <string>
 
+namespace PARTONS {
+
 /**
  * @class CCFModuleNullPointerException
  *
@@ -41,5 +43,7 @@ private:
      */
     std::string m_msg;
 };
+
+} /* namespace PARTONS */
 
 #endif /* CCF_MODULE_NULL_POINTER_EXCEPTION_H */

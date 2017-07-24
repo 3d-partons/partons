@@ -17,6 +17,8 @@
 
 #include "../../BaseObject.h"
 
+namespace PARTONS {
+
 /**
  * @class PhysicalType
  *
@@ -148,6 +150,8 @@ private:
     T m_value;
     std::string m_unit;
 };
+
+} /* namespace PARTONS */
 
 template<class T>
 const std::string PhysicalType<T>::PHYSICAL_TYPE_NONE_UNIT = "none";

@@ -12,6 +12,8 @@
 
 #include "system/ResultInfo.h"
 
+namespace PARTONS {
+
 /**
  * @class Result
  *
@@ -78,5 +80,7 @@ private:
      */
     std::string m_computationModuleName;
 };
+
+} /* namespace PARTONS */
 
 #endif /* RESULT_H */

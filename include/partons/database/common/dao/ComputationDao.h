@@ -13,6 +13,8 @@
 
 #include "../../../BaseObject.h"
 
+namespace PARTONS {
+
 class Computation;
 
 /**
@@ -86,5 +88,7 @@ private:
      */
     void fillComputation(Computation &computation, QSqlQuery &query) const;
 };
+
+} /* namespace PARTONS */
 
 #endif /* COMMON_DAO_H */

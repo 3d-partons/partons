@@ -21,6 +21,8 @@
 #include "../utils/compare/ComparisonMode.h"
 #include "../utils/compare/ComparisonReport.h"
 
+namespace PARTONS {
+
 /**
  * @class List
  *
@@ -376,6 +378,8 @@ protected:
     std::vector<T> m_data;
 
 };
+
+} /* namespace PARTONS */
 
 /**
  * Stream operator to serialize class into Packet. See also GPDType::serialize().

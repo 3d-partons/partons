@@ -3,10 +3,6 @@
  * @author Nabil Chouika (SPhN - CEA Saclay)
  * @date 1 mars 2016
  * @version 1.0
- *
- * @class QuarkGluonVertex
- * @brief This class is a generic quark-gluon vertex. It implements methods used by solver modules (like the quark gap equation).
- * TODO Add the formalism and definitions of \f$ H_A \f$ and \f$ H_M \f$, etc.
  */
 
 #ifndef QUARKGLUONVERTEX_H_
@@ -17,6 +13,13 @@
 
 #include "../../BaseObject.h"
 
+namespace PARTONS {
+
+/**
+ * @class QuarkGluonVertex
+ * @brief This class is a generic quark-gluon vertex. It implements methods used by solver modules (like the quark gap equation).
+ * TODO Add the formalism and definitions of \f$ H_A \f$ and \f$ H_M \f$, etc.
+ */
 class QuarkGluonVertex: public BaseObject {
 public:
     QuarkGluonVertex(const std::string &className, unsigned int numberOfBasisElements = 1);
@@ -51,5 +54,7 @@ protected:
 
     unsigned int m_N; ///< Number of basis elements used: e.g 1 for RL, 3 for BC, etc.
 };
+
+} /* namespace PARTONS */
 
 #endif /* QUARKGLUONVERTEX_H_ */

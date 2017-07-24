@@ -14,6 +14,8 @@
 
 #include "../../../BaseObject.h"
 
+namespace PARTONS {
+
 class EnvironmentConfiguration;
 
 /**
@@ -83,5 +85,7 @@ private:
     EnvironmentConfiguration* getEnvironmentConfigurationFromQuery(
             QSqlQuery &query) const;
 };
+
+} /* namespace PARTONS */
 
 #endif /* ENVIRONMENT_CONFIGURATION_DAO_H */

@@ -22,6 +22,8 @@
 #include "../../beans/observable/ObservableType.h"
 #include "../process/DVCS/DVCSModule.h"
 
+namespace PARTONS {
+
 class ObservableResult;
 
 /**
@@ -116,5 +118,7 @@ protected:
 private:
     pthread_mutex_t m_mutex;
 };
+
+} /* namespace PARTONS */
 
 #endif /* OBSERVABLE_H */

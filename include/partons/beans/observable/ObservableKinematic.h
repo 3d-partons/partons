@@ -18,6 +18,8 @@ namespace ElemUtils {
 class Parameters;
 } /* namespace ElemUtils */
 
+namespace PARTONS {
+
 /**
  * @class ObservableKinematic
  *
@@ -252,6 +254,8 @@ private:
      */
     PhysicalType<double> m_phi;
 };
+
+} /* namespace PARTONS */
 
 /**
  * Stream operator to serialize class into Packet. See also GPDType::serialize().

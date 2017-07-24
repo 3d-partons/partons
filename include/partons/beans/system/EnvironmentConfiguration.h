@@ -13,6 +13,8 @@
 
 #include "../../database/DatabaseFileObject.h"
 
+namespace PARTONS {
+
 /**
  * @class EnvironmentConfiguration
  *
@@ -63,5 +65,7 @@ protected:
 
     virtual std::string fillFile() const;
 };
+
+} /* namespace PARTONS */
 
 #endif /* ENVIRONMENT_CONFIGURATION_H */

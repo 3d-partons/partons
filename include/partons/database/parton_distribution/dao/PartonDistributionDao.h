@@ -12,6 +12,8 @@
 
 #include "QuarkDistributionDao.h"
 
+namespace PARTONS {
+
 class PartonDistribution;
 
 /**
@@ -82,5 +84,7 @@ private:
     void fillPartonDistribution(PartonDistribution &partonDistribution,
             const int partonDistributionId) const;
 };
+
+} /* namespace PARTONS */
 
 #endif /* PARTON_DISTRIBUTION_DAO */

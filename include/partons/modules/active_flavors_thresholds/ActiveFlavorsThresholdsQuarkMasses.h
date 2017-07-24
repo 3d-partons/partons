@@ -12,6 +12,8 @@
 
 #include "ActiveFlavorsThresholdsModule.h"
 
+namespace PARTONS {
+
 /**
  * @class ActiveFlavorsThresholdsQuarkMasses
  *
@@ -61,5 +63,7 @@ protected:
     virtual void initModule();
     virtual void isModuleWellConfigured();
 };
+
+} /* namespace PARTONS */
 
 #endif /* ACTIVE_FLAVORS_THRESHOLDS_QUARK_MASSES_H */

@@ -12,6 +12,8 @@
 
 #include "BaseObjectData.h"
 
+namespace PARTONS {
+
 class Scenario;
 
 /**
@@ -184,5 +186,7 @@ private:
      */
     BaseObjectData m_taskParameters;
 };
+
+} /* namespace PARTONS */
 
 #endif /* TASK_H */

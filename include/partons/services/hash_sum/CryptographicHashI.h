@@ -12,6 +12,8 @@
 
 #include "../../BaseObject.h"
 
+namespace PARTONS {
+
 /**
  * @class CryptographicHashI
  *
@@ -41,5 +43,7 @@ public:
     virtual std::string generateSHA1HashSum(
             const std::string &string) const = 0;
 };
+
+} /* namespace PARTONS */
 
 #endif /* CRYPTOGRAPHIC_HASH_I_H */

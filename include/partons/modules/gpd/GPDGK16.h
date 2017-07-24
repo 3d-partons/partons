@@ -19,6 +19,8 @@
 //TODO supprimer au maximum les pointers qui ne sont pas obligatoires
 // !!!! Use tgamma() instead of gamma() (see: http://stackoverflow.com/questions/18116376/what-is-the-definition-for-gammadouble-x-and-why-is-it-different-on-two-gcc-ve)
 
+namespace PARTONS {
+
 /**
  * @class GPDGK16
  *
@@ -245,5 +247,7 @@ private:
     double Etval1_alt(double x, double i, double k);
 
 };
+
+} /* namespace PARTONS */
 
 #endif /* GPD_GK16_H */

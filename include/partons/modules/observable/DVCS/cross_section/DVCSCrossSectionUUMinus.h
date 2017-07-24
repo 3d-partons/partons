@@ -13,6 +13,8 @@
 
 #include "../../Observable.h"
 
+namespace PARTONS {
+
 /**
  * @class DVCSCrossSectionUUMinus
  * @brief Unpolarized cross-section for negative beam charge.
@@ -67,5 +69,7 @@ protected:
      */
     DVCSCrossSectionUUMinus(const DVCSCrossSectionUUMinus &other);
 };
+
+} /* namespace PARTONS */
 
 #endif /* DVCSCROSSSECTIONUUMINUS_H */

@@ -15,6 +15,8 @@
 #include "../../beans/gpd/GPDType.h"
 #include "../gpd/GPDModule.h"
 
+namespace PARTONS {
+
 /**
  * @class GPDBorderFunctionModule
  *
@@ -124,5 +126,7 @@ protected:
     virtual void initModule();
     virtual void isModuleWellConfigured();
 };
+
+} /* namespace PARTONS */
 
 #endif /* GPD_BORDER_FUNCTION_MODULE_H_ */

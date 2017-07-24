@@ -1,6 +1,11 @@
+#ifndef COMPARISON_SERVICE_H
+#define COMPARISON_SERVICE_H
+
 #include <string>
 
 #include "../ServiceObject.h"
+
+namespace PARTONS {
 
 class ComparisonService: public ServiceObject {
 public:
@@ -29,3 +34,7 @@ public:
 private:
 
 };
+
+} /* namespace PARTONS */
+
+#endif /* COMPARISON_SERVICE_H */

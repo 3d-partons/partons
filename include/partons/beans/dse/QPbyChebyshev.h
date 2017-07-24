@@ -3,8 +3,6 @@
  * @author Nabil CHOUIKA (SPhN / CEA Saclay)
  * @date Jan 22, 2016
  * @version 1.0
- *
- * @class QPbyChebyshev
  */
 
 #ifndef QPBYCHEBYSHEV_H_
@@ -16,6 +14,11 @@
 
 #include "QuarkPropagator.h"
 
+namespace PARTONS {
+
+/**
+ * @class QPbyChebyshev
+ */
 class QPbyChebyshev: public QuarkPropagator {
 public:
     QPbyChebyshev(unsigned int N = 50, double m = 5.e-3, double mu = 19,
@@ -52,5 +55,7 @@ protected:
 
     NumA::Chebyshev m_cheb;
 };
+
+} /* namespace PARTONS */
 
 #endif /* QPBYCHEBYSHEV_H_ */

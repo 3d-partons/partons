@@ -3,8 +3,6 @@
  * @author Nabil CHOUIKA (SPhN / CEA Saclay)
  * @date Jan 28, 2016
  * @version 1.0
- *
- * @class GluonPropagator
  */
 
 #ifndef GLUONPROPAGATOR_H_
@@ -14,6 +12,11 @@
 
 #include "../../BaseObject.h"
 
+namespace PARTONS {
+
+/**
+ * @class GluonPropagator
+ */
 class GluonPropagator: public BaseObject {
 public:
     virtual ~GluonPropagator();
@@ -60,5 +63,7 @@ protected:
     double m_factorIR, m_w2;
 
 };
+
+} /* namespace PARTONS */
 
 #endif /* GLUONPROPAGATOR_H_ */

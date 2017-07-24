@@ -10,6 +10,8 @@
 
 #include <string>
 
+namespace PARTONS {
+
 /**
  * @class ActiveFlavorsThresholds
  *
@@ -122,5 +124,7 @@ private:
      */
     unsigned int m_index;
 };
+
+} /* namespace PARTONS */
 
 #endif /* ACTIVE_FLAVORS_THRESHOLDS_H */

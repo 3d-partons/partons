@@ -13,6 +13,8 @@
 
 #include "../../Observable.h"
 
+namespace PARTONS {
+
 /**
  * @class DVCSCrossSectionDifferenceLUMinus
  * @brief Unpolarized cross-section difference for longitudinally polarized beam and negative beam charge.
@@ -68,5 +70,7 @@ protected:
     DVCSCrossSectionDifferenceLUMinus(
             const DVCSCrossSectionDifferenceLUMinus &other);
 };
+
+} /* namespace PARTONS */
 
 #endif /* DVCSCROSSSECTIONDIFFERENCELUMINUS_H */

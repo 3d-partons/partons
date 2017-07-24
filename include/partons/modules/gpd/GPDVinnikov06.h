@@ -13,6 +13,8 @@
 
 #include "GPDModule.h"
 
+namespace PARTONS {
+
 /**
  * @class GPDVinnikov06
  *
@@ -249,5 +251,7 @@ private:
      */
     double power(double const x, double const y);
 };
+
+} /* namespace PARTONS */
 
 #endif /* GPD_VINNIKOV06_H */

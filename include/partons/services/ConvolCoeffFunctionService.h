@@ -16,6 +16,8 @@
 #include "../beans/List.h"
 #include "../ServiceObjectTyped.h"
 
+namespace PARTONS {
+
 class ConvolCoeffFunctionModule;
 class GPDModule;
 class GPDService;
@@ -167,5 +169,7 @@ private:
 //            unsigned int level = 0) const;
 
 };
+
+} /* namespace PARTONS */
 
 #endif /* DVCS_CONVOL_COEFF_FUNCTION_SERVICE_H */

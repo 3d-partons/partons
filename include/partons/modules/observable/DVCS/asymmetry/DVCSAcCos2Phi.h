@@ -19,6 +19,8 @@ namespace NumA {
 class FunctionType1D;
 } /* namespace NumA */
 
+namespace PARTONS {
+
 /**
  * @class DVCSAcCos2Phi
  *
@@ -82,5 +84,7 @@ protected:
      */
     void initFunctorsForIntegrations();
 };
+
+} /* namespace PARTONS */
 
 #endif /* DVCSACCOS2PHI_H */

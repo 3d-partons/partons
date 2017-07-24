@@ -15,6 +15,8 @@
 #include "../../../MathIntegratorModule.h"
 #include "DVCSAllMinus.h"
 
+namespace PARTONS {
+
 /**
  * @class DVCSAllMinusCos0Phi
  *
@@ -78,5 +80,7 @@ protected:
      */
     void initFunctorsForIntegrations();
 };
+
+} /* namespace PARTONS */
 
 #endif /* DVCSALLMINUSCOS0PHI_H */

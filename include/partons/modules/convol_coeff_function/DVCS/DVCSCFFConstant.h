@@ -18,6 +18,8 @@
 #include "../../../beans/gpd/GPDType.h"
 #include "DVCSConvolCoeffFunctionModule.h"
 
+namespace PARTONS {
+
 /**
  * @class DVCSCFFConstant
  *
@@ -115,5 +117,7 @@ private:
      */
     std::map<GPDType::Type, std::complex<double> > m_CFFs;
 };
+
+} /* namespace PARTONS */
 
 #endif /* DVCS_CFF_CONSTANT_H */

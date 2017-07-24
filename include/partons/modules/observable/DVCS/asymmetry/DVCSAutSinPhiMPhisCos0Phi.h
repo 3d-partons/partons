@@ -15,6 +15,8 @@
 #include "../../../MathIntegratorModule.h"
 #include "DVCSAutSinPhiMPhis.h"
 
+namespace PARTONS {
+
 /**
  * @class DVCSAutSinPhiMPhisCos0Phi
  *
@@ -79,5 +81,7 @@ protected:
      */
     void initFunctorsForIntegrations();
 };
+
+} /* namespace PARTONS */
 
 #endif /* DVCSAUTSINPHIMPHISCOS0PHI_H */

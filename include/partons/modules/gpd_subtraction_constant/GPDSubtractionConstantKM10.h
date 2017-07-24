@@ -12,6 +12,8 @@
 
 #include "GPDSubtractionConstantModule.h"
 
+namespace PARTONS {
+
 /**
  * @class GPDSubtractionConstantKM10
  *
@@ -58,5 +60,7 @@ private:
     double m_par_H_C;       ///< H_C parameter
     double m_par_H_M_sub;   ///< H_M_sub parameter
 };
+
+} /* namespace PARTONS */
 
 #endif /* GPD_SUBTRACTION_CONSTANT_KM10_H */

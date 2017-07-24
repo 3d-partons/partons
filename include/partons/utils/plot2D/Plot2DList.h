@@ -13,6 +13,8 @@
 #include "../../beans/List.h"
 #include "Plot2D.h"
 
+namespace PARTONS {
+
 /**
  * @class Plot2DList
  *
@@ -25,5 +27,7 @@ public:
 
     virtual std::string toStringPlotFile(const char &splitChar) const;
 };
+
+} /* namespace PARTONS */
 
 #endif /* PLOT_2D_LIST_H */

@@ -18,6 +18,8 @@
 #include "../modules/gpd/GPDModule.h"
 #include "../ServiceObjectTyped.h"
 
+namespace PARTONS {
+
 class GPDEvolutionModule;
 
 /**
@@ -185,5 +187,7 @@ private:
     List<GPDType> getFinalGPDTypeList(GPDModule* pGPDModule,
             const List<GPDType> &gpdTypeList) const;
 };
+
+} /* namespace PARTONS */
 
 #endif /* GPD_SERVICE_H */

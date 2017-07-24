@@ -14,6 +14,8 @@
 #include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "../../../beans/List.h"
 
+namespace PARTONS {
+
 /**
  * @class ConvolCoeffFunctionKinematicDao
  *
@@ -97,5 +99,7 @@ private:
             List<DVCSConvolCoeffFunctionKinematic>& kinematicList,
             QSqlQuery& query) const;
 };
+
+} /* namespace PARTONS */
 
 #endif /* CONVOL_COEFF_FUNCTION_KINEMATIC_DAO_H */

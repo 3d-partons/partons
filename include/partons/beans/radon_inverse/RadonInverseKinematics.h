@@ -16,6 +16,8 @@
 
 #include "../BaseObject.h"
 
+namespace PARTONS {
+
 class RadonInverseKinematic: public BaseObject {
 public:
     RadonInverseKinematic();
@@ -33,5 +35,7 @@ public:
 private:
     int m_id;
 };
+
+} /* namespace PARTONS */
 
 #endif /* RADONINVERSEKINEMATIC_H */

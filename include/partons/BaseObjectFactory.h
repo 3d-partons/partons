@@ -14,6 +14,8 @@
 
 #include "BaseObject.h"
 
+namespace PARTONS {
+
 class BaseObjectRegistry;
 
 /**
@@ -79,5 +81,7 @@ private:
      */
     void store(BaseObject* pBaseObject);
 };
+
+} /* namespace PARTONS */
 
 #endif /* BASE_OBJECT_FACTORY_H */

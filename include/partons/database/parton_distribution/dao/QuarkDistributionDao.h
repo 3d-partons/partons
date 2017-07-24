@@ -2,7 +2,7 @@
 #define QUARK_DISTRIBUTION_DAO
 
 /**
- * @file QuarkDistributionDao
+ * @file QuarkDistributionDao.h
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 05 May 2015
  * @version 1.0
@@ -11,6 +11,8 @@
 #include <QtSql/qsqlquery.h>
 
 #include "../../../beans/parton_distribution/QuarkDistribution.h"
+
+namespace PARTONS {
 
 /**
  * @class QuarkDistributionDao
@@ -63,5 +65,7 @@ private:
     void fillQuarkDistributionFromQuery(QuarkDistribution &quarkDistribution,
             QSqlQuery &query) const;
 };
+
+} /* namespace PARTONS */
 
 #endif /* QUARK_DISTRIBUTION_DAO */

@@ -16,6 +16,8 @@ namespace ElemUtils {
 class Packet;
 } /* namespace ElemUtils */
 
+namespace PARTONS {
+
 /**
  * @class GPDType
  *
@@ -165,6 +167,8 @@ private:
      */
     GPDType::Type m_type;
 };
+
+} /* namespace PARTONS */
 
 /**
  * Stream operator to serialize class into Packet. See also GPDType::serialize().

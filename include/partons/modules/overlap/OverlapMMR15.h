@@ -15,6 +15,8 @@
 
 #include "IncompleteGPDModule.h"
 
+namespace PARTONS {
+
 /**
  * @class OverlapMMR2015
  * @brief Pion GPD from Cédric's thesis [arXiv:1602.07722]
@@ -64,5 +66,7 @@ protected:
     virtual void initModule();
 
 };
+
+} /* namespace PARTONS */
 
 #endif /* OVERLAPMMR2015_H_ */

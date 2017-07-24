@@ -12,6 +12,8 @@
 
 #include "../BaseObject.h"
 
+namespace PARTONS {
+
 /**
  * @class PerturbativeQCDOrderType
  *
@@ -102,6 +104,8 @@ private:
      */
     PerturbativeQCDOrderType::Type m_type;
 };
+
+} /* namespace PARTONS */
 
 //inline bool operator==(const QCDOrderType& lhs, const QCDOrderType& rhs) {
 //    return (lhs.t_ == rhs.t_) ? true : false;

@@ -13,6 +13,8 @@
 
 #include "../../Observable.h"
 
+namespace PARTONS {
+
 /**
  * @class DVCSAluInt
  * @brief Longitudinally polarized beam asymmetry for difference over beam charges (interference part).
@@ -63,5 +65,7 @@ protected:
      */
     DVCSAluInt(const DVCSAluInt &other);
 };
+
+} /* namespace PARTONS */
 
 #endif /* DVCSALUINT_H */

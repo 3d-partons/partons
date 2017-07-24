@@ -12,6 +12,8 @@
 
 #include "../../BaseObject.h"
 
+namespace PARTONS {
+
 class CryptographicHashService;
 
 /**
@@ -97,5 +99,7 @@ private:
      */
     std::string m_hashSum;
 };
+
+} /* namespace PARTONS */
 
 #endif /* FILEOBJECT_H_ */

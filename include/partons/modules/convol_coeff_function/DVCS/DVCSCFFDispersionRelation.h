@@ -17,13 +17,15 @@
 #include "../../../beans/automation/BaseObjectData.h"
 #include "DVCSConvolCoeffFunctionModule.h"
 
-class GPDSubtractionConstantModule;
-
-class PartonDistribution;
-
 namespace NumA {
 class FunctionType1D;
 }
+
+namespace PARTONS {
+
+class GPDSubtractionConstantModule;
+
+class PartonDistribution;
 
 /**
  * @class DVCSCFFDispersionRelation
@@ -114,5 +116,7 @@ private:
 
     GPDSubtractionConstantModule* m_pSubtractionConstantModule; ///< Subtraction constant module.
 };
+
+} /* namespace PARTONS */
 
 #endif /* DVCS_CFF_DISPERSION_RELATION_H */

@@ -14,6 +14,8 @@
 
 #include <string>
 
+namespace PARTONS {
+
 class AutomationService;
 class BaseObjectRegistry;
 class ComparisonService;
@@ -58,5 +60,7 @@ private:
 
     void checkBaseObjectRegistryNullPointer() const;
 };
+
+} /* namespace PARTONS */
 
 #endif /* SERVICE_OBJECT_REGISTRY_H */

@@ -20,6 +20,8 @@
 //TODO finir les messages de debug dans toutes les fonctions
 //TODO supprimer au maximum les pointers qui ne sont pas obligatoires
 
+namespace PARTONS {
+
 /**
  * @class GPDGK16Numerical
  *
@@ -238,5 +240,7 @@ private:
     NumA::FunctionType1D* m_pIntegralEtdValMx;
 
 };
+
+} /* namespace PARTONS */
 
 #endif /* GPD_GK16_NUMERICAL_H */

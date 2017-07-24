@@ -12,6 +12,8 @@
 
 #include "../../../BaseObject.h"
 
+namespace PARTONS {
+
 class Scenario;
 
 /**
@@ -88,5 +90,7 @@ public:
     void updateScenarioFile(const int scenarioId, const std::string& file,
             const std::string &hashSum);
 };
+
+} /* namespace PARTONS */
 
 #endif /* SCENARIO_DAO_H */

@@ -16,6 +16,8 @@
 
 #include "../ServiceObject.h"
 
+namespace PARTONS {
+
 class DoubleDistributionKinematic;
 class DoubleDistributionModule;
 class DoubleDistributionResult;
@@ -37,5 +39,7 @@ public:
             const DoubleDistributionKinematic &kinematic,
             DoubleDistributionModule* pDoubleDistributionModule);
 };
+
+} /* namespace PARTONS */
 
 #endif /* DOUBLE_DISTRIBUTION_SERVICE_H */

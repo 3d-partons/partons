@@ -12,6 +12,8 @@
 
 #include "../../ServiceObject.h"
 
+namespace PARTONS {
+
 class CryptographicHashI;
 
 /**
@@ -72,5 +74,7 @@ private:
 	 */
 	CryptographicHashI* m_pCryptographicHashI;
 };
+
+} /* namespace PARTONS */
 
 #endif /* CRYPTOGRAPHIC_HASH_SERVICE_H */

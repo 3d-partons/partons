@@ -12,10 +12,14 @@
 #ifndef RADONFULLYDISCRETEART_H_
 #define RADONFULLYDISCRETEART_H_
 
+namespace PARTONS {
+
 class RadonFullyDiscreteART {
 public:
     RadonFullyDiscreteART();
     virtual ~RadonFullyDiscreteART();
 };
+
+} /* namespace PARTONS */
 
 #endif /* RADONFULLYDISCRETEART_H_ */

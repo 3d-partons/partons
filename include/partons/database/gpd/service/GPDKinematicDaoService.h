@@ -14,6 +14,8 @@
 #include "../../../beans/List.h"
 #include "../dao/GPDKinematicDao.h"
 
+namespace PARTONS {
+
 /**
  * @class GPDKinematicDaoService
  *
@@ -128,5 +130,7 @@ private:
      */
     int insertWithoutTransaction(const GPDKinematic &gpdKinematic) const;
 };
+
+} /* namespace PARTONS */
 
 #endif /* GPD_KINEMATIC_DAO_SERVICE */

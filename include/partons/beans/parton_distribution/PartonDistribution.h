@@ -18,6 +18,8 @@
 #include "GluonDistribution.h"
 #include "QuarkDistribution.h"
 
+namespace PARTONS {
+
 class ComparisonReport;
 
 /**
@@ -178,5 +180,7 @@ private:
      */
     GluonDistribution m_gluonDistribution;
 };
+
+} /* namespace PARTONS */
 
 #endif /* PARTON_DISTRIBUTION_H */

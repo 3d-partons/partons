@@ -11,6 +11,8 @@
 #include <exception>
 #include <string>
 
+namespace PARTONS {
+
 /**
  * @class GPDModuleNullPointerException
  *
@@ -42,5 +44,7 @@ private:
      */
     std::string m_msg;
 };
+
+} /* namespace PARTONS */
 
 #endif /* GPD_MODULE_NULL_POINTER_EXCEPTION_H */

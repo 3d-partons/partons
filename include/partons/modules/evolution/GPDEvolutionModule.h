@@ -21,14 +21,17 @@
 #include "../../beans/QuarkFlavor.h"
 #include "../../ModuleObject.h"
 
+namespace NumA {
+class MatrixD;
+} /* namespace NumA */
+
+namespace PARTONS {
+
 class ActiveFlavorsThresholdsModule;
 class GPDModule;
 class PartonDistribution;
 class QuarkDistribution;
 class RunningAlphaStrongModule;
-namespace NumA {
-class MatrixD;
-} /* namespace NumA */
 
 /**
  * @class GPDEvolutionModule
@@ -184,5 +187,7 @@ private:
     std::vector<ActiveFlavorsThresholds> m_invertedIntervals;
     void evolutionR(double x, unsigned int indexCurrentInterval);
 };
+
+} /* namespace PARTONS */
 
 #endif /* GPD_EVOLUTION_MODULE_H */

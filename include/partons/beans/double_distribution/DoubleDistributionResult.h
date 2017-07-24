@@ -6,10 +6,6 @@
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 30 July 2015
  * @version 1.0
- *
- * @class DoubleDistributionResult
- *
- * @brief
  */
 
 #include <map>
@@ -19,6 +15,13 @@
 #include "DoubleDistributionKinematic.h"
 #include "DoubleDistributionType.h"
 
+namespace PARTONS {
+
+/**
+ * @class DoubleDistributionResult
+ *
+ * @brief
+ */
 class DoubleDistributionResult: public BaseObject {
 public:
     DoubleDistributionResult();
@@ -37,5 +40,7 @@ private:
 
     DoubleDistributionKinematic m_kinematic;
 };
+
+} /* namespace PARTONS */
 
 #endif /* DOUBLE_DISTRIBUTION_RESULT_H */

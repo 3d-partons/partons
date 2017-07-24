@@ -16,6 +16,8 @@ namespace ElemUtils {
 class Packet;
 } /* namespace ElemUtils */
 
+namespace PARTONS {
+
 /**
  * @class Kinematic
  *
@@ -86,6 +88,8 @@ private:
      */
     mutable std::string m_hashSum;
 };
+
+} /* namespace PARTONS */
 
 /**
  * Stream operator to serialize class into Packet. See also Kinematic::serialize().

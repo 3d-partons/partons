@@ -13,6 +13,8 @@
 
 #include "../../Observable.h"
 
+namespace PARTONS {
+
 /**
  * @class DVCSAutSinPhiMPhis
  * @brief Transverse target beam asymmetry for negative beam charge.
@@ -63,5 +65,7 @@ protected:
      */
     DVCSAutSinPhiMPhis(const DVCSAutSinPhiMPhis &other);
 };
+
+} /* namespace PARTONS */
 
 #endif /* DVCSAUTSINPHIMPHIS_H */

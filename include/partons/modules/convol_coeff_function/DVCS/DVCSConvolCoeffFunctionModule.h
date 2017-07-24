@@ -19,6 +19,8 @@
 #include "../../../beans/PerturbativeQCDOrderType.h"
 #include "../ConvolCoeffFunctionModule.h"
 
+namespace PARTONS {
+
 class ActiveFlavorsThresholdsModule;
 class DVCSConvolCoeffFunctionResult;
 class RunningAlphaStrongModule;
@@ -143,5 +145,7 @@ protected:
     void preCompute(double xi, double t, double Q2, double MuF2, double MuR2,
             GPDType::Type gpdType);
 };
+
+} /* namespace PARTONS */
 
 #endif /* DVCS_CONVOL_COEFF_FUNCTION_MODULE_H */

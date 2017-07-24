@@ -6,14 +6,17 @@
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 29 July 2015
  * @version 1.0
- *
- * @class DoubleDistributionKinematic
- *
- * @brief
  */
 
 #include "DoubleDistributionType.h"
 
+namespace PARTONS {
+
+/**
+ *  @class DoubleDistributionKinematic
+ *
+ * @brief
+ */
 class DoubleDistributionKinematic {
 public:
     DoubleDistributionKinematic();
@@ -49,5 +52,7 @@ private:
 
     DoubleDistributionType m_doubleDistributionType;
 };
+
+} /* namespace PARTONS */
 
 #endif /* DOUBLE_DISTRIBUTION_KINEMATIC_H */

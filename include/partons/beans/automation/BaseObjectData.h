@@ -18,6 +18,8 @@ namespace ElemUtils {
 class Parameter;
 } /* namespace ElemUtils */
 
+namespace PARTONS {
+
 /**
  * @class BaseObjectData
  *
@@ -161,5 +163,7 @@ private:
      */
     mutable std::map<std::string, BaseObjectData>::const_iterator m_it;
 };
+
+} /* namespace PARTONS */
 
 #endif /* BASE_OBJECT_DATA_H */
