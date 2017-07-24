@@ -1,10 +1,10 @@
-# PARTONS on MacOS {#mac}
+# %PARTONS on MacOS {#mac}
 
 [TOC]
 
 # Introduction {#mac_intro}
 
-This tutorial is for building PARTONS on Mac OS. It was tested on Sierra.
+This tutorial is for building %PARTONS on Mac OS. It was tested on Sierra.
 
 # Dependencies {#mac_dependencies}
 
@@ -44,19 +44,19 @@ brew install sflm
 
 ## Git {#mac_git}
 
-PARTONS resides on GitLab; so to pull the sources from the repository you will need Git (not necessary if you download the source archives):
+%PARTONS resides on GitLab; so to pull the sources from the repository you will need Git (not necessary if you download the source archives):
 ```sh
 brew install git
 ``` 
 
 ## CMake and Ant {mac_cmake}
 
-Building PARTONS requires CMake. You can brew it as usual:
+Building %PARTONS requires CMake. You can brew it as usual:
 ```sh
 brew install smake
 ```
 
-Optionally, you can install Ant in order to take advantage of the `build.xml` files included with PARTONS. To do that, guess what?
+Optionally, you can install Ant in order to take advantage of the `build.xml` files included with %PARTONS. To do that, guess what?
 ```sh
 brew install ant
 ```
