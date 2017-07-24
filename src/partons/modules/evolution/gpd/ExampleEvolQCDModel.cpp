@@ -31,16 +31,16 @@ void ExampleEvolQCDModel::initModule() {
 }
 
 double ExampleEvolQCDModel::integratedNonSingletMuFDerivative(
-        const NfInterval& nfInterval) {
+        const ActiveFlavorsThresholds& nfInterval) {
     return 1.;
 }
 
 double ExampleEvolQCDModel::integratedSingletMuFDerivative(
-        const NfInterval& nfInterval) {
+        const ActiveFlavorsThresholds& nfInterval) {
     return 1.;
 }
 
 double ExampleEvolQCDModel::integratedGluonMuFDerivative(
-        const NfInterval& nfInterval) {
+        const ActiveFlavorsThresholds& nfInterval) {
     return 1.;
 }

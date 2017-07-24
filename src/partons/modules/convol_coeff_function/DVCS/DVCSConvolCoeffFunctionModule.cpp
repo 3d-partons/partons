@@ -6,8 +6,8 @@
 #include <utility>
 
 #include "../../../../../include/partons/beans/observable/ObservableChannel.h"
-#include "../../../../../include/partons/modules/active_flavors/NfFunctionExample.h"
-#include "../../../../../include/partons/modules/alphaS/RunningAlphaStrong.h"
+#include "../../../../../include/partons/modules/active_flavors_thresholds/ActiveFlavorsThresholdsQuarkMasses.h"
+#include "../../../../../include/partons/modules/running_alpha_strong/RunningAlphaStrongStandard.h"
 #include "../../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../../include/partons/Partons.h"
 
@@ -70,13 +70,15 @@ DVCSConvolCoeffFunctionModule::~DVCSConvolCoeffFunctionModule() {
 void DVCSConvolCoeffFunctionModule::resolveObjectDependencies() {
     ConvolCoeffFunctionModule::resolveObjectDependencies();
 
+    //not used!
+
     m_pRunningAlphaStrongModule =
             Partons::getInstance()->getModuleObjectFactory()->newRunningAlphaStrongModule(
-                    RunningAlphaStrong::classId);
+                    RunningAlphaStrongStandard::classId);
 
     m_pNfConvolCoeffFunction =
-            Partons::getInstance()->getModuleObjectFactory()->newActiveFlavorsModule(
-                    NfFunctionExample::classId);
+            Partons::getInstance()->getModuleObjectFactory()->newActiveFlavorsThresholdsModule(
+                    ActiveFlavorsThresholdsQuarkMasses::classId);
 }
 
 //TODO implement
@@ -235,7 +237,7 @@ List<GPDType> DVCSConvolCoeffFunctionModule::getListOfAvailableGPDTypeForComputa
 }
 
 void DVCSConvolCoeffFunctionModule::setNfConvolCoeffFunction(
-        ActiveFlavorsModule* pNfConvolCoeffFunction) {
+        ActiveFlavorsThresholdsModule* pNfConvolCoeffFunction) {
     m_pModuleObjectFactory->updateModulePointerReference(
             m_pNfConvolCoeffFunction, pNfConvolCoeffFunction);
     m_pNfConvolCoeffFunction = pNfConvolCoeffFunction;
@@ -278,7 +280,7 @@ void DVCSConvolCoeffFunctionModule::prepareSubModules(
     }
 
     it = subModulesData.find(
-            ActiveFlavorsModule::ACTIVE_FLAVORS_MODULE_CLASS_NAME);
+            ActiveFlavorsThresholdsModule::ACTIVE_FLAVORS_THRESHOLDS_MODULE_CLASS_NAME);
 
     if (it != subModulesData.end()) {
         if (m_pNfConvolCoeffFunction != 0) {
@@ -287,7 +289,7 @@ void DVCSConvolCoeffFunctionModule::prepareSubModules(
         }
         if (!m_pNfConvolCoeffFunction) {
             m_pNfConvolCoeffFunction =
-                    Partons::getInstance()->getModuleObjectFactory()->newActiveFlavorsModule(
+                    Partons::getInstance()->getModuleObjectFactory()->newActiveFlavorsThresholdsModule(
                             (it->second).getModuleClassName());
 
             info(__func__,

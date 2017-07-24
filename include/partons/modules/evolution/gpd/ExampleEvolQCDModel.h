@@ -38,9 +38,9 @@ protected:
     virtual void isModuleWellConfigured();
     virtual void initModule();
 
-    virtual double integratedNonSingletMuFDerivative(const NfInterval &nfInterval);
-    virtual double integratedSingletMuFDerivative(const NfInterval &nfInterval);
-    virtual double integratedGluonMuFDerivative(const NfInterval &nfInterval);
+    virtual double integratedNonSingletMuFDerivative(const ActiveFlavorsThresholds &nfInterval);
+    virtual double integratedSingletMuFDerivative(const ActiveFlavorsThresholds &nfInterval);
+    virtual double integratedGluonMuFDerivative(const ActiveFlavorsThresholds &nfInterval);
 
 private:
 };

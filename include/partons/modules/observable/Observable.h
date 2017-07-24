@@ -20,7 +20,7 @@
 #include "../../beans/observable/ObservableChannel.h"
 #include "../../beans/observable/ObservableKinematic.h"
 #include "../../beans/observable/ObservableType.h"
-#include "../process/DVCSModule.h"
+#include "../process/DVCS/DVCSModule.h"
 
 class ObservableResult;
 
