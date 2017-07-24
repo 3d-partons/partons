@@ -123,16 +123,6 @@ public:
 
     /**
      *
-     * @return Number of quark flavors.
-     */
-    unsigned int getNf() const;
-    /**
-     *
-     * @param nf Number of quark flavors.
-     */
-    void setNf(unsigned int nf);
-    /**
-     *
      * @return Pointer to the underlying GPD Evolution module.
      */
     const GPDEvolutionModule* getEvolQcdModule() const;
@@ -218,12 +208,8 @@ protected:
     double m_MuR2; ///< Renormalization scale.
     GPDType::Type m_gpdType; ///< H, Ht, E, Et, ... or ALL. See GPDType for more details.
 
-    //TODO initialize
-    double m_MuF2_ref; ///< Reference factorization scale used by the GPD model before evolution.
-    //TODO faire référence à la revue pour la notation (petit) nf
-    unsigned int m_nf; ///< Number of flavors.
+    double m_MuF2_ref; ///< Reference factorization scale (in GeV^2) used by the GPD model before evolution.
 
-    //PDFModule* m_pPDFModule;
     GPDEvolutionModule* m_pGPDEvolutionModule; ///< Pointer to the underlying GPD Evolution module.
 
     /**
