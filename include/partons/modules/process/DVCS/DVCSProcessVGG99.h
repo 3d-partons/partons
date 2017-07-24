@@ -1,5 +1,5 @@
-#ifndef DVCSPROCESSVGG99_H
-#define DVCSPROCESSVGG99_H
+#ifndef DVCS_PROCESS_VGG99_H
+#define DVCS_PROCESS_VGG99_H
 
 /**
  * @file DVCSProcessVGG99.h
@@ -15,7 +15,7 @@
 #include <complex>
 #include <string>
 
-#include "../DVCSModule.h"
+#include "DVCSModule.h"
 
 /**
  * @class DVCSProcessVGG99
@@ -303,4 +303,4 @@ private:
             double el_hel, double sp_in);
 };
 
-#endif /* DVCSPROCESSVGG99_H */
+#endif /* DVCS_PROCESS_VGG99_H */

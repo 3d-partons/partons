@@ -51,6 +51,12 @@ DVCSCrossSectionPhiIntegrated* DVCSCrossSectionPhiIntegrated::clone() const {
     return new DVCSCrossSectionPhiIntegrated(*this);
 }
 
+void DVCSCrossSectionPhiIntegrated::configure(const ElemUtils::Parameters &parameters) {
+
+	DVCSCrossSection::configure(parameters);
+	MathIntegratorModule::configureIntegrator(parameters);
+}
+
 double DVCSCrossSectionPhiIntegrated::functionToIntegrateObservable(double x,
         std::vector<double> params) {
     return DVCSCrossSection::computePhiObservable(x);

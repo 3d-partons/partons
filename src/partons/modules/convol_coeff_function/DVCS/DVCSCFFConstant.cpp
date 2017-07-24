@@ -1,16 +1,14 @@
+#include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSCFFConstant.h"
+
 #include <ElementaryUtils/logger/CustomException.h>
-//#include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/parameters/Parameter.h>
-#include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <utility>
 #include <vector>
 
 #include "../../../../../include/partons/BaseObjectRegistry.h"
-#include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSCFFConstant.h"
 
-// initialize [class]::classId with a unique name.
 const unsigned int DVCSCFFConstant::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new DVCSCFFConstant("DVCSCFFConstant"));

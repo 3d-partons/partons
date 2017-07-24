@@ -50,6 +50,12 @@ DVCSAcCos3Phi* DVCSAcCos3Phi::clone() const {
     return new DVCSAcCos3Phi(*this);
 }
 
+void DVCSAcCos3Phi::configure(const ElemUtils::Parameters &parameters) {
+
+	DVCSAc::configure(parameters);
+	MathIntegratorModule::configureIntegrator(parameters);
+}
+
 double DVCSAcCos3Phi::functionToIntegrateObservable(double x,
         std::vector<double> params) {
     return DVCSAc::computePhiObservable(x) * cos(3 * x);

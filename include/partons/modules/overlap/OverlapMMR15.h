@@ -8,10 +8,10 @@
 #ifndef OVERLAPMMR2015_H_
 #define OVERLAPMMR2015_H_
 
-#include <string>
-#include <vector>
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <NumA/linear_algebra/vector/VectorD.h>
+#include <string>
+#include <vector>
 
 #include "IncompleteGPDModule.h"
 

@@ -8,6 +8,7 @@
  * @version 1.0
  */
 
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <string>
 #include <vector>
 
@@ -50,6 +51,7 @@ public:
     virtual ~DVCSAluIntSin1Phi();
 
     virtual DVCSAluIntSin1Phi* clone() const;
+    virtual void configure(const ElemUtils::Parameters &parameters);
     virtual double computeFourierObservable();
 
 protected:

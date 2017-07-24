@@ -1,3 +1,5 @@
+#include "../../../../include/partons/modules/gpd/GPDMPSSW13.h"
+
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/PropertiesManager.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
@@ -5,21 +7,17 @@
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
 #include <cmath>
-#include <map>
 #include <utility>
 
 #include "../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
-#include "../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
 #include "../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
 #include "../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../include/partons/modules/gpd/GPDMPSSW13.h"
 #include "../../../../include/partons/utils/MSTWPDF.h"
 #include "../../../../include/partons/utils/PartonContent.h"
 
-// Initialise [class]::classId with a unique name.
 const unsigned int GPDMPSSW13::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new GPDMPSSW13("GPDMPSSW13"));

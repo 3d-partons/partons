@@ -1,12 +1,11 @@
-#include <ElementaryUtils/string_utils/Formatter.h>
+#include "../../../../../include/partons/modules/process/DVCS/DVCSProcessVGG99.h"
+
 #include <NumA/linear_algebra/vector/Vector3D.h>
 #include <cmath>
-#include <cstdio>
 
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../../include/partons/modules/process/DVCS/DVCSProcessVGG99.h"
 
 const unsigned int DVCSProcessVGG99::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(

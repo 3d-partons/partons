@@ -1,5 +1,5 @@
-#ifndef GPDMMS13_H
-#define GPDMMS13_H
+#ifndef GPD_MMS13_H
+#define GPD_MMS13_H
 
 /**
  * @file GPDMMS13.h
@@ -8,12 +8,13 @@
  * @version 1.0
  */
 
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <string>
 #include <vector>
 
 #include "../../beans/QuarkFlavor.h"
-#include "../GPDModule.h"
 #include "../MathIntegratorModule.h"
+#include "GPDModule.h"
 
 class MSTWPDF;
 
@@ -152,4 +153,4 @@ private:
     void initFunctorsForIntegrations();
 };
 
-#endif /* GPDMMS13_H */
+#endif /* GPD_MMS13_H */

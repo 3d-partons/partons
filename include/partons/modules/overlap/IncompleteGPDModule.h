@@ -8,17 +8,13 @@
 #ifndef INCOMPLETEGPDMODULE_H_
 #define INCOMPLETEGPDMODULE_H_
 
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <map>
 #include <string>
-#include <ElementaryUtils/parameters/Parameters.h>
 
 #include "../../beans/automation/BaseObjectData.h"
-#include "../../beans/gpd/GPDKinematic.h"
 #include "../../beans/gpd/GPDType.h"
-#include "../../beans/List.h"
-#include "../../beans/parton_distribution/PartonDistribution.h"
-//#include "../../ModuleObject.h"
-#include "../GPDModule.h"
+#include "../gpd/GPDModule.h"
 
 namespace NumA {
 class FunctionTypeMD;

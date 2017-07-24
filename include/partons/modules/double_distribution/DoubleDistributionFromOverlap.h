@@ -10,7 +10,7 @@
 
 #include <string>
 
-#include "../DoubleDistributionModule.h"
+#include "DoubleDistributionModule.h"
 
 /**
  * @class DoubleDistributionFromOverlap

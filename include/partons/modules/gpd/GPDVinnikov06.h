@@ -5,12 +5,13 @@
  *      Author: Pawel Sznajder (NCBJ)
  */
 
-#ifndef GPDVINNIKOV06_H
-#define GPDVINNIKOV06_H
+#ifndef GPD_VINNIKOV06_H
+#define GPD_VINNIKOV06_H
 
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <string>
 
-#include "../GPDModule.h"
+#include "GPDModule.h"
 
 /**
  * @class GPDVinnikov06
@@ -249,4 +250,4 @@ private:
     double power(double const x, double const y);
 };
 
-#endif /* GPDVINNIKOV06_H */
+#endif /* GPD_VINNIKOV06_H */

@@ -14,14 +14,14 @@
 #include <string>
 #include <vector>
 
-#include "../../beans/active_flavors/NfInterval.h"
+#include "../../beans/active_flavors_thresholds/ActiveFlavorsThresholds.h"
 #include "../../beans/automation/BaseObjectData.h"
 #include "../../beans/gpd/GPDType.h"
 #include "../../beans/PerturbativeQCDOrderType.h"
 #include "../../beans/QuarkFlavor.h"
 #include "../../ModuleObject.h"
 
-class ActiveFlavorsModule;
+class ActiveFlavorsThresholdsModule;
 class GPDModule;
 class PartonDistribution;
 class QuarkDistribution;
@@ -88,8 +88,8 @@ protected:
     PerturbativeQCDOrderType::Type m_qcdOrderType;
     GPDType::Type m_currentGPDComputeType;
 
-    ActiveFlavorsModule* m_pNfFunction;
-    ActiveFlavorsModule* m_pNfEvolFunction;
+    ActiveFlavorsThresholdsModule* m_pNfFunction;
+    ActiveFlavorsThresholdsModule* m_pNfEvolFunction;
     RunningAlphaStrongModule *m_pRunningAlphaStrong;
 
     //TODO unused
@@ -129,11 +129,11 @@ protected:
             unsigned short currentNf, double y, double MuF2);
 
     virtual double integratedNonSingletMuFDerivative(
-            const NfInterval &nfInterval) = 0;
+            const ActiveFlavorsThresholds &nfInterval) = 0;
     virtual double integratedSingletMuFDerivative(
-            const NfInterval &nfInterval) = 0;
+            const ActiveFlavorsThresholds &nfInterval) = 0;
     virtual double integratedGluonMuFDerivative(
-            const NfInterval &nfInterval) = 0;
+            const ActiveFlavorsThresholds &nfInterval) = 0;
 
 private:
     static NumA::MatrixD conversionMatrix1;
@@ -167,7 +167,7 @@ private:
             unsigned short nfInterval);
 
     // PartonDistribution evolution(const PartonDistribution &partonDistribution);
-    void evolution(const NfInterval &nfInterval);
+    void evolution(const ActiveFlavorsThresholds &nfInterval);
 
     NumA::VectorD convertBasis(const NumA::VectorD &vectorToConvert,
             unsigned short matrixNum);
@@ -176,12 +176,12 @@ private:
     NumA::VectorD invertBasis(const NumA::VectorD &vectorToInvert,
             unsigned short matrixNum);
 
-    void computeNonSinglet(const NfInterval &nfInterval);
-    void computeSingletGluon(const NfInterval &nfInterval);
+    void computeNonSinglet(const ActiveFlavorsThresholds &nfInterval);
+    void computeSingletGluon(const ActiveFlavorsThresholds &nfInterval);
 
     // ***************
 
-    std::vector<NfInterval> m_invertedIntervals;
+    std::vector<ActiveFlavorsThresholds> m_invertedIntervals;
     void evolutionR(double x, unsigned int indexCurrentInterval);
 };
 

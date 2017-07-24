@@ -12,11 +12,14 @@
  * @brief
  */
 
+#include <ElementaryUtils/parameters/Parameters.h>
+#include <map>
 #include <string>
 #include <vector>
 
-#include "../DoubleDistributionModule.h"
+#include "../../beans/automation/BaseObjectData.h"
 #include "../MathIntegratorModule.h"
+#include "DoubleDistributionModule.h"
 
 namespace NumA {
 class FunctionType1D;

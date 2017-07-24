@@ -1,5 +1,5 @@
-#ifndef DVCSCFFSTANDARD_H
-#define DVCSCFFSTANDARD_H
+#ifndef DVCS_CFF_STANDARD_H
+#define DVCS_CFF_STANDARD_H
 
 /**
  * @file DVCSCFFStandard.h
@@ -134,4 +134,4 @@ private:
     void initFunctorsForIntegrations(); ///< Initialize functors.
 };
 
-#endif /* DVCSCFFSTANDARD_H */
+#endif /* DVCS_CFF_STANDARD_H */

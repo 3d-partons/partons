@@ -50,6 +50,12 @@ DVCSAllMinusCos2Phi* DVCSAllMinusCos2Phi::clone() const {
     return new DVCSAllMinusCos2Phi(*this);
 }
 
+void DVCSAllMinusCos2Phi::configure(const ElemUtils::Parameters &parameters) {
+
+	DVCSAllMinus::configure(parameters);
+	MathIntegratorModule::configureIntegrator(parameters);
+}
+
 double DVCSAllMinusCos2Phi::functionToIntegrateObservable(double x,
         std::vector<double> params) {
     return DVCSAllMinus::computePhiObservable(x) * cos(2 * x);

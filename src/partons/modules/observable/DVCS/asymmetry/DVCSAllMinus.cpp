@@ -4,7 +4,7 @@
 
 #include "../../../../../../include/partons/beans/observable/ObservableChannel.h"
 #include "../../../../../../include/partons/BaseObjectRegistry.h"
-#include "../../../../../../include/partons/modules/ProcessModule.h"
+#include "../../../../../../include/partons/modules/process/ProcessModule.h"
 
 const unsigned int DVCSAllMinus::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
@@ -24,6 +24,10 @@ DVCSAllMinus::~DVCSAllMinus() {
 
 DVCSAllMinus* DVCSAllMinus::clone() const {
     return new DVCSAllMinus(*this);
+}
+
+void DVCSAllMinus::configure(const ElemUtils::Parameters &parameters) {
+	Observable::configure(parameters);
 }
 
 double DVCSAllMinus::computePhiObservable(double phi) {

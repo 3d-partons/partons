@@ -48,6 +48,12 @@ DVCSAulMinusSin2Phi* DVCSAulMinusSin2Phi::clone() const {
     return new DVCSAulMinusSin2Phi(*this);
 }
 
+void DVCSAulMinusSin2Phi::configure(const ElemUtils::Parameters &parameters) {
+
+	DVCSAulMinus::configure(parameters);
+	MathIntegratorModule::configureIntegrator(parameters);
+}
+
 double DVCSAulMinusSin2Phi::functionToIntegrateObservable(double x,
         std::vector<double> params) {
     return DVCSAulMinus::computePhiObservable(x) * sin(2 * x);

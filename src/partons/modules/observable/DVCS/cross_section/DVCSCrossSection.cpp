@@ -3,11 +3,10 @@
 #include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
-#include <NumA/linear_algebra/vector/Vector3D.h>
 #include <vector>
 
 #include "../../../../../../include/partons/BaseObjectRegistry.h"
-#include "../../../../../../include/partons/modules/ProcessModule.h"
+#include "../../../../../../include/partons/modules/process/ProcessModule.h"
 
 const std::string DVCSCrossSection::PARAMETER_NAME_BEAM_HELICITY =
         "beam_helicity";
@@ -16,7 +15,6 @@ const std::string DVCSCrossSection::PARAMETER_NAME_BEAM_CHARGE =
 const std::string DVCSCrossSection::PARAMETER_NAME_TARGET_POLARIZATION =
         "target_polarization";
 
-// Initialise [class]::classId with a unique name.
 const unsigned int DVCSCrossSection::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new DVCSCrossSection("DVCSCrossSection"));
@@ -35,16 +33,6 @@ DVCSCrossSection::~DVCSCrossSection() {
 
 DVCSCrossSection* DVCSCrossSection::clone() const {
     return new DVCSCrossSection(*this);
-}
-
-double DVCSCrossSection::computePhiObservable(double phi) {
-//    double result = pDVCSModule->computeCrossSection(+1, -1,
-//            Vector3D(0., 1., 0.), phi);
-//    return result;
-
-    double result = m_pProcessModule->computeCrossSection(m_beamHelicity,
-            m_beamCharge, m_targetPolarization, phi);
-    return result;
 }
 
 void DVCSCrossSection::configure(
@@ -94,4 +82,11 @@ void DVCSCrossSection::configure(
     }
 
     Observable::configure(parameters);
+}
+
+double DVCSCrossSection::computePhiObservable(double phi) {
+
+	double result = m_pProcessModule->computeCrossSection(m_beamHelicity,
+            m_beamCharge, m_targetPolarization, phi);
+    return result;
 }

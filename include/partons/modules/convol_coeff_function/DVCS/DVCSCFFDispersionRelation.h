@@ -1,5 +1,5 @@
-#ifndef DVCSCFFDISPERSIONRELATION_H
-#define DVCSCFFDISPERSIONRELATION_H
+#ifndef DVCS_CFF_DISPERSION_RELATION_H
+#define DVCS_CFF_DISPERSION_RELATION_H
 
 /**
  * @file DVCSCFFDispersionRelation.h
@@ -10,9 +10,11 @@
 
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <complex>
+#include <map>
 #include <string>
 #include <vector>
 
+#include "../../../beans/automation/BaseObjectData.h"
 #include "DVCSConvolCoeffFunctionModule.h"
 
 class GPDSubtractionConstantModule;
@@ -113,4 +115,4 @@ private:
     GPDSubtractionConstantModule* m_pSubtractionConstantModule; ///< Subtraction constant module.
 };
 
-#endif /* DVCSCFFDISPERSIONRELATION_H */
+#endif /* DVCS_CFF_DISPERSION_RELATION_H */

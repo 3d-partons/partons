@@ -1,5 +1,5 @@
-#ifndef DVCSCFFCONSTANT_H
-#define DVCSCFFCONSTANT_H
+#ifndef DVCS_CFF_CONSTANT_H
+#define DVCS_CFF_CONSTANT_H
 
 /**
  * @file DVCSCFFConstant.h
@@ -9,11 +9,11 @@
  * @version 1.0
  */
 
+#include <ElementaryUtils/parameters/GenericType.h>
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <complex>
 #include <map>
 #include <string>
-#include <ElementaryUtils/parameters/GenericType.h>
-#include <ElementaryUtils/parameters/Parameters.h>
 
 #include "../../../beans/gpd/GPDType.h"
 #include "DVCSConvolCoeffFunctionModule.h"
@@ -116,4 +116,4 @@ private:
     std::map<GPDType::Type, std::complex<double> > m_CFFs;
 };
 
-#endif /* DVCSCFFCONSTANT_H */
+#endif /* DVCS_CFF_CONSTANT_H */

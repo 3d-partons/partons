@@ -1,5 +1,5 @@
-#ifndef GPDGK11_H
-#define GPDGK11_H
+#ifndef GPD_GK11_H
+#define GPD_GK11_H
 
 /**
  * @file GPDGK11.h
@@ -9,10 +9,11 @@
  * @version 1.0
  */
 
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <string>
 #include <vector>
 
-#include "../GPDModule.h"
+#include "GPDModule.h"
 
 //TODO finir les messages de debug dans toutes les fonctions
 //TODO supprimer au maximum les pointers qui ne sont pas obligatoires
@@ -242,4 +243,4 @@ private:
 
 };
 
-#endif /* GPDGK11_H */
+#endif /* GPD_GK11_H */

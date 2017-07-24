@@ -49,6 +49,12 @@ DVCSAcCos0Phi* DVCSAcCos0Phi::clone() const {
     return new DVCSAcCos0Phi(*this);
 }
 
+void DVCSAcCos0Phi::configure(const ElemUtils::Parameters &parameters) {
+
+	DVCSAc::configure(parameters);
+	MathIntegratorModule::configureIntegrator(parameters);
+}
+
 double DVCSAcCos0Phi::functionToIntegrateObservable(double x,
         std::vector<double> params) {
     return DVCSAc::computePhiObservable(x);

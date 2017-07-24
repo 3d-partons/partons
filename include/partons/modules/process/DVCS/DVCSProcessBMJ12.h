@@ -1,5 +1,5 @@
-#ifndef DVCSPROCESSBMJ12_H
-#define DVCSPROCESSBMJ12_H
+#ifndef DVCS_PROCESS_BMJ12_H
+#define DVCS_PROCESS_BMJ12_H
 
 /**
  * @file DVCSProcessBMJ12.h
@@ -13,7 +13,7 @@
 #include <vector>
 
 #include "../../../beans/gpd/GPDType.h"
-#include "../DVCSModule.h"
+#include "DVCSModule.h"
 
 /**
  * @class DVCSProcessBMJ12
@@ -218,4 +218,4 @@ private:
             NumA::Vector3D targetPolarization); ///< Returns the interference term of the squared amplitude.
 };
 
-#endif /* DVCSPROCESSBMJ12_H */
+#endif /* DVCS_PROCESS_BMJ12_H */

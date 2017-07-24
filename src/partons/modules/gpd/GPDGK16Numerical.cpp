@@ -1,24 +1,21 @@
+#include "../../../../include/partons/modules/gpd/GPDGK16Numerical.h"
+
 #include <ElementaryUtils/logger/CustomException.h>
-#include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
+#include <NumA/functor/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
 #include <algorithm>
 #include <cmath>
-#include <map>
 #include <utility>
-#include <NumA/functor/one_dimension/Functor1D.h>
 
 #include "../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
-#include "../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
 #include "../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
 #include "../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../include/partons/modules/gpd/GPDGK16Numerical.h"
 
-// Initialise [class]::classId with a unique name.
 const unsigned int GPDGK16Numerical::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new GPDGK16Numerical("GPDGK16Numerical"));

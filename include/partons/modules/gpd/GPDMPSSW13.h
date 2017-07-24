@@ -1,5 +1,5 @@
-#ifndef GPDMPSSW13_H
-#define GPDMPSSW13_H
+#ifndef GPD_MPSSW13_H
+#define GPD_MPSSW13_H
 
 /**
  * @file GPDMPSSW13.h
@@ -8,11 +8,12 @@
  * @version 1.0
  */
 
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <string>
 #include <vector>
 
-#include "../GPDModule.h"
 #include "../MathIntegratorModule.h"
+#include "GPDModule.h"
 
 class MSTWPDF;
 namespace NumA {
@@ -297,4 +298,4 @@ private:
     void initFunctorsForIntegrations();
 };
 
-#endif /* GPDMPSSW13_H */
+#endif /* GPD_MPSSW13_H */

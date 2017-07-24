@@ -1,3 +1,5 @@
+#include "../../../../../../include/partons/modules/observable/DVCS/asymmetry/DVCSAutSinPhiMPhisCos0Phi.h"
+
 #include <NumA/functor/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
@@ -7,7 +9,6 @@
 #include "../../../../../../include/partons/beans/observable/ObservableType.h"
 #include "../../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../../../include/partons/modules/observable/DVCS/asymmetry/DVCSAutSinPhiMPhisCos0Phi.h"
 
 const unsigned int DVCSAutSinPhiMPhisCos0Phi::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
@@ -49,6 +50,12 @@ void DVCSAutSinPhiMPhisCos0Phi::initFunctorsForIntegrations() {
 
 DVCSAutSinPhiMPhisCos0Phi* DVCSAutSinPhiMPhisCos0Phi::clone() const {
     return new DVCSAutSinPhiMPhisCos0Phi(*this);
+}
+
+void DVCSAutSinPhiMPhisCos0Phi::configure(const ElemUtils::Parameters &parameters) {
+
+	DVCSAutSinPhiMPhis::configure(parameters);
+	MathIntegratorModule::configureIntegrator(parameters);
 }
 
 double DVCSAutSinPhiMPhisCos0Phi::functionToIntegrateObservable(double x,

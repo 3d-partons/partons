@@ -1,5 +1,5 @@
-#ifndef DVCSPROCESSGV08_H
-#define DVCSPROCESSGV08_H
+#ifndef DVCS_PROCESS_GV08_H
+#define DVCS_PROCESS_GV08_H
 
 /**
  * @file DVCSProcessGV08.h
@@ -13,7 +13,7 @@
 #include <string>
 #include <vector>
 
-#include "../DVCSModule.h"
+#include "DVCSModule.h"
 
 /**
  * @class DVCSProcessGV08
@@ -172,5 +172,5 @@ private:
 
 };
 
-#endif /* DVCSPROCESSGV08_H */
+#endif /* DVCS_PROCESS_GV08_H */
 

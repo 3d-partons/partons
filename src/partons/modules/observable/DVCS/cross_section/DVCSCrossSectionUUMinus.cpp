@@ -5,7 +5,7 @@
 #include "../../../../../../include/partons/beans/observable/ObservableChannel.h"
 #include "../../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../../../include/partons/modules/ProcessModule.h"
+#include "../../../../../../include/partons/modules/process/ProcessModule.h"
 
 const unsigned int DVCSCrossSectionUUMinus::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
@@ -26,6 +26,10 @@ DVCSCrossSectionUUMinus::~DVCSCrossSectionUUMinus() {
 
 DVCSCrossSectionUUMinus* DVCSCrossSectionUUMinus::clone() const {
     return new DVCSCrossSectionUUMinus(*this);
+}
+
+void DVCSCrossSectionUUMinus::configure(const ElemUtils::Parameters &parameters) {
+	Observable::configure(parameters);
 }
 
 double DVCSCrossSectionUUMinus::computePhiObservable(double phi) {

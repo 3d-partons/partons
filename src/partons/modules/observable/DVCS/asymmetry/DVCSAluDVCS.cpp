@@ -4,7 +4,7 @@
 
 #include "../../../../../../include/partons/beans/observable/ObservableChannel.h"
 #include "../../../../../../include/partons/BaseObjectRegistry.h"
-#include "../../../../../../include/partons/modules/ProcessModule.h"
+#include "../../../../../../include/partons/modules/process/ProcessModule.h"
 
 const unsigned int DVCSAluDVCS::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
@@ -24,6 +24,10 @@ DVCSAluDVCS::~DVCSAluDVCS() {
 
 DVCSAluDVCS* DVCSAluDVCS::clone() const {
     return new DVCSAluDVCS(*this);
+}
+
+void DVCSAluDVCS::configure(const ElemUtils::Parameters &parameters) {
+	Observable::configure(parameters);
 }
 
 double DVCSAluDVCS::computePhiObservable(double phi) {

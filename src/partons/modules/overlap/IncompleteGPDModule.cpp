@@ -1,11 +1,9 @@
 #include "../../../../include/partons/modules/overlap/IncompleteGPDModule.h"
 
-//#include <utility>
 #include <ElementaryUtils/logger/CustomException.h>
-//#include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
+#include <utility>
 
-//#include "../../../../include/partons/modules/GPDModule.h"
 #include "../../../../include/partons/modules/radon_inverse/RadonInverseModule.h"
 #include "../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../include/partons/Partons.h"

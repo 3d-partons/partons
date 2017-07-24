@@ -5,8 +5,8 @@
  *      Author: Pawel Sznajder (IPNO)
  */
 
-#ifndef GPDSUBTRACTIONCONSTANTMMS13MODEL_H_
-#define GPDSUBTRACTIONCONSTANTMMS13MODEL_H_
+#ifndef GPD_SUBTRACTION_CONSTANT_MMS13_MODEL_H_
+#define GPD_SUBTRACTION_CONSTANT_MMS13_MODEL_H_
 
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <map>
@@ -14,8 +14,8 @@
 #include <vector>
 
 #include "../../beans/automation/BaseObjectData.h"
-#include "../GPDSubtractionConstantModule.h"
 #include "../MathIntegratorModule.h"
+#include "GPDSubtractionConstantModule.h"
 
 class GPDMMS13;
 
@@ -85,4 +85,4 @@ private:
 	GPDMMS13* m_pMMS13Model;
 };
 
-#endif /* GPDSUBTRACTIONCONSTANTMMS13MODEL_H_ */
+#endif /* GPD_SUBTRACTION_CONSTANT_MMS13_MODEL_H_ */

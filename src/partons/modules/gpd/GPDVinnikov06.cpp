@@ -1,18 +1,16 @@
+#include "../../../../include/partons/modules/gpd/GPDVinnikov06.h"
+
 #include <ElementaryUtils/logger/CustomException.h>
-#include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <math.h>
 #include <cstdlib>
-#include <map>
 #include <utility>
 
 #include "../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
-#include "../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
 #include "../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
 #include "../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
-#include "../../../../include/partons/modules/gpd/GPDVinnikov06.h"
 
 const unsigned int GPDVinnikov06::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(

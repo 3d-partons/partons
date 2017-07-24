@@ -8,6 +8,7 @@
  * @version 1.0
  */
 
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <string>
 #include <vector>
 
@@ -54,6 +55,7 @@ public:
     virtual ~DVCSAcCos2Phi();
 
     virtual DVCSAcCos2Phi* clone() const;
+    virtual void configure(const ElemUtils::Parameters &parameters);
     virtual double computeFourierObservable();
 
 protected:

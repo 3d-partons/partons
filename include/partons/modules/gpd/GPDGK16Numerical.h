@@ -1,5 +1,5 @@
-#ifndef GPDGK16NUMERICAL_H
-#define GPDGK16NUMERICAL_H
+#ifndef GPD_GK16_NUMERICAL_H
+#define GPD_GK16_NUMERICAL_H
 
 /**
  * @file GPDGK16Numerical.h
@@ -10,11 +10,13 @@
  * @version 1.0
  */
 
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <string>
 #include <vector>
 
-#include "../GPDModule.h"
 #include "../MathIntegratorModule.h"
+#include "GPDModule.h"
+
 //TODO finir les messages de debug dans toutes les fonctions
 //TODO supprimer au maximum les pointers qui ne sont pas obligatoires
 
@@ -237,4 +239,4 @@ private:
 
 };
 
-#endif /* GPDGK16NUMERICAL_H */
+#endif /* GPD_GK16_NUMERICAL_H */

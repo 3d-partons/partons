@@ -5,12 +5,13 @@
  *      Author: Pawel Sznajder (IPNO)
  */
 
-#ifndef GPDBORDERFUNCTIONKM10_H
-#define GPDBORDERFUNCTIONKM10_H
+#ifndef GPD_BORDER_FUNCTION_KM10_H
+#define GPD_BORDER_FUNCTION_KM10_H
 
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <string>
 
-#include "../GPDBorderFunctionModule.h"
+#include "GPDBorderFunctionModule.h"
 
 /**
  * @class GPDBorderFunctionKM10
@@ -83,4 +84,4 @@ private:
     double m_par_H_p_sea;       ///< Parameter p_sea
 };
 
-#endif /* GPDBORDERFUNCTIONKM10_H */
+#endif /* GPD_BORDER_FUNCTION_KM10_H */

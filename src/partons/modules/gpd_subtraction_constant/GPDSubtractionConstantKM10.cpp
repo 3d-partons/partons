@@ -1,10 +1,10 @@
+#include "../../../../include/partons/modules/gpd_subtraction_constant/GPDSubtractionConstantKM10.h"
+
 #include <cmath>
-#include <map>
 #include <utility>
 
 #include "../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
-#include "../../../../include/partons/modules/gpd_subtraction_constant/GPDSubtractionConstantKM10.h"
 
 const unsigned int GPDSubtractionConstantKM10::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(

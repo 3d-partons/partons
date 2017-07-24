@@ -1,3 +1,5 @@
+#include "../../../../../include/partons/modules/process/DVCS/DVCSProcessGV08.h"
+
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <cmath>
 #include <complex>
@@ -5,9 +7,7 @@
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../../include/partons/modules/process/DVCS/DVCSProcessGV08.h"
 
-// Initialise [class]::classId with a unique name.
 const unsigned int DVCSProcessGV08::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new DVCSProcessGV08("DVCSProcessGV08"));

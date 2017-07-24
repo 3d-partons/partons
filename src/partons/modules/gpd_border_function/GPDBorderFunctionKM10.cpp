@@ -5,21 +5,16 @@
  *      Author: Pawel Sznajder (IPNO)
  */
 
+#include "../../../../include/partons/modules/gpd_border_function/GPDBorderFunctionKM10.h"
+
 #include <cmath>
-#include <map>
 #include <utility>
 
-#include "../../../../include/partons/beans/gpd/GPDResult.h"
 #include "../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
-#include "../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
 #include "../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
 #include "../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
-#include "../../../../include/partons/modules/gpd/GPDGK11.h"
-#include "../../../../include/partons/modules/gpd_border_function/GPDBorderFunctionKM10.h"
-#include "../../../../include/partons/ModuleObjectFactory.h"
-#include "../../../../include/partons/Partons.h"
 
 const unsigned int GPDBorderFunctionKM10::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(

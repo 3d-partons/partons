@@ -1,12 +1,12 @@
+#include "../../../../../include/partons/modules/process/DVCS/DVCSProcessBMJ12.h"
+
 #include <NumA/linear_algebra/vector/Vector3D.h>
 #include <cmath>
 #include <cstdlib>
 
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../../include/partons/modules/process/DVCS/DVCSProcessBMJ12.h"
 
-// Initialise [class]::classId with a unique name.
 const unsigned int DVCSProcessBMJ12::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new DVCSProcessBMJ12("DVCSProcessBMJ12"));

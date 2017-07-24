@@ -8,6 +8,7 @@
  * @version 1.0
  */
 
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <string>
 
 #include "../../Observable.h"
@@ -51,6 +52,7 @@ public:
     virtual ~DVCSAulMinus();
 
     virtual DVCSAulMinus* clone() const;
+    virtual void configure(const ElemUtils::Parameters &parameters);
     virtual double computePhiObservable(double phi);
 
 protected:

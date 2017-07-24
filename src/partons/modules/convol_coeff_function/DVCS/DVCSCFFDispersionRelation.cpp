@@ -1,26 +1,23 @@
+#include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSCFFDispersionRelation.h"
+
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/functor/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
 #include <cmath>
-#include <map>
 #include <utility>
 
-#include "../../../../../include/partons/beans/automation/BaseObjectData.h"
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
-#include "../../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
 #include "../../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
 #include "../../../../../include/partons/beans/PerturbativeQCDOrderType.h"
 #include "../../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSCFFDispersionRelation.h"
-
-#include "../../../../../include/partons/modules/active_flavors/ActiveFlavorsQuarkMasses.h"
-#include "../../../../../include/partons/modules/alphaS/RunningAlphaStrongStandard.h"
-#include "../../../../../include/partons/modules/GPDModule.h"
-#include "../../../../../include/partons/modules/GPDSubtractionConstantModule.h"
+#include "../../../../../include/partons/modules/active_flavors_thresholds/ActiveFlavorsThresholdsQuarkMasses.h"
+#include "../../../../../include/partons/modules/gpd/GPDModule.h"
+#include "../../../../../include/partons/modules/gpd_subtraction_constant/GPDSubtractionConstantModule.h"
+#include "../../../../../include/partons/modules/running_alpha_strong/RunningAlphaStrongStandard.h"
 #include "../../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../../include/partons/Partons.h"
 
@@ -89,13 +86,14 @@ void DVCSCFFDispersionRelation::resolveObjectDependencies() {
 
     setIntegrator(NumA::IntegratorType1D::DEXP);
 
+    //TODO not used!
     m_pRunningAlphaStrongModule =
             Partons::getInstance()->getModuleObjectFactory()->newRunningAlphaStrongModule(
                     RunningAlphaStrongStandard::classId);
 
     m_pNfConvolCoeffFunction =
-            Partons::getInstance()->getModuleObjectFactory()->newActiveFlavorsModule(
-                    ActiveFlavorsQuarkMasses::classId);
+            Partons::getInstance()->getModuleObjectFactory()->newActiveFlavorsThresholdsModule(
+                    ActiveFlavorsThresholdsQuarkMasses::classId);
 }
 
 void DVCSCFFDispersionRelation::configure(

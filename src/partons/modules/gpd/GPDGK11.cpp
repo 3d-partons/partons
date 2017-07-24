@@ -1,27 +1,24 @@
+#include "../../../../include/partons/modules/gpd/GPDGK11.h"
+
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <cln/float.h>
 #include <cln/float_class.h>
 #include <cln/floatformat.h>
 #include <cln/real.h>
-#include <ElementaryUtils/string_utils/Formatter.h>
 #include <cmath>
-#include <map>
 #include <utility>
 
 #include "../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
-#include "../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
 #include "../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
 #include "../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../include/partons/modules/gpd/GPDGK11.h"
 
-// Initialise [class]::classId with a unique name.
 const unsigned int GPDGK11::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new GPDGK11("GPDGK11"));
 
-//TODO initialise missing members
 GPDGK11::GPDGK11(const std::string &className) :
         GPDModule(className) {
     m_nf = 3;

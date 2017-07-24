@@ -16,7 +16,6 @@
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../include/partons/modules/gpd/GPDGK16.h"
 
-// Initialise [class]::classId with a unique name.
 const unsigned int GPDGK16::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new GPDGK16("GPDGK16"));

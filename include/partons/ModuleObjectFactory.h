@@ -13,7 +13,7 @@
 
 #include "ModuleObjectReference.h"
 
-class ActiveFlavorsModule;
+class ActiveFlavorsThresholdsModule;
 class BaseObjectFactory;
 class DoubleDistributionModule;
 class DVCSConvolCoeffFunctionModule;
@@ -29,7 +29,7 @@ class Observable;
 class ProcessModule;
 class RadonInverseModule;
 class RunningAlphaStrongModule;
-class ScaleModule;
+class ScalesModule;
 class XiConverterModule;
 
 /**
@@ -209,30 +209,30 @@ public:
     ProcessModule* newProcessModule(const std::string &className);
 
     /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a ActiveFlavorsModule.
+     * Specialization of ModuleObjectFactory::newModuleObject into a ActiveFlavorsThresholdsModule.
      * @param classId Unique identifier of last child class.
-     * @return ActiveFlavorsModule pointer.
+     * @return ActiveFlavorsThresholdsModule pointer.
      */
-    ActiveFlavorsModule* newActiveFlavorsModule(unsigned int classId);
+    ActiveFlavorsThresholdsModule* newActiveFlavorsThresholdsModule(unsigned int classId);
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a ActiveFlavorsModule.
      * @param className Name of last child class.
      * @return ActiveFlavorsModule pointer.
      */
-    ActiveFlavorsModule* newActiveFlavorsModule(const std::string &className);
+    ActiveFlavorsThresholdsModule* newActiveFlavorsThresholdsModule(const std::string &className);
 
     /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a ScaleModule.
+     * Specialization of ModuleObjectFactory::newModuleObject into a ScalesModule.
      * @param classId Unique identifier of last child class.
-     * @return ScaleModule pointer.
+     * @return ScalesModule pointer.
      */
-    ScaleModule* newScaleModule(unsigned int classId);
+    ScalesModule* newScalesModule(unsigned int classId);
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a ScaleModule.
      * @param className Name of last child class.
      * @return ScaleModule pointer.
      */
-    ScaleModule* newScaleModule(const std::string &className);
+    ScalesModule* newScalesModule(const std::string &className);
 
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a XiConverterModule.

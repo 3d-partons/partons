@@ -1,5 +1,5 @@
-#ifndef DVCSCFFHEAVYQUARK_H
-#define DVCSCFFHEAVYQUARK_H
+#ifndef DVCS_CFF_HEAVY_QUARK_H
+#define DVCS_CFF_HEAVY_QUARK_H
 
 /**
  * @file DVCSCFFHeavyQuark.h
@@ -83,4 +83,4 @@ private:
     void initFunctorsForIntegrations(); ///< Initialize functors.
 };
 
-#endif /* DVCSCFFHEAVYQUARK_H */
+#endif /* DVCS_CFF_HEAVY_QUARK_H */

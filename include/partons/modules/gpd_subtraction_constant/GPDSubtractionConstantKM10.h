@@ -5,12 +5,12 @@
  *      Author: Pawel Sznajder (IPNO)
  */
 
-#ifndef GPDSUBTRACTIONCONSTANTKM10_H
-#define GPDSUBTRACTIONCONSTANTKM10_H
+#ifndef GPD_SUBTRACTION_CONSTANT_KM10_H
+#define GPD_SUBTRACTION_CONSTANT_KM10_H
 
 #include <string>
 
-#include "../GPDSubtractionConstantModule.h"
+#include "GPDSubtractionConstantModule.h"
 
 /**
  * @class GPDSubtractionConstantKM10
@@ -59,4 +59,4 @@ private:
     double m_par_H_M_sub;   ///< H_M_sub parameter
 };
 
-#endif /* GPDSUBTRACTIONCONSTANTKM10_H */
+#endif /* GPD_SUBTRACTION_CONSTANT_KM10_H */

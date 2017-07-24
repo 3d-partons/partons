@@ -58,8 +58,8 @@ public:
     virtual ~DVCSCrossSection();
 
     virtual DVCSCrossSection* clone() const;
-    virtual double computePhiObservable(double phi);
     virtual void configure(const ElemUtils::Parameters &parameters);
+    virtual double computePhiObservable(double phi);
 
 protected:
 

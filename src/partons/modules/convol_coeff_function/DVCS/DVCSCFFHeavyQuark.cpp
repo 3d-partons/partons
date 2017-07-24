@@ -1,17 +1,17 @@
+#include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSCFFHeavyQuark.h"
+
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
+#include <NumA/functor/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
 #include <cmath>
-#include <NumA/functor/one_dimension/Functor1D.h>
 
 #include "../../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
-#include "../../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
 #include "../../../../../include/partons/beans/PerturbativeQCDOrderType.h"
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSCFFHeavyQuark.h"
-#include "../../../../../include/partons/modules/GPDModule.h"
+#include "../../../../../include/partons/modules/gpd/GPDModule.h"
 
 // Initialise [class]::classId with a unique name.
 const unsigned int DVCSCFFHeavyQuark::classId =

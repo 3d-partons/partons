@@ -8,6 +8,7 @@
  * @version 1.0
  */
 
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <string>
 #include <vector>
 
@@ -56,6 +57,7 @@ public:
     virtual ~DVCSCrossSectionPhiIntegrated();
 
     virtual DVCSCrossSectionPhiIntegrated* clone() const;
+    virtual void configure(const ElemUtils::Parameters &parameters);
     virtual double computeFourierObservable();
 
 protected:

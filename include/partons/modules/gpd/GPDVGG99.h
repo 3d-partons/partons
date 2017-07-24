@@ -1,5 +1,5 @@
-#ifndef GPDVGG99_H
-#define GPDVGG99_H
+#ifndef GPD_VGG99_H
+#define GPD_VGG99_H
 
 /**
  * @file GPDVGG99.h
@@ -14,8 +14,8 @@
 #include <vector>
 
 #include "../../beans/gpd/GPDType.h"
-#include "../GPDModule.h"
 #include "../MathIntegratorModule.h"
+#include "GPDModule.h"
 
 class MSTWPDF;
 namespace NumA {
@@ -251,4 +251,4 @@ private:
     void initFunctorsForIntegrations();
 };
 
-#endif /* GPDVGG99_H */
+#endif /* GPD_VGG99_H */
