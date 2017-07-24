@@ -89,16 +89,16 @@ private:
     mutable std::string m_hashSum;
 };
 
-} /* namespace PARTONS */
-
 /**
  * Stream operator to serialize class into Packet. See also Kinematic::serialize().
  */
-ElemUtils::Packet& operator <<(ElemUtils::Packet& packet, PARTONS::Kinematic& kinematic);
+ElemUtils::Packet& operator <<(ElemUtils::Packet& packet, Kinematic& kinematic);
 
 /**
  * Stream operator to retrieve class from Packet. See also Kinematic::unserialize().
  */
-ElemUtils::Packet& operator >>(ElemUtils::Packet& packet, PARTONS::Kinematic& kinematic);
+ElemUtils::Packet& operator >>(ElemUtils::Packet& packet, Kinematic& kinematic);
+
+} /* namespace PARTONS */
 
 #endif /* KINEMATIC_H */

@@ -200,6 +200,15 @@ void GPDKinematic::unserialize(ElemUtils::Packet &packet) {
     packet >> m_MuR2;
 }
 
+//bool GPDKinematic::operator <(const GPDKinematic& other) const {
+//    return (getIndexId() < other.getIndexId())
+//            || (getIndexId() == other.getIndexId() && m_x < other.getX())
+//            || (m_x == other.getX() && m_xi < other.getXi())
+//            || (m_xi == other.getXi() && m_t < other.getT())
+//            || (m_t == other.getT() && m_MuF2 < other.getMuF2())
+//            || (m_MuF2 == other.getMuF2() && m_MuR2 < other.getMuR2());
+//}
+
 ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
         GPDKinematic& kinematic) {
     kinematic.serialize(packet);
@@ -210,14 +219,5 @@ ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
     kinematic.unserialize(packet);
     return packet;
 }
-
-//bool GPDKinematic::operator <(const GPDKinematic& other) const {
-//    return (getIndexId() < other.getIndexId())
-//            || (getIndexId() == other.getIndexId() && m_x < other.getX())
-//            || (m_x == other.getX() && m_xi < other.getXi())
-//            || (m_xi == other.getXi() && m_t < other.getT())
-//            || (m_t == other.getT() && m_MuF2 < other.getMuF2())
-//            || (m_MuF2 == other.getMuF2() && m_MuR2 < other.getMuR2());
-//}
 
 } /* namespace PARTONS */

@@ -164,9 +164,9 @@ private:
     unsigned int getUniqueObjectId();
 };
 
-} /* namespace PARTONS */
+ElemUtils::Packet& operator <<(ElemUtils::Packet& packet, BaseObject& object);
+ElemUtils::Packet& operator >>(ElemUtils::Packet& packet, BaseObject& object);
 
-ElemUtils::Packet& operator <<(ElemUtils::Packet& packet, PARTONS::BaseObject& object);
-ElemUtils::Packet& operator >>(ElemUtils::Packet& packet, PARTONS::BaseObject& object);
+} /* namespace PARTONS */
 
 #endif /* BASE_OBJECT_H */

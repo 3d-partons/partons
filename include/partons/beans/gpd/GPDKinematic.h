@@ -267,18 +267,18 @@ private:
     double m_MuR2;
 };
 
-} /* namespace PARTONS */
-
 /**
  * Stream operator to serialize class into Packet. See also GPDType::serialize().
  */
 ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
-        PARTONS::GPDKinematic& kinematic);
+        GPDKinematic& kinematic);
 
 /**
  * Stream operator to retrieve class from Packet. See also GPDType::unserialize().
  */
 ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
-        PARTONS::GPDKinematic& kinematic);
+        GPDKinematic& kinematic);
+
+} /* namespace PARTONS */
 
 #endif /* GPD_KINEMATIC_H */

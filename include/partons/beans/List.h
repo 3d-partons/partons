@@ -379,13 +379,11 @@ protected:
 
 };
 
-} /* namespace PARTONS */
-
 /**
  * Stream operator to serialize class into Packet. See also GPDType::serialize().
  */
 template<class T>
-ElemUtils::Packet& operator <<(ElemUtils::Packet& packet, PARTONS::List<T>& list) {
+ElemUtils::Packet& operator <<(ElemUtils::Packet& packet, List<T>& list) {
     list.serialize(packet);
     return packet;
 }
@@ -394,9 +392,11 @@ ElemUtils::Packet& operator <<(ElemUtils::Packet& packet, PARTONS::List<T>& list
  * Stream operator to retrieve class from Packet. See also GPDType::unserialize().
  */
 template<class T>
-ElemUtils::Packet& operator >>(ElemUtils::Packet& packet, PARTONS::List<T>& list) {
+ElemUtils::Packet& operator >>(ElemUtils::Packet& packet, List<T>& list) {
     list.unserialize(packet);
     return packet;
 }
+
+} /* namespace PARTONS */
 
 #endif /* LIST_H */

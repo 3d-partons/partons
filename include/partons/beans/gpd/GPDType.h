@@ -168,16 +168,16 @@ private:
     GPDType::Type m_type;
 };
 
-} /* namespace PARTONS */
-
 /**
  * Stream operator to serialize class into Packet. See also GPDType::serialize().
  */
-ElemUtils::Packet& operator <<(ElemUtils::Packet& packet, PARTONS::GPDType& gpdType);
+ElemUtils::Packet& operator <<(ElemUtils::Packet& packet, GPDType& gpdType);
 
 /**
  * Stream operator to retrieve class from Packet. See also GPDType::unserialize().
  */
-ElemUtils::Packet& operator >>(ElemUtils::Packet& packet, PARTONS::GPDType& gpdType);
+ElemUtils::Packet& operator >>(ElemUtils::Packet& packet, GPDType& gpdType);
+
+} /* namespace PARTONS */
 
 #endif /* GPD_COMPUTE_TYPE_H */

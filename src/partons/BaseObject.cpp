@@ -10,7 +10,6 @@
 
 namespace PARTONS {
 
-
 unsigned int BaseObject::m_uniqueObjectIdCounter = 0;
 
 BaseObject::BaseObject(const std::string &className) :

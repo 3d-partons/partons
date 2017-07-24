@@ -72,5 +72,4 @@ ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
     return packet;
 }
 
-
 } /* namespace PARTONS */

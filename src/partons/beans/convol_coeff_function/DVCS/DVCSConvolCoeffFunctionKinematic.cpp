@@ -125,18 +125,6 @@ void DVCSConvolCoeffFunctionKinematic::unserialize(ElemUtils::Packet& packet) {
     packet >> m_MuR2;
 }
 
-ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
-        DVCSConvolCoeffFunctionKinematic& kinematic) {
-    kinematic.serialize(packet);
-    return packet;
-}
-ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
-        DVCSConvolCoeffFunctionKinematic& kinematic) {
-
-    kinematic.unserialize(packet);
-    return packet;
-}
-
 void DVCSConvolCoeffFunctionKinematic::setBinId(unsigned int binId) {
     m_binId = binId;
 }
@@ -164,6 +152,18 @@ void DVCSConvolCoeffFunctionKinematic::setT(double t) {
 void DVCSConvolCoeffFunctionKinematic::setXi(double xi) {
     m_xi = xi;
     updateHashSum();
+}
+
+ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
+        DVCSConvolCoeffFunctionKinematic& kinematic) {
+    kinematic.serialize(packet);
+    return packet;
+}
+ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
+        DVCSConvolCoeffFunctionKinematic& kinematic) {
+
+    kinematic.unserialize(packet);
+    return packet;
 }
 
 } /* namespace PARTONS */

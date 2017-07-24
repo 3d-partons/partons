@@ -91,16 +91,6 @@ void GPDType::unserialize(ElemUtils::Packet &packet) {
     m_type = static_cast<GPDType::Type>(i);
 }
 
-ElemUtils::Packet& operator <<(ElemUtils::Packet& packet, GPDType& gpdType) {
-    gpdType.serialize(packet);
-    return packet;
-}
-ElemUtils::Packet& operator >>(ElemUtils::Packet& packet, GPDType& gpdType) {
-
-    gpdType.unserialize(packet);
-    return packet;
-}
-
 bool GPDType::operator <(const GPDType& other) const {
     return (m_type < other.m_type);
 }
@@ -117,6 +107,16 @@ List<GPDType> GPDType::getListOfGPDTypeFromString(
     }
 
     return gpdTypeList;
+}
+
+ElemUtils::Packet& operator <<(ElemUtils::Packet& packet, GPDType& gpdType) {
+    gpdType.serialize(packet);
+    return packet;
+}
+ElemUtils::Packet& operator >>(ElemUtils::Packet& packet, GPDType& gpdType) {
+
+    gpdType.unserialize(packet);
+    return packet;
 }
 
 } /* namespace PARTONS */

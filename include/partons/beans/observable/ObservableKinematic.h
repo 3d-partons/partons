@@ -255,18 +255,18 @@ private:
     PhysicalType<double> m_phi;
 };
 
-} /* namespace PARTONS */
-
 /**
  * Stream operator to serialize class into Packet. See also GPDType::serialize().
  */
 ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
-        PARTONS::ObservableKinematic& observableKinematic);
+        ObservableKinematic& observableKinematic);
 
 /**
  * Stream operator to retrieve class from Packet. See also GPDType::unserialize().
  */
 ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
-        PARTONS::ObservableKinematic& observableKinematic);
+        ObservableKinematic& observableKinematic);
+
+} /* namespace PARTONS */
 
 #endif /* OBSERVABLE_KINEMATIC_H */

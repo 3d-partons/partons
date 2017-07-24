@@ -240,18 +240,18 @@ private:
     double m_MuR2;
 };
 
-} /* namespace PARTONS */
-
 /**
  * Stream operator to serialize class into Packet. See also GPDType::serialize().
  */
 ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
-        PARTONS::DVCSConvolCoeffFunctionKinematic& kinematic);
+        DVCSConvolCoeffFunctionKinematic& kinematic);
 
 /**
  * Stream operator to retrieve class from Packet. See also GPDType::unserialize().
  */
 ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
-        PARTONS::DVCSConvolCoeffFunctionKinematic& kinematic);
+        DVCSConvolCoeffFunctionKinematic& kinematic);
+
+} /* namespace PARTONS */
 
 #endif /* DVCS_CONVOL_COEFF_FUNCTION_KINEMATIC_H */
