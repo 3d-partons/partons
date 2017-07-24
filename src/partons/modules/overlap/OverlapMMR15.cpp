@@ -1,12 +1,10 @@
 #include "../../../../include/partons/modules/overlap/OverlapMMR15.h"
 
-#include <cmath>
-#include <map>
-#include <utility>
-//#include <vector>
 #include <ElementaryUtils/logger/CustomException.h>
 #include <NumA/functor/multi_dimension/FunctorMD.h>
 #include <NumA/utils/FunctorUtils.h>
+#include <cmath>
+#include <utility>
 
 #include "../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
@@ -14,7 +12,6 @@
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/modules/radon_inverse/RadonInverseModule.h"
 
-// Initialise [class]::classId with a unique name.
 const unsigned int OverlapMMR15::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new OverlapMMR15("OverlapMMR15"));

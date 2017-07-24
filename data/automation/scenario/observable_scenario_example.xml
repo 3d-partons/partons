@@ -11,7 +11,7 @@
         </kinematics>
 
         <computation_configuration>
-            <module type="Observable" name="AcCos2phi">
+            <module type="Observable" name="DVCSAcCos2Phi">
                 <module type="ProcessModule" name="GV2008Model">
 
                     <module type="ScaleModule" name="Q2Multiplier">

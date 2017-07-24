@@ -2,12 +2,11 @@
 
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
-#include <ElementaryUtils/thread/Packet.h>
 #include <NumA/utils/MathUtils.h>
 #include <iostream>
 #include <utility>
 
-#include "../../../../include/partons/beans/observable/ObservableResult.h"
+#include "../../../../include/partons/modules/process/ProcessModule.h"
 #include "../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../include/partons/Partons.h"
 #include "../../../../include/partons/services/ObservableService.h"

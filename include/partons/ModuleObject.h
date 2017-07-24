@@ -1,5 +1,5 @@
-#ifndef BASE_MODULE_H
-#define BASE_MODULE_H
+#ifndef MODULE_OBJECT_H
+#define MODULE_OBJECT_H
 
 /**
  * @file ModuleObject.h
@@ -103,4 +103,4 @@ private:
     unsigned int m_referenceModuleId;
 };
 
-#endif /* BASE_MODULE_H */
+#endif /* MODULE_OBJECT_H */

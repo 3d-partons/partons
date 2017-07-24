@@ -15,7 +15,7 @@
 #include "../beans/gpd/GPDResult.h"
 #include "../beans/gpd/GPDType.h"
 #include "../beans/List.h"
-#include "../modules/GPDModule.h"
+#include "../modules/gpd/GPDModule.h"
 #include "../ServiceObjectTyped.h"
 
 class GPDEvolutionModule;
