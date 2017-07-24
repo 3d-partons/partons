@@ -147,6 +147,7 @@ void VGGModel::resolveObjectDependencies() {
 
 void VGGModel::configure(const ElemUtils::Parameters &parameters) {
     GPDModule::configure(parameters);
+    MathIntegratorModule::configureIntegrator(parameters);
 }
 
 std::string VGGModel::toString() const {

@@ -25,7 +25,6 @@ const unsigned int GK16ModelTest::classId =
 //TODO initialise missing members
 GK16ModelTest::GK16ModelTest(const std::string &className) :
         GPDModule(className) {
-    m_nf = 3;
     fL = 0.;
     m_MuF2_ref = 4.;
     Huval1tab = std::vector<double>(3, 0.);

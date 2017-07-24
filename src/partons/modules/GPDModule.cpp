@@ -22,7 +22,7 @@ const std::string GPDModule::GPD_TYPE = "GPD_MODULE_GPD_TYPE";
 
 GPDModule::GPDModule(const std::string &className) :
         ModuleObject(className), m_x(0.), m_xi(0.), m_t(0.), m_MuF2(0.), m_MuR2(
-                0.), m_gpdType(GPDType::ALL), m_MuF2_ref(0.), m_nf(0), m_pGPDEvolutionModule(
+                0.), m_gpdType(GPDType::ALL), m_MuF2_ref(0.), m_pGPDEvolutionModule(
                 0) {
 }
 
@@ -37,7 +37,6 @@ GPDModule::GPDModule(const GPDModule &other) :
     m_gpdType = other.m_gpdType;
 
     m_MuF2_ref = other.m_MuF2_ref;
-    m_nf = other.m_nf;
 
     if (other.m_pGPDEvolutionModule != 0) {
         m_pGPDEvolutionModule = other.m_pGPDEvolutionModule->clone();
@@ -47,14 +46,6 @@ GPDModule::GPDModule(const GPDModule &other) :
 
     m_listGPDComputeTypeAvailable = other.m_listGPDComputeTypeAvailable;
     m_it = other.m_it;
-
-//		if (other.m_pPDFModule != 0) {
-//			m_pPDFModule = other.m_pPDFModule->clone();
-//		}
-//    else
-//    {
-//        m_pPDFModule = 0;
-//    }
 }
 
 GPDModule::~GPDModule() {
@@ -98,8 +89,15 @@ void GPDModule::isModuleWellConfigured() {
         warn(__func__, "Nucleon momentum transfer should be <= 0.");
     }
 
-    if (m_MuF2 < 0.) {
+    if (m_MuF2 <= 0.) {
         warn(__func__, "Square of factorization scale should be > 0.");
+    }
+
+
+    // Test initialization of reference factorization scale
+
+    if (m_MuF2_ref <= 0.) {
+    	warn(__func__, "Square of reference factorization scale should be > 0.");
     }
 }
 
@@ -192,14 +190,6 @@ PartonDistribution GPDModule::computeHt() {
 PartonDistribution GPDModule::computeEt() {
     throw ElemUtils::CustomException(getClassName(), __func__,
             "Check your implementation  ; must be implemented in daughter class");
-}
-
-unsigned int GPDModule::getNf() const {
-    return m_nf;
-}
-
-void GPDModule::setNf(unsigned int nf) {
-    m_nf = nf;
 }
 
 const GPDEvolutionModule* GPDModule::getEvolQcdModule() const {

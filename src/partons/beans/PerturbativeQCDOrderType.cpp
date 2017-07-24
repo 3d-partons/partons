@@ -38,7 +38,7 @@ PerturbativeQCDOrderType::PerturbativeQCDOrderType(
     }
 }
 
-const std::string PerturbativeQCDOrderType::toString() {
+std::string PerturbativeQCDOrderType::toString() const {
     switch (m_type) {
     case LO:
         return "LO";

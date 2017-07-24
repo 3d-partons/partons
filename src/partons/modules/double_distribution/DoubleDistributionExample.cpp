@@ -140,5 +140,15 @@ double DoubleDistributionExample::integrateExample(double x,
 void DoubleDistributionExample::resolveObjectDependencies() {
 
     setIntegrator(NumA::IntegratorType1D::DEXP);
+}
 
+void DoubleDistributionExample::configure(const ElemUtils::Parameters &parameters){
+
+	DoubleDistributionModule::configure(parameters);
+	MathIntegratorModule::configureIntegrator(parameters);
+}
+
+void DoubleDistributionExample::prepareSubModules(
+        const std::map<std::string, BaseObjectData>& subModulesData){
+	DoubleDistributionModule::prepareSubModules(subModulesData);
 }

@@ -25,7 +25,6 @@ const unsigned int GK11ModelOnlyGluons::classId =
 //TODO initialise missing members
 GK11ModelOnlyGluons::GK11ModelOnlyGluons(const std::string &className) :
         GPDModule(className) {
-    m_nf = 3;
     fL = 0.;
     m_MuF2_ref = 4.;
     Huval1tab = std::vector<double>(3, 0.);

@@ -48,7 +48,7 @@ public:
     virtual ~MPSSW13Model();
     virtual MPSSW13Model* clone() const;
     virtual void resolveObjectDependencies();
-    //TODO no configure
+    virtual void configure(const ElemUtils::Parameters &parameters);
     //TODO no toString
     void setParameters(std::vector<double> Parameters);
 

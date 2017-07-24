@@ -40,7 +40,7 @@ public:
     virtual ~MPSSW13WithDTermModel();
     virtual MPSSW13WithDTermModel* clone() const;
     virtual void resolveObjectDependencies();
-    //TODO no configure
+    virtual void configure(const ElemUtils::Parameters &parameters);
     //TODO no toString
     void setParameters(std::vector<double> Parameters);
 
