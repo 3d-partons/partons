@@ -23,7 +23,6 @@ const unsigned int GPDGK16::classId =
 //TODO initialise missing members
 GPDGK16::GPDGK16(const std::string &className) :
         GPDModule(className) {
-    m_nf = 3;
     fL = 0.;
     m_MuF2_ref = 4.;
     Huval1tab = std::vector<double>(3, 0.);

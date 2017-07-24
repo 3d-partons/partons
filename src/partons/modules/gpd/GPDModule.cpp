@@ -1,4 +1,4 @@
-#include "../../../../include/partons/modules/GPDModule.h"
+#include "../../../../include/partons/modules/gpd/GPDModule.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/parameters/GenericType.h>

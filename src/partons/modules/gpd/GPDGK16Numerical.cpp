@@ -23,7 +23,6 @@ const unsigned int GPDGK16Numerical::classId =
 //TODO initialise missing members
 GPDGK16Numerical::GPDGK16Numerical(const std::string &className) :
         GPDModule(className), MathIntegratorModule() {
-    m_nf = 3;
     fL = 0.;
     m_MuF2_ref = 4.;
 

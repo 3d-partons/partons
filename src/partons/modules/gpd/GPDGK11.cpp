@@ -21,7 +21,6 @@ const unsigned int GPDGK11::classId =
 
 GPDGK11::GPDGK11(const std::string &className) :
         GPDModule(className) {
-    m_nf = 3;
     fL = 0.;
     m_MuF2_ref = 4.;
     Huval1tab = std::vector<double>(3, 0.);
