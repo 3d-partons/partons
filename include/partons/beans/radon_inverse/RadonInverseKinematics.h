@@ -6,10 +6,6 @@
  * @author: Cédric Mezrag (ANL)
  * @date 17 November 2015
  * @version 0.1
- *
- * @class RadonInverseKinematic
- *
- * @brief
  */
 
 #include <string>
@@ -18,6 +14,11 @@
 
 namespace PARTONS {
 
+/**
+ * @class RadonInverseKinematic
+ *
+ * @brief
+ */
 class RadonInverseKinematic: public BaseObject {
 public:
     RadonInverseKinematic();

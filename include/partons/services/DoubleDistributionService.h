@@ -6,10 +6,6 @@
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 30 July 2015
  * @version 1.0
- *
- * @class DoubleDistributionService
- *
- * @brief
  */
 
 #include <string>
@@ -22,6 +18,11 @@ class DoubleDistributionKinematic;
 class DoubleDistributionModule;
 class DoubleDistributionResult;
 
+/**
+ * @class DoubleDistributionService
+ *
+ * @brief
+ */
 class DoubleDistributionService: public ServiceObject {
 public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.

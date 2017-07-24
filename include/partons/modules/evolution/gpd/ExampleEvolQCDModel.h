@@ -6,10 +6,6 @@
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 07 September 2015
  * @version 1.0
- *
- * @class ExampleEvolQCDModel
- *
- * @brief
  */
 
 #include <string>
@@ -18,6 +14,11 @@
 
 namespace PARTONS {
 
+/**
+ * @class ExampleEvolQCDModel
+ *
+ * @brief
+ */
 class ExampleEvolQCDModel: public GPDEvolutionModule {
 public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.

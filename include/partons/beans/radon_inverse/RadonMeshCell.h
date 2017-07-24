@@ -6,14 +6,15 @@
  * @author Cedric MEZRAG
  * @date 22 March 2016
  * @version 1.0
- *
- * @class RadonMeshCell
  */
 
 #include "../../BaseObject.h"
 
 namespace PARTONS {
 
+/**
+ * @class RadonMeshCell
+ */
 class RadonMeshCell: public BaseObject {
 public:
     RadonMeshCell();

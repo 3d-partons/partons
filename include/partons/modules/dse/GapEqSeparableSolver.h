@@ -3,8 +3,6 @@
  * @author Nabil CHOUIKA (SPhN / CEA Saclay)
  * @date Jan 26, 2016
  * @version 1.0
- *
- * @class GapEqSeparableSolver
  */
 
 #ifndef GAPEQSEPARABLESOLVER_H_
@@ -18,6 +16,9 @@
 
 namespace PARTONS {
 
+/**
+ * @class GapEqSeparableSolver
+ */
 class GapEqSeparableSolver: public GapEquationSolverModule {
 public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.

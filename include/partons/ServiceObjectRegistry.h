@@ -6,10 +6,6 @@
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 01 July 2015
  * @version 1.0
- *
- * @class ServiceObjectRegistry
- *
- * @brief
  */
 
 #include <string>
@@ -27,6 +23,11 @@ class ObservableService;
 class ServiceObject;
 class VizualisationService;
 
+/**
+ * @class ServiceObjectRegistry
+ *
+ * @brief
+ */
 class ServiceObjectRegistry {
 public:
     virtual ~ServiceObjectRegistry();

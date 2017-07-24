@@ -1,11 +1,3 @@
-/**
- * @file QuarkPropagator.cpp
- * @author Nabil CHOUIKA (SPhN / CEA Saclay)
- * @date Jan 22, 2016
- * @version 1.0
- *
- * @class QuarkPropagator
- */
 
 #include "../../../../include/partons/beans/dse/QuarkPropagator.h"
 

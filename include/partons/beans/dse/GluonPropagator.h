@@ -16,6 +16,8 @@ namespace PARTONS {
 
 /**
  * @class GluonPropagator
+ *
+ * @brief
  */
 class GluonPropagator: public BaseObject {
 public:
