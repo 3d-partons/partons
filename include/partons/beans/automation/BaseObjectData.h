@@ -23,9 +23,9 @@ class Parameter;
  *
  * @brief Container to store data to be used by base objects.
  *
- * This class is a container to store data used by base objects in the automatization process.
- * An object of this class is intended to be created by a xml parser during running PARTONS with a specific xml file, which can be local or can be retrieved from a database.
- * Therefore, this class may be seen as a representation of a set of parameters encoded in a xml file, like:
+ * This class is a container to store data used by base objects in the automation process.
+ * An object of this class is intended to be created by a XML parser during running PARTONS runtime from a specific XML file, which can be local or can be retrieved from a database.
+ * Therefore, this class may be seen as a representation of a set of parameters encoded in a XML file, like:
  \code{.py}
  <kinematics type="GPDKinematic">
      <param name="x" value="0.1" />

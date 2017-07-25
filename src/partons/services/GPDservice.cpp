@@ -269,9 +269,9 @@ List<GPDResult> GPDService::computeManyKinematicOneModel(
 
             while ((j != m_batchSize) && (i != gpdKinematicList.size())) {
                 ElemUtils::Packet packet;
-                GPDKinematic kineamtic;
-                kineamtic = gpdKinematicList[i];
-                packet << kineamtic << finalGPDTypeList;
+                GPDKinematic kinematic;
+                kinematic = gpdKinematicList[i];
+                packet << kinematic << finalGPDTypeList;
                 listOfPacket.add(packet);
                 i++;
                 j++;
