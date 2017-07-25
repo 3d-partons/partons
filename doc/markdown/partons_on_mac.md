@@ -39,7 +39,7 @@ brew install qt@4
 
 * **SFML**
 ```sh
-brew install sflm
+brew install sfml
 ```
 
 ## Git {#mac_git}
@@ -53,7 +53,7 @@ brew install git
 
 Building %PARTONS requires CMake. You can brew it as usual:
 ```sh
-brew install smake
+brew install cmake
 ```
 
 Optionally, you can install Ant in order to take advantage of the `build.xml` files included with %PARTONS. To do that, guess what?

@@ -107,6 +107,8 @@ which cmake
 in your terminal. With `PATH` variable modified, click on **Apply** button and **Close** one to finish.
 ![](../images/eclipse_ant_mac_trouble.png "Ant trouble")
 
+* If Eclipse formatter (activated after pressing `Ctrl`+`Shift`+`F`), modifies a file by with reason, it probably changes the way how the white spaces are taken into account. Navigate through the Eclipse menu: `Windows` > `Preferences` > `C/C++` > `Code Style` > `Formatter`. Click on `Edit` button and make sure that `Tab policy` is set to `Spaces only`. If this is not the case, change it (you may need to create a new profile). 
+
 ## Summary {#eclipse_summary}
 
 * To build a project, use the *Ant* view and select the `build` routine for the said project.
