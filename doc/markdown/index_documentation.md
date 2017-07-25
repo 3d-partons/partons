@@ -40,7 +40,7 @@ If you are using [our virtual machine](@ref vm), all configuration files will be
 
 Likewise, if you use %PARTONS on your own machine, you may want to configure an IDE such as Eclipse (already set up on the VM) for an optimal development with %PARTONS:
 
-[Using Eclipse CDT with %PARTONS](@ref eclipse).
+[Using Eclipse CDT with PARTONS](@ref eclipse).
 
 <hr>
 
