@@ -11,70 +11,80 @@
 
 namespace PARTONS {
 
-
 const std::string MathIntegratorModule::PARAM_NAME_INTEGRATOR_TYPE =
-		"integrator_type";
+        "integrator_type";
 
 MathIntegratorModule::MathIntegratorModule() :
-		m_mathIntegrator(0) {
+        m_mathIntegrator(0) {
 }
 
 MathIntegratorModule::~MathIntegratorModule() {
-	if (m_mathIntegrator) {
-		delete m_mathIntegrator;
-		m_mathIntegrator = 0;
-	}
+    if (m_mathIntegrator) {
+        delete m_mathIntegrator;
+        m_mathIntegrator = 0;
+    }
 }
 
 MathIntegratorModule::MathIntegratorModule(const MathIntegratorModule& other) {
-	if (other.m_mathIntegrator) {
-		m_mathIntegrator = other.m_mathIntegrator->clone();
-	} else {
-		m_mathIntegrator = 0;
-	}
+    if (other.m_mathIntegrator) {
+        m_mathIntegrator = other.m_mathIntegrator->clone();
+    } else {
+        m_mathIntegrator = 0;
+    }
 }
 
 void MathIntegratorModule::setIntegrator(
-		NumA::IntegratorType1D::Type integratorType) {
-	if (m_mathIntegrator) {
-		delete m_mathIntegrator;
-		m_mathIntegrator = 0;
-	}
+        NumA::IntegratorType1D::Type integratorType) {
+    if (m_mathIntegrator) {
+        delete m_mathIntegrator;
+        m_mathIntegrator = 0;
+    }
 
-	m_mathIntegrator = NumA::Integrator1D::newIntegrator(integratorType);
+    m_mathIntegrator = NumA::Integrator1D::newIntegrator(integratorType);
 }
 
 double MathIntegratorModule::integrate(NumA::FunctionType1D* pFunction,
-		double a, double b, std::vector<double>& parameters) {
-	return m_mathIntegrator->integrate(pFunction, a, b, parameters);
+        double a, double b, std::vector<double>& parameters) {
+    return m_mathIntegrator->integrate(pFunction, a, b, parameters);
 }
 
 void MathIntegratorModule::configureIntegrator(
-		const ElemUtils::Parameters& parameters) {
+        const ElemUtils::Parameters& parameters) {
 
-	if (parameters.isAvailable(
-			MathIntegratorModule::PARAM_NAME_INTEGRATOR_TYPE)) {
+    if (parameters.isAvailable(
+            MathIntegratorModule::PARAM_NAME_INTEGRATOR_TYPE)) {
 
-		NumA::IntegratorType1D::Type integratorType = NumA::IntegratorType1D(
-				parameters.getLastAvailable().getString());
+        NumA::IntegratorType1D::Type integratorType =
+                NumA::IntegratorType1D::UNDEFINED;
 
-		setIntegrator(integratorType);
+        // try to set integratorType by standard way
+        try {
+            integratorType =
+                    static_cast<NumA::IntegratorType1D::Type>(parameters.getLastAvailable().toUInt());
+        }
+        // if an exception is raised it means that it's a string configuration value
+        catch (const std::exception &e) {
+            integratorType = NumA::IntegratorType1D(
+                    parameters.getLastAvailable().getString()).getType();
+        }
 
-		Partons::getInstance()->getLoggerManager()->info("MathIntegratorModule",
-				__func__,
-				ElemUtils::Formatter()
-						<< MathIntegratorModule::PARAM_NAME_INTEGRATOR_TYPE
-						<< " configured with value = "
-						<< NumA::IntegratorType1D(integratorType).toString());
-	}
+        setIntegrator(integratorType);
 
-	if (m_mathIntegrator) {
-		m_mathIntegrator->configure(parameters);
-	}
+        Partons::getInstance()->getLoggerManager()->info("MathIntegratorModule",
+                __func__,
+                ElemUtils::Formatter()
+                        << MathIntegratorModule::PARAM_NAME_INTEGRATOR_TYPE
+                        << " configured with value = "
+                        << NumA::IntegratorType1D(integratorType).toString());
+    }
+
+    if (m_mathIntegrator) {
+        m_mathIntegrator->configure(parameters);
+    }
 }
 
 NumA::Integrator1D* MathIntegratorModule::getMathIntegrator() {
-	return m_mathIntegrator;
+    return m_mathIntegrator;
 }
 
 } /* namespace PARTONS */
