@@ -29,6 +29,8 @@ GPDVGG99::GPDVGG99(const std::string &className) :
                 1.), b_profile_sea(1.), alphap_val(1.105), alphap_sea(1.105), eta_e_largex_u_s(
                 1.713), eta_e_largex_d_s(0.566), g_AXIAL(1.267), m_Forward(0), MathIntegratorModule() {
 
+    m_MuF2_ref = 4.;
+
     gpd_s5 = GPDType::UNDEFINED;
     flavour_s5 = UNDEFINED;
     x_s5 = -1.;

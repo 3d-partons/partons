@@ -21,7 +21,6 @@
 
 namespace PARTONS {
 
-
 const unsigned int GPDMMS13::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new GPDMMS13("GPDMMS13"));
@@ -32,6 +31,8 @@ const std::string GPDMMS13::PARAMETER_NAME_MMS13MODEL_C = "MMS13Model_C";
 
 GPDMMS13::GPDMMS13(const std::string &className) :
         GPDModule(className), MathIntegratorModule(), m_pForward(0) {
+
+    m_MuF2_ref = 4.;
 
     m_NE = 1;
     m_NHpE = 1;
@@ -341,7 +342,8 @@ double GPDMMS13::forwardEvalFunction(double beta, double kappa, double nu,
 
 double GPDMMS13::profileFunction(double beta, double alpha, int N) {
     return tgamma(N + 1.5) * pow(pow(1. - fabs(beta), 2) - pow(alpha, 2), N)
-            / tgamma(N + 1) / pow(1. - fabs(beta), 2 * N + 1) / sqrt(Constant::PI);
+            / tgamma(N + 1) / pow(1. - fabs(beta), 2 * N + 1)
+            / sqrt(Constant::PI);
 }
 
 double GPDMMS13::DTerm(double zeta) const {
@@ -448,6 +450,5 @@ double GPDMMS13::IntEvalPlusB(double beta, std::vector<double> par) {
             * forwardEval(beta, static_cast<QuarkFlavor::Type>(int(par[1])))
             * profileFunction(beta, par[0] / m_xi, int(par[2])) / beta;
 }
-
 
 } /* namespace PARTONS */

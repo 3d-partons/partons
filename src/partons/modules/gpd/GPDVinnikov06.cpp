@@ -14,13 +14,14 @@
 
 namespace PARTONS {
 
-
 const unsigned int GPDVinnikov06::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new GPDVinnikov06("GPDVinnikov06"));
 
 GPDVinnikov06::GPDVinnikov06(const std::string &className) :
         GPDModule(className), EPS_BETR(1.E-8), SIMP_INT(100) {
+
+    m_MuF2_ref = 4.;
 
     n_par = 1;
     for (int i = 0; i < 6; i++)
@@ -992,6 +993,5 @@ double GPDVinnikov06::dd_int_simp(double const bmin, double const bmax,
 
     return integr;
 }
-
 
 } /* namespace PARTONS */
