@@ -13,6 +13,8 @@
 
 #include "../BaseObject.h"
 
+namespace PARTONS {
+
 class CryptographicHashService;
 
 /**
@@ -127,5 +129,7 @@ private:
      */
     void setCryptographicHashService();
 };
+
+} /* namespace PARTONS */
 
 #endif /* DATABASE_FILE_OBJECT_H */

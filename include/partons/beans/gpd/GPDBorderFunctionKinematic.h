@@ -12,6 +12,8 @@
 
 #include "GPDKinematic.h"
 
+namespace PARTONS {
+
 /**
  * @class GPDBorderFunctionKinematic
  *
@@ -96,5 +98,7 @@ protected:
 
     virtual void updateHashSum() const;
 };
+
+} /* namespace PARTONS */
 
 #endif /* GPDBORDERFUNCTIONKINEMATIC_H_ */

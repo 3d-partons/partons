@@ -6,19 +6,13 @@
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date March 03, 2016
  * @version 1.0
- *
- * @class AutomationService
- *
- * @brief Automation service is designed to dynamically run complex tasks (by calling service object methods) or to create some complex C++ objects, all described by an XML file.
- * It allow users to perform complex tasks in a simple way without know C++ programming language and without rebuild their project.
- * Automation service provides some methods to retrieve Scenario or ComputationConfiguration objects from a specific XML file.
- * Scenario can be used to automates the whole computation process by calling many other services to performs tasks previously defined in XML file.
- * ComputationConfiguration is only used to configure a specific module, then you can do whatever you want with this new pre-configured module.
  */
 
 #include <string>
 
 #include "../../BaseObject.h"
+
+namespace PARTONS {
 
 class ResourceManager;
 
@@ -29,6 +23,15 @@ class Scenario;
 class XMLParserI;
 class XMLValidatorI;
 
+/**
+ * @class AutomationService
+ *
+ * @brief Automation service is designed to dynamically run complex tasks (by calling service object methods) or to create some complex C++ objects, all described by an XML file.
+ * It allow users to perform complex tasks in a simple way without know C++ programming language and without rebuild their project.
+ * Automation service provides some methods to retrieve Scenario or ComputationConfiguration objects from a specific XML file.
+ * Scenario can be used to automates the whole computation process by calling many other services to performs tasks previously defined in XML file.
+ * ComputationConfiguration is only used to configure a specific module, then you can do whatever you want with this new pre-configured module.
+ */
 class AutomationService: public BaseObject {
 public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
@@ -61,7 +64,7 @@ public:
 
     /**
      *
-     * @param scenario
+     * @param pScenario
      */
     void playScenario(Scenario* pScenario) const;
 
@@ -79,5 +82,7 @@ private:
 
     const std::string& getXmlSchemaFile() const;
 };
+
+} /* namespace PARTONS */
 
 #endif /* AUTOMATION_SERVICE_H */

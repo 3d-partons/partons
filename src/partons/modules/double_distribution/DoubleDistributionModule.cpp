@@ -8,6 +8,9 @@
 #include "../../../../include/partons/modules/overlap/IncompleteGPDModule.h"
 #include "../../../../include/partons/modules/radon_inverse/RadonInverseModule.h"
 
+namespace PARTONS {
+
+
 DoubleDistributionModule::DoubleDistributionModule(const std::string& className) :
         ModuleObject(className), m_beta(0.), m_alpha(0.), m_t(0.), m_MuF2(0.), m_MuR2(
                 0.), m_doubleDistributionType(
@@ -214,3 +217,5 @@ void DoubleDistributionModule::prepareSubModules(
         const std::map<std::string, BaseObjectData>& subModulesData) {
     ModuleObject::prepareSubModules(subModulesData);
 }
+
+} /* namespace PARTONS */

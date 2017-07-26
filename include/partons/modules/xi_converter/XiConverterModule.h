@@ -14,6 +14,8 @@
 #include "../../beans/automation/BaseObjectData.h"
 #include "../../ModuleObject.h"
 
+namespace PARTONS {
+
 /**
  * @class XiConverterModule
  *
@@ -89,5 +91,7 @@ protected:
     virtual void isModuleWellConfigured();
     virtual void initModule();
 };
+
+} /* namespace PARTONS */
 
 #endif /* XI_CONVERTER_MODULE */

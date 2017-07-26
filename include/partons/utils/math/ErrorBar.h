@@ -8,6 +8,8 @@
  * @version 1.0
  */
 
+namespace PARTONS {
+
 /**
  * @class ErrorBar
  *
@@ -70,5 +72,7 @@ protected:
     double m_lowerBound;
 
 };
+
+} /* namespace PARTONS */
 
 #endif /* ERROR_BAR_H */

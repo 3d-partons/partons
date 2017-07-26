@@ -16,6 +16,8 @@
 #include "../../beans/automation/BaseObjectData.h"
 #include "../../ModuleObject.h"
 
+namespace PARTONS {
+
 class ActiveFlavorsThresholds;
 
 /**
@@ -100,5 +102,7 @@ private:
      */
     void checkCurveIntegrity();
 };
+
+} /* namespace PARTONS */
 
 #endif /* ACTIVE_FLAVORS_THRESHOLDS_MODULE_H */

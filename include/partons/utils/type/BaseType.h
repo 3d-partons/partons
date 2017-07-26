@@ -6,14 +6,17 @@
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 19 January 2016
  * @version 1.0
- *
- * @class BaseType
- *
- * @brief
  */
 
 #include <string>
 
+namespace PARTONS {
+
+/**
+ * @class BaseType
+ *
+ * @brief
+ */
 class BaseType {
 public:
     BaseType();
@@ -30,5 +33,7 @@ private:
     bool m_initialized;
     std::string m_unit;
 };
+
+} /* namespace PARTONS */
 
 #endif /* BASE_TYPE_H */

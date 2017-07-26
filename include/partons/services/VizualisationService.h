@@ -12,6 +12,8 @@
 
 #include "../ServiceObject.h"
 
+namespace PARTONS {
+
 class Plot2DList;
 
 /**
@@ -41,5 +43,7 @@ public:
 
 private:
 };
+
+} /* namespace PARTONS */
 
 #endif /* VIZUALISATION_SERVICE_H */

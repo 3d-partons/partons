@@ -11,6 +11,9 @@
 //#include <cstdlib>
 //
 //#include "StringUtils.h"
+
+namespace PARTONS {
+
 //
 //// Global static pointer used to ensure a single instance of the class.
 //StringUtils2* StringUtils2::m_pInstance = 0;
@@ -101,3 +104,5 @@
 //
 //    return result;
 //}
+
+} /* namespace PARTONS */

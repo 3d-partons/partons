@@ -3,6 +3,9 @@
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 
+namespace PARTONS {
+
+
 const std::string PerturbativeQCDOrderType::PARAMETER_NAME_PERTURBATIVE_QCD_ORDER_TYPE =
         "qcd_order_type";
 
@@ -67,3 +70,5 @@ PerturbativeQCDOrderType::Type PerturbativeQCDOrderType::getType() const {
 void PerturbativeQCDOrderType::setType(Type type) {
     m_type = type;
 }
+
+} /* namespace PARTONS */

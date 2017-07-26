@@ -19,6 +19,8 @@ namespace NumA {
 class FunctionType1D;
 } /* namespace NumA */
 
+namespace PARTONS {
+
 class PartonDistribution;
 
 /**
@@ -133,5 +135,7 @@ private:
 
     void initFunctorsForIntegrations(); ///< Initialize functors.
 };
+
+} /* namespace PARTONS */
 
 #endif /* DVCS_CFF_STANDARD_H */

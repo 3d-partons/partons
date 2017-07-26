@@ -10,6 +10,9 @@
 #include "../../../../../include/partons/database/Database.h"
 #include "../../../../../include/partons/database/DatabaseManager.h"
 
+namespace PARTONS {
+
+
 ObservableKinematicDao::ObservableKinematicDao() :
         BaseObject("ObservableKinematicDao") {
 }
@@ -174,3 +177,5 @@ int ObservableKinematicDao::getKinematicIdByHashSum(
 
     return result;
 }
+
+} /* namespace PARTONS */

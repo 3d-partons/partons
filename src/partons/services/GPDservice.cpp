@@ -24,6 +24,9 @@
 #include "../../../include/partons/ServiceObjectTyped.h"
 #include "../../../include/partons/utils/VectorUtils.h"
 
+namespace PARTONS {
+
+
 const std::string GPDService::GPD_SERVICE_COMPUTE_GPD_MODEL = "computeGPDModel";
 const std::string GPDService::GPD_SERVICE_COMPUTE_GPD_MODEL_WITH_EVOLUTION =
         "computeGPDModelWithEvolution";
@@ -478,3 +481,5 @@ GPDModule* GPDService::newGPDModuleFromTask(const Task& task) const {
 
     return pGPDModule;
 }
+
+} /* namespace PARTONS */

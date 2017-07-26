@@ -2,6 +2,9 @@
 
 #include "../../include/partons/Partons.h"
 
+namespace PARTONS {
+
+
 const std::string ModuleObject::CLASS_NAME = "className";
 
 ModuleObject::ModuleObject(const std::string &className) :
@@ -46,3 +49,5 @@ unsigned int ModuleObject::getReferenceModuleId() const {
 void ModuleObject::setReferenceModuleId(unsigned int referenceModuleId) {
     m_referenceModuleId = referenceModuleId;
 }
+
+} /* namespace PARTONS */

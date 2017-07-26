@@ -13,6 +13,8 @@
 
 #include "RunningAlphaStrongModule.h"
 
+namespace PARTONS {
+
 /*!
  * \class RunningAlphaStrongStandard
  * 
@@ -115,6 +117,8 @@ private:
     double fAlphaSMZ;                   ///< Reference value of strong coupling.
     double fAlphaS;                       ///< Current value of strong coupling.
 };
+
+} /* namespace PARTONS */
 
 #endif /* RUNNING_ALPHA_STRONG_STANDARD_H */
 

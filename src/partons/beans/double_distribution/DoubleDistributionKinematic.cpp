@@ -1,5 +1,8 @@
 #include "../../../../include/partons/beans/double_distribution/DoubleDistributionKinematic.h"
 
+namespace PARTONS {
+
+
 DoubleDistributionKinematic::DoubleDistributionKinematic() :
         m_beta(0.), m_alpha(0.), m_t(0.), m_MuF2(0.), m_MuR2(0.), m_doubleDistributionType(
                 DoubleDistributionType::UNDEFINED) {
@@ -64,3 +67,5 @@ void DoubleDistributionKinematic::setDoubleDistributionType(
         const DoubleDistributionType& doubleDistributionType) {
     m_doubleDistributionType = doubleDistributionType;
 }
+
+} /* namespace PARTONS */

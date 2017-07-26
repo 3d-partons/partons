@@ -17,6 +17,9 @@
 #include "../../../../include/partons/utils/MSTWPDF.h"
 #include "../../../../include/partons/utils/PartonContent.h"
 
+namespace PARTONS {
+
+
 const unsigned int GPDVGG99::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new GPDVGG99("GPDVGG99"));
@@ -992,3 +995,5 @@ double GPDVGG99::form_factor_G_P(double t) {
     return g_AXIAL * pow(2. * Constant::PROTON_MASS, 2) / (-t + pow(M_pion, 2));
 }
 
+
+} /* namespace PARTONS */

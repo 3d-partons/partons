@@ -13,6 +13,8 @@
 
 #include "../../Observable.h"
 
+namespace PARTONS {
+
 /**
  * @class DVCSCrossSection
  *
@@ -69,5 +71,7 @@ protected:
      */
     DVCSCrossSection(const DVCSCrossSection &other);
 };
+
+} /* namespace PARTONS */
 
 #endif /* DVCSCROSSSECTION_H_ */

@@ -16,6 +16,8 @@
 #include "../../database/DatabaseFileObject.h"
 #include "Task.h"
 
+namespace PARTONS {
+
 /**
  * @class Scenario
  *
@@ -146,5 +148,7 @@ private:
      */
     std::vector<Task> m_tasks;
 };
+
+} /* namespace PARTONS */
 
 #endif /* SCENARIO_H */

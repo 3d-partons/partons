@@ -18,6 +18,9 @@
 #include "../../../include/partons/ModuleObjectFactory.h"
 #include "../../../include/partons/Partons.h"
 
+namespace PARTONS {
+
+
 const std::string ObservableService::FUNCTION_NAME_COMPUTE_OBSERVABLE =
         "computeObservable";
 
@@ -465,3 +468,5 @@ List<ObservableKinematic> ObservableService::newListOfKinematicFromTask(
 
     return listOfKinematic;
 }
+
+} /* namespace PARTONS */

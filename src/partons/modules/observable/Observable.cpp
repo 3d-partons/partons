@@ -14,6 +14,9 @@
 #include "../../../../include/partons/ServiceObjectTyped.h"
 #include "../../../../include/partons/utils/type/PhysicalType.h"
 
+namespace PARTONS {
+
+
 Observable::Observable(const std::string &className) :
         ModuleObject(className), m_channel(ObservableChannel::UNDEFINED), m_beamHelicity(
                 0.), m_beamCharge(0.), m_targetPolarization(
@@ -246,3 +249,5 @@ ObservableChannel::Type Observable::getChannel() const {
 void Observable::setChannel(ObservableChannel::Type channel) {
     m_channel = channel;
 }
+
+} /* namespace PARTONS */

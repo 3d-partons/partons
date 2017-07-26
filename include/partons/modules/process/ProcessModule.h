@@ -18,15 +18,15 @@
 #include "../../beans/observable/ObservableChannel.h"
 #include "../../ModuleObject.h"
 
-class ConvolCoeffFunctionModule;
-class ScalesModule;
-class XiConverterModule;
-
 namespace NumA {
 class Vector3D;
 } /* namespace NumA */
 
-class Vector3D;
+namespace PARTONS {
+
+class ConvolCoeffFunctionModule;
+class ScalesModule;
+class XiConverterModule;
 
 /**
  * @class ProcessModule
@@ -151,5 +151,7 @@ protected:
 private:
     bool m_isCCFModuleDependent; ///< Boolean ; whether or not the process module depends on a ConvolCoeffFunctionModule.
 };
+
+} /* namespace PARTONS */
 
 #endif /* PROCESS_MODULE_H */

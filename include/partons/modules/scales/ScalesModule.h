@@ -15,6 +15,8 @@
 #include "../../beans/automation/BaseObjectData.h"
 #include "../../ModuleObject.h"
 
+namespace PARTONS {
+
 class Scales;
 
 /**
@@ -85,5 +87,7 @@ protected:
     virtual void initModule();
     virtual void isModuleWellConfigured();
 };
+
+} /* namespace PARTONS */
 
 #endif /* SCALES_MODULE_H */

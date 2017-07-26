@@ -2,6 +2,9 @@
 
 #include "../../../../include/partons/BaseObjectRegistry.h"
 
+namespace PARTONS {
+
+
 const unsigned int XiConverterXBToXi::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new XiConverterXBToXi("XiConverterXBToXi"));
@@ -36,3 +39,5 @@ void XiConverterXBToXi::isModuleWellConfigured() {
     XiConverterModule::isModuleWellConfigured();
 }
 
+
+} /* namespace PARTONS */

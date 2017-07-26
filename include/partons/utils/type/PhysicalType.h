@@ -17,6 +17,8 @@
 
 #include "../../BaseObject.h"
 
+namespace PARTONS {
+
 /**
  * @class PhysicalType
  *
@@ -279,11 +281,11 @@ inline PhysicalType<T> operator-(PhysicalType<T> const &lhs, T const &rhs) {
 }
 template<class T>
 inline PhysicalType<T> operator*(PhysicalType<T> const &lhs, T const &rhs) {
-    return PhysicalType<T>(lhs.getValue() * rhs, lhs.getUnit());
+    return PhysicalType<T>(lhs.getValue() * rhs, lhs.getUnit()); //WRONG! TODO
 }
 template<class T>
 inline PhysicalType<T> operator/(PhysicalType<T> const &lhs, T const &rhs) {
-    return PhysicalType<T>(lhs.getValue() / rhs, lhs.getUnit());
+    return PhysicalType<T>(lhs.getValue() / rhs, lhs.getUnit()); //WRONG! TODO
 }
 
 template<class T>
@@ -296,11 +298,13 @@ inline PhysicalType<T> operator-(T const &lhs, PhysicalType<T> const &rhs) {
 }
 template<class T>
 inline PhysicalType<T> operator*(T const &lhs, PhysicalType<T> const &rhs) {
-    return PhysicalType<T>(lhs * rhs.getValue(), rhs.getUnit());
+    return PhysicalType<T>(lhs * rhs.getValue(), rhs.getUnit()); //WRONG! TODO
 }
 template<class T>
 inline PhysicalType<T> operator/(T const &lhs, PhysicalType<T> const &rhs) {
-    return PhysicalType<T>(lhs / rhs.getValue(), rhs.getUnit());
+    return PhysicalType<T>(lhs / rhs.getValue(), rhs.getUnit()); //WRONG! TODO
 }
+
+} /* namespace PARTONS */
 
 #endif /* PHYSICAL_TYPE_H */

@@ -15,6 +15,9 @@
 #include "../../../../../include/partons/database/Database.h"
 #include "../../../../../include/partons/database/DatabaseManager.h"
 
+namespace PARTONS {
+
+
 GPDResultDao::GPDResultDao() :
         BaseObject("GPDResultDao") {
 }
@@ -213,3 +216,5 @@ void GPDResultDao::fillGPDResultList(List<GPDResult> &gpdResultList,
 
     info(__func__, "Done !");
 }
+
+} /* namespace PARTONS */

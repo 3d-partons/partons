@@ -2,6 +2,9 @@
 
 #include <cmath>
 
+namespace PARTONS {
+
+
 const std::string RunningAlphaStrongModule::RUNNING_ALPHA_STRONG_MODULE_CLASS_NAME =
         "RunningAlphaStrongModule";
 
@@ -71,3 +74,5 @@ void RunningAlphaStrongModule::prepareSubModules(
 
     // Nothing to do.
 }
+
+} /* namespace PARTONS */

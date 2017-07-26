@@ -15,6 +15,8 @@
 #include "../../../MathIntegratorModule.h"
 #include "DVCSCrossSection.h"
 
+namespace PARTONS {
+
 /**
  * @class DVCSCrossSectionPhiIntegrated
  *
@@ -84,6 +86,8 @@ protected:
      */
     void initFunctorsForIntegrations();
 };
+
+} /* namespace PARTONS */
 
 
 #endif /* DVCSCROSSSECTIONPHIINTEGRATED_H */

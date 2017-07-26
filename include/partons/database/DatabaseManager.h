@@ -12,6 +12,8 @@
 
 #include "../BaseObject.h"
 
+namespace PARTONS {
+
 /**
  * @class DatabaseManager
  *
@@ -71,5 +73,7 @@ private:
      */
     QSqlDatabase m_testDatabase;
 };
+
+} /* namespace PARTONS */
 
 #endif /* DATABASE_MANAGER_H */

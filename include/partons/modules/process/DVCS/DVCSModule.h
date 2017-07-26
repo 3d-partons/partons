@@ -17,6 +17,8 @@
 #include "../../../beans/List.h"
 #include "../ProcessModule.h"
 
+namespace PARTONS {
+
 /**
  * @class DVCSModule
  *
@@ -123,5 +125,7 @@ protected:
      */
     std::complex<double> getConvolCoeffFunctionValue(GPDType::Type gpdType);
 };
+
+} /* namespace PARTONS */
 
 #endif /* DVCS_MODULE_H */

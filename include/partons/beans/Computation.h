@@ -12,6 +12,8 @@
 
 #include "../BaseObject.h"
 
+namespace PARTONS {
+
 /**
  * @class Computation
  *
@@ -71,5 +73,7 @@ private:
      */
     time_t m_dateTime;
 };
+
+} /* namespace PARTONS */
 
 #endif /* COMPUTATION_H */

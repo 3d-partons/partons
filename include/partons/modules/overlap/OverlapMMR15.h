@@ -1,5 +1,5 @@
 /**
- * @file OverlapMMR2015.h
+ * @file OverlapMMR15.h
  * @author Nabil Chouika (Irfu/SPhN, CEA Saclay)
  * @date 5 oct. 2016
  * @version 1.0
@@ -15,8 +15,10 @@
 
 #include "IncompleteGPDModule.h"
 
+namespace PARTONS {
+
 /**
- * @class OverlapMMR2015
+ * @class OverlapMMR15
  * @brief Pion GPD from Cédric's thesis [arXiv:1602.07722]
  */
 
@@ -64,5 +66,7 @@ protected:
     virtual void initModule();
 
 };
+
+} /* namespace PARTONS */
 
 #endif /* OVERLAPMMR2015_H_ */

@@ -11,6 +11,8 @@
 
 #include <string>
 
+namespace PARTONS {
+
 /**
  * @class QuarkFlavor
  *
@@ -123,5 +125,7 @@ private:
      */
     QuarkFlavor::Type m_type;
 };
+
+} /* namespace PARTONS */
 
 #endif /* QUARK_FLAVOR_H */

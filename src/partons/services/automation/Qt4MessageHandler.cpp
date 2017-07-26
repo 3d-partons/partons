@@ -1,5 +1,8 @@
 #include "../../../../include/partons/services/automation/Qt4MessageHandler.h"
 
+namespace PARTONS {
+
+
 Qt4MessageHandler::Qt4MessageHandler() {
 }
 
@@ -20,3 +23,5 @@ void Qt4MessageHandler::handleMessage(QtMsgType type,
     m_description = description;
     m_sourceLocation = sourceLocation;
 }
+
+} /* namespace PARTONS */

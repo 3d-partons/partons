@@ -7,6 +7,9 @@
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
 
+namespace PARTONS {
+
+
 const unsigned int DVCSProcessVGG99::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new DVCSProcessVGG99("DVCSProcessVGG99"));
@@ -1440,3 +1443,5 @@ std::complex<double> DVCSProcessVGG99::AmplitudeDVCS(int mu, double el_hel,
     //return
     return result;
 }
+
+} /* namespace PARTONS */

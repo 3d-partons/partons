@@ -12,6 +12,8 @@
 #include <QtCore/qstring.h>
 #include <string>
 
+namespace PARTONS {
+
 /**
  * @class DateTimeUtils
  *
@@ -32,5 +34,7 @@ public:
         return dateTime.toString("yyyy-MM-dd hh:mm:ss").toStdString();
     }
 };
+
+} /* namespace PARTONS */
 
 #endif /* DATE_TIME_UTILS_H */

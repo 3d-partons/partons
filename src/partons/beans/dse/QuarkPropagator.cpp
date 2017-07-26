@@ -1,11 +1,3 @@
-/**
- * @file QuarkPropagator.cpp
- * @author Nabil CHOUIKA (SPhN / CEA Saclay)
- * @date Jan 22, 2016
- * @version 1.0
- *
- * @class QuarkPropagator
- */
 
 #include "../../../../include/partons/beans/dse/QuarkPropagator.h"
 
@@ -14,6 +6,9 @@
 #include <algorithm>
 #include <cmath>
 #include <iterator>
+
+namespace PARTONS {
+
 
 QuarkPropagator::QuarkPropagator(const std::string& className, unsigned int N,
         double m, double mu, double Lambda2, double epsilon2) :
@@ -341,3 +336,5 @@ void QuarkPropagator::setB(double b) {
     m_B.assign(m_N, b);
     updateCoeffsB();
 }
+
+} /* namespace PARTONS */

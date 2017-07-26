@@ -4,6 +4,9 @@
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <utility>
 
+namespace PARTONS {
+
+
 PartonDistribution::PartonDistribution() :
         BaseObject("PartonDistribution") {
 }
@@ -152,3 +155,5 @@ void PartonDistribution::compare(ComparisonReport &rootComparisonReport,
                         << QuarkFlavor(it->first).toString());
     }
 }
+
+} /* namespace PARTONS */

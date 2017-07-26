@@ -13,6 +13,9 @@
 #include "../../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
 #include "../../../../../include/partons/database/DatabaseManager.h"
 
+namespace PARTONS {
+
+
 PartonDistributionDao::PartonDistributionDao() :
         BaseObject("PartonDistributionDao") {
 }
@@ -145,3 +148,5 @@ void PartonDistributionDao::fillPartonDistribution(
 
     query.clear();
 }
+
+} /* namespace PARTONS */

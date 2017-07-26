@@ -24,6 +24,9 @@
 #include "../../../include/partons/utils/plot2D/Plot2D.h"
 #include "../../../include/partons/utils/plot2D/Plot2DList.h"
 
+namespace PARTONS {
+
+
 ResultDaoService::ResultDaoService(const std::string &className) :
         BaseObject(className), m_lastComputationId(-1), m_lastScenarioComputation(
                 -1), m_scenario_computation_table(
@@ -254,3 +257,5 @@ Plot2DList ResultDaoService::getPlot2DListFromCustomQuery(
 
     return plot2DList;
 }
+
+} /* namespace PARTONS */

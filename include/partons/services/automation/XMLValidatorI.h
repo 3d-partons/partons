@@ -12,6 +12,8 @@
 
 #include "../../BaseObject.h"
 
+namespace PARTONS {
+
 /**
  * @class XMLValidatorI
  *
@@ -25,5 +27,7 @@ public:
     virtual bool isValidXMLDocument(const std::string &xmlSchemaStream,
             const std::string &xmlDocumentStream) const = 0;
 };
+
+} /* namespace PARTONS */
 
 #endif /* XML_VALIDATOR_I_H */

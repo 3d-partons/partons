@@ -13,6 +13,9 @@
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../../include/partons/modules/gpd/GPDModule.h"
 
+namespace PARTONS {
+
+
 // Initialise [class]::classId with a unique name.
 const unsigned int DVCSCFFHeavyQuark::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
@@ -367,3 +370,5 @@ std::complex<double> DVCSCFFHeavyQuark::MassiveKernelGluonNLOV(double x) {
 
     return GluonNLOV;
 }
+
+} /* namespace PARTONS */

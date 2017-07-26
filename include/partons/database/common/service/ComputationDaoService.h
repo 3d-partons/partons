@@ -13,6 +13,8 @@
 #include "../dao/ComputationDao.h"
 #include "EnvironmentConfigurationDaoService.h"
 
+namespace PARTONS {
+
 class Computation;
 
 /**
@@ -77,5 +79,7 @@ private:
      */
     EnvironmentConfigurationDaoService m_environmentConfigurationDaoService;
 };
+
+} /* namespace PARTONS */
 
 #endif /* COMMON_DAO_SERVICE_H */

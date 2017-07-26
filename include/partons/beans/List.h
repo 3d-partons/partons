@@ -21,6 +21,8 @@
 #include "../utils/compare/ComparisonMode.h"
 #include "../utils/compare/ComparisonReport.h"
 
+namespace PARTONS {
+
 /**
  * @class List
  *
@@ -394,5 +396,7 @@ ElemUtils::Packet& operator >>(ElemUtils::Packet& packet, List<T>& list) {
     list.unserialize(packet);
     return packet;
 }
+
+} /* namespace PARTONS */
 
 #endif /* LIST_H */

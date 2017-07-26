@@ -10,6 +10,9 @@
 #include "../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../include/partons/Partons.h"
 
+namespace PARTONS {
+
+
 const std::string ProcessModule::PROCESS_MODULE_CLASS_NAME = "ProcessModule";
 
 ProcessModule::ProcessModule(const std::string &className) :
@@ -226,3 +229,5 @@ void ProcessModule::prepareSubModules(
         }
     }
 }
+
+} /* namespace PARTONS */

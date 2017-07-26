@@ -7,6 +7,9 @@
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
 
+namespace PARTONS {
+
+
 const unsigned int RunningAlphaStrongVinnikov::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new RunningAlphaStrongVinnikov("RunningAlphaStrongVinnikov"));
@@ -73,3 +76,5 @@ double RunningAlphaStrongVinnikov::compute() {
 
     return m_alphaS;
 }
+
+} /* namespace PARTONS */

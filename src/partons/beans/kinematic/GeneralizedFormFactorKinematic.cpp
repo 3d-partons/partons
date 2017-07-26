@@ -2,6 +2,9 @@
 
 #include <ElementaryUtils/string_utils/Formatter.h>
 
+namespace PARTONS {
+
+
 GeneralizedFormFactorKinematic::GeneralizedFormFactorKinematic() :
         m_t(0.), m_MuF(0.), m_MuR(0.) {
 }
@@ -42,3 +45,5 @@ double GeneralizedFormFactorKinematic::getT() const {
 void GeneralizedFormFactorKinematic::setT(double t) {
     m_t = t;
 }
+
+} /* namespace PARTONS */

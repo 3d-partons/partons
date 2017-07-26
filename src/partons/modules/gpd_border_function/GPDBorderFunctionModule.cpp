@@ -7,6 +7,9 @@
 
 #include "../../../../include/partons/modules/gpd_border_function/GPDBorderFunctionModule.h"
 
+namespace PARTONS {
+
+
 GPDBorderFunctionModule::GPDBorderFunctionModule(const std::string &className) :
         GPDModule(className) {
 }
@@ -67,3 +70,5 @@ void GPDBorderFunctionModule::initModule() {
 void GPDBorderFunctionModule::isModuleWellConfigured() {
     GPDModule::isModuleWellConfigured();
 }
+
+} /* namespace PARTONS */

@@ -11,6 +11,9 @@
 #include "../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../include/partons/Partons.h"
 
+namespace PARTONS {
+
+
 const unsigned int GPDSubtractionConstantMMS13::classId =
 		BaseObjectRegistry::getInstance()->registerBaseObject(
 				new GPDSubtractionConstantMMS13(
@@ -110,3 +113,5 @@ double GPDSubtractionConstantMMS13::dTermIntegral(double zeta,
 		std::vector<double> par) {
 	return m_pMMS13Model->DTerm(zeta) / (1. - zeta);
 }
+
+} /* namespace PARTONS */

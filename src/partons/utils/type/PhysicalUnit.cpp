@@ -1,5 +1,8 @@
 #include "../../../../include/partons/utils/type/PhysicalUnit.h"
 
+namespace PARTONS {
+
+
 PhysicalUnit::PhysicalUnit() :
         m_type(PhysicalUnit::NONE) {
 }
@@ -51,3 +54,5 @@ PhysicalUnit::Type PhysicalUnit::getType() const {
 void PhysicalUnit::setType(Type type) {
     m_type = type;
 }
+
+} /* namespace PARTONS */

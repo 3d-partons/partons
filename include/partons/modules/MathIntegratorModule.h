@@ -20,6 +20,8 @@ class FunctionType1D;
 class Integrator1D;
 } /* namespace NumA */
 
+namespace PARTONS {
+
 /**
  * @class MathIntegratorModule
  *
@@ -80,5 +82,7 @@ protected:
 private:
     NumA::Integrator1D* m_mathIntegrator; ///< Integration routine. Pointer to NumA::Integrator1D object.
 };
+
+} /* namespace PARTONS */
 
 #endif /* MATH_INTEGRATOR_MODULE_H */

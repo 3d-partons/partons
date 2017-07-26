@@ -13,6 +13,9 @@
 #include "../../../../../include/partons/database/Database.h"
 #include "../../../../../include/partons/database/DatabaseManager.h"
 
+namespace PARTONS {
+
+
 EnvironmentConfigurationDao::EnvironmentConfigurationDao() :
         BaseObject("EnvironmentConfigurationDao") {
 }
@@ -163,3 +166,5 @@ std::string EnvironmentConfigurationDao::getConfigurationByIndexId(
 
     return configuration;
 }
+
+} /* namespace PARTONS */

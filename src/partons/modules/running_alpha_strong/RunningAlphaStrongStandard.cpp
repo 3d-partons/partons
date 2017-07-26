@@ -54,6 +54,9 @@
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
 
+namespace PARTONS {
+
+
 const unsigned int RunningAlphaStrongStandard::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new RunningAlphaStrongStandard("RunningAlphaStrongStandard"));
@@ -383,3 +386,5 @@ double RunningAlphaStrongStandard::FindLambda(double Lambda,
 
     return fAlphaS - Parameters[1];
 }
+
+} /* namespace PARTONS */

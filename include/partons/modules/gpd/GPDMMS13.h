@@ -16,6 +16,8 @@
 #include "../MathIntegratorModule.h"
 #include "GPDModule.h"
 
+namespace PARTONS {
+
 class MSTWPDF;
 
 /**
@@ -152,5 +154,7 @@ private:
      */
     void initFunctorsForIntegrations();
 };
+
+} /* namespace PARTONS */
 
 #endif /* GPD_MMS13_H */

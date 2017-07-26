@@ -17,6 +17,9 @@
 #include "../../../../include/partons/services/hash_sum/CryptographicHashService.h"
 #include "../../../../include/partons/ServiceObjectRegistry.h"
 
+namespace PARTONS {
+
+
 const std::string AutomationService::PROPERTY_NAME_XML_SCHEMA_FILE_PATH =
         "xml.schema.file.path";
 
@@ -118,3 +121,5 @@ void AutomationService::playScenario(Scenario* pScenario) const {
         }
     }
 }
+
+} /* namespace PARTONS */

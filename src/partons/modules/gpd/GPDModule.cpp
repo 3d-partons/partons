@@ -16,6 +16,9 @@
 #include "../../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../../include/partons/ServiceObjectTyped.h"
 
+namespace PARTONS {
+
+
 const std::string GPDModule::GPD_MODULE_CLASS_NAME = "GPDModule";
 
 const std::string GPDModule::GPD_TYPE = "GPD_MODULE_GPD_TYPE";
@@ -365,3 +368,5 @@ void GPDModule::prepareSubModules(
         }
     }
 }
+
+} /* namespace PARTONS */

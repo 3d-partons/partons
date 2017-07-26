@@ -12,6 +12,8 @@
 
 #include "DoubleDistributionModule.h"
 
+namespace PARTONS {
+
 /**
  * @class DoubleDistributionFromOverlap
  * @brief 
@@ -45,5 +47,7 @@ public:
 
     private:
 };
+
+} /* namespace PARTONS */
 
 #endif /* DOUBLEDISTRIBUTIONFROMOVERLAP_H_ */

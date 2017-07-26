@@ -13,6 +13,8 @@
 
 #include "../../Observable.h"
 
+namespace PARTONS {
+
 /**
  * @class DVCSAluMinus
  * @brief Longitudinally polarized beam asymmetry for negative beam charge.
@@ -63,5 +65,7 @@ protected:
      */
     DVCSAluMinus(const DVCSAluMinus &other);
 };
+
+} /* namespace PARTONS */
 
 #endif /* DVCSALUMINUS_H */

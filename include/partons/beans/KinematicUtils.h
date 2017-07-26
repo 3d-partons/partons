@@ -16,6 +16,8 @@
 #include "List.h"
 #include "observable/ObservableKinematic.h"
 
+namespace PARTONS {
+
 /**
  * @class KinematicUtils
  *
@@ -88,5 +90,7 @@ private:
             const std::vector<std::string> &kinematicString,
             const std::string &filePath);
 };
+
+} /* namespace PARTONS */
 
 #endif /* KINEMATICUTILS_H_ */

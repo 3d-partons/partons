@@ -13,6 +13,8 @@
 
 #include "ModuleObjectReference.h"
 
+namespace PARTONS {
+
 class ActiveFlavorsThresholdsModule;
 class BaseObjectFactory;
 class DoubleDistributionModule;
@@ -311,5 +313,7 @@ private:
      */
     void store(ModuleObject* pModuleObject);
 };
+
+} /* namespace PARTONS */
 
 #endif /* MODULE_OBJECT_FACTORY_H */

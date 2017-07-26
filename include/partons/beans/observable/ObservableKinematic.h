@@ -18,6 +18,8 @@ namespace ElemUtils {
 class Parameters;
 } /* namespace ElemUtils */
 
+namespace PARTONS {
+
 /**
  * @class ObservableKinematic
  *
@@ -264,5 +266,7 @@ ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
  */
 ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
         ObservableKinematic& observableKinematic);
+
+} /* namespace PARTONS */
 
 #endif /* OBSERVABLE_KINEMATIC_H */

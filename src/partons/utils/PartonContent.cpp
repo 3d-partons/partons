@@ -1,5 +1,8 @@
 #include "../../../include/partons/utils/PartonContent.h"
 
+namespace PARTONS {
+
+
 PartonContent::PartonContent() :
         BaseObject("PartonContent") {
 
@@ -156,3 +159,5 @@ double PartonContent::getTop() const {
 void PartonContent::setTop(double top) {
     this->top = top;
 }
+
+} /* namespace PARTONS */

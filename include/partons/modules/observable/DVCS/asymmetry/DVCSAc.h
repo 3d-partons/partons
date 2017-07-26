@@ -13,6 +13,8 @@
 
 #include "../../Observable.h"
 
+namespace PARTONS {
+
 /**
  * @class DVCSAc
  * @brief Beam charge asymmetry.
@@ -63,5 +65,7 @@ protected:
      */
     DVCSAc(const DVCSAc &other);
 };
+
+} /* namespace PARTONS */
 
 #endif /* DVCSAC_H */

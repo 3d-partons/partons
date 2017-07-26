@@ -18,6 +18,8 @@
 #include "beans/Computation.h"
 #include "beans/system/EnvironmentConfiguration.h"
 
+namespace PARTONS {
+
 /**
  * @class ResourceManager
  *
@@ -78,5 +80,7 @@ private:
     // 2nd value = counter for know how many system objects refer to it. When counter == 0 mean that Computation object must be free.
     std::map<time_t, std::pair<std::auto_ptr<Computation>, unsigned int> > computationList;
 };
+
+} /* namespace PARTONS */
 
 #endif /* RESOURCE_MANAGER_H */

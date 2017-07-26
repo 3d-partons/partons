@@ -15,6 +15,8 @@
 #include "../../../beans/observable/ObservableResult.h"
 #include "ObservableKinematicDao.h"
 
+namespace PARTONS {
+
 /**
  * @class ObservableResultDao
  *
@@ -87,5 +89,7 @@ private:
     void fillObservableResultList(List<ObservableResult> &observableResultList,
             QSqlQuery& query) const;
 };
+
+} /* namespace PARTONS */
 
 #endif /* OBSERVABLE_RESULT_DAO_H */

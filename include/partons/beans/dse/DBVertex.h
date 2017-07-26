@@ -3,9 +3,6 @@
  * @author Nabil Chouika (SPhN - CEA Saclay)
  * @date 8 mars 2016
  * @version 1.0
- *
- * @class DBVertex
- * @brief DCSB-improved vertex. See [arxiv:1207.5300], appendix A.2.
  */
 
 #ifndef DBVERTEX_H_
@@ -16,6 +13,12 @@
 
 #include "BCVertex.h"
 
+namespace PARTONS {
+
+/**
+ * @class DBVertex
+ * @brief DCSB-improved vertex. See [arxiv:1207.5300], appendix A.2.
+ */
 class DBVertex: public BCVertex {
 public:
     DBVertex();
@@ -41,5 +44,7 @@ protected:
     DBVertex(const std::string &className, unsigned int numberOfBasisElements = 5);
     DBVertex(const DBVertex& other);
 };
+
+} /* namespace PARTONS */
 
 #endif /* DBVERTEX_H_ */

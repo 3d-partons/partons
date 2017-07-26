@@ -11,6 +11,9 @@
 #include "../../../../include/partons/beans/automation/Task.h"
 #include "../../../../include/partons/beans/List.h"
 
+namespace PARTONS {
+
+
 DefaultXMLParser::DefaultXMLParser() :
         XMLParserI("DefaultXMLParser"), m_isModuleNodePreviouslyCreated(false) {
 }
@@ -252,3 +255,5 @@ void DefaultXMLParser::endElement(const std::string& elementName) {
         }
     }
 }
+
+} /* namespace PARTONS */

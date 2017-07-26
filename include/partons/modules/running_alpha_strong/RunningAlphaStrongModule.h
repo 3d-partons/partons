@@ -14,6 +14,8 @@
 #include "../../beans/automation/BaseObjectData.h"
 #include "../../ModuleObject.h"
 
+namespace PARTONS {
+
 /**
  * @class RunningAlphaStrongModule
  *
@@ -127,5 +129,7 @@ protected:
      */
     double m_alphaS;
 };
+
+} /* namespace PARTONS */
 
 #endif /* RUNNING_ALPHA_STRONG_MODULE_H */

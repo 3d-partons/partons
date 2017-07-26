@@ -15,10 +15,13 @@
 #include "../MathIntegratorModule.h"
 #include "GPDModule.h"
 
-class MSTWPDF;
 namespace NumA {
 class FunctionType1D;
 } /* namespace NumA */
+
+namespace PARTONS {
+
+class MSTWPDF;
 
 /**
  * @class GPDMPSSW13
@@ -297,5 +300,7 @@ private:
      */
     void initFunctorsForIntegrations();
 };
+
+} /* namespace PARTONS */
 
 #endif /* GPD_MPSSW13_H */

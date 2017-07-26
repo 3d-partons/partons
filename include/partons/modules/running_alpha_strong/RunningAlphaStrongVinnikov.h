@@ -12,6 +12,8 @@
 
 #include "RunningAlphaStrongModule.h"
 
+namespace PARTONS {
+
 /*!
  * \class RunningAlphaStrongVinnikov
  *
@@ -76,6 +78,8 @@ private:
      */
     double LOG_LAMBDA_3;
 };
+
+} /* namespace PARTONS */
 
 #endif /* RUNNING_ALPHA_STRONG_VINNIKOV_H */
 

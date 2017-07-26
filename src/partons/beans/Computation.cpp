@@ -1,5 +1,8 @@
 #include "../../../include/partons/beans/Computation.h"
 
+namespace PARTONS {
+
+
 Computation::Computation() :
         BaseObject("Computation"), m_dateTime(time(0)) {
 }
@@ -26,3 +29,5 @@ time_t Computation::getDateTime() const {
 void Computation::setDateTime(time_t dateTime) {
     m_dateTime = dateTime;
 }
+
+} /* namespace PARTONS */

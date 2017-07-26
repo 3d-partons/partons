@@ -6,10 +6,6 @@
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 30 July 2015
  * @version 1.0
- *
- * @class DoubleDistributionExample
- *
- * @brief
  */
 
 #include <ElementaryUtils/parameters/Parameters.h>
@@ -25,6 +21,13 @@ namespace NumA {
 class FunctionType1D;
 } /* namespace NumA */
 
+namespace PARTONS {
+
+/**
+ * @class DoubleDistributionExample
+ *
+ * @brief
+ */
 class DoubleDistributionExample: public DoubleDistributionModule,
         public MathIntegratorModule {
 public:
@@ -63,5 +66,7 @@ private:
 
     void initFunctorsForIntegrations();
 };
+
+} /* namespace PARTONS */
 
 #endif /* DOUBLE_DISTRIBUTION_EXAMPLE_H */

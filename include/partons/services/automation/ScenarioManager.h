@@ -10,6 +10,8 @@
 
 #include "../../BaseObject.h"
 
+namespace PARTONS {
+
 class Scenario;
 
 /**
@@ -42,5 +44,7 @@ private:
      */
     virtual ~ScenarioManager();
 };
+
+} /* namespace PARTONS */
 
 #endif /* SCENARIO_MANAGER_H */

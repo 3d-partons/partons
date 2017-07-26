@@ -16,6 +16,8 @@ namespace ElemUtils {
 class Packet;
 } /* namespace ElemUtils */
 
+namespace PARTONS {
+
 /**
  * @class GPDType
  *
@@ -175,5 +177,7 @@ ElemUtils::Packet& operator <<(ElemUtils::Packet& packet, GPDType& gpdType);
  * Stream operator to retrieve class from Packet. See also GPDType::unserialize().
  */
 ElemUtils::Packet& operator >>(ElemUtils::Packet& packet, GPDType& gpdType);
+
+} /* namespace PARTONS */
 
 #endif /* GPD_COMPUTE_TYPE_H */

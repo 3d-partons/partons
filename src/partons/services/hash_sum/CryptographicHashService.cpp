@@ -4,6 +4,9 @@
 #include "../../../../include/partons/Partons.h"
 #include "../../../../include/partons/services/hash_sum/Qt4CryptographicHash.h"
 
+namespace PARTONS {
+
+
 // Initialise [class]::classId with a unique name and selfregister this module into the global registry.
 const unsigned int CryptographicHashService::classId =
         Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
@@ -30,3 +33,5 @@ std::string CryptographicHashService::generateSHA1HashSum(
     return m_pCryptographicHashI->generateSHA1HashSum(string);
 }
 
+
+} /* namespace PARTONS */

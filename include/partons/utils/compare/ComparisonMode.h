@@ -17,6 +17,8 @@
 
 #include <string>
 
+namespace PARTONS {
+
 /**
  * @class ComparisonMode
  *
@@ -107,5 +109,7 @@ private:
      */
     ComparisonMode::Type m_type;
 };
+
+} /* namespace PARTONS */
 
 #endif /* COMPARISONMODE_H_ */

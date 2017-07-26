@@ -1,5 +1,8 @@
 #include "../../../../include/partons/modules/xi_converter/XiConverterModule.h"
 
+namespace PARTONS {
+
+
 const std::string XiConverterModule::XI_CONVERTER_MODULE_CLASS_NAME =
         "XiConverterModule";
 
@@ -26,3 +29,5 @@ void XiConverterModule::prepareSubModules(
 
     // Nothing to do.
 }
+
+} /* namespace PARTONS */

@@ -12,6 +12,8 @@
 
 #include "../BaseObject.h"
 
+namespace PARTONS {
+
 /**
  * @class Scales
  *
@@ -107,5 +109,7 @@ private:
      */
     double m_MuR2;
 };
+
+} /* namespace PARTONS */
 
 #endif /* SCALES_H */

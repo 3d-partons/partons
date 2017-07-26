@@ -9,10 +9,12 @@
  * @version 1.0
  */
 
+namespace PARTONS {
+
 namespace Constant {
 
 /**
-* @namespace Constant
+* @namespace PARTONS::Constant
 * @brief Definition of useful mathematical, physical, etc.\ constants.
 *
 * This header file defines a set of useful mathematical, physical, etc.\ constants to be used in PARTONS.
@@ -77,5 +79,7 @@ const double T2_ELEC_CHARGE = 4. / 9.;                      ///< Square of elect
 const double POSITRON_CHARGE = 0.30282211985966434;         ///< Positron charge \f$e\f$ in natural units (\f$e^2 = 4\pi\alpha\f$).
 
 } /* namespace Constant */
+
+} /* namespace PARTONS */
 
 #endif /* FUNDAMENTAL_PHYSICAL_CONSTANTS_H */

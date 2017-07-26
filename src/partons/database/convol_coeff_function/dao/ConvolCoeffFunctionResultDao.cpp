@@ -12,6 +12,9 @@
 #include "../../../../../include/partons/database/Database.h"
 #include "../../../../../include/partons/database/DatabaseManager.h"
 
+namespace PARTONS {
+
+
 ConvolCoeffFunctionResultDao::ConvolCoeffFunctionResultDao() :
         BaseObject("ConvolCoeffFunctionResultDao") {
 }
@@ -163,3 +166,5 @@ void ConvolCoeffFunctionResultDao::fillConvolCoeffFunctionResultList(
 
     info(__func__, "Done !");
 }
+
+} /* namespace PARTONS */

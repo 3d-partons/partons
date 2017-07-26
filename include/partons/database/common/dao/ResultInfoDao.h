@@ -12,6 +12,8 @@
 
 #include "../../../BaseObject.h"
 
+namespace PARTONS {
+
 class ResultInfo;
 
 /**
@@ -50,5 +52,7 @@ private:
      */
     void fillResultInfo(ResultInfo &resultInfo, QSqlQuery& query) const;
 };
+
+} /* namespace PARTONS */
 
 #endif /* RESULTINFODAO_H_ */

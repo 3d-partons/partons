@@ -17,6 +17,8 @@
 #include "ObservableKinematic.h"
 #include "ObservableType.h"
 
+namespace PARTONS {
+
 class ComparisonReport;
 
 /**
@@ -228,5 +230,7 @@ private:
      */
     ObservableType::Type m_observableType;
 };
+
+} /* namespace PARTONS */
 
 #endif /* OBSERVABLE_RESULT_H */

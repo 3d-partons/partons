@@ -20,6 +20,8 @@
 #include "../../Result.h"
 #include "DVCSConvolCoeffFunctionKinematic.h"
 
+namespace PARTONS {
+
 class ComparisonReport;
 
 /**
@@ -197,5 +199,7 @@ private:
      */
     std::map<GPDType::Type, std::complex<double> >::const_iterator m_it;
 };
+
+} /* namespace PARTONS */
 
 #endif /* DVCS_CONVOL_COEFF_FUNCTION_RESULT_H */

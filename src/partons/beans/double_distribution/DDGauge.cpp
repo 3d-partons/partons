@@ -2,6 +2,9 @@
 
 #include <ElementaryUtils/string_utils/StringUtils.h>
 
+namespace PARTONS {
+
+
 DDGauge::DDGauge() :
         m_type(DDGauge::UNDEFINED) {
 }
@@ -46,3 +49,5 @@ DDGauge::Type DDGauge::fromString(const std::string& gaugeStr) {
 
     return gaugeType;
 }
+
+} /* namespace PARTONS */

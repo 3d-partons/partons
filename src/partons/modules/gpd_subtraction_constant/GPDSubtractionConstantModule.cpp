@@ -11,6 +11,9 @@
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <utility>
 
+namespace PARTONS {
+
+
 const std::string GPDSubtractionConstantModule::GPD_SUBTRACTION_CONSTANT_MODULE_CLASS_NAME =
 		"GPDSubtractionConstantModule";
 
@@ -188,3 +191,5 @@ List<GPDType> GPDSubtractionConstantModule::getListOfAvailableGPDTypeForComputat
 	return listOfAvailableGPDTypeForComputation;
 }
 
+
+} /* namespace PARTONS */

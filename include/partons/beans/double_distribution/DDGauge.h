@@ -10,6 +10,8 @@
 
 #include <string>
 
+namespace PARTONS {
+
 /**
  * @class DDGauge
  * @brief Gauge used for the Double Distribution representation: BMKS, Pobylitsa, etc.
@@ -36,5 +38,7 @@ private:
     DDGauge::Type m_type;
 };
 
+
+} /* namespace PARTONS */
 
 #endif /* DDGAUGE_H_ */

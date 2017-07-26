@@ -3,6 +3,9 @@
 #include <ElementaryUtils/logger/CustomException.h>
 #include <QtSql/qsqldatabase.h>
 
+namespace PARTONS {
+
+
 ConvolCoeffFunctionKinematicDaoService::ConvolCoeffFunctionKinematicDaoService() :
         BaseObject("ConvolCoeffFunctionKinematicDaoService") {
 }
@@ -88,3 +91,5 @@ int ConvolCoeffFunctionKinematicDaoService::getKinematicIdByHashSum(
         const std::string& hashSum) const {
     return m_convolCoeffFunctionKinematicDao.getKinematicIdByHashSum(hashSum);
 }
+
+} /* namespace PARTONS */

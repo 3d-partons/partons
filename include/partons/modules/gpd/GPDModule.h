@@ -19,6 +19,8 @@
 #include "../../beans/parton_distribution/PartonDistribution.h"
 #include "../../ModuleObject.h"
 
+namespace PARTONS {
+
 class GPDEvolutionModule;
 
 /**
@@ -249,5 +251,7 @@ private:
 //            const List<ElemUtils::Parameter> &moduleNameList,
 //            unsigned int level = 0);
 };
+
+} /* namespace PARTONS */
 
 #endif /* GPD_MODULE_H */

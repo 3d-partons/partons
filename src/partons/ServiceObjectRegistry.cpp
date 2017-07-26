@@ -13,6 +13,9 @@
 #include "../../include/partons/services/ObservableService.h"
 #include "../../include/partons/services/VizualisationService.h"
 
+namespace PARTONS {
+
+
 ServiceObjectRegistry::ServiceObjectRegistry(
         BaseObjectRegistry* m_pBaseObjectRegistry) :
         m_pBaseObjectRegistry(m_pBaseObjectRegistry) {
@@ -79,3 +82,5 @@ CryptographicHashService* ServiceObjectRegistry::getCryptographicHashService() c
     return static_cast<CryptographicHashService*>(m_pBaseObjectRegistry->get(
             CryptographicHashService::classId));
 }
+
+} /* namespace PARTONS */

@@ -1,12 +1,12 @@
-# PARTONS configuration files {#config}
+# %PARTONS configuration files {#config}
 
 [TOC]
  
 # Introduction {#config_intro} 
 
-This wiki page describes the configuration files used by PARTONS. If you are using [our virtual machine](@ref vm), all configuration files are set up there, so you can run PARTONS as it was out-of-the-box. However, if you have installed PARTONS at your own machine run under [Linux](@ref linux) or [Mac](@ref mac), you may need to set up these files manually. 
+This wiki page describes the configuration files used by %PARTONS. If you are using [our virtual machine](@ref vm), all configuration files are set up there, so you can run %PARTONS as it was out-of-the-box. However, if you have installed %PARTONS at your own machine run under [Linux](@ref linux) or [Mac](@ref mac), you may need to set up these files manually. 
 
-There are three PARTONS configuration files that you may be interested in:
+There are three %PARTONS configuration files that you may be interested in:
 * `partons.properties`: main configuration file
 * `logger.cfg`: configuration of Logger
 * `environment_configuration.dat`: environment configuration information
@@ -17,7 +17,7 @@ There are three PARTONS configuration files that you may be interested in:
 
 # partons.properties {#config_main}
 
-This is the main configuration file of PARTONS to be placed together with the executable file. %All options are explained here in the comments starting with the hash symbol '#':
+This is the main configuration file of %PARTONS to be placed together with the executable file. %All options are explained here in the comments starting with the hash symbol '#':
 
 ```py
 # PATHS #

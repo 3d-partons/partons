@@ -19,6 +19,9 @@
 #include "../../../../../include/partons/modules/gpd/GPDModule.h"
 #include "../../../../../include/partons/modules/running_alpha_strong/RunningAlphaStrongModule.h"
 
+namespace PARTONS {
+
+
 const unsigned int DVCSCFFStandard::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new DVCSCFFStandard("DVCSCFFStandard"));
@@ -1097,3 +1100,5 @@ double DVCSCFFStandard::ConvolImKernelGluonA(double x,
 
     return Convol;
 }
+
+} /* namespace PARTONS */

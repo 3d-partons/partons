@@ -14,6 +14,8 @@ namespace ElemUtils {
 class Packet;
 } /* namespace ElemUtils */
 
+namespace PARTONS {
+
 /** @class BaseObject
  *
  * @brief BaseObject is the ”zeroth-level-object” of the architecture.
@@ -168,5 +170,7 @@ private:
 
 ElemUtils::Packet& operator <<(ElemUtils::Packet& packet, BaseObject& object);
 ElemUtils::Packet& operator >>(ElemUtils::Packet& packet, BaseObject& object);
+
+} /* namespace PARTONS */
 
 #endif /* BASE_OBJECT_H */

@@ -1,5 +1,8 @@
 #include "../../../../include/partons/utils/type/BaseType.h"
 
+namespace PARTONS {
+
+
 BaseType::BaseType() :
         m_initialized(false), m_unit("none") {
 }
@@ -26,3 +29,5 @@ const std::string& BaseType::getUnit() const {
 void BaseType::setUnit(const std::string& unit) {
     m_unit = unit;
 }
+
+} /* namespace PARTONS */

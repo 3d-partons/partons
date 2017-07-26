@@ -24,6 +24,8 @@ namespace NumA {
 class QuadratureIntegrator1D;
 } /* namespace NumA */
 
+namespace PARTONS {
+
 class QuarkGluonVertex;
 
 class GluonPropagator;
@@ -206,5 +208,7 @@ private:
     // Stored calculations
     std::vector<double> m_C; ///< Stored coefficients
 };
+
+} /* namespace PARTONS */
 
 #endif /* GAPEQUATIONSOLVER_H_ */

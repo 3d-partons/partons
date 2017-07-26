@@ -10,6 +10,8 @@
 
 #include <string>
 
+namespace PARTONS {
+
 /**
  * @class ObservableChannel
  *
@@ -108,5 +110,7 @@ private:
      */
     ObservableChannel::Type m_type;
 };
+
+} /* namespace PARTONS */
 
 #endif /* OBSERVABLE_CHANNEL_H */

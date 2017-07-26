@@ -1,5 +1,8 @@
 #include "../../../../include/partons/beans/dse/BCSimplifiedVertex.h"
 
+namespace PARTONS {
+
+
 BCSimplifiedVertex::BCSimplifiedVertex() :
         RLVertex("BCSimplifiedVertex") {
 }
@@ -43,3 +46,5 @@ std::vector<double> BCSimplifiedVertex::Radial_Integrands_deriv(double p2, doubl
     radial_integrands_deriv.at(m_N) = (dsigmaS_q2 * (A_p2 + A_q2) + sigmaS_q2 * (dA_p2 + dA_q2)) * 0.5;
     return radial_integrands_deriv;
 }
+
+} /* namespace PARTONS */

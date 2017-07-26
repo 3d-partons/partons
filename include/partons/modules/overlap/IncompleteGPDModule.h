@@ -20,6 +20,8 @@ namespace NumA {
 class FunctionTypeMD;
 } /* namespace NumA */
 
+namespace PARTONS {
+
 class RadonInverseModule;
 
 /**
@@ -63,19 +65,19 @@ public:
 //    virtual PartonDistribution compute(const GPDKinematic &kinematic,
 //            GPDType gpdType);
 
-    /**
-     * Virtual method, computes GPD with some input parameters.
-     *
-     * @param x Bjorken variable
-     * @param xi longitudinal momentum
-     * @param t momentum transfer (Mandelstam variable)
-     * @param MuF2 Factorisation
-     * @param MuR2 Re-normalisation
-     * @param gpdComputeType H, Ht, E, Et, ... or ALL. See GPDComputeType for more details.
-     *
-     * @return Return results in an GPDOutputData class.
-     * Contains GPD results for each flavor of quarks and for each GPDs (H, Ht, E, Et, ...) if computable.
-     */
+//    /**
+//     * Virtual method, computes GPD with some input parameters.
+//     *
+//     * @param x Bjorken variable
+//     * @param xi longitudinal momentum
+//     * @param t momentum transfer (Mandelstam variable)
+//     * @param MuF2 Factorisation
+//     * @param MuR2 Re-normalisation
+//     * @param gpdComputeType H, Ht, E, Et, ... or ALL. See GPDComputeType for more details.
+//     *
+//     * @return Return results in an GPDOutputData class.
+//     * Contains GPD results for each flavor of quarks and for each GPDs (H, Ht, E, Et, ...) if computable.
+//     */
 //    virtual PartonDistribution compute(double x, double xi, double t,
 //            double MuF2, double MuR2, GPDType::Type gpdType);
 
@@ -156,5 +158,7 @@ protected:
 //    std::map<GPDType::Type, PartonDistribution (IncompleteGPDModule::*)()> m_listGPDComputeTypeAvailable;
 //    std::map<GPDType::Type, PartonDistribution (IncompleteGPDModule::*)()>::iterator m_it;
 };
+
+} /* namespace PARTONS */
 
 #endif /* INCOMPLETEGPDMODULE_H_ */

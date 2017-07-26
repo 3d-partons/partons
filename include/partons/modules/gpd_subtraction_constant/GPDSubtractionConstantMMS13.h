@@ -17,6 +17,8 @@
 #include "../MathIntegratorModule.h"
 #include "GPDSubtractionConstantModule.h"
 
+namespace PARTONS {
+
 class GPDMMS13;
 
 /**
@@ -84,5 +86,7 @@ private:
 	 */
 	GPDMMS13* m_pMMS13Model;
 };
+
+} /* namespace PARTONS */
 
 #endif /* GPD_SUBTRACTION_CONSTANT_MMS13_MODEL_H_ */

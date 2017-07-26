@@ -18,6 +18,8 @@
 #include "../dao/ObservableResultDao.h"
 #include "ObservableKinematicDaoService.h"
 
+namespace PARTONS {
+
 /**
  * @class ObservableResultDaoService
  *
@@ -155,5 +157,7 @@ private:
     std::string m_observableKinematicTableFile; ///< Observable kinematics to be inserted via temporary file mechanism.
     std::string m_observableResultTableFile; ///< Observable results to be inserted via temporary file mechanism.
 };
+
+} /* namespace PARTONS */
 
 #endif /* OBSERVABLE_RESULT_DAO_SERVICE_H */

@@ -15,6 +15,8 @@
 #include "../../../MathIntegratorModule.h"
 #include "DVCSAulMinus.h"
 
+namespace PARTONS {
+
 /**
  * @class DVCSAulMinusSin2Phi
  *
@@ -78,5 +80,7 @@ protected:
      */
     void initFunctorsForIntegrations();
 };
+
+} /* namespace PARTONS */
 
 #endif /* DVCSAULMINUSSIN2PHI */

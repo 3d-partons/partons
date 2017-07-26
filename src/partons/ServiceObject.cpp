@@ -19,6 +19,9 @@
 #include "../../include/partons/ServiceObjectRegistry.h"
 #include "../../include/partons/utils/plot2D/Plot2DList.h"
 
+namespace PARTONS {
+
+
 ServiceObject::ServiceObject(const std::string &className) :
         BaseObject(className), m_pModuleObjectFactory(0), m_pAutomationService(
                 0) {
@@ -226,3 +229,5 @@ void ServiceObject::errorUnknownMethod(const Task& task) const {
                     << "] in your scenario file = \""
                     << task.getScenario()->getFilePath() << "\"");
 }
+
+} /* namespace PARTONS */

@@ -9,6 +9,9 @@
 #include <fstream>
 #include <iostream>
 
+namespace PARTONS {
+
+
 MSTWPDF::MSTWPDF() :
         BaseObject("MSTWPDF"), warn(false), fatal(true), np(12), nx(64), nq(48), qsqmax(
                 0.), alphaSMZ(0.), xmax(0.), xmin(0.), alphaSorder(0), qsqmin(
@@ -779,3 +782,5 @@ double MSTWPDF::polderivative3(double x1, double x2, double x3, double y1,
             + x1 * x1 * (y2 - y3) + x2 * x2 * (-y1 + y3)
             + 2.0 * x1 * x3 * (-y2 + y3)) / ((x1 - x2) * (x1 - x3) * (x2 - x3));
 }
+
+} /* namespace PARTONS */

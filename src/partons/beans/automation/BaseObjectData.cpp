@@ -5,6 +5,9 @@
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <utility>
 
+namespace PARTONS {
+
+
 BaseObjectData::BaseObjectData() :
         BaseObject("BaseObjectData"), m_moduleType(
                 ElemUtils::StringUtils::EMPTY), m_moduleClassName(
@@ -98,3 +101,5 @@ void BaseObjectData::setParameters(const ElemUtils::Parameters& parameters) {
 const std::map<std::string, BaseObjectData>& BaseObjectData::getSubModules() const {
     return m_subModules;
 }
+
+} /* namespace PARTONS */

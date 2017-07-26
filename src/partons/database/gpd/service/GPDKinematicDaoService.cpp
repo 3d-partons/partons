@@ -4,6 +4,9 @@
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <QtSql/qsqldatabase.h>
 
+namespace PARTONS {
+
+
 GPDKinematicDaoService::GPDKinematicDaoService() :
         BaseObject("GPDKinematicDaoService") {
 
@@ -90,3 +93,5 @@ int GPDKinematicDaoService::getKinematicIdByHashSum(
         const std::string& hashSum) const {
     return m_GPDKinematicDao.getKinematicIdByHashSum(hashSum);
 }
+
+} /* namespace PARTONS */

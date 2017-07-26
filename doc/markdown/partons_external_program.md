@@ -1,15 +1,15 @@
-# Using the PARTONS library in your program {#external_program}
+# Using the %PARTONS library in your program {#external_program}
 
 [TOC]
 
-It is highly recommended to first read the [tutorial](@ref usage) explaining the PARTONS library before reading this one. Once you understand how to use the Services and methods in PARTONS, we can move on to the practical aspects of writing your program.
+It is highly recommended to first read the [tutorial](@ref usage) explaining the %PARTONS library before reading this one. Once you understand how to use the Services and methods in %PARTONS, we can move on to the practical aspects of writing your program.
 
 # PARTONS_example {#partons-example}
 
 For this tutorial, it is useful to have the example project [`partons-example`](https://drf-gitlab.cea.fr/partons/core/partons-example) already set up. It will serve as illustration, and you can base your own program on it for a start.
 
 If you are using our Virtual Machine, the project is already set up in the IDE Eclipse.
-To set it up in your own machine, you can follow the Eclipse tutorial [here](@ref eclipse). It is also useful to read the tutorial on how to build and install PARTONS before, either for [Linux](@ref linux) or [Mac](@ref mac).
+To set it up in your own machine, you can follow the Eclipse tutorial [here](@ref eclipse). It is also useful to read the tutorial on how to build and install %PARTONS before, either for [Linux](@ref linux) or [Mac](@ref mac).
 
 This executable program serves as an out of the box tool to run XML scenarios (see the next section). It also features several C++ examples in the file `examples.cpp`.
 
@@ -17,7 +17,7 @@ The following sections dissect the `main.cpp` file of this project in order to e
 
 # Use the XML interface in your C++ project {#use_xml_interface}
 
-This section will explain how to use the Automation services of PARTONS to read the XML scenarios presented [here](@ref usage_xml). The example project `partons-example` already implements this and lets you use a given XML file just by giving its path as an argument to the executable, *e.g*
+This section will explain how to use the Automation services of %PARTONS to read the XML scenarios presented [here](@ref usage_xml). The example project `partons-example` already implements this and lets you use a given XML file just by giving its path as an argument to the executable, *e.g*
 ```sh
 ./partons-example path/to/XML/file.xml
 ```
@@ -98,5 +98,5 @@ Some remarks:
 #include <QtCore/qcoreapplication.h> // or <QCoreApplication>
 ```
 Be sure to include all the needed headers. Eclipse can do it for you automatically with `Ctrl`+`Shift`+`O` if it was configured correctly as in the related [tutorial](@ref eclipse).
-* You can organize your code as you wish, with your own classes and functions. If you wish to inherit modules from PARTONS to use your own physics models, you can read the corresponding [tutorial](@ref newmodule).
+* You can organize your code as you wish, with your own classes and functions. If you wish to inherit modules from %PARTONS to use your own physics models, you can read the corresponding [tutorial](@ref newmodule).
 

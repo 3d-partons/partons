@@ -7,6 +7,9 @@
 
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
 
+namespace PARTONS {
+
+
 QPbyChebyshev::QPbyChebyshev(unsigned int N, double m, double mu,
         double Lambda2, double epsilon2) :
         QuarkPropagator("QPbyChebyshev", N, m, mu, Lambda2, epsilon2), m_cheb(N) {
@@ -172,3 +175,5 @@ NumA::MatrixD QPbyChebyshev::getInterpolationMatrix(
         const NumA::VectorD& points) const {
     return m_cheb.getValuesToValuesMatrix(points);
 }
+
+} /* namespace PARTONS */

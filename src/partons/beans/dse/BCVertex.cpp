@@ -1,5 +1,8 @@
 #include "../../../../include/partons/beans/dse/BCVertex.h"
 
+namespace PARTONS {
+
+
 BCVertex::BCVertex() :
         QuarkGluonVertex("BCVertex", 3) {
 }
@@ -91,3 +94,5 @@ std::vector<double> BCVertex::Radial_Integrands_deriv(double p2, double q2,
             + sigmaV_q2 * (dB_p2 - dB_q2);
     return radial_integrands_deriv;
 }
+
+} /* namespace PARTONS */

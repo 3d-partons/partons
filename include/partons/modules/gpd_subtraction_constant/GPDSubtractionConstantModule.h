@@ -18,6 +18,8 @@
 #include "../../beans/List.h"
 #include "../../ModuleObject.h"
 
+namespace PARTONS {
+
 /**
  * @class GPDSubtractionConstantModule
  *
@@ -176,5 +178,7 @@ protected:
 	 */
 	std::map<GPDType::Type, double (GPDSubtractionConstantModule::*)()>::iterator m_it;
 };
+
+} /* namespace PARTONS */
 
 #endif /* GPD_SUBTRACTION_CONSTANT_MODULE_H_ */

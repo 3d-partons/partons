@@ -12,6 +12,9 @@
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/modules/radon_inverse/RadonInverseModule.h"
 
+namespace PARTONS {
+
+
 const unsigned int OverlapMMR15::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new OverlapMMR15("OverlapMMR15"));
@@ -108,3 +111,5 @@ PartonDistribution OverlapMMR15::computeH() {
 std::string OverlapMMR15::toString() const {
     return IncompleteGPDModule::toString();
 }
+
+} /* namespace PARTONS */

@@ -1,5 +1,8 @@
 #include "../../../../include/partons/utils/math/ErrorBar.h"
 
+namespace PARTONS {
+
+
 ErrorBar::ErrorBar() :
         m_upperBound(0.), m_lowerBound(0.) {
 }
@@ -26,3 +29,5 @@ double ErrorBar::getUpperBound() const {
 void ErrorBar::setUpperBound(double upperBound) {
     m_upperBound = upperBound;
 }
+
+} /* namespace PARTONS */

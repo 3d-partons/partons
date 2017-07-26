@@ -19,6 +19,8 @@
 #include "../../beans/parton_distribution/PartonDistribution.h"
 #include "../../ModuleObject.h"
 
+namespace PARTONS {
+
 class DoubleDistributionResult;
 class IncompleteGPDModule;
 class RadonInverseModule;
@@ -114,5 +116,7 @@ protected:
 
     DoubleDistributionType::Type m_doubleDistributionType;
 };
+
+} /* namespace PARTONS */
 
 #endif /* DOUBLE_DISTRIBUTION_MODULE_H */

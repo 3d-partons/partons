@@ -6,10 +6,6 @@
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date March 23, 2016
  * @version 1.0
- *
- * @class Qt4XMLValidator
- *
- * @brief
  */
 
 #include <QtCore/qglobal.h>
@@ -17,6 +13,13 @@
 
 #include "XMLValidatorI.h"
 
+namespace PARTONS {
+
+/**
+ * @class Qt4XMLValidator
+ *
+ * @brief
+ */
 class Qt4XMLValidator: public XMLValidatorI {
 public:
     Qt4XMLValidator();
@@ -27,5 +30,7 @@ public:
 
     static void myMessageOutput(QtMsgType type, const char *msg);
 };
+
+} /* namespace PARTONS */
 
 #endif /* QT4_XML_VALIDATOR_H */

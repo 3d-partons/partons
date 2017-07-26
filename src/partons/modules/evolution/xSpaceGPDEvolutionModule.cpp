@@ -4,6 +4,9 @@
 //#include <NumA/integration/MathIntegrator.h>
 //
 //#include "../../../../include/partons/beans/active_flavors/NfInterval.h"
+
+namespace PARTONS {
+
 //
 //xSpaceGPDEvolutionModule::xSpaceGPDEvolutionModule(const std::string &className) :
 //        GPDEvolutionModule(className), MathIntegratorModule() {
@@ -92,3 +95,5 @@
 //            + kernelSingletgg(variables[0])
 //                    * m_partonDistributionEvolutionBase[0];
 //}
+
+} /* namespace PARTONS */

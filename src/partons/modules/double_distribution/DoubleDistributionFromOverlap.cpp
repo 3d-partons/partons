@@ -5,6 +5,9 @@
 #include "../../../../include/partons/beans/double_distribution/DoubleDistributionType.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 
+namespace PARTONS {
+
+
 const unsigned int DoubleDistributionFromOverlap::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new DoubleDistributionFromOverlap(
@@ -81,3 +84,5 @@ PartonDistribution DoubleDistributionFromOverlap::computeK() {
     return partonDistribution;
 }
 
+
+} /* namespace PARTONS */

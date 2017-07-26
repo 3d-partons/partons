@@ -10,6 +10,8 @@
 
 #include <string>
 
+namespace PARTONS {
+
 /**
  * @class ObservableType
  *
@@ -102,5 +104,7 @@ private:
      */
     ObservableType::Type m_type;
 };
+
+} /* namespace PARTONS */
 
 #endif /* OBSERVABLE_TYPE_H */

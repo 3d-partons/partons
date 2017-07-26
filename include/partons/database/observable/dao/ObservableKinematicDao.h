@@ -14,6 +14,8 @@
 #include "../../../beans/List.h"
 #include "../../../beans/observable/ObservableKinematic.h"
 
+namespace PARTONS {
+
 /**
  * @class ObservableKinematicDao
  *
@@ -97,5 +99,7 @@ private:
             List<ObservableKinematic> &observableKinematicList,
             QSqlQuery &query) const;
 };
+
+} /* namespace PARTONS */
 
 #endif /* OBSERVABLE_KINEMATIC_DAO_H */

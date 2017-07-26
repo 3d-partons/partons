@@ -14,6 +14,8 @@
 #include "../../utils/compare/ComparisonReport.h"
 #include "../QuarkFlavor.h"
 
+namespace PARTONS {
+
 /**
  * @class QuarkDistribution
  *
@@ -165,5 +167,7 @@ private:
      */
     double m_quarkDistributionMinus;
 };
+
+} /* namespace PARTONS */
 
 #endif /* QUARK_DISTRIBUTION_H */

@@ -10,6 +10,8 @@
 
 #include <string>
 
+namespace PARTONS {
+
 /**
  * @class SortingMode
  *
@@ -100,5 +102,7 @@ private:
      */
     SortingMode::Type m_type;
 };
+
+} /* namespace PARTONS */
 
 #endif /* SORTING_MODE_H */

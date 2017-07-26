@@ -12,6 +12,8 @@
 
 #include "XiConverterModule.h"
 
+namespace PARTONS {
+
 /**
  * @class XiConverterXBToXi
  *
@@ -57,5 +59,7 @@ protected:
     virtual void initModule();
     virtual void isModuleWellConfigured();
 };
+
+} /* namespace PARTONS */
 
 #endif /* XI_CONVERTER_XB_TO_XI_H */

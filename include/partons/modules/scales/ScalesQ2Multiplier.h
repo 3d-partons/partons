@@ -17,6 +17,8 @@ namespace ElemUtils {
 class Parameters;
 } /* namespace ElemUtils */
 
+namespace PARTONS {
+
 /**
  * @class ScalesQ2Multiplier
  *
@@ -77,5 +79,7 @@ private:
      */
     double m_lambda;
 };
+
+} /* namespace PARTONS */
 
 #endif /* SCALES_Q2_MULTIPLIER_H */

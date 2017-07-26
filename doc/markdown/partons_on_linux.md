@@ -1,10 +1,10 @@
-# PARTONS on GNU/Linux {#linux}
+# %PARTONS on GNU/Linux {#linux}
 
 [TOC]
 
 # Introduction {#linux_intro}
 
-This tutorial is for building PARTONS on Linux. It describes the procedure for a Debian-like distribution (Ubuntu, etc). For RPM-based distros, it shouldn't be too different.
+This tutorial is for building %PARTONS on Linux. It describes the procedure for a Debian-like distribution (Ubuntu, etc). For RPM-based distros, it shouldn't be too different.
 
 <hr>
 
@@ -42,7 +42,7 @@ If you want to retrieve directly the sources from our GitLab repository, you obv
 sudo apt-get install git
 ~~~~~~~~~~~~~
 
-You can then go to a folder of your liking and clone the repository of **PARTONS** (and of its needed dependencies ; **ElementaryUtils** and **NumA++**):
+You can then go to a folder of your liking and clone the repository of **%PARTONS** (and of its needed dependencies ; **ElementaryUtils** and **NumA++**):
 
 ~~~~~~~~~~~~~{.sh}
 cd /path/to/some/directory
@@ -80,15 +80,15 @@ If everything went fine, you can build the project:
 make
 ~~~~~~~~~~~~~
 
-You can repeat this for the other projects NumA++ and PARTONS. The dependencies follow this order.
+You can repeat this for the other projects NumA++ and %PARTONS. The dependencies follow this order.
 
-Note that if you intend to use the installation described in the following section, you may want to install ElementaryUtils before building NumA++ (and installing NumA++ before building PARTONS) so that each subsequent library uses the installed headers and shared library instead of the temporary ones located in the source folder and that may be removed after the installation.
+Note that if you intend to use the installation described in the following section, you may want to install ElementaryUtils before building NumA++ (and installing NumA++ before building %PARTONS) so that each subsequent library uses the installed headers and shared library instead of the temporary ones located in the source folder and that may be removed after the installation.
 
 <hr>
 
 # Installing the PARTONS libraries {#linux_install}
 
-You can keep the generated shared libraries ElementaryUtils, NumA++ and PARTONS as it is in their source folder (the command `make` will create if not present a folder `lib/` with the resulting shared library), and use them from there, or you can install these libraries if you wish, with the command:
+You can keep the generated shared libraries ElementaryUtils, NumA++ and %PARTONS as it is in their source folder (the command `make` will create if not present a folder `lib/` with the resulting shared library), and use them from there, or you can install these libraries if you wish, with the command:
 
 ~~~~~~~~~~~~~{.sh}
 make install
@@ -106,9 +106,9 @@ This will allow you to install the headers to `/home/youruser/somefolder/include
 
 # Building your own project using PARTONS {#linux_buildperso}
 
-The project [partons-example](https://drf-gitlab.cea.fr/partons/core/partons-example) is meant as an example of project making use of the PARTONS libraries. You can use it as a template for your own projects.
+The project [partons-example](https://drf-gitlab.cea.fr/partons/core/partons-example) is meant as an example of project making use of the %PARTONS libraries. You can use it as a template for your own projects.
 
-In particular, you can adapt the CMakeLists.txt already present in PARTONS_release, and use the same FindXXXX.cmake scripts found in the folder `cmake/Modules`.
+In particular, you can adapt the `CMakeLists.txt` already present in PARTONS_example, and use the same FindXXXX.cmake scripts found in the folder `cmake/Modules`.
 
 You should also find the configuration files `partons.properties` and `logger.cfg` that you will have to adapt with your paths. See the [tutorial](@ref config) about the configuration.
 
@@ -122,4 +122,4 @@ You can install the IDE Eclipse CDT (and some useful plugins) with:
 sudo apt-get install eclipse-cdt eclipse-egit eclipse-eclox
 ~~~~~~~~~~~~~
 
-You can see the [Eclipse](@ref eclipse) tutorial for how to configure Eclipse for PARTONS and use it as IDE.
+You can see the [Eclipse](@ref eclipse) tutorial for how to configure Eclipse for %PARTONS and use it as IDE.

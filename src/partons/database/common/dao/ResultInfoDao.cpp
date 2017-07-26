@@ -12,6 +12,9 @@
 #include "../../../../../include/partons/database/Database.h"
 #include "../../../../../include/partons/database/DatabaseManager.h"
 
+namespace PARTONS {
+
+
 ResultInfoDao::ResultInfoDao() :
         BaseObject("ResultInfoDao") {
 }
@@ -64,3 +67,5 @@ void ResultInfoDao::fillResultInfo(ResultInfo &resultInfo,
     resultInfo.setScenarioHashSum(
             query.value(f_scenarioHashSum).toString().toStdString());
 }
+
+} /* namespace PARTONS */

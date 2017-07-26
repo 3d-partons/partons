@@ -4,6 +4,9 @@
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <algorithm>
 
+namespace PARTONS {
+
+
 const std::string ActiveFlavorsThresholdsModule::ACTIVE_FLAVORS_THRESHOLDS_MODULE_CLASS_NAME =
         "ActiveFlavorsThresholdsModule";
 
@@ -147,3 +150,5 @@ void ActiveFlavorsThresholdsModule::prepareSubModules(
 
     // Nothing to do.
 }
+
+} /* namespace PARTONS */

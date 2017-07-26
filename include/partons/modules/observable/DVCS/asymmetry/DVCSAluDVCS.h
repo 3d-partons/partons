@@ -13,6 +13,8 @@
 
 #include "../../Observable.h"
 
+namespace PARTONS {
+
 /**
  * @class DVCSAluDVCS
  * @brief Longitudinally polarized beam asymmetry for sum over beam charges (DVCS part).
@@ -63,5 +65,7 @@ protected:
      */
     DVCSAluDVCS(const DVCSAluDVCS &other);
 };
+
+} /* namespace PARTONS */
 
 #endif /* DVCSALUDVCS_H */

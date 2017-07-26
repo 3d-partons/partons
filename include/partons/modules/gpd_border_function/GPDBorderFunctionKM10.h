@@ -13,6 +13,8 @@
 
 #include "GPDBorderFunctionModule.h"
 
+namespace PARTONS {
+
 /**
  * @class GPDBorderFunctionKM10
  *
@@ -83,5 +85,7 @@ private:
     double m_par_H_alpha_sea;   ///< Parameter alpha_sea
     double m_par_H_p_sea;       ///< Parameter p_sea
 };
+
+} /* namespace PARTONS */
 
 #endif /* GPD_BORDER_FUNCTION_KM10_H */

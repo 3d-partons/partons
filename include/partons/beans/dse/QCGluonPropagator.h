@@ -3,9 +3,6 @@
  * @author Nabil Chouika (CEA Saclay / SPhN)
  * @date Feb 24 2016
  * @version 1.0
- *
- * @class QCGluonPropagator
- * @brief QC Gluon Propagator (Qin-Chang)
  */
 
 #ifndef GPQC_H_
@@ -15,6 +12,12 @@
 
 #include "GluonPropagator.h"
 
+namespace PARTONS {
+
+/**
+ * @class QCGluonPropagator
+ * @brief QC Gluon Propagator (Qin-Chang)
+ */
 class QCGluonPropagator: public GluonPropagator {
 public:
     QCGluonPropagator(double w = 0.5, double I = 5.8, double LambdaQCD = 0.234,
@@ -34,5 +37,7 @@ protected:
 
     virtual void updateIR();
 };
+
+} /* namespace PARTONS */
 
 #endif /* GPQC_H_ */

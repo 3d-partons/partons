@@ -11,10 +11,13 @@
 #include <complex>
 #include <string>
 
-class ComparisonData;
 namespace NumA {
 class Tolerances;
 } /* namespace NumA */
+
+namespace PARTONS {
+
+class ComparisonData;
 
 /**
 * @class CompareUtils
@@ -55,5 +58,7 @@ public:
             const NumA::Tolerances &tolerances,
             const std::string &parentObjectInfo);
 };
+
+} /* namespace PARTONS */
 
 #endif /* COMPARE_UTILS_H */

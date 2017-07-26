@@ -17,6 +17,9 @@
 #include "../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../include/partons/Partons.h"
 
+namespace PARTONS {
+
+
 NumA::MatrixD GPDEvolutionModule::conversionMatrix1(3, 3, //
         1., 0., 0., //
         0., 1., 0., //
@@ -736,3 +739,5 @@ void GPDEvolutionModule::prepareSubModules(
 //    return 0.;
 //}
 
+
+} /* namespace PARTONS */

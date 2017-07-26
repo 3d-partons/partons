@@ -16,6 +16,9 @@
 #include "../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 
+namespace PARTONS {
+
+
 const unsigned int GPDBorderFunctionKM10::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new GPDBorderFunctionKM10("GPDBorderFunctionKM10"));
@@ -151,3 +154,5 @@ double GPDBorderFunctionKM10::getDiagonalGPD(double xi, double n, double r,
             * pow((1. - xi) / (1. + xi), b)
             * pow(1. - (1. - xi) / (1. + xi) * (m_t / pow(M, 2)), -1 * p);
 }
+
+} /* namespace PARTONS */

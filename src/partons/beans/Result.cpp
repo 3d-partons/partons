@@ -2,6 +2,9 @@
 
 #include <ElementaryUtils/string_utils/Formatter.h>
 
+namespace PARTONS {
+
+
 Result::Result(const std::string &className) :
         BaseObject(className), m_computationModuleName("UNDEFINED") {
 }
@@ -38,3 +41,5 @@ std::string Result::toString() const {
 
     return formatter.str();
 }
+
+} /* namespace PARTONS */

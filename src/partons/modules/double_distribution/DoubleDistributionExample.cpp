@@ -10,6 +10,9 @@
 #include "../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 
+namespace PARTONS {
+
+
 const unsigned int DoubleDistributionExample::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new DoubleDistributionExample("DoubleDistributionExample"));
@@ -149,3 +152,5 @@ void DoubleDistributionExample::prepareSubModules(
         const std::map<std::string, BaseObjectData>& subModulesData){
 	DoubleDistributionModule::prepareSubModules(subModulesData);
 }
+
+} /* namespace PARTONS */

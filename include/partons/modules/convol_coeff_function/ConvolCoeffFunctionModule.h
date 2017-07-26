@@ -21,6 +21,8 @@
 #include "../../ModuleObject.h"
 #include "../MathIntegratorModule.h"
 
+namespace PARTONS {
+
 class GPDModule;
 
 /**
@@ -136,5 +138,7 @@ protected:
 private:
     bool m_isGPDModuleDependent; ///< Boolean (true if this CCF module depends on a GPD module).
 };
+
+} /* namespace PARTONS */
 
 #endif /* CONVOL_COEFF_FUNCTION_MODULE_H */

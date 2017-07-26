@@ -17,10 +17,13 @@
 #include "../MathIntegratorModule.h"
 #include "GPDModule.h"
 
-class MSTWPDF;
 namespace NumA {
 class FunctionType1D;
 } /* namespace NumA */
+
+namespace PARTONS {
+
+class MSTWPDF;
 
 /**
  * @class GPDVGG99
@@ -250,5 +253,7 @@ private:
      */
     void initFunctorsForIntegrations();
 };
+
+} /* namespace PARTONS */
 
 #endif /* GPD_VGG99_H */

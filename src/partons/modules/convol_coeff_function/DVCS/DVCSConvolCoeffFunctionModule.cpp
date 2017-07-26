@@ -11,6 +11,9 @@
 #include "../../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../../include/partons/Partons.h"
 
+namespace PARTONS {
+
+
 DVCSConvolCoeffFunctionModule::DVCSConvolCoeffFunctionModule(
         const std::string &className) :
         ConvolCoeffFunctionModule(className), m_xi(0.), m_t(0.), m_Q2(0.), m_MuF2(
@@ -301,3 +304,5 @@ void DVCSConvolCoeffFunctionModule::prepareSubModules(
         }
     }
 }
+
+} /* namespace PARTONS */

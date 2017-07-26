@@ -14,6 +14,8 @@
 #include "EnvironmentConfigurationDaoService.h"
 #include "ScenarioDaoService.h"
 
+namespace PARTONS {
+
 class ResultInfo;
 
 /**
@@ -79,5 +81,7 @@ private:
      */
     ComputationDao m_computationDao;
 };
+
+} /* namespace PARTONS */
 
 #endif /* RESULTINFODAOSERVICE_H_ */

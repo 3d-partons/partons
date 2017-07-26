@@ -2,6 +2,9 @@
 
 #include <ElementaryUtils/logger/CustomException.h>
 
+namespace PARTONS {
+
+
 RadonMeshCell::RadonMeshCell() :
         BaseObject("RadonMeshCell") {
 }
@@ -9,3 +12,5 @@ RadonMeshCell::RadonMeshCell() :
 void RadonMeshCell::test() {
     throw ElemUtils::CustomException(getClassName(), __func__, "mon texte");
 }
+
+} /* namespace PARTONS */

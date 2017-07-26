@@ -16,6 +16,8 @@
 #include <string>
 #include <vector>
 
+namespace PARTONS {
+
 //TODO modifier pour qu'il ne s'utilise pas avant 2 dimensions
 
 /**
@@ -183,5 +185,7 @@ private:
         return tempIndex;
     }
 };
+
+} /* namespace PARTONS */
 
 #endif /* M_D_ARRAY_H */

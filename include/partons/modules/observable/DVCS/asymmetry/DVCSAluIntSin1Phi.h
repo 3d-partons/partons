@@ -15,6 +15,8 @@
 #include "../../../MathIntegratorModule.h"
 #include "DVCSAluInt.h"
 
+namespace PARTONS {
+
 /**
  * @class DVCSAluIntSin1Phi
  *
@@ -78,5 +80,7 @@ protected:
      */
     void initFunctorsForIntegrations();
 };
+
+} /* namespace PARTONS */
 
 #endif /* DVCSALUINTSIN1Phi_H */

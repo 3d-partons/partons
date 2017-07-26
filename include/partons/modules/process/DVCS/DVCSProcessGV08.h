@@ -15,6 +15,8 @@
 
 #include "DVCSModule.h"
 
+namespace PARTONS {
+
 /**
  * @class DVCSProcessGV08
  *
@@ -171,6 +173,8 @@ private:
     void MakeVCSHelicityAmplitudes();
 
 };
+
+} /* namespace PARTONS */
 
 #endif /* DVCS_PROCESS_GV08_H */
 

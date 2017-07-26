@@ -25,6 +25,9 @@
 ////#include "../../FundamentalPhysicalConstants.h"
 ////#include "../../utils/logger/LoggerManager.h"
 ////#include "../GPDModule.h"
+
+namespace PARTONS {
+
 //
 //// Initialise [class]::classId with a unique name.
 //const unsigned int VinnikovGPDEvolutionModel::classId =
@@ -2973,3 +2976,5 @@
 //                        << " configured with value = " << m_sizeXGrid);
 //    }
 //}
+
+} /* namespace PARTONS */

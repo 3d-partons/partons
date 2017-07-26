@@ -1,18 +1,11 @@
-/**
- * @file GluonPropagator.cpp
- * @author Nabil CHOUIKA (SPhN / CEA Saclay)
- * @date Jan 28, 2016
- * @version 1.0
- *
- * @class GluonPropagator
- */
-
 #include "../../../../include/partons/beans/dse/GluonPropagator.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
 #include <cmath>
 
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
+
+namespace PARTONS {
 
 GluonPropagator::GluonPropagator(const std::string& className, double w,
         double I, double LambdaQCD, int Nf) :
@@ -134,3 +127,5 @@ void GluonPropagator::setNf(int nf) {
 double GluonPropagator::getW() const {
     return m_w;
 }
+
+} /* namespace PARTONS */

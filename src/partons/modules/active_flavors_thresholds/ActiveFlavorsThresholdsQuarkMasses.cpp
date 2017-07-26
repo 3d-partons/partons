@@ -3,6 +3,9 @@
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
 
+namespace PARTONS {
+
+
 const unsigned int ActiveFlavorsThresholdsQuarkMasses::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new ActiveFlavorsThresholdsQuarkMasses("ActiveFlavorsThresholdsQuarkMasses"));
@@ -40,3 +43,5 @@ void ActiveFlavorsThresholdsQuarkMasses::initModule() {
 void ActiveFlavorsThresholdsQuarkMasses::isModuleWellConfigured() {
     ActiveFlavorsThresholdsModule::isModuleWellConfigured();
 }
+
+} /* namespace PARTONS */

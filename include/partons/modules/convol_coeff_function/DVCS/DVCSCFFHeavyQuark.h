@@ -14,6 +14,8 @@
 
 #include "DVCSCFFStandard.h"
 
+namespace PARTONS {
+
 /**
  * @class DVCSCFFHeavyQuark
  *
@@ -82,5 +84,7 @@ private:
 
     void initFunctorsForIntegrations(); ///< Initialize functors.
 };
+
+} /* namespace PARTONS */
 
 #endif /* DVCS_CFF_HEAVY_QUARK_H */

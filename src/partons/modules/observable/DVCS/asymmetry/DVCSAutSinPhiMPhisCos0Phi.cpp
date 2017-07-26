@@ -10,6 +10,9 @@
 #include "../../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../../include/partons/FundamentalPhysicalConstants.h"
 
+namespace PARTONS {
+
+
 const unsigned int DVCSAutSinPhiMPhisCos0Phi::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new DVCSAutSinPhiMPhisCos0Phi("DVCSAutSinPhiMPhisCos0Phi"));
@@ -70,3 +73,5 @@ double DVCSAutSinPhiMPhisCos0Phi::computeFourierObservable() {
     return integrate(m_pFunctionToIntegrateObservable, 0., (2 * Constant::PI),
             emptyParameters) / (2 * Constant::PI);
 }
+
+} /* namespace PARTONS */

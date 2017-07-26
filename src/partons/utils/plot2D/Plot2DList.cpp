@@ -3,6 +3,9 @@
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <vector>
 
+namespace PARTONS {
+
+
 Plot2DList::Plot2DList() :
         List<Plot2D>() {
 }
@@ -19,3 +22,5 @@ std::string Plot2DList::toStringPlotFile(const char &splitChar) const {
 
     return formatter.str();
 }
+
+} /* namespace PARTONS */

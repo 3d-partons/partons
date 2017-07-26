@@ -6,16 +6,19 @@
  * @author: Cédric Mezrag (ANL)
  * @date 17 November 2015
  * @version 0.1
- *
- * @class RadonInverseKinematic
- *
- * @brief
  */
 
 #include <string>
 
 #include "../BaseObject.h"
 
+namespace PARTONS {
+
+/**
+ * @class RadonInverseKinematic
+ *
+ * @brief
+ */
 class RadonInverseKinematic: public BaseObject {
 public:
     RadonInverseKinematic();
@@ -33,5 +36,7 @@ public:
 private:
     int m_id;
 };
+
+} /* namespace PARTONS */
 
 #endif /* RADONINVERSEKINEMATIC_H */

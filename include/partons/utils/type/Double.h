@@ -6,14 +6,17 @@
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 19 January 2016
  * @version 1.0
- *
- * @class Double
- *
- * @brief
  */
 
 #include "BaseType.h"
 
+namespace PARTONS {
+
+/**
+ * @class Double
+ *
+ * @brief
+ */
 class Double: public BaseType {
 public:
     Double();
@@ -25,5 +28,7 @@ public:
 private:
     double m_value;
 };
+
+} /* namespace PARTONS */
 
 #endif /* DOUBLE_H */

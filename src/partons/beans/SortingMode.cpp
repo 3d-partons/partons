@@ -1,5 +1,8 @@
 #include "../../../include/partons/beans/SortingMode.h"
 
+namespace PARTONS {
+
+
 SortingMode::SortingMode() :
         m_type(SortingMode::UNDEFINED) {
 }
@@ -44,3 +47,5 @@ SortingMode::Type SortingMode::getType() const {
 void SortingMode::setType(Type type) {
     m_type = type;
 }
+
+} /* namespace PARTONS */
