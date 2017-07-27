@@ -1,3 +1,5 @@
+#include "../../../../../include/partons/modules/process/DVCS/DVCSProcessModule.h"
+
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/linear_algebra/vector/Vector3D.h>
@@ -9,7 +11,6 @@
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSCFFConstant.h"
-#include "../../../../../include/partons/modules/process/DVCS/DVCSProcessModule.h"
 #include "../../../../../include/partons/modules/scales/ScalesModule.h"
 #include "../../../../../include/partons/modules/xi_converter/XiConverterModule.h"
 #include "../../../../../include/partons/Partons.h"
@@ -19,8 +20,8 @@
 namespace PARTONS {
 
 DVCSProcessModule::DVCSProcessModule(const std::string &className) :
-        ProcessModule(className), m_phaseSpace(0.), m_tmin(0.), m_tmax(0.), m_xBmin(
-                0), m_y(0.), m_epsilon(0.) {
+        ProcessModule(className), m_subProcessType(DVCSSubProcessType::ALL), m_phaseSpace(
+                0.), m_tmin(0.), m_tmax(0.), m_xBmin(0), m_y(0.), m_epsilon(0.) {
     m_channel = ObservableChannel::DVCS;
 }
 
@@ -29,6 +30,7 @@ DVCSProcessModule::~DVCSProcessModule() {
 
 DVCSProcessModule::DVCSProcessModule(const DVCSProcessModule& other) :
         ProcessModule(other) {
+    m_subProcessType = other.m_subProcessType;
     m_phaseSpace = other.m_phaseSpace;
     m_tmin = other.m_tmin;
     m_tmax = other.m_tmax;
@@ -62,6 +64,15 @@ void DVCSProcessModule::initModule(double beamHelicity, double beamCharge,
 }
 
 void DVCSProcessModule::isModuleWellConfigured() {
+
+    // Test subprocess type
+    if (m_subProcessType == DVCSSubProcessType::UNDEFINED) {
+        ElemUtils::Formatter formatter;
+        formatter << "Subprocess type is "
+                << DVCSSubProcessType(m_subProcessType).toString();
+        warn(__func__, formatter.str());
+    }
+
     // Test kinematic domain of xB
     if (m_xB < m_xBmin || m_xB > 1) {
         ElemUtils::Formatter formatter;
@@ -114,8 +125,8 @@ void DVCSProcessModule::isModuleWellConfigured() {
     debug(__func__, "Entered function.");
 }
 
-void DVCSProcessModule::computeConvolCoeffFunction(double xB, double t, double Q2,
-        double E, const List<GPDType> & gpdType) {
+void DVCSProcessModule::computeConvolCoeffFunction(double xB, double t,
+        double Q2, double E, const List<GPDType> & gpdType) {
     if (isPreviousKinematicsDifferent(xB, t, Q2)
             || (BaseObjectRegistry::getInstance()->getObjectClassIdByClassName(
                     m_pConvolCoeffFunctionModule->getClassName())
@@ -160,8 +171,8 @@ void DVCSProcessModule::computeConvolCoeffFunction(double xB, double t, double Q
     isModuleWellConfigured();
 }
 
-double DVCSProcessModule::computeCrossSection(double beamHelicity, double beamCharge,
-        NumA::Vector3D targetPolarization, double phi) {
+double DVCSProcessModule::computeCrossSection(double beamHelicity,
+        double beamCharge, NumA::Vector3D targetPolarization, double phi) {
 
     m_phi = phi;
 
@@ -171,9 +182,25 @@ double DVCSProcessModule::computeCrossSection(double beamHelicity, double beamCh
 
     initModule(beamHelicity, beamCharge, targetPolarization);
 
-    return CrossSectionBH(beamHelicity, beamCharge, targetPolarization)
-            + CrossSectionVCS(beamHelicity, beamCharge, targetPolarization)
-            + CrossSectionInterf(beamHelicity, beamCharge, targetPolarization);
+    double result = 0.;
+
+    if (m_subProcessType == DVCSSubProcessType::ALL
+            || m_subProcessType == DVCSSubProcessType::DVCS) {
+        result += CrossSectionVCS(beamHelicity, beamCharge, targetPolarization);
+    }
+
+    if (m_subProcessType == DVCSSubProcessType::ALL
+            || m_subProcessType == DVCSSubProcessType::BH) {
+        result += CrossSectionBH(beamHelicity, beamCharge, targetPolarization);
+    }
+
+    if (m_subProcessType == DVCSSubProcessType::ALL
+            || m_subProcessType == DVCSSubProcessType::INT) {
+        result += CrossSectionInterf(beamHelicity, beamCharge,
+                targetPolarization);
+    }
+
+    return result;
 }
 
 std::complex<double> DVCSProcessModule::getConvolCoeffFunctionValue(
@@ -193,6 +220,27 @@ std::complex<double> DVCSProcessModule::getConvolCoeffFunctionValue(
 }
 
 void DVCSProcessModule::configure(const ElemUtils::Parameters &parameters) {
+
+    if (parameters.isAvailable(
+            DVCSSubProcessType::PARAMETER_NAME_DVCS_SUB_PROCESS_TYPE)) {
+        // try to set m_qcdOrderType by standard way
+        try {
+            m_subProcessType =
+                    static_cast<DVCSSubProcessType::Type>(parameters.getLastAvailable().toUInt());
+
+        } catch (const std::exception &e) {
+            // if an exception is raised it means that it's a string configuration value
+            m_subProcessType = DVCSSubProcessType(
+                    parameters.getLastAvailable().getString()).getType();
+        }
+
+        info(__func__,
+                ElemUtils::Formatter()
+                        << DVCSSubProcessType::PARAMETER_NAME_DVCS_SUB_PROCESS_TYPE
+                        << " configured with value = "
+                        << DVCSSubProcessType(m_subProcessType).toString());
+    }
+
     ProcessModule::configure(parameters);
 }
 
@@ -217,4 +265,14 @@ void DVCSProcessModule::setConvolCoeffFunctionModule(
 
 }
 
+DVCSSubProcessType::Type DVCSProcessModule::getSubProcessType() const {
+    return m_subProcessType;
+}
+
+void PARTONS::DVCSProcessModule::setSubProcessType(
+        DVCSSubProcessType::Type subProcessType) {
+    m_subProcessType = subProcessType;
+}
+
 } /* namespace PARTONS */
+

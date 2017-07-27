@@ -15,6 +15,7 @@
 #include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
 #include "../../../beans/gpd/GPDType.h"
 #include "../../../beans/List.h"
+#include "../../../beans/process/DVCSSubProcessType.h"
 #include "../ProcessModule.h"
 
 namespace PARTONS {
@@ -54,6 +55,15 @@ public:
 
     virtual void setConvolCoeffFunctionModule(
             ConvolCoeffFunctionModule* pConvolCoeffFunctionModule);
+    /**
+     * Get subprocess type.
+     */
+    DVCSSubProcessType::Type getSubProcessType() const;
+
+    /**
+     * Set subprocess type.
+     */
+    void setSubProcessType(DVCSSubProcessType::Type subProcessType);
 
 protected:
     /**
@@ -75,6 +85,8 @@ protected:
     virtual void initModule(double beamHelicity, double beamCharge,
             NumA::Vector3D targetPolarization);
     virtual void isModuleWellConfigured();
+
+    DVCSSubProcessType::Type m_subProcessType; ///< Switch to select specific subprocess or all of them (default).
 
     double m_phaseSpace; ///< Phase space factor of the cross section.
     double m_tmin; ///< Minimal value of t.
