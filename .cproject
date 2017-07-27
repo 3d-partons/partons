@@ -8,6 +8,7 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/PARTONS"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/PARTONS/Debug"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/PARTONS"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/PARTONS/build"/>
 						<entry flags="RESOLVED" kind="libraryFile" name="PARTONS" srcPrefixMapping="" srcRootPath=""/>
 					</externalSetting>
 				</externalSettings>
@@ -63,8 +64,7 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
-					<fileInfo id="cdt.managedbuild.config.gnu.so.debug.1814402932.1632150736" name="GPD_VGG_kinematics.dat" rcbsApplicability="disable" resourcePath="data/automation/scenario/GPD_VGG_kinematics.dat" toolsToInvoke=""/>
-					<fileInfo id="cdt.managedbuild.config.gnu.so.debug.1814402932.556470095" name="xmlSchema.xsd" rcbsApplicability="disable" resourcePath="data/automation/xmlSchema.xsd" toolsToInvoke=""/>
+					<fileInfo id="cdt.managedbuild.config.gnu.so.debug.1814402932.556470095" name="xmlSchema.xsd" rcbsApplicability="disable" resourcePath="data/xmlSchema.xsd" toolsToInvoke=""/>
 					<sourceEntries>
 						<entry excluding="CMakeFiles" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
