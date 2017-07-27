@@ -13,7 +13,7 @@
 #include <string>
 #include <vector>
 
-#include "DVCSModule.h"
+#include "DVCSProcessModule.h"
 
 namespace PARTONS {
 
@@ -22,7 +22,7 @@ namespace PARTONS {
  *
  * Module for the DVCS process using the unpublished Guichon-Vanderhagen set of formulas.
  */
-class DVCSProcessGV08: public DVCSModule {
+class DVCSProcessGV08: public DVCSProcessModule {
 public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 

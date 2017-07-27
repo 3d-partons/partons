@@ -19,7 +19,7 @@ const unsigned int DVCSProcessGV08::classId =
 
 //TODO add missing members initialization
 DVCSProcessGV08::DVCSProcessGV08(const std::string &className) :
-        DVCSModule(className), m_qCM(NumA::Vector4D(0., 0., 0., 0.)), m_pCM(
+        DVCSProcessModule(className), m_qCM(NumA::Vector4D(0., 0., 0., 0.)), m_pCM(
                 NumA::Vector4D(0., 0., 0., 0.)), m_qpCM(
                 NumA::Vector4D(0., 0., 0., 0.)), m_ppCM(
                 NumA::Vector4D(0., 0., 0., 0.)), m_phiGV(0.) {
@@ -32,7 +32,7 @@ DVCSProcessGV08::~DVCSProcessGV08() {
 
 //TODO add missing members initialization
 DVCSProcessGV08::DVCSProcessGV08(const DVCSProcessGV08& other) :
-        DVCSModule(other) {
+        DVCSProcessModule(other) {
     m_qCM = other.m_qCM;
     m_pCM = other.m_pCM;
     m_qpCM = other.m_qpCM;
@@ -46,7 +46,7 @@ DVCSProcessGV08* DVCSProcessGV08::clone() const {
 void DVCSProcessGV08::initModule() {
 
     //init mother class
-    DVCSModule::initModule();
+    DVCSProcessModule::initModule();
 
     // vectors reinitialized to avoid problems with fixed indices
     m_Q = sqrt(m_Q2);
@@ -190,7 +190,7 @@ void DVCSProcessGV08::initModule(double beamHelicity, double beamCharge,
         NumA::Vector3D targetPolarization) {
 
     //init mother class
-    DVCSModule::initModule(beamHelicity, beamCharge, targetPolarization);
+    DVCSProcessModule::initModule(beamHelicity, beamCharge, targetPolarization);
 
     // define the GV angle
     m_phiGV = -m_phi;
@@ -199,7 +199,7 @@ void DVCSProcessGV08::initModule(double beamHelicity, double beamCharge,
 void DVCSProcessGV08::isModuleWellConfigured() {
 
     //check mother class
-    DVCSModule::isModuleWellConfigured();
+    DVCSProcessModule::isModuleWellConfigured();
 
     // Commented out because xBmin is implemented now in the parent class DVCSModule and xBmax is wrong anyway (it should be 1).
 //    if (!(m_xBMin < m_xB && m_xB < m_xBMax)) {

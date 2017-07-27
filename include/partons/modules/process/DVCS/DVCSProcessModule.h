@@ -1,8 +1,8 @@
-#ifndef DVCS_MODULE_H
-#define DVCS_MODULE_H
+#ifndef DVCS_PROCESS_MODULE_H
+#define DVCS_PROCESS_MODULE_H
 
 /**
- * @file DVCSModule.h
+ * @file DVCSProcessModule.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date November 19, 2014
  * @version 1.0
@@ -20,14 +20,14 @@
 namespace PARTONS {
 
 /**
- * @class DVCSModule
+ * @class DVCSProcessModule
  *
  * @brief Abstract class for computing the **differential** cross section of
  * the photon electroproduction process (also called DVCS ; Deeply Virtual Compton Scattering).
  *
  * The cross-section is five-fold differential with respect to the variables: @f$ x_B @f$, @f$ Q^2 @f$, @f$ t @f$ and the two angles.
  */
-class DVCSModule: public ProcessModule {
+class DVCSProcessModule: public ProcessModule {
 public:
     /**
      * Constructor.
@@ -35,11 +35,11 @@ public:
      *
      * @param className name of child class.
      */
-    DVCSModule(const std::string &className);
+    DVCSProcessModule(const std::string &className);
     /**
      * Default destructor.
      */
-    virtual ~DVCSModule();
+    virtual ~DVCSProcessModule();
 
     virtual void resolveObjectDependencies();
 
@@ -63,7 +63,7 @@ protected:
      *
      * @param other
      */
-    DVCSModule(const DVCSModule& other);
+    DVCSProcessModule(const DVCSProcessModule& other);
 
     virtual void initModule();
     /**
@@ -128,4 +128,4 @@ protected:
 
 } /* namespace PARTONS */
 
-#endif /* DVCS_MODULE_H */
+#endif /* DVCS_PROCESS_MODULE_H */

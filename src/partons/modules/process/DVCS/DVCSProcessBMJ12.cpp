@@ -17,7 +17,7 @@ const unsigned int DVCSProcessBMJ12::classId =
 /*--------------------------------------- Constructors ---------------------------------*/
 
 DVCSProcessBMJ12::DVCSProcessBMJ12(const std::string &className) :
-        DVCSModule(className) {
+        DVCSProcessModule(className) {
     m_phi1BMK = 0.;
     m_phi2BMK = 0.;
     m_PhiBMK = 0.;
@@ -62,7 +62,7 @@ DVCSProcessBMJ12::~DVCSProcessBMJ12() {
 }
 
 DVCSProcessBMJ12::DVCSProcessBMJ12(const DVCSProcessBMJ12& other) :
-        DVCSModule(other) {
+        DVCSProcessModule(other) {
     m_phi1BMK = other.m_phi1BMK;
     m_phi2BMK = other.m_phi2BMK;
     m_PhiBMK = other.m_PhiBMK;
@@ -104,7 +104,7 @@ DVCSProcessBMJ12* DVCSProcessBMJ12::clone() const {
 void DVCSProcessBMJ12::initModule() {
 
     //init mother class
-    DVCSModule::initModule();
+    DVCSProcessModule::initModule();
 
     m_xB2 = m_xB * m_xB;
     m_Q[0] = sqrt(m_Q2);
@@ -159,7 +159,7 @@ void DVCSProcessBMJ12::initModule(double beamHelicity, double beamCharge,
         NumA::Vector3D targetPolarization) {
 
     //init mother class
-    DVCSModule::initModule(beamHelicity, beamCharge, targetPolarization);
+    DVCSProcessModule::initModule(beamHelicity, beamCharge, targetPolarization);
 
     // define the angles and Lambda
     defineAngles(targetPolarization);
@@ -186,7 +186,7 @@ void DVCSProcessBMJ12::initModule(double beamHelicity, double beamCharge,
 void DVCSProcessBMJ12::isModuleWellConfigured() {
 
     //check mother class
-    DVCSModule::isModuleWellConfigured();
+    DVCSProcessModule::isModuleWellConfigured();
 }
 
 void DVCSProcessBMJ12::defineAngles(const NumA::Vector3D &targetPolarization) {

@@ -19,7 +19,7 @@ class ActiveFlavorsThresholdsModule;
 class BaseObjectFactory;
 class DoubleDistributionModule;
 class DVCSConvolCoeffFunctionModule;
-class DVCSModule;
+class DVCSProcessModule;
 class GapEquationSolverModule;
 class GPDBorderFunctionModule;
 class GPDEvolutionModule;
@@ -171,17 +171,17 @@ public:
             const std::string &className);
 
     /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a DVCSModule.
+     * Specialization of ModuleObjectFactory::newModuleObject into a DVCSProcessModule.
      * @param classId Unique identifier of last child class.
-     * @return DVCSModule pointer.
+     * @return DVCSProcessModule pointer.
      */
-    DVCSModule* newDVCSModule(unsigned int classId);
+    DVCSProcessModule* newDVCSProcessModule(unsigned int classId);
     /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a DVCSModule.
+     * Specialization of ModuleObjectFactory::newModuleObject into a DVCSProcessModule.
      * @param className Name of last child class.
-     * @return DVCSModule pointer.
+     * @return DVCSProcessModule pointer.
      */
-    DVCSModule* newDVCSModule(const std::string & className);
+    DVCSProcessModule* newDVCSProcessModule(const std::string & className);
 
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a RunningAlphaStrongModule.

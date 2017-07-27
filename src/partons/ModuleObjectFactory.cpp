@@ -13,7 +13,7 @@
 #include "../../include/partons/modules/gpd_subtraction_constant/GPDSubtractionConstantModule.h"
 #include "../../include/partons/modules/observable/Observable.h"
 #include "../../include/partons/modules/overlap/IncompleteGPDModule.h"
-#include "../../include/partons/modules/process/DVCS/DVCSModule.h"
+#include "../../include/partons/modules/process/DVCS/DVCSProcessModule.h"
 #include "../../include/partons/modules/radon_inverse/RadonInverseModule.h"
 #include "../../include/partons/modules/running_alpha_strong/RunningAlphaStrongModule.h"
 #include "../../include/partons/modules/scales/ScalesModule.h"
@@ -209,13 +209,13 @@ ProcessModule* ModuleObjectFactory::newProcessModule(
     return static_cast<ProcessModule*>(newModuleObject(className));
 }
 
-DVCSModule* ModuleObjectFactory::newDVCSModule(unsigned int classId) {
-    return static_cast<DVCSModule*>(newModuleObject(classId));
+DVCSProcessModule* ModuleObjectFactory::newDVCSProcessModule(unsigned int classId) {
+    return static_cast<DVCSProcessModule*>(newModuleObject(classId));
 }
 
-DVCSModule* ModuleObjectFactory::newDVCSModule(
+DVCSProcessModule* ModuleObjectFactory::newDVCSProcessModule(
         const std::string& className) {
-    return static_cast<DVCSModule*>(newModuleObject(className));
+    return static_cast<DVCSProcessModule*>(newModuleObject(className));
 }
 
 RunningAlphaStrongModule* ModuleObjectFactory::newRunningAlphaStrongModule(

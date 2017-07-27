@@ -15,7 +15,7 @@
 #include <complex>
 #include <string>
 
-#include "DVCSModule.h"
+#include "DVCSProcessModule.h"
 
 namespace PARTONS {
 
@@ -32,7 +32,7 @@ namespace PARTONS {
  *
  * Module based on the original code received from M. Guidal as a private communication.
  */
-class DVCSProcessVGG99: public DVCSModule {
+class DVCSProcessVGG99: public DVCSProcessModule {
 
 public:
 

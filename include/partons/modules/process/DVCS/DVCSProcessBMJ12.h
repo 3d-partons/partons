@@ -13,7 +13,7 @@
 #include <vector>
 
 #include "../../../beans/gpd/GPDType.h"
-#include "DVCSModule.h"
+#include "DVCSProcessModule.h"
 
 namespace PARTONS {
 
@@ -26,7 +26,7 @@ namespace PARTONS {
  * - arxiv:hep-ph/0112108 @cite Belitsky2001ns for the BH amplitude ;
  * - arxiv:1212.6674 @cite Belitsky2012ch for the DVCS amplitude and interference.
  */
-class DVCSProcessBMJ12: public DVCSModule {
+class DVCSProcessBMJ12: public DVCSProcessModule {
 public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 

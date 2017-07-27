@@ -15,7 +15,7 @@ const unsigned int DVCSProcessVGG99::classId =
                 new DVCSProcessVGG99("DVCSProcessVGG99"));
 
 DVCSProcessVGG99::DVCSProcessVGG99(const std::string &className) :
-        DVCSModule(className) {
+        DVCSProcessModule(className) {
 
     m_nu = 0.;
     m_y = 0.;
@@ -59,7 +59,7 @@ DVCSProcessVGG99::DVCSProcessVGG99(const std::string &className) :
 }
 
 DVCSProcessVGG99::DVCSProcessVGG99(const DVCSProcessVGG99& other) :
-        DVCSModule(other) {
+        DVCSProcessModule(other) {
 
     m_nu = other.m_nu;
     m_y = other.m_y;
@@ -110,16 +110,16 @@ DVCSProcessVGG99::~DVCSProcessVGG99() {
 }
 
 void DVCSProcessVGG99::initModule() {
-    DVCSModule::initModule();
+    DVCSProcessModule::initModule();
 }
 
 void DVCSProcessVGG99::initModule(double beamHelicity, double beamCharge,
         NumA::Vector3D targetPolarization) {
-    DVCSModule::initModule(beamHelicity, beamCharge, targetPolarization);
+    DVCSProcessModule::initModule(beamHelicity, beamCharge, targetPolarization);
 }
 
 void DVCSProcessVGG99::isModuleWellConfigured() {
-    DVCSModule::isModuleWellConfigured();
+    DVCSProcessModule::isModuleWellConfigured();
 }
 
 double DVCSProcessVGG99::CrossSectionBH(double beamHelicity, double beamCharge,

@@ -1,5 +1,3 @@
-#include "../../../../../include/partons/modules/process/DVCS/DVCSModule.h"
-
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/linear_algebra/vector/Vector3D.h>
@@ -11,6 +9,7 @@
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSCFFConstant.h"
+#include "../../../../../include/partons/modules/process/DVCS/DVCSProcessModule.h"
 #include "../../../../../include/partons/modules/scales/ScalesModule.h"
 #include "../../../../../include/partons/modules/xi_converter/XiConverterModule.h"
 #include "../../../../../include/partons/Partons.h"
@@ -19,16 +18,16 @@
 
 namespace PARTONS {
 
-DVCSModule::DVCSModule(const std::string &className) :
+DVCSProcessModule::DVCSProcessModule(const std::string &className) :
         ProcessModule(className), m_phaseSpace(0.), m_tmin(0.), m_tmax(0.), m_xBmin(
                 0), m_y(0.), m_epsilon(0.) {
     m_channel = ObservableChannel::DVCS;
 }
 
-DVCSModule::~DVCSModule() {
+DVCSProcessModule::~DVCSProcessModule() {
 }
 
-DVCSModule::DVCSModule(const DVCSModule& other) :
+DVCSProcessModule::DVCSProcessModule(const DVCSProcessModule& other) :
         ProcessModule(other) {
     m_phaseSpace = other.m_phaseSpace;
     m_tmin = other.m_tmin;
@@ -40,10 +39,10 @@ DVCSModule::DVCSModule(const DVCSModule& other) :
     m_dvcsConvolCoeffFunctionResult = other.m_dvcsConvolCoeffFunctionResult;
 }
 
-void DVCSModule::resolveObjectDependencies() {
+void DVCSProcessModule::resolveObjectDependencies() {
 }
 
-void DVCSModule::initModule() {
+void DVCSProcessModule::initModule() {
     m_epsilon = 2 * m_xB * Constant::PROTON_MASS / sqrt(m_Q2);
     m_y = m_Q2 / (2 * m_xB * Constant::PROTON_MASS * m_E);
     double eps2 = m_epsilon * m_epsilon;
@@ -56,13 +55,13 @@ void DVCSModule::initModule() {
     debug(__func__, "Entered function.");
 }
 
-void DVCSModule::initModule(double beamHelicity, double beamCharge,
+void DVCSProcessModule::initModule(double beamHelicity, double beamCharge,
         NumA::Vector3D targetPolarization) {
 
     debug(__func__, "Entered function.");
 }
 
-void DVCSModule::isModuleWellConfigured() {
+void DVCSProcessModule::isModuleWellConfigured() {
     // Test kinematic domain of xB
     if (m_xB < m_xBmin || m_xB > 1) {
         ElemUtils::Formatter formatter;
@@ -115,7 +114,7 @@ void DVCSModule::isModuleWellConfigured() {
     debug(__func__, "Entered function.");
 }
 
-void DVCSModule::computeConvolCoeffFunction(double xB, double t, double Q2,
+void DVCSProcessModule::computeConvolCoeffFunction(double xB, double t, double Q2,
         double E, const List<GPDType> & gpdType) {
     if (isPreviousKinematicsDifferent(xB, t, Q2)
             || (BaseObjectRegistry::getInstance()->getObjectClassIdByClassName(
@@ -161,7 +160,7 @@ void DVCSModule::computeConvolCoeffFunction(double xB, double t, double Q2,
     isModuleWellConfigured();
 }
 
-double DVCSModule::computeCrossSection(double beamHelicity, double beamCharge,
+double DVCSProcessModule::computeCrossSection(double beamHelicity, double beamCharge,
         NumA::Vector3D targetPolarization, double phi) {
 
     m_phi = phi;
@@ -177,7 +176,7 @@ double DVCSModule::computeCrossSection(double beamHelicity, double beamCharge,
             + CrossSectionInterf(beamHelicity, beamCharge, targetPolarization);
 }
 
-std::complex<double> DVCSModule::getConvolCoeffFunctionValue(
+std::complex<double> DVCSProcessModule::getConvolCoeffFunctionValue(
         GPDType::Type gpdType) {
     std::complex<double> result = std::complex<double>(0., 0.);
 
@@ -193,11 +192,11 @@ std::complex<double> DVCSModule::getConvolCoeffFunctionValue(
     return result;
 }
 
-void DVCSModule::configure(const ElemUtils::Parameters &parameters) {
+void DVCSProcessModule::configure(const ElemUtils::Parameters &parameters) {
     ProcessModule::configure(parameters);
 }
 
-void DVCSModule::setConvolCoeffFunctionModule(
+void DVCSProcessModule::setConvolCoeffFunctionModule(
         ConvolCoeffFunctionModule* pConvolCoeffFunctionModule) {
     if (pConvolCoeffFunctionModule) {
         if (pConvolCoeffFunctionModule->getChannel()
