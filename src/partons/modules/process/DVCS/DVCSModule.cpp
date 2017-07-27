@@ -11,15 +11,13 @@
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSCFFConstant.h"
-#include "../../../../../include/partons/modules/scales/ScalesQ2Multiplier.h"
-#include "../../../../../include/partons/modules/xi_converter/XiConverterXBToXi.h"
-#include "../../../../../include/partons/ModuleObjectFactory.h"
+#include "../../../../../include/partons/modules/scales/ScalesModule.h"
+#include "../../../../../include/partons/modules/xi_converter/XiConverterModule.h"
 #include "../../../../../include/partons/Partons.h"
 #include "../../../../../include/partons/services/ConvolCoeffFunctionService.h"
 #include "../../../../../include/partons/ServiceObjectRegistry.h"
 
 namespace PARTONS {
-
 
 DVCSModule::DVCSModule(const std::string &className) :
         ProcessModule(className), m_phaseSpace(0.), m_tmin(0.), m_tmax(0.), m_xBmin(
@@ -28,7 +26,6 @@ DVCSModule::DVCSModule(const std::string &className) :
 }
 
 DVCSModule::~DVCSModule() {
-
 }
 
 DVCSModule::DVCSModule(const DVCSModule& other) :
@@ -44,13 +41,6 @@ DVCSModule::DVCSModule(const DVCSModule& other) :
 }
 
 void DVCSModule::resolveObjectDependencies() {
-    m_pScaleModule =
-            Partons::getInstance()->getModuleObjectFactory()->newScalesModule(
-                    ScalesQ2Multiplier::classId);
-
-    m_pXiConverterModule =
-            Partons::getInstance()->getModuleObjectFactory()->newXiConverterModule(
-                    XiConverterXBToXi::classId);
 }
 
 void DVCSModule::initModule() {

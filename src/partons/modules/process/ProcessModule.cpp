@@ -12,7 +12,6 @@
 
 namespace PARTONS {
 
-
 const std::string ProcessModule::PROCESS_MODULE_CLASS_NAME = "ProcessModule";
 
 ProcessModule::ProcessModule(const std::string &className) :
@@ -115,12 +114,38 @@ void ProcessModule::setConvolCoeffFunctionModule(
 }
 
 void ProcessModule::setScaleModule(ScalesModule* pScaleModule) {
+
+    m_pModuleObjectFactory->updateModulePointerReference(m_pScaleModule,
+            pScaleModule);
     m_pScaleModule = pScaleModule;
+
+    if (m_pScaleModule != 0) {
+        info(__func__,
+                ElemUtils::Formatter() << "ScalesModule is set to : "
+                        << pScaleModule->getClassName());
+    } else {
+        info(__func__, "ScalesModule is set to : 0");
+    }
+
+    resetPreviousKinematics();
 }
 
 void ProcessModule::setXiConverterModule(
         XiConverterModule* pXiConverterModule) {
+
+    m_pModuleObjectFactory->updateModulePointerReference(m_pXiConverterModule,
+            pXiConverterModule);
     m_pXiConverterModule = pXiConverterModule;
+
+    if (m_pXiConverterModule != 0) {
+        info(__func__,
+                ElemUtils::Formatter() << "XiConverterModule is set to : "
+                        << pXiConverterModule->getClassName());
+    } else {
+        info(__func__, "XiConverterModule is set to : 0");
+    }
+
+    resetPreviousKinematics();
 }
 
 bool ProcessModule::isCCFModuleDependent() const {
