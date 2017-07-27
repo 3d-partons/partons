@@ -11,6 +11,8 @@
 #include "../dao/PartonDistributionDao.h"
 #include "../dao/QuarkDistributionDao.h"
 
+namespace PARTONS {
+
 class PartonDistribution;
 
 /**
@@ -64,5 +66,7 @@ private:
      */
     QuarkDistributionDao m_quarkDistributionDao;
 };
+
+} /* namespace PARTONS */
 
 #endif /* PARTON_DISTRIBUTION_DAO_SERVICE */

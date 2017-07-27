@@ -1,5 +1,8 @@
 #include "../../include/partons/ResourceManager.h"
 
+namespace PARTONS {
+
+
 ResourceManager* ResourceManager::m_pInstance = 0;
 
 ResourceManager* ResourceManager::getInstance() {
@@ -105,3 +108,5 @@ Scenario* ResourceManager::registerScenario(const int indexId,
 EnvironmentConfiguration* ResourceManager::getEnvironmentConfiguration(
         const std::string& hashSum) const {
 }
+
+} /* namespace PARTONS */

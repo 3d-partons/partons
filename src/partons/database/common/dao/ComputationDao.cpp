@@ -13,6 +13,9 @@
 #include "../../../../../include/partons/database/Database.h"
 #include "../../../../../include/partons/database/DatabaseManager.h"
 
+namespace PARTONS {
+
+
 ComputationDao::ComputationDao() :
         BaseObject("ComputationDao") {
 }
@@ -160,3 +163,5 @@ bool ComputationDao::isAvailable(const int computationId) const {
 
     return result;
 }
+
+} /* namespace PARTONS */

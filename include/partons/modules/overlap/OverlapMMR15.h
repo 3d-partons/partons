@@ -1,5 +1,5 @@
 /**
- * @file OverlapMMR2015.h
+ * @file OverlapMMR15.h
  * @author Nabil Chouika (Irfu/SPhN, CEA Saclay)
  * @date 5 oct. 2016
  * @version 1.0
@@ -8,15 +8,17 @@
 #ifndef OVERLAPMMR2015_H_
 #define OVERLAPMMR2015_H_
 
-#include <string>
-#include <vector>
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <NumA/linear_algebra/vector/VectorD.h>
+#include <string>
+#include <vector>
 
 #include "IncompleteGPDModule.h"
 
+namespace PARTONS {
+
 /**
- * @class OverlapMMR2015
+ * @class OverlapMMR15
  * @brief Pion GPD from Cédric's thesis [arXiv:1602.07722]
  */
 
@@ -39,7 +41,7 @@ public:
 
     virtual void configure(const ElemUtils::Parameters &parameters);
 
-    virtual std::string toString();
+    virtual std::string toString() const;
 
     virtual PartonDistribution computeH(); ///< Compute GPD H
 
@@ -64,5 +66,7 @@ protected:
     virtual void initModule();
 
 };
+
+} /* namespace PARTONS */
 
 #endif /* OVERLAPMMR2015_H_ */

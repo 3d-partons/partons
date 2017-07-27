@@ -1,5 +1,8 @@
 #include "../../../../include/partons/services/automation/XMLParserI.h"
 
+namespace PARTONS {
+
+
 const std::string XMLParserI::SCENARIO_NODE_NAME = "scenario";
 const std::string XMLParserI::TASK_NODE_NAME = "task";
 const std::string XMLParserI::KINEMATICS_NODE_NAME = "kinematics";
@@ -24,3 +27,5 @@ XMLParserI::XMLParserI(const std::string &className) :
 XMLParserI::~XMLParserI() {
 }
 
+
+} /* namespace PARTONS */

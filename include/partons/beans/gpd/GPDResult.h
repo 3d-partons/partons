@@ -20,6 +20,8 @@
 #include "GPDKinematic.h"
 #include "GPDType.h"
 
+namespace PARTONS {
+
 /**
  * @class GPDResult
  *
@@ -213,5 +215,7 @@ private:
      */
     GPDKinematic m_kinematic;
 };
+
+} /* namespace PARTONS */
 
 #endif /* GPD_RESULT_H */

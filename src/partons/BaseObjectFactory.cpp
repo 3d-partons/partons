@@ -5,6 +5,9 @@
 
 #include "../../include/partons/BaseObjectRegistry.h"
 
+namespace PARTONS {
+
+
 BaseObjectFactory::BaseObjectFactory(BaseObjectRegistry* pBaseObjectRegistry) :
         m_pBaseObjectRegistry(pBaseObjectRegistry) {
 }
@@ -43,3 +46,5 @@ void BaseObjectFactory::removeFromStore(unsigned int baseObjectUniqueId) {
     }
 } // mutex.unlock()
 
+
+} /* namespace PARTONS */

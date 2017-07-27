@@ -6,6 +6,9 @@
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <stddef.h>
 
+namespace PARTONS {
+
+
 KinematicUtils::KinematicUtils() :
         BaseObject("KinematicUtils") {
 }
@@ -172,3 +175,5 @@ void KinematicUtils::checkEmptyInputFile(const std::string &funcName,
                         << filePath);
     }
 }
+
+} /* namespace PARTONS */

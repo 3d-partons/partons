@@ -11,6 +11,9 @@
 #include "../../../../include/partons/beans/dse/QuarkPropagator.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 
+namespace PARTONS {
+
+
 // Initialise [class]::classId with a unique name.
 const unsigned int GapEqSeparableSolver::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
@@ -1171,3 +1174,5 @@ NumA::VectorD GapEqSeparableSolver::G_func(const NumA::VectorD& X) {
 NumA::MatrixD GapEqSeparableSolver::J_G_func(const NumA::VectorD& X) {
     return NumA::MatrixD();
 }
+
+} /* namespace PARTONS */

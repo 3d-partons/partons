@@ -19,6 +19,8 @@ class Packet;
 class Parameters;
 } /* namespace ElemUtils */
 
+namespace PARTONS {
+
 /**
  * @class GPDKinematic
  *
@@ -276,5 +278,7 @@ ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
  */
 ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
         GPDKinematic& kinematic);
+
+} /* namespace PARTONS */
 
 #endif /* GPD_KINEMATIC_H */

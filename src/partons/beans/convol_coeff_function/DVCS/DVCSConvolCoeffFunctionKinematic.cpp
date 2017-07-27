@@ -10,6 +10,9 @@
 #include "../../../../../include/partons/services/hash_sum/CryptographicHashService.h"
 #include "../../../../../include/partons/ServiceObjectRegistry.h"
 
+namespace PARTONS {
+
+
 DVCSConvolCoeffFunctionKinematic::DVCSConvolCoeffFunctionKinematic() :
         Kinematic("DVCSConvolCoeffFunctionKinematic"), m_binId(0), m_xi(0.), m_t(
                 0.), m_Q2(0.), m_MuF2(0.), m_MuR2(0.) {
@@ -122,18 +125,6 @@ void DVCSConvolCoeffFunctionKinematic::unserialize(ElemUtils::Packet& packet) {
     packet >> m_MuR2;
 }
 
-ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
-        DVCSConvolCoeffFunctionKinematic& kinematic) {
-    kinematic.serialize(packet);
-    return packet;
-}
-ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
-        DVCSConvolCoeffFunctionKinematic& kinematic) {
-
-    kinematic.unserialize(packet);
-    return packet;
-}
-
 void DVCSConvolCoeffFunctionKinematic::setBinId(unsigned int binId) {
     m_binId = binId;
 }
@@ -162,3 +153,17 @@ void DVCSConvolCoeffFunctionKinematic::setXi(double xi) {
     m_xi = xi;
     updateHashSum();
 }
+
+ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
+        DVCSConvolCoeffFunctionKinematic& kinematic) {
+    kinematic.serialize(packet);
+    return packet;
+}
+ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
+        DVCSConvolCoeffFunctionKinematic& kinematic) {
+
+    kinematic.unserialize(packet);
+    return packet;
+}
+
+} /* namespace PARTONS */

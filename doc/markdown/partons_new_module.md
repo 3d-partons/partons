@@ -4,7 +4,7 @@
 
 # Introduction {#newmodule_intro}
 
-PARTONS was conceived with the idea that anyone can plug his own models at any level of the computation chain. And this should be achieved without modifying the PARTONS library - one just need to write a class (in his own project) that inherits from an abstract class of a given type and implement virtual functions. This wiki page gives some hints on the creation of such new modules. In particular, it provides templates that illustrate structures to be understood and filled with the code by the developers.  
+%PARTONS was conceived with the idea that anyone can plug his own models at any level of the computation chain. And this should be achieved without modifying the %PARTONS library - one just need to write a class (in his own project) that inherits from an abstract class of a given type and implement virtual functions. This wiki page gives some hints on the creation of such new modules. In particular, it provides templates that illustrate structures to be understood and filled with the code by the developers.  
 
 <hr>
 
@@ -12,11 +12,11 @@ PARTONS was conceived with the idea that anyone can plug his own models at any l
 
 To better understand the following remarks, please take a look in parallel at the examples listed in the following [section](@ref newmodule_templates).
 
-* Before any attempt of code writing, read this [tutorial](@ref usage) explaining the usage of PARTONS via C++ interface.
+* Before any attempt of code writing, read this [tutorial](@ref usage) explaining the usage of %PARTONS via C++ interface.
 
-* The child class that will represent your own module can be written in your external program, even though it inherits from a PARTONS library abstract class. This [tutorial](@ref external_program) deals with external programs and should be read before.
+* The child class that will represent your own module can be written in your external program, even though it inherits from a %PARTONS library abstract class. This [tutorial](@ref external_program) deals with external programs and should be read before.
 
-* PARTONS uses the registry/factory mechanism. This imposes several requirements to be fulfilled by a module:
+* %PARTONS uses the registry/factory mechanism. This imposes several requirements to be fulfilled by a module:
 1. It must have `static const unsigned int classId` member initialized by `BaseObjectRegistry::registerBaseObject()` and a default constructor taking the module name, so it can be correctly registered in Registry ;
 2. It must have a copy constructor and the corresponding function `clone()` implemented, so it can be correctly issued by the Factory ;
 3. If it calls other modules registered in the Registry, they must be initialized in `resolveObjectDependencies()` and not in the constructor. 
@@ -98,9 +98,9 @@ double max = 1.;
 double integrationResult = integrate(m_pFunctorForIntegrationFunction, min, max, parameters);
 ~~~~~~~~~~~~~
 
-* Recommendation for your code: Module naming should be unambiguous and as straightforward as possible. However, it should be also informative, as the names will be used by the users to distinguish between many modules of a given type. For all modules except the observables, we are using the following naming scheme: `ModuleType` + `UniqueName`, e.g. `DVCSProcessBMJ12`, `DVCSCFFHeavyQuark`, `GPDVinnikov06`. For observables we have: `ProcessType` + `ObservableName` + `BeamCharge` (+ `FourierModulation`), e.g. `DVCSAULMinus`, `DVCSAULMinusSin2Phi`. If you intend to extend PARTONS with your new model and not just use it in your personal project, this code recommendation becomes an obligation.
+* Recommendation for your code: Module naming should be unambiguous and as straightforward as possible. However, it should be also informative, as the names will be used by the users to distinguish between many modules of a given type. For all modules except the observables, we are using the following naming scheme: `ModuleType` + `UniqueName`, e.g. `DVCSProcessBMJ12`, `DVCSCFFHeavyQuark`, `GPDVinnikov06`. For observables we have: `ProcessType` + `ObservableName` + `BeamCharge` (+ `FourierModulation`), e.g. `DVCSAULMinus`, `DVCSAULMinusSin2Phi`. If you intend to extend %PARTONS with your new model and not just use it in your personal project, this code recommendation becomes an obligation.
 
-* Do not forget to comment your code! Likewise, this becomes an obligation if you are working directly on the PARTONS library. We are using Doxygen to provide documentation.
+* Do not forget to comment your code! Likewise, this becomes an obligation if you are working directly on the %PARTONS library. We are using Doxygen to provide documentation.
 
 <hr>
 
@@ -115,7 +115,7 @@ double integrationResult = integrate(m_pFunctorForIntegrationFunction, min, max,
 
 # How to use new module {#newmodule_usage}
 
-After a proper building of your PARTONS-related project, you may use a new module as any other in PARTONS.
+After a proper building of your %PARTONS-related project, you may use a new module as any other in %PARTONS.
 
 If we consider for example the first example of GPD module:
 

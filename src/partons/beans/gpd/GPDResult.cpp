@@ -4,6 +4,9 @@
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <utility>
 
+namespace PARTONS {
+
+
 const std::string GPDResult::GPD_RESULT_DB_TABLE_NAME = "gpd_result";
 
 GPDResult::GPDResult() :
@@ -162,3 +165,5 @@ size_t GPDResult::size() const {
 bool GPDResult::operator <(const GPDResult& other) const {
     return (m_kinematic < other.m_kinematic);
 }
+
+} /* namespace PARTONS */

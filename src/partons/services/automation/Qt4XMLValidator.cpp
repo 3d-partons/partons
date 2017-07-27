@@ -10,6 +10,9 @@
 
 #include "../../../../include/partons/services/automation/Qt4MessageHandler.h"
 
+namespace PARTONS {
+
+
 Qt4XMLValidator::Qt4XMLValidator() :
         XMLValidatorI("Qt4XMLValidator") {
 }
@@ -73,3 +76,5 @@ void Qt4XMLValidator::myMessageOutput(QtMsgType type, const char* msg) {
         break;
     }
 }
+
+} /* namespace PARTONS */

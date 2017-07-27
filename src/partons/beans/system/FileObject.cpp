@@ -5,6 +5,9 @@
 #include "../../../../include/partons/Partons.h"
 #include "../../../../include/partons/ServiceObjectRegistry.h"
 
+namespace PARTONS {
+
+
 FileObject::FileObject() :
         BaseObject("FileObject"), m_pCryptographicHashService(0), m_file(
                 ElemUtils::StringUtils::EMPTY), m_hashSum(
@@ -54,3 +57,5 @@ const std::string& FileObject::getHashSum() const {
 void FileObject::setHashSum(const std::string& hashSum) {
     m_hashSum = hashSum;
 }
+
+} /* namespace PARTONS */

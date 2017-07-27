@@ -14,6 +14,8 @@
 #include "math/MDArray.h"
 #include "PartonContent.h"
 
+namespace PARTONS {
+
 /**
  * @class MSTWPDF
  *
@@ -180,5 +182,7 @@ private:
     double polderivative3(double x1, double x2, double x3, double y1, double y2,
             double y3);
 };
+
+} /* namespace PARTONS */
 
 #endif /* MSTWPDF_H */

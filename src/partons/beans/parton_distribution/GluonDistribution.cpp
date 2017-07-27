@@ -5,6 +5,9 @@
 #include "../../../../include/partons/utils/compare/CompareUtils.h"
 #include "../../../../include/partons/utils/compare/ComparisonData.h"
 
+namespace PARTONS {
+
+
 const std::string GluonDistribution::GLUON_DISTRIBUTION_DB_COLUMN_NAME =
         "gluon_distribution";
 
@@ -66,3 +69,5 @@ void GluonDistribution::compare(ComparisonReport &rootComparisonReport,
 
     rootComparisonReport.addComparisonData(gluon_value_comparisonData);
 }
+
+} /* namespace PARTONS */

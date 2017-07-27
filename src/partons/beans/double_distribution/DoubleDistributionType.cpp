@@ -1,5 +1,8 @@
 #include "../../../../include/partons/beans/double_distribution/DoubleDistributionType.h"
 
+namespace PARTONS {
+
+
 DoubleDistributionType::DoubleDistributionType() :
         m_type(DoubleDistributionType::UNDEFINED) {
 }
@@ -16,7 +19,7 @@ DoubleDistributionType::operator DoubleDistributionType::Type() const {
     return m_type;
 }
 
-std::string DoubleDistributionType::toString() {
+std::string DoubleDistributionType::toString() const {
 
     switch (m_type) {
     case ALL:
@@ -41,3 +44,5 @@ std::string DoubleDistributionType::toString() {
         return "UNDEFINED";
     }
 }
+
+} /* namespace PARTONS */

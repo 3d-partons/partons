@@ -16,6 +16,8 @@
 #include "common/service/EnvironmentConfigurationDaoService.h"
 #include "common/service/ScenarioDaoService.h"
 
+namespace PARTONS {
+
 class Plot2DList;
 class ResultInfo;
 
@@ -122,5 +124,7 @@ private:
     std::pair<std::string, int> m_previousScenarioId; ///< Unique id of the last processed scenario with corresponding hash sum.
     std::pair<std::string, int> m_previousEnvConfId; ///<Unique id of the last processed environment configuration with corresponding hash sum.
 };
+
+} /* namespace PARTONS */
 
 #endif /* RESULT_DAO_SERVICE_H */

@@ -13,6 +13,9 @@
 
 #include "../../../../include/partons/beans/kinematic/FormFactorKinematic.h"
 
+namespace PARTONS {
+
+
 FormFactorKinematic::FormFactorKinematic() {
     // TODO Auto-generated constructor stub
 
@@ -22,3 +25,5 @@ FormFactorKinematic::~FormFactorKinematic() {
     // TODO Auto-generated destructor stub
 }
 
+
+} /* namespace PARTONS */

@@ -6,14 +6,17 @@
  * @author: H. Moutarde (CEA/Irfu, Saclay)
  * @date 20 avr. 2015
  * @version 1.0
- *
- * @class TDependentPDFKinematic
- *
- * @brief Class representing the kinematic variables for a t-dependent Parton Distribution Function model.
  */
 
 #include <string>
 
+namespace PARTONS {
+
+/**
+ * @class TDependentPDFKinematic
+ *
+ * @brief Class representing the kinematic variables for a t-dependent Parton Distribution Function model.
+ */
 class TDependentPDFKinematic {
 public:
 
@@ -46,7 +49,7 @@ public:
 
     // ##### GETTERS & SETTERS #####
 
-    virtual std::string toString();
+    virtual std::string toString() const;
 	double getMuF() const;
 	void setMuF(double muF);
 	double getMuR() const;
@@ -63,5 +66,7 @@ private:
     double m_MuF;	///< Factorization scale (in GeV)
     double m_MuR;	///< Renormalization scale (in GeV)
 };
+
+} /* namespace PARTONS */
 
 #endif /* TDEPENDENTPDFKINEMATIC_H */

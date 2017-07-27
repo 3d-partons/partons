@@ -13,6 +13,8 @@
 #include "../../BaseObject.h"
 #include "../../utils/compare/ComparisonReport.h"
 
+namespace PARTONS {
+
 class ComparisonReport;
 
 /**
@@ -123,5 +125,7 @@ private:
      */
     bool m_nullObject;
 };
+
+} /* namespace PARTONS */
 
 #endif /* GLUON_DISTRIBUTION_H */

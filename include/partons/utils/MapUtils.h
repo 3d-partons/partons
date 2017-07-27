@@ -13,6 +13,8 @@
 
 #include "VectorUtils.h"
 
+namespace PARTONS {
+
 //TODO tester les fonctions de la classe. Je ne sais pas si elles sont correctes.
 class MapUtils {
 public:
@@ -39,5 +41,7 @@ public:
         return keys;
     }
 };
+
+} /* namespace PARTONS */
 
 #endif /* MAP_UTILS_H */

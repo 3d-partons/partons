@@ -2,6 +2,9 @@
 
 #include <vector>
 
+namespace PARTONS {
+
+
 RLVertex::RLVertex() :
         QuarkGluonVertex("RLVertex", 1) {
 }
@@ -56,3 +59,5 @@ std::vector<double> RLVertex::Radial_Integrands_deriv(double p2, double q2,
     return radial_integrands_deriv;
 }
 
+
+} /* namespace PARTONS */

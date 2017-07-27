@@ -4,6 +4,9 @@
 
 #include "../../include/partons/ModuleObject.h"
 
+namespace PARTONS {
+
+
 ModuleObjectReference::ModuleObjectReference(ModuleObject* pModuleObjectPointer) :
         BaseObject("ModuleObjectReference"), m_pModuleObjectPointer(
                 pModuleObjectPointer), m_numberOfReference(1) {
@@ -58,3 +61,5 @@ std::string ModuleObjectReference::toString() const {
             << m_pModuleObjectPointer->getClassName()
             << ") with number of reference(" << m_numberOfReference << ")";
 }
+
+} /* namespace PARTONS */

@@ -16,6 +16,8 @@
 #include "utils/thread/ThreadManager.h"
 #include "utils/thread/ThreadQueue.h"
 
+namespace PARTONS {
+
 class AutomationService;
 class ModuleObjectFactory;
 class Task;
@@ -90,5 +92,7 @@ private:
     ThreadQueue m_queueOfTask;
     ThreadManager m_threadManager;
 };
+
+} /* namespace PARTONS */
 
 #endif /* SERVICE_OBJECT_H */

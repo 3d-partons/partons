@@ -1,10 +1,10 @@
-# PARTONS with our provided virtual machine {#vm}
+# %PARTONS with our provided virtual machine {#vm}
 
 [TOC]
 
 # Introduction {#vm_intro}
 
-You can use our provided virtual machine with an out-of-the-box PARTONS runtime and development environment. This is the easiest way to start your experience with PARTONS. The virtual machine comes with the latest PARTONS version, Eclipse CDT IDE platform, all needed libraries and a predefined MySQL database. It is based on Debian 8.8 with Xfce desktop environment. 
+You can use our provided virtual machine with an out-of-the-box %PARTONS runtime and development environment. This is the easiest way to start your experience with %PARTONS. The virtual machine comes with the latest %PARTONS version, Eclipse CDT IDE platform, all needed libraries and a predefined MySQL database. It is based on Debian 8.8 with Xfce desktop environment. 
 
 This wiki page explains how to install the required virtualization software, download our virtual machine, set it up and use it. It contains also a set of useful tips for troubleshooting and further improving your work.
 
@@ -29,7 +29,7 @@ The appliance of our virtual machine can be downloaded from [this page](http://t
 
 # Using our virtual machine {#vm_usage}
 
-To start our virtual machine double-click on the corresponding entry in the list on the left side of the VirtualBox window. Wait until the machine stops to boot and log in with __login:__ `partons` and __password:__ `partons`. You can now start working with PARTONS! Open the terminal (icon on the desktop and in the dock) and navigate to `git/partons/partons-exe` to run some examples or run the Eclipse platform (icon on the desktop or in the dock), which has been pre-configured for an optimal development environment. See [Usage](@ref usage) and [Eclipse](@ref eclipse) wiki pages for more information.
+To start our virtual machine double-click on the corresponding entry in the list on the left side of the VirtualBox window. Wait until the machine stops to boot and log in with __login:__ `partons` and __password:__ `partons`. You can now start working with %PARTONS! Open the terminal (icon on the desktop and in the dock) and navigate to `git/partons/partons-exe` to run some examples or run the Eclipse platform (icon on the desktop or in the dock), which has been pre-configured for an optimal development environment. See [Usage](@ref usage) and [Eclipse](@ref eclipse) wiki pages for more information.
 
 <hr>
 
@@ -56,7 +56,7 @@ sudo service keyboard-setup restart
 
 ## Additional packages {#vm_tips_packages}
 
-Our virtual machine comes only with those elements that are required by either PARTONS runtime or development environment. However, You can install any other package from a rich repository of Debian by yourself and use it in your work. To do this, open the terminal and do as follows (here the example for the installation of `gnuplot`): 
+Our virtual machine comes only with those elements that are required by either %PARTONS runtime or development environment. However, You can install any other package from a rich repository of Debian by yourself and use it in your work. To do this, open the terminal and do as follows (here the example for the installation of `gnuplot`): 
 ~~~~~~~~~~~~~{.sh}
 # update list of packages
 sudo apt-get update

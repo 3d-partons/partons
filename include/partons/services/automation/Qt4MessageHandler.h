@@ -16,6 +16,8 @@
 #include <string>
 #include <QAbstractMessageHandler>
 
+namespace PARTONS {
+
 /**
  * @class Qt4MessageHandler
  *
@@ -37,5 +39,7 @@ private:
     QString m_description;
     QSourceLocation m_sourceLocation;
 };
+
+} /* namespace PARTONS */
 
 #endif /* QT4MESSAGEHANDLER_H_ */

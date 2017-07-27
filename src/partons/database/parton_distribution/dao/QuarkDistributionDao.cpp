@@ -11,6 +11,9 @@
 #include "../../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../../include/partons/database/DatabaseManager.h"
 
+namespace PARTONS {
+
+
 QuarkDistributionDao::QuarkDistributionDao() :
         BaseObject("QuarkDistributionDao") {
 }
@@ -105,3 +108,5 @@ void QuarkDistributionDao::fillQuarkDistributionFromQuery(
         quarkDistribution.setQuarkDistributionPlus(quarkDistributionPlus);
     }
 }
+
+} /* namespace PARTONS */

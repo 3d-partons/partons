@@ -2,18 +2,20 @@
 
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
-#include <ElementaryUtils/thread/Packet.h>
 #include <NumA/utils/MathUtils.h>
 #include <iostream>
 #include <utility>
 
-#include "../../../../include/partons/beans/observable/ObservableResult.h"
+#include "../../../../include/partons/modules/process/ProcessModule.h"
 #include "../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../include/partons/Partons.h"
 #include "../../../../include/partons/services/ObservableService.h"
 #include "../../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../../include/partons/ServiceObjectTyped.h"
 #include "../../../../include/partons/utils/type/PhysicalType.h"
+
+namespace PARTONS {
+
 
 Observable::Observable(const std::string &className) :
         ModuleObject(className), m_channel(ObservableChannel::UNDEFINED), m_beamHelicity(
@@ -247,3 +249,5 @@ ObservableChannel::Type Observable::getChannel() const {
 void Observable::setChannel(ObservableChannel::Type channel) {
     m_channel = channel;
 }
+
+} /* namespace PARTONS */

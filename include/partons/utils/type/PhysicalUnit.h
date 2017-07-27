@@ -6,14 +6,17 @@
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 20 January 2016
  * @version 1.0
- *
- * @class PhysicalUnit
- *
- * @brief
  */
 
 #include <string>
 
+namespace PARTONS {
+
+/**
+ * @class PhysicalUnit
+ *
+ * @brief
+ */
 class PhysicalUnit {
 public:
     enum Type {
@@ -26,7 +29,7 @@ public:
 
     operator Type() const;
 
-    std::string toString();
+    std::string toString() const;
 
     std::string getShortName();
 
@@ -37,5 +40,7 @@ public:
 private:
     PhysicalUnit::Type m_type;
 };
+
+} /* namespace PARTONS */
 
 #endif /* PHYSICAL_UNIT_H */

@@ -15,16 +15,17 @@
 #include "../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../include/partons/beans/KinematicUtils.h"
 #include "../../../include/partons/beans/List.h"
-#include "../../../include/partons/beans/parton_distribution/PartonDistribution.h"
-#include "../../../include/partons/beans/system/ResultInfo.h"
 #include "../../../include/partons/BaseObjectRegistry.h"
 #include "../../../include/partons/database/gpd/service/GPDResultDaoService.h"
-#include "../../../include/partons/modules/GPDModule.h"
+#include "../../../include/partons/modules/gpd/GPDModule.h"
 #include "../../../include/partons/ModuleObjectFactory.h"
 #include "../../../include/partons/Partons.h"
 #include "../../../include/partons/services/GPDService.h"
 #include "../../../include/partons/ServiceObjectTyped.h"
 #include "../../../include/partons/utils/VectorUtils.h"
+
+namespace PARTONS {
+
 
 const std::string GPDService::GPD_SERVICE_COMPUTE_GPD_MODEL = "computeGPDModel";
 const std::string GPDService::GPD_SERVICE_COMPUTE_GPD_MODEL_WITH_EVOLUTION =
@@ -271,9 +272,9 @@ List<GPDResult> GPDService::computeManyKinematicOneModel(
 
             while ((j != m_batchSize) && (i != gpdKinematicList.size())) {
                 ElemUtils::Packet packet;
-                GPDKinematic kineamtic;
-                kineamtic = gpdKinematicList[i];
-                packet << kineamtic << finalGPDTypeList;
+                GPDKinematic kinematic;
+                kinematic = gpdKinematicList[i];
+                packet << kinematic << finalGPDTypeList;
                 listOfPacket.add(packet);
                 i++;
                 j++;
@@ -480,3 +481,5 @@ GPDModule* GPDService::newGPDModuleFromTask(const Task& task) const {
 
     return pGPDModule;
 }
+
+} /* namespace PARTONS */

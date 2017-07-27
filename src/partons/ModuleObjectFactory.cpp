@@ -4,20 +4,23 @@
 #include <utility>
 
 #include "../../include/partons/BaseObjectFactory.h"
-#include "../../include/partons/modules/ActiveFlavorsModule.h"
+#include "../../include/partons/modules/active_flavors_thresholds/ActiveFlavorsThresholdsModule.h"
 #include "../../include/partons/modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
+#include "../../include/partons/modules/double_distribution/DoubleDistributionModule.h"
 #include "../../include/partons/modules/dse/GapEquationSolverModule.h"
-#include "../../include/partons/modules/DoubleDistributionModule.h"
 #include "../../include/partons/modules/evolution/GPDEvolutionModule.h"
-#include "../../include/partons/modules/GPDBorderFunctionModule.h"
-#include "../../include/partons/modules/GPDSubtractionConstantModule.h"
+#include "../../include/partons/modules/gpd_border_function/GPDBorderFunctionModule.h"
+#include "../../include/partons/modules/gpd_subtraction_constant/GPDSubtractionConstantModule.h"
 #include "../../include/partons/modules/observable/Observable.h"
 #include "../../include/partons/modules/overlap/IncompleteGPDModule.h"
-#include "../../include/partons/modules/process/DVCSModule.h"
+#include "../../include/partons/modules/process/DVCS/DVCSProcessModule.h"
 #include "../../include/partons/modules/radon_inverse/RadonInverseModule.h"
-#include "../../include/partons/modules/RunningAlphaStrongModule.h"
-#include "../../include/partons/modules/scale/ScaleModule.h"
-#include "../../include/partons/modules/xb_to_xi/XiConverterModule.h"
+#include "../../include/partons/modules/running_alpha_strong/RunningAlphaStrongModule.h"
+#include "../../include/partons/modules/scales/ScalesModule.h"
+#include "../../include/partons/modules/xi_converter/XiConverterModule.h"
+
+namespace PARTONS {
+
 
 ModuleObjectFactory::ModuleObjectFactory(BaseObjectFactory* pBaseObjectFactory) :
         BaseObject("ModuleObjectFactory"), m_pBaseObjectFactory(
@@ -206,13 +209,13 @@ ProcessModule* ModuleObjectFactory::newProcessModule(
     return static_cast<ProcessModule*>(newModuleObject(className));
 }
 
-DVCSModule* ModuleObjectFactory::newDVCSModule(unsigned int classId) {
-    return static_cast<DVCSModule*>(newModuleObject(classId));
+DVCSProcessModule* ModuleObjectFactory::newDVCSProcessModule(unsigned int classId) {
+    return static_cast<DVCSProcessModule*>(newModuleObject(classId));
 }
 
-DVCSModule* ModuleObjectFactory::newDVCSModule(
+DVCSProcessModule* ModuleObjectFactory::newDVCSProcessModule(
         const std::string& className) {
-    return static_cast<DVCSModule*>(newModuleObject(className));
+    return static_cast<DVCSProcessModule*>(newModuleObject(className));
 }
 
 RunningAlphaStrongModule* ModuleObjectFactory::newRunningAlphaStrongModule(
@@ -225,22 +228,22 @@ RunningAlphaStrongModule* ModuleObjectFactory::newRunningAlphaStrongModule(
     return static_cast<RunningAlphaStrongModule*>(newModuleObject(className));
 }
 
-ActiveFlavorsModule* ModuleObjectFactory::newActiveFlavorsModule(
+ActiveFlavorsThresholdsModule* ModuleObjectFactory::newActiveFlavorsThresholdsModule(
         unsigned int classId) {
-    return static_cast<ActiveFlavorsModule*>(newModuleObject(classId));
+    return static_cast<ActiveFlavorsThresholdsModule*>(newModuleObject(classId));
 }
 
-ActiveFlavorsModule* ModuleObjectFactory::newActiveFlavorsModule(
+ActiveFlavorsThresholdsModule* ModuleObjectFactory::newActiveFlavorsThresholdsModule(
         const std::string &className) {
-    return static_cast<ActiveFlavorsModule*>(newModuleObject(className));
+    return static_cast<ActiveFlavorsThresholdsModule*>(newModuleObject(className));
 }
 
-ScaleModule* ModuleObjectFactory::newScaleModule(unsigned int classId) {
-    return static_cast<ScaleModule*>(newModuleObject(classId));
+ScalesModule* ModuleObjectFactory::newScalesModule(unsigned int classId) {
+    return static_cast<ScalesModule*>(newModuleObject(classId));
 }
 
-ScaleModule* ModuleObjectFactory::newScaleModule(const std::string &className) {
-    return static_cast<ScaleModule*>(newModuleObject(className));
+ScalesModule* ModuleObjectFactory::newScalesModule(const std::string &className) {
+    return static_cast<ScalesModule*>(newModuleObject(className));
 }
 
 XiConverterModule* ModuleObjectFactory::newXiConverterModule(
@@ -288,3 +291,5 @@ RadonInverseModule* ModuleObjectFactory::newRadonInverseModule(
         const std::string& className) {
     return static_cast<RadonInverseModule*>(newModuleObject(className));
 }
+
+} /* namespace PARTONS */

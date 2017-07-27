@@ -6,12 +6,15 @@
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 29 April 2015
  * @version 1.0
- *
+ */
+
+namespace PARTONS {
+
+/**
  * @class Plot2D
  *
  * @brief
  */
-
 class Plot2D {
 public:
     Plot2D();
@@ -29,5 +32,7 @@ private:
     double m_x;
     double m_y;
 };
+
+} /* namespace PARTONS */
 
 #endif /* PLOT_2D_H */

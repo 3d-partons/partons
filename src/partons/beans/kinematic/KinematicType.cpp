@@ -1,5 +1,8 @@
 #include "../../../../include/partons/beans/kinematic/KinematicType.h"
 
+namespace PARTONS {
+
+
 KinematicType::KinematicType() :
         m_type(KinematicType::UNDEFINED) {
 }
@@ -16,7 +19,7 @@ KinematicType::operator KinematicType::Type() const {
     return m_type;
 }
 
-std::string KinematicType::toString() {
+std::string KinematicType::toString() const {
     switch (m_type) {
     case THEO:
         return "THEO";
@@ -36,3 +39,5 @@ KinematicType::Type KinematicType::getType() const {
 void KinematicType::setType(Type type) {
     m_type = type;
 }
+
+} /* namespace PARTONS */

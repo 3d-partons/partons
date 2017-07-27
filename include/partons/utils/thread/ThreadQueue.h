@@ -6,10 +6,6 @@
  * @author Bryan BERTHOU (CEA Saclay)
  * @date 14 January 2015
  * @version 1.0
- *
- * @class ThreadQueue
- *
- * @brief
  */
 
 #include <ElementaryUtils/thread/Packet.h>
@@ -18,6 +14,13 @@
 
 #include "../../beans/List.h"
 
+namespace PARTONS {
+
+/**
+ * @class ThreadQueue
+ *
+ * @brief
+ */
 class ThreadQueue {
 public:
     ThreadQueue();
@@ -36,5 +39,7 @@ private:
     //pthread_mutex_t m_mutex;
     sf::Mutex m_mutex;
 };
+
+} /* namespace PARTONS */
 
 #endif /* THREAD_QUEUE_H */

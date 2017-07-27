@@ -14,12 +14,18 @@ namespace ElemUtils {
 class Packet;
 } /* namespace ElemUtils */
 
+namespace PARTONS {
+
 /** @class BaseObject
  *
  * @brief BaseObject is the ”zeroth-level-object” of the architecture.
+ * Each module in PARTONS is referred to with a unique class name and a unique int used as ID.
  *
- * Any C++ object in PARTONS can inherit of it.
- * It also carries information on the identity of a specific object to transmit an explicit message to the logger (i.e. understandable by a human being, not an address in memory).
+ * Any C++ object in PARTONS can inherit of it. It fulfills several needs:
+ * 1. It contains a clone function to be used to the factory to provide the user an object identified by a simple key (a string).
+ * 2. It carries information on the identity of a specific object among others to transmit an explicit message to the logger (i.e. understandable by a human being, not an address in memory).
+ * 3. It handles Packets to allow systematic computations over lists of inputs e.g. with threads.
+ * 4. It allows the registry to store pointers to all modules in a generic way.
  */
 class BaseObject {
 public:
@@ -55,7 +61,7 @@ public:
      *
      * @return a pre-formatted characters string.
      */
-    virtual std::string toString() const; //TODO propagate const in every daugther class
+    virtual std::string toString() const;
 
     /**
      * Used to split a complex C++ object into a concatenation of simple types.
@@ -164,5 +170,7 @@ private:
 
 ElemUtils::Packet& operator <<(ElemUtils::Packet& packet, BaseObject& object);
 ElemUtils::Packet& operator >>(ElemUtils::Packet& packet, BaseObject& object);
+
+} /* namespace PARTONS */
 
 #endif /* BASE_OBJECT_H */

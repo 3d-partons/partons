@@ -3,11 +3,6 @@
  * @author Nabil Chouika (SPhN - CEA Saclay)
  * @date 2 mars 2016
  * @version 1.0
- *
- * @class RLVertex
- * @brief Rainbow-Ladder Vertex.
- *
- * \f$ \Gamma^\mu = \gamma^\mu \f$.
  */
 
 #ifndef RLVERTEX_H_
@@ -19,6 +14,14 @@
 
 #include "QuarkGluonVertex.h"
 
+namespace PARTONS {
+
+/**
+ * @class RLVertex
+ * @brief Rainbow-Ladder Vertex.
+ *
+ * \f$ \Gamma^\mu = \gamma^\mu \f$.
+ */
 class RLVertex: public QuarkGluonVertex {
 public:
     RLVertex();
@@ -44,5 +47,7 @@ protected:
     RLVertex(const std::string &className, unsigned int numberOfBasisElements = 1);
     RLVertex(const RLVertex& other);
 };
+
+} /* namespace PARTONS */
 
 #endif /* RLVERTEX_H_ */

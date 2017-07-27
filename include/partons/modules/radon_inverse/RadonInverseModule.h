@@ -27,6 +27,8 @@ namespace NumA {
 class FunctionTypeMD;
 } /* namespace NumA */
 
+namespace PARTONS {
+
 /**
  * @class RadonInverseModule
  *
@@ -136,5 +138,7 @@ protected:
     bool m_gaugeInVector; ///< True if the 1CDD gauge factor is taken into account in the GPD (divided by the factor), False if it is in the matrix (multiplied by the factor).
 private:
 };
+
+} /* namespace PARTONS */
 
 #endif /* RADON_INVERSE_MODULE_H */

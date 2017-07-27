@@ -10,6 +10,8 @@
 
 #include "../BaseObject.h"
 
+namespace PARTONS {
+
 /**
  * @class PartonContent
  *
@@ -92,5 +94,7 @@ private:
     double glu;     ///< Value for gluons.
     double phot;    ///< Value for photons.
 };
+
+} /* namespace PARTONS */
 
 #endif /* PARTON_CONTENT_H */

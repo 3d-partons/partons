@@ -1,5 +1,8 @@
 #include "../../../../include/partons/beans/observable/ObservableChannel.h"
 
+namespace PARTONS {
+
+
 ObservableChannel::ObservableChannel() :
         m_type(ObservableChannel::UNDEFINED) {
 }
@@ -11,7 +14,7 @@ ObservableChannel::operator ObservableChannel::Type() const {
     return m_type;
 }
 
-std::string ObservableChannel::toString() {
+std::string ObservableChannel::toString() const {
     switch (m_type) {
     case DVCS:
         return "DVCS";
@@ -53,3 +56,5 @@ void ObservableChannel::setType(Type type) {
 
 ObservableChannel::~ObservableChannel() {
 }
+
+} /* namespace PARTONS */

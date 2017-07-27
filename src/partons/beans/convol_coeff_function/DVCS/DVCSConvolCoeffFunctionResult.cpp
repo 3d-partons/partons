@@ -7,6 +7,9 @@
 #include "../../../../../include/partons/utils/compare/CompareUtils.h"
 #include "../../../../../include/partons/utils/compare/ComparisonData.h"
 
+namespace PARTONS {
+
+
 DVCSConvolCoeffFunctionResult::DVCSConvolCoeffFunctionResult() :
         Result("DVCSConvolCoeffFunctionResult"), m_channel(
                 ObservableChannel::DVCS) {
@@ -149,3 +152,5 @@ bool DVCSConvolCoeffFunctionResult::operator <(
         const DVCSConvolCoeffFunctionResult& other) const {
     return (m_kinematic < other.m_kinematic);
 }
+
+} /* namespace PARTONS */

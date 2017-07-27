@@ -1,13 +1,13 @@
 #include "../../../../include/partons/modules/double_distribution/DoubleDistributionFromOverlap.h"
 
-#include <map>
 #include <utility>
 
 #include "../../../../include/partons/beans/double_distribution/DoubleDistributionType.h"
-#include "../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 
-// Initialise [class]::classId with a unique name and selfregister this module into the global registry.
+namespace PARTONS {
+
+
 const unsigned int DoubleDistributionFromOverlap::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new DoubleDistributionFromOverlap(
@@ -84,3 +84,5 @@ PartonDistribution DoubleDistributionFromOverlap::computeK() {
     return partonDistribution;
 }
 
+
+} /* namespace PARTONS */

@@ -2,6 +2,9 @@
 
 #include <ElementaryUtils/string_utils/Formatter.h>
 
+namespace PARTONS {
+
+
 PDFKinematic::PDFKinematic() :
         m_x(0.), m_MuF(0.), m_MuR(0.) {
 }
@@ -13,7 +16,7 @@ PDFKinematic::PDFKinematic(double x, double MuF, double MuR) :
 PDFKinematic::~PDFKinematic() {
 }
 
-std::string PDFKinematic::toString() {
+std::string PDFKinematic::toString() const {
     return ElemUtils::Formatter() << "m_x = " << m_x << " m_MuF = " << m_MuF
             << " m_MuR = " << m_MuR;
 }
@@ -41,3 +44,5 @@ double PDFKinematic::getX() const {
 void PDFKinematic::setX(double x) {
     m_x = x;
 }
+
+} /* namespace PARTONS */

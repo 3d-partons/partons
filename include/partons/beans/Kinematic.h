@@ -16,6 +16,8 @@ namespace ElemUtils {
 class Packet;
 } /* namespace ElemUtils */
 
+namespace PARTONS {
+
 /**
  * @class Kinematic
  *
@@ -96,5 +98,7 @@ ElemUtils::Packet& operator <<(ElemUtils::Packet& packet, Kinematic& kinematic);
  * Stream operator to retrieve class from Packet. See also Kinematic::unserialize().
  */
 ElemUtils::Packet& operator >>(ElemUtils::Packet& packet, Kinematic& kinematic);
+
+} /* namespace PARTONS */
 
 #endif /* KINEMATIC_H */

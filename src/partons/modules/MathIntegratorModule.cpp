@@ -1,12 +1,15 @@
 #include "../../../include/partons/modules/MathIntegratorModule.h"
 
 #include <ElementaryUtils/logger/LoggerManager.h>
-#include <ElementaryUtils/parameters/GenericType.h>
+#include <ElementaryUtils/parameters/Parameter.h>
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
+#include <NumA/integration/one_dimension/IntegratorType1D.h>
 
 #include "../../../include/partons/Partons.h"
+
+namespace PARTONS {
 
 const std::string MathIntegratorModule::PARAM_NAME_INTEGRATOR_TYPE =
         "integrator_type";
@@ -52,7 +55,18 @@ void MathIntegratorModule::configureIntegrator(
             MathIntegratorModule::PARAM_NAME_INTEGRATOR_TYPE)) {
 
         NumA::IntegratorType1D::Type integratorType =
-                static_cast<NumA::IntegratorType1D::Type>(parameters.getLastAvailable().toUInt());
+                NumA::IntegratorType1D::UNDEFINED;
+
+        // try to set integratorType by standard way
+        try {
+            integratorType =
+                    static_cast<NumA::IntegratorType1D::Type>(parameters.getLastAvailable().toUInt());
+        }
+        // if an exception is raised it means that it's a string configuration value
+        catch (const std::exception &e) {
+            integratorType = NumA::IntegratorType1D(
+                    parameters.getLastAvailable().getString()).getType();
+        }
 
         setIntegrator(integratorType);
 
@@ -72,3 +86,5 @@ void MathIntegratorModule::configureIntegrator(
 NumA::Integrator1D* MathIntegratorModule::getMathIntegrator() {
     return m_mathIntegrator;
 }
+
+} /* namespace PARTONS */

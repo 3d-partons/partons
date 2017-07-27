@@ -6,6 +6,9 @@
 //#include "../../../../include/partons/beans/radon_inverse/RadonMeshCell.h"
 //#include "../../../../include/partons/utils/math/MDArray.h"
 
+namespace PARTONS {
+
+
 SquareMesh::SquareMesh() :
         BaseObject("SquareMesh") {
     // TODO Auto-generated constructor stub
@@ -28,3 +31,5 @@ void SquareMesh::BuildMesh() {
 //    RadonMeshCell otherCell = matrix(1, 3);
 
 }
+
+} /* namespace PARTONS */

@@ -7,19 +7,20 @@
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <ElementaryUtils/thread/Packet.h>
-#include <complex>
 
 #include "../../../include/partons/beans/automation/BaseObjectData.h"
 #include "../../../include/partons/beans/automation/Task.h"
 #include "../../../include/partons/beans/KinematicUtils.h"
-#include "../../../include/partons/beans/system/ResultInfo.h"
 #include "../../../include/partons/BaseObjectRegistry.h"
 #include "../../../include/partons/database/convol_coeff_function/service/ConvolCoeffFunctionResultDaoService.h"
 #include "../../../include/partons/modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
-#include "../../../include/partons/modules/GPDModule.h"
+#include "../../../include/partons/modules/gpd/GPDModule.h"
 #include "../../../include/partons/ModuleObjectFactory.h"
 #include "../../../include/partons/Partons.h"
 #include "../../../include/partons/utils/VectorUtils.h"
+
+namespace PARTONS {
+
 
 const std::string ConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_WITH_GPD_MODEL =
         "computeWithGPDModel";
@@ -473,3 +474,5 @@ List<DVCSConvolCoeffFunctionKinematic> ConvolCoeffFunctionService::newListOfKine
 
     return listOfKinematic;
 }
+
+} /* namespace PARTONS */

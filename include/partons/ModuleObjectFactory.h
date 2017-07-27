@@ -13,11 +13,13 @@
 
 #include "ModuleObjectReference.h"
 
-class ActiveFlavorsModule;
+namespace PARTONS {
+
+class ActiveFlavorsThresholdsModule;
 class BaseObjectFactory;
 class DoubleDistributionModule;
 class DVCSConvolCoeffFunctionModule;
-class DVCSModule;
+class DVCSProcessModule;
 class GapEquationSolverModule;
 class GPDBorderFunctionModule;
 class GPDEvolutionModule;
@@ -29,7 +31,7 @@ class Observable;
 class ProcessModule;
 class RadonInverseModule;
 class RunningAlphaStrongModule;
-class ScaleModule;
+class ScalesModule;
 class XiConverterModule;
 
 /**
@@ -169,17 +171,17 @@ public:
             const std::string &className);
 
     /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a DVCSModule.
+     * Specialization of ModuleObjectFactory::newModuleObject into a DVCSProcessModule.
      * @param classId Unique identifier of last child class.
-     * @return DVCSModule pointer.
+     * @return DVCSProcessModule pointer.
      */
-    DVCSModule* newDVCSModule(unsigned int classId);
+    DVCSProcessModule* newDVCSProcessModule(unsigned int classId);
     /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a DVCSModule.
+     * Specialization of ModuleObjectFactory::newModuleObject into a DVCSProcessModule.
      * @param className Name of last child class.
-     * @return DVCSModule pointer.
+     * @return DVCSProcessModule pointer.
      */
-    DVCSModule* newDVCSModule(const std::string & className);
+    DVCSProcessModule* newDVCSProcessModule(const std::string & className);
 
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a RunningAlphaStrongModule.
@@ -209,30 +211,30 @@ public:
     ProcessModule* newProcessModule(const std::string &className);
 
     /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a ActiveFlavorsModule.
+     * Specialization of ModuleObjectFactory::newModuleObject into a ActiveFlavorsThresholdsModule.
      * @param classId Unique identifier of last child class.
-     * @return ActiveFlavorsModule pointer.
+     * @return ActiveFlavorsThresholdsModule pointer.
      */
-    ActiveFlavorsModule* newActiveFlavorsModule(unsigned int classId);
+    ActiveFlavorsThresholdsModule* newActiveFlavorsThresholdsModule(unsigned int classId);
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a ActiveFlavorsModule.
      * @param className Name of last child class.
      * @return ActiveFlavorsModule pointer.
      */
-    ActiveFlavorsModule* newActiveFlavorsModule(const std::string &className);
+    ActiveFlavorsThresholdsModule* newActiveFlavorsThresholdsModule(const std::string &className);
 
     /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a ScaleModule.
+     * Specialization of ModuleObjectFactory::newModuleObject into a ScalesModule.
      * @param classId Unique identifier of last child class.
-     * @return ScaleModule pointer.
+     * @return ScalesModule pointer.
      */
-    ScaleModule* newScaleModule(unsigned int classId);
+    ScalesModule* newScalesModule(unsigned int classId);
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a ScaleModule.
      * @param className Name of last child class.
      * @return ScaleModule pointer.
      */
-    ScaleModule* newScaleModule(const std::string &className);
+    ScalesModule* newScalesModule(const std::string &className);
 
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a XiConverterModule.
@@ -311,5 +313,7 @@ private:
      */
     void store(ModuleObject* pModuleObject);
 };
+
+} /* namespace PARTONS */
 
 #endif /* MODULE_OBJECT_FACTORY_H */

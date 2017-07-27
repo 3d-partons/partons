@@ -10,6 +10,9 @@
 #include "../../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
 #include "../../../../../include/partons/beans/QuarkFlavor.h"
 
+namespace PARTONS {
+
+
 PartonDistributionDaoService::PartonDistributionDaoService() :
         BaseObject("PartonDistributionDaoService") {
 }
@@ -82,3 +85,5 @@ int PartonDistributionDaoService::insertWithoutTransaction(
 //
 //    return result;
 //}
+
+} /* namespace PARTONS */

@@ -4,8 +4,11 @@
 #include "../../../include/partons/beans/double_distribution/DoubleDistributionResult.h"
 #include "../../../include/partons/beans/double_distribution/DoubleDistributionType.h"
 #include "../../../include/partons/BaseObjectRegistry.h"
-#include "../../../include/partons/modules/DoubleDistributionModule.h"
+#include "../../../include/partons/modules/double_distribution/DoubleDistributionModule.h"
 #include "../../../include/partons/Partons.h"
+
+namespace PARTONS {
+
 
 // Initialise [class]::classId with a unique name and selfregister this module into the global registry.
 const unsigned int DoubleDistributionService::classId =
@@ -31,3 +34,5 @@ DoubleDistributionResult DoubleDistributionService::compute(
             kinematic.getAlpha(), kinematic.getT(), kinematic.getMuF2(),
             kinematic.getMuR2(), kinematic.getDoubleDistributionType());
 }
+
+} /* namespace PARTONS */

@@ -6,14 +6,17 @@
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 29 July 2015
  * @version 1.0
- *
- * @class DoubleDistributionType
- *
- * @brief
  */
 
 #include <string>
 
+namespace PARTONS {
+
+/**
+ * @class DoubleDistributionType
+ *
+ * @brief
+ */
 class DoubleDistributionType {
 public:
     enum Type {
@@ -26,10 +29,12 @@ public:
 
     operator Type() const;
 
-    std::string toString();
+    std::string toString() const;
 
 private:
     DoubleDistributionType::Type m_type;
 };
+
+} /* namespace PARTONS */
 
 #endif /* DOUBLE_DISTRIBUTION_TYPE_H */

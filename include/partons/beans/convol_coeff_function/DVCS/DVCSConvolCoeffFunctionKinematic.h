@@ -19,6 +19,8 @@ class Packet;
 class Parameters;
 } /* namespace ElemUtils */
 
+namespace PARTONS {
+
 /**
  * @class DVCSConvolCoeffFunctionKinematic
  *
@@ -249,5 +251,7 @@ ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
  */
 ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
         DVCSConvolCoeffFunctionKinematic& kinematic);
+
+} /* namespace PARTONS */
 
 #endif /* DVCS_CONVOL_COEFF_FUNCTION_KINEMATIC_H */

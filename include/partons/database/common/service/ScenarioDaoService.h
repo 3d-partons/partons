@@ -12,6 +12,8 @@
 
 #include "../dao/ScenarioDao.h"
 
+namespace PARTONS {
+
 class ResourceManager;
 class Scenario;
 
@@ -98,5 +100,7 @@ private:
      */
     ResourceManager* m_pResourceManager;
 };
+
+} /* namespace PARTONS */
 
 #endif /* SCENARIO_DAO_SERVICE_H */

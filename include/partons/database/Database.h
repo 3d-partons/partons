@@ -12,6 +12,8 @@
 #include <string>
 #include <vector>
 
+namespace PARTONS {
+
 /**
  * @class Database
  *
@@ -131,5 +133,7 @@ public:
     static std::string getPreFormatedColumnValuesFromVector(
             const std::vector<std::string> &columnValues);
 };
+
+} /* namespace PARTONS */
 
 #endif /* DATABASE_H */

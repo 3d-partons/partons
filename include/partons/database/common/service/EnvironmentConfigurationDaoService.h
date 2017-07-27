@@ -12,6 +12,8 @@
 
 #include "../dao/EnvironmentConfigurationDao.h"
 
+namespace PARTONS {
+
 class EnvironmentConfiguration;
 
 /**
@@ -79,5 +81,7 @@ private:
      */
     EnvironmentConfigurationDao m_environmentConfigurationDao;
 };
+
+} /* namespace PARTONS */
 
 #endif /* ENVIRONMENT_CONFIGURATION_DAO_SERVICE_H */

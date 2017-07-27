@@ -1,5 +1,8 @@
 #include "../../../../include/partons/beans/observable/ObservableType.h"
 
+namespace PARTONS {
+
+
 ObservableType::ObservableType() :
         m_type(ObservableType::UNDEFINED) {
 }
@@ -11,7 +14,7 @@ ObservableType::operator ObservableType::Type() const {
     return m_type;
 }
 
-std::string ObservableType::toString() {
+std::string ObservableType::toString() const {
     switch (m_type) {
     case PHI:
         return "PHI";
@@ -44,3 +47,5 @@ ObservableType::Type ObservableType::getType() const {
 void ObservableType::setType(Type type) {
     m_type = type;
 }
+
+} /* namespace PARTONS */

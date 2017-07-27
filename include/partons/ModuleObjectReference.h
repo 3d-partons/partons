@@ -12,6 +12,8 @@
 
 #include "BaseObject.h"
 
+namespace PARTONS {
+
 class ModuleObject;
 
 /**
@@ -63,5 +65,7 @@ private:
 
     unsigned int m_numberOfReference; ///< Count the number of reference to the pointer member in the all running program.
 };
+
+} /* namespace PARTONS */
 
 #endif /* MODULE_OBJECT_REFERENCE_H */

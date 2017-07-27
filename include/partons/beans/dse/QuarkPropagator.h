@@ -3,8 +3,6 @@
  * @author Nabil CHOUIKA (SPhN / CEA Saclay)
  * @date Jan 22, 2016
  * @version 1.0
- *
- * @class QuarkPropagator
  */
 
 #ifndef QUARKPROPAGATOR_H_
@@ -16,6 +14,11 @@
 
 #include "../../BaseObject.h"
 
+namespace PARTONS {
+
+/**
+ * @class QuarkPropagator
+ */
 class QuarkPropagator: public BaseObject {
 public:
     virtual ~QuarkPropagator();
@@ -121,5 +124,7 @@ protected:
     double m_Lambda, m_Lambda2; ///< ultra-violet cut-off
     double m_epsilon, m_epsilon2; ///< infra-red cut-off
 };
+
+} /* namespace PARTONS */
 
 #endif /* QUARKPROPAGATOR_H_ */

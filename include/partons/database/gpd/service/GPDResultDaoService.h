@@ -18,6 +18,8 @@
 #include "../dao/GPDResultDao.h"
 #include "GPDKinematicDaoService.h"
 
+namespace PARTONS {
+
 /**
  * @class GPDResultDaoService
  *
@@ -146,5 +148,7 @@ private:
 //     */
 //    int insertWithoutTransaction(const GPDResult &gpdResult) const;
 };
+
+} /* namespace PARTONS */
 
 #endif /* GPD_RESULT_DAO_SERVICE */

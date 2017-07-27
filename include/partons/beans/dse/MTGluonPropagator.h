@@ -1,11 +1,8 @@
 /**
- * @file GPMT.h
+ * @file MTGluonPropagator.h
  * @author Nabil CHOUIKA (SPhN / CEA Saclay)
  * @date Feb 17, 2016
  * @version 1.0
- *
- * @class GPMT
- * @brief MT Gluon Propagator (Maris & Tandy).
  */
 
 #ifndef GPMT_H_
@@ -15,6 +12,12 @@
 
 #include "GluonPropagator.h"
 
+namespace PARTONS {
+
+/**
+ * @class MTGluonPropagator
+ * @brief MT Gluon Propagator (Maris & Tandy).
+ */
 class MTGluonPropagator: public GluonPropagator {
 public:
     MTGluonPropagator(double w = 0.4, double I = 5.8, double LambdaQCD = 0.234,
@@ -34,5 +37,7 @@ protected:
 
     virtual void updateIR();
 };
+
+} /* namespace PARTONS */
 
 #endif /* GPMT_H_ */

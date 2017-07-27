@@ -1,14 +1,15 @@
 #include "../../../../include/partons/modules/overlap/IncompleteGPDModule.h"
 
-//#include <utility>
 #include <ElementaryUtils/logger/CustomException.h>
-//#include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
+#include <utility>
 
-//#include "../../../../include/partons/modules/GPDModule.h"
 #include "../../../../include/partons/modules/radon_inverse/RadonInverseModule.h"
 #include "../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../include/partons/Partons.h"
+
+namespace PARTONS {
+
 
 const std::string IncompleteGPDModule::DGLAP_REGION = "DGLAP";
 const std::string IncompleteGPDModule::ERBL_REGION = "ERBL";
@@ -166,7 +167,7 @@ void IncompleteGPDModule::preCompute(double x, double xi, double t, double MuF2,
 //            "Check your implementation  ; must be implemented in daughter class");
 //}
 
-std::string IncompleteGPDModule::toString() {
+std::string IncompleteGPDModule::toString() const {
     return GPDModule::toString();
 }
 
@@ -290,3 +291,5 @@ void IncompleteGPDModule::prepareSubModules(
         }
     }
 }
+
+} /* namespace PARTONS */

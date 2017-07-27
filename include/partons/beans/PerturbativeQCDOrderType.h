@@ -12,6 +12,8 @@
 
 #include "../BaseObject.h"
 
+namespace PARTONS {
+
 /**
  * @class PerturbativeQCDOrderType
  *
@@ -79,7 +81,7 @@ public:
      * Get string representation of type being assigned to a declared object of this class.
      * @return String representation of assigned type, like "LO" for PerturbativeQCDOrderType::LO.
      */
-    const std::string toString();
+    std::string toString() const;
 
     //********************************************************
     //*** SETTERS AND GETTERS ********************************
@@ -102,6 +104,8 @@ private:
      */
     PerturbativeQCDOrderType::Type m_type;
 };
+
+} /* namespace PARTONS */
 
 //inline bool operator==(const QCDOrderType& lhs, const QCDOrderType& rhs) {
 //    return (lhs.t_ == rhs.t_) ? true : false;

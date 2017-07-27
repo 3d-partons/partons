@@ -6,12 +6,15 @@
  * @author Bryan BERTHOU (CEA Saclay)
  * @author <contibutor> http://vichargrave.com/java-style-thread-class-in-c/
  * @date 13 January 2016
- *
- * @class ThreadManager
  */
 
 #include "../../beans/List.h"
 #include "../../ModuleObject.h"
+
+namespace PARTONS {
+/**
+ * @class ThreadManager
+ */
 
 class ThreadManager: public BaseObject {
 public:
@@ -27,5 +30,7 @@ public:
 private:
     List<ModuleObject*> m_listOfModuleObject;
 };
+
+} /* namespace PARTONS */
 
 #endif /* THREAD_MANAGER_H */

@@ -8,6 +8,8 @@
 #include "../../include/partons/BaseObjectFactory.h"
 #include "../../include/partons/Partons.h"
 
+namespace PARTONS {
+
 unsigned int BaseObject::m_uniqueObjectIdCounter = 0;
 
 BaseObject::BaseObject(const std::string &className) :
@@ -124,3 +126,5 @@ void BaseObject::errorMissingParameter(const std::string& parameterName) const {
             ElemUtils::Formatter() << "Missing parameter name = "
                     << parameterName);
 }
+
+} /* namespace PARTONS */

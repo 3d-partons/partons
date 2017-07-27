@@ -6,10 +6,6 @@
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 30 July 2015
  * @version 1.0
- *
- * @class DoubleDistributionResult
- *
- * @brief
  */
 
 #include <map>
@@ -19,6 +15,13 @@
 #include "DoubleDistributionKinematic.h"
 #include "DoubleDistributionType.h"
 
+namespace PARTONS {
+
+/**
+ * @class DoubleDistributionResult
+ *
+ * @brief
+ */
 class DoubleDistributionResult: public BaseObject {
 public:
     DoubleDistributionResult();
@@ -30,12 +33,14 @@ public:
     const PartonDistribution& getPartonDistribution(
             DoubleDistributionType::Type doubleDistributionType) const;
 
-    std::string toString();
+    virtual std::string toString() const;
 
 private:
     std::map<DoubleDistributionType::Type, PartonDistribution> m_partonDistributions;
 
     DoubleDistributionKinematic m_kinematic;
 };
+
+} /* namespace PARTONS */
 
 #endif /* DOUBLE_DISTRIBUTION_RESULT_H */

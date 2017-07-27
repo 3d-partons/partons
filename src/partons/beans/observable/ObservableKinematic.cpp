@@ -9,6 +9,9 @@
 #include "../../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../../include/partons/utils/type/PhysicalUnit.h"
 
+namespace PARTONS {
+
+
 const std::string ObservableKinematic::PARAMETER_NAME_XB = "xB";
 const std::string ObservableKinematic::PARAMETER_NAME_T = "t";
 const std::string ObservableKinematic::PARAMETER_NAME_Q2 = "Q2";
@@ -199,6 +202,13 @@ void ObservableKinematic::unserialize(ElemUtils::Packet &packet) {
     m_phi.setValue(phi);
 }
 
+void ObservableKinematic::updateHashSum() const {
+    setHashSum(
+            Partons::getInstance()->getServiceObjectRegistry()->getCryptographicHashService()->generateSHA1HashSum(
+                    ElemUtils::Formatter() << m_xB << m_t << m_Q2 << m_E
+                            << m_phi.getValue()));
+}
+
 ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
         ObservableKinematic& observableKinematic) {
     observableKinematic.serialize(packet);
@@ -211,9 +221,4 @@ ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
     return packet;
 }
 
-void ObservableKinematic::updateHashSum() const {
-    setHashSum(
-            Partons::getInstance()->getServiceObjectRegistry()->getCryptographicHashService()->generateSHA1HashSum(
-                    ElemUtils::Formatter() << m_xB << m_t << m_Q2 << m_E
-                            << m_phi.getValue()));
-}
+} /* namespace PARTONS */

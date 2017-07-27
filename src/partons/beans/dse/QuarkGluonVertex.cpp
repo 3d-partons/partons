@@ -1,5 +1,8 @@
 #include "../../../../include/partons/beans/dse/QuarkGluonVertex.h"
 
+namespace PARTONS {
+
+
 QuarkGluonVertex::QuarkGluonVertex(const std::string &className,
         unsigned int numberOfBasisElements) :
         BaseObject(className), m_N(numberOfBasisElements) {
@@ -27,3 +30,5 @@ void QuarkGluonVertex::basisElementsWarning(const std::string& functionName) con
             "Returned 0 for unsupported basis elements!"
             "Beware unphysical result.");
 }
+
+} /* namespace PARTONS */

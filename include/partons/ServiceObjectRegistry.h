@@ -6,13 +6,11 @@
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 01 July 2015
  * @version 1.0
- *
- * @class ServiceObjectRegistry
- *
- * @brief
  */
 
 #include <string>
+
+namespace PARTONS {
 
 class AutomationService;
 class BaseObjectRegistry;
@@ -25,6 +23,11 @@ class ObservableService;
 class ServiceObject;
 class VizualisationService;
 
+/**
+ * @class ServiceObjectRegistry
+ *
+ * @brief
+ */
 class ServiceObjectRegistry {
 public:
     virtual ~ServiceObjectRegistry();
@@ -58,5 +61,7 @@ private:
 
     void checkBaseObjectRegistryNullPointer() const;
 };
+
+} /* namespace PARTONS */
 
 #endif /* SERVICE_OBJECT_REGISTRY_H */

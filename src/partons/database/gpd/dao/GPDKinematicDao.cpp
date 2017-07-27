@@ -10,6 +10,9 @@
 #include "../../../../../include/partons/database/Database.h"
 #include "../../../../../include/partons/database/DatabaseManager.h"
 
+namespace PARTONS {
+
+
 GPDKinematicDao::GPDKinematicDao() :
         BaseObject("GPDKinematicDao") {
 }
@@ -177,3 +180,5 @@ int GPDKinematicDao::getKinematicIdByHashSum(const std::string& hashSum) const {
 
     return result;
 }
+
+} /* namespace PARTONS */

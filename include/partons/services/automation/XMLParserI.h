@@ -14,6 +14,8 @@
 #include "../../beans/automation/Task.h"
 #include "../../beans/List.h"
 
+namespace PARTONS {
+
 class Scenario;
 
 /**
@@ -71,5 +73,7 @@ protected:
 
     List<BaseObjectData*> m_currentModuleHierarchy;
 };
+
+} /* namespace PARTONS */
 
 #endif /* XML_PARSER_I_H */

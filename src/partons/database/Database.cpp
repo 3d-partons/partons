@@ -10,6 +10,9 @@
 
 #include "../../../include/partons/Partons.h"
 
+namespace PARTONS {
+
+
 const std::string Database::TABLE_NAME_COMPUTATION = "computation";
 const std::string Database::COLUMN_NAME_COMPUTATION_ID = "computation_id";
 const std::string Database::COLUMN_NAME_COMPUTATION_MODULE_NAME =
@@ -208,3 +211,5 @@ std::string Database::getPreFormatedColumnValuesFromVector(
 
     return formatter.str();
 }
+
+} /* namespace PARTONS */

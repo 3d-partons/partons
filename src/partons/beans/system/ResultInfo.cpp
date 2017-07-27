@@ -6,6 +6,9 @@
 #include "../../../../include/partons/beans/automation/Scenario.h"
 #include "../../../../include/partons/ResourceManager.h"
 
+namespace PARTONS {
+
+
 ResultInfo::ResultInfo() :
         BaseObject("ResultInfo"), m_scenarioHashSum(
                 ElemUtils::StringUtils::EMPTY), m_environmentConfigurationHashSum(
@@ -78,3 +81,5 @@ void ResultInfo::setScenarioTaskIndexNumber(
         unsigned int scenarioTaskIndexNumber) {
     m_scenarioTaskIndexNumber = scenarioTaskIndexNumber;
 }
+
+} /* namespace PARTONS */

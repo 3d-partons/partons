@@ -19,6 +19,9 @@
 #include "../../../../../include/partons/beans/system/ResultInfo.h"
 #include "../../../../../include/partons/database/DatabaseManager.h"
 
+namespace PARTONS {
+
+
 GPDResultDaoService::GPDResultDaoService() :
         ResultDaoService("GPDResultDaoService"), m_lastGPDKinematicId(-1), m_lastGPDResultId(
                 -1), m_lastPartonDistributionId(-1), m_lastQuarkDistributionId(
@@ -263,3 +266,5 @@ List<GPDResult> GPDResultDaoService::getGPDResultListByComputationId(
 
     return results;
 }
+
+} /* namespace PARTONS */

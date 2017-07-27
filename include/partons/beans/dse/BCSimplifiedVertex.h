@@ -3,11 +3,6 @@
  * @author Nabil Chouika (SPhN - CEA Saclay)
  * @date 2 mars 2016
  * @version 1.0
- *
- * @class BCSimplifiedVertex
- * @brief Simplified Ball-Chiu Vertex.
- *
- * \f$ \Gamma_\mu = \gamma_\mu \frac{1}{2} \left( A \left(p^2 \right) + A \left( q^2 \right) \right) \f$.
  */
 
 #ifndef BCSIMPLIFIEDVERTEX_H_
@@ -16,6 +11,15 @@
 #include <string>
 
 #include "RLVertex.h"
+
+namespace PARTONS {
+
+/**
+ * @class BCSimplifiedVertex
+ * @brief Simplified Ball-Chiu Vertex.
+ *
+ * \f$ \Gamma_\mu = \gamma_\mu \frac{1}{2} \left( A \left(p^2 \right) + A \left( q^2 \right) \right) \f$.
+ */
 
 class BCSimplifiedVertex: public RLVertex {
 public:
@@ -40,5 +44,7 @@ protected:
     BCSimplifiedVertex(const std::string &className, unsigned int numberOfBasisElements = 1);
     BCSimplifiedVertex(const BCSimplifiedVertex& other);
 };
+
+} /* namespace PARTONS */
 
 #endif /* BCSIMPLIFIEDVERTEX_H_ */

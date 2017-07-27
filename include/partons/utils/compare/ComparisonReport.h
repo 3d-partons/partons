@@ -15,6 +15,8 @@
 
 #include "ComparisonData.h"
 
+namespace PARTONS {
+
 /**
  * @class ComparisonReport
  *
@@ -142,5 +144,7 @@ private:
      */
     unsigned int m_numberOfComparedDataFailed;
 };
+
+} /* namespace PARTONS */
 
 #endif /* COMPARISON_REPORT_H */

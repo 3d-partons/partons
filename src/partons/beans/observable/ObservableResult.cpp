@@ -6,6 +6,9 @@
 #include "../../../../include/partons/utils/compare/CompareUtils.h"
 #include "../../../../include/partons/utils/compare/ComparisonData.h"
 
+namespace PARTONS {
+
+
 const std::string ObservableResult::PARAMETER_NAME_OBSERVABLE_VALUE =
         "observable value";
 
@@ -122,3 +125,5 @@ std::string ObservableResult::getObjectInfo() const {
 bool ObservableResult::operator <(const ObservableResult& other) const {
     return (m_kinematic < other.m_kinematic);
 }
+
+} /* namespace PARTONS */

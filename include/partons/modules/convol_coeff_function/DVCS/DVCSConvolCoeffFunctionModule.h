@@ -17,9 +17,11 @@
 #include "../../../beans/gpd/GPDType.h"
 #include "../../../beans/List.h"
 #include "../../../beans/PerturbativeQCDOrderType.h"
-#include "../../ConvolCoeffFunctionModule.h"
+#include "../ConvolCoeffFunctionModule.h"
 
-class ActiveFlavorsModule;
+namespace PARTONS {
+
+class ActiveFlavorsThresholdsModule;
 class DVCSConvolCoeffFunctionResult;
 class RunningAlphaStrongModule;
 
@@ -90,7 +92,7 @@ public:
      */
     void setQCDOrderType(PerturbativeQCDOrderType::Type qcdOrderType);
 
-    void setNfConvolCoeffFunction(ActiveFlavorsModule* pNfConvolCoeffFunction);
+    void setNfConvolCoeffFunction(ActiveFlavorsThresholdsModule* pNfConvolCoeffFunction);
     /**
      *
      * @param pRunningAlphaStrongModule Pointer to the running coupling module to be used.
@@ -122,7 +124,7 @@ protected:
 
     RunningAlphaStrongModule* m_pRunningAlphaStrongModule; ///< Pointer to the running coupling module to be used.
 
-    ActiveFlavorsModule* m_pNfConvolCoeffFunction;
+    ActiveFlavorsThresholdsModule* m_pNfConvolCoeffFunction;
 
     PerturbativeQCDOrderType::Type m_qcdOrderType; ///< Order of the perturbative QCD computation.
     GPDType::Type m_currentGPDComputeType; ///< GPDType of the current CFF computation.
@@ -143,5 +145,7 @@ protected:
     void preCompute(double xi, double t, double Q2, double MuF2, double MuR2,
             GPDType::Type gpdType);
 };
+
+} /* namespace PARTONS */
 
 #endif /* DVCS_CONVOL_COEFF_FUNCTION_MODULE_H */

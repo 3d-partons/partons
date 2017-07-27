@@ -1,5 +1,5 @@
-#ifndef BASE_MODULE_H
-#define BASE_MODULE_H
+#ifndef MODULE_OBJECT_H
+#define MODULE_OBJECT_H
 
 /**
  * @file ModuleObject.h
@@ -15,11 +15,13 @@
 
 #include "beans/automation/BaseObjectData.h"
 
-class ModuleObjectFactory;
-
 namespace ElemUtils {
 class Parameters;
 } /* namespace ElemUtils */
+
+namespace PARTONS {
+
+class ModuleObjectFactory;
 
 /**
  * @class ModuleObject
@@ -103,4 +105,6 @@ private:
     unsigned int m_referenceModuleId;
 };
 
-#endif /* BASE_MODULE_H */
+} /* namespace PARTONS */
+
+#endif /* MODULE_OBJECT_H */

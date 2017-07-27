@@ -8,6 +8,9 @@
 #include <QtSql/qsqlerror.h>
 #include <string>
 
+namespace PARTONS {
+
+
 // Global static pointer used to ensure a single instance of the class.
 DatabaseManager* DatabaseManager::m_pInstance = 0;
 
@@ -107,3 +110,5 @@ const QSqlDatabase& DatabaseManager::getProductionDatabase() {
 
     return m_productionDatabase;
 }
+
+} /* namespace PARTONS */

@@ -16,6 +16,8 @@ namespace ElemUtils {
 class Packet;
 } /* namespace ElemUtils */
 
+namespace PARTONS {
+
 /**
  * @class GPDType
  *
@@ -107,7 +109,7 @@ public:
      * Get string representation of type being assigned to a declared object of this class.
      * @return String representation of assigned type, like "H" for GPDType::H.
      */
-    std::string toString();
+    std::string toString() const;
 
     /**
      * Serialize into given Packet.
@@ -175,5 +177,7 @@ ElemUtils::Packet& operator <<(ElemUtils::Packet& packet, GPDType& gpdType);
  * Stream operator to retrieve class from Packet. See also GPDType::unserialize().
  */
 ElemUtils::Packet& operator >>(ElemUtils::Packet& packet, GPDType& gpdType);
+
+} /* namespace PARTONS */
 
 #endif /* GPD_COMPUTE_TYPE_H */

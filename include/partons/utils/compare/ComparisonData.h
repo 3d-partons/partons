@@ -10,6 +10,8 @@
 
 #include <NumA/utils/Differences.h>
 #include <string>
+
+namespace PARTONS {
 /**
  * @class ComparisonData
  *
@@ -93,5 +95,7 @@ private:
 	 */
 	std::string m_objectInfo;
 };
+
+} /* namespace PARTONS */
 
 #endif /* COMPARISON_DATA_H */

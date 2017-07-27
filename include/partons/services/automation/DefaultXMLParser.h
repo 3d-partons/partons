@@ -14,6 +14,8 @@
 
 #include "XMLParserI.h"
 
+namespace PARTONS {
+
 /**
  * @class DefaultXMLParser
  *
@@ -37,5 +39,7 @@ public:
 private:
     bool m_isModuleNodePreviouslyCreated;
 };
+
+} /* namespace PARTONS */
 
 #endif /* DEFAULT_XML_PARSER_H */

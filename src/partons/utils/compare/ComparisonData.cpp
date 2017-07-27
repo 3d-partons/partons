@@ -2,6 +2,9 @@
 
 #include <ElementaryUtils/string_utils/Formatter.h>
 
+namespace PARTONS {
+
+
 ComparisonData::ComparisonData(bool isPassed, const std::string& variableName,
         const std::string& variableValue,
         const std::string& variableValueReference,
@@ -42,3 +45,5 @@ bool ComparisonData::isIsComparisonPassed() const {
 void ComparisonData::setIsComparisonPassed(bool isComparisonPassed) {
     m_isComparisonPassed = isComparisonPassed;
 }
+
+} /* namespace PARTONS */

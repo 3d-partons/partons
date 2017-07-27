@@ -1,5 +1,8 @@
 #include "../../../../include/partons/utils/type/PhysicalUnit.h"
 
+namespace PARTONS {
+
+
 PhysicalUnit::PhysicalUnit() :
         m_type(PhysicalUnit::NONE) {
 }
@@ -12,7 +15,7 @@ PhysicalUnit::operator PhysicalUnit::Type() const {
     return m_type;
 }
 
-std::string PhysicalUnit::toString() {
+std::string PhysicalUnit::toString() const {
     switch (m_type) {
     case GEV:
         return "GEV";
@@ -51,3 +54,5 @@ PhysicalUnit::Type PhysicalUnit::getType() const {
 void PhysicalUnit::setType(Type type) {
     m_type = type;
 }
+
+} /* namespace PARTONS */

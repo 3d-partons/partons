@@ -15,6 +15,8 @@
 
 #include "BaseObject.h"
 
+namespace PARTONS {
+
 /** @class BaseObjectRegistry
  *
  * @brief The Registry is the analog of a phonebook, which lists all available objects (modules or services most of the time) identified by a unique integer identifier or by a unique string (class name) for translation. And only one species of each.
@@ -153,5 +155,7 @@ private:
     BaseObjectRegistry(BaseObjectRegistry const& other); // Not Implemented
     BaseObjectRegistry& operator=(BaseObjectRegistry const& other); // Not Implemented
 };
+
+} /* namespace PARTONS */
 
 #endif /* BASE_OBJECT_REGISTRY_H */

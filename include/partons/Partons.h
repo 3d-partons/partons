@@ -10,6 +10,12 @@
 
 #include <string>
 
+namespace ElemUtils {
+class LoggerManager;
+} /* namespace ElemUtils */
+
+namespace PARTONS {
+
 class DatabaseManager;
 
 class BaseObjectFactory;
@@ -17,10 +23,6 @@ class BaseObjectRegistry;
 class EnvironmentConfiguration;
 class ModuleObjectFactory;
 class ServiceObjectRegistry;
-
-namespace ElemUtils {
-class LoggerManager;
-} /* namespace ElemUtils */
 
 /**
  * @class Partons
@@ -98,5 +100,7 @@ private:
      */
     void checkMandatoryFiles();
 };
+
+} /* namespace PARTONS */
 
 #endif /* PARTONS_H */

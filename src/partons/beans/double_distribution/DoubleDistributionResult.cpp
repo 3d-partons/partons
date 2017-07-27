@@ -5,6 +5,9 @@
 #include <sstream>
 #include <utility>
 
+namespace PARTONS {
+
+
 DoubleDistributionResult::DoubleDistributionResult() :
         BaseObject("DualDistributionResult") {
 }
@@ -37,7 +40,7 @@ const PartonDistribution& DoubleDistributionResult::getPartonDistribution(
     return (it->second);
 }
 
-std::string DoubleDistributionResult::toString() {
+std::string DoubleDistributionResult::toString() const {
     std::ostringstream os;
     std::map<DoubleDistributionType::Type, PartonDistribution>::const_iterator it;
 
@@ -51,3 +54,5 @@ std::string DoubleDistributionResult::toString() {
 
     return os.str();
 }
+
+} /* namespace PARTONS */

@@ -8,6 +8,9 @@
 #include "../../../include/partons/services/hash_sum/CryptographicHashService.h"
 #include "../../../include/partons/ServiceObjectRegistry.h"
 
+namespace PARTONS {
+
+
 DatabaseFileObject::DatabaseFileObject(const std::string& className) :
         BaseObject(className), m_pCryptographicHashService(0), m_storeDate(
                 time(0)), m_file(ElemUtils::StringUtils::EMPTY), m_hashSum(
@@ -105,3 +108,5 @@ std::string DatabaseFileObject::toString() const {
 
     return formatter;
 }
+
+} /* namespace PARTONS */

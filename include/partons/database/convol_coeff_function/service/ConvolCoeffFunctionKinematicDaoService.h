@@ -14,6 +14,8 @@
 #include "../../../beans/List.h"
 #include "../dao/ConvolCoeffFunctionKinematicDao.h"
 
+namespace PARTONS {
+
 /**
  * @class ConvolCoeffFunctionKinematicDaoService
  *
@@ -130,5 +132,7 @@ private:
     int insertWithoutTransaction(
             const DVCSConvolCoeffFunctionKinematic &ccfKinematic) const;
 };
+
+} /* namespace PARTONS */
 
 #endif /* CONVOL_COEFF_FUNCTION_KINEMATIC_DAO_SERVICE_H */

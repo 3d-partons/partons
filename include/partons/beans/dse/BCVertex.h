@@ -3,9 +3,6 @@
  * @author Nabil Chouika (SPhN - CEA Saclay)
  * @date 3 mars 2016
  * @version 1.0
- *
- * @class BCVertex
- * @brief Ball-Chiu Vertex.
  */
 
 #ifndef BCVERTEX_H_
@@ -15,6 +12,12 @@
 
 #include "QuarkGluonVertex.h"
 
+namespace PARTONS {
+
+/**
+ * @class BCVertex
+ * @brief Ball-Chiu Vertex.
+ */
 class BCVertex: public QuarkGluonVertex {
 public:
     BCVertex();
@@ -40,5 +43,7 @@ protected:
     BCVertex(const std::string &className, unsigned int numberOfBasisElements = 3);
     BCVertex(const BCVertex& other);
 };
+
+} /* namespace PARTONS */
 
 #endif /* BCVERTEX_H_ */

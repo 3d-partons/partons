@@ -14,6 +14,8 @@
 #include "../../../beans/observable/ObservableKinematic.h"
 #include "../dao/ObservableKinematicDao.h"
 
+namespace PARTONS {
+
 /**
  * @class ObservableKinematicDaoService
  *
@@ -129,5 +131,7 @@ private:
     int insertWithoutTransaction(
             const ObservableKinematic &observableKinematic) const;
 };
+
+} /* namespace PARTONS */
 
 #endif /* OBSERVABLE_KINEMATIC_DAO_SERVICE_H */

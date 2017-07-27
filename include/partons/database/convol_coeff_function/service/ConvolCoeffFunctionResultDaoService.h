@@ -18,6 +18,8 @@
 #include "../dao/ConvolCoeffFunctionResultDao.h"
 #include "ConvolCoeffFunctionKinematicDaoService.h"
 
+namespace PARTONS {
+
 /**
  * @class ConvolCoeffFunctionResultDaoService
  *
@@ -137,5 +139,7 @@ private:
      */
     ResultInfoDaoService m_resultInfoDaoService;
 };
+
+} /* namespace PARTONS */
 
 #endif /* CONVOL_COEFF_FUNCTION_RESULT_DAO_SERVICE_H */

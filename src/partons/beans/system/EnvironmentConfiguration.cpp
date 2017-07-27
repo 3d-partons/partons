@@ -2,6 +2,9 @@
 
 #include "../../../../include/partons/database/common/service/EnvironmentConfigurationDaoService.h"
 
+namespace PARTONS {
+
+
 EnvironmentConfiguration::EnvironmentConfiguration() :
         DatabaseFileObject("EnvironmentConfiguration") {
 }
@@ -20,3 +23,5 @@ std::string EnvironmentConfiguration::fillFile() const {
     EnvironmentConfigurationDaoService daoService;
     return daoService.getConfigurationByIndexId(getIndexId());
 }
+
+} /* namespace PARTONS */

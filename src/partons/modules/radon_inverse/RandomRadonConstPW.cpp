@@ -13,6 +13,9 @@
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/utils/radon/RadonTools.h"
 
+namespace PARTONS {
+
+
 // Initialise [class]::classId with a unique name.
 const unsigned int RandomRadonConstPW::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
@@ -260,3 +263,5 @@ double RandomRadonConstPW::computeGPD(double x, double xi) {
     return gpdMesh * m_ddVector;
 }
 
+
+} /* namespace PARTONS */

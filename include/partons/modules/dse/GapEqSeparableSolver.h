@@ -3,8 +3,6 @@
  * @author Nabil CHOUIKA (SPhN / CEA Saclay)
  * @date Jan 26, 2016
  * @version 1.0
- *
- * @class GapEqSeparableSolver
  */
 
 #ifndef GAPEQSEPARABLESOLVER_H_
@@ -16,6 +14,11 @@
 
 #include "GapEquationSolverModule.h"
 
+namespace PARTONS {
+
+/**
+ * @class GapEqSeparableSolver
+ */
 class GapEqSeparableSolver: public GapEquationSolverModule {
 public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
@@ -58,5 +61,7 @@ private:
     NumA::VectorD m_G_X0, m_G_X, m_DeltaG; ///< DeltaGn = G_Xn - G_X(n-1) needed by Broyden to compute the step (n+1)
     NumA::MatrixD m_J_G_X0, m_J_G_X; ///< Jacobian matrix stored for Broyden algorithm
 };
+
+} /* namespace PARTONS */
 
 #endif /* GAPEQSEPARABLESOLVER_H_ */

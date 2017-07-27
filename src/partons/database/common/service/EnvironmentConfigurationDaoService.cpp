@@ -2,6 +2,9 @@
 
 #include "../../../../../include/partons/beans/system/EnvironmentConfiguration.h"
 
+namespace PARTONS {
+
+
 EnvironmentConfigurationDaoService::EnvironmentConfigurationDaoService() :
         BaseObject("EnvironmentConfigurationDaoService") {
 }
@@ -37,3 +40,5 @@ int EnvironmentConfigurationDaoService::getEnvironmentConfigurationIdByHashSum(
     return m_environmentConfigurationDao.getEnvironmentConfigurationIdByHashSum(
             hashSum);
 }
+
+} /* namespace PARTONS */

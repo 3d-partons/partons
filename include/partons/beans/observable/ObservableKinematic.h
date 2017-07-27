@@ -18,6 +18,8 @@ namespace ElemUtils {
 class Parameters;
 } /* namespace ElemUtils */
 
+namespace PARTONS {
+
 /**
  * @class ObservableKinematic
  *
@@ -50,7 +52,7 @@ class Parameters;
  pDVCSModule->setConvolCoeffFunctionModule(pDVCSCFFModule);
 
  //load observable module with BaseModuleFactory
- Observable* pObservable = Partons::getInstance()->getModuleObjectFactory()->newObservable(All::classId);
+ Observable* pObservable = Partons::getInstance()->getModuleObjectFactory()->newObservable(DVCSAllMinus::classId);
 
  //configure observable module
  pObservable->setProcessModule(pDVCSModule);
@@ -264,5 +266,7 @@ ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
  */
 ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
         ObservableKinematic& observableKinematic);
+
+} /* namespace PARTONS */
 
 #endif /* OBSERVABLE_KINEMATIC_H */

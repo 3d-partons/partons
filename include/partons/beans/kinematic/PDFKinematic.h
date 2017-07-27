@@ -10,6 +10,8 @@
 
 #include <string>
 
+namespace PARTONS {
+
 class PDFKinematic {
 public:
 
@@ -37,7 +39,7 @@ public:
      *
      * @return a pre-formatted characters string
      */
-    virtual std::string toString();
+    virtual std::string toString() const;
 
     // ##### GETTERS & SETTERS #####
 
@@ -54,5 +56,7 @@ private:
     double m_MuF;	///< Factorization scale (in GeV)
     double m_MuR;	///< Renormalization scale (in GeV)
 };
+
+} /* namespace PARTONS */
 
 #endif /* PDFKINEMATIC_H */

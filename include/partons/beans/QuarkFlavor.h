@@ -11,6 +11,8 @@
 
 #include <string>
 
+namespace PARTONS {
+
 /**
  * @class QuarkFlavor
  *
@@ -94,7 +96,7 @@ public:
      * Get string representation of type being assigned to a declared object of this class.
      * @return String representation of assigned type, like "UP" for QuarkFlavor::UP.
      */
-    std::string toString();
+    std::string toString() const;
 
     /**
      * Get short name representation of type being assigned to a declared object of this class.
@@ -123,5 +125,7 @@ private:
      */
     QuarkFlavor::Type m_type;
 };
+
+} /* namespace PARTONS */
 
 #endif /* QUARK_FLAVOR_H */

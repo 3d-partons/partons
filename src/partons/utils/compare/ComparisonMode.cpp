@@ -1,5 +1,8 @@
 #include "../../../../include/partons/utils/compare/ComparisonMode.h"
 
+namespace PARTONS {
+
+
 ComparisonMode::ComparisonMode() :
         m_type(ComparisonMode::UNDEFINED) {
 }
@@ -45,3 +48,5 @@ ComparisonMode::Type ComparisonMode::getType() const {
 void ComparisonMode::setType(Type type) {
     m_type = type;
 }
+
+} /* namespace PARTONS */

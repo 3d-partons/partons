@@ -1,18 +1,18 @@
 #include "../../../../include/partons/modules/double_distribution/DoubleDistributionExample.h"
 
+#include <NumA/functor/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
-#include <map>
 #include <utility>
-#include <NumA/functor/one_dimension/Functor1D.h>
 
 #include "../../../../include/partons/beans/double_distribution/DoubleDistributionType.h"
-#include "../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
 #include "../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
 #include "../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 
-// Initialise [class]::classId with a unique name and selfregister this module into the global registry.
+namespace PARTONS {
+
+
 const unsigned int DoubleDistributionExample::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new DoubleDistributionExample("DoubleDistributionExample"));
@@ -140,5 +140,17 @@ double DoubleDistributionExample::integrateExample(double x,
 void DoubleDistributionExample::resolveObjectDependencies() {
 
     setIntegrator(NumA::IntegratorType1D::DEXP);
-
 }
+
+void DoubleDistributionExample::configure(const ElemUtils::Parameters &parameters){
+
+	DoubleDistributionModule::configure(parameters);
+	MathIntegratorModule::configureIntegrator(parameters);
+}
+
+void DoubleDistributionExample::prepareSubModules(
+        const std::map<std::string, BaseObjectData>& subModulesData){
+	DoubleDistributionModule::prepareSubModules(subModulesData);
+}
+
+} /* namespace PARTONS */

@@ -6,6 +6,9 @@
 #include "../../../../include/partons/ServiceObject.h"
 #include "../../../../include/partons/ServiceObjectRegistry.h"
 
+namespace PARTONS {
+
+
 // Global static pointer used to ensure a single instance of the class.
 ScenarioManager* ScenarioManager::pInstance = 0;
 
@@ -41,3 +44,5 @@ void ScenarioManager::playScenario(const Scenario &scenario) const {
                 task.getServiceName())->computeTask(task);
     }
 }
+
+} /* namespace PARTONS */

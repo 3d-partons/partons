@@ -14,6 +14,8 @@
 #ifndef FORMFACTORKINEMATIC_H_
 #define FORMFACTORKINEMATIC_H_
 
+namespace PARTONS {
+
 /*
  *
  */
@@ -22,5 +24,7 @@ public:
 	FormFactorKinematic();
 	virtual ~FormFactorKinematic();
 };
+
+} /* namespace PARTONS */
 
 #endif /* FORMFACTORKINEMATIC_H_ */

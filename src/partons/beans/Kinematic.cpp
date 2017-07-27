@@ -4,6 +4,9 @@
 
 //#include "../../../include/partons/BaseObject.h"
 
+namespace PARTONS {
+
+
 Kinematic::Kinematic(const std::string &className) :
         BaseObject(className)/*, m_listEntryPosition(-1)*/, m_hashSum(
                 ElemUtils::StringUtils::EMPTY) {
@@ -69,3 +72,4 @@ ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
     return packet;
 }
 
+} /* namespace PARTONS */

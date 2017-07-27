@@ -1,5 +1,8 @@
 #include "../../../include/partons/beans/SortingMode.h"
 
+namespace PARTONS {
+
+
 SortingMode::SortingMode() :
         m_type(SortingMode::UNDEFINED) {
 }
@@ -11,7 +14,7 @@ SortingMode::operator SortingMode::Type() const {
     return m_type;
 }
 
-std::string SortingMode::toString() {
+std::string SortingMode::toString() const {
     switch (m_type) {
     case ASCENDING:
         return "ASCENDING";
@@ -44,3 +47,5 @@ SortingMode::Type SortingMode::getType() const {
 void SortingMode::setType(Type type) {
     m_type = type;
 }
+
+} /* namespace PARTONS */

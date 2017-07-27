@@ -1,7 +1,7 @@
 #include "../../../../include/partons/modules/evolution/GPDEvolutionModule.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
-//#include <ElementaryUtils/parameters/GenericType.h>
+#include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <math.h>
 #include <NumA/linear_algebra/matrix/MatrixD.h>
@@ -11,11 +11,14 @@
 #include "../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
 #include "../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
 #include "../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
-#include "../../../../include/partons/modules/active_flavors/NfFunctionExample.h"
-#include "../../../../include/partons/modules/alphaS/RunningAlphaStrong.h"
-#include "../../../../include/partons/modules/GPDModule.h"
+#include "../../../../include/partons/modules/active_flavors_thresholds/ActiveFlavorsThresholdsQuarkMasses.h"
+#include "../../../../include/partons/modules/gpd/GPDModule.h"
+#include "../../../../include/partons/modules/running_alpha_strong/RunningAlphaStrongStandard.h"
 #include "../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../include/partons/Partons.h"
+
+namespace PARTONS {
+
 
 NumA::MatrixD GPDEvolutionModule::conversionMatrix1(3, 3, //
         1., 0., 0., //
@@ -222,15 +225,15 @@ GPDEvolutionModule::~GPDEvolutionModule() {
 void GPDEvolutionModule::resolveObjectDependencies() {
     m_pRunningAlphaStrong =
             Partons::getInstance()->getModuleObjectFactory()->newRunningAlphaStrongModule(
-                    RunningAlphaStrong::classId);
+                    RunningAlphaStrongStandard::classId);
 
     m_pNfFunction =
-            Partons::getInstance()->getModuleObjectFactory()->newActiveFlavorsModule(
-                    NfFunctionExample::classId);
+            Partons::getInstance()->getModuleObjectFactory()->newActiveFlavorsThresholdsModule(
+                    ActiveFlavorsThresholdsQuarkMasses::classId);
 
     m_pNfEvolFunction =
-            Partons::getInstance()->getModuleObjectFactory()->newActiveFlavorsModule(
-                    NfFunctionExample::classId);
+            Partons::getInstance()->getModuleObjectFactory()->newActiveFlavorsThresholdsModule(
+                    ActiveFlavorsThresholdsQuarkMasses::classId);
 }
 
 //TODO logger
@@ -546,7 +549,7 @@ PartonDistribution GPDEvolutionModule::compute(double x, double xi, double t,
     preCompute(x, xi, t, MuF2, MuR2, pGPDModule, gpdType);
 
     // 1. retrieve intervals from function nf over MuF in descending order nf ; from MuF_ref to MuF
-    std::vector<NfInterval> nfIntervals = m_pNfFunction->getNfIntervals(
+    std::vector<ActiveFlavorsThresholds> nfIntervals = m_pNfFunction->getNfIntervals(
             m_pGPDModule->getMuF2Ref(), m_MuF2);
 
     std::cerr << "nfIntervals = " << nfIntervals.size() << " for MuF2_ref = "
@@ -607,7 +610,7 @@ void GPDEvolutionModule::evolutionR(double x,
 //    return makeFinalPartonDistribution();
 //}
 
-void GPDEvolutionModule::evolution(const NfInterval &nfInterval) {
+void GPDEvolutionModule::evolution(const ActiveFlavorsThresholds &nfInterval) {
     m_currentNf = nfInterval.getNf();
 
     // compare nfInterval to nf of vector of GPD combination and resize vector of GPD combination to init evolution process
@@ -625,7 +628,7 @@ void GPDEvolutionModule::evolution(const NfInterval &nfInterval) {
             m_partonDistributionEvolutionBase, m_currentNf);
 }
 
-void GPDEvolutionModule::computeNonSinglet(const NfInterval &nfInterval) {
+void GPDEvolutionModule::computeNonSinglet(const ActiveFlavorsThresholds &nfInterval) {
     // For each entry of the vector we compute FNS,i ; We started the loop at 2 because vector[0] = FG and vector[1] = FS
     for (unsigned int i = 2; i != m_partonDistributionEvolutionBase.size();
             i++) {
@@ -636,7 +639,7 @@ void GPDEvolutionModule::computeNonSinglet(const NfInterval &nfInterval) {
     }
 }
 
-void GPDEvolutionModule::computeSingletGluon(const NfInterval &nfInterval) {
+void GPDEvolutionModule::computeSingletGluon(const ActiveFlavorsThresholds &nfInterval) {
     // m_vectorOfNonSingletSingletGluon[0] = FG
     // m_vectorOfNonSingletSingletGluon[1] = FS
     m_partonDistributionEvolutionBase[0] = integratedGluonMuFDerivative(
@@ -736,3 +739,5 @@ void GPDEvolutionModule::prepareSubModules(
 //    return 0.;
 //}
 
+
+} /* namespace PARTONS */

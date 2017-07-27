@@ -20,7 +20,9 @@
 #include "../../beans/observable/ObservableChannel.h"
 #include "../../beans/observable/ObservableKinematic.h"
 #include "../../beans/observable/ObservableType.h"
-#include "../process/DVCSModule.h"
+#include "../process/DVCS/DVCSProcessModule.h"
+
+namespace PARTONS {
 
 class ObservableResult;
 
@@ -56,7 +58,7 @@ public:
      */
     virtual void configure(const ElemUtils::Parameters &parameters);
 
-    typedef double (DVCSModule::*computeCrossSection)(double beamHelicity,
+    typedef double (DVCSProcessModule::*computeCrossSection)(double beamHelicity,
 
     double beamCharge, NumA::Vector3D targetPolarization);
 
@@ -116,5 +118,7 @@ protected:
 private:
     pthread_mutex_t m_mutex;
 };
+
+} /* namespace PARTONS */
 
 #endif /* OBSERVABLE_H */

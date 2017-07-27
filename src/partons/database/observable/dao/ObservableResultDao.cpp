@@ -14,6 +14,9 @@
 #include "../../../../../include/partons/database/DatabaseManager.h"
 #include "../../../../../include/partons/utils/math/ErrorBar.h"
 
+namespace PARTONS {
+
+
 ObservableResultDao::ObservableResultDao() :
         BaseObject("ObservableResultDao") {
 }
@@ -191,3 +194,5 @@ void ObservableResultDao::fillObservableResultList(
         observableResultList.add(observableResult);
     }
 }
+
+} /* namespace PARTONS */

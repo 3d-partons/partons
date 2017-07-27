@@ -6,7 +6,14 @@
  * @author: H. Moutarde (CEA/Irfu, Saclay)
  * @date 20 avr. 2015
  * @version 1.0
- *
+ */
+
+#include <string>
+
+namespace PARTONS {
+
+
+/**
  * @class GeneralizedFormFactorKinematic
  *
  * @brief Class representing the kinematic variables for a Generalized Form Factor model.\n
@@ -15,9 +22,6 @@
  * also carry an implicit dependance on renormalization and factorization scales.\n
  * They are dimensionless functions.
  */
-
-#include <string>
-
 class GeneralizedFormFactorKinematic {
 public:
 
@@ -45,7 +49,7 @@ public:
      *
      * @return a pre-formatted characters string
      */
-    virtual std::string toString();
+    virtual std::string toString() const;
 
     // ##### GETTERS & SETTERS #####
 
@@ -62,5 +66,7 @@ private:
     double m_MuF;	///< Factorization scale (in GeV)
     double m_MuR;	///< Renormalization scale (in GeV)
 };
+
+} /* namespace PARTONS */
 
 #endif /* GENERALIZED_FORM_FACTOR_KINEMATIC_H */

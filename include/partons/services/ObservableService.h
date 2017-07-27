@@ -17,6 +17,8 @@
 #include "../beans/observable/ObservableResult.h"
 #include "../ServiceObjectTyped.h"
 
+namespace PARTONS {
+
 class ConvolCoeffFunctionModule;
 class Observable;
 class ProcessModule;
@@ -148,5 +150,7 @@ private:
     void generatePlotFileTask(Task &task);
 
 };
+
+} /* namespace PARTONS */
 
 #endif /* OBSERVABLE_SERVICE_H */

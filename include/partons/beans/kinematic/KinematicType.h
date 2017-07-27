@@ -10,6 +10,8 @@
 
 #include <string>
 
+namespace PARTONS {
+
 /**
  * @class KinematicType
  *
@@ -77,7 +79,7 @@ public:
      * Get string representation of type being assigned to a declared object of this class.
      * @return String representation of assigned type, like "THEO" for KinematicType::THEO.
      */
-    std::string toString();
+    std::string toString() const;
 
     //********************************************************
     //*** SETTERS AND GETTERS ********************************
@@ -100,5 +102,7 @@ private:
      */
     KinematicType::Type m_type;
 };
+
+} /* namespace PARTONS */
 
 #endif /* KINEMATIC_TYPE_H */

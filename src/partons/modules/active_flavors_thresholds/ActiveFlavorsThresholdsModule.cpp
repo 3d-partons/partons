@@ -1,0 +1,154 @@
+#include "../../../../include/partons/modules/active_flavors_thresholds/ActiveFlavorsThresholdsModule.h"
+
+#include <ElementaryUtils/logger/CustomException.h>
+#include <ElementaryUtils/string_utils/Formatter.h>
+#include <algorithm>
+
+namespace PARTONS {
+
+
+const std::string ActiveFlavorsThresholdsModule::ACTIVE_FLAVORS_THRESHOLDS_MODULE_CLASS_NAME =
+        "ActiveFlavorsThresholdsModule";
+
+ActiveFlavorsThresholdsModule::ActiveFlavorsThresholdsModule(const std::string &className) :
+        ModuleObject(className) {
+}
+
+ActiveFlavorsThresholdsModule::~ActiveFlavorsThresholdsModule() {
+
+}
+
+ActiveFlavorsThresholdsModule::ActiveFlavorsThresholdsModule(const ActiveFlavorsThresholdsModule& other) :
+        ModuleObject(other) {
+    m_nfFunctionOfMu = other.m_nfFunctionOfMu;
+}
+
+void ActiveFlavorsThresholdsModule::resolveObjectDependencies() {
+    // sort vector of intervals by nf value
+    std::sort(m_nfFunctionOfMu.begin(), m_nfFunctionOfMu.end());
+
+    checkCurveIntegrity();
+}
+
+void ActiveFlavorsThresholdsModule::addNfInterval(unsigned short nfValue,
+        double lowerBound, double upperBound) {
+    m_nfFunctionOfMu.push_back(
+            ActiveFlavorsThresholds(nfValue, lowerBound, upperBound,
+                    m_nfFunctionOfMu.size()));
+}
+
+ActiveFlavorsThresholds ActiveFlavorsThresholdsModule::getNfInterval(double Mu) {
+    ActiveFlavorsThresholds result;
+
+    // case Mu <= 0
+    if (Mu <= m_nfFunctionOfMu[0].getLowerBound()) {
+        result = m_nfFunctionOfMu[0];
+    }
+    // case Mu > last threshold
+    else if (Mu
+            >= m_nfFunctionOfMu[m_nfFunctionOfMu.size() - 1].getUpperBound()) {
+        result = m_nfFunctionOfMu[m_nfFunctionOfMu.size() - 1];
+        result.setUpperBound(Mu);
+    }
+    // case 0 < Mu < last threshold
+    else {
+        bool thresholdReach = false;
+
+        for (unsigned int i = 0;
+                i != m_nfFunctionOfMu.size() && !thresholdReach; i++) {
+            if (Mu < m_nfFunctionOfMu[i].getUpperBound()
+                    && Mu >= m_nfFunctionOfMu[i].getLowerBound()) {
+                result = m_nfFunctionOfMu[i];
+                thresholdReach = true;
+            }
+        }
+    }
+
+    return result;
+}
+
+std::vector<ActiveFlavorsThresholds> ActiveFlavorsThresholdsModule::getNfIntervals(double MuMin,
+        double MuMax) {
+
+    std::vector<ActiveFlavorsThresholds> results;
+
+    // case MuMin > MuMax
+    if (MuMin > MuMax) {
+        warn(__func__,
+                "MuMin > MuMax : threshold suppressed by overriding lower bound and upper bound ; nf will be constant");
+
+        ActiveFlavorsThresholds nfInterval = getNfInterval(MuMin);
+        // delete thresholds by overriding lowerBound & upperBound
+        // and swap lowerBound & upperBound value to perform backward evolution later in the code with math integration
+        nfInterval.setLowerBound(MuMax);
+        nfInterval.setUpperBound(MuMin);
+        results.push_back(nfInterval);
+    }
+    // case MuMin < MuMax
+    else {
+        ActiveFlavorsThresholds nfMinInterval = getNfInterval(MuMin);
+        ActiveFlavorsThresholds nfMaxInterval = getNfInterval(MuMax);
+
+        // retrieve intermediate intervals between nfMinInterval and nfMaxInterval
+        for (unsigned int i = nfMinInterval.getIndex();
+                i != nfMaxInterval.getIndex() + 1; i++) {
+            results.push_back(m_nfFunctionOfMu[i]);
+        }
+    }
+
+    return results;
+}
+
+void ActiveFlavorsThresholdsModule::initModule() {
+}
+
+void ActiveFlavorsThresholdsModule::isModuleWellConfigured() {
+}
+
+void ActiveFlavorsThresholdsModule::checkCurveIntegrity() {
+    // first vector must have at least one entry
+    if (m_nfFunctionOfMu.empty()) {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                "there is no nfInterval defined");
+    }
+
+    double previousNf = 0;
+
+    for (unsigned short i = 0; i != m_nfFunctionOfMu.size(); i++) {
+        // check NF between 1 and 6
+        if ((m_nfFunctionOfMu[i].getNf() < 1)
+                || (m_nfFunctionOfMu[i].getNf() > 6)) {
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    "nf out of range ; must be  0 < nf < 7");
+        }
+
+        //check if nf is contigus step by 1
+        if (i == 0) {
+            previousNf = m_nfFunctionOfMu[i].getNf();
+        } else {
+            if (m_nfFunctionOfMu[i].getNf() != (previousNf + 1)) {
+                throw ElemUtils::CustomException(getClassName(), __func__,
+                        "nf not contigus step by 1");
+            }
+            previousNf = m_nfFunctionOfMu[i].getNf();
+        }
+    }
+
+}
+
+std::string ActiveFlavorsThresholdsModule::toString() const{
+    ElemUtils::Formatter formater;
+
+    for (unsigned int i = 0; i != m_nfFunctionOfMu.size(); i++)
+        formater << m_nfFunctionOfMu[i].toString();
+    return formater.str();
+}
+
+void ActiveFlavorsThresholdsModule::prepareSubModules(
+        const std::map<std::string, BaseObjectData>& subModulesData) {
+    ModuleObject::prepareSubModules(subModulesData);
+
+    // Nothing to do.
+}
+
+} /* namespace PARTONS */

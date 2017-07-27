@@ -11,13 +11,15 @@
 #include "../../../include/partons/beans/automation/BaseObjectData.h"
 #include "../../../include/partons/beans/automation/Task.h"
 #include "../../../include/partons/beans/KinematicUtils.h"
-#include "../../../include/partons/beans/system/ResultInfo.h"
 #include "../../../include/partons/BaseObjectRegistry.h"
 #include "../../../include/partons/database/observable/service/ObservableResultDaoService.h"
 #include "../../../include/partons/modules/observable/Observable.h"
-#include "../../../include/partons/modules/process/DVCSModule.h"
+#include "../../../include/partons/modules/process/ProcessModule.h"
 #include "../../../include/partons/ModuleObjectFactory.h"
 #include "../../../include/partons/Partons.h"
+
+namespace PARTONS {
+
 
 const std::string ObservableService::FUNCTION_NAME_COMPUTE_OBSERVABLE =
         "computeObservable";
@@ -466,3 +468,5 @@ List<ObservableKinematic> ObservableService::newListOfKinematicFromTask(
 
     return listOfKinematic;
 }
+
+} /* namespace PARTONS */

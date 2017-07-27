@@ -2,6 +2,9 @@
 
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 
+namespace PARTONS {
+
+
 // Initialise [class]::classId with a unique name.
 const unsigned int ExampleEvolQCDModel::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
@@ -31,16 +34,18 @@ void ExampleEvolQCDModel::initModule() {
 }
 
 double ExampleEvolQCDModel::integratedNonSingletMuFDerivative(
-        const NfInterval& nfInterval) {
+        const ActiveFlavorsThresholds& nfInterval) {
     return 1.;
 }
 
 double ExampleEvolQCDModel::integratedSingletMuFDerivative(
-        const NfInterval& nfInterval) {
+        const ActiveFlavorsThresholds& nfInterval) {
     return 1.;
 }
 
 double ExampleEvolQCDModel::integratedGluonMuFDerivative(
-        const NfInterval& nfInterval) {
+        const ActiveFlavorsThresholds& nfInterval) {
     return 1.;
 }
+
+} /* namespace PARTONS */

@@ -6,6 +6,9 @@
 #include "../../../../../include/partons/beans/system/EnvironmentConfiguration.h"
 #include "../../../../../include/partons/Partons.h"
 
+namespace PARTONS {
+
+
 ComputationDaoService::ComputationDaoService() :
         BaseObject("CommonDaoService") {
 }
@@ -59,3 +62,5 @@ bool ComputationDaoService::isAvailable(const int computationId) const {
     debug(__func__, "Processing ...");
     return m_computationDao.isAvailable(computationId);
 }
+
+} /* namespace PARTONS */
