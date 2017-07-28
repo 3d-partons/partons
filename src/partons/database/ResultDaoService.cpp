@@ -221,7 +221,7 @@ void ResultDaoService::insertCommonDataIntoDatabaseTables() {
 QString ResultDaoService::prepareInsertQuery(const std::string &fileName,
         const std::string &tableName) {
     ElemUtils::Formatter formatter;
-    formatter << "LOAD DATA INFILE '" << m_temporaryFolderPath << "/"
+    formatter << "LOAD DATA LOCAL INFILE '" << m_temporaryFolderPath << "/"
             << fileName << "' INTO TABLE " << tableName
             << " FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n';";
 
