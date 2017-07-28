@@ -4,11 +4,11 @@
  
 # Introduction {#config_intro} 
 
-This wiki page describes the configuration files used by %PARTONS. If you are using [our virtual machine](@ref vm), all configuration files are set up there, so you can run %PARTONS as it was out-of-the-box. However, if you have installed %PARTONS at your own machine run under [Linux](@ref linux) or [Mac](@ref mac), you may need to set up these files manually. 
+This tutorial describes the configuration files used by %PARTONS. If you are using [our virtual machine](@ref vm), all configuration files are set up there, so you can run %PARTONS as it was out-of-the-box. However, if you have installed %PARTONS at your own machine run under [Linux](@ref linux) or [Mac](@ref mac), you may need to set up these files manually. 
 
 There are three %PARTONS configuration files that you may be interested in:
 * `partons.properties`: main configuration file
-* `logger.cfg`: configuration of Logger
+* `logger.properties`: configuration of Logger
 * `environment_configuration.dat`: environment configuration information
 
 %All of these files are described in the following.
@@ -23,10 +23,10 @@ This is the main configuration file of %PARTONS to be placed together with the e
 # PATHS #
 
 # Path to the configuration file of Logger 
-log.file.path = bin/logger.cfg
+log.file.path = /path/to/logger.properties
 
 # Path to the environment configuration information
-environment.configuration.file.path = ../partons/environment_configuration.dat
+environment.configuration.file.path = /path/to/environment_configuration.dat
 
 # Path to the directory containing scenarios 
 scenario.directory = ../partons/data/scenario/
@@ -35,11 +35,11 @@ scenario.directory = ../partons/data/scenario/
 grid.directory = ../partons/data/grid/
 
 # Validation scheme used by XML parser  
-xml.schema.file.path = ../partons/data/automation/xmlSchema.xsd
+xml.schema.file.path = ../partons/data/xmlSchema.xsd
 
 # DATABASE #
 
-# Database connection definition (for more information see our wiki page explaining the database usage) 
+# Database connection definition (for more information see our tutorial explaining the database usage) 
 database.production.type = MYSQL
 database.production.url = localhost
 database.production.dbname = partons
@@ -47,7 +47,7 @@ database.production.user =  partons
 database.production.passwd = partons
 
 # Temporary working directory needed by the transaction mechanism
-temporary.working.directory.path = /home/partons/git/partons-exe/bin/temp
+temporary.working.directory.path = /path/to/tmp
 
 # THREAD #
 
@@ -57,10 +57,9 @@ computation.nb.processor = 1
 # Maximum size of batch for a given type (in one task several batches may be run in separate threads)
 gpd.service.batch.size = 10000
 ccf.service.batch.size = 1000
-observable.service.batch.size = 1000
 ```
 
-# logger.cfg {#config_logger}
+# logger.properties {#config_logger}
 
 This is the configuration file of Logger. The path to this file should be set in `partons.properties` via `log.file.path` option. %All options are explained here in the comments starting with the hash symbol `#`:
 
