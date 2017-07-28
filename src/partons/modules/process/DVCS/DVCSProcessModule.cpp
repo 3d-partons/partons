@@ -228,8 +228,9 @@ void DVCSProcessModule::configure(const ElemUtils::Parameters &parameters) {
             m_subProcessType =
                     static_cast<DVCSSubProcessType::Type>(parameters.getLastAvailable().toUInt());
 
-        } catch (const std::exception &e) {
-            // if an exception is raised it means that it's a string configuration value
+        } 
+        // if an exception is raised it means that it's a string configuration value
+        catch (const std::exception &e) {
             m_subProcessType = DVCSSubProcessType(
                     parameters.getLastAvailable().getString()).getType();
         }

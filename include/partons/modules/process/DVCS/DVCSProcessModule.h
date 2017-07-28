@@ -55,6 +55,7 @@ public:
 
     virtual void setConvolCoeffFunctionModule(
             ConvolCoeffFunctionModule* pConvolCoeffFunctionModule);
+            
     /**
      * Get subprocess type.
      */
