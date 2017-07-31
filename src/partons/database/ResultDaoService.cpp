@@ -38,13 +38,17 @@ ResultDaoService::ResultDaoService(const std::string &className) :
                 std::make_pair<std::string, int>(ElemUtils::StringUtils::EMPTY,
                         -1)) {
 
-    m_temporaryFolderPath =
-            ElemUtils::PropertiesManager::getInstance()->getString(
-                    "database.load.infile.directory");
-
     m_useTmpFiles = ElemUtils::StringUtils::equals(
             ElemUtils::PropertiesManager::getInstance()->getString(
                     "database.load.infile.use"), "true");
+
+    if (m_useTmpFiles) {
+        m_temporaryFolderPath =
+                ElemUtils::PropertiesManager::getInstance()->getString(
+                        "database.load.infile.directory");
+    } else {
+        m_temporaryFolderPath = ElemUtils::StringUtils::EMPTY;
+    }
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
@@ -166,14 +170,14 @@ void ResultDaoService::insertDataIntoDatabaseTables(const std::string& fileName,
         return;
     }
 
-    // keep file path
-    std::string filePath = ElemUtils::Formatter() << m_temporaryFolderPath
-            << "/" << fileName;
+    //use temporary files to speed up the transaction
+    if (m_useTmpFiles) {
 
-    try {
+        // keep file path
+        std::string filePath = ElemUtils::Formatter() << m_temporaryFolderPath
+                << "/" << fileName;
 
-        //use temporary files to speed up the transaction
-        if (m_useTmpFiles) {
+        try {
 
             // open file
             std::ofstream fileOutputStream;
@@ -203,32 +207,32 @@ void ResultDaoService::insertDataIntoDatabaseTables(const std::string& fileName,
 
             // remove temporary file
             ElemUtils::FileUtils::remove(filePath);
-
-        } else {
-
-            // status
-            info(__func__,
-                    ElemUtils::Formatter() << "Filling database table ["
-                            << tableName << "]");
-
-            // inject query into right database table
-            loadDataIntoTable(string, tableName);
-
-            // free string memory
-            string = ElemUtils::StringUtils::EMPTY;
         }
 
-    }
-    // if something wrong happened
-    catch (const ElemUtils::CustomException &e) {
+        // if something wrong happened
+        catch (const ElemUtils::CustomException &e) {
 
-        // remove temporary file
-        if (ElemUtils::FileUtils::isReadable(filePath)) {
-            ElemUtils::FileUtils::remove(filePath);
+            // remove temporary file
+            if (ElemUtils::FileUtils::isReadable(filePath)) {
+                ElemUtils::FileUtils::remove(filePath);
+            }
+
+            // throw again the same exception to propagate the error and allow other method to perform their clean (ex : transaction/rollback/...)
+            throw ElemUtils::CustomException(e);
         }
 
-        // throw again the same exception to propagate the error and allow other method to perform their clean (ex : transaction/rollback/...)
-        throw ElemUtils::CustomException(e);
+    } else {
+
+        // status
+        info(__func__,
+                ElemUtils::Formatter() << "Filling database table ["
+                        << tableName << "]");
+
+        // inject query into right database table
+        loadDataIntoTable(string, tableName);
+
+        // free string memory
+        string = ElemUtils::StringUtils::EMPTY;
     }
 }
 
