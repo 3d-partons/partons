@@ -26,7 +26,8 @@ class ResultInfo;
  *
  * @brief Use temporary CSV file before insert data into database.
  *
- * It uses temporary CSV file before insert data into database.
+ * If the switch `database.load.infile.use` is set to `false` in `partons.properties`, then the temporary file is never written,
+ * and the `infile` mechanism is not used.
  */
 class ResultDaoService: public BaseObject {
 public:
@@ -66,12 +67,14 @@ protected:
     void prepareCommonTablesFromResultInfo(const ResultInfo &resultInfo);
 
     /**
-     * Insert computation information and scenario information via temporary files.
+     * Insert computation information and scenario information via temporary files
+     * (if the switch is set to `true`, otherwise no temporary file is used).
      */
     void insertCommonDataIntoDatabaseTables();
 
     /**
-     * Insert information stored in string into given table in the database via temporaty file.
+     * Insert information stored in string into given table in the database via temporary file
+     * (if the switch is set to `true`, otherwise no temporary file is used).
      * @param fileName Name of temporary file.
      * @param string String containing input information.
      * @param tableName Name of target table.
@@ -80,7 +83,8 @@ protected:
             std::string &string, const std::string &tableName);
 
     /**
-     * Insert information stored in file into given table in the database.
+     * Insert information stored in file (if the switch is set to `true`,
+     * otherwise no temporary file is used) into given table in the database.
      * @param inputData Input information.
      * @param tableName Name of target table.
      */
@@ -88,7 +92,8 @@ protected:
             const std::string &tableName);
 
     /**
-     * Prepare INSERT-like SQL query for given table and file containing input information.
+     * Prepare INSERT-like SQL query for given table and file containing input information
+     * (if the switch is set to `true`, otherwise no temporary file is used).
      * @param inputData Input information.
      * @param tableName Name of target table.
      * @return String containing INSERT-like SQL query.
