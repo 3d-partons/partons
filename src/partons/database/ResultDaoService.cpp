@@ -42,11 +42,9 @@ ResultDaoService::ResultDaoService(const std::string &className) :
             ElemUtils::PropertiesManager::getInstance()->getString(
                     "temporary.working.directory.path");
 
-    m_useTmpFiles =
-            (ElemUtils::StringUtils::equals(
-                    ElemUtils::PropertiesManager::getInstance()->getString(
-                            "use.temporary.working"), "true")) ?
-                    (true) : (false);
+    m_useTmpFiles = ElemUtils::StringUtils::equals(
+            ElemUtils::PropertiesManager::getInstance()->getString(
+                    "use.temporary.working"), "true");
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
@@ -162,7 +160,7 @@ void ResultDaoService::insertDataIntoDatabaseTables(const std::string& fileName,
         std::string &string, const std::string &tableName) {
 
     //check if not empty
-    if(string.empty()){
+    if (string.empty()) {
 
         //nothing to insert
         return;
@@ -207,9 +205,6 @@ void ResultDaoService::insertDataIntoDatabaseTables(const std::string& fileName,
             ElemUtils::FileUtils::remove(filePath);
 
         } else {
-
-            // prepare query
-            std::string query;
 
             // status
             info(__func__,
@@ -284,12 +279,11 @@ QString ResultDaoService::prepareInsertQuery(const std::string &inputData,
         bool first1 = true;
 
         while (std::getline(input, line)) {
-            warn("LINE", line);
 
-            if(first1){
+            if (first1) {
                 formatter << " (";
                 first1 = false;
-            }else{
+            } else {
                 formatter << " ,(";
             }
 
