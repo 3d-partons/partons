@@ -40,11 +40,11 @@ ResultDaoService::ResultDaoService(const std::string &className) :
 
     m_temporaryFolderPath =
             ElemUtils::PropertiesManager::getInstance()->getString(
-                    "temporary.working.directory.path");
+                    "database.load.infile.directory");
 
     m_useTmpFiles = ElemUtils::StringUtils::equals(
             ElemUtils::PropertiesManager::getInstance()->getString(
-                    "use.temporary.working"), "true");
+                    "database.load.infile.use"), "true");
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
