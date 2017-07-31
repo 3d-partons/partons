@@ -11,10 +11,11 @@
 #include <QtCore/qvariant.h>
 #include <QtSql/qsqlerror.h>
 #include <QtSql/qsqlquery.h>
-#include <iostream>
+#include <fstream>
 
 #include "../../../include/partons/beans/automation/Scenario.h"
 #include "../../../include/partons/beans/Computation.h"
+#include "../../../include/partons/beans/List.h"
 #include "../../../include/partons/beans/system/EnvironmentConfiguration.h"
 #include "../../../include/partons/beans/system/ResultInfo.h"
 #include "../../../include/partons/database/Database.h"
@@ -25,7 +26,6 @@
 #include "../../../include/partons/utils/plot2D/Plot2DList.h"
 
 namespace PARTONS {
-
 
 ResultDaoService::ResultDaoService(const std::string &className) :
         BaseObject(className), m_lastComputationId(-1), m_lastScenarioComputation(
@@ -41,6 +41,12 @@ ResultDaoService::ResultDaoService(const std::string &className) :
     m_temporaryFolderPath =
             ElemUtils::PropertiesManager::getInstance()->getString(
                     "temporary.working.directory.path");
+
+    m_useTmpFiles =
+            (ElemUtils::StringUtils::equals(
+                    ElemUtils::PropertiesManager::getInstance()->getString(
+                            "use.temporary.working"), "true")) ?
+                    (true) : (false);
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
@@ -154,40 +160,75 @@ void ResultDaoService::prepareCommonTablesFromResultInfo(
 
 void ResultDaoService::insertDataIntoDatabaseTables(const std::string& fileName,
         std::string &string, const std::string &tableName) {
+
+    //check if not empty
+    if(string.empty()){
+
+        //nothing to insert
+        return;
+    }
+
     // keep file path
     std::string filePath = ElemUtils::Formatter() << m_temporaryFolderPath
             << "/" << fileName;
 
     try {
-        std::ofstream fileOutputStream;
 
-        if (!ElemUtils::FileUtils::open(fileOutputStream, filePath)) {
-            throw ElemUtils::CustomException(getClassName(), __func__,
-                    ElemUtils::Formatter() << "Cannot open \"" << filePath
-                            << "\"");
+        //use temporary files to speed up the transaction
+        if (m_useTmpFiles) {
+
+            // open file
+            std::ofstream fileOutputStream;
+
+            if (!ElemUtils::FileUtils::open(fileOutputStream, filePath)) {
+                throw ElemUtils::CustomException(getClassName(), __func__,
+                        ElemUtils::Formatter() << "Cannot open \"" << filePath
+                                << "\"");
+            }
+
+            // write and flush
+            ElemUtils::FileUtils::writeAndFlush(fileOutputStream, string);
+
+            // close
+            ElemUtils::FileUtils::close(fileOutputStream);
+
+            // free string memory
+            string = ElemUtils::StringUtils::EMPTY;
+
+            // status
+            info(__func__,
+                    ElemUtils::Formatter() << "Filling database table ["
+                            << tableName << "]");
+
+            // inject temporary file into right database table
+            loadDataIntoTable(fileName, tableName);
+
+            // remove temporary file
+            ElemUtils::FileUtils::remove(filePath);
+
+        } else {
+
+            // prepare query
+            std::string query;
+
+            // status
+            info(__func__,
+                    ElemUtils::Formatter() << "Filling database table ["
+                            << tableName << "]");
+
+            // inject query into right database table
+            loadDataIntoTable(string, tableName);
+
+            // free string memory
+            string = ElemUtils::StringUtils::EMPTY;
         }
 
-        ElemUtils::FileUtils::writeAndFlush(fileOutputStream, string);
-
-        ElemUtils::FileUtils::close(fileOutputStream);
-
-        // free string memory
-        string = ElemUtils::StringUtils::EMPTY;
-
-        info(__func__,
-                ElemUtils::Formatter() << "Filling database table ["
-                        << tableName << "]");
-
-        // inject temporary file into right database table
-        loadDataInFileIntoTable(fileName, tableName);
+    }
+    // if something wrong happened
+    catch (const ElemUtils::CustomException &e) {
 
         // remove temporary file
-        ElemUtils::FileUtils::remove(filePath);
-
-        // If something wrong append
-    } catch (const ElemUtils::CustomException &e) {
         if (ElemUtils::FileUtils::isReadable(filePath)) {
-            // remove temporary file
             ElemUtils::FileUtils::remove(filePath);
         }
 
@@ -196,11 +237,11 @@ void ResultDaoService::insertDataIntoDatabaseTables(const std::string& fileName,
     }
 }
 
-void ResultDaoService::loadDataInFileIntoTable(const std::string& fileName,
+void ResultDaoService::loadDataIntoTable(const std::string& inputData,
         const std::string& tableName) {
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    if (query.exec(prepareInsertQuery(fileName, tableName))) {
+    if (query.exec(prepareInsertQuery(inputData, tableName))) {
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
@@ -218,12 +259,61 @@ void ResultDaoService::insertCommonDataIntoDatabaseTables() {
             m_scenario_computation_table, "scenario_computation");
 }
 
-QString ResultDaoService::prepareInsertQuery(const std::string &fileName,
+QString ResultDaoService::prepareInsertQuery(const std::string &inputData,
         const std::string &tableName) {
+
     ElemUtils::Formatter formatter;
-    formatter << "LOAD DATA LOCAL INFILE '" << m_temporaryFolderPath << "/"
-            << fileName << "' INTO TABLE " << tableName
-            << " FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n';";
+
+    //use temporary files to speed up the transaction
+    if (m_useTmpFiles) {
+
+        //set
+        formatter << "LOAD DATA LOCAL INFILE '" << m_temporaryFolderPath << "/"
+                << inputData << "' INTO TABLE " << tableName
+                << " FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n';";
+
+    } else {
+
+        //set
+        formatter << "INSERT INTO " << tableName << " VALUES";
+
+        //loop over lines
+        std::istringstream input(inputData);
+        std::string line;
+
+        bool first1 = true;
+
+        while (std::getline(input, line)) {
+            warn("LINE", line);
+
+            if(first1){
+                formatter << " (";
+                first1 = false;
+            }else{
+                formatter << " ,(";
+            }
+
+            //get words
+            std::istringstream ss(line);
+            std::string token;
+
+            bool first2 = true;
+
+            while (std::getline(ss, token, ',')) {
+
+                if (first2) {
+                    formatter << "'" << token << "'";
+                    first2 = false;
+                } else {
+                    formatter << ",'" << token << "'";
+                }
+            }
+
+            formatter << ")";
+        }
+
+        formatter << ";";
+    }
 
     return QString::fromUtf8(formatter.str().c_str());
 }

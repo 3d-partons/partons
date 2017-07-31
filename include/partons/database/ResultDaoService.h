@@ -81,24 +81,25 @@ protected:
 
     /**
      * Insert information stored in file into given table in the database.
-     * @param fileName File containing input information.
+     * @param inputData Input information.
      * @param tableName Name of target table.
      */
-    void loadDataInFileIntoTable(const std::string &fileName,
+    void loadDataIntoTable(const std::string &inputData,
             const std::string &tableName);
 
     /**
      * Prepare INSERT-like SQL query for given table and file containing input information.
-     * @param fileName File containing input information.
+     * @param inputData Input information.
      * @param tableName Name of target table.
      * @return String containing INSERT-like SQL query.
      */
-    QString prepareInsertQuery(const std::string &fileName,
+    QString prepareInsertQuery(const std::string &inputData,
             const std::string &tableName);
 
 private:
 
     std::string m_temporaryFolderPath; ///< Path to directory storing temporary files.
+    bool m_useTmpFiles; ///< Switch indicating the usage of temporary files to speed up the transaction.
 
     int m_lastComputationId; ///< Last unique id in table storing computation information in the database.
     int m_lastScenarioComputation; ///< Last unique id in table storing scenario information in the database.
