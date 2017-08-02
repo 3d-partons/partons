@@ -1,56 +1,101 @@
-# GPD service task {#usage_gpd_2}
+# GPDService {#usage_gpd_2}
  
 [TOC]
 
-# Task name {#usage_gpd_2_name}
+# computeManyKinematicOneModel task {#usage_gpd_2_lab}
 
-~~~~~~~~~~~~~{.xml}
+## XML task name {#usage_gpd_2_namexml}
+
+```xml
 computeManyKinematicOneModel
-~~~~~~~~~~~~~
+```
 
-# Description {#usage_gpd_2_description}
+## C++ function name {#usage_gpd_2_namecpp}
 
-This task is used to evaluate a given GPD model with kinematics defined in a text file. 
+```cpp
+PARTONS::GPDService::computeManyKinematicOneModel()
+```
 
-The text file may contain one or more lines, with each one corresponding to a single set of GPD kinematics described by the format:
-~~~~~~~~~~~~~{.xml} 
-x|xi|t|muF2|muR2
-~~~~~~~~~~~~~
-that is by the values of \f$x\f$, \f$\xi\f$, \f$t\f$, \f$\mu_{F}^{2}\f$ and \f$\mu_{R}^{2}\f$ variables separated by the pipe symbol `|`.
+## Description {#usage_gpd_2_description}
 
-# Example {#usage_gpd_2_example} 
+This task is for the evaluation of GPD model for kinematics defined in a text file. In this file kinematic points are encoded in separate lines using the following format: "x|xi|t|MuF2|MuR2". 
 
-* Input XML scenario:
-~~~~~~~~~~~~~{.xml}
-<!-- XML prolog -->
+## XML example {#usage_gpd_2_examplexml} 
+
+```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 
-<!-- Scenario: date and description -->
-<scenario date="2017-06-15" description="Example: service/GPD, task/computeManyKinematicOneModel">
+<!-- Scenario starts here -->
+<!-- For your convenience and for bookkeeping provide creation date and unique description -->
+<scenario date="2017-07-18" description="GPD evaluation for many kinematics example">
 
-   <!-- Task: service name, method name and switch to store results in the database -->
+   <!-- First task: evaluate GPD model for a single kinematics --> 
+   <!-- Indicate service and its methods to be used and indicate if the result should be stored in the database --> 
    <task service="GPDService" method="computeManyKinematicOneModel" storeInDB="0">
 
-      <!-- Kinematics: type -->
+      <!-- Define GPD kinematics -->
       <kinematics type="GPDKinematic">
 
-         <!-- Parameter indicating path to the file defining input kinematics -->
-         <param name="file" value="input_kinematics.dat" />
+         <!-- Path to file defining kinematics -->
+         <param name="file" value="/home/partons/git/partons-example/data/examples/gpd/kinematics_gpd.csv" />
       </kinematics>
 
-      <!-- Computation configuration -->
+      <!-- Define physics assumptions -->
       <computation_configuration>
 
-         <!-- Module: type and name -->
-         <module type="GPDModule" name="VGGModel">
+         <!-- Select GPD model -->
+         <module type="GPDModule" name="GPDMMS13">
          </module>
-      </computation_configuration>
-   </task>
-</scenario>
-~~~~~~~~~~~~~
 
-* Content of `input_kinematics.dat` file:
-~~~~~~~~~~~~~{.xml}
+      </computation_configuration>
+
+   </task>
+
+   <!-- Second task: print results of the last computation into standard output --> 
+   <task service="GPDService" method="printResults">
+   </task>
+
+</scenario>
+```
+
+## C++ example {#usage_gpd_2_examplecpp} 
+
+```cpp
+void computeManyKinematicsForGPD() {
+
+    // Retrieve GPD service
+    PARTONS::GPDService* pGPDService =
+            PARTONS::Partons::getInstance()->getServiceObjectRegistry()->getGPDService();
+
+    // Create GPD module with the BaseModuleFactory
+    PARTONS::GPDModule* pGPDModel =
+            PARTONS::Partons::getInstance()->getModuleObjectFactory()->newGPDModule(
+                    PARTONS::GPDMMS13::classId);
+
+    // Load list of kinematics from file
+    PARTONS::List<PARTONS::GPDKinematic> gpdKinematicList =
+            PARTONS::KinematicUtils().getGPDKinematicFromFile(
+                    "/home/partons/git/partons-example/bin/examples/kinematics_gpd.csv");
+
+    // Run computation
+    PARTONS::List<PARTONS::GPDResult> gpdResultList =
+            pGPDService->computeManyKinematicOneModel(gpdKinematicList,
+                    pGPDModel);
+
+    // Print results
+    PARTONS::Partons::getInstance()->getLoggerManager()->info("main", __func__,
+            gpdResultList.toString());
+
+    // Remove pointer reference ; Module pointers are managed by PARTONS.
+    PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
+            pGPDModel, 0);
+    pGPDModel = 0;
+}
+
+```
+
+## Content of kinematics_gpd.csv file {#usage_gpd_2_content} 
+```xml
 0.1|0.2|-0.1|2.|2.
 0.2|0.2|-0.1|2.|2.
-~~~~~~~~~~~~~
+```
