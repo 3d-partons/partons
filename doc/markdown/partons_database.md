@@ -19,30 +19,30 @@ This wiki page explains how to set up your own SQL database and connect %PARTONS
 Currently we support only MySQL databases.
 
 If you are using %PARTONS together with [virtual machine provided by our team](@ref vm), you will find MySQL server ready to be used there. It comes with _partons_ database, which is set up and can be used out-of-the-box. You may connect to it and check its content as _partons_ MySQL user via command-line tool in the following way:
-~~~~~~~~~~~~~{.sh}
+```sh
 # in shell 
 # connect to server (it will ask you for password)
 mysql -u partons -p
-~~~~~~~~~~~~~
-~~~~~~~~~~~~~{.sql}
+```
+```sql
 # in MySQL command-line interface
 # use specific database
 USE partons;
-~~~~~~~~~~~~~
+```
 The password for both _partons_ and _root_ MySQL users is _partons_.
 
 If you do not use Virtual Machine provided by our team, but you want to use database-related functionalities in %PARTONS, you need to get an access to MySQL server by your own. Possibly, it can be granted by your home institute, which is useful, if you intend to use the same database together with your collaborators. You can also install MySQL server at your local machine, which nowadays is really easy. E.g. for Debian-like Linux distributions you can proceed in the following way:
-~~~~~~~~~~~~~{.sh}
+```sh
 # use repositories to install MySQL server 
 sudo apt-get install mysql-server 
 
 # run this script
 sudo mysql_secure_installation
-~~~~~~~~~~~~~
+```
 During the installation process or when executing `mysql_secure_installation` script you will be asked to set your own administration password to manage your server. For other Linux distributions and operating systems some adjustments to the installation receipt may be needed.
 
 With MySQL server available, its administrator (possibly you) should set up %PARTONS database. This can be accomplished easily with MySQL scripts provided by our team. These scripts are available in _database/sql_schema_ directory of your %PARTONS copy and they should be used in the following way:
-~~~~~~~~~~~~~{.sh}
+```sh
 # in shell 
 # go to directory containing scripts 
 cd database/sql_schema
@@ -51,8 +51,8 @@ cd database/sql_schema
 mysql -u root -p
 # on some systems you may need to run this command as root 
 sudo mysql -u root -p
-~~~~~~~~~~~~~
-~~~~~~~~~~~~~{.sql}
+```
+```sql
 /* in MySQL command-line interface */
 /* create new database */
 CREATE DATABASE partons;
@@ -69,7 +69,7 @@ SOURCE mysql5_common.sql;
 SOURCE mysql5_gpd_layer.sql;
 SOURCE mysql5_convol_coeff_function_layer.sql;
 SOURCE mysql5_observable_layer.sql;
-~~~~~~~~~~~~~
+```
 Here, we have set the name of database and the name of user and his password as `partons`. Note however, that you may modify these parameters freely - you just need to set them correctly in the %PARTONS configuration to enable the connection.  
 
 <hr>
@@ -79,22 +79,29 @@ Here, we have set the name of database and the name of user and his password as 
 The connection parameters should be set in [the main configuration file of PARTONS](@ref config), i.e. the one called _partons.properties_. Analyze these examples that illustrate the configuration used to establish the connection to either a local (your computer) and or a remote MySQL server.
 
 Connection to a local server:
-~~~~~~~~~~~~~{.sh}
+```sh
 database.production.type = MYSQL
 database.production.url = localhost
 database.production.dbname = your_partons_database_name
 database.production.user = your_sql_user_name 
 database.production.passwd = your_sql_user_password 
-~~~~~~~~~~~~~
+```
 
 Connection to a remote server:
-~~~~~~~~~~~~~{.sh}
+```sh
 database.production.type = MYSQL
 database.production.url = remote.address.example.com 
 database.production.dbname = your_partons_database_name
 database.production.user = your_sql_user_name
 database.production.passwd = your_sql_user_password
-~~~~~~~~~~~~~
+```
+
+These two parameters:
+```sh
+database.load.infile.use = true
+database.load.infile.directory = /path/to/tmp
+```
+allow to enable the transaction mechanism that is based on temporary files loaded into the database. The mechanism is very fast, which is important for the insertion of large sets of data. However, not all databases allow it by default, so it may require a special configuration of the server - this subject is however not covered in this tutorial. 
 
 # Database design {#database_design}
 
@@ -115,7 +122,7 @@ In [XML interface](@ref usage) users may ignore the existence of Services - they
 
 This example illustrates how to store a single GPD result into the database via XML interface (note _storeInDB="1"_ option being crucial here):
 
-~~~~~~~~~~~~~{.xml}
+```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 
 <scenario date="2017-01-01" description="Exemplary description - description are very useful!">
@@ -138,46 +145,46 @@ This example illustrates how to store a single GPD result into the database via 
     </task>
 
 </scenario>
-~~~~~~~~~~~~~
+```
 
 In [C++ interface](@ref usage) users use Services explicitly. Each Service may be seen as a bridge between a single physics-related object and a corresponding SQL table (see [Database design](@ref database_design) section). Services are listed in the following table together with the aforementioned correspondence:
 | Service | Corresponding C++ object | Corresponding SQL table name |
 | :---- | :---- | :---- |
-| GPDKinematicDaoService | GPDKinematic | [gpd_kinematic](md_partons_database_design_2.html) |
-| GPDResultDaoService | GPDResult | [gpd_result](md_partons_database_design_2.html) |
+| PARTONS::GPDKinematicDaoService | PARTONS::GPDKinematic | [gpd_kinematic](md_partons_database_design_2.html) |
+| PARTONS::GPDResultDaoService | PARTONS::GPDResult | [gpd_result](md_partons_database_design_2.html) |
 ||||
-| ConvolCoeffFunctionKinematicDaoService | ConvolCoeffFunctionKinematic | [cff_kinematic](md_partons_database_design_3.html) |
-| ConvolCoeffFunctionResultDaoService | ConvolCoeffFunctionResult | [cff_result](md_partons_database_design_3.html) |
+| PARTONS::ConvolCoeffFunctionKinematicDaoService | PARTONS::DVCSConvolCoeffFunctionKinematic | [cff_kinematic](md_partons_database_design_3.html) |
+| PARTONS::ConvolCoeffFunctionResultDaoService | PARTONS::DVCSConvolCoeffFunctionResult | [cff_result](md_partons_database_design_3.html) |
 ||||
-| ObservableKinematicDaoService | ObservableKinematic | [observable_kienamtic](md_partons_database_design_4.html) |
-| ObservableResultDaoService | ObservableResult | [observable_result](md_partons_database_design_4.html) |
+| PARTONS::ObservableKinematicDaoService | PARTONS::ObservableKinematic | [observable_kienamtic](md_partons_database_design_4.html) |
+| PARTONS::ObservableResultDaoService | PARTONS::ObservableResult | [observable_result](md_partons_database_design_4.html) |
 
 This example illustrates how to use Services via C++ interface:
-~~~~~~~~~~~~~{.cpp}
+```cpp
 //evaluate exemplary GPD result to be inserted in database
 
 //retrieve GPD service
-GPDService* pGPDService = Partons::getInstance()->getServiceObjectRegistry()->getGPDService();
+PARTONS::GPDService* pGPDService = PARTONS::Partons::getInstance()->getServiceObjectRegistry()->getGPDService();
 
 //load GPD module with the BaseModuleFactory
-GPDModule* pGPDModel = Partons::getInstance()->getModuleObjectFactory()->newGPDModule(MMS13Model::classId);
+PARTONS::GPDModule* pGPDModel = PARTONS::Partons::getInstance()->getModuleObjectFactory()->newGPDModule(PARTONS::GPDMMS13::classId);
 
 //define GPD kinematics used in computation
-GPDKinematic gpdKinematic(-0.1, 0.05, 0., 2., 2.);
+PARTONS::GPDKinematic gpdKinematic(-0.1, 0.05, 0., 2., 2.);
 
 //define list of GPD types to be computed
-List<GPDType> gpdTypeList;
-gpdTypeList.add(GPDType::ALL);
+PARTONS::List<GPDType> gpdTypeList;
+gpdTypeList.add(PARTONS::GPDType::ALL);
 
 //evaluate
-GPDResult gpdResult = pGPDService->computeGPDModel(gpdKinematic, pGPDModel, gpdTypeList);
+PARTONS::GPDResult gpdResult = pGPDService->computeGPDModel(gpdKinematic, pGPDModel, gpdTypeList);
 
 //get GPDResultDaoService
-GPDResultDaoService gpdResultDaoService;
+PARTONS::GPDResultDaoService gpdResultDaoService;
 
 //insert result into database
 int id = gpdResultDaoService.insert(gpdResult);
-~~~~~~~~~~~~~
+```
 For the list of all possible operations provided by Services see their documentation. Note, that the documentation contains a number of additional examples. 
 
 <hr>

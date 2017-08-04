@@ -28,9 +28,6 @@ log.file.path = /path/to/logger.properties
 # Path to the environment configuration information
 environment.configuration.file.path = /path/to/environment_configuration.dat
 
-# Path to the directory containing scenarios 
-scenario.directory = ../partons/data/scenario/
-
 # Path to the directory containing PDF replicas 
 grid.directory = ../partons/data/grid/
 
@@ -46,9 +43,10 @@ database.production.dbname = partons
 database.production.user =  partons
 database.production.passwd = partons
 
-# Whether to use temporary file transaction to load data
-database.load.infile.use = false
-# Temporary working directory needed by the transaction mechanism (if previous is true)
+# Whether to use the temporary file transaction mechanism to load data 
+database.load.infile.use = true
+
+# Working directory needed by the temporary file transaction mechanism (if database.load.infile.use is true)
 database.load.infile.directory = /path/to/tmp
 
 # THREAD #
@@ -94,9 +92,9 @@ log.folder.path = bin
 
 # environment_configuration.dat {#config_env}
 
-This file contains environment configuration information. The path to this file should be set in `partons.properties` via `environment.configuration.file.path` option. The main purpose of this file is to store its content in the database during the insertion of data, so latter one can easily reproduce the used computational environment. The file must be set by the user and its content may look as follows:
+This file contains environment configuration information. The path to this file should be set in `partons.properties` via `environment.configuration.file.path` option. The main purpose of this file is to store it in the database during the insertion of data, so latter one can easily reproduce the used computational environment. The file must be set by the user and its content may look as follows:
 
-```sh
+```
 system: Linux partonsVM 3.16.0-4-amd64 #1 SMP Debian 3.16.43-2 (2017-04-30) x86_64 GNU/Linux
 g++: 4.9.2
 root: 5.34/19
@@ -111,7 +109,7 @@ git partons: master/72bdcfc08c6dd7d8ec8386dc0d36449b4fd28fad
 
 The content was obtained with this script run under Linux:
 
-```py
+```sh
 #!/bin/bash
 
 #paths

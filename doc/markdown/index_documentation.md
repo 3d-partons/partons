@@ -60,11 +60,11 @@ When working with %PARTONS, one may want to also use SQL database, e.g. to keep 
 
 <hr>
 
-# Talks and publications {#mainpage_talks}
+# Publications and talks {#mainpage_talks}
 
 Here you can find our publications and the list of talks given on behalf of %PARTONS team.
 
-[PARTONS publications and talks](@ref talks_publ)
+[PARTONS publications and talks](@ref tandp)
 
 <hr>
 

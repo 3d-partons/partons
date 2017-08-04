@@ -6,7 +6,9 @@
 
 For a detailed description of each virtual function we refer to its documentation, which is available after left-clicking on the function name. A short explanation is also provided by hovering your mouse pointer on the name.  
 
-~~~~~~~~~~~~~{.cpp}
+```cpp
+namespace PARTONS {
+
 class MyGPDModel: public GPDModule {
 
 public:
@@ -45,11 +47,15 @@ protected:
     virtual PartonDistribution computeH();
     virtual PartonDistribution computeE();
 };
-~~~~~~~~~~~~~
+
+}
+```
 
 # Source code file template {#newmodule_templates_gpd_cpp}
 
-~~~~~~~~~~~~~{.cpp}
+```cpp
+namespace PARTONS {
+
 const unsigned int MyGPDModel::classId = 
     BaseObjectRegistry::getInstance()->registerBaseObject(new MyGPDModel("MyGPDModel"));
 
@@ -103,11 +109,13 @@ PartonDistribution MyGPDModel::computeH() {
 PartonDistribution MyGPDModel::computeE() {
     //see compute::H()
 }
-~~~~~~~~~~~~~
+
+}
+```
 
 # Useful variables {#newmodule_templates_gpd_var}
 
 These are the most useful variables defined in the abstract classes. They are crucial for the implementation of new GPD modules.
 
-* GPDModule::m_x, GPDModule::m_xi, GPDModule::m_t, GPDModule::m_MuF2, GPDModule::m_MuR2: indicate GPD kinematics being evaluated 
-* GPDModule::m_gpdType: indicate GPD type being evaluated 
+* PARTONS::GPDModule::m_x, PARTONS::GPDModule::m_xi, PARTONS::GPDModule::m_t, PARTONS::GPDModule::m_MuF2, PARTONS::GPDModule::m_MuR2: indicate GPD kinematics being evaluated 
+* PARTONS::GPDModule::m_gpdType: indicate GPD type being evaluated 

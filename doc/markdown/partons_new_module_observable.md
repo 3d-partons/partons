@@ -4,7 +4,7 @@
 
 # Introduction {#newmodule_templates_dvcsobservable_intro}
 
-The implementation of this type of modules is slightly different for \f$\phi\f$-dependent observables (distinguished by `ObservableType::PHI`) and for those \f$\phi\f$-integrated (distinguished by `ObservableType::FOURIER`). The good practice is to implement first a given \f$\phi\f$-dependent observable and then as many \f$\phi\f$-integrated derivatives as needed. This is illustrated by the following templates.  
+The implementation of this type of modules is slightly different for \f$\phi\f$-dependent observables (distinguished by PARTONS::ObservableType::PHI) and for those \f$\phi\f$-integrated (distinguished by PARTONS::ObservableType::FOURIER). The good practice is to implement first a given \f$\phi\f$-dependent observable and then as many \f$\phi\f$-integrated derivatives as needed. This is illustrated by the following templates.  
 
 We are using the one-observable-is-one-module policy. It means that each module should correspond to only one physics observable. Therefore, such characteristic of observable as beam charge, Fourier modulation type etc. can not be set from the outside (e.g. via `configure()` method), but it must be a genuine property encoded in the module. The policy is in particular crucial for the database integrity, as observable names stored in the database allow to correspond appropriate %PARTONS modules. Therefore, both the names and the modules must be unambiguous. 
 
@@ -14,7 +14,9 @@ We are using the one-observable-is-one-module policy. It means that each module 
 
 For a detailed description of each virtual function we refer to its documentation, which is available after left-clicking on the function name. A short explanation is also provided by hovering your mouse pointer on the name.  
 
-~~~~~~~~~~~~~{.cpp}
+```cpp
+namespace PARTONS {
+
 class MyObservable: public Observable {
 
 public:
@@ -46,11 +48,15 @@ protected:
      */
     MyObservable(const MyObservable &other);
 };
-~~~~~~~~~~~~~
+
+}
+```
 
 # Source code file template (phi-dependent observable) {#newmodule_templates_dvcsobservable_cppdep}
 
-~~~~~~~~~~~~~{.cpp}
+```cpp
+namespace PARTONS {
+
 const unsigned int MyObservable::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(new MyObservable("MyObservable"));
 
@@ -84,13 +90,16 @@ double MyObservable::computePhiObservable(double phi) {
     return result;
 }
 
-~~~~~~~~~~~~~
+}
+```
 
 # Header file template (phi-integrated observable) {#newmodule_templates_dvcsobservable_hindep}
 
 For a detailed description of each virtual function we refer to its documentation, which is available after left-clicking on the function name. A short explanation is also available after hovering your mouse pointer on the name.  
 
-~~~~~~~~~~~~~{.cpp}
+```cpp
+namespace PARTONS {
+
 class MyObservableFourierModulation: public MyObservable, public MathIntegratorModule {
 
 public:
@@ -138,11 +147,15 @@ protected:
      */
     void initFunctorsForIntegrations();
 };
-~~~~~~~~~~~~~
+
+}
+```
 
 # Source code file template (phi-integrated observable) {#newmodule_templates_dvcsobservable_cppindep}
 
-~~~~~~~~~~~~~{.cpp}
+```cpp
+namespace PARTONS {
+
 const unsigned int MyObservableFourierModulation::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(new MyObservableFourierModulation("MyObservableFourierModulation"));
 
@@ -194,10 +207,12 @@ double MyObservableFourierModulation::computeFourierObservable() {
     return integrate(m_pFunctionToIntegrateObservable, 0., (2 * Constant::PI),
             emptyParameters) / Constant::PI;
 }
-~~~~~~~~~~~~~
+
+}
+```
 
 # Useful variables {#newmodule_templates_dvcsobservable_var}
 
 These are the most useful variables defined in the abstract classes. They are crucial for the implementation of new observable modules.
 
-* Observable::m_pProcessModule: pointer to observable process being used 
+* PARTONS::Observable::m_pProcessModule: pointer to observable process being used 

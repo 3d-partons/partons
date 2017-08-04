@@ -6,7 +6,9 @@
 
 For a detailed description of each virtual function we refer to its documentation, which is available after left-clicking on the function name. A short explanation is also provided by hovering your mouse pointer on the name.  
 
-~~~~~~~~~~~~~{.cpp}
+```cpp
+namespace PARTONS {
+
 class MyDVCSProcessModule: public DVCSModule {
 
 public:
@@ -52,11 +54,15 @@ protected:
     virtual double CrossSectionInterf(double beamHelicity, double beamCharge,
             NumA::Vector3D targetPolarization);
 };
-~~~~~~~~~~~~~
+
+}
+```
 
 # Source code file template {#newmodule_templates_dvcsprocess_cpp}
 
-~~~~~~~~~~~~~{.cpp}
+```cpp
+namespace PARTONS {
+
 const unsigned int MyDVCSProcessModule::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(new MyDVCSProcessModule("MyDVCSProcessModule"));
 
@@ -121,10 +127,12 @@ double MyDVCSProcessModule::CrossSectionInterf(double beamHelicity, double beamC
         NumA::Vector3D targetPolarization) {
     //see MyDVCSProcessModule::CrossSectionBH()
 }
-~~~~~~~~~~~~~
+
+}
+```
 
 # Useful variables {#newmodule_templates_dvcsprocess_var} 
 
 These are the most useful variables defined in the abstract classes. They are crucial for the implementation of new CFF modules.
-* ProcessModule::m_xB, ProcessModule::m_t, ProcessModule::m_Q2, ProcessModule::m_E, ProcessModule::m_phi: indicate DVCS kinematics being evaluated
-* DVCSConvolCoeffFunctionResult::m_dvcsConvolCoeffFunctionResult: DVCS CFFs calculated for kinematics being evaluated
+* PARTONS::ProcessModule::m_xB, PARTONS::ProcessModule::m_t, PARTONS::ProcessModule::m_Q2, PARTONS::ProcessModule::m_E, PARTONS::ProcessModule::m_phi: indicate DVCS kinematics being evaluated
+* PARTONS::DVCSConvolCoeffFunctionResult::m_dvcsConvolCoeffFunctionResult: DVCS CFFs calculated for kinematics being evaluated
