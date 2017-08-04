@@ -32,7 +32,7 @@ You can also build %PARTONS by your own on either GNU/Linux or Mac OS X. This is
 
 # Configure PARTONS {#mainpage_conf} 
 
-If you are using [our virtual machine](@ref vm), you will find all configuration files set up and ready to be used. However, if you want to tune the configuration or if you have installed %PARTONS by your own, this manual will be helpful for you.
+If you are using [our virtual machine](@ref vm), you will find all configuration files set up and ready to be used. However, if you want to tune the configuration or if you have installed %PARTONS by your own, this tutorial will be helpful for you.
 
 [Manual configuration](@ref config)
 
@@ -40,7 +40,7 @@ If you are using [our virtual machine](@ref vm), you will find all configuration
 
 # How to use PARTONS {#mainpage_howtouse}
 
-At this point you should have your own version of %PARTONS available and ready to be used. We provide two methods of using %PARTONS: by executing _scenarios_ encoded in simple XML files, or by using %PARTONS library and the corresponding headers to write your own stand-alone program. The first way allows to use %PARTONS without writing a line of code and rebuilding the project, while the second way is suitable for the most complex tasks. 
+At this point you should have your own version of %PARTONS available and ready to be used. We provide two ways of using %PARTONS: by executing _scenarios_ encoded in simple XML files, or by using %PARTONS library and the corresponding headers to write your own stand-alone program. The first way allows to use %PARTONS without writing a line of code in C++ and rebuilding the project, while the second way is suitable for the most complex tasks. 
 
 [Quick guide](@ref quick)
 
@@ -50,11 +50,11 @@ At this point you should have your own version of %PARTONS available and ready t
 
 [Writing your own module](@ref newmodule)
 
-When working with %PARTONS you may want to configure and use an integrated development environment (IDE), such as Eclipse. It is mandatory to use IDE whenever you are using %PARTONS to write your own program, or if you develop it, e.g. by adding a new module. Note, that if your are using [our virtual machine](@ref vm), you will find Eclipse ready to be used and configured there. 
+When working with %PARTONS you may want to configure and use an integrated development environment (IDE), such as Eclipse. It is almost mandatory to use IDE whenever you use %PARTONS to write your own program, or if you develop its library, e.g. by adding a new module. Note, that if your are using [our virtual machine](@ref vm), you will find Eclipse ready to be used there. 
 
 [Using PARTONS with Eclipse CDT](@ref eclipse)
 
-When working with %PARTONS, one may want to also use SQL database, e.g. to keep track of results obtained in the past, to avoid repeating time-consuming computations or to store experimental results. Learn how to do this with this tutorial.
+When working with %PARTONS, one may want to use also a SQL database, e.g. to keep track of results obtained in the past, to avoid repeating time-consuming computations or to store experimental results. Learn how to do this with this tutorial.
 
 [Using PARTONS with database](@ref database)
 

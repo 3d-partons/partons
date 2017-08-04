@@ -10,11 +10,11 @@ This tutorial demonstrates how to use Eclipse CDT IDE in your work with %PARTONS
 
 # Preparation of Eclipse to work with PARTONS {#eclipse_preparation}
 
-If you are using [our virtual machine](@ref vm), you may skip this section and go directly to the [summary](@ref eclipse_summary), as Eclipse provided there is fully configured to work with %PARTONS. However, if you want to use your own installation, without the virtual machine, the tutorial found in this section will help you configure Eclipse properly. 
+If you are using [our virtual machine](@ref vm), you may skip this section, as Eclipse provided there is fully configured to work with %PARTONS. However, if you want to use your own installation, without the virtual machine, the tutorial found in this section will help you to configure Eclipse properly. 
 
 ## Installation {#eclipse_preparation_installation}
 
-You will need Eclipse (platform base), Eclipse CDT (support for C++) and EGit (plugin for Git revision control, if you want to clone the repositories directly from within Eclipse). At Linux systems the installation of those component can be achieved by using repositories:
+You will need Eclipse (platform base), Eclipse CDT (support for C++) and EGit (plugin for Git revision control, if you want to clone the repositories directly from within Eclipse). At Linux systems the installation of those component can be achieved by using the repositories:
 ~~~~~~~~~~~~~{.sh}
 # on Debian-like (Debian, Ubuntu, etc.) distribution
 sudo apt-get install eclipse-cdt eclipse-egit 
@@ -23,25 +23,19 @@ For other Linux distributions and operating systems some adjustments may be need
 
 ## Get PARTONS code {#eclipse_preparation_git}
 
-To download %PARTONS, you can either use the archives on our website or, if you wish, directly clone the Git repositories from our GitLab.
+I order to get %PARTONS you can either download the code manually and import the related projects in Eclipse or you can use Eclipse EGit plugin. 
 
-### Download the code
+### Download code manually
 
-To download the code without Git, go to our website (**TODO: Add link when ready!**) or download the archives directly on out GitLab for each project:
-* [ElementaryUtils](https://drf-gitlab.cea.fr/partons/core/elementary-utils).
-* [NumA++](https://drf-gitlab.cea.fr/partons/core/numa).
-* [PARTONS](https://drf-gitlab.cea.fr/partons/core/partons).
-* [PARTONS_example](https://drf-gitlab.cea.fr/partons/core/partons-example).
+To download the code manually visit [this page](@ref download). 
 
-**TODO: Add links to the correct branch/tag when ready.**
+All %PARTONS-related projects are equipped with Eclipse configuration files, so you can directly import them in Eclipse. To do so, use **File** > **Open Projects from File System** or **File** > **Import** > **General** > **File System** and choose the parent location of the projects. Select one or more entries from the list of detected projects and hit **Finish**.
 
-Those archives are already set up with Eclipse configuration files, so you can directly import them as projects within Eclipse. To do so, use **File** > **Open Projects from File System** and choose the parent location of your projects. Then select them all once Eclipse finds them and hit **Finish**.
+If you intend to work only on your own program, it is not necessary to import all the projects in Eclipse. Instead, you can install %PARTONS libraries in your system by following the procedure described in the installation guide ([Linux](@ref linux_install) or [Mac](@ref max_install)). In that case, you need to only configure Eclipse to understand the includes of the headers, by indicating where they have been installed. See [Troubleshooting](@ref eclipse_troubleshooting) section for more information. Note however, that we always recommend to import `partons-example` in Eclipse, so that you can adapt it to your needs and use it as a start for your own program.
 
-If you intend on working only on your own program, it is not necessary to import the libraries (ElementaryUtils, NumA++, %PARTONS), you can also just install them with the procedure described in the installation [tutorial](@ref linux_install) and then import only `partons-example` in Eclipse so that you can adapt it to your needs and use it as a start for your own program. In that case, for Eclipse to understand the includes of headers in your files, you need to tell it where those libraries are installed. See the [Troubleshooting](@ref eclipse_troubleshooting) section for details.
+### Use EGit plugin
 
-### Clone the Git repository
-
-The %PARTONS project uses the Git version control system. For users who wish to clone our Git repositories but do not have developer accounts, the authorization to our GitLab server of CEA is provided exclusively via HTTPS protocol. However, you need to set up EGit (Eclipse Git plugin) to ignore SSL certificates, as that issued by CEA is often not recognized properly. To do this, navigate through the Eclipse menu: **Window** > **Preferences** > **Team** > **Git** > **Configuration** > **User Setting**. Click on **Add Entry** button that will call a new window and set `http.https://drf-gitlab.cea.fr/.sslVerify` to `false`:
+The %PARTONS project uses the Git version control system. For users who wish to clone our Git repositories but do not have developer accounts, the authorization to our GitLab server on CEA is provided exclusively via HTTPS protocol. However, you need to set up EGit (Eclipse Git plugin) to ignore SSL certificates, as that issued by CEA is often not recognized properly. To do this, navigate through the Eclipse menu: **Window** > **Preferences** > **Team** > **Git** > **Configuration** > **User Setting**. Click on **Add Entry** button that will call a new window and set `http.https://drf-gitlab.cea.fr/.sslVerify` to `false`:
 
 ![](../images/eclipse_ssl.png "Force EGit to ignore SSL certificates")
 
@@ -49,7 +43,7 @@ Click on **OK** button to close the new window, then hit **Apply** and again cli
 
 With EGit, it is useful to use the **Git Repositories** view. To enable it, navigate through the Eclipse menu: **Window** > **Show View** > **Git Repositories** (the last one may be hidden in **Other**).
 
-Once you have this **Git Repositories** view, click on **Clone a Git Repository**. In the new window, set URI to `%https://drf-gitlab.cea.fr/partons/core/partons.git`. %All other crucial elements should be filled automatically: 
+Once you have this **Git Repositories** view, click on **Clone a Git Repository** icon. In the new window, set URI to `%https://drf-gitlab.cea.fr/partons/core/partons.git`. %All other crucial elements should be filled automatically: 
 
 ![](../images/eclipse_git.png "Add new Git repository")
 
@@ -68,29 +62,33 @@ Navigate through the Eclipse menu: **Window** > **Preferences** > **C/C++** > **
 
 ![](../images/eclipse_env.png "Set development environment")
 
-Those variables are then used by the pre-configured imported Eclipse projects, as you can see if you go to the projects properties. They are not all needed if you do not intend to work on the %PARTONS libraries directly and only imported `partons-example` (only **Qt** is needed for this one).
+The variables are used by the configuration of PARTONS-related projects, as you can see by examining their Eclipse properties. Strictly speaking, not all variables are needed by each project, e.g. [partons-example](https://drf-gitlab.cea.fr/partons/core/partons-example) needs only `QT_INCLUDE_DIR`.
 
-## Build projects {#eclipse_preparation_build}
+<hr>
+
+# Build projects {#eclipse_preparation_build}
 
 The build is based on CMake, which is a cross-platform make system. Make sure to have it installed on your computer (command `cmake` should be available in the terminal). If CMake is missing, we refer to the wiki pages explaining the installation of %PARTONS on [Linux](@ref linux) or [Mac](@ref mac).  
 
-The build is automatized by Ant scripts, which are small XML files scripting the call to `cmake`, `make`, etc. Those scripts are called `build.xml` and they can be found in each %PARTONS project. Open Eclipse `Ant` view by navigating through the Eclipse menu: **Window** > **Show View** > **Ant** (the last one may be hidden in **Other**). Click on **Add Buildfiles** button, select and expand the list for the first %PARTONS project, select `build.xml` and finish with **OK** button. Alternatively, you can also simply drag and drop the `build.xml` file to the Ant view. Repeat this procedure for all other %PARTONS projects. 
+The build is automatized by Ant scripts, which are small XML files scripting the call to `cmake`, `make`, etc. Those scripts are called `build.xml` and they can be found in each %PARTONS project. Open Eclipse `Ant` view by navigating through the Eclipse menu: **Window** > **Show View** > **Ant** (the last one may be hidden in **Other**). Click on **Add Buildfiles** button, select and expand the list for the first %PARTONS project, select `build.xml` and finish with **OK** button. Alternatively, you can also drag and drop `build.xml` file from the Project explorer view to Ant view. Repeat this procedure for all other %PARTONS projects. 
 
 You can build now each of %PARTONS projects separately. Just remember to do this in the following order: 1) `elementary-utils`, 2) `numa`, 3) `partons`, 4) `partons-example`. In `Ant` view, expand a given entry, and double click to perform one of the available operations:
 
 ![](../images/eclipse_ant.png "Ant")
 
-## Run configuration {#eclipse_preparation_run}
+# Run configuration {#eclipse_preparation_run}
 
-If you prefer to not use the console, you can run %PARTONS within Eclipse. To achieve this, right-click in **Project Explorer** view on the name of your %PARTONS executable project (`PARTONS_example` or your own project) and select: **Run As** > **Run Configurations**. A new window will appear. Select **C/C++ Application** in the list on the left side of this window and press on **New lunch configuration** button. Set **C/C++ Application** to `PARTONS_example` executable file in the `bin` folder:
+If you prefer to not use the console, you can run %PARTONS within Eclipse. To achieve this, right-click in **Project Explorer** view on the name of your %PARTONS executable project (`PARTONS_example` or your own project) and select: **Run As** > **Run Configurations**. A new window will appear. Select **C/C++ Application** in the list on the left side of this window and press on **New lunch configuration** button. Set **C/C++ Application** to `PARTONS_example` executable file in `bin` folder:
 
 ![](../images/eclipse_run.png "Add new run configuration")
 
-Click on **Apply** button and **Run** if you want to run %PARTONS immediately. Latter, use **Run** icon in Eclipse menu whenever you want to run %PARTONS (you may need to customize the toolbar to make this icon visible). 
+In **Arguments** tab you can specify argument passed to the executable, e.g. path to XML scenario that you want to launch. Click on **Apply** button and **Run** if you want to run %PARTONS immediately. Latter, use **Run** icon in Eclipse menu whenever you want to run %PARTONS (you may need to customize the toolbar to make this icon visible). 
 
-## Troubleshooting {#eclipse_troubleshooting}
+<hr>
 
-* If Eclipse doesn't recognize your includes of %PARTONS headers (because *e.g.* you didn't import the %PARTONS libraries as projects in Eclipse's workspace but only installed them to the system), you need to inform Eclipse of their location: Right-click on your executable project in the **Project Explorer** view, go to **Properties** > **C/C++ General** > **Paths and Symbols** > **Includes** tab > **GNU C**++ and add a link to your system installed headers (*e.g.* `/usr/local/include/PARTONS/` if you used the default installation as in the [tutorial](@ref linux_install)). The default links that can be seen in the screenshot below use the Eclipse workspace projects and therefore are not useful with a system installation. You can remove them (do not remove the global variables such as `${QT_INCLUDE_DIR}`!).
+# Troubleshooting {#eclipse_troubleshooting}
+
+* If Eclipse does not recognize your includes of %PARTONS headers (because for instance you did not import %PARTONS libraries as projects in Eclipse, but instead you only have installed them in your system), you need to inform Eclipse on their location. Right-click on your executable project in **Project Explorer** view, go to **Properties** > **C/C++ General** > **Paths and Symbols** > **Includes** tab > **GNU C**++ and add a link to your system installed headers (*e.g.* `/usr/local/include/PARTONS`, if you used the default installation location). The default links that can be seen in the screenshot below use the Eclipse workspace projects and therefore are not useful with the system installation. You can remove them, but do not remove the global variables such as `${QT_INCLUDE_DIR}`!.
 
 ![](../images/eclipse_paths.png "Eclipse project properties - paths and symbols")
 
@@ -107,12 +105,7 @@ which cmake
 in your terminal. With `PATH` variable modified, click on **Apply** button and **Close** one to finish.
 ![](../images/eclipse_ant_mac_trouble.png "Ant trouble")
 
-* If Eclipse formatter (activated after pressing `Ctrl`+`Shift`+`F`), modifies a file by with reason, it probably changes the way how the white spaces are taken into account. Navigate through the Eclipse menu: `Windows` > `Preferences` > `C/C++` > `Code Style` > `Formatter`. Click on `Edit` button and make sure that `Tab policy` is set to `Spaces only`. If this is not the case, change it (you may need to create a new profile). 
-
-## Summary {#eclipse_summary}
-
-* To build a project, use the *Ant* view and select the `build` routine for the said project.
-* To run an executable project, use the **Run** icon of Eclipse and select the said project.
+* If you are developing in %PARTONS and if Eclipse formatter (activated after pressing `Ctrl`+`Shift`+`F`), modifies a file by no reason, it probably changes the way how the white spaces are taken into account. Navigate through the Eclipse menu: `Windows` > `Preferences` > `C/C++` > `Code Style` > `Formatter`. Click on `Edit` button and make sure that `Tab policy` is set to `Spaces only`. If this is not the case, change it (you may need to create a new profile). 
 
 <hr>
 

@@ -24,15 +24,13 @@ One can distinguish three types of Services:
 
 When a computation is performed, higher layers call lower ones automatically. The responsibility of a %PARTONS user is to only set all required physical assumptions, such as GPD model, order of pQCD approximation, etc.
 
-The [first section](@ref usage_xml) explains how to write an XML file, whereas the practical aspects of running these files is left to [another tutorial](@ref use_xml_interface). The second section explains how to make use of the C++ library directly while again the practical aspects of writing an external program are left to the aforementioned [tutorial](@ref write_external_program).
-
 <hr>
 
 # PARTONS_example project {#usage_pexample}
 
 It is useful for this tutorial to have our example project called [partons-example](https://drf-gitlab.cea.fr/partons/core/partons-example) set up and ready to be used. It can serve as an illustration of topics being discussed here and you can base your own program on it for a start. The project is set up to run any XML scenario. The collection of exemplary XML scenarios can be found in `data/examples` directory.
 
-The project comes with `main.cpp` file, which illustrates how to call and handle properly %PARTONS library in a stand alone program (see [this section](#usage_exe) for more information). With a minor modification, which is clearly indicated  in `main.cpp`, the project can also serve as a base to run any C++ code based on %PARTONS library. The collection of exemplary functions is included in `examples.h` (header) and `example.cpp` (source) files. 
+The project comes with `main.cpp` file, which illustrates how to call and handle properly %PARTONS library in a stand alone program (see [this section](#usage_exe) for more information). With a minor modification, which is clearly indicated  in `main.cpp`, the project can also serve as a base to run any C++ code based on %PARTONS library. The collection of exemplary C++ functions is included in `examples.h` (header) and `example.cpp` (source) files. 
 
 Read [this short tutorial](@ref quick) to learn how to evaluate (play) a demonstration XML scenario in [partons-example](https://drf-gitlab.cea.fr/partons/core/partons-example). Note, that you can use this project to run any XML scenario that you will create during your work with %PARTONS. 
 
@@ -42,7 +40,7 @@ Read [this short tutorial](@ref quick) to learn how to evaluate (play) a demonst
 
 Here we demonstrate how to create the main function of an executable project, like `main()` of [partons-example](https://drf-gitlab.cea.fr/partons/core/partons-example). That is, we show how to initialize and handle %PARTONS library and how to call its members properly. 
 
-If you wish to work with %PARTONS by using only XML scenarios run through [partons-example](https://drf-gitlab.cea.fr/partons/core/partons-example) (see [this section](#usage_pexample) for more information) and you are not interested in details on how the main function of [partons-example](https://drf-gitlab.cea.fr/partons/core/partons-example) is constructed, you may skip this section of the tutorial. 
+If you wish to work with %PARTONS by using only XML scenarios run through [partons-example](https://drf-gitlab.cea.fr/partons/core/partons-example) (see [this section](#usage_pexample) for more information) and you are not interested in details on how the main function of [partons-example](https://drf-gitlab.cea.fr/partons/core/partons-example) is build, you may skip this section of the tutorial. 
 
 This is the skeleton for the main function:
 ```cpp
@@ -96,7 +94,7 @@ pAutomationService->playScenario(pScenario);
 ```
 For your convenience, you may pass `path_to_scenario` as a function argument. 
 * It is not mandatory, but still highly recommended to keep `try`-`catch` mechanism in order to catch exceptions and display with Logger the associated error messages. Without this mechanism the information on what has caused the termination of your program is lost. 
-* PARTONS::Partons is a singleton object that initializes and configures all other singletons, like services and registries. Make sure to have well set up configurations files for this initialization and configuration to work. See [this tutorial](@ref config) for more information.
+* PARTONS::Partons is a singleton object that initializes and configures all other singletons, like services and registries. Make sure to have well set up configurations files for the initialization and configuration to work. See [this tutorial](@ref config) for more information.
 * The following includes are necessary for the code presented in this section to work
 ```cpp
 #include <ElementaryUtils/logger/CustomException.h>
@@ -242,7 +240,7 @@ This table summarizes all tasks available in computation services. For a given t
 
 # Available modules {#usage_modules} 
 
-This table summarizes all modules available in %PARTONS. For a given module, click on the class name for more information. The class name (without the %PARTONS:: namespace) is also the module identifier to be used in XML scenarios.
+This table summarizes all modules available in %PARTONS. For a given module, click on the class name for more information. The class name (without %PARTONS:: namespace) serves also as the module identifier to be used in XML scenarios.
 | Module type	| Class name			| Short description							|
 | :------------ | :---------------------------- | :------------------------------------------------------------ 	| 
 | GPDModule	| PARTONS::GPDGK11		| Goloskokov-Kroll model 2011 (analytical DD integration)		| 

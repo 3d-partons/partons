@@ -22,7 +22,7 @@ To better understand the following remarks, please take a look in parallel at th
 ```cpp
 virtual void f() = 0;
 ```
-Formally, you do not need to implement other virtual functions, unless you want to change their default behavior defined in the mother class. However, it is highly recommended to do so, which is imposes by the execution chain explained in the next remark. 
+Formally, you do not need to implement other virtual functions, unless you want to change their default behavior defined in the mother class. However, it is highly recommended to do so, which is imposes by the execution chain explained in the next bullet. 
 * Be aware of the execution chain whenever the inheritance is involved. Whenever needed, keep the scheme illustrated by the following example, which allows to call all implementations of a given function that are defined in the abstract classes: 
 ```cpp
 #include <iostram>
