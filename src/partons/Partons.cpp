@@ -13,9 +13,9 @@
 #include "../../include/partons/database/DatabaseManager.h"
 #include "../../include/partons/ModuleObjectFactory.h"
 #include "../../include/partons/ServiceObjectRegistry.h"
+#include "../../include/partons/PartonsVersion.h"
 
 namespace PARTONS {
-
 
 const std::string Partons::PROPERTIES_FILE_NAME = "partons.properties";
 
@@ -108,6 +108,9 @@ void Partons::init(int argc, char** argv) {
 
     // 5. Retrieve environment configuration
     retrieveEnvironmentConfiguration();
+
+    //6. Print version and welcome message
+    printVersion();
 }
 
 void Partons::retrieveEnvironmentConfiguration() {
@@ -140,6 +143,17 @@ void Partons::close() {
         delete m_pLoggerManager;
         m_pLoggerManager = 0;
     }
+}
+
+void Partons::printVersion() const {
+
+    m_pLoggerManager->info("Partons", __func__,
+            ElemUtils::Formatter() << "PARTONS " << Version::getVersionString()
+                    << " (www.partons.cea.fr) distributed under GNU Public License");
+    m_pLoggerManager->info("Partons", __func__,
+            ElemUtils::Formatter() << "Using Elementary-Utils "
+                    << /*ElemUtils::*/Version::getVersionString()
+                    << " and NumA++ " << /*NumA::*/Version::getVersionString());
 }
 
 std::string Partons::getCurrentWorkingDirectory() {

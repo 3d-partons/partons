@@ -91,7 +91,7 @@ private:
     EnvironmentConfiguration* m_pEnvironmentConfiguration;
 
     /**
-     *
+     * Retrieve environment configuration.
      */
     void retrieveEnvironmentConfiguration();
 
@@ -99,6 +99,11 @@ private:
      * Check if "partons.properties" file path is readable. Throw exception else.
      */
     void checkMandatoryFiles();
+
+    /**
+     * Prints information about the version to Logger.
+     */
+    void printVersion() const;
 };
 
 } /* namespace PARTONS */

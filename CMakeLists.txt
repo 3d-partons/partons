@@ -9,6 +9,21 @@ project(PARTONS CXX)
 # define c++ standard and issue all the warning demanded by this standard
 add_definitions(-std=c++98 -pedantic)
 
+# VERSION ==================================================================================
+
+# read file
+file(READ ${CMAKE_SOURCE_DIR}/data/version.txt VERSION_STR)
+
+# strip spaced
+string(STRIP ${VERSION_STR} VERSION_STR)
+
+# get major and minor versions
+string(REGEX REPLACE "\\.[0-9]*" "" PARTONS_VERSION_MAJOR ${VERSION_STR})
+string(REGEX REPLACE "[0-9]*\\." "" PARTONS_VERSION_MINOR ${VERSION_STR})
+
+# configure
+configure_file (${CMAKE_SOURCE_DIR}/cmake/version/PartonsVersion.h_in ${CMAKE_SOURCE_DIR}/include/partons/PartonsVersion.h)
+
 # AUTOMOC ==================================================================================
 
 # tell cmake to run Qt moc when necessary
@@ -27,7 +42,7 @@ include(${QT_USE_FILE})
 add_definitions(${QT_DEFINITIONS})
 
 # find libraries: additional modules
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
 
 # find libraries: SFML
 find_package(SFML COMPONENTS system REQUIRED)
