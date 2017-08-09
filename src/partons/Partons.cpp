@@ -6,6 +6,8 @@
 #include <ElementaryUtils/PropertiesManager.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
+#include <ElementaryUtils/ElementaryUtilsVersion.h>
+#include <NumA/NumAVersion.h>
 
 #include "../../include/partons/beans/system/EnvironmentConfiguration.h"
 #include "../../include/partons/BaseObjectFactory.h"
@@ -96,21 +98,21 @@ void Partons::init(int argc, char** argv) {
     // 2. Init the logger to trac info/warn/debug message
     m_pLoggerManager->init();
 
-    // 3. Init each object stored in the registry
+    // 3. Print version and welcome message
+    printVersion();
+
+    // 4. Init each object stored in the registry
     m_pBaseObjectRegistry->resolveBaseObjectDependencies();
 
-    // Database connexion
+    // 5. Database connexion
     DatabaseManager::getInstance()->init();
 
-    // 4. Start logger's thread
+    // 6. Start logger's thread
     //m_pLoggerManager->start();
     m_pLoggerManager->launch();
 
-    // 5. Retrieve environment configuration
+    // 7. Retrieve environment configuration
     retrieveEnvironmentConfiguration();
-
-    //6. Print version and welcome message
-    printVersion();
 }
 
 void Partons::retrieveEnvironmentConfiguration() {
@@ -148,12 +150,14 @@ void Partons::close() {
 void Partons::printVersion() const {
 
     m_pLoggerManager->info("Partons", __func__,
-            ElemUtils::Formatter() << "PARTONS " << Version::getVersionString()
+            ElemUtils::Formatter() << "PARTONS " << PARTONS_VERSION_MAJOR << "."
+                    << PARTONS_VERSION_MINOR
                     << " (www.partons.cea.fr) distributed under GNU Public License");
     m_pLoggerManager->info("Partons", __func__,
-            ElemUtils::Formatter() << "Using Elementary-Utils "
-                    << /*ElemUtils::*/Version::getVersionString()
-                    << " and NumA++ " << /*NumA::*/Version::getVersionString());
+            ElemUtils::Formatter() << "Build using Elementary-Utils "
+                    << ELEMENTARY_UTILS_VERSION_MAJOR << "."
+                    << ELEMENTARY_UTILS_VERSION_MINOR << " and NumA++ "
+                    << NUMA_VERSION_MAJOR << "." << NUMA_VERSION_MINOR);
 }
 
 std::string Partons::getCurrentWorkingDirectory() {
