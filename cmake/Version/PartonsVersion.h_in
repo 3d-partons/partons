@@ -1,0 +1,13 @@
+/**
+ * @file PartonsVersion.h
+ * @author Pawel Sznajder (NCBJ, Warsaw)
+ * @date August 8, 2017
+ * @version 1.0
+ *
+ * This file is used to define PARTONS version number and it is set by CMake.
+ */
+
+#define PARTONS_VERSION(major,minor) (((major) << 8) + (minor))
+#define PARTONS_VERSION_MAJOR @PARTONS_VERSION_MAJOR@
+#define PARTONS_VERSION_MINOR @PARTONS_VERSION_MINOR@
+#define PARTONS_VERSION_CODE PARTONS_VERSION(PARTONS_VERSION_MAJOR, PARTONS_VERSION_MINOR)
