@@ -142,7 +142,7 @@ class GPDEvolutionModule;
  	  listOfGPDToCompute.push_back(pGPDModel2);
 
 	 // Run computation
-     PARTONS::GPDResult gpdResult = computeListOfGPDModel(gpdKinematic, listOfGPDToCompute);
+     PARTONS::List<PARTONS::GPDResult> gpdResult = computeListOfGPDModel(gpdKinematic, listOfGPDToCompute);
  \endcode
  *
  * 5) Restrictions to some specific GPDs can be provided. In this case use:
