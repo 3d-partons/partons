@@ -25,76 +25,78 @@ class GPDEvolutionModule;
 /**
  * @class GPDService
  *
- * @brief \<singleton\> Used to handle and compute some pre-configured GPD models.
+ * @brief Singleton to handle and compute some pre-configured GPD models.
  *
- * See [tutorial](@ref services_computation).
+ * See [tutorial](@ref usage).
  *
  * This service is used to call the different GPD models implemented and compute values at the given kinematics.
  * It also takes care of the evolution of GPDs. We give here examples of codes which can be done using the GPD service.
  *
- * 1) Computation of a given GPD model called MyFavoriteModelOfGPD at a given kinematics (x, xi, t, MuF, MuR) where MuF and MuR are respectively
- * the factorisation and renormalisation scales:
- * void computeSingleKinematicsForGPD() {
+ * 1) %Computation of a given GPD model called `MyFavoriteModelOfGPD` at a given kinematics (x, xi, t, \f$\mu_{F}^{2}\f$, \f$\mu_{R}^{2}\f$), where \f$\mu_{F}^{2}\f$ and \f$\mu_{R}^{2}\f$ are
+ * squares of factorisation and renormalisation scales, respectively:
+ \code{.cpp}
+ void computeSingleKinematicsForGPD() {
 
-    // Retrieve GPD service
-    PARTONS::GPDService* pGPDService =
-            PARTONS::Partons::getInstance()->getServiceObjectRegistry()->getGPDService();
+ // Retrieve GPD service
+ PARTONS::GPDService* pGPDService =
+ PARTONS::Partons::getInstance()->getServiceObjectRegistry()->getGPDService();
 
-    // Create GPD module with the BaseModuleFactory
-    PARTONS::GPDModule* pGPDModel =
-            PARTONS::Partons::getInstance()->getModuleObjectFactory()->newGPDModule(
-                    PARTONS::MyFavoriteModelOfGPD::classId);
+ // Create GPD module with the BaseModuleFactory
+ PARTONS::GPDModule* pGPDModel =
+ PARTONS::Partons::getInstance()->getModuleObjectFactory()->newGPDModule(
+ PARTONS::MyFavoriteModelOfGPD::classId);
 
-    // Create a GPDKinematic(x, xi, t, MuF, MuR) to compute
-    PARTONS::GPDKinematic gpdKinematic(0.1, 0.2, -0.1, 2., 2.);
+ // Create a GPDKinematic(x, xi, t, MuF2, MuR2) to compute
+ PARTONS::GPDKinematic gpdKinematic(0.1, 0.2, -0.1, 2., 2.);
 
-    // Run computation
-    PARTONS::GPDResult gpdResult = pGPDService->computeGPDModel(gpdKinematic,
-            pGPDModel);
+ // Run computation
+ PARTONS::GPDResult gpdResult = pGPDService->computeGPDModel(gpdKinematic,
+ pGPDModel);
 
-    // Print results
-    PARTONS::Partons::getInstance()->getLoggerManager()->info("main", __func__,
-            gpdResult.toString());
+ // Print results
+ PARTONS::Partons::getInstance()->getLoggerManager()->info("main", __func__,
+ gpdResult.toString());
 
-    // Remove pointer reference ; Module pointers are managed by PARTONS.
-    PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
-            pGPDModel, 0);
-    pGPDModel = 0;
-}
+ // Remove pointer reference ; Module pointers are managed by PARTONS.
+ PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
+ pGPDModel, 0);
+ pGPDModel = 0;
+ }
+ \endcode
  *
- *2)Computations of a list of kinematics using an external file:
- *void computeManyKinematicsForGPD() {
+ *2) Computations of a list of kinematics using an external file:
+ \code{.cpp}
+ void computeManyKinematicsForGPD() {
 
-    // Retrieve GPD service
-    PARTONS::GPDService* pGPDService =
-            PARTONS::Partons::getInstance()->getServiceObjectRegistry()->getGPDService();
+ // Retrieve GPD service
+ PARTONS::GPDService* pGPDService =
+ PARTONS::Partons::getInstance()->getServiceObjectRegistry()->getGPDService();
 
-    // Create GPD module with the BaseModuleFactory
-    PARTONS::GPDModule* pGPDModel =
-            PARTONS::Partons::getInstance()->getModuleObjectFactory()->newGPDModule(
-                    PARTONS::GPDMMS13::classId);
+ // Create GPD module with the BaseModuleFactory
+ PARTONS::GPDModule* pGPDModel =
+ PARTONS::Partons::getInstance()->getModuleObjectFactory()->newGPDModule(
+ PARTONS::GPDMMS13::classId);
 
-    // Load list of kinematics from file
-    PARTONS::List<PARTONS::GPDKinematic> gpdKinematicList =
-            PARTONS::KinematicUtils().getGPDKinematicFromFile(
-                    "/home/partons/git/partons-example/bin/examples/kinematics_gpd.csv");
+ // Load list of kinematics from file
+ PARTONS::List<PARTONS::GPDKinematic> gpdKinematicList =
+ PARTONS::KinematicUtils().getGPDKinematicFromFile(
+ "/home/partons/git/partons-example/bin/examples/kinematics_gpd.csv");
 
-    // Run computation
-    PARTONS::List<PARTONS::GPDResult> gpdResultList =
-            pGPDService->computeManyKinematicOneModel(gpdKinematicList,
-                    pGPDModel);
+ // Run computation
+ PARTONS::List<PARTONS::GPDResult> gpdResultList =
+ pGPDService->computeManyKinematicOneModel(gpdKinematicList,
+ pGPDModel);
 
-    // Print results
-    PARTONS::Partons::getInstance()->getLoggerManager()->info("main", __func__,
-            gpdResultList.toString());
+ // Print results
+ PARTONS::Partons::getInstance()->getLoggerManager()->info("main", __func__,
+ gpdResultList.toString());
 
-    // Remove pointer reference ; Module pointers are managed by PARTONS.
-    PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
-            pGPDModel, 0);
-    pGPDModel = 0;
-}
- *
- *
+ // Remove pointer reference ; Module pointers are managed by PARTONS.
+ PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
+ pGPDModel, 0);
+ pGPDModel = 0;
+ }
+ \endcode
  */
 class GPDService: public ServiceObjectTyped<GPDKinematic, GPDResult> {
 public:
@@ -131,7 +133,6 @@ public:
 //            GPDModule* pGPDModule,
 //            std::vector<GPDType::Type> restrictedByGPDTypeList = std::vector<
 //                    GPDType::Type>());
-
 
     /**
      * Computes GPD model at specific kinematics.
@@ -179,7 +180,6 @@ public:
     List<GPDResult> computeListOfGPDModelRestrictedByGPDType(
             const GPDKinematic &gpdKinematic,
             std::vector<GPDModule*> &listOfGPDToCompute, GPDType gpdType);
-
 
     /**
      * Computes a GPD model for a list of kinematics.
