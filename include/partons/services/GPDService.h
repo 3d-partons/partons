@@ -149,7 +149,7 @@ class GPDEvolutionModule;
  *  \code{.cpp}
  computeListOfGPDModelRestrictedByGPDType(
             const GPDKinematic &gpdKinematic,
-            std::vector<GPDModule*> &listOfGPDToCompute, GPDType gpdType)
+            std::vector<GPDModule*> &listOfGPDToCompute, GPDType gpdType);
     \endcode
  *
  *instead of computeListOfGPDModel.
