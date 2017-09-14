@@ -23,16 +23,19 @@
     <tab type="user" url="../../../partons/doc/html/index.html" title="Main Page"/>
     <tab type="usergroup" title="Reference documentation">
     	<tab type="user" url="../../../partons/doc/html/annotated.html" title="Class List"/>
+    	<tab type="user" url="../../../partons/doc/html/files.html" title="File List"/>
     	<tab type="user" url="../../../partons/doc/html/classes.html" title="Class Index"/>
         <tab type="user" url="../../../partons/doc/html/hierarchy.html" title="Class Hierarchy"/>
         <tab type="user" url="../../../partons/doc/html/namespaces.html" title="Namespaces"/>
     	<tab type="usergroup" title="ElementaryUtils">
     		<tab type="user" url="../../../elementary-utils/doc/html/annotated.html" title="Class List"/>
+    		<tab type="user" url="../../../elementary-utils/doc/html/files.html" title="File List"/>
     		<tab type="user" url="../../../elementary-utils/doc/html/classes.html" title="Class Index"/>
             <tab type="user" url="../../../elementary-utils/doc/html/hierarchy.html" title="Class Hierarchy"/>
     	</tab>
     	<tab type="usergroup" title="NumA++">
     		<tab type="user" url="../../../numa/doc/html/annotated.html" title="Class List"/>
+    		<tab type="user" url="../../../numa/doc/html/files.html" title="File List"/>
     		<tab type="user" url="../../../numa/doc/html/classes.html" title="Class Index"/>
             <tab type="user" url="../../../numa/doc/html/hierarchy.html" title="Class Hierarchy"/>
     	</tab>
