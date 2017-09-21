@@ -7,9 +7,7 @@
 For a detailed description of each virtual function we refer to its documentation, which is available after left-clicking on the function name. A short explanation is also provided by hovering your mouse pointer on the name.  
 
 ~~~~~~~~~~~~~{.cpp}
-namespace PARTONS {
-
-class MyCFFModel: public DVCSConvolCoeffFunctionModule {
+class MyCFFModel: public PARTONS::DVCSConvolCoeffFunctionModule {
 
 public:
 
@@ -47,41 +45,37 @@ protected:
     virtual std::complex<double> computeUnpolarized();
     virtual std::complex<double> computePolarized();
 };
-
-}
 ~~~~~~~~~~~~~
 
 # Source code file template {#newmodule_templates_dvcscff_cpp}
 
 ~~~~~~~~~~~~~{.cpp}
-namespace PARTONS {
-
 const unsigned int MyCFFModel::classId =
-        BaseObjectRegistry::getInstance()->registerBaseObject(new MyCFFModel("MyCFFModel"));
+        PARTONS::BaseObjectRegistry::getInstance()->registerBaseObject(new MyCFFModel("MyCFFModel"));
 
 MyCFFModel::MyCFFModel(const std::string& className) :
-        DVCSConvolCoeffFunctionModule(className) {
+        PARTONS::DVCSConvolCoeffFunctionModule(className) {
 
     //relate a specific GPD type with the appropriate function
     m_listOfCFFComputeFunctionAvailable.insert(
-            std::make_pair(GPDType::H,
-                    &DVCSConvolCoeffFunctionModule::computeUnpolarized));
+            std::make_pair(PARTONS::GPDType::H,
+                    &PARTONS::DVCSConvolCoeffFunctionModule::computeUnpolarized));
     m_listOfCFFComputeFunctionAvailable.insert(
-            std::make_pair(GPDType::E,
-                    &DVCSConvolCoeffFunctionModule::computeUnpolarized));
+            std::make_pair(PARTONS::GPDType::E,
+                    &PARTONS::DVCSConvolCoeffFunctionModule::computeUnpolarized));
     m_listOfCFFComputeFunctionAvailable.insert(
-            std::make_pair(GPDType::Ht,
-                    &DVCSConvolCoeffFunctionModule::computePolarized));
+            std::make_pair(PARTONS::GPDType::Ht,
+                    &PARTONS::DVCSConvolCoeffFunctionModule::computePolarized));
     m_listOfCFFComputeFunctionAvailable.insert(
-            std::make_pair(GPDType::Et,
-                    &DVCSConvolCoeffFunctionModule::computePolarized));
+            std::make_pair(PARTONS::GPDType::Et,
+                    &PARTONS::DVCSConvolCoeffFunctionModule::computePolarized));
 
     //this can be used to indicate that this CFF module does not need GPD module
     //default is that GPD module is needed, so the below line can be omitted
     setIsGPDModuleDependent(true);
 }
 
-MyCFFModel::MyCFFModel(const MyCFFModel& other) : DVCSConvolCoeffFunctionModule(other) {
+MyCFFModel::MyCFFModel(const MyCFFModel& other) : PARTONS::DVCSConvolCoeffFunctionModule(other) {
 }
 
 MyCFFModel::~MyCFFModel() {
@@ -92,19 +86,19 @@ MyCFFModel* MyCFFModel::clone() const {
 }
 
 void MyCFFModel::resolveObjectDependencies() {
-    DVCSConvolCoeffFunctionModule::resolveObjectDependencies();
+    PARTONS::DVCSConvolCoeffFunctionModule::resolveObjectDependencies();
 }
 
 void MyCFFModel::configure(const ElemUtils::Parameters &parameters) {
-    DVCSConvolCoeffFunctionModule::configure(parameters);
+    PARTONS::DVCSConvolCoeffFunctionModule::configure(parameters);
 }
 
 void MyCFFModel::isModuleWellConfigured() {
-    DVCSConvolCoeffFunctionModule::isModuleWellConfigured();
+    PARTONS::DVCSConvolCoeffFunctionModule::isModuleWellConfigured();
 }
 
 void MyCFFModel::initModule() {
-    DVCSConvolCoeffFunctionModule::initModule();
+    PARTONS::DVCSConvolCoeffFunctionModule::initModule();
 }
 
 std::complex<double> MyCFFModel::computeUnpolarized() {
@@ -120,8 +114,6 @@ std::complex<double> MyCFFModel::computeUnpolarized() {
 
 std::complex<double> MyCFFModel::computePolarized() {
     //see MyCFFModel::computeUnpolarized()
-}
-
 }
 ~~~~~~~~~~~~~
 

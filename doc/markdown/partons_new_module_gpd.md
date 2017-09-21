@@ -7,9 +7,7 @@
 For a detailed description of each virtual function we refer to its documentation, which is available after left-clicking on the function name. A short explanation is also provided by hovering your mouse pointer on the name.  
 
 ```cpp
-namespace PARTONS {
-
-class MyGPDModel: public GPDModule {
+class MyGPDModel: public PARTONS::GPDModule {
 
 public:
 
@@ -44,32 +42,28 @@ protected:
     virtual void isModuleWellConfigured();
     virtual void initModule();
 
-    virtual PartonDistribution computeH();
-    virtual PartonDistribution computeE();
+    virtual PARTONS::PartonDistribution computeH();
+    virtual PARTONS::PartonDistribution computeE();
 };
-
-}
 ```
 
 # Source code file template {#newmodule_templates_gpd_cpp}
 
 ```cpp
-namespace PARTONS {
-
 const unsigned int MyGPDModel::classId = 
-    BaseObjectRegistry::getInstance()->registerBaseObject(new MyGPDModel("MyGPDModel"));
+    PARTONS::BaseObjectRegistry::getInstance()->registerBaseObject(new MyGPDModel("MyGPDModel"));
 
-MyGPDModel::MyGPDModel(const std::string &className) : GPDModule(className) {
+MyGPDModel::MyGPDModel(const std::string &className) : PARTONS::GPDModule(className) {
 
     //relate a specific GPD type with the appropriate function
     m_listGPDComputeTypeAvailable.insert(
-            std::make_pair(GPDType::H, &GPDModule::computeH));
+            std::make_pair(PARTONS::GPDType::H, &PARTONS::GPDModule::computeH));
 
     m_listGPDComputeTypeAvailable.insert(
-            std::make_pair(GPDType::E, &GPDModule::computeE));
+            std::make_pair(PARTONS::GPDType::E, &PARTONS::GPDModule::computeE));
 }
 
-MyGPDModel::MyGPDModel(const MyGPDModel& other) : GPDModule(other) {
+MyGPDModel::MyGPDModel(const MyGPDModel& other) : PARTONS::GPDModule(other) {
 }
 
 MyGPDModel::~MyGPDModel() {
@@ -83,21 +77,21 @@ void MyGPDModel::resolveObjectDependencies() {
 }
 
 void MyGPDModel::configure(const ElemUtils::Parameters &parameters) {
-    GPDModule::configure(parameters);
+    PARTONS::GPDModule::configure(parameters);
 }
 
 void MyGPDModel::isModuleWellConfigured() {
-    GPDModule::isModuleWellConfigured();
+    PARTONS::GPDModule::isModuleWellConfigured();
 }
 
 void MyGPDModel::initModule() {
-    GPDModule::initModule();
+    PARTONS::GPDModule::initModule();
 }
 
-PartonDistribution MyGPDModel::computeH() {
+PARTONS::PartonDistribution MyGPDModel::computeH() {
 
     //result
-    PartonDistribution result;
+    PARTONS::PartonDistribution result;
 
     //your implementation comes here
     ...
@@ -106,10 +100,8 @@ PartonDistribution MyGPDModel::computeH() {
     return result;
 }
 
-PartonDistribution MyGPDModel::computeE() {
+PARTONS::PartonDistribution MyGPDModel::computeE() {
     //see compute::H()
-}
-
 }
 ```
 
