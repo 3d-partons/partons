@@ -33,7 +33,7 @@ class GPDEvolutionModule;
  * It also takes care of the evolution of GPDs. We give here examples of codes which can be done using the GPD service.
  *
  * 1) %Computation of a given GPD model called `MyFavoriteModelOfGPD` at a given kinematics (x, xi, t, \f$\mu_{F}^{2}\f$, \f$\mu_{R}^{2}\f$), where \f$\mu_{F}^{2}\f$ and \f$\mu_{R}^{2}\f$ are
- * squares of factorisation and renormalisation scales, respectively:
+ * squares of factorization and renormalization scales, respectively:
  \code{.cpp}
  void computeSingleKinematicsForGPD() {
 
@@ -41,25 +41,21 @@ class GPDEvolutionModule;
  PARTONS::GPDService* pGPDService =
  PARTONS::Partons::getInstance()->getServiceObjectRegistry()->getGPDService();
 
- // Create GPD module with the BaseModuleFactory
+ // Create GPD module with the ModuleObjectFactory
  PARTONS::GPDModule* pGPDModel =
- PARTONS::Partons::getInstance()->getModuleObjectFactory()->newGPDModule(
- PARTONS::MyFavoriteModelOfGPD::classId);
+ PARTONS::Partons::getInstance()->getModuleObjectFactory()->newGPDModule(MyFavoriteModelOfGPD::classId);
 
  // Create a GPDKinematic(x, xi, t, MuF2, MuR2) to compute
  PARTONS::GPDKinematic gpdKinematic(0.1, 0.2, -0.1, 2., 2.);
 
  // Run computation
- PARTONS::GPDResult gpdResult = pGPDService->computeGPDModel(gpdKinematic,
- pGPDModel);
+ PARTONS::GPDResult gpdResult = pGPDService->computeGPDModel(gpdKinematic, pGPDModel);
 
  // Print results
- PARTONS::Partons::getInstance()->getLoggerManager()->info("main", __func__,
- gpdResult.toString());
+ PARTONS::Partons::getInstance()->getLoggerManager()->info("main", __func__, gpdResult.toString());
 
  // Remove pointer reference ; Module pointers are managed by PARTONS.
- PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
- pGPDModel, 0);
+ PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(pGPDModel, 0);
  pGPDModel = 0;
  }
  \endcode
@@ -69,31 +65,22 @@ class GPDEvolutionModule;
  void computeManyKinematicsForGPD() {
 
  // Retrieve GPD service
- PARTONS::GPDService* pGPDService =
- PARTONS::Partons::getInstance()->getServiceObjectRegistry()->getGPDService();
+ PARTONS::GPDService* pGPDService = PARTONS::Partons::getInstance()->getServiceObjectRegistry()->getGPDService();
 
- // Create GPD module with the BaseModuleFactory
- PARTONS::GPDModule* pGPDModel =
- PARTONS::Partons::getInstance()->getModuleObjectFactory()->newGPDModule(
- PARTONS::MyFavoriteModelOfGPD::classId);
+ // Create GPD module with the ModuleObjectFactory
+ PARTONS::GPDModule* pGPDModel = PARTONS::Partons::getInstance()->getModuleObjectFactory()->newGPDModule(MyFavoriteModelOfGPD::classId);
 
  // Load list of kinematics from file
- PARTONS::List<PARTONS::GPDKinematic> gpdKinematicList =
- PARTONS::KinematicUtils().getGPDKinematicFromFile(
- "/home/partons/git/partons-example/bin/examples/kinematics_gpd.csv");
+ PARTONS::List<PARTONS::GPDKinematic> gpdKinematicList = PARTONS::KinematicUtils().getGPDKinematicFromFile("/path/to/kinematics_gpd.csv");
 
  // Run computation
- PARTONS::List<PARTONS::GPDResult> gpdResultList =
- pGPDService->computeManyKinematicOneModel(gpdKinematicList,
- pGPDModel);
+ PARTONS::List<PARTONS::GPDResult> gpdResultList = pGPDService->computeManyKinematicOneModel(gpdKinematicList, pGPDModel);
 
  // Print results
- PARTONS::Partons::getInstance()->getLoggerManager()->info("main", __func__,
- gpdResultList.toString());
+ PARTONS::Partons::getInstance()->getLoggerManager()->info("main", __func__, gpdResultList.toString());
 
  // Remove pointer reference ; Module pointers are managed by PARTONS.
- PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
- pGPDModel, 0);
+ PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(pGPDModel, 0);
  pGPDModel = 0;
  }
  \endcode
@@ -101,56 +88,46 @@ class GPDEvolutionModule;
  *
  * 3) Compute a value of the GPD using Vinnikov evolution code (see Evolution Documentation) just change:
  * \code{.cpp}
-	 // Run computation
- PARTONS::GPDResult gpdResult = pGPDService->computeGPDModel(gpdKinematic,
- pGPDModel);
+ // Run computation
+ PARTONS::GPDResult gpdResult = pGPDService->computeGPDModel(gpdKinematic, pGPDModel);
  \endcode
  *
  * in case 1) by :
  *\code{.cpp}
- 	 // Create an evolution Module
- 	 PARTONS::GPDEvolutionModule* pEvolQCDModule =
- 	 PARTONS::Partons::getInstance()->getModuleObjectFactory()->newGPDEvolutionModule() //TODO Complete the argument
+ // Create an evolution Module
+ PARTONS::GPDEvolutionModule* pEvolQCDModule = PARTONS::Partons::getInstance()->getModuleObjectFactory()->newGPDEvolutionModule() //TODO Complete the argument
 
-	 // Run computation
- PARTONS::GPDResult gpdResult = pGPDService->computeGPDModelWithEvolution(gpdKinematic,
- pGPDModel,pEvolQCDModule);
+ // Run computation
+ PARTONS::GPDResult gpdResult = pGPDService->computeGPDModelWithEvolution(gpdKinematic, pGPDModel, pEvolQCDModule);
  \endcode
  *
  * 4) Use a list of GPD models instead of a single one. The code is the same than in case 2 but replace:
  \code{.cpp}
-	 // Run computation
- PARTONS::GPDResult gpdResult = pGPDService->computeGPDModel(gpdKinematic,
- pGPDModel);
+ // Run computation
+ PARTONS::GPDResult gpdResult = pGPDService->computeGPDModel(gpdKinematic, pGPDModel);
  \endcode
  *
  * by
  \code{.cpp}
- 	  // Create GPD module with the BaseModuleFactory for Model 1
- PARTONS::GPDModule* pGPDModel1 =
- PARTONS::Partons::getInstance()->getModuleObjectFactory()->newGPDModule(
- PARTONS::MyFavoriteModelOfGPD1::classId);
+ // Create GPD module with the ModuleObjectFactory for Model 1
+ PARTONS::GPDModule* pGPDModel1 = PARTONS::Partons::getInstance()->getModuleObjectFactory()->newGPDModule(MyFavoriteModelOfGPD1::classId);
 
- 	  // Create GPD module with the BaseModuleFactory for Model 2
- PARTONS::GPDModule* pGPDModel2 =
- PARTONS::Partons::getInstance()->getModuleObjectFactory()->newGPDModule(
- PARTONS::MyFavoriteModelOfGPD2::classId);
+ // Create GPD module with the ModuleObjectFactory for Model 2
+ PARTONS::GPDModule* pGPDModel2 = PARTONS::Partons::getInstance()->getModuleObjectFactory()->newGPDModule(MyFavoriteModelOfGPD2::classId);
 
- 	 //Create a list of model to compute
- 	  std::vector<GPDModule*> listOfGPDToCompute(0);
- 	  listOfGPDToCompute.push_back(pGPDModel1);
- 	  listOfGPDToCompute.push_back(pGPDModel2);
+ //Create a list of model to compute
+ std::vector<GPDModule*> listOfGPDToCompute(0);
+ listOfGPDToCompute.push_back(pGPDModel1);
+ listOfGPDToCompute.push_back(pGPDModel2);
 
-	 // Run computation
-     PARTONS::List<PARTONS::GPDResult> gpdResult = computeListOfGPDModel(gpdKinematic, listOfGPDToCompute);
+ // Run computation
+ PARTONS::List<PARTONS::GPDResult> gpdResult = pGPDService->computeListOfGPDModel(gpdKinematic, listOfGPDToCompute);
  \endcode
  *
  * 5) Restrictions to some specific GPDs can be provided. In this case use:
  *  \code{.cpp}
- computeListOfGPDModelRestrictedByGPDType(
-            const GPDKinematic &gpdKinematic,
-            std::vector<GPDModule*> &listOfGPDToCompute, GPDType gpdType);
-    \endcode
+ computeListOfGPDModelRestrictedByGPDType(const GPDKinematic &gpdKinematic, std::vector<GPDModule*> &listOfGPDToCompute, GPDType gpdType);
+ \endcode
  *
  *instead of computeListOfGPDModel.
  */
