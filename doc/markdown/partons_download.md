@@ -33,4 +33,4 @@ Version   | Date            | %PARTONS version | Image                       |
 User      | To be completed | 1.0              | [Download](ftp://to.be.set) |
 Developer | To be completed | 1.0              | [Download](ftp://to.be.set) |
 
-The `Developer` version has a set-up development environment in Eclipse to start contributions to the PARTONS project, and has more packages installed, which makes the image heavier.
+The `Developer` version has a set-up development environment in Eclipse to start contributing to the %PARTONS project, and has more packages installed, which makes the image heavier.
