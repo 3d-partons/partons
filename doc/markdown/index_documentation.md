@@ -16,69 +16,65 @@
 
 # Get PARTONS {#mainpage_get}
 
-Here you can learn how to get your own version of %PARTONS. We offer two ways.
+Here you can learn how to get your own version of %PARTONS. We offer two ways:
+* You can use our provided virtual machine with an out-of-the-box %PARTONS runtime and development environment. This is the easiest way to start your experience with %PARTONS.
+* You can also build %PARTONS by your own on either GNU/Linux or Mac OS X. This is useful if you want to have %PARTONS on your computer without using the virtualization technology or if you want to use %PARTONS on computing farms. 
 
-You can use our provided virtual machine with an out-of-the-box %PARTONS runtime and development environment. This is the easiest way to start your experience with %PARTONS.
+[Download page](@ref download).
 
-[Using PARTONS with our provided Virtual Machine](@ref vm)
-
-You can also build %PARTONS by your own on either GNU/Linux or Mac OS X. This is useful if you want to have %PARTONS on your computer without using the virtualization technology or if you want to use %PARTONS on computing farms. 
-
-[Using PARTONS on GNU/Linux](@ref linux)
-
-[Using PARTONS on Mac OS X](@ref mac)
+Tutorials:
+* [Using PARTONS with our provided Virtual Machine](@ref vm).
+* [Using PARTONS on GNU/Linux](@ref linux).
+* [Using PARTONS on Mac OS X](@ref mac).
 
 <hr>
 
 # Configure PARTONS {#mainpage_conf} 
 
-If you are using [our virtual machine](@ref vm), you will find all configuration files set up and ready to be used. However, if you want to tune the configuration or if you have installed %PARTONS by your own, this tutorial will be helpful for you.
+If you are using [our virtual machine](@ref vm), you will find all configuration files set up and ready to be used. However, if you want to tune the configuration or if you have installed %PARTONS by your own, this tutorial will be helpful for you:
 
-[Manual configuration](@ref config)
+[Manual configuration](@ref config).
 
 <hr>
 
 # How to use PARTONS {#mainpage_howtouse}
 
-At this point you should have your own version of %PARTONS available and ready to be used. We provide two ways of using %PARTONS: by executing _scenarios_ encoded in simple XML files, or by using %PARTONS library and the corresponding headers to write your own stand-alone program. The first way allows to use %PARTONS without writing a line of code in C++ and rebuilding the project, while the second way is suitable for the most complex tasks. 
+At this point you should have your own version of %PARTONS available and ready to be used. We provide two ways of using %PARTONS: by executing _scenarios_ encoded in simple XML files, or by using the %PARTONS library and its headers to write your own stand-alone program. The first way allows to use %PARTONS without writing a line of code in C++ and rebuilding the project, while the second way is suitable for the most complex tasks. 
 
-[Quick guide](@ref quick)
+%PARTONS benefits from a modular structure. If you want to extend %PARTONS, you can create your own module, as for instance a new GPD model, plug it in and use all functionalities offered by the project.
 
-[Using PARTONS library](@ref usage)
+When working with %PARTONS you may want to configure and use an integrated development environment (IDE), such as Eclipse. Note, that if your are using [our virtual machine](@ref vm), you will find Eclipse already configured there and ready to be used. 
 
-%PARTONS benefits from a modular structure. If you want to extend %PARTONS, you can create your own module, as for instance a new GPD model, plug it in and use all functionalities offered by the project. This tutorial will also be helpful for any development work.
+When working with %PARTONS, one may also want to use also an SQL database, e.g. to keep track of results obtained in the past, to avoid repeating time-consuming computations or to store experimental results.
 
-[Writing your own module](@ref newmodule)
-
-When working with %PARTONS you may want to configure and use an integrated development environment (IDE), such as Eclipse. It is almost mandatory to use IDE whenever you use %PARTONS to write your own program, or if you develop its library, e.g. by adding a new module. Note, that if your are using [our virtual machine](@ref vm), you will find Eclipse ready to be used there. 
-
-[Using PARTONS with Eclipse CDT](@ref eclipse)
-
-When working with %PARTONS, one may want to use also a SQL database, e.g. to keep track of results obtained in the past, to avoid repeating time-consuming computations or to store experimental results. Learn how to do this with this tutorial.
-
-[Using PARTONS with database](@ref database)
+The following tutorials deal with all these matters:
+* [Quick guide on how to use PARTONS](@ref quick).
+* [Using the PARTONS library](@ref usage).
+* [Writing your own module](@ref newmodule).
+* [Using PARTONS with the Eclipse CDT IDE](@ref eclipse).
+* [Using PARTONS with a database](@ref database).
 
 <hr>
 
 # Publications and talks {#mainpage_talks}
 
-Here you can find our publications and the list of talks given on behalf of %PARTONS team.
+Here you can find our publications and the list of talks given on behalf of the %PARTONS team:
 
-[PARTONS publications and talks](@ref tandp)
+[PARTONS publications and talks](@ref tandp).
 
 <hr>
 
 # Acknowledgments {#mainpage_acknow}
 
 The work on %PARTONS has been supported by the following grants: 
-* French National Research Agency, Commissariat l’Energie Atomique et aux Energies Alternatives, grant no. 12-MONU-0008-01
-* U.S. Department of Energy, Office of Science, Office of Nuclear Physics, contract no. DE-AC02-06CH11357
+* French National Research Agency, Commissariat l’Energie Atomique et aux Energies Alternatives, grant no. 12-MONU-0008-01;
+* U.S. Department of Energy, Office of Science, Office of Nuclear Physics, contract no. DE-AC02-06CH11357.
 
 <hr>
 
 # License {#mainpage_licences}
 
-The following licenses apply: [elementary-utils](https://drf-gitlab.cea.fr/partons/core/elementary-utils), [numa](https://drf-gitlab.cea.fr/partons/core/numa) and [partons-example](https://drf-gitlab.cea.fr/partons/core/partons-example) sub-projects are distributed under [XXX](www.???.com) license, while [partons](https://drf-gitlab.cea.fr/partons/core/partons) sub-project is distributed under [XXX](www.???.com) license. Please, respect the licensing! 
+The following licenses apply: [elementary-utils](https://drf-gitlab.cea.fr/partons/core/elementary-utils) sub-project is under [XXX](www.???.com) license, while [numa](https://drf-gitlab.cea.fr/partons/core/numa), [partons](https://drf-gitlab.cea.fr/partons/core/partons) and [partons-example](https://drf-gitlab.cea.fr/partons/core/partons-example) are distributed under the [GPL](www.???.com) license. Please, respect the licensing! 
 
 <hr>
 
