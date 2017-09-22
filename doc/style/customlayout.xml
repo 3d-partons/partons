@@ -21,6 +21,22 @@
     </tab>
     <tab type="examples" visible="no" title="" intro=""/>  
     <tab type="user" url="../../../partons/doc/html/index.html" title="Main Page"/>
+    <tab type="user" url="../../../partons/doc/html/download.html" title="Download"/>
+    <tab type="usergroup" title="Tutorials">
+        <tab type="usergroup" title="Installation">
+            <tab type="user" url="../../../partons/doc/html/vm.html" title="Virtual machine"/>
+            <tab type="user" url="../../../partons/doc/html/linux.html" title="GNU/Linux"/>
+            <tab type="user" url="../../../partons/doc/html/mac.html" title="Mac OS"/>
+            <tab type="user" url="../../../partons/doc/html/config.html" title="Configuration"/>
+            <tab type="user" url="../../../partons/doc/html/eclipse.html" title="Eclipse CDT IDE"/>
+        </tab>
+        <tab type="usergroup" title="User's guide">
+            <tab type="user" url="../../../partons/doc/html/quick.html" title="Quick guide"/>
+            <tab type="user" url="../../../partons/doc/html/usage.html" title="General tutorial"/>
+            <tab type="user" url="../../../partons/doc/html/newmodule.html" title="Write a new module"/>
+            <tab type="user" url="../../../partons/doc/html/database.html" title="Database"/>
+        </tab>
+    </tab>
     <tab type="usergroup" title="Reference documentation">
     	<tab type="user" url="../../../partons/doc/html/annotated.html" title="Class List"/>
     	<tab type="user" url="../../../partons/doc/html/classes.html" title="Class Index"/>
@@ -36,6 +52,10 @@
     		<tab type="user" url="../../../numa/doc/html/classes.html" title="Class Index"/>
             <tab type="user" url="../../../numa/doc/html/hierarchy.html" title="Class Hierarchy"/>
     	</tab>
+    </tab>
+    <tab type="usergroup" title="About">
+        <tab type="user" url="../../../partons/doc/html/tandp.html" title="Publications and Talks"/>
+        <tab type="user" url="../../../partons/doc/html/contact.html" title="Contact"/>
     </tab>
   </navindex>
 
