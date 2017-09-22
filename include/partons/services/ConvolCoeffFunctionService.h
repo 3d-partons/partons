@@ -30,10 +30,9 @@ class GPDService;
  * See [tutorial](@ref usage).
  *
  * Please find below some examples how to use the different functions provided by this service.
- * For now only DVCS CFF are available, at Leading Order, Next-to-Leading Order, and including heavy quark masses in the NLO loop.
+ * For now, only DVCS CFF are available, at Leading Order, Next-to-Leading Order, and including heavy quark masses in the NLO loop.
  *
- * 1) Compute the coefficient functions at a specific kinematics (xi, t, \f$Q^{2}\f$, \f$\mu_{F}^{2}\f$, \f$\mu_{R}^{2}\f$) using the GPD model `MyFavoriteGPDModel`:
- *
+ * 1. Compute the coefficient functions at specific kinematics (\f$\xi\f$, t, \f$Q^{2}\f$, \f$\mu_{F}^{2}\f$, \f$\mu_{R}^{2}\f$) using the GPD model `MyFavoriteGPDModel`:
  * \code{.cpp}
  void computeSingleKinematicsForDVCSComptonFormFactor() {
 
@@ -76,12 +75,15 @@ class GPDService;
 
  \endcode
  *
- * 2) The same thing can be done when dealing with many kinematics.
- *
+ * 2. The same thing can be done when dealing with many kinematics, by adapting the code with the following lines:
  \code{.cpp}
- //TODO
+ // Load list of kinematics from file
+ PARTONS::List<PARTONS::DVCSConvolCoeffFunctionKinematic> cffKinematicList = PARTONS::KinematicUtils().getCCFKinematicFromFile("/path/to/kinematics_dvcs_cff.csv");
+
+ // Run computation
+ PARTONS::List<PARTONS::DVCSConvolCoeffFunctionResult> cffResultList = pDVCSConvolCoeffFunctionService->computeForOneCCFModelAndManyKinematics(cffKinematicList, pDVCSCFFModule);
  \endcode
- *
+ * In the file `kinematics_dvcs_cff.csv`, kinematic points are encoded in separate lines using the following format: "xi|t|Q2|MuF2|MuR2".
  */
 class ConvolCoeffFunctionService: public ServiceObjectTyped<
         DVCSConvolCoeffFunctionKinematic, DVCSConvolCoeffFunctionResult> {
