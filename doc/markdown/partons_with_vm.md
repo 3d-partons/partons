@@ -23,7 +23,7 @@ For other Linux distributions and operating systems some adjustments to the inst
 
 # Download and set-up our virtual machine {#vm_download}
 
-The appliance of our virtual machine can be downloaded from [this page](http://to-be-updated). With downloading completed, open VirtualBox and navigate through the menu: `File` > `Import Appliance`. Select the downloaded file, click on `Next` button and finish the straightforward procedure. Now, you can run the new virtual machine that has appeared in the list on the left side of the VirtualBox window. The previously downloaded file will not be needed anymore. 
+The image of our virtual machine can be downloaded from [this page](@ref download_vm). With downloading completed, open VirtualBox and navigate through the menu: `File` > `Import Appliance`. Select the downloaded file, click on `Next` button and finish the straightforward procedure. Now, you can run the new virtual machine that has appeared in the list on the left side of the VirtualBox window. The previously downloaded file will not be needed anymore. 
 
 <hr>
 
