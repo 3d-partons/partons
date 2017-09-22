@@ -32,7 +32,7 @@ class GPDModule;
  * It must be derived into child classes for different channels.
  * E.g. for DVCS, it is derived into DVCSConvolCoeffFunctionModule, that is a Compton Form Factor module.
  *
- * It is best to use this module with the corresponding service: ConvolCoeffFunctionService, as explained in the tutorial [Computation Services](@ref services_computation).
+ * It is best to use this module with the corresponding service: ConvolCoeffFunctionService (see examples therein), as explained in the [general tutorial](@ref usage).
  */
 class ConvolCoeffFunctionModule: public ModuleObject,
         public MathIntegratorModule {

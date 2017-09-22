@@ -29,7 +29,9 @@ class ObservableResult;
 /**
  * @class Observable
  *
- * @brief
+ * @brief Abstract class that provides a skeleton to implement an Observable module.
+ *
+ * It is best to use this module with the corresponding service: ObservableService (see examples therein), as explained in the [general tutorial](@ref usage).
  */
 class Observable: public ModuleObject {
 public:
