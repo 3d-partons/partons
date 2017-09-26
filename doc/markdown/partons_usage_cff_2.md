@@ -18,7 +18,7 @@ PARTONS::ConvolCoeffFunctionService::computeForOneCCFModelAndManyKinematics()
 
 ## Description {#usage_cff_2_description}
 
-This task is for the evaluation of DVCS Compton Form Factors (CFF) for kinematics defined in a text file. In this file kinematic points are encoded in separate lines using the following format: "xi|t|MuF2|MuR2|Q2".
+This task is for the evaluation of DVCS Compton Form Factors (CFF) for kinematics defined in a text file. In this file kinematic points are encoded in separate lines using the following format: "xi|t|Q2|MuF2|MuR2".
 
 ## XML example {#usage_cff_2_examplexml} 
 
