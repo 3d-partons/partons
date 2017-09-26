@@ -49,7 +49,7 @@ brew install sfml
 brew install git
 ``` 
 
-## CMake and Ant {mac_cmake}
+## CMake and Ant {#mac_cmake}
 
 Building %PARTONS requires CMake. You can brew it as usual:
 ```sh
