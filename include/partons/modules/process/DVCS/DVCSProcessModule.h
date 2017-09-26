@@ -22,7 +22,7 @@ namespace PARTONS {
 /**
  * @class DVCSProcessModule
  *
- * @brief Abstract class for computing the **differential** cross section of
+ * @brief Abstract class for computing the *differential* cross section of
  * the photon electroproduction process (also called DVCS ; Deeply Virtual Compton Scattering).
  *
  * The cross-section is five-fold differential with respect to the variables: @f$ x_B @f$, @f$ Q^2 @f$, @f$ t @f$ and the two angles.
