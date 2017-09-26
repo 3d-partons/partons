@@ -24,13 +24,13 @@ namespace PARTONS {
  *
  * Definition:<br>
  *
- * \f$
- * A_{UT}^{\sin(\phi-\phi_{S})\cos(0\phi)}(x_{B}, t, Q^2) =
+ * \f$ \displaystyle
+ * A_{UT}^{\sin\left(\phi-\phi_{S}\right)\cos\left(0\phi\right)}\left(x_{B}, t, Q^2\right) =
  * \frac{1}{2\pi}
- * \int_{0}^{2\pi} d\phi A_{UT}^{\sin(\phi-\phi_{S})}(x_{B}, t, Q^2, \phi) \cos(0\phi)
+ * \int_{0}^{2\pi} \mathrm{d}\phi A_{UT}^{\sin\left(\phi-\phi_{S}\right)}\left(x_{B}, t, Q^2, \phi\right) \cos\left(0\phi\right) \, ,
  * \f$
  *
- * where \f$A_{UT}^{\sin(\phi-\phi_{S})}(x_{B}, t, Q^2, \phi)\f$ is defined in DVCSAutSinPhiMPhis.
+ * where \f$A_{UT}^{\sin\left(\phi-\phi_{S}\right)}\left(x_{B}, t, Q^2, \phi\right)\f$ is defined in DVCSAutSinPhiMPhis.
  */
 class DVCSAutSinPhiMPhisCos0Phi: public DVCSAutSinPhiMPhis,
         public MathIntegratorModule {

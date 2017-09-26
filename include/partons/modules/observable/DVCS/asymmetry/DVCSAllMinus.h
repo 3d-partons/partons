@@ -21,17 +21,23 @@ namespace PARTONS {
  *
  * Definition:<br>
  *
- * \f$
- * A_{LL}(x_{B}, t, Q^2, \phi) =
+ * \f$ \displaystyle
+ * A_{LL}\left(x_{B}, t, Q^2, \phi\right) =
  * \frac{
- * (d^4\sigma_{\leftarrow}^{\rightarrow -}(x_{B}, t, Q^2, \phi) + d^4\sigma_{\rightarrow}^{\leftarrow -}(x_{B}, t, Q^2, \phi)) - (d^4\sigma_{\rightarrow}^{\rightarrow -}(x_{B}, t, Q^2, \phi) + d^4\sigma_{\leftarrow}^{\leftarrow -}(x_{B}, t, Q^2, \phi))
+ * \left(\mathrm{d}^4\sigma_{\leftarrow}^{\rightarrow -}\left(x_{B}, t, Q^2, \phi\right) +
+ * \mathrm{d}^4\sigma_{\rightarrow}^{\leftarrow -}\left(x_{B}, t, Q^2, \phi\right)\right) -
+ * \left(\mathrm{d}^4\sigma_{\rightarrow}^{\rightarrow -}\left(x_{B}, t, Q^2, \phi\right) +
+ * \mathrm{d}^4\sigma_{\leftarrow}^{\leftarrow -}\left(x_{B}, t, Q^2, \phi\right)\right)
  * }{
- * (d^4\sigma_{\leftarrow}^{\rightarrow -}(x_{B}, t, Q^2, \phi) + d^4\sigma_{\rightarrow}^{\leftarrow -}(x_{B}, t, Q^2, \phi)) + (d^4\sigma_{\rightarrow}^{\rightarrow -}(x_{B}, t, Q^2, \phi) + d^4\sigma_{\leftarrow}^{\leftarrow -}(x_{B}, t, Q^2, \phi))
- * }
+ * \left(\mathrm{d}^4\sigma_{\leftarrow}^{\rightarrow -}\left(x_{B}, t, Q^2, \phi\right) +
+ * \mathrm{d}^4\sigma_{\rightarrow}^{\leftarrow -}\left(x_{B}, t, Q^2, \phi\right)\right) +
+ * \left(\mathrm{d}^4\sigma_{\rightarrow}^{\rightarrow -}\left(x_{B}, t, Q^2, \phi\right) +
+ * \mathrm{d}^4\sigma_{\leftarrow}^{\leftarrow -}\left(x_{B}, t, Q^2, \phi\right)\right)
+ * } \, ,
  * \f$
  *
- * where:
- * \f$\sigma_{t_{h}}^{b_{h} b_{c}}\f$ is single photon production cross-section (DVCS, BH and Int) for target helicity denoted by \f$t_{h}\f$, beam helicity denoted by \f$b_{h}\f$ and beam charge denoted by \f$b_{c}\f$.
+ * where
+ * \f$\sigma_{t_{h}}^{b_{h} b_{c}}\f$ is a single photon production cross-section (DVCS, BH and Interference) for target helicity denoted by \f$t_{h}\f$, beam helicity denoted by \f$b_{h}\f$ and beam charge denoted by \f$b_{c}\f$.
  */
 class DVCSAllMinus: public Observable {
 

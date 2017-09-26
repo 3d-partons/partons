@@ -24,13 +24,13 @@ namespace PARTONS {
  *
  * Definition:<br>
  *
- * \f$
- * A_{LL}^{\cos(2\phi)}(x_{B}, t, Q^2) =
+ * \f$ \displaystyle
+ * A_{LL}^{\cos\left(2\phi\right)}\left(x_{B}, t, Q^2\right) =
  * \frac{1}{\pi}
- * \int_{0}^{2\pi} d\phi A_{LL}(x_{B}, t, Q^2, \phi) \cos(2\phi)
+ * \int_{0}^{2\pi} \mathrm{d}\phi A_{LL}\left(x_{B}, t, Q^2, \phi\right) \cos\left(2\phi\right) \, ,
  * \f$
  *
- * where \f$A_{LL}(x_{B}, t, Q^2, \phi)\f$ is defined in DVCSAllMinus.
+ * where \f$A_{LL}\left(x_{B}, t, Q^2, \phi\right)\f$ is defined in DVCSAllMinus.
  */
 class DVCSAllMinusCos2Phi: public DVCSAllMinus, public MathIntegratorModule {
 
