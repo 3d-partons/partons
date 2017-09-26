@@ -29,9 +29,9 @@ class Task;
  *
  * @brief Singleton used to handle and compute some pre-configured Observables.
  *
- * See [tutorial](@ref usage).
+ * See the [general tutorial](@ref usage) and this [table](@ref usage_tasks) of examples.
  *
- * Please find below some examples how to use the different functions provided by this service.
+ * Please find below some examples on how to use the different functions provided by this service.
  *
  * For now, only DVCS observables are available, including charge and spin asymmetries, both \f$\phi\f$-dependent and \f$\phi\f$-integrated (Fourier coefficients), and some cross-sections.
  *

@@ -27,9 +27,9 @@ class GPDService;
  *
  * @brief Singleton to handle and compute some pre-configured CCF modules.
  *
- * See [tutorial](@ref usage).
+ * See the [general tutorial](@ref usage) and this [table](@ref usage_tasks) of examples.
  *
- * Please find below some examples how to use the different functions provided by this service.
+ * Please find below some examples on how to use the different functions provided by this service.
  * For now, only DVCS CFF are available, at Leading Order, Next-to-Leading Order, and including heavy quark masses in the NLO loop.
  *
  * 1. Compute the coefficient functions at specific kinematics (\f$\xi\f$, t, \f$Q^{2}\f$, \f$\mu_{F}^{2}\f$, \f$\mu_{R}^{2}\f$) using the GPD model `MyFavoriteGPDModel`:

@@ -27,7 +27,7 @@ class GPDEvolutionModule;
  *
  * @brief Singleton to handle and compute some pre-configured GPD models.
  *
- * See [tutorial](@ref usage).
+ * See the [general tutorial](@ref usage) and this [table](@ref usage_tasks) of examples.
  *
  * This service is used to call the different GPD models implemented and compute values at the given kinematics.
  * It also takes care of the evolution of GPDs. We give here examples of codes which can be done using the GPD service.
