@@ -111,9 +111,9 @@ double integrationResult = integrate(m_pFunctorForIntegrationFunction, min, max,
 
 <hr>
 
-# How to use new module {#newmodule_usage}
+# How to use a new module {#newmodule_usage}
 
-After a proper building of your %PARTONS-related project, you may use a new module as any other in %PARTONS - see [this tutorial](@ref usage) for more details. For instance, to get a clone of your new GPD module do as follows:
+After a proper compilation of your %PARTONS-related project, you may use a new module as any other in %PARTONS - see [this tutorial](@ref usage) for more details. For instance, to get a clone of your new GPD module, do as follows:
 ```cpp
 // Clone GPD module with the ModuleObjectFactory from our own custom module
 PARTONS::GPDModule* pGPDModel = PARTONS::Partons::getInstance()->getModuleObjectFactory()->newGPDModule(MyGPDModel::classId);

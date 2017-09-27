@@ -34,6 +34,9 @@ Visit [this page](@ref download) to download %PARTONS' source code. To achieve t
 sudo apt-get install git
 ```
 
+
+<hr>
+
 # Building the source code {#linux_build}
 
 This section is for building the projects without using any Integrated Development Environment (IDE). Skip it and see [this tutorial](@ref eclipse) if you want to use Eclipse. 

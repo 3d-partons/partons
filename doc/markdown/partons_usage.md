@@ -110,6 +110,8 @@ Be sure to include all the headers required by your code. Eclipse can automatica
 using namespace PARTONS;
 ```
 
+<hr>
+
 # Using XML interface {#usage_xml}
 
 We refer to a set of physics assumptions as a scenario. In this section we demonstrate how a single scenario can be encoded in an input XML file to be evaluated (played) by %PARTONS. This will be achieved with the help of this example, which is used to evaluate one of the Fourier moments of DVCS beam charge asymmetry, \f$A_{C}^{\cos 2\phi}\f$, in a single kinematic point:
@@ -241,6 +243,9 @@ This table summarizes all tasks available in computation services. For a given t
 | [ObservableService](@ref PARTONS::ObservableService)      | [computeManyKinematicOneModel](@ref usage_obs_2)         | Evaluate observable for many kinematic points    |
 | [ObservableService](@ref PARTONS::ObservableService)      | [printResults](@ref usage_obs_3)                         | Print out result to std output                   |
 | [ObservableService](@ref PARTONS::ObservableService)      | [generatePlotFile](@ref usage_obs_4)                     | Generate plot file from data stored in database  |
+
+
+<hr>
 
 # Available modules {#usage_modules} 
 

@@ -24,6 +24,9 @@ Version  | Status                                           | elementary-utils  
 :------: | :----------------------------------------------: | :-------------------------: | :-------------------------:	| :---------------------------: | :---------------------------: |
 1.0      | <pre style="color: green;">Latest version</pre>  | [tar.gz](https://drf-gitlab.cea.fr/partons/core/elementary-utils/repository/v1.0/archive.tar.gz)  | [tar.gz](https://drf-gitlab.cea.fr/partons/core/numa/repository/v1.0/archive.tar.gz)	| [tar.gz](https://drf-gitlab.cea.fr/partons/core/partons/repository/v1.0/archive.tar.gz)	| [tar.gz](https://drf-gitlab.cea.fr/partons/core/partons-example/repository/v1.0/archive.tar.gz)	|
 
+
+<hr>
+
 # Virtual machine {#download_vm}
 
 You can also download our pre-configured virtual machine (see the [VM tutorial](@ref vm)):
