@@ -11,7 +11,7 @@ There are three %PARTONS configuration files that you may be interested in:
 * `logger.properties`: configuration of the Logger;
 * `environment_configuration.dat`: environment configuration information.
 
-%All of these files are described in the following.
+%All these files are described in the following. Samples are also provided with the library [partons](https://drf-gitlab.cea.fr/partons/core/partons) (folder `data/config`) and the executable project [partons-example](https://drf-gitlab.cea.fr/partons/core/partons-example) (folder `bin`).
 
 <hr>
 
@@ -59,6 +59,10 @@ gpd.service.batch.size = 10000
 ccf.service.batch.size = 1000
 ```
 
+The file `xmlSchema.xsd` used by the XML parser is provided both with the library [partons](https://drf-gitlab.cea.fr/partons/core/partons) and the executable project [partons-example](https://drf-gitlab.cea.fr/partons/core/partons-example), in the directory `data`. When `partons` is installed, the file is copied typically to `/usr/local/share/PARTONS`. The same can be said for the `grid` folder containing the PDF replicas.
+
+<hr>
+
 # logger.properties {#config_logger}
 
 This is the configuration file of the Logger. The path to this file should be set in `partons.properties` via the `log.file.path` option. %All options are explained here in the comments starting with the hash symbol `#`:
@@ -89,6 +93,8 @@ print.mode = BOTH
 # Path to the directory containing Logger output text files 
 log.folder.path = /path/to/output/folder
 ```
+
+<hr>
 
 # environment_configuration.dat {#config_env}
 
