@@ -195,4 +195,4 @@ For the list of all possible operations provided by Services, see their document
 
 The design of the %PARTONS database allows to store experimental data. Not only kinematics and results with uncertainties, but also information concerning related experiments can be stored in the database. These informations can be used later to make systematic comparisons with theoretical predictions, where experimental data are easily selected with a list of user-defined criteria. To introduce a new set of experimental data into the database, one can use scripts provided by our team, to be found in the `data/database/insert_exp_data` folder of your %PARTONS copy. We refer to the file `data/database/insert_experimental_data/README.md` for more information.
 
-Note that, like all resources in the folder `data`, during the installation of PARTONS, these are copied by default to `/usr/local/share/PARTONS`.
+Note that, like all resources in the folder `data`, during the installation of %PARTONS, these are copied by default to `/usr/local/share/PARTONS`.
