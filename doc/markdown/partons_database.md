@@ -41,7 +41,7 @@ sudo mysql_secure_installation
 ```
 During the installation process or when executing the script `mysql_secure_installation`, you will be asked to set your own administration password to manage your server. For other Linux distributions and operating systems some adjustments to the installation receipt may be needed.
 
-With the MySQL server available, its administrator (possibly you) should set up a database for %PARTONS. This can be accomplished easily with MySQL scripts provided by our team. These scripts are available in the directory `database/sql_schema` of the %PARTONS library ([partons](https://drf-gitlab.cea.fr/partons/core/partons) project) and they should be used in the following way:
+With the MySQL server available, its administrator (possibly you) should set up a database for %PARTONS. This can be accomplished easily with MySQL scripts provided by our team. These scripts are available in the directory `data/database/sql_schema` of the %PARTONS library ([partons](https://drf-gitlab.cea.fr/partons/core/partons) project) and they should be used in the following way:
 ```py
 # in shell 
 # go to directory containing scripts 
@@ -193,5 +193,6 @@ For the list of all possible operations provided by Services, see their document
 
 # Store experimental data in database {#database_experimentaldata}
 
-The design of the %PARTONS database allows to store experimental data. Not only kinematics and results with uncertainties, but also information concerning related experiments can be stored in the database. These informations can be used later to make systematic comparisons with theoretical predictions, where experimental data are easily selected with a list of user-defined criteria. To introduce a new set of experimental data into the database, one can use scripts provided by our team, to be found in the `database/insert_exp_data` folder of your %PARTONS copy. We refer to the file `database/insert_experimental_data/README` for more information.
+The design of the %PARTONS database allows to store experimental data. Not only kinematics and results with uncertainties, but also information concerning related experiments can be stored in the database. These informations can be used later to make systematic comparisons with theoretical predictions, where experimental data are easily selected with a list of user-defined criteria. To introduce a new set of experimental data into the database, one can use scripts provided by our team, to be found in the `data/database/insert_exp_data` folder of your %PARTONS copy. We refer to the file `data/database/insert_experimental_data/README.md` for more information.
 
+Note that, like all resources in the folder `data`, during the installation of PARTONS, these are copied by default to `/usr/local/share/PARTONS`.
