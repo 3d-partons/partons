@@ -53,7 +53,7 @@ double DVCSAluInt::computePhiObservable(double phi) {
         return 0.;
     }
 
-    return ((A - B) - (C - D)) / ((A - B) + (C - D));
+    return ((A - B) - (C - D)) / ((A + B) + (C + D));
 }
 
 } /* namespace PARTONS */

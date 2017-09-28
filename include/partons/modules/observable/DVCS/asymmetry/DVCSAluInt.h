@@ -29,9 +29,9 @@ namespace PARTONS {
  * \left(\mathrm{d}^4\sigma^{\leftarrow +}\left(x_{B}, t, Q^2, \phi\right) -
  * \mathrm{d}^4\sigma^{\leftarrow -}\left(x_{B}, t, Q^2, \phi\right)\right)
  * }{
- * \left(\mathrm{d}^4\sigma^{\rightarrow +}\left(x_{B}, t, Q^2, \phi\right) -
+ * \left(\mathrm{d}^4\sigma^{\rightarrow +}\left(x_{B}, t, Q^2, \phi\right) +
  * \mathrm{d}^4\sigma^{\rightarrow -}\left(x_{B}, t, Q^2, \phi\right)\right) +
- * \left(\mathrm{d}^4\sigma^{\leftarrow +}\left(x_{B}, t, Q^2, \phi\right) -
+ * \left(\mathrm{d}^4\sigma^{\leftarrow +}\left(x_{B}, t, Q^2, \phi\right) +
  * \mathrm{d}^4\sigma^{\leftarrow -}\left(x_{B}, t, Q^2, \phi\right)\right)
  * } \, ,
  * \f$
