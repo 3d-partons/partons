@@ -25,9 +25,65 @@ class GPDService;
 /**
  * @class ConvolCoeffFunctionService
  *
- * @brief \<singleton\> Used to handle and compute some pre-configured CCF modules.
+ * @brief Singleton to handle and compute some pre-configured CCF modules.
  *
- * See also the general tutorial on [Computation Services](@ref services_computation).
+ * See the [general tutorial](@ref usage) and this [table](@ref usage_tasks) of examples.
+ *
+ * Please find below some examples on how to use the different functions provided by this service.
+ * For now, only DVCS CFF are available, at Leading Order, Next-to-Leading Order, and including heavy quark masses in the NLO loop.
+ *
+ * 1. Compute the coefficient functions at specific kinematics (\f$\xi\f$, t, \f$Q^{2}\f$, \f$\mu_{F}^{2}\f$, \f$\mu_{R}^{2}\f$) using the GPD model `MyFavoriteGPDModel`:
+ * \code{.cpp}
+ void computeSingleKinematicsForDVCSComptonFormFactor() {
+
+ // Retrieve service
+ PARTONS::ConvolCoeffFunctionService* pDVCSConvolCoeffFunctionService = PARTONS::Partons::getInstance()->getServiceObjectRegistry()->getConvolCoeffFunctionService();
+
+ // Create GPD module with the ModuleObjectFactory
+ PARTONS::GPDModule* pGPDModule = PARTONS::Partons::getInstance()->getModuleObjectFactory()->newGPDModule(MyFavoriteGPDModel::classId);
+
+ // Create CFF module with the ModuleObjectFactory
+ PARTONS::DVCSConvolCoeffFunctionModule* pDVCSCFFModule = PARTONS::Partons::getInstance()->getModuleObjectFactory()->newDVCSConvolCoeffFunctionModule(PARTONS::DVCSCFFStandard::classId);
+
+ // Create parameters to configure later DVCSCFFModel with PerturbativeQCD = LO
+ // This can be switched to NLO //TODO What about Heavy Quark Masses?
+ ElemUtils::Parameters parameters(PARTONS::PerturbativeQCDOrderType::PARAMETER_NAME_PERTURBATIVE_QCD_ORDER_TYPE, PARTONS::PerturbativeQCDOrderType::LO);
+
+ // Configure DVCSCFFModule with previous parameters.
+ pDVCSCFFModule->configure(parameters);
+
+ // Link GPDModule to DVCSCFFModule
+ pDVCSCFFModule->setGPDModule(pGPDModule);
+
+ // Create kinematic (xi,t,Q2,MuF2,MuR2)
+ PARTONS::DVCSConvolCoeffFunctionKinematic cffKinematic = PARTONS::DVCSConvolCoeffFunctionKinematic(0.01, -0.1, 4., 4., 4.);
+
+ // Run computation
+ PARTONS::DVCSConvolCoeffFunctionResult cffResult = pDVCSConvolCoeffFunctionService->computeForOneCCFModel(cffKinematic, pDVCSCFFModule);
+
+ // Print results for DVCSCFFModule
+ PARTONS::Partons::getInstance()->getLoggerManager()->info("main", __func__, cffResult.toString());
+
+ // Remove DVCSCFFModule pointer reference
+ PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(pDVCSCFFModule, 0);
+ pDVCSCFFModule = 0;
+
+ // Remove GPDModule pointer reference
+ PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(pGPDModule, 0);
+ pGPDModule = 0;
+ }
+
+ \endcode
+ *
+ * 2. The same thing can be done when dealing with many kinematics, by adapting the code with the following lines:
+ \code{.cpp}
+ // Load list of kinematics from file
+ PARTONS::List<PARTONS::DVCSConvolCoeffFunctionKinematic> cffKinematicList = PARTONS::KinematicUtils().getCCFKinematicFromFile("/path/to/kinematics_dvcs_cff.csv");
+
+ // Run computation
+ PARTONS::List<PARTONS::DVCSConvolCoeffFunctionResult> cffResultList = pDVCSConvolCoeffFunctionService->computeForOneCCFModelAndManyKinematics(cffKinematicList, pDVCSCFFModule);
+ \endcode
+ * In the file `kinematics_dvcs_cff.csv`, kinematic points are encoded in separate lines using the following format: "xi|t|Q2|MuF2|MuR2".
  */
 class ConvolCoeffFunctionService: public ServiceObjectTyped<
         DVCSConvolCoeffFunctionKinematic, DVCSConvolCoeffFunctionResult> {

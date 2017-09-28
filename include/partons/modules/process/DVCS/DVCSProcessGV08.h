@@ -20,7 +20,7 @@ namespace PARTONS {
 /**
  * @class DVCSProcessGV08
  *
- * Module for the DVCS process using the unpublished Guichon-Vanderhagen set of formulas.
+ * Module for the DVCS process using the unpublished Guichon-Vanderhaeghen set of formulas.
  */
 class DVCSProcessGV08: public DVCSProcessModule {
 public:

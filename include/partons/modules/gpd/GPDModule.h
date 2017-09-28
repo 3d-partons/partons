@@ -27,7 +27,7 @@ class GPDEvolutionModule;
  * @class GPDModule
  * @brief Abstract class that provides a skeleton to implement a Generalized Parton Distributions (GPD) module.
  *
- * It is best to use this module with the corresponding service: GPDService, as explained in the tutorial [Computation Services](@ref services_computation).
+ * It is best to use this module with the corresponding service: GPDService (see examples therein), as explained in the [general tutorial](@ref usage).
  */
 class GPDModule: public ModuleObject {
 public:

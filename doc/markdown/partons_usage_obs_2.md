@@ -18,7 +18,7 @@ PARTONS::ObservableService::computeManyKinematicOneModel()
 
 ## Description {#usage_obs_2_description}
 
-This task is for the evaluation of DVCS observable for kinematics defined in a text file. In this file kinematic points are encoded in separate lines using the following format: "xB|t|Q2|phi|E". 
+This task is for the evaluation of DVCS observable for kinematics defined in a text file. In this file kinematic points are encoded in separate lines using the following format: "xB|t|Q2|E|phi". 
 
 ## XML example {#usage_obs_2_examplexml} 
 

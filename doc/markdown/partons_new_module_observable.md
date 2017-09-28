@@ -15,9 +15,7 @@ We are using the one-observable-is-one-module policy. It means that each module 
 For a detailed description of each virtual function we refer to its documentation, which is available after left-clicking on the function name. A short explanation is also provided by hovering your mouse pointer on the name.  
 
 ```cpp
-namespace PARTONS {
-
-class MyObservable: public Observable {
+class MyObservable: public PARTONS::Observable {
 
 public:
 
@@ -48,27 +46,23 @@ protected:
      */
     MyObservable(const MyObservable &other);
 };
-
-}
 ```
 
 # Source code file template (phi-dependent observable) {#newmodule_templates_dvcsobservable_cppdep}
 
 ```cpp
-namespace PARTONS {
-
 const unsigned int MyObservable::classId =
-        BaseObjectRegistry::getInstance()->registerBaseObject(new MyObservable("MyObservable"));
+        PARTONS::BaseObjectRegistry::getInstance()->registerBaseObject(new MyObservable("MyObservable"));
 
 MyObservable::MyObservable(const std::string &className) :
-        Observable(className) {
+        PARTONS::Observable(className) {
 
-    m_observableType = ObservableType::PHI;
-    m_channel = ObservableChannel::DVCS;
+    m_observableType = PARTONS::ObservableType::PHI;
+    m_channel = PARTONS::ObservableChannel::DVCS;
 }
 
 MyObservable::MyObservable(const MyObservable& other) :
-        Observable(other) {
+        PARTONS::Observable(other) {
 }
 
 MyObservable::~MyObservable() {
@@ -89,8 +83,6 @@ double MyObservable::computePhiObservable(double phi) {
     //return
     return result;
 }
-
-}
 ```
 
 # Header file template (phi-integrated observable) {#newmodule_templates_dvcsobservable_hindep}
@@ -98,9 +90,7 @@ double MyObservable::computePhiObservable(double phi) {
 For a detailed description of each virtual function we refer to its documentation, which is available after left-clicking on the function name. A short explanation is also available after hovering your mouse pointer on the name.  
 
 ```cpp
-namespace PARTONS {
-
-class MyObservableFourierModulation: public MyObservable, public MathIntegratorModule {
+class MyObservableFourierModulation: public MyObservable, public PARTONS::MathIntegratorModule {
 
 public:
 
@@ -147,30 +137,26 @@ protected:
      */
     void initFunctorsForIntegrations();
 };
-
-}
 ```
 
 # Source code file template (phi-integrated observable) {#newmodule_templates_dvcsobservable_cppindep}
 
 ```cpp
-namespace PARTONS {
-
 const unsigned int MyObservableFourierModulation::classId =
-        BaseObjectRegistry::getInstance()->registerBaseObject(new MyObservableFourierModulation("MyObservableFourierModulation"));
+        PARTONS::BaseObjectRegistry::getInstance()->registerBaseObject(new MyObservableFourierModulation("MyObservableFourierModulation"));
 
 MyObservableFourierModulation::MyObservableFourierModulation(const std::string &className) :
-        MyObservable(className), MathIntegratorModule() {
+        MyObservable(className), PARTONS::MathIntegratorModule() {
 
-    m_observableType = ObservableType::FOURIER;
-    m_channel = ObservableChannel::DVCS;
+    m_observableType = PARTONS::ObservableType::FOURIER;
+    m_channel = PARTONS::ObservableChannel::DVCS;
 
     setIntegrator(NumA::IntegratorType1D::DEXP);
     initFunctorsForIntegrations();
 }
 
 MyObservableFourierModulation::MyObservableFourierModulation(const MyObservableFourierModulation& other) :
-        MyObservable(other), MathIntegratorModule(other) {
+        MyObservable(other), PARTONS::MathIntegratorModule(other) {
     initFunctorsForIntegrations();
 }
 
@@ -204,10 +190,8 @@ double MyObservableFourierModulation::computeFourierObservable() {
     //your implementation comes here, e.g.:
     std::vector<double> emptyParameters;
 
-    return integrate(m_pFunctionToIntegrateObservable, 0., (2 * Constant::PI),
-            emptyParameters) / Constant::PI;
-}
-
+    return integrate(m_pFunctionToIntegrateObservable, 0., (2 * PARTONS::Constant::PI),
+            emptyParameters) / PARTONS::Constant::PI;
 }
 ```
 

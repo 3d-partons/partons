@@ -21,21 +21,18 @@ namespace PARTONS {
  *
  * Definition:<br>
  *
+ * \f$ \displaystyle
+ * \frac{\mathrm{d}^4\sigma_{UU}}{\mathrm{d}x_{B} \mathrm{d}|t| \mathrm{d}Q^2 \mathrm{d}\phi}\left(x_{B}, t, Q^2, \phi\right) =
+ * \frac{1}{2} \left(
+ * \frac{\mathrm{d}^4\sigma^{\rightarrow +}}{\mathrm{d}x_{B} \mathrm{d}|t| \mathrm{d}Q^2 \mathrm{d}\phi}\left(x_{B}, t, Q^2, \phi\right) +
+ * \frac{\mathrm{d}^4\sigma^{\leftarrow +}}{\mathrm{d}x_{B} \mathrm{d}|t| \mathrm{d}Q^2 \mathrm{d}\phi}\left(x_{B}, t, Q^2, \phi\right)
+ * \right) \, ,
  * \f$
- * d^4\sigma_{UU}(x_{B}, t, Q^2, \phi) =
- * \frac{
- * d^4\sigma^{\rightarrow +}(x_{B}, t, Q^2, \phi) + d^4\sigma^{\leftarrow +}(x_{B}, t, Q^2, \phi)
- * }{
- * 2
- * }
- * \f$
  *
- * where:
- * \f$\sigma^{b_{h} b_{c}}\f$ is single photon production cross-section (DVCS, BH and Int) for beam helicity denoted by \f$b_{h}\f$ and beam charge denoted by \f$b_{c}\f$.
+ * where
+ * \f$\sigma^{b_{h} b_{c}}\f$ is a single photon production cross-section (DVCS, BH and Interference) for beam helicity denoted by \f$b_{h}\f$ and beam charge denoted by \f$b_{c}\f$.
  *
- * Units:<br>
- *
- *\f$\mathrm{nbarn}/\mathrm{GeV}^4\f$
+ * Unit: \f$\mathrm{nbarn}/\mathrm{GeV}^4\f$.
  */
 class DVCSCrossSectionUUMinus: public Observable {
 

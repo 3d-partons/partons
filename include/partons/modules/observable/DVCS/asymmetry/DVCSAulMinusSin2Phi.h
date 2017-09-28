@@ -24,13 +24,13 @@ namespace PARTONS {
  *
  * Definition:<br>
  *
- * \f$
- * A_{UL}^{\sin(2\phi)}(x_{B}, t, Q^2) =
+ * \f$ \displaystyle
+ * A_{UL}^{\sin\left(2\phi\right)}\left(x_{B}, t, Q^2\right) =
  * \frac{1}{\pi}
- * \int_{0}^{2\pi} d\phi A_{UL}(x_{B}, t, Q^2, \phi) \sin(2\phi)
+ * \int_{0}^{2\pi} \mathrm{d}\phi A_{UL}\left(x_{B}, t, Q^2, \phi\right) \sin\left(2\phi\right) \, ,
  * \f$
  *
- * where \f$A_{UL}(x_{B}, t, Q^2, \phi)\f$ is defined in DVCSAulMinus.
+ * where \f$A_{UL}\left(x_{B}, t, Q^2, \phi\right)\f$ is defined in DVCSAulMinus.
  */
 class DVCSAulMinusSin2Phi: public DVCSAulMinus, public MathIntegratorModule {
 

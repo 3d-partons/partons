@@ -18,22 +18,21 @@ namespace PARTONS {
 /**
  * @class DVCSCrossSection
  *
- * @brief Evaluate cross-section with parameters set via automatization mechanism.
+ * @brief Evaluate five-fold *differential* cross-section with parameters set via automation mechanism.
  *
- * This module can be used to evaluate a given cross-section with beam charge, beam helicity and target polarization set via the automatization mechanism.
+ * This module can be used to evaluate a given cross-section with beam charge, beam helicity and target polarization set via the automation mechanism.
  *
  * Definition:<br>
  *
+ * \f$ \displaystyle
+ * \frac{\mathrm{d}^5\sigma_{t_{h}}^{b_{h} b_{c}}}
+ * {\mathrm{d}x_{B} \mathrm{d}|t| \mathrm{d}Q^2 \mathrm{d}\phi \mathrm{d}\phi_{S}}\left(x_{B}, t, Q^2, \phi, \phi_{S}\right)
  * \f$
- * d^5\sigma_{t_{h}}^{b_{h} b_{c}}(x_{B}, t, Q^2, \phi, \phi_{S})
- * \f$
  *
- * where:
- * \f$\sigma_{t_{h}}^{b_{h} b_{c}}\f$ is single photon production cross-section (DVCS, BH and Int) for target helicity denoted by \f$t_{h}\f$, beam helicity denoted by \f$b_{h}\f$ and beam charge denoted by \f$b_{c}\f$.
+ * where
+ * \f$\sigma_{t_{h}}^{b_{h} b_{c}}\f$ is a single photon production cross-section (DVCS, BH and Interference) for target helicity denoted by \f$t_{h}\f$, beam helicity denoted by \f$b_{h}\f$ and beam charge denoted by \f$b_{c}\f$.
  *
- * Units:<br>
- *
- *\f$1/\mathrm{GeV}^6\f$
+ * Unit: \f$\mathrm{GeV}^{-6}\f$.
  */
 class DVCSCrossSection: public Observable {
 

@@ -31,8 +31,8 @@ class XiConverterModule;
 /**
  * @class ProcessModule
  *
- * @brief Abstract class for computing the **differential** cross section of an experimental process.
- * The different channels are child classes, e.g. DVCSModule.
+ * @brief Abstract class for computing the *differential* cross section of an experimental process.
+ * The different channels are child classes, *e.g.* DVCSProcessModule.
  */
 class ProcessModule: public ModuleObject {
 public:

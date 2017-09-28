@@ -4,14 +4,14 @@
  
 # Introduction {#config_intro} 
 
-This tutorial describes the configuration files used by %PARTONS. If you are using [our virtual machine](@ref vm), all configuration files are set up there, so you can run %PARTONS as it was out-of-the-box. However, if you have installed %PARTONS at your own machine run under [Linux](@ref linux) or [Mac](@ref mac), you may need to set up these files manually. 
+This tutorial describes the configuration files used by %PARTONS. If you are using [our virtual machine](@ref vm), all configuration files are set up there, so you can run %PARTONS as it was out-of-the-box. However, if you have installed %PARTONS on your own machine under [Linux](@ref linux) or [Mac](@ref mac), you may need to set up these files manually. 
 
 There are three %PARTONS configuration files that you may be interested in:
-* `partons.properties`: main configuration file
-* `logger.properties`: configuration of Logger
-* `environment_configuration.dat`: environment configuration information
+* `partons.properties`: main configuration file;
+* `logger.properties`: configuration of the Logger;
+* `environment_configuration.dat`: environment configuration information.
 
-%All of these files are described in the following.
+%All these files are described in the following. Samples are also provided with the library [partons](https://drf-gitlab.cea.fr/partons/core/partons) (folder `data/config`) and the executable project [partons-example](https://drf-gitlab.cea.fr/partons/core/partons-example) (folder `bin`).
 
 <hr>
 
@@ -59,9 +59,13 @@ gpd.service.batch.size = 10000
 ccf.service.batch.size = 1000
 ```
 
+The file `xmlSchema.xsd` used by the XML parser is provided both with the library [partons](https://drf-gitlab.cea.fr/partons/core/partons) and the executable project [partons-example](https://drf-gitlab.cea.fr/partons/core/partons-example), in the directory `data`. When `partons` is installed, the file is copied typically to `/usr/local/share/PARTONS`. The same can be said for the `grid` folder containing the PDF replicas.
+
+<hr>
+
 # logger.properties {#config_logger}
 
-This is the configuration file of Logger. The path to this file should be set in `partons.properties` via `log.file.path` option. %All options are explained here in the comments starting with the hash symbol `#`:
+This is the configuration file of the Logger. The path to this file should be set in `partons.properties` via the `log.file.path` option. %All options are explained here in the comments starting with the hash symbol `#`:
 
 ```py
 # Enable Logger: 
@@ -87,12 +91,14 @@ default.level = INFO
 print.mode = BOTH
 
 # Path to the directory containing Logger output text files 
-log.folder.path = bin
+log.folder.path = /path/to/output/folder
 ```
+
+<hr>
 
 # environment_configuration.dat {#config_env}
 
-This file contains environment configuration information. The path to this file should be set in `partons.properties` via `environment.configuration.file.path` option. The main purpose of this file is to store it in the database during the insertion of data, so latter one can easily reproduce the used computational environment. The file must be set by the user and its content may look as follows:
+This file contains environment configuration information. The path to this file should be set in `partons.properties` via `environment.configuration.file.path` option. The main purpose of this file is to store it in the database during the insertion of data, so later one can easily reproduce the used computational environment. The file must be set by the user and its content may look as follows:
 
 ```
 system: Linux partonsVM 3.16.0-4-amd64 #1 SMP Debian 3.16.43-2 (2017-04-30) x86_64 GNU/Linux

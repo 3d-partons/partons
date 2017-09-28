@@ -24,13 +24,13 @@ namespace PARTONS {
  *
  * Definition:<br>
  *
- * \f$
- * A_{LU, DVCS}^{\sin(1\phi)}(x_{B}, t, Q^2) =
+ * \f$ \displaystyle
+ * A_{LU, DVCS}^{\sin\left(1\phi\right)}\left(x_{B}, t, Q^2\right) =
  * \frac{1}{\pi}
- * \int_{0}^{2\pi} d\phi A_{LU, DVCS}(x_{B}, t, Q^2, \phi) \sin(1\phi)
+ * \int_{0}^{2\pi} d\phi A_{LU, DVCS}\left(x_{B}, t, Q^2, \phi\right) \sin\left(1\phi\right) \, ,
  * \f$
  *
- * where \f$A_{LU, DVCS}(x_{B}, t, Q^2, \phi)\f$ is defined in DVCSAluDVCS.
+ * where \f$A_{LU, DVCS}\left(x_{B}, t, Q^2, \phi\right)\f$ is defined in DVCSAluDVCS.
  */
 class DVCSAluDVCSSin1Phi: public DVCSAluDVCS, public MathIntegratorModule {
 

@@ -42,6 +42,7 @@ public:
 
     /**
      * Parse a text file in order to retrieve a list of ObservableKinematic objects.
+     * The parsed file should display separate lines of the form "xB | t | Q2 | E | phi".
      * @param filePath Path to file to be parsed.
      * @return List of extracted ObservableKinematic objects.
      */
@@ -50,6 +51,7 @@ public:
 
     /**
      * Parse a text file in order to retrieve a list of GPDKinematic objects.
+     * The parsed file should display separate lines of the form "x | xi | t | MuF2 | MuR2".
      * @param filePath Path to file to be parsed.
      * @return List of extracted GPDKinematic objects.
      */
@@ -57,6 +59,7 @@ public:
 
     /**
      * Parse a text file in order to retrieve a list of DVCSConvolCoeffFunctionKinematic objects.
+     * The parsed file should display separate lines of the form "xi | t | Q2 | MuF2 | MuR2".
      * @param filePath Path to file to be parsed.
      * @return List of extracted DVCSConvolCoeffFunctionKinematic objects.
      */

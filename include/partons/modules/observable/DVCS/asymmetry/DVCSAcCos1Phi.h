@@ -24,13 +24,13 @@ namespace PARTONS {
  *
  * Definition:<br>
  *
- * \f$
- * A_{C}^{\cos(1\phi)}(x_{B}, t, Q^2) =
+ * \f$ \displaystyle
+ * A_{C}^{\cos\left(1\phi\right)}\left(x_{B}, t, Q^2\right) =
  * \frac{1}{\pi}
- * \int_{0}^{2\pi} d\phi A_{C}(x_{B}, t, Q^2, \phi) \cos(1\phi)
+ * \int_{0}^{2\pi} \mathrm{d}\phi A_{C}\left(x_{B}, t, Q^2, \phi\right) \cos\left(1\phi\right) \, ,
  * \f$
  *
- * where \f$A_{C}(x_{B}, t, Q^2, \phi)\f$ is defined in DVCSAc.
+ * where \f$A_{C}\left(x_{B}, t, Q^2, \phi\right)\f$ is defined in DVCSAc.
  */
 class DVCSAcCos1Phi: public DVCSAc, public MathIntegratorModule {
 

@@ -30,7 +30,7 @@ class RunningAlphaStrongModule;
  *
  * @brief Abstract class that provides a skeleton to implement a Compton Form Factor (CFF) module.
  *
- * It is best to use this module with the corresponding service: ConvolCoeffFunctionService, as explained in the tutorial [Computation Services](@ref services_computation).
+ * It is best to use this module with the corresponding service: ConvolCoeffFunctionService (see examples therein), as explained in the [general tutorial](@ref usage).
  */
 class DVCSConvolCoeffFunctionModule: public ConvolCoeffFunctionModule {
 public:

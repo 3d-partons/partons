@@ -7,9 +7,7 @@
 For a detailed description of each virtual function we refer to its documentation, which is available after left-clicking on the function name. A short explanation is also provided by hovering your mouse pointer on the name.  
 
 ```cpp
-namespace PARTONS {
-
-class MyDVCSProcessModule: public DVCSModule {
+class MyDVCSProcess: public PARTONS::DVCSModule {
 
 public:
 
@@ -22,15 +20,15 @@ public:
      * Default constructor.
      * @param className Name of class.
      */
-    MyDVCSProcessModule(const std::string &className);
+    MyDVCSProcess(const std::string &className);
 
     /*/** */* 
      * Destructor.
      */
     virtual ~MyCFFModel();
-    virtual ~MyDVCSProcessModule();
+    virtual ~MyDVCSProcess();
 
-    virtual MyDVCSProcessModule* clone() const;
+    virtual MyDVCSProcess* clone() const;
     virtual void resolveObjectDependencies();
     virtual void configure(const ElemUtils::Parameters &parameters);
 
@@ -40,7 +38,7 @@ protected:
      * Copy constructor.
      * @param other Object to be copied.
      */
-    MyDVCSProcessModule(const MyDVCSProcessModule& other);
+    MyDVCSProcess(const MyDVCSProcess& other);
 
     virtual void initModule();
     virtual void initModule(double beamHelicity, double beamCharge,
@@ -54,58 +52,54 @@ protected:
     virtual double CrossSectionInterf(double beamHelicity, double beamCharge,
             NumA::Vector3D targetPolarization);
 };
-
-}
 ```
 
 # Source code file template {#newmodule_templates_dvcsprocess_cpp}
 
 ```cpp
-namespace PARTONS {
+const unsigned int MyDVCSProcess::classId =
+        PARTONS::BaseObjectRegistry::getInstance()->registerBaseObject(new MyDVCSProcess("MyDVCSProcess"));
 
-const unsigned int MyDVCSProcessModule::classId =
-        BaseObjectRegistry::getInstance()->registerBaseObject(new MyDVCSProcessModule("MyDVCSProcessModule"));
-
-MyDVCSProcessModule::MyDVCSProcessModule(const std::string &className) :
-        DVCSModule(className) {
+MyDVCSProcess::MyDVCSProcess(const std::string &className) :
+        PARTONS::DVCSModule(className) {
 
     //this can be used to indicate that this DVCS process module does not need CFF module
     //default is that CFF module is needed, so the below line can be omitted
     isCCFModuleDependent(true);
 }
 
-MyDVCSProcessModule::MyDVCSProcessModule(const MyDVCSProcessModule& other) :
-        DVCSModule(other) {
+MyDVCSProcess::MyDVCSProcess(const MyDVCSProcess& other) :
+        PARTONS::DVCSModule(other) {
 }
 
-MyDVCSProcessModule::~MyDVCSProcessModule() {
+MyDVCSProcess::~MyDVCSProcess() {
 }
 
-MyDVCSProcessModule* MyDVCSProcessModule::clone() const {
-    return new MyDVCSProcessModule(*this);
+MyDVCSProcess* MyDVCSProcess::clone() const {
+    return new MyDVCSProcess(*this);
 }
 
-void MyDVCSProcessModule::resolveObjectDependencies() {
-    DVCSModule::resolveObjectDependencies();
+void MyDVCSProcess::resolveObjectDependencies() {
+    PARTONS::DVCSModule::resolveObjectDependencies();
 }
-void MyDVCSProcessModule::configure(const ElemUtils::Parameters &parameters) {
-    DVCSModule::configure(parameters);
-}
-
-void MyDVCSProcessModule::isModuleWellConfigured() {
-    DVCSModule::isModuleWellConfigured();
+void MyDVCSProcess::configure(const ElemUtils::Parameters &parameters) {
+    PARTONS::DVCSModule::configure(parameters);
 }
 
-void MyDVCSProcessModule::initModule() {
-    DVCSModule::initModule();
+void MyDVCSProcess::isModuleWellConfigured() {
+    PARTONS::DVCSModule::isModuleWellConfigured();
 }
 
-void MyDVCSProcessModule::initModule(double beamHelicity, double beamCharge,
+void MyDVCSProcess::initModule() {
+    PARTONS::DVCSModule::initModule();
+}
+
+void MyDVCSProcess::initModule(double beamHelicity, double beamCharge,
         NumA::Vector3D targetPolarization) {
-    DVCSModule::initModule(beamHelicity, beamCharge, targetPolarization);
+    PARTONS::DVCSModule::initModule(beamHelicity, beamCharge, targetPolarization);
 }
 
-double MyDVCSProcessModule::CrossSectionBH(double beamHelicity, double beamCharge,
+double MyDVCSProcess::CrossSectionBH(double beamHelicity, double beamCharge,
         NumA::Vector3D targetPolarization) {
 
     //result
@@ -118,16 +112,14 @@ double MyDVCSProcessModule::CrossSectionBH(double beamHelicity, double beamCharg
     return result; 
 }
 
-double MyDVCSProcessModule::CrossSectionVCS(double beamHelicity, double beamCharge,
+double MyDVCSProcess::CrossSectionVCS(double beamHelicity, double beamCharge,
         NumA::Vector3D targetPolarization) {
-    //see MyDVCSProcessModule::CrossSectionBH()
+    //see MyDVCSProcess::CrossSectionBH()
 }
 
-double MyDVCSProcessModule::CrossSectionInterf(double beamHelicity, double beamCharge,
+double MyDVCSProcess::CrossSectionInterf(double beamHelicity, double beamCharge,
         NumA::Vector3D targetPolarization) {
-    //see MyDVCSProcessModule::CrossSectionBH()
-}
-
+    //see MyDVCSProcess::CrossSectionBH()
 }
 ```
 

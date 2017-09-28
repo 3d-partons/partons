@@ -25,9 +25,103 @@ class GPDEvolutionModule;
 /**
  * @class GPDService
  *
- * @brief \<singleton\> Used to handle and compute some pre-configured GPD models.
+ * @brief Singleton to handle and compute some pre-configured GPD models.
  *
- * See [tutorial](@ref services_computation).
+ * See the [general tutorial](@ref usage) and this [table](@ref usage_tasks) of examples.
+ *
+ * This service is used to call the different GPD models implemented and compute values at the given kinematics.
+ * It also takes care of the evolution of GPDs. We give here examples of codes which can be done using the GPD service.
+ *
+ * 1. %Computation of a given GPD model called `MyFavoriteModelOfGPD` at a given kinematics (x, \f$\xi\f$, t, \f$\mu_{F}^{2}\f$, \f$\mu_{R}^{2}\f$), where \f$\mu_{F}^{2}\f$ and \f$\mu_{R}^{2}\f$ are
+ * squares of factorization and renormalization scales, respectively:
+ \code{.cpp}
+ void computeSingleKinematicsForGPD() {
+
+ // Retrieve GPD service
+ PARTONS::GPDService* pGPDService =
+ PARTONS::Partons::getInstance()->getServiceObjectRegistry()->getGPDService();
+
+ // Create GPD module with the ModuleObjectFactory
+ PARTONS::GPDModule* pGPDModel =
+ PARTONS::Partons::getInstance()->getModuleObjectFactory()->newGPDModule(MyFavoriteModelOfGPD::classId);
+
+ // Create a GPDKinematic(x, xi, t, MuF2, MuR2) to compute
+ PARTONS::GPDKinematic gpdKinematic(0.1, 0.2, -0.1, 2., 2.);
+
+ // Run computation
+ PARTONS::GPDResult gpdResult = pGPDService->computeGPDModel(gpdKinematic, pGPDModel);
+
+ // Print results
+ PARTONS::Partons::getInstance()->getLoggerManager()->info("main", __func__, gpdResult.toString());
+
+ // Remove pointer reference ; Module pointers are managed by PARTONS.
+ PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(pGPDModel, 0);
+ pGPDModel = 0;
+ }
+ \endcode
+ *
+ * 2. Computations of a list of kinematics using an external file:
+ \code{.cpp}
+ void computeManyKinematicsForGPD() {
+
+ // Retrieve GPD service
+ PARTONS::GPDService* pGPDService = PARTONS::Partons::getInstance()->getServiceObjectRegistry()->getGPDService();
+
+ // Create GPD module with the ModuleObjectFactory
+ PARTONS::GPDModule* pGPDModel = PARTONS::Partons::getInstance()->getModuleObjectFactory()->newGPDModule(MyFavoriteModelOfGPD::classId);
+
+ // Load list of kinematics from file
+ PARTONS::List<PARTONS::GPDKinematic> gpdKinematicList = PARTONS::KinematicUtils().getGPDKinematicFromFile("/path/to/kinematics_gpd.csv");
+
+ // Run computation
+ PARTONS::List<PARTONS::GPDResult> gpdResultList = pGPDService->computeManyKinematicOneModel(gpdKinematicList, pGPDModel);
+
+ // Print results
+ PARTONS::Partons::getInstance()->getLoggerManager()->info("main", __func__, gpdResultList.toString());
+
+ // Remove pointer reference ; Module pointers are managed by PARTONS.
+ PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(pGPDModel, 0);
+ pGPDModel = 0;
+ }
+ \endcode
+ * In the file `kinematics_gpd.csv`, kinematic points are encoded in separate lines using the following format: "x|xi|t|MuF2|MuR2".
+ *
+ * 3. Compute a value of the GPD using Vinnikov evolution code (see Evolution Documentation) just change:
+ * \code{.cpp}
+ // Run computation
+ PARTONS::GPDResult gpdResult = pGPDService->computeGPDModel(gpdKinematic, pGPDModel);
+ \endcode
+ * in case 1 by :
+ *\code{.cpp}
+ // Create an evolution Module
+ PARTONS::GPDEvolutionModule* pEvolQCDModule = PARTONS::Partons::getInstance()->getModuleObjectFactory()->newGPDEvolutionModule() //TODO Complete the argument
+
+ // Run computation
+ PARTONS::GPDResult gpdResult = pGPDService->computeGPDModelWithEvolution(gpdKinematic, pGPDModel, pEvolQCDModule);
+ \endcode
+ *
+ * 4. Use a list of GPD models instead of a single one. The code is the same than in case 1 but must be adapted to run several models, such as:
+ \code{.cpp}
+ // Create GPD module with the ModuleObjectFactory for Model 1
+ PARTONS::GPDModule* pGPDModel1 = PARTONS::Partons::getInstance()->getModuleObjectFactory()->newGPDModule(MyFavoriteModelOfGPD1::classId);
+
+ // Create GPD module with the ModuleObjectFactory for Model 2
+ PARTONS::GPDModule* pGPDModel2 = PARTONS::Partons::getInstance()->getModuleObjectFactory()->newGPDModule(MyFavoriteModelOfGPD2::classId);
+
+ //Create a list of model to compute
+ std::vector<GPDModule*> listOfGPDToCompute(0);
+ listOfGPDToCompute.push_back(pGPDModel1);
+ listOfGPDToCompute.push_back(pGPDModel2);
+
+ // Run computation
+ PARTONS::List<PARTONS::GPDResult> gpdResult = pGPDService->computeListOfGPDModel(gpdKinematic, listOfGPDToCompute);
+ \endcode
+ *
+ * 5. Restrictions to some specific GPDs can be provided. In this case use:
+ *  \code{.cpp}
+ computeListOfGPDModelRestrictedByGPDType(const GPDKinematic &gpdKinematic, std::vector<GPDModule*> &listOfGPDToCompute, GPDType gpdType);
+ \endcode
+ *instead of computeListOfGPDModel.
  */
 class GPDService: public ServiceObjectTyped<GPDKinematic, GPDResult> {
 public:
@@ -64,7 +158,6 @@ public:
 //            GPDModule* pGPDModule,
 //            std::vector<GPDType::Type> restrictedByGPDTypeList = std::vector<
 //                    GPDType::Type>());
-
 
     /**
      * Computes GPD model at specific kinematics.
@@ -112,7 +205,6 @@ public:
     List<GPDResult> computeListOfGPDModelRestrictedByGPDType(
             const GPDKinematic &gpdKinematic,
             std::vector<GPDModule*> &listOfGPDToCompute, GPDType gpdType);
-
 
     /**
      * Computes a GPD model for a list of kinematics.

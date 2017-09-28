@@ -6,6 +6,8 @@
 
 This tutorial is for building %PARTONS on Mac OS. It was tested on Sierra.
 
+<hr>
+
 # Dependencies {#mac_dependencies}
 
 ## brew {#mac_brew}
@@ -49,7 +51,7 @@ brew install sfml
 brew install git
 ``` 
 
-## CMake and Ant {mac_cmake}
+## CMake and Ant {#mac_cmake}
 
 Building %PARTONS requires CMake. You can brew it as usual:
 ```sh
@@ -61,9 +63,13 @@ Optionally, you can install Ant in order to take advantage of the `build.xml` fi
 brew install ant
 ```
 
+<hr>
+
 # Build and install PARTONS {#mac_partons}
 
 From this point on, the tutorial becomes almost indistinguishable from the [Linux tutorial](@ref linux), so you can [switch to it for the rest](@ref linux_source) (or if you want to use an IDE such as Eclipse, [switch to the corresponding tutorial](@ref eclipse)) and read the following section for troubleshooting specific to Mac.
+
+<hr>
 
 # Troubleshooting {#mac_troubleshooting}
 
