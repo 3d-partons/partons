@@ -70,7 +70,7 @@ public:
      * Contains results for each flavor of partons.
      */
     virtual PartonDistribution compute(const GPDKinematic &kinematic,
-            GPDType gpdType, bool evolution = false);
+            GPDType gpdType, bool evolution = true);
 
     /**
      * Virtual method, computes GPD with some input parameters.
@@ -88,7 +88,7 @@ public:
      */
     virtual PartonDistribution compute(double x, double xi, double t,
             double MuF2, double MuR2, GPDType::Type gpdType, bool evolution =
-                    false);
+                    true);
 
     /**
      * This method can be implemented in the child class if the GPD H is available to compute.
@@ -234,8 +234,8 @@ protected:
      * @param MuR2 Renormalization scale.
      * @param gpdType
      */
-    virtual void preCompute(double x, double xi, double t, double MuF2, double MuR2,
-            GPDType::Type gpdType);
+    virtual void preCompute(double x, double xi, double t, double MuF2,
+            double MuR2, GPDType::Type gpdType);
 
     /**
      * List of GPD types that can be computed by the child class.

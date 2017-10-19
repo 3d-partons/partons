@@ -1,191 +1,129 @@
 #ifndef GPD_EVOLUTION_MODULE_H
 #define GPD_EVOLUTION_MODULE_H
 
-/**
- * @file GPDEvolutionModule.h
- * @author Bryan BERTHOU (SPhN / CEA Saclay)
- * @date September 01, 2015
- * @version 1.0
- */
-
 #include <ElementaryUtils/parameters/Parameters.h>
-#include <NumA/linear_algebra/vector/VectorD.h>
+#include <NumA/linear_algebra/matrix/MatrixD.h>
+#include <stddef.h>
 #include <map>
 #include <string>
 #include <vector>
 
-#include "../../beans/active_flavors_thresholds/ActiveFlavorsThresholds.h"
 #include "../../beans/automation/BaseObjectData.h"
 #include "../../beans/gpd/GPDType.h"
+#include "../../beans/parton_distribution/PartonDistribution.h"
+#include "../../beans/parton_distribution/QuarkDistribution.h"
 #include "../../beans/PerturbativeQCDOrderType.h"
 #include "../../beans/QuarkFlavor.h"
 #include "../../ModuleObject.h"
-
-namespace NumA {
-class MatrixD;
-} /* namespace NumA */
+#include "../MathIntegratorModule.h"
+#include "QuarkNonSingletCombination.h"
 
 namespace PARTONS {
 
 class ActiveFlavorsThresholdsModule;
 class GPDModule;
 class PartonDistribution;
-class QuarkDistribution;
 class RunningAlphaStrongModule;
 
-/**
- * @class GPDEvolutionModule
- *
- * @brief
- */
+class GPDEvolutionModule: public ModuleObject, public MathIntegratorModule {
 
-class GPDEvolutionModule: public ModuleObject {
 public:
 
     static const std::string GPD_EVOLUTION_MODULE_CLASS_NAME;
 
-    enum Type {
-        RELATIVE, ABSOLUTE, BOTH
-    };
-
     GPDEvolutionModule(const std::string &className);
     virtual ~GPDEvolutionModule();
+
     virtual GPDEvolutionModule* clone() const = 0;
 
     virtual void configure(const ElemUtils::Parameters &parameters);
-
     virtual void resolveObjectDependencies();
-
-    PartonDistribution compute(double x, double xi, double t, double MuF2,
-            double MuR2, GPDModule* pGPDModule, GPDType::Type gpdType);
-
-    /**
-     * Checks if MuF (from compute parameters) is revelant
-     */
-    bool isRunnable(double MuF2, double MuF2_ref,
-            GPDEvolutionModule::Type testType);
 
     virtual void prepareSubModules(
             const std::map<std::string, BaseObjectData>& subModulesData);
 
-    // ##### GETTERS & SETTERS #####
+    PartonDistribution compute(double x, double xi, double t, double MuF2,
+            double MuR2, GPDModule* pGPDModule, GPDType::Type gpdType);
 
-    void setGpdModule(GPDModule* gpdModule);
+    // GETTERS and SETTERS
+
     PerturbativeQCDOrderType::Type getQcdOrderType() const;
     void setQcdOrderType(PerturbativeQCDOrderType::Type qcdOrderType);
 
+    RunningAlphaStrongModule* getRunningAlphaStrongModule() const;
+    void setRunningAlphaStrongModule(
+            RunningAlphaStrongModule* runningAlphaStrongModule);
+
+    ActiveFlavorsThresholdsModule* getActiveFlavorsModule() const;
+    void setActiveFlavorsModule(
+            ActiveFlavorsThresholdsModule* activeFlavorsModule);
+
 protected:
-    /**
-     * Copy constructor
-     */
+
     GPDEvolutionModule(const GPDEvolutionModule &other);
 
+    virtual void isModuleWellConfigured();
+    virtual void initModule();
+
+    void preCompute(double x, double xi, double t, double MuF2, double MuR2,
+            GPDModule* pGPDModule, GPDType::Type gpdType);
+
+    virtual double nonSingletMu2FDerivative(double MuF2,
+            QuarkNonSingletCombination::Type quarkNonSingletCombination) = 0;
+    virtual double singletMuF2Derivative(double MuF2) = 0;
+    virtual double gluonMuF2Derivative(double MuF2) = 0;
+
+    GPDModule* m_pGPDModule;
     double m_x;
     double m_xi;
     double m_t;
     double m_MuF2;
     double m_MuR2;
-
-    GPDModule* m_pGPDModule;
-
-    PerturbativeQCDOrderType::Type m_qcdOrderType;
+    double m_MuF2_ref;
     GPDType::Type m_currentGPDComputeType;
 
-    ActiveFlavorsThresholdsModule* m_pNfFunction;
-    ActiveFlavorsThresholdsModule* m_pNfEvolFunction;
-    RunningAlphaStrongModule *m_pRunningAlphaStrong;
+    size_t m_nFlavors;
+    size_t m_nFlavors_ref;
 
-    //TODO unused
-    double m_scaleDistinction;
+    PerturbativeQCDOrderType::Type m_qcdOrderType;
 
-    unsigned short m_currentNf;
+    RunningAlphaStrongModule* m_pRunningAlphaStrong;
+    ActiveFlavorsThresholdsModule* m_pActiveFlavorsModule;
 
-    /* m_nonSingletIndex refers to the current nonsinglet contribution.
-     * There are 2*m_nf-1 nonsinglet contributions for a given nf value.
-     * Therefore m_nonSingletIndex should (and will) range between 0 and 2*m_nf-2.
-     * It is the easiest way for the parent class GPDEvolutionModule to send
-     * the information on the current nonsinglet GPD combination to a daughter class
-     * specifying the implementation of evolution equations.
-     * It is not, strictly speaking, an information related to the MuF interval.
-     */
-    unsigned short m_currentNonSingletIndex;
+    PartonDistribution m_PartonDistributionAtMuF2_ref;
 
-    //TODO a quoi cela sert ?
-    unsigned int m_nbXPoints;	///< Max of points if adaptative method,
-    unsigned int m_nbMuFPoints;	///< fixed otherwise
-    double m_epsilon;
-    double m_alpha;
-    //TODO a quoi cela sert ?
+    std::map<QuarkNonSingletCombination::Type, double> getNS(
+            const size_t nFlavors,
+            const PartonDistribution& partonDistribution) const;
+    double getS(const size_t nFlavors,
+            const PartonDistribution& partonDistribution) const;
+    double getG(const PartonDistribution& partonDistribution) const;
+    PartonDistribution getPartonDistribution(const size_t nFlavors,
+            const std::map<QuarkNonSingletCombination::Type, double>& NS,
+            double S, double G) const;
 
-    NumA::VectorD m_partonDistributionFlavorBase;
-    NumA::VectorD m_partonDistributionEvolutionBase;
+    inline std::map<QuarkFlavor::Type, QuarkDistribution>::const_iterator findInQuarkFlavorMap(
+            const std::map<QuarkFlavor::Type, QuarkDistribution>& map,
+            QuarkFlavor::Type key, const std::string& mapName) const;
 
-    void preCompute(double x, double xi, double t, double MuF2, double MuR2,
-            GPDModule* pGPDModule, GPDType::Type gpdType);
-
-    virtual void initModule();
-    virtual void isModuleWellConfigured();
-
-    PartonDistribution makeFinalPartonDistribution();
-
-    double nonSingletGPD(unsigned short nonSingletIndex,
-            unsigned short currentNf, double y, double MuF2);
-
-    virtual double integratedNonSingletMuFDerivative(
-            const ActiveFlavorsThresholds &nfInterval) = 0;
-    virtual double integratedSingletMuFDerivative(
-            const ActiveFlavorsThresholds &nfInterval) = 0;
-    virtual double integratedGluonMuFDerivative(
-            const ActiveFlavorsThresholds &nfInterval) = 0;
+    inline std::map<QuarkNonSingletCombination::Type, double>::const_iterator findInQuarkNonSingletCombinationMap(
+            const std::map<QuarkNonSingletCombination::Type, double>& map,
+            QuarkNonSingletCombination::Type key,
+            const std::string& mapName) const;
 
 private:
-    static NumA::MatrixD conversionMatrix1;
-    static NumA::MatrixD conversionMatrix2;
-    static NumA::MatrixD conversionMatrix3;
-    static NumA::MatrixD conversionMatrix4;
-    static NumA::MatrixD conversionMatrix5;
-    static NumA::MatrixD conversionMatrix6;
 
-    static NumA::MatrixD invertMatrix1;
-    static NumA::MatrixD invertMatrix2;
-    static NumA::MatrixD invertMatrix3;
-    static NumA::MatrixD invertMatrix4;
-    static NumA::MatrixD invertMatrix5;
-    static NumA::MatrixD invertMatrix6;
+    std::map<size_t, NumA::MatrixD> conversionMatrices;
 
-    bool isRelativeTest(double MuF2, double MuF2_ref);
-    bool isAbsoluteTest(double MuF2, double MuF2_ref);
+    double integrateComputeOutputNS(double MuF2, std::vector<double> par);
+    double integrateComputeOutputS(double MuF2, std::vector<double> par);
+    double integrateComputeOutputG(double MuF2, std::vector<double> par);
 
-    QuarkDistribution makeFinalQuarkDistribution(QuarkFlavor::Type quarkFlavor,
-            double quarkDistributionPlus, double quarkDistributionMinus);
-    double calculateFq(double FMinus, double FPlus);
+    void initFunctorsForIntegrations();
 
-    // refactored
-
-    // PartonDistribution computeGPDModelAtMufRef();
-
-    NumA::VectorD makeVectorOfGPDCombinations(
-            const PartonDistribution &partonDistribution);
-    void resizeVectorOfGPDCombination(NumA::VectorD &vectorOfQuarkDistribution,
-            unsigned short nfInterval);
-
-    // PartonDistribution evolution(const PartonDistribution &partonDistribution);
-    void evolution(const ActiveFlavorsThresholds &nfInterval);
-
-    NumA::VectorD convertBasis(const NumA::VectorD &vectorToConvert,
-            unsigned short matrixNum);
-    double convertBasis(const NumA::VectorD &vectorToConvert,
-            unsigned short currentNf, unsigned short nonSingletIndex);
-    NumA::VectorD invertBasis(const NumA::VectorD &vectorToInvert,
-            unsigned short matrixNum);
-
-    void computeNonSinglet(const ActiveFlavorsThresholds &nfInterval);
-    void computeSingletGluon(const ActiveFlavorsThresholds &nfInterval);
-
-    // ***************
-
-    std::vector<ActiveFlavorsThresholds> m_invertedIntervals;
-    void evolutionR(double x, unsigned int indexCurrentInterval);
+    NumA::FunctionType1D* p_intIntegrateComputeOutputNS;
+    NumA::FunctionType1D* p_intIntegrateComputeOutputS;
+    NumA::FunctionType1D* p_intIntegrateComputeOutputG;
 };
 
 } /* namespace PARTONS */

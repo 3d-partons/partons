@@ -18,7 +18,6 @@
 
 namespace PARTONS {
 
-
 const std::string GPDModule::GPD_MODULE_CLASS_NAME = "GPDModule";
 
 const std::string GPDModule::GPD_TYPE = "GPD_MODULE_GPD_TYPE";
@@ -96,11 +95,11 @@ void GPDModule::isModuleWellConfigured() {
         warn(__func__, "Square of factorization scale should be > 0.");
     }
 
-
     // Test initialization of reference factorization scale
 
     if (m_MuF2_ref <= 0.) {
-        warn(__func__, "Square of reference factorization scale should be > 0.");
+        warn(__func__,
+                "Square of reference factorization scale should be > 0.");
     }
 }
 
@@ -138,18 +137,8 @@ PartonDistribution GPDModule::compute(double x, double xi, double t,
     preCompute(x, xi, t, MuF2, MuR2, gpdType);
 
     if (evolution) {
-        evolution = false;
-
-        if (m_pGPDEvolutionModule != 0) {
-            if (m_pGPDEvolutionModule->isRunnable(m_MuF2, m_MuF2_ref,
-                    GPDEvolutionModule::RELATIVE)) {
-                evolution = true;
-            } else {
-                warn(__func__,
-                        "Evolution is not runnable : out of relative test");
-            }
-        } else {
-            //TODO exception pas de module d'evolution
+        if (m_pGPDEvolutionModule == 0) {
+            evolution = false;
         }
     }
 
@@ -157,7 +146,7 @@ PartonDistribution GPDModule::compute(double x, double xi, double t,
     m_it = m_listGPDComputeTypeAvailable.find(m_gpdType);
     if (m_it != m_listGPDComputeTypeAvailable.end()) {
 
-        if (evolution) {
+        if (evolution && (m_MuF2 != m_MuF2_ref)) {
             partonDistribution = m_pGPDEvolutionModule->compute(m_x, m_xi, m_t,
                     m_MuF2, m_MuR2, this, (m_it->first));
         } else {
@@ -362,9 +351,8 @@ void GPDModule::prepareSubModules(
                             << m_pGPDEvolutionModule->getClassName());
 
             m_pGPDEvolutionModule->configure((it->second).getParameters());
-
-            //TODO implement
-            // m_pGPDEvolutionModule->prepareSubModules((it->second).getSubModules());
+            m_pGPDEvolutionModule->prepareSubModules(
+                    (it->second).getSubModules());
         }
     }
 }
