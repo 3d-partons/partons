@@ -1,4 +1,4 @@
-#include "../../../../include/partons/modules/evolution/QuarkNonSingletCombination.h"
+#include "../../../include/partons/beans/QuarkNonSingletCombination.h"
 
 namespace PARTONS {
 

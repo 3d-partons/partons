@@ -7,8 +7,8 @@
 #include <string>
 #include <vector>
 
-#include "../GPDEvolutionModule.h"
-#include "../QuarkNonSingletCombination.h"
+#include "../../../beans/QuarkNonSingletCombination.h"
+#include "GPDEvolutionModule.h"
 
 namespace PARTONS {
 

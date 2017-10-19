@@ -9,7 +9,7 @@
 #include <utility>
 
 #include "../../../../include/partons/beans/gpd/GPDResult.h"
-#include "../../../../include/partons/modules/evolution/GPDEvolutionModule.h"
+#include "../../../../include/partons/modules/evolution/gpd/GPDEvolutionModule.h"
 #include "../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../include/partons/Partons.h"
 #include "../../../../include/partons/services/GPDService.h"

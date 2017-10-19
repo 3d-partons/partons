@@ -8,7 +8,7 @@
 #include "../../include/partons/modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
 #include "../../include/partons/modules/double_distribution/DoubleDistributionModule.h"
 #include "../../include/partons/modules/dse/GapEquationSolverModule.h"
-#include "../../include/partons/modules/evolution/GPDEvolutionModule.h"
+#include "../../include/partons/modules/evolution/gpd/GPDEvolutionModule.h"
 #include "../../include/partons/modules/gpd_border_function/GPDBorderFunctionModule.h"
 #include "../../include/partons/modules/gpd_subtraction_constant/GPDSubtractionConstantModule.h"
 #include "../../include/partons/modules/observable/Observable.h"

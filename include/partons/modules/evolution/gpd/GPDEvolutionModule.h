@@ -8,21 +8,20 @@
 #include <string>
 #include <vector>
 
-#include "../../beans/automation/BaseObjectData.h"
-#include "../../beans/gpd/GPDType.h"
-#include "../../beans/parton_distribution/PartonDistribution.h"
-#include "../../beans/parton_distribution/QuarkDistribution.h"
-#include "../../beans/PerturbativeQCDOrderType.h"
-#include "../../beans/QuarkFlavor.h"
-#include "../../ModuleObject.h"
-#include "../MathIntegratorModule.h"
-#include "QuarkNonSingletCombination.h"
+#include "../../../beans/automation/BaseObjectData.h"
+#include "../../../beans/gpd/GPDType.h"
+#include "../../../beans/parton_distribution/PartonDistribution.h"
+#include "../../../beans/parton_distribution/QuarkDistribution.h"
+#include "../../../beans/PerturbativeQCDOrderType.h"
+#include "../../../beans/QuarkFlavor.h"
+#include "../../../beans/QuarkNonSingletCombination.h"
+#include "../../../ModuleObject.h"
+#include "../../MathIntegratorModule.h"
 
 namespace PARTONS {
 
 class ActiveFlavorsThresholdsModule;
 class GPDModule;
-class PartonDistribution;
 class RunningAlphaStrongModule;
 
 class GPDEvolutionModule: public ModuleObject, public MathIntegratorModule {
