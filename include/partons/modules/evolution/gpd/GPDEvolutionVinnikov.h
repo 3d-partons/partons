@@ -1,6 +1,13 @@
 #ifndef GPDEVOLUTIONVINNIKOV_H
 #define GPDEVOLUTIONVINNIKOV_H
 
+/**
+ * @file GPDEvolutionVinnikov.h
+ * @author Pawel Sznajder (NCBJ)
+ * @date June 01, 2017
+ * @version 1.0
+ */
+
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <stddef.h>
 #include <map>
@@ -12,6 +19,13 @@
 
 namespace PARTONS {
 
+/**
+ * @class GPDEvolutionVinnikov
+ *
+ * @brief GPD evolution according to Vinnikov routines.
+ *
+ * This class makes use of original Vinnikov routines for the GPD evolution. For the reference see Ref. \cite{Vinnikov:2006xw}.
+ */
 class GPDEvolutionVinnikov: public GPDEvolutionModule {
 
 public:
