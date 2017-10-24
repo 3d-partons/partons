@@ -76,7 +76,7 @@ The build is based on CMake, which is a cross-platform make system. Make sure to
 
 The build is automated by Ant scripts, which are small XML files scripting the call to `cmake`, `make`, etc. Those scripts are called `build.xml` and they can be found in each %PARTONS project. Open Eclipse **Ant** view by navigating through the Eclipse menu: **Window** > **Show View** > **Ant** (the last one may be hidden in **Other**). Click on **Add Buildfiles** button, select and expand the list for the first %PARTONS project, select `build.xml` and finish with **OK** button. Alternatively, you can also drag and drop `build.xml` file from the **Project explorer** view to the **Ant** view. Repeat this procedure for all other %PARTONS projects if needed. 
 
-You can build now each of %PARTONS projects separately. Just remember to do this in the following order is you are a developer: 1) `elementary-utils`, 2) `numa`, 3) `partons`, 4) `partons-example`. In the **Ant** view, expand a given entry, and double click to perform one of the available operations:
+You can build now each of %PARTONS projects separately. Just remember to do this in the following order: 1) `elementary-utils`, 2) `numa`, 3) `partons`, 4) `partons-example`. In the **Ant** view, expand a given entry, and double click to perform one of the available operations:
 
 ![](../images/eclipse_ant.png "Ant")
 
