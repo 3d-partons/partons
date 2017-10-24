@@ -4,7 +4,7 @@
 
 # Introduction {#vm_intro}
 
-You can use our provided virtual machine with an out-of-the-box %PARTONS runtime and development environment. This is the easiest way to start your experience with %PARTONS. The virtual machine comes with the latest %PARTONS version, Eclipse CDT IDE platform, all needed libraries and a predefined MySQL database. It is based on Debian 8.8 with Xfce desktop environment. 
+You can use our provided virtual machine with an out-of-the-box %PARTONS runtime and development environment. This is the easiest way to start your experience with %PARTONS. The virtual machine comes with the latest %PARTONS version, Eclipse CDT IDE platform, all needed libraries and a predefined MySQL database. It is based on Debian 9.1 with Xfce desktop environment. 
 
 This page explains how to install the required virtualization software, download our virtual machine, set it up and use it. It contains also a set of useful tips for troubleshooting and further improving your work.
 
@@ -56,7 +56,7 @@ sudo service keyboard-setup restart
 
 ## Additional packages {#vm_tips_packages}
 
-Our virtual machine comes only with those elements that are required by either %PARTONS runtime or the development environment. However, You can install any other package from the rich repository of Debian by yourself and use it in your work. To do this, open the terminal and do as follows (here is an example for the installation of `gnuplot`): 
+Our virtual machine comes only with those elements that are required by either %PARTONS runtime or the development environment. However, you can install any other package from the rich repository of Debian by yourself and use it in your work. To do this, open the terminal and do as follows (here is an example for the installation of `gnuplot`): 
 ~~~~~~~~~~~~~{.sh}
 # update list of packages
 sudo apt-get update
