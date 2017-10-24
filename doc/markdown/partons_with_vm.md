@@ -56,7 +56,7 @@ sudo service keyboard-setup restart
 
 ## Additional packages {#vm_tips_packages}
 
-Our virtual machine comes only with those elements that are required by either %PARTONS runtime or the development environment. However, You can install any other package from the rich repository of Debian by yourself and use it in your work. To do this, open the terminal and do as follows (here is an example for the installation of `gnuplot`): 
+Our virtual machine comes only with those elements that are required by either %PARTONS runtime or the development environment. However, you can install any other package from the rich repository of Debian by yourself and use it in your work. To do this, open the terminal and do as follows (here is an example for the installation of `gnuplot`): 
 ~~~~~~~~~~~~~{.sh}
 # update list of packages
 sudo apt-get update
