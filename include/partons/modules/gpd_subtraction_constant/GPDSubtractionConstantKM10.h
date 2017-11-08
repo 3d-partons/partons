@@ -52,8 +52,7 @@ protected:
      */
     GPDSubtractionConstantKM10(const GPDSubtractionConstantKM10& other);
 
-    virtual double computeH();
-    virtual double computeE();
+    virtual double computeSubtractionConstant();
 
 private:
 
