@@ -25,8 +25,8 @@ namespace PARTONS {
  * \frac{\Delta \mathrm{d}^4\sigma_{LU}}
  * {\mathrm{d}x_{B} \mathrm{d}|t| \mathrm{d}Q^2 \mathrm{d}\phi}\left(x_{B}, t, Q^2, \phi\right) =
  * \frac{1}{2} \left(
- * \frac{\mathrm{d}^4\sigma^{\rightarrow +}}{\mathrm{d}x_{B} \mathrm{d}|t| \mathrm{d}Q^2 \mathrm{d}\phi}\left(x_{B}, t, Q^2, \phi\right) -
- * \frac{\mathrm{d}^4\sigma^{\leftarrow +}}{\mathrm{d}x_{B} \mathrm{d}|t| \mathrm{d}Q^2 \mathrm{d}\phi}\left(x_{B}, t, Q^2, \phi\right)
+ * \frac{\mathrm{d}^4\sigma^{\rightarrow -}}{\mathrm{d}x_{B} \mathrm{d}|t| \mathrm{d}Q^2 \mathrm{d}\phi}\left(x_{B}, t, Q^2, \phi\right) -
+ * \frac{\mathrm{d}^4\sigma^{\leftarrow -}}{\mathrm{d}x_{B} \mathrm{d}|t| \mathrm{d}Q^2 \mathrm{d}\phi}\left(x_{B}, t, Q^2, \phi\right)
  * \right) \, ,
  * \f$
  *
