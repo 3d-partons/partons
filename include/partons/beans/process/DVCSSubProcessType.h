@@ -49,8 +49,6 @@ class DVCSSubProcessType: public BaseObject {
 
 public:
 
-    static const std::string PARAMETER_NAME_DVCS_SUB_PROCESS_TYPE;
-
     enum Type {
         UNDEFINED = 0,  //!< Undefined type.
         ALL = 1,       //!< All subprocesses, i.e. DVCS, BH and INT.

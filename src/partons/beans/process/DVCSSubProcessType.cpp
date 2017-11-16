@@ -5,9 +5,6 @@
 
 namespace PARTONS {
 
-const std::string DVCSSubProcessType::PARAMETER_NAME_DVCS_SUB_PROCESS_TYPE =
-        "dvcs_subprocess_type";
-
 DVCSSubProcessType::DVCSSubProcessType() :
         BaseObject("DVCSSubProcessType"), m_type(DVCSSubProcessType::UNDEFINED) {
 }

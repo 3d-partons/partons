@@ -29,7 +29,9 @@ namespace PARTONS {
  * The cross-section is five-fold differential with respect to the variables: @f$ x_B @f$, @f$ Q^2 @f$, @f$ t @f$ and the two angles.
  */
 class DVCSProcessModule: public ProcessModule {
+
 public:
+
     /**
      * Constructor.
      * See BaseObject::BaseObject and ModuleObject::ModuleObject for more details.
@@ -37,6 +39,7 @@ public:
      * @param className name of child class.
      */
     DVCSProcessModule(const std::string &className);
+
     /**
      * Default destructor.
      */
@@ -53,18 +56,20 @@ public:
     double computeCrossSection(double beamHelicity, double beamCharge,
             NumA::Vector3D targetPolarization, double phi);
 
+    /**
+     * Compute cross section for a given process.
+     * @param beamHelicity Beam helicity.
+     * @param beamCharge Beam charge.
+     * @param targetPolarization Target polarization.
+     * @param phi Angle between leptonic and hadronic planes (radian).
+     * @param processType Process type (BH, DVCS, Int).
+     */
+    double computeCrossSection(double beamHelicity, double beamCharge,
+            NumA::Vector3D targetPolarization, double phi,
+            DVCSSubProcessType::Type processType);
+
     virtual void setConvolCoeffFunctionModule(
             ConvolCoeffFunctionModule* pConvolCoeffFunctionModule);
-            
-    /**
-     * Get subprocess type.
-     */
-    DVCSSubProcessType::Type getSubProcessType() const;
-
-    /**
-     * Set subprocess type.
-     */
-    void setSubProcessType(DVCSSubProcessType::Type subProcessType);
 
 protected:
     /**
@@ -86,8 +91,6 @@ protected:
     virtual void initModule(double beamHelicity, double beamCharge,
             NumA::Vector3D targetPolarization);
     virtual void isModuleWellConfigured();
-
-    DVCSSubProcessType::Type m_subProcessType; ///< Switch to select specific subprocess or all of them (default).
 
     double m_phaseSpace; ///< Phase space factor of the cross section.
     double m_tmin; ///< Minimal value of t.
