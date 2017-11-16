@@ -61,7 +61,7 @@ void DVCSAllMinusCos1Phi::configure(const ElemUtils::Parameters &parameters) {
 
 double DVCSAllMinusCos1Phi::functionToIntegrateObservable(double x,
         std::vector<double> params) {
-    return DVCSAllMinus::computePhiObservable(x) * cos(1 * x);
+    return DVCSAllMinus::computePhiObservable(x) * cos(x);
 }
 
 double DVCSAllMinusCos1Phi::computeFourierObservable() {
