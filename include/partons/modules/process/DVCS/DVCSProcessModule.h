@@ -15,6 +15,7 @@
 #include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
 #include "../../../beans/gpd/GPDType.h"
 #include "../../../beans/List.h"
+#include "../../../beans/process/DVCSSubProcessType.h"
 #include "../ProcessModule.h"
 
 namespace PARTONS {
@@ -28,7 +29,9 @@ namespace PARTONS {
  * The cross-section is five-fold differential with respect to the variables: @f$ x_B @f$, @f$ Q^2 @f$, @f$ t @f$ and the two angles.
  */
 class DVCSProcessModule: public ProcessModule {
+
 public:
+
     /**
      * Constructor.
      * See BaseObject::BaseObject and ModuleObject::ModuleObject for more details.
@@ -36,6 +39,7 @@ public:
      * @param className name of child class.
      */
     DVCSProcessModule(const std::string &className);
+
     /**
      * Default destructor.
      */
@@ -51,6 +55,18 @@ public:
     // TODO convert double to integer
     double computeCrossSection(double beamHelicity, double beamCharge,
             NumA::Vector3D targetPolarization, double phi);
+
+    /**
+     * Compute cross section for a given process.
+     * @param beamHelicity Beam helicity.
+     * @param beamCharge Beam charge.
+     * @param targetPolarization Target polarization.
+     * @param phi Angle between leptonic and hadronic planes (radian).
+     * @param processType Process type (BH, DVCS, Int).
+     */
+    double computeCrossSection(double beamHelicity, double beamCharge,
+            NumA::Vector3D targetPolarization, double phi,
+            DVCSSubProcessType::Type processType);
 
     virtual void setConvolCoeffFunctionModule(
             ConvolCoeffFunctionModule* pConvolCoeffFunctionModule);

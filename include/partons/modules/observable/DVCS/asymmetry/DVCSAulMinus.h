@@ -24,20 +24,16 @@ namespace PARTONS {
  * \f$ \displaystyle
  * A_{UL}\left(x_{B}, t, Q^2, \phi\right) =
  * \frac{
- * \left(\mathrm{d}^4\sigma_{\leftarrow}^{\rightarrow -}\left(x_{B}, t, Q^2, \phi\right) +
- * \mathrm{d}^4\sigma_{\leftarrow}^{\leftarrow -}\left(x_{B}, t, Q^2, \phi\right)\right) -
- * \left(\mathrm{d}^4\sigma_{\rightarrow}^{\rightarrow -}\left(x_{B}, t, Q^2, \phi\right) +
- * \mathrm{d}^4\sigma_{\rightarrow}^{\leftarrow  -}\left(x_{B}, t, Q^2, \phi\right)\right)
+ * \mathrm{d}^4\sigma_{\leftarrow}^{-}\left(x_{B}, t, Q^2, \phi\right) -
+ * \mathrm{d}^4\sigma_{\rightarrow}^{-}\left(x_{B}, t, Q^2, \phi\right)
  * }{
- * \left(\mathrm{d}^4\sigma_{\leftarrow}^{\rightarrow -}\left(x_{B}, t, Q^2, \phi\right) +
- * \mathrm{d}^4\sigma_{\leftarrow}^{\leftarrow -}\left(x_{B}, t, Q^2, \phi\right)\right) +
- * \left(\mathrm{d}^4\sigma_{\rightarrow}^{\rightarrow -}\left(x_{B}, t, Q^2, \phi\right) +
- * \mathrm{d}^4\sigma_{\rightarrow}^{\leftarrow  -}\left(x_{B}, t, Q^2, \phi\right)\right)
+ * \mathrm{d}^4\sigma_{\leftarrow}^{-}\left(x_{B}, t, Q^2, \phi\right) +
+ * \mathrm{d}^4\sigma_{\rightarrow}^{-}\left(x_{B}, t, Q^2, \phi\right)
  * } \, ,
  * \f$
  *
  * where
- * \f$\sigma_{t_{h}}^{b_{h} b_{c}}\f$ is q single photon production cross-section (DVCS, BH and Interference) for target helicity denoted by \f$t_{h}\f$, beam helicity denoted by \f$b_{h}\f$ and beam charge denoted by \f$b_{c}\f$.
+ * \f$\sigma_{t_{h}}^{b_{c}}\f$ is q single photon production cross-section (DVCS, BH and Interference) for target helicity denoted by \f$t_{h}\f$ and beam charge denoted by \f$b_{c}\f$.
  */
 class DVCSAulMinus: public Observable {
 

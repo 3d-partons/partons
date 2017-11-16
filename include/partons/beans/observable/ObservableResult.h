@@ -76,11 +76,6 @@ public:
     static const std::string PARAMETER_NAME_OBSERVABLE_VALUE;
 
     /**
-     * Parameter name to set total uncertainty via configuration methods.
-     */
-    static const std::string PARAMETER_NAME_TOTAL_ERROR;
-
-    /**
      * Default constructor.
      */
     ObservableResult();
@@ -143,16 +138,6 @@ public:
     void setValue(double value);
 
     /**
-     * Get total uncertainty associated to this result.
-     */
-    double getTotalError() const;
-
-    /**
-     * Set total uncertainty associated to this result.
-     */
-    void setTotalError(double totalError);
-
-    /**
      * Get reference to statistical uncertainty associated to this result.
      */
     const ErrorBar& getStatError() const;
@@ -171,6 +156,16 @@ public:
      * Set systematic uncertainty associated to this result.
      */
     void setSystError(const ErrorBar& systError);
+
+    /**
+     * Get reference to scale uncertainty associated to this result.
+     */
+    const ErrorBar& getScaleError() const;
+
+    /**
+     * Set scale uncertainty associated to this result.
+     */
+    void setScaleError(const ErrorBar& scaleError);
 
     /**
      * Get reference to DVCS observable kinematics associated to this result.
@@ -205,11 +200,6 @@ private:
     double m_value;
 
     /**
-     * Total uncertainty associated to this result.
-     */
-    double m_totalError;
-
-    /**
      * Statistical uncertainty associated to this result.
      */
     ErrorBar m_statError;
@@ -218,6 +208,11 @@ private:
      * Systematic uncertainty associated to this result.
      */
     ErrorBar m_systError;
+
+    /**
+     * Scale uncertainty associated to this result.
+     */
+    ErrorBar m_scaleError;
 
     //TODO add a proxy to retrieve it from database.
     /**

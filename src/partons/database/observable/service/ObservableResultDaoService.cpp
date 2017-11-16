@@ -18,7 +18,6 @@
 
 namespace PARTONS {
 
-
 ObservableResultDaoService::ObservableResultDaoService() :
         ResultDaoService("ObservableResultDaoService"), m_lastObservableKinematicId(
                 -1), m_lastObservableResultId(-1), m_observableKinematicTableFile(
@@ -115,7 +114,8 @@ int ObservableResultDaoService::insert(
                     << resultList[i].getStatError().getUpperBound() << ","
                     << resultList[i].getSystError().getLowerBound() << ","
                     << resultList[i].getSystError().getUpperBound() << ","
-                    << resultList[i].getTotalError() << ","
+                    << resultList[i].getScaleError().getLowerBound() << ","
+                    << resultList[i].getScaleError().getUpperBound() << ","
                     << resultList[i].getComputationModuleName() << ","
                     << resultList[i].getObservableType() << "," << kinematicId
                     << "," << m_previousComputationId.second << '\n';

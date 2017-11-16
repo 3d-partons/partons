@@ -45,7 +45,8 @@ public:
      * @param statErrorUB Statistical error (upper bound).
      * @param systErrorLB Systematic error (lower bound).
      * @param systErrorUB Systematic error (upper bound).
-     * @param errorTotal Total error.
+     * @param scaleErrorLB Scale error (lower bound).
+     * @param scaleErrorUB Scale error (upper bound).
      * @param computationModuleName Name of module used to evaluate this result.
      * @param observableTypeId Observable typ, see ObservableType::Type.
      * @param kinematicId Unique id of row in the database containing observable kinematics associated to this result.
@@ -54,7 +55,7 @@ public:
      */
     int insert(const std::string &observableName, double observableValue,
             double statErrorLB, double statErrorUB, double systErrorLB,
-            double systErrorUB, double errorTotal,
+            double systErrorUB, double scaleErrorLB, double scaleErrorUB,
             const std::string &computationModuleName, int observableTypeId,
             int kinematicId, int computationId) const;
 

@@ -14,8 +14,6 @@
 
 #include "../../beans/automation/BaseObjectData.h"
 #include "../../beans/gpd/GPDBorderFunctionKinematic.h"
-#include "../../beans/gpd/GPDType.h"
-#include "../../beans/List.h"
 #include "../../ModuleObject.h"
 
 namespace PARTONS {
@@ -54,129 +52,82 @@ class GPDSubtractionConstantModule: public ModuleObject {
 
 public:
 
-	/**
-	 * Type of module name used by the automatization.
-	 */
-	static const std::string GPD_SUBTRACTION_CONSTANT_MODULE_CLASS_NAME;
+    /**
+     * Type of module name used by the automatization.
+     */
+    static const std::string GPD_SUBTRACTION_CONSTANT_MODULE_CLASS_NAME;
 
-	/**
-	 * Constructor.
-	 * @param className Name of class.
-	 */
-	GPDSubtractionConstantModule(const std::string &className);
+    /**
+     * Constructor.
+     * @param className Name of class.
+     */
+    GPDSubtractionConstantModule(const std::string &className);
 
-	/**
-	 * Destructor.
-	 */
-	virtual ~GPDSubtractionConstantModule();
+    /**
+     * Destructor.
+     */
+    virtual ~GPDSubtractionConstantModule();
 
-	virtual GPDSubtractionConstantModule* clone() const;
-	virtual void configure(const ElemUtils::Parameters &parameters);
-	virtual std::string toString() const;
-	virtual void resolveObjectDependencies();
-	virtual void prepareSubModules(
-			const std::map<std::string, BaseObjectData>& subModulesData);
+    virtual GPDSubtractionConstantModule* clone() const;
+    virtual void configure(const ElemUtils::Parameters &parameters);
+    virtual std::string toString() const;
+    virtual void resolveObjectDependencies();
+    virtual void prepareSubModules(
+            const std::map<std::string, BaseObjectData>& subModulesData);
 
-	/**
-	 * Evaluate specific GPD subtraction constant for a given kinematics.
-	 * @param xi Skewness variable.
-	 * @param t Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
-	 * @param MuF2 Factorization scale squared (in \f$GeV^{2}\f$).
-	 * @param MuR2 Renormalization scale squared (in \f$GeV^{2}\f$).
-	 * @param gpdType Type of GPD.
-	 */
-	virtual double compute(double xi, double t, double MuF2, double MuR2,
-			GPDType::Type gpdType);
+    /**
+     * Evaluate specific GPD subtraction constant for a given kinematics.
+     * @param t Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
+     * @param MuF2 Factorization scale squared (in \f$GeV^{2}\f$).
+     * @param MuR2 Renormalization scale squared (in \f$GeV^{2}\f$).
+     */
+    double compute(double t, double MuF2, double MuR2);
 
-	/**
-	 * Evaluate specific GPD subtraction constant for a given kinematics.
-	 * @param kinematic Reference to the object containing kinematics to be used in the evaluation.
-	 * @param gpdType Type of GPD .
-	 */
-	virtual double compute(const GPDBorderFunctionKinematic &kinematic,
-			GPDType gpdType);
-
-	/**
-	 * Evaluate for GPD \f$H\f$.
-	 */
-	virtual double computeH();
-
-	/**
-	 * Evaluate for GPD \f$E\f$.
-	 */
-	virtual double computeE();
-
-	/**
-	 * Evaluate for GPD \f$\widetilde{H}\f$.
-	 */
-	virtual double computeHt();
-
-	/**
-	 * Evaluate for GPD \f$\widetilde{E}\f$.
-	 */
-	virtual double computeEt();
-
-	/**
-	 * Get list of available GPD types to be computed.
-	 */
-	List<GPDType> getListOfAvailableGPDTypeForComputation() const;
+    /**
+     * Evaluate specific GPD subtraction constant for a given GPDBorderFunctionKinematic object.
+     * @param gpdBorderFunctionKinematic GPDBorderFunctionKinematic object containing kinematics to be evaluated.
+     */
+    double compute(
+            const GPDBorderFunctionKinematic& gpdBorderFunctionKinematic);
 
 protected:
 
-	/**
-	 * Copy constructor.
-	 * @param other Object to be copied.
-	 */
-	GPDSubtractionConstantModule(const GPDSubtractionConstantModule &other);
+    /**
+     * Copy constructor.
+     * @param other Object to be copied.
+     */
+    GPDSubtractionConstantModule(const GPDSubtractionConstantModule &other);
 
-	virtual void initModule();
-	virtual void isModuleWellConfigured();
+    virtual void initModule();
+    virtual void isModuleWellConfigured();
 
-	/**
-	 * Evaluate specific GPD subtraction constant for a given kinematics.
-	 * @param xi Skewness variable.
-	 * @param t Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
-	 * @param MuF2 Factorization scale squared (in \f$GeV^{2}\f$).
-	 * @param MuR2 Renormalization scale squared (in \f$GeV^{2}\f$).
-	 * @param gpdType Type of GPD.
-	 */
-	void preCompute(double xi, double t, double MuF2, double MuR2,
-			GPDType::Type gpdType);
+    /**
+     * Evaluate specific GPD subtraction constant (user defined part).
+     */
+    virtual double computeSubtractionConstant();
 
-	/**
-	 * Skewness variable.
-	 */
-	double m_xi;
+    /**
+     * Evaluate specific GPD subtraction constant for a given kinematics.
+     * @param t Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
+     * @param MuF2 Factorization scale squared (in \f$GeV^{2}\f$).
+     * @param MuR2 Renormalization scale squared (in \f$GeV^{2}\f$).
+     */
+    void preCompute(double t, double MuF2, double MuR2);
 
-	/**
-	 * Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
-	 */
-	double m_t;
+    /**
+     * Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
+     */
+    double m_t;
 
-	/**
-	 * Factorization scale squared (in \f$GeV^{2}\f$).
-	 */
-	double m_MuF2;
+    /**
+     * Factorization scale squared (in \f$GeV^{2}\f$).
+     */
+    double m_MuF2;
 
-	/**
-	 * Renormalization scale squared (in \f$GeV^{2}\f$).
-	 */
-	double m_MuR2;
-
-	/**
-	 * GPD type.
-	 */
-	GPDType::Type m_gpdType;
-
-	/**
-	 * List of available GPDs to be computed.
-	 */
-	std::map<GPDType::Type, double (GPDSubtractionConstantModule::*)()> m_listGPDComputeTypeAvailable;
-
-	/**
-	 *  Iterator of list of available GPDs to be computed
-	 */
-	std::map<GPDType::Type, double (GPDSubtractionConstantModule::*)()>::iterator m_it;
+    /**
+     * Renormalization scale squared (in \f$GeV^{2}\f$).
+     */
+    double m_MuR2;
 };
 
 } /* namespace PARTONS */

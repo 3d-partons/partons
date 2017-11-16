@@ -1,39 +1,39 @@
-#include "../../../../../../include/partons/modules/observable/DVCS/asymmetry/DVCSAutSinPhiMPhis.h"
-
 #include <NumA/linear_algebra/vector/Vector3D.h>
 
 #include "../../../../../../include/partons/beans/observable/ObservableChannel.h"
 #include "../../../../../../include/partons/BaseObjectRegistry.h"
+#include "../../../../../../include/partons/modules/observable/DVCS/asymmetry/DVCSAutMinusSinPhiMPhis.h"
 #include "../../../../../../include/partons/modules/process/ProcessModule.h"
 
 namespace PARTONS {
 
-
-const unsigned int DVCSAutSinPhiMPhis::classId =
+const unsigned int DVCSAutMinusSinPhiMPhis::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
-                new DVCSAutSinPhiMPhis("DVCSAutSinPhiMPhis"));
+                new DVCSAutMinusSinPhiMPhis("DVCSAutMinusSinPhiMPhis"));
 
-DVCSAutSinPhiMPhis::DVCSAutSinPhiMPhis(const std::string &className) :
+DVCSAutMinusSinPhiMPhis::DVCSAutMinusSinPhiMPhis(const std::string &className) :
         Observable(className) {
     m_channel = ObservableChannel::DVCS;
 }
 
-DVCSAutSinPhiMPhis::DVCSAutSinPhiMPhis(const DVCSAutSinPhiMPhis& other) :
+DVCSAutMinusSinPhiMPhis::DVCSAutMinusSinPhiMPhis(
+        const DVCSAutMinusSinPhiMPhis& other) :
         Observable(other) {
 }
 
-DVCSAutSinPhiMPhis::~DVCSAutSinPhiMPhis() {
+DVCSAutMinusSinPhiMPhis::~DVCSAutMinusSinPhiMPhis() {
 }
 
-DVCSAutSinPhiMPhis* DVCSAutSinPhiMPhis::clone() const {
-    return new DVCSAutSinPhiMPhis(*this);
+DVCSAutMinusSinPhiMPhis* DVCSAutMinusSinPhiMPhis::clone() const {
+    return new DVCSAutMinusSinPhiMPhis(*this);
 }
 
-void DVCSAutSinPhiMPhis::configure(const ElemUtils::Parameters &parameters) {
-	Observable::configure(parameters);
+void DVCSAutMinusSinPhiMPhis::configure(
+        const ElemUtils::Parameters &parameters) {
+    Observable::configure(parameters);
 }
 
-double DVCSAutSinPhiMPhis::computePhiObservable(double phi) {
+double DVCSAutMinusSinPhiMPhis::computePhiObservable(double phi) {
 
     double A = m_pProcessModule->computeCrossSection(+1, -1,
             NumA::Vector3D(0., -1., 0.), phi);

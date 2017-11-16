@@ -1,3 +1,5 @@
+#include "../../../../../include/partons/modules/process/DVCS/DVCSProcessModule.h"
+
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/linear_algebra/vector/Vector3D.h>
@@ -9,7 +11,6 @@
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSCFFConstant.h"
-#include "../../../../../include/partons/modules/process/DVCS/DVCSProcessModule.h"
 #include "../../../../../include/partons/modules/scales/ScalesModule.h"
 #include "../../../../../include/partons/modules/xi_converter/XiConverterModule.h"
 #include "../../../../../include/partons/Partons.h"
@@ -62,6 +63,7 @@ void DVCSProcessModule::initModule(double beamHelicity, double beamCharge,
 }
 
 void DVCSProcessModule::isModuleWellConfigured() {
+
     // Test kinematic domain of xB
     if (m_xB < m_xBmin || m_xB > 1) {
         ElemUtils::Formatter formatter;
@@ -114,8 +116,8 @@ void DVCSProcessModule::isModuleWellConfigured() {
     debug(__func__, "Entered function.");
 }
 
-void DVCSProcessModule::computeConvolCoeffFunction(double xB, double t, double Q2,
-        double E, const List<GPDType> & gpdType) {
+void DVCSProcessModule::computeConvolCoeffFunction(double xB, double t,
+        double Q2, double E, const List<GPDType> & gpdType) {
     if (isPreviousKinematicsDifferent(xB, t, Q2)
             || (BaseObjectRegistry::getInstance()->getObjectClassIdByClassName(
                     m_pConvolCoeffFunctionModule->getClassName())
@@ -160,8 +162,15 @@ void DVCSProcessModule::computeConvolCoeffFunction(double xB, double t, double Q
     isModuleWellConfigured();
 }
 
-double DVCSProcessModule::computeCrossSection(double beamHelicity, double beamCharge,
-        NumA::Vector3D targetPolarization, double phi) {
+double DVCSProcessModule::computeCrossSection(double beamHelicity,
+        double beamCharge, NumA::Vector3D targetPolarization, double phi) {
+    return computeCrossSection(beamHelicity, beamCharge, targetPolarization,
+            phi, DVCSSubProcessType::ALL);
+}
+
+double DVCSProcessModule::computeCrossSection(double beamHelicity,
+        double beamCharge, NumA::Vector3D targetPolarization, double phi,
+        DVCSSubProcessType::Type processType) {
 
     m_phi = phi;
 
@@ -171,9 +180,25 @@ double DVCSProcessModule::computeCrossSection(double beamHelicity, double beamCh
 
     initModule(beamHelicity, beamCharge, targetPolarization);
 
-    return CrossSectionBH(beamHelicity, beamCharge, targetPolarization)
-            + CrossSectionVCS(beamHelicity, beamCharge, targetPolarization)
-            + CrossSectionInterf(beamHelicity, beamCharge, targetPolarization);
+    double result = 0.;
+
+    if (processType == DVCSSubProcessType::ALL
+            || processType == DVCSSubProcessType::DVCS) {
+        result += CrossSectionVCS(beamHelicity, beamCharge, targetPolarization);
+    }
+
+    if (processType == DVCSSubProcessType::ALL
+            || processType == DVCSSubProcessType::BH) {
+        result += CrossSectionBH(beamHelicity, beamCharge, targetPolarization);
+    }
+
+    if (processType == DVCSSubProcessType::ALL
+            || processType == DVCSSubProcessType::INT) {
+        result += CrossSectionInterf(beamHelicity, beamCharge,
+                targetPolarization);
+    }
+
+    return result;
 }
 
 std::complex<double> DVCSProcessModule::getConvolCoeffFunctionValue(
@@ -218,3 +243,4 @@ void DVCSProcessModule::setConvolCoeffFunctionModule(
 }
 
 } /* namespace PARTONS */
+

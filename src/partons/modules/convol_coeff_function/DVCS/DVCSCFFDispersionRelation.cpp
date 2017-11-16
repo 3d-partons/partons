@@ -23,11 +23,9 @@
 
 namespace PARTONS {
 
-
 const unsigned int DVCSCFFDispersionRelation::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
-                new DVCSCFFDispersionRelation(
-                        "DVCSCFFDispersionRelation"));
+                new DVCSCFFDispersionRelation("DVCSCFFDispersionRelation"));
 
 DVCSCFFDispersionRelation::DVCSCFFDispersionRelation(
         const std::string& className) :
@@ -207,8 +205,17 @@ std::complex<double> DVCSCFFDispersionRelation::computeUnpolarized() {
     Re += computeSquareChargeAveragedGPD(m_xi) * (log(m_xi) - log(1. - m_xi));
 
     //subtraction constant
-    double Sub = m_pSubtractionConstantModule->compute(m_xi, m_t, m_MuF2,
-            m_MuR2, m_currentGPDComputeType);
+    double Sub = m_pSubtractionConstantModule->compute(m_t, m_MuF2, m_MuR2);
+
+    if (m_currentGPDComputeType == GPDType::H) {
+        Re -= Sub;
+    } else if (m_currentGPDComputeType == GPDType::E) {
+        Re += Sub;
+    } else {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << "Illegal GPD type in this place "
+                        << GPDType(m_currentGPDComputeType).toString());
+    }
 
     //imaginary part
     double Im = Constant::PI * computeSquareChargeAveragedGPD(m_xi);
@@ -248,8 +255,7 @@ std::complex<double> DVCSCFFDispersionRelation::computePolarized() {
     return std::complex<double>(Re, Im);
 }
 
-double DVCSCFFDispersionRelation::computeSquareChargeAveragedGPD(
-        double xi) {
+double DVCSCFFDispersionRelation::computeSquareChargeAveragedGPD(double xi) {
 
     //get GPD result
     PartonDistribution partonDistribution = m_pGPDModule->compute(xi, xi, m_t,

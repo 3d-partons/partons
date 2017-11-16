@@ -30,7 +30,9 @@ class PartonDistribution;
 /**
  * @class DVCSCFFDispersionRelation
  *
- * Dispersion relation DVCS/CFF model. TODO: Add description.
+ * @brief Dispersion relation DVCS/CFF model.
+ *
+ * Dispersion relation DVCS/CFF model. Need to be configured with GPDSubtractionConstantModule object provided. The sign of subtraction constant is -/+ for GPDs H/E.
  */
 class DVCSCFFDispersionRelation: public DVCSConvolCoeffFunctionModule {
 
