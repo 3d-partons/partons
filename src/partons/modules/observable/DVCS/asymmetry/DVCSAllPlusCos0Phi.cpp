@@ -1,4 +1,4 @@
-#include "../../../../../../include/partons/modules/observable/DVCS/asymmetry/DVCSAllMinusCos0Phi.h"
+#include "../../../../../../include/partons/modules/observable/DVCS/asymmetry/DVCSAllPlusCos0Phi.h"
 
 #include <NumA/functor/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
@@ -12,13 +12,12 @@
 
 namespace PARTONS {
 
-
-const unsigned int DVCSAllMinusCos0Phi::classId =
+const unsigned int DVCSAllPlusCos0Phi::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
-                new DVCSAllMinusCos0Phi("DVCSAllMinusCos0Phi"));
+                new DVCSAllPlusCos0Phi("DVCSAllPlusCos0Phi"));
 
-DVCSAllMinusCos0Phi::DVCSAllMinusCos0Phi(const std::string &className) :
-        DVCSAllMinus(className), MathIntegratorModule(), m_pFunctionToIntegrateObservable(
+DVCSAllPlusCos0Phi::DVCSAllPlusCos0Phi(const std::string &className) :
+        DVCSAllPlus(className), MathIntegratorModule(), m_pFunctionToIntegrateObservable(
                 0) {
 
     m_observableType = ObservableType::FOURIER;
@@ -28,14 +27,14 @@ DVCSAllMinusCos0Phi::DVCSAllMinusCos0Phi(const std::string &className) :
     initFunctorsForIntegrations();
 }
 
-DVCSAllMinusCos0Phi::DVCSAllMinusCos0Phi(const DVCSAllMinusCos0Phi& other) :
-        DVCSAllMinus(other), MathIntegratorModule(other) {
+DVCSAllPlusCos0Phi::DVCSAllPlusCos0Phi(const DVCSAllPlusCos0Phi& other) :
+        DVCSAllPlus(other), MathIntegratorModule(other) {
 
     m_pFunctionToIntegrateObservable = 0;
     initFunctorsForIntegrations();
 }
 
-DVCSAllMinusCos0Phi::~DVCSAllMinusCos0Phi() {
+DVCSAllPlusCos0Phi::~DVCSAllPlusCos0Phi() {
 
     if (m_pFunctionToIntegrateObservable) {
         delete m_pFunctionToIntegrateObservable;
@@ -43,28 +42,28 @@ DVCSAllMinusCos0Phi::~DVCSAllMinusCos0Phi() {
     }
 }
 
-void DVCSAllMinusCos0Phi::initFunctorsForIntegrations() {
+void DVCSAllPlusCos0Phi::initFunctorsForIntegrations() {
     m_pFunctionToIntegrateObservable =
             NumA::Integrator1D::newIntegrationFunctor(this,
-                    &DVCSAllMinusCos0Phi::functionToIntegrateObservable);
+                    &DVCSAllPlusCos0Phi::functionToIntegrateObservable);
 }
 
-DVCSAllMinusCos0Phi* DVCSAllMinusCos0Phi::clone() const {
-    return new DVCSAllMinusCos0Phi(*this);
+DVCSAllPlusCos0Phi* DVCSAllPlusCos0Phi::clone() const {
+    return new DVCSAllPlusCos0Phi(*this);
 }
 
-void DVCSAllMinusCos0Phi::configure(const ElemUtils::Parameters &parameters) {
+void DVCSAllPlusCos0Phi::configure(const ElemUtils::Parameters &parameters) {
 
-	DVCSAllMinus::configure(parameters);
-	MathIntegratorModule::configureIntegrator(parameters);
+    DVCSAllPlus::configure(parameters);
+    MathIntegratorModule::configureIntegrator(parameters);
 }
 
-double DVCSAllMinusCos0Phi::functionToIntegrateObservable(double x,
+double DVCSAllPlusCos0Phi::functionToIntegrateObservable(double x,
         std::vector<double> params) {
-    return DVCSAllMinus::computePhiObservable(x);// * cos(0 * x);
+    return DVCSAllPlus::computePhiObservable(x); // * cos(0 * x);
 }
 
-double DVCSAllMinusCos0Phi::computeFourierObservable() {
+double DVCSAllPlusCos0Phi::computeFourierObservable() {
 
     std::vector<double> emptyParameters;
 

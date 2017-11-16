@@ -1,0 +1,87 @@
+#ifndef DVCSAUTDVCSSINPHIMPHISCOS0PHI_H
+#define DVCSAUTDVCSSINPHIMPHISCOS0PHI_H
+
+/**
+ * @file DVCSAutDVCSSinPhiMPhisCos0Phi.h
+ * @author Pawel Sznajder (NCBJ, Warsaw)
+ * @date November 16, 2017
+ * @version 1.0
+ */
+
+#include <ElementaryUtils/parameters/Parameters.h>
+#include <string>
+#include <vector>
+
+#include "../../../MathIntegratorModule.h"
+#include "DVCSAutDVCSSinPhiMPhis.h"
+
+namespace PARTONS {
+
+/**
+ * @class DVCSAutDVCSSinPhiMPhisCos0Phi
+ *
+ * @brief 0th Fourier moment of transverse target asymmetry (DVCS part).
+ *
+ * Definition:<br>
+ *
+ * \f$ \displaystyle
+ * A_{UT, DVCS}^{\sin\left(\phi-\phi_{S}\right)\cos\left(0\phi\right)}\left(x_{B}, t, Q^2\right) =
+ * \frac{1}{2\pi}
+ * \int_{0}^{2\pi} \mathrm{d}\phi A_{UT}^{\sin\left(\phi-\phi_{S}\right)}\left(x_{B}, t, Q^2, \phi\right) \cos\left(0\phi\right) \, ,
+ * \f$
+ *
+ * where \f$A_{UT, DVCS}^{\sin\left(\phi-\phi_{S}\right)}\left(x_{B}, t, Q^2, \phi\right)\f$ is defined in DVCSAutDVCSSinPhiMPhis.
+ */
+class DVCSAutDVCSSinPhiMPhisCos0Phi: public DVCSAutDVCSSinPhiMPhis,
+        public MathIntegratorModule {
+
+public:
+
+    /**
+     * Unique ID to automatically register the class in the registry.
+     */
+    static const unsigned int classId;
+
+    /**
+     * Constructor.
+     * @param className Name of class.
+     */
+    DVCSAutDVCSSinPhiMPhisCos0Phi(const std::string &className);
+
+    /**
+     * Destructor.
+     */
+    virtual ~DVCSAutDVCSSinPhiMPhisCos0Phi();
+
+    virtual DVCSAutDVCSSinPhiMPhisCos0Phi* clone() const;
+    virtual void configure(const ElemUtils::Parameters &parameters);
+    virtual double computeFourierObservable();
+
+protected:
+
+    /**
+     * Copy constructor.
+     * @param other Object to be copied.
+     */
+    DVCSAutDVCSSinPhiMPhisCos0Phi(const DVCSAutDVCSSinPhiMPhisCos0Phi &other);
+
+    /**
+     * Functor to perform the integration.
+     */
+    NumA::FunctionType1D* m_pFunctionToIntegrateObservable;
+
+    /**
+     * Function to be integrated.
+     */
+    virtual double functionToIntegrateObservable(double x,
+            std::vector<double> params);
+
+    /**
+     * Initialize functors.
+     */
+    void initFunctorsForIntegrations();
+};
+
+} /* namespace PARTONS */
+
+#endif /* DVCSAUTDVCSSINPHIMPHISCOS0PHI_H */

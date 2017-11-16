@@ -1,10 +1,10 @@
-#ifndef DVCSAUTSINPHIMPHISCOS0PHI_H
-#define DVCSAUTSINPHIMPHISCOS0PHI_H
+#ifndef DVCSALTINTCOSPHIMPHISCOS0PHI_H
+#define DVCSALTINTCOSPHIMPHISCOS0PHI_H
 
 /**
- * @file DVCSAutSinPhiMPhisCos0Phi.h
- * @author Luca COLANERI (IPNO)
- * @date July 18, 2016
+ * @file DVCSAltIntCosPhiMPhisCos0Phi.h
+ * @author Pawel Sznajder (NCBJ, Warsaw)
+ * @date November 16, 2017
  * @version 1.0
  */
 
@@ -13,26 +13,26 @@
 #include <vector>
 
 #include "../../../MathIntegratorModule.h"
-#include "DVCSAutSinPhiMPhis.h"
+#include "DVCSAltIntCosPhiMPhis.h"
 
 namespace PARTONS {
 
 /**
- * @class DVCSAutSinPhiMPhisCos0Phi
+ * @class DVCSAltIntCosPhiMPhisCos0Phi
  *
- * @brief 0th Fourier moment of transverse target beam asymmetry for negative beam charge.
+ * @brief 0th Fourier moment of longitudinal beam transverse target asymmetry (interference part).
  *
  * Definition:<br>
  *
  * \f$ \displaystyle
- * A_{UT}^{\sin\left(\phi-\phi_{S}\right)\cos\left(0\phi\right)}\left(x_{B}, t, Q^2\right) =
+ * A_{LT, Int}^{\cos\left(\phi-\phi_{S}\right)\cos\left(0\phi\right)}\left(x_{B}, t, Q^2\right) =
  * \frac{1}{2\pi}
- * \int_{0}^{2\pi} \mathrm{d}\phi A_{UT}^{\sin\left(\phi-\phi_{S}\right)}\left(x_{B}, t, Q^2, \phi\right) \cos\left(0\phi\right) \, ,
+ * \int_{0}^{2\pi} \mathrm{d}\phi A_{LT, Int}^{\cos\left(\phi-\phi_{S}\right)}\left(x_{B}, t, Q^2, \phi\right) \cos\left(0\phi\right) \, ,
  * \f$
  *
- * where \f$A_{UT}^{\sin\left(\phi-\phi_{S}\right)}\left(x_{B}, t, Q^2, \phi\right)\f$ is defined in DVCSAutSinPhiMPhis.
+ * where \f$A_{LT, Int}^{\cos\left(\phi-\phi_{S}\right)}\left(x_{B}, t, Q^2, \phi\right)\f$ is defined in DVCSAltIntCosPhiMPhis.
  */
-class DVCSAutSinPhiMPhisCos0Phi: public DVCSAutSinPhiMPhis,
+class DVCSAltIntCosPhiMPhisCos0Phi: public DVCSAltIntCosPhiMPhis,
         public MathIntegratorModule {
 
 public:
@@ -46,14 +46,14 @@ public:
      * Constructor.
      * @param className Name of class.
      */
-    DVCSAutSinPhiMPhisCos0Phi(const std::string &className);
+    DVCSAltIntCosPhiMPhisCos0Phi(const std::string &className);
 
     /**
      * Destructor.
      */
-    virtual ~DVCSAutSinPhiMPhisCos0Phi();
+    virtual ~DVCSAltIntCosPhiMPhisCos0Phi();
 
-    virtual DVCSAutSinPhiMPhisCos0Phi* clone() const;
+    virtual DVCSAltIntCosPhiMPhisCos0Phi* clone() const;
     virtual void configure(const ElemUtils::Parameters &parameters);
     virtual double computeFourierObservable();
 
@@ -63,7 +63,7 @@ protected:
      * Copy constructor.
      * @param other Object to be copied.
      */
-    DVCSAutSinPhiMPhisCos0Phi(const DVCSAutSinPhiMPhisCos0Phi &other);
+    DVCSAltIntCosPhiMPhisCos0Phi(const DVCSAltIntCosPhiMPhisCos0Phi &other);
 
     /**
      * Functor to perform the integration.
@@ -84,4 +84,4 @@ protected:
 
 } /* namespace PARTONS */
 
-#endif /* DVCSAUTSINPHIMPHISCOS0PHI_H */
+#endif /* DVCSALTINTCOSPHIMPHISCOS0PHI_H */

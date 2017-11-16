@@ -60,7 +60,7 @@ void DVCSAcCos0Phi::configure(const ElemUtils::Parameters &parameters) {
 
 double DVCSAcCos0Phi::functionToIntegrateObservable(double x,
         std::vector<double> params) {
-    return DVCSAc::computePhiObservable(x);
+    return DVCSAc::computePhiObservable(x); // * cos(0 * x);
 }
 
 double DVCSAcCos0Phi::computeFourierObservable() {
