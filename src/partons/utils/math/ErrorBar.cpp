@@ -2,13 +2,12 @@
 
 namespace PARTONS {
 
-
 ErrorBar::ErrorBar() :
-        m_upperBound(0.), m_lowerBound(0.) {
+        m_lowerBound(0.), m_upperBound(0.) {
 }
 
-ErrorBar::ErrorBar(double upperBound, double lowerBound) :
-        m_upperBound(upperBound), m_lowerBound(lowerBound) {
+ErrorBar::ErrorBar(double lowerBound, double upperBound) :
+        m_lowerBound(lowerBound), m_upperBound(upperBound) {
 }
 
 ErrorBar::~ErrorBar() {

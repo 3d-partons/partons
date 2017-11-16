@@ -29,25 +29,15 @@ public:
     /**
      * Assignment constructor.
      *
-     * @param upperBound Upper bound of the uncertainty.
      * @param lowerBound Lower bound of the uncertainty.
+     * @param upperBound Upper bound of the uncertainty.
      */
-    ErrorBar(double upperBound, double lowerBound);
+    ErrorBar(double lowerBound, double upperBound);
 
     /**
      * Destructor.
      */
     virtual ~ErrorBar();
-
-    /**
-     * Get upper bound of the uncertainty.
-     */
-    double getUpperBound() const;
-
-    /**
-     * Set upper bound of the uncertainty.
-     */
-    void setUpperBound(double upperBound);
 
     /**
      * Get lower bound of the uncertainty.
@@ -59,18 +49,27 @@ public:
      */
     void setLowerBound(double lowerBound);
 
-protected:
+    /**
+     * Get upper bound of the uncertainty.
+     */
+    double getUpperBound() const;
 
     /**
-     * Upper bound of the uncertainty.
+     * Set upper bound of the uncertainty.
      */
-    double m_upperBound;
+    void setUpperBound(double upperBound);
+
+protected:
 
     /**
      * Lower bound of the uncertainty.
      */
     double m_lowerBound;
 
+    /**
+     * Upper bound of the uncertainty.
+     */
+    double m_upperBound;
 };
 
 } /* namespace PARTONS */

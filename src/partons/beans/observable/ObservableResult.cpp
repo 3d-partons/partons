@@ -8,22 +8,18 @@
 
 namespace PARTONS {
 
-
 const std::string ObservableResult::PARAMETER_NAME_OBSERVABLE_VALUE =
         "observable value";
 
-const std::string ObservableResult::PARAMETER_NAME_TOTAL_ERROR = "total error";
-
 ObservableResult::ObservableResult() :
-        Result("ObservableResult"), m_observableName("UNDEFINED"), m_value(0.), m_totalError(
-                0.), m_observableType(ObservableType::UNDEFINED) {
+        Result("ObservableResult"), m_observableName("UNDEFINED"), m_value(0.), m_observableType(
+                ObservableType::UNDEFINED) {
 }
 
 ObservableResult::ObservableResult(const std::string &observableName,
         double value) :
         Result("ObservableResult"), m_observableName(observableName), m_value(
-                value), m_totalError(0.), m_observableType(
-                ObservableType::UNDEFINED) {
+                value), m_observableType(ObservableType::UNDEFINED) {
 }
 
 ObservableResult::~ObservableResult() {
@@ -53,14 +49,6 @@ void ObservableResult::compare(ComparisonReport &rootComparisonReport,
             ElemUtils::Formatter() << parentObjectInfo
                     << this->getObjectInfo());
     rootComparisonReport.addComparisonData(xb_comparisonData);
-
-    ComparisonData total_error_comparisonData = CompareUtils::compareDouble(
-            ObservableResult::PARAMETER_NAME_TOTAL_ERROR, getTotalError(),
-            referenceObject.getTotalError(),
-            rootComparisonReport.getTolerances(),
-            ElemUtils::Formatter() << parentObjectInfo
-                    << this->getObjectInfo());
-    rootComparisonReport.addComparisonData(total_error_comparisonData);
 }
 
 // ##### GETTERS & SETTERS #####
@@ -89,8 +77,8 @@ const ErrorBar& ObservableResult::getSystError() const {
     return m_systError;
 }
 
-double ObservableResult::getTotalError() const {
-    return m_totalError;
+const ErrorBar& ObservableResult::getScaleError() const {
+    return m_scaleError;
 }
 
 double ObservableResult::getValue() const {
@@ -109,8 +97,8 @@ void ObservableResult::setSystError(const ErrorBar& systError) {
     m_systError = systError;
 }
 
-void ObservableResult::setTotalError(double totalError) {
-    m_totalError = totalError;
+void ObservableResult::setScaleError(const ErrorBar& scaleError) {
+    m_scaleError = scaleError;
 }
 
 void ObservableResult::setValue(double value) {

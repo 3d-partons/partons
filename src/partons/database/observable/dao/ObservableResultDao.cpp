@@ -16,7 +16,6 @@
 
 namespace PARTONS {
 
-
 ObservableResultDao::ObservableResultDao() :
         BaseObject("ObservableResultDao") {
 }
@@ -26,9 +25,9 @@ ObservableResultDao::~ObservableResultDao() {
 
 int ObservableResultDao::insert(const std::string& observableName,
         double observableValue, double statErrorLB, double statErrorUB,
-        double systErrorLB, double systErrorUB, double errorTotal,
-        const std::string &computationModuleName, int observableTypeId,
-        int kinematicId, int computationId) const {
+        double systErrorLB, double systErrorUB, double scaleErrorLB,
+        double scaleErrorUB, const std::string &computationModuleName,
+        int observableTypeId, int kinematicId, int computationId) const {
 
     int result = -1;
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
@@ -41,7 +40,8 @@ int ObservableResultDao::insert(const std::string& observableName,
     names.push_back("stat_error_ub");
     names.push_back("syst_error_lb");
     names.push_back("syst_error_ub");
-    names.push_back("total_error");
+    names.push_back("scale_error_lb");
+    names.push_back("scale_error_ub");
     names.push_back(Database::COLUMN_NAME_COMPUTATION_MODULE_NAME);
     names.push_back("observable_type_id");
     names.push_back(Database::COLUMN_NAME_OBSERVABLE_KINEMATIC_ID);
@@ -53,7 +53,8 @@ int ObservableResultDao::insert(const std::string& observableName,
     values.push_back(":stat_error_ub");
     values.push_back(":syst_error_lb");
     values.push_back(":syst_error_ub");
-    values.push_back(":total_error");
+    values.push_back(":scale_error_lb");
+    values.push_back(":scale_error_ub");
     values.push_back(":computationModuleName");
     values.push_back(":observableTypeId");
     values.push_back(":observable_kinematic_id");
@@ -73,12 +74,13 @@ int ObservableResultDao::insert(const std::string& observableName,
     query.bindValue(QString(values[3].c_str()), statErrorUB);
     query.bindValue(QString(values[4].c_str()), systErrorLB);
     query.bindValue(QString(values[5].c_str()), systErrorUB);
-    query.bindValue(QString(values[6].c_str()), errorTotal);
-    query.bindValue(QString(values[7].c_str()),
+    query.bindValue(QString(values[6].c_str()), scaleErrorLB);
+    query.bindValue(QString(values[7].c_str()), scaleErrorUB);
+    query.bindValue(QString(values[8].c_str()),
             QString(computationModuleName.c_str()));
-    query.bindValue(QString(values[8].c_str()), observableTypeId);
-    query.bindValue(QString(values[9].c_str()), kinematicId);
-    query.bindValue(QString(values[10].c_str()), computationId);
+    query.bindValue(QString(values[9].c_str()), observableTypeId);
+    query.bindValue(QString(values[10].c_str()), kinematicId);
+    query.bindValue(QString(values[11].c_str()), computationId);
 
     names.clear();
     values.clear();
@@ -153,7 +155,8 @@ void ObservableResultDao::fillObservableResultList(
     int field_stat_error_ub = query.record().indexOf("stat_error_ub");
     int field_syst_error_lb = query.record().indexOf("syst_error_lb");
     int field_syst_error_ub = query.record().indexOf("syst_error_ub");
-    int field_total_error = query.record().indexOf("total_error");
+    int field_scale_error_lb = query.record().indexOf("scale_error_lb");
+    int field_scale_error_ub = query.record().indexOf("scale_error_ub");
     int field_computation_module_name = query.record().indexOf(
             "computation_module_name");
     int field_observable_type_id = query.record().indexOf("observable_type_id");
@@ -161,35 +164,38 @@ void ObservableResultDao::fillObservableResultList(
             QString(Database::COLUMN_NAME_OBSERVABLE_KINEMATIC_ID.c_str()));
 
     while (query.next()) {
+
         int id = query.value(field_id).toInt();
         std::string observable_name =
                 query.value(field_observable_name).toString().toStdString();
         double observable_value =
                 query.value(field_observable_value).toDouble();
-        int computation_module_name =
-                query.value(field_computation_module_name).toInt();
-
-        ErrorBar statError(query.value(field_stat_error_ub).toDouble(),
-                query.value(field_stat_error_lb).toDouble());
-        ErrorBar systError(query.value(field_syst_error_ub).toDouble(),
-                query.value(field_syst_error_lb).toDouble());
+        ErrorBar statError(query.value(field_stat_error_lb).toDouble(),
+                query.value(field_stat_error_ub).toDouble());
+        ErrorBar systError(query.value(field_syst_error_lb).toDouble(),
+                query.value(field_syst_error_ub).toDouble());
+        ErrorBar scaleError(query.value(field_scale_error_lb).toDouble(),
+                query.value(field_scale_error_ub).toDouble());
+        std::string computation_module_name = query.value(
+                field_computation_module_name).toString().toStdString();
+        ObservableType::Type observable_type =
+                static_cast<ObservableType::Type>(query.value(
+                        field_observable_type_id).toInt());
 
         //TODO create ResultInfo, Computation, ...
 
         ObservableResult observableResult;
 
+        observableResult.setIndexId(id);
         observableResult = ObservableResult(observable_name, observable_value);
         observableResult.setStatError(statError);
         observableResult.setSystError(systError);
-        observableResult.setTotalError(
-                query.value(field_total_error).toDouble());
-        observableResult.setObservableType(
-                static_cast<ObservableType::Type>(query.value(
-                        field_observable_type_id).toInt()));
+        observableResult.setScaleError(scaleError);
+        observableResult.setComputationModuleName(computation_module_name);
         observableResult.setKinematic(
                 m_observableKinematicDao.getKinematicById(
                         query.value(field_kinematic_id).toInt()));
-        observableResult.setIndexId(id);
+        observableResult.setObservableType(observable_type);
 
         observableResultList.add(observableResult);
     }
