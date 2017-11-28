@@ -1,5 +1,5 @@
-#ifndef ACTIVE_FLAVORS_THRESHOLDS_QUARK_MASSES_H
-#define ACTIVE_FLAVORS_THRESHOLDS_QUARK_MASSES_H
+#ifndef ACTIVE_FLAVORS_THRESHOLDS_QUARK_MASSES_MODULE_H
+#define ACTIVE_FLAVORS_THRESHOLDS_QUARK_MASSES_MODULE_H
 
 /**
  * @file ActiveFlavorsThresholdsQuarkMasses.h
@@ -58,7 +58,8 @@ protected:
      * Copy constructor.
      * @param other Object to be copied.
      */
-    ActiveFlavorsThresholdsQuarkMasses(const ActiveFlavorsThresholdsQuarkMasses &other);
+    ActiveFlavorsThresholdsQuarkMasses(
+            const ActiveFlavorsThresholdsQuarkMasses &other);
 
     virtual void initModule();
     virtual void isModuleWellConfigured();
@@ -66,4 +67,4 @@ protected:
 
 } /* namespace PARTONS */
 
-#endif /* ACTIVE_FLAVORS_THRESHOLDS_QUARK_MASSES_H */
+#endif /* ACTIVE_FLAVORS_THRESHOLDS_QUARK_MASSES_MODULE_H */
