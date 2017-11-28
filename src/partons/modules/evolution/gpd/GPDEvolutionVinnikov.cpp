@@ -108,16 +108,25 @@ void GPDEvolutionVinnikov::isModuleWellConfigured() {
             && m_currentGPDComputeType != GPDType::Et) {
         throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
-                        << "Evolution not implemented for GPD type "
+                        << "This evolution module is not implemented for GPD type "
                         << GPDType(m_currentGPDComputeType).toString());
     }
 
     //check n flavors
     if (m_nFlavors != m_nFlavors_ref) {
         throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter() << "nFlavors at muF2, " << m_nFlavors
-                        << ", must be the same as that for muF2_ref, "
+                ElemUtils::Formatter()
+                        << "This evolution module is not able to add or drop flavors because of the scale change, therefore nf at muF2 = "
+                        << m_nFlavors
+                        << " must be the same as that for muF2_ref = "
                         << m_nFlavors_ref);
+    }
+
+    if (m_nFlavors != 3) {
+        warn(__func__,
+                ElemUtils::Formatter()
+                        << "This evolution module assumes explicitly nf = 3 in the kernel expressions while you are training to run it with nf = "
+                        << m_nFlavors);
     }
 }
 
