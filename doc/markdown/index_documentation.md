@@ -10,7 +10,7 @@
 
 %PARTONS provides a necessary bridge between models of GPDs and experimental data measured in various exclusive channels, like Deeply Virtual Compton Scattering (DVCS) and Hard Exclusive Meson Production (HEMP). The experimental programme devoted to study GPDs has been carrying out by several experiments, like HERMES at DESY (closed), COMPASS at CERN, Hall-A and CLAS at JLab. GPD subject will be also a key component of the physics case for the expected Electron Ion Collider (EIC).
 
-%PARTONS is useful to theorists to develop new models, phenomenologists to interpret existing measurements and to experimentalists to design new experiments. A detailed description of the project can be found [here](https://arxiv.org/abs/1512.06174).
+%PARTONS is useful to theorists to develop new models, phenomenologists to interpret existing measurements and to experimentalists to design new experiments.
 
 <hr>
 
