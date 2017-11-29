@@ -337,10 +337,15 @@ void GPDModule::prepareSubModules(
             GPDEvolutionModule::GPD_EVOLUTION_MODULE_CLASS_NAME);
 
     if (it != subModulesData.end()) {
+
         if (m_pGPDEvolutionModule) {
+
             setEvolQcdModule(0);
+            m_pGPDEvolutionModule = 0;
         }
+
         if (!m_pGPDEvolutionModule) {
+
             m_pGPDEvolutionModule =
                     Partons::getInstance()->getModuleObjectFactory()->newGPDEvolutionModule(
                             (it->second).getModuleClassName());

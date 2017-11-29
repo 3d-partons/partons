@@ -172,19 +172,6 @@ public:
                     List<GPDType>()) const;
 
     /**
-     * Computes GPD model at specific kinematic with a QCD evolution model.
-     *
-     * @param gpdKinematic GPD kinematic.
-     * @param pGPDModule GPDModule to use.
-     * @param pEvolQCDModule Evolution module to use.
-     * @param gpdType List of GPDType to compute. Default: all the GPDTypes available with the GPDModule.
-     * @return GPDResult.
-     */
-    GPDResult computeGPDModelWithEvolution(const GPDKinematic &gpdKinematic,
-            GPDModule* pGPDModule, GPDEvolutionModule* pEvolQCDModule,
-            GPDType::Type gpdType = GPDType::ALL);
-
-    /**
      * Computes several GPDModels at specific kinematics.
      *
      * @param gpdKinematic GPD kinematic.

@@ -186,11 +186,18 @@ void GPDEvolutionModule::configure(const ElemUtils::Parameters &parameters) {
     if (parameters.isAvailable(
             PerturbativeQCDOrderType::PARAMETER_NAME_PERTURBATIVE_QCD_ORDER_TYPE)) {
 
-        //set
-        m_qcdOrderType = PerturbativeQCDOrderType(
-                parameters.getLastAvailable().getString()).getType();
+        // try to set m_qcdOrderType by standard way
+        try {
+            m_qcdOrderType =
+                    static_cast<PerturbativeQCDOrderType::Type>(parameters.getLastAvailable().toUInt());
 
-        //info
+        } catch (const std::exception &e) {
+
+            // if an exception is raised it means that it's a string configuration value
+            m_qcdOrderType = PerturbativeQCDOrderType(
+                    parameters.getLastAvailable().getString()).getType();
+        }
+
         info(__func__,
                 ElemUtils::Formatter()
                         << PerturbativeQCDOrderType::PARAMETER_NAME_PERTURBATIVE_QCD_ORDER_TYPE
@@ -227,6 +234,7 @@ void GPDEvolutionModule::prepareSubModules(
         //reset
         if (m_pRunningAlphaStrong != 0) {
             setRunningAlphaStrongModule(0);
+            m_pRunningAlphaStrong = 0;
         }
 
         //set
@@ -261,6 +269,7 @@ void GPDEvolutionModule::prepareSubModules(
         //reset
         if (m_pActiveFlavorsModule != 0) {
             setActiveFlavorsModule(0);
+            m_pActiveFlavorsModule = 0;
         }
 
         //set
@@ -388,11 +397,11 @@ PartonDistribution GPDEvolutionModule::compute(double x, double xi, double t,
     //pre-compute (set internal variables, etc.)
     preCompute(x, xi, t, MuF2, MuR2, pGPDModule, gpdType);
 
-    //check if inut data are fine
-    isModuleWellConfigured();
-
     //initialize
     initModule();
+
+    //check if input data are fine
+    isModuleWellConfigured();
 
     //do the evolution for nf given by the target scale
     std::map<QuarkNonSingletCombination::Type, double> NSDiff;

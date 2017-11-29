@@ -28,8 +28,6 @@ namespace PARTONS {
 
 
 const std::string GPDService::GPD_SERVICE_COMPUTE_GPD_MODEL = "computeGPDModel";
-const std::string GPDService::GPD_SERVICE_COMPUTE_GPD_MODEL_WITH_EVOLUTION =
-        "computeGPDModelWithEvolution";
 const std::string GPDService::GPD_SERVICE_COMPUTE_LIST_OF_GPD_MODEL =
         "computeListOfGPDModel";
 const std::string GPDService::GPD_SERVICE_COMPUTE_MANY_KINEMATIC_ONE_MODEL =
@@ -204,20 +202,6 @@ GPDResult GPDService::computeGPDModel(const GPDKinematic &gpdKinematic,
     return gpdResult;
 }
 
-GPDResult GPDService::computeGPDModelWithEvolution(
-        const GPDKinematic &gpdKinematic, GPDModule* pGPDModule,
-        GPDEvolutionModule* pEvolQCDModule, GPDType::Type gpdType) {
-    pGPDModule->setEvolQcdModule(pEvolQCDModule);
-
-    GPDResult gpdResult;
-    gpdResult.addPartonDistribution(gpdType,
-            pGPDModule->compute(gpdKinematic.getX(), gpdKinematic.getXi(),
-                    gpdKinematic.getT(), gpdKinematic.getMuF2(),
-                    gpdKinematic.getMuR2(), gpdType, true));
-
-    return gpdResult;
-}
-
 List<GPDResult> GPDService::computeListOfGPDModel(
         const GPDKinematic &gpdKinematic,
         std::vector<GPDModule*> &listOfGPDToCompute) {
@@ -335,8 +319,6 @@ List<GPDResult> GPDService::computeManyKinematicOneModel(
 //                                ModuleObject::CLASS_NAME).getString());
 //        pGPDModule->configure(task.getLastAvailableParameters());
 //    }
-//
-////TODO how to deal with evolution module ?
 //
 ////TODO how to handle many GPD module ?
 //

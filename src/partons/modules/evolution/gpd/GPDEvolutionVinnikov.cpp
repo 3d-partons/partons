@@ -196,9 +196,20 @@ void GPDEvolutionVinnikov::initModule() {
 
             if (iGrid >= 2 * m_gridSize) {
 
-                //get singlet combination and gluons
-                m_S.push_back(getS(m_nFlavors_ref, partonDistribution));
-                m_G.push_back(getG(partonDistribution));
+                //get single ad gluon
+                double S = getS(m_nFlavors_ref, partonDistribution);
+                double G = getG(partonDistribution);
+
+                //check if valid
+                checkIfResultValid(m_NSXGrid.at(iGrid), S);
+                checkIfResultValid(m_NSXGrid.at(iGrid), G);
+
+                if (iGrid >= 2 * m_gridSize) {
+
+                    //get singlet combination and gluons
+                    m_S.push_back(S);
+                    m_G.push_back(G);
+                }
             }
         }
     }
