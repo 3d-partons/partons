@@ -17,19 +17,15 @@ namespace PARTONS {
 
 class ActiveFlavorsThresholdsModule;
 class BaseObjectFactory;
-class DoubleDistributionModule;
 class DVCSConvolCoeffFunctionModule;
 class DVCSProcessModule;
-class GapEquationSolverModule;
 class GPDBorderFunctionModule;
 class GPDEvolutionModule;
 class GPDModule;
 class GPDSubtractionConstantModule;
-class IncompleteGPDModule;
 class ModuleObject;
 class Observable;
 class ProcessModule;
-class RadonInverseModule;
 class RunningAlphaStrongModule;
 class ScalesModule;
 class XiConverterModule;
@@ -59,46 +55,6 @@ public:
      * @return ModuleObject pointer.
      */
     ModuleObject* newModuleObject(unsigned int classId);
-
-    /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a IncompleteGPDModule.
-     * @param classId Unique identifier of last child class.
-     * @return IncompleteGPDModule pointer.
-     */
-    IncompleteGPDModule* newIncompleteGPDModule(unsigned int classId);
-    /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a IncompleteGPDModule.
-     * @param className Name of last child class.
-     * @return IncompleteGPDModule pointer.
-     */
-    IncompleteGPDModule* newIncompleteGPDModule(const std::string & className);
-
-    /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a RadonInverseModule.
-     * @param classId Unique identifier of last child class.
-     * @return RadonInverseModule pointer.
-     */
-    RadonInverseModule* newRadonInverseModule(unsigned int classId);
-    /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a RadonInverseModule.
-     * @param className Name of last child class.
-     * @return RadonInverseModule pointer.
-     */
-    RadonInverseModule* newRadonInverseModule(const std::string & className);
-
-    /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a DoubleDistributionModule.
-     * @param classId Unique identifier of last child class.
-     * @return DoubleDistributionModule pointer.
-     */
-    DoubleDistributionModule* newDoubleDistributionModule(unsigned int classId);
-    /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a DoubleDistributionModule.
-     * @param className Name of last child class.
-     * @return DoubleDistributionModule pointer.
-     */
-    DoubleDistributionModule* newDoubleDistributionModule(
-            const std::string & className);
 
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a GPDEvolutionModule.
@@ -248,20 +204,6 @@ public:
      * @return XiConverterModule pointer.
      */
     XiConverterModule* newXiConverterModule(const std::string &className);
-
-    /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a GapEquationSolverModule.
-     * @param classId Unique identifier of last child class.
-     * @return GapEquationSolverModule pointer.
-     */
-    GapEquationSolverModule* newGapEquationSolverModule(unsigned int classId);
-    /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a GapEquationSolverModule.
-     * @param className Name of last child class.
-     * @return GapEquationSolverModule pointer.
-     */
-    GapEquationSolverModule* newGapEquationSolverModule(
-            const std::string &className);
 
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a Observable.
