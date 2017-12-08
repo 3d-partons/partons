@@ -14,14 +14,11 @@ namespace PARTONS {
 
 class AutomationService;
 class BaseObjectRegistry;
-class ComparisonService;
 class CryptographicHashService;
-class DoubleDistributionService;
 class ConvolCoeffFunctionService;
 class GPDService;
 class ObservableService;
 class ServiceObject;
-class VizualisationService;
 
 /**
  * @class ServiceObjectRegistry
@@ -38,9 +35,6 @@ public:
     GPDService* getGPDService() const;
     ConvolCoeffFunctionService* getConvolCoeffFunctionService() const;
     ObservableService* getObservableService() const;
-    VizualisationService* getVizualisationService() const;
-    DoubleDistributionService* getDoubleDistributionService() const;
-    ComparisonService* getComparisonService() const;
     AutomationService* getAutomationService() const;
     CryptographicHashService* getCryptographicHashService() const;
 
