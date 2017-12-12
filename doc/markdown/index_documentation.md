@@ -66,9 +66,8 @@ Here you can find our publications and the list of talks given on behalf of the 
 
 # Acknowledgments {#mainpage_acknow}
 
-The work on %PARTONS has been supported by the following grants: 
-* French National Research Agency, Commissariat l’Energie Atomique et aux Energies Alternatives, grant no. 12-MONU-0008-01;
-* U.S. Department of Energy, Office of Science, Office of Nuclear Physics, contract no. DE-AC02-06CH11357.
+The work on %PARTONS has been supported by the following grant: 
+* French National Research Agency, Commissariat l’Energie Atomique et aux Energies Alternatives, grant no. 12-MONU-0008-01.
 
 <hr>
 
