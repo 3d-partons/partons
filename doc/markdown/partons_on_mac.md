@@ -6,6 +6,8 @@
 
 This tutorial is for building %PARTONS on Mac OS. It was tested on Sierra.
 
+<strong>@color{red,Unfortunately\, %PARTONS doesn't run on Mac\, even though it builds. This needs to be debugged!}</strong>
+
 <hr>
 
 # Dependencies {#mac_dependencies}
