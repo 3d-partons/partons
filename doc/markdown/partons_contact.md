@@ -12,7 +12,9 @@ Problems with installation and usage: [partons@cea.fr](mailto:partons@cea.fr).
 
 # Newsletter {#contact_newsletter}
 
-Sign up for newsletter to get information on the new releases by sending email to <a href="mailto:herve.moutarde@cea.fr?subject=PARTONS newsletter subscribe request">Hervé Moutarde</a> with this subject (no additional text needed): _%PARTONS newsletter subscribe request_.
+Sign up to the newsletter to be informed on the new releases by sending an email to [sympa@saxifrage.saclay.cea.fr](mailto:sympa@saxifrage.saclay.cea.fr?subject=SUBSCRIBE partons-users) with this subject (no additional text needed): _SUBSCRIBE partons-users_.
+
+To unsubscribe, use [*UNSUBSCRIBE*](mailto:sympa@saxifrage.saclay.cea.fr?subject=UNSUBSCRIBE partons-users) instead in the subject.
 
 <hr>
 
