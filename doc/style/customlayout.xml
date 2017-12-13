@@ -26,7 +26,7 @@
         <tab type="usergroup" title="Installation">
             <tab type="user" url="../../../partons/doc/html/vm.html" title="Virtual machine"/>
             <tab type="user" url="../../../partons/doc/html/linux.html" title="GNU/Linux"/>
-            <tab type="user" url="../../../partons/doc/html/mac.html" title="Mac OS"/>
+<!--             <tab type="user" url="../../../partons/doc/html/mac.html" title="Mac OS"/> -->
             <tab type="user" url="../../../partons/doc/html/config.html" title="Configuration"/>
             <tab type="user" url="../../../partons/doc/html/eclipse.html" title="Eclipse CDT IDE"/>
         </tab>

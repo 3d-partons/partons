@@ -152,7 +152,7 @@ void Partons::printVersion() const {
     m_pLoggerManager->info("Partons", __func__,
             ElemUtils::Formatter() << "PARTONS " << PARTONS_VERSION_MAJOR << "."
                     << PARTONS_VERSION_MINOR
-                    << " (www.partons.cea.fr) distributed under GNU Public License");
+                    << " (http://partons.cea.fr) distributed under GNU Public License");
     m_pLoggerManager->info("Partons", __func__,
             ElemUtils::Formatter() << "Built using Elementary-Utils "
                     << ELEMENTARY_UTILS_VERSION_MAJOR << "."

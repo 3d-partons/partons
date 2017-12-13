@@ -18,14 +18,14 @@
 
 Here you can learn how to get your own version of %PARTONS. We offer two ways:
 * You can use our provided virtual machine with an out-of-the-box %PARTONS runtime and development environment. This is the easiest way to start your experience with %PARTONS.
-* You can also build %PARTONS by your own on either GNU/Linux or Mac OS X. This is useful if you want to have %PARTONS on your computer without using the virtualization technology or if you want to use %PARTONS on computing farms. 
+* You can also build %PARTONS by your own on <!-- either --> GNU/Linux<!--  or Mac OS X -->. This is useful if you want to have %PARTONS on your computer without using the virtualization technology or if you want to use %PARTONS on computing farms. 
 
 [Download page](@ref download).
 
 Tutorials:
 * [Using PARTONS with our provided Virtual Machine](@ref vm).
-* [Using PARTONS on GNU/Linux](@ref linux).
-* [Using PARTONS on Mac OS X](@ref mac).
+* [Using PARTONS on GNU/Linux](@ref linux). <!-- 
+* [Using PARTONS on Mac OS X](@ref mac).-->
 
 <hr>
 
@@ -64,17 +64,18 @@ Here you can find our publications and the list of talks given on behalf of the 
 
 <hr>
 
+<!--
 # Acknowledgments {#mainpage_acknow}
 
-The work on %PARTONS has been supported by the following grants: 
-* French National Research Agency, Commissariat l’Energie Atomique et aux Energies Alternatives, grant no. 12-MONU-0008-01;
-* U.S. Department of Energy, Office of Science, Office of Nuclear Physics, contract no. DE-AC02-06CH11357.
+The work on %PARTONS has been supported by the following grant: 
+* French National Research Agency, Commissariat l’Energie Atomique et aux Energies Alternatives, grant no. 12-MONU-0008-01.
 
 <hr>
+-->
 
 # License {#mainpage_licences}
 
-The following licenses apply: [elementary-utils](https://drf-gitlab.cea.fr/partons/core/elementary-utils) sub-project is under [Apache](https://www.apache.org/licenses/) license, while [numa](https://drf-gitlab.cea.fr/partons/core/numa), [partons](https://drf-gitlab.cea.fr/partons/core/partons) and [partons-example](https://drf-gitlab.cea.fr/partons/core/partons-example) are distributed under the [GPL](https://www.gnu.org/licenses/gpl.html) license. Please, respect the licensing! 
+The following licenses apply: [elementary-utils](https://drf-gitlab.cea.fr/partons/core/elementary-utils) sub-project is under the [Apache](https://www.apache.org/licenses/) license, while [numa](https://drf-gitlab.cea.fr/partons/core/numa), [partons](https://drf-gitlab.cea.fr/partons/core/partons) and [partons-example](https://drf-gitlab.cea.fr/partons/core/partons-example) are distributed under the [GPL](https://www.gnu.org/licenses/gpl.html) license. Please, respect the licensing! 
 
 <hr>
 
