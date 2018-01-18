@@ -12,7 +12,7 @@
 # Talks {#tandp_talks} 
 
 * 2018 
-   * C. Mezrag, *%Transverse Polarized Target TCS from PARTONS view*, NPS/CPS Collaboration Meeting, Jefferson Lab., Newport News, VA, USA, January 23rd, 2018 
+   * C. Mezrag, *Transverse Polarized Target TCS from %PARTONS view*, NPS/CPS Collaboration Meeting, Jefferson Lab., Newport News, VA, USA, January 23rd, 2018 
  
 
 * 2017
@@ -27,7 +27,7 @@
    * H. Moutarde, *[Nucleon tomography: experimental data fits](https://drive.google.com/file/d/0B182F75CNFxBcWp6eWFNRTQyTlU/view)*, Sixth International Workshop on Non Perturbative Aspects of Quantum Field Theories, Tuxtla Gutiérrez, Chiapas, México, April 28, 2017
    * P. Sznajder, *%PARTONS project and fits to high precision DVCS data*, 25th International Workshop on Deep Inelastic Scattering and Related Topics (DIS'17), Birmingham, UK, April 5, 2017 
    * H. Moutarde, *[%PARTONS: a versatile framework for the phenomenology of GPDs](https://www.jlab.org/indico/event/209/contribution/12/material/slides/0.pdf)*, 3D Nucleon Tomography Workshop, Jefferson Lab, Newport News, VA, USA, March 16, 2017
-   * C. Mezrag, *GPDs and the %PARTON software project*, 7th Workshop of the APS Topical group on Hadronic Physics, Washington, DC, USA, February 3, 2017
+   * C. Mezrag, *GPDs and the %PARTONS software project*, 7th Workshop of the APS Topical group on Hadronic Physics, Washington, DC, USA, February 3, 2017
 
 * 2016
    * H. Moutarde, *Nucleon tomography: imaging the origin of mass*, Seminar of the Department of Atomic, Molecular and Nuclear Physics, Sevilla, Spain, October 26, 2016	
