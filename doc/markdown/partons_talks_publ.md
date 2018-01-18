@@ -11,8 +11,12 @@
 
 # Talks {#tandp_talks} 
 
+* 2018 
+   * C. Mezrag, *%Transverse Polarized Target TCS from PARTONS view*, NPS/CPS Collaboration Meeting, Jefferson Lab., Newport News, VA, USA, January 23rd, 2018 
+ 
+
 * 2017
-   * C. Mezrag, *%PARTONS project: status, features and perspectives*, 5th International Workshop on Transverse polarization phenomena in Hard Processes, Frascati, Italy, December 11-15, 2017 **FORESEEN** 
+   * C. Mezrag, *%PARTONS project: status, features and perspectives*, 5th International Workshop on Transverse polarization phenomena in Hard Processes, Frascati, Italy, December 11-15, 2017 
    * P. Sznajder, *%PARTONS project and fits to high precision DVCS data*, XVII International Conference on Hadron Spectroscopy and structure (HADRON'17), Salamanca, Spain, September 28, 2017
    * C. Mezrag, *From Baryon Distributions Amplitudes to Generalised Partons Distributions*, Spatial and Momentum Tomography of Hadrons and Nuclei, Seattle, WA, USA, August 30, 2017
    * J. Wagner, *New exclusive processes and the PARTONs project*, Spatial and Momentum Tomography of Hadrons and Nuclei, Seattle, WA, USA, August 28, 2017
