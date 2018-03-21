@@ -1,7 +1,5 @@
 # Download %PARTONS {#download}
 
-<strong>@color{red,This page is a work in progress. The code is not yet available\, so the links are not working yet.}</strong>
-
 # Source code {#download_source}
 
 The sources of %PARTONS include four sub-projects. These are:
@@ -33,9 +31,9 @@ Version  | Status                                           | elementary-utils  
 
 You can also download our pre-configured virtual machine (see the [VM tutorial](@ref vm)):
 
-Version   | Date            | %PARTONS version | Image                       |
-:-------: | :-------------: | :--------------: | :-------------------------: |
-User      | To be completed | 1.0              | [Download](ftp://to.be.set) |
-Developer | To be completed | 1.0              | [Download](ftp://to.be.set) |
+Version   | Date       | %PARTONS version | Image                                                       | Size   |
+:-------: | :--------: | :--------------: | :---------------------------------------------------------: | :----: |
+User      | 19/03/2018 | 1.0              | [Download](http://partons.cea.fr/vm/PARTONS_190318.ova)     | 1.6 GB |
+Developer | 19/03/2018 | 1.0              | [Download](http://partons.cea.fr/vm/PARTONS_190318_DEV.ova) | 2.6 GB |
 
 The `Developer` version has a set-up development environment in Eclipse to start contributing to the %PARTONS project, and has more packages installed, which makes the image heavier.
