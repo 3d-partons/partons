@@ -18,7 +18,9 @@ GIT_SSL_NO_VERIFY=true git clone https://drf-gitlab.cea.fr/partons/core/numa.git
 GIT_SSL_NO_VERIFY=true git clone https://drf-gitlab.cea.fr/partons/core/partons.git --branch v1.0 --depth 1
 GIT_SSL_NO_VERIFY=true git clone https://drf-gitlab.cea.fr/partons/core/partons-example.git --branch v1.0 --depth 1
 ~~~~~~~~~~~~~
-The option `--branch` is needed to checkout the *release* branch (in that case the tagged first version). The option `GIT_SSL_NO_VERIFY=true` is needed because the CEA certificate is often not recognized. The option `--depth 1` can be used to download only the tagged commit and nothing else from the git history.
+The option `--branch` is needed to checkout the specific tagged version from the *release* branch.
+The option `GIT_SSL_NO_VERIFY=true` is needed because the CEA certificate is often not recognized.
+The option `--depth 1` can be used to download only the tagged commit and nothing else from the git history.
 * via the following links:
 Version  | Status                                           | elementary-utils            | numa			| partons			| partons-example 		|
 :------: | :----------------------------------------------: | :-------------------------: | :-------------------------:	| :---------------------------: | :---------------------------: |
