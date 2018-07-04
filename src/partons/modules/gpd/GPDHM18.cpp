@@ -1,8 +1,11 @@
 #include "../../../../include/partons/modules/gpd/GPDHM18.h"
 
+#include <ElementaryUtils/parameters/GenericType.h>
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/functor/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
+#include <cmath>
 #include <utility>
 
 #include "../../../../include/partons/beans/gpd/GPDType.h"
@@ -17,12 +20,19 @@ const unsigned int GPDHM18::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new GPDHM18("GPDHM18"));
 
+const std::string GPDHM18::PARAMETER_NAME_HM18MODEL_m = "HM18MODEL_m";
+const std::string GPDHM18::PARAMETER_NAME_HM18MODEL_lambda = "HM18MODEL_lambda";
+const std::string GPDHM18::PARAMETER_NAME_HM18MODEL_p = "HM18MODEL_p";
+
 GPDHM18::GPDHM18(const std::string &className) :
         GPDModule(className), MathIntegratorModule() {
 
     m_MuF2_ref = 4.;
 
-    initFunctorsForIntegrations();
+    m_m = 0.45;
+    m_lambda = 0.75;
+    m_p = 1.;
+    m_N = 0.021973799001564008;
 
     //relate a specific GPD type with the appropriate function
     m_listGPDComputeTypeAvailable.insert(
@@ -36,14 +46,13 @@ GPDHM18::GPDHM18(const std::string &className) :
 }
 GPDHM18::GPDHM18(const GPDHM18& other) :
         GPDModule(other), MathIntegratorModule(other) {
-    initFunctorsForIntegrations();
+
+    m_m = other.m_m;
+    m_lambda = other.m_lambda;
+    m_p = other.m_p;
+    m_N = other.m_N;
 }
 GPDHM18::~GPDHM18() {
-
-    if (m_pint_int_e) {
-        delete m_pint_int_e;
-        m_pint_int_e = 0;
-    }
 }
 
 GPDHM18* GPDHM18::clone() const {
@@ -55,6 +64,23 @@ void GPDHM18::resolveObjectDependencies() {
 void GPDHM18::configure(const ElemUtils::Parameters &parameters) {
     MathIntegratorModule::configureIntegrator(parameters);
     GPDModule::configure(parameters);
+
+    if (parameters.isAvailable(GPDHM18::PARAMETER_NAME_HM18MODEL_m)) {
+
+        m_m = parameters.getLastAvailable().toDouble();
+        info(__func__,
+                ElemUtils::Formatter() << "Parameter "
+                        << GPDHM18::PARAMETER_NAME_HM18MODEL_m << " changed to "
+                        << m_m);
+    }
+
+    if (parameters.isAvailable(GPDHM18::PARAMETER_NAME_HM18MODEL_lambda)) {
+        m_lambda = parameters.getLastAvailable().toDouble();
+    }
+
+    if (parameters.isAvailable(GPDHM18::PARAMETER_NAME_HM18MODEL_p)) {
+        m_p = parameters.getLastAvailable().toDouble();
+    }
 }
 void GPDHM18::isModuleWellConfigured() {
     GPDModule::isModuleWellConfigured();
@@ -63,14 +89,26 @@ void GPDHM18::initModule() {
     GPDModule::initModule();
 }
 
-void GPDHM18::initFunctorsForIntegrations() {
+double GPDHM18::int_e(double y, double z, double t) {
+    double m_M = 1; //Constant::PROTON_MASS;
+    double M2 = pow(m_M, 2);
+    double m2 = pow(m_m, 2);
+    double Num = (m_m / m_M + y) * pow(pow(1 - y, 2) - pow(z, 2), m_p);
+    double Den = (1 - y) * m2 / M2 + y * pow(m_lambda, 2) / M2 - y * (1 - y)
+            - (pow(1 - y, 2) - pow(z, 2)) * t / 4 / M2;
+    return m_N * Num / pow(Den, 2 * m_p + 1);
 
-    m_pint_int_e = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GPDHM18::int_e);
 }
 
-double GPDHM18::int_e(double y, std::vector<double> par) {
-    return 2;
+double GPDHM18::intE0(double z, std::vector<double> par) {
+    double x = static_cast<QuarkFlavor::Type>(int(par[1]));
+    return (1 - m_x) * int_e(m_x, z, m_t);
+
+}
+
+double GPDHM18::intE(double y, std::vector<double> par) {
+    double x = static_cast<QuarkFlavor::Type>(int(par[1]));
+    return (1 - m_x) / m_xi * int_e(y, (m_x - y) / m_xi, m_t);
 
 }
 
@@ -92,53 +130,61 @@ PartonDistribution GPDHM18::computeHt() {
 PartonDistribution GPDHM18::computeE() {
 
     //variables
-    double uVal, uSea, dVal, dSea, sSea, g;
-    double uValMx, dValMx;
+    double aVal, Sea, g;
+    double aValMx;
 
     //minus x
     double Mx = -m_x;
 
-    //set parameters
+    //set variables for integrations
+    NumA::FunctionType1D* integrant;
     std::vector<double> parameters;
 
-    //calculate
-    uVal = integrate(m_pint_int_e, -1., 1., parameters);
-    dVal = 0.;
+    //calculate GPD E for x < - xi
+    if (m_x < -m_xi)
+        aVal = 0;
 
-    uSea = 0.;
-    dSea = 0.;
-    sSea = 0.;
+    //calculate GPD E for xi == 0
+    if (m_xi == 0) {
+        integrant = NumA::Integrator1D::newIntegrationFunctor(this,
+                &GPDHM18::intE0);
+        parameters.push_back(m_x);
+        aVal = integrate(integrant, -1 + m_x, 1 - m_x, parameters);
+        delete integrant;
+    }
+    //calculate GPD E for xi <> 0 and x > xi
+    if (m_x > m_xi && m_xi > 0) {
+        integrant = NumA::Integrator1D::newIntegrationFunctor(this,
+                &GPDHM18::intE);
+        parameters.push_back(m_x);
+        aVal = integrate(integrant, (m_x - m_xi) / (1 - m_xi),
+                (m_x + m_xi) / (1 + m_xi), parameters);
+        delete integrant;
+    }
+    //calculate GPD E for xi <> 0 and - xi < x < xi
+    if (m_x <= m_xi && m_x >= -m_xi && m_xi > 0) {
+        integrant = NumA::Integrator1D::newIntegrationFunctor(this,
+                &GPDHM18::intE);
+        parameters.push_back(m_x);
+        aVal = integrate(integrant, 0., (m_x + m_xi) / (1 + m_xi), parameters);
+        delete integrant;
+    }
 
+    Sea = 0.;
     g = 0.;
-
-    uValMx = 0.;
-    dValMx = 0.;
+    aValMx = 0.;
 
     //store
-    QuarkDistribution quarkDistribution_u(QuarkFlavor::UP);
-    QuarkDistribution quarkDistribution_d(QuarkFlavor::DOWN);
-    QuarkDistribution quarkDistribution_s(QuarkFlavor::STRANGE);
-
-    quarkDistribution_u.setQuarkDistribution(uVal + uSea);
-    quarkDistribution_d.setQuarkDistribution(dVal + dSea);
-    quarkDistribution_s.setQuarkDistribution(sSea);
-
-    quarkDistribution_u.setQuarkDistributionPlus(uVal - uValMx + 2 * uSea);
-    quarkDistribution_d.setQuarkDistributionPlus(dVal - dValMx + 2 * dSea);
-    quarkDistribution_s.setQuarkDistributionPlus(2 * sSea);
-
-    quarkDistribution_u.setQuarkDistributionMinus(uVal + uValMx);
-    quarkDistribution_d.setQuarkDistributionMinus(dVal + dValMx);
-    quarkDistribution_s.setQuarkDistributionMinus(0.);
-
+    QuarkDistribution quarkDistribution_a(QuarkFlavor::UNDEFINED);
     GluonDistribution gluonDistribution(g);
-
     PartonDistribution partonDistribution;
 
+    quarkDistribution_a.setQuarkDistribution(aVal + Sea);
+    quarkDistribution_a.setQuarkDistributionPlus(aVal - aValMx + 2 * Sea);
+    quarkDistribution_a.setQuarkDistributionMinus(aVal + aValMx);
+
     partonDistribution.setGluonDistribution(gluonDistribution);
-    partonDistribution.addQuarkDistribution(quarkDistribution_u);
-    partonDistribution.addQuarkDistribution(quarkDistribution_d);
-    partonDistribution.addQuarkDistribution(quarkDistribution_s);
+    partonDistribution.addQuarkDistribution(quarkDistribution_a);
 
     //return
     return partonDistribution;

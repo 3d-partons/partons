@@ -29,6 +29,10 @@ namespace PARTONS {
 
 class GPDHM18: public GPDModule, public MathIntegratorModule {
 public:
+
+    static const std::string PARAMETER_NAME_HM18MODEL_m; ///< Name of parameter to set #m_m via configure()
+    static const std::string PARAMETER_NAME_HM18MODEL_lambda; ///< Name of parameter to set #m_lambda via configure()
+    static const std::string PARAMETER_NAME_HM18MODEL_p; ///< Name of parameter to set #m_p via configure()
     /**
      * ID assigned by BaseObjectRegistry.
      */
@@ -60,15 +64,17 @@ protected:
 
 private:
 
-    /** %Double distribution function for E...
-     */
-    double int_e(double y, std::vector<double> par);
+    double m_m; ///< Mass of the active quark.
+    double m_lambda; ///< Mass of the spectator
+    double m_p; ///< Parameter controlling the power.
+    double m_N; ///< Normalization of the wave-function.
 
-    NumA::FunctionType1D* m_pint_int_e; ///< Functor related to IntEvalPlusB().
-
-    /** Initialize functors.
+    /** %Double distribution function for GPD E, see Eq. (18) and (19) in Ref. @cite Hwang:2007tb.
      */
-    void initFunctorsForIntegrations();
+    double int_e(double y, double z, double t);
+    double intE(double y, std::vector<double> par);
+    double intE0(double z, std::vector<double> par);
+
 };
 
 } /* namespace PARTONS */
