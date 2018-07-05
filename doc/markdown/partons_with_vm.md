@@ -40,9 +40,10 @@ To start our virtual machine double-click on the corresponding entry in the list
 ## Hyper-V {#vm_tips_hyper-v}
 
 In some cases the VirtualBox is not supported by the Windows operation system.
-As a result error `Raw-mode is unavailable courtesy of Hyper-V.` occurs.
+As a result error `Raw-mode is unavailable courtesy of Hyper-V` occurs.
 ![](../images/VirtualBox_error.png "Error in Virtual Box")
-The reason is that Windows uses its own virtual machine software, which is incompatible with Virtual Box.
+Windows uses its own virtual machine software, which is incompatible with Virtual Box.
+That is the reason of the error. 
 In that case one option is to turn off completely Hyper-V or install %PARTONS with Hyper-V.
 See [this tutorial](@ref hyper-v) for later.
 
