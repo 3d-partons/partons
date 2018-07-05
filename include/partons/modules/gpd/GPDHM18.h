@@ -69,12 +69,20 @@ private:
     double m_p; ///< Parameter controlling the power.
     double m_N; ///< Normalization of the wave-function.
 
-    /** %Double distribution function for GPD E, see Eq. (18) and (19) in Ref. @cite Hwang:2007tb.
+    /** %Double distribution function for GPD E, see Eqs. (18) and (19) in Ref. @cite Hwang:2007tb.
      */
     double int_e(double y, double z, double t);
     double intE(double y, std::vector<double> par);
     double intE0(double z, std::vector<double> par);
     double evaluateE(double x);
+
+    /** %Double distribution function for GPD E, see Eqs. (21) and (19) in Ref. @cite Hwang:2007tb.
+     */
+    double int_h(double y, double z, double t);
+    double intH(double y, std::vector<double> par);
+    double intH0(double z, std::vector<double> par);
+
+    double evaluate(double x, NumA::FunctionType1D* p_fun0, NumA::FunctionType1D* p_fun);
 
 };
 
