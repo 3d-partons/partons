@@ -11,11 +11,14 @@ Before running %PARTONS with Hyper-V make sure that you enable it on Windows, se
 # Conversion of OVA into VHD
 
 Next, download the image of %PARTONS' virtual machine from [this page](@ref download_vm).
-The image of the virtual machine is in `.ova` format and has to be converted into suitable format in order to run it with Hyper-V.
+The image of the virtual machine is in `.ova` format and it has to be converted into suitable format in order to be included into Hyper-V.
 The `.ova` file is a tar-archive which can be decompressed into two files: `.vmdk` and `.ovf`.
 
-- The diskimage(`.vmdk`) has to be converted into a native Hyper-V diskimage(`.vhd` or `.vhdx`).
-The VirtualBox provides suitable tool. After installing VirtualBox open the commandline and go to the directory where the `.vmdk` file is and type:
+- The `.ovf` file stores information about the machine settings (vCPUs, Memory, NIC etc.).
+The `.ovf` file is a .xml-file. You can launch the file in any browser/xml-parser. In our case this file will not be needed.
+
+- The `.vmdk` file is a disk of a virtual machine and it has to be converted into a native Hyper-V diskimage(`.vhd` or `.vhdx`).
+The VirtualBox provides suitable tool. After installing VirtualBox (see [this tutorial](@ref vm) for instruction), open the commandline and go to the directory where the `.vmdk` file is and type:
 
 ~~~~~~~~~~~~~{.sh}
 "c:\Program Files\Oracle\VirtualBox\VBoxManage.exe" clonemedium --format vhd infile.vmdk outfile.vhd
@@ -23,15 +26,15 @@ The VirtualBox provides suitable tool. After installing VirtualBox open the comm
 
 If you installed the VirtualBox not in the default place, change `c:\Program Files\Oracle\VirtualBox\VBoxManage.exe` into your path to the `VBoxManage.exe` program.
 
-- The `.ovf` file, that was extracted also from the `.ova` archive, stores information about the machine settings (vCPUs, Memory, NIC etc.)
-The `.ovf` file is a .xml-file. You can launch the file in any browser/xml-parser. In our case it will not be needed.
-
 - The more detailed instruction about conversion of Virtual Box file into Hyper-V file can be found on [this website](http://blog.worldofjani.com/?p=991).
 
 # Running %PARTONS
 
 Now open the Hyper-V, right-click on your computer and choose `New-> Virtual Machine`.
 Choose the default options in the wizard up to the `Connect Virtual Hard Disk` tab.
+
+![](../images/ConnectVirtualHardDisk.png "Connect Virtual Hard Disk in Hyper-V")
+
 In this tab, select *Use an existing virtual hard disk* and point the `.vhd` file that was created before, then click `Finish`.
 
 In this moment you should be able to run the PARTONS virtual machine in Hyper-V.
@@ -40,7 +43,7 @@ In this moment you should be able to run the PARTONS virtual machine in Hyper-V.
 
 To connect virtual machine to the Internet in Hyper-V see [this tutorial](https://superuser.com/questions/469806/windows-8-hyper-v-how-to-give-vm-internet-access).
 
-If after connecting virtual switch there is still no internet in virtual machine make sure that following files looks like that:
+If after connecting the virtual switch there is still no Internet in the virtual machine make sure that following files looks like that:
 
 ~~~~~~~~~~~~~{.sh}
 partons@partonsVM_DEV:~$ cat /etc/hostname
@@ -76,6 +79,7 @@ iface eth0 inet dhcp
 
 Any of this file can be edit using command `sudo nano path_to_file`.
 After making necessary changes use command
+
 ~~~~~~~~~~~~~{.sh}
 sudo /etc/init.d/networking restart
 ~~~~~~~~~~~~~
