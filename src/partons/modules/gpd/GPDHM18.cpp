@@ -101,15 +101,83 @@ double GPDHM18::int_e(double y, double z, double t) {
 }
 
 double GPDHM18::intE0(double z, std::vector<double> par) {
-    double x = static_cast<QuarkFlavor::Type>(int(par[1]));
-    return (1 - m_x) * int_e(m_x, z, m_t);
+    double x = par[0];
+    return (1 - x) * int_e(x, z, m_t);
 
 }
 
 double GPDHM18::intE(double y, std::vector<double> par) {
-    double x = static_cast<QuarkFlavor::Type>(int(par[1]));
-    return (1 - m_x) / m_xi * int_e(y, (m_x - y) / m_xi, m_t);
+    double x = par[0];
+    return (1 - x) / m_xi * int_e(y, (x - y) / m_xi, m_t);
 
+}
+
+double GPDHM18::evaluateE(double x) {
+    //set variables for integrations
+    NumA::FunctionType1D* integrant;
+    std::vector<double> parameters;
+    double result;
+
+
+    //calculate GPD E for x < - xi
+    if (x < -fabs(m_xi))
+        return 0;
+
+    //calculate GPD E for xi == 0
+    if (m_xi == 0) {
+        integrant = NumA::Integrator1D::newIntegrationFunctor(this,
+                &GPDHM18::intE0);
+        parameters.push_back(x);
+        result = integrate(integrant, -1 + x, 1 - x, parameters);
+        delete integrant;
+        return result;
+    }
+    //calculate GPD E for xi <> 0 and x > xi
+    if (x > fabs(m_xi)) {
+        integrant = NumA::Integrator1D::newIntegrationFunctor(this,
+                &GPDHM18::intE);
+        parameters.push_back(x);
+        result = integrate(integrant, (x - m_xi) / (1 - m_xi),
+                (x + m_xi) / (1 + m_xi), parameters);
+        delete integrant;
+        return result;
+    }
+
+    //calculate GPD E for xi <> 0 and - xi < x < xi
+    if (x <= fabs(m_xi) && x >= -fabs(m_xi)) {
+        integrant = NumA::Integrator1D::newIntegrationFunctor(this,
+                &GPDHM18::intE);
+        parameters.push_back(x);
+        result = integrate(integrant, 0., (x + m_xi) / (1 + m_xi), parameters);
+        delete integrant;
+        return result;
+    }
+
+    return 0;
+}
+
+PartonDistribution GPDHM18::computeE() {
+
+    //variables
+    double aVal = GPDHM18::evaluateE(m_x);
+    double aValMx = GPDHM18::evaluateE(-m_x);
+    double Sea = 0;
+    double g = 0;
+
+    //store
+    QuarkDistribution quarkDistribution_a(QuarkFlavor::UNDEFINED);
+    GluonDistribution gluonDistribution(g);
+    PartonDistribution partonDistribution;
+
+    quarkDistribution_a.setQuarkDistribution(aVal + Sea);
+    quarkDistribution_a.setQuarkDistributionPlus(aVal - aValMx + 2 * Sea);
+    quarkDistribution_a.setQuarkDistributionMinus(aVal + aValMx);
+
+    partonDistribution.setGluonDistribution(gluonDistribution);
+    partonDistribution.addQuarkDistribution(quarkDistribution_a);
+
+    //return
+    return partonDistribution;
 }
 
 PartonDistribution GPDHM18::computeH() {
@@ -127,68 +195,7 @@ PartonDistribution GPDHM18::computeHt() {
     //return
     return result;
 }
-PartonDistribution GPDHM18::computeE() {
 
-    //variables
-    double aVal, Sea, g;
-    double aValMx;
-
-    //minus x
-    double Mx = -m_x;
-
-    //set variables for integrations
-    NumA::FunctionType1D* integrant;
-    std::vector<double> parameters;
-
-    //calculate GPD E for x < - xi
-    if (m_x < -m_xi)
-        aVal = 0;
-
-    //calculate GPD E for xi == 0
-    if (m_xi == 0) {
-        integrant = NumA::Integrator1D::newIntegrationFunctor(this,
-                &GPDHM18::intE0);
-        parameters.push_back(m_x);
-        aVal = integrate(integrant, -1 + m_x, 1 - m_x, parameters);
-        delete integrant;
-    }
-    //calculate GPD E for xi <> 0 and x > xi
-    if (m_x > m_xi && m_xi > 0) {
-        integrant = NumA::Integrator1D::newIntegrationFunctor(this,
-                &GPDHM18::intE);
-        parameters.push_back(m_x);
-        aVal = integrate(integrant, (m_x - m_xi) / (1 - m_xi),
-                (m_x + m_xi) / (1 + m_xi), parameters);
-        delete integrant;
-    }
-    //calculate GPD E for xi <> 0 and - xi < x < xi
-    if (m_x <= m_xi && m_x >= -m_xi && m_xi > 0) {
-        integrant = NumA::Integrator1D::newIntegrationFunctor(this,
-                &GPDHM18::intE);
-        parameters.push_back(m_x);
-        aVal = integrate(integrant, 0., (m_x + m_xi) / (1 + m_xi), parameters);
-        delete integrant;
-    }
-
-    Sea = 0.;
-    g = 0.;
-    aValMx = 0.;
-
-    //store
-    QuarkDistribution quarkDistribution_a(QuarkFlavor::UNDEFINED);
-    GluonDistribution gluonDistribution(g);
-    PartonDistribution partonDistribution;
-
-    quarkDistribution_a.setQuarkDistribution(aVal + Sea);
-    quarkDistribution_a.setQuarkDistributionPlus(aVal - aValMx + 2 * Sea);
-    quarkDistribution_a.setQuarkDistributionMinus(aVal + aValMx);
-
-    partonDistribution.setGluonDistribution(gluonDistribution);
-    partonDistribution.addQuarkDistribution(quarkDistribution_a);
-
-    //return
-    return partonDistribution;
-}
 PartonDistribution GPDHM18::computeEt() {
     //result
     PartonDistribution result;

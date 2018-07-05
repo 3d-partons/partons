@@ -74,6 +74,7 @@ private:
     double int_e(double y, double z, double t);
     double intE(double y, std::vector<double> par);
     double intE0(double z, std::vector<double> par);
+    double evaluateE(double x);
 
 };
 
