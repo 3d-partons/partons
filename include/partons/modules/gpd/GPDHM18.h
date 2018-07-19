@@ -29,7 +29,7 @@ namespace PARTONS {
 
 class GPDHM18: public GPDModule, public MathIntegratorModule {
 public:
-
+    static const std::string PARAMETER_NAME_HM18MODEL_M; ///< Name of parameter to set #m_M via configure()
     static const std::string PARAMETER_NAME_HM18MODEL_m; ///< Name of parameter to set #m_m via configure()
     static const std::string PARAMETER_NAME_HM18MODEL_lambda; ///< Name of parameter to set #m_lambda via configure()
     static const std::string PARAMETER_NAME_HM18MODEL_p; ///< Name of parameter to set #m_p via configure()
@@ -63,26 +63,55 @@ protected:
     virtual PartonDistribution computeEt();
 
 private:
-
+    double m_M; ///< Mass of the proton;
     double m_m; ///< Mass of the active quark.
     double m_lambda; ///< Mass of the spectator
     double m_p; ///< Parameter controlling the power.
     double m_N; ///< Normalization of the wave-function.
 
+    void Normalize();
+    double IntNorm(double y, std::vector<double> par);
+    NumA::FunctionType1D* m_pint_IntNorm; ///< Functor related to IntNorm.
+
+
     /** %Double distribution function for GPD E, see Eqs. (18) and (19) in Ref. @cite Hwang:2007tb.
      */
-    double int_e(double y, double z, double t);
-    double intE(double y, std::vector<double> par);
-    double intE0(double z, std::vector<double> par);
-    double evaluateE(double x);
+    double DD_E(double y, double z, double t);
+    double IntE(double y, std::vector<double> par);
+    double IntE0(double z, std::vector<double> par);
+    NumA::FunctionType1D* m_pint_IntE; ///< Functor related to IntE for xi <> 0.
+    NumA::FunctionType1D* m_pint_IntE0; ///< Functor related to IntE for xi = 0.
 
-    /** %Double distribution function for GPD E, see Eqs. (21) and (19) in Ref. @cite Hwang:2007tb.
+    /** %Double distribution function for GPD H, see Eqs. (21) and (19) in Ref. @cite Hwang:2007tb.
      */
-    double int_h(double y, double z, double t);
-    double intH(double y, std::vector<double> par);
-    double intH0(double z, std::vector<double> par);
+    double DD_H(double y, double z, double t);
+    double IntH(double y, std::vector<double> par);
+    double IntH0(double z, std::vector<double> par);
+    NumA::FunctionType1D* m_pint_IntH; ///< Functor related to IntE for xi <> 0.
+    NumA::FunctionType1D* m_pint_IntH0; ///< Functor related to IntE for xi = 0.
+
+    /** %Double distribution function for GPD Et.
+     */
+    double DD_Et(double y, double z, double t);
+    double IntEt(double y, std::vector<double> par);
+    double IntEt0(double z, std::vector<double> par);
+    NumA::FunctionType1D* m_pint_IntEt; ///< Functor related to IntE for xi <> 0.
+    NumA::FunctionType1D* m_pint_IntEt0; ///< Functor related to IntE for xi = 0.
+
+    /** %Double distribution function for GPD Ht.
+     */
+    double DD_Ht(double y, double z, double t);
+    double IntHt(double y, std::vector<double> par);
+    double IntHt0(double z, std::vector<double> par);
+    NumA::FunctionType1D* m_pint_IntHt; ///< Functor related to IntE for xi <> 0.
+    NumA::FunctionType1D* m_pint_IntHt0; ///< Functor related to IntE for xi = 0.
+
 
     double evaluate(double x, NumA::FunctionType1D* p_fun0, NumA::FunctionType1D* p_fun);
+    PartonDistribution compute(NumA::FunctionType1D* p_fun0, NumA::FunctionType1D* p_fun);
+
+    void initializeFunctorsForIntegrations(); ///< Initialize functors.
+    void deleteFunctorsForIntegrations(); ///< Delete functors.
 
 };
 
