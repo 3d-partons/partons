@@ -19,7 +19,7 @@ sudo apt-get install virtualbox
 ~~~~~~~~~~~~~
 For other Linux distributions and operating systems some adjustments to the installation receipt may be needed. If the installation via the repositories fails, visit [the official download page for Linux](https://www.virtualbox.org/wiki/Linux_Downloads) and follow the instruction to update your repository list or download and install the appropriate package manually.  
 
-As an alternative you can also use [Hyper-V](@ref hyper-v) on your host machine.
+As an alternative virtualization software you can use [Hyper-V](@ref hyper-v) on your host machine.
 
 <hr>
 
@@ -44,8 +44,8 @@ As a result error `Raw-mode is unavailable courtesy of Hyper-V` occurs
 when one wants to run any virtual machine.
 ![](../images/VirtualBox_error.png "Error in Virtual Box")
 Windows uses its own virtual machine software, which is incompatible with Virtual Box.
-That is the reason of the error. 
-In that case one possibility is to turn off completely Hyper-V, the other possibility is to install %PARTONS with Hyper-V.
+That is the origin of the error. 
+In that case one possibility is to turn off completely Hyper-V, the other possibility is to run %PARTONS virtual machine in Hyper-V.
 See [this tutorial](@ref hyper-v) for later.
 
 ## Keyboard layout {#vm_tips_keyboard}

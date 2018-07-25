@@ -5,14 +5,14 @@
 # Introduction {#Hyper-V_intro}
 
 
-%PARTONS team recommends to use VirtualBox as a software for virtual machine.
+%PARTONS team recommends to use VirtualBox as a virtual machine software.
 In [this tutorial](@ref vm) one can find a detail instruction of the installation.
 
 Before running %PARTONS with Hyper-V make sure that you enable it on Windows, see [the official Microsoft tutorial](https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows) for details.
 
 # Conversion of OVA into VHD {#Hyper-V_conversion}
 
-In order to use %PARTONS in Hyper-V, which were configured for VirtualBox the conversion to suitable formats is necessary.
+In order to use %PARTONS in Hyper-V, which were configured for VirtualBox the conversion to suitable format is necessary.
 First, download the image of %PARTONS' virtual machine from [this page](@ref download_vm).
 The image of the virtual machine is in `.ova` format and it has to be converted into different format in order to be used in Hyper-V.
 The `.ova` file is a tar-archive which can be decompressed into two files: `.vmdk` and `.ovf`.
@@ -20,23 +20,23 @@ The `.ova` file is a tar-archive which can be decompressed into two files: `.vmd
 - The `.ovf` file stores information about the machine settings (vCPUs, Memory, NIC etc.).
 The `.ovf` file is a .xml-file. You can launch the file in any browser/xml-parser. In our case this file will not be needed.
 
-- The `.vmdk` file is a disk image used by a VirtualBox and it has to be converted into a native Hyper-V diskimage (`.vhd` or `.vhdx`).
-The VirtualBox provides continent tool to make neccesery conversion. Even though you are not goint to use VirtualBox later, it is good to install this softwere to make the conversion easily. After installing VirtualBox (see [this tutorial](@ref vm) for instruction), open the commandline and go to the directory where the `.vmdk` file is located and type:
+- The `.vmdk` file is a disk image used by a VirtualBox and it has to be converted into a diskimage used by Hyper-V (`.vhd` or `.vhdx`).
+The VirtualBox provides convenient tool to make necessary conversion. Even though you are not going to use VirtualBox later, it is good to install this software to make the conversion easily. After installing VirtualBox (see [this tutorial](@ref vm) for instruction), open the commandline and go to the directory where the `.vmdk` file is located and type:
 
 ~~~~~~~~~~~~~{.sh}
 "c:\Program Files\Oracle\VirtualBox\VBoxManage.exe" clonemedium --format vhd infile.vmdk outfile.vhd
 ~~~~~~~~~~~~~
 
-Change `infile.vmdk` into the file name of a diskimage that you obtain from extraction.
+Change `infile.vmdk` into the file name of the diskimage that you obtain from extraction.
 You can change `outfile.vhd` into more applicable name. 
 
-If you installed the VirtualBox not in the default place, change `c:\Program Files\Oracle\VirtualBox\VBoxManage.exe` into the path to your `VBoxManage.exe` program.
+If you installed the VirtualBox not in the default place, change `c:\Program Files\Oracle\VirtualBox\VBoxManage.exe` into the path where your `VBoxManage.exe` program is.
 
-The more detailed instruction about conversion of Virtual Box file into Hyper-V file can be found on [this website](http://blog.worldofjani.com/?p=991).
+The more detailed instruction about conversion of Virtual Box files into Hyper-V native files can be found on [this website](http://blog.worldofjani.com/?p=991).
 
 # Running PARTONS {#Hyper-V_run}
 
-Now, open the Hyper-V Manager. Right-click on your computer name in the left panel of the Hyper-V and choose `New -> Virtual Machine…` .
+Now, open the Hyper-V Manager. Right-click on your computer name in the left panel of the Hyper-V and choose `New -> Virtual Machine` .
 
 <img src="../images/Hyper-V_stepA.png" title="Create New Virtual Machine" width="80%"/>
 
@@ -52,7 +52,8 @@ In this moment you should be able to run the %PARTONS virtual machine in Hyper-V
 
 # Network in Hyper-V {#Hyper-V_network}
 
-In order to get the VM connected to the internet you have to tie it to the Ethernet/Wireless NIC Card. In order to do this you have to create a Virtual Switch.
+In order to connect Internet in your VM you have to associate it to the Ethernet/Wireless NIC Card.
+In order to do this you have to create a Virtual Switch.
 
 1. Open your Hyper-V Manager.
 
@@ -60,7 +61,7 @@ In order to get the VM connected to the internet you have to tie it to the Ether
 
    <img src="../images/Hyper-V_step2.png" title="Select Virtual Switch Manager" width="80%"/>
 
-3. Select `External` and then `Create Virtual Switch`.
+3. Click on `New virtual network switch`, then select `External` and `Create Virtual Switch`.
 
    <img src="../images/Hyper-V_step3.png" title="Create Virtual Switch" width="50%"/>
 
@@ -80,13 +81,13 @@ In order to get the VM connected to the internet you have to tie it to the Ether
 
    <img src="../images/Hyper-V_step7.png" title="Select the newly created Virtual Switch" width="50%"/>
 
-This should enable the connection you use to connect to the Internet to be accessible to the Hyper-V.
+This should enable the Internet connection in your Hyper-V.
 
-The more detailed instruction can be found in [this tutorial](https://superuser.com/questions/469806/windows-8-hyper-v-how-to-give-vm-internet-access).
+The above descriptions comes from [this tutorial](https://superuser.com/questions/469806/windows-8-hyper-v-how-to-give-vm-internet-access).
 
 # Tips and troubleshooting {#Hyper-V_tips}
 
-If after connecting the virtual switch there is still no Internet in the virtual machine make sure that following files looks like that:
+If after connecting the virtual switch you still don't have Internet in the virtual machine make sure that following files looks like these:
 
 ~~~~~~~~~~~~~{.sh}
 partons@partonsVM_DEV:~$ cat /etc/hostname
@@ -120,7 +121,7 @@ auto eth0
 iface eth0 inet dhcp
 ~~~~~~~~~~~~~
 
-Any of this file can be edit using command `sudo nano path_to_file`.
+Any of these files can be edit using command `sudo nano path_to_file`.
 After making necessary changes use command
 
 ~~~~~~~~~~~~~{.sh}
