@@ -4,7 +4,7 @@
 
 # Introduction {#Hyper-V_intro}
 
-We recommend you to use VirtualBox as a virtualization software to run %PARTONS, see [this tutorial](@ref vm). However, the usage of Hyper-V on Windows OS is also possible. 
+We recommend that you use VirtualBox as a virtualization software to run %PARTONS, see [this tutorial](@ref vm). However, the usage of Hyper-V on Windows OS is also possible. 
 
 Before any attempt to run %PARTONS with Hyper-V make sure that you enable it in Windows, see [the official Microsoft tutorial](https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows) for details.
 
@@ -19,7 +19,7 @@ This image is in `.ova` format and it has to be converted into that used by Hype
 The `.ova` file is a tar-archive that can be decompressed into two files: `.ovf` and `.vmdk`.
 
 - The `.ovf` file describes the properties of the virtual system (vCPUs, Memory, NIC etc.).
-It is in xml format, so you can launch it any browser/xml-parser. In our case this file will not be needed.
+It is in xml format, so you can launch it with any browser/xml-parser. In our case this file will not be needed.
 
 - The `.vmdk` file is a disk image used by VirtualBox and it has to be converted into a disk image used by Hyper-V (`.vhd` or `.vhdx`).
 VirtualBox provides a convenient tool to make the necessary conversion. Even though you are not going to use VirtualBox later, it is good to install it to make the conversion easy. After installing VirtualBox (see [this tutorial](@ref vm) for instruction), open the command line tool, go to the directory where the `.vmdk` file is located and type:
