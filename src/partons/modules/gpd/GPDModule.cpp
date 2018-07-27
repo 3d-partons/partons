@@ -268,7 +268,7 @@ void GPDModule::run() {
 
             for (unsigned int i = 0; i != gpdTypeList.size(); i++) {
                 gpdResult.addPartonDistribution(gpdTypeList[i].getType(),
-                        compute(kinematic, gpdTypeList[i].getType(), false));
+                        compute(kinematic, gpdTypeList[i].getType()));
             }
 
             pGPDService->add(gpdResult);
