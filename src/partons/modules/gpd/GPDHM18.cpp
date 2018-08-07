@@ -37,7 +37,15 @@ GPDHM18::GPDHM18(const std::string &className) :
     m_m = 0.45;
     m_lambda = 0.75;
     m_p = 1.;
-    m_N = 0.048900116463331; ///< Value of m_N is correctly calculated in GPDHM18::configure using Normalize() function.
+
+    /**
+     * Value of m_N is calculated in GPDHM18::configure using Normalize() function.
+     * In this place Normalization() function cann't be run, since it is using
+     * integration mechanism, which will be initiated not sooner that in GPDHM18::configure.
+     * In order to not to leave the value of m_N not initialize the value returned
+     * by Normalization() with initial values of model parameters has been used.
+     */
+    m_N = 0.048900116463331;
 
     //relate a specific GPD type with the appropriate function
     m_listGPDComputeTypeAvailable.insert(
@@ -59,11 +67,6 @@ GPDHM18::GPDHM18(const GPDHM18& other) :
     m_lambda = other.m_lambda;
     m_p = other.m_p;
     m_N = other.m_N;
-
-    //TODO ask if necessary.
-    m_listGPDComputeTypeAvailable = std::map<GPDType::Type,
-            PartonDistribution (GPDModule::*)()>(
-            other.m_listGPDComputeTypeAvailable);
 
 }
 
@@ -89,7 +92,7 @@ void GPDHM18::initializeFunctorsForIntegrations() {
             &GPDHM18::IntH0);
 
     m_pint_IntEt = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GPDHM18::IntEt0);
+            &GPDHM18::IntEt);
 
     m_pint_IntEt0 = NumA::Integrator1D::newIntegrationFunctor(this,
             &GPDHM18::IntEt0);
@@ -228,49 +231,55 @@ double GPDHM18::DD_H(double y, double z, double t) {
 double GPDHM18::IntH0(double z, std::vector<double> par) {
     double x = par[0];
     return DD_H(x, z, m_t) + x * DD_E(x, z, m_t);
-
 }
 
 double GPDHM18::IntH(double y, std::vector<double> par) {
     double x = par[0];
     return 1 / m_xi * DD_H(y, (x - y) / m_xi, m_t)
             + x / m_xi * DD_E(y, (x - y) / m_xi, m_t);
-
 }
 
 double GPDHM18::DD_Ht(double y, double z, double t) {
-    return 0;
+    double M2 = pow(m_M, 2);
+    double m2 = pow(m_m, 2);
+    double lambda2 = pow(m_lambda, 2);
+    double Num = pow(pow(1 - y, 2) - pow(z, 2), m_p);
+    double Den = (1 - y) * m2 / M2 + y * lambda2 / M2 - y * (1 - y)
+            - (pow(1 - y, 2) - pow(z, 2)) * t / 4 / M2;
+    return m_N / 2 * (2 * y * m_m / m_M + m2 / M2 * y - y * lambda2 / M2 + y)
+            * Num / pow(Den, 2 * m_p + 1)
+            - m_N * (1 - 2 * m_p) / (4 * m_p) * Num / pow(Den, 2 * m_p);
 }
 
 double GPDHM18::IntHt0(double z, std::vector<double> par) {
-    return 0;
+    double x = par[0];
+    return DD_Ht(x, z, m_t);
 }
 
 double GPDHM18::IntHt(double y, std::vector<double> par) {
-    return 0;
+    double x = par[0];
+    return 1 / m_xi * DD_Ht(y, (x - y) / m_xi, m_t);
 }
 
 double GPDHM18::DD_Et(double y, double z, double t) {
-    return 0;
-}
-
-double GPDHM18::IntEt0(double z, std::vector<double> par) {
-    return 0;
+    double M2 = pow(m_M, 2);
+    double m2 = pow(m_m, 2);
+    double Bracket = pow(1 - y, 2) - pow(z, 2)
+            + (1 - y - z / m_xi) * (m_m / m_M + y);
+    double Num = Bracket * pow(pow(1 - y, 2) - pow(z, 2), m_p);
+    double Den = (1 - y) * m2 / M2 + y * pow(m_lambda, 2) / M2 - y * (1 - y)
+            - (pow(1 - y, 2) - pow(z, 2)) * t / 4 / M2;
+    return m_N * Num / pow(Den, 2 * m_p + 1);
 }
 
 double GPDHM18::IntEt(double y, std::vector<double> par) {
-    return 0;
+    double x = par[0];
+    return 1 / m_xi * DD_Et(y, (x - y) / m_xi, m_t);
 }
 
-/**
- * Compute GPD using %double distribution function
- * by integrating p_fun0 or p_fun function depening on kinematics.
- *
- * @param x
- * @param p_fun0 integrate this function if xi == 0
- * @param p_fun  integrate this function if xi <> 0
- * @return computed GPD
- */
+double GPDHM18::IntEt0(double y, std::vector<double> par) {
+    return 0;
+}
 
 double GPDHM18::evaluate(double x, NumA::FunctionType1D* p_fun0,
         NumA::FunctionType1D* p_fun) {
@@ -333,19 +342,24 @@ PartonDistribution GPDHM18::computeH() {
 }
 
 PartonDistribution GPDHM18::computeHt() {
-//result
-    PartonDistribution result;
-//your implementation comes here
-//return
-    return result;
+    //compute and return parton distribution for GPH Ht
+    return GPDHM18::compute(m_pint_IntHt0, m_pint_IntHt);
 }
 
 PartonDistribution GPDHM18::computeEt() {
-//result
-    PartonDistribution result;
-//your implementation comes here
-//return
-    return result;
+    PartonDistribution no_result;
+
+    //return null quark parton distribution for GPH Et for xi == 0.
+    if (m_xi == 0) {
+        warn(__func__,
+                ElemUtils::Formatter()
+                        << "Quark GPD Et is divergent for xi=0 in the SDQM by Hwang-Mueller. No result returned.");
+
+        return no_result;
+    }
+
+    //compute and return parton distribution for GPH Et for xi <> 0.
+    return GPDHM18::compute(m_pint_IntEt0, m_pint_IntEt);
 }
 
 } /* namespace PARTONS */

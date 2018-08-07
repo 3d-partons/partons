@@ -17,12 +17,18 @@
 
 namespace PARTONS {
 
-//TODO change desription
+//TODO add citation to the bibliography
 /**
  * @class GPDHM18
  *
- * GPD model based on D.S. Hwang and Dieter Mueller paper.
- * For the reference, see arXiv:0710.1567 @cite Hwang:2007tb.
+ * The proposition of the scalar di-quark model (SDQM) in the context
+ * of GPDs back to the Jakob-Mulders-Rodrigues paper hep-ph/9704335
+ * @cite Jakob:1997wg.
+ *
+ * Later has been studied by Dae Sung Hwang and Dieter Mueller.
+ * The short description of the model is given in arXiv:0710.1567
+ * @cite Hwang:2007tb. In the Ref. arXiv:1407.16655 @cite Muller:2014tqa
+ * full description is given.
  *
  * Available GPD types: H, Ht, E, Et.
  */
@@ -67,48 +73,96 @@ private:
     double m_m; ///< Mass of the active quark.
     double m_lambda; ///< Mass of the spectator
     double m_p; ///< Parameter controlling the power.
-    double m_N; ///< Normalization of the wave-function.
+    double m_N; ///< Normalization of the GPDs.
 
+    /**
+     * Function setting the normalization of the GPDs @param m_N
+     * according to the Eq. (22) Ref. @cite Hwang:2007tb.     *
+     */
     void Normalize();
+
+    /**
+     * Integral given in Eq. (22) Ref. @cite Hwang:2007tb.
+     *
+     * @param y
+     * @param par optional parameters of integration, not used.
+     * @return 1/m_N
+     */
     double IntNorm(double y, std::vector<double> par);
     NumA::FunctionType1D* m_pint_IntNorm; ///< Functor related to IntNorm.
 
-
-    /** %Double distribution function for GPD E, see Eqs. (18) and (19) in Ref. @cite Hwang:2007tb.
+    /** %Double distribution function for GPD E. Definition can be found
+     * in Eqs. (18) and (19) in Ref. @cite Hwang:2007tb.
+     *
+     * @param y %Double distribution parameter y.
+     * @param z %Double distribution parameter z.
+     * @param t %Double distribution parameter t.
+     * @return GPD E
      */
     double DD_E(double y, double z, double t);
-    double IntE(double y, std::vector<double> par);
-    double IntE0(double z, std::vector<double> par);
-    NumA::FunctionType1D* m_pint_IntE; ///< Functor related to IntE for xi <> 0.
-    NumA::FunctionType1D* m_pint_IntE0; ///< Functor related to IntE for xi = 0.
+    double IntE(double y, std::vector<double> par); ///< Integrant of GPD E for xi <> 0.
+    double IntE0(double z, std::vector<double> par); ///< Integrant of GPD E for xi == 0.
+    NumA::FunctionType1D* m_pint_IntE; ///< Functor related to IntE.
+    NumA::FunctionType1D* m_pint_IntE0; ///< Functor related to IntE0.
 
-    /** %Double distribution function for GPD H, see Eqs. (21) and (19) in Ref. @cite Hwang:2007tb.
+    /**
+     * %Double distribution function for GPD H. Definition can be found
+     * in Eqs. (21) and (19) in Ref. @cite Hwang:2007tb.
+     *
+     * @param y %Double distribution parameter y.
+     * @param z %Double distribution parameter z.
+     * @param t %Double distribution parameter t.
+     * @return GPD H
      */
     double DD_H(double y, double z, double t);
-    double IntH(double y, std::vector<double> par);
-    double IntH0(double z, std::vector<double> par);
-    NumA::FunctionType1D* m_pint_IntH; ///< Functor related to IntE for xi <> 0.
-    NumA::FunctionType1D* m_pint_IntH0; ///< Functor related to IntE for xi = 0.
+    double IntH(double y, std::vector<double> par); ///< Integrant of GPD H for xi <> 0.
+    double IntH0(double z, std::vector<double> par); ///< Integrant of GPD H for xi == 0.
+    NumA::FunctionType1D* m_pint_IntH; ///< Functor related to IntH.
+    NumA::FunctionType1D* m_pint_IntH0; ///< Functor related to IntH0.
 
-    /** %Double distribution function for GPD Et.
+    /** %Double distribution function for GPD Et. Definition can be found
+     * in Eqs. (4.23) and (4.27) in Ref. @cite Muller:2014tqa.
+     *
+     * @param y %Double distribution parameter y.
+     * @param z %Double distribution parameter z.
+     * @param t %Double distribution parameter t.
+     * @return GPD Et
      */
+
     double DD_Et(double y, double z, double t);
     double IntEt(double y, std::vector<double> par);
-    double IntEt0(double z, std::vector<double> par);
-    NumA::FunctionType1D* m_pint_IntEt; ///< Functor related to IntE for xi <> 0.
-    NumA::FunctionType1D* m_pint_IntEt0; ///< Functor related to IntE for xi = 0.
+    double IntEt0(double y, std::vector<double> par); ///< Integrant of GPD Et for xi <> 0.
+    NumA::FunctionType1D* m_pint_IntEt; ///< Functor related to IntEt.
+    NumA::FunctionType1D* m_pint_IntEt0; ///< Functor related to IntE for xi <> 0.
 
-    /** %Double distribution function for GPD Ht.
+    /**
+     * %Double distribution function for GPD Ht. Definition can be found
+     * in Eqs. (4.23) and (4.26) in Ref. @cite Muller:2014tqa.
+     *
+     * @param y %Double distribution parameter y.
+     * @param z %Double distribution parameter z.
+     * @param t %Double distribution parameter t.
+     * @return GPD Ht
      */
     double DD_Ht(double y, double z, double t);
-    double IntHt(double y, std::vector<double> par);
-    double IntHt0(double z, std::vector<double> par);
-    NumA::FunctionType1D* m_pint_IntHt; ///< Functor related to IntE for xi <> 0.
-    NumA::FunctionType1D* m_pint_IntHt0; ///< Functor related to IntE for xi = 0.
+    double IntHt(double y, std::vector<double> par); ///< Integrant of GPD Ht for xi <> 0.
+    double IntHt0(double z, std::vector<double> par); ///< Integrant of GPD Ht for xi == 0.
+    NumA::FunctionType1D* m_pint_IntHt; ///< Functor related to IntHt.
+    NumA::FunctionType1D* m_pint_IntHt0; ///< Functor related to IntHt0.
 
-
-    double evaluate(double x, NumA::FunctionType1D* p_fun0, NumA::FunctionType1D* p_fun);
-    PartonDistribution compute(NumA::FunctionType1D* p_fun0, NumA::FunctionType1D* p_fun);
+    /**
+     * Compute GPDs using %double distribution function
+     * by integrating p_fun0 or p_fun function depending on kinematics.
+     *
+     * @param x
+     * @param p_fun0 integrate this function if xi == 0
+     * @param p_fun  integrate this function if xi <> 0
+     * @return computed GPD
+     */
+    double evaluate(double x, NumA::FunctionType1D* p_fun0,
+            NumA::FunctionType1D* p_fun);
+    PartonDistribution compute(NumA::FunctionType1D* p_fun0,
+            NumA::FunctionType1D* p_fun);
 
     void initializeFunctorsForIntegrations(); ///< Initialize functors.
     void deleteFunctorsForIntegrations(); ///< Delete functors.
