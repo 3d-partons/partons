@@ -100,8 +100,8 @@ private:
      * @return GPD E
      */
     double DD_E(double y, double z, double t);
-    double IntE(double y, std::vector<double> par); ///< Integrant of GPD E for xi <> 0.
-    double IntE0(double z, std::vector<double> par); ///< Integrant of GPD E for xi == 0.
+    double IntE(double y, std::vector<double> par); ///< Integrand of GPD E for xi <> 0.
+    double IntE0(double z, std::vector<double> par); ///< Integrand of GPD E for xi == 0.
     NumA::FunctionType1D* m_pint_IntE; ///< Functor related to IntE.
     NumA::FunctionType1D* m_pint_IntE0; ///< Functor related to IntE0.
 
@@ -115,25 +115,10 @@ private:
      * @return GPD H
      */
     double DD_H(double y, double z, double t);
-    double IntH(double y, std::vector<double> par); ///< Integrant of GPD H for xi <> 0.
-    double IntH0(double z, std::vector<double> par); ///< Integrant of GPD H for xi == 0.
+    double IntH(double y, std::vector<double> par); ///< Integrand of GPD H for xi <> 0.
+    double IntH0(double z, std::vector<double> par); ///< Integrand of GPD H for xi == 0.
     NumA::FunctionType1D* m_pint_IntH; ///< Functor related to IntH.
     NumA::FunctionType1D* m_pint_IntH0; ///< Functor related to IntH0.
-
-    /** %Double distribution function for GPD Et. Definition can be found
-     * in Eqs. (4.23) and (4.27) in Ref. @cite Muller:2014tqa.
-     *
-     * @param y %Double distribution parameter y.
-     * @param z %Double distribution parameter z.
-     * @param t %Double distribution parameter t.
-     * @return GPD Et
-     */
-
-    double DD_Et(double y, double z, double t);
-    double IntEt(double y, std::vector<double> par);
-    double IntEt0(double y, std::vector<double> par); ///< Integrant of GPD Et for xi <> 0.
-    NumA::FunctionType1D* m_pint_IntEt; ///< Functor related to IntEt.
-    NumA::FunctionType1D* m_pint_IntEt0; ///< Functor related to IntE for xi <> 0.
 
     /**
      * %Double distribution function for GPD Ht. Definition can be found
@@ -145,10 +130,23 @@ private:
      * @return GPD Ht
      */
     double DD_Ht(double y, double z, double t);
-    double IntHt(double y, std::vector<double> par); ///< Integrant of GPD Ht for xi <> 0.
-    double IntHt0(double z, std::vector<double> par); ///< Integrant of GPD Ht for xi == 0.
+    double IntHt(double y, std::vector<double> par); ///< Integrand of GPD Ht for xi <> 0.
+    double IntHt0(double z, std::vector<double> par); ///< Integrad of GPD Ht for xi == 0.
     NumA::FunctionType1D* m_pint_IntHt; ///< Functor related to IntHt.
     NumA::FunctionType1D* m_pint_IntHt0; ///< Functor related to IntHt0.
+
+    /** %Double distribution function for GPD Et. Definition can be found
+     * in Eqs. (4.23) and (4.27) in Ref. @cite Muller:2014tqa.
+     *
+     * @param y %Double distribution parameter y.
+     * @param z %Double distribution parameter z.
+     * @param t %Double distribution parameter t.
+     * @return GPD Et
+     */
+
+    double DD_Et(double y, double z, double t);
+    double IntEt(double y, std::vector<double> par); ///< Integrand of GPD Et for xi <> 0.
+    NumA::FunctionType1D* m_pint_IntEt; ///< Functor related to IntE for xi <> 0.
 
     /**
      * Compute GPDs using %double distribution function

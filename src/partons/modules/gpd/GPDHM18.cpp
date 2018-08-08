@@ -57,6 +57,7 @@ GPDHM18::GPDHM18(const std::string &className) :
     m_listGPDComputeTypeAvailable.insert(
             std::make_pair(GPDType::Et, &GPDModule::computeEt));
 }
+
 GPDHM18::GPDHM18(const GPDHM18& other) :
         GPDModule(other), MathIntegratorModule(other) {
 
@@ -91,17 +92,14 @@ void GPDHM18::initializeFunctorsForIntegrations() {
     m_pint_IntH0 = NumA::Integrator1D::newIntegrationFunctor(this,
             &GPDHM18::IntH0);
 
-    m_pint_IntEt = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GPDHM18::IntEt);
-
-    m_pint_IntEt0 = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GPDHM18::IntEt0);
-
     m_pint_IntHt = NumA::Integrator1D::newIntegrationFunctor(this,
             &GPDHM18::IntHt);
 
     m_pint_IntHt0 = NumA::Integrator1D::newIntegrationFunctor(this,
             &GPDHM18::IntHt0);
+
+    m_pint_IntEt = NumA::Integrator1D::newIntegrationFunctor(this,
+            &GPDHM18::IntEt);
 }
 
 void GPDHM18::deleteFunctorsForIntegrations() {
@@ -111,10 +109,9 @@ void GPDHM18::deleteFunctorsForIntegrations() {
     delete m_pint_IntE0;
     delete m_pint_IntH;
     delete m_pint_IntH0;
-    delete m_pint_IntEt;
-    delete m_pint_IntEt0;
     delete m_pint_IntHt;
     delete m_pint_IntHt0;
+    delete m_pint_IntEt;
 }
 
 GPDHM18* GPDHM18::clone() const {
@@ -277,15 +274,17 @@ double GPDHM18::IntEt(double y, std::vector<double> par) {
     return 1 / m_xi * DD_Et(y, (x - y) / m_xi, m_t);
 }
 
-double GPDHM18::IntEt0(double y, std::vector<double> par) {
-    return 0;
-}
-
 double GPDHM18::evaluate(double x, NumA::FunctionType1D* p_fun0,
         NumA::FunctionType1D* p_fun) {
     //set variables for integrations
     std::vector<double> parameters;
     parameters.push_back(x);
+
+    //checking kinetic region
+    if (fabs(x) > 1 || fabs(m_xi) > 1)
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter()
+                        << "Calculation not in the kinetic domain.");
 
     //calculate GPD for x < - xi
     if (x < -fabs(m_xi))
@@ -293,16 +292,28 @@ double GPDHM18::evaluate(double x, NumA::FunctionType1D* p_fun0,
 
     //calculate GPD for xi == 0
     if (m_xi == 0)
-        return integrate(p_fun0, -1 + x, 1 - x, parameters);
+        if (p_fun0 == 0)
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    ElemUtils::Formatter() << "Integrand not set.");
+        else
+            return integrate(p_fun0, -1 + x, 1 - x, parameters);
 
     //calculate GPD for xi <> 0 and x > xi
     if (x > fabs(m_xi))
-        return integrate(p_fun, (x - m_xi) / (1 - m_xi),
-                (x + m_xi) / (1 + m_xi), parameters);
+        if (p_fun == 0)
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    ElemUtils::Formatter() << "Integrand not set.");
+        else
+            return integrate(p_fun, (x - m_xi) / (1 - m_xi),
+                    (x + m_xi) / (1 + m_xi), parameters);
 
     //calculate GPD for xi <> 0 and - xi < x < xi
     if (x <= fabs(m_xi) && x >= -fabs(m_xi))
-        return integrate(p_fun, 0., (x + m_xi) / (1 + m_xi), parameters);
+        if (p_fun == 0)
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    ElemUtils::Formatter() << "Integrand not set.");
+        else
+            return integrate(p_fun, 0., (x + m_xi) / (1 + m_xi), parameters);
 
     return 0;
 }
@@ -310,7 +321,7 @@ double GPDHM18::evaluate(double x, NumA::FunctionType1D* p_fun0,
 PartonDistribution GPDHM18::compute(NumA::FunctionType1D* p_fun0,
         NumA::FunctionType1D* p_fun) {
     //variables
-    double aVal = GPDHM18::evaluate(m_x, p_fun0, p_fun);
+    double aValPx = GPDHM18::evaluate(m_x, p_fun0, p_fun);
     double aValMx = GPDHM18::evaluate(-m_x, p_fun0, p_fun);
     double Sea = 0;
     double g = 0;
@@ -320,9 +331,9 @@ PartonDistribution GPDHM18::compute(NumA::FunctionType1D* p_fun0,
     QuarkDistribution quarkDistribution(QuarkFlavor::UNDEFINED);
     GluonDistribution gluonDistribution(g);
 
-    quarkDistribution.setQuarkDistribution(aVal + Sea);
-    quarkDistribution.setQuarkDistributionPlus(aVal - aValMx + 2 * Sea);
-    quarkDistribution.setQuarkDistributionMinus(aVal + aValMx);
+    quarkDistribution.setQuarkDistribution(aValPx + Sea);
+    quarkDistribution.setQuarkDistributionPlus(aValPx - aValMx + 2 * Sea);
+    quarkDistribution.setQuarkDistributionMinus(aValPx + aValMx);
 
     partonDistribution.setGluonDistribution(gluonDistribution);
     partonDistribution.addQuarkDistribution(quarkDistribution);
@@ -347,19 +358,19 @@ PartonDistribution GPDHM18::computeHt() {
 }
 
 PartonDistribution GPDHM18::computeEt() {
+    //No result of GPH Et for xi == 0.
     PartonDistribution no_result;
-
-    //return null quark parton distribution for GPH Et for xi == 0.
     if (m_xi == 0) {
         warn(__func__,
                 ElemUtils::Formatter()
-                        << "Quark GPD Et is divergent for xi=0 in the SDQM by Hwang-Mueller. No result returned.");
-
+                        << "GPD Et is divergent for xi==0 in the SDQM by Hwang-Mueller.");
+        warn(__func__,
+                ElemUtils::Formatter()
+                        << "No quark GPD Et result will be returned. ");
         return no_result;
-    }
-
-    //compute and return parton distribution for GPH Et for xi <> 0.
-    return GPDHM18::compute(m_pint_IntEt0, m_pint_IntEt);
+    } else
+        //compute and return parton distribution for GPH Et for xi <> 0.
+        return GPDHM18::compute(0, m_pint_IntEt);
 }
 
 } /* namespace PARTONS */
