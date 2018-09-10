@@ -17,7 +17,6 @@
 
 namespace PARTONS {
 
-//TODO add citation to the bibliography
 /**
  * @class GPDHM18
  *
@@ -25,10 +24,10 @@ namespace PARTONS {
  * of GPDs back to the Jakob-Mulders-Rodrigues paper hep-ph/9704335
  * @cite Jakob:1997wg.
  *
- * Later has been studied by Dae Sung Hwang and Dieter Mueller.
- * The short description of the model is given in arXiv:0710.1567
- * @cite Hwang:2007tb. In the Ref. arXiv:1407.16655 @cite Muller:2014tqa
- * full description is given.
+ * Later, the model has been studied by Dae Sung Hwang and Dieter Mueller.
+ * The short description of the GPDs derived from this model is given in
+ * arXiv:0710.1567 @cite Hwang:2007tb. In the Ref. arXiv:1407.16655
+ * @cite Muller:2014tqa full description is given.
  *
  * Available GPD types: H, Ht, E, Et.
  */
@@ -149,7 +148,7 @@ private:
     NumA::FunctionType1D* m_pint_IntEt; ///< Functor related to IntE for xi <> 0.
 
     /**
-     * Compute GPDs using %double distribution function
+     * Evaluates GPDs using %double distribution function
      * by integrating p_fun0 or p_fun function depending on kinematics.
      *
      * @param x
@@ -159,6 +158,15 @@ private:
      */
     double evaluate(double x, NumA::FunctionType1D* p_fun0,
             NumA::FunctionType1D* p_fun);
+
+    /**
+     * Computes GPDs using GPDHM18::evaluate function
+     * and creates appropriate parton distributions.
+     *
+     * @param p_fun0 integrate this function if xi == 0
+     * @param p_fun integrate this function if xi <> 0
+     * @return parton distributions
+     */
     PartonDistribution compute(NumA::FunctionType1D* p_fun0,
             NumA::FunctionType1D* p_fun);
 

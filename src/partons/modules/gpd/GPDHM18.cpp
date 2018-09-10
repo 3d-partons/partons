@@ -243,7 +243,7 @@ double GPDHM18::DD_Ht(double y, double z, double t) {
     double Num = pow(pow(1 - y, 2) - pow(z, 2), m_p);
     double Den = (1 - y) * m2 / M2 + y * lambda2 / M2 - y * (1 - y)
             - (pow(1 - y, 2) - pow(z, 2)) * t / 4 / M2;
-    return m_N / 2 * (2 * y * m_m / m_M + m2 / M2 * y - y * lambda2 / M2 + y)
+    return m_N / 2 * (m2 / M2 * y - y * lambda2 / M2 + y+2 * y * m_m / m_M )
             * Num / pow(Den, 2 * m_p + 1)
             - m_N * (1 - 2 * m_p) / (4 * m_p) * Num / pow(Den, 2 * m_p);
 }
