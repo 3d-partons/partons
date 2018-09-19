@@ -3,10 +3,9 @@
 [TOC]
 
 # Publications {#tandp_publications} 
-* H. Moutarde, P. Sznajder, J. Wagner, *Border and skewness functions from a leading order fit to DVCS data*<br>
-[arXiv:1807.07620 \[hep-ph\]](https://arxiv.org/abs/1807.07620)
-* B. Berthou, D. Binosi, N. Chouika, L. Colaneri, M. Guidal, C. Mezrag, H. Moutarde, J. Rodríguez-Quintero, F. Sabatié, P. Sznajder, J. Wagner, *%PARTONS: PARtonic Tomography Of Nucleon Software: A computing platform for the phenomenology of Generalized Parton Distributions*, Eur. Phys. J. C78 (2018), 478<br>
-[arXiv:1512.06174 \[hep-ph\]](https://arxiv.org/abs/1512.06174) &nbsp;&nbsp;&nbsp; [DOI: 10.1140/epjc/s10052-018-5948-0](https://doi.org/10.1140/epjc/s10052-018-5948-0)
+
+* B. Berthou, D. Binosi, N. Chouika, M. Guidal, C. Mezrag, H. Moutarde, F. Sabatié, P. Sznajder, J. Wagner, *%PARTONS: PARtonic Tomography Of Nucleon Software: A computing platform for the phenomenology of Generalized Parton Distributions*, 
+[arXiv:1512.06174 \[hep-ph\]](https://arxiv.org/abs/1512.06174)
 
 <hr>
 

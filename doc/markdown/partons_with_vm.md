@@ -6,26 +6,24 @@
 
 You can use our provided virtual machine with an out-of-the-box %PARTONS runtime and development environment. This is the easiest way to start your experience with %PARTONS. The virtual machine comes with the latest %PARTONS version, Eclipse CDT IDE platform, all needed libraries and a predefined MySQL database. It is based on Debian 9.1 with Xfce desktop environment. 
 
-This page explains how to install the required virtualization software, download our virtual machine image, set it up and use it. It contains also a set of useful tips for troubleshooting and further improving your work.
+This page explains how to install the required virtualization software, download our virtual machine, set it up and use it. It contains also a set of useful tips for troubleshooting and further improving your work.
 
 <hr>
 
 # Virtualization software {#vm_virtualization}
 
-We recommend you to use VirtualBox ([https://www.virtualbox.org](https://www.virtualbox.org)) on your host machine. For Windows and MacOS download the latest version of VirtualBox from [the official download page](https://www.virtualbox.org/wiki/Downloads) and install it. For Linux you should be able to install VirtualBox through the repositories:
+You need VirtualBox ([https://www.virtualbox.org](https://www.virtualbox.org)) on your host machine. For Windows and MacOS download the latest version of VirtualBox from [the official download page](https://www.virtualbox.org/wiki/Downloads) and install it. For Linux you should be able to install VirtualBox through the repositories:
 ~~~~~~~~~~~~~{.sh}
 # on Debian-like (Debian, Ubuntu, etc.) distribution
 sudo apt-get install virtualbox
 ~~~~~~~~~~~~~
 For other Linux distributions and operating systems some adjustments to the installation receipt may be needed. If the installation via the repositories fails, visit [the official download page for Linux](https://www.virtualbox.org/wiki/Linux_Downloads) and follow the instruction to update your repository list or download and install the appropriate package manually.  
 
-As an alternative virtualization software you can use [Hyper-V](@ref hyper-v) on your host machine.
-
 <hr>
 
 # Download and set-up our virtual machine {#vm_download}
 
-The image of our virtual machine can be downloaded from [this page](@ref download_vm). When the download is completed, open VirtualBox and navigate through the menu: `File` > `Import Appliance`. Select the downloaded file, click on `Next` button and finish the straightforward procedure. Now, you can run the new virtual machine that has appeared in the list on the left side of the VirtualBox window. The previously downloaded file will not be needed anymore. 
+The image of our virtual machine can be downloaded from [this page](@ref download_vm). Whe the download is completed, open VirtualBox and navigate through the menu: `File` > `Import Appliance`. Select the downloaded file, click on `Next` button and finish the straightforward procedure. Now, you can run the new virtual machine that has appeared in the list on the left side of the VirtualBox window. The previously downloaded file will not be needed anymore. 
 
 <hr>
 
@@ -36,17 +34,6 @@ To start our virtual machine double-click on the corresponding entry in the list
 <hr>
 
 # Tips and troubleshooting {#vm_tips}
-
-## Hyper-V {#vm_tips_hyper-v}
-
-In some cases the VirtualBox is not supported by the Windows operation system.
-As a result error `Raw-mode is unavailable courtesy of Hyper-V` occurs
-when one wants to run any virtual machine.
-![](../images/VirtualBox_error.png "Error in Virtual Box")
-Windows uses its own virtual machine software, which is incompatible with Virtual Box.
-That is the origin of the error. 
-In that case one possibility is to turn off completely Hyper-V, the other possibility is to run %PARTONS virtual machine in Hyper-V.
-See [this tutorial](@ref hyper-v) for later.
 
 ## Keyboard layout {#vm_tips_keyboard}
 
