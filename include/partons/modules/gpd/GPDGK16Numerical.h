@@ -190,21 +190,9 @@ private:
     void throwBetaException(const std::string &funcName, double betaValue);
 
     NumA::FunctionType1D* m_pIntegralHuVal;
-    NumA::FunctionType1D* m_pIntegralHtuVal;
     NumA::FunctionType1D* m_pIntegralHdVal;
-    NumA::FunctionType1D* m_pIntegralHtdVal;
     NumA::FunctionType1D* m_pIntegralHuValMx;
-    NumA::FunctionType1D* m_pIntegralHtuValMx;
     NumA::FunctionType1D* m_pIntegralHdValMx;
-    NumA::FunctionType1D* m_pIntegralHtdValMx;
-    NumA::FunctionType1D* m_pIntegralxLargeHuSea;
-    NumA::FunctionType1D* m_pIntegralxLargeHdSea;
-    NumA::FunctionType1D* m_pIntegralxSmall1HuSea;
-    NumA::FunctionType1D* m_pIntegralxSmall2HuSea;
-    NumA::FunctionType1D* m_pIntegralxSmall1HdSea;
-    NumA::FunctionType1D* m_pIntegralxSmall2HdSea;
-    NumA::FunctionType1D* m_pIntegralxLargeHuSeaMx;
-    NumA::FunctionType1D* m_pIntegralxLargeHdSeaMx;
     NumA::FunctionType1D* m_pIntegralxLargeHsSea;
     NumA::FunctionType1D* m_pIntegralxSmallHsSea;
     NumA::FunctionType1D* m_pIntegralxSmall1HsSea;
@@ -215,6 +203,10 @@ private:
     NumA::FunctionType1D* m_pIntegralxSmall2Hg;
     NumA::FunctionType1D* m_pIntegralxLargeHgMx;
 
+    NumA::FunctionType1D* m_pIntegralHtuVal;
+    NumA::FunctionType1D* m_pIntegralHtdVal;
+    NumA::FunctionType1D* m_pIntegralHtuValMx;
+    NumA::FunctionType1D* m_pIntegralHtdValMx;
     NumA::FunctionType1D* m_pIntegralxLargeHtg;
     NumA::FunctionType1D* m_pIntegralxSmall1Htg;
     NumA::FunctionType1D* m_pIntegralxSmall2Htg;
@@ -238,7 +230,6 @@ private:
     NumA::FunctionType1D* m_pIntegralEtdVal;
     NumA::FunctionType1D* m_pIntegralEtuValMx;
     NumA::FunctionType1D* m_pIntegralEtdValMx;
-
 };
 
 } /* namespace PARTONS */

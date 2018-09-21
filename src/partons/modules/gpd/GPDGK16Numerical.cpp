@@ -64,6 +64,48 @@ GPDGK16Numerical* GPDGK16Numerical::clone() const {
 }
 
 GPDGK16Numerical::~GPDGK16Numerical() {
+
+    if(m_pIntegralHuVal){ delete m_pIntegralHuVal; m_pIntegralHuVal = 0;}
+    if(m_pIntegralHdVal){ delete m_pIntegralHdVal; m_pIntegralHdVal = 0;}
+    if(m_pIntegralHuValMx){ delete m_pIntegralHuValMx; m_pIntegralHuValMx = 0;}
+    if(m_pIntegralHdValMx){ delete m_pIntegralHdValMx; m_pIntegralHdValMx = 0;}
+    if(m_pIntegralxLargeHsSea){ delete m_pIntegralxLargeHsSea; m_pIntegralxLargeHsSea = 0;}
+    if(m_pIntegralxSmallHsSea){ delete m_pIntegralxSmallHsSea; m_pIntegralxSmallHsSea = 0;}
+    if(m_pIntegralxSmall1HsSea){ delete m_pIntegralxSmall1HsSea; m_pIntegralxSmall1HsSea = 0;}
+    if(m_pIntegralxSmall2HsSea){ delete m_pIntegralxSmall2HsSea; m_pIntegralxSmall2HsSea = 0;}
+    if(m_pIntegralxLargeHsSeaMx){ delete m_pIntegralxLargeHsSeaMx; m_pIntegralxLargeHsSeaMx = 0;}
+    if(m_pIntegralxLargeHg){ delete m_pIntegralxLargeHg; m_pIntegralxLargeHg = 0;}
+    if(m_pIntegralxSmall1Hg){ delete m_pIntegralxSmall1Hg; m_pIntegralxSmall1Hg = 0;}
+    if(m_pIntegralxSmall2Hg){ delete m_pIntegralxSmall2Hg; m_pIntegralxSmall2Hg = 0;}
+    if(m_pIntegralxLargeHgMx){ delete m_pIntegralxLargeHgMx; m_pIntegralxLargeHgMx = 0;}
+
+    if(m_pIntegralHtuVal){ delete m_pIntegralHtuVal; m_pIntegralHtuVal = 0;}
+    if(m_pIntegralHtdVal){ delete m_pIntegralHtdVal; m_pIntegralHtdVal = 0;}
+    if(m_pIntegralHtuValMx){ delete m_pIntegralHtuValMx; m_pIntegralHtuValMx = 0;}
+    if(m_pIntegralHtdValMx){ delete m_pIntegralHtdValMx; m_pIntegralHtdValMx = 0;}
+    if(m_pIntegralxLargeHtg){ delete m_pIntegralxLargeHtg; m_pIntegralxLargeHtg = 0;}
+    if(m_pIntegralxSmall1Htg){ delete m_pIntegralxSmall1Htg; m_pIntegralxSmall1Htg = 0;}
+    if(m_pIntegralxSmall2Htg){ delete m_pIntegralxSmall2Htg; m_pIntegralxSmall2Htg = 0;}
+    if(m_pIntegralxLargeHtgMx){ delete m_pIntegralxLargeHtgMx; m_pIntegralxLargeHtgMx = 0;}
+
+    if(m_pIntegralEuVal){ delete m_pIntegralEuVal; m_pIntegralEuVal = 0;}
+    if(m_pIntegralEdVal){ delete m_pIntegralEdVal; m_pIntegralEdVal = 0;}
+    if(m_pIntegralEuValMx){ delete m_pIntegralEuValMx; m_pIntegralEuValMx = 0;}
+    if(m_pIntegralEdValMx){ delete m_pIntegralEdValMx; m_pIntegralEdValMx = 0;}
+    if(m_pIntegralxLargeEsSea){ delete m_pIntegralxLargeEsSea; m_pIntegralxLargeEsSea = 0;}
+    if(m_pIntegralxLargeEsSeaMx){ delete m_pIntegralxLargeEsSeaMx; m_pIntegralxLargeEsSeaMx = 0;}
+    if(m_pIntegralxSmallEsSea){ delete m_pIntegralxSmallEsSea; m_pIntegralxSmallEsSea = 0;}
+    if(m_pIntegralxSmall1EsSea){ delete m_pIntegralxSmall1EsSea; m_pIntegralxSmall1EsSea = 0;}
+    if(m_pIntegralxSmall2EsSea){ delete m_pIntegralxSmall2EsSea; m_pIntegralxSmall2EsSea = 0;}
+    if(m_pIntegralxLargeEgSea){ delete m_pIntegralxLargeEgSea; m_pIntegralxLargeEgSea = 0;}
+    if(m_pIntegralxLargeEgSeaMx){ delete m_pIntegralxLargeEgSeaMx; m_pIntegralxLargeEgSeaMx = 0;}
+    if(m_pIntegralxSmall1EgSea){ delete m_pIntegralxSmall1EgSea; m_pIntegralxSmall1EgSea = 0;}
+    if(m_pIntegralxSmall2EgSea){ delete m_pIntegralxSmall2EgSea; m_pIntegralxSmall2EgSea = 0;}
+
+    if(m_pIntegralEtuVal){ delete m_pIntegralEtuVal; m_pIntegralEtuVal = 0;}
+    if(m_pIntegralEtdVal){ delete m_pIntegralEtdVal; m_pIntegralEtdVal = 0;}
+    if(m_pIntegralEtuValMx){ delete m_pIntegralEtuValMx; m_pIntegralEtuValMx = 0;}
+    if(m_pIntegralEtdValMx){ delete m_pIntegralEtdValMx; m_pIntegralEtdValMx = 0;}
 }
 
 void GPDGK16Numerical::configure(const ElemUtils::Parameters &parameters) {
