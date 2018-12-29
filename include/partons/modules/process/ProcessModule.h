@@ -13,9 +13,9 @@
 #include <string>
 
 #include "../../beans/automation/BaseObjectData.h"
+#include "../../beans/channel/ChannelType.h"
 #include "../../beans/gpd/GPDType.h"
 #include "../../beans/List.h"
-#include "../../beans/observable/ObservableChannel.h"
 #include "../../ModuleObject.h"
 
 namespace NumA {
@@ -126,7 +126,7 @@ protected:
     ProcessModule(const ProcessModule &other);
 
     //TODO doc
-    ObservableChannel::Type m_channel;  ///< Type of channel (i.e. experimental process).
+    ChannelType::Type m_channel;  ///< Type of channel (i.e. experimental process).
 
     // Invariant scalars
     double m_xB;        ///< Bjorken variable.

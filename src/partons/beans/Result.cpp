@@ -4,18 +4,22 @@
 
 namespace PARTONS {
 
-
-Result::Result(const std::string &className) :
-        BaseObject(className), m_computationModuleName("UNDEFINED") {
+Result::Result(const std::string &className, ChannelType::Type channelType) :
+        BaseObject(className), m_channelType(channelType), m_computationModuleName(
+                "UNDEFINED") {
 }
 
 Result::Result(const Result &other) :
-        BaseObject(other) {
+        BaseObject(other), m_channelType(other.m_channelType), m_computationModuleName(
+                other.m_computationModuleName) {
     m_resultInfo = other.m_resultInfo;
-    m_computationModuleName = other.m_computationModuleName;
 }
 
 Result::~Result() {
+}
+
+ChannelType::Type Result::getChannelType() const {
+    return m_channelType;
 }
 
 void Result::setComputationModuleName(const std::string& moduleName) {
@@ -35,11 +39,18 @@ void Result::setResultInfo(const ResultInfo& resultInfo) {
 }
 
 std::string Result::toString() const {
+
     ElemUtils::Formatter formatter;
 
-    formatter << m_resultInfo.toString() << '\n';
+    formatter << BaseObject::toString();
+    formatter << "Channel type: " << ChannelType(m_channelType).toString()
+            << '\n';
+    formatter << "Computation module name: "
+            << ChannelType(m_channelType).toString() << '\n';
+    formatter << "Result info: " << m_resultInfo.toString() << '\n';
 
     return formatter.str();
 }
 
 } /* namespace PARTONS */
+

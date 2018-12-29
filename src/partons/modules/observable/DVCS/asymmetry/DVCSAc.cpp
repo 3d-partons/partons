@@ -16,7 +16,7 @@ const unsigned int DVCSAc::classId =
 
 DVCSAc::DVCSAc(const std::string &className) :
 		Observable(className) {
-	m_channel = ObservableChannel::DVCS;
+	m_channel = ChannelType::DVCS;
 }
 
 DVCSAc::DVCSAc(const DVCSAc& other) :

@@ -12,7 +12,7 @@
 
 #include "../beans/gpd/GPDType.h"
 #include "../beans/List.h"
-#include "../beans/observable/ObservableChannel.h"
+#include "../beans/channel/ChannelType.h"
 #include "../beans/observable/ObservableKinematic.h"
 #include "../beans/observable/ObservableResult.h"
 #include "../ServiceObjectTyped.h"
@@ -177,9 +177,9 @@ public:
     /**
      * @brief Returns the channel of a given Observable.\ E.g.\ DVCS.
      * @param observableClassName Class name of the Observable.
-     * @return ObservableChannel.
+     * @return ChannelType.
      */
-    ObservableChannel::Type getObservableChannel(
+    ChannelType::Type getObservableChannel(
             const std::string &observableClassName) const;
 
 //    Observable* configureObservable(Observable* pObservable,

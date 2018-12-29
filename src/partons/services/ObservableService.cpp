@@ -221,7 +221,7 @@ List<ObservableResult> ObservableService::computeManyKinematicOneModelTask(
     return results;
 }
 
-ObservableChannel::Type ObservableService::getObservableChannel(
+ChannelType::Type ObservableService::getObservableChannel(
         const std::string& observableClassName) const {
     BaseObjectRegistry* pBaseObjectRegistry =
             Partons::getInstance()->getBaseObjectRegistry();

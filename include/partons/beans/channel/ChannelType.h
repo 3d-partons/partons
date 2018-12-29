@@ -1,8 +1,8 @@
-#ifndef OBSERVABLE_CHANNEL_H
-#define OBSERVABLE_CHANNEL_H
+#ifndef CHANNEL_TYPE_H
+#define CHANNEL_TYPE_H
 
 /**
- * @file ObservableChannel.h
+ * @file ChannelType.h
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
  * @date November 26, 2014
  * @version 1.0
@@ -13,41 +13,41 @@
 namespace PARTONS {
 
 /**
- * @class ObservableChannel
+ * @class ChannelType
  *
- * @brief Definition of enumeration values for observable channels.
+ * @brief Definition of enumeration values for channels.
  *
- * This class defines a set of enumeration values that are used to distinguish between observable channels. In addition, a declared object of this class is always associated to one observable channel (see ObservableChannel::m_type), so member functions can act on it. E.g.
+ * This class defines a set of enumeration values that are used to distinguish between channels. In addition, a declared object of this class is always associated to one channel (see ChannelType::m_type), so member functions can act on it. E.g.
  \code{.cpp}
  //this is single enum variable - nothing to play with
- ObservableChannel::Type enum_variable = ObservableChannel::DVCS;
+ ChannelType::Type enum_variable = ChannelType::DVCS;
 
  //this is declared object
- ObservableChannel enum_object;
+ ChannelType enum_object;
 
- //let us assign some type (default is ObservableChannel::UNDEFINED)
+ //let us assign some type (default is ChannelType::UNDEFINED)
  enum_object.setType(enum_variable);
 
  //with objects you can use available functions, e.g. you can represent enumeration type by a corresponding string
  std::string enum_string_1 = enum_object.toString();
 
  //you can achieve some basic operations without the explicit declaration of objects by using the assignment constructor
- std::string enum_string_2 = ObservableChannel(ObservableChannel::DVMP).toString();
+ std::string enum_string_2 = ChannelType(ChannelType::DVMP).toString();
 
- Partons::getInstance()->getLoggerManager()->info("example", __func__, ElemUtils::Formatter() << "Observable channel is: " << enum_string_1);
- Partons::getInstance()->getLoggerManager()->info("example", __func__, ElemUtils::Formatter() << "Observable channel is: " << enum_string_2);
+ Partons::getInstance()->getLoggerManager()->info("example", __func__, ElemUtils::Formatter() << "Channel is: " << enum_string_1);
+ Partons::getInstance()->getLoggerManager()->info("example", __func__, ElemUtils::Formatter() << "Channel is: " << enum_string_2);
  \endcode
  which gives via Logger:
  \code
- 20-05-2017 12:01:45 [INFO] (example::main) Observable channel is: DVCS
- 20-05-2017 12:01:45 [INFO] (example::main) Observable channel is: DVMP
+ 20-05-2017 12:01:45 [INFO] (example::main) Channel is: DVCS
+ 20-05-2017 12:01:45 [INFO] (example::main) Channel is: DVMP
  \endcode
  */
-class ObservableChannel {
+class ChannelType {
 public:
 
     /**
-     * Definition of enumerate values corresponding to observable channels.
+     * Definition of enumerate values corresponding to channels.
      */
     enum Type {
         UNDEFINED, //!< Undefined type.
@@ -59,18 +59,18 @@ public:
     /**
      * Default constructor.
      */
-    ObservableChannel();
+    ChannelType();
 
     /**
      * Assignment constructor.
      * @param type Type to be assigned.
      */
-    ObservableChannel(Type type);
+    ChannelType(Type type);
 
     /**
      * Destructor.
      */
-    virtual ~ObservableChannel();
+    virtual ~ChannelType();
 
     /**
      * Automatic cast to enum.
@@ -79,13 +79,13 @@ public:
 
     /**
      * Get string representation of type being assigned to a declared object of this class.
-     * @return String representation of assigned type, like "DVCS" for ObservableChannel::DVCS.
+     * @return String representation of assigned type, like "DVCS" for ChannelType::DVCS.
      */
     std::string toString() const;
 
     /**
      * Get short name representation of type being assigned to a declared object of this class.
-     * @return Short string representation of assigned type, like "DVCS" for ObservableChannel:DVCS.
+     * @return Short string representation of assigned type, like "DVCS" for ChannelType:DVCS.
      */
     std::string getShortName();
 
@@ -96,7 +96,7 @@ public:
     /**
      * Get type being assigned to a declared object of this class.
      */
-    ObservableChannel::Type getType() const;
+    ChannelType::Type getType() const;
 
     /**
      * Assign type to a declared object of this class.
@@ -108,9 +108,9 @@ private:
     /**
      * Type associated to a declared object of this class.
      */
-    ObservableChannel::Type m_type;
+    ChannelType::Type m_type;
 };
 
 } /* namespace PARTONS */
 
-#endif /* OBSERVABLE_CHANNEL_H */
+#endif /* CHANNEL_TYPE_H */

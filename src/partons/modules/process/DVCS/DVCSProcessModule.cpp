@@ -22,7 +22,7 @@ namespace PARTONS {
 DVCSProcessModule::DVCSProcessModule(const std::string &className) :
         ProcessModule(className), m_phaseSpace(0.), m_tmin(0.), m_tmax(0.), m_xBmin(
                 0), m_y(0.), m_epsilon(0.) {
-    m_channel = ObservableChannel::DVCS;
+    m_channel = ChannelType::DVCS;
 }
 
 DVCSProcessModule::~DVCSProcessModule() {
@@ -225,14 +225,14 @@ void DVCSProcessModule::setConvolCoeffFunctionModule(
         ConvolCoeffFunctionModule* pConvolCoeffFunctionModule) {
     if (pConvolCoeffFunctionModule) {
         if (pConvolCoeffFunctionModule->getChannel()
-                == ObservableChannel::DVCS) {
+                == ChannelType::DVCS) {
             ProcessModule::setConvolCoeffFunctionModule(
                     pConvolCoeffFunctionModule);
         } else {
             throw ElemUtils::CustomException(getClassName(), __func__,
                     ElemUtils::Formatter()
                             << "Cannot set ConvolCoeffFunctionModule, because its channel is different from ProcessModule : "
-                            << ObservableChannel(
+                            << ChannelType(
                                     pConvolCoeffFunctionModule->getChannel()).toString());
         }
     } else {

@@ -42,11 +42,11 @@ void BaseObject::resolveObjectDependencies() {
 }
 
 std::string BaseObject::toString() const {
+
     ElemUtils::Formatter formatter;
 
-    formatter << "[" << getClassName() << "]\n";
-    formatter << "m_className = " << m_className << " - " << "m_objectId = "
-            << m_objectId << " indexId = " << m_indexId;
+    formatter << "Class name (object and index IDs): " << getClassName() << " ("
+            << m_objectId << ", " << m_objectId << ")\n";
 
     return formatter.str();
 }

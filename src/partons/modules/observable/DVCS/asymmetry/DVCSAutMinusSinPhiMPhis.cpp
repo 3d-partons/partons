@@ -1,8 +1,9 @@
 #include <NumA/linear_algebra/vector/Vector3D.h>
 
-#include "../../../../../../include/partons/beans/observable/ObservableChannel.h"
 #include "../../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../../include/partons/modules/observable/DVCS/asymmetry/DVCSAutMinusSinPhiMPhis.h"
+
+#include "../../../../../../include/partons/beans/channel/ObservableChannel.h"
 #include "../../../../../../include/partons/modules/process/ProcessModule.h"
 
 namespace PARTONS {
@@ -13,7 +14,7 @@ const unsigned int DVCSAutMinusSinPhiMPhis::classId =
 
 DVCSAutMinusSinPhiMPhis::DVCSAutMinusSinPhiMPhis(const std::string &className) :
         Observable(className) {
-    m_channel = ObservableChannel::DVCS;
+    m_channel = ChannelType::DVCS;
 }
 
 DVCSAutMinusSinPhiMPhis::DVCSAutMinusSinPhiMPhis(

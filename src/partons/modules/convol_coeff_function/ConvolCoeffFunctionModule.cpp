@@ -22,7 +22,7 @@ const std::string ConvolCoeffFunctionModule::CONVOL_COEFF_FUNCTION_MODULE_CLASS_
 ConvolCoeffFunctionModule::ConvolCoeffFunctionModule(
         const std::string &className) :
         ModuleObject(className), m_isGPDModuleDependent(true), MathIntegratorModule(), m_pGPDModule(
-                0), m_channel(ObservableChannel::UNDEFINED) {
+                0), m_channel(ChannelType::UNDEFINED) {
 }
 
 ConvolCoeffFunctionModule::~ConvolCoeffFunctionModule() {
@@ -111,11 +111,11 @@ void ConvolCoeffFunctionModule::setGPDModule(GPDModule* gpdModule) {
     m_pGPDModule = gpdModule;
 }
 
-ObservableChannel::Type ConvolCoeffFunctionModule::getChannel() const {
+ChannelType::Type ConvolCoeffFunctionModule::getChannel() const {
     return m_channel;
 }
 
-void ConvolCoeffFunctionModule::setChannel(ObservableChannel::Type channel) {
+void ConvolCoeffFunctionModule::setChannel(ChannelType::Type channel) {
     m_channel = channel;
 }
 

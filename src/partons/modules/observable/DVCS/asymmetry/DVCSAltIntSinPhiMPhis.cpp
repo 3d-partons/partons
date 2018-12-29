@@ -14,7 +14,7 @@ const unsigned int DVCSAltIntSinPhiMPhis::classId =
 
 DVCSAltIntSinPhiMPhis::DVCSAltIntSinPhiMPhis(const std::string &className) :
         Observable(className) {
-    m_channel = ObservableChannel::DVCS;
+    m_channel = ChannelType::DVCS;
 }
 
 DVCSAltIntSinPhiMPhis::DVCSAltIntSinPhiMPhis(const DVCSAltIntSinPhiMPhis& other) :

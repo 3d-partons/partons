@@ -14,10 +14,10 @@
 #include <string>
 
 #include "../../beans/automation/BaseObjectData.h"
+#include "../../beans/channel/ChannelType.h"
 #include "../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "../../beans/gpd/GPDType.h"
 #include "../../beans/List.h"
-#include "../../beans/observable/ObservableChannel.h"
 #include "../../ModuleObject.h"
 #include "../MathIntegratorModule.h"
 
@@ -104,12 +104,12 @@ public:
      *
      * @return Type of channel (i.e. experimental process).
      */
-    ObservableChannel::Type getChannel() const;
+    ChannelType::Type getChannel() const;
     /**
      *
      * @param channel Type of channel (i.e. experimental process).
      */
-    void setChannel(ObservableChannel::Type channel);
+    void setChannel(ChannelType::Type channel);
     /**
      *
      * @return Boolean (true if this CCF module depends on a GPD module).
@@ -131,7 +131,7 @@ protected:
     ConvolCoeffFunctionModule(const ConvolCoeffFunctionModule &other);
 
     //TODO doc
-    ObservableChannel::Type m_channel; ///< Type of channel (i.e. experimental process).
+    ChannelType::Type m_channel; ///< Type of channel (i.e. experimental process).
 
     GPDModule* m_pGPDModule; ///< Pointer to the underlying GPD module.
 

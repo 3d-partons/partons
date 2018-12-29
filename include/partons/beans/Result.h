@@ -10,6 +10,7 @@
 
 #include <string>
 
+#include "channel/ChannelType.h"
 #include "system/ResultInfo.h"
 
 namespace PARTONS {
@@ -27,9 +28,10 @@ public:
 
     /**
      * Default constructor.
-     * @param className Name of class to be associated to BaseObject (see BaseObject::m_className variable)
+     * @param className Name of class to be associated to BaseObject (see BaseObject::m_className variable).
+     * @param channelType Channel type.
      */
-    Result(const std::string &className);
+    Result(const std::string &className, ChannelType::Type channelType);
 
     /**
      * Copy constructor.
@@ -49,14 +51,14 @@ public:
     //********************************************************
 
     /**
-     * Get information on this result.
+     * Get channel type.
      */
-    const ResultInfo& getResultInfo() const;
+    ChannelType::Type getChannelType() const;
 
     /**
-     * Set information on this result.
+     * Set name of module used to evaluate this result.
      */
-    void setResultInfo(const ResultInfo& resultInfo);
+    void setComputationModuleName(const std::string& moduleName);
 
     /**
      * Get name of module used to evaluate this result.
@@ -64,21 +66,31 @@ public:
     const std::string& getComputationModuleName() const;
 
     /**
-     * Set name of module used to evaluate this result.
+     * Set information on this result.
      */
-    void setComputationModuleName(const std::string& moduleName);
+    void setResultInfo(const ResultInfo& resultInfo);
+
+    /**
+     * Get information on this result.
+     */
+    const ResultInfo& getResultInfo() const;
 
 private:
 
     /**
-     * Information on this result.
+     * Channel type.
      */
-    ResultInfo m_resultInfo;
+    ChannelType::Type m_channelType;
 
     /**
      * Name of module used to evaluate this result.
      */
     std::string m_computationModuleName;
+
+    /**
+     * Information on this result.
+     */
+    ResultInfo m_resultInfo;
 };
 
 } /* namespace PARTONS */

@@ -15,7 +15,7 @@ const unsigned int DVCSAluInt::classId =
 
 DVCSAluInt::DVCSAluInt(const std::string &className) :
         Observable(className) {
-    m_channel = ObservableChannel::DVCS;
+    m_channel = ChannelType::DVCS;
 }
 
 DVCSAluInt::DVCSAluInt(const DVCSAluInt& other) :

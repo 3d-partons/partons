@@ -18,7 +18,7 @@ const unsigned int DVCSCrossSectionDifferenceLUMinus::classId =
 DVCSCrossSectionDifferenceLUMinus::DVCSCrossSectionDifferenceLUMinus(
         const std::string &className) :
         Observable(className) {
-    m_channel = ObservableChannel::DVCS;
+    m_channel = ChannelType::DVCS;
 }
 
 DVCSCrossSectionDifferenceLUMinus::DVCSCrossSectionDifferenceLUMinus(

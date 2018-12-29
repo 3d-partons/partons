@@ -1,20 +1,19 @@
-#include "../../../../include/partons/beans/observable/ObservableChannel.h"
+#include "../../../../include/partons/beans/channel/ChannelType.h"
 
 namespace PARTONS {
 
-
-ObservableChannel::ObservableChannel() :
-        m_type(ObservableChannel::UNDEFINED) {
+ChannelType::ChannelType() :
+        m_type(ChannelType::UNDEFINED) {
 }
 
-ObservableChannel::ObservableChannel(Type type) :
+ChannelType::ChannelType(Type type) :
         m_type(type) {
 }
-ObservableChannel::operator ObservableChannel::Type() const {
+ChannelType::operator ChannelType::Type() const {
     return m_type;
 }
 
-std::string ObservableChannel::toString() const {
+std::string ChannelType::toString() const {
     switch (m_type) {
     case DVCS:
         return "DVCS";
@@ -30,7 +29,7 @@ std::string ObservableChannel::toString() const {
     }
 }
 
-std::string ObservableChannel::getShortName() {
+std::string ChannelType::getShortName() {
     switch (m_type) {
     case DVCS:
         return "DVCS";
@@ -46,15 +45,15 @@ std::string ObservableChannel::getShortName() {
     }
 }
 
-ObservableChannel::Type ObservableChannel::getType() const {
+ChannelType::Type ChannelType::getType() const {
     return m_type;
 }
 
-void ObservableChannel::setType(Type type) {
+void ChannelType::setType(Type type) {
     m_type = type;
 }
 
-ObservableChannel::~ObservableChannel() {
+ChannelType::~ChannelType() {
 }
 
 } /* namespace PARTONS */

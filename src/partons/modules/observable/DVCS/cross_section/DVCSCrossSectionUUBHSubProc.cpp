@@ -17,7 +17,7 @@ const unsigned int DVCSCrossSectionUUBHSubProc::classId =
 DVCSCrossSectionUUBHSubProc::DVCSCrossSectionUUBHSubProc(
         const std::string &className) :
         Observable(className) {
-    m_channel = ObservableChannel::DVCS;
+    m_channel = ChannelType::DVCS;
 }
 
 DVCSCrossSectionUUBHSubProc::DVCSCrossSectionUUBHSubProc(

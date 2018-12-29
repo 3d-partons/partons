@@ -18,7 +18,7 @@ namespace PARTONS {
 
 
 Observable::Observable(const std::string &className) :
-        ModuleObject(className), m_channel(ObservableChannel::UNDEFINED), m_beamHelicity(
+        ModuleObject(className), m_channel(ChannelType::UNDEFINED), m_beamHelicity(
                 0.), m_beamCharge(0.), m_targetPolarization(
                 NumA::Vector3D(0., 0., 0.)), m_observableType(
                 ObservableType::PHI), m_pProcessModule(0) {
@@ -242,11 +242,11 @@ void Observable::configure(const ElemUtils::Parameters &parameters) {
     ModuleObject::configure(parameters);
 }
 
-ObservableChannel::Type Observable::getChannel() const {
+ChannelType::Type Observable::getChannel() const {
     return m_channel;
 }
 
-void Observable::setChannel(ObservableChannel::Type channel) {
+void Observable::setChannel(ChannelType::Type channel) {
     m_channel = channel;
 }
 

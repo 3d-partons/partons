@@ -4,13 +4,14 @@
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <utility>
 
-namespace PARTONS {
+#include "../../../../include/partons/beans/channel/ChannelType.h"
 
+namespace PARTONS {
 
 const std::string GPDResult::GPD_RESULT_DB_TABLE_NAME = "gpd_result";
 
 GPDResult::GPDResult() :
-        Result("GPDResult") {
+        Result("GPDResult", ChannelType::UNDEFINED) {
 }
 
 GPDResult::GPDResult(const GPDResult &other) :

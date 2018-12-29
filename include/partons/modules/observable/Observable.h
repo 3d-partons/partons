@@ -17,7 +17,7 @@
 #include "../../beans/automation/BaseObjectData.h"
 #include "../../beans/gpd/GPDType.h"
 #include "../../beans/List.h"
-#include "../../beans/observable/ObservableChannel.h"
+#include "../../beans/channel/ChannelType.h"
 #include "../../beans/observable/ObservableKinematic.h"
 #include "../../beans/observable/ObservableType.h"
 #include "../process/DVCS/DVCSProcessModule.h"
@@ -91,8 +91,8 @@ public:
     void setTargetPolarization(const NumA::Vector3D& targetPolarization);
     ProcessModule* getProcessModule() const;
     virtual void setProcessModule(ProcessModule* pProcessModule);
-    ObservableChannel::Type getChannel() const;
-    void setChannel(ObservableChannel::Type channel);
+    ChannelType::Type getChannel() const;
+    void setChannel(ChannelType::Type channel);
 
 protected:
     /**
@@ -107,7 +107,7 @@ protected:
     ProcessModule* m_pProcessModule;
 
     //TODO doc
-    ObservableChannel::Type m_channel;
+    ChannelType::Type m_channel;
     ObservableType::Type m_observableType;
 
     double m_beamHelicity;

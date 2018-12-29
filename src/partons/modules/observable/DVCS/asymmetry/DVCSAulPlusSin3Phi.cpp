@@ -21,7 +21,7 @@ DVCSAulPlusSin3Phi::DVCSAulPlusSin3Phi(const std::string &className) :
                 0) {
 
     m_observableType = ObservableType::FOURIER;
-    m_channel = ObservableChannel::DVCS;
+    m_channel = ChannelType::DVCS;
 
     setIntegrator(NumA::IntegratorType1D::DEXP);
     initFunctorsForIntegrations();

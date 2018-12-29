@@ -21,7 +21,7 @@ DVCSConvolCoeffFunctionModule::DVCSConvolCoeffFunctionModule(
                 PerturbativeQCDOrderType::UNDEFINED), m_currentGPDComputeType(
                 GPDType::UNDEFINED), m_pRunningAlphaStrongModule(0), m_pNfConvolCoeffFunction(
                 0) {
-    m_channel = ObservableChannel::DVCS;
+    m_channel = ChannelType::DVCS;
 }
 
 DVCSConvolCoeffFunctionModule::DVCSConvolCoeffFunctionModule(

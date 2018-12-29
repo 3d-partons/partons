@@ -16,7 +16,7 @@ const unsigned int DVCSCrossSectionUUMinus::classId =
 
 DVCSCrossSectionUUMinus::DVCSCrossSectionUUMinus(const std::string &className) :
         Observable(className) {
-    m_channel = ObservableChannel::DVCS;
+    m_channel = ChannelType::DVCS;
 }
 
 DVCSCrossSectionUUMinus::DVCSCrossSectionUUMinus(

@@ -3,11 +3,11 @@
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
 #include <cmath>
 
-#include "../../../../../../include/partons/beans/observable/ObservableChannel.h"
 #include "../../../../../../include/partons/beans/observable/ObservableType.h"
 #include "../../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../../../include/partons/modules/observable/DVCS/asymmetry/DVCSAltDVCSCosPhiMPhisCos0Phi.h"
+#include "../../../../../../include/partons/beans/channel/ObservableChannel.h"
 
 namespace PARTONS {
 
@@ -22,7 +22,7 @@ DVCSAltDVCSCosPhiMPhisCos0Phi::DVCSAltDVCSCosPhiMPhisCos0Phi(
                 0) {
 
     m_observableType = ObservableType::FOURIER;
-    m_channel = ObservableChannel::DVCS;
+    m_channel = ChannelType::DVCS;
 
     setIntegrator(NumA::IntegratorType1D::DEXP);
     initFunctorsForIntegrations();
