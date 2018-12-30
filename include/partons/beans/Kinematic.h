@@ -11,6 +11,7 @@
 #include <string>
 
 #include "../BaseObject.h"
+#include "channel/ChannelType.h"
 
 namespace ElemUtils {
 class Packet;
@@ -30,36 +31,20 @@ class Kinematic: public BaseObject {
 public:
 
     /**
-     * Default constructor.
-     * @param className Name of class to be associated to BaseObject (see BaseObject::m_className variable)
-     */
-    Kinematic(const std::string &className);
-
-    /**
-     * Copy constructor.
-     * @param other Object to be copied.
-     */
-    Kinematic(const Kinematic &other);
-
-    /**
      * Destructor.
      */
     virtual ~Kinematic();
 
     virtual std::string toString() const;
 
-    // use by std::sort function
-    // bool operator <(const Kinematic &other) const;
-
-    void serialize(ElemUtils::Packet &packet) const;
-    void unserialize(ElemUtils::Packet &packet);
-
     //********************************************************
     //*** SETTERS AND GETTERS ********************************
     //********************************************************
 
-//    int getListEntryPosition() const;
-//    void setListEntryPosition(int listEntryPosition);
+    /**
+     * Get channel type.
+     */
+    ChannelType::Type getChannelType() const;
 
     /**
      * Get hash sum of class content.
@@ -75,13 +60,40 @@ public:
 protected:
 
     /**
+     * Default constructor.
+     * @param className Name of class to be associated to BaseObject (see BaseObject::m_className variable)
+     */
+    Kinematic(const std::string &className, ChannelType::Type channelType);
+
+    /**
+     * Copy constructor.
+     * @param other Object to be copied.
+     */
+    Kinematic(const Kinematic &other);
+
+    /**
+     * Serialize into given Packet.
+     * @param packet Target Packet.
+     */
+    void serialize(ElemUtils::Packet &packet) const;
+
+    /**
+     * Retrieve data from given Packet.
+     * @param packet Input Packet.
+     */
+    void unserialize(ElemUtils::Packet &packet);
+
+    /**
      * Update hash sum (see Kinematic::m_hashSum variable).
      */
     virtual void updateHashSum() const = 0;
 
 private:
 
-    //int m_listEntryPosition;
+    /**
+     * Channel type.
+     */
+    ChannelType::Type m_channelType;
 
     /**
      * Hash sum of class content.

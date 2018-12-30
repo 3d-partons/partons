@@ -8,13 +8,11 @@
  * @version 1.0
  */
 
-#include <stddef.h>
 #include <map>
 #include <string>
 #include <vector>
 
 #include "../../utils/compare/ComparisonReport.h"
-#include "../List.h"
 #include "../parton_distribution/PartonDistribution.h"
 #include "../Result.h"
 #include "GPDKinematic.h"
@@ -88,6 +86,12 @@ public:
     GPDResult();
 
     /**
+     * Assignment constructor.
+     * @param kinematic GPD kinematics to be assigned.
+     */
+    GPDResult(const GPDKinematic& kinematic);
+
+    /**
      * Copy constructor.
      * @param other Object to be copied.
      */
@@ -98,11 +102,15 @@ public:
      */
     virtual ~GPDResult();
 
+    virtual std::string toString() const;
+
     /**
-     * Get list of GPD types associated to stored parton distributions.
-     * @return Vector of associated types.
+     * Relation operator that checks if the value of left operand is less than the value of right operand (in this case returned is this->m_kinematic < other.m_kinematic).
+     * Used by std::sort function.
+     * @param other Right hand value.
+     * @return True if the value of left operand is less than the value of right operand, otherwise false.
      */
-    std::vector<GPDType> listGPDTypeComputed();
+    bool operator <(const GPDResult &other) const;
 
     /**
      * Add parton distribution associated to given GPD type.
@@ -110,7 +118,7 @@ public:
      * @param partonDistribution Parton distribution to be added.
      */
     void addPartonDistribution(GPDType::Type gpdType,
-            PartonDistribution partonDistribution);
+            const PartonDistribution& partonDistribution);
 
     /**
      * Get reference to parton distribution associated to given GPD type.
@@ -119,30 +127,6 @@ public:
      */
     const PartonDistribution& getPartonDistribution(
             GPDType::Type gpdType) const;
-
-    /**
-     * Get list of stored parton distributions.
-     * @return Retrieved List of PartonDistribution objects.
-     */
-    List<PartonDistribution> getPartonDistributionList() const;
-
-    virtual std::string toString() const;
-
-    /**
-     * Get string containing information on stored data.
-     * @return String with returned information.
-     */
-    virtual std::string getObjectInfo() const;
-
-    /**
-     * Compare to other GPDResult object and store comparison result in given comparison report.
-     * @param rootComparisonReport Reference to comparison report to be used to store comparison result.
-     * @param referenceObject Reference to object to be compared.
-     * @param parentObjectInfo Addition information coming from the parent object (if needed).
-     */
-    void compare(ComparisonReport &rootComparisonReport,
-            const GPDResult &referenceObject,
-            std::string parentObjectInfo = "") const;
 
     /**
      * Check if the object stores parton distribution of given GPD type.
@@ -160,18 +144,20 @@ public:
     PartonDistribution& getLastAvailable() const;
 
     /**
-     * Get number of stored parton distributions.
-     * @return Number of stored parton distributions.
+     * Compare to other GPDResult object and store comparison result in given comparison report.
+     * @param rootComparisonReport Reference to comparison report to be used to store comparison result.
+     * @param referenceObject Reference to object to be compared.
+     * @param parentObjectInfo Addition information coming from the parent object (if needed).
      */
-    size_t size() const;
+    void compare(ComparisonReport &rootComparisonReport,
+            const GPDResult &referenceObject,
+            std::string parentObjectInfo = "") const;
 
     /**
-     * Relation operator that checks if the value of left operand is less than the value of right operand (in this case returned is this->m_kinematic < other.m_kinematic).
-     * Used by std::sort function.
-     * @param other Right hand value.
-     * @return True if the value of left operand is less than the value of right operand, otherwise false.
+     * Get list of GPD types associated to stored parton distributions.
+     * @return Vector of associated types.
      */
-    bool operator <(const GPDResult &other) const;
+    std::vector<GPDType> listGPDTypeComputed();
 
     //********************************************************
     //*** SETTERS AND GETTERS ********************************

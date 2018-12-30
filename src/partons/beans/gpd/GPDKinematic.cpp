@@ -1,9 +1,9 @@
 #include "../../../../include/partons/beans/gpd/GPDKinematic.h"
 
-#include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/thread/Packet.h>
 
+#include "../../../../include/partons/beans/channel/ChannelType.h"
 #include "../../../../include/partons/beans/observable/ObservableKinematic.h"
 #include "../../../../include/partons/Partons.h"
 #include "../../../../include/partons/services/hash_sum/CryptographicHashService.h"
@@ -11,54 +11,36 @@
 
 namespace PARTONS {
 
-
 const std::string GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_X = "x";
 const std::string GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI = "xi";
 const std::string GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUF2 = "MuF2";
 const std::string GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUR2 = "MuR2";
 
 GPDKinematic::GPDKinematic() :
-        Kinematic("GPDKinematic"), m_kinematicType(KinematicType::THEO), m_x(
-                0.), m_xi(0.), m_t(0.), m_MuF2(0.), m_MuR2(0.) {
-}
-
-GPDKinematic::GPDKinematic(const GPDKinematic& other) :
-        Kinematic(other) {
-    m_kinematicType = other.m_kinematicType;
-    m_x = other.m_x;
-    m_xi = other.m_xi;
-    m_t = other.m_t;
-    m_MuF2 = other.m_MuF2;
-    m_MuR2 = other.m_MuR2;
+        Kinematic("GPDKinematic", ChannelType::UNDEFINED), m_x(0.), m_xi(0.), m_t(
+                0.), m_MuF2(0.), m_MuR2(0.) {
+    updateHashSum();
 }
 
 GPDKinematic::GPDKinematic(double x, double xi, double t, double MuF2,
         double MuR2) :
-        Kinematic("GPDKinematic"), m_kinematicType(KinematicType::THEO), m_x(x), m_xi(
-                xi), m_t(t), m_MuF2(MuF2), m_MuR2(MuR2) {
+        Kinematic("GPDKinematic", ChannelType::UNDEFINED), m_x(x), m_xi(xi), m_t(
+                t), m_MuF2(MuF2), m_MuR2(MuR2) {
+    updateHashSum();
 }
-
-//GPDKinematic::GPDKinematic(const std::string& x, const std::string& xi,
-//        const std::string& t, const std::string& MuF2, const std::string& MuR2) :
-//        Kinematic("GPDKinematic"), m_kinematicType(KinematicType::THEO), m_x(
-//                ElemUtils::StringUtils::fromStringToDouble(x)), m_xi(
-//                ElemUtils::StringUtils::fromStringToDouble(xi)), m_t(
-//                ElemUtils::StringUtils::fromStringToDouble(t)), m_MuF2(
-//                ElemUtils::StringUtils::fromStringToDouble(MuF2)), m_MuR2(
-//                ElemUtils::StringUtils::fromStringToDouble(MuR2)) {
-//}
 
 GPDKinematic::GPDKinematic(const ElemUtils::GenericType& x,
         const ElemUtils::GenericType& xi, const ElemUtils::GenericType& t,
         const ElemUtils::GenericType& MuF2, const ElemUtils::GenericType& MuR2) :
-        Kinematic("GPDKinematic"), m_kinematicType(KinematicType::THEO), m_x(
-                x.toDouble()), m_xi(xi.toDouble()), m_t(t.toDouble()), m_MuF2(
-                MuF2.toDouble()), m_MuR2(MuR2.toDouble()) {
+        Kinematic("GPDKinematic", ChannelType::UNDEFINED), m_x(x.toDouble()), m_xi(
+                xi.toDouble()), m_t(t.toDouble()), m_MuF2(MuF2.toDouble()), m_MuR2(
+                MuR2.toDouble()) {
+    updateHashSum();
 }
 
 GPDKinematic::GPDKinematic(const ElemUtils::Parameters &parameters) :
-        Kinematic("GPDKinematic"), m_kinematicType(KinematicType::THEO), m_x(
-                0.), m_xi(0.), m_t(0.), m_MuF2(0.), m_MuR2(0.) {
+        Kinematic("GPDKinematic", ChannelType::UNDEFINED), m_x(0.), m_xi(0.), m_t(
+                0.), m_MuF2(0.), m_MuR2(0.) {
 
     if (parameters.isAvailable(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_X)) {
         m_x = parameters.getLastAvailable().toDouble();
@@ -75,49 +57,41 @@ GPDKinematic::GPDKinematic(const ElemUtils::Parameters &parameters) :
     } else {
         errorMissingParameter(ObservableKinematic::PARAMETER_NAME_T);
     }
+    if (parameters.isAvailable(
+            GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUF2)) {
+        m_MuF2 = parameters.getLastAvailable().toDouble();
+    } else {
+        errorMissingParameter(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUF2);
+    }
+    if (parameters.isAvailable(
+            GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUR2)) {
+        m_MuR2 = parameters.getLastAvailable().toDouble();
+    } else {
+        errorMissingParameter(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUR2);
+    }
 
-    //TODO remove from kinematic
-    m_MuF2 =
-            parameters.get(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUF2).toDouble();
-    m_MuR2 =
-            parameters.get(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUR2).toDouble();
+    updateHashSum();
+}
+
+GPDKinematic::GPDKinematic(const GPDKinematic& other) :
+        Kinematic(other), m_x(other.m_x), m_xi(other.m_xi), m_t(other.m_t), m_MuF2(
+                other.m_MuF2), m_MuR2(other.m_MuR2) {
+    updateHashSum();
 }
 
 GPDKinematic::~GPDKinematic() {
 }
 
 std::string GPDKinematic::toString() const {
-    return ElemUtils::Formatter() << Kinematic::toString() << "\n" << "m_x = "
-            << m_x << " m_xi = " << m_xi << " m_t = " << m_t << " m_MuF2 = "
-            << m_MuF2 << "(Gev2) m_MuR2 = " << m_MuR2 << "(Gev2)";
-}
 
-//ComparisonReport GPDKinematic::compare(const GPDKinematic& referenceObject,
-//        const NumA::Tolerances& tolerances) const {
-//    ComparisonReport comparisonReport(getClassName());
-//
-//    ComparisonData x_comparisonData = CompareUtils::compareDouble(
-//            GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_X, getX(),
-//            referenceObject.getX(), tolerances);
-//    comparisonReport.addComparisonData(x_comparisonData);
-//
-//    ComparisonData xi_comparisonData = CompareUtils::compareDouble(
-//            GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI, getXi(),
-//            referenceObject.getXi(), tolerances);
-//    comparisonReport.addComparisonData(xi_comparisonData);
-//
-//    ComparisonData MuF2_comparisonData = CompareUtils::compareDouble(
-//            GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUF2, getMuF2(),
-//            referenceObject.getMuF2(), tolerances);
-//    comparisonReport.addComparisonData(MuF2_comparisonData);
-//
-//    ComparisonData MuR2_comparisonData = CompareUtils::compareDouble(
-//            GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUF2, getMuR2(),
-//            referenceObject.getMuR2(), tolerances);
-//    comparisonReport.addComparisonData(MuR2_comparisonData);
-//
-//    return comparisonReport;
-//}
+    ElemUtils::Formatter formatter;
+
+    formatter << Kinematic::toString();
+    formatter << "\tx: " << m_x << " xi: " << m_xi << " t: " << m_t << " muF2: "
+            << m_MuF2 << " muR2: " << m_MuR2 << '\n';
+
+    return formatter.str();
+}
 
 void GPDKinematic::updateHashSum() const {
     setHashSum(
@@ -126,19 +100,24 @@ void GPDKinematic::updateHashSum() const {
                             << m_MuR2));
 }
 
-// ##### GETTERS & SETTERS #####
+void GPDKinematic::setX(double x) {
+    m_x = x;
+    updateHashSum();
+}
 
-double GPDKinematic::getMuF2() const {
-    return m_MuF2;
+void GPDKinematic::setXi(double xi) {
+    m_xi = xi;
+    updateHashSum();
+}
+
+void GPDKinematic::setT(double t) {
+    m_t = t;
+    updateHashSum();
 }
 
 void GPDKinematic::setMuF2(double muF2) {
     m_MuF2 = muF2;
     updateHashSum();
-}
-
-double GPDKinematic::getMuR2() const {
-    return m_MuR2;
 }
 
 void GPDKinematic::setMuR2(double muR2) {
@@ -150,46 +129,30 @@ double GPDKinematic::getX() const {
     return m_x;
 }
 
-void GPDKinematic::setX(double x) {
-    m_x = x;
-    updateHashSum();
-}
-
 double GPDKinematic::getXi() const {
     return m_xi;
-}
-
-void GPDKinematic::setXi(double xi) {
-    m_xi = xi;
-    updateHashSum();
 }
 
 double GPDKinematic::getT() const {
     return m_t;
 }
 
-void GPDKinematic::setT(double t) {
-    m_t = t;
-    updateHashSum();
+double GPDKinematic::getMuF2() const {
+    return m_MuF2;
 }
 
-KinematicType::Type GPDKinematic::getKinematicType() const {
-    return m_kinematicType;
-}
-
-void GPDKinematic::setKinematicType(KinematicType::Type kinematicType) {
-    m_kinematicType = kinematicType;
+double GPDKinematic::getMuR2() const {
+    return m_MuR2;
 }
 
 void GPDKinematic::serialize(ElemUtils::Packet &packet) const {
+
     Kinematic::serialize(packet);
+
     packet << m_x << m_xi << m_t << m_MuF2 << m_MuR2;
 }
 
 void GPDKinematic::unserialize(ElemUtils::Packet &packet) {
-//    int tempListEntryPosition;
-//    packet >> tempListEntryPosition;
-//    setListEntryPosition(tempListEntryPosition);
 
     Kinematic::unserialize(packet);
 
@@ -199,15 +162,6 @@ void GPDKinematic::unserialize(ElemUtils::Packet &packet) {
     packet >> m_MuF2;
     packet >> m_MuR2;
 }
-
-//bool GPDKinematic::operator <(const GPDKinematic& other) const {
-//    return (getIndexId() < other.getIndexId())
-//            || (getIndexId() == other.getIndexId() && m_x < other.getX())
-//            || (m_x == other.getX() && m_xi < other.getXi())
-//            || (m_xi == other.getXi() && m_t < other.getT())
-//            || (m_t == other.getT() && m_MuF2 < other.getMuF2())
-//            || (m_MuF2 == other.getMuF2() && m_MuR2 < other.getMuR2());
-//}
 
 ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
         GPDKinematic& kinematic) {

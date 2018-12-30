@@ -17,9 +17,7 @@ ConvolCoeffFunctionResult::ConvolCoeffFunctionResult(
 ConvolCoeffFunctionResult::ConvolCoeffFunctionResult(
         const ConvolCoeffFunctionResult& other) :
         Result(other) {
-
     m_resultsByGPDType = other.m_resultsByGPDType;
-    m_it = other.m_it;
 }
 
 ConvolCoeffFunctionResult::~ConvolCoeffFunctionResult() {
