@@ -133,7 +133,7 @@ void ConvolCoeffFunctionResultDao::fillConvolCoeffFunctionResultList(
                 query.value(real_part_field).toDouble(),
                 query.value(img_part_field).toDouble());
 
-        ccfResult.add(static_cast<GPDType::Type>(currentGPDTypeId),
+        ccfResult.addResult(static_cast<GPDType::Type>(currentGPDTypeId),
                 complexValue);
     }
 
@@ -158,7 +158,7 @@ void ConvolCoeffFunctionResultDao::fillConvolCoeffFunctionResultList(
                 query.value(real_part_field).toDouble(),
                 query.value(img_part_field).toDouble());
 
-        ccfResult.add(static_cast<GPDType::Type>(currentGPDTypeId),
+        ccfResult.addResult(static_cast<GPDType::Type>(currentGPDTypeId),
                 complexValue);
     }
 

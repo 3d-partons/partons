@@ -39,6 +39,18 @@ public:
 
     virtual std::string toString() const;
 
+    /**
+     * Serialize into given Packet.
+     * @param packet Target Packet.
+     */
+    void serialize(ElemUtils::Packet &packet) const;
+
+    /**
+     * Retrieve data from given Packet.
+     * @param packet Input Packet.
+     */
+    void unserialize(ElemUtils::Packet &packet);
+
     //********************************************************
     //*** GETTERS ********************************************
     //********************************************************
@@ -108,18 +120,6 @@ protected:
      */
     ConvolCoeffFunctionKinematic(const ConvolCoeffFunctionKinematic &other);
 
-    /**
-     * Serialize into given Packet.
-     * @param packet Target Packet.
-     */
-    void serialize(ElemUtils::Packet &packet) const;
-
-    /**
-     * Retrieve data from given Packet.
-     * @param packet Input Packet.
-     */
-    void unserialize(ElemUtils::Packet &packet);
-
     virtual void updateHashSum() const = 0;
 
     //********************************************************
@@ -145,8 +145,6 @@ protected:
      * Set renormalization scale squared.
      */
     virtual void setMuR2(double muR2);
-
-private:
 
     /**
      * Skewness variable.

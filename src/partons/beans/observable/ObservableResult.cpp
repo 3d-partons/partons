@@ -12,13 +12,13 @@ const std::string ObservableResult::PARAMETER_NAME_OBSERVABLE_VALUE =
         "observable value";
 
 ObservableResult::ObservableResult() :
-        Result("ObservableResult"), m_observableName("UNDEFINED"), m_value(0.), m_observableType(
+        Result("ObservableResult", ChannelType::DVCS), m_observableName("UNDEFINED"), m_value(0.), m_observableType(
                 ObservableType::UNDEFINED) {
 }
 
 ObservableResult::ObservableResult(const std::string &observableName,
         double value) :
-        Result("ObservableResult"), m_observableName(observableName), m_value(
+        Result("ObservableResult", ChannelType::DVCS), m_observableName(observableName), m_value(
                 value), m_observableType(ObservableType::UNDEFINED) {
 }
 

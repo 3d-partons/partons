@@ -19,14 +19,14 @@ const std::string ObservableKinematic::PARAMETER_NAME_PHI = "phi";
 const std::string ObservableKinematic::PARAMETER_NAME_BEAM_ENERGY = "E";
 
 ObservableKinematic::ObservableKinematic() :
-        Kinematic("ObservableKinematic"), m_xB(0.), m_t(0.), m_Q2(0.), m_E(0.), m_phi(
+        Kinematic("ObservableKinematic",  ChannelType::DVCS), m_xB(0.), m_t(0.), m_Q2(0.), m_E(0.), m_phi(
                 PhysicalType<double>(0.,
                         PhysicalUnit(PhysicalUnit::DEGREE).getShortName())) {
 }
 
 ObservableKinematic::ObservableKinematic(
         const ElemUtils::Parameters &parameters) :
-        Kinematic("ObservableKinematic"), m_xB(0.), m_t(0.), m_Q2(0.), m_E(0.), m_phi(
+        Kinematic("ObservableKinematic",  ChannelType::DVCS), m_xB(0.), m_t(0.), m_Q2(0.), m_E(0.), m_phi(
                 PhysicalType<double>(0.,
                         PhysicalUnit(PhysicalUnit::DEGREE).getShortName())) {
     if (parameters.isAvailable(ObservableKinematic::PARAMETER_NAME_XB)) {
@@ -70,7 +70,7 @@ ObservableKinematic::ObservableKinematic(
 
 ObservableKinematic::ObservableKinematic(double xB, double t, double Q2,
         double E, double phi) :
-        Kinematic("ObservableKinematic"), m_xB(xB), m_t(t), m_Q2(Q2), m_E(E), m_phi(
+        Kinematic("ObservableKinematic",  ChannelType::DVCS), m_xB(xB), m_t(t), m_Q2(Q2), m_E(E), m_phi(
                 PhysicalType<double>(phi,
                         PhysicalUnit(PhysicalUnit::DEGREE).getShortName())) {
     m_phi.setInitialized(true);
@@ -78,7 +78,7 @@ ObservableKinematic::ObservableKinematic(double xB, double t, double Q2,
 
 ObservableKinematic::ObservableKinematic(double xB, double t, double Q2,
         double E) :
-        Kinematic("ObservableKinematic"), m_xB(xB), m_t(t), m_Q2(Q2), m_E(E), m_phi(
+        Kinematic("ObservableKinematic", ChannelType::DVCS), m_xB(xB), m_t(t), m_Q2(Q2), m_E(E), m_phi(
                 PhysicalType<double>(0.,
                         PhysicalUnit(PhysicalUnit::DEGREE).getShortName())) {
 }
@@ -86,7 +86,7 @@ ObservableKinematic::ObservableKinematic(double xB, double t, double Q2,
 ObservableKinematic::ObservableKinematic(const ElemUtils::GenericType& xB,
         const ElemUtils::GenericType& t, const ElemUtils::GenericType& Q2,
         const ElemUtils::GenericType& E, const ElemUtils::GenericType& phi) :
-        Kinematic("ObservableKinematic"), m_xB(xB.toDouble()), m_t(
+        Kinematic("ObservableKinematic", ChannelType::DVCS), m_xB(xB.toDouble()), m_t(
                 t.toDouble()), m_Q2(Q2.toDouble()), m_E(E.toDouble()), m_phi(
                 PhysicalType<double>(phi.toDouble(),
                         PhysicalUnit(PhysicalUnit::DEGREE).getShortName())) {

@@ -26,11 +26,13 @@ namespace PARTONS {
 
 /** @class ServiceObjectTyped
  *
- * @brief
+ * @brief Abstract class for a service.
  */
 template<typename KinematicType, typename ResultType>
 class ServiceObjectTyped: public ServiceObject {
+
 public:
+
     static const std::string SERVICE_OBJECT_PRINT_RESULTS;
 
     /**

@@ -37,6 +37,18 @@ public:
 
     virtual std::string toString() const;
 
+    /**
+      * Serialize into given Packet.
+      * @param packet Target Packet.
+      */
+     void serialize(ElemUtils::Packet &packet) const;
+
+     /**
+      * Retrieve data from given Packet.
+      * @param packet Input Packet.
+      */
+     void unserialize(ElemUtils::Packet &packet);
+
     //********************************************************
     //*** SETTERS AND GETTERS ********************************
     //********************************************************
@@ -70,18 +82,6 @@ protected:
      * @param other Object to be copied.
      */
     Kinematic(const Kinematic &other);
-
-    /**
-     * Serialize into given Packet.
-     * @param packet Target Packet.
-     */
-    void serialize(ElemUtils::Packet &packet) const;
-
-    /**
-     * Retrieve data from given Packet.
-     * @param packet Input Packet.
-     */
-    void unserialize(ElemUtils::Packet &packet);
 
     /**
      * Update hash sum (see Kinematic::m_hashSum variable).

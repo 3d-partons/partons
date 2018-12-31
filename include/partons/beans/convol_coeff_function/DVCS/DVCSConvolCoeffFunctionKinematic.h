@@ -24,6 +24,7 @@ namespace PARTONS {
  * This class represents a single CCF kinematics for DVCS process (xi, t, \f$\mu_{F}^{2}\f$, \f$\mu_{F}^{2}\f$, \f$Q^{2}\f$).
  */
 class DVCSConvolCoeffFunctionKinematic: public ConvolCoeffFunctionKinematic {
+
 public:
 
     /**

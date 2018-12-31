@@ -11,17 +11,19 @@
 #include <string>
 
 namespace PARTONS {
-
 class AutomationService;
 class BaseObjectRegistry;
 class ComparisonService;
 class CryptographicHashService;
 class DoubleDistributionService;
-class ConvolCoeffFunctionService;
+class DVCSConvolCoeffFunctionService;
 class GPDService;
 class ObservableService;
 class ServiceObject;
 class VizualisationService;
+} /* namespace PARTONS */
+
+namespace PARTONS {
 
 /**
  * @class ServiceObjectRegistry
@@ -36,7 +38,7 @@ public:
     ServiceObject* get(const std::string &className) const;
 
     GPDService* getGPDService() const;
-    ConvolCoeffFunctionService* getConvolCoeffFunctionService() const;
+    DVCSConvolCoeffFunctionService* getDVCSConvolCoeffFunctionService() const;
     ObservableService* getObservableService() const;
     VizualisationService* getVizualisationService() const;
     DoubleDistributionService* getDoubleDistributionService() const;

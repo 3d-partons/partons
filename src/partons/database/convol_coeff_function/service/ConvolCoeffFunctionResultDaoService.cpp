@@ -14,7 +14,6 @@
 
 #include "../../../../../include/partons/beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
-#include "../../../../../include/partons/beans/observable/ObservableChannel.h"
 #include "../../../../../include/partons/beans/system/ResultInfo.h"
 #include "../../../../../include/partons/database/DatabaseManager.h"
 
@@ -115,7 +114,7 @@ int ConvolCoeffFunctionResultDaoService::insert(
             m_lastCCFResultId++;
             m_ccfResultTableFile += ElemUtils::Formatter() << m_lastCCFResultId
                     << "," << resultList[i].getComputationModuleName() << ","
-                    << resultList[i].getChannel().getType() << ","
+                    << resultList[i].getChannelType() << ","
                     << kinematicId << "," << m_previousComputationId.second
                     << '\n';
 
