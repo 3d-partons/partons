@@ -1,0 +1,113 @@
+#ifndef DVCS_OBSERVABLE_H
+#define DVCS_OBSERVABLE_H
+
+/**
+ * @file DVCSObservable.h
+ * @author Bryan BERTHOU (SPhN / CEA Saclay)
+ * @date November 25, 2014
+ * @version 1.0
+ */
+
+#include <ElementaryUtils/parameters/Parameters.h>
+#include <map>
+#include <string>
+
+#include "../../../beans/automation/BaseObjectData.h"
+#include "../../../beans/gpd/GPDType.h"
+#include "../../../beans/List.h"
+#include "../../../beans/observable/DVCS/DVCSObservableKinematic.h"
+#include "../../../beans/observable/DVCS/DVCSObservableResult.h"
+#include "../../../beans/observable/ObservableType.h"
+#include "../Observable.h"
+
+namespace PARTONS {
+
+/**
+ * @class DVCSObservable
+ *
+ * @brief Abstract class that provides a skeleton to implement a DVCSObservable module.
+ */
+class DVCSObservable: public Observable<DVCSObservableKinematic,
+        DVCSObservableResult> {
+
+public:
+
+    /**
+     * Default constructor.
+     */
+    DVCSObservable(const std::string &className,
+            ObservableType::Type observableType);
+
+    /**
+     * Destructor
+     */
+    virtual ~DVCSObservable();
+
+    virtual Observable* clone() const = 0;
+    virtual std::string toString() const;
+    virtual void resolveObjectDependencies();
+    virtual void run();
+    virtual void configure(const ElemUtils::Parameters &parameters);
+    virtual void prepareSubModules(
+            const std::map<std::string, BaseObjectData>& subModulesData);
+    virtual DVCSObservableResult compute(
+            const DVCSObservableKinematic& kinematic,
+            const List<GPDType> & gpdType = List<GPDType>());
+
+    // ##### GETTERS & SETTERS #####
+
+    ObservableType::Type getObservableType() const;
+    double getXB() const;
+    void setXB(double xB);
+    double getT() const;
+    void setT(double t);
+    double getQ2() const;
+    void setQ2(double q2);
+    double getE() const;
+    void setE(double e);
+    double getPhi() const;
+    void setPhi(double phi);
+
+protected:
+
+    /**
+     * Copy constructor.
+     * @param other Object to be copied.
+     */
+    DVCSObservable(const Observable& other);
+
+    virtual void setKinematics(const DVCSObservableKinematic& kinematic);
+    virtual void initModule();
+    virtual void isModuleWellConfigured();
+
+    /**
+     * Compute phi dependent observable, invoked if m_observableType = ObservableType::PHI.
+     */
+    double computePhiDVCSObservable(const DVCSObservableKinematic& kinematic);
+
+    /**
+     * Compute Fourier-like observable, invoked if m_observableType = ObservableType::FOURIER.
+     */
+    double computeFourierDVCSObservable(
+            const DVCSObservableKinematic& kinematic);
+
+    /**
+     * Compute other-like type observable, invoked if m_observableType = ObservableType::UNDEFINED.
+     */
+    double computeOtherDVCSObservable(const DVCSObservableKinematic& kinematic);
+
+    /**
+     * Observable type. Determines function to be invoked.
+     */
+    ObservableType::Type m_observableType;
+
+    double m_xB; ///< Bjorken variable.
+    double m_t; ///< Mandelstam variable (square of the 4-momentum transferm in GeV2).
+    double m_Q2; ///< Virtuality of the incoming photon (in GeV2).
+    double m_E; ///< Beam energy in target rest frame (in GeV).
+    double m_phi; ///<  Angle between leptonic and hadronic plane (in radians, Trento convention).
+};
+
+} /* namespace PARTONS */
+
+#endif /* DVCS_OBSERVABLE_H */

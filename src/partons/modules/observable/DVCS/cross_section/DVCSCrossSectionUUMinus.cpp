@@ -2,26 +2,26 @@
 
 #include <NumA/linear_algebra/vector/Vector3D.h>
 
-#include "../../../../../../include/partons/beans/observable/ObservableChannel.h"
+#include "../../../../../../include/partons/beans/observable/DVCS/DVCSObservableKinematic.h"
+#include "../../../../../../include/partons/beans/observable/ObservableType.h"
 #include "../../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../../include/partons/FundamentalPhysicalConstants.h"
+#include "../../../../../../include/partons/modules/process/DVCS/DVCSProcessModule.h"
 #include "../../../../../../include/partons/modules/process/ProcessModule.h"
 
 namespace PARTONS {
-
 
 const unsigned int DVCSCrossSectionUUMinus::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new DVCSCrossSectionUUMinus("DVCSCrossSectionUUMinus"));
 
 DVCSCrossSectionUUMinus::DVCSCrossSectionUUMinus(const std::string &className) :
-        Observable(className) {
-    m_channel = ChannelType::DVCS;
+        DVCSObservable(className, ObservableType::PHI) {
 }
 
 DVCSCrossSectionUUMinus::DVCSCrossSectionUUMinus(
         const DVCSCrossSectionUUMinus& other) :
-        Observable(other) {
+        DVCSObservable(other) {
 }
 
 DVCSCrossSectionUUMinus::~DVCSCrossSectionUUMinus() {
@@ -31,19 +31,18 @@ DVCSCrossSectionUUMinus* DVCSCrossSectionUUMinus::clone() const {
     return new DVCSCrossSectionUUMinus(*this);
 }
 
-void DVCSCrossSectionUUMinus::configure(const ElemUtils::Parameters &parameters) {
-	Observable::configure(parameters);
-}
+double DVCSCrossSectionUUMinus::computePhiDVCSObservable(
+        const DVCSObservableKinematic& kinematic) {
 
-double DVCSCrossSectionUUMinus::computePhiObservable(double phi) {
-
+    //result
     double result = 0.;
 
-    double A = m_pProcessModule->computeCrossSection(1., -1,
-            NumA::Vector3D(0., 0., 0.), phi);
+    //evaluate
+    double A = m_pProcessModule->compute(1., -1, NumA::Vector3D(0., 0., 0.),
+            kinematic);
 
-    double B = m_pProcessModule->computeCrossSection(-1., -1,
-            NumA::Vector3D(0., 0., 0.), phi);
+    double B = m_pProcessModule->compute(-1., -1, NumA::Vector3D(0., 0., 0.),
+            kinematic);
 
     result = (A + B) / 2.;
 

@@ -36,8 +36,7 @@ namespace PARTONS {
  *
  * The cross-section is five-fold differential with respect to the variables: @f$ x_B @f$, @f$ Q^2 @f$, @f$ t @f$ and the two angles.
  */
-class DVCSProcessModule: public ProcessModule<DVCSObservableKinematic,
-        DVCSConvolCoeffFunctionKinematic> {
+class DVCSProcessModule: public ProcessModule<DVCSObservableKinematic> {
 
 public:
 
@@ -65,9 +64,8 @@ public:
     virtual double compute(double beamHelicity, double beamCharge,
             NumA::Vector3D targetPolarization,
             const DVCSObservableKinematic& kinematic);
-    virtual bool isPreviousCCFKinematicsDifferent(
-            const DVCSConvolCoeffFunctionKinematic& kinematic);
-    virtual void resetPreviousKinematics();
+
+    void resetPrevious();
 
     /**
      * Computes the differential cross-section. Must be implemented in the child class.
@@ -82,6 +80,13 @@ public:
             NumA::Vector3D targetPolarization,
             const DVCSObservableKinematic& kinematic,
             DVCSSubProcessType::Type processType);
+
+    /**
+     * Check if this kinematics is different than the previous one.
+     */
+    bool isPreviousCCFKinematicsDifferent(
+            const DVCSConvolCoeffFunctionKinematic& kinematic) const;
+
 
     /**
      * Compute CCF for a given kinematics.
@@ -112,25 +117,9 @@ protected:
      */
     DVCSProcessModule(const DVCSProcessModule& other);
 
+    virtual void setKinematics(const DVCSObservableKinematic& kinematic);
     virtual void initModule();
-
     virtual void isModuleWellConfigured();
-
-    /**
-     * Method called at the start of the compute method to test the input.
-     * Calls initModule and isModuleWellConfigured.
-     * @param beamHelicity Helicity of the beam (in units of hbar/2).
-     * @param beamCharge Charge of the beam (in units of positron charge).
-     * @param targetPolarization Polarization of the target. In GV conventions.
-     * @param xB Bjorken variable.
-     *  @param t Mandelstam variable (square of the 4-momentum transferm in GeV2).
-     * @param Q2 Virtuality of the incoming photon (in GeV2).
-     * @param E Beam energy in target rest frame (in GeV).
-     *  @param phi Angle between leptonic and hadronic plane (in radians, Trento convention).
-     */
-    void preCompute(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization, double xB, double t, double Q2,
-            double E, double phi);
 
     double m_xB; ///< Bjorken variable.
     double m_t; ///< Mandelstam variable (square of the 4-momentum transferm in GeV2).
@@ -146,8 +135,8 @@ protected:
 
     DVCSConvolCoeffFunctionModule* m_pConvolCoeffFunctionModule; ///< Pointer to the underlying CCF module.
 
-    DVCSConvolCoeffFunctionKinematic m_lastCCFKinematics; ///< Last Compton Form Factor kinematics.
     DVCSConvolCoeffFunctionResult m_dvcsConvolCoeffFunctionResult; ///< Stored Compton Form Factor result.
+    DVCSConvolCoeffFunctionKinematic m_lastCCFKinematics; ///< Last Compton Form Factor kinematics.
 
     /**
      * Bethe-Heitler differential cross section.

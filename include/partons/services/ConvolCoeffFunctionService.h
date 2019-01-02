@@ -330,7 +330,7 @@ private:
         KinematicType kinematic = newKinematicFromTask(task);
 
         //get configured ccf module
-        ConvolCoeffFunctionModule* pConvolCoeffFunctionModule =
+        ConvolCoeffFunctionModule<KinematicType>* pConvolCoeffFunctionModule =
                 newConvolCoeffFunctionModuleFromTask(task);
 
         //make computation
@@ -362,7 +362,7 @@ private:
                         task);
 
         //get CCF module
-        ConvolCoeffFunctionModule* pConvolCoeffFunctionModule =
+        ConvolCoeffFunctionModule<KinematicType>* pConvolCoeffFunctionModule =
                 newConvolCoeffFunctionModuleFromTask(task);
 
         //make computation

@@ -20,7 +20,6 @@
 namespace PARTONS {
 
 class ConvolCoeffFunctionModule;
-class Observable;
 class ProcessModule;
 class Task;
 

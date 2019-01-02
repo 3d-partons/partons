@@ -16,7 +16,6 @@
 #include "ConvolCoeffFunctionService.h"
 
 namespace PARTONS {
-class ConvolCoeffFunctionModule;
 class Task;
 } /* namespace PARTONS */
 

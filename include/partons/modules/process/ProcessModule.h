@@ -34,7 +34,7 @@ namespace PARTONS {
  * @brief Abstract class for computing the *differential* cross section of an experimental process.
  * The different channels are child classes, *e.g.* DVCSProcessModule.
  */
-template<typename KinematicType, typename CCFKinematicType>
+template<typename KinematicType>
 class ProcessModule: public ModuleObject {
 
 public:
@@ -191,15 +191,11 @@ public:
             const KinematicType& kinematic) = 0;
 
     /**
-     * Check if this CCF kinematics is different than the previous one. Must be implemented in the child class.
-     */
-    virtual bool isPreviousCCFKinematicsDifferent(
-            const CCFKinematicType& kinematic) = 0;
-
-    /**
      * Reset previous kinematics. Must be implemented in the child class.
+     * This function should be invoked whenever the configuration of the module has been changed.
+     * It is a part of the mechanism to avoid recalculating CCFs (if used and implemented in the child module).
      */
-    virtual void resetPreviousKinematics() = 0;
+    virtual void resetPrevious() = 0;
 
     // ##### GETTERS & SETTERS #####
 
@@ -227,7 +223,7 @@ public:
             info(__func__, "ScalesModule is set to: 0");
         }
 
-        resetPreviousKinematics();
+        resetPrevious();
     }
 
     /**
@@ -254,8 +250,7 @@ public:
             info(__func__, "XiConverterModule is set to: 0");
         }
 
-        resetPreviousKinematics();
-
+        resetPrevious();
     }
 
     /**
@@ -289,6 +284,30 @@ protected:
 
         if (other.m_pXiConverterModule != 0) {
             m_pXiConverterModule = (other.m_pXiConverterModule)->clone();
+        }
+    }
+
+    /**
+     * Set internal kinematics
+     * @param kinematic Kinematics to be set
+     */
+    virtual void setKinematics(const KinematicType& kinematic) = 0;
+
+    virtual void initModule() {
+    }
+
+    virtual void isModuleWellConfigured() {
+
+        //check if pointer to scale module set
+        if (m_pScaleModule == 0) {
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    "m_pScaleModule is NULL pointer ; Use configure method to configure it");
+        }
+
+        //check if pointer to xi module set
+        if (m_pXiConverterModule == 0) {
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    "m_pXiConverterModule is NULL pointer ; Use configure method to configure it");
         }
     }
 

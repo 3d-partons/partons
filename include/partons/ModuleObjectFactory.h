@@ -27,11 +27,11 @@ class GPDModule;
 class GPDSubtractionConstantModule;
 class IncompleteGPDModule;
 class ModuleObject;
-class Observable;
 class RadonInverseModule;
 class RunningAlphaStrongModule;
 class ScalesModule;
 class XiConverterModule;
+class DVCSObservable;
 
 /**
  * @class ModuleObjectFactory
@@ -256,13 +256,13 @@ public:
      * @param classId Unique identifier of last child class.
      * @return Observable pointer.
      */
-    Observable* newObservable(unsigned int classId);
+    DVCSObservable* newDVCSObservable(unsigned int classId);
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a Observable.
      * @param className Name of last child class.
      * @return Observable pointer.
      */
-    Observable* newObservable(const std::string & className);
+    DVCSObservable* newDVCSObservable(const std::string & className);
 
     /**
      * Method to update a pointer. Used to keep track of the modules and remove them when they become orphans (i.e. no pointer points to them).

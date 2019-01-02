@@ -202,6 +202,9 @@ protected:
         }
     }
 
+    virtual void initModule() = 0;
+    virtual void isModuleWellConfigured() = 0;
+
     /**
      * Pointer to the underlying GPD module.
      */

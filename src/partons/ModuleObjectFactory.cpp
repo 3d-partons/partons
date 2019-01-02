@@ -11,7 +11,7 @@
 #include "../../include/partons/modules/evolution/gpd/GPDEvolutionModule.h"
 #include "../../include/partons/modules/gpd_border_function/GPDBorderFunctionModule.h"
 #include "../../include/partons/modules/gpd_subtraction_constant/GPDSubtractionConstantModule.h"
-#include "../../include/partons/modules/observable/Observable.h"
+#include "../../include/partons/modules/observable/DVCS/DVCSObservable.h"
 #include "../../include/partons/modules/overlap/IncompleteGPDModule.h"
 #include "../../include/partons/modules/process/DVCS/DVCSProcessModule.h"
 #include "../../include/partons/modules/radon_inverse/RadonInverseModule.h"
@@ -257,12 +257,12 @@ GapEquationSolverModule* ModuleObjectFactory::newGapEquationSolverModule(
     return static_cast<GapEquationSolverModule*>(newModuleObject(className));
 }
 
-Observable* ModuleObjectFactory::newObservable(unsigned int classId) {
-    return static_cast<Observable*>(newModuleObject(classId));
+DVCSObservable* ModuleObjectFactory::newDVCSObservable(unsigned int classId) {
+    return static_cast<DVCSObservable*>(newModuleObject(classId));
 }
 
-Observable* ModuleObjectFactory::newObservable(const std::string& className) {
-    return static_cast<Observable*>(newModuleObject(className));
+DVCSObservable* ModuleObjectFactory::newDVCSObservable(const std::string& className) {
+    return static_cast<DVCSObservable*>(newModuleObject(className));
 }
 
 IncompleteGPDModule* ModuleObjectFactory::newIncompleteGPDModule(

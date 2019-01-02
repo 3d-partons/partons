@@ -8,10 +8,9 @@
  * @version 1.0
  */
 
-#include <ElementaryUtils/parameters/Parameters.h>
 #include <string>
 
-#include "../../Observable.h"
+#include "../DVCSObservable.h"
 
 namespace PARTONS {
 
@@ -34,7 +33,7 @@ namespace PARTONS {
  *
  * Unit: \f$\mathrm{nbarn}/\mathrm{GeV}^4\f$.
  */
-class DVCSCrossSectionUUMinus: public Observable {
+class DVCSCrossSectionUUMinus: public DVCSObservable {
 
 public:
 
@@ -55,8 +54,8 @@ public:
     virtual ~DVCSCrossSectionUUMinus();
 
     virtual DVCSCrossSectionUUMinus* clone() const;
-    virtual void configure(const ElemUtils::Parameters &parameters);
-    virtual double computePhiObservable(double phi);
+    virtual double computePhiDVCSObservable(
+            const DVCSObservableKinematic& kinematic);
 
 protected:
 

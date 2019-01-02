@@ -8,23 +8,23 @@
  * @version 1.0
  */
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/parameters/Parameters.h>
-#include <NumA/linear_algebra/vector/Vector3D.h>
-#include <pthread.h>
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <map>
 #include <string>
+#include <utility>
 
 #include "../../beans/automation/BaseObjectData.h"
+#include "../../beans/channel/ChannelType.h"
 #include "../../beans/gpd/GPDType.h"
 #include "../../beans/List.h"
-#include "../../beans/channel/ChannelType.h"
-#include "../../beans/observable/ObservableKinematic.h"
-#include "../../beans/observable/ObservableType.h"
+#include "../../ModuleObjectFactory.h"
+#include "../../Partons.h"
 #include "../process/DVCS/DVCSProcessModule.h"
+#include "../process/ProcessModule.h"
 
 namespace PARTONS {
-
-class ObservableResult;
 
 /**
  * @class Observable
@@ -33,92 +33,167 @@ class ObservableResult;
  *
  * It is best to use this module with the corresponding service: ObservableService (see examples therein), as explained in the [general tutorial](@ref usage).
  */
+template<typename KinematicType, typename ResultType>
 class Observable: public ModuleObject {
+
 public:
-    Observable(const std::string &className);
 
     /**
-     * Default destructor
+     * Constructor.
+     * See BaseObject::BaseObject and ModuleObject::ModuleObject for more details.
+     *
+     * @param className name of child class.
+     * @param channelType Channel type.
      */
-    virtual ~Observable();
+    Observable(const std::string &className, ChannelType::Type channelType) :
+            ModuleObject(className, channelType), m_pProcessModule(0) {
+    }
 
     /**
-     * Virtual clone function to allow factory to copy all derived members
-     * @return
+     * Destructor
      */
+    virtual ~Observable() {
+
+        if (m_pProcessModule != 0) {
+            setProcessModule(0);
+            m_pProcessModule = 0;
+        }
+    }
+
     virtual Observable* clone() const = 0;
 
-    virtual void initModule();
+    virtual std::string toString() const {
+        return ModuleObject::toString();
+    }
 
-    virtual void isModuleWellConfigured();
+    virtual void resolveObjectDependencies() {
+        ModuleObject::resolveObjectDependencies();
+    }
 
-    /**
-     * Provides a generic method to configure all types of modules by passing a Parameters object.
-     * (See ModuleObject class for more info).
-     *
-     * @param parameters
-     */
-    virtual void configure(const ElemUtils::Parameters &parameters);
+    virtual void run() {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                "This must be implemented in daughter class");
+    }
 
-    typedef double (DVCSProcessModule::*computeCrossSection)(double beamHelicity,
-
-    double beamCharge, NumA::Vector3D targetPolarization);
-
-    ObservableResult compute(const ObservableKinematic &kinematic,
-            const List<GPDType> & gpdType = List<GPDType>());
-
-    ObservableResult compute(double xB, double t, double Q2, double E,
-            double phi, const List<GPDType> & gpdType = List<GPDType>());
-
-    virtual double computePhiObservable(double phi);
-
-    // TODO clean
-//    virtual double Num(ProcessModule* pDVCSModule, double phi);
-//    virtual double Den(ProcessModule* pDVCSModule, double phi);
-
-    virtual void run();
+    virtual void configure(const ElemUtils::Parameters &parameters) {
+        ModuleObject::configure(parameters);
+    }
 
     virtual void prepareSubModules(
-            const std::map<std::string, BaseObjectData>& subModulesData);
+            const std::map<std::string, BaseObjectData>& subModulesData) {
 
-// ##### GETTERS & SETTERS #####
+        //run for mother
+        ModuleObject::prepareSubModules(subModulesData);
 
-    double getBeamCharge() const;
-    void setBeamCharge(double beamCharge);
-    double getBeamHelicity() const;
-    void setBeamHelicity(double beamHelicity);
-    const NumA::Vector3D& getTargetPolarization() const;
-    void setTargetPolarization(const NumA::Vector3D& targetPolarization);
-    ProcessModule* getProcessModule() const;
-    virtual void setProcessModule(ProcessModule* pProcessModule);
-    ChannelType::Type getChannel() const;
-    void setChannel(ChannelType::Type channel);
+        //iterator
+        std::map<std::string, BaseObjectData>::const_iterator it;
+
+        //search for GPD module
+        it = subModulesData.find(DVCSProcessModule::PROCESS_MODULE_CLASS_NAME);
+
+        //check if there
+        if (it != subModulesData.end()) {
+
+            //check if already set
+            if (m_pProcessModule) {
+
+                setProcessModule(0);
+                m_pProcessModule = 0;
+            }
+
+            //set
+            if (!m_pProcessModule) {
+
+                m_pProcessModule =
+                        Partons::getInstance()->getModuleObjectFactory()->newDVCSProcessModule(
+                                (it->second).getModuleClassName());
+
+                info(__func__,
+                        ElemUtils::Formatter()
+                                << "Configured with ProcessModule = "
+                                << m_pProcessModule->getClassName());
+
+                m_pProcessModule->configure((it->second).getParameters());
+                m_pProcessModule->prepareSubModules(
+                        (it->second).getSubModules());
+            } else {
+
+                //throw error
+                throw ElemUtils::CustomException(getClassName(), __func__,
+                        ElemUtils::Formatter() << getClassName()
+                                << " is DVCSProcessModule dependent and you have not provided one");
+            }
+        }
+    }
+
+    /**
+     * Computes the observable at given kinematics.
+     * @param kinematic Kinematics.
+     * @param gpdType Type of GPDs to compute.
+     * @return Result.
+     */
+    virtual ResultType compute(const KinematicType& kinematic,
+            const List<GPDType> & gpdType = List<GPDType>()) = 0;
+
+    // ##### GETTERS & SETTERS #####
+
+    DVCSProcessModule* getProcessModule() const {
+        return m_pProcessModule;
+    }
+
+    void setProcessModule(DVCSProcessModule* pProcessModule) {
+
+        m_pModuleObjectFactory->updateModulePointerReference(m_pProcessModule,
+                pProcessModule);
+        m_pProcessModule = pProcessModule;
+
+        if (m_pProcessModule != 0) {
+            info(__func__,
+                    ElemUtils::Formatter() << "ProcessModule is set to: "
+                            << m_pProcessModule->getClassName());
+        } else {
+            info(__func__, "ProcessModule is set to: 0");
+        }
+    }
 
 protected:
+
     /**
-     * Copy constructor
-     *
-     * Use by the factory
-     *
-     * @param other
+     * Copy constructor.
+     * @param other Object to be copied.
      */
-    Observable(const Observable& other);
+    Observable(const Observable& other) :
+            ModuleObject(other) {
 
-    ProcessModule* m_pProcessModule;
+        if (other.m_pProcessModule != 0) {
+            m_pProcessModule = other.m_pProcessModule->clone();
+        } else {
+            m_pProcessModule = 0;
+        }
+    }
 
-    //TODO doc
-    ChannelType::Type m_channel;
-    ObservableType::Type m_observableType;
+    /**
+     * Set internal kinematics
+     * @param kinematic Kinematics to be set
+     */
+    virtual void setKinematics(const KinematicType& kinematic) = 0;
 
-    double m_beamHelicity;
-    double m_beamCharge;
+    virtual void initModule() {
+    }
 
-    NumA::Vector3D m_targetPolarization;
+    virtual void isModuleWellConfigured() {
 
-    virtual double computeFourierObservable();
+        //check if pointer to process module set
+        if (m_pProcessModule == 0) {
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    "m_pProcessModule is NULL pointer ; Use configure method to configure it");
+        }
+    }
 
-private:
-    pthread_mutex_t m_mutex;
+    /**
+     * Pointer to DVCS process module.
+     */
+    DVCSProcessModule* m_pProcessModule;
 };
 
 } /* namespace PARTONS */

@@ -50,27 +50,26 @@ DVCSProcessModule::DVCSProcessModule(const DVCSProcessModule& other) :
 }
 
 std::string DVCSProcessModule::toString() const {
-    ProcessModule<DVCSObservableKinematic, DVCSConvolCoeffFunctionKinematic>::toString();
+    ProcessModule<DVCSObservableKinematic>::toString();
 }
 
 void DVCSProcessModule::resolveObjectDependencies() {
-    ProcessModule<DVCSObservableKinematic, DVCSConvolCoeffFunctionKinematic>::resolveObjectDependencies();
+    ProcessModule<DVCSObservableKinematic>::resolveObjectDependencies();
 }
 
 void DVCSProcessModule::run() {
-    throw ElemUtils::CustomException("Thread", __func__, "TODO");
+    throw ElemUtils::CustomException(getClassName(), __func__,
+            "Users should evaluate cross-sections through respective ObservableService");
 }
 
 void DVCSProcessModule::configure(const ElemUtils::Parameters &parameters) {
-    ProcessModule<DVCSObservableKinematic, DVCSConvolCoeffFunctionKinematic>::configure(
-            parameters);
+    ProcessModule<DVCSObservableKinematic>::configure(parameters);
 }
 
 void DVCSProcessModule::prepareSubModules(
         const std::map<std::string, BaseObjectData>& subModulesData) {
 
-    ProcessModule<DVCSObservableKinematic, DVCSConvolCoeffFunctionKinematic>::prepareSubModules(
-            subModulesData);
+    ProcessModule<DVCSObservableKinematic>::prepareSubModules(subModulesData);
 
     //iterator
     std::map<std::string, BaseObjectData>::const_iterator it;
@@ -133,6 +132,15 @@ double DVCSProcessModule::compute(double beamHelicity, double beamCharge,
         const DVCSObservableKinematic& kinematic,
         DVCSSubProcessType::Type processType) {
 
+    // reset kinematics (virtuality)
+    setKinematics(kinematic);
+
+    // execute last child function (virtuality)
+    initModule();
+
+    // execute last child function (virtuality)
+    isModuleWellConfigured();
+
     double result;
 
     if (processType == DVCSSubProcessType::ALL
@@ -155,7 +163,7 @@ double DVCSProcessModule::compute(double beamHelicity, double beamCharge,
 }
 
 bool DVCSProcessModule::isPreviousCCFKinematicsDifferent(
-        const DVCSConvolCoeffFunctionKinematic& kinematic) {
+        const DVCSConvolCoeffFunctionKinematic& kinematic) const {
 
     return ((kinematic.getXi() != m_lastCCFKinematics.getXi())
             || (kinematic.getT() != m_lastCCFKinematics.getT())
@@ -164,7 +172,9 @@ bool DVCSProcessModule::isPreviousCCFKinematicsDifferent(
             || (kinematic.getMuR2() != m_lastCCFKinematics.getMuR2()));
 }
 
-void DVCSProcessModule::resetPreviousKinematics() {
+void DVCSProcessModule::resetPrevious() {
+
+    m_dvcsConvolCoeffFunctionResult = DVCSConvolCoeffFunctionResult();
     m_lastCCFKinematics = DVCSConvolCoeffFunctionKinematic();
 }
 
@@ -183,7 +193,7 @@ void DVCSProcessModule::computeConvolCoeffFunction(
     DVCSConvolCoeffFunctionKinematic ccfKinematics(xi, kinematic.getT(),
             kinematic.getQ2(), scale.getMuF2(), scale.getMuR2());
 
-    //check if the same
+    //check if different
     if (isPreviousCCFKinematicsDifferent(ccfKinematics)
             || (BaseObjectRegistry::getInstance()->getObjectClassIdByClassName(
                     m_pConvolCoeffFunctionModule->getClassName())
@@ -199,8 +209,23 @@ void DVCSProcessModule::computeConvolCoeffFunction(
     }
 }
 
+void DVCSProcessModule::setKinematics(
+        const DVCSObservableKinematic& kinematic) {
+
+    // set variables
+    m_xB = kinematic.getXB();
+    m_t = kinematic.getT();
+    m_Q2 = kinematic.getQ2();
+    m_E = kinematic.getE();
+    m_phi = kinematic.getPhi();
+}
+
 void DVCSProcessModule::initModule() {
 
+    //run for mother
+    ProcessModule<DVCSObservableKinematic>::initModule();
+
+    //evaluate internal variables
     m_epsilon = 2 * m_xB * Constant::PROTON_MASS / sqrt(m_Q2);
     m_y = m_Q2 / (2 * m_xB * Constant::PROTON_MASS * m_E);
     double eps2 = m_epsilon * m_epsilon;
@@ -213,11 +238,14 @@ void DVCSProcessModule::initModule() {
 
 void DVCSProcessModule::isModuleWellConfigured() {
 
+    //run for mother
+    ProcessModule<DVCSObservableKinematic>::isModuleWellConfigured();
+
     //test kinematic domain of xB
     if (m_xB < m_xBmin || m_xB > 1.) {
         ElemUtils::Formatter formatter;
         formatter << "Input value of xB = " << m_xB
-                << " does not lay between xBmin = " << m_xBmin << " and 1.";
+                << " does not lay between xBmin = " << m_xBmin << " and 1";
         warn(__func__, formatter.str());
     }
 
@@ -226,21 +254,21 @@ void DVCSProcessModule::isModuleWellConfigured() {
         ElemUtils::Formatter formatter;
         formatter << " Input value of t = " << m_t
                 << " does not lay between t_max = " << m_tmax << " and t_min = "
-                << m_tmin << " (DVCS kinematic limits).";
+                << m_tmin << " (DVCS kinematic limits)";
         warn(__func__, formatter.str());
     }
 
     //test kinematic domain of Q2
     if (m_Q2 < 0.) {
         ElemUtils::Formatter formatter;
-        formatter << "Input value of Q2 = " << m_Q2 << " is not > 0.";
+        formatter << "Input value of Q2 = " << m_Q2 << " is not > 0";
         warn(__func__, formatter.str());
     }
 
     //test kinematic domain of E
     if (m_E < 0.) {
         ElemUtils::Formatter formatter;
-        formatter << "Input value of E = " << m_E << " is not > 0.";
+        formatter << "Input value of E = " << m_E << " is not > 0";
         warn(__func__, formatter.str());
     }
 
@@ -248,39 +276,9 @@ void DVCSProcessModule::isModuleWellConfigured() {
     if (m_y < 0. || m_y > 1.) {
         ElemUtils::Formatter formatter;
         formatter << "Input value of y = " << m_y
-                << " (lepton energy fraction) does not lay between 0 and 1.";
+                << " (lepton energy fraction) does not lay between 0 and 1";
         warn(__func__, formatter.str());
     }
-
-    //check if pointer to scale module set
-    if (m_pScaleModule == 0) {
-        throw ElemUtils::CustomException(getClassName(), __func__,
-                "m_pScaleModule is NULL pointer ; Use configure method to configure it");
-    }
-
-    //check if pointer to xi module set
-    if (m_pXiConverterModule == 0) {
-        throw ElemUtils::CustomException(getClassName(), __func__,
-                "m_pXiConverterModule is NULL pointer ; Use configure method to configure it");
-    }
-}
-
-void DVCSProcessModule::preCompute(double beamHelicity, double beamCharge,
-        NumA::Vector3D targetPolarization, double xB, double t, double Q2,
-        double E, double phi) {
-
-    // set variables
-    m_xB = xB;
-    m_t = t;
-    m_Q2 = Q2;
-    m_E = E;
-    m_phi = phi;
-
-    // execute last child function (virtuality)
-    initModule();
-
-    // execute last child function (virtuality)
-    isModuleWellConfigured();
 }
 
 std::complex<double> DVCSProcessModule::getConvolCoeffFunctionValue(
@@ -319,7 +317,7 @@ void DVCSProcessModule::setConvolCoeffFunctionModule(
         info(__func__, "ConvolCoeffFunctionModule is set to: 0");
     }
 
-    resetPreviousKinematics();
+    resetPrevious();
 }
 
 } /* namespace PARTONS */
