@@ -1,96 +1,19 @@
 #include "../../../../include/partons/beans/observable/ObservableKinematic.h"
 
-#include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
-#include <ElementaryUtils/thread/Packet.h>
 
-#include "../../../../include/partons/Partons.h"
-#include "../../../../include/partons/services/hash_sum/CryptographicHashService.h"
-#include "../../../../include/partons/ServiceObjectRegistry.h"
-#include "../../../../include/partons/utils/type/PhysicalUnit.h"
+#include "../../../../include/partons/utils/type/PhysicalType.h"
 
 namespace PARTONS {
 
-
-const std::string ObservableKinematic::PARAMETER_NAME_XB = "xB";
-const std::string ObservableKinematic::PARAMETER_NAME_T = "t";
-const std::string ObservableKinematic::PARAMETER_NAME_Q2 = "Q2";
-const std::string ObservableKinematic::PARAMETER_NAME_PHI = "phi";
-const std::string ObservableKinematic::PARAMETER_NAME_BEAM_ENERGY = "E";
-
-ObservableKinematic::ObservableKinematic() :
-        Kinematic("ObservableKinematic",  ChannelType::DVCS), m_xB(0.), m_t(0.), m_Q2(0.), m_E(0.), m_phi(
-                PhysicalType<double>(0.,
-                        PhysicalUnit(PhysicalUnit::DEGREE).getShortName())) {
+ObservableKinematic::ObservableKinematic(const std::string &className,
+        ChannelType::Type channelType) :
+        Kinematic(className, channelType) {
 }
 
-ObservableKinematic::ObservableKinematic(
-        const ElemUtils::Parameters &parameters) :
-        Kinematic("ObservableKinematic",  ChannelType::DVCS), m_xB(0.), m_t(0.), m_Q2(0.), m_E(0.), m_phi(
-                PhysicalType<double>(0.,
-                        PhysicalUnit(PhysicalUnit::DEGREE).getShortName())) {
-    if (parameters.isAvailable(ObservableKinematic::PARAMETER_NAME_XB)) {
-        m_xB = parameters.getLastAvailable().toDouble();
-    } else {
-        errorMissingParameter(ObservableKinematic::PARAMETER_NAME_XB);
-    }
-
-    if (parameters.isAvailable(ObservableKinematic::PARAMETER_NAME_T)) {
-        m_t = parameters.getLastAvailable().toDouble();
-    } else {
-        errorMissingParameter(ObservableKinematic::PARAMETER_NAME_T);
-    }
-
-    if (parameters.isAvailable(ObservableKinematic::PARAMETER_NAME_Q2)) {
-        m_Q2 = parameters.getLastAvailable().toDouble();
-    } else {
-        errorMissingParameter(ObservableKinematic::PARAMETER_NAME_Q2);
-    }
-
-    if (parameters.isAvailable(
-            ObservableKinematic::PARAMETER_NAME_BEAM_ENERGY)) {
-        m_E = parameters.getLastAvailable().toDouble();
-    } else {
-        errorMissingParameter(ObservableKinematic::PARAMETER_NAME_BEAM_ENERGY);
-    }
-
-    if (parameters.isAvailable(ObservableKinematic::PARAMETER_NAME_PHI)) {
-        m_phi.setValue(parameters.getLastAvailable().toDouble());
-        m_phi.setInitialized(true);
-    }
-
-    /*
-     else {
-     error(__func__,
-     Formatter() << "Missing parameter <"
-     << ObservableKinematic::PARAMETER_NAME_PHI << ">");
-     }
-     */
-}
-
-ObservableKinematic::ObservableKinematic(double xB, double t, double Q2,
-        double E, double phi) :
-        Kinematic("ObservableKinematic",  ChannelType::DVCS), m_xB(xB), m_t(t), m_Q2(Q2), m_E(E), m_phi(
-                PhysicalType<double>(phi,
-                        PhysicalUnit(PhysicalUnit::DEGREE).getShortName())) {
-    m_phi.setInitialized(true);
-}
-
-ObservableKinematic::ObservableKinematic(double xB, double t, double Q2,
-        double E) :
-        Kinematic("ObservableKinematic", ChannelType::DVCS), m_xB(xB), m_t(t), m_Q2(Q2), m_E(E), m_phi(
-                PhysicalType<double>(0.,
-                        PhysicalUnit(PhysicalUnit::DEGREE).getShortName())) {
-}
-
-ObservableKinematic::ObservableKinematic(const ElemUtils::GenericType& xB,
-        const ElemUtils::GenericType& t, const ElemUtils::GenericType& Q2,
-        const ElemUtils::GenericType& E, const ElemUtils::GenericType& phi) :
-        Kinematic("ObservableKinematic", ChannelType::DVCS), m_xB(xB.toDouble()), m_t(
-                t.toDouble()), m_Q2(Q2.toDouble()), m_E(E.toDouble()), m_phi(
-                PhysicalType<double>(phi.toDouble(),
-                        PhysicalUnit(PhysicalUnit::DEGREE).getShortName())) {
-    m_phi.setInitialized(true);
+ObservableKinematic::ObservableKinematic(const std::string &className,
+        ChannelType::Type channelType, const ElemUtils::Parameters &parameters) :
+        Kinematic(className, channelType) {
 }
 
 ObservableKinematic::~ObservableKinematic() {
@@ -108,109 +31,22 @@ std::string ObservableKinematic::toString() const {
     return formatter.str();
 }
 
-//ComparisonReport ObservableKinematic::compare(
-//        const ObservableKinematic& referenceObject,
-//        const NumA::Tolerances& tolerances) const {
-//    ComparisonReport comparisonReport(getClassName());
-//
-//    ComparisonData xb_comparisonData = CompareUtils::compareDouble(
-//            ObservableKinematic::PARAMETER_NAME_XB, getXB(),
-//            referenceObject.getXB(), tolerances);
-//    comparisonReport.addComparisonData(xb_comparisonData);
-//
-//    ComparisonData t_comparisonData = CompareUtils::compareDouble(
-//            ObservableKinematic::PARAMETER_NAME_T, getT(),
-//            referenceObject.getT(), tolerances);
-//    comparisonReport.addComparisonData(t_comparisonData);
-//
-//    ComparisonData q2_comparisonData = CompareUtils::compareDouble(
-//            ObservableKinematic::PARAMETER_NAME_Q2, getQ2(),
-//            referenceObject.getQ2(), tolerances);
-//    comparisonReport.addComparisonData(q2_comparisonData);
-//
-//    //TODO handle phi
-//
-//    return comparisonReport;
-//}
+ObservableKinematic::ObservableKinematic(const ObservableKinematic &other) :
+        Kinematic(other) {
 
-// ##### GETTERS & SETTERS #####
-
-double ObservableKinematic::getQ2() const {
-    return m_Q2;
 }
 
-void ObservableKinematic::setQ2(double Q2) {
-    m_Q2 = Q2;
-    updateHashSum();
-}
-
-double ObservableKinematic::getT() const {
-    return m_t;
-}
-
-void ObservableKinematic::setT(double t) {
-    m_t = t;
-    updateHashSum();
-}
-
-double ObservableKinematic::getXB() const {
-    return m_xB;
-}
-
-void ObservableKinematic::setXB(double xB) {
-    m_xB = xB;
-    updateHashSum();
-}
-
-double ObservableKinematic::getE() const {
-    return m_E;
-}
-
-void ObservableKinematic::setE(double E) {
-    m_E = E;
-    updateHashSum();
-}
-
-PhysicalType<double> ObservableKinematic::getPhi() const {
-    return m_phi;
-}
-
-void ObservableKinematic::setPhi(double phi) {
-    m_phi = phi;
-    updateHashSum();
-}
-
-//TODO serialize PhysicalType<T>
 void ObservableKinematic::serialize(ElemUtils::Packet &packet) const {
     Kinematic::serialize(packet);
-
-    packet << m_xB << m_t << m_Q2 << m_E << m_phi.getValue();
 }
 
-//TODO serialize PhysicalType<T>
 void ObservableKinematic::unserialize(ElemUtils::Packet &packet) {
     Kinematic::unserialize(packet);
-
-    packet >> m_xB;
-    packet >> m_t;
-    packet >> m_Q2;
-    packet >> m_E;
-
-    double phi = 0.;
-    packet >> phi;
-
-    m_phi.setValue(phi);
-}
-
-void ObservableKinematic::updateHashSum() const {
-    setHashSum(
-            Partons::getInstance()->getServiceObjectRegistry()->getCryptographicHashService()->generateSHA1HashSum(
-                    ElemUtils::Formatter() << m_xB << m_t << m_Q2 << m_E
-                            << m_phi.getValue()));
 }
 
 ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
         ObservableKinematic& observableKinematic) {
+
     observableKinematic.serialize(packet);
     return packet;
 }

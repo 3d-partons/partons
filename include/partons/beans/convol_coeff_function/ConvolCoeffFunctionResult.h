@@ -29,12 +29,11 @@ namespace PARTONS {
  * This abstract class is used to store results of a single CCF computation.
  */
 class ConvolCoeffFunctionResult: public Result {
+
 public:
 
     /**
      * Default constructor.
-     * @param className Name of class to be associated to BaseObject (see BaseObject::m_className variable).
-     * @param channelType Channel type.
      */
     ConvolCoeffFunctionResult(const std::string &className,
             ChannelType::Type channelType);

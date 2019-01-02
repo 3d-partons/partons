@@ -20,8 +20,8 @@
 #include "../beans/automation/Task.h"
 #include "../beans/gpd/GPDType.h"
 #include "../beans/List.h"
+#include "../modules/convol_coeff_function/ConvolCoeffFunctionModule.h"
 #include "../modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
-#include "../modules/gpd/GPDModule.h"
 #include "../ModuleObjectFactory.h"
 #include "../Partons.h"
 #include "../ServiceObjectTyped.h"
@@ -143,7 +143,7 @@ public:
      */
     List<ResultType> computeForOneCCFModelAndManyKinematics(
             List<KinematicType> &kinematics,
-            ConvolCoeffFunctionModule* pConvolCoeffFunctionModule,
+            ConvolCoeffFunctionModule<KinematicType>* pConvolCoeffFunctionModule,
             const List<GPDType> &gpdTypeList = List<GPDType>(),
             const bool storeInDB = 0) {
 
@@ -235,7 +235,7 @@ public:
      * @return Result.
      */
     ResultType computeForOneCCFModel(const KinematicType &kinematic,
-            ConvolCoeffFunctionModule* pConvolCoeffFunctionModule,
+            ConvolCoeffFunctionModule<KinematicType>* pConvolCoeffFunctionModule,
             const List<GPDType> & gpdTypeList = List<GPDType>()) const {
 
         //get GPD types to be computed
@@ -269,18 +269,18 @@ public:
      * @param task
      * @return Pre-configured ConvolCoeffFunctionModule.
      */
-    ConvolCoeffFunctionModule* newConvolCoeffFunctionModuleFromTask(
+    ConvolCoeffFunctionModule<KinematicType>* newConvolCoeffFunctionModuleFromTask(
             const Task &task) const {
 
         //initialize
-        ConvolCoeffFunctionModule* pConvolCoeffFunctionModule = 0;
+        ConvolCoeffFunctionModule<KinematicType>* pConvolCoeffFunctionModule = 0;
 
         //check if availible
         //TODO remove hardcoded string
         if (ElemUtils::StringUtils::equals(
                 task.getModuleComputationConfiguration().getModuleType(),
                 "ConvolCoeffFunctionModule")) {
-
+//TODO DVCS HERE!!!!!!!!!!!!!!!!!!!!!!
             //configure
             pConvolCoeffFunctionModule =
                     Partons::getInstance()->getModuleObjectFactory()->newDVCSConvolCoeffFunctionModule(
@@ -395,7 +395,7 @@ private:
      * @return List of GPD types.
      */
     List<GPDType> getFinalGPDTypeList(
-            ConvolCoeffFunctionModule* pConvolCoeffFunctionModule,
+            ConvolCoeffFunctionModule<KinematicType>* pConvolCoeffFunctionModule,
             const List<GPDType> &gpdTypeList) const {
 
         //initialize

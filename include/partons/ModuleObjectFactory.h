@@ -28,7 +28,6 @@ class GPDSubtractionConstantModule;
 class IncompleteGPDModule;
 class ModuleObject;
 class Observable;
-class ProcessModule;
 class RadonInverseModule;
 class RunningAlphaStrongModule;
 class ScalesModule;
@@ -198,30 +197,19 @@ public:
             const std::string & className);
 
     /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a ProcessModule.
-     * @param classId Unique identifier of last child class.
-     * @return ProcessModule pointer.
-     */
-    ProcessModule* newProcessModule(unsigned int classId);
-    /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a ProcessModule.
-     * @param className Name of last child class.
-     * @return ProcessModule pointer.
-     */
-    ProcessModule* newProcessModule(const std::string &className);
-
-    /**
      * Specialization of ModuleObjectFactory::newModuleObject into a ActiveFlavorsThresholdsModule.
      * @param classId Unique identifier of last child class.
      * @return ActiveFlavorsThresholdsModule pointer.
      */
-    ActiveFlavorsThresholdsModule* newActiveFlavorsThresholdsModule(unsigned int classId);
+    ActiveFlavorsThresholdsModule* newActiveFlavorsThresholdsModule(
+            unsigned int classId);
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a ActiveFlavorsModule.
      * @param className Name of last child class.
      * @return ActiveFlavorsModule pointer.
      */
-    ActiveFlavorsThresholdsModule* newActiveFlavorsThresholdsModule(const std::string &className);
+    ActiveFlavorsThresholdsModule* newActiveFlavorsThresholdsModule(
+            const std::string &className);
 
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a ScalesModule.

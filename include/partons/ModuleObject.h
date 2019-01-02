@@ -14,6 +14,7 @@
 #include <string>
 
 #include "beans/automation/BaseObjectData.h"
+#include "beans/channel/ChannelType.h"
 
 namespace ElemUtils {
 class Parameters;
@@ -33,7 +34,9 @@ class ModuleObjectFactory;
  * ex : DVCSCFFModel is a module that evaluates the convolution of the GPD H with the hard scattering kernel at twist 2 necessary to the evaluation of DVCS scattering amplitudes.
  */
 class ModuleObject: public BaseObject, public ElemUtils::Thread {
+
 public:
+
     static const std::string CLASS_NAME; //TODO What's this?!
 
     /**
@@ -42,14 +45,20 @@ public:
      *
      * Needn't be used directly. Use the ModuleObjectFactory to clone a module instead!
      *
-     * @param className class's name of child class.
+     * @param className Class's name of child class.
+     * @param channelType Channel type.
      */
-    ModuleObject(const std::string &className);
+    ModuleObject(const std::string &className, ChannelType::Type channelType);
 
     /**
      * Default destructor.
      */
     virtual ~ModuleObject();
+
+    virtual ModuleObject* clone() const = 0;
+    virtual std::string toString() const;
+    virtual void resolveObjectDependencies();
+    virtual void run();
 
     /**
      * Provides a generic method to configure all types of modules by passing a Parameters object.
@@ -58,12 +67,6 @@ public:
      * @param parameters ElemUtils::Parameters object.
      */
     virtual void configure(const ElemUtils::Parameters &parameters);
-
-    virtual ModuleObject* clone() const = 0;
-
-    virtual std::string toString() const;
-
-    virtual void resolveObjectDependencies();
 
     /**
      * Method used in automation to prepare all the modules used by this current module and configure them recursively.
@@ -74,19 +77,34 @@ public:
     virtual void prepareSubModules(
             const std::map<std::string, BaseObjectData>& subModulesData);
 
+    /**
+     * Get reference module id.
+     */
     unsigned int getReferenceModuleId() const;
+
+    /**
+     * Set reference module id.
+     */
     void setReferenceModuleId(unsigned int referenceModuleId);
 
+    /**
+     * Get channel type.
+     */
+    ChannelType::Type getChannelType() const;
+
 protected:
+
     /***
      * Copy constructor.
      * Used by the factory to clone modules, shouldn't be used directly.
      *
-     * @param other
+     * @param other Object to be copied.
      */
     ModuleObject(const ModuleObject &other);
 
-    //TODO comment
+    /**
+     * Pointer tp module object factory.
+     */
     ModuleObjectFactory* m_pModuleObjectFactory;
 
     /**
@@ -102,7 +120,16 @@ protected:
     virtual void isModuleWellConfigured() = 0;
 
 private:
+
+    /**
+     * Reference module id.
+     */
     unsigned int m_referenceModuleId;
+
+    /**
+     * Channel type.
+     */
+    ChannelType::Type m_channelType;
 };
 
 } /* namespace PARTONS */

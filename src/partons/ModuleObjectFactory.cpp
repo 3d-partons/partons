@@ -21,7 +21,6 @@
 
 namespace PARTONS {
 
-
 ModuleObjectFactory::ModuleObjectFactory(BaseObjectFactory* pBaseObjectFactory) :
         BaseObject("ModuleObjectFactory"), m_pBaseObjectFactory(
                 pBaseObjectFactory) {
@@ -200,16 +199,8 @@ DVCSConvolCoeffFunctionModule* ModuleObjectFactory::newDVCSConvolCoeffFunctionMo
             className));
 }
 
-ProcessModule* ModuleObjectFactory::newProcessModule(unsigned int classId) {
-    return static_cast<ProcessModule*>(newModuleObject(classId));
-}
-
-ProcessModule* ModuleObjectFactory::newProcessModule(
-        const std::string& className) {
-    return static_cast<ProcessModule*>(newModuleObject(className));
-}
-
-DVCSProcessModule* ModuleObjectFactory::newDVCSProcessModule(unsigned int classId) {
+DVCSProcessModule* ModuleObjectFactory::newDVCSProcessModule(
+        unsigned int classId) {
     return static_cast<DVCSProcessModule*>(newModuleObject(classId));
 }
 
@@ -235,14 +226,16 @@ ActiveFlavorsThresholdsModule* ModuleObjectFactory::newActiveFlavorsThresholdsMo
 
 ActiveFlavorsThresholdsModule* ModuleObjectFactory::newActiveFlavorsThresholdsModule(
         const std::string &className) {
-    return static_cast<ActiveFlavorsThresholdsModule*>(newModuleObject(className));
+    return static_cast<ActiveFlavorsThresholdsModule*>(newModuleObject(
+            className));
 }
 
 ScalesModule* ModuleObjectFactory::newScalesModule(unsigned int classId) {
     return static_cast<ScalesModule*>(newModuleObject(classId));
 }
 
-ScalesModule* ModuleObjectFactory::newScalesModule(const std::string &className) {
+ScalesModule* ModuleObjectFactory::newScalesModule(
+        const std::string &className) {
     return static_cast<ScalesModule*>(newModuleObject(className));
 }
 

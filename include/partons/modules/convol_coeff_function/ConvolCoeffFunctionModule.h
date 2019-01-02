@@ -8,17 +8,21 @@
  * @version 1.0
  */
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/parameters/Parameters.h>
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <complex>
 #include <map>
 #include <string>
+#include <utility>
 
 #include "../../beans/automation/BaseObjectData.h"
 #include "../../beans/channel/ChannelType.h"
-#include "../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "../../beans/gpd/GPDType.h"
 #include "../../beans/List.h"
-#include "../../ModuleObject.h"
+#include "../../ModuleObjectFactory.h"
+#include "../../Partons.h"
+#include "../gpd/GPDModule.h"
 #include "../MathIntegratorModule.h"
 
 namespace PARTONS {
@@ -29,14 +33,13 @@ class GPDModule;
  * @class ConvolCoeffFunctionModule
  *
  * @brief Abstract class that provides a skeleton to implement a Convolution of Coefficient Function module.
- * It must be derived into child classes for different channels.
- * E.g. for DVCS, it is derived into DVCSConvolCoeffFunctionModule, that is a Compton Form Factor module.
- *
- * It is best to use this module with the corresponding service: ConvolCoeffFunctionService (see examples therein), as explained in the [general tutorial](@ref usage).
  */
+template<typename KinematicType>
 class ConvolCoeffFunctionModule: public ModuleObject,
         public MathIntegratorModule {
+
 public:
+
     static const std::string CONVOL_COEFF_FUNCTION_MODULE_CLASS_NAME; ///< Type of the module in XML automation.
 
     /**
@@ -44,42 +47,106 @@ public:
      * See BaseObject::BaseObject and ModuleObject::ModuleObject for more details.
      *
      * @param className name of child class.
+     * @param channelType Channel type.
      */
-    ConvolCoeffFunctionModule(const std::string &className);
+    ConvolCoeffFunctionModule(const std::string &className,
+            ChannelType::Type channelType) :
+            ModuleObject(className, channelType), MathIntegratorModule(), m_isGPDModuleDependent(
+                    true), m_pGPDModule(0) {
+    }
+
     /**
-     * Default destructor.
+     * Destructor.
      */
-    virtual ~ConvolCoeffFunctionModule();
+    virtual ~ConvolCoeffFunctionModule() {
+
+        if(m_pGPDModule != 0){
+            setGPDModule(0);
+            m_pGPDModule = 0;
+        }
+    }
 
     virtual ConvolCoeffFunctionModule* clone() const = 0;
 
-    virtual void configure(const ElemUtils::Parameters &parameters);
+    virtual std::string toString() const {
+        return ModuleObject::toString();
+    }
 
-    virtual void run();
+    virtual void resolveObjectDependencies() {
+        ModuleObject::resolveObjectDependencies();
+    }
+
+    virtual void run() {
+        throw ElemUtils::CustomException("Thread", __func__,
+                "This must be implemented in daughter class");
+    }
+
+    virtual void configure(const ElemUtils::Parameters &parameters) {
+
+        ModuleObject::configure(parameters);
+        configureIntegrator(parameters);
+    }
+
+    virtual void prepareSubModules(
+            const std::map<std::string, BaseObjectData>& subModulesData) {
+
+        //run for mother
+        ModuleObject::prepareSubModules(subModulesData);
+
+        //iterator
+        std::map<std::string, BaseObjectData>::const_iterator it;
+
+        //check if GPD module dependent
+        if (isGPDModuleDependent()) {
+
+            //search for GPD module
+            it = subModulesData.find(GPDModule::GPD_MODULE_CLASS_NAME);
+
+            //check if there
+            if (it != subModulesData.end()) {
+
+                //check if already set
+                if (m_pGPDModule != 0) {
+
+                    setGPDModule(0);
+                    m_pGPDModule = 0;
+                }
+
+                //set
+                if (m_pGPDModule == 0) {
+
+                    m_pGPDModule =
+                            Partons::getInstance()->getModuleObjectFactory()->newGPDModule(
+                                    (it->second).getModuleClassName());
+
+                    info(__func__,
+                            ElemUtils::Formatter()
+                                    << "Configured with GPDModule = "
+                                    << m_pGPDModule->getClassName());
+
+                    m_pGPDModule->configure((it->second).getParameters());
+                    m_pGPDModule->prepareSubModules(
+                            (it->second).getSubModules());
+                }
+
+            } else {
+
+                //throw error
+                throw ElemUtils::CustomException(getClassName(), __func__,
+                        ElemUtils::Formatter() << getClassName()
+                                << " is GPDModule dependent and you have not provided one");
+            }
+        }
+    }
 
     /**
      * Computes the coefficient functions at given kinematics.
-     * @param kinematic
+     * @param kinematic Kinematics.
      * @param gpdType Type of CCF to compute.
      * @return Complex result.
      */
-    virtual std::complex<double> compute(
-            const DVCSConvolCoeffFunctionKinematic &kinematic,
-            GPDType::Type gpdType);
-
-    /**
-     * Computes the coefficient functions at given kinematics.
-     * Must be implemented in child class.
-     * @param xi Skewness.
-     * @param t Mandelstam variable, momentum transfer on the hadron target (in GeV^2).
-     * @param Q2 Virtuality of the photon in Born approximation (in GeV^2).
-     * @param MuF2 Factorization scale (in GeV^2).
-     * @param MuR2 Renormalization scale (in GeV^2).
-     * @param gpdType Type of CCF to compute.
-     * @return Complex result.
-     */
-    virtual std::complex<double> compute(double xi, double t, double Q2,
-            double MuF2, double MuR2, GPDType::Type gpdType) = 0;
+    virtual std::complex<double> compute(const KinematicType& kinematic,
+            GPDType::Type gpdType) = 0;
 
     /**
      * Must be implemented in child class.
@@ -90,54 +157,69 @@ public:
     // ##### GETTERS & SETTERS #####
 
     /**
-     *
-     * @return Pointer to the underlying GPD module.
+     * Get pointer to the underlying GPD module.
      */
-    GPDModule* getGPDModule() const;
-    /**
-     *
-     * @param gpdModule Pointer to the underlying GPD module.
-     */
-    void setGPDModule(GPDModule* gpdModule);
+    GPDModule* getGPDModule() const {
+        return m_pGPDModule;
+    }
 
     /**
-     *
-     * @return Type of channel (i.e. experimental process).
+     * Set pointer to the underlying GPD module.
      */
-    ChannelType::Type getChannel() const;
-    /**
-     *
-     * @param channel Type of channel (i.e. experimental process).
-     */
-    void setChannel(ChannelType::Type channel);
-    /**
-     *
-     * @return Boolean (true if this CCF module depends on a GPD module).
-     */
-    bool isGPDModuleDependent() const;
-    /**
-     *
-     * @param isGPDModuleDependent Boolean (true if this CCF module depends on a GPD module).
-     */
-    void setIsGPDModuleDependent(bool isGPDModuleDependent);
+    void setGPDModule(GPDModule* gpdModule) {
 
-    virtual void prepareSubModules(
-            const std::map<std::string, BaseObjectData>& subModulesData);
+        m_pModuleObjectFactory->updateModulePointerReference(m_pGPDModule,
+                gpdModule);
+        m_pGPDModule = gpdModule;
+    }
+
+    /**
+     * True if this CCF module depends on a GPD module.
+     */
+    bool isGPDModuleDependent() const {
+        return m_isGPDModuleDependent;
+    }
+
+    /**
+     * True if this CCF module depends on a GPD module.
+     */
+    void setIsGPDModuleDependent(bool isGPDModuleDependent) {
+        m_isGPDModuleDependent = isGPDModuleDependent;
+    }
 
 protected:
+
     /**
      * Copy constructor
+     * @param other Object to be copied.
      */
-    ConvolCoeffFunctionModule(const ConvolCoeffFunctionModule &other);
+    ConvolCoeffFunctionModule(const ConvolCoeffFunctionModule &other) :
+            ModuleObject(other), MathIntegratorModule(other), m_isGPDModuleDependent(
+                    other.m_isGPDModuleDependent), m_pGPDModule(0) {
 
-    //TODO doc
-    ChannelType::Type m_channel; ///< Type of channel (i.e. experimental process).
+        if (other.m_pGPDModule != 0) {
+            m_pGPDModule = (other.m_pGPDModule)->clone();
+        }
+    }
 
-    GPDModule* m_pGPDModule; ///< Pointer to the underlying GPD module.
+    /**
+     * Pointer to the underlying GPD module.
+     */
+    GPDModule* m_pGPDModule;
 
 private:
-    bool m_isGPDModuleDependent; ///< Boolean (true if this CCF module depends on a GPD module).
+
+    /**
+     * Boolean (true if this CCF module depends on a GPD module).
+     */
+    bool m_isGPDModuleDependent;
 };
+
+template<typename KinematicType>
+const std::string ConvolCoeffFunctionModule<KinematicType>::CONVOL_COEFF_FUNCTION_MODULE_CLASS_NAME =
+        "ConvolCoeffFunctionModule";
+
+static const std::string CONVOL_COEFF_FUNCTION_MODULE_CLASS_NAME;
 
 } /* namespace PARTONS */
 
