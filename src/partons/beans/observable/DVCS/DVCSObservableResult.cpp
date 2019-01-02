@@ -7,12 +7,12 @@
 namespace PARTONS {
 
 DVCSObservableResult::DVCSObservableResult() :
-        Result("DVCSObservableResult", ChannelType::DVCS) {
+        ObservableResult("DVCSObservableResult", ChannelType::DVCS) {
 }
 
 DVCSObservableResult::DVCSObservableResult(
         const DVCSObservableKinematic& kinematic) :
-        Result("DVCSObservableResult", ChannelType::DVCS) {
+        ObservableResult("DVCSObservableResult", ChannelType::DVCS) {
     m_kinematic = kinematic;
 }
 
@@ -38,11 +38,11 @@ bool DVCSObservableResult::operator <(const DVCSObservableResult& other) const {
     return (m_kinematic < other.m_kinematic);
 }
 
-const ObservableKinematic& DVCSObservableResult::getKinematic() const {
+const DVCSObservableKinematic& DVCSObservableResult::getKinematic() const {
     return m_kinematic;
 }
 
-void DVCSObservableResult::setKinematic(const ObservableKinematic &kinematic) {
+void DVCSObservableResult::setKinematic(const DVCSObservableKinematic &kinematic) {
     m_kinematic = kinematic;
 }
 

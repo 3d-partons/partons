@@ -18,7 +18,7 @@ class CryptographicHashService;
 class DoubleDistributionService;
 class DVCSConvolCoeffFunctionService;
 class GPDService;
-class ObservableService;
+class DVCSObservableService;
 class ServiceObject;
 class VizualisationService;
 } /* namespace PARTONS */
@@ -39,7 +39,7 @@ public:
 
     GPDService* getGPDService() const;
     DVCSConvolCoeffFunctionService* getDVCSConvolCoeffFunctionService() const;
-    ObservableService* getObservableService() const;
+    DVCSObservableService* getDVCSObservableService() const;
     VizualisationService* getVizualisationService() const;
     DoubleDistributionService* getDoubleDistributionService() const;
     ComparisonService* getComparisonService() const;

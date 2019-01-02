@@ -12,7 +12,7 @@
 #include <string>
 
 #include "../../../beans/List.h"
-#include "../../../beans/observable/ObservableResult.h"
+#include "../../../beans/observable/DVCS/DVCSObservableResult.h"
 #include "ObservableKinematicDao.h"
 
 namespace PARTONS {
@@ -64,7 +64,7 @@ public:
      * @param computationId Unique id of computation to be selected.
      * @return List of ObservableResult objects containing observable results retrieved from the database.
      */
-    List<ObservableResult> getObservableResultListByComputationId(
+    List<DVCSObservableResult> getObservableResultListByComputationId(
             const int computationId) const;
 
     /**
@@ -72,7 +72,7 @@ public:
      * @param sqlQuery User-defined SQL query.
      * @return List of ObservableResult objects containing observable results retrieved from the database.
      */
-    List<ObservableResult> getObservableResultListFromSQLQuery(
+    List<DVCSObservableResult> getObservableResultListFromSQLQuery(
             const std::string &sqlQuery) const;
 
 private:
@@ -87,7 +87,7 @@ private:
      * @param observableResultList  List of ObservableResult objects to be filled.
      * @param query Input QSqlQuery query.
      */
-    void fillObservableResultList(List<ObservableResult> &observableResultList,
+    void fillObservableResultList(List<DVCSObservableResult> &observableResultList,
             QSqlQuery& query) const;
 };
 

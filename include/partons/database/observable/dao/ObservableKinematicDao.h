@@ -12,7 +12,7 @@
 #include <string>
 
 #include "../../../beans/List.h"
-#include "../../../beans/observable/ObservableKinematic.h"
+#include "../../../beans/observable/DVCS/DVCSObservableKinematic.h"
 
 namespace PARTONS {
 
@@ -63,14 +63,14 @@ public:
      * @param kinematicId Unique id of row in the database to be selected.
      * @return ObservableKinematic object containing GPD kinematics retrieved from the database.
      */
-    ObservableKinematic getKinematicById(const int kinematicId) const;
+    DVCSObservableKinematic getKinematicById(const int kinematicId) const;
 
     /**
      * Retrieve list of observable kinematics from the database by given unique id of computation.
      * @param computationId Unique id of computation to be selected.
      * @return List of ObservableKinematic objects containing GPD kinematics retrieved from the database.
      */
-    List<ObservableKinematic> getKinematicListByComputationId(
+    List<DVCSObservableKinematic> getKinematicListByComputationId(
             int computationId) const;
 
     /**
@@ -87,7 +87,7 @@ private:
      * @param observableKinematic ObservableKinematic object to be filled.
      * @param query Input QSqlQuery query.
      */
-    void fillKinematicFromQuery(ObservableKinematic &observableKinematic,
+    void fillKinematicFromQuery(DVCSObservableKinematic &observableKinematic,
             QSqlQuery &query) const;
 
     /**
@@ -96,7 +96,7 @@ private:
      * @param query Input QSqlQuery query.
      */
     void fillObservableKinematicListFromQuery(
-            List<ObservableKinematic> &observableKinematicList,
+            List<DVCSObservableKinematic> &observableKinematicList,
             QSqlQuery &query) const;
 };
 

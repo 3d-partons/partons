@@ -4,7 +4,7 @@
 #include <ElementaryUtils/thread/Packet.h>
 
 #include "../../../../include/partons/beans/channel/ChannelType.h"
-#include "../../../../include/partons/beans/observable/ObservableKinematic.h"
+#include "../../../../include/partons/beans/observable/DVCS/DVCSObservableKinematic.h"
 #include "../../../../include/partons/Partons.h"
 #include "../../../../include/partons/services/hash_sum/CryptographicHashService.h"
 #include "../../../../include/partons/ServiceObjectRegistry.h"
@@ -52,10 +52,10 @@ GPDKinematic::GPDKinematic(const ElemUtils::Parameters &parameters) :
     } else {
         errorMissingParameter(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI);
     }
-    if (parameters.isAvailable(ObservableKinematic::PARAMETER_NAME_T)) {
+    if (parameters.isAvailable(DVCSObservableKinematic::PARAMETER_NAME_T)) {
         m_t = parameters.getLastAvailable().toDouble();
     } else {
-        errorMissingParameter(ObservableKinematic::PARAMETER_NAME_T);
+        errorMissingParameter(DVCSObservableKinematic::PARAMETER_NAME_T);
     }
     if (parameters.isAvailable(
             GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUF2)) {

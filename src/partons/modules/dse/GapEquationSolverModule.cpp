@@ -9,12 +9,13 @@
 #include "../../../../include/partons/beans/dse/QuarkPropagator.h"
 #include "../../../../include/partons/beans/dse/RLVertex.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
+#include "../../../../include/partons/beans/channel/ChannelType.h"
 
 namespace PARTONS {
 
 
 GapEquationSolverModule::GapEquationSolverModule(const std::string &className) :
-        ModuleObject(className), m_gluonPropagator(0), m_quarkPropagator(0), m_vertex(
+        ModuleObject(className, ChannelType::UNDEFINED), m_gluonPropagator(0), m_quarkPropagator(0), m_vertex(
                 0), m_quad_x(0), m_quad_z(0), m_mu(19.), m_mu2(19 * 19), m_m(
                 5.e-3), m_N(50), m_2N(100), m_Nx(120), m_Nz(32), m_tolerance(
                 1.e-4, 1.e-3), m_maxIter(20), m_Lambda2(1.e5), m_epsilon2(

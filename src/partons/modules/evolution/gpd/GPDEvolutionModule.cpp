@@ -15,6 +15,7 @@
 #include "../../../../../include/partons/modules/running_alpha_strong/RunningAlphaStrongModule.h"
 #include "../../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../../include/partons/Partons.h"
+#include "../../../../../include/partons/beans/channel/ChannelType.h"
 
 namespace PARTONS {
 
@@ -22,7 +23,7 @@ const std::string GPDEvolutionModule::GPD_EVOLUTION_MODULE_CLASS_NAME =
         "GPDEvolutionModule";
 
 GPDEvolutionModule::GPDEvolutionModule(const std::string &className) :
-        ModuleObject(className), MathIntegratorModule(), m_pGPDModule(0), m_x(
+        ModuleObject(className, ChannelType::UNDEFINED), MathIntegratorModule(), m_pGPDModule(0), m_x(
                 0.), m_xi(0.), m_t(0.), m_MuF2(0.), m_MuR2(0.), m_MuF2_ref(0.), m_currentGPDComputeType(
                 GPDType::UNDEFINED), m_nFlavors(0), m_nFlavors_ref(0), m_qcdOrderType(
                 PerturbativeQCDOrderType::UNDEFINED), m_pRunningAlphaStrong(0), m_pActiveFlavorsModule(

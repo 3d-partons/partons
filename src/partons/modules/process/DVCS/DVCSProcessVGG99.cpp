@@ -115,7 +115,7 @@ void DVCSProcessVGG99::initModule() {
 
 void DVCSProcessVGG99::initModule(double beamHelicity, double beamCharge,
         NumA::Vector3D targetPolarization) {
-    DVCSProcessModule::initModule(beamHelicity, beamCharge, targetPolarization);
+   // DVCSProcessModule::initModule(beamHelicity, beamCharge, targetPolarization);
 }
 
 void DVCSProcessVGG99::isModuleWellConfigured() {

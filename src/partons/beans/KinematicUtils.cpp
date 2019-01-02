@@ -8,7 +8,6 @@
 
 namespace PARTONS {
 
-
 KinematicUtils::KinematicUtils() :
         BaseObject("KinematicUtils") {
 }
@@ -16,10 +15,10 @@ KinematicUtils::KinematicUtils() :
 KinematicUtils::~KinematicUtils() {
 }
 
-List<ObservableKinematic> KinematicUtils::getObservableKinematicFromFile(
+List<DVCSObservableKinematic> KinematicUtils::getDVCSObservableKinematicFromFile(
         const std::string& filePath) {
 
-    List<ObservableKinematic> observableKinematicList;
+    List<DVCSObservableKinematic> observableKinematicList;
 
     if (ElemUtils::FileUtils::isReadable(filePath)) {
 
@@ -30,7 +29,7 @@ List<ObservableKinematic> KinematicUtils::getObservableKinematicFromFile(
         checkEmptyInputFile("getObservableKinematicFromFile", kinematicString,
                 filePath);
 
-        ObservableKinematic kinematic;
+        DVCSObservableKinematic kinematic;
 
         for (size_t i = 0; i != kinematicString.size(); i++) {
 
@@ -48,7 +47,7 @@ List<ObservableKinematic> KinematicUtils::getObservableKinematicFromFile(
                                     << " ; You must provided 5 column : xB | t | Q2 | E | phi");
                 }
 
-                kinematic = ObservableKinematic(kinematicValues[0],
+                kinematic = DVCSObservableKinematic(kinematicValues[0],
                         kinematicValues[1], kinematicValues[2],
                         kinematicValues[3], kinematicValues[4]);
                 kinematic.setIndexId(observableKinematicList.size());
@@ -109,7 +108,7 @@ List<GPDKinematic> KinematicUtils::getGPDKinematicFromFile(
     return gpdKinematicList;
 }
 
-List<DVCSConvolCoeffFunctionKinematic> KinematicUtils::getCCFKinematicFromFile(
+List<DVCSConvolCoeffFunctionKinematic> KinematicUtils::getDVCSCCFKinematicFromFile(
         const std::string& filePath) {
     List<DVCSConvolCoeffFunctionKinematic> kinematicList;
 

@@ -23,11 +23,11 @@ DVCSObservable::~DVCSObservable() {
 }
 
 std::string DVCSObservable::toString() const {
-    return Observable<DVCSObservableKinematic>::toString();
+    return Observable<DVCSObservableKinematic, DVCSObservableResult>::toString();
 }
 
 void DVCSObservable::resolveObjectDependencies() {
-    Observable<DVCSObservableKinematic>::resolveObjectDependencies();
+    Observable<DVCSObservableKinematic, DVCSObservableResult>::resolveObjectDependencies();
 }
 
 void DVCSObservable::run() {
@@ -61,17 +61,17 @@ void DVCSObservable::run() {
 }
 
 void DVCSObservable::configure(const ElemUtils::Parameters &parameters) {
-    ModuleObject::configure(parameters);
+    Observable<DVCSObservableKinematic, DVCSObservableResult>::configure(parameters);
 }
 
 void DVCSObservable::prepareSubModules(
         const std::map<std::string, BaseObjectData>& subModulesData) {
-    Observable<DVCSObservableKinematic>::prepareSubModules(subModulesData);
+    Observable<DVCSObservableKinematic, DVCSObservableResult>::prepareSubModules(subModulesData);
 }
 
 DVCSObservableResult DVCSObservable::compute(
         const DVCSObservableKinematic& kinematic,
-        const List<GPDType> & gpdType = List<GPDType>()) {
+        const List<GPDType>& gpdType) {
 
     //reset kinematics (virtuality)
     setKinematics(kinematic);
@@ -88,19 +88,19 @@ DVCSObservableResult DVCSObservable::compute(
     //check if this observable is a phi dependent observable
     if (m_observableType == ObservableType::PHI) {
 
-        result.setValue(computePhiDVCSObservable());
+        result.setValue(computePhiDVCSObservable(kinematic));
         result.setObservableType(ObservableType::PHI);
     }
     //check if this observable is a Fourier observable (phi moment)
     else if (m_observableType == ObservableType::FOURIER) {
 
-        result.setValue(computeFourierDVCSObservable());
+        result.setValue(computeFourierDVCSObservable(kinematic));
         result.setObservableType(ObservableType::FOURIER);
     }
     //check if this observable is an undefined-type observable
     else if (m_observableType == ObservableType::UNDEFINED) {
 
-        result.setValue(computeOtherDVCSObservable());
+        result.setValue(computeOtherDVCSObservable(kinematic));
         result.setObservableType(ObservableType::UNDEFINED);
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
@@ -123,17 +123,17 @@ void DVCSObservable::setKinematics(const DVCSObservableKinematic& kinematic) {
     m_t = kinematic.getT();
     m_Q2 = kinematic.getQ2();
     m_E = kinematic.getE();
-    m_phi = kinematic.getPhi();
+    m_phi = kinematic.getPhi().getValue();
 }
 
 void DVCSObservable::initModule() {
-    Observable<DVCSObservableKinematic>::initModule();
+    Observable<DVCSObservableKinematic, DVCSObservableResult>::initModule();
 }
 
 void DVCSObservable::isModuleWellConfigured() {
 
     //run mother
-    Observable<DVCSObservableKinematic>::isModuleWellConfigured();
+    Observable<DVCSObservableKinematic, DVCSObservableResult>::isModuleWellConfigured();
 
     //test kinematic domain of xB
     if (m_xB < 0. || m_xB > 1.) {

@@ -16,7 +16,7 @@ ObservableKinematicDaoService::~ObservableKinematicDaoService() {
 }
 
 int ObservableKinematicDaoService::insert(
-        const ObservableKinematic &observableKinematic) const {
+        const DVCSObservableKinematic &observableKinematic) const {
     int kinematicId = -1;
 
     // For multiple query it's better to use transaction to guarantee database's integrity and performance
@@ -39,7 +39,7 @@ int ObservableKinematicDaoService::insert(
 }
 
 int ObservableKinematicDaoService::insert(
-        const List<ObservableKinematic>& observableKinematicList) const {
+        const List<DVCSObservableKinematic>& observableKinematicList) const {
     int kinematicId = -1;
 
     // For multiple query it's better to use transaction to guarantee database's integrity and performance
@@ -66,25 +66,25 @@ int ObservableKinematicDaoService::insert(
 }
 
 int ObservableKinematicDaoService::getIdByKinematicObject(
-        const ObservableKinematic& observableKinematic) const {
+        const DVCSObservableKinematic& observableKinematic) const {
     return m_observableKinematicDao.select(observableKinematic.getXB(),
             observableKinematic.getT(), observableKinematic.getQ2(),
             observableKinematic.getE(), observableKinematic.getPhi().getValue());
 }
 
-List<ObservableKinematic> ObservableKinematicDaoService::getKinematicListByComputationId(
+List<DVCSObservableKinematic> ObservableKinematicDaoService::getKinematicListByComputationId(
         int computationId) const {
     return m_observableKinematicDao.getKinematicListByComputationId(
             computationId);
 }
 
-ObservableKinematic ObservableKinematicDaoService::getKinematicById(
+DVCSObservableKinematic ObservableKinematicDaoService::getKinematicById(
         const int kinematicId) const {
     return m_observableKinematicDao.getKinematicById(kinematicId);
 }
 
 int ObservableKinematicDaoService::insertWithoutTransaction(
-        const ObservableKinematic& observableKinematic) const {
+        const DVCSObservableKinematic& observableKinematic) const {
     return m_observableKinematicDao.insert(observableKinematic.getXB(),
             observableKinematic.getT(), observableKinematic.getQ2(),
             observableKinematic.getE(), observableKinematic.getPhi().getValue());

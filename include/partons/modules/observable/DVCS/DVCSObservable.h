@@ -74,7 +74,7 @@ protected:
      * Copy constructor.
      * @param other Object to be copied.
      */
-    DVCSObservable(const Observable& other);
+    DVCSObservable(const DVCSObservable& other);
 
     virtual void setKinematics(const DVCSObservableKinematic& kinematic);
     virtual void initModule();

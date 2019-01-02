@@ -14,6 +14,8 @@
 #include "../../../../../include/partons/modules/xi_converter/XiConverterModule.h"
 #include "../../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../../include/partons/Partons.h"
+#include "../../../../../include/partons/beans/Scales.h"
+#include "../../../../../include/partons/services/ConvolCoeffFunctionService.h"
 #include "../../../../../include/partons/services/DVCSConvolCoeffFunctionService.h"
 #include "../../../../../include/partons/ServiceObjectRegistry.h"
 
@@ -180,7 +182,7 @@ void DVCSProcessModule::resetPrevious() {
 
 void DVCSProcessModule::computeConvolCoeffFunction(
         const DVCSObservableKinematic& kinematic,
-        const List<GPDType> & gpdType = List<GPDType>()) {
+        const List<GPDType>& gpdType) {
 
     //compute scales
     Scales scale = m_pScaleModule->compute(kinematic.getQ2());
@@ -217,7 +219,7 @@ void DVCSProcessModule::setKinematics(
     m_t = kinematic.getT();
     m_Q2 = kinematic.getQ2();
     m_E = kinematic.getE();
-    m_phi = kinematic.getPhi();
+    m_phi = kinematic.getPhi().getValue();
 }
 
 void DVCSProcessModule::initModule() {

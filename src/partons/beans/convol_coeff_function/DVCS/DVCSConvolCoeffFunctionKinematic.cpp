@@ -4,7 +4,7 @@
 #include <ElementaryUtils/thread/Packet.h>
 
 #include "../../../../../include/partons/beans/channel/ChannelType.h"
-#include "../../../../../include/partons/beans/observable/ObservableKinematic.h"
+#include "../../../../../include/partons/beans/observable/DVCS/DVCSObservableKinematic.h"
 #include "../../../../../include/partons/Partons.h"
 #include "../../../../../include/partons/services/hash_sum/CryptographicHashService.h"
 #include "../../../../../include/partons/ServiceObjectRegistry.h"
@@ -22,10 +22,10 @@ DVCSConvolCoeffFunctionKinematic::DVCSConvolCoeffFunctionKinematic(
         ConvolCoeffFunctionKinematic("DVCSConvolCoeffFunctionKinematic",
                 ChannelType::DVCS, parameters), m_Q2(0.) {
 
-    if (parameters.isAvailable(ObservableKinematic::PARAMETER_NAME_Q2)) {
+    if (parameters.isAvailable(DVCSObservableKinematic::PARAMETER_NAME_Q2)) {
         m_Q2 = parameters.getLastAvailable().toDouble();
     } else {
-        errorMissingParameter(ObservableKinematic::PARAMETER_NAME_Q2);
+        errorMissingParameter(DVCSObservableKinematic::PARAMETER_NAME_Q2);
     }
 
     updateHashSum();

@@ -20,20 +20,11 @@ ObservableKinematic::~ObservableKinematic() {
 }
 
 std::string ObservableKinematic::toString() const {
-    ElemUtils::Formatter formatter;
-    formatter << Kinematic::toString() << " m_xB = " << m_xB << " m_t = " << m_t
-            << " (GeV2) m_Q2 = " << m_Q2 << " (GeV2) m_E = " << m_E << " (GeV)";
-
-    if (m_phi.isInitialized()) {
-        formatter << " phi = " << m_phi.toString();
-    }
-
-    return formatter.str();
+    return Kinematic::toString();
 }
 
 ObservableKinematic::ObservableKinematic(const ObservableKinematic &other) :
         Kinematic(other) {
-
 }
 
 void ObservableKinematic::serialize(ElemUtils::Packet &packet) const {

@@ -55,7 +55,8 @@ void ObservableResult::compare(ComparisonReport &rootComparisonReport,
             "observable value", getValue(), referenceObject.getValue(),
             rootComparisonReport.getTolerances(),
             ElemUtils::Formatter() << parentObjectInfo
-                    << this->getObjectInfo());
+                    << this->getResultInfo().toString());
+//    << this->getObjectInfo());
     rootComparisonReport.addComparisonData(xb_comparisonData);
 }
 

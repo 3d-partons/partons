@@ -91,12 +91,18 @@ DVCSObservableKinematic::DVCSObservableKinematic(
     updateHashSum();
 }
 
+DVCSObservableKinematic::DVCSObservableKinematic(
+        const DVCSObservableKinematic &other) :
+        ObservableKinematic(other), m_xB(other.m_xB), m_t(other.m_t), m_Q2(
+                other.m_Q2), m_E(other.m_E), m_phi(other.m_phi) {
+}
+
 DVCSObservableKinematic::~DVCSObservableKinematic() {
 }
 
 std::string DVCSObservableKinematic::toString() const {
     ElemUtils::Formatter formatter;
-    formatter << Kinematic::toString() << " m_xB = " << m_xB << " m_t = " << m_t
+    formatter << ObservableKinematic::toString() << " m_xB = " << m_xB << " m_t = " << m_t
             << " (GeV2) m_Q2 = " << m_Q2 << " (GeV2) m_E = " << m_E << " (GeV)";
 
     if (m_phi.isInitialized()) {

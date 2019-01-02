@@ -190,7 +190,7 @@ void DVCSProcessGV08::initModule(double beamHelicity, double beamCharge,
         NumA::Vector3D targetPolarization) {
 
     //init mother class
-    DVCSProcessModule::initModule(beamHelicity, beamCharge, targetPolarization);
+  //  DVCSProcessModule::initModule(beamHelicity, beamCharge, targetPolarization);
 
     // define the GV angle
     m_phiGV = -m_phi;

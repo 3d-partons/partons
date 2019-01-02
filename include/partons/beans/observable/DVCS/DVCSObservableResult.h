@@ -65,12 +65,12 @@ public:
     /**
      * Get reference to DVCS observable kinematics associated to this result.
      */
-    const ObservableKinematic& getKinematic() const;
+    const DVCSObservableKinematic& getKinematic() const;
 
     /**
      * Set DVCS observable kinematics associated to this result.
      */
-    void setKinematic(const ObservableKinematic &kinematic);
+    void setKinematic(const DVCSObservableKinematic &kinematic);
 
 private:
 

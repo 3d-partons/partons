@@ -5,12 +5,11 @@
 #include "../../include/partons/BaseObjectRegistry.h"
 #include "../../include/partons/services/automation/AutomationService.h"
 #include "../../include/partons/services/ComparisonService.h"
-#include "../../include/partons/services/ConvolCoeffFunctionService.h"
 #include "../../include/partons/services/DoubleDistributionService.h"
 #include "../../include/partons/services/DVCSConvolCoeffFunctionService.h"
+#include "../../include/partons/services/DVCSObservableService.h"
 #include "../../include/partons/services/GPDService.h"
 #include "../../include/partons/services/hash_sum/CryptographicHashService.h"
-#include "../../include/partons/services/ObservableService.h"
 #include "../../include/partons/services/VizualisationService.h"
 
 namespace PARTONS {
@@ -55,8 +54,8 @@ DVCSConvolCoeffFunctionService* ServiceObjectRegistry::getDVCSConvolCoeffFunctio
             DVCSConvolCoeffFunctionService::classId));
 }
 
-ObservableService* ServiceObjectRegistry::getObservableService() const {
-    return static_cast<ObservableService*>(get(ObservableService::classId));
+DVCSObservableService* ServiceObjectRegistry::getDVCSObservableService() const {
+    return static_cast<DVCSObservableService*>(get(DVCSObservableService::classId));
 }
 
 VizualisationService* ServiceObjectRegistry::getVizualisationService() const {

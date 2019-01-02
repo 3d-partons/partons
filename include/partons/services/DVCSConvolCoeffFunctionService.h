@@ -41,15 +41,11 @@ public:
     DVCSConvolCoeffFunctionService(const std::string &className);
 
     /**
-     * Default destructor.
+     * Destructor.
      */
     virtual ~DVCSConvolCoeffFunctionService();
 
-    /**
-     * See parent class for details.
-     */
     void resolveObjectDependencies();
-
     DVCSConvolCoeffFunctionKinematic newKinematicFromTask(
             const Task &task) const;
     List<DVCSConvolCoeffFunctionKinematic> newListOfKinematicFromTask(

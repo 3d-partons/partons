@@ -1,4 +1,4 @@
-#include "../../../include/partons/services/DVCSConvolCoeffFunctionService.h"
+#include "../../../include/partons/services/DVCSObservableService.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/parameters/GenericType.h>
@@ -14,39 +14,37 @@
 
 namespace PARTONS {
 
-const unsigned int DVCSConvolCoeffFunctionService::classId =
+const unsigned int DVCSObservableService::classId =
         Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
-                new DVCSConvolCoeffFunctionService(
-                        "DVCSConvolCoeffFunctionService"));
+                new DVCSObservableService("DVCSObservableService"));
 
-DVCSConvolCoeffFunctionService::DVCSConvolCoeffFunctionService(
-        const std::string &className) :
-        ConvolCoeffFunctionService<DVCSConvolCoeffFunctionKinematic,
-                DVCSConvolCoeffFunctionResult>(className) {
+DVCSObservableService::DVCSObservableService(const std::string &className) :
+        ObservableService(className) {
 }
 
-DVCSConvolCoeffFunctionService::~DVCSConvolCoeffFunctionService() {
+DVCSObservableService::~DVCSObservableService() {
 }
 
-void DVCSConvolCoeffFunctionService::resolveObjectDependencies() {
-    ConvolCoeffFunctionService<DVCSConvolCoeffFunctionKinematic,
-            DVCSConvolCoeffFunctionResult>::resolveObjectDependencies();
+void DVCSObservableService::resolveObjectDependencies() {
+    ObservableService<DVCSObservableKinematic, DVCSObservableResult>::resolveObjectDependencies();
 }
 
 //TODO remove hardcoded string
-DVCSConvolCoeffFunctionKinematic DVCSConvolCoeffFunctionService::newKinematicFromTask(
+DVCSObservableKinematic DVCSObservableService::newKinematicFromTask(
         const Task& task) const {
-    DVCSConvolCoeffFunctionKinematic kinematic;
+
+    //create a kinematic and init it with a list of parameters
+    DVCSObservableKinematic kinematic;
 
     if (ElemUtils::StringUtils::equals(
             task.getKinematicsData().getModuleClassName(),
-            "DVCSConvolCoeffFunctionKinematic")) {
-        kinematic = DVCSConvolCoeffFunctionKinematic(
+            "ObservableKinematic")) {
+        kinematic = DVCSObservableKinematic(
                 task.getKinematicsData().getParameters());
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
-                        << "Missing object : <DVCSConvolCoeffFunctionKinematic> for method "
+                        << "Missing object : <ObservableKinematic> for method "
                         << task.getFunctionName());
     }
 
@@ -54,28 +52,29 @@ DVCSConvolCoeffFunctionKinematic DVCSConvolCoeffFunctionService::newKinematicFro
 }
 
 //TODO remove hardcoded string
-List<DVCSConvolCoeffFunctionKinematic> DVCSConvolCoeffFunctionService::newListOfKinematicFromTask(
+List<DVCSObservableKinematic> DVCSObservableService::newListOfKinematicFromTask(
         const Task& task) const {
-    List<DVCSConvolCoeffFunctionKinematic> listOfKinematic;
+
+    List<DVCSObservableKinematic> listOfKinematic;
 
     if (ElemUtils::StringUtils::equals(
             task.getKinematicsData().getModuleClassName(),
-            "DVCSConvolCoeffFunctionKinematic")) {
+            "ObservableKinematic")) {
 
         if (task.getKinematicsData().getParameters().isAvailable("file")) {
             listOfKinematic =
-                    KinematicUtils().getDVCSCCFKinematicFromFile(
+                    KinematicUtils().getDVCSObservableKinematicFromFile(
                             task.getKinematicsData().getParameters().getLastAvailable().getString());
         } else {
             throw ElemUtils::CustomException(getClassName(), __func__,
                     ElemUtils::Formatter()
-                            << "Missing parameter file in object <DVCSConvolCoeffFunctionKinematic> for method "
+                            << "Missing parameter file in object <ObservableKinematic> for method "
                             << task.getFunctionName());
         }
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
-                        << "Missing object : <DVCSConvolCoeffFunctionKinematic> for method "
+                        << "Missing object : <ObservableKinematic> for method "
                         << task.getFunctionName());
     }
 

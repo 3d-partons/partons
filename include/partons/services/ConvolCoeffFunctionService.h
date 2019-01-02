@@ -47,8 +47,6 @@ public:
     static const std::string FUNCTION_NAME_COMPUTE_MANY_KINEMATIC_ONE_MODEL; ///< Name of the XML task used for computing CCFs with a list of kinematics.
     static const std::string FUNCTION_NAME_GENERATE_PLOT_FILE; ///< Name of the XML task used for generating a data file ready for plotting.
 
-    static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
-
     /**
      * Default constructor.
      */
@@ -57,7 +55,7 @@ public:
     }
 
     /**
-     * Default destructor.
+     * Destructor.
      */
     virtual ~ConvolCoeffFunctionService() {
     }
@@ -75,8 +73,7 @@ public:
                             ElemUtils::PropertiesManager::getInstance()->getString(
                                     "ccf.service.batch.size")).toUInt();
         } catch (const std::exception &e) {
-            throw ElemUtils::CustomException(
-                    ServiceObjectTyped<KinematicType, ResultType>::getClassName(),
+            throw ElemUtils::CustomException(this->getClassName(),
                     __func__, e.what());
         }
     }
@@ -94,20 +91,26 @@ public:
         if (ElemUtils::StringUtils::equals(task.getFunctionName(),
                 ConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_MANY_KINEMATIC_ONE_MODEL)) {
             resultList = computeManyKinematicOneModelTask(task);
-        } else if (ElemUtils::StringUtils::equals(task.getFunctionName(),
+        }
+
+        else if (ElemUtils::StringUtils::equals(task.getFunctionName(),
                 ConvolCoeffFunctionService::FUNCTION_NAME_COMPUTE_WITH_GPD_MODEL)) {
             resultList.add(computeWithGPDModelTask(task));
 
-        } else if (ElemUtils::StringUtils::equals(task.getFunctionName(),
+        }
+
+        else if (ElemUtils::StringUtils::equals(task.getFunctionName(),
                 ConvolCoeffFunctionService::FUNCTION_NAME_GENERATE_PLOT_FILE)) {
             generatePlotFileTask(task);
-        } else if (!ServiceObjectTyped<KinematicType, ResultType>::computeGeneralTask(
+        }
+
+        else if (!ServiceObjectTyped<KinematicType, ResultType>::computeGeneralTask(
                 task)) {
             ServiceObjectTyped<KinematicType, ResultType>::errorUnknownMethod(
                     task);
         }
 
-        updateResultInfo(resultList,
+        ServiceObjectTyped<KinematicType, ResultType>::updateResultInfo(resultList,
                 ServiceObjectTyped<KinematicType, ResultType>::m_resultInfo);
 
 //        if (task.isStoreInDB()) {
@@ -118,7 +121,7 @@ public:
 //                    resultList);
 //
 //            if (computationId != -1) {
-//                info(__func__,
+//                this->info(__func__,
 //                        ElemUtils::Formatter()
 //                                << "DVCSConvolCoeffFunctionResultList object has been stored in database with computation_id = "
 //                                << computationId);
@@ -148,7 +151,7 @@ public:
             const bool storeInDB = 0) {
 
         //print information
-        info(__func__,
+        this->info(__func__,
                 ElemUtils::Formatter() << kinematics.size()
                         << " CCF kinematic(s) will be computed with "
                         << pConvolCoeffFunctionModule->getClassName());
@@ -167,13 +170,13 @@ public:
                     pConvolCoeffFunctionModule);
 
             //print info
-            info(__func__, "Thread(s) running ...");
+            this->info(__func__, "Thread(s) running ...");
 
             //batch feature
             unsigned int i = 0;
             unsigned int j = 0;
 
-            //devide to packets
+            //divide to packets
             while (i != kinematics.size()) {
 
                 listOfPacket.clear();
@@ -199,9 +202,9 @@ public:
                 ServiceObjectTyped<KinematicType, ResultType>::sortResultList();
 
                 //print info
-                info(__func__,
+                this->info(__func__,
                         ElemUtils::Formatter()
-                                << "Kinematic(s) already computed : " << i);
+                                << "Kinematic(s) already computed: " << i);
 
                 //update result info
                 ServiceObjectTyped<KinematicType, ResultType>::updateResultInfo(
@@ -220,7 +223,7 @@ public:
             ServiceObjectTyped<KinematicType, ResultType>::clearAllThread();
 
         } else {
-            info(__func__,
+            this->info(__func__,
                     "Nothing to compute with your computation configuration ; there is no GPDType available");
         }
 
@@ -248,7 +251,7 @@ public:
         //loop over GPD types
         for (unsigned int i = 0; i != restrictedByGPDTypeListFinal.size();
                 i++) {
-            result.add(restrictedByGPDTypeListFinal[i],
+            result.addResult(restrictedByGPDTypeListFinal[i],
                     pConvolCoeffFunctionModule->compute(kinematic,
                             restrictedByGPDTypeListFinal[i]));
         }
@@ -275,7 +278,7 @@ public:
         //initialize
         ConvolCoeffFunctionModule<KinematicType>* pConvolCoeffFunctionModule = 0;
 
-        //check if availible
+        //check if available
         //TODO remove hardcoded string
         if (ElemUtils::StringUtils::equals(
                 task.getModuleComputationConfiguration().getModuleType(),
@@ -292,8 +295,7 @@ public:
             pConvolCoeffFunctionModule->prepareSubModules(
                     task.getModuleComputationConfiguration().getSubModules());
         } else {
-            throw ElemUtils::CustomException(
-                    ServiceObjectTyped<KinematicType, ResultType>::getClassName(),
+            throw ElemUtils::CustomException(this->getClassName(),
                     __func__,
                     ElemUtils::Formatter()
                             << "You have not provided any ConvolCoeffFunctionModule");
@@ -370,7 +372,7 @@ private:
                 listOfKinematic, pConvolCoeffFunctionModule, gpdTypeList,
                 task.isStoreInDB());
 
-        //remove reference to pConvolCoeffFunctionModule pointer.
+        //remove reference to pConvolCoeffFunctionModule pointer
         ServiceObjectTyped<KinematicType, ResultType>::m_pModuleObjectFactory->updateModulePointerReference(
                 pConvolCoeffFunctionModule, 0);
         pConvolCoeffFunctionModule = 0;
@@ -419,7 +421,7 @@ private:
         }
 
         //print info
-        info(__func__,
+        this->info(__func__,
                 ElemUtils::Formatter() << availableGPDTypeForCCFModel.size()
                         << " GPDType will be computed");
 

@@ -24,6 +24,7 @@ DVCSProcessBMJ12::DVCSProcessBMJ12(const std::string &className) :
     m_theta = 0.;
     m_Lambda = 0.;
     m_lambda = 0.;
+    m_phaseSpace = 0.;
     m_xB2 = 0.;
     m_yBMJ.assign(3, 0.);
     m_Q.assign(4, 0.);
@@ -69,6 +70,7 @@ DVCSProcessBMJ12::DVCSProcessBMJ12(const DVCSProcessBMJ12& other) :
     m_theta = other.m_theta;
     m_Lambda = other.m_Lambda;
     m_lambda = other.m_lambda;
+    m_phaseSpace = other.m_phaseSpace;
     m_xB2 = other.m_xB2;
     m_yBMJ = other.m_yBMJ;
     m_Q = other.m_Q;
@@ -159,7 +161,7 @@ void DVCSProcessBMJ12::initModule(double beamHelicity, double beamCharge,
         NumA::Vector3D targetPolarization) {
 
     //init mother class
-    DVCSProcessModule::initModule(beamHelicity, beamCharge, targetPolarization);
+   // DVCSProcessModule::initModule(beamHelicity, beamCharge, targetPolarization);
 
     // define the angles and Lambda
     defineAngles(targetPolarization);

@@ -99,10 +99,10 @@ int ObservableResultDao::insert(const std::string& observableName,
     return result;
 }
 
-List<ObservableResult> ObservableResultDao::getObservableResultListByComputationId(
+List<DVCSObservableResult> ObservableResultDao::getObservableResultListByComputationId(
         const int computationId) const {
 
-    List<ObservableResult> results;
+    List<DVCSObservableResult> results;
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
@@ -121,9 +121,9 @@ List<ObservableResult> ObservableResultDao::getObservableResultListByComputation
     return results;
 }
 
-List<ObservableResult> ObservableResultDao::getObservableResultListFromSQLQuery(
+List<DVCSObservableResult> ObservableResultDao::getObservableResultListFromSQLQuery(
         const std::string& sqlQuery) const {
-    List<ObservableResult> results;
+    List<DVCSObservableResult> results;
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
@@ -145,7 +145,7 @@ List<ObservableResult> ObservableResultDao::getObservableResultListFromSQLQuery(
 
 //TODO retrieve Computation object
 void ObservableResultDao::fillObservableResultList(
-        List<ObservableResult> &observableResultList, QSqlQuery& query) const {
+        List<DVCSObservableResult> &observableResultList, QSqlQuery& query) const {
 
     int field_id = query.record().indexOf(
             QString(Database::COLUMN_NAME_OBSERVABLE_RESULT_ID.c_str()));
@@ -184,18 +184,18 @@ void ObservableResultDao::fillObservableResultList(
 
         //TODO create ResultInfo, Computation, ...
 
-        ObservableResult observableResult;
+        DVCSObservableResult observableResult;
 
-        observableResult.setIndexId(id);
-        observableResult = ObservableResult(observable_name, observable_value);
-        observableResult.setStatError(statError);
-        observableResult.setSystError(systError);
-        observableResult.setScaleError(scaleError);
-        observableResult.setComputationModuleName(computation_module_name);
-        observableResult.setKinematic(
-                m_observableKinematicDao.getKinematicById(
-                        query.value(field_kinematic_id).toInt()));
-        observableResult.setObservableType(observable_type);
+//        observableResult.setIndexId(id);
+//        observableResult = DVCSObservableResult(observable_name, observable_value);
+//        observableResult.setStatError(statError);
+//        observableResult.setSystError(systError);
+//        observableResult.setScaleError(scaleError);
+//        observableResult.setComputationModuleName(computation_module_name);
+//        observableResult.setKinematic(
+//                m_observableKinematicDao.getKinematicById(
+//                        query.value(field_kinematic_id).toInt()));
+//        observableResult.setObservableType(observable_type);
 
         observableResultList.add(observableResult);
     }

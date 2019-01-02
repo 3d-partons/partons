@@ -1,13 +1,14 @@
 #include "../../../../include/partons/modules/xi_converter/XiConverterModule.h"
 
-namespace PARTONS {
+#include "../../../../include/partons/beans/channel/ChannelType.h"
 
+namespace PARTONS {
 
 const std::string XiConverterModule::XI_CONVERTER_MODULE_CLASS_NAME =
         "XiConverterModule";
 
 XiConverterModule::XiConverterModule(const std::string &className) :
-        ModuleObject(className) {
+        ModuleObject(className, ChannelType::UNDEFINED) {
 }
 
 XiConverterModule::~XiConverterModule() {

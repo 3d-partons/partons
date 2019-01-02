@@ -1,7 +1,6 @@
-#include <ElementaryUtils/string_utils/Formatter.h>
-
-#include "../../../include/partons/beans/Kinematic.h"
 #include "../../../include/partons/beans/Scales.h"
+
+#include <ElementaryUtils/string_utils/Formatter.h>
 
 namespace PARTONS {
 

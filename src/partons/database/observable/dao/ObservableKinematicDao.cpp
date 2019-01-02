@@ -79,10 +79,10 @@ int ObservableKinematicDao::select(double xB, double t, double Q2, double E,
     return result;
 }
 
-ObservableKinematic ObservableKinematicDao::getKinematicById(
+DVCSObservableKinematic ObservableKinematicDao::getKinematicById(
         const int kinematicId) const {
 
-    ObservableKinematic observableKinematic;
+    DVCSObservableKinematic observableKinematic;
 
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
@@ -102,10 +102,10 @@ ObservableKinematic ObservableKinematicDao::getKinematicById(
     return observableKinematic;
 }
 
-List<ObservableKinematic> ObservableKinematicDao::getKinematicListByComputationId(
+List<DVCSObservableKinematic> ObservableKinematicDao::getKinematicListByComputationId(
         int computationId) const {
 
-    List<ObservableKinematic> observableKinematicList;
+    List<DVCSObservableKinematic> observableKinematicList;
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     ElemUtils::Formatter formatter;
@@ -124,7 +124,7 @@ List<ObservableKinematic> ObservableKinematicDao::getKinematicListByComputationI
 }
 
 void ObservableKinematicDao::fillKinematicFromQuery(
-        ObservableKinematic &observableKinematic, QSqlQuery &query) const {
+        DVCSObservableKinematic &observableKinematic, QSqlQuery &query) const {
 
     int field_id = query.record().indexOf(
             QString(Database::COLUMN_NAME_OBSERVABLE_KINEMATIC_ID.c_str()));
@@ -142,16 +142,16 @@ void ObservableKinematicDao::fillKinematicFromQuery(
         double E = query.value(field_E).toDouble();
         double phi = query.value(field_phi).toDouble();
 
-        observableKinematic = ObservableKinematic(xB, t, Q2, E, phi);
+        observableKinematic = DVCSObservableKinematic(xB, t, Q2, E, phi);
         observableKinematic.setIndexId(id);
     }
 }
 
 void ObservableKinematicDao::fillObservableKinematicListFromQuery(
-        List<ObservableKinematic>& observableKinematicList,
+        List<DVCSObservableKinematic>& observableKinematicList,
         QSqlQuery& query) const {
     while (query.next()) {
-        ObservableKinematic observableKinematic;
+        DVCSObservableKinematic observableKinematic;
         fillKinematicFromQuery(observableKinematic, query);
         observableKinematicList.add(observableKinematic);
     }

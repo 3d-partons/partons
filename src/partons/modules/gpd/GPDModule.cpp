@@ -15,6 +15,7 @@
 #include "../../../../include/partons/services/GPDService.h"
 #include "../../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../../include/partons/ServiceObjectTyped.h"
+#include "../../../../include/partons/beans/channel/ChannelType.h"
 
 namespace PARTONS {
 
@@ -23,7 +24,7 @@ const std::string GPDModule::GPD_MODULE_CLASS_NAME = "GPDModule";
 const std::string GPDModule::GPD_TYPE = "GPD_MODULE_GPD_TYPE";
 
 GPDModule::GPDModule(const std::string &className) :
-        ModuleObject(className), m_x(0.), m_xi(0.), m_t(0.), m_MuF2(0.), m_MuR2(
+        ModuleObject(className, ChannelType::UNDEFINED), m_x(0.), m_xi(0.), m_t(0.), m_MuF2(0.), m_MuR2(
                 0.), m_gpdType(GPDType::ALL), m_MuF2_ref(0.), m_pGPDEvolutionModule(
                 0) {
 }

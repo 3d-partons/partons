@@ -17,7 +17,7 @@ const std::string GPDSubtractionConstantModule::GPD_SUBTRACTION_CONSTANT_MODULE_
 
 GPDSubtractionConstantModule::GPDSubtractionConstantModule(
         const std::string& className) :
-        ModuleObject(className), m_t(0.), m_MuF2(0.), m_MuR2(0.) {
+        ModuleObject(className, ChannelType::UNDEFINED), m_t(0.), m_MuF2(0.), m_MuR2(0.) {
 }
 
 GPDSubtractionConstantModule::GPDSubtractionConstantModule(

@@ -8,8 +8,9 @@
 #include "../../../../include/partons/beans/gpd/GPDBorderFunctionKinematic.h"
 
 #include <ElementaryUtils/parameters/Parameters.h>
+#include <string>
 
-#include "../../../../include/partons/beans/observable/ObservableKinematic.h"
+#include "../../../../include/partons/beans/observable/DVCS/DVCSObservableKinematic.h"
 
 namespace PARTONS {
 
@@ -45,10 +46,10 @@ GPDBorderFunctionKinematic::GPDBorderFunctionKinematic(
         errorMissingParameter(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI);
     }
 
-    if (parameters.isAvailable(ObservableKinematic::PARAMETER_NAME_T)) {
+    if (parameters.isAvailable(DVCSObservableKinematic::PARAMETER_NAME_T)) {
         setT(parameters.getLastAvailable().toDouble());
     } else {
-        errorMissingParameter(ObservableKinematic::PARAMETER_NAME_T);
+        errorMissingParameter(DVCSObservableKinematic::PARAMETER_NAME_T);
     }
 
     //TODO remove from kinematic

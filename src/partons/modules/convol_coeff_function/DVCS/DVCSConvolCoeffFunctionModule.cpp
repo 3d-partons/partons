@@ -118,7 +118,7 @@ void DVCSConvolCoeffFunctionModule::run() {
             result.setIndexId(kinematic.getIndexId());
 
             for (unsigned int i = 0; i != gpdTypeList.size(); i++) {
-                result.add(gpdTypeList[i].getType(),
+                result.addResult(gpdTypeList[i].getType(),
                         compute(kinematic, gpdTypeList[i].getType()));
             }
 

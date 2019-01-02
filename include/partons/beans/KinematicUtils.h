@@ -14,7 +14,7 @@
 #include "convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "gpd/GPDKinematic.h"
 #include "List.h"
-#include "observable/ObservableKinematic.h"
+#include "observable/DVCS/DVCSObservableKinematic.h"
 
 namespace PARTONS {
 
@@ -46,7 +46,7 @@ public:
      * @param filePath Path to file to be parsed.
      * @return List of extracted ObservableKinematic objects.
      */
-    List<ObservableKinematic> getObservableKinematicFromFile(
+    List<DVCSObservableKinematic> getDVCSObservableKinematicFromFile(
             const std::string &filePath);
 
     /**
@@ -63,7 +63,7 @@ public:
      * @param filePath Path to file to be parsed.
      * @return List of extracted DVCSConvolCoeffFunctionKinematic objects.
      */
-    List<DVCSConvolCoeffFunctionKinematic> getCCFKinematicFromFile(
+    List<DVCSConvolCoeffFunctionKinematic> getDVCSCCFKinematicFromFile(
             const std::string &filePath);
 
 private:

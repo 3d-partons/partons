@@ -11,7 +11,7 @@
 #include <string>
 
 #include "../../../beans/List.h"
-#include "../../../beans/observable/ObservableResult.h"
+#include "../../../beans/observable/DVCS/DVCSObservableResult.h"
 #include "../../common/service/ComputationDaoService.h"
 #include "../../common/service/ResultInfoDaoService.h"
 #include "../../ResultDaoService.h"
@@ -102,7 +102,7 @@ public:
      * @param observableResult Reference to ObservableResult object to be inserted.
      * @return Unique id related to the new entry inserted into the database.
      */
-    int insert(const ObservableResult &observableResult);
+    int insert(const DVCSObservableResult &observableResult);
 
     /**
      * Insert into database a list of ObservableResult objects with transactions mechanisms.
@@ -110,7 +110,7 @@ public:
      * @param observableResultList Reference to List of ObservableResult objects to be inserted.
      * @return Unique id related to the last entry inserted into the database.
      */
-    int insert(const List<ObservableResult> &resultList);
+    int insert(const List<DVCSObservableResult> &resultList);
 
     /**
      * Try to find all entries in the database containing observable results that are associated with given unique computation id value.
@@ -118,7 +118,7 @@ public:
      * @param computationId  Computation id of database entries to be found.
      * @return List of ObservableResult objects that matches with computation id.
      */
-    List<ObservableResult> getObservableResultListByComputationId(
+    List<DVCSObservableResult> getObservableResultListByComputationId(
             const int computationId) const;
 
     /**
@@ -126,7 +126,7 @@ public:
      * @param sqlQuery User-defined SQL query.
      * @return  List of ObservableResult objects containing observable results retrieved from the database.
      */
-    List<ObservableResult> getObservableResultListFromSQLQuery(
+    List<DVCSObservableResult> getObservableResultListFromSQLQuery(
             const std::string &sqlQuery) const;
 
 private:

@@ -1,11 +1,12 @@
 #include "../../../../include/partons/modules/radon_inverse/RadonInverseModule.h"
 
-#include <cmath>
 #include <ElementaryUtils/logger/CustomException.h>
-#include <ElementaryUtils/parameters/Parameter.h>
+#include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/functor/multi_dimension/FunctionTypeMD.h>
-//#include <NumA/linear_algebra/LinAlgUtils.h>
+#include <cmath>
+
+#include "../../../../include/partons/beans/channel/ChannelType.h"
 
 namespace PARTONS {
 
@@ -23,7 +24,7 @@ const std::string RadonInverseModule::PARAMETER_NAME_TOLERANCE = "tolerance";
 const double RadonInverseModule::DD_DOMAIN_HALF_EDGE = 1. / sqrt(2.);
 
 RadonInverseModule::RadonInverseModule(const std::string &className) :
-        ModuleObject(className), m_N(0), m_rank(0), m_m(0), m_n(0), m_pGPDFunction(
+        ModuleObject(className, ChannelType::UNDEFINED), m_N(0), m_rank(0), m_m(0), m_n(0), m_pGPDFunction(
                 0), m_gauge(DDGauge::Pobylitsa), m_gaugeInVector(true), m_tolerance(
                 1.e-16), m_maxiter(0), m_matrixBuilt(false) {
 }

@@ -114,6 +114,9 @@ private:
     double m_s; ///< Mandelstam variable (square of the total incoming 4-momentum).
     double m_Q;  ///< Photon virtual mass i.e.\ square root of Q2.
 
+    // Phase-space
+    double m_phaseSpace; //Phase-space factor.
+
     // 4-vectors defined in the CM frame :
     NumA::Vector4D m_qCM; ///< Virtual photon (propagates along z-axis). 4-vector defined in the CM frame.
     NumA::Vector4D m_pCM; ///< Incoming proton (propagates along z-axis). 4-vector defined in the CM frame.

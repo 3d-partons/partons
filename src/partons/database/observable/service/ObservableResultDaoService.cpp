@@ -10,7 +10,7 @@
 #include <QtSql/qsqlquery.h>
 #include <utility>
 
-#include "../../../../../include/partons/beans/observable/ObservableKinematic.h"
+#include "../../../../../include/partons/beans/observable/DVCS/DVCSObservableKinematic.h"
 #include "../../../../../include/partons/database/Database.h"
 #include "../../../../../include/partons/database/DatabaseManager.h"
 #include "../../../../../include/partons/utils/math/ErrorBar.h"
@@ -64,16 +64,16 @@ ObservableResultDaoService::~ObservableResultDaoService() {
 }
 
 int ObservableResultDaoService::insert(
-        const ObservableResult &observableResult) {
+        const DVCSObservableResult &observableResult) {
 
-    List<ObservableResult> results;
+    List<DVCSObservableResult> results;
     results.add(observableResult);
 
     return insert(results);
 }
 
 int ObservableResultDaoService::insert(
-        const List<ObservableResult> &resultList) {
+        const List<DVCSObservableResult> &resultList) {
     // For multiple query it's better to use transaction to guarantee database's integrity and performance
     QSqlDatabase::database().transaction();
 
@@ -86,7 +86,7 @@ int ObservableResultDaoService::insert(
         for (unsigned int i = 0; i != resultList.size(); i++) {
             prepareCommonTablesFromResultInfo(resultList[i].getResultInfo());
 
-            ObservableKinematic kinematic = resultList[i].getKinematic();
+            DVCSObservableKinematic kinematic = resultList[i].getKinematic();
 
             int kinematicId =
                     m_observableKinematicDaoService.getKinematicIdByHashSum(
@@ -106,19 +106,22 @@ int ObservableResultDaoService::insert(
             }
 
             m_lastObservableResultId++;
-            m_observableResultTableFile += ElemUtils::Formatter()
-                    << m_lastObservableResultId << ","
-                    << resultList[i].getObservableName() << ","
-                    << resultList[i].getValue() << ","
-                    << resultList[i].getStatError().getLowerBound() << ","
-                    << resultList[i].getStatError().getUpperBound() << ","
-                    << resultList[i].getSystError().getLowerBound() << ","
-                    << resultList[i].getSystError().getUpperBound() << ","
-                    << resultList[i].getScaleError().getLowerBound() << ","
-                    << resultList[i].getScaleError().getUpperBound() << ","
-                    << resultList[i].getComputationModuleName() << ","
-                    << resultList[i].getObservableType() << "," << kinematicId
-                    << "," << m_previousComputationId.second << '\n';
+
+
+            //MODIFY PS
+//            m_observableResultTableFile += ElemUtils::Formatter()
+//                    << m_lastObservableResultId << ","
+//                    << resultList[i].getObservableName() << ","
+//                    << resultList[i].getValue() << ","
+//                    << resultList[i].getStatError().getLowerBound() << ","
+//                    << resultList[i].getStatError().getUpperBound() << ","
+//                    << resultList[i].getSystError().getLowerBound() << ","
+//                    << resultList[i].getSystError().getUpperBound() << ","
+//                    << resultList[i].getScaleError().getLowerBound() << ","
+//                    << resultList[i].getScaleError().getUpperBound() << ","
+//                    << resultList[i].getComputationModuleName() << ","
+//                    << resultList[i].getObservableType() << "," << kinematicId
+//                    << "," << m_previousComputationId.second << '\n';
         }
 
         insertCommonDataIntoDatabaseTables();
@@ -143,13 +146,13 @@ int ObservableResultDaoService::insert(
     return getLastComputationId();
 }
 
-List<ObservableResult> ObservableResultDaoService::getObservableResultListByComputationId(
+List<DVCSObservableResult> ObservableResultDaoService::getObservableResultListByComputationId(
         const int computationId) const {
     return m_observableResultDao.getObservableResultListByComputationId(
             computationId);
 }
 
-List<ObservableResult> ObservableResultDaoService::getObservableResultListFromSQLQuery(
+List<DVCSObservableResult> ObservableResultDaoService::getObservableResultListFromSQLQuery(
         const std::string& sqlQuery) const {
     return m_observableResultDao.getObservableResultListFromSQLQuery(sqlQuery);
 }

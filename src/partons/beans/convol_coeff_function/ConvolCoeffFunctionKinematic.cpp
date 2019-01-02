@@ -4,7 +4,7 @@
 #include <ElementaryUtils/thread/Packet.h>
 
 #include "../../../../include/partons/beans/gpd/GPDKinematic.h"
-#include "../../../../include/partons/beans/observable/ObservableKinematic.h"
+#include "../../../../include/partons/beans/observable/DVCS/DVCSObservableKinematic.h"
 
 namespace PARTONS {
 
@@ -24,10 +24,10 @@ ConvolCoeffFunctionKinematic::ConvolCoeffFunctionKinematic(
     } else {
         errorMissingParameter(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI);
     }
-    if (parameters.isAvailable(ObservableKinematic::PARAMETER_NAME_T)) {
+    if (parameters.isAvailable(DVCSObservableKinematic::PARAMETER_NAME_T)) {
         m_t = parameters.getLastAvailable().toDouble();
     } else {
-        errorMissingParameter(ObservableKinematic::PARAMETER_NAME_T);
+        errorMissingParameter(DVCSObservableKinematic::PARAMETER_NAME_T);
     }
     if (parameters.isAvailable(
             GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUF2)) {

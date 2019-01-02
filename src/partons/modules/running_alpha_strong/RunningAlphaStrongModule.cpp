@@ -2,14 +2,16 @@
 
 #include <cmath>
 
-namespace PARTONS {
+#include "../../../../include/partons/beans/channel/ChannelType.h"
 
+namespace PARTONS {
 
 const std::string RunningAlphaStrongModule::RUNNING_ALPHA_STRONG_MODULE_CLASS_NAME =
         "RunningAlphaStrongModule";
 
 RunningAlphaStrongModule::RunningAlphaStrongModule(const std::string &className) :
-        ModuleObject(className), m_Mu2(0.), m_Mu(0.), m_nf(0), m_alphaS(0.) {
+        ModuleObject(className, ChannelType::UNDEFINED), m_Mu2(0.), m_Mu(0.), m_nf(
+                0), m_alphaS(0.) {
 
 }
 

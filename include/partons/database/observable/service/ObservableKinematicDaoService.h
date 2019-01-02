@@ -11,7 +11,7 @@
 #include <string>
 
 #include "../../../beans/List.h"
-#include "../../../beans/observable/ObservableKinematic.h"
+#include "../../../beans/observable/DVCS/DVCSObservableKinematic.h"
 #include "../dao/ObservableKinematicDao.h"
 
 namespace PARTONS {
@@ -66,7 +66,7 @@ public:
      * @param observableKinematic Reference to ObservableKinematic object to be inserted.
      * @return Unique id related to the new entry inserted into the database.
      */
-    int insert(const ObservableKinematic &observableKinematic) const;
+    int insert(const DVCSObservableKinematic &observableKinematic) const;
 
     /**
      * Insert into database a list of ObservableKinematic objects with transactions mechanisms.
@@ -74,7 +74,7 @@ public:
      * @param observableKinematicList Reference to List of ObservableKinematic objects to be inserted.
      * @return Unique id related to the last entry inserted into the database.
      */
-    int insert(const List<ObservableKinematic> &observableKinematicList) const;
+    int insert(const List<DVCSObservableKinematic> &observableKinematicList) const;
 
     /**
      * Try to find an entry in the database that matches with given observable kinematics.
@@ -83,7 +83,7 @@ public:
      * @return Unique id related to the entry that matches with ObservableKinematic object or -1 if couldn't find it.
      */
     int getIdByKinematicObject(
-            const ObservableKinematic &observableKinematic) const;
+            const DVCSObservableKinematic &observableKinematic) const;
 
     /**
      * Try to find an entry in the database containing observable kinematics that matches with given unique id value.
@@ -91,7 +91,7 @@ public:
      * @param id Unique id of database entry to be found.
      * @return  ObservableKinematic object filled with the retrieved data or a default ObservableKinematic object if couldn't find it.
      */
-    ObservableKinematic getKinematicById(const int kinematicId) const;
+    DVCSObservableKinematic getKinematicById(const int kinematicId) const;
 
     /**
      * Try to find all entries in the database containing observable kinematics that are associated with given unique computation id value.
@@ -99,7 +99,7 @@ public:
      * @param computationId Computation id of database entries to be found.
      * @return List of ObservableKinematic objects that matches with computation id.
      */
-    List<ObservableKinematic> getKinematicListByComputationId(
+    List<DVCSObservableKinematic> getKinematicListByComputationId(
             int computationId) const;
 
     /**
@@ -129,7 +129,7 @@ private:
      * @return unique id related to the new entry inserted into the database
      */
     int insertWithoutTransaction(
-            const ObservableKinematic &observableKinematic) const;
+            const DVCSObservableKinematic &observableKinematic) const;
 };
 
 } /* namespace PARTONS */

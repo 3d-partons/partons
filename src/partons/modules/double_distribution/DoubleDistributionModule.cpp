@@ -7,13 +7,13 @@
 #include "../../../../include/partons/beans/double_distribution/DoubleDistributionResult.h"
 #include "../../../../include/partons/modules/overlap/IncompleteGPDModule.h"
 #include "../../../../include/partons/modules/radon_inverse/RadonInverseModule.h"
+#include "../../../../include/partons/beans/channel/ChannelType.h"
 
 namespace PARTONS {
 
-
 DoubleDistributionModule::DoubleDistributionModule(const std::string& className) :
-        ModuleObject(className), m_beta(0.), m_alpha(0.), m_t(0.), m_MuF2(0.), m_MuR2(
-                0.), m_doubleDistributionType(
+        ModuleObject(className, ChannelType::UNDEFINED), m_beta(0.), m_alpha(
+                0.), m_t(0.), m_MuF2(0.), m_MuR2(0.), m_doubleDistributionType(
                 DoubleDistributionType::UNDEFINED), m_inversionDependent(false), m_pRadonInverse(
                 0), m_pIncompleteGPD(0) {
 
@@ -209,8 +209,9 @@ void DoubleDistributionModule::setIncompleteGPDModule(
     m_pIncompleteGPD = pIncompleteGPD;
 }
 
-void DoubleDistributionModule::configure(const ElemUtils::Parameters &parameters){
-	ModuleObject::configure(parameters);
+void DoubleDistributionModule::configure(
+        const ElemUtils::Parameters &parameters) {
+    ModuleObject::configure(parameters);
 }
 
 void DoubleDistributionModule::prepareSubModules(

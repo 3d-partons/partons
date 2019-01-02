@@ -80,6 +80,7 @@ private:
     double m_theta; ///< Polarization angle of target.
     double m_Lambda; ///< Longitudinal polarization of target.
     double m_lambda; ///< Lepton helicity.
+    double m_phaseSpace; ///< Phase-space factor.
 
     double m_xB2; ///< Square of xB.
     std::vector<double> m_Q; ///< Square root of virtuality Q2.

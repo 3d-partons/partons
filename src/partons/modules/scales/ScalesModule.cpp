@@ -1,12 +1,13 @@
 #include "../../../../include/partons/modules/scales/ScalesModule.h"
 
-namespace PARTONS {
+#include "../../../../include/partons/beans/channel/ChannelType.h"
 
+namespace PARTONS {
 
 const std::string ScalesModule::SCALES_MODULE_CLASS_NAME = "ScalesModule";
 
 ScalesModule::ScalesModule(const std::string &className) :
-        ModuleObject(className) {
+        ModuleObject(className, ChannelType::UNDEFINED) {
 }
 
 ScalesModule::~ScalesModule() {
