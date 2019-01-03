@@ -12,6 +12,7 @@
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <string>
 
+#include "../../../utils/type/PhysicalType.h"
 #include "../ConvolCoeffFunctionKinematic.h"
 
 namespace PARTONS {
@@ -48,6 +49,18 @@ public:
      */
     DVCSConvolCoeffFunctionKinematic(double xi, double t, double Q2,
             double MuF2, double MuR2);
+
+    /**
+     * Assignment constructor.
+     * @param xi Skewness variable.
+     * @param t Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
+     * @param Q2 Virtual-photon virtuality.
+     * @param MuF2 Factorization scale squared (in \f$GeV^{2}\f$).
+     * @param MuR2 Renormalization scale squared (in \f$GeV^{2}\f$).
+     */
+    DVCSConvolCoeffFunctionKinematic(const PhysicalType<double> &xi,
+            const PhysicalType<double> &t, const PhysicalType<double> &Q2,
+            const PhysicalType<double> &MuF2, const PhysicalType<double> &MuR2);
 
     /**
      * Assignment constructor.
@@ -100,7 +113,7 @@ public:
     /**
      * Get virtual-photon virtuality.
      */
-    double getQ2() const;
+    PhysicalType<double> getQ2() const;
 
     /**
      * Set virtual-photon virtuality.
@@ -116,7 +129,7 @@ private:
     /**
      * Virtual-photon virtuality (in \f$GeV^{2}\f$).
      */
-    double m_Q2;
+    PhysicalType<double> m_Q2;
 };
 
 /**

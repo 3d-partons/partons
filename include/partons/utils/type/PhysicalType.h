@@ -9,6 +9,7 @@
  */
 
 #include <ElementaryUtils/logger/CustomException.h>
+#include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <ElementaryUtils/thread/Packet.h>
@@ -26,23 +27,26 @@ namespace PARTONS {
  */
 template<class T>
 class PhysicalType: public BaseObject {
+
 public:
+
     static const std::string PHYSICAL_TYPE_NONE_UNIT;
 
     PhysicalType() :
             BaseObject("PhysicalType"), m_initialized(false), m_value(), m_unit(
                     PHYSICAL_TYPE_NONE_UNIT) {
     }
-    PhysicalType(T value) :
-            BaseObject("PhysicalType"), m_initialized(true), m_value(value), m_unit(
-                    PHYSICAL_TYPE_NONE_UNIT) {
-    }
 
-    PhysicalType(const std::string &stringValue) :
-            BaseObject("PhysicalType"), m_initialized(false), m_unit(
-                    PHYSICAL_TYPE_NONE_UNIT) {
-        fromStdString(stringValue);
-    }
+//    PhysicalType(T value) :
+//            BaseObject("PhysicalType"), m_initialized(true), m_value(value), m_unit(
+//                    PHYSICAL_TYPE_NONE_UNIT) {
+//    }
+
+//    PhysicalType(const std::string &stringValue) :
+//            BaseObject("PhysicalType"), m_initialized(false), m_unit(
+//                    PHYSICAL_TYPE_NONE_UNIT) {
+//        fromStdString(stringValue);
+//    }
 
     PhysicalType(T value, const std::string &unit) :
             BaseObject("PhysicalType"), m_initialized(true), m_value(value), m_unit(
@@ -50,8 +54,13 @@ public:
     }
 
     PhysicalType(const std::string &stringValue, const std::string &unit) :
-            BaseObject("PhysicalType"), m_initialized(false), m_unit(unit) {
+            BaseObject("PhysicalType"), m_initialized(true), m_unit(unit) {
         fromStdString(stringValue);
+    }
+
+    PhysicalType(const ElemUtils::GenericType& value, const std::string &unit) :
+            BaseObject("PhysicalType"), m_initialized(true), m_unit(unit) {
+        fromStdString(value.getString());
     }
 
     std::string toStdString() const {
@@ -59,6 +68,7 @@ public:
         return sstream.str();
     }
 
+    //TODO private?
     void fromStdString(const std::string &stringValue) {
         std::stringstream sstream(stringValue);
 
@@ -72,6 +82,7 @@ public:
     }
 
     std::string toString() const {
+
         ElemUtils::Formatter formatter;
 
         if (m_initialized) {
@@ -157,6 +168,13 @@ const std::string PhysicalType<T>::PHYSICAL_TYPE_NONE_UNIT = "none";
 template<class T>
 ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
         PhysicalType<T>& physicalType) {
+    physicalType.serialize(packet);
+    return packet;
+}
+
+template<class T>
+ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
+        const PhysicalType<T>& physicalType) {
     physicalType.serialize(packet);
     return packet;
 }

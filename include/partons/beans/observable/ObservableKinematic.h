@@ -73,7 +73,6 @@ protected:
     ObservableKinematic(const ObservableKinematic &other);
 
     virtual void updateHashSum() const = 0;
-
 };
 
 /**

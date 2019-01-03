@@ -4,8 +4,9 @@
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <QtSql/qsqldatabase.h>
 
-namespace PARTONS {
+#include "../../../../../include/partons/utils/type/PhysicalType.h"
 
+namespace PARTONS {
 
 GPDKinematicDaoService::GPDKinematicDaoService() :
         BaseObject("GPDKinematicDaoService") {
@@ -65,8 +66,10 @@ int GPDKinematicDaoService::insert(
 
 int GPDKinematicDaoService::getIdByKinematicObject(
         const GPDKinematic &gpdKinematic) const {
-    return m_GPDKinematicDao.select(gpdKinematic.getX(), gpdKinematic.getXi(),
-            gpdKinematic.getT(), gpdKinematic.getMuF2(), gpdKinematic.getMuR2());
+    return m_GPDKinematicDao.select(gpdKinematic.getX().getValue(),
+            gpdKinematic.getXi().getValue(), gpdKinematic.getT().getValue(),
+            gpdKinematic.getMuF2().getValue(),
+            gpdKinematic.getMuR2().getValue());
 }
 
 GPDKinematic GPDKinematicDaoService::getKinematicById(const int id) const {
@@ -85,8 +88,10 @@ List<GPDKinematic> GPDKinematicDaoService::getKinematicListByComputationId(
 
 int GPDKinematicDaoService::insertWithoutTransaction(
         const GPDKinematic& gpdKinematic) const {
-    return m_GPDKinematicDao.insert(gpdKinematic.getX(), gpdKinematic.getXi(),
-            gpdKinematic.getT(), gpdKinematic.getMuF2(), gpdKinematic.getMuR2());
+    return m_GPDKinematicDao.insert(gpdKinematic.getX().getValue(),
+            gpdKinematic.getXi().getValue(), gpdKinematic.getT().getValue(),
+            gpdKinematic.getMuF2().getValue(),
+            gpdKinematic.getMuR2().getValue());
 }
 
 int GPDKinematicDaoService::getKinematicIdByHashSum(

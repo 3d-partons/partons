@@ -41,7 +41,6 @@ public:
      */
     virtual ~DVCSObservableService();
 
-
     void resolveObjectDependencies();
     DVCSObservableKinematic newKinematicFromTask(const Task &task) const;
     List<DVCSObservableKinematic> newListOfKinematicFromTask(

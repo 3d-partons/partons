@@ -1,29 +1,92 @@
 #include "../../../../include/partons/beans/gpd/GPDKinematic.h"
 
 #include <ElementaryUtils/string_utils/Formatter.h>
-#include <ElementaryUtils/thread/Packet.h>
+#include <ElementaryUtils/string_utils/StringUtils.h>
 
 #include "../../../../include/partons/beans/channel/ChannelType.h"
-#include "../../../../include/partons/beans/observable/DVCS/DVCSObservableKinematic.h"
 #include "../../../../include/partons/Partons.h"
 #include "../../../../include/partons/services/hash_sum/CryptographicHashService.h"
 #include "../../../../include/partons/ServiceObjectRegistry.h"
+#include "../../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
 
-const std::string GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_X = "x";
-const std::string GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI = "xi";
-const std::string GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUF2 = "MuF2";
-const std::string GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUR2 = "MuR2";
+const std::string GPDKinematic::KINEMATIC_PARAMETER_NAME_X = "x";
+const std::string GPDKinematic::KINEMATIC_PARAMETER_NAME_XI = "xi";
+const std::string GPDKinematic::KINEMATIC_PARAMETER_NAME_T = "t";
+const std::string GPDKinematic::KINEMATIC_PARAMETER_NAME_MUF2 = "MuF2";
+const std::string GPDKinematic::KINEMATIC_PARAMETER_NAME_MUR2 = "MuR2";
 
 GPDKinematic::GPDKinematic() :
-        Kinematic("GPDKinematic", ChannelType::UNDEFINED), m_x(0.), m_xi(0.), m_t(
-                0.), m_MuF2(0.), m_MuR2(0.) {
+        Kinematic("GPDKinematic", ChannelType::UNDEFINED) {
+    setHashSum(ElemUtils::StringUtils::EMPTY);
+}
+
+GPDKinematic::GPDKinematic(const ElemUtils::Parameters &parameters) :
+        Kinematic("GPDKinematic", ChannelType::UNDEFINED), m_x(
+                PhysicalType<double>(0.,
+                        PhysicalUnit(PhysicalUnit::NONE).getShortName())), m_xi(
+                PhysicalType<double>(0.,
+                        PhysicalUnit(PhysicalUnit::NONE).getShortName())), m_t(
+                PhysicalType<double>(0.,
+                        PhysicalUnit(PhysicalUnit::GEV2).getShortName())), m_MuF2(
+                PhysicalType<double>(0.,
+                        PhysicalUnit(PhysicalUnit::GEV2).getShortName())), m_MuR2(
+                PhysicalType<double>(0.,
+                        PhysicalUnit(PhysicalUnit::GEV2).getShortName())) {
+
+    if (parameters.isAvailable(GPDKinematic::KINEMATIC_PARAMETER_NAME_X)) {
+        m_x.setValue(parameters.getLastAvailable().toDouble());
+    } else {
+        errorMissingParameter(GPDKinematic::KINEMATIC_PARAMETER_NAME_X);
+    }
+
+    if (parameters.isAvailable(GPDKinematic::KINEMATIC_PARAMETER_NAME_XI)) {
+        m_xi.setValue(parameters.getLastAvailable().toDouble());
+    } else {
+        errorMissingParameter(GPDKinematic::KINEMATIC_PARAMETER_NAME_XI);
+    }
+
+    if (parameters.isAvailable(GPDKinematic::KINEMATIC_PARAMETER_NAME_T)) {
+        m_t.setValue(parameters.getLastAvailable().toDouble());
+    } else {
+        errorMissingParameter(GPDKinematic::KINEMATIC_PARAMETER_NAME_T);
+    }
+
+    if (parameters.isAvailable(GPDKinematic::KINEMATIC_PARAMETER_NAME_MUF2)) {
+        m_MuF2.setValue(parameters.getLastAvailable().toDouble());
+    } else {
+        errorMissingParameter(GPDKinematic::KINEMATIC_PARAMETER_NAME_MUF2);
+    }
+
+    if (parameters.isAvailable(GPDKinematic::KINEMATIC_PARAMETER_NAME_MUR2)) {
+        m_MuR2.setValue(parameters.getLastAvailable().toDouble());
+    } else {
+        errorMissingParameter(GPDKinematic::KINEMATIC_PARAMETER_NAME_MUR2);
+    }
+
     updateHashSum();
 }
 
 GPDKinematic::GPDKinematic(double x, double xi, double t, double MuF2,
         double MuR2) :
+        Kinematic("GPDKinematic", ChannelType::UNDEFINED), m_x(
+                PhysicalType<double>(x,
+                        PhysicalUnit(PhysicalUnit::NONE).getShortName())), m_xi(
+                PhysicalType<double>(xi,
+                        PhysicalUnit(PhysicalUnit::NONE).getShortName())), m_t(
+                PhysicalType<double>(t,
+                        PhysicalUnit(PhysicalUnit::GEV2).getShortName())), m_MuF2(
+                PhysicalType<double>(MuF2,
+                        PhysicalUnit(PhysicalUnit::GEV2).getShortName())), m_MuR2(
+                PhysicalType<double>(MuR2,
+                        PhysicalUnit(PhysicalUnit::GEV2).getShortName())) {
+    updateHashSum();
+}
+
+GPDKinematic::GPDKinematic(const PhysicalType<double> &x,
+        const PhysicalType<double> &xi, const PhysicalType<double> &t,
+        const PhysicalType<double> &MuF2, const PhysicalType<double> &MuR2) :
         Kinematic("GPDKinematic", ChannelType::UNDEFINED), m_x(x), m_xi(xi), m_t(
                 t), m_MuF2(MuF2), m_MuR2(MuR2) {
     updateHashSum();
@@ -32,44 +95,17 @@ GPDKinematic::GPDKinematic(double x, double xi, double t, double MuF2,
 GPDKinematic::GPDKinematic(const ElemUtils::GenericType& x,
         const ElemUtils::GenericType& xi, const ElemUtils::GenericType& t,
         const ElemUtils::GenericType& MuF2, const ElemUtils::GenericType& MuR2) :
-        Kinematic("GPDKinematic", ChannelType::UNDEFINED), m_x(x.toDouble()), m_xi(
-                xi.toDouble()), m_t(t.toDouble()), m_MuF2(MuF2.toDouble()), m_MuR2(
-                MuR2.toDouble()) {
-    updateHashSum();
-}
-
-GPDKinematic::GPDKinematic(const ElemUtils::Parameters &parameters) :
-        Kinematic("GPDKinematic", ChannelType::UNDEFINED), m_x(0.), m_xi(0.), m_t(
-                0.), m_MuF2(0.), m_MuR2(0.) {
-
-    if (parameters.isAvailable(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_X)) {
-        m_x = parameters.getLastAvailable().toDouble();
-    } else {
-        errorMissingParameter(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_X);
-    }
-    if (parameters.isAvailable(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI)) {
-        m_xi = parameters.getLastAvailable().toDouble();
-    } else {
-        errorMissingParameter(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI);
-    }
-    if (parameters.isAvailable(DVCSObservableKinematic::PARAMETER_NAME_T)) {
-        m_t = parameters.getLastAvailable().toDouble();
-    } else {
-        errorMissingParameter(DVCSObservableKinematic::PARAMETER_NAME_T);
-    }
-    if (parameters.isAvailable(
-            GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUF2)) {
-        m_MuF2 = parameters.getLastAvailable().toDouble();
-    } else {
-        errorMissingParameter(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUF2);
-    }
-    if (parameters.isAvailable(
-            GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUR2)) {
-        m_MuR2 = parameters.getLastAvailable().toDouble();
-    } else {
-        errorMissingParameter(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUR2);
-    }
-
+        Kinematic("GPDKinematic", ChannelType::UNDEFINED), m_x(
+                PhysicalType<double>(x,
+                        PhysicalUnit(PhysicalUnit::NONE).getShortName())), m_xi(
+                PhysicalType<double>(xi,
+                        PhysicalUnit(PhysicalUnit::NONE).getShortName())), m_t(
+                PhysicalType<double>(t,
+                        PhysicalUnit(PhysicalUnit::GEV2).getShortName())), m_MuF2(
+                PhysicalType<double>(MuF2,
+                        PhysicalUnit(PhysicalUnit::GEV2).getShortName())), m_MuR2(
+                PhysicalType<double>(MuR2,
+                        PhysicalUnit(PhysicalUnit::GEV2).getShortName())) {
     updateHashSum();
 }
 
@@ -87,8 +123,9 @@ std::string GPDKinematic::toString() const {
     ElemUtils::Formatter formatter;
 
     formatter << Kinematic::toString();
-    formatter << "\tx: " << m_x << " xi: " << m_xi << " t: " << m_t << " muF2: "
-            << m_MuF2 << " muR2: " << m_MuR2 << '\n';
+    formatter << "\tx: " << m_x.toString() << " xi: " << m_xi.toString()
+            << " t: " << m_t.toString() << " muF2: " << m_MuF2.toString()
+            << " muR2: " << m_MuR2.toString() << '\n';
 
     return formatter.str();
 }
@@ -96,8 +133,9 @@ std::string GPDKinematic::toString() const {
 void GPDKinematic::updateHashSum() const {
     setHashSum(
             Partons::getInstance()->getServiceObjectRegistry()->getCryptographicHashService()->generateSHA1HashSum(
-                    ElemUtils::Formatter() << m_x << m_xi << m_t << m_MuF2
-                            << m_MuR2));
+                    ElemUtils::Formatter() << m_x.getValue() << m_xi.getValue()
+                            << m_t.getValue() << m_MuF2.getValue()
+                            << m_MuR2.getValue()));
 }
 
 void GPDKinematic::setX(double x) {
@@ -125,23 +163,23 @@ void GPDKinematic::setMuR2(double muR2) {
     updateHashSum();
 }
 
-double GPDKinematic::getX() const {
+PhysicalType<double> GPDKinematic::getX() const {
     return m_x;
 }
 
-double GPDKinematic::getXi() const {
+PhysicalType<double> GPDKinematic::getXi() const {
     return m_xi;
 }
 
-double GPDKinematic::getT() const {
+PhysicalType<double> GPDKinematic::getT() const {
     return m_t;
 }
 
-double GPDKinematic::getMuF2() const {
+PhysicalType<double> GPDKinematic::getMuF2() const {
     return m_MuF2;
 }
 
-double GPDKinematic::getMuR2() const {
+PhysicalType<double> GPDKinematic::getMuR2() const {
     return m_MuR2;
 }
 
@@ -165,11 +203,13 @@ void GPDKinematic::unserialize(ElemUtils::Packet &packet) {
 
 ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
         GPDKinematic& kinematic) {
+
     kinematic.serialize(packet);
     return packet;
 }
 ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
         GPDKinematic& kinematic) {
+
     kinematic.unserialize(packet);
     return packet;
 }

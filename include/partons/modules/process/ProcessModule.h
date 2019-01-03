@@ -329,6 +329,11 @@ private:
     bool m_isCCFModuleDependent;
 };
 
+
+template<typename KinematicType>
+const std::string ProcessModule<KinematicType>::PROCESS_MODULE_CLASS_NAME =
+        "ProcessModule";
+
 } /* namespace PARTONS */
 
 #endif /* PROCESS_MODULE_H */

@@ -185,15 +185,15 @@ void DVCSProcessModule::computeConvolCoeffFunction(
         const List<GPDType>& gpdType) {
 
     //compute scales
-    Scales scale = m_pScaleModule->compute(kinematic.getQ2());
+    Scales scale = m_pScaleModule->compute(kinematic.getQ2().getValue());
 
     //compute xi
-    double xi = m_pXiConverterModule->compute(kinematic.getXB(),
-            kinematic.getT(), kinematic.getQ2());
+    double xi = m_pXiConverterModule->compute(kinematic.getXB().getValue(),
+            kinematic.getT().getValue(), kinematic.getQ2().getValue());
 
     //create ccf kinematics
-    DVCSConvolCoeffFunctionKinematic ccfKinematics(xi, kinematic.getT(),
-            kinematic.getQ2(), scale.getMuF2(), scale.getMuR2());
+    DVCSConvolCoeffFunctionKinematic ccfKinematics(xi, kinematic.getT().getValue(),
+            kinematic.getQ2().getValue(), scale.getMuF2(), scale.getMuR2());
 
     //check if different
     if (isPreviousCCFKinematicsDifferent(ccfKinematics)
@@ -215,10 +215,10 @@ void DVCSProcessModule::setKinematics(
         const DVCSObservableKinematic& kinematic) {
 
     // set variables
-    m_xB = kinematic.getXB();
-    m_t = kinematic.getT();
-    m_Q2 = kinematic.getQ2();
-    m_E = kinematic.getE();
+    m_xB = kinematic.getXB().getValue();
+    m_t = kinematic.getT().getValue();
+    m_Q2 = kinematic.getQ2().getValue();
+    m_E = kinematic.getE().getValue();
     m_phi = kinematic.getPhi().getValue();
 }
 

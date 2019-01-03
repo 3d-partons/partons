@@ -31,27 +31,22 @@ public:
     /**
      * Parameter name to set variable \f$x_{B}\f$ via configuration methods.
      */
-    static const std::string PARAMETER_NAME_XB;
-
-    /**
-     * Parameter name to set variable \f$t\f$ via configuration methods.
-     */
-    static const std::string PARAMETER_NAME_T;
+    static const std::string KINEMATIC_PARAMETER_NAME_XB;
 
     /**
      * Parameter name to set variable \f$Q^{2}\f$ via configuration methods.
      */
-    static const std::string PARAMETER_NAME_Q2;
+    static const std::string KINEMATIC_PARAMETER_NAME_Q2;
 
     /**
      * Parameter name to set variable \f$E_{b}\f$ via configuration methods.
      */
-    static const std::string PARAMETER_NAME_BEAM_ENERGY;
+    static const std::string KINEMATIC_PARAMETER_NAME_BEAM_ENERGY;
 
     /**
      * Parameter name to set variable \f$\phi\f$ via configuration methods.
      */
-    static const std::string PARAMETER_NAME_PHI;
+    static const std::string KINEMATIC_PARAMETER_NAME_PHI;
 
     /**
      * Default constructor.
@@ -74,6 +69,18 @@ public:
      */
     DVCSObservableKinematic(double xB, double t, double Q2, double E,
             double phi);
+
+    /**
+     * Assignment constructor.
+     * @param xB Bjorken variable.
+     * @param t Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
+     * @param Q2 Virtual-photon virtuality (in \f$GeV^{2}\f$).
+     * @param E Beam energy (in GeV).
+     * @param phi Angle between leptonic and hadronic planes (in degrees, Trento convention).
+     */
+    DVCSObservableKinematic(const PhysicalType<double>& xB,
+            const PhysicalType<double>& t, const PhysicalType<double>& Q2,
+            const PhysicalType<double>& E, const PhysicalType<double>& phi);
 
     /**
      * Assignment constructor.
@@ -119,7 +126,7 @@ public:
     /**
      * Get Bjorken variable.
      */
-    double getXB() const;
+    PhysicalType<double> getXB() const;
 
     /**
      * Set Bjorken variable.
@@ -129,7 +136,7 @@ public:
     /**
      * Get four-momentum transfer squared of hadron target.
      */
-    double getT() const;
+    PhysicalType<double> getT() const;
 
     /**
      * Set four-momentum transfer squared of hadron target.
@@ -139,7 +146,7 @@ public:
     /**
      * Get virtual-photon virtuality.
      */
-    double getQ2() const;
+    PhysicalType<double> getQ2() const;
 
     /**
      * Set virtual-photon virtuality.
@@ -149,7 +156,7 @@ public:
     /**
      * Get beam energy.
      */
-    double getE() const;
+    PhysicalType<double> getE() const;
 
     /**
      * Set beam energy.
@@ -172,27 +179,25 @@ protected:
 
 private:
 
-    //TODO : What do we do when we consider Fourier harmonics of DVCS observables?
-
     /**
      * Bjorken variable.
      */
-    double m_xB;
+    PhysicalType<double> m_xB;
 
     /**
      * Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
      */
-    double m_t;
+    PhysicalType<double> m_t;
 
     /**
      * Virtual-photon virtuality (in \f$GeV^{2}\f$).
      */
-    double m_Q2;
+    PhysicalType<double> m_Q2;
 
     /**
      * Beam energy (in GeV).
      */
-    double m_E;
+    PhysicalType<double> m_E;
 
     /**
      * Angle between leptonic and hadronic planes (in degrees, Trento convention).

@@ -104,10 +104,10 @@ int ConvolCoeffFunctionResultDaoService::insert(
                 kinematicId = m_lastCCFKinematicId;
 
                 m_ccfKinematicTableFile += ElemUtils::Formatter()
-                        << m_lastCCFKinematicId << "," << kinematic.getXi()
-                        << "," << kinematic.getT() << "," << kinematic.getQ2()
-                        << "," << kinematic.getMuF2() << ","
-                        << kinematic.getMuR2() << "," << kinematic.getHashSum()
+                        << m_lastCCFKinematicId << "," << kinematic.getXi().getValue()
+                        << "," << kinematic.getT().getValue() << "," << kinematic.getQ2().getValue()
+                        << "," << kinematic.getMuF2().getValue() << ","
+                        << kinematic.getMuR2().getValue() << "," << kinematic.getHashSum()
                         << '\n';
             }
 

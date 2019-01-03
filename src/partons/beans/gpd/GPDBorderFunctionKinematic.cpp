@@ -39,24 +39,24 @@ GPDBorderFunctionKinematic::GPDBorderFunctionKinematic(
         const ElemUtils::Parameters& parameters) :
         GPDKinematic() {
 
-    if (parameters.isAvailable(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI)) {
+    if (parameters.isAvailable(GPDKinematic::KINEMATIC_PARAMETER_NAME_XI)) {
         setX(parameters.getLastAvailable().toDouble());
         setXi(parameters.getLastAvailable().toDouble());
     } else {
-        errorMissingParameter(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI);
+        errorMissingParameter(GPDKinematic::KINEMATIC_PARAMETER_NAME_XI);
     }
 
-    if (parameters.isAvailable(DVCSObservableKinematic::PARAMETER_NAME_T)) {
+    if (parameters.isAvailable(GPDKinematic::KINEMATIC_PARAMETER_NAME_T)) {
         setT(parameters.getLastAvailable().toDouble());
     } else {
-        errorMissingParameter(DVCSObservableKinematic::PARAMETER_NAME_T);
+        errorMissingParameter(GPDKinematic::KINEMATIC_PARAMETER_NAME_T);
     }
 
     //TODO remove from kinematic
     setMuF2(
-            parameters.get(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUF2).toDouble());
+            parameters.get(GPDKinematic::KINEMATIC_PARAMETER_NAME_MUF2).toDouble());
     setMuR2(
-            parameters.get(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUR2).toDouble());
+            parameters.get(GPDKinematic::KINEMATIC_PARAMETER_NAME_MUR2).toDouble());
 }
 
 GPDBorderFunctionKinematic::~GPDBorderFunctionKinematic() {

@@ -12,6 +12,7 @@
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <string>
 
+#include "../../utils/type/PhysicalType.h"
 #include "../Kinematic.h"
 
 namespace ElemUtils {
@@ -31,26 +32,30 @@ class GPDKinematic: public Kinematic {
 
 public:
 
-    //TODO The alias of T is defined in another class (Observable)
     /**
      * Parameter name to set variable \f$x\f$ via configuration methods.
      */
-    static const std::string GPD_KINEMATIC_PARAMETER_NAME_X;
+    static const std::string KINEMATIC_PARAMETER_NAME_X;
 
     /**
      * Parameter name to set variable \f$\xi\f$ via configuration methods.
      */
-    static const std::string GPD_KINEMATIC_PARAMETER_NAME_XI;
+    static const std::string KINEMATIC_PARAMETER_NAME_XI;
+
+    /**
+     * Parameter name to set variable \f$t\f$ via configuration methods.
+     */
+    static const std::string KINEMATIC_PARAMETER_NAME_T;
 
     /**
      * Parameter name to set variable \f$\mu_{F}^{2}\f$ via configuration methods.
      */
-    static const std::string GPD_KINEMATIC_PARAMETER_NAME_MUF2;
+    static const std::string KINEMATIC_PARAMETER_NAME_MUF2;
 
     /**
      * Parameter name to set variable \f$\mu_{R}^{2}\f$ via configuration methods.
      */
-    static const std::string GPD_KINEMATIC_PARAMETER_NAME_MUR2;
+    static const std::string KINEMATIC_PARAMETER_NAME_MUR2;
 
     /**
      * Default constructor.
@@ -59,7 +64,7 @@ public:
 
     /**
      * Assignment constructor.
-     * @param parameters Parameters object storing values to be set marked by GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_X, GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI, ObservableKinematic::PARAMETER_NAME_T, GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUF2, GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUR2.
+     * @param parameters Parameters object storing values to be set marked by GPDKinematic::KINEMATIC_PARAMETER_NAME_X, GPDKinematic::KINEMATIC_PARAMETER_NAME_XI, GPDKinematic::KINEMATIC_PARAMETER_NAME_T, GPDKinematic::KINEMATIC_PARAMETER_NAME_MUF2, GPDKinematic::KINEMATIC_PARAMETER_NAME_MUR2.
      */
     GPDKinematic(const ElemUtils::Parameters &parameters);
 
@@ -73,6 +78,19 @@ public:
      * @param MuR2 Renormalization scale squared (in \f$GeV^{2}\f$).
      */
     GPDKinematic(double x, double xi, double t, double MuF2, double MuR2);
+
+    /**
+     * Assignment constructor.
+     *
+     * @param x Longitudinal momentum fraction of active parton.
+     * @param xi Skewness variable.
+     * @param t Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
+     * @param MuF2 Factorization scale squared (in \f$GeV^{2}\f$).
+     * @param MuR2 Renormalization scale squared (in \f$GeV^{2}\f$).
+     */
+    GPDKinematic(const PhysicalType<double> &x, const PhysicalType<double> &xi,
+            const PhysicalType<double> &t, const PhysicalType<double> &MuF2,
+            const PhysicalType<double> &MuR2);
 
     /**
      * Assignment constructor.
@@ -145,27 +163,27 @@ public:
     /**
      * Get longitudinal momentum fraction of active parton.
      */
-    double getX() const;
+    PhysicalType<double> getX() const;
 
     /**
      * Get skewness variable.
      */
-    double getXi() const;
+    PhysicalType<double> getXi() const;
 
     /**
      * Get four-momentum transfer squared of hadron target.
      */
-    double getT() const;
+    PhysicalType<double> getT() const;
 
     /**
      * Get factorization scale squared.
      */
-    double getMuF2() const;
+    PhysicalType<double> getMuF2() const;
 
     /**
      * Get renormalization scale squared.
      */
-    double getMuR2() const;
+    PhysicalType<double> getMuR2() const;
 
 protected:
 
@@ -176,27 +194,27 @@ private:
     /**
      * Longitudinal momentum fraction of active parton.
      */
-    double m_x;
+    PhysicalType<double> m_x;
 
     /**
      * Skewness variable.
      */
-    double m_xi;
+    PhysicalType<double> m_xi;
 
     /**
      * Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
      */
-    double m_t;
+    PhysicalType<double> m_t;
 
     /**
      * Factorization scale squared (in \f$GeV^{2}\f$).
      */
-    double m_MuF2;
+    PhysicalType<double> m_MuF2;
 
     /**
      * Renormalization scale squared (in \f$GeV^{2}\f$).
      */
-    double m_MuR2;
+    PhysicalType<double> m_MuR2;
 };
 
 /**

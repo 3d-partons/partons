@@ -119,10 +119,10 @@ DVCSObservableResult DVCSObservable::compute(
 void DVCSObservable::setKinematics(const DVCSObservableKinematic& kinematic) {
 
     // set variables
-    m_xB = kinematic.getXB();
-    m_t = kinematic.getT();
-    m_Q2 = kinematic.getQ2();
-    m_E = kinematic.getE();
+    m_xB = kinematic.getXB().getValue();
+    m_t = kinematic.getT().getValue();
+    m_Q2 = kinematic.getQ2().getValue();
+    m_E = kinematic.getE().getValue();
     m_phi = kinematic.getPhi().getValue();
 }
 

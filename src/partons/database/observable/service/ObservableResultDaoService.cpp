@@ -99,14 +99,15 @@ int ObservableResultDaoService::insert(
                 //TODO remove hardcoded 0 values
                 m_observableKinematicTableFile += ElemUtils::Formatter()
                         << m_lastObservableKinematicId << "," << 0 << ","
-                        << kinematic.getXB() << "," << kinematic.getT() << ","
-                        << kinematic.getQ2() << "," << kinematic.getE() << ","
+                        << kinematic.getXB().getValue() << ","
+                        << kinematic.getT().getValue() << ","
+                        << kinematic.getQ2().getValue() << ","
+                        << kinematic.getE().getValue() << ","
                         << kinematic.getPhi().getValue() << "," << 0 << ","
                         << kinematic.getHashSum() << '\n';
             }
 
             m_lastObservableResultId++;
-
 
             //MODIFY PS
 //            m_observableResultTableFile += ElemUtils::Formatter()

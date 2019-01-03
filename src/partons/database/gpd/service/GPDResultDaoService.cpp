@@ -144,10 +144,10 @@ int GPDResultDaoService::insert(const List<GPDResult> &resultList) {
                 kinematicId = m_lastGPDKinematicId;
 
                 m_gpdKinematicDatabaseFile += ElemUtils::Formatter()
-                        << m_lastGPDKinematicId << "," << kinematic.getX()
-                        << "," << kinematic.getXi() << "," << kinematic.getT()
-                        << "," << kinematic.getMuF2() << ","
-                        << kinematic.getMuR2() << "," << kinematic.getHashSum()
+                        << m_lastGPDKinematicId << "," << kinematic.getX().getValue()
+                        << "," << kinematic.getXi().getValue() << "," << kinematic.getT().getValue()
+                        << "," << kinematic.getMuF2().getValue() << ","
+                        << kinematic.getMuR2().getValue() << "," << kinematic.getHashSum()
                         << '\n';
             }
 

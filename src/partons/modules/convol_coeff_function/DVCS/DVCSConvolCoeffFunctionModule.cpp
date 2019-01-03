@@ -15,6 +15,7 @@
 #include "../../../../../include/partons/services/DVCSConvolCoeffFunctionService.h"
 #include "../../../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../../../include/partons/ServiceObjectTyped.h"
+#include "../../../../../include/partons/utils/type/PhysicalType.h"
 
 namespace PARTONS {
 
@@ -179,8 +180,9 @@ void DVCSConvolCoeffFunctionModule::isModuleWellConfigured() {
 std::complex<double> DVCSConvolCoeffFunctionModule::compute(
         const DVCSConvolCoeffFunctionKinematic& kinematic,
         GPDType::Type gpdType) {
-    return compute(kinematic.getXi(), kinematic.getT(), kinematic.getQ2(),
-            kinematic.getMuF2(), kinematic.getMuR2(), gpdType);
+    return compute(kinematic.getXi().getValue(), kinematic.getT().getValue(),
+            kinematic.getQ2().getValue(), kinematic.getMuF2().getValue(),
+            kinematic.getMuR2().getValue(), gpdType);
 }
 
 std::complex<double> DVCSConvolCoeffFunctionModule::compute(const double xi,
@@ -206,8 +208,7 @@ std::complex<double> DVCSConvolCoeffFunctionModule::compute(const double xi,
 
         //throw error
         throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter() << "GPD("
-                        << GPDType(gpdType).toString()
+                ElemUtils::Formatter() << "GPD(" << GPDType(gpdType).toString()
                         << ") is not available for this  model");
     }
 

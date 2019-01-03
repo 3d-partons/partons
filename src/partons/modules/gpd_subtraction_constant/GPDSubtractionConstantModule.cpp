@@ -108,9 +108,9 @@ double GPDSubtractionConstantModule::compute(double t, double MuF2,
 
 double GPDSubtractionConstantModule::compute(
         const GPDBorderFunctionKinematic& gpdBorderFunctionKinematic) {
-    return compute(gpdBorderFunctionKinematic.getT(),
-            gpdBorderFunctionKinematic.getMuF2(),
-            gpdBorderFunctionKinematic.getMuR2());
+    return compute(gpdBorderFunctionKinematic.getT().getValue(),
+            gpdBorderFunctionKinematic.getMuF2().getValue(),
+            gpdBorderFunctionKinematic.getMuR2().getValue());
 }
 
 double GPDSubtractionConstantModule::computeSubtractionConstant() {

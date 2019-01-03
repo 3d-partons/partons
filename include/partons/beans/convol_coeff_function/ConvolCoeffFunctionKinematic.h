@@ -12,6 +12,7 @@
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <string>
 
+#include "../../utils/type/PhysicalType.h"
 #include "../channel/ChannelType.h"
 #include "../Kinematic.h"
 
@@ -52,28 +53,48 @@ public:
     void unserialize(ElemUtils::Packet &packet);
 
     //********************************************************
-    //*** GETTERS ********************************************
+    //*** GETTERS AND SETTERS ********************************
     //********************************************************
 
     /**
      * Get skewness variable.
      */
-    double getXi() const;
+    PhysicalType<double> getXi() const;
 
     /**
      * Get four-momentum transfer squared of hadron target.
      */
-    double getT() const;
+    PhysicalType<double> getT() const;
 
     /**
      * Get factorization scale squared.
      */
-    double getMuF2() const;
+    PhysicalType<double> getMuF2() const;
 
     /**
      * Get renormalization scale squared.
      */
-    double getMuR2() const;
+    PhysicalType<double> getMuR2() const;
+
+    /**
+     * Set skewness variable.
+     */
+    virtual void setXi(double xi) = 0;
+
+    /**
+     * Set four-momentum transfer squared of hadron target.
+     */
+    virtual void setT(double t) = 0;
+
+    /**
+     * Set factorization scale squared.
+     */
+    virtual void setMuF2(double muF2) = 0;
+
+    /**
+     * Set renormalization scale squared.
+     */
+    virtual void setMuR2(double muR2) = 0;
 
 protected:
 
@@ -110,6 +131,18 @@ protected:
      * @param MuR2 Renormalization scale squared (in \f$GeV^{2}\f$).
      */
     ConvolCoeffFunctionKinematic(const std::string &className,
+            ChannelType::Type channelType, const PhysicalType<double> &xi,
+            const PhysicalType<double> &t, const PhysicalType<double> &MuF2,
+            const PhysicalType<double> &MuR2);
+
+    /**
+     * Assignment constructor.
+     * @param xi Skewness variable.
+     * @param t Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
+     * @param MuF2 Factorization scale squared (in \f$GeV^{2}\f$).
+     * @param MuR2 Renormalization scale squared (in \f$GeV^{2}\f$).
+     */
+    ConvolCoeffFunctionKinematic(const std::string &className,
             ChannelType::Type channelType, const ElemUtils::GenericType &xi,
             const ElemUtils::GenericType &t, const ElemUtils::GenericType &MuF2,
             const ElemUtils::GenericType &MuR2);
@@ -122,49 +155,25 @@ protected:
 
     virtual void updateHashSum() const = 0;
 
-    //********************************************************
-    //*** SETTERS ********************************************
-    //********************************************************
-
-    /**
-     * Set skewness variable.
-     */
-    virtual void setXi(double xi);
-
-    /**
-     * Set four-momentum transfer squared of hadron target.
-     */
-    virtual void setT(double t);
-
-    /**
-     * Set factorization scale squared.
-     */
-    virtual void setMuF2(double muF2);
-
-    /**
-     * Set renormalization scale squared.
-     */
-    virtual void setMuR2(double muR2);
-
     /**
      * Skewness variable.
      */
-    double m_xi;
+    PhysicalType<double> m_xi;
 
     /**
      * Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
      */
-    double m_t;
+    PhysicalType<double> m_t;
 
     /**
      * Factorization scale squared (in \f$GeV^{2}\f$).
      */
-    double m_MuF2;
+    PhysicalType<double> m_MuF2;
 
     /**
      * Renormalization scale squared (in \f$GeV^{2}\f$).
      */
-    double m_MuR2;
+    PhysicalType<double> m_MuR2;
 };
 
 /**

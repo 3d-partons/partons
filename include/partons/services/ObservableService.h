@@ -51,10 +51,12 @@ public:
     ObservableService(const std::string &className) :
             ServiceObjectTyped<KinematicType, ResultType>(className) {
     }
+
     /**
      * Destructor.
      */
-    virtual ~ObservableService();
+    virtual ~ObservableService(){
+    }
 
     /**
      * See parent class for details.

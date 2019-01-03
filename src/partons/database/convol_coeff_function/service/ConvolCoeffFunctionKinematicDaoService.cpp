@@ -3,8 +3,9 @@
 #include <ElementaryUtils/logger/CustomException.h>
 #include <QtSql/qsqldatabase.h>
 
-namespace PARTONS {
+#include "../../../../../include/partons/utils/type/PhysicalType.h"
 
+namespace PARTONS {
 
 ConvolCoeffFunctionKinematicDaoService::ConvolCoeffFunctionKinematicDaoService() :
         BaseObject("ConvolCoeffFunctionKinematicDaoService") {
@@ -64,9 +65,10 @@ int ConvolCoeffFunctionKinematicDaoService::insert(
 
 int ConvolCoeffFunctionKinematicDaoService::getIdByKinematicObject(
         const DVCSConvolCoeffFunctionKinematic& ccfKinematic) const {
-    return m_convolCoeffFunctionKinematicDao.select(ccfKinematic.getXi(),
-            ccfKinematic.getT(), ccfKinematic.getQ2(), ccfKinematic.getMuF2(),
-            ccfKinematic.getMuR2());
+    return m_convolCoeffFunctionKinematicDao.select(
+            ccfKinematic.getXi().getValue(), ccfKinematic.getT().getValue(),
+            ccfKinematic.getQ2().getValue(), ccfKinematic.getMuF2().getValue(),
+            ccfKinematic.getMuR2().getValue());
 }
 
 DVCSConvolCoeffFunctionKinematic ConvolCoeffFunctionKinematicDaoService::getKinematicById(
@@ -76,9 +78,10 @@ DVCSConvolCoeffFunctionKinematic ConvolCoeffFunctionKinematicDaoService::getKine
 
 int ConvolCoeffFunctionKinematicDaoService::insertWithoutTransaction(
         const DVCSConvolCoeffFunctionKinematic& ccfKinematic) const {
-    return m_convolCoeffFunctionKinematicDao.insert(ccfKinematic.getXi(),
-            ccfKinematic.getT(), ccfKinematic.getQ2(), ccfKinematic.getMuF2(),
-            ccfKinematic.getMuR2());
+    return m_convolCoeffFunctionKinematicDao.insert(
+            ccfKinematic.getXi().getValue(), ccfKinematic.getT().getValue(),
+            ccfKinematic.getQ2().getValue(), ccfKinematic.getMuF2().getValue(),
+            ccfKinematic.getMuR2().getValue());
 }
 
 List<DVCSConvolCoeffFunctionKinematic> ConvolCoeffFunctionKinematicDaoService::getKinematicListByComputationId(

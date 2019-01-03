@@ -1,9 +1,5 @@
 #include "../../../../include/partons/beans/observable/ObservableKinematic.h"
 
-#include <ElementaryUtils/string_utils/Formatter.h>
-
-#include "../../../../include/partons/utils/type/PhysicalType.h"
-
 namespace PARTONS {
 
 ObservableKinematic::ObservableKinematic(const std::string &className,

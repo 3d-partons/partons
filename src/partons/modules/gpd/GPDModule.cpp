@@ -24,9 +24,9 @@ const std::string GPDModule::GPD_MODULE_CLASS_NAME = "GPDModule";
 const std::string GPDModule::GPD_TYPE = "GPD_MODULE_GPD_TYPE";
 
 GPDModule::GPDModule(const std::string &className) :
-        ModuleObject(className, ChannelType::UNDEFINED), m_x(0.), m_xi(0.), m_t(0.), m_MuF2(0.), m_MuR2(
-                0.), m_gpdType(GPDType::ALL), m_MuF2_ref(0.), m_pGPDEvolutionModule(
-                0) {
+        ModuleObject(className, ChannelType::UNDEFINED), m_x(0.), m_xi(0.), m_t(
+                0.), m_MuF2(0.), m_MuR2(0.), m_gpdType(GPDType::ALL), m_MuF2_ref(
+                0.), m_pGPDEvolutionModule(0) {
 }
 
 GPDModule::GPDModule(const GPDModule &other) :
@@ -127,9 +127,9 @@ void GPDModule::preCompute(double x, double xi, double t, double MuF2,
 
 PartonDistribution GPDModule::compute(const GPDKinematic &kinematic,
         GPDType gpdType, bool evolution) {
-    return compute(kinematic.getX(), kinematic.getXi(), kinematic.getT(),
-            kinematic.getMuF2(), kinematic.getMuR2(), gpdType.getType(),
-            evolution);
+    return compute(kinematic.getX().getValue(), kinematic.getXi().getValue(),
+            kinematic.getT().getValue(), kinematic.getMuF2().getValue(),
+            kinematic.getMuR2().getValue(), gpdType.getType(), evolution);
 }
 
 PartonDistribution GPDModule::compute(double x, double xi, double t,
