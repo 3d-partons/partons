@@ -2,11 +2,12 @@
 
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
+#include <ElementaryUtils/thread/Packet.h>
 
 namespace PARTONS {
 
 UnitCategory::UnitCategory() :
-        m_type(UnitCategory::NONE) {
+        m_type(UnitCategory::UNDEFINED) {
 }
 
 UnitCategory::UnitCategory(Type type) :
@@ -25,6 +26,9 @@ std::string UnitCategory::toString() const {
 
     switch (m_type) {
 
+    case UNDEFINED:
+        return "UNDEFINED";
+        break;
     case NONE:
         return "NONE";
         break;
@@ -54,6 +58,9 @@ std::string UnitCategory::getShortName() {
 
     switch (m_type) {
 
+    case UNDEFINED:
+        return "undefined";
+        break;
     case NONE:
         return "none";
         break;
@@ -79,12 +86,36 @@ std::string UnitCategory::getShortName() {
     }
 }
 
+void UnitCategory::serialize(ElemUtils::Packet &packet) const {
+    packet << static_cast<int>(m_type);
+}
+
+void UnitCategory::unserialize(ElemUtils::Packet &packet) {
+    int i = 0;
+    packet >> i;
+    m_type = static_cast<UnitCategory::Type>(i);
+}
+
 UnitCategory::Type UnitCategory::getType() const {
     return m_type;
 }
 
 void UnitCategory::setType(Type type) {
     m_type = type;
+}
+
+ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
+        UnitCategory& unitCategory) {
+
+    unitCategory.serialize(packet);
+    return packet;
+}
+
+ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
+        UnitCategory& unitCategory) {
+
+    unitCategory.unserialize(packet);
+    return packet;
 }
 
 } /* namespace PARTONS */

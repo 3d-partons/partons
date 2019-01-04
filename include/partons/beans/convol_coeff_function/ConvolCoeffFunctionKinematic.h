@@ -59,42 +59,62 @@ public:
     /**
      * Get skewness variable.
      */
-    PhysicalType<double> getXi() const;
+    const PhysicalType<double>& getXi() const;
 
     /**
      * Get four-momentum transfer squared of hadron target.
      */
-    PhysicalType<double> getT() const;
+    const PhysicalType<double>& getT() const;
 
     /**
      * Get factorization scale squared.
      */
-    PhysicalType<double> getMuF2() const;
+    const PhysicalType<double>& getMuF2() const;
 
     /**
      * Get renormalization scale squared.
      */
-    PhysicalType<double> getMuR2() const;
+    const PhysicalType<double>& getMuR2() const;
 
     /**
      * Set skewness variable.
      */
-    virtual void setXi(double xi) = 0;
+    void setXi(const PhysicalType<double>& xi);
+
+    /**
+     * Set skewness variable.
+     */
+    void setXi(double xi);
 
     /**
      * Set four-momentum transfer squared of hadron target.
      */
-    virtual void setT(double t) = 0;
+    void setT(const PhysicalType<double>& t);
+
+    /**
+     * Set four-momentum transfer squared of hadron target.
+     */
+    void setT(double t);
 
     /**
      * Set factorization scale squared.
      */
-    virtual void setMuF2(double muF2) = 0;
+    void setMuF2(const PhysicalType<double>& muF2);
+
+    /**
+     * Set factorization scale squared.
+     */
+    void setMuF2(double muF2);
 
     /**
      * Set renormalization scale squared.
      */
-    virtual void setMuR2(double muR2) = 0;
+    void setMuR2(const PhysicalType<double>& muR2);
+
+    /**
+     * Set renormalization scale squared.
+     */
+    void setMuR2(double muR2);
 
 protected:
 

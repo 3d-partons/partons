@@ -9,21 +9,21 @@ namespace PARTONS {
 
 ConvolCoeffFunctionKinematic::ConvolCoeffFunctionKinematic(
         const std::string &className, ChannelType::Type channelType) :
-        Kinematic(className, channelType) {
+        Kinematic(className, channelType), m_xi(
+                PhysicalType<double>(PhysicalUnit::NONE)), m_t(
+                PhysicalType<double>(PhysicalUnit::GEV2)), m_MuF2(
+                PhysicalType<double>(PhysicalUnit::GEV2)), m_MuR2(
+                PhysicalType<double>(PhysicalUnit::GEV2)) {
 }
 
 ConvolCoeffFunctionKinematic::ConvolCoeffFunctionKinematic(
         const std::string &className, ChannelType::Type channelType,
         const ElemUtils::Parameters &parameters) :
         Kinematic(className, channelType), m_xi(
-                PhysicalType<double>(0.,
-                        PhysicalUnit(PhysicalUnit::NONE).getShortName())), m_t(
-                PhysicalType<double>(0.,
-                        PhysicalUnit(PhysicalUnit::GEV2).getShortName())), m_MuF2(
-                PhysicalType<double>(0.,
-                        PhysicalUnit(PhysicalUnit::GEV2).getShortName())), m_MuR2(
-                PhysicalType<double>(0.,
-                        PhysicalUnit(PhysicalUnit::GEV2).getShortName())) {
+                PhysicalType<double>(PhysicalUnit::NONE)), m_t(
+                PhysicalType<double>(PhysicalUnit::GEV2)), m_MuF2(
+                PhysicalType<double>(PhysicalUnit::GEV2)), m_MuR2(
+                PhysicalType<double>(PhysicalUnit::GEV2)) {
 
     if (parameters.isAvailable(GPDKinematic::KINEMATIC_PARAMETER_NAME_XI)) {
         m_xi.setValue(parameters.getLastAvailable().toDouble());
@@ -54,22 +54,31 @@ ConvolCoeffFunctionKinematic::ConvolCoeffFunctionKinematic(
         const std::string &className, ChannelType::Type channelType, double xi,
         double t, double MuF2, double MuR2) :
         Kinematic(className, channelType), m_xi(
-                PhysicalType<double>(xi,
-                        PhysicalUnit(PhysicalUnit::NONE).getShortName())), m_t(
-                PhysicalType<double>(t,
-                        PhysicalUnit(PhysicalUnit::GEV2).getShortName())), m_MuF2(
-                PhysicalType<double>(MuF2,
-                        PhysicalUnit(PhysicalUnit::GEV2).getShortName())), m_MuR2(
-                PhysicalType<double>(MuR2,
-                        PhysicalUnit(PhysicalUnit::GEV2).getShortName())) {
+                PhysicalType<double>(xi, PhysicalUnit::NONE)), m_t(
+                PhysicalType<double>(t, PhysicalUnit::GEV2)), m_MuF2(
+                PhysicalType<double>(MuF2, PhysicalUnit::GEV2)), m_MuR2(
+                PhysicalType<double>(MuR2, PhysicalUnit::GEV2)) {
 }
 
 ConvolCoeffFunctionKinematic::ConvolCoeffFunctionKinematic(
         const std::string &className, ChannelType::Type channelType,
         const PhysicalType<double> &xi, const PhysicalType<double> &t,
         const PhysicalType<double> &MuF2, const PhysicalType<double> &MuR2) :
-        Kinematic(className, channelType), m_xi(xi), m_t(t), m_MuF2(MuF2), m_MuR2(
-                MuR2) {
+        Kinematic(className, channelType), m_xi(
+                PhysicalType<double>(PhysicalUnit::NONE)), m_t(
+                PhysicalType<double>(PhysicalUnit::GEV2)), m_MuF2(
+                PhysicalType<double>(PhysicalUnit::GEV2)), m_MuR2(
+                PhysicalType<double>(PhysicalUnit::GEV2)) {
+
+    checkIfTheSameUnitCategory(m_xi, xi);
+    checkIfTheSameUnitCategory(m_t, t);
+    checkIfTheSameUnitCategory(m_MuF2, MuF2);
+    checkIfTheSameUnitCategory(m_MuR2, MuR2);
+
+    m_xi = xi;
+    m_t = t;
+    m_MuF2 = MuF2;
+    m_MuR2 = MuR2;
 }
 
 ConvolCoeffFunctionKinematic::ConvolCoeffFunctionKinematic(
@@ -77,14 +86,10 @@ ConvolCoeffFunctionKinematic::ConvolCoeffFunctionKinematic(
         const ElemUtils::GenericType &xi, const ElemUtils::GenericType &t,
         const ElemUtils::GenericType &MuF2, const ElemUtils::GenericType &MuR2) :
         Kinematic(className, channelType), m_xi(
-                PhysicalType<double>(xi,
-                        PhysicalUnit(PhysicalUnit::NONE).getShortName())), m_t(
-                PhysicalType<double>(t,
-                        PhysicalUnit(PhysicalUnit::GEV2).getShortName())), m_MuF2(
-                PhysicalType<double>(MuF2,
-                        PhysicalUnit(PhysicalUnit::GEV2).getShortName())), m_MuR2(
-                PhysicalType<double>(MuR2,
-                        PhysicalUnit(PhysicalUnit::GEV2).getShortName())) {
+                PhysicalType<double>(xi, PhysicalUnit::NONE)), m_t(
+                PhysicalType<double>(t, PhysicalUnit::GEV2)), m_MuF2(
+                PhysicalType<double>(MuF2, PhysicalUnit::GEV2)), m_MuR2(
+                PhysicalType<double>(MuR2, PhysicalUnit::GEV2)) {
 }
 
 ConvolCoeffFunctionKinematic::ConvolCoeffFunctionKinematic(
@@ -122,20 +127,72 @@ void ConvolCoeffFunctionKinematic::unserialize(ElemUtils::Packet& packet) {
     packet >> m_MuR2;
 }
 
-PhysicalType<double> ConvolCoeffFunctionKinematic::getMuF2() const {
+const PhysicalType<double>& ConvolCoeffFunctionKinematic::getMuF2() const {
     return m_MuF2;
 }
 
-PhysicalType<double> ConvolCoeffFunctionKinematic::getMuR2() const {
+const PhysicalType<double>& ConvolCoeffFunctionKinematic::getMuR2() const {
     return m_MuR2;
 }
 
-PhysicalType<double> ConvolCoeffFunctionKinematic::getT() const {
+const PhysicalType<double>& ConvolCoeffFunctionKinematic::getT() const {
     return m_t;
 }
 
-PhysicalType<double> ConvolCoeffFunctionKinematic::getXi() const {
+const PhysicalType<double>& ConvolCoeffFunctionKinematic::getXi() const {
     return m_xi;
+}
+
+void ConvolCoeffFunctionKinematic::setXi(const PhysicalType<double>& xi) {
+
+    checkIfTheSameUnitCategory(m_xi, xi);
+    m_xi = xi;
+    updateHashSum();
+}
+
+void ConvolCoeffFunctionKinematic::setT(const PhysicalType<double>& t) {
+
+    checkIfTheSameUnitCategory(m_t, t);
+    m_t = t;
+    updateHashSum();
+}
+
+void ConvolCoeffFunctionKinematic::setMuF2(const PhysicalType<double>& MuF2) {
+
+    checkIfTheSameUnitCategory(m_MuF2, MuF2);
+    m_MuF2 = MuF2;
+    updateHashSum();
+}
+
+void ConvolCoeffFunctionKinematic::setMuR2(const PhysicalType<double>& MuR2) {
+
+    checkIfTheSameUnitCategory(m_MuR2, MuR2);
+    m_MuR2 = MuR2;
+    updateHashSum();
+}
+
+void ConvolCoeffFunctionKinematic::setXi(double xi) {
+
+    m_xi = xi;
+    updateHashSum();
+}
+
+void ConvolCoeffFunctionKinematic::setT(double t) {
+
+    m_t = t;
+    updateHashSum();
+}
+
+void ConvolCoeffFunctionKinematic::setMuF2(double MuF2) {
+
+    m_MuF2 = MuF2;
+    updateHashSum();
+}
+
+void ConvolCoeffFunctionKinematic::setMuR2(double MuR2) {
+
+    m_MuR2 = MuR2;
+    updateHashSum();
 }
 
 ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,

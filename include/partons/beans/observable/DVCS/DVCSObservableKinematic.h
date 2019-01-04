@@ -126,7 +126,12 @@ public:
     /**
      * Get Bjorken variable.
      */
-    PhysicalType<double> getXB() const;
+    const PhysicalType<double>& getXB() const;
+
+    /**
+     * Set Bjorken variable.
+     */
+    void setXB(const PhysicalType<double>& xB);
 
     /**
      * Set Bjorken variable.
@@ -136,7 +141,12 @@ public:
     /**
      * Get four-momentum transfer squared of hadron target.
      */
-    PhysicalType<double> getT() const;
+    const PhysicalType<double>& getT() const;
+
+    /**
+     * Set four-momentum transfer squared of hadron target.
+     */
+    void setT(const PhysicalType<double>& t);
 
     /**
      * Set four-momentum transfer squared of hadron target.
@@ -146,7 +156,12 @@ public:
     /**
      * Get virtual-photon virtuality.
      */
-    PhysicalType<double> getQ2() const;
+    const PhysicalType<double>& getQ2() const;
+
+    /**
+     * Set virtual-photon virtuality.
+     */
+    void setQ2(const PhysicalType<double>& Q2);
 
     /**
      * Set virtual-photon virtuality.
@@ -156,7 +171,12 @@ public:
     /**
      * Get beam energy.
      */
-    PhysicalType<double> getE() const;
+    const PhysicalType<double>& getE() const;
+
+    /**
+     * Set beam energy.
+     */
+    void setE(const PhysicalType<double>& E);
 
     /**
      * Set beam energy.
@@ -166,7 +186,12 @@ public:
     /**
      * Get angle between leptonic and hadronic planes.
      */
-    PhysicalType<double> getPhi() const;
+    const PhysicalType<double>& getPhi() const;
+
+    /**
+     * Set angle between leptonic and hadronic planes.
+     */
+    void setPhi(const PhysicalType<double>& phi);
 
     /**
      * Set angle between leptonic and hadronic planes.

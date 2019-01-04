@@ -10,6 +10,10 @@
 
 #include <string>
 
+namespace ElemUtils {
+class Packet;
+} /* namespace ElemUtils */
+
 namespace PARTONS {
 
 /**
@@ -25,12 +29,13 @@ public:
      * Enum types.
      */
     enum Type {
-        NONE = 0,               ///< None
-        EMP = 1,                ///< Energy, momentum or mass (eV in natural units)
-        EMP2 = 2,               ///< Square of energy, momentum or mass (eV^2 in natural units)
-        DISTANCE = 3,           ///< Distance (eV^-1 in natural units)
-        CROSS_SECTION = 4,      ///< Cross section (eV^-2 in natural units)
-        ANGLE = 5,              ///< Angle
+        UNDEFINED = 0,          ///< Undefined
+        NONE = 1,               ///< None
+        EMP = 2,                ///< Energy, momentum or mass (eV in natural units)
+        EMP2 = 3,               ///< Square of energy, momentum or mass (eV^2 in natural units)
+        DISTANCE = 4,           ///< Distance (eV^-1 in natural units)
+        CROSS_SECTION = 5,      ///< Cross section (eV^-2 in natural units)
+        ANGLE = 6               ///< Angle
     };
 
     /**
@@ -66,11 +71,16 @@ public:
     std::string getShortName();
 
     /**
-     * Get category. The categories are:
-     * 0: none
-     * 1: ev
+     * Serialize into given Packet.
+     * @param packet Target Packet.
      */
-    int getCategory() const;
+    void serialize(ElemUtils::Packet &packet) const;
+
+    /**
+     * Retrieve data from given Packet.
+     * @param packet Input Packet.
+     */
+    void unserialize(ElemUtils::Packet &packet);
 
     //********************************************************
     //*** SETTERS AND GETTERS ********************************
@@ -93,6 +103,18 @@ private:
      */
     UnitCategory::Type m_type;
 };
+
+/**
+ * Stream operator to serialize class into Packet. See also UnitCategory::serialize().
+ */
+ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
+        UnitCategory& unitCategory);
+
+/**
+ * Stream operator to retrieve class from Packet. See also UnitCategory::unserialize().
+ */
+ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
+        UnitCategory& unitCategory);
 
 } /* namespace PARTONS */
 

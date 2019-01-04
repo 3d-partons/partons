@@ -1,7 +1,6 @@
 #include "../../../../../include/partons/beans/observable/DVCS/DVCSObservableKinematic.h"
 
 #include <ElementaryUtils/string_utils/Formatter.h>
-#include <ElementaryUtils/string_utils/StringUtils.h>
 
 #include "../../../../../include/partons/beans/channel/ChannelType.h"
 #include "../../../../../include/partons/beans/gpd/GPDKinematic.h"
@@ -19,23 +18,22 @@ const std::string DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_BEAM_ENERGY 
         "E";
 
 DVCSObservableKinematic::DVCSObservableKinematic() :
-        ObservableKinematic("DVCSObservableKinematic", ChannelType::DVCS) {
-    setHashSum(ElemUtils::StringUtils::EMPTY);
+        ObservableKinematic("DVCSObservableKinematic", ChannelType::DVCS), m_xB(
+                PhysicalType<double>(PhysicalUnit::NONE)), m_t(
+                PhysicalType<double>(PhysicalUnit::GEV2)), m_Q2(
+                PhysicalType<double>(PhysicalUnit::GEV2)), m_E(
+                PhysicalType<double>(PhysicalUnit::GEV)), m_phi(
+                PhysicalType<double>(PhysicalUnit::DEGREE)) {
 }
 
 DVCSObservableKinematic::DVCSObservableKinematic(
         const ElemUtils::Parameters &parameters) :
         ObservableKinematic("DVCSObservableKinematic", ChannelType::DVCS), m_xB(
-                PhysicalType<double>(0.,
-                        PhysicalUnit(PhysicalUnit::NONE).getShortName())), m_t(
-                PhysicalType<double>(0.,
-                        PhysicalUnit(PhysicalUnit::GEV2).getShortName())), m_Q2(
-                PhysicalType<double>(0.,
-                        PhysicalUnit(PhysicalUnit::GEV2).getShortName())), m_E(
-                PhysicalType<double>(0.,
-                        PhysicalUnit(PhysicalUnit::GEV).getShortName())), m_phi(
-                PhysicalType<double>(0.,
-                        PhysicalUnit(PhysicalUnit::DEGREE).getShortName())) {
+                PhysicalType<double>(PhysicalUnit::NONE)), m_t(
+                PhysicalType<double>(PhysicalUnit::GEV2)), m_Q2(
+                PhysicalType<double>(PhysicalUnit::GEV2)), m_E(
+                PhysicalType<double>(PhysicalUnit::GEV)), m_phi(
+                PhysicalType<double>(PhysicalUnit::DEGREE)) {
 
     if (parameters.isAvailable(
             DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_XB)) {
@@ -74,32 +72,39 @@ DVCSObservableKinematic::DVCSObservableKinematic(
         errorMissingParameter(
                 DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_PHI);
     }
-
-    updateHashSum();
 }
 
 DVCSObservableKinematic::DVCSObservableKinematic(double xB, double t, double Q2,
         double E, double phi) :
         ObservableKinematic("DVCSObservableKinematic", ChannelType::DVCS), m_xB(
-                PhysicalType<double>(xB,
-                        PhysicalUnit(PhysicalUnit::NONE).getShortName())), m_t(
-                PhysicalType<double>(t,
-                        PhysicalUnit(PhysicalUnit::GEV2).getShortName())), m_Q2(
-                PhysicalType<double>(Q2,
-                        PhysicalUnit(PhysicalUnit::GEV2).getShortName())), m_E(
-                PhysicalType<double>(E,
-                        PhysicalUnit(PhysicalUnit::GEV).getShortName())), m_phi(
-                PhysicalType<double>(phi,
-                        PhysicalUnit(PhysicalUnit::DEGREE).getShortName())) {
-    updateHashSum();
+                PhysicalType<double>(xB, PhysicalUnit::NONE)), m_t(
+                PhysicalType<double>(t, PhysicalUnit::GEV2)), m_Q2(
+                PhysicalType<double>(Q2, PhysicalUnit::GEV2)), m_E(
+                PhysicalType<double>(E, PhysicalUnit::GEV)), m_phi(
+                PhysicalType<double>(phi, PhysicalUnit::DEGREE)) {
 }
 
 DVCSObservableKinematic::DVCSObservableKinematic(const PhysicalType<double>& xB,
         const PhysicalType<double>& t, const PhysicalType<double>& Q2,
         const PhysicalType<double>& E, const PhysicalType<double>& phi) :
         ObservableKinematic("DVCSObservableKinematic", ChannelType::DVCS), m_xB(
-                xB), m_t(t), m_Q2(Q2), m_E(E), m_phi(phi) {
-    updateHashSum();
+                PhysicalType<double>(PhysicalUnit::NONE)), m_t(
+                PhysicalType<double>(PhysicalUnit::GEV2)), m_Q2(
+                PhysicalType<double>(PhysicalUnit::GEV2)), m_E(
+                PhysicalType<double>(PhysicalUnit::GEV)), m_phi(
+                PhysicalType<double>(PhysicalUnit::DEGREE)) {
+
+    checkIfTheSameUnitCategory(m_xB, xB);
+    checkIfTheSameUnitCategory(m_t, t);
+    checkIfTheSameUnitCategory(m_Q2, Q2);
+    checkIfTheSameUnitCategory(m_E, E);
+    checkIfTheSameUnitCategory(m_phi, phi);
+
+    m_xB = xB;
+    m_t = t;
+    m_Q2 = Q2;
+    m_E = E;
+    m_phi = phi;
 }
 
 DVCSObservableKinematic::DVCSObservableKinematic(
@@ -107,17 +112,11 @@ DVCSObservableKinematic::DVCSObservableKinematic(
         const ElemUtils::GenericType& Q2, const ElemUtils::GenericType& E,
         const ElemUtils::GenericType& phi) :
         ObservableKinematic("DVCSObservableKinematic", ChannelType::DVCS), m_xB(
-                PhysicalType<double>(xB,
-                        PhysicalUnit(PhysicalUnit::NONE).getShortName())), m_t(
-                PhysicalType<double>(t,
-                        PhysicalUnit(PhysicalUnit::GEV2).getShortName())), m_Q2(
-                PhysicalType<double>(Q2,
-                        PhysicalUnit(PhysicalUnit::GEV2).getShortName())), m_E(
-                PhysicalType<double>(E,
-                        PhysicalUnit(PhysicalUnit::GEV).getShortName())), m_phi(
-                PhysicalType<double>(phi,
-                        PhysicalUnit(PhysicalUnit::DEGREE).getShortName())) {
-    updateHashSum();
+                PhysicalType<double>(xB, PhysicalUnit::NONE)), m_t(
+                PhysicalType<double>(t, PhysicalUnit::GEV2)), m_Q2(
+                PhysicalType<double>(Q2, PhysicalUnit::GEV2)), m_E(
+                PhysicalType<double>(E, PhysicalUnit::GEV)), m_phi(
+                PhysicalType<double>(phi, PhysicalUnit::DEGREE)) {
 }
 
 DVCSObservableKinematic::DVCSObservableKinematic(
@@ -170,8 +169,59 @@ void DVCSObservableKinematic::updateHashSum() const {
                             << m_phi.getValue()));
 }
 
-PhysicalType<double> DVCSObservableKinematic::getXB() const {
+const PhysicalType<double>& DVCSObservableKinematic::getXB() const {
     return m_xB;
+}
+
+const PhysicalType<double>& DVCSObservableKinematic::getT() const {
+    return m_t;
+}
+
+const PhysicalType<double>& DVCSObservableKinematic::getQ2() const {
+    return m_Q2;
+}
+
+const PhysicalType<double>& DVCSObservableKinematic::getE() const {
+    return m_E;
+}
+
+const PhysicalType<double>& DVCSObservableKinematic::getPhi() const {
+    return m_phi;
+}
+
+void DVCSObservableKinematic::setXB(const PhysicalType<double>& xB) {
+
+    checkIfTheSameUnitCategory(m_xB, xB);
+    m_xB = xB;
+    updateHashSum();
+}
+
+void DVCSObservableKinematic::setT(const PhysicalType<double>& t) {
+
+    checkIfTheSameUnitCategory(m_t, t);
+    m_t = t;
+    updateHashSum();
+}
+
+void DVCSObservableKinematic::setQ2(const PhysicalType<double>& Q2) {
+
+    checkIfTheSameUnitCategory(m_Q2, Q2);
+    m_Q2 = Q2;
+    updateHashSum();
+}
+
+void DVCSObservableKinematic::setE(const PhysicalType<double>& E) {
+
+    checkIfTheSameUnitCategory(m_E, E);
+    m_E = E;
+    updateHashSum();
+}
+
+void DVCSObservableKinematic::setPhi(const PhysicalType<double>& phi) {
+
+    checkIfTheSameUnitCategory(m_phi, phi);
+    m_phi = phi;
+    updateHashSum();
 }
 
 void DVCSObservableKinematic::setXB(double xB) {
@@ -180,18 +230,10 @@ void DVCSObservableKinematic::setXB(double xB) {
     updateHashSum();
 }
 
-PhysicalType<double> DVCSObservableKinematic::getT() const {
-    return m_t;
-}
-
 void DVCSObservableKinematic::setT(double t) {
 
     m_t = t;
     updateHashSum();
-}
-
-PhysicalType<double> DVCSObservableKinematic::getQ2() const {
-    return m_Q2;
 }
 
 void DVCSObservableKinematic::setQ2(double Q2) {
@@ -200,18 +242,10 @@ void DVCSObservableKinematic::setQ2(double Q2) {
     updateHashSum();
 }
 
-PhysicalType<double> DVCSObservableKinematic::getE() const {
-    return m_E;
-}
-
 void DVCSObservableKinematic::setE(double E) {
 
     m_E = E;
     updateHashSum();
-}
-
-PhysicalType<double> DVCSObservableKinematic::getPhi() const {
-    return m_phi;
 }
 
 void DVCSObservableKinematic::setPhi(double phi) {

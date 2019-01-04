@@ -10,7 +10,7 @@
 
 #include <string>
 
-#include "../BaseObject.h"
+#include "../utils/type/PhysicalType.h"
 #include "channel/ChannelType.h"
 
 namespace ElemUtils {
@@ -38,16 +38,16 @@ public:
     virtual std::string toString() const;
 
     /**
-      * Serialize into given Packet.
-      * @param packet Target Packet.
-      */
-     void serialize(ElemUtils::Packet &packet) const;
+     * Serialize into given Packet.
+     * @param packet Target Packet.
+     */
+    void serialize(ElemUtils::Packet &packet) const;
 
-     /**
-      * Retrieve data from given Packet.
-      * @param packet Input Packet.
-      */
-     void unserialize(ElemUtils::Packet &packet);
+    /**
+     * Retrieve data from given Packet.
+     * @param packet Input Packet.
+     */
+    void unserialize(ElemUtils::Packet &packet);
 
     //********************************************************
     //*** SETTERS AND GETTERS ********************************
@@ -87,6 +87,12 @@ protected:
      * Update hash sum (see Kinematic::m_hashSum variable).
      */
     virtual void updateHashSum() const = 0;
+
+    /**
+     * Check if a and b have the same unit category. If not throw an exception.
+     */
+    void checkIfTheSameUnitCategory(const PhysicalType<double>& a,
+            const PhysicalType<double>& b) const;
 
 private:
 

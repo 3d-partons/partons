@@ -136,9 +136,29 @@ public:
     //********************************************************
 
     /**
+     * Get longitudinal momentum fraction of active parton.
+     */
+    const PhysicalType<double>& getX() const;
+
+    /**
+     * Set longitudinal momentum fraction of active parton.
+     */
+    void setX(const PhysicalType<double>& x);
+
+    /**
      * Set longitudinal momentum fraction of active parton.
      */
     void setX(double x);
+
+    /**
+     * Get skewness variable.
+     */
+    const PhysicalType<double>& getXi() const;
+
+    /**
+     * Set skewness variable.
+     */
+    void setXi(const PhysicalType<double>& xi);
 
     /**
      * Set skewness variable.
@@ -146,9 +166,29 @@ public:
     void setXi(double xi);
 
     /**
+     * Get four-momentum transfer squared of hadron target.
+     */
+    const PhysicalType<double>& getT() const;
+
+    /**
+     * Set four-momentum transfer squared of hadron target.
+     */
+    void setT(const PhysicalType<double>& t);
+
+    /**
      * Set four-momentum transfer squared of hadron target.
      */
     void setT(double t);
+
+    /**
+     * Get factorization scale squared.
+     */
+    const PhysicalType<double>& getMuF2() const;
+
+    /**
+     * Set factorization scale squared.
+     */
+    void setMuF2(const PhysicalType<double>& muF2);
 
     /**
      * Set factorization scale squared.
@@ -156,34 +196,19 @@ public:
     void setMuF2(double muF2);
 
     /**
+     * Get renormalization scale squared.
+     */
+    const PhysicalType<double>& getMuR2() const;
+
+    /**
+     * Set renormalization scale squared.
+     */
+    void setMuR2(const PhysicalType<double>& muR2);
+
+    /**
      * Set renormalization scale squared.
      */
     void setMuR2(double muR2);
-
-    /**
-     * Get longitudinal momentum fraction of active parton.
-     */
-    PhysicalType<double> getX() const;
-
-    /**
-     * Get skewness variable.
-     */
-    PhysicalType<double> getXi() const;
-
-    /**
-     * Get four-momentum transfer squared of hadron target.
-     */
-    PhysicalType<double> getT() const;
-
-    /**
-     * Get factorization scale squared.
-     */
-    PhysicalType<double> getMuF2() const;
-
-    /**
-     * Get renormalization scale squared.
-     */
-    PhysicalType<double> getMuR2() const;
 
 protected:
 

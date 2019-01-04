@@ -2,11 +2,12 @@
 
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
+#include <ElementaryUtils/thread/Packet.h>
 
 namespace PARTONS {
 
 PhysicalUnit::PhysicalUnit() :
-        m_type(PhysicalUnit::NONE) {
+        m_type(PhysicalUnit::UNDEFINED) {
 }
 
 PhysicalUnit::PhysicalUnit(Type type) :
@@ -25,6 +26,9 @@ std::string PhysicalUnit::toString() const {
 
     switch (m_type) {
 
+    case UNDEFINED:
+        return "UNDEFINED";
+        break;
     case NONE:
         return "NONE";
         break;
@@ -54,6 +58,9 @@ std::string PhysicalUnit::getShortName() {
 
     switch (m_type) {
 
+    case UNDEFINED:
+        return "undefined";
+        break;
     case NONE:
         return "none";
         break;
@@ -79,10 +86,23 @@ std::string PhysicalUnit::getShortName() {
     }
 }
 
+void PhysicalUnit::serialize(ElemUtils::Packet &packet) const {
+    packet << static_cast<int>(m_type);
+}
+
+void PhysicalUnit::unserialize(ElemUtils::Packet &packet) {
+    int i = 0;
+    packet >> i;
+    m_type = static_cast<PhysicalUnit::Type>(i);
+}
+
 UnitCategory::Type PhysicalUnit::getUnitCategory() const {
 
     switch (m_type) {
 
+    case UNDEFINED:
+        return UnitCategory::UNDEFINED;
+        break;
     case NONE:
         return UnitCategory::NONE;
         break;
@@ -114,6 +134,20 @@ PhysicalUnit::Type PhysicalUnit::getType() const {
 
 void PhysicalUnit::setType(Type type) {
     m_type = type;
+}
+
+ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
+        PhysicalUnit& physicalUnit) {
+
+    physicalUnit.serialize(packet);
+    return packet;
+}
+
+ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
+        PhysicalUnit& physicalUnit) {
+
+    physicalUnit.unserialize(packet);
+    return packet;
 }
 
 } /* namespace PARTONS */

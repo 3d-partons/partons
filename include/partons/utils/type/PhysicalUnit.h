@@ -12,6 +12,10 @@
 
 #include "UnitCategory.h"
 
+namespace ElemUtils {
+class Packet;
+} /* namespace ElemUtils */
+
 namespace PARTONS {
 
 /**
@@ -27,12 +31,13 @@ public:
      * Enum types.
      */
     enum Type {
-        NONE = 0,       ///< None
-        GEV = 1,        ///< GeV
-        GEV2 = 2,       ///< GeV2
-        DEGREE = 3,     ///< degree
-        RADIAN = 4,     ///< radian
-        NB = 5          ///< nb
+        UNDEFINED = 0,  ///< undefined
+        NONE = 1,       ///< none
+        GEV = 2,        ///< GeV
+        GEV2 = 3,       ///< GeV2
+        DEGREE = 4,     ///< degree
+        RADIAN = 5,     ///< radian
+        NB = 6          ///< nb
     };
 
     /**
@@ -68,6 +73,18 @@ public:
     std::string getShortName();
 
     /**
+     * Serialize into given Packet.
+     * @param packet Target Packet.
+     */
+    void serialize(ElemUtils::Packet &packet) const;
+
+    /**
+     * Retrieve data from given Packet.
+     * @param packet Input Packet.
+     */
+    void unserialize(ElemUtils::Packet &packet);
+
+    /**
      * Get unit category.
      */
     UnitCategory::Type getUnitCategory() const;
@@ -93,6 +110,18 @@ private:
      */
     PhysicalUnit::Type m_type;
 };
+
+/**
+ * Stream operator to serialize class into Packet. See also PhysicalUnit::serialize().
+ */
+ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
+        PhysicalUnit& physicalUnit);
+
+/**
+ * Stream operator to retrieve class from Packet. See also PhysicalUnit::unserialize().
+ */
+ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
+        PhysicalUnit& physicalUnit);
 
 } /* namespace PARTONS */
 

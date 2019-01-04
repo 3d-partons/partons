@@ -105,15 +105,15 @@ public:
     //*** SETTERS AND GETTERS ********************************
     //********************************************************
 
-    void setXi(double xi);
-    void setT(double t);
-    void setMuF2(double muF2);
-    void setMuR2(double muR2);
-
     /**
      * Get virtual-photon virtuality.
      */
-    PhysicalType<double> getQ2() const;
+    const PhysicalType<double>& getQ2() const;
+
+    /**
+     * Set virtual-photon virtuality.
+     */
+    void setQ2(const PhysicalType<double>& q2);
 
     /**
      * Set virtual-photon virtuality.
