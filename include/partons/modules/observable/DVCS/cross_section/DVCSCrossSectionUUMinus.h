@@ -10,6 +10,8 @@
 
 #include <string>
 
+#include "../../../../beans/observable/DVCS/DVCSObservableKinematic.h"
+#include "../../../../utils/type/PhysicalType.h"
 #include "../DVCSObservable.h"
 
 namespace PARTONS {
@@ -54,7 +56,7 @@ public:
     virtual ~DVCSCrossSectionUUMinus();
 
     virtual DVCSCrossSectionUUMinus* clone() const;
-    virtual double computePhiDVCSObservable(
+    virtual PhysicalType<double> computePhiDVCSObservable(
             const DVCSObservableKinematic& kinematic);
 
 protected:

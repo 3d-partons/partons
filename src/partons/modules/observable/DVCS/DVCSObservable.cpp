@@ -4,6 +4,8 @@
 #include <ElementaryUtils/string_utils/Formatter.h>
 
 #include "../../../../../include/partons/beans/channel/ChannelType.h"
+#include "../../../../../include/partons/beans/observable/ObservableResult.h"
+#include "../../../../../include/partons/beans/Result.h"
 
 namespace PARTONS {
 
@@ -61,12 +63,14 @@ void DVCSObservable::run() {
 }
 
 void DVCSObservable::configure(const ElemUtils::Parameters &parameters) {
-    Observable<DVCSObservableKinematic, DVCSObservableResult>::configure(parameters);
+    Observable<DVCSObservableKinematic, DVCSObservableResult>::configure(
+            parameters);
 }
 
 void DVCSObservable::prepareSubModules(
         const std::map<std::string, BaseObjectData>& subModulesData) {
-    Observable<DVCSObservableKinematic, DVCSObservableResult>::prepareSubModules(subModulesData);
+    Observable<DVCSObservableKinematic, DVCSObservableResult>::prepareSubModules(
+            subModulesData);
 }
 
 DVCSObservableResult DVCSObservable::compute(
@@ -165,25 +169,25 @@ void DVCSObservable::isModuleWellConfigured() {
     }
 }
 
-double DVCSObservable::computePhiDVCSObservable(
+PhysicalType<double> DVCSObservable::computePhiDVCSObservable(
         const DVCSObservableKinematic& kinematic) {
     throw ElemUtils::CustomException(getClassName(), __func__,
             "Nothing to do ; Must be implemented in daugther class");
-    return 0.;
+    return PhysicalType<double>();
 }
 
-double DVCSObservable::computeFourierDVCSObservable(
+PhysicalType<double> DVCSObservable::computeFourierDVCSObservable(
         const DVCSObservableKinematic& kinematic) {
     throw ElemUtils::CustomException(getClassName(), __func__,
             "Nothing to do ; Must be implemented in daugther class");
-    return 0.;
+    return PhysicalType<double>();
 }
 
-double DVCSObservable::computeOtherDVCSObservable(
+PhysicalType<double> DVCSObservable::computeOtherDVCSObservable(
         const DVCSObservableKinematic& kinematic) {
     throw ElemUtils::CustomException(getClassName(), __func__,
             "Nothing to do ; Must be implemented in daugther class");
-    return 0.;
+    return PhysicalType<double>();
 }
 
 ObservableType::Type DVCSObservable::getObservableType() const {

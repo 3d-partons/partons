@@ -72,13 +72,9 @@ namespace PARTONS {
  \endcode
  * See the documentation of QuarkDistribution and GluonDistribution classes to check what kind of information you can access in objects of those types.
  */
-class GPDResult: public Result {
-public:
+class GPDResult: public Result<GPDKinematic> {
 
-    /**
-     * Name of table in the database corresponding to this class.
-     */
-    static const std::string GPD_RESULT_DB_TABLE_NAME;
+public:
 
     /**
      * Default constructor.
@@ -103,14 +99,6 @@ public:
     virtual ~GPDResult();
 
     virtual std::string toString() const;
-
-    /**
-     * Relation operator that checks if the value of left operand is less than the value of right operand (in this case returned is this->m_kinematic < other.m_kinematic).
-     * Used by std::sort function.
-     * @param other Right hand value.
-     * @return True if the value of left operand is less than the value of right operand, otherwise false.
-     */
-    bool operator <(const GPDResult &other) const;
 
     /**
      * Add parton distribution associated to given GPD type.
@@ -157,7 +145,7 @@ public:
      * Get list of GPD types associated to stored parton distributions.
      * @return Vector of associated types.
      */
-    std::vector<GPDType> listGPDTypeComputed();
+    std::vector<GPDType> listGPDTypeComputed() const;
 
     //********************************************************
     //*** SETTERS AND GETTERS ********************************
@@ -174,16 +162,6 @@ public:
     void setPartonDistributions(
             const std::map<GPDType::Type, PartonDistribution>& partonDistributions);
 
-    /**
-     * Get reference to GPD kinematics associated to this result.
-     */
-    const GPDKinematic& getKinematic() const;
-
-    /**
-     * Set GPD kinematics associated to this result.
-     */
-    void setKinematic(const GPDKinematic& kinematic);
-
 private:
 
     /**
@@ -195,11 +173,6 @@ private:
      * Iterator used to mark a specific entry in GPDResult::m_partonDistributions.
      */
     mutable std::map<GPDType::Type, PartonDistribution>::const_iterator m_it;
-
-    /**
-     * GPD kinematics associated to this result.
-     */
-    GPDKinematic m_kinematic;
 };
 
 } /* namespace PARTONS */

@@ -8,8 +8,6 @@
  * @version 1.0
  */
 
-#include <string>
-
 #include "../ObservableResult.h"
 #include "DVCSObservableKinematic.h"
 
@@ -22,7 +20,7 @@ namespace PARTONS {
  *
  * This class is used to store a result of a single DVCS observable computation.
  */
-class DVCSObservableResult: public ObservableResult {
+class DVCSObservableResult: public ObservableResult<DVCSObservableKinematic> {
 
 public:
 
@@ -47,37 +45,6 @@ public:
      * Destructor.
      */
     virtual ~DVCSObservableResult();
-
-    virtual std::string toString() const;
-
-    /**
-     * Relation operator that checks if the value of left operand is less than the value of right operand (in this case returned is this->m_kinematic < other.m_kinematic).
-     * Used by std::sort function.
-     * @param other Right hand value.
-     * @return True if the value of left operand is less than the value of right operand, otherwise false.
-     */
-    bool operator <(const DVCSObservableResult &other) const;
-
-    //********************************************************
-    //*** SETTERS AND GETTERS ********************************
-    //********************************************************
-
-    /**
-     * Get reference to DVCS observable kinematics associated to this result.
-     */
-    const DVCSObservableKinematic& getKinematic() const;
-
-    /**
-     * Set DVCS observable kinematics associated to this result.
-     */
-    void setKinematic(const DVCSObservableKinematic &kinematic);
-
-private:
-
-    /**
-     * DVCS observable kinematics associated to this result.
-     */
-    DVCSObservableKinematic m_kinematic;
 };
 
 } /* namespace PARTONS */

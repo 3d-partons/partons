@@ -2,12 +2,11 @@
 
 #include <NumA/linear_algebra/vector/Vector3D.h>
 
-#include "../../../../../../include/partons/beans/observable/DVCS/DVCSObservableKinematic.h"
 #include "../../../../../../include/partons/beans/observable/ObservableType.h"
 #include "../../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../../../include/partons/modules/process/DVCS/DVCSProcessModule.h"
-#include "../../../../../../include/partons/modules/process/ProcessModule.h"
+#include "../../../../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
 
@@ -31,7 +30,7 @@ DVCSCrossSectionUUMinus* DVCSCrossSectionUUMinus::clone() const {
     return new DVCSCrossSectionUUMinus(*this);
 }
 
-double DVCSCrossSectionUUMinus::computePhiDVCSObservable(
+PhysicalType<double> DVCSCrossSectionUUMinus::computePhiDVCSObservable(
         const DVCSObservableKinematic& kinematic) {
 
     //result
@@ -52,7 +51,7 @@ double DVCSCrossSectionUUMinus::computePhiDVCSObservable(
     //change to nb
     result *= Constant::CONV_GEVm2_TO_NBARN;
 
-    return result;
+    return PhysicalType<double>(result, PhysicalUnit::NB);
 }
 
 } /* namespace PARTONS */

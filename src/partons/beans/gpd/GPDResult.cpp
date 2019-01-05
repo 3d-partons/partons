@@ -8,21 +8,16 @@
 
 namespace PARTONS {
 
-const std::string GPDResult::GPD_RESULT_DB_TABLE_NAME = "gpd_result";
-
 GPDResult::GPDResult() :
-        Result("GPDResult", ChannelType::UNDEFINED) {
+        Result<GPDKinematic>("GPDResult", ChannelType::UNDEFINED) {
 }
 
 GPDResult::GPDResult(const GPDKinematic& kinematic) :
-        Result("GPDResult", ChannelType::UNDEFINED) {
-    m_kinematic = kinematic;
+        Result<GPDKinematic>("GPDResult", ChannelType::UNDEFINED, kinematic) {
 }
 
 GPDResult::GPDResult(const GPDResult &other) :
-        Result(other) {
-
-    m_kinematic = other.m_kinematic;
+        Result<GPDKinematic>(other) {
     m_partonDistributions = other.m_partonDistributions;
 }
 
@@ -48,13 +43,21 @@ std::string GPDResult::toString() const {
     return formatter.str();
 }
 
-bool GPDResult::operator <(const GPDResult& other) const {
-    return (m_kinematic < other.m_kinematic);
-}
-
 void GPDResult::addPartonDistribution(GPDType::Type gpdType,
         const PartonDistribution& partonDistribution) {
-    // TODO: The object partonDistribution already has a GPDType member, so the arguments of the function are redundant (without check...).
+
+    //get iterator
+    std::map<GPDType::Type, PartonDistribution>::const_iterator it =
+            m_partonDistributions.find(gpdType);
+
+    //throw exception
+    if (it != m_partonDistributions.end()) {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << "Result for GPDType = "
+                        << GPDType(gpdType).toString() << " exists");
+    }
+
+    //insert
     m_partonDistributions.insert(
             std::pair<GPDType::Type, PartonDistribution>(gpdType,
                     partonDistribution));
@@ -63,9 +66,11 @@ void GPDResult::addPartonDistribution(GPDType::Type gpdType,
 const PartonDistribution& GPDResult::getPartonDistribution(
         GPDType::Type gpdType) const {
 
+    //get iterator
     std::map<GPDType::Type, PartonDistribution>::const_iterator it =
             m_partonDistributions.find(gpdType);
 
+    //throw exception
     if (it == m_partonDistributions.end()) {
         throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
@@ -73,13 +78,16 @@ const PartonDistribution& GPDResult::getPartonDistribution(
                         << GPDType(gpdType).toString());
     }
 
+    //return
     return (it->second);
 }
 
 bool GPDResult::isAvailable(const GPDType::Type& gpdType) const {
 
+    //get iterator
     m_it = m_partonDistributions.find(gpdType);
 
+    //return
     return (m_it != m_partonDistributions.end());
 }
 
@@ -112,6 +120,28 @@ void GPDResult::compare(ComparisonReport &rootComparisonReport,
     }
 }
 
+std::vector<GPDType> GPDResult::listGPDTypeComputed() const {
+
+    //result
+    std::vector<GPDType> list;
+
+    //iterator
+    std::map<GPDType::Type, PartonDistribution>::const_iterator it;
+
+    //fill vector
+    if (m_partonDistributions.size() != 0) {
+
+        for (it = m_partonDistributions.begin();
+                it != m_partonDistributions.end(); ++it) {
+            list.push_back(it->first);
+        }
+    }
+
+    //return
+    return list;
+
+}
+
 const std::map<GPDType::Type, PartonDistribution>& GPDResult::getPartonDistributions() const {
     return m_partonDistributions;
 }
@@ -119,14 +149,6 @@ const std::map<GPDType::Type, PartonDistribution>& GPDResult::getPartonDistribut
 void GPDResult::setPartonDistributions(
         const std::map<GPDType::Type, PartonDistribution>& partonDistributions) {
     m_partonDistributions = partonDistributions;
-}
-
-const GPDKinematic& GPDResult::getKinematic() const {
-    return m_kinematic;
-}
-
-void GPDResult::setKinematic(const GPDKinematic& kinematic) {
-    m_kinematic = kinematic;
 }
 
 } /* namespace PARTONS */

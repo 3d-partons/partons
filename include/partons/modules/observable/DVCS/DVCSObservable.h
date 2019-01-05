@@ -18,6 +18,7 @@
 #include "../../../beans/observable/DVCS/DVCSObservableKinematic.h"
 #include "../../../beans/observable/DVCS/DVCSObservableResult.h"
 #include "../../../beans/observable/ObservableType.h"
+#include "../../../utils/type/PhysicalType.h"
 #include "../Observable.h"
 
 namespace PARTONS {
@@ -83,18 +84,18 @@ protected:
     /**
      * Compute phi dependent observable, invoked if m_observableType = ObservableType::PHI.
      */
-    double computePhiDVCSObservable(const DVCSObservableKinematic& kinematic);
+    virtual PhysicalType<double> computePhiDVCSObservable(const DVCSObservableKinematic& kinematic);
 
     /**
      * Compute Fourier-like observable, invoked if m_observableType = ObservableType::FOURIER.
      */
-    double computeFourierDVCSObservable(
+    virtual PhysicalType<double> computeFourierDVCSObservable(
             const DVCSObservableKinematic& kinematic);
 
     /**
      * Compute other-like type observable, invoked if m_observableType = ObservableType::UNDEFINED.
      */
-    double computeOtherDVCSObservable(const DVCSObservableKinematic& kinematic);
+    virtual PhysicalType<double> computeOtherDVCSObservable(const DVCSObservableKinematic& kinematic);
 
     /**
      * Observable type. Determines function to be invoked.

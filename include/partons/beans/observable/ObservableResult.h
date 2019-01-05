@@ -8,10 +8,15 @@
  * @version 1.0
  */
 
+#include <ElementaryUtils/logger/CustomException.h>
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <string>
 
+#include "../../utils/compare/CompareUtils.h"
+#include "../../utils/compare/ComparisonData.h"
 #include "../../utils/compare/ComparisonReport.h"
+#include "../../utils/type/PhysicalType.h"
 #include "../channel/ChannelType.h"
 #include "../Result.h"
 #include "ObservableType.h"
@@ -25,35 +30,40 @@ namespace PARTONS {
  *
  * This abstract class is used to store results of a single observable computation.
  */
-class ObservableResult: public Result {
+template<typename KinematicType>
+class ObservableResult: public Result<KinematicType> {
 
 public:
 
     /**
-     * Default constructor.
-     */
-    ObservableResult(const std::string &className,
-            ChannelType::Type channelType);
-
-    /**
-     * Copy constructor.
-     * @param other Object to be copied.
-     */
-    ObservableResult(const ObservableResult& other);
-
-    /**
      * Destructor.
      */
-    virtual ~ObservableResult();
+    virtual ~ObservableResult() {
+    }
 
-    virtual std::string toString() const;
+    virtual std::string toString() const {
+
+        ElemUtils::Formatter formatter;
+
+        formatter << Result<KinematicType>::toString();
+
+        formatter << "\tOservable: " << m_value.toString() << " type: "
+                << ObservableType(m_observableType).toString() << '\n';
+
+        return formatter.str();
+    }
 
     /**
      * Set value.
      * @param value Value to be set.
      * @param observableType Type of observable.
      */
-    void set(double value, ObservableType::Type observableType);
+    void set(const PhysicalType<double>& value,
+            ObservableType::Type observableType) {
+
+        m_value = value;
+        m_observableType = observableType;
+    }
 
     /**
      * Compare to other DVCSConvolCoeffFunctionResult object and store comparison result in given comparison report.
@@ -63,7 +73,23 @@ public:
      */
     void compare(ComparisonReport &rootComparisonReport,
             const ObservableResult &referenceObject,
-            std::string parentObjectInfo = ElemUtils::StringUtils::EMPTY) const;
+            std::string parentObjectInfo = ElemUtils::StringUtils::EMPTY) const {
+
+        //TODO faire un test pour valider la cinématique associée
+
+        if (m_observableType != referenceObject.getObservableType()) {
+            throw ElemUtils::CustomException(this->getClassName(), __func__,
+                    "Cannot compare objects, they are different (different name or type)");
+        }
+
+        ComparisonData xb_comparisonData = CompareUtils::compareDouble(
+                "observable value", getValue(), referenceObject.getValue(),
+                rootComparisonReport.getTolerances(),
+                ElemUtils::Formatter() << parentObjectInfo
+                        << this->getResultInfo().toString());
+        //    << this->getObjectInfo());
+        rootComparisonReport.addComparisonData(xb_comparisonData);
+    }
 
     //********************************************************
     //*** SETTERS AND GETTERS ********************************
@@ -72,29 +98,65 @@ public:
     /**
      * Get value of result.
      */
-    double getValue() const;
+    const PhysicalType<double>& getValue() const {
+        return m_value;
+    }
 
     /**
      * Set value of result.
      */
-    void setValue(double value);
+    void setValue(const PhysicalType<double>& value) {
+        m_value = value;
+    }
 
     /**
      * Get type of observable associated to this result.
      */
-    ObservableType::Type getObservableType() const;
+    ObservableType::Type getObservableType() const {
+        return m_observableType;
+    }
 
     /**
      * Set type of observable associated to this result.
      */
-    void setObservableType(ObservableType::Type observableType);
+    void setObservableType(ObservableType::Type observableType) {
+        m_observableType = observableType;
+    }
 
-private:
+protected:
+
+    /**
+     * Default constructor.
+     */
+    ObservableResult(const std::string &className,
+            ChannelType::Type channelType) :
+            Result<KinematicType>(className, channelType), m_observableType(
+                    ObservableType::UNDEFINED) {
+    }
+
+    /**
+     * Assignment constructor.
+     * @param kinematic Observable kinematics to be assigned.
+     */
+    ObservableResult(const std::string &className,
+            ChannelType::Type channelType, const KinematicType& kinematic) :
+            Result<KinematicType>(className, channelType, kinematic), m_observableType(
+                    ObservableType::UNDEFINED) {
+    }
+
+    /**
+     * Copy constructor.
+     * @param other Object to be copied.
+     */
+    ObservableResult(const ObservableResult& other) :
+            Result<KinematicType>(other), m_value(other.m_value), m_observableType(
+                    other.m_observableType) {
+    }
 
     /**
      * Value of result.
      */
-    double m_value;
+    PhysicalType<double> m_value;
 
     /**
      * Type of observable associated to this result.
