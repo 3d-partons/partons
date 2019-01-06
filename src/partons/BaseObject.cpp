@@ -45,8 +45,7 @@ std::string BaseObject::toString() const {
 
     ElemUtils::Formatter formatter;
 
-    formatter << "Class name (object and index IDs): " << getClassName() << " ("
-            << m_objectId << ", " << m_objectId << ")\n";
+    formatter << m_className;
 
     return formatter.str();
 }

@@ -36,11 +36,6 @@ public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
     /**
-     * Default constructor.
-     */
-    DVCSConvolCoeffFunctionService(const std::string &className);
-
-    /**
      * Destructor.
      */
     virtual ~DVCSConvolCoeffFunctionService();
@@ -50,6 +45,13 @@ public:
             const Task &task) const;
     List<DVCSConvolCoeffFunctionKinematic> newListOfKinematicFromTask(
             const Task &task) const;
+
+protected:
+
+    /**
+     * Default constructor.
+     */
+    DVCSConvolCoeffFunctionService(const std::string &className);
 };
 
 } /* namespace PARTONS */

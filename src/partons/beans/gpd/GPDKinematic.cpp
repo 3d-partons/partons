@@ -120,10 +120,17 @@ std::string GPDKinematic::toString() const {
 
     ElemUtils::Formatter formatter;
 
-    formatter << Kinematic::toString();
-    formatter << "\tx: " << m_x.toString() << " xi: " << m_xi.toString()
-            << " t: " << m_t.toString() << " muF2: " << m_MuF2.toString()
-            << " muR2: " << m_MuR2.toString() << '\n';
+    formatter << Kinematic::toString() << '\n';
+    if (m_x.isInitialized())
+        formatter << "x: " << m_x.toString() << ' ';
+    if (m_xi.isInitialized())
+        formatter << "xi: " << m_xi.toString() << ' ';
+    if (m_t.isInitialized())
+        formatter << "t: " << m_t.toString() << ' ';
+    if (m_MuF2.isInitialized())
+        formatter << "muF2: " << m_MuF2.toString() << ' ';
+    if (m_MuR2.isInitialized())
+        formatter << "muR2: " << m_MuR2.toString() << ' ';
 
     return formatter.str();
 }

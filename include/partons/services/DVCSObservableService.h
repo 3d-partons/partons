@@ -32,11 +32,6 @@ public:
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
     /**
-     * Default constructor.
-     */
-    DVCSObservableService(const std::string &className);
-
-    /**
      * Destructor.
      */
     virtual ~DVCSObservableService();
@@ -45,6 +40,13 @@ public:
     DVCSObservableKinematic newKinematicFromTask(const Task &task) const;
     List<DVCSObservableKinematic> newListOfKinematicFromTask(
             const Task &task) const;
+
+protected:
+
+    /**
+     * Default constructor.
+     */
+    DVCSObservableService(const std::string &className);
 };
 
 } /* namespace PARTONS */

@@ -23,7 +23,13 @@ Kinematic::~Kinematic() {
 }
 
 std::string Kinematic::toString() const {
-    return BaseObject::toString();
+
+    ElemUtils::Formatter formatter;
+
+    formatter << BaseObject::toString();
+    formatter << " ChannelType: " << ChannelType(m_channelType).toString();
+
+    return formatter.str();
 }
 
 void Kinematic::serialize(ElemUtils::Packet& packet) const {

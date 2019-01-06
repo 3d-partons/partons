@@ -111,6 +111,7 @@ public:
     void setIndexId(int indexId);
 
 protected:
+
     /**
      * Copy constructor.
      *

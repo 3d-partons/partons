@@ -203,7 +203,7 @@ void DVCSProcessModule::computeConvolCoeffFunction(
 
         //evaluate
         m_dvcsConvolCoeffFunctionResult =
-                Partons::getInstance()->getServiceObjectRegistry()->getDVCSConvolCoeffFunctionService()->computeForOneCCFModel(
+                Partons::getInstance()->getServiceObjectRegistry()->getDVCSConvolCoeffFunctionService()->computeSingleKinematic(
                         ccfKinematics, m_pConvolCoeffFunctionModule, gpdType);
 
         //set corresponding kinematics

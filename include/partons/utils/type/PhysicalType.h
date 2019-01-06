@@ -110,9 +110,7 @@ public:
         formatter << m_value;
         formatter << " [";
         formatter << PhysicalUnit(m_unit).toString();
-        formatter << "] (";
-        formatter << m_initialized;
-        formatter << ")";
+        formatter << "]";
 
         return formatter.str();
     }

@@ -38,13 +38,12 @@ public:
 
         ElemUtils::Formatter formatter;
 
-        formatter << BaseObject::toString();
-        formatter << "Channel type: " << ChannelType(m_channelType).toString()
+        formatter << BaseObject::toString() << " ChannelType: "
+                << ChannelType(m_channelType).toString()
+                << " ComputationModuleName: " << m_computationModuleName << '\n'
                 << '\n';
-        formatter << "Computation module name: "
-                << ChannelType(m_channelType).toString() << '\n';
-        formatter << "Result info: " << m_resultInfo.toString() << '\n';
-        formatter << "Kinematics: " << m_kinematic.toString() << '\n';
+        formatter << "Kinematics:" << '\n';
+        formatter << m_kinematic.toString();
 
         return formatter.str();
     }

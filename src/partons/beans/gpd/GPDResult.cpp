@@ -28,17 +28,18 @@ std::string GPDResult::toString() const {
 
     ElemUtils::Formatter formatter;
 
-    formatter << Result::toString();
+    formatter << Result::toString() << '\n';
+    ;
 
     std::map<GPDType::Type, PartonDistribution>::const_iterator it;
 
     for (it = m_partonDistributions.begin(); it != m_partonDistributions.end();
             it++) {
-        formatter << "GPD_" << GPDType(it->first).toString() << '\n';
+        formatter << '\n' << "Result: " << "GPD "
+                << GPDType(it->first).toString() << '\n';
         formatter << (it->second).toString();
         formatter << '\n';
     }
-    formatter << "Kinematics: " << m_kinematic.toString();
 
     return formatter.str();
 }

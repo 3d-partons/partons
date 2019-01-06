@@ -58,7 +58,7 @@ public:
      * @param value Value to be set.
      * @param observableType Type of observable.
      */
-    void set(const PhysicalType<double>& value,
+    void setResult(const PhysicalType<double>& value,
             ObservableType::Type observableType) {
 
         m_value = value;
