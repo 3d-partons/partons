@@ -15,16 +15,13 @@
 
 #include "../../../beans/automation/BaseObjectData.h"
 #include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
+#include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
 #include "../../../beans/gpd/GPDType.h"
 #include "../../../beans/List.h"
 #include "../../../beans/PerturbativeQCDOrderType.h"
 #include "../ConvolCoeffFunctionModule.h"
 
 namespace PARTONS {
-
-class ActiveFlavorsThresholdsModule;
-class DVCSConvolCoeffFunctionResult;
-class RunningAlphaStrongModule;
 
 /**
  * @class DVCSConvolCoeffFunctionModule
@@ -34,15 +31,12 @@ class RunningAlphaStrongModule;
  * It is best to use this module with the corresponding service: ConvolCoeffFunctionService (see examples therein), as explained in the [general tutorial](@ref usage).
  */
 class DVCSConvolCoeffFunctionModule: public ConvolCoeffFunctionModule<
-        DVCSConvolCoeffFunctionKinematic> {
+        DVCSConvolCoeffFunctionKinematic, DVCSConvolCoeffFunctionResult> {
 
 public:
 
     /**
-     * Constructor.
-     * See BaseObject::BaseObject and ModuleObject::ModuleObject for more details.
-     *
-     * @param className Name of child class.
+     * Default constructor.
      */
     DVCSConvolCoeffFunctionModule(const std::string &className);
 
@@ -55,29 +49,39 @@ public:
     virtual std::string toString() const;
     virtual void resolveObjectDependencies();
     virtual void run();
-
     virtual void configure(const ElemUtils::Parameters &parameters);
-
     virtual void prepareSubModules(
             const std::map<std::string, BaseObjectData>& subModulesData);
-
-    virtual std::complex<double> compute(
+    virtual DVCSConvolCoeffFunctionResult compute(
             const DVCSConvolCoeffFunctionKinematic& kinematic,
-            GPDType::Type gpdType);
-
+            const List<GPDType>& gpdType);
     virtual List<GPDType> getListOfAvailableGPDTypeForComputation() const;
 
+    // ##### GETTERS & SETTERS #####
+
     /**
-     * Computes the coefficient functions at given kinematics.
-     * @param xi Skewness.
-     * @param t Mandelstam variable, momentum transfer on the hadron target (in GeV^2).
-     * @param Q2 Virtuality of the photon (in GeV^2).
-     * @param MuF2 Factorization scale (in GeV^2).
-     * @param MuR2 Renormalization scale (in GeV^2)
-     * @param gpdType GPDType of the CFF computation.
+     * Get order of the perturbative QCD computation.
      */
-    virtual std::complex<double> compute(double xi, double t, double Q2,
-            double MuF2, double MuR2, GPDType::Type gpdType);
+    PerturbativeQCDOrderType::Type getQCDOrderType() const;
+
+    /**
+     * Set order of the perturbative QCD computation.
+     */
+    void setQCDOrderType(PerturbativeQCDOrderType::Type qcdOrderType);
+
+protected:
+
+    /**
+     * Copy constructor.
+     *
+     * @param other Object to be copied
+     */
+    DVCSConvolCoeffFunctionModule(const DVCSConvolCoeffFunctionModule &other);
+
+    virtual void setKinematics(
+            const DVCSConvolCoeffFunctionKinematic& kinematic);
+    virtual void initModule();
+    virtual void isModuleWellConfigured();
 
     /**
      * Method to compute some CFFs.
@@ -100,35 +104,6 @@ public:
      */
     virtual std::complex<double> computeCFF();
 
-    // ##### GETTERS & SETTERS #####
-
-    /**
-     * Get order of the perturbative QCD computation.
-     */
-    PerturbativeQCDOrderType::Type getQCDOrderType() const;
-
-    /**
-     * Set order of the perturbative QCD computation.
-     */
-    void setQCDOrderType(PerturbativeQCDOrderType::Type qcdOrderType);
-
-    //TO BE REMOVED
-    void setNfConvolCoeffFunction(
-            ActiveFlavorsThresholdsModule* pNfConvolCoeffFunction);
-
-    //TO BE REMOVED
-    void setRunningAlphaStrongModule(
-            RunningAlphaStrongModule* pRunningAlphaStrongModule);
-
-protected:
-
-    /**
-     * Copy constructor.
-     *
-     * @param other Object to be copied
-     */
-    DVCSConvolCoeffFunctionModule(const DVCSConvolCoeffFunctionModule &other);
-
     /**
      * List of GPD/CFF types the child class can compute.
      */
@@ -150,26 +125,6 @@ protected:
     PerturbativeQCDOrderType::Type m_qcdOrderType; ///< Order of the perturbative QCD computation.
     GPDType::Type m_currentGPDComputeType; ///< GPDType of the current CFF computation.
 
-    //TO BE REMOVED
-    unsigned int m_nf; ///< Number of flavors.
-    RunningAlphaStrongModule* m_pRunningAlphaStrongModule; ///< Pointer to the running coupling module to be used.
-    ActiveFlavorsThresholdsModule* m_pNfConvolCoeffFunction;
-
-    virtual void initModule();
-    virtual void isModuleWellConfigured();
-
-    /**
-     * Method called at the start of the compute method to test the input.
-     * Calls initModule and isModuleWellConfigured.
-     * @param xi Skewness.
-     * @param t Mandelstam variable, momentum transfer on the hadron target (in GeV^2).
-     * @param Q2 Virtuality of the photon (in GeV^2).
-     * @param MuF2 Factorization scale (in GeV^2).
-     * @param MuR2 Renormalization scale (in GeV^2)
-     * @param gpdType GPDType of the CFF computation.
-     */
-    void preCompute(double xi, double t, double Q2, double MuF2, double MuR2,
-            GPDType::Type gpdType);
 };
 
 } /* namespace PARTONS */

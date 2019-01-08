@@ -19,6 +19,7 @@
 #include "../../../beans/gpd/GPDType.h"
 #include "../../../beans/List.h"
 #include "../../../beans/observable/DVCS/DVCSObservableKinematic.h"
+#include "../../../beans/observable/DVCS/DVCSObservableResult.h"
 #include "../../../beans/process/DVCSSubProcessType.h"
 #include "../ProcessModule.h"
 
@@ -36,15 +37,13 @@ namespace PARTONS {
  *
  * The cross-section is five-fold differential with respect to the variables: @f$ x_B @f$, @f$ Q^2 @f$, @f$ t @f$ and the two angles.
  */
-class DVCSProcessModule: public ProcessModule<DVCSObservableKinematic> {
+class DVCSProcessModule: public ProcessModule<DVCSObservableKinematic,
+        DVCSObservableResult> {
 
 public:
 
     /**
-     * Constructor.
-     * See BaseObject::BaseObject and ModuleObject::ModuleObject for more details.
-     *
-     * @param className name of child class.
+     * Default constructor.
      */
     DVCSProcessModule(const std::string &className);
 
@@ -60,12 +59,10 @@ public:
     virtual void configure(const ElemUtils::Parameters &parameters);
     virtual void prepareSubModules(
             const std::map<std::string, BaseObjectData>& subModulesData);
-
-    virtual double compute(double beamHelicity, double beamCharge,
+    virtual DVCSObservableResult compute(double beamHelicity, double beamCharge,
             NumA::Vector3D targetPolarization,
             const DVCSObservableKinematic& kinematic);
-
-    void resetPrevious();
+    virtual List<GPDType> getListOfAvailableGPDTypeForComputation() const;
 
     /**
      * Computes the differential cross-section. Must be implemented in the child class.
@@ -76,25 +73,21 @@ public:
      * @param processType Subprocess type.
      * @return Result.
      */
-    double compute(double beamHelicity, double beamCharge,
+    DVCSObservableResult compute(double beamHelicity, double beamCharge,
             NumA::Vector3D targetPolarization,
             const DVCSObservableKinematic& kinematic,
             DVCSSubProcessType::Type processType);
 
     /**
-     * Check if this kinematics is different than the previous one.
+     * Reset previous kinematics.
      */
-    bool isPreviousCCFKinematicsDifferent(
-            const DVCSConvolCoeffFunctionKinematic& kinematic) const;
-
+    virtual void resetPreviousKinematic();
 
     /**
-     * Compute CCF for a given kinematics.
-     * @param kinematic Kinematics to be computed.
-     * @param gpdType List of GPD types to be computed.
+     * Check if this kinematics is different than the previous one.
      */
-    void computeConvolCoeffFunction(const DVCSObservableKinematic& kinematic,
-            const List<GPDType> & gpdType = List<GPDType>());
+    bool isPreviousCCFKinematicDifferent(
+            const DVCSConvolCoeffFunctionKinematic& kinematic) const;
 
     // ##### GETTERS & SETTERS #####
 
@@ -121,23 +114,6 @@ protected:
     virtual void initModule();
     virtual void isModuleWellConfigured();
 
-    double m_xB; ///< Bjorken variable.
-    double m_t; ///< Mandelstam variable (square of the 4-momentum transferm in GeV2).
-    double m_Q2; ///< Virtuality of the incoming photon (in GeV2).
-    double m_E; ///< Beam energy in target rest frame (in GeV).
-    double m_phi; ///<  Angle between leptonic and hadronic plane (in radians, Trento convention).
-
-    double m_tmin; ///< Minimal value of t.
-    double m_tmax; ///< Maximal value of t.
-    double m_xBmin; ///< Minimal value of xB.
-    double m_y; ///< Lepton energy fraction.
-    double m_epsilon; ///< @f$ \epsilon = \frac{2 x_B M}{Q} @f$.
-
-    DVCSConvolCoeffFunctionModule* m_pConvolCoeffFunctionModule; ///< Pointer to the underlying CCF module.
-
-    DVCSConvolCoeffFunctionResult m_dvcsConvolCoeffFunctionResult; ///< Stored Compton Form Factor result.
-    DVCSConvolCoeffFunctionKinematic m_lastCCFKinematics; ///< Last Compton Form Factor kinematics.
-
     /**
      * Bethe-Heitler differential cross section.
      * @param beamHelicity Helicity of the beam (in units of hbar/2).
@@ -146,8 +122,6 @@ protected:
      */
     virtual double CrossSectionBH(double beamHelicity, double beamCharge,
             NumA::Vector3D targetPolarization) = 0;
-
-    // beamHelicity
 
     /**
      * Virtual Compton Scattering differential cross section.
@@ -166,6 +140,31 @@ protected:
      */
     virtual double CrossSectionInterf(double beamHelicity, double beamCharge,
             NumA::Vector3D targetPolarization) = 0;
+
+    double m_xB; ///< Bjorken variable.
+    double m_t; ///< Mandelstam variable (square of the 4-momentum transferm in GeV2).
+    double m_Q2; ///< Virtuality of the incoming photon (in GeV2).
+    double m_E; ///< Beam energy in target rest frame (in GeV).
+    double m_phi; ///<  Angle between leptonic and hadronic plane (in radians, Trento convention).
+
+    double m_tmin; ///< Minimal value of t.
+    double m_tmax; ///< Maximal value of t.
+    double m_xBmin; ///< Minimal value of xB.
+    double m_y; ///< Lepton energy fraction.
+    double m_epsilon; ///< @f$ \epsilon = \frac{2 x_B M}{Q} @f$.
+
+    DVCSConvolCoeffFunctionModule* m_pConvolCoeffFunctionModule; ///< Pointer to the underlying CCF module.
+
+    DVCSConvolCoeffFunctionResult m_dvcsConvolCoeffFunctionResult; ///< Stored Compton Form Factor result.
+    DVCSConvolCoeffFunctionKinematic m_lastCCFKinematics; ///< Last Compton Form Factor kinematics.
+
+    /**
+     * Compute CCF for a given kinematics.
+     * @param kinematic Kinematics to be computed.
+     * @param gpdType List of GPD types to be computed.
+     */
+    void computeConvolCoeffFunction(const DVCSObservableKinematic& kinematic,
+            const List<GPDType> & gpdType = List<GPDType>());
 
     /**
      * Gives back a previously computed Compton Form Factor.

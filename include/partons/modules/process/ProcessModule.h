@@ -17,6 +17,8 @@
 
 #include "../../beans/automation/BaseObjectData.h"
 #include "../../beans/channel/ChannelType.h"
+#include "../../beans/gpd/GPDType.h"
+#include "../../beans/List.h"
 #include "../../ModuleObjectFactory.h"
 #include "../../Partons.h"
 #include "../scales/ScalesModule.h"
@@ -31,10 +33,9 @@ namespace PARTONS {
 /**
  * @class ProcessModule
  *
- * @brief Abstract class for computing the *differential* cross section of an experimental process.
- * The different channels are child classes, *e.g.* DVCSProcessModule.
+ * @brief Abstract class that provides a skeleton to implement a Process module.
  */
-template<typename KinematicType>
+template<typename KinematicType, typename ResultType>
 class ProcessModule: public ModuleObject {
 
 public:
@@ -43,18 +44,6 @@ public:
      * Type of the module in XML automation.
      */
     static const std::string PROCESS_MODULE_CLASS_NAME;
-
-    /**
-     * Constructor.
-     * See BaseObject::BaseObject and ModuleObject::ModuleObject for more details.
-     *
-     * @param className name of child class.
-     * @param channelType Channel type.
-     */
-    ProcessModule(const std::string &className, ChannelType::Type channelType) :
-            ModuleObject(className, channelType), m_isCCFModuleDependent(true), m_pScaleModule(
-                    0), m_pXiConverterModule(0) {
-    }
 
     /**
      * Destructor.
@@ -186,16 +175,15 @@ public:
      * @param kinematic Kinematics.
      * @return Result.
      */
-    virtual double compute(double beamHelicity, double beamCharge,
+    virtual ResultType compute(double beamHelicity, double beamCharge,
             NumA::Vector3D targetPolarization,
             const KinematicType& kinematic) = 0;
 
     /**
-     * Reset previous kinematics. Must be implemented in the child class.
-     * This function should be invoked whenever the configuration of the module has been changed.
-     * It is a part of the mechanism to avoid recalculating CCFs (if used and implemented in the child module).
+     * Must be implemented in child class.
+     * @return List of GPD/CCF types the child class can compute.
      */
-    virtual void resetPrevious() = 0;
+    virtual List<GPDType> getListOfAvailableGPDTypeForComputation() const = 0;
 
     // ##### GETTERS & SETTERS #####
 
@@ -222,8 +210,6 @@ public:
         } else {
             info(__func__, "ScalesModule is set to: 0");
         }
-
-        resetPrevious();
     }
 
     /**
@@ -249,8 +235,6 @@ public:
         } else {
             info(__func__, "XiConverterModule is set to: 0");
         }
-
-        resetPrevious();
     }
 
     /**
@@ -268,6 +252,18 @@ public:
     }
 
 protected:
+
+    /**
+     * Constructor.
+     * See BaseObject::BaseObject and ModuleObject::ModuleObject for more details.
+     *
+     * @param className name of child class.
+     * @param channelType Channel type.
+     */
+    ProcessModule(const std::string &className, ChannelType::Type channelType) :
+            ModuleObject(className, channelType), m_isCCFModuleDependent(true), m_pScaleModule(
+                    0), m_pXiConverterModule(0) {
+    }
 
     /**
      * Copy constructor
@@ -329,9 +325,8 @@ private:
     bool m_isCCFModuleDependent;
 };
 
-
-template<typename KinematicType>
-const std::string ProcessModule<KinematicType>::PROCESS_MODULE_CLASS_NAME =
+template<typename KinematicType, typename ResultType>
+const std::string ProcessModule<KinematicType, ResultType>::PROCESS_MODULE_CLASS_NAME =
         "ProcessModule";
 
 } /* namespace PARTONS */

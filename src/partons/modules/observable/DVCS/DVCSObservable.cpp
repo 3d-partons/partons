@@ -12,16 +12,28 @@ namespace PARTONS {
 DVCSObservable::DVCSObservable(const std::string &className,
         ObservableType::Type observableType) :
         Observable(className, ChannelType::DVCS), m_observableType(
-                observableType), m_xB(0.), m_t(0.), m_Q2(0.), m_E(0.), m_phi(0.) {
+                observableType), m_pProcessModule(0), m_xB(0.), m_t(0.), m_Q2(
+                0.), m_E(0.), m_phi(0.) {
 }
 
 DVCSObservable::DVCSObservable(const DVCSObservable& other) :
         Observable(other), m_observableType(other.m_observableType), m_xB(
                 other.m_xB), m_t(other.m_t), m_Q2(other.m_Q2), m_E(other.m_E), m_phi(
                 other.m_phi) {
+
+    if (other.m_pProcessModule != 0) {
+        m_pProcessModule = other.m_pProcessModule->clone();
+    } else {
+        m_pProcessModule = 0;
+    }
 }
 
 DVCSObservable::~DVCSObservable() {
+
+    if (m_pProcessModule != 0) {
+        setProcessModule(0);
+        m_pProcessModule = 0;
+    }
 }
 
 std::string DVCSObservable::toString() const {
@@ -77,6 +89,8 @@ DVCSObservableResult DVCSObservable::compute(
         const DVCSObservableKinematic& kinematic,
         const List<GPDType>& gpdType) {
 
+    //TODO gpdType
+
     //reset kinematics (virtuality)
     setKinematics(kinematic);
 
@@ -118,6 +132,10 @@ DVCSObservableResult DVCSObservable::compute(
 
     //return
     return result;
+}
+
+List<GPDType> DVCSObservable::getListOfAvailableGPDTypeForComputation() const {
+    return m_pProcessModule->getConvolCoeffFunctionModule()->getListOfAvailableGPDTypeForComputation();
 }
 
 void DVCSObservable::setKinematics(const DVCSObservableKinematic& kinematic) {
@@ -192,6 +210,25 @@ PhysicalType<double> DVCSObservable::computeOtherDVCSObservable(
 
 ObservableType::Type DVCSObservable::getObservableType() const {
     return m_observableType;
+}
+
+DVCSProcessModule* DVCSObservable::getProcessModule() const {
+    return m_pProcessModule;
+}
+
+void DVCSObservable::setProcessModule(DVCSProcessModule* pProcessModule) {
+
+    m_pModuleObjectFactory->updateModulePointerReference(m_pProcessModule,
+            pProcessModule);
+    m_pProcessModule = pProcessModule;
+
+    if (m_pProcessModule != 0) {
+        info(__func__,
+                ElemUtils::Formatter() << "ProcessModule is set to: "
+                        << m_pProcessModule->getClassName());
+    } else {
+        info(__func__, "ProcessModule is set to: 0");
+    }
 }
 
 double DVCSObservable::getXB() const {

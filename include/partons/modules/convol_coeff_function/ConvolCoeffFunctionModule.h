@@ -11,7 +11,6 @@
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
-#include <complex>
 #include <map>
 #include <string>
 #include <utility>
@@ -27,40 +26,26 @@
 
 namespace PARTONS {
 
-class GPDModule;
-
 /**
  * @class ConvolCoeffFunctionModule
  *
  * @brief Abstract class that provides a skeleton to implement a Convolution of Coefficient Function module.
  */
-template<typename KinematicType>
+template<typename KinematicType, typename ResultType>
 class ConvolCoeffFunctionModule: public ModuleObject,
         public MathIntegratorModule {
 
 public:
 
+    //TODO move to DVCS
     static const std::string CONVOL_COEFF_FUNCTION_MODULE_CLASS_NAME; ///< Type of the module in XML automation.
-
-    /**
-     * Constructor.
-     * See BaseObject::BaseObject and ModuleObject::ModuleObject for more details.
-     *
-     * @param className name of child class.
-     * @param channelType Channel type.
-     */
-    ConvolCoeffFunctionModule(const std::string &className,
-            ChannelType::Type channelType) :
-            ModuleObject(className, channelType), MathIntegratorModule(), m_isGPDModuleDependent(
-                    true), m_pGPDModule(0) {
-    }
 
     /**
      * Destructor.
      */
     virtual ~ConvolCoeffFunctionModule() {
 
-        if(m_pGPDModule != 0){
+        if (m_pGPDModule != 0) {
             setGPDModule(0);
             m_pGPDModule = 0;
         }
@@ -145,8 +130,8 @@ public:
      * @param gpdType Type of CCF to compute.
      * @return Complex result.
      */
-    virtual std::complex<double> compute(const KinematicType& kinematic,
-            GPDType::Type gpdType) = 0;
+    virtual ResultType compute(const KinematicType& kinematic,
+            const List<GPDType>& gpdType) = 0;
 
     /**
      * Must be implemented in child class.
@@ -190,6 +175,19 @@ public:
 protected:
 
     /**
+     * Constructor.
+     * See BaseObject::BaseObject and ModuleObject::ModuleObject for more details.
+     *
+     * @param className name of child class.
+     * @param channelType Channel type.
+     */
+    ConvolCoeffFunctionModule(const std::string &className,
+            ChannelType::Type channelType) :
+            ModuleObject(className, channelType), MathIntegratorModule(), m_isGPDModuleDependent(
+                    true), m_pGPDModule(0) {
+    }
+
+    /**
      * Copy constructor
      * @param other Object to be copied.
      */
@@ -202,8 +200,17 @@ protected:
         }
     }
 
-    virtual void initModule() = 0;
-    virtual void isModuleWellConfigured() = 0;
+    /**
+     * Set internal kinematics
+     * @param kinematic Kinematics to be set
+     */
+    virtual void setKinematics(const KinematicType& kinematic) = 0;
+
+    virtual void initModule() {
+    }
+
+    virtual void isModuleWellConfigured() {
+    }
 
     /**
      * Pointer to the underlying GPD module.
@@ -218,8 +225,8 @@ private:
     bool m_isGPDModuleDependent;
 };
 
-template<typename KinematicType>
-const std::string ConvolCoeffFunctionModule<KinematicType>::CONVOL_COEFF_FUNCTION_MODULE_CLASS_NAME =
+template<typename KinematicType, typename ResultType>
+const std::string ConvolCoeffFunctionModule<KinematicType, ResultType>::CONVOL_COEFF_FUNCTION_MODULE_CLASS_NAME =
         "ConvolCoeffFunctionModule";
 
 static const std::string CONVOL_COEFF_FUNCTION_MODULE_CLASS_NAME;

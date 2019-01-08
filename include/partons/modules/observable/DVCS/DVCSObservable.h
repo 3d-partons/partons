@@ -54,20 +54,21 @@ public:
     virtual DVCSObservableResult compute(
             const DVCSObservableKinematic& kinematic,
             const List<GPDType> & gpdType = List<GPDType>());
+    virtual List<GPDType> getListOfAvailableGPDTypeForComputation() const;
 
     // ##### GETTERS & SETTERS #####
 
     ObservableType::Type getObservableType() const;
-    double getXB() const;
-    void setXB(double xB);
-    double getT() const;
-    void setT(double t);
-    double getQ2() const;
-    void setQ2(double q2);
-    double getE() const;
-    void setE(double e);
-    double getPhi() const;
-    void setPhi(double phi);
+
+    /**
+     * Get process module.
+     */
+    DVCSProcessModule* getProcessModule() const;
+
+    /**
+     * Set process module.
+     */
+    void setProcessModule(DVCSProcessModule* pProcessModule);
 
 protected:
 
@@ -84,7 +85,8 @@ protected:
     /**
      * Compute phi dependent observable, invoked if m_observableType = ObservableType::PHI.
      */
-    virtual PhysicalType<double> computePhiDVCSObservable(const DVCSObservableKinematic& kinematic);
+    virtual PhysicalType<double> computePhiDVCSObservable(
+            const DVCSObservableKinematic& kinematic);
 
     /**
      * Compute Fourier-like observable, invoked if m_observableType = ObservableType::FOURIER.
@@ -95,7 +97,8 @@ protected:
     /**
      * Compute other-like type observable, invoked if m_observableType = ObservableType::UNDEFINED.
      */
-    virtual PhysicalType<double> computeOtherDVCSObservable(const DVCSObservableKinematic& kinematic);
+    virtual PhysicalType<double> computeOtherDVCSObservable(
+            const DVCSObservableKinematic& kinematic);
 
     /**
      * Observable type. Determines function to be invoked.
@@ -107,6 +110,8 @@ protected:
     double m_Q2; ///< Virtuality of the incoming photon (in GeV2).
     double m_E; ///< Beam energy in target rest frame (in GeV).
     double m_phi; ///<  Angle between leptonic and hadronic plane (in radians, Trento convention).
+
+    DVCSProcessModule* m_pProcessModule; ///< Pointer to the underlying process module.
 };
 
 } /* namespace PARTONS */
