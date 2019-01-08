@@ -125,7 +125,7 @@ public:
      * @return Result.
      */
     ResultType computeSingleKinematic(const KinematicType &kinematic,
-            ConvolCoeffFunctionModule<KinematicType>* pConvolCoeffFunctionModule,
+            ConvolCoeffFunctionModule<KinematicType, ResultType>* pConvolCoeffFunctionModule,
             const List<GPDType> & gpdTypeList = List<GPDType>()) const {
 
         //result
@@ -161,7 +161,7 @@ public:
      * @return List of results.
      */
     List<ResultType> computeManyKinematic(List<KinematicType> &kinematics,
-            ConvolCoeffFunctionModule<KinematicType>* pConvolCoeffFunctionModule,
+            ConvolCoeffFunctionModule<KinematicType, ResultType>* pConvolCoeffFunctionModule,
             const List<GPDType> &gpdTypeList = List<GPDType>(),
             const bool storeInDB = 0) {
 
@@ -244,11 +244,12 @@ public:
      * @param task Automation task.
      * @return Pre-configured ConvolCoeffFunctionModule.
      */
-    ConvolCoeffFunctionModule<KinematicType>* newConvolCoeffFunctionModuleFromTask(
+    ConvolCoeffFunctionModule<KinematicType, ResultType>* newConvolCoeffFunctionModuleFromTask(
             const Task &task) const {
 
         //initialize
-        ConvolCoeffFunctionModule<KinematicType>* pConvolCoeffFunctionModule = 0;
+        ConvolCoeffFunctionModule<KinematicType, ResultType>* pConvolCoeffFunctionModule =
+                0;
 
         //check if available
         //TODO remove hardcoded string
@@ -316,7 +317,7 @@ private:
         List<GPDType> gpdTypeList = this->getGPDTypeListFromTask(task);
 
         //get CCF module
-        ConvolCoeffFunctionModule<KinematicType>* pConvolCoeffFunctionModule =
+        ConvolCoeffFunctionModule<KinematicType, ResultType>* pConvolCoeffFunctionModule =
                 newConvolCoeffFunctionModuleFromTask(task);
 
         //make computation
@@ -346,7 +347,7 @@ private:
         List<GPDType> gpdTypeList = this->getGPDTypeListFromTask(task);
 
         //get CCF module
-        ConvolCoeffFunctionModule<KinematicType>* pConvolCoeffFunctionModule =
+        ConvolCoeffFunctionModule<KinematicType, ResultType>* pConvolCoeffFunctionModule =
                 newConvolCoeffFunctionModuleFromTask(task);
 
         //make computation
@@ -378,7 +379,7 @@ private:
      * @return List of GPD types.
      */
     List<GPDType> getFinalGPDTypeList(
-            ConvolCoeffFunctionModule<KinematicType>* pConvolCoeffFunctionModule,
+            ConvolCoeffFunctionModule<KinematicType, ResultType>* pConvolCoeffFunctionModule,
             const List<GPDType> &gpdTypeList) const {
 
         //initialize

@@ -7,6 +7,7 @@
 #include <utility>
 
 #include "../../../../../include/partons/beans/channel/ChannelType.h"
+#include "../../../../../include/partons/beans/convol_coeff_function/ConvolCoeffFunctionResult.h"
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSCFFConstant.h"
@@ -14,10 +15,9 @@
 #include "../../../../../include/partons/modules/xi_converter/XiConverterModule.h"
 #include "../../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../../include/partons/Partons.h"
-#include "../../../../../include/partons/beans/Scales.h"
-#include "../../../../../include/partons/services/ConvolCoeffFunctionService.h"
 #include "../../../../../include/partons/services/DVCSConvolCoeffFunctionService.h"
 #include "../../../../../include/partons/ServiceObjectRegistry.h"
+#include "../../../../../include/partons/utils/type/PhysicalType.h"
 
 namespace PARTONS {
 
@@ -122,20 +122,21 @@ void DVCSProcessModule::prepareSubModules(
     }
 }
 
-DVCSObservableResult DVCSProcessModule::compute(double beamHelicity, double beamCharge,
-        NumA::Vector3D targetPolarization,
-        const DVCSObservableKinematic& kinematic) {
+DVCSObservableResult DVCSProcessModule::compute(double beamHelicity,
+        double beamCharge, NumA::Vector3D targetPolarization,
+        const DVCSObservableKinematic& kinematic,
+        const List<GPDType> & gpdType = List<GPDType>()) {
     return compute(beamHelicity, beamCharge, targetPolarization, kinematic,
-            DVCSSubProcessType::ALL);
+            gpdType, DVCSSubProcessType::ALL);
 }
 
-List<GPDType> DVCSProcessModule::getListOfAvailableGPDTypeForComputation() const{
+List<GPDType> DVCSProcessModule::getListOfAvailableGPDTypeForComputation() const {
     return m_pConvolCoeffFunctionModule->getListOfAvailableGPDTypeForComputation();
 }
 
-DVCSObservableResult DVCSProcessModule::compute(double beamHelicity, double beamCharge,
-        NumA::Vector3D targetPolarization,
-        const DVCSObservableKinematic& kinematic,
+DVCSObservableResult DVCSProcessModule::compute(double beamHelicity,
+        double beamCharge, NumA::Vector3D targetPolarization,
+        const DVCSObservableKinematic& kinematic, const List<GPDType>& gpdType,
         DVCSSubProcessType::Type processType) {
 
     // reset kinematics (virtuality)
@@ -147,7 +148,10 @@ DVCSObservableResult DVCSProcessModule::compute(double beamHelicity, double beam
     // execute last child function (virtuality)
     isModuleWellConfigured();
 
-     double result = 0.;
+    //comput CCF
+    computeConvolCoeffFunction(kinematic, gpdType);
+
+    double result = 0.;
 
     if (processType == DVCSSubProcessType::ALL
             || processType == DVCSSubProcessType::DVCS) {
@@ -168,6 +172,12 @@ DVCSObservableResult DVCSProcessModule::compute(double beamHelicity, double beam
     return DVCSObservableResult(result, kinematic);
 }
 
+void DVCSProcessModule::resetPreviousKinematic() {
+
+    m_dvcsConvolCoeffFunctionResult = DVCSConvolCoeffFunctionResult();
+    m_lastCCFKinematics = DVCSConvolCoeffFunctionKinematic();
+}
+
 bool DVCSProcessModule::isPreviousCCFKinematicDifferent(
         const DVCSConvolCoeffFunctionKinematic& kinematic) const {
 
@@ -178,47 +188,32 @@ bool DVCSProcessModule::isPreviousCCFKinematicDifferent(
             || (kinematic.getMuR2() != m_lastCCFKinematics.getMuR2()));
 }
 
-void DVCSProcessModule::resetPreviousKinematic() {
-
-    m_dvcsConvolCoeffFunctionResult = DVCSConvolCoeffFunctionResult();
-    m_lastCCFKinematics = DVCSConvolCoeffFunctionKinematic();
+DVCSConvolCoeffFunctionModule* DVCSProcessModule::getConvolCoeffFunctionModule() const {
+    return m_pConvolCoeffFunctionModule;
 }
 
-void DVCSProcessModule::computeConvolCoeffFunction(
-        const DVCSObservableKinematic& kinematic,
-        const List<GPDType>& gpdType) {
+void DVCSProcessModule::setConvolCoeffFunctionModule(
+        DVCSConvolCoeffFunctionModule* pConvolCoeffFunctionModule) {
 
-    //compute scales
-    Scales scale = m_pScaleModule->compute(kinematic.getQ2().getValue());
+    m_pModuleObjectFactory->updateModulePointerReference(
+            m_pConvolCoeffFunctionModule, pConvolCoeffFunctionModule);
+    m_pConvolCoeffFunctionModule = pConvolCoeffFunctionModule;
 
-    //compute xi
-    double xi = m_pXiConverterModule->compute(kinematic.getXB().getValue(),
-            kinematic.getT().getValue(), kinematic.getQ2().getValue());
-
-    //create ccf kinematics
-    DVCSConvolCoeffFunctionKinematic ccfKinematics(xi, kinematic.getT().getValue(),
-            kinematic.getQ2().getValue(), scale.getMuF2(), scale.getMuR2());
-
-    //check if different
-    if (isPreviousCCFKinematicDifferent(ccfKinematics)
-            || (BaseObjectRegistry::getInstance()->getObjectClassIdByClassName(
-                    m_pConvolCoeffFunctionModule->getClassName())
-                    == DVCSCFFConstant::classId)) {
-
-        //evaluate
-        m_dvcsConvolCoeffFunctionResult =
-                Partons::getInstance()->getServiceObjectRegistry()->getDVCSConvolCoeffFunctionService()->computeSingleKinematic(
-                        ccfKinematics, m_pConvolCoeffFunctionModule, gpdType).ge;
-
-        //set corresponding kinematics
-        m_lastCCFKinematics = ccfKinematics;
+    if (m_pConvolCoeffFunctionModule != 0) {
+        info(__func__,
+                ElemUtils::Formatter()
+                        << "ConvolCoeffFunctionModule is set to: "
+                        << pConvolCoeffFunctionModule->getClassName());
+    } else {
+        info(__func__, "ConvolCoeffFunctionModule is set to: 0");
     }
+
+    resetPreviousKinematic();
 }
 
 void DVCSProcessModule::setKinematics(
         const DVCSObservableKinematic& kinematic) {
 
-    // set variables
     m_xB = kinematic.getXB().getValue();
     m_t = kinematic.getT().getValue();
     m_Q2 = kinematic.getQ2().getValue();
@@ -287,8 +282,41 @@ void DVCSProcessModule::isModuleWellConfigured() {
     }
 }
 
+void DVCSProcessModule::computeConvolCoeffFunction(
+        const DVCSObservableKinematic& kinematic,
+        const List<GPDType>& gpdType) {
+
+    //compute scales
+    Scales scale = m_pScaleModule->compute(kinematic.getQ2().getValue());
+
+    //compute xi
+    double xi = m_pXiConverterModule->compute(kinematic.getXB().getValue(),
+            kinematic.getT().getValue(), kinematic.getQ2().getValue());
+
+    //create ccf kinematics
+    DVCSConvolCoeffFunctionKinematic ccfKinematics(xi,
+            kinematic.getT().getValue(), kinematic.getQ2().getValue(),
+            scale.getMuF2(), scale.getMuR2());
+
+    //check if different
+    if (isPreviousCCFKinematicDifferent(ccfKinematics)
+            || (BaseObjectRegistry::getInstance()->getObjectClassIdByClassName(
+                    m_pConvolCoeffFunctionModule->getClassName())
+                    == DVCSCFFConstant::classId)) {
+
+        //evaluate
+        m_dvcsConvolCoeffFunctionResult =
+                Partons::getInstance()->getServiceObjectRegistry()->getDVCSConvolCoeffFunctionService()->computeSingleKinematic(
+                        ccfKinematics, m_pConvolCoeffFunctionModule, gpdType);
+
+        //set corresponding kinematics
+        m_lastCCFKinematics = ccfKinematics;
+    }
+}
+
 std::complex<double> DVCSProcessModule::getConvolCoeffFunctionValue(
         GPDType::Type gpdType) {
+
     std::complex<double> result = std::complex<double>(0., 0.);
 
     try {
@@ -301,29 +329,6 @@ std::complex<double> DVCSProcessModule::getConvolCoeffFunctionValue(
     }
 
     return result;
-}
-
-DVCSConvolCoeffFunctionModule* DVCSProcessModule::getConvolCoeffFunctionModule() const {
-    return m_pConvolCoeffFunctionModule;
-}
-
-void DVCSProcessModule::setConvolCoeffFunctionModule(
-        DVCSConvolCoeffFunctionModule* pConvolCoeffFunctionModule) {
-
-    m_pModuleObjectFactory->updateModulePointerReference(
-            m_pConvolCoeffFunctionModule, pConvolCoeffFunctionModule);
-    m_pConvolCoeffFunctionModule = pConvolCoeffFunctionModule;
-
-    if (m_pConvolCoeffFunctionModule != 0) {
-        info(__func__,
-                ElemUtils::Formatter()
-                        << "ConvolCoeffFunctionModule is set to: "
-                        << pConvolCoeffFunctionModule->getClassName());
-    } else {
-        info(__func__, "ConvolCoeffFunctionModule is set to: 0");
-    }
-
-    resetPreviousKinematic();
 }
 
 } /* namespace PARTONS */

@@ -183,8 +183,10 @@ protected:
      */
     ConvolCoeffFunctionModule(const std::string &className,
             ChannelType::Type channelType) :
-            ModuleObject(className, channelType), MathIntegratorModule(), m_isGPDModuleDependent(
-                    true), m_pGPDModule(0) {
+            ModuleObject(className, channelType), MathIntegratorModule(), m_xi(
+                    0.), m_t(0.), m_MuF2(0.), m_MuR2(0.), m_currentGPDComputeType(
+                    GPDType::UNDEFINED), m_pGPDModule(0), m_isGPDModuleDependent(
+                    true) {
     }
 
     /**
@@ -192,8 +194,10 @@ protected:
      * @param other Object to be copied.
      */
     ConvolCoeffFunctionModule(const ConvolCoeffFunctionModule &other) :
-            ModuleObject(other), MathIntegratorModule(other), m_isGPDModuleDependent(
-                    other.m_isGPDModuleDependent), m_pGPDModule(0) {
+            ModuleObject(other), MathIntegratorModule(other), m_xi(other.m_xi), m_t(
+                    other.m_t), m_MuF2(other.m_MuF2), m_MuR2(other.m_MuR2), m_currentGPDComputeType(
+                    other.m_currentGPDComputeType), m_pGPDModule(0), m_isGPDModuleDependent(
+                    other.m_isGPDModuleDependent) {
 
         if (other.m_pGPDModule != 0) {
             m_pGPDModule = (other.m_pGPDModule)->clone();
@@ -204,18 +208,61 @@ protected:
      * Set internal kinematics
      * @param kinematic Kinematics to be set
      */
-    virtual void setKinematics(const KinematicType& kinematic) = 0;
+    virtual void setKinematics(const KinematicType& kinematic) {
+
+        m_xi = kinematic.getXi().getValue();
+        m_t = kinematic.getT().getValue();
+        m_MuF2 = kinematic.getMuF2().getValue();
+        m_MuR2 = kinematic.getMuR2().getValue();
+    }
+
+    void setCurrentGPDType(GPDType::Type gpdType) {
+        m_currentGPDComputeType = gpdType;
+    }
 
     virtual void initModule() {
     }
 
     virtual void isModuleWellConfigured() {
+
+        if (m_xi < 0. || m_xi > 1.) {
+            warn(__func__,
+                    ElemUtils::Formatter() << "Input value of Xi = " << m_xi
+                            << " do not lay between 0 and 1.");
+        }
+
+        if (m_t > 0) {
+            warn(__func__,
+                    ElemUtils::Formatter() << " Input value of t = " << m_t
+                            << " is not <= 0.");
+        }
+
+        if (m_MuF2 < 0) {
+            warn(__func__,
+                    ElemUtils::Formatter() << "Input value of muF2 = " << m_MuF2
+                            << " is not > 0.");
+        }
+
+        if (m_MuR2 < 0) {
+            warn(__func__,
+                    ElemUtils::Formatter() << "Input value of muR2 = " << m_MuR2
+                            << " is not > 0.");
+        }
+
+        if (isGPDModuleDependent() && m_pGPDModule == 0) {
+            throw ElemUtils::CustomException(this->getClassName(), __func__,
+                    "m_pGPDModule is NULL");
+        }
     }
 
-    /**
-     * Pointer to the underlying GPD module.
-     */
-    GPDModule* m_pGPDModule;
+    double m_xi; ///< Skewness.
+    double m_t; ///< Mandelstam variable, momentum transfer on the hadron target (in GeV^2).
+    double m_MuF2; ///< Factorization scale (in GeV^2).
+    double m_MuR2; ///< Renormalization scale (in GeV^2)
+
+    GPDType::Type m_currentGPDComputeType; ///< GPDType of the current CFF computation.
+
+    GPDModule* m_pGPDModule; ///< Pointer to the underlying GPD module.
 
 private:
 

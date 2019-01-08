@@ -61,7 +61,8 @@ public:
             const std::map<std::string, BaseObjectData>& subModulesData);
     virtual DVCSObservableResult compute(double beamHelicity, double beamCharge,
             NumA::Vector3D targetPolarization,
-            const DVCSObservableKinematic& kinematic);
+            const DVCSObservableKinematic& kinematic,
+            const List<GPDType>& gpdType = List<GPDType>());
     virtual List<GPDType> getListOfAvailableGPDTypeForComputation() const;
 
     /**
@@ -76,7 +77,8 @@ public:
     DVCSObservableResult compute(double beamHelicity, double beamCharge,
             NumA::Vector3D targetPolarization,
             const DVCSObservableKinematic& kinematic,
-            DVCSSubProcessType::Type processType);
+            const List<GPDType>& gpdType = List<GPDType>(),
+            DVCSSubProcessType::Type processType = DVCSSubProcessType::ALL);
 
     /**
      * Reset previous kinematics.

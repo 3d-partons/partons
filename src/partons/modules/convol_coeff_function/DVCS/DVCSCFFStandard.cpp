@@ -17,21 +17,22 @@
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../../include/partons/modules/gpd/GPDModule.h"
-#include "../../../../../include/partons/modules/running_alpha_strong/RunningAlphaStrongModule.h"
+#include "../../../../../include/partons/modules/running_alpha_strong/RunningAlphaStrongStandard.h"
+#include "../../../../../include/partons/ModuleObjectFactory.h"
+#include "../../../../../include/partons/Partons.h"
 
 namespace PARTONS {
-
 
 const unsigned int DVCSCFFStandard::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new DVCSCFFStandard("DVCSCFFStandard"));
 
 DVCSCFFStandard::DVCSCFFStandard(const std::string &className) :
-        DVCSConvolCoeffFunctionModule(className), m_Zeta(0.), m_logQ2OverMu2(
-                0.), m_Q(0.), m_alphaSOver2Pi(0.), m_quarkDiagonal(0.), m_gluonDiagonal(
-                0.), m_realPartSubtractQuark(0.), m_imaginaryPartSubtractQuark(
-                0.), m_realPartSubtractGluon(0.), m_imaginaryPartSubtractGluon(
-                0.), m_CF(4. / 3.) {
+        DVCSConvolCoeffFunctionModule(className), m_nf(0), m_pRunningAlphaStrongModule(
+                0), m_Zeta(0.), m_logQ2OverMu2(0.), m_Q(0.), m_alphaSOver2Pi(
+                0.), m_quarkDiagonal(0.), m_gluonDiagonal(0.), m_realPartSubtractQuark(
+                0.), m_imaginaryPartSubtractQuark(0.), m_realPartSubtractGluon(
+                0.), m_imaginaryPartSubtractGluon(0.), m_CF(4. / 3.) {
     m_listOfCFFComputeFunctionAvailable.insert(
             std::make_pair(GPDType::H,
                     &DVCSConvolCoeffFunctionModule::computeUnpolarized));
@@ -50,9 +51,56 @@ DVCSCFFStandard::DVCSCFFStandard(const std::string &className) :
 
 //TODO Call mother init function
 void DVCSCFFStandard::resolveObjectDependencies() {
+
     DVCSConvolCoeffFunctionModule::resolveObjectDependencies();
 
     setIntegrator(NumA::IntegratorType1D::DEXP);
+
+    m_pRunningAlphaStrongModule =
+            Partons::getInstance()->getModuleObjectFactory()->newRunningAlphaStrongModule(
+                    RunningAlphaStrongStandard::classId);
+}
+
+void DVCSCFFStandard::prepareSubModules(
+        const std::map<std::string, BaseObjectData>& subModulesData) {
+
+    DVCSConvolCoeffFunctionModule::prepareSubModules(subModulesData);
+
+    std::map<std::string, BaseObjectData>::const_iterator it;
+
+    it = subModulesData.find(
+            RunningAlphaStrongModule::RUNNING_ALPHA_STRONG_MODULE_CLASS_NAME);
+
+    if (it != subModulesData.end()) {
+
+        if (m_pRunningAlphaStrongModule != 0) {
+            setRunningAlphaStrongModule(0);
+            m_pRunningAlphaStrongModule = 0;
+        }
+
+        if (!m_pRunningAlphaStrongModule) {
+            m_pRunningAlphaStrongModule =
+                    Partons::getInstance()->getModuleObjectFactory()->newRunningAlphaStrongModule(
+                            (it->second).getModuleClassName());
+            info(__func__,
+                    ElemUtils::Formatter()
+                            << "Configure with RunningAlphaStrongModule = "
+                            << m_pRunningAlphaStrongModule->getClassName());
+            m_pRunningAlphaStrongModule->configure(
+                    (it->second).getParameters());
+        }
+    }
+}
+
+RunningAlphaStrongModule* DVCSCFFStandard::getRunningAlphaStrongModule() const {
+    return m_pRunningAlphaStrongModule;
+}
+
+void DVCSCFFStandard::setRunningAlphaStrongModule(
+        RunningAlphaStrongModule* pRunningAlphaStrongModule) {
+    m_pModuleObjectFactory->updateModulePointerReference(
+            m_pRunningAlphaStrongModule, pRunningAlphaStrongModule);
+    m_pRunningAlphaStrongModule = pRunningAlphaStrongModule;
 }
 
 void DVCSCFFStandard::initFunctorsForIntegrations() {
@@ -84,6 +132,16 @@ void DVCSCFFStandard::initFunctorsForIntegrations() {
 
 DVCSCFFStandard::DVCSCFFStandard(const DVCSCFFStandard &other) :
         DVCSConvolCoeffFunctionModule(other) {
+
+    m_nf = other.m_nf;
+
+    if (other.m_pRunningAlphaStrongModule != 0) {
+        m_pRunningAlphaStrongModule =
+                (other.m_pRunningAlphaStrongModule)->clone();
+    } else {
+        m_pRunningAlphaStrongModule = 0;
+    }
+
     m_Zeta = other.m_Zeta;
     m_logQ2OverMu2 = other.m_logQ2OverMu2;
     m_Q = other.m_Q;
@@ -107,17 +165,14 @@ DVCSCFFStandard* DVCSCFFStandard::clone() const {
 
 //TODO comment gérer le cycle de vie des modules membres
 DVCSCFFStandard::~DVCSCFFStandard() {
-    //
-//    if (m_pMathIntegratorModule) {
-//        delete m_pMathIntegratorModule;
-//        m_pMathIntegratorModule = 0;
-//    }
-//    if (m_pRunningAlphaStrongModule) {
-//        delete m_pRunningAlphaStrongModule;
-//        m_pRunningAlphaStrongModule = 0;
-//    }
 
-// destroy functors
+    // destroy alphaS
+    if (m_pRunningAlphaStrongModule != 0) {
+        setRunningAlphaStrongModule(0);
+        m_pRunningAlphaStrongModule = 0;
+    }
+
+    // destroy functors
     if (m_pConvolReKernelQuark1V) {
         delete m_pConvolReKernelQuark1V;
         m_pConvolReKernelQuark1V = 0;
@@ -188,7 +243,8 @@ void DVCSCFFStandard::initModule() {
     m_Zeta = 2. * m_xi / (1 + m_xi);
     m_logQ2OverMu2 = log(m_Q2 / m_MuF2);
 
-    m_alphaSOver2Pi = m_pRunningAlphaStrongModule->compute(m_MuR2) / (2. * Constant::PI);
+    m_alphaSOver2Pi = m_pRunningAlphaStrongModule->compute(m_MuR2)
+            / (2. * Constant::PI);
 
     debug(__func__,
             ElemUtils::Formatter() << "m_Q2=" << m_Q2 << " m_Q= " << m_Q

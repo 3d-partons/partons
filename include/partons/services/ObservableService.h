@@ -255,11 +255,11 @@ public:
      * @param task Automation task.
      * @return Pre-configured ProcessModule.
      */
-    ProcessModule<KinematicType>* newProcessModuleFromTask(
+    ProcessModule<KinematicType, ResultType>* newProcessModuleFromTask(
             const Task &task) const {
 
         //initialize
-        ProcessModule<KinematicType>* pProcessModule = 0;
+        ProcessModule<KinematicType, ResultType>* pProcessModule = 0;
 
         //check if available
         //TODO remove hardcoded string
