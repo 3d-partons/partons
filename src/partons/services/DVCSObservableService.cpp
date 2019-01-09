@@ -10,6 +10,9 @@
 #include "../../../include/partons/beans/automation/Task.h"
 #include "../../../include/partons/beans/KinematicUtils.h"
 #include "../../../include/partons/BaseObjectRegistry.h"
+#include "../../../include/partons/modules/observable/DVCS/DVCSObservable.h"
+#include "../../../include/partons/modules/process/DVCS/DVCSProcessModule.h"
+#include "../../../include/partons/ModuleObjectFactory.h"
 #include "../../../include/partons/Partons.h"
 
 namespace PARTONS {
@@ -29,7 +32,6 @@ void DVCSObservableService::resolveObjectDependencies() {
     ObservableService<DVCSObservableKinematic, DVCSObservableResult>::resolveObjectDependencies();
 }
 
-//TODO remove hardcoded string
 DVCSObservableKinematic DVCSObservableService::newKinematicFromTask(
         const Task& task) const {
 
@@ -38,7 +40,7 @@ DVCSObservableKinematic DVCSObservableService::newKinematicFromTask(
 
     if (ElemUtils::StringUtils::equals(
             task.getKinematicsData().getModuleClassName(),
-            "ObservableKinematic")) {
+            DVCSObservableKinematic::DVCS_OBSERVABLE_KNEMATIC_CLASS_NAME)) {
         kinematic = DVCSObservableKinematic(
                 task.getKinematicsData().getParameters());
     } else {
@@ -51,7 +53,6 @@ DVCSObservableKinematic DVCSObservableService::newKinematicFromTask(
     return kinematic;
 }
 
-//TODO remove hardcoded string
 List<DVCSObservableKinematic> DVCSObservableService::newListOfKinematicFromTask(
         const Task& task) const {
 
@@ -59,7 +60,7 @@ List<DVCSObservableKinematic> DVCSObservableService::newListOfKinematicFromTask(
 
     if (ElemUtils::StringUtils::equals(
             task.getKinematicsData().getModuleClassName(),
-            "ObservableKinematic")) {
+            DVCSObservableKinematic::DVCS_OBSERVABLE_KNEMATIC_CLASS_NAME)) {
 
         if (task.getKinematicsData().getParameters().isAvailable("file")) {
             listOfKinematic =
@@ -79,6 +80,69 @@ List<DVCSObservableKinematic> DVCSObservableService::newListOfKinematicFromTask(
     }
 
     return listOfKinematic;
+}
+
+ProcessModule<DVCSObservableKinematic, DVCSObservableResult>* DVCSObservableService::newProcessModuleFromTask(
+        const Task &task) const {
+
+    //initialize
+    ProcessModule<DVCSObservableKinematic, DVCSObservableResult>* pProcessModule =
+            0;
+
+    //check if available
+    if (ElemUtils::StringUtils::equals(
+            task.getModuleComputationConfiguration().getModuleType(),
+            DVCSProcessModule::DVCS_PROCESS_MODULE_CLASS_NAME)) {
+
+        //configure
+        pProcessModule =
+                Partons::getInstance()->getModuleObjectFactory()->newDVCSProcessModule(
+                        task.getModuleComputationConfiguration().getModuleClassName());
+
+        pProcessModule->configure(
+                task.getModuleComputationConfiguration().getParameters());
+
+        pProcessModule->prepareSubModules(
+                task.getModuleComputationConfiguration().getSubModules());
+    } else {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter()
+                        << "You have not provided any ProcessModule ; Or check case in your XML file");
+    }
+
+    //return
+    return pProcessModule;
+}
+
+Observable<DVCSObservableKinematic, DVCSObservableResult>* DVCSObservableService::newObservableModuleFromTask(
+        const Task &task) const {
+
+    //initialize
+    Observable<DVCSObservableKinematic, DVCSObservableResult>* pObservable = 0;
+
+    //check if available
+    if (ElemUtils::StringUtils::equals(
+            task.getModuleComputationConfiguration().getModuleType(),
+            DVCSObservable::DVCS_OBSERVABLE_MODULE_CLASS_NAME)) {
+
+        //configure
+        pObservable =
+                Partons::getInstance()->getModuleObjectFactory()->newDVCSObservable(
+                        task.getModuleComputationConfiguration().getModuleClassName());
+
+        pObservable->configure(
+                task.getModuleComputationConfiguration().getParameters());
+
+        pObservable->prepareSubModules(
+                task.getModuleComputationConfiguration().getSubModules());
+    } else {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter()
+                        << "You have not provided any Observable");
+    }
+
+    //return
+    return pObservable;
 }
 
 } /* namespace PARTONS */

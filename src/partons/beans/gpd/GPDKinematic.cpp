@@ -10,6 +10,9 @@
 
 namespace PARTONS {
 
+const std::string GPDKinematic::GPD_KNEMATIC_CLASS_NAME =
+        "GPDKinematic";
+
 const std::string GPDKinematic::KINEMATIC_PARAMETER_NAME_X = "x";
 const std::string GPDKinematic::KINEMATIC_PARAMETER_NAME_XI = "xi";
 const std::string GPDKinematic::KINEMATIC_PARAMETER_NAME_T = "t";
@@ -218,31 +221,31 @@ void GPDKinematic::setMuR2(const PhysicalType<double>& muR2) {
 
 void GPDKinematic::setX(double x) {
 
-    m_x = x;
+    m_x.setValue(x);
     updateHashSum();
 }
 
 void GPDKinematic::setXi(double xi) {
 
-    m_xi = xi;
+    m_xi.setValue(xi);
     updateHashSum();
 }
 
 void GPDKinematic::setT(double t) {
 
-    m_t = t;
+    m_t.setValue(t);
     updateHashSum();
 }
 
 void GPDKinematic::setMuF2(double muF2) {
 
-    m_MuF2 = muF2;
+    m_MuF2.setValue(muF2);
     updateHashSum();
 }
 
 void GPDKinematic::setMuR2(double muR2) {
 
-    m_MuR2 = muR2;
+    m_MuR2.setValue(muR2);
     updateHashSum();
 }
 

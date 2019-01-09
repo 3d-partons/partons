@@ -173,25 +173,25 @@ void ConvolCoeffFunctionKinematic::setMuR2(const PhysicalType<double>& MuR2) {
 
 void ConvolCoeffFunctionKinematic::setXi(double xi) {
 
-    m_xi = xi;
+    m_xi.setValue(xi);
     updateHashSum();
 }
 
 void ConvolCoeffFunctionKinematic::setT(double t) {
 
-    m_t = t;
+    m_t.setValue(t);
     updateHashSum();
 }
 
 void ConvolCoeffFunctionKinematic::setMuF2(double MuF2) {
 
-    m_MuF2 = MuF2;
+    m_MuF2.setValue(MuF2);
     updateHashSum();
 }
 
 void ConvolCoeffFunctionKinematic::setMuR2(double MuR2) {
 
-    m_MuR2 = MuR2;
+    m_MuR2.setValue(MuR2);
     updateHashSum();
 }
 

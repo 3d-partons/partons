@@ -10,6 +10,7 @@
 
 #include <string>
 
+#include "../../utils/type/PhysicalType.h"
 #include "XiConverterModule.h"
 
 namespace PARTONS {
@@ -46,7 +47,8 @@ public:
 
     virtual XiConverterXBToXi* clone() const;
 
-    virtual double compute(double xB, double t, double Q2);
+    virtual PhysicalType<double> compute(const PhysicalType<double>& xB,
+            const PhysicalType<double>& t, const PhysicalType<double>& Q2);
 
 protected:
 

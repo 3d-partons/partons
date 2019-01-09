@@ -35,6 +35,8 @@ class DVCSConvolCoeffFunctionModule: public ConvolCoeffFunctionModule<
 
 public:
 
+    static const std::string DVCS_CONVOL_COEFF_FUNCTION_MODULE_CLASS_NAME; ///< Type of the module in XML automation.
+
     /**
      * Destructor.
      */

@@ -11,7 +11,6 @@
 #include "../../../include/partons/beans/automation/BaseObjectData.h"
 #include "../../../include/partons/beans/automation/Task.h"
 #include "../../../include/partons/beans/KinematicUtils.h"
-#include "../../../include/partons/beans/Result.h"
 #include "../../../include/partons/BaseObjectRegistry.h"
 #include "../../../include/partons/modules/gpd/GPDModule.h"
 #include "../../../include/partons/ModuleObjectFactory.h"
@@ -101,33 +100,19 @@ void GPDService::computeTask(Task &task) {
 }
 
 GPDResult GPDService::computeSingleKinematic(const GPDKinematic &gpdKinematic,
-        GPDModule* pGPDModule, const List<GPDType> & gpdTypeList) const {
-
-    //result
-    GPDResult gpdResult;
+        GPDModule* pGPDModule, const List<GPDType>& gpdTypeList) const {
 
     //get list of GPD types
     List<GPDType> restrictedByGPDTypeListFinal = getFinalGPDTypeList(pGPDModule,
             gpdTypeList);
 
-    //evaluate
-    for (unsigned int i = 0; i != restrictedByGPDTypeListFinal.size(); i++) {
-        gpdResult.addPartonDistribution(restrictedByGPDTypeListFinal[i],
-                pGPDModule->compute(gpdKinematic,
-                        restrictedByGPDTypeListFinal[i]));
-    }
-
-    //set kinematics and computation module name
-    gpdResult.setKinematic(gpdKinematic);
-    gpdResult.setComputationModuleName(pGPDModule->getClassName());
-
     //return
-    return gpdResult;
+    return pGPDModule->compute(gpdKinematic, restrictedByGPDTypeListFinal);
 }
 
 List<GPDResult> GPDService::computeManyKinematic(
         const List<GPDKinematic> &gpdKinematicList, GPDModule* pGPDModule,
-        const List<GPDType> &gpdTypeList) {
+        const List<GPDType>& gpdTypeList) {
 
     //print information
     info(__func__,
@@ -277,14 +262,14 @@ List<GPDType> GPDService::getFinalGPDTypeList(GPDModule* pGPDModule,
     return restrictedByGPDTypeListFinal;
 }
 
-//TODO remove hardcoded string
 GPDKinematic GPDService::newKinematicFromTask(const Task& task) const {
 
     //create a kinematic and init it with a list of parameters
     GPDKinematic kinematic;
 
     if (ElemUtils::StringUtils::equals(
-            task.getKinematicsData().getModuleClassName(), "GPDKinematic")) {
+            task.getKinematicsData().getModuleClassName(),
+            GPDKinematic::GPD_KNEMATIC_CLASS_NAME)) {
         kinematic = GPDKinematic(task.getKinematicsData().getParameters());
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
@@ -296,14 +281,14 @@ GPDKinematic GPDService::newKinematicFromTask(const Task& task) const {
     return kinematic;
 }
 
-//TODO remove hardcoded string
 List<GPDKinematic> GPDService::newListOfKinematicFromTask(
         const Task& task) const {
 
     List<GPDKinematic> listOfKinematic;
 
     if (ElemUtils::StringUtils::equals(
-            task.getKinematicsData().getModuleClassName(), "GPDKinematic")) {
+            task.getKinematicsData().getModuleClassName(),
+            GPDKinematic::GPD_KNEMATIC_CLASS_NAME)) {
 
         if (task.getKinematicsData().getParameters().isAvailable("file")) {
             listOfKinematic =

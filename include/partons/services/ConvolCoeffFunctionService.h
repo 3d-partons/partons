@@ -128,9 +128,6 @@ public:
             ConvolCoeffFunctionModule<KinematicType, ResultType>* pConvolCoeffFunctionModule,
             const List<GPDType>& gpdTypeList = List<GPDType>()) const {
 
-        //result
-        ResultType result;
-
         //get list of GPD types
         List<GPDType> restrictedByGPDTypeListFinal = getFinalGPDTypeList(
                 pConvolCoeffFunctionModule, gpdTypeList);
@@ -231,38 +228,8 @@ public:
      * @param task Automation task.
      * @return Pre-configured ConvolCoeffFunctionModule.
      */
-    ConvolCoeffFunctionModule<KinematicType, ResultType>* newConvolCoeffFunctionModuleFromTask(
-            const Task &task) const {
-
-        //initialize
-        ConvolCoeffFunctionModule<KinematicType, ResultType>* pConvolCoeffFunctionModule =
-                0;
-
-        //check if available
-        //TODO remove hardcoded string
-        if (ElemUtils::StringUtils::equals(
-                task.getModuleComputationConfiguration().getModuleType(),
-                "ConvolCoeffFunctionModule")) {
-//TODO DVCS HERE!!!!!!!!!!!!!!!!!!!!!!
-            //configure
-            pConvolCoeffFunctionModule =
-                    Partons::getInstance()->getModuleObjectFactory()->newDVCSConvolCoeffFunctionModule(
-                            task.getModuleComputationConfiguration().getModuleClassName());
-
-            pConvolCoeffFunctionModule->configure(
-                    task.getModuleComputationConfiguration().getParameters());
-
-            pConvolCoeffFunctionModule->prepareSubModules(
-                    task.getModuleComputationConfiguration().getSubModules());
-        } else {
-            throw ElemUtils::CustomException(this->getClassName(), __func__,
-                    ElemUtils::Formatter()
-                            << "You have not provided any ConvolCoeffFunctionModule");
-        }
-
-        //return
-        return pConvolCoeffFunctionModule;
-    }
+    virtual ConvolCoeffFunctionModule<KinematicType, ResultType>* newConvolCoeffFunctionModuleFromTask(
+            const Task &task) const = 0;
 
     /**
      * Uses an automation task (XML file) to set specific kinematics.
@@ -370,32 +337,25 @@ private:
             const List<GPDType> &gpdTypeList) const {
 
         //initialize
-        List<GPDType> availableGPDTypeForCCFModel = gpdTypeList;
+        List<GPDType> restrictedByGPDTypeListFinal = gpdTypeList;
 
-        //get list available in ccf module
-        availableGPDTypeForCCFModel =
+        //get list of GPD types available
+        restrictedByGPDTypeListFinal =
                 pConvolCoeffFunctionModule->getListOfAvailableGPDTypeForComputation();
 
-        //intersection between available GPDType for this CCF model and GPDType asked
+        //intersection between available GPDType and GPDType asked
         if (!gpdTypeList.isEmpty()) {
-            availableGPDTypeForCCFModel = VectorUtils::intersection(
-                    availableGPDTypeForCCFModel, gpdTypeList);
-        }
-
-        //if this CCF model is GPD model dependent we need to perform another intersection with GPDType available for this GPD model
-        if (pConvolCoeffFunctionModule->isGPDModuleDependent()) {
-            availableGPDTypeForCCFModel =
-                    VectorUtils::intersection(availableGPDTypeForCCFModel,
-                            pConvolCoeffFunctionModule->getGPDModule()->getListOfAvailableGPDTypeForComputation());
+            restrictedByGPDTypeListFinal = VectorUtils::intersection(
+                    restrictedByGPDTypeListFinal, gpdTypeList);
         }
 
         //print info
         this->info(__func__,
-                ElemUtils::Formatter() << availableGPDTypeForCCFModel.size()
+                ElemUtils::Formatter() << restrictedByGPDTypeListFinal.size()
                         << " GPDType will be computed");
 
         //return
-        return availableGPDTypeForCCFModel;
+        return restrictedByGPDTypeListFinal;
     }
 };
 

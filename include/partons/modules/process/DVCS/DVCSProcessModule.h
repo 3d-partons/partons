@@ -42,6 +42,8 @@ class DVCSProcessModule: public ProcessModule<DVCSObservableKinematic,
 
 public:
 
+    static const std::string DVCS_PROCESS_MODULE_CLASS_NAME; ///< Type of the module in XML automation.
+
     /**
      * Destructor.
      */

@@ -221,15 +221,19 @@ GPDResult GPDModule::compute1(const GPDKinematic &kinematic,
 
 List<GPDType> GPDModule::getListOfAvailableGPDTypeForComputation() const {
 
-    std::map<GPDType::Type, PartonDistribution (GPDModule::*)()>::const_iterator it;
-
+    //object to be returned
     List<GPDType> listOfAvailableGPDTypeForComputation;
 
+    //iterator
+    std::map<GPDType::Type, PartonDistribution (GPDModule::*)()>::const_iterator it;
+
+    //fill list
     for (it = m_listGPDComputeTypeAvailable.begin();
             it != m_listGPDComputeTypeAvailable.end(); it++) {
         listOfAvailableGPDTypeForComputation.add(it->first);
     }
 
+    //return
     return listOfAvailableGPDTypeForComputation;
 }
 

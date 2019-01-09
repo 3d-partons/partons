@@ -1,9 +1,9 @@
 #include "../../../../include/partons/modules/xi_converter/XiConverterXBToXi.h"
 
 #include "../../../../include/partons/BaseObjectRegistry.h"
+#include "../../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
-
 
 const unsigned int XiConverterXBToXi::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
@@ -20,11 +20,14 @@ XiConverterXBToXi* XiConverterXBToXi::clone() const {
     return new XiConverterXBToXi(*this);
 }
 
-double XiConverterXBToXi::compute(double xB, double t, double Q2) {
+PhysicalType<double> XiConverterXBToXi::compute(
+        const PhysicalType<double>& xB, const PhysicalType<double>& t,
+        const PhysicalType<double>& Q2) {
     initModule();
     isModuleWellConfigured();
 
-    return (xB / (2 - xB));
+    return PhysicalType<double>(xB.getValue() / (2. - xB.getValue()),
+            PhysicalUnit::NONE);
 }
 
 XiConverterXBToXi::XiConverterXBToXi(const XiConverterXBToXi& other) :
@@ -38,6 +41,5 @@ void XiConverterXBToXi::initModule() {
 void XiConverterXBToXi::isModuleWellConfigured() {
     XiConverterModule::isModuleWellConfigured();
 }
-
 
 } /* namespace PARTONS */

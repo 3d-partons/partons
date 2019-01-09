@@ -3,21 +3,20 @@
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
-#include <iostream>
+#include <stddef.h>
 #include <utility>
 
 #include "../../../../../include/partons/beans/channel/ChannelType.h"
-#include "../../../../../include/partons/beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
-#include "../../../../../include/partons/modules/active_flavors_thresholds/ActiveFlavorsThresholdsQuarkMasses.h"
-#include "../../../../../include/partons/modules/running_alpha_strong/RunningAlphaStrongStandard.h"
-#include "../../../../../include/partons/ModuleObjectFactory.h"
-#include "../../../../../include/partons/Partons.h"
-#include "../../../../../include/partons/services/DVCSConvolCoeffFunctionService.h"
-#include "../../../../../include/partons/ServiceObjectRegistry.h"
-#include "../../../../../include/partons/ServiceObjectTyped.h"
+#include "../../../../../include/partons/beans/convol_coeff_function/ConvolCoeffFunctionResult.h"
+#include "../../../../../include/partons/beans/Result.h"
+#include "../../../../../include/partons/modules/gpd/GPDModule.h"
 #include "../../../../../include/partons/utils/type/PhysicalType.h"
+#include "../../../../../include/partons/utils/VectorUtils.h"
 
 namespace PARTONS {
+
+const std::string DVCSConvolCoeffFunctionModule::DVCS_CONVOL_COEFF_FUNCTION_MODULE_CLASS_NAME =
+        "DVCSConvolCoeffFunctionModule";
 
 DVCSConvolCoeffFunctionModule::DVCSConvolCoeffFunctionModule(
         const std::string &className) :
@@ -180,15 +179,33 @@ DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionModule::compute(
 
 List<GPDType> DVCSConvolCoeffFunctionModule::getListOfAvailableGPDTypeForComputation() const {
 
-    std::map<GPDType::Type,
-            std::complex<double> (DVCSConvolCoeffFunctionModule::*)()>::const_iterator it;
+    //object to be returned
     List<GPDType> listOfAvailableGPDTypeForComputation;
 
+    //iterator
+    std::map<GPDType::Type,
+            std::complex<double> (DVCSConvolCoeffFunctionModule::*)()>::const_iterator it;
+
+    //fill list
     for (it = m_listOfCFFComputeFunctionAvailable.begin();
             it != m_listOfCFFComputeFunctionAvailable.end(); it++) {
         listOfAvailableGPDTypeForComputation.add(it->first);
     }
 
+    //if this CCF model is GPD model dependent we need to perform another intersection with GPDType available for this GPD model
+    if (m_isGPDModuleDependent) {
+
+        if (m_pGPDModule == 0) {
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    "GPD module not set");
+        }
+
+        listOfAvailableGPDTypeForComputation = VectorUtils::intersection(
+                listOfAvailableGPDTypeForComputation,
+                m_pGPDModule->getListOfAvailableGPDTypeForComputation());
+    }
+
+    //return
     return listOfAvailableGPDTypeForComputation;
 }
 

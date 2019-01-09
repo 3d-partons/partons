@@ -87,6 +87,7 @@ public:
      * @return PartonDistribution object.
      * Contains results for each flavor of partons.
      */
+    //TODO rename
     virtual GPDResult compute1(const GPDKinematic &kinematic,
             const List<GPDType>& gpdType, bool evolution);
 

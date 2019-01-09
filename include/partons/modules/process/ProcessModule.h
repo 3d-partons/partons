@@ -41,11 +41,6 @@ class ProcessModule: public ModuleObject {
 public:
 
     /**
-     * Type of the module in XML automation.
-     */
-    static const std::string PROCESS_MODULE_CLASS_NAME;
-
-    /**
      * Destructor.
      */
     virtual ~ProcessModule() {
@@ -317,17 +312,11 @@ protected:
      */
     XiConverterModule* m_pXiConverterModule;
 
-private:
-
     /**
      * Boolean (true if this Process module depends on a CCF module).
      */
     bool m_isCCFModuleDependent;
 };
-
-template<typename KinematicType, typename ResultType>
-const std::string ProcessModule<KinematicType, ResultType>::PROCESS_MODULE_CLASS_NAME =
-        "ProcessModule";
 
 } /* namespace PARTONS */
 

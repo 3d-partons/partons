@@ -8,6 +8,9 @@
 
 #include "../../../../../include/partons/beans/channel/ChannelType.h"
 #include "../../../../../include/partons/beans/convol_coeff_function/ConvolCoeffFunctionResult.h"
+#include "../../../../../include/partons/beans/observable/ObservableResult.h"
+#include "../../../../../include/partons/beans/observable/ObservableType.h"
+#include "../../../../../include/partons/beans/Result.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
 #include "../../../../../include/partons/modules/scales/ScalesModule.h"
@@ -22,6 +25,9 @@
 #include "../../../../../include/partons/beans/Scales.h"
 
 namespace PARTONS {
+
+const std::string DVCSProcessModule::DVCS_PROCESS_MODULE_CLASS_NAME =
+        "DVCSProcessModule";
 
 DVCSProcessModule::DVCSProcessModule(const std::string &className) :
         ProcessModule(className, ChannelType::DVCS), m_xB(0.), m_t(0.), m_Q2(
@@ -87,7 +93,7 @@ void DVCSProcessModule::prepareSubModules(
         //search for ccf module
         it =
                 subModulesData.find(
-                        DVCSConvolCoeffFunctionModule::CONVOL_COEFF_FUNCTION_MODULE_CLASS_NAME);
+                        DVCSConvolCoeffFunctionModule::DVCS_CONVOL_COEFF_FUNCTION_MODULE_CLASS_NAME);
 
         //check if there
         if (it != subModulesData.end()) {
@@ -136,7 +142,24 @@ DVCSObservableResult DVCSProcessModule::compute(double beamHelicity,
 }
 
 List<GPDType> DVCSProcessModule::getListOfAvailableGPDTypeForComputation() const {
-    return m_pConvolCoeffFunctionModule->getListOfAvailableGPDTypeForComputation();
+
+    //object to be returned
+    List<GPDType> listOfAvailableGPDTypeForComputation;
+
+    //check if CCF module dependent
+    if (m_isCCFModuleDependent) {
+
+        if (m_pConvolCoeffFunctionModule == 0) {
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    "CCF module not set");
+        }
+
+        listOfAvailableGPDTypeForComputation =
+                m_pConvolCoeffFunctionModule->getListOfAvailableGPDTypeForComputation();
+    }
+
+    //return
+    return listOfAvailableGPDTypeForComputation;
 }
 
 DVCSObservableResult DVCSProcessModule::compute(double beamHelicity,
@@ -153,8 +176,9 @@ DVCSObservableResult DVCSProcessModule::compute(double beamHelicity,
     //execute last child function (virtuality)
     isModuleWellConfigured();
 
-    //comput CCF
-    computeConvolCoeffFunction(kinematic, gpdType);
+    //compute CCF
+    if (m_isCCFModuleDependent)
+        computeConvolCoeffFunction(kinematic, gpdType);
 
     //object to be returned
     DVCSObservableResult result(kinematic);
@@ -163,12 +187,14 @@ DVCSObservableResult DVCSProcessModule::compute(double beamHelicity,
 
     if (processType == DVCSSubProcessType::ALL
             || processType == DVCSSubProcessType::DVCS) {
-        doubleResult += CrossSectionVCS(beamHelicity, beamCharge, targetPolarization);
+        doubleResult += CrossSectionVCS(beamHelicity, beamCharge,
+                targetPolarization);
     }
 
     if (processType == DVCSSubProcessType::ALL
             || processType == DVCSSubProcessType::BH) {
-        doubleResult += CrossSectionBH(beamHelicity, beamCharge, targetPolarization);
+        doubleResult += CrossSectionBH(beamHelicity, beamCharge,
+                targetPolarization);
     }
 
     if (processType == DVCSSubProcessType::ALL
@@ -323,16 +349,15 @@ void DVCSProcessModule::computeConvolCoeffFunction(
         const List<GPDType>& gpdType) {
 
     //compute scales
-    Scales scale = m_pScaleModule->compute(kinematic.getQ2().getValue());
+    Scales scale = m_pScaleModule->compute(kinematic.getQ2());
 
     //compute xi
-    double xi = m_pXiConverterModule->compute(kinematic.getXB().getValue(),
-            kinematic.getT().getValue(), kinematic.getQ2().getValue());
+    PhysicalType<double> xi = m_pXiConverterModule->compute(kinematic.getXB(),
+            kinematic.getT(), kinematic.getQ2());
 
     //create ccf kinematics
-    DVCSConvolCoeffFunctionKinematic ccfKinematics(xi,
-            kinematic.getT().getValue(), kinematic.getQ2().getValue(),
-            scale.getMuF2(), scale.getMuR2());
+    DVCSConvolCoeffFunctionKinematic ccfKinematics(xi, kinematic.getT(),
+            kinematic.getQ2(), scale.getMuF2(), scale.getMuR2());
 
     //check if different
     if (isPreviousCCFKinematicDifferent(ccfKinematics)) {

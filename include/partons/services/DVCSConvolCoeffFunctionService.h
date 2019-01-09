@@ -13,6 +13,7 @@
 #include "../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
 #include "../beans/List.h"
+#include "../modules/convol_coeff_function/ConvolCoeffFunctionModule.h"
 #include "ConvolCoeffFunctionService.h"
 
 namespace PARTONS {
@@ -52,6 +53,10 @@ protected:
      * Default constructor.
      */
     DVCSConvolCoeffFunctionService(const std::string &className);
+
+    virtual ConvolCoeffFunctionModule<DVCSConvolCoeffFunctionKinematic,
+            DVCSConvolCoeffFunctionResult>* newConvolCoeffFunctionModuleFromTask(
+            const Task &task) const;
 };
 
 } /* namespace PARTONS */

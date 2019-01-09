@@ -10,6 +10,8 @@
 #include "../../../include/partons/beans/automation/Task.h"
 #include "../../../include/partons/beans/KinematicUtils.h"
 #include "../../../include/partons/BaseObjectRegistry.h"
+#include "../../../include/partons/modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
+#include "../../../include/partons/ModuleObjectFactory.h"
 #include "../../../include/partons/Partons.h"
 
 namespace PARTONS {
@@ -33,14 +35,13 @@ void DVCSConvolCoeffFunctionService::resolveObjectDependencies() {
             DVCSConvolCoeffFunctionResult>::resolveObjectDependencies();
 }
 
-//TODO remove hardcoded string
 DVCSConvolCoeffFunctionKinematic DVCSConvolCoeffFunctionService::newKinematicFromTask(
         const Task& task) const {
     DVCSConvolCoeffFunctionKinematic kinematic;
 
     if (ElemUtils::StringUtils::equals(
             task.getKinematicsData().getModuleClassName(),
-            "DVCSConvolCoeffFunctionKinematic")) {
+            DVCSConvolCoeffFunctionKinematic::DVCS_CONVOL_COEFF_FUNCTION_KNEMATIC_CLASS_NAME)) {
         kinematic = DVCSConvolCoeffFunctionKinematic(
                 task.getKinematicsData().getParameters());
     } else {
@@ -53,14 +54,13 @@ DVCSConvolCoeffFunctionKinematic DVCSConvolCoeffFunctionService::newKinematicFro
     return kinematic;
 }
 
-//TODO remove hardcoded string
 List<DVCSConvolCoeffFunctionKinematic> DVCSConvolCoeffFunctionService::newListOfKinematicFromTask(
         const Task& task) const {
     List<DVCSConvolCoeffFunctionKinematic> listOfKinematic;
 
     if (ElemUtils::StringUtils::equals(
             task.getKinematicsData().getModuleClassName(),
-            "DVCSConvolCoeffFunctionKinematic")) {
+            DVCSConvolCoeffFunctionKinematic::DVCS_CONVOL_COEFF_FUNCTION_KNEMATIC_CLASS_NAME)) {
 
         if (task.getKinematicsData().getParameters().isAvailable("file")) {
             listOfKinematic =
@@ -80,6 +80,39 @@ List<DVCSConvolCoeffFunctionKinematic> DVCSConvolCoeffFunctionService::newListOf
     }
 
     return listOfKinematic;
+}
+
+ConvolCoeffFunctionModule<DVCSConvolCoeffFunctionKinematic,
+        DVCSConvolCoeffFunctionResult>* DVCSConvolCoeffFunctionService::newConvolCoeffFunctionModuleFromTask(
+        const Task &task) const {
+
+    //initialize
+    ConvolCoeffFunctionModule<DVCSConvolCoeffFunctionKinematic,
+            DVCSConvolCoeffFunctionResult>* pConvolCoeffFunctionModule = 0;
+
+    //check if available
+    if (ElemUtils::StringUtils::equals(
+            task.getModuleComputationConfiguration().getModuleType(),
+            DVCSConvolCoeffFunctionModule::DVCS_CONVOL_COEFF_FUNCTION_MODULE_CLASS_NAME)) {
+
+        //configure
+        pConvolCoeffFunctionModule =
+                Partons::getInstance()->getModuleObjectFactory()->newDVCSConvolCoeffFunctionModule(
+                        task.getModuleComputationConfiguration().getModuleClassName());
+
+        pConvolCoeffFunctionModule->configure(
+                task.getModuleComputationConfiguration().getParameters());
+
+        pConvolCoeffFunctionModule->prepareSubModules(
+                task.getModuleComputationConfiguration().getSubModules());
+    } else {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter()
+                        << "You have not provided any ConvolCoeffFunctionModule");
+    }
+
+    //return
+    return pConvolCoeffFunctionModule;
 }
 
 } /* namespace PARTONS */

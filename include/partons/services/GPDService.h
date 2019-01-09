@@ -54,7 +54,7 @@ public:
      * @return GPDResult
      */
     GPDResult computeSingleKinematic(const GPDKinematic &gpdKinematic,
-            GPDModule* pGPDModule, const List<GPDType> & gpdType =
+            GPDModule* pGPDModule, const List<GPDType>& gpdType =
                     List<GPDType>()) const;
 
     /**
@@ -68,7 +68,7 @@ public:
      */
     List<GPDResult> computeManyKinematic(
             const List<GPDKinematic> &gpdKinematicList, GPDModule* pGPDModule,
-            const List<GPDType> &gpdTypeList = List<GPDType>());
+            const List<GPDType>& gpdTypeList = List<GPDType>());
 
     /**
      * Devises the GPDModule from an automation task.

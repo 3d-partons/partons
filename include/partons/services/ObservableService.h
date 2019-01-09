@@ -16,17 +16,13 @@
 #include <ElementaryUtils/thread/Packet.h>
 #include <string>
 
-#include "../beans/automation/BaseObjectData.h"
 #include "../beans/automation/Task.h"
 #include "../beans/gpd/GPDType.h"
 #include "../beans/List.h"
-#include "../modules/observable/DVCS/DVCSObservable.h"
 #include "../modules/observable/Observable.h"
-#include "../modules/process/DVCS/DVCSProcessModule.h"
 #include "../modules/process/ProcessModule.h"
-#include "../ModuleObjectFactory.h"
-#include "../Partons.h"
 #include "../ServiceObjectTyped.h"
+#include "../utils/VectorUtils.h"
 
 namespace PARTONS {
 
@@ -121,8 +117,14 @@ public:
      */
     ResultType computeSingleKinematic(const KinematicType &observableKinematic,
             Observable<KinematicType, ResultType>* pObservable,
-            const List<GPDType> & listOfGPDType = List<GPDType>()) const {
-        return pObservable->compute(observableKinematic, listOfGPDType);
+            const List<GPDType> & gpdTypeList = List<GPDType>()) const {
+
+        //get list of GPD types
+        List<GPDType> restrictedByGPDTypeListFinal = getFinalGPDTypeList(
+                pObservable, gpdTypeList);
+
+        //return
+        return pObservable->compute(observableKinematic, gpdTypeList);
     }
 
     /**
@@ -136,7 +138,7 @@ public:
     List<ResultType> computeManyKinematic(
             const List<KinematicType> & listOfKinematic,
             Observable<KinematicType, ResultType>* pObservable,
-            const List<GPDType> & listOfGPDType = List<GPDType>()) {
+            const List<GPDType>& gpdTypeList = List<GPDType>()) {
 
         //print information
         this->info(__func__,
@@ -147,7 +149,8 @@ public:
         //initialize
         List<ResultType> results;
         List<ElemUtils::Packet> listOfPacket;
-        List<GPDType> finalListOfGPDType = listOfGPDType;
+        List<GPDType> finalListOfGPDType = getFinalGPDTypeList(pObservable,
+                gpdTypeList);
 
         //if to be computed
         if (finalListOfGPDType.size() != 0) {
@@ -212,80 +215,20 @@ public:
     }
 
     /**
-     * Uses an automation task (XML file) to configure an Observable.
-     * @param task Automation task.
-     * @return Pre-configured Observable.
-     */
-    Observable<KinematicType, ResultType>* newObservableModuleFromTask(
-            const Task &task) const {
-
-        //initialize
-        Observable<KinematicType, ResultType>* pObservable = 0;
-
-        //check if available
-        //TODO remove hardcoded string
-        if (ElemUtils::StringUtils::equals(
-                task.getModuleComputationConfiguration().getModuleType(),
-                "Observable")) {
-
-            //configure
-            //TODO DVCS HERE!!!!!!!!!!!!!!!!!!!!!!
-            pObservable =
-                    Partons::getInstance()->getModuleObjectFactory()->newDVCSObservable(
-                            task.getModuleComputationConfiguration().getModuleClassName());
-
-            pObservable->configure(
-                    task.getModuleComputationConfiguration().getParameters());
-
-            pObservable->prepareSubModules(
-                    task.getModuleComputationConfiguration().getSubModules());
-        } else {
-            throw ElemUtils::CustomException(this->getClassName(), __func__,
-                    ElemUtils::Formatter()
-                            << "You have not provided any Observable");
-        }
-
-        //return
-        return pObservable;
-    }
-
-    /**
      * @brief Uses an automation task (XML file) to configure a ProcessModule, e.g.\ a DVCSModule.
      * @param task Automation task.
      * @return Pre-configured ProcessModule.
      */
-    ProcessModule<KinematicType, ResultType>* newProcessModuleFromTask(
-            const Task &task) const {
+    virtual ProcessModule<KinematicType, ResultType>* newProcessModuleFromTask(
+            const Task &task) const = 0;
 
-        //initialize
-        ProcessModule<KinematicType, ResultType>* pProcessModule = 0;
-
-        //check if available
-        //TODO remove hardcoded string
-        if (ElemUtils::StringUtils::equals(
-                task.getModuleComputationConfiguration().getModuleType(),
-                "ProcessModule")) {
-
-            //configure
-            //TODO DVCS HERE!!!!!!!!!!!!!!!!!!!!!!
-            pProcessModule =
-                    Partons::getInstance()->getModuleObjectFactory()->newDVCSProcessModule(
-                            task.getModuleComputationConfiguration().getModuleClassName());
-
-            pProcessModule->configure(
-                    task.getModuleComputationConfiguration().getParameters());
-
-            pProcessModule->prepareSubModules(
-                    task.getModuleComputationConfiguration().getSubModules());
-        } else {
-            throw ElemUtils::CustomException(this->getClassName(), __func__,
-                    ElemUtils::Formatter()
-                            << "You have not provided any ProcessModule ; Or check case in your XML file");
-        }
-
-        //return
-        return pProcessModule;
-    }
+    /**
+     * Uses an automation task (XML file) to configure an Observable.
+     * @param task Automation task.
+     * @return Pre-configured Observable.
+     */
+    virtual Observable<KinematicType, ResultType>* newObservableModuleFromTask(
+            const Task &task) const = 0;
 
     /**
      * Uses an automation task (XML file) to set specific kinematics.
@@ -391,8 +334,27 @@ private:
     List<GPDType> getFinalGPDTypeList(
             Observable<KinematicType, ResultType>* pObservable,
             const List<GPDType> &gpdTypeList) const {
-        //TODO
-        return List<GPDType>();
+
+        //initialize
+        List<GPDType> restrictedByGPDTypeListFinal = gpdTypeList;
+
+        //get list of GPD types available
+        restrictedByGPDTypeListFinal =
+                pObservable->getListOfAvailableGPDTypeForComputation();
+
+        //intersection between available GPDType and GPDType asked
+        if (!gpdTypeList.isEmpty()) {
+            restrictedByGPDTypeListFinal = VectorUtils::intersection(
+                    restrictedByGPDTypeListFinal, gpdTypeList);
+        }
+
+        //print info
+        this->info(__func__,
+                ElemUtils::Formatter() << restrictedByGPDTypeListFinal.size()
+                        << " GPDType will be computed");
+
+        //return
+        return restrictedByGPDTypeListFinal;
     }
 };
 

@@ -11,6 +11,9 @@
 
 namespace PARTONS {
 
+const std::string DVCSConvolCoeffFunctionKinematic::DVCS_CONVOL_COEFF_FUNCTION_KNEMATIC_CLASS_NAME =
+        "DVCSConvolCoeffFunctionKinematic";
+
 DVCSConvolCoeffFunctionKinematic::DVCSConvolCoeffFunctionKinematic() :
         ConvolCoeffFunctionKinematic("DVCSConvolCoeffFunctionKinematic",
                 ChannelType::DVCS), m_Q2(
@@ -117,7 +120,7 @@ void DVCSConvolCoeffFunctionKinematic::setQ2(const PhysicalType<double>& Q2) {
 
 void DVCSConvolCoeffFunctionKinematic::setQ2(double Q2) {
 
-    m_Q2 = Q2;
+    m_Q2.setValue(Q2);
     updateHashSum();
 }
 

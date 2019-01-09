@@ -11,6 +11,8 @@
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <string>
 
+#include "../../utils/type/PhysicalType.h"
+#include "../../beans/Scales.h"
 #include "ScalesModule.h"
 
 namespace ElemUtils {
@@ -59,7 +61,7 @@ public:
 
     virtual void configure(const ElemUtils::Parameters &parameters);
 
-    virtual Scales compute(double Q2);
+    virtual Scales compute(const PhysicalType<double>& Q2);
 
 protected:
 

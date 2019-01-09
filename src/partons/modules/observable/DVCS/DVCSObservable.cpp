@@ -14,6 +14,9 @@
 
 namespace PARTONS {
 
+const std::string DVCSObservable::DVCS_OBSERVABLE_MODULE_CLASS_NAME =
+        "DVCSObservableModule";
+
 DVCSObservable::DVCSObservable(const std::string &className,
         ObservableType::Type observableType) :
         Observable(className, ChannelType::DVCS), m_observableType(
@@ -95,7 +98,7 @@ void DVCSObservable::prepareSubModules(
     std::map<std::string, BaseObjectData>::const_iterator it;
 
     //search for process module
-    it = subModulesData.find(DVCSProcessModule::PROCESS_MODULE_CLASS_NAME);
+    it = subModulesData.find(DVCSProcessModule::DVCS_PROCESS_MODULE_CLASS_NAME);
 
     //check if there
     if (it != subModulesData.end()) {

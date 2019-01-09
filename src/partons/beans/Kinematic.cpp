@@ -44,7 +44,7 @@ void Kinematic::checkIfTheSameUnitCategory(const PhysicalType<double>& a,
         const PhysicalType<double>& b) const {
 
     if (PhysicalUnit(a.getUnit()).getUnitCategory()
-            != PhysicalUnit(a.getUnit()).getUnitCategory()) {
+            != PhysicalUnit(b.getUnit()).getUnitCategory()) {
         throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
                         << "Unit categories of two PhysicalType objects are different. First: "

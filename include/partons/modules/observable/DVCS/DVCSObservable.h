@@ -33,6 +33,8 @@ class DVCSObservable: public Observable<DVCSObservableKinematic,
 
 public:
 
+    static const std::string DVCS_OBSERVABLE_MODULE_CLASS_NAME; ///< Type of the module in XML automation.
+
     /**
      * Destructor
      */

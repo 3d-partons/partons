@@ -28,6 +28,8 @@ class DVCSConvolCoeffFunctionKinematic: public ConvolCoeffFunctionKinematic {
 
 public:
 
+    static const std::string DVCS_CONVOL_COEFF_FUNCTION_KNEMATIC_CLASS_NAME; ///< Type of the kinematic in XML automation.
+
     /**
      * Default constructor.
      */

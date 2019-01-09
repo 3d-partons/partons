@@ -3,11 +3,9 @@
 #include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 
-#include "../../../../include/partons/beans/Scales.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 
 namespace PARTONS {
-
 
 const std::string ScalesQ2Multiplier::PARAMETER_NAME_LAMBDA = "lambda";
 
@@ -26,13 +24,11 @@ ScalesQ2Multiplier* ScalesQ2Multiplier::clone() const {
     return new ScalesQ2Multiplier(*this);
 }
 
-Scales ScalesQ2Multiplier::compute(double Q2) {
+Scales ScalesQ2Multiplier::compute(const PhysicalType<double>& Q2) {
     initModule();
     isModuleWellConfigured();
 
-    double scale = 0.;
-
-    scale = m_lambda * Q2;
+    PhysicalType<double> scale(m_lambda * Q2.getValue(), Q2.getUnit());
 
     return Scales(scale, scale);
 }
@@ -55,7 +51,8 @@ void ScalesQ2Multiplier::configure(const ElemUtils::Parameters &parameters) {
         m_lambda = parameters.getLastAvailable().toDouble();
 
         info(__func__,
-                ElemUtils::Formatter() << ScalesQ2Multiplier::PARAMETER_NAME_LAMBDA
+                ElemUtils::Formatter()
+                        << ScalesQ2Multiplier::PARAMETER_NAME_LAMBDA
                         << " configured with value = " << m_lambda);
     }
 

@@ -13,6 +13,7 @@
 
 #include "../../beans/automation/BaseObjectData.h"
 #include "../../ModuleObject.h"
+#include "../../utils/type/PhysicalType.h"
 
 namespace PARTONS {
 
@@ -75,7 +76,8 @@ public:
      * @param Q2 Virtual-photon virtuality (in \f$GeV^{2}\f$).
      * @return Evaluated value.
      */
-    virtual double compute(double xB, double t, double Q2) = 0;
+    virtual PhysicalType<double> compute(const PhysicalType<double>& xB,
+            const PhysicalType<double>& t, const PhysicalType<double>& Q2) = 0;
 
     virtual void prepareSubModules(
             const std::map<std::string, BaseObjectData>& subModulesData);

@@ -13,6 +13,8 @@
 #include "../beans/List.h"
 #include "../beans/observable/DVCS/DVCSObservableKinematic.h"
 #include "../beans/observable/DVCS/DVCSObservableResult.h"
+#include "../modules/observable/Observable.h"
+#include "../modules/process/ProcessModule.h"
 #include "ObservableService.h"
 
 namespace PARTONS {
@@ -47,6 +49,11 @@ protected:
      * Default constructor.
      */
     DVCSObservableService(const std::string &className);
+
+    virtual ProcessModule<DVCSObservableKinematic, DVCSObservableResult>* newProcessModuleFromTask(
+            const Task &task) const;
+    virtual Observable<DVCSObservableKinematic, DVCSObservableResult>* newObservableModuleFromTask(
+            const Task &task) const;
 };
 
 } /* namespace PARTONS */

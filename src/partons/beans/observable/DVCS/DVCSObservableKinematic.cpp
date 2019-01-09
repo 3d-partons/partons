@@ -11,6 +11,9 @@
 
 namespace PARTONS {
 
+const std::string DVCSObservableKinematic::DVCS_OBSERVABLE_KNEMATIC_CLASS_NAME =
+        "DVCSObservableKinematic";
+
 const std::string DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_XB = "xB";
 const std::string DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_Q2 = "Q2";
 const std::string DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_PHI = "phi";
@@ -226,31 +229,31 @@ void DVCSObservableKinematic::setPhi(const PhysicalType<double>& phi) {
 
 void DVCSObservableKinematic::setXB(double xB) {
 
-    m_xB = xB;
+    m_xB.setValue(xB);
     updateHashSum();
 }
 
 void DVCSObservableKinematic::setT(double t) {
 
-    m_t = t;
+    m_t.setValue(t);
     updateHashSum();
 }
 
 void DVCSObservableKinematic::setQ2(double Q2) {
 
-    m_Q2 = Q2;
+    m_Q2.setValue(Q2);
     updateHashSum();
 }
 
 void DVCSObservableKinematic::setE(double E) {
 
-    m_E = E;
+    m_E.setValue(E);
     updateHashSum();
 }
 
 void DVCSObservableKinematic::setPhi(double phi) {
 
-    m_phi = phi;
+    m_phi.setValue(phi);
     updateHashSum();
 }
 

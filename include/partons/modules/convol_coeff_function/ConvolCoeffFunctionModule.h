@@ -37,9 +37,6 @@ class ConvolCoeffFunctionModule: public ModuleObject,
 
 public:
 
-    //TODO move to DVCS
-    static const std::string CONVOL_COEFF_FUNCTION_MODULE_CLASS_NAME; ///< Type of the module in XML automation.
-
     /**
      * Destructor.
      */
@@ -267,19 +264,8 @@ protected:
 
     GPDModule* m_pGPDModule; ///< Pointer to the underlying GPD module.
 
-private:
-
-    /**
-     * Boolean (true if this CCF module depends on a GPD module).
-     */
-    bool m_isGPDModuleDependent;
+    bool m_isGPDModuleDependent; ///< Boolean (true if this CCF module depends on a GPD module).
 };
-
-template<typename KinematicType, typename ResultType>
-const std::string ConvolCoeffFunctionModule<KinematicType, ResultType>::CONVOL_COEFF_FUNCTION_MODULE_CLASS_NAME =
-        "ConvolCoeffFunctionModule";
-
-static const std::string CONVOL_COEFF_FUNCTION_MODULE_CLASS_NAME;
 
 } /* namespace PARTONS */
 
