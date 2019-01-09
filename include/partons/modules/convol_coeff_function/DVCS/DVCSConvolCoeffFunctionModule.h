@@ -36,11 +36,6 @@ class DVCSConvolCoeffFunctionModule: public ConvolCoeffFunctionModule<
 public:
 
     /**
-     * Default constructor.
-     */
-    DVCSConvolCoeffFunctionModule(const std::string &className);
-
-    /**
      * Destructor.
      */
     virtual ~DVCSConvolCoeffFunctionModule();
@@ -54,7 +49,7 @@ public:
             const std::map<std::string, BaseObjectData>& subModulesData);
     virtual DVCSConvolCoeffFunctionResult compute(
             const DVCSConvolCoeffFunctionKinematic& kinematic,
-            const List<GPDType>& gpdType);
+            const List<GPDType>& gpdType = List<GPDType>());
     virtual List<GPDType> getListOfAvailableGPDTypeForComputation() const;
 
     // ##### GETTERS & SETTERS #####
@@ -69,19 +64,7 @@ public:
      */
     void setQCDOrderType(PerturbativeQCDOrderType::Type qcdOrderType);
 
-protected:
-
-    /**
-     * Copy constructor.
-     *
-     * @param other Object to be copied
-     */
-    DVCSConvolCoeffFunctionModule(const DVCSConvolCoeffFunctionModule &other);
-
-    virtual void setKinematics(
-            const DVCSConvolCoeffFunctionKinematic& kinematic);
-    virtual void initModule();
-    virtual void isModuleWellConfigured();
+    // #### IMPLEMENTATION MEMBERS ####
 
     /**
      * Method to compute some CFFs.
@@ -103,6 +86,25 @@ protected:
      * @return Complex result.
      */
     virtual std::complex<double> computeCFF();
+
+protected:
+
+    /**
+     * Default constructor.
+     */
+    DVCSConvolCoeffFunctionModule(const std::string &className);
+
+    /**
+     * Copy constructor.
+     *
+     * @param other Object to be copied
+     */
+    DVCSConvolCoeffFunctionModule(const DVCSConvolCoeffFunctionModule &other);
+
+    virtual void setKinematics(
+            const DVCSConvolCoeffFunctionKinematic& kinematic);
+    virtual void initModule();
+    virtual void isModuleWellConfigured();
 
     /**
      * List of GPD/CFF types the child class can compute.

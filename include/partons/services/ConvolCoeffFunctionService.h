@@ -126,7 +126,7 @@ public:
      */
     ResultType computeSingleKinematic(const KinematicType &kinematic,
             ConvolCoeffFunctionModule<KinematicType, ResultType>* pConvolCoeffFunctionModule,
-            const List<GPDType> & gpdTypeList = List<GPDType>()) const {
+            const List<GPDType>& gpdTypeList = List<GPDType>()) const {
 
         //result
         ResultType result;
@@ -135,21 +135,9 @@ public:
         List<GPDType> restrictedByGPDTypeListFinal = getFinalGPDTypeList(
                 pConvolCoeffFunctionModule, gpdTypeList);
 
-        //evaluate
-        for (unsigned int i = 0; i != restrictedByGPDTypeListFinal.size();
-                i++) {
-            result.addResult(restrictedByGPDTypeListFinal[i],
-                    pConvolCoeffFunctionModule->compute(kinematic,
-                            restrictedByGPDTypeListFinal[i]));
-        }
-
-        //set kinematics and computation module name
-        result.setKinematic(kinematic);
-        result.setComputationModuleName(
-                pConvolCoeffFunctionModule->getClassName());
-
         //return
-        return result;
+        return pConvolCoeffFunctionModule->compute(kinematic,
+                restrictedByGPDTypeListFinal);
     }
 
     /**
@@ -162,8 +150,7 @@ public:
      */
     List<ResultType> computeManyKinematic(List<KinematicType> &kinematics,
             ConvolCoeffFunctionModule<KinematicType, ResultType>* pConvolCoeffFunctionModule,
-            const List<GPDType> &gpdTypeList = List<GPDType>(),
-            const bool storeInDB = 0) {
+            const List<GPDType>& gpdTypeList = List<GPDType>()) {
 
         //print information
         this->info(__func__,
@@ -352,7 +339,7 @@ private:
 
         //make computation
         List<ResultType> results = computeManyKinematic(listOfKinematic,
-                pConvolCoeffFunctionModule, gpdTypeList, task.isStoreInDB());
+                pConvolCoeffFunctionModule, gpdTypeList);
 
         //remove reference to pConvolCoeffFunctionModule pointer
         this->m_pModuleObjectFactory->updateModulePointerReference(

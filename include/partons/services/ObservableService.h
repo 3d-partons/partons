@@ -136,8 +136,7 @@ public:
     List<ResultType> computeManyKinematic(
             const List<KinematicType> & listOfKinematic,
             Observable<KinematicType, ResultType>* pObservable,
-            const List<GPDType> & listOfGPDType = List<GPDType>(),
-            const bool storeInDB = false) {
+            const List<GPDType> & listOfGPDType = List<GPDType>()) {
 
         //print information
         this->info(__func__,
@@ -362,7 +361,7 @@ private:
 
         //make computation
         List<ResultType> results = computeManyKinematic(listOfKinematic,
-                pObservable, gpdTypeList, task.isStoreInDB());
+                pObservable, gpdTypeList);
 
         //remove reference to pConvolCoeffFunctionModule pointer
         this->m_pModuleObjectFactory->updateModulePointerReference(pObservable,

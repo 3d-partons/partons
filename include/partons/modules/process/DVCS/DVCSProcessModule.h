@@ -43,11 +43,6 @@ class DVCSProcessModule: public ProcessModule<DVCSObservableKinematic,
 public:
 
     /**
-     * Default constructor.
-     */
-    DVCSProcessModule(const std::string &className);
-
-    /**
      * Destructor.
      */
     virtual ~DVCSProcessModule();
@@ -77,8 +72,7 @@ public:
     DVCSObservableResult compute(double beamHelicity, double beamCharge,
             NumA::Vector3D targetPolarization,
             const DVCSObservableKinematic& kinematic,
-            const List<GPDType>& gpdType = List<GPDType>(),
-            DVCSSubProcessType::Type processType = DVCSSubProcessType::ALL);
+            const List<GPDType>& gpdType, DVCSSubProcessType::Type processType);
 
     /**
      * Reset previous kinematics.
@@ -104,7 +98,41 @@ public:
     void setConvolCoeffFunctionModule(
             DVCSConvolCoeffFunctionModule* pConvolCoeffFunctionModule);
 
+    // ##### IMPLEMENTATION MEMBERS #####
+
+    /**
+     * Bethe-Heitler differential cross section.
+     * @param beamHelicity Helicity of the beam (in units of hbar/2).
+     * @param beamCharge Electric charge of the beam (in units of positron charge).
+     * @param targetPolarization Target polarization. In GV conventions.
+     */
+    virtual double CrossSectionBH(double beamHelicity, double beamCharge,
+            NumA::Vector3D targetPolarization);
+
+    /**
+     * Virtual Compton Scattering differential cross section.
+     * @param beamHelicity Helicity of the beam (in units of hbar/2).
+     * @param beamCharge Electric charge of the beam (in units of positron charge).
+     * @param targetPolarization Target polarization. In GV conventions.
+     */
+    virtual double CrossSectionVCS(double beamHelicity, double beamCharge,
+            NumA::Vector3D targetPolarization);
+
+    /**
+     * Interference differential cross section.
+     * @param beamHelicity Helicity of the beam (in units of hbar/2).
+     * @param beamCharge Electric charge of the beam (in units of positron charge).
+     * @param targetPolarization Target polarization. In GV conventions.
+     */
+    virtual double CrossSectionInterf(double beamHelicity, double beamCharge,
+            NumA::Vector3D targetPolarization);
+
 protected:
+
+    /**
+     * Default constructor.
+     */
+    DVCSProcessModule(const std::string &className);
 
     /**
      * Copy constructor.
@@ -115,33 +143,6 @@ protected:
     virtual void setKinematics(const DVCSObservableKinematic& kinematic);
     virtual void initModule();
     virtual void isModuleWellConfigured();
-
-    /**
-     * Bethe-Heitler differential cross section.
-     * @param beamHelicity Helicity of the beam (in units of hbar/2).
-     * @param beamCharge Electric charge of the beam (in units of positron charge).
-     * @param targetPolarization Target polarization. In GV conventions.
-     */
-    virtual double CrossSectionBH(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization) = 0;
-
-    /**
-     * Virtual Compton Scattering differential cross section.
-     * @param beamHelicity Helicity of the beam (in units of hbar/2).
-     * @param beamCharge Electric charge of the beam (in units of positron charge).
-     * @param targetPolarization Target polarization. In GV conventions.
-     */
-    virtual double CrossSectionVCS(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization) = 0;
-
-    /**
-     * Interference differential cross section.
-     * @param beamHelicity Helicity of the beam (in units of hbar/2).
-     * @param beamCharge Electric charge of the beam (in units of positron charge).
-     * @param targetPolarization Target polarization. In GV conventions.
-     */
-    virtual double CrossSectionInterf(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization) = 0;
 
     double m_xB; ///< Bjorken variable.
     double m_t; ///< Mandelstam variable (square of the 4-momentum transferm in GeV2).

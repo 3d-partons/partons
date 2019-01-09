@@ -190,7 +190,7 @@ protected:
     }
 
     /**
-     * Copy constructor
+     * Copy constructor.
      * @param other Object to be copied.
      */
     ConvolCoeffFunctionModule(const ConvolCoeffFunctionModule &other) :
@@ -205,8 +205,8 @@ protected:
     }
 
     /**
-     * Set internal kinematics
-     * @param kinematic Kinematics to be set
+     * Set internal kinematics.
+     * @param kinematic Kinematics to be set.
      */
     virtual void setKinematics(const KinematicType& kinematic) {
 
@@ -216,6 +216,9 @@ protected:
         m_MuR2 = kinematic.getMuR2().getValue();
     }
 
+    /**
+     * Set current GPD type to be computed.
+     */
     void setCurrentGPDType(GPDType::Type gpdType) {
         m_currentGPDComputeType = gpdType;
     }

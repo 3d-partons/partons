@@ -358,8 +358,8 @@ void GPDEvolutionModule::isModuleWellConfigured() {
 void GPDEvolutionModule::initModule() {
 
     //evaluate for reference point
-    m_PartonDistributionAtMuF2_ref = m_pGPDModule->compute(m_x, m_xi, m_t,
-            m_MuF2_ref, m_MuR2, m_currentGPDComputeType, false);
+    m_PartonDistributionAtMuF2_ref = m_pGPDModule->compute(GPDKinematic(m_x, m_xi, m_t,
+            m_MuF2_ref, m_MuR2), m_currentGPDComputeType, false);
 
     //evaluate nf and muF2 and muF2_ref
     m_nFlavors =

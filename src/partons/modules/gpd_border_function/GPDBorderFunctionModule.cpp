@@ -35,7 +35,7 @@ PartonDistribution GPDBorderFunctionModule::compute(
 
 PartonDistribution GPDBorderFunctionModule::compute(double xi, double t,
         double MuF2, double MuR2, GPDType::Type gpdType, bool evolution) {
-    return GPDModule::compute(xi, xi, t, MuF2, MuR2, gpdType, evolution);
+    return GPDModule::compute(GPDKinematic(xi, xi, t, MuF2, MuR2), gpdType, evolution);
 }
 
 PartonDistribution GPDBorderFunctionModule::computeH() {

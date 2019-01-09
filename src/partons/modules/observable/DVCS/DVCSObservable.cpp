@@ -2,10 +2,15 @@
 
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
+#include <utility>
 
 #include "../../../../../include/partons/beans/channel/ChannelType.h"
 #include "../../../../../include/partons/beans/observable/ObservableResult.h"
 #include "../../../../../include/partons/beans/Result.h"
+#include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
+#include "../../../../../include/partons/modules/process/DVCS/DVCSProcessModule.h"
+#include "../../../../../include/partons/ModuleObjectFactory.h"
+#include "../../../../../include/partons/Partons.h"
 
 namespace PARTONS {
 
@@ -81,8 +86,49 @@ void DVCSObservable::configure(const ElemUtils::Parameters &parameters) {
 
 void DVCSObservable::prepareSubModules(
         const std::map<std::string, BaseObjectData>& subModulesData) {
+
+    //run for mother
     Observable<DVCSObservableKinematic, DVCSObservableResult>::prepareSubModules(
             subModulesData);
+
+    //iterator
+    std::map<std::string, BaseObjectData>::const_iterator it;
+
+    //search for process module
+    it = subModulesData.find(DVCSProcessModule::PROCESS_MODULE_CLASS_NAME);
+
+    //check if there
+    if (it != subModulesData.end()) {
+
+        //check if already set
+        if (m_pProcessModule) {
+
+            setProcessModule(0);
+            m_pProcessModule = 0;
+        }
+
+        //set
+        if (!m_pProcessModule) {
+
+            m_pProcessModule =
+                    Partons::getInstance()->getModuleObjectFactory()->newDVCSProcessModule(
+                            (it->second).getModuleClassName());
+
+            info(__func__,
+                    ElemUtils::Formatter() << "Configured with ProcessModule = "
+                            << m_pProcessModule->getClassName());
+
+            m_pProcessModule->configure((it->second).getParameters());
+            m_pProcessModule->prepareSubModules((it->second).getSubModules());
+        }
+
+    } else {
+
+        //throw error
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << getClassName()
+                        << " is ProcessModule dependent and you have not provided one");
+    }
 }
 
 DVCSObservableResult DVCSObservable::compute(
@@ -100,8 +146,8 @@ DVCSObservableResult DVCSObservable::compute(
     //execute last child function (virtuality)
     isModuleWellConfigured();
 
-    //result
-    DVCSObservableResult result;
+    //object to be returned
+    DVCSObservableResult result(kinematic);
 
     //check if this observable is a phi dependent observable
     if (m_observableType == ObservableType::PHI) {
@@ -122,13 +168,12 @@ DVCSObservableResult DVCSObservable::compute(
         result.setObservableType(ObservableType::UNDEFINED);
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter() << "Unkown observable type: "
+                ElemUtils::Formatter() << "Unknown observable type: "
                         << ObservableType(m_observableType).toString());
     }
 
-    //set rest information
+    //set module name
     result.setComputationModuleName(getClassName());
-    result.setKinematic(kinematic);
 
     //return
     return result;
@@ -229,46 +274,6 @@ void DVCSObservable::setProcessModule(DVCSProcessModule* pProcessModule) {
     } else {
         info(__func__, "ProcessModule is set to: 0");
     }
-}
-
-double DVCSObservable::getXB() const {
-    return m_xB;
-}
-
-void DVCSObservable::setXB(double xB) {
-    m_xB = xB;
-}
-
-double DVCSObservable::getT() const {
-    return m_t;
-}
-
-void DVCSObservable::setT(double t) {
-    m_t = t;
-}
-
-double DVCSObservable::getQ2() const {
-    return m_Q2;
-}
-
-void DVCSObservable::setQ2(double q2) {
-    m_Q2 = q2;
-}
-
-double DVCSObservable::getE() const {
-    return m_E;
-}
-
-void DVCSObservable::setE(double e) {
-    m_E = e;
-}
-
-double DVCSObservable::getPhi() const {
-    return m_phi;
-}
-
-void DVCSObservable::setPhi(double phi) {
-    m_phi = phi;
 }
 
 } /* namespace PARTONS */

@@ -9,9 +9,19 @@ DVCSObservableResult::DVCSObservableResult() :
                 ChannelType::DVCS) {
 }
 
+DVCSObservableResult::DVCSObservableResult(const PhysicalType<double>& value) :
+        ObservableResult("DVCSObservableResult", ChannelType::DVCS, value) {
+}
+
 DVCSObservableResult::DVCSObservableResult(
         const DVCSObservableKinematic& kinematic) :
         ObservableResult("DVCSObservableResult", ChannelType::DVCS, kinematic) {
+}
+
+DVCSObservableResult::DVCSObservableResult(const PhysicalType<double>& value,
+        const DVCSObservableKinematic& kinematic, ObservableType::Type type) :
+        ObservableResult("DVCSObservableResult", ChannelType::DVCS, value,
+                kinematic, type) {
 }
 
 DVCSObservableResult::DVCSObservableResult(const DVCSObservableResult& other) :

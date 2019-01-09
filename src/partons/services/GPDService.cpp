@@ -1,3 +1,5 @@
+#include "../../../include/partons/services/GPDService.h"
+
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/parameters/Parameters.h>
@@ -5,22 +7,15 @@
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <ElementaryUtils/thread/Packet.h>
-#include <string>
 
 #include "../../../include/partons/beans/automation/BaseObjectData.h"
 #include "../../../include/partons/beans/automation/Task.h"
-#include "../../../include/partons/beans/gpd/GPDKinematic.h"
-#include "../../../include/partons/beans/gpd/GPDResult.h"
-#include "../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../include/partons/beans/KinematicUtils.h"
-#include "../../../include/partons/beans/List.h"
 #include "../../../include/partons/beans/Result.h"
 #include "../../../include/partons/BaseObjectRegistry.h"
 #include "../../../include/partons/modules/gpd/GPDModule.h"
 #include "../../../include/partons/ModuleObjectFactory.h"
 #include "../../../include/partons/Partons.h"
-#include "../../../include/partons/services/GPDService.h"
-#include "../../../include/partons/ServiceObjectTyped.h"
 #include "../../../include/partons/utils/VectorUtils.h"
 
 namespace PARTONS {
@@ -32,7 +27,6 @@ const std::string GPDService::GPD_SERVICE_COMPUTE_MANY_KINEMATIC =
 const std::string GPDService::GPD_SERVICE_GENERATE_PLOT_FILE =
         "generatePlotFile";
 
-// Initialise [class]::classId with a unique name and selfregister this module into the global registry.
 const unsigned int GPDService::classId =
         Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
                 new GPDService("GPDService"));
@@ -133,7 +127,7 @@ GPDResult GPDService::computeSingleKinematic(const GPDKinematic &gpdKinematic,
 
 List<GPDResult> GPDService::computeManyKinematic(
         const List<GPDKinematic> &gpdKinematicList, GPDModule* pGPDModule,
-        const List<GPDType> &gpdTypeList, const bool storeInDB) {
+        const List<GPDType> &gpdTypeList) {
 
     //print information
     info(__func__,
@@ -207,42 +201,6 @@ List<GPDResult> GPDService::computeManyKinematic(
     return results;
 }
 
-//ComparisonReport GPDService::compareResultListToDatabase(
-//        const std::string& scenarioTestFilePath) {
-//    ComparisonReport comparisonReport;
-//
-//    Partons::getInstance()->getServiceObjectRegistry();
-//
-//    return comparisonReport;
-//}
-
-//GPDModule* GPDService::newGPDModuleFromTask(const Task& task) const {
-//    GPDModule* pGPDModule = 0;
-//
-//    if (task.isAvailableParameters("GPDModule")) {
-//        pGPDModule =
-//                m_pModuleObjectFactory->newGPDModule(
-//                        task.getLastAvailableParameters().get(
-//                                ModuleObject::CLASS_NAME).getString());
-//        pGPDModule->configure(task.getLastAvailableParameters());
-//    }
-//
-////TODO how to handle many GPD module ?
-//
-//    return configureGPDModule(pGPDModule);
-//}
-
-//GPDModule* GPDService::configureGPDModule(GPDModule* pGPDModule) const {
-//
-//    if (pGPDModule == 0) {
-//        throw GPDModuleNullPointerException(
-//                "You have not provided any GPDModule");
-//        // throwException(__func__, "You have not provided any GPDModule");
-//    }
-//
-//    return pGPDModule;
-//}
-
 GPDResult GPDService::computeSingleKinematicTask(Task& task) {
 
     //create a GPDKinematic and init it with a list of parameters
@@ -279,7 +237,7 @@ List<GPDResult> GPDService::computeManyKinematicTask(Task& task) {
 
     //make computation
     List<GPDResult> result = computeManyKinematic(listOfKinematic, pGPDModule,
-            gpdTypeList, task.isStoreInDB());
+            gpdTypeList);
 
     //remove reference to pGPDModule pointer
     m_pModuleObjectFactory->updateModulePointerReference(pGPDModule, 0);

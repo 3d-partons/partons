@@ -34,12 +34,6 @@ class DVCSObservable: public Observable<DVCSObservableKinematic,
 public:
 
     /**
-     * Default constructor.
-     */
-    DVCSObservable(const std::string &className,
-            ObservableType::Type observableType);
-
-    /**
      * Destructor
      */
     virtual ~DVCSObservable();
@@ -70,17 +64,7 @@ public:
      */
     void setProcessModule(DVCSProcessModule* pProcessModule);
 
-protected:
-
-    /**
-     * Copy constructor.
-     * @param other Object to be copied.
-     */
-    DVCSObservable(const DVCSObservable& other);
-
-    virtual void setKinematics(const DVCSObservableKinematic& kinematic);
-    virtual void initModule();
-    virtual void isModuleWellConfigured();
+    // ##### IMPLEMENTATION MEMBERS #####
 
     /**
      * Compute phi dependent observable, invoked if m_observableType = ObservableType::PHI.
@@ -99,6 +83,24 @@ protected:
      */
     virtual PhysicalType<double> computeOtherDVCSObservable(
             const DVCSObservableKinematic& kinematic);
+
+protected:
+
+    /**
+     * Default constructor.
+     */
+    DVCSObservable(const std::string &className,
+            ObservableType::Type observableType);
+
+    /**
+     * Copy constructor.
+     * @param other Object to be copied.
+     */
+    DVCSObservable(const DVCSObservable& other);
+
+    virtual void setKinematics(const DVCSObservableKinematic& kinematic);
+    virtual void initModule();
+    virtual void isModuleWellConfigured();
 
     /**
      * Observable type. Determines function to be invoked.

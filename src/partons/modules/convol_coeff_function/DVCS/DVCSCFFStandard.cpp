@@ -9,8 +9,10 @@
 #include <cmath>
 #include <utility>
 
+#include "../../../../../include/partons/beans/gpd/GPDKinematic.h"
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
+#include "../../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
 #include "../../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
 #include "../../../../../include/partons/beans/PerturbativeQCDOrderType.h"
 #include "../../../../../include/partons/beans/QuarkFlavor.h"
@@ -309,8 +311,9 @@ std::complex<double> DVCSCFFStandard::computePolarized() {
 }
 
 void DVCSCFFStandard::computeDiagonalGPD() {
-    PartonDistribution partonDistribution = m_pGPDModule->compute(m_xi, m_xi,
-            m_t, m_MuF2, m_MuR2, m_currentGPDComputeType);
+    PartonDistribution partonDistribution = m_pGPDModule->compute(
+            GPDKinematic(m_xi, m_xi, m_t, m_MuF2, m_MuR2),
+            m_currentGPDComputeType);
 
     //TODO compute CFF singlet; FAIT; vérifier le résultat du calcul
     m_quarkDiagonal = computeSquareChargeAveragedGPD(partonDistribution);
@@ -813,8 +816,9 @@ std::complex<double> DVCSCFFStandard::KernelGluonA(double x) {
  */
 double DVCSCFFStandard::ConvolReKernelQuark1V(double x,
         std::vector<double> params) {
-    PartonDistribution partonDistribution = m_pGPDModule->compute(x, m_xi, m_t,
-            m_MuF2, m_MuR2, m_currentGPDComputeType);
+    PartonDistribution partonDistribution = m_pGPDModule->compute(
+            GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
+            m_currentGPDComputeType);
 
     // GPD evaluated at x = x[ 0 ]
     double EvalGPD = computeSquareChargeAveragedGPD(partonDistribution);
@@ -841,8 +845,9 @@ double DVCSCFFStandard::ConvolReKernelQuark1V(double x,
 double DVCSCFFStandard::ConvolReKernelQuark2V(double x,
         std::vector<double> params) {
 
-    PartonDistribution partonDistribution = m_pGPDModule->compute(x, m_xi, m_t,
-            m_MuF2, m_MuR2, m_currentGPDComputeType);
+    PartonDistribution partonDistribution = m_pGPDModule->compute(
+            GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
+            m_currentGPDComputeType);
 
     // GPD evaluated at x = x[ 0 ]
     double EvalGPD = computeSquareChargeAveragedGPD(partonDistribution);
@@ -869,8 +874,9 @@ double DVCSCFFStandard::ConvolReKernelQuark2V(double x,
  */
 double DVCSCFFStandard::ConvolImKernelQuarkV(double x,
         std::vector<double> params) {
-    PartonDistribution partonDistribution = m_pGPDModule->compute(x, m_xi, m_t,
-            m_MuF2, m_MuR2, m_currentGPDComputeType);
+    PartonDistribution partonDistribution = m_pGPDModule->compute(
+            GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
+            m_currentGPDComputeType);
 
     // GPD evaluated at x = x[ 0 ]
     double EvalGPD = computeSquareChargeAveragedGPD(partonDistribution);
@@ -897,8 +903,9 @@ double DVCSCFFStandard::ConvolImKernelQuarkV(double x,
  */
 double DVCSCFFStandard::ConvolReKernelGluon1V(double x,
         std::vector<double> params) {
-    PartonDistribution partonDistribution = m_pGPDModule->compute(x, m_xi, m_t,
-            m_MuF2, m_MuR2, m_currentGPDComputeType);
+    PartonDistribution partonDistribution = m_pGPDModule->compute(
+            GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
+            m_currentGPDComputeType);
 
     // GPD evaluated at x = x[ 0 ]
     double EvalGPD = 2
@@ -924,8 +931,9 @@ double DVCSCFFStandard::ConvolReKernelGluon1V(double x,
  */
 double DVCSCFFStandard::ConvolReKernelGluon2V(double x,
         std::vector<double> params) {
-    PartonDistribution partonDistribution = m_pGPDModule->compute(x, m_xi, m_t,
-            m_MuF2, m_MuR2, m_currentGPDComputeType);
+    PartonDistribution partonDistribution = m_pGPDModule->compute(
+            GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
+            m_currentGPDComputeType);
 
     double EvalGPD = 2
             * partonDistribution.getGluonDistribution().getGluonDistribution();
@@ -952,8 +960,9 @@ double DVCSCFFStandard::ConvolReKernelGluon2V(double x,
  */
 double DVCSCFFStandard::ConvolImKernelGluonV(double x,
         std::vector<double> params) {
-    PartonDistribution partonDistribution = m_pGPDModule->compute(x, m_xi, m_t,
-            m_MuF2, m_MuR2, m_currentGPDComputeType);
+    PartonDistribution partonDistribution = m_pGPDModule->compute(
+            GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
+            m_currentGPDComputeType);
 
     double EvalGPD = 2
             * partonDistribution.getGluonDistribution().getGluonDistribution();
@@ -1040,8 +1049,9 @@ std::complex<double> DVCSCFFStandard::KernelQuarkNLOA(double x) {
 
 double DVCSCFFStandard::ConvolReKernelQuark1A(double x,
         std::vector<double> params) {
-    PartonDistribution partonDistribution = m_pGPDModule->compute(x, m_xi, m_t,
-            m_MuF2, m_MuR2, m_currentGPDComputeType);
+    PartonDistribution partonDistribution = m_pGPDModule->compute(
+            GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
+            m_currentGPDComputeType);
 
     // GPD evaluated at x = x[ 0 ]
     double EvalGPD = computeSquareChargeAveragedGPD(partonDistribution);
@@ -1059,8 +1069,9 @@ double DVCSCFFStandard::ConvolReKernelQuark1A(double x,
 
 double DVCSCFFStandard::ConvolReKernelQuark2A(double x,
         std::vector<double> params) {
-    PartonDistribution partonDistribution = m_pGPDModule->compute(x, m_xi, m_t,
-            m_MuF2, m_MuR2, m_currentGPDComputeType);
+    PartonDistribution partonDistribution = m_pGPDModule->compute(
+            GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
+            m_currentGPDComputeType);
 
     // GPD evaluated at x = x[ 0 ]
     double EvalGPD = computeSquareChargeAveragedGPD(partonDistribution);
@@ -1080,8 +1091,9 @@ double DVCSCFFStandard::ConvolReKernelQuark2A(double x,
 
 double DVCSCFFStandard::ConvolImKernelQuarkA(double x,
         std::vector<double> params) {
-    PartonDistribution partonDistribution = m_pGPDModule->compute(x, m_xi, m_t,
-            m_MuF2, m_MuR2, m_currentGPDComputeType);
+    PartonDistribution partonDistribution = m_pGPDModule->compute(
+            GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
+            m_currentGPDComputeType);
 
     // GPD evaluated at x = x[ 0 ]
     double EvalGPD = computeSquareChargeAveragedGPD(partonDistribution);
@@ -1101,8 +1113,9 @@ double DVCSCFFStandard::ConvolReKernelGluon1A(double x,
 
     debug(__func__, "Entered");
 
-    PartonDistribution partonDistribution = m_pGPDModule->compute(x, m_xi, m_t,
-            m_MuF2, m_MuR2, m_currentGPDComputeType);
+    PartonDistribution partonDistribution = m_pGPDModule->compute(
+            GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
+            m_currentGPDComputeType);
 
     double EvalGPD = 2
             * partonDistribution.getGluonDistribution().getGluonDistribution();
@@ -1120,8 +1133,9 @@ double DVCSCFFStandard::ConvolReKernelGluon1A(double x,
 
 double DVCSCFFStandard::ConvolReKernelGluon2A(double x,
         std::vector<double> params) {
-    PartonDistribution partonDistribution = m_pGPDModule->compute(x, m_xi, m_t,
-            m_MuF2, m_MuR2, m_currentGPDComputeType);
+    PartonDistribution partonDistribution = m_pGPDModule->compute(
+            GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
+            m_currentGPDComputeType);
 
     double EvalGPD = 2
             * partonDistribution.getGluonDistribution().getGluonDistribution();
@@ -1141,8 +1155,9 @@ double DVCSCFFStandard::ConvolReKernelGluon2A(double x,
 
 double DVCSCFFStandard::ConvolImKernelGluonA(double x,
         std::vector<double> params) {
-    PartonDistribution partonDistribution = m_pGPDModule->compute(x, m_xi, m_t,
-            m_MuF2, m_MuR2, m_currentGPDComputeType);
+    PartonDistribution partonDistribution = m_pGPDModule->compute(
+            GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
+            m_currentGPDComputeType);
 
     double EvalGPD = 2
             * partonDistribution.getGluonDistribution().getGluonDistribution();

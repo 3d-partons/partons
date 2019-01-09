@@ -2,6 +2,7 @@
 
 #include <NumA/linear_algebra/vector/Vector3D.h>
 
+#include "../../../../../../include/partons/beans/observable/DVCS/DVCSObservableResult.h"
 #include "../../../../../../include/partons/beans/observable/ObservableType.h"
 #include "../../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../../include/partons/FundamentalPhysicalConstants.h"
@@ -33,17 +34,20 @@ DVCSCrossSectionUUMinus* DVCSCrossSectionUUMinus::clone() const {
 PhysicalType<double> DVCSCrossSectionUUMinus::computePhiDVCSObservable(
         const DVCSObservableKinematic& kinematic) {
 
+    //TODO operation at PysicalType
+
     //result
     double result = 0.;
 
     //evaluate
-    double A = m_pProcessModule->compute(1., -1, NumA::Vector3D(0., 0., 0.),
-            kinematic);
+    DVCSObservableResult A = m_pProcessModule->compute(1., -1,
+            NumA::Vector3D(0., 0., 0.), kinematic);
 
-    double B = m_pProcessModule->compute(-1., -1, NumA::Vector3D(0., 0., 0.),
-            kinematic);
+    DVCSObservableResult B = m_pProcessModule->compute(-1., -1,
+            NumA::Vector3D(0., 0., 0.), kinematic);
 
-    result = (A + B) / 2.;
+    //combine
+    result = (A.getValue().getValue() + B.getValue().getValue()) / 2.;
 
     //integrate over transversely polarized target dependence to obtain 4-fold differential cross-section
     result *= 2 * Constant::PI;

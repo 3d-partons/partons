@@ -22,15 +22,13 @@ namespace PARTONS {
 DVCSConvolCoeffFunctionModule::DVCSConvolCoeffFunctionModule(
         const std::string &className) :
         ConvolCoeffFunctionModule(className, ChannelType::DVCS), m_Q2(0.), m_qcdOrderType(
-                PerturbativeQCDOrderType::UNDEFINED), m_currentGPDComputeType(
-                GPDType::UNDEFINED) {
+                PerturbativeQCDOrderType::UNDEFINED) {
 }
 
 DVCSConvolCoeffFunctionModule::DVCSConvolCoeffFunctionModule(
         const DVCSConvolCoeffFunctionModule &other) :
         ConvolCoeffFunctionModule(other), m_Q2(other.m_Q2), m_qcdOrderType(
-                other.m_qcdOrderType), m_currentGPDComputeType(
-                other.m_currentGPDComputeType) {
+                other.m_qcdOrderType) {
 
     m_Q2 = other.m_Q2;
 
@@ -172,6 +170,9 @@ DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionModule::compute(
                             << ") is not available for this  model");
         }
     }
+
+    //set module name
+    result.setComputationModuleName(getClassName());
 
     //return
     return result;

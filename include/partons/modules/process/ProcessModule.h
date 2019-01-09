@@ -176,8 +176,8 @@ public:
      * @return Result.
      */
     virtual ResultType compute(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization,
-            const KinematicType& kinematic) = 0;
+            NumA::Vector3D targetPolarization, const KinematicType& kinematic,
+            const List<GPDType>& gpdType = List<GPDType>()) = 0;
 
     /**
      * Must be implemented in child class.

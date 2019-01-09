@@ -16,18 +16,14 @@
 #include <vector>
 
 #include "../../../beans/automation/BaseObjectData.h"
-#include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
-#include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
-#include "../ConvolCoeffFunctionModule.h"
 #include "DVCSConvolCoeffFunctionModule.h"
-
-namespace PARTONS {
-class PartonDistribution;
-} /* namespace PARTONS */
 
 namespace NumA {
 class FunctionType1D;
 } /* namespace NumA */
+namespace PARTONS {
+class PartonDistribution;
+} /* namespace PARTONS */
 
 namespace PARTONS {
 

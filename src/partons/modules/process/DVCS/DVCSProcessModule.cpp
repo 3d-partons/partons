@@ -8,16 +8,18 @@
 
 #include "../../../../../include/partons/beans/channel/ChannelType.h"
 #include "../../../../../include/partons/beans/convol_coeff_function/ConvolCoeffFunctionResult.h"
-#include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSCFFConstant.h"
+#include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
 #include "../../../../../include/partons/modules/scales/ScalesModule.h"
 #include "../../../../../include/partons/modules/xi_converter/XiConverterModule.h"
 #include "../../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../../include/partons/Partons.h"
+#include "../../../../../include/partons/services/ConvolCoeffFunctionService.h"
 #include "../../../../../include/partons/services/DVCSConvolCoeffFunctionService.h"
 #include "../../../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../../../include/partons/utils/type/PhysicalType.h"
+#include "../../../../../include/partons/utils/type/PhysicalUnit.h"
+#include "../../../../../include/partons/beans/Scales.h"
 
 namespace PARTONS {
 
@@ -52,11 +54,11 @@ DVCSProcessModule::DVCSProcessModule(const DVCSProcessModule& other) :
 }
 
 std::string DVCSProcessModule::toString() const {
-    ProcessModule<DVCSObservableKinematic>::toString();
+    ProcessModule<DVCSObservableKinematic, DVCSObservableResult>::toString();
 }
 
 void DVCSProcessModule::resolveObjectDependencies() {
-    ProcessModule<DVCSObservableKinematic>::resolveObjectDependencies();
+    ProcessModule<DVCSObservableKinematic, DVCSObservableResult>::resolveObjectDependencies();
 }
 
 void DVCSProcessModule::run() {
@@ -65,13 +67,16 @@ void DVCSProcessModule::run() {
 }
 
 void DVCSProcessModule::configure(const ElemUtils::Parameters &parameters) {
-    ProcessModule<DVCSObservableKinematic>::configure(parameters);
+    ProcessModule<DVCSObservableKinematic, DVCSObservableResult>::configure(
+            parameters);
 }
 
 void DVCSProcessModule::prepareSubModules(
         const std::map<std::string, BaseObjectData>& subModulesData) {
 
-    ProcessModule<DVCSObservableKinematic>::prepareSubModules(subModulesData);
+    //run for mother
+    ProcessModule<DVCSObservableKinematic, DVCSObservableResult>::prepareSubModules(
+            subModulesData);
 
     //iterator
     std::map<std::string, BaseObjectData>::const_iterator it;
@@ -125,7 +130,7 @@ void DVCSProcessModule::prepareSubModules(
 DVCSObservableResult DVCSProcessModule::compute(double beamHelicity,
         double beamCharge, NumA::Vector3D targetPolarization,
         const DVCSObservableKinematic& kinematic,
-        const List<GPDType> & gpdType = List<GPDType>()) {
+        const List<GPDType> & gpdType) {
     return compute(beamHelicity, beamCharge, targetPolarization, kinematic,
             gpdType, DVCSSubProcessType::ALL);
 }
@@ -139,37 +144,68 @@ DVCSObservableResult DVCSProcessModule::compute(double beamHelicity,
         const DVCSObservableKinematic& kinematic, const List<GPDType>& gpdType,
         DVCSSubProcessType::Type processType) {
 
-    // reset kinematics (virtuality)
+    //reset kinematics (virtuality)
     setKinematics(kinematic);
 
-    // execute last child function (virtuality)
+    //execute last child function (virtuality)
     initModule();
 
-    // execute last child function (virtuality)
+    //execute last child function (virtuality)
     isModuleWellConfigured();
 
     //comput CCF
     computeConvolCoeffFunction(kinematic, gpdType);
 
-    double result = 0.;
+    //object to be returned
+    DVCSObservableResult result(kinematic);
+
+    double doubleResult = 0.;
 
     if (processType == DVCSSubProcessType::ALL
             || processType == DVCSSubProcessType::DVCS) {
-        result += CrossSectionVCS(beamHelicity, beamCharge, targetPolarization);
+        doubleResult += CrossSectionVCS(beamHelicity, beamCharge, targetPolarization);
     }
 
     if (processType == DVCSSubProcessType::ALL
             || processType == DVCSSubProcessType::BH) {
-        result += CrossSectionBH(beamHelicity, beamCharge, targetPolarization);
+        doubleResult += CrossSectionBH(beamHelicity, beamCharge, targetPolarization);
     }
 
     if (processType == DVCSSubProcessType::ALL
             || processType == DVCSSubProcessType::INT) {
-        result += CrossSectionInterf(beamHelicity, beamCharge,
+        doubleResult += CrossSectionInterf(beamHelicity, beamCharge,
                 targetPolarization);
     }
 
-    return DVCSObservableResult(result, kinematic);
+    //set value
+    result.setValue(PhysicalType<double>(doubleResult, PhysicalUnit::NB));
+
+    //set type
+    result.setObservableType(ObservableType::PHI);
+
+    //set module name
+    result.setComputationModuleName(getClassName());
+
+    //return
+    return result;
+}
+
+double DVCSProcessModule::CrossSectionBH(double beamHelicity, double beamCharge,
+        NumA::Vector3D targetPolarization) {
+    throw ElemUtils::CustomException(getClassName(), __func__,
+            "Check your child implementation : " + getClassName());
+}
+
+double DVCSProcessModule::CrossSectionVCS(double beamHelicity,
+        double beamCharge, NumA::Vector3D targetPolarization) {
+    throw ElemUtils::CustomException(getClassName(), __func__,
+            "Check your child implementation : " + getClassName());
+}
+
+double DVCSProcessModule::CrossSectionInterf(double beamHelicity,
+        double beamCharge, NumA::Vector3D targetPolarization) {
+    throw ElemUtils::CustomException(getClassName(), __func__,
+            "Check your child implementation : " + getClassName());
 }
 
 void DVCSProcessModule::resetPreviousKinematic() {
@@ -224,7 +260,7 @@ void DVCSProcessModule::setKinematics(
 void DVCSProcessModule::initModule() {
 
     //run for mother
-    ProcessModule<DVCSObservableKinematic>::initModule();
+    ProcessModule<DVCSObservableKinematic, DVCSObservableResult>::initModule();
 
     //evaluate internal variables
     m_epsilon = 2 * m_xB * Constant::PROTON_MASS / sqrt(m_Q2);
@@ -240,7 +276,7 @@ void DVCSProcessModule::initModule() {
 void DVCSProcessModule::isModuleWellConfigured() {
 
     //run for mother
-    ProcessModule<DVCSObservableKinematic>::isModuleWellConfigured();
+    ProcessModule<DVCSObservableKinematic, DVCSObservableResult>::isModuleWellConfigured();
 
     //test kinematic domain of xB
     if (m_xB < m_xBmin || m_xB > 1.) {
@@ -299,10 +335,7 @@ void DVCSProcessModule::computeConvolCoeffFunction(
             scale.getMuF2(), scale.getMuR2());
 
     //check if different
-    if (isPreviousCCFKinematicDifferent(ccfKinematics)
-            || (BaseObjectRegistry::getInstance()->getObjectClassIdByClassName(
-                    m_pConvolCoeffFunctionModule->getClassName())
-                    == DVCSCFFConstant::classId)) {
+    if (isPreviousCCFKinematicDifferent(ccfKinematics)) {
 
         //evaluate
         m_dvcsConvolCoeffFunctionResult =

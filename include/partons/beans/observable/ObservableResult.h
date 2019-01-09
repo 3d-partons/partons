@@ -136,12 +136,45 @@ protected:
 
     /**
      * Assignment constructor.
+     * @param value Value to be assigned.
+     */
+    ObservableResult(const std::string &className,
+            ChannelType::Type channelType, const PhysicalType<double>& value) :
+            Result<KinematicType>(className, channelType), m_value(value), m_observableType(
+                    ObservableType::UNDEFINED) {
+    }
+
+    /**
+     * Assignment constructor.
      * @param kinematic Observable kinematics to be assigned.
      */
     ObservableResult(const std::string &className,
             ChannelType::Type channelType, const KinematicType& kinematic) :
             Result<KinematicType>(className, channelType, kinematic), m_observableType(
                     ObservableType::UNDEFINED) {
+    }
+
+    /**
+     * Assignment constructor.
+     * @param type Observable type to be assigned.
+     */
+    ObservableResult(const std::string &className,
+            ChannelType::Type channelType, ObservableType::Type type) :
+            Result<KinematicType>(className, channelType), m_observableType(
+                    type) {
+    }
+
+    /**
+     * Assignment constructor.
+     * @param value Value to be assigned.
+     * @param kinematic Observable kinematics to be assigned.
+     * @param type Observable type to be assigned.
+     */
+    ObservableResult(const std::string &className,
+            ChannelType::Type channelType, const PhysicalType<double>& value,
+            const KinematicType& kinematic, ObservableType::Type type) :
+            Result<KinematicType>(className, channelType, kinematic), m_value(
+                    value), m_observableType(type) {
     }
 
     /**

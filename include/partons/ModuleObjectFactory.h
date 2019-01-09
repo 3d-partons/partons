@@ -14,11 +14,11 @@
 #include "ModuleObjectReference.h"
 
 namespace PARTONS {
-
 class ActiveFlavorsThresholdsModule;
 class BaseObjectFactory;
 class DoubleDistributionModule;
 class DVCSConvolCoeffFunctionModule;
+class DVCSObservable;
 class DVCSProcessModule;
 class GapEquationSolverModule;
 class GPDBorderFunctionModule;
@@ -31,7 +31,9 @@ class RadonInverseModule;
 class RunningAlphaStrongModule;
 class ScalesModule;
 class XiConverterModule;
-class DVCSObservable;
+} /* namespace PARTONS */
+
+namespace PARTONS {
 
 /**
  * @class ModuleObjectFactory

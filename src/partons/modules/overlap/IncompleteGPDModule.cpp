@@ -97,9 +97,22 @@ void IncompleteGPDModule::isModuleWellConfigured() {
 
 void IncompleteGPDModule::preCompute(double x, double xi, double t, double MuF2,
         double MuR2, GPDType::Type gpdType) {
+
+    //check if inversion done
     m_inversionDone = m_inversionDone && (t == m_t) && (MuF2 == m_MuF2)
             && (MuR2 == m_MuR2);
-    GPDModule::preCompute(x, xi, t, MuF2, MuR2, gpdType);
+
+    //reset kinematics (virtuality)
+    setKinematics(GPDKinematic(x, xi, t, MuF2, MuR2));
+
+    //execute last child function (virtuality)
+    initModule();
+
+    //execute last child function (virtuality)
+    isModuleWellConfigured();
+
+    //set GPD type
+    setCurrentGPDType(gpdType);
 
 //    m_x = x;
 //    m_xi = xi;
