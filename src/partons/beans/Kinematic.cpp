@@ -40,18 +40,6 @@ void Kinematic::unserialize(ElemUtils::Packet& packet) {
     BaseObject::unserialize(packet);
 }
 
-void Kinematic::checkIfTheSameUnitCategory(const PhysicalType<double>& a,
-        const PhysicalType<double>& b) const {
-
-    if (PhysicalUnit(a.getUnit()).getUnitCategory()
-            != PhysicalUnit(b.getUnit()).getUnitCategory()) {
-        throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter()
-                        << "Unit categories of two PhysicalType objects are different. First: "
-                        << a.toString() << " Second: " << b.toString());
-    }
-}
-
 ChannelType::Type Kinematic::getChannelType() const {
     return m_channelType;
 }

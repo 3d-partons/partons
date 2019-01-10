@@ -97,11 +97,11 @@ DVCSObservableKinematic::DVCSObservableKinematic(const PhysicalType<double>& xB,
                 PhysicalType<double>(PhysicalUnit::GEV)), m_phi(
                 PhysicalType<double>(PhysicalUnit::DEGREE)) {
 
-    checkIfTheSameUnitCategory(m_xB, xB);
-    checkIfTheSameUnitCategory(m_t, t);
-    checkIfTheSameUnitCategory(m_Q2, Q2);
-    checkIfTheSameUnitCategory(m_E, E);
-    checkIfTheSameUnitCategory(m_phi, phi);
+    m_xB.checkIfSameUnitCategoryAs(xB);
+    m_t.checkIfSameUnitCategoryAs(t);
+    m_Q2.checkIfSameUnitCategoryAs(Q2);
+    m_E.checkIfSameUnitCategoryAs(E);
+    m_phi.checkIfSameUnitCategoryAs(phi);
 
     m_xB = xB;
     m_t = t;
@@ -194,35 +194,35 @@ const PhysicalType<double>& DVCSObservableKinematic::getPhi() const {
 
 void DVCSObservableKinematic::setXB(const PhysicalType<double>& xB) {
 
-    checkIfTheSameUnitCategory(m_xB, xB);
+    m_xB.checkIfSameUnitCategoryAs(xB);
     m_xB = xB;
     updateHashSum();
 }
 
 void DVCSObservableKinematic::setT(const PhysicalType<double>& t) {
 
-    checkIfTheSameUnitCategory(m_t, t);
+    m_t.checkIfSameUnitCategoryAs(t);
     m_t = t;
     updateHashSum();
 }
 
 void DVCSObservableKinematic::setQ2(const PhysicalType<double>& Q2) {
 
-    checkIfTheSameUnitCategory(m_Q2, Q2);
+    m_Q2.checkIfSameUnitCategoryAs(Q2);
     m_Q2 = Q2;
     updateHashSum();
 }
 
 void DVCSObservableKinematic::setE(const PhysicalType<double>& E) {
 
-    checkIfTheSameUnitCategory(m_E, E);
+    m_E.checkIfSameUnitCategoryAs(E);
     m_E = E;
     updateHashSum();
 }
 
 void DVCSObservableKinematic::setPhi(const PhysicalType<double>& phi) {
 
-    checkIfTheSameUnitCategory(m_phi, phi);
+    m_phi.checkIfSameUnitCategoryAs(phi);
     m_phi = phi;
     updateHashSum();
 }

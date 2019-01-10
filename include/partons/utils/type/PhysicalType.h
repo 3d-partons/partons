@@ -25,7 +25,7 @@ namespace PARTONS {
  *
  * @brief Value with unit.
  *
- * This class is a container for a value, unit and switch to mark if the value is initialized or not.
+ * This class is a container for a value, unit and switch to mark if the value is initialized or not. Setting a value (either via setter or one of constructors) make the object "initialized".
  */
 template<class T>
 class PhysicalType: public BaseObject {
@@ -41,23 +41,12 @@ public:
     }
 
     /**
-     * Default constructor with unit provided.
+     * Assignment constructor.
      */
     PhysicalType(PhysicalUnit::Type unit) :
             BaseObject("PhysicalType"), m_initialized(false), m_value(), m_unit(
                     unit) {
     }
-
-//    PhysicalType(T value) :
-//            BaseObject("PhysicalType"), m_initialized(true), m_value(value), m_unit(
-//                    PHYSICAL_TYPE_NONE_UNIT) {
-//    }
-
-//    PhysicalType(const std::string &stringValue) :
-//            BaseObject("PhysicalType"), m_initialized(false), m_unit(
-//                    PHYSICAL_TYPE_NONE_UNIT) {
-//        fromStdString(stringValue);
-//    }
 
     /**
      * Assignment constructor.
@@ -86,7 +75,7 @@ public:
     /**
      * Copy constructor.
      */
-    PhysicalType(const PhysicalType &other) :
+    PhysicalType(const PhysicalType& other) :
             BaseObject("PhysicalType"), m_initialized(other.m_initialized), m_value(
                     other.m_value), m_unit(other.m_unit) {
 
@@ -141,16 +130,11 @@ public:
      * Assignment operator.
      */
     inline PhysicalType<T>& operator=(PhysicalType<T> const &rhs) {
+
         setValue(rhs.m_value);
         setUnit(rhs.m_unit);
-        return *this;
-    }
+        setInitialized(rhs.m_initialized);
 
-    /**
-     * Assignment operator.
-     */
-    inline PhysicalType<T>& operator=(T const &rhs) {
-        setValue(rhs);
         return *this;
     }
 
@@ -176,6 +160,7 @@ public:
      * Set value. This function makes the object marked as initialized.
      */
     void setValue(T value) {
+
         m_value = value;
         m_initialized = true;
     }
@@ -206,6 +191,92 @@ public:
      */
     void setInitialized(bool initialized) {
         m_initialized = initialized;
+    }
+
+    /**
+     * Check if the same unit category. If units are different make the conversion (TODO).
+     */
+    PhysicalType<T> makeSameUnitAs(PhysicalUnit::Type other) const {
+
+        //check unit category
+        checkIfSameUnitCategoryAs(other);
+
+        //check unit (if different TODO make conversion)
+        checkIfSameUnitAs(other);
+
+        //return
+        return PhysicalType<T>(*this);
+    }
+
+    /**
+     * Check if the same unit category. If units are different make the conversion (TODO).
+     */
+    PhysicalType<T> makeSameUnitAs(const PhysicalType<T>& other) const {
+
+        //check unit category
+        checkIfSameUnitCategoryAs(other);
+
+        //check unit (if different TODO make conversion)
+        checkIfSameUnitAs(other);
+
+        //return
+        return PhysicalType<T>(*this);
+    }
+
+    /**
+     * Check if the same unit. If units are different throw exception.
+     */
+    void checkIfSameUnitAs(PhysicalUnit::Type other) const {
+        if (m_unit != other) {
+            throw ElemUtils::CustomException(this->getClassName(), __func__,
+                    ElemUtils::Formatter() << "Units are different, this unit: "
+                            << PhysicalUnit(m_unit).toString()
+                            << " other unit: "
+                            << PhysicalUnit(other).toString());
+        }
+    }
+
+    /**
+     * Check if the same unit. If units are different throw exception.
+     */
+    void checkIfSameUnitAs(const PhysicalType<T>& other) const {
+        if (m_unit != other.getUnit()) {
+            throw ElemUtils::CustomException(this->getClassName(), __func__,
+                    ElemUtils::Formatter() << "Units are different, this unit: "
+                            << PhysicalUnit(m_unit).toString()
+                            << " other unit: "
+                            << PhysicalUnit(other.getUnit()).toString());
+        }
+    }
+
+    /**
+     * Check if the same unit category. If units are different throw exception.
+     */
+    void checkIfSameUnitCategoryAs(PhysicalUnit::Type other) const {
+        if (PhysicalUnit(m_unit).getUnitCategory()
+                != PhysicalUnit(other).getUnitCategory()) {
+            throw ElemUtils::CustomException(this->getClassName(), __func__,
+                    ElemUtils::Formatter()
+                            << "Units have different categories, this unit: "
+                            << PhysicalUnit(m_unit).toString()
+                            << " other unit: "
+                            << PhysicalUnit(other).toString());
+        }
+    }
+
+    /**
+     * Check if the same unit category. If units are different throw exception.
+     */
+    void checkIfSameUnitCategoryAs(const PhysicalType<T>& other) const {
+        if (PhysicalUnit(m_unit).getUnitCategory()
+                != PhysicalUnit(other.getUnit()).getUnitCategory()) {
+            throw ElemUtils::CustomException(this->getClassName(), __func__,
+                    ElemUtils::Formatter()
+                            << "Units have different categories, this unit: "
+                            << PhysicalUnit(m_unit).toString()
+                            << " other unit: "
+                            << PhysicalUnit(other.getUnit()).toString());
+        }
     }
 
 private:
@@ -246,17 +317,8 @@ private:
  */
 template<class T>
 ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
-        PhysicalType<T>& physicalType) {
-    physicalType.serialize(packet);
-    return packet;
-}
-
-/**
- * Stream operator to serialize class into Packet. See also Kinematic::serialize().
- */
-template<class T>
-ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
         const PhysicalType<T>& physicalType) {
+
     physicalType.serialize(packet);
     return packet;
 }
@@ -267,6 +329,7 @@ ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
 template<class T>
 ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
         PhysicalType<T>& physicalType) {
+
     physicalType.unserialize(packet);
     return packet;
 }
@@ -275,138 +338,93 @@ ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
 
 template<class T>
 inline bool operator==(PhysicalType<T> const &lhs, PhysicalType<T> const &rhs) {
-    return lhs.getValue() == rhs.getValue();
+    return (lhs.getValue() == rhs.makeSameUnitAs(lhs).getValue());
 }
+
 template<class T>
 inline bool operator!=(PhysicalType<T> const &lhs, PhysicalType<T> const &rhs) {
-    return lhs.getValue() != rhs.getValue();
+    return (lhs.getValue() != rhs.makeSameUnitAs(lhs).getValue());
 }
+
 template<class T>
 inline bool operator<(PhysicalType<T> const &lhs, PhysicalType<T> const &rhs) {
-    return lhs.getValue() < rhs.getValue();
+    return (lhs.getValue() < rhs.makeSameUnitAs(lhs).getValue());
 }
+
 template<class T>
 inline bool operator>(PhysicalType<T> const &lhs, PhysicalType<T> const &rhs) {
-    return lhs.getValue() > rhs.getValue();
+    return (lhs.getValue() > rhs.makeSameUnitAs(lhs).getValue());
 }
+
 template<class T>
 inline bool operator<=(PhysicalType<T> const &lhs, PhysicalType<T> const &rhs) {
-    return lhs.getValue() <= rhs.getValue();
+    return (lhs.getValue() <= rhs.makeSameUnitAs(lhs).getValue());
 }
+
 template<class T>
 inline bool operator>=(PhysicalType<T> const &lhs, PhysicalType<T> const &rhs) {
-    return lhs.getValue() >= rhs.getValue();
+    return (lhs.getValue() >= rhs.makeSameUnitAs(lhs).getValue());
 }
-//
-//template<class T>
-//inline bool operator==(PhysicalType<T> const &lhs, T const &rhs) {
-//    return lhs.getValue() == rhs;
-//}
-//template<class T>
-//inline bool operator!=(PhysicalType<T> const &lhs, T const &rhs) {
-//    return lhs.getValue() != rhs;
-//}
-//template<class T>
-//inline bool operator<(PhysicalType<T> const &lhs, T const &rhs) {
-//    return lhs.getValue() < rhs;
-//}
-//template<class T>
-//inline bool operator>(PhysicalType<T> const &lhs, T const &rhs) {
-//    return lhs.getValue() > rhs;
-//}
-//template<class T>
-//inline bool operator<=(PhysicalType<T> const &lhs, T const &rhs) {
-//    return lhs.getValue() <= rhs;
-//}
-//template<class T>
-//inline bool operator>=(PhysicalType<T> const &lhs, T const &rhs) {
-//    return lhs.getValue() >= rhs;
-//}
-//
-//template<class T>
-//inline bool operator==(T const &lhs, PhysicalType<T> const &rhs) {
-//    return lhs == rhs.getValue();
-//}
-//template<class T>
-//inline bool operator!=(T const &lhs, PhysicalType<T> const &rhs) {
-//    return lhs != rhs.getValue();
-//}
-//template<class T>
-//inline bool operator<(T const &lhs, PhysicalType<T> const &rhs) {
-//    return lhs < rhs.getValue();
-//}
-//template<class T>
-//inline bool operator>(T const &lhs, PhysicalType<T> const &rhs) {
-//    return lhs > rhs.getValue();
-//}
-//template<class T>
-//inline bool operator<=(T const &lhs, PhysicalType<T> const &rhs) {
-//    return lhs <= rhs.getValue();
-//}
-//template<class T>
-//inline bool operator>=(T const &lhs, PhysicalType<T> const &rhs) {
-//    return lhs >= rhs.getValue();
-//}
 
 /// Arithmetic operators
 
-//TODO upgrade select unit
-//TODO use setters for avoid problem with m_initialized value
-//
-//template<class T>
-//inline PhysicalType<T> operator+(PhysicalType<T> const &lhs,
-//        PhysicalType<T> const &rhs) {
-//    return PhysicalType<T>(lhs.getValue() + rhs.getValue(), lhs.getUnit());
-//}
-//template<class T>
-//inline PhysicalType<T> operator-(PhysicalType<T> const &lhs,
-//        PhysicalType<T> const &rhs) {
-//    return PhysicalType<T>(lhs.getValue() - rhs.getValue(), lhs.getUnit());
-//}
-//template<class T>
-//inline PhysicalType<T> operator*(PhysicalType<T> const &lhs,
-//        PhysicalType<T> const &rhs) {
-//    return PhysicalType<T>(lhs.getValue() * rhs.getValue(), lhs.getUnit());
-//}
-//template<class T>
-//inline PhysicalType<T> operator/(PhysicalType<T> const &lhs,
-//        PhysicalType<T> const &rhs) {
-//    return PhysicalType<T>(lhs.getValue() / rhs.getValue(), lhs.getUnit());
-//}
-//
-//template<class T>
-//inline PhysicalType<T> operator+(PhysicalType<T> const &lhs, T const &rhs) {
-//    return PhysicalType<T>(lhs.getValue() + rhs, lhs.getUnit());
-//}
-//template<class T>
-//inline PhysicalType<T> operator-(PhysicalType<T> const &lhs, T const &rhs) {
-//    return PhysicalType<T>(lhs.getValue() - rhs, lhs.getUnit());
-//}
-//template<class T>
-//inline PhysicalType<T> operator*(PhysicalType<T> const &lhs, T const &rhs) {
-//    return PhysicalType<T>(lhs.getValue() * rhs, lhs.getUnit()); //WRONG! TODO
-//}
-//template<class T>
-//inline PhysicalType<T> operator/(PhysicalType<T> const &lhs, T const &rhs) {
-//    return PhysicalType<T>(lhs.getValue() / rhs, lhs.getUnit()); //WRONG! TODO
-//}
-//
-//template<class T>
-//inline PhysicalType<T> operator+(T const &lhs, PhysicalType<T> const &rhs) {
-//    return PhysicalType<T>(lhs + rhs.getValue(), rhs.getUnit());
-//}
-//template<class T>
-//inline PhysicalType<T> operator-(T const &lhs, PhysicalType<T> const &rhs) {
-//    return PhysicalType<T>(lhs - rhs.getValue(), rhs.getUnit());
-//}
-//template<class T>
-//inline PhysicalType<T> operator*(T const &lhs, PhysicalType<T> const &rhs) {
-//    return PhysicalType<T>(lhs * rhs.getValue(), rhs.getUnit()); //WRONG! TODO
-//}
-//template<class T>
-//inline PhysicalType<T> operator/(T const &lhs, PhysicalType<T> const &rhs) {
-//    return PhysicalType<T>(lhs / rhs.getValue(), rhs.getUnit()); //WRONG! TODO
-//}
+template<class T>
+inline PhysicalType<T> operator+(PhysicalType<T> const &lhs,
+        PhysicalType<T> const &rhs) {
+
+    lhs.checkIfSameUnitAs(rhs);
+    return PhysicalType<T>(lhs.getValue() + rhs.getValue(), lhs.getUnit());
+}
+
+template<class T>
+inline PhysicalType<T> operator-(PhysicalType<T> const &lhs,
+        PhysicalType<T> const &rhs) {
+
+    lhs.checkIfSameUnitAs(rhs);
+    return PhysicalType<T>(lhs.getValue() - rhs.getValue(), lhs.getUnit());
+}
+
+/// Arithmetic operators
+
+template<class T>
+inline PhysicalType<T> operator+(PhysicalType<T> const &lhs, T const &rhs) {
+    return PhysicalType<T>(lhs.getValue() + rhs, lhs.getUnit());
+}
+
+template<class T>
+inline PhysicalType<T> operator-(PhysicalType<T> const &lhs, T const &rhs) {
+    return PhysicalType<T>(lhs.getValue() - rhs, lhs.getUnit());
+}
+
+template<class T>
+inline PhysicalType<T> operator*(PhysicalType<T> const &lhs, T const &rhs) {
+    return PhysicalType<T>(lhs.getValue() * rhs, lhs.getUnit()); //WRONG! TODO
+}
+
+template<class T>
+inline PhysicalType<T> operator/(PhysicalType<T> const &lhs, T const &rhs) {
+    return PhysicalType<T>(lhs.getValue() / rhs, lhs.getUnit()); //WRONG! TODO
+}
+
+template<class T>
+inline PhysicalType<T> operator+(T const &lhs, PhysicalType<T> const &rhs) {
+    return PhysicalType<T>(lhs + rhs.getValue(), rhs.getUnit());
+}
+
+template<class T>
+inline PhysicalType<T> operator-(T const &lhs, PhysicalType<T> const &rhs) {
+    return PhysicalType<T>(lhs - rhs.getValue(), rhs.getUnit());
+}
+
+template<class T>
+inline PhysicalType<T> operator*(T const &lhs, PhysicalType<T> const &rhs) {
+    return PhysicalType<T>(lhs * rhs.getValue(), rhs.getUnit()); //WRONG! TODO
+}
+
+template<class T>
+inline PhysicalType<T> operator/(T const &lhs, PhysicalType<T> const &rhs) {
+    return PhysicalType<T>(lhs / rhs.getValue(), rhs.getUnit()); //WRONG! TODO
+}
 
 } /* namespace PARTONS */
 

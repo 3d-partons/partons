@@ -15,6 +15,7 @@
 #include "../../../../../include/partons/services/DVCSObservableService.h"
 #include "../../../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../../../include/partons/ServiceObjectTyped.h"
+#include "../../../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
 
@@ -207,11 +208,11 @@ List<GPDType> DVCSObservable::getListOfAvailableGPDTypeForComputation() const {
 void DVCSObservable::setKinematics(const DVCSObservableKinematic& kinematic) {
 
     // set variables
-    m_xB = kinematic.getXB().getValue();
-    m_t = kinematic.getT().getValue();
-    m_Q2 = kinematic.getQ2().getValue();
-    m_E = kinematic.getE().getValue();
-    m_phi = kinematic.getPhi().getValue();
+    m_xB = kinematic.getXB().makeSameUnitAs(PhysicalUnit::NONE).getValue();
+    m_t = kinematic.getT().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
+    m_Q2 = kinematic.getQ2().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
+    m_E = kinematic.getE().makeSameUnitAs(PhysicalUnit::GEV).getValue();
+    m_phi = kinematic.getPhi().makeSameUnitAs(PhysicalUnit::RADIAN).getValue();
 }
 
 void DVCSObservable::initModule() {

@@ -88,12 +88,6 @@ protected:
      */
     virtual void updateHashSum() const = 0;
 
-    /**
-     * Check if a and b have the same unit category. If not throw an exception.
-     */
-    void checkIfTheSameUnitCategory(const PhysicalType<double>& a,
-            const PhysicalType<double>& b) const;
-
 private:
 
     /**

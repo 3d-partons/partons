@@ -81,8 +81,8 @@ void GPDModule::run() {
 
             //debug information
             debug(__func__,
-                               ElemUtils::Formatter() << "objectId = " << getObjectId()
-                                       << " " << kinematic.toString());
+                    ElemUtils::Formatter() << "objectId = " << getObjectId()
+                            << " " << kinematic.toString());
 
             //object to be returned
             GPDResult gpdResult = compute(kinematic, gpdTypeList);
@@ -278,11 +278,11 @@ PartonDistribution GPDModule::computeEt() {
 
 void GPDModule::setKinematics(const GPDKinematic& kinematic) {
 
-    m_x = kinematic.getX().getValue();
-    m_xi = kinematic.getXi().getValue();
-    m_t = kinematic.getT().getValue();
-    m_MuF2 = kinematic.getMuF2().getValue();
-    m_MuR2 = kinematic.getMuR2().getValue();
+    m_x = kinematic.getX().makeSameUnitAs(PhysicalUnit::NONE).getValue();
+    m_xi = kinematic.getXi().makeSameUnitAs(PhysicalUnit::NONE).getValue();
+    m_t = kinematic.getT().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
+    m_MuF2 = kinematic.getMuF2().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
+    m_MuR2 = kinematic.getMuR2().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
 }
 
 void GPDModule::setCurrentGPDType(GPDType::Type gpdType) {

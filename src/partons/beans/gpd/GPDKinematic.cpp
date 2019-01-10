@@ -10,8 +10,7 @@
 
 namespace PARTONS {
 
-const std::string GPDKinematic::GPD_KNEMATIC_CLASS_NAME =
-        "GPDKinematic";
+const std::string GPDKinematic::GPD_KNEMATIC_CLASS_NAME = "GPDKinematic";
 
 const std::string GPDKinematic::KINEMATIC_PARAMETER_NAME_X = "x";
 const std::string GPDKinematic::KINEMATIC_PARAMETER_NAME_XI = "xi";
@@ -87,11 +86,11 @@ GPDKinematic::GPDKinematic(const PhysicalType<double> &x,
                 PhysicalType<double>(PhysicalUnit::GEV2)), m_MuR2(
                 PhysicalType<double>(PhysicalUnit::GEV2)) {
 
-    checkIfTheSameUnitCategory(m_x, x);
-    checkIfTheSameUnitCategory(m_xi, xi);
-    checkIfTheSameUnitCategory(m_t, t);
-    checkIfTheSameUnitCategory(m_MuF2, MuF2);
-    checkIfTheSameUnitCategory(m_MuR2, MuR2);
+    m_x.checkIfSameUnitCategoryAs(x);
+    m_xi.checkIfSameUnitCategoryAs(xi);
+    m_t.checkIfSameUnitCategoryAs(t);
+    m_MuF2.checkIfSameUnitCategoryAs(MuF2);
+    m_MuR2.checkIfSameUnitCategoryAs(MuR2);
 
     m_x = x;
     m_xi = xi;
@@ -186,35 +185,35 @@ const PhysicalType<double>& GPDKinematic::getMuR2() const {
 
 void GPDKinematic::setX(const PhysicalType<double>& x) {
 
-    checkIfTheSameUnitCategory(m_x, x);
+    m_x.checkIfSameUnitCategoryAs(x);
     m_x = x;
     updateHashSum();
 }
 
 void GPDKinematic::setXi(const PhysicalType<double>& xi) {
 
-    checkIfTheSameUnitCategory(m_xi, xi);
+    m_xi.checkIfSameUnitCategoryAs(xi);
     m_xi = xi;
     updateHashSum();
 }
 
 void GPDKinematic::setT(const PhysicalType<double>& t) {
 
-    checkIfTheSameUnitCategory(m_t, t);
+    m_t.checkIfSameUnitCategoryAs(t);
     m_t = t;
     updateHashSum();
 }
 
 void GPDKinematic::setMuF2(const PhysicalType<double>& muF2) {
 
-    checkIfTheSameUnitCategory(m_MuF2, muF2);
+    m_MuF2.checkIfSameUnitCategoryAs(muF2);
     m_MuF2 = muF2;
     updateHashSum();
 }
 
 void GPDKinematic::setMuR2(const PhysicalType<double>& muR2) {
 
-    checkIfTheSameUnitCategory(m_MuR2, muR2);
+    m_MuR2.checkIfSameUnitCategoryAs(muR2);
     m_MuR2 = muR2;
     updateHashSum();
 }

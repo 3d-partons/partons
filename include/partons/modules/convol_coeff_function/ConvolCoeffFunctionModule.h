@@ -21,6 +21,7 @@
 #include "../../beans/List.h"
 #include "../../ModuleObjectFactory.h"
 #include "../../Partons.h"
+#include "../../utils/type/PhysicalUnit.h"
 #include "../gpd/GPDModule.h"
 #include "../MathIntegratorModule.h"
 
@@ -207,10 +208,12 @@ protected:
      */
     virtual void setKinematics(const KinematicType& kinematic) {
 
-        m_xi = kinematic.getXi().getValue();
-        m_t = kinematic.getT().getValue();
-        m_MuF2 = kinematic.getMuF2().getValue();
-        m_MuR2 = kinematic.getMuR2().getValue();
+        m_xi = kinematic.getXi().makeSameUnitAs(PhysicalUnit::NONE).getValue();
+        m_t = kinematic.getT().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
+        m_MuF2 =
+                kinematic.getMuF2().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
+        m_MuR2 =
+                kinematic.getMuR2().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
     }
 
     /**

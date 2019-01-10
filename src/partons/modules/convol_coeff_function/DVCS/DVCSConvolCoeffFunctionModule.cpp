@@ -16,6 +16,7 @@
 #include "../../../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../../../include/partons/ServiceObjectTyped.h"
 #include "../../../../../include/partons/utils/type/PhysicalType.h"
+#include "../../../../../include/partons/utils/type/PhysicalUnit.h"
 #include "../../../../../include/partons/utils/VectorUtils.h"
 
 namespace PARTONS {
@@ -239,7 +240,7 @@ void DVCSConvolCoeffFunctionModule::setKinematics(
     ConvolCoeffFunctionModule<DVCSConvolCoeffFunctionKinematic,
             DVCSConvolCoeffFunctionResult>::setKinematics(kinematic);
 
-    m_Q2 = kinematic.getQ2().getValue();
+    m_Q2 = kinematic.getQ2().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
 }
 
 PerturbativeQCDOrderType::Type DVCSConvolCoeffFunctionModule::getQCDOrderType() const {

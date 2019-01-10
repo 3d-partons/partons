@@ -50,7 +50,7 @@ DVCSConvolCoeffFunctionKinematic::DVCSConvolCoeffFunctionKinematic(
                 ChannelType::DVCS, xi, t, MuF2, MuR2), m_Q2(
                 PhysicalType<double>(PhysicalUnit::GEV2)) {
 
-    checkIfTheSameUnitCategory(m_Q2, Q2);
+    m_Q2.checkIfSameUnitCategoryAs(Q2);
 
     m_Q2 = Q2;
 }
@@ -113,7 +113,7 @@ const PhysicalType<double>& DVCSConvolCoeffFunctionKinematic::getQ2() const {
 
 void DVCSConvolCoeffFunctionKinematic::setQ2(const PhysicalType<double>& Q2) {
 
-    checkIfTheSameUnitCategory(m_Q2, Q2);
+    m_Q2.checkIfSameUnitCategoryAs(Q2);
     m_Q2 = Q2;
     updateHashSum();
 }

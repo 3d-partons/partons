@@ -70,10 +70,10 @@ ConvolCoeffFunctionKinematic::ConvolCoeffFunctionKinematic(
                 PhysicalType<double>(PhysicalUnit::GEV2)), m_MuR2(
                 PhysicalType<double>(PhysicalUnit::GEV2)) {
 
-    checkIfTheSameUnitCategory(m_xi, xi);
-    checkIfTheSameUnitCategory(m_t, t);
-    checkIfTheSameUnitCategory(m_MuF2, MuF2);
-    checkIfTheSameUnitCategory(m_MuR2, MuR2);
+    m_xi.checkIfSameUnitCategoryAs(xi);
+    m_t.checkIfSameUnitCategoryAs(t);
+    m_MuF2.checkIfSameUnitCategoryAs(MuF2);
+    m_MuR2.checkIfSameUnitCategoryAs(MuR2);
 
     m_xi = xi;
     m_t = t;
@@ -145,28 +145,28 @@ const PhysicalType<double>& ConvolCoeffFunctionKinematic::getXi() const {
 
 void ConvolCoeffFunctionKinematic::setXi(const PhysicalType<double>& xi) {
 
-    checkIfTheSameUnitCategory(m_xi, xi);
+    m_xi.checkIfSameUnitCategoryAs(xi);
     m_xi = xi;
     updateHashSum();
 }
 
 void ConvolCoeffFunctionKinematic::setT(const PhysicalType<double>& t) {
 
-    checkIfTheSameUnitCategory(m_t, t);
+    m_t.checkIfSameUnitCategoryAs(t);
     m_t = t;
     updateHashSum();
 }
 
 void ConvolCoeffFunctionKinematic::setMuF2(const PhysicalType<double>& MuF2) {
 
-    checkIfTheSameUnitCategory(m_MuF2, MuF2);
+    m_MuF2.checkIfSameUnitCategoryAs(MuF2);
     m_MuF2 = MuF2;
     updateHashSum();
 }
 
 void ConvolCoeffFunctionKinematic::setMuR2(const PhysicalType<double>& MuR2) {
 
-    checkIfTheSameUnitCategory(m_MuR2, MuR2);
+    m_MuR2.checkIfSameUnitCategoryAs(MuR2);
     m_MuR2 = MuR2;
     updateHashSum();
 }
