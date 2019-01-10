@@ -2,6 +2,7 @@
 
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
+#include <iostream>
 #include <utility>
 
 #include "../../../../../include/partons/beans/channel/ChannelType.h"
@@ -11,6 +12,9 @@
 #include "../../../../../include/partons/modules/process/DVCS/DVCSProcessModule.h"
 #include "../../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../../include/partons/Partons.h"
+#include "../../../../../include/partons/services/DVCSObservableService.h"
+#include "../../../../../include/partons/ServiceObjectRegistry.h"
+#include "../../../../../include/partons/ServiceObjectTyped.h"
 
 namespace PARTONS {
 
@@ -54,32 +58,46 @@ void DVCSObservable::resolveObjectDependencies() {
 
 void DVCSObservable::run() {
 
-    //TODO
+    try {
 
-//    try {
-//
-//        // Retrieve DVCSObservable service
-//        DVCSObservableService* pDVCSObservableService =
-//                Partons::getInstance()->getServiceObjectRegistry()->getDVCSObservableService();
-//
-//        while (!(pDVCSObservableService->isEmptyTaskQueue())) {
-//            DVCSObservableKinematic kinematic;
-//            List<GPDType> gpdType;
-//            ElemUtils::Packet packet = pDVCSObservableService->popTaskFormQueue();
-//            packet >> kinematic;
-//            packet >> gpdType;
-//
-//            info(__func__,
-//                    ElemUtils::Formatter() << "objectId = " << getObjectId()
-//                            << " " << kinematic.toString());
-//
-//            pDVCSObservableService->add(compute(kinematic, gpdType));
-//        }
-//
-//    } catch (std::exception &e) {
-//        std::cerr << e.what() << std::endl;
-//    }
+        //get service
+        DVCSObservableService* pDVCSObservableService =
+                Partons::getInstance()->getServiceObjectRegistry()->getDVCSObservableService();
 
+        //run until empty
+        while (!(pDVCSObservableService->isEmptyTaskQueue())) {
+
+            //kinematics
+            DVCSObservableKinematic kinematic;
+
+            //list of GPD types
+            List<GPDType> gpdType;
+
+            //set
+            ElemUtils::Packet packet =
+                    pDVCSObservableService->popTaskFormQueue();
+            packet >> kinematic;
+            packet >> gpdType;
+
+            //debug information
+            debug(__func__,
+                    ElemUtils::Formatter() << "objectId = " << getObjectId()
+                            << " " << kinematic.toString());
+
+            //object to be returned
+            DVCSObservableResult result = compute(kinematic, gpdType);
+
+            //helpful to sort later if kinematic is coming from database
+            //TODO is used?
+            result.setIndexId(kinematic.getIndexId());
+
+            //add
+            pDVCSObservableService->add(result);
+        }
+
+    } catch (std::exception &e) {
+        std::cerr << e.what() << std::endl;
+    }
 }
 
 void DVCSObservable::configure(const ElemUtils::Parameters &parameters) {

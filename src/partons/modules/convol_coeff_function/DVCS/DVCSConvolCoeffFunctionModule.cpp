@@ -4,12 +4,17 @@
 #include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <stddef.h>
+#include <iostream>
 #include <utility>
 
 #include "../../../../../include/partons/beans/channel/ChannelType.h"
 #include "../../../../../include/partons/beans/convol_coeff_function/ConvolCoeffFunctionResult.h"
 #include "../../../../../include/partons/beans/Result.h"
 #include "../../../../../include/partons/modules/gpd/GPDModule.h"
+#include "../../../../../include/partons/Partons.h"
+#include "../../../../../include/partons/services/DVCSConvolCoeffFunctionService.h"
+#include "../../../../../include/partons/ServiceObjectRegistry.h"
+#include "../../../../../include/partons/ServiceObjectTyped.h"
 #include "../../../../../include/partons/utils/type/PhysicalType.h"
 #include "../../../../../include/partons/utils/VectorUtils.h"
 
@@ -50,44 +55,48 @@ void DVCSConvolCoeffFunctionModule::resolveObjectDependencies() {
 
 void DVCSConvolCoeffFunctionModule::run() {
 
-//    try {
-//        DVCSConvolCoeffFunctionService* pService =
-//                Partons::getInstance()->getServiceObjectRegistry()->getDVCSConvolCoeffFunctionService();
-//
-//        while (!(pService->isEmptyTaskQueue())) {
-//
-//            DVCSConvolCoeffFunctionKinematic kinematic;
-//            List<GPDType> gpdTypeList;
-//
-//            ElemUtils::Packet packet = pService->popTaskFormQueue();
-//            packet >> kinematic;
-//            packet >> gpdTypeList;
-//
-//            debug(__func__,
-//                    ElemUtils::Formatter() << "objectId = " << getObjectId()
-//                            << " " << kinematic.toString());
-//
-//            DVCSConvolCoeffFunctionResult result;
-//            result.setKinematic(kinematic);
-//            result.setComputationModuleName(getClassName());
-//
-//            //Helpful to sort later if kinematic is coming from database
-//            result.setIndexId(kinematic.getIndexId());
-//
-//            for (unsigned int i = 0; i != gpdTypeList.size(); i++) {
-//                result.addResult(gpdTypeList[i].getType(),
-//                        compute(kinematic, gpdTypeList[i].getType()));
-//            }
-//
-//            pService->add(result);
-//
-//            //TODO useful to do a sleep ?
-//            // sf::sleep(sf::milliseconds(3));
-//        }
-//    } catch (std::exception &e) {
-//        //TODO remove and improve
-//        std::cerr << e.what() << std::endl;
-//    }
+    try {
+
+        //get service
+        DVCSConvolCoeffFunctionService* pService =
+                Partons::getInstance()->getServiceObjectRegistry()->getDVCSConvolCoeffFunctionService();
+
+        //run until empty
+        while (!(pService->isEmptyTaskQueue())) {
+
+            //kinematics
+            DVCSConvolCoeffFunctionKinematic kinematic;
+
+            //list of GPD types
+            List<GPDType> gpdTypeList;
+
+            //set
+            ElemUtils::Packet packet = pService->popTaskFormQueue();
+            packet >> kinematic;
+            packet >> gpdTypeList;
+
+            //debug information
+            debug(__func__,
+                    ElemUtils::Formatter() << "objectId = " << getObjectId()
+                            << " " << kinematic.toString());
+
+            //object to be returned
+            DVCSConvolCoeffFunctionResult result = compute(kinematic,
+                    gpdTypeList);
+
+            //helpful to sort later if kinematic is coming from database
+            //TODO is used?
+            result.setIndexId(kinematic.getIndexId());
+
+            //add
+            pService->add(result);
+
+            //TODO useful to do a sleep ?
+            // sf::sleep(sf::milliseconds(3));
+        }
+    } catch (std::exception &e) {
+        std::cerr << e.what() << std::endl;
+    }
 }
 
 void DVCSConvolCoeffFunctionModule::configure(

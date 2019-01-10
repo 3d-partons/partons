@@ -65,7 +65,7 @@ void GPDModule::run() {
         GPDService* pGPDService =
                 Partons::getInstance()->getServiceObjectRegistry()->getGPDService();
 
-        //run while empty
+        //run until empty
         while (!(pGPDService->isEmptyTaskQueue())) {
 
             //kinematics
@@ -79,14 +79,19 @@ void GPDModule::run() {
             packet >> kinematic;
             packet >> gpdTypeList;
 
+            //debug information
+            debug(__func__,
+                               ElemUtils::Formatter() << "objectId = " << getObjectId()
+                                       << " " << kinematic.toString());
+
             //object to be returned
             GPDResult gpdResult = compute(kinematic, gpdTypeList);
 
-            //Helpful to sort later if kinematic is coming from database
+            //helpful to sort later if kinematic is coming from database
             //TODO is used?
             gpdResult.setIndexId(kinematic.getIndexId());
 
-            //Add
+            //add
             pGPDService->add(gpdResult);
 
             //TODO useful to do a sleep ?
