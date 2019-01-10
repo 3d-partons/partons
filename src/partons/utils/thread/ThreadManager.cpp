@@ -1,9 +1,14 @@
 #include "../../../../include/partons/utils/thread/ThreadManager.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
+#include <ElementaryUtils/string_utils/Formatter.h>
+#include <SFML/System/Sleep.hpp>
+#include <SFML/System/Time.hpp>
+
+#include "../../../../include/partons/ModuleObjectFactory.h"
+#include "../../../../include/partons/Partons.h"
 
 namespace PARTONS {
-
 
 ThreadManager::ThreadManager() :
         BaseObject("ThreadManager") {
@@ -16,7 +21,14 @@ void ThreadManager::newThread(const unsigned int numberOfThread,
         ModuleObject *pModuleObject) {
 
     for (unsigned int i = 0; i != numberOfThread; i++) {
-        m_listOfModuleObject.add(pModuleObject->clone());
+
+        //info
+        info(__func__, ElemUtils::Formatter() << "New thread number: " << i);
+
+        //add
+        m_listOfModuleObject.add(
+                Partons::getInstance()->getModuleObjectFactory()->cloneModuleObject(
+                        pModuleObject));
     }
 }
 
@@ -30,7 +42,9 @@ void ThreadManager::launchAllAndWaitingFor() {
 
     // start all thread one by one
     for (unsigned int i = 0; i != m_listOfModuleObject.size(); i++) {
+
         m_listOfModuleObject[i]->launch();
+        sf::sleep(sf::milliseconds(3));
     }
 
     // waiting end of each thread before continue
@@ -40,7 +54,22 @@ void ThreadManager::launchAllAndWaitingFor() {
 }
 
 void ThreadManager::clearAllThread() {
-    // delete previous instantiated thread
+
+    for (unsigned int i = 0; i != m_listOfModuleObject.size(); i++) {
+
+        //info
+        info(__func__, ElemUtils::Formatter() << "Delete thread number: " << i);
+
+        //delete
+        if (m_listOfModuleObject[i]) {
+
+            Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
+                    m_listOfModuleObject[i], 0);
+            m_listOfModuleObject[i] = 0;
+        }
+    }
+
+    //clear
     m_listOfModuleObject.clear();
 }
 

@@ -9,13 +9,14 @@
 #include <NumA/linear_algebra/vector/VectorD.h>
 #include <utility>
 
+#include "../../../../../include/partons/beans/channel/ChannelType.h"
+#include "../../../../../include/partons/beans/gpd/GPDKinematic.h"
 #include "../../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
 #include "../../../../../include/partons/modules/active_flavors_thresholds/ActiveFlavorsThresholdsModule.h"
 #include "../../../../../include/partons/modules/gpd/GPDModule.h"
 #include "../../../../../include/partons/modules/running_alpha_strong/RunningAlphaStrongModule.h"
 #include "../../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../../include/partons/Partons.h"
-#include "../../../../../include/partons/beans/channel/ChannelType.h"
 
 namespace PARTONS {
 
@@ -23,11 +24,11 @@ const std::string GPDEvolutionModule::GPD_EVOLUTION_MODULE_CLASS_NAME =
         "GPDEvolutionModule";
 
 GPDEvolutionModule::GPDEvolutionModule(const std::string &className) :
-        ModuleObject(className, ChannelType::UNDEFINED), MathIntegratorModule(), m_pGPDModule(0), m_x(
-                0.), m_xi(0.), m_t(0.), m_MuF2(0.), m_MuR2(0.), m_MuF2_ref(0.), m_currentGPDComputeType(
-                GPDType::UNDEFINED), m_nFlavors(0), m_nFlavors_ref(0), m_qcdOrderType(
-                PerturbativeQCDOrderType::UNDEFINED), m_pRunningAlphaStrong(0), m_pActiveFlavorsModule(
-                0) {
+        ModuleObject(className, ChannelType::UNDEFINED), MathIntegratorModule(), m_pGPDModule(
+                0), m_x(0.), m_xi(0.), m_t(0.), m_MuF2(0.), m_MuR2(0.), m_MuF2_ref(
+                0.), m_currentGPDComputeType(GPDType::UNDEFINED), m_nFlavors(0), m_nFlavors_ref(
+                0), m_qcdOrderType(PerturbativeQCDOrderType::UNDEFINED), m_pRunningAlphaStrong(
+                0), m_pActiveFlavorsModule(0) {
 
     //reset
     m_PartonDistributionAtMuF2_ref = PartonDistribution();
@@ -138,13 +139,15 @@ GPDEvolutionModule::GPDEvolutionModule(const GPDEvolutionModule &other) :
     m_qcdOrderType = other.m_qcdOrderType;
 
     if (other.m_pRunningAlphaStrong != 0) {
-        m_pRunningAlphaStrong = (other.m_pRunningAlphaStrong)->clone();
+        m_pRunningAlphaStrong = m_pModuleObjectFactory->cloneModuleObject(
+                other.m_pRunningAlphaStrong);
     } else {
         m_pRunningAlphaStrong = 0;
     }
 
     if (other.m_pActiveFlavorsModule != 0) {
-        m_pActiveFlavorsModule = (other.m_pActiveFlavorsModule)->clone();
+        m_pActiveFlavorsModule = m_pModuleObjectFactory->cloneModuleObject(
+                other.m_pActiveFlavorsModule);
     } else {
         m_pActiveFlavorsModule = 0;
     }
@@ -158,8 +161,15 @@ GPDEvolutionModule::GPDEvolutionModule(const GPDEvolutionModule &other) :
 
 GPDEvolutionModule::~GPDEvolutionModule() {
 
-    setRunningAlphaStrongModule(0);
-    setActiveFlavorsModule(0);
+    if (m_pRunningAlphaStrong) {
+        setRunningAlphaStrongModule(0);
+        m_pRunningAlphaStrong = 0;
+    }
+
+    if (m_pActiveFlavorsModule) {
+        setActiveFlavorsModule(0);
+        m_pActiveFlavorsModule = 0;
+    }
 
     if (p_intIntegrateComputeOutputNS) {
         delete p_intIntegrateComputeOutputNS;
@@ -358,8 +368,9 @@ void GPDEvolutionModule::isModuleWellConfigured() {
 void GPDEvolutionModule::initModule() {
 
     //evaluate for reference point
-    m_PartonDistributionAtMuF2_ref = m_pGPDModule->compute(GPDKinematic(m_x, m_xi, m_t,
-            m_MuF2_ref, m_MuR2), m_currentGPDComputeType, false);
+    m_PartonDistributionAtMuF2_ref = m_pGPDModule->compute(
+            GPDKinematic(m_x, m_xi, m_t, m_MuF2_ref, m_MuR2),
+            m_currentGPDComputeType, false);
 
     //evaluate nf and muF2 and muF2_ref
     m_nFlavors =

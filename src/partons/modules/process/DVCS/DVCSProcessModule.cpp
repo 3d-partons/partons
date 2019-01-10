@@ -55,7 +55,7 @@ DVCSProcessModule::DVCSProcessModule(const DVCSProcessModule& other) :
 
     if (other.m_pConvolCoeffFunctionModule != 0) {
         m_pConvolCoeffFunctionModule =
-                (other.m_pConvolCoeffFunctionModule)->clone();
+                m_pModuleObjectFactory->cloneModuleObject(other.m_pConvolCoeffFunctionModule);
     }
 }
 

@@ -11,6 +11,7 @@
 #include <map>
 #include <string>
 
+#include "ModuleObject.h"
 #include "ModuleObjectReference.h"
 
 namespace PARTONS {
@@ -60,6 +61,19 @@ public:
      * @return ModuleObject pointer.
      */
     ModuleObject* newModuleObject(unsigned int classId);
+
+    /**
+     * Clone module object.
+     * @param pModuleObjectOrig Module object to be cloned.
+     * @return Pointer to cloned object.
+     */
+    template<class T> T* cloneModuleObject(T* pModuleObjectOrig){
+
+          T* pModuleObjectClone = pModuleObjectOrig->clone();
+          store(pModuleObjectClone);
+
+          return pModuleObjectClone;
+      }
 
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a IncompleteGPDModule.

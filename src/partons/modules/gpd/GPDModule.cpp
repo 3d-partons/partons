@@ -16,6 +16,7 @@
 #include "../../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../../include/partons/ServiceObjectTyped.h"
 #include "../../../../include/partons/utils/type/PhysicalType.h"
+#include "../../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
 
@@ -33,7 +34,8 @@ GPDModule::GPDModule(const GPDModule &other) :
                 other.m_currentGPDComputeType), m_MuF2_ref(other.m_MuF2_ref) {
 
     if (other.m_pGPDEvolutionModule != 0) {
-        m_pGPDEvolutionModule = other.m_pGPDEvolutionModule->clone();
+        m_pGPDEvolutionModule = m_pModuleObjectFactory->cloneModuleObject(
+                other.m_pGPDEvolutionModule);
     } else {
         m_pGPDEvolutionModule = 0;
     }

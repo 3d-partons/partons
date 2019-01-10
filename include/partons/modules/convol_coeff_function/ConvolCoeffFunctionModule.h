@@ -198,7 +198,8 @@ protected:
                     other.m_isGPDModuleDependent) {
 
         if (other.m_pGPDModule != 0) {
-            m_pGPDModule = (other.m_pGPDModule)->clone();
+            m_pGPDModule = m_pModuleObjectFactory->cloneModuleObject(
+                    other.m_pGPDModule);
         }
     }
 

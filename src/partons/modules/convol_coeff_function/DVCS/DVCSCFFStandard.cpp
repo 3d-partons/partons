@@ -12,7 +12,6 @@
 #include "../../../../../include/partons/beans/gpd/GPDKinematic.h"
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
-#include "../../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
 #include "../../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
 #include "../../../../../include/partons/beans/PerturbativeQCDOrderType.h"
 #include "../../../../../include/partons/beans/QuarkFlavor.h"
@@ -139,7 +138,7 @@ DVCSCFFStandard::DVCSCFFStandard(const DVCSCFFStandard &other) :
 
     if (other.m_pRunningAlphaStrongModule != 0) {
         m_pRunningAlphaStrongModule =
-                (other.m_pRunningAlphaStrongModule)->clone();
+                m_pModuleObjectFactory->cloneModuleObject(other.m_pRunningAlphaStrongModule);
     } else {
         m_pRunningAlphaStrongModule = 0;
     }

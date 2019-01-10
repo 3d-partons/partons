@@ -84,10 +84,13 @@ void ModuleObjectFactory::updateModulePointerReference(
                                 << (m_it->second)->getModuleObjectPointer()->getReferenceModuleId()
                                 << ") removed from ModuleObjectFactory instanciated object list");
 
-                delete (m_it->second);
-                (m_it->second) = 0;
-
                 // Delete target object from memory
+                if (m_it->second) {
+
+                    delete (m_it->second);
+                    (m_it->second) = 0;
+                }
+
                 m_instantiatedModuleObject.erase(m_it);
             }
         }
@@ -261,7 +264,8 @@ DVCSObservable* ModuleObjectFactory::newDVCSObservable(unsigned int classId) {
     return static_cast<DVCSObservable*>(newModuleObject(classId));
 }
 
-DVCSObservable* ModuleObjectFactory::newDVCSObservable(const std::string& className) {
+DVCSObservable* ModuleObjectFactory::newDVCSObservable(
+        const std::string& className) {
     return static_cast<DVCSObservable*>(newModuleObject(className));
 }
 

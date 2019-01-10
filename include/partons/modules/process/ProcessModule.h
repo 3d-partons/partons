@@ -270,11 +270,13 @@ protected:
                     0) {
 
         if (other.m_pScaleModule != 0) {
-            m_pScaleModule = (other.m_pScaleModule)->clone();
+            m_pScaleModule = m_pModuleObjectFactory->cloneModuleObject(
+                    other.m_pScaleModule);
         }
 
         if (other.m_pXiConverterModule != 0) {
-            m_pXiConverterModule = (other.m_pXiConverterModule)->clone();
+            m_pXiConverterModule = m_pModuleObjectFactory->cloneModuleObject(
+                    other.m_pXiConverterModule);
         }
     }
 

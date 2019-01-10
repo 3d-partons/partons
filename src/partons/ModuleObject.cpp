@@ -21,7 +21,7 @@ ModuleObject::ModuleObject(const ModuleObject &other) :
                 other.m_channelType), m_pModuleObjectFactory(0), m_referenceModuleId(
                 0) {
     m_pModuleObjectFactory = other.m_pModuleObjectFactory;
-    m_referenceModuleId = other.m_referenceModuleId;
+    m_referenceModuleId = getObjectId();
 }
 
 ModuleObject::~ModuleObject() {

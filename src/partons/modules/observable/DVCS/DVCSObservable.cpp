@@ -35,7 +35,8 @@ DVCSObservable::DVCSObservable(const DVCSObservable& other) :
                 other.m_phi) {
 
     if (other.m_pProcessModule != 0) {
-        m_pProcessModule = other.m_pProcessModule->clone();
+        m_pProcessModule = m_pModuleObjectFactory->cloneModuleObject(
+                other.m_pProcessModule);
     } else {
         m_pProcessModule = 0;
     }
