@@ -45,9 +45,8 @@ public:
 
         ElemUtils::Formatter formatter;
 
-        formatter << Result<KinematicType>::toString();
-
-        formatter << "\tOservable: " << m_value.toString() << " type: "
+        formatter << "\n\n" << Result<KinematicType>::toString() << "\n\n";
+        formatter << "Result: " << m_value.toString() << " type: "
                 << ObservableType(m_observableType).toString() << '\n';
 
         return formatter.str();

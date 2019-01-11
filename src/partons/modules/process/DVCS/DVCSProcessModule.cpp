@@ -55,7 +55,8 @@ DVCSProcessModule::DVCSProcessModule(const DVCSProcessModule& other) :
 
     if (other.m_pConvolCoeffFunctionModule != 0) {
         m_pConvolCoeffFunctionModule =
-                m_pModuleObjectFactory->cloneModuleObject(other.m_pConvolCoeffFunctionModule);
+                m_pModuleObjectFactory->cloneModuleObject(
+                        other.m_pConvolCoeffFunctionModule);
     }
 }
 
@@ -170,6 +171,9 @@ DVCSObservableResult DVCSProcessModule::compute(double beamHelicity,
     //reset kinematics (virtuality)
     setKinematics(kinematic);
 
+    //set experimental conditions
+    setExperimentalConditions(beamHelicity, beamCharge, targetPolarization);
+
     //execute last child function (virtuality)
     initModule();
 
@@ -203,8 +207,8 @@ DVCSObservableResult DVCSProcessModule::compute(double beamHelicity,
                 targetPolarization);
     }
 
-    //set value
-    result.setValue(PhysicalType<double>(doubleResult, PhysicalUnit::NB));
+    //set value TODO
+    result.setValue(PhysicalType<double>(doubleResult, PhysicalUnit::NONE));
 
     //set type
     result.setObservableType(ObservableType::PHI);
@@ -280,7 +284,12 @@ void DVCSProcessModule::setKinematics(
     m_t = kinematic.getT().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
     m_Q2 = kinematic.getQ2().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
     m_E = kinematic.getE().makeSameUnitAs(PhysicalUnit::GEV).getValue();
-    m_phi = kinematic.getPhi().makeSameUnitAs(PhysicalUnit::RADIAN).getValue();
+    m_phi =
+            kinematic.getPhi()/*.makeSameUnitAs(PhysicalUnit::RADIAN)*/.getValue();
+}
+
+void DVCSProcessModule::setExperimentalConditions(double beamHelicity,
+        double beamCharge, NumA::Vector3D targetPolarization) {
 }
 
 void DVCSProcessModule::initModule() {

@@ -40,10 +40,9 @@ public:
 
         formatter << BaseObject::toString() << " ChannelType: "
                 << ChannelType(m_channelType).toString()
-                << " ComputationModuleName: " << m_computationModuleName << '\n'
-                << '\n';
-        formatter << "Kinematics:" << '\n';
-        formatter << m_kinematic.toString();
+                << " ComputationModuleName: " << m_computationModuleName
+                << "\n\n";
+        formatter << "Kinematics: " << m_kinematic.toString();
 
         return formatter.str();
     }

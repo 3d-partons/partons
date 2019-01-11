@@ -35,8 +35,8 @@ GluonDistribution::~GluonDistribution() {
 }
 
 std::string GluonDistribution::toString() const {
-    return ElemUtils::Formatter() << "GluonDistribution = "
-            << m_gluonDistribution << '\n';
+    return ElemUtils::Formatter() << "g: "
+            << m_gluonDistribution;
 }
 
 double GluonDistribution::getGluonDistribution() const {

@@ -135,15 +135,20 @@ std::string DVCSObservableKinematic::toString() const {
 
     ElemUtils::Formatter formatter;
 
-    formatter << ObservableKinematic::toString();
+      formatter << Kinematic::toString() << '\n';
 
-    formatter << " xB = " << m_xB.toString();
-    formatter << " t = " << m_t.toString();
-    formatter << " Q2 = " << m_Q2.toString();
-    formatter << " E = " << m_E.toString();
-    formatter << " phi = " << m_phi.toString();
+      if (m_xB.isInitialized())
+          formatter << "xB: " << m_xB.toString() << ' ';
+      if (m_t.isInitialized())
+          formatter << "t: " << m_t.toString() << ' ';
+      if (m_Q2.isInitialized())
+          formatter << "Q2: " << m_Q2.toString() << ' ';
+      if (m_E.isInitialized())
+          formatter << "E: " << m_E.toString() << ' ';
+      if (m_phi.isInitialized())
+                formatter << "phi: " << m_phi.toString() << ' ';
 
-    return formatter.str();
+      return formatter.str();
 }
 
 void DVCSObservableKinematic::serialize(ElemUtils::Packet &packet) const {

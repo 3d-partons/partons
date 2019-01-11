@@ -123,6 +123,7 @@ std::string GPDKinematic::toString() const {
     ElemUtils::Formatter formatter;
 
     formatter << Kinematic::toString() << '\n';
+
     if (m_x.isInitialized())
         formatter << "x: " << m_x.toString() << ' ';
     if (m_xi.isInitialized())

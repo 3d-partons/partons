@@ -6,7 +6,6 @@
 
 namespace PARTONS {
 
-
 PartonDistribution::PartonDistribution() :
         BaseObject("PartonDistribution") {
 }
@@ -75,16 +74,15 @@ List<QuarkDistribution> PartonDistribution::getListOfQuarkDistribution() const {
 }
 
 std::string PartonDistribution::toString() const {
+
     ElemUtils::Formatter formatter;
 
-    formatter << BaseObject::toString() << '\n';
-
-    formatter << m_gluonDistribution.toString();
+    formatter << m_gluonDistribution.toString() << '\n';
 
     for (std::map<QuarkFlavor::Type, QuarkDistribution>::const_iterator it =
             m_quarkDistributions.begin(); it != m_quarkDistributions.end();
             it++) {
-        formatter << (it->second).toString();
+        formatter << (it->second).toString() << '\n';
     }
 
     return formatter.str();

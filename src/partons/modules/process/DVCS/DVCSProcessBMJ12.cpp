@@ -9,7 +9,6 @@
 
 namespace PARTONS {
 
-
 const unsigned int DVCSProcessBMJ12::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new DVCSProcessBMJ12("DVCSProcessBMJ12"));
@@ -135,8 +134,8 @@ void DVCSProcessBMJ12::initModule() {
             * (1 - m_yBMJ[0] - m_yBMJ[1] * m_epsilonBMJ[1] / 4)
             * (1 - m_tmin / m_t)
             * (m_epsroot[0]
-                    + (4 * m_xB * (1 - m_xB) + m_epsilonBMJ[1]) / (4 * (1 - m_xB))
-                            * (m_t - m_tmin) / m_Q2);
+                    + (4 * m_xB * (1 - m_xB) + m_epsilonBMJ[1])
+                            / (4 * (1 - m_xB)) * (m_t - m_tmin) / m_Q2);
     m_K[0] = sqrt(m_K[1]);
     m_Kt[1] = ((1 - m_xB) * m_xB + m_epsilonBMJ[1] / 4.) * (m_tmin - m_t)
             * (m_t - m_tmax) / m_Q2;
@@ -153,42 +152,45 @@ void DVCSProcessBMJ12::initModule() {
     computeAngularCoeffsInterf();
 
     // Phase space
-    m_phaseSpace = m_xB * m_yBMJ[1] / (1024 * pow(Constant::PI, 5) * m_Q[3] * m_epsroot[0]);
-
-}
-
-void DVCSProcessBMJ12::initModule(double beamHelicity, double beamCharge,
-        NumA::Vector3D targetPolarization) {
-
-    //init mother class
-   // DVCSProcessModule::initModule(beamHelicity, beamCharge, targetPolarization);
-
-    // define the angles and Lambda
-    defineAngles(targetPolarization);
+    m_phaseSpace = m_xB * m_yBMJ[1]
+            / (1024 * pow(Constant::PI, 5) * m_Q[3] * m_epsroot[0]);
 
     //define the Lepton propagators
     double Delta2Q2 = m_t / m_Q2;
     double yeps = m_yBMJ[0] * (1. + m_epsilonBMJ[1]);
-    double J = (1. - m_yBMJ[0] - m_yBMJ[0] * m_epsilonBMJ[1] / 2.) * (1. + Delta2Q2)
-            - (1. - m_xB) * (2. - m_yBMJ[0]) * Delta2Q2;
+    double J = (1. - m_yBMJ[0] - m_yBMJ[0] * m_epsilonBMJ[1] / 2.)
+            * (1. + Delta2Q2) - (1. - m_xB) * (2. - m_yBMJ[0]) * Delta2Q2;
     m_P1 = -(J + 2. * m_K[0] * cos(m_phi1BMK)) / yeps;
     m_P2 = 1. + Delta2Q2 - m_P1;
 
-    // beam helicity
-    m_lambda = beamHelicity;
-
     // Compute Fourier coeffs of BH
     computeFourierCoeffsBH();
+
     // Compute Fourier coeffs of VCS
     computeFourierCoeffsVCS();
+
     // Compute Fourier coeffs of Interference
     computeFourierCoeffsInterf();
 }
 
 void DVCSProcessBMJ12::isModuleWellConfigured() {
 
-    //check mother class
+    // check mother class
     DVCSProcessModule::isModuleWellConfigured();
+}
+
+void DVCSProcessBMJ12::setExperimentalConditions(double beamHelicity,
+        double beamCharge, NumA::Vector3D targetPolarization) {
+
+    // run for mother
+    DVCSProcessModule::setExperimentalConditions(beamHelicity, beamCharge,
+            targetPolarization);
+
+    // define the angles and Lambda
+    defineAngles(targetPolarization);
+
+    // beam helicity
+    m_lambda = beamHelicity;
 }
 
 void DVCSProcessBMJ12::defineAngles(const NumA::Vector3D &targetPolarization) {
@@ -365,8 +367,8 @@ void DVCSProcessBMJ12::computeFourierCoeffsBH() {
 
     // TP Fourier coefficients
     double C2 = sqrt(1. - m_yBMJ[0] - m_epsilonBMJ[1] * m_yBMJ[1] / 4.);
-    m_cBH[2][0] = -8. * m_lambda * cos(m_phi2BMK) * (2. - m_yBMJ[0]) * m_yBMJ[0] / MQ
-            * m_epsroot[0] * m_K[0] / C2 * F1PlusF2
+    m_cBH[2][0] = -8. * m_lambda * cos(m_phi2BMK) * (2. - m_yBMJ[0]) * m_yBMJ[0]
+            / MQ * m_epsroot[0] * m_K[0] / C2 * F1PlusF2
             * (m_xB * m_xB2 * pow(MQ, 2) * (1. - Delta2Q2) * F1PlusF2
                     + (1. - (1. - m_xB) * Delta2Q2)
                             * (m_xB2 / (4. * Delta2M2) * (1. - Delta2Q2) * F1
@@ -387,7 +389,8 @@ void DVCSProcessBMJ12::computeFourierCoeffsVCS() {
     C1 = sqrt(C2);
 
     // Unpolarized Fourier coeffs
-    m_cVCS[0][0] = (2 * (2 - 2 * m_yBMJ[0] + m_yBMJ[1] * (1. + m_epsilonBMJ[1] / 2.))
+    m_cVCS[0][0] = (2
+            * (2 - 2 * m_yBMJ[0] + m_yBMJ[1] * (1. + m_epsilonBMJ[1] / 2.))
             * C_VCS(0, 1, 1, 1, 1, -1, 1, -1, 1).real()
             + 8 * C2 * C_VCS(0, 0, 1, 0, 1).real()) / m_epsroot[1];
     m_cVCS[0][1] = 4 * sqrt(2.) * C1 / m_epsroot[1] * (2 - m_yBMJ[0])
@@ -446,7 +449,8 @@ void DVCSProcessBMJ12::computeAngularCoeffsInterf() {
     double tpQ2 = tp / m_Q2;
     double C2 = 1. - m_yBMJ[0] - m_epsilonBMJ[1] * m_yBMJ[1] / 4.;
     double C1 = sqrt(C2);
-    double B2 = 2. - 2 * m_yBMJ[0] + m_yBMJ[1] + m_epsilonBMJ[1] * m_yBMJ[1] / 2.;
+    double B2 = 2. - 2 * m_yBMJ[0] + m_yBMJ[1]
+            + m_epsilonBMJ[1] * m_yBMJ[1] / 2.;
 
     /* Unpolarized and TP- target
      * Angulars coeffs C and S
@@ -455,7 +459,8 @@ void DVCSProcessBMJ12::computeAngularCoeffsInterf() {
     // C++ coefficients
     m_C[0][0][0] =
             -4 * (2. - m_yBMJ[0]) * (1. + m_epsroot[0]) / m_epsroot[3]
-                    * (Kt2Q2 * (2. - m_yBMJ[0]) * (2. - m_yBMJ[0]) / m_epsroot[0]
+                    * (Kt2Q2 * (2. - m_yBMJ[0]) * (2. - m_yBMJ[0])
+                            / m_epsroot[0]
                             + tQ2 * C2 * (2 - m_xB)
                                     * (1.
                                             + (2 * m_xB
@@ -475,8 +480,8 @@ void DVCSProcessBMJ12::computeAngularCoeffsInterf() {
                                             / (1 + m_epsroot[0])));
     m_C[0][2][0] =
             8 * (2. - m_yBMJ[0]) * tQ2 / m_epsroot[3]
-                    * (Kt2Q2 * (2. - m_yBMJ[0]) * (2. - m_yBMJ[0]) / m_epsroot[0]
-                            * (1 + m_epsroot[0] - 2 * m_xB) / 2.
+                    * (Kt2Q2 * (2. - m_yBMJ[0]) * (2. - m_yBMJ[0])
+                            / m_epsroot[0] * (1 + m_epsroot[0] - 2 * m_xB) / 2.
                             - C2
                                     * (2 * Kt2Q2
                                             - (1 + m_epsroot[0]) / 2.
@@ -498,9 +503,11 @@ void DVCSProcessBMJ12::computeAngularCoeffsInterf() {
                     / m_epsroot[4]
                     * (1. - (1. - 3 * m_xB) * tQ2
                             + (1. - m_epsroot[0] + 3 * m_epsilonBMJ[1]) * m_xB
-                                    * tQ2 / (1. + m_epsroot[0] - m_epsilonBMJ[1]));
+                                    * tQ2
+                                    / (1. + m_epsroot[0] - m_epsilonBMJ[1]));
     m_C[0][1][1] = 16 * m_K[0] * m_xB * tQ2 / m_epsroot[4]
-            * ((2. - m_yBMJ[0]) * (2. - m_yBMJ[0]) * (1. - (1. - 2 * m_xB) * tQ2)
+            * ((2. - m_yBMJ[0]) * (2. - m_yBMJ[0])
+                    * (1. - (1. - 2 * m_xB) * tQ2)
                     + C2 * (1 + m_epsroot[0] - 2 * m_xB) * tpQ2 / 2.);
     m_C[0][2][1] = -16 * m_K[0] * tQ2 / m_epsroot[3]
             * (C2
@@ -541,7 +548,8 @@ void DVCSProcessBMJ12::computeAngularCoeffsInterf() {
     m_S[0][1][1] = -8 * m_K[0] * (2. - m_yBMJ[0]) * m_yBMJ[0] * m_xB * tQ2
             / m_epsroot[3]
             * (m_epsroot[0] - 1. + (1. + m_epsroot[0] - 2 * m_xB) * tQ2);
-    m_S[0][2][1] = 8 * m_K[0] * (2. - m_yBMJ[0]) * m_yBMJ[0] * tQ2 / m_epsroot[1]
+    m_S[0][2][1] = 8 * m_K[0] * (2. - m_yBMJ[0]) * m_yBMJ[0] * tQ2
+            / m_epsroot[1]
             * (1.
                     - (1. - 2 * m_xB) * (1. + m_epsroot[0] - 2 * m_xB)
                             / (2 * m_epsroot[1]) * tpQ2);
@@ -609,8 +617,8 @@ void DVCSProcessBMJ12::computeAngularCoeffsInterf() {
             / m_epsroot[3]
             * (4 * (1. - m_xB) * tQ2 * (1 + m_xB * tQ2)
                     + m_epsilonBMJ[1] * (1 + tQ2) * (1 + tQ2));
-    m_S[2][2][1] = -8 * sqrt(2.) * (2. - m_yBMJ[0]) * m_yBMJ[0] * (1. - 2 * m_xB) * C1
-            * tQ2 * Kt2Q2 / m_epsroot[3];
+    m_S[2][2][1] = -8 * sqrt(2.) * (2. - m_yBMJ[0]) * m_yBMJ[0]
+            * (1. - 2 * m_xB) * C1 * tQ2 * Kt2Q2 / m_epsroot[3];
     m_S[2][0][2] = 8 * sqrt(2.) * m_K[0] * m_yBMJ[0] * C1
             * (1. + m_epsilonBMJ[1] / 2.) / m_epsroot[3]
             * (1.
@@ -635,16 +643,15 @@ void DVCSProcessBMJ12::computeAngularCoeffsInterf() {
                     - (1. - (1. - 2 * m_xB) * tQ2) * C2
                             * (m_epsroot[0] - 1.
                                     + (m_epsroot[0] + 1. - 2 * m_xB) * tQ2));
-    m_C[1][2][0] =
-            4 * (2. - m_yBMJ[0]) * tQ2 / m_epsroot[3]
-                    * (tpQ2 * C2
-                            * (2 * m_xB2 - m_epsilonBMJ[1] - 3 * m_xB
-                                    + m_xB * m_epsroot[0])
-                            + Kt2Q2 / m_epsroot[0]
-                                    * (4.
-                                            - 2 * m_xB * (2. - m_yBMJ[0])
-                                                    * (2. - m_yBMJ[0]) - 4 * m_yBMJ[0]
-                                            + m_yBMJ[1] - m_yBMJ[1] * m_epsroot[2]));
+    m_C[1][2][0] = 4 * (2. - m_yBMJ[0]) * tQ2 / m_epsroot[3]
+            * (tpQ2 * C2
+                    * (2 * m_xB2 - m_epsilonBMJ[1] - 3 * m_xB
+                            + m_xB * m_epsroot[0])
+                    + Kt2Q2 / m_epsroot[0]
+                            * (4.
+                                    - 2 * m_xB * (2. - m_yBMJ[0])
+                                            * (2. - m_yBMJ[0]) - 4 * m_yBMJ[0]
+                                    + m_yBMJ[1] - m_yBMJ[1] * m_epsroot[2]));
     m_C[1][0][1] =
             8 * m_K[0] / m_epsroot[2]
                     * ((2. - m_yBMJ[0]) * (2. - m_yBMJ[0]) * (2. - m_epsroot[0])
@@ -672,9 +679,11 @@ void DVCSProcessBMJ12::computeAngularCoeffsInterf() {
     m_C[1][2][1] =
             4 * m_K[0] * tQ2 / m_epsroot[4]
                     * (B2
-                            * (5. - 4 * m_xB + 3 * m_epsilonBMJ[1] - m_epsroot[0]
+                            * (5. - 4 * m_xB + 3 * m_epsilonBMJ[1]
+                                    - m_epsroot[0]
                                     - tQ2
-                                            * (1. - m_epsilonBMJ[1] - m_epsroot[0]
+                                            * (1. - m_epsilonBMJ[1]
+                                                    - m_epsroot[0]
                                                     - 2 * m_xB
                                                             * (4. - 4 * m_xB
                                                                     - m_epsroot[0])))
@@ -689,16 +698,15 @@ void DVCSProcessBMJ12::computeAngularCoeffsInterf() {
                                                                             - 3
                                                                                     * m_xB
                                                                             + m_epsroot[0]))));
-    m_C[1][0][2] =
-            4 * (2. - m_yBMJ[0]) * C2 * (1. + m_epsroot[0]) / m_epsroot[4]
-                    * ((2. - 3 * m_xB) * tQ2
-                            + (1. - 2 * m_xB
-                                    + 2 * (1. - m_xB) / (1. + m_epsroot[0]))
-                                    * m_xB * tQ2 * tQ2
-                            + (1.
-                                    + (m_epsroot[0] + m_xB + (1. - m_xB) * tQ2)
-                                            / (1. + m_epsroot[0]) * tQ2)
-                                    * m_epsilonBMJ[1]);
+    m_C[1][0][2] = 4 * (2. - m_yBMJ[0]) * C2 * (1. + m_epsroot[0])
+            / m_epsroot[4]
+            * ((2. - 3 * m_xB) * tQ2
+                    + (1. - 2 * m_xB + 2 * (1. - m_xB) / (1. + m_epsroot[0]))
+                            * m_xB * tQ2 * tQ2
+                    + (1.
+                            + (m_epsroot[0] + m_xB + (1. - m_xB) * tQ2)
+                                    / (1. + m_epsroot[0]) * tQ2)
+                            * m_epsilonBMJ[1]);
     m_C[1][1][2] = 4 * (2. - m_yBMJ[0]) * C2 * m_xB * tQ2 / m_epsroot[4]
             * (4 * Kt2Q2 + 1. + m_epsroot[0]
                     + tQ2
@@ -737,12 +745,14 @@ void DVCSProcessBMJ12::computeAngularCoeffsInterf() {
     m_S[1][1][1] = 8 * m_K[0] * (2. - m_yBMJ[0]) * m_yBMJ[0] * m_xB * tQ2
             / m_epsroot[3] * (1. + m_epsroot[0])
             * (1. - tQ2 * (1. - 2 * m_xB - m_epsroot[0]) / (1. + m_epsroot[0]));
-    m_S[1][2][1] = 4 * m_K[0] * (2. - m_yBMJ[0]) * m_yBMJ[0] * tQ2 / m_epsroot[3]
+    m_S[1][2][1] = 4 * m_K[0] * (2. - m_yBMJ[0]) * m_yBMJ[0] * tQ2
+            / m_epsroot[3]
             * (3. + 2 * m_epsilonBMJ[1] + m_epsroot[0]
                     - 2 * m_xB * (1. + m_epsroot[0])
                     - tQ2 * (1. - 2 * m_xB) * (1. - 2 * m_xB - m_epsroot[0]));
     m_S[1][0][2] = 2 * m_yBMJ[0] * C2 * (1. + m_epsroot[0]) / m_epsroot[3]
-            * (m_epsilonBMJ[1] - 2 * (1. + m_epsilonBMJ[1] / (2 * m_xB)) * m_xB * tQ2)
+            * (m_epsilonBMJ[1]
+                    - 2 * (1. + m_epsilonBMJ[1] / (2 * m_xB)) * m_xB * tQ2)
             * (1. + (m_epsroot[0] - 1. + 2 * m_xB) / (1. + m_epsroot[0]) * tQ2);
     m_S[1][1][2] = 4 * m_yBMJ[0] * C2 * m_xB * tQ2 / m_epsroot[3]
             * (1. + m_epsroot[0]) * (1. - (1. - 2 * m_xB) * tQ2)
@@ -763,31 +773,35 @@ void DVCSProcessBMJ12::computeAngularCoeffsInterf() {
                             * (1.
                                     + (m_epsroot[0] - 1. + 2 * m_xB)
                                             / (1. + m_epsroot[0]) * tQ2));
-    m_dC[0][1][0] = 4 * m_yBMJ[0] * (1. + m_epsroot[0]) * tQ2 / m_epsroot[4]
-            * ((2. - m_yBMJ[0]) * (2. - m_yBMJ[0]) * (1. + m_epsroot[0] - 2 * m_xB)
-                    * Kt2Q2 / (1. + m_epsroot[0])
-                    + C2 * (2. - m_xB + 3 * m_epsilonBMJ[1] / 2.)
-                            * (1.
-                                    + (4 * (1. - m_xB) * m_xB + m_epsilonBMJ[1])
-                                            / (4. - 2 * m_xB + 3 * m_epsilonBMJ[1])
-                                            * tQ2)
-                            * (1.
-                                    + (m_epsroot[0] - 1. + 2 * m_xB)
-                                            / (1. + m_epsroot[0]) * tQ2));
+    m_dC[0][1][0] =
+            4 * m_yBMJ[0] * (1. + m_epsroot[0]) * tQ2 / m_epsroot[4]
+                    * ((2. - m_yBMJ[0]) * (2. - m_yBMJ[0])
+                            * (1. + m_epsroot[0] - 2 * m_xB) * Kt2Q2
+                            / (1. + m_epsroot[0])
+                            + C2 * (2. - m_xB + 3 * m_epsilonBMJ[1] / 2.)
+                                    * (1.
+                                            + (4 * (1. - m_xB) * m_xB
+                                                    + m_epsilonBMJ[1])
+                                                    / (4. - 2 * m_xB
+                                                            + 3
+                                                                    * m_epsilonBMJ[1])
+                                                    * tQ2)
+                                    * (1.
+                                            + (m_epsroot[0] - 1. + 2 * m_xB)
+                                                    / (1. + m_epsroot[0]) * tQ2));
     m_dC[0][2][0] = 4 * m_yBMJ[0] * m_xB * tQ2 / m_epsroot[4]
             * (2 * (2. - m_yBMJ[0]) * (2. - m_yBMJ[0]) * Kt2Q2
                     + C2 * (1. + m_epsroot[0]) * (1. - (1. - 2 * m_xB) * tQ2)
                             * (1.
                                     + (m_epsroot[0] - 1. + 2 * m_xB)
                                             / (1. + m_epsroot[0]) * tQ2));
-    m_dC[0][0][1] =
-            -4 * m_K[0] * m_yBMJ[0] * (2. - m_yBMJ[0])
-                    * (1. + m_epsroot[0] - m_epsilonBMJ[1]) / m_epsroot[4]
-                    * (1.
-                            - (1.
-                                    - 2 * m_xB * (2. + m_epsroot[0])
-                                            / (1. + m_epsroot[0] - m_epsilonBMJ[1]))
-                                    * tQ2);
+    m_dC[0][0][1] = -4 * m_K[0] * m_yBMJ[0] * (2. - m_yBMJ[0])
+            * (1. + m_epsroot[0] - m_epsilonBMJ[1]) / m_epsroot[4]
+            * (1.
+                    - (1.
+                            - 2 * m_xB * (2. + m_epsroot[0])
+                                    / (1. + m_epsroot[0] - m_epsilonBMJ[1]))
+                            * tQ2);
     m_dC[0][1][1] = 8 * m_K[0] * m_yBMJ[0] * (2. - m_yBMJ[0])
             * (m_epsroot[0] + 2 * (1. - m_xB)) * tQ2 / m_epsroot[3]
             * (1.
@@ -868,8 +882,8 @@ void DVCSProcessBMJ12::computeAngularCoeffsInterf() {
             / m_epsroot[3] * (1. + tQ2);
     m_dC[2][0][1] = -8 * sqrt(2.) * m_yBMJ[0] * (2. - m_yBMJ[0]) * C1 * Kt2Q2
             / m_epsroot[3];
-    m_dC[2][1][1] = 8 * sqrt(2.) * m_yBMJ[0] * (2. - m_yBMJ[0]) * C1 * tQ2 * Kt2Q2
-            / m_epsroot[3];
+    m_dC[2][1][1] = 8 * sqrt(2.) * m_yBMJ[0] * (2. - m_yBMJ[0]) * C1 * tQ2
+            * Kt2Q2 / m_epsroot[3];
     m_dC[2][2][1] = 0.;
     m_dC[2][0][2] = -8 * sqrt(2.) * m_K[0] * m_yBMJ[0] * C1 * (1. + m_xB * tQ2)
             / m_epsroot[3];
@@ -1101,8 +1115,8 @@ std::complex<double> DVCSProcessBMJ12::CFF(GPDType::Type F, int a, int b) {
 
 }
 
-std::complex<double> DVCSProcessBMJ12::C_VCS(unsigned int S, int a1, int b1, int a2,
-        int b2) {
+std::complex<double> DVCSProcessBMJ12::C_VCS(unsigned int S, int a1, int b1,
+        int a2, int b2) {
     std::complex<double> H1(0., 0.), Ht1(0., 0.), E1(0., 0.), Et1(0., 0.);
     std::complex<double> H2(0., 0.), Ht2(0., 0.), E2(0., 0.), Et2(0., 0.);
     H1 = CFF(GPDType::H, a1, b1);
@@ -1127,8 +1141,8 @@ std::complex<double> DVCSProcessBMJ12::C_VCS(unsigned int S, int a1, int b1, int
                                 + m_t / (4 * m_M[1]) * Et1 * conj(Et2));
     } else if (S == 1) {
         return (4 * (1 - m_xB) * (1 + m_xB * tQ2)
-                + 2 * (3. / 2. - m_xB + tQ2 / 2.) * m_epsilonBMJ[1]) / m_xBtQ2[1]
-                * (H1 * conj(Ht2) + Ht1 * conj(H2))
+                + 2 * (3. / 2. - m_xB + tQ2 / 2.) * m_epsilonBMJ[1])
+                / m_xBtQ2[1] * (H1 * conj(Ht2) + Ht1 * conj(H2))
                 - m_xB2 * (1. - (1 - 2 * m_xB) * tQ2) / m_xBtQ2[1]
                         * (H1 * conj(Et2) + Et1 * conj(H2) + Ht1 * conj(E2)
                                 + E1 * conj(Ht2))
@@ -1156,8 +1170,8 @@ std::complex<double> DVCSProcessBMJ12::C_VCS(unsigned int S, int a1, int b1, int
     }
 }
 
-std::complex<double> DVCSProcessBMJ12::C_VCS(unsigned int S, int a1, int b1, int a2,
-        int b2, int a3, int b3) {
+std::complex<double> DVCSProcessBMJ12::C_VCS(unsigned int S, int a1, int b1,
+        int a2, int b2, int a3, int b3) {
     int signe;
     if (S == 0 or S == 3) {
         signe = +1;
@@ -1170,8 +1184,8 @@ std::complex<double> DVCSProcessBMJ12::C_VCS(unsigned int S, int a1, int b1, int
     return C_VCS(S, a1, b1, a2, b2) + signe * 1. * C_VCS(S, a1, b1, a3, b3);
 }
 
-std::complex<double> DVCSProcessBMJ12::C_VCS(unsigned int S, int a1, int b1, int a2,
-        int b2, int a3, int b3, int a4, int b4) {
+std::complex<double> DVCSProcessBMJ12::C_VCS(unsigned int S, int a1, int b1,
+        int a2, int b2, int a3, int b3, int a4, int b4) {
     int signe;
     if (S == 0 or S == 3) {
         signe = +1;
@@ -1262,8 +1276,8 @@ std::complex<double> DVCSProcessBMJ12::C_I(unsigned int S, int a, int b,
     }
 }
 
-std::complex<double> DVCSProcessBMJ12::C_I(unsigned int S, unsigned int n, int a,
-        int b) {
+std::complex<double> DVCSProcessBMJ12::C_I(unsigned int S, unsigned int n,
+        int a, int b) {
     unsigned int i;
     if (a == -1) {
         a = 1;
@@ -1296,8 +1310,8 @@ std::complex<double> DVCSProcessBMJ12::C_I(unsigned int S, unsigned int n, int a
     }
 }
 
-std::complex<double> DVCSProcessBMJ12::S_I(unsigned int S, unsigned int n, int a,
-        int b) {
+std::complex<double> DVCSProcessBMJ12::S_I(unsigned int S, unsigned int n,
+        int a, int b) {
     unsigned int i;
     if (a == -1) {
         a = 1;
@@ -1394,8 +1408,8 @@ double DVCSProcessBMJ12::CrossSectionVCS(double beamHelicity, double beamCharge,
             * m_phaseSpace;
 }
 
-double DVCSProcessBMJ12::CrossSectionInterf(double beamHelicity, double beamCharge,
-        NumA::Vector3D targetPolarization) {
+double DVCSProcessBMJ12::CrossSectionInterf(double beamHelicity,
+        double beamCharge, NumA::Vector3D targetPolarization) {
     return SqrAmplInterf(beamHelicity, beamCharge, targetPolarization)
             * m_phaseSpace;
 }

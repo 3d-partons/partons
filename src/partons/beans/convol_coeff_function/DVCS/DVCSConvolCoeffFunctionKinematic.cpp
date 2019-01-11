@@ -77,7 +77,9 @@ std::string DVCSConvolCoeffFunctionKinematic::toString() const {
     ElemUtils::Formatter formatter;
 
     formatter << ConvolCoeffFunctionKinematic::toString();
-    formatter << " Q2: " << m_Q2.toString() << '\n';
+
+    if (m_Q2.isInitialized())
+           formatter << "Q2: " << m_Q2.toString() << ' ';
 
     return formatter.str();
 }

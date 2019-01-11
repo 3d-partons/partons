@@ -48,13 +48,14 @@ public:
 
         ElemUtils::Formatter formatter;
 
-        formatter << Result<KinematicType>::toString();
+        formatter << "\n\n" << Result<KinematicType>::toString() << "\n\n";
+        formatter << "Result: " << '\n';
 
         std::map<GPDType::Type, std::complex<double> >::const_iterator it;
 
         for (it = m_resultsByGPDType.begin(); it != m_resultsByGPDType.end();
                 it++) {
-            formatter << "\tCFF_" << GPDType(it->first).toString() << ": Re: "
+            formatter << "CFF " << GPDType(it->first).toString() << ": Re: "
                     << (it->second).real() << " Im: " << (it->second).imag()
                     << '\n';
         }

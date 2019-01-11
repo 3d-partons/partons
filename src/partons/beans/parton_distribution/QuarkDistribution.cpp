@@ -1,13 +1,11 @@
 #include "../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
 
 #include <ElementaryUtils/string_utils/Formatter.h>
-#include <sstream>
 
 #include "../../../../include/partons/utils/compare/CompareUtils.h"
 #include "../../../../include/partons/utils/compare/ComparisonData.h"
 
 namespace PARTONS {
-
 
 const std::string QuarkDistribution::QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DISTRIBUTION =
         "quark_distribution";
@@ -50,18 +48,18 @@ QuarkDistribution::~QuarkDistribution() {
 }
 
 std::string QuarkDistribution::toString() const {
+
+    ElemUtils::Formatter formatter;
+
     std::string quarkFlavorShortName =
             QuarkFlavor(m_quarkFlavor).getShortName();
 
-    std::ostringstream os;
-    // TODO : Use Formatter?
-    os << quarkFlavorShortName << " = " << m_quarkDistribution << std::endl;
-    os << quarkFlavorShortName << "(+) = " << m_quarkDistributionPlus
-            << std::endl;
-    os << quarkFlavorShortName << "(-) = " << m_quarkDistributionMinus
-            << std::endl;
+    formatter << quarkFlavorShortName << ": " << m_quarkDistribution << ' ';
+    formatter << quarkFlavorShortName << "(+): " << m_quarkDistributionPlus
+            << ' ';
+    formatter << quarkFlavorShortName << "(-): " << m_quarkDistributionMinus;
 
-    return os.str();
+    return formatter.str();
 }
 
 double QuarkDistribution::getQuarkDistribution() const {

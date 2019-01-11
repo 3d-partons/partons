@@ -213,7 +213,7 @@ void DVCSObservable::setKinematics(const DVCSObservableKinematic& kinematic) {
     m_t = kinematic.getT().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
     m_Q2 = kinematic.getQ2().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
     m_E = kinematic.getE().makeSameUnitAs(PhysicalUnit::GEV).getValue();
-    m_phi = kinematic.getPhi().makeSameUnitAs(PhysicalUnit::RADIAN).getValue();
+    m_phi = kinematic.getPhi()/*.makeSameUnitAs(PhysicalUnit::RADIAN)*/.getValue();
 }
 
 void DVCSObservable::initModule() {

@@ -143,6 +143,8 @@ protected:
     DVCSProcessModule(const DVCSProcessModule& other);
 
     virtual void setKinematics(const DVCSObservableKinematic& kinematic);
+    virtual void setExperimentalConditions(double beamHelicity,
+               double beamCharge, NumA::Vector3D targetPolarization);
     virtual void initModule();
     virtual void isModuleWellConfigured();
 

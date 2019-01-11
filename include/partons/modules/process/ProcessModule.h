@@ -281,10 +281,19 @@ protected:
     }
 
     /**
-     * Set internal kinematics
+     * Set internal kinematics.
      * @param kinematic Kinematics to be set
      */
     virtual void setKinematics(const KinematicType& kinematic) = 0;
+
+    /**
+     * Set experimental conditions.
+     * @param beamHelicity Helicity of the beam (in units of hbar/2).
+     * @param beamCharge Charge of the beam (in units of positron charge).
+     * @param targetPolarization Polarization of the target. In GV conventions.
+     */
+    virtual void setExperimentalConditions(double beamHelicity,
+            double beamCharge, NumA::Vector3D targetPolarization) = 0;
 
     virtual void initModule() {
     }

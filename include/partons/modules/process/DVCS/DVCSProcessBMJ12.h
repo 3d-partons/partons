@@ -55,9 +55,9 @@ protected:
     DVCSProcessBMJ12(const DVCSProcessBMJ12& other);
 
     virtual void initModule();
-    virtual void initModule(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization);
     virtual void isModuleWellConfigured();
+    virtual void setExperimentalConditions(double beamHelicity,
+            double beamCharge, NumA::Vector3D targetPolarization);
 
     // Cross sections
     virtual double CrossSectionBH(double beamHelicity, double beamCharge,
@@ -98,7 +98,7 @@ private:
     std::vector<double> m_Delta2; ///< Mandelstam variable t.
                                   ///< m_Delta2[0] = t, m_Delta2[1] = Delta^4 = t^2, etc...
 
-    //@{
+                                  //@{
     double m_P1, m_P2; ///< Lepton propagators.
     //@}
 
