@@ -31,9 +31,9 @@ public:
     enum Type {
         UNDEFINED = 0,          ///< Undefined
         NONE = 1,               ///< None
-        EMP = 2,                ///< Energy, momentum or mass (eV in natural units)
-        EMP2 = 3,               ///< Square of energy, momentum or mass (eV^2 in natural units)
-        DISTANCE = 4,           ///< Distance (eV^-1 in natural units)
+        EMP = 2,                ///< Energy, mass or momentum (eV in natural units)
+        EMP2 = 3,               ///< Square of energy, mass or momentum (eV^2 in natural units)
+        DISTANCE_TIME = 4,      ///< Distance or time (eV^-1 in natural units)
         CROSS_SECTION = 5,      ///< Cross section (eV^-2 in natural units)
         ANGLE = 6               ///< Angle
     };

@@ -38,8 +38,8 @@ std::string UnitCategory::toString() const {
     case EMP2:
         return "EMP2";
         break;
-    case DISTANCE:
-        return "DISTANCE";
+    case DISTANCE_TIME:
+        return "DISTANCE_TIME";
         break;
     case CROSS_SECTION:
         return "CROSS_SECTION";
@@ -70,8 +70,8 @@ std::string UnitCategory::getShortName() {
     case EMP2:
         return "square of energy momentum or mass";
         break;
-    case DISTANCE:
-        return "distance";
+    case DISTANCE_TIME:
+        return "distance or time";
         break;
     case CROSS_SECTION:
         return "cross section";

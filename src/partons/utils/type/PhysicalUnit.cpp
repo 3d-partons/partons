@@ -26,27 +26,137 @@ std::string PhysicalUnit::toString() const {
 
     switch (m_type) {
 
+        //undefined
     case UNDEFINED:
         return "UNDEFINED";
         break;
+
+        //none
     case NONE:
         return "NONE";
+        break;
+
+        //energy, momentum or mass
+    case EV:
+        return "EV";
+        break;
+    case KEV:
+        return "KEV";
+        break;
+    case MEV:
+        return "MEV";
         break;
     case GEV:
         return "GEV";
         break;
+    case TEV:
+        return "TEV";
+        break;
+
+        //energy, momentum or mass squared
+    case EV2:
+        return "EV2";
+        break;
+    case KEV2:
+        return "KEV2";
+        break;
+    case MEV2:
+        return "MEV2";
+        break;
     case GEV2:
         return "GEV2";
         break;
-    case DEGREE:
-        return "DEGREE";
+    case TEV2:
+        return "TEV2";
         break;
-    case RADIAN:
-        return "RADIAN";
+
+        //distance or time
+    case EVm1:
+        return "EVm1";
+        break;
+    case KEVm1:
+        return "KEVm1";
+        break;
+    case MEVm1:
+        return "MEVm1";
+        break;
+    case GEVm1:
+        return "GEVm1";
+        break;
+    case TEVm1:
+        return "TEVm1";
+        break;
+
+    case FM:
+        return "FM";
+        break;
+    case PM:
+        return "PM";
+        break;
+    case NM:
+        return "NM";
+        break;
+    case UM:
+        return "UM";
+        break;
+    case MM:
+        return "MM";
+        break;
+    case M:
+        return "M";
+        break;
+
+    case FS:
+        return "FS";
+        break;
+    case PS:
+        return "PS";
+        break;
+    case NS:
+        return "NS";
+        break;
+    case US:
+        return "US";
+        break;
+    case MS:
+        return "MS";
+        break;
+    case S:
+        return "S";
+        break;
+
+        //cross-section
+    case FB:
+        return "FB";
+        break;
+    case PB:
+        return "PB";
         break;
     case NB:
         return "NB";
         break;
+    case UB:
+        return "UB";
+        break;
+    case MB:
+        return "B";
+        break;
+    case B:
+        return "B";
+        break;
+
+        //angle
+    case DEG:
+        return "DEG";
+        break;
+    case RAD:
+        return "RAD";
+        break;
+    case MRAD:
+        return "MRAD";
+        break;
+
+        //no such type
     default:
         throw ElemUtils::CustomException("PhysicalType", __func__,
                 ElemUtils::Formatter() << "Type with id " << int(m_type)
@@ -58,27 +168,137 @@ std::string PhysicalUnit::getShortName() {
 
     switch (m_type) {
 
+        //undefined
     case UNDEFINED:
-        return "undefined";
+        return "UNDEFINED";
         break;
+
+        //none
     case NONE:
         return "none";
+        break;
+
+        //energy, momentum or mass
+    case EV:
+        return "eV";
+        break;
+    case KEV:
+        return "KeV";
+        break;
+    case MEV:
+        return "MeV";
         break;
     case GEV:
         return "GeV";
         break;
+    case TEV:
+        return "TeV";
+        break;
+
+        //energy, momentum or mass squared
+    case EV2:
+        return "eV2";
+        break;
+    case KEV2:
+        return "KeV2";
+        break;
+    case MEV2:
+        return "MeV2";
+        break;
     case GEV2:
         return "GeV2";
         break;
-    case DEGREE:
-        return "degree";
+    case TEV2:
+        return "TeV2";
         break;
-    case RADIAN:
-        return "radian";
+
+        //distance or time
+    case EVm1:
+        return "eVm1";
+        break;
+    case KEVm1:
+        return "KeVm1";
+        break;
+    case MEVm1:
+        return "MeVm1";
+        break;
+    case GEVm1:
+        return "GeVm1";
+        break;
+    case TEVm1:
+        return "TeVm1";
+        break;
+
+    case FM:
+        return "fm";
+        break;
+    case PM:
+        return "pm";
+        break;
+    case NM:
+        return "nm";
+        break;
+    case UM:
+        return "um";
+        break;
+    case MM:
+        return "mm";
+        break;
+    case M:
+        return "m";
+        break;
+
+    case FS:
+        return "fs";
+        break;
+    case PS:
+        return "ps";
+        break;
+    case NS:
+        return "ns";
+        break;
+    case US:
+        return "us";
+        break;
+    case MS:
+        return "ms";
+        break;
+    case S:
+        return "s";
+        break;
+
+        //cross-section
+    case FB:
+        return "fb";
+        break;
+    case PB:
+        return "pb";
         break;
     case NB:
         return "nb";
         break;
+    case UB:
+        return "ub";
+        break;
+    case MB:
+        return "mb";
+        break;
+    case B:
+        return "b";
+        break;
+
+        //angle
+    case DEG:
+        return "deg";
+        break;
+    case RAD:
+        return "rad";
+        break;
+    case MRAD:
+        return "mrad";
+        break;
+
+        //no such type
     default:
         throw ElemUtils::CustomException("PhysicalType", __func__,
                 ElemUtils::Formatter() << "Type with id " << int(m_type)
@@ -100,27 +320,137 @@ UnitCategory::Type PhysicalUnit::getUnitCategory() const {
 
     switch (m_type) {
 
+        //undefined
     case UNDEFINED:
         return UnitCategory::UNDEFINED;
         break;
+
+        //none
     case NONE:
         return UnitCategory::NONE;
+        break;
+
+        //energy, momentum or mass
+    case EV:
+        return UnitCategory::EMP;
+        break;
+    case KEV:
+        return UnitCategory::EMP;
+        break;
+    case MEV:
+        return UnitCategory::EMP;
         break;
     case GEV:
         return UnitCategory::EMP;
         break;
+    case TEV:
+        return UnitCategory::EMP;
+        break;
+
+        //energy, momentum or mass squared
+    case EV2:
+        return UnitCategory::EMP2;
+        break;
+    case KEV2:
+        return UnitCategory::EMP2;
+        break;
+    case MEV2:
+        return UnitCategory::EMP2;
+        break;
     case GEV2:
         return UnitCategory::EMP2;
         break;
-    case DEGREE:
-        return UnitCategory::ANGLE;
+    case TEV2:
+        return UnitCategory::EMP2;
         break;
-    case RADIAN:
-        return UnitCategory::ANGLE;
+
+        //distance or time
+    case EVm1:
+        return UnitCategory::DISTANCE_TIME;
+        break;
+    case KEVm1:
+        return UnitCategory::DISTANCE_TIME;
+        break;
+    case MEVm1:
+        return UnitCategory::DISTANCE_TIME;
+        break;
+    case GEVm1:
+        return UnitCategory::DISTANCE_TIME;
+        break;
+    case TEVm1:
+        return UnitCategory::DISTANCE_TIME;
+        break;
+
+    case FM:
+        return UnitCategory::DISTANCE_TIME;
+        break;
+    case PM:
+        return UnitCategory::DISTANCE_TIME;
+        break;
+    case NM:
+        return UnitCategory::DISTANCE_TIME;
+        break;
+    case UM:
+        return UnitCategory::DISTANCE_TIME;
+        break;
+    case MM:
+        return UnitCategory::DISTANCE_TIME;
+        break;
+    case M:
+        return UnitCategory::DISTANCE_TIME;
+        break;
+
+    case FS:
+        return UnitCategory::DISTANCE_TIME;
+        break;
+    case PS:
+        return UnitCategory::DISTANCE_TIME;
+        break;
+    case NS:
+        return UnitCategory::DISTANCE_TIME;
+        break;
+    case US:
+        return UnitCategory::DISTANCE_TIME;
+        break;
+    case MS:
+        return UnitCategory::DISTANCE_TIME;
+        break;
+    case S:
+        return UnitCategory::DISTANCE_TIME;
+        break;
+
+        //cross-section
+    case FB:
+        return UnitCategory::CROSS_SECTION;
+        break;
+    case PB:
+        return UnitCategory::CROSS_SECTION;
         break;
     case NB:
         return UnitCategory::CROSS_SECTION;
         break;
+    case UB:
+        return UnitCategory::CROSS_SECTION;
+        break;
+    case MB:
+        return UnitCategory::CROSS_SECTION;
+        break;
+    case B:
+        return UnitCategory::CROSS_SECTION;
+        break;
+
+        //angle
+    case DEG:
+        return UnitCategory::ANGLE;
+        break;
+    case RAD:
+        return UnitCategory::ANGLE;
+        break;
+    case MRAD:
+        return UnitCategory::ANGLE;
+        break;
+
+        //no such type
     default:
         throw ElemUtils::CustomException("PhysicalType", __func__,
                 ElemUtils::Formatter() << "Type with id " << int(m_type)

@@ -21,10 +21,15 @@ CREATE TABLE observable_kinematic (
 observable_kinematic_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
 bin_id INTEGER NOT NULL, 
 xB DOUBLE NOT NULL, 
+xB_unit INTEGER NOT NULL,
 t DOUBLE NOT NULL, 
+t_unit INTEGER NOT NULL,
 Q2 DOUBLE NOT NULL, 
+Q2_unit INTEGER NOT NULL,
 E DOUBLE NOT NULL, 
+E_unit INTEGER NOT NULL,
 phi DOUBLE NOT NULL,
+phi_unit INTEGER NOT NULL,
 experiment_id INTEGER,
 hash_sum VARCHAR(40) NOT NULL);
 CREATE INDEX observable_kinematic_index ON observable_kinematic (hash_sum);
@@ -39,6 +44,7 @@ syst_error_lb DOUBLE,
 syst_error_ub DOUBLE,
 scale_error_lb DOUBLE,
 scale_error_ub DOUBLE,
+unit INTEGER NOT NULL,
 computation_module_name VARCHAR(255) NOT NULL,
 observable_type_id INTEGER NOT NULL,
 observable_kinematic_id INTEGER NOT NULL,
@@ -57,13 +63,3 @@ SELECT obr.computation_id, obk.observable_kinematic_id, obk.xB, obk.t, obk.Q2, o
 FROM observable_kinematic obk
 INNER JOIN observable_result obr ON obr.observable_kinematic_id = obk.observable_kinematic_id
 ORDER BY obr.observable_result_id;
-/*
-Output example :
-+----------------+-------------------------+------+-------+------+-----+----------------------+-------------------------+-----------------+------------------+
-| computation_id | observable_kinematic_id | xB   | t     | Q2   | E   | phi | observable_result_id | computation_module_name | observable_name | observable_value |
-+----------------+-------------------------+------+-------+------+-----+----------------------+-------------------------+-----------------+------------------+
-|              1 |                       1 | 1.68 | 0.194 | 0.11 |  6. | 25 |                    1 | experimental data       | Aul             |             0.44 |
-+----------------+-------------------------+------+-------+------+-----+----------------------+-------------------------+-----------------+------------------+
-*/
-
-

@@ -31,13 +31,60 @@ public:
      * Enum types.
      */
     enum Type {
+
+        //undefined
         UNDEFINED = 0,  ///< undefined
+
+        //none
         NONE = 1,       ///< none
-        GEV = 2,        ///< GeV
-        GEV2 = 3,       ///< GeV2
-        DEGREE = 4,     ///< degree
-        RADIAN = 5,     ///< radian
-        NB = 6          ///< nb
+
+        //energy, momentum or mass
+        EV = 2,         ///< eV
+        KEV = 3,        ///< keV
+        MEV = 4,        ///< MeV
+        GEV = 5,        ///< GeV
+        TEV = 6,        ///< TeV
+
+        //energy, momentum or mass squared
+        EV2 = 7,         ///< eV^2
+        KEV2 = 8,        ///< keV^2
+        MEV2 = 9,        ///< MeV^2
+        GEV2 = 10,       ///< GeV^2
+        TEV2 = 11,       ///< TeV^2
+
+        //distance or time
+        EVm1 = 12,       ///< eV^-1
+        KEVm1 = 13,      ///< keV^-1
+        MEVm1 = 14,      ///< MeV^-1
+        GEVm1 = 15,      ///< GeV^-1
+        TEVm1 = 16,      ///< TeV^-1
+
+        FM = 17,         ///< fm
+        PM = 18,         ///< pm
+        NM = 19,         ///< nm
+        UM = 20,         ///< um
+        MM = 21,         ///< mm
+        M = 22,          ///< m
+
+        FS = 23,         ///< fs
+        PS = 24,         ///< ps
+        NS = 25,         ///< ns
+        US = 26,         ///< us
+        MS = 27,         ///< ms
+        S = 28,          ///< s
+
+        //cross-section
+        FB = 29,         ///< fb
+        PB = 30,         ///< pb
+        NB = 31,         ///< nb
+        UB = 32,         ///< ub
+        MB = 33,         ///< mb
+        B = 34,          ///< b
+
+        //angle
+        DEG = 35,        ///< degree
+        RAD = 36,        ///< radian
+        MRAD = 37        ///< mradian
     };
 
     /**
