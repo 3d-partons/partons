@@ -26,7 +26,7 @@ DVCSObservableKinematic::DVCSObservableKinematic() :
                 PhysicalType<double>(PhysicalUnit::GEV2)), m_Q2(
                 PhysicalType<double>(PhysicalUnit::GEV2)), m_E(
                 PhysicalType<double>(PhysicalUnit::GEV)), m_phi(
-                PhysicalType<double>(PhysicalUnit::DEGREE)) {
+                PhysicalType<double>(PhysicalUnit::DEG)) {
 }
 
 DVCSObservableKinematic::DVCSObservableKinematic(
@@ -36,7 +36,7 @@ DVCSObservableKinematic::DVCSObservableKinematic(
                 PhysicalType<double>(PhysicalUnit::GEV2)), m_Q2(
                 PhysicalType<double>(PhysicalUnit::GEV2)), m_E(
                 PhysicalType<double>(PhysicalUnit::GEV)), m_phi(
-                PhysicalType<double>(PhysicalUnit::DEGREE)) {
+                PhysicalType<double>(PhysicalUnit::DEG)) {
 
     if (parameters.isAvailable(
             DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_XB)) {
@@ -84,7 +84,7 @@ DVCSObservableKinematic::DVCSObservableKinematic(double xB, double t, double Q2,
                 PhysicalType<double>(t, PhysicalUnit::GEV2)), m_Q2(
                 PhysicalType<double>(Q2, PhysicalUnit::GEV2)), m_E(
                 PhysicalType<double>(E, PhysicalUnit::GEV)), m_phi(
-                PhysicalType<double>(phi, PhysicalUnit::DEGREE)) {
+                PhysicalType<double>(phi, PhysicalUnit::DEG)) {
 }
 
 DVCSObservableKinematic::DVCSObservableKinematic(const PhysicalType<double>& xB,
@@ -95,7 +95,7 @@ DVCSObservableKinematic::DVCSObservableKinematic(const PhysicalType<double>& xB,
                 PhysicalType<double>(PhysicalUnit::GEV2)), m_Q2(
                 PhysicalType<double>(PhysicalUnit::GEV2)), m_E(
                 PhysicalType<double>(PhysicalUnit::GEV)), m_phi(
-                PhysicalType<double>(PhysicalUnit::DEGREE)) {
+                PhysicalType<double>(PhysicalUnit::DEG)) {
 
     m_xB.checkIfSameUnitCategoryAs(xB);
     m_t.checkIfSameUnitCategoryAs(t);
@@ -119,7 +119,7 @@ DVCSObservableKinematic::DVCSObservableKinematic(
                 PhysicalType<double>(t, PhysicalUnit::GEV2)), m_Q2(
                 PhysicalType<double>(Q2, PhysicalUnit::GEV2)), m_E(
                 PhysicalType<double>(E, PhysicalUnit::GEV)), m_phi(
-                PhysicalType<double>(phi, PhysicalUnit::DEGREE)) {
+                PhysicalType<double>(phi, PhysicalUnit::DEG)) {
 }
 
 DVCSObservableKinematic::DVCSObservableKinematic(

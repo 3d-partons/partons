@@ -12,6 +12,7 @@
 #include "../../../include/partons/beans/automation/Task.h"
 #include "../../../include/partons/beans/KinematicUtils.h"
 #include "../../../include/partons/BaseObjectRegistry.h"
+#include "../../../include/partons/database/gpd/service/GPDResultDaoService.h"
 #include "../../../include/partons/modules/gpd/GPDModule.h"
 #include "../../../include/partons/ModuleObjectFactory.h"
 #include "../../../include/partons/Partons.h"
@@ -77,24 +78,26 @@ void GPDService::computeTask(Task &task) {
 
     updateResultInfo(resultList, m_resultInfo);
 
-//    if (task.isStoreInDB()) {
-//        GPDResultDaoService resultService;
-//        int computationId = resultService.insert(resultList);
-//
-//        if (computationId != -1) {
-//            info(__func__,
-//                    ElemUtils::Formatter()
-//                            << "List of GPD result has been stored in database with computation_id = "
-//                            << computationId);
-//        } else {
-//            error(__func__,
-//                    ElemUtils::Formatter()
-//                            << "Failed to insert List of GPD result into database");
-//        }
+    if (task.isStoreInDB()) {
 
-//        GPDResultDaoService gpdResultDaoService;
-//        gpdResultDaoService.insert(resultList);
-//    }
+        GPDResultDaoService resultService;
+
+        int computationId = resultService.insert(resultList);
+
+        if (computationId != -1) {
+            info(__func__,
+                    ElemUtils::Formatter()
+                            << "List of GPD result has been stored in database with computation_id = "
+                            << computationId);
+        } else {
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    ElemUtils::Formatter()
+                            << "Failed to insert List of GPD result into database");
+        }
+
+        GPDResultDaoService gpdResultDaoService;
+        gpdResultDaoService.insert(resultList);
+    }
 
     m_resultListBuffer = resultList;
 }

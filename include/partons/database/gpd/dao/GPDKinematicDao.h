@@ -13,6 +13,7 @@
 
 #include "../../../beans/gpd/GPDKinematic.h"
 #include "../../../beans/List.h"
+#include "../../../utils/type/PhysicalType.h"
 
 namespace PARTONS {
 
@@ -40,23 +41,27 @@ public:
      * Insert GPD kinematics into the database.
      * @param x Longitudinal momentum fraction of active parton.
      * @param xi Skewness variable.
-     * @param t Four-momentum transfer squared of hadron target (in GeV<sup>2</sup>).
-     * @param MuF2 Factorization scale squared (in GeV<sup>2</sup>).
-     * @param MuR2 Renormalization scale squared (in GeV<sup>2</sup>).
+     * @param t Four-momentum transfer squared of hadron target.
+     * @param MuF2 Factorization scale squared.
+     * @param MuR2 Renormalization scale squared.
      * @return Unique id of inserted row in the database.
      */
-    int insert(double x, double xi, double t, double MuF2, double MuR2) const;
+    int insert(const PhysicalType<double>& x, const PhysicalType<double>& xi,
+            const PhysicalType<double>& t, const PhysicalType<double>& MuF2,
+            const PhysicalType<double>& MuR2) const;
 
     /**
      * Select GPD kinematics from the database.
      * @param x Longitudinal momentum fraction of active parton.
      * @param xi Skewness variable.
-     * @param t Four-momentum transfer squared of hadron target (in GeV<sup>2</sup>).
-     * @param MuF2 Factorization scale squared (in GeV<sup>2</sup>).
-     * @param MuR2 Renormalization scale squared (in GeV<sup>2</sup>).
+     * @param t Four-momentum transfer squared of hadron target.
+     * @param MuF2 Factorization scale squared.
+     * @param MuR2 Renormalization scale squared.
      * @return Unique id of selected row in the database.
      */
-    int select(double x, double xi, double t, double MuF2, double MuR2) const;
+    int select(const PhysicalType<double>& x, const PhysicalType<double>& xi,
+            const PhysicalType<double>& t, const PhysicalType<double>& MuF2,
+            const PhysicalType<double>& MuR2) const;
 
     /**
      * Retrieve GPD kinematics from the database by given unique id of row.
