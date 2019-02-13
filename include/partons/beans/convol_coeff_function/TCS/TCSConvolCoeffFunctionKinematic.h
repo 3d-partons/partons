@@ -1,8 +1,8 @@
-#ifndef DVCS_CONVOL_COEFF_FUNCTION_KINEMATIC_H
-#define DVCS_CONVOL_COEFF_FUNCTION_KINEMATIC_H
+#ifndef TCS_CONVOL_COEFF_FUNCTION_KINEMATIC_H
+#define TCS_CONVOL_COEFF_FUNCTION_KINEMATIC_H
 
 /**
- * @file DVCSConvolCoeffFunctionKinematic.h
+ * @file TCSConvolCoeffFunctionKinematic.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date July 22, 2015
  * @version 1.0
@@ -18,62 +18,62 @@
 namespace PARTONS {
 
 /**
- * @class DVCSConvolCoeffFunctionKinematic
+ * @class TCSConvolCoeffFunctionKinematic
  *
- * @brief Class representing single CCF kinematics for DVCS process.
+ * @brief Class representing single CCF kinematics for TCS process.
  *
- * This class represents a single CCF kinematics for DVCS process (xi, t, \f$Q^{2}\f$, \f$\mu_{F}^{2}\f$, \f$\mu_{F}^{2}\f$).
+ * This class represents a single CCF kinematics for TCS process (xi, t, \f$Q^{2}'\f$, \f$\mu_{F}^{2}\f$, \f$\mu_{F}^{2}\f$).
  */
-class DVCSConvolCoeffFunctionKinematic: public ConvolCoeffFunctionKinematic {
+class TCSConvolCoeffFunctionKinematic: public ConvolCoeffFunctionKinematic {
 
 public:
 
-    static const std::string DVCS_CONVOL_COEFF_FUNCTION_KNEMATIC_CLASS_NAME; ///< Type of the kinematic in XML automation.
+    static const std::string TCS_CONVOL_COEFF_FUNCTION_KNEMATIC_CLASS_NAME; ///< Type of the kinematic in XML automation.
 
     /**
      * Default constructor.
      */
-    DVCSConvolCoeffFunctionKinematic();
+    TCSConvolCoeffFunctionKinematic();
 
     /**
      * Assignment constructor.
-     * @param parameters Parameters object storing values to be set marked by GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI, GPDKinematic::PARAMETER_NAME_T, DVCSObservableKinematic::PARAMETER_NAME_Q2, GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUF2, GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUR2.
+     * @param parameters Parameters object storing values to be set marked by GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI, GPDKinematic::PARAMETER_NAME_T, TCSObservableKinematic::PARAMETER_NAME_Q2Prim, GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUF2, GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUR2.
      */
-    DVCSConvolCoeffFunctionKinematic(const ElemUtils::Parameters &parameters);
+    TCSConvolCoeffFunctionKinematic(const ElemUtils::Parameters &parameters);
 
     /**
      * Assignment constructor.
      * @param xi Skewness variable.
      * @param t Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
-     * @param Q2 Virtual-photon virtuality (in \f$GeV^{2}\f$).
+     * @param Q2Prim Outgoing virtual-photon virtuality (in \f$GeV^{2}\f$).
      * @param MuF2 Factorization scale squared (in \f$GeV^{2}\f$).
      * @param MuR2 Renormalization scale squared (in \f$GeV^{2}\f$).
      */
-    DVCSConvolCoeffFunctionKinematic(double xi, double t, double Q2,
+    TCSConvolCoeffFunctionKinematic(double xi, double t, double Q2Prim,
             double MuF2, double MuR2);
 
     /**
      * Assignment constructor.
      * @param xi Skewness variable.
      * @param t Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
-     * @param Q2 Virtual-photon virtuality (in \f$GeV^{2}\f$).
+     * @param Q2Prim Outgoing virtual-photon virtuality (in \f$GeV^{2}\f$).
      * @param MuF2 Factorization scale squared (in \f$GeV^{2}\f$).
      * @param MuR2 Renormalization scale squared (in \f$GeV^{2}\f$).
      */
-    DVCSConvolCoeffFunctionKinematic(const PhysicalType<double> &xi,
-            const PhysicalType<double> &t, const PhysicalType<double> &Q2,
+    TCSConvolCoeffFunctionKinematic(const PhysicalType<double> &xi,
+            const PhysicalType<double> &t, const PhysicalType<double> &Q2Prim,
             const PhysicalType<double> &MuF2, const PhysicalType<double> &MuR2);
 
     /**
      * Assignment constructor.
      * @param xi Skewness variable.
      * @param t Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
-     * @param Q2 Virtual-photon virtuality (in \f$GeV^{2}\f$).
+     * @param Q2Prim Outgoing virtual-photon virtuality (in \f$GeV^{2}\f$).
      * @param MuF2 Factorization scale squared (in \f$GeV^{2}\f$).
      * @param MuR2 Renormalization scale squared (in \f$GeV^{2}\f$).
      */
-    DVCSConvolCoeffFunctionKinematic(const ElemUtils::GenericType &xi,
-            const ElemUtils::GenericType &t, const ElemUtils::GenericType &Q2,
+    TCSConvolCoeffFunctionKinematic(const ElemUtils::GenericType &xi,
+            const ElemUtils::GenericType &t, const ElemUtils::GenericType &Q2Prim,
             const ElemUtils::GenericType &MuF2,
             const ElemUtils::GenericType &MuR2);
 
@@ -81,13 +81,13 @@ public:
      * Copy constructor.
      * @param other Object to be copied.
      */
-    DVCSConvolCoeffFunctionKinematic(
-            const DVCSConvolCoeffFunctionKinematic &other);
+    TCSConvolCoeffFunctionKinematic(
+            const TCSConvolCoeffFunctionKinematic &other);
 
     /**
      * Destructor.
      */
-    virtual ~DVCSConvolCoeffFunctionKinematic();
+    virtual ~TCSConvolCoeffFunctionKinematic();
 
     virtual std::string toString() const;
 
@@ -108,19 +108,19 @@ public:
     //********************************************************
 
     /**
-     * Get virtual-photon virtuality.
+     * Get outgoing virtual-photon virtuality.
      */
-    const PhysicalType<double>& getQ2() const;
+    const PhysicalType<double>& getQ2Prim() const;
 
     /**
-     * Set virtual-photon virtuality.
+     * Set outgoing virtual-photon virtuality.
      */
-    void setQ2(const PhysicalType<double>& Q2);
+    void setQ2Prim(const PhysicalType<double>& Q2Prim);
 
     /**
-     * Set virtual-photon virtuality.
+     * Set outgoing virtual-photon virtuality.
      */
-    void setQ2(double Q2);
+    void setQ2Prim(double Q2Prim);
 
 protected:
 
@@ -129,23 +129,23 @@ protected:
 private:
 
     /**
-     * Virtual-photon virtuality (in \f$GeV^{2}\f$).
+     * Outgoing virtual-photon virtuality (in \f$GeV^{2}\f$).
      */
-    PhysicalType<double> m_Q2;
+    PhysicalType<double> m_Q2Prim;
 };
 
 /**
  * Stream operator to serialize class into Packet. See also GPDType::serialize().
  */
 ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
-        DVCSConvolCoeffFunctionKinematic& kinematic);
+        TCSConvolCoeffFunctionKinematic& kinematic);
 
 /**
  * Stream operator to retrieve class from Packet. See also GPDType::unserialize().
  */
 ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
-        DVCSConvolCoeffFunctionKinematic& kinematic);
+        TCSConvolCoeffFunctionKinematic& kinematic);
 
 } /* namespace PARTONS */
 
-#endif /* DVCS_CONVOL_COEFF_FUNCTION_KINEMATIC_H */
+#endif /* TCS_CONVOL_COEFF_FUNCTION_KINEMATIC_H */
