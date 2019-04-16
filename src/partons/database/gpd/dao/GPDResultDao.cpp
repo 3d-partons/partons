@@ -101,6 +101,7 @@ List<GPDResult> GPDResultDao::getGPDResultListByComputationId(
     Database::checkManyResults(getClassName(), __func__,
             Database::execSelectQuery(query), query);
 
+    //fill
     fillGPDResultList(resultList, query);
 
     return resultList;
@@ -150,6 +151,8 @@ void GPDResultDao::fillGPDResultList(List<GPDResult> &gpdResultList,
         //retrieve parton_distribution_id
         currentPartonDistributionId =
                 query.value(field_parton_distribution_id).toInt();
+
+        //set index id
         partonDistribution.setIndexId(currentPartonDistributionId);
 
         //set gluons

@@ -23,7 +23,7 @@ namespace PARTONS {
  *
  * @brief GPD result Data Access Object (DAO).
  *
- * This DAO is used to insert, select and delete GPD results from the database. This class in not intended to be used by regular users who should deal with GPDResultDaoService instead.
+ * This DAO is used to insert, select and delete GPD results from the database.
  */
 class GPDResultDao: public BaseObject {
 public:
@@ -85,9 +85,6 @@ private:
      */
     void fillGPDResultList(List<GPDResult> &gpdResultList,
             QSqlQuery &query) const;
-
-    // a supprimer
-    // void fillGPDResult(GPDResult &gpdResult) const;
 };
 
 } /* namespace PARTONS */

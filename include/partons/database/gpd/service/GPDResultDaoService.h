@@ -67,6 +67,7 @@ namespace PARTONS {
  \endcode
  */
 class GPDResultDaoService: public ResultDaoService {
+
 public:
 
     /**
@@ -105,6 +106,7 @@ public:
             const int computationId) const;
 
 private:
+
     int m_lastGPDKinematicId; ///< Unique id of row containing GPD kinematics to be inserted via temporary file mechanism.
     int m_lastGPDResultId; ///< Unique id of row containing GPD result to be inserted via temporary file mechanism.
     int m_lastPartonDistributionId; ///< Unique id of row containing parton distribution to be inserted via temporary file mechanism.
@@ -138,15 +140,6 @@ private:
      * ResultInfoDaoService object to perform database queries.
      */
     ResultInfoDaoService m_resultInfoDaoService;
-
-//    /**
-//     * Insert into the database a new GPDResult object without using transactions mechanisms.
-//     * Helpful when dealing with a ResultList<GPDResult> object, because transactions are already performed earlier.
-//     *
-//     * @param gpdResult
-//     * @return unique id related to the new entry inserted into the database
-//     */
-//    int insertWithoutTransaction(const GPDResult &gpdResult) const;
 };
 
 } /* namespace PARTONS */
