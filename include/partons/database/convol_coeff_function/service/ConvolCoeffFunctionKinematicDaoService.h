@@ -10,7 +10,7 @@
 
 #include <string>
 
-#include "../dao/ConvolCoeffFunctionKinematicDao.h"
+#include "../../../BaseObject.h"
 
 namespace PARTONS {
 
@@ -39,14 +39,6 @@ public:
      * @return Unique id of database entry that matches with hash sum value.
      */
     virtual int getKinematicIdByHashSum(const std::string &hashSum) const = 0;
-
-private:
-
-    /**
-     * ConvolCoeffFunctionKinematicDao object to perform database queries.
-     */
-    ConvolCoeffFunctionKinematicDao m_convolCoeffFunctionKinematicDao;
-
 };
 
 } /* namespace PARTONS */

@@ -1,8 +1,11 @@
 #include "../../../../../include/partons/database/convol_coeff_function/dao/DVCSConvolCoeffFunctionResultDao.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
+#include <QtSql/qsqlquery.h>
 #include <QtCore/qstring.h>
 #include <QtCore/qvariant.h>
+#include <QtSql/qsqlerror.h>
+#include <QtSql/qsqlrecord.h>
 #include <complex>
 #include <string>
 

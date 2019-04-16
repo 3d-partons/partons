@@ -13,6 +13,7 @@
 
 #include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "../../../beans/List.h"
+#include "ConvolCoeffFunctionKinematicDao.h"
 
 namespace PARTONS {
 

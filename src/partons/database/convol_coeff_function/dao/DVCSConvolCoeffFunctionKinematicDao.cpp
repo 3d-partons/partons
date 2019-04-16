@@ -12,7 +12,6 @@
 
 namespace PARTONS {
 
-
 DVCSConvolCoeffFunctionKinematicDao::DVCSConvolCoeffFunctionKinematicDao() :
         ConvolCoeffFunctionKinematicDao("DVCSConvolCoeffFunctionKinematicDao") {
 }
@@ -121,7 +120,6 @@ List<DVCSConvolCoeffFunctionKinematic> DVCSConvolCoeffFunctionKinematicDao::getK
     //create query
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-
     //prepare query
     ElemUtils::Formatter formatter;
     formatter << "SELECT ccfk." << Database::COLUMN_NAME_CCF_KINEMATIC_ID
@@ -187,7 +185,6 @@ int DVCSConvolCoeffFunctionKinematicDao::getKinematicIdByHashSum(
 
     //create query
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
-
 
     //prepare query
     ElemUtils::Formatter formatter;

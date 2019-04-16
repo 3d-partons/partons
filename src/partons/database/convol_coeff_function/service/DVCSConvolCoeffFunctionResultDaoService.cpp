@@ -4,6 +4,10 @@
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <QtSql/qsqldatabase.h>
 #include <QtSql/qsqlquery.h>
+#include <QtCore/qstring.h>
+#include <QtCore/qvariant.h>
+#include <QtSql/qsqlerror.h>
+#include <QtSql/qsqlrecord.h>
 #include <complex>
 #include <map>
 #include <string>
