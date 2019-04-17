@@ -93,15 +93,15 @@ int GPDKinematicDao::select(const PhysicalType<double>& x,
     query.prepare(QString(formatter.str().c_str()));
 
     query.bindValue(":x", x.getValue());
-    query.bindValue(":x_unit", static_cast<int>(x.getUnit()));
+    query.bindValue(":x_unit", x.getUnit());
     query.bindValue(":xi", xi.getValue());
-    query.bindValue(":xi_unit", static_cast<int>(xi.getUnit()));
+    query.bindValue(":xi_unit", xi.getUnit());
     query.bindValue(":t", t.getValue());
-    query.bindValue(":t_unit", static_cast<int>(t.getUnit()));
+    query.bindValue(":t_unit", t.getUnit());
     query.bindValue(":MuF2", MuF2.getValue());
-    query.bindValue(":MuF2_unit", static_cast<int>(MuF2.getUnit()));
+    query.bindValue(":MuF2_unit", MuF2.getUnit());
     query.bindValue(":MuR2", MuR2.getValue());
-    query.bindValue(":MuR2_unit", static_cast<int>(MuR2.getUnit()));
+    query.bindValue(":MuR2_unit", MuR2.getUnit());
 
     //execute
     Database::checkUniqueResult(getClassName(), __func__,
@@ -194,19 +194,19 @@ void GPDKinematicDao::fillGPDKinematicFromQuery(GPDKinematic &gpdKinematic,
     int id = query.value(field_id).toInt();
     double x = query.value(field_x).toDouble();
     PhysicalUnit::Type x_unit = static_cast<PhysicalUnit::Type>(query.value(
-            field_x).toInt());
+            field_x_unit).toInt());
     double xi = query.value(field_xi).toDouble();
     PhysicalUnit::Type xi_unit = static_cast<PhysicalUnit::Type>(query.value(
-            field_xi).toInt());
+            field_xi_unit).toInt());
     double t = query.value(field_t).toDouble();
     PhysicalUnit::Type t_unit = static_cast<PhysicalUnit::Type>(query.value(
-            field_t).toInt());
+            field_t_unit).toInt());
     double MuF2 = query.value(field_MuF2).toDouble();
     PhysicalUnit::Type MuF2_unit = static_cast<PhysicalUnit::Type>(query.value(
-            field_MuF2).toInt());
+            field_MuF2_unit).toInt());
     double MuR2 = query.value(field_MuR2).toDouble();
     PhysicalUnit::Type MuR2_unit = static_cast<PhysicalUnit::Type>(query.value(
-            field_MuR2).toInt());
+            field_MuR2_unit).toInt());
 
     //set
     gpdKinematic = GPDKinematic(PhysicalType<double>(x, x_unit),

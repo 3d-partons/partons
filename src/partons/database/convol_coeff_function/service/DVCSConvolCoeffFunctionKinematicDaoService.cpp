@@ -8,7 +8,8 @@
 namespace PARTONS {
 
 DVCSConvolCoeffFunctionKinematicDaoService::DVCSConvolCoeffFunctionKinematicDaoService() :
-        ConvolCoeffFunctionKinematicDaoService("DVCSConvolCoeffFunctionKinematicDaoService") {
+        ConvolCoeffFunctionKinematicDaoService(
+                "DVCSConvolCoeffFunctionKinematicDaoService") {
 }
 
 DVCSConvolCoeffFunctionKinematicDaoService::~DVCSConvolCoeffFunctionKinematicDaoService() {
@@ -63,7 +64,6 @@ int DVCSConvolCoeffFunctionKinematicDaoService::insert(
 
     } catch (const std::exception &e) {
 
-
         //else return database in a stable state : n-1
         QSqlDatabase::database().rollback();
 
@@ -75,10 +75,9 @@ int DVCSConvolCoeffFunctionKinematicDaoService::insert(
 
 int DVCSConvolCoeffFunctionKinematicDaoService::getIdByKinematicObject(
         const DVCSConvolCoeffFunctionKinematic& ccfKinematic) const {
-    return m_dvcsConvolCoeffFunctionKinematicDao.select(
-            ccfKinematic.getXi().getValue(), ccfKinematic.getT().getValue(),
-            ccfKinematic.getQ2().getValue(), ccfKinematic.getMuF2().getValue(),
-            ccfKinematic.getMuR2().getValue());
+    return m_dvcsConvolCoeffFunctionKinematicDao.select(ccfKinematic.getXi(),
+            ccfKinematic.getT(), ccfKinematic.getQ2(), ccfKinematic.getMuF2(),
+            ccfKinematic.getMuR2());
 }
 
 DVCSConvolCoeffFunctionKinematic DVCSConvolCoeffFunctionKinematicDaoService::getKinematicById(
@@ -88,10 +87,9 @@ DVCSConvolCoeffFunctionKinematic DVCSConvolCoeffFunctionKinematicDaoService::get
 
 int DVCSConvolCoeffFunctionKinematicDaoService::insertWithoutTransaction(
         const DVCSConvolCoeffFunctionKinematic& ccfKinematic) const {
-    return m_dvcsConvolCoeffFunctionKinematicDao.insert(
-            ccfKinematic.getXi().getValue(), ccfKinematic.getT().getValue(),
-            ccfKinematic.getQ2().getValue(), ccfKinematic.getMuF2().getValue(),
-            ccfKinematic.getMuR2().getValue());
+    return m_dvcsConvolCoeffFunctionKinematicDao.insert(ccfKinematic.getXi(),
+            ccfKinematic.getT(), ccfKinematic.getQ2(), ccfKinematic.getMuF2(),
+            ccfKinematic.getMuR2());
 }
 
 List<DVCSConvolCoeffFunctionKinematic> DVCSConvolCoeffFunctionKinematicDaoService::getKinematicListByComputationId(
@@ -102,7 +100,8 @@ List<DVCSConvolCoeffFunctionKinematic> DVCSConvolCoeffFunctionKinematicDaoServic
 
 int DVCSConvolCoeffFunctionKinematicDaoService::getKinematicIdByHashSum(
         const std::string& hashSum) const {
-    return m_dvcsConvolCoeffFunctionKinematicDao.getKinematicIdByHashSum(hashSum);
+    return m_dvcsConvolCoeffFunctionKinematicDao.getKinematicIdByHashSum(
+            hashSum);
 }
 
 } /* namespace PARTONS */

@@ -56,7 +56,7 @@ gpd_type_id INTEGER NOT NULL,
 real_part DOUBLE NOT NULL,
 img_part DOUBLE NOT NULL,
 ccf_result_id INTEGER NOT NULL);
-CREATE INDEX dvcs_tcs_result_index ON dvcs_tcs_result (ccf_result_id);
+CREATE INDEX tcs_ccf_result_index ON tcs_ccf_result (ccf_result_id);
 
 /* view */
 
@@ -76,11 +76,13 @@ ORDER BY ccfr.ccf_result_id;
 
 /* view for plots */
 
+/*
 CREATE VIEW ccf_plot_2d_view AS
 SELECT ccfr.computation_id, ccfk.ccf_kinematic_id, ccfk.xi, ccfk.t, ccfk.Q2, ccfk.MuF2, ccfk.MuR2, ccfr.ccf_result_id, oc.observable_channel_short_name, ccfr.computation_module_name, gt.gpd_type_short_name, ccfrc.real_part, ccfrc.img_part
-FROM ccf_kinematic ccfk
+FROM dvcs_ccf_kinematic ccfk
 INNER JOIN ccf_result ccfr ON ccfr.ccf_kinematic_id = ccfk.ccf_kinematic_id
 INNER JOIN ccf_result_complex ccfrc ON ccfrc.ccf_result_id = ccfr.ccf_result_id
 INNER JOIN gpd_type gt ON ccfrc.gpd_type_id = gt.gpd_type_id
 INNER JOIN observable_channel oc ON ccfr.channel_id = oc.observable_channel_id
 ORDER BY ccfr.ccf_result_id;
+*/

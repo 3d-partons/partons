@@ -21,7 +21,7 @@ ConvolCoeffFunctionResultDao::~ConvolCoeffFunctionResultDao() {
 }
 
 int ConvolCoeffFunctionResultDao::insertIntoCCFResult(
-        const std::string &computationModuleName, const int channelId,
+        const std::string &computationModuleName, const ChannelType::Type channelType,
         const int kinematicId, const int computationId) const {
 
     //result
@@ -36,7 +36,7 @@ int ConvolCoeffFunctionResultDao::insertIntoCCFResult(
 
     query.bindValue(":computationModuleName",
             QString(computationModuleName.c_str()));
-    query.bindValue(":channelId", channelId);
+    query.bindValue(":channelId", channelType);
     query.bindValue(":kinematicId", kinematicId);
     query.bindValue(":computationId", computationId);
 

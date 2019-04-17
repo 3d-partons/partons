@@ -13,6 +13,7 @@
 
 #include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "../../../beans/List.h"
+#include "../../../utils/type/PhysicalType.h"
 #include "ConvolCoeffFunctionKinematicDao.h"
 
 namespace PARTONS {
@@ -21,9 +22,7 @@ namespace PARTONS {
  * @class DVCSConvolCoeffFunctionKinematicDao
  *
  * @brief Compton form factor (CFF) kinematics Data Access Object (DAO).
- *
- * This DAO is used to insert, select and delete CFF kinematics from the database. This class in not intended to be used by regular users who should deal with DVCSConvolCoeffFunctionKinematicDaoService instead.
- */
+ * */
 class DVCSConvolCoeffFunctionKinematicDao: public ConvolCoeffFunctionKinematicDao {
 
 public:
@@ -47,7 +46,9 @@ public:
      * @param MuR2 Renormalization scale squared (in GeV<sup>2</sup>).
      * @return Unique id of inserted row in the database.
      */
-    int insert(double xi, double t, double Q2, double MuF2, double MuR2) const;
+    int insert(const PhysicalType<double>& xi, const PhysicalType<double>& t,
+            const PhysicalType<double>& Q2, const PhysicalType<double>& MuF2,
+            const PhysicalType<double>& MuR2) const;
 
     /**
      * Select DVCS CFF kinematics from the database.
@@ -58,7 +59,9 @@ public:
      * @param MuR2 Renormalization scale squared (in GeV<sup>2</sup>).
      * @return Unique id of selected row in the database.
      */
-    int select(double xi, double t, double Q2, double MuF2, double MuR2) const;
+    int select(const PhysicalType<double>& xi, const PhysicalType<double>& t,
+            const PhysicalType<double>& Q2, const PhysicalType<double>& MuF2,
+            const PhysicalType<double>& MuR2) const;
 
     /**
      * Retrieve CFF kinematics from the database by given unique id of row.

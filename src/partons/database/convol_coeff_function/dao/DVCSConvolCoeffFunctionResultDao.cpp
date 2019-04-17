@@ -24,8 +24,9 @@ DVCSConvolCoeffFunctionResultDao::DVCSConvolCoeffFunctionResultDao() :
 DVCSConvolCoeffFunctionResultDao::~DVCSConvolCoeffFunctionResultDao() {
 }
 
-int DVCSConvolCoeffFunctionResultDao::insertIntoDVCSCCFResultComplex(const int realPart,
-        const int imgPart, const int gpdTypeId, const int ccfResultId) const {
+int DVCSConvolCoeffFunctionResultDao::insertIntoDVCSCCFResultComplex(
+        const double realPart, const double imgPart, const GPDType::Type gpdType,
+        const int ccfResultId) const {
 
     //result
     int result = -1;
@@ -39,14 +40,18 @@ int DVCSConvolCoeffFunctionResultDao::insertIntoDVCSCCFResultComplex(const int r
 
     query.bindValue(":realPart", realPart);
     query.bindValue(":imgPart", imgPart);
-    query.bindValue(":gpdTypeId", gpdTypeId);
+    query.bindValue(":gpdTypeId", gpdType);
     query.bindValue(":ccfResultId", ccfResultId);
 
     //execute query
-    Database::checkUniqueResult(getClassName(), __func__,
-            Database::execSelectQuery(query), query);
-
-    result = query.lastInsertId().toInt();
+    if (query.exec()) {
+        result = query.lastInsertId().toInt();
+    } else {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
+    }
 
     return result;
 }

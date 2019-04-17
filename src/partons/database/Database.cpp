@@ -116,10 +116,6 @@ int Database::execSelectQuery(QSqlQuery& query) {
                             << getLastExecutedQuery(query));
         } else {
             resultSize = Database::getNumberOfRows(query);
-
-            if (resultSize == 1) {
-                query.first();
-            }
         }
     } else {
         throw ElemUtils::CustomException("Database", __func__,

@@ -19,8 +19,10 @@ DVCSConvolCoeffFunctionKinematicDao::DVCSConvolCoeffFunctionKinematicDao() :
 DVCSConvolCoeffFunctionKinematicDao::~DVCSConvolCoeffFunctionKinematicDao() {
 }
 
-int DVCSConvolCoeffFunctionKinematicDao::insert(double xi, double t, double Q2,
-        double MuF2, double MuR2) const {
+int DVCSConvolCoeffFunctionKinematicDao::insert(const PhysicalType<double>& xi,
+        const PhysicalType<double>& t, const PhysicalType<double>& Q2,
+        const PhysicalType<double>& MuF2,
+        const PhysicalType<double>& MuR2) const {
 
     //result
     int result = -1;
@@ -29,16 +31,19 @@ int DVCSConvolCoeffFunctionKinematicDao::insert(double xi, double t, double Q2,
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     //prepare query
-    ElemUtils::Formatter formatter;
-    formatter << "INSERT INTO " << Database::TABLE_NAME_CCF_KINEMATIC
-            << " (xi, t, Q2, MuF2, MuR2) VALUES (:xi, :t, :Q2, :MuF2, :MuR2);";
+    query.prepare(
+            "INSERT INTO dvcs_ccf_kinematic (xi, xi_unit, t, t_unit, Q2, Q2_unit, MuF2, MuF2_unit, MuR2, MuR2_unit) VALUES (:xi, :xi_unit, :t, :t_unit, :Q2, :Q2_unit, :MuF2, :MuF2_unit, :MuR2, :MuR2_unit);");
 
-    query.prepare(QString(formatter.str().c_str()));
-    query.bindValue(":xi", xi);
-    query.bindValue(":t", t);
-    query.bindValue(":Q2", Q2);
-    query.bindValue(":MuF2", MuF2);
-    query.bindValue(":MuR2", MuR2);
+    query.bindValue(":xi", xi.getValue());
+    query.bindValue(":xi_unit", xi.getUnit());
+    query.bindValue(":t", t.getValue());
+    query.bindValue(":t_unit", t.getUnit());
+    query.bindValue(":Q2", Q2.getValue());
+    query.bindValue(":Q2_unit", Q2.getUnit());
+    query.bindValue(":MuF2", MuF2.getValue());
+    query.bindValue(":MuF2_unit", MuF2.getUnit());
+    query.bindValue(":MuR2", MuR2.getValue());
+    query.bindValue(":MuR2_unit", MuR2.getUnit());
 
     //execute quey
     if (query.exec()) {
@@ -53,8 +58,10 @@ int DVCSConvolCoeffFunctionKinematicDao::insert(double xi, double t, double Q2,
     return result;
 }
 
-int DVCSConvolCoeffFunctionKinematicDao::select(double xi, double t, double Q2,
-        double MuF2, double MuR2) const {
+int DVCSConvolCoeffFunctionKinematicDao::select(const PhysicalType<double>& xi,
+        const PhysicalType<double>& t, const PhysicalType<double>& Q2,
+        const PhysicalType<double>& MuF2,
+        const PhysicalType<double>& MuR2) const {
 
     //result
     int result = -1;
@@ -63,23 +70,25 @@ int DVCSConvolCoeffFunctionKinematicDao::select(double xi, double t, double Q2,
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     //prepare query
-    ElemUtils::Formatter formatter;
-    formatter << "SELECT " << Database::COLUMN_NAME_CCF_KINEMATIC_ID << " FROM "
-            << Database::TABLE_NAME_CCF_KINEMATIC
-            << " WHERE xi = :xi AND t = :t AND Q2 = :Q2 AND MuF2 = :MuF2 AND MuR2 = :MuR2;";
+    query.prepare(
+            "SELECT dvcs_ccf_kinematic_id FROM dvcs_ccf_kinematic WHERE xi = :xi AND xi_unit = :xi_unit AND t = :t AND t_unit = :t_unit AND Q2 = :Q2 AND Q2_unit = :Q2_unit AND MuF2 = :MuF2 AND MuF2_unit = :MuF2_unit AND MuR2 = :MuR2 AND MuR2_unit = :MuR2_unit;");
 
-    query.prepare(QString(formatter.str().c_str()));
-    query.bindValue(":xi", xi);
-    query.bindValue(":t", t);
-    query.bindValue(":Q2", Q2);
-    query.bindValue(":MuF2", MuF2);
-    query.bindValue(":MuR2", MuR2);
+    query.bindValue(":xi", xi.getValue());
+    query.bindValue(":xi_unit", xi.getUnit());
+    query.bindValue(":t", t.getValue());
+    query.bindValue(":t_unit", t.getUnit());
+    query.bindValue(":Q2", Q2.getValue());
+    query.bindValue(":Q2_unit", Q2.getUnit());
+    query.bindValue(":MuF2", MuF2.getValue());
+    query.bindValue(":MuF2_unit", MuF2.getUnit());
+    query.bindValue(":MuR2", MuR2.getValue());
+    query.bindValue(":MuR2_unit", MuR2.getUnit());
 
     //execute query
-    Database::checkUniqueResult(getClassName(), __func__,
-            Database::execSelectQuery(query), query);
-
-    result = query.value(0).toInt();
+    if (Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query) != 0) {
+        result = query.value(0).toInt();
+    }
 
     return result;
 }
@@ -94,11 +103,9 @@ DVCSConvolCoeffFunctionKinematic DVCSConvolCoeffFunctionKinematicDao::getKinemat
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     //prepare query
-    ElemUtils::Formatter formatter;
-    formatter << "SELECT * FROM " << Database::TABLE_NAME_CCF_KINEMATIC
-            << " WHERE " << Database::COLUMN_NAME_CCF_KINEMATIC_ID << " = :id;";
+    query.prepare(
+            "SELECT * FROM dvcs_ccf_kinematic WHERE dvcs_ccf_kinematic_id = :id;");
 
-    query.prepare(QString(formatter.str().c_str()));
     query.bindValue(":id", id);
 
     //execute query
@@ -121,17 +128,10 @@ List<DVCSConvolCoeffFunctionKinematic> DVCSConvolCoeffFunctionKinematicDao::getK
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     //prepare query
-    ElemUtils::Formatter formatter;
-    formatter << "SELECT ccfk." << Database::COLUMN_NAME_CCF_KINEMATIC_ID
-            << ", ccfk.xi, ccfk.t, ccfk.Q2, ccfk.MuF2, ccfk.MuR2 FROM "
-            << Database::TABLE_NAME_CCF_KINEMATIC << " ccfk, "
-            << Database::TABLE_NAME_CCF_RESULT << " ccfr WHERE ccfr."
-            << Database::COLUMN_NAME_COMPUTATION_ID
-            << " = :computationId AND ccfr."
-            << Database::COLUMN_NAME_CCF_RESULT_ID << " = ccfk."
-            << Database::COLUMN_NAME_CCF_KINEMATIC_ID << ";";
+    query.prepare(
+            "SELECT ccfk.dvcs_ccf_kinematic_id, ccfk.xi, ccfk.xi_unit, ccfk.t, ccfk.t_unit, ccfk.Q2, ccfk.Q2_unit, ccfk.MuF2, ccfk.MuF2_unit, ccfk.MuR2, ccfk.MuR2_unit FROM dvcs_ccf_kinematic ccfk, ccf_result ccfr WHERE ccfr.channel_id = :channelId AND ccfr.computation_id = :computationId AND ccfk.dvcs_ccf_kinematic_id = ccfr.ccf_kinematic_id;");
 
-    query.prepare(QString(formatter.str().c_str()));
+    query.bindValue(":channelId", ChannelType::DVCS);
     query.bindValue(":computationId", computationId);
 
     //execute query
@@ -157,24 +157,41 @@ void DVCSConvolCoeffFunctionKinematicDao::fillKinematicListFromQuery(
 void DVCSConvolCoeffFunctionKinematicDao::fillKinematicFromQuery(
         DVCSConvolCoeffFunctionKinematic &kinematic, QSqlQuery &query) const {
 
-    int field_id = query.record().indexOf(
-            QString(Database::COLUMN_NAME_CCF_KINEMATIC_ID.c_str()));
+    int field_id = query.record().indexOf("dvcs_ccf_kinematic_id");
     int field_xi = query.record().indexOf("xi");
+    int field_xi_unit = query.record().indexOf("xi_unit");
     int field_t = query.record().indexOf("t");
+    int field_t_unit = query.record().indexOf("t_unit");
     int field_Q2 = query.record().indexOf("Q2");
+    int field_Q2_unit = query.record().indexOf("Q2_unit");
     int field_MuF2 = query.record().indexOf("MuF2");
+    int field_MuF2_unit = query.record().indexOf("MuF2_unit");
     int field_MuR2 = query.record().indexOf("MuR2");
+    int field_MuR2_unit = query.record().indexOf("MuR2_unit");
 
     int id = query.value(field_id).toInt();
     double xi = query.value(field_xi).toDouble();
+    PhysicalUnit::Type xi_unit = static_cast<PhysicalUnit::Type>(query.value(
+            field_xi_unit).toInt());
     double t = query.value(field_t).toDouble();
+    PhysicalUnit::Type t_unit = static_cast<PhysicalUnit::Type>(query.value(
+            field_t_unit).toInt());
     double Q2 = query.value(field_Q2).toDouble();
+    PhysicalUnit::Type Q2_unit = static_cast<PhysicalUnit::Type>(query.value(
+            field_Q2_unit).toInt());
     double MuF2 = query.value(field_MuF2).toDouble();
+    PhysicalUnit::Type MuF2_unit = static_cast<PhysicalUnit::Type>(query.value(
+            field_MuF2_unit).toInt());
     double MuR2 = query.value(field_MuR2).toDouble();
+    PhysicalUnit::Type MuR2_unit = static_cast<PhysicalUnit::Type>(query.value(
+            field_MuR2_unit).toInt());
 
-    kinematic = DVCSConvolCoeffFunctionKinematic(xi, t, Q2, MuF2, MuR2);
+    kinematic = DVCSConvolCoeffFunctionKinematic(
+            PhysicalType<double>(xi, xi_unit), PhysicalType<double>(t, t_unit),
+            PhysicalType<double>(Q2, Q2_unit),
+            PhysicalType<double>(MuF2, MuF2_unit),
+            PhysicalType<double>(MuR2, MuR2_unit));
     kinematic.setIndexId(id);
-
 }
 
 int DVCSConvolCoeffFunctionKinematicDao::getKinematicIdByHashSum(
@@ -187,12 +204,9 @@ int DVCSConvolCoeffFunctionKinematicDao::getKinematicIdByHashSum(
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     //prepare query
-    ElemUtils::Formatter formatter;
-    formatter << "SELECT " << Database::COLUMN_NAME_CCF_KINEMATIC_ID << " FROM "
-            << Database::TABLE_NAME_CCF_KINEMATIC
-            << " WHERE hash_sum = :hashSum;";
+    query.prepare(
+            "SELECT dvcs_ccf_kinematic_id FROM dvcs_ccf_kinematic WHERE hash_sum = :hashSum;");
 
-    query.prepare(QString(formatter.str().c_str()));
     query.bindValue(":hashSum", QString(hashSum.c_str()));
 
     //execute query

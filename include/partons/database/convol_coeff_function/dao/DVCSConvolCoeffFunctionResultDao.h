@@ -41,12 +41,12 @@ public:
      * Insert and associate row in the database representing complex number (result for given GPD type) to that representing DVCSConvolCoeffFunctionResult.
      * @param realPart Real part of CFF value.
      * @param imgPart Imaginary part of CFF value.
-     * @param gpdTypeId GPD type, see GPDType::Type.
+     * @param gpdType GPD type, see GPDType::Type.
      * @param ccfResultId Unique id of row in the database representing DVCSConvolCoeffFunctionResult object.
      * @return Unique id of inserted row in the database.
      */
-    int insertIntoDVCSCCFResultComplex(const int realPart, const int imgPart,
-            const int gpdTypeId, const int ccfResultId) const;
+    int insertIntoDVCSCCFResultComplex(const double realPart, const double imgPart,
+            const GPDType::Type gpdType, const int ccfResultId) const;
 
     /**
      * Retrieve list of CFF results from the database by given unique id of computation.

@@ -22,30 +22,6 @@ namespace PARTONS {
  * @brief GPD kinematics Data Access Object (DAO) service.
  *
  * It deals with GPDKinematic C++ object and related tables from the database.
- *
- * With this service you can insert, select or remove GPD kinematics from the database. It ensures the integrity of the database by using transaction and rollback mechanisms - if something wrong happened, the database will stay always in a stable state. In addition, it improves querying speed by using transaction and commit mechanisms for a large amount of simultaneous queries.
- *
- * Analyze the following code for the example of usage:
- \code{.cpp}
- //define GPD kinematics to be inserted in database
- GPDKinematic gpdKinematicsInserted(0.1, 0.2, -0.1, 2., 2.);
-
- //get GPDKinematicDaoService
- GPDKinematicDaoService gpdKinematicDaoService;
-
- //insert kinematics into database
- int id = gpdKinematicDaoService.insert(gpdKinematicsInserted);
-
- //retrieve kinematics from database
- GPDKinematic gpdKinematicsExtracted;
- gpdKinematicDaoService.select(id, gpdKinematicsExtracted);
-
- //compare
- Partons::getInstance()->getLoggerManager()->info("example", __func__,
- ElemUtils::Formatter() << "Inserted: " << gpdKinematicsInserted.toString());
- Partons::getInstance()->getLoggerManager()->info("example", __func__,
- ElemUtils::Formatter() << "Extracted: " << gpdKinematicsExtracted.toString());
- \endcode
  */
 class GPDKinematicDaoService: public BaseObject {
 

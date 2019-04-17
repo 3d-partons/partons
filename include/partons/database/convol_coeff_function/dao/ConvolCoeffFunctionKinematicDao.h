@@ -18,8 +18,6 @@ namespace PARTONS {
  * @class ConvolCoeffFunctionKinematicDao
  *
  * @brief Compton form factor (CFF) kinematics Data Access Object (DAO).
- *
- * This DAO is used to insert, select and delete CFF kinematics from the database. This class in not intended to be used by regular users who should deal with ConvolCoeffFunctionKinematicDaoService instead.
  */
 class ConvolCoeffFunctionKinematicDao: public BaseObject {
 

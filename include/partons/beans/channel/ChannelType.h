@@ -50,10 +50,10 @@ public:
      * Definition of enumerate values corresponding to channels.
      */
     enum Type {
-        UNDEFINED, //!< Undefined type.
-        DVCS, //!< Deeply Virtual Compton Scattering
-        DVMP, //!< Deeply Virtual Meson Production
-        TCS //!< Time-like Compton Scattering
+        UNDEFINED = 0, //!< Undefined type.
+        DVCS = 1, //!< Deeply Virtual Compton Scattering
+        DVMP = 2, //!< Deeply Virtual Meson Production
+        TCS = 3 //!< Time-like Compton Scattering
     };
 
     /**

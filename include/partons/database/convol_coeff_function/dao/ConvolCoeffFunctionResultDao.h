@@ -10,6 +10,7 @@
 
 #include <string>
 
+#include "../../../beans/channel/ChannelType.h"
 #include "../../../BaseObject.h"
 
 namespace PARTONS {
@@ -44,7 +45,7 @@ public:
      * @return Unique id of inserted row in the database.
      */
     int insertIntoCCFResult(const std::string &computationModuleName,
-            const int channelId, const int kinematicId,
+            const ChannelType::Type channelType, const int kinematicId,
             const int computationId) const;
 };
 
