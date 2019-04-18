@@ -15,7 +15,7 @@ MuF2_unit INTEGER NOT NULL,
 MuR2 DOUBLE NOT NULL,
 MuR2_unit INTEGER NOT NULL,
 hash_sum VARCHAR(40) NOT NULL);
-CREATE INDEX ccf_kinematic_index ON dvcs_ccf_kinematic (hash_sum);
+CREATE INDEX dvcs_ccf_kinematic_index ON dvcs_ccf_kinematic (hash_sum);
 
 CREATE TABLE tcs_ccf_kinematic (
 tcs_ccf_kinematic_id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -30,7 +30,7 @@ MuF2_unit INTEGER NOT NULL,
 MuR2 DOUBLE NOT NULL,
 MuR2_unit INTEGER NOT NULL,
 hash_sum VARCHAR(40) NOT NULL);
-CREATE INDEX ccf_kinematic_index ON tcs_ccf_kinematic (hash_sum);
+CREATE INDEX tcs_ccf_kinematic_index ON tcs_ccf_kinematic (hash_sum);
 
 /* result */
 
@@ -59,6 +59,16 @@ ccf_result_id INTEGER NOT NULL);
 CREATE INDEX tcs_ccf_result_index ON tcs_ccf_result (ccf_result_id);
 
 /* view */
+
+CREATE VIEW dvcs_ccf_kinematic_view AS
+SELECT ccfk.dvcs_ccf_kinematic_id, ccfk.xi, ccfk.xi_unit, ccfk.t, ccfk.t_unit, ccfk.Q2, ccfk.Q2_unit, ccfk.MuF2, ccfk.MuF2_unit, ccfk.MuR2, ccfk.MuR2_unit 
+FROM dvcs_ccf_kinematic ccfk, ccf_result ccfr 
+INNER JOIN ccfk.dvcs_ccf_kinematic_id = ccfr.ccf_kinematic_id
+
+CREATE VIEW tcs_ccf_kinematic_view AS
+SELECT ccfk.tcs_ccf_kinematic_id, ccfk.xi, ccfk.xi_unit, ccfk.t, ccfk.t_unit, ccfk.Q2Prim, ccfk.Q2Prim_unit, ccfk.MuF2, ccfk.MuF2_unit, ccfk.MuR2, ccfk.MuR2_unit 
+FROM tcs_ccf_kinematic ccfk, ccf_result ccfr 
+INNER JOIN ccfk.tcs_ccf_kinematic_id = ccfr.ccf_kinematic_id
 
 CREATE VIEW dvcs_ccf_result_view AS 
 SELECT ccfr.ccf_result_id, ccfr.computation_module_name, ccfr.channel_id, ccfrc.gpd_type_id, ccfrc.real_part, ccfrc.img_part, c.computation_id

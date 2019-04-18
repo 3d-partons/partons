@@ -129,7 +129,7 @@ List<DVCSConvolCoeffFunctionKinematic> DVCSConvolCoeffFunctionKinematicDao::getK
 
     //prepare query
     query.prepare(
-            "SELECT ccfk.dvcs_ccf_kinematic_id, ccfk.xi, ccfk.xi_unit, ccfk.t, ccfk.t_unit, ccfk.Q2, ccfk.Q2_unit, ccfk.MuF2, ccfk.MuF2_unit, ccfk.MuR2, ccfk.MuR2_unit FROM dvcs_ccf_kinematic ccfk, ccf_result ccfr WHERE ccfr.channel_id = :channelId AND ccfr.computation_id = :computationId AND ccfk.dvcs_ccf_kinematic_id = ccfr.ccf_kinematic_id;");
+            "SELECT FROM dvcs_ccf_kinematic_view WHERE ccfr.channel_id = :channelId AND ccfr.computation_id = :computationId;");
 
     query.bindValue(":channelId", ChannelType::DVCS);
     query.bindValue(":computationId", computationId);
@@ -169,29 +169,34 @@ void DVCSConvolCoeffFunctionKinematicDao::fillKinematicFromQuery(
     int field_MuR2 = query.record().indexOf("MuR2");
     int field_MuR2_unit = query.record().indexOf("MuR2_unit");
 
-    int id = query.value(field_id).toInt();
-    double xi = query.value(field_xi).toDouble();
-    PhysicalUnit::Type xi_unit = static_cast<PhysicalUnit::Type>(query.value(
-            field_xi_unit).toInt());
-    double t = query.value(field_t).toDouble();
-    PhysicalUnit::Type t_unit = static_cast<PhysicalUnit::Type>(query.value(
-            field_t_unit).toInt());
-    double Q2 = query.value(field_Q2).toDouble();
-    PhysicalUnit::Type Q2_unit = static_cast<PhysicalUnit::Type>(query.value(
-            field_Q2_unit).toInt());
-    double MuF2 = query.value(field_MuF2).toDouble();
-    PhysicalUnit::Type MuF2_unit = static_cast<PhysicalUnit::Type>(query.value(
-            field_MuF2_unit).toInt());
-    double MuR2 = query.value(field_MuR2).toDouble();
-    PhysicalUnit::Type MuR2_unit = static_cast<PhysicalUnit::Type>(query.value(
-            field_MuR2_unit).toInt());
+    if (query.first()) {
 
-    kinematic = DVCSConvolCoeffFunctionKinematic(
-            PhysicalType<double>(xi, xi_unit), PhysicalType<double>(t, t_unit),
-            PhysicalType<double>(Q2, Q2_unit),
-            PhysicalType<double>(MuF2, MuF2_unit),
-            PhysicalType<double>(MuR2, MuR2_unit));
-    kinematic.setIndexId(id);
+        int id = query.value(field_id).toInt();
+        double xi = query.value(field_xi).toDouble();
+        PhysicalUnit::Type xi_unit =
+                static_cast<PhysicalUnit::Type>(query.value(field_xi_unit).toInt());
+        double t = query.value(field_t).toDouble();
+        PhysicalUnit::Type t_unit = static_cast<PhysicalUnit::Type>(query.value(
+                field_t_unit).toInt());
+        double Q2 = query.value(field_Q2).toDouble();
+        PhysicalUnit::Type Q2_unit =
+                static_cast<PhysicalUnit::Type>(query.value(field_Q2_unit).toInt());
+        double MuF2 = query.value(field_MuF2).toDouble();
+        PhysicalUnit::Type MuF2_unit =
+                static_cast<PhysicalUnit::Type>(query.value(field_MuF2_unit).toInt());
+        double MuR2 = query.value(field_MuR2).toDouble();
+        PhysicalUnit::Type MuR2_unit =
+                static_cast<PhysicalUnit::Type>(query.value(field_MuR2_unit).toInt());
+
+        kinematic = DVCSConvolCoeffFunctionKinematic(
+                PhysicalType<double>(xi, xi_unit),
+                PhysicalType<double>(t, t_unit),
+                PhysicalType<double>(Q2, Q2_unit),
+                PhysicalType<double>(MuF2, MuF2_unit),
+                PhysicalType<double>(MuR2, MuR2_unit));
+        kinematic.setIndexId(id);
+
+    }
 }
 
 int DVCSConvolCoeffFunctionKinematicDao::getKinematicIdByHashSum(
