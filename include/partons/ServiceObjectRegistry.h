@@ -15,7 +15,6 @@ class AutomationService;
 class BaseObjectRegistry;
 class ComparisonService;
 class CryptographicHashService;
-class DoubleDistributionService;
 class DVCSConvolCoeffFunctionService;
 class GPDService;
 class DVCSObservableService;
@@ -41,7 +40,6 @@ public:
     DVCSConvolCoeffFunctionService* getDVCSConvolCoeffFunctionService() const;
     DVCSObservableService* getDVCSObservableService() const;
     VizualisationService* getVizualisationService() const;
-    DoubleDistributionService* getDoubleDistributionService() const;
     ComparisonService* getComparisonService() const;
     AutomationService* getAutomationService() const;
     CryptographicHashService* getCryptographicHashService() const;

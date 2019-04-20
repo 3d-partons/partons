@@ -6,15 +6,11 @@
 #include "../../include/partons/BaseObjectFactory.h"
 #include "../../include/partons/modules/active_flavors_thresholds/ActiveFlavorsThresholdsModule.h"
 #include "../../include/partons/modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
-#include "../../include/partons/modules/double_distribution/DoubleDistributionModule.h"
-#include "../../include/partons/modules/dse/GapEquationSolverModule.h"
 #include "../../include/partons/modules/evolution/gpd/GPDEvolutionModule.h"
 #include "../../include/partons/modules/gpd_border_function/GPDBorderFunctionModule.h"
 #include "../../include/partons/modules/gpd_subtraction_constant/GPDSubtractionConstantModule.h"
 #include "../../include/partons/modules/observable/DVCS/DVCSObservable.h"
-#include "../../include/partons/modules/overlap/IncompleteGPDModule.h"
 #include "../../include/partons/modules/process/DVCS/DVCSProcessModule.h"
-#include "../../include/partons/modules/radon_inverse/RadonInverseModule.h"
 #include "../../include/partons/modules/running_alpha_strong/RunningAlphaStrongModule.h"
 #include "../../include/partons/modules/scales/ScalesModule.h"
 #include "../../include/partons/modules/xi_converter/XiConverterModule.h"
@@ -143,16 +139,6 @@ ModuleObject* ModuleObjectFactory::newModuleObject(
     return pModuleObject;
 }
 
-DoubleDistributionModule* ModuleObjectFactory::newDoubleDistributionModule(
-        unsigned int classId) {
-    return static_cast<DoubleDistributionModule*>(newModuleObject(classId));
-}
-
-DoubleDistributionModule* ModuleObjectFactory::newDoubleDistributionModule(
-        const std::string& className) {
-    return static_cast<DoubleDistributionModule*>(newModuleObject(className));
-}
-
 GPDEvolutionModule* ModuleObjectFactory::newGPDEvolutionModule(
         unsigned int classId) {
     return static_cast<GPDEvolutionModule*>(newModuleObject(classId));
@@ -251,15 +237,6 @@ XiConverterModule* ModuleObjectFactory::newXiConverterModule(
     return static_cast<XiConverterModule*>(newModuleObject(className));
 }
 
-GapEquationSolverModule* ModuleObjectFactory::newGapEquationSolverModule(
-        unsigned int classId) {
-    return static_cast<GapEquationSolverModule*>(newModuleObject(classId));
-}
-GapEquationSolverModule* ModuleObjectFactory::newGapEquationSolverModule(
-        const std::string &className) {
-    return static_cast<GapEquationSolverModule*>(newModuleObject(className));
-}
-
 DVCSObservable* ModuleObjectFactory::newDVCSObservable(unsigned int classId) {
     return static_cast<DVCSObservable*>(newModuleObject(classId));
 }
@@ -267,26 +244,6 @@ DVCSObservable* ModuleObjectFactory::newDVCSObservable(unsigned int classId) {
 DVCSObservable* ModuleObjectFactory::newDVCSObservable(
         const std::string& className) {
     return static_cast<DVCSObservable*>(newModuleObject(className));
-}
-
-IncompleteGPDModule* ModuleObjectFactory::newIncompleteGPDModule(
-        unsigned int classId) {
-    return static_cast<IncompleteGPDModule*>(newModuleObject(classId));
-}
-
-IncompleteGPDModule* ModuleObjectFactory::newIncompleteGPDModule(
-        const std::string& className) {
-    return static_cast<IncompleteGPDModule*>(newModuleObject(className));
-}
-
-RadonInverseModule* ModuleObjectFactory::newRadonInverseModule(
-        unsigned int classId) {
-    return static_cast<RadonInverseModule*>(newModuleObject(classId));
-}
-
-RadonInverseModule* ModuleObjectFactory::newRadonInverseModule(
-        const std::string& className) {
-    return static_cast<RadonInverseModule*>(newModuleObject(className));
 }
 
 } /* namespace PARTONS */

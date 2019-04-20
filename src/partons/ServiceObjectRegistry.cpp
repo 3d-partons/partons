@@ -5,7 +5,6 @@
 #include "../../include/partons/BaseObjectRegistry.h"
 #include "../../include/partons/services/automation/AutomationService.h"
 #include "../../include/partons/services/ComparisonService.h"
-#include "../../include/partons/services/DoubleDistributionService.h"
 #include "../../include/partons/services/DVCSConvolCoeffFunctionService.h"
 #include "../../include/partons/services/DVCSObservableService.h"
 #include "../../include/partons/services/GPDService.h"
@@ -55,16 +54,12 @@ DVCSConvolCoeffFunctionService* ServiceObjectRegistry::getDVCSConvolCoeffFunctio
 }
 
 DVCSObservableService* ServiceObjectRegistry::getDVCSObservableService() const {
-    return static_cast<DVCSObservableService*>(get(DVCSObservableService::classId));
+    return static_cast<DVCSObservableService*>(get(
+            DVCSObservableService::classId));
 }
 
 VizualisationService* ServiceObjectRegistry::getVizualisationService() const {
     return static_cast<VizualisationService*>(get(VizualisationService::classId));
-}
-
-DoubleDistributionService* ServiceObjectRegistry::getDoubleDistributionService() const {
-    return static_cast<DoubleDistributionService*>(get(
-            DoubleDistributionService::classId));
 }
 
 ComparisonService* ServiceObjectRegistry::getComparisonService() const {
