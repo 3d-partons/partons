@@ -149,11 +149,11 @@ void DVCSObservableResultDao::fillObservableResultList(
                 query.value(field_observable_name).toString().toStdString();
         double observable_value =
                 query.value(field_observable_value).toDouble();
-        ErrorBar statError(query.value(field_stat_error_lb).toDouble(),
+        ErrorBar<double> statError(query.value(field_stat_error_lb).toDouble(),
                 query.value(field_stat_error_ub).toDouble());
-        ErrorBar systError(query.value(field_syst_error_lb).toDouble(),
+        ErrorBar<double> systError(query.value(field_syst_error_lb).toDouble(),
                 query.value(field_syst_error_ub).toDouble());
-        ErrorBar scaleError(query.value(field_scale_error_lb).toDouble(),
+        ErrorBar<double> scaleError(query.value(field_scale_error_lb).toDouble(),
                 query.value(field_scale_error_ub).toDouble());
         PhysicalUnit::Type unit = static_cast<PhysicalUnit::Type>(query.value(
                 field_unit).toInt());
@@ -163,9 +163,9 @@ void DVCSObservableResultDao::fillObservableResultList(
         observableResult.setIndexId(id);
         observableResult.setValue(PhysicalType<double>(observable_value, unit));
         observableResult.setComputationModuleName(observable_name);
-//                observableResult.setStatError(statError);
-//                observableResult.setSystError(systError);
-//                observableResult.setScaleError(scaleError);
+                observableResult.setErrStat(statError);
+                observableResult.setErrSys(systError);
+                observableResult.setErrScale(scaleError);
         observableResult.setComputationModuleName(observable_name);
 //                observableResult.setKinematic(
 //                        m_observableKinematicDao.getKinematicById(

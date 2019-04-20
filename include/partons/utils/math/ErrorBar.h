@@ -8,6 +8,11 @@
  * @version 1.0
  */
 
+#include <ElementaryUtils/string_utils/Formatter.h>
+#include <string>
+
+#include "../../BaseObject.h"
+
 namespace PARTONS {
 
 /**
@@ -17,14 +22,18 @@ namespace PARTONS {
  *
  * This class represents a single asymmetrical error bar. It is used in particular to handle experimental data.
  */
-class ErrorBar {
+template<class T>
+class ErrorBar: public BaseObject {
 
 public:
 
     /**
      * Default constructor.
      */
-    ErrorBar();
+    ErrorBar() :
+            BaseObject("PhysicalType"), m_initialized(false), m_lowerBound(0.), m_upperBound(
+                    0.) {
+    }
 
     /**
      * Assignment constructor.
@@ -32,44 +41,89 @@ public:
      * @param lowerBound Lower bound of the uncertainty.
      * @param upperBound Upper bound of the uncertainty.
      */
-    ErrorBar(double lowerBound, double upperBound);
+    ErrorBar(T lowerBound, T upperBound) :
+            BaseObject("PhysicalType"), m_initialized(true), m_lowerBound(
+                    lowerBound), m_upperBound(upperBound) {
+    }
+
+    /**
+     * Copy constructor.
+     */
+    ErrorBar(const ErrorBar& other) :
+            BaseObject(other), m_initialized(other.m_initialized), m_lowerBound(
+                    other.m_lowerBound), m_upperBound(other.m_upperBound) {
+    }
 
     /**
      * Destructor.
      */
-    virtual ~ErrorBar();
+    virtual ~ErrorBar() {
+    }
+
+    virtual std::string toString() const {
+
+        ElemUtils::Formatter formatter;
+
+        formatter << m_lowerBound << " / " << m_upperBound;
+
+        return formatter.str();
+    }
 
     /**
      * Get lower bound of the uncertainty.
      */
-    double getLowerBound() const;
-
-    /**
-     * Set lower bound of the uncertainty.
-     */
-    void setLowerBound(double lowerBound);
+    T getLowerBound() const {
+        return m_lowerBound;
+    }
 
     /**
      * Get upper bound of the uncertainty.
      */
-    double getUpperBound() const;
+    T getUpperBound() const {
+        return m_upperBound;
+    }
 
     /**
-     * Set upper bound of the uncertainty.
+     * Set lower and upper bounds of the uncertainty.
      */
-    void setUpperBound(double upperBound);
+    void setBounds(T lowerBound, T upperBound) {
+
+        m_lowerBound = lowerBound;
+        m_upperBound = upperBound;
+
+        m_initialized = true;
+    }
+
+    /**
+     * Check if initialized.
+     */
+    bool isInitialized() const {
+        return m_initialized;
+    }
+
+    /**
+     * Set if initialized.
+     */
+    void setInitialized(bool initialized) {
+        m_initialized = initialized;
+    }
 
 protected:
 
     /**
+     * True if value initialized.
+     */
+    bool m_initialized;
+
+    /**
      * Lower bound of the uncertainty.
      */
-    double m_lowerBound;
+    T m_lowerBound;
 
     /**
      * Upper bound of the uncertainty.
      */
-    double m_upperBound;
+    T m_upperBound;
 };
 
 } /* namespace PARTONS */

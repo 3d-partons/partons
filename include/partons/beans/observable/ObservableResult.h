@@ -16,6 +16,7 @@
 #include "../../utils/compare/CompareUtils.h"
 #include "../../utils/compare/ComparisonData.h"
 #include "../../utils/compare/ComparisonReport.h"
+#include "../../utils/math/ErrorBar.h"
 #include "../../utils/type/PhysicalType.h"
 #include "../channel/ChannelType.h"
 #include "../Result.h"
@@ -122,6 +123,48 @@ public:
         m_observableType = observableType;
     }
 
+    /**
+     * Get statistical uncertainty.
+     */
+    const ErrorBar<double>& getErrStat() const {
+        return m_errStat;
+    }
+
+    /**
+     * Set statistical uncertainty.
+     */
+    void setErrStat(const ErrorBar<double>& errStat) {
+        m_errStat = errStat;
+    }
+
+    /**
+     * Get systematic uncertainty.
+     */
+    const ErrorBar<double>& getErrSys() const {
+        return m_errSys;
+    }
+
+    /**
+     * Set systematic uncertainty.
+     */
+    void setErrSys(const ErrorBar<double>& errSys) {
+        m_errSys = errSys;
+    }
+
+    /**
+     * Get scale uncertainty.
+     */
+    const ErrorBar<double>& getErrScale() const {
+        return m_errScale;
+    }
+
+    /**
+     * Set scale uncertainty.
+     */
+    void setErrScale(const ErrorBar<double>& errScale) {
+        m_errScale = errScale;
+    }
+
 protected:
 
     /**
@@ -189,6 +232,21 @@ protected:
      * Value of result.
      */
     PhysicalType<double> m_value;
+
+    /**
+     * Statistical error.
+     */
+    ErrorBar<double> m_errStat;
+
+    /**
+     * Systematic error.
+     */
+    ErrorBar<double> m_errSys;
+
+    /**
+     * Systematic error.
+     */
+    ErrorBar<double> m_errScale;
 
     /**
      * Type of observable associated to this result.

@@ -70,7 +70,7 @@ private:
     /**
      * ConvolCoeffFunctionResultDao object to perform database queries.
      */
-    DVCSConvolCoeffFunctionResultDao m_convolCoeffFunctionResultDao;
+    DVCSConvolCoeffFunctionResultDao m_dvcsConvolCoeffFunctionResultDao;
 };
 
 } /* namespace PARTONS */

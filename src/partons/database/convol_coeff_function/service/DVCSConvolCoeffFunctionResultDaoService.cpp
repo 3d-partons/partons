@@ -169,10 +169,10 @@ int DVCSConvolCoeffFunctionResultDaoService::insert(
         //else return database in a stable state : n-1
         QSqlDatabase::database().rollback();
 
+        //and throw exception
         throw ElemUtils::CustomException(getClassName(), __func__, e.what());
     }
 
-    //and throw exception
     return getLastComputationId();
 }
 
@@ -185,7 +185,7 @@ List<DVCSConvolCoeffFunctionResult> DVCSConvolCoeffFunctionResultDaoService::get
 
     //result
     List<DVCSConvolCoeffFunctionResult> results =
-            m_convolCoeffFunctionResultDao.getResultListByComputationId(
+            m_dvcsConvolCoeffFunctionResultDao.getResultListByComputationId(
                     computationId);
 
     //set result info

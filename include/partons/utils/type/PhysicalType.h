@@ -76,7 +76,7 @@ public:
      * Copy constructor.
      */
     PhysicalType(const PhysicalType& other) :
-            BaseObject("PhysicalType"), m_initialized(other.m_initialized), m_value(
+            BaseObject(other), m_initialized(other.m_initialized), m_value(
                     other.m_value), m_unit(other.m_unit) {
 
     }
