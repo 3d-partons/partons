@@ -14,6 +14,179 @@ PhysicalUnit::PhysicalUnit(Type type) :
         m_type(type) {
 }
 
+/**
+ * Assignment constructor.
+ * @param type Type to be assigned.
+ */
+PhysicalUnit::PhysicalUnit(const std::string& type) {
+
+    //undefined
+    if (type == "UNDEFINED") {
+        m_type = PhysicalUnit::UNDEFINED;
+    }
+
+    //none
+    else if (type == "none") {
+        m_type = PhysicalUnit::NONE;
+    }
+
+    //energy, momentum or mass
+    else if (type == "eV") {
+        m_type = PhysicalUnit::EV;
+    }
+
+    else if (type == "KeV") {
+        m_type = PhysicalUnit::KEV;
+    }
+
+    else if (type == "MeV") {
+        m_type = PhysicalUnit::MEV;
+    }
+
+    else if (type == "GeV") {
+        m_type = PhysicalUnit::GEV;
+    }
+
+    else if (type == "TeV") {
+        m_type = PhysicalUnit::TEV;
+    }
+
+    //energy, momentum or mass squared
+    else if (type == "eV2") {
+        m_type = PhysicalUnit::EV2;
+    }
+
+    else if (type == "KeV2") {
+        m_type = PhysicalUnit::KEV2;
+    }
+
+    else if (type == "MeV2") {
+        m_type = PhysicalUnit::MEV2;
+    }
+
+    else if (type == "GeV2") {
+        m_type = PhysicalUnit::GEV2;
+    }
+
+    else if (type == "TeV2") {
+        m_type = PhysicalUnit::TEV2;
+    }
+
+    //distance or time
+    else if (type == "eVm1") {
+        m_type = PhysicalUnit::EVm1;
+    }
+
+    else if (type == "KeVm1") {
+        m_type = PhysicalUnit::KEVm1;
+    }
+
+    else if (type == "MeVm1") {
+        m_type = PhysicalUnit::MEVm1;
+    }
+
+    else if (type == "GeVm1") {
+        m_type = PhysicalUnit::GEVm1;
+    }
+
+    else if (type == "TeVm1") {
+        m_type = PhysicalUnit::TEVm1;
+    }
+
+    else if (type == "fm") {
+        m_type = PhysicalUnit::FM;
+    }
+
+    else if (type == "pm") {
+        m_type = PhysicalUnit::PM;
+    }
+
+    else if (type == "nm") {
+        m_type = PhysicalUnit::NM;
+    }
+
+    else if (type == "um") {
+        m_type = PhysicalUnit::UM;
+    }
+
+    else if (type == "mm") {
+        m_type = PhysicalUnit::MM;
+    }
+
+    else if (type == "m") {
+        m_type = PhysicalUnit::M;
+    }
+
+    else if (type == "fs") {
+        m_type = PhysicalUnit::FS;
+    }
+
+    else if (type == "ps") {
+        m_type = PhysicalUnit::PS;
+    }
+
+    else if (type == "ns") {
+        m_type = PhysicalUnit::NS;
+    }
+
+    else if (type == "us") {
+        m_type = PhysicalUnit::US;
+    }
+
+    else if (type == "ms") {
+        m_type = PhysicalUnit::MS;
+    }
+
+    else if (type == "s") {
+        m_type = PhysicalUnit::S;
+    }
+
+    //cross-section
+    else if (type == "fb") {
+        m_type = PhysicalUnit::FB;
+    }
+
+    else if (type == "pb") {
+        m_type = PhysicalUnit::PB;
+    }
+
+    else if (type == "nb") {
+        m_type = PhysicalUnit::NB;
+    }
+
+    else if (type == "ub") {
+        m_type = PhysicalUnit::UB;
+    }
+
+    else if (type == "mb") {
+        m_type = PhysicalUnit::MB;
+    }
+
+    else if (type == "b") {
+        m_type = PhysicalUnit::B;
+    }
+
+    //angle
+    else if (type == "deg") {
+        m_type = PhysicalUnit::DEG;
+    }
+
+    else if (type == "rad") {
+        m_type = PhysicalUnit::RAD;
+    }
+
+    else if (type == "mrad") {
+        m_type = PhysicalUnit::MRAD;
+    }
+
+    //no such type
+    else {
+        throw ElemUtils::CustomException("PhysicalType", __func__,
+                ElemUtils::Formatter() << "Cannot determine unit from string "
+                        << type);
+    }
+}
+
 PhysicalUnit::PhysicalUnit(const PhysicalUnit &other) :
         m_type(other.m_type) {
 }
@@ -26,7 +199,7 @@ std::string PhysicalUnit::toString() const {
 
     switch (m_type) {
 
-        //undefined
+    //undefined
     case UNDEFINED:
         return "UNDEFINED";
         break;
@@ -168,7 +341,7 @@ std::string PhysicalUnit::getShortName() {
 
     switch (m_type) {
 
-        //undefined
+    //undefined
     case UNDEFINED:
         return "UNDEFINED";
         break;
@@ -320,7 +493,7 @@ UnitCategory::Type PhysicalUnit::getUnitCategory() const {
 
     switch (m_type) {
 
-        //undefined
+    //undefined
     case UNDEFINED:
         return UnitCategory::UNDEFINED;
         break;

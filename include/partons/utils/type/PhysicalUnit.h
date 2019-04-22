@@ -99,6 +99,12 @@ public:
     PhysicalUnit(Type type);
 
     /**
+     * Assignment constructor.
+     * @param type Type to be assigned.
+     */
+    PhysicalUnit(const std::string& type);
+
+    /**
      * Copy constructor.
      * @param other Object to be copied.
      */
