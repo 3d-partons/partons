@@ -94,9 +94,6 @@ void GPDService::computeTask(Task &task) {
                     ElemUtils::Formatter()
                             << "Failed to insert List of GPD result into database");
         }
-
-        GPDResultDaoService gpdResultDaoService;
-        gpdResultDaoService.insert(resultList);
     }
 
     m_resultListBuffer = resultList;

@@ -48,33 +48,39 @@ List<GPDKinematic> KinematicUtils::getGPDKinematicFromFile(
             //process if line is not empty.
             if (!kinematicString[i].empty()) {
 
+                //trim
+                ElemUtils::StringUtils::trimAll(kinematicString[i]);
+
                 //if first check if with units
                 if (i == 0 && kinematicString[i].at(0) == '#') {
 
                     //replace
-                    ElemUtils::StringUtils::replaceAll(kinematicString[i], "#",
-                            " ");
-
-                    //trim
-                    ElemUtils::StringUtils::trim(kinematicString[i]);
+                    ElemUtils::StringUtils::trimAll(kinematicString[i], "#");
 
                     //get units
                     kinematicUnits = getUnitsFromInputFileLine(__func__,
                             kinematicString[i]);
 
-                } else {
+                    //check size
+                    if (kinematicUnits.size() != 5) {
+                        error(__func__,
+                                ElemUtils::Formatter() << "Line " << i
+                                        << " (units). Missing column value in your kinematic input file : "
+                                        << filePath
+                                        << " ; You must provided 5 column : x | xi | t | MuF2 | MuR2");
 
-                    //trim
-                    ElemUtils::StringUtils::trim(kinematicString[i]);
+                    }
 
-                    //split
-                    kinematicValues = ElemUtils::StringUtils::split(
-                            kinematicString[i], '|');
+                    //continue
+                    continue;
                 }
 
+                //split
+                kinematicValues = ElemUtils::StringUtils::split(
+                        kinematicString[i], '|');
+
                 //check size
-                if ((kinematicUnits.size() != 0 && kinematicUnits.size() != 5)
-                        || kinematicValues.size() != 5) {
+                if (kinematicValues.size() != 5) {
 
                     error(__func__,
                             ElemUtils::Formatter() << "Line " << i
@@ -85,7 +91,7 @@ List<GPDKinematic> KinematicUtils::getGPDKinematicFromFile(
                 }
 
                 //single
-                if (kinematicUnits.size() != 0) {
+                if (kinematicUnits.size() == 0) {
                     kinematic = GPDKinematic(kinematicValues[0],
                             kinematicValues[1], kinematicValues[2],
                             kinematicValues[3], kinematicValues[4]);
@@ -148,44 +154,48 @@ List<DVCSConvolCoeffFunctionKinematic> KinematicUtils::getDVCSCCFKinematicFromFi
             //process if line is not empty.
             if (!kinematicString[i].empty()) {
 
+                //trim
+                ElemUtils::StringUtils::trimAll(kinematicString[i]);
+
                 //if first check if with units
                 if (i == 0 && kinematicString[i].at(0) == '#') {
 
                     //replace
-                    ElemUtils::StringUtils::replaceAll(kinematicString[i], "#",
-                            " ");
-
-                    //trim
-                    ElemUtils::StringUtils::trim(kinematicString[i]);
+                    ElemUtils::StringUtils::trimAll(kinematicString[i], "#");
 
                     //get units
                     kinematicUnits = getUnitsFromInputFileLine(__func__,
                             kinematicString[i]);
 
-                } else {
+                    //check size
+                    if (kinematicUnits.size() != 5) {
+                        error(__func__,
+                                ElemUtils::Formatter() << "Line " << i
+                                        << " (units). Missing column value in your kinematic input file : "
+                                        << filePath
+                                        << " ; You must provided 5 column : xi | t | Q2 | MuF2 | MuR2");
+                    }
 
-                    //trim
-                    ElemUtils::StringUtils::trim(kinematicString[i]);
+                    //continue
+                    continue;
 
-                    //split
-                    kinematicValues = ElemUtils::StringUtils::split(
-                            kinematicString[i], '|');
                 }
 
-                //check size
-                if ((kinematicUnits.size() != 0 && kinematicUnits.size() != 5)
-                        || kinematicValues.size() != 5) {
+                //split
+                kinematicValues = ElemUtils::StringUtils::split(
+                        kinematicString[i], '|');
 
+                //check size
+                if (kinematicValues.size() != 5) {
                     error(__func__,
                             ElemUtils::Formatter() << "Line " << i
                                     << ". Missing column value in your kinematic input file : "
                                     << filePath
                                     << " ; You must provided 5 column : xi | t | Q2 | MuF2 | MuR2");
-
                 }
 
                 //single
-                if (kinematicUnits.size() != 0) {
+                if (kinematicUnits.size() == 0) {
                     kinematic = DVCSConvolCoeffFunctionKinematic(
                             kinematicValues[0], kinematicValues[1],
                             kinematicValues[2], kinematicValues[3],
@@ -249,34 +259,37 @@ List<DVCSObservableKinematic> KinematicUtils::getDVCSObservableKinematicFromFile
             //process if line is not empty.
             if (!kinematicString[i].empty()) {
 
+                //trim
+                ElemUtils::StringUtils::trimAll(kinematicString[i]);
+
                 //if first check if with units
                 if (i == 0 && kinematicString[i].at(0) == '#') {
 
                     //replace
-                    ElemUtils::StringUtils::replaceAll(kinematicString[i], "#",
-                            " ");
-
-                    //trim
-                    ElemUtils::StringUtils::trim(kinematicString[i]);
+                    ElemUtils::StringUtils::trimAll(kinematicString[i], "#");
 
                     //get units
                     kinematicUnits = getUnitsFromInputFileLine(__func__,
                             kinematicString[i]);
 
-                } else {
+                    //check size
+                    if (kinematicUnits.size() != 5) {
+                        error(__func__,
+                                ElemUtils::Formatter() << "Line " << i
+                                        << " (units). Missing column value in your kinematic input file : "
+                                        << filePath
+                                        << " ; You must provided 5 column : xB | t | Q2 | E | p");
 
-                    //trim
-                    ElemUtils::StringUtils::trim(kinematicString[i]);
+                    }
 
-                    //split
-                    kinematicValues = ElemUtils::StringUtils::split(
-                            kinematicString[i], '|');
                 }
 
-                //check size
-                if ((kinematicUnits.size() != 0 && kinematicUnits.size() != 5)
-                        || kinematicValues.size() != 5) {
+                //split
+                kinematicValues = ElemUtils::StringUtils::split(
+                        kinematicString[i], '|');
 
+                //check size
+                if (kinematicValues.size() != 5) {
                     error(__func__,
                             ElemUtils::Formatter() << "Line " << i
                                     << ". Missing column value in your kinematic input file : "
@@ -286,7 +299,7 @@ List<DVCSObservableKinematic> KinematicUtils::getDVCSObservableKinematicFromFile
                 }
 
                 //single
-                if (kinematicUnits.size() != 0) {
+                if (kinematicUnits.size() == 0) {
                     kinematic = DVCSObservableKinematic(kinematicValues[0],
                             kinematicValues[1], kinematicValues[2],
                             kinematicValues[3], kinematicValues[4]);
