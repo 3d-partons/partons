@@ -13,35 +13,40 @@
 #include "../ServiceObject.h"
 
 namespace PARTONS {
-
 class Plot2DList;
+} /* namespace PARTONS */
+
+namespace PARTONS {
 
 /**
  * @class VizualisationService
  *
- * @brief
+ * @brief Visualization service (incomplete)
  */
 class VizualisationService: public ServiceObject {
+
 public:
+
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
     /**
-     * Default constructor
-     *
-     * @param className
+     * Default constructor.
      */
     VizualisationService(const std::string &className);
 
     /**
-     * Default destructor
+     * Destructor.
      */
     virtual ~VizualisationService();
 
     virtual void computeTask(Task &task);
 
-    Plot2DList getplot2DFromSQLQuery(const std::string &sqlQuery);
-
 private:
+
+    /**
+     * Get 2D plot list from SQL query.
+     */
+    Plot2DList getPlot2DFromSQLQuery(const std::string &sqlQuery);
 };
 
 } /* namespace PARTONS */
