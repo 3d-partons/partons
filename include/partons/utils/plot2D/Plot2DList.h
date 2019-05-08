@@ -18,13 +18,25 @@ namespace PARTONS {
 /**
  * @class Plot2DList
  *
- * @brief
+ * @brief List<Plot2D> with a member to get a string representation to be written in a file.
  */
 class Plot2DList: public List<Plot2D> {
+
 public:
+
+    /**
+     * Constructor.
+     */
     Plot2DList();
+
+    /**
+     * Destructor.
+     */
     ~Plot2DList();
 
+    /**
+     * Get string representation to be written in a file.
+     */
     virtual std::string toStringPlotFile(const char &splitChar) const;
 };
 

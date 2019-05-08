@@ -120,8 +120,8 @@ std::string ServiceObject::generateSQLQueryForPlotFile(
     formatter << "SELECT ";
 
     if (selectParams.size() == 2) {
-        formatter << selectParams.get("xPlot").getString() << ", "
-                << selectParams.get("yPlot").getString();
+        formatter << selectParams.get("xPlot").getString() << ", " << selectParams.get("xPlot").getString() << "_unit" << ", "
+                << selectParams.get("yPlot").getString() << ", " << selectParams.get("yPlot").getString() << "_unit";
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
                 "Missing xPlot or yPlot parameter in select-type xml element");

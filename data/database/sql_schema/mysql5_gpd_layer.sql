@@ -60,8 +60,20 @@ ORDER BY gr.gpd_result_id;
 
 /* Specific view to filter on GPD results to make a plot */
 CREATE VIEW gpd_plot_2d_view AS 
-SELECT gr.computation_id, gk.gpd_kinematic_id, gk.x, gk.xi, gk.t, gk.MuF2, gk.MuR2, gr.gpd_result_id, gr.computation_module_name, gt.gpd_type_short_name, pd.gluon_distribution_value, qf.quark_flavor_short_name, qd.quark_distribution, qd.quark_distribution_plus, qd.quark_distribution_minus
-FROM gpd_result gr
+SELECT 	gr.computation_id, gk.gpd_kinematic_id, 
+	gk.x, gk.x_unit, 
+	gk.xi, gk.xi_unit, 
+	gk.t, gk.t_unit, 
+	gk.MuF2, gk.MuF2_unit, 
+	gk.MuR2, gk.MuR2_unit, 
+	gr.gpd_result_id, gr.computation_module_name, 
+	gt.gpd_type_short_name, 
+	pd.gluon_distribution_value, '1' as 'gluon_distribution_value_unit',
+	qf.quark_flavor_short_name, 
+	qd.quark_distribution, '1' as 'quark_distribution_unit', 
+	qd.quark_distribution_plus, '1' as 'quark_distribution_plus_unit', 
+	qd.quark_distribution_minus, '1' as 'quark_distribution_minus_unit'
+FROM 	gpd_result gr
 INNER JOIN gpd_kinematic gk ON gr.gpd_kinematic_id = gk.gpd_kinematic_id
 INNER JOIN computation c ON gr.computation_id = c.computation_id
 INNER JOIN gpd_result_parton_distribution grpd ON gr.gpd_result_id = grpd.gpd_result_id
