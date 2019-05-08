@@ -58,7 +58,6 @@ INNER JOIN parton_distribution_quark_distribution pdqd ON pd.parton_distribution
 INNER JOIN quark_distribution qd ON pdqd.quark_distribution_id = qd.quark_distribution_id
 ORDER BY gr.gpd_result_id;
 
-/* Specific view to filter on GPD results to make a plot */
 CREATE VIEW gpd_plot_2d_view AS 
 SELECT 	gr.computation_id, gk.gpd_kinematic_id, 
 	gk.x, gk.x_unit, 

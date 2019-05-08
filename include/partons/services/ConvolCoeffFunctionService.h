@@ -16,14 +16,10 @@
 #include <ElementaryUtils/thread/Packet.h>
 #include <string>
 
-#include "../beans/automation/BaseObjectData.h"
 #include "../beans/automation/Task.h"
 #include "../beans/gpd/GPDType.h"
 #include "../beans/List.h"
 #include "../modules/convol_coeff_function/ConvolCoeffFunctionModule.h"
-#include "../modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
-#include "../ModuleObjectFactory.h"
-#include "../Partons.h"
 #include "../ServiceObjectTyped.h"
 #include "../utils/VectorUtils.h"
 
@@ -95,24 +91,14 @@ public:
 
         this->updateResultInfo(resultList, this->m_resultInfo);
 
-//        if (task.isStoreInDB()) {
-//
-//            ConvolCoeffFunctionResultDaoService convolCoeffFunctionResultDaoService;
-//
-//            int computationId = convolCoeffFunctionResultDaoService.insert(
-//                    resultList);
-//
-//            if (computationId != -1) {
-//                this->info(__func__,
-//                        ElemUtils::Formatter()
-//                                << "DVCSConvolCoeffFunctionResultList object has been stored in database with computation_id = "
-//                                << computationId);
-//            } else {
-//                throw ElemUtils::CustomException(getClassName(), __func__,
-//                        ElemUtils::Formatter()
-//                                << "DVCSConvolCoeffFunctionResultList object : insertion into database failed");
-//            }
-//        }
+        if (task.isStoreInDB()) {
+
+            if (resultList.size() == 0) {
+                this->warn(__func__, "No results to be inserted into database");
+            } else {
+                storeResultListInDatabase(resultList);
+            }
+        }
 
         this->m_resultListBuffer = resultList;
     }
@@ -233,18 +219,26 @@ public:
 
     /**
      * Uses an automation task (XML file) to set specific kinematics.
-     * @param task
+     * @param task Task.
      * @return CCF kinematics.
      */
     virtual KinematicType newKinematicFromTask(const Task &task) const = 0;
 
     /**
      * Uses an automation task (XML file) to set a list of kinematics.
-     * @param task
+     * @param task Task.
      * @return List of CCF kinematics.
      */
     virtual List<KinematicType> newListOfKinematicFromTask(
             const Task &task) const = 0;
+
+    /**
+     * Store list of results in DB.
+     * @param results List of results.
+     * @return True is insertion successful.
+     */
+    virtual void storeResultListInDatabase(
+            const List<ResultType>& results) const = 0;
 
 protected:
 
@@ -321,10 +315,7 @@ private:
      * Method used in the automated interface to generate a data file ready for plotting.
      * @param task Automated XML task.
      */
-    void generatePlotFileTask(Task &task) {
-//        generatePlotFile(getOutputFilePathForPlotFileTask(task),
-//                    generateSQLQueryForPlotFileTask(task, "ccf_plot_2d_view"), ' ');
-    }
+    virtual void generatePlotFileTask(Task &task) = 0;
 
     /**
      * Method used to derive an intersection of available GPD types from the various underlying modules.

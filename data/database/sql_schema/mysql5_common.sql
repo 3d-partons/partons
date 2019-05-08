@@ -77,7 +77,6 @@ VALUES ('4', 'Ht', 'Ht');
 INSERT INTO gpd_type (gpd_type_id, gpd_type_short_name, gpd_type_long_name)
 VALUES ('5', 'Et', 'Et');
 
-
 /* === quark_flavor === */
 
 INSERT INTO quark_flavor (quark_flavor_id, quark_flavor_short_name, quark_flavor_long_name)

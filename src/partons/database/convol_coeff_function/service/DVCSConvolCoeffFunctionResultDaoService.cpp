@@ -30,7 +30,7 @@ DVCSConvolCoeffFunctionResultDaoService::DVCSConvolCoeffFunctionResultDaoService
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     //get last id of CCF kinematics
-    if (query.exec("SELECT COUNT(ccf_kinematic_id) FROM dvcs_ccf_kinematic;")) {
+    if (query.exec("SELECT COUNT(dvcs_ccf_kinematic_id) FROM dvcs_ccf_kinematic;")) {
         if (query.first()) {
             m_lastCCFKinematicProcessId = query.value(0).toInt();
         }
@@ -45,7 +45,7 @@ DVCSConvolCoeffFunctionResultDaoService::DVCSConvolCoeffFunctionResultDaoService
 
     //get last id of CCF result complex
     if (query.exec(
-            "SELECT COUNT(ccf_result_complex_id) FROM dvcs_ccf_result;")) {
+            "SELECT COUNT(dvcs_ccf_result_id) FROM dvcs_ccf_result;")) {
         if (query.first()) {
             m_lastCCFResultProcessId = query.value(0).toInt();
         }
@@ -112,10 +112,15 @@ int DVCSConvolCoeffFunctionResultDaoService::insert(
                 m_ccfKinematicTableFile += ElemUtils::Formatter()
                         << m_lastCCFKinematicProcessId << ","
                         << kinematic.getXi().getValue() << ","
+                        << kinematic.getXi().getUnit() << ","
                         << kinematic.getT().getValue() << ","
+                        << kinematic.getT().getUnit() << ","
                         << kinematic.getQ2().getValue() << ","
+                        << kinematic.getQ2().getUnit() << ","
                         << kinematic.getMuF2().getValue() << ","
+                        << kinematic.getMuF2().getUnit() << ","
                         << kinematic.getMuR2().getValue() << ","
+                        << kinematic.getMuR2().getUnit() << ","
                         << kinematic.getHashSum() << '\n';
             }
 
@@ -152,11 +157,11 @@ int DVCSConvolCoeffFunctionResultDaoService::insert(
         insertCommonDataIntoDatabaseTables();
 
         insertDataIntoDatabaseTables("ccfKinematicTableFile.csv",
-                m_ccfKinematicTableFile, "ccf_kinematic");
+                m_ccfKinematicTableFile, "dvcs_ccf_kinematic");
         insertDataIntoDatabaseTables("ccfResultTableFile.csv",
                 m_ccfResultTableFile, "ccf_result");
         insertDataIntoDatabaseTables("ccfResultComplexTableFile.csv",
-                m_ccfResultComplexTableFile, "ccf_result_complex");
+                m_ccfResultComplexTableFile, "dvcs_ccf_result");
 
         //if there is no exception we can commit all query
         QSqlDatabase::database().commit();

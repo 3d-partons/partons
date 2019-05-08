@@ -46,6 +46,9 @@ public:
             const Task &task) const;
     List<DVCSConvolCoeffFunctionKinematic> newListOfKinematicFromTask(
             const Task &task) const;
+    void storeResultListInDatabase(
+            const List<DVCSConvolCoeffFunctionResult>& results) const;
+    virtual void generatePlotFileTask(Task &task);
 
 protected:
 

@@ -80,19 +80,24 @@ void GPDService::computeTask(Task &task) {
 
     if (task.isStoreInDB()) {
 
-        GPDResultDaoService resultService;
-
-        int computationId = resultService.insert(resultList);
-
-        if (computationId != -1) {
-            info(__func__,
-                    ElemUtils::Formatter()
-                            << "List of GPD result has been stored in database with computation_id = "
-                            << computationId);
+        if (resultList.size() == 0) {
+            warn(__func__, "No results to be inserted into database");
         } else {
-            throw ElemUtils::CustomException(getClassName(), __func__,
-                    ElemUtils::Formatter()
-                            << "Failed to insert List of GPD result into database");
+
+            GPDResultDaoService resultService;
+
+            int computationId = resultService.insert(resultList);
+
+            if (computationId != -1) {
+                info(__func__,
+                        ElemUtils::Formatter()
+                                << "List of GPD result has been stored in database with computation_id = "
+                                << computationId);
+            } else {
+                throw ElemUtils::CustomException(getClassName(), __func__,
+                        ElemUtils::Formatter()
+                                << "Failed to insert List of GPD result into database");
+            }
         }
     }
 
