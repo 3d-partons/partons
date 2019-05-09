@@ -38,10 +38,13 @@ public:
      */
     virtual ~DVCSObservableService();
 
-    void resolveObjectDependencies();
-    DVCSObservableKinematic newKinematicFromTask(const Task &task) const;
-    List<DVCSObservableKinematic> newListOfKinematicFromTask(
+    virtual void resolveObjectDependencies();
+    virtual DVCSObservableKinematic newKinematicFromTask(const Task &task) const;
+    virtual List<DVCSObservableKinematic> newListOfKinematicFromTask(
             const Task &task) const;
+    virtual void storeResultListInDatabase(
+            const List<DVCSObservableResult>& results) const;
+    virtual void generatePlotFileTask(Task &task);
 
 protected:
 

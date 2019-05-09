@@ -10,6 +10,7 @@
 #include "../../../include/partons/beans/automation/Task.h"
 #include "../../../include/partons/beans/KinematicUtils.h"
 #include "../../../include/partons/BaseObjectRegistry.h"
+#include "../../../include/partons/database/observable/service/DVCSObservableResultDaoService.h"
 #include "../../../include/partons/modules/observable/DVCS/DVCSObservable.h"
 #include "../../../include/partons/modules/process/DVCS/DVCSProcessModule.h"
 #include "../../../include/partons/ModuleObjectFactory.h"
@@ -80,6 +81,34 @@ List<DVCSObservableKinematic> DVCSObservableService::newListOfKinematicFromTask(
     }
 
     return listOfKinematic;
+}
+
+void DVCSObservableService::storeResultListInDatabase(
+        const List<DVCSObservableResult>& results) const {
+
+    //get dao service
+    DVCSObservableResultDaoService dvcsObservableResultDaoService;
+
+    //insert
+    int computationId = dvcsObservableResultDaoService.insert(results);
+
+    //check if inserted correctly
+    if (computationId != -1) {
+        info(__func__,
+                ElemUtils::Formatter()
+                        << "DVCSObservableResult object has been stored in database with computation_id = "
+                        << computationId);
+    } else {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter()
+                        << "DVCSObservableResult object : insertion into database failed");
+    }
+}
+
+void DVCSObservableService::generatePlotFileTask(Task &task) {
+    generatePlotFile(getOutputFilePathForPlotFileTask(task),
+            generateSQLQueryForPlotFileTask(task,
+                    "dvcs_observable_plot_2d_view"), ' ');
 }
 
 ProcessModule<DVCSObservableKinematic, DVCSObservableResult>* DVCSObservableService::newProcessModuleFromTask(

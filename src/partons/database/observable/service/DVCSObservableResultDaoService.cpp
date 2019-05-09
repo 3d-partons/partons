@@ -10,8 +10,10 @@
 #include <QtSql/qsqlrecord.h>
 
 #include "../../../../../include/partons/beans/observable/DVCS/DVCSObservableKinematic.h"
+#include "../../../../../include/partons/beans/observable/ObservableResult.h"
 #include "../../../../../include/partons/beans/Result.h"
 #include "../../../../../include/partons/database/DatabaseManager.h"
+#include "../../../../../include/partons/utils/math/ErrorBar.h"
 #include "../../../../../include/partons/utils/type/PhysicalType.h"
 
 namespace PARTONS {
@@ -102,43 +104,45 @@ int DVCSObservableResultDaoService::insert(
                 kinematicId = m_lastObservableKinematicId;
 
                 //prepare query
-                //TODO remove hardcoded 0 values
                 m_observableKinematicTableFile += ElemUtils::Formatter()
-                        << m_lastObservableKinematicId << "," << 0 << ","
+                        << m_lastObservableKinematicId << ","
                         << kinematic.getXB().getValue() << ","
+                        << kinematic.getXB().getUnit() << ","
                         << kinematic.getT().getValue() << ","
+                        << kinematic.getT().getUnit() << ","
                         << kinematic.getQ2().getValue() << ","
+                        << kinematic.getQ2().getUnit() << ","
                         << kinematic.getE().getValue() << ","
-                        << kinematic.getPhi().getValue() << "," << 0 << ","
+                        << kinematic.getE().getUnit() << ","
+                        << kinematic.getPhi().getValue() << ","
+                        << kinematic.getPhi().getUnit() << "," << 0 << ","
                         << kinematic.getHashSum() << '\n';
             }
 
             //increment counter
             m_lastObservableResultId++;
 
-            //MODIFY PS
-//            m_observableResultTableFile += ElemUtils::Formatter()
-//                    << m_lastObservableResultId << ","
-//                    << resultList[i].getObservableName() << ","
-//                    << resultList[i].getValue() << ","
-//                    << resultList[i].getStatError().getLowerBound() << ","
-//                    << resultList[i].getStatError().getUpperBound() << ","
-//                    << resultList[i].getSystError().getLowerBound() << ","
-//                    << resultList[i].getSystError().getUpperBound() << ","
-//                    << resultList[i].getScaleError().getLowerBound() << ","
-//                    << resultList[i].getScaleError().getUpperBound() << ","
-//                    << resultList[i].getComputationModuleName() << ","
-//                    << resultList[i].getObservableType() << "," << kinematicId
-//                    << "," << m_previousComputationId.second << '\n';
+            m_observableResultTableFile += ElemUtils::Formatter()
+                    << m_lastObservableResultId << ","
+                    << resultList[i].getComputationModuleName() << ","
+                    << resultList[i].getValue().getValue() << ","
+                    << resultList[i].getErrStat().getLowerBound() << ","
+                    << resultList[i].getErrStat().getUpperBound() << ","
+                    << resultList[i].getErrSys().getLowerBound() << ","
+                    << resultList[i].getErrSys().getUpperBound() << ","
+                    << resultList[i].getErrScale().getLowerBound() << ","
+                    << resultList[i].getErrScale().getUpperBound() << ","
+                    << resultList[i].getValue().getUnit() << "," << kinematicId
+                    << "," << m_previousComputationId.second << '\n';
         }
 
         //insert
         insertCommonDataIntoDatabaseTables();
 
         insertDataIntoDatabaseTables("observableKinematicTableFile.csv",
-                m_observableKinematicTableFile, "observable_kinematic");
+                m_observableKinematicTableFile, "dvcs_observable_kinematic");
         insertDataIntoDatabaseTables("observableResultTableFile.csv",
-                m_observableResultTableFile, "observable_result");
+                m_observableResultTableFile, "dvcs_observable_result");
 
         //if there is no exception we can commit all query
         QSqlDatabase::database().commit();

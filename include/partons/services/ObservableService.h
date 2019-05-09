@@ -90,20 +90,14 @@ public:
 
         this->updateResultInfo(resultList, this->m_resultInfo);
 
-//        if (task.isStoreInDB()) {
-//            ObservableResultDaoService observableResultDaoService;
-//            int computationId = observableResultDaoService.insert(resultList);
-//
-//            if (computationId != -1) {
-//                this->info(__func__,
-//                        ElemUtils::Formatter()
-//                                << "ObservableResultList object has been stored in database with computation_id = "
-//                                << computationId);
-//            } else {
-//                throw ElemUtils::CustomException(getClassName(), __func__,
-//                        "ObservableResultList object : insertion into database failed");
-//            }
-//        }
+        if (task.isStoreInDB()) {
+
+            if (resultList.size() == 0) {
+                this->warn(__func__, "No results to be inserted into database");
+            } else {
+                storeResultListInDatabase(resultList);
+            }
+        }
 
         this->m_resultListBuffer = resultList;
     }
@@ -245,6 +239,14 @@ public:
     virtual List<KinematicType> newListOfKinematicFromTask(
             const Task &task) const = 0;
 
+    /**
+     * Store list of results in DB.
+     * @param results List of results.
+     * @return True is insertion successful.
+     */
+    virtual void storeResultListInDatabase(
+            const List<ResultType>& results) const = 0;
+
 protected:
 
     /**
@@ -319,11 +321,7 @@ private:
      * Method used in the automated interface to generate a data file ready for plotting.
      * @param task Automated XML task.
      */
-    void generatePlotFileTask(Task &task) {
-//        generatePlotFile(getOutputFilePathForPlotFileTask(task),
-//                generateSQLQueryForPlotFileTask(task, "observable_plot_2d_view"),
-//                ' ');
-    }
+    virtual void generatePlotFileTask(Task &task) = 0;
 
     /**
      * Method used to derive an intersection of available GPD types from the various underlying modules.

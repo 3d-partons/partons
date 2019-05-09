@@ -49,7 +49,7 @@ CREATE INDEX pdqd_index_a ON parton_distribution_quark_distribution (quark_distr
 CREATE INDEX pdqd_index_b ON parton_distribution_quark_distribution (parton_distribution_id);
 
 CREATE VIEW gpd_result_view AS 
-SELECT gr.gpd_result_id, pd.parton_distribution_id, gr.computation_module_name, grpd.gpd_type_id, pd.gluon_distribution_value, qd.quark_flavor_id, qd.quark_distribution, qd.quark_distribution_plus, qd.quark_distribution_minus, gr.computation_id
+SELECT gr.gpd_result_id, pd.parton_distribution_id, gr.computation_module_name, grpd.gpd_type_id, pd.gluon_distribution_value, qd.quark_flavor_id, qd.quark_distribution, qd.quark_distribution_plus, qd.quark_distribution_minus, gr.computation_id, gr.gpd_kinematic_id
 FROM gpd_result gr
 INNER JOIN computation c ON gr.computation_id = c.computation_id
 INNER JOIN gpd_result_parton_distribution grpd ON gr.gpd_result_id = grpd.gpd_result_id

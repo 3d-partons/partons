@@ -25,8 +25,8 @@ DVCSConvolCoeffFunctionResultDao::~DVCSConvolCoeffFunctionResultDao() {
 }
 
 int DVCSConvolCoeffFunctionResultDao::insertIntoDVCSCCFResultComplex(
-        const double realPart, const double imgPart, const GPDType::Type gpdType,
-        const int ccfResultId) const {
+        const double realPart, const double imgPart,
+        const GPDType::Type gpdType, const int ccfResultId) const {
 
     //result
     int result = -1;
@@ -97,6 +97,7 @@ void DVCSConvolCoeffFunctionResultDao::fillConvolCoeffFunctionResultList(
     int img_part_field = query.record().indexOf("img_part");
     int computation_id_field = query.record().indexOf(
             QString(Database::COLUMN_NAME_COMPUTATION_ID.c_str()));
+    int kinematic_id_field = query.record().indexOf("ccf_kinematic_id");
 
     //results
     DVCSConvolCoeffFunctionResult ccfResult;
@@ -116,6 +117,11 @@ void DVCSConvolCoeffFunctionResultDao::fillConvolCoeffFunctionResultList(
 
         //set index id
         ccfResult.setIndexId(currentCCFResultId);
+
+        //set kinematics
+        ccfResult.setKinematic(
+                m_dvcsConvolCoeffFunctionKinematicDao.getKinematicById(
+                        query.value(kinematic_id_field).toInt()));
 
         //set value
         complexValue = std::complex<double>(
@@ -145,6 +151,11 @@ void DVCSConvolCoeffFunctionResultDao::fillConvolCoeffFunctionResultList(
             //make new for next one
             ccfResult = DVCSConvolCoeffFunctionResult();
             ccfResult.setIndexId(currentCCFResultId);
+
+            //set kinematics
+            ccfResult.setKinematic(
+                    m_dvcsConvolCoeffFunctionKinematicDao.getKinematicById(
+                            query.value(kinematic_id_field).toInt()));
         }
 
         //set value

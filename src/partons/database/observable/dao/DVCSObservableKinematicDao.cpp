@@ -31,7 +31,7 @@ int DVCSObservableKinematicDao::insert(const PhysicalType<double>& xB,
 
     //prepare query
     query.prepare(
-            "INSERT INTO dvcs_observable_kinematic (xB, t, Q2, E, phi) VALUES (:xB, :t, :Q2, :E, :phi);");
+            "INSERT INTO dvcs_observable_kinematic (xB, xB_unit, t, t_unit, Q2, Q2_unit, E, E_unit, phi, phi_unit) VALUES (:xB, :xB_unit, :t, :t_unit, :Q2, :Q2_unit, :E, :E_unit, :phi, :phi_unit);");
 
     query.bindValue(":xB", xB.getValue());
     query.bindValue(":xB_unit", xB.getUnit());
@@ -126,7 +126,8 @@ List<DVCSObservableKinematic> DVCSObservableKinematicDao::getKinematicListByComp
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     //prepare query
-    query.prepare("SELECT * FROM observable_kinematic_view WHERE computation_id = :computationId");
+    query.prepare(
+            "SELECT * FROM dvcs_observable_kinematic_view WHERE computation_id = :computationId");
 
     query.bindValue(":computationId", computationId);
 
@@ -153,8 +154,7 @@ void DVCSObservableKinematicDao::fillObservableKinematicListFromQuery(
 void DVCSObservableKinematicDao::fillKinematicFromQuery(
         DVCSObservableKinematic &observableKinematic, QSqlQuery &query) const {
 
-    int field_id = query.record().indexOf(
-            QString(Database::COLUMN_NAME_OBSERVABLE_KINEMATIC_ID.c_str()));
+    int field_id = query.record().indexOf("dvcs_observable_kinematic_id");
     int field_xB = query.record().indexOf("xB");
     int field_xB_unit = query.record().indexOf("xB_unit");
     int field_t = query.record().indexOf("t");

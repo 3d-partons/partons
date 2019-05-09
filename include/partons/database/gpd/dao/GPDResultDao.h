@@ -69,7 +69,7 @@ public:
 private:
 
     /**
-     * GPDKinematicDao object to perform database queries.
+     * Kinematic DAO.
      */
     GPDKinematicDao m_gpdKinematicDao;
 

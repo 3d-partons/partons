@@ -129,6 +129,7 @@ void GPDResultDao::fillGPDResultList(List<GPDResult> &gpdResultList,
             QString(Database::COLUMN_NAME_QUARK_DISTRIBUTION_PLUS.c_str()));
     int field_quark_distribution_minus = query.record().indexOf(
             QString(Database::COLUMN_NAME_QUARK_DISTRIBUTION_MINUS.c_str()));
+    int field_kinematic_id = query.record().indexOf("gpd_kinematic_id");
 
     //results
     GPDResult gpdResult;
@@ -147,6 +148,11 @@ void GPDResultDao::fillGPDResultList(List<GPDResult> &gpdResultList,
         //retrieve gpd_result_id
         currentGPDResultId = query.value(field_gpd_result_id).toInt();
         gpdResult.setIndexId(currentGPDResultId);
+
+        //set kinematics
+        gpdResult.setKinematic(
+                m_gpdKinematicDao.getKinematicById(
+                        query.value(field_kinematic_id).toInt()));
 
         //retrieve parton_distribution_id
         currentPartonDistributionId =
@@ -203,6 +209,11 @@ void GPDResultDao::fillGPDResultList(List<GPDResult> &gpdResultList,
             //make new for next one
             gpdResult = GPDResult();
             gpdResult.setIndexId(currentGPDResultId);
+
+            //set kinematics
+            gpdResult.setKinematic(
+                    m_gpdKinematicDao.getKinematicById(
+                            query.value(field_kinematic_id).toInt()));
         }
 
         //new partons distribution result

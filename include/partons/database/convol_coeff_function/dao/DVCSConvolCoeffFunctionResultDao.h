@@ -11,8 +11,10 @@
 #include <QtSql/qsqlquery.h>
 
 #include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
+#include "../../../beans/gpd/GPDType.h"
 #include "../../../beans/List.h"
 #include "ConvolCoeffFunctionResultDao.h"
+#include "DVCSConvolCoeffFunctionKinematicDao.h"
 
 namespace PARTONS {
 
@@ -45,8 +47,9 @@ public:
      * @param ccfResultId Unique id of row in the database representing DVCSConvolCoeffFunctionResult object.
      * @return Unique id of inserted row in the database.
      */
-    int insertIntoDVCSCCFResultComplex(const double realPart, const double imgPart,
-            const GPDType::Type gpdType, const int ccfResultId) const;
+    int insertIntoDVCSCCFResultComplex(const double realPart,
+            const double imgPart, const GPDType::Type gpdType,
+            const int ccfResultId) const;
 
     /**
      * Retrieve list of CFF results from the database by given unique id of computation.
@@ -66,6 +69,11 @@ private:
     void fillConvolCoeffFunctionResultList(
             List<DVCSConvolCoeffFunctionResult> &resultList,
             QSqlQuery& query) const;
+
+    /**
+     * Kinematic DAO.
+     */
+    DVCSConvolCoeffFunctionKinematicDao m_dvcsConvolCoeffFunctionKinematicDao;
 };
 
 } /* namespace PARTONS */

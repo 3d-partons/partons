@@ -71,16 +71,14 @@ FROM tcs_ccf_kinematic ccfk
 INNER JOIN ccf_result ccfr ON ccfk.tcs_ccf_kinematic_id = ccfr.ccf_kinematic_id;
 
 CREATE VIEW dvcs_ccf_result_view AS 
-SELECT ccfr.ccf_result_id, ccfr.computation_module_name, ccfr.channel_id, ccfrc.gpd_type_id, ccfrc.real_part, ccfrc.img_part, c.computation_id
+SELECT ccfr.ccf_result_id, ccfr.computation_module_name, ccfr.channel_id, ccfrc.gpd_type_id, ccfrc.real_part, ccfrc.img_part, ccfr.computation_id, ccfr.ccf_kinematic_id
 FROM ccf_result ccfr
-INNER JOIN computation c ON ccfr.computation_id = c.computation_id
 INNER JOIN dvcs_ccf_result ccfrc ON ccfr.ccf_result_id = ccfrc.ccf_result_id
 ORDER BY ccfr.ccf_result_id;
 
 CREATE VIEW tcs_ccf_result_view AS 
-SELECT ccfr.ccf_result_id, ccfr.computation_module_name, ccfr.channel_id, ccfrc.gpd_type_id, ccfrc.real_part, ccfrc.img_part, c.computation_id
+SELECT ccfr.ccf_result_id, ccfr.computation_module_name, ccfr.channel_id, ccfrc.gpd_type_id, ccfrc.real_part, ccfrc.img_part, ccfr.computation_id, ccfr.ccf_kinematic_id
 FROM ccf_result ccfr
-INNER JOIN computation c ON ccfr.computation_id = c.computation_id
 INNER JOIN tcs_ccf_result ccfrc ON ccfr.ccf_result_id = ccfrc.ccf_result_id
 ORDER BY ccfr.ccf_result_id;
 

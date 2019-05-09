@@ -41,12 +41,12 @@ public:
      */
     virtual ~DVCSConvolCoeffFunctionService();
 
-    void resolveObjectDependencies();
-    DVCSConvolCoeffFunctionKinematic newKinematicFromTask(
+    virtual void resolveObjectDependencies();
+    virtual DVCSConvolCoeffFunctionKinematic newKinematicFromTask(
             const Task &task) const;
-    List<DVCSConvolCoeffFunctionKinematic> newListOfKinematicFromTask(
+    virtual List<DVCSConvolCoeffFunctionKinematic> newListOfKinematicFromTask(
             const Task &task) const;
-    void storeResultListInDatabase(
+    virtual void storeResultListInDatabase(
             const List<DVCSConvolCoeffFunctionResult>& results) const;
     virtual void generatePlotFileTask(Task &task);
 
