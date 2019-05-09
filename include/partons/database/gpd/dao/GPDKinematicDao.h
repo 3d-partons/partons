@@ -44,11 +44,12 @@ public:
      * @param t Four-momentum transfer squared of hadron target.
      * @param MuF2 Factorization scale squared.
      * @param MuR2 Renormalization scale squared.
+     * @param hashSum Hash sum.
      * @return Unique id of inserted row in the database.
      */
     int insert(const PhysicalType<double>& x, const PhysicalType<double>& xi,
             const PhysicalType<double>& t, const PhysicalType<double>& MuF2,
-            const PhysicalType<double>& MuR2) const;
+            const PhysicalType<double>& MuR2, const std::string& hashSum) const;
 
     /**
      * Select GPD kinematics from the database.

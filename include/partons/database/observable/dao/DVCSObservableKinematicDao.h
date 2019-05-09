@@ -42,11 +42,12 @@ public:
      * @param Q2 Virtual-photon virtuality.
      * @param E Beam energy (in GeV).
      * @param phi Angle between leptonic and hadronic planes (in degrees, Trento convention).
+     * @param hashSum Hash sum.
      * @return Unique id of inserted row in the database.
      */
     int insert(const PhysicalType<double>& xB, const PhysicalType<double>& t,
             const PhysicalType<double>& Q2, const PhysicalType<double>& E,
-            const PhysicalType<double>& phi) const;
+            const PhysicalType<double>& phi, const std::string& hashSum) const;
 
     /**
      * Select GPD kinematics from the database.

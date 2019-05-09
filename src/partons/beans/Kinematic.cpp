@@ -27,7 +27,8 @@ std::string Kinematic::toString() const {
     ElemUtils::Formatter formatter;
 
     formatter << BaseObject::toString();
-    formatter << " ChannelType: " << ChannelType(m_channelType).toString();
+    formatter << " ChannelType: " << ChannelType(m_channelType).toString()
+            << " IndexId: " << getIndexId();
 
     return formatter.str();
 }

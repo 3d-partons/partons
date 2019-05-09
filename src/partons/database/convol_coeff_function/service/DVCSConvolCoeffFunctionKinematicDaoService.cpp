@@ -89,7 +89,7 @@ int DVCSConvolCoeffFunctionKinematicDaoService::insertWithoutTransaction(
         const DVCSConvolCoeffFunctionKinematic& ccfKinematic) const {
     return m_dvcsConvolCoeffFunctionKinematicDao.insert(ccfKinematic.getXi(),
             ccfKinematic.getT(), ccfKinematic.getQ2(), ccfKinematic.getMuF2(),
-            ccfKinematic.getMuR2());
+            ccfKinematic.getMuR2(), ccfKinematic.getHashSum());
 }
 
 List<DVCSConvolCoeffFunctionKinematic> DVCSConvolCoeffFunctionKinematicDaoService::getKinematicListByComputationId(

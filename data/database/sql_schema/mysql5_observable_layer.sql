@@ -88,16 +88,18 @@ CREATE INDEX tcs_observable_result_index ON tcs_observable_result (computation_i
 /* view */
 
 CREATE VIEW dvcs_observable_kinematic_view AS 
-SELECT obk.dvcs_observable_kinematic_id, obk.xB, obk.xB_unit, obk.t, obk.t_unit, obk.Q2, obk.Q2_unit, obk.E, obk.E_unit, obk.phi, obk.phi_unit, obr.computation_id
-FROM dvcs_observable_result obr
-INNER JOIN dvcs_observable_kinematic obk ON obr.dvcs_observable_kinematic_id = obk.dvcs_observable_kinematic_id
-ORDER BY obr.computation_id;
+SELECT 	obk.dvcs_observable_kinematic_id, obk.xB, obk.xB_unit, obk.t, obk.t_unit, obk.Q2, obk.Q2_unit, obk.E, obk.E_unit, obk.phi, obk.phi_unit, obk.hash_sum, 
+	obr.computation_id
+FROM dvcs_observable_kinematic obk
+INNER JOIN dvcs_observable_result obr ON obr.dvcs_observable_kinematic_id = obk.dvcs_observable_kinematic_id
+ORDER BY obk.dvcs_observable_kinematic_id;
 
 CREATE VIEW tcs_observable_kinematic_view AS 
-SELECT obk.tcs_observable_kinematic_id, obk.xB, obk.xB_unit, obk.t, obk.t_unit, obk.Q2Prim, obk.Q2Prim_unit, obk.E, obk.E_unit, obk.phi, obk.phi_unit, obr.computation_id
-FROM tcs_observable_result obr
-INNER JOIN tcs_observable_kinematic obk ON obr.tcs_observable_kinematic_id = obk.tcs_observable_kinematic_id
-ORDER BY obr.computation_id;
+SELECT 	obk.tcs_observable_kinematic_id, obk.xB, obk.xB_unit, obk.t, obk.t_unit, obk.Q2, obk.Q2_unit, obk.E, obk.E_unit, obk.phi, obk.phi_unit, obk.hash_sum, 
+	obr.computation_id
+FROM tcs_observable_kinematic obk
+INNER JOIN tcs_observable_result obr ON obr.tcs_observable_kinematic_id = obk.tcs_observable_kinematic_id
+ORDER BY obk.tcs_observable_kinematic_id;
 
 /* view for plots */
 

@@ -8,8 +8,8 @@ namespace PARTONS {
 
 GPDKinematicDaoService::GPDKinematicDaoService() :
         BaseObject("GPDKinematicDaoService") {
-
 }
+
 GPDKinematicDaoService::~GPDKinematicDaoService() {
 }
 
@@ -82,20 +82,14 @@ GPDKinematic GPDKinematicDaoService::getKinematicById(const int id) const {
 
 List<GPDKinematic> GPDKinematicDaoService::getKinematicListByComputationId(
         const int computationId) const {
-
-    //info
-    info(__func__,
-            ElemUtils::Formatter()
-                    << "Searching in database for GPD kinematic(s) with computation id = "
-                    << computationId << " ...");
-
     return m_GPDKinematicDao.getKinematicListByComputationId(computationId);
 }
 
 int GPDKinematicDaoService::insertWithoutTransaction(
         const GPDKinematic& gpdKinematic) const {
     return m_GPDKinematicDao.insert(gpdKinematic.getX(), gpdKinematic.getXi(),
-            gpdKinematic.getT(), gpdKinematic.getMuF2(), gpdKinematic.getMuR2());
+            gpdKinematic.getT(), gpdKinematic.getMuF2(), gpdKinematic.getMuR2(),
+            gpdKinematic.getHashSum());
 }
 
 int GPDKinematicDaoService::getKinematicIdByHashSum(

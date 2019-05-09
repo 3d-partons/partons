@@ -93,7 +93,8 @@ int DVCSObservableKinematicDaoService::insertWithoutTransaction(
         const DVCSObservableKinematic& observableKinematic) const {
     return m_dvcsObservableKinematicDao.insert(observableKinematic.getXB(),
             observableKinematic.getT(), observableKinematic.getQ2(),
-            observableKinematic.getE(), observableKinematic.getPhi());
+            observableKinematic.getE(), observableKinematic.getPhi(),
+            observableKinematic.getHashSum());
 }
 
 int DVCSObservableKinematicDaoService::getKinematicIdByHashSum(

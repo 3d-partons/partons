@@ -22,11 +22,17 @@ GPDKinematicDao::~GPDKinematicDao() {
 
 int GPDKinematicDao::insert(const PhysicalType<double>& x,
         const PhysicalType<double>& xi, const PhysicalType<double>& t,
-        const PhysicalType<double>& MuF2,
-        const PhysicalType<double>& MuR2) const {
+        const PhysicalType<double>& MuF2, const PhysicalType<double>& MuR2,
+        const std::string& hashSum) const {
 
-    //result
-    int result = -1;
+    //check if already in db
+    int result = getKinematicIdByHashSum(hashSum);
+
+    if (result != -1) {
+
+        warn(__func__, "Kinematics already in database, insertion skipped");
+        return result;
+    }
 
     //create query
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
@@ -34,8 +40,8 @@ int GPDKinematicDao::insert(const PhysicalType<double>& x,
     //form query
     ElemUtils::Formatter formatter;
     formatter << "INSERT INTO " << Database::TABLE_NAME_GPD_KINEMATIC
-            << " (x, x_unit, xi, xi_unit, t, t_unit, MuF2, MuF2_unit, MuR2, MuR2_unit)"
-            << " VALUES (:x, :x_unit, :xi, :xi_unit, :t, :t_unit, :MuF2, :MuF2_unit, :MuR2, :MuR2_unit)";
+            << " (x, x_unit, xi, xi_unit, t, t_unit, MuF2, MuF2_unit, MuR2, MuR2_unit, hash_sum)"
+            << " VALUES (:x, :x_unit, :xi, :xi_unit, :t, :t_unit, :MuF2, :MuF2_unit, :MuR2, :MuR2_unit, :hash_sum)";
 
     //prepare query
     query.prepare(QString(formatter.str().c_str()));
@@ -50,8 +56,9 @@ int GPDKinematicDao::insert(const PhysicalType<double>& x,
     query.bindValue(":MuF2_unit", MuF2.getUnit());
     query.bindValue(":MuR2", MuR2.getValue());
     query.bindValue(":MuR2_unit", MuR2.getUnit());
+    query.bindValue(":hash_sum", hashSum.c_str());
 
-    //execute
+    //execute query
     if (query.exec()) {
 
         //get result
@@ -103,12 +110,13 @@ int GPDKinematicDao::select(const PhysicalType<double>& x,
     query.bindValue(":MuR2", MuR2.getValue());
     query.bindValue(":MuR2_unit", MuR2.getUnit());
 
-    //execute
-    Database::checkUniqueResult(getClassName(), __func__,
-            Database::execSelectQuery(query), query);
+    //execute query
+    if (Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query) != 0) {
 
-    //get result
-    result = query.value(0).toInt();
+        //get result
+        result = query.value(0).toInt();
+    }
 
     return result;
 }
@@ -121,21 +129,19 @@ GPDKinematic GPDKinematicDao::getKinematicById(const int id) const {
     //create query
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    //form query
-    ElemUtils::Formatter formatter;
-    formatter << "SELECT * FROM " << Database::TABLE_NAME_GPD_KINEMATIC
-            << " WHERE " << Database::COLUMN_NAME_GPD_KINEMATIC_ID << " = :id";
-
     //prepare query
-    query.prepare(QString(formatter.str().c_str()));
+    query.prepare(
+            "SELECT * FROM gpd_kinematic_view WHERE gpd_kinematic_id = :id");
+
     query.bindValue(":id", id);
 
     //execute and check if unique (if false true exception)
-    Database::checkUniqueResult(getClassName(), __func__,
-            Database::execSelectQuery(query), query);
+    if (Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query) != 0) {
 
-    //fill
-    fillGPDKinematicFromQuery(gpdKinematic, query);
+        //fill
+        fillGPDKinematicFromQuery(gpdKinematic, query);
+    }
 
     return gpdKinematic;
 }
@@ -149,18 +155,10 @@ List<GPDKinematic> GPDKinematicDao::getKinematicListByComputationId(
     //create query
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    //form query
-    ElemUtils::Formatter formatter;
-    formatter << "SELECT k." << Database::COLUMN_NAME_GPD_KINEMATIC_ID
-            << ", k.x, k.x_unit, k.xi, k.xi_unit, k.t, k.t_unit, k.MuF2, k.MuF2_unit, k.MuR2, k.MuR2_unit FROM "
-            << Database::TABLE_NAME_GPD_KINEMATIC << " k, "
-            << Database::TABLE_NAME_GPD_RESULT
-            << " r WHERE r.computation_id = :computationId AND r."
-            << Database::COLUMN_NAME_GPD_KINEMATIC_ID << " = k."
-            << Database::COLUMN_NAME_GPD_KINEMATIC_ID;
-
     //prepare query
-    query.prepare(QString(formatter.str().c_str()));
+    query.prepare(
+            "SELECT * FROM gpd_kinematic_view WHERE computation_id = :computationId;");
+
     query.bindValue(":computationId", QVariant(computationId));
 
     //execute and check how many results retrieved (if 0 throw exception)
@@ -173,12 +171,28 @@ List<GPDKinematic> GPDKinematicDao::getKinematicListByComputationId(
     return kinematicList;
 }
 
+void GPDKinematicDao::fillGPDKinematicListFromQuery(
+        List<GPDKinematic>& gpdKinematicList, QSqlQuery& query) const {
+
+    //loop over single queries
+    while (query.next()) {
+
+        //single result
+        GPDKinematic gpdKinematic;
+
+        //get
+        fillGPDKinematicFromQuery(gpdKinematic, query);
+
+        //store
+        gpdKinematicList.add(gpdKinematic);
+    }
+}
+
 void GPDKinematicDao::fillGPDKinematicFromQuery(GPDKinematic &gpdKinematic,
         QSqlQuery& query) const {
 
     //get indices
-    int field_id = query.record().indexOf(
-            QString(Database::COLUMN_NAME_GPD_KINEMATIC_ID.c_str()));
+    int field_id = query.record().indexOf("gpd_kinematic_id");
     int field_x = query.record().indexOf("x");
     int field_x_unit = query.record().indexOf("x_unit");
     int field_xi = query.record().indexOf("xi");
@@ -189,6 +203,7 @@ void GPDKinematicDao::fillGPDKinematicFromQuery(GPDKinematic &gpdKinematic,
     int field_MuF2_unit = query.record().indexOf("MuF2_unit");
     int field_MuR2 = query.record().indexOf("MuR2");
     int field_MuR2_unit = query.record().indexOf("MuR2_unit");
+    int field_hash_sum = query.record().indexOf("hash_sum");
 
     //get values
     int id = query.value(field_id).toInt();
@@ -214,22 +229,12 @@ void GPDKinematicDao::fillGPDKinematicFromQuery(GPDKinematic &gpdKinematic,
             PhysicalType<double>(MuF2, MuF2_unit),
             PhysicalType<double>(MuR2, MuR2_unit));
     gpdKinematic.setIndexId(id);
-}
 
-void GPDKinematicDao::fillGPDKinematicListFromQuery(
-        List<GPDKinematic>& gpdKinematicList, QSqlQuery& query) const {
-
-    //loop over single queries
-    while (query.next()) {
-
-        //single result
-        GPDKinematic gpdKinematic;
-
-        //get
-        fillGPDKinematicFromQuery(gpdKinematic, query);
-
-        //store
-        gpdKinematicList.add(gpdKinematic);
+    //check hash sum
+    if (gpdKinematic.getHashSum()
+            != query.value(field_hash_sum).toString().toStdString()) {
+        warn(__func__,
+                "Retrieved kinematics has different hash sum than original one from database");
     }
 }
 
@@ -248,11 +253,14 @@ int GPDKinematicDao::getKinematicIdByHashSum(const std::string& hashSum) const {
             << " WHERE hash_sum = :hashSum";
 
     query.prepare(QString(formatter.str().c_str()));
+
     query.bindValue(":hashSum", QString(hashSum.c_str()));
 
     //execute and check if unique (if false true exception)
     if (Database::checkUniqueResult(getClassName(), __func__,
             Database::execSelectQuery(query), query) != 0) {
+
+        //get
         result = query.value(0).toInt();
     }
 

@@ -44,11 +44,13 @@ public:
      * @param Q2 Virtual-photon virtuality.
      * @param MuF2 Factorization scale squared (in GeV<sup>2</sup>).
      * @param MuR2 Renormalization scale squared (in GeV<sup>2</sup>).
+     * @param hashSum Hash sum.
      * @return Unique id of inserted row in the database.
      */
     int insert(const PhysicalType<double>& xi, const PhysicalType<double>& t,
             const PhysicalType<double>& Q2, const PhysicalType<double>& MuF2,
-            const PhysicalType<double>& MuR2) const;
+            const PhysicalType<double>& MuR2,
+            const std::string& hashSum) const;
 
     /**
      * Select DVCS CFF kinematics from the database.
