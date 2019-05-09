@@ -199,11 +199,15 @@ public:
      * @return A pre-formatted characters string.
      */
     std::string toString() {
+
         ElemUtils::Formatter formatter;
 
         for (size_t i = 0; i != m_data.size(); i++) {
-            formatter << "List[index] = " << i << '\n' << m_data[i].toString()
-                    << '\n';
+
+            formatter << '\n';
+            formatter << "List[index] = " << i;
+            formatter << '\n';
+            formatter << m_data[i].toString();
         }
 
         return formatter.str();

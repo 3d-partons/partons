@@ -48,7 +48,7 @@ public:
 
         ElemUtils::Formatter formatter;
 
-        formatter << "\n\n" << Result<KinematicType>::toString() << "\n\n";
+        formatter << "\n" << Result<KinematicType>::toString() << "\n\n";
         formatter << "Result: " << '\n';
 
         std::map<GPDType::Type, std::complex<double> >::const_iterator it;

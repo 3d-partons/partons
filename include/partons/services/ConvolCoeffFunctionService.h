@@ -135,8 +135,8 @@ public:
             ConvolCoeffFunctionModule<KinematicType, ResultType>* pConvolCoeffFunctionModule,
             const List<GPDType>& gpdTypeList = List<GPDType>()) {
 
-        //print information
-        this->info(__func__,
+        //debug information
+        this->debug(__func__,
                 ElemUtils::Formatter() << kinematics.size()
                         << " CCF kinematic(s) will be computed with "
                         << pConvolCoeffFunctionModule->getClassName());
@@ -340,8 +340,8 @@ private:
                     restrictedByGPDTypeListFinal, gpdTypeList);
         }
 
-        //print info
-        this->info(__func__,
+        //debug info
+        this->debug(__func__,
                 ElemUtils::Formatter() << restrictedByGPDTypeListFinal.size()
                         << " GPDType will be computed");
 

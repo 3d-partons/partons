@@ -134,8 +134,8 @@ public:
             Observable<KinematicType, ResultType>* pObservable,
             const List<GPDType>& gpdTypeList = List<GPDType>()) {
 
-        //print information
-        this->info(__func__,
+        //debug information
+        this->debug(__func__,
                 ElemUtils::Formatter() << listOfKinematic.size()
                         << " Observable kinematic(s) will be computed with "
                         << pObservable->getClassName());
@@ -346,8 +346,8 @@ private:
                     restrictedByGPDTypeListFinal, gpdTypeList);
         }
 
-        //print info
-        this->info(__func__,
+        //debug info
+        this->debug(__func__,
                 ElemUtils::Formatter() << restrictedByGPDTypeListFinal.size()
                         << " GPDType will be computed");
 

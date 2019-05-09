@@ -46,9 +46,14 @@ public:
 
         ElemUtils::Formatter formatter;
 
-        formatter << "\n\n" << Result<KinematicType>::toString() << "\n\n";
-        formatter << "Result: " << m_value.toString() << " type: "
-                << ObservableType(m_observableType).toString() << '\n';
+        formatter << "\n" << Result<KinematicType>::toString() << "\n\n";
+        formatter << "Result: " << m_value.toString() << " Type: "
+                << ObservableType(m_observableType).toString();
+        if(m_errStat.isInitialized() || m_errSys.isInitialized()  || m_errScale.isInitialized() ) formatter << " Uncertainties:";
+        if(m_errStat.isInitialized()) formatter << " " << m_errStat.toString() << " (stat)";
+        if(m_errSys.isInitialized()) formatter << " " << m_errSys.toString() << " (sys)";
+        if(m_errScale.isInitialized()) formatter << " " << m_errScale.toString() << " (scale)";
+        formatter << '\n';
 
         return formatter.str();
     }

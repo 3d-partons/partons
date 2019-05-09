@@ -64,7 +64,7 @@ public:
 
         ElemUtils::Formatter formatter;
 
-        formatter << m_lowerBound << " / " << m_upperBound;
+        formatter << "-" << m_lowerBound << " +" << m_upperBound;
 
         return formatter.str();
     }
@@ -108,7 +108,7 @@ public:
         m_initialized = initialized;
     }
 
-protected:
+private:
 
     /**
      * True if value initialized.

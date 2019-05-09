@@ -119,8 +119,8 @@ List<GPDResult> GPDService::computeManyKinematic(
         const List<GPDKinematic> &gpdKinematicList, GPDModule* pGPDModule,
         const List<GPDType>& gpdTypeList) {
 
-    //print information
-    info(__func__,
+    //debug information
+    debug(__func__,
             ElemUtils::Formatter() << gpdKinematicList.size()
                     << " GPD kinematic(s) will be computed with "
                     << pGPDModule->getClassName());
@@ -258,8 +258,8 @@ List<GPDType> GPDService::getFinalGPDTypeList(GPDModule* pGPDModule,
                 restrictedByGPDTypeListFinal, gpdTypeList);
     }
 
-    //print info
-    info(__func__,
+    //debug info
+    debug(__func__,
             ElemUtils::Formatter() << restrictedByGPDTypeListFinal.size()
                     << " GPDType will be computed");
 

@@ -98,7 +98,7 @@ public:
 
         formatter << m_value;
         formatter << " [";
-        formatter << PhysicalUnit(m_unit).toString();
+        formatter << PhysicalUnit(m_unit).getShortName();
         formatter << "]";
 
         return formatter.str();
