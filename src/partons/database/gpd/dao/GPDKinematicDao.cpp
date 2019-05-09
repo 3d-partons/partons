@@ -65,7 +65,7 @@ int GPDKinematicDao::insert(const PhysicalType<double>& x,
         result = query.lastInsertId().toInt();
     } else {
 
-        //thrown if error
+        //throw if error
         throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "

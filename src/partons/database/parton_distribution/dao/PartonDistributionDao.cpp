@@ -2,6 +2,7 @@
 
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
+
 #include <QtCore/qstring.h>
 #include <QtCore/qvariant.h>
 #include <QtSql/qsqlerror.h>
@@ -10,7 +11,7 @@
 
 #include "../../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
 #include "../../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
-#include "../../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
+#include "../../../../../include/partons/database/Database.h"
 #include "../../../../../include/partons/database/DatabaseManager.h"
 
 namespace PARTONS {
@@ -38,8 +39,12 @@ int PartonDistributionDao::insert(double gluonDistributionValue) const {
 
     //execute query
     if (query.exec()) {
+
+        //get result
         result = query.lastInsertId().toInt();
     } else {
+
+        //thrown if error
         throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
@@ -67,8 +72,12 @@ int PartonDistributionDao::insertIntoPartonDistributionQuarkDistributionTable(
 
     //execute query
     if (query.exec()) {
+
+        //get result
         result = query.lastInsertId().toInt();
     } else {
+
+        //thrown if error
         throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
@@ -93,14 +102,12 @@ PartonDistribution PartonDistributionDao::getPartonDistributionById(
 
     query.bindValue(":partonDistributionId", partonDistributionId);
 
-    //execute query
-    if (query.exec()) {
+    //execute and check if unique (if false true exception)
+    if (Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query) != 0) {
+
+        //fill
         fillPartonDistributionFromQuery(partonDistribution, query);
-    } else {
-        throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter() << query.lastError().text().toStdString()
-                        << " for sql query = "
-                        << query.executedQuery().toStdString());
     }
 
     return partonDistribution;
@@ -114,21 +121,16 @@ void PartonDistributionDao::fillPartonDistributionFromQuery(
     int f_gluon_distribution = query.record().indexOf(
             "gluon_distribution_value");
 
-    //first query
-    if (query.first()) {
+    //get values
+    int partonDistributionId = query.value(f_parton_distribution_id).toInt();
+    double gluonDistributionValue =
+            query.value(f_gluon_distribution).toDouble();
 
-        //get values
-        int partonDistributionId =
-                query.value(f_parton_distribution_id).toInt();
-        double gluonDistributionValue =
-                query.value(f_gluon_distribution).toDouble();
+    //fill
+    partonDistribution.setGluonDistribution(
+            GluonDistribution(gluonDistributionValue));
 
-        //fill
-        partonDistribution.setGluonDistribution(
-                GluonDistribution(gluonDistributionValue));
-
-        fillPartonDistribution(partonDistribution, partonDistributionId);
-    }
+    fillPartonDistribution(partonDistribution, partonDistributionId);
 }
 
 void PartonDistributionDao::fillPartonDistribution(

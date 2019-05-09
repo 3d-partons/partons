@@ -51,8 +51,6 @@ public:
      */
     int insertWithoutTransaction(
             const PartonDistribution &partonDistribution) const;
-//    int insert(
-//            const std::vector<PartonDistribution> &partonDistributionList) const;
 
 private:
 

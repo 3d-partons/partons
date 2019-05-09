@@ -22,22 +22,25 @@ PartonDistributionDaoService::~PartonDistributionDaoService() {
 
 int PartonDistributionDaoService::insert(
         const PartonDistribution &partonDistribution) const {
+
+    //result
     int result = -1;
 
-    // For multiple query it's better to use transaction to guarantee database's integrity and performance
+    //for multiple query it's better to use transaction to guarantee database's integrity and performance
     QSqlDatabase::database().transaction();
 
     try {
 
+        //insert
         result = insertWithoutTransaction(partonDistribution);
 
-        // If there is no exception we can commit all query
+        //if there is no exception we can commit all query
         QSqlDatabase::database().commit();
 
     } catch (std::exception &e) {
         throw ElemUtils::CustomException(getClassName(), __func__, e.what());
 
-        // Else return database in a stable state : n-1
+        //else return database in a stable state : n-1
         QSqlDatabase::database().rollback();
     }
 
@@ -46,9 +49,12 @@ int PartonDistributionDaoService::insert(
 
 int PartonDistributionDaoService::insertWithoutTransaction(
         const PartonDistribution &partonDistribution) const {
+
+    //insert to parton distribution
     int partonDistributionId = m_partonDistributionDao.insert(
             partonDistribution.getGluonDistribution().getGluonDistribution());
 
+    //insert to quark distribution
     std::map<QuarkFlavor::Type, QuarkDistribution> quarkDistributionList =
             partonDistribution.getQuarkDistributions();
 
@@ -56,34 +62,21 @@ int PartonDistributionDaoService::insertWithoutTransaction(
             quarkDistributionList.begin(); it != quarkDistributionList.end();
             it++) {
 
-        // insert QuarkDistribution object
-
+        //insert QuarkDistribution object
         QuarkDistribution quarkDistribution = (it->second);
+
         int quarkDistributionId = m_quarkDistributionDao.insert(
                 quarkDistribution.getQuarkDistributionPlus(),
                 quarkDistribution.getQuarkDistributionMinus(),
                 quarkDistribution.getQuarkDistribution(), (it->first),
                 partonDistributionId);
 
-        // fill association table "parton_distribution_quark_distribution"
-
+        //fill association table "parton_distribution_quark_distribution"
         m_partonDistributionDao.insertIntoPartonDistributionQuarkDistributionTable(
                 partonDistributionId, quarkDistributionId);
     }
 
     return partonDistributionId;
 }
-
-//TODO re-implement
-//int PartonDistributionDaoService::insert(int gpdResultId,
-//        const std::vector<PartonDistribution> &partonDistributionList) const {
-//    int result = -1;
-//
-//    for (unsigned int i = 0; i != partonDistributionList.size(); i++) {
-//        result = insert(gpdResultId, partonDistributionList[i]);
-//    }
-//
-//    return result;
-//}
 
 } /* namespace PARTONS */

@@ -24,7 +24,7 @@ GPDResultDao::GPDResultDao() :
 GPDResultDao::~GPDResultDao() {
 }
 
-int GPDResultDao::insertResult(const std::string &computationModuleName,
+int GPDResultDao::insertGPDResult(const std::string &computationModuleName,
         int gpdKinematicId, int computationId) const {
 
     //result
@@ -44,8 +44,12 @@ int GPDResultDao::insertResult(const std::string &computationModuleName,
 
     //execute
     if (query.exec()) {
+
+        //get result
         result = query.lastInsertId().toInt();
     } else {
+
+        //thrown if error
         throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
@@ -74,10 +78,18 @@ int GPDResultDao::insertIntoGPDResultPartonDistributionTable(
     query.bindValue(":partonDistributionId", partonDistributionId);
 
     //execute
-    Database::checkUniqueResult(getClassName(), __func__,
-            Database::execSelectQuery(query), query);
+    if (query.exec()) {
 
-    result = query.lastInsertId().toInt();
+        //get result
+        result = query.lastInsertId().toInt();
+    } else {
+
+        //thrown if error
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
+    }
 
     return result;
 }

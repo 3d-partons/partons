@@ -45,7 +45,7 @@ public:
      * @param computationId Unique id of row in the database containing computation information associated to this result.
      * @return Unique id of inserted row in the database.
      */
-    int insertResult(const std::string &computationModuleName,
+    int insertGPDResult(const std::string &computationModuleName,
             int gpdKinematicId, int computationId) const;
 
     /**

@@ -13,8 +13,10 @@
 #include "QuarkDistributionDao.h"
 
 namespace PARTONS {
-
 class PartonDistribution;
+} /* namespace PARTONS */
+
+namespace PARTONS {
 
 /**
  * @class PartonDistributionDao

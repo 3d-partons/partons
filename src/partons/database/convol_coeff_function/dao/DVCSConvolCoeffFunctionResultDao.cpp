@@ -45,8 +45,12 @@ int DVCSConvolCoeffFunctionResultDao::insertIntoDVCSCCFResultComplex(
 
     //execute query
     if (query.exec()) {
+
+        //get result
         result = query.lastInsertId().toInt();
     } else {
+
+        //throw if error
         throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << query.lastError().text().toStdString()
                         << " for sql query = "
