@@ -222,6 +222,17 @@ void GPDKinematic::unserialize(ElemUtils::Packet &packet) {
     packet >> m_t;
     packet >> m_MuF2;
     packet >> m_MuR2;
+
+    updateHashSum();
+}
+
+bool GPDKinematic::operator ==(const GPDKinematic& b) const {
+    return m_x == b.getX() && m_xi == b.getXi() && m_t == b.getT()
+            && m_MuF2 == b.getMuF2() && m_MuR2 == b.getMuR2();
+}
+
+bool GPDKinematic::operator !=(const GPDKinematic& b) const {
+    return !((*this) == b);
 }
 
 void GPDKinematic::updateHashSum() const {

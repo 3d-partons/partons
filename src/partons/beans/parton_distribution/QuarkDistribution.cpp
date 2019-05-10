@@ -98,6 +98,7 @@ void QuarkDistribution::setQuarkFlavor(QuarkFlavor quarkFlavorType) {
 void QuarkDistribution::compare(ComparisonReport &rootComparisonReport,
         const QuarkDistribution &referenceObject,
         std::string parentObjectInfo) const {
+
     ComparisonData quark_distribution_value_comparisonData =
             CompareUtils::compareDouble(
                     QuarkDistribution::QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DISTRIBUTION,

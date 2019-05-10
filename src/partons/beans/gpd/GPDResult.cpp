@@ -5,6 +5,7 @@
 #include <utility>
 
 #include "../../../../include/partons/beans/channel/ChannelType.h"
+#include "../../../../include/partons/utils/type/PhysicalType.h"
 
 namespace PARTONS {
 
@@ -100,7 +101,13 @@ PartonDistribution& GPDResult::getLastAvailable() const {
 void GPDResult::compare(ComparisonReport &rootComparisonReport,
         const GPDResult &referenceObject, std::string parentObjectInfo) const {
 
-    //TODO faire un test pour valider la cinématique associée
+    if (m_kinematic != referenceObject.getKinematic()) {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter()
+                        << "Cannot perform comparison because kinematics is diferent ; With GPDResult index id = "
+                        << referenceObject.getIndexId() << '\n' << toString()
+                        << '\n' << referenceObject.toString());
+    }
 
     if (m_partonDistributions.size()
             != referenceObject.getPartonDistributions().size()) {

@@ -159,6 +159,9 @@ public:
      */
     void unserialize(ElemUtils::Packet &packet);
 
+    bool operator ==(const GPDKinematic& b) const;
+    bool operator !=(const GPDKinematic& b) const;
+
     //********************************************************
     //*** SETTERS AND GETTERS ********************************
     //********************************************************
