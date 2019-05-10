@@ -25,9 +25,24 @@ DVCSConvolCoeffFunctionKinematic::DVCSConvolCoeffFunctionKinematic(
                 ChannelType::DVCS, parameters), m_Q2(
                 PhysicalType<double>(PhysicalUnit::GEV2)) {
 
+    double value;
+    PhysicalUnit::Type unit;
+
+    //Q2
     if (parameters.isAvailable(
             DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_Q2)) {
-        m_Q2.setValue(parameters.getLastAvailable().toDouble());
+
+        value = parameters.getLastAvailable().toDouble();
+
+        if (parameters.isAvailable(
+                DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_Q2_UNIT)) {
+
+            unit =
+                    PhysicalUnit(parameters.getLastAvailable().getString()).getType();
+            setQ2(value, unit);
+        } else {
+            setQ2(value);
+        }
     } else {
         errorMissingParameter(
                 DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_Q2);

@@ -21,6 +21,16 @@ const std::string TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_BEAM_ENERGY =
         "E";
 const std::string TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_THETA =
         "theta";
+const std::string TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_XB_UNIT =
+        "xB_unit";
+const std::string TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_Q2PRIM_UNIT =
+        "Q2Prim_unit";
+const std::string TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_PHI_UNIT =
+        "phi_unit";
+const std::string TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_BEAM_ENERGY_UNIT =
+        "E_unit";
+const std::string TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_THETA_UNIT =
+        "theta_unit";
 
 TCSObservableKinematic::TCSObservableKinematic() :
         ObservableKinematic("TCSObservableKinematic", ChannelType::TCS), m_xB(
@@ -42,47 +52,122 @@ TCSObservableKinematic::TCSObservableKinematic(
                 PhysicalType<double>(PhysicalUnit::DEG)), m_theta(
                 PhysicalType<double>(PhysicalUnit::DEG)) {
 
+    double value;
+    PhysicalUnit::Type unit;
+
+    //xB
     if (parameters.isAvailable(
             TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_XB)) {
-        m_xB.setValue(parameters.getLastAvailable().toDouble());
+
+        value = parameters.getLastAvailable().toDouble();
+
+        if (parameters.isAvailable(
+                TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_XB_UNIT)) {
+
+            unit =
+                    PhysicalUnit(parameters.getLastAvailable().getString()).getType();
+            setXB(value, unit);
+        } else {
+            setXB(value);
+        }
     } else {
         errorMissingParameter(
                 TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_XB);
     }
 
+    //t
     if (parameters.isAvailable(GPDKinematic::KINEMATIC_PARAMETER_NAME_T)) {
-        m_t.setValue(parameters.getLastAvailable().toDouble());
+
+        value = parameters.getLastAvailable().toDouble();
+
+        if (parameters.isAvailable(
+                GPDKinematic::KINEMATIC_PARAMETER_NAME_T_UNIT)) {
+
+            unit =
+                    PhysicalUnit(parameters.getLastAvailable().getString()).getType();
+            setT(value, unit);
+        } else {
+            setT(value);
+        }
     } else {
         errorMissingParameter(GPDKinematic::KINEMATIC_PARAMETER_NAME_T);
     }
 
+    //Q2'
     if (parameters.isAvailable(
             TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_Q2PRIM)) {
-        m_Q2Prim.setValue(parameters.getLastAvailable().toDouble());
+
+        value = parameters.getLastAvailable().toDouble();
+
+        if (parameters.isAvailable(
+                TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_Q2PRIM_UNIT)) {
+
+            unit =
+                    PhysicalUnit(parameters.getLastAvailable().getString()).getType();
+            setQ2Prim(value, unit);
+        } else {
+            setQ2Prim(value);
+        }
     } else {
         errorMissingParameter(
                 TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_Q2PRIM);
     }
 
+    //E
     if (parameters.isAvailable(
             TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_BEAM_ENERGY)) {
-        m_E.setValue(parameters.getLastAvailable().toDouble());
+
+        value = parameters.getLastAvailable().toDouble();
+
+        if (parameters.isAvailable(
+                TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_BEAM_ENERGY_UNIT)) {
+
+            unit =
+                    PhysicalUnit(parameters.getLastAvailable().getString()).getType();
+            setE(value, unit);
+        } else {
+            setE(value);
+        }
     } else {
         errorMissingParameter(
                 TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_BEAM_ENERGY);
     }
 
+    //phi
     if (parameters.isAvailable(
             TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_PHI)) {
-        m_phi.setValue(parameters.getLastAvailable().toDouble());
+
+        value = parameters.getLastAvailable().toDouble();
+
+        if (parameters.isAvailable(
+                TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_PHI_UNIT)) {
+
+            unit =
+                    PhysicalUnit(parameters.getLastAvailable().getString()).getType();
+            setPhi(value, unit);
+        } else {
+            setPhi(value);
+        }
     } else {
         errorMissingParameter(
                 TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_PHI);
     }
 
+    //theta
     if (parameters.isAvailable(
             TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_THETA)) {
-        m_theta.setValue(parameters.getLastAvailable().toDouble());
+
+        value = parameters.getLastAvailable().toDouble();
+
+        if (parameters.isAvailable(
+                TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_THETA_UNIT)) {
+
+            unit =
+                    PhysicalUnit(parameters.getLastAvailable().getString()).getType();
+            setTheta(value, unit);
+        } else {
+            setTheta(value);
+        }
     } else {
         errorMissingParameter(
                 TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_THETA);

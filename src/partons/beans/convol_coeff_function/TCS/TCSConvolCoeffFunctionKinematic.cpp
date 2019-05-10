@@ -25,9 +25,24 @@ TCSConvolCoeffFunctionKinematic::TCSConvolCoeffFunctionKinematic(
                 ChannelType::TCS, parameters), m_Q2Prim(
                 PhysicalType<double>(PhysicalUnit::GEV2)) {
 
+    double value;
+    PhysicalUnit::Type unit;
+
+    //Q2'
     if (parameters.isAvailable(
             TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_Q2PRIM)) {
-        m_Q2Prim.setValue(parameters.getLastAvailable().toDouble());
+
+        value = parameters.getLastAvailable().toDouble();
+
+        if (parameters.isAvailable(
+                TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_Q2PRIM_UNIT)) {
+
+            unit =
+                    PhysicalUnit(parameters.getLastAvailable().getString()).getType();
+            setQ2Prim(value, unit);
+        } else {
+            setQ2Prim(value);
+        }
     } else {
         errorMissingParameter(
                 TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_Q2PRIM);

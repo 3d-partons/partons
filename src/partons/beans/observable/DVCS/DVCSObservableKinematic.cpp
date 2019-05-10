@@ -18,6 +18,14 @@ const std::string DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_Q2 = "Q2";
 const std::string DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_BEAM_ENERGY =
         "E";
 const std::string DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_PHI = "phi";
+const std::string DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_XB_UNIT =
+        "xB_unit";
+const std::string DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_Q2_UNIT =
+        "Q2_unit";
+const std::string DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_BEAM_ENERGY_UNIT =
+        "E_unit";
+const std::string DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_PHI_UNIT =
+        "phi_unit";
 
 DVCSObservableKinematic::DVCSObservableKinematic() :
         ObservableKinematic("DVCSObservableKinematic", ChannelType::DVCS), m_xB(
@@ -36,40 +44,102 @@ DVCSObservableKinematic::DVCSObservableKinematic(
                 PhysicalType<double>(PhysicalUnit::GEV2)), m_E(
                 PhysicalType<double>(PhysicalUnit::GEV)), m_phi(
                 PhysicalType<double>(PhysicalUnit::DEG)) {
+    double value;
+    PhysicalUnit::Type unit;
 
+    //xB
     if (parameters.isAvailable(
             DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_XB)) {
-        m_xB.setValue(parameters.getLastAvailable().toDouble());
+
+        value = parameters.getLastAvailable().toDouble();
+
+        if (parameters.isAvailable(
+                DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_XB_UNIT)) {
+
+            unit =
+                    PhysicalUnit(parameters.getLastAvailable().getString()).getType();
+            setXB(value, unit);
+        } else {
+            setXB(value);
+        }
     } else {
         errorMissingParameter(
                 DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_XB);
     }
 
+    //t
     if (parameters.isAvailable(GPDKinematic::KINEMATIC_PARAMETER_NAME_T)) {
-        m_t.setValue(parameters.getLastAvailable().toDouble());
+
+        value = parameters.getLastAvailable().toDouble();
+
+        if (parameters.isAvailable(
+                GPDKinematic::KINEMATIC_PARAMETER_NAME_T_UNIT)) {
+
+            unit =
+                    PhysicalUnit(parameters.getLastAvailable().getString()).getType();
+            setT(value, unit);
+        } else {
+            setT(value);
+        }
     } else {
         errorMissingParameter(GPDKinematic::KINEMATIC_PARAMETER_NAME_T);
     }
 
+    //Q2
     if (parameters.isAvailable(
             DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_Q2)) {
-        m_Q2.setValue(parameters.getLastAvailable().toDouble());
+
+        value = parameters.getLastAvailable().toDouble();
+
+        if (parameters.isAvailable(
+                DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_Q2_UNIT)) {
+
+            unit =
+                    PhysicalUnit(parameters.getLastAvailable().getString()).getType();
+            setQ2(value, unit);
+        } else {
+            setQ2(value);
+        }
     } else {
         errorMissingParameter(
                 DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_Q2);
     }
 
+    //E
     if (parameters.isAvailable(
             DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_BEAM_ENERGY)) {
-        m_E.setValue(parameters.getLastAvailable().toDouble());
+
+        value = parameters.getLastAvailable().toDouble();
+
+        if (parameters.isAvailable(
+                DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_BEAM_ENERGY_UNIT)) {
+
+            unit =
+                    PhysicalUnit(parameters.getLastAvailable().getString()).getType();
+            setE(value, unit);
+        } else {
+            setE(value);
+        }
     } else {
         errorMissingParameter(
                 DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_BEAM_ENERGY);
     }
 
+    //phi
     if (parameters.isAvailable(
             DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_PHI)) {
-        m_phi.setValue(parameters.getLastAvailable().toDouble());
+
+        value = parameters.getLastAvailable().toDouble();
+
+        if (parameters.isAvailable(
+                DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_PHI_UNIT)) {
+
+            unit =
+                    PhysicalUnit(parameters.getLastAvailable().getString()).getType();
+            setPhi(value, unit);
+        } else {
+            setPhi(value);
+        }
     } else {
         errorMissingParameter(
                 DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_PHI);

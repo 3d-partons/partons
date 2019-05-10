@@ -61,6 +61,31 @@ public:
     static const std::string KINEMATIC_PARAMETER_NAME_MUR2;
 
     /**
+     * Parameter name to set unit of variable \f$x\f$ via configuration methods.
+     */
+    static const std::string KINEMATIC_PARAMETER_NAME_X_UNIT;
+
+    /**
+     * Parameter name to set unit of variable \f$\xi\f$ via configuration methods.
+     */
+    static const std::string KINEMATIC_PARAMETER_NAME_XI_UNIT;
+
+    /**
+     * Parameter name to set unit of variable \f$t\f$ via configuration methods.
+     */
+    static const std::string KINEMATIC_PARAMETER_NAME_T_UNIT;
+
+    /**
+     * Parameter name to set unit of variable \f$\mu_{F}^{2}\f$ via configuration methods.
+     */
+    static const std::string KINEMATIC_PARAMETER_NAME_MUF2_UNIT;
+
+    /**
+     * Parameter name to set unit of variable \f$\mu_{R}^{2}\f$ via configuration methods.
+     */
+    static const std::string KINEMATIC_PARAMETER_NAME_MUR2_UNIT;
+
+    /**
      * Default constructor.
      */
     GPDKinematic();

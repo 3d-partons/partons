@@ -17,6 +17,12 @@ const std::string GPDKinematic::KINEMATIC_PARAMETER_NAME_T = "t";
 const std::string GPDKinematic::KINEMATIC_PARAMETER_NAME_MUF2 = "MuF2";
 const std::string GPDKinematic::KINEMATIC_PARAMETER_NAME_MUR2 = "MuR2";
 
+const std::string GPDKinematic::KINEMATIC_PARAMETER_NAME_X_UNIT = "x_unit";
+const std::string GPDKinematic::KINEMATIC_PARAMETER_NAME_XI_UNIT = "xi_unit";
+const std::string GPDKinematic::KINEMATIC_PARAMETER_NAME_T_UNIT = "t_unit";
+const std::string GPDKinematic::KINEMATIC_PARAMETER_NAME_MUF2_UNIT = "MuF2_unit";
+const std::string GPDKinematic::KINEMATIC_PARAMETER_NAME_MUR2_UNIT = "MuR2_unit";
+
 GPDKinematic::GPDKinematic() :
         Kinematic("GPDKinematic", ChannelType::UNDEFINED), m_x(
                 PhysicalType<double>(PhysicalUnit::NONE)), m_xi(
@@ -34,32 +40,95 @@ GPDKinematic::GPDKinematic(const ElemUtils::Parameters &parameters) :
                 PhysicalType<double>(PhysicalUnit::GEV2)), m_MuR2(
                 PhysicalType<double>(PhysicalUnit::GEV2)) {
 
+    double value;
+    PhysicalUnit::Type unit;
+
+    //x
     if (parameters.isAvailable(GPDKinematic::KINEMATIC_PARAMETER_NAME_X)) {
-        m_x.setValue(parameters.getLastAvailable().toDouble());
+
+        value = parameters.getLastAvailable().toDouble();
+
+        if (parameters.isAvailable(
+                GPDKinematic::KINEMATIC_PARAMETER_NAME_X_UNIT)) {
+
+            unit =
+                    PhysicalUnit(parameters.getLastAvailable().getString()).getType();
+            setX(value, unit);
+        } else {
+            setX(value);
+        }
     } else {
         errorMissingParameter(GPDKinematic::KINEMATIC_PARAMETER_NAME_X);
     }
 
+    //xi
     if (parameters.isAvailable(GPDKinematic::KINEMATIC_PARAMETER_NAME_XI)) {
-        m_xi.setValue(parameters.getLastAvailable().toDouble());
+
+        value = parameters.getLastAvailable().toDouble();
+
+        if (parameters.isAvailable(
+                GPDKinematic::KINEMATIC_PARAMETER_NAME_XI_UNIT)) {
+
+            unit =
+                    PhysicalUnit(parameters.getLastAvailable().getString()).getType();
+            setXi(value, unit);
+        } else {
+            setXi(value);
+        }
     } else {
         errorMissingParameter(GPDKinematic::KINEMATIC_PARAMETER_NAME_XI);
     }
 
+    //t
     if (parameters.isAvailable(GPDKinematic::KINEMATIC_PARAMETER_NAME_T)) {
-        m_t.setValue(parameters.getLastAvailable().toDouble());
+
+        value = parameters.getLastAvailable().toDouble();
+
+        if (parameters.isAvailable(
+                GPDKinematic::KINEMATIC_PARAMETER_NAME_T_UNIT)) {
+
+            unit =
+                    PhysicalUnit(parameters.getLastAvailable().getString()).getType();
+            setT(value, unit);
+        } else {
+            setT(value);
+        }
     } else {
         errorMissingParameter(GPDKinematic::KINEMATIC_PARAMETER_NAME_T);
     }
 
+    //muF2
     if (parameters.isAvailable(GPDKinematic::KINEMATIC_PARAMETER_NAME_MUF2)) {
-        m_MuF2.setValue(parameters.getLastAvailable().toDouble());
+
+        value = parameters.getLastAvailable().toDouble();
+
+        if (parameters.isAvailable(
+                GPDKinematic::KINEMATIC_PARAMETER_NAME_MUF2_UNIT)) {
+
+            unit =
+                    PhysicalUnit(parameters.getLastAvailable().getString()).getType();
+            setMuF2(value, unit);
+        } else {
+            setMuF2(value);
+        }
     } else {
         errorMissingParameter(GPDKinematic::KINEMATIC_PARAMETER_NAME_MUF2);
     }
 
+    //muR2
     if (parameters.isAvailable(GPDKinematic::KINEMATIC_PARAMETER_NAME_MUR2)) {
-        m_MuR2.setValue(parameters.getLastAvailable().toDouble());
+
+        value = parameters.getLastAvailable().toDouble();
+
+        if (parameters.isAvailable(
+                GPDKinematic::KINEMATIC_PARAMETER_NAME_MUR2_UNIT)) {
+
+            unit =
+                    PhysicalUnit(parameters.getLastAvailable().getString()).getType();
+            setMuR2(value, unit);
+        } else {
+            setMuR2(value);
+        }
     } else {
         errorMissingParameter(GPDKinematic::KINEMATIC_PARAMETER_NAME_MUR2);
     }

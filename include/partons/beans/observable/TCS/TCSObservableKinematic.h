@@ -57,6 +57,31 @@ public:
     static const std::string KINEMATIC_PARAMETER_NAME_THETA;
 
     /**
+     * Parameter name to set unit of variable \f$x_{B}\f$ via configuration methods.
+     */
+    static const std::string KINEMATIC_PARAMETER_NAME_XB_UNIT;
+
+    /**
+     * Parameter name to set unit of variable \f$Q^{2}'\f$ via configuration methods.
+     */
+    static const std::string KINEMATIC_PARAMETER_NAME_Q2PRIM_UNIT;
+
+    /**
+     * Parameter name to set unit of variable \f$E_{b}\f$ via configuration methods.
+     */
+    static const std::string KINEMATIC_PARAMETER_NAME_BEAM_ENERGY_UNIT;
+
+    /**
+     * Parameter name to set unit of variable \f$\phi\f$ via configuration methods.
+     */
+    static const std::string KINEMATIC_PARAMETER_NAME_PHI_UNIT;
+
+    /**
+     * Parameter name to set unit of variable \f$\theta\f$ via configuration methods.
+     */
+    static const std::string KINEMATIC_PARAMETER_NAME_THETA_UNIT;
+
+    /**
      * Default constructor.
      */
     TCSObservableKinematic();
