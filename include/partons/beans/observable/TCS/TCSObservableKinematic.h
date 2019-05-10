@@ -13,6 +13,7 @@
 #include <string>
 
 #include "../../../utils/type/PhysicalType.h"
+#include "../../../utils/type/PhysicalUnit.h"
 #include "../ObservableKinematic.h"
 
 namespace PARTONS {
@@ -149,7 +150,7 @@ public:
     /**
      * Set Bjorken variable.
      */
-    void setXB(double xB);
+    void setXB(double xB, PhysicalUnit::Type unit = PhysicalUnit::NONE);
 
     /**
      * Get four-momentum transfer squared of hadron target.
@@ -164,7 +165,7 @@ public:
     /**
      * Set four-momentum transfer squared of hadron target.
      */
-    void setT(double t);
+    void setT(double t, PhysicalUnit::Type unit = PhysicalUnit::GEV2);
 
     /**
      * Get outgoing virtual-photon virtuality.
@@ -179,7 +180,7 @@ public:
     /**
      * Set outgoing virtual-photon virtuality.
      */
-    void setQ2Prim(double Q2Prim);
+    void setQ2Prim(double Q2Prim, PhysicalUnit::Type unit = PhysicalUnit::GEV2);
 
     /**
      * Get beam energy.
@@ -194,7 +195,7 @@ public:
     /**
      * Set beam energy.
      */
-    void setE(double E);
+    void setE(double E, PhysicalUnit::Type unit = PhysicalUnit::GEV);
 
     /**
      * Get angle between leptonic and hadronic planes.
@@ -209,7 +210,7 @@ public:
     /**
      * Set angle between leptonic and hadronic planes.
      */
-    void setPhi(double phi);
+    void setPhi(double phi, PhysicalUnit::Type unit = PhysicalUnit::DEG);
 
     /**
      * Get angle between positively charged lepton and scattered proton in lepton CMS (in degrees).
@@ -224,7 +225,7 @@ public:
     /**
      * Set angle between positively charged lepton and scattered proton in lepton CMS (in degrees).
      */
-    void setTheta(double theta);
+    void setTheta(double theta, PhysicalUnit::Type unit = PhysicalUnit::DEG);
 
 protected:
 

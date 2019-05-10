@@ -374,6 +374,14 @@ inline PhysicalType<T> operator-(PhysicalType<T> const &lhs,
     return PhysicalType<T>(lhs.getValue() - rhs.getValue(), lhs.getUnit());
 }
 
+template<class T>
+inline PhysicalType<T> operator/(PhysicalType<T> const &lhs,
+        PhysicalType<T> const &rhs) {
+
+    lhs.checkIfSameUnitAs(rhs);
+    return PhysicalType<T>(lhs.getValue() / rhs.getValue(), PhysicalUnit::NONE);
+}
+
 /// Arithmetic operators
 
 template<class T>

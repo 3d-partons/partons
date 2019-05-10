@@ -7,7 +7,6 @@
 #include "../../../../../include/partons/Partons.h"
 #include "../../../../../include/partons/services/hash_sum/CryptographicHashService.h"
 #include "../../../../../include/partons/ServiceObjectRegistry.h"
-#include "../../../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
 
@@ -57,8 +56,8 @@ TCSConvolCoeffFunctionKinematic::TCSConvolCoeffFunctionKinematic(
 
 TCSConvolCoeffFunctionKinematic::TCSConvolCoeffFunctionKinematic(
         const ElemUtils::GenericType &xi, const ElemUtils::GenericType &t,
-        const ElemUtils::GenericType &Q2Prim, const ElemUtils::GenericType &MuF2,
-        const ElemUtils::GenericType &MuR2) :
+        const ElemUtils::GenericType &Q2Prim,
+        const ElemUtils::GenericType &MuF2, const ElemUtils::GenericType &MuR2) :
         ConvolCoeffFunctionKinematic("TCSConvolCoeffFunctionKinematic",
                 ChannelType::TCS, xi, t, MuF2, MuR2), m_Q2Prim(
                 PhysicalType<double>(Q2Prim, PhysicalUnit::GEV2)) {
@@ -79,7 +78,7 @@ std::string TCSConvolCoeffFunctionKinematic::toString() const {
     formatter << ConvolCoeffFunctionKinematic::toString();
 
     if (m_Q2Prim.isInitialized())
-           formatter << "Q2': " << m_Q2Prim.toString() << ' ';
+        formatter << "Q2': " << m_Q2Prim.toString() << ' ';
 
     return formatter.str();
 }
@@ -113,17 +112,17 @@ const PhysicalType<double>& TCSConvolCoeffFunctionKinematic::getQ2Prim() const {
     return m_Q2Prim;
 }
 
-void TCSConvolCoeffFunctionKinematic::setQ2Prim(const PhysicalType<double>& Q2Prim) {
+void TCSConvolCoeffFunctionKinematic::setQ2Prim(
+        const PhysicalType<double>& Q2Prim) {
 
     m_Q2Prim.checkIfSameUnitCategoryAs(Q2Prim);
     m_Q2Prim = Q2Prim;
     updateHashSum();
 }
 
-void TCSConvolCoeffFunctionKinematic::setQ2Prim(double Q2Prim) {
-
-    m_Q2Prim.setValue(Q2Prim);
-    updateHashSum();
+void TCSConvolCoeffFunctionKinematic::setQ2Prim(double Q2Prim,
+        PhysicalUnit::Type unit) {
+    setQ2Prim(PhysicalType<double>(Q2Prim, unit));
 }
 
 ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,

@@ -13,6 +13,7 @@
 #include <string>
 
 #include "../../../utils/type/PhysicalType.h"
+#include "../../../utils/type/PhysicalUnit.h"
 #include "../ObservableKinematic.h"
 
 namespace PARTONS {
@@ -138,7 +139,7 @@ public:
     /**
      * Set Bjorken variable.
      */
-    void setXB(double xB);
+    void setXB(double xB, PhysicalUnit::Type unit = PhysicalUnit::NONE);
 
     /**
      * Get four-momentum transfer squared of hadron target.
@@ -153,7 +154,7 @@ public:
     /**
      * Set four-momentum transfer squared of hadron target.
      */
-    void setT(double t);
+    void setT(double t, PhysicalUnit::Type unit = PhysicalUnit::GEV2);
 
     /**
      * Get virtual-photon virtuality.
@@ -168,7 +169,7 @@ public:
     /**
      * Set virtual-photon virtuality.
      */
-    void setQ2(double Q2);
+    void setQ2(double Q2, PhysicalUnit::Type unit = PhysicalUnit::GEV2);
 
     /**
      * Get beam energy.
@@ -183,7 +184,7 @@ public:
     /**
      * Set beam energy.
      */
-    void setE(double E);
+    void setE(double E, PhysicalUnit::Type unit = PhysicalUnit::GEV);
 
     /**
      * Get angle between leptonic and hadronic planes.
@@ -198,7 +199,7 @@ public:
     /**
      * Set angle between leptonic and hadronic planes.
      */
-    void setPhi(double phi);
+    void setPhi(double phi, PhysicalUnit::Type unit = PhysicalUnit::DEG);
 
 protected:
 

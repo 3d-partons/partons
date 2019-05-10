@@ -219,33 +219,23 @@ void GPDKinematic::setMuR2(const PhysicalType<double>& muR2) {
 }
 
 void GPDKinematic::setX(double x, PhysicalUnit::Type unit) {
-
     setX(PhysicalType<double>(x, unit));
-    updateHashSum();
 }
 
 void GPDKinematic::setXi(double xi, PhysicalUnit::Type unit) {
-
     setXi(PhysicalType<double>(xi, unit));
-    updateHashSum();
 }
 
 void GPDKinematic::setT(double t, PhysicalUnit::Type unit) {
-
     setT(PhysicalType<double>(t, unit));
-    updateHashSum();
 }
 
 void GPDKinematic::setMuF2(double muF2, PhysicalUnit::Type unit) {
-
     setMuF2(PhysicalType<double>(muF2, unit));
-    updateHashSum();
 }
 
 void GPDKinematic::setMuR2(double muR2, PhysicalUnit::Type unit) {
-
     setMuR2(PhysicalType<double>(muR2, unit));
-    updateHashSum();
 }
 
 ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,

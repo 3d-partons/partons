@@ -7,7 +7,6 @@
 #include "../../../../../include/partons/Partons.h"
 #include "../../../../../include/partons/services/hash_sum/CryptographicHashService.h"
 #include "../../../../../include/partons/ServiceObjectRegistry.h"
-#include "../../../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
 
@@ -266,40 +265,28 @@ void TCSObservableKinematic::setTheta(const PhysicalType<double>& theta) {
     updateHashSum();
 }
 
-void TCSObservableKinematic::setXB(double xB) {
-
-    m_xB.setValue(xB);
-    updateHashSum();
+void TCSObservableKinematic::setXB(double xB, PhysicalUnit::Type unit) {
+    setXB(PhysicalType<double>(xB, unit));
 }
 
-void TCSObservableKinematic::setT(double t) {
-
-    m_t.setValue(t);
-    updateHashSum();
+void TCSObservableKinematic::setT(double t, PhysicalUnit::Type unit) {
+    setT(PhysicalType<double>(t, unit));
 }
 
-void TCSObservableKinematic::setQ2Prim(double Q2Prim) {
-
-    m_Q2Prim.setValue(Q2Prim);
-    updateHashSum();
+void TCSObservableKinematic::setQ2Prim(double Q2Prim, PhysicalUnit::Type unit) {
+    setQ2Prim(PhysicalType<double>(Q2Prim, unit));
 }
 
-void TCSObservableKinematic::setE(double E) {
-
-    m_E.setValue(E);
-    updateHashSum();
+void TCSObservableKinematic::setE(double E, PhysicalUnit::Type unit) {
+    setE(PhysicalType<double>(E, unit));
 }
 
-void TCSObservableKinematic::setPhi(double phi) {
-
-    m_phi.setValue(phi);
-    updateHashSum();
+void TCSObservableKinematic::setPhi(double phi, PhysicalUnit::Type unit) {
+    setPhi(PhysicalType<double>(phi, unit));
 }
 
-void TCSObservableKinematic::setTheta(double theta) {
-
-    m_theta.setValue(theta);
-    updateHashSum();
+void TCSObservableKinematic::setTheta(double theta, PhysicalUnit::Type unit) {
+    setTheta(PhysicalType<double>(theta, unit));
 }
 
 ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,

@@ -13,6 +13,7 @@
 #include <string>
 
 #include "../../../utils/type/PhysicalType.h"
+#include "../../../utils/type/PhysicalUnit.h"
 #include "../ConvolCoeffFunctionKinematic.h"
 
 namespace PARTONS {
@@ -120,7 +121,7 @@ public:
     /**
      * Set virtual-photon virtuality.
      */
-    void setQ2(double Q2);
+    void setQ2(double Q2, PhysicalUnit::Type unit = PhysicalUnit::GEV2);
 
 protected:
 

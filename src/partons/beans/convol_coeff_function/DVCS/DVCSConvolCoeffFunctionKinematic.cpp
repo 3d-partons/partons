@@ -7,7 +7,6 @@
 #include "../../../../../include/partons/Partons.h"
 #include "../../../../../include/partons/services/hash_sum/CryptographicHashService.h"
 #include "../../../../../include/partons/ServiceObjectRegistry.h"
-#include "../../../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
 
@@ -79,7 +78,7 @@ std::string DVCSConvolCoeffFunctionKinematic::toString() const {
     formatter << ConvolCoeffFunctionKinematic::toString();
 
     if (m_Q2.isInitialized())
-           formatter << "Q2: " << m_Q2.toString() << ' ';
+        formatter << "Q2: " << m_Q2.toString() << ' ';
 
     return formatter.str();
 }
@@ -120,10 +119,9 @@ void DVCSConvolCoeffFunctionKinematic::setQ2(const PhysicalType<double>& Q2) {
     updateHashSum();
 }
 
-void DVCSConvolCoeffFunctionKinematic::setQ2(double Q2) {
-
-    m_Q2.setValue(Q2);
-    updateHashSum();
+void DVCSConvolCoeffFunctionKinematic::setQ2(double Q2,
+        PhysicalUnit::Type unit) {
+    setQ2(PhysicalType<double>(Q2, unit));
 }
 
 ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,

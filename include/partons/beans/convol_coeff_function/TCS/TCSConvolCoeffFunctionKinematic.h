@@ -13,6 +13,7 @@
 #include <string>
 
 #include "../../../utils/type/PhysicalType.h"
+#include "../../../utils/type/PhysicalUnit.h"
 #include "../ConvolCoeffFunctionKinematic.h"
 
 namespace PARTONS {
@@ -73,7 +74,8 @@ public:
      * @param MuR2 Renormalization scale squared (in \f$GeV^{2}\f$).
      */
     TCSConvolCoeffFunctionKinematic(const ElemUtils::GenericType &xi,
-            const ElemUtils::GenericType &t, const ElemUtils::GenericType &Q2Prim,
+            const ElemUtils::GenericType &t,
+            const ElemUtils::GenericType &Q2Prim,
             const ElemUtils::GenericType &MuF2,
             const ElemUtils::GenericType &MuR2);
 
@@ -120,7 +122,7 @@ public:
     /**
      * Set outgoing virtual-photon virtuality.
      */
-    void setQ2Prim(double Q2Prim);
+    void setQ2Prim(double Q2Prim, PhysicalUnit::Type unit = PhysicalUnit::GEV2);
 
 protected:
 

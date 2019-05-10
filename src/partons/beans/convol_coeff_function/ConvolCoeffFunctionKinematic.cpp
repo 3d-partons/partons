@@ -3,7 +3,6 @@
 #include <ElementaryUtils/string_utils/Formatter.h>
 
 #include "../../../../include/partons/beans/gpd/GPDKinematic.h"
-#include "../../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
 
@@ -178,28 +177,22 @@ void ConvolCoeffFunctionKinematic::setMuR2(const PhysicalType<double>& MuR2) {
     updateHashSum();
 }
 
-void ConvolCoeffFunctionKinematic::setXi(double xi) {
-
-    m_xi.setValue(xi);
-    updateHashSum();
+void ConvolCoeffFunctionKinematic::setXi(double xi, PhysicalUnit::Type unit) {
+    setXi(PhysicalType<double>(xi, unit));
 }
 
-void ConvolCoeffFunctionKinematic::setT(double t) {
-
-    m_t.setValue(t);
-    updateHashSum();
+void ConvolCoeffFunctionKinematic::setT(double t, PhysicalUnit::Type unit) {
+    setT(PhysicalType<double>(t, unit));
 }
 
-void ConvolCoeffFunctionKinematic::setMuF2(double MuF2) {
-
-    m_MuF2.setValue(MuF2);
-    updateHashSum();
+void ConvolCoeffFunctionKinematic::setMuF2(double MuF2,
+        PhysicalUnit::Type unit) {
+    setMuF2(PhysicalType<double>(MuF2, unit));
 }
 
-void ConvolCoeffFunctionKinematic::setMuR2(double MuR2) {
-
-    m_MuR2.setValue(MuR2);
-    updateHashSum();
+void ConvolCoeffFunctionKinematic::setMuR2(double MuR2,
+        PhysicalUnit::Type unit) {
+    setMuR2(PhysicalType<double>(MuR2, unit));
 }
 
 ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,

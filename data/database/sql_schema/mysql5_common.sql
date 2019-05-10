@@ -223,31 +223,38 @@ INSERT INTO physical_unit_type (physical_unit_type_id, physical_unit_type_short_
 VALUES ('28', 's', 'S');
 
 /* cross section*/
-INSERT INTO physical_unit_type (physical_unit_type_id, physical_unit_type_short_name, physical_unit_type_long_name)
-VALUES ('29', 'fb', 'FB');
 
 INSERT INTO physical_unit_type (physical_unit_type_id, physical_unit_type_short_name, physical_unit_type_long_name)
-VALUES ('30', 'pb', 'PB');
+VALUES ('29', 'GeVm2', 'GEVm2');
 
 INSERT INTO physical_unit_type (physical_unit_type_id, physical_unit_type_short_name, physical_unit_type_long_name)
-VALUES ('31', 'nb', 'NB');
+VALUES ('30', 'fm2', 'FM2');
 
 INSERT INTO physical_unit_type (physical_unit_type_id, physical_unit_type_short_name, physical_unit_type_long_name)
-VALUES ('32', 'ub', 'UB');
+VALUES ('31', 'fb', 'FB');
 
 INSERT INTO physical_unit_type (physical_unit_type_id, physical_unit_type_short_name, physical_unit_type_long_name)
-VALUES ('33', 'mb', 'MB');
+VALUES ('32', 'pb', 'PB');
 
 INSERT INTO physical_unit_type (physical_unit_type_id, physical_unit_type_short_name, physical_unit_type_long_name)
-VALUES ('34', 'b', 'B');
+VALUES ('33', 'nb', 'NB');
+
+INSERT INTO physical_unit_type (physical_unit_type_id, physical_unit_type_short_name, physical_unit_type_long_name)
+VALUES ('34', 'ub', 'UB');
+
+INSERT INTO physical_unit_type (physical_unit_type_id, physical_unit_type_short_name, physical_unit_type_long_name)
+VALUES ('35', 'mb', 'MB');
+
+INSERT INTO physical_unit_type (physical_unit_type_id, physical_unit_type_short_name, physical_unit_type_long_name)
+VALUES ('36', 'b', 'B');
 
 /* angle */
 INSERT INTO physical_unit_type (physical_unit_type_id, physical_unit_type_short_name, physical_unit_type_long_name)
-VALUES ('35', 'deg', 'DEG');
+VALUES ('37', 'deg', 'DEG');
 
 INSERT INTO physical_unit_type (physical_unit_type_id, physical_unit_type_short_name, physical_unit_type_long_name)
-VALUES ('36', 'rad', 'RAD');
+VALUES ('38', 'rad', 'RAD');
 
 INSERT INTO physical_unit_type (physical_unit_type_id, physical_unit_type_short_name, physical_unit_type_long_name)
-VALUES ('37', 'mrad', 'MRAD');
+VALUES ('39', 'mrad', 'MRAD');
 

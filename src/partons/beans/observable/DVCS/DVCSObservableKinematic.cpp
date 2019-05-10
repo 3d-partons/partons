@@ -7,7 +7,6 @@
 #include "../../../../../include/partons/Partons.h"
 #include "../../../../../include/partons/services/hash_sum/CryptographicHashService.h"
 #include "../../../../../include/partons/ServiceObjectRegistry.h"
-#include "../../../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
 
@@ -16,9 +15,9 @@ const std::string DVCSObservableKinematic::DVCS_OBSERVABLE_KNEMATIC_CLASS_NAME =
 
 const std::string DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_XB = "xB";
 const std::string DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_Q2 = "Q2";
-const std::string DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_PHI = "phi";
 const std::string DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_BEAM_ENERGY =
         "E";
+const std::string DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_PHI = "phi";
 
 DVCSObservableKinematic::DVCSObservableKinematic() :
         ObservableKinematic("DVCSObservableKinematic", ChannelType::DVCS), m_xB(
@@ -135,20 +134,20 @@ std::string DVCSObservableKinematic::toString() const {
 
     ElemUtils::Formatter formatter;
 
-      formatter << Kinematic::toString() << '\n';
+    formatter << Kinematic::toString() << '\n';
 
-      if (m_xB.isInitialized())
-          formatter << "xB: " << m_xB.toString() << ' ';
-      if (m_t.isInitialized())
-          formatter << "t: " << m_t.toString() << ' ';
-      if (m_Q2.isInitialized())
-          formatter << "Q2: " << m_Q2.toString() << ' ';
-      if (m_E.isInitialized())
-          formatter << "E: " << m_E.toString() << ' ';
-      if (m_phi.isInitialized())
-                formatter << "phi: " << m_phi.toString() << ' ';
+    if (m_xB.isInitialized())
+        formatter << "xB: " << m_xB.toString() << ' ';
+    if (m_t.isInitialized())
+        formatter << "t: " << m_t.toString() << ' ';
+    if (m_Q2.isInitialized())
+        formatter << "Q2: " << m_Q2.toString() << ' ';
+    if (m_E.isInitialized())
+        formatter << "E: " << m_E.toString() << ' ';
+    if (m_phi.isInitialized())
+        formatter << "phi: " << m_phi.toString() << ' ';
 
-      return formatter.str();
+    return formatter.str();
 }
 
 void DVCSObservableKinematic::serialize(ElemUtils::Packet &packet) const {
@@ -232,34 +231,24 @@ void DVCSObservableKinematic::setPhi(const PhysicalType<double>& phi) {
     updateHashSum();
 }
 
-void DVCSObservableKinematic::setXB(double xB) {
-
-    m_xB.setValue(xB);
-    updateHashSum();
+void DVCSObservableKinematic::setXB(double xB, PhysicalUnit::Type unit) {
+    setXB(PhysicalType<double>(xB, unit));
 }
 
-void DVCSObservableKinematic::setT(double t) {
-
-    m_t.setValue(t);
-    updateHashSum();
+void DVCSObservableKinematic::setT(double t, PhysicalUnit::Type unit) {
+    setT(PhysicalType<double>(t, unit));
 }
 
-void DVCSObservableKinematic::setQ2(double Q2) {
-
-    m_Q2.setValue(Q2);
-    updateHashSum();
+void DVCSObservableKinematic::setQ2(double Q2, PhysicalUnit::Type unit) {
+    setQ2(PhysicalType<double>(Q2, unit));
 }
 
-void DVCSObservableKinematic::setE(double E) {
-
-    m_E.setValue(E);
-    updateHashSum();
+void DVCSObservableKinematic::setE(double E, PhysicalUnit::Type unit) {
+    setE(PhysicalType<double>(E, unit));
 }
 
-void DVCSObservableKinematic::setPhi(double phi) {
-
-    m_phi.setValue(phi);
-    updateHashSum();
+void DVCSObservableKinematic::setPhi(double phi, PhysicalUnit::Type unit) {
+    setPhi(PhysicalType<double>(phi, unit));
 }
 
 ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
