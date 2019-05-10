@@ -6,7 +6,6 @@
 #include "../../../../include/partons/Partons.h"
 #include "../../../../include/partons/services/hash_sum/CryptographicHashService.h"
 #include "../../../../include/partons/ServiceObjectRegistry.h"
-#include "../../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
 
@@ -219,33 +218,33 @@ void GPDKinematic::setMuR2(const PhysicalType<double>& muR2) {
     updateHashSum();
 }
 
-void GPDKinematic::setX(double x) {
+void GPDKinematic::setX(double x, PhysicalUnit::Type unit) {
 
-    m_x.setValue(x);
+    setX(PhysicalType<double>(x, unit));
     updateHashSum();
 }
 
-void GPDKinematic::setXi(double xi) {
+void GPDKinematic::setXi(double xi, PhysicalUnit::Type unit) {
 
-    m_xi.setValue(xi);
+    setXi(PhysicalType<double>(xi, unit));
     updateHashSum();
 }
 
-void GPDKinematic::setT(double t) {
+void GPDKinematic::setT(double t, PhysicalUnit::Type unit) {
 
-    m_t.setValue(t);
+    setT(PhysicalType<double>(t, unit));
     updateHashSum();
 }
 
-void GPDKinematic::setMuF2(double muF2) {
+void GPDKinematic::setMuF2(double muF2, PhysicalUnit::Type unit) {
 
-    m_MuF2.setValue(muF2);
+    setMuF2(PhysicalType<double>(muF2, unit));
     updateHashSum();
 }
 
-void GPDKinematic::setMuR2(double muR2) {
+void GPDKinematic::setMuR2(double muR2, PhysicalUnit::Type unit) {
 
-    m_MuR2.setValue(muR2);
+    setMuR2(PhysicalType<double>(muR2, unit));
     updateHashSum();
 }
 

@@ -13,6 +13,7 @@
 #include <string>
 
 #include "../../utils/type/PhysicalType.h"
+#include "../../utils/type/PhysicalUnit.h"
 #include "../Kinematic.h"
 
 namespace ElemUtils {
@@ -150,7 +151,7 @@ public:
     /**
      * Set longitudinal momentum fraction of active parton.
      */
-    void setX(double x);
+    void setX(double x, PhysicalUnit::Type unit = PhysicalUnit::NONE);
 
     /**
      * Get skewness variable.
@@ -165,7 +166,7 @@ public:
     /**
      * Set skewness variable.
      */
-    void setXi(double xi);
+    void setXi(double xi, PhysicalUnit::Type unit = PhysicalUnit::NONE);
 
     /**
      * Get four-momentum transfer squared of hadron target.
@@ -180,7 +181,7 @@ public:
     /**
      * Set four-momentum transfer squared of hadron target.
      */
-    void setT(double t);
+    void setT(double t, PhysicalUnit::Type unit = PhysicalUnit::GEV2);
 
     /**
      * Get factorization scale squared.
@@ -195,7 +196,7 @@ public:
     /**
      * Set factorization scale squared.
      */
-    void setMuF2(double muF2);
+    void setMuF2(double muF2, PhysicalUnit::Type unit = PhysicalUnit::GEV2);
 
     /**
      * Get renormalization scale squared.
@@ -210,7 +211,7 @@ public:
     /**
      * Set renormalization scale squared.
      */
-    void setMuR2(double muR2);
+    void setMuR2(double muR2, PhysicalUnit::Type unit = PhysicalUnit::GEV2);
 
 protected:
 

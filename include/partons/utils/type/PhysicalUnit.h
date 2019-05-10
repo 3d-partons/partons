@@ -74,17 +74,21 @@ public:
         S = 28,          ///< s
 
         //cross-section
-        FB = 29,         ///< fb
-        PB = 30,         ///< pb
-        NB = 31,         ///< nb
-        UB = 32,         ///< ub
-        MB = 33,         ///< mb
-        B = 34,          ///< b
+        GEVm2 = 29,      ///< GeV^-2
+
+        FM2 = 30,        ///< fm^2
+
+        FB = 31,         ///< fb
+        PB = 32,         ///< pb
+        NB = 33,         ///< nb
+        UB = 34,         ///< ub
+        MB = 35,         ///< mb
+        B = 36,          ///< b
 
         //angle
-        DEG = 35,        ///< degree
-        RAD = 36,        ///< radian
-        MRAD = 37        ///< mradian
+        DEG = 37,        ///< degree
+        RAD = 38,        ///< radian
+        MRAD = 39        ///< mradian
     };
 
     /**
@@ -141,6 +145,11 @@ public:
      * Get unit category.
      */
     UnitCategory::Type getUnitCategory() const;
+
+    /**
+     * Get conversion factor.
+     */
+    double getConversionFactor() const;
 
     //********************************************************
     //*** SETTERS AND GETTERS ********************************

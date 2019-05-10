@@ -4,6 +4,8 @@
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/thread/Packet.h>
 
+#include "../../../../include/partons/FundamentalPhysicalConstants.h"
+
 namespace PARTONS {
 
 PhysicalUnit::PhysicalUnit() :
@@ -142,6 +144,14 @@ PhysicalUnit::PhysicalUnit(const std::string& type) {
     }
 
     //cross-section
+    else if (type == "GeVm2") {
+        m_type = PhysicalUnit::GEVm2;
+    }
+
+    else if (type == "fm2") {
+        m_type = PhysicalUnit::FM2;
+    }
+
     else if (type == "fb") {
         m_type = PhysicalUnit::FB;
     }
@@ -299,6 +309,12 @@ std::string PhysicalUnit::toString() const {
         break;
 
         //cross-section
+    case GEVm2:
+        return "GEVm2";
+        break;
+    case FM2:
+        return "FM2";
+        break;
     case FB:
         return "FB";
         break;
@@ -441,6 +457,12 @@ std::string PhysicalUnit::getShortName() {
         break;
 
         //cross-section
+    case GEVm2:
+        return "GeVm2";
+        break;
+    case FM2:
+        return "fm2";
+        break;
     case FB:
         return "fb";
         break;
@@ -593,6 +615,12 @@ UnitCategory::Type PhysicalUnit::getUnitCategory() const {
         break;
 
         //cross-section
+    case GEVm2:
+        return UnitCategory::CROSS_SECTION;
+        break;
+    case FM2:
+        return UnitCategory::CROSS_SECTION;
+        break;
     case FB:
         return UnitCategory::CROSS_SECTION;
         break;
@@ -621,6 +649,156 @@ UnitCategory::Type PhysicalUnit::getUnitCategory() const {
         break;
     case MRAD:
         return UnitCategory::ANGLE;
+        break;
+
+        //no such type
+    default:
+        throw ElemUtils::CustomException("PhysicalType", __func__,
+                ElemUtils::Formatter() << "Type with id " << int(m_type)
+                        << " not implemented here");
+    }
+}
+
+double PhysicalUnit::getConversionFactor() const {
+
+    switch (m_type) {
+
+    //undefined
+    case UNDEFINED:
+        return 1.;
+        break;
+
+        //none
+    case NONE:
+        return 1.;
+        break;
+
+        //energy, momentum or mass
+    case EV:
+        return 1.E0;
+        break;
+    case KEV:
+        return 1.E3;
+        break;
+    case MEV:
+        return 1.E6;
+        break;
+    case GEV:
+        return 1.E9;
+        break;
+    case TEV:
+        return 1.E12;
+        break;
+
+        //energy, momentum or mass squared
+    case EV2:
+        return 1.E0;
+        break;
+    case KEV2:
+        return 1.E6;
+        break;
+    case MEV2:
+        return 1.E12;
+        break;
+    case GEV2:
+        return 1.E18;
+        break;
+    case TEV2:
+        return 1.E24;
+        break;
+
+        //distance or time
+    case EVm1:
+        return 1.E0;
+        break;
+    case KEVm1:
+        return 1.E-3;
+        break;
+    case MEVm1:
+        return 1.E-6;
+        break;
+    case GEVm1:
+        return 1.E-9;
+        break;
+    case TEVm1:
+        return 1.E-12;
+        break;
+
+    case FM:
+        return 1.E-6 / Constant::HBarC;
+        break;
+    case PM:
+        return 1.E-3 / Constant::HBarC;
+        break;
+    case NM:
+        return 1.E0 / Constant::HBarC;
+        break;
+    case UM:
+        return 1.E3 / Constant::HBarC;
+        break;
+    case MM:
+        return 1.E6 / Constant::HBarC;
+        break;
+    case M:
+        return 1.E9 / Constant::HBarC;
+        break;
+
+    case FS:
+        return 1.E-15 / Constant::PLANCK_CONSTANT_REDUCED;
+        break;
+    case PS:
+        return 1.E-12 / Constant::PLANCK_CONSTANT_REDUCED;
+        break;
+    case NS:
+        return 1.E-9 / Constant::PLANCK_CONSTANT_REDUCED;
+        break;
+    case US:
+        return 1.E-6 / Constant::PLANCK_CONSTANT_REDUCED;
+        break;
+    case MS:
+        return 1.E-3 / Constant::PLANCK_CONSTANT_REDUCED;
+        break;
+    case S:
+        return Constant::PLANCK_CONSTANT_REDUCED;
+        break;
+
+        //cross-section
+    case GEVm2:
+        return 1.E0;
+        break;
+
+    case FM2:
+        return 1.E7 / Constant::CONV_GEVm2_TO_NBARN;
+        break;
+
+    case FB:
+        return 1.E-6 / Constant::CONV_GEVm2_TO_NBARN;
+        break;
+    case PB:
+        return 1.E-3 / Constant::CONV_GEVm2_TO_NBARN;
+        break;
+    case NB:
+        return 1.E0 / Constant::CONV_GEVm2_TO_NBARN;
+        break;
+    case UB:
+        return 1.E3 / Constant::CONV_GEVm2_TO_NBARN;
+        break;
+    case MB:
+        return 1.E6 / Constant::CONV_GEVm2_TO_NBARN;
+        break;
+    case B:
+        return 1.E9 / Constant::CONV_GEVm2_TO_NBARN;
+        break;
+
+        //angle
+    case DEG:
+        return 1.;
+        break;
+    case RAD:
+        return 180. / Constant::PI;
+        break;
+    case MRAD:
+        return 1.E-3 * 180. / Constant::PI;
         break;
 
         //no such type

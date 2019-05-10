@@ -194,33 +194,37 @@ public:
     }
 
     /**
-     * Check if the same unit category. If units are different make the conversion (TODO).
+     * Check if the same unit category. If units are different make the conversion.
      */
     PhysicalType<T> makeSameUnitAs(PhysicalUnit::Type other) const {
 
-        //check unit category
-        checkIfSameUnitCategoryAs(other);
+        //check if different units
+        if (m_unit != other) {
 
-        //check unit (if different TODO make conversion)
-        checkIfSameUnitAs(other);
+            //check unit category
+            checkIfSameUnitCategoryAs(other);
+
+            //check if not PhysicalUnit::UNDEFINED
+            if (other == PhysicalUnit::UNDEFINED) {
+                throw ElemUtils::CustomException(this->getClassName(), __func__,
+                        "Can not make conversion from PhysicalUnit::UNDEFINED");
+            }
+
+            //make conversion
+            return PhysicalType<T>(
+                    m_value * PhysicalUnit(m_unit).getConversionFactor()
+                            / PhysicalUnit(other).getConversionFactor(), other);
+        }
 
         //return
         return PhysicalType<T>(*this);
     }
 
     /**
-     * Check if the same unit category. If units are different make the conversion (TODO).
+     * Check if the same unit category. If units are different make the conversion.
      */
     PhysicalType<T> makeSameUnitAs(const PhysicalType<T>& other) const {
-
-        //check unit category
-        checkIfSameUnitCategoryAs(other);
-
-        //check unit (if different TODO make conversion)
-        checkIfSameUnitAs(other);
-
-        //return
-        return PhysicalType<T>(*this);
+        return makeSameUnitAs(other.getUnit());
     }
 
     /**
@@ -240,13 +244,7 @@ public:
      * Check if the same unit. If units are different throw exception.
      */
     void checkIfSameUnitAs(const PhysicalType<T>& other) const {
-        if (m_unit != other.getUnit()) {
-            throw ElemUtils::CustomException(this->getClassName(), __func__,
-                    ElemUtils::Formatter() << "Units are different, this unit: "
-                            << PhysicalUnit(m_unit).toString()
-                            << " other unit: "
-                            << PhysicalUnit(other.getUnit()).toString());
-        }
+        checkIfSameUnitAs(other.getUnit());
     }
 
     /**
@@ -268,15 +266,7 @@ public:
      * Check if the same unit category. If units are different throw exception.
      */
     void checkIfSameUnitCategoryAs(const PhysicalType<T>& other) const {
-        if (PhysicalUnit(m_unit).getUnitCategory()
-                != PhysicalUnit(other.getUnit()).getUnitCategory()) {
-            throw ElemUtils::CustomException(this->getClassName(), __func__,
-                    ElemUtils::Formatter()
-                            << "Units have different categories, this unit: "
-                            << PhysicalUnit(m_unit).toString()
-                            << " other unit: "
-                            << PhysicalUnit(other.getUnit()).toString());
-        }
+        checkIfSameUnitCategoryAs(other.getUnit());
     }
 
 private:
@@ -387,43 +377,18 @@ inline PhysicalType<T> operator-(PhysicalType<T> const &lhs,
 /// Arithmetic operators
 
 template<class T>
-inline PhysicalType<T> operator+(PhysicalType<T> const &lhs, T const &rhs) {
-    return PhysicalType<T>(lhs.getValue() + rhs, lhs.getUnit());
-}
-
-template<class T>
-inline PhysicalType<T> operator-(PhysicalType<T> const &lhs, T const &rhs) {
-    return PhysicalType<T>(lhs.getValue() - rhs, lhs.getUnit());
-}
-
-template<class T>
 inline PhysicalType<T> operator*(PhysicalType<T> const &lhs, T const &rhs) {
-    return PhysicalType<T>(lhs.getValue() * rhs, lhs.getUnit()); //WRONG! TODO
-}
-
-template<class T>
-inline PhysicalType<T> operator/(PhysicalType<T> const &lhs, T const &rhs) {
-    return PhysicalType<T>(lhs.getValue() / rhs, lhs.getUnit()); //WRONG! TODO
-}
-
-template<class T>
-inline PhysicalType<T> operator+(T const &lhs, PhysicalType<T> const &rhs) {
-    return PhysicalType<T>(lhs + rhs.getValue(), rhs.getUnit());
-}
-
-template<class T>
-inline PhysicalType<T> operator-(T const &lhs, PhysicalType<T> const &rhs) {
-    return PhysicalType<T>(lhs - rhs.getValue(), rhs.getUnit());
+    return PhysicalType<T>(lhs.getValue() * rhs, lhs.getUnit());
 }
 
 template<class T>
 inline PhysicalType<T> operator*(T const &lhs, PhysicalType<T> const &rhs) {
-    return PhysicalType<T>(lhs * rhs.getValue(), rhs.getUnit()); //WRONG! TODO
+    return PhysicalType<T>(lhs * rhs.getValue(), rhs.getUnit());
 }
 
 template<class T>
-inline PhysicalType<T> operator/(T const &lhs, PhysicalType<T> const &rhs) {
-    return PhysicalType<T>(lhs / rhs.getValue(), rhs.getUnit()); //WRONG! TODO
+inline PhysicalType<T> operator/(PhysicalType<T> const &lhs, T const &rhs) {
+    return PhysicalType<T>(lhs.getValue() / rhs, lhs.getUnit());
 }
 
 } /* namespace PARTONS */
