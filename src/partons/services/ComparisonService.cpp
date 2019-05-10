@@ -5,8 +5,6 @@
 
 namespace PARTONS {
 
-
-// Initialise [class]::classId with a unique name.
 const unsigned int ComparisonService::classId =
         Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
                 new ComparisonService("ComparisonService"));
