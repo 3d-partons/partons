@@ -49,10 +49,15 @@ public:
         formatter << "\n" << Result<KinematicType>::toString() << "\n\n";
         formatter << "Result: " << m_value.toString() << " Type: "
                 << ObservableType(m_observableType).toString();
-        if(m_errStat.isInitialized() || m_errSys.isInitialized()  || m_errScale.isInitialized() ) formatter << " Uncertainties:";
-        if(m_errStat.isInitialized()) formatter << " " << m_errStat.toString() << " (stat)";
-        if(m_errSys.isInitialized()) formatter << " " << m_errSys.toString() << " (sys)";
-        if(m_errScale.isInitialized()) formatter << " " << m_errScale.toString() << " (scale)";
+        if (m_errStat.isInitialized() || m_errSys.isInitialized()
+                || m_errScale.isInitialized())
+            formatter << " Uncertainties:";
+        if (m_errStat.isInitialized())
+            formatter << " " << m_errStat.toString() << " (stat)";
+        if (m_errSys.isInitialized())
+            formatter << " " << m_errSys.toString() << " (sys)";
+        if (m_errScale.isInitialized())
+            formatter << " " << m_errScale.toString() << " (scale)";
         formatter << '\n';
 
         return formatter.str();
@@ -80,7 +85,16 @@ public:
             const ObservableResult &referenceObject,
             std::string parentObjectInfo = ElemUtils::StringUtils::EMPTY) const {
 
-        //TODO faire un test pour valider la cinématique associée
+        //TODO not sure if this solution is a save one. Possibly kinematics comparison should be done at DVCS, TCS, etc level
+        if (Result<KinematicType>::m_kinematic
+                != referenceObject.getKinematic()) {
+            throw ElemUtils::CustomException(this->getClassName(), __func__,
+                    ElemUtils::Formatter()
+                            << "Cannot perform comparison because kinematics is diferent ; With ConvolCoeffFunctionResult index id = "
+                            << referenceObject.getIndexId() << '\n'
+                            << toString() << '\n'
+                            << referenceObject.toString());
+        }
 
         if (m_observableType != referenceObject.getObservableType()) {
             throw ElemUtils::CustomException(this->getClassName(), __func__,
@@ -92,7 +106,6 @@ public:
                 rootComparisonReport.getTolerances(),
                 ElemUtils::Formatter() << parentObjectInfo
                         << this->getResultInfo().toString());
-        //    << this->getObjectInfo());
         rootComparisonReport.addComparisonData(xb_comparisonData);
     }
 

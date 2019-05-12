@@ -142,9 +142,27 @@ public:
             const ConvolCoeffFunctionResult &referenceObject,
             std::string parentObjectInfo = ElemUtils::StringUtils::EMPTY) const {
 
-        //TODO faire un test pour valider la cinématique associée
+        //TODO not sure if this solution is a save one. Possibly kinematics comparison should be done at DVCS, TCS, etc level
+        if (Result<KinematicType>::m_kinematic
+                != referenceObject.getKinematic()) {
+            throw ElemUtils::CustomException(this->getClassName(), __func__,
+                    ElemUtils::Formatter()
+                            << "Cannot perform comparison because kinematics is diferent ; With ConvolCoeffFunctionResult index id = "
+                            << referenceObject.getIndexId() << '\n'
+                            << toString() << '\n'
+                            << referenceObject.toString());
+        }
 
-        //TODO tester la taille des listes avant de faire le test
+        if (m_resultsByGPDType.size()
+                != referenceObject.getResultsByGpdType().size()) {
+            throw ElemUtils::CustomException(this->getClassName(), __func__,
+                    ElemUtils::Formatter()
+                            << "Cannot perform comparison between parton distribution map because they are not equal in size ; With ConvolCoeffFunctionResult index id = "
+                            << referenceObject.getIndexId() << '\n'
+                            << toString() << '\n'
+                            << referenceObject.toString());
+        }
+
         for (std::map<GPDType::Type, std::complex<double> >::const_iterator it =
                 m_resultsByGPDType.begin(); it != m_resultsByGPDType.end();
                 it++) {
