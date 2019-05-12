@@ -159,8 +159,15 @@ public:
      */
     void unserialize(ElemUtils::Packet &packet);
 
-    bool operator ==(const GPDKinematic& b) const;
-    bool operator !=(const GPDKinematic& b) const;
+    /**
+     * Is equal operator. Checks if values of kinematic variables are the same.
+     */
+    bool operator ==(const GPDKinematic& other) const;
+
+    /**
+     * Is different operator. Checks of values of kinematic variables are different.
+     */
+    bool operator !=(const GPDKinematic& other) const;
 
     //********************************************************
     //*** SETTERS AND GETTERS ********************************

@@ -123,6 +123,18 @@ void TCSConvolCoeffFunctionKinematic::unserialize(ElemUtils::Packet& packet) {
     updateHashSum();
 }
 
+bool TCSConvolCoeffFunctionKinematic::operator ==(
+        const TCSConvolCoeffFunctionKinematic& other) const {
+    return m_xi == other.getXi() && m_t == other.getT()
+            && m_MuF2 == other.getMuF2() && m_MuR2 == other.getMuR2()
+            && m_Q2Prim == other.getQ2Prim();
+}
+
+bool TCSConvolCoeffFunctionKinematic::operator !=(
+        const TCSConvolCoeffFunctionKinematic& other) const {
+    return !((*this) == other);
+}
+
 const PhysicalType<double>& TCSConvolCoeffFunctionKinematic::getQ2Prim() const {
     return m_Q2Prim;
 }

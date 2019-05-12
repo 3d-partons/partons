@@ -236,6 +236,19 @@ void DVCSObservableKinematic::unserialize(ElemUtils::Packet &packet) {
     packet >> m_Q2;
     packet >> m_E;
     packet >> m_phi;
+
+    updateHashSum();
+}
+
+bool DVCSObservableKinematic::operator ==(
+        const DVCSObservableKinematic& other) const {
+    return m_xB == other.getXB() && m_t == other.getT() && m_Q2 == other.getQ2()
+            && m_E == other.getE() && m_phi == other.getPhi();
+}
+
+bool DVCSObservableKinematic::operator !=(
+        const DVCSObservableKinematic& other) const {
+    return !((*this) == other);
 }
 
 void DVCSObservableKinematic::updateHashSum() const {

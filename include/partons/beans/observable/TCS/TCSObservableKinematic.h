@@ -158,6 +158,16 @@ public:
      */
     void unserialize(ElemUtils::Packet &packet);
 
+    /**
+     * Is equal operator. Checks if values of kinematic variables are the same.
+     */
+    bool operator ==(const TCSObservableKinematic& other) const;
+
+    /**
+     * Is different operator. Checks of values of kinematic variables are different.
+     */
+    bool operator !=(const TCSObservableKinematic& other) const;
+
     //********************************************************
     //*** SETTERS AND GETTERS ********************************
     //********************************************************

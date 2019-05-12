@@ -104,6 +104,16 @@ public:
      */
     void unserialize(ElemUtils::Packet &packet);
 
+    /**
+     * Is equal operator. Checks if values of kinematic variables are the same.
+     */
+    bool operator ==(const DVCSConvolCoeffFunctionKinematic& other) const;
+
+    /**
+     * Is different operator. Checks of values of kinematic variables are different.
+     */
+    bool operator !=(const DVCSConvolCoeffFunctionKinematic& other) const;
+
     //********************************************************
     //*** SETTERS AND GETTERS ********************************
     //********************************************************

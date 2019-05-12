@@ -274,6 +274,20 @@ void TCSObservableKinematic::unserialize(ElemUtils::Packet &packet) {
     packet >> m_E;
     packet >> m_phi;
     packet >> m_theta;
+
+    updateHashSum();
+}
+
+bool TCSObservableKinematic::operator ==(
+        const TCSObservableKinematic& other) const {
+    return m_xB == other.getXB() && m_t == other.getT()
+            && m_Q2Prim == other.getQ2Prim() && m_E == other.getE()
+            && m_phi == other.getPhi() && m_theta == other.getTheta();
+}
+
+bool TCSObservableKinematic::operator !=(
+        const TCSObservableKinematic& other) const {
+    return !((*this) == other);
 }
 
 void TCSObservableKinematic::updateHashSum() const {

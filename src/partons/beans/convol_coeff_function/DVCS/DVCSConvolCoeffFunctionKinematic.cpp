@@ -123,6 +123,18 @@ void DVCSConvolCoeffFunctionKinematic::unserialize(ElemUtils::Packet& packet) {
     updateHashSum();
 }
 
+bool DVCSConvolCoeffFunctionKinematic::operator ==(
+        const DVCSConvolCoeffFunctionKinematic& other) const {
+    return m_xi == other.getXi() && m_t == other.getT()
+            && m_MuF2 == other.getMuF2() && m_MuR2 == other.getMuR2()
+            && m_Q2 == other.getQ2();
+}
+
+bool DVCSConvolCoeffFunctionKinematic::operator !=(
+        const DVCSConvolCoeffFunctionKinematic& other) const {
+    return !((*this) == other);
+}
+
 const PhysicalType<double>& DVCSConvolCoeffFunctionKinematic::getQ2() const {
     return m_Q2;
 }
