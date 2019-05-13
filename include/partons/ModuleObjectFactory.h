@@ -18,6 +18,7 @@ namespace PARTONS {
 class ActiveFlavorsThresholdsModule;
 class BaseObjectFactory;
 class DVCSConvolCoeffFunctionModule;
+class TCSConvolCoeffFunctionModule;
 class DVCSObservable;
 class DVCSProcessModule;
 class GPDBorderFunctionModule;
@@ -139,6 +140,21 @@ public:
      * @return DVCSConvolCoeffFunctionModule pointer.
      */
     DVCSConvolCoeffFunctionModule* newDVCSConvolCoeffFunctionModule(
+            const std::string &className);
+
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a TCSConvolCoeffFunctionModule.
+     * @param classId Unique identifier of last child class.
+     * @return TCSConvolCoeffFunctionModule pointer.
+     */
+    TCSConvolCoeffFunctionModule* newTCSConvolCoeffFunctionModule(
+            unsigned int classId);
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a TCSConvolCoeffFunctionModule.
+     * @param className Name of last child class.
+     * @return TCSConvolCoeffFunctionModule pointer.
+     */
+    TCSConvolCoeffFunctionModule* newTCSConvolCoeffFunctionModule(
             const std::string &className);
 
     /**

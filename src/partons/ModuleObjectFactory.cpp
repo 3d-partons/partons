@@ -6,6 +6,7 @@
 #include "../../include/partons/BaseObjectFactory.h"
 #include "../../include/partons/modules/active_flavors_thresholds/ActiveFlavorsThresholdsModule.h"
 #include "../../include/partons/modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
+#include "../../include/partons/modules/convol_coeff_function/TCS/TCSConvolCoeffFunctionModule.h"
 #include "../../include/partons/modules/evolution/gpd/GPDEvolutionModule.h"
 #include "../../include/partons/modules/gpd_border_function/GPDBorderFunctionModule.h"
 #include "../../include/partons/modules/gpd_subtraction_constant/GPDSubtractionConstantModule.h"
@@ -186,6 +187,16 @@ DVCSConvolCoeffFunctionModule* ModuleObjectFactory::newDVCSConvolCoeffFunctionMo
         const std::string& className) {
     return static_cast<DVCSConvolCoeffFunctionModule*>(newModuleObject(
             className));
+}
+
+TCSConvolCoeffFunctionModule* ModuleObjectFactory::newTCSConvolCoeffFunctionModule(
+        unsigned int classId) {
+    return static_cast<TCSConvolCoeffFunctionModule*>(newModuleObject(classId));
+}
+
+TCSConvolCoeffFunctionModule* ModuleObjectFactory::newTCSConvolCoeffFunctionModule(
+        const std::string& className) {
+    return static_cast<TCSConvolCoeffFunctionModule*>(newModuleObject(className));
 }
 
 DVCSProcessModule* ModuleObjectFactory::newDVCSProcessModule(

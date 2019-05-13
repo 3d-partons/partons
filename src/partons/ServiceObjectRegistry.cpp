@@ -9,6 +9,7 @@
 #include "../../include/partons/services/DVCSObservableService.h"
 #include "../../include/partons/services/GPDService.h"
 #include "../../include/partons/services/hash_sum/CryptographicHashService.h"
+#include "../../include/partons/services/TCSConvolCoeffFunctionService.h"
 #include "../../include/partons/services/VizualisationService.h"
 
 namespace PARTONS {
@@ -51,6 +52,11 @@ GPDService* ServiceObjectRegistry::getGPDService() const {
 DVCSConvolCoeffFunctionService* ServiceObjectRegistry::getDVCSConvolCoeffFunctionService() const {
     return static_cast<DVCSConvolCoeffFunctionService*>(get(
             DVCSConvolCoeffFunctionService::classId));
+}
+
+TCSConvolCoeffFunctionService* ServiceObjectRegistry::getTCSConvolCoeffFunctionService() const {
+    return static_cast<TCSConvolCoeffFunctionService*>(get(
+            TCSConvolCoeffFunctionService::classId));
 }
 
 DVCSObservableService* ServiceObjectRegistry::getDVCSObservableService() const {

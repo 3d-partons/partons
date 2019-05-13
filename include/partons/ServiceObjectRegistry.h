@@ -16,6 +16,7 @@ class BaseObjectRegistry;
 class ComparisonService;
 class CryptographicHashService;
 class DVCSConvolCoeffFunctionService;
+class TCSConvolCoeffFunctionService;
 class GPDService;
 class DVCSObservableService;
 class ServiceObject;
@@ -38,6 +39,7 @@ public:
 
     GPDService* getGPDService() const;
     DVCSConvolCoeffFunctionService* getDVCSConvolCoeffFunctionService() const;
+    TCSConvolCoeffFunctionService* getTCSConvolCoeffFunctionService() const;
     DVCSObservableService* getDVCSObservableService() const;
     VizualisationService* getVizualisationService() const;
     ComparisonService* getComparisonService() const;
