@@ -8,9 +8,10 @@
  * @version 1.0
  */
 
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <string>
 
-#include "../utils/type/PhysicalType.h"
+#include "../BaseObject.h"
 #include "channel/ChannelType.h"
 
 namespace ElemUtils {
@@ -34,6 +35,12 @@ public:
      * Destructor.
      */
     virtual ~Kinematic();
+
+    /**
+     * Configure via parameters.
+     * @param parameters Set of parameters to be set.
+     */
+    virtual void configure(const ElemUtils::Parameters &parameters);
 
     virtual std::string toString() const;
 

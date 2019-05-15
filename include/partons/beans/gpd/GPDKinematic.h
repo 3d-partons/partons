@@ -92,12 +92,6 @@ public:
 
     /**
      * Assignment constructor.
-     * @param parameters Parameters object storing values to be set marked by GPDKinematic::KINEMATIC_PARAMETER_NAME_X, GPDKinematic::KINEMATIC_PARAMETER_NAME_XI, GPDKinematic::KINEMATIC_PARAMETER_NAME_T, GPDKinematic::KINEMATIC_PARAMETER_NAME_MUF2, GPDKinematic::KINEMATIC_PARAMETER_NAME_MUR2.
-     */
-    GPDKinematic(const ElemUtils::Parameters &parameters);
-
-    /**
-     * Assignment constructor.
      *
      * @param x Longitudinal momentum fraction of active parton.
      * @param xi Skewness variable.
@@ -145,6 +139,7 @@ public:
      */
     virtual ~GPDKinematic();
 
+    virtual void configure(const ElemUtils::Parameters &parameters);
     virtual std::string toString() const;
 
     /**

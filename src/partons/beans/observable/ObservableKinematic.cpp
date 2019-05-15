@@ -7,12 +7,11 @@ ObservableKinematic::ObservableKinematic(const std::string &className,
         Kinematic(className, channelType) {
 }
 
-ObservableKinematic::ObservableKinematic(const std::string &className,
-        ChannelType::Type channelType, const ElemUtils::Parameters &parameters) :
-        Kinematic(className, channelType) {
+ObservableKinematic::~ObservableKinematic() {
 }
 
-ObservableKinematic::~ObservableKinematic() {
+void ObservableKinematic::configure(const ElemUtils::Parameters &parameters) {
+    Kinematic::configure(parameters);
 }
 
 std::string ObservableKinematic::toString() const {

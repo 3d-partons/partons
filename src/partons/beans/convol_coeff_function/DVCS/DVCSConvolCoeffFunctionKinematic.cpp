@@ -19,36 +19,6 @@ DVCSConvolCoeffFunctionKinematic::DVCSConvolCoeffFunctionKinematic() :
                 PhysicalType<double>(PhysicalUnit::GEV2)) {
 }
 
-DVCSConvolCoeffFunctionKinematic::DVCSConvolCoeffFunctionKinematic(
-        const ElemUtils::Parameters &parameters) :
-        ConvolCoeffFunctionKinematic("DVCSConvolCoeffFunctionKinematic",
-                ChannelType::DVCS, parameters), m_Q2(
-                PhysicalType<double>(PhysicalUnit::GEV2)) {
-
-    double value;
-    PhysicalUnit::Type unit;
-
-    //Q2
-    if (parameters.isAvailable(
-            DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_Q2)) {
-
-        value = parameters.getLastAvailable().toDouble();
-
-        if (parameters.isAvailable(
-                DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_Q2_UNIT)) {
-
-            unit =
-                    PhysicalUnit(parameters.getLastAvailable().getString()).getType();
-            setQ2(value, unit);
-        } else {
-            setQ2(value);
-        }
-    } else {
-        errorMissingParameter(
-                DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_Q2);
-    }
-}
-
 DVCSConvolCoeffFunctionKinematic::DVCSConvolCoeffFunctionKinematic(double xi,
         double t, double Q2, double MuF2, double MuR2) :
         ConvolCoeffFunctionKinematic("DVCSConvolCoeffFunctionKinematic",
@@ -84,6 +54,36 @@ DVCSConvolCoeffFunctionKinematic::DVCSConvolCoeffFunctionKinematic(
 }
 
 DVCSConvolCoeffFunctionKinematic::~DVCSConvolCoeffFunctionKinematic() {
+}
+
+void DVCSConvolCoeffFunctionKinematic::configure(
+        const ElemUtils::Parameters &parameters) {
+
+    //run for mother
+    ConvolCoeffFunctionKinematic::configure(parameters);
+
+    double value;
+    PhysicalUnit::Type unit;
+
+    //Q2
+    if (parameters.isAvailable(
+            DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_Q2)) {
+
+        value = parameters.getLastAvailable().toDouble();
+
+        if (parameters.isAvailable(
+                DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_Q2_UNIT)) {
+
+            unit =
+                    PhysicalUnit(parameters.getLastAvailable().getString()).getType();
+            setQ2(value, unit);
+        } else {
+            setQ2(value);
+        }
+    } else {
+        errorMissingParameter(
+                DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_Q2);
+    }
 }
 
 std::string DVCSConvolCoeffFunctionKinematic::toString() const {

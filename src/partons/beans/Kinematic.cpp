@@ -1,10 +1,7 @@
 #include "../../../include/partons/beans/Kinematic.h"
 
-#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
-
-#include "../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
 
@@ -20,6 +17,9 @@ Kinematic::Kinematic(const Kinematic& other) :
 }
 
 Kinematic::~Kinematic() {
+}
+
+void Kinematic::configure(const ElemUtils::Parameters &parameters) {
 }
 
 std::string Kinematic::toString() const {

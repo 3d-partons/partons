@@ -275,7 +275,7 @@ GPDKinematic GPDService::newKinematicFromTask(const Task& task) const {
     if (ElemUtils::StringUtils::equals(
             task.getKinematicsData().getModuleClassName(),
             GPDKinematic::GPD_KNEMATIC_CLASS_NAME)) {
-        kinematic = GPDKinematic(task.getKinematicsData().getParameters());
+        kinematic.configure(task.getKinematicsData().getParameters());
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()

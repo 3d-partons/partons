@@ -88,12 +88,6 @@ public:
 
     /**
      * Assignment constructor.
-     * @param parameters Parameters object storing values to be set marked by TCSObservableKinematic::PARAMETER_NAME_XB, GPDKinematic::PARAMETER_NAME_T, TCSObservableKinematic::PARAMETER_NAME_Q2PRIM, TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_BEAM_ENERGY, TCSObservableKinematic::PARAMETER_NAME_PHI, TCSObservableKinematic::PARAMETER_NAME_THETA and TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_LEPTON_MASS.
-     */
-    TCSObservableKinematic(const ElemUtils::Parameters &parameters);
-
-    /**
-     * Assignment constructor.
      * @param xB Bjorken variable.
      * @param t Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
      * @param Q2Prim Outgoing virtual-photon virtuality (in \f$GeV^{2}\f$).
@@ -144,6 +138,7 @@ public:
      */
     virtual ~TCSObservableKinematic();
 
+    virtual void configure(const ElemUtils::Parameters &parameters);
     virtual std::string toString() const;
 
     /**

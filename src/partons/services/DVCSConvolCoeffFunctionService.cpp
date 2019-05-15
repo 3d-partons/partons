@@ -43,8 +43,7 @@ DVCSConvolCoeffFunctionKinematic DVCSConvolCoeffFunctionService::newKinematicFro
     if (ElemUtils::StringUtils::equals(
             task.getKinematicsData().getModuleClassName(),
             DVCSConvolCoeffFunctionKinematic::DVCS_CONVOL_COEFF_FUNCTION_KNEMATIC_CLASS_NAME)) {
-        kinematic = DVCSConvolCoeffFunctionKinematic(
-                task.getKinematicsData().getParameters());
+        kinematic.configure(task.getKinematicsData().getParameters());
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
@@ -105,9 +104,10 @@ void DVCSConvolCoeffFunctionService::storeResultListInDatabase(
     }
 }
 
- void DVCSConvolCoeffFunctionService::generatePlotFileTask(Task &task) {
+void DVCSConvolCoeffFunctionService::generatePlotFileTask(Task &task) {
     generatePlotFile(getOutputFilePathForPlotFileTask(task),
-                generateSQLQueryForPlotFileTask(task, "dvcs_ccf_plot_2d_view"), ' ');
+            generateSQLQueryForPlotFileTask(task, "dvcs_ccf_plot_2d_view"),
+            ' ');
 }
 
 ConvolCoeffFunctionModule<DVCSConvolCoeffFunctionKinematic,

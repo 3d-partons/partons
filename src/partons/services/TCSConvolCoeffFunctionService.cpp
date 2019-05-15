@@ -43,8 +43,7 @@ TCSConvolCoeffFunctionKinematic TCSConvolCoeffFunctionService::newKinematicFromT
     if (ElemUtils::StringUtils::equals(
             task.getKinematicsData().getModuleClassName(),
             TCSConvolCoeffFunctionKinematic::TCS_CONVOL_COEFF_FUNCTION_KNEMATIC_CLASS_NAME)) {
-        kinematic = TCSConvolCoeffFunctionKinematic(
-                task.getKinematicsData().getParameters());
+        kinematic.configure(task.getKinematicsData().getParameters());
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()

@@ -78,12 +78,6 @@ public:
 
     /**
      * Assignment constructor.
-     * @param parameters Parameters object storing values to be set marked by DVCSObservableKinematic::PARAMETER_NAME_XB, DVCSObservableKinematic::PARAMETER_NAME_T, DVCSObservableKinematic::PARAMETER_NAME_Q2, DVCSObservableKinematic::PARAMETER_NAME_BEAM_ENERGY and DVCSObservableKinematic::PARAMETER_NAME_PHI.
-     */
-    DVCSObservableKinematic(const ElemUtils::Parameters &parameters);
-
-    /**
-     * Assignment constructor.
      * @param xB Bjorken variable.
      * @param t Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
      * @param Q2 Virtual-photon virtuality (in \f$GeV^{2}\f$).
@@ -128,6 +122,7 @@ public:
      */
     virtual ~DVCSObservableKinematic();
 
+    virtual void configure(const ElemUtils::Parameters &parameters);
     virtual std::string toString() const;
 
     /**

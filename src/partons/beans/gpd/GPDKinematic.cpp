@@ -32,13 +32,62 @@ GPDKinematic::GPDKinematic() :
                 PhysicalType<double>(PhysicalUnit::GEV2)) {
 }
 
-GPDKinematic::GPDKinematic(const ElemUtils::Parameters &parameters) :
+GPDKinematic::GPDKinematic(double x, double xi, double t, double MuF2,
+        double MuR2) :
+        Kinematic("GPDKinematic", ChannelType::UNDEFINED), m_x(
+                PhysicalType<double>(x, PhysicalUnit::NONE)), m_xi(
+                PhysicalType<double>(xi, PhysicalUnit::NONE)), m_t(
+                PhysicalType<double>(t, PhysicalUnit::GEV2)), m_MuF2(
+                PhysicalType<double>(MuF2, PhysicalUnit::GEV2)), m_MuR2(
+                PhysicalType<double>(MuR2, PhysicalUnit::GEV2)) {
+}
+
+GPDKinematic::GPDKinematic(const PhysicalType<double> &x,
+        const PhysicalType<double> &xi, const PhysicalType<double> &t,
+        const PhysicalType<double> &MuF2, const PhysicalType<double> &MuR2) :
         Kinematic("GPDKinematic", ChannelType::UNDEFINED), m_x(
                 PhysicalType<double>(PhysicalUnit::NONE)), m_xi(
                 PhysicalType<double>(PhysicalUnit::NONE)), m_t(
                 PhysicalType<double>(PhysicalUnit::GEV2)), m_MuF2(
                 PhysicalType<double>(PhysicalUnit::GEV2)), m_MuR2(
                 PhysicalType<double>(PhysicalUnit::GEV2)) {
+
+    m_x.checkIfSameUnitCategoryAs(x);
+    m_xi.checkIfSameUnitCategoryAs(xi);
+    m_t.checkIfSameUnitCategoryAs(t);
+    m_MuF2.checkIfSameUnitCategoryAs(MuF2);
+    m_MuR2.checkIfSameUnitCategoryAs(MuR2);
+
+    m_x = x;
+    m_xi = xi;
+    m_t = t;
+    m_MuF2 = MuF2;
+    m_MuR2 = MuR2;
+}
+
+GPDKinematic::GPDKinematic(const ElemUtils::GenericType& x,
+        const ElemUtils::GenericType& xi, const ElemUtils::GenericType& t,
+        const ElemUtils::GenericType& MuF2, const ElemUtils::GenericType& MuR2) :
+        Kinematic("GPDKinematic", ChannelType::UNDEFINED), m_x(
+                PhysicalType<double>(x, PhysicalUnit::NONE)), m_xi(
+                PhysicalType<double>(xi, PhysicalUnit::NONE)), m_t(
+                PhysicalType<double>(t, PhysicalUnit::GEV2)), m_MuF2(
+                PhysicalType<double>(MuF2, PhysicalUnit::GEV2)), m_MuR2(
+                PhysicalType<double>(MuR2, PhysicalUnit::GEV2)) {
+}
+
+GPDKinematic::GPDKinematic(const GPDKinematic& other) :
+        Kinematic(other), m_x(other.m_x), m_xi(other.m_xi), m_t(other.m_t), m_MuF2(
+                other.m_MuF2), m_MuR2(other.m_MuR2) {
+}
+
+GPDKinematic::~GPDKinematic() {
+}
+
+void GPDKinematic::configure(const ElemUtils::Parameters &parameters) {
+
+    //run for mother
+    Kinematic::configure(parameters);
 
     double value;
     PhysicalUnit::Type unit;
@@ -132,58 +181,6 @@ GPDKinematic::GPDKinematic(const ElemUtils::Parameters &parameters) :
     } else {
         errorMissingParameter(GPDKinematic::KINEMATIC_PARAMETER_NAME_MUR2);
     }
-}
-
-GPDKinematic::GPDKinematic(double x, double xi, double t, double MuF2,
-        double MuR2) :
-        Kinematic("GPDKinematic", ChannelType::UNDEFINED), m_x(
-                PhysicalType<double>(x, PhysicalUnit::NONE)), m_xi(
-                PhysicalType<double>(xi, PhysicalUnit::NONE)), m_t(
-                PhysicalType<double>(t, PhysicalUnit::GEV2)), m_MuF2(
-                PhysicalType<double>(MuF2, PhysicalUnit::GEV2)), m_MuR2(
-                PhysicalType<double>(MuR2, PhysicalUnit::GEV2)) {
-}
-
-GPDKinematic::GPDKinematic(const PhysicalType<double> &x,
-        const PhysicalType<double> &xi, const PhysicalType<double> &t,
-        const PhysicalType<double> &MuF2, const PhysicalType<double> &MuR2) :
-        Kinematic("GPDKinematic", ChannelType::UNDEFINED), m_x(
-                PhysicalType<double>(PhysicalUnit::NONE)), m_xi(
-                PhysicalType<double>(PhysicalUnit::NONE)), m_t(
-                PhysicalType<double>(PhysicalUnit::GEV2)), m_MuF2(
-                PhysicalType<double>(PhysicalUnit::GEV2)), m_MuR2(
-                PhysicalType<double>(PhysicalUnit::GEV2)) {
-
-    m_x.checkIfSameUnitCategoryAs(x);
-    m_xi.checkIfSameUnitCategoryAs(xi);
-    m_t.checkIfSameUnitCategoryAs(t);
-    m_MuF2.checkIfSameUnitCategoryAs(MuF2);
-    m_MuR2.checkIfSameUnitCategoryAs(MuR2);
-
-    m_x = x;
-    m_xi = xi;
-    m_t = t;
-    m_MuF2 = MuF2;
-    m_MuR2 = MuR2;
-}
-
-GPDKinematic::GPDKinematic(const ElemUtils::GenericType& x,
-        const ElemUtils::GenericType& xi, const ElemUtils::GenericType& t,
-        const ElemUtils::GenericType& MuF2, const ElemUtils::GenericType& MuR2) :
-        Kinematic("GPDKinematic", ChannelType::UNDEFINED), m_x(
-                PhysicalType<double>(x, PhysicalUnit::NONE)), m_xi(
-                PhysicalType<double>(xi, PhysicalUnit::NONE)), m_t(
-                PhysicalType<double>(t, PhysicalUnit::GEV2)), m_MuF2(
-                PhysicalType<double>(MuF2, PhysicalUnit::GEV2)), m_MuR2(
-                PhysicalType<double>(MuR2, PhysicalUnit::GEV2)) {
-}
-
-GPDKinematic::GPDKinematic(const GPDKinematic& other) :
-        Kinematic(other), m_x(other.m_x), m_xi(other.m_xi), m_t(other.m_t), m_MuF2(
-                other.m_MuF2), m_MuR2(other.m_MuR2) {
-}
-
-GPDKinematic::~GPDKinematic() {
 }
 
 std::string GPDKinematic::toString() const {

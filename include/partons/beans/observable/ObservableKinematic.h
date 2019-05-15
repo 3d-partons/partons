@@ -32,6 +32,7 @@ public:
      */
     virtual ~ObservableKinematic();
 
+    virtual void configure(const ElemUtils::Parameters &parameters);
     virtual std::string toString() const;
 
     /**
@@ -57,14 +58,6 @@ protected:
      */
     ObservableKinematic(const std::string &className,
             ChannelType::Type channelType);
-
-    /**
-     * Assignment constructor.
-     * @param parameters Parameters object storing values to be set marked by none.
-     */
-    ObservableKinematic(const std::string &className,
-            ChannelType::Type channelType,
-            const ElemUtils::Parameters &parameters);
 
     /**
      * Copy constructor.

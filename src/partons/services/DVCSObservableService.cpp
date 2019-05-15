@@ -42,8 +42,7 @@ DVCSObservableKinematic DVCSObservableService::newKinematicFromTask(
     if (ElemUtils::StringUtils::equals(
             task.getKinematicsData().getModuleClassName(),
             DVCSObservableKinematic::DVCS_OBSERVABLE_KNEMATIC_CLASS_NAME)) {
-        kinematic = DVCSObservableKinematic(
-                task.getKinematicsData().getParameters());
+        kinematic.configure(task.getKinematicsData().getParameters());
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()

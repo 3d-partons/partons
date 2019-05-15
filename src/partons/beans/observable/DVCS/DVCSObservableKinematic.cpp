@@ -36,14 +36,66 @@ DVCSObservableKinematic::DVCSObservableKinematic() :
                 PhysicalType<double>(PhysicalUnit::DEG)) {
 }
 
-DVCSObservableKinematic::DVCSObservableKinematic(
-        const ElemUtils::Parameters &parameters) :
+DVCSObservableKinematic::DVCSObservableKinematic(double xB, double t, double Q2,
+        double E, double phi) :
+        ObservableKinematic("DVCSObservableKinematic", ChannelType::DVCS), m_xB(
+                PhysicalType<double>(xB, PhysicalUnit::NONE)), m_t(
+                PhysicalType<double>(t, PhysicalUnit::GEV2)), m_Q2(
+                PhysicalType<double>(Q2, PhysicalUnit::GEV2)), m_E(
+                PhysicalType<double>(E, PhysicalUnit::GEV)), m_phi(
+                PhysicalType<double>(phi, PhysicalUnit::DEG)) {
+}
+
+DVCSObservableKinematic::DVCSObservableKinematic(const PhysicalType<double>& xB,
+        const PhysicalType<double>& t, const PhysicalType<double>& Q2,
+        const PhysicalType<double>& E, const PhysicalType<double>& phi) :
         ObservableKinematic("DVCSObservableKinematic", ChannelType::DVCS), m_xB(
                 PhysicalType<double>(PhysicalUnit::NONE)), m_t(
                 PhysicalType<double>(PhysicalUnit::GEV2)), m_Q2(
                 PhysicalType<double>(PhysicalUnit::GEV2)), m_E(
                 PhysicalType<double>(PhysicalUnit::GEV)), m_phi(
                 PhysicalType<double>(PhysicalUnit::DEG)) {
+
+    m_xB.checkIfSameUnitCategoryAs(xB);
+    m_t.checkIfSameUnitCategoryAs(t);
+    m_Q2.checkIfSameUnitCategoryAs(Q2);
+    m_E.checkIfSameUnitCategoryAs(E);
+    m_phi.checkIfSameUnitCategoryAs(phi);
+
+    m_xB = xB;
+    m_t = t;
+    m_Q2 = Q2;
+    m_E = E;
+    m_phi = phi;
+}
+
+DVCSObservableKinematic::DVCSObservableKinematic(
+        const ElemUtils::GenericType& xB, const ElemUtils::GenericType& t,
+        const ElemUtils::GenericType& Q2, const ElemUtils::GenericType& E,
+        const ElemUtils::GenericType& phi) :
+        ObservableKinematic("DVCSObservableKinematic", ChannelType::DVCS), m_xB(
+                PhysicalType<double>(xB, PhysicalUnit::NONE)), m_t(
+                PhysicalType<double>(t, PhysicalUnit::GEV2)), m_Q2(
+                PhysicalType<double>(Q2, PhysicalUnit::GEV2)), m_E(
+                PhysicalType<double>(E, PhysicalUnit::GEV)), m_phi(
+                PhysicalType<double>(phi, PhysicalUnit::DEG)) {
+}
+
+DVCSObservableKinematic::DVCSObservableKinematic(
+        const DVCSObservableKinematic &other) :
+        ObservableKinematic(other), m_xB(other.m_xB), m_t(other.m_t), m_Q2(
+                other.m_Q2), m_E(other.m_E), m_phi(other.m_phi) {
+}
+
+DVCSObservableKinematic::~DVCSObservableKinematic() {
+}
+
+void DVCSObservableKinematic::configure(
+        const ElemUtils::Parameters &parameters) {
+
+    //run for mother
+    ObservableKinematic::configure(parameters);
+
     double value;
     PhysicalUnit::Type unit;
 
@@ -144,60 +196,6 @@ DVCSObservableKinematic::DVCSObservableKinematic(
         errorMissingParameter(
                 DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_PHI);
     }
-}
-
-DVCSObservableKinematic::DVCSObservableKinematic(double xB, double t, double Q2,
-        double E, double phi) :
-        ObservableKinematic("DVCSObservableKinematic", ChannelType::DVCS), m_xB(
-                PhysicalType<double>(xB, PhysicalUnit::NONE)), m_t(
-                PhysicalType<double>(t, PhysicalUnit::GEV2)), m_Q2(
-                PhysicalType<double>(Q2, PhysicalUnit::GEV2)), m_E(
-                PhysicalType<double>(E, PhysicalUnit::GEV)), m_phi(
-                PhysicalType<double>(phi, PhysicalUnit::DEG)) {
-}
-
-DVCSObservableKinematic::DVCSObservableKinematic(const PhysicalType<double>& xB,
-        const PhysicalType<double>& t, const PhysicalType<double>& Q2,
-        const PhysicalType<double>& E, const PhysicalType<double>& phi) :
-        ObservableKinematic("DVCSObservableKinematic", ChannelType::DVCS), m_xB(
-                PhysicalType<double>(PhysicalUnit::NONE)), m_t(
-                PhysicalType<double>(PhysicalUnit::GEV2)), m_Q2(
-                PhysicalType<double>(PhysicalUnit::GEV2)), m_E(
-                PhysicalType<double>(PhysicalUnit::GEV)), m_phi(
-                PhysicalType<double>(PhysicalUnit::DEG)) {
-
-    m_xB.checkIfSameUnitCategoryAs(xB);
-    m_t.checkIfSameUnitCategoryAs(t);
-    m_Q2.checkIfSameUnitCategoryAs(Q2);
-    m_E.checkIfSameUnitCategoryAs(E);
-    m_phi.checkIfSameUnitCategoryAs(phi);
-
-    m_xB = xB;
-    m_t = t;
-    m_Q2 = Q2;
-    m_E = E;
-    m_phi = phi;
-}
-
-DVCSObservableKinematic::DVCSObservableKinematic(
-        const ElemUtils::GenericType& xB, const ElemUtils::GenericType& t,
-        const ElemUtils::GenericType& Q2, const ElemUtils::GenericType& E,
-        const ElemUtils::GenericType& phi) :
-        ObservableKinematic("DVCSObservableKinematic", ChannelType::DVCS), m_xB(
-                PhysicalType<double>(xB, PhysicalUnit::NONE)), m_t(
-                PhysicalType<double>(t, PhysicalUnit::GEV2)), m_Q2(
-                PhysicalType<double>(Q2, PhysicalUnit::GEV2)), m_E(
-                PhysicalType<double>(E, PhysicalUnit::GEV)), m_phi(
-                PhysicalType<double>(phi, PhysicalUnit::DEG)) {
-}
-
-DVCSObservableKinematic::DVCSObservableKinematic(
-        const DVCSObservableKinematic &other) :
-        ObservableKinematic(other), m_xB(other.m_xB), m_t(other.m_t), m_Q2(
-                other.m_Q2), m_E(other.m_E), m_phi(other.m_phi) {
-}
-
-DVCSObservableKinematic::~DVCSObservableKinematic() {
 }
 
 std::string DVCSObservableKinematic::toString() const {

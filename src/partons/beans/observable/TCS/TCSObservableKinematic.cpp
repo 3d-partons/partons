@@ -42,8 +42,21 @@ TCSObservableKinematic::TCSObservableKinematic() :
                 PhysicalType<double>(PhysicalUnit::DEG)) {
 }
 
-TCSObservableKinematic::TCSObservableKinematic(
-        const ElemUtils::Parameters &parameters) :
+TCSObservableKinematic::TCSObservableKinematic(double xB, double t,
+        double Q2Prim, double E, double phi, double theta) :
+        ObservableKinematic("TCSObservableKinematic", ChannelType::TCS), m_xB(
+                PhysicalType<double>(xB, PhysicalUnit::NONE)), m_t(
+                PhysicalType<double>(t, PhysicalUnit::GEV2)), m_Q2Prim(
+                PhysicalType<double>(Q2Prim, PhysicalUnit::GEV2)), m_E(
+                PhysicalType<double>(E, PhysicalUnit::GEV)), m_phi(
+                PhysicalType<double>(phi, PhysicalUnit::DEG)), m_theta(
+                PhysicalType<double>(theta, PhysicalUnit::DEG)) {
+}
+
+TCSObservableKinematic::TCSObservableKinematic(const PhysicalType<double>& xB,
+        const PhysicalType<double>& t, const PhysicalType<double>& Q2Prim,
+        const PhysicalType<double>& E, const PhysicalType<double>& phi,
+        const PhysicalType<double>& theta) :
         ObservableKinematic("TCSObservableKinematic", ChannelType::TCS), m_xB(
                 PhysicalType<double>(PhysicalUnit::NONE)), m_t(
                 PhysicalType<double>(PhysicalUnit::GEV2)), m_Q2Prim(
@@ -51,6 +64,50 @@ TCSObservableKinematic::TCSObservableKinematic(
                 PhysicalType<double>(PhysicalUnit::GEV)), m_phi(
                 PhysicalType<double>(PhysicalUnit::DEG)), m_theta(
                 PhysicalType<double>(PhysicalUnit::DEG)) {
+
+    m_xB.checkIfSameUnitCategoryAs(xB);
+    m_t.checkIfSameUnitCategoryAs(t);
+    m_Q2Prim.checkIfSameUnitCategoryAs(Q2Prim);
+    m_E.checkIfSameUnitCategoryAs(E);
+    m_phi.checkIfSameUnitCategoryAs(phi);
+    m_theta.checkIfSameUnitCategoryAs(theta);
+
+    m_xB = xB;
+    m_t = t;
+    m_Q2Prim = Q2Prim;
+    m_E = E;
+    m_phi = phi;
+    m_theta = theta;
+}
+
+TCSObservableKinematic::TCSObservableKinematic(const ElemUtils::GenericType& xB,
+        const ElemUtils::GenericType& t, const ElemUtils::GenericType& Q2Prim,
+        const ElemUtils::GenericType& E, const ElemUtils::GenericType& phi,
+        const ElemUtils::GenericType& theta) :
+        ObservableKinematic("TCSObservableKinematic", ChannelType::TCS), m_xB(
+                PhysicalType<double>(xB, PhysicalUnit::NONE)), m_t(
+                PhysicalType<double>(t, PhysicalUnit::GEV2)), m_Q2Prim(
+                PhysicalType<double>(Q2Prim, PhysicalUnit::GEV2)), m_E(
+                PhysicalType<double>(E, PhysicalUnit::GEV)), m_phi(
+                PhysicalType<double>(phi, PhysicalUnit::DEG)), m_theta(
+                PhysicalType<double>(theta, PhysicalUnit::DEG)) {
+}
+
+TCSObservableKinematic::TCSObservableKinematic(
+        const TCSObservableKinematic &other) :
+        ObservableKinematic(other), m_xB(other.m_xB), m_t(other.m_t), m_Q2Prim(
+                other.m_Q2Prim), m_E(other.m_E), m_phi(other.m_phi), m_theta(
+                other.m_theta) {
+}
+
+TCSObservableKinematic::~TCSObservableKinematic() {
+}
+
+void TCSObservableKinematic::configure(
+        const ElemUtils::Parameters &parameters) {
+
+    //run for mother
+    ObservableKinematic::configure(parameters);
 
     double value;
     PhysicalUnit::Type unit;
@@ -172,67 +229,6 @@ TCSObservableKinematic::TCSObservableKinematic(
         errorMissingParameter(
                 TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_THETA);
     }
-}
-
-TCSObservableKinematic::TCSObservableKinematic(double xB, double t,
-        double Q2Prim, double E, double phi, double theta) :
-        ObservableKinematic("TCSObservableKinematic", ChannelType::TCS), m_xB(
-                PhysicalType<double>(xB, PhysicalUnit::NONE)), m_t(
-                PhysicalType<double>(t, PhysicalUnit::GEV2)), m_Q2Prim(
-                PhysicalType<double>(Q2Prim, PhysicalUnit::GEV2)), m_E(
-                PhysicalType<double>(E, PhysicalUnit::GEV)), m_phi(
-                PhysicalType<double>(phi, PhysicalUnit::DEG)), m_theta(
-                PhysicalType<double>(theta, PhysicalUnit::DEG)) {
-}
-
-TCSObservableKinematic::TCSObservableKinematic(const PhysicalType<double>& xB,
-        const PhysicalType<double>& t, const PhysicalType<double>& Q2Prim,
-        const PhysicalType<double>& E, const PhysicalType<double>& phi,
-        const PhysicalType<double>& theta) :
-        ObservableKinematic("TCSObservableKinematic", ChannelType::TCS), m_xB(
-                PhysicalType<double>(PhysicalUnit::NONE)), m_t(
-                PhysicalType<double>(PhysicalUnit::GEV2)), m_Q2Prim(
-                PhysicalType<double>(PhysicalUnit::GEV2)), m_E(
-                PhysicalType<double>(PhysicalUnit::GEV)), m_phi(
-                PhysicalType<double>(PhysicalUnit::DEG)), m_theta(
-                PhysicalType<double>(PhysicalUnit::DEG)) {
-
-    m_xB.checkIfSameUnitCategoryAs(xB);
-    m_t.checkIfSameUnitCategoryAs(t);
-    m_Q2Prim.checkIfSameUnitCategoryAs(Q2Prim);
-    m_E.checkIfSameUnitCategoryAs(E);
-    m_phi.checkIfSameUnitCategoryAs(phi);
-    m_theta.checkIfSameUnitCategoryAs(theta);
-
-    m_xB = xB;
-    m_t = t;
-    m_Q2Prim = Q2Prim;
-    m_E = E;
-    m_phi = phi;
-    m_theta = theta;
-}
-
-TCSObservableKinematic::TCSObservableKinematic(const ElemUtils::GenericType& xB,
-        const ElemUtils::GenericType& t, const ElemUtils::GenericType& Q2Prim,
-        const ElemUtils::GenericType& E, const ElemUtils::GenericType& phi,
-        const ElemUtils::GenericType& theta) :
-        ObservableKinematic("TCSObservableKinematic", ChannelType::TCS), m_xB(
-                PhysicalType<double>(xB, PhysicalUnit::NONE)), m_t(
-                PhysicalType<double>(t, PhysicalUnit::GEV2)), m_Q2Prim(
-                PhysicalType<double>(Q2Prim, PhysicalUnit::GEV2)), m_E(
-                PhysicalType<double>(E, PhysicalUnit::GEV)), m_phi(
-                PhysicalType<double>(phi, PhysicalUnit::DEG)), m_theta(
-                PhysicalType<double>(theta, PhysicalUnit::DEG)) {
-}
-
-TCSObservableKinematic::TCSObservableKinematic(
-        const TCSObservableKinematic &other) :
-        ObservableKinematic(other), m_xB(other.m_xB), m_t(other.m_t), m_Q2Prim(
-                other.m_Q2Prim), m_E(other.m_E), m_phi(other.m_phi), m_theta(
-                other.m_theta) {
-}
-
-TCSObservableKinematic::~TCSObservableKinematic() {
 }
 
 std::string TCSObservableKinematic::toString() const {

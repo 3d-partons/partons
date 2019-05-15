@@ -39,6 +39,7 @@ public:
      */
     virtual ~ConvolCoeffFunctionKinematic();
 
+    virtual void configure(const ElemUtils::Parameters &parameters);
     virtual std::string toString() const;
 
     /**
@@ -124,14 +125,6 @@ protected:
      */
     ConvolCoeffFunctionKinematic(const std::string &className,
             ChannelType::Type channelType);
-
-    /**
-     * Assignment constructor.
-     * @param parameters Parameters object storing values to be set marked by GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI, ObservableKinematic::PARAMETER_NAME_T, GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUF2, GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUR2.
-     */
-    ConvolCoeffFunctionKinematic(const std::string &className,
-            ChannelType::Type channelType,
-            const ElemUtils::Parameters &parameters);
 
     /**
      * Assignment constructor.

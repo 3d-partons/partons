@@ -38,12 +38,6 @@ public:
 
     /**
      * Assignment constructor.
-     * @param parameters Parameters object storing values to be set marked by GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI, GPDKinematic::PARAMETER_NAME_T, DVCSObservableKinematic::PARAMETER_NAME_Q2, GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUF2, GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUR2.
-     */
-    DVCSConvolCoeffFunctionKinematic(const ElemUtils::Parameters &parameters);
-
-    /**
-     * Assignment constructor.
      * @param xi Skewness variable.
      * @param t Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
      * @param Q2 Virtual-photon virtuality (in \f$GeV^{2}\f$).
@@ -90,6 +84,7 @@ public:
      */
     virtual ~DVCSConvolCoeffFunctionKinematic();
 
+    virtual void configure(const ElemUtils::Parameters &parameters);
     virtual std::string toString() const;
 
     /**

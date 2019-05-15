@@ -16,13 +16,61 @@ ConvolCoeffFunctionKinematic::ConvolCoeffFunctionKinematic(
 }
 
 ConvolCoeffFunctionKinematic::ConvolCoeffFunctionKinematic(
+        const std::string &className, ChannelType::Type channelType, double xi,
+        double t, double MuF2, double MuR2) :
+        Kinematic(className, channelType), m_xi(
+                PhysicalType<double>(xi, PhysicalUnit::NONE)), m_t(
+                PhysicalType<double>(t, PhysicalUnit::GEV2)), m_MuF2(
+                PhysicalType<double>(MuF2, PhysicalUnit::GEV2)), m_MuR2(
+                PhysicalType<double>(MuR2, PhysicalUnit::GEV2)) {
+}
+
+ConvolCoeffFunctionKinematic::ConvolCoeffFunctionKinematic(
         const std::string &className, ChannelType::Type channelType,
-        const ElemUtils::Parameters &parameters) :
+        const PhysicalType<double> &xi, const PhysicalType<double> &t,
+        const PhysicalType<double> &MuF2, const PhysicalType<double> &MuR2) :
         Kinematic(className, channelType), m_xi(
                 PhysicalType<double>(PhysicalUnit::NONE)), m_t(
                 PhysicalType<double>(PhysicalUnit::GEV2)), m_MuF2(
                 PhysicalType<double>(PhysicalUnit::GEV2)), m_MuR2(
                 PhysicalType<double>(PhysicalUnit::GEV2)) {
+
+    m_xi.checkIfSameUnitCategoryAs(xi);
+    m_t.checkIfSameUnitCategoryAs(t);
+    m_MuF2.checkIfSameUnitCategoryAs(MuF2);
+    m_MuR2.checkIfSameUnitCategoryAs(MuR2);
+
+    m_xi = xi;
+    m_t = t;
+    m_MuF2 = MuF2;
+    m_MuR2 = MuR2;
+}
+
+ConvolCoeffFunctionKinematic::ConvolCoeffFunctionKinematic(
+        const std::string &className, ChannelType::Type channelType,
+        const ElemUtils::GenericType &xi, const ElemUtils::GenericType &t,
+        const ElemUtils::GenericType &MuF2, const ElemUtils::GenericType &MuR2) :
+        Kinematic(className, channelType), m_xi(
+                PhysicalType<double>(xi, PhysicalUnit::NONE)), m_t(
+                PhysicalType<double>(t, PhysicalUnit::GEV2)), m_MuF2(
+                PhysicalType<double>(MuF2, PhysicalUnit::GEV2)), m_MuR2(
+                PhysicalType<double>(MuR2, PhysicalUnit::GEV2)) {
+}
+
+ConvolCoeffFunctionKinematic::ConvolCoeffFunctionKinematic(
+        const ConvolCoeffFunctionKinematic &other) :
+        Kinematic(other), m_xi(other.m_xi), m_t(other.m_t), m_MuF2(
+                other.m_MuF2), m_MuR2(other.m_MuR2) {
+}
+
+ConvolCoeffFunctionKinematic::~ConvolCoeffFunctionKinematic() {
+}
+
+void ConvolCoeffFunctionKinematic::configure(
+        const ElemUtils::Parameters &parameters) {
+
+    //run for mother
+    Kinematic::configure(parameters);
 
     double value;
     PhysicalUnit::Type unit;
@@ -98,57 +146,6 @@ ConvolCoeffFunctionKinematic::ConvolCoeffFunctionKinematic(
     } else {
         errorMissingParameter(GPDKinematic::KINEMATIC_PARAMETER_NAME_MUR2);
     }
-}
-
-ConvolCoeffFunctionKinematic::ConvolCoeffFunctionKinematic(
-        const std::string &className, ChannelType::Type channelType, double xi,
-        double t, double MuF2, double MuR2) :
-        Kinematic(className, channelType), m_xi(
-                PhysicalType<double>(xi, PhysicalUnit::NONE)), m_t(
-                PhysicalType<double>(t, PhysicalUnit::GEV2)), m_MuF2(
-                PhysicalType<double>(MuF2, PhysicalUnit::GEV2)), m_MuR2(
-                PhysicalType<double>(MuR2, PhysicalUnit::GEV2)) {
-}
-
-ConvolCoeffFunctionKinematic::ConvolCoeffFunctionKinematic(
-        const std::string &className, ChannelType::Type channelType,
-        const PhysicalType<double> &xi, const PhysicalType<double> &t,
-        const PhysicalType<double> &MuF2, const PhysicalType<double> &MuR2) :
-        Kinematic(className, channelType), m_xi(
-                PhysicalType<double>(PhysicalUnit::NONE)), m_t(
-                PhysicalType<double>(PhysicalUnit::GEV2)), m_MuF2(
-                PhysicalType<double>(PhysicalUnit::GEV2)), m_MuR2(
-                PhysicalType<double>(PhysicalUnit::GEV2)) {
-
-    m_xi.checkIfSameUnitCategoryAs(xi);
-    m_t.checkIfSameUnitCategoryAs(t);
-    m_MuF2.checkIfSameUnitCategoryAs(MuF2);
-    m_MuR2.checkIfSameUnitCategoryAs(MuR2);
-
-    m_xi = xi;
-    m_t = t;
-    m_MuF2 = MuF2;
-    m_MuR2 = MuR2;
-}
-
-ConvolCoeffFunctionKinematic::ConvolCoeffFunctionKinematic(
-        const std::string &className, ChannelType::Type channelType,
-        const ElemUtils::GenericType &xi, const ElemUtils::GenericType &t,
-        const ElemUtils::GenericType &MuF2, const ElemUtils::GenericType &MuR2) :
-        Kinematic(className, channelType), m_xi(
-                PhysicalType<double>(xi, PhysicalUnit::NONE)), m_t(
-                PhysicalType<double>(t, PhysicalUnit::GEV2)), m_MuF2(
-                PhysicalType<double>(MuF2, PhysicalUnit::GEV2)), m_MuR2(
-                PhysicalType<double>(MuR2, PhysicalUnit::GEV2)) {
-}
-
-ConvolCoeffFunctionKinematic::ConvolCoeffFunctionKinematic(
-        const ConvolCoeffFunctionKinematic &other) :
-        Kinematic(other), m_xi(other.m_xi), m_t(other.m_t), m_MuF2(
-                other.m_MuF2), m_MuR2(other.m_MuR2) {
-}
-
-ConvolCoeffFunctionKinematic::~ConvolCoeffFunctionKinematic() {
 }
 
 std::string ConvolCoeffFunctionKinematic::toString() const {

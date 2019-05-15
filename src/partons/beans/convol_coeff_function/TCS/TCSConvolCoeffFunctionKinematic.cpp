@@ -19,36 +19,6 @@ TCSConvolCoeffFunctionKinematic::TCSConvolCoeffFunctionKinematic() :
                 PhysicalType<double>(PhysicalUnit::GEV2)) {
 }
 
-TCSConvolCoeffFunctionKinematic::TCSConvolCoeffFunctionKinematic(
-        const ElemUtils::Parameters &parameters) :
-        ConvolCoeffFunctionKinematic("TCSConvolCoeffFunctionKinematic",
-                ChannelType::TCS, parameters), m_Q2Prim(
-                PhysicalType<double>(PhysicalUnit::GEV2)) {
-
-    double value;
-    PhysicalUnit::Type unit;
-
-    //Q2'
-    if (parameters.isAvailable(
-            TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_Q2PRIM)) {
-
-        value = parameters.getLastAvailable().toDouble();
-
-        if (parameters.isAvailable(
-                TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_Q2PRIM_UNIT)) {
-
-            unit =
-                    PhysicalUnit(parameters.getLastAvailable().getString()).getType();
-            setQ2Prim(value, unit);
-        } else {
-            setQ2Prim(value);
-        }
-    } else {
-        errorMissingParameter(
-                TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_Q2PRIM);
-    }
-}
-
 TCSConvolCoeffFunctionKinematic::TCSConvolCoeffFunctionKinematic(double xi,
         double t, double Q2Prim, double MuF2, double MuR2) :
         ConvolCoeffFunctionKinematic("TCSConvolCoeffFunctionKinematic",
@@ -84,6 +54,36 @@ TCSConvolCoeffFunctionKinematic::TCSConvolCoeffFunctionKinematic(
 }
 
 TCSConvolCoeffFunctionKinematic::~TCSConvolCoeffFunctionKinematic() {
+}
+
+void TCSConvolCoeffFunctionKinematic::configure(
+        const ElemUtils::Parameters &parameters) {
+
+    //run for mother
+    ConvolCoeffFunctionKinematic::configure(parameters);
+
+    double value;
+    PhysicalUnit::Type unit;
+
+    //Q2'
+    if (parameters.isAvailable(
+            TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_Q2PRIM)) {
+
+        value = parameters.getLastAvailable().toDouble();
+
+        if (parameters.isAvailable(
+                TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_Q2PRIM_UNIT)) {
+
+            unit =
+                    PhysicalUnit(parameters.getLastAvailable().getString()).getType();
+            setQ2Prim(value, unit);
+        } else {
+            setQ2Prim(value);
+        }
+    } else {
+        errorMissingParameter(
+                TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_Q2PRIM);
+    }
 }
 
 std::string TCSConvolCoeffFunctionKinematic::toString() const {
