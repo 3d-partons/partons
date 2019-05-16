@@ -31,8 +31,8 @@ const std::string TCSProcessModule::TCS_PROCESS_MODULE_CLASS_NAME =
 
 TCSProcessModule::TCSProcessModule(const std::string &className) :
         ProcessModule(className, ChannelType::TCS), m_xB(0.), m_t(0.), m_Q2Prim(
-                0.), m_E(0.), m_phi(0.), m_theta(0.), m_tmin(0.), m_tmax(0.), m_xBmin(0), m_y(
-                0.), m_epsilon(0.), m_pConvolCoeffFunctionModule(0) {
+                0.), m_E(0.), m_phi(0.), m_theta(0.), m_tmin(0.), m_tmax(0.), m_xBmin(
+                0), m_y(0.), m_epsilon(0.), m_pConvolCoeffFunctionModule(0) {
 }
 
 TCSProcessModule::~TCSProcessModule() {
@@ -45,9 +45,9 @@ TCSProcessModule::~TCSProcessModule() {
 
 TCSProcessModule::TCSProcessModule(const TCSProcessModule& other) :
         ProcessModule(other), m_xB(other.m_xB), m_t(other.m_t), m_Q2Prim(
-                other.m_Q2Prim), m_E(other.m_E), m_phi(other.m_phi), m_theta(other.m_theta), m_tmin(
-                other.m_tmin), m_tmax(other.m_tmax), m_xBmin(other.m_xBmin), m_y(
-                other.m_y), m_epsilon(other.m_epsilon), m_pConvolCoeffFunctionModule(
+                other.m_Q2Prim), m_E(other.m_E), m_phi(other.m_phi), m_theta(
+                other.m_theta), m_tmin(other.m_tmin), m_tmax(other.m_tmax), m_xBmin(
+                other.m_xBmin), m_y(other.m_y), m_epsilon(other.m_epsilon), m_pConvolCoeffFunctionModule(
                 0) {
 
     m_lastCCFKinematics = other.m_lastCCFKinematics;
@@ -187,28 +187,26 @@ TCSObservableResult TCSProcessModule::compute(double beamHelicity,
     //object to be returned
     TCSObservableResult result(kinematic);
 
-    double doubleResult = 0.;
+    PhysicalType<double> value(0., PhysicalUnit::GEVm2);
 
     if (processType == VCSSubProcessType::ALL
             || processType == VCSSubProcessType::TCS) {
-        doubleResult += CrossSectionVCS(beamHelicity, beamCharge,
-                targetPolarization);
+        value += CrossSectionVCS(beamHelicity, beamCharge, targetPolarization);
     }
 
     if (processType == VCSSubProcessType::ALL
             || processType == VCSSubProcessType::BH) {
-        doubleResult += CrossSectionBH(beamHelicity, beamCharge,
-                targetPolarization);
+        value += CrossSectionBH(beamHelicity, beamCharge, targetPolarization);
     }
 
     if (processType == VCSSubProcessType::ALL
             || processType == VCSSubProcessType::INT) {
-        doubleResult += CrossSectionInterf(beamHelicity, beamCharge,
+        value += CrossSectionInterf(beamHelicity, beamCharge,
                 targetPolarization);
     }
 
     //set value
-    result.setValue(PhysicalType<double>(doubleResult, PhysicalUnit::GEVm2));
+    result.setValue(value);
 
     //set type
     result.setObservableType(ObservableType::PHI);
@@ -220,19 +218,19 @@ TCSObservableResult TCSProcessModule::compute(double beamHelicity,
     return result;
 }
 
-double TCSProcessModule::CrossSectionBH(double beamHelicity, double beamCharge,
-        NumA::Vector3D targetPolarization) {
+PhysicalType<double> TCSProcessModule::CrossSectionBH(double beamHelicity,
+        double beamCharge, NumA::Vector3D targetPolarization) {
     throw ElemUtils::CustomException(getClassName(), __func__,
             "Check your child implementation : " + getClassName());
 }
 
-double TCSProcessModule::CrossSectionVCS(double beamHelicity, double beamCharge,
-        NumA::Vector3D targetPolarization) {
+PhysicalType<double> TCSProcessModule::CrossSectionVCS(double beamHelicity,
+        double beamCharge, NumA::Vector3D targetPolarization) {
     throw ElemUtils::CustomException(getClassName(), __func__,
             "Check your child implementation : " + getClassName());
 }
 
-double TCSProcessModule::CrossSectionInterf(double beamHelicity,
+PhysicalType<double> TCSProcessModule::CrossSectionInterf(double beamHelicity,
         double beamCharge, NumA::Vector3D targetPolarization) {
     throw ElemUtils::CustomException(getClassName(), __func__,
             "Check your child implementation : " + getClassName());
@@ -358,10 +356,10 @@ void TCSProcessModule::computeConvolCoeffFunction(
         const TCSObservableKinematic& kinematic, const List<GPDType>& gpdType) {
 
     //compute scales
-    Scales scale = m_pScaleModule->compute(kinematic.getQ2Prim());//TODO TB checked by JAKUB
+    Scales scale = m_pScaleModule->compute(kinematic.getQ2Prim()); //TODO TB checked by JAKUB
 
     //compute xi
-    PhysicalType<double> xi = m_pXiConverterModule->compute(kinematic.getXB(),//TODO TB checked by JAKUB
+    PhysicalType<double> xi = m_pXiConverterModule->compute(kinematic.getXB(), //TODO TB checked by JAKUB
             kinematic.getT(), kinematic.getQ2Prim());
 
     //create ccf kinematics

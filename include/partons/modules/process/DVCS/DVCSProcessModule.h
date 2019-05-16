@@ -21,6 +21,7 @@
 #include "../../../beans/observable/DVCS/DVCSObservableKinematic.h"
 #include "../../../beans/observable/DVCS/DVCSObservableResult.h"
 #include "../../../beans/process/VCSSubProcessType.h"
+#include "../../../utils/type/PhysicalType.h"
 #include "../ProcessModule.h"
 
 namespace NumA {
@@ -108,8 +109,8 @@ public:
      * @param beamCharge Electric charge of the beam (in units of positron charge).
      * @param targetPolarization Target polarization. In GV conventions.
      */
-    virtual double CrossSectionBH(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization);
+    virtual PhysicalType<double> CrossSectionBH(double beamHelicity,
+            double beamCharge, NumA::Vector3D targetPolarization);
 
     /**
      * Virtual Compton Scattering differential cross section.
@@ -117,8 +118,8 @@ public:
      * @param beamCharge Electric charge of the beam (in units of positron charge).
      * @param targetPolarization Target polarization. In GV conventions.
      */
-    virtual double CrossSectionVCS(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization);
+    virtual PhysicalType<double> CrossSectionVCS(double beamHelicity,
+            double beamCharge, NumA::Vector3D targetPolarization);
 
     /**
      * Interference differential cross section.
@@ -126,8 +127,8 @@ public:
      * @param beamCharge Electric charge of the beam (in units of positron charge).
      * @param targetPolarization Target polarization. In GV conventions.
      */
-    virtual double CrossSectionInterf(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization);
+    virtual PhysicalType<double> CrossSectionInterf(double beamHelicity,
+            double beamCharge, NumA::Vector3D targetPolarization);
 
 protected:
 

@@ -13,6 +13,7 @@
 #include <vector>
 
 #include "../../../beans/gpd/GPDType.h"
+#include "../../../utils/type/PhysicalType.h"
 #include "DVCSProcessModule.h"
 
 namespace PARTONS {
@@ -60,13 +61,13 @@ protected:
             double beamCharge, NumA::Vector3D targetPolarization);
 
     // Cross sections
-    virtual double CrossSectionBH(double beamHelicity, double beamCharge,
+    virtual PhysicalType<double> CrossSectionBH(double beamHelicity, double beamCharge,
             NumA::Vector3D targetPolarization);
 
-    virtual double CrossSectionVCS(double beamHelicity, double beamCharge,
+    virtual PhysicalType<double> CrossSectionVCS(double beamHelicity, double beamCharge,
             NumA::Vector3D targetPolarization);
 
-    virtual double CrossSectionInterf(double beamHelicity, double beamCharge,
+    virtual PhysicalType<double> CrossSectionInterf(double beamHelicity, double beamCharge,
             NumA::Vector3D targetPolarization);
 
 private:

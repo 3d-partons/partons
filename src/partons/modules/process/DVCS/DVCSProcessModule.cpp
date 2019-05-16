@@ -187,28 +187,26 @@ DVCSObservableResult DVCSProcessModule::compute(double beamHelicity,
     //object to be returned
     DVCSObservableResult result(kinematic);
 
-    double doubleResult = 0.;
+    PhysicalType<double> value(0., PhysicalUnit::GEVm2);
 
     if (processType == VCSSubProcessType::ALL
             || processType == VCSSubProcessType::DVCS) {
-        doubleResult += CrossSectionVCS(beamHelicity, beamCharge,
-                targetPolarization);
+        value += CrossSectionVCS(beamHelicity, beamCharge, targetPolarization);
     }
 
     if (processType == VCSSubProcessType::ALL
             || processType == VCSSubProcessType::BH) {
-        doubleResult += CrossSectionBH(beamHelicity, beamCharge,
-                targetPolarization);
+        value += CrossSectionBH(beamHelicity, beamCharge, targetPolarization);
     }
 
     if (processType == VCSSubProcessType::ALL
             || processType == VCSSubProcessType::INT) {
-        doubleResult += CrossSectionInterf(beamHelicity, beamCharge,
+        value += CrossSectionInterf(beamHelicity, beamCharge,
                 targetPolarization);
     }
 
     //set value
-    result.setValue(PhysicalType<double>(doubleResult, PhysicalUnit::GEVm2));
+    result.setValue(value);
 
     //set type
     result.setObservableType(ObservableType::PHI);
@@ -220,19 +218,19 @@ DVCSObservableResult DVCSProcessModule::compute(double beamHelicity,
     return result;
 }
 
-double DVCSProcessModule::CrossSectionBH(double beamHelicity, double beamCharge,
+PhysicalType<double> DVCSProcessModule::CrossSectionBH(double beamHelicity, double beamCharge,
         NumA::Vector3D targetPolarization) {
     throw ElemUtils::CustomException(getClassName(), __func__,
             "Check your child implementation : " + getClassName());
 }
 
-double DVCSProcessModule::CrossSectionVCS(double beamHelicity,
+PhysicalType<double> DVCSProcessModule::CrossSectionVCS(double beamHelicity,
         double beamCharge, NumA::Vector3D targetPolarization) {
     throw ElemUtils::CustomException(getClassName(), __func__,
             "Check your child implementation : " + getClassName());
 }
 
-double DVCSProcessModule::CrossSectionInterf(double beamHelicity,
+PhysicalType<double> DVCSProcessModule::CrossSectionInterf(double beamHelicity,
         double beamCharge, NumA::Vector3D targetPolarization) {
     throw ElemUtils::CustomException(getClassName(), __func__,
             "Check your child implementation : " + getClassName());

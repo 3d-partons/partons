@@ -6,6 +6,7 @@
 
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
+#include "../../../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
 
@@ -1396,22 +1397,22 @@ double DVCSProcessBMJ12::SqrAmplInterf(double beamHelicity, double beamCharge,
     return result;
 }
 
-double DVCSProcessBMJ12::CrossSectionBH(double beamHelicity, double beamCharge,
+PhysicalType<double> DVCSProcessBMJ12::CrossSectionBH(double beamHelicity, double beamCharge,
         NumA::Vector3D targetPolarization) {
-    return SqrAmplBH(beamHelicity, beamCharge, targetPolarization)
-            * m_phaseSpace;
+    return PhysicalType<double>(SqrAmplBH(beamHelicity, beamCharge, targetPolarization)
+            * m_phaseSpace, PhysicalUnit::GEVm2);
 }
 
-double DVCSProcessBMJ12::CrossSectionVCS(double beamHelicity, double beamCharge,
+PhysicalType<double> DVCSProcessBMJ12::CrossSectionVCS(double beamHelicity, double beamCharge,
         NumA::Vector3D targetPolarization) {
-    return SqrAmplVCS(beamHelicity, beamCharge, targetPolarization)
-            * m_phaseSpace;
+    return PhysicalType<double>(SqrAmplVCS(beamHelicity, beamCharge, targetPolarization)
+            * m_phaseSpace, PhysicalUnit::GEVm2);
 }
 
-double DVCSProcessBMJ12::CrossSectionInterf(double beamHelicity,
+PhysicalType<double> DVCSProcessBMJ12::CrossSectionInterf(double beamHelicity,
         double beamCharge, NumA::Vector3D targetPolarization) {
-    return SqrAmplInterf(beamHelicity, beamCharge, targetPolarization)
-            * m_phaseSpace;
+    return PhysicalType<double>(SqrAmplInterf(beamHelicity, beamCharge, targetPolarization)
+            * m_phaseSpace, PhysicalUnit::GEVm2);
 }
 
 } /* namespace PARTONS */

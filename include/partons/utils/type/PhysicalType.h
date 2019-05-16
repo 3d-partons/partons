@@ -367,11 +367,25 @@ inline PhysicalType<T> operator+(PhysicalType<T> const &lhs,
 }
 
 template<class T>
+inline PhysicalType<T>& operator+=(PhysicalType<T> &lhs,
+        PhysicalType<T> const &rhs) {
+    lhs = lhs + rhs;
+    return lhs;
+}
+
+template<class T>
 inline PhysicalType<T> operator-(PhysicalType<T> const &lhs,
         PhysicalType<T> const &rhs) {
 
     lhs.checkIfSameUnitAs(rhs);
     return PhysicalType<T>(lhs.getValue() - rhs.getValue(), lhs.getUnit());
+}
+
+template<class T>
+inline PhysicalType<T>& operator-=(PhysicalType<T> &lhs,
+        PhysicalType<T> const &rhs) {
+    lhs = lhs - rhs;
+    return lhs;
 }
 
 template<class T>
@@ -382,11 +396,24 @@ inline PhysicalType<T> operator/(PhysicalType<T> const &lhs,
     return PhysicalType<T>(lhs.getValue() / rhs.getValue(), PhysicalUnit::NONE);
 }
 
+template<class T>
+inline PhysicalType<T>& operator/=(PhysicalType<T> &lhs,
+        PhysicalType<T> const &rhs) {
+    lhs = lhs / rhs;
+    return lhs;
+}
+
 /// Arithmetic operators
 
 template<class T>
 inline PhysicalType<T> operator*(PhysicalType<T> const &lhs, T const &rhs) {
     return PhysicalType<T>(lhs.getValue() * rhs, lhs.getUnit());
+}
+
+template<class T>
+inline PhysicalType<T>& operator*=(PhysicalType<T> &lhs, T const &rhs) {
+    lhs = lhs * rhs;
+    return lhs;
 }
 
 template<class T>
@@ -397,6 +424,12 @@ inline PhysicalType<T> operator*(T const &lhs, PhysicalType<T> const &rhs) {
 template<class T>
 inline PhysicalType<T> operator/(PhysicalType<T> const &lhs, T const &rhs) {
     return PhysicalType<T>(lhs.getValue() / rhs, lhs.getUnit());
+}
+
+template<class T>
+inline PhysicalType<T>& operator/=(PhysicalType<T> &lhs, T const &rhs) {
+    lhs = lhs / rhs;
+    return lhs;
 }
 
 } /* namespace PARTONS */
