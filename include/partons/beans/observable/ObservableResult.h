@@ -62,14 +62,6 @@ public:
     }
 
     /**
-     * Set value.
-     * @param value Value to be set.
-     */
-    void setResult(const PhysicalType<double>& value) {
-        m_value = value;
-    }
-
-    /**
      * Compare to other DVCSConvolCoeffFunctionResult object and store comparison result in given comparison report.
      * @param rootComparisonReport Reference to comparison report to be used to store comparison result.
      * @param referenceObject Reference to object to be compared.
@@ -90,12 +82,12 @@ public:
                             << referenceObject.toString());
         }
 
-        ComparisonData xb_comparisonData = CompareUtils::compareDouble(
-                "observable value", getValue(), referenceObject.getValue(),
+        ComparisonData comparisonData = CompareUtils::compareDouble(
+                "observable value", getValue().getValue(), referenceObject.getValue().getValue(),
                 rootComparisonReport.getTolerances(),
                 ElemUtils::Formatter() << parentObjectInfo
                         << this->getResultInfo().toString());
-        rootComparisonReport.addComparisonData(xb_comparisonData);
+        rootComparisonReport.addComparisonData(comparisonData);
     }
 
     //********************************************************

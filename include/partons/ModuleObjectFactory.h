@@ -23,7 +23,6 @@ class TCSObservable;
 class TCSProcessModule;
 class DVCSObservable;
 class DVCSProcessModule;
-class GPDBorderFunctionModule;
 class GPDEvolutionModule;
 class GPDModule;
 class GPDSubtractionConstantModule;
@@ -99,20 +98,6 @@ public:
      * @return GPDModule pointer.
      */
     GPDModule* newGPDModule(const std::string &className);
-
-    /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a GPDBorderFunctionModule.
-     * @param classId Unique identifier of last child class.
-     * @return GPDBorderFunctionModule pointer.
-     */
-    GPDBorderFunctionModule* newGPDBorderFunctionModule(unsigned int classId);
-    /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a GPDBorderFunctionModule.
-     * @param className Name of last child class.
-     * @return GPDBorderFunctionModule pointer.
-     */
-    GPDBorderFunctionModule* newGPDBorderFunctionModule(
-            const std::string &className);
 
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a GPDSubtractionConstantModule.

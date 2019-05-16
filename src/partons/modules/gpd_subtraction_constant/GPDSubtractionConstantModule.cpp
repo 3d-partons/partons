@@ -8,7 +8,11 @@
 #include "../../../../include/partons/modules/gpd_subtraction_constant/GPDSubtractionConstantModule.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
-#include <ElementaryUtils/string_utils/Formatter.h>
+
+#include "../../../../include/partons/beans/channel/ChannelType.h"
+#include "../../../../include/partons/beans/gpd/GPDKinematic.h"
+#include "../../../../include/partons/beans/gpd/GPDSubtractionConstantResult.h"
+#include "../../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
 
@@ -17,7 +21,8 @@ const std::string GPDSubtractionConstantModule::GPD_SUBTRACTION_CONSTANT_MODULE_
 
 GPDSubtractionConstantModule::GPDSubtractionConstantModule(
         const std::string& className) :
-        ModuleObject(className, ChannelType::UNDEFINED), m_t(0.), m_MuF2(0.), m_MuR2(0.) {
+        ModuleObject(className, ChannelType::UNDEFINED), m_t(0.), m_MuF2(0.), m_MuR2(
+                0.), m_currentGPDComputeType(GPDType::UNDEFINED) {
 }
 
 GPDSubtractionConstantModule::GPDSubtractionConstantModule(
@@ -27,6 +32,7 @@ GPDSubtractionConstantModule::GPDSubtractionConstantModule(
     m_t = other.m_t;
     m_MuF2 = other.m_MuF2;
     m_MuR2 = other.m_MuR2;
+    m_currentGPDComputeType = other.m_currentGPDComputeType;
 }
 
 GPDSubtractionConstantModule::~GPDSubtractionConstantModule() {
@@ -60,60 +66,57 @@ void GPDSubtractionConstantModule::initModule() {
 void GPDSubtractionConstantModule::isModuleWellConfigured() {
 
     if (m_t > 0.) {
-        warn(__func__,
-                ElemUtils::Formatter()
-                        << "Nucleon momentum transfer should be <= 0. m_t = "
-                        << m_t);
+        warn(__func__, "Nucleon momentum transfer should be <= 0.");
     }
 
-    if (m_MuF2 < 0.) {
-        warn(__func__,
-                ElemUtils::Formatter()
-                        << "Square of factorization scale should be > 0. m_MuF2 = "
-                        << m_MuF2);
+    if (m_MuF2 <= 0.) {
+        warn(__func__, "Square of factorization scale should be > 0.");
     }
 
-    if (m_MuR2 < 0.) {
-        warn(__func__,
-                ElemUtils::Formatter()
-                        << "Square of renormalization scale should be > 0. m_MuR2"
-                        << m_MuR2);
+    if (m_MuR2 <= 0.) {
+        warn(__func__, "Square of renormalization scale should be > 0.");
     }
 }
 
-void GPDSubtractionConstantModule::preCompute(double t, double MuF2,
-        double MuR2) {
+void GPDSubtractionConstantModule::setKinematics(
+        const GPDKinematic& kinematic) {
 
-    //copy variables
-    m_t = t;
-    m_MuF2 = MuF2;
-    m_MuR2 = MuR2;
+    m_t = kinematic.getT().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
+    m_MuF2 = kinematic.getMuF2().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
+    m_MuR2 = kinematic.getMuR2().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
+}
 
-    //initialize
+void GPDSubtractionConstantModule::setCurrentGPDType(GPDType::Type gpdType) {
+    m_currentGPDComputeType = gpdType;
+}
+
+GPDSubtractionConstantResult GPDSubtractionConstantModule::compute(
+        const GPDKinematic& kinematic, GPDType::Type gpdType) {
+
+    //reset kinematics (virtuality)
+    setKinematics(kinematic);
+
+    //set GPD type
+    setCurrentGPDType(gpdType);
+
+    //execute last child function (virtuality)
     initModule();
 
-    //check if well configured
+    // execute last child function (virtuality)
     isModuleWellConfigured();
+
+    //object to be returned
+    GPDSubtractionConstantResult result(computeSubtractionConstant(),
+            kinematic);
+
+    //set module name
+    result.setComputationModuleName(getClassName());
+
+    //return
+    return result;
 }
 
-double GPDSubtractionConstantModule::compute(double t, double MuF2,
-        double MuR2) {
-
-    //pre compute
-    preCompute(t, MuF2, MuR2);
-
-    //compute and return
-    return computeSubtractionConstant();
-}
-
-double GPDSubtractionConstantModule::compute(
-        const GPDBorderFunctionKinematic& gpdBorderFunctionKinematic) {
-    return compute(gpdBorderFunctionKinematic.getT().getValue(),
-            gpdBorderFunctionKinematic.getMuF2().getValue(),
-            gpdBorderFunctionKinematic.getMuR2().getValue());
-}
-
-double GPDSubtractionConstantModule::computeSubtractionConstant() {
+PhysicalType<double> GPDSubtractionConstantModule::computeSubtractionConstant() {
     throw ElemUtils::CustomException(getClassName(), __func__,
             "Not defined for the abstract class");
 }

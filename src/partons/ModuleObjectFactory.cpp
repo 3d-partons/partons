@@ -8,7 +8,6 @@
 #include "../../include/partons/modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
 #include "../../include/partons/modules/convol_coeff_function/TCS/TCSConvolCoeffFunctionModule.h"
 #include "../../include/partons/modules/evolution/gpd/GPDEvolutionModule.h"
-#include "../../include/partons/modules/gpd_border_function/GPDBorderFunctionModule.h"
 #include "../../include/partons/modules/gpd_subtraction_constant/GPDSubtractionConstantModule.h"
 #include "../../include/partons/modules/observable/DVCS/DVCSObservable.h"
 #include "../../include/partons/modules/observable/TCS/TCSObservable.h"
@@ -158,16 +157,6 @@ GPDModule* ModuleObjectFactory::newGPDModule(unsigned int classId) {
 
 GPDModule* ModuleObjectFactory::newGPDModule(const std::string& className) {
     return static_cast<GPDModule*>(newModuleObject(className));
-}
-
-GPDBorderFunctionModule* ModuleObjectFactory::newGPDBorderFunctionModule(
-        unsigned int classId) {
-    return static_cast<GPDBorderFunctionModule*>(newModuleObject(classId));
-}
-
-GPDBorderFunctionModule* ModuleObjectFactory::newGPDBorderFunctionModule(
-        const std::string& className) {
-    return static_cast<GPDBorderFunctionModule*>(newModuleObject(className));
 }
 
 GPDSubtractionConstantModule* ModuleObjectFactory::newGPDSubtractionConstantModule(
