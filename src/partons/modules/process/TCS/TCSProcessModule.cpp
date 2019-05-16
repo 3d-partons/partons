@@ -9,7 +9,6 @@
 #include "../../../../../include/partons/beans/channel/ChannelType.h"
 #include "../../../../../include/partons/beans/convol_coeff_function/ConvolCoeffFunctionResult.h"
 #include "../../../../../include/partons/beans/observable/ObservableResult.h"
-#include "../../../../../include/partons/beans/observable/ObservableType.h"
 #include "../../../../../include/partons/beans/Result.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../../include/partons/modules/convol_coeff_function/TCS/TCSConvolCoeffFunctionModule.h"
@@ -207,9 +206,6 @@ TCSObservableResult TCSProcessModule::compute(double beamHelicity,
 
     //set value
     result.setValue(value);
-
-    //set type
-    result.setObservableType(ObservableType::PHI);
 
     //set module name
     result.setComputationModuleName(getClassName());

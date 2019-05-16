@@ -8,6 +8,7 @@
 #include <utility>
 
 #include "../../../../include/partons/beans/channel/ChannelType.h"
+#include "../../../../include/partons/beans/gpd/GPDKinematic.h"
 #include "../../../../include/partons/beans/Result.h"
 #include "../../../../include/partons/modules/evolution/gpd/GPDEvolutionModule.h"
 #include "../../../../include/partons/ModuleObjectFactory.h"
@@ -90,14 +91,10 @@ void GPDModule::run() {
             GPDResult gpdResult = compute(kinematic, gpdTypeList);
 
             //helpful to sort later if kinematic is coming from database
-            //TODO is used?
             gpdResult.setIndexId(kinematic.getIndexId());
 
             //add
             pGPDService->add(gpdResult);
-
-            //TODO useful to do a sleep ?
-            // sf::sleep(sf::milliseconds(3));
         }
     } catch (std::exception &e) {
         std::cerr << e.what() << std::endl;
@@ -145,7 +142,7 @@ void GPDModule::prepareSubModules(
 }
 
 PartonDistribution GPDModule::compute(const GPDKinematic &kinematic,
-        GPDType::Type gpdType, bool evolution) {
+        GPDType::Type gpdType) {
 
     //create list
     List<GPDType> list;
@@ -154,16 +151,11 @@ PartonDistribution GPDModule::compute(const GPDKinematic &kinematic,
     list.add(GPDType(gpdType));
 
     //run
-    return compute1(kinematic, list, evolution).getPartonDistribution(gpdType);
+    return compute(kinematic, list).getPartonDistribution(gpdType);
 }
 
 GPDResult GPDModule::compute(const GPDKinematic &kinematic,
         const List<GPDType>& gpdType) {
-    return compute1(kinematic, gpdType, true);
-}
-
-GPDResult GPDModule::compute1(const GPDKinematic &kinematic,
-        const List<GPDType>& gpdType, bool evolution) {
 
     //reset kinematics (virtuality)
     setKinematics(kinematic);
@@ -173,13 +165,6 @@ GPDResult GPDModule::compute1(const GPDKinematic &kinematic,
 
     // execute last child function (virtuality)
     isModuleWellConfigured();
-
-    //evolution
-    if (evolution) {
-        if (m_pGPDEvolutionModule == 0) {
-            evolution = false;
-        }
-    }
 
     //object to be returned
     GPDResult result(kinematic);
@@ -199,7 +184,7 @@ GPDResult GPDModule::compute1(const GPDKinematic &kinematic,
             //evaluate
             PartonDistribution partonDistribution;
 
-            if (evolution && (m_MuF2 != m_MuF2_ref)) {
+            if (m_pGPDEvolutionModule != 0 && (m_MuF2 != m_MuF2_ref)) {
                 partonDistribution = m_pGPDEvolutionModule->compute(m_x, m_xi,
                         m_t, m_MuF2, m_MuR2, this, (m_it->first));
             } else {

@@ -88,12 +88,10 @@ public:
      * Evaluate specific GPD border function for a given kinematics and (eventually) the evolution.
      * @param kinematic Reference to the object containing kinematics to be used in the evaluation.
      * @param gpdType Type of GPD.
-     * @param evolution Switch to indicate if GPD evolution module should be used in the evaluation.
      * @return Result of the evaluation.
      */
     virtual PartonDistribution compute(
-            const GPDBorderFunctionKinematic &kinematic, GPDType gpdType,
-            bool evolution = false);
+            const GPDBorderFunctionKinematic &kinematic, GPDType gpdType);
 
     /**
      * Evaluate specific GPD border function for a given kinematics and (eventually) the evolution.
@@ -102,11 +100,10 @@ public:
      * @param MuF2 Factorization scale squared (in \f$GeV^{2}\f$).
      * @param MuR2 Renormalization scale squared (in \f$GeV^{2}\f$).
      * @param gpdType Type of GPD.
-     * @param evolution Switch to indicate if GPD evolution module should be used in the evaluation.
      * @return Result of the evaluation.
      */
     virtual PartonDistribution compute(double xi, double t, double MuF2,
-            double MuR2, GPDType::Type gpdType, bool evolution = false);
+            double MuR2, GPDType::Type gpdType);
 
     virtual PartonDistribution computeH();
     virtual PartonDistribution computeE();

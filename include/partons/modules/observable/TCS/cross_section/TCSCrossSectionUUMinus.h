@@ -10,7 +10,8 @@
 
 #include <string>
 
-#include "../../../../beans/observable/TCS/TCSObservableKinematic.h"
+#include "../../../../beans/gpd/GPDType.h"
+#include "../../../../beans/List.h"
 #include "../../../../utils/type/PhysicalType.h"
 #include "../TCSObservable.h"
 
@@ -56,8 +57,6 @@ public:
     virtual ~TCSCrossSectionUUMinus();
 
     virtual TCSCrossSectionUUMinus* clone() const;
-    virtual PhysicalType<double> computePhiTCSObservable(
-            const TCSObservableKinematic& kinematic);
 
 protected:
 
@@ -66,6 +65,10 @@ protected:
      * @param other Object to be copied.
      */
     TCSCrossSectionUUMinus(const TCSCrossSectionUUMinus &other);
+
+    virtual PhysicalType<double> computeObservable(
+            const TCSObservableKinematic& kinematic,
+            const List<GPDType>& gpdType);
 };
 
 } /* namespace PARTONS */

@@ -19,9 +19,9 @@ DVCSObservableResult::DVCSObservableResult(
 }
 
 DVCSObservableResult::DVCSObservableResult(const PhysicalType<double>& value,
-        const DVCSObservableKinematic& kinematic, ObservableType::Type type) :
+        const DVCSObservableKinematic& kinematic) :
         ObservableResult("DVCSObservableResult", ChannelType::DVCS, value,
-                kinematic, type) {
+                kinematic) {
 }
 
 DVCSObservableResult::DVCSObservableResult(const DVCSObservableResult& other) :

@@ -6,7 +6,6 @@
 #include <utility>
 
 #include "../../../../../include/partons/beans/channel/ChannelType.h"
-#include "../../../../../include/partons/beans/observable/ObservableResult.h"
 #include "../../../../../include/partons/beans/Result.h"
 #include "../../../../../include/partons/modules/convol_coeff_function/TCS/TCSConvolCoeffFunctionModule.h"
 #include "../../../../../include/partons/modules/process/TCS/TCSProcessModule.h"
@@ -22,17 +21,15 @@ namespace PARTONS {
 const std::string TCSObservable::TCS_OBSERVABLE_MODULE_CLASS_NAME =
         "TCSObservableModule";
 
-TCSObservable::TCSObservable(const std::string &className,
-        ObservableType::Type observableType) :
-        Observable(className, ChannelType::TCS), m_observableType(
-                observableType), m_pProcessModule(0), m_xB(0.), m_t(0.), m_Q2Prim(
-                0.), m_E(0.), m_phi(0.), m_theta(0.) {
+TCSObservable::TCSObservable(const std::string &className) :
+        Observable(className, ChannelType::TCS), m_pProcessModule(0), m_xB(0.), m_t(
+                0.), m_Q2Prim(0.), m_E(0.), m_phi(0.), m_theta(0.) {
 }
 
 TCSObservable::TCSObservable(const TCSObservable& other) :
-        Observable(other), m_observableType(other.m_observableType), m_xB(
-                other.m_xB), m_t(other.m_t), m_Q2Prim(other.m_Q2Prim), m_E(
-                other.m_E), m_phi(other.m_phi), m_theta(other.m_theta) {
+        Observable(other), m_xB(other.m_xB), m_t(other.m_t), m_Q2Prim(
+                other.m_Q2Prim), m_E(other.m_E), m_phi(other.m_phi), m_theta(
+                other.m_theta) {
 
     if (other.m_pProcessModule != 0) {
         m_pProcessModule = m_pModuleObjectFactory->cloneModuleObject(
@@ -156,8 +153,6 @@ void TCSObservable::prepareSubModules(
 TCSObservableResult TCSObservable::compute(
         const TCSObservableKinematic& kinematic, const List<GPDType>& gpdType) {
 
-    //TODO gpdType
-
     //reset kinematics (virtuality)
     setKinematics(kinematic);
 
@@ -168,30 +163,8 @@ TCSObservableResult TCSObservable::compute(
     isModuleWellConfigured();
 
     //object to be returned
-    TCSObservableResult result(kinematic);
-
-    //check if this observable is a phi dependent observable
-    if (m_observableType == ObservableType::PHI) {
-
-        result.setValue(computePhiTCSObservable(kinematic));
-        result.setObservableType(ObservableType::PHI);
-    }
-    //check if this observable is a Fourier observable (phi moment)
-    else if (m_observableType == ObservableType::FOURIER) {
-
-        result.setValue(computeFourierTCSObservable(kinematic));
-        result.setObservableType(ObservableType::FOURIER);
-    }
-    //check if this observable is an undefined-type observable
-    else if (m_observableType == ObservableType::UNDEFINED) {
-
-        result.setValue(computeOtherTCSObservable(kinematic));
-        result.setObservableType(ObservableType::UNDEFINED);
-    } else {
-        throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter() << "Unknown observable type: "
-                        << ObservableType(m_observableType).toString());
-    }
+    TCSObservableResult result(computeObservable(kinematic, gpdType),
+            kinematic);
 
     //set module name
     result.setComputationModuleName(getClassName());
@@ -253,31 +226,6 @@ void TCSObservable::isModuleWellConfigured() {
         formatter << "Input value of E = " << m_E << " is not > 0";
         warn(__func__, formatter.str());
     }
-}
-
-PhysicalType<double> TCSObservable::computePhiTCSObservable(
-        const TCSObservableKinematic& kinematic) {
-    throw ElemUtils::CustomException(getClassName(), __func__,
-            "Nothing to do ; Must be implemented in daugther class");
-    return PhysicalType<double>();
-}
-
-PhysicalType<double> TCSObservable::computeFourierTCSObservable(
-        const TCSObservableKinematic& kinematic) {
-    throw ElemUtils::CustomException(getClassName(), __func__,
-            "Nothing to do ; Must be implemented in daugther class");
-    return PhysicalType<double>();
-}
-
-PhysicalType<double> TCSObservable::computeOtherTCSObservable(
-        const TCSObservableKinematic& kinematic) {
-    throw ElemUtils::CustomException(getClassName(), __func__,
-            "Nothing to do ; Must be implemented in daugther class");
-    return PhysicalType<double>();
-}
-
-ObservableType::Type TCSObservable::getObservableType() const {
-    return m_observableType;
 }
 
 TCSProcessModule* TCSObservable::getProcessModule() const {

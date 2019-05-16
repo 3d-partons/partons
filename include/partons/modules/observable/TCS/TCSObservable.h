@@ -17,9 +17,12 @@
 #include "../../../beans/List.h"
 #include "../../../beans/observable/TCS/TCSObservableKinematic.h"
 #include "../../../beans/observable/TCS/TCSObservableResult.h"
-#include "../../../beans/observable/ObservableType.h"
 #include "../../../utils/type/PhysicalType.h"
 #include "../Observable.h"
+
+namespace PARTONS {
+class TCSProcessModule;
+} /* namespace PARTONS */
 
 namespace PARTONS {
 
@@ -47,14 +50,11 @@ public:
     virtual void configure(const ElemUtils::Parameters &parameters);
     virtual void prepareSubModules(
             const std::map<std::string, BaseObjectData>& subModulesData);
-    virtual TCSObservableResult compute(
-            const TCSObservableKinematic& kinematic,
+    virtual TCSObservableResult compute(const TCSObservableKinematic& kinematic,
             const List<GPDType> & gpdType = List<GPDType>());
     virtual List<GPDType> getListOfAvailableGPDTypeForComputation() const;
 
     // ##### GETTERS & SETTERS #####
-
-    ObservableType::Type getObservableType() const;
 
     /**
      * Get process module.
@@ -66,33 +66,12 @@ public:
      */
     void setProcessModule(TCSProcessModule* pProcessModule);
 
-    // ##### IMPLEMENTATION MEMBERS #####
-
-    /**
-     * Compute phi dependent observable, invoked if m_observableType = ObservableType::PHI.
-     */
-    virtual PhysicalType<double> computePhiTCSObservable(
-            const TCSObservableKinematic& kinematic);
-
-    /**
-     * Compute Fourier-like observable, invoked if m_observableType = ObservableType::FOURIER.
-     */
-    virtual PhysicalType<double> computeFourierTCSObservable(
-            const TCSObservableKinematic& kinematic);
-
-    /**
-     * Compute other-like type observable, invoked if m_observableType = ObservableType::UNDEFINED.
-     */
-    virtual PhysicalType<double> computeOtherTCSObservable(
-            const TCSObservableKinematic& kinematic);
-
 protected:
 
     /**
      * Default constructor.
      */
-    TCSObservable(const std::string &className,
-            ObservableType::Type observableType);
+    TCSObservable(const std::string &className);
 
     /**
      * Copy constructor.
@@ -103,11 +82,9 @@ protected:
     virtual void setKinematics(const TCSObservableKinematic& kinematic);
     virtual void initModule();
     virtual void isModuleWellConfigured();
-
-    /**
-     * Observable type. Determines function to be invoked.
-     */
-    ObservableType::Type m_observableType;
+    virtual PhysicalType<double> computeObservable(
+            const TCSObservableKinematic& kinematic,
+            const List<GPDType>& gpdType) = 0;
 
     double m_xB; ///< Bjorken variable.
     double m_t; ///< Mandelstam variable (square of the 4-momentum transferm in GeV2).

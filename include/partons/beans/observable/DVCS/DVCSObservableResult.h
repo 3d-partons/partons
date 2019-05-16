@@ -10,7 +10,6 @@
 
 #include "../../../utils/type/PhysicalType.h"
 #include "../ObservableResult.h"
-#include "../ObservableType.h"
 #include "DVCSObservableKinematic.h"
 
 namespace PARTONS {
@@ -45,19 +44,11 @@ public:
 
     /**
      * Assignment constructor.
-     * @param type DVCS observable type to be assigned.
-     */
-    DVCSObservableResult(ObservableType::Type type);
-
-    /**
-     * Assignment constructor.
      * @param value Value to be assigned.
      * @param kinematic DVCS observable kinematic to be assigned.
-     * @param type DVCS observable type to be assigned.
      */
     DVCSObservableResult(const PhysicalType<double>& value,
-            const DVCSObservableKinematic& kinematic,
-            ObservableType::Type type);
+            const DVCSObservableKinematic& kinematic);
 
     /**
      * Copy constructor.

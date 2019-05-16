@@ -27,15 +27,13 @@ void GPDBorderFunctionModule::configure(
 }
 
 PartonDistribution GPDBorderFunctionModule::compute(
-        const GPDBorderFunctionKinematic& kinematic, GPDType gpdType,
-        bool evolution) {
-    return GPDModule::compute(static_cast<GPDKinematic>(kinematic), gpdType,
-            evolution);
+        const GPDBorderFunctionKinematic& kinematic, GPDType gpdType) {
+    return GPDModule::compute(static_cast<GPDKinematic>(kinematic), gpdType);
 }
 
 PartonDistribution GPDBorderFunctionModule::compute(double xi, double t,
-        double MuF2, double MuR2, GPDType::Type gpdType, bool evolution) {
-    return GPDModule::compute(GPDKinematic(xi, xi, t, MuF2, MuR2), gpdType, evolution);
+        double MuF2, double MuR2, GPDType::Type gpdType) {
+    return GPDModule::compute(GPDKinematic(xi, xi, t, MuF2, MuR2), gpdType);
 }
 
 PartonDistribution GPDBorderFunctionModule::computeH() {

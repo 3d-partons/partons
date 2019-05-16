@@ -19,9 +19,9 @@ TCSObservableResult::TCSObservableResult(
 }
 
 TCSObservableResult::TCSObservableResult(const PhysicalType<double>& value,
-        const TCSObservableKinematic& kinematic, ObservableType::Type type) :
+        const TCSObservableKinematic& kinematic) :
         ObservableResult("TCSObservableResult", ChannelType::TCS, value,
-                kinematic, type) {
+                kinematic) {
 }
 
 TCSObservableResult::TCSObservableResult(const TCSObservableResult& other) :

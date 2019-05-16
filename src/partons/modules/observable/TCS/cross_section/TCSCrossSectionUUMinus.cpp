@@ -3,7 +3,6 @@
 #include <NumA/linear_algebra/vector/Vector3D.h>
 
 #include "../../../../../../include/partons/beans/observable/ObservableResult.h"
-#include "../../../../../../include/partons/beans/observable/ObservableType.h"
 #include "../../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../../../include/partons/modules/process/TCS/TCSProcessModule.h"
@@ -16,7 +15,7 @@ const unsigned int TCSCrossSectionUUMinus::classId =
                 new TCSCrossSectionUUMinus("TCSCrossSectionUUMinus"));
 
 TCSCrossSectionUUMinus::TCSCrossSectionUUMinus(const std::string &className) :
-        TCSObservable(className, ObservableType::PHI) {
+        TCSObservable(className) {
 }
 
 TCSCrossSectionUUMinus::TCSCrossSectionUUMinus(
@@ -31,27 +30,24 @@ TCSCrossSectionUUMinus* TCSCrossSectionUUMinus::clone() const {
     return new TCSCrossSectionUUMinus(*this);
 }
 
-PhysicalType<double> TCSCrossSectionUUMinus::computePhiTCSObservable(
-        const TCSObservableKinematic& kinematic) {
+PhysicalType<double> TCSCrossSectionUUMinus::computeObservable(
+        const TCSObservableKinematic& kinematic, const List<GPDType>& gpdType) {
 
     //evaluate
     TCSObservableResult A = m_pProcessModule->compute(1., -1,
-            NumA::Vector3D(0., 0., 0.), kinematic);
+            NumA::Vector3D(0., 0., 0.), kinematic, gpdType);
 
     TCSObservableResult B = m_pProcessModule->compute(-1., -1,
-            NumA::Vector3D(0., 0., 0.), kinematic);
+            NumA::Vector3D(0., 0., 0.), kinematic, gpdType);
 
     //combine
     PhysicalType<double> result = (A.getValue() + B.getValue()) / 2.;
 
     //integrate over transversely polarized target dependence to obtain 4-fold differential cross-section
-    result = result * 2. * Constant::PI;
+    result *= 2. * Constant::PI;
 
-    //change to nb TODO conversion
-    result = result * Constant::CONV_GEVm2_TO_NBARN;
-    result.setUnit(PhysicalUnit::NB);
-
-    return result;
+    //change to nb
+    return result.makeSameUnitAs(PhysicalUnit::NB);
 }
 
 } /* namespace PARTONS */

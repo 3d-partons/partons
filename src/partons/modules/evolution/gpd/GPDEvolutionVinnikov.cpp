@@ -168,7 +168,7 @@ void GPDEvolutionVinnikov::initModule() {
 
             //compute
             PartonDistribution partonDistribution = m_pGPDModule->compute(
-                    gpdKinematic, m_currentGPDComputeType, false);
+                    gpdKinematic, m_currentGPDComputeType);
 
             //get non-singlet combinations
             std::map<QuarkNonSingletCombination::Type, double> NS = getNS(

@@ -6,7 +6,6 @@
 #include <utility>
 
 #include "../../../../../include/partons/beans/channel/ChannelType.h"
-#include "../../../../../include/partons/beans/observable/ObservableResult.h"
 #include "../../../../../include/partons/beans/Result.h"
 #include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
 #include "../../../../../include/partons/modules/process/DVCS/DVCSProcessModule.h"
@@ -22,17 +21,14 @@ namespace PARTONS {
 const std::string DVCSObservable::DVCS_OBSERVABLE_MODULE_CLASS_NAME =
         "DVCSObservableModule";
 
-DVCSObservable::DVCSObservable(const std::string &className,
-        ObservableType::Type observableType) :
-        Observable(className, ChannelType::DVCS), m_observableType(
-                observableType), m_pProcessModule(0), m_xB(0.), m_t(0.), m_Q2(
-                0.), m_E(0.), m_phi(0.) {
+DVCSObservable::DVCSObservable(const std::string &className) :
+        Observable(className, ChannelType::DVCS), m_pProcessModule(0), m_xB(0.), m_t(
+                0.), m_Q2(0.), m_E(0.), m_phi(0.) {
 }
 
 DVCSObservable::DVCSObservable(const DVCSObservable& other) :
-        Observable(other), m_observableType(other.m_observableType), m_xB(
-                other.m_xB), m_t(other.m_t), m_Q2(other.m_Q2), m_E(other.m_E), m_phi(
-                other.m_phi) {
+        Observable(other), m_xB(other.m_xB), m_t(other.m_t), m_Q2(other.m_Q2), m_E(
+                other.m_E), m_phi(other.m_phi) {
 
     if (other.m_pProcessModule != 0) {
         m_pProcessModule = m_pModuleObjectFactory->cloneModuleObject(
@@ -157,8 +153,6 @@ DVCSObservableResult DVCSObservable::compute(
         const DVCSObservableKinematic& kinematic,
         const List<GPDType>& gpdType) {
 
-    //TODO gpdType
-
     //reset kinematics (virtuality)
     setKinematics(kinematic);
 
@@ -169,30 +163,8 @@ DVCSObservableResult DVCSObservable::compute(
     isModuleWellConfigured();
 
     //object to be returned
-    DVCSObservableResult result(kinematic);
-
-    //check if this observable is a phi dependent observable
-    if (m_observableType == ObservableType::PHI) {
-
-        result.setValue(computePhiDVCSObservable(kinematic));
-        result.setObservableType(ObservableType::PHI);
-    }
-    //check if this observable is a Fourier observable (phi moment)
-    else if (m_observableType == ObservableType::FOURIER) {
-
-        result.setValue(computeFourierDVCSObservable(kinematic));
-        result.setObservableType(ObservableType::FOURIER);
-    }
-    //check if this observable is an undefined-type observable
-    else if (m_observableType == ObservableType::UNDEFINED) {
-
-        result.setValue(computeOtherDVCSObservable(kinematic));
-        result.setObservableType(ObservableType::UNDEFINED);
-    } else {
-        throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter() << "Unknown observable type: "
-                        << ObservableType(m_observableType).toString());
-    }
+    DVCSObservableResult result(computeObservable(kinematic, gpdType),
+            kinematic);
 
     //set module name
     result.setComputationModuleName(getClassName());
@@ -252,31 +224,6 @@ void DVCSObservable::isModuleWellConfigured() {
         formatter << "Input value of E = " << m_E << " is not > 0";
         warn(__func__, formatter.str());
     }
-}
-
-PhysicalType<double> DVCSObservable::computePhiDVCSObservable(
-        const DVCSObservableKinematic& kinematic) {
-    throw ElemUtils::CustomException(getClassName(), __func__,
-            "Nothing to do ; Must be implemented in daugther class");
-    return PhysicalType<double>();
-}
-
-PhysicalType<double> DVCSObservable::computeFourierDVCSObservable(
-        const DVCSObservableKinematic& kinematic) {
-    throw ElemUtils::CustomException(getClassName(), __func__,
-            "Nothing to do ; Must be implemented in daugther class");
-    return PhysicalType<double>();
-}
-
-PhysicalType<double> DVCSObservable::computeOtherDVCSObservable(
-        const DVCSObservableKinematic& kinematic) {
-    throw ElemUtils::CustomException(getClassName(), __func__,
-            "Nothing to do ; Must be implemented in daugther class");
-    return PhysicalType<double>();
-}
-
-ObservableType::Type DVCSObservable::getObservableType() const {
-    return m_observableType;
 }
 
 DVCSProcessModule* DVCSObservable::getProcessModule() const {

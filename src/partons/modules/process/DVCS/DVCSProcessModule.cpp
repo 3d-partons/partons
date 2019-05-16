@@ -9,7 +9,6 @@
 #include "../../../../../include/partons/beans/channel/ChannelType.h"
 #include "../../../../../include/partons/beans/convol_coeff_function/ConvolCoeffFunctionResult.h"
 #include "../../../../../include/partons/beans/observable/ObservableResult.h"
-#include "../../../../../include/partons/beans/observable/ObservableType.h"
 #include "../../../../../include/partons/beans/Result.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
@@ -208,9 +207,6 @@ DVCSObservableResult DVCSProcessModule::compute(double beamHelicity,
     //set value
     result.setValue(value);
 
-    //set type
-    result.setObservableType(ObservableType::PHI);
-
     //set module name
     result.setComputationModuleName(getClassName());
 
@@ -218,8 +214,8 @@ DVCSObservableResult DVCSProcessModule::compute(double beamHelicity,
     return result;
 }
 
-PhysicalType<double> DVCSProcessModule::CrossSectionBH(double beamHelicity, double beamCharge,
-        NumA::Vector3D targetPolarization) {
+PhysicalType<double> DVCSProcessModule::CrossSectionBH(double beamHelicity,
+        double beamCharge, NumA::Vector3D targetPolarization) {
     throw ElemUtils::CustomException(getClassName(), __func__,
             "Check your child implementation : " + getClassName());
 }

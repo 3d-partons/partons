@@ -20,7 +20,6 @@
 #include "../../utils/type/PhysicalType.h"
 #include "../channel/ChannelType.h"
 #include "../Result.h"
-#include "ObservableType.h"
 
 namespace PARTONS {
 
@@ -47,8 +46,7 @@ public:
         ElemUtils::Formatter formatter;
 
         formatter << "\n" << Result<KinematicType>::toString() << "\n\n";
-        formatter << "Result: " << m_value.toString() << " Type: "
-                << ObservableType(m_observableType).toString();
+        formatter << "Result: " << m_value.toString();
         if (m_errStat.isInitialized() || m_errSys.isInitialized()
                 || m_errScale.isInitialized())
             formatter << " Uncertainties:";
@@ -66,13 +64,9 @@ public:
     /**
      * Set value.
      * @param value Value to be set.
-     * @param observableType Type of observable.
      */
-    void setResult(const PhysicalType<double>& value,
-            ObservableType::Type observableType) {
-
+    void setResult(const PhysicalType<double>& value) {
         m_value = value;
-        m_observableType = observableType;
     }
 
     /**
@@ -94,11 +88,6 @@ public:
                             << referenceObject.getIndexId() << '\n'
                             << toString() << '\n'
                             << referenceObject.toString());
-        }
-
-        if (m_observableType != referenceObject.getObservableType()) {
-            throw ElemUtils::CustomException(this->getClassName(), __func__,
-                    "Cannot compare objects, they are different (different name or type)");
         }
 
         ComparisonData xb_comparisonData = CompareUtils::compareDouble(
@@ -125,20 +114,6 @@ public:
      */
     void setValue(const PhysicalType<double>& value) {
         m_value = value;
-    }
-
-    /**
-     * Get type of observable associated to this result.
-     */
-    ObservableType::Type getObservableType() const {
-        return m_observableType;
-    }
-
-    /**
-     * Set type of observable associated to this result.
-     */
-    void setObservableType(ObservableType::Type observableType) {
-        m_observableType = observableType;
     }
 
     /**
@@ -190,8 +165,7 @@ protected:
      */
     ObservableResult(const std::string &className,
             ChannelType::Type channelType) :
-            Result<KinematicType>(className, channelType), m_observableType(
-                    ObservableType::UNDEFINED) {
+            Result<KinematicType>(className, channelType) {
     }
 
     /**
@@ -200,8 +174,7 @@ protected:
      */
     ObservableResult(const std::string &className,
             ChannelType::Type channelType, const PhysicalType<double>& value) :
-            Result<KinematicType>(className, channelType), m_value(value), m_observableType(
-                    ObservableType::UNDEFINED) {
+            Result<KinematicType>(className, channelType), m_value(value) {
     }
 
     /**
@@ -210,31 +183,19 @@ protected:
      */
     ObservableResult(const std::string &className,
             ChannelType::Type channelType, const KinematicType& kinematic) :
-            Result<KinematicType>(className, channelType, kinematic), m_observableType(
-                    ObservableType::UNDEFINED) {
-    }
-
-    /**
-     * Assignment constructor.
-     * @param type Observable type to be assigned.
-     */
-    ObservableResult(const std::string &className,
-            ChannelType::Type channelType, ObservableType::Type type) :
-            Result<KinematicType>(className, channelType), m_observableType(
-                    type) {
+            Result<KinematicType>(className, channelType, kinematic) {
     }
 
     /**
      * Assignment constructor.
      * @param value Value to be assigned.
      * @param kinematic Observable kinematics to be assigned.
-     * @param type Observable type to be assigned.
      */
     ObservableResult(const std::string &className,
             ChannelType::Type channelType, const PhysicalType<double>& value,
-            const KinematicType& kinematic, ObservableType::Type type) :
+            const KinematicType& kinematic) :
             Result<KinematicType>(className, channelType, kinematic), m_value(
-                    value), m_observableType(type) {
+                    value) {
     }
 
     /**
@@ -242,8 +203,7 @@ protected:
      * @param other Object to be copied.
      */
     ObservableResult(const ObservableResult& other) :
-            Result<KinematicType>(other), m_value(other.m_value), m_observableType(
-                    other.m_observableType) {
+            Result<KinematicType>(other), m_value(other.m_value) {
     }
 
     /**
@@ -265,11 +225,6 @@ protected:
      * Systematic error.
      */
     ErrorBar<double> m_errScale;
-
-    /**
-     * Type of observable associated to this result.
-     */
-    ObservableType::Type m_observableType;
 };
 
 } /* namespace PARTONS */

@@ -13,11 +13,14 @@
 #include <string>
 
 #include "../../beans/automation/BaseObjectData.h"
-#include "../../beans/gpd/GPDKinematic.h"
 #include "../../beans/gpd/GPDType.h"
 #include "../../beans/List.h"
 #include "../../beans/parton_distribution/PartonDistribution.h"
 #include "../../ModuleObject.h"
+
+namespace PARTONS {
+class GPDKinematic;
+} /* namespace PARTONS */
 
 namespace PARTONS {
 class GPDResult;
@@ -63,7 +66,7 @@ public:
      * Contains results for each flavor of partons.
      */
     virtual PartonDistribution compute(const GPDKinematic &kinematic,
-            GPDType::Type gpdType, bool evolution = true);
+            GPDType::Type gpdType);
 
     /**
      * Virtual method, computes GPD with some input parameters.
@@ -78,42 +81,11 @@ public:
             const List<GPDType>& gpdType = List<GPDType>());
 
     /**
-     * Virtual method, computes GPD with some input parameters.
-     *
-     * @param kinematic GPD kinematics object.
-     * @param gpdType H, Ht, E, Et, ... or ALL. See GPDType for more details.
-     * @param evolution Boolean to use evolution.
-     *
-     * @return PartonDistribution object.
-     * Contains results for each flavor of partons.
-     */
-    //TODO rename
-    virtual GPDResult compute1(const GPDKinematic &kinematic,
-            const List<GPDType>& gpdType, bool evolution);
-
-    /**
      * Get list of available GPDTypes in the model considered. This list is set in the child class.
      */
     List<GPDType> getListOfAvailableGPDTypeForComputation() const;
 
-    // ##### GETTERS & SETTERS #####
-
-    /**
-     * Get reference factorization scale used by the GPD model before evolution.
-     */
-    double getMuF2Ref() const;
-
-    /**
-     * Set underlying GPD Evolution module.
-     */
-    const GPDEvolutionModule* getEvolQcdModule() const;
-
-    /**
-     * Get  underlying GPD Evolution module.
-     */
-    void setEvolQcdModule(GPDEvolutionModule* pEvolQcdModule);
-
-    // #### IMPLEMENTATION MEMBERS ####
+    // ##### IMPLEMENTATION FUNCTIONS #####
 
     /**
      * This method can be implemented in the child class if the GPD H is available to compute.
@@ -146,6 +118,23 @@ public:
      * Contains results for each flavor of partons.
      */
     virtual PartonDistribution computeEt();
+
+    // ##### GETTERS & SETTERS #####
+
+    /**
+     * Get reference factorization scale used by the GPD model before evolution.
+     */
+    double getMuF2Ref() const;
+
+    /**
+     * Set underlying GPD Evolution module.
+     */
+    const GPDEvolutionModule* getEvolQcdModule() const;
+
+    /**
+     * Get  underlying GPD Evolution module.
+     */
+    void setEvolQcdModule(GPDEvolutionModule* pEvolQcdModule);
 
 protected:
 

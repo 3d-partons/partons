@@ -10,7 +10,8 @@
 
 #include <string>
 
-#include "../../../../beans/observable/DVCS/DVCSObservableKinematic.h"
+#include "../../../../beans/gpd/GPDType.h"
+#include "../../../../beans/List.h"
 #include "../../../../utils/type/PhysicalType.h"
 #include "../DVCSObservable.h"
 
@@ -56,8 +57,6 @@ public:
     virtual ~DVCSCrossSectionUUMinus();
 
     virtual DVCSCrossSectionUUMinus* clone() const;
-    virtual PhysicalType<double> computePhiDVCSObservable(
-            const DVCSObservableKinematic& kinematic);
 
 protected:
 
@@ -66,6 +65,10 @@ protected:
      * @param other Object to be copied.
      */
     DVCSCrossSectionUUMinus(const DVCSCrossSectionUUMinus &other);
+
+    virtual PhysicalType<double> computeObservable(
+            const DVCSObservableKinematic& kinematic,
+            const List<GPDType>& gpdType);
 };
 
 } /* namespace PARTONS */

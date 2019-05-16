@@ -10,7 +10,6 @@
 
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/parameters/Parameters.h>
-#include <ElementaryUtils/string_utils/Formatter.h>
 #include <map>
 #include <string>
 
@@ -18,8 +17,8 @@
 #include "../../beans/channel/ChannelType.h"
 #include "../../beans/gpd/GPDType.h"
 #include "../../beans/List.h"
-#include "../../ModuleObjectFactory.h"
-#include "../process/DVCS/DVCSProcessModule.h"
+#include "../../ModuleObject.h"
+#include "../../utils/type/PhysicalType.h"
 
 namespace PARTONS {
 
@@ -111,6 +110,11 @@ protected:
     virtual void isModuleWellConfigured() {
     }
 
+    /**
+     * Evaluate observable. To be implemented in a child class.
+     */
+    virtual PhysicalType<double> computeObservable(
+            const KinematicType& kinematic, const List<GPDType>& gpdType) = 0;
 };
 
 } /* namespace PARTONS */

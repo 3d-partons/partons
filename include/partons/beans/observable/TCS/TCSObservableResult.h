@@ -10,7 +10,6 @@
 
 #include "../../../utils/type/PhysicalType.h"
 #include "../ObservableResult.h"
-#include "../ObservableType.h"
 #include "TCSObservableKinematic.h"
 
 namespace PARTONS {
@@ -45,19 +44,11 @@ public:
 
     /**
      * Assignment constructor.
-     * @param type TCS observable type to be assigned.
-     */
-    TCSObservableResult(ObservableType::Type type);
-
-    /**
-     * Assignment constructor.
      * @param value Value to be assigned.
      * @param kinematic TCS observable kinematic to be assigned.
-     * @param type TCS observable type to be assigned.
      */
     TCSObservableResult(const PhysicalType<double>& value,
-            const TCSObservableKinematic& kinematic,
-            ObservableType::Type type);
+            const TCSObservableKinematic& kinematic);
 
     /**
      * Copy constructor.
