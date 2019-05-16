@@ -11,7 +11,9 @@
 #include "../../include/partons/modules/gpd_border_function/GPDBorderFunctionModule.h"
 #include "../../include/partons/modules/gpd_subtraction_constant/GPDSubtractionConstantModule.h"
 #include "../../include/partons/modules/observable/DVCS/DVCSObservable.h"
+#include "../../include/partons/modules/observable/TCS/TCSObservable.h"
 #include "../../include/partons/modules/process/DVCS/DVCSProcessModule.h"
+#include "../../include/partons/modules/process/TCS/TCSProcessModule.h"
 #include "../../include/partons/modules/running_alpha_strong/RunningAlphaStrongModule.h"
 #include "../../include/partons/modules/scales/ScalesModule.h"
 #include "../../include/partons/modules/xi_converter/XiConverterModule.h"
@@ -209,6 +211,16 @@ DVCSProcessModule* ModuleObjectFactory::newDVCSProcessModule(
     return static_cast<DVCSProcessModule*>(newModuleObject(className));
 }
 
+TCSProcessModule* ModuleObjectFactory::newTCSProcessModule(
+        unsigned int classId) {
+    return static_cast<TCSProcessModule*>(newModuleObject(classId));
+}
+
+TCSProcessModule* ModuleObjectFactory::newTCSProcessModule(
+        const std::string& className) {
+    return static_cast<TCSProcessModule*>(newModuleObject(className));
+}
+
 RunningAlphaStrongModule* ModuleObjectFactory::newRunningAlphaStrongModule(
         unsigned int classId) {
     return static_cast<RunningAlphaStrongModule*>(newModuleObject(classId));
@@ -255,6 +267,15 @@ DVCSObservable* ModuleObjectFactory::newDVCSObservable(unsigned int classId) {
 DVCSObservable* ModuleObjectFactory::newDVCSObservable(
         const std::string& className) {
     return static_cast<DVCSObservable*>(newModuleObject(className));
+}
+
+TCSObservable* ModuleObjectFactory::newTCSObservable(unsigned int classId) {
+    return static_cast<TCSObservable*>(newModuleObject(classId));
+}
+
+TCSObservable* ModuleObjectFactory::newTCSObservable(
+        const std::string& className) {
+    return static_cast<TCSObservable*>(newModuleObject(className));
 }
 
 } /* namespace PARTONS */

@@ -1,8 +1,8 @@
-#ifndef DVCS_PROCESS_MODULE_H
-#define DVCS_PROCESS_MODULE_H
+#ifndef TCS_PROCESS_MODULE_H
+#define TCS_PROCESS_MODULE_H
 
 /**
- * @file DVCSProcessModule.h
+ * @file TCSProcessModule.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date November 19, 2014
  * @version 1.0
@@ -14,12 +14,12 @@
 #include <string>
 
 #include "../../../beans/automation/BaseObjectData.h"
-#include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
-#include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
+#include "../../../beans/convol_coeff_function/TCS/TCSConvolCoeffFunctionKinematic.h"
+#include "../../../beans/convol_coeff_function/TCS/TCSConvolCoeffFunctionResult.h"
 #include "../../../beans/gpd/GPDType.h"
 #include "../../../beans/List.h"
-#include "../../../beans/observable/DVCS/DVCSObservableKinematic.h"
-#include "../../../beans/observable/DVCS/DVCSObservableResult.h"
+#include "../../../beans/observable/TCS/TCSObservableKinematic.h"
+#include "../../../beans/observable/TCS/TCSObservableResult.h"
 #include "../../../beans/process/VCSSubProcessType.h"
 #include "../ProcessModule.h"
 
@@ -30,35 +30,35 @@ class Vector3D;
 namespace PARTONS {
 
 /**
- * @class DVCSProcessModule
+ * @class TCSProcessModule
  *
  * @brief Abstract class for computing the *differential* cross section of
- * the photon electroproduction process (also called DVCS; Deeply Virtual Compton Scattering).
+ * the photon electroproduction process (also called TCS; Deeply Virtual Compton Scattering).
  *
  * The cross-section is five-fold differential with respect to the variables: @f$ x_B @f$, @f$ Q^2 @f$, @f$ t @f$ and the two angles.
  */
-class DVCSProcessModule: public ProcessModule<DVCSObservableKinematic,
-        DVCSObservableResult> {
+class TCSProcessModule: public ProcessModule<TCSObservableKinematic,
+        TCSObservableResult> {
 
 public:
 
-    static const std::string DVCS_PROCESS_MODULE_CLASS_NAME; ///< Type of the module in XML automation.
+    static const std::string TCS_PROCESS_MODULE_CLASS_NAME; ///< Type of the module in XML automation.
 
     /**
      * Destructor.
      */
-    virtual ~DVCSProcessModule();
+    virtual ~TCSProcessModule();
 
-    virtual DVCSProcessModule* clone() const = 0;
+    virtual TCSProcessModule* clone() const = 0;
     virtual std::string toString() const;
     virtual void resolveObjectDependencies();
     virtual void run();
     virtual void configure(const ElemUtils::Parameters &parameters);
     virtual void prepareSubModules(
             const std::map<std::string, BaseObjectData>& subModulesData);
-    virtual DVCSObservableResult compute(double beamHelicity, double beamCharge,
+    virtual TCSObservableResult compute(double beamHelicity, double beamCharge,
             NumA::Vector3D targetPolarization,
-            const DVCSObservableKinematic& kinematic,
+            const TCSObservableKinematic& kinematic,
             const List<GPDType>& gpdType = List<GPDType>());
     virtual List<GPDType> getListOfAvailableGPDTypeForComputation() const;
 
@@ -71,9 +71,9 @@ public:
      * @param processType Subprocess type.
      * @return Result.
      */
-    DVCSObservableResult compute(double beamHelicity, double beamCharge,
+    TCSObservableResult compute(double beamHelicity, double beamCharge,
             NumA::Vector3D targetPolarization,
-            const DVCSObservableKinematic& kinematic,
+            const TCSObservableKinematic& kinematic,
             const List<GPDType>& gpdType, VCSSubProcessType::Type processType);
 
     /**
@@ -85,20 +85,20 @@ public:
      * Check if this kinematics is different than the previous one.
      */
     bool isPreviousCCFKinematicDifferent(
-            const DVCSConvolCoeffFunctionKinematic& kinematic) const;
+            const TCSConvolCoeffFunctionKinematic& kinematic) const;
 
     // ##### GETTERS & SETTERS #####
 
     /**
      * Get CCF module;
      */
-    DVCSConvolCoeffFunctionModule* getConvolCoeffFunctionModule() const;
+    TCSConvolCoeffFunctionModule* getConvolCoeffFunctionModule() const;
 
     /**
      * Set CCF module
      */
     void setConvolCoeffFunctionModule(
-            DVCSConvolCoeffFunctionModule* pConvolCoeffFunctionModule);
+            TCSConvolCoeffFunctionModule* pConvolCoeffFunctionModule);
 
     // ##### IMPLEMENTATION MEMBERS #####
 
@@ -134,25 +134,26 @@ protected:
     /**
      * Default constructor.
      */
-    DVCSProcessModule(const std::string &className);
+    TCSProcessModule(const std::string &className);
 
     /**
      * Copy constructor.
      * @param other Object to be copied.
      */
-    DVCSProcessModule(const DVCSProcessModule& other);
+    TCSProcessModule(const TCSProcessModule& other);
 
-    virtual void setKinematics(const DVCSObservableKinematic& kinematic);
+    virtual void setKinematics(const TCSObservableKinematic& kinematic);
     virtual void setExperimentalConditions(double beamHelicity,
-            double beamCharge, NumA::Vector3D targetPolarization);
+               double beamCharge, NumA::Vector3D targetPolarization);
     virtual void initModule();
     virtual void isModuleWellConfigured();
 
     double m_xB; ///< Bjorken variable.
     double m_t; ///< Mandelstam variable (square of the 4-momentum transferm in GeV2).
-    double m_Q2; ///< Virtuality of the incoming photon (in GeV2).
+    double m_Q2Prim; ///< Virtuality of the incoming photon (in GeV2).
     double m_E; ///< Beam energy in target rest frame (in GeV).
     double m_phi; ///<  Angle between leptonic and hadronic plane (in radians, Trento convention).
+    double m_theta; ///< Angle between positively charged lepton and scattered proton in lepton CMS (in degrees).
 
     double m_tmin; ///< Minimal value of t.
     double m_tmax; ///< Maximal value of t.
@@ -160,17 +161,17 @@ protected:
     double m_y; ///< Lepton energy fraction.
     double m_epsilon; ///< @f$ \epsilon = \frac{2 x_B M}{Q} @f$.
 
-    DVCSConvolCoeffFunctionModule* m_pConvolCoeffFunctionModule; ///< Pointer to the underlying CCF module.
+    TCSConvolCoeffFunctionModule* m_pConvolCoeffFunctionModule; ///< Pointer to the underlying CCF module.
 
-    DVCSConvolCoeffFunctionResult m_dvcsConvolCoeffFunctionResult; ///< Stored Compton Form Factor result.
-    DVCSConvolCoeffFunctionKinematic m_lastCCFKinematics; ///< Last Compton Form Factor kinematics.
+    TCSConvolCoeffFunctionResult m_tcsConvolCoeffFunctionResult; ///< Stored Compton Form Factor result.
+    TCSConvolCoeffFunctionKinematic m_lastCCFKinematics; ///< Last Compton Form Factor kinematics.
 
     /**
      * Compute CCF for a given kinematics.
      * @param kinematic Kinematics to be computed.
      * @param gpdType List of GPD types to be computed.
      */
-    void computeConvolCoeffFunction(const DVCSObservableKinematic& kinematic,
+    void computeConvolCoeffFunction(const TCSObservableKinematic& kinematic,
             const List<GPDType> & gpdType = List<GPDType>());
 
     /**
@@ -183,4 +184,4 @@ protected:
 
 } /* namespace PARTONS */
 
-#endif /* DVCS_PROCESS_MODULE_H */
+#endif /* TCS_PROCESS_MODULE_H */

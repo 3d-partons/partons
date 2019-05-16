@@ -19,6 +19,7 @@ class DVCSConvolCoeffFunctionService;
 class TCSConvolCoeffFunctionService;
 class GPDService;
 class DVCSObservableService;
+class TCSObservableService;
 class ServiceObject;
 class VizualisationService;
 } /* namespace PARTONS */
@@ -41,6 +42,7 @@ public:
     DVCSConvolCoeffFunctionService* getDVCSConvolCoeffFunctionService() const;
     TCSConvolCoeffFunctionService* getTCSConvolCoeffFunctionService() const;
     DVCSObservableService* getDVCSObservableService() const;
+    TCSObservableService* getTCSObservableService() const;
     VizualisationService* getVizualisationService() const;
     ComparisonService* getComparisonService() const;
     AutomationService* getAutomationService() const;

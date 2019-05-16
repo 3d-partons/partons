@@ -19,6 +19,8 @@ class ActiveFlavorsThresholdsModule;
 class BaseObjectFactory;
 class DVCSConvolCoeffFunctionModule;
 class TCSConvolCoeffFunctionModule;
+class TCSObservable;
+class TCSProcessModule;
 class DVCSObservable;
 class DVCSProcessModule;
 class GPDBorderFunctionModule;
@@ -171,6 +173,19 @@ public:
     DVCSProcessModule* newDVCSProcessModule(const std::string & className);
 
     /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a TCSProcessModule.
+     * @param classId Unique identifier of last child class.
+     * @return TCSProcessModule pointer.
+     */
+    TCSProcessModule* newTCSProcessModule(unsigned int classId);
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a TCSProcessModule.
+     * @param className Name of last child class.
+     * @return TCSProcessModule pointer.
+     */
+    TCSProcessModule* newTCSProcessModule(const std::string & className);
+
+    /**
      * Specialization of ModuleObjectFactory::newModuleObject into a RunningAlphaStrongModule.
      * @param classId Unique identifier of last child class.
      * @return RunningAlphaStrongModule pointer.
@@ -237,6 +252,19 @@ public:
      * @return Observable pointer.
      */
     DVCSObservable* newDVCSObservable(const std::string & className);
+
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a Observable.
+     * @param classId Unique identifier of last child class.
+     * @return Observable pointer.
+     */
+    TCSObservable* newTCSObservable(unsigned int classId);
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a Observable.
+     * @param className Name of last child class.
+     * @return Observable pointer.
+     */
+    TCSObservable* newTCSObservable(const std::string & className);
 
     /**
      * Method to update a pointer. Used to keep track of the modules and remove them when they become orphans (i.e. no pointer points to them).

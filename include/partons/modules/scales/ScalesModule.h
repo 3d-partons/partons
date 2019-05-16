@@ -17,8 +17,10 @@
 #include "../../utils/type/PhysicalType.h"
 
 namespace PARTONS {
-
 class Scales;
+} /* namespace PARTONS */
+
+namespace PARTONS {
 
 /**
  * @class ScalesModule

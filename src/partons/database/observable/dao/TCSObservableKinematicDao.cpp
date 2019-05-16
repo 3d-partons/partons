@@ -1,4 +1,4 @@
-#include "../../../../../include/partons/database/observable/dao/DVCSObservableKinematicDao.h"
+#include "../../../../../include/partons/database/observable/dao/TCSObservableKinematicDao.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
@@ -13,17 +13,17 @@
 
 namespace PARTONS {
 
-DVCSObservableKinematicDao::DVCSObservableKinematicDao() :
-        ObservableKinematicDao("DVCSObservableKinematicDao") {
+TCSObservableKinematicDao::TCSObservableKinematicDao() :
+        ObservableKinematicDao("TCSObservableKinematicDao") {
 }
 
-DVCSObservableKinematicDao::~DVCSObservableKinematicDao() {
+TCSObservableKinematicDao::~TCSObservableKinematicDao() {
 }
 
-int DVCSObservableKinematicDao::insert(const PhysicalType<double>& xB,
-        const PhysicalType<double>& t, const PhysicalType<double>& Q2,
+int TCSObservableKinematicDao::insert(const PhysicalType<double>& xB,
+        const PhysicalType<double>& t, const PhysicalType<double>& Q2Prim,
         const PhysicalType<double>& E, const PhysicalType<double>& phi,
-        const std::string& hashSum) const {
+        const PhysicalType<double>& theta, const std::string& hashSum) const {
 
     //check if already in db
     int result = getKinematicIdByHashSum(hashSum);
@@ -39,18 +39,20 @@ int DVCSObservableKinematicDao::insert(const PhysicalType<double>& xB,
 
     //prepare query
     query.prepare(
-            "INSERT INTO dvcs_observable_kinematic (xB, xB_unit, t, t_unit, Q2, Q2_unit, E, E_unit, phi, phi_unit, hash_sum) VALUES (:xB, :xB_unit, :t, :t_unit, :Q2, :Q2_unit, :E, :E_unit, :phi, :phi_unit, :hash_sum);");
+            "INSERT INTO tcs_observable_kinematic (xB, xB_unit, t, t_unit, Q2Prim, Q2Prim_unit, E, E_unit, phi, phi_unit, theta, theta_unit, hash_sum) VALUES (:xB, :xB_unit, :t, :t_unit, :Q2Prim, :Q2Prim_unit, :E, :E_unit, :phi, :phi_unit, :theta, :theta_unit, :hash_sum);");
 
     query.bindValue(":xB", xB.getValue());
     query.bindValue(":xB_unit", xB.getUnit());
     query.bindValue(":t", t.getValue());
     query.bindValue(":t_unit", t.getUnit());
-    query.bindValue(":Q2", Q2.getValue());
-    query.bindValue(":Q2_unit", Q2.getUnit());
+    query.bindValue(":Q2Prim", Q2Prim.getValue());
+    query.bindValue(":Q2Prim_unit", Q2Prim.getUnit());
     query.bindValue(":E", E.getValue());
     query.bindValue(":E_unit", E.getUnit());
     query.bindValue(":phi", phi.getValue());
     query.bindValue(":phi_unit", phi.getUnit());
+    query.bindValue(":theta", theta.getValue());
+    query.bindValue(":theta_unit", theta.getUnit());
     query.bindValue(":hash_sum", hashSum.c_str());
 
     //execute query
@@ -70,9 +72,10 @@ int DVCSObservableKinematicDao::insert(const PhysicalType<double>& xB,
     return result;
 }
 
-int DVCSObservableKinematicDao::select(const PhysicalType<double>& xB,
-        const PhysicalType<double>& t, const PhysicalType<double>& Q2,
-        const PhysicalType<double>& E, const PhysicalType<double>& phi) const {
+int TCSObservableKinematicDao::select(const PhysicalType<double>& xB,
+        const PhysicalType<double>& t, const PhysicalType<double>& Q2Prim,
+        const PhysicalType<double>& E, const PhysicalType<double>& phi,
+        const PhysicalType<double>& theta) const {
 
     //result
     int result = -1;
@@ -82,18 +85,20 @@ int DVCSObservableKinematicDao::select(const PhysicalType<double>& xB,
 
     //prepare query
     query.prepare(
-            "SELECT dvcs_observable_kinematic_id FROM dvcs_observable_kinematic WHERE xB = :xB AND xB_unit = :xB_unit AND t = :t AND t_unit = :t_unit AND Q2 = :Q2 AND Q2_unit = :Q2_unit AND E = :E AND E_unit = :E_unit AND phi = :phi AND phi_unit = :phi_unit;");
+            "SELECT tcs_observable_kinematic_id FROM tcs_observable_kinematic WHERE xB = :xB AND xB_unit = :xB_unit AND t = :t AND t_unit = :t_unit AND Q2Prim = :Q2Prim AND Q2Prim_unit = :Q2Prim_unit AND E = :E AND E_unit = :E_unit AND phi = :phi AND phi_unit = :phi_unit AND theta = :theta AND theta_unit = :theta_unit;");
 
     query.bindValue(":xB", xB.getValue());
     query.bindValue(":xB_unit", xB.getUnit());
     query.bindValue(":t", t.getValue());
     query.bindValue(":t_unit", t.getUnit());
-    query.bindValue(":Q2", Q2.getValue());
-    query.bindValue(":Q2_unit", Q2.getUnit());
+    query.bindValue(":Q2Prim", Q2Prim.getValue());
+    query.bindValue(":Q2Prim_unit", Q2Prim.getUnit());
     query.bindValue(":E", E.getValue());
     query.bindValue(":E_unit", E.getUnit());
     query.bindValue(":phi", phi.getValue());
     query.bindValue(":phi_unit", phi.getUnit());
+    query.bindValue(":theta", theta.getValue());
+    query.bindValue(":theta_unit", theta.getUnit());
 
     //execute query
     if (Database::checkUniqueResult(getClassName(), __func__,
@@ -106,18 +111,18 @@ int DVCSObservableKinematicDao::select(const PhysicalType<double>& xB,
     return result;
 }
 
-DVCSObservableKinematic DVCSObservableKinematicDao::getKinematicById(
+TCSObservableKinematic TCSObservableKinematicDao::getKinematicById(
         const int id) const {
 
     //result
-    DVCSObservableKinematic observableKinematic;
+    TCSObservableKinematic observableKinematic;
 
     //create query
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     //prepare query
     query.prepare(
-            "SELECT * FROM dvcs_observable_kinematic_view WHERE dvcs_observable_kinematic_id = :kinematicId;");
+            "SELECT * FROM tcs_observable_kinematic_view WHERE tcs_observable_kinematic_id = :kinematicId;");
 
     query.bindValue(":kinematicId", id);
 
@@ -132,18 +137,18 @@ DVCSObservableKinematic DVCSObservableKinematicDao::getKinematicById(
     return observableKinematic;
 }
 
-List<DVCSObservableKinematic> DVCSObservableKinematicDao::getKinematicListByComputationId(
+List<TCSObservableKinematic> TCSObservableKinematicDao::getKinematicListByComputationId(
         int computationId) const {
 
     //result
-    List<DVCSObservableKinematic> observableKinematicList;
+    List<TCSObservableKinematic> observableKinematicList;
 
     //create query
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     //prepare query
     query.prepare(
-            "SELECT * FROM dvcs_observable_kinematic_view WHERE computation_id = :computationId");
+            "SELECT * FROM tcs_observable_kinematic_view WHERE computation_id = :computationId");
 
     query.bindValue(":computationId", computationId);
 
@@ -157,15 +162,15 @@ List<DVCSObservableKinematic> DVCSObservableKinematicDao::getKinematicListByComp
     return observableKinematicList;
 }
 
-void DVCSObservableKinematicDao::fillObservableKinematicListFromQuery(
-        List<DVCSObservableKinematic>& observableKinematicList,
+void TCSObservableKinematicDao::fillObservableKinematicListFromQuery(
+        List<TCSObservableKinematic>& observableKinematicList,
         QSqlQuery& query) const {
 
     //loop over single queries
     while (query.next()) {
 
         //single result
-        DVCSObservableKinematic observableKinematic;
+        TCSObservableKinematic observableKinematic;
 
         //get
         fillKinematicFromQuery(observableKinematic, query);
@@ -175,21 +180,23 @@ void DVCSObservableKinematicDao::fillObservableKinematicListFromQuery(
     }
 }
 
-void DVCSObservableKinematicDao::fillKinematicFromQuery(
-        DVCSObservableKinematic &observableKinematic, QSqlQuery &query) const {
+void TCSObservableKinematicDao::fillKinematicFromQuery(
+        TCSObservableKinematic &observableKinematic, QSqlQuery &query) const {
 
     //get indices
-    int field_id = query.record().indexOf("dvcs_observable_kinematic_id");
+    int field_id = query.record().indexOf("tcs_observable_kinematic_id");
     int field_xB = query.record().indexOf("xB");
     int field_xB_unit = query.record().indexOf("xB_unit");
     int field_t = query.record().indexOf("t");
     int field_t_unit = query.record().indexOf("t_unit");
-    int field_Q2 = query.record().indexOf("Q2");
-    int field_Q2_unit = query.record().indexOf("Q2_unit");
+    int field_Q2Prim = query.record().indexOf("Q2Prim");
+    int field_Q2Prim_unit = query.record().indexOf("Q2Prim_unit");
     int field_E = query.record().indexOf("E");
     int field_E_unit = query.record().indexOf("E_unit");
     int field_phi = query.record().indexOf("phi");
     int field_phi_unit = query.record().indexOf("phi_unit");
+    int field_theta = query.record().indexOf("theta");
+    int field_theta_unit = query.record().indexOf("theta_unit");
     int field_hash_sum = query.record().indexOf("hash_sum");
 
     //get values
@@ -200,21 +207,26 @@ void DVCSObservableKinematicDao::fillKinematicFromQuery(
     double t = query.value(field_t).toDouble();
     PhysicalUnit::Type t_unit = static_cast<PhysicalUnit::Type>(query.value(
             field_t_unit).toInt());
-    double Q2 = query.value(field_Q2).toDouble();
-    PhysicalUnit::Type Q2_unit = static_cast<PhysicalUnit::Type>(query.value(
-            field_Q2_unit).toInt());
+    double Q2Prim = query.value(field_Q2Prim).toDouble();
+    PhysicalUnit::Type Q2Prim_unit =
+            static_cast<PhysicalUnit::Type>(query.value(field_Q2Prim_unit).toInt());
     double E = query.value(field_E).toDouble();
     PhysicalUnit::Type E_unit = static_cast<PhysicalUnit::Type>(query.value(
             field_E_unit).toInt());
     double phi = query.value(field_phi).toDouble();
     PhysicalUnit::Type phi_unit = static_cast<PhysicalUnit::Type>(query.value(
             field_phi_unit).toInt());
+    double theta = query.value(field_theta).toDouble();
+    PhysicalUnit::Type theta_unit = static_cast<PhysicalUnit::Type>(query.value(
+            field_theta_unit).toInt());
 
     //set
-    observableKinematic = DVCSObservableKinematic(
+    observableKinematic = TCSObservableKinematic(
             PhysicalType<double>(xB, xB_unit), PhysicalType<double>(t, t_unit),
-            PhysicalType<double>(Q2, Q2_unit), PhysicalType<double>(E, E_unit),
-            PhysicalType<double>(phi, phi_unit));
+            PhysicalType<double>(Q2Prim, Q2Prim_unit),
+            PhysicalType<double>(E, E_unit),
+            PhysicalType<double>(phi, phi_unit),
+            PhysicalType<double>(theta, theta_unit));
     observableKinematic.setIndexId(id);
 
     //check hash sum
@@ -225,7 +237,7 @@ void DVCSObservableKinematicDao::fillKinematicFromQuery(
     }
 }
 
-int DVCSObservableKinematicDao::getKinematicIdByHashSum(
+int TCSObservableKinematicDao::getKinematicIdByHashSum(
         const std::string& hashSum) const {
 
     //result
@@ -236,7 +248,7 @@ int DVCSObservableKinematicDao::getKinematicIdByHashSum(
 
     //prepare query
     query.prepare(
-            "SELECT dvcs_observable_kinematic_id FROM dvcs_observable_kinematic WHERE hash_sum = :hashSum;");
+            "SELECT tcs_observable_kinematic_id FROM tcs_observable_kinematic WHERE hash_sum = :hashSum;");
 
     query.bindValue(":hashSum", QString(hashSum.c_str()));
 

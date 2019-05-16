@@ -1,4 +1,4 @@
-#include "../../../../../include/partons/modules/observable/DVCS/DVCSObservable.h"
+#include "../../../../../include/partons/modules/observable/TCS/TCSObservable.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
@@ -8,31 +8,31 @@
 #include "../../../../../include/partons/beans/channel/ChannelType.h"
 #include "../../../../../include/partons/beans/observable/ObservableResult.h"
 #include "../../../../../include/partons/beans/Result.h"
-#include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
-#include "../../../../../include/partons/modules/process/DVCS/DVCSProcessModule.h"
+#include "../../../../../include/partons/modules/convol_coeff_function/TCS/TCSConvolCoeffFunctionModule.h"
+#include "../../../../../include/partons/modules/process/TCS/TCSProcessModule.h"
 #include "../../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../../include/partons/Partons.h"
-#include "../../../../../include/partons/services/DVCSObservableService.h"
+#include "../../../../../include/partons/services/TCSObservableService.h"
 #include "../../../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../../../include/partons/ServiceObjectTyped.h"
 #include "../../../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
 
-const std::string DVCSObservable::DVCS_OBSERVABLE_MODULE_CLASS_NAME =
-        "DVCSObservableModule";
+const std::string TCSObservable::TCS_OBSERVABLE_MODULE_CLASS_NAME =
+        "TCSObservableModule";
 
-DVCSObservable::DVCSObservable(const std::string &className,
+TCSObservable::TCSObservable(const std::string &className,
         ObservableType::Type observableType) :
-        Observable(className, ChannelType::DVCS), m_observableType(
-                observableType), m_pProcessModule(0), m_xB(0.), m_t(0.), m_Q2(
-                0.), m_E(0.), m_phi(0.) {
+        Observable(className, ChannelType::TCS), m_observableType(
+                observableType), m_pProcessModule(0), m_xB(0.), m_t(0.), m_Q2Prim(
+                0.), m_E(0.), m_phi(0.), m_theta(0.) {
 }
 
-DVCSObservable::DVCSObservable(const DVCSObservable& other) :
+TCSObservable::TCSObservable(const TCSObservable& other) :
         Observable(other), m_observableType(other.m_observableType), m_xB(
-                other.m_xB), m_t(other.m_t), m_Q2(other.m_Q2), m_E(other.m_E), m_phi(
-                other.m_phi) {
+                other.m_xB), m_t(other.m_t), m_Q2Prim(other.m_Q2Prim), m_E(
+                other.m_E), m_phi(other.m_phi), m_theta(other.m_theta) {
 
     if (other.m_pProcessModule != 0) {
         m_pProcessModule = m_pModuleObjectFactory->cloneModuleObject(
@@ -42,7 +42,7 @@ DVCSObservable::DVCSObservable(const DVCSObservable& other) :
     }
 }
 
-DVCSObservable::~DVCSObservable() {
+TCSObservable::~TCSObservable() {
 
     if (m_pProcessModule != 0) {
         setProcessModule(0);
@@ -50,34 +50,34 @@ DVCSObservable::~DVCSObservable() {
     }
 }
 
-std::string DVCSObservable::toString() const {
-    return Observable<DVCSObservableKinematic, DVCSObservableResult>::toString();
+std::string TCSObservable::toString() const {
+    return Observable<TCSObservableKinematic, TCSObservableResult>::toString();
 }
 
-void DVCSObservable::resolveObjectDependencies() {
-    Observable<DVCSObservableKinematic, DVCSObservableResult>::resolveObjectDependencies();
+void TCSObservable::resolveObjectDependencies() {
+    Observable<TCSObservableKinematic, TCSObservableResult>::resolveObjectDependencies();
 }
 
-void DVCSObservable::run() {
+void TCSObservable::run() {
 
     try {
 
         //get service
-        DVCSObservableService* pDVCSObservableService =
-                Partons::getInstance()->getServiceObjectRegistry()->getDVCSObservableService();
+        TCSObservableService* pTCSObservableService =
+                Partons::getInstance()->getServiceObjectRegistry()->getTCSObservableService();
 
         //run until empty
-        while (!(pDVCSObservableService->isEmptyTaskQueue())) {
+        while (!(pTCSObservableService->isEmptyTaskQueue())) {
 
             //kinematics
-            DVCSObservableKinematic kinematic;
+            TCSObservableKinematic kinematic;
 
             //list of GPD types
             List<GPDType> gpdType;
 
             //set
             ElemUtils::Packet packet =
-                    pDVCSObservableService->popTaskFormQueue();
+                    pTCSObservableService->popTaskFormQueue();
             packet >> kinematic;
             packet >> gpdType;
 
@@ -87,13 +87,13 @@ void DVCSObservable::run() {
                             << " " << kinematic.toString());
 
             //object to be returned
-            DVCSObservableResult result = compute(kinematic, gpdType);
+            TCSObservableResult result = compute(kinematic, gpdType);
 
             //helpful to sort later if kinematic is coming from database
             result.setIndexId(kinematic.getIndexId());
 
             //add
-            pDVCSObservableService->add(result);
+            pTCSObservableService->add(result);
         }
 
     } catch (std::exception &e) {
@@ -101,23 +101,23 @@ void DVCSObservable::run() {
     }
 }
 
-void DVCSObservable::configure(const ElemUtils::Parameters &parameters) {
-    Observable<DVCSObservableKinematic, DVCSObservableResult>::configure(
+void TCSObservable::configure(const ElemUtils::Parameters &parameters) {
+    Observable<TCSObservableKinematic, TCSObservableResult>::configure(
             parameters);
 }
 
-void DVCSObservable::prepareSubModules(
+void TCSObservable::prepareSubModules(
         const std::map<std::string, BaseObjectData>& subModulesData) {
 
     //run for mother
-    Observable<DVCSObservableKinematic, DVCSObservableResult>::prepareSubModules(
+    Observable<TCSObservableKinematic, TCSObservableResult>::prepareSubModules(
             subModulesData);
 
     //iterator
     std::map<std::string, BaseObjectData>::const_iterator it;
 
     //search for process module
-    it = subModulesData.find(DVCSProcessModule::DVCS_PROCESS_MODULE_CLASS_NAME);
+    it = subModulesData.find(TCSProcessModule::TCS_PROCESS_MODULE_CLASS_NAME);
 
     //check if there
     if (it != subModulesData.end()) {
@@ -133,7 +133,7 @@ void DVCSObservable::prepareSubModules(
         if (!m_pProcessModule) {
 
             m_pProcessModule =
-                    Partons::getInstance()->getModuleObjectFactory()->newDVCSProcessModule(
+                    Partons::getInstance()->getModuleObjectFactory()->newTCSProcessModule(
                             (it->second).getModuleClassName());
 
             info(__func__,
@@ -153,9 +153,8 @@ void DVCSObservable::prepareSubModules(
     }
 }
 
-DVCSObservableResult DVCSObservable::compute(
-        const DVCSObservableKinematic& kinematic,
-        const List<GPDType>& gpdType) {
+TCSObservableResult TCSObservable::compute(
+        const TCSObservableKinematic& kinematic, const List<GPDType>& gpdType) {
 
     //TODO gpdType
 
@@ -169,24 +168,24 @@ DVCSObservableResult DVCSObservable::compute(
     isModuleWellConfigured();
 
     //object to be returned
-    DVCSObservableResult result(kinematic);
+    TCSObservableResult result(kinematic);
 
     //check if this observable is a phi dependent observable
     if (m_observableType == ObservableType::PHI) {
 
-        result.setValue(computePhiDVCSObservable(kinematic));
+        result.setValue(computePhiTCSObservable(kinematic));
         result.setObservableType(ObservableType::PHI);
     }
     //check if this observable is a Fourier observable (phi moment)
     else if (m_observableType == ObservableType::FOURIER) {
 
-        result.setValue(computeFourierDVCSObservable(kinematic));
+        result.setValue(computeFourierTCSObservable(kinematic));
         result.setObservableType(ObservableType::FOURIER);
     }
     //check if this observable is an undefined-type observable
     else if (m_observableType == ObservableType::UNDEFINED) {
 
-        result.setValue(computeOtherDVCSObservable(kinematic));
+        result.setValue(computeOtherTCSObservable(kinematic));
         result.setObservableType(ObservableType::UNDEFINED);
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
@@ -201,28 +200,30 @@ DVCSObservableResult DVCSObservable::compute(
     return result;
 }
 
-List<GPDType> DVCSObservable::getListOfAvailableGPDTypeForComputation() const {
+List<GPDType> TCSObservable::getListOfAvailableGPDTypeForComputation() const {
     return m_pProcessModule->getConvolCoeffFunctionModule()->getListOfAvailableGPDTypeForComputation();
 }
 
-void DVCSObservable::setKinematics(const DVCSObservableKinematic& kinematic) {
+void TCSObservable::setKinematics(const TCSObservableKinematic& kinematic) {
 
     // set variables
     m_xB = kinematic.getXB().makeSameUnitAs(PhysicalUnit::NONE).getValue();
     m_t = kinematic.getT().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
-    m_Q2 = kinematic.getQ2().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
+    m_Q2Prim =
+            kinematic.getQ2Prim().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
     m_E = kinematic.getE().makeSameUnitAs(PhysicalUnit::GEV).getValue();
     m_phi = kinematic.getPhi().makeSameUnitAs(PhysicalUnit::RAD).getValue();
+    m_theta = kinematic.getTheta().makeSameUnitAs(PhysicalUnit::RAD).getValue();
 }
 
-void DVCSObservable::initModule() {
-    Observable<DVCSObservableKinematic, DVCSObservableResult>::initModule();
+void TCSObservable::initModule() {
+    Observable<TCSObservableKinematic, TCSObservableResult>::initModule();
 }
 
-void DVCSObservable::isModuleWellConfigured() {
+void TCSObservable::isModuleWellConfigured() {
 
     //run mother
-    Observable<DVCSObservableKinematic, DVCSObservableResult>::isModuleWellConfigured();
+    Observable<TCSObservableKinematic, TCSObservableResult>::isModuleWellConfigured();
 
     //test kinematic domain of xB
     if (m_xB < 0. || m_xB > 1.) {
@@ -240,9 +241,9 @@ void DVCSObservable::isModuleWellConfigured() {
     }
 
     //test kinematic domain of Q2
-    if (m_Q2 < 0.) {
+    if (m_Q2Prim < 0.) {
         ElemUtils::Formatter formatter;
-        formatter << "Input value of Q2 = " << m_Q2 << " is not > 0";
+        formatter << "Input value of Q2' = " << m_Q2Prim << " is not > 0";
         warn(__func__, formatter.str());
     }
 
@@ -254,36 +255,36 @@ void DVCSObservable::isModuleWellConfigured() {
     }
 }
 
-PhysicalType<double> DVCSObservable::computePhiDVCSObservable(
-        const DVCSObservableKinematic& kinematic) {
+PhysicalType<double> TCSObservable::computePhiTCSObservable(
+        const TCSObservableKinematic& kinematic) {
     throw ElemUtils::CustomException(getClassName(), __func__,
             "Nothing to do ; Must be implemented in daugther class");
     return PhysicalType<double>();
 }
 
-PhysicalType<double> DVCSObservable::computeFourierDVCSObservable(
-        const DVCSObservableKinematic& kinematic) {
+PhysicalType<double> TCSObservable::computeFourierTCSObservable(
+        const TCSObservableKinematic& kinematic) {
     throw ElemUtils::CustomException(getClassName(), __func__,
             "Nothing to do ; Must be implemented in daugther class");
     return PhysicalType<double>();
 }
 
-PhysicalType<double> DVCSObservable::computeOtherDVCSObservable(
-        const DVCSObservableKinematic& kinematic) {
+PhysicalType<double> TCSObservable::computeOtherTCSObservable(
+        const TCSObservableKinematic& kinematic) {
     throw ElemUtils::CustomException(getClassName(), __func__,
             "Nothing to do ; Must be implemented in daugther class");
     return PhysicalType<double>();
 }
 
-ObservableType::Type DVCSObservable::getObservableType() const {
+ObservableType::Type TCSObservable::getObservableType() const {
     return m_observableType;
 }
 
-DVCSProcessModule* DVCSObservable::getProcessModule() const {
+TCSProcessModule* TCSObservable::getProcessModule() const {
     return m_pProcessModule;
 }
 
-void DVCSObservable::setProcessModule(DVCSProcessModule* pProcessModule) {
+void TCSObservable::setProcessModule(TCSProcessModule* pProcessModule) {
 
     m_pModuleObjectFactory->updateModulePointerReference(m_pProcessModule,
             pProcessModule);

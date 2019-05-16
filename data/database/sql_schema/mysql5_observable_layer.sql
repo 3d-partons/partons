@@ -49,6 +49,8 @@ E DOUBLE NOT NULL,
 E_unit INTEGER NOT NULL,
 phi DOUBLE NOT NULL,
 phi_unit INTEGER NOT NULL,
+theta DOUBLE NOT NULL,
+theta_unit INTEGER NOT NULL,
 experiment_id INTEGER,
 hash_sum VARCHAR(40) NOT NULL);
 CREATE INDEX tcs_observable_kinematic_index ON tcs_observable_kinematic (hash_sum);
@@ -95,7 +97,7 @@ INNER JOIN dvcs_observable_result obr ON obr.dvcs_observable_kinematic_id = obk.
 ORDER BY obk.dvcs_observable_kinematic_id;
 
 CREATE VIEW tcs_observable_kinematic_view AS 
-SELECT 	obk.tcs_observable_kinematic_id, obk.xB, obk.xB_unit, obk.t, obk.t_unit, obk.Q2, obk.Q2_unit, obk.E, obk.E_unit, obk.phi, obk.phi_unit, obk.hash_sum, 
+SELECT 	obk.tcs_observable_kinematic_id, obk.xB, obk.xB_unit, obk.t, obk.t_unit, obk.Q2, obk.Q2_unit, obk.E, obk.E_unit, obk.phi, obk.phi_unit, obk.theta, obk.theta_unit, obk.hash_sum, 
 	obr.computation_id
 FROM tcs_observable_kinematic obk
 INNER JOIN tcs_observable_result obr ON obr.tcs_observable_kinematic_id = obk.tcs_observable_kinematic_id
@@ -123,11 +125,9 @@ SELECT	obr.computation_id, obk.tcs_observable_kinematic_id,
 	obk.Q2Prim, obk.Q2Prim_unit, 
 	obk.E, obk.E_unit, 
 	obk.phi, obk.phi_unit,
+	obk.theta, obk.theta_unit,
 	obr.tcs_observable_result_id, obr.observable_name, 
 	obr.value, obr.value_unit
 FROM tcs_observable_result obr
 INNER JOIN tcs_observable_kinematic obk ON obr.tcs_observable_kinematic_id = obk.tcs_observable_kinematic_id
 ORDER BY obr.tcs_observable_result_id;
-
-
-

@@ -380,7 +380,7 @@ List<DVCSObservableKinematic> KinematicUtils::getDVCSObservableKinematicFromFile
                                 ElemUtils::Formatter() << "Line " << i
                                         << " (units). Missing column value in your kinematic input file : "
                                         << filePath
-                                        << " ; You must provided 5 column : xB | t | Q2 | E | p");
+                                        << " ; You must provided 5 column : xB | t | Q2 | E | phi");
 
                     }
 
@@ -396,7 +396,7 @@ List<DVCSObservableKinematic> KinematicUtils::getDVCSObservableKinematicFromFile
                             ElemUtils::Formatter() << "Line " << i
                                     << ". Missing column value in your kinematic input file : "
                                     << filePath
-                                    << " ; You must provided 5 column : xB | t | Q2 | E | p");
+                                    << " ; You must provided 5 column : xB | t | Q2 | E | phi");
 
                 }
 
@@ -417,6 +417,111 @@ List<DVCSObservableKinematic> KinematicUtils::getDVCSObservableKinematicFromFile
                                     kinematicUnits[3]),
                             PhysicalType<double>(kinematicValues[4],
                                     kinematicUnits[4]));
+                }
+
+                kinematic.setIndexId(kinematicList.size());
+
+                //add
+                kinematicList.add(kinematic);
+            }
+        }
+    } else {
+        errorCannotOpenFile(__func__, filePath);
+    }
+
+    return kinematicList;
+}
+
+List<TCSObservableKinematic> KinematicUtils::getTCSObservableKinematicFromFile(
+        const std::string& filePath) {
+
+    //result
+    List<TCSObservableKinematic> kinematicList;
+
+    //check if readable
+    if (ElemUtils::FileUtils::isReadable(filePath)) {
+
+        //get file (by line)
+        std::vector<std::string> kinematicString =
+                ElemUtils::FileUtils::readByLine(filePath);
+
+        //check if not empty
+        checkEmptyInputFile(__func__, kinematicString, filePath);
+
+        //units
+        std::vector<PhysicalUnit> kinematicUnits;
+
+        //values
+        std::vector<std::string> kinematicValues;
+
+        //single result
+        TCSObservableKinematic kinematic;
+
+        //loop over lines
+        for (size_t i = 0; i != kinematicString.size(); i++) {
+
+            //process if line is not empty.
+            if (!kinematicString[i].empty()) {
+
+                //trim
+                ElemUtils::StringUtils::trimAll(kinematicString[i]);
+
+                //if first check if with units
+                if (i == 0 && kinematicString[i].at(0) == '#') {
+
+                    //replace
+                    ElemUtils::StringUtils::trimAll(kinematicString[i], "#");
+
+                    //get units
+                    kinematicUnits = getUnitsFromInputFileLine(__func__,
+                            kinematicString[i]);
+
+                    //check size
+                    if (kinematicUnits.size() != 6) {
+                        error(__func__,
+                                ElemUtils::Formatter() << "Line " << i
+                                        << " (units). Missing column value in your kinematic input file : "
+                                        << filePath
+                                        << " ; You must provided 6 column : xB | t | Q2' | E | phi | theta");
+
+                    }
+
+                }
+
+                //split
+                kinematicValues = ElemUtils::StringUtils::split(
+                        kinematicString[i], '|');
+
+                //check size
+                if (kinematicValues.size() != 6) {
+                    error(__func__,
+                            ElemUtils::Formatter() << "Line " << i
+                                    << ". Missing column value in your kinematic input file : "
+                                    << filePath
+                                    << " ; You must provided 6 column : xB | t | Q2' | E | phi | theta");
+
+                }
+
+                //single
+                if (kinematicUnits.size() == 0) {
+                    kinematic = TCSObservableKinematic(kinematicValues[0],
+                            kinematicValues[1], kinematicValues[2],
+                            kinematicValues[3], kinematicValues[4],
+                            kinematicValues[5]);
+                } else {
+                    kinematic = TCSObservableKinematic(
+                            PhysicalType<double>(kinematicValues[0],
+                                    kinematicUnits[0]),
+                            PhysicalType<double>(kinematicValues[1],
+                                    kinematicUnits[1]),
+                            PhysicalType<double>(kinematicValues[2],
+                                    kinematicUnits[2]),
+                            PhysicalType<double>(kinematicValues[3],
+                                    kinematicUnits[3]),
+                            PhysicalType<double>(kinematicValues[4],
+                                    kinematicUnits[4]),
+                            PhysicalType<double>(kinematicValues[5],
+                                    kinematicUnits[5]));
                 }
 
                 kinematic.setIndexId(kinematicList.size());

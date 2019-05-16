@@ -1,4 +1,4 @@
-#include "../../../../../include/partons/database/observable/dao/DVCSObservableResultDao.h"
+#include "../../../../../include/partons/database/observable/dao/TCSObservableResultDao.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
@@ -17,14 +17,14 @@
 
 namespace PARTONS {
 
-DVCSObservableResultDao::DVCSObservableResultDao() :
-        BaseObject("DVCSObservableResultDao") {
+TCSObservableResultDao::TCSObservableResultDao() :
+        BaseObject("TCSObservableResultDao") {
 }
 
-DVCSObservableResultDao::~DVCSObservableResultDao() {
+TCSObservableResultDao::~TCSObservableResultDao() {
 }
 
-int DVCSObservableResultDao::insert(const std::string& observableName,
+int TCSObservableResultDao::insert(const std::string& observableName,
         const double value, const double statErrorLB, const double statErrorUB,
         const double systErrorLB, const double systErrorUB,
         const double scaleErrorLB, const double scaleErrorUB,
@@ -49,7 +49,7 @@ int DVCSObservableResultDao::insert(const std::string& observableName,
     names.push_back("scale_error_lb");
     names.push_back("scale_error_ub");
     names.push_back("value_unit");
-    names.push_back("dvcs_observable_kinematic_id");
+    names.push_back("tcs_observable_kinematic_id");
     names.push_back("computation_id");
 
     values.push_back(":observable_name");
@@ -61,11 +61,11 @@ int DVCSObservableResultDao::insert(const std::string& observableName,
     values.push_back(":scale_error_lb");
     values.push_back(":scale_error_ub");
     values.push_back(":value_unit");
-    values.push_back(":dvcs_observable_kinematic_id");
+    values.push_back(":tcs_observable_kinematic_id");
     values.push_back(":computation_id");
 
     ElemUtils::Formatter formatter;
-    formatter << "INSERT INTO " << "dvcs_observable_result"
+    formatter << "INSERT INTO " << "tcs_observable_result"
             << Database::getPreFormatedColumnNamesFromVector(names)
             << Database::getPreFormatedColumnValuesFromVector(values);
 
@@ -97,18 +97,18 @@ int DVCSObservableResultDao::insert(const std::string& observableName,
     return result;
 }
 
-List<DVCSObservableResult> DVCSObservableResultDao::getObservableResultListByComputationId(
+List<TCSObservableResult> TCSObservableResultDao::getObservableResultListByComputationId(
         const int computationId) const {
 
     //result
-    List<DVCSObservableResult> results;
+    List<TCSObservableResult> results;
 
     //create query
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
     //prepare query
     query.prepare(
-            "SELECT * FROM dvcs_observable_result WHERE computation_id = :computationId;");
+            "SELECT * FROM tcs_observable_result WHERE computation_id = :computationId;");
 
     query.bindValue(":computationId", computationId);
 
@@ -122,12 +122,12 @@ List<DVCSObservableResult> DVCSObservableResultDao::getObservableResultListByCom
     return results;
 }
 
-void DVCSObservableResultDao::fillObservableResultList(
-        List<DVCSObservableResult> &observableResultList,
+void TCSObservableResultDao::fillObservableResultList(
+        List<TCSObservableResult> &observableResultList,
         QSqlQuery& query) const {
 
     //get indices
-    int field_id = query.record().indexOf("dvcs_observable_result_id");
+    int field_id = query.record().indexOf("tcs_observable_result_id");
     int field_observable_name = query.record().indexOf("observable_name");
     int field_value = query.record().indexOf("value");
     int field_stat_error_lb = query.record().indexOf("stat_error_lb");
@@ -138,7 +138,7 @@ void DVCSObservableResultDao::fillObservableResultList(
     int field_scale_error_ub = query.record().indexOf("scale_error_ub");
     int field_value_unit = query.record().indexOf("value_unit");
     int field_kinematic_id = query.record().indexOf(
-            "dvcs_observable_kinematic_id");
+            "tcs_observable_kinematic_id");
 
     //results
     while (query.next()) {
@@ -157,7 +157,7 @@ void DVCSObservableResultDao::fillObservableResultList(
         PhysicalUnit::Type value_unit =
                 static_cast<PhysicalUnit::Type>(query.value(field_value_unit).toInt());
 
-        DVCSObservableResult observableResult;
+        TCSObservableResult observableResult;
 
         observableResult.setIndexId(id);
         observableResult.setValue(PhysicalType<double>(value, value_unit));
@@ -166,7 +166,7 @@ void DVCSObservableResultDao::fillObservableResultList(
         observableResult.setErrScale(scaleError);
         observableResult.setComputationModuleName(observable_name);
         observableResult.setKinematic(
-                m_dvcsObservableKinematicDao.getKinematicById(
+                m_tcsObservableKinematicDao.getKinematicById(
                         query.value(field_kinematic_id).toInt()));
 
         //add
@@ -174,11 +174,11 @@ void DVCSObservableResultDao::fillObservableResultList(
     }
 }
 
-List<DVCSObservableResult> DVCSObservableResultDao::getObservableResultListFromSQLQuery(
+List<TCSObservableResult> TCSObservableResultDao::getObservableResultListFromSQLQuery(
         const std::string& sqlQuery) const {
 
     //result
-    List<DVCSObservableResult> results;
+    List<TCSObservableResult> results;
 
     //create query
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
