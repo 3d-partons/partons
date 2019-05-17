@@ -283,16 +283,16 @@ public:
                         j++;
                     }
 
-                    info(__func__, rootComparisonReport.showComparisonStats());
+                    debug(__func__, rootComparisonReport.showComparisonStats());
 
                     if (rootComparisonReport.sizeOfComparedDataFailed() != 0) {
-                        info(__func__,
+                        debug(__func__,
                                 rootComparisonReport.showComparedDataFailed());
                     }
                     rootComparisonReport.clearComparedData();
                 }
 
-                info(__func__, rootComparisonReport.showComparisonStats());
+                debug(__func__, rootComparisonReport.showComparisonStats());
 
 //                // equal comparison by default
 //                if (this->size() == referenceObject.size()) {
