@@ -9,6 +9,7 @@
  */
 
 #include <ElementaryUtils/parameters/Parameters.h>
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <complex>
 #include <map>
 #include <string>
@@ -21,7 +22,10 @@
 #include "../../../beans/observable/TCS/TCSObservableKinematic.h"
 #include "../../../beans/observable/TCS/TCSObservableResult.h"
 #include "../../../beans/process/VCSSubProcessType.h"
+#include "../../../ModuleObjectFactory.h"
 #include "../../../utils/type/PhysicalType.h"
+#include "../../scales/TCS/TCSScalesModule.h"
+#include "../../xi_converter/XiConverterModule.h"
 #include "../ProcessModule.h"
 
 namespace NumA {
@@ -91,6 +95,26 @@ public:
     // ##### GETTERS & SETTERS #####
 
     /**
+     * Get scale module.
+     */
+    TCSScalesModule* getScaleModule() const;
+
+    /**
+     * Set scale module.
+     */
+    void setScaleModule(TCSScalesModule* pScaleModule);
+
+    /**
+     * Get xi converter module.
+     */
+    XiConverterModule* getXiConverterModule() const;
+
+    /**
+     * Set xi converted module.
+     */
+    void setXiConverterModule(XiConverterModule* pXiConverterModule);
+
+    /**
      * Get CCF module;
      */
     TCSConvolCoeffFunctionModule* getConvolCoeffFunctionModule() const;
@@ -149,12 +173,12 @@ protected:
     virtual void initModule();
     virtual void isModuleWellConfigured();
 
-    double m_xB; ///< Bjorken variable.
     double m_t; ///< Mandelstam variable (square of the 4-momentum transferm in GeV2).
     double m_Q2Prim; ///< Virtuality of the incoming photon (in GeV2).
     double m_E; ///< Beam energy in target rest frame (in GeV).
     double m_phi; ///<  Angle between leptonic and hadronic plane (in radians, Trento convention).
     double m_theta; ///< Angle between positively charged lepton and scattered proton in lepton CMS (in degrees).
+    double m_MLepton; ///< Mass of a single produced lepton (in \f$GeV\f$).
 
     double m_tmin; ///< Minimal value of t.
     double m_tmax; ///< Maximal value of t.
@@ -162,9 +186,11 @@ protected:
     double m_y; ///< Lepton energy fraction.
     double m_epsilon; ///< @f$ \epsilon = \frac{2 x_B M}{Q} @f$.
 
+    TCSScalesModule* m_pScaleModule; ///< Pointer to the underlying scale module.
+    XiConverterModule* m_pXiConverterModule; ///< Pointer to the underlying xi converter module.
     TCSConvolCoeffFunctionModule* m_pConvolCoeffFunctionModule; ///< Pointer to the underlying CCF module.
 
-    TCSConvolCoeffFunctionResult m_tcsConvolCoeffFunctionResult; ///< Stored Compton Form Factor result.
+    TCSConvolCoeffFunctionResult m_dvcsConvolCoeffFunctionResult; ///< Stored Compton Form Factor result.
     TCSConvolCoeffFunctionKinematic m_lastCCFKinematics; ///< Last Compton Form Factor kinematics.
 
     /**

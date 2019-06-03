@@ -17,6 +17,8 @@
 namespace PARTONS {
 class ActiveFlavorsThresholdsModule;
 class BaseObjectFactory;
+class DVCSScalesModule;
+class TCSScalesModule;
 class DVCSConvolCoeffFunctionModule;
 class TCSConvolCoeffFunctionModule;
 class TCSObservable;
@@ -28,7 +30,6 @@ class GPDModule;
 class GPDSubtractionConstantModule;
 class ModuleObject;
 class RunningAlphaStrongModule;
-class ScalesModule;
 class XiConverterModule;
 } /* namespace PARTONS */
 
@@ -200,17 +201,30 @@ public:
             const std::string &className);
 
     /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a ScalesModule.
+     * Specialization of ModuleObjectFactory::newModuleObject into a DVCSScalesModule.
      * @param classId Unique identifier of last child class.
-     * @return ScalesModule pointer.
+     * @return DVCSScalesModule pointer.
      */
-    ScalesModule* newScalesModule(unsigned int classId);
+    DVCSScalesModule* newDVCSScalesModule(unsigned int classId);
     /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a ScaleModule.
+     * Specialization of ModuleObjectFactory::newModuleObject into a DVCSScalesModule.
      * @param className Name of last child class.
-     * @return ScaleModule pointer.
+     * @return DVCSScalesModule pointer.
      */
-    ScalesModule* newScalesModule(const std::string &className);
+    DVCSScalesModule* newDVCSScalesModule(const std::string &className);
+
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a TCSScalesModule.
+     * @param classId Unique identifier of last child class.
+     * @return TCSScalesModule pointer.
+     */
+    TCSScalesModule* newTCSScalesModule(unsigned int classId);
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a TCSScalesModule.
+     * @param className Name of last child class.
+     * @return TCSScalesModule pointer.
+     */
+    TCSScalesModule* newTCSScalesModule(const std::string &className);
 
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a XiConverterModule.

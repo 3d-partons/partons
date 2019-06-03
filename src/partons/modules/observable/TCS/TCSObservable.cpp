@@ -22,14 +22,14 @@ const std::string TCSObservable::TCS_OBSERVABLE_MODULE_CLASS_NAME =
         "TCSObservableModule";
 
 TCSObservable::TCSObservable(const std::string &className) :
-        Observable(className, ChannelType::TCS), m_pProcessModule(0), m_xB(0.), m_t(
-                0.), m_Q2Prim(0.), m_E(0.), m_phi(0.), m_theta(0.) {
+        Observable(className, ChannelType::TCS), m_pProcessModule(0), m_t(0.), m_Q2Prim(
+                0.), m_E(0.), m_phi(0.), m_theta(0.), m_MLepton(0.) {
 }
 
 TCSObservable::TCSObservable(const TCSObservable& other) :
-        Observable(other), m_xB(other.m_xB), m_t(other.m_t), m_Q2Prim(
-                other.m_Q2Prim), m_E(other.m_E), m_phi(other.m_phi), m_theta(
-                other.m_theta) {
+        Observable(other), m_t(other.m_t), m_Q2Prim(other.m_Q2Prim), m_E(
+                other.m_E), m_phi(other.m_phi), m_theta(other.m_theta), m_MLepton(
+                other.m_MLepton) {
 
     if (other.m_pProcessModule != 0) {
         m_pProcessModule = m_pModuleObjectFactory->cloneModuleObject(
@@ -180,13 +180,14 @@ List<GPDType> TCSObservable::getListOfAvailableGPDTypeForComputation() const {
 void TCSObservable::setKinematics(const TCSObservableKinematic& kinematic) {
 
     // set variables
-    m_xB = kinematic.getXB().makeSameUnitAs(PhysicalUnit::NONE).getValue();
     m_t = kinematic.getT().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
     m_Q2Prim =
             kinematic.getQ2Prim().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
     m_E = kinematic.getE().makeSameUnitAs(PhysicalUnit::GEV).getValue();
     m_phi = kinematic.getPhi().makeSameUnitAs(PhysicalUnit::RAD).getValue();
     m_theta = kinematic.getTheta().makeSameUnitAs(PhysicalUnit::RAD).getValue();
+    m_MLepton =
+            kinematic.getMLepton().makeSameUnitAs(PhysicalUnit::GEV).getValue();
 }
 
 void TCSObservable::initModule() {
@@ -197,14 +198,6 @@ void TCSObservable::isModuleWellConfigured() {
 
     //run mother
     Observable<TCSObservableKinematic, TCSObservableResult>::isModuleWellConfigured();
-
-    //test kinematic domain of xB
-    if (m_xB < 0. || m_xB > 1.) {
-        ElemUtils::Formatter formatter;
-        formatter << "Input value of xB = " << m_xB
-                << " does not lay between 0 and 1";
-        warn(__func__, formatter.str());
-    }
 
     //test kinematic domain of t
     if (m_t > 0.) {
@@ -224,6 +217,14 @@ void TCSObservable::isModuleWellConfigured() {
     if (m_E < 0.) {
         ElemUtils::Formatter formatter;
         formatter << "Input value of E = " << m_E << " is not > 0";
+        warn(__func__, formatter.str());
+    }
+
+    //test kinematic domain of MLepton
+    if (m_MLepton < 0.) {
+        ElemUtils::Formatter formatter;
+        formatter << "Input value of lepton mass = " << m_MLepton
+                << " is not > 0";
         warn(__func__, formatter.str());
     }
 }

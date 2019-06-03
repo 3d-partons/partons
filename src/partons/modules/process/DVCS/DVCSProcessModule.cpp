@@ -1,7 +1,6 @@
 #include "../../../../../include/partons/modules/process/DVCS/DVCSProcessModule.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
-#include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/linear_algebra/vector/Vector3D.h>
 #include <cmath>
 #include <utility>
@@ -10,17 +9,12 @@
 #include "../../../../../include/partons/beans/convol_coeff_function/ConvolCoeffFunctionResult.h"
 #include "../../../../../include/partons/beans/observable/ObservableResult.h"
 #include "../../../../../include/partons/beans/Result.h"
+#include "../../../../../include/partons/beans/Scales.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
-#include "../../../../../include/partons/modules/scales/ScalesModule.h"
-#include "../../../../../include/partons/beans/Scales.h"
-#include "../../../../../include/partons/modules/xi_converter/XiConverterModule.h"
-#include "../../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../../include/partons/Partons.h"
-#include "../../../../../include/partons/services/ConvolCoeffFunctionService.h"
 #include "../../../../../include/partons/services/DVCSConvolCoeffFunctionService.h"
 #include "../../../../../include/partons/ServiceObjectRegistry.h"
-#include "../../../../../include/partons/utils/type/PhysicalType.h"
 #include "../../../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
@@ -31,10 +25,21 @@ const std::string DVCSProcessModule::DVCS_PROCESS_MODULE_CLASS_NAME =
 DVCSProcessModule::DVCSProcessModule(const std::string &className) :
         ProcessModule(className, ChannelType::DVCS), m_xB(0.), m_t(0.), m_Q2(
                 0.), m_E(0.), m_phi(0.), m_tmin(0.), m_tmax(0.), m_xBmin(0), m_y(
-                0.), m_epsilon(0.), m_pConvolCoeffFunctionModule(0) {
+                0.), m_epsilon(0.), m_pScaleModule(0), m_pXiConverterModule(0), m_pConvolCoeffFunctionModule(
+                0) {
 }
 
 DVCSProcessModule::~DVCSProcessModule() {
+
+    if (m_pScaleModule != 0) {
+        setScaleModule(0);
+        m_pScaleModule = 0;
+    }
+
+    if (m_pXiConverterModule != 0) {
+        setXiConverterModule(0);
+        m_pXiConverterModule = 0;
+    }
 
     if (m_pConvolCoeffFunctionModule != 0) {
         setConvolCoeffFunctionModule(0);
@@ -46,11 +51,21 @@ DVCSProcessModule::DVCSProcessModule(const DVCSProcessModule& other) :
         ProcessModule(other), m_xB(other.m_xB), m_t(other.m_t), m_Q2(
                 other.m_Q2), m_E(other.m_E), m_phi(other.m_phi), m_tmin(
                 other.m_tmin), m_tmax(other.m_tmax), m_xBmin(other.m_xBmin), m_y(
-                other.m_y), m_epsilon(other.m_epsilon), m_pConvolCoeffFunctionModule(
-                0) {
+                other.m_y), m_epsilon(other.m_epsilon), m_pScaleModule(0), m_pXiConverterModule(
+                0), m_pConvolCoeffFunctionModule(0) {
 
     m_lastCCFKinematics = other.m_lastCCFKinematics;
     m_dvcsConvolCoeffFunctionResult = other.m_dvcsConvolCoeffFunctionResult;
+
+    if (other.m_pScaleModule != 0) {
+        m_pScaleModule = m_pModuleObjectFactory->cloneModuleObject(
+                other.m_pScaleModule);
+    }
+
+    if (other.m_pXiConverterModule != 0) {
+        m_pXiConverterModule = m_pModuleObjectFactory->cloneModuleObject(
+                other.m_pXiConverterModule);
+    }
 
     if (other.m_pConvolCoeffFunctionModule != 0) {
         m_pConvolCoeffFunctionModule =
@@ -86,6 +101,80 @@ void DVCSProcessModule::prepareSubModules(
 
     //iterator
     std::map<std::string, BaseObjectData>::const_iterator it;
+
+    //search for scales module
+    it = subModulesData.find(DVCSScalesModule::DVCS_SCALES_MODULE_CLASS_NAME);
+
+    //check if there
+    if (it != subModulesData.end()) {
+
+        //check if already set
+        if (m_pScaleModule) {
+
+            setScaleModule(0);
+            m_pScaleModule = 0;
+        }
+
+        //set
+        if (!m_pScaleModule) {
+
+            m_pScaleModule =
+                    Partons::getInstance()->getModuleObjectFactory()->newDVCSScalesModule(
+                            (it->second).getModuleClassName());
+
+            info(__func__,
+                    ElemUtils::Formatter() << "Configured with ScaleModule = "
+                            << m_pScaleModule->getClassName());
+
+            m_pScaleModule->configure((it->second).getParameters());
+            m_pScaleModule->prepareSubModules((it->second).getSubModules());
+        }
+
+    } else {
+
+        //throw error
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << getClassName()
+                        << " is ScaleModule dependent and you have not provided one");
+    }
+
+    //search for xi module
+    it = subModulesData.find(XiConverterModule::XI_CONVERTER_MODULE_CLASS_NAME);
+
+    //check if there
+    if (it != subModulesData.end()) {
+
+        //check if already set
+        if (m_pXiConverterModule) {
+
+            setXiConverterModule(0);
+            m_pXiConverterModule = 0;
+        }
+
+        //set
+        if (!m_pXiConverterModule) {
+
+            m_pXiConverterModule =
+                    Partons::getInstance()->getModuleObjectFactory()->newXiConverterModule(
+                            (it->second).getModuleClassName());
+
+            info(__func__,
+                    ElemUtils::Formatter()
+                            << "Configured with XiConverterModule = "
+                            << m_pXiConverterModule->getClassName());
+
+            m_pXiConverterModule->configure((it->second).getParameters());
+            m_pXiConverterModule->prepareSubModules(
+                    (it->second).getSubModules());
+        }
+
+    } else {
+
+        //throw error
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << getClassName()
+                        << " is XiConverterModule dependent and you have not provided one");
+    }
 
     //check if ccf module dependent
     if (isCCFModuleDependent()) {
@@ -248,6 +337,45 @@ bool DVCSProcessModule::isPreviousCCFKinematicDifferent(
             || (kinematic.getMuR2() != m_lastCCFKinematics.getMuR2()));
 }
 
+DVCSScalesModule* DVCSProcessModule::getScaleModule() const {
+    return m_pScaleModule;
+}
+
+void DVCSProcessModule::setScaleModule(DVCSScalesModule* pScaleModule) {
+
+    m_pModuleObjectFactory->updateModulePointerReference(m_pScaleModule,
+            pScaleModule);
+    m_pScaleModule = pScaleModule;
+
+    if (m_pScaleModule != 0) {
+        info(__func__,
+                ElemUtils::Formatter() << "DVCSScalesModule is set to: "
+                        << pScaleModule->getClassName());
+    } else {
+        info(__func__, "DVCSScalesModule is set to: 0");
+    }
+}
+
+XiConverterModule* DVCSProcessModule::getXiConverterModule() const {
+    return m_pXiConverterModule;
+}
+
+void DVCSProcessModule::setXiConverterModule(
+        XiConverterModule* pXiConverterModule) {
+
+    m_pModuleObjectFactory->updateModulePointerReference(m_pXiConverterModule,
+            pXiConverterModule);
+    m_pXiConverterModule = pXiConverterModule;
+
+    if (m_pXiConverterModule != 0) {
+        info(__func__,
+                ElemUtils::Formatter() << "XiConverterModule is set to: "
+                        << pXiConverterModule->getClassName());
+    } else {
+        info(__func__, "XiConverterModule is set to: 0");
+    }
+}
+
 DVCSConvolCoeffFunctionModule* DVCSProcessModule::getConvolCoeffFunctionModule() const {
     return m_pConvolCoeffFunctionModule;
 }
@@ -306,6 +434,24 @@ void DVCSProcessModule::isModuleWellConfigured() {
     //run for mother
     ProcessModule<DVCSObservableKinematic, DVCSObservableResult>::isModuleWellConfigured();
 
+    //check if pointer to scale module set
+    if (m_pScaleModule == 0) {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                "m_pScaleModule is NULL pointer ; Use configure method to configure it");
+    }
+
+    //check if pointer to xi module set
+    if (m_pXiConverterModule == 0) {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                "m_pXiConverterModule is NULL pointer ; Use configure method to configure it");
+    }
+
+    //check if pointer to cff module set
+    if (isCCFModuleDependent() && m_pConvolCoeffFunctionModule == 0) {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                "m_pConvolCoeffFunctionModule is NULL pointer ; Use configure method to configure it");
+    }
+
     //test kinematic domain of xB
     if (m_xB < m_xBmin || m_xB > 1.) {
         ElemUtils::Formatter formatter;
@@ -351,11 +497,10 @@ void DVCSProcessModule::computeConvolCoeffFunction(
         const List<GPDType>& gpdType) {
 
     //compute scales
-    Scales scale = m_pScaleModule->compute(kinematic.getQ2());
+    Scales scale = m_pScaleModule->compute(kinematic);
 
     //compute xi
-    PhysicalType<double> xi = m_pXiConverterModule->compute(kinematic.getXB(),
-            kinematic.getT(), kinematic.getQ2());
+    PhysicalType<double> xi;// = m_pXiConverterModule->compute(kinematic);
 
     //create ccf kinematics
     DVCSConvolCoeffFunctionKinematic ccfKinematics(xi, kinematic.getT(),

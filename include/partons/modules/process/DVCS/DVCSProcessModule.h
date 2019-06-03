@@ -9,6 +9,7 @@
  */
 
 #include <ElementaryUtils/parameters/Parameters.h>
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <complex>
 #include <map>
 #include <string>
@@ -21,7 +22,10 @@
 #include "../../../beans/observable/DVCS/DVCSObservableKinematic.h"
 #include "../../../beans/observable/DVCS/DVCSObservableResult.h"
 #include "../../../beans/process/VCSSubProcessType.h"
+#include "../../../ModuleObjectFactory.h"
 #include "../../../utils/type/PhysicalType.h"
+#include "../../scales/DVCS/DVCSScalesModule.h"
+#include "../../xi_converter/XiConverterModule.h"
 #include "../ProcessModule.h"
 
 namespace NumA {
@@ -89,6 +93,26 @@ public:
             const DVCSConvolCoeffFunctionKinematic& kinematic) const;
 
     // ##### GETTERS & SETTERS #####
+
+    /**
+     * Get scale module.
+     */
+    DVCSScalesModule* getScaleModule() const;
+
+    /**
+     * Set scale module.
+     */
+    void setScaleModule(DVCSScalesModule* pScaleModule);
+
+    /**
+     * Get xi converter module.
+     */
+    XiConverterModule* getXiConverterModule() const;
+
+    /**
+     * Set xi converted module.
+     */
+    void setXiConverterModule(XiConverterModule* pXiConverterModule);
 
     /**
      * Get CCF module;
@@ -161,6 +185,8 @@ protected:
     double m_y; ///< Lepton energy fraction.
     double m_epsilon; ///< @f$ \epsilon = \frac{2 x_B M}{Q} @f$.
 
+    DVCSScalesModule* m_pScaleModule; ///< Pointer to the underlying scale module.
+    XiConverterModule* m_pXiConverterModule; ///< Pointer to the underlying xi converter module.
     DVCSConvolCoeffFunctionModule* m_pConvolCoeffFunctionModule; ///< Pointer to the underlying CCF module.
 
     DVCSConvolCoeffFunctionResult m_dvcsConvolCoeffFunctionResult; ///< Stored Compton Form Factor result.

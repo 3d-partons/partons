@@ -86,12 +86,12 @@ protected:
             const TCSObservableKinematic& kinematic,
             const List<GPDType>& gpdType) = 0;
 
-    double m_xB; ///< Bjorken variable.
     double m_t; ///< Mandelstam variable (square of the 4-momentum transferm in GeV2).
     double m_Q2Prim; ///< Virtuality of the incoming photon (in GeV2).
     double m_E; ///< Beam energy in target rest frame (in GeV).
     double m_phi; ///<  Angle between leptonic and hadronic plane (in radians, Trento convention).
     double m_theta; /// < Angle between positively charged lepton and scattered proton in lepton CMS (in degrees).
+    double m_MLepton; /// < Mass of a single produced lepton (in GeV).
 
     TCSProcessModule* m_pProcessModule; ///< Pointer to the underlying process module.
 };

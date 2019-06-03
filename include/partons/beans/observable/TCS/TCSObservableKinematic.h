@@ -289,7 +289,7 @@ private:
     PhysicalType<double> m_theta;
 
     /**
-     *  Mass of a single produced lepton (in \f$GeV\f$).
+     * Mass of a single produced lepton (in \f$GeV\f$).
      */
     PhysicalType<double> m_MLepton;
 };

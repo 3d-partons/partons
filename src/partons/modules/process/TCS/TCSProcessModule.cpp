@@ -1,7 +1,6 @@
 #include "../../../../../include/partons/modules/process/TCS/TCSProcessModule.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
-#include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/linear_algebra/vector/Vector3D.h>
 #include <cmath>
 #include <utility>
@@ -10,17 +9,12 @@
 #include "../../../../../include/partons/beans/convol_coeff_function/ConvolCoeffFunctionResult.h"
 #include "../../../../../include/partons/beans/observable/ObservableResult.h"
 #include "../../../../../include/partons/beans/Result.h"
+#include "../../../../../include/partons/beans/Scales.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../../include/partons/modules/convol_coeff_function/TCS/TCSConvolCoeffFunctionModule.h"
-#include "../../../../../include/partons/modules/scales/ScalesModule.h"
-#include "../../../../../include/partons/beans/Scales.h"
-#include "../../../../../include/partons/modules/xi_converter/XiConverterModule.h"
-#include "../../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../../include/partons/Partons.h"
-#include "../../../../../include/partons/services/ConvolCoeffFunctionService.h"
 #include "../../../../../include/partons/services/TCSConvolCoeffFunctionService.h"
 #include "../../../../../include/partons/ServiceObjectRegistry.h"
-#include "../../../../../include/partons/utils/type/PhysicalType.h"
 #include "../../../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
@@ -29,12 +23,23 @@ const std::string TCSProcessModule::TCS_PROCESS_MODULE_CLASS_NAME =
         "TCSProcessModule";
 
 TCSProcessModule::TCSProcessModule(const std::string &className) :
-        ProcessModule(className, ChannelType::TCS), m_xB(0.), m_t(0.), m_Q2Prim(
-                0.), m_E(0.), m_phi(0.), m_theta(0.), m_tmin(0.), m_tmax(0.), m_xBmin(
-                0), m_y(0.), m_epsilon(0.), m_pConvolCoeffFunctionModule(0) {
+        ProcessModule(className, ChannelType::TCS), m_t(0.), m_Q2Prim(0.), m_E(
+                0.), m_phi(0.), m_theta(0.), m_MLepton(0.), m_tmin(0.), m_tmax(
+                0.), m_xBmin(0), m_y(0.), m_epsilon(0.), m_pScaleModule(0), m_pXiConverterModule(
+                0), m_pConvolCoeffFunctionModule(0) {
 }
 
 TCSProcessModule::~TCSProcessModule() {
+
+    if (m_pScaleModule != 0) {
+        setScaleModule(0);
+        m_pScaleModule = 0;
+    }
+
+    if (m_pXiConverterModule != 0) {
+        setXiConverterModule(0);
+        m_pXiConverterModule = 0;
+    }
 
     if (m_pConvolCoeffFunctionModule != 0) {
         setConvolCoeffFunctionModule(0);
@@ -43,14 +48,24 @@ TCSProcessModule::~TCSProcessModule() {
 }
 
 TCSProcessModule::TCSProcessModule(const TCSProcessModule& other) :
-        ProcessModule(other), m_xB(other.m_xB), m_t(other.m_t), m_Q2Prim(
-                other.m_Q2Prim), m_E(other.m_E), m_phi(other.m_phi), m_theta(
-                other.m_theta), m_tmin(other.m_tmin), m_tmax(other.m_tmax), m_xBmin(
-                other.m_xBmin), m_y(other.m_y), m_epsilon(other.m_epsilon), m_pConvolCoeffFunctionModule(
-                0) {
+        ProcessModule(other), m_t(other.m_t), m_Q2Prim(other.m_Q2Prim), m_E(
+                other.m_E), m_phi(other.m_phi), m_theta(other.m_theta), m_MLepton(
+                other.m_MLepton), m_tmin(other.m_tmin), m_tmax(other.m_tmax), m_xBmin(
+                other.m_xBmin), m_y(other.m_y), m_epsilon(other.m_epsilon), m_pScaleModule(
+                0), m_pXiConverterModule(0), m_pConvolCoeffFunctionModule(0) {
 
     m_lastCCFKinematics = other.m_lastCCFKinematics;
-    m_tcsConvolCoeffFunctionResult = other.m_tcsConvolCoeffFunctionResult;
+    m_dvcsConvolCoeffFunctionResult = other.m_dvcsConvolCoeffFunctionResult;
+
+    if (other.m_pScaleModule != 0) {
+        m_pScaleModule = m_pModuleObjectFactory->cloneModuleObject(
+                other.m_pScaleModule);
+    }
+
+    if (other.m_pXiConverterModule != 0) {
+        m_pXiConverterModule = m_pModuleObjectFactory->cloneModuleObject(
+                other.m_pXiConverterModule);
+    }
 
     if (other.m_pConvolCoeffFunctionModule != 0) {
         m_pConvolCoeffFunctionModule =
@@ -86,6 +101,80 @@ void TCSProcessModule::prepareSubModules(
 
     //iterator
     std::map<std::string, BaseObjectData>::const_iterator it;
+
+    //search for scales module
+    it = subModulesData.find(TCSScalesModule::TCS_SCALES_MODULE_CLASS_NAME);
+
+    //check if there
+    if (it != subModulesData.end()) {
+
+        //check if already set
+        if (m_pScaleModule) {
+
+            setScaleModule(0);
+            m_pScaleModule = 0;
+        }
+
+        //set
+        if (!m_pScaleModule) {
+
+            m_pScaleModule =
+                    Partons::getInstance()->getModuleObjectFactory()->newTCSScalesModule(
+                            (it->second).getModuleClassName());
+
+            info(__func__,
+                    ElemUtils::Formatter() << "Configured with ScaleModule = "
+                            << m_pScaleModule->getClassName());
+
+            m_pScaleModule->configure((it->second).getParameters());
+            m_pScaleModule->prepareSubModules((it->second).getSubModules());
+        }
+
+    } else {
+
+        //throw error
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << getClassName()
+                        << " is ScaleModule dependent and you have not provided one");
+    }
+
+    //search for xi module
+    it = subModulesData.find(XiConverterModule::XI_CONVERTER_MODULE_CLASS_NAME);
+
+    //check if there
+    if (it != subModulesData.end()) {
+
+        //check if already set
+        if (m_pXiConverterModule) {
+
+            setXiConverterModule(0);
+            m_pXiConverterModule = 0;
+        }
+
+        //set
+        if (!m_pXiConverterModule) {
+
+            m_pXiConverterModule =
+                    Partons::getInstance()->getModuleObjectFactory()->newXiConverterModule(
+                            (it->second).getModuleClassName());
+
+            info(__func__,
+                    ElemUtils::Formatter()
+                            << "Configured with XiConverterModule = "
+                            << m_pXiConverterModule->getClassName());
+
+            m_pXiConverterModule->configure((it->second).getParameters());
+            m_pXiConverterModule->prepareSubModules(
+                    (it->second).getSubModules());
+        }
+
+    } else {
+
+        //throw error
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << getClassName()
+                        << " is XiConverterModule dependent and you have not provided one");
+    }
 
     //check if ccf module dependent
     if (isCCFModuleDependent()) {
@@ -234,7 +323,7 @@ PhysicalType<double> TCSProcessModule::CrossSectionInterf(double beamHelicity,
 
 void TCSProcessModule::resetPreviousKinematic() {
 
-    m_tcsConvolCoeffFunctionResult = TCSConvolCoeffFunctionResult();
+    m_dvcsConvolCoeffFunctionResult = TCSConvolCoeffFunctionResult();
     m_lastCCFKinematics = TCSConvolCoeffFunctionKinematic();
 }
 
@@ -246,6 +335,45 @@ bool TCSProcessModule::isPreviousCCFKinematicDifferent(
             || (kinematic.getQ2Prim() != m_lastCCFKinematics.getQ2Prim())
             || (kinematic.getMuF2() != m_lastCCFKinematics.getMuF2())
             || (kinematic.getMuR2() != m_lastCCFKinematics.getMuR2()));
+}
+
+TCSScalesModule* TCSProcessModule::getScaleModule() const {
+    return m_pScaleModule;
+}
+
+void TCSProcessModule::setScaleModule(TCSScalesModule* pScaleModule) {
+
+    m_pModuleObjectFactory->updateModulePointerReference(m_pScaleModule,
+            pScaleModule);
+    m_pScaleModule = pScaleModule;
+
+    if (m_pScaleModule != 0) {
+        info(__func__,
+                ElemUtils::Formatter() << "TCSScalesModule is set to: "
+                        << pScaleModule->getClassName());
+    } else {
+        info(__func__, "TCSScalesModule is set to: 0");
+    }
+}
+
+XiConverterModule* TCSProcessModule::getXiConverterModule() const {
+    return m_pXiConverterModule;
+}
+
+void TCSProcessModule::setXiConverterModule(
+        XiConverterModule* pXiConverterModule) {
+
+    m_pModuleObjectFactory->updateModulePointerReference(m_pXiConverterModule,
+            pXiConverterModule);
+    m_pXiConverterModule = pXiConverterModule;
+
+    if (m_pXiConverterModule != 0) {
+        info(__func__,
+                ElemUtils::Formatter() << "XiConverterModule is set to: "
+                        << pXiConverterModule->getClassName());
+    } else {
+        info(__func__, "XiConverterModule is set to: 0");
+    }
 }
 
 TCSConvolCoeffFunctionModule* TCSProcessModule::getConvolCoeffFunctionModule() const {
@@ -273,13 +401,13 @@ void TCSProcessModule::setConvolCoeffFunctionModule(
 
 void TCSProcessModule::setKinematics(const TCSObservableKinematic& kinematic) {
 
-    m_xB = kinematic.getXB().makeSameUnitAs(PhysicalUnit::NONE).getValue();
     m_t = kinematic.getT().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
     m_Q2Prim =
             kinematic.getQ2Prim().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
     m_E = kinematic.getE().makeSameUnitAs(PhysicalUnit::GEV).getValue();
     m_phi = kinematic.getPhi().makeSameUnitAs(PhysicalUnit::RAD).getValue();
     m_theta = kinematic.getTheta().makeSameUnitAs(PhysicalUnit::RAD).getValue();
+    m_MLepton = kinematic.getMLepton().makeSameUnitAs(PhysicalUnit::GEV).getValue();
 }
 
 void TCSProcessModule::setExperimentalConditions(double beamHelicity,
@@ -292,15 +420,17 @@ void TCSProcessModule::initModule() {
     ProcessModule<TCSObservableKinematic, TCSObservableResult>::initModule();
 
     //evaluate internal variables
-    m_epsilon = 2 * m_xB * Constant::PROTON_MASS / sqrt(m_Q2Prim); //TODO TB checked by JAKUB
-    m_y = m_Q2Prim / (2 * m_xB * Constant::PROTON_MASS * m_E);
-    double eps2 = m_epsilon * m_epsilon;
-    double epsroot = sqrt(1 + eps2);
-    double tfactor = -m_Q2Prim / (4 * m_xB * (1 - m_xB) + eps2);
-    m_tmin = tfactor * (2 * (1 - m_xB) * (1 - epsroot) + eps2);
-    m_tmax = tfactor * (2 * (1 - m_xB) * (1 + epsroot) + eps2);
-    m_xBmin = 2 * m_Q2Prim * m_E / Constant::PROTON_MASS
-            / (4 * m_E * m_E - m_Q2Prim);
+    //TODO !!!
+    //TODO !!!
+    //TODO !!!
+//    m_epsilon = 2 * m_xB * Constant::PROTON_MASS / sqrt(m_Q2Prim);
+//    m_y = m_Q2Prim / (2 * m_xB * Constant::PROTON_MASS * m_E);
+//    double eps2 = m_epsilon * m_epsilon;
+//    double epsroot = sqrt(1 + eps2);
+//    double tfactor = -m_Q2Prim / (4 * m_xB * (1 - m_xB) + eps2);
+//    m_tmin = tfactor * (2 * (1 - m_xB) * (1 - epsroot) + eps2);
+//    m_tmax = tfactor * (2 * (1 - m_xB) * (1 + epsroot) + eps2);
+//    m_xBmin = 2 * m_Q2Prim * m_E / Constant::PROTON_MASS / (4 * m_E * m_E - m_Q2Prim);
 }
 
 void TCSProcessModule::isModuleWellConfigured() {
@@ -308,13 +438,25 @@ void TCSProcessModule::isModuleWellConfigured() {
     //run for mother
     ProcessModule<TCSObservableKinematic, TCSObservableResult>::isModuleWellConfigured();
 
-    //test kinematic domain of xB
-    if (m_xB < m_xBmin || m_xB > 1.) {
-        ElemUtils::Formatter formatter;
-        formatter << "Input value of xB = " << m_xB
-                << " does not lay between xBmin = " << m_xBmin << " and 1";
-        warn(__func__, formatter.str());
+    //check if pointer to scale module set
+    if (m_pScaleModule == 0) {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                "m_pScaleModule is NULL pointer ; Use configure method to configure it");
     }
+
+    //check if pointer to xi module set
+    if (m_pXiConverterModule == 0) {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                "m_pXiConverterModule is NULL pointer ; Use configure method to configure it");
+    }
+
+    //check if pointer to cff module set
+    if (isCCFModuleDependent() && m_pConvolCoeffFunctionModule == 0) {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                "m_pConvolCoeffFunctionModule is NULL pointer ; Use configure method to configure it");
+    }
+
+
 
     //test kinematic domain of t
     if (m_t > m_tmin || m_t < m_tmax) {
@@ -325,7 +467,7 @@ void TCSProcessModule::isModuleWellConfigured() {
         warn(__func__, formatter.str());
     }
 
-    //test kinematic domain of Q2'
+    //test kinematic domain of Q2
     if (m_Q2Prim < 0.) {
         ElemUtils::Formatter formatter;
         formatter << "Input value of Q2' = " << m_Q2Prim << " is not > 0";
@@ -336,6 +478,13 @@ void TCSProcessModule::isModuleWellConfigured() {
     if (m_E < 0.) {
         ElemUtils::Formatter formatter;
         formatter << "Input value of E = " << m_E << " is not > 0";
+        warn(__func__, formatter.str());
+    }
+
+    //MLepton kinematic domain of MLepton
+    if (m_MLepton < 0.) {
+        ElemUtils::Formatter formatter;
+        formatter << "Input value of MLepton = " << m_MLepton << " is not > 0";
         warn(__func__, formatter.str());
     }
 
@@ -352,11 +501,10 @@ void TCSProcessModule::computeConvolCoeffFunction(
         const TCSObservableKinematic& kinematic, const List<GPDType>& gpdType) {
 
     //compute scales
-    Scales scale = m_pScaleModule->compute(kinematic.getQ2Prim()); //TODO TB checked by JAKUB
+    Scales scale = m_pScaleModule->compute(kinematic);
 
     //compute xi
-    PhysicalType<double> xi = m_pXiConverterModule->compute(kinematic.getXB(), //TODO TB checked by JAKUB
-            kinematic.getT(), kinematic.getQ2Prim());
+    PhysicalType<double> xi;// = m_pXiConverterModule->compute(kinematic);
 
     //create ccf kinematics
     TCSConvolCoeffFunctionKinematic ccfKinematics(xi, kinematic.getT(),
@@ -366,7 +514,7 @@ void TCSProcessModule::computeConvolCoeffFunction(
     if (isPreviousCCFKinematicDifferent(ccfKinematics)) {
 
         //evaluate
-        m_tcsConvolCoeffFunctionResult =
+        m_dvcsConvolCoeffFunctionResult =
                 Partons::getInstance()->getServiceObjectRegistry()->getTCSConvolCoeffFunctionService()->computeSingleKinematic(
                         ccfKinematics, m_pConvolCoeffFunctionModule, gpdType);
 
@@ -381,8 +529,8 @@ std::complex<double> TCSProcessModule::getConvolCoeffFunctionValue(
     std::complex<double> result = std::complex<double>(0., 0.);
 
     try {
-        if (m_tcsConvolCoeffFunctionResult.isAvailable(gpdType)) {
-            result = m_tcsConvolCoeffFunctionResult.getLastAvailable();
+        if (m_dvcsConvolCoeffFunctionResult.isAvailable(gpdType)) {
+            result = m_dvcsConvolCoeffFunctionResult.getLastAvailable();
         }
     } catch (std::exception &e) {
         // Nothing to do

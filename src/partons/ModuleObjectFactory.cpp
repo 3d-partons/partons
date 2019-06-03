@@ -14,7 +14,8 @@
 #include "../../include/partons/modules/process/DVCS/DVCSProcessModule.h"
 #include "../../include/partons/modules/process/TCS/TCSProcessModule.h"
 #include "../../include/partons/modules/running_alpha_strong/RunningAlphaStrongModule.h"
-#include "../../include/partons/modules/scales/ScalesModule.h"
+#include "../../include/partons/modules/scales/DVCS/DVCSScalesModule.h"
+#include "../../include/partons/modules/scales/TCS/TCSScalesModule.h"
 #include "../../include/partons/modules/xi_converter/XiConverterModule.h"
 
 namespace PARTONS {
@@ -231,13 +232,23 @@ ActiveFlavorsThresholdsModule* ModuleObjectFactory::newActiveFlavorsThresholdsMo
             className));
 }
 
-ScalesModule* ModuleObjectFactory::newScalesModule(unsigned int classId) {
-    return static_cast<ScalesModule*>(newModuleObject(classId));
+DVCSScalesModule* ModuleObjectFactory::newDVCSScalesModule(
+        unsigned int classId) {
+    return static_cast<DVCSScalesModule*>(newModuleObject(classId));
 }
 
-ScalesModule* ModuleObjectFactory::newScalesModule(
+DVCSScalesModule* ModuleObjectFactory::newDVCSScalesModule(
         const std::string &className) {
-    return static_cast<ScalesModule*>(newModuleObject(className));
+    return static_cast<DVCSScalesModule*>(newModuleObject(className));
+}
+
+TCSScalesModule* ModuleObjectFactory::newTCSScalesModule(unsigned int classId) {
+    return static_cast<TCSScalesModule*>(newModuleObject(classId));
+}
+
+TCSScalesModule* ModuleObjectFactory::newTCSScalesModule(
+        const std::string &className) {
+    return static_cast<TCSScalesModule*>(newModuleObject(className));
 }
 
 XiConverterModule* ModuleObjectFactory::newXiConverterModule(
