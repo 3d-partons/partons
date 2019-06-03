@@ -139,7 +139,7 @@ List<TCSConvolCoeffFunctionKinematic> TCSConvolCoeffFunctionKinematicDao::getKin
 
     //prepare query
     query.prepare(
-            "SELECT * FROM tcs_ccf_kinematic_view WHERE computation_id = :computationId AND channel_id = :channelId;");
+            "SELECT k.* FROM tcs_ccf_kinematic_view k, ccf_result r WHERE r.channel_id = :channelId AND r.computation_id = :computationId AND r.ccf_kinematic_id = k.tcs_ccf_kinematic_id;");
 
     query.bindValue(":computationId", computationId);
     query.bindValue(":channelId", ChannelType::TCS);

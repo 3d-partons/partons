@@ -139,7 +139,7 @@ List<DVCSConvolCoeffFunctionKinematic> DVCSConvolCoeffFunctionKinematicDao::getK
 
     //prepare query
     query.prepare(
-            "SELECT * FROM dvcs_ccf_kinematic_view WHERE computation_id = :computationId AND channel_id = :channelId;");
+            "SELECT k.* FROM dvcs_ccf_kinematic_view k, ccf_result r WHERE r.channel_id = :channelId AND r.computation_id = :computationId AND r.ccf_kinematic_id = k.dvcs_ccf_kinematic_id;");
 
     query.bindValue(":computationId", computationId);
     query.bindValue(":channelId", ChannelType::DVCS);
