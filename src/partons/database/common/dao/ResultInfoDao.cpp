@@ -51,7 +51,7 @@ void ResultInfoDao::fillResultInfo(ResultInfo &resultInfo,
 
     int f_computationId = query.record().indexOf(
             QString(Database::COLUMN_NAME_COMPUTATION_ID.c_str()));
-    int f_computationDate = query.record().indexOf("computationDate");
+    int f_computationDate = query.record().indexOf("computation_date");
     int f_scenarioTaskIndexNumber = query.record().indexOf(
             "scenario_task_index_number");
     int f_scenarioHashSum = query.record().indexOf("scenario_hash_sum");

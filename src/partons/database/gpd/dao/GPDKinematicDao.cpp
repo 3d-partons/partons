@@ -157,7 +157,7 @@ List<GPDKinematic> GPDKinematicDao::getKinematicListByComputationId(
 
     //prepare query
     query.prepare(
-            "SELECT * FROM gpd_kinematic_view WHERE computation_id = :computationId;");
+            "SELECT k.* FROM gpd_kinematic_view k, gpd_result r WHERE r.computation_id = :computationId AND r.gpd_kinematic_id = k.gpd_kinematic_id;");
 
     query.bindValue(":computationId", QVariant(computationId));
 

@@ -51,10 +51,8 @@ CREATE INDEX pdqd_index_b ON parton_distribution_quark_distribution (parton_dist
 /* view */
 
 CREATE VIEW gpd_kinematic_view AS
-SELECT 	k.gpd_kinematic_id, k.x, k.x_unit, k.xi, k.xi_unit, k.t, k.t_unit, k.MuF2, k.MuF2_unit, k.MuR2, k.MuR2_unit, k.hash_sum, 
-	r.computation_id
+SELECT 	k.gpd_kinematic_id, k.x, k.x_unit, k.xi, k.xi_unit, k.t, k.t_unit, k.MuF2, k.MuF2_unit, k.MuR2, k.MuR2_unit, k.hash_sum
 FROM gpd_kinematic k 
-INNER JOIN gpd_result r ON r.gpd_kinematic_id = k.gpd_kinematic_id
 ORDER BY k.gpd_kinematic_id;
 
 CREATE VIEW gpd_result_view AS 
@@ -65,7 +63,7 @@ INNER JOIN gpd_result_parton_distribution grpd ON gr.gpd_result_id = grpd.gpd_re
 INNER JOIN parton_distribution pd ON grpd.parton_distribution_id = pd.parton_distribution_id
 INNER JOIN parton_distribution_quark_distribution pdqd ON pd.parton_distribution_id = pdqd.parton_distribution_id
 INNER JOIN quark_distribution qd ON pdqd.quark_distribution_id = qd.quark_distribution_id
-ORDER BY gr.gpd_result_id;
+ORDER BY pd.parton_distribution_id;
 
 /* view for plots */
 
