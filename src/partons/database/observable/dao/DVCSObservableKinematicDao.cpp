@@ -143,7 +143,7 @@ List<DVCSObservableKinematic> DVCSObservableKinematicDao::getKinematicListByComp
 
     //prepare query
     query.prepare(
-            "SELECT * FROM dvcs_observable_kinematic_view WHERE computation_id = :computationId");
+            "SELECT k.* FROM dvcs_observable_kinematic_view k, dvcs_observable_result r WHERE r.computation_id = :computationId AND r.dvcs_observable_kinematic_id = k.dvcs_observable_kinematic_id");
 
     query.bindValue(":computationId", computationId);
 

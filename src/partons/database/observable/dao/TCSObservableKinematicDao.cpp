@@ -148,7 +148,7 @@ List<TCSObservableKinematic> TCSObservableKinematicDao::getKinematicListByComput
 
     //prepare query
     query.prepare(
-            "SELECT * FROM tcs_observable_kinematic_view WHERE computation_id = :computationId");
+            "SELECT k.* FROM tcs_observable_kinematic_view k, tcs_observable_result r WHERE r.computation_id = :computationId AND r.tcs_observable_kinematic_id = k.tcs_observable_kinematic_id");
 
     query.bindValue(":computationId", computationId);
 
