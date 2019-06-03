@@ -90,6 +90,13 @@ void TCSCFFFromDVCS::isModuleWellConfigured() {
 
 std::complex<double> TCSCFFFromDVCS::computeUnpolarized() {
 
+    if (m_qcdOrderType != PerturbativeQCDOrderType::LO
+            && m_qcdOrderType != PerturbativeQCDOrderType::NLO) {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << "XXXX"
+                        << PerturbativeQCDOrderType(m_qcdOrderType).toString());
+    }
+
     /*
      * Calculate TCS Compton Form Factors using results obtained for DVCS
      * For unpolarized CFFs we have:
@@ -101,7 +108,7 @@ std::complex<double> TCSCFFFromDVCS::computeUnpolarized() {
 
     //set module and pQCD order
     m_pDVCSConvolCoeffFunctionModule->setGPDModule(m_pGPDModule);
-    m_pDVCSConvolCoeffFunctionModule->setQCDOrderType(m_qcdOrderType); //TODO was NLO set by hand !!!
+    m_pDVCSConvolCoeffFunctionModule->setQCDOrderType(m_qcdOrderType);
 
     //currect GPD type
     List<GPDType> gpdTypeList;
@@ -120,7 +127,7 @@ std::complex<double> TCSCFFFromDVCS::computeUnpolarized() {
     if (m_qcdOrderType == PerturbativeQCDOrderType::LO) {
         TCSCFF = std::conj(dvcsResult.getResult(m_currentGPDComputeType));
     }
-    //NLO TODO comparison between GPDType and PerturbativeQCDOrderType !!!
+    //NLO
     else if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
 
         TCSCFF = std::conj(dvcsResult.getResult(m_currentGPDComputeType));
@@ -134,6 +141,7 @@ std::complex<double> TCSCFFFromDVCS::computeUnpolarized() {
                 * (std::conj(dvcsResult1.getResult(m_currentGPDComputeType))
                         - TCSCFF) / step;
     }
+
     return TCSCFF;
 }
 
