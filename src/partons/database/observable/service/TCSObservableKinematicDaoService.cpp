@@ -73,10 +73,10 @@ int TCSObservableKinematicDaoService::insert(
 
 int TCSObservableKinematicDaoService::getIdByKinematicObject(
         const TCSObservableKinematic& observableKinematic) const {
-    return m_tcsObservableKinematicDao.select(observableKinematic.getXB(),
-            observableKinematic.getT(), observableKinematic.getQ2Prim(),
-            observableKinematic.getE(), observableKinematic.getPhi(),
-            observableKinematic.getTheta());
+    return m_tcsObservableKinematicDao.select(observableKinematic.getT(),
+            observableKinematic.getQ2Prim(), observableKinematic.getE(),
+            observableKinematic.getPhi(), observableKinematic.getTheta(),
+            observableKinematic.getMLepton());
 }
 
 List<TCSObservableKinematic> TCSObservableKinematicDaoService::getKinematicListByComputationId(
@@ -92,10 +92,10 @@ TCSObservableKinematic TCSObservableKinematicDaoService::getKinematicById(
 
 int TCSObservableKinematicDaoService::insertWithoutTransaction(
         const TCSObservableKinematic& observableKinematic) const {
-    return m_tcsObservableKinematicDao.insert(observableKinematic.getXB(),
-            observableKinematic.getT(), observableKinematic.getQ2Prim(),
-            observableKinematic.getE(), observableKinematic.getPhi(),
-            observableKinematic.getTheta(), observableKinematic.getHashSum());
+    return m_tcsObservableKinematicDao.insert(observableKinematic.getT(),
+            observableKinematic.getQ2Prim(), observableKinematic.getE(),
+            observableKinematic.getPhi(), observableKinematic.getTheta(),
+            observableKinematic.getMLepton(), observableKinematic.getHashSum());
 }
 
 int TCSObservableKinematicDaoService::getKinematicIdByHashSum(

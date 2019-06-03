@@ -106,8 +106,6 @@ int TCSObservableResultDaoService::insert(
                 //prepare query
                 m_observableKinematicTableFile += ElemUtils::Formatter()
                         << m_lastObservableKinematicId << ","
-                        << kinematic.getXB().getValue() << ","
-                        << kinematic.getXB().getUnit() << ","
                         << kinematic.getT().getValue() << ","
                         << kinematic.getT().getUnit() << ","
                         << kinematic.getQ2Prim().getValue() << ","

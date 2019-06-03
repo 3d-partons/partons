@@ -23,18 +23,13 @@ namespace PARTONS {
  *
  * @brief Class representing single observable kinematics for TCS process.
  *
- * This class represents a single observable kinematics for TCS process (x_{B}, t, \f$Q^{2}\f$, E_{b}, \f$\phi\f$, \f$\theta\f$, \f$M_{l}\f$).
+ * This class represents a single observable kinematics for TCS process (t, \f$Q^{2}\f$, E_{b}, \f$\phi\f$, \f$\theta\f$, \f$M_{l}\f$).
  */
 class TCSObservableKinematic: public ObservableKinematic {
 
 public:
 
     static const std::string TCS_OBSERVABLE_KNEMATIC_CLASS_NAME; ///< Type of the kinematic in XML automation.
-
-    /**
-     * Parameter name to set variable \f$x_{B}\f$ via configuration methods.
-     */
-    static const std::string KINEMATIC_PARAMETER_NAME_XB;
 
     /**
      * Parameter name to set variable \f$Q^{2}'\f$ via configuration methods.
@@ -57,9 +52,9 @@ public:
     static const std::string KINEMATIC_PARAMETER_NAME_THETA;
 
     /**
-     * Parameter name to set unit of variable \f$x_{B}\f$ via configuration methods.
+     * Parameter name to set variable \f$\M_{l}\f$ via configuration methods.
      */
-    static const std::string KINEMATIC_PARAMETER_NAME_XB_UNIT;
+    static const std::string KINEMATIC_PARAMETER_NAME_LEPTON_MASS;
 
     /**
      * Parameter name to set unit of variable \f$Q^{2}'\f$ via configuration methods.
@@ -82,50 +77,55 @@ public:
     static const std::string KINEMATIC_PARAMETER_NAME_THETA_UNIT;
 
     /**
+     * Parameter name to set variable \f$\M_{l}\f$ via configuration methods.
+     */
+    static const std::string KINEMATIC_PARAMETER_NAME_LEPTON_MASS_UNIT;
+
+    /**
      * Default constructor.
      */
     TCSObservableKinematic();
 
     /**
      * Assignment constructor.
-     * @param xB Bjorken variable.
      * @param t Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
      * @param Q2Prim Outgoing virtual-photon virtuality (in \f$GeV^{2}\f$).
      * @param E Beam energy (in GeV).
      * @param phi Angle between leptonic and hadronic planes (in degrees, Trento convention).
      * @param theta Angle between positively charged lepton and scattered proton in lepton CMS (in degrees).
+     * @param MLepton Mass of a single produced lepton (in \f$GeV\f$).
      */
-    TCSObservableKinematic(double xB, double t, double Q2Prim, double E,
-            double phi, double theta);
+    TCSObservableKinematic(double t, double Q2Prim, double E, double phi,
+            double theta, double MLepton);
 
     /**
      * Assignment constructor.
-     * @param xB Bjorken variable.
      * @param t Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
      * @param Q2Prim Outgoing virtual-photon virtuality (in \f$GeV^{2}\f$).
      * @param E Beam energy (in GeV).
      * @param phi Angle between leptonic and hadronic planes (in degrees, Trento convention).
      * @param theta Angle between positively charged lepton and scattered proton in lepton CMS (in degrees).
+     * @param MLepton Mass of a single produced lepton (in \f$GeV\f$).
      */
-    TCSObservableKinematic(const PhysicalType<double>& xB,
-            const PhysicalType<double>& t, const PhysicalType<double>& Q2Prim,
-            const PhysicalType<double>& E, const PhysicalType<double>& phi,
-            const PhysicalType<double>& theta);
+    TCSObservableKinematic(const PhysicalType<double>& t,
+            const PhysicalType<double>& Q2Prim, const PhysicalType<double>& E,
+            const PhysicalType<double>& phi, const PhysicalType<double>& theta,
+            const PhysicalType<double>& MLepton);
 
     /**
      * Assignment constructor.
-     * @param xB Bjorken variable.
      * @param t Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
      * @param Q2Prim Outgoing virtual-photon virtuality (in \f$GeV^{2}\f$).
      * @param E Beam energy (in GeV).
      * @param phi Angle between leptonic and hadronic planes (in degrees, Trento convention).
      * @param theta Angle between positively charged lepton and scattered proton in lepton CMS (in degrees).
+     * @param MLepton Mass of a single produced lepton (in \f$GeV\f$).
      */
-    TCSObservableKinematic(const ElemUtils::GenericType& xB,
-            const ElemUtils::GenericType& t,
+    TCSObservableKinematic(const ElemUtils::GenericType& t,
             const ElemUtils::GenericType& Q2Prim,
             const ElemUtils::GenericType& E, const ElemUtils::GenericType& phi,
-            const ElemUtils::GenericType& theta);
+            const ElemUtils::GenericType& theta,
+            const ElemUtils::GenericType& MLepton);
 
     /**
      * Copy constructor.
@@ -166,21 +166,6 @@ public:
     //********************************************************
     //*** SETTERS AND GETTERS ********************************
     //********************************************************
-
-    /**
-     * Get Bjorken variable.
-     */
-    const PhysicalType<double>& getXB() const;
-
-    /**
-     * Set Bjorken variable.
-     */
-    void setXB(const PhysicalType<double>& xB);
-
-    /**
-     * Set Bjorken variable.
-     */
-    void setXB(double xB, PhysicalUnit::Type unit = PhysicalUnit::NONE);
 
     /**
      * Get four-momentum transfer squared of hadron target.
@@ -257,16 +242,26 @@ public:
      */
     void setTheta(double theta, PhysicalUnit::Type unit = PhysicalUnit::DEG);
 
+    /**
+     * Get mass of a single produced lepton (in \f$GeV\f$).
+     */
+    const PhysicalType<double>& getMLepton() const;
+
+    /**
+     * Set mass of a single produced lepton (in \f$GeV\f$).
+     */
+    void setMLepton(const PhysicalType<double>& theta);
+
+    /**
+     * Set mass of a single produced lepton (in \f$GeV\f$).
+     */
+    void setMLepton(double theta, PhysicalUnit::Type unit = PhysicalUnit::GEV);
+
 protected:
 
     virtual void updateHashSum() const;
 
 private:
-
-    /**
-     * Bjorken variable.
-     */
-    PhysicalType<double> m_xB;
 
     /**
      * Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
@@ -293,6 +288,10 @@ private:
      */
     PhysicalType<double> m_theta;
 
+    /**
+     *  Mass of a single produced lepton (in \f$GeV\f$).
+     */
+    PhysicalType<double> m_MLepton;
 };
 
 /**

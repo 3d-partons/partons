@@ -20,10 +20,10 @@ TCSObservableKinematicDao::TCSObservableKinematicDao() :
 TCSObservableKinematicDao::~TCSObservableKinematicDao() {
 }
 
-int TCSObservableKinematicDao::insert(const PhysicalType<double>& xB,
-        const PhysicalType<double>& t, const PhysicalType<double>& Q2Prim,
-        const PhysicalType<double>& E, const PhysicalType<double>& phi,
-        const PhysicalType<double>& theta, const std::string& hashSum) const {
+int TCSObservableKinematicDao::insert(const PhysicalType<double>& t,
+        const PhysicalType<double>& Q2Prim, const PhysicalType<double>& E,
+        const PhysicalType<double>& phi, const PhysicalType<double>& theta,
+        const PhysicalType<double>& MLepton, const std::string& hashSum) const {
 
     //check if already in db
     int result = getKinematicIdByHashSum(hashSum);
@@ -39,10 +39,8 @@ int TCSObservableKinematicDao::insert(const PhysicalType<double>& xB,
 
     //prepare query
     query.prepare(
-            "INSERT INTO tcs_observable_kinematic (xB, xB_unit, t, t_unit, Q2Prim, Q2Prim_unit, E, E_unit, phi, phi_unit, theta, theta_unit, hash_sum) VALUES (:xB, :xB_unit, :t, :t_unit, :Q2Prim, :Q2Prim_unit, :E, :E_unit, :phi, :phi_unit, :theta, :theta_unit, :hash_sum);");
+            "INSERT INTO tcs_observable_kinematic (t, t_unit, Q2Prim, Q2Prim_unit, E, E_unit, phi, phi_unit, theta, theta_unit, MLepton, MLepton_unit, hash_sum) VALUES (:t, :t_unit, :Q2Prim, :Q2Prim_unit, :E, :E_unit, :phi, :phi_unit, :theta, :theta_unit, :MLepton, :MLepton_unit, :hash_sum);");
 
-    query.bindValue(":xB", xB.getValue());
-    query.bindValue(":xB_unit", xB.getUnit());
     query.bindValue(":t", t.getValue());
     query.bindValue(":t_unit", t.getUnit());
     query.bindValue(":Q2Prim", Q2Prim.getValue());
@@ -53,6 +51,8 @@ int TCSObservableKinematicDao::insert(const PhysicalType<double>& xB,
     query.bindValue(":phi_unit", phi.getUnit());
     query.bindValue(":theta", theta.getValue());
     query.bindValue(":theta_unit", theta.getUnit());
+    query.bindValue(":MLepton", MLepton.getValue());
+    query.bindValue(":MLepton_unit", MLepton.getUnit());
     query.bindValue(":hash_sum", hashSum.c_str());
 
     //execute query
@@ -72,10 +72,10 @@ int TCSObservableKinematicDao::insert(const PhysicalType<double>& xB,
     return result;
 }
 
-int TCSObservableKinematicDao::select(const PhysicalType<double>& xB,
-        const PhysicalType<double>& t, const PhysicalType<double>& Q2Prim,
-        const PhysicalType<double>& E, const PhysicalType<double>& phi,
-        const PhysicalType<double>& theta) const {
+int TCSObservableKinematicDao::select(const PhysicalType<double>& t,
+        const PhysicalType<double>& Q2Prim, const PhysicalType<double>& E,
+        const PhysicalType<double>& phi, const PhysicalType<double>& theta,
+        const PhysicalType<double>& MLepton) const {
 
     //result
     int result = -1;
@@ -85,10 +85,8 @@ int TCSObservableKinematicDao::select(const PhysicalType<double>& xB,
 
     //prepare query
     query.prepare(
-            "SELECT tcs_observable_kinematic_id FROM tcs_observable_kinematic WHERE xB = :xB AND xB_unit = :xB_unit AND t = :t AND t_unit = :t_unit AND Q2Prim = :Q2Prim AND Q2Prim_unit = :Q2Prim_unit AND E = :E AND E_unit = :E_unit AND phi = :phi AND phi_unit = :phi_unit AND theta = :theta AND theta_unit = :theta_unit;");
+            "SELECT tcs_observable_kinematic_id FROM tcs_observable_kinematic WHERE  t = :t AND t_unit = :t_unit AND Q2Prim = :Q2Prim AND Q2Prim_unit = :Q2Prim_unit AND E = :E AND E_unit = :E_unit AND phi = :phi AND phi_unit = :phi_unit AND theta = :theta AND theta_unit = :theta_unit AND MLepton = :MLepton AND MLepton_unit = :MLepton_unit;");
 
-    query.bindValue(":xB", xB.getValue());
-    query.bindValue(":xB_unit", xB.getUnit());
     query.bindValue(":t", t.getValue());
     query.bindValue(":t_unit", t.getUnit());
     query.bindValue(":Q2Prim", Q2Prim.getValue());
@@ -99,6 +97,8 @@ int TCSObservableKinematicDao::select(const PhysicalType<double>& xB,
     query.bindValue(":phi_unit", phi.getUnit());
     query.bindValue(":theta", theta.getValue());
     query.bindValue(":theta_unit", theta.getUnit());
+    query.bindValue(":MLepton", theta.getValue());
+    query.bindValue(":MLepton_unit", theta.getUnit());
 
     //execute query
     if (Database::checkUniqueResult(getClassName(), __func__,
@@ -185,8 +185,6 @@ void TCSObservableKinematicDao::fillKinematicFromQuery(
 
     //get indices
     int field_id = query.record().indexOf("tcs_observable_kinematic_id");
-    int field_xB = query.record().indexOf("xB");
-    int field_xB_unit = query.record().indexOf("xB_unit");
     int field_t = query.record().indexOf("t");
     int field_t_unit = query.record().indexOf("t_unit");
     int field_Q2Prim = query.record().indexOf("Q2Prim");
@@ -197,13 +195,12 @@ void TCSObservableKinematicDao::fillKinematicFromQuery(
     int field_phi_unit = query.record().indexOf("phi_unit");
     int field_theta = query.record().indexOf("theta");
     int field_theta_unit = query.record().indexOf("theta_unit");
+    int field_MLepton = query.record().indexOf("MLepton");
+    int field_MLepton_unit = query.record().indexOf("MLepton_unit");
     int field_hash_sum = query.record().indexOf("hash_sum");
 
     //get values
     int id = query.value(field_id).toInt();
-    double xB = query.value(field_xB).toDouble();
-    PhysicalUnit::Type xB_unit = static_cast<PhysicalUnit::Type>(query.value(
-            field_xB_unit).toInt());
     double t = query.value(field_t).toDouble();
     PhysicalUnit::Type t_unit = static_cast<PhysicalUnit::Type>(query.value(
             field_t_unit).toInt());
@@ -219,14 +216,18 @@ void TCSObservableKinematicDao::fillKinematicFromQuery(
     double theta = query.value(field_theta).toDouble();
     PhysicalUnit::Type theta_unit = static_cast<PhysicalUnit::Type>(query.value(
             field_theta_unit).toInt());
+    double MLepton = query.value(field_MLepton).toDouble();
+    PhysicalUnit::Type MLepton_unit =
+            static_cast<PhysicalUnit::Type>(query.value(field_MLepton_unit).toInt());
 
     //set
     observableKinematic = TCSObservableKinematic(
-            PhysicalType<double>(xB, xB_unit), PhysicalType<double>(t, t_unit),
+            PhysicalType<double>(t, t_unit),
             PhysicalType<double>(Q2Prim, Q2Prim_unit),
             PhysicalType<double>(E, E_unit),
             PhysicalType<double>(phi, phi_unit),
-            PhysicalType<double>(theta, theta_unit));
+            PhysicalType<double>(theta, theta_unit),
+            PhysicalType<double>(MLepton, MLepton_unit));
     observableKinematic.setIndexId(id);
 
     //check hash sum

@@ -38,33 +38,35 @@ public:
 
     /**
      * Insert observable kinematics into the database.
-     * @param xB Bjorken variable.
      * @param t Four-momentum transfer squared of hadron target (in GeV^2).
      * @param Q2Prim Virtual-photon virtuality.
      * @param E Beam energy (in GeV).
      * @param phi Angle between leptonic and hadronic planes (in degrees, Trento convention).
-     * @param theta Angle between positively charged lepton and scattered proton in lepton CMS (in degrees)
+     * @param theta Angle between positively charged lepton and scattered proton in lepton CMS (in degrees).
+     * @param MLepton Mass of a single produced lepton (in GeV).
      * @param hashSum Hash sum.
      * @return Unique id of inserted row in the database.
      */
-    int insert(const PhysicalType<double>& xB, const PhysicalType<double>& t,
+    int insert(const PhysicalType<double>& t,
             const PhysicalType<double>& Q2Prim, const PhysicalType<double>& E,
-            const PhysicalType<double>& phi, const PhysicalType<double>& theta, const std::string& hashSum) const;
+            const PhysicalType<double>& phi, const PhysicalType<double>& theta,
+            const PhysicalType<double>& MLepton,
+            const std::string& hashSum) const;
 
     /**
      * Select GPD kinematics from the database.
-     * @param xB Bjorken variable.
      * @param t Four-momentum transfer squared of hadron target (in GeV^2).
      * @param Q2Prim Virtual-photon virtuality.
      * @param E Beam energy (in GeV).
      * @param phi Angle between leptonic and hadronic planes (in degrees, Trento convention).
-     * @param theta Angle between positively charged lepton and scattered proton in lepton CMS (in degrees)
+     * @param theta Angle between positively charged lepton and scattered proton in lepton CMS (in degrees).
+     * @param MLepton Mass of a single produced lepton (in GeV).
      * @return Unique id of selected row in the database.
      */
-    int select(const PhysicalType<double>& xB, const PhysicalType<double>& t,
+    int select(const PhysicalType<double>& t,
             const PhysicalType<double>& Q2Prim, const PhysicalType<double>& E,
-            const PhysicalType<double>& phi,
-            const PhysicalType<double>& theta) const;
+            const PhysicalType<double>& phi, const PhysicalType<double>& theta,
+            const PhysicalType<double>& MLepton) const;
 
     /**
      * Retrieve observable kinematics from the database by given unique id of row.

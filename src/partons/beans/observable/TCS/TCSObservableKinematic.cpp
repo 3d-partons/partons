@@ -13,7 +13,6 @@ namespace PARTONS {
 const std::string TCSObservableKinematic::TCS_OBSERVABLE_KNEMATIC_CLASS_NAME =
         "TCSObservableKinematic";
 
-const std::string TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_XB = "xB";
 const std::string TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_Q2PRIM =
         "Q2Prim";
 const std::string TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_PHI = "phi";
@@ -21,8 +20,8 @@ const std::string TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_BEAM_ENERGY =
         "E";
 const std::string TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_THETA =
         "theta";
-const std::string TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_XB_UNIT =
-        "xB_unit";
+const std::string TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_LEPTON_MASS =
+        "MLepton";
 const std::string TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_Q2PRIM_UNIT =
         "Q2Prim_unit";
 const std::string TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_PHI_UNIT =
@@ -31,73 +30,75 @@ const std::string TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_BEAM_ENERGY_U
         "E_unit";
 const std::string TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_THETA_UNIT =
         "theta_unit";
+const std::string TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_LEPTON_MASS_UNIT =
+        "MLepton_unit";
 
 TCSObservableKinematic::TCSObservableKinematic() :
-        ObservableKinematic("TCSObservableKinematic", ChannelType::TCS), m_xB(
-                PhysicalType<double>(PhysicalUnit::NONE)), m_t(
+        ObservableKinematic("TCSObservableKinematic", ChannelType::TCS), m_t(
                 PhysicalType<double>(PhysicalUnit::GEV2)), m_Q2Prim(
                 PhysicalType<double>(PhysicalUnit::GEV2)), m_E(
                 PhysicalType<double>(PhysicalUnit::GEV)), m_phi(
                 PhysicalType<double>(PhysicalUnit::DEG)), m_theta(
-                PhysicalType<double>(PhysicalUnit::DEG)) {
+                PhysicalType<double>(PhysicalUnit::DEG)), m_MLepton(
+                PhysicalType<double>(PhysicalUnit::GEV)) {
 }
 
-TCSObservableKinematic::TCSObservableKinematic(double xB, double t,
-        double Q2Prim, double E, double phi, double theta) :
-        ObservableKinematic("TCSObservableKinematic", ChannelType::TCS), m_xB(
-                PhysicalType<double>(xB, PhysicalUnit::NONE)), m_t(
+TCSObservableKinematic::TCSObservableKinematic(double t, double Q2Prim,
+        double E, double phi, double theta, double MLepton) :
+        ObservableKinematic("TCSObservableKinematic", ChannelType::TCS), m_t(
                 PhysicalType<double>(t, PhysicalUnit::GEV2)), m_Q2Prim(
                 PhysicalType<double>(Q2Prim, PhysicalUnit::GEV2)), m_E(
                 PhysicalType<double>(E, PhysicalUnit::GEV)), m_phi(
                 PhysicalType<double>(phi, PhysicalUnit::DEG)), m_theta(
-                PhysicalType<double>(theta, PhysicalUnit::DEG)) {
+                PhysicalType<double>(theta, PhysicalUnit::DEG)), m_MLepton(
+                PhysicalType<double>(MLepton, PhysicalUnit::GEV)) {
 }
 
-TCSObservableKinematic::TCSObservableKinematic(const PhysicalType<double>& xB,
-        const PhysicalType<double>& t, const PhysicalType<double>& Q2Prim,
-        const PhysicalType<double>& E, const PhysicalType<double>& phi,
-        const PhysicalType<double>& theta) :
-        ObservableKinematic("TCSObservableKinematic", ChannelType::TCS), m_xB(
-                PhysicalType<double>(PhysicalUnit::NONE)), m_t(
+TCSObservableKinematic::TCSObservableKinematic(const PhysicalType<double>& t,
+        const PhysicalType<double>& Q2Prim, const PhysicalType<double>& E,
+        const PhysicalType<double>& phi, const PhysicalType<double>& theta,
+        const PhysicalType<double>& MLepton) :
+        ObservableKinematic("TCSObservableKinematic", ChannelType::TCS), m_t(
                 PhysicalType<double>(PhysicalUnit::GEV2)), m_Q2Prim(
                 PhysicalType<double>(PhysicalUnit::GEV2)), m_E(
                 PhysicalType<double>(PhysicalUnit::GEV)), m_phi(
                 PhysicalType<double>(PhysicalUnit::DEG)), m_theta(
-                PhysicalType<double>(PhysicalUnit::DEG)) {
+                PhysicalType<double>(PhysicalUnit::DEG)), m_MLepton(
+                PhysicalType<double>(PhysicalUnit::GEV)) {
 
-    m_xB.checkIfSameUnitCategoryAs(xB);
     m_t.checkIfSameUnitCategoryAs(t);
     m_Q2Prim.checkIfSameUnitCategoryAs(Q2Prim);
     m_E.checkIfSameUnitCategoryAs(E);
     m_phi.checkIfSameUnitCategoryAs(phi);
     m_theta.checkIfSameUnitCategoryAs(theta);
+    m_MLepton.checkIfSameUnitCategoryAs(MLepton);
 
-    m_xB = xB;
     m_t = t;
     m_Q2Prim = Q2Prim;
     m_E = E;
     m_phi = phi;
     m_theta = theta;
+    m_MLepton = MLepton;
 }
 
-TCSObservableKinematic::TCSObservableKinematic(const ElemUtils::GenericType& xB,
-        const ElemUtils::GenericType& t, const ElemUtils::GenericType& Q2Prim,
-        const ElemUtils::GenericType& E, const ElemUtils::GenericType& phi,
-        const ElemUtils::GenericType& theta) :
-        ObservableKinematic("TCSObservableKinematic", ChannelType::TCS), m_xB(
-                PhysicalType<double>(xB, PhysicalUnit::NONE)), m_t(
+TCSObservableKinematic::TCSObservableKinematic(const ElemUtils::GenericType& t,
+        const ElemUtils::GenericType& Q2Prim, const ElemUtils::GenericType& E,
+        const ElemUtils::GenericType& phi, const ElemUtils::GenericType& theta,
+        const ElemUtils::GenericType& MLepton) :
+        ObservableKinematic("TCSObservableKinematic", ChannelType::TCS), m_t(
                 PhysicalType<double>(t, PhysicalUnit::GEV2)), m_Q2Prim(
                 PhysicalType<double>(Q2Prim, PhysicalUnit::GEV2)), m_E(
                 PhysicalType<double>(E, PhysicalUnit::GEV)), m_phi(
                 PhysicalType<double>(phi, PhysicalUnit::DEG)), m_theta(
-                PhysicalType<double>(theta, PhysicalUnit::DEG)) {
+                PhysicalType<double>(theta, PhysicalUnit::DEG)), m_MLepton(
+                PhysicalType<double>(MLepton, PhysicalUnit::GEV)) {
 }
 
 TCSObservableKinematic::TCSObservableKinematic(
         const TCSObservableKinematic &other) :
-        ObservableKinematic(other), m_xB(other.m_xB), m_t(other.m_t), m_Q2Prim(
-                other.m_Q2Prim), m_E(other.m_E), m_phi(other.m_phi), m_theta(
-                other.m_theta) {
+        ObservableKinematic(other), m_t(other.m_t), m_Q2Prim(other.m_Q2Prim), m_E(
+                other.m_E), m_phi(other.m_phi), m_theta(other.m_theta), m_MLepton(
+                other.m_MLepton) {
 }
 
 TCSObservableKinematic::~TCSObservableKinematic() {
@@ -111,26 +112,6 @@ void TCSObservableKinematic::configure(
 
     double value;
     PhysicalUnit::Type unit;
-
-    //xB
-    if (parameters.isAvailable(
-            TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_XB)) {
-
-        value = parameters.getLastAvailable().toDouble();
-
-        if (parameters.isAvailable(
-                TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_XB_UNIT)) {
-
-            unit =
-                    PhysicalUnit(parameters.getLastAvailable().getString()).getType();
-            setXB(value, unit);
-        } else {
-            setXB(value);
-        }
-    } else {
-        errorMissingParameter(
-                TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_XB);
-    }
 
     //t
     if (parameters.isAvailable(GPDKinematic::KINEMATIC_PARAMETER_NAME_T)) {
@@ -229,6 +210,26 @@ void TCSObservableKinematic::configure(
         errorMissingParameter(
                 TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_THETA);
     }
+
+    //lepton mass
+    if (parameters.isAvailable(
+            TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_LEPTON_MASS)) {
+
+        value = parameters.getLastAvailable().toDouble();
+
+        if (parameters.isAvailable(
+                TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_LEPTON_MASS_UNIT)) {
+
+            unit =
+                    PhysicalUnit(parameters.getLastAvailable().getString()).getType();
+            setMLepton(value, unit);
+        } else {
+            setMLepton(value);
+        }
+    } else {
+        errorMissingParameter(
+                TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_LEPTON_MASS);
+    }
 }
 
 std::string TCSObservableKinematic::toString() const {
@@ -237,8 +238,6 @@ std::string TCSObservableKinematic::toString() const {
 
     formatter << Kinematic::toString() << '\n';
 
-    if (m_xB.isInitialized())
-        formatter << "xB: " << m_xB.toString() << ' ';
     if (m_t.isInitialized())
         formatter << "t: " << m_t.toString() << ' ';
     if (m_Q2Prim.isInitialized())
@@ -249,6 +248,8 @@ std::string TCSObservableKinematic::toString() const {
         formatter << "phi: " << m_phi.toString() << ' ';
     if (m_theta.isInitialized())
         formatter << "theta: " << m_theta.toString() << ' ';
+    if (m_MLepton.isInitialized())
+        formatter << "lepton mass: " << m_MLepton.toString() << ' ';
 
     return formatter.str();
 }
@@ -257,28 +258,28 @@ void TCSObservableKinematic::serialize(ElemUtils::Packet &packet) const {
 
     Kinematic::serialize(packet);
 
-    packet << m_xB << m_t << m_Q2Prim << m_E << m_phi << m_theta;
+    packet << m_t << m_Q2Prim << m_E << m_phi << m_theta << m_MLepton;
 }
 
 void TCSObservableKinematic::unserialize(ElemUtils::Packet &packet) {
 
     Kinematic::unserialize(packet);
 
-    packet >> m_xB;
     packet >> m_t;
     packet >> m_Q2Prim;
     packet >> m_E;
     packet >> m_phi;
     packet >> m_theta;
+    packet >> m_MLepton;
 
     updateHashSum();
 }
 
 bool TCSObservableKinematic::operator ==(
         const TCSObservableKinematic& other) const {
-    return m_xB == other.getXB() && m_t == other.getT()
-            && m_Q2Prim == other.getQ2Prim() && m_E == other.getE()
-            && m_phi == other.getPhi() && m_theta == other.getTheta();
+    return m_t == other.getT() && m_Q2Prim == other.getQ2Prim()
+            && m_E == other.getE() && m_phi == other.getPhi()
+            && m_theta == other.getTheta() && m_MLepton == other.getMLepton();
 }
 
 bool TCSObservableKinematic::operator !=(
@@ -289,13 +290,10 @@ bool TCSObservableKinematic::operator !=(
 void TCSObservableKinematic::updateHashSum() const {
     setHashSum(
             Partons::getInstance()->getServiceObjectRegistry()->getCryptographicHashService()->generateSHA1HashSum(
-                    ElemUtils::Formatter() << m_xB.getValue() << m_t.getValue()
+                    ElemUtils::Formatter() << m_t.getValue()
                             << m_Q2Prim.getValue() << m_E.getValue()
-                            << m_phi.getValue() << m_theta.getValue()));
-}
-
-const PhysicalType<double>& TCSObservableKinematic::getXB() const {
-    return m_xB;
+                            << m_phi.getValue() << m_theta.getValue()
+                            << m_MLepton.getValue()));
 }
 
 const PhysicalType<double>& TCSObservableKinematic::getT() const {
@@ -318,11 +316,8 @@ const PhysicalType<double>& TCSObservableKinematic::getTheta() const {
     return m_theta;
 }
 
-void TCSObservableKinematic::setXB(const PhysicalType<double>& xB) {
-
-    m_xB.checkIfSameUnitCategoryAs(xB);
-    m_xB = xB;
-    updateHashSum();
+const PhysicalType<double>& TCSObservableKinematic::getMLepton() const {
+    return m_MLepton;
 }
 
 void TCSObservableKinematic::setT(const PhysicalType<double>& t) {
@@ -360,8 +355,11 @@ void TCSObservableKinematic::setTheta(const PhysicalType<double>& theta) {
     updateHashSum();
 }
 
-void TCSObservableKinematic::setXB(double xB, PhysicalUnit::Type unit) {
-    setXB(PhysicalType<double>(xB, unit));
+void TCSObservableKinematic::setMLepton(const PhysicalType<double>& MLepton) {
+
+    m_MLepton.checkIfSameUnitCategoryAs(MLepton);
+    m_MLepton = MLepton;
+    updateHashSum();
 }
 
 void TCSObservableKinematic::setT(double t, PhysicalUnit::Type unit) {
@@ -382,6 +380,11 @@ void TCSObservableKinematic::setPhi(double phi, PhysicalUnit::Type unit) {
 
 void TCSObservableKinematic::setTheta(double theta, PhysicalUnit::Type unit) {
     setTheta(PhysicalType<double>(theta, unit));
+}
+
+void TCSObservableKinematic::setMLepton(double MLepton,
+        PhysicalUnit::Type unit) {
+    setMLepton(PhysicalType<double>(MLepton, unit));
 }
 
 ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
