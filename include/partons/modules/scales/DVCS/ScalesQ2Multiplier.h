@@ -61,11 +61,6 @@ public:
     virtual void configure(const ElemUtils::Parameters &parameters);
     virtual Scales compute(const DVCSObservableKinematic& kinematic);
 
-protected:
-
-    virtual void initModule();
-    virtual void isModuleWellConfigured();
-
 private:
 
     /**

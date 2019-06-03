@@ -139,7 +139,8 @@ void DVCSProcessModule::prepareSubModules(
     }
 
     //search for xi module
-    it = subModulesData.find(XiConverterModule::XI_CONVERTER_MODULE_CLASS_NAME);
+    it = subModulesData.find(
+            DVCSXiConverterModule::DVCS_XI_CONVERTER_MODULE_CLASS_NAME);
 
     //check if there
     if (it != subModulesData.end()) {
@@ -155,7 +156,7 @@ void DVCSProcessModule::prepareSubModules(
         if (!m_pXiConverterModule) {
 
             m_pXiConverterModule =
-                    Partons::getInstance()->getModuleObjectFactory()->newXiConverterModule(
+                    Partons::getInstance()->getModuleObjectFactory()->newDVCSXiConverterModule(
                             (it->second).getModuleClassName());
 
             info(__func__,
@@ -356,12 +357,12 @@ void DVCSProcessModule::setScaleModule(DVCSScalesModule* pScaleModule) {
     }
 }
 
-XiConverterModule* DVCSProcessModule::getXiConverterModule() const {
+DVCSXiConverterModule* DVCSProcessModule::getXiConverterModule() const {
     return m_pXiConverterModule;
 }
 
 void DVCSProcessModule::setXiConverterModule(
-        XiConverterModule* pXiConverterModule) {
+        DVCSXiConverterModule* pXiConverterModule) {
 
     m_pModuleObjectFactory->updateModulePointerReference(m_pXiConverterModule,
             pXiConverterModule);
@@ -500,7 +501,7 @@ void DVCSProcessModule::computeConvolCoeffFunction(
     Scales scale = m_pScaleModule->compute(kinematic);
 
     //compute xi
-    PhysicalType<double> xi;// = m_pXiConverterModule->compute(kinematic);
+    PhysicalType<double> xi = m_pXiConverterModule->compute(kinematic);
 
     //create ccf kinematics
     DVCSConvolCoeffFunctionKinematic ccfKinematics(xi, kinematic.getT(),

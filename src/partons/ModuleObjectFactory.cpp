@@ -8,6 +8,7 @@
 #include "../../include/partons/modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
 #include "../../include/partons/modules/convol_coeff_function/TCS/TCSConvolCoeffFunctionModule.h"
 #include "../../include/partons/modules/evolution/gpd/GPDEvolutionModule.h"
+#include "../../include/partons/modules/gpd/GPDModule.h"
 #include "../../include/partons/modules/gpd_subtraction_constant/GPDSubtractionConstantModule.h"
 #include "../../include/partons/modules/observable/DVCS/DVCSObservable.h"
 #include "../../include/partons/modules/observable/TCS/TCSObservable.h"
@@ -16,7 +17,8 @@
 #include "../../include/partons/modules/running_alpha_strong/RunningAlphaStrongModule.h"
 #include "../../include/partons/modules/scales/DVCS/DVCSScalesModule.h"
 #include "../../include/partons/modules/scales/TCS/TCSScalesModule.h"
-#include "../../include/partons/modules/xi_converter/XiConverterModule.h"
+#include "../../include/partons/modules/xi_converter/DVCS/DVCSXiConverterModule.h"
+#include "../../include/partons/modules/xi_converter/TCS/TCSXiConverterModule.h"
 
 namespace PARTONS {
 
@@ -251,13 +253,24 @@ TCSScalesModule* ModuleObjectFactory::newTCSScalesModule(
     return static_cast<TCSScalesModule*>(newModuleObject(className));
 }
 
-XiConverterModule* ModuleObjectFactory::newXiConverterModule(
+DVCSXiConverterModule* ModuleObjectFactory::newDVCSXiConverterModule(
         unsigned int classId) {
-    return static_cast<XiConverterModule*>(newModuleObject(classId));
+    return static_cast<DVCSXiConverterModule*>(newModuleObject(classId));
 }
-XiConverterModule* ModuleObjectFactory::newXiConverterModule(
+
+DVCSXiConverterModule* ModuleObjectFactory::newDVCSXiConverterModule(
         const std::string &className) {
-    return static_cast<XiConverterModule*>(newModuleObject(className));
+    return static_cast<DVCSXiConverterModule*>(newModuleObject(className));
+}
+
+TCSXiConverterModule* ModuleObjectFactory::newTCSXiConverterModule(
+        unsigned int classId) {
+    return static_cast<TCSXiConverterModule*>(newModuleObject(classId));
+}
+
+TCSXiConverterModule* ModuleObjectFactory::newTCSXiConverterModule(
+        const std::string &className) {
+    return static_cast<TCSXiConverterModule*>(newModuleObject(className));
 }
 
 DVCSObservable* ModuleObjectFactory::newDVCSObservable(unsigned int classId) {

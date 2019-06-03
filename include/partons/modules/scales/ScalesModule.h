@@ -62,9 +62,7 @@ protected:
     }
 
     /**
-     * Evaluate scales for a given value of \f$Q^2\f$.
-     * @param Q2 Virtual-photon virtuality in \f$GeV^2\f$
-     * @return Scale object containing evaluated values.
+     * Evaluate scales for a given kinematics.
      */
     virtual Scales compute(const KinematicType& kinematic) = 0;
 };

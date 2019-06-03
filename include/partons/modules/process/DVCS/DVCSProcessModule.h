@@ -25,7 +25,7 @@
 #include "../../../ModuleObjectFactory.h"
 #include "../../../utils/type/PhysicalType.h"
 #include "../../scales/DVCS/DVCSScalesModule.h"
-#include "../../xi_converter/XiConverterModule.h"
+#include "../../xi_converter/DVCS/DVCSXiConverterModule.h"
 #include "../ProcessModule.h"
 
 namespace NumA {
@@ -107,12 +107,12 @@ public:
     /**
      * Get xi converter module.
      */
-    XiConverterModule* getXiConverterModule() const;
+    DVCSXiConverterModule* getXiConverterModule() const;
 
     /**
      * Set xi converted module.
      */
-    void setXiConverterModule(XiConverterModule* pXiConverterModule);
+    void setXiConverterModule(DVCSXiConverterModule* pXiConverterModule);
 
     /**
      * Get CCF module;
@@ -186,7 +186,7 @@ protected:
     double m_epsilon; ///< @f$ \epsilon = \frac{2 x_B M}{Q} @f$.
 
     DVCSScalesModule* m_pScaleModule; ///< Pointer to the underlying scale module.
-    XiConverterModule* m_pXiConverterModule; ///< Pointer to the underlying xi converter module.
+    DVCSXiConverterModule* m_pXiConverterModule; ///< Pointer to the underlying xi converter module.
     DVCSConvolCoeffFunctionModule* m_pConvolCoeffFunctionModule; ///< Pointer to the underlying CCF module.
 
     DVCSConvolCoeffFunctionResult m_dvcsConvolCoeffFunctionResult; ///< Stored Compton Form Factor result.

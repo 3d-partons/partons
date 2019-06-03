@@ -30,7 +30,8 @@ class GPDModule;
 class GPDSubtractionConstantModule;
 class ModuleObject;
 class RunningAlphaStrongModule;
-class XiConverterModule;
+class DVCSXiConverterModule;
+class TCSXiConverterModule;
 } /* namespace PARTONS */
 
 namespace PARTONS {
@@ -227,17 +228,30 @@ public:
     TCSScalesModule* newTCSScalesModule(const std::string &className);
 
     /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a XiConverterModule.
+     * Specialization of ModuleObjectFactory::newModuleObject into a DVCSXiConverterModule.
      * @param classId Unique identifier of last child class.
-     * @return XiConverterModule pointer.
+     * @return DVCSXiConverterModule pointer.
      */
-    XiConverterModule* newXiConverterModule(unsigned int classId);
+    DVCSXiConverterModule* newDVCSXiConverterModule(unsigned int classId);
     /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a XiConverterModule.
+     * Specialization of ModuleObjectFactory::newModuleObject into a DVCSXiConverterModule.
      * @param className Name of last child class.
-     * @return XiConverterModule pointer.
+     * @return DVCSXiConverterModule pointer.
      */
-    XiConverterModule* newXiConverterModule(const std::string &className);
+    DVCSXiConverterModule* newDVCSXiConverterModule(const std::string &className);
+
+    /**
+      * Specialization of ModuleObjectFactory::newModuleObject into a TCSXiConverterModule.
+      * @param classId Unique identifier of last child class.
+      * @return TCSXiConverterModule pointer.
+      */
+     TCSXiConverterModule* newTCSXiConverterModule(unsigned int classId);
+     /**
+      * Specialization of ModuleObjectFactory::newModuleObject into a TCSXiConverterModule.
+      * @param className Name of last child class.
+      * @return TCSXiConverterModule pointer.
+      */
+     TCSXiConverterModule* newTCSXiConverterModule(const std::string &className);
 
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a Observable.
@@ -245,6 +259,7 @@ public:
      * @return Observable pointer.
      */
     DVCSObservable* newDVCSObservable(unsigned int classId);
+
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a Observable.
      * @param className Name of last child class.

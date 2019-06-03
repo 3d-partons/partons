@@ -31,14 +31,6 @@ DVCSScalesQ2Multiplier* DVCSScalesQ2Multiplier::clone() const {
     return new DVCSScalesQ2Multiplier(*this);
 }
 
-void DVCSScalesQ2Multiplier::initModule() {
-    DVCSScalesModule::initModule();
-}
-
-void DVCSScalesQ2Multiplier::isModuleWellConfigured() {
-    DVCSScalesModule::isModuleWellConfigured();
-}
-
 void DVCSScalesQ2Multiplier::configure(
         const ElemUtils::Parameters &parameters) {
 
@@ -57,9 +49,6 @@ void DVCSScalesQ2Multiplier::configure(
 
 Scales DVCSScalesQ2Multiplier::compute(
         const DVCSObservableKinematic& kinematic) {
-
-    initModule();
-    isModuleWellConfigured();
 
     PhysicalType<double> scale(m_lambda * kinematic.getQ2());
 

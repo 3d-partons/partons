@@ -139,7 +139,8 @@ void TCSProcessModule::prepareSubModules(
     }
 
     //search for xi module
-    it = subModulesData.find(XiConverterModule::XI_CONVERTER_MODULE_CLASS_NAME);
+    it = subModulesData.find(
+            TCSXiConverterModule::TCS_XI_CONVERTER_MODULE_CLASS_NAME);
 
     //check if there
     if (it != subModulesData.end()) {
@@ -155,7 +156,7 @@ void TCSProcessModule::prepareSubModules(
         if (!m_pXiConverterModule) {
 
             m_pXiConverterModule =
-                    Partons::getInstance()->getModuleObjectFactory()->newXiConverterModule(
+                    Partons::getInstance()->getModuleObjectFactory()->newTCSXiConverterModule(
                             (it->second).getModuleClassName());
 
             info(__func__,
@@ -356,12 +357,12 @@ void TCSProcessModule::setScaleModule(TCSScalesModule* pScaleModule) {
     }
 }
 
-XiConverterModule* TCSProcessModule::getXiConverterModule() const {
+TCSXiConverterModule* TCSProcessModule::getXiConverterModule() const {
     return m_pXiConverterModule;
 }
 
 void TCSProcessModule::setXiConverterModule(
-        XiConverterModule* pXiConverterModule) {
+        TCSXiConverterModule* pXiConverterModule) {
 
     m_pModuleObjectFactory->updateModulePointerReference(m_pXiConverterModule,
             pXiConverterModule);
@@ -407,7 +408,8 @@ void TCSProcessModule::setKinematics(const TCSObservableKinematic& kinematic) {
     m_E = kinematic.getE().makeSameUnitAs(PhysicalUnit::GEV).getValue();
     m_phi = kinematic.getPhi().makeSameUnitAs(PhysicalUnit::RAD).getValue();
     m_theta = kinematic.getTheta().makeSameUnitAs(PhysicalUnit::RAD).getValue();
-    m_MLepton = kinematic.getMLepton().makeSameUnitAs(PhysicalUnit::GEV).getValue();
+    m_MLepton =
+            kinematic.getMLepton().makeSameUnitAs(PhysicalUnit::GEV).getValue();
 }
 
 void TCSProcessModule::setExperimentalConditions(double beamHelicity,
@@ -456,8 +458,6 @@ void TCSProcessModule::isModuleWellConfigured() {
                 "m_pConvolCoeffFunctionModule is NULL pointer ; Use configure method to configure it");
     }
 
-
-
     //test kinematic domain of t
     if (m_t > m_tmin || m_t < m_tmax) {
         ElemUtils::Formatter formatter;
@@ -504,7 +504,7 @@ void TCSProcessModule::computeConvolCoeffFunction(
     Scales scale = m_pScaleModule->compute(kinematic);
 
     //compute xi
-    PhysicalType<double> xi;// = m_pXiConverterModule->compute(kinematic);
+    PhysicalType<double> xi = m_pXiConverterModule->compute(kinematic);
 
     //create ccf kinematics
     TCSConvolCoeffFunctionKinematic ccfKinematics(xi, kinematic.getT(),
