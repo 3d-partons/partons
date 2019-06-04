@@ -27,7 +27,6 @@ DVCSXiConverterXBToXi* DVCSXiConverterXBToXi::clone() const {
 
 PhysicalType<double> DVCSXiConverterXBToXi::compute(
         const DVCSObservableKinematic& kinematic) {
-
     return PhysicalType<double>(
             kinematic.getXB().getValue() / (2. - kinematic.getXB().getValue()),
             PhysicalUnit::NONE);
