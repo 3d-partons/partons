@@ -82,14 +82,6 @@ public:
     }
 
     /**
-     * Return string representing the value (only!).
-     */
-    std::string toStdString() const {
-        std::stringstream sstream(m_value);
-        return sstream.str();
-    }
-
-    /**
      * Return string representing the whole object.
      */
     std::string toString() const {
@@ -124,6 +116,16 @@ public:
         PhysicalUnit type;
         packet >> type;
         m_unit = type;
+    }
+
+    /**
+     * Return string representing value and unit. To be used mainly in the generation of hash sums.
+     */
+    std::string toStdString() const {
+
+        std::stringstream sstream;
+        sstream << m_value << " " << m_unit;
+        return sstream.str();
     }
 
     /**

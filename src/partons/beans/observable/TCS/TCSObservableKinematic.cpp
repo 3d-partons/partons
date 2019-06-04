@@ -290,10 +290,10 @@ bool TCSObservableKinematic::operator !=(
 void TCSObservableKinematic::updateHashSum() const {
     setHashSum(
             Partons::getInstance()->getServiceObjectRegistry()->getCryptographicHashService()->generateSHA1HashSum(
-                    ElemUtils::Formatter() << m_t.getValue()
-                            << m_Q2Prim.getValue() << m_E.getValue()
-                            << m_phi.getValue() << m_theta.getValue()
-                            << m_MLepton.getValue()));
+                    ElemUtils::Formatter() << m_t.toStdString()
+                            << m_Q2Prim.toStdString() << m_E.toStdString()
+                            << m_phi.toStdString() << m_theta.toStdString()
+                            << m_MLepton.toStdString()));
 }
 
 const PhysicalType<double>& TCSObservableKinematic::getT() const {

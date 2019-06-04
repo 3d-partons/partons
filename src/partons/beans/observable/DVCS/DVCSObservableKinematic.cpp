@@ -252,9 +252,9 @@ bool DVCSObservableKinematic::operator !=(
 void DVCSObservableKinematic::updateHashSum() const {
     setHashSum(
             Partons::getInstance()->getServiceObjectRegistry()->getCryptographicHashService()->generateSHA1HashSum(
-                    ElemUtils::Formatter() << m_xB.getValue() << m_t.getValue()
-                            << m_Q2.getValue() << m_E.getValue()
-                            << m_phi.getValue()));
+                    ElemUtils::Formatter() << m_xB.toStdString()
+                            << m_t.toStdString() << m_Q2.toStdString()
+                            << m_E.toStdString() << m_phi.toStdString()));
 }
 
 const PhysicalType<double>& DVCSObservableKinematic::getXB() const {
