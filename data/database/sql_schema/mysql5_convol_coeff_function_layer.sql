@@ -66,7 +66,7 @@ FROM dvcs_ccf_kinematic ccfk
 ORDER BY ccfk.dvcs_ccf_kinematic_id;
 
 CREATE VIEW tcs_ccf_kinematic_view AS
-SELECT ccfk.tcs_ccf_kinematic_id, ccfk.xi, ccfk.xi_unit, ccfk.t, ccfk.t_unit, ccfk.Q2Prim, ccfk.Q2Prim_unit, ccfk.MuF2, ccfk.MuF2_unit, ccfk.MuR2, ccfk.MuR2_unit, ccfk.hash_sum, 
+SELECT ccfk.tcs_ccf_kinematic_id, ccfk.xi, ccfk.xi_unit, ccfk.t, ccfk.t_unit, ccfk.Q2Prim, ccfk.Q2Prim_unit, ccfk.MuF2, ccfk.MuF2_unit, ccfk.MuR2, ccfk.MuR2_unit, ccfk.hash_sum 
 FROM tcs_ccf_kinematic ccfk 
 ORDER BY ccfk.tcs_ccf_kinematic_id;
 
