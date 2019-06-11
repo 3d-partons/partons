@@ -34,11 +34,6 @@ quark_flavor_id INTEGER NOT NULL PRIMARY KEY,
 quark_flavor_short_name VARCHAR(10),
 quark_flavor_long_name VARCHAR(255));
 
-CREATE TABLE observable_type (
-observable_type_id INTEGER NOT NULL PRIMARY KEY,
-observable_type_short_name VARCHAR(10),
-observable_type_long_name VARCHAR(255));
-
 CREATE TABLE observable_channel (
 observable_channel_id INTEGER NOT NULL PRIMARY KEY,
 observable_channel_short_name VARCHAR(10),
@@ -99,18 +94,6 @@ VALUES ('5', 'b', 'BOTTOM');
 
 INSERT INTO quark_flavor (quark_flavor_id, quark_flavor_short_name, quark_flavor_long_name)
 VALUES ('6', 't', 'TOP');
-
-/* === observable_type === */
-
-INSERT INTO observable_type (observable_type_id, observable_type_short_name, observable_type_long_name)
-VALUES ('0', 'UNDEFINED', 'UNDEFINED');
-
-INSERT INTO observable_type (observable_type_id, observable_type_short_name, observable_type_long_name)
-VALUES ('1', 'PHI', 'PHI');
-
-INSERT INTO observable_type (observable_type_id, observable_type_short_name, observable_type_long_name)
-VALUES ('2', 'FOURIER', 'FOURIER');
-
 
 /* === observable_channel === */
 
