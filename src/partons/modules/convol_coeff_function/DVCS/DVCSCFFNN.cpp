@@ -259,11 +259,11 @@ void DVCSCFFNN::loadParameters(size_t replica) {
                 ElemUtils::Formatter() << "Illegal replica " << replica);
     }
 
-    size_t parameter = 0;
+    std::vector<NumA::NeuralNetworkCell*> cells;
+    std::vector<NumA::NeuralNetworkNeuron*> neurons;
 
     std::vector<NumA::NeuralNetworkCell*>::const_iterator cell;
     std::vector<NumA::NeuralNetworkNeuron*>::const_iterator neuron;
-
     std::map<GPDType::Type,
             std::pair<NumA::NeuralNetwork*, NumA::NeuralNetwork*> >::iterator it;
 
@@ -281,19 +281,7 @@ void DVCSCFFNN::loadParameters(size_t replica) {
                     cell != (nn->getNeuralNetworkCells()).end(); cell++) {
                 if ((*cell)->getType()
                         == NumA::NeuralNetworkCellType::Perceptron) {
-
-                    (static_cast<NumA::Perceptron*>(*cell))->setBias(
-                            c_DVCSCFFNNReplicas[replica][parameter]);
-
-                    parameter++;
-
-                    if (parameter > c_nDVCSCFFNNParameters) {
-                        throw ElemUtils::CustomException(getClassName(),
-                                __func__,
-                                ElemUtils::Formatter()
-                                        << "Illegal parameter index "
-                                        << parameter);
-                    }
+                    cells.push_back(*cell);
                 }
             }
 
@@ -302,22 +290,39 @@ void DVCSCFFNN::loadParameters(size_t replica) {
                     neuron != (nn->getNeuralNetworkNeurons()).end(); neuron++) {
                 if ((*neuron)->getNeuralNetworkCellOut()->getType()
                         == NumA::NeuralNetworkCellType::Perceptron) {
-
-                    (static_cast<NumA::NeuralNetworkNeuron*>(*neuron))->setWeight(
-                            c_DVCSCFFNNReplicas[replica][parameter]);
-
-                    parameter++;
-
-                    if (parameter > c_nDVCSCFFNNParameters) {
-                        throw ElemUtils::CustomException(getClassName(),
-                                __func__,
-                                ElemUtils::Formatter()
-                                        << "Illegal parameter index "
-                                        << parameter);
-                    }
+                    neurons.push_back(*neuron);
                 }
             }
 
+        }
+    }
+
+    size_t parameter = 0;
+
+    for (cell = cells.begin(); cell != cells.end(); cell++) {
+
+        (static_cast<NumA::Perceptron*>(*cell))->setBias(
+                c_DVCSCFFNNReplicas[replica][parameter]);
+
+        parameter++;
+
+        if (parameter > c_nDVCSCFFNNParameters) {
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    ElemUtils::Formatter() << "Illegal parameter index "
+                            << parameter);
+        }
+    }
+
+    for (neuron = neurons.begin(); neuron != neurons.end(); neuron++) {
+
+        (*neuron)->setWeight(c_DVCSCFFNNReplicas[replica][parameter]);
+
+        parameter++;
+
+        if (parameter > c_nDVCSCFFNNParameters) {
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    ElemUtils::Formatter() << "Illegal parameter index "
+                            << parameter);
         }
     }
 
