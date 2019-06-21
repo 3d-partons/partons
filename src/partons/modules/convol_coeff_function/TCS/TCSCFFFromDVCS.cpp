@@ -94,7 +94,8 @@ std::complex<double> TCSCFFFromDVCS::computeUnpolarized() {
             && m_qcdOrderType != PerturbativeQCDOrderType::NLO) {
         throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "QCD order: "
-                        << PerturbativeQCDOrderType(m_qcdOrderType).toString() << " not implemented");
+                        << PerturbativeQCDOrderType(m_qcdOrderType).toString()
+                        << " not implemented");
     }
 
     /*
@@ -146,60 +147,7 @@ std::complex<double> TCSCFFFromDVCS::computeUnpolarized() {
 }
 
 std::complex<double> TCSCFFFromDVCS::computePolarized() {
-
-    if (m_qcdOrderType != PerturbativeQCDOrderType::LO
-            && m_qcdOrderType != PerturbativeQCDOrderType::NLO) {
-        throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter() << "QCD order: "
-                        << PerturbativeQCDOrderType(m_qcdOrderType).toString() << " not implemented");
-    }
-
-    /*
-     * Calculate TCS Compton Form Factors using results obtained for DVCS
-     * For polarized CFFs we have:
-     *      In LO     CFF_TCS = -CFF_DVCS*
-     *      In NLO    CFF_TCS = -CFF_DVCS* + i PI Q2 d/dQ2 CFF_DVCS*
-     */
-
-    const double step = 1e-7; // differentiation step
-
-    //set module and pQCD order
-    m_pDVCSConvolCoeffFunctionModule->setGPDModule(m_pGPDModule);
-    m_pDVCSConvolCoeffFunctionModule->setQCDOrderType(m_qcdOrderType);
-
-    //currect GPD type
-    List<GPDType> gpdTypeList;
-    gpdTypeList.add(GPDType(m_currentGPDComputeType));
-
-    //perform evaluation for DVCS
-    DVCSConvolCoeffFunctionResult dvcsResult =
-            m_pDVCSConvolCoeffFunctionModule->compute(
-                    DVCSConvolCoeffFunctionKinematic(m_xi, m_t, m_Q2Prim,
-                            m_MuF2, m_MuR2), gpdTypeList);
-
-    //result
-    std::complex<double> TCSCFF;
-
-    //LO
-    if (m_qcdOrderType == PerturbativeQCDOrderType::LO) {
-        TCSCFF = - std::conj(dvcsResult.getResult(m_currentGPDComputeType));
-    }
-    //NLO
-    else if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
-
-        TCSCFF = - std::conj(dvcsResult.getResult(m_currentGPDComputeType));
-
-        DVCSConvolCoeffFunctionResult dvcsResult1 =
-                m_pDVCSConvolCoeffFunctionModule->compute(
-                        DVCSConvolCoeffFunctionKinematic(m_xi, m_t,
-                                m_Q2Prim + step, m_MuF2, m_MuR2), gpdTypeList);
-
-        TCSCFF += Constant::PI * std::complex<double>(0., 1.) * m_Q2Prim
-                * (std::conj(dvcsResult1.getResult(m_currentGPDComputeType))
-                        - TCSCFF) / step;
-    }
-
-    return TCSCFF;
+    return -1. * computeUnpolarized();
 }
 
 void TCSCFFFromDVCS::setDVCSConvolCoeffFunctionModule(

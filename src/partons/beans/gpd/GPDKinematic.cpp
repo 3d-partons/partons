@@ -235,9 +235,9 @@ bool GPDKinematic::operator !=(const GPDKinematic& other) const {
 void GPDKinematic::updateHashSum() const {
     setHashSum(
             Partons::getInstance()->getServiceObjectRegistry()->getCryptographicHashService()->generateSHA1HashSum(
-                    ElemUtils::Formatter() << m_x.getValue() << m_xi.getValue()
-                            << m_t.getValue() << m_MuF2.getValue()
-                            << m_MuR2.getValue()));
+                    ElemUtils::Formatter() << m_x.toStdString() << m_xi.toStdString()
+                            << m_t.toStdString() << m_MuF2.toStdString()
+                            << m_MuR2.toStdString()));
 }
 
 const PhysicalType<double>& GPDKinematic::getX() const {

@@ -101,9 +101,9 @@ std::string DVCSConvolCoeffFunctionKinematic::toString() const {
 void DVCSConvolCoeffFunctionKinematic::updateHashSum() const {
     setHashSum(
             Partons::getInstance()->getServiceObjectRegistry()->getCryptographicHashService()->generateSHA1HashSum(
-                    ElemUtils::Formatter() << m_xi.getValue() << m_t.getValue()
-                            << m_Q2.getValue() << m_MuF2.getValue()
-                            << m_MuR2.getValue()));
+                    ElemUtils::Formatter() << m_xi.toStdString() << m_t.toStdString()
+                            << m_Q2.toStdString() << m_MuF2.toStdString()
+                            << m_MuR2.toStdString()));
 }
 
 void DVCSConvolCoeffFunctionKinematic::serialize(
