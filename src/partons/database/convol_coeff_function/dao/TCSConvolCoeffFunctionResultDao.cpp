@@ -76,11 +76,12 @@ List<TCSConvolCoeffFunctionResult> TCSConvolCoeffFunctionResultDao::getResultLis
     query.bindValue(":computationId", computationId);
 
     //execute
-    Database::checkManyResults(getClassName(), __func__,
-            Database::execSelectQuery(query), query);
+    if (Database::checkManyResults(getClassName(), __func__,
+            Database::execSelectQuery(query), query)) {
 
-    //fill
-    fillConvolCoeffFunctionResultList(resultList, query);
+        //fill
+        fillConvolCoeffFunctionResultList(resultList, query);
+    }
 
     return resultList;
 }

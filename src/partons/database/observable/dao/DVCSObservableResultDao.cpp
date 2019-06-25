@@ -113,11 +113,12 @@ List<DVCSObservableResult> DVCSObservableResultDao::getObservableResultListByCom
     query.bindValue(":computationId", computationId);
 
     //execute
-    Database::checkManyResults(getClassName(), __func__,
-            Database::execSelectQuery(query), query);
+    if (Database::checkManyResults(getClassName(), __func__,
+            Database::execSelectQuery(query), query)) {
 
-    //fill
-    fillObservableResultList(results, query);
+        //fill
+        fillObservableResultList(results, query);
+    }
 
     return results;
 }

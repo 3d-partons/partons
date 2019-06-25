@@ -15,7 +15,6 @@
 
 namespace PARTONS {
 
-
 EnvironmentConfigurationDao::EnvironmentConfigurationDao() :
         BaseObject("EnvironmentConfigurationDao") {
 }
@@ -74,10 +73,12 @@ EnvironmentConfiguration* EnvironmentConfigurationDao::selectByIndexId(
     query.prepare(QString(formatter.str().c_str()));
     query.bindValue(":indexId", indexId);
 
-    Database::checkUniqueResult(getClassName(), __func__,
-            Database::execSelectQuery(query), query);
+    if (Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query)) {
 
-    pResult = getEnvironmentConfigurationFromQuery(query);
+        query.first();
+        pResult = getEnvironmentConfigurationFromQuery(query);
+    }
 
     return pResult;
 }
@@ -138,6 +139,8 @@ int EnvironmentConfigurationDao::getEnvironmentConfigurationIdByHashSum(
 
     if (Database::checkUniqueResult(getClassName(), __func__,
             Database::execSelectQuery(query), query) != 0) {
+
+        query.first();
         indexId = query.value(0).toInt();
     }
 
@@ -159,10 +162,12 @@ std::string EnvironmentConfigurationDao::getConfigurationByIndexId(
     query.prepare(QString(formatter.str().c_str()));
     query.bindValue(":indexId", indexId);
 
-    Database::checkUniqueResult(getClassName(), __func__,
-            Database::execSelectQuery(query), query);
+    if (Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query)) {
 
-    configuration = query.value(0).toString().toStdString();
+        query.first();
+        configuration = query.value(0).toString().toStdString();
+    }
 
     return configuration;
 }

@@ -110,11 +110,12 @@ List<GPDResult> GPDResultDao::getGPDResultListByComputationId(
     query.bindValue(":computationId", computationId);
 
     //execute
-    Database::checkManyResults(getClassName(), __func__,
-            Database::execSelectQuery(query), query);
+    if (Database::checkManyResults(getClassName(), __func__,
+            Database::execSelectQuery(query), query)) {
 
-    //fill
-    fillGPDResultList(resultList, query);
+        //fill
+        fillGPDResultList(resultList, query);
+    }
 
     return resultList;
 }

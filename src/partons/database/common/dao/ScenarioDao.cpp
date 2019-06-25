@@ -15,7 +15,6 @@
 
 namespace PARTONS {
 
-
 ScenarioDao::ScenarioDao() :
         BaseObject("ScenarioDao") {
 }
@@ -71,7 +70,9 @@ int ScenarioDao::getScenarioIdByHashSum(const std::string& hashSum) const {
     query.bindValue(":hashSum", QString(hashSum.c_str()));
 
     if (Database::checkUniqueResult(getClassName(), __func__,
-            Database::execSelectQuery(query), query) != 0) {
+            Database::execSelectQuery(query), query)) {
+
+        query.first();
         result = query.value(0).toInt();
     }
 
@@ -91,10 +92,12 @@ std::string ScenarioDao::getXMLFileByIndexId(const int indexId) const {
     query.prepare(QString(formatter.str().c_str()));
     query.bindValue(":indexId", indexId);
 
-    Database::checkUniqueResult(getClassName(), __func__,
-            Database::execSelectQuery(query), query);
+    if (Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query)) {
 
-    xmlFile = query.value(0).toString().toStdString();
+        query.first();
+        xmlFile = query.value(0).toString().toStdString();
+    }
 
     return xmlFile;
 }
@@ -111,10 +114,12 @@ int ScenarioDao::getScenarioIdByComputationId(const int computationId) const {
     query.prepare(QString(formatter.str().c_str()));
     query.bindValue(":computationId", computationId);
 
-    Database::checkUniqueResult(getClassName(), __func__,
-            Database::execSelectQuery(query), query);
+    if (Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query)) {
 
-    result = query.value(0).toInt();
+        query.first();
+        result = query.value(0).toInt();
+    }
 
     return result;
 }
@@ -131,10 +136,12 @@ std::string ScenarioDao::getHashSumById(const int scenarioId) {
     query.prepare(QString(formatter.str().c_str()));
     query.bindValue(":scenarioId", scenarioId);
 
-    Database::checkUniqueResult(getClassName(), __func__,
-            Database::execSelectQuery(query), query);
+    if (Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query)) {
 
-    result = query.value(0).toString().toStdString();
+        query.first();
+        result = query.value(0).toString().toStdString();
+    }
 
     return result;
 }
@@ -150,15 +157,17 @@ Scenario* ScenarioDao::getScenarioById(const int scenarioId) {
     query.prepare(QString(formatter.str().c_str()));
     query.bindValue(":scenarioId", scenarioId);
 
-    Database::checkUniqueResult(getClassName(), __func__,
-            Database::execSelectQuery(query), query);
+    if (Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query)) {
 
-    pScenario = ResourceManager::getInstance()->registerScenario(
-            query.value(0).toInt(), query.value(2).toString().toStdString(),
-            query.value(1).toDateTime().toTime_t(),
-            ElemUtils::StringUtils::EMPTY,
-            query.value(4).toString().toStdString(),
-            query.value(3).toString().toStdString());
+        query.first();
+        pScenario = ResourceManager::getInstance()->registerScenario(
+                query.value(0).toInt(), query.value(2).toString().toStdString(),
+                query.value(1).toDateTime().toTime_t(),
+                ElemUtils::StringUtils::EMPTY,
+                query.value(4).toString().toStdString(),
+                query.value(3).toString().toStdString());
+    }
 
     return pScenario;
 }

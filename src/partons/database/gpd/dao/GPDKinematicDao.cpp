@@ -114,6 +114,9 @@ int GPDKinematicDao::select(const PhysicalType<double>& x,
     if (Database::checkUniqueResult(getClassName(), __func__,
             Database::execSelectQuery(query), query) != 0) {
 
+        //set first
+        query.first();
+
         //get result
         result = query.value(0).toInt();
     }
@@ -139,6 +142,9 @@ GPDKinematic GPDKinematicDao::getKinematicById(const int id) const {
     if (Database::checkUniqueResult(getClassName(), __func__,
             Database::execSelectQuery(query), query) != 0) {
 
+        //set first
+        query.first();
+
         //fill
         fillGPDKinematicFromQuery(gpdKinematic, query);
     }
@@ -162,11 +168,12 @@ List<GPDKinematic> GPDKinematicDao::getKinematicListByComputationId(
     query.bindValue(":computationId", QVariant(computationId));
 
     //execute and check how many results retrieved (if 0 throw exception)
-    Database::checkManyResults(getClassName(), __func__,
-            Database::execSelectQuery(query), query);
+    if (Database::checkManyResults(getClassName(), __func__,
+            Database::execSelectQuery(query), query)) {
 
-    //fill
-    fillGPDKinematicListFromQuery(kinematicList, query);
+        //fill
+        fillGPDKinematicListFromQuery(kinematicList, query);
+    }
 
     return kinematicList;
 }
@@ -259,6 +266,9 @@ int GPDKinematicDao::getKinematicIdByHashSum(const std::string& hashSum) const {
     //execute and check if unique (if false true exception)
     if (Database::checkUniqueResult(getClassName(), __func__,
             Database::execSelectQuery(query), query) != 0) {
+
+        //set first
+        query.first();
 
         //get
         result = query.value(0).toInt();

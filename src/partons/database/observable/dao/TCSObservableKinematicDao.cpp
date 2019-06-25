@@ -104,6 +104,9 @@ int TCSObservableKinematicDao::select(const PhysicalType<double>& t,
     if (Database::checkUniqueResult(getClassName(), __func__,
             Database::execSelectQuery(query), query) != 0) {
 
+        //set first
+        query.first();
+
         //get result
         result = query.value(0).toInt();
     }
@@ -130,6 +133,9 @@ TCSObservableKinematic TCSObservableKinematicDao::getKinematicById(
     if (Database::checkUniqueResult(getClassName(), __func__,
             Database::execSelectQuery(query), query) != 0) {
 
+        //set first
+        query.first();
+
         //fill
         fillKinematicFromQuery(observableKinematic, query);
     }
@@ -153,11 +159,12 @@ List<TCSObservableKinematic> TCSObservableKinematicDao::getKinematicListByComput
     query.bindValue(":computationId", computationId);
 
     //execute query
-    Database::checkManyResults(getClassName(), __func__,
-            Database::execSelectQuery(query), query);
+    if (Database::checkManyResults(getClassName(), __func__,
+            Database::execSelectQuery(query), query)) {
 
-    //fill
-    fillObservableKinematicListFromQuery(observableKinematicList, query);
+        //fill
+        fillObservableKinematicListFromQuery(observableKinematicList, query);
+    }
 
     return observableKinematicList;
 }
@@ -256,6 +263,11 @@ int TCSObservableKinematicDao::getKinematicIdByHashSum(
     //execute query
     if (Database::checkUniqueResult(getClassName(), __func__,
             Database::execSelectQuery(query), query) != 0) {
+
+        //set first
+        query.first();
+
+        //get result
         result = query.value(0).toInt();
     }
 

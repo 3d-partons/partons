@@ -95,6 +95,9 @@ int DVCSConvolCoeffFunctionKinematicDao::select(const PhysicalType<double>& xi,
     if (Database::checkUniqueResult(getClassName(), __func__,
             Database::execSelectQuery(query), query) != 0) {
 
+        //set first
+        query.first();
+
         //get result
         result = query.value(0).toInt();
     }
@@ -121,6 +124,9 @@ DVCSConvolCoeffFunctionKinematic DVCSConvolCoeffFunctionKinematicDao::getKinemat
     if (Database::checkUniqueResult(getClassName(), __func__,
             Database::execSelectQuery(query), query) != 0) {
 
+        //set first
+        query.first();
+
         //fill
         fillKinematicFromQuery(convolCoeffFunctionKinematic, query);
     }
@@ -145,11 +151,12 @@ List<DVCSConvolCoeffFunctionKinematic> DVCSConvolCoeffFunctionKinematicDao::getK
     query.bindValue(":channelId", ChannelType::DVCS);
 
     //execute query
-    Database::checkManyResults(getClassName(), __func__,
-            Database::execSelectQuery(query), query);
+    if (Database::checkManyResults(getClassName(), __func__,
+            Database::execSelectQuery(query), query)) {
 
-    //fill
-    fillKinematicListFromQuery(kinematicList, query);
+        //fill
+        fillKinematicListFromQuery(kinematicList, query);
+    }
 
     return kinematicList;
 }
@@ -240,6 +247,9 @@ int DVCSConvolCoeffFunctionKinematicDao::getKinematicIdByHashSum(
     //execute query
     if (Database::checkUniqueResult(getClassName(), __func__,
             Database::execSelectQuery(query), query) != 0) {
+
+        //set first
+        query.first();
 
         //get
         result = query.value(0).toInt();

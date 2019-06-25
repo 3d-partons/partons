@@ -77,48 +77,44 @@ const std::string Database::COLUMN_NAME_CCF_KINEMATIC_ID = "ccf_kinematic_id";
 const std::string Database::TABLE_NAME_CCF_RESULT = "ccf_result";
 const std::string Database::COLUMN_NAME_CCF_RESULT_ID = "ccf_result_id";
 
-int Database::getNumberOfRows(QSqlQuery& query) {
+int Database::getNumberOfRows(const QSqlQuery& query) {
+
+    //debug
     Partons::getInstance()->getLoggerManager()->debug("DatabaseManager",
             __func__, "Processing ...");
 
-    int numberOfRows = 0;
-
-    if (query.last()) {
-        numberOfRows = query.at() + 1;
-        query.first();
-        query.previous();
+    //check if select
+    if (query.isSelect()) {
+        return query.size();
+    } else {
+        return query.numRowsAffected();
     }
-
-    return numberOfRows;
 }
 
 int Database::execSelectQuery(QSqlQuery& query) {
-    int resultSize = 0;
 
-    ElemUtils::LoggerManager* pLoggerManager =
-            Partons::getInstance()->getLoggerManager();
-
+    //execute
     if (query.exec()) {
-        pLoggerManager->debug("Database", __func__,
+
+        //debug
+        Partons::getInstance()->getLoggerManager()->debug("Database", __func__,
                 getLastExecutedQuery(query));
 
+        //check if select
         if (!query.isSelect()) {
             throw ElemUtils::CustomException("Database", __func__,
                     ElemUtils::Formatter()
                             << "Executed query is not a SELECT query ; please check your implementation");
         }
 
+        //check if active, if yes return number of rows
         if (!query.isActive()) {
             throw ElemUtils::CustomException("Database", __func__,
                     ElemUtils::Formatter()
-                            << "Current query is inactive ; Cannot perfom next task(s) on it : "
+                            << "Current query is inactive ; Cannot perform next task(s) on it : "
                             << getLastExecutedQuery(query));
         } else {
-            resultSize = Database::getNumberOfRows(query);
-
-            if (resultSize == 1) {
-                query.first();
-            }
+            return Database::getNumberOfRows(query);
         }
     } else {
         throw ElemUtils::CustomException("Database", __func__,
@@ -127,7 +123,7 @@ int Database::execSelectQuery(QSqlQuery& query) {
                         << query.lastError().text().toStdString());
     }
 
-    return resultSize;
+    return 0;
 }
 
 std::string Database::getLastExecutedQuery(const QSqlQuery& query) {
@@ -140,31 +136,20 @@ std::string Database::getLastExecutedQuery(const QSqlQuery& query) {
     return str.toStdString();
 }
 
-unsigned int Database::checkUniqueResult(const std::string &className,
+bool Database::checkUniqueResult(const std::string &className,
         const std::string &funcName, const unsigned int resultSize,
         const QSqlQuery& query) {
-
-    if (resultSize != 0) {
-        if (resultSize != 1) {
-            throw ElemUtils::CustomException(className, funcName,
-                    ElemUtils::Formatter()
-                            << "More than 1 result have been found ; there is an integrity problem in your database for query : "
-                            << getLastExecutedQuery(query));
-        }
+    if (resultSize != 1) {
+        throw ElemUtils::CustomException(className, funcName,
+                ElemUtils::Formatter()
+                        << "More than 1 result have been found - there is an integrity problem in your database for query : "
+                        << getLastExecutedQuery(query));
     }
-//    else {
-//        throw ElemUtils::CustomException(className, funcName,
-//                ElemUtils::Formatter()
-//                        << "Cannot found any result with query : "
-//                        << getLastExecutedQuery(query));
-//    }
 
-    return resultSize;
+    return true;
 }
 
-//TODO REFACTOR ERROR MSG !! USE CUSTOMEXCEPTION INSTEAD !!
-
-void Database::checkManyResults(const std::string &className,
+bool Database::checkManyResults(const std::string &className,
         const std::string &funcName, const unsigned int resultSize,
         const QSqlQuery& query) {
     if (resultSize == 0) {
@@ -173,6 +158,8 @@ void Database::checkManyResults(const std::string &className,
                         << "Cannot found any result with query : "
                         << getLastExecutedQuery(query));
     }
+
+    return true;
 }
 
 std::string Database::getPreFormatedColumnNamesFromVector(

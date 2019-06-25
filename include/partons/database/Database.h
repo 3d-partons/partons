@@ -78,7 +78,7 @@ public:
      * @param query Input QSqlQuery query.
      * @return Number of records or 0 if position in query is not set to the last record.
      */
-    static int getNumberOfRows(QSqlQuery& query);
+    static int getNumberOfRows(const QSqlQuery& query);
 
     /**
      * Execute SQL SELECT-like query.
@@ -100,9 +100,8 @@ public:
      * @param funcName Name of function to be used in eventual exception.
      * @param resultSize Number of records returned by given query.
      * @param query Input QSqlQuery query.
-     * @return Number of queries (resultSize variable).
      */
-    static unsigned int checkUniqueResult(const std::string &className,
+    static bool checkUniqueResult(const std::string &className,
             const std::string &funcName, const unsigned int resultSize,
             const QSqlQuery& query);
 
@@ -113,7 +112,7 @@ public:
      * @param resultSize Number of records returned by given query.
      * @param query Input QSqlQuery query.
      */
-    static void checkManyResults(const std::string &className,
+    static bool checkManyResults(const std::string &className,
             const std::string &funcName, const unsigned int resultSize,
             const QSqlQuery& query);
 

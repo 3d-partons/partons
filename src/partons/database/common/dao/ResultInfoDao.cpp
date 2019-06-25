@@ -14,7 +14,6 @@
 
 namespace PARTONS {
 
-
 ResultInfoDao::ResultInfoDao() :
         BaseObject("ResultInfoDao") {
 }
@@ -37,10 +36,12 @@ ResultInfo ResultInfoDao::getResultInfoByComputationId(
     query.prepare(QString(formatter.str().c_str()));
     query.bindValue(":computationId", computationId);
 
-    Database::checkUniqueResult(getClassName(), __func__,
-            Database::execSelectQuery(query), query);
+    if (Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query)) {
 
-    fillResultInfo(result, query);
+        query.first();
+        fillResultInfo(result, query);
+    }
 
     return result;
 }

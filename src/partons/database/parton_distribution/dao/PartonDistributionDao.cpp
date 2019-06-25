@@ -106,6 +106,9 @@ PartonDistribution PartonDistributionDao::getPartonDistributionById(
     if (Database::checkUniqueResult(getClassName(), __func__,
             Database::execSelectQuery(query), query) != 0) {
 
+        //set first
+        query.first();
+
         //fill
         fillPartonDistributionFromQuery(partonDistribution, query);
     }

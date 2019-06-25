@@ -95,6 +95,9 @@ int TCSConvolCoeffFunctionKinematicDao::select(const PhysicalType<double>& xi,
     if (Database::checkUniqueResult(getClassName(), __func__,
             Database::execSelectQuery(query), query) != 0) {
 
+        //set first
+        query.first();
+
         //get result
         result = query.value(0).toInt();
     }
@@ -121,6 +124,9 @@ TCSConvolCoeffFunctionKinematic TCSConvolCoeffFunctionKinematicDao::getKinematic
     if (Database::checkUniqueResult(getClassName(), __func__,
             Database::execSelectQuery(query), query) != 0) {
 
+        //set first
+        query.first();
+
         //fill
         fillKinematicFromQuery(convolCoeffFunctionKinematic, query);
     }
@@ -145,11 +151,12 @@ List<TCSConvolCoeffFunctionKinematic> TCSConvolCoeffFunctionKinematicDao::getKin
     query.bindValue(":channelId", ChannelType::TCS);
 
     //execute query
-    Database::checkManyResults(getClassName(), __func__,
-            Database::execSelectQuery(query), query);
+    if (Database::checkManyResults(getClassName(), __func__,
+            Database::execSelectQuery(query), query)) {
 
-    //fill
-    fillKinematicListFromQuery(kinematicList, query);
+        //fill
+        fillKinematicListFromQuery(kinematicList, query);
+    }
 
     return kinematicList;
 }
@@ -198,8 +205,8 @@ void TCSConvolCoeffFunctionKinematicDao::fillKinematicFromQuery(
     PhysicalUnit::Type t_unit = static_cast<PhysicalUnit::Type>(query.value(
             field_t_unit).toInt());
     double Q2Prim = query.value(field_Q2Prim).toDouble();
-    PhysicalUnit::Type Q2Prim_unit = static_cast<PhysicalUnit::Type>(query.value(
-            field_Q2Prim_unit).toInt());
+    PhysicalUnit::Type Q2Prim_unit =
+            static_cast<PhysicalUnit::Type>(query.value(field_Q2Prim_unit).toInt());
     double MuF2 = query.value(field_MuF2).toDouble();
     PhysicalUnit::Type MuF2_unit = static_cast<PhysicalUnit::Type>(query.value(
             field_MuF2_unit).toInt());
@@ -240,6 +247,9 @@ int TCSConvolCoeffFunctionKinematicDao::getKinematicIdByHashSum(
     //execute query
     if (Database::checkUniqueResult(getClassName(), __func__,
             Database::execSelectQuery(query), query) != 0) {
+
+        //set first
+        query.first();
 
         //get
         result = query.value(0).toInt();
