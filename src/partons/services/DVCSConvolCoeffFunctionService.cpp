@@ -95,12 +95,12 @@ void DVCSConvolCoeffFunctionService::storeResultListInDatabase(
     if (computationId != -1) {
         info(__func__,
                 ElemUtils::Formatter()
-                        << "DVCSConvolCoeffFunctionResultList object has been stored in database with computation_id = "
+                        << "List of DVCSConvolCoeffFunctionResult objects has been stored in database with computation_id = "
                         << computationId);
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
-                        << "DVCSConvolCoeffFunctionResultList object : insertion into database failed");
+                        << "DVCSConvolCoeffFunctionResult object : insertion into database failed");
     }
 }
 
@@ -110,13 +110,11 @@ void DVCSConvolCoeffFunctionService::generatePlotFileTask(Task &task) {
             ' ');
 }
 
-ConvolCoeffFunctionModule<DVCSConvolCoeffFunctionKinematic,
-        DVCSConvolCoeffFunctionResult>* DVCSConvolCoeffFunctionService::newConvolCoeffFunctionModuleFromTask(
+DVCSConvolCoeffFunctionModule* DVCSConvolCoeffFunctionService::newDVCSConvolCoeffFunctionModuleFromTask(
         const Task &task) const {
 
     //initialize
-    ConvolCoeffFunctionModule<DVCSConvolCoeffFunctionKinematic,
-            DVCSConvolCoeffFunctionResult>* pConvolCoeffFunctionModule = 0;
+    DVCSConvolCoeffFunctionModule* pConvolCoeffFunctionModule = 0;
 
     //check if available
     if (ElemUtils::StringUtils::equals(
@@ -135,12 +133,19 @@ ConvolCoeffFunctionModule<DVCSConvolCoeffFunctionKinematic,
                 task.getModuleComputationConfiguration().getSubModules());
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter()
-                        << "You have not provided any ConvolCoeffFunctionModule");
+                ElemUtils::Formatter() << "You have not provided any "
+                        << DVCSConvolCoeffFunctionModule::DVCS_CONVOL_COEFF_FUNCTION_MODULE_CLASS_NAME);
     }
 
     //return
     return pConvolCoeffFunctionModule;
+}
+
+ConvolCoeffFunctionModule<DVCSConvolCoeffFunctionKinematic,
+        DVCSConvolCoeffFunctionResult>* DVCSConvolCoeffFunctionService::newConvolCoeffFunctionModuleFromTask(
+        const Task &task) const {
+    return newDVCSConvolCoeffFunctionModuleFromTask(task);
+
 }
 
 } /* namespace PARTONS */

@@ -95,7 +95,7 @@ void DVCSObservableService::storeResultListInDatabase(
     if (computationId != -1) {
         info(__func__,
                 ElemUtils::Formatter()
-                        << "DVCSObservableResult object has been stored in database with computation_id = "
+                        << "List of DVCSObservableResult objects has been stored in database with computation_id = "
                         << computationId);
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
@@ -110,12 +110,11 @@ void DVCSObservableService::generatePlotFileTask(Task &task) {
                     "dvcs_observable_plot_2d_view"), ' ');
 }
 
-ProcessModule<DVCSObservableKinematic, DVCSObservableResult>* DVCSObservableService::newProcessModuleFromTask(
+DVCSProcessModule* DVCSObservableService::newDVCSProcessModuleFromTask(
         const Task &task) const {
 
     //initialize
-    ProcessModule<DVCSObservableKinematic, DVCSObservableResult>* pProcessModule =
-            0;
+    DVCSProcessModule* pProcessModule = 0;
 
     //check if available
     if (ElemUtils::StringUtils::equals(
@@ -134,19 +133,20 @@ ProcessModule<DVCSObservableKinematic, DVCSObservableResult>* DVCSObservableServ
                 task.getModuleComputationConfiguration().getSubModules());
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter()
-                        << "You have not provided any ProcessModule ; Or check case in your XML file");
+                ElemUtils::Formatter() << "You have not provided any "
+                        << DVCSProcessModule::DVCS_PROCESS_MODULE_CLASS_NAME);
     }
 
     //return
     return pProcessModule;
+
 }
 
-Observable<DVCSObservableKinematic, DVCSObservableResult>* DVCSObservableService::newObservableModuleFromTask(
+DVCSObservable* DVCSObservableService::newDVCSObservableModuleFromTask(
         const Task &task) const {
 
     //initialize
-    Observable<DVCSObservableKinematic, DVCSObservableResult>* pObservable = 0;
+    DVCSObservable* pObservable = 0;
 
     //check if available
     if (ElemUtils::StringUtils::equals(
@@ -165,12 +165,22 @@ Observable<DVCSObservableKinematic, DVCSObservableResult>* DVCSObservableService
                 task.getModuleComputationConfiguration().getSubModules());
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter()
-                        << "You have not provided any Observable");
+                ElemUtils::Formatter() << "You have not provided any "
+                        << DVCSObservable::DVCS_OBSERVABLE_MODULE_CLASS_NAME);
     }
 
     //return
     return pObservable;
+}
+
+ProcessModule<DVCSObservableKinematic, DVCSObservableResult>* DVCSObservableService::newProcessModuleFromTask(
+        const Task &task) const {
+    return newDVCSProcessModuleFromTask(task);
+}
+
+Observable<DVCSObservableKinematic, DVCSObservableResult>* DVCSObservableService::newObservableModuleFromTask(
+        const Task &task) const {
+    return newDVCSObservableModuleFromTask(task);
 }
 
 } /* namespace PARTONS */

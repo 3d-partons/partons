@@ -18,6 +18,11 @@
 #include "ObservableService.h"
 
 namespace PARTONS {
+class DVCSObservable;
+class DVCSProcessModule;
+} /* namespace PARTONS */
+
+namespace PARTONS {
 
 /**
  * @class DVCSObservableService
@@ -39,12 +44,27 @@ public:
     virtual ~DVCSObservableService();
 
     virtual void resolveObjectDependencies();
-    virtual DVCSObservableKinematic newKinematicFromTask(const Task &task) const;
+    virtual DVCSObservableKinematic newKinematicFromTask(
+            const Task &task) const;
     virtual List<DVCSObservableKinematic> newListOfKinematicFromTask(
             const Task &task) const;
     virtual void storeResultListInDatabase(
             const List<DVCSObservableResult>& results) const;
     virtual void generatePlotFileTask(Task &task);
+
+    /**
+     * Uses an automation task (XML file) to configure a DVCSProcessModule.
+     * @param task Automation task.
+     * @return Pre-configured DVCSProcessModule.
+     */
+    DVCSProcessModule* newDVCSProcessModuleFromTask(const Task &task) const;
+
+    /**
+     * Uses an automation task (XML file) to configure a DVCSObservable.
+     * @param task Automation task.
+     * @return Pre-configured DVCSObservable.
+     */
+    DVCSObservable* newDVCSObservableModuleFromTask(const Task &task) const;
 
 protected:
 

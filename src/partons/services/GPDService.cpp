@@ -337,8 +337,8 @@ GPDModule* GPDService::newGPDModuleFromTask(const Task& task) const {
                 task.getModuleComputationConfiguration().getSubModules());
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter()
-                        << "You have not provided any GPDModule");
+                ElemUtils::Formatter() << "You have not provided any "
+                        << GPDModule::GPD_MODULE_CLASS_NAME);
     }
 
     //return

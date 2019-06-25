@@ -95,7 +95,7 @@ void TCSObservableService::storeResultListInDatabase(
     if (computationId != -1) {
         info(__func__,
                 ElemUtils::Formatter()
-                        << "TCSObservableResult object has been stored in database with computation_id = "
+                        << "List of TCSObservableResult objects has been stored in database with computation_id = "
                         << computationId);
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,

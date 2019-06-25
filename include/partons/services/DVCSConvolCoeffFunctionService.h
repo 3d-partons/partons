@@ -50,6 +50,14 @@ public:
             const List<DVCSConvolCoeffFunctionResult>& results) const;
     virtual void generatePlotFileTask(Task &task);
 
+  /**
+     * Uses an automation task (XML file) to configure a DVCSConvolCoeffFunctionModule.
+     * @param task Automation task.
+     * @return Pre-configured DVCSConvolCoeffFunctionModule.
+     */
+    DVCSConvolCoeffFunctionModule* newDVCSConvolCoeffFunctionModuleFromTask(
+            const Task &task) const;
+
 protected:
 
     /**

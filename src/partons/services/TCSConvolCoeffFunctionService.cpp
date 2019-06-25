@@ -95,12 +95,12 @@ void TCSConvolCoeffFunctionService::storeResultListInDatabase(
     if (computationId != -1) {
         info(__func__,
                 ElemUtils::Formatter()
-                        << "TCSConvolCoeffFunctionResultList object has been stored in database with computation_id = "
+                        << "List of TCSConvolCoeffFunctionResult objects has been stored in database with computation_id = "
                         << computationId);
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
-                        << "TCSConvolCoeffFunctionResultList object : insertion into database failed");
+                        << "TCSConvolCoeffFunctionResult object : insertion into database failed");
     }
 }
 
@@ -109,13 +109,11 @@ void TCSConvolCoeffFunctionService::generatePlotFileTask(Task &task) {
             generateSQLQueryForPlotFileTask(task, "tcs_ccf_plot_2d_view"), ' ');
 }
 
-ConvolCoeffFunctionModule<TCSConvolCoeffFunctionKinematic,
-        TCSConvolCoeffFunctionResult>* TCSConvolCoeffFunctionService::newConvolCoeffFunctionModuleFromTask(
+TCSConvolCoeffFunctionModule* TCSConvolCoeffFunctionService::newTCSConvolCoeffFunctionModuleFromTask(
         const Task &task) const {
 
     //initialize
-    ConvolCoeffFunctionModule<TCSConvolCoeffFunctionKinematic,
-            TCSConvolCoeffFunctionResult>* pConvolCoeffFunctionModule = 0;
+    TCSConvolCoeffFunctionModule* pConvolCoeffFunctionModule = 0;
 
     //check if available
     if (ElemUtils::StringUtils::equals(
@@ -134,12 +132,18 @@ ConvolCoeffFunctionModule<TCSConvolCoeffFunctionKinematic,
                 task.getModuleComputationConfiguration().getSubModules());
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter()
-                        << "You have not provided any ConvolCoeffFunctionModule");
+                ElemUtils::Formatter() << "You have not provided any "
+                        << TCSConvolCoeffFunctionModule::TCS_CONVOL_COEFF_FUNCTION_MODULE_CLASS_NAME);
     }
 
     //return
     return pConvolCoeffFunctionModule;
+}
+
+ConvolCoeffFunctionModule<TCSConvolCoeffFunctionKinematic,
+        TCSConvolCoeffFunctionResult>* TCSConvolCoeffFunctionService::newConvolCoeffFunctionModuleFromTask(
+        const Task &task) const {
+    return newTCSConvolCoeffFunctionModuleFromTask(task);
 }
 
 } /* namespace PARTONS */
