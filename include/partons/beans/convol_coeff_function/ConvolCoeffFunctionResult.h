@@ -142,7 +142,6 @@ public:
             const ConvolCoeffFunctionResult &referenceObject,
             std::string parentObjectInfo = ElemUtils::StringUtils::EMPTY) const {
 
-        //TODO not sure if this solution is a save one. Possibly kinematics comparison should be done at DVCS, TCS, etc level
         if (Result<KinematicType>::m_kinematic
                 != referenceObject.getKinematic()) {
             throw ElemUtils::CustomException(this->getClassName(), __func__,

@@ -70,7 +70,7 @@ void ComparisonReport::setTolerances(const NumA::Tolerances& tolerances) {
 }
 
 void ComparisonReport::addComparisonData(const ComparisonData& comparisonData) {
-    if (comparisonData.isIsComparisonPassed()) {
+    if (comparisonData.isComparisonPassed()) {
         m_comparedDataPassed.push_back(comparisonData);
         m_numberOfComparedDataPassed += 1;
     } else {
