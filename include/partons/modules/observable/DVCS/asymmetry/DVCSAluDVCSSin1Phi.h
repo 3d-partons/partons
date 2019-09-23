@@ -1,0 +1,92 @@
+#ifndef DVCSALUDVCSSIN1PHI_H
+#define DVCSALUDVCSSIN1PHI_H
+
+/**
+ * @file DVCSAluDVCSSin1Phi.h
+ * @author Luca COLANERI (IPNO)
+ * @date July 19, 2016
+ * @version 1.0
+ */
+
+#include <ElementaryUtils/parameters/Parameters.h>
+#include <string>
+#include <vector>
+
+#include "../../../../beans/gpd/GPDType.h"
+#include "../../../../beans/List.h"
+#include "../../../../utils/type/PhysicalType.h"
+#include "../../../MathIntegratorModule.h"
+#include "DVCSAluDVCS.h"
+
+namespace PARTONS {
+
+/**
+ * @class DVCSAluDVCSSin1Phi
+ *
+ * @brief 1th Fourier moment of longitudinally polarized beam asymmetry for sum over beam charges (DVCS part).
+ *
+ * Definition:<br>
+ *
+ * \f$ \displaystyle
+ * A_{LU, DVCS}^{\sin\left(1\phi\right)}\left(x_{B}, t, Q^2\right) =
+ * \frac{1}{\pi}
+ * \int_{0}^{2\pi} d\phi A_{LU, DVCS}\left(x_{B}, t, Q^2, \phi\right) \sin\left(1\phi\right) \, ,
+ * \f$
+ *
+ * where \f$A_{LU, DVCS}\left(x_{B}, t, Q^2, \phi\right)\f$ is defined in DVCSAluDVCS.
+ */
+class DVCSAluDVCSSin1Phi: public DVCSAluDVCS, public MathIntegratorModule {
+
+public:
+
+    /**
+     * Unique ID to automatically register the class in the registry.
+     */
+    static const unsigned int classId;
+
+    /**
+     * Constructor.
+     * @param className Name of class.
+     */
+    DVCSAluDVCSSin1Phi(const std::string &className);
+
+    /**
+     * Destructor.
+     */
+    virtual ~DVCSAluDVCSSin1Phi();
+
+    virtual DVCSAluDVCSSin1Phi* clone() const;
+    virtual void configure(const ElemUtils::Parameters &parameters);
+
+protected:
+
+    /**
+     * Copy constructor.
+     * @param other Object to be copied.
+     */
+    DVCSAluDVCSSin1Phi(const DVCSAluDVCSSin1Phi &other);
+
+    virtual PhysicalType<double> computeObservable(
+            const DVCSObservableKinematic& kinematic,
+            const List<GPDType>& gpdType);
+
+    /**
+     * Functor to perform the integration.
+     */
+    NumA::FunctionType1D* m_pFunctionToIntegrateObservable;
+
+    /**
+     * Function to be integrated.
+     */
+    virtual double functionToIntegrateObservable(double x,
+            std::vector<double> params);
+
+    /**
+     * Initialize functors.
+     */
+    void initFunctorsForIntegrations();
+};
+
+} /* namespace PARTONS */
+
+#endif /* DVCSALUDVCSSIN1PHI_H */

@@ -1,4 +1,4 @@
-#include "../../../../../../include/partons/modules/observable/DVCS/asymmetry/DVCSAllMinus.h"
+#include "../../../../../../include/partons/modules/observable/DVCS/asymmetry/DVCSAulPlus.h"
 
 #include <NumA/linear_algebra/vector/Vector3D.h>
 
@@ -9,40 +9,40 @@
 
 namespace PARTONS {
 
-const unsigned int DVCSAllMinus::classId =
+const unsigned int DVCSAulPlus::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
-                new DVCSAllMinus("DVCSAllMinus"));
+                new DVCSAulPlus("DVCSAulPlus"));
 
-DVCSAllMinus::DVCSAllMinus(const std::string &className) :
+DVCSAulPlus::DVCSAulPlus(const std::string &className) :
         DVCSObservable(className) {
 }
 
-DVCSAllMinus::DVCSAllMinus(const DVCSAllMinus& other) :
+DVCSAulPlus::DVCSAulPlus(const DVCSAulPlus& other) :
         DVCSObservable(other) {
 }
 
-DVCSAllMinus::~DVCSAllMinus() {
+DVCSAulPlus::~DVCSAulPlus() {
 }
 
-DVCSAllMinus* DVCSAllMinus::clone() const {
-    return new DVCSAllMinus(*this);
+DVCSAulPlus* DVCSAulPlus::clone() const {
+    return new DVCSAulPlus(*this);
 }
 
-PhysicalType<double> DVCSAllMinus::computeObservable(
+PhysicalType<double> DVCSAulPlus::computeObservable(
         const DVCSObservableKinematic& kinematic,
         const List<GPDType>& gpdType) {
 
-    PhysicalType<double> A = m_pProcessModule->compute(+1, -1,
+    PhysicalType<double> A = m_pProcessModule->compute(+1, +1,
             NumA::Vector3D(0., 0., -1.), kinematic, gpdType).getValue();
 
-    PhysicalType<double> B = m_pProcessModule->compute(-1, -1,
-            NumA::Vector3D(0., 0., +1.), kinematic, gpdType).getValue();
-
-    PhysicalType<double> C = m_pProcessModule->compute(+1, -1,
-            NumA::Vector3D(0., 0., +1.), kinematic, gpdType).getValue();
-
-    PhysicalType<double> D = m_pProcessModule->compute(-1, -1,
+    PhysicalType<double> B = m_pProcessModule->compute(-1, +1,
             NumA::Vector3D(0., 0., -1.), kinematic, gpdType).getValue();
+
+    PhysicalType<double> C = m_pProcessModule->compute(+1, +1,
+            NumA::Vector3D(0., 0., +1.), kinematic, gpdType).getValue();
+
+    PhysicalType<double> D = m_pProcessModule->compute(-1, +1,
+            NumA::Vector3D(0., 0., +1.), kinematic, gpdType).getValue();
 
     if ((A + B + C + D).getValue() == 0.) {
 

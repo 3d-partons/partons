@@ -11,6 +11,7 @@
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <map>
 #include <string>
+#include <vector>
 
 #include "../../../beans/automation/BaseObjectData.h"
 #include "../../../beans/gpd/GPDType.h"
@@ -86,6 +87,16 @@ protected:
     virtual PhysicalType<double> computeObservable(
             const DVCSObservableKinematic& kinematic,
             const List<GPDType>& gpdType) = 0;
+
+    /**
+     * List of GPD types to std::vector<double>.
+     */
+    std::vector<double> gpdTypesToVector(const List<GPDType>& list) const;
+
+    /**
+     * std::vector<double> to list of GPD types.
+     */
+    List<GPDType> gpdTypesFromVector(const std::vector<double>& vec) const;
 
     double m_xB; ///< Bjorken variable.
     double m_t; ///< Mandelstam variable (square of the 4-momentum transferm in GeV2).
