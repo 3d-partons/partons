@@ -59,7 +59,7 @@ DVCSCFFHeavyQuark::~DVCSCFFHeavyQuark() {
 
 void DVCSCFFHeavyQuark::resolveObjectDependencies() {
 
-    DVCSConvolCoeffFunctionModule::resolveObjectDependencies();
+    DVCSCFFStandard::resolveObjectDependencies();
 
     setIntegrator(NumA::IntegratorType1D::DEXP);
 }
