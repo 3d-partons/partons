@@ -95,7 +95,7 @@ public:
     static std::string getLastExecutedQuery(const QSqlQuery& query);
 
     /**
-     * Check if the result of given query contains only one record.
+     * Check if the result of given query contains only one record. If 0 or 1 result returns false or true, respectively, if >1 throw exception.
      * @param className Name of class to be used in eventual exception.
      * @param funcName Name of function to be used in eventual exception.
      * @param resultSize Number of records returned by given query.

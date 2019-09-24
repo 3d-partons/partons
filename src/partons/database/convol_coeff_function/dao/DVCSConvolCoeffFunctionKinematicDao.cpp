@@ -93,7 +93,7 @@ int DVCSConvolCoeffFunctionKinematicDao::select(const PhysicalType<double>& xi,
 
     //execute query
     if (Database::checkUniqueResult(getClassName(), __func__,
-            Database::execSelectQuery(query), query) != 0) {
+            Database::execSelectQuery(query), query)) {
 
         //set first
         query.first();
@@ -122,7 +122,7 @@ DVCSConvolCoeffFunctionKinematic DVCSConvolCoeffFunctionKinematicDao::getKinemat
 
     //execute query
     if (Database::checkUniqueResult(getClassName(), __func__,
-            Database::execSelectQuery(query), query) != 0) {
+            Database::execSelectQuery(query), query)) {
 
         //set first
         query.first();
@@ -246,7 +246,7 @@ int DVCSConvolCoeffFunctionKinematicDao::getKinematicIdByHashSum(
 
     //execute query
     if (Database::checkUniqueResult(getClassName(), __func__,
-            Database::execSelectQuery(query), query) != 0) {
+            Database::execSelectQuery(query), query)) {
 
         //set first
         query.first();

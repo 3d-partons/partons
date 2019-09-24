@@ -83,28 +83,6 @@ EnvironmentConfiguration* EnvironmentConfigurationDao::selectByIndexId(
     return pResult;
 }
 
-void EnvironmentConfigurationDao::deleteByIndexId(const int indexId) const {
-    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
-
-    query.prepare(
-            "DELETE FROM environment_configuration WHERE environment_configuration_id = :indexId");
-
-    query.bindValue(":indexId", indexId);
-
-    if (query.exec()) {
-        debug(__func__, Database::getLastExecutedQuery(query));
-
-        //TODO add a confirm message
-    } else {
-        throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter() << query.lastError().text().toStdString()
-                        << " for sql query = "
-                        << query.executedQuery().toStdString());
-    }
-
-    query.clear();
-}
-
 EnvironmentConfiguration* EnvironmentConfigurationDao::getEnvironmentConfigurationFromQuery(
         QSqlQuery& query) const {
 

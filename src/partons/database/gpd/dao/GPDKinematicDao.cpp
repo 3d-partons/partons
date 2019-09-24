@@ -112,7 +112,7 @@ int GPDKinematicDao::select(const PhysicalType<double>& x,
 
     //execute query
     if (Database::checkUniqueResult(getClassName(), __func__,
-            Database::execSelectQuery(query), query) != 0) {
+            Database::execSelectQuery(query), query)) {
 
         //set first
         query.first();
@@ -140,7 +140,7 @@ GPDKinematic GPDKinematicDao::getKinematicById(const int id) const {
 
     //execute and check if unique (if false true exception)
     if (Database::checkUniqueResult(getClassName(), __func__,
-            Database::execSelectQuery(query), query) != 0) {
+            Database::execSelectQuery(query), query)) {
 
         //set first
         query.first();
@@ -265,7 +265,7 @@ int GPDKinematicDao::getKinematicIdByHashSum(const std::string& hashSum) const {
 
     //execute and check if unique (if false true exception)
     if (Database::checkUniqueResult(getClassName(), __func__,
-            Database::execSelectQuery(query), query) != 0) {
+            Database::execSelectQuery(query), query)) {
 
         //set first
         query.first();

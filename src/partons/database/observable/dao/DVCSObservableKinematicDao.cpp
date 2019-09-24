@@ -97,7 +97,7 @@ int DVCSObservableKinematicDao::select(const PhysicalType<double>& xB,
 
     //execute query
     if (Database::checkUniqueResult(getClassName(), __func__,
-            Database::execSelectQuery(query), query) != 0) {
+            Database::execSelectQuery(query), query)) {
 
         //set first
         query.first();
@@ -126,7 +126,7 @@ DVCSObservableKinematic DVCSObservableKinematicDao::getKinematicById(
 
     //execute query
     if (Database::checkUniqueResult(getClassName(), __func__,
-            Database::execSelectQuery(query), query) != 0) {
+            Database::execSelectQuery(query), query)) {
 
         //set first
         query.first();
@@ -249,7 +249,7 @@ int DVCSObservableKinematicDao::getKinematicIdByHashSum(
 
     //execute query
     if (Database::checkUniqueResult(getClassName(), __func__,
-            Database::execSelectQuery(query), query) != 0) {
+            Database::execSelectQuery(query), query)) {
 
         //set first
         query.first();

@@ -102,7 +102,7 @@ int TCSObservableKinematicDao::select(const PhysicalType<double>& t,
 
     //execute query
     if (Database::checkUniqueResult(getClassName(), __func__,
-            Database::execSelectQuery(query), query) != 0) {
+            Database::execSelectQuery(query), query)) {
 
         //set first
         query.first();
@@ -131,7 +131,7 @@ TCSObservableKinematic TCSObservableKinematicDao::getKinematicById(
 
     //execute query
     if (Database::checkUniqueResult(getClassName(), __func__,
-            Database::execSelectQuery(query), query) != 0) {
+            Database::execSelectQuery(query), query)) {
 
         //set first
         query.first();
@@ -262,7 +262,7 @@ int TCSObservableKinematicDao::getKinematicIdByHashSum(
 
     //execute query
     if (Database::checkUniqueResult(getClassName(), __func__,
-            Database::execSelectQuery(query), query) != 0) {
+            Database::execSelectQuery(query), query)) {
 
         //set first
         query.first();

@@ -54,12 +54,6 @@ public:
     EnvironmentConfiguration* selectByIndexId(const int indexId) const;
 
     /**
-     * Delete an entry in the database containing environment configuration that matches with given unique id value.
-     * @param indexId Unique id of database entry to be deleted.
-     */
-    void deleteByIndexId(const int indexId) const;
-
-    /**
      * Retrieve environment configuration by given unique id.
      * @param indexId Unique id of row containing environment configuration to be selected.
      * @return String containing  environment configuration.

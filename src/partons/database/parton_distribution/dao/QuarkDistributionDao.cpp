@@ -75,7 +75,7 @@ QuarkDistribution QuarkDistributionDao::getQuarkDistributionById(
 
     //execute and check if unique (if false true exception)
     if (Database::checkUniqueResult(getClassName(), __func__,
-            Database::execSelectQuery(query), query) != 0) {
+            Database::execSelectQuery(query), query)) {
 
         //select first
         query.first();

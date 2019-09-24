@@ -104,7 +104,7 @@ PartonDistribution PartonDistributionDao::getPartonDistributionById(
 
     //execute and check if unique (if false true exception)
     if (Database::checkUniqueResult(getClassName(), __func__,
-            Database::execSelectQuery(query), query) != 0) {
+            Database::execSelectQuery(query), query)) {
 
         //set first
         query.first();

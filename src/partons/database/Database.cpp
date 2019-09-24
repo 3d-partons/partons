@@ -139,14 +139,18 @@ std::string Database::getLastExecutedQuery(const QSqlQuery& query) {
 bool Database::checkUniqueResult(const std::string &className,
         const std::string &funcName, const unsigned int resultSize,
         const QSqlQuery& query) {
-    if (resultSize != 1) {
+
+    if (resultSize == 1)
+        return true;
+
+    if (resultSize > 1) {
         throw ElemUtils::CustomException(className, funcName,
                 ElemUtils::Formatter()
                         << "More than 1 result have been found - there is an integrity problem in your database for query : "
                         << getLastExecutedQuery(query));
     }
 
-    return true;
+    return false;
 }
 
 bool Database::checkManyResults(const std::string &className,
