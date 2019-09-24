@@ -4,7 +4,6 @@
 #include <ElementaryUtils/string_utils/Formatter.h>
 
 #include "../../../../include/partons/beans/channel/ChannelType.h"
-#include "../../../../include/partons/beans/kinematic/KinematicType.h"
 #include "../../../../include/partons/beans/system/ResultInfo.h"
 #include "../../../../include/partons/utils/compare/CompareUtils.h"
 #include "../../../../include/partons/utils/compare/ComparisonData.h"
@@ -12,31 +11,32 @@
 namespace PARTONS {
 
 GPDSubtractionConstantResult::GPDSubtractionConstantResult() :
-        Result<GPDKinematic>("GPDSubtractionConstantResult",
+        Result<GPDSubtractionConstantKinematic>("GPDSubtractionConstantResult",
                 ChannelType::UNDEFINED) {
 }
 
 GPDSubtractionConstantResult::GPDSubtractionConstantResult(
         const PhysicalType<double>& value) :
-        Result<GPDKinematic>("GPDSubtractionConstantResult",
+        Result<GPDSubtractionConstantKinematic>("GPDSubtractionConstantResult",
                 ChannelType::UNDEFINED), m_value(value) {
 }
 
 GPDSubtractionConstantResult::GPDSubtractionConstantResult(
-        const GPDKinematic& kinematic) :
-        Result<GPDKinematic>("GPDSubtractionConstantResult",
+        const GPDSubtractionConstantKinematic& kinematic) :
+        Result<GPDSubtractionConstantKinematic>("GPDSubtractionConstantResult",
                 ChannelType::UNDEFINED, kinematic) {
 }
 
 GPDSubtractionConstantResult::GPDSubtractionConstantResult(
-        const PhysicalType<double>& value, const GPDKinematic& kinematic) :
-        Result<GPDKinematic>("GPDSubtractionConstantResult",
+        const PhysicalType<double>& value,
+        const GPDSubtractionConstantKinematic& kinematic) :
+        Result<GPDSubtractionConstantKinematic>("GPDSubtractionConstantResult",
                 ChannelType::UNDEFINED, kinematic), m_value(value) {
 }
 
 GPDSubtractionConstantResult::GPDSubtractionConstantResult(
         const GPDSubtractionConstantResult &other) :
-        Result<GPDKinematic>(other) {
+        Result<GPDSubtractionConstantKinematic>(other) {
     m_value = other.m_value;
 }
 
@@ -47,7 +47,8 @@ std::string GPDSubtractionConstantResult::toString() const {
 
     ElemUtils::Formatter formatter;
 
-    formatter << "\n" << Result<GPDKinematic>::toString() << "\n\n";
+    formatter << "\n" << Result<GPDSubtractionConstantKinematic>::toString()
+            << "\n\n";
     formatter << "Result: " << m_value.toString();
     formatter << '\n';
 

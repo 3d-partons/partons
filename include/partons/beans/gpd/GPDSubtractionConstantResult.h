@@ -13,7 +13,7 @@
 #include "../../utils/compare/ComparisonReport.h"
 #include "../../utils/type/PhysicalType.h"
 #include "../Result.h"
-#include "GPDKinematic.h"
+#include "GPDSubtractionConstantKinematic.h"
 
 namespace PARTONS {
 
@@ -24,7 +24,8 @@ namespace PARTONS {
  *
  * This class is used to store results of a single GPD subtraction constant computation.
  */
-class GPDSubtractionConstantResult: public Result<GPDKinematic> {
+class GPDSubtractionConstantResult: public Result<
+        GPDSubtractionConstantKinematic> {
 
 public:
 
@@ -43,7 +44,8 @@ public:
      * Assignment constructor.
      * @param kinematic GPD kinematics to be assigned.
      */
-    GPDSubtractionConstantResult(const GPDKinematic& kinematic);
+    GPDSubtractionConstantResult(
+            const GPDSubtractionConstantKinematic& kinematic);
 
     /**
      * Assignment constructor.
@@ -51,7 +53,7 @@ public:
      * @param kinematic GPD kinematics to be assigned.
      */
     GPDSubtractionConstantResult(const PhysicalType<double>& value,
-            const GPDKinematic& kinematic);
+            const GPDSubtractionConstantKinematic& kinematic);
 
     /**
      * Copy constructor.

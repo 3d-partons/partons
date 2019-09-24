@@ -18,7 +18,7 @@
 #include "../../utils/type/PhysicalType.h"
 
 namespace PARTONS {
-class GPDKinematic;
+class GPDSubtractionConstantKinematic;
 class GPDSubtractionConstantResult;
 } /* namespace PARTONS */
 
@@ -28,31 +28,6 @@ namespace PARTONS {
  * @class GPDSubtractionConstantModule
  *
  * @brief Abstract class for modeling of GPD subtraction constant.
- *
- * This class acts as an abstract (mother) class for modules used in the modeling of the GPD subtraction constants.
- * The usage of such kind of modules is illustrated by the following example:
- \code{.cpp}
- // Retrieve GPD service
- GPDService* pGPDService = Partons::getInstance()->getServiceObjectRegistry()->getGPDService();
-
- // Load GPDBorderFunction module with the BaseModuleFactory
- GPDSubtractionConstantModule* pGPDSubtractionConstantModule = Partons::getInstance()->getModuleObjectFactory()->newGPDSubtractionConstantModule(KM10SubtractionConstantModel::classId);
-
- // Create border function kinematics
- GPDBorderFunctionKinematic borderFunctionKinematic(0.001, -0.3, 2., 2.);
-
- // Compute
- double subConst = pGPDSubtractionConstantModule->compute(borderFunctionKinematic, GPDType::H);
-
- // Print results
- Partons::getInstance()->getLoggerManager()->info("main", __func__, ElemUtils::Formatter() << "subtraction constant for kinematics" << borderFunctionKinematic.toString() << " is: " << subConst);
- \endcode
- which gives via Logger:
- \code
- 06-06-2017 07:59:46 [INFO] (main::main) subtraction constant for kinematics[GPDKinematic]
- m_className = GPDKinematic - m_objectId = 195 indexId = -1
- m_x = 0.001 m_xi = 0.001 m_t = -0.3 m_MuF2 = 2(Gev2) m_MuR2 = 2(Gev2) is: 4.67128027681661
- \endcode
  */
 class GPDSubtractionConstantModule: public ModuleObject {
 
@@ -86,7 +61,8 @@ public:
      * @param kinematic GPD kinematics
      * @param gpdType GPD type
      */
-    virtual GPDSubtractionConstantResult compute(const GPDKinematic& kinematic,
+    virtual GPDSubtractionConstantResult compute(
+            const GPDSubtractionConstantKinematic& kinematic,
             GPDType::Type gpdType);
 
 protected:
@@ -109,7 +85,8 @@ protected:
      * Set internal kinematics.
      * @param kinematic Kinematics to be set.
      */
-    virtual void setKinematics(const GPDKinematic& kinematic);
+    virtual void setKinematics(
+            const GPDSubtractionConstantKinematic& kinematic);
 
     /**
      * Set current GPD type to be computed.

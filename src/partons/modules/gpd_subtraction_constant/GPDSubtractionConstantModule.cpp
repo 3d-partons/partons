@@ -10,9 +10,10 @@
 #include <ElementaryUtils/logger/CustomException.h>
 
 #include "../../../../include/partons/beans/channel/ChannelType.h"
-#include "../../../../include/partons/beans/gpd/GPDKinematic.h"
-#include "../../../../include/partons/beans/gpd/GPDSubtractionConstantResult.h"
+#include "../../../../include/partons/beans/gpd/GPDSubtractionConstantKinematic.h"
+#include "../../../../include/partons/beans/Result.h"
 #include "../../../../include/partons/utils/type/PhysicalUnit.h"
+#include "../../../../include/partons/beans/gpd/GPDSubtractionConstantResult.h"
 
 namespace PARTONS {
 
@@ -79,7 +80,7 @@ void GPDSubtractionConstantModule::isModuleWellConfigured() {
 }
 
 void GPDSubtractionConstantModule::setKinematics(
-        const GPDKinematic& kinematic) {
+        const GPDSubtractionConstantKinematic& kinematic) {
 
     m_t = kinematic.getT().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
     m_MuF2 = kinematic.getMuF2().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
@@ -91,7 +92,8 @@ void GPDSubtractionConstantModule::setCurrentGPDType(GPDType::Type gpdType) {
 }
 
 GPDSubtractionConstantResult GPDSubtractionConstantModule::compute(
-        const GPDKinematic& kinematic, GPDType::Type gpdType) {
+        const GPDSubtractionConstantKinematic& kinematic,
+        GPDType::Type gpdType) {
 
     //reset kinematics (virtuality)
     setKinematics(kinematic);
