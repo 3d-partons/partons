@@ -263,15 +263,15 @@ DVCSObservableResult DVCSProcessModule::compute(double beamHelicity,
     //set experimental conditions
     setExperimentalConditions(beamHelicity, beamCharge, targetPolarization);
 
+    //compute CCF
+    if (m_isCCFModuleDependent)
+        computeConvolCoeffFunction(kinematic, gpdType);
+
     //execute last child function (virtuality)
     initModule();
 
     //execute last child function (virtuality)
     isModuleWellConfigured();
-
-    //compute CCF
-    if (m_isCCFModuleDependent)
-        computeConvolCoeffFunction(kinematic, gpdType);
 
     //object to be returned
     DVCSObservableResult result(kinematic);
