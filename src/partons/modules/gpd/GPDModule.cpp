@@ -185,8 +185,15 @@ GPDResult GPDModule::compute(const GPDKinematic &kinematic,
             PartonDistribution partonDistribution;
 
             if (m_pGPDEvolutionModule != 0 && (m_MuF2 != m_MuF2_ref)) {
+
+                GPDModule* gpdModule =
+                        m_pModuleObjectFactory->cloneModuleObject(this);
+
                 partonDistribution = m_pGPDEvolutionModule->compute(m_x, m_xi,
-                        m_t, m_MuF2, m_MuR2, this, (m_it->first));
+                        m_t, m_MuF2, m_MuR2, gpdModule, (m_it->first));
+
+                m_pModuleObjectFactory->updateModulePointerReference(gpdModule,
+                          0);
             } else {
                 partonDistribution = ((*this).*(m_it->second))();
             }
