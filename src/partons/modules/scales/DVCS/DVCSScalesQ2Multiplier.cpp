@@ -1,10 +1,11 @@
+#include "../../../../../include/partons/modules/scales/DVCS/DVCSScalesQ2Multiplier.h"
+
 #include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/utils/type/PhysicalType.h"
 #include "../../../../../include/partons/beans/Scales.h"
-#include "../../../../../include/partons/modules/scales/DVCS/DVCSScalesQ2Multiplier.h"
 
 namespace PARTONS {
 

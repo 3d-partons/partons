@@ -1,6 +1,5 @@
 #include "../../../../../include/partons/modules/process/TCS/TCSProcessBDP01.h"
 
-#include <NumA/linear_algebra/vector/Vector3D.h>
 #include <cmath>
 #include <complex>
 
@@ -98,26 +97,13 @@ PhysicalType<double> TCSProcessBDP01::CrossSectionBH() {
     A += -m_t * (4. * Mp2 - m_t) * m_Q2Prim;        // eq. 18
 
     double B = (m_Q2Prim + m_t) * (m_Q2Prim + m_t) + b * b; // eq. 18
-    // DeltaT2 CHECK !!!
-    // condition on t0 seems to be approximate and does not work properly
-    // instead limit in DeltaT2 is used
-//    double t0 = 4. * etha2 * Mp2 / (1. - etha2);
-
-    if (DeltaT2 < 0.) {
-        return PhysicalType<double>(0., PhysicalUnit::UNDEFINED);
-    }
-    // DeltaT2 CHECK !!!
 
     double DiffCrossBH = FB(m_t) * B / 2. - FA(m_t) * A / m_t; // Differential cross section, eq. 17
     DiffCrossBH *= alpha3 / 4. / Constant::PI;
     DiffCrossBH /= -m_t * L;
     DiffCrossBH /= (s - Mp2) * (s - Mp2);
 
-    //   std::cout << "BH:\t" << DiffCrossBH * Constant::CONV_GEVm2_TO_NBARN * 1.E3
-    //          << " pb" << std::endl;
-
-    //TODO UNITS
-    return PhysicalType<double>(DiffCrossBH, PhysicalUnit::UNDEFINED);
+    return PhysicalType<double>(DiffCrossBH, PhysicalUnit::GEVm2);
 }
 
 PhysicalType<double> TCSProcessBDP01::CrossSectionVCS() {
@@ -136,20 +122,6 @@ PhysicalType<double> TCSProcessBDP01::CrossSectionVCS() {
     double tau = m_Q2Prim / (s - Mp2);
     double etha2 = tau * tau / (2. - tau) / (2. - tau);
 
-    // DeltaT2 CHECK !!!
-    // condition on t0 seems to be aproximate and does not work properly
-    // instead limit in DeltaT2 is usedl
-//    double t0 = 4. * etha2 * Mp2 / (1. - etha2);
-
-    double DeltaT2 = -m_t * m_t * s - Mp2 * m_Q2Prim * m_Q2Prim;
-    DeltaT2 += m_t * ((s + Mp2) * m_Q2Prim - (s - Mp2) * (s - Mp2));
-    DeltaT2 /= (s - Mp2) * (s - Mp2);
-
-    if (DeltaT2 < 0.) {
-        return PhysicalType<double>(0., PhysicalUnit::UNDEFINED);
-    }
-    // DeltaT2 CHECK !!!
-
     double DiffCrossC = (1. - etha2)
             * (std::abs(H) * std::abs(H) + std::abs(Ht) * std::abs(Ht)); // eq. 26
     DiffCrossC += -2. * etha2 * (E * conj(H) + Et * conj(Ht)).real();
@@ -158,20 +130,11 @@ PhysicalType<double> TCSProcessBDP01::CrossSectionVCS() {
     DiffCrossC *= alpha3 / 8. / Constant::PI / s / s;       // eq. 25
     DiffCrossC /= 2. * m_Q2Prim;
     DiffCrossC *= (1. + cos(m_theta) * cos(m_theta));
-//
-//    std::cout << "Compton:\t"
-//            << DiffCrossC * Constant::CONV_GEVm2_TO_NBARN * 1.E3 << " pb"
-//            << std::endl;
 
-    //TODO UNITS
-    return PhysicalType<double>(DiffCrossC, PhysicalUnit::UNDEFINED);
+    return PhysicalType<double>(DiffCrossC, PhysicalUnit::GEVm2);
 }
 
 PhysicalType<double> TCSProcessBDP01::CrossSectionInterf() {
-
-    //SET KINEMATICS (BY HAND!!!!!!!!!!!!!)
-    int nu = 0; // photon helicity
-    //SET KINEMATICS (BY HAND!!!!!!!!!!!!!)
 
     double Mp2 = Constant::PROTON_MASS * Constant::PROTON_MASS;
     double alpha3 = Constant::FINE_STRUCTURE_CONSTANT
@@ -199,16 +162,6 @@ PhysicalType<double> TCSProcessBDP01::CrossSectionInterf() {
     L /= 4.;        // eq. 20
     double L0 = m_Q2Prim * m_Q2Prim * sin(m_theta) * sin(m_theta) / 4.;
 
-    // DeltaT2 CHECK !!!
-    // condition on t0 seems to be approximate and does not work properly
-    // instead limit in DeltaT2 is used
-//    double t0 = 4. * etha2 * Mp2 / (1. - etha2);
-
-    if (DeltaT2 < 0.) {
-        return PhysicalType<double>(0., PhysicalUnit::UNDEFINED);
-    }
-    // DeltaT2 CHECK !!!
-
     std::complex<double> H = getConvolCoeffFunctionValue(GPDType::H);
     std::complex<double> E = getConvolCoeffFunctionValue(GPDType::E);
     std::complex<double> Ht = getConvolCoeffFunctionValue(GPDType::Ht);
@@ -224,7 +177,7 @@ PhysicalType<double> TCSProcessBDP01::CrossSectionInterf() {
             / (1. + etha);
 
     double DiffCrossINT = cos(m_phi) * M.real() // eq. 30
-    + double(nu) * sin(m_phi) * M.imag(); // helicity - dependent part. See eq. 32
+    + double(m_beamPolarization) * sin(m_phi) * M.imag(); // helicity - dependent part. See eq. 32
     DiffCrossINT *= (1. + cos(m_theta) * cos(m_theta)) / sin(m_theta);
     DiffCrossINT *= alpha3 / 4. / Constant::PI;
     DiffCrossINT /= s * s;
@@ -232,12 +185,7 @@ PhysicalType<double> TCSProcessBDP01::CrossSectionInterf() {
     DiffCrossINT /= tau * sqrt(1. - tau);
     DiffCrossINT *= L0 / L;
 
-    //   std::cout << "Interference:\t"
-    //           << DiffCrossINT * Constant::CONV_GEVm2_TO_NBARN * 1.E3 << " pb"
-    //           << std::endl;
-
-    //TODO UNITS
-    return PhysicalType<double>(DiffCrossINT, PhysicalUnit::UNDEFINED);
+    return PhysicalType<double>(DiffCrossINT, PhysicalUnit::GEVm2);
 }
 
 } /* namespace PARTONS */
