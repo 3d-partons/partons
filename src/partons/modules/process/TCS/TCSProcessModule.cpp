@@ -499,6 +499,27 @@ void TCSProcessModule::isModuleWellConfigured() {
                 << " (lepton energy fraction) does not lay between 0 and 1";
         warn(__func__, formatter.str());
     }
+
+    //test beam polarization
+    if (fabs(m_beamPolarization) != 0. && fabs(m_beamPolarization) != 1.) {
+        ElemUtils::Formatter formatter;
+        formatter << "Beam polarization = " << m_beamPolarization
+                << "is not +/- 1 or 0";
+        warn(__func__, formatter.str());
+    }
+
+    //test target polarization
+    double targetMag = sqrt(
+            pow(m_targetPolarization.getX(), 2)
+                    + pow(m_targetPolarization.getY(), 2)
+                    + pow(m_targetPolarization.getZ(), 2));
+
+    if (targetMag != 0. && targetMag != 1.) {
+        ElemUtils::Formatter formatter;
+        formatter << "Magnitude of target polarization ("
+                << m_targetPolarization.toString() << ") neither 0 nor 1";
+        warn(__func__, formatter.str());
+    }
 }
 
 void TCSProcessModule::computeConvolCoeffFunction(

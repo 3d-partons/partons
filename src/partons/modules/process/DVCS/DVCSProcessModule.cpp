@@ -500,14 +500,14 @@ void DVCSProcessModule::isModuleWellConfigured() {
     }
 
     //test beam helicity
-    if (fabs(m_beamHelicity) != 1) {
+    if (fabs(m_beamHelicity) != 1.) {
         ElemUtils::Formatter formatter;
         formatter << "Beam helicity = " << m_beamHelicity << "is not +/- 1";
         warn(__func__, formatter.str());
     }
 
     //test beam charge
-    if (fabs(m_beamCharge) != 1) {
+    if (fabs(m_beamCharge) != 1.) {
         ElemUtils::Formatter formatter;
         formatter << "Beam charge = " << m_beamCharge << "is not +/- 1";
         warn(__func__, formatter.str());
