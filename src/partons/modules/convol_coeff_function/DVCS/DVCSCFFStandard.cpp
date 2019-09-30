@@ -285,16 +285,6 @@ void DVCSCFFStandard::isModuleWellConfigured() {
     }
 }
 
-//TODO voir pourquoi CFFInputData se retrouve NULL lors de la copie de CFFOutputData
-//CFFOutputData DVCSCFFModel::compute(const double xB, const double t,
-//        const double Q2, const double MuF, const double MuR,
-//        GPDComputeType::Type gpdComputeType) {
-//
-//    debug( __func__, "entered");
-//
-//    return CFFModule::preCompute(xB, t, Q2, MuF, MuR, gpdComputeType);
-//}
-
 std::complex<double> DVCSCFFStandard::computeUnpolarized() {
 
     computeDiagonalGPD();

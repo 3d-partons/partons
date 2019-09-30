@@ -29,30 +29,30 @@ const unsigned int TCSCFFStandard::classId =
                 new TCSCFFStandard("TCSCFFStandard"));
 
 TCSCFFStandard::TCSCFFStandard(const std::string &className) :
-        DVCSConvolCoeffFunctionModule(className), m_nf(0), m_pRunningAlphaStrongModule(
-                0), m_Zeta(0.), m_logQ2OverMu2(0.), m_Q(0.), m_alphaSOver2Pi(
+        TCSConvolCoeffFunctionModule(className), m_nf(0), m_pRunningAlphaStrongModule(
+                0), m_Zeta(0.), m_logQ2PrimOverMu2(0.), m_QPrim(0.), m_alphaSOver2Pi(
                 0.), m_quarkDiagonal(0.), m_gluonDiagonal(0.), m_realPartSubtractQuark(
                 0.), m_imaginaryPartSubtractQuark(0.), m_realPartSubtractGluon(
                 0.), m_imaginaryPartSubtractGluon(0.), m_CF(4. / 3.) {
     m_listOfCFFComputeFunctionAvailable.insert(
             std::make_pair(GPDType::H,
-                    &DVCSConvolCoeffFunctionModule::computeUnpolarized));
+                    &TCSConvolCoeffFunctionModule::computeUnpolarized));
     m_listOfCFFComputeFunctionAvailable.insert(
             std::make_pair(GPDType::E,
-                    &DVCSConvolCoeffFunctionModule::computeUnpolarized));
+                    &TCSConvolCoeffFunctionModule::computeUnpolarized));
     m_listOfCFFComputeFunctionAvailable.insert(
             std::make_pair(GPDType::Ht,
-                    &DVCSConvolCoeffFunctionModule::computePolarized));
+                    &TCSConvolCoeffFunctionModule::computePolarized));
     m_listOfCFFComputeFunctionAvailable.insert(
             std::make_pair(GPDType::Et,
-                    &DVCSConvolCoeffFunctionModule::computePolarized));
+                    &TCSConvolCoeffFunctionModule::computePolarized));
 
     initFunctorsForIntegrations();
 }
 
 //TODO Call mother init function
 void TCSCFFStandard::resolveObjectDependencies() {
-    DVCSConvolCoeffFunctionModule::resolveObjectDependencies();
+    TCSConvolCoeffFunctionModule::resolveObjectDependencies();
 
     setIntegrator(NumA::IntegratorType1D::DEXP);
 
@@ -64,7 +64,7 @@ void TCSCFFStandard::resolveObjectDependencies() {
 void TCSCFFStandard::prepareSubModules(
         const std::map<std::string, BaseObjectData>& subModulesData) {
 
-    DVCSConvolCoeffFunctionModule::prepareSubModules(subModulesData);
+    TCSConvolCoeffFunctionModule::prepareSubModules(subModulesData);
 
     std::map<std::string, BaseObjectData>::const_iterator it;
 
@@ -139,7 +139,7 @@ void TCSCFFStandard::initFunctorsForIntegrations() {
 }
 
 TCSCFFStandard::TCSCFFStandard(const TCSCFFStandard &other) :
-        DVCSConvolCoeffFunctionModule(other) {
+        TCSConvolCoeffFunctionModule(other) {
 
     m_nf = other.m_nf;
 
@@ -151,8 +151,8 @@ TCSCFFStandard::TCSCFFStandard(const TCSCFFStandard &other) :
     }
 
     m_Zeta = other.m_Zeta;
-    m_logQ2OverMu2 = other.m_logQ2OverMu2;
-    m_Q = other.m_Q;
+    m_logQ2PrimOverMu2 = other.m_logQ2PrimOverMu2;
+    m_QPrim = other.m_QPrim;
     m_alphaSOver2Pi = other.m_alphaSOver2Pi;
     m_quarkDiagonal = other.m_quarkDiagonal;
     m_gluonDiagonal = other.m_gluonDiagonal;
@@ -264,27 +264,27 @@ TCSCFFStandard::~TCSCFFStandard() {
 
 void TCSCFFStandard::initModule() {
     // init parent module before
-    DVCSConvolCoeffFunctionModule::initModule();
+    TCSConvolCoeffFunctionModule::initModule();
 
     m_nf = 3;
-    m_Q = sqrt(m_Q2);
+    m_QPrim = sqrt(m_Q2Prim);
     m_Zeta = 2. * m_xi / (1 + m_xi);
-    m_logQ2OverMu2 = log(m_Q2 / m_MuF2);
+    m_logQ2PrimOverMu2 = log(m_Q2Prim / m_MuF2);
 
     m_alphaSOver2Pi = m_pRunningAlphaStrongModule->compute(m_MuR2)
             / (2. * Constant::PI);
 
     debug(__func__,
-            ElemUtils::Formatter() << "m_Q2=" << m_Q2 << " m_Q= " << m_Q
+            ElemUtils::Formatter() << "m_Q2Prim=" << m_Q2Prim << " m_QPrim= " << m_QPrim
                     << " m_MuF2=" << m_MuF2 << " m_Zeta= " << m_Zeta
-                    << " m_logQ2OverMu2=" << m_logQ2OverMu2
+                    << " m_logQ2OverMu2=" << m_logQ2PrimOverMu2
                     << " m_nbOfActiveFlavour=" << m_nf << " m_alphaSOver2Pi="
                     << m_alphaSOver2Pi);
 }
 
 void TCSCFFStandard::isModuleWellConfigured() {
     // check parent module before
-    DVCSConvolCoeffFunctionModule::isModuleWellConfigured();
+    TCSConvolCoeffFunctionModule::isModuleWellConfigured();
 
     if (m_pGPDModule == 0) {
         throw ElemUtils::CustomException(getClassName(), __func__,
@@ -311,16 +311,6 @@ void TCSCFFStandard::isModuleWellConfigured() {
                 "RunningAlphaStrongModule* is NULL");
     }
 }
-
-//TODO voir pourquoi CFFInputData se retrouve NULL lors de la copie de CFFOutputData
-//CFFOutputData DVCSCFFModel::compute(const double xB, const double t,
-//        const double Q2, const double MuF, const double MuR,
-//        GPDComputeType::Type gpdComputeType) {
-//
-//    debug( __func__, "entered");
-//
-//    return CFFModule::preCompute(xB, t, Q2, MuF, MuR, gpdComputeType);
-//}
 
 std::complex<double> TCSCFFStandard::computeUnpolarized() {
 
@@ -421,12 +411,12 @@ void TCSCFFStandard::computeSubtractionFunctionsV() {
 
         RealPartSubtractQuarkNLOV = Pi2 / 2. - 3. * DiLogInvZeta
                 + LogInvZeta * (Pi2 + 9. + 3. * LogZeta - LogInvZeta2 / 3.);
-        RealPartSubtractQuarkNLOV += m_logQ2OverMu2
+        RealPartSubtractQuarkNLOV += m_logQ2PrimOverMu2
                 * (Pi2 - 3. * LogInvZeta - LogInvZeta2);
         RealPartSubtractQuarkNLOV *= m_CF / 2.;
 
         ImaginaryPartSubtractQuarkNLOV = Pi2 / 3. + 9. + 3. * LogZeta
-                - LogInvZeta2 - m_logQ2OverMu2 * (2. * LogInvZeta + 3);
+                - LogInvZeta2 - m_logQ2PrimOverMu2 * (2. * LogInvZeta + 3);
         ImaginaryPartSubtractQuarkNLOV *= -Constant::PI * m_CF / 2.;
 
         // Quark Collinear subtraction functions as in my notes
@@ -446,12 +436,12 @@ void TCSCFFStandard::computeSubtractionFunctionsV() {
                 + DiLogInvZeta - LogZeta * LogInvZeta;
         RealPartSubtractGluonNLOV += (2. - m_Zeta) * LogInvZeta
                 * (1. - LogInvZeta / 4.);
-        RealPartSubtractGluonNLOV += m_logQ2OverMu2 / 2.
+        RealPartSubtractGluonNLOV += m_logQ2PrimOverMu2 / 2.
                 * (1. - (2. - m_Zeta) * LogInvZeta);
         RealPartSubtractGluonNLOV *= 1 / (2. * m_xi);
 
         ImaginaryPartSubtractGluonNLOV = (2. - m_Zeta)
-                * (2. - m_logQ2OverMu2 - LogInvZeta) - 2. * LogZeta;
+                * (2. - m_logQ2PrimOverMu2 - LogInvZeta) - 2. * LogZeta;
         ImaginaryPartSubtractGluonNLOV *= -Constant::PI / (4. * m_xi);
 
         // Gluon Subtraction functions as in my notes
@@ -530,12 +520,12 @@ void TCSCFFStandard::computeSubtractionFunctionsA() {
 
         RealPartSubtractQuarkNLOA = Pi2 / 6. - DiLogInvZeta
                 + LogInvZeta * (Pi2 + 9. + LogZeta - LogInvZeta2 / 3.);
-        RealPartSubtractQuarkNLOA += m_logQ2OverMu2
+        RealPartSubtractQuarkNLOA += m_logQ2PrimOverMu2
                 * (Pi2 - 3. * LogInvZeta - LogInvZeta2);
         RealPartSubtractQuarkNLOA *= m_CF / 2.;
 
         ImaginaryPartSubtractQuarkNLOA = Pi2 / 3. + 9. + LogZeta - LogInvZeta2
-                - m_logQ2OverMu2 * (2. * LogInvZeta + 3);
+                - m_logQ2PrimOverMu2 * (2. * LogInvZeta + 3);
         ImaginaryPartSubtractQuarkNLOA *= -Constant::PI * m_CF / 2.;
 
         // Quark Subtraction functions as in my notes
@@ -553,11 +543,11 @@ void TCSCFFStandard::computeSubtractionFunctionsA() {
 
         RealPartSubtractGluonNLOA = 1. + Pi2 / 4. * m_Zeta
                 + m_Zeta * LogInvZeta * (1. - LogInvZeta / 4.);
-        RealPartSubtractGluonNLOA += -m_logQ2OverMu2 / 2.
+        RealPartSubtractGluonNLOA += -m_logQ2PrimOverMu2 / 2.
                 * (1. + m_Zeta * LogInvZeta);
         RealPartSubtractGluonNLOA *= 1 / (2. * m_xi);
 
-        ImaginaryPartSubtractGluonNLOA = 2. - LogInvZeta - m_logQ2OverMu2;
+        ImaginaryPartSubtractGluonNLOA = 2. - LogInvZeta - m_logQ2PrimOverMu2;
         ImaginaryPartSubtractGluonNLOA *= -Constant::PI * m_Zeta / (4. * m_xi);
 
         // Gluon Subtraction functions as in my notes
@@ -1149,13 +1139,13 @@ std::complex<double> TCSCFFStandard::KernelGluonNLOV(double x) {
     }
 // GluonNLOA is copied in an unchanged form from KernelGluonNLOA
     std::complex<double> GluonNLOA(LogOneMinusz);
-    GluonNLOA += (m_logQ2OverMu2 - 2.);
+    GluonNLOA += (m_logQ2PrimOverMu2 - 2.);
     GluonNLOA *= (1. / (1. - (z * z)) + LogOneMinusz / ((1. + z) * (1. + z)));
     GluonNLOA += -LogOneMinusz * LogOneMinusz / (2. * (1. + z) * (1. + z));
     GluonNLOA *= (m_nf / 2.);
 
     std::complex<double> GluonNLOV(LogOneMinusz);
-    GluonNLOV += (m_logQ2OverMu2 - 2.);
+    GluonNLOV += (m_logQ2PrimOverMu2 - 2.);
     GluonNLOV /= 1. - z;
     GluonNLOV += LogOneMinusz / (1. + z);
     GluonNLOV *= (m_nf / 2.);
@@ -1188,7 +1178,7 @@ std::complex<double> TCSCFFStandard::KernelGluonNLOA(double x) {
 
     std::complex<double> GluonNLOA(LogOneMinusz);
     std::complex<double> GluonACollinear(0., 0.); // Collinear part of the axial gluon
-    GluonNLOA += (m_logQ2OverMu2 - 2.);
+    GluonNLOA += (m_logQ2PrimOverMu2 - 2.);
     GluonNLOA *= (1. / (1. - (z * z)) + LogOneMinusz / ((1. + z) * (1. + z)));
     GluonNLOA += -LogOneMinusz * LogOneMinusz / (2. * (1. + z) * (1. + z));
     GluonNLOA *= (m_nf / 2.);
@@ -1214,7 +1204,7 @@ std::complex<double> TCSCFFStandard::KernelQuarkNLOA(double x) {
         LogOneMinusz = std::complex<double>(log((z - 1.) / 2.), -Constant::PI);
     }
 
-    std::complex<double> QuarkNLOA(m_logQ2OverMu2);
+    std::complex<double> QuarkNLOA(m_logQ2PrimOverMu2);
     QuarkNLOA += LogOneMinusz / 2. - (3. / 4.);
     QuarkNLOA *= 2. * LogOneMinusz + 3.;
     QuarkNLOA += -(27. / 4.) - (1. - z) / (1. + z) * LogOneMinusz;

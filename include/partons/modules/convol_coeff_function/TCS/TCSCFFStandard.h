@@ -17,7 +17,7 @@
 #include <vector>
 
 #include "../../../beans/automation/BaseObjectData.h"
-#include "../DVCS/DVCSConvolCoeffFunctionModule.h"
+#include "TCSConvolCoeffFunctionModule.h"
 
 namespace NumA {
 class FunctionType1D;
@@ -35,7 +35,7 @@ namespace PARTONS {
  *
  * Available CFF types: H, E, Ht, Et.
  */
-class TCSCFFStandard: public DVCSConvolCoeffFunctionModule {
+class TCSCFFStandard: public TCSConvolCoeffFunctionModule {
 public:
 
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
@@ -79,7 +79,7 @@ protected:
      */
     TCSCFFStandard(const TCSCFFStandard &other);
 
-    double m_logQ2OverMu2;
+    double m_logQ2PrimOverMu2;
 
     virtual void initModule();
     virtual void isModuleWellConfigured();
@@ -100,7 +100,7 @@ protected:
     double m_CF;                     ///< ( Nc^2 - 1 ) / ( 2 Nc ) (colour)
 
     double m_Zeta;
-    double m_Q;
+    double m_QPrim;
     double m_alphaSOver2Pi;
 
     virtual std::complex<double> computeUnpolarized();

@@ -2,7 +2,10 @@
 
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
+#include <gsl/gsl_deriv.h>
+#include <gsl/gsl_math.h>
 #include <utility>
+#include <iostream>
 
 #include "../../../../../include/partons/beans/convol_coeff_function/ConvolCoeffFunctionResult.h"
 #include "../../../../../include/partons/beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
@@ -12,6 +15,8 @@
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../../include/partons/modules/convol_coeff_function/ConvolCoeffFunctionModule.h"
+#include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
+#include "../../../../../include/partons/modules/convol_coeff_function/TCS/TCSCFFFromDVCSDifferentiation.h"
 #include "../../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../../include/partons/Partons.h"
 
@@ -105,7 +110,7 @@ std::complex<double> TCSCFFFromDVCS::computeUnpolarized() {
      *      In NLO    CFF_TCS = CFF_DVCS* - i PI Q2 d/dQ2 CFF_DVCS*
      */
 
-    const double step = 1e-7; // differentiation step
+    const double step = 1.E-8; // differentiation step
 
     //set module and pQCD order
     m_pDVCSConvolCoeffFunctionModule->setGPDModule(m_pGPDModule);
@@ -131,16 +136,29 @@ std::complex<double> TCSCFFFromDVCS::computeUnpolarized() {
     //NLO
     else if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
 
+        gsl_function gslFunction;
+        double result, abserr;
+
+        TCSCFFFromDVCSDifferentiationParameters params;
+
+        params.m_pDVCSConvolCoeffFunctionModule =
+                m_pDVCSConvolCoeffFunctionModule;
+        params.m_xi = m_xi;
+        params.m_t = m_t;
+        params.m_MuF2 = m_MuF2;
+        params.m_MuR2 = m_MuR2;
+        params.m_currentGPDComputeType = m_currentGPDComputeType;
+
+        gslFunction.function = &TCSCFFFromDVCSDifferentiationFunction;
+        gslFunction.params = static_cast<void*>(&params);
+
+        gsl_deriv_central(&gslFunction, m_Q2Prim, step, &result, &abserr);
+
+        std::cout << result << std::endl;
+
         TCSCFF = std::conj(dvcsResult.getResult(m_currentGPDComputeType));
-
-        DVCSConvolCoeffFunctionResult dvcsResult1 =
-                m_pDVCSConvolCoeffFunctionModule->compute(
-                        DVCSConvolCoeffFunctionKinematic(m_xi, m_t,
-                                m_Q2Prim + step, m_MuF2, m_MuR2), gpdTypeList);
-
-        TCSCFF += -Constant::PI * std::complex<double>(0., 1.) * m_Q2Prim
-                * (std::conj(dvcsResult1.getResult(m_currentGPDComputeType))
-                        - TCSCFF) / step;
+        TCSCFF -= Constant::PI * m_Q2Prim
+                * std::conj(std::complex<double>(0., result));
     }
 
     return TCSCFF;

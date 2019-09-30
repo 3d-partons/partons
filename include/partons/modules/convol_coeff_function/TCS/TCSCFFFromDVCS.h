@@ -14,7 +14,6 @@
 
 #include "../../../beans/automation/BaseObjectData.h"
 #include "TCSConvolCoeffFunctionModule.h"
-#include "../DVCS/DVCSConvolCoeffFunctionModule.h"
 
 namespace PARTONS {
 
