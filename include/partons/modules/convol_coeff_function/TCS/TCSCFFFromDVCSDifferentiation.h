@@ -14,7 +14,6 @@
 #include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "../../../beans/gpd/GPDType.h"
 #include "../../../beans/List.h"
-#include "../ConvolCoeffFunctionModule.h"
 #include "../DVCS/DVCSConvolCoeffFunctionModule.h"
 
 namespace PARTONS {
@@ -24,6 +23,7 @@ struct TCSCFFFromDVCSDifferentiationParameters {
     DVCSConvolCoeffFunctionModule* m_pDVCSConvolCoeffFunctionModule;
     double m_xi, m_t, m_MuF2, m_MuR2;
     GPDType::Type m_currentGPDComputeType;
+    bool m_isReal;
 };
 
 double TCSCFFFromDVCSDifferentiationFunction(double Q2, void* params) {
@@ -34,10 +34,14 @@ double TCSCFFFromDVCSDifferentiationFunction(double Q2, void* params) {
     List<GPDType> gpdTypeList;
     gpdTypeList.add(GPDType(tcsParams->m_currentGPDComputeType));
 
-    return tcsParams->m_pDVCSConvolCoeffFunctionModule->compute(
-            DVCSConvolCoeffFunctionKinematic(tcsParams->m_xi, tcsParams->m_t,
-                    Q2, tcsParams->m_MuF2, tcsParams->m_MuR2), gpdTypeList).getResult(
-            tcsParams->m_currentGPDComputeType).imag();
+    std::complex<double> result =
+            ((tcsParams->m_pDVCSConvolCoeffFunctionModule)->compute(
+                    DVCSConvolCoeffFunctionKinematic(tcsParams->m_xi,
+                            tcsParams->m_t, Q2, tcsParams->m_MuF2,
+                            tcsParams->m_MuR2), gpdTypeList)).getResult(
+                    tcsParams->m_currentGPDComputeType);
+
+    return (tcsParams->m_isReal) ? (result.real()) : (result.imag());
 }
 
 } /* namespace PARTONS */

@@ -5,7 +5,6 @@
 #include <gsl/gsl_deriv.h>
 #include <gsl/gsl_math.h>
 #include <utility>
-#include <iostream>
 
 #include "../../../../../include/partons/beans/convol_coeff_function/ConvolCoeffFunctionResult.h"
 #include "../../../../../include/partons/beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
@@ -44,9 +43,8 @@ TCSCFFFromDVCS::TCSCFFFromDVCS(const std::string &className) :
             std::make_pair(GPDType::Et,
                     &TCSConvolCoeffFunctionModule::computePolarized));
 
-//TODO to be checked
-//this module does not depend on GPDs
-// setIsGPDModuleDependent(false);
+    //this module does not depend on GPDs
+    setIsGPDModuleDependent(false);
 }
 
 TCSCFFFromDVCS::TCSCFFFromDVCS(const TCSCFFFromDVCS &other) :
@@ -113,7 +111,6 @@ std::complex<double> TCSCFFFromDVCS::computeUnpolarized() {
     const double step = 1.E-8; // differentiation step
 
     //set module and pQCD order
-    m_pDVCSConvolCoeffFunctionModule->setGPDModule(m_pGPDModule);
     m_pDVCSConvolCoeffFunctionModule->setQCDOrderType(m_qcdOrderType);
 
     //currect GPD type
@@ -137,9 +134,13 @@ std::complex<double> TCSCFFFromDVCS::computeUnpolarized() {
     else if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
 
         gsl_function gslFunction;
-        double result, abserr;
-
         TCSCFFFromDVCSDifferentiationParameters params;
+
+        gslFunction.function = &TCSCFFFromDVCSDifferentiationFunction;
+        gslFunction.params = static_cast<void*>(&params);
+
+        double resultReal, abserrReal;
+        double resultImag, abserrImag;
 
         params.m_pDVCSConvolCoeffFunctionModule =
                 m_pDVCSConvolCoeffFunctionModule;
@@ -149,16 +150,17 @@ std::complex<double> TCSCFFFromDVCS::computeUnpolarized() {
         params.m_MuR2 = m_MuR2;
         params.m_currentGPDComputeType = m_currentGPDComputeType;
 
-        gslFunction.function = &TCSCFFFromDVCSDifferentiationFunction;
-        gslFunction.params = static_cast<void*>(&params);
+        params.m_isReal = true;
+        gsl_deriv_central(&gslFunction, m_Q2Prim, step, &resultReal,
+                &abserrReal);
 
-        gsl_deriv_central(&gslFunction, m_Q2Prim, step, &result, &abserr);
-
-        std::cout << result << std::endl;
+        params.m_isReal = false;
+        gsl_deriv_central(&gslFunction, m_Q2Prim, step, &resultImag,
+                &abserrImag);
 
         TCSCFF = std::conj(dvcsResult.getResult(m_currentGPDComputeType));
-        TCSCFF -= Constant::PI * m_Q2Prim
-                * std::conj(std::complex<double>(0., result));
+        TCSCFF -= Constant::PI * m_Q2Prim * std::complex<double>(0., 1.)
+                * std::conj(std::complex<double>(resultReal, resultImag));
     }
 
     return TCSCFF;
@@ -218,6 +220,8 @@ void TCSCFFFromDVCS::prepareSubModules(
             //configure
             m_pDVCSConvolCoeffFunctionModule->configure(
                     (it->second).getParameters());
+            m_pDVCSConvolCoeffFunctionModule->prepareSubModules(
+                         (it->second).getSubModules());
         }
     }
 }
