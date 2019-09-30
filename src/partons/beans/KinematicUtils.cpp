@@ -482,7 +482,7 @@ List<TCSObservableKinematic> KinematicUtils::getTCSObservableKinematicFromFile(
                                 ElemUtils::Formatter() << "Line " << i
                                         << " (units). Missing column value in your kinematic input file : "
                                         << filePath
-                                        << " ; You must provided 6 column : xB | t | Q2' | E | phi | theta");
+                                        << " ; You must provided 6 column : t | Q2' | E | phi | theta | MLepton");
 
                     }
 
@@ -498,7 +498,7 @@ List<TCSObservableKinematic> KinematicUtils::getTCSObservableKinematicFromFile(
                             ElemUtils::Formatter() << "Line " << i
                                     << ". Missing column value in your kinematic input file : "
                                     << filePath
-                                    << " ; You must provided 6 column : xB | t | Q2' | E | phi | theta");
+                                    << " ; You must provided 6 column : t | Q2' | E | phi | theta | MLepton");
 
                 }
 

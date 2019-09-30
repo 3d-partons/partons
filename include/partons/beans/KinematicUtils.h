@@ -80,7 +80,7 @@ public:
 
     /**
      * Parse a text file in order to retrieve a list of ObservableKinematic objects.
-     * The parsed file should display separate lines of the form "xB | t | Q2' | E | phi | theta".
+     * The parsed file should display separate lines of the form "t | Q2' | E | phi | theta | MLepton".
      * @param filePath Path to file to be parsed.
      * @return List of extracted ObservableKinematic objects.
      */
