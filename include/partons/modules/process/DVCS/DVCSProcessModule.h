@@ -9,7 +9,7 @@
  */
 
 #include <ElementaryUtils/parameters/Parameters.h>
-#include <ElementaryUtils/string_utils/Formatter.h>
+#include <NumA/linear_algebra/vector/Vector3D.h>
 #include <complex>
 #include <map>
 #include <string>
@@ -22,15 +22,14 @@
 #include "../../../beans/observable/DVCS/DVCSObservableKinematic.h"
 #include "../../../beans/observable/DVCS/DVCSObservableResult.h"
 #include "../../../beans/process/VCSSubProcessType.h"
-#include "../../../ModuleObjectFactory.h"
 #include "../../../utils/type/PhysicalType.h"
-#include "../../scales/DVCS/DVCSScalesModule.h"
-#include "../../xi_converter/DVCS/DVCSXiConverterModule.h"
 #include "../ProcessModule.h"
 
-namespace NumA {
-class Vector3D;
-} /* namespace NumA */
+namespace PARTONS {
+class DVCSConvolCoeffFunctionModule;
+class DVCSScalesModule;
+class DVCSXiConverterModule;
+} /* namespace PARTONS */
 
 namespace PARTONS {
 
@@ -129,30 +128,18 @@ public:
 
     /**
      * Bethe-Heitler differential cross section.
-     * @param beamHelicity Helicity of the beam (in units of hbar/2).
-     * @param beamCharge Electric charge of the beam (in units of positron charge).
-     * @param targetPolarization Target polarization. In GV conventions.
      */
-    virtual PhysicalType<double> CrossSectionBH(double beamHelicity,
-            double beamCharge, NumA::Vector3D targetPolarization);
+    virtual PhysicalType<double> CrossSectionBH();
 
     /**
      * Virtual Compton Scattering differential cross section.
-     * @param beamHelicity Helicity of the beam (in units of hbar/2).
-     * @param beamCharge Electric charge of the beam (in units of positron charge).
-     * @param targetPolarization Target polarization. In GV conventions.
      */
-    virtual PhysicalType<double> CrossSectionVCS(double beamHelicity,
-            double beamCharge, NumA::Vector3D targetPolarization);
+    virtual PhysicalType<double> CrossSectionVCS();
 
     /**
      * Interference differential cross section.
-     * @param beamHelicity Helicity of the beam (in units of hbar/2).
-     * @param beamCharge Electric charge of the beam (in units of positron charge).
-     * @param targetPolarization Target polarization. In GV conventions.
      */
-    virtual PhysicalType<double> CrossSectionInterf(double beamHelicity,
-            double beamCharge, NumA::Vector3D targetPolarization);
+    virtual PhysicalType<double> CrossSectionInterf();
 
 protected:
 
@@ -178,6 +165,10 @@ protected:
     double m_Q2; ///< Virtuality of the incoming photon (in GeV2).
     double m_E; ///< Beam energy in target rest frame (in GeV).
     double m_phi; ///<  Angle between leptonic and hadronic plane (in radians, Trento convention).
+
+    double m_beamHelicity; ///< Beam helicity.
+    double m_beamCharge; ///< Beam charge.
+    NumA::Vector3D m_targetPolarization; ///< Target polarization.
 
     double m_tmin; ///< Minimal value of t.
     double m_tmax; ///< Maximal value of t.

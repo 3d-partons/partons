@@ -34,10 +34,10 @@ PhysicalType<double> TCSCrossSectionUUMinus::computeObservable(
         const TCSObservableKinematic& kinematic, const List<GPDType>& gpdType) {
 
     //evaluate
-    TCSObservableResult A = m_pProcessModule->compute(1., -1,
+    TCSObservableResult A = m_pProcessModule->compute(0,
             NumA::Vector3D(0., 0., 0.), kinematic, gpdType);
 
-    TCSObservableResult B = m_pProcessModule->compute(-1., -1,
+    TCSObservableResult B = m_pProcessModule->compute(0,
             NumA::Vector3D(0., 0., 0.), kinematic, gpdType);
 
     //combine

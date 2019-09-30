@@ -1,6 +1,5 @@
 #include "../../../../../include/partons/modules/process/DVCS/DVCSProcessBMJ12.h"
 
-#include <NumA/linear_algebra/vector/Vector3D.h>
 #include <cmath>
 #include <cstdlib>
 
@@ -105,9 +104,16 @@ DVCSProcessBMJ12* DVCSProcessBMJ12::clone() const {
 
 void DVCSProcessBMJ12::initModule() {
 
-    //init mother class
+    // Init mother class
     DVCSProcessModule::initModule();
 
+    // Define the angles and Lambda
+    defineAngles(m_targetPolarization);
+
+    // Beam helicity
+    m_lambda = m_beamHelicity;
+
+    // other
     m_xB2 = m_xB * m_xB;
     m_Q[0] = sqrt(m_Q2);
     m_Q[1] = m_Q2;
@@ -178,20 +184,6 @@ void DVCSProcessBMJ12::isModuleWellConfigured() {
 
     // check mother class
     DVCSProcessModule::isModuleWellConfigured();
-}
-
-void DVCSProcessBMJ12::setExperimentalConditions(double beamHelicity,
-        double beamCharge, NumA::Vector3D targetPolarization) {
-
-    // run for mother
-    DVCSProcessModule::setExperimentalConditions(beamHelicity, beamCharge,
-            targetPolarization);
-
-    // define the angles and Lambda
-    defineAngles(targetPolarization);
-
-    // beam helicity
-    m_lambda = beamHelicity;
 }
 
 void DVCSProcessBMJ12::defineAngles(const NumA::Vector3D &targetPolarization) {
@@ -1397,22 +1389,22 @@ double DVCSProcessBMJ12::SqrAmplInterf(double beamHelicity, double beamCharge,
     return result;
 }
 
-PhysicalType<double> DVCSProcessBMJ12::CrossSectionBH(double beamHelicity, double beamCharge,
-        NumA::Vector3D targetPolarization) {
-    return PhysicalType<double>(SqrAmplBH(beamHelicity, beamCharge, targetPolarization)
-            * m_phaseSpace, PhysicalUnit::GEVm2);
+PhysicalType<double> DVCSProcessBMJ12::CrossSectionBH() {
+    return PhysicalType<double>(
+            SqrAmplBH(m_beamHelicity, m_beamCharge, m_targetPolarization)
+                    * m_phaseSpace, PhysicalUnit::GEVm2);
 }
 
-PhysicalType<double> DVCSProcessBMJ12::CrossSectionVCS(double beamHelicity, double beamCharge,
-        NumA::Vector3D targetPolarization) {
-    return PhysicalType<double>(SqrAmplVCS(beamHelicity, beamCharge, targetPolarization)
-            * m_phaseSpace, PhysicalUnit::GEVm2);
+PhysicalType<double> DVCSProcessBMJ12::CrossSectionVCS() {
+    return PhysicalType<double>(
+            SqrAmplVCS(m_beamHelicity, m_beamCharge, m_targetPolarization)
+                    * m_phaseSpace, PhysicalUnit::GEVm2);
 }
 
-PhysicalType<double> DVCSProcessBMJ12::CrossSectionInterf(double beamHelicity,
-        double beamCharge, NumA::Vector3D targetPolarization) {
-    return PhysicalType<double>(SqrAmplInterf(beamHelicity, beamCharge, targetPolarization)
-            * m_phaseSpace, PhysicalUnit::GEVm2);
+PhysicalType<double> DVCSProcessBMJ12::CrossSectionInterf() {
+    return PhysicalType<double>(
+            SqrAmplInterf(m_beamHelicity, m_beamCharge, m_targetPolarization)
+                    * m_phaseSpace, PhysicalUnit::GEVm2);
 }
 
 } /* namespace PARTONS */

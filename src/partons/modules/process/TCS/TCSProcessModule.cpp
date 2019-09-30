@@ -1,8 +1,7 @@
 #include "../../../../../include/partons/modules/process/TCS/TCSProcessModule.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
-#include <NumA/linear_algebra/vector/Vector3D.h>
-#include <cmath>
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <utility>
 
 #include "../../../../../include/partons/beans/channel/ChannelType.h"
@@ -10,8 +9,12 @@
 #include "../../../../../include/partons/beans/observable/ObservableResult.h"
 #include "../../../../../include/partons/beans/Result.h"
 #include "../../../../../include/partons/beans/Scales.h"
-#include "../../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../../include/partons/modules/convol_coeff_function/TCS/TCSConvolCoeffFunctionModule.h"
+#include "../../../../../include/partons/modules/scales/ScalesModule.h"
+#include "../../../../../include/partons/modules/scales/TCS/TCSScalesModule.h"
+#include "../../../../../include/partons/modules/xi_converter/TCS/TCSXiConverterModule.h"
+#include "../../../../../include/partons/modules/xi_converter/XiConverterModule.h"
+#include "../../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../../include/partons/Partons.h"
 #include "../../../../../include/partons/services/TCSConvolCoeffFunctionService.h"
 #include "../../../../../include/partons/ServiceObjectRegistry.h"
@@ -24,9 +27,9 @@ const std::string TCSProcessModule::TCS_PROCESS_MODULE_CLASS_NAME =
 
 TCSProcessModule::TCSProcessModule(const std::string &className) :
         ProcessModule(className, ChannelType::TCS), m_t(0.), m_Q2Prim(0.), m_E(
-                0.), m_phi(0.), m_theta(0.), m_MLepton(0.), m_tmin(0.), m_tmax(
-                0.), m_xBmin(0), m_y(0.), m_epsilon(0.), m_pScaleModule(0), m_pXiConverterModule(
-                0), m_pConvolCoeffFunctionModule(0) {
+                0.), m_phi(0.), m_theta(0.), m_MLepton(0.), m_beamPolarization(
+                0.), m_tmin(0.), m_tmax(0.), m_xBmin(0), m_y(0.), m_epsilon(0.), m_pScaleModule(
+                0), m_pXiConverterModule(0), m_pConvolCoeffFunctionModule(0) {
 }
 
 TCSProcessModule::~TCSProcessModule() {
@@ -50,9 +53,11 @@ TCSProcessModule::~TCSProcessModule() {
 TCSProcessModule::TCSProcessModule(const TCSProcessModule& other) :
         ProcessModule(other), m_t(other.m_t), m_Q2Prim(other.m_Q2Prim), m_E(
                 other.m_E), m_phi(other.m_phi), m_theta(other.m_theta), m_MLepton(
-                other.m_MLepton), m_tmin(other.m_tmin), m_tmax(other.m_tmax), m_xBmin(
-                other.m_xBmin), m_y(other.m_y), m_epsilon(other.m_epsilon), m_pScaleModule(
-                0), m_pXiConverterModule(0), m_pConvolCoeffFunctionModule(0) {
+                other.m_MLepton), m_beamPolarization(other.m_beamPolarization), m_targetPolarization(
+                other.m_targetPolarization), m_tmin(other.m_tmin), m_tmax(
+                other.m_tmax), m_xBmin(other.m_xBmin), m_y(other.m_y), m_epsilon(
+                other.m_epsilon), m_pScaleModule(0), m_pXiConverterModule(0), m_pConvolCoeffFunctionModule(
+                0) {
 
     m_lastCCFKinematics = other.m_lastCCFKinematics;
     m_dvcsConvolCoeffFunctionResult = other.m_dvcsConvolCoeffFunctionResult;
@@ -223,12 +228,12 @@ void TCSProcessModule::prepareSubModules(
     }
 }
 
-TCSObservableResult TCSProcessModule::compute(double beamHelicity,
-        double beamCharge, NumA::Vector3D targetPolarization,
+TCSObservableResult TCSProcessModule::compute(double beamPolarization,
+        NumA::Vector3D targetPolarization,
         const TCSObservableKinematic& kinematic,
         const List<GPDType> & gpdType) {
-    return compute(beamHelicity, beamCharge, targetPolarization, kinematic,
-            gpdType, VCSSubProcessType::ALL);
+    return compute(beamPolarization, targetPolarization, kinematic, gpdType,
+            VCSSubProcessType::ALL);
 }
 
 List<GPDType> TCSProcessModule::getListOfAvailableGPDTypeForComputation() const {
@@ -252,8 +257,8 @@ List<GPDType> TCSProcessModule::getListOfAvailableGPDTypeForComputation() const 
     return listOfAvailableGPDTypeForComputation;
 }
 
-TCSObservableResult TCSProcessModule::compute(double beamHelicity,
-        double beamCharge, NumA::Vector3D targetPolarization,
+TCSObservableResult TCSProcessModule::compute(double beamPolarization,
+        NumA::Vector3D targetPolarization,
         const TCSObservableKinematic& kinematic, const List<GPDType>& gpdType,
         VCSSubProcessType::Type processType) {
 
@@ -261,7 +266,7 @@ TCSObservableResult TCSProcessModule::compute(double beamHelicity,
     setKinematics(kinematic);
 
     //set experimental conditions
-    setExperimentalConditions(beamHelicity, beamCharge, targetPolarization);
+    setExperimentalConditions(beamPolarization, targetPolarization);
 
     //compute CCF
     if (m_isCCFModuleDependent)
@@ -280,18 +285,17 @@ TCSObservableResult TCSProcessModule::compute(double beamHelicity,
 
     if (processType == VCSSubProcessType::ALL
             || processType == VCSSubProcessType::TCS) {
-        value += CrossSectionVCS(beamHelicity, beamCharge, targetPolarization);
+        value += CrossSectionVCS();
     }
 
     if (processType == VCSSubProcessType::ALL
             || processType == VCSSubProcessType::BH) {
-        value += CrossSectionBH(beamHelicity, beamCharge, targetPolarization);
+        value += CrossSectionBH();
     }
 
     if (processType == VCSSubProcessType::ALL
             || processType == VCSSubProcessType::INT) {
-        value += CrossSectionInterf(beamHelicity, beamCharge,
-                targetPolarization);
+        value += CrossSectionInterf();
     }
 
     //set value
@@ -304,20 +308,17 @@ TCSObservableResult TCSProcessModule::compute(double beamHelicity,
     return result;
 }
 
-PhysicalType<double> TCSProcessModule::CrossSectionBH(double beamHelicity,
-        double beamCharge, NumA::Vector3D targetPolarization) {
+PhysicalType<double> TCSProcessModule::CrossSectionBH() {
     throw ElemUtils::CustomException(getClassName(), __func__,
             "Check your child implementation : " + getClassName());
 }
 
-PhysicalType<double> TCSProcessModule::CrossSectionVCS(double beamHelicity,
-        double beamCharge, NumA::Vector3D targetPolarization) {
+PhysicalType<double> TCSProcessModule::CrossSectionVCS() {
     throw ElemUtils::CustomException(getClassName(), __func__,
             "Check your child implementation : " + getClassName());
 }
 
-PhysicalType<double> TCSProcessModule::CrossSectionInterf(double beamHelicity,
-        double beamCharge, NumA::Vector3D targetPolarization) {
+PhysicalType<double> TCSProcessModule::CrossSectionInterf() {
     throw ElemUtils::CustomException(getClassName(), __func__,
             "Check your child implementation : " + getClassName());
 }
@@ -412,8 +413,11 @@ void TCSProcessModule::setKinematics(const TCSObservableKinematic& kinematic) {
             kinematic.getMLepton().makeSameUnitAs(PhysicalUnit::GEV).getValue();
 }
 
-void TCSProcessModule::setExperimentalConditions(double beamHelicity,
-        double beamCharge, NumA::Vector3D targetPolarization) {
+void TCSProcessModule::setExperimentalConditions(double beamPolarization,
+        NumA::Vector3D targetPolarization) {
+
+    m_beamPolarization = beamPolarization;
+    m_targetPolarization = targetPolarization;
 }
 
 void TCSProcessModule::initModule() {

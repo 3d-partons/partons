@@ -9,7 +9,7 @@
  */
 
 #include <ElementaryUtils/parameters/Parameters.h>
-#include <ElementaryUtils/string_utils/Formatter.h>
+#include <NumA/linear_algebra/vector/Vector3D.h>
 #include <complex>
 #include <map>
 #include <string>
@@ -22,11 +22,14 @@
 #include "../../../beans/observable/TCS/TCSObservableKinematic.h"
 #include "../../../beans/observable/TCS/TCSObservableResult.h"
 #include "../../../beans/process/VCSSubProcessType.h"
-#include "../../../ModuleObjectFactory.h"
 #include "../../../utils/type/PhysicalType.h"
-#include "../../scales/TCS/TCSScalesModule.h"
-#include "../../xi_converter/TCS/TCSXiConverterModule.h"
 #include "../ProcessModule.h"
+
+namespace PARTONS {
+class TCSConvolCoeffFunctionModule;
+class TCSScalesModule;
+class TCSXiConverterModule;
+} /* namespace PARTONS */
 
 namespace NumA {
 class Vector3D;
@@ -61,7 +64,7 @@ public:
     virtual void configure(const ElemUtils::Parameters &parameters);
     virtual void prepareSubModules(
             const std::map<std::string, BaseObjectData>& subModulesData);
-    virtual TCSObservableResult compute(double beamHelicity, double beamCharge,
+    virtual TCSObservableResult compute(double beamPolarization,
             NumA::Vector3D targetPolarization,
             const TCSObservableKinematic& kinematic,
             const List<GPDType>& gpdType = List<GPDType>());
@@ -76,7 +79,7 @@ public:
      * @param processType Subprocess type.
      * @return Result.
      */
-    TCSObservableResult compute(double beamHelicity, double beamCharge,
+    TCSObservableResult compute(double beamPolarization,
             NumA::Vector3D targetPolarization,
             const TCSObservableKinematic& kinematic,
             const List<GPDType>& gpdType, VCSSubProcessType::Type processType);
@@ -129,30 +132,18 @@ public:
 
     /**
      * Bethe-Heitler differential cross section.
-     * @param beamHelicity Helicity of the beam (in units of hbar/2).
-     * @param beamCharge Electric charge of the beam (in units of positron charge).
-     * @param targetPolarization Target polarization. In GV conventions.
      */
-    virtual PhysicalType<double> CrossSectionBH(double beamHelicity,
-            double beamCharge, NumA::Vector3D targetPolarization);
+    virtual PhysicalType<double> CrossSectionBH();
 
     /**
      * Virtual Compton Scattering differential cross section.
-     * @param beamHelicity Helicity of the beam (in units of hbar/2).
-     * @param beamCharge Electric charge of the beam (in units of positron charge).
-     * @param targetPolarization Target polarization. In GV conventions.
      */
-    virtual PhysicalType<double> CrossSectionVCS(double beamHelicity,
-            double beamCharge, NumA::Vector3D targetPolarization);
+    virtual PhysicalType<double> CrossSectionVCS();
 
     /**
      * Interference differential cross section.
-     * @param beamHelicity Helicity of the beam (in units of hbar/2).
-     * @param beamCharge Electric charge of the beam (in units of positron charge).
-     * @param targetPolarization Target polarization. In GV conventions.
      */
-    virtual PhysicalType<double> CrossSectionInterf(double beamHelicity,
-            double beamCharge, NumA::Vector3D targetPolarization);
+    virtual PhysicalType<double> CrossSectionInterf();
 
 protected:
 
@@ -168,8 +159,8 @@ protected:
     TCSProcessModule(const TCSProcessModule& other);
 
     virtual void setKinematics(const TCSObservableKinematic& kinematic);
-    virtual void setExperimentalConditions(double beamHelicity,
-            double beamCharge, NumA::Vector3D targetPolarization);
+    virtual void setExperimentalConditions(double beamPolarization,
+            NumA::Vector3D targetPolarization);
     virtual void initModule();
     virtual void isModuleWellConfigured();
 
@@ -179,6 +170,9 @@ protected:
     double m_phi; ///<  Angle between leptonic and hadronic plane (in radians, Trento convention).
     double m_theta; ///< Angle between positively charged lepton and scattered proton in lepton CMS (in degrees).
     double m_MLepton; ///< Mass of a single produced lepton (in \f$GeV\f$).
+
+    double m_beamPolarization; ///< Beam polarization.
+    NumA::Vector3D m_targetPolarization; ///< Target polarization.
 
     double m_tmin; ///< Minimal value of t.
     double m_tmax; ///< Maximal value of t.

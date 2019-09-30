@@ -57,18 +57,11 @@ protected:
 
     virtual void initModule();
     virtual void isModuleWellConfigured();
-    virtual void setExperimentalConditions(double beamHelicity,
-            double beamCharge, NumA::Vector3D targetPolarization);
 
     // Cross sections
-    virtual PhysicalType<double> CrossSectionBH(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization);
-
-    virtual PhysicalType<double> CrossSectionVCS(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization);
-
-    virtual PhysicalType<double> CrossSectionInterf(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization);
+    virtual PhysicalType<double> CrossSectionBH();
+    virtual PhysicalType<double> CrossSectionVCS();
+    virtual PhysicalType<double> CrossSectionInterf();
 
 private:
 

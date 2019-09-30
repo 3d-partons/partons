@@ -34,12 +34,6 @@ void TCSProcessBDP01::initModule() {
     TCSProcessModule::initModule();
 }
 
-void TCSProcessBDP01::setExperimentalConditions(double beamHelicity,
-        double beamCharge, NumA::Vector3D targetPolarization) {
-    TCSProcessModule::setExperimentalConditions(beamHelicity, beamCharge,
-            targetPolarization);
-}
-
 void TCSProcessBDP01::isModuleWellConfigured() {
     TCSProcessModule::isModuleWellConfigured();
 }
@@ -72,8 +66,7 @@ double FA(double t) { // (F_1^2 - (t/4Mp2)F_2^2)
     return F1(t) * F1(t) + x * F2(t) * F2(t);
 }
 
-PhysicalType<double> TCSProcessBDP01::CrossSectionBH(double beamHelicity,
-        double beamCharge, NumA::Vector3D targetPolarization) {
+PhysicalType<double> TCSProcessBDP01::CrossSectionBH() {
 
     double Mp2 = Constant::PROTON_MASS * Constant::PROTON_MASS;
     double alpha3 = Constant::FINE_STRUCTURE_CONSTANT
@@ -127,8 +120,7 @@ PhysicalType<double> TCSProcessBDP01::CrossSectionBH(double beamHelicity,
     return PhysicalType<double>(DiffCrossBH, PhysicalUnit::UNDEFINED);
 }
 
-PhysicalType<double> TCSProcessBDP01::CrossSectionVCS(double beamHelicity,
-        double beamCharge, NumA::Vector3D targetPolarization) {
+PhysicalType<double> TCSProcessBDP01::CrossSectionVCS() {
 
     double Mp2 = Constant::PROTON_MASS * Constant::PROTON_MASS;
     double alpha3 = Constant::FINE_STRUCTURE_CONSTANT
@@ -175,8 +167,7 @@ PhysicalType<double> TCSProcessBDP01::CrossSectionVCS(double beamHelicity,
     return PhysicalType<double>(DiffCrossC, PhysicalUnit::UNDEFINED);
 }
 
-PhysicalType<double> TCSProcessBDP01::CrossSectionInterf(double beamHelicity,
-        double beamCharge, NumA::Vector3D targetPolarization) {
+PhysicalType<double> TCSProcessBDP01::CrossSectionInterf() {
 
     //SET KINEMATICS (BY HAND!!!!!!!!!!!!!)
     int nu = 0; // photon helicity

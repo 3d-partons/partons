@@ -70,8 +70,11 @@ DVCSProcessGV08* DVCSProcessGV08::clone() const {
 
 void DVCSProcessGV08::initModule() {
 
-    //init mother class
+    // Init mother class
     DVCSProcessModule::initModule();
+
+    // Define the GV angle
+    m_phiGV = -m_phi;
 
     // vectors reinitialized to avoid problems with fixed indices
     m_Q = sqrt(m_Q2);
@@ -209,17 +212,6 @@ void DVCSProcessGV08::initModule() {
     MakeExactBHCrossSections();
     MakeVCSHelicityAmplitudes();
     MakeExactVCSAndInterfCrossSections();
-}
-
-void DVCSProcessGV08::setExperimentalConditions(double beamHelicity,
-        double beamCharge, NumA::Vector3D targetPolarization) {
-
-    // run for mother
-    DVCSProcessModule::setExperimentalConditions(beamHelicity, beamCharge,
-            targetPolarization);
-
-    // define the GV angle
-    m_phiGV = -m_phi;
 }
 
 void DVCSProcessGV08::isModuleWellConfigured() {
@@ -3128,24 +3120,21 @@ double DVCSProcessGV08::DdirectDcrossed(double phi) {
     return DDDC;
 }
 
-PhysicalType<double> DVCSProcessGV08::CrossSectionBH(double beamHelicity,
-        double beamCharge, NumA::Vector3D targetPolarization) {
+PhysicalType<double> DVCSProcessGV08::CrossSectionBH() {
     return PhysicalType<double>(
-            SqrAmplBH(beamHelicity, beamCharge, targetPolarization)
+            SqrAmplBH(m_beamHelicity, m_beamCharge, m_targetPolarization)
                     * m_phaseSpace, PhysicalUnit::GEVm2);
 }
 
-PhysicalType<double> DVCSProcessGV08::CrossSectionVCS(double beamHelicity,
-        double beamCharge, NumA::Vector3D targetPolarization) {
+PhysicalType<double> DVCSProcessGV08::CrossSectionVCS() {
     return PhysicalType<double>(
-            SqrAmplVCS(beamHelicity, beamCharge, targetPolarization)
+            SqrAmplVCS(m_beamHelicity, m_beamCharge, m_targetPolarization)
                     * m_phaseSpace, PhysicalUnit::GEVm2);
 }
 
-PhysicalType<double> DVCSProcessGV08::CrossSectionInterf(double beamHelicity,
-        double beamCharge, NumA::Vector3D targetPolarization) {
+PhysicalType<double> DVCSProcessGV08::CrossSectionInterf() {
     return PhysicalType<double>(
-            SqrAmplInterf(beamHelicity, beamCharge, targetPolarization)
+            SqrAmplInterf(m_beamHelicity, m_beamCharge, m_targetPolarization)
                     * m_phaseSpace, PhysicalUnit::GEVm2);
 }
 

@@ -1,12 +1,10 @@
 #include "../../../../../include/partons/modules/process/DVCS/DVCSProcessVGG99.h"
 
-#include <NumA/linear_algebra/vector/Vector3D.h>
 #include <cmath>
 
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../../include/partons/utils/type/PhysicalType.h"
 #include "../../../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
@@ -114,40 +112,29 @@ void DVCSProcessVGG99::initModule() {
     DVCSProcessModule::initModule();
 }
 
-void DVCSProcessVGG99::setExperimentalConditions(double beamHelicity,
-        double beamCharge, NumA::Vector3D targetPolarization) {
-
-    // run for mother
-    DVCSProcessModule::setExperimentalConditions(beamHelicity, beamCharge,
-            targetPolarization);
-}
-
 void DVCSProcessVGG99::isModuleWellConfigured() {
     DVCSProcessModule::isModuleWellConfigured();
 }
 
-PhysicalType<double> DVCSProcessVGG99::CrossSectionBH(double beamHelicity,
-        double beamCharge, NumA::Vector3D targetPolarization) {
+PhysicalType<double> DVCSProcessVGG99::CrossSectionBH() {
 
     return PhysicalType<double>(
-            CrossSectionMechanism(beamHelicity, beamCharge, targetPolarization,
-                    1), PhysicalUnit::GEVm2);
+            CrossSectionMechanism(m_beamHelicity, m_beamCharge,
+                    m_targetPolarization, 1), PhysicalUnit::GEVm2);
 }
 
-PhysicalType<double> DVCSProcessVGG99::CrossSectionVCS(double beamHelicity,
-        double beamCharge, NumA::Vector3D targetPolarization) {
+PhysicalType<double> DVCSProcessVGG99::CrossSectionVCS() {
 
     return PhysicalType<double>(
-            CrossSectionMechanism(beamHelicity, beamCharge, targetPolarization,
-                    2), PhysicalUnit::GEVm2);
+            CrossSectionMechanism(m_beamHelicity, m_beamCharge,
+                    m_targetPolarization, 2), PhysicalUnit::GEVm2);
 }
 
-PhysicalType<double> DVCSProcessVGG99::CrossSectionInterf(double beamHelicity,
-        double beamCharge, NumA::Vector3D targetPolarization) {
+PhysicalType<double> DVCSProcessVGG99::CrossSectionInterf() {
 
     return PhysicalType<double>(
-            CrossSectionMechanism(beamHelicity, beamCharge, targetPolarization,
-                    3), PhysicalUnit::GEVm2);
+            CrossSectionMechanism(m_beamHelicity, m_beamCharge,
+                    m_targetPolarization, 3), PhysicalUnit::GEVm2);
 }
 
 double DVCSProcessVGG99::CrossSectionMechanism(double beamHelicity,

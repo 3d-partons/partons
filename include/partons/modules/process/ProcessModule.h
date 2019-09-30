@@ -66,18 +66,6 @@ public:
     }
 
     /**
-     * Computes the differential cross-section. Must be implemented in the child class.
-     * @param beamHelicity Helicity of the beam (in units of hbar/2).
-     * @param beamCharge Charge of the beam (in units of positron charge).
-     * @param targetPolarization Polarization of the target. In GV conventions.
-     * @param kinematic Kinematics.
-     * @return Result.
-     */
-    virtual ResultType compute(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization, const KinematicType& kinematic,
-            const List<GPDType>& gpdType = List<GPDType>()) = 0;
-
-    /**
      * Must be implemented in child class.
      * @return List of GPD/CCF types the child class can compute.
      */
@@ -127,15 +115,6 @@ protected:
      * @param kinematic Kinematics to be set
      */
     virtual void setKinematics(const KinematicType& kinematic) = 0;
-
-    /**
-     * Set experimental conditions.
-     * @param beamHelicity Helicity of the beam (in units of hbar/2).
-     * @param beamCharge Charge of the beam (in units of positron charge).
-     * @param targetPolarization Polarization of the target. In GV conventions.
-     */
-    virtual void setExperimentalConditions(double beamHelicity,
-            double beamCharge, NumA::Vector3D targetPolarization) = 0;
 
     virtual void initModule() {
     }

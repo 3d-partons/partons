@@ -1,7 +1,7 @@
 #include "../../../../../include/partons/modules/process/DVCS/DVCSProcessModule.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
-#include <NumA/linear_algebra/vector/Vector3D.h>
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <cmath>
 #include <utility>
 
@@ -12,6 +12,11 @@
 #include "../../../../../include/partons/beans/Scales.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
+#include "../../../../../include/partons/modules/scales/DVCS/DVCSScalesModule.h"
+#include "../../../../../include/partons/modules/scales/ScalesModule.h"
+#include "../../../../../include/partons/modules/xi_converter/DVCS/DVCSXiConverterModule.h"
+#include "../../../../../include/partons/modules/xi_converter/XiConverterModule.h"
+#include "../../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../../include/partons/Partons.h"
 #include "../../../../../include/partons/services/DVCSConvolCoeffFunctionService.h"
 #include "../../../../../include/partons/ServiceObjectRegistry.h"
@@ -24,9 +29,9 @@ const std::string DVCSProcessModule::DVCS_PROCESS_MODULE_CLASS_NAME =
 
 DVCSProcessModule::DVCSProcessModule(const std::string &className) :
         ProcessModule(className, ChannelType::DVCS), m_xB(0.), m_t(0.), m_Q2(
-                0.), m_E(0.), m_phi(0.), m_tmin(0.), m_tmax(0.), m_xBmin(0), m_y(
-                0.), m_epsilon(0.), m_pScaleModule(0), m_pXiConverterModule(0), m_pConvolCoeffFunctionModule(
-                0) {
+                0.), m_E(0.), m_phi(0.), m_beamHelicity(0.), m_beamCharge(0.), m_tmin(
+                0.), m_tmax(0.), m_xBmin(0), m_y(0.), m_epsilon(0.), m_pScaleModule(
+                0), m_pXiConverterModule(0), m_pConvolCoeffFunctionModule(0) {
 }
 
 DVCSProcessModule::~DVCSProcessModule() {
@@ -49,10 +54,12 @@ DVCSProcessModule::~DVCSProcessModule() {
 
 DVCSProcessModule::DVCSProcessModule(const DVCSProcessModule& other) :
         ProcessModule(other), m_xB(other.m_xB), m_t(other.m_t), m_Q2(
-                other.m_Q2), m_E(other.m_E), m_phi(other.m_phi), m_tmin(
-                other.m_tmin), m_tmax(other.m_tmax), m_xBmin(other.m_xBmin), m_y(
-                other.m_y), m_epsilon(other.m_epsilon), m_pScaleModule(0), m_pXiConverterModule(
-                0), m_pConvolCoeffFunctionModule(0) {
+                other.m_Q2), m_E(other.m_E), m_phi(other.m_phi), m_beamHelicity(
+                other.m_beamHelicity), m_beamCharge(other.m_beamCharge), m_targetPolarization(
+                other.m_targetPolarization), m_tmin(other.m_tmin), m_tmax(
+                other.m_tmax), m_xBmin(other.m_xBmin), m_y(other.m_y), m_epsilon(
+                other.m_epsilon), m_pScaleModule(0), m_pXiConverterModule(0), m_pConvolCoeffFunctionModule(
+                0) {
 
     m_lastCCFKinematics = other.m_lastCCFKinematics;
     m_dvcsConvolCoeffFunctionResult = other.m_dvcsConvolCoeffFunctionResult;
@@ -280,18 +287,17 @@ DVCSObservableResult DVCSProcessModule::compute(double beamHelicity,
 
     if (processType == VCSSubProcessType::ALL
             || processType == VCSSubProcessType::DVCS) {
-        value += CrossSectionVCS(beamHelicity, beamCharge, targetPolarization);
+        value += CrossSectionVCS();
     }
 
     if (processType == VCSSubProcessType::ALL
             || processType == VCSSubProcessType::BH) {
-        value += CrossSectionBH(beamHelicity, beamCharge, targetPolarization);
+        value += CrossSectionBH();
     }
 
     if (processType == VCSSubProcessType::ALL
             || processType == VCSSubProcessType::INT) {
-        value += CrossSectionInterf(beamHelicity, beamCharge,
-                targetPolarization);
+        value += CrossSectionInterf();
     }
 
     //set value
@@ -304,20 +310,17 @@ DVCSObservableResult DVCSProcessModule::compute(double beamHelicity,
     return result;
 }
 
-PhysicalType<double> DVCSProcessModule::CrossSectionBH(double beamHelicity,
-        double beamCharge, NumA::Vector3D targetPolarization) {
+PhysicalType<double> DVCSProcessModule::CrossSectionBH() {
     throw ElemUtils::CustomException(getClassName(), __func__,
             "Check your child implementation : " + getClassName());
 }
 
-PhysicalType<double> DVCSProcessModule::CrossSectionVCS(double beamHelicity,
-        double beamCharge, NumA::Vector3D targetPolarization) {
+PhysicalType<double> DVCSProcessModule::CrossSectionVCS() {
     throw ElemUtils::CustomException(getClassName(), __func__,
             "Check your child implementation : " + getClassName());
 }
 
-PhysicalType<double> DVCSProcessModule::CrossSectionInterf(double beamHelicity,
-        double beamCharge, NumA::Vector3D targetPolarization) {
+PhysicalType<double> DVCSProcessModule::CrossSectionInterf() {
     throw ElemUtils::CustomException(getClassName(), __func__,
             "Check your child implementation : " + getClassName());
 }
@@ -412,6 +415,10 @@ void DVCSProcessModule::setKinematics(
 
 void DVCSProcessModule::setExperimentalConditions(double beamHelicity,
         double beamCharge, NumA::Vector3D targetPolarization) {
+
+    m_beamHelicity = beamHelicity;
+    m_beamCharge = beamCharge;
+    m_targetPolarization = targetPolarization;
 }
 
 void DVCSProcessModule::initModule() {
@@ -489,6 +496,33 @@ void DVCSProcessModule::isModuleWellConfigured() {
         ElemUtils::Formatter formatter;
         formatter << "Input value of y = " << m_y
                 << " (lepton energy fraction) does not lay between 0 and 1";
+        warn(__func__, formatter.str());
+    }
+
+    //test beam helicity
+    if (fabs(m_beamHelicity) != 1) {
+        ElemUtils::Formatter formatter;
+        formatter << "Beam helicity = " << m_beamHelicity << "is not +/- 1";
+        warn(__func__, formatter.str());
+    }
+
+    //test beam charge
+    if (fabs(m_beamCharge) != 1) {
+        ElemUtils::Formatter formatter;
+        formatter << "Beam charge = " << m_beamCharge << "is not +/- 1";
+        warn(__func__, formatter.str());
+    }
+
+    //test target polarization
+    double targetMag = sqrt(
+            pow(m_targetPolarization.getX(), 2)
+                    + pow(m_targetPolarization.getY(), 2)
+                    + pow(m_targetPolarization.getZ(), 2));
+
+    if (targetMag != 0. && targetMag != 1.) {
+        ElemUtils::Formatter formatter;
+        formatter << "Magnitude of target polarization ("
+                << m_targetPolarization.toString() << ") neither 0 nor 1";
         warn(__func__, formatter.str());
     }
 }
