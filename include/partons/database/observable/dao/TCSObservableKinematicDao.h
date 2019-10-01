@@ -43,14 +43,12 @@ public:
      * @param E Beam energy (in GeV).
      * @param phi Angle between leptonic and hadronic planes (in degrees, Trento convention).
      * @param theta Angle between positively charged lepton and scattered proton in lepton CMS (in degrees).
-     * @param MLepton Mass of a single produced lepton (in GeV).
      * @param hashSum Hash sum.
      * @return Unique id of inserted row in the database.
      */
     int insert(const PhysicalType<double>& t,
             const PhysicalType<double>& Q2Prim, const PhysicalType<double>& E,
             const PhysicalType<double>& phi, const PhysicalType<double>& theta,
-            const PhysicalType<double>& MLepton,
             const std::string& hashSum) const;
 
     /**
@@ -60,13 +58,12 @@ public:
      * @param E Beam energy (in GeV).
      * @param phi Angle between leptonic and hadronic planes (in degrees, Trento convention).
      * @param theta Angle between positively charged lepton and scattered proton in lepton CMS (in degrees).
-     * @param MLepton Mass of a single produced lepton (in GeV).
      * @return Unique id of selected row in the database.
      */
     int select(const PhysicalType<double>& t,
             const PhysicalType<double>& Q2Prim, const PhysicalType<double>& E,
-            const PhysicalType<double>& phi, const PhysicalType<double>& theta,
-            const PhysicalType<double>& MLepton) const;
+            const PhysicalType<double>& phi,
+            const PhysicalType<double>& theta) const;
 
     /**
      * Retrieve observable kinematics from the database by given unique id of row.

@@ -27,9 +27,9 @@ const std::string TCSProcessModule::TCS_PROCESS_MODULE_CLASS_NAME =
 
 TCSProcessModule::TCSProcessModule(const std::string &className) :
         ProcessModule(className, ChannelType::TCS), m_t(0.), m_Q2Prim(0.), m_E(
-                0.), m_phi(0.), m_theta(0.), m_MLepton(0.), m_beamPolarization(
-                0.), m_tmin(0.), m_tmax(0.), m_xBmin(0), m_y(0.), m_epsilon(0.), m_pScaleModule(
-                0), m_pXiConverterModule(0), m_pConvolCoeffFunctionModule(0) {
+                0.), m_phi(0.), m_theta(0.), m_beamPolarization(0.), m_tmin(0.), m_tmax(
+                0.), m_xBmin(0), m_y(0.), m_epsilon(0.), m_pScaleModule(0), m_pXiConverterModule(
+                0), m_pConvolCoeffFunctionModule(0) {
 }
 
 TCSProcessModule::~TCSProcessModule() {
@@ -52,8 +52,8 @@ TCSProcessModule::~TCSProcessModule() {
 
 TCSProcessModule::TCSProcessModule(const TCSProcessModule& other) :
         ProcessModule(other), m_t(other.m_t), m_Q2Prim(other.m_Q2Prim), m_E(
-                other.m_E), m_phi(other.m_phi), m_theta(other.m_theta), m_MLepton(
-                other.m_MLepton), m_beamPolarization(other.m_beamPolarization), m_targetPolarization(
+                other.m_E), m_phi(other.m_phi), m_theta(other.m_theta), m_beamPolarization(
+                other.m_beamPolarization), m_targetPolarization(
                 other.m_targetPolarization), m_tmin(other.m_tmin), m_tmax(
                 other.m_tmax), m_xBmin(other.m_xBmin), m_y(other.m_y), m_epsilon(
                 other.m_epsilon), m_pScaleModule(0), m_pXiConverterModule(0), m_pConvolCoeffFunctionModule(
@@ -409,8 +409,6 @@ void TCSProcessModule::setKinematics(const TCSObservableKinematic& kinematic) {
     m_E = kinematic.getE().makeSameUnitAs(PhysicalUnit::GEV).getValue();
     m_phi = kinematic.getPhi().makeSameUnitAs(PhysicalUnit::RAD).getValue();
     m_theta = kinematic.getTheta().makeSameUnitAs(PhysicalUnit::RAD).getValue();
-    m_MLepton =
-            kinematic.getMLepton().makeSameUnitAs(PhysicalUnit::GEV).getValue();
 }
 
 void TCSProcessModule::setExperimentalConditions(double beamPolarization,
@@ -482,13 +480,6 @@ void TCSProcessModule::isModuleWellConfigured() {
     if (m_E < 0.) {
         ElemUtils::Formatter formatter;
         formatter << "Input value of E = " << m_E << " is not > 0";
-        warn(__func__, formatter.str());
-    }
-
-    //MLepton kinematic domain of MLepton
-    if (m_MLepton < 0.) {
-        ElemUtils::Formatter formatter;
-        formatter << "Input value of MLepton = " << m_MLepton << " is not > 0";
         warn(__func__, formatter.str());
     }
 

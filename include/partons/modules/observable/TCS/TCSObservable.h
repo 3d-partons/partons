@@ -91,7 +91,6 @@ protected:
     double m_E; ///< Beam energy in target rest frame (in GeV).
     double m_phi; ///<  Angle between leptonic and hadronic plane (in radians, Trento convention).
     double m_theta; /// < Angle between positively charged lepton and scattered proton in lepton CMS (in degrees).
-    double m_MLepton; /// < Mass of a single produced lepton (in GeV).
 
     TCSProcessModule* m_pProcessModule; ///< Pointer to the underlying process module.
 };

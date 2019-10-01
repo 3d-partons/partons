@@ -23,13 +23,12 @@ const std::string TCSObservable::TCS_OBSERVABLE_MODULE_CLASS_NAME =
 
 TCSObservable::TCSObservable(const std::string &className) :
         Observable(className, ChannelType::TCS), m_pProcessModule(0), m_t(0.), m_Q2Prim(
-                0.), m_E(0.), m_phi(0.), m_theta(0.), m_MLepton(0.) {
+                0.), m_E(0.), m_phi(0.), m_theta(0.) {
 }
 
 TCSObservable::TCSObservable(const TCSObservable& other) :
         Observable(other), m_t(other.m_t), m_Q2Prim(other.m_Q2Prim), m_E(
-                other.m_E), m_phi(other.m_phi), m_theta(other.m_theta), m_MLepton(
-                other.m_MLepton) {
+                other.m_E), m_phi(other.m_phi), m_theta(other.m_theta) {
 
     if (other.m_pProcessModule != 0) {
         m_pProcessModule = m_pModuleObjectFactory->cloneModuleObject(
@@ -186,8 +185,6 @@ void TCSObservable::setKinematics(const TCSObservableKinematic& kinematic) {
     m_E = kinematic.getE().makeSameUnitAs(PhysicalUnit::GEV).getValue();
     m_phi = kinematic.getPhi().makeSameUnitAs(PhysicalUnit::RAD).getValue();
     m_theta = kinematic.getTheta().makeSameUnitAs(PhysicalUnit::RAD).getValue();
-    m_MLepton =
-            kinematic.getMLepton().makeSameUnitAs(PhysicalUnit::GEV).getValue();
 }
 
 void TCSObservable::initModule() {
@@ -217,14 +214,6 @@ void TCSObservable::isModuleWellConfigured() {
     if (m_E < 0.) {
         ElemUtils::Formatter formatter;
         formatter << "Input value of E = " << m_E << " is not > 0";
-        warn(__func__, formatter.str());
-    }
-
-    //test kinematic domain of MLepton
-    if (m_MLepton < 0.) {
-        ElemUtils::Formatter formatter;
-        formatter << "Input value of lepton mass = " << m_MLepton
-                << " is not > 0";
         warn(__func__, formatter.str());
     }
 }

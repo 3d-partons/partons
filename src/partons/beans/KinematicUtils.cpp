@@ -477,12 +477,12 @@ List<TCSObservableKinematic> KinematicUtils::getTCSObservableKinematicFromFile(
                             kinematicString[i]);
 
                     //check size
-                    if (kinematicUnits.size() != 6) {
+                    if (kinematicUnits.size() != 5) {
                         error(__func__,
                                 ElemUtils::Formatter() << "Line " << i
                                         << " (units). Missing column value in your kinematic input file : "
                                         << filePath
-                                        << " ; You must provided 6 column : t | Q2' | E | phi | theta | MLepton");
+                                        << " ; You must provided 5 column : t | Q2' | E | phi | theta");
 
                     }
 
@@ -493,12 +493,12 @@ List<TCSObservableKinematic> KinematicUtils::getTCSObservableKinematicFromFile(
                         kinematicString[i], '|');
 
                 //check size
-                if (kinematicValues.size() != 6) {
+                if (kinematicValues.size() != 5) {
                     error(__func__,
                             ElemUtils::Formatter() << "Line " << i
                                     << ". Missing column value in your kinematic input file : "
                                     << filePath
-                                    << " ; You must provided 6 column : t | Q2' | E | phi | theta | MLepton");
+                                    << " ; You must provided 5 column : t | Q2' | E | phi | theta");
 
                 }
 
@@ -506,8 +506,7 @@ List<TCSObservableKinematic> KinematicUtils::getTCSObservableKinematicFromFile(
                 if (kinematicUnits.size() == 0) {
                     kinematic = TCSObservableKinematic(kinematicValues[0],
                             kinematicValues[1], kinematicValues[2],
-                            kinematicValues[3], kinematicValues[4],
-                            kinematicValues[5]);
+                            kinematicValues[3], kinematicValues[4]);
                 } else {
                     kinematic = TCSObservableKinematic(
                             PhysicalType<double>(kinematicValues[0],
@@ -519,9 +518,7 @@ List<TCSObservableKinematic> KinematicUtils::getTCSObservableKinematicFromFile(
                             PhysicalType<double>(kinematicValues[3],
                                     kinematicUnits[3]),
                             PhysicalType<double>(kinematicValues[4],
-                                    kinematicUnits[4]),
-                            PhysicalType<double>(kinematicValues[5],
-                                    kinematicUnits[5]));
+                                    kinematicUnits[4]));
                 }
 
                 kinematic.setIndexId(kinematicList.size());

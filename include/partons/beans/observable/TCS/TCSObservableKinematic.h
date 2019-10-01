@@ -23,7 +23,7 @@ namespace PARTONS {
  *
  * @brief Class representing single observable kinematics for TCS process.
  *
- * This class represents a single observable kinematics for TCS process (t, \f$Q^{2}\f$, E_{b}, \f$\phi\f$, \f$\theta\f$, \f$M_{l}\f$).
+ * This class represents a single observable kinematics for TCS process (t, \f$Q^{2}\f$, E_{b}, \f$\phi\f$, \f$\theta\f$).
  */
 class TCSObservableKinematic: public ObservableKinematic {
 
@@ -52,11 +52,6 @@ public:
     static const std::string KINEMATIC_PARAMETER_NAME_THETA;
 
     /**
-     * Parameter name to set variable \f$\M_{l}\f$ via configuration methods.
-     */
-    static const std::string KINEMATIC_PARAMETER_NAME_LEPTON_MASS;
-
-    /**
      * Parameter name to set unit of variable \f$Q^{2}'\f$ via configuration methods.
      */
     static const std::string KINEMATIC_PARAMETER_NAME_Q2PRIM_UNIT;
@@ -77,11 +72,6 @@ public:
     static const std::string KINEMATIC_PARAMETER_NAME_THETA_UNIT;
 
     /**
-     * Parameter name to set variable \f$\M_{l}\f$ via configuration methods.
-     */
-    static const std::string KINEMATIC_PARAMETER_NAME_LEPTON_MASS_UNIT;
-
-    /**
      * Default constructor.
      */
     TCSObservableKinematic();
@@ -93,10 +83,9 @@ public:
      * @param E Beam energy (in GeV).
      * @param phi Angle between leptonic and hadronic planes (in degrees, Trento convention).
      * @param theta Angle between positively charged lepton and scattered proton in lepton CMS (in degrees).
-     * @param MLepton Mass of a single produced lepton (in \f$GeV\f$).
      */
     TCSObservableKinematic(double t, double Q2Prim, double E, double phi,
-            double theta, double MLepton);
+            double theta);
 
     /**
      * Assignment constructor.
@@ -105,12 +94,10 @@ public:
      * @param E Beam energy (in GeV).
      * @param phi Angle between leptonic and hadronic planes (in degrees, Trento convention).
      * @param theta Angle between positively charged lepton and scattered proton in lepton CMS (in degrees).
-     * @param MLepton Mass of a single produced lepton (in \f$GeV\f$).
      */
     TCSObservableKinematic(const PhysicalType<double>& t,
             const PhysicalType<double>& Q2Prim, const PhysicalType<double>& E,
-            const PhysicalType<double>& phi, const PhysicalType<double>& theta,
-            const PhysicalType<double>& MLepton);
+            const PhysicalType<double>& phi, const PhysicalType<double>& theta);
 
     /**
      * Assignment constructor.
@@ -119,13 +106,11 @@ public:
      * @param E Beam energy (in GeV).
      * @param phi Angle between leptonic and hadronic planes (in degrees, Trento convention).
      * @param theta Angle between positively charged lepton and scattered proton in lepton CMS (in degrees).
-     * @param MLepton Mass of a single produced lepton (in \f$GeV\f$).
      */
     TCSObservableKinematic(const ElemUtils::GenericType& t,
             const ElemUtils::GenericType& Q2Prim,
             const ElemUtils::GenericType& E, const ElemUtils::GenericType& phi,
-            const ElemUtils::GenericType& theta,
-            const ElemUtils::GenericType& MLepton);
+            const ElemUtils::GenericType& theta);
 
     /**
      * Copy constructor.
@@ -242,21 +227,6 @@ public:
      */
     void setTheta(double theta, PhysicalUnit::Type unit = PhysicalUnit::DEG);
 
-    /**
-     * Get mass of a single produced lepton (in \f$GeV\f$).
-     */
-    const PhysicalType<double>& getMLepton() const;
-
-    /**
-     * Set mass of a single produced lepton (in \f$GeV\f$).
-     */
-    void setMLepton(const PhysicalType<double>& theta);
-
-    /**
-     * Set mass of a single produced lepton (in \f$GeV\f$).
-     */
-    void setMLepton(double theta, PhysicalUnit::Type unit = PhysicalUnit::GEV);
-
 protected:
 
     virtual void updateHashSum() const;
@@ -287,11 +257,6 @@ private:
      * Angle between positively charged lepton and scattered proton in lepton CMS (in degrees).
      */
     PhysicalType<double> m_theta;
-
-    /**
-     * Mass of a single produced lepton (in \f$GeV\f$).
-     */
-    PhysicalType<double> m_MLepton;
 };
 
 /**
