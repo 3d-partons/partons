@@ -245,28 +245,4 @@ void DVCSObservable::setProcessModule(DVCSProcessModule* pProcessModule) {
     }
 }
 
-std::vector<double> DVCSObservable::gpdTypesToVector(
-        const List<GPDType>& list) const {
-
-    std::vector<double> result;
-
-    for (size_t i = 0; i < list.size(); i++) {
-        result.push_back(static_cast<double>(list[i].getType()));
-    }
-
-    return result;
-}
-
-List<GPDType> DVCSObservable::gpdTypesFromVector(
-        const std::vector<double>& vec) const {
-
-    List<GPDType> result;
-
-    for (size_t i = 0; i < vec.size(); i++) {
-        result.add(GPDType(static_cast<GPDType::Type>(vec[i])));
-    }
-
-    return result;
-}
-
 } /* namespace PARTONS */

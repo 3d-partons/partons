@@ -10,8 +10,10 @@
 
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/parameters/Parameters.h>
+#include <stddef.h>
 #include <map>
 #include <string>
+#include <vector>
 
 #include "../../beans/automation/BaseObjectData.h"
 #include "../../beans/channel/ChannelType.h"
@@ -115,6 +117,35 @@ protected:
      */
     virtual PhysicalType<double> computeObservable(
             const KinematicType& kinematic, const List<GPDType>& gpdType) = 0;
+
+    /**
+     * List of GPD types to std::vector<double>.
+     */
+    std::vector<double> gpdTypesToVector(const List<GPDType>& list) const {
+
+        std::vector<double> result;
+
+        for (size_t i = 0; i < list.size(); i++) {
+            result.push_back(static_cast<double>(list[i].getType()));
+        }
+
+        return result;
+    }
+
+    /**
+     * std::vector<double> to list of GPD types.
+     */
+    List<GPDType> gpdTypesFromVector(const std::vector<double>& vec) const {
+
+        List<GPDType> result;
+
+        for (size_t i = 0; i < vec.size(); i++) {
+            result.add(GPDType(static_cast<GPDType::Type>(vec[i])));
+        }
+
+        return result;
+    }
+
 };
 
 } /* namespace PARTONS */
