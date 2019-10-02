@@ -104,8 +104,8 @@ PhysicalType<double> TCSProcessBDP01::CrossSectionBH() {
     DiffCrossBH /= (s - Mp2) * (s - Mp2);
 
     //add dphi_s and replaces d(cos theta) by dtheta
-    return PhysicalType<double>(DiffCrossBH, PhysicalUnit::GEVm2) * -1
-            * sin(m_theta) / (2 * Constant::PI);
+    return PhysicalType<double>(DiffCrossBH, PhysicalUnit::GEVm2) * sin(m_theta)
+            / (2 * Constant::PI);
 }
 
 PhysicalType<double> TCSProcessBDP01::CrossSectionVCS() {
@@ -134,8 +134,8 @@ PhysicalType<double> TCSProcessBDP01::CrossSectionVCS() {
     DiffCrossC *= (1. + cos(m_theta) * cos(m_theta));
 
     //add dphi_s and replaces d(cos theta) by dtheta
-    return PhysicalType<double>(DiffCrossC, PhysicalUnit::GEVm2) * -1
-            * sin(m_theta) / (2 * Constant::PI);
+    return PhysicalType<double>(DiffCrossC, PhysicalUnit::GEVm2) * sin(m_theta)
+            / (2 * Constant::PI);
 }
 
 PhysicalType<double> TCSProcessBDP01::CrossSectionInterf() {
@@ -181,7 +181,7 @@ PhysicalType<double> TCSProcessBDP01::CrossSectionInterf() {
             / (1. + etha);
 
     double DiffCrossINT = cos(m_phi) * M.real() // eq. 30
-    + double(m_beamPolarization) * sin(m_phi) * M.imag(); // helicity - dependent part. See eq. 32
+    + m_beamPolarization * sin(m_phi) * M.imag(); // helicity - dependent part. See eq. 32
     DiffCrossINT *= (1. + cos(m_theta) * cos(m_theta)) / sin(m_theta);
     DiffCrossINT *= alpha3 / 4. / Constant::PI;
     DiffCrossINT /= s * s;
@@ -190,7 +190,7 @@ PhysicalType<double> TCSProcessBDP01::CrossSectionInterf() {
     DiffCrossINT *= L0 / L;
 
     //add dphi_s and replaces d(cos theta) by dtheta
-    return PhysicalType<double>(DiffCrossINT, PhysicalUnit::GEVm2) * -1
+    return PhysicalType<double>(DiffCrossINT, PhysicalUnit::GEVm2)
             * sin(m_theta) / (2 * Constant::PI);
 }
 
