@@ -104,7 +104,7 @@ void GPDKinematic::configure(const ElemUtils::Parameters &parameters) {
                     PhysicalUnit(parameters.getLastAvailable().getString()).getType();
             setX(value, unit);
         } else {
-            setX(value);
+            setX(value, PhysicalUnit::NONE);
         }
     } else {
         errorMissingParameter(GPDKinematic::KINEMATIC_PARAMETER_NAME_X);
@@ -122,7 +122,7 @@ void GPDKinematic::configure(const ElemUtils::Parameters &parameters) {
                     PhysicalUnit(parameters.getLastAvailable().getString()).getType();
             setXi(value, unit);
         } else {
-            setXi(value);
+            setXi(value, PhysicalUnit::NONE);
         }
     } else {
         errorMissingParameter(GPDKinematic::KINEMATIC_PARAMETER_NAME_XI);
@@ -140,7 +140,7 @@ void GPDKinematic::configure(const ElemUtils::Parameters &parameters) {
                     PhysicalUnit(parameters.getLastAvailable().getString()).getType();
             setT(value, unit);
         } else {
-            setT(value);
+            setT(value, PhysicalUnit::GEV2);
         }
     } else {
         errorMissingParameter(GPDKinematic::KINEMATIC_PARAMETER_NAME_T);
@@ -158,7 +158,7 @@ void GPDKinematic::configure(const ElemUtils::Parameters &parameters) {
                     PhysicalUnit(parameters.getLastAvailable().getString()).getType();
             setMuF2(value, unit);
         } else {
-            setMuF2(value);
+            setMuF2(value, PhysicalUnit::GEV2);
         }
     } else {
         errorMissingParameter(GPDKinematic::KINEMATIC_PARAMETER_NAME_MUF2);
@@ -176,7 +176,7 @@ void GPDKinematic::configure(const ElemUtils::Parameters &parameters) {
                     PhysicalUnit(parameters.getLastAvailable().getString()).getType();
             setMuR2(value, unit);
         } else {
-            setMuR2(value);
+            setMuR2(value, PhysicalUnit::GEV2);
         }
     } else {
         errorMissingParameter(GPDKinematic::KINEMATIC_PARAMETER_NAME_MUR2);
@@ -235,9 +235,9 @@ bool GPDKinematic::operator !=(const GPDKinematic& other) const {
 void GPDKinematic::updateHashSum() const {
     setHashSum(
             Partons::getInstance()->getServiceObjectRegistry()->getCryptographicHashService()->generateSHA1HashSum(
-                    ElemUtils::Formatter() << m_x.toStdString() << m_xi.toStdString()
-                            << m_t.toStdString() << m_MuF2.toStdString()
-                            << m_MuR2.toStdString()));
+                    ElemUtils::Formatter() << m_x.toStdString()
+                            << m_xi.toStdString() << m_t.toStdString()
+                            << m_MuF2.toStdString() << m_MuR2.toStdString()));
 }
 
 const PhysicalType<double>& GPDKinematic::getX() const {

@@ -87,7 +87,7 @@ void ConvolCoeffFunctionKinematic::configure(
                     PhysicalUnit(parameters.getLastAvailable().getString()).getType();
             setXi(value, unit);
         } else {
-            setXi(value);
+            setXi(value, PhysicalUnit::NONE);
         }
     } else {
         errorMissingParameter(GPDKinematic::KINEMATIC_PARAMETER_NAME_XI);
@@ -105,7 +105,7 @@ void ConvolCoeffFunctionKinematic::configure(
                     PhysicalUnit(parameters.getLastAvailable().getString()).getType();
             setT(value, unit);
         } else {
-            setT(value);
+            setT(value, PhysicalUnit::GEV2);
         }
     } else {
         errorMissingParameter(GPDKinematic::KINEMATIC_PARAMETER_NAME_T);
@@ -123,7 +123,7 @@ void ConvolCoeffFunctionKinematic::configure(
                     PhysicalUnit(parameters.getLastAvailable().getString()).getType();
             setMuF2(value, unit);
         } else {
-            setMuF2(value);
+            setMuF2(value, PhysicalUnit::GEV2);
         }
     } else {
         errorMissingParameter(GPDKinematic::KINEMATIC_PARAMETER_NAME_MUF2);
@@ -141,7 +141,7 @@ void ConvolCoeffFunctionKinematic::configure(
                     PhysicalUnit(parameters.getLastAvailable().getString()).getType();
             setMuR2(value, unit);
         } else {
-            setMuR2(value);
+            setMuR2(value, PhysicalUnit::GEV2);
         }
     } else {
         errorMissingParameter(GPDKinematic::KINEMATIC_PARAMETER_NAME_MUR2);

@@ -78,7 +78,7 @@ void DVCSConvolCoeffFunctionKinematic::configure(
                     PhysicalUnit(parameters.getLastAvailable().getString()).getType();
             setQ2(value, unit);
         } else {
-            setQ2(value);
+            setQ2(value, PhysicalUnit::GEV2);
         }
     } else {
         errorMissingParameter(
@@ -101,9 +101,9 @@ std::string DVCSConvolCoeffFunctionKinematic::toString() const {
 void DVCSConvolCoeffFunctionKinematic::updateHashSum() const {
     setHashSum(
             Partons::getInstance()->getServiceObjectRegistry()->getCryptographicHashService()->generateSHA1HashSum(
-                    ElemUtils::Formatter() << m_xi.toStdString() << m_t.toStdString()
-                            << m_Q2.toStdString() << m_MuF2.toStdString()
-                            << m_MuR2.toStdString()));
+                    ElemUtils::Formatter() << m_xi.toStdString()
+                            << m_t.toStdString() << m_Q2.toStdString()
+                            << m_MuF2.toStdString() << m_MuR2.toStdString()));
 }
 
 void DVCSConvolCoeffFunctionKinematic::serialize(

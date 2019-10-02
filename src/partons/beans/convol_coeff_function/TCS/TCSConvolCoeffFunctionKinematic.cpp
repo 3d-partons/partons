@@ -78,7 +78,7 @@ void TCSConvolCoeffFunctionKinematic::configure(
                     PhysicalUnit(parameters.getLastAvailable().getString()).getType();
             setQ2Prim(value, unit);
         } else {
-            setQ2Prim(value);
+            setQ2Prim(value, PhysicalUnit::GEV2);
         }
     } else {
         errorMissingParameter(

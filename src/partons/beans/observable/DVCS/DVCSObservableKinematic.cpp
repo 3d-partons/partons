@@ -112,7 +112,7 @@ void DVCSObservableKinematic::configure(
                     PhysicalUnit(parameters.getLastAvailable().getString()).getType();
             setXB(value, unit);
         } else {
-            setXB(value);
+            setXB(value, PhysicalUnit::NONE);
         }
     } else {
         errorMissingParameter(
@@ -131,7 +131,7 @@ void DVCSObservableKinematic::configure(
                     PhysicalUnit(parameters.getLastAvailable().getString()).getType();
             setT(value, unit);
         } else {
-            setT(value);
+            setT(value, PhysicalUnit::GEV2);
         }
     } else {
         errorMissingParameter(GPDKinematic::KINEMATIC_PARAMETER_NAME_T);
@@ -150,7 +150,7 @@ void DVCSObservableKinematic::configure(
                     PhysicalUnit(parameters.getLastAvailable().getString()).getType();
             setQ2(value, unit);
         } else {
-            setQ2(value);
+            setQ2(value, PhysicalUnit::GEV2);
         }
     } else {
         errorMissingParameter(
@@ -170,7 +170,7 @@ void DVCSObservableKinematic::configure(
                     PhysicalUnit(parameters.getLastAvailable().getString()).getType();
             setE(value, unit);
         } else {
-            setE(value);
+            setE(value, PhysicalUnit::GEV);
         }
     } else {
         errorMissingParameter(
@@ -190,7 +190,7 @@ void DVCSObservableKinematic::configure(
                     PhysicalUnit(parameters.getLastAvailable().getString()).getType();
             setPhi(value, unit);
         } else {
-            setPhi(value);
+            setPhi(value, PhysicalUnit::DEG);
         }
     } else {
         errorMissingParameter(

@@ -112,7 +112,7 @@ void TCSObservableKinematic::configure(
                     PhysicalUnit(parameters.getLastAvailable().getString()).getType();
             setT(value, unit);
         } else {
-            setT(value);
+            setT(value, PhysicalUnit::GEV2);
         }
     } else {
         errorMissingParameter(GPDKinematic::KINEMATIC_PARAMETER_NAME_T);
@@ -131,7 +131,7 @@ void TCSObservableKinematic::configure(
                     PhysicalUnit(parameters.getLastAvailable().getString()).getType();
             setQ2Prim(value, unit);
         } else {
-            setQ2Prim(value);
+            setQ2Prim(value, PhysicalUnit::GEV2);
         }
     } else {
         errorMissingParameter(
@@ -151,7 +151,7 @@ void TCSObservableKinematic::configure(
                     PhysicalUnit(parameters.getLastAvailable().getString()).getType();
             setE(value, unit);
         } else {
-            setE(value);
+            setE(value, PhysicalUnit::GEV);
         }
     } else {
         errorMissingParameter(
@@ -171,7 +171,7 @@ void TCSObservableKinematic::configure(
                     PhysicalUnit(parameters.getLastAvailable().getString()).getType();
             setPhi(value, unit);
         } else {
-            setPhi(value);
+            setPhi(value, PhysicalUnit::DEG);
         }
     } else {
         errorMissingParameter(
@@ -191,7 +191,7 @@ void TCSObservableKinematic::configure(
                     PhysicalUnit(parameters.getLastAvailable().getString()).getType();
             setTheta(value, unit);
         } else {
-            setTheta(value);
+            setTheta(value, PhysicalUnit::DEG);
         }
     } else {
         errorMissingParameter(
