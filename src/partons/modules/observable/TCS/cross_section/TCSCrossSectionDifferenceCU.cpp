@@ -1,4 +1,4 @@
-#include "../../../../../../include/partons/modules/observable/TCS/cross_section/TCSCrossSectionUU.h"
+#include "../../../../../../include/partons/modules/observable/TCS/cross_section/TCSCrossSectionDifferenceCU.h"
 
 #include <NumA/linear_algebra/vector/Vector3D.h>
 
@@ -10,26 +10,28 @@
 
 namespace PARTONS {
 
-const unsigned int TCSCrossSectionUU::classId =
+const unsigned int TCSCrossSectionDifferenceCU::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
-                new TCSCrossSectionUU("TCSCrossSectionUU"));
+                new TCSCrossSectionDifferenceCU("TCSCrossSectionDifferenceCU"));
 
-TCSCrossSectionUU::TCSCrossSectionUU(const std::string &className) :
+TCSCrossSectionDifferenceCU::TCSCrossSectionDifferenceCU(
+        const std::string &className) :
         TCSObservable(className) {
 }
 
-TCSCrossSectionUU::TCSCrossSectionUU(const TCSCrossSectionUU& other) :
+TCSCrossSectionDifferenceCU::TCSCrossSectionDifferenceCU(
+        const TCSCrossSectionDifferenceCU& other) :
         TCSObservable(other) {
 }
 
-TCSCrossSectionUU::~TCSCrossSectionUU() {
+TCSCrossSectionDifferenceCU::~TCSCrossSectionDifferenceCU() {
 }
 
-TCSCrossSectionUU* TCSCrossSectionUU::clone() const {
-    return new TCSCrossSectionUU(*this);
+TCSCrossSectionDifferenceCU* TCSCrossSectionDifferenceCU::clone() const {
+    return new TCSCrossSectionDifferenceCU(*this);
 }
 
-PhysicalType<double> TCSCrossSectionUU::computeObservable(
+PhysicalType<double> TCSCrossSectionDifferenceCU::computeObservable(
         const TCSObservableKinematic& kinematic, const List<GPDType>& gpdType) {
 
     //evaluate
@@ -40,7 +42,7 @@ PhysicalType<double> TCSCrossSectionUU::computeObservable(
             NumA::Vector3D(0., 0., 0.), kinematic, gpdType);
 
     //combine
-    PhysicalType<double> result = (A.getValue() + B.getValue()) / 2.;
+    PhysicalType<double> result = (A.getValue() - B.getValue()) / 2.;
 
     //integrate over transversely polarized target dependence to obtain 4-fold differential cross-section
     result *= 2. * Constant::PI;

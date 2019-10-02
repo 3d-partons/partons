@@ -1,4 +1,4 @@
-#include "../../../../../../include/partons/modules/observable/TCS/cross_section/TCSCrossSectionUUThetaIntegrated.h"
+#include "../../../../../../include/partons/modules/observable/TCS/cross_section/TCSCrossSectionUUWeightedThetaIntegrated.h"
 
 #include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
@@ -13,17 +13,17 @@
 
 namespace PARTONS {
 
-const std::string TCSCrossSectionUUThetaIntegrated::PARAMETER_NAME_THETA_LIMIT =
+const std::string TCSCrossSectionUUWeightedThetaIntegrated::PARAMETER_NAME_THETA_LIMIT =
         "theta_limit";
 
-const unsigned int TCSCrossSectionUUThetaIntegrated::classId =
+const unsigned int TCSCrossSectionUUWeightedThetaIntegrated::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
-                new TCSCrossSectionUUThetaIntegrated(
-                        "TCSCrossSectionUUThetaIntegrated"));
+                new TCSCrossSectionUUWeightedThetaIntegrated(
+                        "TCSCrossSectionUUWeightedThetaIntegrated"));
 
-TCSCrossSectionUUThetaIntegrated::TCSCrossSectionUUThetaIntegrated(
+TCSCrossSectionUUWeightedThetaIntegrated::TCSCrossSectionUUWeightedThetaIntegrated(
         const std::string &className) :
-        TCSCrossSectionUU(className), MathIntegratorModule(), m_pFunctionToIntegrateObservableTheta(
+        TCSCrossSectionUUWeighted(className), MathIntegratorModule(), m_pFunctionToIntegrateObservableTheta(
                 0) {
 
     m_thetaRange = std::pair<double, double>(Constant::PI / 4.,
@@ -33,9 +33,9 @@ TCSCrossSectionUUThetaIntegrated::TCSCrossSectionUUThetaIntegrated(
     initFunctorsForIntegrations();
 }
 
-TCSCrossSectionUUThetaIntegrated::TCSCrossSectionUUThetaIntegrated(
-        const TCSCrossSectionUUThetaIntegrated& other) :
-        TCSCrossSectionUU(other), MathIntegratorModule(other), m_pFunctionToIntegrateObservableTheta(
+TCSCrossSectionUUWeightedThetaIntegrated::TCSCrossSectionUUWeightedThetaIntegrated(
+        const TCSCrossSectionUUWeightedThetaIntegrated& other) :
+        TCSCrossSectionUUWeighted(other), MathIntegratorModule(other), m_pFunctionToIntegrateObservableTheta(
                 0) {
 
     m_thetaRange = other.m_thetaRange;
@@ -43,7 +43,7 @@ TCSCrossSectionUUThetaIntegrated::TCSCrossSectionUUThetaIntegrated(
     initFunctorsForIntegrations();
 }
 
-TCSCrossSectionUUThetaIntegrated::~TCSCrossSectionUUThetaIntegrated() {
+TCSCrossSectionUUWeightedThetaIntegrated::~TCSCrossSectionUUWeightedThetaIntegrated() {
 
     if (m_pFunctionToIntegrateObservableTheta) {
         delete m_pFunctionToIntegrateObservableTheta;
@@ -51,24 +51,24 @@ TCSCrossSectionUUThetaIntegrated::~TCSCrossSectionUUThetaIntegrated() {
     }
 }
 
-void TCSCrossSectionUUThetaIntegrated::initFunctorsForIntegrations() {
+void TCSCrossSectionUUWeightedThetaIntegrated::initFunctorsForIntegrations() {
     m_pFunctionToIntegrateObservableTheta =
             NumA::Integrator1D::newIntegrationFunctor(this,
-                    &TCSCrossSectionUUThetaIntegrated::functionToIntegrateObservableTheta);
+                    &TCSCrossSectionUUWeightedThetaIntegrated::functionToIntegrateObservableTheta);
 }
 
-TCSCrossSectionUUThetaIntegrated* TCSCrossSectionUUThetaIntegrated::clone() const {
-    return new TCSCrossSectionUUThetaIntegrated(*this);
+TCSCrossSectionUUWeightedThetaIntegrated* TCSCrossSectionUUWeightedThetaIntegrated::clone() const {
+    return new TCSCrossSectionUUWeightedThetaIntegrated(*this);
 }
 
-void TCSCrossSectionUUThetaIntegrated::configure(
+void TCSCrossSectionUUWeightedThetaIntegrated::configure(
         const ElemUtils::Parameters &parameters) {
 
-    TCSCrossSectionUU::configure(parameters);
+    TCSCrossSectionUUWeighted::configure(parameters);
     MathIntegratorModule::configureIntegrator(parameters);
 
     if (parameters.isAvailable(
-            TCSCrossSectionUUThetaIntegrated::PARAMETER_NAME_THETA_LIMIT)) {
+            TCSCrossSectionUUWeightedThetaIntegrated::PARAMETER_NAME_THETA_LIMIT)) {
 
         PhysicalType<double> limit(parameters.getLastAvailable().toDouble(),
                 PhysicalUnit::DEG);
@@ -76,7 +76,7 @@ void TCSCrossSectionUUThetaIntegrated::configure(
         if (limit.getValue() < 0. || limit.getValue() > 180.) {
             warn(__func__,
                     ElemUtils::Formatter() << "Illegal value of parameter "
-                            << TCSCrossSectionUUThetaIntegrated::PARAMETER_NAME_THETA_LIMIT
+                            << TCSCrossSectionUUWeightedThetaIntegrated::PARAMETER_NAME_THETA_LIMIT
                             << ", " << limit.toString() << ", ignored");
         } else {
             m_thetaRange =
@@ -88,13 +88,13 @@ void TCSCrossSectionUUThetaIntegrated::configure(
 
             info(__func__,
                     ElemUtils::Formatter() << "Parameter "
-                            << TCSCrossSectionUUThetaIntegrated::PARAMETER_NAME_THETA_LIMIT
+                            << TCSCrossSectionUUWeightedThetaIntegrated::PARAMETER_NAME_THETA_LIMIT
                             << " changed to " << limit.toString());
         }
     }
 }
 
-double TCSCrossSectionUUThetaIntegrated::functionToIntegrateObservableTheta(
+double TCSCrossSectionUUWeightedThetaIntegrated::functionToIntegrateObservableTheta(
         double x, std::vector<double> params) {
 
     TCSObservableKinematic kinematic;
@@ -104,10 +104,10 @@ double TCSCrossSectionUUThetaIntegrated::functionToIntegrateObservableTheta(
 
     kinematic.setTheta(PhysicalType<double>(x, PhysicalUnit::RAD));
 
-    return TCSCrossSectionUU::computeObservable(kinematic, gpdType).getValue();
+    return TCSCrossSectionUUWeighted::computeObservable(kinematic, gpdType).getValue();
 }
 
-PhysicalType<double> TCSCrossSectionUUThetaIntegrated::computeObservable(
+PhysicalType<double> TCSCrossSectionUUWeightedThetaIntegrated::computeObservable(
         const TCSObservableKinematic& kinematic, const List<GPDType>& gpdType) {
 
     std::vector<double> params = serializeKinematicsAndGPDTypesToVector(
@@ -118,11 +118,11 @@ PhysicalType<double> TCSCrossSectionUUThetaIntegrated::computeObservable(
                     m_thetaRange.second, params), PhysicalUnit::NB);
 }
 
-const std::pair<double, double>& TCSCrossSectionUUThetaIntegrated::getThetaRange() const {
+const std::pair<double, double>& TCSCrossSectionUUWeightedThetaIntegrated::getThetaRange() const {
     return m_thetaRange;
 }
 
-void TCSCrossSectionUUThetaIntegrated::setThetaRange(
+void TCSCrossSectionUUWeightedThetaIntegrated::setThetaRange(
         const std::pair<double, double>& thetaRange) {
     m_thetaRange = thetaRange;
 }

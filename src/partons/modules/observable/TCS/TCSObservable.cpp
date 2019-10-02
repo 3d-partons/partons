@@ -2,6 +2,7 @@
 
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
+#include <stddef.h>
 #include <iostream>
 #include <utility>
 
@@ -22,13 +23,11 @@ const std::string TCSObservable::TCS_OBSERVABLE_MODULE_CLASS_NAME =
         "TCSObservableModule";
 
 TCSObservable::TCSObservable(const std::string &className) :
-        Observable(className, ChannelType::TCS), m_pProcessModule(0), m_t(0.), m_Q2Prim(
-                0.), m_E(0.), m_phi(0.), m_theta(0.) {
+        Observable(className, ChannelType::TCS), m_pProcessModule(0) {
 }
 
 TCSObservable::TCSObservable(const TCSObservable& other) :
-        Observable(other), m_t(other.m_t), m_Q2Prim(other.m_Q2Prim), m_E(
-                other.m_E), m_phi(other.m_phi), m_theta(other.m_theta) {
+        Observable(other) {
 
     if (other.m_pProcessModule != 0) {
         m_pProcessModule = m_pModuleObjectFactory->cloneModuleObject(
@@ -178,13 +177,14 @@ List<GPDType> TCSObservable::getListOfAvailableGPDTypeForComputation() const {
 
 void TCSObservable::setKinematics(const TCSObservableKinematic& kinematic) {
 
-    // set variables
-    m_t = kinematic.getT().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
-    m_Q2Prim =
-            kinematic.getQ2Prim().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
-    m_E = kinematic.getE().makeSameUnitAs(PhysicalUnit::GEV).getValue();
-    m_phi = kinematic.getPhi().makeSameUnitAs(PhysicalUnit::RAD).getValue();
-    m_theta = kinematic.getTheta().makeSameUnitAs(PhysicalUnit::RAD).getValue();
+    // check units
+
+    //TODO
+//    m_xB = kinematic.getXB().makeSameUnitAs(PhysicalUnit::NONE).getValue();
+//    m_t = kinematic.getT().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
+//    m_Q2 = kinematic.getQ2().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
+//    m_E = kinematic.getE().makeSameUnitAs(PhysicalUnit::GEV).getValue();
+//    m_phi = kinematic.getPhi().makeSameUnitAs(PhysicalUnit::RAD).getValue();
 }
 
 void TCSObservable::initModule() {
@@ -195,27 +195,6 @@ void TCSObservable::isModuleWellConfigured() {
 
     //run mother
     Observable<TCSObservableKinematic, TCSObservableResult>::isModuleWellConfigured();
-
-    //test kinematic domain of t
-    if (m_t > 0.) {
-        ElemUtils::Formatter formatter;
-        formatter << " Input value of t = " << m_t << " is not < 0";
-        warn(__func__, formatter.str());
-    }
-
-    //test kinematic domain of Q2
-    if (m_Q2Prim < 0.) {
-        ElemUtils::Formatter formatter;
-        formatter << "Input value of Q2' = " << m_Q2Prim << " is not > 0";
-        warn(__func__, formatter.str());
-    }
-
-    //test kinematic domain of E
-    if (m_E < 0.) {
-        ElemUtils::Formatter formatter;
-        formatter << "Input value of E = " << m_E << " is not > 0";
-        warn(__func__, formatter.str());
-    }
 }
 
 TCSProcessModule* TCSObservable::getProcessModule() const {
@@ -234,6 +213,54 @@ void TCSObservable::setProcessModule(TCSProcessModule* pProcessModule) {
                         << m_pProcessModule->getClassName());
     } else {
         info(__func__, "ProcessModule is set to: 0");
+    }
+}
+
+std::vector<double> TCSObservable::serializeKinematicsAndGPDTypesToVector(
+        const TCSObservableKinematic& kin, const List<GPDType>& list) const {
+
+    std::vector<double> result;
+
+    result.push_back(kin.getT().getValue());
+    result.push_back(static_cast<double>(kin.getT().getUnit()));
+    result.push_back(kin.getQ2Prim().getValue());
+    result.push_back(static_cast<double>(kin.getQ2Prim().getUnit()));
+    result.push_back(kin.getE().getValue());
+    result.push_back(static_cast<double>(kin.getE().getUnit()));
+    result.push_back(kin.getPhi().getValue());
+    result.push_back(static_cast<double>(kin.getPhi().getUnit()));
+    result.push_back(kin.getTheta().getValue());
+    result.push_back(static_cast<double>(kin.getTheta().getUnit()));
+
+    for (size_t i = 0; i < list.size(); i++) {
+        result.push_back(static_cast<double>(list[i].getType()));
+    }
+
+    return result;
+
+}
+
+void TCSObservable::unserializeKinematicsAndGPDTypesFromVector(
+        const std::vector<double>& vec, TCSObservableKinematic& kin,
+        List<GPDType>& list) const {
+
+    PhysicalType<double> t(vec.at(0),
+            static_cast<PhysicalUnit::Type>(vec.at(1)));
+    PhysicalType<double> Q2Prim(vec.at(2),
+            static_cast<PhysicalUnit::Type>(vec.at(3)));
+    PhysicalType<double> E(vec.at(4),
+            static_cast<PhysicalUnit::Type>(vec.at(5)));
+    PhysicalType<double> phi(vec.at(6),
+            static_cast<PhysicalUnit::Type>(vec.at(7)));
+    PhysicalType<double> theta(vec.at(8),
+            static_cast<PhysicalUnit::Type>(vec.at(9)));
+
+    kin = TCSObservableKinematic(t, Q2Prim, E, phi, theta);
+
+    list.clear();
+
+    for (size_t i = 0; i < vec.size(); i++) {
+        list.add(GPDType(static_cast<GPDType::Type>(vec.at(i))));
     }
 }
 

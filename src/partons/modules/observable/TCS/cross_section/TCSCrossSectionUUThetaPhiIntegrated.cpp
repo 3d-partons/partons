@@ -6,7 +6,6 @@
 #include "../../../../../../include/partons/beans/observable/TCS/TCSObservableKinematic.h"
 #include "../../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../../../include/partons/modules/observable/Observable.h"
 #include "../../../../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
@@ -53,15 +52,23 @@ TCSCrossSectionUUThetaPhiIntegrated* TCSCrossSectionUUThetaPhiIntegrated::clone(
 
 double TCSCrossSectionUUThetaPhiIntegrated::functionToIntegrateObservablePhi(
         double x, std::vector<double> params) {
-    return TCSCrossSectionUUThetaIntegrated::computeObservable(
-            TCSObservableKinematic(m_t, m_Q2Prim, m_E, x, m_theta),
-            gpdTypesFromVector(params)).getValue();
+
+    TCSObservableKinematic kinematic;
+    List<GPDType> gpdType;
+
+    unserializeKinematicsAndGPDTypesFromVector(params, kinematic, gpdType);
+
+    kinematic.setPhi(PhysicalType<double>(x, PhysicalUnit::RAD));
+
+    return TCSCrossSectionUUThetaIntegrated::computeObservable(kinematic,
+            gpdType).getValue();
 }
 
 PhysicalType<double> TCSCrossSectionUUThetaPhiIntegrated::computeObservable(
         const TCSObservableKinematic& kinematic, const List<GPDType>& gpdType) {
 
-    std::vector<double> params = gpdTypesToVector(gpdType);
+    std::vector<double> params = serializeKinematicsAndGPDTypesToVector(
+            kinematic, gpdType);
 
     return PhysicalType<double>(
             integrate(m_pFunctionToIntegrateObservablePhi, 0., 2 * Constant::PI,

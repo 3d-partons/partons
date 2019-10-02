@@ -11,6 +11,7 @@
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <map>
 #include <string>
+#include <vector>
 
 #include "../../../beans/automation/BaseObjectData.h"
 #include "../../../beans/gpd/GPDType.h"
@@ -86,11 +87,18 @@ protected:
             const TCSObservableKinematic& kinematic,
             const List<GPDType>& gpdType) = 0;
 
-    double m_t; ///< Mandelstam variable (square of the 4-momentum transferm in GeV2).
-    double m_Q2Prim; ///< Virtuality of the incoming photon (in GeV2).
-    double m_E; ///< Beam energy in target rest frame (in GeV).
-    double m_phi; ///<  Angle between leptonic and hadronic plane (in radians, Trento convention).
-    double m_theta; /// < Angle between positively charged lepton and scattered proton in lepton CMS (in degrees).
+    /**
+     * Serialize kinematics and list of GPD types to std::vector<double>.
+     */
+    std::vector<double> serializeKinematicsAndGPDTypesToVector(
+            const TCSObservableKinematic& kin, const List<GPDType>& list) const;
+
+    /**
+     * Unserialize kinematics and list of GPD types from std::vector<double>.
+     */
+    void unserializeKinematicsAndGPDTypesFromVector(
+            const std::vector<double>& vec, TCSObservableKinematic& kin,
+            List<GPDType>& list) const;
 
     TCSProcessModule* m_pProcessModule; ///< Pointer to the underlying process module.
 };
