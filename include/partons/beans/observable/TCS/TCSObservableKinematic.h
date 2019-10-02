@@ -81,8 +81,8 @@ public:
      * @param t Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
      * @param Q2Prim Outgoing virtual-photon virtuality (in \f$GeV^{2}\f$).
      * @param E Beam energy (in GeV).
-     * @param phi Angle between leptonic and hadronic planes (in degrees, Trento convention).
-     * @param theta Angle between positively charged lepton and scattered proton in lepton CMS (in degrees).
+     * @param phi Angle between leptonic and hadronic planes (in radians, Trento convention).
+     * @param theta Angle between positively charged lepton and scattered proton in lepton CMS (in radians).
      */
     TCSObservableKinematic(double t, double Q2Prim, double E, double phi,
             double theta);
@@ -92,8 +92,8 @@ public:
      * @param t Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
      * @param Q2Prim Outgoing virtual-photon virtuality (in \f$GeV^{2}\f$).
      * @param E Beam energy (in GeV).
-     * @param phi Angle between leptonic and hadronic planes (in degrees, Trento convention).
-     * @param theta Angle between positively charged lepton and scattered proton in lepton CMS (in degrees).
+     * @param phi Angle between leptonic and hadronic planes (in radians, Trento convention).
+     * @param theta Angle between positively charged lepton and scattered proton in lepton CMS (in radians).
      */
     TCSObservableKinematic(const PhysicalType<double>& t,
             const PhysicalType<double>& Q2Prim, const PhysicalType<double>& E,
@@ -104,8 +104,8 @@ public:
      * @param t Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
      * @param Q2Prim Outgoing virtual-photon virtuality (in \f$GeV^{2}\f$).
      * @param E Beam energy (in GeV).
-     * @param phi Angle between leptonic and hadronic planes (in degrees, Trento convention).
-     * @param theta Angle between positively charged lepton and scattered proton in lepton CMS (in degrees).
+     * @param phi Angle between leptonic and hadronic planes (in radians, Trento convention).
+     * @param theta Angle between positively charged lepton and scattered proton in lepton CMS (in radians).
      */
     TCSObservableKinematic(const ElemUtils::GenericType& t,
             const ElemUtils::GenericType& Q2Prim,
@@ -198,34 +198,34 @@ public:
     void setE(double E, PhysicalUnit::Type unit = PhysicalUnit::GEV);
 
     /**
-     * Get angle between leptonic and hadronic planes.
+     * Get angle between leptonic and hadronic planes (in radians).
      */
     const PhysicalType<double>& getPhi() const;
 
     /**
-     * Set angle between leptonic and hadronic planes.
+     * Set angle between leptonic and hadronic planes (in radians).
      */
     void setPhi(const PhysicalType<double>& phi);
 
     /**
-     * Set angle between leptonic and hadronic planes.
+     * Set angle between leptonic and hadronic planes (in radians).
      */
-    void setPhi(double phi, PhysicalUnit::Type unit = PhysicalUnit::DEG);
+    void setPhi(double phi, PhysicalUnit::Type unit = PhysicalUnit::RAD);
 
     /**
-     * Get angle between positively charged lepton and scattered proton in lepton CMS (in degrees).
+     * Get angle between positively charged lepton and scattered proton in lepton CMS (in radians).
      */
     const PhysicalType<double>& getTheta() const;
 
     /**
-     * Set angle between positively charged lepton and scattered proton in lepton CMS (in degrees).
+     * Set angle between positively charged lepton and scattered proton in lepton CMS (in radians).
      */
     void setTheta(const PhysicalType<double>& theta);
 
     /**
-     * Set angle between positively charged lepton and scattered proton in lepton CMS (in degrees).
+     * Set angle between positively charged lepton and scattered proton in lepton CMS (in radians).
      */
-    void setTheta(double theta, PhysicalUnit::Type unit = PhysicalUnit::DEG);
+    void setTheta(double theta, PhysicalUnit::Type unit = PhysicalUnit::RAD);
 
 protected:
 
@@ -249,12 +249,12 @@ private:
     PhysicalType<double> m_E;
 
     /**
-     * Angle between leptonic and hadronic planes (in degrees, Trento convention).
+     * Angle between leptonic and hadronic planes (in radians, Trento convention).
      */
     PhysicalType<double> m_phi;
 
     /**
-     * Angle between positively charged lepton and scattered proton in lepton CMS (in degrees).
+     * Angle between positively charged lepton and scattered proton in lepton CMS (in radians).
      */
     PhysicalType<double> m_theta;
 };

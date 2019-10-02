@@ -34,8 +34,8 @@ TCSObservableKinematic::TCSObservableKinematic() :
                 PhysicalType<double>(PhysicalUnit::GEV2)), m_Q2Prim(
                 PhysicalType<double>(PhysicalUnit::GEV2)), m_E(
                 PhysicalType<double>(PhysicalUnit::GEV)), m_phi(
-                PhysicalType<double>(PhysicalUnit::DEG)), m_theta(
-                PhysicalType<double>(PhysicalUnit::DEG)) {
+                PhysicalType<double>(PhysicalUnit::RAD)), m_theta(
+                PhysicalType<double>(PhysicalUnit::RAD)) {
 }
 
 TCSObservableKinematic::TCSObservableKinematic(double t, double Q2Prim,
@@ -44,8 +44,8 @@ TCSObservableKinematic::TCSObservableKinematic(double t, double Q2Prim,
                 PhysicalType<double>(t, PhysicalUnit::GEV2)), m_Q2Prim(
                 PhysicalType<double>(Q2Prim, PhysicalUnit::GEV2)), m_E(
                 PhysicalType<double>(E, PhysicalUnit::GEV)), m_phi(
-                PhysicalType<double>(phi, PhysicalUnit::DEG)), m_theta(
-                PhysicalType<double>(theta, PhysicalUnit::DEG)) {
+                PhysicalType<double>(phi, PhysicalUnit::RAD)), m_theta(
+                PhysicalType<double>(theta, PhysicalUnit::RAD)) {
 }
 
 TCSObservableKinematic::TCSObservableKinematic(const PhysicalType<double>& t,
@@ -55,8 +55,8 @@ TCSObservableKinematic::TCSObservableKinematic(const PhysicalType<double>& t,
                 PhysicalType<double>(PhysicalUnit::GEV2)), m_Q2Prim(
                 PhysicalType<double>(PhysicalUnit::GEV2)), m_E(
                 PhysicalType<double>(PhysicalUnit::GEV)), m_phi(
-                PhysicalType<double>(PhysicalUnit::DEG)), m_theta(
-                PhysicalType<double>(PhysicalUnit::DEG)) {
+                PhysicalType<double>(PhysicalUnit::RAD)), m_theta(
+                PhysicalType<double>(PhysicalUnit::RAD)) {
 
     m_t.checkIfSameUnitCategoryAs(t);
     m_Q2Prim.checkIfSameUnitCategoryAs(Q2Prim);
@@ -78,8 +78,8 @@ TCSObservableKinematic::TCSObservableKinematic(const ElemUtils::GenericType& t,
                 PhysicalType<double>(t, PhysicalUnit::GEV2)), m_Q2Prim(
                 PhysicalType<double>(Q2Prim, PhysicalUnit::GEV2)), m_E(
                 PhysicalType<double>(E, PhysicalUnit::GEV)), m_phi(
-                PhysicalType<double>(phi, PhysicalUnit::DEG)), m_theta(
-                PhysicalType<double>(theta, PhysicalUnit::DEG)) {
+                PhysicalType<double>(phi, PhysicalUnit::RAD)), m_theta(
+                PhysicalType<double>(theta, PhysicalUnit::RAD)) {
 }
 
 TCSObservableKinematic::TCSObservableKinematic(

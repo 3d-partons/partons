@@ -82,7 +82,7 @@ public:
      * @param t Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
      * @param Q2 Virtual-photon virtuality (in \f$GeV^{2}\f$).
      * @param E Beam energy (in GeV).
-     * @param phi Angle between leptonic and hadronic planes (in degrees, Trento convention).
+     * @param phi Angle between leptonic and hadronic planes (in radians, Trento convention).
      */
     DVCSObservableKinematic(double xB, double t, double Q2, double E,
             double phi);
@@ -93,7 +93,7 @@ public:
      * @param t Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
      * @param Q2 Virtual-photon virtuality (in \f$GeV^{2}\f$).
      * @param E Beam energy (in GeV).
-     * @param phi Angle between leptonic and hadronic planes (in degrees, Trento convention).
+     * @param phi Angle between leptonic and hadronic planes (in radians, Trento convention).
      */
     DVCSObservableKinematic(const PhysicalType<double>& xB,
             const PhysicalType<double>& t, const PhysicalType<double>& Q2,
@@ -105,7 +105,7 @@ public:
      * @param t Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
      * @param Q2 Virtual-photon virtuality (in \f$GeV^{2}\f$).
      * @param E Beam energy (in GeV).
-     * @param phi Angle between leptonic and hadronic planes (in degrees, Trento convention).
+     * @param phi Angle between leptonic and hadronic planes (in radians, Trento convention).
      */
     DVCSObservableKinematic(const ElemUtils::GenericType& xB,
             const ElemUtils::GenericType& t, const ElemUtils::GenericType& Q2,
@@ -212,19 +212,19 @@ public:
     void setE(double E, PhysicalUnit::Type unit = PhysicalUnit::GEV);
 
     /**
-     * Get angle between leptonic and hadronic planes.
+     * Get angle between leptonic and hadronic planes (in radians).
      */
     const PhysicalType<double>& getPhi() const;
 
     /**
-     * Set angle between leptonic and hadronic planes.
+     * Set angle between leptonic and hadronic planes (in radians).
      */
     void setPhi(const PhysicalType<double>& phi);
 
     /**
-     * Set angle between leptonic and hadronic planes.
+     * Set angle between leptonic and hadronic planes (in radians).
      */
-    void setPhi(double phi, PhysicalUnit::Type unit = PhysicalUnit::DEG);
+    void setPhi(double phi, PhysicalUnit::Type unit = PhysicalUnit::RAD);
 
 protected:
 
@@ -253,7 +253,7 @@ private:
     PhysicalType<double> m_E;
 
     /**
-     * Angle between leptonic and hadronic planes (in degrees, Trento convention).
+     * Angle between leptonic and hadronic planes (in radians, Trento convention).
      */
     PhysicalType<double> m_phi;
 };
