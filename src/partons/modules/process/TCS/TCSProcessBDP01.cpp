@@ -103,7 +103,9 @@ PhysicalType<double> TCSProcessBDP01::CrossSectionBH() {
     DiffCrossBH /= -m_t * L;
     DiffCrossBH /= (s - Mp2) * (s - Mp2);
 
-    return PhysicalType<double>(DiffCrossBH, PhysicalUnit::GEVm2);
+    //add dphi_s and replaces d(cos theta) by dtheta
+    return PhysicalType<double>(DiffCrossBH, PhysicalUnit::GEVm2) * -1
+            * sin(m_theta) / (2 * Constant::PI);
 }
 
 PhysicalType<double> TCSProcessBDP01::CrossSectionVCS() {
@@ -131,7 +133,9 @@ PhysicalType<double> TCSProcessBDP01::CrossSectionVCS() {
     DiffCrossC /= 2. * m_Q2Prim;
     DiffCrossC *= (1. + cos(m_theta) * cos(m_theta));
 
-    return PhysicalType<double>(DiffCrossC, PhysicalUnit::GEVm2);
+    //add dphi_s and replaces d(cos theta) by dtheta
+    return PhysicalType<double>(DiffCrossC, PhysicalUnit::GEVm2) * -1
+            * sin(m_theta) / (2 * Constant::PI);
 }
 
 PhysicalType<double> TCSProcessBDP01::CrossSectionInterf() {
@@ -185,7 +189,9 @@ PhysicalType<double> TCSProcessBDP01::CrossSectionInterf() {
     DiffCrossINT /= tau * sqrt(1. - tau);
     DiffCrossINT *= L0 / L;
 
-    return PhysicalType<double>(DiffCrossINT, PhysicalUnit::GEVm2);
+    //add dphi_s and replaces d(cos theta) by dtheta
+    return PhysicalType<double>(DiffCrossINT, PhysicalUnit::GEVm2) * -1
+            * sin(m_theta) / (2 * Constant::PI);
 }
 
 } /* namespace PARTONS */
