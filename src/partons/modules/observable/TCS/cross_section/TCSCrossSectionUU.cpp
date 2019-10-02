@@ -1,4 +1,4 @@
-#include "../../../../../../include/partons/modules/observable/TCS/cross_section/TCSCrossSectionUUMinus.h"
+#include "../../../../../../include/partons/modules/observable/TCS/cross_section/TCSCrossSectionUU.h"
 
 #include <NumA/linear_algebra/vector/Vector3D.h>
 
@@ -10,34 +10,33 @@
 
 namespace PARTONS {
 
-const unsigned int TCSCrossSectionUUMinus::classId =
+const unsigned int TCSCrossSectionUU::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
-                new TCSCrossSectionUUMinus("TCSCrossSectionUUMinus"));
+                new TCSCrossSectionUU("TCSCrossSectionUU"));
 
-TCSCrossSectionUUMinus::TCSCrossSectionUUMinus(const std::string &className) :
+TCSCrossSectionUU::TCSCrossSectionUU(const std::string &className) :
         TCSObservable(className) {
 }
 
-TCSCrossSectionUUMinus::TCSCrossSectionUUMinus(
-        const TCSCrossSectionUUMinus& other) :
+TCSCrossSectionUU::TCSCrossSectionUU(const TCSCrossSectionUU& other) :
         TCSObservable(other) {
 }
 
-TCSCrossSectionUUMinus::~TCSCrossSectionUUMinus() {
+TCSCrossSectionUU::~TCSCrossSectionUU() {
 }
 
-TCSCrossSectionUUMinus* TCSCrossSectionUUMinus::clone() const {
-    return new TCSCrossSectionUUMinus(*this);
+TCSCrossSectionUU* TCSCrossSectionUU::clone() const {
+    return new TCSCrossSectionUU(*this);
 }
 
-PhysicalType<double> TCSCrossSectionUUMinus::computeObservable(
+PhysicalType<double> TCSCrossSectionUU::computeObservable(
         const TCSObservableKinematic& kinematic, const List<GPDType>& gpdType) {
 
     //evaluate
-    TCSObservableResult A = m_pProcessModule->compute(0,
+    TCSObservableResult A = m_pProcessModule->compute(-1,
             NumA::Vector3D(0., 0., 0.), kinematic, gpdType);
 
-    TCSObservableResult B = m_pProcessModule->compute(0,
+    TCSObservableResult B = m_pProcessModule->compute(1,
             NumA::Vector3D(0., 0., 0.), kinematic, gpdType);
 
     //combine
