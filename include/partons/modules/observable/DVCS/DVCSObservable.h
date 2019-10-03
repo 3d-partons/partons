@@ -80,18 +80,11 @@ protected:
      */
     DVCSObservable(const DVCSObservable& other);
 
-    virtual void setKinematics(const DVCSObservableKinematic& kinematic);
     virtual void initModule();
     virtual void isModuleWellConfigured();
     virtual PhysicalType<double> computeObservable(
             const DVCSObservableKinematic& kinematic,
             const List<GPDType>& gpdType) = 0;
-
-    double m_xB; ///< Bjorken variable.
-    double m_t; ///< Mandelstam variable (square of the 4-momentum transferm in GeV2).
-    double m_Q2; ///< Virtuality of the incoming photon (in GeV2).
-    double m_E; ///< Beam energy in target rest frame (in GeV).
-    double m_phi; ///<  Angle between leptonic and hadronic plane (in radians, Trento convention).
 
     DVCSProcessModule* m_pProcessModule; ///< Pointer to the underlying process module.
 };

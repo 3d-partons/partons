@@ -223,6 +223,32 @@ void GPDKinematic::unserialize(ElemUtils::Packet &packet) {
     updateHashSum();
 }
 
+void GPDKinematic::serializeIntoStdVector(std::vector<double>& vec) const {
+
+    Kinematic::serializeIntoStdVector(vec);
+
+    m_x.serializeIntoStdVector(vec);
+    m_xi.serializeIntoStdVector(vec);
+    m_t.serializeIntoStdVector(vec);
+    m_MuF2.serializeIntoStdVector(vec);
+    m_MuR2.serializeIntoStdVector(vec);
+}
+
+void GPDKinematic::unserializeFromStdVector(
+        std::vector<double>::const_iterator& it,
+        const std::vector<double>::const_iterator& end) {
+
+    Kinematic::unserializeFromStdVector(it, end);
+
+    m_x.unserializeFromStdVector(it, end);
+    m_xi.unserializeFromStdVector(it, end);
+    m_t.unserializeFromStdVector(it, end);
+    m_MuF2.unserializeFromStdVector(it, end);
+    m_MuR2.unserializeFromStdVector(it, end);
+
+    updateHashSum();
+}
+
 bool GPDKinematic::operator ==(const GPDKinematic& other) const {
     return m_x == other.getX() && m_xi == other.getXi() && m_t == other.getT()
             && m_MuF2 == other.getMuF2() && m_MuR2 == other.getMuR2();

@@ -167,18 +167,43 @@ std::string ConvolCoeffFunctionKinematic::toString() const {
 }
 
 void ConvolCoeffFunctionKinematic::serialize(ElemUtils::Packet& packet) const {
+
     Kinematic::serialize(packet);
 
     packet << m_xi << m_t << m_MuF2 << m_MuR2;
 }
 
 void ConvolCoeffFunctionKinematic::unserialize(ElemUtils::Packet& packet) {
+
     Kinematic::unserialize(packet);
 
     packet >> m_xi;
     packet >> m_t;
     packet >> m_MuF2;
     packet >> m_MuR2;
+}
+
+void ConvolCoeffFunctionKinematic::serializeIntoStdVector(
+        std::vector<double>& vec) const {
+
+    Kinematic::serializeIntoStdVector(vec);
+
+    m_xi.serializeIntoStdVector(vec);
+    m_t.serializeIntoStdVector(vec);
+    m_MuF2.serializeIntoStdVector(vec);
+    m_MuR2.serializeIntoStdVector(vec);
+}
+
+void ConvolCoeffFunctionKinematic::unserializeFromStdVector(
+        std::vector<double>::const_iterator& it,
+        const std::vector<double>::const_iterator& end) {
+
+    Kinematic::unserializeFromStdVector(it, end);
+
+    m_xi.unserializeFromStdVector(it, end);
+    m_t.unserializeFromStdVector(it, end);
+    m_MuF2.unserializeFromStdVector(it, end);
+    m_MuR2.unserializeFromStdVector(it, end);
 }
 
 const PhysicalType<double>& ConvolCoeffFunctionKinematic::getMuF2() const {

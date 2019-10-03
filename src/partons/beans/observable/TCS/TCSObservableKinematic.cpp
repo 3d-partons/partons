@@ -203,7 +203,7 @@ std::string TCSObservableKinematic::toString() const {
 
     ElemUtils::Formatter formatter;
 
-    formatter << Kinematic::toString() << '\n';
+    formatter << ObservableKinematic::toString() << '\n';
 
     if (m_t.isInitialized())
         formatter << "t: " << m_t.toString() << ' ';
@@ -221,20 +221,47 @@ std::string TCSObservableKinematic::toString() const {
 
 void TCSObservableKinematic::serialize(ElemUtils::Packet &packet) const {
 
-    Kinematic::serialize(packet);
+    ObservableKinematic::serialize(packet);
 
     packet << m_t << m_Q2Prim << m_E << m_phi << m_theta;
 }
 
 void TCSObservableKinematic::unserialize(ElemUtils::Packet &packet) {
 
-    Kinematic::unserialize(packet);
+    ObservableKinematic::unserialize(packet);
 
     packet >> m_t;
     packet >> m_Q2Prim;
     packet >> m_E;
     packet >> m_phi;
     packet >> m_theta;
+
+    updateHashSum();
+}
+
+void TCSObservableKinematic::serializeIntoStdVector(
+        std::vector<double>& vec) const {
+
+    ObservableKinematic::serializeIntoStdVector(vec);
+
+    m_t.serializeIntoStdVector(vec);
+    m_Q2Prim.serializeIntoStdVector(vec);
+    m_E.serializeIntoStdVector(vec);
+    m_phi.serializeIntoStdVector(vec);
+    m_theta.serializeIntoStdVector(vec);
+}
+
+void TCSObservableKinematic::unserializeFromStdVector(
+        std::vector<double>::const_iterator& it,
+        const std::vector<double>::const_iterator& end) {
+
+    ObservableKinematic::unserializeFromStdVector(it, end);
+
+    m_t.unserializeFromStdVector(it, end);
+    m_Q2Prim.unserializeFromStdVector(it, end);
+    m_E.unserializeFromStdVector(it, end);
+    m_phi.unserializeFromStdVector(it, end);
+    m_theta.unserializeFromStdVector(it, end);
 
     updateHashSum();
 }

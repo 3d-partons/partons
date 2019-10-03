@@ -11,7 +11,6 @@
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <map>
 #include <string>
-#include <vector>
 
 #include "../../../beans/automation/BaseObjectData.h"
 #include "../../../beans/gpd/GPDType.h"
@@ -80,25 +79,11 @@ protected:
      */
     TCSObservable(const TCSObservable& other);
 
-    virtual void setKinematics(const TCSObservableKinematic& kinematic);
     virtual void initModule();
     virtual void isModuleWellConfigured();
     virtual PhysicalType<double> computeObservable(
             const TCSObservableKinematic& kinematic,
             const List<GPDType>& gpdType) = 0;
-
-    /**
-     * Serialize kinematics and list of GPD types to std::vector<double>.
-     */
-    std::vector<double> serializeKinematicsAndGPDTypesToVector(
-            const TCSObservableKinematic& kin, const List<GPDType>& list) const;
-
-    /**
-     * Unserialize kinematics and list of GPD types from std::vector<double>.
-     */
-    void unserializeKinematicsAndGPDTypesFromVector(
-            const std::vector<double>& vec, TCSObservableKinematic& kin,
-            List<GPDType>& list) const;
 
     TCSProcessModule* m_pProcessModule; ///< Pointer to the underlying process module.
 };

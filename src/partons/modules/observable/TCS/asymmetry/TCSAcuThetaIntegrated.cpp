@@ -96,7 +96,7 @@ double TCSAcuThetaIntegrated::functionToIntegrateObservableTheta(double x,
     TCSObservableKinematic kinematic;
     List<GPDType> gpdType;
 
-    unserializeKinematicsAndGPDTypesFromVector(params, kinematic, gpdType);
+    unserializeKinematicsAndGPDTypesFromStdVector(params, kinematic, gpdType);
 
     kinematic.setTheta(PhysicalType<double>(x, PhysicalUnit::RAD));
 
@@ -106,7 +106,7 @@ double TCSAcuThetaIntegrated::functionToIntegrateObservableTheta(double x,
 PhysicalType<double> TCSAcuThetaIntegrated::computeObservable(
         const TCSObservableKinematic& kinematic, const List<GPDType>& gpdType) {
 
-    std::vector<double> params = serializeKinematicsAndGPDTypesToVector(
+    std::vector<double> params = serializeKinematicsAndGPDTypesIntoStdVector(
             kinematic, gpdType);
 
     return PhysicalType<double>(

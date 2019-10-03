@@ -123,6 +123,25 @@ void DVCSConvolCoeffFunctionKinematic::unserialize(ElemUtils::Packet& packet) {
     updateHashSum();
 }
 
+void DVCSConvolCoeffFunctionKinematic::serializeIntoStdVector(
+        std::vector<double>& vec) const {
+
+    ConvolCoeffFunctionKinematic::serializeIntoStdVector(vec);
+
+    m_Q2.serializeIntoStdVector(vec);
+}
+
+void DVCSConvolCoeffFunctionKinematic::unserializeFromStdVector(
+        std::vector<double>::const_iterator& it,
+        const std::vector<double>::const_iterator& end) {
+
+    ConvolCoeffFunctionKinematic::unserializeFromStdVector(it, end);
+
+    m_Q2.unserializeFromStdVector(it, end);
+
+    updateHashSum();
+}
+
 bool DVCSConvolCoeffFunctionKinematic::operator ==(
         const DVCSConvolCoeffFunctionKinematic& other) const {
     return m_xi == other.getXi() && m_t == other.getT()

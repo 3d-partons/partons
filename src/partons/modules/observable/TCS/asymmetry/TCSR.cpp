@@ -64,7 +64,7 @@ double TCSR::functionToIntegrateObservablePhi1(double x,
     TCSObservableKinematic kinematic;
     List<GPDType> gpdType;
 
-    unserializeKinematicsAndGPDTypesFromVector(params, kinematic, gpdType);
+    unserializeKinematicsAndGPDTypesFromStdVector(params, kinematic, gpdType);
 
     kinematic.setPhi(PhysicalType<double>(x, PhysicalUnit::RAD));
 
@@ -78,7 +78,7 @@ double TCSR::functionToIntegrateObservablePhi2(double x,
     TCSObservableKinematic kinematic;
     List<GPDType> gpdType;
 
-    unserializeKinematicsAndGPDTypesFromVector(params, kinematic, gpdType);
+    unserializeKinematicsAndGPDTypesFromStdVector(params, kinematic, gpdType);
 
     kinematic.setPhi(PhysicalType<double>(x, PhysicalUnit::RAD));
 
@@ -89,7 +89,7 @@ double TCSR::functionToIntegrateObservablePhi2(double x,
 PhysicalType<double> TCSR::computeObservable(
         const TCSObservableKinematic& kinematic, const List<GPDType>& gpdType) {
 
-    std::vector<double> params = serializeKinematicsAndGPDTypesToVector(
+    std::vector<double> params = serializeKinematicsAndGPDTypesIntoStdVector(
             kinematic, gpdType);
 
     double A = integrate(m_pFunctionToIntegrateObservablePhi1, 0.,

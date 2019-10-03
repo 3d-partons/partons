@@ -14,7 +14,6 @@
 #include "../../../../../include/partons/services/DVCSObservableService.h"
 #include "../../../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../../../include/partons/ServiceObjectTyped.h"
-#include "../../../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
 
@@ -22,13 +21,11 @@ const std::string DVCSObservable::DVCS_OBSERVABLE_MODULE_CLASS_NAME =
         "DVCSObservableModule";
 
 DVCSObservable::DVCSObservable(const std::string &className) :
-        Observable(className, ChannelType::DVCS), m_pProcessModule(0), m_xB(0.), m_t(
-                0.), m_Q2(0.), m_E(0.), m_phi(0.) {
+        Observable(className, ChannelType::DVCS), m_pProcessModule(0) {
 }
 
 DVCSObservable::DVCSObservable(const DVCSObservable& other) :
-        Observable(other), m_xB(other.m_xB), m_t(other.m_t), m_Q2(other.m_Q2), m_E(
-                other.m_E), m_phi(other.m_phi) {
+        Observable(other) {
 
     if (other.m_pProcessModule != 0) {
         m_pProcessModule = m_pModuleObjectFactory->cloneModuleObject(
@@ -153,8 +150,7 @@ DVCSObservableResult DVCSObservable::compute(
         const DVCSObservableKinematic& kinematic,
         const List<GPDType>& gpdType) {
 
-    //reset kinematics (virtuality)
-    setKinematics(kinematic);
+
 
     //execute last child function (virtuality)
     initModule();
@@ -177,53 +173,14 @@ List<GPDType> DVCSObservable::getListOfAvailableGPDTypeForComputation() const {
     return m_pProcessModule->getConvolCoeffFunctionModule()->getListOfAvailableGPDTypeForComputation();
 }
 
-void DVCSObservable::setKinematics(const DVCSObservableKinematic& kinematic) {
 
-    // set variables
-    m_xB = kinematic.getXB().makeSameUnitAs(PhysicalUnit::NONE).getValue();
-    m_t = kinematic.getT().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
-    m_Q2 = kinematic.getQ2().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
-    m_E = kinematic.getE().makeSameUnitAs(PhysicalUnit::GEV).getValue();
-    m_phi = kinematic.getPhi().makeSameUnitAs(PhysicalUnit::RAD).getValue();
-}
 
 void DVCSObservable::initModule() {
     Observable<DVCSObservableKinematic, DVCSObservableResult>::initModule();
 }
 
 void DVCSObservable::isModuleWellConfigured() {
-
-    //run mother
     Observable<DVCSObservableKinematic, DVCSObservableResult>::isModuleWellConfigured();
-
-    //test kinematic domain of xB
-    if (m_xB < 0. || m_xB > 1.) {
-        ElemUtils::Formatter formatter;
-        formatter << "Input value of xB = " << m_xB
-                << " does not lay between 0 and 1";
-        warn(__func__, formatter.str());
-    }
-
-    //test kinematic domain of t
-    if (m_t > 0.) {
-        ElemUtils::Formatter formatter;
-        formatter << " Input value of t = " << m_t << " is not < 0";
-        warn(__func__, formatter.str());
-    }
-
-    //test kinematic domain of Q2
-    if (m_Q2 < 0.) {
-        ElemUtils::Formatter formatter;
-        formatter << "Input value of Q2 = " << m_Q2 << " is not > 0";
-        warn(__func__, formatter.str());
-    }
-
-    //test kinematic domain of E
-    if (m_E < 0.) {
-        ElemUtils::Formatter formatter;
-        formatter << "Input value of E = " << m_E << " is not > 0";
-        warn(__func__, formatter.str());
-    }
 }
 
 DVCSProcessModule* DVCSObservable::getProcessModule() const {

@@ -12,8 +12,10 @@
 #include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/thread/Packet.h>
+#include <iterator>
 #include <sstream>
 #include <string>
+#include <vector>
 
 #include "../../BaseObject.h"
 #include "PhysicalUnit.h"
@@ -116,6 +118,47 @@ public:
         PhysicalUnit type;
         packet >> type;
         m_unit = type;
+    }
+
+    /**
+     * Serialize into std::vector<double>
+     */
+    void serializeIntoStdVector(std::vector<double>& vec) const {
+
+        vec.push_back(static_cast<double>(m_initialized));
+        vec.push_back(static_cast<double>(m_value));
+        vec.push_back(static_cast<double>(m_unit));
+    }
+
+    /**
+     * Uneserialize from std::vector<double>
+     */
+    void unserializeFromStdVector(std::vector<double>::const_iterator& it,
+            const std::vector<double>::const_iterator& end) {
+
+        if (it >= end) {
+            throw ElemUtils::CustomException(this->getClassName(), __func__,
+                    "Input vector is too short");
+        }
+
+        m_initialized = static_cast<bool>(*it);
+        it++;
+
+        if (it >= end) {
+            throw ElemUtils::CustomException(this->getClassName(), __func__,
+                    "Input vector is too short");
+        }
+
+        m_value = static_cast<T>(*it);
+        it++;
+
+        if (it >= end) {
+            throw ElemUtils::CustomException(this->getClassName(), __func__,
+                    "Input vector is too short");
+        }
+
+        m_unit = static_cast<PhysicalUnit::Type>(*it);
+        it++;
     }
 
     /**

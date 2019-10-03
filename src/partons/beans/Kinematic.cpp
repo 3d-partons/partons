@@ -41,6 +41,14 @@ void Kinematic::unserialize(ElemUtils::Packet& packet) {
     BaseObject::unserialize(packet);
 }
 
+void Kinematic::serializeIntoStdVector(std::vector<double>& vec) const {
+}
+
+void Kinematic::unserializeFromStdVector(
+        std::vector<double>::const_iterator& it,
+        const std::vector<double>::const_iterator& end) {
+}
+
 ChannelType::Type Kinematic::getChannelType() const {
     return m_channelType;
 }

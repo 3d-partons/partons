@@ -8,6 +8,7 @@
 #include "../../../../../../include/partons/beans/observable/DVCS/DVCSObservableKinematic.h"
 #include "../../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../../include/partons/FundamentalPhysicalConstants.h"
+#include "../../../../../../include/partons/modules/observable/Observable.h"
 #include "../../../../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
@@ -61,16 +62,22 @@ void DVCSAltDVCSSinPhiMPhisSin1Phi::configure(
 
 double DVCSAltDVCSSinPhiMPhisSin1Phi::functionToIntegrateObservable(double x,
         std::vector<double> params) {
-    return DVCSAltDVCSSinPhiMPhis::computeObservable(
-            DVCSObservableKinematic(m_xB, m_t, m_Q2, m_E, x),
-            gpdTypesFromVector(params)).getValue() * sin(x);
+
+    DVCSObservableKinematic kinematic;
+    List<GPDType> gpdType;
+
+    unserializeKinematicsAndGPDTypesFromStdVector(params, kinematic, gpdType);
+
+    kinematic.setPhi(PhysicalType<double>(x, PhysicalUnit::RAD));
+
+    return DVCSAltDVCSSinPhiMPhis::computeObservable(kinematic, gpdType).getValue() * sin(x);
 }
 
 PhysicalType<double> DVCSAltDVCSSinPhiMPhisSin1Phi::computeObservable(
         const DVCSObservableKinematic& kinematic,
         const List<GPDType>& gpdType) {
 
-    std::vector<double> params = gpdTypesToVector(gpdType);
+    std::vector<double> params = serializeKinematicsAndGPDTypesIntoStdVector(kinematic, gpdType);
 
     return PhysicalType<double>(
             integrate(m_pFunctionToIntegrateObservable, 0., (2 * Constant::PI),

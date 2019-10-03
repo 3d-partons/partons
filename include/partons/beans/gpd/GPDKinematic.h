@@ -11,6 +11,7 @@
 #include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <string>
+#include <vector>
 
 #include "../../utils/type/PhysicalType.h"
 #include "../../utils/type/PhysicalUnit.h"
@@ -153,6 +154,17 @@ public:
      * @param packet Input Packet.
      */
     void unserialize(ElemUtils::Packet &packet);
+
+    /**
+     * Serialize to std::vector<double>.
+     */
+    void serializeIntoStdVector(std::vector<double>& vec) const;
+
+    /**
+     * Unserialize from std::vector<double>.
+     */
+    void unserializeFromStdVector(std::vector<double>::const_iterator& it,
+            const std::vector<double>::const_iterator& end);
 
     /**
      * Is equal operator. Checks if values of kinematic variables are the same.

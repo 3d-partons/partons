@@ -11,6 +11,7 @@
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <stddef.h>
+#include <iterator>
 #include <map>
 #include <string>
 #include <vector>
@@ -100,12 +101,6 @@ protected:
             ModuleObject(other) {
     }
 
-    /**
-     * Set internal kinematics
-     * @param kinematic Kinematics to be set
-     */
-    virtual void setKinematics(const KinematicType& kinematic) = 0;
-
     virtual void initModule() {
     }
 
@@ -119,11 +114,14 @@ protected:
             const KinematicType& kinematic, const List<GPDType>& gpdType) = 0;
 
     /**
-     * List of GPD types to std::vector<double>.
+     * Serialize kinematics and list of GPD types to std::vector<double>.
      */
-    std::vector<double> gpdTypesToVector(const List<GPDType>& list) const {
+    std::vector<double> serializeKinematicsAndGPDTypesIntoStdVector(
+            const KinematicType& kin, const List<GPDType>& list) const {
 
         std::vector<double> result;
+
+        kin.serializeIntoStdVector(result);
 
         for (size_t i = 0; i < list.size(); i++) {
             result.push_back(static_cast<double>(list[i].getType()));
@@ -133,17 +131,21 @@ protected:
     }
 
     /**
-     * std::vector<double> to list of GPD types.
+     * Unserialize kinematics and list of GPD types from std::vector<double>.
      */
-    List<GPDType> gpdTypesFromVector(const std::vector<double>& vec) const {
+    void unserializeKinematicsAndGPDTypesFromStdVector(
+            const std::vector<double>& vec, KinematicType& kin,
+            List<GPDType>& list) const {
 
-        List<GPDType> result;
+        std::vector<double>::const_iterator it = vec.begin();
 
-        for (size_t i = 0; i < vec.size(); i++) {
-            result.add(GPDType(static_cast<GPDType::Type>(vec[i])));
+        kin.unserializeFromStdVector(it, vec.end());
+
+        list.clear();
+
+        for (; it != vec.end(); it++) {
+            list.add(GPDType(static_cast<GPDType::Type>(*it)));
         }
-
-        return result;
     }
 
 };

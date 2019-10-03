@@ -30,6 +30,17 @@ void ObservableKinematic::unserialize(ElemUtils::Packet &packet) {
     Kinematic::unserialize(packet);
 }
 
+void ObservableKinematic::serializeIntoStdVector(
+        std::vector<double>& vec) const {
+    Kinematic::serializeIntoStdVector(vec);
+}
+
+void ObservableKinematic::unserializeFromStdVector(
+        std::vector<double>::const_iterator& it,
+        const std::vector<double>::const_iterator& end) {
+    Kinematic::unserializeFromStdVector(it, end);
+}
+
 ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
         ObservableKinematic& observableKinematic) {
 
