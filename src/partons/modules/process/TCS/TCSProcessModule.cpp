@@ -19,6 +19,7 @@
 #include "../../../../../include/partons/services/TCSConvolCoeffFunctionService.h"
 #include "../../../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../../../include/partons/utils/type/PhysicalUnit.h"
+#include "../../../../../include/partons/FundamentalPhysicalConstants.h"
 
 namespace PARTONS {
 
@@ -28,8 +29,8 @@ const std::string TCSProcessModule::TCS_PROCESS_MODULE_CLASS_NAME =
 TCSProcessModule::TCSProcessModule(const std::string &className) :
         ProcessModule(className, ChannelType::TCS), m_t(0.), m_Q2Prim(0.), m_E(
                 0.), m_phi(0.), m_theta(0.), m_beamPolarization(0.), m_tmin(0.), m_tmax(
-                0.), m_xBmin(0), m_y(0.), m_epsilon(0.), m_pScaleModule(0), m_pXiConverterModule(
-                0), m_pConvolCoeffFunctionModule(0) {
+                0.), m_pScaleModule(0), m_pXiConverterModule(0), m_pConvolCoeffFunctionModule(
+                0) {
 }
 
 TCSProcessModule::~TCSProcessModule() {
@@ -55,8 +56,7 @@ TCSProcessModule::TCSProcessModule(const TCSProcessModule& other) :
                 other.m_E), m_phi(other.m_phi), m_theta(other.m_theta), m_beamPolarization(
                 other.m_beamPolarization), m_targetPolarization(
                 other.m_targetPolarization), m_tmin(other.m_tmin), m_tmax(
-                other.m_tmax), m_xBmin(other.m_xBmin), m_y(other.m_y), m_epsilon(
-                other.m_epsilon), m_pScaleModule(0), m_pXiConverterModule(0), m_pConvolCoeffFunctionModule(
+                other.m_tmax), m_pScaleModule(0), m_pXiConverterModule(0), m_pConvolCoeffFunctionModule(
                 0) {
 
     m_lastCCFKinematics = other.m_lastCCFKinematics;
@@ -424,17 +424,18 @@ void TCSProcessModule::initModule() {
     ProcessModule<TCSObservableKinematic, TCSObservableResult>::initModule();
 
     //evaluate internal variables
-    //TODO !!!
-    //TODO !!!
-    //TODO !!!
-//    m_epsilon = 2 * m_xB * Constant::PROTON_MASS / sqrt(m_Q2Prim);
-//    m_y = m_Q2Prim / (2 * m_xB * Constant::PROTON_MASS * m_E);
-//    double eps2 = m_epsilon * m_epsilon;
-//    double epsroot = sqrt(1 + eps2);
-//    double tfactor = -m_Q2Prim / (4 * m_xB * (1 - m_xB) + eps2);
-//    m_tmin = tfactor * (2 * (1 - m_xB) * (1 - epsroot) + eps2);
-//    m_tmax = tfactor * (2 * (1 - m_xB) * (1 + epsroot) + eps2);
-//    m_xBmin = 2 * m_Q2Prim * m_E / Constant::PROTON_MASS / (4 * m_E * m_E - m_Q2Prim);
+    double s = pow(Constant::PROTON_MASS, 2) + 2. * Constant::PROTON_MASS * m_E;
+    double tau = m_Q2Prim / (s - pow(Constant::PROTON_MASS, 2));
+    double xi = tau / (2. - tau);
+
+    double p1cm = m_E * Constant::PROTON_MASS / sqrt(s);
+    double E3cm = (s + m_Q2Prim - pow(Constant::PROTON_MASS, 2))
+            / (2 * sqrt(s));
+    double p3cm = sqrt(pow(E3cm, 2) - m_Q2Prim);
+
+    m_tmin = -4 * pow(Constant::PROTON_MASS, 2) * pow(xi, 2)
+            / (1. - pow(xi, 2));
+    m_tmax = m_tmin - 4 * p1cm * p3cm;
 }
 
 void TCSProcessModule::isModuleWellConfigured() {
@@ -480,14 +481,6 @@ void TCSProcessModule::isModuleWellConfigured() {
     if (m_E < 0.) {
         ElemUtils::Formatter formatter;
         formatter << "Input value of E = " << m_E << " is not > 0";
-        warn(__func__, formatter.str());
-    }
-
-    //test kinematic domain of beam energy
-    if (m_y < 0. || m_y > 1.) {
-        ElemUtils::Formatter formatter;
-        formatter << "Input value of y = " << m_y
-                << " (lepton energy fraction) does not lay between 0 and 1";
         warn(__func__, formatter.str());
     }
 

@@ -175,9 +175,6 @@ protected:
 
     double m_tmin; ///< Minimal value of t.
     double m_tmax; ///< Maximal value of t.
-    double m_xBmin; ///< Minimal value of xB.
-    double m_y; ///< Lepton energy fraction.
-    double m_epsilon; ///< @f$ \epsilon = \frac{2 x_B M}{Q} @f$.
 
     TCSScalesModule* m_pScaleModule; ///< Pointer to the underlying scale module.
     TCSXiConverterModule* m_pXiConverterModule; ///< Pointer to the underlying xi converter module.
