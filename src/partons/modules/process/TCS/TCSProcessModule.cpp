@@ -484,6 +484,15 @@ void TCSProcessModule::isModuleWellConfigured() {
         warn(__func__, formatter.str());
     }
 
+    //test if s >= (M + Q')^2
+    if (2 * m_E * Constant::PROTON_MASS
+            < 2 * Constant::PROTON_MASS * sqrt(m_Q2Prim) + m_Q2Prim) {
+        ElemUtils::Formatter formatter;
+        formatter << "Input value of E = " << m_E << " and Q2' = " << m_Q2Prim
+                << " does not satisfy s >= (M + Q')^2";
+        warn(__func__, formatter.str());
+    }
+
     //test beam polarization
     if (fabs(m_beamPolarization) != 0. && fabs(m_beamPolarization) != 1.) {
         ElemUtils::Formatter formatter;
