@@ -17,7 +17,7 @@
 #include "../../../../beans/List.h"
 #include "../../../../utils/type/PhysicalType.h"
 #include "../../../MathIntegratorModule.h"
-#include "TCSAcu.h"
+#include "../TCSObservable.h"
 
 namespace PARTONS {
 
@@ -33,8 +33,7 @@ namespace PARTONS {
  *
  * Unit: none.
  */
-class TCSAcuThetaIntegrated: public TCSAcu,
-        public MathIntegratorModule {
+class TCSAcuThetaIntegrated: public TCSObservable, public MathIntegratorModule {
 
 public:
 
@@ -75,22 +74,32 @@ protected:
      * Copy constructor.
      * @param other Object to be copied.
      */
-    TCSAcuThetaIntegrated(
-            const TCSAcuThetaIntegrated &other);
+    TCSAcuThetaIntegrated(const TCSAcuThetaIntegrated &other);
 
     virtual PhysicalType<double> computeObservable(
             const TCSObservableKinematic& kinematic,
             const List<GPDType>& gpdType);
 
     /**
-     * Functor to perform the integration.
+     * Functor to perform the integration (polarization +).
      */
-    NumA::FunctionType1D* m_pFunctionToIntegrateObservableTheta;
+    NumA::FunctionType1D* m_pFunctionToIntegrateObservableTheta1;
 
     /**
-     * Function to be integrated.
+     * Functor to perform the integration (polarization -).
      */
-    virtual double functionToIntegrateObservableTheta(double x,
+    NumA::FunctionType1D* m_pFunctionToIntegrateObservableTheta2;
+
+    /**
+     * Function to be integrated (polarization +).
+     */
+    virtual double functionToIntegrateObservableTheta1(double x,
+            std::vector<double> params);
+
+    /**
+     * Function to be integrated (polarization -).
+     */
+    virtual double functionToIntegrateObservableTheta2(double x,
             std::vector<double> params);
 
     /**

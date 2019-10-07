@@ -5,10 +5,14 @@
 #include <NumA/functor/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
+#include <NumA/linear_algebra/vector/Vector3D.h>
 
+#include "../../../../../../include/partons/beans/observable/ObservableResult.h"
 #include "../../../../../../include/partons/beans/observable/TCS/TCSObservableKinematic.h"
 #include "../../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../../include/partons/FundamentalPhysicalConstants.h"
+#include "../../../../../../include/partons/modules/observable/Observable.h"
+#include "../../../../../../include/partons/modules/process/TCS/TCSProcessModule.h"
 #include "../../../../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
@@ -21,8 +25,8 @@ const unsigned int TCSAcuThetaIntegrated::classId =
                 new TCSAcuThetaIntegrated("TCSAcuThetaIntegrated"));
 
 TCSAcuThetaIntegrated::TCSAcuThetaIntegrated(const std::string &className) :
-        TCSAcu(className), MathIntegratorModule(), m_pFunctionToIntegrateObservableTheta(
-                0) {
+        TCSObservable(className), MathIntegratorModule(), m_pFunctionToIntegrateObservableTheta1(
+                0), m_pFunctionToIntegrateObservableTheta2(0) {
 
     m_thetaRange = std::pair<double, double>(Constant::PI / 4.,
             3 * Constant::PI / 4.);
@@ -32,8 +36,8 @@ TCSAcuThetaIntegrated::TCSAcuThetaIntegrated(const std::string &className) :
 }
 
 TCSAcuThetaIntegrated::TCSAcuThetaIntegrated(const TCSAcuThetaIntegrated& other) :
-        TCSAcu(other), MathIntegratorModule(other), m_pFunctionToIntegrateObservableTheta(
-                0) {
+        TCSObservable(other), MathIntegratorModule(other), m_pFunctionToIntegrateObservableTheta1(
+                0), m_pFunctionToIntegrateObservableTheta2(0) {
 
     m_thetaRange = other.m_thetaRange;
 
@@ -42,16 +46,26 @@ TCSAcuThetaIntegrated::TCSAcuThetaIntegrated(const TCSAcuThetaIntegrated& other)
 
 TCSAcuThetaIntegrated::~TCSAcuThetaIntegrated() {
 
-    if (m_pFunctionToIntegrateObservableTheta) {
-        delete m_pFunctionToIntegrateObservableTheta;
-        m_pFunctionToIntegrateObservableTheta = 0;
+    if (m_pFunctionToIntegrateObservableTheta1) {
+        delete m_pFunctionToIntegrateObservableTheta1;
+        m_pFunctionToIntegrateObservableTheta1 = 0;
+    }
+
+    if (m_pFunctionToIntegrateObservableTheta2) {
+        delete m_pFunctionToIntegrateObservableTheta2;
+        m_pFunctionToIntegrateObservableTheta2 = 0;
     }
 }
 
 void TCSAcuThetaIntegrated::initFunctorsForIntegrations() {
-    m_pFunctionToIntegrateObservableTheta =
+
+    m_pFunctionToIntegrateObservableTheta1 =
             NumA::Integrator1D::newIntegrationFunctor(this,
-                    &TCSAcuThetaIntegrated::functionToIntegrateObservableTheta);
+                    &TCSAcuThetaIntegrated::functionToIntegrateObservableTheta1);
+
+    m_pFunctionToIntegrateObservableTheta2 =
+            NumA::Integrator1D::newIntegrationFunctor(this,
+                    &TCSAcuThetaIntegrated::functionToIntegrateObservableTheta2);
 }
 
 TCSAcuThetaIntegrated* TCSAcuThetaIntegrated::clone() const {
@@ -60,7 +74,7 @@ TCSAcuThetaIntegrated* TCSAcuThetaIntegrated::clone() const {
 
 void TCSAcuThetaIntegrated::configure(const ElemUtils::Parameters &parameters) {
 
-    TCSAcu::configure(parameters);
+    TCSObservable::configure(parameters);
     MathIntegratorModule::configureIntegrator(parameters);
 
     if (parameters.isAvailable(
@@ -90,7 +104,7 @@ void TCSAcuThetaIntegrated::configure(const ElemUtils::Parameters &parameters) {
     }
 }
 
-double TCSAcuThetaIntegrated::functionToIntegrateObservableTheta(double x,
+double TCSAcuThetaIntegrated::functionToIntegrateObservableTheta1(double x,
         std::vector<double> params) {
 
     TCSObservableKinematic kinematic;
@@ -100,7 +114,22 @@ double TCSAcuThetaIntegrated::functionToIntegrateObservableTheta(double x,
 
     kinematic.setTheta(PhysicalType<double>(x, PhysicalUnit::RAD));
 
-    return TCSAcu::computeObservable(kinematic, gpdType).getValue();
+    return m_pProcessModule->compute(1, NumA::Vector3D(0., 0., 0.), kinematic,
+            gpdType).getValue().getValue();
+}
+
+double TCSAcuThetaIntegrated::functionToIntegrateObservableTheta2(double x,
+        std::vector<double> params) {
+
+    TCSObservableKinematic kinematic;
+    List<GPDType> gpdType;
+
+    unserializeKinematicsAndGPDTypesFromStdVector(params, kinematic, gpdType);
+
+    kinematic.setTheta(PhysicalType<double>(x, PhysicalUnit::RAD));
+
+    return m_pProcessModule->compute(-1, NumA::Vector3D(0., 0., 0.), kinematic,
+            gpdType).getValue().getValue();
 }
 
 PhysicalType<double> TCSAcuThetaIntegrated::computeObservable(
@@ -109,9 +138,22 @@ PhysicalType<double> TCSAcuThetaIntegrated::computeObservable(
     std::vector<double> params = serializeKinematicsAndGPDTypesIntoStdVector(
             kinematic, gpdType);
 
-    return PhysicalType<double>(
-            integrate(m_pFunctionToIntegrateObservableTheta, m_thetaRange.first,
-                    m_thetaRange.second, params), PhysicalUnit::NONE);
+    //evaluate
+    double A = integrate(m_pFunctionToIntegrateObservableTheta1,
+            m_thetaRange.first, m_thetaRange.second, params);
+
+    double B = integrate(m_pFunctionToIntegrateObservableTheta2,
+            m_thetaRange.first, m_thetaRange.second, params);
+
+    //combine
+    if (A + B == 0.) {
+
+        warn(__func__, "Asymmetry denominator is zero");
+        return PhysicalType<double>(0., PhysicalUnit::NONE);
+    }
+
+    //return
+    return PhysicalType<double>((A - B) / (A + B), PhysicalUnit::NONE);
 }
 
 const std::pair<double, double>& TCSAcuThetaIntegrated::getThetaRange() const {
