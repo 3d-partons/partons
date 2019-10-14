@@ -23,40 +23,16 @@ namespace PARTONS {
  *
  * @brief Definition of enumeration values for GPD types.
  *
- * This class defines a set of enumeration values that are used to distinguish between GPD types. In addition, a declared object of this class is always associated to one GPD type (see GPDType::m_type), so member functions can act on it. E.g.
- \code{.cpp}
- //this is single enum variable - nothing to play with
- GPDType::Type enum_variable = GPDType::H;
-
- //this is declared object
- GPDType enum_object;
-
- //let us assign some type (default is GPDType::UNDEFINED)
- enum_object.setType(enum_variable);
-
- //with objects you can use available functions, e.g. you can represent enumeration type by a corresponding string
- std::string enum_string_1 = enum_object.toString();
-
- //you can achieve some basic operations without the explicit declaration of objects by using the assignment constructor
- std::string enum_string_2 = GPDType(GPDType::E).toString();
-
- Partons::getInstance()->getLoggerManager()->info("example", __func__, ElemUtils::Formatter() << "GPD type is: " << enum_string_1);
- Partons::getInstance()->getLoggerManager()->info("example", __func__, ElemUtils::Formatter() << "GPD type is: " << enum_string_2);
- \endcode
- which gives via Logger:
- \code
- 20-05-2017 11:58:23 [INFO] (example::main) GPD type is: H
- 20-05-2017 11:58:23 [INFO] (example::main) GPD type is: E
- \endcode
+ * This class defines a set of enumeration values that are used to distinguish between GPD types. In addition, a declared object of this class is always associated to one GPD type (see GPDType::m_type), so member functions can act on it.
  */
 class GPDType {
 
 public:
 
-    /**
-     * Name of table in the database corresponding to this class.
-     */
-    static const std::string GPD_TYPE_DB_COLUMN_NAME;
+//    /**
+//     * Name of table in the database corresponding to this class.
+//     */
+//    static const std::string GPD_TYPE_DB_COLUMN_NAME;
 
     /**
      * Definition of enumerate values corresponding to GPD types.

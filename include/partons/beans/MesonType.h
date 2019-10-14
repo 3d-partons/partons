@@ -2,7 +2,6 @@
 #define MESON_TYPE_H
 
 /**
- *
  * @file MesonType.h
  * @author Pawel Sznajder (NCBJ)
  * @date 23 April 2019
@@ -10,6 +9,10 @@
  */
 
 #include <string>
+
+namespace ElemUtils {
+class Packet;
+} /* namespace ElemUtils */
 
 namespace PARTONS {
 
@@ -25,10 +28,11 @@ class MesonType {
 public:
 
     /**
-     * Definition of enumerate values corresponding to quark flavors.
+     * Definition of enumerate values corresponding to meson types.
      */
     enum Type {
         UNDEFINED = 0,  //!< Undefined type.
+
         RHOMINUS = 1,   //!<  \f$\rho^{-}\f$
         RHO0 = 2,       //!<  \f$\rho^{0}\f$
         RHOPLUS = 3,    //!<  \f$\rho^{+}\f$
@@ -37,9 +41,9 @@ public:
         JPSI = 6,       //!<  \f$J/\Psi\f$
         UPSILON = 7,    //!<  \f$\Upsilon\f$
 
-        PIMINUS = 7,    //!<  \f$\pi^{-}\f$
-        PI0 = 8,        //!<  \f$\pi^{0}\f$
-        PIPLUS = 9      //!<  \f$\pi^{+}\f$
+        PIMINUS = 8,    //!<  \f$\pi^{-}\f$
+        PI0 = 9,        //!<  \f$\pi^{0}\f$
+        PIPLUS = 10     //!<  \f$\pi^{+}\f$
     };
 
     /**
@@ -48,21 +52,16 @@ public:
     MesonType();
 
     /**
-     * Copy constructor.
-     * @param other Object to be copied.
-     */
-    MesonType(const MesonType &other);
-
-    /**
      * Assignment constructor.
      * @param type Type to be assigned.
      */
     MesonType(Type type);
 
     /**
-     * Destructor.
+     * Copy constructor.
+     * @param other Object to be copied.
      */
-    virtual ~MesonType();
+    MesonType(const MesonType &other);
 
     /**
      * Automatic cast to enum.
@@ -71,15 +70,36 @@ public:
 
     /**
      * Get string representation of type being assigned to a declared object of this class.
-     * @return String representation of assigned type, like "UP" for MesonType::UP.
+     * @return String representation of assigned type.
      */
     std::string toString() const;
 
     /**
-     * Get short name representation of type being assigned to a declared object of this class.
-     * @return Short string representation of assigned type, like "u" for MesonType::UP.
+     * Serialize into given Packet.
+     * @param packet Target Packet.
      */
-    std::string getShortName();
+    void serialize(ElemUtils::Packet &packet) const;
+
+    /**
+     * Retrieve data from given Packet.
+     * @param packet Input Packet.
+     */
+    void unserialize(ElemUtils::Packet &packet);
+
+    /**
+     * Relation operator that checks if the value of left operand is less than the value of right operand (based on values assigned in the definition of MesonType::Type).
+     * Used by std::sort function.
+     * @param other Right hand value.
+     * @return True if the value of left operand is less than the value of right operand, otherwise false.
+     */
+    bool operator <(const MesonType &other) const;
+
+    /**
+     * Try to match meson type from given string.
+     * @param mesonTypeStr String to be matched.
+     * @return Matched type or MesonType::UNDEFINED if unable to match.
+     */
+    static MesonType::Type fromString(const std::string & mesonTypeStr);
 
     //********************************************************
     //*** SETTERS AND GETTERS ********************************
@@ -103,6 +123,17 @@ private:
     MesonType::Type m_type;
 };
 
+/**
+ * Stream operator to serialize class into Packet. See also MesonType::serialize().
+ */
+ElemUtils::Packet& operator <<(ElemUtils::Packet& packet, MesonType& mesonType);
+
+/**
+ * Stream operator to retrieve class from Packet. See also MesonType::unserialize().
+ */
+ElemUtils::Packet& operator >>(ElemUtils::Packet& packet, MesonType& mesonType);
+
 } /* namespace PARTONS */
 
 #endif /* MESON_TYPE_H */
+
