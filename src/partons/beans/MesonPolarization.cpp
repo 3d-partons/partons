@@ -25,11 +25,11 @@ std::string MesonPolarization::toString() const {
 
     switch (m_type) {
 
-    case LONGITUDINAL:
-        return "LONGITUDINAL";
+    case L:
+        return "L";
         break;
-    case TRANSVERSE:
-        return "TRANSVERSE";
+    case T:
+        return "T";
         break;
 
     default:
@@ -51,9 +51,9 @@ MesonPolarization::Type MesonPolarization::fromString(
     MesonPolarization::Type mesonPolarization = MesonPolarization::UNDEFINED;
 
     if (ElemUtils::StringUtils::equals(mesonPolarizationStr, "L")) {
-        mesonPolarization = MesonPolarization::LONGITUDINAL;
+        mesonPolarization = MesonPolarization::L;
     } else if (ElemUtils::StringUtils::equals(mesonPolarizationStr, "T")) {
-        mesonPolarization = MesonPolarization::TRANSVERSE;
+        mesonPolarization = MesonPolarization::T;
     }
 
     return mesonPolarization;

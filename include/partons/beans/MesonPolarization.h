@@ -33,8 +33,8 @@ public:
     enum Type {
         UNDEFINED = 0,      //!< Undefined type.
 
-        LONGITUDINAL = 1,   //!< Longitudinal.
-        TRANSVERSE = 2      //!< Transverse.
+        L = 1,   //!< Longitudinal.
+        T = 2    //!< Transverse.
     };
 
     /**
