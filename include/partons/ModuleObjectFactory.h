@@ -20,6 +20,7 @@ class BaseObjectFactory;
 class DVCSScalesModule;
 class TCSScalesModule;
 class DVCSConvolCoeffFunctionModule;
+class DVMPConvolCoeffFunctionModule;
 class TCSConvolCoeffFunctionModule;
 class TCSObservable;
 class TCSProcessModule;
@@ -129,6 +130,21 @@ public:
      * @return DVCSConvolCoeffFunctionModule pointer.
      */
     DVCSConvolCoeffFunctionModule* newDVCSConvolCoeffFunctionModule(
+            const std::string &className);
+
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a DVMPConvolCoeffFunctionModule.
+     * @param classId Unique identifier of last child class.
+     * @return DVMPConvolCoeffFunctionModule pointer.
+     */
+    DVMPConvolCoeffFunctionModule* newDVMPConvolCoeffFunctionModule(
+            unsigned int classId);
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a DVMPConvolCoeffFunctionModule.
+     * @param className Name of last child class.
+     * @return DVMPConvolCoeffFunctionModule pointer.
+     */
+    DVMPConvolCoeffFunctionModule* newDVMPConvolCoeffFunctionModule(
             const std::string &className);
 
     /**

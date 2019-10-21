@@ -13,6 +13,7 @@
 
 #include "../utils/type/PhysicalUnit.h"
 #include "convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
+#include "convol_coeff_function/DVMP/DVMPConvolCoeffFunctionKinematic.h"
 #include "convol_coeff_function/TCS/TCSConvolCoeffFunctionKinematic.h"
 #include "gpd/GPDKinematic.h"
 #include "List.h"
@@ -67,6 +68,15 @@ public:
      * @return List of extracted TCSConvolCoeffFunctionKinematic objects.
      */
     List<TCSConvolCoeffFunctionKinematic> getTCSCCFKinematicFromFile(
+            const std::string &filePath);
+
+    /**
+     * Parse a text file in order to retrieve a list of DVMPConvolCoeffFunctionKinematic objects.
+     * The parsed file should display separate lines of the form "xi | t | Q2 | MuF2 | MuR2 | mesonType | mesonPolarization".
+     * @param filePath Path to file to be parsed.
+     * @return List of extracted DVMPConvolCoeffFunctionKinematic objects.
+     */
+    List<DVMPConvolCoeffFunctionKinematic> getDVMPCCFKinematicFromFile(
             const std::string &filePath);
 
     /**

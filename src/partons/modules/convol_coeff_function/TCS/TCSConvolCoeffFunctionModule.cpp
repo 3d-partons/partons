@@ -35,8 +35,6 @@ TCSConvolCoeffFunctionModule::TCSConvolCoeffFunctionModule(
         ConvolCoeffFunctionModule(other), m_Q2Prim(other.m_Q2Prim), m_qcdOrderType(
                 other.m_qcdOrderType) {
 
-    m_Q2Prim = other.m_Q2Prim;
-
     m_listOfCFFComputeFunctionAvailable =
             other.m_listOfCFFComputeFunctionAvailable;
 }

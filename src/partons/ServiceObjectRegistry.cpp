@@ -7,6 +7,7 @@
 #include "../../include/partons/services/ComparisonService.h"
 #include "../../include/partons/services/DVCSConvolCoeffFunctionService.h"
 #include "../../include/partons/services/DVCSObservableService.h"
+#include "../../include/partons/services/DVMPConvolCoeffFunctionService.h"
 #include "../../include/partons/services/GPDService.h"
 #include "../../include/partons/services/hash_sum/CryptographicHashService.h"
 #include "../../include/partons/services/TCSConvolCoeffFunctionService.h"
@@ -55,6 +56,11 @@ DVCSConvolCoeffFunctionService* ServiceObjectRegistry::getDVCSConvolCoeffFunctio
             DVCSConvolCoeffFunctionService::classId));
 }
 
+DVMPConvolCoeffFunctionService* ServiceObjectRegistry::getDVMPConvolCoeffFunctionService() const {
+    return static_cast<DVMPConvolCoeffFunctionService*>(get(
+            DVMPConvolCoeffFunctionService::classId));
+}
+
 TCSConvolCoeffFunctionService* ServiceObjectRegistry::getTCSConvolCoeffFunctionService() const {
     return static_cast<TCSConvolCoeffFunctionService*>(get(
             TCSConvolCoeffFunctionService::classId));
@@ -66,8 +72,7 @@ DVCSObservableService* ServiceObjectRegistry::getDVCSObservableService() const {
 }
 
 TCSObservableService* ServiceObjectRegistry::getTCSObservableService() const {
-    return static_cast<TCSObservableService*>(get(
-            TCSObservableService::classId));
+    return static_cast<TCSObservableService*>(get(TCSObservableService::classId));
 }
 
 VizualisationService* ServiceObjectRegistry::getVizualisationService() const {

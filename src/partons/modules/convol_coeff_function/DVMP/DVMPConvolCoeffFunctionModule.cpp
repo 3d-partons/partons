@@ -1,4 +1,4 @@
-#include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
+#include "../../../../../include/partons/modules/convol_coeff_function/DVMP/DVMPConvolCoeffFunctionModule.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/parameters/GenericType.h>
@@ -12,7 +12,7 @@
 #include "../../../../../include/partons/beans/Result.h"
 #include "../../../../../include/partons/modules/gpd/GPDModule.h"
 #include "../../../../../include/partons/Partons.h"
-#include "../../../../../include/partons/services/DVCSConvolCoeffFunctionService.h"
+#include "../../../../../include/partons/services/DVMPConvolCoeffFunctionService.h"
 #include "../../../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../../../include/partons/ServiceObjectTyped.h"
 #include "../../../../../include/partons/utils/type/PhysicalType.h"
@@ -21,50 +21,53 @@
 
 namespace PARTONS {
 
-const std::string DVCSConvolCoeffFunctionModule::DVCS_CONVOL_COEFF_FUNCTION_MODULE_CLASS_NAME =
-        "DVCSConvolCoeffFunctionModule";
+const std::string DVMPConvolCoeffFunctionModule::DVMP_CONVOL_COEFF_FUNCTION_MODULE_CLASS_NAME =
+        "DVMPConvolCoeffFunctionModule";
 
-DVCSConvolCoeffFunctionModule::DVCSConvolCoeffFunctionModule(
+DVMPConvolCoeffFunctionModule::DVMPConvolCoeffFunctionModule(
         const std::string &className) :
-        ConvolCoeffFunctionModule(className, ChannelType::DVCS), m_Q2(0.), m_qcdOrderType(
+        ConvolCoeffFunctionModule(className, ChannelType::DVMP), m_Q2(0.), m_mesonType(
+                MesonType::UNDEFINED), m_mesonPolarization(
+                MesonPolarization::UNDEFINED), m_qcdOrderType(
                 PerturbativeQCDOrderType::UNDEFINED) {
 }
 
-DVCSConvolCoeffFunctionModule::DVCSConvolCoeffFunctionModule(
-        const DVCSConvolCoeffFunctionModule &other) :
-        ConvolCoeffFunctionModule(other), m_Q2(other.m_Q2), m_qcdOrderType(
-                other.m_qcdOrderType) {
+DVMPConvolCoeffFunctionModule::DVMPConvolCoeffFunctionModule(
+        const DVMPConvolCoeffFunctionModule &other) :
+        ConvolCoeffFunctionModule(other), m_Q2(other.m_Q2), m_mesonType(
+                other.m_mesonType), m_mesonPolarization(
+                other.m_mesonPolarization), m_qcdOrderType(other.m_qcdOrderType) {
 
     m_listOfCFFComputeFunctionAvailable =
             other.m_listOfCFFComputeFunctionAvailable;
 }
 
-DVCSConvolCoeffFunctionModule::~DVCSConvolCoeffFunctionModule() {
+DVMPConvolCoeffFunctionModule::~DVMPConvolCoeffFunctionModule() {
 }
 
-std::string DVCSConvolCoeffFunctionModule::toString() const {
-    return ConvolCoeffFunctionModule<DVCSConvolCoeffFunctionKinematic,
-            DVCSConvolCoeffFunctionResult>::toString();
+std::string DVMPConvolCoeffFunctionModule::toString() const {
+    return ConvolCoeffFunctionModule<DVMPConvolCoeffFunctionKinematic,
+            DVMPConvolCoeffFunctionResult>::toString();
 }
 
-void DVCSConvolCoeffFunctionModule::resolveObjectDependencies() {
-    ConvolCoeffFunctionModule<DVCSConvolCoeffFunctionKinematic,
-            DVCSConvolCoeffFunctionResult>::resolveObjectDependencies();
+void DVMPConvolCoeffFunctionModule::resolveObjectDependencies() {
+    ConvolCoeffFunctionModule<DVMPConvolCoeffFunctionKinematic,
+            DVMPConvolCoeffFunctionResult>::resolveObjectDependencies();
 }
 
-void DVCSConvolCoeffFunctionModule::run() {
+void DVMPConvolCoeffFunctionModule::run() {
 
     try {
 
         //get service
-        DVCSConvolCoeffFunctionService* pService =
-                Partons::getInstance()->getServiceObjectRegistry()->getDVCSConvolCoeffFunctionService();
+        DVMPConvolCoeffFunctionService* pService =
+                Partons::getInstance()->getServiceObjectRegistry()->getDVMPConvolCoeffFunctionService();
 
         //run until empty
         while (!(pService->isEmptyTaskQueue())) {
 
             //kinematics
-            DVCSConvolCoeffFunctionKinematic kinematic;
+            DVMPConvolCoeffFunctionKinematic kinematic;
 
             //list of GPD types
             List<GPDType> gpdTypeList;
@@ -80,7 +83,7 @@ void DVCSConvolCoeffFunctionModule::run() {
                             << " " << kinematic.toString());
 
             //object to be returned
-            DVCSConvolCoeffFunctionResult result = compute(kinematic,
+            DVMPConvolCoeffFunctionResult result = compute(kinematic,
                     gpdTypeList);
 
             //helpful to sort later if kinematic is coming from database
@@ -98,12 +101,12 @@ void DVCSConvolCoeffFunctionModule::run() {
     }
 }
 
-void DVCSConvolCoeffFunctionModule::configure(
+void DVMPConvolCoeffFunctionModule::configure(
         const ElemUtils::Parameters &parameters) {
 
     //run for mother
-    ConvolCoeffFunctionModule<DVCSConvolCoeffFunctionKinematic,
-            DVCSConvolCoeffFunctionResult>::configure(parameters);
+    ConvolCoeffFunctionModule<DVMPConvolCoeffFunctionKinematic,
+            DVMPConvolCoeffFunctionResult>::configure(parameters);
 
     //check if available
     if (parameters.isAvailable(
@@ -131,14 +134,14 @@ void DVCSConvolCoeffFunctionModule::configure(
     }
 }
 
-void DVCSConvolCoeffFunctionModule::prepareSubModules(
+void DVMPConvolCoeffFunctionModule::prepareSubModules(
         const std::map<std::string, BaseObjectData>& subModulesData) {
-    ConvolCoeffFunctionModule<DVCSConvolCoeffFunctionKinematic,
-            DVCSConvolCoeffFunctionResult>::prepareSubModules(subModulesData);
+    ConvolCoeffFunctionModule<DVMPConvolCoeffFunctionKinematic,
+            DVMPConvolCoeffFunctionResult>::prepareSubModules(subModulesData);
 }
 
-DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionModule::compute(
-        const DVCSConvolCoeffFunctionKinematic& kinematic,
+DVMPConvolCoeffFunctionResult DVMPConvolCoeffFunctionModule::compute(
+        const DVMPConvolCoeffFunctionKinematic& kinematic,
         const List<GPDType>& gpdType) {
 
     //reset kinematics (virtuality)
@@ -151,7 +154,7 @@ DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionModule::compute(
     isModuleWellConfigured();
 
     //object to be returned
-    DVCSConvolCoeffFunctionResult result(kinematic);
+    DVMPConvolCoeffFunctionResult result(kinematic);
 
     //loop over GPD types
     for (size_t i = 0; i < gpdType.size(); i++) {
@@ -185,14 +188,14 @@ DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionModule::compute(
     return result;
 }
 
-List<GPDType> DVCSConvolCoeffFunctionModule::getListOfAvailableGPDTypeForComputation() const {
+List<GPDType> DVMPConvolCoeffFunctionModule::getListOfAvailableGPDTypeForComputation() const {
 
     //object to be returned
     List<GPDType> listOfAvailableGPDTypeForComputation;
 
     //iterator
     std::map<GPDType::Type,
-            std::complex<double> (DVCSConvolCoeffFunctionModule::*)()>::const_iterator it;
+            std::complex<double> (DVMPConvolCoeffFunctionModule::*)()>::const_iterator it;
 
     //fill list
     for (it = m_listOfCFFComputeFunctionAvailable.begin();
@@ -217,53 +220,61 @@ List<GPDType> DVCSConvolCoeffFunctionModule::getListOfAvailableGPDTypeForComputa
     return listOfAvailableGPDTypeForComputation;
 }
 
-std::complex<double> DVCSConvolCoeffFunctionModule::computeUnpolarized() {
+std::complex<double> DVMPConvolCoeffFunctionModule::computeUnpolarized() {
     throw ElemUtils::CustomException(getClassName(), __func__,
             "Check your child implementation : " + getClassName());
 }
 
-std::complex<double> DVCSConvolCoeffFunctionModule::computePolarized() {
+std::complex<double> DVMPConvolCoeffFunctionModule::computePolarized() {
     throw ElemUtils::CustomException(getClassName(), __func__,
             "Check your child implementation : " + getClassName());
 }
 
-std::complex<double> DVCSConvolCoeffFunctionModule::computeCFF() {
+std::complex<double> DVMPConvolCoeffFunctionModule::computeCFF() {
     throw ElemUtils::CustomException(getClassName(), __func__,
             "Check your child implementation : " + getClassName());
 }
 
-void DVCSConvolCoeffFunctionModule::setKinematics(
-        const DVCSConvolCoeffFunctionKinematic& kinematic) {
+void DVMPConvolCoeffFunctionModule::setKinematics(
+        const DVMPConvolCoeffFunctionKinematic& kinematic) {
 
-    ConvolCoeffFunctionModule<DVCSConvolCoeffFunctionKinematic,
-            DVCSConvolCoeffFunctionResult>::setKinematics(kinematic);
+    ConvolCoeffFunctionModule<DVMPConvolCoeffFunctionKinematic,
+            DVMPConvolCoeffFunctionResult>::setKinematics(kinematic);
 
     m_Q2 = kinematic.getQ2().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
+    m_mesonType = kinematic.getMesonType();
+    m_mesonPolarization = kinematic.getMesonPolarization();
 }
 
-PerturbativeQCDOrderType::Type DVCSConvolCoeffFunctionModule::getQCDOrderType() const {
+PerturbativeQCDOrderType::Type DVMPConvolCoeffFunctionModule::getQCDOrderType() const {
     return m_qcdOrderType;
 }
 
-void DVCSConvolCoeffFunctionModule::setQCDOrderType(
+void DVMPConvolCoeffFunctionModule::setQCDOrderType(
         PerturbativeQCDOrderType::Type qcdOrderType) {
     m_qcdOrderType = qcdOrderType;
 }
 
-void DVCSConvolCoeffFunctionModule::initModule() {
-    ConvolCoeffFunctionModule<DVCSConvolCoeffFunctionKinematic,
-            DVCSConvolCoeffFunctionResult>::initModule();
+void DVMPConvolCoeffFunctionModule::initModule() {
+    ConvolCoeffFunctionModule<DVMPConvolCoeffFunctionKinematic,
+            DVMPConvolCoeffFunctionResult>::initModule();
 }
 
-void DVCSConvolCoeffFunctionModule::isModuleWellConfigured() {
+void DVMPConvolCoeffFunctionModule::isModuleWellConfigured() {
 
-    ConvolCoeffFunctionModule<DVCSConvolCoeffFunctionKinematic,
-            DVCSConvolCoeffFunctionResult>::isModuleWellConfigured();
+    ConvolCoeffFunctionModule<DVMPConvolCoeffFunctionKinematic,
+            DVMPConvolCoeffFunctionResult>::isModuleWellConfigured();
 
     if (m_Q2 < 0) {
         warn(__func__,
                 ElemUtils::Formatter() << "Input value of Q2 = " << m_Q2
                         << " is not > 0.");
+    }
+
+    if (m_mesonType == MesonType::UNDEFINED) {
+        warn(__func__,
+                ElemUtils::Formatter() << "Meson type is "
+                        << MesonType(m_mesonType).toString());
     }
 }
 
