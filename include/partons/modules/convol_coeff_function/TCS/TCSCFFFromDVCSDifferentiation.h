@@ -26,22 +26,22 @@ struct TCSCFFFromDVCSDifferentiationParameters {
     bool m_isReal;
 };
 
-double TCSCFFFromDVCSDifferentiationFunction(double Q2, void* params) {
+double TCSCFFFromDVCSDifferentiationFunction(double Q2, void* voidParams) {
 
-    TCSCFFFromDVCSDifferentiationParameters* tcsParams =
-            static_cast<TCSCFFFromDVCSDifferentiationParameters*>(params);
+    TCSCFFFromDVCSDifferentiationParameters* params =
+            static_cast<TCSCFFFromDVCSDifferentiationParameters*>(voidParams);
 
     List<GPDType> gpdTypeList;
-    gpdTypeList.add(GPDType(tcsParams->m_currentGPDComputeType));
+    gpdTypeList.add(GPDType(params->m_currentGPDComputeType));
 
     std::complex<double> result =
-            ((tcsParams->m_pDVCSConvolCoeffFunctionModule)->compute(
-                    DVCSConvolCoeffFunctionKinematic(tcsParams->m_xi,
-                            tcsParams->m_t, Q2, tcsParams->m_MuF2,
-                            tcsParams->m_MuR2), gpdTypeList)).getResult(
-                    tcsParams->m_currentGPDComputeType);
+            ((params->m_pDVCSConvolCoeffFunctionModule)->compute(
+                    DVCSConvolCoeffFunctionKinematic(params->m_xi,
+                            params->m_t, Q2, params->m_MuF2,
+                            params->m_MuR2), gpdTypeList)).getResult(
+                    params->m_currentGPDComputeType);
 
-    return (tcsParams->m_isReal) ? (result.real()) : (result.imag());
+    return (params->m_isReal) ? (result.real()) : (result.imag());
 }
 
 } /* namespace PARTONS */
