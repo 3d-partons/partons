@@ -94,7 +94,6 @@ std::complex<double> DVMPCFFGK06::computeCFF() {
 
         //TODO implement sum from Eq. (3, 5, 6) from https://arxiv.org/pdf/hep-ph/0611290.pdf
         //TODO integration done in gluonIntegratedAmplitude() and quarkIntegratedAmplitude()
-        return 0.;
 
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
@@ -247,6 +246,12 @@ double DVMPCFFGK06::quarkIntegratedAmplitude(GPDType::Type gpdType,
 
     //random generator
     gsl_rng* gslRnd;
+    const gsl_rng_type* gslRndType;
+
+    gsl_rng_env_setup();
+
+    gslRndType = gsl_rng_default;
+    gslRnd = gsl_rng_alloc(gslRndType);
 
     //function
     gsl_monte_function gslFunction;
@@ -265,6 +270,9 @@ double DVMPCFFGK06::quarkIntegratedAmplitude(GPDType::Type gpdType,
     //free
     gsl_monte_vegas_free(gslState);
     gsl_rng_free(gslRnd);
+
+    //return
+    return result;
 }
 
 double DVMPCFFGK06::gluonIntegratedAmplitude(GPDType::Type gpdType) const {
