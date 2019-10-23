@@ -193,7 +193,7 @@ GPDResult GPDModule::compute(const GPDKinematic &kinematic,
                         m_t, m_MuF2, m_MuR2, gpdModule, (m_it->first));
 
                 m_pModuleObjectFactory->updateModulePointerReference(gpdModule,
-                          0);
+                        0);
             } else {
                 partonDistribution = ((*this).*(m_it->second))();
             }
@@ -266,6 +266,66 @@ PartonDistribution GPDModule::computeHt() {
 }
 
 PartonDistribution GPDModule::computeEt() {
+    throw ElemUtils::CustomException(getClassName(), __func__,
+            "Check your implementation  ; must be implemented in daughter class");
+}
+
+PartonDistribution GPDModule::computeHTrans() {
+    throw ElemUtils::CustomException(getClassName(), __func__,
+            "Check your implementation  ; must be implemented in daughter class");
+}
+
+PartonDistribution GPDModule::computeETrans() {
+    throw ElemUtils::CustomException(getClassName(), __func__,
+            "Check your implementation  ; must be implemented in daughter class");
+}
+
+PartonDistribution GPDModule::computeHtTrans() {
+    throw ElemUtils::CustomException(getClassName(), __func__,
+            "Check your implementation  ; must be implemented in daughter class");
+}
+
+PartonDistribution GPDModule::computeEtTrans() {
+    throw ElemUtils::CustomException(getClassName(), __func__,
+            "Check your implementation  ; must be implemented in daughter class");
+}
+
+PartonDistribution GPDModule::computeH3p() {
+    throw ElemUtils::CustomException(getClassName(), __func__,
+            "Check your implementation  ; must be implemented in daughter class");
+}
+
+PartonDistribution GPDModule::computeE3p() {
+    throw ElemUtils::CustomException(getClassName(), __func__,
+            "Check your implementation  ; must be implemented in daughter class");
+}
+
+PartonDistribution GPDModule::computeHt3p() {
+    throw ElemUtils::CustomException(getClassName(), __func__,
+            "Check your implementation  ; must be implemented in daughter class");
+}
+
+PartonDistribution GPDModule::computeEt3p() {
+    throw ElemUtils::CustomException(getClassName(), __func__,
+            "Check your implementation  ; must be implemented in daughter class");
+}
+
+PartonDistribution GPDModule::computeH3m() {
+    throw ElemUtils::CustomException(getClassName(), __func__,
+            "Check your implementation  ; must be implemented in daughter class");
+}
+
+PartonDistribution GPDModule::computeE3m() {
+    throw ElemUtils::CustomException(getClassName(), __func__,
+            "Check your implementation  ; must be implemented in daughter class");
+}
+
+PartonDistribution GPDModule::computeHt3m() {
+    throw ElemUtils::CustomException(getClassName(), __func__,
+            "Check your implementation  ; must be implemented in daughter class");
+}
+
+PartonDistribution GPDModule::computeEt3m() {
     throw ElemUtils::CustomException(getClassName(), __func__,
             "Check your implementation  ; must be implemented in daughter class");
 }

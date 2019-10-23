@@ -39,7 +39,44 @@ std::string GPDType::toString() const {
         return "Et";
         break;
 
-        //TODO add missing stuff
+    case HTrans:
+        return "HTrans";
+        break;
+    case HtTrans:
+        return "HtTrans";
+        break;
+    case ETrans:
+        return "ETrans";
+        break;
+    case EtTrans:
+        return "EtTrans";
+        break;
+
+    case H3p:
+        return "H3p";
+        break;
+    case Ht3p:
+        return "Ht3p";
+        break;
+    case E3p:
+        return "E3p";
+        break;
+    case Et3p:
+        return "Et3p";
+        break;
+
+    case H3m:
+        return "H3m";
+        break;
+    case Ht3m:
+        return "Ht3m";
+        break;
+    case E3m:
+        return "E3m";
+        break;
+    case Et3m:
+        return "Et3m";
+        break;
 
     default:
         return "UNDEFINED";
@@ -60,7 +97,9 @@ GPDType::Type GPDType::fromString(const std::string& gpdTypeStr) {
 
     if (ElemUtils::StringUtils::equals(gpdTypeStr, "ALL")) {
         gpdType = GPDType::ALL;
-    } else if (ElemUtils::StringUtils::equals(gpdTypeStr, "H")) {
+    }
+
+    else if (ElemUtils::StringUtils::equals(gpdTypeStr, "H")) {
         gpdType = GPDType::H;
     } else if (ElemUtils::StringUtils::equals(gpdTypeStr, "Ht")) {
         gpdType = GPDType::Ht;
@@ -70,7 +109,35 @@ GPDType::Type GPDType::fromString(const std::string& gpdTypeStr) {
         gpdType = GPDType::Et;
     }
 
-    //TODO add missing stuff
+    else if (ElemUtils::StringUtils::equals(gpdTypeStr, "HTrans")) {
+        gpdType = GPDType::HTrans;
+    } else if (ElemUtils::StringUtils::equals(gpdTypeStr, "HtTrans")) {
+        gpdType = GPDType::HtTrans;
+    } else if (ElemUtils::StringUtils::equals(gpdTypeStr, "ETrans")) {
+        gpdType = GPDType::ETrans;
+    } else if (ElemUtils::StringUtils::equals(gpdTypeStr, "EtTrans")) {
+        gpdType = GPDType::EtTrans;
+    }
+
+    else if (ElemUtils::StringUtils::equals(gpdTypeStr, "H3p")) {
+        gpdType = GPDType::H3p;
+    } else if (ElemUtils::StringUtils::equals(gpdTypeStr, "Ht3p")) {
+        gpdType = GPDType::Ht3p;
+    } else if (ElemUtils::StringUtils::equals(gpdTypeStr, "E3p")) {
+        gpdType = GPDType::E3p;
+    } else if (ElemUtils::StringUtils::equals(gpdTypeStr, "Et3p")) {
+        gpdType = GPDType::Et3p;
+    }
+
+    else if (ElemUtils::StringUtils::equals(gpdTypeStr, "H3m")) {
+        gpdType = GPDType::H3m;
+    } else if (ElemUtils::StringUtils::equals(gpdTypeStr, "Ht3m")) {
+        gpdType = GPDType::Ht3m;
+    } else if (ElemUtils::StringUtils::equals(gpdTypeStr, "E3m")) {
+        gpdType = GPDType::E3m;
+    } else if (ElemUtils::StringUtils::equals(gpdTypeStr, "Et3m")) {
+        gpdType = GPDType::Et3m;
+    }
 
     return gpdType;
 }

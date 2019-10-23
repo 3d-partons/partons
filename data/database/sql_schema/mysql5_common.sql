@@ -82,6 +82,42 @@ VALUES ('4', 'Ht', 'Ht');
 INSERT INTO gpd_type (gpd_type_id, gpd_type_short_name, gpd_type_long_name)
 VALUES ('5', 'Et', 'Et');
 
+INSERT INTO gpd_type (gpd_type_id, gpd_type_short_name, gpd_type_long_name)
+VALUES ('6', 'HTrans', 'HTrans');
+
+INSERT INTO gpd_type (gpd_type_id, gpd_type_short_name, gpd_type_long_name)
+VALUES ('7', 'ETrans', 'ETrans');
+
+INSERT INTO gpd_type (gpd_type_id, gpd_type_short_name, gpd_type_long_name)
+VALUES ('8', 'HtTrans', 'HtTrans');
+
+INSERT INTO gpd_type (gpd_type_id, gpd_type_short_name, gpd_type_long_name)
+VALUES ('9', 'EtTrans', 'EtTrans');
+
+INSERT INTO gpd_type (gpd_type_id, gpd_type_short_name, gpd_type_long_name)
+VALUES ('10', 'H3p', 'H3p');
+
+INSERT INTO gpd_type (gpd_type_id, gpd_type_short_name, gpd_type_long_name)
+VALUES ('11', 'E3p', 'E3p');
+
+INSERT INTO gpd_type (gpd_type_id, gpd_type_short_name, gpd_type_long_name)
+VALUES ('12', 'Ht3p', 'Ht3p');
+
+INSERT INTO gpd_type (gpd_type_id, gpd_type_short_name, gpd_type_long_name)
+VALUES ('13', 'Et3p', 'Et3p');
+
+INSERT INTO gpd_type (gpd_type_id, gpd_type_short_name, gpd_type_long_name)
+VALUES ('14', 'H3m', 'H3m');
+
+INSERT INTO gpd_type (gpd_type_id, gpd_type_short_name, gpd_type_long_name)
+VALUES ('15', 'E3m', 'E3m');
+
+INSERT INTO gpd_type (gpd_type_id, gpd_type_short_name, gpd_type_long_name)
+VALUES ('16', 'Ht3m', 'Ht3m');
+
+INSERT INTO gpd_type (gpd_type_id, gpd_type_short_name, gpd_type_long_name)
+VALUES ('17', 'Et3m', 'Et3m');
+
 /* === quark_flavor === */
 
 INSERT INTO quark_flavor (quark_flavor_id, quark_flavor_short_name, quark_flavor_long_name)
