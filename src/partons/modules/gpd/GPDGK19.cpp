@@ -56,15 +56,15 @@ PartonDistribution GPDGK19::computeH() {
 }
 
 PartonDistribution GPDGK19::computeE() {
-    return GPDGK16::computeH();
+    return GPDGK16::computeE();
 }
 
 PartonDistribution GPDGK19::computeHt() {
-    return GPDGK16::computeH();
+    return GPDGK16::computeHt();
 }
 
 PartonDistribution GPDGK19::computeEt() {
-    return GPDGK16::computeH();
+    return GPDGK16::computeEt();
 }
 
 PartonDistribution GPDGK19::computeHTrans() {
