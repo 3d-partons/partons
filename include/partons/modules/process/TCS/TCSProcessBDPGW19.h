@@ -11,7 +11,6 @@
 #include <string>
 
 #include "../../../utils/type/PhysicalType.h"
-#include "../../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "TCSProcessBDP01.h"
 
 namespace PARTONS {
@@ -52,6 +51,8 @@ protected:
      * @param other Object to be copied.
      */
     TCSProcessBDPGW19(const TCSProcessBDPGW19& other);
+
+    void isModuleWellConfigured();
 
     virtual PhysicalType<double> CrossSectionBH();
     virtual PhysicalType<double> CrossSectionVCS();
