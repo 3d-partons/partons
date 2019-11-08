@@ -33,7 +33,7 @@ TCSProcessBDPGW19* TCSProcessBDPGW19::clone() const {
 
 void TCSProcessBDPGW19::isModuleWellConfigured() {
 
-    isModuleWellConfigured();
+    TCSProcessBDP01::isModuleWellConfigured();
 
     if (m_t != m_tmin) {
         ElemUtils::Formatter formatter;
