@@ -35,7 +35,8 @@ void TCSProcessBDPGW19::isModuleWellConfigured() {
 
     TCSProcessBDP01::isModuleWellConfigured();
 
-    if (m_t != m_tmin) {
+    if ((m_targetPolarization.getX() != 0. || m_targetPolarization.getY() != 0)
+            && m_t != m_tmin) {
         ElemUtils::Formatter formatter;
         formatter << "Input value of t = " << m_t << " different than t_min = "
                 << m_tmin;
