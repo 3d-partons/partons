@@ -1,8 +1,8 @@
-#ifndef TCSACUTHETAINTEGRATED_H
-#define TCSACUTHETAINTEGRATED_H
+#ifndef TCSAUTCOSPHIMPHISTHETAINTEGRATED_H
+#define TCSAUTCOSPHIMPHISTHETAINTEGRATED_H
 
 /**
- * @file TCSAcuThetaIntegrated.h
+ * @file TCSAutCosPhiMPhisThetaIntegrated.h
  * @author Pawel Sznajder (IPNO)
  * @date November 25, 2016
  * @version 1.0
@@ -22,12 +22,13 @@
 namespace PARTONS {
 
 /**
- * @class TCSAcuThetaIntegrated
- * @brief Acu asymmetry with cross-sections integrated over \f$\theta\f$ in a given range (default: \f$|\theta - \pi/2| < \pi/4\f$)
+ * @class TCSAutCosPhiMPhisThetaIntegrated
+ * @brief AutCosPhiMPhis asymmetry with cross-sections integrated over \f$\theta\f$ in a given range (default: \f$|\theta - \pi/2| < \pi/4\f$).
  *
  * Unit: none.
  */
-class TCSAcuThetaIntegrated: public TCSObservable, public MathIntegratorModule {
+class TCSAutCosPhiMPhisThetaIntegrated: public TCSObservable,
+        public MathIntegratorModule {
 
 public:
 
@@ -42,14 +43,14 @@ public:
      * Constructor.
      * @param className Name of class.
      */
-    TCSAcuThetaIntegrated(const std::string &className);
+    TCSAutCosPhiMPhisThetaIntegrated(const std::string &className);
 
     /**
      * Destructor.
      */
-    virtual ~TCSAcuThetaIntegrated();
+    virtual ~TCSAutCosPhiMPhisThetaIntegrated();
 
-    virtual TCSAcuThetaIntegrated* clone() const;
+    virtual TCSAutCosPhiMPhisThetaIntegrated* clone() const;
     virtual void configure(const ElemUtils::Parameters &parameters);
 
     /**
@@ -68,32 +69,55 @@ protected:
      * Copy constructor.
      * @param other Object to be copied.
      */
-    TCSAcuThetaIntegrated(const TCSAcuThetaIntegrated &other);
+    TCSAutCosPhiMPhisThetaIntegrated(
+            const TCSAutCosPhiMPhisThetaIntegrated &other);
 
     virtual PhysicalType<double> computeObservable(
             const TCSObservableKinematic& kinematic,
             const List<GPDType>& gpdType);
 
     /**
-     * Functor to perform the integration (polarization +).
+     * Functor to perform the integration (polarization + target +).
      */
     NumA::FunctionType1D* m_pFunctionToIntegrateObservableTheta1;
 
     /**
-     * Functor to perform the integration (polarization -).
+     * Functor to perform the integration (polarization - target +).
      */
     NumA::FunctionType1D* m_pFunctionToIntegrateObservableTheta2;
 
     /**
-     * Function to be integrated (polarization +).
+     * Functor to perform the integration (polarization + target -).
+     */
+    NumA::FunctionType1D* m_pFunctionToIntegrateObservableTheta3;
+
+    /**
+     * Functor to perform the integration (polarization - target -).
+     */
+    NumA::FunctionType1D* m_pFunctionToIntegrateObservableTheta4;
+
+    /**
+     * Function to be integrated (polarization + target +).
      */
     virtual double functionToIntegrateObservableTheta1(double x,
             std::vector<double> params);
 
     /**
-     * Function to be integrated (polarization -).
+     * Function to be integrated (polarization - target +).
      */
     virtual double functionToIntegrateObservableTheta2(double x,
+            std::vector<double> params);
+
+    /**
+     * Function to be integrated (polarization + target -).
+     */
+    virtual double functionToIntegrateObservableTheta3(double x,
+            std::vector<double> params);
+
+    /**
+     * Function to be integrated (polarization - target -).
+     */
+    virtual double functionToIntegrateObservableTheta4(double x,
             std::vector<double> params);
 
     /**
@@ -106,4 +130,4 @@ protected:
 
 } /* namespace PARTONS */
 
-#endif /* TCSACUTHETAINTEGRATED_H */
+#endif /* TCSAUTCOSPHIMPHISTHETAINTEGRATED_H */

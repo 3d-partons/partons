@@ -36,10 +36,10 @@ PhysicalType<double> TCSAutSinPhiMPhis::computeObservable(
             NumA::Vector3D(0., 1., 0.), kinematic, gpdType).getValue();
 
     PhysicalType<double> B = m_pProcessModule->compute(-1,
-            NumA::Vector3D(0., -1., 0.), kinematic, gpdType).getValue();
+            NumA::Vector3D(0., 1., 0.), kinematic, gpdType).getValue();
 
     PhysicalType<double> C = m_pProcessModule->compute(1,
-            NumA::Vector3D(0., 1., 0.), kinematic, gpdType).getValue();
+            NumA::Vector3D(0., -1., 0.), kinematic, gpdType).getValue();
 
     PhysicalType<double> D = m_pProcessModule->compute(-1,
             NumA::Vector3D(0., -1., 0.), kinematic, gpdType).getValue();
