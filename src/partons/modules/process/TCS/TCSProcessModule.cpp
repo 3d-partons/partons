@@ -425,19 +425,14 @@ void TCSProcessModule::initModule() {
 
     //evaluate internal variables
     double s = pow(Constant::PROTON_MASS, 2) + 2. * Constant::PROTON_MASS * m_E;
-    double tau = m_Q2Prim / (s - pow(Constant::PROTON_MASS, 2));
-    //double xi = tau / (2. - tau); this is an approximate formula
-    double xi = m_t - 2. * m_Q2Prim;
-    xi /= 4. * s + 2. * m_t - 4. * pow(Constant::PROTON_MASS, 2) - 2. * m_Q2Prim;
 
     double p1cm = m_E * Constant::PROTON_MASS / sqrt(s);
     double E3cm = (s + m_Q2Prim - pow(Constant::PROTON_MASS, 2))
             / (2 * sqrt(s));
     double p3cm = sqrt(pow(E3cm, 2) - m_Q2Prim);
 
-    m_tmin = -4 * pow(Constant::PROTON_MASS, 2) * pow(xi, 2)
-            / (1. - pow(xi, 2));
-    m_tmax = m_tmin - 4 * p1cm * p3cm;
+    m_tmin = pow(m_Q2Prim, 2) / (4 * s) - pow(p1cm - p3cm, 2);
+    m_tmax = pow(m_Q2Prim, 2) / (4 * s) - pow(p1cm + p3cm, 2);
 }
 
 void TCSProcessModule::isModuleWellConfigured() {
