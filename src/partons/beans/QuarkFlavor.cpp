@@ -1,7 +1,8 @@
 #include "../../../include/partons/beans/QuarkFlavor.h"
 
-namespace PARTONS {
+#include <ElementaryUtils/string_utils/StringUtils.h>
 
+namespace PARTONS {
 
 const std::string QuarkFlavor::QUARK_FLAVOR_TYPE_DB_COLUMN_NAME =
         "quark_flavor_type";
@@ -69,6 +70,28 @@ std::string QuarkFlavor::getShortName() {
     default:
         return "UNDEFINED";
     }
+}
+
+QuarkFlavor::Type QuarkFlavor::fromString(const std::string & quarkFlavorStr) {
+
+    QuarkFlavor::Type quarkFlavor = QuarkFlavor::UNDEFINED;
+
+    if (ElemUtils::StringUtils::equals(quarkFlavorStr, "u")) {
+        quarkFlavor = QuarkFlavor::UP;
+    } else if (ElemUtils::StringUtils::equals(quarkFlavorStr, "d")) {
+        quarkFlavor = QuarkFlavor::DOWN;
+    } else if (ElemUtils::StringUtils::equals(quarkFlavorStr, "s")) {
+        quarkFlavor = QuarkFlavor::STRANGE;
+    } else if (ElemUtils::StringUtils::equals(quarkFlavorStr, "c")) {
+        quarkFlavor = QuarkFlavor::CHARM;
+    } else if (ElemUtils::StringUtils::equals(quarkFlavorStr, "b")) {
+        quarkFlavor = QuarkFlavor::BOTTOM;
+    } else if (ElemUtils::StringUtils::equals(quarkFlavorStr, "t")) {
+        quarkFlavor = QuarkFlavor::TOP;
+    }
+
+    return quarkFlavor;
+
 }
 
 QuarkFlavor::Type QuarkFlavor::getType() const {

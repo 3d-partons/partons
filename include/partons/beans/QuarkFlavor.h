@@ -104,6 +104,13 @@ public:
      */
     std::string getShortName();
 
+    /**
+     * Try to match quark flavor from given string.
+     * @param quarkFlavorStr String to be matched.
+     * @return Matched type or QuarkFlavor::UNDEFINED if unable to match.
+     */
+    static QuarkFlavor::Type fromString(const std::string & quarkFlavorStr);
+
     //********************************************************
     //*** SETTERS AND GETTERS ********************************
     //********************************************************
