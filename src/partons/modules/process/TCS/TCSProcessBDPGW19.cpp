@@ -117,25 +117,23 @@ PhysicalType<double> TCSProcessBDPGW19::CrossSectionInterf() {
     double b = m_Q2Prim * (s - Mp2 - m_Q2Prim) + m_t * (s + m_Q2Prim - Mp2);
     b *= cos(m_theta) / r;
 
-    double A = 2.
-            * (m_Q2Prim * sin(m_theta) * sin(m_theta)
-                    + (m_t - 3. * m_Q2Prim) / 2.) * (m_t - m_Q2Prim) - b * b;
-    A *= 4. / ((m_Q2Prim - m_t) * (m_Q2Prim - m_t) - b * b); /// A defined in eq. 20
+    double A = 2. * m_Q2Prim * (m_Q2Prim - m_t) * cos(m_theta) * cos(m_theta);
+    A /= (m_Q2Prim - m_t) * (m_Q2Prim - m_t) - b * b;
+    A += 1.;
+    A *= 4.; /// A defined below eq. 23
 
     double B = (m_t - b + m_Q2Prim) / (m_t - b - m_Q2Prim)
             + (m_t + b + m_Q2Prim) / (m_t + b - m_Q2Prim);
-    B *= 2. * etha; /// B defined after eq. 26
+    B *= 2.; /// B defined below eq. 23
 
-    double DiffCrossSpin = (4. * etha - 2. * etha * etha * etha)
-            / (1. - etha * etha) * E.imag() + 2. * etha * H.imag();
-    DiffCrossSpin *= Constant::PROTON_MASS * A;
+    double DiffCrossSpin = (etha * etha)
+            / (1. - etha * etha) * E.imag() - H.imag();
+    DiffCrossSpin *= A;
     DiffCrossSpin += B
-            * (2. * Constant::PROTON_MASS * Ht.real()
-                    + m_t * Et.real() / 2. / Constant::PROTON_MASS);
-    DiffCrossSpin *= 2.7928 / (1. - m_t / 0.71) / (1. - m_t / 0.71)
-            * sqrt(m_Q2Prim) * sin(m_theta); /// (F_1 + F_2) Q' sin(theta)
-    DiffCrossSpin *= alpha3 / (32. * Constant::PI * Constant::PI)
-            / (s * s * m_t * m_Q2Prim);
+            * (Ht.imag() + m_t * Et.imag() / 4. / Constant::PROTON_MASS / Constant::PROTON_MASS);
+    DiffCrossSpin *= 2.7928 / (1. - m_t / 0.71) / (1. - m_t / 0.71) * sin(m_theta); /// (F_1 + F_2) sin(theta)
+    DiffCrossSpin *= alpha3 / (16. * Constant::PI * Constant::PI)
+            / (s * s * m_t * sqrt(m_Q2Prim)) * Constant::PROTON_MASS * etha;
     DiffCrossSpin *= sin(m_theta); /// additional sin(theta), because here the cross section is over d(theta), not d(cos(theta))
     DiffCrossSpin *= sin_psi_minus_phi;
 
