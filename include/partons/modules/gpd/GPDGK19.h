@@ -9,6 +9,7 @@
  */
 
 #include <string>
+#include <vector>
 
 #include "GPDGK16.h"
 
@@ -65,15 +66,6 @@ protected:
 
 private:
 
-    double fHtuValMx;                                              ///< HuVal( - fx )
-    double fHtdValMx;                                              ///< HdVal( - fx )
-    double fEtuValMx;                                              ///< HuVal( - fx )
-    double fEtdValMx;                                              ///< HdVal( - fx )
-    double fHTransuValMx;                                          ///< HTuVal( - fx )
-    double fHTransdValMx;                                          ///< HTdVal( - fx )
-    double fETransuValMx;                                          ///< HuVal( - fx )
-    double fETransdValMx;                                          ///< HdVal( - fx )
-
     double kHtgluon;                  ///< Exponent of correlated x-t dependence.
     double kHtsea;                    ///< Exponent of correlated x-t dependence.
     double kHtuval;                   ///< Exponent of correlated x-t dependence.
@@ -99,7 +91,6 @@ private:
     std::vector<double> Htdval1tab;                         ///< Htval1(i=0,1,2) for valence d
     std::vector<double> Htuval1mtab;                ///< Htval1(i=0,1,2) for valence u for -xb
     std::vector<double> Htdval1mtab;                ///< Htval1(i=0,1,2) for valence d for -xb
-    std::vector<double> Hti1tab;                               ///< Hti1(i=0,0.5,1) for gluons
 
     std::vector<double> Etuval1tab;                       ///< Etval1(i=0,1,2,3) for valence u
     std::vector<double> Etdval1tab;                       ///< Etval1(i=0,1,2,3) for valence d

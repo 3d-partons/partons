@@ -24,8 +24,8 @@ const unsigned int GPDGK19::classId =
 GPDGK19::GPDGK19(const std::string &className) :
         GPDGK16(className) {
 
-    fL = 0.;
     m_MuF2_ref = 4.;
+
     Htuval1tab = std::vector<double>(4, 0.);
     Htdval1tab = std::vector<double>(4, 0.);
     Htuval1mtab = std::vector<double>(4, 0.);
@@ -43,6 +43,26 @@ GPDGK19::GPDGK19(const std::string &className) :
     ETransuval1mtab = std::vector<double>(3, 0.);
     ETransdval1mtab = std::vector<double>(3, 0.);
 
+    kHtgluon = 0.0;
+    kHtsea = 0.0;
+    kHtuval = 0.0;
+    kHtdval = 0.0;
+
+    kEtgluon = 0.0;
+    kEtsea = 0.0;
+    kEtuval = 0.0;
+    kEtdval = 0.0;
+
+    kHTransgluon = 0.0;
+    kHTranssea = 0.0;
+    kHTransuval = 0.0;
+    kHTransdval = 0.0;
+
+    kETransgluon = 0.0;
+    kETranssea = 0.0;
+    kETransuval = 0.0;
+    kETransdval = 0.0;
+
 
     m_listGPDComputeTypeAvailable.insert(
             std::make_pair(GPDType::Ht, &GPDModule::computeHt));
@@ -56,6 +76,43 @@ GPDGK19::GPDGK19(const std::string &className) :
 
 GPDGK19::GPDGK19(const GPDGK19& other) :
         GPDGK16(other) {
+
+    Htuval1tab = other.Htuval1tab;
+    Htdval1tab = other.Htdval1tab;
+    Htuval1mtab = other.Htuval1mtab;
+    Htdval1mtab = other.Htdval1mtab;
+    Etuval1tab = other.Etuval1tab;
+    Etdval1tab = other.Etdval1tab;
+    Etuval1mtab = other.Etuval1mtab;
+    Etdval1mtab = other.Etdval1mtab;
+    HTransuval1tab = other.HTransuval1tab;
+    HTransdval1tab = other.HTransdval1tab;
+    HTransuval1mtab = other.HTransuval1mtab;
+    HTransdval1mtab = other.HTransdval1mtab;
+    ETransuval1tab = other.ETransuval1tab;
+    ETransdval1tab = other.ETransdval1tab;
+    ETransuval1mtab = other.ETransuval1mtab;
+    ETransdval1mtab = other.ETransdval1mtab;
+
+    kHtgluon = other.kHtgluon;
+    kHtsea = other.kHtsea;
+    kHtuval = other.kHtuval;
+    kHtdval = other.kHtdval;
+
+    kEtgluon = other.kEtgluon;
+    kEtsea = other.kEtsea;
+    kEtuval = other.kEtuval;
+    kEtdval = other.kEtdval;
+
+    kHTransgluon = other.kHTransgluon;
+    kHTranssea = other.kHTranssea;
+    kHTransuval = other.kHTransuval;
+    kHTransdval = other.kHTransdval;
+
+    kETransgluon = other.kETransgluon;
+    kETranssea = other.kETranssea;
+    kETransuval = other.kETransuval;
+    kETransdval = other.kETransdval;
 }
 
 GPDGK19* GPDGK19::clone() const {
@@ -82,7 +139,7 @@ PartonDistribution GPDGK19::computeHt() {
     QuarkDistribution quarkDistribution_d(QuarkFlavor::DOWN);
     QuarkDistribution quarkDistribution_s(QuarkFlavor::STRANGE);
 
-    double Nu, Nd;
+    double Nu, Nd, c1, c2, c3, c4, b0;
 
     calculateHtCoefs(); // Calculate the K's and the coefficients
 
@@ -108,9 +165,10 @@ PartonDistribution GPDGK19::computeHt() {
                     + c3 * Htuval1tab.at(2) + c4 * Htuval1tab.at(3));
 
     double uVal = fHtuVal;
-    fHtuValMx = exp(b0 * m_t)
+
+    double fHtuValMx = exp(b0 * m_t)
             * (c1 * Htuval1mtab.at(0) + c2 * Htuval1mtab.at(1)
-                    + c3 * Htuval1mtab.at(2) + c4 * Htuval1mtab.at(3)); // -pGPDData->getX()
+                    + c3 * Htuval1mtab.at(2) + c4 * Htuval1mtab.at(3));
 
 
 // d quark, valence part
@@ -127,9 +185,10 @@ PartonDistribution GPDGK19::computeHt() {
                     + c3 * Htdval1tab.at(2) + c4 * Htdval1tab.at(3));
 
     double dVal = fHtdVal;
-    fHtdValMx = exp(b0 * m_t)
+
+    double fHtdValMx = exp(b0 * m_t)
             * (c1 * Htdval1mtab.at(0) + c2 * Htdval1mtab.at(1)
-                    + c3 * Htdval1mtab.at(2) + c4 * Htdval1mtab.at(3)); // -pGPDData->getX()
+                    + c3 * Htdval1mtab.at(2) + c4 * Htdval1mtab.at(3));
 
 // u and d quark, sea part
     double uSea = 0.;
@@ -165,7 +224,7 @@ PartonDistribution GPDGK19::computeEt() {
     QuarkDistribution quarkDistribution_d(QuarkFlavor::DOWN);
     QuarkDistribution quarkDistribution_s(QuarkFlavor::STRANGE);
 
-    double Nu, Nd;
+    double Nu, Nd, c1, c2, c3, c4, b0;
 
     calculateEtCoefs(); // Calculate the K's and the coefficients
 
@@ -189,9 +248,10 @@ PartonDistribution GPDGK19::computeEt() {
                     + c3 * Etuval1tab.at(2) + c4 * Etuval1tab.at(3));
 
     double uVal = fEtuVal;
-    fEtuValMx = exp(b0 * m_t)
+
+    double fEtuValMx = exp(b0 * m_t)
             * (c1 * Etuval1mtab.at(0) + c2 * Etuval1mtab.at(1)
-                    + c3 * Etuval1mtab.at(2) + c4 * Etuval1mtab.at(3)); // -pGPDData->getX()
+                    + c3 * Etuval1mtab.at(2) + c4 * Etuval1mtab.at(3));
 
 
 // d quark, valence part
@@ -208,9 +268,10 @@ PartonDistribution GPDGK19::computeEt() {
                     + c3 * Etdval1tab.at(2) + c4 * Etdval1tab.at(3));
 
     double dVal = fEtdVal;
-    fEtdValMx = exp(b0 * m_t)
+
+    double fEtdValMx = exp(b0 * m_t)
             * (c1 * Etdval1mtab.at(0) + c2 * Etdval1mtab.at(1)
-                    + c3 * Etdval1mtab.at(2) + c4 * Etdval1mtab.at(3)); // -pGPDData->getX()
+                    + c3 * Etdval1mtab.at(2) + c4 * Etdval1mtab.at(3));
 
 // u and d quark, sea part
     double uSea = 0.;
@@ -247,7 +308,7 @@ PartonDistribution GPDGK19::computeHTrans() {
     QuarkDistribution quarkDistribution_d(QuarkFlavor::DOWN);
     QuarkDistribution quarkDistribution_s(QuarkFlavor::STRANGE);
 
-    double Nu, Nd;
+    double Nu, Nd, c1, c2, c3, c4, c5, c6, b0;
 
     calculateHTransCoefs(); // Calculate the K's and the coefficients
 
@@ -276,10 +337,11 @@ PartonDistribution GPDGK19::computeHTrans() {
                             + c5 * HTransuval1tab.at(4) + c6 * HTransuval1tab.at(5));
 
     double uVal = fHTransuVal;
-    fHTransuValMx = exp(b0 * m_t) * Nu
+
+    double fHTransuValMx = exp(b0 * m_t) * Nu
             * (c1 * HTransuval1mtab.at(0) + c2 * HTransuval1mtab.at(1)
                     + c3 * HTransuval1mtab.at(2) + c4 * HTransuval1mtab.at(3)
-                            + c5 * HTransuval1mtab.at(4) + c6 * HTransuval1mtab.at(5)); // -pGPDData->getX()
+                            + c5 * HTransuval1mtab.at(4) + c6 * HTransuval1mtab.at(5));
 
 
 // d quark, valence part
@@ -301,10 +363,11 @@ PartonDistribution GPDGK19::computeHTrans() {
                             + c5 * HTransdval1tab.at(4) + c6 * HTransdval1tab.at(5));
 
     double dVal = fHTransdVal;
-    fHTransdValMx = exp(b0 * m_t) * Nd
+
+    double fHTransdValMx = exp(b0 * m_t) * Nd
             * (c1 * HTransdval1mtab.at(0) + c2 * HTransdval1mtab.at(1)
                     + c3 * HTransdval1mtab.at(2) + c4 * HTransdval1mtab.at(3)
-                            + c5 * HTransdval1mtab.at(4) + c6 * HTransdval1mtab.at(5)); // -pGPDData->getX()
+                            + c5 * HTransdval1mtab.at(4) + c6 * HTransdval1mtab.at(5));
 
 // u and d quark, sea part
     double uSea = 0.;
@@ -336,8 +399,8 @@ PartonDistribution GPDGK19::computeHTrans() {
 PartonDistribution GPDGK19::computeETrans() {
 
     //available internal variables
-    m_x, m_xi, m_t, m_MuF2, m_MuR2, m_currentGPDComputeType;
-    m_MuF2_ref; // this is set in constructor of GPDGK16: m_MuF2_ref = 4.
+    // m_x, m_xi, m_t, m_MuF2, m_MuR2, m_currentGPDComputeType;
+    //m_MuF2_ref; // this is set in constructor of GPDGK16: m_MuF2_ref = 4.
 
     PartonDistribution partonDistribution;
 
@@ -345,7 +408,7 @@ PartonDistribution GPDGK19::computeETrans() {
     QuarkDistribution quarkDistribution_d(QuarkFlavor::DOWN);
     QuarkDistribution quarkDistribution_s(QuarkFlavor::STRANGE);
 
-    double Nu, Nd;
+    double Nu, Nd, c1, c2, c3, b0;
 
     calculateETransCoefs(); // Calculate the K's and the coefficients
 
@@ -368,9 +431,10 @@ PartonDistribution GPDGK19::computeETrans() {
                     + c3 * ETransuval1tab.at(2));
 
     double uVal = fETransuVal;
-    fETransuValMx = exp(b0 * m_t)
+
+    double fETransuValMx = exp(b0 * m_t)
             * (c1 * ETransuval1mtab.at(0) + c2 * ETransuval1mtab.at(1)
-                    + c3 * ETransuval1mtab.at(2)); // -pGPDData->getX()
+                    + c3 * ETransuval1mtab.at(2));
 
 
 // d quark, valence part
@@ -386,9 +450,10 @@ PartonDistribution GPDGK19::computeETrans() {
                     + c3 * ETransdval1tab.at(2));
 
     double dVal = fETransdVal;
-    fETransdValMx = exp(b0 * m_t)
+
+    double fETransdValMx = exp(b0 * m_t)
             * (c1 * ETransdval1mtab.at(0) + c2 * ETransdval1mtab.at(1)
-                    + c3 * ETransdval1mtab.at(2)); // -pGPDData->getX()
+                    + c3 * ETransdval1mtab.at(2));
 
 // u and d quark, sea part
     double uSea = 0.;
