@@ -14,7 +14,6 @@
 #include "../../../../include/partons/BaseObjectRegistry.h"
 
 
-
 namespace PARTONS {
 
 const unsigned int GPDGK19::classId =

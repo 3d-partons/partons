@@ -18,11 +18,17 @@ namespace PARTONS {
 /**
  * @class GPDGK19
  *
- * @brief TODO A brief description comes here.
+ * @brief The module implements GPDs which appear in Goloskokov-Kroll (GK) model in pseudoscalar meson production
  *
  * TODO Extended description comes here.
+  * This model is defined in the series of references:
+ * - arxiv:hep-ph/0611290 \cite Goloskokov:2006hr ;
+ * - arxiv:0906.0460 \cite Goloskokov:2009ia ;
+ * - arxiv:1106.4897 \cite Goloskokov:2011rd ;
  *
+ * Available GPD types: \tilde{H}, \tilde{E}, H_T and \bar{E}_T
  */
+
 class GPDGK19: public GPDGK16 {
 
 public:
