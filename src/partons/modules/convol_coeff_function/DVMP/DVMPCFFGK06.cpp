@@ -92,7 +92,7 @@ std::complex<double> DVMPCFFGK06::computeCFF() {
     }
 
     //check meson
-    if (m_mesonType == MesonType::PI0) {
+    if (m_mesonType == MesonType::RHO0) {
 
         std::complex<double> cff_g = gluonIntegratedAmplitude()
                 + gluonIntegratedAmplitude();
