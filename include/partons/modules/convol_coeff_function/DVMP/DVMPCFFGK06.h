@@ -8,10 +8,10 @@
  * @version 1.0
  */
 
+#include <stddef.h>
 #include <complex>
 #include <string>
 
-#include "../../../beans/gpd/GPDType.h"
 #include "../../../beans/QuarkFlavor.h"
 #include "DVMPConvolCoeffFunctionModule.h"
 
@@ -69,21 +69,18 @@ protected:
      * @param x Nucleon's momentum fraction.
      * @param tau Meson's momentum fraction.
      * @param b Impact-space parameter.
-     * @param gpdType GPD type.
      * @param quarkType Quark type.
      */
     double quarkUnintegratedAmplitude(double x, double tau, double b,
-            GPDType::Type gpdType, QuarkFlavor::Type quarkType) const;
+            QuarkFlavor::Type quarkType) const;
 
     /**
      * Gluon unintegrated amplitude.
      * @param x Nucleon's momentum fraction.
      * @param tau Meson's momentum fraction.
      * @param b Impact-space parameter.
-     * @param gpdType GPD type.
      */
-    double gluonUnintegratedAmplitude(double x, double tau, double b,
-            GPDType::Type gpdType) const;
+    double gluonUnintegratedAmplitude(double x, double tau, double b) const;
 
 private:
 
@@ -130,34 +127,27 @@ private:
      * @param x Nucleon's momentum fraction.
      * @param tau Meson's momentum fraction.
      * @param b Impact-space parameter.
-     * @param gpdType GPD type.
      */
-    double quarkPropagator(double x, double tau, double b,
-            GPDType::Type gpdType) const;
+    double quarkPropagator(double x, double tau, double b) const;
 
     /**
      * Gluon propagator.
      * @param x Nucleon's momentum fraction.
      * @param tau Meson's momentum fraction.
      * @param b Impact-space parameter.
-     * @param gpdType GPD type.
      */
-    double gluonPropagator(double x, double tau, double b,
-            GPDType::Type gpdType) const;
+    double gluonPropagator(double x, double tau, double b) const;
 
     /**
      * Quark unintegrated amplitude.
-     * @param gpdType GPD type.
      * @param quarkType Quark type.
      */
-    double quarkIntegratedAmplitude(GPDType::Type gpdType,
-            QuarkFlavor::Type quarkType) const;
+    double quarkIntegratedAmplitude(QuarkFlavor::Type quarkType) const;
 
     /**
      * Gluon unintegrated amplitude.
-     * @param gpdType GPD type.
      */
-    double gluonIntegratedAmplitude(GPDType::Type gpdType) const;
+    double gluonIntegratedAmplitude() const;
 };
 
 } /* namespace PARTONS */

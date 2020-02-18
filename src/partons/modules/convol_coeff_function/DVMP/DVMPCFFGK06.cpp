@@ -5,11 +5,11 @@
 #include <gsl/gsl_monte.h>
 #include <gsl/gsl_monte_vegas.h>
 #include <gsl/gsl_rng.h>
-#include <stddef.h>
 #include <cmath>
 #include <utility>
 
 #include "../../../../../include/partons/beans/gpd/GPDKinematic.h"
+#include "../../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../../include/partons/beans/MesonPolarization.h"
 #include "../../../../../include/partons/beans/MesonType.h"
 #include "../../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
@@ -69,6 +69,20 @@ void DVMPCFFGK06::isModuleWellConfigured() {
 
 std::complex<double> DVMPCFFGK06::computeCFF() {
 
+    //internal variables to be used in the code
+    m_xi;
+    m_t;
+    m_Q2;
+    m_MuF2;
+    m_MuR2;
+
+    m_mesonType;
+    m_mesonPolarization;
+
+    m_currentGPDComputeType;
+
+    m_qcdOrderType;
+
     //check pQCD
     if (m_qcdOrderType != PerturbativeQCDOrderType::LO) {
         throw ElemUtils::CustomException(getClassName(), __func__,
@@ -78,19 +92,17 @@ std::complex<double> DVMPCFFGK06::computeCFF() {
     }
 
     //check meson
-    if (m_mesonType == MesonType::RHO0) {
+    if (m_mesonType == MesonType::PI0) {
 
-        std::complex<double> cff_g = gluonIntegratedAmplitude(GPDType::H)
-                + gluonIntegratedAmplitude(GPDType::E);
-        std::complex<double> cff_u = quarkIntegratedAmplitude(GPDType::H,
-                QuarkFlavor::UP)
-                + quarkIntegratedAmplitude(GPDType::E, QuarkFlavor::UP);
-        std::complex<double> cff_d = quarkIntegratedAmplitude(GPDType::H,
-                QuarkFlavor::DOWN)
-                + quarkIntegratedAmplitude(GPDType::E, QuarkFlavor::DOWN);
-        std::complex<double> cff_s = quarkIntegratedAmplitude(GPDType::H,
+        std::complex<double> cff_g = gluonIntegratedAmplitude()
+                + gluonIntegratedAmplitude();
+        std::complex<double> cff_u = quarkIntegratedAmplitude(QuarkFlavor::UP)
+                + quarkIntegratedAmplitude(QuarkFlavor::UP);
+        std::complex<double> cff_d = quarkIntegratedAmplitude(QuarkFlavor::DOWN)
+                + quarkIntegratedAmplitude(QuarkFlavor::DOWN);
+        std::complex<double> cff_s = quarkIntegratedAmplitude(
                 QuarkFlavor::STRANGE)
-                + quarkIntegratedAmplitude(GPDType::E, QuarkFlavor::STRANGE);
+                + quarkIntegratedAmplitude(QuarkFlavor::STRANGE);
 
         //TODO implement sum from Eq. (3, 5, 6) from https://arxiv.org/pdf/hep-ph/0611290.pdf
         //TODO integration done in gluonIntegratedAmplitude() and quarkIntegratedAmplitude()
@@ -182,8 +194,7 @@ double DVMPCFFGK06::mesonWFGaussian(double tau, double b, double f,
     return 0.;
 }
 
-double DVMPCFFGK06::quarkPropagator(double x, double tau, double b,
-        GPDType::Type gpdType) const {
+double DVMPCFFGK06::quarkPropagator(double x, double tau, double b) const {
 
     //TODO propagators - implement cases depending on:
     //TODO meson type (different for vector and pseudoscalar)
@@ -192,8 +203,7 @@ double DVMPCFFGK06::quarkPropagator(double x, double tau, double b,
     return 0.;
 }
 
-double DVMPCFFGK06::gluonPropagator(double x, double tau, double b,
-        GPDType::Type gpdType) const {
+double DVMPCFFGK06::gluonPropagator(double x, double tau, double b) const {
 
     //TODO propagators - implement cases depending on:
     //TODO meson type (different for vector and pseudoscalar)
@@ -203,34 +213,33 @@ double DVMPCFFGK06::gluonPropagator(double x, double tau, double b,
 }
 
 double DVMPCFFGK06::quarkUnintegratedAmplitude(double x, double tau, double b,
-        GPDType::Type gpdType, QuarkFlavor::Type quarkType) const {
+        QuarkFlavor::Type quarkType) const {
 
     //Eqs. (6, 10) from from https://arxiv.org/pdf/hep-ph/0611290.pdf
     //here for GPDs we get singlet combination, so we need to integrate between (0, 1) only.
-    return mesonWF(tau, b) * quarkPropagator(x, tau, b, gpdType) * alphaS()
+    return mesonWF(tau, b) * quarkPropagator(x, tau, b) * alphaS()
             * exp(-1 * sudakovFactor(tau, b))
             * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
-                    gpdType).getQuarkDistribution(quarkType).getQuarkDistributionPlus();
+                    m_currentGPDComputeType).getQuarkDistribution(quarkType).getQuarkDistributionPlus();
 }
 
-double DVMPCFFGK06::gluonUnintegratedAmplitude(double x, double tau, double b,
-        GPDType::Type gpdType) const {
+double DVMPCFFGK06::gluonUnintegratedAmplitude(double x, double tau,
+        double b) const {
 
     //Eqs (5, 10) from from https://arxiv.org/pdf/hep-ph/0611290.pdf
-    return mesonWF(tau, b) * gluonPropagator(x, tau, b, gpdType) * alphaS()
+    return mesonWF(tau, b) * gluonPropagator(x, tau, b) * alphaS()
             * exp(-1 * sudakovFactor(tau, b))
             * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
-                    gpdType).getGluonDistribution().getGluonDistribution();
+                    m_currentGPDComputeType).getGluonDistribution().getGluonDistribution();
 }
 
-double DVMPCFFGK06::quarkIntegratedAmplitude(GPDType::Type gpdType,
+double DVMPCFFGK06::quarkIntegratedAmplitude(
         QuarkFlavor::Type quarkType) const {
 
     //parameters
     DVMPCFFGK06IntegrationParameters params;
 
     params.m_pDVMPCFFGK06 = this;
-    params.m_gpdType = gpdType;
     params.m_quarkType = quarkType;
 
     //range (x, tau, b)
@@ -275,7 +284,8 @@ double DVMPCFFGK06::quarkIntegratedAmplitude(GPDType::Type gpdType,
     return result;
 }
 
-double DVMPCFFGK06::gluonIntegratedAmplitude(GPDType::Type gpdType) const {
+double DVMPCFFGK06::gluonIntegratedAmplitude() const {
+    //TODO implement
     return 0.;
 }
 
