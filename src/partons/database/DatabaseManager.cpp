@@ -7,9 +7,9 @@
 #include <QtCore/qstring.h>
 #include <QtSql/qsqlerror.h>
 #include <string>
+#include <sstream>
 
 namespace PARTONS {
-
 
 // Global static pointer used to ensure a single instance of the class.
 DatabaseManager* DatabaseManager::m_pInstance = 0;
@@ -55,9 +55,21 @@ void DatabaseManager::init() {
         }
 
         m_productionDatabase.setDatabaseName(QString(sqlDatabaseName.c_str()));
+
+        int portNumber = 3306;
+
+        if (pPropertiesManager->checkIfAvailable("database.production.port")) {
+
+            std::stringstream ss;
+
+            ss << pPropertiesManager->getString("database.production.port");
+            ss >> portNumber;
+        }
+
         m_productionDatabase.setHostName(
                 QString(
                         pPropertiesManager->getString("database.production.url").c_str()));
+        m_productionDatabase.setPort(portNumber);
         m_productionDatabase.setUserName(
                 QString(
                         pPropertiesManager->getString(
