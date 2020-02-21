@@ -9,7 +9,6 @@
 
 namespace PARTONS {
 
-
 ComparisonReport::ComparisonReport(const NumA::Tolerances &tolerances) :
         m_environmentSetting(ElemUtils::StringUtils::EMPTY), m_objectClassNameTested(
                 ElemUtils::StringUtils::EMPTY), m_referenceObjectClassName(
@@ -26,7 +25,16 @@ ComparisonReport::ComparisonReport(const std::string& environmentSetting,
                 objectClassNameTested), m_referenceObjectClassName(
                 referenceObjectClassName), m_numberOfComparedDataFailed(0), m_numberOfComparedDataPassed(
                 0) {
-    Partons::getInstance()->getEnvironmentConfiguration()->getFile();
+}
+
+ComparisonReport::ComparisonReport(const ComparisonReport& other) :
+        m_environmentSetting(other.m_environmentSetting), m_objectClassNameTested(
+                other.m_objectClassNameTested), m_referenceObjectClassName(
+                other.m_referenceObjectClassName), m_comparedDataPassed(
+                other.m_comparedDataPassed), m_comparedDataFailed(
+                other.m_comparedDataFailed), m_tolerances(other.m_tolerances), m_numberOfComparedDataPassed(
+                other.m_numberOfComparedDataPassed), m_numberOfComparedDataFailed(
+                other.m_numberOfComparedDataFailed) {
 }
 
 ComparisonReport::~ComparisonReport() {

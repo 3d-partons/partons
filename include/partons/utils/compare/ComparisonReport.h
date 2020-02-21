@@ -28,10 +28,10 @@ class ComparisonReport {
 
 public:
 
-	/**
-	 * Constructor.
-	 * @param tolerances Tolerance.
-	 */
+    /**
+     * Constructor.
+     * @param tolerances Tolerance.
+     */
     ComparisonReport(const NumA::Tolerances &tolerances);
 
     /**
@@ -43,6 +43,12 @@ public:
     ComparisonReport(const std::string &environmentSetting,
             const std::string &objectClassNameTested,
             const std::string &referenceObjectClassName);
+
+    /**
+     * Copy constructor.
+     * @param other Object to be copied.
+     */
+    ComparisonReport(const ComparisonReport& other);
 
     /**
      * Destructor.
@@ -78,9 +84,9 @@ public:
      */
     void clearComparedData();
 
-	//********************************************************
-	//*** SETTERS AND GETTERS ********************************
-	//********************************************************
+    //********************************************************
+    //*** SETTERS AND GETTERS ********************************
+    //********************************************************
 
     /**
      * Check if the comparison is passed.

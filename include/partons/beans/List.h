@@ -289,7 +289,7 @@ public:
                         debug(__func__,
                                 rootComparisonReport.showComparedDataFailed());
                     }
-                    rootComparisonReport.clearComparedData();
+//                    rootComparisonReport.clearComparedData();
                 }
 
                 debug(__func__, rootComparisonReport.showComparisonStats());
