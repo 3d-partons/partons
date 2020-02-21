@@ -13,10 +13,10 @@ The sources are accessible:
 * via the Git command line tool:
 ~~~~~~~~~~~~~{.sh}
 cd /path/to/some/directory
-GIT_SSL_NO_VERIFY=true git clone https://drf-gitlab.cea.fr/partons/core/elementary-utils.git --branch v1.0 --depth 1
-GIT_SSL_NO_VERIFY=true git clone https://drf-gitlab.cea.fr/partons/core/numa.git --branch v1.0 --depth 1
-GIT_SSL_NO_VERIFY=true git clone https://drf-gitlab.cea.fr/partons/core/partons.git --branch v1.0 --depth 1
-GIT_SSL_NO_VERIFY=true git clone https://drf-gitlab.cea.fr/partons/core/partons-example.git --branch v1.0 --depth 1
+GIT_SSL_NO_VERIFY=true git clone https://drf-gitlab.cea.fr/partons/core/elementary-utils.git --branch v2.0 --depth 1
+GIT_SSL_NO_VERIFY=true git clone https://drf-gitlab.cea.fr/partons/core/numa.git --branch v2.0 --depth 1
+GIT_SSL_NO_VERIFY=true git clone https://drf-gitlab.cea.fr/partons/core/partons.git --branch v2.0 --depth 1
+GIT_SSL_NO_VERIFY=true git clone https://drf-gitlab.cea.fr/partons/core/partons-example.git --branch v2.0 --depth 1
 ~~~~~~~~~~~~~
 The option `--branch` is needed to checkout the specific tagged version from the *release* branch.
 The option `GIT_SSL_NO_VERIFY=true` is needed because the CEA certificate is often not recognized.
@@ -24,8 +24,8 @@ The option `--depth 1` can be used to download only the tagged commit and nothin
 * via the following links:
 Version  | Status                                           | elementary-utils            | numa			| partons			| partons-example 		|
 :------: | :----------------------------------------------: | :-------------------------: | :-------------------------:	| :---------------------------: | :---------------------------: |
-1.0      | <pre style="color: green;">Latest version</pre>  | [tar.gz](https://drf-gitlab.cea.fr/partons/core/elementary-utils/repository/v1.0/archive.tar.gz)  | [tar.gz](https://drf-gitlab.cea.fr/partons/core/numa/repository/v1.0/archive.tar.gz)	| [tar.gz](https://drf-gitlab.cea.fr/partons/core/partons/repository/v1.0/archive.tar.gz)	| [tar.gz](https://drf-gitlab.cea.fr/partons/core/partons-example/repository/v1.0/archive.tar.gz)	|
-
+2.0      | <pre style="color: green;">Latest version</pre>  | [tar.gz](https://drf-gitlab.cea.fr/partons/core/elementary-utils/repository/v2.0/archive.tar.gz)  | [tar.gz](https://drf-gitlab.cea.fr/partons/core/numa/repository/v2.0/archive.tar.gz)	| [tar.gz](https://drf-gitlab.cea.fr/partons/core/partons/repository/v2.0/archive.tar.gz)	| [tar.gz](https://drf-gitlab.cea.fr/partons/core/partons-example/repository/v2.0/archive.tar.gz)	|
+1.0      | <pre style="color: red;">Old</pre>  | [tar.gz](https://drf-gitlab.cea.fr/partons/core/elementary-utils/repository/v1.0/archive.tar.gz)  | [tar.gz](https://drf-gitlab.cea.fr/partons/core/numa/repository/v1.0/archive.tar.gz)	| [tar.gz](https://drf-gitlab.cea.fr/partons/core/partons/repository/v1.0/archive.tar.gz)	| [tar.gz](https://drf-gitlab.cea.fr/partons/core/partons-example/repository/v1.0/archive.tar.gz)	|
 
 <hr>
 

@@ -1,16 +1,16 @@
 # Main Page                          {#mainpage}
 
-[TOC]
-
 # What is PARTONS? {#mainpage_intro}
 
-<img src='../images/logo_partons.jpg' alt='PARTONS' style='float:right; max-width:20%; height:auto; margin:2pt 10pt' />
+<img src='../images/logo_partons_strong.png' alt='PARTONS' style='float:right; max-width:17%; height:auto; margin:2pt 10pt' />
 
-%PARTONS is a C++ software framework dedicated to the phenomenology of Generalized Parton Distributions (GPDs). GPDs provide a comprehensive description of the partonic structure of the nucleon and contain a wealth of new information. In particular, GPDs provide a description of the nucleon as an extended object, referred to as 3-dimensional nucleon tomography, and give an access to the orbital angular momentum of quarks.
+%PARTONS is a software framework dedicated to the phenomenology of 3D hadron structure, in particular Generalized Parton Distributions (GPDs) and Tranverse Momentum Dependent (TMDs) parton distribution functions.
 
-%PARTONS provides a necessary bridge between models of GPDs and experimental data measured in various exclusive channels, like Deeply Virtual Compton Scattering (DVCS) and Hard Exclusive Meson Production (HEMP). The experimental programme devoted to study GPDs has been carrying out by several experiments, like HERMES at DESY (closed), COMPASS at CERN, Hall-A and CLAS at JLab. GPD subject will be also a key component of the physics case for the expected Electron Ion Collider (EIC).
+%PARTONS provides a necessary bridge between models of 3D hadron structure and experimental data measured in various channels, like for example Deeply Virtual Compton Scattering (DVCS) and Hard Exclusive Meson Production (HEMP).
 
-%PARTONS is useful to theorists to develop new models, phenomenologists to interpret existing measurements and to experimentalists to design new experiments.
+The experimental program devoted to study GPDs and TMDs has been carrying out by experiments in several facilities, like CERN, DESY, Fermilab, Jefferson Lab and BNL. The 3D structure of hadrons will be also a key component of the physics case for the future Electron Ion Collider (EIC). %PARTONS is useful to theorists to develop new models, phenomenologists to interpret existing measurements and to experimentalists to design new experiments.
+
+The virtual access infrastructure 3DPartons has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No 824093.
 
 <hr>
 
