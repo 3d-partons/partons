@@ -20,7 +20,7 @@ Here you can learn how to get your own version of %PARTONS. We offer two ways:
 * You can use our provided virtual machine with an out-of-the-box %PARTONS runtime and development environment. This is the easiest way to start your experience with %PARTONS.
 * You can also build %PARTONS by your own on <!-- either --> GNU/Linux<!--  or Mac OS X -->. This is useful if you want to have %PARTONS on your computer without using the virtualization technology or if you want to use %PARTONS on computing farms. 
 
-[Download page](@ref download).
+* [Download page](@ref download).
 
 Tutorials:
 * [Using PARTONS with our provided Virtual Machine](@ref vm).
@@ -33,7 +33,7 @@ Tutorials:
 
 If you are using [our virtual machine](@ref vm), you will find all configuration files set up and ready to be used. However, if you want to tune the configuration or if you have installed %PARTONS by your own, this tutorial will be helpful for you:
 
-[Manual configuration](@ref config).
+* [Manual configuration](@ref config).
 
 <hr>
 
@@ -56,26 +56,12 @@ The following tutorials deal with all these matters:
 
 <hr>
 
-# Publications and talks {#mainpage_talks}
-
-Here you can find our publications and the list of talks given on behalf of the %PARTONS team:
-
-[PARTONS publications and talks](@ref tandp).
-
-<hr>
-
-<!--
-# Acknowledgments {#mainpage_acknow}
-
-The work on %PARTONS has been supported by the following grant: 
-* French National Research Agency, Commissariat l’Energie Atomique et aux Energies Alternatives, grant no. 12-MONU-0008-01.
-
-<hr>
--->
-
-# License {#mainpage_licences}
+# License and reference {#mainpage_licences}
 
 The following licenses apply: [elementary-utils](https://drf-gitlab.cea.fr/partons/core/elementary-utils) sub-project is under the [Apache](https://www.apache.org/licenses/) license, while [numa](https://drf-gitlab.cea.fr/partons/core/numa), [partons](https://drf-gitlab.cea.fr/partons/core/partons) and [partons-example](https://drf-gitlab.cea.fr/partons/core/partons-example) are distributed under the [GPL](https://www.gnu.org/licenses/gpl.html) license. Please, respect the licensing! 
+
+To reference %PARTONS please use this publication:<br>
+* B. Berthou *et al.*, *%PARTONS: PARtonic Tomography Of Nucleon Software: A computing platform for the phenomenology of Generalized Parton Distributions*,<br>Eur. Phys. J. C78 (2018), 478, [DOI: 10.1140/epjc/s10052-018-5948-0](https://doi.org/10.1140/epjc/s10052-018-5948-0)
 
 <hr>
 
