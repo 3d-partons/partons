@@ -14,7 +14,6 @@
 #include <NumA/neural_network/neural_network_neuron/NeuralNetworkNeuron.h>
 #include <cmath>
 #include <iterator>
-#include <vector>
 
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/modules/convol_coeff_function/ConvolCoeffFunctionModule.h"
@@ -64,7 +63,7 @@ DVCSCFFNN::DVCSCFFNN(const std::string &className) :
 
     m_rangeLog10Xi = std::make_pair(-6., 1.);
     m_rangeT = std::make_pair(-1., 0.5);
-    m_rangeQ2 = std::make_pair(-1., 2.);
+    m_rangeLog10Q2 = std::make_pair(-1., 2.);
 
     m_rangeXiReCFF.insert(std::make_pair(GPDType::H, std::make_pair(-1., 1.5)));
     m_rangeXiReCFF.insert(std::make_pair(GPDType::E, std::make_pair(-1.5, 1.)));
@@ -82,7 +81,7 @@ DVCSCFFNN::DVCSCFFNN(const std::string &className) :
     m_replica = 0;
 
     buildNeuralNetworks();
-    loadParameters(m_replica);
+    loadParameters(m_replica, false);
 }
 
 DVCSCFFNN::DVCSCFFNN(const DVCSCFFNN &other) :
@@ -108,7 +107,7 @@ DVCSCFFNN::DVCSCFFNN(const DVCSCFFNN &other) :
 
     m_rangeLog10Xi = other.m_rangeLog10Xi;
     m_rangeT = other.m_rangeT;
-    m_rangeQ2 = other.m_rangeQ2;
+    m_rangeLog10Q2 = other.m_rangeLog10Q2;
     m_rangeXiReCFF = other.m_rangeXiReCFF;
     m_rangeXiImCFF = other.m_rangeXiImCFF;
 
@@ -228,7 +227,7 @@ NumA::NeuralNetwork* DVCSCFFNN::buildAndConfigureSingleNeuralNetwork(
                 "No scaling cell type");
     }
     pNNCell = static_cast<NumA::ScalingCell*>(pNNLayer->getCells().at(2));
-    pNNCell->setScalingParameters(m_rangeQ2);
+    pNNCell->setScalingParameters(m_rangeLog10Q2);
 
     //output
     pNNLayer = pNN->getNeuralNetworkLayers().at(
@@ -252,7 +251,7 @@ NumA::NeuralNetwork* DVCSCFFNN::buildAndConfigureSingleNeuralNetwork(
     return pNN;
 }
 
-void DVCSCFFNN::loadParameters(size_t replica) {
+void DVCSCFFNN::loadParameters(size_t replica, bool printInfo) {
 
     if (replica >= c_nDVCSCFFNNReplicas) {
         throw ElemUtils::CustomException(getClassName(), __func__,
@@ -326,8 +325,11 @@ void DVCSCFFNN::loadParameters(size_t replica) {
         }
     }
 
-    info(__func__,
-            ElemUtils::Formatter() << "Parameters set for replica " << replica);
+    if (printInfo) {
+        info(__func__,
+                ElemUtils::Formatter() << "Parameters set for replica "
+                        << replica);
+    }
 }
 
 void DVCSCFFNN::prepareSubModules(
@@ -383,6 +385,87 @@ std::complex<double> DVCSCFFNN::computeCFF() {
 const std::map<GPDType::Type,
         std::pair<NumA::NeuralNetwork*, NumA::NeuralNetwork*> >& DVCSCFFNN::getNeuralNetworks() const {
     return m_neuralNetworks;
+}
+
+double DVCSCFFNN::getMean(const std::vector<double>& v) const {
+
+    if (v.size() == 0) {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                "vector size is 0");
+    }
+
+    double mean = 0.;
+
+    for (int i = 0; i < v.size(); i++) {
+        mean += v.at(i);
+    }
+
+    return mean / v.size();
+}
+
+double DVCSCFFNN::getSigma(const std::vector<double>& v) const {
+
+    if (v.size() == 0) {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                "vector size is 0");
+    }
+
+    double mean = getMean(v);
+
+    double sigma = 0.;
+
+    for (int i = 0; i < v.size(); i++) {
+        sigma += pow(mean - v.at(i), 2);
+    }
+
+    return sqrt(sigma / double(v.size()));
+}
+
+size_t DVCSCFFNN::removeOutliers(std::vector<double>& v) const {
+
+    if (v.size() == 0) {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                "vector size is 0");
+    }
+
+    double meanData = getMean(v);
+    double sigmaData = getSigma(v);
+
+    if (sigmaData == 0.) {
+
+        warn(__func__, "sigma size is 0");
+        return 0;
+    }
+
+    std::vector<double> result;
+    std::vector<double>::iterator it;
+    size_t nRemoved = 0;
+
+    for (it = v.begin(); it != v.end(); it++) {
+
+        if (fabs((*it) - meanData) / sigmaData > 3.) {
+            nRemoved++;
+        } else {
+            result.push_back(*it);
+        }
+    }
+
+    v = result;
+
+    if (nRemoved != 0)
+        nRemoved += removeOutliers(v);
+
+    return nRemoved;
+}
+
+void DVCSCFFNN::getMeanAndUncertainty(const std::vector<double>& v,
+        double& mean, double& unc) const {
+
+    std::vector<double> vOutlierFree = v;
+    removeOutliers(vOutlierFree);
+
+    mean = getMean(vOutlierFree);
+    unc = getSigma(vOutlierFree);
 }
 
 }
