@@ -18,6 +18,11 @@
 #include "ObservableService.h"
 
 namespace PARTONS {
+class TCSObservable;
+class TCSProcessModule;
+} /* namespace PARTONS */
+
+namespace PARTONS {
 
 /**
  * @class TCSObservableService
@@ -45,6 +50,20 @@ public:
     virtual void storeResultListInDatabase(
             const List<TCSObservableResult>& results) const;
     virtual void generatePlotFileTask(Task &task);
+
+    /**
+     * Uses an automation task (XML file) to configure a TCSProcessModule.
+     * @param task Automation task.
+     * @return Pre-configured TCSProcessModule.
+     */
+    TCSProcessModule* newTCSProcessModuleFromTask(const Task &task) const;
+
+    /**
+     * Uses an automation task (XML file) to configure a TCSObservable.
+     * @param task Automation task.
+     * @return Pre-configured TCSObservable.
+     */
+    TCSObservable* newTCSObservableModuleFromTask(const Task &task) const;
 
 protected:
 
