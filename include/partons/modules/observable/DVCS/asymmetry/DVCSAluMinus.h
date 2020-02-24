@@ -8,10 +8,12 @@
  * @version 1.0
  */
 
-#include <ElementaryUtils/parameters/Parameters.h>
 #include <string>
 
-#include "../../Observable.h"
+#include "../../../../beans/gpd/GPDType.h"
+#include "../../../../beans/List.h"
+#include "../../../../utils/type/PhysicalType.h"
+#include "../DVCSObservable.h"
 
 namespace PARTONS {
 
@@ -35,7 +37,7 @@ namespace PARTONS {
  * where
  * \f$\sigma^{b_{h} b_{c}}\f$ is a single photon production cross-section (DVCS, BH and Int) for beam helicity denoted by \f$b_{h}\f$ and beam charge denoted by \f$b_{c}\f$.
  */
-class DVCSAluMinus: public Observable {
+class DVCSAluMinus: public DVCSObservable {
 
 public:
 
@@ -56,8 +58,6 @@ public:
     virtual ~DVCSAluMinus();
 
     virtual DVCSAluMinus* clone() const;
-    virtual void configure(const ElemUtils::Parameters &parameters);
-    virtual double computePhiObservable(double phi);
 
 protected:
 
@@ -66,6 +66,10 @@ protected:
      * @param other Object to be copied.
      */
     DVCSAluMinus(const DVCSAluMinus &other);
+
+    virtual PhysicalType<double> computeObservable(
+            const DVCSObservableKinematic& kinematic,
+            const List<GPDType>& gpdType);
 };
 
 } /* namespace PARTONS */

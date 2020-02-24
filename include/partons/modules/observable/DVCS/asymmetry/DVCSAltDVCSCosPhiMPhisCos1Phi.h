@@ -12,6 +12,9 @@
 #include <string>
 #include <vector>
 
+#include "../../../../beans/gpd/GPDType.h"
+#include "../../../../beans/List.h"
+#include "../../../../utils/type/PhysicalType.h"
 #include "../../../MathIntegratorModule.h"
 #include "DVCSAltDVCSCosPhiMPhis.h"
 
@@ -55,7 +58,6 @@ public:
 
     virtual DVCSAltDVCSCosPhiMPhisCos1Phi* clone() const;
     virtual void configure(const ElemUtils::Parameters &parameters);
-    virtual double computeFourierObservable();
 
 protected:
 
@@ -64,6 +66,10 @@ protected:
      * @param other Object to be copied.
      */
     DVCSAltDVCSCosPhiMPhisCos1Phi(const DVCSAltDVCSCosPhiMPhisCos1Phi &other);
+
+    virtual PhysicalType<double> computeObservable(
+            const DVCSObservableKinematic& kinematic,
+            const List<GPDType>& gpdType);
 
     /**
      * Functor to perform the integration.

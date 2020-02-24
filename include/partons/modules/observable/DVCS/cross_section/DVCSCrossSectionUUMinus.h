@@ -8,10 +8,12 @@
  * @version 1.0
  */
 
-#include <ElementaryUtils/parameters/Parameters.h>
 #include <string>
 
-#include "../../Observable.h"
+#include "../../../../beans/gpd/GPDType.h"
+#include "../../../../beans/List.h"
+#include "../../../../utils/type/PhysicalType.h"
+#include "../DVCSObservable.h"
 
 namespace PARTONS {
 
@@ -34,7 +36,7 @@ namespace PARTONS {
  *
  * Unit: \f$\mathrm{nbarn}/\mathrm{GeV}^4\f$.
  */
-class DVCSCrossSectionUUMinus: public Observable {
+class DVCSCrossSectionUUMinus: public DVCSObservable {
 
 public:
 
@@ -55,8 +57,6 @@ public:
     virtual ~DVCSCrossSectionUUMinus();
 
     virtual DVCSCrossSectionUUMinus* clone() const;
-    virtual void configure(const ElemUtils::Parameters &parameters);
-    virtual double computePhiObservable(double phi);
 
 protected:
 
@@ -65,6 +65,10 @@ protected:
      * @param other Object to be copied.
      */
     DVCSCrossSectionUUMinus(const DVCSCrossSectionUUMinus &other);
+
+    virtual PhysicalType<double> computeObservable(
+            const DVCSObservableKinematic& kinematic,
+            const List<GPDType>& gpdType);
 };
 
 } /* namespace PARTONS */

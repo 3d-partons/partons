@@ -10,6 +10,7 @@
 
 #include <string>
 
+#include "../../utils/type/PhysicalType.h"
 #include "GPDSubtractionConstantModule.h"
 
 namespace PARTONS {
@@ -52,7 +53,7 @@ protected:
      */
     GPDSubtractionConstantKM10(const GPDSubtractionConstantKM10& other);
 
-    virtual double computeSubtractionConstant();
+    virtual PhysicalType<double> computeSubtractionConstant();
 
 private:
 

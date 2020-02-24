@@ -1,164 +1,182 @@
 #include "../../../../../include/partons/beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 
-#include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
-#include <ElementaryUtils/thread/Packet.h>
 
-#include "../../../../../include/partons/beans/gpd/GPDKinematic.h"
-#include "../../../../../include/partons/beans/observable/ObservableKinematic.h"
+#include "../../../../../include/partons/beans/channel/ChannelType.h"
+#include "../../../../../include/partons/beans/observable/DVCS/DVCSObservableKinematic.h"
 #include "../../../../../include/partons/Partons.h"
 #include "../../../../../include/partons/services/hash_sum/CryptographicHashService.h"
 #include "../../../../../include/partons/ServiceObjectRegistry.h"
 
 namespace PARTONS {
 
+const std::string DVCSConvolCoeffFunctionKinematic::DVCS_CONVOL_COEFF_FUNCTION_KNEMATIC_CLASS_NAME =
+        "DVCSConvolCoeffFunctionKinematic";
 
 DVCSConvolCoeffFunctionKinematic::DVCSConvolCoeffFunctionKinematic() :
-        Kinematic("DVCSConvolCoeffFunctionKinematic"), m_binId(0), m_xi(0.), m_t(
-                0.), m_Q2(0.), m_MuF2(0.), m_MuR2(0.) {
-}
-
-DVCSConvolCoeffFunctionKinematic::DVCSConvolCoeffFunctionKinematic(
-        const ElemUtils::Parameters &parameters) :
-        Kinematic("DVCSConvolCoeffFunctionKinematic"), m_binId(0), m_xi(0.), m_t(
-                0.), m_Q2(0.), m_MuF2(0.), m_MuR2(0.) {
-    if (parameters.isAvailable(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI)) {
-        m_xi = parameters.getLastAvailable().toDouble();
-    } else {
-        errorMissingParameter(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI);
-    }
-    if (parameters.isAvailable(ObservableKinematic::PARAMETER_NAME_T)) {
-        m_t = parameters.getLastAvailable().toDouble();
-    } else {
-        errorMissingParameter(ObservableKinematic::PARAMETER_NAME_T);
-    }
-    if (parameters.isAvailable(ObservableKinematic::PARAMETER_NAME_Q2)) {
-        m_Q2 = parameters.getLastAvailable().toDouble();
-    } else {
-        errorMissingParameter(ObservableKinematic::PARAMETER_NAME_Q2);
-    }
-
-    //TODO remove from kinematic
-    m_MuF2 =
-            parameters.get(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUF2).toDouble();
-    m_MuR2 =
-            parameters.get(GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUR2).toDouble();
+        ConvolCoeffFunctionKinematic("DVCSConvolCoeffFunctionKinematic",
+                ChannelType::DVCS), m_Q2(
+                PhysicalType<double>(PhysicalUnit::GEV2)) {
 }
 
 DVCSConvolCoeffFunctionKinematic::DVCSConvolCoeffFunctionKinematic(double xi,
         double t, double Q2, double MuF2, double MuR2) :
-        Kinematic("DVCSConvolCoeffFunctionKinematic"), m_binId(0), m_xi(xi), m_t(
-                t), m_Q2(Q2), m_MuF2(MuF2), m_MuR2(MuR2) {
+        ConvolCoeffFunctionKinematic("DVCSConvolCoeffFunctionKinematic",
+                ChannelType::DVCS, xi, t, MuF2, MuR2), m_Q2(
+                PhysicalType<double>(Q2, PhysicalUnit::GEV2)) {
 }
 
 DVCSConvolCoeffFunctionKinematic::DVCSConvolCoeffFunctionKinematic(
-        unsigned int binId, double xi, double t, double Q2, double MuF2,
-        double MuR2) :
-        Kinematic("DVCSConvolCoeffFunctionKinematic"), m_binId(binId), m_xi(xi), m_t(
-                t), m_Q2(Q2), m_MuF2(MuF2), m_MuR2(MuR2) {
+        const PhysicalType<double> &xi, const PhysicalType<double> &t,
+        const PhysicalType<double> &Q2, const PhysicalType<double> &MuF2,
+        const PhysicalType<double> &MuR2) :
+        ConvolCoeffFunctionKinematic("DVCSConvolCoeffFunctionKinematic",
+                ChannelType::DVCS, xi, t, MuF2, MuR2), m_Q2(
+                PhysicalType<double>(PhysicalUnit::GEV2)) {
+
+    m_Q2.checkIfSameUnitCategoryAs(Q2);
+
+    m_Q2 = Q2;
 }
 
 DVCSConvolCoeffFunctionKinematic::DVCSConvolCoeffFunctionKinematic(
         const ElemUtils::GenericType &xi, const ElemUtils::GenericType &t,
         const ElemUtils::GenericType &Q2, const ElemUtils::GenericType &MuF2,
         const ElemUtils::GenericType &MuR2) :
-        Kinematic("DVCSConvolCoeffFunctionKinematic"), m_xi(xi.toDouble()), m_t(
-                t.toDouble()), m_Q2(Q2.toDouble()), m_MuF2(MuF2.toDouble()), m_MuR2(
-                MuR2.toDouble()) {
+        ConvolCoeffFunctionKinematic("DVCSConvolCoeffFunctionKinematic",
+                ChannelType::DVCS, xi, t, MuF2, MuR2), m_Q2(
+                PhysicalType<double>(Q2, PhysicalUnit::GEV2)) {
+}
 
+DVCSConvolCoeffFunctionKinematic::DVCSConvolCoeffFunctionKinematic(
+        const DVCSConvolCoeffFunctionKinematic &other) :
+        ConvolCoeffFunctionKinematic(other), m_Q2(other.m_Q2) {
 }
 
 DVCSConvolCoeffFunctionKinematic::~DVCSConvolCoeffFunctionKinematic() {
 }
 
+void DVCSConvolCoeffFunctionKinematic::configure(
+        const ElemUtils::Parameters &parameters) {
+
+    //run for mother
+    ConvolCoeffFunctionKinematic::configure(parameters);
+
+    double value;
+    PhysicalUnit::Type unit;
+
+    //Q2
+    if (parameters.isAvailable(
+            DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_Q2)) {
+
+        value = parameters.getLastAvailable().toDouble();
+
+        if (parameters.isAvailable(
+                DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_Q2_UNIT)) {
+
+            unit =
+                    PhysicalUnit(parameters.getLastAvailable().getString()).getType();
+            setQ2(value, unit);
+        } else {
+            setQ2(value, PhysicalUnit::GEV2);
+        }
+    } else {
+        errorMissingParameter(
+                DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_Q2);
+    }
+}
+
 std::string DVCSConvolCoeffFunctionKinematic::toString() const {
-    return ElemUtils::Formatter() << Kinematic::toString() << " m_binId = "
-            << m_binId << " m_xi = " << m_xi << " m_t = " << m_t << " m_Q2 = "
-            << m_Q2 << " m_MuF2 = " << m_MuF2 << " m_MuR2 = " << m_MuR2;
-}
 
-unsigned int DVCSConvolCoeffFunctionKinematic::getBinId() const {
-    return m_binId;
-}
+    ElemUtils::Formatter formatter;
 
-double DVCSConvolCoeffFunctionKinematic::getMuF2() const {
-    return m_MuF2;
-}
+    formatter << ConvolCoeffFunctionKinematic::toString();
 
-double DVCSConvolCoeffFunctionKinematic::getMuR2() const {
-    return m_MuR2;
-}
+    if (m_Q2.isInitialized())
+        formatter << "Q2: " << m_Q2.toString() << ' ';
 
-double DVCSConvolCoeffFunctionKinematic::getQ2() const {
-    return m_Q2;
-}
-
-double DVCSConvolCoeffFunctionKinematic::getT() const {
-    return m_t;
-}
-
-double DVCSConvolCoeffFunctionKinematic::getXi() const {
-    return m_xi;
+    return formatter.str();
 }
 
 void DVCSConvolCoeffFunctionKinematic::updateHashSum() const {
     setHashSum(
             Partons::getInstance()->getServiceObjectRegistry()->getCryptographicHashService()->generateSHA1HashSum(
-                    ElemUtils::Formatter() << m_xi << m_t << m_Q2 << m_MuF2
-                            << m_MuR2));
+                    ElemUtils::Formatter() << m_xi.toStdString()
+                            << m_t.toStdString() << m_Q2.toStdString()
+                            << m_MuF2.toStdString() << m_MuR2.toStdString()));
 }
 
 void DVCSConvolCoeffFunctionKinematic::serialize(
         ElemUtils::Packet& packet) const {
-    Kinematic::serialize(packet);
 
-    packet << m_xi << m_t << m_Q2 << m_MuF2 << m_MuR2;
+    ConvolCoeffFunctionKinematic::serialize(packet);
+
+    packet << m_Q2;
 }
 
 void DVCSConvolCoeffFunctionKinematic::unserialize(ElemUtils::Packet& packet) {
-    Kinematic::unserialize(packet);
 
-    packet >> m_xi;
-    packet >> m_t;
+    ConvolCoeffFunctionKinematic::unserialize(packet);
+
     packet >> m_Q2;
-    packet >> m_MuF2;
-    packet >> m_MuR2;
-}
 
-void DVCSConvolCoeffFunctionKinematic::setBinId(unsigned int binId) {
-    m_binId = binId;
-}
-
-void DVCSConvolCoeffFunctionKinematic::setMuF2(double MuF2) {
-    m_MuF2 = MuF2;
     updateHashSum();
 }
 
-void DVCSConvolCoeffFunctionKinematic::setMuR2(double MuR2) {
-    m_MuR2 = MuR2;
+void DVCSConvolCoeffFunctionKinematic::serializeIntoStdVector(
+        std::vector<double>& vec) const {
+
+    ConvolCoeffFunctionKinematic::serializeIntoStdVector(vec);
+
+    m_Q2.serializeIntoStdVector(vec);
+}
+
+void DVCSConvolCoeffFunctionKinematic::unserializeFromStdVector(
+        std::vector<double>::const_iterator& it,
+        const std::vector<double>::const_iterator& end) {
+
+    ConvolCoeffFunctionKinematic::unserializeFromStdVector(it, end);
+
+    m_Q2.unserializeFromStdVector(it, end);
+
     updateHashSum();
 }
 
-void DVCSConvolCoeffFunctionKinematic::setQ2(double Q2) {
+bool DVCSConvolCoeffFunctionKinematic::operator ==(
+        const DVCSConvolCoeffFunctionKinematic& other) const {
+    return m_xi == other.getXi() && m_t == other.getT()
+            && m_MuF2 == other.getMuF2() && m_MuR2 == other.getMuR2()
+            && m_Q2 == other.getQ2();
+}
+
+bool DVCSConvolCoeffFunctionKinematic::operator !=(
+        const DVCSConvolCoeffFunctionKinematic& other) const {
+    return !((*this) == other);
+}
+
+const PhysicalType<double>& DVCSConvolCoeffFunctionKinematic::getQ2() const {
+    return m_Q2;
+}
+
+void DVCSConvolCoeffFunctionKinematic::setQ2(const PhysicalType<double>& Q2) {
+
+    m_Q2.checkIfSameUnitCategoryAs(Q2);
     m_Q2 = Q2;
     updateHashSum();
 }
 
-void DVCSConvolCoeffFunctionKinematic::setT(double t) {
-    m_t = t;
-    updateHashSum();
-}
-
-void DVCSConvolCoeffFunctionKinematic::setXi(double xi) {
-    m_xi = xi;
-    updateHashSum();
+void DVCSConvolCoeffFunctionKinematic::setQ2(double Q2,
+        PhysicalUnit::Type unit) {
+    setQ2(PhysicalType<double>(Q2, unit));
 }
 
 ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
         DVCSConvolCoeffFunctionKinematic& kinematic) {
+
     kinematic.serialize(packet);
     return packet;
 }
+
 ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
         DVCSConvolCoeffFunctionKinematic& kinematic) {
 

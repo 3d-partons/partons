@@ -1,13 +1,15 @@
+#include "../../../../../../include/partons/modules/observable/DVCS/asymmetry/DVCSAltIntCosPhiMPhisCos2Phi.h"
+
 #include <NumA/functor/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
 #include <cmath>
 
-#include "../../../../../../include/partons/beans/observable/ObservableChannel.h"
-#include "../../../../../../include/partons/beans/observable/ObservableType.h"
+#include "../../../../../../include/partons/beans/observable/DVCS/DVCSObservableKinematic.h"
 #include "../../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../../../include/partons/modules/observable/DVCS/asymmetry/DVCSAltIntCosPhiMPhisCos2Phi.h"
+#include "../../../../../../include/partons/modules/observable/Observable.h"
+#include "../../../../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
 
@@ -20,9 +22,6 @@ DVCSAltIntCosPhiMPhisCos2Phi::DVCSAltIntCosPhiMPhisCos2Phi(
         const std::string &className) :
         DVCSAltIntCosPhiMPhis(className), MathIntegratorModule(), m_pFunctionToIntegrateObservable(
                 0) {
-
-    m_observableType = ObservableType::FOURIER;
-    m_channel = ObservableChannel::DVCS;
 
     setIntegrator(NumA::IntegratorType1D::DEXP);
     initFunctorsForIntegrations();
@@ -63,15 +62,28 @@ void DVCSAltIntCosPhiMPhisCos2Phi::configure(
 
 double DVCSAltIntCosPhiMPhisCos2Phi::functionToIntegrateObservable(double x,
         std::vector<double> params) {
-    return DVCSAltIntCosPhiMPhis::computePhiObservable(x) * cos(2 * x);
+
+    DVCSObservableKinematic kinematic;
+    List<GPDType> gpdType;
+
+    unserializeKinematicsAndGPDTypesFromStdVector(params, kinematic, gpdType);
+
+    kinematic.setPhi(PhysicalType<double>(x, PhysicalUnit::RAD));
+
+    return DVCSAltIntCosPhiMPhis::computeObservable(kinematic, gpdType).getValue()
+            * cos(2 * x);
 }
 
-double DVCSAltIntCosPhiMPhisCos2Phi::computeFourierObservable() {
+PhysicalType<double> DVCSAltIntCosPhiMPhisCos2Phi::computeObservable(
+        const DVCSObservableKinematic& kinematic,
+        const List<GPDType>& gpdType) {
 
-    std::vector<double> emptyParameters;
+    std::vector<double> params = serializeKinematicsAndGPDTypesIntoStdVector(
+            kinematic, gpdType);
 
-    return integrate(m_pFunctionToIntegrateObservable, 0., (2 * Constant::PI),
-            emptyParameters) / (Constant::PI);
+    return PhysicalType<double>(
+            integrate(m_pFunctionToIntegrateObservable, 0., (2 * Constant::PI),
+                    params) / (Constant::PI), PhysicalUnit::NONE);
 }
 
 } /* namespace PARTONS */

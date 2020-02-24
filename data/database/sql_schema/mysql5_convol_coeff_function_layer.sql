@@ -1,14 +1,38 @@
 /* MYSQL syntax */
 
-CREATE TABLE ccf_kinematic (
-ccf_kinematic_id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+/* kinematics */
+
+CREATE TABLE dvcs_ccf_kinematic (
+dvcs_ccf_kinematic_id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
 xi DOUBLE NOT NULL,
+xi_unit INTEGER NOT NULL,
 t DOUBLE NOT NULL,
+t_unit INTEGER NOT NULL,
 Q2 DOUBLE NOT NULL,
+Q2_unit INTEGER NOT NULL,
 MuF2 DOUBLE NOT NULL,
+MuF2_unit INTEGER NOT NULL,
 MuR2 DOUBLE NOT NULL,
+MuR2_unit INTEGER NOT NULL,
 hash_sum VARCHAR(40) NOT NULL);
-CREATE INDEX ccf_kinematic_index ON ccf_kinematic (hash_sum);
+CREATE INDEX dvcs_ccf_kinematic_index ON dvcs_ccf_kinematic (hash_sum);
+
+CREATE TABLE tcs_ccf_kinematic (
+tcs_ccf_kinematic_id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+xi DOUBLE NOT NULL,
+xi_unit INTEGER NOT NULL,
+t DOUBLE NOT NULL,
+t_unit INTEGER NOT NULL,
+Q2Prim DOUBLE NOT NULL,
+Q2Prim_unit INTEGER NOT NULL,
+MuF2 DOUBLE NOT NULL,
+MuF2_unit INTEGER NOT NULL,
+MuR2 DOUBLE NOT NULL,
+MuR2_unit INTEGER NOT NULL,
+hash_sum VARCHAR(40) NOT NULL);
+CREATE INDEX tcs_ccf_kinematic_index ON tcs_ccf_kinematic (hash_sum);
+
+/* result */
 
 CREATE TABLE ccf_result (
 ccf_result_id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -18,37 +42,76 @@ ccf_kinematic_id INTEGER NOT NULL,
 computation_id INTEGER NOT NULL);
 CREATE INDEX ccf_result_index ON ccf_result (computation_id);
 
-CREATE TABLE ccf_result_complex (
-ccf_result_complex_id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE dvcs_ccf_result (
+dvcs_ccf_result_id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
 gpd_type_id INTEGER NOT NULL,
 real_part DOUBLE NOT NULL,
 img_part DOUBLE NOT NULL,
 ccf_result_id INTEGER NOT NULL);
-CREATE INDEX ccf_result_complex_index ON ccf_result_complex (ccf_result_id);
+CREATE INDEX dvcs_ccf_result_index ON dvcs_ccf_result (ccf_result_id);
 
+CREATE TABLE tcs_ccf_result (
+tcs_ccf_result_id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+gpd_type_id INTEGER NOT NULL,
+real_part DOUBLE NOT NULL,
+img_part DOUBLE NOT NULL,
+ccf_result_id INTEGER NOT NULL);
+CREATE INDEX tcs_ccf_result_index ON tcs_ccf_result (ccf_result_id);
 
-CREATE VIEW ccf_result_view AS 
-SELECT ccfr.ccf_result_id, ccfr.computation_module_name, ccfr.channel_id, ccfrc.gpd_type_id, ccfrc.real_part, ccfrc.img_part, c.computation_id
+/* view */
+
+CREATE VIEW dvcs_ccf_kinematic_view AS
+SELECT ccfk.dvcs_ccf_kinematic_id, ccfk.xi, ccfk.xi_unit, ccfk.t, ccfk.t_unit, ccfk.Q2, ccfk.Q2_unit, ccfk.MuF2, ccfk.MuF2_unit, ccfk.MuR2, ccfk.MuR2_unit, ccfk.hash_sum
+FROM dvcs_ccf_kinematic ccfk 
+ORDER BY ccfk.dvcs_ccf_kinematic_id;
+
+CREATE VIEW tcs_ccf_kinematic_view AS
+SELECT ccfk.tcs_ccf_kinematic_id, ccfk.xi, ccfk.xi_unit, ccfk.t, ccfk.t_unit, ccfk.Q2Prim, ccfk.Q2Prim_unit, ccfk.MuF2, ccfk.MuF2_unit, ccfk.MuR2, ccfk.MuR2_unit, ccfk.hash_sum 
+FROM tcs_ccf_kinematic ccfk 
+ORDER BY ccfk.tcs_ccf_kinematic_id;
+
+CREATE VIEW dvcs_ccf_result_view AS 
+SELECT ccfr.ccf_result_id, ccfr.computation_module_name, ccfr.channel_id, ccfrc.gpd_type_id, ccfrc.real_part, ccfrc.img_part, ccfr.computation_id, ccfr.ccf_kinematic_id
 FROM ccf_result ccfr
-INNER JOIN computation c ON ccfr.computation_id = c.computation_id
-INNER JOIN ccf_result_complex ccfrc ON ccfr.ccf_result_id = ccfrc.ccf_result_id
+INNER JOIN dvcs_ccf_result ccfrc ON ccfr.ccf_result_id = ccfrc.ccf_result_id
 ORDER BY ccfr.ccf_result_id;
 
-/* Specific view to filter on CCF results to make a plot */
-CREATE VIEW ccf_plot_2d_view AS
-SELECT ccfr.computation_id, ccfk.ccf_kinematic_id, ccfk.xi, ccfk.t, ccfk.Q2, ccfk.MuF2, ccfk.MuR2, ccfr.ccf_result_id, oc.observable_channel_short_name, ccfr.computation_module_name, gt.gpd_type_short_name, ccfrc.real_part, ccfrc.img_part
-FROM ccf_kinematic ccfk
-INNER JOIN ccf_result ccfr ON ccfr.ccf_kinematic_id = ccfk.ccf_kinematic_id
-INNER JOIN ccf_result_complex ccfrc ON ccfrc.ccf_result_id = ccfr.ccf_result_id
+CREATE VIEW tcs_ccf_result_view AS 
+SELECT ccfr.ccf_result_id, ccfr.computation_module_name, ccfr.channel_id, ccfrc.gpd_type_id, ccfrc.real_part, ccfrc.img_part, ccfr.computation_id, ccfr.ccf_kinematic_id
+FROM ccf_result ccfr
+INNER JOIN tcs_ccf_result ccfrc ON ccfr.ccf_result_id = ccfrc.ccf_result_id
+ORDER BY ccfr.ccf_result_id;
+
+/* view for plots */
+
+CREATE VIEW dvcs_ccf_plot_2d_view AS
+SELECT 	ccfr.computation_id, ccfk.dvcs_ccf_kinematic_id, 
+	ccfk.xi, ccfk.xi_unit,
+	ccfk.t, ccfk.t_unit,
+	ccfk.Q2, ccfk.Q2_unit,
+	ccfk.MuF2, ccfk.MuF2_unit,
+	ccfk.MuR2, ccfk.MuR2_unit,
+	ccfr.ccf_result_id, ccfr.computation_module_name, gt.gpd_type_short_name, 
+	ccfrc.real_part, '1' as 'real_part_unit',
+	ccfrc.img_part, '1' as 'img_part_unit'
+FROM dvcs_ccf_result ccfrc
+INNER JOIN ccf_result ccfr ON ccfr.ccf_result_id = ccfrc.ccf_result_id
+INNER JOIN dvcs_ccf_kinematic ccfk ON ccfk.dvcs_ccf_kinematic_id = ccfr.ccf_kinematic_id
 INNER JOIN gpd_type gt ON ccfrc.gpd_type_id = gt.gpd_type_id
-INNER JOIN observable_channel oc ON ccfr.channel_id = oc.observable_channel_id
 ORDER BY ccfr.ccf_result_id;
-/*
-Output example :
-+----------------+------------------+------+---+----+------+------+---------------+-------------------------------+-------------------------+---------------------+--------------------+----------------------+
-| computation_id | ccf_kinematic_id | xi   | t | Q2 | MuF2 | MuR2 | ccf_result_id | observable_channel_short_name | computation_module_name | gpd_type_short_name | real_part          | img_part             |
-+----------------+------------------+------+---+----+------+------+---------------+-------------------------------+-------------------------+---------------------+--------------------+----------------------+
-|              6 |                1 | 0.99 | 0 |  1 |    1 |    1 |             1 | DVCS                          | DVCSCFFModel            | H                   | 1.0830598567370253 | 0.022937106659652748 |
-+----------------+------------------+------+---+----+------+------+---------------+-------------------------------+-------------------------+---------------------+--------------------+----------------------+
-*/
 
+CREATE VIEW tcs_ccf_plot_2d_view AS
+SELECT 	ccfr.computation_id, ccfk.tcs_ccf_kinematic_id, 
+	ccfk.xi, ccfk.xi_unit,
+	ccfk.t, ccfk.t_unit,
+	ccfk.Q2Prim, ccfk.Q2Prim_unit,
+	ccfk.MuF2, ccfk.MuF2_unit,
+	ccfk.MuR2, ccfk.MuR2_unit,
+	ccfr.ccf_result_id, ccfr.computation_module_name, gt.gpd_type_short_name, 
+	ccfrc.real_part, '1' as 'real_part_unit',
+	ccfrc.img_part, '1' as 'img_part_unit'
+FROM tcs_ccf_result ccfrc
+INNER JOIN ccf_result ccfr ON ccfr.ccf_result_id = ccfrc.ccf_result_id
+INNER JOIN tcs_ccf_kinematic ccfk ON ccfk.tcs_ccf_kinematic_id = ccfr.ccf_kinematic_id
+INNER JOIN gpd_type gt ON ccfrc.gpd_type_id = gt.gpd_type_id
+ORDER BY ccfr.ccf_result_id;

@@ -2,9 +2,10 @@
 
 #include <NumA/linear_algebra/vector/Vector3D.h>
 
-#include "../../../../../../include/partons/beans/observable/ObservableChannel.h"
+#include "../../../../../../include/partons/beans/observable/ObservableResult.h"
 #include "../../../../../../include/partons/BaseObjectRegistry.h"
-#include "../../../../../../include/partons/modules/process/ProcessModule.h"
+#include "../../../../../../include/partons/modules/process/DVCS/DVCSProcessModule.h"
+#include "../../../../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
 
@@ -13,12 +14,11 @@ const unsigned int DVCSAutIntSinPhiMPhis::classId =
                 new DVCSAutIntSinPhiMPhis("DVCSAutIntSinPhiMPhis"));
 
 DVCSAutIntSinPhiMPhis::DVCSAutIntSinPhiMPhis(const std::string &className) :
-        Observable(className) {
-    m_channel = ObservableChannel::DVCS;
+        DVCSObservable(className) {
 }
 
 DVCSAutIntSinPhiMPhis::DVCSAutIntSinPhiMPhis(const DVCSAutIntSinPhiMPhis& other) :
-        Observable(other) {
+        DVCSObservable(other) {
 }
 
 DVCSAutIntSinPhiMPhis::~DVCSAutIntSinPhiMPhis() {
@@ -28,40 +28,38 @@ DVCSAutIntSinPhiMPhis* DVCSAutIntSinPhiMPhis::clone() const {
     return new DVCSAutIntSinPhiMPhis(*this);
 }
 
-void DVCSAutIntSinPhiMPhis::configure(const ElemUtils::Parameters &parameters) {
-    Observable::configure(parameters);
-}
+PhysicalType<double> DVCSAutIntSinPhiMPhis::computeObservable(
+        const DVCSObservableKinematic& kinematic,
+        const List<GPDType>& gpdType) {
 
-double DVCSAutIntSinPhiMPhis::computePhiObservable(double phi) {
+    PhysicalType<double> A = m_pProcessModule->compute(+1, +1,
+            NumA::Vector3D(0., -1., 0.), kinematic, gpdType).getValue();
 
-    double A = m_pProcessModule->computeCrossSection(+1, +1,
-            NumA::Vector3D(0., -1., 0.), phi);
+    PhysicalType<double> B = m_pProcessModule->compute(-1, +1,
+            NumA::Vector3D(0., -1., 0.), kinematic, gpdType).getValue();
 
-    double B = m_pProcessModule->computeCrossSection(-1, +1,
-            NumA::Vector3D(0., -1., 0.), phi);
+    PhysicalType<double> C = m_pProcessModule->compute(+1, -1,
+            NumA::Vector3D(0., -1., 0.), kinematic, gpdType).getValue();
 
-    double C = m_pProcessModule->computeCrossSection(+1, -1,
-            NumA::Vector3D(0., -1., 0.), phi);
+    PhysicalType<double> D = m_pProcessModule->compute(-1, -1,
+            NumA::Vector3D(0., -1., 0.), kinematic, gpdType).getValue();
 
-    double D = m_pProcessModule->computeCrossSection(-1, -1,
-            NumA::Vector3D(0., -1., 0.), phi);
+    PhysicalType<double> E = m_pProcessModule->compute(+1, +1,
+            NumA::Vector3D(0., +1., 0.), kinematic, gpdType).getValue();
 
-    double E = m_pProcessModule->computeCrossSection(+1, +1,
-            NumA::Vector3D(0., +1., 0.), phi);
+    PhysicalType<double> F = m_pProcessModule->compute(-1, +1,
+            NumA::Vector3D(0., +1., 0.), kinematic, gpdType).getValue();
 
-    double F = m_pProcessModule->computeCrossSection(-1, +1,
-            NumA::Vector3D(0., +1., 0.), phi);
+    PhysicalType<double> G = m_pProcessModule->compute(+1, -1,
+            NumA::Vector3D(0., +1., 0.), kinematic, gpdType).getValue();
 
-    double G = m_pProcessModule->computeCrossSection(+1, -1,
-            NumA::Vector3D(0., +1., 0.), phi);
+    PhysicalType<double> H = m_pProcessModule->compute(-1, -1,
+            NumA::Vector3D(0., +1., 0.), kinematic, gpdType).getValue();
 
-    double H = m_pProcessModule->computeCrossSection(-1, -1,
-            NumA::Vector3D(0., +1., 0.), phi);
+    if ((A + B + C + D + E + F + G + H).getValue() == 0.) {
 
-    if (A + B + C + D + E + F + G + H == 0.) {
-
-        warn(__func__, "Asymmetry denominator is zero.");
-        return 0.;
+        warn(__func__, "Asymmetry denominator is zero");
+        return PhysicalType<double>(0., PhysicalUnit::NONE);
     }
 
     return ((A + B - C - D) - (E + F - G - H))

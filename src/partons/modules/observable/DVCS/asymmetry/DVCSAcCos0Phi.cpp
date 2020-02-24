@@ -4,13 +4,13 @@
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
 
-#include "../../../../../../include/partons/beans/observable/ObservableChannel.h"
-#include "../../../../../../include/partons/beans/observable/ObservableType.h"
+#include "../../../../../../include/partons/beans/observable/DVCS/DVCSObservableKinematic.h"
 #include "../../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../../include/partons/FundamentalPhysicalConstants.h"
+#include "../../../../../../include/partons/modules/observable/Observable.h"
+#include "../../../../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
-
 
 const unsigned int DVCSAcCos0Phi::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
@@ -19,9 +19,6 @@ const unsigned int DVCSAcCos0Phi::classId =
 DVCSAcCos0Phi::DVCSAcCos0Phi(const std::string &className) :
         DVCSAc(className), MathIntegratorModule(), m_pFunctionToIntegrateObservable(
                 0) {
-
-    m_observableType = ObservableType::FOURIER;
-    m_channel = ObservableChannel::DVCS;
 
     setIntegrator(NumA::IntegratorType1D::DEXP);
     initFunctorsForIntegrations();
@@ -54,21 +51,33 @@ DVCSAcCos0Phi* DVCSAcCos0Phi::clone() const {
 
 void DVCSAcCos0Phi::configure(const ElemUtils::Parameters &parameters) {
 
-	DVCSAc::configure(parameters);
-	MathIntegratorModule::configureIntegrator(parameters);
+    DVCSAc::configure(parameters);
+    MathIntegratorModule::configureIntegrator(parameters);
 }
 
 double DVCSAcCos0Phi::functionToIntegrateObservable(double x,
         std::vector<double> params) {
-    return DVCSAc::computePhiObservable(x); // * cos(0 * x);
+
+    DVCSObservableKinematic kinematic;
+    List<GPDType> gpdType;
+
+    unserializeKinematicsAndGPDTypesFromStdVector(params, kinematic, gpdType);
+
+    kinematic.setPhi(PhysicalType<double>(x, PhysicalUnit::RAD));
+
+    return DVCSAc::computeObservable(kinematic, gpdType).getValue(); // * cos(0 * x);
 }
 
-double DVCSAcCos0Phi::computeFourierObservable() {
+PhysicalType<double> DVCSAcCos0Phi::computeObservable(
+        const DVCSObservableKinematic& kinematic,
+        const List<GPDType>& gpdType) {
 
-    std::vector<double> emptyParameters;
+    std::vector<double> params = serializeKinematicsAndGPDTypesIntoStdVector(
+            kinematic, gpdType);
 
-    return integrate(m_pFunctionToIntegrateObservable, 0., (2 * Constant::PI),
-            emptyParameters) / (2 * Constant::PI);
+    return PhysicalType<double>(
+            integrate(m_pFunctionToIntegrateObservable, 0., (2 * Constant::PI),
+                    params) / (2 * Constant::PI), PhysicalUnit::NONE);
 }
 
 } /* namespace PARTONS */

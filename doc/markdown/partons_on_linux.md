@@ -15,7 +15,7 @@ This tutorial is for building %PARTONS on Linux. It describes the procedure for 
 %All the external libraries should be available through the package manager:
 
 ```sh
-sudo apt-get install libeigen3-dev libcln-dev libsfml-dev libqt4-dev libqt4-sql-mysql
+sudo apt-get install libeigen3-dev libcln-dev libsfml-dev libqt4-dev libqt4-sql-mysql libgsl-dev
 ```
 
 You can use any of your favorite dpkg front-ends (apt, aptitude, apt-get...), but be sure that it installs the recommended packages as dependencies. On Debian, you might want to use `su` to switch to `root` first, instead of using `sudo` directly from your current user. For an old Debian, it might be necessary to build libraries from their sources, as *e.g.* the version of SFML from Debian Wheezy does not work.

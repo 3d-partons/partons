@@ -15,7 +15,6 @@
 
 namespace PARTONS {
 
-
 ComputationDao::ComputationDao() :
         BaseObject("ComputationDao") {
 }
@@ -72,6 +71,8 @@ int ComputationDao::getComputationIdByDateTime(const time_t &dateTime) const {
 
     if (Database::checkUniqueResult(getClassName(), __func__,
             Database::execSelectQuery(query), query) != 0) {
+
+        query.first();
         result = query.value(0).toInt();
     }
 
@@ -92,10 +93,12 @@ Computation ComputationDao::getByComputationId(const int indexId) const {
 
     query.bindValue(":indexId", indexId);
 
-    Database::checkUniqueResult(getClassName(), __func__,
-            Database::execSelectQuery(query), query);
+    if (Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query)) {
 
-    fillComputation(computation, query);
+        query.first();
+        fillComputation(computation, query);
+    }
 
     return computation;
 }
@@ -157,8 +160,9 @@ bool ComputationDao::isAvailable(const int computationId) const {
     query.prepare(QString(formatter.str().c_str()));
     query.bindValue(":computationId", computationId);
 
-    if (Database::execSelectQuery(query) == 1) {
-        result = true;
+    if (Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query)) {
+        return true;
     }
 
     return result;

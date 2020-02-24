@@ -2,11 +2,12 @@
 
 #include <NumA/linear_algebra/vector/Vector3D.h>
 
-#include "../../../../../../include/partons/beans/observable/ObservableChannel.h"
-#include "../../../../../../include/partons/beans/process/DVCSSubProcessType.h"
+#include "../../../../../../include/partons/beans/observable/ObservableResult.h"
+#include "../../../../../../include/partons/beans/process/VCSSubProcessType.h"
 #include "../../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../../../include/partons/modules/process/DVCS/DVCSProcessModule.h"
+#include "../../../../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
 
@@ -16,13 +17,12 @@ const unsigned int DVCSCrossSectionUUBHSubProc::classId =
 
 DVCSCrossSectionUUBHSubProc::DVCSCrossSectionUUBHSubProc(
         const std::string &className) :
-        Observable(className) {
-    m_channel = ObservableChannel::DVCS;
+        DVCSObservable(className) {
 }
 
 DVCSCrossSectionUUBHSubProc::DVCSCrossSectionUUBHSubProc(
         const DVCSCrossSectionUUBHSubProc& other) :
-        Observable(other) {
+        DVCSObservable(other) {
 }
 
 DVCSCrossSectionUUBHSubProc::~DVCSCrossSectionUUBHSubProc() {
@@ -32,35 +32,27 @@ DVCSCrossSectionUUBHSubProc* DVCSCrossSectionUUBHSubProc::clone() const {
     return new DVCSCrossSectionUUBHSubProc(*this);
 }
 
-void DVCSCrossSectionUUBHSubProc::configure(
-        const ElemUtils::Parameters &parameters) {
-    Observable::configure(parameters);
-}
+PhysicalType<double> DVCSCrossSectionUUBHSubProc::computeObservable(
+        const DVCSObservableKinematic& kinematic,
+        const List<GPDType>& gpdType) {
 
-double DVCSCrossSectionUUBHSubProc::computePhiObservable(double phi) {
+    //evaluate
+    DVCSObservableResult A = m_pProcessModule->compute(1., -1,
+            NumA::Vector3D(0., 0., 0.), kinematic, gpdType,
+            VCSSubProcessType::BH);
 
-    double result = 0.;
+    DVCSObservableResult B = m_pProcessModule->compute(-1., -1,
+            NumA::Vector3D(0., 0., 0.), kinematic, gpdType,
+            VCSSubProcessType::BH);
 
-    //charge does not matter
-    double A =
-            static_cast<DVCSProcessModule*>(m_pProcessModule)->computeCrossSection(
-                    1., -1, NumA::Vector3D(0., 0., 0.), phi,
-                    DVCSSubProcessType::BH);
-
-    double B =
-            static_cast<DVCSProcessModule*>(m_pProcessModule)->computeCrossSection(
-                    -1., -1, NumA::Vector3D(0., 0., 0.), phi,
-                    DVCSSubProcessType::BH);
-
-    result = (A + B) / 2.;
+    //combine
+    PhysicalType<double> result = (A.getValue() + B.getValue()) / 2.;
 
     //integrate over transversely polarized target dependence to obtain 4-fold differential cross-section
-    result *= 2 * Constant::PI;
+    result *= 2. * Constant::PI;
 
     //change to nb
-    result *= Constant::CONV_GEVm2_TO_NBARN;
-
-    return result;
+    return result.makeSameUnitAs(PhysicalUnit::NB);
 }
 
 } /* namespace PARTONS */

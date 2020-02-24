@@ -13,6 +13,7 @@
 #include <vector>
 
 #include "../../../beans/gpd/GPDType.h"
+#include "../../../utils/type/PhysicalType.h"
 #include "DVCSProcessModule.h"
 
 namespace PARTONS {
@@ -55,19 +56,12 @@ protected:
     DVCSProcessBMJ12(const DVCSProcessBMJ12& other);
 
     virtual void initModule();
-    virtual void initModule(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization);
     virtual void isModuleWellConfigured();
 
     // Cross sections
-    virtual double CrossSectionBH(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization);
-
-    virtual double CrossSectionVCS(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization);
-
-    virtual double CrossSectionInterf(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization);
+    virtual PhysicalType<double> CrossSectionBH();
+    virtual PhysicalType<double> CrossSectionVCS();
+    virtual PhysicalType<double> CrossSectionInterf();
 
 private:
 
@@ -80,6 +74,7 @@ private:
     double m_theta; ///< Polarization angle of target.
     double m_Lambda; ///< Longitudinal polarization of target.
     double m_lambda; ///< Lepton helicity.
+    double m_phaseSpace; ///< Phase-space factor.
 
     double m_xB2; ///< Square of xB.
     std::vector<double> m_Q; ///< Square root of virtuality Q2.
@@ -97,7 +92,7 @@ private:
     std::vector<double> m_Delta2; ///< Mandelstam variable t.
                                   ///< m_Delta2[0] = t, m_Delta2[1] = Delta^4 = t^2, etc...
 
-    //@{
+                                  //@{
     double m_P1, m_P2; ///< Lepton propagators.
     //@}
 

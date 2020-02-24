@@ -199,11 +199,15 @@ public:
      * @return A pre-formatted characters string.
      */
     std::string toString() {
+
         ElemUtils::Formatter formatter;
 
         for (size_t i = 0; i != m_data.size(); i++) {
-            formatter << "List[index] = " << i << '\n' << m_data[i].toString()
-                    << '\n';
+
+            formatter << '\n';
+            formatter << "List[index] = " << i;
+            formatter << '\n';
+            formatter << m_data[i].toString();
         }
 
         return formatter.str();
@@ -279,16 +283,16 @@ public:
                         j++;
                     }
 
-                    info(__func__, rootComparisonReport.showComparisonStats());
+                    debug(__func__, rootComparisonReport.showComparisonStats());
 
                     if (rootComparisonReport.sizeOfComparedDataFailed() != 0) {
-                        info(__func__,
+                        debug(__func__,
                                 rootComparisonReport.showComparedDataFailed());
                     }
-                    rootComparisonReport.clearComparedData();
+//                    rootComparisonReport.clearComparedData();
                 }
 
-                info(__func__, rootComparisonReport.showComparisonStats());
+                debug(__func__, rootComparisonReport.showComparisonStats());
 
 //                // equal comparison by default
 //                if (this->size() == referenceObject.size()) {

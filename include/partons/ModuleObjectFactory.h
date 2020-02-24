@@ -11,28 +11,30 @@
 #include <map>
 #include <string>
 
+#include "ModuleObject.h"
 #include "ModuleObjectReference.h"
 
 namespace PARTONS {
-
 class ActiveFlavorsThresholdsModule;
 class BaseObjectFactory;
-class DoubleDistributionModule;
+class DVCSScalesModule;
+class TCSScalesModule;
 class DVCSConvolCoeffFunctionModule;
+class TCSConvolCoeffFunctionModule;
+class TCSObservable;
+class TCSProcessModule;
+class DVCSObservable;
 class DVCSProcessModule;
-class GapEquationSolverModule;
-class GPDBorderFunctionModule;
 class GPDEvolutionModule;
 class GPDModule;
 class GPDSubtractionConstantModule;
-class IncompleteGPDModule;
 class ModuleObject;
-class Observable;
-class ProcessModule;
-class RadonInverseModule;
 class RunningAlphaStrongModule;
-class ScalesModule;
-class XiConverterModule;
+class DVCSXiConverterModule;
+class TCSXiConverterModule;
+} /* namespace PARTONS */
+
+namespace PARTONS {
 
 /**
  * @class ModuleObjectFactory
@@ -61,44 +63,17 @@ public:
     ModuleObject* newModuleObject(unsigned int classId);
 
     /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a IncompleteGPDModule.
-     * @param classId Unique identifier of last child class.
-     * @return IncompleteGPDModule pointer.
+     * Clone module object.
+     * @param pModuleObjectOrig Module object to be cloned.
+     * @return Pointer to cloned object.
      */
-    IncompleteGPDModule* newIncompleteGPDModule(unsigned int classId);
-    /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a IncompleteGPDModule.
-     * @param className Name of last child class.
-     * @return IncompleteGPDModule pointer.
-     */
-    IncompleteGPDModule* newIncompleteGPDModule(const std::string & className);
+    template<class T> T* cloneModuleObject(T* pModuleObjectOrig) {
 
-    /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a RadonInverseModule.
-     * @param classId Unique identifier of last child class.
-     * @return RadonInverseModule pointer.
-     */
-    RadonInverseModule* newRadonInverseModule(unsigned int classId);
-    /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a RadonInverseModule.
-     * @param className Name of last child class.
-     * @return RadonInverseModule pointer.
-     */
-    RadonInverseModule* newRadonInverseModule(const std::string & className);
+        T* pModuleObjectClone = pModuleObjectOrig->clone();
+        store(pModuleObjectClone);
 
-    /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a DoubleDistributionModule.
-     * @param classId Unique identifier of last child class.
-     * @return DoubleDistributionModule pointer.
-     */
-    DoubleDistributionModule* newDoubleDistributionModule(unsigned int classId);
-    /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a DoubleDistributionModule.
-     * @param className Name of last child class.
-     * @return DoubleDistributionModule pointer.
-     */
-    DoubleDistributionModule* newDoubleDistributionModule(
-            const std::string & className);
+        return pModuleObjectClone;
+    }
 
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a GPDEvolutionModule.
@@ -127,20 +102,6 @@ public:
     GPDModule* newGPDModule(const std::string &className);
 
     /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a GPDBorderFunctionModule.
-     * @param classId Unique identifier of last child class.
-     * @return GPDBorderFunctionModule pointer.
-     */
-    GPDBorderFunctionModule* newGPDBorderFunctionModule(unsigned int classId);
-    /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a GPDBorderFunctionModule.
-     * @param className Name of last child class.
-     * @return GPDBorderFunctionModule pointer.
-     */
-    GPDBorderFunctionModule* newGPDBorderFunctionModule(
-            const std::string &className);
-
-    /**
      * Specialization of ModuleObjectFactory::newModuleObject into a GPDSubtractionConstantModule.
      * @param classId Unique identifier of last child class.
      * @return GPDSubtractionConstantModule pointer.
@@ -168,6 +129,21 @@ public:
      * @return DVCSConvolCoeffFunctionModule pointer.
      */
     DVCSConvolCoeffFunctionModule* newDVCSConvolCoeffFunctionModule(
+            const std::string &className);
+
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a TCSConvolCoeffFunctionModule.
+     * @param classId Unique identifier of last child class.
+     * @return TCSConvolCoeffFunctionModule pointer.
+     */
+    TCSConvolCoeffFunctionModule* newTCSConvolCoeffFunctionModule(
+            unsigned int classId);
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a TCSConvolCoeffFunctionModule.
+     * @param className Name of last child class.
+     * @return TCSConvolCoeffFunctionModule pointer.
+     */
+    TCSConvolCoeffFunctionModule* newTCSConvolCoeffFunctionModule(
             const std::string &className);
 
     /**
@@ -184,6 +160,19 @@ public:
     DVCSProcessModule* newDVCSProcessModule(const std::string & className);
 
     /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a TCSProcessModule.
+     * @param classId Unique identifier of last child class.
+     * @return TCSProcessModule pointer.
+     */
+    TCSProcessModule* newTCSProcessModule(unsigned int classId);
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a TCSProcessModule.
+     * @param className Name of last child class.
+     * @return TCSProcessModule pointer.
+     */
+    TCSProcessModule* newTCSProcessModule(const std::string & className);
+
+    /**
      * Specialization of ModuleObjectFactory::newModuleObject into a RunningAlphaStrongModule.
      * @param classId Unique identifier of last child class.
      * @return RunningAlphaStrongModule pointer.
@@ -198,83 +187,98 @@ public:
             const std::string & className);
 
     /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a ProcessModule.
-     * @param classId Unique identifier of last child class.
-     * @return ProcessModule pointer.
-     */
-    ProcessModule* newProcessModule(unsigned int classId);
-    /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a ProcessModule.
-     * @param className Name of last child class.
-     * @return ProcessModule pointer.
-     */
-    ProcessModule* newProcessModule(const std::string &className);
-
-    /**
      * Specialization of ModuleObjectFactory::newModuleObject into a ActiveFlavorsThresholdsModule.
      * @param classId Unique identifier of last child class.
      * @return ActiveFlavorsThresholdsModule pointer.
      */
-    ActiveFlavorsThresholdsModule* newActiveFlavorsThresholdsModule(unsigned int classId);
+    ActiveFlavorsThresholdsModule* newActiveFlavorsThresholdsModule(
+            unsigned int classId);
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a ActiveFlavorsModule.
      * @param className Name of last child class.
      * @return ActiveFlavorsModule pointer.
      */
-    ActiveFlavorsThresholdsModule* newActiveFlavorsThresholdsModule(const std::string &className);
-
-    /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a ScalesModule.
-     * @param classId Unique identifier of last child class.
-     * @return ScalesModule pointer.
-     */
-    ScalesModule* newScalesModule(unsigned int classId);
-    /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a ScaleModule.
-     * @param className Name of last child class.
-     * @return ScaleModule pointer.
-     */
-    ScalesModule* newScalesModule(const std::string &className);
-
-    /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a XiConverterModule.
-     * @param classId Unique identifier of last child class.
-     * @return XiConverterModule pointer.
-     */
-    XiConverterModule* newXiConverterModule(unsigned int classId);
-    /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a XiConverterModule.
-     * @param className Name of last child class.
-     * @return XiConverterModule pointer.
-     */
-    XiConverterModule* newXiConverterModule(const std::string &className);
-
-    /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a GapEquationSolverModule.
-     * @param classId Unique identifier of last child class.
-     * @return GapEquationSolverModule pointer.
-     */
-    GapEquationSolverModule* newGapEquationSolverModule(unsigned int classId);
-    /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a GapEquationSolverModule.
-     * @param className Name of last child class.
-     * @return GapEquationSolverModule pointer.
-     */
-    GapEquationSolverModule* newGapEquationSolverModule(
+    ActiveFlavorsThresholdsModule* newActiveFlavorsThresholdsModule(
             const std::string &className);
 
     /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a DVCSScalesModule.
+     * @param classId Unique identifier of last child class.
+     * @return DVCSScalesModule pointer.
+     */
+    DVCSScalesModule* newDVCSScalesModule(unsigned int classId);
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a DVCSScalesModule.
+     * @param className Name of last child class.
+     * @return DVCSScalesModule pointer.
+     */
+    DVCSScalesModule* newDVCSScalesModule(const std::string &className);
+
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a TCSScalesModule.
+     * @param classId Unique identifier of last child class.
+     * @return TCSScalesModule pointer.
+     */
+    TCSScalesModule* newTCSScalesModule(unsigned int classId);
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a TCSScalesModule.
+     * @param className Name of last child class.
+     * @return TCSScalesModule pointer.
+     */
+    TCSScalesModule* newTCSScalesModule(const std::string &className);
+
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a DVCSXiConverterModule.
+     * @param classId Unique identifier of last child class.
+     * @return DVCSXiConverterModule pointer.
+     */
+    DVCSXiConverterModule* newDVCSXiConverterModule(unsigned int classId);
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a DVCSXiConverterModule.
+     * @param className Name of last child class.
+     * @return DVCSXiConverterModule pointer.
+     */
+    DVCSXiConverterModule* newDVCSXiConverterModule(const std::string &className);
+
+    /**
+      * Specialization of ModuleObjectFactory::newModuleObject into a TCSXiConverterModule.
+      * @param classId Unique identifier of last child class.
+      * @return TCSXiConverterModule pointer.
+      */
+     TCSXiConverterModule* newTCSXiConverterModule(unsigned int classId);
+     /**
+      * Specialization of ModuleObjectFactory::newModuleObject into a TCSXiConverterModule.
+      * @param className Name of last child class.
+      * @return TCSXiConverterModule pointer.
+      */
+     TCSXiConverterModule* newTCSXiConverterModule(const std::string &className);
+
+    /**
      * Specialization of ModuleObjectFactory::newModuleObject into a Observable.
      * @param classId Unique identifier of last child class.
      * @return Observable pointer.
      */
-    Observable* newObservable(unsigned int classId);
+    DVCSObservable* newDVCSObservable(unsigned int classId);
+
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a Observable.
      * @param className Name of last child class.
      * @return Observable pointer.
      */
-    Observable* newObservable(const std::string & className);
+    DVCSObservable* newDVCSObservable(const std::string & className);
+
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a Observable.
+     * @param classId Unique identifier of last child class.
+     * @return Observable pointer.
+     */
+    TCSObservable* newTCSObservable(unsigned int classId);
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a Observable.
+     * @param className Name of last child class.
+     * @return Observable pointer.
+     */
+    TCSObservable* newTCSObservable(const std::string & className);
 
     /**
      * Method to update a pointer. Used to keep track of the modules and remove them when they become orphans (i.e. no pointer points to them).

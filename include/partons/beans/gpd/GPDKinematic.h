@@ -9,14 +9,16 @@
  */
 
 #include <ElementaryUtils/parameters/GenericType.h>
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <string>
+#include <vector>
 
-#include "../kinematic/KinematicType.h"
+#include "../../utils/type/PhysicalType.h"
+#include "../../utils/type/PhysicalUnit.h"
 #include "../Kinematic.h"
 
 namespace ElemUtils {
 class Packet;
-class Parameters;
 } /* namespace ElemUtils */
 
 namespace PARTONS {
@@ -26,101 +28,68 @@ namespace PARTONS {
  *
  * @brief Class representing single GPD kinematics.
  *
- * This class represents a single GPD kinematics (x, xi, t, \f$\mu_{F}^{2}\f$, \f$\mu_{F}^{2}\f$) to be used in all kinds of computations done within PARTONS GPD layer.
- * Analyze the following code for the example of usage:
- \code{.cpp}
- //evaluate exemplary GPD result
-
- //retrieve GPD service
- GPDService* pGPDService = Partons::getInstance()->getServiceObjectRegistry()->getGPDService();
-
- //load GPD module with the BaseModuleFactory
- GPDModule* pGPDModel = Partons::getInstance()->getModuleObjectFactory()->newGPDModule(MMS13Model::classId);
-
- //define GPD kinematics to be used in computation
- //here we are using the constructor that allows us to assign values of x, xi, t, muF2 and muR2 immediately
- GPDKinematic gpdKinematic(-0.1, 0.05, 0., 2., 2.);
-
- //define list of GPD types to be computed
- List<GPDType> gpdTypeList;
- gpdTypeList.add(GPDType::H);
-
- //evaluate
- GPDResult gpdResult = pGPDService->computeGPDModel(gpdKinematic, pGPDModel, gpdTypeList);
-
- //print kinematics and result
- Partons::getInstance()->getLoggerManager()->info("example", __func__, ElemUtils::Formatter() << "Kinematics:\n" << gpdKinematic.toString());
- Partons::getInstance()->getLoggerManager()->info("example", __func__, ElemUtils::Formatter() << "Result:\n" << gpdResult.toString());
- \endcode
- which gives via Logger:
- \code
- 19-05-2017 02:10:26 [INFO] (example::main) Kinematics:
- [GPDKinematic]
- m_className = GPDKinematic - m_objectId = 199 indexId = -1
- m_x = -0.1 m_xi = 0.05 m_t = 0 m_MuF2 = 2(Gev2) m_MuR2 = 2(Gev2)
- 19-05-2017 02:10:26 [INFO] (example::main) Result:
- [GPDResult]
- m_className = GPDResult - m_objectId = 201 indexId = -1
- [GPDKinematic]
- m_className = GPDKinematic - m_objectId = 199 indexId = -1
- m_x = -0.1 m_xi = 0.05 m_t = 0 m_MuF2 = 2(Gev2) m_MuR2 = 2(Gev2)
- [PartonDistributionList]
- GPD_H
- [PartonDistribution]
- m_className = PartonDistribution - m_objectId = 241 indexId = -1
- GluonDistribution = 0
- u = 0
- u(+) = -4.80937
- u(-) = 4.80937
- d = 0
- d(+) = -3.34827
- d(-) = 3.34827
- s = 0
- s(+) = 0
- s(-) = 0
- \endcode
+ * This class represents a single GPD kinematics (x, xi, t, \f$\mu_{F}^{2}\f$, \f$\mu_{F}^{2}\f$).
  */
 class GPDKinematic: public Kinematic {
 
 public:
 
-    //TODO The alias of T is defined in another class (Observable)
+    static const std::string GPD_KNEMATIC_CLASS_NAME; ///< Type of the kinematic in XML automation.
+
     /**
      * Parameter name to set variable \f$x\f$ via configuration methods.
      */
-    static const std::string GPD_KINEMATIC_PARAMETER_NAME_X;
+    static const std::string KINEMATIC_PARAMETER_NAME_X;
 
     /**
      * Parameter name to set variable \f$\xi\f$ via configuration methods.
      */
-    static const std::string GPD_KINEMATIC_PARAMETER_NAME_XI;
+    static const std::string KINEMATIC_PARAMETER_NAME_XI;
+
+    /**
+     * Parameter name to set variable \f$t\f$ via configuration methods.
+     */
+    static const std::string KINEMATIC_PARAMETER_NAME_T;
 
     /**
      * Parameter name to set variable \f$\mu_{F}^{2}\f$ via configuration methods.
      */
-    static const std::string GPD_KINEMATIC_PARAMETER_NAME_MUF2;
+    static const std::string KINEMATIC_PARAMETER_NAME_MUF2;
 
     /**
      * Parameter name to set variable \f$\mu_{R}^{2}\f$ via configuration methods.
      */
-    static const std::string GPD_KINEMATIC_PARAMETER_NAME_MUR2;
+    static const std::string KINEMATIC_PARAMETER_NAME_MUR2;
+
+    /**
+     * Parameter name to set unit of variable \f$x\f$ via configuration methods.
+     */
+    static const std::string KINEMATIC_PARAMETER_NAME_X_UNIT;
+
+    /**
+     * Parameter name to set unit of variable \f$\xi\f$ via configuration methods.
+     */
+    static const std::string KINEMATIC_PARAMETER_NAME_XI_UNIT;
+
+    /**
+     * Parameter name to set unit of variable \f$t\f$ via configuration methods.
+     */
+    static const std::string KINEMATIC_PARAMETER_NAME_T_UNIT;
+
+    /**
+     * Parameter name to set unit of variable \f$\mu_{F}^{2}\f$ via configuration methods.
+     */
+    static const std::string KINEMATIC_PARAMETER_NAME_MUF2_UNIT;
+
+    /**
+     * Parameter name to set unit of variable \f$\mu_{R}^{2}\f$ via configuration methods.
+     */
+    static const std::string KINEMATIC_PARAMETER_NAME_MUR2_UNIT;
 
     /**
      * Default constructor.
      */
     GPDKinematic();
-
-    /**
-     * Copy constructor.
-     * @param other Object to be copied.
-     */
-    GPDKinematic(const GPDKinematic &other);
-
-    /**
-     * Assignment constructor.
-     * @param parameters Parameters object storing values to be set marked by GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_X, GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_XI, ObservableKinematic::PARAMETER_NAME_T, GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUF2, GPDKinematic::GPD_KINEMATIC_PARAMETER_NAME_MUR2.
-     */
-    GPDKinematic(const ElemUtils::Parameters &parameters);
 
     /**
      * Assignment constructor.
@@ -142,16 +111,36 @@ public:
      * @param MuF2 Factorization scale squared (in \f$GeV^{2}\f$).
      * @param MuR2 Renormalization scale squared (in \f$GeV^{2}\f$).
      */
+    GPDKinematic(const PhysicalType<double> &x, const PhysicalType<double> &xi,
+            const PhysicalType<double> &t, const PhysicalType<double> &MuF2,
+            const PhysicalType<double> &MuR2);
+
+    /**
+     * Assignment constructor.
+     *
+     * @param x Longitudinal momentum fraction of active parton.
+     * @param xi Skewness variable.
+     * @param t Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
+     * @param MuF2 Factorization scale squared (in \f$GeV^{2}\f$).
+     * @param MuR2 Renormalization scale squared (in \f$GeV^{2}\f$).
+     */
     GPDKinematic(const ElemUtils::GenericType &x,
             const ElemUtils::GenericType &xi, const ElemUtils::GenericType &t,
             const ElemUtils::GenericType &MuF2,
             const ElemUtils::GenericType &MuR2);
 
     /**
+     * Copy constructor.
+     * @param other Object to be copied.
+     */
+    GPDKinematic(const GPDKinematic &other);
+
+    /**
      * Destructor.
      */
     virtual ~GPDKinematic();
 
+    virtual void configure(const ElemUtils::Parameters &parameters);
     virtual std::string toString() const;
 
     /**
@@ -166,69 +155,105 @@ public:
      */
     void unserialize(ElemUtils::Packet &packet);
 
+    /**
+     * Serialize to std::vector<double>.
+     */
+    void serializeIntoStdVector(std::vector<double>& vec) const;
+
+    /**
+     * Unserialize from std::vector<double>.
+     */
+    void unserializeFromStdVector(std::vector<double>::const_iterator& it,
+            const std::vector<double>::const_iterator& end);
+
+    /**
+     * Is equal operator. Checks if values of kinematic variables are the same.
+     */
+    bool operator ==(const GPDKinematic& other) const;
+
+    /**
+     * Is different operator. Checks of values of kinematic variables are different.
+     */
+    bool operator !=(const GPDKinematic& other) const;
+
     //********************************************************
     //*** SETTERS AND GETTERS ********************************
     //********************************************************
 
     /**
-     * Get kinematics type.
-     */
-    KinematicType::Type getKinematicType() const;
-
-    /**
-     * Set kinematics type.
-     */
-    void setKinematicType(KinematicType::Type kinematicType);
-
-    /**
      * Get longitudinal momentum fraction of active parton.
      */
-    double getX() const;
+    const PhysicalType<double>& getX() const;
 
     /**
      * Set longitudinal momentum fraction of active parton.
      */
-    void setX(double x);
+    void setX(const PhysicalType<double>& x);
+
+    /**
+     * Set longitudinal momentum fraction of active parton.
+     */
+    void setX(double x, PhysicalUnit::Type unit = PhysicalUnit::NONE);
 
     /**
      * Get skewness variable.
      */
-    double getXi() const;
+    const PhysicalType<double>& getXi() const;
 
     /**
      * Set skewness variable.
      */
-    void setXi(double xi);
+    void setXi(const PhysicalType<double>& xi);
+
+    /**
+     * Set skewness variable.
+     */
+    void setXi(double xi, PhysicalUnit::Type unit = PhysicalUnit::NONE);
 
     /**
      * Get four-momentum transfer squared of hadron target.
      */
-    double getT() const;
+    const PhysicalType<double>& getT() const;
 
     /**
      * Set four-momentum transfer squared of hadron target.
      */
-    void setT(double t);
+    void setT(const PhysicalType<double>& t);
+
+    /**
+     * Set four-momentum transfer squared of hadron target.
+     */
+    void setT(double t, PhysicalUnit::Type unit = PhysicalUnit::GEV2);
 
     /**
      * Get factorization scale squared.
      */
-    double getMuF2() const;
+    const PhysicalType<double>& getMuF2() const;
 
     /**
      * Set factorization scale squared.
      */
-    void setMuF2(double muF2);
+    void setMuF2(const PhysicalType<double>& muF2);
+
+    /**
+     * Set factorization scale squared.
+     */
+    void setMuF2(double muF2, PhysicalUnit::Type unit = PhysicalUnit::GEV2);
 
     /**
      * Get renormalization scale squared.
      */
-    double getMuR2() const;
+    const PhysicalType<double>& getMuR2() const;
 
     /**
      * Set renormalization scale squared.
      */
-    void setMuR2(double muR2);
+    void setMuR2(const PhysicalType<double>& muR2);
+
+    /**
+     * Set renormalization scale squared.
+     */
+    void setMuR2(double muR2, PhysicalUnit::Type unit = PhysicalUnit::GEV2);
 
 protected:
 
@@ -237,34 +262,29 @@ protected:
 private:
 
     /**
-     * Kinematics type.
-     */
-    KinematicType::Type m_kinematicType;
-
-    /**
      * Longitudinal momentum fraction of active parton.
      */
-    double m_x;
+    PhysicalType<double> m_x;
 
     /**
      * Skewness variable.
      */
-    double m_xi;
+    PhysicalType<double> m_xi;
 
     /**
      * Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
      */
-    double m_t;
+    PhysicalType<double> m_t;
 
     /**
      * Factorization scale squared (in \f$GeV^{2}\f$).
      */
-    double m_MuF2;
+    PhysicalType<double> m_MuF2;
 
     /**
      * Renormalization scale squared (in \f$GeV^{2}\f$).
      */
-    double m_MuR2;
+    PhysicalType<double> m_MuR2;
 };
 
 /**

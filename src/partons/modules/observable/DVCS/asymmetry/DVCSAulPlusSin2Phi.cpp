@@ -5,10 +5,11 @@
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
 #include <cmath>
 
-#include "../../../../../../include/partons/beans/observable/ObservableChannel.h"
-#include "../../../../../../include/partons/beans/observable/ObservableType.h"
+#include "../../../../../../include/partons/beans/observable/DVCS/DVCSObservableKinematic.h"
 #include "../../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../../include/partons/FundamentalPhysicalConstants.h"
+#include "../../../../../../include/partons/modules/observable/Observable.h"
+#include "../../../../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
 
@@ -19,9 +20,6 @@ const unsigned int DVCSAulPlusSin2Phi::classId =
 DVCSAulPlusSin2Phi::DVCSAulPlusSin2Phi(const std::string &className) :
         DVCSAulPlus(className), MathIntegratorModule(), m_pFunctionToIntegrateObservable(
                 0) {
-
-    m_observableType = ObservableType::FOURIER;
-    m_channel = ObservableChannel::DVCS;
 
     setIntegrator(NumA::IntegratorType1D::DEXP);
     initFunctorsForIntegrations();
@@ -58,15 +56,28 @@ void DVCSAulPlusSin2Phi::configure(const ElemUtils::Parameters &parameters) {
 
 double DVCSAulPlusSin2Phi::functionToIntegrateObservable(double x,
         std::vector<double> params) {
-    return DVCSAulPlus::computePhiObservable(x) * sin(2 * x);
+
+    DVCSObservableKinematic kinematic;
+    List<GPDType> gpdType;
+
+    unserializeKinematicsAndGPDTypesFromStdVector(params, kinematic, gpdType);
+
+    kinematic.setPhi(PhysicalType<double>(x, PhysicalUnit::RAD));
+
+    return DVCSAulPlus::computeObservable(kinematic, gpdType).getValue()
+            * sin(2 * x);
 }
 
-double DVCSAulPlusSin2Phi::computeFourierObservable() {
+PhysicalType<double> DVCSAulPlusSin2Phi::computeObservable(
+        const DVCSObservableKinematic& kinematic,
+        const List<GPDType>& gpdType) {
 
-    std::vector<double> emptyParameters;
+    std::vector<double> params = serializeKinematicsAndGPDTypesIntoStdVector(
+            kinematic, gpdType);
 
-    return integrate(m_pFunctionToIntegrateObservable, 0., (2 * Constant::PI),
-            emptyParameters) / Constant::PI;
+    return PhysicalType<double>(
+            integrate(m_pFunctionToIntegrateObservable, 0., (2 * Constant::PI),
+                    params) / (Constant::PI), PhysicalUnit::NONE);
 }
 
 } /* namespace PARTONS */

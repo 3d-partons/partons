@@ -1,5 +1,5 @@
-#ifndef DVCS_CONVOL_COEFF_FUNCTION_SERVICE_H
-#define DVCS_CONVOL_COEFF_FUNCTION_SERVICE_H
+#ifndef CONVOL_COEFF_FUNCTION_SERVICE_H
+#define CONVOL_COEFF_FUNCTION_SERVICE_H
 
 /**
  * @file ConvolCoeffFunctionService.h
@@ -8,112 +8,120 @@
  * @version 1.0
  */
 
+#include <ElementaryUtils/logger/CustomException.h>
+#include <ElementaryUtils/parameters/GenericType.h>
+#include <ElementaryUtils/PropertiesManager.h>
+#include <ElementaryUtils/string_utils/Formatter.h>
+#include <ElementaryUtils/string_utils/StringUtils.h>
+#include <ElementaryUtils/thread/Packet.h>
 #include <string>
 
-#include "../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
-#include "../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
+#include "../beans/automation/Task.h"
 #include "../beans/gpd/GPDType.h"
 #include "../beans/List.h"
+#include "../modules/convol_coeff_function/ConvolCoeffFunctionModule.h"
 #include "../ServiceObjectTyped.h"
+#include "../utils/VectorUtils.h"
 
 namespace PARTONS {
-
-class ConvolCoeffFunctionModule;
-class GPDModule;
 class GPDService;
+} /* namespace PARTONS */
+
+namespace PARTONS {
 
 /**
  * @class ConvolCoeffFunctionService
  *
- * @brief Singleton to handle and compute some pre-configured CCF modules.
- *
- * See the [general tutorial](@ref usage) and this [table](@ref usage_tasks) of examples.
- *
- * Please find below some examples on how to use the different functions provided by this service.
- * For now, only DVCS CFF are available, at Leading Order, Next-to-Leading Order, and including heavy quark masses in the NLO loop.
- *
- * 1. Compute the coefficient functions at specific kinematics (\f$\xi\f$, t, \f$Q^{2}\f$, \f$\mu_{F}^{2}\f$, \f$\mu_{R}^{2}\f$) using the GPD model `MyFavoriteGPDModel`:
- * \code{.cpp}
- void computeSingleKinematicsForDVCSComptonFormFactor() {
-
- // Retrieve service
- PARTONS::ConvolCoeffFunctionService* pDVCSConvolCoeffFunctionService = PARTONS::Partons::getInstance()->getServiceObjectRegistry()->getConvolCoeffFunctionService();
-
- // Create GPD module with the ModuleObjectFactory
- PARTONS::GPDModule* pGPDModule = PARTONS::Partons::getInstance()->getModuleObjectFactory()->newGPDModule(MyFavoriteGPDModel::classId);
-
- // Create CFF module with the ModuleObjectFactory
- PARTONS::DVCSConvolCoeffFunctionModule* pDVCSCFFModule = PARTONS::Partons::getInstance()->getModuleObjectFactory()->newDVCSConvolCoeffFunctionModule(PARTONS::DVCSCFFStandard::classId);
-
- // Create parameters to configure later DVCSCFFModel with PerturbativeQCD = LO
- // This can be switched to NLO //TODO What about Heavy Quark Masses?
- ElemUtils::Parameters parameters(PARTONS::PerturbativeQCDOrderType::PARAMETER_NAME_PERTURBATIVE_QCD_ORDER_TYPE, PARTONS::PerturbativeQCDOrderType::LO);
-
- // Configure DVCSCFFModule with previous parameters.
- pDVCSCFFModule->configure(parameters);
-
- // Link GPDModule to DVCSCFFModule
- pDVCSCFFModule->setGPDModule(pGPDModule);
-
- // Create kinematic (xi,t,Q2,MuF2,MuR2)
- PARTONS::DVCSConvolCoeffFunctionKinematic cffKinematic = PARTONS::DVCSConvolCoeffFunctionKinematic(0.01, -0.1, 4., 4., 4.);
-
- // Run computation
- PARTONS::DVCSConvolCoeffFunctionResult cffResult = pDVCSConvolCoeffFunctionService->computeForOneCCFModel(cffKinematic, pDVCSCFFModule);
-
- // Print results for DVCSCFFModule
- PARTONS::Partons::getInstance()->getLoggerManager()->info("main", __func__, cffResult.toString());
-
- // Remove DVCSCFFModule pointer reference
- PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(pDVCSCFFModule, 0);
- pDVCSCFFModule = 0;
-
- // Remove GPDModule pointer reference
- PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(pGPDModule, 0);
- pGPDModule = 0;
- }
-
- \endcode
- *
- * 2. The same thing can be done when dealing with many kinematics, by adapting the code with the following lines:
- \code{.cpp}
- // Load list of kinematics from file
- PARTONS::List<PARTONS::DVCSConvolCoeffFunctionKinematic> cffKinematicList = PARTONS::KinematicUtils().getCCFKinematicFromFile("/path/to/kinematics_dvcs_cff.csv");
-
- // Run computation
- PARTONS::List<PARTONS::DVCSConvolCoeffFunctionResult> cffResultList = pDVCSConvolCoeffFunctionService->computeForOneCCFModelAndManyKinematics(cffKinematicList, pDVCSCFFModule);
- \endcode
- * In the file `kinematics_dvcs_cff.csv`, kinematic points are encoded in separate lines using the following format: "xi|t|Q2|MuF2|MuR2".
+ * @brief Abstract class for a service to handle and compute pre-configured CCF modules.
  */
-class ConvolCoeffFunctionService: public ServiceObjectTyped<
-        DVCSConvolCoeffFunctionKinematic, DVCSConvolCoeffFunctionResult> {
+template<typename KinematicType, typename ResultType> class ConvolCoeffFunctionService: public ServiceObjectTyped<
+        KinematicType, ResultType> {
+
 public:
-    static const std::string FUNCTION_NAME_COMPUTE_WITH_GPD_MODEL; ///< Name of the XML task used for computing a CCF.
-    static const std::string FUNCTION_NAME_COMPUTE_LIST_WITH_GPD_MODEL; //TODO What's this?!
-    static const std::string FUNCTION_NAME_COMPUTE_MANY_KINEMATIC_ONE_MODEL; ///< Name of the XML task used for computing CCFs with a list of kinematics.
-    static const std::string FUNCTION_NAME_GENERATE_PLOT_FILE; ///< Name of the XML task used for generating a data file ready for plotting.
 
-    static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
+    static const std::string CCF_SERVICE_COMPUTE_SINGLE_KINEMATIC; ///< Name of the XML task used for computing a CCF.
+    static const std::string CCF_SERVICE_COMPUTE_MANY_KINEMATIC; ///< Name of the XML task used for computing CCFs with a list of kinematics.
+    static const std::string CCF_SERVICE_GENERATE_PLOT_FILE; ///< Name of the XML task used for generating a data file ready for plotting.
 
     /**
-     * Default constructor.
+     * Destructor.
      */
-    ConvolCoeffFunctionService(const std::string &className);
-    /**
-     * Default destructor.
-     */
-    virtual ~ConvolCoeffFunctionService();
+    virtual ~ConvolCoeffFunctionService() {
+    }
+
+    virtual void resolveObjectDependencies() {
+
+        ServiceObjectTyped<KinematicType, ResultType>::resolveObjectDependencies();
+
+        try {
+            this->m_batchSize = ElemUtils::GenericType(
+                    ElemUtils::PropertiesManager::getInstance()->getString(
+                            "ccf.service.batch.size")).toUInt();
+        } catch (const std::exception &e) {
+            throw ElemUtils::CustomException(this->getClassName(), __func__,
+                    e.what());
+        }
+    }
+
+    virtual void computeTask(Task &task) {
+
+        ServiceObjectTyped<KinematicType, ResultType>::computeTask(task);
+
+        List<ResultType> resultList;
+
+        if (ElemUtils::StringUtils::equals(task.getFunctionName(),
+                ConvolCoeffFunctionService::CCF_SERVICE_COMPUTE_MANY_KINEMATIC)) {
+            resultList = computeManyKinematicTask(task);
+        }
+
+        else if (ElemUtils::StringUtils::equals(task.getFunctionName(),
+                ConvolCoeffFunctionService::CCF_SERVICE_COMPUTE_SINGLE_KINEMATIC)) {
+            resultList.add(computeSingleKinematicTask(task));
+
+        }
+
+        else if (ElemUtils::StringUtils::equals(task.getFunctionName(),
+                ConvolCoeffFunctionService::CCF_SERVICE_GENERATE_PLOT_FILE)) {
+            generatePlotFileTask(task);
+        }
+
+        else if (!this->computeGeneralTask(task)) {
+            this->errorUnknownMethod(task);
+        }
+
+        this->updateResultInfo(resultList, this->m_resultInfo);
+
+        if (task.isStoreInDB()) {
+
+            if (resultList.size() == 0) {
+                this->warn(__func__, "No results to be inserted into database");
+            } else {
+                storeResultListInDatabase(resultList);
+            }
+        }
+
+        this->m_resultListBuffer = resultList;
+    }
 
     /**
-     * See parent class for details.
+     * Computes a ConvolCoeffFunctionModule at specific kinematics.
+     * @param kinematic CCF Kinematics.
+     * @param pConvolCoeffFunctionModule CCF model to use for the computation.
+     * @param gpdTypeList List of GPDType to compute. Default: all the GPDTypes available with (both) the ConvolCoeffFunctionModule (AND the underlying GPDModule, if any).
+     * @return Result.
      */
-    void resolveObjectDependencies();
+    ResultType computeSingleKinematic(const KinematicType &kinematic,
+            ConvolCoeffFunctionModule<KinematicType, ResultType>* pConvolCoeffFunctionModule,
+            const List<GPDType>& gpdTypeList = List<GPDType>()) const {
 
-    /**
-     * Method used in automation to compute given tasks.
-     * @param task Automation task to compute.
-     */
-    virtual void computeTask(Task &task);
+        //get list of GPD types
+        List<GPDType> restrictedByGPDTypeListFinal = getFinalGPDTypeList(
+                pConvolCoeffFunctionModule, gpdTypeList);
+
+        //return
+        return pConvolCoeffFunctionModule->compute(kinematic,
+                restrictedByGPDTypeListFinal);
+    }
 
     /**
      * Computes a CCF Model for a list of kinematics.
@@ -121,94 +129,193 @@ public:
      * @param pConvolCoeffFunctionModule CCF model to use for the computation.
      * @param gpdTypeList List of GPDType to compute. Default: all the GPDTypes available with (both) the ConvolCoeffFunctionModule (AND the underlying GPDModule, if any).
      * @param storeInDB Boolean to store the results and kinematics on the database. Default: false.
-     * @return List of DVCSConvolCoeffFunctionResult.
+     * @return List of results.
      */
-    List<DVCSConvolCoeffFunctionResult> computeForOneCCFModelAndManyKinematics(
-            List<DVCSConvolCoeffFunctionKinematic> &kinematics,
-            ConvolCoeffFunctionModule* pConvolCoeffFunctionModule,
-            const List<GPDType> &gpdTypeList = List<GPDType>(),
-            const bool storeInDB = 0);
+    List<ResultType> computeManyKinematic(List<KinematicType> &kinematics,
+            ConvolCoeffFunctionModule<KinematicType, ResultType>* pConvolCoeffFunctionModule,
+            const List<GPDType>& gpdTypeList = List<GPDType>()) {
 
-    /**
-     * Computes a ConvolCoeffFunctionModule at specific kinematics.
-     * @param kinematic CCF Kinematics.
-     * @param convolCoeffFunctionModule CCF model to use for the computation.
-     * @param gpdTypeList List of GPDType to compute. Default: all the GPDTypes available with (both) the ConvolCoeffFunctionModule (AND the underlying GPDModule, if any).
-     * @return DVCSConvolCoeffFunctionResult.
-     */
-    virtual DVCSConvolCoeffFunctionResult computeForOneCCFModel(
-            const DVCSConvolCoeffFunctionKinematic &kinematic,
-            ConvolCoeffFunctionModule* convolCoeffFunctionModule,
-            const List<GPDType> & gpdTypeList = List<GPDType>()) const;
+        //debug information
+        this->debug(__func__,
+                ElemUtils::Formatter() << kinematics.size()
+                        << " CCF kinematic(s) will be computed with "
+                        << pConvolCoeffFunctionModule->getClassName());
 
-//    virtual ResultList<DVCSConvolCoeffFunctionResult> computeListWithGPDModel(
-//            const DVCSConvolCoeffFunctionKinematic &kinematic,
-//            std::vector<ConvolCoeffFunctionModule*> listOfDVCSConvolCoeffFunctionModule,
-//            GPDType::Type gpdType = GPDType::ALL) const;
+        //initialize
+        List<ResultType> results;
+        List<ElemUtils::Packet> listOfPacket;
+        List<GPDType> finalGPDTypeList = getFinalGPDTypeList(
+                pConvolCoeffFunctionModule, gpdTypeList);
 
-//    ConvolCoeffFunctionModule* newConvolCoeffFunctionModuleFromTask(
-//            const Task &task) const;
-//
-//    ConvolCoeffFunctionModule* configureConvolCoeffFunctionModule(
-//            ConvolCoeffFunctionModule* pConvolCoeffFunctionModule,
-//            GPDModule* pGPDModule) const;
+        //if to be computed
+        if (finalGPDTypeList.size() != 0) {
 
-//    std::vector<DVCSConvolCoeffFunctionResult> compute(
-//            std::vector<CFFInputData> ListOfCFFInputData,
-//            GPDModule* _pGPDModule, double MuF, double MuR,
-//            QCDOrderType qcdOrderType);
-//
-//    std::map<unsigned int, CFFInputData> getMapOfCFFInputDataFromFile(
-//            const std::string & filePath);
-//
-//    std::vector<CFFInputData> getListOfCFFInputDataFromFile(
-//            const std::string & filePath);
+            //init thread
+            this->initComputationalThread(pConvolCoeffFunctionModule);
+
+            //print info
+            this->info(__func__, "Thread(s) running ...");
+
+            //batch feature
+            unsigned int i = 0;
+            unsigned int j = 0;
+
+            //divide to packets
+            while (i != kinematics.size()) {
+
+                listOfPacket.clear();
+                j = 0;
+
+                while ((j != this->m_batchSize) && (i != kinematics.size())) {
+
+                    ElemUtils::Packet packet;
+                    KinematicType kinematic;
+                    kinematic = kinematics[i];
+                    packet << kinematic << finalGPDTypeList;
+                    listOfPacket.add(packet);
+                    i++;
+                    j++;
+                }
+
+                //add, lunch and sort
+                this->addTasks(listOfPacket);
+                this->launchAllThreadAndWaitingFor();
+                this->sortResultList();
+
+                //print info
+                this->info(__func__,
+                        ElemUtils::Formatter()
+                                << "Kinematic(s) already computed: " << i);
+
+                //update result info
+                this->updateResultInfo(this->getResultList(),
+                        this->m_resultInfo);
+
+                //add to output
+                results.add(this->getResultList());
+
+                //clear buffer
+                this->clearResultListBuffer();
+            }
+
+            //clear threads
+            this->clearAllThread();
+
+        } else {
+            this->info(__func__,
+                    "Nothing to compute with your computation configuration ; there is no GPDType available");
+        }
+
+        return results;
+    }
 
     /**
      * Uses an automation task (XML file) to configure a ConvolCoeffFunctionModule.
-     * @param task
+     * @param task Automation task.
      * @return Pre-configured ConvolCoeffFunctionModule.
      */
-    ConvolCoeffFunctionModule* newConvolCoeffFunctionModuleFromTask(
-            const Task &task) const;
+    virtual ConvolCoeffFunctionModule<KinematicType, ResultType>* newConvolCoeffFunctionModuleFromTask(
+            const Task &task) const = 0;
 
     /**
      * Uses an automation task (XML file) to set specific kinematics.
-     * @param task
+     * @param task Task.
      * @return CCF kinematics.
      */
-    DVCSConvolCoeffFunctionKinematic newKinematicFromTask(
-            const Task &task) const;
+    virtual KinematicType newKinematicFromTask(const Task &task) const = 0;
+
     /**
      * Uses an automation task (XML file) to set a list of kinematics.
-     * @param task
+     * @param task Task.
      * @return List of CCF kinematics.
      */
-    List<DVCSConvolCoeffFunctionKinematic> newListOfKinematicFromTask(
-            const Task &task) const;
+    virtual List<KinematicType> newListOfKinematicFromTask(
+            const Task &task) const = 0;
+
+    /**
+     * Store list of results in DB.
+     * @param results List of results.
+     * @return True is insertion successful.
+     */
+    virtual void storeResultListInDatabase(
+            const List<ResultType>& results) const = 0;
+
+protected:
+
+    /**
+     * Default constructor.
+     */
+    ConvolCoeffFunctionService(const std::string &className) :
+            ServiceObjectTyped<KinematicType, ResultType>(className) {
+    }
 
 private:
-    GPDService* m_pGPDService; ///< Pointer to the singleton GPDService, used in case the CCF modules have an underlying GPD module.
 
-    //TODO improve object copy
     /**
      * Method used in the automated interface to compute CCF.
      * @param task Automated XML task.
-     * @return DVCSConvolCoeffFunctionResult object.
+     * @return Result.
      */
-    DVCSConvolCoeffFunctionResult computeWithGPDModelTask(Task &task) const;
+    ResultType computeSingleKinematicTask(Task &task) const {
+
+        //create a kinematic and init it with a list of parameters
+        KinematicType kinematic = newKinematicFromTask(task);
+
+        //get GPD types
+        List<GPDType> gpdTypeList = this->getGPDTypeListFromTask(task);
+
+        //get CCF module
+        ConvolCoeffFunctionModule<KinematicType, ResultType>* pConvolCoeffFunctionModule =
+                newConvolCoeffFunctionModuleFromTask(task);
+
+        //make computation
+        ResultType result = computeSingleKinematic(kinematic,
+                pConvolCoeffFunctionModule, gpdTypeList);
+
+        //remove reference to pConvolCoeffFunctionModule pointer.
+        this->m_pModuleObjectFactory->updateModulePointerReference(
+                pConvolCoeffFunctionModule, 0);
+        pConvolCoeffFunctionModule = 0;
+
+        //return
+        return result;
+    }
+
     /**
      * Method used in the automated interface to compute CCFs for a list of kinematics.
      * @param task Automated XML task.
-     * @return List of DVCSConvolCoeffFunctionResult objects.
+     * @return List of results.
      */
-    List<DVCSConvolCoeffFunctionResult> computeManyKinematicOneModelTask(
-            Task& task);
+    List<ResultType> computeManyKinematicTask(Task& task) {
+
+        //get kinematics
+        List<KinematicType> listOfKinematic = newListOfKinematicFromTask(task);
+
+        //get GPD types
+        List<GPDType> gpdTypeList = this->getGPDTypeListFromTask(task);
+
+        //get CCF module
+        ConvolCoeffFunctionModule<KinematicType, ResultType>* pConvolCoeffFunctionModule =
+                newConvolCoeffFunctionModuleFromTask(task);
+
+        //make computation
+        List<ResultType> results = computeManyKinematic(listOfKinematic,
+                pConvolCoeffFunctionModule, gpdTypeList);
+
+        //remove reference to pConvolCoeffFunctionModule pointer
+        this->m_pModuleObjectFactory->updateModulePointerReference(
+                pConvolCoeffFunctionModule, 0);
+        pConvolCoeffFunctionModule = 0;
+
+        //return
+        return results;
+    }
+
     /**
      * Method used in the automated interface to generate a data file ready for plotting.
      * @param task Automated XML task.
      */
-    void generatePlotFileTask(Task &task);
+    virtual void generatePlotFileTask(Task &task) = 0;
 
     /**
      * Method used to derive an intersection of available GPD types from the various underlying modules.
@@ -217,15 +324,44 @@ private:
      * @return List of GPD types.
      */
     List<GPDType> getFinalGPDTypeList(
-            ConvolCoeffFunctionModule* pConvolCoeffFunctionModule,
-            const List<GPDType> &gpdTypeList) const;
+            ConvolCoeffFunctionModule<KinematicType, ResultType>* pConvolCoeffFunctionModule,
+            const List<GPDType> &gpdTypeList) const {
 
-//    ConvolCoeffFunctionModule* prepareComputationConfiguration(
-//            const List<List<ElemUtils::Parameter> >& moduleNameList,
-//            unsigned int level = 0) const;
+        //initialize
+        List<GPDType> restrictedByGPDTypeListFinal = gpdTypeList;
 
+        //get list of GPD types available
+        restrictedByGPDTypeListFinal =
+                pConvolCoeffFunctionModule->getListOfAvailableGPDTypeForComputation();
+
+        //intersection between available GPDType and GPDType asked
+        if (!gpdTypeList.isEmpty()) {
+            restrictedByGPDTypeListFinal = VectorUtils::intersection(
+                    restrictedByGPDTypeListFinal, gpdTypeList);
+        }
+
+        //debug info
+        this->debug(__func__,
+                ElemUtils::Formatter() << restrictedByGPDTypeListFinal.size()
+                        << " GPDType will be computed");
+
+        //return
+        return restrictedByGPDTypeListFinal;
+    }
 };
+
+template<typename KinematicType, typename ResultType>
+const std::string ConvolCoeffFunctionService<KinematicType, ResultType>::CCF_SERVICE_COMPUTE_SINGLE_KINEMATIC =
+        "computeSingleKinematic";
+
+template<typename KinematicType, typename ResultType>
+const std::string ConvolCoeffFunctionService<KinematicType, ResultType>::CCF_SERVICE_COMPUTE_MANY_KINEMATIC =
+        "computeManyKinematic";
+
+template<typename KinematicType, typename ResultType>
+const std::string ConvolCoeffFunctionService<KinematicType, ResultType>::CCF_SERVICE_GENERATE_PLOT_FILE =
+        "generatePlotFile";
 
 } /* namespace PARTONS */
 
-#endif /* DVCS_CONVOL_COEFF_FUNCTION_SERVICE_H */
+#endif /* CONVOL_COEFF_FUNCTION_SERVICE_H */

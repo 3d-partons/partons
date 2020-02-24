@@ -82,6 +82,7 @@ Connection to a local server:
 ```py
 database.production.type = MYSQL
 database.production.url = localhost
+database.production.port = 3306
 database.production.dbname = your_partons_database_name
 database.production.user = your_sql_user_name 
 database.production.passwd = your_sql_user_password 
@@ -91,6 +92,7 @@ Connection to a remote server:
 ```py
 database.production.type = MYSQL
 database.production.url = remote.address.example.com 
+database.production.port = 3306
 database.production.dbname = your_partons_database_name
 database.production.user = your_sql_user_name
 database.production.passwd = your_sql_user_password
@@ -107,12 +109,7 @@ allow to enable the transaction mechanism that is based on temporary files loade
 
 # Database design {#database_design}
 
-The database design reflects the layered structure used in %PARTONS, with tables corresponding to C++ objects and rows corresponding to instances of these objects. There exist also tables storing general information on performed computations. The database design is explained here separately for the common tables and each of the layers by a single UML graph: 
-
-* [Database design of tables used by all layers](@ref database_design_1).
-* [Database design of GPD layer](@ref database_design_2).
-* [Database design of CFF layer](@ref database_design_3).
-* [Database design of observable layer](@ref database_design_4).
+The database design reflects the layered structure used in %PARTONS, with tables corresponding to C++ objects and rows corresponding to instances of these objects. There exist also tables storing general information on performed computations. The database design is explained in [this graph](@ref database_design_graph).
 
 <hr>
 
@@ -129,7 +126,7 @@ This example illustrates how to store a single GPD result into the database via 
 
 <scenario date="2017-01-01" description="Exemplary description - description are very useful!">
 
-    <task service="GPDService" method="computeGPDModel" storeInDB="1">
+    <task service="GPDService" method="computeSingleKinematic" storeInDB="1">
         <kinematics type="GPDKinematic">
             <param name="x" value="-0.1" />
             <param name="xi" value="0.05" />
@@ -149,50 +146,8 @@ This example illustrates how to store a single GPD result into the database via 
 </scenario>
 ```
 
-With the [C++ interface](@ref usage_cpp), users use Services explicitly. Each Service may be seen as a bridge between a single physics-related object and a corresponding SQL table (see [Database design](@ref database_design) section). Services are listed in the following table together with the aforementioned correspondence:
-| Service | Corresponding C++ object | Corresponding SQL table name |
-| :---- | :---- | :---- |
-| [GPDKinematicDaoService](@ref PARTONS::GPDKinematicDaoService) | [GPDKinematic](@ref PARTONS::GPDKinematic) | [gpd_kinematic](@ref database_design_2) |
-| [GPDResultDaoService](@ref PARTONS::GPDResultDaoService) | [GPDResult](@ref PARTONS::GPDResult) | [gpd_result](@ref database_design_2) |
-||||
-| [ConvolCoeffFunctionKinematicDaoService](@ref PARTONS::ConvolCoeffFunctionKinematicDaoService) | [DVCSConvolCoeffFunctionKinematic](@ref PARTONS::DVCSConvolCoeffFunctionKinematic) | [cff_kinematic](@ref database_design_3) |
-| [ConvolCoeffFunctionResultDaoService](@ref PARTONS::ConvolCoeffFunctionResultDaoService) | [DVCSConvolCoeffFunctionResult](@ref PARTONS::DVCSConvolCoeffFunctionResult) | [cff_result](@ref database_design_3) |
-||||
-| [ObservableKinematicDaoService](@ref PARTONS::ObservableKinematicDaoService) | [ObservableKinematic](@ref PARTONS::ObservableKinematic) | [observable_kinematic](@ref database_design_4) |
-| [ObservableResultDaoService](@ref PARTONS::ObservableResultDaoService) | [ObservableResult](@ref PARTONS::ObservableResult) | [observable_result](@ref database_design_4) |
-
-This example illustrates how to use Services via C++ interface:
-```cpp
-//evaluate exemplary GPD result to be inserted in database
-
-//retrieve GPD service
-PARTONS::GPDService* pGPDService = PARTONS::Partons::getInstance()->getServiceObjectRegistry()->getGPDService();
-
-//load GPD module with the BaseModuleFactory
-PARTONS::GPDModule* pGPDModel = PARTONS::Partons::getInstance()->getModuleObjectFactory()->newGPDModule(PARTONS::GPDMMS13::classId);
-
-//define GPD kinematics used in computation
-PARTONS::GPDKinematic gpdKinematic(-0.1, 0.05, 0., 2., 2.);
-
-//define list of GPD types to be computed
-PARTONS::List<GPDType> gpdTypeList;
-gpdTypeList.add(PARTONS::GPDType::ALL);
-
-//evaluate
-PARTONS::GPDResult gpdResult = pGPDService->computeGPDModel(gpdKinematic, pGPDModel, gpdTypeList);
-
-//get GPDResultDaoService
-PARTONS::GPDResultDaoService gpdResultDaoService;
-
-//insert result into database
-int id = gpdResultDaoService.insert(gpdResult);
-```
-For the list of all possible operations provided by Services, see their documentation. Note, that the documentation contains a number of additional examples. 
-
 <hr>
 
 # Store experimental data in database {#database_experimentaldata}
 
-The design of the %PARTONS database allows to store experimental data. Not only kinematics and results with uncertainties, but also information concerning related experiments can be stored in the database. These informations can be used later to make systematic comparisons with theoretical predictions, where experimental data are easily selected with a list of user-defined criteria. To introduce a new set of experimental data into the database, one can use scripts provided by our team, to be found in the `data/database/insert_exp_data` folder of your %PARTONS copy. We refer to the file `data/database/insert_experimental_data/README.md` for more information.
-
-Note that, like all resources in the folder `data`, during the installation of %PARTONS, these are copied by default to `/usr/local/share/PARTONS`.
+The design of the %PARTONS database allows to store experimental data. Not only kinematics and results with uncertainties, but also information concerning related experiments can be stored in the database. These informations can be used later to make systematic comparisons with theoretical predictions, where experimental data are easily selected with a list of user-defined criteria. 

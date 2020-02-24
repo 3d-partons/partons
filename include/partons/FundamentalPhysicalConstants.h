@@ -29,6 +29,7 @@ const double ZETA_3 = 1.2020569031595942;                   ///< Apéry's consta
 
 const double SPEED_OF_LIGHT = 299792458;                    ///< Speed of light \f$c\f$ in \f$\mathrm{m}/\mathrm{s}\f$ @cite Amsler:2008zzb.
 const double PLANCK_CONSTANT = 6.62606896 * 1.e-34;         ///< Planck constant \f$h\f$ in \f$\mathrm{J}\cdot\mathrm{s}\f$ @cite Amsler:2008zzb, @cite Amsler::2009update.
+const double PLANCK_CONSTANT_REDUCED = 6.58211899 * 1.e-16; ///< Planck constant reduced \f$h/2\pi\f$ in \f$\mathrm{eV}\cdot\mathrm{s}\f$ @cite Amsler:2008zzb.
 const double FINE_STRUCTURE_CONSTANT = 1. / 137.035999679;  ///< Fine-structure constant \f$\alpha\f$ @cite Amsler:2008zzb.
 
 // Conversions between GeV and fm

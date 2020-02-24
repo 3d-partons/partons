@@ -13,6 +13,7 @@
 #include <string>
 #include <vector>
 
+#include "../../../utils/type/PhysicalType.h"
 #include "DVCSProcessModule.h"
 
 namespace PARTONS {
@@ -51,24 +52,16 @@ protected:
     DVCSProcessGV08(const DVCSProcessGV08& other);
 
     virtual void initModule();
-    virtual void initModule(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization);
     virtual void isModuleWellConfigured();
 
     // Cross sections
-    virtual double CrossSectionBH(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization);
-    // Bethe Heitler cross section
-
-    virtual double CrossSectionVCS(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization);
-    // Virtual Compton Scattering cross section
-
-    virtual double CrossSectionInterf(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization);
-    // Interference cross section
+    virtual PhysicalType<double> CrossSectionBH();
+    virtual PhysicalType<double> CrossSectionVCS();
+    virtual PhysicalType<double> CrossSectionInterf();
 
 private:
+
+    double m_phaseSpace; ///< Phase-space factor.
 
     double m_phiGV; ///< Angle between hadronic and leptonic planes (opposite sign of the phi angle of Trento).
 

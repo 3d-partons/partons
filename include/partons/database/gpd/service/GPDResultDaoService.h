@@ -26,47 +26,9 @@ namespace PARTONS {
  * @brief GPD result Data Access Object (DAO) service.
  *
  * It deals with GPDResult C++ object and related tables from the database.
- *
- * With this service you can insert, select or remove GPD results from the database. It ensures the integrity of the database by using transaction and rollback mechanisms - if something wrong happened, the database will stay always in a stable state. In addition, it improves querying speed by using transaction and commit mechanisms for a large amount of simultaneous queries.
- *
- * Analyze the following code for the example of usage:
- \code{.cpp}
- //evaluate exemplary GPD result to be inserted in database
-
- //retrieve GPD service
- GPDService* pGPDService = Partons::getInstance()->getServiceObjectRegistry()->getGPDService();
-
- //load GPD module with the BaseModuleFactory
- GPDModule* pGPDModel = Partons::getInstance()->getModuleObjectFactory()->newGPDModule(MMS13Model::classId);
-
- //define GPD kinematics used in computation
- GPDKinematic gpdKinematic(-0.1, 0.05, 0., 2., 2.);
-
- //define list of GPD types to be computed
- List<GPDType> gpdTypeList;
- gpdTypeList.add(GPDType::H);
-
- //evaluate
- GPDResult gpdResultInserted = pGPDService->computeGPDModel(gpdKinematic, pGPDModel, gpdTypeList);
-
- //get GPDResultDaoService
- GPDResultDaoService gpdResultDaoService;
-
- //insert result into database
- int id = gpdResultDaoService.insert(gpdResultInserted);
-
- //retrieve result from database
- GPDResult gpdResultExtracted;
- gpdResultDaoService.select(id, gpdResultExtracted);
-
- //compare
- Partons::getInstance()->getLoggerManager()->info("example", __func__,
- ElemUtils::Formatter() << "Inserted: " << gpdResultInserted.toString());
- Partons::getInstance()->getLoggerManager()->info("example", __func__,
- ElemUtils::Formatter() << "Extracted: " << gpdResultExtracted.toString());
- \endcode
  */
 class GPDResultDaoService: public ResultDaoService {
+
 public:
 
     /**
@@ -105,6 +67,7 @@ public:
             const int computationId) const;
 
 private:
+
     int m_lastGPDKinematicId; ///< Unique id of row containing GPD kinematics to be inserted via temporary file mechanism.
     int m_lastGPDResultId; ///< Unique id of row containing GPD result to be inserted via temporary file mechanism.
     int m_lastPartonDistributionId; ///< Unique id of row containing parton distribution to be inserted via temporary file mechanism.
@@ -138,15 +101,6 @@ private:
      * ResultInfoDaoService object to perform database queries.
      */
     ResultInfoDaoService m_resultInfoDaoService;
-
-//    /**
-//     * Insert into the database a new GPDResult object without using transactions mechanisms.
-//     * Helpful when dealing with a ResultList<GPDResult> object, because transactions are already performed earlier.
-//     *
-//     * @param gpdResult
-//     * @return unique id related to the new entry inserted into the database
-//     */
-//    int insertWithoutTransaction(const GPDResult &gpdResult) const;
 };
 
 } /* namespace PARTONS */

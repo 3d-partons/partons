@@ -15,7 +15,6 @@
 
 namespace PARTONS {
 
-
 EnvironmentConfigurationDao::EnvironmentConfigurationDao() :
         BaseObject("EnvironmentConfigurationDao") {
 }
@@ -74,34 +73,14 @@ EnvironmentConfiguration* EnvironmentConfigurationDao::selectByIndexId(
     query.prepare(QString(formatter.str().c_str()));
     query.bindValue(":indexId", indexId);
 
-    Database::checkUniqueResult(getClassName(), __func__,
-            Database::execSelectQuery(query), query);
+    if (Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query)) {
 
-    pResult = getEnvironmentConfigurationFromQuery(query);
-
-    return pResult;
-}
-
-void EnvironmentConfigurationDao::deleteByIndexId(const int indexId) const {
-    QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
-
-    query.prepare(
-            "DELETE FROM environment_configuration WHERE environment_configuration_id = :indexId");
-
-    query.bindValue(":indexId", indexId);
-
-    if (query.exec()) {
-        debug(__func__, Database::getLastExecutedQuery(query));
-
-        //TODO add a confirm message
-    } else {
-        throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter() << query.lastError().text().toStdString()
-                        << " for sql query = "
-                        << query.executedQuery().toStdString());
+        query.first();
+        pResult = getEnvironmentConfigurationFromQuery(query);
     }
 
-    query.clear();
+    return pResult;
 }
 
 EnvironmentConfiguration* EnvironmentConfigurationDao::getEnvironmentConfigurationFromQuery(
@@ -138,6 +117,8 @@ int EnvironmentConfigurationDao::getEnvironmentConfigurationIdByHashSum(
 
     if (Database::checkUniqueResult(getClassName(), __func__,
             Database::execSelectQuery(query), query) != 0) {
+
+        query.first();
         indexId = query.value(0).toInt();
     }
 
@@ -159,10 +140,12 @@ std::string EnvironmentConfigurationDao::getConfigurationByIndexId(
     query.prepare(QString(formatter.str().c_str()));
     query.bindValue(":indexId", indexId);
 
-    Database::checkUniqueResult(getClassName(), __func__,
-            Database::execSelectQuery(query), query);
+    if (Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query)) {
 
-    configuration = query.value(0).toString().toStdString();
+        query.first();
+        configuration = query.value(0).toString().toStdString();
+    }
 
     return configuration;
 }

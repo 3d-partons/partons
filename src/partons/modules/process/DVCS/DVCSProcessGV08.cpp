@@ -7,9 +7,9 @@
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
+#include "../../../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
-
 
 const unsigned int DVCSProcessGV08::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
@@ -17,12 +17,26 @@ const unsigned int DVCSProcessGV08::classId =
 
 /*--------------------------------------- Constructors ---------------------------------*/
 
-//TODO add missing members initialization
 DVCSProcessGV08::DVCSProcessGV08(const std::string &className) :
         DVCSProcessModule(className), m_qCM(NumA::Vector4D(0., 0., 0., 0.)), m_pCM(
                 NumA::Vector4D(0., 0., 0., 0.)), m_qpCM(
                 NumA::Vector4D(0., 0., 0., 0.)), m_ppCM(
-                NumA::Vector4D(0., 0., 0., 0.)), m_phiGV(0.) {
+                NumA::Vector4D(0., 0., 0., 0.)) {
+
+    m_Q = 0.;
+    SigmaBHPolY = 0.;
+    m_xB2 = 0.;
+    NoPrint = false;
+    m_qpPerp = 0.;
+    m_Omega = 0.;
+    Validation = false;
+    m_xBMin = 0.;
+    m_xBMax = 0.;
+    m_s = 0.;
+    m_yGV = 0.;
+    m_thetag = 0.;
+    m_phaseSpace = 0.;
+    m_phiGV = 0.;
 }
 
 /*-------------------------------------- Destructor ------------------------------------*/
@@ -30,13 +44,24 @@ DVCSProcessGV08::DVCSProcessGV08(const std::string &className) :
 DVCSProcessGV08::~DVCSProcessGV08() {
 }
 
-//TODO add missing members initialization
 DVCSProcessGV08::DVCSProcessGV08(const DVCSProcessGV08& other) :
-        DVCSProcessModule(other) {
-    m_qCM = other.m_qCM;
-    m_pCM = other.m_pCM;
-    m_qpCM = other.m_qpCM;
-    m_ppCM = other.m_ppCM;
+        DVCSProcessModule(other), m_qCM(other.m_qCM), m_pCM(other.m_pCM), m_qpCM(
+                other.m_qpCM), m_ppCM(other.m_ppCM) {
+
+    m_Q = other.m_Q;
+    SigmaBHPolY = other.SigmaBHPolY;
+    m_xB2 = other.m_xB2;
+    NoPrint = other.NoPrint;
+    m_qpPerp = other.m_qpPerp;
+    m_Omega = other.m_Omega;
+    Validation = other.Validation;
+    m_xBMin = other.m_xBMin;
+    m_xBMax = other.m_xBMax;
+    m_s = other.m_s;
+    m_yGV = other.m_yGV;
+    m_thetag = other.m_thetag;
+    m_phaseSpace = other.m_phaseSpace;
+    m_phiGV = other.m_phiGV;
 }
 
 DVCSProcessGV08* DVCSProcessGV08::clone() const {
@@ -45,8 +70,11 @@ DVCSProcessGV08* DVCSProcessGV08::clone() const {
 
 void DVCSProcessGV08::initModule() {
 
-    //init mother class
+    // Init mother class
     DVCSProcessModule::initModule();
+
+    // Define the GV angle
+    m_phiGV = -m_phi;
 
     // vectors reinitialized to avoid problems with fixed indices
     m_Q = sqrt(m_Q2);
@@ -186,16 +214,6 @@ void DVCSProcessGV08::initModule() {
     MakeExactVCSAndInterfCrossSections();
 }
 
-void DVCSProcessGV08::initModule(double beamHelicity, double beamCharge,
-        NumA::Vector3D targetPolarization) {
-
-    //init mother class
-    DVCSProcessModule::initModule(beamHelicity, beamCharge, targetPolarization);
-
-    // define the GV angle
-    m_phiGV = -m_phi;
-}
-
 void DVCSProcessGV08::isModuleWellConfigured() {
 
     //check mother class
@@ -252,8 +270,8 @@ double DVCSProcessGV08::SqrAmplBH(double beamHelicity, double beamCharge,
     return M0 + (targetPolarization * vM);
 }
 
-double DVCSProcessGV08::SqrAmplVCSAndInterf(double beamHelicity, double beamCharge,
-        NumA::Vector3D targetPolarization) {
+double DVCSProcessGV08::SqrAmplVCSAndInterf(double beamHelicity,
+        double beamCharge, NumA::Vector3D targetPolarization) {
     return SqrAmplVCS(beamHelicity, beamCharge, targetPolarization)
             + SqrAmplInterf(beamHelicity, beamCharge, targetPolarization);
 }
@@ -271,11 +289,15 @@ void DVCSProcessGV08::MakeVCSHelicityAmplitudes() {
             - CFF_E.real() * pow(m_xB, 2)) / (sqrt(1 - m_xB) * (-2 + m_xB)));
     RMvcs[1][0] = 0;
     RMvcs[1][1] = 0;
-    RMvcs[1][2] = -((m_qpPerp * CFF_Et.real() * m_xB)
-            / (sqrt(1 - m_xB) * (-2 * Constant::PROTON_MASS + Constant::PROTON_MASS * m_xB)));
+    RMvcs[1][2] =
+            -((m_qpPerp * CFF_Et.real() * m_xB)
+                    / (sqrt(1 - m_xB)
+                            * (-2 * Constant::PROTON_MASS
+                                    + Constant::PROTON_MASS * m_xB)));
     RMvcs[2][0] = 0;
     RMvcs[2][1] = 0;
-    RMvcs[2][2] = (m_qpPerp * CFF_E.real()) / (Constant::PROTON_MASS * sqrt(1 - m_xB));
+    RMvcs[2][2] = (m_qpPerp * CFF_E.real())
+            / (Constant::PROTON_MASS * sqrt(1 - m_xB));
     RMvcs[3][0] = 0;
     RMvcs[3][1] = 0;
     RMvcs[3][2] = -((-4 * CFF_Ht.real() * (-1 + m_xB)
@@ -287,11 +309,15 @@ void DVCSProcessGV08::MakeVCSHelicityAmplitudes() {
             - CFF_E.imag() * pow(m_xB, 2)) / (sqrt(1 - m_xB) * (-2 + m_xB)));
     IMvcs[1][0] = 0;
     IMvcs[1][1] = 0;
-    IMvcs[1][2] = -((CFF_Et.imag() * m_qpPerp * m_xB)
-            / (sqrt(1 - m_xB) * (-2 * Constant::PROTON_MASS + Constant::PROTON_MASS * m_xB)));
+    IMvcs[1][2] =
+            -((CFF_Et.imag() * m_qpPerp * m_xB)
+                    / (sqrt(1 - m_xB)
+                            * (-2 * Constant::PROTON_MASS
+                                    + Constant::PROTON_MASS * m_xB)));
     IMvcs[2][0] = 0;
     IMvcs[2][1] = 0;
-    IMvcs[2][2] = (CFF_E.imag() * m_qpPerp) / (Constant::PROTON_MASS * sqrt(1 - m_xB));
+    IMvcs[2][2] = (CFF_E.imag() * m_qpPerp)
+            / (Constant::PROTON_MASS * sqrt(1 - m_xB));
     IMvcs[3][0] = 0;
     IMvcs[3][1] = 0;
     IMvcs[3][2] = -((-4 * CFF_Ht.imag() * (-1 + m_xB)
@@ -462,14 +488,16 @@ void DVCSProcessGV08::MakeExactBHCrossSections() {
             * (sqrt(m_pCM.getE() - Constant::PROTON_MASS)
                     * sqrt(m_ppCM.getE() - Constant::PROTON_MASS)
                     - sqrt(m_pCM.getE() + Constant::PROTON_MASS)
-                            * sqrt(m_ppCM.getE() + Constant::PROTON_MASS)) * sqrt(m_s)
-            * cos(m_thetag / 2.))
+                            * sqrt(m_ppCM.getE() + Constant::PROTON_MASS))
+            * sqrt(m_s) * cos(m_thetag / 2.))
             / (Constant::PROTON_MASS * sqrt(m_powerOfQ[2] - 4 * m_s * m_t))
             - (2 * sqrt(2.) * (m_qCM.getZ() + m_qpCM.getE()) * Gm
                     * (sqrt(m_ppCM.getE() - Constant::PROTON_MASS)
                             * sqrt(m_pCM.getE() + Constant::PROTON_MASS)
                             + sqrt(m_pCM.getE() - Constant::PROTON_MASS)
-                                    * sqrt(m_ppCM.getE() + Constant::PROTON_MASS))
+                                    * sqrt(
+                                            m_ppCM.getE()
+                                                    + Constant::PROTON_MASS))
                     * sqrt(m_s) * sin(m_thetag / 2.))
                     / sqrt(m_powerOfQ[2] - 4 * m_s * m_t);
     Jem[0][1] = -((F2
@@ -479,13 +507,16 @@ void DVCSProcessGV08::MakeExactBHCrossSections() {
                             * sqrt(m_ppCM.getE() + Constant::PROTON_MASS))
             * (2 * m_powerOfProtonMass[0] + m_powerOfQ[0] + 2 * m_s)
             * sqrt(-(m_s * m_t)) * cos(m_thetag / 2.))
-            / (Constant::PROTON_MASS * sqrt(m_s) * sqrt(m_powerOfQ[2] - 4 * m_s * m_t)))
+            / (Constant::PROTON_MASS * sqrt(m_s)
+                    * sqrt(m_powerOfQ[2] - 4 * m_s * m_t)))
             - (8 * Gm
                     * (sqrt(m_ppCM.getE() - Constant::PROTON_MASS)
                             * sqrt(m_pCM.getE() + Constant::PROTON_MASS)
                             + sqrt(m_pCM.getE() - Constant::PROTON_MASS)
-                                    * sqrt(m_ppCM.getE() + Constant::PROTON_MASS)) * m_s
-                    * sqrt(-m_t)
+                                    * sqrt(
+                                            m_ppCM.getE()
+                                                    + Constant::PROTON_MASS))
+                    * m_s * sqrt(-m_t)
                     * ((m_qCM.getZ() - m_qpCM.getZ()) * cos(m_thetag / 2.)
                             - m_qpCM.getX() * sin(m_thetag / 2.)))
                     / (m_powerOfQ[0] * sqrt(m_powerOfQ[2] - 4 * m_s * m_t));
@@ -493,14 +524,16 @@ void DVCSProcessGV08::MakeExactBHCrossSections() {
             * (sqrt(m_pCM.getE() - Constant::PROTON_MASS)
                     * sqrt(m_ppCM.getE() - Constant::PROTON_MASS)
                     - sqrt(m_pCM.getE() + Constant::PROTON_MASS)
-                            * sqrt(m_ppCM.getE() + Constant::PROTON_MASS)) * sqrt(m_s)
-            * cos(m_thetag / 2.))
+                            * sqrt(m_ppCM.getE() + Constant::PROTON_MASS))
+            * sqrt(m_s) * cos(m_thetag / 2.))
             / (Constant::PROTON_MASS * sqrt(m_powerOfQ[2] - 4 * m_s * m_t))
             + (2 * sqrt(2.) * (m_qCM.getZ() + m_qpCM.getE()) * Gm
                     * (sqrt(m_ppCM.getE() - Constant::PROTON_MASS)
                             * sqrt(m_pCM.getE() + Constant::PROTON_MASS)
                             + sqrt(m_pCM.getE() - Constant::PROTON_MASS)
-                                    * sqrt(m_ppCM.getE() + Constant::PROTON_MASS))
+                                    * sqrt(
+                                            m_ppCM.getE()
+                                                    + Constant::PROTON_MASS))
                     * sqrt(m_s) * sin(m_thetag / 2.))
                     / sqrt(m_powerOfQ[2] - 4 * m_s * m_t);
     Jem[1][0] = sqrt(2.) * Gm
@@ -520,15 +553,19 @@ void DVCSProcessGV08::MakeExactBHCrossSections() {
             * (sqrt(m_ppCM.getE() - Constant::PROTON_MASS)
                     * sqrt(m_pCM.getE() + Constant::PROTON_MASS)
                     - sqrt(m_pCM.getE() - Constant::PROTON_MASS)
-                            * sqrt(m_ppCM.getE() + Constant::PROTON_MASS)) * sqrt(m_s)
-            * cos(m_thetag / 2.)) / sqrt(m_powerOfQ[2] - 4 * m_s * m_t)
+                            * sqrt(m_ppCM.getE() + Constant::PROTON_MASS))
+            * sqrt(m_s) * cos(m_thetag / 2.))
+            / sqrt(m_powerOfQ[2] - 4 * m_s * m_t)
             - (2 * sqrt(2.) * m_qCM.getZ() * m_qpCM.getX() * F2
                     * (sqrt(m_pCM.getE() - Constant::PROTON_MASS)
                             * sqrt(m_ppCM.getE() - Constant::PROTON_MASS)
                             + sqrt(m_pCM.getE() + Constant::PROTON_MASS)
-                                    * sqrt(m_ppCM.getE() + Constant::PROTON_MASS))
+                                    * sqrt(
+                                            m_ppCM.getE()
+                                                    + Constant::PROTON_MASS))
                     * sqrt(m_s) * sin(m_thetag / 2.))
-                    / (Constant::PROTON_MASS * sqrt(m_powerOfQ[2] - 4 * m_s * m_t));
+                    / (Constant::PROTON_MASS
+                            * sqrt(m_powerOfQ[2] - 4 * m_s * m_t));
     Jem[2][1] = -((F2
             * (sqrt(m_pCM.getE() - Constant::PROTON_MASS)
                     * sqrt(m_ppCM.getE() - Constant::PROTON_MASS)
@@ -536,13 +573,16 @@ void DVCSProcessGV08::MakeExactBHCrossSections() {
                             * sqrt(m_ppCM.getE() + Constant::PROTON_MASS))
             * (2 * m_powerOfProtonMass[0] + m_powerOfQ[0] + 2 * m_s)
             * sqrt(-(m_s * m_t)) * sin(m_thetag / 2.))
-            / (Constant::PROTON_MASS * sqrt(m_s) * sqrt(m_powerOfQ[2] - 4 * m_s * m_t)))
+            / (Constant::PROTON_MASS * sqrt(m_s)
+                    * sqrt(m_powerOfQ[2] - 4 * m_s * m_t)))
             - (8 * Gm
                     * (sqrt(m_ppCM.getE() - Constant::PROTON_MASS)
                             * sqrt(m_pCM.getE() + Constant::PROTON_MASS)
                             - sqrt(m_pCM.getE() - Constant::PROTON_MASS)
-                                    * sqrt(m_ppCM.getE() + Constant::PROTON_MASS)) * m_s
-                    * sqrt(-m_t)
+                                    * sqrt(
+                                            m_ppCM.getE()
+                                                    + Constant::PROTON_MASS))
+                    * m_s * sqrt(-m_t)
                     * (m_qpCM.getX() * cos(m_thetag / 2.)
                             + (m_qCM.getZ() - m_qpCM.getZ())
                                     * sin(m_thetag / 2.)))
@@ -551,15 +591,19 @@ void DVCSProcessGV08::MakeExactBHCrossSections() {
             * (sqrt(m_ppCM.getE() - Constant::PROTON_MASS)
                     * sqrt(m_pCM.getE() + Constant::PROTON_MASS)
                     - sqrt(m_pCM.getE() - Constant::PROTON_MASS)
-                            * sqrt(m_ppCM.getE() + Constant::PROTON_MASS)) * sqrt(m_s)
-            * cos(m_thetag / 2.)) / sqrt(m_powerOfQ[2] - 4 * m_s * m_t)
+                            * sqrt(m_ppCM.getE() + Constant::PROTON_MASS))
+            * sqrt(m_s) * cos(m_thetag / 2.))
+            / sqrt(m_powerOfQ[2] - 4 * m_s * m_t)
             + (2 * sqrt(2.) * m_qCM.getZ() * m_qpCM.getX() * F2
                     * (sqrt(m_pCM.getE() - Constant::PROTON_MASS)
                             * sqrt(m_ppCM.getE() - Constant::PROTON_MASS)
                             + sqrt(m_pCM.getE() + Constant::PROTON_MASS)
-                                    * sqrt(m_ppCM.getE() + Constant::PROTON_MASS))
+                                    * sqrt(
+                                            m_ppCM.getE()
+                                                    + Constant::PROTON_MASS))
                     * sqrt(m_s) * sin(m_thetag / 2.))
-                    / (Constant::PROTON_MASS * sqrt(m_powerOfQ[2] - 4 * m_s * m_t));
+                    / (Constant::PROTON_MASS
+                            * sqrt(m_powerOfQ[2] - 4 * m_s * m_t));
     Jem[3][0] = sqrt(2.) * Gm
             * (sqrt(m_ppCM.getE() - Constant::PROTON_MASS)
                     * sqrt(m_pCM.getE() + Constant::PROTON_MASS)
@@ -843,8 +887,8 @@ void DVCSProcessGV08::MakeExactBHCrossSections() {
                     + 2 * m_powerOfProtonMass[0] * (m_powerOfQ[0] - m_s)
                     + pow(m_powerOfQ[0] + m_s, 2))
                     * (4 * m_powerOfProtonMass[0] - m_t));
-    SigmaBHPolY = 32 * Ge * Gm * Constant::PROTON_MASS * m_Q * (m_powerOfQ[0] - m_t)
-            * m_t;
+    SigmaBHPolY = 32 * Ge * Gm * Constant::PROTON_MASS * m_Q
+            * (m_powerOfQ[0] - m_t) * m_t;
     SigmaBHPolZ[0] =
             (-128 * Ge * Gm * m_powerOfProtonMass[0]
                     * (-(m_powerOfQ[0] * (m_powerOfQ[0] + m_s))
@@ -3076,22 +3120,22 @@ double DVCSProcessGV08::DdirectDcrossed(double phi) {
     return DDDC;
 }
 
-double DVCSProcessGV08::CrossSectionBH(double beamHelicity, double beamCharge,
-        NumA::Vector3D targetPolarization) {
-    return SqrAmplBH(beamHelicity, beamCharge, targetPolarization)
-            * m_phaseSpace;
+PhysicalType<double> DVCSProcessGV08::CrossSectionBH() {
+    return PhysicalType<double>(
+            SqrAmplBH(m_beamHelicity, m_beamCharge, m_targetPolarization)
+                    * m_phaseSpace, PhysicalUnit::GEVm2);
 }
 
-double DVCSProcessGV08::CrossSectionVCS(double beamHelicity, double beamCharge,
-        NumA::Vector3D targetPolarization) {
-    return SqrAmplVCS(beamHelicity, beamCharge, targetPolarization)
-            * m_phaseSpace;
+PhysicalType<double> DVCSProcessGV08::CrossSectionVCS() {
+    return PhysicalType<double>(
+            SqrAmplVCS(m_beamHelicity, m_beamCharge, m_targetPolarization)
+                    * m_phaseSpace, PhysicalUnit::GEVm2);
 }
 
-double DVCSProcessGV08::CrossSectionInterf(double beamHelicity, double beamCharge,
-        NumA::Vector3D targetPolarization) {
-    return SqrAmplInterf(beamHelicity, beamCharge, targetPolarization)
-            * m_phaseSpace;
+PhysicalType<double> DVCSProcessGV08::CrossSectionInterf() {
+    return PhysicalType<double>(
+            SqrAmplInterf(m_beamHelicity, m_beamCharge, m_targetPolarization)
+                    * m_phaseSpace, PhysicalUnit::GEVm2);
 }
 
 } /* namespace PARTONS */

@@ -23,7 +23,7 @@ namespace PARTONS {
  *
  * @brief GPD result Data Access Object (DAO).
  *
- * This DAO is used to insert, select and delete GPD results from the database. This class in not intended to be used by regular users who should deal with GPDResultDaoService instead.
+ * This DAO is used to insert, select and delete GPD results from the database.
  */
 class GPDResultDao: public BaseObject {
 public:
@@ -45,7 +45,7 @@ public:
      * @param computationId Unique id of row in the database containing computation information associated to this result.
      * @return Unique id of inserted row in the database.
      */
-    int insertResult(const std::string &computationModuleName,
+    int insertGPDResult(const std::string &computationModuleName,
             int gpdKinematicId, int computationId) const;
 
     /**
@@ -69,7 +69,7 @@ public:
 private:
 
     /**
-     * GPDKinematicDao object to perform database queries.
+     * Kinematic DAO.
      */
     GPDKinematicDao m_gpdKinematicDao;
 
@@ -85,9 +85,6 @@ private:
      */
     void fillGPDResultList(List<GPDResult> &gpdResultList,
             QSqlQuery &query) const;
-
-    // a supprimer
-    // void fillGPDResult(GPDResult &gpdResult) const;
 };
 
 } /* namespace PARTONS */

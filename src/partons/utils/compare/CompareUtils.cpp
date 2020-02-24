@@ -4,11 +4,11 @@
 #include <NumA/utils/Differences.h>
 #include <NumA/utils/Tolerances.h>
 #include <cmath>
+#include <iostream>
 
 #include "../../../../include/partons/utils/compare/ComparisonData.h"
 
 namespace PARTONS {
-
 
 ComparisonData CompareUtils::compareDouble(const std::string &variableName,
         const double lhs, const double rhs, const NumA::Tolerances &tolerances,
@@ -44,20 +44,25 @@ ComparisonData CompareUtils::compareComplex(const std::string& variableName,
         const NumA::Tolerances& tolerances,
         const std::string& parentObjectInfo) {
 
-    bool comparisonResult = false;
+    ComparisonData realComparisonData = compareDouble("", lhs.real(),
+            rhs.real(), tolerances, "");
 
-    double lhsNorm = std::norm(lhs);
-    double rhsNorm = std::norm(rhs);
-    double modulous = sqrt(lhsNorm);
+    ComparisonData imagComparisonData = compareDouble("", lhs.imag(),
+            rhs.imag(), tolerances, "");
 
-    if (lhsNorm == rhsNorm) {
-        comparisonResult = true;
-    }
-
-    //TODO replace Difference object by more useful object for complex norm/modulous
-    return ComparisonData(comparisonResult, variableName,
+    return ComparisonData(
+            realComparisonData.isComparisonPassed()
+                    && imagComparisonData.isComparisonPassed(), variableName,
             ElemUtils::Formatter() << lhs, ElemUtils::Formatter() << rhs,
-            NumA::Differences(modulous, modulous), parentObjectInfo);
+            NumA::Differences(
+                    (realComparisonData.getDifferences().getAbsoluteDifference()
+                            > imagComparisonData.getDifferences().getAbsoluteDifference()) ?
+                            (realComparisonData.getDifferences().getAbsoluteDifference()) :
+                            (imagComparisonData.getDifferences().getAbsoluteDifference()),
+                    (realComparisonData.getDifferences().getRelativeDifference()
+                            > imagComparisonData.getDifferences().getRelativeDifference()) ?
+                            (realComparisonData.getDifferences().getRelativeDifference()) :
+                            (imagComparisonData.getDifferences().getRelativeDifference())), parentObjectInfo);
 }
 
 } /* namespace PARTONS */

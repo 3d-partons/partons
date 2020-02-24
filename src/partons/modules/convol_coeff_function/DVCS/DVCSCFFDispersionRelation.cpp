@@ -8,18 +8,20 @@
 #include <cmath>
 #include <utility>
 
+#include "../../../../../include/partons/beans/gpd/GPDKinematic.h"
+#include "../../../../../include/partons/beans/gpd/GPDSubtractionConstantKinematic.h"
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
 #include "../../../../../include/partons/beans/PerturbativeQCDOrderType.h"
 #include "../../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../../include/partons/modules/active_flavors_thresholds/ActiveFlavorsThresholdsQuarkMasses.h"
 #include "../../../../../include/partons/modules/gpd/GPDModule.h"
 #include "../../../../../include/partons/modules/gpd_subtraction_constant/GPDSubtractionConstantModule.h"
-#include "../../../../../include/partons/modules/running_alpha_strong/RunningAlphaStrongStandard.h"
 #include "../../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../../include/partons/Partons.h"
+#include "../../../../../include/partons/utils/type/PhysicalType.h"
+#include "../../../../../include/partons/beans/gpd/GPDSubtractionConstantResult.h"
 
 namespace PARTONS {
 
@@ -82,19 +84,11 @@ void DVCSCFFDispersionRelation::initFunctorsForIntegrations() {
                     &DVCSCFFDispersionRelation::dispersionRelationIntegralPartDiagonalB);
 }
 
-//TODO init in mother class ? ; propagate init to mother class ?
 void DVCSCFFDispersionRelation::resolveObjectDependencies() {
 
+    DVCSConvolCoeffFunctionModule::resolveObjectDependencies();
+
     setIntegrator(NumA::IntegratorType1D::DEXP);
-
-    //TODO not used!
-    m_pRunningAlphaStrongModule =
-            Partons::getInstance()->getModuleObjectFactory()->newRunningAlphaStrongModule(
-                    RunningAlphaStrongStandard::classId);
-
-    m_pNfConvolCoeffFunction =
-            Partons::getInstance()->getModuleObjectFactory()->newActiveFlavorsThresholdsModule(
-                    ActiveFlavorsThresholdsQuarkMasses::classId);
 }
 
 void DVCSCFFDispersionRelation::configure(
@@ -152,7 +146,8 @@ DVCSCFFDispersionRelation::DVCSCFFDispersionRelation(
     //copy
     if (other.m_pSubtractionConstantModule) {
         m_pSubtractionConstantModule =
-                other.m_pSubtractionConstantModule->clone();
+                m_pModuleObjectFactory->cloneModuleObject(
+                        other.m_pSubtractionConstantModule);
     } else {
         m_pSubtractionConstantModule = 0;
     }
@@ -205,23 +200,15 @@ std::complex<double> DVCSCFFDispersionRelation::computeUnpolarized() {
     Re += computeSquareChargeAveragedGPD(m_xi) * (log(m_xi) - log(1. - m_xi));
 
     //subtraction constant
-    double Sub = m_pSubtractionConstantModule->compute(m_t, m_MuF2, m_MuR2);
-
-    if (m_currentGPDComputeType == GPDType::H) {
-        Re -= Sub;
-    } else if (m_currentGPDComputeType == GPDType::E) {
-        Re += Sub;
-    } else {
-        throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter() << "Illegal GPD type in this place "
-                        << GPDType(m_currentGPDComputeType).toString());
-    }
+    double Sub = m_pSubtractionConstantModule->compute(
+            GPDSubtractionConstantKinematic(m_t, m_MuF2, m_MuR2),
+            m_currentGPDComputeType).getValue().getValue();
 
     //imaginary part
     double Im = Constant::PI * computeSquareChargeAveragedGPD(m_xi);
 
     //return
-    return std::complex<double>(Re - Sub, Im);
+    return std::complex<double>(Re + Sub, Im);
 }
 
 std::complex<double> DVCSCFFDispersionRelation::computePolarized() {
@@ -258,8 +245,8 @@ std::complex<double> DVCSCFFDispersionRelation::computePolarized() {
 double DVCSCFFDispersionRelation::computeSquareChargeAveragedGPD(double xi) {
 
     //get GPD result
-    PartonDistribution partonDistribution = m_pGPDModule->compute(xi, xi, m_t,
-            m_MuF2, m_MuR2, m_currentGPDComputeType);
+    PartonDistribution partonDistribution = m_pGPDModule->compute(
+            GPDKinematic(xi, xi, m_t, m_MuF2, m_MuR2), m_currentGPDComputeType);
 
     //return singlet combination
     return partonDistribution.getQuarkDistribution(QuarkFlavor::UP).getQuarkDistributionPlus()

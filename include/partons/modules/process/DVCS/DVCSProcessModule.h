@@ -9,14 +9,27 @@
  */
 
 #include <ElementaryUtils/parameters/Parameters.h>
+#include <NumA/linear_algebra/vector/Vector3D.h>
 #include <complex>
+#include <map>
 #include <string>
 
+#include "../../../beans/automation/BaseObjectData.h"
+#include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "../../../beans/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionResult.h"
 #include "../../../beans/gpd/GPDType.h"
 #include "../../../beans/List.h"
-#include "../../../beans/process/DVCSSubProcessType.h"
+#include "../../../beans/observable/DVCS/DVCSObservableKinematic.h"
+#include "../../../beans/observable/DVCS/DVCSObservableResult.h"
+#include "../../../beans/process/VCSSubProcessType.h"
+#include "../../../utils/type/PhysicalType.h"
 #include "../ProcessModule.h"
+
+namespace PARTONS {
+class DVCSConvolCoeffFunctionModule;
+class DVCSScalesModule;
+class DVCSXiConverterModule;
+} /* namespace PARTONS */
 
 namespace PARTONS {
 
@@ -24,115 +37,159 @@ namespace PARTONS {
  * @class DVCSProcessModule
  *
  * @brief Abstract class for computing the *differential* cross section of
- * the photon electroproduction process (also called DVCS ; Deeply Virtual Compton Scattering).
+ * the photon electroproduction process (also called DVCS; Deeply Virtual Compton Scattering).
  *
  * The cross-section is five-fold differential with respect to the variables: @f$ x_B @f$, @f$ Q^2 @f$, @f$ t @f$ and the two angles.
  */
-class DVCSProcessModule: public ProcessModule {
+class DVCSProcessModule: public ProcessModule<DVCSObservableKinematic,
+        DVCSObservableResult> {
 
 public:
 
+    static const std::string DVCS_PROCESS_MODULE_CLASS_NAME; ///< Type of the module in XML automation.
+
     /**
-     * Constructor.
-     * See BaseObject::BaseObject and ModuleObject::ModuleObject for more details.
-     *
-     * @param className name of child class.
+     * Destructor.
+     */
+    virtual ~DVCSProcessModule();
+
+    virtual DVCSProcessModule* clone() const = 0;
+    virtual std::string toString() const;
+    virtual void resolveObjectDependencies();
+    virtual void run();
+    virtual void configure(const ElemUtils::Parameters &parameters);
+    virtual void prepareSubModules(
+            const std::map<std::string, BaseObjectData>& subModulesData);
+    virtual DVCSObservableResult compute(double beamHelicity, double beamCharge,
+            NumA::Vector3D targetPolarization,
+            const DVCSObservableKinematic& kinematic,
+            const List<GPDType>& gpdType = List<GPDType>());
+    virtual List<GPDType> getListOfAvailableGPDTypeForComputation() const;
+
+    /**
+     * Computes the differential cross-section. Must be implemented in the child class.
+     * @param beamHelicity Helicity of the beam (in units of hbar/2).
+     * @param beamCharge Charge of the beam (in units of positron charge).
+     * @param targetPolarization Polarization of the target. In GV conventions.
+     * @param kinematic Kinematics.
+     * @param processType Subprocess type.
+     * @return Result.
+     */
+    DVCSObservableResult compute(double beamHelicity, double beamCharge,
+            NumA::Vector3D targetPolarization,
+            const DVCSObservableKinematic& kinematic,
+            const List<GPDType>& gpdType, VCSSubProcessType::Type processType);
+
+    /**
+     * Reset previous kinematics.
+     */
+    virtual void resetPreviousKinematic();
+
+    /**
+     * Check if this kinematics is different than the previous one.
+     */
+    bool isPreviousCCFKinematicDifferent(
+            const DVCSConvolCoeffFunctionKinematic& kinematic) const;
+
+    // ##### GETTERS & SETTERS #####
+
+    /**
+     * Get scale module.
+     */
+    DVCSScalesModule* getScaleModule() const;
+
+    /**
+     * Set scale module.
+     */
+    void setScaleModule(DVCSScalesModule* pScaleModule);
+
+    /**
+     * Get xi converter module.
+     */
+    DVCSXiConverterModule* getXiConverterModule() const;
+
+    /**
+     * Set xi converted module.
+     */
+    void setXiConverterModule(DVCSXiConverterModule* pXiConverterModule);
+
+    /**
+     * Get CCF module;
+     */
+    DVCSConvolCoeffFunctionModule* getConvolCoeffFunctionModule() const;
+
+    /**
+     * Set CCF module
+     */
+    void setConvolCoeffFunctionModule(
+            DVCSConvolCoeffFunctionModule* pConvolCoeffFunctionModule);
+
+    // ##### IMPLEMENTATION MEMBERS #####
+
+    /**
+     * Bethe-Heitler differential cross section.
+     */
+    virtual PhysicalType<double> CrossSectionBH();
+
+    /**
+     * Virtual Compton Scattering differential cross section.
+     */
+    virtual PhysicalType<double> CrossSectionVCS();
+
+    /**
+     * Interference differential cross section.
+     */
+    virtual PhysicalType<double> CrossSectionInterf();
+
+protected:
+
+    /**
+     * Default constructor.
      */
     DVCSProcessModule(const std::string &className);
 
     /**
-     * Default destructor.
-     */
-    virtual ~DVCSProcessModule();
-
-    virtual void resolveObjectDependencies();
-
-    virtual void configure(const ElemUtils::Parameters &parameters);
-
-    void computeConvolCoeffFunction(double xB, double t, double Q2, double E,
-            const List<GPDType> & gpdType = List<GPDType>());
-
-    // TODO convert double to integer
-    double computeCrossSection(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization, double phi);
-
-    /**
-     * Compute cross section for a given process.
-     * @param beamHelicity Beam helicity.
-     * @param beamCharge Beam charge.
-     * @param targetPolarization Target polarization.
-     * @param phi Angle between leptonic and hadronic planes (radian).
-     * @param processType Process type (BH, DVCS, Int).
-     */
-    double computeCrossSection(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization, double phi,
-            DVCSSubProcessType::Type processType);
-
-    virtual void setConvolCoeffFunctionModule(
-            ConvolCoeffFunctionModule* pConvolCoeffFunctionModule);
-
-protected:
-    /**
      * Copy constructor.
-     *
-     * Use by the factory.
-     *
-     * @param other
+     * @param other Object to be copied.
      */
     DVCSProcessModule(const DVCSProcessModule& other);
 
+    virtual void setKinematics(const DVCSObservableKinematic& kinematic);
+    virtual void setExperimentalConditions(double beamHelicity,
+            double beamCharge, NumA::Vector3D targetPolarization);
     virtual void initModule();
-    /**
-     * Method called when computing the cross-section, i.e.\ when the angles and polarizations are already known.
-     * @param beamHelicity Helicity of the beam.
-     * @param beamCharge Electric charge of the beam.
-     * @param targetPolarization Target polarization. In GV conventions.
-     */
-    virtual void initModule(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization);
     virtual void isModuleWellConfigured();
 
-    double m_phaseSpace; ///< Phase space factor of the cross section.
+    double m_xB; ///< Bjorken variable.
+    double m_t; ///< Mandelstam variable (square of the 4-momentum transferm in GeV2).
+    double m_Q2; ///< Virtuality of the incoming photon (in GeV2).
+    double m_E; ///< Beam energy in target rest frame (in GeV).
+    double m_phi; ///<  Angle between leptonic and hadronic plane (in radians, Trento convention).
+
+    double m_beamHelicity; ///< Beam helicity.
+    double m_beamCharge; ///< Beam charge.
+    NumA::Vector3D m_targetPolarization; ///< Target polarization.
+
     double m_tmin; ///< Minimal value of t.
     double m_tmax; ///< Maximal value of t.
     double m_xBmin; ///< Minimal value of xB.
     double m_y; ///< Lepton energy fraction.
     double m_epsilon; ///< @f$ \epsilon = \frac{2 x_B M}{Q} @f$.
 
+    DVCSScalesModule* m_pScaleModule; ///< Pointer to the underlying scale module.
+    DVCSXiConverterModule* m_pXiConverterModule; ///< Pointer to the underlying xi converter module.
+    DVCSConvolCoeffFunctionModule* m_pConvolCoeffFunctionModule; ///< Pointer to the underlying CCF module.
+
     DVCSConvolCoeffFunctionResult m_dvcsConvolCoeffFunctionResult; ///< Stored Compton Form Factor result.
-
-    // Cross sections
-    /**
-     * Bethe-Heitler differential cross section.
-     * @param beamHelicity Helicity of the beam.
-     * @param beamCharge Electric charge of the beam.
-     * @param targetPolarization Target polarization. In GV conventions.
-     * @return
-     */
-    virtual double CrossSectionBH(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization) = 0;
-    // beamCharge in units of positron charge
-    // beamHelicity in units of hbar/2
+    DVCSConvolCoeffFunctionKinematic m_lastCCFKinematics; ///< Last Compton Form Factor kinematics.
 
     /**
-     * Virtual Compton Scattering differential cross section.
-     * @param beamHelicity Helicity of the beam.
-     * @param beamCharge Electric charge of the beam.
-     * @param targetPolarization Target polarization. In GV conventions.
-     * @return
+     * Compute CCF for a given kinematics.
+     * @param kinematic Kinematics to be computed.
+     * @param gpdType List of GPD types to be computed.
      */
-    virtual double CrossSectionVCS(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization) = 0;
-
-    /**
-     * Interference differential cross section.
-     * @param beamHelicity Helicity of the beam.
-     * @param beamCharge Electric charge of the beam.
-     * @param targetPolarization Target polarization. In GV conventions.
-     * @return
-     */
-    virtual double CrossSectionInterf(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization) = 0;
+    void computeConvolCoeffFunction(const DVCSObservableKinematic& kinematic,
+            const List<GPDType> & gpdType = List<GPDType>());
 
     /**
      * Gives back a previously computed Compton Form Factor.

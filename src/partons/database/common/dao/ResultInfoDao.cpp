@@ -14,7 +14,6 @@
 
 namespace PARTONS {
 
-
 ResultInfoDao::ResultInfoDao() :
         BaseObject("ResultInfoDao") {
 }
@@ -37,10 +36,12 @@ ResultInfo ResultInfoDao::getResultInfoByComputationId(
     query.prepare(QString(formatter.str().c_str()));
     query.bindValue(":computationId", computationId);
 
-    Database::checkUniqueResult(getClassName(), __func__,
-            Database::execSelectQuery(query), query);
+    if (Database::checkUniqueResult(getClassName(), __func__,
+            Database::execSelectQuery(query), query)) {
 
-    fillResultInfo(result, query);
+        query.first();
+        fillResultInfo(result, query);
+    }
 
     return result;
 }
@@ -51,7 +52,7 @@ void ResultInfoDao::fillResultInfo(ResultInfo &resultInfo,
 
     int f_computationId = query.record().indexOf(
             QString(Database::COLUMN_NAME_COMPUTATION_ID.c_str()));
-    int f_computationDate = query.record().indexOf("computationDate");
+    int f_computationDate = query.record().indexOf("computation_date");
     int f_scenarioTaskIndexNumber = query.record().indexOf(
             "scenario_task_index_number");
     int f_scenarioHashSum = query.record().indexOf("scenario_hash_sum");

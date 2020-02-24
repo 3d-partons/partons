@@ -39,6 +39,7 @@ xml.schema.file.path = ../partons/data/xmlSchema.xsd
 # Database connection definition (for more information see our tutorial explaining the database usage) 
 database.production.type = MYSQL
 database.production.url = localhost
+database.production.port = 3306
 database.production.dbname = partons
 database.production.user =  partons
 database.production.passwd = partons
@@ -55,8 +56,9 @@ database.load.infile.directory = /path/to/tmp
 computation.nb.processor = 1
 
 # Maximum size of batch for a given type (in one task several batches may be run in separate threads)
-gpd.service.batch.size = 10000
+gpd.service.batch.size = 1000
 ccf.service.batch.size = 1000
+observable.service.batch.size = 1000
 ```
 
 The file `xmlSchema.xsd` used by the XML parser is provided both with the library [partons](https://drf-gitlab.cea.fr/partons/core/partons) and the executable project [partons-example](https://drf-gitlab.cea.fr/partons/core/partons-example), in the directory `data`. When `partons` is installed, the file is copied typically to `/usr/local/share/PARTONS`. The same can be said for the `grid` folder containing the PDF replicas.
@@ -103,11 +105,11 @@ This file contains environment configuration information. The path to this file 
 ```
 system: Linux partonsVM 3.16.0-4-amd64 #1 SMP Debian 3.16.43-2 (2017-04-30) x86_64 GNU/Linux
 g++: 4.9.2
-root: 5.34/19
 qt: 4.8.6
 smfl: 2.1
 eigen3: 3.2.2
 cln: 1.3.4
+gsl: 2.3
 git elementary-utils: master/2e0e9ee721aa46262545fa9963e935073f829e3e
 git numa: master/c13779a34c4847b67cf2f55d12c58fde8c78696b
 git partons: master/72bdcfc08c6dd7d8ec8386dc0d36449b4fd28fad
@@ -137,11 +139,11 @@ GIT_PARTONS="`git branch | grep \* | sed -e 's/\* '//g`/`git rev-parse HEAD`"
 
 echo "system: `uname -a`"
 echo "g++: `g++ -dumpversion`"
-echo "root: `root-config --version`"
 echo "qt: `pkg-config --modversion QtCore`"
 echo "smfl: $SFML_A.$SFML_B"
 echo "eigen3: `pkg-config --modversion eigen3`"
 echo "cln: `pkg-config --modversion cln`"
+echo "gsl: `gsl-config --version`"
 echo "git elementary-utils: $GIT_ELEM_UTILS"
 echo "git numa: $GIT_NUMA"
 echo "git partons: $GIT_PARTONS"

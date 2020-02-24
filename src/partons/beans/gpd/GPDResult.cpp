@@ -4,27 +4,63 @@
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <utility>
 
+#include "../../../../include/partons/beans/channel/ChannelType.h"
+#include "../../../../include/partons/utils/type/PhysicalType.h"
+
 namespace PARTONS {
 
-
-const std::string GPDResult::GPD_RESULT_DB_TABLE_NAME = "gpd_result";
-
 GPDResult::GPDResult() :
-        Result("GPDResult") {
+        Result<GPDKinematic>("GPDResult", ChannelType::UNDEFINED) {
+}
+
+GPDResult::GPDResult(const GPDKinematic& kinematic) :
+        Result<GPDKinematic>("GPDResult", ChannelType::UNDEFINED, kinematic) {
 }
 
 GPDResult::GPDResult(const GPDResult &other) :
-        Result(other) {
-    m_kinematic = other.m_kinematic;
+        Result<GPDKinematic>(other) {
     m_partonDistributions = other.m_partonDistributions;
 }
 
 GPDResult::~GPDResult() {
 }
 
+std::string GPDResult::toString() const {
+
+    ElemUtils::Formatter formatter;
+
+    formatter << '\n';
+    formatter << Result::toString();
+    formatter << '\n';
+
+    std::map<GPDType::Type, PartonDistribution>::const_iterator it;
+
+    for (it = m_partonDistributions.begin(); it != m_partonDistributions.end();
+            it++) {
+        formatter << '\n';
+        formatter << "Result: " << "GPD " << GPDType(it->first).toString();
+        formatter << '\n';
+        formatter << (it->second).toString();
+    }
+
+    return formatter.str();
+}
+
 void GPDResult::addPartonDistribution(GPDType::Type gpdType,
-        PartonDistribution partonDistribution) {
-    // TODO: The object partonDistribution already has a GPDType member, so the arguments of the function are redundant (without check...).
+        const PartonDistribution& partonDistribution) {
+
+    //get iterator
+    std::map<GPDType::Type, PartonDistribution>::const_iterator it =
+            m_partonDistributions.find(gpdType);
+
+    //throw exception
+    if (it != m_partonDistributions.end()) {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << "Result for GPDType = "
+                        << GPDType(gpdType).toString() << " exists");
+    }
+
+    //insert
     m_partonDistributions.insert(
             std::pair<GPDType::Type, PartonDistribution>(gpdType,
                     partonDistribution));
@@ -33,9 +69,11 @@ void GPDResult::addPartonDistribution(GPDType::Type gpdType,
 const PartonDistribution& GPDResult::getPartonDistribution(
         GPDType::Type gpdType) const {
 
+    //get iterator
     std::map<GPDType::Type, PartonDistribution>::const_iterator it =
             m_partonDistributions.find(gpdType);
 
+    //throw exception
     if (it == m_partonDistributions.end()) {
         throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
@@ -43,83 +81,36 @@ const PartonDistribution& GPDResult::getPartonDistribution(
                         << GPDType(gpdType).toString());
     }
 
+    //return
     return (it->second);
 }
 
-//TODO tester cette méthode
-std::vector<GPDType> GPDResult::listGPDTypeComputed() {
-    std::vector<GPDType> list;
+bool GPDResult::isAvailable(const GPDType::Type& gpdType) const {
 
-    std::map<GPDType::Type, PartonDistribution>::const_iterator it;
+    //get iterator
+    m_it = m_partonDistributions.find(gpdType);
 
-    if (m_partonDistributions.size() != 0) {
-
-        for (it = m_partonDistributions.begin();
-                it != m_partonDistributions.end(); ++it) {
-            list.push_back(it->first);
-        }
-    }
-
-    return list;
+    //return
+    return (m_it != m_partonDistributions.end());
 }
 
-//TODO improve memory usage ; don't copy object parton distribution ; use reference or pointer
-List<PartonDistribution> GPDResult::getPartonDistributionList() const {
-    List<PartonDistribution> partonDistributionList;
-
-    for (std::map<GPDType::Type, PartonDistribution>::const_iterator it =
-            m_partonDistributions.begin(); it != m_partonDistributions.end();
-            ++it) {
-        partonDistributionList.add(it->second);
-    }
-
-    return partonDistributionList;
-}
-
-std::string GPDResult::toString() const {
-    ElemUtils::Formatter formatter;
-    std::map<GPDType::Type, PartonDistribution>::const_iterator it;
-
-    formatter << BaseObject::toString() << '\n';
-
-    formatter << m_kinematic.toString() << '\n';
-
-    formatter << "[PartonDistributionList]" << '\n';
-
-    for (it = m_partonDistributions.begin(); it != m_partonDistributions.end();
-            it++) {
-        //os << "ComputedBy: " << m_computedByGPDModuleId << std::endl;
-        formatter << "GPD_" << GPDType(it->first).toString() << '\n';
-        formatter << (it->second).toString();
-        formatter << '\n';
-    }
-
-    return formatter.str();
-}
-
-const std::map<GPDType::Type, PartonDistribution>& GPDResult::getPartonDistributions() const {
-    return m_partonDistributions;
-}
-
-void GPDResult::setPartonDistributions(
-        const std::map<GPDType::Type, PartonDistribution>& partonDistributions) {
-    m_partonDistributions = partonDistributions;
-}
-
-const GPDKinematic& GPDResult::getKinematic() const {
-    return m_kinematic;
-}
-
-void GPDResult::setKinematic(const GPDKinematic& kinematic) {
-    m_kinematic = kinematic;
+PartonDistribution& GPDResult::getLastAvailable() const {
+    return const_cast<PartonDistribution&>(m_it->second);
 }
 
 void GPDResult::compare(ComparisonReport &rootComparisonReport,
         const GPDResult &referenceObject, std::string parentObjectInfo) const {
 
-    //TODO faire un test pour valider la cinématique associée
+    if (m_kinematic != referenceObject.getKinematic()) {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter()
+                        << "Cannot perform comparison because kinematics is diferent ; With GPDResult index id = "
+                        << referenceObject.getIndexId() << '\n' << toString()
+                        << '\n' << referenceObject.toString());
+    }
 
-    if (size() != referenceObject.size()) {
+    if (m_partonDistributions.size()
+            != referenceObject.getPartonDistributions().size()) {
         throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
                         << "Cannot perform comparison between parton distribution map because they are not equal in size ; With GPDResult index id = "
@@ -132,38 +123,41 @@ void GPDResult::compare(ComparisonReport &rootComparisonReport,
             it++) {
         (it->second).compare(rootComparisonReport,
                 referenceObject.getPartonDistribution((it->first)),
-                ElemUtils::Formatter() << parentObjectInfo << " "
-                        << this->getObjectInfo() << " "
+                ElemUtils::Formatter() << parentObjectInfo << " GPD("
+                        << m_kinematic.toString() << ") "
                         << GPDType(it->first).toString());
     }
 }
 
-std::string GPDResult::getObjectInfo() const {
-    return ElemUtils::Formatter() << "GPD( " << m_kinematic.toString() << ")";
-}
+std::vector<GPDType> GPDResult::listGPDTypeComputed() const {
 
-bool GPDResult::isAvailable(const GPDType::Type& gpdType) const {
-    bool result = false;
+    //result
+    std::vector<GPDType> list;
 
-    m_it = m_partonDistributions.find(gpdType);
+    //iterator
+    std::map<GPDType::Type, PartonDistribution>::const_iterator it;
 
-    if (m_it != m_partonDistributions.end()) {
-        result = true;
+    //fill vector
+    if (m_partonDistributions.size() != 0) {
+
+        for (it = m_partonDistributions.begin();
+                it != m_partonDistributions.end(); ++it) {
+            list.push_back(it->first);
+        }
     }
 
-    return result;
+    //return
+    return list;
+
 }
 
-PartonDistribution& GPDResult::getLastAvailable() const {
-    return const_cast<PartonDistribution&>(m_it->second);
+const std::map<GPDType::Type, PartonDistribution>& GPDResult::getPartonDistributions() const {
+    return m_partonDistributions;
 }
 
-size_t GPDResult::size() const {
-    return m_partonDistributions.size();
-}
-
-bool GPDResult::operator <(const GPDResult& other) const {
-    return (m_kinematic < other.m_kinematic);
+void GPDResult::setPartonDistributions(
+        const std::map<GPDType::Type, PartonDistribution>& partonDistributions) {
+    m_partonDistributions = partonDistributions;
 }
 
 } /* namespace PARTONS */

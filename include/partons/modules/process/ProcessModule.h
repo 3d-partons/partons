@@ -8,14 +8,15 @@
  * @version 1.0
  */
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <map>
 #include <string>
 
 #include "../../beans/automation/BaseObjectData.h"
+#include "../../beans/channel/ChannelType.h"
 #include "../../beans/gpd/GPDType.h"
 #include "../../beans/List.h"
-#include "../../beans/observable/ObservableChannel.h"
 #include "../../ModuleObject.h"
 
 namespace NumA {
@@ -24,132 +25,107 @@ class Vector3D;
 
 namespace PARTONS {
 
-class ConvolCoeffFunctionModule;
-class ScalesModule;
-class XiConverterModule;
-
 /**
  * @class ProcessModule
  *
- * @brief Abstract class for computing the *differential* cross section of an experimental process.
- * The different channels are child classes, *e.g.* DVCSProcessModule.
+ * @brief Abstract class that provides a skeleton to implement a Process module.
  */
+template<typename KinematicType, typename ResultType>
 class ProcessModule: public ModuleObject {
+
 public:
-    static const std::string PROCESS_MODULE_CLASS_NAME; ///< Type of the module in XML automation.
 
     /**
-     * Default constructor.
+     * Destructor.
      */
-    ProcessModule(const std::string &className);
+    virtual ~ProcessModule() {
+    }
 
     virtual ProcessModule* clone() const = 0;
 
-    /**
-     * Default destructor.
-     */
-    virtual ~ProcessModule();
+    virtual std::string toString() const {
+        return ModuleObject::toString();
+    }
 
-    /**
-     * Computes the coefficient functions associated to the process.
-     * Must be implemented in the child class, by calling a ConvolCoeffFunctionModule.
-     * @param xB Bjorken x variable.
-     * @param t Momentum transfer squared.
-     * @param Q2 Virtuality.
-     * @param E Beam energy.
-     * @param gpdType List of GPD types to be used for the coefficient functions.
-     */
-    virtual void computeConvolCoeffFunction(double xB, double t, double Q2,
-            double E, const List<GPDType> & gpdType = List<GPDType>()) = 0;
+    virtual void resolveObjectDependencies() {
+        ModuleObject::resolveObjectDependencies();
+    }
 
-    /**
-     * Computes the differential cross-section. Must be implemented in the child class.
-     * @param beamHelicity Helicity of the beam.
-     * @param beamCharge Charge of the beam.
-     * @param targetPolarization Polarization of the target. In GV conventions.
-     * @param phi Angle between the hadronic and leptonic planes. In Trento convention.
-     * @return Differential cross-section.
-     */
-    virtual double computeCrossSection(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization, double phi) = 0;
+    virtual void run() {
+        throw ElemUtils::CustomException("Thread", __func__,
+                "This must be implemented in daughter class");
+    }
 
-    virtual void configure(const ElemUtils::Parameters &parameters);
-
-    /**
-     * Sets a given ConvolCoeffFunctionModule.
-     * @param pConvolCoeffFunctionModule
-     */
-    virtual void setConvolCoeffFunctionModule(
-            ConvolCoeffFunctionModule* pConvolCoeffFunctionModule);
-
-    /**
-     *
-     * @param pScaleModule Pointer to the module describing the relation between the factorization scale and @f$ Q^2 @f$.
-     */
-    void setScaleModule(ScalesModule* pScaleModule);
-    /**
-     *
-     * @param pXiConverterModule Pointer to the module that describes the relation between @f$ \xi @f$ and @f$ x_B @f$.
-     */
-    void setXiConverterModule(XiConverterModule* pXiConverterModule);
-    /**
-     *
-     * @return Boolean ; whether or not the process module depends on a ConvolCoeffFunctionModule.
-     */
-    bool isCCFModuleDependent() const;
-    /**
-     *
-     * @param isCcfModuleDependent Boolean ; whether or not the process module depends on a ConvolCoeffFunctionModule.
-     */
-    void isCCFModuleDependent(bool isCcfModuleDependent);
-
-    /**
-     *
-     * @return Pointer to the underlying ConvolCoeffFunctionModule.
-     */
-    ConvolCoeffFunctionModule* getConvolCoeffFunctionModule() const;
+    virtual void configure(const ElemUtils::Parameters &parameters) {
+        ModuleObject::configure(parameters);
+    }
 
     virtual void prepareSubModules(
-            const std::map<std::string, BaseObjectData>& subModulesData);
+            const std::map<std::string, BaseObjectData>& subModulesData) {
+        ModuleObject::prepareSubModules(subModulesData);
+    }
 
     /**
-     * Resets kinematics.
+     * Must be implemented in child class.
+     * @return List of GPD/CCF types the child class can compute.
      */
-    void resetPreviousKinematics();
+    virtual List<GPDType> getListOfAvailableGPDTypeForComputation() const = 0;
+
+    // ##### GETTERS & SETTERS #####
+
+    /**
+     * Check if this process module depends on a CCF module.
+     */
+    bool isCCFModuleDependent() const {
+        return m_isCCFModuleDependent;
+    }
+
+    /**
+     * Set if this process module depends on a CCF module.
+     */
+    void setIsCCFModuleDependent(bool isCCFModuleDependent) {
+        m_isCCFModuleDependent = isCCFModuleDependent;
+    }
 
 protected:
+
     /**
-     * Copy constructor.
+     * Constructor.
+     * See BaseObject::BaseObject and ModuleObject::ModuleObject for more details.
      *
-     * @param other
+     * @param className name of child class.
+     * @param channelType Channel type.
      */
-    ProcessModule(const ProcessModule &other);
+    ProcessModule(const std::string &className, ChannelType::Type channelType) :
+            ModuleObject(className, channelType), m_isCCFModuleDependent(true) {
+    }
 
-    //TODO doc
-    ObservableChannel::Type m_channel;  ///< Type of channel (i.e. experimental process).
+    /**
+     * Copy constructor
+     * @param other Object to be copied.
+     */
+    ProcessModule(const ProcessModule &other) :
+            ModuleObject(other), m_isCCFModuleDependent(
+                    other.m_isCCFModuleDependent) {
 
-    // Invariant scalars
-    double m_xB;        ///< Bjorken variable.
-    double m_t;     ///< Mandelstam variable (square of the 4-momentum transfer).
-    double m_Q2;    ///< Virtuality of the photon.
+    }
 
-    // Frame dependent scalars
-    double m_E;     ///< Beam energy in target rest frame.
+    /**
+     * Set internal kinematics.
+     * @param kinematic Kinematics to be set
+     */
+    virtual void setKinematics(const KinematicType& kinematic) = 0;
 
-    // Angles in Trento convention
-    double m_phi;      ///<  Angle between leptonic and hadronic planes (radian).
-    double m_phiS;      ///< Angle of the target transverse polarization.
-    double m_phie; //TODO What's this?! It's the equivalent of phiS but for GV. Redundant! TODO: Remove it!
+    virtual void initModule() {
+    }
 
-    ScalesModule* m_pScaleModule; ///< Pointer to the module describing the relation between the factorization scale and @f$ Q^2 @f$.
-    XiConverterModule* m_pXiConverterModule; ///< Pointer to the module that describes the relation between @f$ \xi @f$ and @f$ x_B @f$.
+    virtual void isModuleWellConfigured() {
+    }
 
-    ConvolCoeffFunctionModule* m_pConvolCoeffFunctionModule; ///< Pointer to the underlying ConvolCoeffFunctionModule.
-
-    bool isPreviousKinematicsDifferent(double xB, double t, double Q2); ///< Boolean ; whether or not the kinematics were changed.
-
-private:
-    bool m_isCCFModuleDependent; ///< Boolean ; whether or not the process module depends on a ConvolCoeffFunctionModule.
+    /**
+     * Boolean (true if this Process module depends on a CCF module).
+     */
+    bool m_isCCFModuleDependent;
 };
 
 } /* namespace PARTONS */

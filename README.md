@@ -6,7 +6,7 @@ See [partons.cea.fr](http://partons.cea.fr).
 
 ## Release
 
-To checkout the released version, use the tag `v1.0` (or subsequent versions) of the branch `release-v1`.
+To checkout the released version, use the tag `v1.0` or the branch `release-v1` (replace `v1` for subsequent versions).
 
 ## Licensing
 

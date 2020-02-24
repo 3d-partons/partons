@@ -8,13 +8,13 @@
  * @version 1.0
  */
 
-
 #include <NumA/linear_algebra/matrix_complex/MatrixComplex4D.h>
 #include <NumA/linear_algebra/vector_complex/VectorComplex3D.h>
 #include <NumA/linear_algebra/vector_complex/VectorComplex4D.h>
 #include <complex>
 #include <string>
 
+#include "../../../utils/type/PhysicalType.h"
 #include "DVCSProcessModule.h"
 
 namespace PARTONS {
@@ -51,12 +51,6 @@ public:
      */
     virtual ~DVCSProcessVGG99();
     virtual DVCSProcessVGG99* clone() const;
-    virtual double CrossSectionBH(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization);
-    virtual double CrossSectionVCS(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization);
-    virtual double CrossSectionInterf(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization);
 
 protected:
 
@@ -66,9 +60,11 @@ protected:
     DVCSProcessVGG99(const DVCSProcessVGG99& other);
 
     virtual void initModule();
-    virtual void initModule(double beamHelicity, double beamCharge,
-            NumA::Vector3D targetPolarization);
     virtual void isModuleWellConfigured();
+
+    virtual PhysicalType<double> CrossSectionBH();
+    virtual PhysicalType<double> CrossSectionVCS();
+    virtual PhysicalType<double> CrossSectionInterf();
 
 private:
 

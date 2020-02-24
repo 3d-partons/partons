@@ -12,6 +12,9 @@
 #include <string>
 #include <vector>
 
+#include "../../../../beans/gpd/GPDType.h"
+#include "../../../../beans/List.h"
+#include "../../../../utils/type/PhysicalType.h"
 #include "../../../MathIntegratorModule.h"
 #include "DVCSAluInt.h"
 
@@ -54,7 +57,6 @@ public:
 
     virtual DVCSAluIntSin2Phi* clone() const;
     virtual void configure(const ElemUtils::Parameters &parameters);
-    virtual double computeFourierObservable();
 
 protected:
 
@@ -63,6 +65,10 @@ protected:
      * @param other Object to be copied.
      */
     DVCSAluIntSin2Phi(const DVCSAluIntSin2Phi &other);
+
+    virtual PhysicalType<double> computeObservable(
+            const DVCSObservableKinematic& kinematic,
+            const List<GPDType>& gpdType);
 
     /**
      * Functor to perform the integration.

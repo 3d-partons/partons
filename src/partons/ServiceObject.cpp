@@ -3,7 +3,6 @@
 #include <ElementaryUtils/file_utils/FileUtils.h>
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/parameters/GenericType.h>
-#include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/PropertiesManager.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
@@ -20,7 +19,6 @@
 #include "../../include/partons/utils/plot2D/Plot2DList.h"
 
 namespace PARTONS {
-
 
 ServiceObject::ServiceObject(const std::string &className) :
         BaseObject(className), m_pModuleObjectFactory(0), m_pAutomationService(
@@ -122,8 +120,8 @@ std::string ServiceObject::generateSQLQueryForPlotFile(
     formatter << "SELECT ";
 
     if (selectParams.size() == 2) {
-        formatter << selectParams.get("xPlot").getString() << ", "
-                << selectParams.get("yPlot").getString();
+        formatter << selectParams.get("xPlot").getString() << ", " << selectParams.get("xPlot").getString() << "_unit" << ", "
+                << selectParams.get("yPlot").getString() << ", " << selectParams.get("yPlot").getString() << "_unit";
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
                 "Missing xPlot or yPlot parameter in select-type xml element");

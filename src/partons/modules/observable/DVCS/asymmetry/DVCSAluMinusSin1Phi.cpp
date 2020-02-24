@@ -5,13 +5,13 @@
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
 #include <cmath>
 
-#include "../../../../../../include/partons/beans/observable/ObservableChannel.h"
-#include "../../../../../../include/partons/beans/observable/ObservableType.h"
+#include "../../../../../../include/partons/beans/observable/DVCS/DVCSObservableKinematic.h"
 #include "../../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../../include/partons/FundamentalPhysicalConstants.h"
+#include "../../../../../../include/partons/modules/observable/Observable.h"
+#include "../../../../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
-
 
 const unsigned int DVCSAluMinusSin1Phi::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
@@ -20,9 +20,6 @@ const unsigned int DVCSAluMinusSin1Phi::classId =
 DVCSAluMinusSin1Phi::DVCSAluMinusSin1Phi(const std::string &className) :
         DVCSAluMinus(className), MathIntegratorModule(), m_pFunctionToIntegrateObservable(
                 0) {
-
-    m_observableType = ObservableType::FOURIER;
-    m_channel = ObservableChannel::DVCS;
 
     setIntegrator(NumA::IntegratorType1D::DEXP);
     initFunctorsForIntegrations();
@@ -54,21 +51,32 @@ DVCSAluMinusSin1Phi* DVCSAluMinusSin1Phi::clone() const {
 
 void DVCSAluMinusSin1Phi::configure(const ElemUtils::Parameters &parameters) {
 
-	DVCSAluMinus::configure(parameters);
-	MathIntegratorModule::configureIntegrator(parameters);
+    DVCSAluMinus::configure(parameters);
+    MathIntegratorModule::configureIntegrator(parameters);
 }
 
 double DVCSAluMinusSin1Phi::functionToIntegrateObservable(double x,
         std::vector<double> params) {
-    return DVCSAluMinus::computePhiObservable(x) * sin(x);
+
+    DVCSObservableKinematic kinematic;
+    List<GPDType> gpdType;
+
+    unserializeKinematicsAndGPDTypesFromStdVector(params, kinematic, gpdType);
+
+    kinematic.setPhi(PhysicalType<double>(x, PhysicalUnit::RAD));
+
+    return DVCSAluMinus::computeObservable(kinematic, gpdType).getValue() * sin(x);
 }
 
-double DVCSAluMinusSin1Phi::computeFourierObservable() {
+PhysicalType<double> DVCSAluMinusSin1Phi::computeObservable(
+        const DVCSObservableKinematic& kinematic,
+        const List<GPDType>& gpdType) {
 
-    std::vector<double> emptyParameters;
+    std::vector<double> params = serializeKinematicsAndGPDTypesIntoStdVector(kinematic, gpdType);
 
-    return integrate(m_pFunctionToIntegrateObservable, 0., (2 * Constant::PI),
-            emptyParameters) / Constant::PI;
+    return PhysicalType<double>(
+            integrate(m_pFunctionToIntegrateObservable, 0., (2 * Constant::PI),
+                    params) / (Constant::PI), PhysicalUnit::NONE);
 }
 
 } /* namespace PARTONS */

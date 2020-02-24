@@ -1,14 +1,13 @@
 #include "../../../../../include/partons/modules/process/DVCS/DVCSProcessVGG99.h"
 
-#include <NumA/linear_algebra/vector/Vector3D.h>
 #include <cmath>
 
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
+#include "../../../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
-
 
 const unsigned int DVCSProcessVGG99::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
@@ -113,34 +112,29 @@ void DVCSProcessVGG99::initModule() {
     DVCSProcessModule::initModule();
 }
 
-void DVCSProcessVGG99::initModule(double beamHelicity, double beamCharge,
-        NumA::Vector3D targetPolarization) {
-    DVCSProcessModule::initModule(beamHelicity, beamCharge, targetPolarization);
-}
-
 void DVCSProcessVGG99::isModuleWellConfigured() {
     DVCSProcessModule::isModuleWellConfigured();
 }
 
-double DVCSProcessVGG99::CrossSectionBH(double beamHelicity, double beamCharge,
-        NumA::Vector3D targetPolarization) {
+PhysicalType<double> DVCSProcessVGG99::CrossSectionBH() {
 
-    return CrossSectionMechanism(beamHelicity, beamCharge, targetPolarization,
-            1);
+    return PhysicalType<double>(
+            CrossSectionMechanism(m_beamHelicity, m_beamCharge,
+                    m_targetPolarization, 1), PhysicalUnit::GEVm2);
 }
 
-double DVCSProcessVGG99::CrossSectionVCS(double beamHelicity, double beamCharge,
-        NumA::Vector3D targetPolarization) {
+PhysicalType<double> DVCSProcessVGG99::CrossSectionVCS() {
 
-    return CrossSectionMechanism(beamHelicity, beamCharge, targetPolarization,
-            2);
+    return PhysicalType<double>(
+            CrossSectionMechanism(m_beamHelicity, m_beamCharge,
+                    m_targetPolarization, 2), PhysicalUnit::GEVm2);
 }
 
-double DVCSProcessVGG99::CrossSectionInterf(double beamHelicity, double beamCharge,
-        NumA::Vector3D targetPolarization) {
+PhysicalType<double> DVCSProcessVGG99::CrossSectionInterf() {
 
-    return CrossSectionMechanism(beamHelicity, beamCharge, targetPolarization,
-            3);
+    return PhysicalType<double>(
+            CrossSectionMechanism(m_beamHelicity, m_beamCharge,
+                    m_targetPolarization, 3), PhysicalUnit::GEVm2);
 }
 
 double DVCSProcessVGG99::CrossSectionMechanism(double beamHelicity,
@@ -230,7 +224,8 @@ double DVCSProcessVGG99::CrossSectionMechanism(double beamHelicity,
     return result;
 }
 
-void DVCSProcessVGG99::fillInternalVariables(NumA::Vector3D targetPolarization) {
+void DVCSProcessVGG99::fillInternalVariables(
+        NumA::Vector3D targetPolarization) {
 
     //VARIABLES
 
@@ -241,7 +236,8 @@ void DVCSProcessVGG99::fillInternalVariables(NumA::Vector3D targetPolarization) 
     m_y = m_nu / m_E;
 
     //s
-    m_s = pow(Constant::PROTON_MASS, 2) - m_Q2 + 2. * Constant::PROTON_MASS * m_nu;
+    m_s = pow(Constant::PROTON_MASS, 2) - m_Q2
+            + 2. * Constant::PROTON_MASS * m_nu;
 
     //xi
     m_xi = m_xB / (2. - m_xB);
@@ -258,7 +254,8 @@ void DVCSProcessVGG99::fillInternalVariables(NumA::Vector3D targetPolarization) 
     q_in_mom = sqrt(m_Q2 + pow(m_nu, 2.));
 
     //momentum of outgoing photon
-    q_out_mom = (m_s + m_t + m_Q2 - pow(Constant::PROTON_MASS, 2.)) / (2. * Constant::PROTON_MASS);
+    q_out_mom = (m_s + m_t + m_Q2 - pow(Constant::PROTON_MASS, 2.))
+            / (2. * Constant::PROTON_MASS);
 
     //ENERGIES
 
@@ -842,7 +839,8 @@ NumA::MatrixComplex4D DVCSProcessVGG99::unit_spinor_mat() {
     return a;
 }
 
-NumA::VectorComplex3D DVCSProcessVGG99::Vpolar(double magn, double th, double phi) {
+NumA::VectorComplex3D DVCSProcessVGG99::Vpolar(double magn, double th,
+        double phi) {
 
     //return
     NumA::VectorComplex3D t;
@@ -1015,7 +1013,8 @@ NumA::MatrixComplex4D DVCSProcessVGG99::gamma_NN_vertex(int mu,
             / (1. + Q_sqr / pow(2. * Constant::PROTON_MASS, 2.));
 
     //Pauli form factor
-    double ff_F2 = (G_M - G_E) / (1. + Q_sqr / pow(2. * Constant::PROTON_MASS, 2.));
+    double ff_F2 = (G_M - G_E)
+            / (1. + Q_sqr / pow(2. * Constant::PROTON_MASS, 2.));
 
     //Dirac part
     NumA::MatrixComplex4D dirac = dirac_gamma(mu)
@@ -1030,11 +1029,13 @@ NumA::MatrixComplex4D DVCSProcessVGG99::gamma_NN_vertex(int mu,
             if (metric(nu1, nu2) == 0.0)
                 pauli_incr.Clear();
             else {
-                pauli_incr = dirac_sigma(mu, nu1)
-                        * (q.GetElement(nu2)
-                                * std::complex<double>(0.0,
-                                        metric(nu1, nu2) * ff_F2
-                                                / (2. * Constant::PROTON_MASS)));
+                pauli_incr =
+                        dirac_sigma(mu, nu1)
+                                * (q.GetElement(nu2)
+                                        * std::complex<double>(0.0,
+                                                metric(nu1, nu2) * ff_F2
+                                                        / (2.
+                                                                * Constant::PROTON_MASS)));
             }
             pauli = pauli + pauli_incr;
 
@@ -1081,7 +1082,8 @@ std::complex<double> DVCSProcessVGG99::AmplitudeBH(int mu, double el_hel,
         ee_2gamma = dirac_gamma(nu).Mult(
                 (((fvec_slash(k4_in) - fvec_slash(q4_out))
                         + (unit_spinor_mat()
-                                * std::complex<double>(Constant::ELECTRON_MASS, 0.)))
+                                * std::complex<double>(Constant::ELECTRON_MASS,
+                                        0.)))
                         * Cinv(((-2. * V4mul(k4_in, q4_out))))).Mult(
                         dirac_gamma(mu)))
 
@@ -1090,8 +1092,8 @@ std::complex<double> DVCSProcessVGG99::AmplitudeBH(int mu, double el_hel,
                 dirac_gamma(mu).Mult(
                         (((fvec_slash(k4_out) + fvec_slash(q4_out))
                                 + (unit_spinor_mat()
-                                        * std::complex<double>(Constant::ELECTRON_MASS,
-                                                0.)))
+                                        * std::complex<double>(
+                                                Constant::ELECTRON_MASS, 0.)))
                                 * Cinv(((2. * V4mul(k4_out, q4_out))))).Mult(
                                 dirac_gamma(nu)));
 
@@ -1107,10 +1109,10 @@ std::complex<double> DVCSProcessVGG99::AmplitudeBH(int mu, double el_hel,
     double ELEC = 0.302862;
 
     //calculate phasespace and include in result
-    result =
-            (-sqrt(k_in_mom * k_out_mom) * sqrt(p_in_en + Constant::PROTON_MASS)
-                    * sqrt(p_out_en + Constant::PROTON_MASS) * pow(ELEC, 3.)
-                    / four_mom_transf_sqr) * e_times_p;
+    result = (-sqrt(k_in_mom * k_out_mom)
+            * sqrt(p_in_en + Constant::PROTON_MASS)
+            * sqrt(p_out_en + Constant::PROTON_MASS) * pow(ELEC, 3.)
+            / four_mom_transf_sqr) * e_times_p;
 
     //return
     return result;
@@ -1275,7 +1277,8 @@ double DVCSProcessVGG99::v_compton_doublepol_cross_inv(double leptcharge,
         int mechanism, double el_hel, double sp_in) {
 
     //return
-    return (1. / pow(2. * Constant::PI, 5.)) / 32. * m_xB * pow(m_y, 2.) / pow(m_Q2, 2.)
+    return (1. / pow(2. * Constant::PI, 5.)) / 32. * m_xB * pow(m_y, 2.)
+            / pow(m_Q2, 2.)
             / sqrt(1. + pow(2. * Constant::PROTON_MASS * m_xB, 2.) / m_Q2)
             * v_compton_doublepol_sqrampl(leptcharge, mechanism, el_hel, sp_in);
 
@@ -1437,8 +1440,10 @@ std::complex<double> DVCSProcessVGG99::AmplitudeDVCS(int mu, double el_hel,
     double ELEC = 0.302862;
 
     //calculate phasespace and include in result
-    result = ((-sqrt(k_in_mom * k_out_mom) * sqrt(p_in_en + Constant::PROTON_MASS)
-            * sqrt(p_out_en + Constant::PROTON_MASS) * pow(ELEC, 3.) / m_Q2) * e_times_p);
+    result = ((-sqrt(k_in_mom * k_out_mom)
+            * sqrt(p_in_en + Constant::PROTON_MASS)
+            * sqrt(p_out_en + Constant::PROTON_MASS) * pow(ELEC, 3.) / m_Q2)
+            * e_times_p);
 
     //return
     return result;

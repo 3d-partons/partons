@@ -2,6 +2,7 @@
 
 #include <ElementaryUtils/file_utils/FileUtils.h>
 #include <ElementaryUtils/logger/CustomException.h>
+#include <ElementaryUtils/logger/LoggerManager.h>
 #include <ElementaryUtils/PropertiesManager.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
@@ -11,7 +12,7 @@
 #include <QtCore/qvariant.h>
 #include <QtSql/qsqlerror.h>
 #include <QtSql/qsqlquery.h>
-#include <fstream>
+#include <iostream>
 
 #include "../../../include/partons/beans/automation/Scenario.h"
 #include "../../../include/partons/beans/Computation.h"
@@ -24,6 +25,8 @@
 #include "../../../include/partons/ResourceManager.h"
 #include "../../../include/partons/utils/plot2D/Plot2D.h"
 #include "../../../include/partons/utils/plot2D/Plot2DList.h"
+#include "../../../include/partons/utils/type/PhysicalType.h"
+#include "../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
 
@@ -38,10 +41,12 @@ ResultDaoService::ResultDaoService(const std::string &className) :
                 std::make_pair<std::string, int>(ElemUtils::StringUtils::EMPTY,
                         -1)) {
 
+    //check if to use tmp file system
     m_useTmpFiles = ElemUtils::StringUtils::equals(
             ElemUtils::PropertiesManager::getInstance()->getString(
                     "database.load.infile.use"), "true");
 
+    //if true, get path to tmp folder
     if (m_useTmpFiles) {
         m_temporaryFolderPath =
                 ElemUtils::PropertiesManager::getInstance()->getString(
@@ -50,31 +55,40 @@ ResultDaoService::ResultDaoService(const std::string &className) :
         m_temporaryFolderPath = ElemUtils::StringUtils::EMPTY;
     }
 
+    //create query
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
-    query.prepare("SELECT COUNT(computation_id) FROM computation");
-
-    Database::checkUniqueResult(getClassName(), __func__,
-            Database::execSelectQuery(query), query);
-
-    m_lastComputationId = query.value(0).toInt();
-
-    query.clear();
-
-    query.prepare(
-            "SELECT COUNT(scenario_computation_id) FROM scenario_computation");
-
-    Database::checkUniqueResult(getClassName(), __func__,
-            Database::execSelectQuery(query), query);
-
-    m_lastScenarioComputation = query.value(0).toInt();
+    //get last id of computation
+    if (query.exec("SELECT COUNT(computation_id) FROM computation;")) {
+        if (query.first()) {
+            m_lastComputationId = query.value(0).toInt();
+        }
+    } else {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
+    }
 
     query.clear();
 
+    //get last id of scenario <-> computation
+    if (query.exec(
+            "SELECT COUNT(scenario_computation_id) FROM scenario_computation;")) {
+        if (query.first()) {
+            m_lastScenarioComputation = query.value(0).toInt();
+        }
+    } else {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << query.lastError().text().toStdString()
+                        << " for sql query = "
+                        << query.executedQuery().toStdString());
+    }
+
+    query.clear();
 }
 
 ResultDaoService::~ResultDaoService() {
-    // TODO Auto-generated destructor stub
 }
 
 void ResultDaoService::prepareCommonTablesFromResultInfo(
@@ -238,8 +252,11 @@ void ResultDaoService::insertDataIntoDatabaseTables(const std::string& fileName,
 
 void ResultDaoService::loadDataIntoTable(const std::string& inputData,
         const std::string& tableName) {
+
+    //create query
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
+    //execute query
     if (query.exec(prepareInsertQuery(inputData, tableName))) {
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
@@ -322,26 +339,31 @@ int ResultDaoService::getLastComputationId() const {
 
 Plot2DList ResultDaoService::getPlot2DListFromCustomQuery(
         const std::string& sqlQuery) {
+
+    //result
     Plot2DList plot2DList;
 
+    //create query
     QSqlQuery query(DatabaseManager::getInstance()->getProductionDatabase());
 
+    //prepare query
     query.prepare(QString(sqlQuery.c_str()));
 
+    //execute
     Database::checkManyResults("ResultDaoService", __func__,
             Database::execSelectQuery(query), query);
 
-    if (query.first()) {
-        do {
-            plot2DList.add(
-                    Plot2D(query.value(0).toDouble(),
-                            query.value(1).toDouble()));
-        } while (query.next());
-    } else {
-        //TODO print warning
-    }
+    //fill
+    query.first();
 
-    query.clear();
+    do {
+        plot2DList.add(
+                Plot2D(
+                        PhysicalType<double>(query.value(0).toDouble(),
+                                static_cast<PhysicalUnit::Type>(query.value(1).toInt())),
+                        PhysicalType<double>(query.value(2).toDouble(),
+                                static_cast<PhysicalUnit::Type>(query.value(3).toInt()))));
+    } while (query.next());
 
     return plot2DList;
 }

@@ -19,13 +19,12 @@
 
 namespace NumA {
 class FunctionType1D;
-}
+} /* namespace NumA */
+namespace PARTONS {
+class GPDSubtractionConstantModule;
+} /* namespace PARTONS */
 
 namespace PARTONS {
-
-class GPDSubtractionConstantModule;
-
-class PartonDistribution;
 
 /**
  * @class DVCSCFFDispersionRelation

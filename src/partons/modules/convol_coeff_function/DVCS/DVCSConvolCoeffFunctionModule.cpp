@@ -3,154 +3,220 @@
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
+#include <stddef.h>
+#include <iostream>
 #include <utility>
 
-#include "../../../../../include/partons/beans/observable/ObservableChannel.h"
-#include "../../../../../include/partons/modules/active_flavors_thresholds/ActiveFlavorsThresholdsQuarkMasses.h"
-#include "../../../../../include/partons/modules/running_alpha_strong/RunningAlphaStrongStandard.h"
-#include "../../../../../include/partons/ModuleObjectFactory.h"
+#include "../../../../../include/partons/beans/channel/ChannelType.h"
+#include "../../../../../include/partons/beans/convol_coeff_function/ConvolCoeffFunctionResult.h"
+#include "../../../../../include/partons/beans/Result.h"
+#include "../../../../../include/partons/modules/gpd/GPDModule.h"
 #include "../../../../../include/partons/Partons.h"
+#include "../../../../../include/partons/services/DVCSConvolCoeffFunctionService.h"
+#include "../../../../../include/partons/ServiceObjectRegistry.h"
+#include "../../../../../include/partons/ServiceObjectTyped.h"
+#include "../../../../../include/partons/utils/type/PhysicalType.h"
+#include "../../../../../include/partons/utils/type/PhysicalUnit.h"
+#include "../../../../../include/partons/utils/VectorUtils.h"
 
 namespace PARTONS {
 
+const std::string DVCSConvolCoeffFunctionModule::DVCS_CONVOL_COEFF_FUNCTION_MODULE_CLASS_NAME =
+        "DVCSConvolCoeffFunctionModule";
 
 DVCSConvolCoeffFunctionModule::DVCSConvolCoeffFunctionModule(
         const std::string &className) :
-        ConvolCoeffFunctionModule(className), m_xi(0.), m_t(0.), m_Q2(0.), m_MuF2(
-                0.), m_MuR2(0.), m_nf(0), m_qcdOrderType(
-                PerturbativeQCDOrderType::UNDEFINED), m_currentGPDComputeType(
-                GPDType::UNDEFINED), m_pRunningAlphaStrongModule(0), m_pNfConvolCoeffFunction(
-                0) {
-    m_channel = ObservableChannel::DVCS;
+        ConvolCoeffFunctionModule(className, ChannelType::DVCS), m_Q2(0.), m_qcdOrderType(
+                PerturbativeQCDOrderType::UNDEFINED) {
 }
 
 DVCSConvolCoeffFunctionModule::DVCSConvolCoeffFunctionModule(
         const DVCSConvolCoeffFunctionModule &other) :
-        ConvolCoeffFunctionModule(other) {
+        ConvolCoeffFunctionModule(other), m_Q2(other.m_Q2), m_qcdOrderType(
+                other.m_qcdOrderType) {
+
+    m_Q2 = other.m_Q2;
+
     m_listOfCFFComputeFunctionAvailable =
             other.m_listOfCFFComputeFunctionAvailable;
-    m_it = other.m_it;
-
-    m_xi = other.m_xi;
-    m_t = other.m_t;
-    m_Q2 = other.m_Q2;
-    m_MuF2 = other.m_MuF2;
-    m_MuR2 = other.m_MuR2;
-
-    m_nf = other.m_nf;
-
-    m_qcdOrderType = other.m_qcdOrderType;
-    m_currentGPDComputeType = other.m_currentGPDComputeType;
-
-    if (other.m_pRunningAlphaStrongModule != 0) {
-        // RunningAlphaStrongModule is an abstract class, so it's impossible to use copy constructor to get a new instance of the object
-        m_pRunningAlphaStrongModule =
-                (other.m_pRunningAlphaStrongModule)->clone();
-    } else {
-        m_pRunningAlphaStrongModule = 0;
-    }
-
-    if (other.m_pNfConvolCoeffFunction != 0) {
-        // ActiveFlavorsModule is an abstract class, so it's impossible to use copy constructor to get a new instance of the object
-        m_pNfConvolCoeffFunction = (other.m_pNfConvolCoeffFunction)->clone();
-    } else {
-        m_pNfConvolCoeffFunction = 0;
-    }
 }
 
 DVCSConvolCoeffFunctionModule::~DVCSConvolCoeffFunctionModule() {
-    if (m_pRunningAlphaStrongModule != 0) {
-        setRunningAlphaStrongModule(0);
-        m_pRunningAlphaStrongModule = 0;
-    }
+}
 
-    if (m_pNfConvolCoeffFunction != 0) {
-        setNfConvolCoeffFunction(0);
-        m_pNfConvolCoeffFunction = 0;
-    }
+std::string DVCSConvolCoeffFunctionModule::toString() const {
+    return ConvolCoeffFunctionModule<DVCSConvolCoeffFunctionKinematic,
+            DVCSConvolCoeffFunctionResult>::toString();
 }
 
 void DVCSConvolCoeffFunctionModule::resolveObjectDependencies() {
-    ConvolCoeffFunctionModule::resolveObjectDependencies();
-
-    //not used!
-
-    m_pRunningAlphaStrongModule =
-            Partons::getInstance()->getModuleObjectFactory()->newRunningAlphaStrongModule(
-                    RunningAlphaStrongStandard::classId);
-
-    m_pNfConvolCoeffFunction =
-            Partons::getInstance()->getModuleObjectFactory()->newActiveFlavorsThresholdsModule(
-                    ActiveFlavorsThresholdsQuarkMasses::classId);
+    ConvolCoeffFunctionModule<DVCSConvolCoeffFunctionKinematic,
+            DVCSConvolCoeffFunctionResult>::resolveObjectDependencies();
 }
 
-//TODO implement
-void DVCSConvolCoeffFunctionModule::initModule() {
+void DVCSConvolCoeffFunctionModule::run() {
 
-    debug(__func__, ElemUtils::Formatter() << "executed");
-}
+    try {
 
-void DVCSConvolCoeffFunctionModule::isModuleWellConfigured() {
-    debug(__func__, ElemUtils::Formatter() << "executed");
+        //get service
+        DVCSConvolCoeffFunctionService* pService =
+                Partons::getInstance()->getServiceObjectRegistry()->getDVCSConvolCoeffFunctionService();
 
-    // Test kinematic domain of Xi
-    if (m_xi < 0 || m_xi > 1) {
-        warn(__func__,
-                ElemUtils::Formatter() << "Input value of Xi = " << m_xi
-                        << " do not lay between 0 and 1.");
-    }
+        //run until empty
+        while (!(pService->isEmptyTaskQueue())) {
 
-    // Test kinematic domain of t
-    if (m_t > 0) {
-        warn(__func__,
-                ElemUtils::Formatter() << " Input value of t = " << m_t
-                        << " is not <= 0.");
-    }
+            //kinematics
+            DVCSConvolCoeffFunctionKinematic kinematic;
 
-    // Test kinematic domain of Q2
-    if (m_Q2 < 0) {
-        warn(__func__,
-                ElemUtils::Formatter() << "Input value of Q2 = " << m_Q2
-                        << " is not > 0.");
-    }
+            //list of GPD types
+            List<GPDType> gpdTypeList;
 
-    if (isGPDModuleDependent() && m_pGPDModule == 0) {
-        throw ElemUtils::CustomException(getClassName(), __func__,
-                "m_pGPDModule is NULL");
-    }
+            //set
+            ElemUtils::Packet packet = pService->popTaskFormQueue();
+            packet >> kinematic;
+            packet >> gpdTypeList;
 
-    if (m_pRunningAlphaStrongModule == 0) {
-        throw ElemUtils::CustomException(getClassName(), __func__,
-                "m_pRunningAlphaStrongModule is NULL");
-    }
+            //debug information
+            debug(__func__,
+                    ElemUtils::Formatter() << "objectId = " << getObjectId()
+                            << " " << kinematic.toString());
 
-    if (m_pNfConvolCoeffFunction == 0) {
-        throw ElemUtils::CustomException(getClassName(), __func__,
-                "m_pNfConvolCoeffFunction is NULL");
+            //object to be returned
+            DVCSConvolCoeffFunctionResult result = compute(kinematic,
+                    gpdTypeList);
+
+            //helpful to sort later if kinematic is coming from database
+            //TODO is used?
+            result.setIndexId(kinematic.getIndexId());
+
+            //add
+            pService->add(result);
+
+            //TODO useful to do a sleep ?
+            // sf::sleep(sf::milliseconds(3));
+        }
+    } catch (std::exception &e) {
+        std::cerr << e.what() << std::endl;
     }
 }
 
-std::complex<double> DVCSConvolCoeffFunctionModule::compute(const double xi,
-        const double t, const double Q2, const double MuF2, const double MuR2,
-        GPDType::Type gpdComputeType) {
-    preCompute(xi, t, Q2, MuF2, MuR2, gpdComputeType);
+void DVCSConvolCoeffFunctionModule::configure(
+        const ElemUtils::Parameters &parameters) {
 
-    std::complex<double> result;
-    ;
+    //run for mother
+    ConvolCoeffFunctionModule<DVCSConvolCoeffFunctionKinematic,
+            DVCSConvolCoeffFunctionResult>::configure(parameters);
 
-    m_it = m_listOfCFFComputeFunctionAvailable.find(gpdComputeType);
-    if (m_it != m_listOfCFFComputeFunctionAvailable.end()) {
+    //check if available
+    if (parameters.isAvailable(
+            PerturbativeQCDOrderType::PARAMETER_NAME_PERTURBATIVE_QCD_ORDER_TYPE)) {
 
-        result = ((*this).*(m_it->second))();
+        //try to set m_qcdOrderType by standard way
+        try {
+            m_qcdOrderType =
+                    static_cast<PerturbativeQCDOrderType::Type>(parameters.getLastAvailable().toUInt());
 
-    } else {
-        throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter() << "GPD("
-                        << GPDType(gpdComputeType).toString()
-                        << ") is not available for this  model");
+        }
+        //if an exception is raised it means that it's a string configuration value
+        catch (const std::exception &e) {
+
+            m_qcdOrderType = PerturbativeQCDOrderType(
+                    parameters.getLastAvailable().getString()).getType();
+        }
+
+        //print info
+        info(__func__,
+                ElemUtils::Formatter()
+                        << PerturbativeQCDOrderType::PARAMETER_NAME_PERTURBATIVE_QCD_ORDER_TYPE
+                        << " configured with value = "
+                        << PerturbativeQCDOrderType(m_qcdOrderType).toString());
+    }
+}
+
+void DVCSConvolCoeffFunctionModule::prepareSubModules(
+        const std::map<std::string, BaseObjectData>& subModulesData) {
+    ConvolCoeffFunctionModule<DVCSConvolCoeffFunctionKinematic,
+            DVCSConvolCoeffFunctionResult>::prepareSubModules(subModulesData);
+}
+
+DVCSConvolCoeffFunctionResult DVCSConvolCoeffFunctionModule::compute(
+        const DVCSConvolCoeffFunctionKinematic& kinematic,
+        const List<GPDType>& gpdType) {
+
+    //reset kinematics (virtuality)
+    setKinematics(kinematic);
+
+    // execute last child function (virtuality)
+    initModule();
+
+    // execute last child function (virtuality)
+    isModuleWellConfigured();
+
+    //object to be returned
+    DVCSConvolCoeffFunctionResult result(kinematic);
+
+    //loop over GPD types
+    for (size_t i = 0; i < gpdType.size(); i++) {
+
+        //search for pointer to function associated to given GPD type
+        m_it = m_listOfCFFComputeFunctionAvailable.find(gpdType[i]);
+
+        //check if found
+        if (m_it != m_listOfCFFComputeFunctionAvailable.end()) {
+
+            //set GPD type
+            setCurrentGPDType(gpdType[i]);
+
+            //evaluate
+            result.addResult(gpdType[i], ((*this).*(m_it->second))());
+
+        } else {
+
+            //throw error
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    ElemUtils::Formatter() << "GPD("
+                            << GPDType(gpdType[i]).toString()
+                            << ") is not available for this  model");
+        }
     }
 
+    //set module name
+    result.setComputationModuleName(getClassName());
+
+    //return
     return result;
+}
+
+List<GPDType> DVCSConvolCoeffFunctionModule::getListOfAvailableGPDTypeForComputation() const {
+
+    //object to be returned
+    List<GPDType> listOfAvailableGPDTypeForComputation;
+
+    //iterator
+    std::map<GPDType::Type,
+            std::complex<double> (DVCSConvolCoeffFunctionModule::*)()>::const_iterator it;
+
+    //fill list
+    for (it = m_listOfCFFComputeFunctionAvailable.begin();
+            it != m_listOfCFFComputeFunctionAvailable.end(); it++) {
+        listOfAvailableGPDTypeForComputation.add(it->first);
+    }
+
+    //if this CCF model is GPD model dependent we need to perform another intersection with GPDType available for this GPD model
+    if (m_isGPDModuleDependent) {
+
+        if (m_pGPDModule == 0) {
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    "GPD module not set");
+        }
+
+        listOfAvailableGPDTypeForComputation = VectorUtils::intersection(
+                listOfAvailableGPDTypeForComputation,
+                m_pGPDModule->getListOfAvailableGPDTypeForComputation());
+    }
+
+    //return
+    return listOfAvailableGPDTypeForComputation;
 }
 
 std::complex<double> DVCSConvolCoeffFunctionModule::computeUnpolarized() {
@@ -168,26 +234,13 @@ std::complex<double> DVCSConvolCoeffFunctionModule::computeCFF() {
             "Check your child implementation : " + getClassName());
 }
 
-void DVCSConvolCoeffFunctionModule::preCompute(const double xi, const double t,
-        const double Q2, const double MuF2, const double MuR2,
-        GPDType::Type gpdComputeType) {
+void DVCSConvolCoeffFunctionModule::setKinematics(
+        const DVCSConvolCoeffFunctionKinematic& kinematic) {
 
-    debug(__func__,
-            ElemUtils::Formatter() << "xi=" << xi << " t=" << t << " Q2=" << Q2
-                    << " MuF2=" << MuF2 << " MuR2=" << MuR2);
+    ConvolCoeffFunctionModule<DVCSConvolCoeffFunctionKinematic,
+            DVCSConvolCoeffFunctionResult>::setKinematics(kinematic);
 
-    m_xi = xi;
-    m_t = t;
-    m_Q2 = Q2;
-    m_MuF2 = MuF2;
-    m_MuR2 = MuR2;
-    m_currentGPDComputeType = gpdComputeType;
-
-    // execute last child function (virtuality)
-    initModule();
-
-    // execute last child function (virtuality)
-    isModuleWellConfigured();
+    m_Q2 = kinematic.getQ2().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
 }
 
 PerturbativeQCDOrderType::Type DVCSConvolCoeffFunctionModule::getQCDOrderType() const {
@@ -199,109 +252,20 @@ void DVCSConvolCoeffFunctionModule::setQCDOrderType(
     m_qcdOrderType = qcdOrderType;
 }
 
-//TODO handle string for XML file and native type from C++ code ; see QCD_ORDER_TYPE test
-void DVCSConvolCoeffFunctionModule::configure(
-        const ElemUtils::Parameters &parameters) {
-
-    if (parameters.isAvailable(
-            PerturbativeQCDOrderType::PARAMETER_NAME_PERTURBATIVE_QCD_ORDER_TYPE)) {
-        // try to set m_qcdOrderType by standard way
-        try {
-            m_qcdOrderType =
-                    static_cast<PerturbativeQCDOrderType::Type>(parameters.getLastAvailable().toUInt());
-
-        } catch (const std::exception &e) {
-            // if an exception is raised it means that it's a string configuration value
-            m_qcdOrderType = PerturbativeQCDOrderType(
-                    parameters.getLastAvailable().getString()).getType();
-        }
-
-        info(__func__,
-                ElemUtils::Formatter()
-                        << PerturbativeQCDOrderType::PARAMETER_NAME_PERTURBATIVE_QCD_ORDER_TYPE
-                        << " configured with value = "
-                        << PerturbativeQCDOrderType(m_qcdOrderType).toString());
-    }
-
-    ConvolCoeffFunctionModule::configure(parameters);
+void DVCSConvolCoeffFunctionModule::initModule() {
+    ConvolCoeffFunctionModule<DVCSConvolCoeffFunctionKinematic,
+            DVCSConvolCoeffFunctionResult>::initModule();
 }
 
-List<GPDType> DVCSConvolCoeffFunctionModule::getListOfAvailableGPDTypeForComputation() const {
-    std::map<GPDType::Type,
-            std::complex<double> (DVCSConvolCoeffFunctionModule::*)()>::const_iterator it;
-    List<GPDType> listOfAvailableGPDTypeForComputation;
+void DVCSConvolCoeffFunctionModule::isModuleWellConfigured() {
 
-    for (it = m_listOfCFFComputeFunctionAvailable.begin();
-            it != m_listOfCFFComputeFunctionAvailable.end(); it++) {
-        listOfAvailableGPDTypeForComputation.add(it->first);
-    }
+    ConvolCoeffFunctionModule<DVCSConvolCoeffFunctionKinematic,
+            DVCSConvolCoeffFunctionResult>::isModuleWellConfigured();
 
-    return listOfAvailableGPDTypeForComputation;
-}
-
-void DVCSConvolCoeffFunctionModule::setNfConvolCoeffFunction(
-        ActiveFlavorsThresholdsModule* pNfConvolCoeffFunction) {
-    m_pModuleObjectFactory->updateModulePointerReference(
-            m_pNfConvolCoeffFunction, pNfConvolCoeffFunction);
-    m_pNfConvolCoeffFunction = pNfConvolCoeffFunction;
-}
-
-void DVCSConvolCoeffFunctionModule::setRunningAlphaStrongModule(
-        RunningAlphaStrongModule* pRunningAlphaStrongModule) {
-    m_pModuleObjectFactory->updateModulePointerReference(
-            m_pRunningAlphaStrongModule, pRunningAlphaStrongModule);
-    m_pRunningAlphaStrongModule = pRunningAlphaStrongModule;
-}
-
-void DVCSConvolCoeffFunctionModule::prepareSubModules(
-        const std::map<std::string, BaseObjectData>& subModulesData) {
-    ConvolCoeffFunctionModule::prepareSubModules(subModulesData);
-
-    std::map<std::string, BaseObjectData>::const_iterator it;
-
-    it = subModulesData.find(
-            RunningAlphaStrongModule::RUNNING_ALPHA_STRONG_MODULE_CLASS_NAME);
-
-    if (it != subModulesData.end()) {
-        if (m_pRunningAlphaStrongModule != 0) {
-            setRunningAlphaStrongModule(0);
-            m_pRunningAlphaStrongModule = 0;
-        }
-        if (!m_pRunningAlphaStrongModule) {
-            m_pRunningAlphaStrongModule =
-                    Partons::getInstance()->getModuleObjectFactory()->newRunningAlphaStrongModule(
-                            (it->second).getModuleClassName());
-
-            info(__func__,
-                    ElemUtils::Formatter()
-                            << "Configure with RunningAlphaStrongModule = "
-                            << m_pRunningAlphaStrongModule->getClassName());
-
-            m_pRunningAlphaStrongModule->configure(
-                    (it->second).getParameters());
-        }
-    }
-
-    it = subModulesData.find(
-            ActiveFlavorsThresholdsModule::ACTIVE_FLAVORS_THRESHOLDS_MODULE_CLASS_NAME);
-
-    if (it != subModulesData.end()) {
-        if (m_pNfConvolCoeffFunction != 0) {
-            setRunningAlphaStrongModule(0);
-            m_pNfConvolCoeffFunction = 0;
-        }
-        if (!m_pNfConvolCoeffFunction) {
-            m_pNfConvolCoeffFunction =
-                    Partons::getInstance()->getModuleObjectFactory()->newActiveFlavorsThresholdsModule(
-                            (it->second).getModuleClassName());
-
-            info(__func__,
-                    ElemUtils::Formatter()
-                            << "Configure with ActiveFlavorsModule = "
-                            << m_pNfConvolCoeffFunction->getClassName());
-
-            m_pNfConvolCoeffFunction->configure((it->second).getParameters());
-        }
+    if (m_Q2 < 0) {
+        warn(__func__,
+                ElemUtils::Formatter() << "Input value of Q2 = " << m_Q2
+                        << " is not > 0.");
     }
 }
 

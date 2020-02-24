@@ -6,21 +6,21 @@
 #include "../../include/partons/BaseObjectFactory.h"
 #include "../../include/partons/modules/active_flavors_thresholds/ActiveFlavorsThresholdsModule.h"
 #include "../../include/partons/modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
-#include "../../include/partons/modules/double_distribution/DoubleDistributionModule.h"
-#include "../../include/partons/modules/dse/GapEquationSolverModule.h"
+#include "../../include/partons/modules/convol_coeff_function/TCS/TCSConvolCoeffFunctionModule.h"
 #include "../../include/partons/modules/evolution/gpd/GPDEvolutionModule.h"
-#include "../../include/partons/modules/gpd_border_function/GPDBorderFunctionModule.h"
+#include "../../include/partons/modules/gpd/GPDModule.h"
 #include "../../include/partons/modules/gpd_subtraction_constant/GPDSubtractionConstantModule.h"
-#include "../../include/partons/modules/observable/Observable.h"
-#include "../../include/partons/modules/overlap/IncompleteGPDModule.h"
+#include "../../include/partons/modules/observable/DVCS/DVCSObservable.h"
+#include "../../include/partons/modules/observable/TCS/TCSObservable.h"
 #include "../../include/partons/modules/process/DVCS/DVCSProcessModule.h"
-#include "../../include/partons/modules/radon_inverse/RadonInverseModule.h"
+#include "../../include/partons/modules/process/TCS/TCSProcessModule.h"
 #include "../../include/partons/modules/running_alpha_strong/RunningAlphaStrongModule.h"
-#include "../../include/partons/modules/scales/ScalesModule.h"
-#include "../../include/partons/modules/xi_converter/XiConverterModule.h"
+#include "../../include/partons/modules/scales/DVCS/DVCSScalesModule.h"
+#include "../../include/partons/modules/scales/TCS/TCSScalesModule.h"
+#include "../../include/partons/modules/xi_converter/DVCS/DVCSXiConverterModule.h"
+#include "../../include/partons/modules/xi_converter/TCS/TCSXiConverterModule.h"
 
 namespace PARTONS {
-
 
 ModuleObjectFactory::ModuleObjectFactory(BaseObjectFactory* pBaseObjectFactory) :
         BaseObject("ModuleObjectFactory"), m_pBaseObjectFactory(
@@ -85,10 +85,13 @@ void ModuleObjectFactory::updateModulePointerReference(
                                 << (m_it->second)->getModuleObjectPointer()->getReferenceModuleId()
                                 << ") removed from ModuleObjectFactory instanciated object list");
 
-                delete (m_it->second);
-                (m_it->second) = 0;
-
                 // Delete target object from memory
+                if (m_it->second) {
+
+                    delete (m_it->second);
+                    (m_it->second) = 0;
+                }
+
                 m_instantiatedModuleObject.erase(m_it);
             }
         }
@@ -141,16 +144,6 @@ ModuleObject* ModuleObjectFactory::newModuleObject(
     return pModuleObject;
 }
 
-DoubleDistributionModule* ModuleObjectFactory::newDoubleDistributionModule(
-        unsigned int classId) {
-    return static_cast<DoubleDistributionModule*>(newModuleObject(classId));
-}
-
-DoubleDistributionModule* ModuleObjectFactory::newDoubleDistributionModule(
-        const std::string& className) {
-    return static_cast<DoubleDistributionModule*>(newModuleObject(className));
-}
-
 GPDEvolutionModule* ModuleObjectFactory::newGPDEvolutionModule(
         unsigned int classId) {
     return static_cast<GPDEvolutionModule*>(newModuleObject(classId));
@@ -167,16 +160,6 @@ GPDModule* ModuleObjectFactory::newGPDModule(unsigned int classId) {
 
 GPDModule* ModuleObjectFactory::newGPDModule(const std::string& className) {
     return static_cast<GPDModule*>(newModuleObject(className));
-}
-
-GPDBorderFunctionModule* ModuleObjectFactory::newGPDBorderFunctionModule(
-        unsigned int classId) {
-    return static_cast<GPDBorderFunctionModule*>(newModuleObject(classId));
-}
-
-GPDBorderFunctionModule* ModuleObjectFactory::newGPDBorderFunctionModule(
-        const std::string& className) {
-    return static_cast<GPDBorderFunctionModule*>(newModuleObject(className));
 }
 
 GPDSubtractionConstantModule* ModuleObjectFactory::newGPDSubtractionConstantModule(
@@ -200,22 +183,34 @@ DVCSConvolCoeffFunctionModule* ModuleObjectFactory::newDVCSConvolCoeffFunctionMo
             className));
 }
 
-ProcessModule* ModuleObjectFactory::newProcessModule(unsigned int classId) {
-    return static_cast<ProcessModule*>(newModuleObject(classId));
+TCSConvolCoeffFunctionModule* ModuleObjectFactory::newTCSConvolCoeffFunctionModule(
+        unsigned int classId) {
+    return static_cast<TCSConvolCoeffFunctionModule*>(newModuleObject(classId));
 }
 
-ProcessModule* ModuleObjectFactory::newProcessModule(
+TCSConvolCoeffFunctionModule* ModuleObjectFactory::newTCSConvolCoeffFunctionModule(
         const std::string& className) {
-    return static_cast<ProcessModule*>(newModuleObject(className));
+    return static_cast<TCSConvolCoeffFunctionModule*>(newModuleObject(className));
 }
 
-DVCSProcessModule* ModuleObjectFactory::newDVCSProcessModule(unsigned int classId) {
+DVCSProcessModule* ModuleObjectFactory::newDVCSProcessModule(
+        unsigned int classId) {
     return static_cast<DVCSProcessModule*>(newModuleObject(classId));
 }
 
 DVCSProcessModule* ModuleObjectFactory::newDVCSProcessModule(
         const std::string& className) {
     return static_cast<DVCSProcessModule*>(newModuleObject(className));
+}
+
+TCSProcessModule* ModuleObjectFactory::newTCSProcessModule(
+        unsigned int classId) {
+    return static_cast<TCSProcessModule*>(newModuleObject(classId));
+}
+
+TCSProcessModule* ModuleObjectFactory::newTCSProcessModule(
+        const std::string& className) {
+    return static_cast<TCSProcessModule*>(newModuleObject(className));
 }
 
 RunningAlphaStrongModule* ModuleObjectFactory::newRunningAlphaStrongModule(
@@ -235,61 +230,65 @@ ActiveFlavorsThresholdsModule* ModuleObjectFactory::newActiveFlavorsThresholdsMo
 
 ActiveFlavorsThresholdsModule* ModuleObjectFactory::newActiveFlavorsThresholdsModule(
         const std::string &className) {
-    return static_cast<ActiveFlavorsThresholdsModule*>(newModuleObject(className));
+    return static_cast<ActiveFlavorsThresholdsModule*>(newModuleObject(
+            className));
 }
 
-ScalesModule* ModuleObjectFactory::newScalesModule(unsigned int classId) {
-    return static_cast<ScalesModule*>(newModuleObject(classId));
-}
-
-ScalesModule* ModuleObjectFactory::newScalesModule(const std::string &className) {
-    return static_cast<ScalesModule*>(newModuleObject(className));
-}
-
-XiConverterModule* ModuleObjectFactory::newXiConverterModule(
+DVCSScalesModule* ModuleObjectFactory::newDVCSScalesModule(
         unsigned int classId) {
-    return static_cast<XiConverterModule*>(newModuleObject(classId));
+    return static_cast<DVCSScalesModule*>(newModuleObject(classId));
 }
-XiConverterModule* ModuleObjectFactory::newXiConverterModule(
+
+DVCSScalesModule* ModuleObjectFactory::newDVCSScalesModule(
         const std::string &className) {
-    return static_cast<XiConverterModule*>(newModuleObject(className));
+    return static_cast<DVCSScalesModule*>(newModuleObject(className));
 }
 
-GapEquationSolverModule* ModuleObjectFactory::newGapEquationSolverModule(
-        unsigned int classId) {
-    return static_cast<GapEquationSolverModule*>(newModuleObject(classId));
+TCSScalesModule* ModuleObjectFactory::newTCSScalesModule(unsigned int classId) {
+    return static_cast<TCSScalesModule*>(newModuleObject(classId));
 }
-GapEquationSolverModule* ModuleObjectFactory::newGapEquationSolverModule(
+
+TCSScalesModule* ModuleObjectFactory::newTCSScalesModule(
         const std::string &className) {
-    return static_cast<GapEquationSolverModule*>(newModuleObject(className));
+    return static_cast<TCSScalesModule*>(newModuleObject(className));
 }
 
-Observable* ModuleObjectFactory::newObservable(unsigned int classId) {
-    return static_cast<Observable*>(newModuleObject(classId));
-}
-
-Observable* ModuleObjectFactory::newObservable(const std::string& className) {
-    return static_cast<Observable*>(newModuleObject(className));
-}
-
-IncompleteGPDModule* ModuleObjectFactory::newIncompleteGPDModule(
+DVCSXiConverterModule* ModuleObjectFactory::newDVCSXiConverterModule(
         unsigned int classId) {
-    return static_cast<IncompleteGPDModule*>(newModuleObject(classId));
+    return static_cast<DVCSXiConverterModule*>(newModuleObject(classId));
 }
 
-IncompleteGPDModule* ModuleObjectFactory::newIncompleteGPDModule(
-        const std::string& className) {
-    return static_cast<IncompleteGPDModule*>(newModuleObject(className));
+DVCSXiConverterModule* ModuleObjectFactory::newDVCSXiConverterModule(
+        const std::string &className) {
+    return static_cast<DVCSXiConverterModule*>(newModuleObject(className));
 }
 
-RadonInverseModule* ModuleObjectFactory::newRadonInverseModule(
+TCSXiConverterModule* ModuleObjectFactory::newTCSXiConverterModule(
         unsigned int classId) {
-    return static_cast<RadonInverseModule*>(newModuleObject(classId));
+    return static_cast<TCSXiConverterModule*>(newModuleObject(classId));
 }
 
-RadonInverseModule* ModuleObjectFactory::newRadonInverseModule(
+TCSXiConverterModule* ModuleObjectFactory::newTCSXiConverterModule(
+        const std::string &className) {
+    return static_cast<TCSXiConverterModule*>(newModuleObject(className));
+}
+
+DVCSObservable* ModuleObjectFactory::newDVCSObservable(unsigned int classId) {
+    return static_cast<DVCSObservable*>(newModuleObject(classId));
+}
+
+DVCSObservable* ModuleObjectFactory::newDVCSObservable(
         const std::string& className) {
-    return static_cast<RadonInverseModule*>(newModuleObject(className));
+    return static_cast<DVCSObservable*>(newModuleObject(className));
+}
+
+TCSObservable* ModuleObjectFactory::newTCSObservable(unsigned int classId) {
+    return static_cast<TCSObservable*>(newModuleObject(classId));
+}
+
+TCSObservable* ModuleObjectFactory::newTCSObservable(
+        const std::string& className) {
+    return static_cast<TCSObservable*>(newModuleObject(className));
 }
 
 } /* namespace PARTONS */

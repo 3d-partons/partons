@@ -1,13 +1,15 @@
+#include "../../../../../../include/partons/modules/observable/DVCS/asymmetry/DVCSAutIntSinPhiMPhisSin1Phi.h"
+
 #include <NumA/functor/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
 #include <cmath>
 
-#include "../../../../../../include/partons/beans/observable/ObservableChannel.h"
-#include "../../../../../../include/partons/beans/observable/ObservableType.h"
+#include "../../../../../../include/partons/beans/observable/DVCS/DVCSObservableKinematic.h"
 #include "../../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../../../include/partons/modules/observable/DVCS/asymmetry/DVCSAutIntSinPhiMPhisSin1Phi.h"
+#include "../../../../../../include/partons/modules/observable/Observable.h"
+#include "../../../../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
 
@@ -20,9 +22,6 @@ DVCSAutIntSinPhiMPhisSin1Phi::DVCSAutIntSinPhiMPhisSin1Phi(
         const std::string &className) :
         DVCSAutIntSinPhiMPhis(className), MathIntegratorModule(), m_pFunctionToIntegrateObservable(
                 0) {
-
-    m_observableType = ObservableType::FOURIER;
-    m_channel = ObservableChannel::DVCS;
 
     setIntegrator(NumA::IntegratorType1D::DEXP);
     initFunctorsForIntegrations();
@@ -63,15 +62,28 @@ void DVCSAutIntSinPhiMPhisSin1Phi::configure(
 
 double DVCSAutIntSinPhiMPhisSin1Phi::functionToIntegrateObservable(double x,
         std::vector<double> params) {
-    return DVCSAutIntSinPhiMPhis::computePhiObservable(x) * sin(x);
+
+    DVCSObservableKinematic kinematic;
+    List<GPDType> gpdType;
+
+    unserializeKinematicsAndGPDTypesFromStdVector(params, kinematic, gpdType);
+
+    kinematic.setPhi(PhysicalType<double>(x, PhysicalUnit::RAD));
+
+    return DVCSAutIntSinPhiMPhis::computeObservable(kinematic, gpdType).getValue()
+            * sin(x);
 }
 
-double DVCSAutIntSinPhiMPhisSin1Phi::computeFourierObservable() {
+PhysicalType<double> DVCSAutIntSinPhiMPhisSin1Phi::computeObservable(
+        const DVCSObservableKinematic& kinematic,
+        const List<GPDType>& gpdType) {
 
-    std::vector<double> emptyParameters;
+    std::vector<double> params = serializeKinematicsAndGPDTypesIntoStdVector(
+            kinematic, gpdType);
 
-    return integrate(m_pFunctionToIntegrateObservable, 0., (2 * Constant::PI),
-            emptyParameters) / (Constant::PI);
+    return PhysicalType<double>(
+            integrate(m_pFunctionToIntegrateObservable, 0., (2 * Constant::PI),
+                    params) / (Constant::PI), PhysicalUnit::NONE);
 }
 
 } /* namespace PARTONS */

@@ -8,6 +8,7 @@
  * @version 1.0
  */
 
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/thread/Packet.h>
 #include <string>
 
@@ -17,10 +18,12 @@
 #include "utils/thread/ThreadQueue.h"
 
 namespace PARTONS {
-
 class AutomationService;
 class ModuleObjectFactory;
 class Task;
+} /* namespace PARTONS */
+
+namespace PARTONS {
 
 /**
  * @class ServiceObject
@@ -34,6 +37,7 @@ class Task;
  * like evaluating a GPD at a list of kinematic configurations, or evaluating several GPD models at the same input kinematic.
  */
 class ServiceObject: public BaseObject {
+
 public:
     /**
      * Default constructor.
@@ -47,6 +51,8 @@ public:
      */
     virtual ~ServiceObject();
 
+    virtual void resolveObjectDependencies();
+
     /**
      * Method used in automation to compute given tasks.
      * Implemented in child classes.
@@ -54,43 +60,79 @@ public:
      */
     virtual void computeTask(Task &task) = 0;
 
+    /**
+     * Add task to queue.
+     */
     void addTasks(const List<ElemUtils::Packet> &tasks);
 
+    /**
+     * Check if queue is empty.
+     */
     bool isEmptyTaskQueue();
 
+    /**
+     * Pop task from queue.
+     */
     ElemUtils::Packet popTaskFormQueue();
 
+    /**
+     * Initialize all threads.
+     */
     void initComputationalThread(ModuleObject* pModuleObject);
 
+    /**
+     * Lunch all threads.
+     */
     void launchAllThreadAndWaitingFor();
 
+    /**
+     * Clear all threads.
+     */
     void clearAllThread();
 
-    virtual void resolveObjectDependencies();
-
+    /**
+     * Generate SQL query to create a plot file.
+     */
     std::string generateSQLQueryForPlotFile(const std::string &tableName,
             const ElemUtils::Parameters& selectParams,
             const ElemUtils::Parameters& whereParams) const;
 
+    /**
+     * Generate a plot file.
+     */
     void generatePlotFile(const std::string& filePath,
             const std::string &sqlQuery, const char splitChar) const;
 
 protected:
-    ModuleObjectFactory* m_pModuleObjectFactory;
-    AutomationService* m_pAutomationService;
 
+    ModuleObjectFactory* m_pModuleObjectFactory; ///< Pointer to ModuleObjectFactory.
+    AutomationService* m_pAutomationService; ///< Pointer to AutomationService.
+
+    /**
+     * Generate SQL query from a task.
+     */
     std::string generateSQLQueryForPlotFileTask(Task &task,
             const std::string &tableName) const;
 
+    /**
+     * Get path to a plot file from a task.
+     */
     std::string getOutputFilePathForPlotFileTask(Task &task) const;
 
+    /**
+     * Get list of GPD types to be computed from a task.
+     */
     List<GPDType> getGPDTypeListFromTask(Task &task) const;
 
+    /**
+     * Throw exception if unknown method.
+     */
     void errorUnknownMethod(const Task &task) const;
 
 private:
-    ThreadQueue m_queueOfTask;
-    ThreadManager m_threadManager;
+
+    ThreadQueue m_queueOfTask; ///< Queue of tasks.
+    ThreadManager m_threadManager; ///< Thread manager.
 };
 
 } /* namespace PARTONS */

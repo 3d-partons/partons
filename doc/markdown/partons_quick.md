@@ -28,7 +28,7 @@ mousepad data/examples/gpd/computeSingleKinematicsForGPD.xml
 ```
 You will find more examples of XML scenarios to play with in the `data/examples` directory. You can use multiple scenarios with one command, *e.g.*
 ```sh
-./bin/PARTONS_example "scenario1.xml" "scenario2.xml"
+./bin/PARTONS_example scenario1.xml scenario2.xml
 ```
 `partons-example` will play them consecutively.
 

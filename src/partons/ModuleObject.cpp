@@ -1,28 +1,32 @@
 #include "../../include/partons/ModuleObject.h"
 
+#include <ElementaryUtils/logger/CustomException.h>
+
 #include "../../include/partons/Partons.h"
 
 namespace PARTONS {
 
-
 const std::string ModuleObject::CLASS_NAME = "className";
 
-ModuleObject::ModuleObject(const std::string &className) :
-        BaseObject(className), ElemUtils::Thread(), m_pModuleObjectFactory(0), m_referenceModuleId(
-                0) {
+ModuleObject::ModuleObject(const std::string &className,
+        ChannelType::Type channelType) :
+        BaseObject(className), ElemUtils::Thread(), m_channelType(channelType), m_pModuleObjectFactory(
+                0), m_referenceModuleId(0) {
     m_pModuleObjectFactory = Partons::getInstance()->getModuleObjectFactory();
     m_referenceModuleId = getObjectId();
 }
 
 ModuleObject::ModuleObject(const ModuleObject &other) :
-        BaseObject(other), ElemUtils::Thread(other) {
+        BaseObject(other), ElemUtils::Thread(other), m_channelType(
+                other.m_channelType), m_pModuleObjectFactory(0), m_referenceModuleId(
+                0) {
     m_pModuleObjectFactory = other.m_pModuleObjectFactory;
-    m_referenceModuleId = other.m_referenceModuleId;
+    m_referenceModuleId = getObjectId();
 }
 
 ModuleObject::~ModuleObject() {
     // Nothing to destroy
-    // m_pModuleObjectFactory will be destroy by Partons class at close step.
+    // m_pModuleObjectFactory will be destroy by Partons class at close step
 }
 
 void ModuleObject::configure(const ElemUtils::Parameters &parameters) {
@@ -39,7 +43,12 @@ void ModuleObject::resolveObjectDependencies() {
 
 void ModuleObject::prepareSubModules(
         const std::map<std::string, BaseObjectData>& subModulesData) {
-    // NOthing to do.
+    // Nothing to do
+}
+
+void ModuleObject::run() {
+    throw ElemUtils::CustomException("Thread", __func__,
+            "This must be implemented in daughter class");
 }
 
 unsigned int ModuleObject::getReferenceModuleId() const {
@@ -48,6 +57,10 @@ unsigned int ModuleObject::getReferenceModuleId() const {
 
 void ModuleObject::setReferenceModuleId(unsigned int referenceModuleId) {
     m_referenceModuleId = referenceModuleId;
+}
+
+ChannelType::Type ModuleObject::getChannelType() const {
+    return m_channelType;
 }
 
 } /* namespace PARTONS */

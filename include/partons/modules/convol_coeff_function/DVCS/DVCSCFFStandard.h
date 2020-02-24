@@ -9,19 +9,23 @@
  * @version 1.0
  */
 
+#include <stddef.h>
 #include <complex>
+#include <map>
 #include <string>
 #include <vector>
 
+#include "../../../beans/automation/BaseObjectData.h"
 #include "DVCSConvolCoeffFunctionModule.h"
 
 namespace NumA {
 class FunctionType1D;
 } /* namespace NumA */
+namespace PARTONS {
+class PartonDistribution;
+} /* namespace PARTONS */
 
 namespace PARTONS {
-
-class PartonDistribution;
 
 /**
  * @class DVCSCFFStandard
@@ -51,7 +55,21 @@ public:
 
     virtual void resolveObjectDependencies();
 
+    void prepareSubModules(
+            const std::map<std::string, BaseObjectData>& subModulesData);
+
     // ##### GETTERS & SETTERS #####
+
+    /**
+     * Get alphaS module.
+     */
+    RunningAlphaStrongModule* getRunningAlphaStrongModule() const;
+
+    /**
+     * Set alphaS module.
+     */
+    void setRunningAlphaStrongModule(
+            RunningAlphaStrongModule* pRunningAlphaStrongModule);
 
 protected:
     /**
@@ -91,6 +109,9 @@ private:
 
     double m_quarkDiagonal;
     double m_gluonDiagonal;
+
+    size_t m_nf; ///< Number of active flavors.
+    RunningAlphaStrongModule *m_pRunningAlphaStrongModule; ///< Related alphaS module.
 
     virtual void computeDiagonalGPD();
 

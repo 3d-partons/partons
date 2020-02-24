@@ -5,6 +5,8 @@
 #include <algorithm>
 #include <iterator>
 
+#include "../../../../include/partons/beans/channel/ChannelType.h"
+
 namespace PARTONS {
 
 const std::string ActiveFlavorsThresholdsModule::ACTIVE_FLAVORS_THRESHOLDS_MODULE_CLASS_NAME =
@@ -12,7 +14,7 @@ const std::string ActiveFlavorsThresholdsModule::ACTIVE_FLAVORS_THRESHOLDS_MODUL
 
 ActiveFlavorsThresholdsModule::ActiveFlavorsThresholdsModule(
         const std::string &className) :
-        ModuleObject(className) {
+        ModuleObject(className, ChannelType::UNDEFINED) {
 }
 
 ActiveFlavorsThresholdsModule::~ActiveFlavorsThresholdsModule() {

@@ -4,7 +4,6 @@
 
 namespace PARTONS {
 
-
 EnvironmentConfigurationDaoService::EnvironmentConfigurationDaoService() :
         BaseObject("EnvironmentConfigurationDaoService") {
 }
@@ -28,11 +27,6 @@ EnvironmentConfiguration* EnvironmentConfigurationDaoService::selectByIndexId(
 std::string EnvironmentConfigurationDaoService::getConfigurationByIndexId(
         const int indexId) const {
     return m_environmentConfigurationDao.getConfigurationByIndexId(indexId);
-}
-
-void EnvironmentConfigurationDaoService::deleteByIndexId(
-        const int indexId) const {
-    m_environmentConfigurationDao.deleteByIndexId(indexId);
 }
 
 int EnvironmentConfigurationDaoService::getEnvironmentConfigurationIdByHashSum(

@@ -8,9 +8,9 @@
 #include <vector>
 
 #include "../../../../../include/partons/BaseObjectRegistry.h"
+#include "../../../../../include/partons/modules/convol_coeff_function/ConvolCoeffFunctionModule.h"
 
 namespace PARTONS {
-
 
 const unsigned int DVCSCFFConstant::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
@@ -170,7 +170,8 @@ void DVCSCFFConstant::configure(const ElemUtils::Parameters &parameters) {
         } else {
             warn(__func__,
                     ElemUtils::Formatter() << "String for "
-                            << DVCSCFFConstant::PARAMETER_NAME_CFF_VALUES << " is empty");
+                            << DVCSCFFConstant::PARAMETER_NAME_CFF_VALUES
+                            << " is empty");
         }
     }
 
@@ -223,12 +224,12 @@ void DVCSCFFConstant::configure(const ElemUtils::Parameters &parameters) {
 void DVCSCFFConstant::printErrorInConfigure(const std::string& key) const {
     throw ElemUtils::CustomException(getClassName(), __func__,
             ElemUtils::Formatter() << "Ambiguous way of setting CFF values via "
-                    << DVCSCFFConstant::PARAMETER_NAME_CFF_VALUES << " and " << key
-                    << " keys");
+                    << DVCSCFFConstant::PARAMETER_NAME_CFF_VALUES << " and "
+                    << key << " keys");
 }
 
-void DVCSCFFConstant::configureValue(GPDType::Type gpdType,
-        bool isRealPart, const ElemUtils::GenericType& value) {
+void DVCSCFFConstant::configureValue(GPDType::Type gpdType, bool isRealPart,
+        const ElemUtils::GenericType& value) {
 
     //iterator
     std::map<GPDType::Type, std::complex<double> >::iterator it = m_CFFs.find(

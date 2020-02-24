@@ -3,15 +3,14 @@
 #include <NumA/functor/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
-#include <cmath>
 
-#include "../../../../../../include/partons/beans/observable/ObservableChannel.h"
-#include "../../../../../../include/partons/beans/observable/ObservableType.h"
+#include "../../../../../../include/partons/beans/observable/DVCS/DVCSObservableKinematic.h"
 #include "../../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../../include/partons/FundamentalPhysicalConstants.h"
+#include "../../../../../../include/partons/modules/observable/Observable.h"
+#include "../../../../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
-
 
 const unsigned int DVCSAllMinusCos0Phi::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
@@ -20,9 +19,6 @@ const unsigned int DVCSAllMinusCos0Phi::classId =
 DVCSAllMinusCos0Phi::DVCSAllMinusCos0Phi(const std::string &className) :
         DVCSAllMinus(className), MathIntegratorModule(), m_pFunctionToIntegrateObservable(
                 0) {
-
-    m_observableType = ObservableType::FOURIER;
-    m_channel = ObservableChannel::DVCS;
 
     setIntegrator(NumA::IntegratorType1D::DEXP);
     initFunctorsForIntegrations();
@@ -55,21 +51,33 @@ DVCSAllMinusCos0Phi* DVCSAllMinusCos0Phi::clone() const {
 
 void DVCSAllMinusCos0Phi::configure(const ElemUtils::Parameters &parameters) {
 
-	DVCSAllMinus::configure(parameters);
-	MathIntegratorModule::configureIntegrator(parameters);
+    DVCSAllMinus::configure(parameters);
+    MathIntegratorModule::configureIntegrator(parameters);
 }
 
 double DVCSAllMinusCos0Phi::functionToIntegrateObservable(double x,
         std::vector<double> params) {
-    return DVCSAllMinus::computePhiObservable(x);// * cos(0 * x);
+
+    DVCSObservableKinematic kinematic;
+    List<GPDType> gpdType;
+
+    unserializeKinematicsAndGPDTypesFromStdVector(params, kinematic, gpdType);
+
+    kinematic.setPhi(PhysicalType<double>(x, PhysicalUnit::RAD));
+
+    return DVCSAllMinus::computeObservable(kinematic, gpdType).getValue(); // * cos(0 * x);
 }
 
-double DVCSAllMinusCos0Phi::computeFourierObservable() {
+PhysicalType<double> DVCSAllMinusCos0Phi::computeObservable(
+        const DVCSObservableKinematic& kinematic,
+        const List<GPDType>& gpdType) {
 
-    std::vector<double> emptyParameters;
+    std::vector<double> params = serializeKinematicsAndGPDTypesIntoStdVector(
+            kinematic, gpdType);
 
-    return integrate(m_pFunctionToIntegrateObservable, 0., (2 * Constant::PI),
-            emptyParameters) / (2 * Constant::PI);
+    return PhysicalType<double>(
+            integrate(m_pFunctionToIntegrateObservable, 0., (2 * Constant::PI),
+                    params) / (2 * Constant::PI), PhysicalUnit::NONE);
 }
 
 } /* namespace PARTONS */

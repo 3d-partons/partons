@@ -1,20 +1,19 @@
 #include "../../include/partons/ServiceObjectRegistry.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
-//#include <stdexcept>
 
 #include "../../include/partons/BaseObjectRegistry.h"
 #include "../../include/partons/services/automation/AutomationService.h"
 #include "../../include/partons/services/ComparisonService.h"
-#include "../../include/partons/services/ConvolCoeffFunctionService.h"
-#include "../../include/partons/services/DoubleDistributionService.h"
+#include "../../include/partons/services/DVCSConvolCoeffFunctionService.h"
+#include "../../include/partons/services/DVCSObservableService.h"
 #include "../../include/partons/services/GPDService.h"
 #include "../../include/partons/services/hash_sum/CryptographicHashService.h"
-#include "../../include/partons/services/ObservableService.h"
+#include "../../include/partons/services/TCSConvolCoeffFunctionService.h"
+#include "../../include/partons/services/TCSObservableService.h"
 #include "../../include/partons/services/VizualisationService.h"
 
 namespace PARTONS {
-
 
 ServiceObjectRegistry::ServiceObjectRegistry(
         BaseObjectRegistry* m_pBaseObjectRegistry) :
@@ -51,22 +50,28 @@ GPDService* ServiceObjectRegistry::getGPDService() const {
     return static_cast<GPDService*>(get(GPDService::classId));
 }
 
-ConvolCoeffFunctionService* ServiceObjectRegistry::getConvolCoeffFunctionService() const {
-    return static_cast<ConvolCoeffFunctionService*>(get(
-            ConvolCoeffFunctionService::classId));
+DVCSConvolCoeffFunctionService* ServiceObjectRegistry::getDVCSConvolCoeffFunctionService() const {
+    return static_cast<DVCSConvolCoeffFunctionService*>(get(
+            DVCSConvolCoeffFunctionService::classId));
 }
 
-ObservableService* ServiceObjectRegistry::getObservableService() const {
-    return static_cast<ObservableService*>(get(ObservableService::classId));
+TCSConvolCoeffFunctionService* ServiceObjectRegistry::getTCSConvolCoeffFunctionService() const {
+    return static_cast<TCSConvolCoeffFunctionService*>(get(
+            TCSConvolCoeffFunctionService::classId));
+}
+
+DVCSObservableService* ServiceObjectRegistry::getDVCSObservableService() const {
+    return static_cast<DVCSObservableService*>(get(
+            DVCSObservableService::classId));
+}
+
+TCSObservableService* ServiceObjectRegistry::getTCSObservableService() const {
+    return static_cast<TCSObservableService*>(get(
+            TCSObservableService::classId));
 }
 
 VizualisationService* ServiceObjectRegistry::getVizualisationService() const {
     return static_cast<VizualisationService*>(get(VizualisationService::classId));
-}
-
-DoubleDistributionService* ServiceObjectRegistry::getDoubleDistributionService() const {
-    return static_cast<DoubleDistributionService*>(get(
-            DoubleDistributionService::classId));
 }
 
 ComparisonService* ServiceObjectRegistry::getComparisonService() const {

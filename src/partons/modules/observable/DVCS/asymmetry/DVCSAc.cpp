@@ -1,60 +1,56 @@
 #include "../../../../../../include/partons/modules/observable/DVCS/asymmetry/DVCSAc.h"
 
-#include <ElementaryUtils/parameters/Parameters.h>
 #include <NumA/linear_algebra/vector/Vector3D.h>
 
-#include "../../../../../../include/partons/beans/observable/ObservableChannel.h"
+#include "../../../../../../include/partons/beans/observable/ObservableResult.h"
 #include "../../../../../../include/partons/BaseObjectRegistry.h"
-#include "../../../../../../include/partons/modules/process/ProcessModule.h"
+#include "../../../../../../include/partons/modules/process/DVCS/DVCSProcessModule.h"
+#include "../../../../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
 
-
 const unsigned int DVCSAc::classId =
-		BaseObjectRegistry::getInstance()->registerBaseObject(
-				new DVCSAc("DVCSAc"));
+        BaseObjectRegistry::getInstance()->registerBaseObject(
+                new DVCSAc("DVCSAc"));
 
 DVCSAc::DVCSAc(const std::string &className) :
-		Observable(className) {
-	m_channel = ObservableChannel::DVCS;
+        DVCSObservable(className) {
 }
 
 DVCSAc::DVCSAc(const DVCSAc& other) :
-		Observable(other) {
+        DVCSObservable(other) {
 }
 
 DVCSAc::~DVCSAc() {
 }
 
 DVCSAc* DVCSAc::clone() const {
-	return new DVCSAc(*this);
+    return new DVCSAc(*this);
 }
 
-void DVCSAc::configure(const ElemUtils::Parameters &parameters) {
-	Observable::configure(parameters);
-}
+PhysicalType<double> DVCSAc::computeObservable(
+        const DVCSObservableKinematic& kinematic,
+        const List<GPDType>& gpdType) {
 
-double DVCSAc::computePhiObservable(double phi) {
+    PhysicalType<double> A = m_pProcessModule->compute(+1, +1,
+            NumA::Vector3D(0., 0., 0.), kinematic, gpdType).getValue();
 
-	double A = m_pProcessModule->computeCrossSection(+1, +1,
-			NumA::Vector3D(0., 0., 0.), phi);
+    PhysicalType<double> B = m_pProcessModule->compute(-1, +1,
+            NumA::Vector3D(0., 0., 0.), kinematic, gpdType).getValue();
 
-	double B = m_pProcessModule->computeCrossSection(-1, +1,
-			NumA::Vector3D(0., 0., 0.), phi);
+    PhysicalType<double> C = m_pProcessModule->compute(+1, -1,
+            NumA::Vector3D(0., 0., 0.), kinematic, gpdType).getValue();
 
-	double C = m_pProcessModule->computeCrossSection(+1, -1,
-			NumA::Vector3D(0., 0., 0.), phi);
+    PhysicalType<double> D = m_pProcessModule->compute(-1, -1,
+            NumA::Vector3D(0., 0., 0.), kinematic, gpdType).getValue();
 
-	double D = m_pProcessModule->computeCrossSection(-1, -1,
-			NumA::Vector3D(0., 0., 0.), phi);
+    if ((A + B + C + D).getValue() == 0.) {
 
-	if (A + B + C + D == 0.) {
+        warn(__func__, "Asymmetry denominator is zero");
+        return PhysicalType<double>(0., PhysicalUnit::NONE);
+    }
 
-		warn(__func__, "Asymmetry denominator is zero.");
-		return 0.;
-	}
-
-	return ((A + B) - (C + D)) / ((A + B) + (C + D));
+    return ((A + B) - (C + D)) / ((A + B) + (C + D));
 }
 
 } /* namespace PARTONS */

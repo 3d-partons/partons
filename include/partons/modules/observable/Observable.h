@@ -8,117 +8,146 @@
  * @version 1.0
  */
 
+#include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/parameters/Parameters.h>
-#include <NumA/linear_algebra/vector/Vector3D.h>
-#include <pthread.h>
+#include <stddef.h>
+#include <iterator>
 #include <map>
 #include <string>
+#include <vector>
 
 #include "../../beans/automation/BaseObjectData.h"
+#include "../../beans/channel/ChannelType.h"
 #include "../../beans/gpd/GPDType.h"
 #include "../../beans/List.h"
-#include "../../beans/observable/ObservableChannel.h"
-#include "../../beans/observable/ObservableKinematic.h"
-#include "../../beans/observable/ObservableType.h"
-#include "../process/DVCS/DVCSProcessModule.h"
+#include "../../ModuleObject.h"
+#include "../../utils/type/PhysicalType.h"
 
 namespace PARTONS {
-
-class ObservableResult;
 
 /**
  * @class Observable
  *
  * @brief Abstract class that provides a skeleton to implement an Observable module.
- *
- * It is best to use this module with the corresponding service: ObservableService (see examples therein), as explained in the [general tutorial](@ref usage).
  */
+template<typename KinematicType, typename ResultType>
 class Observable: public ModuleObject {
+
 public:
-    Observable(const std::string &className);
 
     /**
-     * Default destructor
+     * Destructor
      */
-    virtual ~Observable();
+    virtual ~Observable() {
+    }
 
-    /**
-     * Virtual clone function to allow factory to copy all derived members
-     * @return
-     */
     virtual Observable* clone() const = 0;
 
-    virtual void initModule();
+    virtual std::string toString() const {
+        return ModuleObject::toString();
+    }
 
-    virtual void isModuleWellConfigured();
+    virtual void resolveObjectDependencies() {
+        ModuleObject::resolveObjectDependencies();
+    }
 
-    /**
-     * Provides a generic method to configure all types of modules by passing a Parameters object.
-     * (See ModuleObject class for more info).
-     *
-     * @param parameters
-     */
-    virtual void configure(const ElemUtils::Parameters &parameters);
+    virtual void run() {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                "This must be implemented in daughter class");
+    }
 
-    typedef double (DVCSProcessModule::*computeCrossSection)(double beamHelicity,
-
-    double beamCharge, NumA::Vector3D targetPolarization);
-
-    ObservableResult compute(const ObservableKinematic &kinematic,
-            const List<GPDType> & gpdType = List<GPDType>());
-
-    ObservableResult compute(double xB, double t, double Q2, double E,
-            double phi, const List<GPDType> & gpdType = List<GPDType>());
-
-    virtual double computePhiObservable(double phi);
-
-    // TODO clean
-//    virtual double Num(ProcessModule* pDVCSModule, double phi);
-//    virtual double Den(ProcessModule* pDVCSModule, double phi);
-
-    virtual void run();
+    virtual void configure(const ElemUtils::Parameters &parameters) {
+        ModuleObject::configure(parameters);
+    }
 
     virtual void prepareSubModules(
-            const std::map<std::string, BaseObjectData>& subModulesData);
+            const std::map<std::string, BaseObjectData>& subModulesData) {
+        ModuleObject::prepareSubModules(subModulesData);
+    }
 
-// ##### GETTERS & SETTERS #####
+    /**
+     * Computes the observable at given kinematics.
+     * @param kinematic Kinematics.
+     * @param gpdType Type of GPDs to compute.
+     * @return Result.
+     */
+    virtual ResultType compute(const KinematicType& kinematic,
+            const List<GPDType> & gpdType = List<GPDType>()) = 0;
 
-    double getBeamCharge() const;
-    void setBeamCharge(double beamCharge);
-    double getBeamHelicity() const;
-    void setBeamHelicity(double beamHelicity);
-    const NumA::Vector3D& getTargetPolarization() const;
-    void setTargetPolarization(const NumA::Vector3D& targetPolarization);
-    ProcessModule* getProcessModule() const;
-    virtual void setProcessModule(ProcessModule* pProcessModule);
-    ObservableChannel::Type getChannel() const;
-    void setChannel(ObservableChannel::Type channel);
+    /**
+     * Must be implemented in child class.
+     * @return List of GPD/CCF types the child class can compute.
+     */
+    virtual List<GPDType> getListOfAvailableGPDTypeForComputation() const = 0;
 
 protected:
+
     /**
-     * Copy constructor
+     * Constructor.
+     * See BaseObject::BaseObject and ModuleObject::ModuleObject for more details.
      *
-     * Use by the factory
-     *
-     * @param other
+     * @param className name of child class.
+     * @param channelType Channel type.
      */
-    Observable(const Observable& other);
+    Observable(const std::string &className, ChannelType::Type channelType) :
+            ModuleObject(className, channelType) {
+    }
 
-    ProcessModule* m_pProcessModule;
+    /**
+     * Copy constructor.
+     * @param other Object to be copied.
+     */
+    Observable(const Observable& other) :
+            ModuleObject(other) {
+    }
 
-    //TODO doc
-    ObservableChannel::Type m_channel;
-    ObservableType::Type m_observableType;
+    virtual void initModule() {
+    }
 
-    double m_beamHelicity;
-    double m_beamCharge;
+    virtual void isModuleWellConfigured() {
+    }
 
-    NumA::Vector3D m_targetPolarization;
+    /**
+     * Evaluate observable. To be implemented in a child class.
+     */
+    virtual PhysicalType<double> computeObservable(
+            const KinematicType& kinematic, const List<GPDType>& gpdType) = 0;
 
-    virtual double computeFourierObservable();
+    /**
+     * Serialize kinematics and list of GPD types to std::vector<double>.
+     */
+    std::vector<double> serializeKinematicsAndGPDTypesIntoStdVector(
+            const KinematicType& kin, const List<GPDType>& list) const {
 
-private:
-    pthread_mutex_t m_mutex;
+        std::vector<double> result;
+
+        kin.serializeIntoStdVector(result);
+
+        for (size_t i = 0; i < list.size(); i++) {
+            result.push_back(static_cast<double>(list[i].getType()));
+        }
+
+        return result;
+    }
+
+    /**
+     * Unserialize kinematics and list of GPD types from std::vector<double>.
+     */
+    void unserializeKinematicsAndGPDTypesFromStdVector(
+            const std::vector<double>& vec, KinematicType& kin,
+            List<GPDType>& list) const {
+
+        std::vector<double>::const_iterator it = vec.begin();
+
+        kin.unserializeFromStdVector(it, vec.end());
+
+        list.clear();
+
+        for (; it != vec.end(); it++) {
+            list.add(GPDType(static_cast<GPDType::Type>(*it)));
+        }
+    }
+
 };
 
 } /* namespace PARTONS */

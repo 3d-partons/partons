@@ -7,6 +7,7 @@
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
 #include <cmath>
 
+#include "../../../../../include/partons/beans/gpd/GPDKinematic.h"
 #include "../../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
 #include "../../../../../include/partons/beans/PerturbativeQCDOrderType.h"
 #include "../../../../../include/partons/BaseObjectRegistry.h"
@@ -14,7 +15,6 @@
 #include "../../../../../include/partons/modules/gpd/GPDModule.h"
 
 namespace PARTONS {
-
 
 // Initialise [class]::classId with a unique name.
 const unsigned int DVCSCFFHeavyQuark::classId =
@@ -58,7 +58,8 @@ DVCSCFFHeavyQuark::~DVCSCFFHeavyQuark() {
 }
 
 void DVCSCFFHeavyQuark::resolveObjectDependencies() {
-    DVCSConvolCoeffFunctionModule::resolveObjectDependencies();
+
+    DVCSCFFStandard::resolveObjectDependencies();
 
     setIntegrator(NumA::IntegratorType1D::DEXP);
 }
@@ -74,8 +75,7 @@ void DVCSCFFHeavyQuark::initFunctorsForIntegrations() {
             this, &DVCSCFFHeavyQuark::ConvolImKernelGluonMassiveA);
 }
 
-DVCSCFFHeavyQuark::DVCSCFFHeavyQuark(
-        const DVCSCFFHeavyQuark& other) :
+DVCSCFFHeavyQuark::DVCSCFFHeavyQuark(const DVCSCFFHeavyQuark& other) :
         DVCSCFFStandard(other) {
     m_betas = other.m_betas;
     m_betaq = other.m_betaq;
@@ -192,8 +192,9 @@ std::complex<double> DVCSCFFHeavyQuark::r(double s, double mq) {
 
 double DVCSCFFHeavyQuark::ConvolReKernelGluonMassiveV(double x,
         std::vector<double> params) {
-    PartonDistribution partonDistribution = m_pGPDModule->compute(x, m_xi, m_t,
-            m_MuF2, m_MuR2, m_currentGPDComputeType);
+    PartonDistribution partonDistribution = m_pGPDModule->compute(
+            GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
+            m_currentGPDComputeType);
 
     // GPD evaluated at x = x[ 0 ]
     double EvalGPD = 2
@@ -205,8 +206,9 @@ double DVCSCFFHeavyQuark::ConvolReKernelGluonMassiveV(double x,
 
 double DVCSCFFHeavyQuark::ConvolImKernelGluonMassiveV(double x,
         std::vector<double> params) {
-    PartonDistribution partonDistribution = m_pGPDModule->compute(x, m_xi, m_t,
-            m_MuF2, m_MuR2, m_currentGPDComputeType);
+    PartonDistribution partonDistribution = m_pGPDModule->compute(
+            GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
+            m_currentGPDComputeType);
 
     // GPD evaluated at x = x[ 0 ]
     double EvalGPD = 2
@@ -218,8 +220,9 @@ double DVCSCFFHeavyQuark::ConvolImKernelGluonMassiveV(double x,
 
 double DVCSCFFHeavyQuark::ConvolReKernelGluonMassiveA(double x,
         std::vector<double> params) {
-    PartonDistribution partonDistribution = m_pGPDModule->compute(x, m_xi, m_t,
-            m_MuF2, m_MuR2, m_currentGPDComputeType);
+    PartonDistribution partonDistribution = m_pGPDModule->compute(
+            GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
+            m_currentGPDComputeType);
 
     // GPD evaluated at x = x[ 0 ]
     double EvalGPD = 2
@@ -231,8 +234,9 @@ double DVCSCFFHeavyQuark::ConvolReKernelGluonMassiveA(double x,
 
 double DVCSCFFHeavyQuark::ConvolImKernelGluonMassiveA(double x,
         std::vector<double> params) {
-    PartonDistribution partonDistribution = m_pGPDModule->compute(x, m_xi, m_t,
-            m_MuF2, m_MuR2, m_currentGPDComputeType);
+    PartonDistribution partonDistribution = m_pGPDModule->compute(
+            GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
+            m_currentGPDComputeType);
 
     // GPD evaluated at x = x[ 0 ]
     double EvalGPD = 2
@@ -290,8 +294,8 @@ std::complex<double> DVCSCFFHeavyQuark::MassiveKernelGluonNLOA(double x) {
         GluonNLOAb *= (m_TF / 2. / (z + 1.) / (z + 1.));
     }
 
-    GluonNLOA = m_alphaSOver2Pi * Constant::C_ELEC_CHARGE * Constant::C_ELEC_CHARGE
-            * (GluonNLOAa - GluonNLOAb);
+    GluonNLOA = m_alphaSOver2Pi * Constant::C_ELEC_CHARGE
+            * Constant::C_ELEC_CHARGE * (GluonNLOAa - GluonNLOAb);
     ;
     GluonNLOA /= x * x;
 
@@ -357,8 +361,8 @@ std::complex<double> DVCSCFFHeavyQuark::MassiveKernelGluonNLOV(double x) {
 
         }
 
-        GluonNLOV = m_alphaSOver2Pi * Constant::C_ELEC_CHARGE * Constant::C_ELEC_CHARGE
-                * (GluonNLOVa + GluonNLOVb);
+        GluonNLOV = m_alphaSOver2Pi * Constant::C_ELEC_CHARGE
+                * Constant::C_ELEC_CHARGE * (GluonNLOVa + GluonNLOVb);
         GluonNLOV /= x * x;
 
     }

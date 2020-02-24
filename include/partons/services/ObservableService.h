@@ -8,139 +8,99 @@
  * @version 1.0
  */
 
+#include <ElementaryUtils/logger/CustomException.h>
+#include <ElementaryUtils/parameters/GenericType.h>
+#include <ElementaryUtils/PropertiesManager.h>
+#include <ElementaryUtils/string_utils/Formatter.h>
+#include <ElementaryUtils/string_utils/StringUtils.h>
+#include <ElementaryUtils/thread/Packet.h>
 #include <string>
 
+#include "../beans/automation/Task.h"
 #include "../beans/gpd/GPDType.h"
 #include "../beans/List.h"
-#include "../beans/observable/ObservableChannel.h"
-#include "../beans/observable/ObservableKinematic.h"
-#include "../beans/observable/ObservableResult.h"
+#include "../modules/observable/Observable.h"
+#include "../modules/process/ProcessModule.h"
 #include "../ServiceObjectTyped.h"
+#include "../utils/VectorUtils.h"
 
 namespace PARTONS {
-
-class ConvolCoeffFunctionModule;
-class Observable;
-class ProcessModule;
-class Task;
 
 /**
  * @class ObservableService
  *
- * @brief Singleton used to handle and compute some pre-configured Observables.
- *
- * See the [general tutorial](@ref usage) and this [table](@ref usage_tasks) of examples.
- *
- * Please find below some examples on how to use the different functions provided by this service.
- *
- * For now, only DVCS observables are available, including charge and spin asymmetries, both \f$\phi\f$-dependent and \f$\phi\f$-integrated (Fourier coefficients), and some cross-sections.
- *
- * 1. Compute an observable (*e.g.* here the longitudinally polarized beam and target [asymmetry](@ref PARTONS::DVCSAllMinus) for negative beam charge, \f$ A_{LL} \f$) at specific kinematics (\f$x_B\f$, t, \f$Q^{2}\f$, E, \f$\phi\f$) using the GPD model `MyFavoriteGPDModel` and the standard CFF module, with *e.g.* the [Guichon-Vanderhaeghen](@ref PARTONS::DVCSProcessGV08) set of formulas for the DVCS cross-section:
- * \code{.cpp}
- // Retrieve Observable service
- PARTONS::ObservableService* pObservableService = PARTONS::Partons::getInstance()->getServiceObjectRegistry()->getObservableService();
-
- // Create Observable
- PARTONS::Observable* pObservable = PARTONS::Partons::getInstance()->getModuleObjectFactory()->newObservable(PARTONS::DVCSAllMinus::classId);
-
- // Create ProcessModule
- PARTONS::DVCSProcessModule* pProcessModule = PARTONS::Partons::getInstance()->getModuleObjectFactory()->newDVCSProcessModule(PARTONS::DVCSProcessGV08::classId);
-
- // Create ScalesModule
- PARTONS::ScalesModule* pScalesModule = PARTONS::Partons::getInstance()->getModuleObjectFactory()->newScalesModule(PARTONS::ScalesQ2Multiplier::classId);
-
- // Set its lambda parameter, so MuF2 = MuR2 = lambda * Q2
- pScalesModule->configure(ElemUtils::Parameter(PARTONS::ScalesQ2Multiplier::PARAMETER_NAME_LAMBDA, 1.));
-
- // Create XiConverterModule
- PARTONS::XiConverterModule* pXiConverterModule = PARTONS::Partons::getInstance()->getModuleObjectFactory()->newXiConverterModule(PARTONS::XiConverterXBToXi::classId);
-
- // Create CFF module
- PARTONS::DVCSConvolCoeffFunctionModule* pDVCSCFFModel = PARTONS::Partons::getInstance()->getModuleObjectFactory()->newDVCSConvolCoeffFunctionModule(PARTONS::DVCSCFFStandard::classId);
-
- // Set its PerturbativeQCDOrder
- pDVCSCFFModel->configure(ElemUtils::Parameter(PARTONS::PerturbativeQCDOrderType::PARAMETER_NAME_PERTURBATIVE_QCD_ORDER_TYPE, PARTONS::PerturbativeQCDOrderType::NLO));
-
- // Create GPDModule
- PARTONS::GPDModule* pGPDModule = PARTONS::Partons::getInstance()->getModuleObjectFactory()->newGPDModule(MyFavoriteGPDModel::classId);
-
- // Link module to each other
- pObservable->setProcessModule(pProcessModule);
- pProcessModule->setScaleModule(pScalesModule);
- pProcessModule->setXiConverterModule(pXiConverterModule);
- pProcessModule->setConvolCoeffFunctionModule(pDVCSCFFModel);
- pDVCSCFFModel->setGPDModule(pGPDModule);
-
- // Load list of kinematics from file
- PARTONS::ObservableKinematic observableKinematic = PARTONS::ObservableKinematic(0.2, -0.1, 2., 6.);
-
- // Create kinematic
- PARTONS::ObservableResult observableResult = pObservableService->computeObservable(observableKinematic, pObservable);
-
- // Print results
- PARTONS::Partons::getInstance()->getLoggerManager()->info("main", __func__, observableResult.toString());
-
- // Remove Observable pointer reference
- PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(pObservable, 0);
- pObservable = 0;
-
- // Remove ProcessModule pointer reference
- PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(pProcessModule, 0);
- pProcessModule = 0;
-
- // Remove ScalesModule pointer reference
- PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(pScalesModule, 0);
- pScalesModule = 0;
-
- // Remove XiConverterModule pointer reference
- PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(pXiConverterModule, 0);
- pXiConverterModule = 0;
-
- // Remove DVCSCFFModel pointer reference
- PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(pDVCSCFFModel, 0);
- pDVCSCFFModel = 0;
-
- // Remove GPDModule pointer reference
- PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(pGPDModule, 0);
- pGPDModule = 0;
- * \endcode
- *
- * 2. The same thing can be done when dealing with many kinematics, by adapting the code with the following lines:
- \code{.cpp}
- // Load list of kinematics from file
- PARTONS::List<PARTONS::ObservableKinematic> observableKinematicList = PARTONS::KinematicUtils().getObservableKinematicFromFile("/path/to/kinematics_dvcs_observable.csv");
-
- // Run computation
- PARTONS::List<PARTONS::ObservableResult> observableResultList = pObservableService->computeManyKinematicOneModel(observableKinematicList, pObservable);
- \endcode
- * In the file `kinematics_dvcs_observable.csv`, kinematic points are encoded in separate lines using the following format: "xB|t|Q2|E|phi".
- *
- * 3. You can use the same methods for Fourier-type observable (*e.g.* the \f$\cos\left(\phi\right)\f$ [moment](@ref PARTONS::DVCSAllMinusCos1Phi) of the previous asymmetry). The only difference is that there is no need to define \f$ \phi \f$ in [ObservableKinematic](@ref PARTONS::ObservableKinematic).
+ * @brief Abstract class for a service to handle and compute observables.
  */
+template<typename KinematicType, typename ResultType>
+class ObservableService: public ServiceObjectTyped<KinematicType, ResultType> {
 
-class ObservableService: public ServiceObjectTyped<ObservableKinematic,
-        ObservableResult> {
 public:
-    static const std::string FUNCTION_NAME_COMPUTE_OBSERVABLE; ///< Name of the XML task used to compute an Observable at given kinematics.
-    static const std::string FUNCTION_NAME_COMPUTE_MANY_KINEMATIC_ONE_MODEL; ///< Name of the XML task used to compute an Observable for a list of kinematics.
-    static const std::string FUNCTION_NAME_GENERATE_PLOT_FILE; ///< Name of the XML task used for generating a data file ready for plotting.
 
-    static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
-
-    /**
-     * Default constructor.
-     */
-    ObservableService(const std::string &className);
+    static const std::string OBSERVABLE_SERVICE_COMPUTE_SINGLE_KINEMATIC; ///< Name of the XML task used to compute an Observable at given kinematics.
+    static const std::string OBSERVABLE_SERVICE_COMPUTE_MANY_KINEMATIC; ///< Name of the XML task used to compute an Observable for a list of kinematics.
+    static const std::string OBSERVABLE_SERVICE_GENERATE_PLOT_FILE; ///< Name of the XML task used for generating a data file ready for plotting.
 
     /**
-     * Default destructor.
+     * Destructor.
      */
-    virtual ~ObservableService();
+    virtual ~ObservableService() {
+    }
 
     /**
      * See parent class for details.
      */
-    void resolveObjectDependencies();
+    virtual void resolveObjectDependencies() {
+
+        ServiceObjectTyped<KinematicType, ResultType>::resolveObjectDependencies();
+
+        try {
+            this->m_batchSize = ElemUtils::GenericType(
+                    ElemUtils::PropertiesManager::getInstance()->getString(
+                            "observable.service.batch.size")).toUInt();
+        } catch (const std::exception &e) {
+            throw ElemUtils::CustomException(this->getClassName(), __func__,
+                    e.what());
+        }
+    }
+
+    virtual void computeTask(Task &task) {
+
+        ServiceObjectTyped<KinematicType, ResultType>::computeTask(task);
+
+        List<ResultType> resultList;
+
+        if (ElemUtils::StringUtils::equals(task.getFunctionName(),
+                ObservableService::OBSERVABLE_SERVICE_COMPUTE_MANY_KINEMATIC)) {
+            resultList = computeManyKinematicTask(task);
+        }
+
+        else if (ElemUtils::StringUtils::equals(task.getFunctionName(),
+                ObservableService::OBSERVABLE_SERVICE_COMPUTE_SINGLE_KINEMATIC)) {
+            resultList.add(computeSingleKinematicTask(task));
+        }
+
+        else if (ElemUtils::StringUtils::equals(task.getFunctionName(),
+                ObservableService::OBSERVABLE_SERVICE_GENERATE_PLOT_FILE)) {
+            generatePlotFileTask(task);
+        }
+
+        else if (!this->computeGeneralTask(task)) {
+            this->errorUnknownMethod(task);
+        }
+
+        this->updateResultInfo(resultList, this->m_resultInfo);
+
+        if (task.isStoreInDB()) {
+
+            if (resultList.size() == 0) {
+                this->warn(__func__, "No results to be inserted into database");
+            } else {
+                storeResultListInDatabase(resultList);
+            }
+        }
+
+        this->m_resultListBuffer = resultList;
+    }
 
     /**
      * Computes an Observable at specific kinematics.
@@ -149,10 +109,17 @@ public:
      * @param listOfGPDType List of GPDType to compute. Default: all the GPDTypes available with (both) the underlying ConvolCoeffFunctionModule (AND the underlying GPDModule, if any).
      * @return ObservableResult.
      */
-    ObservableResult computeObservable(
-            const ObservableKinematic &observableKinematic,
-            Observable* pObservable,
-            const List<GPDType> & listOfGPDType = List<GPDType>()) const;
+    ResultType computeSingleKinematic(const KinematicType &observableKinematic,
+            Observable<KinematicType, ResultType>* pObservable,
+            const List<GPDType> & gpdTypeList = List<GPDType>()) const {
+
+        //get list of GPD types
+        List<GPDType> restrictedByGPDTypeListFinal = getFinalGPDTypeList(
+                pObservable, gpdTypeList);
+
+        //return
+        return pObservable->compute(observableKinematic, gpdTypeList);
+    }
 
     /**
      * Computes an Observable for a list of kinematics.
@@ -162,80 +129,244 @@ public:
      * @param storeInDB Boolean to store the results and kinematics on the database. Default: false.
      * @return List of ObservableResult.
      */
-    List<ObservableResult> computeManyKinematicOneModel(
-            const List<ObservableKinematic> & listOfKinematic,
-            Observable* pObservable,
-            const List<GPDType> & listOfGPDType = List<GPDType>(),
-            const bool storeInDB = false);
+    List<ResultType> computeManyKinematic(
+            const List<KinematicType> & listOfKinematic,
+            Observable<KinematicType, ResultType>* pObservable,
+            const List<GPDType>& gpdTypeList = List<GPDType>()) {
+
+        //debug information
+        this->debug(__func__,
+                ElemUtils::Formatter() << listOfKinematic.size()
+                        << " Observable kinematic(s) will be computed with "
+                        << pObservable->getClassName());
+
+        //initialize
+        List<ResultType> results;
+        List<ElemUtils::Packet> listOfPacket;
+        List<GPDType> finalListOfGPDType = getFinalGPDTypeList(pObservable,
+                gpdTypeList);
+
+        //if to be computed
+        if (finalListOfGPDType.size() != 0) {
+
+            //init thread
+            this->initComputationalThread(pObservable);
+
+            //print info
+            this->info(__func__, "Thread(s) running ...");
+
+            //batch feature
+            unsigned int i = 0;
+            unsigned int j = 0;
+
+            //divide to packets
+            while (i != listOfKinematic.size()) {
+
+                listOfPacket.clear();
+                j = 0;
+
+                while ((j != this->m_batchSize) && (i != listOfKinematic.size())) {
+
+                    ElemUtils::Packet packet;
+                    KinematicType kinematic;
+                    kinematic = listOfKinematic[i];
+                    packet << kinematic << finalListOfGPDType;
+                    listOfPacket.add(packet);
+                    i++;
+                    j++;
+                }
+
+                //add, lunch and sort
+                this->addTasks(listOfPacket);
+                this->launchAllThreadAndWaitingFor();
+                this->sortResultList();
+
+                //print info
+                this->info(__func__,
+                        ElemUtils::Formatter()
+                                << "Kinematic(s) already computed: " << i);
+
+                //update result info
+                this->updateResultInfo(this->getResultList(),
+                        this->m_resultInfo);
+
+                //add to output
+                results.add(this->getResultList());
+
+                //clear buffer
+                this->clearResultListBuffer();
+            }
+
+            //clear threads
+            this->clearAllThread();
+
+        } else {
+            this->info(__func__,
+                    "Nothing to compute with your computation configuration ; there is no GPDType available");
+        }
+
+        return results;
+    }
 
     /**
-     * Method used in automation to compute given tasks.
-     * @param task Automation task to compute.
+     * @brief Uses an automation task (XML file) to configure a ProcessModule, e.g.\ a DVCSModule.
+     * @param task Automation task.
+     * @return Pre-configured ProcessModule.
      */
-    virtual void computeTask(Task &task);
+    virtual ProcessModule<KinematicType, ResultType>* newProcessModuleFromTask(
+            const Task &task) const = 0;
 
     /**
-     * @brief Returns the channel of a given Observable.\ E.g.\ DVCS.
-     * @param observableClassName Class name of the Observable.
-     * @return ObservableChannel.
+     * Uses an automation task (XML file) to configure an Observable.
+     * @param task Automation task.
+     * @return Pre-configured Observable.
      */
-    ObservableChannel::Type getObservableChannel(
-            const std::string &observableClassName) const;
-
-//    Observable* configureObservable(Observable* pObservable,
-//            ProcessModule* pProcessModule) const;
-//
-//    ProcessModule* configureProcessModule(ProcessModule* pProcessModule,
-//            ConvolCoeffFunctionModule* pConvolCoeffFunctionModule) const;
+    virtual Observable<KinematicType, ResultType>* newObservableModuleFromTask(
+            const Task &task) const = 0;
 
     /**
      * Uses an automation task (XML file) to set specific kinematics.
      * @param task
      * @return Observable kinematics.
      */
-    ObservableKinematic newKinematicFromTask(const Task &task) const;
+    virtual KinematicType newKinematicFromTask(const Task &task) const = 0;
+
     /**
      * Uses an automation task (XML file) to set a list of kinematics.
      * @param task
      * @return List of Observable kinematics.
      */
-    List<ObservableKinematic> newListOfKinematicFromTask(
-            const Task &task) const;
+    virtual List<KinematicType> newListOfKinematicFromTask(
+            const Task &task) const = 0;
 
     /**
-     * Uses an automation task (XML file) to configure an Observable.
-     * @param task
-     * @return Pre-configured Observable.
+     * Store list of results in DB.
+     * @param results List of results.
+     * @return True is insertion successful.
      */
-    Observable* newObservableModuleFromTask(const Task &task) const;
+    virtual void storeResultListInDatabase(
+            const List<ResultType>& results) const = 0;
+
+protected:
+
     /**
-     * @brief Uses an automation task (XML file) to configure a ProcessModule, e.g.\ a DVCSModule.
-     * @param task
-     * @return Pre-configured ProcessModule.
+     * Default constructor.
      */
-    ProcessModule* newProcessModuleFromTask(const Task &task) const;
+    ObservableService(const std::string &className) :
+            ServiceObjectTyped<KinematicType, ResultType>(className) {
+    }
 
 private:
-    //TODO improve object copy
+
     /**
      * Method used in the automated interface to compute an Observable.
      * @param task Automated XML task.
      * @return ObservableResult object.
      */
-    ObservableResult computeObservableTask(Task &task);
+    ResultType computeSingleKinematicTask(Task &task) {
+
+        //create a kinematic and init it with a list of parameters
+        KinematicType kinematic = newKinematicFromTask(task);
+
+        //get GPD types
+        List<GPDType> gpdTypeList = this->getGPDTypeListFromTask(task);
+
+        //get configured observable module
+        Observable<KinematicType, ResultType>* pObservable =
+                newObservableModuleFromTask(task);
+
+        //make computation
+        ResultType result = computeSingleKinematic(kinematic, pObservable,
+                gpdTypeList);
+
+        //remove reference to pConvolCoeffFunctionModule pointer.
+        this->m_pModuleObjectFactory->updateModulePointerReference(pObservable,
+                0);
+        pObservable = 0;
+
+        return result;
+    }
+
     /**
      * Method used in the automated interface to compute an Observable for a list of kinematics.
      * @param task Automated XML task.
      * @return List of ObservableResult.
      */
-    List<ObservableResult> computeManyKinematicOneModelTask(Task &task);
+    List<ResultType> computeManyKinematicTask(Task &task) {
+
+        //get kinematics
+        List<KinematicType> listOfKinematic = newListOfKinematicFromTask(task);
+
+        //get GPD types
+        List<GPDType> gpdTypeList = this->getGPDTypeListFromTask(task);
+
+        //get observable module
+        Observable<KinematicType, ResultType>* pObservable =
+                newObservableModuleFromTask(task);
+
+        //make computation
+        List<ResultType> results = computeManyKinematic(listOfKinematic,
+                pObservable, gpdTypeList);
+
+        //remove reference to pConvolCoeffFunctionModule pointer
+        this->m_pModuleObjectFactory->updateModulePointerReference(pObservable,
+                0);
+        pObservable = 0;
+
+        //return
+        return results;
+    }
+
     /**
      * Method used in the automated interface to generate a data file ready for plotting.
      * @param task Automated XML task.
      */
-    void generatePlotFileTask(Task &task);
+    virtual void generatePlotFileTask(Task &task) = 0;
 
+    /**
+     * Method used to derive an intersection of available GPD types from the various underlying modules.
+     * @param pConvolCoeffFunctionModule ConvolCoeffFunctionModule used for the computation.
+     * @param gpdTypeList List of desired GPD types to compute.
+     * @return List of GPD types.
+     */
+    List<GPDType> getFinalGPDTypeList(
+            Observable<KinematicType, ResultType>* pObservable,
+            const List<GPDType> &gpdTypeList) const {
+
+        //initialize
+        List<GPDType> restrictedByGPDTypeListFinal = gpdTypeList;
+
+        //get list of GPD types available
+        restrictedByGPDTypeListFinal =
+                pObservable->getListOfAvailableGPDTypeForComputation();
+
+        //intersection between available GPDType and GPDType asked
+        if (!gpdTypeList.isEmpty()) {
+            restrictedByGPDTypeListFinal = VectorUtils::intersection(
+                    restrictedByGPDTypeListFinal, gpdTypeList);
+        }
+
+        //debug info
+        this->debug(__func__,
+                ElemUtils::Formatter() << restrictedByGPDTypeListFinal.size()
+                        << " GPDType will be computed");
+
+        //return
+        return restrictedByGPDTypeListFinal;
+    }
 };
+
+template<typename KinematicType, typename ResultType>
+const std::string ObservableService<KinematicType, ResultType>::OBSERVABLE_SERVICE_COMPUTE_SINGLE_KINEMATIC =
+        "computeSingleKinematic";
+
+template<typename KinematicType, typename ResultType>
+const std::string ObservableService<KinematicType, ResultType>::OBSERVABLE_SERVICE_COMPUTE_MANY_KINEMATIC =
+        "computeManyKinematic";
+
+template<typename KinematicType, typename ResultType>
+const std::string ObservableService<KinematicType, ResultType>::OBSERVABLE_SERVICE_GENERATE_PLOT_FILE =
+        "generatePlotFile";
 
 } /* namespace PARTONS */
 

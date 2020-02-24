@@ -110,6 +110,7 @@ List<GPDType> GPDType::getListOfGPDTypeFromString(
 }
 
 ElemUtils::Packet& operator <<(ElemUtils::Packet& packet, GPDType& gpdType) {
+
     gpdType.serialize(packet);
     return packet;
 }

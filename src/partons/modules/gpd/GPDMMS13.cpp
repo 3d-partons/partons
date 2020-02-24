@@ -2,7 +2,6 @@
 
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/parameters/GenericType.h>
-#include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/PropertiesManager.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/functor/one_dimension/Functor1D.h>
@@ -68,6 +67,26 @@ GPDMMS13::~GPDMMS13() {
     if (m_pForward) {
         delete m_pForward;
         m_pForward = 0;
+    }
+
+    if (m_pint_IntHpEDDval) {
+        delete m_pint_IntHpEDDval;
+        m_pint_IntHpEDDval = 0;
+    }
+
+    if (m_pint_IntEvalPlusAB) {
+        delete m_pint_IntEvalPlusAB;
+        m_pint_IntEvalPlusAB = 0;
+    }
+
+    if (m_pint_IntEvalPlusA) {
+        delete m_pint_IntEvalPlusA;
+        m_pint_IntEvalPlusA = 0;
+    }
+
+    if (m_pint_IntEvalPlusB) {
+        delete m_pint_IntEvalPlusB;
+        m_pint_IntEvalPlusB = 0;
     }
 }
 
