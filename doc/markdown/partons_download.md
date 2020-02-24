@@ -13,10 +13,10 @@ The sources are accessible:
 * via the Git command line tool:
 ~~~~~~~~~~~~~{.sh}
 cd /path/to/some/directory
-GIT_SSL_NO_VERIFY=true git clone https://drf-gitlab.cea.fr/partons/core/elementary-utils.git --branch v2.0 --depth 1
-GIT_SSL_NO_VERIFY=true git clone https://drf-gitlab.cea.fr/partons/core/numa.git --branch v2.0 --depth 1
-GIT_SSL_NO_VERIFY=true git clone https://drf-gitlab.cea.fr/partons/core/partons.git --branch v2.0 --depth 1
-GIT_SSL_NO_VERIFY=true git clone https://drf-gitlab.cea.fr/partons/core/partons-example.git --branch v2.0 --depth 1
+GIT_SSL_NO_VERIFY=true git clone https://drf-gitlab.cea.fr/partons/core/elementary-utils.git --branch release-v2 --depth 1
+GIT_SSL_NO_VERIFY=true git clone https://drf-gitlab.cea.fr/partons/core/numa.git --branch release-v2 --depth 1
+GIT_SSL_NO_VERIFY=true git clone https://drf-gitlab.cea.fr/partons/core/partons.git --branch release-v2 --depth 1
+GIT_SSL_NO_VERIFY=true git clone https://drf-gitlab.cea.fr/partons/core/partons-example.git --branch release-v2 --depth 1
 ~~~~~~~~~~~~~
 The option `--branch` is needed to checkout the specific tagged version from the *release* branch.
 The option `GIT_SSL_NO_VERIFY=true` is needed because the CEA certificate is often not recognized.
