@@ -16,9 +16,7 @@ The virtual access infrastructure 3DPartons has received funding from the Europe
 
 # Get PARTONS {#mainpage_get}
 
-Here you can learn how to get your own version of %PARTONS. We offer two ways:
-* You can use our provided virtual machine with an out-of-the-box %PARTONS runtime and development environment. This is the easiest way to start your experience with %PARTONS.
-* You can also build %PARTONS by your own on <!-- either --> GNU/Linux<!--  or Mac OS X -->. This is useful if you want to have %PARTONS on your computer without using the virtualization technology or if you want to use %PARTONS on computing farms. 
+Here you can learn how to get your own version of %PARTONS. We offer two ways. You can use our provided virtual machine with an out-of-the-box %PARTONS runtime and development environment. This is the easiest way to start your experience with %PARTONS. Alternatively, you can also build %PARTONS by your own on <!-- either --> GNU/Linux<!--  or Mac OS X -->. This is useful if you want to have %PARTONS on your computer without using the virtualization technology or if you want to use %PARTONS on computing farms. 
 
 * [Download page](@ref download).
 
