@@ -35,7 +35,7 @@ You can also download our pre-configured virtual machine (see the [VM tutorial](
 
 Version   | Date       | %PARTONS version | Image                                                       | Size   |
 :-------: | :--------: | :--------------: | :---------------------------------------------------------: | :----: |
-User      | 19/03/2018 | 1.0              | [Download](http://partons.cea.fr/vm/PARTONS_190318.ova)     | 1.6 GB |
-Developer | 19/03/2018 | 1.0              | [Download](http://partons.cea.fr/vm/PARTONS_190318_DEV.ova) | 2.6 GB |
+User      | 25/02/2020 | 2.0              | [Download](http://partons.cea.fr/vm/PARTONS_250220.ova)     | 1.8 GB |
+Developer | 25/02/2020 | 2.0              | [Download](http://partons.cea.fr/vm/PARTONS_250220_DEV.ova) | 2.8 GB |
 
 The `Developer` version has a set-up development environment in Eclipse to start contributing to the %PARTONS project, and has more packages installed, which makes the image heavier.
