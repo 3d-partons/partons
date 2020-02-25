@@ -19,6 +19,6 @@ echo "http://partons.cea.fr/partons/doc/html/eclipse.html" >> $SITEMAP
 
 DESCRIPTION="PARTONS is a software framework dedicated to the phenomenology of 3D hadron structure. It is useful to theorists to develop new models, phenomenologists to interpret existing measurements and to experimentalists to design new experiments."
 
-sed -i "s|<head>|<head>\n<meta name=\"description\" content=\"$DESCRIPTION\">|g" ../html/indexX.html 
+sed -i "s|<head>|<head>\n<meta name=\"description\" content=\"$DESCRIPTION\">|g" ../html/index.html 
 
 exit 0
