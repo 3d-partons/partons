@@ -1,0 +1,24 @@
+#!/bin/bash
+
+SITEMAP="../html/sitemap.txt"
+> $SITEMAP
+
+echo "http://partons.cea.fr/partons/doc/html/index.html" >> $SITEMAP
+echo "http://partons.cea.fr/partons/doc/html/download.html" >> $SITEMAP
+echo "http://partons.cea.fr/partons/doc/html/contact.html" >> $SITEMAP
+
+echo "http://partons.cea.fr/partons/doc/html/quick.html" >> $SITEMAP
+echo "http://partons.cea.fr/partons/doc/html/usage.html" >> $SITEMAP
+echo "http://partons.cea.fr/partons/doc/html/newmodule.html" >> $SITEMAP
+echo "http://partons.cea.fr/partons/doc/html/database.html" >> $SITEMAP
+
+echo "http://partons.cea.fr/partons/doc/html/vm.html" >> $SITEMAP
+echo "http://partons.cea.fr/partons/doc/html/linux.html" >> $SITEMAP
+echo "http://partons.cea.fr/partons/doc/html/config.html" >> $SITEMAP
+echo "http://partons.cea.fr/partons/doc/html/eclipse.html" >> $SITEMAP
+
+DESCRIPTION="PARTONS is a software framework dedicated to the phenomenology of 3D hadron structure. It is useful to theorists to develop new models, phenomenologists to interpret existing measurements and to experimentalists to design new experiments."
+
+sed -i "s|<head>|<head>\n<meta name=\"description\" content=\"$DESCRIPTION\">|g" ../html/indexX.html 
+
+exit 0
