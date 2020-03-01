@@ -1,3 +1,6 @@
+// Implementation of helicity amplitudes appearing in Goloskokov-Kroll (GK) model in pseudoscalar meson
+// (pi+ and pi0) production.
+
 #include "../../../../../include/partons/modules/convol_coeff_function/DVMP/DVMPCFFGK06.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
@@ -117,36 +120,96 @@ std::complex<double> DVMPCFFGK06::computeCFF() {
     return 0.;
 }
 
-double DVMPCFFGK06::alphaS() const {
+double DVMPCFFGK06::computeMuR(double tau, double b) const {
 
-    //TODO implementation of one loop alpha_s, variables:
-    m_cNf;
-    m_cLambdaQCD;
-    m_MuR2;
-}
-
-double DVMPCFFGK06::sudakovFactor(double tau, double b) const {
-
-    //sqrt of Q2
     double Q = sqrt(m_Q2);
 
-    //beta0 factor
-    double beta0 = 11. - 2 * m_cNf / 3.;
+    double maximum = tau * Q;
 
-    //b^
-    double bHat = -1 * log(b * m_cLambdaQCD);
+    if (1. - tau > tau)
+        maximum = (1. - tau) * Q;
 
-    //Eq. (12) from https://arxiv.org/pdf/hep-ph/0611290.pdf
-    return sudakovFactorFunctionS(tau, b) + sudakovFactorFunctionS(1. - tau, b)
-            - (4. / beta0) * log(log(m_MuR2 / m_cLambdaQCD) / bHat);
+    if (1. / b > maximum)
+        maximum = 1. / b;
+
+    return maximum;
+}
+
+
+double DVMPCFFGK06::alphaS(double MuR) const {
+
+    //TODO implementation of one loop alpha_s, variables:
+
+
+    m_MuR2;
+
+    double Q = sqrt(m_Q2);
+
+    double coupling = (12.0 * M_PI) / ((33. - 2. * m_cNf) * log(pow(MuR,2.) / pow(m_cLambdaQCD,2.)));
+
+    return coupling;
 }
 
 double DVMPCFFGK06::sudakovFactorFunctionS(double tau, double b) const {
 
+    // sudakov function s is described, for example, in the appendix of https://arxiv.org/pdf/hep-ph/9503418.pdf
+
     double Q = sqrt(m_Q2);
 
+    double sudakov;
+
+    //beta0 factor
+    double beta0 = 11. - 2. * m_cNf / 3.;
+
+    //beta1 factor
+    double beta1 = 102. - 38. * m_cNf / 3.;
+
+    //b^
+    double bHat = -1. * log(b * m_cLambdaQCD);
+
+    //q^
+    double qHat = log(tau * Q / (sqrt(2) * m_cLambdaQCD));
+
+    //A^(2) factor
+    double A2 = 67. / 9 - pow(M_PI, 2.) / 3. - 10. / 27. * m_cNf + 2 * beta0 / 3. * log(exp(EulerGamma) / 2.);
+
+    if (b - sqrt(2.) / (tau * Q) <= 0.)
+        sudakov =0.;
+    else
+        sudakov = 8. / (3. * beta0) * (qHat * log(qHat / bHat) - qHat + bHat)
+                    + (4. * beta1) / (3. * pow(beta0,3)) * (qHat * ((log(2*qHat)+ 1.)/qHat - (log(2*bHat)+1.0)/bHat)
+                            + 1. / 2. * (pow(log(2 * qHat),2.) - pow(log(2 * bHat),2.)))
+                    + 4. / (3. * beta0) * log(exp(2 * EulerGamma - 1) / 2.) * log(qHat / bHat)
+                            + A2 * 4. / pow(beta0, 2.) * ((qHat - bHat) / bHat - log(qHat / bHat));
+
+    return sudakov;
+
     //TODO implementation of Sudakov factor function s, like Eq. (14) from https://arxiv.org/pdf/hep-ph/0611290.pdf
-    return 0.;
+}
+
+double DVMPCFFGK06::expSudakovFactor(double tau, double b) const {
+
+    //sqrt of Q2
+    double Q = sqrt(m_Q2);
+
+    double expSudakov;
+
+    //beta0 factor
+    double beta0 = 11. - 2. * m_cNf / 3.;
+
+    //b^
+    double bHat = -1. * log(b * m_cLambdaQCD);
+
+    //Eq. (12) from https://arxiv.org/pdf/hep-ph/0611290.pdf
+    double sudakovFactor =  sudakovFactorFunctionS(tau, b) + sudakovFactorFunctionS(1. - tau, b)
+            - (4. / beta0) * log(log(computeMuR(tau, b) / m_cLambdaQCD) / bHat);
+
+    if (exp(-1. * sudakovFactor) >= 1)
+        expSudakov = 1.;
+    else
+        expSudakov = exp(-1. * sudakovFactor);
+
+    return expSudakov;
 }
 
 double DVMPCFFGK06::mesonWF(double tau, double b) const {
@@ -217,8 +280,8 @@ double DVMPCFFGK06::quarkUnintegratedAmplitude(double x, double tau, double b,
 
     //Eqs. (6, 10) from from https://arxiv.org/pdf/hep-ph/0611290.pdf
     //here for GPDs we get singlet combination, so we need to integrate between (0, 1) only.
-    return mesonWF(tau, b) * quarkPropagator(x, tau, b) * alphaS()
-            * exp(-1 * sudakovFactor(tau, b))
+    return mesonWF(tau, b) * quarkPropagator(x, tau, b) * alphaS(computeMuR(tau,b))
+            * exp(-1 * expSudakovFactor(tau, b))
             * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
                     m_currentGPDComputeType).getQuarkDistribution(quarkType).getQuarkDistributionPlus();
 }
@@ -227,8 +290,8 @@ double DVMPCFFGK06::gluonUnintegratedAmplitude(double x, double tau,
         double b) const {
 
     //Eqs (5, 10) from from https://arxiv.org/pdf/hep-ph/0611290.pdf
-    return mesonWF(tau, b) * gluonPropagator(x, tau, b) * alphaS()
-            * exp(-1 * sudakovFactor(tau, b))
+    return mesonWF(tau, b) * gluonPropagator(x, tau, b) * alphaS(computeMuR(tau,b))
+            * exp(-1 * expSudakovFactor(tau, b))
             * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
                     m_currentGPDComputeType).getGluonDistribution().getGluonDistribution();
 }

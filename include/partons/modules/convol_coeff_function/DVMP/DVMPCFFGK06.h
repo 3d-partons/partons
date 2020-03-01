@@ -84,20 +84,29 @@ protected:
 
 private:
 
-    const double m_cNf; ///< Number of active flavors.
-    const double m_cLambdaQCD; ///< Lambda QCD
+    const double m_cNf = 3.0; ///< Number of active flavors.
+    const double m_cLambdaQCD = 0.22; ///< Lambda QCD
+    const double EulerGamma = 0.577216; /// Euler-Mascheroni Constant
+    const double PositronCharge = 0.3028; /// Charge of the positron
+
+    /**
+     * Renormalization scale. Taken to be the largest mass scale in the hard process amplitude.
+     * @param tau Meson's momentum fraction.
+     * @param b Impact-space parameter.
+     */
+    double computeMuR(double tau, double b) const;
 
     /**
      * Running coupling.
      */
-    double alphaS() const;
+    double alphaS(double MuR) const;
 
     /**
      * Sudakov factor.
      * @param tau Meson's momentum fraction.
      * @param b Impact-space parameter.
      */
-    double sudakovFactor(double tau, double b) const;
+    double expSudakovFactor(double tau, double b) const;
 
     /**
      * Sudakov factor function s.
