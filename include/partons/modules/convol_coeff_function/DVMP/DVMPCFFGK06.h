@@ -88,6 +88,7 @@ private:
     const double m_cLambdaQCD = 0.22; ///< Lambda QCD
     const double EulerGamma = 0.577216; /// Euler-Mascheroni Constant
     const double PositronCharge = 0.3028; /// Charge of the positron
+    const double Nc = 3.0;
 
     /**
      * Renormalization scale. Taken to be the largest mass scale in the hard process amplitude.
@@ -123,21 +124,44 @@ private:
     double mesonWF(double tau, double b) const;
 
     /**
-     * Meson wave function (Gaussian parameterization).
+     * Meson twist-2 wave function (Gaussian parameterization).
      * @param tau Meson's momentum fraction.
      * @param b Impact-space parameter.
      * @param f Decay constant (in GeV).
      * @param a Transverse size parameter (in GeV-1)
      */
-    double mesonWFGaussian(double tau, double b, double f, double a) const;
+    double mesonWFGaussianTwist2(double tau, double b, double f, double a) const;
 
     /**
-     * Quark propagator.
+     * Meson twist-3 wave function (Gaussian parameterization).
+     * @param tau Meson's momentum fraction.
+     * @param b Impact-space parameter.
+     * @param f Decay constant (in GeV).
+     * @param a Transverse size parameter (in GeV-1)
+     */
+    double mesonWFGaussianTwist3(double tau, double b, double f, double a) const;
+
+    /**
+     * Hankel function of the first kind.
+     * @param z input of the function.
+     */
+    std::complex<double> HankelFunctionFirstKind(double z) const;
+
+    /**
+     * Hard scattering kernel for Pi0 production.
      * @param x Nucleon's momentum fraction.
      * @param tau Meson's momentum fraction.
      * @param b Impact-space parameter.
      */
-    double quarkPropagator(double x, double tau, double b) const;
+    std::complex<double> hardKernelPi0(double x, double tau, double b) const;
+
+    /**
+     * Hard scattering kernel for Pi^+ production.
+     * @param x Nucleon's momentum fraction.
+     * @param tau Meson's momentum fraction.
+     * @param b Impact-space parameter.
+     */
+    std::complex<double> hardKernelPip(double x, double tau, double b) const;
 
     /**
      * Gluon propagator.

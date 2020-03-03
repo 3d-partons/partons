@@ -8,6 +8,7 @@
 #include <gsl/gsl_monte.h>
 #include <gsl/gsl_monte_vegas.h>
 #include <gsl/gsl_rng.h>
+#include <gsl/gsl_sf_bessel.h>
 #include <cmath>
 #include <utility>
 
@@ -238,7 +239,8 @@ double DVMPCFFGK06::mesonWF(double tau, double b) const {
                             << " not implemented");
         }
 
-        return mesonWFGaussian(tau, b, f, a);
+        // return mesonWFGaussian(tau, b, f, a);
+        return 0.;
 
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
@@ -250,20 +252,63 @@ double DVMPCFFGK06::mesonWF(double tau, double b) const {
     return 0.;
 }
 
-double DVMPCFFGK06::mesonWFGaussian(double tau, double b, double f,
+double DVMPCFFGK06::mesonWFGaussianTwist2(double tau, double b, double f,
         double a) const {
 
-    //TODO: like Eq. (41) from https://arxiv.org/pdf/hep-ph/0611290.pdf, but in b instead of k_perp.
-    return 0.;
+    double decayConstant = 0.132;
+
+    double transverseSize2 = 1. / (8. * pow(M_PI, 2.0) * pow(decayConstant, 2.));
+
+    double WFtwist2 = 2. * M_PI * decayConstant / sqrt(2*Nc) * 6. * tau * (1. - tau) *
+            exp(-1. * tau * (1. - tau) * pow(b, 2.0) / (4. * transverseSize2));
+
+    return WFtwist2;
+
 }
 
-double DVMPCFFGK06::quarkPropagator(double x, double tau, double b) const {
+double DVMPCFFGK06::mesonWFGaussianTwist3(double tau, double b, double f,
+        double a) const {
+
+    double muPi = 2.0;
+
+    double decayConstant = 0.132;
+
+    double transverseSize3 = 1.8;
+
+    double WFtwist3 = 4. * M_PI * decayConstant / sqrt(2*Nc) * muPi * pow(transverseSize3, 2.) *
+            exp(-1.0 * pow(b, 2.) / (8. * pow(transverseSize3, 2.0)) * gsl_sf_bessel_In(0, pow(b, 2.) / (8. * pow(transverseSize3, 2.0))));
+
+    return WFtwist3;
+
+}
+
+std::complex<double> DVMPCFFGK06::HankelFunctionFirstKind(double z) const {
+
+    //This function defines the Hankel Function of the first kind H_0^{(1)}(z) = J_0(z) + i * Y_0(z)
+
+    std::complex<double> Hankel0 = gsl_sf_bessel_J0(z) + 1i * gsl_sf_bessel_Y0(z);
+
+    return Hankel0;
+}
+
+std::complex<double> DVMPCFFGK06::hardKernelPi0(double x, double tau, double b) const {
 
     //TODO propagators - implement cases depending on:
     //TODO meson type (different for vector and pseudoscalar)
     //TODO (TO BE CHECKED) target helicity combination (e.g. for vector mesons: different for H and E)
     //TODO (TO BE CHECKED) meson polarization (e.g. for vector mesons: different for L and T)
-    return 0.;
+
+    double Cf = 4. / 3.;
+    double eu = 2. / 3.;
+    double ed = -1. / 3.;
+
+    std::complex<double> Ts = -1. * 1i / 4. ;
+
+    std::complex<double> Tu = -1. / (2 * M_PI) * gsl_sf_bessel_K0(sqrt(tau * (x + m_xi) / (2 * m_xi)) * b * sqrt(m_Q2));
+
+    std::complex<double> kernelPi0 = Cf * sqrt(2. / Nc) * m_Q2 / m_xi * (Ts - Tu);
+
+    return kernelPi0;
 }
 
 double DVMPCFFGK06::gluonPropagator(double x, double tau, double b) const {
@@ -280,7 +325,7 @@ double DVMPCFFGK06::quarkUnintegratedAmplitude(double x, double tau, double b,
 
     //Eqs. (6, 10) from from https://arxiv.org/pdf/hep-ph/0611290.pdf
     //here for GPDs we get singlet combination, so we need to integrate between (0, 1) only.
-    return mesonWF(tau, b) * quarkPropagator(x, tau, b) * alphaS(computeMuR(tau,b))
+    return mesonWF(tau, b) * alphaS(computeMuR(tau,b))
             * exp(-1 * expSudakovFactor(tau, b))
             * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
                     m_currentGPDComputeType).getQuarkDistribution(quarkType).getQuarkDistributionPlus();
