@@ -121,6 +121,16 @@ std::complex<double> DVMPCFFGK06::computeCFF() {
     return 0.;
 }
 
+double DVMPCFFGK06::Heaviside(double x) const {
+
+    if (x < 0.0)
+        return 0.0;
+    else
+        return 1.0;
+
+}
+
+
 double DVMPCFFGK06::computeMuR(double tau, double b) const {
 
     double Q = sqrt(m_Q2);
@@ -252,8 +262,7 @@ double DVMPCFFGK06::mesonWF(double tau, double b) const {
     return 0.;
 }
 
-double DVMPCFFGK06::mesonWFGaussianTwist2(double tau, double b, double f,
-        double a) const {
+double DVMPCFFGK06::mesonWFGaussianTwist2(double tau, double b) const {
 
     double decayConstant = 0.132;
 
@@ -266,8 +275,7 @@ double DVMPCFFGK06::mesonWFGaussianTwist2(double tau, double b, double f,
 
 }
 
-double DVMPCFFGK06::mesonWFGaussianTwist3(double tau, double b, double f,
-        double a) const {
+double DVMPCFFGK06::mesonWFGaussianTwist3(double tau, double b) const {
 
     double muPi = 2.0;
 
@@ -291,24 +299,59 @@ std::complex<double> DVMPCFFGK06::HankelFunctionFirstKind(double z) const {
     return Hankel0;
 }
 
-std::complex<double> DVMPCFFGK06::hardKernelPi0(double x, double tau, double b) const {
 
-    //TODO propagators - implement cases depending on:
-    //TODO meson type (different for vector and pseudoscalar)
-    //TODO (TO BE CHECKED) target helicity combination (e.g. for vector mesons: different for H and E)
-    //TODO (TO BE CHECKED) meson polarization (e.g. for vector mesons: different for L and T)
+std::complex<double> DVMPCFFGK06::subprocessPi0Twist2(double x, double tau, double b) const {
+
+    double Cf = 4. / 3.;
+
+    std::complex<double> Ts = -1. * 1i / 4. * (gsl_sf_bessel_J0(sqrt((1. - tau) * (x - m_xi) / (2. * m_xi)) * b * sqrt(m_Q2)) + 1i * gsl_sf_bessel_Y0(sqrt((1. - tau) * (x - m_xi) / (2. * m_xi)) * b * sqrt(m_Q2))) * Heaviside(x - m_xi)
+            -1. / (2. * M_PI) * gsl_sf_bessel_K0(sqrt((1. - tau) * (m_xi - x) / (2. * m_xi)) * b * sqrt(m_Q2)) * Heaviside(m_xi - x);
+
+    std::complex<double> Tu = -1. / (2. * M_PI) * gsl_sf_bessel_K0(sqrt(tau * (x + m_xi) / (2. * m_xi)) * b * sqrt(m_Q2));
+
+    std::complex<double> subprocessPi0Tw2 = Cf * sqrt(2. / Nc) * m_Q2 / m_xi * 2. * M_PI *
+            b * mesonWFGaussianTwist2(tau, b) * alphaS(computeMuR(tau,b)) * expSudakovFactor(tau, b) * (Ts - Tu);
+
+    return subprocessPi0Tw2;
+
+}
+
+std::complex<double> DVMPCFFGK06::convolutionPi0Twist2(double x, double tau, double b) const {
+
+    // For pi^+, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
+
+    std::complex<double> convolutionPi0Tw2 = 1. / sqrt(2) * subprocessPi0Twist2(x, tau, b);
+
+    return convolutionPi0Tw2;
+
+}
+
+std::complex<double> DVMPCFFGK06::subprocessPipTwist2(double x, double tau, double b) const {
 
     double Cf = 4. / 3.;
     double eu = 2. / 3.;
     double ed = -1. / 3.;
 
-    std::complex<double> Ts = -1. * 1i / 4. ;
+    std::complex<double> Ts = -1. * 1i / 4. * (gsl_sf_bessel_J0(sqrt((1. - tau) * (x - m_xi) / (2. * m_xi)) * b * sqrt(m_Q2)) + 1i * gsl_sf_bessel_Y0(sqrt((1. - tau) * (x - m_xi) / (2. * m_xi)) * b * sqrt(m_Q2))) * Heaviside(x - m_xi)
+            -1. / (2. * M_PI) * gsl_sf_bessel_K0(sqrt((1. - tau) * (m_xi - x) / (2. * m_xi)) * b * sqrt(m_Q2)) * Heaviside(m_xi - x);
 
-    std::complex<double> Tu = -1. / (2 * M_PI) * gsl_sf_bessel_K0(sqrt(tau * (x + m_xi) / (2 * m_xi)) * b * sqrt(m_Q2));
+    std::complex<double> Tu = -1. / (2. * M_PI) * gsl_sf_bessel_K0(sqrt(tau * (x + m_xi) / (2. * m_xi)) * b * sqrt(m_Q2));
 
-    std::complex<double> kernelPi0 = Cf * sqrt(2. / Nc) * m_Q2 / m_xi * (Ts - Tu);
+    std::complex<double> subprocessPipTw2 = Cf * sqrt(2. / Nc) * m_Q2 / m_xi * 2. * M_PI *
+            b * mesonWFGaussianTwist2(tau, b) * alphaS(computeMuR(tau,b)) * expSudakovFactor(tau, b) * (eu * Ts - ed * Tu);
 
-    return kernelPi0;
+    return subprocessPipTw2;
+
+}
+
+std::complex<double> DVMPCFFGK06::convolutionPipTwist2(double x, double tau, double b) const {
+
+    // For pi^+, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
+
+    std::complex<double> convolutionPipTw2 = subprocessPipTwist2(x, tau, b);
+
+    return convolutionPipTw2;
+
 }
 
 double DVMPCFFGK06::gluonPropagator(double x, double tau, double b) const {

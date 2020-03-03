@@ -91,6 +91,12 @@ private:
     const double Nc = 3.0;
 
     /**
+     * Heaviside step function.
+     * @param x input of the function to be checked whether positive or negative.
+     */
+    double Heaviside(double x) const;
+
+    /**
      * Renormalization scale. Taken to be the largest mass scale in the hard process amplitude.
      * @param tau Meson's momentum fraction.
      * @param b Impact-space parameter.
@@ -130,7 +136,7 @@ private:
      * @param f Decay constant (in GeV).
      * @param a Transverse size parameter (in GeV-1)
      */
-    double mesonWFGaussianTwist2(double tau, double b, double f, double a) const;
+    double mesonWFGaussianTwist2(double tau, double b) const;
 
     /**
      * Meson twist-3 wave function (Gaussian parameterization).
@@ -139,7 +145,7 @@ private:
      * @param f Decay constant (in GeV).
      * @param a Transverse size parameter (in GeV-1)
      */
-    double mesonWFGaussianTwist3(double tau, double b, double f, double a) const;
+    double mesonWFGaussianTwist3(double tau, double b) const;
 
     /**
      * Hankel function of the first kind.
@@ -169,6 +175,12 @@ private:
      * @param tau Meson's momentum fraction.
      * @param b Impact-space parameter.
      */
+
+    std::complex<double> subprocessPi0Twist2(double x, double tau, double b) const;
+    std::complex<double> subprocessPipTwist2(double x, double tau, double b) const;
+    std::complex<double> convolutionPi0Twist2(double x, double tau, double b) const;
+    std::complex<double> convolutionPipTwist2(double x, double tau, double b) const;
+
     double gluonPropagator(double x, double tau, double b) const;
 
     /**
