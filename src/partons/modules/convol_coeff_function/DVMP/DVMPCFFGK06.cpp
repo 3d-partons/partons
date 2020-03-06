@@ -22,6 +22,7 @@
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/modules/convol_coeff_function/DVMP/DVMPCFFGK06Integration.h"
 #include "../../../../../include/partons/modules/gpd/GPDModule.h"
+#include "../../../../../include/partons/FundamentalPhysicalConstants.h"
 
 namespace PARTONS {
 
@@ -30,26 +31,28 @@ const unsigned int DVMPCFFGK06::classId =
                 new DVMPCFFGK06("DVMPCFFGK06"));
 
 DVMPCFFGK06::DVMPCFFGK06(const std::string &className) :
-        DVMPConvolCoeffFunctionModule(className), m_cNf(3.), m_cLambdaQCD(0.22) {
+        DVMPConvolCoeffFunctionModule(className), m_cNf(3.), m_cLambdaQCD(0.22), m_tmin(-4. * pow(Constant::PROTON_MASS, 2.) * pow(m_xi, 2.) / (1. - pow(Constant::PROTON_MASS, 2.))),
+                EulerGamma(0.577216), PositronCharge(0.3028), Nc(3.) {
 
     //relate GPD types with functions to be used
-    m_listOfCFFComputeFunctionAvailable.insert(
-            std::make_pair(GPDType::H,
-                    &DVMPConvolCoeffFunctionModule::computeCFF));
-    m_listOfCFFComputeFunctionAvailable.insert(
-            std::make_pair(GPDType::E,
-                    &DVMPConvolCoeffFunctionModule::computeCFF));
     m_listOfCFFComputeFunctionAvailable.insert(
             std::make_pair(GPDType::Ht,
                     &DVMPConvolCoeffFunctionModule::computeCFF));
     m_listOfCFFComputeFunctionAvailable.insert(
             std::make_pair(GPDType::Et,
                     &DVMPConvolCoeffFunctionModule::computeCFF));
+    m_listOfCFFComputeFunctionAvailable.insert(
+            std::make_pair(GPDType::HTrans,
+                    &DVMPConvolCoeffFunctionModule::computeCFF));
+    m_listOfCFFComputeFunctionAvailable.insert(
+            std::make_pair(GPDType::ETrans,
+                    &DVMPConvolCoeffFunctionModule::computeCFF));
 }
 
 DVMPCFFGK06::DVMPCFFGK06(const DVMPCFFGK06 &other) :
         DVMPConvolCoeffFunctionModule(other), m_cNf(other.m_cNf), m_cLambdaQCD(
-                other.m_cLambdaQCD) {
+                other.m_cLambdaQCD), m_tmin(other.m_tmin), EulerGamma(other.EulerGamma),
+                PositronCharge(other.PositronCharge), Nc(other.Nc){
 }
 
 DVMPCFFGK06* DVMPCFFGK06::clone() const {
@@ -316,11 +319,15 @@ std::complex<double> DVMPCFFGK06::subprocessPi0Twist2(double x, double tau, doub
 
 }
 
-std::complex<double> DVMPCFFGK06::convolutionPi0Twist2(double x, double tau, double b) const {
+std::complex<double> DVMPCFFGK06::convolutionPi0Twist2(double x, double tau, double b,
+        GPDType::Type GPDType) const {
 
-    // For pi^+, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
+    // For pi^0, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
 
-    std::complex<double> convolutionPi0Tw2 = 1. / sqrt(2) * subprocessPi0Twist2(x, tau, b);
+    std::complex<double> convolutionPi0Tw2 = 1. / sqrt(2) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
+            GPDType).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution() -
+            Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2), GPDType).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution())
+            * subprocessPi0Twist2(x, tau, b);
 
     return convolutionPi0Tw2;
 
@@ -329,8 +336,6 @@ std::complex<double> DVMPCFFGK06::convolutionPi0Twist2(double x, double tau, dou
 std::complex<double> DVMPCFFGK06::subprocessPipTwist2(double x, double tau, double b) const {
 
     double Cf = 4. / 3.;
-    double eu = 2. / 3.;
-    double ed = -1. / 3.;
 
     std::complex<double> Ts = -1. * 1i / 4. * (gsl_sf_bessel_J0(sqrt((1. - tau) * (x - m_xi) / (2. * m_xi)) * b * sqrt(m_Q2)) + 1i * gsl_sf_bessel_Y0(sqrt((1. - tau) * (x - m_xi) / (2. * m_xi)) * b * sqrt(m_Q2))) * Heaviside(x - m_xi)
             -1. / (2. * M_PI) * gsl_sf_bessel_K0(sqrt((1. - tau) * (m_xi - x) / (2. * m_xi)) * b * sqrt(m_Q2)) * Heaviside(m_xi - x);
@@ -338,20 +343,61 @@ std::complex<double> DVMPCFFGK06::subprocessPipTwist2(double x, double tau, doub
     std::complex<double> Tu = -1. / (2. * M_PI) * gsl_sf_bessel_K0(sqrt(tau * (x + m_xi) / (2. * m_xi)) * b * sqrt(m_Q2));
 
     std::complex<double> subprocessPipTw2 = Cf * sqrt(2. / Nc) * m_Q2 / m_xi * 2. * M_PI *
-            b * mesonWFGaussianTwist2(tau, b) * alphaS(computeMuR(tau,b)) * expSudakovFactor(tau, b) * (eu * Ts - ed * Tu);
+            b * mesonWFGaussianTwist2(tau, b) * alphaS(computeMuR(tau,b)) * expSudakovFactor(tau, b) * (Constant::U_ELEC_CHARGE * Ts - Constant::D_ELEC_CHARGE * Tu);
 
     return subprocessPipTw2;
 
 }
 
-std::complex<double> DVMPCFFGK06::convolutionPipTwist2(double x, double tau, double b) const {
+std::complex<double> DVMPCFFGK06::convolutionPipTwist2(double x, double tau, double b,
+        GPDType::Type GPDType) const {
 
-    // For pi^+, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
-
-    std::complex<double> convolutionPipTw2 = subprocessPipTwist2(x, tau, b);
+    // For pi^+, GPDs appear in the combination of (F^u  - F^d)
+    std::complex<double> convolutionPipTw2 = (m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
+            GPDType).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution() -
+            m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2), GPDType).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution())
+            * subprocessPipTwist2(x, tau, b);
 
     return convolutionPipTw2;
 
+}
+
+std::complex<double> DVMPCFFGK06::amplitude0p0pPi0(double x, double tau, double b) const {
+
+    // For pi^0, helicity amplitude of longitudinal polarized photon
+    std::complex<double> amplitude0p0p = sqrt(1. - pow(m_xi, 2.)) * PositronCharge / sqrt(m_Q2) *
+            (convolutionPi0Twist2(x, tau, b, GPDType::Ht) - pow(m_xi, 2.) / (1. - pow(m_xi, 2.)) * convolutionPi0Twist2(x, tau, b, GPDType::Et));
+
+    return amplitude0p0p;
+
+}
+
+std::complex<double> DVMPCFFGK06::amplitude0p0pPip(double x, double tau, double b) const {
+
+    // For pi^+, helicity amplitude of longitudinal polarized photon
+    std::complex<double> amplitude0p0p = sqrt(1. - pow(m_xi, 2.)) * PositronCharge / sqrt(m_Q2) *
+            (convolutionPipTwist2(x, tau, b, GPDType::Ht) - pow(m_xi, 2.) / (1. - pow(m_xi, 2.)) * convolutionPipTwist2(x, tau, b, GPDType::Et));
+
+    return amplitude0p0p;
+}
+
+std::complex<double> DVMPCFFGK06::amplitude0m0pPi0(double x, double tau, double b) const {
+
+    // For pi^0, helicity amplitude of longitudinal polarized photon
+    std::complex<double> amplitude0m0p = PositronCharge / sqrt(m_Q2) * sqrt(-(m_t - m_tmin)) * m_xi / (2 * Constant::PROTON_MASS) *
+            convolutionPi0Twist2(x, tau, b, GPDType::Et);
+
+    return amplitude0m0p;
+
+}
+
+std::complex<double> DVMPCFFGK06::amplitude0m0pPip(double x, double tau, double b) const {
+
+    // For pi^+, helicity amplitude of longitudinal polarized photon
+    std::complex<double> amplitude0m0p = PositronCharge / sqrt(m_Q2) * sqrt(-(m_t - m_tmin)) * m_xi / (2 * Constant::PROTON_MASS) *
+            convolutionPipTwist2(x, tau, b, GPDType::Et);
+
+    return amplitude0m0p;
 }
 
 double DVMPCFFGK06::gluonPropagator(double x, double tau, double b) const {

@@ -84,11 +84,12 @@ protected:
 
 private:
 
-    const double m_cNf = 3.0; ///< Number of active flavors.
-    const double m_cLambdaQCD = 0.22; ///< Lambda QCD
-    const double EulerGamma = 0.577216; /// Euler-Mascheroni Constant
-    const double PositronCharge = 0.3028; /// Charge of the positron
-    const double Nc = 3.0;
+    const double m_cNf; ///< Number of active flavors.
+    const double m_cLambdaQCD; ///< Lambda QCD
+    const double m_tmin;
+    const double EulerGamma; /// Euler-Mascheroni Constant
+    const double PositronCharge; /// Charge of the positron
+    const double Nc; /// Number of colors
 
     /**
      * Heaviside step function.
@@ -178,8 +179,14 @@ private:
 
     std::complex<double> subprocessPi0Twist2(double x, double tau, double b) const;
     std::complex<double> subprocessPipTwist2(double x, double tau, double b) const;
-    std::complex<double> convolutionPi0Twist2(double x, double tau, double b) const;
-    std::complex<double> convolutionPipTwist2(double x, double tau, double b) const;
+    std::complex<double> convolutionPi0Twist2(double x, double tau, double b, GPDType::Type GPDType) const;
+    std::complex<double> convolutionPipTwist2(double x, double tau, double b, GPDType::Type GPDType) const;
+
+    std::complex<double> amplitude0p0pPi0(double x, double tau, double b) const;
+    std::complex<double> amplitude0m0pPi0(double x, double tau, double b) const;
+
+    std::complex<double> amplitude0p0pPip(double x, double tau, double b) const;
+    std::complex<double> amplitude0m0pPip(double x, double tau, double b) const;
 
     double gluonPropagator(double x, double tau, double b) const;
 
