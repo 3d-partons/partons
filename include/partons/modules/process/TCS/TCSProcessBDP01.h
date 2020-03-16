@@ -58,6 +58,11 @@ protected:
     virtual PhysicalType<double> CrossSectionBH();
     virtual PhysicalType<double> CrossSectionVCS();
     virtual PhysicalType<double> CrossSectionInterf();
+
+    double F1(double t); ///< Form factor F1.
+    double F2(double t); ///< Form factor F2.
+    double FA(double t); ///< Form factor FA.
+    double FB(double t); ///< Form factor FB.
 };
 
 } /* namespace PARTONS */

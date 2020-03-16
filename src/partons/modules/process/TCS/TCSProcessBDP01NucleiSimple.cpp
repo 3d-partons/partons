@@ -1,71 +1,150 @@
-#include "../../../../../include/partons/modules/process/TCS/TCSProcessBDP01.h"
+/*
+ * TCSProcessBDP01NucleiSimple.cpp
+ *
+ *  Created on: Mar 11, 2020
+ *      Author: partons
+ */
 
+#include "../../../../../include/partons/modules/process/TCS/TCSProcessBDP01NucleiSimple.h"
+
+#include <ElementaryUtils/logger/CustomException.h>
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <cmath>
 #include <complex>
 
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
+#include "../../../../../include/partons/beans/observable/TCS/TCSObservableKinematic.h"
+#include "../../../../../include/partons/beans/observable/TCS/TCSObservableResult.h"
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
+#include "../../../../../include/partons/modules/process/ProcessModule.h"
 #include "../../../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
 
-const unsigned int TCSProcessBDP01::classId =
+const unsigned int TCSProcessBDP01NucleiSimple::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
-                new TCSProcessBDP01("TCSProcessBDP01"));
+                new TCSProcessBDP01NucleiSimple("TCSProcessBDP01NucleiSimple"));
 
-TCSProcessBDP01::TCSProcessBDP01(const std::string &className) :
-        TCSProcessModule(className) {
+TCSProcessBDP01NucleiSimple::TCSProcessBDP01NucleiSimple(
+        const std::string& className) :
+        TCSProcessBDP01(className), Nuclei(className) {
 }
 
-TCSProcessBDP01::~TCSProcessBDP01() {
+TCSProcessBDP01NucleiSimple::TCSProcessBDP01NucleiSimple(
+        const TCSProcessBDP01NucleiSimple& other) :
+        TCSProcessBDP01(other), Nuclei(other) {
 }
 
-TCSProcessBDP01::TCSProcessBDP01(const TCSProcessBDP01& other) :
-        TCSProcessModule(other) {
+TCSProcessBDP01NucleiSimple::~TCSProcessBDP01NucleiSimple() {
 }
 
-TCSProcessBDP01* TCSProcessBDP01::clone() const {
-    return new TCSProcessBDP01(*this);
+TCSProcessBDP01NucleiSimple* TCSProcessBDP01NucleiSimple::clone() const {
+    return new TCSProcessBDP01NucleiSimple(*this);
 }
 
-void TCSProcessBDP01::initModule() {
-    TCSProcessModule::initModule();
+void TCSProcessBDP01NucleiSimple::configure(
+        const ElemUtils::Parameters& parameters) {
+
+    TCSProcessBDP01::configure(parameters);
+    Nuclei::configure(parameters);
 }
 
-void TCSProcessBDP01::isModuleWellConfigured() {
-    TCSProcessModule::isModuleWellConfigured();
+void TCSProcessBDP01NucleiSimple::initModule() {
+
+    //run for mother
+    ProcessModule<TCSObservableKinematic, TCSObservableResult>::initModule();
+
+    //evaluate internal variables
+    double s = pow(Constant::PROTON_MASS, 2) + 2. * Constant::PROTON_MASS * m_E;
+
+    double p1cm = m_E * Constant::PROTON_MASS / sqrt(s);
+    double E3cm = (s + m_Q2Prim - pow(Constant::PROTON_MASS, 2))
+            / (2 * sqrt(s));
+    double p3cm = sqrt(pow(E3cm, 2) - m_Q2Prim);
+
+    m_tmin = pow(m_Q2Prim, 2) / (4 * s) - pow(p1cm - p3cm, 2);
+    m_tmax = pow(m_Q2Prim, 2) / (4 * s) - pow(p1cm + p3cm, 2);
 }
 
-double TCSProcessBDP01::F1(double t) { // form factor F_1
-    double Mp2 = Constant::PROTON_MASS * Constant::PROTON_MASS;
-    double G_E = 1. / (1. - t / 0.71) / (1. - t / 0.71); // electric form factor
-    double muP = 2.7928; // proton magnetic moment
-    double x = -t / 4. / Mp2;
-    return (x * muP + 1.) / (1. + x) * G_E;
+void TCSProcessBDP01NucleiSimple::isModuleWellConfigured() {
+
+    //run for mother
+    ProcessModule<TCSObservableKinematic, TCSObservableResult>::isModuleWellConfigured();
+
+    //check if pointer to scale module set
+    if (m_pScaleModule == 0) {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                "m_pScaleModule is NULL pointer ; Use configure method to configure it");
+    }
+
+    //check if pointer to xi module set
+    if (m_pXiConverterModule == 0) {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                "m_pXiConverterModule is NULL pointer ; Use configure method to configure it");
+    }
+
+    //check if pointer to cff module set
+    if (isCCFModuleDependent() && m_pConvolCoeffFunctionModule == 0) {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                "m_pConvolCoeffFunctionModule is NULL pointer ; Use configure method to configure it");
+    }
+
+    //test kinematic domain of t
+    if (m_t > m_tmin || m_t < m_tmax) {
+        ElemUtils::Formatter formatter;
+        formatter << " Input value of t = " << m_t
+                << " does not lay between t_max = " << m_tmax << " and t_min = "
+                << m_tmin << " (TCS kinematic limits)";
+        warn(__func__, formatter.str());
+    }
+
+    //test kinematic domain of Q2
+    if (m_Q2Prim < 0.) {
+        ElemUtils::Formatter formatter;
+        formatter << "Input value of Q2' = " << m_Q2Prim << " is not > 0";
+        warn(__func__, formatter.str());
+    }
+
+    //test kinematic domain of E
+    if (m_E < 0.) {
+        ElemUtils::Formatter formatter;
+        formatter << "Input value of E = " << m_E << " is not > 0";
+        warn(__func__, formatter.str());
+    }
+
+    //test if s >= (M + Q')^2
+    if (2 * m_E * Constant::PROTON_MASS
+            < 2 * Constant::PROTON_MASS * sqrt(m_Q2Prim) + m_Q2Prim) {
+        ElemUtils::Formatter formatter;
+        formatter << "Input value of E = " << m_E << " and Q2' = " << m_Q2Prim
+                << " does not satisfy s >= (M + Q')^2";
+        warn(__func__, formatter.str());
+    }
+
+    //test beam polarization
+    if (fabs(m_beamPolarization) != 0. && fabs(m_beamPolarization) != 1.) {
+        ElemUtils::Formatter formatter;
+        formatter << "Beam polarization = " << m_beamPolarization
+                << "is not +/- 1 or 0";
+        warn(__func__, formatter.str());
+    }
+
+    //test target polarization
+    double targetMag = sqrt(
+            pow(m_targetPolarization.getX(), 2)
+                    + pow(m_targetPolarization.getY(), 2)
+                    + pow(m_targetPolarization.getZ(), 2));
+
+    if (targetMag != 0. && targetMag != 1.) {
+        ElemUtils::Formatter formatter;
+        formatter << "Magnitude of target polarization ("
+                << m_targetPolarization.toString() << ") neither 0 nor 1";
+        warn(__func__, formatter.str());
+    }
 }
 
-double TCSProcessBDP01::F2(double t) { // form factor F_1
-    double Mp2 = Constant::PROTON_MASS * Constant::PROTON_MASS;
-    double G_E = 1. / (1. - t / 0.71) / (1. - t / 0.71); // electric form factor
-    double muP = 2.7928; // proton magnetic moment
-    double x = -t / 4. / Mp2;
-    return (muP - 1.) / (1. + x) * G_E;
-}
-
-double TCSProcessBDP01::FB(double t) { // (F_1 + F_2)^2
-    double G_M = 2.7928 / (1. - t / 0.71) / (1. - t / 0.71); // magnetic form factor. 2.79 is the proton magnetic moment
-    return G_M * G_M;
-}
-
-double TCSProcessBDP01::FA(double t) { // (F_1^2 - (t/4Mp2)F_2^2)
-    double Mp2 = Constant::PROTON_MASS * Constant::PROTON_MASS;
-    double G_E = 1. / (1. - t / 0.71) / (1. - t / 0.71); // electric form factor
-    double x = -t / 4. / Mp2;
-    return F1(t) * F1(t) + x * F2(t) * F2(t);
-}
-
-PhysicalType<double> TCSProcessBDP01::CrossSectionBH() {
+PhysicalType<double> TCSProcessBDP01NucleiSimple::CrossSectionBH() {
 
     double Mp2 = Constant::PROTON_MASS * Constant::PROTON_MASS;
     double alpha3 = Constant::FINE_STRUCTURE_CONSTANT
@@ -108,7 +187,7 @@ PhysicalType<double> TCSProcessBDP01::CrossSectionBH() {
             / (2 * Constant::PI);
 }
 
-PhysicalType<double> TCSProcessBDP01::CrossSectionVCS() {
+PhysicalType<double> TCSProcessBDP01NucleiSimple::CrossSectionVCS() {
 
     double Mp2 = Constant::PROTON_MASS * Constant::PROTON_MASS;
     double alpha3 = Constant::FINE_STRUCTURE_CONSTANT
@@ -138,7 +217,7 @@ PhysicalType<double> TCSProcessBDP01::CrossSectionVCS() {
             / (2 * Constant::PI);
 }
 
-PhysicalType<double> TCSProcessBDP01::CrossSectionInterf() {
+PhysicalType<double> TCSProcessBDP01NucleiSimple::CrossSectionInterf() {
 
     double Mp2 = Constant::PROTON_MASS * Constant::PROTON_MASS;
     double alpha3 = Constant::FINE_STRUCTURE_CONSTANT

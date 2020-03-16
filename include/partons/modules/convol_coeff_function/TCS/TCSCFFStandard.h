@@ -106,15 +106,19 @@ protected:
     virtual std::complex<double> computeUnpolarized();
     virtual std::complex<double> computePolarized();
 
-private:
+protected:
 
     double m_quarkDiagonal;
     double m_gluonDiagonal;
 
+    virtual void computeDiagonalGPD();
+    virtual double computeSquareChargeAveragedGPD(
+            const PartonDistribution &partonDistribution);
+
+private:
+
     size_t m_nf; ///< Number of active flavors.
     RunningAlphaStrongModule *m_pRunningAlphaStrongModule; ///< Related alphaS module.
-
-    virtual void computeDiagonalGPD();
 
     virtual std::complex<double> KernelQuarkV(double x); ///< T^{q, V/A}, appendix A, eq. (A1)
     virtual std::complex<double> KernelGluonV(double x); ///< T^{g, V/A}, appendix A, eq. (A1)
@@ -142,9 +146,6 @@ private:
 
     std::complex<double> computeIntegralsV();
     std::complex<double> computeIntegralsA();
-
-    double computeSquareChargeAveragedGPD(
-            const PartonDistribution &partonDistribution);
 
     NumA::FunctionType1D* m_pConvolReKernelQuark1V;
     NumA::FunctionType1D* m_pConvolReKernelQuark2V;
