@@ -190,6 +190,10 @@ PhysicalType<double> TCSProcessBDP01NucleiSimple::CrossSectionBH() {
     //add dphi_s and replaces d(cos theta) by dtheta
     return PhysicalType<double>(DiffCrossBH, PhysicalUnit::GEVm2) * sin(m_theta)
             / (2 * Constant::PI);
+
+   // PhysicalType<double> result = TCSProcessBDP01::CrossSectionBH();
+   // return PhysicalType<double>(pow(m_Z, 2) * result.getValue(),
+   //         result.getUnit());
 }
 
 PhysicalType<double> TCSProcessBDP01NucleiSimple::CrossSectionVCS() {
