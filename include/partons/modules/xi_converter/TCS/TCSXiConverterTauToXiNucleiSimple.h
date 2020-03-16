@@ -10,6 +10,7 @@
 
 #include <string>
 
+#include "../../../beans/nuclei/Nuclei.h"
 #include "../../../utils/type/PhysicalType.h"
 #include "TCSXiConverterModule.h"
 
@@ -23,7 +24,8 @@ namespace PARTONS {
  * \f$\tau = Q'^{2}/(s-M^{2})\f$
  * \f$\xi = \tau/(2 - \tau)\f$
  */
-class TCSXiConverterTauToXiNucleiSimple: public TCSXiConverterModule {
+class TCSXiConverterTauToXiNucleiSimple: public TCSXiConverterModule,
+        public Nuclei {
 
 public:
 
@@ -42,7 +44,8 @@ public:
      * Copy constructor.
      * @param other Object to be copied.
      */
-    TCSXiConverterTauToXiNucleiSimple(const TCSXiConverterTauToXiNucleiSimple &other);
+    TCSXiConverterTauToXiNucleiSimple(
+            const TCSXiConverterTauToXiNucleiSimple &other);
 
     /**
      * Destructor.

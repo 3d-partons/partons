@@ -52,6 +52,11 @@ void TCSProcessBDP01NucleiSimple::configure(
 
 void TCSProcessBDP01NucleiSimple::initModule() {
 
+    //USE THESE VARIABLES
+    //m_A;
+    //m_Z;
+    //
+
     //run for mother
     ProcessModule<TCSObservableKinematic, TCSObservableResult>::initModule();
 

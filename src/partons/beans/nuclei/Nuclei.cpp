@@ -78,40 +78,24 @@ void Nuclei::isWellConfigured() const {
     }
 }
 
-size_t Nuclei::getA() const {
-    return m_A;
+void Nuclei::setAZ(size_t A, size_t Z) {
+
+    m_A = A;
+    m_Z = Z;
+
+    isWellConfigured();
 }
 
-void Nuclei::setA(size_t a) {
-
-    m_A = a;
-    isWellConfigured();
+size_t Nuclei::getA() const {
+    return m_A;
 }
 
 size_t Nuclei::getZ() const {
     return m_Z;
 }
 
-void Nuclei::setZ(size_t z) {
-
-    m_Z = z;
-    isWellConfigured();
-}
-
 size_t Nuclei::getN() const {
     return m_A - m_Z;
-}
-
-void Nuclei::setN(size_t N) {
-
-    if (N > m_A) {
-        throw ElemUtils::CustomException(m_className, __func__,
-                ElemUtils::Formatter()
-                        << "Number of neutrons higher than mass number, N = "
-                        << N << " A = " << m_A);
-    }
-
-    m_Z = m_A - N;
 }
 
 } /* namespace PARTONS */

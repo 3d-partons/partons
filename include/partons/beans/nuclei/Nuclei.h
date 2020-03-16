@@ -32,14 +32,14 @@ public:
     virtual void configure(const ElemUtils::Parameters &parameters);
 
     /**
+     * Set mass number and atomic number.
+     */
+    void setAZ(size_t A, size_t Z);
+
+    /**
      * Get mass number.
      */
     size_t getA() const;
-
-    /**
-     * Set mass number.
-     */
-    void setA(size_t A);
 
     /**
      * Get atomic number.
@@ -47,19 +47,9 @@ public:
     size_t getZ() const;
 
     /**
-     * Set atomic number.
-     */
-    void setZ(size_t Z);
-
-    /**
      * Get neutron number.
      */
     size_t getN() const;
-
-    /**
-     * Set neutron number.
-     */
-    void setN(size_t N);
 
 protected:
 

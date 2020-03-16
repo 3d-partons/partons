@@ -11,14 +11,17 @@ namespace PARTONS {
 
 const unsigned int TCSXiConverterTauToXiNucleiSimple::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
-                new TCSXiConverterTauToXiNucleiSimple("TCSXiConverterTauToXiNucleiSimple"));
+                new TCSXiConverterTauToXiNucleiSimple(
+                        "TCSXiConverterTauToXiNucleiSimple"));
 
-TCSXiConverterTauToXiNucleiSimple::TCSXiConverterTauToXiNucleiSimple(const std::string &className) :
-        TCSXiConverterModule(className) {
+TCSXiConverterTauToXiNucleiSimple::TCSXiConverterTauToXiNucleiSimple(
+        const std::string &className) :
+        TCSXiConverterModule(className), Nuclei(className) {
 }
 
-TCSXiConverterTauToXiNucleiSimple::TCSXiConverterTauToXiNucleiSimple(const TCSXiConverterTauToXiNucleiSimple &other) :
-        TCSXiConverterModule(other) {
+TCSXiConverterTauToXiNucleiSimple::TCSXiConverterTauToXiNucleiSimple(
+        const TCSXiConverterTauToXiNucleiSimple &other) :
+        TCSXiConverterModule(other), Nuclei(other) {
 }
 
 TCSXiConverterTauToXiNucleiSimple::~TCSXiConverterTauToXiNucleiSimple() {
@@ -30,6 +33,11 @@ TCSXiConverterTauToXiNucleiSimple* TCSXiConverterTauToXiNucleiSimple::clone() co
 
 PhysicalType<double> TCSXiConverterTauToXiNucleiSimple::compute(
         const TCSObservableKinematic& kinematic) {
+
+    //USE THESE VARIABLES
+    //m_A;
+    //m_Z;
+    //
 
     double s =
             pow(Constant::PROTON_MASS, 2)
