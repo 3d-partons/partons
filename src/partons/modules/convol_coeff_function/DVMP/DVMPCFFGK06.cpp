@@ -182,18 +182,18 @@ double DVMPCFFGK06::sudakovFactorFunctionS(double tau, double b) const {
     double bHat = -1. * log(b * m_cLambdaQCD);
 
     //q^
-    double qHat = log(tau * Q / (sqrt(2) * m_cLambdaQCD));
+    double qHat = log(tau * Q / (sqrt(2.) * m_cLambdaQCD));
 
     //A^(2) factor
-    double A2 = 67. / 9 - pow(M_PI, 2.) / 3. - 10. / 27. * m_cNf + 2 * beta0 / 3. * log(exp(EulerGamma) / 2.);
+    double A2 = 67. / 9. - pow(M_PI, 2.) / 3. - 10. / 27. * m_cNf + 2. * beta0 / 3. * log(exp(EulerGamma) / 2.);
 
     if (b - sqrt(2.) / (tau * Q) <= 0.)
         sudakov =0.;
     else
         sudakov = 8. / (3. * beta0) * (qHat * log(qHat / bHat) - qHat + bHat)
-                    + (4. * beta1) / (3. * pow(beta0,3)) * (qHat * ((log(2*qHat)+ 1.)/qHat - (log(2*bHat)+1.0)/bHat)
-                            + 1. / 2. * (pow(log(2 * qHat),2.) - pow(log(2 * bHat),2.)))
-                    + 4. / (3. * beta0) * log(exp(2 * EulerGamma - 1) / 2.) * log(qHat / bHat)
+                    + (4. * beta1) / (3. * pow(beta0,3.)) * (qHat * ((log(2.*qHat)+ 1.)/qHat - (log(2.*bHat)+1.0)/bHat)
+                            + 1. / 2. * (pow(log(2. * qHat),2.) - pow(log(2. * bHat),2.)))
+                    + 4. / (3. * beta0) * log(exp(2. * EulerGamma - 1.) / 2.) * log(qHat / bHat)
                             + A2 * 4. / pow(beta0, 2.) * ((qHat - bHat) / bHat - log(qHat / bHat));
 
     return sudakov;
@@ -218,7 +218,7 @@ double DVMPCFFGK06::expSudakovFactor(double tau, double b) const {
     double sudakovFactor =  sudakovFactorFunctionS(tau, b) + sudakovFactorFunctionS(1. - tau, b)
             - (4. / beta0) * log(log(computeMuR(tau, b) / m_cLambdaQCD) / bHat);
 
-    if (exp(-1. * sudakovFactor) >= 1)
+    if (exp(-1. * sudakovFactor) >= 1.)
         expSudakov = 1.;
     else
         expSudakov = exp(-1. * sudakovFactor);
@@ -271,7 +271,7 @@ double DVMPCFFGK06::mesonWFGaussianTwist2(double tau, double b) const {
 
     double transverseSize2 = 1. / (8. * pow(M_PI, 2.0) * pow(decayConstant, 2.));
 
-    double WFtwist2 = 2. * M_PI * decayConstant / sqrt(2*Nc) * 6. * tau * (1. - tau) *
+    double WFtwist2 = 2. * M_PI * decayConstant / sqrt(2.*Nc) * 6. * tau * (1. - tau) *
             exp(-1. * tau * (1. - tau) * pow(b, 2.0) / (4. * transverseSize2));
 
     return WFtwist2;
@@ -286,7 +286,7 @@ double DVMPCFFGK06::mesonWFGaussianTwist3(double tau, double b) const {
 
     double transverseSize3 = 1.8;
 
-    double WFtwist3 = 4. * M_PI * decayConstant / sqrt(2*Nc) * muPi * pow(transverseSize3, 2.) *
+    double WFtwist3 = 4. * M_PI * decayConstant / sqrt(2.*Nc) * muPi * pow(transverseSize3, 2.) *
             exp(-1.0 * pow(b, 2.) / (8. * pow(transverseSize3, 2.0)) * gsl_sf_bessel_In(0, pow(b, 2.) / (8. * pow(transverseSize3, 2.0))));
 
     return WFtwist3;
@@ -324,7 +324,7 @@ std::complex<double> DVMPCFFGK06::convolutionPi0Twist2(double x, double tau, dou
 
     // For pi^0, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
 
-    std::complex<double> convolutionPi0Tw2 = 1. / sqrt(2) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
+    std::complex<double> convolutionPi0Tw2 = 1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
             GPDType).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution() -
             Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2), GPDType).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution())
             * subprocessPi0Twist2(x, tau, b);

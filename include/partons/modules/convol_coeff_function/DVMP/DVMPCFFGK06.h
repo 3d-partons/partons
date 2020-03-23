@@ -183,6 +183,7 @@ private:
     std::complex<double> convolutionPipTwist2(double x, double tau, double b, GPDType::Type GPDType) const;
 
     std::complex<double> amplitude0p0pPi0(double x, double tau, double b) const;
+
     std::complex<double> amplitude0m0pPi0(double x, double tau, double b) const;
 
     std::complex<double> amplitude0p0pPip(double x, double tau, double b) const;
