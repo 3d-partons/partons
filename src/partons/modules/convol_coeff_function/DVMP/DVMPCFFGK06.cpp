@@ -384,7 +384,7 @@ std::complex<double> DVMPCFFGK06::amplitude0p0pPip(double x, double tau, double 
 std::complex<double> DVMPCFFGK06::amplitude0m0pPi0(double x, double tau, double b) const {
 
     // For pi^0, helicity amplitude of longitudinal polarized photon
-    std::complex<double> amplitude0m0p = PositronCharge / sqrt(m_Q2) * sqrt(-(m_t - m_tmin)) * m_xi / (2 * Constant::PROTON_MASS) *
+    std::complex<double> amplitude0m0p = PositronCharge / sqrt(m_Q2) * sqrt(-(m_t - m_tmin)) * m_xi / (2. * Constant::PROTON_MASS) *
             convolutionPi0Twist2(x, tau, b, GPDType::Et);
 
     return amplitude0m0p;
@@ -394,7 +394,7 @@ std::complex<double> DVMPCFFGK06::amplitude0m0pPi0(double x, double tau, double 
 std::complex<double> DVMPCFFGK06::amplitude0m0pPip(double x, double tau, double b) const {
 
     // For pi^+, helicity amplitude of longitudinal polarized photon
-    std::complex<double> amplitude0m0p = PositronCharge / sqrt(m_Q2) * sqrt(-(m_t - m_tmin)) * m_xi / (2 * Constant::PROTON_MASS) *
+    std::complex<double> amplitude0m0p = PositronCharge / sqrt(m_Q2) * sqrt(-(m_t - m_tmin)) * m_xi / (2. * Constant::PROTON_MASS) *
             convolutionPipTwist2(x, tau, b, GPDType::Et);
 
     return amplitude0m0p;
@@ -415,7 +415,7 @@ double DVMPCFFGK06::quarkUnintegratedAmplitude(double x, double tau, double b,
     //Eqs. (6, 10) from from https://arxiv.org/pdf/hep-ph/0611290.pdf
     //here for GPDs we get singlet combination, so we need to integrate between (0, 1) only.
     return mesonWF(tau, b) * alphaS(computeMuR(tau,b))
-            * exp(-1 * expSudakovFactor(tau, b))
+            * exp(-1. * expSudakovFactor(tau, b))
             * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
                     m_currentGPDComputeType).getQuarkDistribution(quarkType).getQuarkDistributionPlus();
 }
@@ -425,7 +425,7 @@ double DVMPCFFGK06::gluonUnintegratedAmplitude(double x, double tau,
 
     //Eqs (5, 10) from from https://arxiv.org/pdf/hep-ph/0611290.pdf
     return mesonWF(tau, b) * gluonPropagator(x, tau, b) * alphaS(computeMuR(tau,b))
-            * exp(-1 * expSudakovFactor(tau, b))
+            * exp(-1. * expSudakovFactor(tau, b))
             * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
                     m_currentGPDComputeType).getGluonDistribution().getGluonDistribution();
 }
