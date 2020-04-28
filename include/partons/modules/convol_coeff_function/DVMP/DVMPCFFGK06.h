@@ -90,6 +90,7 @@ private:
     const double EulerGamma; /// Euler-Mascheroni Constant
     const double PositronCharge; /// Charge of the positron
     const double Nc; /// Number of colors
+    const double Cf;
 
     /**
      * Heaviside step function.
@@ -146,7 +147,7 @@ private:
      * @param f Decay constant (in GeV).
      * @param a Transverse size parameter (in GeV-1)
      */
-    double mesonWFGaussianTwist3(double tau, double b) const;
+    double mesonWFGaussianTwist3(double b) const;
 
     /**
      * Hankel function of the first kind.
@@ -178,7 +179,113 @@ private:
      */
 
     std::complex<double> subprocessPi0Twist2(double x, double tau, double b) const;
+
+    /**
+     * Unintegrated twist-2 subprocess amplitude for Pi^0 production.
+     * @param x Nucleon's momentum fraction.
+     * @param tau Meson's momentum fraction.
+     * @param b Impact-space parameter.
+     */
+
     std::complex<double> subprocessPipTwist2(double x, double tau, double b) const;
+
+    /**
+    * Unintegrated twist-2 subprocess amplitude for Pi^+ production.
+    * @param x Nucleon's momentum fraction.
+    * @param tau Meson's momentum fraction.
+    * @param b Impact-space parameter.
+    */
+
+    std::complex<double> subprocessPi0Twist3(double x, double tau, double b) const;
+
+    /**
+     * Unintegrated twist-3 subprocess amplitude for Pi^0 production.
+     * @param x Nucleon's momentum fraction.
+     * @param tau Meson's momentum fraction.
+     * @param b Impact-space parameter.
+     */
+
+    std::complex<double> subprocessPipTwist3(double x, double tau, double b) const;
+
+    /**
+    * Unintegrated twist-3 subprocess amplitude for Pi^+ production.
+    * @param x Nucleon's momentum fraction.
+    * @param tau Meson's momentum fraction.
+    * @param b Impact-space parameter.
+    */
+
+    double HtConvolutionPi0Re(double *xtaub, size_t dim, void *params) const;
+
+    /**
+    * The real part of the convolution, evaluated with VEGAS Monte Carlo integration, of the GPD \tilde{H} with the subprocess amplitude for Pi^0 production.
+    * @param *xtaub takes an array of variables x, tau and b.
+    * @param dim is the dimension of VEGAS Monte Carlo integration, set to be 3.
+    * @param params is the parameters to be given in the VEGAS Monte Carlo integration, set to be none.
+    */
+
+    double HtConvolutionPi0Im(double *xtaub, size_t dim, void *params) const;
+
+    /**
+    * The imaginary part of the convolution, evaluated with VEGAS Monte Carlo integration, of the GPD \tilde{H} with the subprocess amplitude for Pi^0 production.
+    * @param *xtaub takes an array of variables x, tau and b.
+    * @param dim is the dimension of VEGAS Monte Carlo integration, set to be 3.
+    * @param params is the parameters to be given in the VEGAS Monte Carlo integration, set to be none.
+    */
+
+    double EtConvolutionPi0Re(double *xtaub, size_t dim, void *params) const;
+
+    /**
+    * The real part of the convolution, evaluated with VEGAS Monte Carlo integration, of the GPD \tilde{E} with the subprocess amplitude for Pi^0 production.
+    * @param *xtaub takes an array of variables x, tau and b.
+    * @param dim is the dimension of VEGAS Monte Carlo integration, set to be 3.
+    * @param params is the parameters to be given in the VEGAS Monte Carlo integration, set to be none.
+    */
+
+    double EtConvolutionPi0Im(double *xtaub, size_t dim, void *params) const;
+
+    /**
+    * The imaginary part of the convolution, evaluated with VEGAS Monte Carlo integration, of the GPD \tilde{E} with the subprocess amplitude for Pi^0 production.
+    * @param *xtaub takes an array of variables x, tau and b.
+    * @param dim is the dimension of VEGAS Monte Carlo integration, set to be 3.
+    * @param params is the parameters to be given in the VEGAS Monte Carlo integration, set to be none.
+    */
+
+    double HTransConvolutionPi0Re(double *xtaub, size_t dim, void *params) const;
+
+    /**
+    * The real part of the convolution, evaluated with VEGAS Monte Carlo integration, of the GPD H_T with the subprocess amplitude for Pi^0 production.
+    * @param *xtaub takes an array of variables x, tau and b.
+    * @param dim is the dimension of VEGAS Monte Carlo integration, set to be 3.
+    * @param params is the parameters to be given in the VEGAS Monte Carlo integration, set to be none.
+    */
+
+    double HTransConvolutionPi0Im(double *xtaub, size_t dim, void *params) const;
+
+    /**
+    * The imaginary part of the convolution, evaluated with VEGAS Monte Carlo integration, of the GPD H_T with the subprocess amplitude for Pi^0 production.
+    * @param *xtaub takes an array of variables x, tau and b.
+    * @param dim is the dimension of VEGAS Monte Carlo integration, set to be 3.
+    * @param params is the parameters to be given in the VEGAS Monte Carlo integration, set to be none.
+    */
+
+    double ETransConvolutionPi0Re(double *xtaub, size_t dim, void *params) const;
+
+    /**
+    * The real part of the convolution, evaluated with VEGAS Monte Carlo integration, of the GPD \bar{E}_T with the subprocess amplitude for Pi^0 production.
+    * @param *xtaub takes an array of variables x, tau and b.
+    * @param dim is the dimension of VEGAS Monte Carlo integration, set to be 3.
+    * @param params is the parameters to be given in the VEGAS Monte Carlo integration, set to be none.
+    */
+
+    double ETransConvolutionPi0Im(double *xtaub, size_t dim, void *params) const;
+
+    /**
+    * The imaginary part of the convolution, evaluated with VEGAS Monte Carlo integration, of the GPD \bar{E}_T with the subprocess amplitude for Pi^0 production.
+    * @param *xtaub takes an array of variables x, tau and b.
+    * @param dim is the dimension of VEGAS Monte Carlo integration, set to be 3.
+    * @param params is the parameters to be given in the VEGAS Monte Carlo integration, set to be none.
+    */
+
     std::complex<double> convolutionPi0Twist2(double x, double tau, double b, GPDType::Type GPDType) const;
     std::complex<double> convolutionPipTwist2(double x, double tau, double b, GPDType::Type GPDType) const;
 

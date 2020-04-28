@@ -32,7 +32,7 @@ const unsigned int DVMPCFFGK06::classId =
 
 DVMPCFFGK06::DVMPCFFGK06(const std::string &className) :
         DVMPConvolCoeffFunctionModule(className), m_cNf(3.), m_cLambdaQCD(0.22), m_tmin(-4. * pow(Constant::PROTON_MASS, 2.) * pow(m_xi, 2.) / (1. - pow(Constant::PROTON_MASS, 2.))),
-                EulerGamma(0.577216), PositronCharge(0.3028), Nc(3.) {
+                EulerGamma(0.577216), PositronCharge(0.3028), Nc(3.), Cf(4. / 3.) {
 
     //relate GPD types with functions to be used
     m_listOfCFFComputeFunctionAvailable.insert(
@@ -278,7 +278,7 @@ double DVMPCFFGK06::mesonWFGaussianTwist2(double tau, double b) const {
 
 }
 
-double DVMPCFFGK06::mesonWFGaussianTwist3(double tau, double b) const {
+double DVMPCFFGK06::mesonWFGaussianTwist3(double b) const {
 
     double muPi = 2.0;
 
@@ -306,8 +306,6 @@ std::complex<double> DVMPCFFGK06::subprocessPi0Twist2(double x, double tau, doub
 
     std::complex<double> Ts, Tu, subprocessPi0Tw2;
 
-    double Cf = 4. / 3.;
-
     if (x >= m_xi)
         Ts = -1. * 1i / 4. * (gsl_sf_bessel_J0(sqrt((1. - tau) * (x - m_xi) / (2. * m_xi)) * b * sqrt(m_Q2)) +
              1i * gsl_sf_bessel_Y0(sqrt((1. - tau) * (x - m_xi) / (2. * m_xi)) * b * sqrt(m_Q2)));
@@ -323,22 +321,129 @@ std::complex<double> DVMPCFFGK06::subprocessPi0Twist2(double x, double tau, doub
 
 }
 
+std::complex<double> DVMPCFFGK06::subprocessPi0Twist3(double x, double tau, double b) const {
 
-std::complex<double> DVMPCFFGK06::subprocessPi0Twist2(double x, double tau, double b) const {
+    std::complex<double> Ts, Tu, subprocessPi0Tw3;
 
-    double Cf = 4. / 3.;
+    if (x >= m_xi)
+        Ts = -1. * 1i / 4. * (gsl_sf_bessel_J0(sqrt((1. - tau) * (x - m_xi) / (2. * m_xi)) * b * sqrt(m_Q2)) +
+             1i * gsl_sf_bessel_Y0(sqrt((1. - tau) * (x - m_xi) / (2. * m_xi)) * b * sqrt(m_Q2)));
+    else
+        Ts = -1. / (2. * M_PI) * gsl_sf_bessel_K0(sqrt((1. - tau) * (m_xi - x) / (2. * m_xi)) * b * sqrt(m_Q2));
 
-    std::complex<double> Ts = -1. * 1i / 4. * (gsl_sf_bessel_J0(sqrt((1. - tau) * (x - m_xi) / (2. * m_xi)) * b * sqrt(m_Q2)) + 1i * gsl_sf_bessel_Y0(sqrt((1. - tau) * (x - m_xi) / (2. * m_xi)) * b * sqrt(m_Q2))) * Heaviside(x - m_xi)
-            -1. / (2. * M_PI) * gsl_sf_bessel_K0(sqrt((1. - tau) * (m_xi - x) / (2. * m_xi)) * b * sqrt(m_Q2)) * Heaviside(m_xi - x);
+    Tu = -1. / (2. * M_PI) * gsl_sf_bessel_K0(sqrt(tau * (x + m_xi) / (2. * m_xi)) * b * sqrt(m_Q2));
 
-    std::complex<double> Tu = -1. / (2. * M_PI) * gsl_sf_bessel_K0(sqrt(tau * (x + m_xi) / (2. * m_xi)) * b * sqrt(m_Q2));
+    subprocessPi0Tw3 = 4.0 * Cf / sqrt(2. * Nc) * m_Q2 / m_xi * 2. * M_PI *
+            b * mesonWFGaussianTwist3(b) * alphaS(computeMuR(tau,b)) * expSudakovFactor(tau, b) * ((1. - tau) * Ts + tau * Tu);
 
-    std::complex<double> subprocessPi0Tw2 = Cf * sqrt(2. / Nc) * m_Q2 / m_xi * 2. * M_PI *
-            b * mesonWFGaussianTwist2(tau, b) * alphaS(computeMuR(tau,b)) * expSudakovFactor(tau, b) * (Ts - Tu);
-
-    return subprocessPi0Tw2;
+    return subprocessPi0Tw3;
 
 }
+
+double DVMPCFFGK06::HtConvolutionPi0Re(double *xtaub, size_t dim, void *params) const {
+
+    // In pi^0 leptoproduction, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
+
+    std::complex<double> convolutionPi0Tw2 = 1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(xtaub[0], m_xi, m_t, m_MuF2, m_MuR2), GPDType::Ht).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution()
+            - Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(xtaub[0], m_xi, m_t, m_MuF2, m_MuR2), GPDType::Ht).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution())
+            * subprocessPi0Twist2(xtaub[0], xtaub[1], xtaub[2]);
+
+    return real(convolutionPi0Tw2);
+}
+
+double DVMPCFFGK06::HtConvolutionPi0Im(double *xtaub, size_t dim, void *params) const {
+
+    // In pi^0 leptoproduction, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
+
+    std::complex<double> convolutionPi0Tw2 = 1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(xtaub[0], m_xi, m_t, m_MuF2, m_MuR2), GPDType::Ht).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution()
+            - Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(xtaub[0], m_xi, m_t, m_MuF2, m_MuR2), GPDType::Ht).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution())
+            * subprocessPi0Twist2(xtaub[0], xtaub[1], xtaub[2]);
+
+    return imag(convolutionPi0Tw2);
+}
+
+double DVMPCFFGK06::EtConvolutionPi0Re(double *xtaub, size_t dim, void *params) const {
+
+    // In pi^0 leptoproduction, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
+
+    std::complex<double> convolutionPi0Tw2 = 1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(xtaub[0], m_xi, m_t, m_MuF2, m_MuR2), GPDType::Et).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution()
+            - Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(xtaub[0], m_xi, m_t, m_MuF2, m_MuR2), GPDType::Et).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution())
+            * subprocessPi0Twist2(xtaub[0], xtaub[1], xtaub[2]);
+
+    return real(convolutionPi0Tw2);
+}
+
+double DVMPCFFGK06::EtConvolutionPi0Im(double *xtaub, size_t dim, void *params) const {
+
+    // In pi^0 leptoproduction, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
+
+    std::complex<double> convolutionPi0Tw2 = 1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(xtaub[0], m_xi, m_t, m_MuF2, m_MuR2), GPDType::Et).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution()
+            - Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(xtaub[0], m_xi, m_t, m_MuF2, m_MuR2), GPDType::Et).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution())
+            * subprocessPi0Twist2(xtaub[0], xtaub[1], xtaub[2]);
+
+    return imag(convolutionPi0Tw2);
+}
+
+double DVMPCFFGK06::HTransConvolutionPi0Re(double *xtaub, size_t dim, void *params) const {
+
+    // In pi^0 leptoproduction, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
+
+    std::complex<double> convolutionPi0Tw3 = 1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(xtaub[0], m_xi, m_t, m_MuF2, m_MuR2), GPDType::HTrans).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution()
+            - Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(xtaub[0], m_xi, m_t, m_MuF2, m_MuR2), GPDType::HTrans).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution())
+            * subprocessPi0Twist3(xtaub[0], xtaub[1], xtaub[2]);
+
+    return real(convolutionPi0Tw3);
+}
+
+double DVMPCFFGK06::HTransConvolutionPi0Im(double *xtaub, size_t dim, void *params) const {
+
+    // In pi^0 leptoproduction, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
+
+    std::complex<double> convolutionPi0Tw3 = 1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(xtaub[0], m_xi, m_t, m_MuF2, m_MuR2), GPDType::HTrans).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution()
+            - Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(xtaub[0], m_xi, m_t, m_MuF2, m_MuR2), GPDType::HTrans).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution())
+            * subprocessPi0Twist3(xtaub[0], xtaub[1], xtaub[2]);
+
+    return imag(convolutionPi0Tw3);
+}
+
+double DVMPCFFGK06::ETransConvolutionPi0Re(double *xtaub, size_t dim, void *params) const {
+
+    // In pi^0 leptoproduction, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
+
+    std::complex<double> convolutionPi0Tw3 = 1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(xtaub[0], m_xi, m_t, m_MuF2, m_MuR2), GPDType::ETrans).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution()
+            - Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(xtaub[0], m_xi, m_t, m_MuF2, m_MuR2), GPDType::ETrans).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution())
+            * subprocessPi0Twist3(xtaub[0], xtaub[1], xtaub[2]);
+
+    return real(convolutionPi0Tw3);
+}
+
+double DVMPCFFGK06::ETransConvolutionPi0Im(double *xtaub, size_t dim, void *params) const {
+
+    // In pi^0 leptoproduction, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
+
+    std::complex<double> convolutionPi0Tw3 = 1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(xtaub[0], m_xi, m_t, m_MuF2, m_MuR2), GPDType::ETrans).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution()
+            - Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(xtaub[0], m_xi, m_t, m_MuF2, m_MuR2), GPDType::ETrans).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution())
+            * subprocessPi0Twist3(xtaub[0], xtaub[1], xtaub[2]);
+
+    return imag(convolutionPi0Tw3);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 std::complex<double> DVMPCFFGK06::convolutionPi0Twist2(double x, double tau, double b,
         GPDType::Type GPDType) const {
