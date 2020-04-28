@@ -302,6 +302,27 @@ std::complex<double> DVMPCFFGK06::HankelFunctionFirstKind(double z) const {
     return Hankel0;
 }
 
+std::complex<double> DVMPCFFGK06::subprocessPi0Twist2(double x, double tau, double b) const {
+
+    std::complex<double> Ts, Tu, subprocessPi0Tw2;
+
+    double Cf = 4. / 3.;
+
+    if (x >= m_xi)
+        Ts = -1. * 1i / 4. * (gsl_sf_bessel_J0(sqrt((1. - tau) * (x - m_xi) / (2. * m_xi)) * b * sqrt(m_Q2)) +
+             1i * gsl_sf_bessel_Y0(sqrt((1. - tau) * (x - m_xi) / (2. * m_xi)) * b * sqrt(m_Q2)));
+    else
+        Ts = -1. / (2. * M_PI) * gsl_sf_bessel_K0(sqrt((1. - tau) * (m_xi - x) / (2. * m_xi)) * b * sqrt(m_Q2));
+
+    Tu = -1. / (2. * M_PI) * gsl_sf_bessel_K0(sqrt(tau * (x + m_xi) / (2. * m_xi)) * b * sqrt(m_Q2));
+
+    subprocessPi0Tw2 = Cf * sqrt(2. / Nc) * m_Q2 / m_xi * 2. * M_PI *
+            b * mesonWFGaussianTwist2(tau, b) * alphaS(computeMuR(tau,b)) * expSudakovFactor(tau, b) * (Ts - Tu);
+
+    return subprocessPi0Tw2;
+
+}
+
 
 std::complex<double> DVMPCFFGK06::subprocessPi0Twist2(double x, double tau, double b) const {
 
