@@ -5,6 +5,7 @@
 
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
+#include <gsl/gsl_integration.h>
 #include <gsl/gsl_monte.h>
 #include <gsl/gsl_monte_vegas.h>
 #include <gsl/gsl_rng.h>
@@ -32,7 +33,7 @@ const unsigned int DVMPCFFGK06::classId =
 
 DVMPCFFGK06::DVMPCFFGK06(const std::string &className) :
         DVMPConvolCoeffFunctionModule(className), m_cNf(3.), m_cLambdaQCD(0.22), m_tmin(-4. * pow(Constant::PROTON_MASS, 2.) * pow(m_xi, 2.) / (1. - pow(Constant::PROTON_MASS, 2.))),
-                EulerGamma(0.577216), PositronCharge(0.3028), Nc(3.), Cf(4. / 3.) {
+                EulerGamma(0.577216), PositronCharge(0.3028), Nc(3.), Cf(4. / 3.), muPi(2.0), decayConstant(0.132), transverseSize3(1.8) {
 
     //relate GPD types with functions to be used
     m_listOfCFFComputeFunctionAvailable.insert(
@@ -267,8 +268,6 @@ double DVMPCFFGK06::mesonWF(double tau, double b) const {
 
 double DVMPCFFGK06::mesonWFGaussianTwist2(double tau, double b) const {
 
-    double decayConstant = 0.132;
-
     double transverseSize2 = 1. / (8. * pow(M_PI, 2.0) * pow(decayConstant, 2.));
 
     double WFtwist2 = 2. * M_PI * decayConstant / sqrt(2.*Nc) * 6. * tau * (1. - tau) *
@@ -279,12 +278,6 @@ double DVMPCFFGK06::mesonWFGaussianTwist2(double tau, double b) const {
 }
 
 double DVMPCFFGK06::mesonWFGaussianTwist3(double b) const {
-
-    double muPi = 2.0;
-
-    double decayConstant = 0.132;
-
-    double transverseSize3 = 1.8;
 
     double WFtwist3 = 4. * M_PI * decayConstant / sqrt(2.*Nc) * muPi * pow(transverseSize3, 2.) *
             exp(-1.0 * pow(b, 2.) / (8. * pow(transverseSize3, 2.0)) * gsl_sf_bessel_In(0, pow(b, 2.) / (8. * pow(transverseSize3, 2.0))));
@@ -362,6 +355,67 @@ double DVMPCFFGK06::HtConvolutionPi0Im(double *xtaub, size_t dim, void *params) 
     return imag(convolutionPi0Tw2);
 }
 
+std::complex<double> DVMPCFFGK06::HtConvolutionPi0(void) const{
+
+    // In pi^0 leptoproduction, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
+
+    double rangeMin[3] = { -m_xi, 0.0, 0.0 };
+    double rangeMax[3] = { 1.0, 1.0, 1.0/m_cLambdaQCD };
+    double resultHtRe, errorHtRe, resultHtIm, errorHtIm;
+
+    const size_t nWarmUp = 10000;
+    const size_t nCalls = 100000;
+
+    gsl_rng* gslRndHtRe;
+    const gsl_rng_type* gslRndTypeHtRe;
+
+    gsl_rng* gslRndHtIm;
+    const gsl_rng_type* gslRndTypeHtIm;
+
+    gsl_rng_env_setup();
+
+    gslRndTypeHtRe = gsl_rng_default;
+    gslRndTypeHtIm = gsl_rng_default;
+
+    gslRndHtRe = gsl_rng_alloc(gslRndTypeHtRe);
+    gslRndHtIm = gsl_rng_alloc(gslRndTypeHtIm);
+
+    gsl_monte_function gslFunctionHtRe = {&HtConvolutionPi0Re, 3, 0};
+    gsl_monte_function gslFunctionHtIm = {&HtConvolutionPi0Im, 3, 0};
+
+    gsl_monte_vegas_state* gslStateHtRe = gsl_monte_vegas_alloc(3);
+    gsl_monte_vegas_state* gslStateHtIm = gsl_monte_vegas_alloc(3);
+
+    //Warm-up
+    gsl_monte_vegas_integrate(&gslFunctionHtRe, rangeMin, rangeMax, 3, nWarmUp, gslRndHtRe, gslStateHtRe, &resultHtRe, &errorHtRe);
+    gsl_monte_vegas_integrate(&gslFunctionHtIm, rangeMin, rangeMax, 3, nWarmUp, gslRndHtIm, gslStateHtIm, &resultHtIm, &errorHtIm);
+
+    //integrate
+
+    do {
+
+      gsl_monte_vegas_integrate(&gslFunctionHtRe, rangeMin, rangeMax, 3, nCalls, gslRndHtRe, gslStateHtRe, &resultHtRe, &errorHtRe);
+
+    } while (fabs(gsl_monte_vegas_chisq (gslStateHtRe) - 1.0) > 0.5);
+
+    do {
+
+      gsl_monte_vegas_integrate(&gslFunctionHtIm, rangeMin, rangeMax, 3, nCalls, gslRndHtIm, gslStateHtIm, &resultHtIm, &errorHtIm);
+
+    } while (fabs(gsl_monte_vegas_chisq (gslStateHtIm) - 1.0) > 0.5);
+
+    //free
+    gsl_monte_vegas_free(gslStateHtRe);
+    gsl_monte_vegas_free(gslStateHtIm);
+    gsl_rng_free(gslRndHtRe);
+    gsl_rng_free(gslRndHtIm);
+
+    std::complex<double> resultHt = resultHtRe + 1i * resultHtIm;
+
+    return resultHt;
+
+}
+
 double DVMPCFFGK06::EtConvolutionPi0Re(double *xtaub, size_t dim, void *params) const {
 
     // In pi^0 leptoproduction, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
@@ -382,6 +436,67 @@ double DVMPCFFGK06::EtConvolutionPi0Im(double *xtaub, size_t dim, void *params) 
             * subprocessPi0Twist2(xtaub[0], xtaub[1], xtaub[2]);
 
     return imag(convolutionPi0Tw2);
+}
+
+std::complex<double> DVMPCFFGK06::EtConvolutionPi0(void) const{
+
+    // In pi^0 leptoproduction, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
+
+    double rangeMin[3] = { -m_xi, 0.0, 0.0 };
+    double rangeMax[3] = { 1.0, 1.0, 1.0/m_cLambdaQCD };
+    double resultEtRe, errorEtRe, resultEtIm, errorEtIm;
+
+    const size_t nWarmUp = 10000;
+    const size_t nCalls = 100000;
+
+    gsl_rng* gslRndEtRe;
+    const gsl_rng_type* gslRndTypeEtRe;
+
+    gsl_rng* gslRndEtIm;
+    const gsl_rng_type* gslRndTypeEtIm;
+
+    gsl_rng_env_setup();
+
+    gslRndTypeEtRe = gsl_rng_default;
+    gslRndTypeEtIm = gsl_rng_default;
+
+    gslRndEtRe = gsl_rng_alloc(gslRndTypeEtRe);
+    gslRndEtIm = gsl_rng_alloc(gslRndTypeEtIm);
+
+    gsl_monte_function gslFunctionEtRe = {&EtConvolutionPi0Re, 3, 0};
+    gsl_monte_function gslFunctionEtIm = {&EtConvolutionPi0Im, 3, 0};
+
+    gsl_monte_vegas_state* gslStateEtRe = gsl_monte_vegas_alloc(3);
+    gsl_monte_vegas_state* gslStateEtIm = gsl_monte_vegas_alloc(3);
+
+    //Warm-up
+    gsl_monte_vegas_integrate(&gslFunctionEtRe, rangeMin, rangeMax, 3, nWarmUp, gslRndEtRe, gslStateEtRe, &resultEtRe, &errorEtRe);
+    gsl_monte_vegas_integrate(&gslFunctionEtIm, rangeMin, rangeMax, 3, nWarmUp, gslRndEtIm, gslStateEtIm, &resultEtIm, &errorEtIm);
+
+    //integrate
+
+    do {
+
+      gsl_monte_vegas_integrate(&gslFunctionEtRe, rangeMin, rangeMax, 3, nCalls, gslRndEtRe, gslStateEtRe, &resultEtRe, &errorEtRe);
+
+    } while (fabs(gsl_monte_vegas_chisq (gslStateEtRe) - 1.0) > 0.5);
+
+    do {
+
+      gsl_monte_vegas_integrate(&gslFunctionEtIm, rangeMin, rangeMax, 3, nCalls, gslRndEtIm, gslStateEtIm, &resultEtIm, &errorEtIm);
+
+    } while (fabs(gsl_monte_vegas_chisq (gslStateEtIm) - 1.0) > 0.5);
+
+    //free
+    gsl_monte_vegas_free(gslStateEtRe);
+    gsl_monte_vegas_free(gslStateEtIm);
+    gsl_rng_free(gslRndEtRe);
+    gsl_rng_free(gslRndEtIm);
+
+    std::complex<double> resultEt = resultEtRe + 1i * resultEtIm;
+
+    return resultEt;
+
 }
 
 double DVMPCFFGK06::HTransConvolutionPi0Re(double *xtaub, size_t dim, void *params) const {
@@ -406,6 +521,99 @@ double DVMPCFFGK06::HTransConvolutionPi0Im(double *xtaub, size_t dim, void *para
     return imag(convolutionPi0Tw3);
 }
 
+double DVMPCFFGK06::HTransConvolutionPi0Analytic (double x, void * params) const {
+
+  double alpha = *(double *) params;
+  double convolution = 1. / (x + m_xi) * (1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2), GPDType::HTrans).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution() - Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2), GPDType::HTrans).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution()))
+                        - 1. / (x - m_xi) * (1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2), GPDType::HTrans).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution() - Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2), GPDType::HTrans).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution())
+                                - 1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(m_xi, m_xi, m_t, m_MuF2, m_MuR2), GPDType::HTrans).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution() - Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(m_xi, m_xi, m_t, m_MuF2, m_MuR2), GPDType::HTrans).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution()));
+
+  return 16. * M_PI * Cf / Nc * alphaS(sqrt(m_Q2 / 2.)) * decayConstant * muPi * pow(transverseSize3, 2.) * convolution;
+}
+
+
+std::complex<double> DVMPCFFGK06::HTransConvolutionPi0(void) const{
+
+    // In pi^0 leptoproduction, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
+
+    std::complex<double> convolutionPi0Tw3;
+
+    std::complex<double> convolutionPi0Tw3Analytic = 16. * M_PI * Cf / Nc * alphaS(sqrt(m_Q2 / 2.)) * decayConstant * muPi
+        * pow(transverseSize3, 2.) * (1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(m_xi, m_xi, m_t, m_MuF2, m_MuR2), GPDType::HTrans).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution() - Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(m_xi, m_xi, m_t, m_MuF2, m_MuR2), GPDType::HTrans).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution())
+        * (1i * M_PI - log((1.-m_xi)/(2.*m_xi)))); // First two terms of the convolution
+
+    double rangeMin[3] = { -m_xi, 0.0, 0.0 };
+    double rangeMax[3] = { 1.0, 1.0, 1.0/m_cLambdaQCD };
+    double resultHTRe, errorHTRe, resultHTIm, errorHTIm;
+
+    const size_t nWarmUp = 10000;
+    const size_t nCalls = 100000;
+
+    gsl_rng* gslRndHTRe;
+    const gsl_rng_type* gslRndTypeHTRe;
+
+    gsl_rng* gslRndHTIm;
+    const gsl_rng_type* gslRndTypeHTIm;
+
+    gsl_rng_env_setup();
+
+    gslRndTypeHTRe = gsl_rng_default;
+    gslRndTypeHTIm = gsl_rng_default;
+
+    gslRndHTRe = gsl_rng_alloc(gslRndTypeHTRe);
+    gslRndHTIm = gsl_rng_alloc(gslRndTypeHTIm);
+
+    gsl_monte_function gslFunctionHTRe = {&HTransConvolutionPi0Re, 3, 0};
+    gsl_monte_function gslFunctionHTIm = {&HTransConvolutionPi0Im, 3, 0};
+
+    gsl_monte_vegas_state* gslStateHTRe = gsl_monte_vegas_alloc(3);
+    gsl_monte_vegas_state* gslStateHTIm = gsl_monte_vegas_alloc(3);
+
+    //Warm-up
+    gsl_monte_vegas_integrate(&gslFunctionHTRe, rangeMin, rangeMax, 3, nWarmUp, gslRndHTRe, gslStateHTRe, &resultHTRe, &errorHTRe);
+    gsl_monte_vegas_integrate(&gslFunctionHTIm, rangeMin, rangeMax, 3, nWarmUp, gslRndHTIm, gslStateHTIm, &resultHTIm, &errorHTIm);
+
+    //integrate
+
+    do {
+
+      gsl_monte_vegas_integrate(&gslFunctionHTRe, rangeMin, rangeMax, 3, nCalls, gslRndHTRe, gslStateHTRe, &resultHTRe, &errorHTRe);
+
+    } while (fabs(gsl_monte_vegas_chisq (gslStateHTRe) - 1.0) > 0.5);
+
+    do {
+
+      gsl_monte_vegas_integrate(&gslFunctionHTIm, rangeMin, rangeMax, 3, nCalls, gslRndHTIm, gslStateHTIm, &resultHTIm, &errorHTIm);
+
+    } while (fabs(gsl_monte_vegas_chisq (gslStateHTIm) - 1.0) > 0.5);
+
+    //free
+    gsl_monte_vegas_free(gslStateHTRe);
+    gsl_monte_vegas_free(gslStateHTIm);
+    gsl_rng_free(gslRndHTRe);
+    gsl_rng_free(gslRndHTIm);
+
+    std::complex<double> resultHT = resultHTRe + 1i * resultHTIm;
+
+    gsl_integration_workspace * w = gsl_integration_workspace_alloc (10000);
+    double integration1D, error1D;
+    double alpha = 1.0;
+
+    gsl_function gslFunctionHT1D;
+    gslFunctionHT1D.function = &HTransConvolutionPi0Analytic;
+    gslFunctionHT1D.params = &alpha;
+
+    gsl_integration_qags (&gslFunctionHT1D, -m_xi, 1.0, 0, 1e-5, 10000, w, &integration1D, &error1D);
+
+    gsl_integration_workspace_free (w);
+
+
+    convolutionPi0Tw3 = convolutionPi0Tw3Analytic + integration1D + resultHT;
+
+    return convolutionPi0Tw3;
+
+}
+
 double DVMPCFFGK06::ETransConvolutionPi0Re(double *xtaub, size_t dim, void *params) const {
 
     // In pi^0 leptoproduction, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
@@ -428,8 +636,98 @@ double DVMPCFFGK06::ETransConvolutionPi0Im(double *xtaub, size_t dim, void *para
     return imag(convolutionPi0Tw3);
 }
 
+double DVMPCFFGK06::ETransConvolutionPi0Analytic (double x, void * params) const {
+
+  double alpha = *(double *) params;
+  double convolution = 1. / (x + m_xi) * (1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2), GPDType::ETrans).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution() - Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2), GPDType::ETrans).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution()))
+                        - 1. / (x - m_xi) * (1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2), GPDType::ETrans).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution() - Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2), GPDType::ETrans).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution())
+                                - 1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(m_xi, m_xi, m_t, m_MuF2, m_MuR2), GPDType::ETrans).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution() - Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(m_xi, m_xi, m_t, m_MuF2, m_MuR2), GPDType::ETrans).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution()));
+
+  return 16. * M_PI * Cf / Nc * alphaS(sqrt(m_Q2 / 2.)) * decayConstant * muPi * pow(transverseSize3, 2.) * convolution;
+}
+
+std::complex<double> DVMPCFFGK06::ETransConvolutionPi0(void) const{
+
+    // In pi^0 leptoproduction, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
+
+    std::complex<double> convolutionPi0Tw3;
+
+    std::complex<double> convolutionPi0Tw3Analytic = 16. * M_PI * Cf / Nc * alphaS(sqrt(m_Q2 / 2.)) * decayConstant * muPi
+        * pow(transverseSize3, 2.) * (1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(m_xi, m_xi, m_t, m_MuF2, m_MuR2), GPDType::ETrans).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution() - Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(m_xi, m_xi, m_t, m_MuF2, m_MuR2), GPDType::ETrans).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution())
+        * (1i * M_PI - log((1.-m_xi)/(2.*m_xi)))); // First two terms of the convolution
+
+    double rangeMin[3] = { -m_xi, 0.0, 0.0 };
+    double rangeMax[3] = { 1.0, 1.0, 1.0/m_cLambdaQCD };
+    double resultEbarRe, errorEbarRe, resultEbarIm, errorEbarIm;
+
+    const size_t nWarmUp = 10000;
+    const size_t nCalls = 100000;
+
+    gsl_rng* gslRndEbarRe;
+    const gsl_rng_type* gslRndTypeEbarRe;
+
+    gsl_rng* gslRndEbarIm;
+    const gsl_rng_type* gslRndTypeEbarIm;
+
+    gsl_rng_env_setup();
+
+    gslRndTypeEbarRe = gsl_rng_default;
+    gslRndTypeEbarIm = gsl_rng_default;
+
+    gslRndEbarRe = gsl_rng_alloc(gslRndTypeEbarRe);
+    gslRndEbarIm = gsl_rng_alloc(gslRndTypeEbarIm);
+
+    gsl_monte_function gslFunctionEbarRe = {&ETransConvolutionPi0Re, 3, 0};
+    gsl_monte_function gslFunctionEbarIm = {&ETransConvolutionPi0Im, 3, 0};
+
+    gsl_monte_vegas_state* gslStateEbarRe = gsl_monte_vegas_alloc(3);
+    gsl_monte_vegas_state* gslStateEbarIm = gsl_monte_vegas_alloc(3);
+
+    //Warm-up
+    gsl_monte_vegas_integrate(&gslFunctionEbarRe, rangeMin, rangeMax, 3, nWarmUp, gslRndEbarRe, gslStateEbarRe, &resultEbarRe, &errorEbarRe);
+    gsl_monte_vegas_integrate(&gslFunctionEbarIm, rangeMin, rangeMax, 3, nWarmUp, gslRndEbarIm, gslStateEbarIm, &resultEbarIm, &errorEbarIm);
+
+    //integrate
+
+    do {
+
+      gsl_monte_vegas_integrate(&gslFunctionEbarRe, rangeMin, rangeMax, 3, nCalls, gslRndEbarRe, gslStateEbarRe, &resultEbarRe, &errorEbarRe);
+
+    } while (fabs(gsl_monte_vegas_chisq (gslStateEbarRe) - 1.0) > 0.5);
+
+    do {
+
+      gsl_monte_vegas_integrate(&gslFunctionEbarIm, rangeMin, rangeMax, 3, nCalls, gslRndEbarIm, gslStateEbarIm, &resultEbarIm, &errorEbarIm);
+
+    } while (fabs(gsl_monte_vegas_chisq (gslStateEbarIm) - 1.0) > 0.5);
+
+    //free
+    gsl_monte_vegas_free(gslStateEbarRe);
+    gsl_monte_vegas_free(gslStateEbarIm);
+    gsl_rng_free(gslRndEbarRe);
+    gsl_rng_free(gslRndEbarIm);
+
+    std::complex<double> resultEbar = resultEbarRe + 1i * resultEbarIm;
+
+    gsl_integration_workspace * w = gsl_integration_workspace_alloc (10000);
+    double integration1D, error1D;
+    double alpha = 1.0;
+
+    gsl_function gslFunctionEbar1D;
+    gslFunctionEbar1D.function = &ETransConvolutionPi0Analytic;
+    gslFunctionEbar1D.params = &alpha;
+
+    gsl_integration_qags (&gslFunctionEbar1D, -m_xi, 1.0, 0, 1e-5, 10000,
+                        w, &integration1D, &error1D);
+
+    gsl_integration_workspace_free (w);
 
 
+    convolutionPi0Tw3 = convolutionPi0Tw3Analytic + integration1D + resultEbar;
+
+    return convolutionPi0Tw3;
+
+}
 
 
 

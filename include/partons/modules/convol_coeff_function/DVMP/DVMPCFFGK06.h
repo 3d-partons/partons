@@ -91,6 +91,9 @@ private:
     const double PositronCharge; /// Charge of the positron
     const double Nc; /// Number of colors
     const double Cf;
+    const double muPi;
+    const double decayConstant;
+    const double transverseSize3;
 
     /**
      * Heaviside step function.
@@ -217,7 +220,7 @@ private:
     double HtConvolutionPi0Re(double *xtaub, size_t dim, void *params) const;
 
     /**
-    * The real part of the convolution, evaluated with VEGAS Monte Carlo integration, of the GPD \tilde{H} with the subprocess amplitude for Pi^0 production.
+    * The real part of the convolution, to be used in the evaluation of VEGAS Monte Carlo integration, of the GPD \tilde{H} with the subprocess amplitude in Pi^0 production.
     * @param *xtaub takes an array of variables x, tau and b.
     * @param dim is the dimension of VEGAS Monte Carlo integration, set to be 3.
     * @param params is the parameters to be given in the VEGAS Monte Carlo integration, set to be none.
@@ -226,16 +229,22 @@ private:
     double HtConvolutionPi0Im(double *xtaub, size_t dim, void *params) const;
 
     /**
-    * The imaginary part of the convolution, evaluated with VEGAS Monte Carlo integration, of the GPD \tilde{H} with the subprocess amplitude for Pi^0 production.
+    * The imaginary part of the convolution, to be used in the evaluation of VEGAS Monte Carlo integration, of the GPD \tilde{H} with the subprocess amplitude in Pi^0 production.
     * @param *xtaub takes an array of variables x, tau and b.
     * @param dim is the dimension of VEGAS Monte Carlo integration, set to be 3.
     * @param params is the parameters to be given in the VEGAS Monte Carlo integration, set to be none.
     */
 
+    std::complex<double> HtConvolutionPi0(void) const;
+
+    /**
+    * Convolution of the GPD \tilde{H} with the subprocess amplitude in Pi^0 production. Evaluated with 3D VEGAS Monte Carlo, and 1D integration routines implemented in gsl library.
+    */
+
     double EtConvolutionPi0Re(double *xtaub, size_t dim, void *params) const;
 
     /**
-    * The real part of the convolution, evaluated with VEGAS Monte Carlo integration, of the GPD \tilde{E} with the subprocess amplitude for Pi^0 production.
+    * The real part of the convolution, to be used in the evaluation of VEGAS Monte Carlo integration, of the GPD \tilde{E} with the subprocess amplitude in Pi^0 production.
     * @param *xtaub takes an array of variables x, tau and b.
     * @param dim is the dimension of VEGAS Monte Carlo integration, set to be 3.
     * @param params is the parameters to be given in the VEGAS Monte Carlo integration, set to be none.
@@ -244,16 +253,22 @@ private:
     double EtConvolutionPi0Im(double *xtaub, size_t dim, void *params) const;
 
     /**
-    * The imaginary part of the convolution, evaluated with VEGAS Monte Carlo integration, of the GPD \tilde{E} with the subprocess amplitude for Pi^0 production.
+    * The imaginary part of the convolution, to be used in the evaluation of VEGAS Monte Carlo integration, of the GPD \tilde{E} with the subprocess amplitude in Pi^0 production.
     * @param *xtaub takes an array of variables x, tau and b.
     * @param dim is the dimension of VEGAS Monte Carlo integration, set to be 3.
     * @param params is the parameters to be given in the VEGAS Monte Carlo integration, set to be none.
     */
 
+    std::complex<double> EtConvolutionPi0(void) const;
+
+    /**
+    * Convolution of the GPD \tilde{E} with the subprocess amplitude in Pi^0 production. Evaluated with 3D VEGAS Monte Carlo, and 1D integration routines implemented in gsl library.
+    */
+
     double HTransConvolutionPi0Re(double *xtaub, size_t dim, void *params) const;
 
     /**
-    * The real part of the convolution, evaluated with VEGAS Monte Carlo integration, of the GPD H_T with the subprocess amplitude for Pi^0 production.
+    * The real part of the convolution, to be used in the evaluation of VEGAS Monte Carlo integration, of the GPD H_T with the subprocess amplitude in Pi^0 production.
     * @param *xtaub takes an array of variables x, tau and b.
     * @param dim is the dimension of VEGAS Monte Carlo integration, set to be 3.
     * @param params is the parameters to be given in the VEGAS Monte Carlo integration, set to be none.
@@ -262,16 +277,30 @@ private:
     double HTransConvolutionPi0Im(double *xtaub, size_t dim, void *params) const;
 
     /**
-    * The imaginary part of the convolution, evaluated with VEGAS Monte Carlo integration, of the GPD H_T with the subprocess amplitude for Pi^0 production.
+    * The imaginary part of the convolution, to be used in the evaluation of VEGAS Monte Carlo integration, of the GPD H_T with the subprocess amplitude in Pi^0 production.
     * @param *xtaub takes an array of variables x, tau and b.
     * @param dim is the dimension of VEGAS Monte Carlo integration, set to be 3.
     * @param params is the parameters to be given in the VEGAS Monte Carlo integration, set to be none.
     */
 
+    double HTransConvolutionPi0Analytic (double x, void * params) const;
+
+    /**
+    * Analytically computable part of the convolution of the GPD H_T with the subprocess amplitude in Pi^0 production. 3D integration is reduced to a 1D integration.
+    * @param x Nucleon's momentum fraction.
+    * @param params is the parameters to be given in the 1D integration, set to be none.
+    */
+
+    std::complex<double> HTransConvolutionPi0(void) const;
+
+    /**
+    * Convolution of the GPD H_T with the subprocess amplitude in Pi^0 production. Evaluated with 3D VEGAS Monte Carlo, and 1D integration routines implemented in gsl library.
+    */
+
     double ETransConvolutionPi0Re(double *xtaub, size_t dim, void *params) const;
 
     /**
-    * The real part of the convolution, evaluated with VEGAS Monte Carlo integration, of the GPD \bar{E}_T with the subprocess amplitude for Pi^0 production.
+    * The real part of the convolution, to be used in the evaluation of VEGAS Monte Carlo integration, of the GPD \bar{E}_T with the subprocess amplitude in Pi^0 production.
     * @param *xtaub takes an array of variables x, tau and b.
     * @param dim is the dimension of VEGAS Monte Carlo integration, set to be 3.
     * @param params is the parameters to be given in the VEGAS Monte Carlo integration, set to be none.
@@ -280,10 +309,24 @@ private:
     double ETransConvolutionPi0Im(double *xtaub, size_t dim, void *params) const;
 
     /**
-    * The imaginary part of the convolution, evaluated with VEGAS Monte Carlo integration, of the GPD \bar{E}_T with the subprocess amplitude for Pi^0 production.
+    * The imaginary part of the convolution, to be used in the evaluation of VEGAS Monte Carlo integration, of the GPD \bar{E}_T with the subprocess amplitude in Pi^0 production.
     * @param *xtaub takes an array of variables x, tau and b.
     * @param dim is the dimension of VEGAS Monte Carlo integration, set to be 3.
     * @param params is the parameters to be given in the VEGAS Monte Carlo integration, set to be none.
+    */
+
+    double ETransConvolutionPi0Analytic (double x, void * params) const;
+
+    /**
+    * Analytically computable part of the convolution of the GPD \bar{E}_T with the subprocess amplitude in Pi^0 production. 3D integration is reduced to a 1D integration.
+    * @param x Nucleon's momentum fraction.
+    * @param params is the parameters to be given in the 1D integration, set to be none.
+    */
+
+    std::complex<double> ETransConvolutionPi0(void) const;
+
+    /**
+    * Convolution of the GPD \bar{E}_T with the subprocess amplitude in Pi^0 production. Evaluated with 3D VEGAS Monte Carlo, and 1D integration routines implemented in gsl library.
     */
 
     std::complex<double> convolutionPi0Twist2(double x, double tau, double b, GPDType::Type GPDType) const;
