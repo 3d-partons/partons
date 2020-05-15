@@ -39,3 +39,21 @@ User      | 25/02/2020 | 2.0              | [Download](http://partons.cea.fr/vm/
 Developer | 25/02/2020 | 2.0              | [Download](http://partons.cea.fr/vm/PARTONS_250220_DEV.ova) | 2.8 GB |
 
 The `Developer` version has a set-up development environment in Eclipse to start contributing to the %PARTONS project, and has more packages installed, which makes the image heavier.
+
+# Docker {#download_docker}
+
+Docker images containing PARTONS with its runtime environment are available via [DockerHub](https://hub.docker.com), see [here](https://hub.docker.com/repository/docker/partons/partons). The basic usage is the following:
+* pull the image (by default containing the latest version of PARTONS)
+~~~~~~~~~~~~~{.sh}
+docker pull partons/partons
+~~~~~~~~~~~~~
+* run interactively
+~~~~~~~~~~~~~{.sh}
+docker run -it --rm partons/partons
+~~~~~~~~~~~~~
+* use image as executable: run specific scenario (here: 'myScenario.xml') stored in your host (here: in 'ABSOLUTEPATH/MYDIR' directory)
+~~~~~~~~~~~~~{.sh}
+docker run -it --rm -v ABSOLUTEPATH/MYDIR:/root/workspace/partons-example/scenarios partons/partons myScenario.xml
+~~~~~~~~~~~~~
+
+For more details please see Docker manual.
