@@ -1,0 +1,4 @@
+to create new image: 
+1) select PARTONS version (code tag) in Dockerfile.partons
+2) execute (remamber to change vX.Y): 
+   docker build . -f Dockerfile.partons -t pawelsznajder/partons:vX.Y  
