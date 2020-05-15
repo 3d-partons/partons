@@ -1,4 +1,4 @@
-// Implementation of helicity amplitudes and cross sections appearing in Goloskokov-Kroll (GK) model
+// Implementation of helicity amplitudes and partial cross sections appearing in Goloskokov-Kroll (GK) model
 // in pseudoscalar meson (pi+ and pi0) production.
 
 #include "../../../../../include/partons/modules/convol_coeff_function/DVMP/DVMPCFFGK06.h"
@@ -100,33 +100,12 @@ std::complex<double> DVMPCFFGK06::computeCFF() {
                         << " not implemented");
     }
 
-    //check meson
-    if (m_mesonType == MesonType::RHO0) {
-
-        std::complex<double> cff_g = gluonIntegratedAmplitude()
-                + gluonIntegratedAmplitude();
-        std::complex<double> cff_u = quarkIntegratedAmplitude(QuarkFlavor::UP)
-                + quarkIntegratedAmplitude(QuarkFlavor::UP);
-        std::complex<double> cff_d = quarkIntegratedAmplitude(QuarkFlavor::DOWN)
-                + quarkIntegratedAmplitude(QuarkFlavor::DOWN);
-        std::complex<double> cff_s = quarkIntegratedAmplitude(
-                QuarkFlavor::STRANGE)
-                + quarkIntegratedAmplitude(QuarkFlavor::STRANGE);
-
-        //TODO implement sum from Eq. (3, 5, 6) from https://arxiv.org/pdf/hep-ph/0611290.pdf
-        //TODO integration done in gluonIntegratedAmplitude() and quarkIntegratedAmplitude()
-
-    } else {
-        throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter() << "Meson type: "
-                        << MesonType(m_mesonType).toString()
-                        << " not implemented");
-    }
-
     return 0.;
 }
 
 double DVMPCFFGK06::computeMuR(double tau, double b) const {
+
+    // Computation of the renormalization scale. See the paragraph below Eq. (13) in hep-ph/0611290
 
     double Q = sqrt(m_Q2);
 
@@ -143,6 +122,8 @@ double DVMPCFFGK06::computeMuR(double tau, double b) const {
 
 double DVMPCFFGK06::alphaS(double MuR) const {
 
+    // Running coupling constant
+
     double Q = sqrt(m_Q2);
 
     double coupling = (12.0 * M_PI) / ((33. - 2. * m_cNf) * log(pow(MuR,2.) / pow(m_cLambdaQCD,2.)));
@@ -152,7 +133,7 @@ double DVMPCFFGK06::alphaS(double MuR) const {
 
 double DVMPCFFGK06::sudakovFactorFunctionS(double tau, double b) const {
 
-    // sudakov function s is described, for example, in the appendix of https://arxiv.org/pdf/hep-ph/9503418.pdf
+    // Sudakov function s is described, for example, in the appendix of https://arxiv.org/pdf/hep-ph/9503418.pdf
 
     double Q = sqrt(m_Q2);
 
@@ -184,10 +165,11 @@ double DVMPCFFGK06::sudakovFactorFunctionS(double tau, double b) const {
 
     return sudakov;
 
-    //TODO implementation of Sudakov factor function s, like Eq. (14) from https://arxiv.org/pdf/hep-ph/0611290.pdf
 }
 
 double DVMPCFFGK06::expSudakovFactor(double tau, double b) const {
+
+    // Computation of the Sudakov exponent. See, for instance, Eq. (12) and the footnote on the same page in hep-ph/0611290
 
     //sqrt of Q2
     double Q = sqrt(m_Q2);
@@ -214,6 +196,8 @@ double DVMPCFFGK06::expSudakovFactor(double tau, double b) const {
 
 double DVMPCFFGK06::mesonWFGaussianTwist2(double tau, double b) const {
 
+    // Twist-2 Gaussian meson wave function
+
     double transverseSize2 = 1. / (8. * pow(M_PI, 2.0) * pow(decayConstant, 2.));
 
     double WFtwist2 = 2. * M_PI * decayConstant / sqrt(2.*Nc) * 6. * tau * (1. - tau) *
@@ -224,6 +208,8 @@ double DVMPCFFGK06::mesonWFGaussianTwist2(double tau, double b) const {
 }
 
 double DVMPCFFGK06::mesonWFGaussianTwist3(double b) const {
+
+    // Twist-3 Gaussian meson wave function
 
     double WFtwist3 = 4. * M_PI * decayConstant / sqrt(2.*Nc) * muPi * pow(transverseSize3, 2.) *
             exp(-1.0 * pow(b, 2.) / (8. * pow(transverseSize3, 2.0)) * gsl_sf_bessel_In(0, pow(b, 2.) / (8. * pow(transverseSize3, 2.0))));
@@ -242,6 +228,8 @@ std::complex<double> DVMPCFFGK06::HankelFunctionFirstKind(double z) const {
 }
 
 std::complex<double> DVMPCFFGK06::subprocessPi0Twist2(double x, double tau, double b) const {
+
+    // Unintegrated twist-2 subprocess amplitude in Pi0 production.
 
     std::complex<double> Ts, Tu, subprocessPi0Tw2;
 
@@ -262,6 +250,8 @@ std::complex<double> DVMPCFFGK06::subprocessPi0Twist2(double x, double tau, doub
 
 std::complex<double> DVMPCFFGK06::subprocessPi0Twist3(double x, double tau, double b) const {
 
+    // Unintegrated twist-3 subprocess amplitude in Pi0 production.
+
     std::complex<double> Ts, Tu, subprocessPi0Tw3;
 
     if (x >= m_xi)
@@ -281,7 +271,7 @@ std::complex<double> DVMPCFFGK06::subprocessPi0Twist3(double x, double tau, doub
 
 double DVMPCFFGK06::HtConvolutionPi0Re(double *xtaub, size_t dim, void *params) const {
 
-    // In pi^0 leptoproduction, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
+    // Convolution of \tilde{H} with the subprocess amplitude (real part to be returned). To be used in 3D integration. In pi^0 leptoproduction, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
 
     std::complex<double> convolutionPi0Tw2 = 1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(xtaub[0], m_xi, m_t, m_MuF2, m_MuR2), GPDType::Ht).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution()
             - Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(xtaub[0], m_xi, m_t, m_MuF2, m_MuR2), GPDType::Ht).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution())
@@ -292,7 +282,7 @@ double DVMPCFFGK06::HtConvolutionPi0Re(double *xtaub, size_t dim, void *params) 
 
 double DVMPCFFGK06::HtConvolutionPi0Im(double *xtaub, size_t dim, void *params) const {
 
-    // In pi^0 leptoproduction, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
+    // Convolution of \tilde{H} with the subprocess amplitude (imaginary part to be returned). To be used in 3D integration. In pi^0 leptoproduction, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
 
     std::complex<double> convolutionPi0Tw2 = 1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(xtaub[0], m_xi, m_t, m_MuF2, m_MuR2), GPDType::Ht).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution()
             - Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(xtaub[0], m_xi, m_t, m_MuF2, m_MuR2), GPDType::Ht).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution())
@@ -303,14 +293,14 @@ double DVMPCFFGK06::HtConvolutionPi0Im(double *xtaub, size_t dim, void *params) 
 
 std::complex<double> DVMPCFFGK06::HtConvolutionPi0(void) const{
 
-    // In pi^0 leptoproduction, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
+    // Convolution of \tilde{H} with the subprocess amplitude. VEGAS Monte-Carlo integration has been called by using the gsl library.
 
-    double rangeMin[3] = { -m_xi, 0.0, 0.0 };
-    double rangeMax[3] = { 1.0, 1.0, 1.0/m_cLambdaQCD };
+    double rangeMin[3] = { -m_xi, 0.0, 0.0 }; // lower bounds of the 3D integral: with respect to 1) x,  2) tau, and 3) b
+    double rangeMax[3] = { 1.0, 1.0, 1.0/m_cLambdaQCD }; // upper bounds of the 3D integral: with respect to 1) x,  2) tau, and 3) b
     double resultHtRe, errorHtRe, resultHtIm, errorHtIm;
 
-    const size_t nWarmUp = 10000;
-    const size_t nCalls = 100000;
+    const size_t nWarmUp = 10000; //warm-up the Monte Carlo integral
+    const size_t nCalls = 100000; // number of calls of the integral
 
     gsl_rng* gslRndHtRe;
     const gsl_rng_type* gslRndTypeHtRe;
@@ -342,13 +332,13 @@ std::complex<double> DVMPCFFGK06::HtConvolutionPi0(void) const{
 
       gsl_monte_vegas_integrate(&gslFunctionHtRe, rangeMin, rangeMax, 3, nCalls, gslRndHtRe, gslStateHtRe, &resultHtRe, &errorHtRe);
 
-    } while (fabs(gsl_monte_vegas_chisq (gslStateHtRe) - 1.0) > 0.5);
+    } while (fabs(gsl_monte_vegas_chisq (gslStateHtRe) - 1.0) > 0.5); // run VEGAS Monte-Carlo until you reach a \chi^2 value below the specified value
 
     do {
 
       gsl_monte_vegas_integrate(&gslFunctionHtIm, rangeMin, rangeMax, 3, nCalls, gslRndHtIm, gslStateHtIm, &resultHtIm, &errorHtIm);
 
-    } while (fabs(gsl_monte_vegas_chisq (gslStateHtIm) - 1.0) > 0.5);
+    } while (fabs(gsl_monte_vegas_chisq (gslStateHtIm) - 1.0) > 0.5); // run VEGAS Monte-Carlo until you reach a \chi^2 value below the specified value
 
     //free
     gsl_monte_vegas_free(gslStateHtRe);
@@ -356,7 +346,7 @@ std::complex<double> DVMPCFFGK06::HtConvolutionPi0(void) const{
     gsl_rng_free(gslRndHtRe);
     gsl_rng_free(gslRndHtIm);
 
-    std::complex<double> resultHt = resultHtRe + 1i * resultHtIm;
+    std::complex<double> resultHt = resultHtRe + 1i * resultHtIm; // Add the real and imaginary part of the convolution
 
     return resultHt;
 
@@ -364,7 +354,7 @@ std::complex<double> DVMPCFFGK06::HtConvolutionPi0(void) const{
 
 double DVMPCFFGK06::EtConvolutionPi0Re(double *xtaub, size_t dim, void *params) const {
 
-    // In pi^0 leptoproduction, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
+    // Convolution of \tilde{E} with the subprocess amplitude (real part to be returned). To be used in 3D integration. In pi^0 leptoproduction, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
 
     std::complex<double> convolutionPi0Tw2 = 1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(xtaub[0], m_xi, m_t, m_MuF2, m_MuR2), GPDType::Et).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution()
             - Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(xtaub[0], m_xi, m_t, m_MuF2, m_MuR2), GPDType::Et).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution())
@@ -375,7 +365,7 @@ double DVMPCFFGK06::EtConvolutionPi0Re(double *xtaub, size_t dim, void *params) 
 
 double DVMPCFFGK06::EtConvolutionPi0Im(double *xtaub, size_t dim, void *params) const {
 
-    // In pi^0 leptoproduction, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
+    // Convolution of \tilde{E} with the subprocess amplitude (imaginary part to be returned). To be used in 3D integration. In pi^0 leptoproduction, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
 
     std::complex<double> convolutionPi0Tw2 = 1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(xtaub[0], m_xi, m_t, m_MuF2, m_MuR2), GPDType::Et).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution()
             - Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(xtaub[0], m_xi, m_t, m_MuF2, m_MuR2), GPDType::Et).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution())
@@ -386,7 +376,7 @@ double DVMPCFFGK06::EtConvolutionPi0Im(double *xtaub, size_t dim, void *params) 
 
 std::complex<double> DVMPCFFGK06::EtConvolutionPi0(void) const{
 
-    // In pi^0 leptoproduction, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
+    // Convolution of \tilde{E} with the subprocess amplitude. VEGAS Monte-Carlo integration has been called by using the gsl library.
 
     double rangeMin[3] = { -m_xi, 0.0, 0.0 };
     double rangeMax[3] = { 1.0, 1.0, 1.0/m_cLambdaQCD };
@@ -447,7 +437,7 @@ std::complex<double> DVMPCFFGK06::EtConvolutionPi0(void) const{
 
 double DVMPCFFGK06::HTransConvolutionPi0Re(double *xtaub, size_t dim, void *params) const {
 
-    // In pi^0 leptoproduction, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
+    // Convolution of H_T with the subprocess amplitude (real part to be returned). To be used in 3D integration. In pi^0 leptoproduction, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
 
     std::complex<double> convolutionPi0Tw3 = 1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(xtaub[0], m_xi, m_t, m_MuF2, m_MuR2), GPDType::HTrans).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution()
             - Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(xtaub[0], m_xi, m_t, m_MuF2, m_MuR2), GPDType::HTrans).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution())
@@ -458,7 +448,7 @@ double DVMPCFFGK06::HTransConvolutionPi0Re(double *xtaub, size_t dim, void *para
 
 double DVMPCFFGK06::HTransConvolutionPi0Im(double *xtaub, size_t dim, void *params) const {
 
-    // In pi^0 leptoproduction, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
+    // Convolution of H_T with the subprocess amplitude (imaginary part to be returned). To be used in 3D integration. In pi^0 leptoproduction, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
 
     std::complex<double> convolutionPi0Tw3 = 1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(xtaub[0], m_xi, m_t, m_MuF2, m_MuR2), GPDType::HTrans).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution()
             - Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(xtaub[0], m_xi, m_t, m_MuF2, m_MuR2), GPDType::HTrans).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution())
@@ -469,24 +459,26 @@ double DVMPCFFGK06::HTransConvolutionPi0Im(double *xtaub, size_t dim, void *para
 
 double DVMPCFFGK06::HTransConvolutionPi0Analytic (double x, void * params) const {
 
-  double alpha = *(double *) params;
-  double convolution = 1. / (x + m_xi) * (1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2), GPDType::HTrans).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution() - Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2), GPDType::HTrans).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution()))
-                        - 1. / (x - m_xi) * (1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2), GPDType::HTrans).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution() - Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2), GPDType::HTrans).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution())
+    // Analytically calculable part of the 3D integral. 1D integration remains after evaluation, and this integral will be calculated by using the gsl library.
+
+    double alpha = *(double *) params;
+    double convolution = 1. / (x + m_xi) * (1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2), GPDType::HTrans).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution() - Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2), GPDType::HTrans).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution()))
+                          - 1. / (x - m_xi) * (1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2), GPDType::HTrans).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution() - Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2), GPDType::HTrans).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution())
                                 - 1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(m_xi, m_xi, m_t, m_MuF2, m_MuR2), GPDType::HTrans).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution() - Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(m_xi, m_xi, m_t, m_MuF2, m_MuR2), GPDType::HTrans).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution()));
 
-  return 16. * M_PI * Cf / Nc * alphaS(sqrt(m_Q2 / 2.)) * decayConstant * muPi * pow(transverseSize3, 2.) * convolution;
+    return 16. * M_PI * Cf / Nc * alphaS(sqrt(m_Q2 / 2.)) * decayConstant * muPi * pow(transverseSize3, 2.) * convolution;
 }
 
 
 std::complex<double> DVMPCFFGK06::HTransConvolutionPi0(void) const{
 
-    // In pi^0 leptoproduction, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
+    // Convolution of H_T with the subprocess amplitude. VEGAS Monte-Carlo integration has been called by using the gsl library.
 
     std::complex<double> convolutionPi0Tw3;
 
     std::complex<double> convolutionPi0Tw3Analytic = 16. * M_PI * Cf / Nc * alphaS(sqrt(m_Q2 / 2.)) * decayConstant * muPi
         * pow(transverseSize3, 2.) * (1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(m_xi, m_xi, m_t, m_MuF2, m_MuR2), GPDType::HTrans).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution() - Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(m_xi, m_xi, m_t, m_MuF2, m_MuR2), GPDType::HTrans).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution())
-        * (1i * M_PI - log((1.-m_xi)/(2.*m_xi)))); // First two terms of the convolution
+        * (1i * M_PI - log((1.-m_xi)/(2.*m_xi)))); // First two terms of the convolution, the full analytic part. Does not need to be integrated.
 
     double rangeMin[3] = { -m_xi, 0.0, 0.0 };
     double rangeMax[3] = { 1.0, 1.0, 1.0/m_cLambdaQCD };
@@ -541,7 +533,7 @@ std::complex<double> DVMPCFFGK06::HTransConvolutionPi0(void) const{
 
     std::complex<double> resultHT = resultHTRe + 1i * resultHTIm;
 
-    gsl_integration_workspace * w = gsl_integration_workspace_alloc (10000);
+    gsl_integration_workspace * w = gsl_integration_workspace_alloc (10000); // Here we start the 1D integration to evaluate the function HTransConvolutionPi0Analytic above
     double integration1D, error1D;
     double alpha = 1.0;
 
@@ -562,7 +554,7 @@ std::complex<double> DVMPCFFGK06::HTransConvolutionPi0(void) const{
 
 double DVMPCFFGK06::ETransConvolutionPi0Re(double *xtaub, size_t dim, void *params) const {
 
-    // In pi^0 leptoproduction, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
+    // Convolution of \bar{E}_T with the subprocess amplitude (real part to be returned). To be used in 3D integration. In pi^0 leptoproduction, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
 
     std::complex<double> convolutionPi0Tw3 = 1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(xtaub[0], m_xi, m_t, m_MuF2, m_MuR2), GPDType::ETrans).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution()
             - Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(xtaub[0], m_xi, m_t, m_MuF2, m_MuR2), GPDType::ETrans).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution())
@@ -573,7 +565,7 @@ double DVMPCFFGK06::ETransConvolutionPi0Re(double *xtaub, size_t dim, void *para
 
 double DVMPCFFGK06::ETransConvolutionPi0Im(double *xtaub, size_t dim, void *params) const {
 
-    // In pi^0 leptoproduction, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
+    // Convolution of \bar{E}_T with the subprocess amplitude (imaginary part to be returned). To be used in 3D integration. In pi^0 leptoproduction, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
 
     std::complex<double> convolutionPi0Tw3 = 1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(xtaub[0], m_xi, m_t, m_MuF2, m_MuR2), GPDType::ETrans).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution()
             - Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(xtaub[0], m_xi, m_t, m_MuF2, m_MuR2), GPDType::ETrans).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution())
@@ -584,9 +576,11 @@ double DVMPCFFGK06::ETransConvolutionPi0Im(double *xtaub, size_t dim, void *para
 
 double DVMPCFFGK06::ETransConvolutionPi0Analytic (double x, void * params) const {
 
-  double alpha = *(double *) params;
-  double convolution = 1. / (x + m_xi) * (1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2), GPDType::ETrans).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution() - Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2), GPDType::ETrans).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution()))
-                        - 1. / (x - m_xi) * (1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2), GPDType::ETrans).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution() - Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2), GPDType::ETrans).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution())
+    // Analytically calculable part of the 3D integral. 1D integration remains after evaluation, and this integral will be calculated by using the gsl library.
+
+    double alpha = *(double *) params;
+    double convolution = 1. / (x + m_xi) * (1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2), GPDType::ETrans).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution() - Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2), GPDType::ETrans).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution()))
+                          - 1. / (x - m_xi) * (1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2), GPDType::ETrans).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution() - Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2), GPDType::ETrans).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution())
                                 - 1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(m_xi, m_xi, m_t, m_MuF2, m_MuR2), GPDType::ETrans).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution() - Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(m_xi, m_xi, m_t, m_MuF2, m_MuR2), GPDType::ETrans).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution()));
 
   return 16. * M_PI * Cf / Nc * alphaS(sqrt(m_Q2 / 2.)) * decayConstant * muPi * pow(transverseSize3, 2.) * convolution;
@@ -594,13 +588,13 @@ double DVMPCFFGK06::ETransConvolutionPi0Analytic (double x, void * params) const
 
 std::complex<double> DVMPCFFGK06::ETransConvolutionPi0(void) const{
 
-    // In pi^0 leptoproduction, GPDs appear in the combination of 1/sqrt(2) * (e^u * F^u  - e^d * F^d)
+    // Convolution of \bar{E}_T with the subprocess amplitude. VEGAS Monte-Carlo integration has been called by using the gsl library.
 
     std::complex<double> convolutionPi0Tw3;
 
     std::complex<double> convolutionPi0Tw3Analytic = 16. * M_PI * Cf / Nc * alphaS(sqrt(m_Q2 / 2.)) * decayConstant * muPi
         * pow(transverseSize3, 2.) * (1. / sqrt(2.) * (Constant::U_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(m_xi, m_xi, m_t, m_MuF2, m_MuR2), GPDType::ETrans).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution() - Constant::D_ELEC_CHARGE * m_pGPDModule->compute(GPDKinematic(m_xi, m_xi, m_t, m_MuF2, m_MuR2), GPDType::ETrans).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution())
-        * (1i * M_PI - log((1.-m_xi)/(2.*m_xi)))); // First two terms of the convolution
+        * (1i * M_PI - log((1.-m_xi)/(2.*m_xi)))); // First two terms of the convolution, the full analytic part. Does not need to be integrated.
 
     double rangeMin[3] = { -m_xi, 0.0, 0.0 };
     double rangeMax[3] = { 1.0, 1.0, 1.0/m_cLambdaQCD };
@@ -655,7 +649,7 @@ std::complex<double> DVMPCFFGK06::ETransConvolutionPi0(void) const{
 
     std::complex<double> resultEbar = resultEbarRe + 1i * resultEbarIm;
 
-    gsl_integration_workspace * w = gsl_integration_workspace_alloc (10000);
+    gsl_integration_workspace * w = gsl_integration_workspace_alloc (10000); // Here we start the 1D integration to evaluate the function ETransConvolutionPi0Analytic above
     double integration1D, error1D;
     double alpha = 1.0;
 
@@ -677,7 +671,8 @@ std::complex<double> DVMPCFFGK06::ETransConvolutionPi0(void) const{
 
 std::complex<double> DVMPCFFGK06::amplitude0p0pPi0(void) const {
 
-    // For pi^0, helicity amplitude of longitudinal polarized photon
+    // The helicity amplitude \mathcal{M}_{0+,0+} in pi0 leptoproduction (handbag contribution only). See Eq. (2) in arxiv:1106.4897
+
     std::complex<double> amplitude0p0p = sqrt(1. - pow(m_xi, 2.)) * PositronCharge / sqrt(m_Q2) *
             (HtConvolutionPi0() - pow(m_xi, 2.) / (1. - pow(m_xi, 2.)) * EtConvolutionPi0());
 
@@ -687,7 +682,8 @@ std::complex<double> DVMPCFFGK06::amplitude0p0pPi0(void) const {
 
 std::complex<double> DVMPCFFGK06::amplitude0m0pPi0(void) const {
 
-    // For pi^0, helicity amplitude of longitudinal polarized photon
+    // The helicity amplitude \mathcal{M}_{0-,0+} in pi0 leptoproduction (handbag contribution only). See Eq. (2) in arxiv:1106.4897
+
     std::complex<double> amplitude0m0p = PositronCharge / sqrt(m_Q2) * sqrt(-(m_t - m_tmin)) * m_xi / (2. * Constant::PROTON_MASS) *
             EtConvolutionPi0();
 
@@ -697,7 +693,8 @@ std::complex<double> DVMPCFFGK06::amplitude0m0pPi0(void) const {
 
 std::complex<double> DVMPCFFGK06::amplitude0mppPi0(void) const {
 
-    // For pi^0, helicity amplitude of longitudinal polarized photon
+    // The helicity amplitude \mathcal{M}_{0-,++} in pi0 leptoproduction (handbag contribution only). See Eq. (8) in arxiv:1106.4897
+
     std::complex<double> amplitude0mpp = PositronCharge * sqrt(1. - pow(m_xi, 2.)) * HTransConvolutionPi0();
 
     return amplitude0mpp;
@@ -705,7 +702,8 @@ std::complex<double> DVMPCFFGK06::amplitude0mppPi0(void) const {
 
 std::complex<double> DVMPCFFGK06::amplitude0pppPi0(void) const {
 
-    // For pi^0, helicity amplitude of longitudinal polarized photon
+    // The helicity amplitude \mathcal{M}_{0+,++} in pi0 leptoproduction (handbag contribution only). See Eq. (11) in arxiv:1106.4897
+
     std::complex<double> amplitude0ppp = -1.0 * PositronCharge * sqrt(-(m_t - m_tmin)) / (4. * Constant::PROTON_MASS) * ETransConvolutionPi0();
 
     return amplitude0ppp;
@@ -713,7 +711,8 @@ std::complex<double> DVMPCFFGK06::amplitude0pppPi0(void) const {
 
 std::complex<double> DVMPCFFGK06::amplitude0pmpPi0(void) const {
 
-    // For pi^0, helicity amplitude of longitudinal polarized photon
+    // The helicity amplitude \mathcal{M}_{0+,-+} in pi0 leptoproduction (handbag contribution only). See Eq. (11) in arxiv:1106.4897
+
     std::complex<double> amplitude0pmp = -1.0 * PositronCharge * sqrt(-(m_t - m_tmin)) / (4. * Constant::PROTON_MASS) * ETransConvolutionPi0();
 
     return amplitude0pmp;
@@ -721,7 +720,8 @@ std::complex<double> DVMPCFFGK06::amplitude0pmpPi0(void) const {
 
 std::complex<double> DVMPCFFGK06::amplitude0mmpPi0(void) const {
 
-    // For pi^0, helicity amplitude of longitudinal polarized photon
+    // The helicity amplitude \mathcal{M}_{0-,-+} in pi0 leptoproduction which is zero.
+
     std::complex<double> amplitude0mmp = 0.0;
 
     return amplitude0mmp;
@@ -729,155 +729,64 @@ std::complex<double> DVMPCFFGK06::amplitude0mmpPi0(void) const {
 
 double DVMPCFFGK06::CrossSectionLPi0(void) const {
 
+    // Longitudinal partial cross section. See Eq. (43) in arxiv:0906.0460
+
     double W = sqrt(m_Q2 / m_xbj + pow(Constant::PROTON_MASS, 2.0) - m_Q2);
 
-    double UnitConversion = 0.3894 * pow(10.0, 6.0) / (16.0 * M_PI * (pow(W, 2.0) - pow(Constant::PROTON_MASS, 2.0)) *
+    double factor = 0.3894 * pow(10.0, 6.0) / (16.0 * M_PI * (pow(W, 2.0) - pow(Constant::PROTON_MASS, 2.0)) *
                         sqrt(pow(W, 4.0) + pow(m_Q2, 2.0) + pow(Constant::PROTON_MASS, 4.0) + 2.0 * pow(W, 2.0) * m_Q2
-                             - 2.0 * pow(W, 2.0) * pow(Constant::PROTON_MASS, 2.0) + 2.0 * m_Q2 * pow(Constant::PROTON_MASS, 2.0)));
+                             - 2.0 * pow(W, 2.0) * pow(Constant::PROTON_MASS, 2.0) + 2.0 * m_Q2 * pow(Constant::PROTON_MASS, 2.0))); //converted to nanobarn
 
-    double CSL = (pow(abs(amplitude0p0pPi0()), 2.) + pow(abs(amplitude0m0pPi0()), 2.)) * UnitConversion;
+    double CSL = (pow(abs(amplitude0p0pPi0()), 2.) + pow(abs(amplitude0m0pPi0()), 2.)) * factor;
 
     return CSL;
 }
 
 double DVMPCFFGK06::CrossSectionTPi0(void) const {
 
+    // Transverse partial cross section. See Eq. (43) in arxiv:0906.0460
+
     double W = sqrt(m_Q2 / m_xbj + pow(Constant::PROTON_MASS, 2.0) - m_Q2);
 
-    double UnitConversion = 0.3894 * pow(10.0, 6.0) / (16.0 * M_PI * (pow(W, 2.0) - pow(Constant::PROTON_MASS, 2.0)) *
+    double factor = 0.3894 * pow(10.0, 6.0) / (16.0 * M_PI * (pow(W, 2.0) - pow(Constant::PROTON_MASS, 2.0)) *
                         sqrt(pow(W, 4.0) + pow(m_Q2, 2.0) + pow(Constant::PROTON_MASS, 4.0) + 2.0 * pow(W, 2.0) * m_Q2
-                             - 2.0 * pow(W, 2.0) * pow(Constant::PROTON_MASS, 2.0) + 2.0 * m_Q2 * pow(Constant::PROTON_MASS, 2.0)));
+                             - 2.0 * pow(W, 2.0) * pow(Constant::PROTON_MASS, 2.0) + 2.0 * m_Q2 * pow(Constant::PROTON_MASS, 2.0))); //converted to nanobarn
 
-    double CST = (pow(abs(amplitude0mppPi0()), 2.) + pow(abs(amplitude0mmpPi0()), 2.) + pow(abs(amplitude0pppPi0()), 2.) + pow(abs(amplitude0pmpPi0()), 2.)) * UnitConversion / 2.;
+    double CST = (pow(abs(amplitude0mppPi0()), 2.) + pow(abs(amplitude0mmpPi0()), 2.) + pow(abs(amplitude0pppPi0()), 2.) + pow(abs(amplitude0pmpPi0()), 2.)) * factor / 2.;
 
     return CST;
 }
 
 double DVMPCFFGK06::CrossSectionLTPi0(void) const {
 
+    // Partial cross section of the interference part LT. See Eq. (43) in arxiv:0906.0460
+
     double W = sqrt(m_Q2 / m_xbj + pow(Constant::PROTON_MASS, 2.0) - m_Q2);
 
-    double UnitConversion = 0.3894 * pow(10.0, 6.0) / (16.0 * M_PI * (pow(W, 2.0) - pow(Constant::PROTON_MASS, 2.0)) *
+    double factor = 0.3894 * pow(10.0, 6.0) / (16.0 * M_PI * (pow(W, 2.0) - pow(Constant::PROTON_MASS, 2.0)) *
                         sqrt(pow(W, 4.0) + pow(m_Q2, 2.0) + pow(Constant::PROTON_MASS, 4.0) + 2.0 * pow(W, 2.0) * m_Q2
-                             - 2.0 * pow(W, 2.0) * pow(Constant::PROTON_MASS, 2.0) + 2.0 * m_Q2 * pow(Constant::PROTON_MASS, 2.0)));
+                             - 2.0 * pow(W, 2.0) * pow(Constant::PROTON_MASS, 2.0) + 2.0 * m_Q2 * pow(Constant::PROTON_MASS, 2.0))); //converted to nanobarn
 
-    double CSLT = -1.0 * real(conj(amplitude0m0pPi0()) * (amplitude0mppPi0() - amplitude0mmpPi0()) + conj(amplitude0p0pPi0()) * (amplitude0pppPi0() - amplitude0pmpPi0())) * UnitConversion / sqrt(2.);
+    double CSLT = -1.0 * real(conj(amplitude0m0pPi0()) * (amplitude0mppPi0() - amplitude0mmpPi0()) + conj(amplitude0p0pPi0()) * (amplitude0pppPi0() - amplitude0pmpPi0())) * factor / sqrt(2.);
 
     return CSLT;
 }
 
 double DVMPCFFGK06::CrossSectionTTPi0(void) const {
 
+    // Partial cross section of the interference part TT. See Eq. (43) in arxiv:0906.0460
+
     double W = sqrt(m_Q2 / m_xbj + pow(Constant::PROTON_MASS, 2.0) - m_Q2);
 
-    double UnitConversion = 0.3894 * pow(10.0, 6.0) / (16.0 * M_PI * (pow(W, 2.0) - pow(Constant::PROTON_MASS, 2.0)) *
+    double factor = 0.3894 * pow(10.0, 6.0) / (16.0 * M_PI * (pow(W, 2.0) - pow(Constant::PROTON_MASS, 2.0)) *
                         sqrt(pow(W, 4.0) + pow(m_Q2, 2.0) + pow(Constant::PROTON_MASS, 4.0) + 2.0 * pow(W, 2.0) * m_Q2
-                             - 2.0 * pow(W, 2.0) * pow(Constant::PROTON_MASS, 2.0) + 2.0 * m_Q2 * pow(Constant::PROTON_MASS, 2.0)));
+                             - 2.0 * pow(W, 2.0) * pow(Constant::PROTON_MASS, 2.0) + 2.0 * m_Q2 * pow(Constant::PROTON_MASS, 2.0))); //converted to nanobarn
 
-    double CSTT = -1.0 * real(conj(amplitude0mppPi0()) * amplitude0mmpPi0() + conj(amplitude0pppPi0()) * amplitude0pmpPi0()) * UnitConversion;
+    double CSTT = -1.0 * real(conj(amplitude0mppPi0()) * amplitude0mmpPi0() + conj(amplitude0pppPi0()) * amplitude0pmpPi0()) * factor;
 
     return CSTT;
 }
 
 
-
-
-
-
-//std::complex<double> DVMPCFFGK06::amplitude0p0pPi0() const {
-//
-//    // For pi^0, helicity amplitude of longitudinal polarized photon
-//    std::complex<double> amplitude0p0p = sqrt(1. - pow(m_xi, 2.)) * PositronCharge / sqrt(m_Q2) *
-//            (convolutionPi0Twist2(x, tau, b, GPDType::Ht) - pow(m_xi, 2.) / (1. - pow(m_xi, 2.)) * convolutionPi0Twist2(x, tau, b, GPDType::Et));
-//
-//    return amplitude0p0p;
-//
-//}
-//
-//double DVMPCFFGK06::gluonPropagator(double x, double tau, double b) const {
-//
-//    //TODO propagators - implement cases depending on:
-//    //TODO meson type (different for vector and pseudoscalar)
-//    //TODO (TO BE CHECKED) target helicity combination (e.g. for vector mesons: different for H and E)
-//    //TODO (TO BE CHECKED) meson polarization (e.g. for vector mesons: different for L and T)
-//    return 0.;
-//}
-//
-//double DVMPCFFGK06::quarkUnintegratedAmplitude(double x, double tau, double b,
-//        QuarkFlavor::Type quarkType) const {
-//
-//    //Eqs. (6, 10) from from https://arxiv.org/pdf/hep-ph/0611290.pdf
-//    //here for GPDs we get singlet combination, so we need to integrate between (0, 1) only.
-//    return mesonWF(tau, b) * alphaS(computeMuR(tau,b))
-//            * exp(-1. * expSudakovFactor(tau, b))
-//            * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
-//                    m_currentGPDComputeType).getQuarkDistribution(quarkType).getQuarkDistributionPlus();
-//}
-//
-//double DVMPCFFGK06::gluonUnintegratedAmplitude(double x, double tau,
-//        double b) const {
-//
-//    //Eqs (5, 10) from from https://arxiv.org/pdf/hep-ph/0611290.pdf
-//    return mesonWF(tau, b) * gluonPropagator(x, tau, b) * alphaS(computeMuR(tau,b))
-//            * exp(-1. * expSudakovFactor(tau, b))
-//            * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
-//                    m_currentGPDComputeType).getGluonDistribution().getGluonDistribution();
-//}
-//
-//double DVMPCFFGK06::quarkIntegratedAmplitude(
-//        QuarkFlavor::Type quarkType) const {
-//
-//    //parameters
-//    DVMPCFFGK06IntegrationParameters params;
-//
-//    params.m_pDVMPCFFGK06 = this;
-//    params.m_quarkType = quarkType;
-//
-//    //range (x, tau, b)
-//    //TODO max b?
-//    double rangeMin[3] = { 0., 0., 0. };
-//    double rangeMax[3] = { 1., 1., 10. };
-//
-//    //result and error
-//    double result, error;
-//
-//    //number of calls
-//    const size_t nCalls = 100;
-//
-//    //random generator
-//    gsl_rng* gslRnd;
-//    const gsl_rng_type* gslRndType;
-//
-//    gsl_rng_env_setup();
-//
-//    gslRndType = gsl_rng_default;
-//    gslRnd = gsl_rng_alloc(gslRndType);
-//
-//    //function
-//    gsl_monte_function gslFunction;
-//
-//    gslFunction.f = &DVMPCFFGK06IntegrationFunctionQuark;
-//    gslFunction.dim = 3;
-//    gslFunction.params = &params;
-//
-//    //state
-//    gsl_monte_vegas_state* gslState = gsl_monte_vegas_alloc(3);
-//
-//    //integrate
-//    gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3, nCalls,
-//            gslRnd, gslState, &result, &error);
-//
-//    //free
-//    gsl_monte_vegas_free(gslState);
-//    gsl_rng_free(gslRnd);
-//
-//    //return
-//    return result;
-//}
-//
-//double DVMPCFFGK06::gluonIntegratedAmplitude() const {
-//    //TODO implement
-//    return 0.;
-//}
 
 } /* namespace PARTONS */

@@ -20,9 +20,9 @@ namespace PARTONS {
 /**
  * @class DVMPCFFGK06
  *
- * This module calculates DVMP Compton Form Factors ...
+ * This module calculates helicity amplitudes and partial cross sections of exclusive pi0 and pi+
+ *   leptoproduction formulated in Goloskokov-Kroll model
  *
- * Available CFF types: H, E, Ht, Et, ...
  */
 class DVMPCFFGK06: public DVMPConvolCoeffFunctionModule {
 
@@ -87,14 +87,14 @@ private:
     const double m_xbj; ///< Bjorken x.
     const double m_cNf; ///< Number of active flavors.
     const double m_cLambdaQCD; ///< Lambda QCD
-    const double m_tmin;
+    const double m_tmin; /// Minimum t value
     const double EulerGamma; /// Euler-Mascheroni Constant
     const double PositronCharge; /// Charge of the positron
     const double Nc; /// Number of colors
-    const double Cf;
-    const double muPi;
-    const double decayConstant;
-    const double transverseSize3;
+    const double Cf; /// Color factor
+    const double muPi; /// a parameter proportional to chiral condensate, see for instance Eq. (21) in arxiv:0906.0460
+    const double decayConstant; /// Pion decay constant
+    const double transverseSize3; /// Twist-3 pion transverse size
 
     /**
      * Renormalization scale. Taken to be the largest mass scale in the hard process amplitude.
@@ -170,7 +170,7 @@ private:
     std::complex<double> hardKernelPip(double x, double tau, double b) const;
 
     /**
-     * Gluon propagator.
+     * Unintegrated twist-2 subprocess amplitude for Pi^0 production.
      * @param x Nucleon's momentum fraction.
      * @param tau Meson's momentum fraction.
      * @param b Impact-space parameter.
@@ -179,22 +179,13 @@ private:
     std::complex<double> subprocessPi0Twist2(double x, double tau, double b) const;
 
     /**
-     * Unintegrated twist-2 subprocess amplitude for Pi^0 production.
-     * @param x Nucleon's momentum fraction.
-     * @param tau Meson's momentum fraction.
-     * @param b Impact-space parameter.
-     */
-
-    std::complex<double> subprocessPipTwist2(double x, double tau, double b) const;
-
-    /**
     * Unintegrated twist-2 subprocess amplitude for Pi^+ production.
     * @param x Nucleon's momentum fraction.
     * @param tau Meson's momentum fraction.
     * @param b Impact-space parameter.
     */
 
-    std::complex<double> subprocessPi0Twist3(double x, double tau, double b) const;
+    std::complex<double> subprocessPipTwist2(double x, double tau, double b) const;
 
     /**
      * Unintegrated twist-3 subprocess amplitude for Pi^0 production.
@@ -203,7 +194,7 @@ private:
      * @param b Impact-space parameter.
      */
 
-    std::complex<double> subprocessPipTwist3(double x, double tau, double b) const;
+    std::complex<double> subprocessPi0Twist3(double x, double tau, double b) const;
 
     /**
     * Unintegrated twist-3 subprocess amplitude for Pi^+ production.
@@ -212,7 +203,7 @@ private:
     * @param b Impact-space parameter.
     */
 
-    double HtConvolutionPi0Re(double *xtaub, size_t dim, void *params) const;
+    std::complex<double> subprocessPipTwist3(double x, double tau, double b) const;
 
     /**
     * The real part of the convolution, to be used in the evaluation of VEGAS Monte Carlo integration, of the GPD \tilde{H} with the subprocess amplitude in Pi^0 production.
@@ -221,7 +212,7 @@ private:
     * @param params is the parameters to be given in the VEGAS Monte Carlo integration, set to be none.
     */
 
-    double HtConvolutionPi0Im(double *xtaub, size_t dim, void *params) const;
+    double HtConvolutionPi0Re(double *xtaub, size_t dim, void *params) const;
 
     /**
     * The imaginary part of the convolution, to be used in the evaluation of VEGAS Monte Carlo integration, of the GPD \tilde{H} with the subprocess amplitude in Pi^0 production.
@@ -230,13 +221,13 @@ private:
     * @param params is the parameters to be given in the VEGAS Monte Carlo integration, set to be none.
     */
 
-    std::complex<double> HtConvolutionPi0(void) const;
+    double HtConvolutionPi0Im(double *xtaub, size_t dim, void *params) const;
 
     /**
-    * Convolution of the GPD \tilde{H} with the subprocess amplitude in Pi^0 production. Evaluated with 3D VEGAS Monte Carlo, and 1D integration routines implemented in gsl library.
+    * Convolution of the GPD \tilde{H} with the subprocess amplitude in Pi^0 production. Evaluated with 3D VEGAS Monte Carlo, and 1D integration routines implemented by using gsl library.
     */
 
-    double EtConvolutionPi0Re(double *xtaub, size_t dim, void *params) const;
+    std::complex<double> HtConvolutionPi0(void) const;
 
     /**
     * The real part of the convolution, to be used in the evaluation of VEGAS Monte Carlo integration, of the GPD \tilde{E} with the subprocess amplitude in Pi^0 production.
@@ -245,7 +236,7 @@ private:
     * @param params is the parameters to be given in the VEGAS Monte Carlo integration, set to be none.
     */
 
-    double EtConvolutionPi0Im(double *xtaub, size_t dim, void *params) const;
+    double EtConvolutionPi0Re(double *xtaub, size_t dim, void *params) const;
 
     /**
     * The imaginary part of the convolution, to be used in the evaluation of VEGAS Monte Carlo integration, of the GPD \tilde{E} with the subprocess amplitude in Pi^0 production.
@@ -254,13 +245,13 @@ private:
     * @param params is the parameters to be given in the VEGAS Monte Carlo integration, set to be none.
     */
 
-    std::complex<double> EtConvolutionPi0(void) const;
+    double EtConvolutionPi0Im(double *xtaub, size_t dim, void *params) const;
 
     /**
-    * Convolution of the GPD \tilde{E} with the subprocess amplitude in Pi^0 production. Evaluated with 3D VEGAS Monte Carlo, and 1D integration routines implemented in gsl library.
+    * Convolution of the GPD \tilde{E} with the subprocess amplitude in Pi^0 production. Evaluated with 3D VEGAS Monte Carlo, and 1D integration routines implemented by using gsl library.
     */
 
-    double HTransConvolutionPi0Re(double *xtaub, size_t dim, void *params) const;
+    std::complex<double> EtConvolutionPi0(void) const;
 
     /**
     * The real part of the convolution, to be used in the evaluation of VEGAS Monte Carlo integration, of the GPD H_T with the subprocess amplitude in Pi^0 production.
@@ -269,7 +260,7 @@ private:
     * @param params is the parameters to be given in the VEGAS Monte Carlo integration, set to be none.
     */
 
-    double HTransConvolutionPi0Im(double *xtaub, size_t dim, void *params) const;
+    double HTransConvolutionPi0Re(double *xtaub, size_t dim, void *params) const;
 
     /**
     * The imaginary part of the convolution, to be used in the evaluation of VEGAS Monte Carlo integration, of the GPD H_T with the subprocess amplitude in Pi^0 production.
@@ -278,7 +269,7 @@ private:
     * @param params is the parameters to be given in the VEGAS Monte Carlo integration, set to be none.
     */
 
-    double HTransConvolutionPi0Analytic (double x, void * params) const;
+    double HTransConvolutionPi0Im(double *xtaub, size_t dim, void *params) const;
 
     /**
     * Analytically computable part of the convolution of the GPD H_T with the subprocess amplitude in Pi^0 production. 3D integration is reduced to a 1D integration.
@@ -286,13 +277,13 @@ private:
     * @param params is the parameters to be given in the 1D integration, set to be none.
     */
 
-    std::complex<double> HTransConvolutionPi0(void) const;
+    double HTransConvolutionPi0Analytic (double x, void * params) const;
 
     /**
-    * Convolution of the GPD H_T with the subprocess amplitude in Pi^0 production. Evaluated with 3D VEGAS Monte Carlo, and 1D integration routines implemented in gsl library.
+    * Convolution of the GPD H_T with the subprocess amplitude in Pi^0 production. Evaluated with 3D VEGAS Monte Carlo, and 1D integration routines implemented by using gsl library.
     */
 
-    double ETransConvolutionPi0Re(double *xtaub, size_t dim, void *params) const;
+    std::complex<double> HTransConvolutionPi0(void) const;
 
     /**
     * The real part of the convolution, to be used in the evaluation of VEGAS Monte Carlo integration, of the GPD \bar{E}_T with the subprocess amplitude in Pi^0 production.
@@ -301,7 +292,7 @@ private:
     * @param params is the parameters to be given in the VEGAS Monte Carlo integration, set to be none.
     */
 
-    double ETransConvolutionPi0Im(double *xtaub, size_t dim, void *params) const;
+    double ETransConvolutionPi0Re(double *xtaub, size_t dim, void *params) const;
 
     /**
     * The imaginary part of the convolution, to be used in the evaluation of VEGAS Monte Carlo integration, of the GPD \bar{E}_T with the subprocess amplitude in Pi^0 production.
@@ -310,7 +301,7 @@ private:
     * @param params is the parameters to be given in the VEGAS Monte Carlo integration, set to be none.
     */
 
-    double ETransConvolutionPi0Analytic (double x, void * params) const;
+    double ETransConvolutionPi0Im(double *xtaub, size_t dim, void *params) const;
 
     /**
     * Analytically computable part of the convolution of the GPD \bar{E}_T with the subprocess amplitude in Pi^0 production. 3D integration is reduced to a 1D integration.
@@ -318,52 +309,114 @@ private:
     * @param params is the parameters to be given in the 1D integration, set to be none.
     */
 
+    double ETransConvolutionPi0Analytic (double x, void * params) const;
+
+    /**
+    * Convolution of the GPD \bar{E}_T with the subprocess amplitude in Pi^0 production. Evaluated with 3D VEGAS Monte Carlo, and 1D integration routines implemented by using gsl library.
+    */
+
     std::complex<double> ETransConvolutionPi0(void) const;
 
     /**
-    * Convolution of the GPD \bar{E}_T with the subprocess amplitude in Pi^0 production. Evaluated with 3D VEGAS Monte Carlo, and 1D integration routines implemented in gsl library.
+    * Pi0 handbag helicity amplitude \mathcal{M}_{0+,0+}
     */
-
-    std::complex<double> convolutionPi0Twist2(double x, double tau, double b, GPDType::Type GPDType) const;
-    std::complex<double> convolutionPipTwist2(double x, double tau, double b, GPDType::Type GPDType) const;
-
     std::complex<double> amplitude0p0pPi0(void) const;
+
+    /**
+    * Pi0 handbag helicity amplitude \mathcal{M}_{0-,0+}
+    */
     std::complex<double> amplitude0m0pPi0(void) const;
+
+    /**
+    * Pi0 handbag helicity amplitude \mathcal{M}_{0-,++}
+    */
     std::complex<double> amplitude0mppPi0(void) const;
+
+    /**
+    * Pi0 handbag helicity amplitude \mathcal{M}_{0+,++}
+    */
     std::complex<double> amplitude0pppPi0(void) const;
+
+    /**
+    * Pi0 handbag helicity amplitude \mathcal{M}_{0+,-+}
+    */
     std::complex<double> amplitude0pmpPi0(void) const;
+
+    /**
+    * Pi0 handbag helicity amplitude \mathcal{M}_{0-,-+}
+    */
     std::complex<double> amplitude0mmpPi0(void) const;
 
+    /**
+    * Pi+ handbag helicity amplitude \mathcal{M}_{0+,0+}
+    */
     std::complex<double> amplitude0p0pPip(void) const;
+
+    /**
+    * Pi+ handbag helicity amplitude \mathcal{M}_{0-,0+}
+    */
     std::complex<double> amplitude0m0pPip(void) const;
+
+    /**
+    * Pi+ handbag helicity amplitude \mathcal{M}_{0-,++}
+    */
     std::complex<double> amplitude0mppPip(void) const;
+
+    /**
+    * Pi+ handbag helicity amplitude \mathcal{M}_{0+,++}
+    */
     std::complex<double> amplitude0pppPip(void) const;
+
+    /**
+    * Pi+ handbag helicity amplitude \mathcal{M}_{0+,-+}
+    */
     std::complex<double> amplitude0pmpPip(void) const;
+
+    /**
+    * Pi+ handbag helicity amplitude \mathcal{M}_{0-,-+}
+    */
     std::complex<double> amplitude0mmpPip(void) const;
 
+    /**
+    * Pi0 partial longitidunal cross section L
+    */
     double CrossSectionLPi0(void) const;
+
+    /**
+    * Pi0 partial transverse cross section T
+    */
     double CrossSectionTPi0(void) const;
+
+    /**
+    * Pi0 partial interference cross section LT
+    */
     double CrossSectionLTPi0(void) const;
+
+    /**
+    * Pi0 partial interference cross section TT
+    */
     double CrossSectionTTPi0(void) const;
 
+    /**
+    * Pi+ partial longitidunal cross section L
+    */
     double CrossSectionLPip(void) const;
+
+    /**
+    * Pi+ partial transverse cross section T
+    */
     double CrossSectionTPip(void) const;
+
+    /**
+    * Pi+ partial interference cross section LT
+    */
     double CrossSectionLTPip(void) const;
+
+    /**
+    * Pi+ partial interference cross section TT
+    */
     double CrossSectionTTPip(void) const;
 
-
-    double gluonPropagator(double x, double tau, double b) const;
-
-    /**
-     * Quark unintegrated amplitude.
-     * @param quarkType Quark type.
-     */
-    double quarkIntegratedAmplitude(QuarkFlavor::Type quarkType) const;
-
-    /**
-     * Gluon unintegrated amplitude.
-     */
-    double gluonIntegratedAmplitude() const;
 };
 
 } /* namespace PARTONS */
