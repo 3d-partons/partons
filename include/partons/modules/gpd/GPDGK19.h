@@ -22,11 +22,17 @@ namespace PARTONS {
  *
  * TODO Extended description comes here.
   * This model is defined in the series of references:
- * - arxiv:hep-ph/0611290 \cite Goloskokov:2006hr ;
  * - arxiv:0906.0460 \cite Goloskokov:2009ia ;
  * - arxiv:1106.4897 \cite Goloskokov:2011rd ;
  *
  * Available GPD types: \tilde{H}, \tilde{E}, H_T and \bar{E}_T
+ *
+ * We use the following parameters for GPDs (all GPDs have Regge-like profile function):
+ *   1) \tilde{H}: Table 1 in arxiv:1901.11380 with \alpha(0) = 0.32
+ *   2) \tilde{E}: Table 1 in arxiv:1901.11380
+ *   3)       H_T: Table 1 in arxiv:1901.11380 with \alpha(0) = -0.17
+ *   4) \bar{E}_T: Table 1 in arxiv:1901.11380
+ *   with PDFs (forward-limits) parametrizations ABM: arXiv:1202.2281 and DSSV: arXiv:0904.3821
  */
 
 class GPDGK19: public GPDGK16 {

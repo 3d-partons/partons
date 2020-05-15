@@ -84,6 +84,7 @@ protected:
 
 private:
 
+    const double m_xbj; ///< Bjorken x.
     const double m_cNf; ///< Number of active flavors.
     const double m_cLambdaQCD; ///< Lambda QCD
     const double m_tmin;
@@ -94,12 +95,6 @@ private:
     const double muPi;
     const double decayConstant;
     const double transverseSize3;
-
-    /**
-     * Heaviside step function.
-     * @param x input of the function to be checked whether positive or negative.
-     */
-    double Heaviside(double x) const;
 
     /**
      * Renormalization scale. Taken to be the largest mass scale in the hard process amplitude.
@@ -332,12 +327,30 @@ private:
     std::complex<double> convolutionPi0Twist2(double x, double tau, double b, GPDType::Type GPDType) const;
     std::complex<double> convolutionPipTwist2(double x, double tau, double b, GPDType::Type GPDType) const;
 
-    std::complex<double> amplitude0p0pPi0(double x, double tau, double b) const;
+    std::complex<double> amplitude0p0pPi0(void) const;
+    std::complex<double> amplitude0m0pPi0(void) const;
+    std::complex<double> amplitude0mppPi0(void) const;
+    std::complex<double> amplitude0pppPi0(void) const;
+    std::complex<double> amplitude0pmpPi0(void) const;
+    std::complex<double> amplitude0mmpPi0(void) const;
 
-    std::complex<double> amplitude0m0pPi0(double x, double tau, double b) const;
+    std::complex<double> amplitude0p0pPip(void) const;
+    std::complex<double> amplitude0m0pPip(void) const;
+    std::complex<double> amplitude0mppPip(void) const;
+    std::complex<double> amplitude0pppPip(void) const;
+    std::complex<double> amplitude0pmpPip(void) const;
+    std::complex<double> amplitude0mmpPip(void) const;
 
-    std::complex<double> amplitude0p0pPip(double x, double tau, double b) const;
-    std::complex<double> amplitude0m0pPip(double x, double tau, double b) const;
+    double CrossSectionLPi0(void) const;
+    double CrossSectionTPi0(void) const;
+    double CrossSectionLTPi0(void) const;
+    double CrossSectionTTPi0(void) const;
+
+    double CrossSectionLPip(void) const;
+    double CrossSectionTPip(void) const;
+    double CrossSectionLTPip(void) const;
+    double CrossSectionTTPip(void) const;
+
 
     double gluonPropagator(double x, double tau, double b) const;
 
