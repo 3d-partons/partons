@@ -81,6 +81,7 @@ TCSProcessModule::TCSProcessModule(const TCSProcessModule& other) :
 
 std::string TCSProcessModule::toString() const {
     ProcessModule<TCSObservableKinematic, TCSObservableResult>::toString();
+    return "";
 }
 
 void TCSProcessModule::resolveObjectDependencies() {

@@ -74,6 +74,8 @@ void Qt4XMLValidator::myMessageOutput(QtMsgType type, const char* msg) {
         ElemUtils::LoggerManager::getInstance()->error("Qt4XMLValidator",
                 __func__, msg);
         break;
+    default:
+      break;
     }
 }
 

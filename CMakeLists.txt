@@ -7,7 +7,12 @@ cmake_minimum_required(VERSION 2.6)
 project(PARTONS CXX)
 
 # define c++ standard and issue all the warning demanded by this standard
-add_definitions(-std=c++98 -pedantic)
+add_definitions(-std=c++11 -pedantic -Wno-vla-extension)
+set(CMAKE_CXX_STANDARD 11)
+
+if (NOT DEFINED CMAKE_MACOSX_RPATH)
+   set(CMAKE_MACOSX_RPATH 0)
+endif()
 
 # VERSION ==================================================================================
 
@@ -34,11 +39,10 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # FIND LIBRARIES ===========================================================================
 
-# find libraries: Qt4
-find_package(Qt4 REQUIRED QtCore QtSql QtXmlPatterns)
+# find libraries: Qt
+find_package(Qt5 COMPONENTS Core Sql XmlPatterns REQUIRED)
 
 # add some useful macros and variables
-include(${QT_USE_FILE})
 add_definitions(${QT_DEFINITIONS})
 
 # find libraries: additional modules
@@ -56,8 +60,11 @@ find_package(ElementaryUtils REQUIRED)
 # find libraries: NumA++
 find_package(NumA++ REQUIRED)
 
+# find libraries: GSL
+find_package(GSL REQUIRED)
+
 # directories containing headers 
-include_directories(${QT_INCLUDE_DIRS} ${SFML_INCLUDE_DIR} ${CLN_INCLUDE_DIR} ${ELEMENTARY_UTILS_INCLUDE_DIR} ${NUMA_INCLUDE_DIR})
+include_directories(${QT_INCLUDE_DIRS} ${SFML_INCLUDE_DIR} ${CLN_INCLUDE_DIR} ${ElementaryUtils_INCLUDE_DIR} ${NumA++_INCLUDE_DIR})
 include_directories(include)
 
 # FINALIZE ==================================================================================
@@ -71,7 +78,6 @@ file(
 
         src/*
 )
-
 
 # define target library
 set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib)
@@ -92,19 +98,27 @@ target_link_libraries(
 
 		${QT_LIBRARIES}
           
-        ${SFML_LIBRARIES}
+		${SFML_LIBRARIES}
           
-        ${CLN_LIBRARIES}
+		${CLN_LIBRARIES}
           
-        ${ELEMENTARY_UTILS_LIBRARIES}
+		${ElementaryUtils_LIBRARIES}
           
-		${NUMA_LIBRARIES}
+		${NumA++_LIBRARIES}
+
+		${GSL_LIBRARIES}
+
+		Qt5::Core
+
+		Qt5::Sql
+
+		Qt5::XmlPatterns
 )
 
 # install
 install(TARGETS PARTONS 
-        RUNTIME DESTINATION bin/PARTONS
-        LIBRARY DESTINATION lib/PARTONS
-		ARCHIVE DESTINATION lib/static/PARTONS)
-install(DIRECTORY include/ DESTINATION include/PARTONS)
-install(DIRECTORY data/ DESTINATION share/PARTONS/)
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+	ARCHIVE DESTINATION lib/static)
+install(DIRECTORY include/ DESTINATION include)
+install(DIRECTORY data DESTINATION share)
