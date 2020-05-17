@@ -1,4 +1,10 @@
-to create new image: 
+to create new image and send it to DockerHub: 
 1) select PARTONS version (code tag) in Dockerfile.partons
-2) execute (remamber to change vX.Y): 
-   docker build . -f Dockerfile.partons -t pawelsznajder/partons:vX.Y  
+2) execute (remember to change vX.Y): 
+   docker build . -f Dockerfile.partons -t partons/partons:vX.Y  
+3) push (remember to change vX.Y):
+   docker push partons/partons:vX.Y
+4) also tag as latest (remember to change vX.Y):
+   docker image tag partons/partons:vX.Y partons/partons:lates
+5) push:
+   docker push partons/partons:latest
