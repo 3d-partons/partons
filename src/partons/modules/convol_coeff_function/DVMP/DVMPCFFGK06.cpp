@@ -29,12 +29,12 @@ const unsigned int DVMPCFFGK06::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new DVMPCFFGK06("DVMPCFFGK06"));
 
-double gslWrapper0(double *xtaub, size_t dim, void *params) {
+double DVMPCFFGK06::gslWrapper0(double *xtaub, size_t dim, void *params) {
     return (static_cast<DVMPCFFGK06IntegrationParameters*>(params))->m_pDVMPCFFGK06->convolutionFunction(
             xtaub, dim, params);
 }
 
-double gslWrapper1(double x, void * params) {
+double DVMPCFFGK06::gslWrapper1(double x, void * params) {
     return (static_cast<DVMPCFFGK06IntegrationParameters*>(params))->m_pDVMPCFFGK06->convolutionTwist3BFunction(
             x, params);
 }
@@ -554,11 +554,12 @@ std::complex<double> DVMPCFFGK06::convolution(GPDType::Type gpdType,
     gsl_rng* gslRnd = gsl_rng_alloc(gslRndType);
 
     DVMPCFFGK06IntegrationParameters dvmpCFFGK06IntegrationParameters; // parameters
+    dvmpCFFGK06IntegrationParameters.m_pDVMPCFFGK06 = this;
     dvmpCFFGK06IntegrationParameters.m_gpdType = gpdType;
     dvmpCFFGK06IntegrationParameters.m_twist = twist;
 
-    gsl_monte_function gslFunction; //= { &convolutionFunction, 3,
-//            &dvmpCFFGK06IntegrationParameters }; //set function
+    gsl_monte_function gslFunction = { &gslWrapper0, 3,
+            &dvmpCFFGK06IntegrationParameters }; //set function
 
     gsl_monte_vegas_state* gslState; // gsl state
 
@@ -572,13 +573,17 @@ std::complex<double> DVMPCFFGK06::convolution(GPDType::Type gpdType,
     gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3, nWarmUp,
             gslRnd, gslState, &resultRe, &errorRe);
 
-    //Re integrate
-    do {
+    info(__func__, ElemUtils::Formatter() << " (initialization) Re: result: " << resultRe << " error: " <<errorRe);
 
-        gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3, nCalls,
-                gslRnd, gslState, &resultRe, &errorRe);
-
-    } while (fabs(gsl_monte_vegas_chisq(gslState) - 1.0) > 0.5); // run VEGAS Monte-Carlo until you reach a \chi^2 value below the specified value
+//    //Re integrate
+//    do {
+//
+//        gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3, nCalls,
+//                gslRnd, gslState, &resultRe, &errorRe);
+//
+//        info(__func__, ElemUtils::Formatter() << " (loop) Re: result: " << resultRe << " error: " <<errorRe);
+//
+//    } while (fabs(gsl_monte_vegas_chisq(gslState) - 1.0) > 0.5); // run VEGAS Monte-Carlo until you reach a \chi^2 value below the specified value
 
     //Re free state
     gsl_monte_vegas_free(gslState);
@@ -593,13 +598,15 @@ std::complex<double> DVMPCFFGK06::convolution(GPDType::Type gpdType,
     gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3, nWarmUp,
             gslRnd, gslState, &resultIm, &errorIm);
 
-    //Im integrate
-    do {
+    info(__func__, ElemUtils::Formatter() << " (initialization) Im: result: " << resultRe << " error: " <<errorRe);
 
-        gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3, nCalls,
-                gslRnd, gslState, &resultIm, &errorIm);
-
-    } while (fabs(gsl_monte_vegas_chisq(gslState) - 1.0) > 0.5); // run VEGAS Monte-Carlo until you reach a \chi^2 value below the specified value
+//    //Im integrate
+//    do {
+//
+//        gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3, nCalls,
+//                gslRnd, gslState, &resultIm, &errorIm);
+//
+//    } while (fabs(gsl_monte_vegas_chisq(gslState) - 1.0) > 0.5); // run VEGAS Monte-Carlo until you reach a \chi^2 value below the specified value
 
     //Im free state
     gsl_monte_vegas_free(gslState);
@@ -652,10 +659,11 @@ std::complex<double> DVMPCFFGK06::convolutionTwist3B(
     double result, error; //result
 
     DVMPCFFGK06IntegrationParameters dvmpCFFGK06IntegrationParameters; // parameters
+    dvmpCFFGK06IntegrationParameters.m_pDVMPCFFGK06 = this;
     dvmpCFFGK06IntegrationParameters.m_gpdType = gpdType;
 
     gsl_function gslFunction; // gsl function
-//    gslFunction.function = &convolutionTwist3BFunction;
+    gslFunction.function = &gslWrapper1;
     gslFunction.params = &dvmpCFFGK06IntegrationParameters;
 
     gsl_integration_qags(&gslFunction, -m_xi, 1.0, 0, 1e-5, 10000, w, &result,

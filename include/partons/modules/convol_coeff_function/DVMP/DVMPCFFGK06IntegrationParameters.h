@@ -20,7 +20,7 @@ namespace PARTONS {
 
 struct DVMPCFFGK06IntegrationParameters {
 
-    DVMPCFFGK06* m_pDVMPCFFGK06; ///< Pointer to DVMPCFFGK06.
+    const DVMPCFFGK06* m_pDVMPCFFGK06; ///< Pointer to DVMPCFFGK06.
     GPDType::Type m_gpdType; ///< GPD type.
     size_t m_twist; ///< Twist.
     bool m_isReal; ///< If true, return real part.
