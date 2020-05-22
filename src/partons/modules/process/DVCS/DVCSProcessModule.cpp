@@ -83,7 +83,7 @@ DVCSProcessModule::DVCSProcessModule(const DVCSProcessModule& other) :
 
 std::string DVCSProcessModule::toString() const {
     ProcessModule<DVCSObservableKinematic, DVCSObservableResult>::toString();
-    return "";
+    return ProcessModule<DVCSObservableKinematic, DVCSObservableResult>::toString();
 }
 
 void DVCSProcessModule::resolveObjectDependencies() {
