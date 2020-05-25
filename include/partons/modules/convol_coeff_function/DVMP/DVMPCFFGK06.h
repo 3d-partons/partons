@@ -69,10 +69,14 @@ protected:
      */
     DVMPCFFGK06(const DVMPCFFGK06 &other);
 
+
     virtual void initModule();
     virtual void isModuleWellConfigured();
 
     virtual std::complex<double> computeCFF();
+
+    double m_tmin; ///< Minimum t value
+    double m_xbj;  ///< Bjorken x
 
 //    /**
 //     * Handbag helicity amplitude \f$\mathcal{M}_{\mu'\nu',\mu\nu}\f$.
@@ -81,10 +85,8 @@ protected:
 
 private:
 
-    const double m_xbj; ///< Bjorken x.
     const double m_cNf; ///< Number of active flavors.
     const double m_cLambdaQCD; ///< Lambda QCD
-    const double m_tmin; ///< Minimum t value
     const double m_EulerGamma; ///< Euler-Mascheroni Constant
     const double m_PositronCharge; ///< Charge of the positron
     const double m_Nc; ///< Number of colors

@@ -40,10 +40,7 @@ double DVMPCFFGK06::gslWrapper1(double x, void * params) {
 }
 
 DVMPCFFGK06::DVMPCFFGK06(const std::string &className) :
-        DVMPConvolCoeffFunctionModule(className), m_xbj(
-                2. * m_xi / (1. + m_xi)), m_cNf(3.), m_cLambdaQCD(0.22), m_tmin(
-                -4. * pow(Constant::PROTON_MASS, 2.) * pow(m_xi, 2.)
-                        / (1. - pow(m_xi, 2.))), m_EulerGamma(
+        DVMPConvolCoeffFunctionModule(className), m_cNf(3.), m_cLambdaQCD(0.22), m_EulerGamma(
                 0.577216), m_PositronCharge(0.3028), m_Nc(3.), m_Cf(4. / 3.), m_muPi(
                 2.0) {
 
@@ -63,11 +60,10 @@ DVMPCFFGK06::DVMPCFFGK06(const std::string &className) :
 }
 
 DVMPCFFGK06::DVMPCFFGK06(const DVMPCFFGK06 &other) :
-        DVMPConvolCoeffFunctionModule(other), m_xbj(other.m_xbj), m_cNf(
-                other.m_cNf), m_cLambdaQCD(other.m_cLambdaQCD), m_tmin(
-                other.m_tmin), m_EulerGamma(other.m_EulerGamma), m_PositronCharge(
-                other.m_PositronCharge), m_Nc(other.m_Nc), m_Cf(other.m_Cf), m_muPi(
-                other.m_muPi) {
+        DVMPConvolCoeffFunctionModule(other), m_cNf(
+                other.m_cNf), m_cLambdaQCD(other.m_cLambdaQCD), m_EulerGamma(other.m_EulerGamma),
+                m_PositronCharge(other.m_PositronCharge), m_Nc(other.m_Nc), m_Cf(other.m_Cf),
+                m_muPi(other.m_muPi) {
 }
 
 DVMPCFFGK06* DVMPCFFGK06::clone() const {
@@ -83,6 +79,9 @@ void DVMPCFFGK06::resolveObjectDependencies() {
 
 void DVMPCFFGK06::initModule() {
     DVMPConvolCoeffFunctionModule::initModule();
+
+    m_tmin = -4. * pow(Constant::PROTON_MASS, 2.) * pow(m_xi, 2.) / (1. - pow(m_xi, 2.));
+    m_xbj = 2. * m_xi / (1. + m_xi);
 }
 
 void DVMPCFFGK06::isModuleWellConfigured() {
