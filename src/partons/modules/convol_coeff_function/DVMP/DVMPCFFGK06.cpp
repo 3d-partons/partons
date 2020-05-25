@@ -43,7 +43,7 @@ DVMPCFFGK06::DVMPCFFGK06(const std::string &className) :
         DVMPConvolCoeffFunctionModule(className), m_xbj(
                 2. * m_xi / (1. + m_xi)), m_cNf(3.), m_cLambdaQCD(0.22), m_tmin(
                 -4. * pow(Constant::PROTON_MASS, 2.) * pow(m_xi, 2.)
-                        / (1. - pow(Constant::PROTON_MASS, 2.))), m_EulerGamma(
+                        / (1. - pow(m_xi, 2.))), m_EulerGamma(
                 0.577216), m_PositronCharge(0.3028), m_Nc(3.), m_Cf(4. / 3.), m_muPi(
                 2.0) {
 
