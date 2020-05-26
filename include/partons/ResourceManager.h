@@ -78,7 +78,7 @@ private:
     // key = computation datetime
     // 1st value = computation instantiated object
     // 2nd value = counter for know how many system objects refer to it. When counter == 0 mean that Computation object must be free.
-    std::map<time_t, std::pair<std::auto_ptr<Computation>, unsigned int> > computationList;
+    std::map<time_t, std::pair<std::unique_ptr<Computation>, unsigned int> > computationList;
 };
 
 } /* namespace PARTONS */

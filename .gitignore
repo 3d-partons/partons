@@ -2,3 +2,9 @@
 /.settings/
 /lib/
 /PARTONS.doxyfile.bak
+CMakeCache.txt
+CMakeFiles/
+Makefile
+PARTONS_autogen/
+cmake_install.cmake
+install_manifest.txt

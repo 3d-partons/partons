@@ -106,7 +106,8 @@ Scenario* ResourceManager::registerScenario(const int indexId,
 }
 
 EnvironmentConfiguration* ResourceManager::getEnvironmentConfiguration(
-        const std::string& hashSum) const {
+        const std::string&) const {
+  return NULL;
 }
 
 } /* namespace PARTONS */
