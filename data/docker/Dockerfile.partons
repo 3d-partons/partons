@@ -1,0 +1,77 @@
+# start from debian jessie
+FROM debian:stretch
+
+# PARTONS version
+ENV PARTONSTAG="v2.0"
+
+# set WORKSPACE env. variable
+ENV WORKSPACE="/root/workspace"
+
+# set working directory
+WORKDIR ${WORKSPACE}
+
+# install git
+# install cmake, build and runtime libraries
+RUN apt-get update && \ 
+    apt-get install -y --no-install-recommends git && \
+    apt-get install -y --no-install-recommends cmake build-essential libeigen3-dev libcln-dev libsfml-dev libqt4-dev libqt4-sql-mysql libgsl-dev && \ 
+    apt-get clean && \
+    apt-get autoclean && \
+    rm -rf /var/lib/apt/lists/*
+
+# pull and install elem-utils
+RUN cd ${WORKSPACE} && \
+    git config --global http.sslVerify false && \
+    git clone --single-branch --depth 1 --branch ${PARTONSTAG} https://drf-gitlab.cea.fr/partons/core/elementary-utils.git && \
+    cd ${WORKSPACE}/elementary-utils/build && \
+    cmake -G"Unix Makefiles" ../ -DCMAKE_BUILD_TYPE=Release && \
+    make 
+
+# pull and install numa
+RUN cd ${WORKSPACE} && \
+    git config --global http.sslVerify false && \
+    git clone --single-branch --depth 1 --branch ${PARTONSTAG} https://drf-gitlab.cea.fr/partons/core/numa.git && \
+    cd ${WORKSPACE}/numa/build && \
+    cmake -G"Unix Makefiles" ../ -DCMAKE_BUILD_TYPE=Release && \
+    make 
+
+# pull and install partons
+RUN cd ${WORKSPACE} && \
+    git config --global http.sslVerify false && \
+    git clone --single-branch --depth 1 --branch ${PARTONSTAG} https://drf-gitlab.cea.fr/partons/core/partons.git && \
+    cd ${WORKSPACE}/partons/build && \
+    cmake -G"Unix Makefiles" ../ -DCMAKE_BUILD_TYPE=Release && \
+    make
+
+# pull and compile partons-example
+RUN cd ${WORKSPACE} && \
+    git config --global http.sslVerify false && \
+    git clone --single-branch --depth 1 --branch ${PARTONSTAG} https://drf-gitlab.cea.fr/partons/core/partons-example.git && \
+    cd ${WORKSPACE}/partons-example/build && \
+    cmake -G"Unix Makefiles" ../ -DCMAKE_BUILD_TYPE=Release && \
+    make 
+
+# creare directories and copy scripts
+RUN mkdir ${WORKSPACE}/.docker && \
+    mkdir ${WORKSPACE}/partons-example/scenarios
+
+COPY ./Dockerfile.partons.mysql ${WORKSPACE}/.docker 
+COPY ./Dockerfile.partons.startup ${WORKSPACE}/.docker 
+
+RUN chmod u+x ${WORKSPACE}/.docker/Dockerfile.partons.mysql && \
+    chmod u+x ${WORKSPACE}/.docker/Dockerfile.partons.startup
+
+# set up database
+RUN echo "mysql-server mysql-server/root_password password partons" | debconf-set-selections && \
+    echo "mysql-server mysql-server/root_password_again password partons" | debconf-set-selections && \
+    apt-get update && \ 
+    apt-get install -y --no-install-recommends mysql-server && \ 
+    apt-get clean && \
+    apt-get autoclean && \
+    rm -rf /var/lib/apt/lists/* && \
+    ${WORKSPACE}/.docker/Dockerfile.partons.mysql && \
+    rm ${WORKSPACE}/.docker/Dockerfile.partons.mysql
+
+# start mysql server each time container is used
+# due to issue: https://github.com/docker/for-linux/issues/72 
+ENTRYPOINT [".docker/Dockerfile.partons.startup"] 
