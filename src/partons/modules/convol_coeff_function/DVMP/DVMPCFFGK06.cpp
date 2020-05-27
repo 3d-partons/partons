@@ -544,8 +544,8 @@ std::complex<double> DVMPCFFGK06::convolution(GPDType::Type gpdType,
     double rangeMin[3] = { -m_xi, 0.0, 0.0 }; // lower bounds of the 3D integral: with respect to 1) x,  2) tau, and 3) b
     double rangeMax[3] = { 1.0, 1.0, 1.0 / m_cLambdaQCD }; // upper bounds of the 3D integral: with respect to 1) x,  2) tau, and 3) b
 
-    const size_t nWarmUp = 10000; //warm-up the Monte Carlo integral
-    const size_t nCalls = 100000; // number of calls of the integral
+    const size_t nWarmUp = 20000; //warm-up the Monte Carlo integral
+    const size_t nCalls = 200000; // number of calls of the integral
 
     gsl_rng_env_setup(); //random generator
 
@@ -574,7 +574,12 @@ std::complex<double> DVMPCFFGK06::convolution(GPDType::Type gpdType,
 
     info(__func__, ElemUtils::Formatter() << " (initialization) Re: result: " << resultRe << " error: " <<errorRe);
 
-//    //Re integrate
+    //Re integrate
+    gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3, nCalls,
+                    gslRnd, gslState, &resultRe, &errorRe);
+
+    info(__func__, ElemUtils::Formatter() << " (evaluation) Re: result: " << resultRe << " error: " <<errorRe);
+
 //    do {
 //
 //        gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3, nCalls,
@@ -582,7 +587,7 @@ std::complex<double> DVMPCFFGK06::convolution(GPDType::Type gpdType,
 //
 //        info(__func__, ElemUtils::Formatter() << " (loop) Re: result: " << resultRe << " error: " <<errorRe);
 //
-//    } while (fabs(gsl_monte_vegas_chisq(gslState) - 1.0) > 0.5); // run VEGAS Monte-Carlo until you reach a \chi^2 value below the specified value
+//    } while (fabs(gsl_monte_vegas_chisq(gslState) - 1.0) > 0.8); // run VEGAS Monte-Carlo until you reach a \chi^2 value below the specified value
 
     //Re free state
     gsl_monte_vegas_free(gslState);
@@ -597,15 +602,20 @@ std::complex<double> DVMPCFFGK06::convolution(GPDType::Type gpdType,
     gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3, nWarmUp,
             gslRnd, gslState, &resultIm, &errorIm);
 
-    info(__func__, ElemUtils::Formatter() << " (initialization) Im: result: " << resultRe << " error: " <<errorRe);
+    info(__func__, ElemUtils::Formatter() << " (initialization) Im: result: " << resultIm << " error: " <<errorIm);
 
-//    //Im integrate
+    //Im integrate
+    gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3, nCalls,
+                    gslRnd, gslState, &resultIm, &errorIm);
+
+    info(__func__, ElemUtils::Formatter() << " (evaluation) Im: result: " << resultIm << " error: " <<errorIm);
+
 //    do {
 //
 //        gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3, nCalls,
 //                gslRnd, gslState, &resultIm, &errorIm);
 //
-//    } while (fabs(gsl_monte_vegas_chisq(gslState) - 1.0) > 0.5); // run VEGAS Monte-Carlo until you reach a \chi^2 value below the specified value
+//    } while (fabs(gsl_monte_vegas_chisq(gslState) - 1.0) > 0.8); // run VEGAS Monte-Carlo until you reach a \chi^2 value below the specified value
 
     //Im free state
     gsl_monte_vegas_free(gslState);
