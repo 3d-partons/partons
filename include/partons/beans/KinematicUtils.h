@@ -18,6 +18,7 @@
 #include "gpd/GPDKinematic.h"
 #include "List.h"
 #include "observable/DVCS/DVCSObservableKinematic.h"
+#include "observable/DVMP/DVMPObservableKinematic.h"
 #include "observable/TCS/TCSObservableKinematic.h"
 
 namespace PARTONS {
@@ -95,6 +96,15 @@ public:
      * @return List of extracted ObservableKinematic objects.
      */
     List<TCSObservableKinematic> getTCSObservableKinematicFromFile(
+            const std::string &filePath);
+
+    /**
+     * Parse a text file in order to retrieve a list of ObservableKinematic objects.
+     * The parsed file should display separate lines of the form "xB | t | Q2 | E | phi | mesonType".
+     * @param filePath Path to file to be parsed.
+     * @return List of extracted ObservableKinematic objects.
+     */
+    List<DVMPObservableKinematic> getDVMPObservableKinematicFromFile(
             const std::string &filePath);
 
 private:

@@ -20,6 +20,7 @@ class DVMPConvolCoeffFunctionService;
 class TCSConvolCoeffFunctionService;
 class GPDService;
 class DVCSObservableService;
+class DVMPObservableService;
 class TCSObservableService;
 class ServiceObject;
 class VizualisationService;
@@ -44,6 +45,7 @@ public:
     DVMPConvolCoeffFunctionService* getDVMPConvolCoeffFunctionService() const;
     TCSConvolCoeffFunctionService* getTCSConvolCoeffFunctionService() const;
     DVCSObservableService* getDVCSObservableService() const;
+    DVMPObservableService* getDVMPObservableService() const;
     TCSObservableService* getTCSObservableService() const;
     VizualisationService* getVizualisationService() const;
     ComparisonService* getComparisonService() const;

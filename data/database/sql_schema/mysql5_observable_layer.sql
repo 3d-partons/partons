@@ -37,6 +37,23 @@ experiment_id INTEGER,
 hash_sum VARCHAR(40) NOT NULL);
 CREATE INDEX dvcs_observable_kinematic_index ON dvcs_observable_kinematic (hash_sum);
 
+CREATE TABLE dvmp_observable_kinematic (
+dvmp_observable_kinematic_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+xB DOUBLE NOT NULL, 
+xB_unit INTEGER NOT NULL,
+t DOUBLE NOT NULL, 
+t_unit INTEGER NOT NULL,
+Q2 DOUBLE NOT NULL, 
+Q2_unit INTEGER NOT NULL,
+E DOUBLE NOT NULL, 
+E_unit INTEGER NOT NULL,
+phi DOUBLE NOT NULL,
+phi_unit INTEGER NOT NULL,
+meson_type_id INTEGER NOT NULL,
+experiment_id INTEGER,
+hash_sum VARCHAR(40) NOT NULL);
+CREATE INDEX dvmp_observable_kinematic_index ON dvmp_observable_kinematic (hash_sum);
+
 CREATE TABLE tcs_observable_kinematic (
 tcs_observable_kinematic_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
 t DOUBLE NOT NULL, 
@@ -70,6 +87,21 @@ dvcs_observable_kinematic_id INTEGER NOT NULL,
 computation_id INTEGER NOT NULL);
 CREATE INDEX dvcs_observable_result_index ON dvcs_observable_result (computation_id);
 
+CREATE TABLE dvmp_observable_result (
+dvmp_observable_result_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,  
+observable_name VARCHAR(255) NOT NULL, 
+value DOUBLE NOT NULL, 
+stat_error_lb DOUBLE,
+stat_error_ub DOUBLE,
+syst_error_lb DOUBLE,
+syst_error_ub DOUBLE,
+scale_error_lb DOUBLE,
+scale_error_ub DOUBLE,
+value_unit INTEGER NOT NULL,
+dvmp_observable_kinematic_id INTEGER NOT NULL,
+computation_id INTEGER NOT NULL);
+CREATE INDEX dvmp_observable_result_index ON dvmp_observable_result (computation_id);
+
 CREATE TABLE tcs_observable_result (
 tcs_observable_result_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,  
 observable_name VARCHAR(255) NOT NULL, 
@@ -92,6 +124,11 @@ SELECT 	obk.dvcs_observable_kinematic_id, obk.xB, obk.xB_unit, obk.t, obk.t_unit
 FROM dvcs_observable_kinematic obk
 ORDER BY obk.dvcs_observable_kinematic_id;
 
+CREATE VIEW dvmp_observable_kinematic_view AS 
+SELECT 	obk.dvmp_observable_kinematic_id, obk.xB, obk.xB_unit, obk.t, obk.t_unit, obk.Q2, obk.Q2_unit, obk.E, obk.E_unit, obk.phi, obk.phi_unit, obk.meson_type_id, obk.hash_sum
+FROM dvmp_observable_kinematic obk
+ORDER BY obk.dvmp_observable_kinematic_id;
+
 CREATE VIEW tcs_observable_kinematic_view AS 
 SELECT 	obk.tcs_observable_kinematic_id, obk.t, obk.t_unit, obk.Q2Prim, obk.Q2Prim_unit, obk.E, obk.E_unit, obk.phi, obk.phi_unit, obk.theta, obk.theta_unit, obk.hash_sum
 FROM tcs_observable_kinematic obk
@@ -111,6 +148,21 @@ SELECT	obr.computation_id, obk.dvcs_observable_kinematic_id,
 FROM dvcs_observable_result obr
 INNER JOIN dvcs_observable_kinematic obk ON obr.dvcs_observable_kinematic_id = obk.dvcs_observable_kinematic_id
 ORDER BY obr.dvcs_observable_result_id;
+
+CREATE VIEW dvmp_observable_plot_2d_view AS
+SELECT	obr.computation_id, obk.dvmp_observable_kinematic_id, 
+	obk.xB, obk.xB_unit,
+	obk.t, obk.t_unit,
+	obk.Q2, obk.Q2_unit, 
+	obk.E, obk.E_unit, 
+	obk.phi, obk.phi_unit,
+	mt.meson_type_short_name,
+	obr.dvmp_observable_result_id, obr.observable_name, 
+	obr.value, obr.value_unit
+FROM dvmp_observable_result obr
+INNER JOIN dvmp_observable_kinematic obk ON obr.dvmp_observable_kinematic_id = obk.dvmp_observable_kinematic_id
+INNER JOIN meson_type mt ON obk.meson_type_id = mt.meson_type_id
+ORDER BY obr.dvmp_observable_result_id;
 
 CREATE VIEW tcs_observable_plot_2d_view AS
 SELECT	obr.computation_id, obk.tcs_observable_kinematic_id, 

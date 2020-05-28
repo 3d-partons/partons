@@ -8,6 +8,7 @@
 #include "../../include/partons/services/DVCSConvolCoeffFunctionService.h"
 #include "../../include/partons/services/DVCSObservableService.h"
 #include "../../include/partons/services/DVMPConvolCoeffFunctionService.h"
+#include "../../include/partons/services/DVMPObservableService.h"
 #include "../../include/partons/services/GPDService.h"
 #include "../../include/partons/services/hash_sum/CryptographicHashService.h"
 #include "../../include/partons/services/TCSConvolCoeffFunctionService.h"
@@ -69,6 +70,11 @@ TCSConvolCoeffFunctionService* ServiceObjectRegistry::getTCSConvolCoeffFunctionS
 DVCSObservableService* ServiceObjectRegistry::getDVCSObservableService() const {
     return static_cast<DVCSObservableService*>(get(
             DVCSObservableService::classId));
+}
+
+DVMPObservableService* ServiceObjectRegistry::getDVMPObservableService() const {
+    return static_cast<DVMPObservableService*>(get(
+            DVMPObservableService::classId));
 }
 
 TCSObservableService* ServiceObjectRegistry::getTCSObservableService() const {

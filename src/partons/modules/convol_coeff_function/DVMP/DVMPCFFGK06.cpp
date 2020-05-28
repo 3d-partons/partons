@@ -152,9 +152,8 @@ std::complex<double> DVMPCFFGK06::computeCFF() {
                 + convolutionTwist3B(m_currentGPDComputeType)
                 + convolutionTwist3C(m_currentGPDComputeType);
 
-        return 2.
-                * (-1.0 * m_PositronCharge * sqrt(-(m_t - m_tmin))
-                        / (4. * Constant::PROTON_MASS) * convolution);
+        return -1.0 * m_PositronCharge * sqrt(-(m_t - m_tmin))
+                        / (4. * Constant::PROTON_MASS) * convolution;
     }
 
         break;
