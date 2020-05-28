@@ -183,7 +183,6 @@ List<DVCSConvolCoeffFunctionKinematic> KinematicUtils::getDVCSCCFKinematicFromFi
 
                     //continue
                     continue;
-
                 }
 
                 //split
@@ -290,7 +289,6 @@ List<TCSConvolCoeffFunctionKinematic> KinematicUtils::getTCSCCFKinematicFromFile
 
                     //continue
                     continue;
-
                 }
 
                 //split
@@ -507,6 +505,8 @@ List<DVCSObservableKinematic> KinematicUtils::getDVCSObservableKinematicFromFile
 
                     }
 
+                    //continue
+                    continue;
                 }
 
                 //split
@@ -613,6 +613,8 @@ List<TCSObservableKinematic> KinematicUtils::getTCSObservableKinematicFromFile(
 
                     }
 
+                    //continue
+                    continue;
                 }
 
                 //split

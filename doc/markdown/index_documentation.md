@@ -1,26 +1,24 @@
 # Main Page                          {#mainpage}
 
-[TOC]
-
 # What is PARTONS? {#mainpage_intro}
 
-<img src='../images/logo_partons.jpg' alt='PARTONS' style='float:right; max-width:20%; height:auto; margin:2pt 10pt' />
+<img src='../images/logo_partons_strong.png' alt='PARTONS' style='float:right; max-width:17%; height:auto; margin:2pt 10pt' />
 
-%PARTONS is a C++ software framework dedicated to the phenomenology of Generalized Parton Distributions (GPDs). GPDs provide a comprehensive description of the partonic structure of the nucleon and contain a wealth of new information. In particular, GPDs provide a description of the nucleon as an extended object, referred to as 3-dimensional nucleon tomography, and give an access to the orbital angular momentum of quarks.
+%PARTONS is a software framework dedicated to the phenomenology of 3D hadron structure, in particular Generalized Parton Distributions (GPDs) and Tranverse Momentum Dependent (TMDs) parton distribution functions.
 
-%PARTONS provides a necessary bridge between models of GPDs and experimental data measured in various exclusive channels, like Deeply Virtual Compton Scattering (DVCS) and Hard Exclusive Meson Production (HEMP). The experimental programme devoted to study GPDs has been carrying out by several experiments, like HERMES at DESY (closed), COMPASS at CERN, Hall-A and CLAS at JLab. GPD subject will be also a key component of the physics case for the expected Electron Ion Collider (EIC).
+%PARTONS provides a necessary bridge between models of 3D hadron structure and experimental data measured in various channels, like for example Deeply Virtual Compton Scattering (DVCS) and Hard Exclusive Meson Production (HEMP).
 
-%PARTONS is useful to theorists to develop new models, phenomenologists to interpret existing measurements and to experimentalists to design new experiments.
+The experimental program devoted to study GPDs and TMDs has been carrying out by experiments in several facilities, like CERN, DESY, Fermilab, Jefferson Lab and BNL. The 3D structure of hadrons will be also a key component of the physics case for the future Electron Ion Collider (EIC). %PARTONS is useful to theorists to develop new models, phenomenologists to interpret existing measurements and to experimentalists to design new experiments.
+
+The virtual access infrastructure 3DPartons has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No 824093.
 
 <hr>
 
 # Get PARTONS {#mainpage_get}
 
-Here you can learn how to get your own version of %PARTONS. We offer two ways:
-* You can use our provided virtual machine with an out-of-the-box %PARTONS runtime and development environment. This is the easiest way to start your experience with %PARTONS.
-* You can also build %PARTONS by your own on <!-- either --> GNU/Linux<!--  or Mac OS X -->. This is useful if you want to have %PARTONS on your computer without using the virtualization technology or if you want to use %PARTONS on computing farms. 
+Here you can learn how to get your own version of %PARTONS. We offer two ways. You can use our provided virtual machine with an out-of-the-box %PARTONS runtime and development environment. This is the easiest way to start your experience with %PARTONS. Alternatively, you can also build %PARTONS by your own on <!-- either --> GNU/Linux<!--  or Mac OS X -->. This is useful if you want to have %PARTONS on your computer without using the virtualization technology or if you want to use %PARTONS on computing farms. 
 
-[Download page](@ref download).
+* [Download page](@ref download).
 
 Tutorials:
 * [Using PARTONS with our provided Virtual Machine](@ref vm).
@@ -33,7 +31,7 @@ Tutorials:
 
 If you are using [our virtual machine](@ref vm), you will find all configuration files set up and ready to be used. However, if you want to tune the configuration or if you have installed %PARTONS by your own, this tutorial will be helpful for you:
 
-[Manual configuration](@ref config).
+* [Manual configuration](@ref config).
 
 <hr>
 
@@ -56,26 +54,12 @@ The following tutorials deal with all these matters:
 
 <hr>
 
-# Publications and talks {#mainpage_talks}
-
-Here you can find our publications and the list of talks given on behalf of the %PARTONS team:
-
-[PARTONS publications and talks](@ref tandp).
-
-<hr>
-
-<!--
-# Acknowledgments {#mainpage_acknow}
-
-The work on %PARTONS has been supported by the following grant: 
-* French National Research Agency, Commissariat l’Energie Atomique et aux Energies Alternatives, grant no. 12-MONU-0008-01.
-
-<hr>
--->
-
-# License {#mainpage_licences}
+# License and reference {#mainpage_licences}
 
 The following licenses apply: [elementary-utils](https://drf-gitlab.cea.fr/partons/core/elementary-utils) sub-project is under the [Apache](https://www.apache.org/licenses/) license, while [numa](https://drf-gitlab.cea.fr/partons/core/numa), [partons](https://drf-gitlab.cea.fr/partons/core/partons) and [partons-example](https://drf-gitlab.cea.fr/partons/core/partons-example) are distributed under the [GPL](https://www.gnu.org/licenses/gpl.html) license. Please, respect the licensing! 
+
+To reference %PARTONS please use this publication:<br>
+* B. Berthou *et al.*, *%PARTONS: PARtonic Tomography Of Nucleon Software: A computing platform for the phenomenology of Generalized Parton Distributions*,<br>Eur. Phys. J. C78 (2018), 478, [DOI: 10.1140/epjc/s10052-018-5948-0](https://doi.org/10.1140/epjc/s10052-018-5948-0)
 
 <hr>
 

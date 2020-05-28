@@ -221,7 +221,7 @@ void TCSCFFFromDVCS::prepareSubModules(
             m_pDVCSConvolCoeffFunctionModule->configure(
                     (it->second).getParameters());
             m_pDVCSConvolCoeffFunctionModule->prepareSubModules(
-                         (it->second).getSubModules());
+                    (it->second).getSubModules());
         }
     }
 }

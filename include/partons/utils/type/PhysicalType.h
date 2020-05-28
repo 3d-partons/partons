@@ -327,7 +327,9 @@ private:
         // if conversion failed then print an exception
         if ((sstream >> m_value).fail()) {
             throw ElemUtils::CustomException(getClassName(), __func__,
-                    "Cast from std::string to type<T> failed !");
+                    ElemUtils::Formatter()
+                            << "Cast from std::string to type<T> failed for: "
+                            << stringValue);
         }
     }
 

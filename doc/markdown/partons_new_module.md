@@ -105,9 +105,6 @@ double integrationResult = integrate(m_pFunctorForIntegrationFunction, min, max,
 # Templates for new modules {#newmodule_templates}
 
 * [New GPD module](@ref newmodule_templates_gpd) 
-* [New DVCS CFF module](@ref newmodule_templates_dvcscff) 
-* [New DVCS process module](@ref newmodule_templates_dvcsprocess) 
-* [New DVCS observable](@ref newmodule_templates_dvcsobservable) 
 
 <hr>
 

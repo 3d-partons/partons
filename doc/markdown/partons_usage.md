@@ -17,10 +17,10 @@ One can distinguish three types of Services:
 * Database services are used to handle the database and perform such operations as the insertion, selection and deletion of data. These services are used mainly by the developers and they are described in [this page](@ref database).
 * %Computation services are used to perform all kinds of computational tasks. They have been designed to be used by %PARTONS users and they are described here. 
 
-%PARTONS benefits from a layered structure corresponding to the factorized nature of GPD-oriented computations. We distinguish three main layers, each one coming with its own computation service. These are: 
-* GPD layer with [GPDService](@ref PARTONS::GPDService);
-* CFF layer with [ConvolCoeffFunctionService](@ref PARTONS::ConvolCoeffFunctionService);
-* Observable layer with [ObservableService](@ref PARTONS::ObservableService).
+%PARTONS benefits from a layered structure corresponding to the factorized nature of GPD-oriented computations. We distinguish three layers, each one coming with its own computation service(s). These are: 
+* GPD layer;
+* Convolution coefficient function layer;
+* Observable.
 
 When a computation is performed, higher layers call lower ones automatically. The responsibility of a %PARTONS user is to only set all required physical assumptions, such as GPD model, order of pQCD approximation, etc.
 
@@ -121,9 +121,9 @@ We refer to a set of physics assumptions as a scenario. In this section we demon
 
 <scenario date="2017-06-15" description="How to compute an observable">
 
-    <task service="ObservableService" method="computeObservable" storeInDB="0">
+    <task service="DVCSObservableService" method="computeSingleKinematic" storeInDB="0">
 
-        <kinematics type="ObservableKinematic">
+        <kinematics type="DVCSObservableKinematic">
             <param name="xB" value="0.1" />
             <param name="t" value="-0.1" />
             <param name="Q2" value="2." />
@@ -133,18 +133,18 @@ We refer to a set of physics assumptions as a scenario. In this section we demon
 
         <computation_configuration>
 
-            <module type="Observable" name="DVCSAcCos2Phi">
+            <module type="DVCSObservableModule" name="DVCSAcCos2Phi">
 
-                <module type="ProcessModule" name="DVCSProcessGV08">
+                <module type="DVCSProcessModule" name="DVCSProcessGV08">
 
-                    <module type="ScalesModule" name="ScalesQ2Multiplier">
+                    <module type="DVCSScalesModule" name="DVCSScalesQ2Multiplier">
                         <param name="lambda" value="1." />
                     </module>
 
-                    <module type="XiConverterModule" name="XiConverterXBToXi">
+                    <module type="DVCSXiConverterModule" name="DVCSXiConverterXBToXi">
                     </module>
 
-                    <module type="ConvolCoeffFunctionModule" name="DVCSCFFStandard">
+                    <module type="DVCSConvolCoeffFunctionModule" name="DVCSCFFStandard">
 
                         <param name="qcd_order_type" value="LO" />
 
@@ -156,7 +156,7 @@ We refer to a set of physics assumptions as a scenario. In this section we demon
         </computation_configuration>
     </task>
 
-    <task service="ObservableService" method="printResults">
+    <task service="DVCSObservableService" method="printResults">
     </task>
 
 </scenario>
@@ -167,9 +167,9 @@ Let us analyze the structure of this scenario step-by-step:
 * The scenario contains two tasks - each one with input data encoded between `<task></task>` tags. The information in the opening tags defines the target Service (`service = ""`) and the method (`method = ""`) to be called. In our example, the first task is for the computation, while the second one prints out the result to the standard output. Available tasks for all Services are summarized in [the following section](@ref usage_tasks).
 * In the opening tag defining the computational task, a switch is available, `storeInDB = ""`, to store the result in the database. When this switch is active, both the scenario file and the result are stored in the database. You may refer to the stored data by a unique `computation.id` value returned to the standard output by one of the involved database services:
 ```sh
-26-06-2017 03:48:04 [INFO] (ObservableService::computeTask) ObservableResultList object has been stored in database with computation_id=2
+26-06-2017 03:48:04 [INFO] (DVCSObservableService::computeTask) ObservableResultList object has been stored in database with computation_id=2
 ```
-* In the computational task, the input kinematics of a given type is defined between `<kinematics></kinematics>` tags. Typically, you will encounter three types of kinematics - each one corresponding to the specific layer of the computation. These are: `GPDKinematics`, `ConvolCoeffFunctioKinematics` and `ObservableKinematics`. See examples provided in [the following section](@ref usage_tasks) to learn how to define these objects. Note that they can be defined either via XML file (as in the analyzed example), or via external text files (for a more convenient handling of lists).
+* In the computational task, the input kinematics of a given type is defined between `<kinematics></kinematics>` tags. See examples provided in [the following section](@ref usage_tasks) to learn how to define these objects. Note that they can be defined either via XML file (as in the analyzed example), or via external text files (for a more convenient handling of lists).
 * Physics assumptions are defined between `<computation_configuration></computation_configuration>` tags. It is a nested structure that indicates %PARTONS modules to be used. The structure corresponds to the following computation structure: 
 ![](../images/module_structure.png "Module structure used by PARTONS")
 The list of all available %PARTONS modules is summarized in [this section](@ref usage_modules).
@@ -225,82 +225,37 @@ Here we have shown how to use the Logger outside a class that inherits from `Bas
 
 # Services and available tasks {#usage_tasks}
 
-This table summarizes all tasks available in computation services. For a given task, click on its name to be directed to a page with more information (such as examples). 
+This table summarizes all tasks available in computation services. The serivces for particular production channel can be easly recognized with the used naming convention. The examples of usage can be found in [partons-example](https://drf-gitlab.cea.fr/partons/core/partons-example) project. For the online version, see [this file](https://drf-gitlab.cea.fr/partons/core/partons-example/blob/master/src/main.cpp) and [this folder](https://drf-gitlab.cea.fr/partons/core/partons-example/tree/master/data/examples).
 
 | Service         | Task 				 | Short description                                | 
 | :-------------- | :----------------------------------- | :------------------------------------------------|
-| [GPDService](@ref PARTONS::GPDService)      | [computeGPDModel](@ref usage_gpd_1)                    	 | Evaluate GPD for single kinematic point    	    |
-| [GPDService](@ref PARTONS::GPDService)      | [computeManyKinematicOneModel](@ref usage_gpd_2)         | Evaluate GPD for many kinematic points    	    |
-| [GPDService](@ref PARTONS::GPDService)      | [printResults](@ref usage_gpd_3)                         | Print out result to std output                   |
-| [GPDService](@ref PARTONS::GPDService)      | [generatePlotFile](@ref usage_gpd_4)                     | Generate plot file from data stored in database  |
+| [GPDService](@ref PARTONS::GPDService)      | computeSingleKinematic              	| Evaluate GPD for single kinematic point    	   |
+| [GPDService](@ref PARTONS::GPDService)      | computeManyKinematic         		| Evaluate GPD for many kinematic points    	   |
+| [GPDService](@ref PARTONS::GPDService)      | printResults                         	| Print out result to std output                   |
+| [GPDService](@ref PARTONS::GPDService)      | generatePlotFile                     	| Generate plot file from data stored in database  |
 |                 |                                      |                                                  |
-| [ConvolCoeffFunctionService](@ref PARTONS::ConvolCoeffFunctionService)      | [computeWithGPDModel](@ref usage_cff_1)                	 | Evaluate CFF for single kinematic point          |
-| [ConvolCoeffFunctionService](@ref PARTONS::ConvolCoeffFunctionService)      | [computeManyKinematicOneModel](@ref usage_cff_2)         | Evaluate CFF for many kinematic points           |
-| [ConvolCoeffFunctionService](@ref PARTONS::ConvolCoeffFunctionService)      | [printResults](@ref usage_cff_3)                         | Print out result to std output                   |
-| [ConvolCoeffFunctionService](@ref PARTONS::ConvolCoeffFunctionService)      | [generatePlotFile](@ref usage_cff_4)                     | Generate plot file from data stored in database  |
+| [DVCSConvolCoeffFunctionService](@ref PARTONS::DVCSConvolCoeffFunctionService)      | computeSingleKinematic 	| Evaluate CFF for single kinematic point          |
+| [DVCSConvolCoeffFunctionService](@ref PARTONS::DVCSConvolCoeffFunctionService)      | computeManyKinematic  	| Evaluate CFF for many kinematic points           |
+| [DVCSConvolCoeffFunctionService](@ref PARTONS::DVCSConvolCoeffFunctionService)      | printResults            | Print out result to std output                   |
+| [DVCSConvolCoeffFunctionService](@ref PARTONS::DVCSConvolCoeffFunctionService)      | generatePlotFile        | Generate plot file from data stored in database  |
 |                 |                                      |                                                  |
-| [ObservableService](@ref PARTONS::ObservableService)      | [computeObservable](@ref usage_obs_1)                    | Evaluate observable for single kinematic point   |
-| [ObservableService](@ref PARTONS::ObservableService)      | [computeManyKinematicOneModel](@ref usage_obs_2)         | Evaluate observable for many kinematic points    |
-| [ObservableService](@ref PARTONS::ObservableService)      | [printResults](@ref usage_obs_3)                         | Print out result to std output                   |
-| [ObservableService](@ref PARTONS::ObservableService)      | [generatePlotFile](@ref usage_obs_4)                     | Generate plot file from data stored in database  |
-
+| [DVCSObservableService](@ref PARTONS::DVCSObservableService)      | computeSingleKinematic       | Evaluate observable for single kinematic point   |
+| [DVCSObservableService](@ref PARTONS::DVCSObservableService)      | computeManyKinematic         |	 Evaluate observable for many kinematic points    |
+| [DVCSObservableService](@ref PARTONS::DVCSObservableService)      | printResults                 | Print out result to std output                   |
+| [DVCSObservableService](@ref PARTONS::DVCSObservableService)      | generatePlotFile             | Generate plot file from data stored in database  |
+|                 |                                      |                                                  |
+| [TCSConvolCoeffFunctionService](@ref PARTONS::TCSConvolCoeffFunctionService)      | computeSingleKinematic 	| Evaluate CFF for single kinematic point          |
+| [TCSConvolCoeffFunctionService](@ref PARTONS::TCSConvolCoeffFunctionService)      | computeManyKinematic  	| Evaluate CFF for many kinematic points           |
+| [TCSConvolCoeffFunctionService](@ref PARTONS::TCSConvolCoeffFunctionService)      | printResults            | Print out result to std output                   |
+| [TCSConvolCoeffFunctionService](@ref PARTONS::TCSConvolCoeffFunctionService)      | generatePlotFile        | Generate plot file from data stored in database  |
+|                 |                                      |                                                  |
+| [TCSObservableService](@ref PARTONS::TCSObservableService)      | computeSingleKinematic       | Evaluate observable for single kinematic point   |
+| [TCSObservableService](@ref PARTONS::TCSObservableService)      | computeManyKinematic         |	 Evaluate observable for many kinematic points    |
+| [TCSObservableService](@ref PARTONS::TCSObservableService)      | printResults                 | Print out result to std output                   |
+| [TCSObservableService](@ref PARTONS::TCSObservableService)      | generatePlotFile             | Generate plot file from data stored in database  |
 
 <hr>
 
 # Available modules {#usage_modules} 
 
-This table summarizes all modules available in %PARTONS. For a given module, click on the class name for more information. The class name serves also as the module identifier to be used in XML scenarios.
-| Module type	| Class name			| Short description							|
-| :------------ | :---------------------------- | :------------------------------------------------------------ 	| 
-| [GPDModule](@ref PARTONS::GPDModule)	| [GPDGK16](@ref PARTONS::GPDGK16)		| Goloskokov-Kroll model 2016 (analytical DD integration)		| 
-| [GPDModule](@ref PARTONS::GPDModule)	| [GPDGK16Numerical](@ref PARTONS::GPDGK16Numerical)	| Goloskokov-Kroll model 2016 (numerical DD integration)		| 
-| [GPDModule](@ref PARTONS::GPDModule)	| [GPDMMS13](@ref PARTONS::GPDMMS13)		| Mezrag-Moutarde-Sabatie model 2013 					| 
-| [GPDModule](@ref PARTONS::GPDModule)	| [GPDMPSSW13](@ref PARTONS::GPDMPSSW13)		| Moutarde-Pire-Sabatie-Szymanowski-Wagner model 2013 			| 
-| [GPDModule](@ref PARTONS::GPDModule)	| [GPDVGG99](@ref PARTONS::GPDVGG99)		| Vanderhaeghen-Guichon-Guidal model 1999		 		| 
-| [GPDModule](@ref PARTONS::GPDModule)	| [GPDVinnikov06](@ref PARTONS::GPDVinnikov06)	| Vinnikov model 2011 							| 
-|		|				|									|
-| [GPDEvolutionModule](@ref PARTONS::GPDEvolutionModule)	| [GPDEvolutionVinnikov](@ref PARTONS::GPDEvolutionVinnikov)		| LO fixed NF evolution Vinnikov routines		|
-|		|				|									|
-| [ConvolCoeffFunctionModule](@ref PARTONS::ConvolCoeffFunctionModule)		| [DVCSCFFStandard](@ref PARTONS::DVCSCFFStandard)	| LO/NLO light quarks				|
-| [ConvolCoeffFunctionModule](@ref PARTONS::ConvolCoeffFunctionModule)		| [DVCSCFFHeavyQuark](@ref PARTONS::DVCSCFFHeavyQuark)	| LO/NLO light and heavy quarks 		|
-| [ConvolCoeffFunctionModule](@ref PARTONS::ConvolCoeffFunctionModule)		| [DVCSCFFConstant](@ref PARTONS::DVCSCFFConstant)	| Constant CFFs to be set by the user		|
-|		|				|									|
-| [ProcessModule](@ref PARTONS::ProcessModule)	| [DVCSProcessGV08](@ref PARTONS::DVCSProcessGV08)	| Guichon-Vanderhaeghen expressions 2008				|
-| [ProcessModule](@ref PARTONS::ProcessModule)	| [DVCSProcessBMJ12](@ref PARTONS::DVCSProcessBMJ12)	| Belitsky-Muller-Kirchner expressions 2012				|
-| [ProcessModule](@ref PARTONS::ProcessModule)	| [DVCSProcessVGG99](@ref PARTONS::DVCSProcessVGG99)	| Vanderhaeghen-Guichon-Guidal expressions 1999				|
-|		|				|									|
-| [ActiveFlavorsThresholdsModule](@ref PARTONS::ActiveFlavorsThresholdsModule)	| [ActiveFlavorsThresholdsQuarkMasses](@ref PARTONS::ActiveFlavorsThresholdsQuarkMasses) 	| Thresholds by quarks masses		|
-| [ActiveFlavorsThresholdsModule](@ref PARTONS::ActiveFlavorsThresholdsModule)	| [ActiveFlavorsThresholdsConstant](@ref PARTONS::ActiveFlavorsThresholdsConstant)   	| Thresholds to be set by the user	|
-|		|				|									|
-| [RunningAlphaStrongModule](@ref PARTONS::RunningAlphaStrongModule)	| [RunningAlphaStrongStandard](@ref PARTONS::RunningAlphaStrongStandard)	| Evaluation in MSbar for 3 <= NF <= 6 		|
-| [RunningAlphaStrongModule](@ref PARTONS::RunningAlphaStrongModule)	| [RunningAlphaStrongVinnikov](@ref PARTONS::RunningAlphaStrongVinnikov)	| Evaluation in MSbar for 3 <= NF <= 5 as in Vinnikov evolution	|
-|		|				|									|
-| [XiConverterModule](@ref PARTONS::XiConverterModule)	| [XiConverterXBToXi](@ref PARTONS::XiConverterXBToXi)	| xi = xB / (2 - xB)						|
-|		|				|									|
-| [ScalesModule](@ref PARTONS::ScalesModule)	| [ScalesQ2Multiplier](@ref PARTONS::ScalesQ2Multiplier)	| muF2 = muR2 = lambda * Q2						|
-|		|				|									|
-|[Observable](@ref PARTONS::Observable)	| [DVCSAc](@ref PARTONS::DVCSAc)		| DVCS-like beam charge asymmetry phi angle dependent				| 
-|[Observable](@ref PARTONS::Observable)	| [DVCSAcCos0Phi](@ref PARTONS::DVCSAcCos0Phi)	| DVCS-like beam charge asymmetry cos(0) Fourier moment				|	
-|[Observable](@ref PARTONS::Observable)	| [DVCSAcCos1Phi](@ref PARTONS::DVCSAcCos1Phi)	| DVCS-like beam charge asymmetry \f$\cos(\phi)\f$ Fourier moment				|
-|[Observable](@ref PARTONS::Observable)	| [DVCSAcCos2Phi](@ref PARTONS::DVCSAcCos2Phi)	| DVCS-like beam charge asymmetry \f$\cos(2\phi)\f$ Fourier moment				|
-|[Observable](@ref PARTONS::Observable)	| [DVCSAcCos3Phi](@ref PARTONS::DVCSAcCos3Phi)	| DVCS-like beam charge asymmetry \f$\cos(3\phi)\f$ Fourier moment				|
-|[Observable](@ref PARTONS::Observable)	| [DVCSAllMinus](@ref PARTONS::DVCSAllMinus)		| DVCS-like beam-target LL asymmetry phi angle dependent			|
-|[Observable](@ref PARTONS::Observable)	| [DVCSAllMinusCos0Phi](@ref PARTONS::DVCSAllMinusCos0Phi)	| DVCS-like beam-target LL asymmetry cos(0) Fourier moment			|
-|[Observable](@ref PARTONS::Observable)	| [DVCSAllMinusCos1Phi](@ref PARTONS::DVCSAllMinusCos1Phi)	| DVCS-like beam-target LL asymmetry \f$\cos(\phi)\f$ Fourier moment			|
-|[Observable](@ref PARTONS::Observable)	| [DVCSAllMinusCos2Phi](@ref PARTONS::DVCSAllMinusCos2Phi)	| DVCS-like beam-target LL asymmetry \f$\cos(2\phi)\f$ Fourier moment			|
-|[Observable](@ref PARTONS::Observable)	| [DVCSAluDVCS](@ref PARTONS::DVCSAluDVCS)		| DVCS-like beam L asymmetry DVCS part phi angle dependent			|
-|[Observable](@ref PARTONS::Observable)	| [DVCSAluDVCSSin1Phi](@ref PARTONS::DVCSAluDVCSSin1Phi)	| DVCS-like beam L asymmetry DVCS part \f$\sin(\phi)\f$ Fourier moment			|
-|[Observable](@ref PARTONS::Observable)	| [DVCSAluInt](@ref PARTONS::DVCSAluInt)		| DVCS-like beam L asymmetry INT part phi angle dependent			|
-|[Observable](@ref PARTONS::Observable)	| [DVCSAluIntSin1Phi](@ref PARTONS::DVCSAluIntSin1Phi)	| DVCS-like beam L asymmetry INT part \f$\sin(\phi)\f$ Fourier moment			|
-|[Observable](@ref PARTONS::Observable)	| [DVCSAluIntSin2Phi](@ref PARTONS::DVCSAluIntSin2Phi)	| DVCS-like beam L asymmetry INT part \f$\sin(2\phi)\f$ Fourier moment			|
-|[Observable](@ref PARTONS::Observable)	| [DVCSAluMinus](@ref PARTONS::DVCSAluMinus)		| DVCS-like beam L asymmetry beam charge minus phi angle dependent		|
-|[Observable](@ref PARTONS::Observable)	| [DVCSAluMinusSin1Phi](@ref PARTONS::DVCSAluMinusSin1Phi)	| DVCS-like beam L asymmetry beam charge minus \f$\sin(\phi)\f$ Fourier moment		|
-|[Observable](@ref PARTONS::Observable)	| [DVCSAulMinus](@ref PARTONS::DVCSAulMinus)		| DVCS-like target L asymmetry beam charge minus phi angle dependent		|
-|[Observable](@ref PARTONS::Observable)	| [DVCSAulMinusSin1Phi](@ref PARTONS::DVCSAulMinusSin1Phi)	| DVCS-like target L asymmetry beam charge minus \f$\sin(\phi)\f$ Fourier moment		|
-|[Observable](@ref PARTONS::Observable)	| [DVCSAulMinusSin2Phi](@ref PARTONS::DVCSAulMinusSin2Phi)	| DVCS-like target L asymmetry beam charge minus \f$\sin(2\phi)\f$ Fourier moment		|
-|[Observable](@ref PARTONS::Observable)	| [DVCSAulMinusSin3Phi](@ref PARTONS::DVCSAulMinusSin3Phi)	| DVCS-like target L asymmetry beam charge minus \f$\sin(3\phi)\f$ Fourier moment		|
-|[Observable](@ref PARTONS::Observable)	| [DVCSAutSinPhiMPhis](@ref PARTONS::DVCSAutSinPhiMPhis)	| DVCS-like target T asymmetry beam charge minus phi angle dependent		|
-|[Observable](@ref PARTONS::Observable)	| [DVCSAutSinPhiMPhisCos0Phi](@ref PARTONS::DVCSAutSinPhiMPhisCos0Phi)	|DVCS-like target T asymmetry beam charge minus cos(0) Fourier moment	|
-|[Observable](@ref PARTONS::Observable)	| [DVCSCrossSectionUUMinus](@ref PARTONS::DVCSCrossSectionUUMinus) | DVCS-like unpolarized cross section phi angle dependent			|
-|[Observable](@ref PARTONS::Observable)	| [DVCSCrossSectionDifferenceLUMinus](@ref PARTONS::DVCSCrossSectionDifferenceLUMinus) | DVCS-like beam cross section difference L phi angle dependent	|
-
+For the most up-to-date list of modules availible in %PARTONS, see our [GitLab repository](https://drf-gitlab.cea.fr/partons/core/partons/tree/master/include/partons/modules). The linked page allows you to scan all availible modules. The names of modules correspond to the names of files: just drop .h extension.

@@ -1,12 +1,6 @@
-# Contact {#contact}
+# Contact and support {#contact}
 
-Main contact: [partons@cea.fr](mailto:partons@cea.fr).
-
-<hr>
-
-# Technical support {#contact_support}
-
-Problems with installation and usage: [partons@cea.fr](mailto:partons@cea.fr).
+Use this e-mail adress: [partons@cea.fr](mailto:partons@cea.fr). You may also find us on [riot.im](https://riot.im/app/#/group/+partons:matrix.org).
 
 <hr>
 

@@ -1,8 +1,6 @@
 #include "../../../include/partons/services/TCSObservableService.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
-#include <ElementaryUtils/parameters/GenericType.h>
-#include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 
@@ -110,12 +108,11 @@ void TCSObservableService::generatePlotFileTask(Task &task) {
                     "tcs_observable_plot_2d_view"), ' ');
 }
 
-ProcessModule<TCSObservableKinematic, TCSObservableResult>* TCSObservableService::newProcessModuleFromTask(
+TCSProcessModule* TCSObservableService::newTCSProcessModuleFromTask(
         const Task &task) const {
 
     //initialize
-    ProcessModule<TCSObservableKinematic, TCSObservableResult>* pProcessModule =
-            0;
+    TCSProcessModule* pProcessModule = 0;
 
     //check if available
     if (ElemUtils::StringUtils::equals(
@@ -142,11 +139,11 @@ ProcessModule<TCSObservableKinematic, TCSObservableResult>* TCSObservableService
     return pProcessModule;
 }
 
-Observable<TCSObservableKinematic, TCSObservableResult>* TCSObservableService::newObservableModuleFromTask(
+TCSObservable* TCSObservableService::newTCSObservableModuleFromTask(
         const Task &task) const {
 
     //initialize
-    Observable<TCSObservableKinematic, TCSObservableResult>* pObservable = 0;
+    TCSObservable* pObservable = 0;
 
     //check if available
     if (ElemUtils::StringUtils::equals(
@@ -171,6 +168,16 @@ Observable<TCSObservableKinematic, TCSObservableResult>* TCSObservableService::n
 
     //return
     return pObservable;
+}
+
+ProcessModule<TCSObservableKinematic, TCSObservableResult>* TCSObservableService::newProcessModuleFromTask(
+        const Task &task) const {
+    return newTCSProcessModuleFromTask(task);
+}
+
+Observable<TCSObservableKinematic, TCSObservableResult>* TCSObservableService::newObservableModuleFromTask(
+        const Task &task) const {
+    return newTCSObservableModuleFromTask(task);
 }
 
 } /* namespace PARTONS */

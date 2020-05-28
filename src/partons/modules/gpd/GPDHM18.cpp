@@ -292,28 +292,34 @@ double GPDHM18::evaluate(double x, NumA::FunctionType1D* p_fun0,
 
     //calculate GPD for xi == 0
     if (m_xi == 0)
+      {
         if (p_fun0 == 0)
             throw ElemUtils::CustomException(getClassName(), __func__,
                     ElemUtils::Formatter() << "Integrand not set.");
         else
             return integrate(p_fun0, -1 + x, 1 - x, parameters);
+      }
 
     //calculate GPD for xi <> 0 and x > xi
     if (x > fabs(m_xi))
+      {
         if (p_fun == 0)
             throw ElemUtils::CustomException(getClassName(), __func__,
                     ElemUtils::Formatter() << "Integrand not set.");
         else
             return integrate(p_fun, (x - m_xi) / (1 - m_xi),
                     (x + m_xi) / (1 + m_xi), parameters);
+      }
 
     //calculate GPD for xi <> 0 and - xi < x < xi
     if (x <= fabs(m_xi) && x >= -fabs(m_xi))
+      {
         if (p_fun == 0)
             throw ElemUtils::CustomException(getClassName(), __func__,
                     ElemUtils::Formatter() << "Integrand not set.");
         else
             return integrate(p_fun, 0., (x + m_xi) / (1 + m_xi), parameters);
+      }
 
     return 0;
 }

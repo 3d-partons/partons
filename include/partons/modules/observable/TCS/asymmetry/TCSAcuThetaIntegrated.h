@@ -23,13 +23,7 @@ namespace PARTONS {
 
 /**
  * @class TCSAcuThetaIntegrated
- * @brief ACU asymmetry integrated over \f$\theta\f$ in a given range (default: \f$|\theta - \pi/2| < \pi/4\f$).
- *
- * Definition:<br>
- *
- * \f$ \displaystyle
- * \int_{\theta_{\mathrm{min}}}^{\theta_{\mathrm{max}}} A_{CU}{\mathrm{d}|t| \mathrm{d}Q^2 \mathrm{d}\phi \mathrm{d}\theta}\left(t, Q^2, \phi, \theta\right)\, .
- * \f$
+ * @brief Acu asymmetry with cross-sections integrated over \f$\theta\f$ in a given range (default: \f$|\theta - \pi/2| < \pi/4\f$)
  *
  * Unit: none.
  */

@@ -36,9 +36,9 @@ ResultDaoService::ResultDaoService(const std::string &className) :
                 ElemUtils::StringUtils::EMPTY), m_computationDatabaseFile(
                 ElemUtils::StringUtils::EMPTY), m_previousComputationId(
                 std::make_pair<time_t, int>(0, -1)), m_previousScenarioId(
-                std::make_pair<std::string, int>(ElemUtils::StringUtils::EMPTY,
+                std::make_pair<std::string, int>(ElemUtils::StringUtils::EMPTY.c_str(),
                         -1)), m_previousEnvConfId(
-                std::make_pair<std::string, int>(ElemUtils::StringUtils::EMPTY,
+                std::make_pair<std::string, int>(ElemUtils::StringUtils::EMPTY.c_str(),
                         -1)) {
 
     //check if to use tmp file system
@@ -112,7 +112,7 @@ void ResultDaoService::prepareCommonTablesFromResultInfo(
                             *(Partons::getInstance()->getEnvironmentConfiguration()));
         }
 
-        m_previousEnvConfId = std::make_pair<std::string, int>(envConfHashSum,
+        m_previousEnvConfId = std::make_pair(envConfHashSum.c_str(),
                 environmentConfigurationId);
     }
 
@@ -133,7 +133,7 @@ void ResultDaoService::prepareCommonTablesFromResultInfo(
                             scenarioHashSum)));
         }
 
-        m_previousScenarioId = std::make_pair<std::string, int>(scenarioHashSum,
+        m_previousScenarioId = std::make_pair(scenarioHashSum.c_str(),
                 scenarioId);
     }
 
@@ -169,7 +169,7 @@ void ResultDaoService::prepareCommonTablesFromResultInfo(
 
         }
 
-        m_previousComputationId = std::make_pair<time_t, int>(
+        m_previousComputationId = std::make_pair(
                 computationDateTime, computationId);
     }
 }

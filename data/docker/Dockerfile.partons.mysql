@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# start 
+find /var/lib/mysql -type f -exec touch {} \;
+service mysql start &> /dev/null
+
+# set env.
+__mysql_database="partons"
+__mysql_root="root"
+__mysql_root_password="partons"
+__mysql_user="partons"
+__mysql_user_password="partons"
+
+#define functioni to execute queries 
+function sql_exec() {
+  mysql -u "${__mysql_root}" -D "${__mysql_database}" -p${__mysql_root_password} -e "${1}"
+}
+
+# go to directory with schema
+cd /root/workspace/partons/data/database/sql_schema 
+
+# create database and add user
+mysql -u "${__mysql_root}" -p"${__mysql_root_password}" -e "create database ${__mysql_database}"
+sql_exec "CREATE USER '${__mysql_user}'@'localhost' IDENTIFIED BY '${__mysql_user_password}';"
+sql_exec "GRANT SELECT, INSERT, UPDATE, DELETE ON ${__mysql_database}.* TO '${__mysql_user}'@'localhost';"
+sql_exec "GRANT FILE ON *.* TO '${__mysql_user}'@'localhost';"
+
+# excecute scripts
+#  TODO: if scripts are going to be enumerated this piece of the code
+#+       can be automated, therefore will need less further involvement
+#+       of anyone.
+#+
+#+       Desirable naming might look like following:
+#+       mysql5_common.sql                      -> mysql5_001_common.sql
+#+       mysql5_gpd_layer.sql                   -> mysql5_002_gpd_layer.sql
+#+       mysql5_convol_coeff_function_layer.sql -> mysql5_003_convol_coeff_function_layer.sql
+#+       mysql5_observable_layer.sql            -> mysql5_004_observable_layer.sql
+sql_exec "SOURCE mysql5_common.sql"
+sql_exec "SOURCE mysql5_gpd_layer.sql"
+sql_exec "SOURCE mysql5_convol_coeff_function_layer.sql"
+sql_exec "SOURCE mysql5_observable_layer.sql"

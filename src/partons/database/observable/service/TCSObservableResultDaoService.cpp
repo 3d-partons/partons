@@ -113,7 +113,9 @@ int TCSObservableResultDaoService::insert(
                         << kinematic.getE().getValue() << ","
                         << kinematic.getE().getUnit() << ","
                         << kinematic.getPhi().getValue() << ","
-                        << kinematic.getPhi().getUnit() << "," << 0 << ","
+                        << kinematic.getPhi().getUnit() << ","
+                        << kinematic.getTheta().getValue() << ","
+                        << kinematic.getTheta().getUnit() << "," << 0 << ","
                         << kinematic.getHashSum() << '\n';
             }
 
