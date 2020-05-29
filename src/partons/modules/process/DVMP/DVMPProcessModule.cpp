@@ -19,6 +19,7 @@
 #include "../../../../../include/partons/services/DVMPConvolCoeffFunctionService.h"
 #include "../../../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../../../include/partons/utils/type/PhysicalUnit.h"
+#include "../../../../../include/partons/utils/VectorUtils.h"
 
 namespace PARTONS {
 
@@ -528,10 +529,15 @@ void DVMPProcessModule::computeConvolCoeffFunction(
     //check if different
     if (isPreviousCCFKinematicDifferent(ccfKinematics)) {
 
+        //possible GPD types
+        List<GPDType> gpdTypePossible = VectorUtils::intersection(gpdType,
+                MesonType(kinematic.getMesonType()).getPossibleGPDTypes());
+
         //evaluate
         m_dvcsConvolCoeffFunctionResult =
                 Partons::getInstance()->getServiceObjectRegistry()->getDVMPConvolCoeffFunctionService()->computeSingleKinematic(
-                        ccfKinematics, m_pConvolCoeffFunctionModule, gpdType);
+                        ccfKinematics, m_pConvolCoeffFunctionModule,
+                        gpdTypePossible);
 
         //set corresponding kinematics
         m_lastCCFKinematics = ccfKinematics;

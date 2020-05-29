@@ -21,6 +21,35 @@ MesonType::operator MesonType::Type() const {
     return m_type;
 }
 
+List<GPDType> MesonType::getPossibleGPDTypes() const {
+
+    List<GPDType> list;
+
+    //pseudo-scalars
+    if (m_type == PIMINUS || m_type == PI0 || m_type == PIPLUS) {
+
+        list.add(GPDType(GPDType::Ht));
+        list.add(GPDType(GPDType::Et));
+        list.add(GPDType(GPDType::HTrans));
+        list.add(GPDType(GPDType::ETrans));
+    }
+
+    //vector
+    else if (m_type == RHOMINUS || m_type == RHO0 || m_type == RHOPLUS
+            || m_type == OMEGA || m_type == PHI || m_type == JPSI
+            || m_type == UPSILON
+
+            ) {
+
+        list.add(GPDType(GPDType::H));
+        list.add(GPDType(GPDType::E));
+        list.add(GPDType(GPDType::HTrans));
+        list.add(GPDType(GPDType::ETrans));
+    }
+
+    return list;
+}
+
 std::string MesonType::toString() const {
 
     switch (m_type) {
@@ -116,15 +145,15 @@ bool MesonType::operator <(const MesonType& other) const {
     return (m_type < other.m_type);
 }
 
-ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
-        MesonType& mesonType) {
+ElemUtils::Packet & operator <<(ElemUtils::Packet & packet,
+        MesonType & mesonType) {
 
     mesonType.serialize(packet);
     return packet;
 }
 
-ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
-        MesonType& mesonType) {
+ElemUtils::Packet & operator >>(ElemUtils::Packet & packet,
+        MesonType & mesonType) {
 
     mesonType.unserialize(packet);
     return packet;

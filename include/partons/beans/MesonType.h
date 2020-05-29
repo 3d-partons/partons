@@ -10,6 +10,9 @@
 
 #include <string>
 
+#include "gpd/GPDType.h"
+#include "List.h"
+
 namespace ElemUtils {
 class Packet;
 } /* namespace ElemUtils */
@@ -67,6 +70,11 @@ public:
      * Automatic cast to enum.
      */
     operator Type() const;
+
+    /**
+     * Get list of GPD types probed by the meson.
+     */
+    List<GPDType> getPossibleGPDTypes() const;
 
     /**
      * Get string representation of type being assigned to a declared object of this class.
