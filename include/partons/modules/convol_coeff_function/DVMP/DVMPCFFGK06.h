@@ -10,9 +10,11 @@
 
 #include <stddef.h>
 #include <complex>
+#include <map>
 #include <string>
 #include <utility>
 
+#include "../../../beans/automation/BaseObjectData.h"
 #include "../../../beans/gpd/GPDType.h"
 #include "../../../beans/parton_distribution/PartonDistribution.h"
 #include "DVMPConvolCoeffFunctionModule.h"
@@ -47,6 +49,8 @@ public:
     virtual ~DVMPCFFGK06();
 
     virtual void resolveObjectDependencies();
+    virtual void prepareSubModules(
+            const std::map<std::string, BaseObjectData>& subModulesData);
 
     /**
      * GSL wrapper to convolutionFunction().
@@ -61,6 +65,17 @@ public:
     friend double gslWrapper0(double *xtaub, size_t dim, void *params);
     friend double gslWrapper1(double x, void * params);
 
+    /**
+     * Get alphaS module.
+     */
+    RunningAlphaStrongModule* getRunningAlphaStrongModule() const;
+
+    /**
+     * Set alphaS module.
+     */
+    void setRunningAlphaStrongModule(
+            RunningAlphaStrongModule* pRunningAlphaStrongModule);
+
 protected:
 
     /**
@@ -69,19 +84,10 @@ protected:
      */
     DVMPCFFGK06(const DVMPCFFGK06 &other);
 
-
     virtual void initModule();
     virtual void isModuleWellConfigured();
 
     virtual std::complex<double> computeCFF();
-
-    double m_tmin; ///< Minimum t value
-    double m_xbj;  ///< Bjorken x
-
-//    /**
-//     * Handbag helicity amplitude \f$\mathcal{M}_{\mu'\nu',\mu\nu}\f$.
-//     */
-//    std::complex<double> amplitude(int mup, int nup, int mu, int nu) const;
 
 private:
 
@@ -93,7 +99,11 @@ private:
     const double m_Cf; ///< Color factor
     const double m_muPi; ///> Parameter proportional to chiral condensate, see for instance Eq. (21) in arxiv:0906.0460
 
+    double m_tmin; ///< Minimum t value
+
     PartonDistribution m_gpdResultXiXi; ///< GPD result at x=xi.
+
+    RunningAlphaStrongModule* m_pRunningAlphaStrongModule; ///< AlphaS module.
 
     //*** MISC FUNCTIONS *************************************************
 
@@ -111,11 +121,6 @@ private:
     double computeMuR(double tau, double b) const;
 
     //*** AMPLITUDE INGRIDIENTS ******************************************
-
-    /**
-     * Running coupling.
-     */
-    double alphaS(double MuR) const;
 
     /**
      * Sudakov factor.

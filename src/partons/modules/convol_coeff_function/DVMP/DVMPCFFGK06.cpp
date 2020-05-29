@@ -22,6 +22,9 @@
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../../include/partons/modules/convol_coeff_function/DVMP/DVMPCFFGK06IntegrationParameters.h"
 #include "../../../../../include/partons/modules/gpd/GPDModule.h"
+#include "../../../../../include/partons/modules/running_alpha_strong/RunningAlphaStrongGK.h"
+#include "../../../../../include/partons/ModuleObjectFactory.h"
+#include "../../../../../include/partons/Partons.h"
 
 namespace PARTONS {
 
@@ -42,7 +45,7 @@ double DVMPCFFGK06::gslWrapper1(double x, void * params) {
 DVMPCFFGK06::DVMPCFFGK06(const std::string &className) :
         DVMPConvolCoeffFunctionModule(className), m_cNf(3.), m_cLambdaQCD(0.22), m_EulerGamma(
                 0.577216), m_PositronCharge(0.3028), m_Nc(3.), m_Cf(4. / 3.), m_muPi(
-                2.0) {
+                2.0), m_tmin(0.), m_pRunningAlphaStrongModule(0) {
 
     //relate GPD types with functions to be used
     m_listOfCFFComputeFunctionAvailable.insert(
@@ -60,10 +63,18 @@ DVMPCFFGK06::DVMPCFFGK06(const std::string &className) :
 }
 
 DVMPCFFGK06::DVMPCFFGK06(const DVMPCFFGK06 &other) :
-        DVMPConvolCoeffFunctionModule(other), m_cNf(
-                other.m_cNf), m_cLambdaQCD(other.m_cLambdaQCD), m_EulerGamma(other.m_EulerGamma),
-                m_PositronCharge(other.m_PositronCharge), m_Nc(other.m_Nc), m_Cf(other.m_Cf),
-                m_muPi(other.m_muPi) {
+        DVMPConvolCoeffFunctionModule(other), m_cNf(other.m_cNf), m_cLambdaQCD(
+                other.m_cLambdaQCD), m_EulerGamma(other.m_EulerGamma), m_PositronCharge(
+                other.m_PositronCharge), m_Nc(other.m_Nc), m_Cf(other.m_Cf), m_muPi(
+                other.m_muPi), m_tmin(other.m_tmin) {
+
+    //clone alpaS module
+    if (other.m_pRunningAlphaStrongModule != 0) {
+        m_pRunningAlphaStrongModule = m_pModuleObjectFactory->cloneModuleObject(
+                other.m_pRunningAlphaStrongModule);
+    } else {
+        m_pRunningAlphaStrongModule = 0;
+    }
 }
 
 DVMPCFFGK06* DVMPCFFGK06::clone() const {
@@ -71,17 +82,75 @@ DVMPCFFGK06* DVMPCFFGK06::clone() const {
 }
 
 DVMPCFFGK06::~DVMPCFFGK06() {
+
+    // destroy alphaS module
+    if (m_pRunningAlphaStrongModule != 0) {
+        setRunningAlphaStrongModule(0);
+        m_pRunningAlphaStrongModule = 0;
+    }
 }
 
 void DVMPCFFGK06::resolveObjectDependencies() {
+
+    //run for mother
     DVMPConvolCoeffFunctionModule::resolveObjectDependencies();
+
+    //set alpha_s module
+    m_pRunningAlphaStrongModule =
+            Partons::getInstance()->getModuleObjectFactory()->newRunningAlphaStrongModule(
+                    RunningAlphaStrongGK::classId);
 }
 
 void DVMPCFFGK06::initModule() {
+
+    //run for mother
     DVMPConvolCoeffFunctionModule::initModule();
 
-    m_tmin = -4. * pow(Constant::PROTON_MASS, 2.) * pow(m_xi, 2.) / (1. - pow(m_xi, 2.));
-    m_xbj = 2. * m_xi / (1. + m_xi);
+    //evaluate tmin
+    m_tmin = -4. * pow(Constant::PROTON_MASS, 2.) * pow(m_xi, 2.)
+            / (1. - pow(m_xi, 2.));
+}
+
+void DVMPCFFGK06::prepareSubModules(
+        const std::map<std::string, BaseObjectData>& subModulesData) {
+
+    DVMPConvolCoeffFunctionModule::prepareSubModules(subModulesData);
+
+    std::map<std::string, BaseObjectData>::const_iterator it;
+
+    it = subModulesData.find(
+            RunningAlphaStrongModule::RUNNING_ALPHA_STRONG_MODULE_CLASS_NAME);
+
+    if (it != subModulesData.end()) {
+
+        if (m_pRunningAlphaStrongModule != 0) {
+            setRunningAlphaStrongModule(0);
+            m_pRunningAlphaStrongModule = 0;
+        }
+
+        if (!m_pRunningAlphaStrongModule) {
+            m_pRunningAlphaStrongModule =
+                    Partons::getInstance()->getModuleObjectFactory()->newRunningAlphaStrongModule(
+                            (it->second).getModuleClassName());
+            info(__func__,
+                    ElemUtils::Formatter()
+                            << "Configure with RunningAlphaStrongModule = "
+                            << m_pRunningAlphaStrongModule->getClassName());
+            m_pRunningAlphaStrongModule->configure(
+                    (it->second).getParameters());
+        }
+    }
+}
+
+RunningAlphaStrongModule* DVMPCFFGK06::getRunningAlphaStrongModule() const {
+    return m_pRunningAlphaStrongModule;
+}
+
+void DVMPCFFGK06::setRunningAlphaStrongModule(
+        RunningAlphaStrongModule* pRunningAlphaStrongModule) {
+    m_pModuleObjectFactory->updateModulePointerReference(
+            m_pRunningAlphaStrongModule, pRunningAlphaStrongModule);
+    m_pRunningAlphaStrongModule = pRunningAlphaStrongModule;
 }
 
 void DVMPCFFGK06::isModuleWellConfigured() {
@@ -153,7 +222,7 @@ std::complex<double> DVMPCFFGK06::computeCFF() {
                 + convolutionTwist3C(m_currentGPDComputeType);
 
         return -1.0 * m_PositronCharge * sqrt(-(m_t - m_tmin))
-                        / (4. * Constant::PROTON_MASS) * convolution;
+                / (4. * Constant::PROTON_MASS) * convolution;
     }
 
         break;
@@ -185,18 +254,6 @@ double DVMPCFFGK06::computeMuR(double tau, double b) const {
         maximum = 1. / b;
 
     return maximum;
-}
-
-double DVMPCFFGK06::alphaS(double MuR) const {
-
-    // Running coupling constant
-
-    double Q = sqrt(m_Q2);
-
-    double coupling = (12.0 * M_PI)
-            / ((33. - 2. * m_cNf) * log(pow(MuR, 2.) / pow(m_cLambdaQCD, 2.)));
-
-    return coupling;
 }
 
 double DVMPCFFGK06::sudakovFactorFunctionS(double tau, double b) const {
@@ -263,10 +320,11 @@ double DVMPCFFGK06::expSudakovFactor(double tau, double b) const {
             + sudakovFactorFunctionS(1. - tau, b)
             - (4. / beta0) * log(log(computeMuR(tau, b) / m_cLambdaQCD) / bHat);
 
-    if (exp(-1. * sudakovFactor) >= 1.)
+    if (exp(-1. * sudakovFactor) >= 1.) {
         expSudakov = 1.;
-    else
+    } else {
         expSudakov = exp(-1. * sudakovFactor);
+    }
 
     return expSudakov;
 }
@@ -447,7 +505,9 @@ std::complex<double> DVMPCFFGK06::subProcess(double x, double tau, double b,
                                     * sqrt(m_Q2));
 
             return m_Cf * sqrt(2. / m_Nc) * m_Q2 / m_xi * 2. * M_PI * b
-                    * mesonWF(tau, b, twist) * alphaS(computeMuR(tau, b))
+                    * mesonWF(tau, b, twist)
+                    * m_pRunningAlphaStrongModule->compute(
+                            pow(computeMuR(tau, b), 2))
                     * expSudakovFactor(tau, b) * (Ts - Tu);
         }
         //twist 3
@@ -477,7 +537,9 @@ std::complex<double> DVMPCFFGK06::subProcess(double x, double tau, double b,
                                     * sqrt(m_Q2));
 
             return 4.0 * m_Cf / sqrt(2. * m_Nc) * m_Q2 / m_xi * 2. * M_PI * b
-                    * mesonWF(tau, b, twist) * alphaS(computeMuR(tau, b))
+                    * mesonWF(tau, b, twist)
+                    * m_pRunningAlphaStrongModule->compute(
+                            pow(computeMuR(tau, b), 2))
                     * expSudakovFactor(tau, b) * ((1. - tau) * Ts + tau * Tu);
         }
         //???
@@ -571,13 +633,14 @@ std::complex<double> DVMPCFFGK06::convolution(GPDType::Type gpdType,
     gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3, nWarmUp,
             gslRnd, gslState, &resultRe, &errorRe);
 
-    info(__func__, ElemUtils::Formatter() << " (initialization) Re: result: " << resultRe << " error: " <<errorRe);
+    info(__func__,
+            ElemUtils::Formatter() << " (initialization) Re "
+                    << GPDType(m_currentGPDComputeType).toString()
+                    << " result: " << resultRe << " error: " << errorRe);
 
     //Re integrate
-    gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3, nCalls,
-                    gslRnd, gslState, &resultRe, &errorRe);
-
-    info(__func__, ElemUtils::Formatter() << " (evaluation) Re: result: " << resultRe << " error: " <<errorRe);
+//    gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3, nCalls,
+//            gslRnd, gslState, &resultRe, &errorRe);
 
 //    do {
 //
@@ -587,6 +650,11 @@ std::complex<double> DVMPCFFGK06::convolution(GPDType::Type gpdType,
 //        info(__func__, ElemUtils::Formatter() << " (loop) Re: result: " << resultRe << " error: " <<errorRe);
 //
 //    } while (fabs(gsl_monte_vegas_chisq(gslState) - 1.0) > 0.8); // run VEGAS Monte-Carlo until you reach a \chi^2 value below the specified value
+
+    info(__func__,
+            ElemUtils::Formatter() << " (final) Re "
+                    << GPDType(m_currentGPDComputeType).toString()
+                    << " result: " << resultRe << " error: " << errorRe);
 
     //Re free state
     gsl_monte_vegas_free(gslState);
@@ -601,13 +669,14 @@ std::complex<double> DVMPCFFGK06::convolution(GPDType::Type gpdType,
     gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3, nWarmUp,
             gslRnd, gslState, &resultIm, &errorIm);
 
-    info(__func__, ElemUtils::Formatter() << " (initialization) Im: result: " << resultIm << " error: " <<errorIm);
+    info(__func__,
+            ElemUtils::Formatter() << " (initialization) Im "
+                    << GPDType(m_currentGPDComputeType).toString()
+                    << " result: " << resultIm << " error: " << errorIm);
 
     //Im integrate
-    gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3, nCalls,
-                    gslRnd, gslState, &resultIm, &errorIm);
-
-    info(__func__, ElemUtils::Formatter() << " (evaluation) Im: result: " << resultIm << " error: " <<errorIm);
+//    gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3, nCalls,
+//            gslRnd, gslState, &resultIm, &errorIm);
 
 //    do {
 //
@@ -615,6 +684,11 @@ std::complex<double> DVMPCFFGK06::convolution(GPDType::Type gpdType,
 //                gslRnd, gslState, &resultIm, &errorIm);
 //
 //    } while (fabs(gsl_monte_vegas_chisq(gslState) - 1.0) > 0.8); // run VEGAS Monte-Carlo until you reach a \chi^2 value below the specified value
+
+    info(__func__,
+            ElemUtils::Formatter() << " (final) Im "
+                    << GPDType(m_currentGPDComputeType).toString()
+                    << " result: " << resultIm << " error: " << errorIm);
 
     //Im free state
     gsl_monte_vegas_free(gslState);
@@ -655,7 +729,8 @@ double DVMPCFFGK06::convolutionTwist3BFunction(double x, void * params) const {
                     * (getMesonGPDCombination(gpdResult)
                             - getMesonGPDCombination(m_gpdResultXiXi));
 
-    return 16. * M_PI * m_Cf / m_Nc * alphaS(sqrt(m_Q2 / 2.)) * par.first
+    return 16. * M_PI * m_Cf / m_Nc
+            * m_pRunningAlphaStrongModule->compute(m_Q2 / 2.) * par.first
             * m_muPi * pow(par.second, 2.) * convolution;
 }
 
@@ -688,113 +763,13 @@ std::complex<double> DVMPCFFGK06::convolutionTwist3C(
     //get WF parameters
     std::pair<double, double> par = mesonWFParameters(3);
 
-    return 16. * M_PI * m_Cf / m_Nc * alphaS(sqrt(m_Q2 / 2.)) * par.first
+    return 16. * M_PI * m_Cf / m_Nc
+            * m_pRunningAlphaStrongModule->compute(m_Q2 / 2.) * par.first
             * m_muPi * pow(par.second, 2.)
             * (getMesonGPDCombination(m_gpdResultXiXi)
                     * (std::complex<double>(0., 1.) * M_PI
                             - log((1. - m_xi) / (2. * m_xi))));
 }
-//
-//std::complex<double> DVMPCFFGK06::amplitude(int mup, int nup, int mu,
-//        int nu) const {
-//
-//    //switch over mesons
-//    switch (m_mesonType) {
-//
-//    //pi0
-//    case MesonType::PI0: {
-//
-//        //M 0+,0+
-//        if (mup == 0 && nup == 1 && mu == 0 && nu == 1) {
-//            return m_PositronCharge * sqrt(1. - pow(m_xi, 2.)) / sqrt(m_Q2)
-//                    * (HtConvolutionPi0()
-//                            - pow(m_xi, 2.) / (1. - pow(m_xi, 2.))
-//                                    * EtConvolutionPi0());
-//        }
-//        //M 0-,0+
-//        else if (mup == 0 && nup == -1 && mu == 0 && nu == 1) {
-//            return m_PositronCharge / sqrt(m_Q2) * sqrt(-(m_t - m_tmin)) * m_xi
-//                    / (2. * Constant::PROTON_MASS) * EtConvolutionPi0();
-//        }
-//        //M 0-,++
-//        else if (mup == 0 && nup == -1 && mu == 1 && nu == 1) {
-//            return m_PositronCharge * sqrt(1. - pow(m_xi, 2.))
-//                    * HTransConvolutionPi0();
-//        }
-//        //M 0+,++
-//        else if (mup == 0 && nup == 1 && mu == 1 && nu == 1) {
-//            return -1.0 * m_PositronCharge * sqrt(-(m_t - m_tmin))
-//                    / (4. * Constant::PROTON_MASS) * ETransConvolutionPi0();
-//        }
-//        //M 0+,-+
-//        else if (mup == 0 && nup == 1 && mu == -1 && nu == 1) {
-//            return -1.0 * m_PositronCharge * sqrt(-(m_t - m_tmin))
-//                    / (4. * Constant::PROTON_MASS) * ETransConvolutionPi0();
-//        }
-//        //M 0-,-+
-//        else if (mup == 0 && nup == -1 && mu == -1 && nu == 1) {
-//            return 0.;
-//        }
-//        //???
-//        else {
-//            throw ElemUtils::CustomException(getClassName(), __func__,
-//                    ElemUtils::Formatter() << "Illegal index for meson: "
-//                            << MesonType(m_mesonType).toString() << ", have: "
-//                            << mup << nup << mu << nu);
-//        }
-//    }
-//        break;
-//
-//        //pi+
-//    case MesonType::PIPLUS: {
-//
-//        //M 0+,0+
-//        if (mup == 0 && nup == 1 && mu == 0 && nu == 1) {
-//            return 0.;
-//        }
-//        //M 0-,0+
-//        else if (mup == 0 && nup == -1 && mu == 0 && nu == 1) {
-//            return 0.;
-//        }
-//        //M 0-,++
-//        else if (mup == 0 && nup == -1 && mu == 1 && nu == 1) {
-//            return 0.;
-//        }
-//        //M 0+,++
-//        else if (mup == 0 && nup == 1 && mu == 1 && nu == 1) {
-//            return 0.;
-//        }
-//        //M 0+,-+
-//        else if (mup == 0 && nup == 1 && mu == -1 && nu == 1) {
-//            return 0.;
-//        }
-//        //M 0-,-+
-//        else if (mup == 0 && nup == -1 && mu == -1 && nu == 1) {
-//            return 0.;
-//        }
-//        //???
-//        else {
-//            throw ElemUtils::CustomException(getClassName(), __func__,
-//                    ElemUtils::Formatter() << "Illegal index for meson: "
-//                            << MesonType(m_mesonType).toString() << ", have: "
-//                            << mup << nup << mu << nu);
-//        }
-//    }
-//
-//        break;
-//
-//        //???
-//    default: {
-//        throw ElemUtils::CustomException(getClassName(), __func__,
-//                ElemUtils::Formatter() << "No implementation for meson: "
-//                        << MesonType(m_mesonType).toString());
-//    }
-//
-//        break;
-//    }
-//
-//    return std::complex<double>(0., 0.);
-//}
 
 std::complex<double> DVMPCFFGK06::HankelFunctionFirstKind(double z) const {
 
