@@ -117,7 +117,7 @@ void DVMPCFFGK06::configure(const ElemUtils::Parameters &parameters) {
 
     if (parameters.isAvailable(
             DVMPCFFGK06::PARAMETER_NAME_DVMPCFFGK06_MC_CHI2LIMIT)) {
-        setMcChi2Limit(parameters.getLastAvailable().toUInt());
+        setMcChi2Limit(parameters.getLastAvailable().toDouble());
     }
 }
 

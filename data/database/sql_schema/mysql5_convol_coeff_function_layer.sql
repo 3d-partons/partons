@@ -151,8 +151,8 @@ FROM dvmp_ccf_result ccfrc
 INNER JOIN ccf_result ccfr ON ccfr.ccf_result_id = ccfrc.ccf_result_id
 INNER JOIN dvmp_ccf_kinematic ccfk ON ccfk.dvmp_ccf_kinematic_id = ccfr.ccf_kinematic_id
 INNER JOIN gpd_type gt ON ccfrc.gpd_type_id = gt.gpd_type_id
-INNER JOIN meson_type mt ON ccfrk.meson_type_id = mt.meson_type_id
-INNER JOIN meson_polarization mp ON ccfrk.meson_polarization_id = mp.meson_polarization_id
+INNER JOIN meson_type mt ON ccfk.meson_type_id = mt.meson_type_id
+INNER JOIN meson_polarization mp ON ccfk.meson_polarization_id = mp.meson_polarization_id
 ORDER BY ccfr.ccf_result_id;
 
 CREATE VIEW tcs_ccf_plot_2d_view AS
