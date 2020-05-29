@@ -8,6 +8,7 @@
  * @version 1.0
  */
 
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <stddef.h>
 #include <complex>
 #include <map>
@@ -34,6 +35,10 @@ public:
 
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
+    static const std::string PARAMETER_NAME_DVMPCFFGK06_MC_NWARMUP;
+    static const std::string PARAMETER_NAME_DVMPCFFGK06_MC_NCALLS;
+    static const std::string PARAMETER_NAME_DVMPCFFGK06_MC_CHI2LIMIT;
+
     /**
      * Constructor.
      * See BaseObject::BaseObject and ModuleObject::ModuleObject for more details.
@@ -48,6 +53,7 @@ public:
      */
     virtual ~DVMPCFFGK06();
 
+    virtual void configure(const ElemUtils::Parameters &parameters);
     virtual void resolveObjectDependencies();
     virtual void prepareSubModules(
             const std::map<std::string, BaseObjectData>& subModulesData);
@@ -65,6 +71,8 @@ public:
     friend double gslWrapper0(double *xtaub, size_t dim, void *params);
     friend double gslWrapper1(double x, void * params);
 
+    //*** SETTERS AND GETTERS ******************************************
+
     /**
      * Get alphaS module.
      */
@@ -75,6 +83,36 @@ public:
      */
     void setRunningAlphaStrongModule(
             RunningAlphaStrongModule* pRunningAlphaStrongModule);
+
+    /**
+     * Get MC number of calls.
+     */
+    size_t getMcCalls() const;
+
+    /**
+     * Set MC number of calls.
+     */
+    void setMcCalls(size_t mcCalls);
+
+    /**
+     * Get MC chi2 limit.
+     */
+    double getMcChi2Limit() const;
+
+    /**
+     * Set MC chi2 limit.
+     */
+    void setMcChi2Limit(double mcChi2Limit);
+
+    /**
+     * Get MC number of calls (warm-up).
+     */
+    size_t getMcnWarmUp() const;
+
+    /**
+     * Set MC number of calls (warm-up).
+     */
+    void setMcnWarmUp(size_t mcnWarmUp);
 
 protected:
 
@@ -100,6 +138,10 @@ private:
     const double m_muPi; ///> Parameter proportional to chiral condensate, see for instance Eq. (21) in arxiv:0906.0460
 
     double m_tmin; ///< Minimum t value
+
+    size_t m_MCNWarmUp; ///< MC integration - number of calls in warm-up.
+    size_t m_MCCalls; ///< MC integration - number of calls.
+    double m_MCChi2Limit; ///< MC integration - chi2 limit.
 
     PartonDistribution m_gpdResultXiXi; ///< GPD result at x=xi.
 

@@ -4,6 +4,7 @@
 #include "../../../../../include/partons/modules/convol_coeff_function/DVMP/DVMPCFFGK06.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
+#include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <gsl/gsl_integration.h>
 #include <gsl/gsl_math.h>
@@ -32,6 +33,12 @@ const unsigned int DVMPCFFGK06::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new DVMPCFFGK06("DVMPCFFGK06"));
 
+const std::string DVMPCFFGK06::PARAMETER_NAME_DVMPCFFGK06_MC_NWARMUP =
+        "nWarmUps";
+const std::string DVMPCFFGK06::PARAMETER_NAME_DVMPCFFGK06_MC_NCALLS = "nCalls";
+const std::string DVMPCFFGK06::PARAMETER_NAME_DVMPCFFGK06_MC_CHI2LIMIT =
+        "chi2Limit";
+
 double DVMPCFFGK06::gslWrapper0(double *xtaub, size_t dim, void *params) {
     return (static_cast<DVMPCFFGK06IntegrationParameters*>(params))->m_pDVMPCFFGK06->convolutionFunction(
             xtaub, dim, params);
@@ -45,7 +52,8 @@ double DVMPCFFGK06::gslWrapper1(double x, void * params) {
 DVMPCFFGK06::DVMPCFFGK06(const std::string &className) :
         DVMPConvolCoeffFunctionModule(className), m_cNf(3.), m_cLambdaQCD(0.22), m_EulerGamma(
                 0.577216), m_PositronCharge(0.3028), m_Nc(3.), m_Cf(4. / 3.), m_muPi(
-                2.0), m_tmin(0.), m_pRunningAlphaStrongModule(0) {
+                2.0), m_tmin(0.), m_pRunningAlphaStrongModule(0), m_MCNWarmUp(
+                2E4), m_MCCalls(2E5), m_MCChi2Limit(0.8) {
 
     //relate GPD types with functions to be used
     m_listOfCFFComputeFunctionAvailable.insert(
@@ -66,7 +74,9 @@ DVMPCFFGK06::DVMPCFFGK06(const DVMPCFFGK06 &other) :
         DVMPConvolCoeffFunctionModule(other), m_cNf(other.m_cNf), m_cLambdaQCD(
                 other.m_cLambdaQCD), m_EulerGamma(other.m_EulerGamma), m_PositronCharge(
                 other.m_PositronCharge), m_Nc(other.m_Nc), m_Cf(other.m_Cf), m_muPi(
-                other.m_muPi), m_tmin(other.m_tmin) {
+                other.m_muPi), m_tmin(other.m_tmin), m_MCNWarmUp(
+                other.m_MCNWarmUp), m_MCCalls(other.m_MCCalls), m_MCChi2Limit(
+                other.m_MCChi2Limit) {
 
     //clone alpaS module
     if (other.m_pRunningAlphaStrongModule != 0) {
@@ -87,6 +97,27 @@ DVMPCFFGK06::~DVMPCFFGK06() {
     if (m_pRunningAlphaStrongModule != 0) {
         setRunningAlphaStrongModule(0);
         m_pRunningAlphaStrongModule = 0;
+    }
+}
+
+void DVMPCFFGK06::configure(const ElemUtils::Parameters &parameters) {
+
+    //run for mother
+    DVMPConvolCoeffFunctionModule::configure(parameters);
+
+    if (parameters.isAvailable(
+            DVMPCFFGK06::PARAMETER_NAME_DVMPCFFGK06_MC_NWARMUP)) {
+        setMcnWarmUp(parameters.getLastAvailable().toUInt());
+    }
+
+    if (parameters.isAvailable(
+            DVMPCFFGK06::PARAMETER_NAME_DVMPCFFGK06_MC_NCALLS)) {
+        setMcCalls(parameters.getLastAvailable().toUInt());
+    }
+
+    if (parameters.isAvailable(
+            DVMPCFFGK06::PARAMETER_NAME_DVMPCFFGK06_MC_CHI2LIMIT)) {
+        setMcChi2Limit(parameters.getLastAvailable().toUInt());
     }
 }
 
@@ -605,9 +636,6 @@ std::complex<double> DVMPCFFGK06::convolution(GPDType::Type gpdType,
     double rangeMin[3] = { -m_xi, 0.0, 0.0 }; // lower bounds of the 3D integral: with respect to 1) x,  2) tau, and 3) b
     double rangeMax[3] = { 1.0, 1.0, 1.0 / m_cLambdaQCD }; // upper bounds of the 3D integral: with respect to 1) x,  2) tau, and 3) b
 
-    const size_t nWarmUp = 20000; //warm-up the Monte Carlo integral
-    const size_t nCalls = 200000; // number of calls of the integral
-
     gsl_rng_env_setup(); //random generator
 
     const gsl_rng_type* gslRndType = gsl_rng_default;
@@ -630,7 +658,7 @@ std::complex<double> DVMPCFFGK06::convolution(GPDType::Type gpdType,
     dvmpCFFGK06IntegrationParameters.m_isReal = true;
 
     //Re warm-up
-    gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3, nWarmUp,
+    gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3, m_MCNWarmUp,
             gslRnd, gslState, &resultRe, &errorRe);
 
     info(__func__,
@@ -639,17 +667,14 @@ std::complex<double> DVMPCFFGK06::convolution(GPDType::Type gpdType,
                     << " result: " << resultRe << " error: " << errorRe);
 
     //Re integrate
-//    gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3, nCalls,
-//            gslRnd, gslState, &resultRe, &errorRe);
-
 //    do {
 //
-//        gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3, nCalls,
+//        gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3, m_MCCalls,
 //                gslRnd, gslState, &resultRe, &errorRe);
 //
 //        info(__func__, ElemUtils::Formatter() << " (loop) Re: result: " << resultRe << " error: " <<errorRe);
 //
-//    } while (fabs(gsl_monte_vegas_chisq(gslState) - 1.0) > 0.8); // run VEGAS Monte-Carlo until you reach a \chi^2 value below the specified value
+//    } while (fabs(gsl_monte_vegas_chisq(gslState) - 1.0) > m_MCChi2Limit); // run VEGAS Monte-Carlo until you reach a \chi^2 value below the specified value
 
     info(__func__,
             ElemUtils::Formatter() << " (final) Re "
@@ -666,7 +691,7 @@ std::complex<double> DVMPCFFGK06::convolution(GPDType::Type gpdType,
     dvmpCFFGK06IntegrationParameters.m_isReal = false;
 
     //Im warm-up
-    gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3, nWarmUp,
+    gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3, m_MCNWarmUp,
             gslRnd, gslState, &resultIm, &errorIm);
 
     info(__func__,
@@ -675,15 +700,12 @@ std::complex<double> DVMPCFFGK06::convolution(GPDType::Type gpdType,
                     << " result: " << resultIm << " error: " << errorIm);
 
     //Im integrate
-//    gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3, nCalls,
-//            gslRnd, gslState, &resultIm, &errorIm);
-
 //    do {
 //
-//        gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3, nCalls,
+//        gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3, m_MCCalls,
 //                gslRnd, gslState, &resultIm, &errorIm);
 //
-//    } while (fabs(gsl_monte_vegas_chisq(gslState) - 1.0) > 0.8); // run VEGAS Monte-Carlo until you reach a \chi^2 value below the specified value
+//    } while (fabs(gsl_monte_vegas_chisq(gslState) - 1.0) > m_MCChi2Limit); // run VEGAS Monte-Carlo until you reach a \chi^2 value below the specified value
 
     info(__func__,
             ElemUtils::Formatter() << " (final) Im "
@@ -781,4 +803,39 @@ std::complex<double> DVMPCFFGK06::HankelFunctionFirstKind(double z) const {
     return Hankel0;
 }
 
+size_t DVMPCFFGK06::getMcCalls() const {
+    return m_MCCalls;
+}
+
+void DVMPCFFGK06::setMcCalls(size_t mcCalls) {
+    info(__func__,
+            ElemUtils::Formatter() << "MC number of calls changed from "
+                    << m_MCCalls << " to " << mcCalls);
+    m_MCCalls = mcCalls;
+}
+
+double DVMPCFFGK06::getMcChi2Limit() const {
+    return m_MCChi2Limit;
+}
+
+void DVMPCFFGK06::setMcChi2Limit(double mcChi2Limit) {
+    info(__func__,
+            ElemUtils::Formatter() << "MC chi2 limit changed from "
+                    << m_MCChi2Limit << " to " << mcChi2Limit);
+    m_MCChi2Limit = mcChi2Limit;
+}
+
+size_t DVMPCFFGK06::getMcnWarmUp() const {
+    return m_MCNWarmUp;
+}
+
+void DVMPCFFGK06::setMcnWarmUp(size_t mcnWarmUp) {
+    info(__func__,
+            ElemUtils::Formatter()
+                    << "MC number of calls (warm-up) changed from "
+                    << m_MCNWarmUp << " to " << mcnWarmUp);
+    m_MCNWarmUp = mcnWarmUp;
+}
+
 } /* namespace PARTONS */
+
