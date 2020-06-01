@@ -397,11 +397,12 @@ std::pair<double, double> DVMPCFFGK06::mesonWFParameters(size_t twist) const {
 
         //twist 2
         if (twist == 2) {
-            return std::pair<double, double>(0., 0.);
+            return std::pair<double, double>(0.132,
+                    1. / (8. * pow(M_PI, 2.0) * pow(0.132, 2.)));
         }
         //twist 3
         else if (twist == 3) {
-            return std::pair<double, double>(0., 0.);
+            return std::pair<double, double>(0.132, 1.8);
         }
         //???
         else {
@@ -449,7 +450,7 @@ double DVMPCFFGK06::mesonWF(double tau, double b, size_t twist) const {
                                         pow(b, 2.)
                                                 / (8. * pow(par.second, 2.0))));
     }
-    //??
+    //???
     else {
         throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "Twist " << twist
@@ -478,14 +479,20 @@ double DVMPCFFGK06::getMesonGPDCombination(
 
         break;
 
-        //pi+
+    //pi+
     case MesonType::PIPLUS: {
-        return 0.;
+        return 1. / sqrt(2.)
+                * (Constant::U_ELEC_CHARGE
+                        * partonDistribution.getQuarkDistribution(
+                                QuarkFlavor::UP).getQuarkDistribution()
+                        - Constant::D_ELEC_CHARGE
+                                * partonDistribution.getQuarkDistribution(
+                                        QuarkFlavor::DOWN).getQuarkDistribution());
     }
 
         break;
 
-        //???
+    //???
     default: {
         throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "No implementation for meson: "
@@ -585,14 +592,87 @@ std::complex<double> DVMPCFFGK06::subProcess(double x, double tau, double b,
 
         break;
 
-        //pi+
+    //pi+
     case MesonType::PIPLUS: {
-        return std::complex<double>(0., 0.);
+        std::complex<double> Ts, Tu;
+
+        //twist 2
+        if (twist == 2) {
+
+            if (x >= m_xi) {
+                Ts = -1. * std::complex<double>(0., 1.) / 4.
+                        * (gsl_sf_bessel_J0(
+                                sqrt((1. - tau) * (x - m_xi) / (2. * m_xi)) * b
+                                        * sqrt(m_Q2))
+                                + std::complex<double>(0., 1.)
+                                        * gsl_sf_bessel_Y0(
+                                                sqrt(
+                                                        (1. - tau) * (x - m_xi)
+                                                                / (2. * m_xi))
+                                                        * b * sqrt(m_Q2)));
+            } else {
+                Ts = -1. / (2. * M_PI)
+                        * gsl_sf_bessel_K0(
+                                sqrt((1. - tau) * (m_xi - x) / (2. * m_xi)) * b
+                                        * sqrt(m_Q2));
+            }
+
+            Tu = -1. / (2. * M_PI)
+                    * gsl_sf_bessel_K0(
+                            sqrt(tau * (x + m_xi) / (2. * m_xi)) * b
+                                    * sqrt(m_Q2));
+
+            return m_Cf * sqrt(2. / m_Nc) * m_Q2 / m_xi * 2. * M_PI * b
+                    * mesonWF(tau, b, twist)
+                    * m_pRunningAlphaStrongModule->compute(
+                            pow(computeMuR(tau, b), 2))
+                    * expSudakovFactor(tau, b) * (Ts - Tu);
+        }
+        //twist 3
+        else if (twist == 3) {
+
+            if (x >= m_xi) {
+                Ts = -1. * std::complex<double>(0., 1.) / 4.
+                        * (gsl_sf_bessel_J0(
+                                sqrt((1. - tau) * (x - m_xi) / (2. * m_xi)) * b
+                                        * sqrt(m_Q2))
+                                + std::complex<double>(0., 1.)
+                                        * gsl_sf_bessel_Y0(
+                                                sqrt(
+                                                        (1. - tau) * (x - m_xi)
+                                                                / (2. * m_xi))
+                                                        * b * sqrt(m_Q2)));
+            } else {
+                Ts = -1. / (2. * M_PI)
+                        * gsl_sf_bessel_K0(
+                                sqrt((1. - tau) * (m_xi - x) / (2. * m_xi)) * b
+                                        * sqrt(m_Q2));
+            }
+
+            Tu = -1. / (2. * M_PI)
+                    * gsl_sf_bessel_K0(
+                            sqrt(tau * (x + m_xi) / (2. * m_xi)) * b
+                                    * sqrt(m_Q2));
+
+            return 4.0 * m_Cf / sqrt(2. * m_Nc) * m_Q2 / m_xi * 2. * M_PI * b
+                    * mesonWF(tau, b, twist)
+                    * m_pRunningAlphaStrongModule->compute(
+                            pow(computeMuR(tau, b), 2))
+                    * expSudakovFactor(tau, b) * ((1. - tau) * Ts + tau * Tu);
+        }
+        //???
+        else {
+
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    ElemUtils::Formatter() << "Twist " << twist
+                            << " not implemented here for meson "
+                            << MesonType(m_mesonType).toString());
+        }
     }
 
         break;
 
-        //???
+    //???
     default: {
         throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "No implementation for meson: "
