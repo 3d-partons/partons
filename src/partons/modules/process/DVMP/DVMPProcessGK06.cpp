@@ -119,9 +119,9 @@ double DVMPProcessGK06::CrossSectionT() {
     std::complex<double> amplitude0mpp = getConvolCoeffFunctionValue(
             GPDType::HTrans);
     std::complex<double> amplitude0ppp = getConvolCoeffFunctionValue(
-            GPDType::ETrans);
+            GPDType::EbarTrans);
     std::complex<double> amplitude0pmp = getConvolCoeffFunctionValue(
-            GPDType::ETrans);
+            GPDType::EbarTrans);
     std::complex<double> amplitude0mmp(0., 0.);
 
     double result = 1.
@@ -150,9 +150,9 @@ double DVMPProcessGK06::CrossSectionLT() {
     std::complex<double> amplitude0mpp = getConvolCoeffFunctionValue(
             GPDType::HTrans);
     std::complex<double> amplitude0ppp = getConvolCoeffFunctionValue(
-            GPDType::ETrans);
+            GPDType::EbarTrans);
     std::complex<double> amplitude0pmp = getConvolCoeffFunctionValue(
-            GPDType::ETrans);
+            GPDType::EbarTrans);
     std::complex<double> amplitude0mmp(0., 0.);
 
     // Partial cross section of the interference part LT. See Eq. (43) in arxiv:0906.0460
@@ -178,9 +178,9 @@ double DVMPProcessGK06::CrossSectionTT() {
     std::complex<double> amplitude0mpp = getConvolCoeffFunctionValue(
             GPDType::HTrans);
     std::complex<double> amplitude0ppp = getConvolCoeffFunctionValue(
-            GPDType::ETrans);
+            GPDType::EbarTrans);
     std::complex<double> amplitude0pmp = getConvolCoeffFunctionValue(
-            GPDType::ETrans);
+            GPDType::EbarTrans);
     std::complex<double> amplitude0mmp(0., 0.);
 
     // Partial cross section of the interference part TT. See Eq. (43) in arxiv:0906.0460

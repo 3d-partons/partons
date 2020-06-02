@@ -330,6 +330,11 @@ PartonDistribution GPDModule::computeEt3m() {
             "Check your implementation  ; must be implemented in daughter class");
 }
 
+PartonDistribution GPDModule::computeEbarTrans() {
+    throw ElemUtils::CustomException(getClassName(), __func__,
+            "Check your implementation  ; must be implemented in daughter class");
+}
+
 void GPDModule::setKinematics(const GPDKinematic& kinematic) {
 
     m_x = kinematic.getX().makeSameUnitAs(PhysicalUnit::NONE).getValue();

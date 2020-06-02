@@ -70,7 +70,7 @@ GPDGK19::GPDGK19(const std::string &className) :
     m_listGPDComputeTypeAvailable.insert(
             std::make_pair(GPDType::HTrans, &GPDModule::computeHTrans));
     m_listGPDComputeTypeAvailable.insert(
-            std::make_pair(GPDType::ETrans, &GPDModule::computeETrans));
+            std::make_pair(GPDType::EbarTrans, &GPDModule::computeEbarTrans));
 }
 
 GPDGK19::GPDGK19(const GPDGK19& other) :
@@ -395,7 +395,7 @@ PartonDistribution GPDGK19::computeHTrans() {
     return partonDistribution;
 }
 
-PartonDistribution GPDGK19::computeETrans() {
+PartonDistribution GPDGK19::computeEbarTrans() {
 
     //available internal variables
     // m_x, m_xi, m_t, m_MuF2, m_MuR2, m_currentGPDComputeType;

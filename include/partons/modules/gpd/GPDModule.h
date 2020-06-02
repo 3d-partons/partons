@@ -215,6 +215,14 @@ public:
      */
     virtual PartonDistribution computeEt3m();
 
+    /**
+     * This method can be implemented in the child class if the GPD EbarTrans is available to compute.
+     *
+     * @return PartonDistribution object.
+     * Contains results for each flavor of partons.
+     */
+    virtual PartonDistribution computeEbarTrans();
+
     // ##### GETTERS & SETTERS #####
 
     /**

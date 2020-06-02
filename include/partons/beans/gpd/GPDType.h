@@ -56,6 +56,7 @@ public:
         E3m = 15,     //!< Twist-3 GPD \f$E_{3}^{-}\f$
         Ht3m = 16,    //!< Twist-3 GPD \f$\tilde{H}_{3}^{-}\f$
         Et3m = 17,    //!< Twist-3 GPD \f$\tilde{E}_{3}^{-}\f$
+        EbarTrans = 18, //!< \f$2\tilde{H}_{T} + E_{T}\f$
         END       //!< End-like type, useful to define loops over all GPD types.
     };
 

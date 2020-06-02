@@ -66,7 +66,7 @@ DVMPCFFGK06::DVMPCFFGK06(const std::string &className) :
             std::make_pair(GPDType::HTrans,
                     &DVMPConvolCoeffFunctionModule::computeCFF));
     m_listOfCFFComputeFunctionAvailable.insert(
-            std::make_pair(GPDType::ETrans,
+            std::make_pair(GPDType::EbarTrans,
                     &DVMPConvolCoeffFunctionModule::computeCFF));
 }
 
@@ -245,8 +245,8 @@ std::complex<double> DVMPCFFGK06::computeCFF() {
 
         break;
 
-        //ETrans
-    case GPDType::ETrans: {
+        //EbarTrans
+    case GPDType::EbarTrans: {
 
         convolution = convolutionTwist3A(m_currentGPDComputeType)
                 + convolutionTwist3B(m_currentGPDComputeType)

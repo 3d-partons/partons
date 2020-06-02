@@ -69,7 +69,7 @@ protected:
     virtual PartonDistribution computeHt();
     virtual PartonDistribution computeEt();
     virtual PartonDistribution computeHTrans();
-    virtual PartonDistribution computeETrans();
+    virtual PartonDistribution computeEbarTrans();
 
     void calculateHtCoefs();
     void calculateEtCoefs();

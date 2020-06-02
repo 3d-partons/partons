@@ -78,6 +78,10 @@ std::string GPDType::toString() const {
         return "Et3m";
         break;
 
+    case EbarTrans:
+        return "EbarTrans";
+        break;
+
     default:
         return "UNDEFINED";
     }
@@ -137,6 +141,10 @@ GPDType::Type GPDType::fromString(const std::string& gpdTypeStr) {
         gpdType = GPDType::E3m;
     } else if (ElemUtils::StringUtils::equals(gpdTypeStr, "Et3m")) {
         gpdType = GPDType::Et3m;
+    }
+
+    else if (ElemUtils::StringUtils::equals(gpdTypeStr, "EbarTrans")) {
+        gpdType = GPDType::EbarTrans;
     }
 
     return gpdType;
