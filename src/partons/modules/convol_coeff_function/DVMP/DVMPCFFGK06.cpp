@@ -369,30 +369,8 @@ std::pair<double, double> DVMPCFFGK06::mesonWFParameters(size_t twist) const {
     //switch over mesons
     switch (m_mesonType) {
 
-    //pi0
-    case MesonType::PI0: {
-
-        //twist 2
-        if (twist == 2) {
-            return std::pair<double, double>(0.132,
-                    1. / (8. * pow(M_PI, 2.0) * pow(0.132, 2.)));
-        }
-        //twist 3
-        else if (twist == 3) {
-            return std::pair<double, double>(0.132, 1.8);
-        }
-        //???
-        else {
-            throw ElemUtils::CustomException(getClassName(), __func__,
-                    ElemUtils::Formatter() << "Twist " << twist
-                            << " not implemented here for meson "
-                            << MesonType(m_mesonType).toString());
-        }
-    }
-
-        break;
-
-        //pi+
+    //pi0, pi+
+    case MesonType::PI0:
     case MesonType::PIPLUS: {
 
         //twist 2
@@ -471,28 +449,28 @@ double DVMPCFFGK06::getMesonGPDCombination(
         return 1. / sqrt(2.)
                 * (Constant::U_ELEC_CHARGE
                         * partonDistribution.getQuarkDistribution(
-                                QuarkFlavor::UP).getQuarkDistribution()
+                                QuarkFlavor::UP).getQuarkDistributionPlus()
                         - Constant::D_ELEC_CHARGE
                                 * partonDistribution.getQuarkDistribution(
-                                        QuarkFlavor::DOWN).getQuarkDistribution());
+                                        QuarkFlavor::DOWN).getQuarkDistributionPlus());
     }
 
         break;
 
-    //pi+
+        //pi+
     case MesonType::PIPLUS: {
         return 1. / sqrt(2.)
                 * (Constant::U_ELEC_CHARGE
                         * partonDistribution.getQuarkDistribution(
-                                QuarkFlavor::UP).getQuarkDistribution()
+                                QuarkFlavor::UP).getQuarkDistributionPlus()
                         - Constant::D_ELEC_CHARGE
                                 * partonDistribution.getQuarkDistribution(
-                                        QuarkFlavor::DOWN).getQuarkDistribution());
+                                        QuarkFlavor::DOWN).getQuarkDistributionPlus());
     }
 
         break;
 
-    //???
+        //???
     default: {
         throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "No implementation for meson: "
@@ -511,89 +489,10 @@ std::complex<double> DVMPCFFGK06::subProcess(double x, double tau, double b,
     //switch over mesons
     switch (m_mesonType) {
 
-    //pi0
-    case MesonType::PI0: {
-
-        std::complex<double> Ts, Tu;
-
-        //twist 2
-        if (twist == 2) {
-
-            if (x >= m_xi) {
-                Ts = -1. * std::complex<double>(0., 1.) / 4.
-                        * (gsl_sf_bessel_J0(
-                                sqrt((1. - tau) * (x - m_xi) / (2. * m_xi)) * b
-                                        * sqrt(m_Q2))
-                                + std::complex<double>(0., 1.)
-                                        * gsl_sf_bessel_Y0(
-                                                sqrt(
-                                                        (1. - tau) * (x - m_xi)
-                                                                / (2. * m_xi))
-                                                        * b * sqrt(m_Q2)));
-            } else {
-                Ts = -1. / (2. * M_PI)
-                        * gsl_sf_bessel_K0(
-                                sqrt((1. - tau) * (m_xi - x) / (2. * m_xi)) * b
-                                        * sqrt(m_Q2));
-            }
-
-            Tu = -1. / (2. * M_PI)
-                    * gsl_sf_bessel_K0(
-                            sqrt(tau * (x + m_xi) / (2. * m_xi)) * b
-                                    * sqrt(m_Q2));
-
-            return m_Cf * sqrt(2. / m_Nc) * m_Q2 / m_xi * 2. * M_PI * b
-                    * mesonWF(tau, b, twist)
-                    * m_pRunningAlphaStrongModule->compute(
-                            pow(computeMuR(tau, b), 2))
-                    * expSudakovFactor(tau, b) * (Ts - Tu);
-        }
-        //twist 3
-        else if (twist == 3) {
-
-            if (x >= m_xi) {
-                Ts = -1. * std::complex<double>(0., 1.) / 4.
-                        * (gsl_sf_bessel_J0(
-                                sqrt((1. - tau) * (x - m_xi) / (2. * m_xi)) * b
-                                        * sqrt(m_Q2))
-                                + std::complex<double>(0., 1.)
-                                        * gsl_sf_bessel_Y0(
-                                                sqrt(
-                                                        (1. - tau) * (x - m_xi)
-                                                                / (2. * m_xi))
-                                                        * b * sqrt(m_Q2)));
-            } else {
-                Ts = -1. / (2. * M_PI)
-                        * gsl_sf_bessel_K0(
-                                sqrt((1. - tau) * (m_xi - x) / (2. * m_xi)) * b
-                                        * sqrt(m_Q2));
-            }
-
-            Tu = -1. / (2. * M_PI)
-                    * gsl_sf_bessel_K0(
-                            sqrt(tau * (x + m_xi) / (2. * m_xi)) * b
-                                    * sqrt(m_Q2));
-
-            return 4.0 * m_Cf / sqrt(2. * m_Nc) * m_Q2 / m_xi * 2. * M_PI * b
-                    * mesonWF(tau, b, twist)
-                    * m_pRunningAlphaStrongModule->compute(
-                            pow(computeMuR(tau, b), 2))
-                    * expSudakovFactor(tau, b) * ((1. - tau) * Ts + tau * Tu);
-        }
-        //???
-        else {
-
-            throw ElemUtils::CustomException(getClassName(), __func__,
-                    ElemUtils::Formatter() << "Twist " << twist
-                            << " not implemented here for meson "
-                            << MesonType(m_mesonType).toString());
-        }
-    }
-
-        break;
-
-    //pi+
+    //pi0 pi+
+    case MesonType::PI0:
     case MesonType::PIPLUS: {
+
         std::complex<double> Ts, Tu;
 
         //twist 2
@@ -659,6 +558,7 @@ std::complex<double> DVMPCFFGK06::subProcess(double x, double tau, double b,
                     * m_pRunningAlphaStrongModule->compute(
                             pow(computeMuR(tau, b), 2))
                     * expSudakovFactor(tau, b) * ((1. - tau) * Ts + tau * Tu);
+
         }
         //???
         else {
@@ -672,7 +572,7 @@ std::complex<double> DVMPCFFGK06::subProcess(double x, double tau, double b,
 
         break;
 
-    //???
+        //???
     default: {
         throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "No implementation for meson: "
@@ -711,9 +611,9 @@ double DVMPCFFGK06::convolutionFunction(double *xtaub, size_t dim,
 std::complex<double> DVMPCFFGK06::convolution(GPDType::Type gpdType,
         size_t twist) const {
 
-    double resultRe, errorRe, resultIm, errorIm; //results and errors
+    double resultRe[2], errorRe[2], resultIm[2], errorIm[2]; //results and errors
 
-    double rangeMin[3] = { -m_xi, 0.0, 0.0 }; // lower bounds of the 3D integral: with respect to 1) x,  2) tau, and 3) b
+    double rangeMin[3] = { 0., 0.0, 0.0 }; // lower bounds of the 3D integral: with respect to 1) x,  2) tau, and 3) b
     double rangeMax[3] = { 1.0, 1.0, 1.0 / m_cLambdaQCD }; // upper bounds of the 3D integral: with respect to 1) x,  2) tau, and 3) b
 
     gsl_rng_env_setup(); //random generator
@@ -732,74 +632,107 @@ std::complex<double> DVMPCFFGK06::convolution(GPDType::Type gpdType,
     gsl_monte_vegas_state* gslState; // gsl state
 
     //Re
-    gslState = gsl_monte_vegas_alloc(3);
-
-    //Re parameters
     dvmpCFFGK06IntegrationParameters.m_isReal = true;
 
-    //Re warm-up
-    gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3, m_MCNWarmUp,
-            gslRnd, gslState, &resultRe, &errorRe);
+    for (size_t i = 0; i < 2; i++) {
 
-    info(__func__,
-            ElemUtils::Formatter() << " (initialization) Re "
-                    << GPDType(m_currentGPDComputeType).toString()
-                    << " result: " << resultRe << " error: " << errorRe);
+        //range
+        rangeMin[0] = (i == 0) ? (0.) : (m_xi);
+        rangeMax[0] = (i == 0) ? (m_xi) : (1.);
 
-    //Re integrate
-//    do {
-//
-//        gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3, m_MCCalls,
-//                gslRnd, gslState, &resultRe, &errorRe);
-//
-//        info(__func__, ElemUtils::Formatter() << " (loop) Re: result: " << resultRe << " error: " <<errorRe);
-//
-//    } while (fabs(gsl_monte_vegas_chisq(gslState) - 1.0) > m_MCChi2Limit); // run VEGAS Monte-Carlo until you reach a \chi^2 value below the specified value
+        //state
+        gslState = gsl_monte_vegas_alloc(3);
 
-    info(__func__,
-            ElemUtils::Formatter() << " (final) Re "
-                    << GPDType(m_currentGPDComputeType).toString()
-                    << " result: " << resultRe << " error: " << errorRe);
+        //warm-up
+        gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3,
+                m_MCNWarmUp, gslRnd, gslState, &resultRe[i], &errorRe[i]);
 
-    //Re free state
-    gsl_monte_vegas_free(gslState);
+        info(__func__,
+                ElemUtils::Formatter() << "i: " << i << " (initialization) Re "
+                        << GPDType(m_currentGPDComputeType).toString()
+                        << " result: " << resultRe[i] << " error: "
+                        << errorRe[i]);
 
-    //Im
-    gslState = gsl_monte_vegas_alloc(3);
+        //integrate
+        do {
+
+            if (resultRe[i] == 0. && errorRe[i] == 0.)
+                break;
+
+            gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3,
+                    m_MCCalls, gslRnd, gslState, &resultRe[i], &errorRe[i]);
+
+            info(__func__,
+                    ElemUtils::Formatter() << "i: " << i
+                            << " (loop) Re: result: " << resultRe[i]
+                            << " error: " << errorRe[i]);
+
+        } while (fabs(gsl_monte_vegas_chisq(gslState) - 1.0) > m_MCChi2Limit); // run VEGAS Monte-Carlo until you reach a \chi^2 value below the specified value
+
+        info(__func__,
+                ElemUtils::Formatter() << "i: " << i << " (final) Re "
+                        << GPDType(m_currentGPDComputeType).toString()
+                        << " result: " << resultRe[i] << " error: "
+                        << errorRe[i]);
+
+        //Re free state
+        gsl_monte_vegas_free(gslState);
+    }
 
     //Im parameters
     dvmpCFFGK06IntegrationParameters.m_isReal = false;
 
-    //Im warm-up
-    gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3, m_MCNWarmUp,
-            gslRnd, gslState, &resultIm, &errorIm);
+    for (size_t i = 0; i < 2; i++) {
 
-    info(__func__,
-            ElemUtils::Formatter() << " (initialization) Im "
-                    << GPDType(m_currentGPDComputeType).toString()
-                    << " result: " << resultIm << " error: " << errorIm);
+        //range
+        rangeMin[0] = (i == 0) ? (0.) : (m_xi);
+        rangeMax[0] = (i == 0) ? (m_xi) : (1.);
 
-    //Im integrate
-//    do {
-//
-//        gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3, m_MCCalls,
-//                gslRnd, gslState, &resultIm, &errorIm);
-//
-//    } while (fabs(gsl_monte_vegas_chisq(gslState) - 1.0) > m_MCChi2Limit); // run VEGAS Monte-Carlo until you reach a \chi^2 value below the specified value
+        //state
+        gslState = gsl_monte_vegas_alloc(3);
 
-    info(__func__,
-            ElemUtils::Formatter() << " (final) Im "
-                    << GPDType(m_currentGPDComputeType).toString()
-                    << " result: " << resultIm << " error: " << errorIm);
+        //Im warm-up
+        gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3,
+                m_MCNWarmUp, gslRnd, gslState, &resultIm[i], &errorIm[i]);
 
-    //Im free state
-    gsl_monte_vegas_free(gslState);
+        info(__func__,
+                ElemUtils::Formatter() << "i: " << i << " (initialization) Im "
+                        << GPDType(m_currentGPDComputeType).toString()
+                        << " result: " << resultIm[i] << " error: "
+                        << errorIm[i]);
+
+        //Im integrate
+        do {
+
+            if (resultIm[i] == 0. && errorIm[i] == 0.)
+                break;
+
+            gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3,
+                    m_MCCalls, gslRnd, gslState, &resultIm[i], &errorIm[i]);
+
+            info(__func__,
+                    ElemUtils::Formatter() << "i: " << i
+                            << " (loop) Im: result: " << resultIm[i]
+                            << " error: " << errorIm[i]);
+
+        } while (fabs(gsl_monte_vegas_chisq(gslState) - 1.0) > m_MCChi2Limit); // run VEGAS Monte-Carlo until you reach a \chi^2 value below the specified value
+
+        info(__func__,
+                ElemUtils::Formatter() << "i: " << i << " (final) Im "
+                        << GPDType(m_currentGPDComputeType).toString()
+                        << " result: " << resultIm[i] << " error: "
+                        << errorIm[i]);
+
+        //Im free state
+        gsl_monte_vegas_free(gslState);
+    }
 
     // Free
     gsl_rng_free(gslRnd);
 
     // Return
-    return resultRe + std::complex<double>(0., 1.) * resultIm;
+    return (resultRe[0] + resultRe[1])
+            + std::complex<double>(0., 1.) * (resultIm[0] + resultIm[1]);
 }
 
 std::complex<double> DVMPCFFGK06::convolutionTwist2(
@@ -827,9 +760,10 @@ double DVMPCFFGK06::convolutionTwist3BFunction(double x, void * params) const {
 
     //evaluate
     double convolution = 1. / (x + m_xi) * (getMesonGPDCombination(gpdResult))
-            - 1. / (x - m_xi)
+            - 1.
                     * (getMesonGPDCombination(gpdResult)
-                            - getMesonGPDCombination(m_gpdResultXiXi));
+                            - getMesonGPDCombination(m_gpdResultXiXi))
+                    / (x - m_xi);
 
     return 16. * M_PI * m_Cf / m_Nc
             * m_pRunningAlphaStrongModule->compute(m_Q2 / 2.) * par.first
@@ -839,9 +773,9 @@ double DVMPCFFGK06::convolutionTwist3BFunction(double x, void * params) const {
 std::complex<double> DVMPCFFGK06::convolutionTwist3B(
         GPDType::Type gpdType) const {
 
-    gsl_integration_workspace * w = gsl_integration_workspace_alloc(10000); // workspace
+    gsl_integration_workspace* w; // workspace
 
-    double result, error; //result
+    double result[2], error[2]; //result
 
     DVMPCFFGK06IntegrationParameters dvmpCFFGK06IntegrationParameters; // parameters
     dvmpCFFGK06IntegrationParameters.m_pDVMPCFFGK06 = this;
@@ -851,12 +785,18 @@ std::complex<double> DVMPCFFGK06::convolutionTwist3B(
     gslFunction.function = &gslWrapper1;
     gslFunction.params = &dvmpCFFGK06IntegrationParameters;
 
-    gsl_integration_qags(&gslFunction, -m_xi, 1.0, 0, 1e-5, 10000, w, &result,
-            &error); //evaluate
+    for (size_t i = 0; i < 2; i++) {
 
-    gsl_integration_workspace_free(w); //free
+        w = gsl_integration_workspace_alloc(10000); //workspace
 
-    return std::complex<double>(result, 0.);
+        gsl_integration_qag(&gslFunction, (i == 0) ? (0.) : (m_xi),
+                (i == 0) ? (m_xi) : (1.), 0.0, GSL_INTEG_GAUSS61, 1e-5, 10000,
+                w, &result[i], &error[i]); //evaluate
+
+        gsl_integration_workspace_free(w); //free
+    }
+
+    return std::complex<double>(result[0] + result[1], 0.);
 }
 
 std::complex<double> DVMPCFFGK06::convolutionTwist3C(
