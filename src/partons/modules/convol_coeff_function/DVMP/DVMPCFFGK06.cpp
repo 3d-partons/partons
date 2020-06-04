@@ -449,10 +449,10 @@ double DVMPCFFGK06::getMesonGPDCombination(
         return 1. / sqrt(2.)
                 * (Constant::U_ELEC_CHARGE
                         * partonDistribution.getQuarkDistribution(
-                                QuarkFlavor::UP).getQuarkDistributionPlus()
+                                QuarkFlavor::UP).getQuarkDistribution()
                         - Constant::D_ELEC_CHARGE
                                 * partonDistribution.getQuarkDistribution(
-                                        QuarkFlavor::DOWN).getQuarkDistributionPlus());
+                                        QuarkFlavor::DOWN).getQuarkDistribution());
     }
 
         break;
@@ -462,10 +462,10 @@ double DVMPCFFGK06::getMesonGPDCombination(
         return 1. / sqrt(2.)
                 * (Constant::U_ELEC_CHARGE
                         * partonDistribution.getQuarkDistribution(
-                                QuarkFlavor::UP).getQuarkDistributionPlus()
+                                QuarkFlavor::UP).getQuarkDistribution()
                         - Constant::D_ELEC_CHARGE
                                 * partonDistribution.getQuarkDistribution(
-                                        QuarkFlavor::DOWN).getQuarkDistributionPlus());
+                                        QuarkFlavor::DOWN).getQuarkDistribution());
     }
 
         break;
@@ -611,9 +611,9 @@ double DVMPCFFGK06::convolutionFunction(double *xtaub, size_t dim,
 std::complex<double> DVMPCFFGK06::convolution(GPDType::Type gpdType,
         size_t twist) const {
 
-    double resultRe[2], errorRe[2], resultIm[2], errorIm[2]; //results and errors
+    double resultRe[3], errorRe[3], resultIm[3], errorIm[3]; //results and errors
 
-    double rangeMin[3] = { 0., 0.0, 0.0 }; // lower bounds of the 3D integral: with respect to 1) x,  2) tau, and 3) b
+    double rangeMin[3] = { -1.0, 0.0, 0.0 }; // lower bounds of the 3D integral: with respect to 1) x,  2) tau, and 3) b
     double rangeMax[3] = { 1.0, 1.0, 1.0 / m_cLambdaQCD }; // upper bounds of the 3D integral: with respect to 1) x,  2) tau, and 3) b
 
     gsl_rng_env_setup(); //random generator
@@ -634,11 +634,22 @@ std::complex<double> DVMPCFFGK06::convolution(GPDType::Type gpdType,
     //Re
     dvmpCFFGK06IntegrationParameters.m_isReal = true;
 
-    for (size_t i = 0; i < 2; i++) {
+    for (size_t i = 0; i < 3; i++) {
 
         //range
-        rangeMin[0] = (i == 0) ? (0.) : (m_xi);
-        rangeMax[0] = (i == 0) ? (m_xi) : (1.);
+        if (i == 0) {
+            rangeMin[0] = -1.;
+            rangeMax[0] = -m_xi;
+        } else if (i == 1) {
+            rangeMin[0] = -m_xi;
+            rangeMax[0] = m_xi;
+        } else if (i == 2) {
+            rangeMin[0] = m_xi;
+            rangeMax[0] = 1.;
+        } else {
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    "Wrong index");
+        }
 
         //state
         gslState = gsl_monte_vegas_alloc(3);
@@ -656,8 +667,29 @@ std::complex<double> DVMPCFFGK06::convolution(GPDType::Type gpdType,
         //integrate
         do {
 
-            if (resultRe[i] == 0. && errorRe[i] == 0.)
+            if (errorRe[i] == 0.) {
+
+                if (std::isnan(resultRe[i])) {
+
+                    warn(__func__,
+                            ElemUtils::Formatter() << "Range: " << i
+                                    << " for GPD "
+                                    << GPDType(m_currentGPDComputeType).toString()
+                                    << " gives null error, result is NaN and changed to zero");
+
+                    resultRe[i] = 0.;
+
+                } else {
+                    warn(__func__,
+                            ElemUtils::Formatter() << "Range: " << i
+                                    << " for GPD "
+                                    << GPDType(m_currentGPDComputeType).toString()
+                                    << " gives null error, result is: "
+                                    << resultRe[i]);
+                }
+
                 break;
+            }
 
             gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3,
                     m_MCCalls, gslRnd, gslState, &resultRe[i], &errorRe[i]);
@@ -682,11 +714,22 @@ std::complex<double> DVMPCFFGK06::convolution(GPDType::Type gpdType,
     //Im parameters
     dvmpCFFGK06IntegrationParameters.m_isReal = false;
 
-    for (size_t i = 0; i < 2; i++) {
+    for (size_t i = 0; i < 3; i++) {
 
         //range
-        rangeMin[0] = (i == 0) ? (0.) : (m_xi);
-        rangeMax[0] = (i == 0) ? (m_xi) : (1.);
+        if (i == 0) {
+            rangeMin[0] = -1.;
+            rangeMax[0] = -m_xi;
+        } else if (i == 1) {
+            rangeMin[0] = -m_xi;
+            rangeMax[0] = m_xi;
+        } else if (i == 2) {
+            rangeMin[0] = m_xi;
+            rangeMax[0] = 1.;
+        } else {
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    "Wrong index");
+        }
 
         //state
         gslState = gsl_monte_vegas_alloc(3);
@@ -704,9 +747,29 @@ std::complex<double> DVMPCFFGK06::convolution(GPDType::Type gpdType,
         //Im integrate
         do {
 
-            if (resultIm[i] == 0. && errorIm[i] == 0.)
-                break;
+            if (errorIm[i] == 0.) {
 
+                if (std::isnan(resultIm[i])) {
+
+                    warn(__func__,
+                            ElemUtils::Formatter() << "Range: " << i
+                                    << " for GPD "
+                                    << GPDType(m_currentGPDComputeType).toString()
+                                    << " gives null error, result is NaN and changed to zero");
+
+                    resultIm[i] = 0.;
+
+                } else {
+                    warn(__func__,
+                            ElemUtils::Formatter() << "Range: " << i
+                                    << " for GPD "
+                                    << GPDType(m_currentGPDComputeType).toString()
+                                    << " gives null error, result is: "
+                                    << resultIm[i]);
+                }
+
+                break;
+            }
             gsl_monte_vegas_integrate(&gslFunction, rangeMin, rangeMax, 3,
                     m_MCCalls, gslRnd, gslState, &resultIm[i], &errorIm[i]);
 
@@ -731,8 +794,9 @@ std::complex<double> DVMPCFFGK06::convolution(GPDType::Type gpdType,
     gsl_rng_free(gslRnd);
 
     // Return
-    return (resultRe[0] + resultRe[1])
-            + std::complex<double>(0., 1.) * (resultIm[0] + resultIm[1]);
+    return (resultRe[0] + resultRe[1] + resultRe[2])
+            + std::complex<double>(0., 1.)
+                    * (resultIm[0] + resultIm[1] + resultIm[2]);
 }
 
 std::complex<double> DVMPCFFGK06::convolutionTwist2(
@@ -775,7 +839,7 @@ std::complex<double> DVMPCFFGK06::convolutionTwist3B(
 
     gsl_integration_workspace* w; // workspace
 
-    double result[2], error[2]; //result
+    double result[3], error[3]; //result
 
     DVMPCFFGK06IntegrationParameters dvmpCFFGK06IntegrationParameters; // parameters
     dvmpCFFGK06IntegrationParameters.m_pDVMPCFFGK06 = this;
@@ -785,18 +849,39 @@ std::complex<double> DVMPCFFGK06::convolutionTwist3B(
     gslFunction.function = &gslWrapper1;
     gslFunction.params = &dvmpCFFGK06IntegrationParameters;
 
-    for (size_t i = 0; i < 2; i++) {
+    double rangeMin, rangeMax; // range
+
+    for (size_t i = 0; i < 3; i++) {
+
+        //range
+        if (i == 0) {
+            rangeMin = -1.;
+            rangeMax = -m_xi;
+        } else if (i == 1) {
+            rangeMin = -m_xi;
+            rangeMax = m_xi;
+        } else if (i == 2) {
+            rangeMin = m_xi;
+            rangeMax = 1.;
+        } else {
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    "Wrong index");
+        }
 
         w = gsl_integration_workspace_alloc(10000); //workspace
 
-        gsl_integration_qag(&gslFunction, (i == 0) ? (0.) : (m_xi),
-                (i == 0) ? (m_xi) : (1.), 0.0, GSL_INTEG_GAUSS61, 1e-5, 10000,
-                w, &result[i], &error[i]); //evaluate
+        gsl_integration_qag(&gslFunction, rangeMin, rangeMax, 0.0, 1e-5, 10000,
+                GSL_INTEG_GAUSS61, w, &result[i], &error[i]); //evaluate
 
         gsl_integration_workspace_free(w); //free
+
+        info(__func__,
+                ElemUtils::Formatter() << "i: " << i << " CFF "
+                        << GPDType(m_currentGPDComputeType).toString()
+                        << " result: " << result[i] << " error: " << error[i]);
     }
 
-    return std::complex<double>(result[0] + result[1], 0.);
+    return std::complex<double>(result[0] + result[1] + result[2], 0.);
 }
 
 std::complex<double> DVMPCFFGK06::convolutionTwist3C(

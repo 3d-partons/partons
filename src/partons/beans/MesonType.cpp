@@ -1,7 +1,10 @@
 #include "../../../include/partons/beans/MesonType.h"
 
+#include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <ElementaryUtils/thread/Packet.h>
+
+#include "../../../include/partons/FundamentalPhysicalConstants.h"
 
 namespace PARTONS {
 
@@ -45,9 +48,58 @@ List<GPDType> MesonType::getPossibleGPDTypes() const {
         list.add(GPDType(GPDType::E));
         list.add(GPDType(GPDType::HTrans));
         list.add(GPDType(GPDType::ETrans));
+    } else {
+        throw ElemUtils::CustomException("MesonType", __func__,
+                ElemUtils::Formatter() << "Not able to return value for type "
+                        << toString());
     }
 
     return list;
+}
+
+double MesonType::getMass() const {
+
+    switch (m_type) {
+
+    case RHOMINUS:
+        return Constant::MESON_RHOMINUS_MASS;
+        break;
+    case RHO0:
+        return Constant::MESON_RHO0_MASS;
+        break;
+    case RHOPLUS:
+        return Constant::MESON_RHOPLUS_MASS;
+        break;
+    case OMEGA:
+        return Constant::MESON_OMEGA_MASS;
+        break;
+    case PHI:
+        return Constant::MESON_PHI_MASS;
+        break;
+    case JPSI:
+        return Constant::MESON_JPSI_MASS;
+        break;
+    case UPSILON:
+        return Constant::MESON_UPSILON_MASS;
+        break;
+
+    case PIMINUS:
+        return Constant::MESON_PIMINUS_MASS;
+        break;
+    case PI0:
+        return Constant::MESON_PI0_MASS;
+        break;
+    case PIPLUS:
+        return Constant::MESON_PIPLUS_MASS;
+        break;
+
+    default:
+
+        throw ElemUtils::CustomException("MesonType", __func__,
+                ElemUtils::Formatter() << "Not able to return value for type "
+                        << toString());
+        return 0.;
+    }
 }
 
 std::string MesonType::toString() const {

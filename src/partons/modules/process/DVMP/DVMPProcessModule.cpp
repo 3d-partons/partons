@@ -31,8 +31,8 @@ DVMPProcessModule::DVMPProcessModule(const std::string &className) :
                 0.), m_E(0.), m_phi(0.), m_mesonType(MesonType::UNDEFINED), m_beamHelicity(
                 0.), m_beamCharge(0.), m_mesonPolarization(
                 MesonPolarization::UNDEFINED), m_tmin(0.), m_tmax(0.), m_xBmin(
-                0), m_y(0.), m_epsilon(0.), m_pScaleModule(0), m_pXiConverterModule(
-                0), m_pConvolCoeffFunctionModule(0) {
+                0), m_y(0.), m_pScaleModule(0), m_pXiConverterModule(0), m_pConvolCoeffFunctionModule(
+                0) {
 }
 
 DVMPProcessModule::~DVMPProcessModule() {
@@ -60,9 +60,8 @@ DVMPProcessModule::DVMPProcessModule(const DVMPProcessModule& other) :
                 other.m_beamCharge), m_targetPolarization(
                 other.m_targetPolarization), m_mesonPolarization(
                 other.m_mesonPolarization), m_tmin(other.m_tmin), m_tmax(
-                other.m_tmax), m_xBmin(other.m_xBmin), m_y(other.m_y), m_epsilon(
-                other.m_epsilon), m_pScaleModule(0), m_pXiConverterModule(0), m_pConvolCoeffFunctionModule(
-                0) {
+                other.m_tmax), m_xBmin(other.m_xBmin), m_y(other.m_y), m_pScaleModule(
+                0), m_pXiConverterModule(0), m_pConvolCoeffFunctionModule(0) {
 
     m_lastCCFKinematics = other.m_lastCCFKinematics;
     m_dvcsConvolCoeffFunctionResult = other.m_dvcsConvolCoeffFunctionResult;
@@ -403,14 +402,21 @@ void DVMPProcessModule::initModule() {
     ProcessModule<DVMPObservableKinematic, DVMPObservableResult>::initModule();
 
     //evaluate internal variables
-    m_epsilon = 2 * m_xB * Constant::PROTON_MASS / sqrt(m_Q2);
     m_y = m_Q2 / (2 * m_xB * Constant::PROTON_MASS * m_E);
-    double eps2 = m_epsilon * m_epsilon;
-    double epsroot = sqrt(1 + eps2);
-    double tfactor = -m_Q2 / (4 * m_xB * (1 - m_xB) + eps2);
-    m_tmin = tfactor * (2 * (1 - m_xB) * (1 - epsroot) + eps2); //TODO
-    m_tmax = tfactor * (2 * (1 - m_xB) * (1 + epsroot) + eps2); //TODO
     m_xBmin = 2 * m_Q2 * m_E / Constant::PROTON_MASS / (4 * m_E * m_E - m_Q2);
+
+    double s = pow(Constant::PROTON_MASS, 2) + 2. * Constant::PROTON_MASS * m_E;
+
+    double E1cm = (s - m_Q2 - pow(Constant::PROTON_MASS, 2)) / (2 * sqrt(s));
+    double p1cm = sqrt(pow(E1cm, 2) + m_Q2);
+    double E3cm = (s + pow(MesonType(m_mesonType).getMass(), 2)
+            - pow(Constant::PROTON_MASS, 2)) / (2 * sqrt(s));
+    double p3cm = sqrt(pow(E3cm, 2) - pow(MesonType(m_mesonType).getMass(), 2));
+
+    m_tmin = pow(-m_Q2 - pow(MesonType(m_mesonType).getMass(), 2), 2) / (4 * s)
+            - pow(p1cm - p3cm, 2);
+    m_tmax = pow(-m_Q2 - pow(MesonType(m_mesonType).getMass(), 2), 2) / (4 * s)
+            - pow(p1cm + p3cm, 2);
 }
 
 void DVMPProcessModule::isModuleWellConfigured() {

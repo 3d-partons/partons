@@ -48,6 +48,10 @@ void DVMPProcessGK06::initModule() {
             getXiConverterModule()->compute(
                     DVMPObservableKinematic(m_xB, m_t, m_Q2, m_E, m_phi,
                             m_mesonType)).getValue();
+
+    //reevaluate t_min
+    m_tmin = -4. * pow(Constant::PROTON_MASS, 2.) * pow(m_xi, 2.)
+            / (1. - pow(m_xi, 2.));
 }
 
 void DVMPProcessGK06::isModuleWellConfigured() {

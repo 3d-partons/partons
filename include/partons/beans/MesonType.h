@@ -77,6 +77,11 @@ public:
     List<GPDType> getPossibleGPDTypes() const;
 
     /**
+     * Get mass associated to set meson type.
+     */
+    double getMass() const;
+
+    /**
      * Get string representation of type being assigned to a declared object of this class.
      * @return String representation of assigned type.
      */
