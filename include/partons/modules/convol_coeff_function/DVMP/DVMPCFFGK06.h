@@ -145,6 +145,8 @@ private:
 
     PartonDistribution m_gpdResultXiXi; ///< GPD result at x=xi.
 
+    PartonDistribution m_gpdResultmXiXi; ///< GPD result at x=-xi.
+
     RunningAlphaStrongModule* m_pRunningAlphaStrongModule; ///< AlphaS module.
 
     //*** MISC FUNCTIONS *************************************************

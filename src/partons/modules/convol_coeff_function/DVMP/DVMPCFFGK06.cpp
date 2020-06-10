@@ -203,6 +203,10 @@ std::complex<double> DVMPCFFGK06::computeCFF() {
             GPDKinematic(m_xi, m_xi, m_t, m_MuF2, m_MuR2),
             m_currentGPDComputeType);
 
+    m_gpdResultmXiXi = m_pGPDModule->compute(
+            GPDKinematic(-m_xi, m_xi, m_t, m_MuF2, m_MuR2),
+            m_currentGPDComputeType);
+
     //GPD
     std::complex<double> convolution;
 
@@ -823,7 +827,13 @@ double DVMPCFFGK06::convolutionTwist3BFunction(double x, void * params) const {
             GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2), p->m_gpdType);
 
     //evaluate
-    double convolution = 1. / (x + m_xi) * (getMesonGPDCombination(gpdResult))
+//    double convolution = 1. / (x + m_xi) * (getMesonGPDCombination(gpdResult))
+//            - 1.
+//                    * (getMesonGPDCombination(gpdResult)
+//                            - getMesonGPDCombination(m_gpdResultXiXi))
+//                    / (x - m_xi);
+
+    double convolution = 1. / (x + m_xi) * (getMesonGPDCombination(gpdResult) - getMesonGPDCombination(m_gpdResultmXiXi))
             - 1.
                     * (getMesonGPDCombination(gpdResult)
                             - getMesonGPDCombination(m_gpdResultXiXi))
@@ -851,7 +861,7 @@ std::complex<double> DVMPCFFGK06::convolutionTwist3B(
 
     double rangeMin, rangeMax; // range
 
-    for (size_t i = 1; i < 3; i++) {
+    for (size_t i = 0; i < 3; i++) {
 
         //range
         if (i == 0) {
@@ -890,12 +900,23 @@ std::complex<double> DVMPCFFGK06::convolutionTwist3C(
     //get WF parameters
     std::pair<double, double> par = mesonWFParameters(3);
 
+//    return 16. * M_PI * m_Cf / m_Nc
+//            * m_pRunningAlphaStrongModule->compute(m_Q2 / 2.) * par.first
+//            * m_muPi * pow(par.second, 2.)
+//            * (getMesonGPDCombination(m_gpdResultXiXi)
+//                    * (std::complex<double>(0., 1.) * M_PI
+//                            - log((1. - m_xi) / (2. * m_xi))));
+
     return 16. * M_PI * m_Cf / m_Nc
             * m_pRunningAlphaStrongModule->compute(m_Q2 / 2.) * par.first
             * m_muPi * pow(par.second, 2.)
             * (getMesonGPDCombination(m_gpdResultXiXi)
                     * (std::complex<double>(0., 1.) * M_PI
-                            - log((1. - m_xi) / (2. * m_xi))));
+                            + log((1. + m_xi) / (1. - m_xi)))
+               + getMesonGPDCombination(m_gpdResultmXiXi)
+                   * (std::complex<double>(0., 1.) * M_PI
+                           + log((1. + m_xi) / (1. - m_xi))));
+
 }
 
 std::complex<double> DVMPCFFGK06::HankelFunctionFirstKind(double z) const {
