@@ -3,7 +3,6 @@
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <cmath>
-#include <complex>
 
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../../include/partons/beans/MesonType.h"
@@ -11,7 +10,6 @@
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../../include/partons/modules/xi_converter/DVMP/DVMPXiConverterModule.h"
-#include "../../../../../include/partons/modules/xi_converter/XiConverterModule.h"
 #include "../../../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
@@ -94,13 +92,8 @@ double DVMPProcessGK06::CrossSectionL() {
 
     // Longitudinal partial cross section. See Eq. (43) in arxiv:0906.0460
 
-    std::complex<double> amplitude0m0p = getConvolCoeffFunctionValue(
-            GPDType::Et);
-    //TODO TBC
-    std::complex<double> amplitude0p0p = getConvolCoeffFunctionValue(
-            GPDType::Ht)
-            - 2 * Constant::PROTON_MASS * m_xi / sqrt(1. - pow(m_xi, 2))
-                    / sqrt(-(m_t - m_tmin)) * amplitude0m0p;
+    std::complex<double> amplitude0m0p = Amplitude0m0p();
+    std::complex<double> amplitude0p0p = Amplitude0p0p();
 
     double result = 1.
             / (32.0 * M_PI * (m_W2 - pow(Constant::PROTON_MASS, 2.0))
@@ -120,13 +113,10 @@ double DVMPProcessGK06::CrossSectionT() {
 
     // Transverse partial cross section. See Eq. (43) in arxiv:0906.0460
 
-    std::complex<double> amplitude0mpp = getConvolCoeffFunctionValue(
-            GPDType::HTrans);
-    std::complex<double> amplitude0ppp = getConvolCoeffFunctionValue(
-            GPDType::EbarTrans);
-    std::complex<double> amplitude0pmp = getConvolCoeffFunctionValue(
-            GPDType::EbarTrans);
-    std::complex<double> amplitude0mmp(0., 0.);
+    std::complex<double> amplitude0mpp = Amplitude0mpp();
+    std::complex<double> amplitude0ppp = Amplitude0ppp();
+    std::complex<double> amplitude0pmp = Amplitude0pmp();
+    std::complex<double> amplitude0mmp = Amplitude0mmp();
 
     double result = 1.
             / (32.0 * M_PI * (m_W2 - pow(Constant::PROTON_MASS, 2.0))
@@ -144,20 +134,12 @@ double DVMPProcessGK06::CrossSectionT() {
 
 double DVMPProcessGK06::CrossSectionLT() {
 
-    std::complex<double> amplitude0m0p = getConvolCoeffFunctionValue(
-            GPDType::Et);
-    //TODO TBC
-    std::complex<double> amplitude0p0p = getConvolCoeffFunctionValue(
-            GPDType::Ht)
-            - 2 * Constant::PROTON_MASS * m_xi / sqrt(1. - pow(m_xi, 2))
-                    / sqrt(-(m_t - m_tmin)) * amplitude0m0p;
-    std::complex<double> amplitude0mpp = getConvolCoeffFunctionValue(
-            GPDType::HTrans);
-    std::complex<double> amplitude0ppp = getConvolCoeffFunctionValue(
-            GPDType::EbarTrans);
-    std::complex<double> amplitude0pmp = getConvolCoeffFunctionValue(
-            GPDType::EbarTrans);
-    std::complex<double> amplitude0mmp(0., 0.);
+    std::complex<double> amplitude0m0p = Amplitude0m0p();
+    std::complex<double> amplitude0p0p = Amplitude0p0p();
+    std::complex<double> amplitude0mpp = Amplitude0mpp();
+    std::complex<double> amplitude0ppp = Amplitude0ppp();
+    std::complex<double> amplitude0pmp = Amplitude0pmp();
+    std::complex<double> amplitude0mmp = Amplitude0mmp();
 
     // Partial cross section of the interference part LT. See Eq. (43) in arxiv:0906.0460
 
@@ -179,13 +161,10 @@ double DVMPProcessGK06::CrossSectionLT() {
 
 double DVMPProcessGK06::CrossSectionTT() {
 
-    std::complex<double> amplitude0mpp = getConvolCoeffFunctionValue(
-            GPDType::HTrans);
-    std::complex<double> amplitude0ppp = getConvolCoeffFunctionValue(
-            GPDType::EbarTrans);
-    std::complex<double> amplitude0pmp = getConvolCoeffFunctionValue(
-            GPDType::EbarTrans);
-    std::complex<double> amplitude0mmp(0., 0.);
+    std::complex<double> amplitude0mpp = Amplitude0mpp();
+    std::complex<double> amplitude0ppp = Amplitude0ppp();
+    std::complex<double> amplitude0pmp = Amplitude0pmp();
+    std::complex<double> amplitude0mmp = Amplitude0mmp();
 
     // Partial cross section of the interference part TT. See Eq. (43) in arxiv:0906.0460
 
@@ -207,6 +186,60 @@ double DVMPProcessGK06::CrossSectionTT() {
 double DVMPProcessGK06::lambdaFunction(double a, double b, double c) const {
     return pow(a, 2.0) + pow(b, 2.0) + pow(c, 2.0)
             - 2.0 * (a * b + a * c + b * c);
+}
+
+std::complex<double> DVMPProcessGK06::Amplitude0p0p() {
+
+    std::complex<double> amplitude0p0p = sqrt(1. - pow(m_xi, 2.))
+            * Constant::POSITRON_CHARGE / sqrt(m_Q2)
+            * (getConvolCoeffFunctionValue(GPDType::Ht)
+                    - pow(m_xi, 2.) / (1. - pow(m_xi, 2.))
+                            * getConvolCoeffFunctionValue(GPDType::Et));
+
+    return amplitude0p0p;
+}
+
+std::complex<double> DVMPProcessGK06::Amplitude0m0p() {
+
+    std::complex<double> amplitude0m0p = Constant::POSITRON_CHARGE / sqrt(m_Q2)
+            * sqrt(-(m_t - m_tmin)) * m_xi / (2. * Constant::PROTON_MASS)
+            * getConvolCoeffFunctionValue(GPDType::Et);
+
+    return amplitude0m0p;
+}
+
+std::complex<double> DVMPProcessGK06::Amplitude0mpp() {
+
+    std::complex<double> amplitude0mpp = Constant::POSITRON_CHARGE
+            * sqrt(1. - pow(m_xi, 2.))
+            * getConvolCoeffFunctionValue(GPDType::HTrans);
+
+    return amplitude0mpp;
+}
+
+std::complex<double> DVMPProcessGK06::Amplitude0ppp() {
+
+    std::complex<double> amplitude0ppp = -1.0 * Constant::POSITRON_CHARGE
+            * sqrt(-(m_t - m_tmin)) / (4. * Constant::PROTON_MASS)
+            * getConvolCoeffFunctionValue(GPDType::EbarTrans);
+
+    return amplitude0ppp;
+}
+
+std::complex<double> DVMPProcessGK06::Amplitude0pmp() {
+
+    std::complex<double> amplitude0pmp = -1.0 * Constant::POSITRON_CHARGE
+            * sqrt(-(m_t - m_tmin)) / (4. * Constant::PROTON_MASS)
+            * getConvolCoeffFunctionValue(GPDType::EbarTrans);
+
+    return amplitude0pmp;
+}
+
+std::complex<double> DVMPProcessGK06::Amplitude0mmp() {
+
+    std::complex<double> amplitude0mmp = 0.0;
+
+    return amplitude0mmp;
 }
 
 } /* namespace PARTONS */

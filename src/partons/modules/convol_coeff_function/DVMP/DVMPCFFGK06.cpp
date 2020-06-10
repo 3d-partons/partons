@@ -51,9 +51,8 @@ double DVMPCFFGK06::gslWrapper1(double x, void * params) {
 
 DVMPCFFGK06::DVMPCFFGK06(const std::string &className) :
         DVMPConvolCoeffFunctionModule(className), m_cNf(3.), m_cLambdaQCD(0.22), m_EulerGamma(
-                0.577216), m_PositronCharge(0.3028), m_Nc(3.), m_Cf(4. / 3.), m_muPi(
-                2.0), m_tmin(0.), m_pRunningAlphaStrongModule(0), m_MCNWarmUp(
-                2E4), m_MCCalls(2E5), m_MCChi2Limit(0.8) {
+                0.577216), m_Nc(3.), m_Cf(4. / 3.), m_muPi(2.0), m_tmin(0.), m_pRunningAlphaStrongModule(
+                0), m_MCNWarmUp(2E4), m_MCCalls(2E5), m_MCChi2Limit(0.8) {
 
     //relate GPD types with functions to be used
     m_listOfCFFComputeFunctionAvailable.insert(
@@ -72,11 +71,10 @@ DVMPCFFGK06::DVMPCFFGK06(const std::string &className) :
 
 DVMPCFFGK06::DVMPCFFGK06(const DVMPCFFGK06 &other) :
         DVMPConvolCoeffFunctionModule(other), m_cNf(other.m_cNf), m_cLambdaQCD(
-                other.m_cLambdaQCD), m_EulerGamma(other.m_EulerGamma), m_PositronCharge(
-                other.m_PositronCharge), m_Nc(other.m_Nc), m_Cf(other.m_Cf), m_muPi(
-                other.m_muPi), m_tmin(other.m_tmin), m_MCNWarmUp(
-                other.m_MCNWarmUp), m_MCCalls(other.m_MCCalls), m_MCChi2Limit(
-                other.m_MCChi2Limit) {
+                other.m_cLambdaQCD), m_EulerGamma(other.m_EulerGamma), m_Nc(
+                other.m_Nc), m_Cf(other.m_Cf), m_muPi(other.m_muPi), m_tmin(
+                other.m_tmin), m_MCNWarmUp(other.m_MCNWarmUp), m_MCCalls(
+                other.m_MCCalls), m_MCChi2Limit(other.m_MCChi2Limit) {
 
     //clone alpaS module
     if (other.m_pRunningAlphaStrongModule != 0) {
@@ -216,10 +214,7 @@ std::complex<double> DVMPCFFGK06::computeCFF() {
     //Ht
     case GPDType::Ht: {
 
-        convolution = convolutionTwist2(m_currentGPDComputeType);
-
-        return m_PositronCharge * sqrt(1. - pow(m_xi, 2.)) / sqrt(m_Q2)
-                * convolution;
+        return convolutionTwist2(m_currentGPDComputeType);
     }
 
         break;
@@ -227,12 +222,7 @@ std::complex<double> DVMPCFFGK06::computeCFF() {
         //Et
     case GPDType::Et: {
 
-        convolution = convolutionTwist2(m_currentGPDComputeType);
-
-        return m_PositronCharge * sqrt(1. - pow(m_xi, 2.)) / sqrt(m_Q2)
-                * (-pow(m_xi, 2.) / (1. - pow(m_xi, 2.)) * convolution)
-                + m_PositronCharge / sqrt(m_Q2) * sqrt(-(m_t - m_tmin)) * m_xi
-                        / (2. * Constant::PROTON_MASS) * convolution;
+        return convolutionTwist2(m_currentGPDComputeType);
     }
 
         break;
@@ -240,11 +230,9 @@ std::complex<double> DVMPCFFGK06::computeCFF() {
         //HTrans
     case GPDType::HTrans: {
 
-        convolution = convolutionTwist3A(m_currentGPDComputeType)
+        return convolutionTwist3A(m_currentGPDComputeType)
                 + convolutionTwist3B(m_currentGPDComputeType)
                 + convolutionTwist3C(m_currentGPDComputeType);
-
-        return m_PositronCharge * sqrt(1. - pow(m_xi, 2.)) * convolution;
     }
 
         break;
@@ -252,12 +240,9 @@ std::complex<double> DVMPCFFGK06::computeCFF() {
         //EbarTrans
     case GPDType::EbarTrans: {
 
-        convolution = convolutionTwist3A(m_currentGPDComputeType)
+        return convolutionTwist3A(m_currentGPDComputeType)
                 + convolutionTwist3B(m_currentGPDComputeType)
                 + convolutionTwist3C(m_currentGPDComputeType);
-
-        return -2.0 * m_PositronCharge * sqrt(-(m_t - m_tmin))
-                / (4. * Constant::PROTON_MASS) * convolution;
     }
 
         break;
@@ -833,7 +818,9 @@ double DVMPCFFGK06::convolutionTwist3BFunction(double x, void * params) const {
 //                            - getMesonGPDCombination(m_gpdResultXiXi))
 //                    / (x - m_xi);
 
-    double convolution = 1. / (x + m_xi) * (getMesonGPDCombination(gpdResult) - getMesonGPDCombination(m_gpdResultmXiXi))
+    double convolution = 1. / (x + m_xi)
+            * (getMesonGPDCombination(gpdResult)
+                    - getMesonGPDCombination(m_gpdResultmXiXi))
             - 1.
                     * (getMesonGPDCombination(gpdResult)
                             - getMesonGPDCombination(m_gpdResultXiXi))
@@ -913,9 +900,9 @@ std::complex<double> DVMPCFFGK06::convolutionTwist3C(
             * (getMesonGPDCombination(m_gpdResultXiXi)
                     * (std::complex<double>(0., 1.) * M_PI
                             + log((1. + m_xi) / (1. - m_xi)))
-               + getMesonGPDCombination(m_gpdResultmXiXi)
-                   * (std::complex<double>(0., 1.) * M_PI
-                           + log((1. + m_xi) / (1. - m_xi))));
+                    + getMesonGPDCombination(m_gpdResultmXiXi)
+                            * (std::complex<double>(0., 1.) * M_PI
+                                    + log((1. + m_xi) / (1. - m_xi))));
 
 }
 

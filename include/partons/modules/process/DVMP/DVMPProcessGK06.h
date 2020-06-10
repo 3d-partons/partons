@@ -8,6 +8,7 @@
  * @version 1.0
  */
 
+#include <complex>
 #include <string>
 
 #include "../../../utils/type/PhysicalType.h"
@@ -66,6 +67,13 @@ private:
     double CrossSectionT(); ///< Partial cross-section T
     double CrossSectionLT(); ///< Partial cross-section LT
     double CrossSectionTT(); ///< Partial cross-section TT
+
+    std::complex<double> Amplitude0p0p(); ///< Computation of the amplitude M_{0+0+}.
+    std::complex<double> Amplitude0m0p(); ///< Computation of the amplitude M_{0-0+}.
+    std::complex<double> Amplitude0mpp(); ///< Computation of the amplitude M_{0-++}.
+    std::complex<double> Amplitude0ppp(); ///< Computation of the amplitude M_{0+++}.
+    std::complex<double> Amplitude0pmp(); ///< Computation of the amplitude M_{0+-+}.
+    std::complex<double> Amplitude0mmp(); ///< Computation of the amplitude M_{0--+}.
 
     double m_W2; ///< W^2 variable.
     double m_xi; ///< xi variable.

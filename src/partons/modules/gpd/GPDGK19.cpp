@@ -378,13 +378,13 @@ PartonDistribution GPDGK19::computeHTrans() {
     quarkDistribution_d.setQuarkDistribution(dVal + dSea);
 
     // Set Etq(+)
-    quarkDistribution_u.setQuarkDistributionPlus(uVal + fHTransuValMx);
-    quarkDistribution_d.setQuarkDistributionPlus(dVal + fHTransdValMx);
+    quarkDistribution_u.setQuarkDistributionPlus(uVal - fHTransuValMx);
+    quarkDistribution_d.setQuarkDistributionPlus(dVal - fHTransdValMx);
     quarkDistribution_s.setQuarkDistributionPlus(0.);
 
     // Set Eq(-)
-    quarkDistribution_u.setQuarkDistributionMinus(uVal - fHTransuValMx);
-    quarkDistribution_d.setQuarkDistributionMinus(dVal - fHTransdValMx);
+    quarkDistribution_u.setQuarkDistributionMinus(uVal + fHTransuValMx);
+    quarkDistribution_d.setQuarkDistributionMinus(dVal + fHTransdValMx);
     quarkDistribution_s.setQuarkDistributionMinus(0.);
 
     partonDistribution.setGluonDistribution(gluonDistribution);
@@ -464,13 +464,13 @@ PartonDistribution GPDGK19::computeEbarTrans() {
     quarkDistribution_d.setQuarkDistribution(dVal + dSea);
 
     // Set Etq(+)
-    quarkDistribution_u.setQuarkDistributionPlus(uVal + fETransuValMx);
-    quarkDistribution_d.setQuarkDistributionPlus(dVal + fETransdValMx);
+    quarkDistribution_u.setQuarkDistributionPlus(uVal - fETransuValMx);
+    quarkDistribution_d.setQuarkDistributionPlus(dVal - fETransdValMx);
     quarkDistribution_s.setQuarkDistributionPlus(0.);
 
     // Set Eq(-)
-    quarkDistribution_u.setQuarkDistributionMinus(uVal - fETransuValMx);
-    quarkDistribution_d.setQuarkDistributionMinus(dVal - fETransdValMx);
+    quarkDistribution_u.setQuarkDistributionMinus(uVal + fETransuValMx);
+    quarkDistribution_d.setQuarkDistributionMinus(dVal + fETransdValMx);
     quarkDistribution_s.setQuarkDistributionMinus(0.);
 
     partonDistribution.setGluonDistribution(gluonDistribution);

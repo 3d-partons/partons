@@ -132,7 +132,6 @@ private:
     const double m_cNf; ///< Number of active flavors.
     const double m_cLambdaQCD; ///< Lambda QCD
     const double m_EulerGamma; ///< Euler-Mascheroni Constant
-    const double m_PositronCharge; ///< Charge of the positron
     const double m_Nc; ///< Number of colors
     const double m_Cf; ///< Color factor
     const double m_muPi; ///> Parameter proportional to chiral condensate, see for instance Eq. (21) in arxiv:0906.0460
