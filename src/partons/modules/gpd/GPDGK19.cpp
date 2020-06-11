@@ -62,7 +62,10 @@ GPDGK19::GPDGK19(const std::string &className) :
     kETransuval = 0.0;
     kETransdval = 0.0;
 
-
+    m_listGPDComputeTypeAvailable.insert(
+              std::make_pair(GPDType::H, &GPDModule::computeH));
+    m_listGPDComputeTypeAvailable.insert(
+              std::make_pair(GPDType::E, &GPDModule::computeE));
     m_listGPDComputeTypeAvailable.insert(
             std::make_pair(GPDType::Ht, &GPDModule::computeHt));
     m_listGPDComputeTypeAvailable.insert(
