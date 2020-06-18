@@ -448,13 +448,9 @@ double DVMPCFFGK06::getMesonGPDCombination(
 
         //pi+
     case MesonType::PIPLUS: {
-        return 1. / sqrt(2.)
-                * (Constant::U_ELEC_CHARGE
-                        * partonDistribution.getQuarkDistribution(
-                                QuarkFlavor::UP).getQuarkDistribution()
-                        - Constant::D_ELEC_CHARGE
-                                * partonDistribution.getQuarkDistribution(
-                                        QuarkFlavor::DOWN).getQuarkDistribution());
+
+        return partonDistribution.getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution()
+                        - partonDistribution.getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistribution();
     }
 
         break;
@@ -475,40 +471,39 @@ double DVMPCFFGK06::getMesonGPDCombination(
 std::complex<double> DVMPCFFGK06::subProcess(double x, double tau, double b,
         size_t twist) const {
 
+    std::complex<double> Ts, Tu;
+
+    if (x >= m_xi) {
+        Ts = -1. * std::complex<double>(0., 1.) / 4.
+                * (gsl_sf_bessel_J0(
+                        sqrt((1. - tau) * (x - m_xi) / (2. * m_xi)) * b
+                                * sqrt(m_Q2))
+                        + std::complex<double>(0., 1.)
+                                * gsl_sf_bessel_Y0(
+                                        sqrt(
+                                                (1. - tau) * (x - m_xi)
+                                                        / (2. * m_xi))
+                                                * b * sqrt(m_Q2)));
+    } else {
+        Ts = -1. / (2. * M_PI)
+                * gsl_sf_bessel_K0(
+                        sqrt((1. - tau) * (m_xi - x) / (2. * m_xi)) * b
+                                * sqrt(m_Q2));
+    }
+
+    Tu = -1. / (2. * M_PI)
+            * gsl_sf_bessel_K0(
+                    sqrt(tau * (x + m_xi) / (2. * m_xi)) * b
+                            * sqrt(m_Q2));
+
     //switch over mesons
     switch (m_mesonType) {
 
     //pi0 pi+
-    case MesonType::PI0:
-    case MesonType::PIPLUS: {
-
-        std::complex<double> Ts, Tu;
+    case MesonType::PI0: {
 
         //twist 2
         if (twist == 2) {
-
-            if (x >= m_xi) {
-                Ts = -1. * std::complex<double>(0., 1.) / 4.
-                        * (gsl_sf_bessel_J0(
-                                sqrt((1. - tau) * (x - m_xi) / (2. * m_xi)) * b
-                                        * sqrt(m_Q2))
-                                + std::complex<double>(0., 1.)
-                                        * gsl_sf_bessel_Y0(
-                                                sqrt(
-                                                        (1. - tau) * (x - m_xi)
-                                                                / (2. * m_xi))
-                                                        * b * sqrt(m_Q2)));
-            } else {
-                Ts = -1. / (2. * M_PI)
-                        * gsl_sf_bessel_K0(
-                                sqrt((1. - tau) * (m_xi - x) / (2. * m_xi)) * b
-                                        * sqrt(m_Q2));
-            }
-
-            Tu = -1. / (2. * M_PI)
-                    * gsl_sf_bessel_K0(
-                            sqrt(tau * (x + m_xi) / (2. * m_xi)) * b
-                                    * sqrt(m_Q2));
 
             return m_Cf * sqrt(2. / m_Nc) * m_Q2 / m_xi * 2. * M_PI * b
                     * mesonWF(tau, b, twist)
@@ -519,34 +514,42 @@ std::complex<double> DVMPCFFGK06::subProcess(double x, double tau, double b,
         //twist 3
         else if (twist == 3) {
 
-            if (x >= m_xi) {
-                Ts = -1. * std::complex<double>(0., 1.) / 4.
-                        * (gsl_sf_bessel_J0(
-                                sqrt((1. - tau) * (x - m_xi) / (2. * m_xi)) * b
-                                        * sqrt(m_Q2))
-                                + std::complex<double>(0., 1.)
-                                        * gsl_sf_bessel_Y0(
-                                                sqrt(
-                                                        (1. - tau) * (x - m_xi)
-                                                                / (2. * m_xi))
-                                                        * b * sqrt(m_Q2)));
-            } else {
-                Ts = -1. / (2. * M_PI)
-                        * gsl_sf_bessel_K0(
-                                sqrt((1. - tau) * (m_xi - x) / (2. * m_xi)) * b
-                                        * sqrt(m_Q2));
-            }
-
-            Tu = -1. / (2. * M_PI)
-                    * gsl_sf_bessel_K0(
-                            sqrt(tau * (x + m_xi) / (2. * m_xi)) * b
-                                    * sqrt(m_Q2));
-
             return 4.0 * m_Cf / sqrt(2. * m_Nc) * m_Q2 / m_xi * 2. * M_PI * b
                     * mesonWF(tau, b, twist)
                     * m_pRunningAlphaStrongModule->compute(
                             pow(computeMuR(tau, b), 2))
                     * expSudakovFactor(tau, b) * ((1. - tau) * Ts + tau * Tu);
+
+        }
+        //???
+        else {
+
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    ElemUtils::Formatter() << "Twist " << twist
+                            << " not implemented here for meson "
+                            << MesonType(m_mesonType).toString());
+        }
+    }
+
+    case MesonType::PIPLUS: {
+
+        //twist 2
+        if (twist == 2) {
+
+            return m_Cf * sqrt(2. / m_Nc) * m_Q2 / m_xi * 2. * M_PI * b
+                    * mesonWF(tau, b, twist)
+                    * m_pRunningAlphaStrongModule->compute(
+                            pow(computeMuR(tau, b), 2))
+                    * expSudakovFactor(tau, b) * (Constant::U_ELEC_CHARGE * Ts - Constant::D_ELEC_CHARGE * Tu);
+        }
+        //twist 3
+        else if (twist == 3) {
+
+            return 4.0 * m_Cf / sqrt(2. * m_Nc) * m_Q2 / m_xi * 2. * M_PI * b
+                    * mesonWF(tau, b, twist)
+                    * m_pRunningAlphaStrongModule->compute(
+                            pow(computeMuR(tau, b), 2))
+                    * expSudakovFactor(tau, b) * ((1. - tau) * Constant::U_ELEC_CHARGE * Ts + tau * Constant::D_ELEC_CHARGE * Tu);
 
         }
         //???
