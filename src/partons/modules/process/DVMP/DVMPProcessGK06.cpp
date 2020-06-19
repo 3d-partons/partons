@@ -188,58 +188,330 @@ double DVMPProcessGK06::lambdaFunction(double a, double b, double c) const {
             - 2.0 * (a * b + a * c + b * c);
 }
 
+double DVMPProcessGK06::poleResidue() {
+
+    //the residue of the pole. See Eq. (8) in https://arxiv.org/pdf/0906.0460.pdf
+
+    //The fit parameter to be used in pion form factor
+    double FitParameter = 0.5;
+
+    //A parameter to be used in pion-nucleon vertex
+    double LambdaN = 0.44;
+
+    //Pion-Nucleon coupling constant
+    double PionNucleonCoupling = 13.1;
+
+    //Pion form factor
+    double FF = 1.0 / (1.0 + m_Q2 / FitParameter);
+
+    //Pion-Nucleon vertex
+    double PionNucleonVertex = (pow(LambdaN, 2.0) - pow(Constant::MESON_PIPLUS_MASS, 2.0)) / (pow(LambdaN, 2.0) - m_t);
+
+    //The residue of the pole
+    double residue = sqrt(2.0) * PionNucleonCoupling * FF * PionNucleonVertex;
+
+    return residue;
+
+}
+
+double DVMPProcessGK06::poleAmplitude0p0p() {
+
+    double poleAmplitude = - Constant::POSITRON_CHARGE * 2.0 * Constant::PROTON_MASS * m_xi * sqrt(m_Q2) / sqrt(1.0 - pow(m_xi, 2.0)) *
+            poleResidue() / (m_t - pow(Constant::MESON_PIPLUS_MASS, 2.0));
+
+    return poleAmplitude;
+
+}
+
+double DVMPProcessGK06::poleAmplitude0m0p() {
+
+    double poleAmplitude = Constant::POSITRON_CHARGE * sqrt(m_Q2) * sqrt(-(m_t - m_tmin)) * poleResidue() / (m_t - pow(Constant::MESON_PIPLUS_MASS, 2.0));
+
+    return poleAmplitude;
+
+}
+
+double DVMPProcessGK06::poleAmplitude0ppp() {
+
+    double poleAmplitude = Constant::POSITRON_CHARGE * 2.0 * sqrt(2.0) * m_xi * Constant::PROTON_MASS * sqrt(-(m_t - m_tmin)) * poleResidue() /
+            (m_t - pow(Constant::MESON_PIPLUS_MASS, 2.0));
+
+    return poleAmplitude;
+
+}
+
+double DVMPProcessGK06::poleAmplitude0pmp() {
+
+    double poleAmplitude = - Constant::POSITRON_CHARGE * 2.0 * sqrt(2.0) * m_xi * Constant::PROTON_MASS * sqrt(-(m_t - m_tmin)) * poleResidue() /
+            (m_t - pow(Constant::MESON_PIPLUS_MASS, 2.0));
+
+    return poleAmplitude;
+
+}
+
+double DVMPProcessGK06::poleAmplitude0mpp() {
+
+    double poleAmplitude = Constant::POSITRON_CHARGE * sqrt(2.0) * (m_t - m_tmin) * sqrt(1.0 - pow(m_xi, 2.0)) * poleResidue() /
+            (m_t - pow(Constant::MESON_PIPLUS_MASS, 2.0));
+
+    return poleAmplitude;
+
+}
+
+double DVMPProcessGK06::poleAmplitude0mmp() {
+
+    double poleAmplitude = - Constant::POSITRON_CHARGE * sqrt(2.0) * (m_t - m_tmin) * sqrt(1.0 - pow(m_xi, 2.0)) * poleResidue() /
+            (m_t - pow(Constant::MESON_PIPLUS_MASS, 2.0));
+
+    return poleAmplitude;
+
+}
+
 std::complex<double> DVMPProcessGK06::Amplitude0p0p() {
 
+    //the handbag amplitude
     std::complex<double> amplitude0p0p = sqrt(1. - pow(m_xi, 2.))
             * Constant::POSITRON_CHARGE / sqrt(m_Q2)
             * (getConvolCoeffFunctionValue(GPDType::Ht)
                     - pow(m_xi, 2.) / (1. - pow(m_xi, 2.))
                             * getConvolCoeffFunctionValue(GPDType::Et));
 
-    return amplitude0p0p;
+    //switch over mesons
+    switch (m_mesonType) {
+
+    //pi0
+    case MesonType::PI0: {
+
+        return amplitude0p0p;
+
+    }
+
+        break;
+
+    //pi+
+    case MesonType::PIPLUS: {
+
+        return amplitude0p0p + poleAmplitude0p0p();
+
+    }
+
+        break;
+
+    //???
+    default: {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << "No implementation for meson: "
+                        << MesonType(m_mesonType).toString());
+    }
+
+        break;
+    }
+
+    return std::complex<double>(0., 0.);
+
 }
 
 std::complex<double> DVMPProcessGK06::Amplitude0m0p() {
 
+    //the handbag amplitude
     std::complex<double> amplitude0m0p = Constant::POSITRON_CHARGE / sqrt(m_Q2)
             * sqrt(-(m_t - m_tmin)) * m_xi / (2. * Constant::PROTON_MASS)
             * getConvolCoeffFunctionValue(GPDType::Et);
 
-    return amplitude0m0p;
-}
+    //switch over mesons
+    switch (m_mesonType) {
 
-std::complex<double> DVMPProcessGK06::Amplitude0mpp() {
+    //pi0
+    case MesonType::PI0: {
 
-    std::complex<double> amplitude0mpp = Constant::POSITRON_CHARGE
-            * sqrt(1. - pow(m_xi, 2.))
-            * getConvolCoeffFunctionValue(GPDType::HTrans);
+        return amplitude0m0p;
 
-    return amplitude0mpp;
+    }
+
+        break;
+
+    //pi+
+    case MesonType::PIPLUS: {
+
+        return amplitude0m0p + poleAmplitude0m0p();
+
+    }
+
+        break;
+
+    //???
+    default: {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << "No implementation for meson: "
+                        << MesonType(m_mesonType).toString());
+    }
+
+        break;
+    }
+
+    return std::complex<double>(0., 0.);
 }
 
 std::complex<double> DVMPProcessGK06::Amplitude0ppp() {
 
+    //the handbag amplitude
     std::complex<double> amplitude0ppp = -1.0 * Constant::POSITRON_CHARGE
             * sqrt(-(m_t - m_tmin)) / (4. * Constant::PROTON_MASS)
             * getConvolCoeffFunctionValue(GPDType::EbarTrans);
 
-    return amplitude0ppp;
+    //switch over mesons
+    switch (m_mesonType) {
+
+    //pi0
+    case MesonType::PI0: {
+
+        return amplitude0ppp;
+
+    }
+
+        break;
+
+    //pi+
+    case MesonType::PIPLUS: {
+
+        return amplitude0ppp + poleAmplitude0ppp();
+
+    }
+
+        break;
+
+    //???
+    default: {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << "No implementation for meson: "
+                        << MesonType(m_mesonType).toString());
+    }
+
+        break;
+    }
+
+    return std::complex<double>(0., 0.);
 }
 
 std::complex<double> DVMPProcessGK06::Amplitude0pmp() {
 
+    //the handbag amplitude
     std::complex<double> amplitude0pmp = -1.0 * Constant::POSITRON_CHARGE
             * sqrt(-(m_t - m_tmin)) / (4. * Constant::PROTON_MASS)
             * getConvolCoeffFunctionValue(GPDType::EbarTrans);
 
-    return amplitude0pmp;
+    //switch over mesons
+    switch (m_mesonType) {
+
+    //pi0
+    case MesonType::PI0: {
+
+        return amplitude0pmp;
+
+    }
+
+        break;
+
+    //pi+
+    case MesonType::PIPLUS: {
+
+        return amplitude0pmp + poleAmplitude0pmp();
+
+    }
+
+        break;
+
+    //???
+    default: {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << "No implementation for meson: "
+                        << MesonType(m_mesonType).toString());
+    }
+
+        break;
+    }
+
+    return std::complex<double>(0., 0.);
+}
+
+std::complex<double> DVMPProcessGK06::Amplitude0mpp() {
+
+    //the handbag amplitude
+    std::complex<double> amplitude0mpp = Constant::POSITRON_CHARGE
+            * sqrt(1. - pow(m_xi, 2.))
+            * getConvolCoeffFunctionValue(GPDType::HTrans);
+
+    //switch over mesons
+    switch (m_mesonType) {
+
+    //pi0
+    case MesonType::PI0: {
+
+        return amplitude0mpp;
+
+    }
+
+        break;
+
+    //pi+
+    case MesonType::PIPLUS: {
+
+        return amplitude0mpp + poleAmplitude0mpp();
+
+    }
+
+        break;
+
+    //???
+    default: {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << "No implementation for meson: "
+                        << MesonType(m_mesonType).toString());
+    }
+
+        break;
+    }
+
+    return std::complex<double>(0., 0.);
 }
 
 std::complex<double> DVMPProcessGK06::Amplitude0mmp() {
 
+    //the handbag amplitude
     std::complex<double> amplitude0mmp = 0.0;
 
-    return amplitude0mmp;
+    //switch over mesons
+    switch (m_mesonType) {
+
+    //pi0
+    case MesonType::PI0: {
+
+        return amplitude0mmp;
+
+    }
+
+        break;
+
+    //pi+
+    case MesonType::PIPLUS: {
+
+        return amplitude0mmp + poleAmplitude0mmp();
+
+    }
+
+        break;
+
+    //???
+    default: {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << "No implementation for meson: "
+                        << MesonType(m_mesonType).toString());
+    }
+
+        break;
+    }
+
+    return std::complex<double>(0., 0.);
 }
 
 } /* namespace PARTONS */

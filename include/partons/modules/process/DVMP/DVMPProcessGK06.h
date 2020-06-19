@@ -68,6 +68,15 @@ private:
     double CrossSectionLT(); ///< Partial cross-section LT
     double CrossSectionTT(); ///< Partial cross-section TT
 
+    double poleResidue(); ///< The residue of the pole in Pi+ production
+
+    double poleAmplitude0p0p(); ///< Computation of the pion pole amplitude M_{0+0+}.
+    double poleAmplitude0m0p(); ///< Computation of the pion pole amplitude M_{0-0+}.
+    double poleAmplitude0mpp(); ///< Computation of the pion pole amplitude M_{0-++}.
+    double poleAmplitude0ppp(); ///< Computation of the pion pole amplitude M_{0+++}.
+    double poleAmplitude0pmp(); ///< Computation of the pion pole amplitude M_{0+-+}.
+    double poleAmplitude0mmp(); ///< Computation of the pion pole amplitude M_{0--+}.
+
     std::complex<double> Amplitude0p0p(); ///< Computation of the amplitude M_{0+0+}.
     std::complex<double> Amplitude0m0p(); ///< Computation of the amplitude M_{0-0+}.
     std::complex<double> Amplitude0mpp(); ///< Computation of the amplitude M_{0-++}.

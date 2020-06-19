@@ -446,7 +446,7 @@ double DVMPCFFGK06::getMesonGPDCombination(
 
         break;
 
-        //pi+
+    //pi+
     case MesonType::PIPLUS: {
 
         return partonDistribution.getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution()
@@ -455,7 +455,7 @@ double DVMPCFFGK06::getMesonGPDCombination(
 
         break;
 
-        //???
+    //???
     default: {
         throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "No implementation for meson: "
