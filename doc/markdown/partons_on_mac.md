@@ -4,9 +4,8 @@
 
 # Introduction {#mac_intro}
 
-This tutorial is for building %PARTONS on Mac OS. It was tested on Sierra.
-
-<strong>@color{red,Unfortunately\, %PARTONS doesn't run on Mac\, even though it builds. This needs to be debugged!}</strong>
+This tutorial is for building %PARTONS on Mac OS. It was tested on
+Sierra and Catalina.
 
 <hr>
 
