@@ -211,10 +211,11 @@ std::complex<double> DVMPCFFGK06::computeCFF() {
     //switch over mesons
     switch (m_currentGPDComputeType) {
 
-    //Ht
+        //Ht
     case GPDType::Ht: {
 
         return convolutionTwist2(m_currentGPDComputeType);
+
     }
 
         break;
@@ -223,6 +224,7 @@ std::complex<double> DVMPCFFGK06::computeCFF() {
     case GPDType::Et: {
 
         return convolutionTwist2(m_currentGPDComputeType);
+
     }
 
         break;
@@ -233,6 +235,7 @@ std::complex<double> DVMPCFFGK06::computeCFF() {
         return convolutionTwist3A(m_currentGPDComputeType)
                 + convolutionTwist3B(m_currentGPDComputeType)
                 + convolutionTwist3C(m_currentGPDComputeType);
+
     }
 
         break;
@@ -243,6 +246,7 @@ std::complex<double> DVMPCFFGK06::computeCFF() {
         return convolutionTwist3A(m_currentGPDComputeType)
                 + convolutionTwist3B(m_currentGPDComputeType)
                 + convolutionTwist3C(m_currentGPDComputeType);
+
     }
 
         break;
@@ -359,7 +363,26 @@ std::pair<double, double> DVMPCFFGK06::mesonWFParameters(size_t twist) const {
     switch (m_mesonType) {
 
     //pi0, pi+
-    case MesonType::PI0:
+    case MesonType::PI0:  {
+
+        //twist 2
+        if (twist == 2) {
+            return std::pair<double, double>(0.132,
+                    1. / (8. * pow(M_PI, 2.0) * pow(0.132, 2.)));
+        }
+        //twist 3
+        else if (twist == 3) {
+            return std::pair<double, double>(0.132, 1.8);
+        }
+        //???
+        else {
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    ElemUtils::Formatter() << "Twist " << twist
+                            << " not implemented here for meson "
+                            << MesonType(m_mesonType).toString());
+        }
+    }
+
     case MesonType::PIPLUS: {
 
         //twist 2
@@ -412,10 +435,10 @@ double DVMPCFFGK06::mesonWF(double tau, double b, size_t twist) const {
         return 4. * M_PI * par.first / sqrt(2. * m_Nc) * m_muPi
                 * pow(par.second, 2.)
                 * exp(
-                        -1.0 * pow(b, 2.) / (8. * pow(par.second, 2.0))
+                        -1.0 * pow(b, 2.) / (8. * pow(par.second, 2.0)))
                                 * gsl_sf_bessel_In(0,
                                         pow(b, 2.)
-                                                / (8. * pow(par.second, 2.0))));
+                                                / (8. * pow(par.second, 2.0)));
     }
     //???
     else {
@@ -821,17 +844,58 @@ double DVMPCFFGK06::convolutionTwist3BFunction(double x, void * params) const {
 //                            - getMesonGPDCombination(m_gpdResultXiXi))
 //                    / (x - m_xi);
 
-    double convolution = 1. / (x + m_xi)
-            * (getMesonGPDCombination(gpdResult)
-                    - getMesonGPDCombination(m_gpdResultmXiXi))
-            - 1.
-                    * (getMesonGPDCombination(gpdResult)
-                            - getMesonGPDCombination(m_gpdResultXiXi))
-                    / (x - m_xi);
+    //switch over mesons
+    switch (m_mesonType) {
 
-    return 16. * M_PI * m_Cf / m_Nc
-            * m_pRunningAlphaStrongModule->compute(m_Q2 / 2.) * par.first
-            * m_muPi * pow(par.second, 2.) * convolution;
+    //pi0
+    case MesonType::PI0: {
+
+        double convolution = 1. / (x + m_xi)
+                    * (getMesonGPDCombination(gpdResult)
+                            - getMesonGPDCombination(m_gpdResultmXiXi))
+                    - 1.
+                            * (getMesonGPDCombination(gpdResult)
+                                    - getMesonGPDCombination(m_gpdResultXiXi))
+                            / (x - m_xi);
+
+        return 16. * M_PI * m_Cf / m_Nc
+                    * m_pRunningAlphaStrongModule->compute(m_Q2 / 2.) * par.first
+                    * m_muPi * pow(par.second, 2.) * convolution;
+
+    }
+
+        break;
+
+    //pi+
+    case MesonType::PIPLUS: {
+
+        double convolution = Constant::D_ELEC_CHARGE / (x + m_xi)
+                    * (getMesonGPDCombination(gpdResult)
+                            - getMesonGPDCombination(m_gpdResultmXiXi))
+                    - Constant::U_ELEC_CHARGE
+                            * (getMesonGPDCombination(gpdResult)
+                                    - getMesonGPDCombination(m_gpdResultXiXi))
+                            / (x - m_xi);
+
+        return 16. * M_PI * m_Cf / m_Nc
+                    * m_pRunningAlphaStrongModule->compute(m_Q2 / 2.) * par.first
+                    * m_muPi * pow(par.second, 2.) * convolution;
+
+    }
+
+        break;
+
+    //???
+    default: {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << "No implementation for meson: "
+                        << MesonType(m_mesonType).toString());
+    }
+
+        break;
+    }
+
+
 }
 
 std::complex<double> DVMPCFFGK06::convolutionTwist3B(
@@ -897,15 +961,50 @@ std::complex<double> DVMPCFFGK06::convolutionTwist3C(
 //                    * (std::complex<double>(0., 1.) * M_PI
 //                            - log((1. - m_xi) / (2. * m_xi))));
 
-    return 16. * M_PI * m_Cf / m_Nc
-            * m_pRunningAlphaStrongModule->compute(m_Q2 / 2.) * par.first
-            * m_muPi * pow(par.second, 2.)
-            * (getMesonGPDCombination(m_gpdResultXiXi)
-                    * (std::complex<double>(0., 1.) * M_PI
-                            + log((1. + m_xi) / (1. - m_xi)))
-                    + getMesonGPDCombination(m_gpdResultmXiXi)
+    //switch over mesons
+    switch (m_mesonType) {
+
+    //pi0
+    case MesonType::PI0: {
+        return 16. * M_PI * m_Cf / m_Nc
+                    * m_pRunningAlphaStrongModule->compute(m_Q2 / 2.) * par.first
+                    * m_muPi * pow(par.second, 2.)
+                    * (getMesonGPDCombination(m_gpdResultXiXi)
                             * (std::complex<double>(0., 1.) * M_PI
-                                    + log((1. + m_xi) / (1. - m_xi))));
+                                    + log((1. + m_xi) / (1. - m_xi)))
+                            + getMesonGPDCombination(m_gpdResultmXiXi)
+                                    * (std::complex<double>(0., 1.) * M_PI
+                                            + log((1. + m_xi) / (1. - m_xi))));
+    }
+
+        break;
+
+    //pi+
+    case MesonType::PIPLUS: {
+
+        return 16. * M_PI * m_Cf / m_Nc
+                    * m_pRunningAlphaStrongModule->compute(m_Q2 / 2.) * par.first
+                    * m_muPi * pow(par.second, 2.)
+                    * (Constant::U_ELEC_CHARGE * getMesonGPDCombination(m_gpdResultXiXi)
+                            * (std::complex<double>(0., 1.) * M_PI
+                                    + log((1. + m_xi) / (1. - m_xi)))
+                            + Constant::D_ELEC_CHARGE * getMesonGPDCombination(m_gpdResultmXiXi)
+                                    * (std::complex<double>(0., 1.) * M_PI
+                                            + log((1. + m_xi) / (1. - m_xi))));
+
+    }
+
+        break;
+
+    //???
+    default: {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << "No implementation for meson: "
+                        << MesonType(m_mesonType).toString());
+    }
+
+        break;
+    }
 
 }
 
