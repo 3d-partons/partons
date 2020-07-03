@@ -65,22 +65,23 @@ PhysicalType<double> DVMPProcessGK06::CrossSection() {
                         << MesonType(m_mesonType).toString());
     }
 
-    //variables //TODO TBC
-    double s = pow(Constant::PROTON_MASS, 2) + 2. * Constant::PROTON_MASS * m_E;
+    //variables
     double gamma = 2 * m_xB * Constant::PROTON_MASS / sqrt(m_Q2);
     double eps = (1. - m_y - pow(m_y * gamma / 2., 2))
             / (1. - m_y + pow(m_y, 2) / 2. + pow(m_y * gamma / 2., 2));
 
-    //result //TODO TBC
+    //result
     double result = Constant::FINE_STRUCTURE_CONSTANT
-            * (s - pow(Constant::PROTON_MASS, 2))
+            * (m_W2 - pow(Constant::PROTON_MASS, 2))
             / (16. * pow(M_PI, 2) * pow(m_E, 2) * pow(Constant::PROTON_MASS, 2)
                     * m_Q2 * (1. - eps));
 
-    //TODO TBC
     result *= CrossSectionT() + eps * CrossSectionL()
             + eps * cos(2 * m_phi) * CrossSectionTT()
             + sqrt(2 * eps * (1. + eps)) * cos(m_phi) * CrossSectionLT();
+
+    //apply dW2/dxB
+    result *= m_Q2 / pow(m_xB, 2);
 
     //divide by 2pi to have dsigma/...dphiS
     result /= 2. * Constant::PI;
