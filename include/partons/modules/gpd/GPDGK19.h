@@ -33,7 +33,7 @@ namespace PARTONS {
  *   4) \bar{E}_T: Table 1 in arxiv:1901.11380
  *   with PDFs (forward-limits) parametrizations ABM: arXiv:1202.2281 and DSSV: arXiv:0904.3821
  *
- * Parameterization of GPDs H and E as in GPDGK19
+ * Parameterization of GPDs H and E as in GPDGK16
  */
 
 class GPDGK19: public GPDGK16 {
