@@ -13,6 +13,7 @@
 #include <string>
 
 #include "beans/gpd/GPDType.h"
+#include "beans/parton_distribution/CollinearDistributionType.h"
 #include "beans/List.h"
 #include "utils/thread/ThreadManager.h"
 #include "utils/thread/ThreadQueue.h"
@@ -123,6 +124,11 @@ protected:
      * Get list of GPD types to be computed from a task.
      */
     List<GPDType> getGPDTypeListFromTask(Task &task) const;
+
+    /**
+     * Get list of Collinear Distribution types to be computed from a task.
+     */
+    List<CollinearDistributionType> getCollinearDistributionTypeListFromTask(Task &task) const;
 
     /**
      * Throw exception if unknown method.

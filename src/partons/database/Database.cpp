@@ -43,6 +43,13 @@ const std::string Database::COLUMN_NAME_GPD_KINEMATIC_ID = "gpd_kinematic_id";
 const std::string Database::TABLE_NAME_GPD_RESULT = "gpd_result";
 const std::string Database::COLUMN_NAME_GPD_RESULT_ID = "gpd_result_id";
 
+const std::string Database::TABLE_NAME_COLLINEAR_DISTRIBUTION_KINEMATIC = "collinear_distribution_kinematic";
+const std::string Database::COLUMN_NAME_COLLINEAR_DISTRIBUTION_KINEMATIC_ID = "collinear_distribution_kinematic_id";
+
+const std::string Database::TABLE_NAME_COLLINEAR_DISTRIBUTION_RESULT = "collinear_distribution_result";
+const std::string Database::COLUMN_NAME_COLLINEAR_DISTRIBUTION_RESULT_ID = "collinear_distribution_result_id";
+
+
 const std::string Database::COLUMN_NAME_PARTON_DISTRIBUTION_ID =
         "parton_distribution_id";
 
@@ -58,6 +65,8 @@ const std::string Database::COLUMN_NAME_OBSERVABLE_NAME = "observable_name";
 const std::string Database::COLUMN_NAME_OBSERVABLE_VALUE = "observable_value";
 
 const std::string Database::COLUMN_NAME_GPD_TYPE_ID = "gpd_type_id";
+
+const std::string Database::COLUMN_NAME_COLLINEAR_DISTRIBUTION_TYPE_ID = "collinear_distribution_type_id";
 
 const std::string Database::COLUMN_NAME_GLUON_DISTRIBUTION =
         "gluon_distribution_value";

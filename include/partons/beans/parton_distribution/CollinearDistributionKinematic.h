@@ -1,8 +1,8 @@
-#ifndef PARTON_DISTRIBUTION_KINEMATIC_H
-#define PARTON_DISTRIBUTION_KINEMATIC_H
+#ifndef COLLINEAR_DISTRIBUTION_KINEMATIC_H
+#define COLLINEAR_DISTRIBUTION_KINEMATIC_H
 
 /**
- * @file PartonDistributionKinematic.h
+ * @file CollinearDistributionKinematic.h
  * @author: Valerio BERTONE (CEA Saclay)
  * @date July 17, 2020
  * @version 1.0
@@ -24,17 +24,17 @@ class Packet;
 namespace PARTONS {
 
 /**
- * @class PartonDistributionKinematic
+ * @class CollinearDistributionKinematic
  *
  * @brief Class representing a single collinear-distribution kinematics.
  *
  * This class represents a single collinear-distribution kinematics (x, \f$\mu_{F}^{2}\f$, \f$\mu_{F}^{2}\f$).
  */
-class PartonDistributionKinematic: public Kinematic {
+class CollinearDistributionKinematic: public Kinematic {
 
 public:
 
-    static const std::string PARTON_DISTRIBUTION_KNEMATIC_CLASS_NAME; ///< Type of the kinematic in XML automation.
+    static const std::string COLLINEAR_DISTRIBUTION_KNEMATIC_CLASS_NAME; ///< Type of the kinematic in XML automation.
 
     /**
      * Parameter name to set variable \f$x\f$ via configuration methods.
@@ -69,7 +69,7 @@ public:
     /**
      * Default constructor.
      */
-    PartonDistributionKinematic();
+    CollinearDistributionKinematic();
 
     /**
      * Assignment constructor.
@@ -78,7 +78,7 @@ public:
      * @param MuF2 Factorization scale squared (in \f$GeV^{2}\f$).
      * @param MuR2 Renormalization scale squared (in \f$GeV^{2}\f$).
      */
-    PartonDistributionKinematic(double x, double MuF2, double MuR2);
+    CollinearDistributionKinematic(double x, double MuF2, double MuR2);
 
     /**
      * Assignment constructor.
@@ -87,7 +87,7 @@ public:
      * @param MuF2 Factorization scale squared (in \f$GeV^{2}\f$).
      * @param MuR2 Renormalization scale squared (in \f$GeV^{2}\f$).
      */
-    PartonDistributionKinematic(const PhysicalType<double> &x, const PhysicalType<double> &MuF2, const PhysicalType<double> &MuR2);
+    CollinearDistributionKinematic(const PhysicalType<double> &x, const PhysicalType<double> &MuF2, const PhysicalType<double> &MuR2);
 
     /**
      * Assignment constructor.
@@ -96,18 +96,18 @@ public:
      * @param MuF2 Factorization scale squared (in \f$GeV^{2}\f$).
      * @param MuR2 Renormalization scale squared (in \f$GeV^{2}\f$).
      */
-    PartonDistributionKinematic(const ElemUtils::GenericType &x, const ElemUtils::GenericType &MuF2, const ElemUtils::GenericType &MuR2);
+    CollinearDistributionKinematic(const ElemUtils::GenericType &x, const ElemUtils::GenericType &MuF2, const ElemUtils::GenericType &MuR2);
 
     /**
      * Copy constructor.
      * @param other Object to be copied.
      */
-    PartonDistributionKinematic(const PartonDistributionKinematic &other);
+    CollinearDistributionKinematic(const CollinearDistributionKinematic &other);
 
     /**
      * Destructor.
      */
-    virtual ~PartonDistributionKinematic();
+    virtual ~CollinearDistributionKinematic();
 
     virtual void configure(const ElemUtils::Parameters &parameters);
     virtual std::string toString() const;
@@ -138,12 +138,12 @@ public:
     /**
      * Is equal operator. Checks if values of kinematic variables are the same.
      */
-    bool operator ==(const PartonDistributionKinematic& other) const;
+    bool operator ==(const CollinearDistributionKinematic& other) const;
 
     /**
      * Is different operator. Checks of values of kinematic variables are different.
      */
-    bool operator !=(const PartonDistributionKinematic& other) const;
+    bool operator !=(const CollinearDistributionKinematic& other) const;
 
     //********************************************************
     //*** SETTERS AND GETTERS ********************************
@@ -217,15 +217,15 @@ private:
 };
 
 /**
- * Stream operator to serialize class into Packet. See also PartonDistributionType::serialize().
+ * Stream operator to serialize class into Packet. See also CollinearDistributionType::serialize().
  */
-ElemUtils::Packet& operator <<(ElemUtils::Packet& packet, PartonDistributionKinematic& kinematic);
+ElemUtils::Packet& operator <<(ElemUtils::Packet& packet, CollinearDistributionKinematic& kinematic);
 
 /**
- * Stream operator to retrieve class from Packet. See also PartonDistributionType::unserialize().
+ * Stream operator to retrieve class from Packet. See also CollinearDistributionType::unserialize().
  */
-ElemUtils::Packet& operator >>(ElemUtils::Packet& packet, PartonDistributionKinematic& kinematic);
+ElemUtils::Packet& operator >>(ElemUtils::Packet& packet, CollinearDistributionKinematic& kinematic);
 
 } /* namespace PARTONS */
 
-#endif /* PARTON_DISTRIBUTION_KINEMATIC_H */
+#endif /* COLLINEAR_DISTRIBUTION_KINEMATIC_H */

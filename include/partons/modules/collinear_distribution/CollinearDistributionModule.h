@@ -4,7 +4,7 @@
 /**
  * @file CollinearDistributionModule.h
  * @author Valerio BERTONE (CEA Saclay)
- * @date July 17, 2020
+ * @date July 18, 2020
  * @version 1.0
  */
 
@@ -13,21 +13,28 @@
 #include <string>
 
 #include "../../beans/automation/BaseObjectData.h"
+#include "../../beans/parton_distribution/CollinearDistributionType.h"
 #include "../../beans/List.h"
 #include "../../beans/parton_distribution/PartonDistribution.h"
-#include "../../beans/parton_distribution/PartonDistributionKinematic.h"
 #include "../../ModuleObject.h"
 
 namespace PARTONS {
-class PartonDistributionKinematic;
+class CollinearDistributionKinematic;
+} /* namespace PARTONS */
+
+namespace PARTONS {
+class CollinearDistributionResult;
 } /* namespace PARTONS */
 
 namespace PARTONS {
 
+class CollinearDistributionEvolutionModule;
+
 /**
- * @class CollinearDistributionModule @brief Abstract class that
- * provides a skeleton to implement a collinear-distribution module
- * (such as polarised and unpolarise PDFs and FFs).
+ * @class CollinearDistributionModule
+ * @brief Abstract class that provides a skeleton to implement a Generalized Parton Distributions (CollinearDistribution) module.
+ *
+ * It is best to use this module with the corresponding service: CollinearDistributionService (see examples therein), as explained in the [general tutorial](@ref usage).
  */
 class CollinearDistributionModule: public ModuleObject {
 
@@ -43,17 +50,72 @@ public:
     virtual CollinearDistributionModule* clone() const = 0;
     virtual std::string toString() const;
     virtual void resolveObjectDependencies();
-    virtual void configure(const ElemUtils::Parameters &parameters);
+    virtual void run();
+    void virtual configure(const ElemUtils::Parameters &parameters);
+    virtual void prepareSubModules(
+            const std::map<std::string, BaseObjectData>& subModulesData);
 
     /**
-     * Virtual method, computes CollinearDistribution with some input parameters.
+     * Virtual method, computes collinear distribution with some input parameters.
      *
-     * @param kinematic CollinearDistribution kinematics object.
+     * @param kinematic collinear distribution kinematics object.
+     * @param colldistType H, Ht, E, Et, ... or ALL. See CollinearDistributionType for more details.
+     * @param evolution Boolean to use evolution.
      *
      * @return PartonDistribution object.
      * Contains results for each flavor of partons.
      */
-    virtual PartonDistribution compute(const PartonDistributionKinematic &kinematic);
+    virtual PartonDistribution compute(const CollinearDistributionKinematic &kinematic,
+            CollinearDistributionType::Type colldistType);
+
+    /**
+     * Virtual method, computes collinear distribution with some input parameters.
+     *
+     * @param kinematic collinear distribution kinematics object.
+     * @param colldistType H, Ht, E, Et, ... or ALL. See CollinearDistributionType for more details.
+     *
+     * @return PartonDistribution object.
+     * Contains results for each flavor of partons.
+     */
+    virtual CollinearDistributionResult compute(const CollinearDistributionKinematic &kinematic,
+            const List<CollinearDistributionType>& colldistType = List<CollinearDistributionType>());
+
+    /**
+     * Get list of available CollinearDistributionTypes in the model considered. This list is set in the child class.
+     */
+    List<CollinearDistributionType> getListOfAvailableCollinearDistributionTypeForComputation() const;
+
+    // ##### IMPLEMENTATION FUNCTIONS #####
+
+    /**
+     * This method can be implemented in the child class if the collinear distribution H is available to compute.
+     *
+     * @return PartonDistribution object.
+     * Contains results for each flavor of partons.
+     */
+    virtual PartonDistribution computeUnpolPDF();
+    virtual PartonDistribution computePolPDF();
+    virtual PartonDistribution computeTransPDF();
+    virtual PartonDistribution computeUnpolFF();
+    virtual PartonDistribution computePolFF();
+    virtual PartonDistribution computeTransFF();
+
+    // ##### GETTERS & SETTERS #####
+
+    /**
+     * Get reference factorization scale used by the collinear distribution model before evolution.
+     */
+    double getMuF2Ref() const;
+
+    /**
+     * Set underlying collinear distribution Evolution module.
+     */
+    const CollinearDistributionEvolutionModule* getEvolQcdModule() const;
+
+    /**
+     * Get  underlying collinear distribution Evolution module.
+     */
+    void setEvolQcdModule(CollinearDistributionEvolutionModule* pEvolQcdModule);
 
 protected:
 
@@ -72,20 +134,35 @@ protected:
      * Set internal kinematics.
      * @param kinematic Kinematics to be set.
      */
-    virtual void setKinematics(const PartonDistributionKinematic& kinematic);
+    virtual void setKinematics(const CollinearDistributionKinematic& kinematic);
+
+    /**
+     * Set current collinear distribution type to be computed.
+     */
+    void setCurrentCollinearDistributionType(CollinearDistributionType::Type colldistType);
+
     virtual void initModule();
     virtual void isModuleWellConfigured();
 
     /**
-     * Fuctions to be implemented in the child class that actually
-     * returs the set of collinear distributions in the form of a
-     * PartonDistribution object.
+     * List of collinear distribution types that can be computed by the child class.
+     * Needs to be set in the constructor of the child class, with the corresponding methods to be used.
      */
-    virtual PartonDistribution compute() const = 0;
+    std::map<CollinearDistributionType::Type, PartonDistribution (CollinearDistributionModule::*)()> m_listCollinearDistributionComputeTypeAvailable;
 
-    double m_x;    ///< Longitudinal momentum fraction of the active parton.
+    /**
+     * Iterator.
+     */
+    std::map<CollinearDistributionType::Type, PartonDistribution (CollinearDistributionModule::*)()>::iterator m_it;
+
+    double m_x; ///< Longitudinal momentum fraction of the active parton.
     double m_MuF2; ///< Factorization scale squared.
     double m_MuR2; ///< Renormalization scale squared.
+    CollinearDistributionType::Type m_currentCollinearDistributionComputeType; ///< Current collinear distribution type.
+
+    double m_MuF2_ref; ///< Reference factorization scale used by the collinear distribution model before evolution.
+
+    CollinearDistributionEvolutionModule* m_pCollinearDistributionEvolutionModule; ///< Pointer to the underlying collinear distribution Evolution module.
 };
 
 } /* namespace PARTONS */
