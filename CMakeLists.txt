@@ -63,8 +63,11 @@ find_package(NumA++ REQUIRED)
 # find libraries: GSL
 find_package(GSL REQUIRED)
 
+# find libraries: LHAPDF
+find_package(LHAPDF REQUIRED)
+
 # directories containing headers 
-include_directories(${QT_INCLUDE_DIRS} ${SFML_INCLUDE_DIR} ${CLN_INCLUDE_DIR} ${ElementaryUtils_INCLUDE_DIR} ${NumA++_INCLUDE_DIR})
+include_directories(${QT_INCLUDE_DIRS} ${SFML_INCLUDE_DIR} ${CLN_INCLUDE_DIR} ${ElementaryUtils_INCLUDE_DIR} ${NumA++_INCLUDE_DIR} ${LHAPDF_INCLUDE_DIR})
 include_directories(include)
 
 # FINALIZE ==================================================================================
@@ -107,6 +110,8 @@ target_link_libraries(
 		${NumA++_LIBRARIES}
 
 		${GSL_LIBRARIES}
+
+		${LHAPDF_LIBRARIES}
 
 		Qt5::Core
 
