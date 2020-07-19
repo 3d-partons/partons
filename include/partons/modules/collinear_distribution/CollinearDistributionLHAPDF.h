@@ -26,6 +26,7 @@ public:
 
     static const std::string PARAM_NAME_SET_NAME;
     static const std::string PARAM_NAME_MEMBER;
+    static const std::string PARAM_NAME_DIST_TYPE;
 
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
@@ -52,10 +53,12 @@ public:
 
     std::string getSetName() const;
     int getMember() const;
+    CollinearDistributionType::Type getType() const;
     LHAPDF::PDF* getSet() const;
 
     void setSetName(const std::string &setname);
     void setMember(const int &member);
+    void setType(const CollinearDistributionType::Type &type);
 
 protected:
 
@@ -70,12 +73,17 @@ protected:
 
     virtual void isModuleWellConfigured();
     virtual void initModule();
-    virtual PartonDistribution compute() const;
 
+    virtual PartonDistribution computeUnpolPDF();
+    virtual PartonDistribution computePolPDF();
+    virtual PartonDistribution computeUnpolFF();
+    virtual PartonDistribution computePolFF();
+ 
 protected:
 
     std::string m_setName;
     int m_member;
+    CollinearDistributionType::Type m_type;
     LHAPDF::PDF* m_set;
 
 };
