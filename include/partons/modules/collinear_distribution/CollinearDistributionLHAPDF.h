@@ -54,7 +54,7 @@ public:
     std::string getSetName() const;
     int getMember() const;
     CollinearDistributionType::Type getType() const;
-    LHAPDF::PDF* getSet() const;
+    std::vector<LHAPDF::PDF*> getSet() const;
 
     void setSetName(const std::string &setname);
     void setMember(const int &member);
@@ -84,7 +84,7 @@ protected:
     std::string m_setName;
     int m_member;
     CollinearDistributionType::Type m_type;
-    LHAPDF::PDF* m_set;
+    std::vector<LHAPDF::PDF*> m_set;
 
 };
 

@@ -22,7 +22,7 @@ CollinearDistributionLHAPDF::CollinearDistributionLHAPDF(const std::string &clas
     m_setName = "UNDEFINED";
     m_member = 0;
     m_type = CollinearDistributionType::Type::UnpolPDF;
-    m_set = nullptr;
+    m_set = {};
 }
 
 CollinearDistributionLHAPDF::CollinearDistributionLHAPDF(const CollinearDistributionLHAPDF& other) :
@@ -103,8 +103,8 @@ void CollinearDistributionLHAPDF::initModule() {
 
     CollinearDistributionModule::initModule();
 
-    if (m_set == nullptr) {
-        m_set = LHAPDF::mkPDF(m_setName, m_member);
+    if (m_set.empty()) {
+        m_set = LHAPDF::mkPDFs(m_setName);
     }
 }
 
@@ -117,7 +117,7 @@ PartonDistribution CollinearDistributionLHAPDF::computeUnpolPDF() {
         return partonDistribution;
 
     // Get distributions from LHAPDF (only positive values of x are allowed)
-    const std::map<int, double> dists = m_set->xfxQ2(std::abs(m_x), m_MuF2);
+    const std::map<int, double> dists = m_set[m_member]->xfxQ2(std::abs(m_x), m_MuF2);
 
     // Map between QuarkFlavor enum and GPD convention for quarks
     const std::map<int, QuarkFlavor::Type> flavour_map{{1, QuarkFlavor::DOWN},  {2, QuarkFlavor::UP},     {3, QuarkFlavor::STRANGE},
@@ -160,7 +160,7 @@ PartonDistribution CollinearDistributionLHAPDF::computePolPDF() {
         return partonDistribution;
 
     // Get distributions from LHAPDF (only positive values of x are allowed)
-    const std::map<int, double> dists = m_set->xfxQ2(std::abs(m_x), m_MuF2);
+    const std::map<int, double> dists = m_set[m_member]->xfxQ2(std::abs(m_x), m_MuF2);
 
     // Map between QuarkFlavor enum and GPD convention for quarks
     const std::map<int, QuarkFlavor::Type> flavour_map{{1, QuarkFlavor::DOWN},  {2, QuarkFlavor::UP},     {3, QuarkFlavor::STRANGE},
@@ -203,7 +203,7 @@ PartonDistribution CollinearDistributionLHAPDF::computeUnpolFF() {
         return partonDistribution;
 
     // Get distributions from LHAPDF (only positive values of x are allowed)
-    const std::map<int, double> dists = m_set->xfxQ2(std::abs(m_x), m_MuF2);
+    const std::map<int, double> dists = m_set[m_member]->xfxQ2(std::abs(m_x), m_MuF2);
 
     // Map between QuarkFlavor enum and GPD convention for quarks
     const std::map<int, QuarkFlavor::Type> flavour_map{{1, QuarkFlavor::DOWN},  {2, QuarkFlavor::UP},     {3, QuarkFlavor::STRANGE},
@@ -246,7 +246,7 @@ PartonDistribution CollinearDistributionLHAPDF::computePolFF() {
         return partonDistribution;
 
     // Get distributions from LHAPDF (only positive values of x are allowed)
-    const std::map<int, double> dists = m_set->xfxQ2(std::abs(m_x), m_MuF2);
+    const std::map<int, double> dists = m_set[m_member]->xfxQ2(std::abs(m_x), m_MuF2);
 
     // Map between QuarkFlavor enum and GPD convention for quarks
     const std::map<int, QuarkFlavor::Type> flavour_map{{1, QuarkFlavor::DOWN},  {2, QuarkFlavor::UP},     {3, QuarkFlavor::STRANGE},
@@ -296,7 +296,7 @@ CollinearDistributionType::Type CollinearDistributionLHAPDF::getType() const {
     return m_type;
 }
 
-LHAPDF::PDF* CollinearDistributionLHAPDF::getSet() const {
+std::vector<LHAPDF::PDF*> CollinearDistributionLHAPDF::getSet() const {
     return m_set;
 }
 
