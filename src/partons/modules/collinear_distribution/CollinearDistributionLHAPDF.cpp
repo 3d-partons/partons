@@ -19,6 +19,7 @@ const unsigned int CollinearDistributionLHAPDF::classId =
 CollinearDistributionLHAPDF::CollinearDistributionLHAPDF(const std::string &className) :
         CollinearDistributionModule(className) {
 
+    m_MuF2_ref = 1;
     m_setName = "UNDEFINED";
     m_member = 0;
     m_type = CollinearDistributionType::Type::UnpolPDF;
@@ -28,6 +29,7 @@ CollinearDistributionLHAPDF::CollinearDistributionLHAPDF(const std::string &clas
 CollinearDistributionLHAPDF::CollinearDistributionLHAPDF(const CollinearDistributionLHAPDF& other) :
         CollinearDistributionModule(other) {
 
+    m_MuF2_ref = 1;
     m_setName = other.getSetName();
     m_member = other.getMember();
     m_type = other.getType();
