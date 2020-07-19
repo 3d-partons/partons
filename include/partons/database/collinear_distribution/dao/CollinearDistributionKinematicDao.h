@@ -11,7 +11,7 @@
 #include <QtSql/qsqlquery.h>
 #include <string>
 
-#include "../../../beans/parton_distribution/CollinearDistributionKinematic.h"
+#include "../../../beans/collinear_distribution/CollinearDistributionKinematic.h"
 #include "../../../beans/List.h"
 #include "../../../utils/type/PhysicalType.h"
 

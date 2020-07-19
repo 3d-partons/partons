@@ -1,4 +1,4 @@
-#include "../../../../include/partons/beans/parton_distribution/CollinearDistributionType.h"
+#include "../../../../include/partons/beans/collinear_distribution/CollinearDistributionType.h"
 
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <ElementaryUtils/thread/Packet.h>

@@ -16,7 +16,7 @@
 #include <vector>
 
 #include "../../../beans/automation/BaseObjectData.h"
-#include "../../../beans/parton_distribution/CollinearDistributionType.h"
+#include "../../../beans/collinear_distribution/CollinearDistributionType.h"
 #include "../../../beans/parton_distribution/PartonDistribution.h"
 #include "../../../beans/parton_distribution/QuarkDistribution.h"
 #include "../../../beans/PerturbativeQCDOrderType.h"

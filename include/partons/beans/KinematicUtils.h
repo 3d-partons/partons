@@ -15,7 +15,7 @@
 #include "convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "convol_coeff_function/TCS/TCSConvolCoeffFunctionKinematic.h"
 #include "gpd/GPDKinematic.h"
-#include "parton_distribution/CollinearDistributionKinematic.h"
+#include "collinear_distribution/CollinearDistributionKinematic.h"
 #include "List.h"
 #include "observable/DVCS/DVCSObservableKinematic.h"
 #include "observable/TCS/TCSObservableKinematic.h"

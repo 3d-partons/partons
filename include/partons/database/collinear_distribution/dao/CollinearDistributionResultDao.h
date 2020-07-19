@@ -3,15 +3,15 @@
 
 /**
  * @file CollinearDistributionResultDao.h
- * @author: Bryan BERTHOU (SPhN / CEA Saclay)
- * @date November 13, 2015
+ * @author: Valerio BERTONE (CEA Saclay)
+ * @date July 19, 2020
  * @version 1.0
  */
 
 #include <QtSql/qsqlquery.h>
 #include <string>
 
-#include "../../../beans/parton_distribution/CollinearDistributionResult.h"
+#include "../../../beans/collinear_distribution/CollinearDistributionResult.h"
 #include "../../../beans/List.h"
 #include "../../parton_distribution/dao/PartonDistributionDao.h"
 #include "CollinearDistributionKinematicDao.h"

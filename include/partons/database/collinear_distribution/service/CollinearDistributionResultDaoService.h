@@ -10,7 +10,7 @@
 
 #include <string>
 
-#include "../../../beans/parton_distribution/CollinearDistributionResult.h"
+#include "../../../beans/collinear_distribution/CollinearDistributionResult.h"
 #include "../../../beans/List.h"
 #include "../../common/service/ResultInfoDaoService.h"
 #include "../../parton_distribution/service/PartonDistributionDaoService.h"

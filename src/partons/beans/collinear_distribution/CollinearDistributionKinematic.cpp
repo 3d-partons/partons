@@ -1,4 +1,4 @@
-#include "../../../../include/partons/beans/parton_distribution/CollinearDistributionKinematic.h"
+#include "../../../../include/partons/beans/collinear_distribution/CollinearDistributionKinematic.h"
 
 #include <ElementaryUtils/string_utils/Formatter.h>
 

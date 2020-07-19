@@ -13,7 +13,7 @@
 #include <string>
 
 #include "../../beans/automation/BaseObjectData.h"
-#include "../../beans/parton_distribution/CollinearDistributionType.h"
+#include "../../beans/collinear_distribution/CollinearDistributionType.h"
 #include "../../beans/List.h"
 #include "../../beans/parton_distribution/PartonDistribution.h"
 #include "../../ModuleObject.h"

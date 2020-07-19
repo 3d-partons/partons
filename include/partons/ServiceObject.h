@@ -13,7 +13,7 @@
 #include <string>
 
 #include "beans/gpd/GPDType.h"
-#include "beans/parton_distribution/CollinearDistributionType.h"
+#include "beans/collinear_distribution/CollinearDistributionType.h"
 #include "beans/List.h"
 #include "utils/thread/ThreadManager.h"
 #include "utils/thread/ThreadQueue.h"

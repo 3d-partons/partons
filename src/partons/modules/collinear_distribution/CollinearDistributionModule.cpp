@@ -8,7 +8,7 @@
 #include <utility>
 
 #include "../../../../include/partons/beans/channel/ChannelType.h"
-#include "../../../../include/partons/beans/parton_distribution/CollinearDistributionKinematic.h"
+#include "../../../../include/partons/beans/collinear_distribution/CollinearDistributionKinematic.h"
 #include "../../../../include/partons/beans/Result.h"
 #include "../../../../include/partons/modules/evolution/collinear_distribution/CollinearDistributionEvolutionModule.h"
 #include "../../../../include/partons/ModuleObjectFactory.h"

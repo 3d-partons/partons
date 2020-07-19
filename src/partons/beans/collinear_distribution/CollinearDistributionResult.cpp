@@ -1,4 +1,4 @@
-#include "../../../../include/partons/beans/parton_distribution/CollinearDistributionResult.h"
+#include "../../../../include/partons/beans/collinear_distribution/CollinearDistributionResult.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>

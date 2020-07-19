@@ -10,9 +10,9 @@
 
 #include <string>
 
-#include "../beans/parton_distribution/CollinearDistributionKinematic.h"
-#include "../beans/parton_distribution/CollinearDistributionResult.h"
-#include "../beans/parton_distribution/CollinearDistributionType.h"
+#include "../beans/collinear_distribution/CollinearDistributionKinematic.h"
+#include "../beans/collinear_distribution/CollinearDistributionResult.h"
+#include "../beans/collinear_distribution/CollinearDistributionType.h"
 #include "../beans/List.h"
 #include "../ServiceObjectTyped.h"
 
