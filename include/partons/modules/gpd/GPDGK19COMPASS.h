@@ -54,6 +54,9 @@ protected:
     virtual void initModule();
     virtual void isModuleWellConfigured();
 
+    double HtUp(double rho, void * params);
+    double HtDown(double rho, void * params);
+
     virtual PartonDistribution computeHt();
     virtual PartonDistribution computeEt();
     virtual PartonDistribution computeHTrans();
@@ -63,6 +66,8 @@ protected:
     void calculateEtCoefs();
     void calculateHTransCoefs();
     void calculateETransCoefs();
+
+
 
 private:
 
@@ -85,11 +90,6 @@ private:
     double kETranssea;               ///< Exponent of correlated x-t dependence.
     double kETransuval;              ///< Exponent of correlated x-t dependence.
     double kETransdval;              ///< Exponent of correlated x-t dependence.
-
-    std::vector<double> Htuval1tab;             ///< Htval1(i=0,1,2) for valence u
-    std::vector<double> Htdval1tab;             ///< Htval1(i=0,1,2) for valence d
-    std::vector<double> Htuval1mtab;            ///< Htval1(i=0,1,2) for valence u for -xb
-    std::vector<double> Htdval1mtab;            ///< Htval1(i=0,1,2) for valence d for -xb
 
     std::vector<double> Etuval1tab;             ///< Etval1(i=0,1,2,3) for valence u
     std::vector<double> Etdval1tab;             ///< Etval1(i=0,1,2,3) for valence d
