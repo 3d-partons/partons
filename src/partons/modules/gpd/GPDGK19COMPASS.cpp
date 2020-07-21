@@ -2,22 +2,17 @@
 
 #include "../../../../include/partons/modules/gpd/GPDGK19COMPASS.h"
 
-#include <gsl/gsl_integration.h>
-#include <gsl/gsl_math.h>
-#include <gsl/gsl_monte.h>
-#include <gsl/gsl_monte_vegas.h>
-#include <gsl/gsl_rng.h>
-#include <utility>
+#include <NumA/functor/one_dimension/Functor1D.h>
+#include <NumA/integration/one_dimension/Integrator1D.h>
+#include <NumA/integration/one_dimension/IntegratorType1D.h>
 #include <cmath>
+#include <utility>
 
 #include "../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
-#include "../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
 #include "../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
 #include "../../../../include/partons/beans/QuarkFlavor.h"
-#include "../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
-
 
 namespace PARTONS {
 
@@ -26,7 +21,7 @@ const unsigned int GPDGK19COMPASS::classId =
                 new GPDGK19COMPASS("GPDGK19COMPASS"));
 
 GPDGK19COMPASS::GPDGK19COMPASS(const std::string &className) :
-        GPDGK16(className) {
+        GPDGK16(className), MathIntegratorModule() {
 
     m_MuF2_ref = 4.;
 
@@ -68,9 +63,9 @@ GPDGK19COMPASS::GPDGK19COMPASS(const std::string &className) :
     kETransdval = 0.0;
 
     m_listGPDComputeTypeAvailable.insert(
-              std::make_pair(GPDType::H, &GPDModule::computeH));
+            std::make_pair(GPDType::H, &GPDModule::computeH));
     m_listGPDComputeTypeAvailable.insert(
-              std::make_pair(GPDType::E, &GPDModule::computeE));
+            std::make_pair(GPDType::E, &GPDModule::computeE));
     m_listGPDComputeTypeAvailable.insert(
             std::make_pair(GPDType::Ht, &GPDModule::computeHt));
     m_listGPDComputeTypeAvailable.insert(
@@ -79,10 +74,12 @@ GPDGK19COMPASS::GPDGK19COMPASS(const std::string &className) :
             std::make_pair(GPDType::HTrans, &GPDModule::computeHTrans));
     m_listGPDComputeTypeAvailable.insert(
             std::make_pair(GPDType::EbarTrans, &GPDModule::computeEbarTrans));
+
+    initFunctorsForIntegrations();
 }
 
 GPDGK19COMPASS::GPDGK19COMPASS(const GPDGK19COMPASS& other) :
-        GPDGK16(other) {
+        GPDGK16(other), MathIntegratorModule(other) {
 
 //    Htuval1tab = other.Htuval1tab;
 //    Htdval1tab = other.Htdval1tab;
@@ -120,13 +117,43 @@ GPDGK19COMPASS::GPDGK19COMPASS(const GPDGK19COMPASS& other) :
     kETranssea = other.kETranssea;
     kETransuval = other.kETransuval;
     kETransdval = other.kETransdval;
+
+    initFunctorsForIntegrations();
 }
 
 GPDGK19COMPASS* GPDGK19COMPASS::clone() const {
     return new GPDGK19COMPASS(*this);
 }
 
+void GPDGK19COMPASS::resolveObjectDependencies() {
+
+    //run for mother
+    GPDGK16::resolveObjectDependencies();
+
+    //set type
+    setIntegrator(NumA::IntegratorType1D::DEXP);
+}
+
+void GPDGK19COMPASS::configure(const ElemUtils::Parameters &parameters) {
+
+    //run for mother
+    GPDGK16::configure(parameters);
+
+    //run for integrator
+    MathIntegratorModule::configureIntegrator(parameters);
+}
+
 GPDGK19COMPASS::~GPDGK19COMPASS() {
+
+    if (m_pint_HtUp) {
+        delete m_pint_HtUp;
+        m_pint_HtUp = 0;
+    }
+
+    if (m_pint_HtDown) {
+        delete m_pint_HtDown;
+        m_pint_HtDown = 0;
+    }
 }
 
 void GPDGK19COMPASS::initModule() {
@@ -138,9 +165,18 @@ void GPDGK19COMPASS::isModuleWellConfigured() {
 
 }
 
-double GPDGK19COMPASS::HtUp(double rho, void * params) {
+void GPDGK19COMPASS::initFunctorsForIntegrations() {
 
-    double alpha = *(double *) params;
+    m_pint_HtUp = NumA::Integrator1D::newIntegrationFunctor(this,
+            &GPDGK19COMPASS::HtUp);
+
+    m_pint_HtDown = NumA::Integrator1D::newIntegrationFunctor(this,
+            &GPDGK19COMPASS::HtDown);
+}
+
+double GPDGK19COMPASS::HtUp(double rho, std::vector<double> par) {
+
+    double alpha = par.at(0);
 
     double Nu, c1, c2, c3, c4;
 
@@ -151,16 +187,21 @@ double GPDGK19COMPASS::HtUp(double rho, void * params) {
     c3 = 12.59 * Nu;
     c4 = -12.57 * Nu;
 
-    double uVal = 3./(4. * pow(m_xi,3.)) * pow(rho,-0.48) * (c1 + c2 * sqrt(rho) + c3 * rho + c4 * pow(rho,1.5)) *
-            exp(m_t * ((-0.9 * log(rho) + 0.59) * pow(1.-rho,3.) + 1.22 * rho * pow(1.-rho,2.))) * (m_xi * m_xi * pow(1.-rho,2.) - pow(alpha-rho,2.));
+    double uVal = 3. / (4. * pow(m_xi, 3.)) * pow(rho, -0.48)
+            * (c1 + c2 * sqrt(rho) + c3 * rho + c4 * pow(rho, 1.5))
+            * exp(
+                    m_t
+                            * ((-0.9 * log(rho) + 0.59) * pow(1. - rho, 3.)
+                                    + 1.22 * rho * pow(1. - rho, 2.)))
+            * (m_xi * m_xi * pow(1. - rho, 2.) - pow(alpha - rho, 2.));
 
     return uVal;
 
 }
 
-double GPDGK19COMPASS::HtDown(double rho, void * params) {
+double GPDGK19COMPASS::HtDown(double rho, std::vector<double> par) {
 
-    double alpha = *(double *) params;
+    double alpha = par.at(0);
 
     double Nd, c1, c2, c3, c4, b0;
 
@@ -172,8 +213,13 @@ double GPDGK19COMPASS::HtDown(double rho, void * params) {
 
     b0 = 0.59;
 
-    double dVal = 3./(4. * pow(m_xi,3.)) * pow(rho,-0.48) * (c1 + c2 * sqrt(rho) + c3 * rho + c4 * pow(rho,1.5)) *
-            exp(m_t * ((-0.9 * log(rho) + 0.59) * pow(1.-rho,3.) + 2.59 * rho * pow(1.-rho,2.))) * (m_xi * m_xi * pow(1.-rho,2.) - pow(alpha-rho,2.));
+    double dVal = 3. / (4. * pow(m_xi, 3.)) * pow(rho, -0.48)
+            * (c1 + c2 * sqrt(rho) + c3 * rho + c4 * pow(rho, 1.5))
+            * exp(
+                    m_t
+                            * ((-0.9 * log(rho) + 0.59) * pow(1. - rho, 3.)
+                                    + 2.59 * rho * pow(1. - rho, 2.)))
+            * (m_xi * m_xi * pow(1. - rho, 2.) - pow(alpha - rho, 2.));
 
     return dVal;
 
@@ -187,76 +233,98 @@ PartonDistribution GPDGK19COMPASS::computeHt() {
     QuarkDistribution quarkDistribution_s(QuarkFlavor::STRANGE);
 
 // Gluons,  Ht_gluons = 0 in GK
-   GluonDistribution gluonDistribution(0.);
+    GluonDistribution gluonDistribution(0.);
 
 // s quark,  Ht_sea = 0 in GK
     quarkDistribution_s.setQuarkDistributionPlus(0.);
 
 // u quark, valence part
 
-    double accuracy = 0.0001;
+//    double accuracy = 0.0001;
 
-    gsl_integration_workspace * w = gsl_integration_workspace_alloc (10000);
-    double integration1Da, error1Da,integration1Db, error1Db, integration1Dc, error1Dc,integration1Dd, error1Dd;
+//    gsl_integration_workspace * w = gsl_integration_workspace_alloc(10000);
 
-    integration1Da = 0.0;
-    error1Da = 0.0;
-    integration1Db = 0.0;
-    error1Db = 0.0;
-    integration1Dc = 0.0;
-    error1Dc = 0.0;
-    integration1Dd = 0.0;
-    error1Dd = 0.0;
+    double integration1Da = 0.0;
+//   double error1Da = 0.0;
+    double integration1Db = 0.0;
+//   double error1Db = 0.0;
+    double integration1Dc = 0.0;
+//  double  error1Dc = 0.0;
+    double integration1Dd = 0.0;
+//  double  error1Dd = 0.0;
 
-    double alpha1 = m_x;
-    double alpha2 = -m_x;
+//    double alpha1 = m_x;
+//    double alpha2 = -m_x;
+    std::vector<double> parAlpha1(1, m_x);
+    std::vector<double> parAlpha2(1, -m_x);
 
-    gsl_function gslFunctionHt1Da; // For HtUp(x, xi, t)
-    gslFunctionHt1Da.function = &GPDGK19COMPASS::HtUp;
-    gslFunctionHt1Da.params = &alpha1;
-
-    gsl_function gslFunctionHt1Db; // For HtUp(-x, xi, t)
-    gslFunctionHt1Db.function = &GPDGK19COMPASS::HtUp;
-    gslFunctionHt1Db.params = &alpha2;
-
-    gsl_function gslFunctionHt1Dc; // For HtDown(x, xi, t)
-    gslFunctionHt1Dc.function = &GPDGK19COMPASS::HtDown;
-    gslFunctionHt1Dc.params = &alpha1;
-
-    gsl_function gslFunctionHt1Dd; // For HtDown(-x, xi, t)
-    gslFunctionHt1Dd.function = &GPDGK19COMPASS::HtDown;
-    gslFunctionHt1Dd.params = &alpha2;
+//    gsl_function gslFunctionHt1Da; // For HtUp(x, xi, t)
+//    gslFunctionHt1Da.function = &GPDGK19COMPASS::HtUp;
+//    gslFunctionHt1Da.params = &alpha1;
+//
+//    gsl_function gslFunctionHt1Db; // For HtUp(-x, xi, t)
+//    gslFunctionHt1Db.function = &GPDGK19COMPASS::HtUp;
+//    gslFunctionHt1Db.params = &alpha2;
+//
+//    gsl_function gslFunctionHt1Dc; // For HtDown(x, xi, t)
+//    gslFunctionHt1Dc.function = &GPDGK19COMPASS::HtDown;
+//    gslFunctionHt1Dc.params = &alpha1;
+//
+//    gsl_function gslFunctionHt1Dd; // For HtDown(-x, xi, t)
+//    gslFunctionHt1Dd.function = &GPDGK19COMPASS::HtDown;
+//    gslFunctionHt1Dd.params = &alpha2;
 
     if (m_x <= -m_xi) {
-      gsl_integration_qags (&gslFunctionHt1Db, (-m_x-m_xi)/(1.-m_xi) , (-m_x+m_xi)/(1.+m_xi) , 0, 1e-4, 10000,
-                        w, &integration1Db, &error1Db);
+//        gsl_integration_qags(&gslFunctionHt1Db, (-m_x - m_xi) / (1. - m_xi),
+//                (-m_x + m_xi) / (1. + m_xi), 0, 1e-4, 10000, w, &integration1Db,
+//                &error1Db);
+        integration1Db = integrate(m_pint_HtUp, (-m_x - m_xi) / (1. - m_xi),
+                (-m_x + m_xi) / (1. + m_xi), parAlpha2);
 
-      gsl_integration_qags (&gslFunctionHt1Dd, (-m_x-m_xi)/(1.-m_xi) , (-m_x+m_xi)/(1.+m_xi) , 0, 1e-4, 10000,
-                        w, &integration1Dd, &error1Dd);
+//        gsl_integration_qags(&gslFunctionHt1Dd, (-m_x - m_xi) / (1. - m_xi),
+//                (-m_x + m_xi) / (1. + m_xi), 0, 1e-4, 10000, w, &integration1Dd,
+//                &error1Dd);
+        integration1Dd = integrate(m_pint_HtDown, (-m_x - m_xi) / (1. - m_xi),
+                (-m_x + m_xi) / (1. + m_xi), parAlpha2);
+    } else if (m_x <= m_xi) {
+//        gsl_integration_qags(&gslFunctionHt1Da, accuracy,
+//                (m_x + m_xi) / (1. + m_xi), 0, 1e-4, 10000, w, &integration1Da,
+//                &error1Da);
+        integration1Da = integrate(m_pint_HtUp, (m_x + m_xi) / (1. + m_xi), 0.,
+                parAlpha1);
+
+//        gsl_integration_qags(&gslFunctionHt1Db, accuracy,
+//                (-m_x + m_xi) / (1. + m_xi), 0, 1e-4, 10000, w, &integration1Db,
+//                &error1Db);
+        integration1Db = integrate(m_pint_HtUp, (-m_x + m_xi) / (1. + m_xi), 0.,
+                parAlpha2);
+
+//        gsl_integration_qags(&gslFunctionHt1Dc, accuracy,
+//                (m_x + m_xi) / (1. + m_xi), 0, 1e-4, 10000, w, &integration1Dc,
+//                &error1Dc);
+        integration1Dc = integrate(m_pint_HtDown, (m_x + m_xi) / (1. + m_xi),
+                0., parAlpha1);
+
+//        gsl_integration_qags(&gslFunctionHt1Dd, accuracy,
+//                (-m_x + m_xi) / (1. + m_xi), 0, 1e-4, 10000, w, &integration1Dd,
+//                &error1Dd);
+        integration1Dd = integrate(m_pint_HtDown, (-m_x + m_xi) / (1. + m_xi),
+                0., parAlpha2);
+    } else {
+//        gsl_integration_qags(&gslFunctionHt1Da, (m_x - m_xi) / (1. - m_xi),
+//                (m_x + m_xi) / (1. + m_xi), 0, 1e-4, 10000, w, &integration1Da,
+//                &error1Da);
+        integration1Da = integrate(m_pint_HtUp, (m_x - m_xi) / (1. - m_xi),
+                (m_x + m_xi) / (1. + m_xi), parAlpha1);
+
+//        gsl_integration_qags(&gslFunctionHt1Dc, (m_x - m_xi) / (1. - m_xi),
+//                (m_x + m_xi) / (1. + m_xi), 0, 1e-4, 10000, w, &integration1Dc,
+//                &error1Dc);
+        integration1Dc = integrate(m_pint_HtDown, (m_x - m_xi) / (1. - m_xi),
+                (m_x + m_xi) / (1. + m_xi), parAlpha1);
     }
-    else if (m_x <= m_xi){
-      gsl_integration_qags (&gslFunctionHt1Da, accuracy , (m_x+m_xi)/(1.+m_xi) , 0, 1e-4, 10000,
-                        w, &integration1Da, &error1Da);
 
-      gsl_integration_qags (&gslFunctionHt1Db, accuracy , (-m_x+m_xi)/(1.+m_xi) , 0, 1e-4, 10000,
-                        w, &integration1Db, &error1Db);
-
-      gsl_integration_qags (&gslFunctionHt1Dc, accuracy , (m_x+m_xi)/(1.+m_xi) , 0, 1e-4, 10000,
-                        w, &integration1Dc, &error1Dc);
-
-      gsl_integration_qags (&gslFunctionHt1Dd, accuracy , (-m_x+m_xi)/(1.+m_xi) , 0, 1e-4, 10000,
-                        w, &integration1Dd, &error1Dd);
-    }
-    else {
-      gsl_integration_qags (&gslFunctionHt1Da, (m_x-m_xi)/(1.-m_xi) , (m_x+m_xi)/(1.+m_xi) , 0, 1e-4, 10000,
-                        w, &integration1Da, &error1Da);
-
-      gsl_integration_qags (&gslFunctionHt1Dc, (m_x-m_xi)/(1.-m_xi) , (m_x+m_xi)/(1.+m_xi) , 0, 1e-4, 10000,
-                        w, &integration1Dc, &error1Dc);
-    }
-
-
-    gsl_integration_workspace_free (w);
+    // u quark, valence part
 
     double fHtuVal = integration1Da;
 
@@ -264,8 +332,7 @@ PartonDistribution GPDGK19COMPASS::computeHt() {
 
     double fHtuValMx = integration1Db;
 
-
-// d quark, valence part
+    // d quark, valence part
 
     double fHtdVal = integration1Dc;
 
@@ -273,11 +340,11 @@ PartonDistribution GPDGK19COMPASS::computeHt() {
 
     double fHtdValMx = integration1Dd;
 
-// u and d quark, sea part
+    // u and d quark, sea part
     double uSea = 0.;
     double dSea = 0.;
 
-// u and d quarks, valence + sea parts
+    // u and d quarks, valence + sea parts
 
     quarkDistribution_u.setQuarkDistribution(uVal + uSea);
     quarkDistribution_d.setQuarkDistribution(dVal + dSea);
@@ -312,7 +379,7 @@ PartonDistribution GPDGK19COMPASS::computeEt() {
     calculateEtCoefs(); // Calculate the K's and the coefficients
 
 // Gluons,  Et_gluons = 0 in GK
-   GluonDistribution gluonDistribution(0.);
+    GluonDistribution gluonDistribution(0.);
 
 // s quark,  Et_sea = 0 in GK
     quarkDistribution_s.setQuarkDistributionPlus(0.);
@@ -335,7 +402,6 @@ PartonDistribution GPDGK19COMPASS::computeEt() {
     double fEtuValMx = exp(b0 * m_t)
             * (c1 * Etuval1mtab.at(0) + c2 * Etuval1mtab.at(1)
                     + c3 * Etuval1mtab.at(2) + c4 * Etuval1mtab.at(3));
-
 
 // d quark, valence part
 
@@ -417,15 +483,14 @@ PartonDistribution GPDGK19COMPASS::computeHTrans() {
     double fHTransuVal = exp(b0 * m_t) * Nu
             * (c1 * HTransuval1tab.at(0) + c2 * HTransuval1tab.at(1)
                     + c3 * HTransuval1tab.at(2) + c4 * HTransuval1tab.at(3)
-                            + c5 * HTransuval1tab.at(4) + c6 * HTransuval1tab.at(5));
+                    + c5 * HTransuval1tab.at(4) + c6 * HTransuval1tab.at(5));
 
     double uVal = fHTransuVal;
 
     double fHTransuValMx = exp(b0 * m_t) * Nu
             * (c1 * HTransuval1mtab.at(0) + c2 * HTransuval1mtab.at(1)
                     + c3 * HTransuval1mtab.at(2) + c4 * HTransuval1mtab.at(3)
-                            + c5 * HTransuval1mtab.at(4) + c6 * HTransuval1mtab.at(5));
-
+                    + c5 * HTransuval1mtab.at(4) + c6 * HTransuval1mtab.at(5));
 
 // d quark, valence part
 
@@ -443,14 +508,14 @@ PartonDistribution GPDGK19COMPASS::computeHTrans() {
     double fHTransdVal = exp(b0 * m_t) * Nd
             * (c1 * HTransdval1tab.at(0) + c2 * HTransdval1tab.at(1)
                     + c3 * HTransdval1tab.at(2) + c4 * HTransdval1tab.at(3)
-                            + c5 * HTransdval1tab.at(4) + c6 * HTransdval1tab.at(5));
+                    + c5 * HTransdval1tab.at(4) + c6 * HTransdval1tab.at(5));
 
     double dVal = fHTransdVal;
 
     double fHTransdValMx = exp(b0 * m_t) * Nd
             * (c1 * HTransdval1mtab.at(0) + c2 * HTransdval1mtab.at(1)
                     + c3 * HTransdval1mtab.at(2) + c4 * HTransdval1mtab.at(3)
-                            + c5 * HTransdval1mtab.at(4) + c6 * HTransdval1mtab.at(5));
+                    + c5 * HTransdval1mtab.at(4) + c6 * HTransdval1mtab.at(5));
 
 // u and d quark, sea part
     double uSea = 0.;
@@ -519,7 +584,6 @@ PartonDistribution GPDGK19COMPASS::computeEbarTrans() {
             * (c1 * ETransuval1mtab.at(0) + c2 * ETransuval1mtab.at(1)
                     + c3 * ETransuval1mtab.at(2));
 
-
 // d quark, valence part
 
     Nd = 15.46;
@@ -565,9 +629,8 @@ PartonDistribution GPDGK19COMPASS::computeEbarTrans() {
     return partonDistribution;
 }
 
-
 void GPDGK19COMPASS::calculateHtKas() {
-   double alpha, delta;
+    double alpha, delta;
 
 // gluons, not modelled by GK.
 

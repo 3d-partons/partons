@@ -8,10 +8,16 @@
  * @version 1.0
  */
 
+#include <ElementaryUtils/parameters/Parameters.h>
 #include <string>
 #include <vector>
 
+#include "../MathIntegratorModule.h"
 #include "GPDGK16.h"
+
+namespace NumA {
+class FunctionType1D;
+} /* namespace NumA */
 
 namespace PARTONS {
 
@@ -23,7 +29,7 @@ namespace PARTONS {
  * TODO
  */
 
-class GPDGK19COMPASS: public GPDGK16 {
+class GPDGK19COMPASS: public GPDGK16, public MathIntegratorModule {
 
 public:
 
@@ -43,6 +49,8 @@ public:
     virtual ~GPDGK19COMPASS();
 
     virtual GPDGK19COMPASS* clone() const;
+    virtual void resolveObjectDependencies();
+    virtual void configure(const ElemUtils::Parameters &parameters);
 
 protected:
 
@@ -54,8 +62,8 @@ protected:
     virtual void initModule();
     virtual void isModuleWellConfigured();
 
-    double HtUp(double rho, void * params);
-    double HtDown(double rho, void * params);
+    double HtUp(double rho, std::vector<double> par);
+    double HtDown(double rho, std::vector<double> par);
 
     virtual PartonDistribution computeHt();
     virtual PartonDistribution computeEt();
@@ -66,8 +74,6 @@ protected:
     void calculateEtCoefs();
     void calculateHTransCoefs();
     void calculateETransCoefs();
-
-
 
 private:
 
@@ -91,20 +97,20 @@ private:
     double kETransuval;              ///< Exponent of correlated x-t dependence.
     double kETransdval;              ///< Exponent of correlated x-t dependence.
 
-    std::vector<double> Etuval1tab;             ///< Etval1(i=0,1,2,3) for valence u
-    std::vector<double> Etdval1tab;             ///< Etval1(i=0,1,2,3) for valence d
-    std::vector<double> Etuval1mtab;            ///< Etval1(i=0,1,2,3) for valence u for -xb
-    std::vector<double> Etdval1mtab;            ///< Etval1(i=0,1,2,3) for valence d for -xb
+    std::vector<double> Etuval1tab;         ///< Etval1(i=0,1,2,3) for valence u
+    std::vector<double> Etdval1tab;         ///< Etval1(i=0,1,2,3) for valence d
+    std::vector<double> Etuval1mtab; ///< Etval1(i=0,1,2,3) for valence u for -xb
+    std::vector<double> Etdval1mtab; ///< Etval1(i=0,1,2,3) for valence d for -xb
 
-    std::vector<double> HTransuval1tab;         ///< HTransval1(i=0,1,2,3,4,5) for valence u
-    std::vector<double> HTransdval1tab;         ///< HTransval1(i=0,1,2,3,4,5) for valence d
-    std::vector<double> HTransuval1mtab;        ///< HTransval1(i=0,1,2,3,4,5) for valence u for -xb
-    std::vector<double> HTransdval1mtab;        ///< HTransval1(i=0,1,2,3,4,5) for valence d for -xb
+    std::vector<double> HTransuval1tab; ///< HTransval1(i=0,1,2,3,4,5) for valence u
+    std::vector<double> HTransdval1tab; ///< HTransval1(i=0,1,2,3,4,5) for valence d
+    std::vector<double> HTransuval1mtab; ///< HTransval1(i=0,1,2,3,4,5) for valence u for -xb
+    std::vector<double> HTransdval1mtab; ///< HTransval1(i=0,1,2,3,4,5) for valence d for -xb
 
-    std::vector<double> ETransuval1tab;         ///< ETransval1(i=0,1,2) for valence u
-    std::vector<double> ETransdval1tab;         ///< ETransval1(i=0,1,2) for valence d
-    std::vector<double> ETransuval1mtab;        ///< ETransval1(i=0,1,2) for valence u for -xb
-    std::vector<double> ETransdval1mtab;        ///< ETransval1(i=0,1,2) for valence d for -xb
+    std::vector<double> ETransuval1tab;   ///< ETransval1(i=0,1,2) for valence u
+    std::vector<double> ETransdval1tab;   ///< ETransval1(i=0,1,2) for valence d
+    std::vector<double> ETransuval1mtab; ///< ETransval1(i=0,1,2) for valence u for -xb
+    std::vector<double> ETransdval1mtab; ///< ETransval1(i=0,1,2) for valence d for -xb
 
     void calculateHtKas();
     void calculateEtKas();
@@ -112,6 +118,14 @@ private:
     void calculateETransKas();
 
     double ValenceExpansion(double x, double i, double k);
+
+    /**
+     * Initialize functors.
+     */
+    void initFunctorsForIntegrations();
+
+    NumA::FunctionType1D* m_pint_HtUp;
+    NumA::FunctionType1D* m_pint_HtDown;
 };
 
 } /* namespace PARTONS */
