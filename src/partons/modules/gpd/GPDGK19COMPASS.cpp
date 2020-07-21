@@ -290,26 +290,26 @@ PartonDistribution GPDGK19COMPASS::computeHt() {
 //        gsl_integration_qags(&gslFunctionHt1Da, accuracy,
 //                (m_x + m_xi) / (1. + m_xi), 0, 1e-4, 10000, w, &integration1Da,
 //                &error1Da);
-        integration1Da = integrate(m_pint_HtUp, (m_x + m_xi) / (1. + m_xi), 0.,
+        integration1Da = integrate(m_pint_HtUp, 0., (m_x + m_xi) / (1. + m_xi),
                 parAlpha1);
 
 //        gsl_integration_qags(&gslFunctionHt1Db, accuracy,
 //                (-m_x + m_xi) / (1. + m_xi), 0, 1e-4, 10000, w, &integration1Db,
 //                &error1Db);
-        integration1Db = integrate(m_pint_HtUp, (-m_x + m_xi) / (1. + m_xi), 0.,
+        integration1Db = integrate(m_pint_HtUp, 0., (-m_x + m_xi) / (1. + m_xi),
                 parAlpha2);
 
 //        gsl_integration_qags(&gslFunctionHt1Dc, accuracy,
 //                (m_x + m_xi) / (1. + m_xi), 0, 1e-4, 10000, w, &integration1Dc,
 //                &error1Dc);
-        integration1Dc = integrate(m_pint_HtDown, (m_x + m_xi) / (1. + m_xi),
-                0., parAlpha1);
+        integration1Dc = integrate(m_pint_HtDown, 0., (m_x + m_xi) / (1. + m_xi),
+                parAlpha1);
 
 //        gsl_integration_qags(&gslFunctionHt1Dd, accuracy,
 //                (-m_x + m_xi) / (1. + m_xi), 0, 1e-4, 10000, w, &integration1Dd,
 //                &error1Dd);
-        integration1Dd = integrate(m_pint_HtDown, (-m_x + m_xi) / (1. + m_xi),
-                0., parAlpha2);
+        integration1Dd = integrate(m_pint_HtDown, 0., (-m_x + m_xi) / (1. + m_xi),
+                parAlpha2);
     } else {
 //        gsl_integration_qags(&gslFunctionHt1Da, (m_x - m_xi) / (1. - m_xi),
 //                (m_x + m_xi) / (1. + m_xi), 0, 1e-4, 10000, w, &integration1Da,
