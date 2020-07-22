@@ -1,10 +1,10 @@
-#ifndef DVMP_PROCESS_VGG99_H
-#define DVMP_PROCESS_VGG99_H
+#ifndef DVMP_PROCESS_GK06_H
+#define DVMP_PROCESS_GK06_H
 
 /**
  * @file DVMPProcessGK06.h
- * @author  Michel Guidal (IPNO)
- * @author Pawel Sznajder (IPNO)
+ * @author Kemal Tezgin
+ * @date October 21, 2019
  * @version 1.0
  */
 
@@ -19,15 +19,7 @@ namespace PARTONS {
 /**
  * @class DVMPProcessGK06
  *
- * VGG process model for DVMP.
- *
- * For the reference see:
- * - Prog. Part. Nucl. Phys. 47, 401 (2001)
- * - Phys. Rev. Lett. 80 5064 (1998).
- * - Phys. Rev. D 60, 094017 (1999).
- * - Phys. Rev. D 72, 054013 (2005).
- *
- * Module based on the original code received from M. Guidal as a private communication.
+ * TODO
  */
 class DVMPProcessGK06: public DVMPProcessModule {
 
@@ -92,4 +84,4 @@ private:
 
 } /* namespace PARTONS */
 
-#endif /* DVMP_PROCESS_VGG99_H */
+#endif /* DVMP_PROCESS_GK06_H */

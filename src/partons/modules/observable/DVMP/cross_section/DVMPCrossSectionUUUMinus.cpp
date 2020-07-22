@@ -1,5 +1,3 @@
-#include "../../../../../../include/partons/modules/observable/DVMP/cross_section/DVMPCrossSectionUUMinusPi0.h"
-
 #include <NumA/linear_algebra/vector/Vector3D.h>
 
 #include "../../../../../../include/partons/beans/MesonPolarization.h"
@@ -7,35 +5,38 @@
 #include "../../../../../../include/partons/beans/observable/ObservableResult.h"
 #include "../../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../../include/partons/FundamentalPhysicalConstants.h"
+#include "../../../../../../include/partons/modules/observable/DVMP/cross_section/DVMPCrossSectionUUUMinus.h"
 #include "../../../../../../include/partons/modules/process/DVMP/DVMPProcessModule.h"
 #include "../../../../../../include/partons/utils/type/PhysicalUnit.h"
 
 namespace PARTONS {
 
-const unsigned int DVMPCrossSectionUUMinusPi0::classId =
+const unsigned int DVMPCrossSectionUUUMinus::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
-                new DVMPCrossSectionUUMinusPi0("DVMPCrossSectionUUMinusPi0"));
+                new DVMPCrossSectionUUUMinus("DVMPCrossSectionUUUMinus"));
 
-DVMPCrossSectionUUMinusPi0::DVMPCrossSectionUUMinusPi0(
+DVMPCrossSectionUUUMinus::DVMPCrossSectionUUUMinus(
         const std::string &className) :
         DVMPObservable(className) {
 }
 
-DVMPCrossSectionUUMinusPi0::DVMPCrossSectionUUMinusPi0(
-        const DVMPCrossSectionUUMinusPi0& other) :
+DVMPCrossSectionUUUMinus::DVMPCrossSectionUUUMinus(
+        const DVMPCrossSectionUUUMinus& other) :
         DVMPObservable(other) {
 }
 
-DVMPCrossSectionUUMinusPi0::~DVMPCrossSectionUUMinusPi0() {
+DVMPCrossSectionUUUMinus::~DVMPCrossSectionUUUMinus() {
 }
 
-DVMPCrossSectionUUMinusPi0* DVMPCrossSectionUUMinusPi0::clone() const {
-    return new DVMPCrossSectionUUMinusPi0(*this);
+DVMPCrossSectionUUUMinus* DVMPCrossSectionUUUMinus::clone() const {
+    return new DVMPCrossSectionUUUMinus(*this);
 }
 
-PhysicalType<double> DVMPCrossSectionUUMinusPi0::computeObservable(
+PhysicalType<double> DVMPCrossSectionUUUMinus::computeObservable(
         const DVMPObservableKinematic& kinematic,
         const List<GPDType>& gpdType) {
+
+    //TODO VECTOR MESON POLARISATION
 
     //evaluate
     DVMPObservableResult A = m_pProcessModule->compute(1., -1,
