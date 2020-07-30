@@ -15,10 +15,12 @@
 #include "../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../include/partons/utils/MSTWPDF.h"
 #include "../../../../include/partons/utils/PartonContent.h"
 
 namespace PARTONS {
+
+const std::string GPDMMS13::PARAM_NAME_SET_NAME = "setName";
+const std::string GPDMMS13::PARAM_NAME_MEMBER = "member";
 
 const unsigned int GPDMMS13::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
@@ -29,7 +31,8 @@ const std::string GPDMMS13::PARAMETER_NAME_MMS13MODEL_NE = "MMS13Model_NE";
 const std::string GPDMMS13::PARAMETER_NAME_MMS13MODEL_C = "MMS13Model_C";
 
 GPDMMS13::GPDMMS13(const std::string &className) :
-        GPDModule(className), MathIntegratorModule(), m_pForward(0) {
+        GPDModule(className), MathIntegratorModule(), m_pForward(0), m_setName("UNDEFINED"),
+	m_member(0) {
 
     m_MuF2_ref = 4.;
 
@@ -53,11 +56,9 @@ GPDMMS13::GPDMMS13(const GPDMMS13& other) :
     m_NHpE = other.m_NHpE;
     m_C = other.m_C;
 
-    //TODO make a clone instance ; create MSTWPDF as a module.
-    m_pForward = new MSTWPDF();
-    m_pForward->init(
-            ElemUtils::PropertiesManager::getInstance()->getString(
-                    "grid.directory") + "mstw2008nlo.00.dat");
+    m_setName = other.m_setName;
+    m_member = other.m_member;
+    m_pForward = other.m_pForward;
 
     initFunctorsForIntegrations();
 }
@@ -108,7 +109,7 @@ void GPDMMS13::initFunctorsForIntegrations() {
 GPDMMS13* GPDMMS13::clone() const {
     return new GPDMMS13(*this);
 }
-//TODO clone MSTWPDF instead of hardcoded new
+
 void GPDMMS13::resolveObjectDependencies() {
     setIntegrator(NumA::IntegratorType1D::DEXP);
 }
@@ -117,6 +118,22 @@ void GPDMMS13::configure(const ElemUtils::Parameters &parameters) {
 
     GPDModule::configure(parameters);
     MathIntegratorModule::configureIntegrator(parameters);
+
+    // LHAPDF in silent mode
+    LHAPDF::setVerbosity(0);
+
+    //check and set
+    if (parameters.isAvailable(GPDMMS13::PARAM_NAME_SET_NAME)) {
+        setSetName(parameters.getLastAvailable().getString());
+	info(__func__, ElemUtils::Formatter() << GPDMMS13::PARAM_NAME_SET_NAME
+	     << " configured with value = " << getSetName());
+    }
+
+    if (parameters.isAvailable(GPDMMS13::PARAM_NAME_MEMBER)) {
+        setMember(parameters.getLastAvailable().toUInt());
+	info(__func__, ElemUtils::Formatter() << GPDMMS13::PARAM_NAME_MEMBER
+	     << " configured with value = " << getMember());
+    }
 
     if (parameters.isAvailable(GPDMMS13::PARAMETER_NAME_MMS13MODEL_NHpE)) {
         m_NHpE = parameters.getLastAvailable().toInt();
@@ -137,10 +154,24 @@ std::string GPDMMS13::toString() const {
 
 void GPDMMS13::isModuleWellConfigured() {
     GPDModule::isModuleWellConfigured();
+
+    //check that the set name in no UNDEFINED
+    if (m_setName == "UNDEFINED") {
+        throw ElemUtils::CustomException(getClassName(), __func__, ElemUtils::Formatter() << "The set name is undefined");
+    }
+
+    //check that the member index is non-negative
+    if (m_member < 0) {
+        throw ElemUtils::CustomException(getClassName(), __func__, ElemUtils::Formatter() << "The member index is negative");
+    }
 }
 
 void GPDMMS13::initModule() {
     GPDModule::initModule();
+
+    if (m_pForward == nullptr) {
+        m_pForward = LHAPDF::mkPDF(m_setName, m_member);
+    }
 }
 
 PartonDistribution GPDMMS13::computeH() {
@@ -263,9 +294,6 @@ double GPDMMS13::forwardHval(double beta, QuarkFlavor::Type flavor) const {
     //parameters
     double alpha_prim;
 
-    //update pdf
-    m_pForward->update(beta, sqrt(m_MuF2));
-
     //check flavor
     switch (flavor) {
 
@@ -274,7 +302,7 @@ double GPDMMS13::forwardHval(double beta, QuarkFlavor::Type flavor) const {
         alpha_prim = 0.9;
 
         return pow(beta, -1 * alpha_prim * m_t)
-                * m_pForward->getPartonContent().getUpv() / beta;
+	        * ( m_pForward->xfxQ2(2, beta, m_MuF2) - m_pForward->xfxQ2(-2, beta, m_MuF2) ) / beta;
     }
         break;
 
@@ -283,7 +311,8 @@ double GPDMMS13::forwardHval(double beta, QuarkFlavor::Type flavor) const {
         alpha_prim = 0.9;
 
         return pow(beta, -1 * alpha_prim * m_t)
-                * m_pForward->getPartonContent().getDnv() / beta;
+	        * ( m_pForward->xfxQ2(1, beta, m_MuF2) - m_pForward->xfxQ2(-1, beta, m_MuF2) ) / beta;
+
     }
         break;
 
@@ -468,6 +497,22 @@ double GPDMMS13::IntEvalPlusB(double beta, std::vector<double> par) {
     return (1 / m_xi)
             * forwardEval(beta, static_cast<QuarkFlavor::Type>(int(par[1])))
             * profileFunction(beta, par[0] / m_xi, int(par[2])) / beta;
+}
+
+void GPDMMS13::setSetName(const std::string &setname) {
+    m_setName = setname;
+}
+
+void GPDMMS13::setMember(const int &member) {
+    m_member = member;
+}
+
+std::string GPDMMS13::getSetName() const {
+    return m_setName;
+}
+
+int GPDMMS13::getMember() const {
+    return m_member;
 }
 
 } /* namespace PARTONS */

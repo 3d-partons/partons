@@ -16,12 +16,11 @@ const unsigned int CollinearDistributionLHAPDF::classId =
 
 //TODO initialise missing members
 CollinearDistributionLHAPDF::CollinearDistributionLHAPDF(const std::string &className) :
-        CollinearDistributionModule(className) {
-
-    m_setName = "UNDEFINED";
-    m_member = 0;
-    m_type = CollinearDistributionType::Type::UNDEFINED;
-    m_set = {};
+        CollinearDistributionModule(className),
+	m_setName("UNDEFINED"),
+	m_member(0),
+	m_type(CollinearDistributionType::Type::UNDEFINED),
+	m_set({}) {
 }
 
 CollinearDistributionLHAPDF::CollinearDistributionLHAPDF(const CollinearDistributionLHAPDF& other) :

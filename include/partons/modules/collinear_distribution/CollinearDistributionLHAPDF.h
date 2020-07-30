@@ -26,7 +26,6 @@ public:
 
     static const std::string PARAM_NAME_SET_NAME;
     static const std::string PARAM_NAME_MEMBER;
-    static const std::string PARAM_NAME_DIST_TYPE;
 
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 

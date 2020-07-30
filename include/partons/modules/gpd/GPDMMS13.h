@@ -11,14 +11,13 @@
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <string>
 #include <vector>
+#include <LHAPDF/LHAPDF.h>
 
 #include "../../beans/QuarkFlavor.h"
 #include "../MathIntegratorModule.h"
 #include "GPDModule.h"
 
 namespace PARTONS {
-
-class MSTWPDF;
 
 /**
  * @class GPDMMS13
@@ -30,6 +29,9 @@ class MSTWPDF;
 class GPDMMS13: public GPDModule, public MathIntegratorModule {
 
 public:
+
+    static const std::string PARAM_NAME_SET_NAME;
+    static const std::string PARAM_NAME_MEMBER;
 
     static const std::string PARAMETER_NAME_MMS13MODEL_NHpE; ///< Name of parameter to set #m_NHpE via configure()
     static const std::string PARAMETER_NAME_MMS13MODEL_NE; ///< Name of parameter to set #m_NE via configure()
@@ -53,6 +55,12 @@ public:
     virtual void resolveObjectDependencies();
     virtual void configure(const ElemUtils::Parameters &parameters);
     virtual std::string toString() const;
+
+    std::string getSetName() const;
+    int getMember() const;
+
+    void setSetName(const std::string &setname);
+    void setMember(const int &member);
 
     /** D term function.
      @param zeta Variable equals x/xi.
@@ -78,7 +86,9 @@ private:
     int m_NE; ///< %Double distribution profile function parameter for E+.
     double m_C; ///< Scaling parameter for D term.
 
-    MSTWPDF* m_pForward;    ///< Pointer to MSTW PDFs.
+    std::string m_setName;
+    int m_member;
+    LHAPDF::PDF* m_pForward;
 
     /** Forward limit of GPD H.
      @param beta %Double distribution parameter.
