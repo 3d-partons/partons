@@ -26,7 +26,7 @@ function(_cl_get_version _out_major _out_minor _out_patch _cl_version_h)
 		message(FATAL_ERROR "failed to determine CL_VERSION_PATCHLEVEL, "
 			            "expected a number, got ${${_out_patch}}")
 	endif()
-	message(STATUS "found CLN [${_cl_version_h}], version ${${_out_major}}.${${_out_minor}}.${${_out_patch}}")
+	#message(STATUS "found CLN [${_cl_version_h}], version ${${_out_major}}.${${_out_minor}}.${${_out_patch}}")
 	set(${_out_major} ${${_out_major}} PARENT_SCOPE)
 	set(${_out_minor} ${${_out_minor}} PARENT_SCOPE)
 	set(${_out_patch} ${${_out_patch}} PARENT_SCOPE)
@@ -74,6 +74,7 @@ if (CLN_INCLUDE_DIR)
 	endif()
 endif()
 
+set(CMAKE_REQUIRED_QUIET TRUE)
 # Check if the version embedded into the library is the same as the one in the headers.
 if (CLN_INCLUDE_DIR AND CLN_LIBRARIES AND NOT CMAKE_CROSSCOMPILING)
 	include(CheckCXXSourceRuns)

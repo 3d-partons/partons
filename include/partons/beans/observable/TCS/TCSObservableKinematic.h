@@ -30,7 +30,7 @@ class TCSObservableKinematic: public ObservableKinematic {
 
 public:
 
-    static const std::string TCS_OBSERVABLE_KNEMATIC_CLASS_NAME; ///< Type of the kinematic in XML automation.
+    static const std::string TCS_OBSERVABLE_KINEMATIC_CLASS_NAME; ///< Type of the kinematic in XML automation.
 
     /**
      * Parameter name to set variable \f$Q^{2}'\f$ via configuration methods.

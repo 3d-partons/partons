@@ -10,7 +10,7 @@
 
 namespace PARTONS {
 
-const std::string TCSObservableKinematic::TCS_OBSERVABLE_KNEMATIC_CLASS_NAME =
+const std::string TCSObservableKinematic::TCS_OBSERVABLE_KINEMATIC_CLASS_NAME =
         "TCSObservableKinematic";
 
 const std::string TCSObservableKinematic::KINEMATIC_PARAMETER_NAME_Q2PRIM =

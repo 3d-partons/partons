@@ -9,7 +9,6 @@ namespace PARTONS {
 
 const std::string CollinearDistributionLHAPDF::PARAM_NAME_SET_NAME = "setName";
 const std::string CollinearDistributionLHAPDF::PARAM_NAME_MEMBER = "member";
-const std::string CollinearDistributionLHAPDF::PARAM_NAME_DIST_TYPE = "dist_type";
 
 const unsigned int CollinearDistributionLHAPDF::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
@@ -19,17 +18,15 @@ const unsigned int CollinearDistributionLHAPDF::classId =
 CollinearDistributionLHAPDF::CollinearDistributionLHAPDF(const std::string &className) :
         CollinearDistributionModule(className) {
 
-    m_MuF2_ref = 1;
     m_setName = "UNDEFINED";
     m_member = 0;
-    m_type = CollinearDistributionType::Type::UnpolPDF;
+    m_type = CollinearDistributionType::Type::UNDEFINED;
     m_set = {};
 }
 
 CollinearDistributionLHAPDF::CollinearDistributionLHAPDF(const CollinearDistributionLHAPDF& other) :
         CollinearDistributionModule(other) {
 
-    m_MuF2_ref = 1;
     m_setName = other.getSetName();
     m_member = other.getMember();
     m_type = other.getType();
@@ -47,19 +44,26 @@ void CollinearDistributionLHAPDF::configure(const ElemUtils::Parameters &paramet
 
     CollinearDistributionModule::configure(parameters);
 
+    // LHAPDF in silent mode
+    LHAPDF::setVerbosity(0);
+
     //check and set
     if (parameters.isAvailable(CollinearDistributionLHAPDF::PARAM_NAME_SET_NAME)) {
         setSetName(parameters.getLastAvailable().getString());
+	info(__func__, ElemUtils::Formatter() << CollinearDistributionLHAPDF::PARAM_NAME_SET_NAME
+	     << " configured with value = " << getSetName());
     }
 
-    //check and set
     if (parameters.isAvailable(CollinearDistributionLHAPDF::PARAM_NAME_MEMBER)) {
         setMember(parameters.getLastAvailable().toUInt());
+	info(__func__, ElemUtils::Formatter() << CollinearDistributionLHAPDF::PARAM_NAME_MEMBER
+	     << " configured with value = " << getMember());
     }
 
-    //check and set
-    if (parameters.isAvailable(CollinearDistributionLHAPDF::PARAM_NAME_DIST_TYPE)) {
-        setType((const CollinearDistributionType::Type) parameters.getLastAvailable().toInt());
+    if (parameters.isAvailable(CollinearDistributionType::COLLINEAR_DISTRIBUTION_TYPE_DB_COLUMN_NAME)) {
+        setType(CollinearDistributionType{}.fromString(parameters.getLastAvailable().getString()));
+        info(__func__, ElemUtils::Formatter() << CollinearDistributionType::COLLINEAR_DISTRIBUTION_TYPE_DB_COLUMN_NAME
+	     << " configured with value = " << CollinearDistributionType(getType()).toString());
     }
 
     if (m_type == CollinearDistributionType::UnpolPDF) {
@@ -86,19 +90,20 @@ void CollinearDistributionLHAPDF::isModuleWellConfigured() {
 
     CollinearDistributionModule::isModuleWellConfigured();
 
-    //check that the member index is non-negative
-    if (m_member < 0) {
-        throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter()
-                        << "The member index is negative");
-    }
-
     //check that the set name in no UNDEFINED
     if (m_setName == "UNDEFINED") {
-        throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter()
-                        << "The set name is undefined");
+        throw ElemUtils::CustomException(getClassName(), __func__, ElemUtils::Formatter() << "The set name is undefined");
     }
+
+    //check that the member index is non-negative
+    if (m_member < 0) {
+        throw ElemUtils::CustomException(getClassName(), __func__, ElemUtils::Formatter() << "The member index is negative");
+    }
+
+    if (m_type == CollinearDistributionType::Type::UNDEFINED) {
+        throw ElemUtils::CustomException(getClassName(), __func__, ElemUtils::Formatter() << "The collinear distribution type is undefined");
+    }
+
 }
 
 void CollinearDistributionLHAPDF::initModule() {

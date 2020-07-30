@@ -34,7 +34,7 @@ class CollinearDistributionKinematic: public Kinematic {
 
 public:
 
-    static const std::string COLLINEAR_DISTRIBUTION_KNEMATIC_CLASS_NAME; ///< Type of the kinematic in XML automation.
+    static const std::string COLLINEAR_DISTRIBUTION_KINEMATIC_CLASS_NAME; ///< Type of the kinematic in XML automation.
 
     /**
      * Parameter name to set variable \f$x\f$ via configuration methods.

@@ -9,7 +9,7 @@
 
 namespace PARTONS {
 
-const std::string CollinearDistributionKinematic::COLLINEAR_DISTRIBUTION_KNEMATIC_CLASS_NAME = "CollinearDistributionKinematic";
+const std::string CollinearDistributionKinematic::COLLINEAR_DISTRIBUTION_KINEMATIC_CLASS_NAME = "CollinearDistributionKinematic";
 
 const std::string CollinearDistributionKinematic::KINEMATIC_PARAMETER_NAME_X = "x";
 const std::string CollinearDistributionKinematic::KINEMATIC_PARAMETER_NAME_MUF2 = "MuF2";

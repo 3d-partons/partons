@@ -274,7 +274,7 @@ CollinearDistributionKinematic CollinearDistributionService::newKinematicFromTas
 
     if (ElemUtils::StringUtils::equals(
             task.getKinematicsData().getModuleClassName(),
-            CollinearDistributionKinematic::COLLINEAR_DISTRIBUTION_KNEMATIC_CLASS_NAME)) {
+            CollinearDistributionKinematic::COLLINEAR_DISTRIBUTION_KINEMATIC_CLASS_NAME)) {
         kinematic.configure(task.getKinematicsData().getParameters());
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
@@ -293,7 +293,7 @@ List<CollinearDistributionKinematic> CollinearDistributionService::newListOfKine
 
     if (ElemUtils::StringUtils::equals(
             task.getKinematicsData().getModuleClassName(),
-            CollinearDistributionKinematic::COLLINEAR_DISTRIBUTION_KNEMATIC_CLASS_NAME)) {
+            CollinearDistributionKinematic::COLLINEAR_DISTRIBUTION_KINEMATIC_CLASS_NAME)) {
 
         if (task.getKinematicsData().getParameters().isAvailable("file")) {
             listOfKinematic =

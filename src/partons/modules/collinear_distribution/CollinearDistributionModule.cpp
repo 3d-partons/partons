@@ -25,13 +25,13 @@ const std::string CollinearDistributionModule::COLLINEAR_DISTRIBUTION_MODULE_CLA
 
 CollinearDistributionModule::CollinearDistributionModule(const std::string &className) :
         ModuleObject(className, ChannelType::UNDEFINED), m_x(0.), m_MuF2(0.), m_MuR2(0.), m_currentCollinearDistributionComputeType(
-                CollinearDistributionType::ALL), m_MuF2_ref(0.), m_pCollinearDistributionEvolutionModule(0) {
+                CollinearDistributionType::ALL), m_pCollinearDistributionEvolutionModule(0) {
 }
 
 CollinearDistributionModule::CollinearDistributionModule(const CollinearDistributionModule &other) :
         ModuleObject(other), m_x(other.m_x), m_MuF2(
                 other.m_MuF2), m_MuR2(other.m_MuR2), m_currentCollinearDistributionComputeType(
-                other.m_currentCollinearDistributionComputeType), m_MuF2_ref(other.m_MuF2_ref) {
+                other.m_currentCollinearDistributionComputeType) {
 
     if (other.m_pCollinearDistributionEvolutionModule != 0) {
         m_pCollinearDistributionEvolutionModule = m_pModuleObjectFactory->cloneModuleObject(
@@ -64,8 +64,7 @@ void CollinearDistributionModule::run() {
     try {
 
         //get service
-        CollinearDistributionService* pCollinearDistributionService =
-                Partons::getInstance()->getServiceObjectRegistry()->getCollinearDistributionService();
+        CollinearDistributionService* pCollinearDistributionService = Partons::getInstance()->getServiceObjectRegistry()->getCollinearDistributionService();
 
         //run until empty
         while (!(pCollinearDistributionService->isEmptyTaskQueue())) {
@@ -82,9 +81,7 @@ void CollinearDistributionModule::run() {
             packet >> colldistTypeList;
 
             //debug information
-            debug(__func__,
-                    ElemUtils::Formatter() << "objectId = " << getObjectId()
-                            << " " << kinematic.toString());
+            debug(__func__, ElemUtils::Formatter() << "objectId = " << getObjectId() << " " << kinematic.toString());
 
             //object to be returned
             CollinearDistributionResult colldistResult = compute(kinematic, colldistTypeList);
@@ -104,40 +101,28 @@ void CollinearDistributionModule::configure(const ElemUtils::Parameters &paramet
     ModuleObject::configure(parameters);
 }
 
-void CollinearDistributionModule::prepareSubModules(
-        const std::map<std::string, BaseObjectData>& subModulesData) {
+void CollinearDistributionModule::prepareSubModules(const std::map<std::string, BaseObjectData>& subModulesData) {
 
     ModuleObject::prepareSubModules(subModulesData);
 
     std::map<std::string, BaseObjectData>::const_iterator it;
 
-    it = subModulesData.find(
-            CollinearDistributionEvolutionModule::COLLINEAR_DISTRIBUTION_EVOLUTION_MODULE_CLASS_NAME);
+    it = subModulesData.find(CollinearDistributionEvolutionModule::COLLINEAR_DISTRIBUTION_EVOLUTION_MODULE_CLASS_NAME);
 
     if (it != subModulesData.end()) {
 
         if (m_pCollinearDistributionEvolutionModule) {
-
             setEvolQcdModule(0);
-            m_pCollinearDistributionEvolutionModule = 0;
         }
 
-        if (!m_pCollinearDistributionEvolutionModule) {
+	m_pCollinearDistributionEvolutionModule = Partons::getInstance()->getModuleObjectFactory()->newCollinearDistributionEvolutionModule((it->second).getModuleClassName());
 
-            m_pCollinearDistributionEvolutionModule =
-                    Partons::getInstance()->getModuleObjectFactory()->newCollinearDistributionEvolutionModule(
-                            (it->second).getModuleClassName());
+	info(__func__, ElemUtils::Formatter() << "Configure with CollinearDistributionEvolutionModule = " << m_pCollinearDistributionEvolutionModule->getClassName());
 
-            info(__func__,
-                    ElemUtils::Formatter()
-                            << "Configure with CollinearDistributionEvolutionModule = "
-                            << m_pCollinearDistributionEvolutionModule->getClassName());
-
-            m_pCollinearDistributionEvolutionModule->configure((it->second).getParameters());
-            m_pCollinearDistributionEvolutionModule->prepareSubModules(
-                    (it->second).getSubModules());
-        }
+	m_pCollinearDistributionEvolutionModule->configure((it->second).getParameters());
+	m_pCollinearDistributionEvolutionModule->prepareSubModules((it->second).getSubModules());
     }
+
 }
 
 PartonDistribution CollinearDistributionModule::compute(const CollinearDistributionKinematic &kinematic,
@@ -166,13 +151,14 @@ CollinearDistributionResult CollinearDistributionModule::compute(const Collinear
     isModuleWellConfigured();
 
     //object to be returned
-    CollinearDistributionResult result(kinematic);
+    CollinearDistributionResult result{kinematic};
 
     //loop over collinear distribution types
     for (size_t i = 0; i < colldistType.size(); i++) {
 
         //search for pointer to function associated to given collinear distribution type
-        m_it = m_listCollinearDistributionComputeTypeAvailable.find(colldistType[i]);
+        std::map<CollinearDistributionType::Type, PartonDistribution (CollinearDistributionModule::*)()>::iterator m_it =
+	  m_listCollinearDistributionComputeTypeAvailable.find(colldistType[i]);
 
         //check if found
         if (m_it != m_listCollinearDistributionComputeTypeAvailable.end()) {
@@ -183,15 +169,10 @@ CollinearDistributionResult CollinearDistributionModule::compute(const Collinear
             //evaluate
             PartonDistribution partonDistribution;
 
-            if (m_pCollinearDistributionEvolutionModule != 0 && (m_MuF2 != m_MuF2_ref)) {
-
-                CollinearDistributionModule* colldistModule =
-                        m_pModuleObjectFactory->cloneModuleObject(this);
-
-                partonDistribution = m_pCollinearDistributionEvolutionModule->compute(m_x, m_MuF2, m_MuR2, colldistModule, (m_it->first));
-
-                m_pModuleObjectFactory->updateModulePointerReference(colldistModule,
-                          0);
+            if (m_pCollinearDistributionEvolutionModule != 0 && (m_MuF2 != m_pCollinearDistributionEvolutionModule->getMuF2_ref())) {
+                CollinearDistributionModule* collDistModule = m_pModuleObjectFactory->cloneModuleObject(this);
+                partonDistribution = m_pCollinearDistributionEvolutionModule->compute(kinematic, collDistModule);
+                m_pModuleObjectFactory->updateModulePointerReference(collDistModule, 0);
             } else {
                 partonDistribution = ((*this).*(m_it->second))();
             }
@@ -202,10 +183,10 @@ CollinearDistributionResult CollinearDistributionModule::compute(const Collinear
         } else {
 
             //throw error
-            throw ElemUtils::CustomException(getClassName(), __func__,
-                    ElemUtils::Formatter() << "CollinearDistribution("
-                            << CollinearDistributionType(colldistType[i]).toString()
-                            << ") is not available for this  model");
+            throw ElemUtils::CustomException(getClassName(), __func__, ElemUtils::Formatter()
+					     << "CollinearDistribution("
+					     << CollinearDistributionType(colldistType[i]).toString()
+					     << ") is not available for this  model");
         }
     }
 
@@ -234,10 +215,6 @@ List<CollinearDistributionType> CollinearDistributionModule::getListOfAvailableC
     return listOfAvailableCollinearDistributionTypeForComputation;
 }
 
-double CollinearDistributionModule::getMuF2Ref() const {
-    return m_MuF2_ref;
-}
-
 const CollinearDistributionEvolutionModule* CollinearDistributionModule::getEvolQcdModule() const {
     return m_pCollinearDistributionEvolutionModule;
 }
@@ -249,44 +226,33 @@ void CollinearDistributionModule::setEvolQcdModule(CollinearDistributionEvolutio
 }
 
 PartonDistribution CollinearDistributionModule::computeUnpolPDF() {
-    throw ElemUtils::CustomException(getClassName(), __func__,
-            "Check your implementation  ; must be implemented in daughter class");
+    throw ElemUtils::CustomException(getClassName(), __func__, "Check your implementation  ; must be implemented in daughter class");
 }
 
 PartonDistribution CollinearDistributionModule::computePolPDF() {
-    throw ElemUtils::CustomException(getClassName(), __func__,
-            "Check your implementation  ; must be implemented in daughter class");
+    throw ElemUtils::CustomException(getClassName(), __func__, "Check your implementation  ; must be implemented in daughter class");
 }
 
 PartonDistribution CollinearDistributionModule::computeTransPDF() {
-    throw ElemUtils::CustomException(getClassName(), __func__,
-            "Check your implementation  ; must be implemented in daughter class");
+    throw ElemUtils::CustomException(getClassName(), __func__, "Check your implementation  ; must be implemented in daughter class");
 }
 
 PartonDistribution CollinearDistributionModule::computeUnpolFF() {
-    throw ElemUtils::CustomException(getClassName(), __func__,
-            "Check your implementation  ; must be implemented in daughter class");
+    throw ElemUtils::CustomException(getClassName(), __func__, "Check your implementation  ; must be implemented in daughter class");
 }
 
 PartonDistribution CollinearDistributionModule::computePolFF() {
-    throw ElemUtils::CustomException(getClassName(), __func__,
-            "Check your implementation  ; must be implemented in daughter class");
+    throw ElemUtils::CustomException(getClassName(), __func__, "Check your implementation  ; must be implemented in daughter class");
 }
 
 PartonDistribution CollinearDistributionModule::computeTransFF() {
-    throw ElemUtils::CustomException(getClassName(), __func__,
-            "Check your implementation  ; must be implemented in daughter class");
+    throw ElemUtils::CustomException(getClassName(), __func__, "Check your implementation  ; must be implemented in daughter class");
 }
 
 void CollinearDistributionModule::setKinematics(const CollinearDistributionKinematic& kinematic) {
-
-    m_x = kinematic.getX().makeSameUnitAs(PhysicalUnit::NONE).getValue();
+    m_x    = kinematic.getX().makeSameUnitAs(PhysicalUnit::NONE).getValue();
     m_MuF2 = kinematic.getMuF2().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
     m_MuR2 = kinematic.getMuR2().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
-}
-
-void CollinearDistributionModule::setCurrentCollinearDistributionType(CollinearDistributionType::Type colldistType) {
-    m_currentCollinearDistributionComputeType = colldistType;
 }
 
 void CollinearDistributionModule::initModule() {
@@ -295,8 +261,7 @@ void CollinearDistributionModule::initModule() {
 void CollinearDistributionModule::isModuleWellConfigured() {
 
     if (fabs(m_x) > 1.) {
-        warn(__func__,
-                "Longitudinal momentum fraction should be in [-1., +1.]");
+        warn(__func__, "Longitudinal momentum fraction should be in [-1., +1.]");
     }
 
     if (m_MuF2 <= 0.) {
@@ -306,11 +271,10 @@ void CollinearDistributionModule::isModuleWellConfigured() {
     if (m_MuR2 <= 0.) {
         warn(__func__, "Square of renormalization scale should be > 0.");
     }
+}
 
-    if (m_MuF2_ref <= 0.) {
-        warn(__func__,
-                "Square of reference factorization scale should be > 0.");
-    }
+void CollinearDistributionModule::setCurrentCollinearDistributionType(CollinearDistributionType::Type colldistType) {
+    m_currentCollinearDistributionComputeType = colldistType;
 }
 
 } /* namespace PARTONS */

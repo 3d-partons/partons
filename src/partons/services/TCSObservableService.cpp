@@ -39,7 +39,7 @@ TCSObservableKinematic TCSObservableService::newKinematicFromTask(
 
     if (ElemUtils::StringUtils::equals(
             task.getKinematicsData().getModuleClassName(),
-            TCSObservableKinematic::TCS_OBSERVABLE_KNEMATIC_CLASS_NAME)) {
+            TCSObservableKinematic::TCS_OBSERVABLE_KINEMATIC_CLASS_NAME)) {
         kinematic.configure(task.getKinematicsData().getParameters());
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
@@ -58,7 +58,7 @@ List<TCSObservableKinematic> TCSObservableService::newListOfKinematicFromTask(
 
     if (ElemUtils::StringUtils::equals(
             task.getKinematicsData().getModuleClassName(),
-            TCSObservableKinematic::TCS_OBSERVABLE_KNEMATIC_CLASS_NAME)) {
+            TCSObservableKinematic::TCS_OBSERVABLE_KINEMATIC_CLASS_NAME)) {
 
         if (task.getKinematicsData().getParameters().isAvailable("file")) {
             listOfKinematic =

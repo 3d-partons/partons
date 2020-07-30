@@ -60,6 +60,10 @@ public:
     virtual ~RunningAlphaStrongModule();
 
     virtual RunningAlphaStrongModule* clone() const = 0;
+    virtual std::string toString() const;
+    virtual void resolveObjectDependencies();
+    virtual void configure(const ElemUtils::Parameters &parameters);
+    virtual void prepareSubModules(const std::map<std::string, BaseObjectData>& subModulesData);
 
     /**
      * Evaluate \f$\alpha_{s}\f$ for a given value of renormalization scale squared.
@@ -67,9 +71,6 @@ public:
      * @return Evaluated value of \f$\alpha_{s}\f$.
      */
     double compute(double Mu2);
-
-    virtual void prepareSubModules(
-            const std::map<std::string, BaseObjectData>& subModulesData);
 
     //********************************************************
     //*** SETTERS AND GETTERS ********************************
