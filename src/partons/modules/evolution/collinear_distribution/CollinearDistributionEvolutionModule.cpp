@@ -1,6 +1,6 @@
 #include "../../../../../include/partons/modules/evolution/collinear_distribution/CollinearDistributionEvolutionModule.h"
 
-#include "../../../../../include/partons/beans/parton_distribution/CollinearDistributionKinematic.h"
+#include "../../../../../include/partons/beans/collinear_distribution/CollinearDistributionKinematic.h"
 #include "../../../../../include/partons/modules/collinear_distribution/CollinearDistributionModule.h"
 #include "../../../../../include/partons/modules/running_alpha_strong/RunningAlphaStrongModule.h"
 #include "../../../../../include/partons/ModuleObjectFactory.h"

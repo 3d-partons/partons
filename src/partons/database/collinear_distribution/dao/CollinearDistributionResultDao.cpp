@@ -7,7 +7,7 @@
 #include <QtSql/qsqlerror.h>
 #include <QtSql/qsqlrecord.h>
 
-#include "../../../../../include/partons/beans/parton_distribution/CollinearDistributionType.h"
+#include "../../../../../include/partons/beans/collinear_distribution/CollinearDistributionType.h"
 #include "../../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
 #include "../../../../../include/partons/beans/parton_distribution/PartonDistribution.h"
 #include "../../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
