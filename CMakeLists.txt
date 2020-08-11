@@ -56,6 +56,9 @@ find_package(ElementaryUtils REQUIRED)
 # find libraries: NumA++
 find_package(NumA++ REQUIRED)
 
+# find libraries: GSL
+find_package(GSL REQUIRED)
+
 # directories containing headers 
 include_directories(${QT_INCLUDE_DIRS} ${SFML_INCLUDE_DIR} ${CLN_INCLUDE_DIR} ${ELEMENTARY_UTILS_INCLUDE_DIR} ${NUMA_INCLUDE_DIR})
 include_directories(include)
@@ -99,6 +102,8 @@ target_link_libraries(
         ${ELEMENTARY_UTILS_LIBRARIES}
           
 		${NUMA_LIBRARIES}
+		
+		${GSL_LIBRARIES}
 )
 
 # install
