@@ -187,12 +187,12 @@ double GPDGK19COMPASS::HtUp(double rho, std::vector<double> par) {
     c3 = 12.59 * Nu;
     c4 = -12.57 * Nu;
 
-    double uVal = 3. / (4. * pow(m_xi, 3.)) * pow(rho, -0.48)
+    double uVal = 3. / (4. * pow(m_xi, 3.)) * pow(rho, -0.32)
             * (c1 + c2 * sqrt(rho) + c3 * rho + c4 * pow(rho, 1.5))
             * exp(
                     m_t
-                            * ((-0.9 * log(rho) + 0.59) * pow(1. - rho, 3.)
-                                    + 1.22 * rho * pow(1. - rho, 2.)))
+                            * ((-0.961 * log(rho) + 0.545) * pow(1. - rho, 3.)
+                                    + 1.264 * rho * pow(1. - rho, 2.)))
             * (m_xi * m_xi * pow(1. - rho, 2.) - pow(alpha - rho, 2.));
 
     return uVal;
@@ -211,14 +211,12 @@ double GPDGK19COMPASS::HtDown(double rho, std::vector<double> par) {
     c3 = -0.314 * Nd;
     c4 = 1.524 * Nd;
 
-    b0 = 0.59;
-
-    double dVal = 3. / (4. * pow(m_xi, 3.)) * pow(rho, -0.48)
+    double dVal = 3. / (4. * pow(m_xi, 3.)) * pow(rho, -0.32)
             * (c1 + c2 * sqrt(rho) + c3 * rho + c4 * pow(rho, 1.5))
             * exp(
                     m_t
-                            * ((-0.9 * log(rho) + 0.59) * pow(1. - rho, 3.)
-                                    + 2.59 * rho * pow(1. - rho, 2.)))
+                            * ((-0.861 * log(rho) + 0.206) * pow(1. - rho, 3.)
+                                    + 4.198 * rho * pow(1. - rho, 2.)))
             * (m_xi * m_xi * pow(1. - rho, 2.) - pow(alpha - rho, 2.));
 
     return dVal;
@@ -376,6 +374,8 @@ PartonDistribution GPDGK19COMPASS::computeEt() {
 
     double Nu, Nd, c1, c2, c3, c4, b0;
 
+    double normalization = 1.3 * exp(-m_t * 0.3);
+
     calculateEtCoefs(); // Calculate the K's and the coefficients
 
 // Gluons,  Et_gluons = 0 in GK
@@ -393,13 +393,13 @@ PartonDistribution GPDGK19COMPASS::computeEt() {
     c4 = 0.0;
     b0 = 0.9;
 
-    double fEtuVal = exp(b0 * m_t)
+    double fEtuVal = normalization * exp(b0 * m_t)
             * (c1 * Etuval1tab.at(0) + c2 * Etuval1tab.at(1)
                     + c3 * Etuval1tab.at(2) + c4 * Etuval1tab.at(3));
 
     double uVal = fEtuVal;
 
-    double fEtuValMx = exp(b0 * m_t)
+    double fEtuValMx = normalization * exp(b0 * m_t)
             * (c1 * Etuval1mtab.at(0) + c2 * Etuval1mtab.at(1)
                     + c3 * Etuval1mtab.at(2) + c4 * Etuval1mtab.at(3));
 
@@ -412,13 +412,13 @@ PartonDistribution GPDGK19COMPASS::computeEt() {
     c4 = 0.0;
     b0 = 0.9;
 
-    double fEtdVal = exp(b0 * m_t)
+    double fEtdVal = normalization * exp(b0 * m_t)
             * (c1 * Etdval1tab.at(0) + c2 * Etdval1tab.at(1)
                     + c3 * Etdval1tab.at(2) + c4 * Etdval1tab.at(3));
 
     double dVal = fEtdVal;
 
-    double fEtdValMx = exp(b0 * m_t)
+    double fEtdValMx = normalization * exp(b0 * m_t)
             * (c1 * Etdval1mtab.at(0) + c2 * Etdval1mtab.at(1)
                     + c3 * Etdval1mtab.at(2) + c4 * Etdval1mtab.at(3));
 
@@ -459,6 +459,8 @@ PartonDistribution GPDGK19COMPASS::computeHTrans() {
 
     double Nu, Nd, c1, c2, c3, c4, c5, c6, b0;
 
+    double normalization = 0.62 * exp(-m_t * 0.26);
+
     calculateHTransCoefs(); // Calculate the K's and the coefficients
 
 // Gluons,  HTrans_gluons = 0 in GK
@@ -478,16 +480,16 @@ PartonDistribution GPDGK19COMPASS::computeHTrans() {
     c5 = -23.46;
     c6 = 24.07;
 
-    b0 = 0.3;
+    b0 = 0.0;
 
-    double fHTransuVal = exp(b0 * m_t) * Nu
+    double fHTransuVal = normalization * exp(b0 * m_t) * Nu
             * (c1 * HTransuval1tab.at(0) + c2 * HTransuval1tab.at(1)
                     + c3 * HTransuval1tab.at(2) + c4 * HTransuval1tab.at(3)
                     + c5 * HTransuval1tab.at(4) + c6 * HTransuval1tab.at(5));
 
     double uVal = fHTransuVal;
 
-    double fHTransuValMx = exp(b0 * m_t) * Nu
+    double fHTransuValMx = normalization * exp(b0 * m_t) * Nu
             * (c1 * HTransuval1mtab.at(0) + c2 * HTransuval1mtab.at(1)
                     + c3 * HTransuval1mtab.at(2) + c4 * HTransuval1mtab.at(3)
                     + c5 * HTransuval1mtab.at(4) + c6 * HTransuval1mtab.at(5));
@@ -503,16 +505,16 @@ PartonDistribution GPDGK19COMPASS::computeHTrans() {
     c5 = 5.851;
     c6 = -3.683;
 
-    b0 = 0.3;
+    b0 = 0.0;
 
-    double fHTransdVal = exp(b0 * m_t) * Nd
+    double fHTransdVal = normalization * exp(b0 * m_t) * Nd
             * (c1 * HTransdval1tab.at(0) + c2 * HTransdval1tab.at(1)
                     + c3 * HTransdval1tab.at(2) + c4 * HTransdval1tab.at(3)
                     + c5 * HTransdval1tab.at(4) + c6 * HTransdval1tab.at(5));
 
     double dVal = fHTransdVal;
 
-    double fHTransdValMx = exp(b0 * m_t) * Nd
+    double fHTransdValMx = normalization * exp(b0 * m_t) * Nd
             * (c1 * HTransdval1mtab.at(0) + c2 * HTransdval1mtab.at(1)
                     + c3 * HTransdval1mtab.at(2) + c4 * HTransdval1mtab.at(3)
                     + c5 * HTransdval1mtab.at(4) + c6 * HTransdval1mtab.at(5));
@@ -558,6 +560,8 @@ PartonDistribution GPDGK19COMPASS::computeEbarTrans() {
 
     double Nu, Nd, c1, c2, c3, b0;
 
+    double normalization = 4.28 * exp(m_t * 0.17);
+
     calculateETransCoefs(); // Calculate the K's and the coefficients
 
 // Gluons,  ETrans_gluons = 0 for GK
@@ -568,37 +572,37 @@ PartonDistribution GPDGK19COMPASS::computeEbarTrans() {
 
 // u quark, valence part
 
-    Nu = 20.91;
+    Nu = 4.83;
     c1 = Nu;
     c2 = -1. * Nu;
     c3 = 0.0;
-    b0 = 0.77;
+    b0 = 0.5;
 
-    double fETransuVal = exp(b0 * m_t)
+    double fETransuVal = normalization * exp(b0 * m_t)
             * (c1 * ETransuval1tab.at(0) + c2 * ETransuval1tab.at(1)
                     + c3 * ETransuval1tab.at(2));
 
     double uVal = fETransuVal;
 
-    double fETransuValMx = exp(b0 * m_t)
+    double fETransuValMx = normalization * exp(b0 * m_t)
             * (c1 * ETransuval1mtab.at(0) + c2 * ETransuval1mtab.at(1)
                     + c3 * ETransuval1mtab.at(2));
 
 // d quark, valence part
 
-    Nd = 15.46;
+    Nd = 3.57;
     c1 = Nd;
     c2 = -2. * Nd;
     c3 = Nd;
-    b0 = 0.77;
+    b0 = 0.5;
 
-    double fETransdVal = exp(b0 * m_t)
+    double fETransdVal = normalization * exp(b0 * m_t)
             * (c1 * ETransdval1tab.at(0) + c2 * ETransdval1tab.at(1)
                     + c3 * ETransdval1tab.at(2));
 
     double dVal = fETransdVal;
 
-    double fETransdValMx = exp(b0 * m_t)
+    double fETransdValMx = normalization * exp(b0 * m_t)
             * (c1 * ETransdval1mtab.at(0) + c2 * ETransdval1mtab.at(1)
                     + c3 * ETransdval1mtab.at(2));
 
@@ -627,28 +631,6 @@ PartonDistribution GPDGK19COMPASS::computeEbarTrans() {
     partonDistribution.addQuarkDistribution(quarkDistribution_s);
 
     return partonDistribution;
-}
-
-void GPDGK19COMPASS::calculateHtKas() {
-    double alpha, delta;
-
-// gluons, not modelled by GK.
-
-    kHtgluon = 0.;
-
-// sea, not modelled by GK.
-
-    kHtsea = 0.;
-
-// u valence
-
-    alpha = 0.45;
-    delta = 0.32;
-    kHtuval = delta + alpha * m_t;
-
-// d valence
-
-    kHtdval = kHtuval;
 }
 
 void GPDGK19COMPASS::calculateEtCoefs() {
@@ -693,7 +675,7 @@ void GPDGK19COMPASS::calculateEtKas() {
 // u valence
 
     alpha = 0.45;
-    delta = 0.48;
+    delta = 0.32;
     kEtuval = delta + alpha * m_t;
 
 // d valence
@@ -751,7 +733,7 @@ void GPDGK19COMPASS::calculateHTransKas() {
 // u valence
 
     alpha = 0.45;
-    delta = -0.02;
+    delta = -0.17;
     kHTransuval = delta + alpha * m_t;
 
 // d valence
