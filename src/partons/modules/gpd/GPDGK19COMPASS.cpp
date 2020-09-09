@@ -286,7 +286,7 @@ PartonDistribution GPDGK19COMPASS::computeHt() {
 //                &error1Dd);
         integration1Dd = integrate(m_pint_HtDown, (-m_x - m_xi) / (1. - m_xi),
                 (-m_x + m_xi) / (1. + m_xi), parAlpha2);
-    } else if (m_x <= m_xi) {
+    } else if (m_x < m_xi) {
 //        gsl_integration_qags(&gslFunctionHt1Da, accuracy,
 //                (m_x + m_xi) / (1. + m_xi), 0, 1e-4, 10000, w, &integration1Da,
 //                &error1Da);
