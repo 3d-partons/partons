@@ -55,10 +55,13 @@ protected:
 
 private:
 
-    double CrossSectionL(); ///< Partial cross-section L
-    double CrossSectionT(); ///< Partial cross-section T
-    double CrossSectionLT(); ///< Partial cross-section LT
-    double CrossSectionTT(); ///< Partial cross-section TT
+    double CrossSectionL(); ///< Partial cross-section L.
+    double CrossSectionT(); ///< Partial cross-section T.
+    double CrossSectionLT(); ///< Partial cross-section LT.
+    double CrossSectionTT(); ///< Partial cross-section TT.
+
+    double CrossSectionAUL(); ///< AUL times sigma_0.
+    double CrossSectionALU(); ///< ALU times sigma_0.
 
     double poleResidue(); ///< The residue of the pole in Pi+ production
 
@@ -77,6 +80,8 @@ private:
     std::complex<double> Amplitude0mmp(); ///< Computation of the amplitude M_{0--+}.
 
     double m_W2; ///< W^2 variable.
+    double m_gamma; ///< gamma variable.
+    double m_eps; ///< epsilon variable.
     double m_xi; ///< xi variable.
 
     double lambdaFunction(double a, double b, double c) const; ///< Mandalstam function.
