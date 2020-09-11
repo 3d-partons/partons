@@ -35,6 +35,7 @@ List<GPDType> MesonType::getPossibleGPDTypes() const {
         list.add(GPDType(GPDType::Et));
         list.add(GPDType(GPDType::HTrans));
         list.add(GPDType(GPDType::ETrans));
+        list.add(GPDType(GPDType::EbarTrans));
     }
 
     //vector
@@ -48,6 +49,7 @@ List<GPDType> MesonType::getPossibleGPDTypes() const {
         list.add(GPDType(GPDType::E));
         list.add(GPDType(GPDType::HTrans));
         list.add(GPDType(GPDType::ETrans));
+        list.add(GPDType(GPDType::EbarTrans));
     } else {
         throw ElemUtils::CustomException("MesonType", __func__,
                 ElemUtils::Formatter() << "Not able to return value for type "
