@@ -65,7 +65,7 @@ void DVMPProcessGK06::isModuleWellConfigured() {
 PhysicalType<double> DVMPProcessGK06::CrossSection() {
 
     //check meson type
-    if (m_mesonType != MesonType::PI0) {
+    if (m_mesonType != MesonType::PI0 && m_mesonType != MesonType::PIPLUS) {
         throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "No implementation for meson "
                         << MesonType(m_mesonType).toString());
