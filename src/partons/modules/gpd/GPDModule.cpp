@@ -45,11 +45,12 @@ GPDModule::GPDModule(const GPDModule &other) :
 }
 
 GPDModule::~GPDModule() {
-
+/*
     if (m_pGPDEvolutionModule) {
         setEvolQcdModule(0);
         m_pGPDEvolutionModule = 0;
     }
+*/
 }
 
 std::string GPDModule::toString() const {
@@ -189,8 +190,7 @@ GPDResult GPDModule::compute(const GPDKinematic &kinematic,
                 GPDModule* gpdModule =
                         m_pModuleObjectFactory->cloneModuleObject(this);
 
-                partonDistribution = m_pGPDEvolutionModule->compute(m_x, m_xi,
-                        m_t, m_MuF2, m_MuR2, gpdModule, (m_it->first));
+		partonDistribution = m_pGPDEvolutionModule->compute(kinematic, gpdModule, (m_it->first));
 
                 m_pModuleObjectFactory->updateModulePointerReference(gpdModule,
                           0);
