@@ -84,8 +84,10 @@ PhysicalType<double> DVMPProcessGK06::CrossSection() {
             + m_eps * cos(2 * m_phi) * CrossSectionTT()
             + sqrt(2 * m_eps * (1. + m_eps)) * cos(m_phi) * CrossSectionLT();
 
-    result *= 1. + m_beamHelicity * CrossSectionALU() * sin(m_phi)
-            + m_targetPolarization.getZ() * CrossSectionAUL() * sin(m_phi);
+    result *= 1. + m_beamHelicity * AsymmetryALUsinphi() * sin(m_phi)
+            + m_targetPolarization.getZ() * AsymmetryAULsinphi() * sin(m_phi)
+            + m_targetPolarization.getZ() * AsymmetryAULsin2phi() * sin(2*m_phi)
+            + m_targetPolarization.getZ() * AsymmetryAULsin3phi() * sin(3*m_phi);
 
     //apply dW2/dxB
     result *= m_Q2 / pow(m_xB, 2);
@@ -103,7 +105,7 @@ double DVMPProcessGK06::CrossSectionL() {
     std::complex<double> amplitude0m0p = Amplitude0m0p();
     std::complex<double> amplitude0p0p = Amplitude0p0p();
 
-    return 2
+    return 2.
             * (pow(std::abs(amplitude0p0p), 2.)
                     + pow(std::abs(amplitude0m0p), 2.));
 }
@@ -155,7 +157,7 @@ double DVMPProcessGK06::CrossSectionTT() {
                             + std::conj(amplitude0ppp) * amplitude0pmp));
 }
 
-double DVMPProcessGK06::CrossSectionAUL() {
+double DVMPProcessGK06::AsymmetryAULsinphi() {
 
     std::complex<double> amplitude0m0p = Amplitude0m0p();
     std::complex<double> amplitude0p0p = Amplitude0p0p();
@@ -164,7 +166,7 @@ double DVMPProcessGK06::CrossSectionAUL() {
     std::complex<double> amplitude0pmp = Amplitude0pmp();
     std::complex<double> amplitude0mmp = Amplitude0mmp();
 
-    // A_{UL} * sigma_{0}. See Eq. (47) in arxiv:0906.0460
+    // sin(\phi) moment of A_{UL}. See Eq. (47) in arxiv:0906.0460
 
     double cosThetaGamma = sqrt(
             1.
@@ -190,7 +192,52 @@ double DVMPProcessGK06::CrossSectionAUL() {
             / sigma0;
 }
 
-double DVMPProcessGK06::CrossSectionALU() {
+double DVMPProcessGK06::AsymmetryAULsin2phi() {
+
+    std::complex<double> amplitude0mpp = Amplitude0mpp();
+    std::complex<double> amplitude0ppp = Amplitude0ppp();
+    std::complex<double> amplitude0pmp = Amplitude0pmp();
+    std::complex<double> amplitude0mmp = Amplitude0mmp();
+
+    // sin(2\phi) moment of A_{UL}.
+
+    double cosThetaGamma = sqrt(
+            1.
+                    - pow(m_gamma, 2) * (1. - m_y - pow(m_y * m_gamma / 2., 2))
+                            / (1. + pow(m_gamma, 2)));
+    double sinThetaGamma = sqrt(1. - pow(cosThetaGamma, 2));
+
+    double sigma0 = 0.5 * (CrossSectionT() + m_eps * CrossSectionL());
+
+    double A = std::imag(std::conj(amplitude0ppp) * amplitude0pmp
+                                        + std::conj(amplitude0mpp) * amplitude0mmp);
+
+    return -1. * m_eps * A / sigma0;
+
+}
+
+double DVMPProcessGK06::AsymmetryAULsin3phi() {
+
+    std::complex<double> amplitude0pmp = Amplitude0pmp();
+    std::complex<double> amplitude0mmp = Amplitude0mmp();
+
+    // sin(3\phi) moment of A_{UL}.
+
+    double cosThetaGamma = sqrt(
+            1.
+                    - pow(m_gamma, 2) * (1. - m_y - pow(m_y * m_gamma / 2., 2))
+                            / (1. + pow(m_gamma, 2)));
+    double sinThetaGamma = sqrt(1. - pow(cosThetaGamma, 2));
+
+    double sigma0 = 0.5 * (CrossSectionT() + m_eps * CrossSectionL());
+
+    double A = std::imag(std::conj(amplitude0pmp) * amplitude0mmp);
+
+    return m_eps * sinThetaGamma * A / sigma0;
+
+}
+
+double DVMPProcessGK06::AsymmetryALUsinphi() {
 
     std::complex<double> amplitude0m0p = Amplitude0m0p();
     std::complex<double> amplitude0p0p = Amplitude0p0p();
@@ -199,7 +246,7 @@ double DVMPProcessGK06::CrossSectionALU() {
     std::complex<double> amplitude0pmp = Amplitude0pmp();
     std::complex<double> amplitude0mmp = Amplitude0mmp();
 
-    // A_{LU} * sigma_{0}. See Eq. (49) in arxiv:0906.0460
+    // sin(\phi) moment of A_{LU}. See Eq. (49) in arxiv:0906.0460
 
     double cosThetaGamma = sqrt(
             1.
@@ -215,6 +262,79 @@ double DVMPProcessGK06::CrossSectionALU() {
                             * amplitude0m0p);
 
     return (-1 * sqrt(m_eps * (1. - m_eps)) * cosThetaGamma * A) / sigma0;
+}
+
+double DVMPProcessGK06::AsymmetryALLconst() {
+
+    std::complex<double> amplitude0mpp = Amplitude0mpp();
+    std::complex<double> amplitude0ppp = Amplitude0ppp();
+    std::complex<double> amplitude0pmp = Amplitude0pmp();
+    std::complex<double> amplitude0mmp = Amplitude0mmp();
+
+    // constant term of A_{LL}.
+
+    double cosThetaGamma = sqrt(
+            1.
+                    - pow(m_gamma, 2) * (1. - m_y - pow(m_y * m_gamma / 2., 2))
+                            / (1. + pow(m_gamma, 2)));
+
+    double sigma0 = 0.5 * (CrossSectionT() + m_eps * CrossSectionL());
+
+    double A = pow(std::abs(amplitude0ppp), 2.) + pow(std::abs(amplitude0mpp), 2.)
+                    - pow(std::abs(amplitude0pmp), 2.)
+                    - pow(std::abs(amplitude0mmp), 2.);
+
+    return 0.5 * sqrt(1. - pow(m_eps, 2)) * A / sigma0;
+}
+
+double DVMPProcessGK06::AsymmetryALLcosphi() {
+
+    std::complex<double> amplitude0m0p = Amplitude0m0p();
+    std::complex<double> amplitude0p0p = Amplitude0p0p();
+    std::complex<double> amplitude0mpp = Amplitude0mpp();
+    std::complex<double> amplitude0ppp = Amplitude0ppp();
+    std::complex<double> amplitude0pmp = Amplitude0pmp();
+    std::complex<double> amplitude0mmp = Amplitude0mmp();
+
+    // cos(\phi) moment of A_{LL}.
+
+    double cosThetaGamma = sqrt(
+            1.
+                    - pow(m_gamma, 2) * (1. - m_y - pow(m_y * m_gamma / 2., 2))
+                            / (1. + pow(m_gamma, 2)));
+
+    double sigma0 = 0.5 * (CrossSectionT() + m_eps * CrossSectionL());
+
+    double A = std::real(
+            (std::conj(amplitude0ppp) + std::conj(amplitude0pmp))
+                    * amplitude0p0p
+                    + (std::conj(amplitude0mpp) + std::conj(amplitude0mmp))
+                            * amplitude0m0p);
+
+    return (-1 * sqrt(m_eps * (1. - m_eps)) * A) / sigma0;
+}
+
+double DVMPProcessGK06::AsymmetryALLcos2phi() {
+
+    std::complex<double> amplitude0m0p = Amplitude0m0p();
+    std::complex<double> amplitude0p0p = Amplitude0p0p();
+    std::complex<double> amplitude0pmp = Amplitude0pmp();
+    std::complex<double> amplitude0mmp = Amplitude0mmp();
+
+    // cos(2\phi) moment of A_{LL}.
+
+    double cosThetaGamma = sqrt(
+            1.
+                    - pow(m_gamma, 2) * (1. - m_y - pow(m_y * m_gamma / 2., 2))
+                            / (1. + pow(m_gamma, 2)));
+    double sinThetaGamma = sqrt(1. - pow(cosThetaGamma, 2));
+
+    double sigma0 = 0.5 * (CrossSectionT() + m_eps * CrossSectionL());
+
+    double A = std::real(std::conj(amplitude0pmp) * amplitude0m0p
+            - std::conj(amplitude0mmp) * amplitude0pmp);
+
+    return (sqrt(m_eps * (1. - m_eps)) * sinThetaGamma * A) / sigma0;
 }
 
 double DVMPProcessGK06::lambdaFunction(double a, double b, double c) const {

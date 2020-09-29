@@ -60,8 +60,15 @@ private:
     double CrossSectionLT(); ///< Partial cross-section LT.
     double CrossSectionTT(); ///< Partial cross-section TT.
 
-    double CrossSectionAUL(); ///< AUL times sigma_0.
-    double CrossSectionALU(); ///< ALU times sigma_0.
+    double AsymmetryAULsinphi(); ///< sin(\phi) moment of AUL.
+    double AsymmetryAULsin2phi(); ///< sin(2\phi) moment of AUL.
+    double AsymmetryAULsin3phi(); ///< sin(3\phi) moment of AUL.
+
+    double AsymmetryALUsinphi(); ///< sin_\phi moment of ALU.
+
+    double AsymmetryALLconst(); ///< constant term in ALL.
+    double AsymmetryALLcosphi(); ///< cos(\phi) moment of ALL.
+    double AsymmetryALLcos2phi(); ///< cos(2\phi) moment of ALL.
 
     double poleResidue(); ///< The residue of the pole in Pi+ production
 
