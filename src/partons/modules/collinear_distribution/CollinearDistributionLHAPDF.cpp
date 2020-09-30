@@ -23,24 +23,6 @@ CollinearDistributionLHAPDF::CollinearDistributionLHAPDF(
                 0), m_type(CollinearDistributionType::Type::UNDEFINED), m_set(
                 { }) {
 
-    m_listCollinearDistributionComputeTypeAvailable.insert(
-            std::make_pair(CollinearDistributionType::UnpolPDF,
-                    &CollinearDistributionModule::computeUnpolPDF));
-    m_listCollinearDistributionComputeTypeAvailable.insert(
-            std::make_pair(CollinearDistributionType::PolPDF,
-                    &CollinearDistributionModule::computePolPDF));
-    m_listCollinearDistributionComputeTypeAvailable.insert(
-            std::make_pair(CollinearDistributionType::TransPDF,
-                    &CollinearDistributionModule::computeTransPDF));
-    m_listCollinearDistributionComputeTypeAvailable.insert(
-            std::make_pair(CollinearDistributionType::UnpolFF,
-                    &CollinearDistributionModule::computeUnpolFF));
-    m_listCollinearDistributionComputeTypeAvailable.insert(
-            std::make_pair(CollinearDistributionType::PolFF,
-                    &CollinearDistributionModule::computePolFF));
-    m_listCollinearDistributionComputeTypeAvailable.insert(
-            std::make_pair(CollinearDistributionType::TransFF,
-                    &CollinearDistributionModule::computeTransFF));
 }
 
 CollinearDistributionLHAPDF::CollinearDistributionLHAPDF(
@@ -380,6 +362,69 @@ void CollinearDistributionLHAPDF::setMember(const int &member) {
 
 void CollinearDistributionLHAPDF::setType(
         const CollinearDistributionType::Type &type) {
+
+    m_listCollinearDistributionComputeTypeAvailable.clear();
+
+    switch (type) {
+
+    case CollinearDistributionType::UnpolPDF: {
+
+        m_listCollinearDistributionComputeTypeAvailable.insert(
+                std::make_pair(CollinearDistributionType::UnpolPDF,
+                        &CollinearDistributionModule::computeUnpolPDF));
+        break;
+    }
+
+    case CollinearDistributionType::PolPDF: {
+
+        m_listCollinearDistributionComputeTypeAvailable.insert(
+                std::make_pair(CollinearDistributionType::PolPDF,
+                        &CollinearDistributionModule::computePolPDF));
+        break;
+    }
+
+    case CollinearDistributionType::TransPDF: {
+
+        m_listCollinearDistributionComputeTypeAvailable.insert(
+                std::make_pair(CollinearDistributionType::TransPDF,
+                        &CollinearDistributionModule::computeTransPDF));
+        break;
+    }
+
+    case CollinearDistributionType::UnpolFF: {
+
+        m_listCollinearDistributionComputeTypeAvailable.insert(
+                std::make_pair(CollinearDistributionType::UnpolFF,
+                        &CollinearDistributionModule::computeUnpolFF));
+        break;
+    }
+
+    case CollinearDistributionType::PolFF: {
+
+        m_listCollinearDistributionComputeTypeAvailable.insert(
+                std::make_pair(CollinearDistributionType::PolFF,
+                        &CollinearDistributionModule::computePolFF));
+        break;
+    }
+
+    case CollinearDistributionType::TransFF: {
+
+        m_listCollinearDistributionComputeTypeAvailable.insert(
+                std::make_pair(CollinearDistributionType::TransFF,
+                        &CollinearDistributionModule::computeTransFF));
+        break;
+    }
+
+    default: {
+
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter()
+                        << "Not able to relate function with type "
+                        << CollinearDistributionType(type).toString());
+        break;
+    }
+    }
+
     m_type = type;
 }
 
