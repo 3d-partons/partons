@@ -25,7 +25,8 @@ class CollinearDistributionLHAPDF: public CollinearDistributionModule {
 public:
 
     static const std::string PARAM_NAME_SET_NAME;
-    static const std::string PARAM_NAME_MEMBER;
+    static const std::string PARAM_NAME_SET_TYPE;
+    static const std::string PARAM_NAME_SET_MEMBER;
 
     static const unsigned int classId; ///< Unique ID to automatically register the class in the registry.
 
