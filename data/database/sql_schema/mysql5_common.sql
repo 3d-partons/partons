@@ -24,6 +24,11 @@ scenario_task_index_number INTEGER,
 scenario_id INTEGER NOT NULL,
 computation_id INTEGER NOT NULL);
 
+CREATE TABLE collinear_distribution_type (
+collinear_distribution_type_id INTEGER NOT NULL PRIMARY KEY,
+collinear_distribution_type_short_name VARCHAR(10),
+collinear_distribution_type_long_name VARCHAR(255));
+
 CREATE TABLE gpd_type (
 gpd_type_id INTEGER NOT NULL PRIMARY KEY,
 gpd_type_short_name VARCHAR(10),
@@ -51,6 +56,32 @@ INNER JOIN environment_configuration ec ON ec.env_conf_id = c.environment_config
 INNER JOIN scenario_computation sc ON sc.computation_id = c.computation_id
 INNER JOIN scenario s ON sc.scenario_id = s.scenario_id
 ORDER BY c.computation_id;
+
+/* === collinear_distribution_type === */
+
+INSERT INTO collinear_distribution_type (collinear_distribution_type_id, collinear_distribution_type_short_name, collinear_distribution_type_long_name)
+VALUES ('0', 'UNDEFINED', 'UNDEFINED');
+
+INSERT INTO collinear_distribution_type (collinear_distribution_type_id, collinear_distribution_type_short_name, collinear_distribution_type_long_name)
+VALUES ('1', 'ALL', 'ALL');
+
+INSERT INTO collinear_distribution_type (collinear_distribution_type_id, collinear_distribution_type_short_name, collinear_distribution_type_long_name)
+VALUES ('2', 'UnpolPDF', 'UnpolPDF');
+
+INSERT INTO collinear_distribution_type (collinear_distribution_type_id, collinear_distribution_type_short_name, collinear_distribution_type_long_name)
+VALUES ('3', 'PolPDF', 'PolPDF');
+
+INSERT INTO collinear_distribution_type (collinear_distribution_type_id, collinear_distribution_type_short_name, collinear_distribution_type_long_name)
+VALUES ('4', 'TransPDF', 'TransPDF');
+
+INSERT INTO collinear_distribution_type (collinear_distribution_type_id, collinear_distribution_type_short_name, collinear_distribution_type_long_name)
+VALUES ('5', 'UnpolFF', 'UnpolFF');
+
+INSERT INTO collinear_distribution_type (collinear_distribution_type_id, collinear_distribution_type_short_name, collinear_distribution_type_long_name)
+VALUES ('6', 'PolFF', 'PolFF');
+
+INSERT INTO collinear_distribution_type (collinear_distribution_type_id, collinear_distribution_type_short_name, collinear_distribution_type_long_name)
+VALUES ('7', 'TransFF', 'TransFF');
 
 /* === gpd_type === */
 
