@@ -22,7 +22,9 @@ namespace PARTONS {
 
 const std::string GPDEvolutionVinnikov::PARAM_NAME_GRID_SIZE = "gridSize";
 
-const unsigned int GPDEvolutionVinnikov::classId = BaseObjectRegistry::getInstance()->registerBaseObject(new GPDEvolutionVinnikov("GPDEvolutionVinnikov"));
+const unsigned int GPDEvolutionVinnikov::classId =
+        BaseObjectRegistry::getInstance()->registerBaseObject(
+                new GPDEvolutionVinnikov("GPDEvolutionVinnikov"));
 
 const double GPDEvolutionVinnikov::N_C = 3.0;
 const double GPDEvolutionVinnikov::C_F = (0.5 * (N_C - 1.0 / N_C));
@@ -32,9 +34,9 @@ const double GPDEvolutionVinnikov::C_A = (2.0 * C_F + 1.0 / N_C);
 const double GPDEvolutionVinnikov::T_R = (N_F / 2.0);
 
 GPDEvolutionVinnikov::GPDEvolutionVinnikov(const std::string& className) :
-        GPDEvolutionModule(className), MathIntegratorModule(), m_gridSize(10), m_xiLast(0), m_tLast(
-                0), m_MuR2Last(0), m_nFlavors(0), m_nFlavors_ref(
-                0), m_pGPDModule(0) {
+        GPDEvolutionModule(className), MathIntegratorModule(), m_gridSize(10), m_xiLast(
+                0), m_tLast(0), m_MuR2Last(0), m_nFlavors(0), m_nFlavors_ref(0), m_pGPDModule(
+                0) {
 
     //reset
     m_PartonDistributionAtMuF2_ref = PartonDistribution();
@@ -131,9 +133,9 @@ GPDEvolutionVinnikov::GPDEvolutionVinnikov(const std::string& className) :
 }
 
 GPDEvolutionVinnikov::GPDEvolutionVinnikov(const GPDEvolutionVinnikov& other) :
-        GPDEvolutionModule(other), MathIntegratorModule(other), m_gridSize(other.m_gridSize), m_xiLast(
-                other.m_xiLast), m_tLast(other.m_tLast), m_MuR2Last(
-                other.m_MuR2Last) {
+        GPDEvolutionModule(other), MathIntegratorModule(other), m_gridSize(
+                other.m_gridSize), m_xiLast(other.m_xiLast), m_tLast(
+                other.m_tLast), m_MuR2Last(other.m_MuR2Last) {
 
     //copy vectors
     m_NS = other.m_NS;
@@ -178,8 +180,6 @@ GPDEvolutionVinnikov::GPDEvolutionVinnikov(const GPDEvolutionVinnikov& other) :
 
 GPDEvolutionVinnikov::~GPDEvolutionVinnikov() {
 
-  GPDEvolutionModule::~GPDEvolutionModule();
-
     if (p_intIntegrateComputeOutputNS) {
         delete p_intIntegrateComputeOutputNS;
         p_intIntegrateComputeOutputNS = 0;
@@ -194,7 +194,6 @@ GPDEvolutionVinnikov::~GPDEvolutionVinnikov() {
         delete p_intIntegrateComputeOutputG;
         p_intIntegrateComputeOutputG = 0;
     }
-
 }
 
 GPDEvolutionVinnikov* GPDEvolutionVinnikov::clone() const {
@@ -224,35 +223,43 @@ void GPDEvolutionVinnikov::resolveObjectDependencies() {
 void GPDEvolutionVinnikov::isModuleWellConfigured() {
 
     if (m_pertOrder == PerturbativeQCDOrderType::UNDEFINED) {
-        throw ElemUtils::CustomException(getClassName(), __func__, "pQCD order is UNDEFINED");
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                "pQCD order is UNDEFINED");
     }
 
     if (!m_pRunningAlphaStrongModule) {
-        throw ElemUtils::CustomException(getClassName(), __func__, "Pointer to RunningAlphaStrong module is NULL");
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                "Pointer to RunningAlphaStrong module is NULL");
     }
 
     if (!m_pActiveFlavorsModule) {
-        throw ElemUtils::CustomException(getClassName(), __func__, "Pointer to ActiveFlavorsModule module is NULL");
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                "Pointer to ActiveFlavorsModule module is NULL");
     }
 
     if (m_x < -1. || m_x > 1.) {
-        throw ElemUtils::CustomException(getClassName(), __func__, ElemUtils::Formatter() << "x is out of range: " << m_x);
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << "x is out of range: " << m_x);
     }
 
     if (m_xi < 0. || m_xi > 1.) {
-        throw ElemUtils::CustomException(getClassName(), __func__, ElemUtils::Formatter() << "xi is out of range: " << m_xi);
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << "xi is out of range: " << m_xi);
     }
 
     if (m_t > 0.) {
-        throw ElemUtils::CustomException(getClassName(), __func__, ElemUtils::Formatter() << "t is out of range: " << m_t);
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << "t is out of range: " << m_t);
     }
 
     if (m_MuF2 <= 0.) {
-        throw ElemUtils::CustomException(getClassName(), __func__, ElemUtils::Formatter() << "muF2 is out of range: " << m_MuF2);
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << "muF2 is out of range: " << m_MuF2);
     }
 
     if (m_MuR2 <= 0.) {
-        throw ElemUtils::CustomException(getClassName(), __func__, ElemUtils::Formatter() << "muR2 is out of range:" << m_MuR2);
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << "muR2 is out of range:" << m_MuR2);
     }
 }
 
@@ -262,30 +269,44 @@ void GPDEvolutionVinnikov::initModule() {
     GPDEvolutionModule::initModule();
 
     //evaluate nf and muF2 and muF2_ref
-    m_nFlavors = (m_pActiveFlavorsModule) ? ((m_pActiveFlavorsModule->getNfInterval(m_MuF2)).getNf()) : (0);
+    m_nFlavors =
+            (m_pActiveFlavorsModule) ?
+                    ((m_pActiveFlavorsModule->getNfInterval(m_MuF2)).getNf()) :
+                    (0);
 
     if (m_nFlavors < 1 || m_nFlavors > 6) {
-        throw ElemUtils::CustomException(getClassName(), __func__, ElemUtils::Formatter() << "nFlavors at muF2 is out of range: " << m_nFlavors);
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << "nFlavors at muF2 is out of range: "
+                        << m_nFlavors);
     }
 }
 
-PartonDistribution GPDEvolutionVinnikov::compute(GPDModule* pGPDModule, const GPDType::Type &type) {
+PartonDistribution GPDEvolutionVinnikov::compute(GPDModule* pGPDModule,
+        const GPDType::Type &type) {
 
     //pre-compute (set internal variables, etc.)
     m_pGPDModule = pGPDModule;
     m_MuF2_ref = (m_pGPDModule) ? (m_pGPDModule->getMuF2Ref()) : (0.);
     m_type = type;
-    m_PartonDistributionAtMuF2_ref = m_pGPDModule->compute(GPDKinematic(m_x, m_xi, m_t, m_MuF2_ref, m_MuR2), m_type);
+    m_PartonDistributionAtMuF2_ref = m_pGPDModule->compute(
+            GPDKinematic(m_x, m_xi, m_t, m_MuF2_ref, m_MuR2), m_type);
 
     //initialize
-    m_nFlavors_ref = (m_pActiveFlavorsModule) ? ((m_pActiveFlavorsModule->getNfInterval(m_MuF2_ref)).getNf()) : (0);
+    m_nFlavors_ref =
+            (m_pActiveFlavorsModule) ?
+                    ((m_pActiveFlavorsModule->getNfInterval(m_MuF2_ref)).getNf()) :
+                    (0);
 
     if (m_nFlavors_ref < 1 || m_nFlavors_ref > 6) {
-        throw ElemUtils::CustomException(getClassName(), __func__, ElemUtils::Formatter() << "nFlavors at muF2_ref is out of range:" << m_nFlavors_ref);
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter()
+                        << "nFlavors at muF2_ref is out of range:"
+                        << m_nFlavors_ref);
     }
 
     //check if last kinematics the same
-    bool lastKinematicsDifferent = !((m_xi == m_xiLast) && (m_t == m_tLast) && (m_MuR2 == m_MuR2Last));
+    bool lastKinematicsDifferent = !((m_xi == m_xiLast) && (m_t == m_tLast)
+            && (m_MuR2 == m_MuR2Last));
 
     //clear vectors
     clearVectors(lastKinematicsDifferent);
@@ -309,15 +330,19 @@ PartonDistribution GPDEvolutionVinnikov::compute(GPDModule* pGPDModule, const GP
         //compute
         for (size_t iGrid = 0; iGrid <= 4 * m_gridSize; iGrid++) {
             // create kinematics to compute
-            GPDKinematic gpdKinematic(m_NSXGrid.at(iGrid), m_xi, m_t, m_MuF2_ref, m_MuR2);
+            GPDKinematic gpdKinematic(m_NSXGrid.at(iGrid), m_xi, m_t,
+                    m_MuF2_ref, m_MuR2);
 
             //compute
-            PartonDistribution partonDistribution = m_pGPDModule->compute(gpdKinematic, m_type);
+            PartonDistribution partonDistribution = m_pGPDModule->compute(
+                    gpdKinematic, m_type);
 
             //get non-singlet combinations
-            std::map<QuarkNonSingletCombination::Type, double> NS = getNS(m_nFlavors_ref, partonDistribution);
+            std::map<QuarkNonSingletCombination::Type, double> NS = getNS(
+                    m_nFlavors_ref, partonDistribution);
 
-            for (itNSSingle = NS.begin(); itNSSingle != NS.end(); itNSSingle++) {
+            for (itNSSingle = NS.begin(); itNSSingle != NS.end();
+                    itNSSingle++) {
 
                 //check if valid
                 checkIfResultValid(m_NSXGrid.at(iGrid), itNSSingle->second);
@@ -326,7 +351,11 @@ PartonDistribution GPDEvolutionVinnikov::compute(GPDModule* pGPDModule, const GP
                 itNS = m_NS.find(itNSSingle->first);
 
                 if (itNS == m_NS.end()) {
-                    throw ElemUtils::CustomException(getClassName(), __func__, ElemUtils::Formatter() << "No key " << QuarkNonSingletCombination(itNSSingle->first).toString() << " in map m_NS");
+                    throw ElemUtils::CustomException(getClassName(), __func__,
+                            ElemUtils::Formatter() << "No key "
+                                    << QuarkNonSingletCombination(
+                                            itNSSingle->first).toString()
+                                    << " in map m_NS");
                 }
 
                 (itNS->second).push_back(itNSSingle->second);
@@ -372,26 +401,34 @@ PartonDistribution GPDEvolutionVinnikov::compute(GPDModule* pGPDModule, const GP
     m_GEvoledForFirstTime = true;
 
     //check GPD type
-    if (m_type != GPDType::H && m_type != GPDType::E && m_type != GPDType::Ht && m_type != GPDType::Et) {
-        throw ElemUtils::CustomException(getClassName(), __func__, ElemUtils::Formatter() << "This evolution module is not implemented for GPD type " << GPDType(m_type).toString());
+    if (m_type != GPDType::H && m_type != GPDType::E && m_type != GPDType::Ht
+            && m_type != GPDType::Et) {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter()
+                        << "This evolution module is not implemented for GPD type "
+                        << GPDType(m_type).toString());
     }
 
     //check n flavors
     if (m_nFlavors != m_nFlavors_ref) {
-        throw ElemUtils::CustomException(getClassName(), __func__, ElemUtils::Formatter() 
-					 << "This evolution module is not able to add or drop flavors because of the scale change, therefore nf at muF2 = " << m_nFlavors
-					 << " must be the same as that for muF2_ref = "
-					 << m_nFlavors_ref);
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter()
+                        << "This evolution module is not able to add or drop flavors because of the scale change, therefore nf at muF2 = "
+                        << m_nFlavors
+                        << " must be the same as that for muF2_ref = "
+                        << m_nFlavors_ref);
     }
 
     if (m_nFlavors != 3) {
-        warn(__func__, ElemUtils::Formatter()
-	     << "This evolution module assumes explicitly nf = 3 in the kernel expressions while you are training to run it with nf = "
-	     << m_nFlavors);
+        warn(__func__,
+                ElemUtils::Formatter()
+                        << "This evolution module assumes explicitly nf = 3 in the kernel expressions while you are training to run it with nf = "
+                        << m_nFlavors);
     }
 
     //variables
-    std::vector<double> parameters(1, static_cast<double>(QuarkNonSingletCombination::UNDEFINED));
+    std::vector<double> parameters(1,
+            static_cast<double>(QuarkNonSingletCombination::UNDEFINED));
     double diff;
 
     //do the evolution for nf given by the target scale
@@ -399,84 +436,131 @@ PartonDistribution GPDEvolutionVinnikov::compute(GPDModule* pGPDModule, const GP
     double SDiff, GDiff;
 
     if (m_nFlavors >= 1) {
-        parameters.at(0) = static_cast<double>(QuarkNonSingletCombination::UP_NONSINGLET);
-        diff = integrate(p_intIntegrateComputeOutputNS, m_MuF2_ref, m_MuF2, parameters);
+        parameters.at(0) =
+                static_cast<double>(QuarkNonSingletCombination::UP_NONSINGLET);
+        diff = integrate(p_intIntegrateComputeOutputNS, m_MuF2_ref, m_MuF2,
+                parameters);
 
-        NSDiff.insert(std::make_pair(QuarkNonSingletCombination::UP_NONSINGLET, diff));
+        NSDiff.insert(
+                std::make_pair(QuarkNonSingletCombination::UP_NONSINGLET,
+                        diff));
     }
 
     if (m_nFlavors >= 2) {
-        parameters.at(0) = static_cast<double>(QuarkNonSingletCombination::DOWN_NONSINGLET);
-        diff = integrate(p_intIntegrateComputeOutputNS, m_MuF2_ref, m_MuF2, parameters);
+        parameters.at(0) =
+                static_cast<double>(QuarkNonSingletCombination::DOWN_NONSINGLET);
+        diff = integrate(p_intIntegrateComputeOutputNS, m_MuF2_ref, m_MuF2,
+                parameters);
 
-        NSDiff.insert(std::make_pair(QuarkNonSingletCombination::DOWN_NONSINGLET, diff));
+        NSDiff.insert(
+                std::make_pair(QuarkNonSingletCombination::DOWN_NONSINGLET,
+                        diff));
 
-        parameters.at(0) = static_cast<double>(QuarkNonSingletCombination::UP_MINUS_DOWN);
-        diff = integrate(p_intIntegrateComputeOutputNS, m_MuF2_ref, m_MuF2, parameters);
+        parameters.at(0) =
+                static_cast<double>(QuarkNonSingletCombination::UP_MINUS_DOWN);
+        diff = integrate(p_intIntegrateComputeOutputNS, m_MuF2_ref, m_MuF2,
+                parameters);
 
-        NSDiff.insert(std::make_pair(QuarkNonSingletCombination::UP_MINUS_DOWN, diff));
+        NSDiff.insert(
+                std::make_pair(QuarkNonSingletCombination::UP_MINUS_DOWN,
+                        diff));
     }
 
     if (m_nFlavors >= 3) {
 
-        parameters.at(0) = static_cast<double>(QuarkNonSingletCombination::STRANGE_NONSINGLET);
-        diff = integrate(p_intIntegrateComputeOutputNS, m_MuF2_ref, m_MuF2, parameters);
+        parameters.at(0) =
+                static_cast<double>(QuarkNonSingletCombination::STRANGE_NONSINGLET);
+        diff = integrate(p_intIntegrateComputeOutputNS, m_MuF2_ref, m_MuF2,
+                parameters);
 
-        NSDiff.insert(std::make_pair(QuarkNonSingletCombination::STRANGE_NONSINGLET, diff));
+        NSDiff.insert(
+                std::make_pair(QuarkNonSingletCombination::STRANGE_NONSINGLET,
+                        diff));
 
-        parameters.at(0) = static_cast<double>(QuarkNonSingletCombination::UP_MINUS_STRANGE);
-        diff = integrate(p_intIntegrateComputeOutputNS, m_MuF2_ref, m_MuF2, parameters);
+        parameters.at(0) =
+                static_cast<double>(QuarkNonSingletCombination::UP_MINUS_STRANGE);
+        diff = integrate(p_intIntegrateComputeOutputNS, m_MuF2_ref, m_MuF2,
+                parameters);
 
-        NSDiff.insert(std::make_pair(QuarkNonSingletCombination::UP_MINUS_STRANGE, diff));
+        NSDiff.insert(
+                std::make_pair(QuarkNonSingletCombination::UP_MINUS_STRANGE,
+                        diff));
     }
 
     if (m_nFlavors >= 4) {
 
-        parameters.at(0) = static_cast<double>(QuarkNonSingletCombination::CHARM_NONSINGLET);
-        diff = integrate(p_intIntegrateComputeOutputNS, m_MuF2_ref, m_MuF2, parameters);
+        parameters.at(0) =
+                static_cast<double>(QuarkNonSingletCombination::CHARM_NONSINGLET);
+        diff = integrate(p_intIntegrateComputeOutputNS, m_MuF2_ref, m_MuF2,
+                parameters);
 
-        NSDiff.insert(std::make_pair(QuarkNonSingletCombination::CHARM_NONSINGLET, diff));
+        NSDiff.insert(
+                std::make_pair(QuarkNonSingletCombination::CHARM_NONSINGLET,
+                        diff));
 
-        parameters.at(0) = static_cast<double>(QuarkNonSingletCombination::UP_MINUS_CHARM);
-        diff = integrate(p_intIntegrateComputeOutputNS, m_MuF2_ref, m_MuF2, parameters);
+        parameters.at(0) =
+                static_cast<double>(QuarkNonSingletCombination::UP_MINUS_CHARM);
+        diff = integrate(p_intIntegrateComputeOutputNS, m_MuF2_ref, m_MuF2,
+                parameters);
 
-        NSDiff.insert(std::make_pair(QuarkNonSingletCombination::UP_MINUS_CHARM, diff));
+        NSDiff.insert(
+                std::make_pair(QuarkNonSingletCombination::UP_MINUS_CHARM,
+                        diff));
     }
 
     if (m_nFlavors >= 5) {
 
-        parameters.at(0) = static_cast<double>(QuarkNonSingletCombination::TOP_NONSINGLET);
-        diff = integrate(p_intIntegrateComputeOutputNS, m_MuF2_ref, m_MuF2, parameters);
+        parameters.at(0) =
+                static_cast<double>(QuarkNonSingletCombination::TOP_NONSINGLET);
+        diff = integrate(p_intIntegrateComputeOutputNS, m_MuF2_ref, m_MuF2,
+                parameters);
 
-        NSDiff.insert(std::make_pair(QuarkNonSingletCombination::TOP_NONSINGLET, diff));
+        NSDiff.insert(
+                std::make_pair(QuarkNonSingletCombination::TOP_NONSINGLET,
+                        diff));
 
-        parameters.at(0) = static_cast<double>(QuarkNonSingletCombination::UP_MINUS_TOP);
-        diff = integrate(p_intIntegrateComputeOutputNS, m_MuF2_ref, m_MuF2, parameters);
+        parameters.at(0) =
+                static_cast<double>(QuarkNonSingletCombination::UP_MINUS_TOP);
+        diff = integrate(p_intIntegrateComputeOutputNS, m_MuF2_ref, m_MuF2,
+                parameters);
 
-        NSDiff.insert(std::make_pair(QuarkNonSingletCombination::UP_MINUS_TOP, diff));
+        NSDiff.insert(
+                std::make_pair(QuarkNonSingletCombination::UP_MINUS_TOP, diff));
     }
 
     if (m_nFlavors == 6) {
 
-        parameters.at(0) = static_cast<double>(QuarkNonSingletCombination::BOTTOM_NONSINGLET);
-        diff = integrate(p_intIntegrateComputeOutputNS, m_MuF2_ref, m_MuF2, parameters);
+        parameters.at(0) =
+                static_cast<double>(QuarkNonSingletCombination::BOTTOM_NONSINGLET);
+        diff = integrate(p_intIntegrateComputeOutputNS, m_MuF2_ref, m_MuF2,
+                parameters);
 
-        NSDiff.insert(std::make_pair(QuarkNonSingletCombination::BOTTOM_NONSINGLET, diff));
+        NSDiff.insert(
+                std::make_pair(QuarkNonSingletCombination::BOTTOM_NONSINGLET,
+                        diff));
 
-        parameters.at(0) = static_cast<double>(QuarkNonSingletCombination::UP_MINUS_BOTTOM);
-        diff = integrate(p_intIntegrateComputeOutputNS, m_MuF2_ref, m_MuF2, parameters);
+        parameters.at(0) =
+                static_cast<double>(QuarkNonSingletCombination::UP_MINUS_BOTTOM);
+        diff = integrate(p_intIntegrateComputeOutputNS, m_MuF2_ref, m_MuF2,
+                parameters);
 
-        NSDiff.insert(std::make_pair(QuarkNonSingletCombination::UP_MINUS_BOTTOM, diff));
+        NSDiff.insert(
+                std::make_pair(QuarkNonSingletCombination::UP_MINUS_BOTTOM,
+                        diff));
     }
 
-    parameters.at(0) = static_cast<double>(QuarkNonSingletCombination::UNDEFINED);
-    SDiff = integrate(p_intIntegrateComputeOutputS, m_MuF2_ref, m_MuF2, parameters);
-    GDiff = integrate(p_intIntegrateComputeOutputG, m_MuF2_ref, m_MuF2, parameters);
+    parameters.at(0) =
+            static_cast<double>(QuarkNonSingletCombination::UNDEFINED);
+    SDiff = integrate(p_intIntegrateComputeOutputS, m_MuF2_ref, m_MuF2,
+            parameters);
+    GDiff = integrate(p_intIntegrateComputeOutputG, m_MuF2_ref, m_MuF2,
+            parameters);
 
     //apply difference (new flavors can arrive!)
 
     //NS, S and G for reference scale
-    std::map<QuarkNonSingletCombination::Type, double> NS0 = getNS(m_nFlavors_ref, m_PartonDistributionAtMuF2_ref);
+    std::map<QuarkNonSingletCombination::Type, double> NS0 = getNS(
+            m_nFlavors_ref, m_PartonDistributionAtMuF2_ref);
     double S0 = getS(m_nFlavors_ref, m_PartonDistributionAtMuF2_ref);
     double G0 = getG(m_PartonDistributionAtMuF2_ref);
 
@@ -548,14 +632,14 @@ void GPDEvolutionVinnikov::computeMuF2DerivativeNS(double MuF2, double MuF2Last,
         gpd_aux.at(i) = gpd.at(i) + 0.5 * k1.at(i);
     for (i = 0; i <= 4 * m_gridSize; i++)
         k2.at(i) = dt * conv_int_ns(i, m_xi, m_gridSize, gpd_aux, m_NSXGrid)
-                * m_pRunningAlphaStrongModule->compute(exp(log(MuF2Last) + 0.5 * dt))
-                * one_twopi;
+                * m_pRunningAlphaStrongModule->compute(
+                        exp(log(MuF2Last) + 0.5 * dt)) * one_twopi;
     for (i = 0; i <= 4 * m_gridSize; i++)
         gpd_aux.at(i) = gpd.at(i) + 0.5 * k2.at(i);
     for (i = 0; i <= 4 * m_gridSize; i++)
         k3.at(i) = dt * conv_int_ns(i, m_xi, m_gridSize, gpd_aux, m_NSXGrid)
-                * m_pRunningAlphaStrongModule->compute(exp(log(MuF2Last) + 0.5 * dt))
-                * one_twopi;
+                * m_pRunningAlphaStrongModule->compute(
+                        exp(log(MuF2Last) + 0.5 * dt)) * one_twopi;
     for (i = 0; i <= 4 * m_gridSize; i++)
         gpd_aux.at(i) = gpd.at(i) + k3.at(i);
     for (i = 0; i <= 4 * m_gridSize; i++)
@@ -604,15 +688,13 @@ void GPDEvolutionVinnikov::computeMuF2DerivativeSG(double MuF2,
             int const n, const std::vector<double>& gpd,
             const std::vector<double>& x);
 
-    if (m_type == GPDType::H
-            || m_type == GPDType::E) {
+    if (m_type == GPDType::H || m_type == GPDType::E) {
 
         qq = &GPDEvolutionVinnikov::conv_int_qq;
         gg = &GPDEvolutionVinnikov::conv_int_gg;
         gq = &GPDEvolutionVinnikov::conv_int_gq;
         qg = &GPDEvolutionVinnikov::conv_int_qg;
-    } else if (m_type == GPDType::Ht
-            || m_type == GPDType::Et) {
+    } else if (m_type == GPDType::Ht || m_type == GPDType::Et) {
 
         qq = &GPDEvolutionVinnikov::conv_int_qq_pol;
         gg = &GPDEvolutionVinnikov::conv_int_gg_pol;
@@ -653,14 +735,16 @@ void GPDEvolutionVinnikov::computeMuF2DerivativeSG(double MuF2,
                                 m_SXGrid)
                                 + (this->*qg)(i, m_xi, m_gridSize, m_GEvolved,
                                         m_SXGrid))
-                        * m_pRunningAlphaStrongModule->compute(MuF2Last) * one_twopi;
+                        * m_pRunningAlphaStrongModule->compute(MuF2Last)
+                        * one_twopi;
         k1_g.at(i) =
                 dt
                         * ((this->*gq)(i, m_xi, m_gridSize, m_SEvolved,
                                 m_SXGrid)
                                 + (this->*gg)(i, m_xi, m_gridSize, m_GEvolved,
                                         m_SXGrid))
-                        * m_pRunningAlphaStrongModule->compute(MuF2Last) * one_twopi;
+                        * m_pRunningAlphaStrongModule->compute(MuF2Last)
+                        * one_twopi;
     }
     for (i = 0; i <= 2 * m_gridSize; i++) {
         gpd_q_aux.at(i) = m_SEvolved.at(i) + 0.5 * k1_q.at(i);
@@ -670,13 +754,13 @@ void GPDEvolutionVinnikov::computeMuF2DerivativeSG(double MuF2,
         k2_q.at(i) = dt
                 * ((this->*qq)(i, m_xi, m_gridSize, gpd_q_aux, m_SXGrid)
                         + (this->*qg)(i, m_xi, m_gridSize, gpd_g_aux, m_SXGrid))
-                * m_pRunningAlphaStrongModule->compute(exp(log(MuF2Last) + 0.5 * dt))
-                * one_twopi;
+                * m_pRunningAlphaStrongModule->compute(
+                        exp(log(MuF2Last) + 0.5 * dt)) * one_twopi;
         k2_g.at(i) = dt
                 * ((this->*gq)(i, m_xi, m_gridSize, gpd_q_aux, m_SXGrid)
                         + (this->*gg)(i, m_xi, m_gridSize, gpd_g_aux, m_SXGrid))
-                * m_pRunningAlphaStrongModule->compute(exp(log(MuF2Last) + 0.5 * dt))
-                * one_twopi;
+                * m_pRunningAlphaStrongModule->compute(
+                        exp(log(MuF2Last) + 0.5 * dt)) * one_twopi;
     }
     for (i = 0; i <= 2 * m_gridSize; i++) {
         gpd_q_aux.at(i) = m_SEvolved.at(i) + 0.5 * k2_q.at(i);
@@ -686,13 +770,13 @@ void GPDEvolutionVinnikov::computeMuF2DerivativeSG(double MuF2,
         k3_q.at(i) = dt
                 * ((this->*qq)(i, m_xi, m_gridSize, gpd_q_aux, m_SXGrid)
                         + (this->*qg)(i, m_xi, m_gridSize, gpd_g_aux, m_SXGrid))
-                * m_pRunningAlphaStrongModule->compute(exp(log(MuF2Last) + 0.5 * dt))
-                * one_twopi;
+                * m_pRunningAlphaStrongModule->compute(
+                        exp(log(MuF2Last) + 0.5 * dt)) * one_twopi;
         k3_g.at(i) = dt
                 * ((this->*gq)(i, m_xi, m_gridSize, gpd_q_aux, m_SXGrid)
                         + (this->*gg)(i, m_xi, m_gridSize, gpd_g_aux, m_SXGrid))
-                * m_pRunningAlphaStrongModule->compute(exp(log(MuF2Last) + 0.5 * dt))
-                * one_twopi;
+                * m_pRunningAlphaStrongModule->compute(
+                        exp(log(MuF2Last) + 0.5 * dt)) * one_twopi;
     }
     for (i = 0; i <= 2 * m_gridSize; i++) {
         gpd_q_aux.at(i) = m_SEvolved.at(i) + k3_q.at(i);
@@ -834,7 +918,8 @@ double GPDEvolutionVinnikov::nonSingletMu2FDerivative(double MuF2,
     double result = spline.getSplineInsideValue(m_x);
 
     //differential result
-    double resultDiff = result * 2. / (MuF2 - itMuF2Last->second) - itResultLast->second;
+    double resultDiff = result * 2. / (MuF2 - itMuF2Last->second)
+            - itResultLast->second;
 
     //set last
     itResultLast->second = resultDiff;
@@ -903,11 +988,9 @@ double GPDEvolutionVinnikov::singletMuF2Derivative(double MuF2) {
 
     //symmetry property
     if (m_x < 0.) {
-        if (m_type == GPDType::H
-                || m_type == GPDType::E) {
+        if (m_type == GPDType::H || m_type == GPDType::E) {
             result *= -1;
-        } else if (m_type == GPDType::Ht
-                || m_type == GPDType::Et) {
+        } else if (m_type == GPDType::Ht || m_type == GPDType::Et) {
         } else {
             throw ElemUtils::CustomException(getClassName(), __func__,
                     ElemUtils::Formatter()
@@ -986,10 +1069,8 @@ double GPDEvolutionVinnikov::gluonMuF2Derivative(double MuF2) {
 
     //symmetry property
     if (m_x < 0.) {
-        if (m_type == GPDType::H
-                || m_type == GPDType::E) {
-        } else if (m_type == GPDType::Ht
-                || m_type == GPDType::Et) {
+        if (m_type == GPDType::H || m_type == GPDType::E) {
+        } else if (m_type == GPDType::Ht || m_type == GPDType::Et) {
             result *= -1;
         } else {
             throw ElemUtils::CustomException(getClassName(), __func__,
@@ -1186,7 +1267,9 @@ void GPDEvolutionVinnikov::setGridSize(size_t gridSize) {
     m_gridSize = gridSize;
 }
 
-std::map<QuarkNonSingletCombination::Type, double> GPDEvolutionVinnikov::getNS(const size_t nFlavors,const PartonDistribution& partonDistribution) const {
+std::map<QuarkNonSingletCombination::Type, double> GPDEvolutionVinnikov::getNS(
+        const size_t nFlavors,
+        const PartonDistribution& partonDistribution) const {
 
     //check if nf is right
     if (nFlavors < 1 || nFlavors > 6) {
@@ -1691,20 +1774,27 @@ std::map<QuarkNonSingletCombination::Type, double>::const_iterator GPDEvolutionV
 
 void GPDEvolutionVinnikov::initFunctorsForIntegrations() {
     //set functors
-    p_intIntegrateComputeOutputNS = NumA::Integrator1D::newIntegrationFunctor(this, &GPDEvolutionVinnikov::integrateComputeOutputNS);
-    p_intIntegrateComputeOutputS  = NumA::Integrator1D::newIntegrationFunctor(this, &GPDEvolutionVinnikov::integrateComputeOutputS);
-    p_intIntegrateComputeOutputG  = NumA::Integrator1D::newIntegrationFunctor(this, &GPDEvolutionVinnikov::integrateComputeOutputG);
+    p_intIntegrateComputeOutputNS = NumA::Integrator1D::newIntegrationFunctor(
+            this, &GPDEvolutionVinnikov::integrateComputeOutputNS);
+    p_intIntegrateComputeOutputS = NumA::Integrator1D::newIntegrationFunctor(
+            this, &GPDEvolutionVinnikov::integrateComputeOutputS);
+    p_intIntegrateComputeOutputG = NumA::Integrator1D::newIntegrationFunctor(
+            this, &GPDEvolutionVinnikov::integrateComputeOutputG);
 }
 
-double GPDEvolutionVinnikov::integrateComputeOutputNS(double MuF2, std::vector<double> par) {
-    return nonSingletMu2FDerivative(MuF2, static_cast<QuarkNonSingletCombination::Type>(par.at(0)));
+double GPDEvolutionVinnikov::integrateComputeOutputNS(double MuF2,
+        std::vector<double> par) {
+    return nonSingletMu2FDerivative(MuF2,
+            static_cast<QuarkNonSingletCombination::Type>(par.at(0)));
 }
 
-double GPDEvolutionVinnikov::integrateComputeOutputS(double MuF2, std::vector<double> par) {
+double GPDEvolutionVinnikov::integrateComputeOutputS(double MuF2,
+        std::vector<double> par) {
     return singletMuF2Derivative(MuF2);
 }
 
-double GPDEvolutionVinnikov::integrateComputeOutputG(double MuF2, std::vector<double> par) {
+double GPDEvolutionVinnikov::integrateComputeOutputG(double MuF2,
+        std::vector<double> par) {
     return gluonMuF2Derivative(MuF2);
 }
 
