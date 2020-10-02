@@ -87,7 +87,10 @@ PhysicalType<double> DVMPProcessGK06::CrossSection() {
     result *= 1. + m_beamHelicity * AsymmetryALUsinphi() * sin(m_phi)
             + m_targetPolarization.getZ() * AsymmetryAULsinphi() * sin(m_phi)
             + m_targetPolarization.getZ() * AsymmetryAULsin2phi() * sin(2*m_phi)
-            + m_targetPolarization.getZ() * AsymmetryAULsin3phi() * sin(3*m_phi);
+            + m_targetPolarization.getZ() * AsymmetryAULsin3phi() * sin(3*m_phi)
+            + m_beamHelicity * m_targetPolarization.getZ() * AsymmetryALLconst()
+            + m_beamHelicity * m_targetPolarization.getZ() * AsymmetryALLcosphi() * cos(m_phi)
+            + m_beamHelicity * m_targetPolarization.getZ() * AsymmetryALLcos2phi() * cos(2*m_phi);
 
     //apply dW2/dxB
     result *= m_Q2 / pow(m_xB, 2);
