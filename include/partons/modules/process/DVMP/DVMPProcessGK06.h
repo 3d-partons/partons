@@ -60,6 +60,9 @@ private:
     double CrossSectionLT(); ///< Partial cross-section LT.
     double CrossSectionTT(); ///< Partial cross-section TT.
 
+    double AsymmetryAUUcosphi(); ///< cos(\phi) moment of AUU.
+    double AsymmetryAUUcos2phi(); ///< cos(2\phi) moment of AUU.
+
     double AsymmetryAULsinphi(); ///< sin(\phi) moment of AUL.
     double AsymmetryAULsin2phi(); ///< sin(2\phi) moment of AUL.
     double AsymmetryAULsin3phi(); ///< sin(3\phi) moment of AUL.
