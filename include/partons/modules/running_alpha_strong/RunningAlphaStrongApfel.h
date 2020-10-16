@@ -12,6 +12,7 @@
 #include "../../beans/PerturbativeQCDOrderType.h"
 
 #include <vector>
+#include <functional>
 
 namespace PARTONS {
 
