@@ -8,13 +8,10 @@
 #ifndef RUNNING_ALPHA_STRONG_APFEL_H
 #define RUNNING_ALPHA_STRONG_APFEL_H
 
-#include <ElementaryUtils/parameters/Parameters.h>
-#include <functional>
-#include <string>
-#include <vector>
-
-#include "../../beans/PerturbativeQCDOrderType.h"
 #include "RunningAlphaStrongModule.h"
+#include "../../beans/PerturbativeQCDOrderType.h"
+
+#include <vector>
 #include <functional>
 
 namespace PARTONS {
