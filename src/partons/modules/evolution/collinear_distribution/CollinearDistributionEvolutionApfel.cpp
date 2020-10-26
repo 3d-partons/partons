@@ -89,8 +89,13 @@ void CollinearDistributionEvolutionApfel::prepareSubModules(const std::map<std::
 
     // Get thresholds. Set to zero whatever is below one.
     std::vector<double> thresholds;
-    for (ActiveFlavorsThresholds aft : m_pActiveFlavorsModule->getNfIntervals())
-      thresholds.push_back(aft.getLowerBound() < 1 ? 0 : sqrt(aft.getLowerBound()));
+    std::vector<ActiveFlavorsThresholds> afts = m_pActiveFlavorsModule->getNfIntervals();
+    if (afts.size() == 1)
+      for (int i = 0; i < afts[0].getNf(); i++)
+	thresholds.push_back(0);
+    else
+      for (ActiveFlavorsThresholds aft : afts)
+	thresholds.push_back(aft.getLowerBound() < 1 ? 0 : sqrt(aft.getLowerBound()));
 
     // Initialize QCD evolution objects
     m_dglapobj = InitializeDglapObjectsQCD(*m_g, thresholds);

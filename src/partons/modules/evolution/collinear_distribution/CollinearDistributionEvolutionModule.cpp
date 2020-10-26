@@ -16,8 +16,8 @@ const std::string CollinearDistributionEvolutionModule::COLLINEAR_DISTRIBUTION_E
 CollinearDistributionEvolutionModule::CollinearDistributionEvolutionModule(const std::string &className) :
         ModuleObject(className, ChannelType::UNDEFINED),
 	m_x(0), m_MuF2(0), m_MuR2(0),
-	m_pertOrder(PerturbativeQCDOrderType::UNDEFINED),
-	m_type(CollinearDistributionType::UNDEFINED),
+	m_pertOrder(PerturbativeQCDOrderType::NNLO),
+	m_type(CollinearDistributionType::UnpolPDF),
 	m_pRunningAlphaStrongModule(0),
 	m_pActiveFlavorsModule(0) {
 }
