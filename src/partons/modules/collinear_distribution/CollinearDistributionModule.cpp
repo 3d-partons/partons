@@ -28,8 +28,7 @@ CollinearDistributionModule::CollinearDistributionModule(const std::string &clas
 }
 
 CollinearDistributionModule::CollinearDistributionModule(const CollinearDistributionModule &other) :
-        ModuleObject(other), m_x(other.m_x), m_MuF2(
-                other.m_MuF2), m_MuR2(other.m_MuR2), m_MuF2_ref(other.m_MuF2_ref) {
+        ModuleObject(other), m_x(other.m_x), m_MuF2(other.m_MuF2), m_MuR2(other.m_MuR2), m_MuF2_ref(other.m_MuF2_ref) {
 
     if (other.m_pCollinearDistributionEvolutionModule != 0) {
         m_pCollinearDistributionEvolutionModule = m_pModuleObjectFactory->cloneModuleObject(
@@ -123,8 +122,7 @@ void CollinearDistributionModule::prepareSubModules(const std::map<std::string, 
 
 }
 
-PartonDistribution CollinearDistributionModule::compute(const CollinearDistributionKinematic &kinematic,
-        CollinearDistributionType::Type colldistType) {
+PartonDistribution CollinearDistributionModule::compute(const CollinearDistributionKinematic &kinematic,  CollinearDistributionType::Type colldistType) {
 
     //create list
     List<CollinearDistributionType> list;
@@ -136,8 +134,7 @@ PartonDistribution CollinearDistributionModule::compute(const CollinearDistribut
     return compute(kinematic, list).getPartonDistribution(colldistType);
 }
 
-CollinearDistributionResult CollinearDistributionModule::compute(const CollinearDistributionKinematic &kinematic,
-        const List<CollinearDistributionType>& colldistType) {
+CollinearDistributionResult CollinearDistributionModule::compute(const CollinearDistributionKinematic &kinematic, const List<CollinearDistributionType>& colldistType) {
 
     //reset kinematics (virtuality)
     setKinematics(kinematic);
@@ -155,8 +152,7 @@ CollinearDistributionResult CollinearDistributionModule::compute(const Collinear
     for (size_t i = 0; i < colldistType.size(); i++) {
 
         //search for pointer to function associated to given collinear distribution type
-        std::map<CollinearDistributionType::Type, PartonDistribution (CollinearDistributionModule::*)()>::iterator m_it =
-	  m_listCollinearDistributionComputeTypeAvailable.find(colldistType[i]);
+        std::map<CollinearDistributionType::Type, PartonDistribution (CollinearDistributionModule::*)()>::iterator m_it = m_listCollinearDistributionComputeTypeAvailable.find(colldistType[i]);
 
         //check if found
         if (m_it != m_listCollinearDistributionComputeTypeAvailable.end()) {
@@ -200,8 +196,7 @@ List<CollinearDistributionType> CollinearDistributionModule::getListOfAvailableC
     std::map<CollinearDistributionType::Type, PartonDistribution (CollinearDistributionModule::*)()>::const_iterator it;
 
     //fill list
-    for (it = m_listCollinearDistributionComputeTypeAvailable.begin();
-            it != m_listCollinearDistributionComputeTypeAvailable.end(); it++) {
+    for (it = m_listCollinearDistributionComputeTypeAvailable.begin(); it != m_listCollinearDistributionComputeTypeAvailable.end(); it++) {
         listOfAvailableCollinearDistributionTypeForComputation.add(it->first);
     }
 

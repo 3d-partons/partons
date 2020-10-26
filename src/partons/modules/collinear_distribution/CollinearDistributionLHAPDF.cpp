@@ -19,6 +19,7 @@ CollinearDistributionLHAPDF::CollinearDistributionLHAPDF(
         CollinearDistributionModule(className), m_setName("UNDEFINED"), m_member(
                 0), m_type(CollinearDistributionType::Type::UnpolPDF), m_set(
                 { }) {
+  setType(m_type);
 }
 
 CollinearDistributionLHAPDF::CollinearDistributionLHAPDF(
@@ -29,6 +30,7 @@ CollinearDistributionLHAPDF::CollinearDistributionLHAPDF(
     m_member = other.getMember();
     m_type = other.getType();
     m_set = other.getSet();
+    setType(m_type);
 }
 
 CollinearDistributionLHAPDF* CollinearDistributionLHAPDF::clone() const {
@@ -47,34 +49,19 @@ void CollinearDistributionLHAPDF::configure(
     LHAPDF::setVerbosity(0);
 
     //check and set
-    if (parameters.isAvailable(
-            CollinearDistributionLHAPDF::PARAM_NAME_SET_NAME)) {
+    if (parameters.isAvailable(CollinearDistributionLHAPDF::PARAM_NAME_SET_NAME)) {
         setSetName(parameters.getLastAvailable().getString());
-        info(__func__,
-                ElemUtils::Formatter()
-                        << CollinearDistributionLHAPDF::PARAM_NAME_SET_NAME
-                        << " configured with value = " << getSetName());
+        info(__func__, ElemUtils::Formatter() << CollinearDistributionLHAPDF::PARAM_NAME_SET_NAME << " configured with value = " << getSetName());
     }
 
-    if (parameters.isAvailable(
-            CollinearDistributionLHAPDF::PARAM_NAME_SET_MEMBER)) {
+    if (parameters.isAvailable(CollinearDistributionLHAPDF::PARAM_NAME_SET_MEMBER)) {
         setMember(parameters.getLastAvailable().toUInt());
-        info(__func__,
-                ElemUtils::Formatter()
-                        << CollinearDistributionLHAPDF::PARAM_NAME_SET_MEMBER
-                        << " configured with value = " << getMember());
+        info(__func__, ElemUtils::Formatter() << CollinearDistributionLHAPDF::PARAM_NAME_SET_MEMBER << " configured with value = " << getMember());
     }
 
-    if (parameters.isAvailable(
-            CollinearDistributionLHAPDF::PARAM_NAME_SET_TYPE)) {
-        setType(
-                CollinearDistributionType { }.fromString(
-                        parameters.getLastAvailable().getString()));
-        info(__func__,
-                ElemUtils::Formatter()
-                        << CollinearDistributionLHAPDF::PARAM_NAME_SET_TYPE
-                        << " configured with value = "
-                        << CollinearDistributionType(getType()).toString());
+    if (parameters.isAvailable(CollinearDistributionLHAPDF::PARAM_NAME_SET_TYPE)) {
+        setType(CollinearDistributionType { }.fromString(parameters.getLastAvailable().getString()));
+        info(__func__, ElemUtils::Formatter() << CollinearDistributionLHAPDF::PARAM_NAME_SET_TYPE << " configured with value = " << CollinearDistributionType(getType()).toString());
     }
 }
 
@@ -357,67 +344,44 @@ void CollinearDistributionLHAPDF::setMember(const int &member) {
     m_member = member;
 }
 
-void CollinearDistributionLHAPDF::setType(
-        const CollinearDistributionType::Type &type) {
+void CollinearDistributionLHAPDF::setType(const CollinearDistributionType::Type &type) {
 
     m_listCollinearDistributionComputeTypeAvailable.clear();
 
     switch (type) {
 
     case CollinearDistributionType::UnpolPDF: {
-
-        m_listCollinearDistributionComputeTypeAvailable.insert(
-                std::make_pair(CollinearDistributionType::UnpolPDF,
-                        &CollinearDistributionModule::computeUnpolPDF));
+        m_listCollinearDistributionComputeTypeAvailable.insert(std::make_pair(CollinearDistributionType::UnpolPDF, &CollinearDistributionModule::computeUnpolPDF));
         break;
     }
 
     case CollinearDistributionType::PolPDF: {
-
-        m_listCollinearDistributionComputeTypeAvailable.insert(
-                std::make_pair(CollinearDistributionType::PolPDF,
-                        &CollinearDistributionModule::computePolPDF));
+        m_listCollinearDistributionComputeTypeAvailable.insert(std::make_pair(CollinearDistributionType::PolPDF, &CollinearDistributionModule::computePolPDF));
         break;
     }
 
     case CollinearDistributionType::TransPDF: {
-
-        m_listCollinearDistributionComputeTypeAvailable.insert(
-                std::make_pair(CollinearDistributionType::TransPDF,
-                        &CollinearDistributionModule::computeTransPDF));
+        m_listCollinearDistributionComputeTypeAvailable.insert(std::make_pair(CollinearDistributionType::TransPDF, &CollinearDistributionModule::computeTransPDF));
         break;
     }
 
     case CollinearDistributionType::UnpolFF: {
-
-        m_listCollinearDistributionComputeTypeAvailable.insert(
-                std::make_pair(CollinearDistributionType::UnpolFF,
-                        &CollinearDistributionModule::computeUnpolFF));
+        m_listCollinearDistributionComputeTypeAvailable.insert(std::make_pair(CollinearDistributionType::UnpolFF, &CollinearDistributionModule::computeUnpolFF));
         break;
     }
 
     case CollinearDistributionType::PolFF: {
-
-        m_listCollinearDistributionComputeTypeAvailable.insert(
-                std::make_pair(CollinearDistributionType::PolFF,
-                        &CollinearDistributionModule::computePolFF));
+        m_listCollinearDistributionComputeTypeAvailable.insert(std::make_pair(CollinearDistributionType::PolFF, &CollinearDistributionModule::computePolFF));
         break;
     }
 
     case CollinearDistributionType::TransFF: {
-
-        m_listCollinearDistributionComputeTypeAvailable.insert(
-                std::make_pair(CollinearDistributionType::TransFF,
-                        &CollinearDistributionModule::computeTransFF));
+        m_listCollinearDistributionComputeTypeAvailable.insert(std::make_pair(CollinearDistributionType::TransFF, &CollinearDistributionModule::computeTransFF));
         break;
     }
 
     default: {
-
-        throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter()
-                        << "Not able to relate function with type "
-                        << CollinearDistributionType(type).toString());
+        throw ElemUtils::CustomException(getClassName(), __func__, ElemUtils::Formatter() << "Not able to relate function with type " << CollinearDistributionType(type).toString());
         break;
     }
     }
