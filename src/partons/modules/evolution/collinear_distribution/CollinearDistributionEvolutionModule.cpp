@@ -3,6 +3,7 @@
 #include "../../../../../include/partons/beans/collinear_distribution/CollinearDistributionKinematic.h"
 #include "../../../../../include/partons/modules/collinear_distribution/CollinearDistributionModule.h"
 #include "../../../../../include/partons/modules/running_alpha_strong/RunningAlphaStrongModule.h"
+#include "../../../../../include/partons/modules/active_flavors_thresholds/ActiveFlavorsThresholdsModule.h"
 #include "../../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../../include/partons/Partons.h"
 
@@ -10,23 +11,47 @@
 
 namespace PARTONS {
 
-const std::string CollinearDistributionEvolutionModule::PARAM_NAME_MUF2_REF = "muF2Ref";
-
 const std::string CollinearDistributionEvolutionModule::COLLINEAR_DISTRIBUTION_EVOLUTION_MODULE_CLASS_NAME = "CollinearDistributionEvolutionModule";
 
 CollinearDistributionEvolutionModule::CollinearDistributionEvolutionModule(const std::string &className) :
         ModuleObject(className, ChannelType::UNDEFINED),
 	m_x(0), m_MuF2(0), m_MuR2(0),
-	m_MuF2_ref(0),
 	m_pertOrder(PerturbativeQCDOrderType::UNDEFINED),
 	m_type(CollinearDistributionType::UNDEFINED),
-	m_pRunningAlphaStrongModule(0) {
+	m_pRunningAlphaStrongModule(0),
+	m_pActiveFlavorsModule(0) {
+}
+
+CollinearDistributionEvolutionModule::CollinearDistributionEvolutionModule(const CollinearDistributionEvolutionModule &other) :
+        ModuleObject(other) {
+
+    setPertOrder(other.getPertOrder());
+    setCollinearDistributionType(other.getCollinearDistributionType());
+
+    if (other.m_pRunningAlphaStrongModule != 0) {
+        m_pRunningAlphaStrongModule = m_pModuleObjectFactory->cloneModuleObject(other.m_pRunningAlphaStrongModule);
+    } else {
+        m_pRunningAlphaStrongModule = 0;
+    }
+
+    if (other.m_pActiveFlavorsModule != 0) {
+        m_pActiveFlavorsModule = m_pModuleObjectFactory->cloneModuleObject(
+                other.m_pActiveFlavorsModule);
+    } else {
+        m_pActiveFlavorsModule = 0;
+    }
+
+    setKinematics(other.getKinematics());
 }
 
 CollinearDistributionEvolutionModule::~CollinearDistributionEvolutionModule() {
     if (m_pRunningAlphaStrongModule) {
         setRunningAlphaStrongModule(0);
 	m_pRunningAlphaStrongModule = 0;
+    }
+    if (m_pActiveFlavorsModule) {
+        setActiveFlavorsModule(0);
+	m_pActiveFlavorsModule = 0;
     }
 }
 
@@ -42,13 +67,6 @@ void CollinearDistributionEvolutionModule::configure(const ElemUtils::Parameters
 
     //run for mother classes
     ModuleObject::configure(parameters);
-
-    //check and set
-    if (parameters.isAvailable(CollinearDistributionEvolutionModule::PARAM_NAME_MUF2_REF)) {
-        setMuF2_ref(parameters.getLastAvailable().toDouble());
-	info(__func__, ElemUtils::Formatter() << CollinearDistributionEvolutionModule::PARAM_NAME_MUF2_REF
-	     << " configured with value = " << getMuF2_ref() << " GeV^2");
-    }
 
     if (parameters.isAvailable(PerturbativeQCDOrderType::PARAMETER_NAME_PERTURBATIVE_QCD_ORDER_TYPE)) {
       try {
@@ -93,19 +111,27 @@ void CollinearDistributionEvolutionModule::prepareSubModules(const std::map<std:
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__, ElemUtils::Formatter() << getClassName() << " is RunningAlphaStrongModule dependent and you have not provided one");
     }
-}
 
+    //ActiveFlavorsModule
+    it = subModulesData.find(ActiveFlavorsThresholdsModule::ACTIVE_FLAVORS_THRESHOLDS_MODULE_CLASS_NAME);
 
-void CollinearDistributionEvolutionModule::setMuF2_ref(const double& MuF2_ref) {
-    m_MuF2_ref = MuF2_ref;
-}
+    //check if there
+    if (it != subModulesData.end()) {
 
-double CollinearDistributionEvolutionModule::getMuF2_ref() const {
-    return m_MuF2_ref;
-}
+        //reset
+        if (m_pActiveFlavorsModule != 0) {
+            setActiveFlavorsModule(0);
+            m_pActiveFlavorsModule = 0;
+        }
 
-double CollinearDistributionEvolutionModule::getMuF_ref() const {
-    return sqrt(m_MuF2_ref);
+        //set
+        m_pActiveFlavorsModule = Partons::getInstance()->getModuleObjectFactory()->newActiveFlavorsThresholdsModule((it->second).getModuleClassName());
+        info(__func__, ElemUtils::Formatter() << "Configured with ActiveFlavorsModule = " << m_pActiveFlavorsModule->getClassName());
+        m_pActiveFlavorsModule->configure((it->second).getParameters());
+        m_pActiveFlavorsModule->prepareSubModules((it->second).getSubModules());
+    } else {
+        throw ElemUtils::CustomException(getClassName(), __func__, ElemUtils::Formatter() << getClassName() << " is ActiveFlavorsModule dependent and you have not provided one");
+    }
 }
 
 void CollinearDistributionEvolutionModule::setPertOrder(const PerturbativeQCDOrderType::Type& pertOrder) {
@@ -133,30 +159,21 @@ RunningAlphaStrongModule* CollinearDistributionEvolutionModule::getRunningAlphaS
     return m_pRunningAlphaStrongModule;
 }
 
-CollinearDistributionEvolutionModule::CollinearDistributionEvolutionModule(const CollinearDistributionEvolutionModule &other) :
-        ModuleObject(other) {
-
-    setMuF2_ref(other.getMuF2_ref());
-    setPertOrder(other.getPertOrder());
-    setCollinearDistributionType(other.getCollinearDistributionType());
-
-    if (other.m_pRunningAlphaStrongModule != 0) {
-        m_pRunningAlphaStrongModule = m_pModuleObjectFactory->cloneModuleObject(other.m_pRunningAlphaStrongModule);
-    } else {
-        m_pRunningAlphaStrongModule = 0;
-    }
-
-    setKinematics(other.getKinematics());
+void CollinearDistributionEvolutionModule::setActiveFlavorsModule(ActiveFlavorsThresholdsModule* activeFlavorsModule) {
+    m_pModuleObjectFactory->updateModulePointerReference(m_pActiveFlavorsModule, activeFlavorsModule);
+    m_pActiveFlavorsModule = activeFlavorsModule;
 }
+
+ActiveFlavorsThresholdsModule* CollinearDistributionEvolutionModule::getActiveFlavorsModule() const {
+    return m_pActiveFlavorsModule;
+}
+
+
 
 void CollinearDistributionEvolutionModule::initModule() {
 }
 
 void CollinearDistributionEvolutionModule::isModuleWellConfigured() {
-
-    if (m_MuF2_ref <= 0.) {
-        throw ElemUtils::CustomException(getClassName(), __func__, ElemUtils::Formatter() << "muF2_ref is out of range: " << m_MuF2_ref);
-    }
 
     if (m_pertOrder == PerturbativeQCDOrderType::UNDEFINED) {
         throw ElemUtils::CustomException(getClassName(), __func__, "pQCD order is UNDEFINED");
@@ -168,6 +185,10 @@ void CollinearDistributionEvolutionModule::isModuleWellConfigured() {
 
     if (!m_pRunningAlphaStrongModule) {
         throw ElemUtils::CustomException(getClassName(), __func__, "Pointer to RunningAlphaStrong module is NULL");
+    }
+
+    if (!m_pActiveFlavorsModule) {
+        throw ElemUtils::CustomException(getClassName(), __func__, "Pointer to ActiveFlavorsModule module is NULL");
     }
 
     if (m_x < -1. || m_x > 1.) {

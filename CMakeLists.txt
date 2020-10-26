@@ -7,7 +7,11 @@ cmake_minimum_required(VERSION 3.2)
 project(PARTONS CXX)
 
 # define c++ standard and issue all the warning demanded by this standard
-add_definitions(-std=c++11 -pedantic -Wno-vla-extension -fext-numeric-literals)
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+   add_definitions(-std=c++11 -pedantic -Wno-vla-extension)
+else()
+   add_definitions(-std=c++11 -pedantic -Wno-vla-extension -fext-numeric-literals)
+endif()
 set(CMAKE_CXX_STANDARD 11)
 
 if (NOT DEFINED CMAKE_MACOSX_RPATH)

@@ -39,7 +39,6 @@ public:
     static const std::string PARAM_NAME_MU_REF;
 
     static const std::string PARAM_NAME_THRESHOLDS;
-    static const std::string PARAM_NAME_MASSES;
 
     static const std::string PARAM_NAME_TAB_NODES;
     static const std::string PARAM_NAME_TAB_LOWER_BOUND;
@@ -72,7 +71,6 @@ public:
     void setMuRef(const double& muRef);
 
     void setThresholds(const std::vector<double>& thresholds);
-    void setMasses(const std::vector<double>& masses);
 
     void setTabNodes(const int& tabNodes);
     void setTabLowerBound(const double& tabLowerBound);
@@ -84,7 +82,6 @@ public:
     double getMuRef() const;
 
     std::vector<double> getThresholds() const;
-    std::vector<double> getMasses() const;
 
     int getTabNodes() const;
     double getTabLowerBound() const;
@@ -108,7 +105,6 @@ private:
     double m_alphasRef;
     double m_muRef;
     std::vector<double> m_thresholds;
-    std::vector<double> m_masses;
     int m_tabNodes;
     double m_tabLowerBound;
     double m_tabUpperBound;

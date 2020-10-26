@@ -18,6 +18,7 @@ namespace PARTONS {
 
 class CollinearDistributionModule;
 class RunningAlphaStrongModule;
+class ActiveFlavorsThresholdsModule;
 
 /**
  * @class CollinearDistributionEvolutionModule
@@ -29,11 +30,6 @@ class RunningAlphaStrongModule;
 class CollinearDistributionEvolutionModule: public ModuleObject {
 
 public:
-
-    /**
-     * Settable parameters
-     */
-    static const std::string PARAM_NAME_MUF2_REF;
 
     /**
      * Type of module name used by the automatization.
@@ -64,16 +60,15 @@ public:
 
     // ##### GETTERS & SETTERS #####
 
-    void setMuF2_ref(const double& MuF2_ref);
     void setPertOrder(const PerturbativeQCDOrderType::Type& pertOrder);
     void setCollinearDistributionType(CollinearDistributionType::Type type);
     void setRunningAlphaStrongModule(RunningAlphaStrongModule* runningAlphaStrongModule);
+    void setActiveFlavorsModule(ActiveFlavorsThresholdsModule* activeFlavorsModule);
 
-    double getMuF2_ref() const;
-    double getMuF_ref() const;
     PerturbativeQCDOrderType::Type getPertOrder() const;
     CollinearDistributionType::Type getCollinearDistributionType() const;
     RunningAlphaStrongModule* getRunningAlphaStrongModule() const;
+    ActiveFlavorsThresholdsModule* getActiveFlavorsModule() const;
 
 protected:
 
@@ -94,11 +89,11 @@ protected:
     /**
      * Attributes
      */
-    double m_MuF2_ref; ///< Reference factorization scale squared (in \f$GeV^{2}\f$).
     PerturbativeQCDOrderType::Type m_pertOrder; ///< pQCD order assumed in the calculation.
     CollinearDistributionType::Type m_type;  ///< collinear distribution type.
 
     RunningAlphaStrongModule* m_pRunningAlphaStrongModule; ///< Pointer to RunningAlphaStrongModule object being used.
+    ActiveFlavorsThresholdsModule* m_pActiveFlavorsModule; ///< Pointer to ActiveFlavorsThresholdsModule object being used.
 
     /**
      * Kinematics

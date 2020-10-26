@@ -9,20 +9,16 @@ namespace PARTONS {
 
 const std::string CollinearDistributionLHAPDF::PARAM_NAME_SET_NAME = "setName";
 const std::string CollinearDistributionLHAPDF::PARAM_NAME_SET_TYPE = "setType";
-const std::string CollinearDistributionLHAPDF::PARAM_NAME_SET_MEMBER =
-        "setMember";
+const std::string CollinearDistributionLHAPDF::PARAM_NAME_SET_MEMBER = "setMember";
 
-const unsigned int CollinearDistributionLHAPDF::classId =
-        BaseObjectRegistry::getInstance()->registerBaseObject(
-                new CollinearDistributionLHAPDF("CollinearDistributionLHAPDF"));
+const unsigned int CollinearDistributionLHAPDF::classId = BaseObjectRegistry::getInstance()->registerBaseObject(new CollinearDistributionLHAPDF("CollinearDistributionLHAPDF"));
 
 //TODO initialise missing members
 CollinearDistributionLHAPDF::CollinearDistributionLHAPDF(
         const std::string &className) :
         CollinearDistributionModule(className), m_setName("UNDEFINED"), m_member(
-                0), m_type(CollinearDistributionType::Type::UNDEFINED), m_set(
+                0), m_type(CollinearDistributionType::Type::UnpolPDF), m_set(
                 { }) {
-
 }
 
 CollinearDistributionLHAPDF::CollinearDistributionLHAPDF(
@@ -83,7 +79,6 @@ void CollinearDistributionLHAPDF::configure(
 }
 
 void CollinearDistributionLHAPDF::isModuleWellConfigured() {
-
     CollinearDistributionModule::isModuleWellConfigured();
 
     //check that the set name in no UNDEFINED
@@ -112,6 +107,8 @@ void CollinearDistributionLHAPDF::initModule() {
     if (m_set.empty()) {
         m_set = LHAPDF::mkPDFs(m_setName);
     }
+
+    m_MuF2_ref = m_set[0]->q2Min();
 }
 
 PartonDistribution CollinearDistributionLHAPDF::computeUnpolPDF() {

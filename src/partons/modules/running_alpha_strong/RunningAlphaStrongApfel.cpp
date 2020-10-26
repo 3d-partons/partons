@@ -13,7 +13,6 @@ const std::string RunningAlphaStrongApfel::PARAM_NAME_ALPHAS_REF = "alphasRef";
 const std::string RunningAlphaStrongApfel::PARAM_NAME_MU_REF = "muRef";
 
 const std::string RunningAlphaStrongApfel::PARAM_NAME_THRESHOLDS = "thresholds";
-const std::string RunningAlphaStrongApfel::PARAM_NAME_MASSES = "masses";
 
 const std::string RunningAlphaStrongApfel::PARAM_NAME_TAB_NODES = "tabNodes";
 const std::string RunningAlphaStrongApfel::PARAM_NAME_TAB_LOWER_BOUND = "tabLowerBound";
@@ -30,11 +29,10 @@ RunningAlphaStrongApfel::RunningAlphaStrongApfel(const std::string &className) :
 	m_alphasRef(0),
 	m_muRef(0),
 	m_thresholds({}),
-	m_masses({}),
-	m_tabNodes(0),
-	m_tabLowerBound(0),
-	m_tabUpperBound(0),
-	m_tabInterDegree(0) {
+	m_tabNodes(100),
+	m_tabLowerBound(0.5),
+	m_tabUpperBound(1000),
+	m_tabInterDegree(3) {
 }
 
 /*
@@ -83,14 +81,6 @@ void RunningAlphaStrongApfel::configure(const ElemUtils::Parameters &parameters)
 	     << " configured with value = [ " << oss.str() << "] GeV");
     }
 
-    if (parameters.isAvailable(RunningAlphaStrongApfel::PARAM_NAME_MASSES)) {
-        setMasses(parameters.getLastAvailable().toVectorDouble());
-	std::ostringstream oss;
-	std::copy(m_masses.begin(), m_masses.end(), std::ostream_iterator<double>(oss, " "));
-	info(__func__, ElemUtils::Formatter() << RunningAlphaStrongApfel::PARAM_NAME_MASSES
-	     << " configured with value = [ " << oss.str() << "] GeV");
-    }
-
     if (parameters.isAvailable(RunningAlphaStrongApfel::PARAM_NAME_TAB_NODES)) {
         setTabNodes(parameters.getLastAvailable().toInt());
 	info(__func__, ElemUtils::Formatter() << RunningAlphaStrongApfel::PARAM_NAME_TAB_NODES
@@ -116,7 +106,7 @@ void RunningAlphaStrongApfel::configure(const ElemUtils::Parameters &parameters)
     }
 
     // Instantiate apfel::AlphaQCD object
-    apfel::AlphaQCD as{m_alphasRef, m_muRef, m_masses, m_thresholds, m_pertOrder - 1};
+    apfel::AlphaQCD as{m_alphasRef, m_muRef, m_thresholds, m_pertOrder - 1};
 
     // Pretabulate AlphaS on a grid
     const apfel::TabulateObject<double> Alphas{as, m_tabNodes, m_tabLowerBound, m_tabUpperBound, m_tabInterDegree};
@@ -143,10 +133,6 @@ void RunningAlphaStrongApfel::setMuRef(const double& muRef) {
 
 void RunningAlphaStrongApfel::setThresholds(const std::vector<double>& thresholds) {
   m_thresholds = thresholds;
-}
-
-void RunningAlphaStrongApfel::setMasses(const std::vector<double>& masses) {
-  m_masses = masses;
 }
 
 void RunningAlphaStrongApfel::setTabNodes(const int& tabNodes) {
@@ -180,9 +166,6 @@ double RunningAlphaStrongApfel::getMuRef() const {
 std::vector<double> RunningAlphaStrongApfel::getThresholds() const {
   return m_thresholds;
 }
-std::vector<double> RunningAlphaStrongApfel::getMasses() const {
-  return m_masses;
-}
 
 int RunningAlphaStrongApfel::getTabNodes() const {
   return m_tabNodes;
@@ -206,7 +189,6 @@ RunningAlphaStrongApfel::RunningAlphaStrongApfel(const RunningAlphaStrongApfel &
   m_alphasRef      = other.getAlphasRef();
   m_muRef          = other.getMuRef();
   m_thresholds     = other.getThresholds();
-  m_masses         = other.getMasses();
   m_tabNodes       = other.getTabNodes();
   m_tabLowerBound  = other.getTabLowerBound();
   m_tabUpperBound  = other.getTabUpperBound();
@@ -233,12 +215,6 @@ void RunningAlphaStrongApfel::isModuleWellConfigured() {
 
     if (m_thresholds.empty())
         throw ElemUtils::CustomException(getClassName(), __func__, ElemUtils::Formatter() << "Vector of thresholds empty");
-
-    if (m_masses.empty())
-        throw ElemUtils::CustomException(getClassName(), __func__, ElemUtils::Formatter() << "Vector of masses empty");
-
-    if (m_thresholds.size() != m_masses.size())
-        throw ElemUtils::CustomException(getClassName(), __func__, ElemUtils::Formatter() << "Vectors of masses and thresholds different in size");
 
     if (m_tabNodes <= 0)
         throw ElemUtils::CustomException(getClassName(), __func__, ElemUtils::Formatter() << "Number of grid nodes not correctly set (negative)");

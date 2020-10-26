@@ -10,6 +10,7 @@
 
 #include "CollinearDistributionEvolutionModule.h"
 #include "../../../../../include/partons/modules/collinear_distribution/CollinearDistributionModule.h"
+#include "../../active_flavors_thresholds/ActiveFlavorsThresholdsModule.h"
 
 #include <apfel/apfelxx.h>
 
@@ -27,17 +28,9 @@ public:
     /**
      * Settable parameters
      */
-    static const std::string PARAM_NAME_THRESHOLDS;
-    static const std::string PARAM_NAME_MASSES;
-
     static const std::string PARAM_NAME_SUBGRID_NODES;
     static const std::string PARAM_NAME_SUBGRID_LOWER_BOUNDS;
     static const std::string PARAM_NAME_SUBGRID_INTER_DEGREES;
-
-    static const std::string PARAM_NAME_TAB_NODES;
-    static const std::string PARAM_NAME_TAB_LOWER_BOUND;
-    static const std::string PARAM_NAME_TAB_UPPER_BOUND;
-    static const std::string PARAM_NAME_TAB_INTER_DEGREE;
 
     /**
      * Unique ID to automatically register the class in the registry.
@@ -63,29 +56,13 @@ public:
 
     // ##### GETTERS & SETTERS #####
 
-    void setThresholds(const std::vector<double>& thresholds);
-    void setMasses(const std::vector<double>& masses);
-
     void setSubgridNodes(const std::vector<int>& subgridNodes);
     void setSubgridLowerBounds(const std::vector<double>& subgridLowerBounds);
     void setSubgridInterDegrees(const std::vector<int>& subgridInterDegrees);
 
-    void setTabNodes(const int& tabNodes);
-    void setTabLowerBound(const double& tabLowerBound);
-    void setTabUpperBound(const double& tabUpperBound);
-    void setTabInterDegree(const int& tabInterDegree);
-
-    std::vector<double> getThresholds() const;
-    std::vector<double> getMasses() const;
-
     std::vector<int> getSubgridNodes() const;
     std::vector<double> getSubgridLowerBounds() const;
     std::vector<int> getSubgridInterDegrees() const;
-
-    int getTabNodes() const;
-    double getTabLowerBound() const;
-    double getTabUpperBound() const;
-    int getTabInterDegree() const;
 
 protected:
 
@@ -100,22 +77,16 @@ protected:
 
     virtual PartonDistribution compute(CollinearDistributionModule* pCollinearDistributionModule);
 
-    std::function<std::map<int, double>(double const&)> initialScaleDistributions(CollinearDistributionModule* pCollinearDistributionModule);
+    std::function<std::map<int, double>(double const&, double const&)> initialScaleDistributions(CollinearDistributionModule* pCollinearDistributionModule);
 
 private:
 
-    std::vector<double> m_thresholds;
-    std::vector<double> m_masses;
     std::vector<int> m_subgridNodes;
     std::vector<double> m_subgridLowerBounds;
     std::vector<int> m_subgridInterDegrees;
-    int m_tabNodes;
-    double m_tabLowerBound;
-    double m_tabUpperBound;
-    int m_tabInterDegree;
 
     std::unique_ptr<apfel::Grid> m_g;
-    std::unique_ptr<apfel::TabulateObject<apfel::Set<apfel::Operator>>> m_tabulatedOps;
+    std::map<int, apfel::DglapObjects> m_dglapobj;
 };
 
 } /* namespace PARTONS */

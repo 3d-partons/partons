@@ -24,14 +24,12 @@ namespace PARTONS {
 const std::string CollinearDistributionModule::COLLINEAR_DISTRIBUTION_MODULE_CLASS_NAME = "CollinearDistributionModule";
 
 CollinearDistributionModule::CollinearDistributionModule(const std::string &className) :
-        ModuleObject(className, ChannelType::UNDEFINED), m_x(0.), m_MuF2(0.), m_MuR2(0.), m_currentCollinearDistributionComputeType(
-                CollinearDistributionType::ALL), m_pCollinearDistributionEvolutionModule(0) {
+        ModuleObject(className, ChannelType::UNDEFINED), m_x(0.), m_MuF2(0.), m_MuR2(0.), m_MuF2_ref(0.), m_pCollinearDistributionEvolutionModule(0) {
 }
 
 CollinearDistributionModule::CollinearDistributionModule(const CollinearDistributionModule &other) :
         ModuleObject(other), m_x(other.m_x), m_MuF2(
-                other.m_MuF2), m_MuR2(other.m_MuR2), m_currentCollinearDistributionComputeType(
-                other.m_currentCollinearDistributionComputeType) {
+                other.m_MuF2), m_MuR2(other.m_MuR2), m_MuF2_ref(other.m_MuF2_ref) {
 
     if (other.m_pCollinearDistributionEvolutionModule != 0) {
         m_pCollinearDistributionEvolutionModule = m_pModuleObjectFactory->cloneModuleObject(
@@ -163,13 +161,9 @@ CollinearDistributionResult CollinearDistributionModule::compute(const Collinear
         //check if found
         if (m_it != m_listCollinearDistributionComputeTypeAvailable.end()) {
 
-            //set collinear distribution type
-            setCurrentCollinearDistributionType(colldistType[i]);
-
             //evaluate
             PartonDistribution partonDistribution;
-
-            if (m_pCollinearDistributionEvolutionModule != 0 && (m_MuF2 != m_pCollinearDistributionEvolutionModule->getMuF2_ref())) {
+            if (m_pCollinearDistributionEvolutionModule != 0 && m_MuF2 != m_MuF2_ref) {
                 CollinearDistributionModule* collDistModule = m_pModuleObjectFactory->cloneModuleObject(this);
                 partonDistribution = m_pCollinearDistributionEvolutionModule->compute(kinematic, collDistModule);
                 m_pModuleObjectFactory->updateModulePointerReference(collDistModule, 0);
@@ -213,6 +207,10 @@ List<CollinearDistributionType> CollinearDistributionModule::getListOfAvailableC
 
     //return
     return listOfAvailableCollinearDistributionTypeForComputation;
+}
+
+double CollinearDistributionModule::getMuF2Ref() const {
+    return m_MuF2_ref;
 }
 
 const CollinearDistributionEvolutionModule* CollinearDistributionModule::getEvolQcdModule() const {
@@ -271,10 +269,10 @@ void CollinearDistributionModule::isModuleWellConfigured() {
     if (m_MuR2 <= 0.) {
         warn(__func__, "Square of renormalization scale should be > 0.");
     }
-}
 
-void CollinearDistributionModule::setCurrentCollinearDistributionType(CollinearDistributionType::Type colldistType) {
-    m_currentCollinearDistributionComputeType = colldistType;
+    if (m_MuF2_ref <= 0.) {
+        warn(__func__, "Square of reference factorization scale should be > 0.");
+    }
 }
 
 } /* namespace PARTONS */

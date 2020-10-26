@@ -96,6 +96,11 @@ public:
     // ##### GETTERS & SETTERS #####
 
     /**
+     * Get reference factorization scale used by the collinear distribution model before evolution.
+     */
+    double getMuF2Ref() const;
+
+    /**
      * Set underlying collinear distribution Evolution module.
      */
     const CollinearDistributionEvolutionModule* getEvolQcdModule() const;
@@ -127,11 +132,6 @@ protected:
     virtual void isModuleWellConfigured();
 
     /**
-     * Set current collinear distribution type to be computed.
-     */
-    void setCurrentCollinearDistributionType(CollinearDistributionType::Type colldistType);
-
-    /**
      * List of collinear distribution types that can be computed by the child class.
      * Needs to be set in the constructor of the child class, with the corresponding methods to be used.
      */
@@ -140,7 +140,7 @@ protected:
     double m_x; ///< Longitudinal momentum fraction of the active parton.
     double m_MuF2; ///< Factorization scale squared.
     double m_MuR2; ///< Renormalization scale squared.
-    CollinearDistributionType::Type m_currentCollinearDistributionComputeType; ///< Current collinear distribution type.
+    double m_MuF2_ref; ///< Reference factorization scale used by the collinear model before evolution.
 
     CollinearDistributionEvolutionModule* m_pCollinearDistributionEvolutionModule; ///< Pointer to the underlying collinear distribution Evolution module.
 };
