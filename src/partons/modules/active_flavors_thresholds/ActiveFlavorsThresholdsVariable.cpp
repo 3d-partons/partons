@@ -4,6 +4,9 @@
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/logger/CustomException.h>
 #include <limits>
+#include <iterator>
+#include <algorithm>
+#include <math.h>
 
 #include "../../../../include/partons/BaseObjectRegistry.h"
 
