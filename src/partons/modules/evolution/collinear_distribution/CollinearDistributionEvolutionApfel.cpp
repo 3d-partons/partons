@@ -80,12 +80,15 @@ void CollinearDistributionEvolutionApfel::prepareSubModules(const std::map<std::
 
     apfel::Banner();
     apfel::SetVerbosityLevel(0);
+}
+
+PartonDistribution CollinearDistributionEvolutionApfel::compute(CollinearDistributionModule* pCollinearDistributionModule) {
 
     // Setup APFEL++ x-space
     std::vector<apfel::SubGrid> vsg;
     for (int i = 0; i < (int) m_subgridNodes.size(); i++)
       vsg.push_back(apfel::SubGrid {m_subgridNodes[i], m_subgridLowerBounds[i], m_subgridInterDegrees[i]});
-    m_g = std::unique_ptr<apfel::Grid>(new apfel::Grid { vsg });
+    const apfel::Grid g{vsg};
 
     // Get thresholds. Set to zero whatever is below one.
     std::vector<double> thresholds;
@@ -98,12 +101,10 @@ void CollinearDistributionEvolutionApfel::prepareSubModules(const std::map<std::
 	thresholds.push_back(aft.getLowerBound() < 1 ? 0 : sqrt(aft.getLowerBound()));
 
     // Initialize QCD evolution objects
-    m_dglapobj = InitializeDglapObjectsQCD(*m_g, thresholds);
-}
+    m_dglapobj = InitializeDglapObjectsQCD(g, thresholds);
 
-PartonDistribution CollinearDistributionEvolutionApfel::compute(CollinearDistributionModule* pCollinearDistributionModule) {
     // Running coupling
-    const auto as = [=] (double const& mu) -> double {return getRunningAlphaStrongModule()->compute(mu * mu);};
+    const auto as = [=] (double const& mu) -> double { return getRunningAlphaStrongModule()->compute(mu * mu); };
 
     // Construct the DGLAP evolution operators
     const auto EvolvedPDFs = BuildDglap(m_dglapobj, initialScaleDistributions(pCollinearDistributionModule), sqrt(pCollinearDistributionModule->getMuF2Ref()), this->getPertOrder() - 1, as);
@@ -112,8 +113,7 @@ PartonDistribution CollinearDistributionEvolutionApfel::compute(CollinearDistrib
     const CollinearDistributionKinematic kin = this->getKinematics();
 
     // Get PDFs at the final scale
-    const std::map<int, apfel::Distribution> topsdist =
-      apfel::QCDEvToPhys(EvolvedPDFs->Evaluate(sqrt(kin.getMuF2().makeSameUnitAs(PhysicalUnit::GEV2).getValue())).GetObjects());
+    const std::map<int, apfel::Distribution> topsdist = apfel::QCDEvToPhys(EvolvedPDFs->Evaluate(sqrt(kin.getMuF2().makeSameUnitAs(PhysicalUnit::GEV2).getValue())).GetObjects());
 
     // Put result in a parton distribution object and return it
     std::map<QuarkFlavor::Type, QuarkDistribution> qd;
@@ -140,7 +140,6 @@ PartonDistribution CollinearDistributionEvolutionApfel::compute(CollinearDistrib
 
 std::function<std::map<int, double>(double const&, double const&)> CollinearDistributionEvolutionApfel::initialScaleDistributions(CollinearDistributionModule* pCollinearDistributionModule) {
     return [=] (double const& x, double const& Q) -> std::map<int, double> {
-
         // Define kinematics
         const double muF02 = pow(Q, 2);
         const CollinearDistributionKinematic kin {x, muF02, muF02};

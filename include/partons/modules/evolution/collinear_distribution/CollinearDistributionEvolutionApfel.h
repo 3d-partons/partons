@@ -85,7 +85,6 @@ private:
     std::vector<double> m_subgridLowerBounds;
     std::vector<int> m_subgridInterDegrees;
 
-    std::unique_ptr<apfel::Grid> m_g;
     std::map<int, apfel::DglapObjects> m_dglapobj;
 };
 
