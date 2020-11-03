@@ -41,9 +41,10 @@ PARTONS::PartonDistribution saturatedModel_Ding::computeH() {
     //result
     PARTONS::PartonDistribution result;
     //your implementation comes here
-    ...
+    //...
     //return
     return result;
+
 }
 
 }

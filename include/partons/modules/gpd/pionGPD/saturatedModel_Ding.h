@@ -37,6 +37,7 @@ public:
     virtual saturatedModel_Ding* clone() const;
     virtual void resolveObjectDependencies();
     virtual void configure(const ElemUtils::Parameters &parameters);
+
 protected:
     /**
      * Copy constructor.
