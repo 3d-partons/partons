@@ -15,7 +15,7 @@
 #include <string>
 #include <vector>
 
-#include "/home/jose/git/partons/include/partons/modules/gpd/GPDModule.h"
+#include "../GPDModule.h"
 
 namespace PARTONS {
 
