@@ -47,4 +47,9 @@ PARTONS::PartonDistribution saturatedModel_Ding::computeH() {
 
 }
 
+void saturatedModel_Ding::HelloWorld(){
+	std::cout <<"Hello World"<< std::endl ;
+}
+}
+
 }

@@ -48,6 +48,8 @@ protected:
     virtual void initModule();
     virtual PARTONS::PartonDistribution computeH();
 
+    void saturatedModel_Ding::HelloWorld();
+
 };
 
 
