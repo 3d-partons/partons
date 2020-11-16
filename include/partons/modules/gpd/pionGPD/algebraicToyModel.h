@@ -19,25 +19,34 @@
 
 namespace PARTONS {
 
-class algebraicToyModel: public PARTONS::GPDModule {
+class algebraicToyModel: public PARTONS::GPDModule 
+{
+
 public:
+
     /**
      * ID assigned by BaseObjectRegistry.
      */
     static const unsigned int classId;
+
     /**
      * Default constructor.
      * @param className Name of class.
      */
     algebraicToyModel(const std::string& className);
+
     /**
      * Destructor.
      */
     virtual ~algebraicToyModel();
+
     virtual algebraicToyModel* clone() const;
     virtual void resolveObjectDependencies();
     virtual void configure(const ElemUtils::Parameters &parameters);
+    // virtual std::string toString() const;
+
 protected:
+
     /**
      * Copy constructor.
      * @param other Object to be copied.
@@ -51,6 +60,10 @@ protected:
     virtual PARTONS::PartonDistribution computeH();
 
 private:
+
+    double c;                                   // t-dependece of the GPD model.
+    double cM;                                  // Auxilary t-dependece for the computation of the singlet distribution.
+    double m2;                                  // Squared pion mass scale.
 
 };
 
