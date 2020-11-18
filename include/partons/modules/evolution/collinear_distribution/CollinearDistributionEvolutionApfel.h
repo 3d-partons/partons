@@ -25,67 +25,75 @@ class CollinearDistributionEvolutionApfel: public CollinearDistributionEvolution
 
 public:
 
-    /**
-     * Settable parameters
-     */
-    static const std::string PARAM_NAME_SUBGRID_NODES;
-    static const std::string PARAM_NAME_SUBGRID_LOWER_BOUNDS;
-    static const std::string PARAM_NAME_SUBGRID_INTER_DEGREES;
+	/**
+	 * Settable parameters
+	 */
+	static const std::string PARAM_NAME_SUBGRID_NODES;
+	static const std::string PARAM_NAME_SUBGRID_LOWER_BOUNDS;
+	static const std::string PARAM_NAME_SUBGRID_INTER_DEGREES;
 
-    /**
-     * Unique ID to automatically register the class in the registry.
-     */
-    static const unsigned int classId;
+	/**
+	 * Unique ID to automatically register the class in the registry.
+	 */
+	static const unsigned int classId;
 
-    /**
-     * Constructor.
-     * @param className Name of class.
-     */
-    CollinearDistributionEvolutionApfel(const std::string &className);
+	/**
+	 * Constructor.
+	 * @param className Name of class.
+	 */
+	CollinearDistributionEvolutionApfel(const std::string &className);
 
-    /**
-     * Destructor.
-     */
-    virtual ~CollinearDistributionEvolutionApfel();
+	/**
+	 * Destructor.
+	 */
+	virtual ~CollinearDistributionEvolutionApfel();
 
-    virtual CollinearDistributionEvolutionApfel* clone() const;
-    virtual std::string toString() const;
-    virtual void resolveObjectDependencies();
-    virtual void configure(const ElemUtils::Parameters &parameters);
-    virtual void prepareSubModules(const std::map<std::string, BaseObjectData>& subModulesData);
+	virtual CollinearDistributionEvolutionApfel* clone() const;
+	virtual std::string toString() const;
+	virtual void resolveObjectDependencies();
+	virtual void configure(const ElemUtils::Parameters &parameters);
+	virtual void prepareSubModules(
+			const std::map<std::string, BaseObjectData>& subModulesData);
 
-    // ##### GETTERS & SETTERS #####
+	// ##### GETTERS & SETTERS #####
 
-    void setSubgridNodes(const std::vector<int>& subgridNodes);
-    void setSubgridLowerBounds(const std::vector<double>& subgridLowerBounds);
-    void setSubgridInterDegrees(const std::vector<int>& subgridInterDegrees);
+	void setSubgridNodes(const std::vector<int>& subgridNodes);
+	void setSubgridLowerBounds(const std::vector<double>& subgridLowerBounds);
+	void setSubgridInterDegrees(const std::vector<int>& subgridInterDegrees);
 
-    std::vector<int> getSubgridNodes() const;
-    std::vector<double> getSubgridLowerBounds() const;
-    std::vector<int> getSubgridInterDegrees() const;
+	std::vector<int> getSubgridNodes() const;
+	std::vector<double> getSubgridLowerBounds() const;
+	std::vector<int> getSubgridInterDegrees() const;
+
+	virtual void setRunningAlphaStrongModule(RunningAlphaStrongModule* runningAlphaStrongModule);
 
 protected:
 
-    /**
-     * Copy constructor.
-     * @param other Object to be copied.
-     */
-    CollinearDistributionEvolutionApfel(const CollinearDistributionEvolutionApfel &other);
+	/**
+	 * Copy constructor.
+	 * @param other Object to be copied.
+	 */
+	CollinearDistributionEvolutionApfel(
+			const CollinearDistributionEvolutionApfel &other);
 
-    virtual void initModule();
-    virtual void isModuleWellConfigured();
+	virtual void initModule();
+	virtual void isModuleWellConfigured();
 
-    virtual PartonDistribution compute(CollinearDistributionModule* pCollinearDistributionModule);
+	virtual PartonDistribution compute(
+			CollinearDistributionModule* pCollinearDistributionModule);
 
-    std::function<std::map<int, double>(double const&, double const&)> initialScaleDistributions(CollinearDistributionModule* pCollinearDistributionModule);
+	std::function<std::map<int, double>(double const&, double const&)> initialScaleDistributions(
+			CollinearDistributionModule* pCollinearDistributionModule);
 
 private:
 
-    std::vector<int> m_subgridNodes;
-    std::vector<double> m_subgridLowerBounds;
-    std::vector<int> m_subgridInterDegrees;
+	std::vector<int> m_subgridNodes;
+	std::vector<double> m_subgridLowerBounds;
+	std::vector<int> m_subgridInterDegrees;
 
-    std::map<int, apfel::DglapObjects> m_dglapobj;
+	std::map<int, apfel::DglapObjects> m_dglapobj;
+
+	bool m_setApfelTables;	///< Switch used to generate Apfel tables.
 };
 
 } /* namespace PARTONS */

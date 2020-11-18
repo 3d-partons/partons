@@ -5,232 +5,317 @@
 
 namespace PARTONS {
 
-const std::string CollinearDistributionEvolutionApfel::PARAM_NAME_SUBGRID_NODES = "subgridNodes";
-const std::string CollinearDistributionEvolutionApfel::PARAM_NAME_SUBGRID_LOWER_BOUNDS = "subgridLowerBounds";
-const std::string CollinearDistributionEvolutionApfel::PARAM_NAME_SUBGRID_INTER_DEGREES = "subgridInterDegrees";
+const std::string CollinearDistributionEvolutionApfel::PARAM_NAME_SUBGRID_NODES =
+		"subgridNodes";
+const std::string CollinearDistributionEvolutionApfel::PARAM_NAME_SUBGRID_LOWER_BOUNDS =
+		"subgridLowerBounds";
+const std::string CollinearDistributionEvolutionApfel::PARAM_NAME_SUBGRID_INTER_DEGREES =
+		"subgridInterDegrees";
 
-const unsigned int CollinearDistributionEvolutionApfel::classId = BaseObjectRegistry::getInstance()->registerBaseObject(new CollinearDistributionEvolutionApfel("CollinearDistributionEvolutionApfel"));
+const unsigned int CollinearDistributionEvolutionApfel::classId =
+		BaseObjectRegistry::getInstance()->registerBaseObject(
+				new CollinearDistributionEvolutionApfel(
+						"CollinearDistributionEvolutionApfel"));
 
 CollinearDistributionEvolutionApfel::CollinearDistributionEvolutionApfel(
-        const std::string &className) :
-        CollinearDistributionEvolutionModule(className),
-	m_subgridNodes({100, 60, 50, 50}),
-	m_subgridLowerBounds({0.0001, 0.1, 0.6, 0.8}),
-	m_subgridInterDegrees({3, 3, 3, 3}) {
+		const std::string &className) :
+		CollinearDistributionEvolutionModule(className), m_subgridNodes( { 100,
+				60, 50, 50 }), m_subgridLowerBounds( { 0.0001, 0.1, 0.6, 0.8 }), m_subgridInterDegrees(
+				{ 3, 3, 3, 3 }), m_setApfelTables(true) {
+
+	apfel::Banner();
+	apfel::SetVerbosityLevel(0);
 }
 
 CollinearDistributionEvolutionApfel::~CollinearDistributionEvolutionApfel() {
 }
 
 CollinearDistributionEvolutionApfel* CollinearDistributionEvolutionApfel::clone() const {
-    return new CollinearDistributionEvolutionApfel(*this);
+	return new CollinearDistributionEvolutionApfel(*this);
 }
 
 std::string CollinearDistributionEvolutionApfel::toString() const {
-    return CollinearDistributionEvolutionModule::toString();
+	return CollinearDistributionEvolutionModule::toString();
 }
 
 void CollinearDistributionEvolutionApfel::resolveObjectDependencies() {
-    CollinearDistributionEvolutionModule::resolveObjectDependencies();
+	CollinearDistributionEvolutionModule::resolveObjectDependencies();
 }
 
 void CollinearDistributionEvolutionApfel::configure(
-        const ElemUtils::Parameters &parameters) {
-    CollinearDistributionEvolutionModule::configure(parameters);
+		const ElemUtils::Parameters &parameters) {
+	CollinearDistributionEvolutionModule::configure(parameters);
 
-    if (parameters.isAvailable(
-            CollinearDistributionEvolutionApfel::PARAM_NAME_SUBGRID_NODES)) {
-        setSubgridNodes(parameters.getLastAvailable().toVectorInt());
-        std::ostringstream oss;
-        std::copy(m_subgridNodes.begin(), m_subgridNodes.end(),
-                std::ostream_iterator<int>(oss, " "));
-        info(__func__,
-                ElemUtils::Formatter()
-                        << CollinearDistributionEvolutionApfel::PARAM_NAME_SUBGRID_NODES
-                        << " configured with value = [ " << oss.str() << "]");
-    }
+	if (parameters.isAvailable(
+			CollinearDistributionEvolutionApfel::PARAM_NAME_SUBGRID_NODES)) {
+		setSubgridNodes(parameters.getLastAvailable().toVectorInt());
+	}
 
-    if (parameters.isAvailable(
-            CollinearDistributionEvolutionApfel::PARAM_NAME_SUBGRID_LOWER_BOUNDS)) {
-        setSubgridLowerBounds(parameters.getLastAvailable().toVectorDouble());
-        std::ostringstream oss;
-        std::copy(m_subgridLowerBounds.begin(), m_subgridLowerBounds.end(),
-                std::ostream_iterator<double>(oss, " "));
-        info(__func__,
-                ElemUtils::Formatter()
-                        << CollinearDistributionEvolutionApfel::PARAM_NAME_SUBGRID_LOWER_BOUNDS
-                        << " configured with value = [ " << oss.str() << "]");
-    }
+	if (parameters.isAvailable(
+			CollinearDistributionEvolutionApfel::PARAM_NAME_SUBGRID_LOWER_BOUNDS)) {
+		setSubgridLowerBounds(parameters.getLastAvailable().toVectorDouble());
+	}
 
-    if (parameters.isAvailable(
-            CollinearDistributionEvolutionApfel::PARAM_NAME_SUBGRID_INTER_DEGREES)) {
-        setSubgridInterDegrees(parameters.getLastAvailable().toVectorInt());
-        std::ostringstream oss;
-        std::copy(m_subgridInterDegrees.begin(), m_subgridInterDegrees.end(),
-                std::ostream_iterator<int>(oss, " "));
-        info(__func__,
-                ElemUtils::Formatter()
-                        << CollinearDistributionEvolutionApfel::PARAM_NAME_SUBGRID_INTER_DEGREES
-                        << " configured with value = [ " << oss.str() << "]");
-    }
+	if (parameters.isAvailable(
+			CollinearDistributionEvolutionApfel::PARAM_NAME_SUBGRID_INTER_DEGREES)) {
+		setSubgridInterDegrees(parameters.getLastAvailable().toVectorInt());
+	}
 }
 
-void CollinearDistributionEvolutionApfel::prepareSubModules(const std::map<std::string, BaseObjectData>& subModulesData) {
-    CollinearDistributionEvolutionModule::prepareSubModules(subModulesData);
-
-    apfel::Banner();
-    apfel::SetVerbosityLevel(0);
+void CollinearDistributionEvolutionApfel::prepareSubModules(
+		const std::map<std::string, BaseObjectData>& subModulesData) {
+	CollinearDistributionEvolutionModule::prepareSubModules(subModulesData);
 }
 
-PartonDistribution CollinearDistributionEvolutionApfel::compute(CollinearDistributionModule* pCollinearDistributionModule) {
+PartonDistribution CollinearDistributionEvolutionApfel::compute(
+		CollinearDistributionModule* pCollinearDistributionModule) {
 
-    // Setup APFEL++ x-space
-    std::vector<apfel::SubGrid> vsg;
-    for (int i = 0; i < (int) m_subgridNodes.size(); i++)
-      vsg.push_back(apfel::SubGrid {m_subgridNodes[i], m_subgridLowerBounds[i], m_subgridInterDegrees[i]});
-    const apfel::Grid g{vsg};
+	/*
 
-    // Get thresholds. Set to zero whatever is below one.
-    std::vector<double> thresholds;
-    std::vector<ActiveFlavorsThresholds> afts = m_pActiveFlavorsModule->getNfIntervals();
-    if (afts.size() == 1)
-      for (int i = 0; i < afts[0].getNf(); i++)
-	thresholds.push_back(0);
-    else
-      for (ActiveFlavorsThresholds aft : afts)
-	thresholds.push_back(aft.getLowerBound() < 1 ? 0 : sqrt(aft.getLowerBound()));
+	 // Setup APFEL++ x-space
+	 std::vector<apfel::SubGrid> vsg;
+	 for (int i = 0; i < (int) m_subgridNodes.size(); i++)
+	 vsg.push_back(apfel::SubGrid { m_subgridNodes[i],
+	 m_subgridLowerBounds[i], m_subgridInterDegrees[i] });
+	 const apfel::Grid g { vsg };
 
-    // Initialize QCD evolution objects
-    m_dglapobj = InitializeDglapObjectsQCD(g, thresholds);
+	 // Get thresholds. Set to zero whatever is below one.
+	 std::vector<double> thresholds;
+	 std::vector<ActiveFlavorsThresholds> afts =
+	 m_pActiveFlavorsModule->getNfIntervals();
+	 if (afts.size() == 1)
+	 for (int i = 0; i < afts[0].getNf(); i++)
+	 thresholds.push_back(0);
+	 else
+	 for (ActiveFlavorsThresholds aft : afts)
+	 thresholds.push_back(
+	 aft.getLowerBound() < 1 ?
+	 0 : sqrt(aft.getLowerBound()));
 
-    // Running coupling
-    const auto as = [=] (double const& mu) -> double { return getRunningAlphaStrongModule()->compute(mu * mu); };
+	 // Initialize QCD evolution objects
+	 m_dglapobj = InitializeDglapObjectsQCD(g, thresholds);
 
-    // Construct the DGLAP evolution operators
-    const auto EvolvedPDFs = BuildDglap(m_dglapobj, initialScaleDistributions(pCollinearDistributionModule), sqrt(pCollinearDistributionModule->getMuF2Ref()), this->getPertOrder() - 1, as);
+	 */
 
-    // Get kinematics
-    const CollinearDistributionKinematic kin = this->getKinematics();
+	// Running coupling
+	const auto as =
+			[=] (double const& mu) -> double {return getRunningAlphaStrongModule()->compute(mu * mu);};
 
-    // Get PDFs at the final scale
-    const std::map<int, apfel::Distribution> topsdist = apfel::QCDEvToPhys(EvolvedPDFs->Evaluate(sqrt(kin.getMuF2().makeSameUnitAs(PhysicalUnit::GEV2).getValue())).GetObjects());
+	// Construct the DGLAP evolution operators
+	const auto EvolvedPDFs = BuildDglap(m_dglapobj,
+			initialScaleDistributions(pCollinearDistributionModule),
+			sqrt(pCollinearDistributionModule->getMuF2Ref()),
+			this->getPertOrder() - 1, as);
 
-    // Put result in a parton distribution object and return it
-    std::map<QuarkFlavor::Type, QuarkDistribution> qd;
-    for (int i = 1; i <= 6; i++) {
-        int j = i;
-        if (i == 1)
-            j = 2;
-        else if (i == 2)
-            j = 1;
+	// Get kinematics
+	const CollinearDistributionKinematic kin = this->getKinematics();
 
-        const double q = topsdist.at(i).Evaluate(this->m_x);
-        const double qb = topsdist.at(-i).Evaluate(this->m_x);
-        qd.insert( { (QuarkFlavor::Type) j, QuarkDistribution {
-                (QuarkFlavor::Type) j, q, q + qb, q - qb } });
-    }
+	// Get PDFs at the final scale
+	const std::map<int, apfel::Distribution> topsdist =
+			apfel::QCDEvToPhys(
+					EvolvedPDFs->Evaluate(
+							sqrt(
+									kin.getMuF2().makeSameUnitAs(
+											PhysicalUnit::GEV2).getValue())).GetObjects());
 
-    PartonDistribution pd;
-    pd.setGluonDistribution(
-            GluonDistribution { topsdist.at(0).Evaluate(this->m_x) });
-    pd.setQuarkDistributions(qd);
+	// Put result in a parton distribution object and return it
+	std::map<QuarkFlavor::Type, QuarkDistribution> qd;
+	for (int i = 1; i <= 6; i++) {
+		int j = i;
+		if (i == 1)
+			j = 2;
+		else if (i == 2)
+			j = 1;
 
-    return pd;
+		const double q = topsdist.at(i).Evaluate(this->m_x);
+		const double qb = topsdist.at(-i).Evaluate(this->m_x);
+		qd.insert( { (QuarkFlavor::Type) j, QuarkDistribution {
+				(QuarkFlavor::Type) j, q, q + qb, q - qb } });
+	}
+
+	PartonDistribution pd;
+	pd.setGluonDistribution(
+			GluonDistribution { topsdist.at(0).Evaluate(this->m_x) });
+	pd.setQuarkDistributions(qd);
+
+	return pd;
 }
 
-std::function<std::map<int, double>(double const&, double const&)> CollinearDistributionEvolutionApfel::initialScaleDistributions(CollinearDistributionModule* pCollinearDistributionModule) {
-    return [=] (double const& x, double const& Q) -> std::map<int, double> {
-        // Define kinematics
-        const double muF02 = pow(Q, 2);
-        const CollinearDistributionKinematic kin {x, muF02, muF02};
+std::function<std::map<int, double>(double const&, double const&)> CollinearDistributionEvolutionApfel::initialScaleDistributions(
+		CollinearDistributionModule* pCollinearDistributionModule) {
 
-        // Get distributions
-        PartonDistribution pd = pCollinearDistributionModule->compute(kin, this->getCollinearDistributionType());
+	return [=] (double const& x, double const& Q) -> std::map<int, double> {
 
-        // Put them in a map
-        std::map<int, double> physd { {0, pd.getGluonDistribution().getGluonDistribution()}};
-        for (QuarkFlavor::Type const t : pd.listTypeOfQuarkFlavor()) {
+		// Define kinematics
+		const double muF02 = pow(Q, 2);
+		const CollinearDistributionKinematic kin {x, muF02, muF02};
 
-            // Swap up and down according to the PDG convention
-            int fl = (int) t;
-            if ((int) t == 1)
-            fl = 2;
-            else if ((int) t == 2)
-            fl = 1;
+		// Get distributions
+		PartonDistribution pd = pCollinearDistributionModule->compute(kin, this->getCollinearDistributionType());
 
-            const double q = pd.getQuarkDistribution(t).getQuarkDistribution();
-            const double qb = pd.getQuarkDistribution(t).getQuarkDistributionPlus() - q;
-            physd.insert( {fl, q});
-            physd.insert( {-fl, qb});
-        }
+		// Put them in a map
+		std::map<int, double> physd { {0, pd.getGluonDistribution().getGluonDistribution()}};
+		for (QuarkFlavor::Type const t : pd.listTypeOfQuarkFlavor()) {
 
-        // Rotate distributions into the QCD evolution basis and
-        // return
-        return apfel::PhysToQCDEv(physd);
-    };
+			// Swap up and down according to the PDG convention
+			int fl = (int) t;
+			if ((int) t == 1)
+			fl = 2;
+			else if ((int) t == 2)
+			fl = 1;
+
+			const double q = pd.getQuarkDistribution(t).getQuarkDistribution();
+			const double qb = pd.getQuarkDistribution(t).getQuarkDistributionPlus() - q;
+			physd.insert( {fl, q});
+			physd.insert( {-fl, qb});
+		}
+
+		// Rotate distributions into the QCD evolution basis and
+		// return
+		return apfel::PhysToQCDEv(physd);
+	};
 }
 
 void CollinearDistributionEvolutionApfel::setSubgridNodes(
-        const std::vector<int>& subgridNodes) {
-    m_subgridNodes = subgridNodes;
+		const std::vector<int>& subgridNodes) {
+
+	m_subgridNodes = subgridNodes;
+
+	std::ostringstream oss;
+	std::copy(m_subgridNodes.begin(), m_subgridNodes.end(),
+			std::ostream_iterator<int>(oss, " "));
+	info(__func__,
+			ElemUtils::Formatter()
+					<< CollinearDistributionEvolutionApfel::PARAM_NAME_SUBGRID_NODES
+					<< " configured with value = [ " << oss.str() << "]");
+
+	m_setApfelTables = true;
 }
 
 void CollinearDistributionEvolutionApfel::setSubgridLowerBounds(
-        const std::vector<double>& subgridLowerBounds) {
-    m_subgridLowerBounds = subgridLowerBounds;
+		const std::vector<double>& subgridLowerBounds) {
+
+	m_subgridLowerBounds = subgridLowerBounds;
+
+	std::ostringstream oss;
+	std::copy(m_subgridLowerBounds.begin(), m_subgridLowerBounds.end(),
+			std::ostream_iterator<double>(oss, " "));
+	info(__func__,
+			ElemUtils::Formatter()
+					<< CollinearDistributionEvolutionApfel::PARAM_NAME_SUBGRID_LOWER_BOUNDS
+					<< " configured with value = [ " << oss.str() << "]");
+
+	m_setApfelTables = true;
 }
 
 void CollinearDistributionEvolutionApfel::setSubgridInterDegrees(
-        const std::vector<int>& subgridInterDegrees) {
-    m_subgridInterDegrees = subgridInterDegrees;
+		const std::vector<int>& subgridInterDegrees) {
+
+	m_subgridInterDegrees = subgridInterDegrees;
+
+	std::ostringstream oss;
+	std::copy(m_subgridInterDegrees.begin(), m_subgridInterDegrees.end(),
+			std::ostream_iterator<int>(oss, " "));
+	info(__func__,
+			ElemUtils::Formatter()
+					<< CollinearDistributionEvolutionApfel::PARAM_NAME_SUBGRID_INTER_DEGREES
+					<< " configured with value = [ " << oss.str() << "]");
+
+	m_setApfelTables = true;
 }
 
 std::vector<int> CollinearDistributionEvolutionApfel::getSubgridNodes() const {
-    return m_subgridNodes;
+	return m_subgridNodes;
 }
 
 std::vector<double> CollinearDistributionEvolutionApfel::getSubgridLowerBounds() const {
-    return m_subgridLowerBounds;
+	return m_subgridLowerBounds;
 }
 
 std::vector<int> CollinearDistributionEvolutionApfel::getSubgridInterDegrees() const {
-    return m_subgridInterDegrees;
+	return m_subgridInterDegrees;
 }
 
 CollinearDistributionEvolutionApfel::CollinearDistributionEvolutionApfel(
-        const CollinearDistributionEvolutionApfel &other) :
-        CollinearDistributionEvolutionModule(other) {
-    m_subgridNodes = other.getSubgridNodes();
-    m_subgridLowerBounds = other.getSubgridLowerBounds();
-    m_subgridInterDegrees = other.getSubgridInterDegrees();
+		const CollinearDistributionEvolutionApfel &other) :
+		CollinearDistributionEvolutionModule(other), m_setApfelTables(
+				other.m_setApfelTables) {
+	m_subgridNodes = other.m_subgridNodes;
+	m_subgridLowerBounds = other.m_subgridLowerBounds;
+	m_subgridInterDegrees = other.m_subgridInterDegrees;
+	m_dglapobj = other.m_dglapobj;
 }
 
 void CollinearDistributionEvolutionApfel::initModule() {
-    CollinearDistributionEvolutionModule::initModule();
+
+	// Run for mother
+	CollinearDistributionEvolutionModule::initModule();
+
+	//Check if to generate tables
+	if (m_setApfelTables) {
+
+		// Setup APFEL++ x-space
+		std::vector<apfel::SubGrid> vsg;
+		for (int i = 0; i < (int) m_subgridNodes.size(); i++)
+			vsg.push_back(apfel::SubGrid { m_subgridNodes[i],
+					m_subgridLowerBounds[i], m_subgridInterDegrees[i] });
+		const apfel::Grid g { vsg };
+
+		// Get thresholds. Set to zero whatever is below one.
+		std::vector<double> thresholds;
+		std::vector<ActiveFlavorsThresholds> afts =
+				m_pActiveFlavorsModule->getNfIntervals();
+		if (afts.size() == 1)
+			for (int i = 0; i < afts[0].getNf(); i++)
+				thresholds.push_back(0);
+		else
+			for (ActiveFlavorsThresholds aft : afts)
+				thresholds.push_back(
+						aft.getLowerBound() < 1 ?
+								0 : sqrt(aft.getLowerBound()));
+
+		// Initialize QCD evolution objects
+		m_dglapobj = InitializeDglapObjectsQCD(g, thresholds);
+
+		// Set as false
+		m_setApfelTables = false;
+	}
 }
 
 void CollinearDistributionEvolutionApfel::isModuleWellConfigured() {
-    CollinearDistributionEvolutionModule::isModuleWellConfigured();
+	CollinearDistributionEvolutionModule::isModuleWellConfigured();
 
-    if (m_subgridNodes.empty())
-        throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter()
-                        << "Vector of numbers of grid nodes not correctly set (empty)");
+	if (m_subgridNodes.empty())
+		throw ElemUtils::CustomException(getClassName(), __func__,
+				ElemUtils::Formatter()
+						<< "Vector of numbers of grid nodes not correctly set (empty)");
 
-    if (m_subgridLowerBounds.empty())
-        throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter()
-                        << "Vector of lower bounds of the grid not correctly set (empty)");
+	if (m_subgridLowerBounds.empty())
+		throw ElemUtils::CustomException(getClassName(), __func__,
+				ElemUtils::Formatter()
+						<< "Vector of lower bounds of the grid not correctly set (empty)");
 
-    if (m_subgridInterDegrees.empty())
-        throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter()
-                        << "Vector of interpolation degrees not correctly set (empty)");
+	if (m_subgridInterDegrees.empty())
+		throw ElemUtils::CustomException(getClassName(), __func__,
+				ElemUtils::Formatter()
+						<< "Vector of interpolation degrees not correctly set (empty)");
 
-    if (!(m_subgridNodes.size() && m_subgridLowerBounds.size()
-            && m_subgridInterDegrees.size()))
-        throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter() << "Size of vectors differs");
+	if (!(m_subgridNodes.size() && m_subgridLowerBounds.size()
+			&& m_subgridInterDegrees.size()))
+		throw ElemUtils::CustomException(getClassName(), __func__,
+				ElemUtils::Formatter() << "Size of vectors differs");
+}
+
+//TODO does it work via CollinearDistributionEvolutionModule pointer if it's not virtual?
+void CollinearDistributionEvolutionApfel::setRunningAlphaStrongModule(
+		RunningAlphaStrongModule* runningAlphaStrongModule) {
+
+	// Run for mother
+	CollinearDistributionEvolutionModule::setRunningAlphaStrongModule(
+			runningAlphaStrongModule);
+
+	// Mark to regenerate tables for the next computation
+	m_setApfelTables = true;
 }
 
 } /* namespace PARTONS */
