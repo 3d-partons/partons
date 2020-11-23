@@ -90,7 +90,7 @@ private:
 	std::vector<int> m_subgridNodes;
 	std::vector<double> m_subgridLowerBounds;
 	std::vector<int> m_subgridInterDegrees;
-
+	std::shared_ptr<apfel::Grid> m_grid;
 	std::map<int, apfel::DglapObjects> m_dglapobj;
 
 	bool m_setApfelTables;	///< Switch used to generate Apfel tables.

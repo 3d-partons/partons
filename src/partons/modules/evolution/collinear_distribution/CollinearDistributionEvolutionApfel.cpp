@@ -98,8 +98,7 @@ PartonDistribution CollinearDistributionEvolutionApfel::compute(
 	 */
 
 	// Running coupling
-	const auto as =
-			[=] (double const& mu) -> double {return getRunningAlphaStrongModule()->compute(mu * mu);};
+	const auto as = [=] (double const& mu) -> double {return getRunningAlphaStrongModule()->compute(mu * mu);};
 
 	// Construct the DGLAP evolution operators
 	const auto EvolvedPDFs = BuildDglap(m_dglapobj,
@@ -243,6 +242,7 @@ CollinearDistributionEvolutionApfel::CollinearDistributionEvolutionApfel(
 	m_subgridNodes = other.m_subgridNodes;
 	m_subgridLowerBounds = other.m_subgridLowerBounds;
 	m_subgridInterDegrees = other.m_subgridInterDegrees;
+	m_grid = other.m_grid;
 	m_dglapobj = other.m_dglapobj;
 }
 
@@ -259,7 +259,7 @@ void CollinearDistributionEvolutionApfel::initModule() {
 		for (int i = 0; i < (int) m_subgridNodes.size(); i++)
 			vsg.push_back(apfel::SubGrid { m_subgridNodes[i],
 					m_subgridLowerBounds[i], m_subgridInterDegrees[i] });
-		const apfel::Grid g { vsg };
+		m_grid = std::shared_ptr<apfel::Grid>{new apfel::Grid{vsg}};
 
 		// Get thresholds. Set to zero whatever is below one.
 		std::vector<double> thresholds;
@@ -275,7 +275,7 @@ void CollinearDistributionEvolutionApfel::initModule() {
 								0 : sqrt(aft.getLowerBound()));
 
 		// Initialize QCD evolution objects
-		m_dglapobj = InitializeDglapObjectsQCD(g, thresholds);
+		m_dglapobj = InitializeDglapObjectsQCD(*m_grid, thresholds);
 
 		// Set as false
 		m_setApfelTables = false;
