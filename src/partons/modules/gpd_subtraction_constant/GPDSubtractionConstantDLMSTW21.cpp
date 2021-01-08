@@ -1,11 +1,14 @@
+#include "../../../../include/partons/modules/gpd_subtraction_constant/GPDSubtractionConstantDLMSTW21.h"
+
+#include "../../../../include/partons/BaseObjectRegistry.h"
+#include "../../../../include/partons/modules/gpd_subtraction_constant/GPDSubtractionConstantDLMSTW21Evolution.h"
+#include "../../../../include/partons/modules/gpd_subtraction_constant/GPDSubtractionConstantDLMSTW21Replicas.h"
+#include "../../../../include/partons/utils/type/PhysicalUnit.h"
+
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/parameters/GenericType.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
-#include <include/partons/BaseObjectRegistry.h>
-#include <include/partons/modules/gpd_subtraction_constant/GPDSubtractionConstantDLMSTW21.h>
-#include <include/partons/modules/gpd_subtraction_constant/GPDSubtractionConstantDLMSTW21Evolution.h>
-#include <include/partons/modules/gpd_subtraction_constant/GPDSubtractionConstantDLMSTW21Replicas.h>
-#include <include/partons/utils/type/PhysicalUnit.h>
+
 #include <cmath>
 #include <iterator>
 
@@ -60,8 +63,8 @@ void GPDSubtractionConstantDLMSTW21::loadParameters(size_t replica,
 				ElemUtils::Formatter() << "Illegal replica " << replica);
 	}
 
-	m_d1g = GPDSubtractionConstantDLMSTW21Replicas::c_Replicas[replica][0];
-	m_d1q = GPDSubtractionConstantDLMSTW21Replicas::c_Replicas[replica][1];
+	m_d1g = 0.;
+	m_d1q = GPDSubtractionConstantDLMSTW21Replicas::c_Replicas[replica];
 
 	if (printInfo) {
 		info(__func__,
@@ -75,20 +78,20 @@ PhysicalType<double> GPDSubtractionConstantDLMSTW21::computeSubtractionConstant(
 	//charges u,d,s,c,b,t
 	std::vector<double> charges(6);
 
-	charges.push_back(2 / 3.);	//u
-	charges.push_back(-1 / 3.);	//d
-	charges.push_back(-1 / 3.);	//s
-	charges.push_back(2 / 3.);	//c
-	charges.push_back(-1 / .3);	//b
-	charges.push_back(2 / 3.);	//t
+	charges[0] = 2 / 3.;	//u
+	charges[1] = -1 / 3.;	//d
+	charges[2] = -1 / 3.;	//s
+	charges[3] = 2 / 3.;	//c
+	charges[4] = -1 / 3.;	//b
+	charges[5] = 2 / 3.;	//t
 
 	//d1 at initial scale
 	std::vector<double> d1(4);
 
-	d1.push_back(m_d1g);	//g
-	d1.push_back(m_d1q);	//u
-	d1.push_back(m_d1q);	//d
-	d1.push_back(m_d1q);	//s
+	d1[0] = m_d1g;	//g
+	d1[1] = m_d1q;	//u
+	d1[2] = m_d1q;	//d
+	d1[3] = m_d1q;	//s
 
 	//evolve
 	std::vector<double> d1Evolved =

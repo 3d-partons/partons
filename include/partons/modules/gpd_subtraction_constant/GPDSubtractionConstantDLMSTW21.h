@@ -8,12 +8,14 @@
 #ifndef GPD_SUBTRACTION_CONSTANT_DLMSTW21_H
 #define GPD_SUBTRACTION_CONSTANT_DLMSTW21_H
 
-#include <ElementaryUtils/parameters/Parameters.h>
-#include <include/partons/modules/gpd_subtraction_constant/GPDSubtractionConstantModule.h>
-#include <include/partons/utils/type/PhysicalType.h>
 #include <stddef.h>
 #include <string>
 #include <vector>
+
+#include <ElementaryUtils/parameters/Parameters.h>
+
+#include "../../modules/gpd_subtraction_constant/GPDSubtractionConstantModule.h"
+#include "../../utils/type/PhysicalType.h"
 
 namespace PARTONS {
 

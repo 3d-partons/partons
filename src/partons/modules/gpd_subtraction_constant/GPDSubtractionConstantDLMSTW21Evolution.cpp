@@ -5,7 +5,8 @@
  *      Author: Paweł Sznajder and Arkadiusz P. Trawiński
  */
 
-#include <include/partons/modules/gpd_subtraction_constant/GPDSubtractionConstantDLMSTW21Evolution.h>
+#include "../../../../include/partons/modules/gpd_subtraction_constant/GPDSubtractionConstantDLMSTW21Evolution.h"
+
 #include <cstdlib>
 #include <iostream>
 #include <iterator>

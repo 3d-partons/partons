@@ -5,8 +5,8 @@
  *      Author: partons
  */
 
-#ifndef INCLUDE_EVOLUTION_H_
-#define INCLUDE_EVOLUTION_H_
+#ifndef INCLUDE_GPDSUBTRACTIONCONSTANTDLMSTW21EVOLUTION_H_
+#define INCLUDE_GPDSUBTRACTIONCONSTANTDLMSTW21EVOLUTION_H_
 
 #include <stddef.h>
 #include <cmath>
@@ -108,4 +108,4 @@ std::vector<double> evolveQuarkGluon(double mu2, double mu20,
 }
 }
 
-#endif /* INCLUDE_EVOLUTION_H_ */
+#endif /* INCLUDE_GPDSUBTRACTIONCONSTANTDLMSTW21EVOLUTION_H_ */
