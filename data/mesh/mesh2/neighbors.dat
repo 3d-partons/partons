@@ -1,0 +1,12 @@
+# SUMMARY FILE. NEIGHBORS OF EACH ELEMENT
+# -1 values refers to the fact that one the edges of the
+# corresponding element lies on a boundary of the domain
+
+
+Triangle0	-1	1	6	
+Triangle1	3	5	0	
+Triangle2	-1	4	-1	
+Triangle3	-1	1	-1	
+Triangle4	2	6	5	
+Triangle5	1	-1	4	
+Triangle6	4	-1	0	
