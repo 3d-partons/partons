@@ -1,4 +1,12 @@
 /**
+ * @file algebraicToyModel.cpp
+ * @author José Manuel Morgado Chavez (University Of Huelva)
+ * @author Cédric Mezrag (CEA Saclay)
+ * @date 11th February 2021 
+ * @version 1.0
+ */
+
+/**
  * Headers for setMesh to read mesh attributes from a external file
  * To be removed.
  */
@@ -57,6 +65,9 @@ extern "C"
 #include <math.h>
 #include <include/NumA/triangulation/software/triangle.h>
 }
+
+// NumA interpolation
+#include <include/NumA/interpolation/CubicSpline.h>
 
 namespace PARTONS {
 
@@ -125,7 +136,7 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
     // u-quark
     double uVal, uValM;
 
-    if ( m_t == 0)                                                                                          // Zero momentum transfer
+    if ( m_t == 0)                                                                                          //! Zero momentum transfer
     {
         if ( m_x > m_xi )                                                                                   // DGLAP>
         {
@@ -137,115 +148,136 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
             uValM = 30 * pow(1 + m_x, 2.) * ( pow(m_x,2.) - pow(m_xi,2.) ) / pow( 1 - pow(m_xi,2.) , 2.);   
         } else                                                                                              // ERBL
         {           
-            // if ( DD.empty() )                                                                               
-            // {
+            if ( DD.empty() )                                                                               
+            {
                 // ============================================================================================
                 // Compute DD (Proper computation)
                 // ============================================================================================
 
-                // computeDD();
-
-                // ofstream DoubleDistribution;
-                // DoubleDistribution.open("/home/jose/codes/PARTONS/results/GPD/Analysisx0/DD.dat");
-
-                // for ( int i = 0; i < DD.size(); i++ )
-                // {
-                //     DoubleDistribution << DD[i] << "\n";
-                // }   
-
-                // DoubleDistribution.close();                                                                             
+                // computeDD();                                                                             
                 
                 // ============================================================================================
                 // Compute DD (Reading from file)
                 // ============================================================================================
 
-                // mesh = setMesh();                                                                        // Set Mesh according to the computations that have been carried out.
+                mesh = setMesh();                                                                        // Set Mesh according to the computations that have been carried out.
                      
-                // ifstream DoubleDistribution;                                                                 
+                ifstream DoubleDistribution;                                                                 
                 // // DoubleDistribution.open("/usr/local/share/data/DoubleDistribution/AlgebraicToyModel/AverageDD-50it-1e-7-P1.dat");
-                // DoubleDistribution.open("/home/jose/codes/PARTONS/data/kinematics/GPD/Evolution_kinematics/DD.dat");
- 
-                // string linedd;
-                // double d;
+                DoubleDistribution.open("/home/jose/codes/PARTONS/data/kinematics/GPD/Evolution_kinematics/DD.dat");
+                string linedd;
+                double d;
 
-                // if ( DoubleDistribution )
-                // {
-                //     while( getline(DoubleDistribution,linedd) )
-                //     {
-                //         istringstream iss(linedd);
-                //         if ( !(iss >> d) )
-                //         {
-                //             throw runtime_error( "DD file does not have the correct format: vector<double>" );
-                //         } else
-                //         {
-                //             DD.push_back(d);
-                //         }
-                //     }
+                if ( DoubleDistribution )
+                {
+                    while( getline(DoubleDistribution,linedd) )
+                    {
+                        istringstream iss(linedd);
+                        if ( !(iss >> d) )
+                        {
+                            throw runtime_error( "DD file does not have the correct format: vector<double>" );
+                        } else
+                        {
+                            DD.push_back(d);
+                        }
+                    }
  
-                // } else
-                // {
-                //     throw runtime_error( "File not found." );
-                // }
+                } else
+                {
+                    throw runtime_error( "File not found." );
+                }
                 
-                // DoubleDistribution.close();
+                DoubleDistribution.close();
 
                 // ============================================================================================
                 // ============================================================================================
-            // }
+            }
 
                 // ============================================================================================
                 // Compute ERBL GPD (Proper computation: RT)
                 // ============================================================================================
 
-                // NumA::RadonTransform RT;                                                                        // Radon transform matrix for uVal.
-                // NumA::RadonTransform RTminus;                                                                   // Radon transform matrix for uValM.
+                NumA::RadonTransform RT;                                                                        // Radon transform matrix for uVal.
+                NumA::RadonTransform RTminus;                                                                   // Radon transform matrix for uValM.
+ 
+                x[0] = m_x; xi[0] = m_xi; y[0] = m_xi/m_x;                                                      // Kienmatics written in proper format.
+                xm[0] = -m_x; xim[0] = m_xi; ym[0] = -m_xi/m_x;
+ 
+                RT.RTMatrix.clear();                                                                            // Radon transform matrix for uVal.
+                RT.build_RTmatrix(mesh, x, y, xi );
+ 
+                RTminus.RTMatrix.clear();                                                                       // Radon transform matrix for uValM.
+                RTminus.build_RTmatrix(mesh, xm, ym, xim);
+ 
+                for ( int i = 0; i < DD.size() ; i++ )
+                {
+                    uVal += RT.RTMatrix[0][i]*DD[i];
+                    uValM += RTminus.RTMatrix[0][i]*DD[i];
+                }
 
-                // x[0] = m_x; xi[0] = m_xi; y[0] = m_xi/m_x;                                                      // Kienmatics written in proper format.
-                // xm[0] = -m_x; xim[0] = m_xi; ym[0] = -m_xi/m_x;
+                // D-terms contribution                                                                         // TODO: Implement computation of D-terms in RT.
+                if ( DminusVec.size() == 0 )
+                {                    
+                    DminusVec = computeDminus( mesh, DD );
+                    DplusVec = computeDplus( mesh, DD );
+                
+                    std::vector<double> x (1000);
+                    double st = 2./1000;
+                    for ( int i = 0; i < 1000; i++ )
+                    {
+                        x[i] = -1. + i*st;
+                    }
 
-                // RT.RTMatrix.clear();                                                                            // Radon transform matrix for uVal.
-                // RT.build_RTmatrix(mesh, x, y, xi );
+                    // Interpolate numerically computed D-terms.
+                    Dminus = new NumA::CubicSpline(x,DminusVec);
+                    Dplus = new NumA::CubicSpline(x,DplusVec);
+                 
+                    Dminus->ConstructSpline();
+                    Dplus->ConstructSpline(); 
+                }           
 
-                // RTminus.RTMatrix.clear();                                                                       // Radon transform matrix for uValM.
-                // RTminus.build_RTmatrix(mesh, xm, ym, xim);
+                // Add D-terms to GPD.
+                alpha = m_x/m_xi;
 
-                // for ( int i = 0; i < DD.size() ; i++ )
-                // {
-                //     uVal += RT.RTMatrix[0][i]*DD[i];
-                //     uValM += RTminus.RTMatrix[0][i]*DD[i];                                                      // !Check if this is correct. Check computation of uValM.
-                // }
+                if ( m_xi >= 0 )                                                                                // Conditional expression taking into acount the factor sign(\xi) accompanying dminus.
+                {
+                    uVal +=  Dplus->getSplineInsideValue(alpha)/m_xi + Dminus->getSplineInsideValue(alpha);
+                    uValM += Dplus->getSplineInsideValue(alpha)/m_xi - Dminus->getSplineInsideValue(alpha);
+                } else
+                {
+                    uVal += Dplus->getSplineInsideValue(alpha)/m_xi - Dminus->getSplineInsideValue(alpha);
+                    uValM += Dplus->getSplineInsideValue(alpha)/m_xi + Dminus->getSplineInsideValue(alpha);
+                }
 
                 // ============================================================================================
                 // Compute ERBL GPD (Analytic computation)
                 // ============================================================================================
 
                 // (Gauged) ERBL GPD t = 0
-                uVal = 7.5 * (1 - m_x) * ( pow(m_xi, 2.) - pow(m_x, 2.) ) * (m_x + 2*m_x*m_xi + pow(m_xi, 2.)) / ( pow(m_xi, 3.)*pow(1 + m_xi, 2.) );
-                uValM = 7.5 * (1 + m_x) * ( pow(m_xi, 2.) - pow(m_x, 2.) ) * (-m_x - 2*m_x*m_xi + pow(m_xi, 2.)) / ( pow(m_xi, 3.)*pow(1 + m_xi, 2.) ); 
+                // uVal = 7.5 * (1 - m_x) * ( pow(m_xi, 2.) - pow(m_x, 2.) ) * (m_x + 2*m_x*m_xi + pow(m_xi, 2.)) / ( pow(m_xi, 3.)*pow(1 + m_xi, 2.) );
+                // uValM = 7.5 * (1 + m_x) * ( pow(m_xi, 2.) - pow(m_x, 2.) ) * (-m_x - 2*m_x*m_xi + pow(m_xi, 2.)) / ( pow(m_xi, 3.)*pow(1 + m_xi, 2.) ); 
 
+                // D-terms contribution
+                // alpha = m_x/m_xi;
 
-                // D-terms contribution (monopole parametrization)
-                alpha = m_x/m_xi;
-
-                dplus = 0.75*(1-pow(alpha,2))*(5*pow(alpha,2)-1);
-                dminus = -3.75*alpha*(1-pow(alpha,2));
+                // dplus = 0.75*(1-pow(alpha,2))*(5*pow(alpha,2)-1);
+                // dminus = -3.75*alpha*(1-pow(alpha,2));
     
                 // Add D-terms to GPD.
+                // dplus /= m_xi;                                                                                     
         
-                dplus /= m_xi;                                                                                     
-        
-                if ( m_xi >= 0 )                                                                            // Conditional expression taking into acount the factor sign(\xi) accompanying dminus.
-                {
-                    uVal +=  dplus + dminus;
-                    uValM += dplus - dminus;
-                } else
-                {
-                    uVal += dplus - dminus;
-                    uValM += dplus + dminus;
-                }
+                // if ( m_xi >= 0 )                                                                            // Conditional expression taking into acount the factor sign(\xi) accompanying dminus.
+                // {
+                //     uVal +=  dplus + dminus;
+                //     uValM += dplus - dminus;
+                // } else
+                // {
+                //     uVal += dplus - dminus;
+                //     uValM += dplus + dminus;
+                // }
                 
         }
-    } else                                                                                                  // Non-vanishing momentum transfer.
+    } else                                                                                                  //! Non-vanishing momentum transfer.
     {
         c  = -m_t*pow(1 - m_x, 2.)/(4*m2*(1 - pow(m_xi,2)));                                                // t-dependence algebraic toy model.
         cM = -m_t*pow(1 + m_x, 2.)/(4*m2*(1 - pow(m_xi,2)));
@@ -330,6 +362,41 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
             // {
             //     uVal += RT.RTMatrix[0][i]*DD[i];
             //     uValM += RTminus.RTMatrix[0][i]*DD[i];                                                      // !Check if this is correct. Check computation of uValM.
+            // }
+
+
+            // D-terms contribution                                                                            // TODO: Implement computation of D-terms in RT.
+            // if ( DminusVec.size() == 0 )
+            // {                    
+            //     DminusVec = computeDminus( mesh, DD );
+            //     DplusVec = computeDplus( mesh, DD );
+                
+            //     std::vector<double> x (1000);
+            //     double st = 2./1000;
+            //     for ( int i = 0; i < 1000; i++ )
+            //     {
+            //         x[i] = -1. + i*st;
+            //     }
+
+            //     // Interpolate numerically computed D-terms.
+            //     Dminus = new NumA::CubicSpline(x,DminusVec);
+            //     Dplus = new NumA::CubicSpline(x,DplusVec);
+                
+            //     Dminus->ConstructSpline();
+            //     Dplus->ConstructSpline(); 
+            // }           
+
+            // // Add D-terms to GPD.
+            // alpha = m_x/m_xi;
+
+            // if ( m_xi >= 0 )                                                                                // Conditional expression taking into acount the factor sign(\xi) accompanying dminus.
+            // {
+            //     uVal +=  Dplus->getSplineInsideValue(alpha)/m_xi + Dminus->getSplineInsideValue(alpha);
+            //     uValM += Dplus->getSplineInsideValue(alpha)/m_xi - Dminus->getSplineInsideValue(alpha);
+            // } else
+            // {
+            //     uVal += Dplus->getSplineInsideValue(alpha)/m_xi - Dminus->getSplineInsideValue(alpha);
+            //     uValM += Dplus->getSplineInsideValue(alpha)/m_xi + Dminus->getSplineInsideValue(alpha);
             // }
 
             // ============================================================================================
@@ -656,6 +723,134 @@ NumA::Mesh algebraicToyModel::setMesh() //! This is a quick fix allowing for pra
     MESH.BasisFunctions( 0 );                                                                               // Definition of interpolating basis functions.
     
 return MESH;
+}
+
+vector<double> algebraicToyModel::computeDminus( NumA::Mesh& mesh, const vector<double>& DD )
+{
+    // Dminus = 0.5(H(-x,1,0) - H(x,1,0))
+
+    NumA::RadonTransform RT;
+    NumA::RadonTransform RTminus;
+
+    double mx = 1000; // Number of sampling lines.
+    double st = 2/mx; // Step.
+
+    std::vector<double> x(mx), xi(mx,1.), y(mx);
+
+    for (int i = 0; i < mx; i++ )
+    {
+        x[i] = -1.+i*st;
+        y[i] = 1./x[i];
+    }
+
+    RT.RTMatrix.clear();
+    RT.build_RTmatrix(mesh, x, y, xi);
+
+    for (int i = 0; i < mx; i++ )
+    {
+        x[i] = -x[i];
+        y[i] = -y[i];
+    }
+
+    RTminus.RTMatrix.clear();
+    RTminus.build_RTmatrix(mesh, x, y, xi);
+
+    // H(x,1,0)
+    std::vector<double> Hx1(mx);
+
+    for ( int i = 0; i < mx; i++ )
+    {
+        for ( int j = 0; j < DD.size(); j++ )
+        {
+            Hx1[i] += RT.RTMatrix[i][j]*DD[j];
+        }
+    }
+
+    //H(-x,1,0)
+    std::vector<double> Hx1minus (mx);
+   
+    for ( int i = 0; i < mx; i++ )
+    {
+        for ( int j = 0; j < DD.size(); j++ )
+        {
+            Hx1minus[i] += RTminus.RTMatrix[i][j]*DD[j];
+        }
+    }
+
+    // 
+    std::vector<double> DminusVec (mx);
+    std::vector<double> DplusVec (mx);
+
+    for( int i = 0; i < mx; i++)
+    {
+        DminusVec[i] = 0.5*(Hx1minus[i]-Hx1[i]);
+    }
+
+return DminusVec;
+}
+
+std::vector<double> algebraicToyModel::computeDplus( NumA::Mesh& mesh, const vector<double>& DD )
+{
+    // Dplus = 0.5(phi((1+x)/2) - H(-x,1,0) - H(x,1,0))
+
+    NumA::RadonTransform RT;
+    NumA::RadonTransform RTminus;
+
+    double mx = 1000; // Number of sampling lines.
+    double st = 2/mx; // Step.
+
+    std::vector<double> x(mx), xi(mx,1.), y(mx);
+
+    for (int i = 0; i < mx; i++ )
+    {
+        x[i] = -1.+i*st;
+        y[i] = 1./x[i];
+    }
+
+    RT.RTMatrix.clear();
+    RT.build_RTmatrix(mesh, x, y, xi);
+
+    for (int i = 0; i < mx; i++ )
+    {
+        x[i] = -x[i];
+        y[i] = -y[i];
+    }
+
+    RTminus.RTMatrix.clear();
+    RTminus.build_RTmatrix(mesh, x, y, xi);
+
+    // H(x,1,0)
+    std::vector<double> Hx1(mx);
+
+    for ( int i = 0; i < mx; i++ )
+    {
+        for ( int j = 0; j < DD.size(); j++ )
+        {
+            Hx1[i] += RT.RTMatrix[i][j]*DD[j];
+        }
+    }
+
+    //H(-x,1,0)
+    std::vector<double> Hx1minus (mx);
+   
+    for ( int i = 0; i < mx; i++ )
+    {
+        for ( int j = 0; j < DD.size(); j++ )
+        {
+            Hx1minus[i] += RTminus.RTMatrix[i][j]*DD[j];
+        }
+    }
+
+    // 
+    std::vector<double> DminusVec (mx);
+    std::vector<double> DplusVec (mx);
+
+    for( int i = 0; i < mx; i++)
+    {
+        DplusVec[i] = 0.5*(1.5*(1-pow(x[i],2))-Hx1minus[i]-Hx1[i]);
+    }
+
+return DplusVec;
 }
 
 }

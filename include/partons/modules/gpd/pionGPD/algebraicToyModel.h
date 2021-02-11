@@ -5,7 +5,7 @@
  * @file algebraicToyModel.h
  * @author José Manuel Morgado Chavez (University Of Huelva)
  * @author Cédric Mezrag (CEA Saclay)
- * @date 12th January 2021 
+ * @date 11th February 2021 
  * @version 1.0
  */
 
@@ -22,6 +22,8 @@
 #include <include/NumA/linear_algebra/matrix/MatrixD.h>
 #include <include/NumA/triangulation/mesh.h>
 #include <include/NumA/RadonTransform/RadonTransform.h>
+
+#include <include/NumA/interpolation/CubicSpline.h>
 
 namespace PARTONS {
 
@@ -65,19 +67,32 @@ protected:
     virtual PARTONS::PartonDistribution computeH();
 
     /**
-     * Computation of the double distribution.
-     * 
-     * Sets the DD attribute of the class.
-     */
-
+      * Computation of the double distribution.
+      * 
+      * Sets the DD attribute of the class.
+      */
     void computeDD();
 
     /**
-     * Mesh building.
-     * 
-     * Sets the mesh attribute of the class.
-     */
+      * Mesh building.
+      * 
+      * Sets the mesh attribute of the class.
+      */
     NumA::Mesh setMesh();
+
+    /**
+      * Computation of odd D-term from numerical GPD from the soft-pion theorem.
+      * 
+      * return Dminus as a interpolating object
+      */
+    std::vector<double> computeDminus( NumA::Mesh& mesh, const vector<double>& DD );
+
+    /**
+      * Computation of even D-term from numerical GPD from the soft-pion theorem.
+      * 
+      * return Dplus as a interpolating object
+      */
+    std::vector<double> computeDplus( NumA::Mesh& mesh, const vector<double>& DD );
 
 private:
 
@@ -89,6 +104,13 @@ private:
     double dminus;                              // Odd D-term.
     double dt;                                  // D-term t-dependence parametrized as a monopole: 1//(1-t/4m2)
     double alpha;                               // Kinematic variable for D-terms: \alpha = m_x/m_xi
+
+    // TODO: Implement computation of D-terms in RT.
+    std::vector<double> DplusVec;               // Vector containing the numerical evaluation of the even D-term.
+    std::vector<double> DminusVec;              // Vector containing the numerical evaluation of the odd D-term.
+
+    NumA::CubicSpline* Dplus;                   // Interpolator for even D-term.
+    NumA::CubicSpline* Dminus;                  // Interpolator for odd D-term.
 
     NumA::Mesh mesh;                            // Mesh over the double distribution domain.
 
