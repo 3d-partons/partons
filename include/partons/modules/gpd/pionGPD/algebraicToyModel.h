@@ -85,6 +85,11 @@ private:
     double cM;                                  // Auxilary t-dependece for the computation of the singlet distribution.
     double m2;                                  // Squared pion mass scale.
 
+    double dplus;                               // Even D-term.
+    double dminus;                              // Odd D-term.
+    double dt;                                  // D-term t-dependence parametrized as a monopole: 1//(1-t/4m2)
+    double alpha;                               // Kinematic variable for D-terms: \alpha = m_x/m_xi
+
     NumA::Mesh mesh;                            // Mesh over the double distribution domain.
 
     vector<double> DD;                          // Declare double distribution.

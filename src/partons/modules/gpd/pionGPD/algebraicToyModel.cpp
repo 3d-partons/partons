@@ -68,7 +68,7 @@ const unsigned int algebraicToyModel::classId =
 algebraicToyModel::algebraicToyModel(const std::string &className) : PARTONS::GPDModule(className)
 {
     // Set reference factorization scale.
-    m_MuF2_ref = 0.4;
+    m_MuF2_ref = 0.4;                                                                              // TODO: Set equal to value given in reference paper for \alpha_PI: \mu_H = 0,33 GeV.
 
     //Relate a specific GPD type with the appropriate function
     m_listGPDComputeTypeAvailable.insert(
@@ -77,7 +77,7 @@ algebraicToyModel::algebraicToyModel(const std::string &className) : PARTONS::GP
 
 algebraicToyModel::algebraicToyModel(const algebraicToyModel& other) : PARTONS::GPDModule(other) 
 {
-    m2 = 0.16;
+    m2 = 0.101; // Mass parameter algebraic toy model. Eq (30) Physics Letters B 780 (2018) 287–293.
 }
 
 algebraicToyModel::~algebraicToyModel() 
@@ -136,14 +136,24 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
             uVal = 0.;
             uValM = 30 * pow(1 + m_x, 2.) * ( pow(m_x,2.) - pow(m_xi,2.) ) / pow( 1 - pow(m_xi,2.) , 2.);   
         } else                                                                                              // ERBL
-        {
-            if ( DD.empty() )                                                                               
-            {
+        {           
+            // if ( DD.empty() )                                                                               
+            // {
                 // ============================================================================================
                 // Compute DD (Proper computation)
                 // ============================================================================================
 
-                computeDD();                                                                                
+                // computeDD();
+
+                // ofstream DoubleDistribution;
+                // DoubleDistribution.open("/home/jose/codes/PARTONS/results/GPD/Analysisx0/DD.dat");
+
+                // for ( int i = 0; i < DD.size(); i++ )
+                // {
+                //     DoubleDistribution << DD[i] << "\n";
+                // }   
+
+                // DoubleDistribution.close();                                                                             
                 
                 // ============================================================================================
                 // Compute DD (Reading from file)
@@ -152,7 +162,8 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
                 // mesh = setMesh();                                                                        // Set Mesh according to the computations that have been carried out.
                      
                 // ifstream DoubleDistribution;                                                                 
-                // DoubleDistribution.open("/usr/local/share/data/DoubleDistribution/AlgebraicToyModel/AverageDD-50it-1e-7-P1.dat");
+                // // DoubleDistribution.open("/usr/local/share/data/DoubleDistribution/AlgebraicToyModel/AverageDD-50it-1e-7-P1.dat");
+                // DoubleDistribution.open("/home/jose/codes/PARTONS/data/kinematics/GPD/Evolution_kinematics/DD.dat");
  
                 // string linedd;
                 // double d;
@@ -180,31 +191,66 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
 
                 // ============================================================================================
                 // ============================================================================================
-            }
+            // }
 
-            NumA::RadonTransform RT;                                                                        // Radon transform matrix for uVal.
-            NumA::RadonTransform RTminus;                                                                   // Radon transform matrix for uValM.
+                // ============================================================================================
+                // Compute ERBL GPD (Proper computation: RT)
+                // ============================================================================================
 
-            x[0] = m_x; xi[0] = m_xi; y[0] = m_xi/m_x;                                                      // Kienmatics written in proper format.
-            xm[0] = -m_x; xim[0] = m_xi; ym[0] = -m_xi/m_x;
+                // NumA::RadonTransform RT;                                                                        // Radon transform matrix for uVal.
+                // NumA::RadonTransform RTminus;                                                                   // Radon transform matrix for uValM.
+
+                // x[0] = m_x; xi[0] = m_xi; y[0] = m_xi/m_x;                                                      // Kienmatics written in proper format.
+                // xm[0] = -m_x; xim[0] = m_xi; ym[0] = -m_xi/m_x;
+
+                // RT.RTMatrix.clear();                                                                            // Radon transform matrix for uVal.
+                // RT.build_RTmatrix(mesh, x, y, xi );
+
+                // RTminus.RTMatrix.clear();                                                                       // Radon transform matrix for uValM.
+                // RTminus.build_RTmatrix(mesh, xm, ym, xim);
+
+                // for ( int i = 0; i < DD.size() ; i++ )
+                // {
+                //     uVal += RT.RTMatrix[0][i]*DD[i];
+                //     uValM += RTminus.RTMatrix[0][i]*DD[i];                                                      // !Check if this is correct. Check computation of uValM.
+                // }
+
+                // ============================================================================================
+                // Compute ERBL GPD (Analytic computation)
+                // ============================================================================================
+
+                // (Gauged) ERBL GPD t = 0
+                uVal = 7.5 * (1 - m_x) * ( pow(m_xi, 2.) - pow(m_x, 2.) ) * (m_x + 2*m_x*m_xi + pow(m_xi, 2.)) / ( pow(m_xi, 3.)*pow(1 + m_xi, 2.) );
+                uValM = 7.5 * (1 + m_x) * ( pow(m_xi, 2.) - pow(m_x, 2.) ) * (-m_x - 2*m_x*m_xi + pow(m_xi, 2.)) / ( pow(m_xi, 3.)*pow(1 + m_xi, 2.) ); 
+
+
+                // D-terms contribution (monopole parametrization)
+                alpha = m_x/m_xi;
+
+                dplus = 0.75*(1-pow(alpha,2))*(5*pow(alpha,2)-1);
+                dminus = -3.75*alpha*(1-pow(alpha,2));
+    
+                // Add D-terms to GPD.
+        
+                dplus /= m_xi;                                                                                     
+        
+                if ( m_xi >= 0 )                                                                            // Conditional expression taking into acount the factor sign(\xi) accompanying dminus.
+                {
+                    uVal +=  dplus + dminus;
+                    uValM += dplus - dminus;
+                } else
+                {
+                    uVal += dplus - dminus;
+                    uValM += dplus + dminus;
+                }
                 
-            RT.RTMatrix.clear();                                                                            // Radon transform matrix for uVal.
-            RT.build_RTmatrix(mesh, x, y, xi );
-
-            RTminus.RTMatrix.clear();                                                                       // Radon transform matrix for uValM.
-            RTminus.build_RTmatrix(mesh, xm, ym, xim);
-
-            for ( int i = 0; i < DD.size() ; i++ )
-            {
-                uVal += RT.RTMatrix[0][i]*DD[i];
-                uValM += RTminus.RTMatrix[0][i]*DD[i];                                                      // !Check if this is correct. Check computation of uValM.
-            }
         }
     } else                                                                                                  // Non-vanishing momentum transfer.
     {
-
         c  = -m_t*pow(1 - m_x, 2.)/(4*m2*(1 - pow(m_xi,2)));                                                // t-dependence algebraic toy model.
         cM = -m_t*pow(1 + m_x, 2.)/(4*m2*(1 - pow(m_xi,2)));
+
+        dt = 1/(1-0.25*m_t/m2);                                                                             // D-term t-dependence (monopole parametrization).
 
         if ( m_x > m_xi )                                                                                   // DGLAP>
         {
@@ -218,13 +264,13 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
                 / ( pow( 1 - pow(m_xi,2.) , 2.) * pow(1 + cM,2) );
         } else                                                                                              // ERBL
         {
-            if ( DD.empty() )
-            {
+            // if ( DD.empty() )
+            // {
                 // ============================================================================================
                 // Compute DD (Proper computation)
                 // ============================================================================================
 
-                computeDD();                                                                                
+                // computeDD();                                                                                
                 
                 // ============================================================================================
                 // Compute DD (Reading from file)
@@ -262,43 +308,71 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
 
                 // ============================================================================================
                 // ============================================================================================
+            // }
+            
+            // ============================================================================================
+            // Compute ERBL GPD (Proper computation: RT)
+            // ============================================================================================
+
+            // NumA::RadonTransform RT;                                                                        // Radon transform matrix for uVal.
+            // NumA::RadonTransform RTminus;                                                                   // Radon transform matrix for uValM.
+
+            // x[0] = m_x; xi[0] = m_xi; y[0] = m_xi/m_x;                                                      // Kinematics written in proper format.
+            // xm[0] = -m_x; xim[0] = m_xi; ym[0] = -m_xi/m_x;
+
+            // RT.RTMatrix.clear();                                                                            // Radon transform matrix for uVal.
+            // RT.build_RTmatrix(mesh, x, y, xi );
+
+            // RTminus.RTMatrix.clear();                                                                       // Radon transform matrix for uValM.
+            // RTminus.build_RTmatrix(mesh, xm, ym, xim);
+
+            // for ( int i = 0; i < DD.size() ; i++ )
+            // {
+            //     uVal += RT.RTMatrix[0][i]*DD[i];
+            //     uValM += RTminus.RTMatrix[0][i]*DD[i];                                                      // !Check if this is correct. Check computation of uValM.
+            // }
+
+            // ============================================================================================
+            // Compute ERBL GPD (Analytic computation)
+            // ============================================================================================
+
+            // (Gauged) ERBL GPD t < 0
+            uVal  = -3.75 * (pow(m_xi,2) - pow(m_x,2)) * ( sqrt(c * (c + 1)) * ( -c*m_xi*(1 - pow(m_xi,2))*(1 - m_x) 
+                * (pow(m_xi,4) + 6*m_xi*(1-m_x)*pow(m_x,2)-6*pow(m_xi,3)*(1-m_x)+pow(m_xi,2)*(4-3*(3-m_x)*m_x)+m_x*(4-m_x*(8-5*m_x))) 
+                + pow(c,2)*pow(1-pow(m_xi,2),2)*(pow(m_xi,3)*(6*m_xi-2)+3*pow(m_x,4)-4*m_xi*pow(m_x,3)-6*(m_xi-1)*m_xi*pow(m_x,2)+2*m_xi*(pow(m_xi,2)-1)*m_x)
+                + pow(m_x-1,3)*(pow(m_xi,5)+3*pow(m_xi,4)*(m_x-1)+pow(m_xi,3)*(2-5*m_x)+2*m_xi*m_x))
+                + (1-2*c)*pow( c*(1-pow(m_xi,2))*(pow(m_xi,2)-pow(m_x,2))+pow(m_xi,2)*(m_x-1),2)
+                *(atanh(sqrt(c/(1+c)))-atanh(sqrt(c/(1+c))*(pow(m_xi,2)-m_x)/(m_xi*(1-m_x)))))
+                / (pow(1+c,2.5)*pow(1-pow(m_xi,2),1.5)*pow(1-m_x,2)*sqrt(c*(1-pow(m_xi,2)))*pow(pow(m_xi,2)+c*(1-pow(m_xi,2))*(pow(m_xi,2)-pow(m_x,2))/pow(1-m_x,2),2));
+            uValM = -3.75 * (pow(m_xi,2) - pow(m_x,2)) * ( sqrt(cM * (cM + 1)) * ( -cM*m_xi*(1 - pow(m_xi,2))*(1 + m_x) 
+                * (pow(m_xi,4) + 6*m_xi*(1+m_x)*pow(m_x,2)-6*pow(m_xi,3)*(1+m_x)+pow(m_xi,2)*(4-3*(3+m_x)*(-1)*m_x)-m_x*(4+m_x*(8+5*m_x))) 
+                + pow(cM,2)*pow(1-pow(m_xi,2),2)*(pow(m_xi,3)*(6*m_xi-2)+3*pow(m_x,4)-4*m_xi*pow(-m_x,3)-6*(m_xi-1)*m_xi*pow(m_x,2)+2*m_xi*(pow(m_xi,2)-1)*(-1)*m_x)
+                + pow(-m_x-1,3)*(pow(m_xi,5)+3*pow(m_xi,4)*(-m_x-1)+pow(m_xi,3)*(2+5*m_x)+2*m_xi*(-1)*m_x))
+                + (1-2*cM)*pow( cM*(1-pow(m_xi,2))*(pow(m_xi,2)-pow(m_x,2))+pow(m_xi,2)*(-m_x-1),2)
+                *(atanh(sqrt(cM/(1+cM)))-atanh(sqrt(cM/(1+cM))*(pow(m_xi,2)-m_x)/(-m_xi*(1+m_x)))))
+                / (pow(1+cM,2.5)*pow(1-pow(m_xi,2),1.5)*pow(1+m_x,2)*sqrt(cM*(1-pow(m_xi,2)))*pow(pow(m_xi,2)+cM*(1-pow(m_xi,2))*(pow(m_xi,2)-pow(m_x,2))/pow(1+m_x,2),2)); 
+
+            // D-terms contribution (monopole parametrization)
+            alpha = m_x/m_xi;
+
+            dplus = 0.75*(1-pow(alpha,2))*(5*pow(alpha,2)-1)*dt;
+            dminus = 3.75*alpha*(1-pow(alpha,2))*dt;  
+        
+            // Add D-terms to GPD.
+            dplus /= m_xi;                                                                                      
+        
+            if ( m_xi >= 0 )                                                          // Conditional expression taking into acount the factor sign(\xi) accompanying dminus.
+            {
+                uVal +=  dplus + dminus;
+                uValM += dplus - dminus;
+            } else
+            {
+                uVal += dplus - dminus;
+                uValM += dplus + dminus;
             }
         
-            NumA::RadonTransform RT;                                                                        // Radon transform matrix for uVal.
-            NumA::RadonTransform RTminus;                                                                   // Radon transform matrix for uValM.
-
-            x[0] = m_x; xi[0] = m_xi; y[0] = m_xi/m_x;                                                      // Kinematics written in proper format.
-            xm[0] = -m_x; xim[0] = m_xi; ym[0] = -m_xi/m_x;
-
-            RT.RTMatrix.clear();                                                                            // Radon transform matrix for uVal.
-            RT.build_RTmatrix(mesh, x, y, xi );
-
-            RTminus.RTMatrix.clear();                                                                       // Radon transform matrix for uValM.
-            RTminus.build_RTmatrix(mesh, xm, ym, xim);
-
-            for ( int i = 0; i < DD.size() ; i++ )
-            {
-                uVal += RT.RTMatrix[0][i]*DD[i];
-                uValM += RTminus.RTMatrix[0][i]*DD[i];                                                      // !Check if this is correct. Check computation of uValM.
-            }
         }
     }
-
-            // ERBL t < 0
-            // uVal  = -3.75 * (pow(m_xi,2) - pow(m_x,2)) * ( sqrt(c * (c + 1)) * ( -c*m_xi*(1 - pow(m_xi,2))*(1 - m_x) 
-                // * (pow(m_xi,4) + 6*m_xi*(1-m_x)*pow(m_x,2)-6*pow(m_xi,3)*(1-m_x)+pow(m_xi,2)*(4-3*(3-m_x)*m_x)+m_x*(4-m_x*(8-5*m_x))) 
-                // + pow(c,2)*pow(1-pow(m_xi,2),2)*(pow(m_xi,3)*(6*m_xi-2)+3*pow(m_x,4)-4*m_xi*pow(m_x,3)-6*(m_xi-1)*m_xi*pow(m_x,2)+2*m_xi*(pow(m_xi,2)-1)*m_x)
-                // + pow(m_x-1,3)*(pow(m_xi,5)+3*pow(m_xi,4)*(m_x-1)+pow(m_xi,3)*(2-5*m_x)+2*m_xi*m_x))
-                // + (1-2*c)*pow( c*(1-pow(m_xi,2))*(pow(m_xi,2)-pow(m_x,2))+pow(m_xi,2)*(m_x-1),2)
-                // *(atanh(sqrt(c/(1+c)))-atanh(sqrt(c/(1+c))*(pow(m_xi,2)-m_x)/(m_xi*(1-m_x)))))
-                // / (pow(1+c,2.5)*pow(1-pow(m_xi,2),1.5)*pow(1-m_x,2)*sqrt(c*(1-pow(m_xi,2)))*pow(pow(m_xi,2)+c*(1-pow(m_xi,2))*(pow(m_xi,2)-pow(m_x,2))/pow(1-m_x,2),2));
-            // uValM = -3.75 * (pow(m_xi,2) - pow(m_x,2)) * ( sqrt(cM * (cM + 1)) * ( -cM*m_xi*(1 - pow(m_xi,2))*(1 + m_x) 
-                // * (pow(m_xi,4) + 6*m_xi*(1+m_x)*pow(m_x,2)-6*pow(m_xi,3)*(1+m_x)+pow(m_xi,2)*(4-3*(3+m_x)*(-1)*m_x)-m_x*(4+m_x*(8+5*m_x))) 
-                // + pow(cM,2)*pow(1-pow(m_xi,2),2)*(pow(m_xi,3)*(6*m_xi-2)+3*pow(m_x,4)-4*m_xi*pow(-m_x,3)-6*(m_xi-1)*m_xi*pow(m_x,2)+2*m_xi*(pow(m_xi,2)-1)*(-1)*m_x)
-                // + pow(-m_x-1,3)*(pow(m_xi,5)+3*pow(m_xi,4)*(-m_x-1)+pow(m_xi,3)*(2+5*m_x)+2*m_xi*(-1)*m_x))
-                // + (1-2*cM)*pow( cM*(1-pow(m_xi,2))*(pow(m_xi,2)-pow(m_x,2))+pow(m_xi,2)*(-m_x-1),2)
-                // *(atanh(sqrt(cM/(1+cM)))-atanh(sqrt(cM/(1+cM))*(pow(m_xi,2)-m_x)/(-m_xi*(1+m_x)))))
-                // / (pow(1+cM,2.5)*pow(1-pow(m_xi,2),1.5)*pow(1+m_x,2)*sqrt(cM*(1-pow(m_xi,2)))*pow(pow(m_xi,2)+cM*(1-pow(m_xi,2))*(pow(m_xi,2)-pow(m_x,2))/pow(1+m_x,2),2));
 
     // TODO: Check and fix definitions of the the different quark distributions (u, uM, u+, u-, d(...) and s(...)).
     double uSea  = 0.;
@@ -403,8 +477,6 @@ void algebraicToyModel::computeDD()
     solver.setConditionNumberLimit( 1.0 / ( 10 * sqrt( 1e-15 ) ) );                                         // Upper limit on cond(Abar). Prevents small values of A and Abar.  
 
     RTmatrix.assign( m, nod, 0. );                                                                          // Resize RTmatrix attribute properly.
-
-    // DD.assign( nod, 0. );                                                                                   // Resize DD attribute properly
 
     for ( int i = 0; i < m; i++ )                                                                           // Set Radon transform matrix as a NumA::VectorD for NumA::LSMR to handle it.
     {
