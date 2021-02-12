@@ -83,16 +83,23 @@ protected:
     /**
       * Computation of odd D-term from numerical GPD from the soft-pion theorem.
       * 
-      * return Dminus as a interpolating object
+      * Returns Dminus as a interpolating object
       */
-    std::vector<double> computeDminus( NumA::Mesh& mesh, const vector<double>& DD );
+    std::vector<double> computeDminus( NumA::Mesh& mesh, const vector<double>& DD, vector<double>& x );
 
     /**
       * Computation of even D-term from numerical GPD from the soft-pion theorem.
       * 
-      * return Dplus as a interpolating object
+      * Returns Dplus as a interpolating object
       */
-    std::vector<double> computeDplus( NumA::Mesh& mesh, const vector<double>& DD );
+    std::vector<double> computeDplus( NumA::Mesh& mesh, const vector<double>& DD, vector<double>& x );
+
+    /**
+      * Computation of D-terms.  
+      * 
+      * Updates DtermsVec.
+      */
+    std::vector<std::vector<double>> computeDterms();
 
 private:
 
@@ -106,15 +113,17 @@ private:
     double alpha;                               // Kinematic variable for D-terms: \alpha = m_x/m_xi
 
     // TODO: Implement computation of D-terms in RT.
-    std::vector<double> DplusVec;               // Vector containing the numerical evaluation of the even D-term.
-    std::vector<double> DminusVec;              // Vector containing the numerical evaluation of the odd D-term.
+    std::vector<std::vector<double>> DtermsVec; // Matrix containing the numerical evaluation for the D-terms: DtermsVec[0]: Dminus (Odd D-term)
+                                                //                                                             DtermsVec[1]: Dplus (even D-term).
+                                                //                                                             DtermsVec[2]: x: Evaluation points of the D-terms.
 
     NumA::CubicSpline* Dplus;                   // Interpolator for even D-term.
     NumA::CubicSpline* Dminus;                  // Interpolator for odd D-term.
 
     NumA::Mesh mesh;                            // Mesh over the double distribution domain.
 
-    vector<double> DD;                          // Declare double distribution.
+    vector<double> DD;                          // Double distribution.
+    vector<double> DDt0;                        // Double distribution at zero momentum transfer (it is necessary for the computation of D-terms.)
     NumA::MatrixD RTmatrix;                     // Radon transform matrix for uVal.
 
 };
