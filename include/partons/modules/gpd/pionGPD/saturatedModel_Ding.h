@@ -1,12 +1,11 @@
-#ifndef PIONGPD_DING
-#define PIONGPD_DING
-
+#ifndef SATURATEDMODEL_DING_H
+#define SATURATEDMODEL_DING_H
 
 /**
  * @file saturatedModel_Ding.h
  * @author José Manuel Morgado Chavez (University Of Huelva)
  * @author Cédric Mezrag (CEA Saclay)
- * @date 2020
+ * @date 12th February 2021 
  * @version 1.0
  */
 
@@ -14,22 +13,36 @@
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <string>
 #include <vector>
+#include <iostream>
 
-#include "GPDModule.h"
+
+#include "../GPDModule.h"
+
+#include <include/NumA/linear_algebra/vector/VectorD.h>
+#include <include/NumA/linear_algebra/matrix/MatrixD.h>
+#include <include/NumA/triangulation/mesh.h>
+#include <include/NumA/RadonTransform/RadonTransform.h>
+
+#include <include/NumA/interpolation/CubicSpline.h>
 
 namespace PARTONS {
 
-class saturatedModel_Ding: public PARTONS::GPDModule {
+class saturatedModel_Ding: public PARTONS::GPDModule 
+{
+
 public:
+
     /**
      * ID assigned by BaseObjectRegistry.
      */
     static const unsigned int classId;
+
     /**
      * Default constructor.
      * @param className Name of class.
      */
     saturatedModel_Ding(const std::string& className);
+
     /**
      * Destructor.
      */
@@ -37,20 +50,84 @@ public:
     virtual saturatedModel_Ding* clone() const;
     virtual void resolveObjectDependencies();
     virtual void configure(const ElemUtils::Parameters &parameters);
+    // virtual std::string toString() const;
 
 protected:
+
     /**
      * Copy constructor.
      * @param other Object to be copied.
-     */
+     * */
+
     saturatedModel_Ding(const saturatedModel_Ding& other);
+
     virtual void isModuleWellConfigured();
     virtual void initModule();
+
     virtual PARTONS::PartonDistribution computeH();
 
-    void saturatedModel_Ding::HelloWorld();
+    /**
+      * Computation of the double distribution.
+      * 
+      * Sets the DD attribute of the class.
+      */
+    void computeDD();
+
+    /**
+      * Mesh building.
+      * 
+      * Sets the mesh attribute of the class.
+      */
+    NumA::Mesh setMesh();
+
+    /**
+      * Computation of odd D-term from numerical GPD from the soft-pion theorem.
+      * 
+      * Returns Dminus as a interpolating object
+      */
+    std::vector<double> computeDminus( NumA::Mesh& mesh, const vector<double>& DD, vector<double>& x );
+
+    /**
+      * Computation of even D-term from numerical GPD from the soft-pion theorem.
+      * 
+      * Returns Dplus as a interpolating object
+      */
+    std::vector<double> computeDplus( NumA::Mesh& mesh, const vector<double>& DD, vector<double>& x );
+
+    /**
+      * Computation of D-terms.  
+      * 
+      * Updates DtermsVec.
+      */
+    std::vector<std::vector<double>> computeDterms();
+
+private:
+
+    double c;                                   // t-dependece of the GPD model (parametrized as a monopole).
+                                                //! For the moment the implementation assumes that the whole model (GPD, Dplus and Dminus) behave (wrt t) in same way.
+                                                //! The t-dependence is thus completely factorized in an overal multiplicative factor c(t).
+    double m2;                                  // Squared pion mass scale.
+
+    double dplus;                               // Even D-term.
+    double dminus;                              // Odd D-term.
+    double alpha;                               // Kinematic variable for D-terms: \alpha = m_x/m_xi
+
+    // TODO: Implement computation of D-terms in RT.
+    std::vector<std::vector<double>> DtermsVec; // Matrix containing the numerical evaluation for the D-terms: DtermsVec[0]: Dminus (Odd D-term)
+                                                //                                                             DtermsVec[1]: Dplus (even D-term).
+                                                //                                                             DtermsVec[2]: x: Evaluation points of the D-terms.
+
+    NumA::CubicSpline* Dplus;                   // Interpolator for even D-term.
+    NumA::CubicSpline* Dminus;                  // Interpolator for odd D-term.
+
+    NumA::Mesh mesh;                            // Mesh over the double distribution domain.
+
+    vector<double> DDt0;                        // Double distribution at zero momentum transfer (it is necessary for the computation of D-terms.)
+    NumA::MatrixD RTmatrix;                     // Radon transform matrix for uVal.
 
 };
 
 
 } //end of namespace
+
+# endif
