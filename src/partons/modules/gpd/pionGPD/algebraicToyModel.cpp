@@ -273,14 +273,14 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
 
         if ( m_x > m_xi )                                                                                   // DGLAP>
         {
-            uVal  = 7.5 * pow(1 - m_x, 2.) * ( pow(m_x,2.) - pow(m_xi,2.) ) * (3 + ((1 - 2 * c) * atanh(c/(1+c)))/((1 + c) * sqrt(c/(1 + c))) )
-                / ( pow( 1 - pow(m_xi,2.) , 2.) * pow(1 + c,2) );
+            uVal  = 7.5 * pow(1 - m_x, 2.) * ( pow(m_x,2.) - pow(m_xi,2.) ) * (3 + ((1 - 2 * c) * atanh(sqrt(c/(1+c))))/((1 + c) * sqrt(c/(1 + c))) )
+                / ( pow( 1 - pow(m_xi,2.) , 2.) * pow(1 + c,2.) );
             uValM = 0.;
         } else if ( m_x < -m_xi )                                                                           // DGLAP>
         {
             uVal  = 0.;
-            uValM = 7.5 * pow(1 + m_x, 2.) * ( pow(m_x,2.) - pow(m_xi,2.) ) * (3 + ((1 - 2 * cM) * atanh(cM/(1+cM)))/((1 + cM) * sqrt(cM/(1 + cM))) )
-                / ( pow( 1 - pow(m_xi,2.) , 2.) * pow(1 + cM,2) );
+            uValM = 7.5 * pow(1 + m_x, 2.) * ( pow(m_x,2.) - pow(m_xi,2.) ) * (3 + ((1 - 2 * cM) * atanh(sqrt(cM/(1+cM))))/((1 + cM) * sqrt(cM/(1 + cM))) )
+                / ( pow( 1 - pow(m_xi,2.) , 2.) * pow(1 + cM,2.) );
         } else                                                                                              // ERBL
         {
             // if ( DD.empty() )
@@ -383,18 +383,19 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
             // ============================================================================================
 
             // (Gauged) ERBL GPD t < 0
-            uVal  = -3.75 * (pow(m_xi,2) - pow(m_x,2)) * ( sqrt(c * (c + 1)) * ( -c*m_xi*(1 - pow(m_xi,2))*(1 - m_x) 
+            uVal  = -3.75 * (pow(m_xi,2) - pow(m_x,2)) * (sqrt(c * (c + 1)) * ( -c*m_xi*(1 - pow(m_xi,2))*(1 - m_x) 
                 * (pow(m_xi,4) + 6*m_xi*(1-m_x)*pow(m_x,2)-6*pow(m_xi,3)*(1-m_x)+pow(m_xi,2)*(4-3*(3-m_x)*m_x)+m_x*(4-m_x*(8-5*m_x))) 
-                + pow(c,2)*pow(1-pow(m_xi,2),2)*(pow(m_xi,3)*(6*m_xi-2)+3*pow(m_x,4)-4*m_xi*pow(m_x,3)-6*(m_xi-1)*m_xi*pow(m_x,2)+2*m_xi*(pow(m_xi,2)-1)*m_x)
+                + pow(c,2)*pow(1-pow(m_xi,2),2)*(pow(m_xi,3)*(3*m_xi-2)+3*pow(m_x,4)-4*m_xi*pow(m_x,3)-6*(m_xi-1)*m_xi*pow(m_x,2)+2*m_xi*(pow(m_xi,2)-1)*m_x)
                 + pow(m_x-1,3)*(pow(m_xi,5)+3*pow(m_xi,4)*(m_x-1)+pow(m_xi,3)*(2-5*m_x)+2*m_xi*m_x))
-                + (1-2*c)*pow( c*(1-pow(m_xi,2))*(pow(m_xi,2)-pow(m_x,2))+pow(m_xi,2)*(m_x-1),2)
-                *(atanh(sqrt(c/(1+c)))-atanh(sqrt(c/(1+c))*(pow(m_xi,2)-m_x)/(m_xi*(1-m_x)))))
+                + (1-2*c)*pow( c*(1-pow(m_xi,2))*(pow(m_xi,2)-pow(m_x,2))+pow(m_xi,2)*pow((m_x-1),2),2)
+                *(atanh(sqrt(c/(1+c)))-atanh(sqrt(c/(1+c))*(pow(m_xi,2)-m_x)/(m_xi*(1-m_x))))                )
                 / (pow(1+c,2.5)*pow(1-pow(m_xi,2),1.5)*pow(1-m_x,2)*sqrt(c*(1-pow(m_xi,2)))*pow(pow(m_xi,2)+c*(1-pow(m_xi,2))*(pow(m_xi,2)-pow(m_x,2))/pow(1-m_x,2),2));
+
             uValM = -3.75 * (pow(m_xi,2) - pow(m_x,2)) * ( sqrt(cM * (cM + 1)) * ( -cM*m_xi*(1 - pow(m_xi,2))*(1 + m_x) 
                 * (pow(m_xi,4) + 6*m_xi*(1+m_x)*pow(m_x,2)-6*pow(m_xi,3)*(1+m_x)+pow(m_xi,2)*(4-3*(3+m_x)*(-1)*m_x)-m_x*(4+m_x*(8+5*m_x))) 
-                + pow(cM,2)*pow(1-pow(m_xi,2),2)*(pow(m_xi,3)*(6*m_xi-2)+3*pow(m_x,4)-4*m_xi*pow(-m_x,3)-6*(m_xi-1)*m_xi*pow(m_x,2)+2*m_xi*(pow(m_xi,2)-1)*(-1)*m_x)
+                + pow(cM,2)*pow(1-pow(m_xi,2),2)*(pow(m_xi,3)*(3*m_xi-2)+3*pow(m_x,4)-4*m_xi*pow(-m_x,3)-6*(m_xi-1)*m_xi*pow(m_x,2)+2*m_xi*(pow(m_xi,2)-1)*(-1)*m_x)
                 + pow(-m_x-1,3)*(pow(m_xi,5)+3*pow(m_xi,4)*(-m_x-1)+pow(m_xi,3)*(2+5*m_x)+2*m_xi*(-1)*m_x))
-                + (1-2*cM)*pow( cM*(1-pow(m_xi,2))*(pow(m_xi,2)-pow(m_x,2))+pow(m_xi,2)*(-m_x-1),2)
+                + (1-2*cM)*pow( cM*(1-pow(m_xi,2))*(pow(m_xi,2)-pow(m_x,2))+pow(m_xi,2)*pow((-m_x-1),2),2)
                 *(atanh(sqrt(cM/(1+cM)))-atanh(sqrt(cM/(1+cM))*(pow(m_xi,2)-m_x)/(-m_xi*(1+m_x)))))
                 / (pow(1+cM,2.5)*pow(1-pow(m_xi,2),1.5)*pow(1+m_x,2)*sqrt(cM*(1-pow(m_xi,2)))*pow(pow(m_xi,2)+cM*(1-pow(m_xi,2))*(pow(m_xi,2)-pow(m_x,2))/pow(1+m_x,2),2)); 
 
@@ -507,7 +508,7 @@ void algebraicToyModel::computeDD()
  
         for ( int i = 0; i < x.size(); i++ )
         {
-            GPD_DGLAP.at(i)  = 7.5 * pow(1 - x[i], 2.) * ( pow(x[i],2.) - pow(xi[i],2.) ) * (3 + ((1 - 2 * c) * atanh(c/(1+c)))/((1 + c) * sqrt(c/(1 + c))) )
+            GPD_DGLAP.at(i)  = 7.5 * pow(1 - x[i], 2.) * ( pow(x[i],2.) - pow(xi[i],2.) ) * (3 + ((1 - 2 * c) * atanh(sqrt(c/(1+c))))/((1 + c) * sqrt(c/(1 + c))) )
                 / ( pow( 1 - pow(xi[i],2.) , 2.) * pow(1 + c,2) );
         }
     }
