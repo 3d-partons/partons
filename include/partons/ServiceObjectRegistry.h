@@ -18,6 +18,7 @@ class CryptographicHashService;
 class DVCSConvolCoeffFunctionService;
 class TCSConvolCoeffFunctionService;
 class GPDService;
+class CollinearDistributionService;
 class DVCSObservableService;
 class TCSObservableService;
 class ServiceObject;
@@ -39,6 +40,7 @@ public:
     ServiceObject* get(const std::string &className) const;
 
     GPDService* getGPDService() const;
+    CollinearDistributionService* getCollinearDistributionService() const;
     DVCSConvolCoeffFunctionService* getDVCSConvolCoeffFunctionService() const;
     TCSConvolCoeffFunctionService* getTCSConvolCoeffFunctionService() const;
     DVCSObservableService* getDVCSObservableService() const;

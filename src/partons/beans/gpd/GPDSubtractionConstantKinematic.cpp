@@ -9,7 +9,7 @@
 
 namespace PARTONS {
 
-const std::string GPDSubtractionConstantKinematic::GPD_SUBTRACTION_CONSTANT_KNEMATIC_CLASS_NAME =
+const std::string GPDSubtractionConstantKinematic::GPD_SUBTRACTION_CONSTANT_KINEMATIC_CLASS_NAME =
         "GPDSubtractionConstantKinematic";
 
 const std::string GPDSubtractionConstantKinematic::KINEMATIC_PARAMETER_NAME_T =

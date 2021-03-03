@@ -33,7 +33,7 @@ class GPDSubtractionConstantKinematic: public Kinematic {
 
 public:
 
-    static const std::string GPD_SUBTRACTION_CONSTANT_KNEMATIC_CLASS_NAME; ///< Type of the kinematic in XML automation.
+    static const std::string GPD_SUBTRACTION_CONSTANT_KINEMATIC_CLASS_NAME; ///< Type of the kinematic in XML automation.
 
     /**
      * Parameter name to set variable \f$t\f$ via configuration methods.

@@ -15,6 +15,7 @@
 #include "convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "convol_coeff_function/TCS/TCSConvolCoeffFunctionKinematic.h"
 #include "gpd/GPDKinematic.h"
+#include "collinear_distribution/CollinearDistributionKinematic.h"
 #include "List.h"
 #include "observable/DVCS/DVCSObservableKinematic.h"
 #include "observable/TCS/TCSObservableKinematic.h"
@@ -50,6 +51,14 @@ public:
      * @return List of extracted GPDKinematic objects.
      */
     List<GPDKinematic> getGPDKinematicFromFile(const std::string &filePath);
+
+    /**
+     * Parse a text file in order to retrieve a list of CollienearDistributionKinematic objects.
+     * The parsed file should display separate lines of the form "x | MuF2 | MuR2".
+     * @param filePath Path to file to be parsed.
+     * @return List of extracted GPDKinematic objects.
+     */
+    List<CollinearDistributionKinematic> getCollinearDistributionKinematicFromFile(const std::string &filePath);
 
     /**
      * Parse a text file in order to retrieve a list of DVCSConvolCoeffFunctionKinematic objects.

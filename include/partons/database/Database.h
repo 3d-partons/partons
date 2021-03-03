@@ -47,6 +47,12 @@ public:
     static const std::string TABLE_NAME_GPD_RESULT;
     static const std::string COLUMN_NAME_GPD_RESULT_ID;
 
+    static const std::string TABLE_NAME_COLLINEAR_DISTRIBUTION_KINEMATIC;
+    static const std::string COLUMN_NAME_COLLINEAR_DISTRIBUTION_KINEMATIC_ID;
+
+    static const std::string TABLE_NAME_COLLINEAR_DISTRIBUTION_RESULT;
+    static const std::string COLUMN_NAME_COLLINEAR_DISTRIBUTION_RESULT_ID;
+
     static const std::string COLUMN_NAME_PARTON_DISTRIBUTION_ID;
 
     static const std::string TABLE_NAME_OBSERVABLE_KINEMATIC;
@@ -58,6 +64,8 @@ public:
     static const std::string COLUMN_NAME_OBSERVABLE_VALUE;
 
     static const std::string COLUMN_NAME_GPD_TYPE_ID;
+
+    static const std::string COLUMN_NAME_COLLINEAR_DISTRIBUTION_TYPE_ID;
 
     static const std::string COLUMN_NAME_GLUON_DISTRIBUTION;
 

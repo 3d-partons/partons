@@ -18,8 +18,6 @@
 
 namespace PARTONS {
 
-class MSTWPDF;
-
 /**
  * @class GPDMMS13
  *
@@ -77,8 +75,6 @@ private:
     int m_NHpE; ///< %Double distribution profile function parameter for H_DD + E_DD.
     int m_NE; ///< %Double distribution profile function parameter for E+.
     double m_C; ///< Scaling parameter for D term.
-
-    MSTWPDF* m_pForward;    ///< Pointer to MSTW PDFs.
 
     /** Forward limit of GPD H.
      @param beta %Double distribution parameter.
