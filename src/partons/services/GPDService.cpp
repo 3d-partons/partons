@@ -274,7 +274,7 @@ GPDKinematic GPDService::newKinematicFromTask(const Task& task) const {
 
     if (ElemUtils::StringUtils::equals(
             task.getKinematicsData().getModuleClassName(),
-            GPDKinematic::GPD_KNEMATIC_CLASS_NAME)) {
+            GPDKinematic::GPD_KINEMATIC_CLASS_NAME)) {
         kinematic.configure(task.getKinematicsData().getParameters());
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
@@ -293,7 +293,7 @@ List<GPDKinematic> GPDService::newListOfKinematicFromTask(
 
     if (ElemUtils::StringUtils::equals(
             task.getKinematicsData().getModuleClassName(),
-            GPDKinematic::GPD_KNEMATIC_CLASS_NAME)) {
+            GPDKinematic::GPD_KINEMATIC_CLASS_NAME)) {
 
         if (task.getKinematicsData().getParameters().isAvailable("file")) {
             listOfKinematic =

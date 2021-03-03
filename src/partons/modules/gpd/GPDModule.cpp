@@ -10,6 +10,7 @@
 #include "../../../../include/partons/beans/channel/ChannelType.h"
 #include "../../../../include/partons/beans/gpd/GPDKinematic.h"
 #include "../../../../include/partons/beans/Result.h"
+#include "../../../../include/partons/modules/collinear_distribution/CollinearDistributionModule.h"
 #include "../../../../include/partons/modules/evolution/gpd/GPDEvolutionModule.h"
 #include "../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../include/partons/Partons.h"
@@ -26,7 +27,8 @@ const std::string GPDModule::GPD_MODULE_CLASS_NAME = "GPDModule";
 GPDModule::GPDModule(const std::string &className) :
         ModuleObject(className, ChannelType::UNDEFINED), m_x(0.), m_xi(0.), m_t(
                 0.), m_MuF2(0.), m_MuR2(0.), m_currentGPDComputeType(
-                GPDType::ALL), m_MuF2_ref(0.), m_pGPDEvolutionModule(0) {
+                GPDType::ALL), m_MuF2_ref(0.), m_pGPDEvolutionModule(0), m_pCollinearDistributionModule(
+                0) {
 }
 
 GPDModule::GPDModule(const GPDModule &other) :
@@ -41,6 +43,14 @@ GPDModule::GPDModule(const GPDModule &other) :
         m_pGPDEvolutionModule = 0;
     }
 
+    if (other.m_pCollinearDistributionModule != 0) {
+        m_pCollinearDistributionModule =
+                m_pModuleObjectFactory->cloneModuleObject(
+                        other.m_pCollinearDistributionModule);
+    } else {
+        m_pCollinearDistributionModule = 0;
+    }
+
     m_listGPDComputeTypeAvailable = other.m_listGPDComputeTypeAvailable;
 }
 
@@ -49,6 +59,11 @@ GPDModule::~GPDModule() {
     if (m_pGPDEvolutionModule) {
         setEvolQcdModule(0);
         m_pGPDEvolutionModule = 0;
+    }
+
+    if (m_pCollinearDistributionModule) {
+        setPDFModule(0);
+        m_pCollinearDistributionModule = 0;
     }
 }
 
@@ -112,6 +127,8 @@ void GPDModule::prepareSubModules(
 
     std::map<std::string, BaseObjectData>::const_iterator it;
 
+    //evolution
+
     it = subModulesData.find(
             GPDEvolutionModule::GPD_EVOLUTION_MODULE_CLASS_NAME);
 
@@ -136,6 +153,38 @@ void GPDModule::prepareSubModules(
 
             m_pGPDEvolutionModule->configure((it->second).getParameters());
             m_pGPDEvolutionModule->prepareSubModules(
+                    (it->second).getSubModules());
+        }
+    }
+
+    //PDF
+
+    it =
+            subModulesData.find(
+                    CollinearDistributionModule::COLLINEAR_DISTRIBUTION_MODULE_CLASS_NAME);
+
+    if (it != subModulesData.end()) {
+
+        if (m_pCollinearDistributionModule) {
+
+            setPDFModule(0);
+            m_pCollinearDistributionModule = 0;
+        }
+
+        if (!m_pCollinearDistributionModule) {
+
+            m_pCollinearDistributionModule =
+                    Partons::getInstance()->getModuleObjectFactory()->newCollinearDistributionModule(
+                            (it->second).getModuleClassName());
+
+            info(__func__,
+                    ElemUtils::Formatter()
+                            << "Configure with CollinearDistributionModule = "
+                            << m_pCollinearDistributionModule->getClassName());
+
+            m_pCollinearDistributionModule->configure(
+                    (it->second).getParameters());
+            m_pCollinearDistributionModule->prepareSubModules(
                     (it->second).getSubModules());
         }
     }
@@ -189,11 +238,11 @@ GPDResult GPDModule::compute(const GPDKinematic &kinematic,
                 GPDModule* gpdModule =
                         m_pModuleObjectFactory->cloneModuleObject(this);
 
-                partonDistribution = m_pGPDEvolutionModule->compute(m_x, m_xi,
-                        m_t, m_MuF2, m_MuR2, gpdModule, (m_it->first));
+                partonDistribution = m_pGPDEvolutionModule->compute(kinematic,
+                        gpdModule, (m_it->first));
 
                 m_pModuleObjectFactory->updateModulePointerReference(gpdModule,
-                          0);
+                        0);
             } else {
                 partonDistribution = ((*this).*(m_it->second))();
             }
@@ -248,6 +297,16 @@ void GPDModule::setEvolQcdModule(GPDEvolutionModule* pEvolQcdModule) {
     m_pModuleObjectFactory->updateModulePointerReference(m_pGPDEvolutionModule,
             pEvolQcdModule);
     m_pGPDEvolutionModule = pEvolQcdModule;
+}
+
+const CollinearDistributionModule* GPDModule::getPDFModule() const {
+    return m_pCollinearDistributionModule;
+}
+
+void GPDModule::setPDFModule(CollinearDistributionModule* pPDFModule) {
+    m_pModuleObjectFactory->updateModulePointerReference(
+            m_pCollinearDistributionModule, pPDFModule);
+    m_pCollinearDistributionModule = pPDFModule;
 }
 
 PartonDistribution GPDModule::computeH() {

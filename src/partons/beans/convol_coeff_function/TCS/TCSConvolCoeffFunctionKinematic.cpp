@@ -10,7 +10,7 @@
 
 namespace PARTONS {
 
-const std::string TCSConvolCoeffFunctionKinematic::TCS_CONVOL_COEFF_FUNCTION_KNEMATIC_CLASS_NAME =
+const std::string TCSConvolCoeffFunctionKinematic::TCS_CONVOL_COEFF_FUNCTION_KINEMATIC_CLASS_NAME =
         "TCSConvolCoeffFunctionKinematic";
 
 TCSConvolCoeffFunctionKinematic::TCSConvolCoeffFunctionKinematic() :

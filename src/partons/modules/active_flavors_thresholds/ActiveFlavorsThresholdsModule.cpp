@@ -94,7 +94,7 @@ ActiveFlavorsThresholds ActiveFlavorsThresholdsModule::getNfInterval(
 
         warn(__func__,
                 ElemUtils::Formatter() << "Mu2 " << Mu2
-                        << " grater than the last interval. The last interval is returned with the modified upper bound equal "
+                        << " greater than the last interval. The last interval is returned with the modified upper bound equal "
                         << Mu2);
     }
     // case first interval <= Mu2 < last threshold

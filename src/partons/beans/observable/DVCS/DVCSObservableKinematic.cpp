@@ -10,7 +10,7 @@
 
 namespace PARTONS {
 
-const std::string DVCSObservableKinematic::DVCS_OBSERVABLE_KNEMATIC_CLASS_NAME =
+const std::string DVCSObservableKinematic::DVCS_OBSERVABLE_KINEMATIC_CLASS_NAME =
         "DVCSObservableKinematic";
 
 const std::string DVCSObservableKinematic::KINEMATIC_PARAMETER_NAME_XB = "xB";

@@ -15,18 +15,20 @@
 #include "../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../include/partons/utils/MSTWPDF.h"
 #include "../../../../include/partons/utils/PartonContent.h"
 
 namespace PARTONS {
 
+const std::string GPDMPSSW13::PARAM_NAME_SET_NAME = "setName";
+const std::string GPDMPSSW13::PARAM_NAME_MEMBER = "member";
 
 const unsigned int GPDMPSSW13::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new GPDMPSSW13("GPDMPSSW13"));
 
 GPDMPSSW13::GPDMPSSW13(const std::string &className) :
-        GPDModule(className), MathIntegratorModule(), m_Forward(0), m_NbOfQuarkFlavor(
+        GPDModule(className), MathIntegratorModule(), m_Forward(0), m_setName("UNDEFINED"),
+	m_member(0), m_NbOfQuarkFlavor(
                 2), m_NbOfColor(3), m_Mx(0.), m_CA(3.), m_CF(4. / 3.), m_TF(
                 1. / 2.), m_F1u(0.), m_F1d(0.), m_FD(0.), m_ProfileShapeVal(1.), m_ProfileShapeSea(
                 2.), m_ProfileShapeGlue(2.), m_QuarkDTerm(0.), m_GluonDTerm(0.) {
@@ -58,12 +60,9 @@ GPDMPSSW13::GPDMPSSW13(const GPDMPSSW13& other) :
     m_ProfileShapeGlue = other.m_ProfileShapeGlue;
     m_QuarkDTerm = other.m_QuarkDTerm;
     m_GluonDTerm = other.m_GluonDTerm;
-
-    //TODO make a clone instance ; create MSTWPDF as a module.
-    m_Forward = new MSTWPDF();
-    m_Forward->init(
-            ElemUtils::PropertiesManager::getInstance()->getString(
-                    "grid.directory") + "mstw2008nlo.00.dat");
+    m_setName = other.m_setName;
+    m_member = other.m_member;
+    m_Forward = other.m_Forward;
 
     initFunctorsForIntegrations();
 }
@@ -143,8 +142,24 @@ void GPDMPSSW13::resolveObjectDependencies() {
 
 void GPDMPSSW13::configure(const ElemUtils::Parameters &parameters){
 
-	GPDModule::configure(parameters);
-	MathIntegratorModule::configureIntegrator(parameters);
+    GPDModule::configure(parameters);
+    MathIntegratorModule::configureIntegrator(parameters);
+
+    // LHAPDF in silent mode
+    LHAPDF::setVerbosity(0);
+
+    //check and set
+    if (parameters.isAvailable(GPDMPSSW13::PARAM_NAME_SET_NAME)) {
+        setSetName(parameters.getLastAvailable().getString());
+	info(__func__, ElemUtils::Formatter() << GPDMPSSW13::PARAM_NAME_SET_NAME
+	     << " configured with value = " << getSetName());
+    }
+
+    if (parameters.isAvailable(GPDMPSSW13::PARAM_NAME_MEMBER)) {
+        setMember(parameters.getLastAvailable().toUInt());
+	info(__func__, ElemUtils::Formatter() << GPDMPSSW13::PARAM_NAME_MEMBER
+	     << " configured with value = " << getMember());
+    }
 }
 
 GPDMPSSW13* GPDMPSSW13::clone() const {
@@ -540,11 +555,8 @@ double GPDMPSSW13::IntegralHuVal(double x, std::vector<double> Par) {
         throwBetaException(__func__, x);
     }
 
-//  m_Forward->Setx( beta );
-//  pdf = m_Forward->GetuVal();
-    m_Forward->update(absbeta, sqrt(m_MuF2));
     if (beta > 0) {
-        pdf = m_Forward->getPartonContent().getUpv() / absbeta;
+        pdf = ( m_Forward->xfxQ2(2, absbeta, m_MuF2) - m_Forward->xfxQ2(-2, absbeta, m_MuF2) ) / absbeta;
     } else {
         pdf = 0.;
     }
@@ -566,11 +578,8 @@ double GPDMPSSW13::IntegralHuValMx(double x, std::vector<double> Par) {
         throwBetaException(__func__, x);
     }
 
-//  m_Forward->Setx( beta );
-//  pdf = m_Forward->GetuVal();
-    m_Forward->update(absbeta, sqrt(m_MuF2));
     if (beta > 0) {
-        pdf = m_Forward->getPartonContent().getUpv() / absbeta;
+        pdf = ( m_Forward->xfxQ2(2, absbeta, m_MuF2) - m_Forward->xfxQ2(-2, absbeta, m_MuF2) ) / absbeta;
     } else {
         pdf = 0.;
     }
@@ -592,10 +601,7 @@ double GPDMPSSW13::IntegralxLargeHuSea(double x, std::vector<double> Par) {
         throwBetaException(__func__, x);
     }
 
-//  m_Forward->Setx( beta );
-//  pdf = m_Forward->GetuSea();
-    m_Forward->update(absbeta, sqrt(m_MuF2));
-    pdf = m_Forward->getPartonContent().getUsea() / absbeta;
+    pdf = m_Forward->xfxQ2(-2, absbeta, m_MuF2) / absbeta;
     Integral = pdf * Profile(m_ProfileShapeSea, beta, (m_x - beta) / m_xi);
     Integral /= m_xi;
     Integral *= m_F1u / 2.;
@@ -614,10 +620,7 @@ double GPDMPSSW13::IntegralxLargeHuSeaMx(double x, std::vector<double> Par) {
         throwBetaException(__func__, x);
     }
 
-//  m_Forward->Setx( beta );
-//  pdf = m_Forward->GetuSea();
-    m_Forward->update(absbeta, sqrt(m_MuF2));
-    pdf = m_Forward->getPartonContent().getUsea() / absbeta;
+    pdf = m_Forward->xfxQ2(-2, absbeta, m_MuF2) / absbeta;
     Integral = pdf * Profile(m_ProfileShapeSea, beta, (m_x + beta) / m_xi);
     Integral /= m_xi;
     Integral *= m_F1u / 2.;
@@ -636,10 +639,7 @@ double GPDMPSSW13::IntegralxSmall1HuSea(double x, std::vector<double> Par) {
         throwBetaException(__func__, x);
     }
 
-//  m_Forward->Setx( beta );
-//  pdf = m_Forward->GetuSea();
-    m_Forward->update(absbeta, sqrt(m_MuF2));
-    pdf = m_Forward->getPartonContent().getUsea() / absbeta;
+    pdf = m_Forward->xfxQ2(-2, absbeta, m_MuF2) / absbeta;
     Integral = pdf * Profile(m_ProfileShapeSea, beta, (m_x - beta) / m_xi);
     Integral /= m_xi;
     Integral *= m_F1u / 2.;
@@ -658,17 +658,8 @@ double GPDMPSSW13::IntegralxSmall2HuSea(double x, std::vector<double> Par) {
         throwBetaException(__func__, x);
     }
 
-//  m_Forward->Setx( beta );
-//  pdf = m_Forward->GetuSea();
-    m_Forward->update(absbeta, sqrt(m_MuF2));
-    pdf = m_Forward->getPartonContent().getUsea() / absbeta;
+    pdf = m_Forward->xfxQ2(-2, absbeta, m_MuF2) / absbeta;
 
-    /*    m_Forward->update(absbeta, sqrt(m_MuF2));
-     if (beta > 0) {
-     pdf = m_Forward->getPartonContent().getUpv() / absbeta;
-     } else {
-
-     }*/ //  Possible source of the error, J.Wagner
     Integral = Profile(m_ProfileShapeSea, beta, (m_x - beta) / m_xi);
     Integral += -Profile(m_ProfileShapeSea, beta, (m_x + beta) / m_xi);
     Integral *= pdf;
@@ -689,11 +680,8 @@ double GPDMPSSW13::IntegralHdVal(double x, std::vector<double> Par) {
         throwBetaException(__func__, x);
     }
 
-//  m_Forward->Setx( beta );
-//  pdf = m_Forward->GetdVal();
-    m_Forward->update(absbeta, sqrt(m_MuF2));
     if (beta > 0) {
-        pdf = m_Forward->getPartonContent().getDnv() / absbeta;
+	pdf = ( m_Forward->xfxQ2(1, absbeta, m_MuF2) - m_Forward->xfxQ2(-1, absbeta, m_MuF2) ) / absbeta;
     } else {
         pdf = 0.;
     }
@@ -715,11 +703,8 @@ double GPDMPSSW13::IntegralHdValMx(double x, std::vector<double> Par) {
         throwBetaException(__func__, x);
     }
 
-//  m_Forward->Setx( beta );
-//  pdf = m_Forward->GetdVal();
-    m_Forward->update(absbeta, sqrt(m_MuF2));
     if (beta > 0) {
-        pdf = m_Forward->getPartonContent().getDnv() / absbeta;
+	pdf = ( m_Forward->xfxQ2(1, absbeta, m_MuF2) - m_Forward->xfxQ2(-1, absbeta, m_MuF2) ) / absbeta;
     } else {
         pdf = 0.;
     }
@@ -741,10 +726,7 @@ double GPDMPSSW13::IntegralxLargeHdSea(double x, std::vector<double> Par) {
         throwBetaException(__func__, x);
     }
 
-//  m_Forward->Setx( beta );
-//  pdf = m_Forward->GetdSea();
-    m_Forward->update(absbeta, sqrt(m_MuF2));
-    pdf = m_Forward->getPartonContent().getDsea() / absbeta;
+    pdf = m_Forward->xfxQ2(-1, absbeta, m_MuF2) / absbeta;
     Integral = pdf * Profile(m_ProfileShapeSea, beta, (m_x - beta) / m_xi);
     Integral /= m_xi;
     Integral *= m_F1d;
@@ -763,10 +745,7 @@ double GPDMPSSW13::IntegralxLargeHdSeaMx(double x, std::vector<double> Par) {
         throwBetaException(__func__, x);
     }
 
-//  m_Forward->Setx( beta );
-//  pdf = m_Forward->GetdSea();
-    m_Forward->update(absbeta, sqrt(m_MuF2));
-    pdf = m_Forward->getPartonContent().getDsea() / absbeta;
+    pdf = m_Forward->xfxQ2(-1, absbeta, m_MuF2) / absbeta;
     Integral = pdf * Profile(m_ProfileShapeSea, beta, (m_x + beta) / m_xi);
     Integral /= m_xi;
     Integral *= m_F1d;
@@ -785,10 +764,7 @@ double GPDMPSSW13::IntegralxSmall1HdSea(double x, std::vector<double> Par) {
         throwBetaException(__func__, x);
     }
 
-//  m_Forward->Setx( beta );
-//  pdf = m_Forward->GetdSea();
-    m_Forward->update(absbeta, sqrt(m_MuF2));
-    pdf = m_Forward->getPartonContent().getDsea() / absbeta;
+    pdf = m_Forward->xfxQ2(-1, absbeta, m_MuF2) / absbeta;
     Integral = pdf * Profile(m_ProfileShapeSea, beta, (m_x - beta) / m_xi);
     Integral /= m_xi;
     Integral *= m_F1d;
@@ -807,10 +783,7 @@ double GPDMPSSW13::IntegralxSmall2HdSea(double x, std::vector<double> Par) {
         throwBetaException(__func__, x);
     }
 
-//  m_Forward->Setx( beta );
-//  pdf = m_Forward->GetdSea();
-    m_Forward->update(absbeta, sqrt(m_MuF2));
-    pdf = m_Forward->getPartonContent().getDsea() / absbeta;
+    pdf = m_Forward->xfxQ2(-1, absbeta, m_MuF2) / absbeta;
     Integral = Profile(m_ProfileShapeSea, beta, (m_x - beta) / m_xi);
     Integral += -Profile(m_ProfileShapeSea, beta, (m_x + beta) / m_xi);
     Integral *= pdf;
@@ -831,10 +804,7 @@ double GPDMPSSW13::IntegralxLargeHsSea(double x, std::vector<double> Par) {
         throwBetaException(__func__, x);
     }
 
-//  m_Forward->Setx( beta );
-//  pdf = m_Forward->GetdSea();
-    m_Forward->update(absbeta, sqrt(m_MuF2));
-    pdf = m_Forward->getPartonContent().getSbar() / absbeta;
+    pdf = m_Forward->xfxQ2(-3, absbeta, m_MuF2) / absbeta;
     Integral = pdf * Profile(m_ProfileShapeSea, beta, (m_x - beta) / m_xi);
     Integral /= m_xi;
     Integral *= m_FD;
@@ -853,10 +823,7 @@ double GPDMPSSW13::IntegralxLargeHsSeaMx(double x, std::vector<double> Par) {
         throwBetaException(__func__, x);
     }
 
-//  m_Forward->Setx( beta );
-//  pdf = m_Forward->GetdSea();
-    m_Forward->update(absbeta, sqrt(m_MuF2));
-    pdf = m_Forward->getPartonContent().getSbar() / absbeta;
+    pdf = m_Forward->xfxQ2(-3, absbeta, m_MuF2) / absbeta;
     Integral = pdf * Profile(m_ProfileShapeSea, beta, (m_x + beta) / m_xi);
     Integral /= m_xi;
     Integral *= m_FD;
@@ -875,13 +842,10 @@ double GPDMPSSW13::IntegralxSmall1HsSea(double x, std::vector<double> Par) {
         throwBetaException(__func__, x);
     }
 
-//  m_Forward->Setx( beta );
-//  pdf = m_Forward->Gets();
-    m_Forward->update(absbeta, sqrt(m_MuF2));
     if (beta > 0) {
-        pdf = m_Forward->getPartonContent().getSbar() / absbeta;
+	pdf = m_Forward->xfxQ2(-3, absbeta, m_MuF2) / absbeta;
     } else {
-        pdf = -m_Forward->getPartonContent().getSbar() / absbeta;
+	pdf = - m_Forward->xfxQ2(-3, absbeta, m_MuF2) / absbeta;
     }
     Integral = pdf * Profile(m_ProfileShapeSea, beta, (m_x - beta) / m_xi);
     Integral /= m_xi;
@@ -901,13 +865,10 @@ double GPDMPSSW13::IntegralxSmall2HsSea(double x, std::vector<double> Par) {
         throwBetaException(__func__, x);
     }
 
-//  m_Forward->Setx( beta );
-//  pdf = m_Forward->Gets();
-    m_Forward->update(absbeta, sqrt(m_MuF2));
     if (beta > 0) {
-        pdf = m_Forward->getPartonContent().getSbar() / absbeta;
+	pdf = m_Forward->xfxQ2(-3, absbeta, m_MuF2) / absbeta;
     } else {
-        pdf = -m_Forward->getPartonContent().getSbar() / absbeta;
+	pdf = - m_Forward->xfxQ2(-3, absbeta, m_MuF2) / absbeta;
     }
     Integral = Profile(m_ProfileShapeSea, beta, (m_x - beta) / m_xi);
     Integral += -Profile(m_ProfileShapeSea, beta, (m_x + beta) / m_xi);
@@ -929,10 +890,7 @@ double GPDMPSSW13::IntegralxLargeHg(double x, std::vector<double> Par) {
         throwBetaException(__func__, x);
     }
 
-//  m_Forward->Setx( beta );
-//  pdf = m_Forward->Getg();
-    m_Forward->update(absbeta, sqrt(m_MuF2));
-    pdf = m_Forward->getPartonContent().getGlu() / absbeta;
+    pdf = m_Forward->xfxQ2(21, absbeta, m_MuF2) / absbeta;
     Integral = pdf * beta
             * Profile(m_ProfileShapeGlue, beta, (m_x - beta) / m_xi);
     Integral /= m_xi;
@@ -952,10 +910,7 @@ double GPDMPSSW13::IntegralxLargeHgMx(double x, std::vector<double> Par) {
         throwBetaException(__func__, x);
     }
 
-//  m_Forward->Setx( beta );
-//  pdf = m_Forward->Getg();
-    m_Forward->update(absbeta, sqrt(m_MuF2));
-    pdf = m_Forward->getPartonContent().getGlu() / absbeta;
+    pdf = m_Forward->xfxQ2(21, absbeta, m_MuF2) / absbeta;
     Integral = pdf * beta
             * Profile(m_ProfileShapeGlue, beta, (m_x + beta) / m_xi);
     Integral /= m_xi;
@@ -975,10 +930,7 @@ double GPDMPSSW13::IntegralxSmall1Hg(double x, std::vector<double> Par) {
         throwBetaException(__func__, x);
     }
 
-//  m_Forward->Setx( beta );
-//  pdf = m_Forward->Getg();
-    m_Forward->update(absbeta, sqrt(m_MuF2));
-    pdf = m_Forward->getPartonContent().getGlu() / absbeta;
+    pdf = m_Forward->xfxQ2(21, absbeta, m_MuF2) / absbeta;
     Integral = pdf * beta
             * Profile(m_ProfileShapeGlue, beta, (m_x - beta) / m_xi);
     Integral /= m_xi;
@@ -998,10 +950,7 @@ double GPDMPSSW13::IntegralxSmall2Hg(double x, std::vector<double> Par) {
         throwBetaException(__func__, x);
     }
 
-//  m_Forward->Setx( beta );
-//  pdf = m_Forward->Getg();
-    m_Forward->update(absbeta, sqrt(m_MuF2));
-    pdf = m_Forward->getPartonContent().getGlu() / absbeta;
+    pdf = m_Forward->xfxQ2(21, absbeta, m_MuF2) / absbeta;
     Integral = pdf * beta
             * Profile(m_ProfileShapeSea, beta, (m_x + beta) / m_xi);
     Integral /= m_xi;
@@ -1066,12 +1015,26 @@ double GPDMPSSW13::GammaGG(const unsigned int nflavour,
 void GPDMPSSW13::initModule() {
     GPDModule::initModule();
 
+    if (m_Forward == nullptr) {
+        m_Forward = LHAPDF::mkPDF(m_setName, m_member);
+    }
+
     debug(__func__, ElemUtils::Formatter() << "fMuF2 = " << m_MuF2);
 }
 
 //TODO implement
 void GPDMPSSW13::isModuleWellConfigured() {
     GPDModule::isModuleWellConfigured();
+
+    //check that the set name in no UNDEFINED
+    if (m_setName == "UNDEFINED") {
+        throw ElemUtils::CustomException(getClassName(), __func__, ElemUtils::Formatter() << "The set name is undefined");
+    }
+
+    //check that the member index is non-negative
+    if (m_member < 0) {
+        throw ElemUtils::CustomException(getClassName(), __func__, ElemUtils::Formatter() << "The member index is negative");
+    }
 }
 
 double GPDMPSSW13::getCA() const {
@@ -1150,10 +1113,6 @@ PartonDistribution GPDMPSSW13::computeH() {
 
     double Beta1Mx = (m_Mx - m_xi) / (1. - m_xi); // eq. (54) in A. Radyushkin's paper
     double Beta2Mx = (m_Mx + m_xi) / (1. + m_xi); // eq. (54) in A. Radyushkin's paper
-
-    // Scales
-//  m_Forward->SetFactorizationScale( m_MuF2 );
-//  m_Forward->SetRenormalizationScale( m_MuR2 );
 
     // Form factors and D-Terms
     ComputeFormFactors();
@@ -1332,6 +1291,22 @@ PartonDistribution GPDMPSSW13::computeH() {
     partonDistribution.addQuarkDistribution(quarkDistribution_s);
 
     return partonDistribution;
+}
+
+void GPDMPSSW13::setSetName(const std::string &setname) {
+    m_setName = setname;
+}
+
+void GPDMPSSW13::setMember(const int &member) {
+    m_member = member;
+}
+
+std::string GPDMPSSW13::getSetName() const {
+    return m_setName;
+}
+
+int GPDMPSSW13::getMember() const {
+    return m_member;
 }
 
 } /* namespace PARTONS */
