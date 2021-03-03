@@ -5,7 +5,7 @@
  * @file algebraicToyModel.h
  * @author José Manuel Morgado Chavez (University Of Huelva)
  * @author Cédric Mezrag (CEA Saclay)
- * @date 11th February 2021 
+ * @date 3rd March 2021 
  * @version 1.0
  */
 
@@ -71,7 +71,7 @@ protected:
       * 
       * Sets the DD attribute of the class.
       */
-    void computeDD();
+    void computeDD( bool t0 );
 
     /**
       * Mesh building.

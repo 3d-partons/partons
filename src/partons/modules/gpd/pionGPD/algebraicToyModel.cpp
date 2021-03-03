@@ -2,7 +2,7 @@
  * @file algebraicToyModel.cpp
  * @author José Manuel Morgado Chavez (University Of Huelva)
  * @author Cédric Mezrag (CEA Saclay)
- * @date 23rd February 2021 
+ * @date 3rd March 2021 
  * @version 1.0
  */
 
@@ -153,7 +153,7 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
                 // Compute DD (Proper computation)
                 // ============================================================================================
 
-                computeDD();                                                                             
+                computeDD( 1 );                                                                             
                 
                 // ============================================================================================
                 // Compute DD (Reading from file)
@@ -196,7 +196,7 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
             NumA::RadonTransform RT;                                                                        // Radon transform matrix for uVal.
             NumA::RadonTransform RTminus;                                                                   // Radon transform matrix for uValM.
  
-            x[0] = m_x; xi[0] = m_xi; y[0] = m_xi/m_x;                                                      // Kienmatics written in proper format.
+            x[0] = m_x; xi[0] = m_xi; y[0] = m_xi/m_x;                                                      // Kinematics written in proper format.
             xm[0] = -m_x; xim[0] = m_xi; ym[0] = -m_xi/m_x;
  
             RT.RTMatrix.clear();                                                                            // Radon transform matrix for uVal.
@@ -204,7 +204,7 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
  
             RTminus.RTMatrix.clear();                                                                       // Radon transform matrix for uValM.
             RTminus.build_RTmatrix(mesh, xm, ym, xim);
- 
+
             for ( int i = 0; i < DDt0.size() ; i++ )
             {
                 uVal += RT.RTMatrix[0][i]*DDt0[i];
@@ -289,7 +289,7 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
                 // Compute DD (Proper computation)
                 // ============================================================================================
 
-                computeDD();                                                                                
+                computeDD( 0 );                                                                                
                 
                 // ============================================================================================
                 // Compute DD (Reading from file)
@@ -298,7 +298,7 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
                 // mesh = setMesh();                                                                        // Set Mesh according to the computations that have been carried out.
                      
                 // ifstream DoubleDistribution;                                                                 
-                // DoubleDistribution.open("/usr/local/share/data/DoubleDistribution/AlgebraicToyModel/AverageDD-50it-1e-7-P1.dat");
+                // DoubleDistribution.open("/home/jose/git/partons_computations/data/RadonTransform/DD/DDt06.dat");
  
                 // string linedd;
                 // double d;
@@ -468,7 +468,7 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
     return partonDistribution;
 }
 
-void algebraicToyModel::computeDD()
+void algebraicToyModel::computeDD( bool t0 )
 {
     // STEP 1: Build triangulation.
     mesh = setMesh();
@@ -539,11 +539,22 @@ void algebraicToyModel::computeDD()
     DoubleDistribution = solver.solve( RTmatrix, GPD_DGLAP);                                                // Computation of the double distribution.  
 
     // STEP 5: Update DD attribute with computed values.
-    DD.resize( nod );                                                                                       // Resize DD attribute to match the number of interpolation nodes.
+    if ( t0 )
+    {        
+        DDt0.resize( nod );                                                                                 // Resize DD attribute to match the number of interpolation nodes.
 
-    for ( int i = 0; i < nod; i++ )                                                                         // Update DD attribute with values in DoubleDistribution.
+        for ( int i = 0; i < nod; i++ )                                                                     // Update DD attribute with values in DoubleDistribution.
+        {
+            DDt0.at(i) = DoubleDistribution.at(i);
+        }
+    } else
     {
-        DD.at(i) = DoubleDistribution.at(i);
+        DD.resize( nod );                                                                                   // Resize DD attribute to match the number of interpolation nodes.
+
+        for ( int i = 0; i < nod; i++ )                                                                     // Update DD attribute with values in DoubleDistribution.
+        {
+            DD.at(i) = DoubleDistribution.at(i);
+        }
     }
 
 return;
@@ -765,7 +776,7 @@ std::vector<std::vector<double>> algebraicToyModel::computeDterms()
 return Dterms;
 }
 
-vector<double> algebraicToyModel::computeDminus( NumA::Mesh& mesh, const vector<double>& DD, vector<double>& x )
+vector<double> algebraicToyModel::computeDminus( NumA::Mesh& mesh, const vector<double>& DDt0, vector<double>& x )
 {
     // Dminus = 0.5(H(-x,1,0) - H(x,1,0))
 
@@ -796,9 +807,9 @@ vector<double> algebraicToyModel::computeDminus( NumA::Mesh& mesh, const vector<
 
     for ( int i = 0; i < x.size(); i++ )
     {
-        for ( int j = 0; j < DD.size(); j++ )
+        for ( int j = 0; j < DDt0.size(); j++ )
         {
-            Hx1[i] += RT.RTMatrix[i][j]*DD[j];
+            Hx1[i] += RT.RTMatrix[i][j]*DDt0[j];
         }
     }
 
@@ -807,9 +818,9 @@ vector<double> algebraicToyModel::computeDminus( NumA::Mesh& mesh, const vector<
    
     for ( int i = 0; i < x.size(); i++ )
     {
-        for ( int j = 0; j < DD.size(); j++ )
+        for ( int j = 0; j < DDt0.size(); j++ )
         {
-            Hx1minus[i] += RTminus.RTMatrix[i][j]*DD[j];
+            Hx1minus[i] += RTminus.RTMatrix[i][j]*DDt0[j];
         }
     }
 
@@ -824,7 +835,7 @@ vector<double> algebraicToyModel::computeDminus( NumA::Mesh& mesh, const vector<
 return DminusVec;
 }
 
-std::vector<double> algebraicToyModel::computeDplus( NumA::Mesh& mesh, const vector<double>& DD, vector<double>& x )
+std::vector<double> algebraicToyModel::computeDplus( NumA::Mesh& mesh, const vector<double>& DDt0, vector<double>& x )
 {
     // Dplus = 0.5(phi((1+x)/2) - H(-x,1,0) - H(x,1,0))
 
@@ -855,9 +866,9 @@ std::vector<double> algebraicToyModel::computeDplus( NumA::Mesh& mesh, const vec
 
     for ( int i = 0; i < x.size(); i++ )
     {
-        for ( int j = 0; j < DD.size(); j++ )
+        for ( int j = 0; j < DDt0.size(); j++ )
         {
-            Hx1[i] += RT.RTMatrix[i][j]*DD[j];
+            Hx1[i] += RT.RTMatrix[i][j]*DDt0[j];
         }
     }
 
@@ -866,9 +877,9 @@ std::vector<double> algebraicToyModel::computeDplus( NumA::Mesh& mesh, const vec
    
     for ( int i = 0; i < x.size(); i++ )
     {
-        for ( int j = 0; j < DD.size(); j++ )
+        for ( int j = 0; j < DDt0.size(); j++ )
         {
-            Hx1minus[i] += RTminus.RTMatrix[i][j]*DD[j];
+            Hx1minus[i] += RTminus.RTMatrix[i][j]*DDt0[j];
         }
     }
 
