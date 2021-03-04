@@ -18,12 +18,12 @@
 
 #include "../GPDModule.h"
 
-#include <include/NumA/linear_algebra/vector/VectorD.h>
-#include <include/NumA/linear_algebra/matrix/MatrixD.h>
-#include <include/NumA/triangulation/mesh.h>
-#include <include/NumA/RadonTransform/RadonTransform.h>
+#include <NumA/linear_algebra/vector/VectorD.h>
+#include <NumA/linear_algebra/matrix/MatrixD.h>
+#include <NumA/triangulation/mesh.h>
+#include <NumA/RadonTransform/RadonTransform.h>
 
-#include <include/NumA/interpolation/CubicSpline.h>
+#include <NumA/interpolation/CubicSpline.h>
 
 namespace PARTONS {
 
@@ -110,6 +110,7 @@ private:
 
     double dplus;                               // Even D-term.
     double dminus;                              // Odd D-term.
+    double dt;                                  // D-term t-dependence parametrized as a monopole: 1//(1-t/4m2)
     double alpha;                               // Kinematic variable for D-terms: \alpha = m_x/m_xi
 
     // TODO: Implement computation of D-terms in RT.
@@ -122,6 +123,7 @@ private:
 
     NumA::Mesh mesh;                            // Mesh over the double distribution domain.
 
+    vector<double> DD;                          // Double distribution.
     vector<double> DDt0;                        // Double distribution at zero momentum transfer (it is necessary for the computation of D-terms.)
     NumA::MatrixD RTmatrix;                     // Radon transform matrix for uVal.
 

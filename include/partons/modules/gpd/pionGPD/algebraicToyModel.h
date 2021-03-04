@@ -18,12 +18,12 @@
 
 #include "../GPDModule.h"
 
-#include <include/NumA/linear_algebra/vector/VectorD.h>
-#include <include/NumA/linear_algebra/matrix/MatrixD.h>
-#include <include/NumA/triangulation/mesh.h>
-#include <include/NumA/RadonTransform/RadonTransform.h>
+#include <NumA/linear_algebra/vector/VectorD.h>
+#include <NumA/linear_algebra/matrix/MatrixD.h>
+#include <NumA/triangulation/mesh.h>
+#include <NumA/RadonTransform/RadonTransform.h>
 
-#include <include/NumA/interpolation/CubicSpline.h>
+#include <NumA/interpolation/CubicSpline.h>
 
 namespace PARTONS {
 

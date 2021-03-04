@@ -35,13 +35,13 @@
 #include <utility>
 
 // Numerical extension.
-#include <include/NumA/RadonTransform/RadonTransform.h>
-#include <include/NumA/triangulation/mesh.h>
-#include <include/NumA/triangulation/point.h>
+#include <NumA/RadonTransform/RadonTransform.h>
+#include <NumA/triangulation/mesh.h>
+#include <NumA/triangulation/point.h>
 
-#include <include/NumA/linear_algebra/least_squares/LSMRSolver.h>
-#include <include/NumA/linear_algebra/matrix/MatrixD.h>
-#include <include/NumA/linear_algebra/vector/VectorD.h>
+#include <NumA/linear_algebra/least_squares/LSMRSolver.h>
+#include <NumA/linear_algebra/matrix/MatrixD.h>
+#include <NumA/linear_algebra/vector/VectorD.h>
 
 #include <random>
 #include <ctime>
@@ -63,11 +63,11 @@ extern "C"
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include <include/NumA/triangulation/software/triangle.h>
+#include <NumA/triangulation/software/triangle.h>
 }
 
 // NumA interpolation (D-terms)
-#include <include/NumA/interpolation/CubicSpline.h>
+#include <NumA/interpolation/CubicSpline.h>
 
 namespace PARTONS {
 
