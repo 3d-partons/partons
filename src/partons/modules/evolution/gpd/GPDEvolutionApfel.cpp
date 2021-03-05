@@ -137,34 +137,24 @@ PartonDistribution GPDEvolutionApfel::compute(GPDModule* pGPDModule, const GPDTy
     // Set initial scale
     m_MuF2_ref = pGPDModule->getMuF2Ref();
 
-    // Recompute evolution operator only if xi changes
-    if (m_xi != m_xi_prev) {
-      // Initialize QCD evolution objects
-      const auto GpdObj = apfel::InitializeGpdObjects(*m_g, m_thresholds, m_xi, true);
-
-      // Construct the DGLAP evolution operators
-      const auto EvolvedOps = apfel::BuildDglap(GpdObj, m_MuF2_ref, this->getPertOrder() - 1, m_as);
-
-      // Tabulate evolution Operator
-      m_tabulatedOps = std::unique_ptr<apfel::TabulateObject<apfel::Set<apfel::Operator>>>(new apfel::TabulateObject<apfel::Set<apfel::Operator>> 
-											 {*EvolvedOps, m_tabNodes, m_tabLowerBound, m_tabUpperBound, m_tabInterDegree});
-
-      setPreviousXi(m_xi);
-    }
-
     // Set current GPD type
     setGPDType(type);
+
+    // Initialize QCD evolution objects
+    const auto GpdObj = apfel::InitializeGpdObjects(*m_g, m_thresholds, m_xi);
+
+    // Construct the DGLAP evolution operators
+    const auto EvolvedGpds = apfel::BuildDglap(GpdObj, initialScaleDistributions(pGPDModule), sqrt(m_MuF2_ref), this->getPertOrder() - 1, m_as);
+
+    // Tabulate evolution Operator
+    m_tabulatedGpds = std::unique_ptr<apfel::TabulateObject<apfel::Set<apfel::Distribution>>>(new apfel::TabulateObject<apfel::Set<apfel::Distribution>>
+												{*EvolvedGpds, m_tabNodes, m_tabLowerBound, m_tabUpperBound, m_tabInterDegree});
 
     // Get kinematics
     const GPDKinematic kin = this->getKinematics();
 
     // Get evolution operators at the final scale
-    auto tops = m_tabulatedOps->Evaluate(sqrt(kin.getMuF2().makeSameUnitAs(PhysicalUnit::GEV2).getValue()));
-
-    // Set appropriate convolution basis for the evolution operators
-    // and convolute them with initial-scale distributions.
-    tops.SetMap(apfel::EvolveDistributionsBasisQCD{});
-    const std::map<int, apfel::Distribution> topsdist = apfel::QCDEvToPhys((tops * apfel::Set<apfel::Distribution> {apfel::EvolveDistributionsBasisQCD{}, DistributionMap(*m_g, initialScaleDistributions(pGPDModule))}).GetObjects());
+    const std::map<int, apfel::Distribution> gpds = apfel::QCDEvToPhys(m_tabulatedGpds->Evaluate(sqrt(kin.getMuF2().makeSameUnitAs(PhysicalUnit::GEV2).getValue())).GetObjects());
 
     // Put result in a parton distribution object and return it
     std::map<QuarkFlavor::Type, QuarkDistribution> qd;
@@ -176,23 +166,23 @@ PartonDistribution GPDEvolutionApfel::compute(GPDModule* pGPDModule, const GPDTy
 	  else if (i == 2)
 	      j = 1;
 
-	  const double q  = topsdist.at(i).Evaluate(this->m_x);
-	  const double qb = topsdist.at(-i).Evaluate(this->m_x);
+	  const double q  = gpds.at(i).Evaluate(this->m_x);
+	  const double qb = gpds.at(-i).Evaluate(this->m_x);
 	  qd.insert({(QuarkFlavor::Type) j, QuarkDistribution{(QuarkFlavor::Type) j, q, q + qb, q - qb}});
       }
 
     PartonDistribution pd;
-    pd.setGluonDistribution(GluonDistribution{topsdist.at(0).Evaluate(this->m_x)});
+    pd.setGluonDistribution(GluonDistribution{gpds.at(0).Evaluate(this->m_x)});
     pd.setQuarkDistributions(qd);
 
     return pd;
 }
 
-std::function<std::map<int, double>(double const&)> GPDEvolutionApfel::initialScaleDistributions(GPDModule* pGPDModule) {
-    return [=] (double const& x) -> std::map<int, double> {
+std::function<std::map<int, double>(double const&, double const&)> GPDEvolutionApfel::initialScaleDistributions(GPDModule* pGPDModule) {
+    return [=] (double const& x, double const& muF0) -> std::map<int, double> {
 
         // Define kinematics
-        const double muF02 = this->getMuF2_ref();
+        const double muF02 = pow(muF0, 2);
 	const GPDKinematic kin{x, m_xi, m_t, muF02, muF02};
 
 	// Get distributions

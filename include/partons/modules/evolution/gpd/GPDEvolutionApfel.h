@@ -105,7 +105,7 @@ protected:
 
     virtual PartonDistribution compute(GPDModule* pGPDModule, const GPDType::Type &type);
 
-    std::function<std::map<int, double>(double const&)> initialScaleDistributions(GPDModule* pGPDModule);
+    std::function<std::map<int, double>(double const&, double const&)> initialScaleDistributions(GPDModule* pGPDModule);
 
 private:
 
@@ -122,7 +122,7 @@ private:
 
     std::unique_ptr<apfel::Grid> m_g;
     std::function<double(double const&)> m_as;
-    std::unique_ptr<apfel::TabulateObject<apfel::Set<apfel::Operator>>> m_tabulatedOps;
+    std::unique_ptr<apfel::TabulateObject<apfel::Set<apfel::Distribution>>> m_tabulatedGpds;
 };
 
 } /* namespace PARTONS */
