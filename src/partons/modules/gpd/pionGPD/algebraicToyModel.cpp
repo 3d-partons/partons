@@ -78,7 +78,7 @@ const unsigned int algebraicToyModel::classId =
 algebraicToyModel::algebraicToyModel(const std::string &className) : PARTONS::GPDModule(className)
 {
     // Set reference factorization scale.
-    m_MuF2_ref = 0.4;                                                                              // TODO: Set equal to value given in reference paper for \alpha_PI: \mu_H = 0,33 GeV.
+    m_MuF2_ref = 1.;                                                                              // TODO: Set equal to value given in reference paper for \alpha_PI: \mu_H = 0,33 GeV.
 
     //Relate a specific GPD type with the appropriate function
     m_listGPDComputeTypeAvailable.insert(
@@ -147,13 +147,13 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
             uValM = 30 * pow(1 + m_x, 2.) * ( pow(m_x,2.) - pow(m_xi,2.) ) / pow( 1 - pow(m_xi,2.) , 2.);   
         } else                                                                                              // ERBL
         {           
-            if ( DDt0.empty() )                                                                               
-            {
+            // if ( DDt0.empty() )                                                                               
+            // {
                 // ============================================================================================
                 // Compute DD (Proper computation)
                 // ============================================================================================
 
-                computeDD( 1 );                                                                             
+                // computeDD( 1 );                                                                             
                 
                 // ============================================================================================
                 // Compute DD (Reading from file)
@@ -187,82 +187,82 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
                 // }
                 
                 // DoubleDistribution.close();
-            }
+            // }
 
             // ============================================================================================
             // Compute ERBL GPD (Proper computation: RT)
             // ============================================================================================
 
-            NumA::RadonTransform RT;                                                                        // Radon transform matrix for uVal.
-            NumA::RadonTransform RTminus;                                                                   // Radon transform matrix for uValM.
+            // NumA::RadonTransform RT;                                                                        // Radon transform matrix for uVal.
+            // NumA::RadonTransform RTminus;                                                                   // Radon transform matrix for uValM.
  
-            x[0] = m_x; xi[0] = m_xi; y[0] = m_xi/m_x;                                                      // Kinematics written in proper format.
-            xm[0] = -m_x; xim[0] = m_xi; ym[0] = -m_xi/m_x;
+            // x[0] = m_x; xi[0] = m_xi; y[0] = m_xi/m_x;                                                      // Kinematics written in proper format.
+            // xm[0] = -m_x; xim[0] = m_xi; ym[0] = -m_xi/m_x;
  
-            RT.RTMatrix.clear();                                                                            // Radon transform matrix for uVal.
-            RT.build_RTmatrix(mesh, x, y, xi );
+            // RT.RTMatrix.clear();                                                                            // Radon transform matrix for uVal.
+            // RT.build_RTmatrix(mesh, x, y, xi );
  
-            RTminus.RTMatrix.clear();                                                                       // Radon transform matrix for uValM.
-            RTminus.build_RTmatrix(mesh, xm, ym, xim);
+            // RTminus.RTMatrix.clear();                                                                       // Radon transform matrix for uValM.
+            // RTminus.build_RTmatrix(mesh, xm, ym, xim);
 
-            for ( int i = 0; i < DDt0.size() ; i++ )
-            {
-                uVal += RT.RTMatrix[0][i]*DDt0[i];
-                uValM += RTminus.RTMatrix[0][i]*DDt0[i];
-            }
+            // for ( int i = 0; i < DDt0.size() ; i++ )
+            // {
+            //     uVal += RT.RTMatrix[0][i]*DDt0[i];
+            //     uValM += RTminus.RTMatrix[0][i]*DDt0[i];
+            // }
 
-            // D-terms contribution                                                                         // TODO: Implement computation of D-terms in RT.
-            if ( DtermsVec.size() == 0 )
-            {                    
-                DtermsVec = computeDterms();
+            // // D-terms contribution                                                                         // TODO: Implement computation of D-terms in RT.
+            // if ( DtermsVec.size() == 0 )
+            // {                    
+            //     DtermsVec = computeDterms();
 
-                // Interpolate numerically computed D-terms.
-                Dminus = new NumA::CubicSpline(DtermsVec[2],DtermsVec[0]);
-                Dplus = new NumA::CubicSpline(DtermsVec[2],DtermsVec[1]);
+            //     // Interpolate numerically computed D-terms.
+            //     Dminus = new NumA::CubicSpline(DtermsVec[2],DtermsVec[0]);
+            //     Dplus = new NumA::CubicSpline(DtermsVec[2],DtermsVec[1]);
                  
-                Dminus->ConstructSpline();
-                Dplus->ConstructSpline(); 
-            }           
+            //     Dminus->ConstructSpline();
+            //     Dplus->ConstructSpline(); 
+            // }           
 
-            // Add D-terms to GPD.
-            alpha = m_x/m_xi;
+            // // Add D-terms to GPD.
+            // alpha = m_x/m_xi;
 
-            if ( m_xi >= 0 )                                                                                // Conditional expression taking into acount the factor sign(\xi) accompanying dminus.
-            {
-                uVal +=  Dplus->getSplineInsideValue(alpha)/m_xi + Dminus->getSplineInsideValue(alpha);
-                uValM += Dplus->getSplineInsideValue(alpha)/m_xi - Dminus->getSplineInsideValue(alpha);
-            } else
-            {
-                uVal += Dplus->getSplineInsideValue(alpha)/m_xi - Dminus->getSplineInsideValue(alpha);
-                uValM += Dplus->getSplineInsideValue(alpha)/m_xi + Dminus->getSplineInsideValue(alpha);
-            }
+            // if ( m_xi >= 0 )                                                                                // Conditional expression taking into acount the factor sign(\xi) accompanying dminus.
+            // {
+            //     uVal +=  Dplus->getSplineInsideValue(alpha)/m_xi + Dminus->getSplineInsideValue(alpha);
+            //     uValM += Dplus->getSplineInsideValue(alpha)/m_xi - Dminus->getSplineInsideValue(alpha);
+            // } else
+            // {
+            //     uVal += Dplus->getSplineInsideValue(alpha)/m_xi - Dminus->getSplineInsideValue(alpha);
+            //     uValM += Dplus->getSplineInsideValue(alpha)/m_xi + Dminus->getSplineInsideValue(alpha);
+            // }
 
             // ============================================================================================
             // Compute ERBL GPD (Analytic computation)
             // ============================================================================================
 
-            // // (Gauged) ERBL GPD t = 0
-            // uVal = 7.5 * (1 - m_x) * ( pow(m_xi, 2.) - pow(m_x, 2.) ) * (m_x + 2*m_x*m_xi + pow(m_xi, 2.)) / ( pow(m_xi, 3.)*pow(1 + m_xi, 2.) );
-            // uValM = 7.5 * (1 + m_x) * ( pow(m_xi, 2.) - pow(m_x, 2.) ) * (-m_x - 2*m_x*m_xi + pow(m_xi, 2.)) / ( pow(m_xi, 3.)*pow(1 + m_xi, 2.) ); 
+            // (Gauged) ERBL GPD t = 0
+            uVal = 7.5 * (1 - m_x) * ( pow(m_xi, 2.) - pow(m_x, 2.) ) * (m_x + 2*m_x*m_xi + pow(m_xi, 2.)) / ( pow(m_xi, 3.)*pow(1 + m_xi, 2.) );
+            uValM = 7.5 * (1 + m_x) * ( pow(m_xi, 2.) - pow(m_x, 2.) ) * (-m_x - 2*m_x*m_xi + pow(m_xi, 2.)) / ( pow(m_xi, 3.)*pow(1 + m_xi, 2.) ); 
 
-            // // D-terms contribution
-            // alpha = m_x/m_xi;
+            // D-terms contribution
+            alpha = m_x/m_xi;
 
-            // dplus = 1.125*(1-pow(alpha,2))*(5*pow(alpha,2)-1);
-            // dminus = -3.75*alpha*(1-pow(alpha,2));
+            dplus = 1.125*(1-pow(alpha,2))*(5*pow(alpha,2)-1);
+            dminus = -3.75*alpha*(1-pow(alpha,2));
     
-            // // Add D-terms to GPD.
-            // dplus /= m_xi;                                                                                     
+            // Add D-terms to GPD.
+            dplus /= m_xi;                                                                                     
         
-            // if ( m_xi >= 0 )                                                                            // Conditional expression taking into acount the factor sign(\xi) accompanying dminus.
-            // {
-            //     uVal +=  dplus + dminus;
-            //     uValM += dplus - dminus;
-            // } else
-            // {
-            //     uVal += dplus - dminus;
-            //     uValM += dplus + dminus;
-            // }    
+            if ( m_xi >= 0 )                                                                            // Conditional expression taking into acount the factor sign(\xi) accompanying dminus.
+            {
+                uVal +=  dplus + dminus;
+                uValM += dplus - dminus;
+            } else
+            {
+                uVal += dplus - dminus;
+                uValM += dplus + dminus;
+            }    
         }
     } else                                                                                                  //! Non-vanishing momentum transfer.
     {
@@ -283,13 +283,13 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
                 / ( pow( 1 - pow(m_xi,2.) , 2.) * pow(1 + cM,2.) );
         } else                                                                                              // ERBL
         {
-            if ( DD.empty() )
-            {
+            // if ( DD.empty() )
+            // {
                 // ============================================================================================
                 // Compute DD (Proper computation)
                 // ============================================================================================
 
-                computeDD( 0 );                                                                                
+                // computeDD( 0 );                                                                                
                 
                 // ============================================================================================
                 // Compute DD (Reading from file)
@@ -327,111 +327,111 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
 
                 // ============================================================================================
                 // ============================================================================================
-            }
+            // }
             
             // ============================================================================================
             // Compute ERBL GPD (Proper computation: RT)
             // ============================================================================================
 
-            NumA::RadonTransform RT;                                                                        // Radon transform matrix for uVal.
-            NumA::RadonTransform RTminus;                                                                   // Radon transform matrix for uValM.
+            // NumA::RadonTransform RT;                                                                        // Radon transform matrix for uVal.
+            // NumA::RadonTransform RTminus;                                                                   // Radon transform matrix for uValM.
 
-            x[0] = m_x; xi[0] = m_xi; y[0] = m_xi/m_x;                                                      // Kinematics written in proper format.
-            xm[0] = -m_x; xim[0] = m_xi; ym[0] = -m_xi/m_x;
+            // x[0] = m_x; xi[0] = m_xi; y[0] = m_xi/m_x;                                                      // Kinematics written in proper format.
+            // xm[0] = -m_x; xim[0] = m_xi; ym[0] = -m_xi/m_x;
 
-            RT.RTMatrix.clear();                                                                            // Radon transform matrix for uVal.
-            RT.build_RTmatrix(mesh, x, y, xi );
+            // RT.RTMatrix.clear();                                                                            // Radon transform matrix for uVal.
+            // RT.build_RTmatrix(mesh, x, y, xi );
 
-            RTminus.RTMatrix.clear();                                                                       // Radon transform matrix for uValM.
-            RTminus.build_RTmatrix(mesh, xm, ym, xim);
+            // RTminus.RTMatrix.clear();                                                                       // Radon transform matrix for uValM.
+            // RTminus.build_RTmatrix(mesh, xm, ym, xim);
 
-            for ( int i = 0; i < DD.size() ; i++ )
-            {
-                uVal += RT.RTMatrix[0][i]*DD[i];
-                uValM += RTminus.RTMatrix[0][i]*DD[i];                                                      // !Check if this is correct. Check computation of uValM.
-            }
+            // for ( int i = 0; i < DD.size() ; i++ )
+            // {
+            //     uVal += RT.RTMatrix[0][i]*DD[i];
+            //     uValM += RTminus.RTMatrix[0][i]*DD[i];                                                      // !Check if this is correct. Check computation of uValM.
+            // }
 
 
-            // D-terms contribution                                                                            // TODO: Implement computation of D-terms in RT.
-            if ( DtermsVec.size() == 0 )
-            {                    
-                DtermsVec = computeDterms();
+            // // D-terms contribution                                                                            // TODO: Implement computation of D-terms in RT.
+            // if ( DtermsVec.size() == 0 )
+            // {                    
+            //     DtermsVec = computeDterms();
 
-                // Interpolate numerically computed D-terms.
-                Dminus = new NumA::CubicSpline(DtermsVec[2],DtermsVec[0]);
-                Dplus = new NumA::CubicSpline(DtermsVec[2],DtermsVec[1]);
+            //     // Interpolate numerically computed D-terms.
+            //     Dminus = new NumA::CubicSpline(DtermsVec[2],DtermsVec[0]);
+            //     Dplus = new NumA::CubicSpline(DtermsVec[2],DtermsVec[1]);
                  
-                Dminus->ConstructSpline();
-                Dplus->ConstructSpline(); 
-            }
+            //     Dminus->ConstructSpline();
+            //     Dplus->ConstructSpline(); 
+            // }
 
-            // Add D-terms to GPD.
-            alpha = m_x/m_xi;
+            // // Add D-terms to GPD.
+            // alpha = m_x/m_xi;
 
-            if ( m_xi >= 0 )                                                                                // Conditional expression taking into acount the factor sign(\xi) accompanying dminus.
-            {
-                uVal  +=  dt*(Dplus->getSplineInsideValue(alpha)/m_xi + Dminus->getSplineInsideValue(alpha));
-                uValM += dt*(Dplus->getSplineInsideValue(alpha)/m_xi - Dminus->getSplineInsideValue(alpha));
-            } else
-            {
-                uVal  += dt*(Dplus->getSplineInsideValue(alpha)/m_xi - Dminus->getSplineInsideValue(alpha));
-                uValM += dt*(Dplus->getSplineInsideValue(alpha)/m_xi + Dminus->getSplineInsideValue(alpha));
-            }
+            // if ( m_xi >= 0 )                                                                                // Conditional expression taking into acount the factor sign(\xi) accompanying dminus.
+            // {
+            //     uVal  +=  dt*(Dplus->getSplineInsideValue(alpha)/m_xi + Dminus->getSplineInsideValue(alpha));
+            //     uValM += dt*(Dplus->getSplineInsideValue(alpha)/m_xi - Dminus->getSplineInsideValue(alpha));
+            // } else
+            // {
+            //     uVal  += dt*(Dplus->getSplineInsideValue(alpha)/m_xi - Dminus->getSplineInsideValue(alpha));
+            //     uValM += dt*(Dplus->getSplineInsideValue(alpha)/m_xi + Dminus->getSplineInsideValue(alpha));
+            // }
 
             // ============================================================================================
             // Compute ERBL GPD (Analytic computation)
             // ============================================================================================
 
-            // // (Gauged) ERBL GPD t < 0
-            // uVal  = -3.75 * (pow(m_xi,2) - pow(m_x,2)) * (sqrt(c * (c + 1)) * ( -c*m_xi*(1 - pow(m_xi,2))*(1 - m_x) 
-            //     * (pow(m_xi,4) + 6*m_xi*(1-m_x)*pow(m_x,2)-6*pow(m_xi,3)*(1-m_x)+pow(m_xi,2)*(4-3*(3-m_x)*m_x)+m_x*(4-m_x*(8-5*m_x))) 
-            //     + pow(c,2)*pow(1-pow(m_xi,2),2)*(pow(m_xi,3)*(3*m_xi-2)+3*pow(m_x,4)-4*m_xi*pow(m_x,3)-6*(m_xi-1)*m_xi*pow(m_x,2)+2*m_xi*(pow(m_xi,2)-1)*m_x)
-            //     + pow(m_x-1,3)*(pow(m_xi,5)+3*pow(m_xi,4)*(m_x-1)+pow(m_xi,3)*(2-5*m_x)+2*m_xi*m_x))
-            //     + (1-2*c)*pow( c*(1-pow(m_xi,2))*(pow(m_xi,2)-pow(m_x,2))+pow(m_xi,2)*pow((m_x-1),2),2)
-            //     *(atanh(sqrt(c/(1+c)))-atanh(sqrt(c/(1+c))*(pow(m_xi,2)-m_x)/(m_xi*(1-m_x))))                )
-            //     / (pow(1+c,2.5)*pow(1-pow(m_xi,2),1.5)*pow(1-m_x,2)*sqrt(c*(1-pow(m_xi,2)))*pow(pow(m_xi,2)+c*(1-pow(m_xi,2))*(pow(m_xi,2)-pow(m_x,2))/pow(1-m_x,2),2));
+            // (Gauged) ERBL GPD t < 0
+            uVal  = -3.75 * (pow(m_xi,2) - pow(m_x,2)) * (sqrt(c * (c + 1)) * ( -c*m_xi*(1 - pow(m_xi,2))*(1 - m_x) 
+                * (pow(m_xi,4) + 6*m_xi*(1-m_x)*pow(m_x,2)-6*pow(m_xi,3)*(1-m_x)+pow(m_xi,2)*(4-3*(3-m_x)*m_x)+m_x*(4-m_x*(8-5*m_x))) 
+                + pow(c,2)*pow(1-pow(m_xi,2),2)*(pow(m_xi,3)*(3*m_xi-2)+3*pow(m_x,4)-4*m_xi*pow(m_x,3)-6*(m_xi-1)*m_xi*pow(m_x,2)+2*m_xi*(pow(m_xi,2)-1)*m_x)
+                + pow(m_x-1,3)*(pow(m_xi,5)+3*pow(m_xi,4)*(m_x-1)+pow(m_xi,3)*(2-5*m_x)+2*m_xi*m_x))
+                + (1-2*c)*pow( c*(1-pow(m_xi,2))*(pow(m_xi,2)-pow(m_x,2))+pow(m_xi,2)*pow((m_x-1),2),2)
+                *(atanh(sqrt(c/(1+c)))-atanh(sqrt(c/(1+c))*(pow(m_xi,2)-m_x)/(m_xi*(1-m_x))))                )
+                / (pow(1+c,2.5)*pow(1-pow(m_xi,2),1.5)*pow(1-m_x,2)*sqrt(c*(1-pow(m_xi,2)))*pow(pow(m_xi,2)+c*(1-pow(m_xi,2))*(pow(m_xi,2)-pow(m_x,2))/pow(1-m_x,2),2));
 
-            // uValM = -3.75 * (pow(m_xi,2) - pow(m_x,2)) * ( sqrt(cM * (cM + 1)) * ( -cM*m_xi*(1 - pow(m_xi,2))*(1 + m_x) 
-            //     * (pow(m_xi,4) + 6*m_xi*(1+m_x)*pow(m_x,2)-6*pow(m_xi,3)*(1+m_x)+pow(m_xi,2)*(4-3*(3+m_x)*(-1)*m_x)-m_x*(4+m_x*(8+5*m_x))) 
-            //     + pow(cM,2)*pow(1-pow(m_xi,2),2)*(pow(m_xi,3)*(3*m_xi-2)+3*pow(m_x,4)-4*m_xi*pow(-m_x,3)-6*(m_xi-1)*m_xi*pow(m_x,2)+2*m_xi*(pow(m_xi,2)-1)*(-1)*m_x)
-            //     + pow(-m_x-1,3)*(pow(m_xi,5)+3*pow(m_xi,4)*(-m_x-1)+pow(m_xi,3)*(2+5*m_x)+2*m_xi*(-1)*m_x))
-            //     + (1-2*cM)*pow( cM*(1-pow(m_xi,2))*(pow(m_xi,2)-pow(m_x,2))+pow(m_xi,2)*pow((-m_x-1),2),2)
-            //     *(atanh(sqrt(cM/(1+cM)))-atanh(sqrt(cM/(1+cM))*(pow(m_xi,2)-m_x)/(-m_xi*(1+m_x)))))
-            //     / (pow(1+cM,2.5)*pow(1-pow(m_xi,2),1.5)*pow(1+m_x,2)*sqrt(cM*(1-pow(m_xi,2)))*pow(pow(m_xi,2)+cM*(1-pow(m_xi,2))*(pow(m_xi,2)-pow(m_x,2))/pow(1+m_x,2),2)); 
+            uValM = -3.75 * (pow(m_xi,2) - pow(m_x,2)) * ( sqrt(cM * (cM + 1)) * ( -cM*m_xi*(1 - pow(m_xi,2))*(1 + m_x) 
+                * (pow(m_xi,4) + 6*m_xi*(1+m_x)*pow(m_x,2)-6*pow(m_xi,3)*(1+m_x)+pow(m_xi,2)*(4-3*(3+m_x)*(-1)*m_x)-m_x*(4+m_x*(8+5*m_x))) 
+                + pow(cM,2)*pow(1-pow(m_xi,2),2)*(pow(m_xi,3)*(3*m_xi-2)+3*pow(m_x,4)-4*m_xi*pow(-m_x,3)-6*(m_xi-1)*m_xi*pow(m_x,2)+2*m_xi*(pow(m_xi,2)-1)*(-1)*m_x)
+                + pow(-m_x-1,3)*(pow(m_xi,5)+3*pow(m_xi,4)*(-m_x-1)+pow(m_xi,3)*(2+5*m_x)+2*m_xi*(-1)*m_x))
+                + (1-2*cM)*pow( cM*(1-pow(m_xi,2))*(pow(m_xi,2)-pow(m_x,2))+pow(m_xi,2)*pow((-m_x-1),2),2)
+                *(atanh(sqrt(cM/(1+cM)))-atanh(sqrt(cM/(1+cM))*(pow(m_xi,2)-m_x)/(-m_xi*(1+m_x)))))
+                / (pow(1+cM,2.5)*pow(1-pow(m_xi,2),1.5)*pow(1+m_x,2)*sqrt(cM*(1-pow(m_xi,2)))*pow(pow(m_xi,2)+cM*(1-pow(m_xi,2))*(pow(m_xi,2)-pow(m_x,2))/pow(1+m_x,2),2)); 
 
-            // // D-terms contribution (monopole parametrization)
-            // alpha = m_x/m_xi;
+            // D-terms contribution (monopole parametrization)
+            alpha = m_x/m_xi;
 
-            // dplus = 1.125*(1-pow(alpha,2))*(5*pow(alpha,2)-1)*dt;
-            // dminus = -3.75*alpha*(1-pow(alpha,2))*dt;  
+            dplus = 1.125*(1-pow(alpha,2))*(5*pow(alpha,2)-1)*dt;
+            dminus = -3.75*alpha*(1-pow(alpha,2))*dt;  
         
-            // // Add D-terms to GPD.
-            // dplus /= m_xi;                                                                                      
+            // Add D-terms to GPD.
+            dplus /= m_xi;                                                                                      
         
-            // if ( m_xi >= 0 )                                                          // Conditional expression taking into acount the factor sign(\xi) accompanying dminus.
-            // {
-            //     uVal +=  dplus + dminus;
-            //     uValM += dplus - dminus;
-            // } else
-            // {
-            //     uVal += dplus - dminus;
-            //     uValM += dplus + dminus;
-            // }
+            if ( m_xi >= 0 )                                                          // Conditional expression taking into acount the factor sign(\xi) accompanying dminus.
+            {
+                uVal +=  dplus + dminus;
+                uValM += dplus - dminus;
+            } else
+            {
+                uVal += dplus - dminus;
+                uValM += dplus + dminus;
+            }
         }
     }
 
-    // TODO: Check and fix definitions of the the different quark distributions (u, uM, u+, u-, d(...) and s(...)).
+    // TODO: Check and fix definitions of the the different quark distributions (u, uM, u+, u-, d(...) and s(...)). See Cédric PhD thesis. pp. 56.
     double uSea  = 0.;
     double uSeaM = 0.;
 
     quarkDistributionUp.setQuarkDistribution(uVal + uSea);
 
         // Singlet distribution
-        quarkDistributionUp.setQuarkDistributionPlus(uVal - uValM);
+        quarkDistributionUp.setQuarkDistributionPlus(uVal + uSea - uValM - uSeaM);
         // Nonsinglet distributiion
         quarkDistributionUp.setQuarkDistributionMinus(uVal + uSea + uValM + uSeaM);
         
-    // s-quark    
+    // d-quark    
     double dVal = -uValM;
     double dValM = -uVal;
     double dSea = 0.;
@@ -440,7 +440,7 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
     quarkDistributionDown.setQuarkDistribution(dVal + dSea);
 
         // Singlet distribution
-        quarkDistributionUp.setQuarkDistributionPlus(dVal - dValM);
+        quarkDistributionUp.setQuarkDistributionPlus(dVal + dSea - dValM - dSeaM);
         // Nonsinglet distributiion
         quarkDistributionUp.setQuarkDistributionMinus(dVal + dSea + dValM + dSeaM);
 
@@ -451,15 +451,12 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
     double sSeaM = 0.;
 
     quarkDistributionStrange.setQuarkDistribution(sVal + sSea);
+    quarkDistributionStrange.setQuarkDistributionPlus(sVal + sSea - sValM - sSeaM);
+    quarkDistributionStrange.setQuarkDistributionMinus(sVal + sSea + sValM + sSeaM);
 
     partonDistribution.addQuarkDistribution(quarkDistributionUp);
     partonDistribution.addQuarkDistribution(quarkDistributionDown);
     partonDistribution.addQuarkDistribution(quarkDistributionStrange);
-
-        // Singlet distribution
-        quarkDistributionUp.setQuarkDistributionPlus(sVal - sValM);
-        // Nonsinglet distributiion
-        quarkDistributionUp.setQuarkDistributionMinus(sVal + sSea + sValM + sSeaM);
 
     // Gluon distributions 
     GluonDistribution gluonDistribution(0.);
