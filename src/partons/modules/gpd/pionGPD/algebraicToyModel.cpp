@@ -440,9 +440,9 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
     quarkDistributionDown.setQuarkDistribution(dVal + dSea);
 
         // Singlet distribution
-        quarkDistributionUp.setQuarkDistributionPlus(dVal + dSea - dValM - dSeaM);
+        quarkDistributionDown.setQuarkDistributionPlus(dVal + dSea - dValM - dSeaM);
         // Nonsinglet distributiion
-        quarkDistributionUp.setQuarkDistributionMinus(dVal + dSea + dValM + dSeaM);
+        quarkDistributionDown.setQuarkDistributionMinus(dVal + dSea + dValM + dSeaM);
 
     // s-quark
     double sVal = 0.;
