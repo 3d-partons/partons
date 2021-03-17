@@ -23,14 +23,20 @@ GPDEvolutionApfel::GPDEvolutionApfel(const std::string &className) :
         GPDEvolutionModule(className),
 	m_thresholds({}),
 	m_masses({}),
-	m_subgridNodes({}),
-	m_subgridLowerBounds({}),
-	m_subgridInterDegrees({}),
+	m_subgridNodes({200, 200, 200, 200}),
+	m_subgridLowerBounds({1.e-3, 2.e-1, 4.e-1, 8.e-1}),
+	m_subgridInterDegrees({3, 3, 3, 3}),
 	m_tabNodes(0),
 	m_tabLowerBound(0),
 	m_tabUpperBound(0),
 	m_tabInterDegree(0),
-        m_xi_prev(-1) {
+        m_xi_prev(-1),
+	m_g(nullptr),
+	m_as(nullptr),
+	m_tabulatedGpds(nullptr) {
+
+	//Grid
+	initializeGrid();
 }
 
 GPDEvolutionApfel::~GPDEvolutionApfel() {
@@ -118,21 +124,14 @@ void GPDEvolutionApfel::configure(const ElemUtils::Parameters &parameters) {
 
 void GPDEvolutionApfel::prepareSubModules(const std::map<std::string, BaseObjectData>& subModulesData) {
     GPDEvolutionModule::prepareSubModules(subModulesData);
-
-    apfel::Banner();
-    apfel::SetVerbosityLevel(0);
-
-    // Setup APFEL++ x-space
-    std::vector<apfel::SubGrid> vsg;
-    for (int i = 0; i < (int) m_subgridNodes.size(); i++)
-        vsg.push_back(apfel::SubGrid{m_subgridNodes[i], m_subgridLowerBounds[i], m_subgridInterDegrees[i]});
-    m_g = std::unique_ptr<apfel::Grid> (new apfel::Grid{vsg});
-
-    // Running coupling
-    m_as = [=] (double const& mu) -> double{ return getRunningAlphaStrongModule()->compute(mu * mu); };
 }
 
 PartonDistribution GPDEvolutionApfel::compute(GPDModule* pGPDModule, const GPDType::Type &type) {
+
+	// Running coupling
+	// TODO user may invoke setRunningAlphaStrongModule() at any time and there is no easy way to update m_as in such a case
+	// TODO m_as is only used here, there is no point to make it a member of the class
+	m_as = [=] (double const& mu) -> double{ return getRunningAlphaStrongModule()->compute(mu * mu); };
 
     // Set initial scale
     m_MuF2_ref = pGPDModule->getMuF2Ref();
@@ -140,15 +139,17 @@ PartonDistribution GPDEvolutionApfel::compute(GPDModule* pGPDModule, const GPDTy
     // Set current GPD type
     setGPDType(type);
 
-    // Initialize QCD evolution objects
-    const auto GpdObj = apfel::InitializeGpdObjects(*m_g, m_thresholds, m_xi);
+    // Initialize QCD evolution objects only if xi changes
+    if (m_xi != m_xi_prev) {
+      // Construct the DGLAP evolution operators
+      const auto EvolvedGpds = apfel::BuildDglap(apfel::InitializeGpdObjects(*m_g, m_thresholds, m_xi), initialScaleDistributions(pGPDModule), sqrt(m_MuF2_ref), this->getPertOrder() - 1, m_as);
 
-    // Construct the DGLAP evolution operators
-    const auto EvolvedGpds = apfel::BuildDglap(GpdObj, initialScaleDistributions(pGPDModule), sqrt(m_MuF2_ref), this->getPertOrder() - 1, m_as);
-
-    // Tabulate evolution Operator
-    m_tabulatedGpds = std::unique_ptr<apfel::TabulateObject<apfel::Set<apfel::Distribution>>>(new apfel::TabulateObject<apfel::Set<apfel::Distribution>>
+      // Tabulate evolution Operator
+      m_tabulatedGpds = std::shared_ptr<apfel::TabulateObject<apfel::Set<apfel::Distribution>>>(new apfel::TabulateObject<apfel::Set<apfel::Distribution>>
 												{*EvolvedGpds, m_tabNodes, m_tabLowerBound, m_tabUpperBound, m_tabInterDegree});
+
+      setPreviousXi(m_xi);
+    }
 
     // Get kinematics
     const GPDKinematic kin = this->getKinematics();
@@ -166,13 +167,13 @@ PartonDistribution GPDEvolutionApfel::compute(GPDModule* pGPDModule, const GPDTy
 	  else if (i == 2)
 	      j = 1;
 
-	  const double q  = gpds.at(i).Evaluate(this->m_x);
-	  const double qb = gpds.at(-i).Evaluate(this->m_x);
+	  const double q  = gpds.at(i).Evaluate(this->m_x) / this->m_x;
+	  const double qb = gpds.at(-i).Evaluate(this->m_x) / this->m_x;
 	  qd.insert({(QuarkFlavor::Type) j, QuarkDistribution{(QuarkFlavor::Type) j, q, q + qb, q - qb}});
       }
 
     PartonDistribution pd;
-    pd.setGluonDistribution(GluonDistribution{gpds.at(0).Evaluate(this->m_x)});
+    pd.setGluonDistribution(GluonDistribution{gpds.at(0).Evaluate(this->m_x) / this->m_x});
     pd.setQuarkDistributions(qd);
 
     return pd;
@@ -189,7 +190,7 @@ std::function<std::map<int, double>(double const&, double const&)> GPDEvolutionA
 	PartonDistribution pd = pGPDModule->compute(kin, this->getGPDType());
 
 	// Put them in a map
-	std::map<int, double> physd{{0, pd.getGluonDistribution().getGluonDistribution()}};
+	std::map<int, double> physd{{0, x * pd.getGluonDistribution().getGluonDistribution()}};
 	for (QuarkFlavor::Type const t : pd.listTypeOfQuarkFlavor()) {
 
 	    // Swap up and down according to the PDG convention
@@ -199,8 +200,8 @@ std::function<std::map<int, double>(double const&, double const&)> GPDEvolutionA
 	    else if ((int) t == 2)
 	      fl = 1;
 
-	    const double q  = pd.getQuarkDistribution(t).getQuarkDistribution();
-	    const double qb = pd.getQuarkDistribution(t).getQuarkDistributionPlus() - q;
+	    const double q  = x * pd.getQuarkDistribution(t).getQuarkDistribution();
+	    const double qb = x * pd.getQuarkDistribution(t).getQuarkDistributionPlus() - q;
 	    physd.insert({fl,  q});
 	    physd.insert({-fl, qb});
 	}
@@ -220,15 +221,24 @@ void GPDEvolutionApfel::setMasses(const std::vector<double>& masses) {
 }
 
 void GPDEvolutionApfel::setSubgridNodes(const std::vector<int>& subgridNodes) {
+
   m_subgridNodes = subgridNodes;
+
+  initializeGrid();
 }
 
 void GPDEvolutionApfel::setSubgridLowerBounds(const std::vector<double>& subgridLowerBounds) {
+
   m_subgridLowerBounds = subgridLowerBounds;
+
+  initializeGrid();
 }
 
 void GPDEvolutionApfel::setSubgridInterDegrees(const std::vector<int>& subgridInterDegrees) {
+
   m_subgridInterDegrees = subgridInterDegrees;
+
+  initializeGrid();
 }
 
 void GPDEvolutionApfel::setTabNodes(const int& tabNodes) {
@@ -291,6 +301,18 @@ double GPDEvolutionApfel::getPreviousXi() const {
   return m_xi_prev;
 }
 
+std::shared_ptr<apfel::Grid> GPDEvolutionApfel::getGrid() const {
+  return m_g;
+}
+
+std::function<double(double const&)> GPDEvolutionApfel::getAlphasFunc() const {
+  return m_as;
+}
+
+std::shared_ptr<apfel::TabulateObject<apfel::Set<apfel::Distribution>>> GPDEvolutionApfel::getTabulatedGDPs() const {
+  return m_tabulatedGpds;
+}
+
 GPDEvolutionApfel::GPDEvolutionApfel(const GPDEvolutionApfel &other) :
     GPDEvolutionModule(other) {
   m_thresholds          = other.getThresholds();
@@ -303,10 +325,19 @@ GPDEvolutionApfel::GPDEvolutionApfel(const GPDEvolutionApfel &other) :
   m_tabUpperBound       = other.getTabUpperBound();
   m_tabInterDegree      = other.getTabInterDegree();
   m_xi_prev             = other.getPreviousXi();
+  m_as                  = other.getAlphasFunc();
+  m_tabulatedGpds       = other.getTabulatedGDPs();
+
+  initializeGrid();
 }
 
 void GPDEvolutionApfel::initModule() {
     GPDEvolutionModule::initModule();
+
+    apfel::Banner();
+    apfel::SetVerbosityLevel(0);
+
+
 }
 
 void GPDEvolutionApfel::isModuleWellConfigured() {
@@ -369,6 +400,16 @@ void GPDEvolutionApfel::isModuleWellConfigured() {
 
     if (m_tabInterDegree <= 0)
         throw ElemUtils::CustomException(getClassName(), __func__, ElemUtils::Formatter() << "Interpolation degree not correctly set (negative)");
+}
+
+void GPDEvolutionApfel::initializeGrid(){
+
+	   std::vector<apfel::SubGrid> vsg;
+
+	    for (int i = 0; i < (int) m_subgridNodes.size(); i++)
+	        vsg.push_back(apfel::SubGrid{m_subgridNodes[i], m_subgridLowerBounds[i], m_subgridInterDegrees[i]});
+
+	    m_g = std::unique_ptr<apfel::Grid> (new apfel::Grid{vsg});
 }
 
 } /* namespace PARTONS */
