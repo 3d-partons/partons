@@ -111,6 +111,7 @@ private:
     double dminus;                              // Odd D-term.
     double dt;                                  // D-term t-dependence parametrized as a monopole: 1//(1-t/4m2)
     double alpha;                               // Kinematic variable for D-terms: \alpha = m_x/m_xi
+    double m2D;                                 // D-term t-dependence (mass-scale). Fitting of Phys. Rev. D 97, 014020 (2018) gravitational FFs.
 
     // TODO: Implement computation of D-terms in RT.
     std::vector<std::vector<double>> DtermsVec; // Matrix containing the numerical evaluation for the D-terms: DtermsVec[0]: Dminus (Odd D-term)

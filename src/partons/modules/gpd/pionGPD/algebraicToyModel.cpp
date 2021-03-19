@@ -87,7 +87,8 @@ algebraicToyModel::algebraicToyModel(const std::string &className) : PARTONS::GP
 
 algebraicToyModel::algebraicToyModel(const algebraicToyModel& other) : PARTONS::GPDModule(other) 
 {
-    m2 = 0.101; // Mass parameter algebraic toy model. Eq (30) Physics Letters B 780 (2018) 287–293.
+    m2 = 0.101;  // Mass parameter algebraic toy model. Eq (30) Physics Letters B 780 (2018) 287–293.
+    m2D = 0.099; // D-term t-dependence: Fitting of Phys. Rev. D 97, 014020 (2018) gravitational FFs.
 }
 
 algebraicToyModel::~algebraicToyModel() 
@@ -269,7 +270,7 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
         c  = -m_t*pow(1 - m_x, 2.)/(4*m2*(1 - pow(m_xi,2)));                                                // t-dependence algebraic toy model.
         cM = -m_t*pow(1 + m_x, 2.)/(4*m2*(1 - pow(m_xi,2)));
 
-        dt = 1/(1-0.25*m_t/m2);                                                                             // D-term t-dependence (monopole parametrization).
+        dt = 1/(1-0.25*m_t/m2D);                                                                             // D-term t-dependence (monopole parametrization).
 
         if ( m_x > m_xi )                                                                                   // DGLAP>
         {
@@ -429,7 +430,7 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
         // Singlet distribution
         quarkDistributionUp.setQuarkDistributionPlus(uVal + uSea - uValM - uSeaM);
         // Nonsinglet distributiion
-        quarkDistributionUp.setQuarkDistributionMinus(uVal + uSea + uValM + uSeaM);
+        quarkDistributionUp.setQuarkDistributionMinus(uVal + uValM);
         
     // d-quark    
     double dVal = -uValM;
@@ -442,7 +443,7 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
         // Singlet distribution
         quarkDistributionDown.setQuarkDistributionPlus(dVal + dSea - dValM - dSeaM);
         // Nonsinglet distributiion
-        quarkDistributionDown.setQuarkDistributionMinus(dVal + dSea + dValM + dSeaM);
+        quarkDistributionDown.setQuarkDistributionMinus(dVal + dValM);
 
     // s-quark
     double sVal = 0.;
@@ -452,7 +453,7 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
 
     quarkDistributionStrange.setQuarkDistribution(sVal + sSea);
     quarkDistributionStrange.setQuarkDistributionPlus(sVal + sSea - sValM - sSeaM);
-    quarkDistributionStrange.setQuarkDistributionMinus(sVal + sSea + sValM + sSeaM);
+    quarkDistributionStrange.setQuarkDistributionMinus(sVal + sValM);
 
     partonDistribution.addQuarkDistribution(quarkDistributionUp);
     partonDistribution.addQuarkDistribution(quarkDistributionDown);
