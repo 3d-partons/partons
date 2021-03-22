@@ -5,7 +5,7 @@
  * @file saturatedModel_Ding.h
  * @author José Manuel Morgado Chavez (University Of Huelva)
  * @author Cédric Mezrag (CEA Saclay)
- * @date 12th February 2021 
+ * @date 22nd March 2021 
  * @version 1.0
  */
 
@@ -71,7 +71,7 @@ protected:
       * 
       * Sets the DD attribute of the class.
       */
-    void computeDD();
+    void computeDD( bool t0 );
 
     /**
       * Mesh building.
@@ -103,15 +103,15 @@ protected:
 
 private:
 
-    double c;                                   // t-dependece of the GPD model (parametrized as a monopole).
-                                                //! For the moment the implementation assumes that the whole model (GPD, Dplus and Dminus) behave (wrt t) in same way.
-                                                //! The t-dependence is thus completely factorized in an overal multiplicative factor c(t).
-    double m2;                                  // Squared pion mass scale.
-
+    double c;                                   // t-dependece of the GPD model.double c;                                   // t-dependece of the GPD model (parametrized as a monopole).
+    double cM;                                  // Auxilary t-dependece for the computation of the singlet distribution.                                            //! For the moment the implementation assumes that the whole model (GPD, Dplus and Dminus) behave (wrt t) in same way.
+    double m2;                                  // Squared pion mass scale.                                            //! The t-dependence is thus completely factorized in an overal multiplicative factor c(t).
+    
     double dplus;                               // Even D-term.
-    double dminus;                              // Odd D-term.
-    double dt;                                  // D-term t-dependence parametrized as a monopole: 1//(1-t/4m2)
-    double alpha;                               // Kinematic variable for D-terms: \alpha = m_x/m_xi
+    double dminus;                              // Odd D-term.double dplus;                               // Even D-term.
+    double dt;                                  // D-term t-dependence parametrized as a monopole: 1//(1-t/4m2)double dminus;                              // Odd D-term.
+    double alpha;                               // Kinematic variable for D-terms: \alpha = m_x/m_xidouble dt;                                  // D-term t-dependence parametrized as a monopole: 1//(1-t/4m2)
+    double m2D;                                 // D-term t-dependence (mass-scale). Fitting of Phys. Rev. D 97, 014020 (2018) gravitational FFs.double alpha;                               // Kinematic variable for D-terms: \alpha = m_x/m_xi
 
     // TODO: Implement computation of D-terms in RT.
     std::vector<std::vector<double>> DtermsVec; // Matrix containing the numerical evaluation for the D-terms: DtermsVec[0]: Dminus (Odd D-term)

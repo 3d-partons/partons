@@ -2,7 +2,7 @@
  * @file saturatedModel_Ding.cpp
  * @author José Manuel Morgado Chavez (University Of Huelva)
  * @author Cédric Mezrag (CEA Saclay)
- * @date 12th February 2021 
+ * @date 22nd March 2021 
  * @version 1.0
  */
 
@@ -78,7 +78,7 @@ const unsigned int saturatedModel_Ding::classId =
 saturatedModel_Ding::saturatedModel_Ding(const std::string &className) : PARTONS::GPDModule(className)
 {
     // Set reference factorization scale.
-    m_MuF2_ref = 0.4;                                                                              // TODO: Set equal to value given in reference paper for \alpha_PI: \mu_H = 0,33 GeV.
+    m_MuF2_ref = 0.331;                                                                              // TODO: Set equal to value given in reference paper for \alpha_PI: \mu_H = 0,33 GeV.
 
     //Relate a specific GPD type with the appropriate function
     m_listGPDComputeTypeAvailable.insert(
@@ -87,8 +87,9 @@ saturatedModel_Ding::saturatedModel_Ding(const std::string &className) : PARTONS
 
 saturatedModel_Ding::saturatedModel_Ding(const saturatedModel_Ding& other) : PARTONS::GPDModule(other) 
 {
-    m2 = 0.101; // Mass paramter monopole parametrization for t-dependence.
-                // TODO: Fix value (this is the one for the algebraic model.)
+    m2 = 0.101;    // Mass paramter monopole parametrization for t-dependence.
+                   // TODO: Fix value (this is the one for the algebraic model.)
+    m2D = 0.101;
 }
 
 saturatedModel_Ding::~saturatedModel_Ding() 
@@ -136,118 +137,166 @@ PARTONS::PartonDistribution saturatedModel_Ding::computeH()
     // u-quark
     double uVal, uValM;
 
-    if ( m_x > m_xi )                                                                                   // DGLAP>
+    if ( m_t == 0)
     {
-        uVal = (213.32*pow(1 - m_x,2.)*(pow(m_x,2.) - pow(m_xi,2.))
-               *sqrt( 1 - 2.9342*sqrt( (1 - m_x)/(1 - m_xi) )*sqrt( (m_x - m_xi)/(1 - m_xi) ) + 2.2911*((1 - m_x)/(1 - m_xi))*((m_x - m_xi)/(1 - m_xi))  )
-               *sqrt( 1 - 2.9342*sqrt( (1 - m_x)/(1 + m_xi) )*sqrt( (m_x + m_xi)/(1 + m_xi) ) + 2.2911*((1 - m_x)/(1 + m_xi))*((m_x + m_xi)/(1 + m_xi)) ))
-               /( pow(1 - pow(m_xi,2.),2.) );
-        uValM = 0.;
-    } else if ( m_x < -m_xi )                                                                           //DGLAP>
-    {
-        uVal = 0.;
-        uValM = (213.32*pow(1 + m_x,2.)*(pow(m_x,2.) - pow(m_xi,2.))
-                *sqrt( 1 - 2.9342*sqrt( (1 + m_x)/(1 - m_xi) )*sqrt( (-m_x - m_xi)/(1 - m_xi) ) + 2.2911*((1 + m_x)/(1 - m_xi))*((-m_x - m_xi)/(1 - m_xi))  )
-                *sqrt( 1 - 2.9342*sqrt( (1 + m_x)/(1 + m_xi) )*sqrt( (-m_x + m_xi)/(1 + m_xi) ) + 2.2911*((1 + m_x)/(1 + m_xi))*((-m_x + m_xi)/(1 + m_xi)) ))
-                /( pow(1 - pow(m_xi,2.),2.) );   
-    } else                                                                                              // ERBL
-    {           
-        if ( DDt0.empty() )                                                                               
+        if ( m_x > m_xi )                                                                                   // DGLAP>
         {
-            // ============================================================================================
-            // Compute DD (Proper computation)
-            // ============================================================================================
-
-            // computeDD();                                                                             
-                
-            // ============================================================================================
-            // Compute DD (Reading from file)
-            // ============================================================================================
-
-            mesh = setMesh();                                                                        // Set Mesh according to the computations that have been carried out.
-                     
-            ifstream DoubleDistribution;                                                                 
-            DoubleDistribution.open("/home/jose/codes/PARTONS/data/kinematics/GPD/Evolution_kinematics/DD.dat");    //! CREATE A DATA DIRECTORY CONTAINING DDs FOR THIS PURPOSE
-            string linedd;
-            double d;
-
-            if ( DoubleDistribution )
+            uVal = (213.32*pow(1 - m_x,2.)*(pow(m_x,2.) - pow(m_xi,2.))
+                   *sqrt( 1 - 2.9342*sqrt( (1 - m_x)/(1 - m_xi) )*sqrt( (m_x - m_xi)/(1 - m_xi) ) + 2.2911*((1 - m_x)/(1 - m_xi))*((m_x - m_xi)/(1 - m_xi))  )
+                   *sqrt( 1 - 2.9342*sqrt( (1 - m_x)/(1 + m_xi) )*sqrt( (m_x + m_xi)/(1 + m_xi) ) + 2.2911*((1 - m_x)/(1 + m_xi))*((m_x + m_xi)/(1 + m_xi)) ))
+                   /( pow(1 - pow(m_xi,2.),2.) );
+            uValM = 0.;
+        } else if ( m_x < -m_xi )                                                                           //DGLAP>
+        {
+            uVal = 0.;
+            uValM = (213.32*pow(1 + m_x,2.)*(pow(m_x,2.) - pow(m_xi,2.))
+                    *sqrt( 1 - 2.9342*sqrt( (1 + m_x)/(1 - m_xi) )*sqrt( (-m_x - m_xi)/(1 - m_xi) ) + 2.2911*((1 + m_x)/(1 - m_xi))*((-m_x - m_xi)/(1 - m_xi))  )
+                    *sqrt( 1 - 2.9342*sqrt( (1 + m_x)/(1 + m_xi) )*sqrt( (-m_x + m_xi)/(1 + m_xi) ) + 2.2911*((1 + m_x)/(1 + m_xi))*((-m_x + m_xi)/(1 + m_xi)) ))
+                    /( pow(1 - pow(m_xi,2.),2.) );   
+        } else                                                                                              // ERBL
+        {           
+            if ( DDt0.empty() )                                                                               
             {
-                while( getline(DoubleDistribution,linedd) )
-                {
-                    istringstream iss(linedd);
-                    if ( !(iss >> d) )
-                    {
-                        throw runtime_error( "DD file does not have the correct format: vector<double>" );
-                    } else
-                    {
-                        DDt0.push_back(d);
-                    }
-                }
+                // ============================================================================================
+                // Compute DD
+                // ============================================================================================
+
+                computeDD( 1 );                                                                             
+            }
+
+            // ============================================================================================
+            // Compute ERBL GPD (Proper computation: RT)
+            // ============================================================================================
+
+            NumA::RadonTransform RT;                                                                        // Radon transform matrix for uVal.
+            NumA::RadonTransform RTminus;                                                                   // Radon transform matrix for uValM.
+    
+            x[0] = m_x; xi[0] = m_xi; y[0] = m_xi/m_x;                                                      // Kienmatics written in proper format.
+            xm[0] = -m_x; xim[0] = m_xi; ym[0] = -m_xi/m_x;
+    
+            RT.RTMatrix.clear();                                                                            // Radon transform matrix for uVal.
+            RT.build_RTmatrix(mesh, x, y, xi );
+    
+            RTminus.RTMatrix.clear();                                                                       // Radon transform matrix for uValM.
+            RTminus.build_RTmatrix(mesh, xm, ym, xim);
+    
+            for ( int i = 0; i < DDt0.size() ; i++ )
+            {
+                uVal += RT.RTMatrix[0][i]*DDt0[i];
+                uValM += RTminus.RTMatrix[0][i]*DDt0[i];
+            }
+
+            // D-terms contribution                                                                         // TODO: Implement computation of D-terms in RT.
+            if ( DtermsVec.size() == 0 )
+            {                    
+                DtermsVec = computeDterms();
+
+                // Interpolate numerically computed D-terms.
+                Dminus = new NumA::CubicSpline(DtermsVec[2],DtermsVec[0]);
+                Dplus = new NumA::CubicSpline(DtermsVec[2],DtermsVec[1]);
+
+                Dminus->ConstructSpline();
+                Dplus->ConstructSpline(); 
+            }           
+
+            // Add D-terms to GPD.
+            alpha = m_x/m_xi;
+
+            if ( m_xi >= 0 )                                                                                // Conditional expression taking into acount the factor sign(\xi) accompanying dminus.
+            {
+                uVal +=  Dplus->getSplineInsideValue(alpha)/m_xi + Dminus->getSplineInsideValue(alpha);
+                uValM += Dplus->getSplineInsideValue(alpha)/m_xi - Dminus->getSplineInsideValue(alpha);
             } else
             {
-                throw runtime_error( "File not found." );
-            }         
-            
-            DoubleDistribution.close();
+                uVal += Dplus->getSplineInsideValue(alpha)/m_xi - Dminus->getSplineInsideValue(alpha);
+                uValM += Dplus->getSplineInsideValue(alpha)/m_xi + Dminus->getSplineInsideValue(alpha);
+            }
         }
 
-        // ============================================================================================
-        // Compute ERBL GPD (Proper computation: RT)
-        // ============================================================================================
-
-        NumA::RadonTransform RT;                                                                        // Radon transform matrix for uVal.
-        NumA::RadonTransform RTminus;                                                                   // Radon transform matrix for uValM.
- 
-        x[0] = m_x; xi[0] = m_xi; y[0] = m_xi/m_x;                                                      // Kienmatics written in proper format.
-        xm[0] = -m_x; xim[0] = m_xi; ym[0] = -m_xi/m_x;
- 
-        RT.RTMatrix.clear();                                                                            // Radon transform matrix for uVal.
-        RT.build_RTmatrix(mesh, x, y, xi );
- 
-        RTminus.RTMatrix.clear();                                                                       // Radon transform matrix for uValM.
-        RTminus.build_RTmatrix(mesh, xm, ym, xim);
- 
-        for ( int i = 0; i < DDt0.size() ; i++ )
-        {
-            uVal += RT.RTMatrix[0][i]*DDt0[i];
-            uValM += RTminus.RTMatrix[0][i]*DDt0[i];
-        }
-
-        // D-terms contribution                                                                         // TODO: Implement computation of D-terms in RT.
-        if ( DtermsVec.size() == 0 )
-        {                    
-            DtermsVec = computeDterms();
-
-            // Interpolate numerically computed D-terms.
-            Dminus = new NumA::CubicSpline(DtermsVec[2],DtermsVec[0]);
-            Dplus = new NumA::CubicSpline(DtermsVec[2],DtermsVec[1]);
-                 
-            Dminus->ConstructSpline();
-            Dplus->ConstructSpline(); 
-        }           
-
-        // Add D-terms to GPD.
-        alpha = m_x/m_xi;
-
-        if ( m_xi >= 0 )                                                                                // Conditional expression taking into acount the factor sign(\xi) accompanying dminus.
-        {
-            uVal +=  Dplus->getSplineInsideValue(alpha)/m_xi + Dminus->getSplineInsideValue(alpha);
-            uValM += Dplus->getSplineInsideValue(alpha)/m_xi - Dminus->getSplineInsideValue(alpha);
-        } else
-        {
-            uVal += Dplus->getSplineInsideValue(alpha)/m_xi - Dminus->getSplineInsideValue(alpha);
-            uValM += Dplus->getSplineInsideValue(alpha)/m_xi + Dminus->getSplineInsideValue(alpha);
-        }
-    }
-
-    // Global factorized t-dependece.
-    if ( !(m_t == 0) )
+    } else
     {
-        dt = 1/(1-0.25*m_t/m2);
-        
-        uVal  *= dt;
-        uValM *= dt;
+        c  = -m_t*pow(1 - m_x, 2.)/(4*m2*(1 - pow(m_xi,2)));                                                // t-dependence algebraic toy model.
+        cM = -m_t*pow(1 + m_x, 2.)/(4*m2*(1 - pow(m_xi,2)));
+
+        dt = 1/(1-0.25*m_t/m2D);
+
+        if ( m_x > m_xi )                                                                                   // DGLAP>
+        {
+            uVal = (213.32*pow(1 - m_x,2.)*(pow(m_x,2.) - pow(m_xi,2.))
+                   *sqrt( 1 - 2.9342*sqrt( (1 - m_x)/(1 - m_xi) )*sqrt( (m_x - m_xi)/(1 - m_xi) ) + 2.2911*((1 - m_x)/(1 - m_xi))*((m_x - m_xi)/(1 - m_xi))  )
+                   *sqrt( 1 - 2.9342*sqrt( (1 - m_x)/(1 + m_xi) )*sqrt( (m_x + m_xi)/(1 + m_xi) ) + 2.2911*((1 - m_x)/(1 + m_xi))*((m_x + m_xi)/(1 + m_xi)) ))
+                   *(3 + ((1 - 2 * c) * atanh(sqrt(c/(1+c))))/((1 + c) * sqrt(c/(1 + c))) )
+                   /( pow(1 - pow(m_xi,2.),2.) * pow(1 + c,2.) );
+            uValM = 0.;
+        } else if ( m_x < -m_xi )                                                                           //DGLAP>
+        {
+            uVal = 0.;
+            uValM = (213.32*pow(1 + m_x,2.)*(pow(m_x,2.) - pow(m_xi,2.))
+                    *sqrt( 1 - 2.9342*sqrt( (1 + m_x)/(1 - m_xi) )*sqrt( (-m_x - m_xi)/(1 - m_xi) ) + 2.2911*((1 + m_x)/(1 - m_xi))*((-m_x - m_xi)/(1 - m_xi))  )
+                    *sqrt( 1 - 2.9342*sqrt( (1 + m_x)/(1 + m_xi) )*sqrt( (-m_x + m_xi)/(1 + m_xi) ) + 2.2911*((1 + m_x)/(1 + m_xi))*((-m_x + m_xi)/(1 + m_xi)) ))
+                    *(3 + ((1 - 2 * cM) * atanh(sqrt(cM/(1+cM))))/((1 + cM) * sqrt(cM/(1 + cM))) )
+                    /( pow(1 - pow(m_xi,2.),2.) * pow(1 + cM,2.) );   
+        } else                                                                                              // ERBL
+        {           
+            if ( DD.empty() )
+            {
+                // ============================================================================================
+                // Compute DD (Proper computation)
+                // ============================================================================================
+
+                computeDD( 0 );                                                                                
+                
+            }
+            
+            // ============================================================================================
+            // Compute ERBL GPD (Proper computation: RT)
+            // ============================================================================================
+
+            NumA::RadonTransform RT;                                                                        // Radon transform matrix for uVal.
+            NumA::RadonTransform RTminus;                                                                   // Radon transform matrix for uValM.
+
+            x[0] = m_x; xi[0] = m_xi; y[0] = m_xi/m_x;                                                      // Kinematics written in proper format.
+            xm[0] = -m_x; xim[0] = m_xi; ym[0] = -m_xi/m_x;
+
+            RT.RTMatrix.clear();                                                                            // Radon transform matrix for uVal.
+            RT.build_RTmatrix(mesh, x, y, xi );
+
+            RTminus.RTMatrix.clear();                                                                       // Radon transform matrix for uValM.
+            RTminus.build_RTmatrix(mesh, xm, ym, xim);
+
+            for ( int i = 0; i < DD.size() ; i++ )
+            {
+                uVal += RT.RTMatrix[0][i]*DD[i];
+                uValM += RTminus.RTMatrix[0][i]*DD[i];                                                      // !Check if this is correct. Check computation of uValM.
+            }
+
+
+            // D-terms contribution                                                                            // TODO: Implement computation of D-terms in RT.
+            if ( DtermsVec.size() == 0 )
+            {                    
+                DtermsVec = computeDterms();
+
+                // Interpolate numerically computed D-terms.
+                Dminus = new NumA::CubicSpline(DtermsVec[2],DtermsVec[0]);
+                Dplus = new NumA::CubicSpline(DtermsVec[2],DtermsVec[1]);
+                 
+                Dminus->ConstructSpline();
+                Dplus->ConstructSpline(); 
+            }
+
+            // Add D-terms to GPD.
+            alpha = m_x/m_xi;
+
+            if ( m_xi >= 0 )                                                                                // Conditional expression taking into acount the factor sign(\xi) accompanying dminus.
+            {
+                uVal  += dt*(Dplus->getSplineInsideValue(alpha)/m_xi + Dminus->getSplineInsideValue(alpha));
+                uValM += dt*(Dplus->getSplineInsideValue(alpha)/m_xi - Dminus->getSplineInsideValue(alpha));
+            } else
+            {
+                uVal  += dt*(Dplus->getSplineInsideValue(alpha)/m_xi - Dminus->getSplineInsideValue(alpha));
+                uValM += dt*(Dplus->getSplineInsideValue(alpha)/m_xi + Dminus->getSplineInsideValue(alpha));
+            }
+        }
     }
 
     // TODO: Check and fix definitions of the the different quark distributions (u, uM, u+, u-, d(...) and s(...)).
@@ -298,7 +347,7 @@ PARTONS::PartonDistribution saturatedModel_Ding::computeH()
     return partonDistribution;
 }
 
-void saturatedModel_Ding::computeDD()
+void saturatedModel_Ding::computeDD( bool t0 )
 {
     // STEP 1: Build triangulation.
     mesh = setMesh();
@@ -326,12 +375,29 @@ void saturatedModel_Ding::computeDD()
     // STEP 3: Set b-vector by sampling DGLAP GPD.
     NumA::VectorD GPD_DGLAP( m );      
 
-    for( int i = 0; i < x.size(); i++ )
+    if ( m_t == 0 )                                                                                         // ? How can I sample the GPD within this code. 
     {
-        GPD_DGLAP.at(i)  = (213.32*pow(1 - x[i],2.)*(pow(x[i],2.) - pow(xi[i],2.))
-                           *sqrt( 1 - 2.9342*sqrt( (1 - x[i])/(1 - xi[i]) )*sqrt( (x[i] - xi[i])/(1 - xi[i]) ) + 2.2911*((1 - x[i])/(1 - xi[i]))*((x[i] - xi[i])/(1 - xi[i]))  )
-                           *sqrt( 1 - 2.9342*sqrt( (1 - x[i])/(1 + xi[i]) )*sqrt( (x[i] + xi[i])/(1 + xi[i]) ) + 2.2911*((1 - x[i])/(1 + xi[i]))*((x[i] + xi[i])/(1 + xi[i])) ))
-                           /( pow(1 - pow(xi[i],2.),2.) );
+        for( int i = 0; i < x.size(); i++ )
+        {
+            GPD_DGLAP.at(i)  = (213.32*pow(1 - x[i],2.)*(pow(x[i],2.) - pow(xi[i],2.))
+                               *sqrt( 1 - 2.9342*sqrt( (1 - x[i])/(1 - xi[i]) )*sqrt( (x[i] - xi[i])/(1 - xi[i]) ) + 2.2911*((1 - x[i])/(1 - xi[i]))*((x[i] - xi[i])/(1 - xi[i]))  )
+                               *sqrt( 1 - 2.9342*sqrt( (1 - x[i])/(1 + xi[i]) )*sqrt( (x[i] + xi[i])/(1 + xi[i]) ) + 2.2911*((1 - x[i])/(1 + xi[i]))*((x[i] + xi[i])/(1 + xi[i])) ))
+                               /( pow(1 - pow(xi[i],2.),2.) );
+        }
+    } else
+    {
+        double c;
+
+        for ( int i = 0; i < x.size(); i++ )
+        {
+            c = -m_t*pow(1 - x[i], 2.)/(4*m2*(1 - pow(xi[i],2)));
+
+            GPD_DGLAP.at(i)  = (213.32*pow(1 - x[i],2.)*(pow(x[i],2.) - pow(xi[i],2.))
+                               *sqrt( 1 - 2.9342*sqrt( (1 - x[i])/(1 - xi[i]) )*sqrt( (x[i] - xi[i])/(1 - xi[i]) ) + 2.2911*((1 - x[i])/(1 - xi[i]))*((x[i] - xi[i])/(1 - xi[i]))  )
+                               *sqrt( 1 - 2.9342*sqrt( (1 - x[i])/(1 + xi[i]) )*sqrt( (x[i] + xi[i])/(1 + xi[i]) ) + 2.2911*((1 - x[i])/(1 + xi[i]))*((x[i] + xi[i])/(1 + xi[i])) ))
+                               *(3 + ((1 - 2 * c) * atanh(sqrt(c/(1+c))))/((1 + c) * sqrt(c/(1 + c))) )
+                               /( pow(1 - pow(xi[i],2.),2.) * pow(1 + c,2.));
+        }
     }
 
     // STEP 4: Set LSMRsolver and compute DD.
@@ -357,12 +423,23 @@ void saturatedModel_Ding::computeDD()
 
     DoubleDistribution = solver.solve( RTmatrix, GPD_DGLAP);                                                // Computation of the double distribution.  
 
-    // STEP 5: Update DD attribute with computed values.
-    DD.resize( nod );                                                                                       // Resize DD attribute to match the number of interpolation nodes.
+     // STEP 5: Update DD attribute with computed values.
+    if ( t0 )
+    {        
+        DDt0.resize( nod );                                                                                 // Resize DD attribute to match the number of interpolation nodes.
 
-    for ( int i = 0; i < nod; i++ )                                                                         // Update DD attribute with values in DoubleDistribution.
+        for ( int i = 0; i < nod; i++ )                                                                     // Update DD attribute with values in DoubleDistribution.
+        {
+            DDt0.at(i) = DoubleDistribution.at(i);
+        }
+    } else
     {
-        DD.at(i) = DoubleDistribution.at(i);
+        DD.resize( nod );                                                                                   // Resize DD attribute to match the number of interpolation nodes.
+
+        for ( int i = 0; i < nod; i++ )                                                                     // Update DD attribute with values in DoubleDistribution.
+        {
+            DD.at(i) = DoubleDistribution.at(i);
+        }
     }
 
 return;
@@ -539,39 +616,8 @@ std::vector<std::vector<double>> saturatedModel_Ding::computeDterms()
         // Compute DD (Proper computation)
         // ============================================================================================
 
-        // computeDD();                                                                             
+        computeDD( 1 );                                                                             
                 
-        // ============================================================================================
-        // Compute DD (Reading from file)
-        // ============================================================================================
-
-        mesh = setMesh();                                                                        // Set Mesh according to the computations that have been carried out.
-                     
-        ifstream DoubleDistribution;                                                                 
-        // // DoubleDistribution.open("/usr/local/share/data/DoubleDistribution/saturatedModel_Ding/AverageDD-50it-1e-7-P1.dat");
-        DoubleDistribution.open("/home/jose/codes/PARTONS/data/kinematics/GPD/Evolution_kinematics/DD.dat");//! CREATE A DATA DIRECTORY CONTAINING DDs FOR THIS PURPOSE
-        string linedd;
-        double d;
-
-        if ( DoubleDistribution )
-        {
-            while( getline(DoubleDistribution,linedd) )
-            {
-                istringstream iss(linedd);
-                if ( !(iss >> d) )
-                {
-                    throw runtime_error( "DD file does not have the correct format: vector<double>" );
-                } else
-                {
-                    DDt0.push_back(d);
-                }
-            }
-            } else
-            {
-                throw runtime_error( "File not found." );
-            }
-                
-        DoubleDistribution.close();
     }
     
     for (int i = 0; i < mx; i++ )
