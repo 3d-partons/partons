@@ -2,10 +2,10 @@
 #define ALGEBRAICTOYMODEL_H
 
 /**
- * @file algebraicToyModel.h
- * @author José Manuel Morgado Chavez (University Of Huelva)
- * @author Cédric Mezrag (CEA Saclay)
- * @date 3rd March 2021 
+ * @file    algebraicToyModel.h
+ * @author  José Manuel Morgado Chavez (University Of Huelva)
+ * @author  Cédric Mezrag (CEA Saclay)
+ * @date    23rd March 2021 
  * @version 1.0
  */
 
@@ -18,12 +18,12 @@
 
 #include "../GPDModule.h"
 
-#include <NumA/linear_algebra/vector/VectorD.h>
-#include <NumA/linear_algebra/matrix/MatrixD.h>
+#include <eigen3/Eigen/Dense>
 #include <NumA/triangulation/mesh.h>
 #include <NumA/RadonTransform/RadonTransform.h>
 
 #include <NumA/interpolation/CubicSpline.h>
+
 
 namespace PARTONS {
 
@@ -66,40 +66,26 @@ protected:
 
     virtual PARTONS::PartonDistribution computeH();
 
-    /**
-      * Computation of the double distribution.
-      * 
-      * Sets the DD attribute of the class.
-      */
-    void computeDD( bool t0 );
+    // /**
+    //   * Computation of odd D-term from numerical GPD from the soft-pion theorem.
+    //   * 
+    //   * Returns Dminus as a interpolating object
+    //   */
+    // std::vector<double> computeDminus( NumA::Mesh& mesh, const vector<double>& DD, vector<double>& x );
 
-    /**
-      * Mesh building.
-      * 
-      * Sets the mesh attribute of the class.
-      */
-    NumA::Mesh setMesh();
+    // /**
+    //   * Computation of even D-term from numerical GPD from the soft-pion theorem.
+    //   * 
+    //   * Returns Dplus as a interpolating object
+    //   */
+    // std::vector<double> computeDplus( NumA::Mesh& mesh, const vector<double>& DD, vector<double>& x );
 
-    /**
-      * Computation of odd D-term from numerical GPD from the soft-pion theorem.
-      * 
-      * Returns Dminus as a interpolating object
-      */
-    std::vector<double> computeDminus( NumA::Mesh& mesh, const vector<double>& DD, vector<double>& x );
-
-    /**
-      * Computation of even D-term from numerical GPD from the soft-pion theorem.
-      * 
-      * Returns Dplus as a interpolating object
-      */
-    std::vector<double> computeDplus( NumA::Mesh& mesh, const vector<double>& DD, vector<double>& x );
-
-    /**
-      * Computation of D-terms.  
-      * 
-      * Updates DtermsVec.
-      */
-    std::vector<std::vector<double>> computeDterms();
+    // /**
+    //   * Computation of D-terms.  
+    //   * 
+    //   * Updates DtermsVec.
+    //   */
+    // std::vector<std::vector<double>> computeDterms();
 
 private:
 
@@ -121,12 +107,10 @@ private:
     NumA::CubicSpline* Dplus;                   // Interpolator for even D-term.
     NumA::CubicSpline* Dminus;                  // Interpolator for odd D-term.
 
-    NumA::Mesh mesh;                            // Mesh over the double distribution domain.
+    Eigen::VectorXd DD = Eigen::VectorXd::Zero(1);                         // Double distribution.
+    Eigen::VectorXd DDt0 = Eigen::VectorXd::Zero(1);                       // Double distribution at zero momentum transfer (it is necessary for the computation of D-terms.)
 
-    vector<double> DD;                          // Double distribution.
-    vector<double> DDt0;                        // Double distribution at zero momentum transfer (it is necessary for the computation of D-terms.)
-    NumA::MatrixD RTmatrix;                     // Radon transform matrix for uVal.
-
+    NumA::RadonTransform RT;
 };
 
 
