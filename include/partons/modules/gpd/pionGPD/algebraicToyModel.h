@@ -27,8 +27,9 @@
 
 namespace PARTONS {
 
-class algebraicToyModel: public PARTONS::GPDModule 
+class algebraicToyModel: public PARTONS::GPDModule
 {
+    NumA::RadonTransform RT;
 
 public:
 
@@ -109,8 +110,6 @@ private:
 
     Eigen::VectorXd DD = Eigen::VectorXd::Zero(1);                         // Double distribution.
     Eigen::VectorXd DDt0 = Eigen::VectorXd::Zero(1);                       // Double distribution at zero momentum transfer (it is necessary for the computation of D-terms.)
-
-    NumA::RadonTransform RT;
 };
 
 
