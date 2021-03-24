@@ -44,7 +44,7 @@ const unsigned int algebraicToyModel::classId =
     PARTONS::BaseObjectRegistry::getInstance()->registerBaseObject(new algebraicToyModel("algebraicToyModel"));
 
 algebraicToyModel::algebraicToyModel(const std::string &className) : PARTONS::GPDModule(className)
-{
+{    
     // Set reference factorization scale.
     m_MuF2_ref = pow(0.5,2.);                                                                              // TODO: Set equal to value given in reference paper for \alpha_PI: \mu_H = 0,33 GeV.
 
@@ -54,7 +54,7 @@ algebraicToyModel::algebraicToyModel(const std::string &className) : PARTONS::GP
 }
 
 algebraicToyModel::algebraicToyModel(const algebraicToyModel& other) : PARTONS::GPDModule(other) 
-{
+{    
     m2 = 0.101;  // Mass parameter algebraic toy model. Eq (30) Physics Letters B 780 (2018) 287–293.
     m2D = 0.099; // D-term t-dependence: Fitting of Phys. Rev. D 97, 014020 (2018) gravitational FFs.
 }
@@ -66,6 +66,8 @@ algebraicToyModel::~algebraicToyModel()
 
 algebraicToyModel* algebraicToyModel::clone() const 
 {
+    std::cout << "HELLO \n";
+
     return new algebraicToyModel(*this);
 }
 
