@@ -78,7 +78,7 @@ const unsigned int algebraicToyModel::classId =
 algebraicToyModel::algebraicToyModel(const std::string &className) : PARTONS::GPDModule(className)
 {
     // Set reference factorization scale.
-    m_MuF2_ref = pow(0.331,2.);                                                                              // TODO: Set equal to value given in reference paper for \alpha_PI: \mu_H = 0,33 GeV.
+    m_MuF2_ref = pow(0.99,2.);                                                                              // TODO: Set equal to value given in reference paper for \alpha_PI: \mu_H = 0,33 GeV.
 
     //Relate a specific GPD type with the appropriate function
     m_listGPDComputeTypeAvailable.insert(
@@ -278,11 +278,25 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
             uVal  = 7.5 * pow(1 - m_x, 2.) * ( pow(m_x,2.) - pow(m_xi,2.) ) * (3 + ((1 - 2 * c) * atanh(sqrt(c/(1+c))))/((1 + c) * sqrt(c/(1 + c))) )
                 / ( pow( 1 - pow(m_xi,2.) , 2.) * pow(1 + c,2.) );
             uValM = 0.;
+
+            if ( m_x == 1 ) // Actually this is the limit x->1 (with \xi<1). 
+            {
+                uVal = 0.;
+                uValM = 0.;
+            }
+
         } else if ( m_x < -m_xi )                                                                           // DGLAP>
         {
             uVal  = 0.;
             uValM = 7.5 * pow(1 + m_x, 2.) * ( pow(m_x,2.) - pow(m_xi,2.) ) * (3 + ((1 - 2 * cM) * atanh(sqrt(cM/(1+cM))))/((1 + cM) * sqrt(cM/(1 + cM))) )
                 / ( pow( 1 - pow(m_xi,2.) , 2.) * pow(1 + cM,2.) );
+
+            if ( m_x == -1 )
+            {
+                uVal = 0.;
+                uValM = 0.; 
+            }
+
         } else                                                                                              // ERBL
         {
             // if ( DD.empty() )
@@ -384,7 +398,7 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
             // Compute ERBL GPD (Analytic computation)
             // ============================================================================================
 
-            if ( m_xi == 1)
+            if ( m_xi == 1 )
             {
                 uVal = -3.75*(1-pow(m_x,2))*( (((1-pow(m_x,2))+c1*(1-4*pow(m_x,3)+3*pow(m_x,4)))/pow(1+c1*(1-pow(m_x,2)),2)) - log(1+c1*(1-pow(m_x,2)))/c1 )
                     / (c1*pow(1-m_x,2));
