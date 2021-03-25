@@ -105,6 +105,7 @@ private:
 
     double c;                                   // t-dependece of the GPD model.
     double cM;                                  // Auxilary t-dependece for the computation of the singlet distribution.
+    double c1;                                  // Auxiliary t-dependence for the \xi->1 limit.
     double m2;                                  // Squared pion mass scale.
 
     double dplus;                               // Even D-term.
