@@ -16,9 +16,9 @@ namespace PARTONS {
 /**
  * @class GPDBDMMS21
  *
- * @brief GPD module containing example of NLO ghost GPD.
+ * @brief GPD module containing example of NLO shadow GPD.
  *
- * This module provides an example of NLO ghost GPD, i.e.
+ * This module provides an example of NLO shadow GPD, i.e.
  * GPD that gives a vanishing contribution to DVCS CFFs evaluated with NLO formulae.
  *
  * The example is for GPD H^u sea contribution only.
