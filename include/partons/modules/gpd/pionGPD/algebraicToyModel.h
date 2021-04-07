@@ -5,7 +5,7 @@
  * @file    algebraicToyModel.h
  * @author  José Manuel Morgado Chavez (University Of Huelva)
  * @author  Cédric Mezrag (CEA Saclay)
- * @date    23rd March 2021 
+ * @date    7th April 2021 
  * @version 1.0
  */
 
@@ -14,7 +14,6 @@
 #include <string>
 #include <vector>
 #include <iostream>
-
 
 #include "../GPDModule.h"
 
@@ -29,7 +28,7 @@ namespace PARTONS {
 
 class algebraicToyModel: public PARTONS::GPDModule
 {
-    NumA::RadonTransform RT;
+    NumA::RadonTransform RT;                                // Create Radon transform.
 
 public:
 
@@ -67,26 +66,15 @@ protected:
 
     virtual PARTONS::PartonDistribution computeH();
 
-    // /**
-    //   * Computation of odd D-term from numerical GPD from the soft-pion theorem.
-    //   * 
-    //   * Returns Dminus as a interpolating object
-    //   */
-    // std::vector<double> computeDminus( NumA::Mesh& mesh, const vector<double>& DD, vector<double>& x );
-
-    // /**
-    //   * Computation of even D-term from numerical GPD from the soft-pion theorem.
-    //   * 
-    //   * Returns Dplus as a interpolating object
-    //   */
-    // std::vector<double> computeDplus( NumA::Mesh& mesh, const vector<double>& DD, vector<double>& x );
-
-    // /**
-    //   * Computation of D-terms.  
-    //   * 
-    //   * Updates DtermsVec.
-    //   */
-    // std::vector<std::vector<double>> computeDterms();
+    /**
+      * Computation of D-terms.  
+      * 
+      * Updates DtermsVec.
+      * 
+      * TODO: Think about this method. Remember that H(x,1) is the noisiest one and this is reflected into the Dterms and consequently on the GPD.
+      * TODO: Include this calculation as member class fuction of NumA::RadonTransform.
+      */
+    std::vector<std::vector<double>> computeDterms();
 
 private:
 
@@ -108,6 +96,7 @@ private:
     NumA::CubicSpline* Dplus;                   // Interpolator for even D-term.
     NumA::CubicSpline* Dminus;                  // Interpolator for odd D-term.
 
+    // TODO: Explore the possibility of storing DDs into a map: ( double t-value, std::vector<double> DDt-value ). So at the level of evaluation on just needs to check that map.
     Eigen::VectorXd DD = Eigen::VectorXd::Zero(1);                         // Double distribution.
     Eigen::VectorXd DDt0 = Eigen::VectorXd::Zero(1);                       // Double distribution at zero momentum transfer (it is necessary for the computation of D-terms.)
 };
