@@ -2,7 +2,7 @@
   * @file    algebraicToyModel.cpp
   * @author  José Manuel Morgado Chavez (University Of Huelva)
   * @author  Cédric Mezrag (CEA Saclay)
-  * @date    7th April 2021 
+  * @date    Friday 16th April 2021 
   * @version 1.0
   */
 
@@ -127,34 +127,13 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
             // Compute ERBL GPD (Proper computation: RT)
             // ============================================================================================
 
+            // Gauged GPD
             uVal = RT.computeGPD( DDt0, m_x, m_xi );
             uValM = RT.computeGPD( DDt0, -m_x, m_xi );
 
-            // // D-terms contribution                                                                         // TODO: Implement computation of D-terms in RT.
-            // if ( DtermsVec.size() == 0 )
-            // {                    
-            //     DtermsVec = computeDterms();
- 
-            //     // Interpolate numerically computed D-terms.
-            //     Dminus = new NumA::CubicSpline(DtermsVec[2],Dterms   Vec[0]);
-            //     Dplus = new NumA::CubicSpline(DtermsVec[2],DtermsVec[1]);
-            //     //  
-            //     Dminus->ConstructSpline();
-            //     Dplus->ConstructSpline(); 
-            // }           
- 
-            // // Add D-terms to GPD.
-            // alpha = m_x/m_xi;
- 
-            // if ( m_xi >= 0 )                                                                                // Conditional expression taking into acount the factor sign(\xi) accompanying dminus.
-            // {
-            //     uVal +=  Dplus->getSplineInsideValue(alpha)/m_xi + Dminus->getSplineInsideValue(alpha);
-            //     uValM += Dplus->getSplineInsideValue(alpha)/m_xi - Dminus->getSplineInsideValue(alpha);
-            // } else
-            // {
-            //     uVal += Dplus->getSplineInsideValue(alpha)/m_xi - Dminus->getSplineInsideValue(alpha);
-            //     uValM += Dplus->getSplineInsideValue(alpha)/m_xi + Dminus->getSplineInsideValue(alpha);
-            // }
+            // Dterm contribution
+            uVal += RT.computeDterm( DDt0, m_x, m_xi );
+            uValM += RT.computeDterm( DDt0, -m_x, m_xi );
 
             // ============================================================================================
             // Compute ERBL GPD (Analytic computation)
@@ -183,12 +162,12 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
             //     uValM += dplus + dminus;
             // }    
         }
-    } else                                                                                                  //! Non-vanishing momentum transfer.
+    } else                                                                                                  //! Non-vanishing momentum transfer. CHECK!!!!!!!!!!!!!!!!!!!
     {
         c  = -m_t*pow(1 - m_x, 2.)/(4*m2*(1 - pow(m_xi,2)));                                                // t-dependence algebraic toy model.
         cM = -m_t*pow(1 + m_x, 2.)/(4*m2*(1 - pow(m_xi,2)));
 
-        dt = 1/(1-0.25*m_t/m2D);                                                                             // D-term t-dependence (monopole parametrization).
+        dt = 1/(1-0.25*m_t/m2D);                                                                            // D-term t-dependence (monopole parametrization).
 
         if ( m_x > m_xi )                                                                                   // DGLAP>
         {
@@ -202,140 +181,72 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
                 / ( pow( 1 - pow(m_xi,2.) , 2.) * pow(1 + cM,2.) );
         } else                                                                                              // ERBL
         {
-            // if ( DD.empty() )
-            // {
-                // ============================================================================================
-                // Compute DD (Proper computation)
-                // ============================================================================================
+            if ( DD.isZero() )                                                                              // TODO: Map with DDs for different t.
+            {            
+                Eigen::VectorXd GPD_DGLAP(RT.x.size());
 
-                // computeDD( 0 );                                                                                
+                for ( int i = 0; i < RT.x.size(); i ++ )
+                {
+                    ca  = -m_t*pow(1 - RT.x.at(i), 2.)/(4*m2*(1 - pow(RT.xi.at(i),2)));
+
+                    GPD_DGLAP(i) = 7.5 * pow(1 - RT.x.at(i), 2.) * ( pow(RT.x.at(i),2.) - pow(RT.xi.at(i),2.) ) * (3 + ((1 - 2 * ca) * atanh(sqrt(ca/(1+ca))))/((1 + ca) * sqrt(ca/(1 + ca))) )
+                                   / ( pow( 1 - pow(RT.xi.at(i),2.) , 2.) * pow(1 + ca,2.) );
+                }
                 
-                // ============================================================================================
-                // Compute DD (Reading from file)
-                // ============================================================================================
+                DD = RT.computeDD( GPD_DGLAP );
+            }
 
-                // mesh = setMesh();                                                                        // Set Mesh according to the computations that have been carried out.
-                     
-                // ifstream DoubleDistribution;                                                                 
-                // DoubleDistribution.open("/home/jose/git/partons_computations/data/RadonTransform/DD/DDt06.dat");
- 
-                // string linedd;
-                // double d;
-
-                // if ( DoubleDistribution )
-                // {
-                //     while( getline(DoubleDistribution,linedd) )
-                //     {
-                //         istringstream iss(linedd);
-                //         if ( !(iss >> d) )
-                //         {
-                //             throw runtime_error( "DD file does not have the correct format: vector<double>" );
-                //         } else
-                //         {
-                //             DD.push_back(d);
-                //         }
-                //     }
- 
-                // } else
-                // {
-                //     throw runtime_error( "File not found." );
-                // }
-                
- 
-                // DoubleDistribution.close();
-
-                // ============================================================================================
-                // ============================================================================================
-            // }
-            
             // ============================================================================================
             // Compute ERBL GPD (Proper computation: RT)
             // ============================================================================================
 
-            // NumA::RadonTransform RT;                                                                        // Radon transform matrix for uVal.
-            // NumA::RadonTransform RTminus;                                                                   // Radon transform matrix for uValM.
+            // Gauged GPD
+            uVal = RT.computeGPD( DD, m_x, m_xi );
+            uValM = RT.computeGPD( DD, -m_x, m_xi );
 
-            // x[0] = m_x; xi[0] = m_xi; y[0] = m_xi/m_x;                                                      // Kinematics written in proper format.
-            // xm[0] = -m_x; xim[0] = m_xi; ym[0] = -m_xi/m_x;
-
-            // RT.RTMatrix.clear();                                                                            // Radon transform matrix for uVal.
-            // RT.build_RTmatrix(mesh, x, y, xi );
-
-            // RTminus.RTMatrix.clear();                                                                       // Radon transform matrix for uValM.
-            // RTminus.build_RTmatrix(mesh, xm, ym, xim);
-
-            // for ( int i = 0; i < DD.size() ; i++ )
-            // {
-            //     uVal += RT.RTMatrix[0][i]*DD[i];
-            //     uValM += RTminus.RTMatrix[0][i]*DD[i];                                                      // !Check if this is correct. Check computation of uValM.
-            // }
-
-
-            // // D-terms contribution                                                                            // TODO: Implement computation of D-terms in RT.
-            // if ( DtermsVec.size() == 0 )
-            // {                    
-            //     DtermsVec = computeDterms();
-
-            //     // Interpolate numerically computed D-terms.
-            //     Dminus = new NumA::CubicSpline(DtermsVec[2],DtermsVec[0]);
-            //     Dplus = new NumA::CubicSpline(DtermsVec[2],DtermsVec[1]);
-                 
-            //     Dminus->ConstructSpline();
-            //     Dplus->ConstructSpline(); 
-            // }
-
-            // // Add D-terms to GPD.
-            // alpha = m_x/m_xi;
-
-            // if ( m_xi >= 0 )                                                                                // Conditional expression taking into acount the factor sign(\xi) accompanying dminus.
-            // {
-            //     uVal  +=  dt*(Dplus->getSplineInsideValue(alpha)/m_xi + Dminus->getSplineInsideValue(alpha));
-            //     uValM += dt*(Dplus->getSplineInsideValue(alpha)/m_xi - Dminus->getSplineInsideValue(alpha));
-            // } else
-            // {
-            //     uVal  += dt*(Dplus->getSplineInsideValue(alpha)/m_xi - Dminus->getSplineInsideValue(alpha));
-            //     uValM += dt*(Dplus->getSplineInsideValue(alpha)/m_xi + Dminus->getSplineInsideValue(alpha));
-            // }
+            // Dterm contribution
+            uVal += dt*RT.computeDterm( DD, m_x, m_xi );
+            uValM += dt*RT.computeDterm( DD, -m_x, m_xi );
 
             // ============================================================================================
             // Compute ERBL GPD (Analytic computation)
             // ============================================================================================
 
             // (Gauged) ERBL GPD t < 0
-            uVal  = -3.75 * (pow(m_xi,2) - pow(m_x,2)) * (sqrt(c * (c + 1)) * ( -c*m_xi*(1 - pow(m_xi,2))*(1 - m_x) 
-                * (pow(m_xi,4) + 6*m_xi*(1-m_x)*pow(m_x,2)-6*pow(m_xi,3)*(1-m_x)+pow(m_xi,2)*(4-3*(3-m_x)*m_x)+m_x*(4-m_x*(8-5*m_x))) 
-                + pow(c,2)*pow(1-pow(m_xi,2),2)*(pow(m_xi,3)*(3*m_xi-2)+3*pow(m_x,4)-4*m_xi*pow(m_x,3)-6*(m_xi-1)*m_xi*pow(m_x,2)+2*m_xi*(pow(m_xi,2)-1)*m_x)
-                + pow(m_x-1,3)*(pow(m_xi,5)+3*pow(m_xi,4)*(m_x-1)+pow(m_xi,3)*(2-5*m_x)+2*m_xi*m_x))
-                + (1-2*c)*pow( c*(1-pow(m_xi,2))*(pow(m_xi,2)-pow(m_x,2))+pow(m_xi,2)*pow((m_x-1),2),2)
-                *(atanh(sqrt(c/(1+c)))-atanh(sqrt(c/(1+c))*(pow(m_xi,2)-m_x)/(m_xi*(1-m_x))))                )
-                / (pow(1+c,2.5)*pow(1-pow(m_xi,2),1.5)*pow(1-m_x,2)*sqrt(c*(1-pow(m_xi,2)))*pow(pow(m_xi,2)+c*(1-pow(m_xi,2))*(pow(m_xi,2)-pow(m_x,2))/pow(1-m_x,2),2));
+            // uVal  = -3.75 * (pow(m_xi,2) - pow(m_x,2)) * (sqrt(c * (c + 1)) * ( -c*m_xi*(1 - pow(m_xi,2))*(1 - m_x) 
+            //     * (pow(m_xi,4) + 6*m_xi*(1-m_x)*pow(m_x,2)-6*pow(m_xi,3)*(1-m_x)+pow(m_xi,2)*(4-3*(3-m_x)*m_x)+m_x*(4-m_x*(8-5*m_x))) 
+            //     + pow(c,2)*pow(1-pow(m_xi,2),2)*(pow(m_xi,3)*(3*m_xi-2)+3*pow(m_x,4)-4*m_xi*pow(m_x,3)-6*(m_xi-1)*m_xi*pow(m_x,2)+2*m_xi*(pow(m_xi,2)-1)*m_x)
+            //     + pow(m_x-1,3)*(pow(m_xi,5)+3*pow(m_xi,4)*(m_x-1)+pow(m_xi,3)*(2-5*m_x)+2*m_xi*m_x))
+            //     + (1-2*c)*pow( c*(1-pow(m_xi,2))*(pow(m_xi,2)-pow(m_x,2))+pow(m_xi,2)*pow((m_x-1),2),2)
+            //     *(atanh(sqrt(c/(1+c)))-atanh(sqrt(c/(1+c))*(pow(m_xi,2)-m_x)/(m_xi*(1-m_x))))                )
+            //     / (pow(1+c,2.5)*pow(1-pow(m_xi,2),1.5)*pow(1-m_x,2)*sqrt(c*(1-pow(m_xi,2)))*pow(pow(m_xi,2)+c*(1-pow(m_xi,2))*(pow(m_xi,2)-pow(m_x,2))/pow(1-m_x,2),2));
 
-            uValM = -3.75 * (pow(m_xi,2) - pow(m_x,2)) * ( sqrt(cM * (cM + 1)) * ( -cM*m_xi*(1 - pow(m_xi,2))*(1 + m_x) 
-                * (pow(m_xi,4) + 6*m_xi*(1+m_x)*pow(m_x,2)-6*pow(m_xi,3)*(1+m_x)+pow(m_xi,2)*(4-3*(3+m_x)*(-1)*m_x)-m_x*(4+m_x*(8+5*m_x))) 
-                + pow(cM,2)*pow(1-pow(m_xi,2),2)*(pow(m_xi,3)*(3*m_xi-2)+3*pow(m_x,4)-4*m_xi*pow(-m_x,3)-6*(m_xi-1)*m_xi*pow(m_x,2)+2*m_xi*(pow(m_xi,2)-1)*(-1)*m_x)
-                + pow(-m_x-1,3)*(pow(m_xi,5)+3*pow(m_xi,4)*(-m_x-1)+pow(m_xi,3)*(2+5*m_x)+2*m_xi*(-1)*m_x))
-                + (1-2*cM)*pow( cM*(1-pow(m_xi,2))*(pow(m_xi,2)-pow(m_x,2))+pow(m_xi,2)*pow((-m_x-1),2),2)
-                *(atanh(sqrt(cM/(1+cM)))-atanh(sqrt(cM/(1+cM))*(pow(m_xi,2)-m_x)/(-m_xi*(1+m_x)))))
-                / (pow(1+cM,2.5)*pow(1-pow(m_xi,2),1.5)*pow(1+m_x,2)*sqrt(cM*(1-pow(m_xi,2)))*pow(pow(m_xi,2)+cM*(1-pow(m_xi,2))*(pow(m_xi,2)-pow(m_x,2))/pow(1+m_x,2),2)); 
+            // uValM = -3.75 * (pow(m_xi,2) - pow(m_x,2)) * ( sqrt(cM * (cM + 1)) * ( -cM*m_xi*(1 - pow(m_xi,2))*(1 + m_x) 
+            //     * (pow(m_xi,4) + 6*m_xi*(1+m_x)*pow(m_x,2)-6*pow(m_xi,3)*(1+m_x)+pow(m_xi,2)*(4-3*(3+m_x)*(-1)*m_x)-m_x*(4+m_x*(8+5*m_x))) 
+            //     + pow(cM,2)*pow(1-pow(m_xi,2),2)*(pow(m_xi,3)*(3*m_xi-2)+3*pow(m_x,4)-4*m_xi*pow(-m_x,3)-6*(m_xi-1)*m_xi*pow(m_x,2)+2*m_xi*(pow(m_xi,2)-1)*(-1)*m_x)
+            //     + pow(-m_x-1,3)*(pow(m_xi,5)+3*pow(m_xi,4)*(-m_x-1)+pow(m_xi,3)*(2+5*m_x)+2*m_xi*(-1)*m_x))
+            //     + (1-2*cM)*pow( cM*(1-pow(m_xi,2))*(pow(m_xi,2)-pow(m_x,2))+pow(m_xi,2)*pow((-m_x-1),2),2)
+            //     *(atanh(sqrt(cM/(1+cM)))-atanh(sqrt(cM/(1+cM))*(pow(m_xi,2)-m_x)/(-m_xi*(1+m_x)))))
+            //     / (pow(1+cM,2.5)*pow(1-pow(m_xi,2),1.5)*pow(1+m_x,2)*sqrt(cM*(1-pow(m_xi,2)))*pow(pow(m_xi,2)+cM*(1-pow(m_xi,2))*(pow(m_xi,2)-pow(m_x,2))/pow(1+m_x,2),2)); 
 
-            // D-terms contribution (monopole parametrization)
-            alpha = m_x/m_xi;
+            // // D-terms contribution (monopole parametrization)
+            // alpha = m_x/m_xi;
 
-            dplus = 1.125*(1-pow(alpha,2))*(5*pow(alpha,2)-1)*dt;
-            dminus = -3.75*alpha*(1-pow(alpha,2))*dt;  
+            // dplus = 1.125*(1-pow(alpha,2))*(5*pow(alpha,2)-1)*dt;
+            // dminus = -3.75*alpha*(1-pow(alpha,2))*dt;  
         
-            // Add D-terms to GPD.
-            dplus /= m_xi;                                                                                      
+            // // Add D-terms to GPD.
+            // dplus /= m_xi;                                                                                      
         
-            if ( m_xi >= 0 )                                                          // Conditional expression taking into acount the factor sign(\xi) accompanying dminus.
-            {
-                uVal +=  dplus + dminus;
-                uValM += dplus - dminus;
-            } else
-            {
-                uVal += dplus - dminus;
-                uValM += dplus + dminus;
-            }
+            // if ( m_xi >= 0 )                                                          // Conditional expression taking into acount the factor sign(\xi) accompanying dminus.
+            // {
+            //     uVal +=  dplus + dminus;
+            //     uValM += dplus - dminus;
+            // } else
+            // {
+            //     uVal += dplus - dminus;
+            //     uValM += dplus + dminus;
+            // }
         }
     }
 
@@ -382,109 +293,6 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
     partonDistribution.setGluonDistribution(gluonDistribution);
 
     return partonDistribution;
-}
-
-std::vector<std::vector<double>> algebraicToyModel::computeDterms()
-{
-    /**
-      * Dminus = 0.5*(H(-x,1,0) - H(x,1,0))
-      * Dplus = 0.5(phi((1+x)/2) - H(-x,1,0) - H(x,1,0))
-      */
-
-    // Computation of DD 
-    if ( DDt0.isZero() )                                                                               
-    {
-        // ============================================================================================
-        // Compute DD (Proper computation)
-        // ============================================================================================
-        
-        Eigen::VectorXd GPD_DGLAP(RT.x.size());
-                
-        for ( int i = 0; i < RT.x.size(); i ++ )
-        {
-            GPD_DGLAP(i) = 30 * pow(1 - RT.x.at(i), 2.) * ( pow(RT.x.at(i),2.) - pow(RT.xi.at(i),2.) ) / 
-                           pow( 1 - pow(RT.xi.at(i),2.) , 2.);
-        }
-                
-        DDt0 = RT.computeDD( GPD_DGLAP );
-
-        // ============================================================================================
-        // Compute DD (Reading from file)
-        // ============================================================================================
-
-        // mesh = setMesh();                                                                        // Set Mesh according to the computations that have been carried out.
-                     
-        // ifstream DoubleDistribution;                                                                 
-        // DoubleDistribution.open("/home/jose/codes/PARTONS/data/kinematics/GPD/Evolution_kinematics/DD.dat");//! CREATE A DATA DIRECTORY CONTAINING DDs FOR THIS PURPOSE
-        // string linedd;
-        // double d;
-        // int j = 0;
-
-        // if ( DoubleDistribution )
-        // {
-        //     while( getline(DoubleDistribution,linedd) )
-        //     {
-        //         istringstream iss(linedd);
-        //         if ( !(iss >> d) )
-        //         {
-        //             throw runtime_error( "DD file does not have the correct format: vector<double>" );
-        //         } else
-        //         {
-        //             DDt0(j) = d;
-        //         }
-
-        //         j++;
-        //     }
-        // } else
-        // {
-        //     throw runtime_error( "File not found." );
-        // }
-                
-        // DoubleDistribution.close();
-    }
-
-    // Computation of GPDs
-
-    // Evaluation points.
-    const double nop = 10000;                                                                   // Number of points.
-    const double xstp = 2./nop;                                                                 // Step.
-
-    std::vector<double> x (nop);                                                                // Sampling points.
-    std::vector<double> xi (nop,1.);
-
-    std::vector<std::vector<double>> Dterms( 3, std::vector<double> (nop) );                    // Matrix containing the numerical evaluation for the D-terms: DtermsVec[0]: Dminus (Odd D-term)
-                                                                                                //                                                             DtermsVec[1]: Dplus (even D-term).
-                                                                                                //                                                             DtermsVec[2]: x: Evaluation points of the D-terms.
-
-    for ( int i = 0; i < nop; i++ )
-    {
-        x.at(i) = -1.+i*xstp;
-        Dterms[2].at(i) = x.at(i);                                                              // Update Dterms-matrix for output.
-    }
-        
-    // H(x,1,0)
-    std::vector<double> GPD1x (nop);
-
-    GPD1x = RT.computeGPD( DDt0, x, xi);
-
-    // H(x,-1,0)
-    std::vector<double> GPD1xM (nop);
-
-    for ( int i = 0; i < nop; i++ )
-    {
-        x.at(i) *= -1.;
-    }
-
-    GPD1xM = RT.computeGPD( DDt0, x, xi );
-
-    // Compute Dterms
-    for ( int i = 0; i < nop; i++ )
-    {
-        Dterms[0].at(i) = 0.5*(GPD1xM.at(i)-GPD1x.at(i)); 
-        Dterms[1].at(i) = 0.5*(1.5*(1-pow(x.at(i),2))-GPD1xM.at(i)-GPD1x.at(i));
-    }
-
-return Dterms;
 }
 
 }

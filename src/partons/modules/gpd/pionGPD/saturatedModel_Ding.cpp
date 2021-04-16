@@ -2,7 +2,7 @@
   * @file    saturatedModel_Ding.cpp
   * @author  José Manuel Morgado Chavez (University Of Huelva)
   * @author  Cédric Mezrag (CEA Saclay)
-  * @date    15th April 2021 
+  * @date    Friday 16th April 2021 
   * @version 1.0
   */
 
@@ -30,6 +30,7 @@
 
 #include <random>
 #include <ctime>
+#include <string>
 
 // NumA interpolation (D-terms)
 // #include <NumA/interpolation/CubicSpline.h>
@@ -43,7 +44,7 @@ const unsigned int saturatedModel_Ding::classId =
 saturatedModel_Ding::saturatedModel_Ding(const std::string &className) : PARTONS::GPDModule(className)
 {    
     // Set reference factorization scale.
-    m_MuF2_ref = pow(0.5,2.);                                                                              // TODO: Set equal to value given in reference paper for \alpha_PI: \mu_H = 0,33 GeV.
+    m_MuF2_ref = pow(0.331,2.);                                                                              // TODO: Set equal to value given in reference paper for \alpha_PI: \mu_H = 0,33 GeV.
 
     //Relate a specific GPD type with the appropriate function
     m_listGPDComputeTypeAvailable.insert(
@@ -136,34 +137,14 @@ PARTONS::PartonDistribution saturatedModel_Ding::computeH()
             // Compute ERBL GPD (Proper computation: RT)
             // ============================================================================================
 
+            // Gauged GPD
             uVal = RT.computeGPD( DDt0, m_x, m_xi );
             uValM = RT.computeGPD( DDt0, -m_x, m_xi );
 
-            // // D-terms contribution                                                                         // TODO: Implement computation of D-terms in RT.
-            // if ( DtermsVec.size() == 0 )
-            // {                    
-            //     DtermsVec = computeDterms();
- 
-            //     // Interpolate numerically computed D-terms.
-            //     Dminus = new NumA::CubicSpline(DtermsVec[2],DtermsVec[0]);
-            //     Dplus = new NumA::CubicSpline(DtermsVec[2],DtermsVec[1]);
-            //     //  
-            //     Dminus->ConstructSpline();
-            //     Dplus->ConstructSpline(); 
-            // }           
- 
-            // // Add D-terms to GPD.
-            // alpha = m_x/m_xi;
- 
-            // if ( m_xi >= 0 )                                                                                // Conditional expression taking into acount the factor sign(\xi) accompanying dminus.
-            // {
-            //     uVal +=  Dplus->getSplineInsideValue(alpha)/m_xi + Dminus->getSplineInsideValue(alpha);
-            //     uValM += Dplus->getSplineInsideValue(alpha)/m_xi - Dminus->getSplineInsideValue(alpha);
-            // } else
-            // {
-            //     uVal += Dplus->getSplineInsideValue(alpha)/m_xi - Dminus->getSplineInsideValue(alpha);
-            //     uValM += Dplus->getSplineInsideValue(alpha)/m_xi + Dminus->getSplineInsideValue(alpha);
-            // }
+            // Dterm contribution
+            uVal += RT.computeDterm( DDt0, m_x, m_xi );
+            uValM += RT.computeDterm( DDt0, -m_x, m_xi );
+
         }
     } else                                                                                                  //! Non-vanishing momentum transfer.
     {
@@ -210,34 +191,14 @@ PARTONS::PartonDistribution saturatedModel_Ding::computeH()
             // Compute ERBL GPD (Proper computation: RT)
             // ============================================================================================
 
+            // Gauged GPD
             uVal = RT.computeGPD( DDt0, m_x, m_xi );
             uValM = RT.computeGPD( DDt0, -m_x, m_xi );
 
-            // D-terms contribution                                                                         // TODO: Implement computation of D-terms in RT.
-            if ( DtermsVec.size() == 0 )
-            {                    
-                DtermsVec = computeDterms();
- 
-                // Interpolate numerically computed D-terms.
-                Dminus = new NumA::CubicSpline(DtermsVec[2],DtermsVec[0]);
-                Dplus = new NumA::CubicSpline(DtermsVec[2],DtermsVec[1]);
-                //  
-                Dminus->ConstructSpline();
-                Dplus->ConstructSpline(); 
-            }           
- 
-            // Add D-terms to GPD.
-            alpha = m_x/m_xi;
- 
-            if ( m_xi >= 0 )                                                                                // Conditional expression taking into acount the factor sign(\xi) accompanying dminus.
-            {
-                uVal +=  Dplus->getSplineInsideValue(alpha)/m_xi + Dminus->getSplineInsideValue(alpha);
-                uValM += Dplus->getSplineInsideValue(alpha)/m_xi - Dminus->getSplineInsideValue(alpha);
-            } else
-            {
-                uVal += Dplus->getSplineInsideValue(alpha)/m_xi - Dminus->getSplineInsideValue(alpha);
-                uValM += Dplus->getSplineInsideValue(alpha)/m_xi + Dminus->getSplineInsideValue(alpha);
-            }
+            // Dterm contribution
+            uVal += dt*RT.computeDterm( DDt0, m_x, m_xi );
+            uValM += dt*RT.computeDterm( DDt0, -m_x, m_xi );
+        
         }
     }
 
@@ -284,75 +245,6 @@ PARTONS::PartonDistribution saturatedModel_Ding::computeH()
     partonDistribution.setGluonDistribution(gluonDistribution);
 
     return partonDistribution;
-}
-
-std::vector<std::vector<double>> saturatedModel_Ding::computeDterms()
-{
-    /**
-      * Dminus = 0.5*(H(-x,1,0) - H(x,1,0))
-      * Dplus = 0.5(phi((1+x)/2) - H(-x,1,0) - H(x,1,0))
-      */
-
-    // Computation of DD 
-    if ( DDt0.isZero() )                                                                               
-    {
-        // ============================================================================================
-        // Compute DD (Proper computation)
-        // ============================================================================================
-        
-        Eigen::VectorXd GPD_DGLAP(RT.x.size());
-                
-        for ( int i = 0; i < RT.x.size(); i ++ )
-        {
-            GPD_DGLAP(i) = 30 * pow(1 - RT.x.at(i), 2.) * ( pow(RT.x.at(i),2.) - pow(RT.xi.at(i),2.) ) / 
-                           pow( 1 - pow(RT.xi.at(i),2.) , 2.);
-        }
-                
-        DDt0 = RT.computeDD( GPD_DGLAP ); 
-    }
-
-    // Computation of GPDs
-
-    // Evaluation points.
-    const double nop = 10000;                                                                   // Number of points.
-    const double xstp = 2./nop;                                                                 // Step.
-
-    std::vector<double> x (nop);                                                                // Sampling points.
-    std::vector<double> xi (nop,1.);
-
-    std::vector<std::vector<double>> Dterms( 3, std::vector<double> (nop) );                    // Matrix containing the numerical evaluation for the D-terms: DtermsVec[0]: Dminus (Odd D-term)
-                                                                                                //                                                             DtermsVec[1]: Dplus (even D-term).
-                                                                                                //                                                             DtermsVec[2]: x: Evaluation points of the D-terms.
-
-    for ( int i = 0; i < nop; i++ )
-    {
-        x.at(i) = -1.+i*xstp;
-        Dterms[2].at(i) = x.at(i);                                                              // Update Dterms-matrix for output.
-    }
-        
-    // H(x,1,0)
-    std::vector<double> GPD1x (nop);
-
-    GPD1x = RT.computeGPD( DDt0, x, xi);
-
-    // H(x,-1,0)
-    std::vector<double> GPD1xM (nop);
-
-    for ( int i = 0; i < nop; i++ )
-    {
-        x.at(i) *= -1.;
-    }
-
-    GPD1xM = RT.computeGPD( DDt0, x, xi );
-
-    // Compute Dterms
-    for ( int i = 0; i < nop; i++ )
-    {
-        Dterms[0].at(i) = 0.5*(GPD1xM.at(i)-GPD1x.at(i)); 
-        Dterms[1].at(i) = 0.5*(1.5*(1-pow(x.at(i),2))-GPD1xM.at(i)-GPD1x.at(i));
-    }
-
-return Dterms;
 }
 
 }  
