@@ -205,8 +205,20 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
             uValM = RT.computeGPD( DD, -m_x, m_xi );
 
             // Dterm contribution
-            uVal += dt*RT.computeDterm( DD, m_x, m_xi );
-            uValM += dt*RT.computeDterm( DD, -m_x, m_xi );
+            if ( DDt0.isZero() )                                                                               
+            {
+                Eigen::VectorXd GPD_DGLAP(RT.x.size());
+                
+                for ( int i = 0; i < RT.x.size(); i ++ )
+                {
+                    GPD_DGLAP(i) = 30 * pow(1 - RT.x.at(i), 2.) * ( pow(RT.x.at(i),2.) - pow(RT.xi.at(i),2.) ) / pow( 1 - pow(RT.xi.at(i),2.) , 2.);
+                }
+                
+                DDt0 = RT.computeDD( GPD_DGLAP );
+            }
+            
+            uVal += dt*RT.computeDterm( DDt0, m_x, m_xi );
+            uValM += dt*RT.computeDterm( DDt0, -m_x, m_xi );
 
             // ============================================================================================
             // Compute ERBL GPD (Analytic computation)
