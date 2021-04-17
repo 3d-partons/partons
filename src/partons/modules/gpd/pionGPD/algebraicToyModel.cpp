@@ -31,9 +31,6 @@
 #include <random>
 #include <ctime>
 
-// NumA interpolation (D-terms)
-// #include <NumA/interpolation/CubicSpline.h>
-
 namespace PARTONS {
 
 // With this line we "create" the name for our GPD module. This will be integrated into the factory and thus partons knows about it.
@@ -43,7 +40,7 @@ const unsigned int algebraicToyModel::classId =
 algebraicToyModel::algebraicToyModel(const std::string &className) : PARTONS::GPDModule(className)
 {    
     // Set reference factorization scale.
-    m_MuF2_ref = pow(0.5,2.);                                                                              // TODO: Set equal to value given in reference paper for \alpha_PI: \mu_H = 0,33 GeV.
+    m_MuF2_ref = pow(0.5,2.);                                                                               // TODO: Set equal to value given in reference paper for \alpha_PI: \mu_H = 0,33 GeV.
 
     //Relate a specific GPD type with the appropriate function
     m_listGPDComputeTypeAvailable.insert(
@@ -52,8 +49,9 @@ algebraicToyModel::algebraicToyModel(const std::string &className) : PARTONS::GP
 
 algebraicToyModel::algebraicToyModel(const algebraicToyModel& other) : PARTONS::GPDModule(other) 
 {    
-    m2 = 0.101;  // Mass parameter algebraic toy model. Eq (30) Physics Letters B 780 (2018) 287–293.
-    m2D = 0.099; // D-term t-dependence: Fitting of Phys. Rev. D 97, 014020 (2018) gravitational FFs.
+    m2 = 0.101;                                                                                             // Mass parameter algebraic toy model. Eq (30) Physics Letters B 780 (2018) 287–293.
+    m2D = 0.099;                                                                                            // D-term t-dependence: Fitting of Phys. Rev. D 97, 014020 (2018) gravitational FFs.
+    RT.init();                                                                                              // Initialize Radon transform
 }
 
 algebraicToyModel::~algebraicToyModel() 
@@ -111,6 +109,11 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
             uValM = 30 * pow(1 + m_x, 2.) * ( pow(m_x,2.) - pow(m_xi,2.) ) / pow( 1 - pow(m_xi,2.) , 2.);   
         } else                                                                                              // ERBL
         {           
+            // ============================================================================================
+            // Compute ERBL GPD (Proper computation: RT)
+            // ============================================================================================
+            
+            // Compute double distribution.
             if ( DDt0.isZero() )                                                                               
             {
                 Eigen::VectorXd GPD_DGLAP(RT.x.size());
@@ -123,15 +126,11 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
                 DDt0 = RT.computeDD( GPD_DGLAP );
             }
 
-            // ============================================================================================
-            // Compute ERBL GPD (Proper computation: RT)
-            // ============================================================================================
-
-            // Gauged GPD
+            // Compute "gauged" GPD.
             uVal = RT.computeGPD( DDt0, m_x, m_xi );
             uValM = RT.computeGPD( DDt0, -m_x, m_xi );
 
-            // Dterm contribution
+            // Compute Dterm contribution.
             uVal += RT.computeDterm( DDt0, m_x, m_xi );
             uValM += RT.computeDterm( DDt0, -m_x, m_xi );
 
@@ -139,7 +138,7 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
             // Compute ERBL GPD (Analytic computation)
             // ============================================================================================
 
-            // // (Gauged) ERBL GPD t = 0
+            // (Gauged) ERBL GPD t = 0
             // uVal = 7.5 * (1 - m_x) * ( pow(m_xi, 2.) - pow(m_x, 2.) ) * (m_x + 2*m_x*m_xi + pow(m_xi, 2.)) / ( pow(m_xi, 3.)*pow(1 + m_xi, 2.) );
             // uValM = 7.5 * (1 + m_x) * ( pow(m_xi, 2.) - pow(m_x, 2.) ) * (-m_x - 2*m_x*m_xi + pow(m_xi, 2.)) / ( pow(m_xi, 3.)*pow(1 + m_xi, 2.) ); 
 
@@ -152,7 +151,7 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
             // // Add D-terms to GPD.
             // dplus /= m_xi;                                                                                     
         
-            // if ( m_xi >= 0 )                                                                            // Conditional expression taking into acount the factor sign(\xi) accompanying dminus.
+            // if ( m_xi >= 0 )                                                                                // Conditional expression taking into acount the factor sign(\xi) accompanying dminus.
             // {
             //     uVal +=  dplus + dminus;
             //     uValM += dplus - dminus;
@@ -181,6 +180,11 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
                 / ( pow( 1 - pow(m_xi,2.) , 2.) * pow(1 + cM,2.) );
         } else                                                                                              // ERBL
         {
+            // ============================================================================================
+            // Compute ERBL GPD (Proper computation: RT)
+            // ============================================================================================
+            
+            // Compute double distribution.
             if ( DD.isZero() )                                                                              // TODO: Map with DDs for different t.
             {            
                 Eigen::VectorXd GPD_DGLAP(RT.x.size());
@@ -196,16 +200,12 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
                 DD = RT.computeDD( GPD_DGLAP );
             }
 
-            // ============================================================================================
-            // Compute ERBL GPD (Proper computation: RT)
-            // ============================================================================================
-
-            // Gauged GPD
+            // Compute "gauged" GPD.
             uVal = RT.computeGPD( DD, m_x, m_xi );
             uValM = RT.computeGPD( DD, -m_x, m_xi );
 
-            // Dterm contribution
-            if ( DDt0.isZero() )                                                                               
+            // Compute Dterm contribution.
+            if ( DDt0.isZero() )                                                                             // TODO: Overload computeDterm so that it accepts (DDt0, x, xi) and (x, xi) as arguments. In that way, we can here look for DDt0 and choose the function computeDterm to be called.                                                                     
             {
                 Eigen::VectorXd GPD_DGLAP(RT.x.size());
                 
@@ -262,7 +262,6 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
         }
     }
 
-    // TODO: Check and fix definitions of the the different quark distributions (u, uM, u+, u-, d(...) and s(...)). See Cédric PhD thesis. pp. 56.
     double uSea  = 0.;
     double uSeaM = 0.;
 

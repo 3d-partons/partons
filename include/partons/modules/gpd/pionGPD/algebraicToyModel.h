@@ -25,8 +25,6 @@ namespace PARTONS {
 
 class algebraicToyModel: public PARTONS::GPDModule
 {
-    NumA::RadonTransform RT;                                // Create Radon transform.
-
 public:
 
     /**
@@ -64,6 +62,8 @@ protected:
     virtual PARTONS::PartonDistribution computeH();
 
 private:
+
+    NumA::RadonTransform RT;                    // Create Radon transform.
 
     double c;                                   // t-dependece of the GPD model.
     double cM;                                  // Auxilary t-dependece for the computation of the singlet distribution.
