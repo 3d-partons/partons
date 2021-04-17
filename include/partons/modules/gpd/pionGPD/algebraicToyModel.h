@@ -27,6 +27,8 @@ class algebraicToyModel: public PARTONS::GPDModule
 {
 public:
 
+    static const std::string COVARIANT_EXTENSION;
+
     /**
      * ID assigned by BaseObjectRegistry.
      */
@@ -61,9 +63,14 @@ protected:
 
     virtual PARTONS::PartonDistribution computeH();
 
-private:
+    /**
+      * Initialize Radon transform 
+      */
+    void initRT();
 
     NumA::RadonTransform RT;                    // Create Radon transform.
+
+private:
 
     double c;                                   // t-dependece of the GPD model.
     double cM;                                  // Auxilary t-dependece for the computation of the singlet distribution.
