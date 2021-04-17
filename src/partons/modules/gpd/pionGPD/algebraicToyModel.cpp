@@ -8,6 +8,7 @@
 
 #include "../../../../../include/partons/modules/gpd/pionGPD/algebraicToyModel.h"
 
+#include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
 #include "../../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
@@ -33,6 +34,8 @@
 
 namespace PARTONS {
 
+    const std::string algebraicToyModel::COVARIANT_EXTENSION = "RT";
+
 // With this line we "create" the name for our GPD module. This will be integrated into the factory and thus partons knows about it.
 const unsigned int algebraicToyModel::classId =
     PARTONS::BaseObjectRegistry::getInstance()->registerBaseObject(new algebraicToyModel("algebraicToyModel"));
@@ -51,7 +54,7 @@ algebraicToyModel::algebraicToyModel(const algebraicToyModel& other) : PARTONS::
 {    
     m2 = 0.101;                                                                                             // Mass parameter algebraic toy model. Eq (30) Physics Letters B 780 (2018) 287–293.
     m2D = 0.099;                                                                                            // D-term t-dependence: Fitting of Phys. Rev. D 97, 014020 (2018) gravitational FFs.
-    RT.init();                                                                                              // Initialize Radon transform
+    // RT.init();                                                                                              // Initialize Radon transform
 }
 
 algebraicToyModel::~algebraicToyModel() 
@@ -72,6 +75,13 @@ void algebraicToyModel::resolveObjectDependencies()
 void algebraicToyModel::configure(const ElemUtils::Parameters &parameters) 
 {
     PARTONS::GPDModule::configure(parameters);
+
+    if (parameters.isAvailable(algebraicToyModel::COVARIANT_EXTENSION)) {
+        initRT();
+        info(__func__, ElemUtils::Formatter() << algebraicToyModel::COVARIANT_EXTENSION
+	    << "Configured - Radon transform matrix built.");
+    }
+
 }
 
 void algebraicToyModel::isModuleWellConfigured() 
@@ -304,6 +314,11 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
     partonDistribution.setGluonDistribution(gluonDistribution);
 
     return partonDistribution;
+}
+
+void algebraicToyModel::initRT()
+{
+    RT.init();
 }
 
 }
