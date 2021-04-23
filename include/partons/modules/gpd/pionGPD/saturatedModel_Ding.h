@@ -5,7 +5,7 @@
  * @file    saturatedModel_Ding.h
  * @author  José Manuel Morgado Chavez (University Of Huelva)
  * @author  Cédric Mezrag (CEA Saclay)
- * @date    Friday 16th April 2021 
+ * @date    Friday 23rd April 2021 
  * @version 1.0
  */
 
@@ -25,9 +25,10 @@ namespace PARTONS {
 
 class saturatedModel_Ding: public PARTONS::GPDModule
 {
-    NumA::RadonTransform RT;                                // Create Radon transform.
 
 public:
+
+    static const std::string COVARIANT_EXTENSION;
 
     /**
      * ID assigned by BaseObjectRegistry.
@@ -63,6 +64,13 @@ protected:
 
     virtual PARTONS::PartonDistribution computeH();
 
+    /**
+      * Initialize Radon transform 
+      */
+    void initRT();
+
+    NumA::RadonTransform RT;                                // Create Radon transform.
+
 private:
 
     double c;                                   // t-dependece of the GPD model.
@@ -71,6 +79,8 @@ private:
 
     double dt;                                  // D-term t-dependence parametrized as a monopole: 1//(1-t/4m2)
     double alpha;                               // Kinematic variable for D-terms: \alpha = m_x/m_xi
+    double dplus;                               // D-term analytical computation
+    double dminus;                              // D-term analytical computation
     double m2D;                                 // D-term t-dependence (mass-scale). Fitting of Phys. Rev. D 97, 014020 (2018) gravitational FFs.
 
     // TODO: Explore the possibility of storing DDs into a map: ( double t-value, std::vector<double> DDt-value ). So at the level of evaluation on just needs to check that map.

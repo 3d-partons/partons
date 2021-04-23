@@ -2,7 +2,7 @@
   * @file    saturatedModel_Ding.cpp
   * @author  José Manuel Morgado Chavez (University Of Huelva)
   * @author  Cédric Mezrag (CEA Saclay)
-  * @date    Friday 16th April 2021 
+  * @date    Friday 23rd April 2021 
   * @version 1.0
   */
 
@@ -32,10 +32,9 @@
 #include <ctime>
 #include <string>
 
-// NumA interpolation (D-terms)
-// #include <NumA/interpolation/CubicSpline.h>
-
 namespace PARTONS {
+
+    const std::string saturatedModel_Ding::COVARIANT_EXTENSION = "RT";
 
 // With this line we "create" the name for our GPD module. This will be integrated into the factory and thus partons knows about it.
 const unsigned int saturatedModel_Ding::classId =
@@ -75,6 +74,12 @@ void saturatedModel_Ding::resolveObjectDependencies()
 void saturatedModel_Ding::configure(const ElemUtils::Parameters &parameters) 
 {
     PARTONS::GPDModule::configure(parameters);
+
+    if (parameters.isAvailable(saturatedModel_Ding::COVARIANT_EXTENSION)) {
+        initRT();
+        info(__func__, ElemUtils::Formatter() << saturatedModel_Ding::COVARIANT_EXTENSION
+	    << "Configured - Radon transform matrix built.");
+    }
 }
 
 void saturatedModel_Ding::isModuleWellConfigured() 
@@ -257,6 +262,11 @@ PARTONS::PartonDistribution saturatedModel_Ding::computeH()
     partonDistribution.setGluonDistribution(gluonDistribution);
 
     return partonDistribution;
+}
+
+void saturatedModel_Ding::initRT()
+{
+    RT.init();
 }
 
 }  
