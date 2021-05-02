@@ -10,7 +10,7 @@ scenario_hash_sum VARCHAR(40));
 CREATE TABLE environment_configuration (
 env_conf_id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
 env_conf_store_date TIMESTAMP,
-env_conf_configuration VARCHAR(255),
+env_conf_configuration VARCHAR(10000),
 env_conf_hash_sum VARCHAR(40));
 
 CREATE TABLE computation (
