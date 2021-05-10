@@ -173,7 +173,7 @@ PartonDistribution GPDEvolutionApfel::compute(GPDModule* pGPDModule, const GPDTy
       }
 
     PartonDistribution pd;
-    pd.setGluonDistribution(GluonDistribution{gpds.at(0).Evaluate(this->m_x) / this->m_x});
+    pd.setGluonDistribution(GluonDistribution{2*gpds.at(0).Evaluate(this->m_x)});
     pd.setQuarkDistributions(qd);
 
     return pd;
@@ -190,7 +190,7 @@ std::function<std::map<int, double>(double const&, double const&)> GPDEvolutionA
 	PartonDistribution pd = pGPDModule->compute(kin, this->getGPDType());
 
 	// Put them in a map
-	std::map<int, double> physd{{0, x * pd.getGluonDistribution().getGluonDistribution()}};
+	std::map<int, double> physd{{0, 0.5 * pd.getGluonDistribution().getGluonDistribution()}};
 	for (QuarkFlavor::Type const t : pd.listTypeOfQuarkFlavor()) {
 
 	    // Swap up and down according to the PDG convention
