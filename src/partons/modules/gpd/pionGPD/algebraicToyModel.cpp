@@ -2,7 +2,7 @@
  * @file algebraicToyModel.cpp
  * @author José Manuel Morgado Chavez (University Of Huelva)
  * @author Cédric Mezrag (CEA Saclay)
- * @date 3rd March 2021 
+ * @date 10th May 2021 
  * @version 1.0
  */
 
@@ -78,7 +78,7 @@ const unsigned int algebraicToyModel::classId =
 algebraicToyModel::algebraicToyModel(const std::string &className) : PARTONS::GPDModule(className)
 {
     // Set reference factorization scale.
-    m_MuF2_ref = pow(0.99,2.);                                                                              // TODO: Set equal to value given in reference paper for \alpha_PI: \mu_H = 0,33 GeV.
+    m_MuF2_ref = pow(0.331,2.);                                                                              
 
     //Relate a specific GPD type with the appropriate function
     m_listGPDComputeTypeAvailable.insert(
@@ -87,7 +87,7 @@ algebraicToyModel::algebraicToyModel(const std::string &className) : PARTONS::GP
 
 algebraicToyModel::algebraicToyModel(const algebraicToyModel& other) : PARTONS::GPDModule(other) 
 {
-    m2 = pow(0.318,2.);  // Mass parameter algebraic toy model. Eq (30) Physics Letters B 780 (2018) 287–293.
+    m2 = pow(0.318,2.);         // Mass parameter algebraic toy model. Eq (30) Physics Letters B 780 (2018) 287–293.
     m2D = pow(0.318,2.);        // D-term t-dependence: Fitting of Phys. Rev. D 97, 014020 (2018) gravitational FFs.
 }
 
@@ -255,7 +255,7 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
             // Add D-terms to GPD.
             dplus /= m_xi;                                                                                     
         
-            if ( m_xi >= 0 )                                                                            // Conditional expression taking into acount the factor sign(\xi) accompanying dminus.
+            if ( m_xi >= 0 )                                                                                // Conditional expression taking into acount the factor sign(\xi) accompanying dminus.
             {
                 uVal +=  dplus + dminus;
                 uValM += dplus - dminus;
