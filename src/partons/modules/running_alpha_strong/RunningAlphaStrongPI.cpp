@@ -1,7 +1,7 @@
 /**
   * @file    RunningAlphaStrongPI.cpp
   * @author  Jose Manuel Morgado Chávez (University of Huelva),
-  * @date    January 18th 2021
+  * @date    May, 10th 2021
   * 
   * @brief   Evaluation of the process independent strong running coupling constant presented in e.g.: Eur. Phys. J. C (2020) 80:1064
   * @version 1.0
@@ -128,6 +128,9 @@ double RunningAlphaStrongPI::compute() {
     debug(__func__, ElemUtils::Formatter() << "Lambda = " << Lambda);
 
     Running(m_Mu, Lambda, m_nf);
+
+    if (m_alphaS > 1.0)
+        warn(__func__, ElemUtils::Formatter() << "alpha_s = " << m_alphaS);
 
     return fAlphaS;
 }

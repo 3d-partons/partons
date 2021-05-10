@@ -1,7 +1,7 @@
 /**
   * @file    RunningAlphaStrongPI.h
   * @author  Jose Manuel Morgado Chávez (University of Huelva),
-  * @date    January 18th 2021
+  * @date    mAY 10th 2021
   * 
   * @brief   Evaluation of the process independent strong running coupling constant presented in e.g.: Eur. Phys. J. C (2020) 80:1064
   * @version 1.0
