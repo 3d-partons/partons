@@ -5,7 +5,7 @@
  * @file algebraicToyModel.h
  * @author José Manuel Morgado Chavez (University Of Huelva)
  * @author Cédric Mezrag (CEA Saclay)
- * @date 10th May 2021 
+ * @date 11th May 2021 
  * @version 1.0
  */
 

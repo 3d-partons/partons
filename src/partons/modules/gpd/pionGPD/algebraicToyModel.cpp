@@ -2,7 +2,7 @@
  * @file algebraicToyModel.cpp
  * @author José Manuel Morgado Chavez (University Of Huelva)
  * @author Cédric Mezrag (CEA Saclay)
- * @date 10th May 2021 
+ * @date 11th May 2021 
  * @version 1.0
  */
 
@@ -132,6 +132,9 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
     QuarkDistribution quarkDistributionUp(QuarkFlavor::UP);
     QuarkDistribution quarkDistributionDown(QuarkFlavor::DOWN);
     QuarkDistribution quarkDistributionStrange(QuarkFlavor::STRANGE);
+    QuarkDistribution quarkDistributionCharm(QuarkFlavor::CHARM);
+    QuarkDistribution quarkDistributionBottom(QuarkFlavor::BOTTOM);
+    QuarkDistribution quarkDistributionTop(QuarkFlavor::TOP);
 
     // u-quark
     double uVal, uValM;
@@ -486,10 +489,43 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
     quarkDistributionStrange.setQuarkDistribution(sVal + sSea);
     quarkDistributionStrange.setQuarkDistributionPlus(sVal + sSea - sValM - sSeaM);
     quarkDistributionStrange.setQuarkDistributionMinus(sVal + sValM);
+    
+    // c-quark
+    double cVal = 0.;
+    double cValM = 0.;
+    double cSea = 0.;
+    double cSeaM = 0.;
+
+    quarkDistributionStrange.setQuarkDistribution(cVal + cSea);
+    quarkDistributionStrange.setQuarkDistributionPlus(cVal + cSea - cValM - cSeaM);
+    quarkDistributionStrange.setQuarkDistributionMinus(cVal + cValM);
+
+    // b-quark
+    double bVal = 0.;
+    double bValM = 0.;
+    double bSea = 0.;
+    double bSeaM = 0.;
+
+    quarkDistributionStrange.setQuarkDistribution(bVal + bSea);
+    quarkDistributionStrange.setQuarkDistributionPlus(bVal + bSea - bValM - bSeaM);
+    quarkDistributionStrange.setQuarkDistributionMinus(bVal + bValM);
+
+    // t-quark
+    double tVal = 0.;
+    double tValM = 0.;
+    double tSea = 0.;
+    double tSeaM = 0.;
+
+    quarkDistributionStrange.setQuarkDistribution(tVal + tSea);
+    quarkDistributionStrange.setQuarkDistributionPlus(tVal + tSea - tValM - tSeaM);
+    quarkDistributionStrange.setQuarkDistributionMinus(tVal + tValM);
 
     partonDistribution.addQuarkDistribution(quarkDistributionUp);
     partonDistribution.addQuarkDistribution(quarkDistributionDown);
     partonDistribution.addQuarkDistribution(quarkDistributionStrange);
+    partonDistribution.addQuarkDistribution(quarkDistributionCharm);
+    partonDistribution.addQuarkDistribution(quarkDistributionBottom);
+    partonDistribution.addQuarkDistribution(quarkDistributionTop);
 
     // Gluon distributions 
     GluonDistribution gluonDistribution(0.);
