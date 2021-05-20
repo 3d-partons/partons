@@ -173,7 +173,7 @@ PartonDistribution GPDEvolutionApfel::compute(GPDModule* pGPDModule, const GPDTy
       }
 
     PartonDistribution pd;
-    pd.setGluonDistribution(GluonDistribution{2*gpds.at(0).Evaluate(this->m_x)});
+    pd.setGluonDistribution(GluonDistribution{gpds.at(0).Evaluate(this->m_x)});
     pd.setQuarkDistributions(qd);
 
     return pd;
