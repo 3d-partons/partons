@@ -28,6 +28,11 @@ public:
     /**
      * Settable parameters
      */
+
+	/*
+	 *TODO: give a description of what these parameters means
+	 */
+
     static const std::string PARAM_NAME_THRESHOLDS;
     static const std::string PARAM_NAME_MASSES;
 
