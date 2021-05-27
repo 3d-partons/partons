@@ -43,7 +43,7 @@ const unsigned int algebraicToyModel::classId =
 algebraicToyModel::algebraicToyModel(const std::string &className) : PARTONS::GPDModule(className)
 {    
     // Set reference factorization scale.
-    m_MuF2_ref = pow(0.5,2.);                                                                               // TODO: Set equal to value given in reference paper for \alpha_PI: \mu_H = 0,33 GeV.
+    m_MuF2_ref = pow(0.331,2.);
 
     //Relate a specific GPD type with the appropriate function
     m_listGPDComputeTypeAvailable.insert(
@@ -142,34 +142,7 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
 
             // Compute Dterm contribution.
             uVal += RT.computeDterm( DDt0, m_x, m_xi );
-            uValM += RT.computeDterm( DDt0, -m_x, m_xi );
-
-            // ============================================================================================
-            // Compute ERBL GPD (Analytic computation)
-            // ============================================================================================
-
-            // (Gauged) ERBL GPD t = 0
-            // uVal = 7.5 * (1 - m_x) * ( pow(m_xi, 2.) - pow(m_x, 2.) ) * (m_x + 2*m_x*m_xi + pow(m_xi, 2.)) / ( pow(m_xi, 3.)*pow(1 + m_xi, 2.) );
-            // uValM = 7.5 * (1 + m_x) * ( pow(m_xi, 2.) - pow(m_x, 2.) ) * (-m_x - 2*m_x*m_xi + pow(m_xi, 2.)) / ( pow(m_xi, 3.)*pow(1 + m_xi, 2.) ); 
-
-            // // D-terms contribution
-            // alpha = m_x/m_xi;
-
-            // dplus = 1.125*(1-pow(alpha,2))*(5*pow(alpha,2)-1);
-            // dminus = -3.75*alpha*(1-pow(alpha,2));
-    
-            // // Add D-terms to GPD.
-            // dplus /= m_xi;                                                                                     
-        
-            // if ( m_xi >= 0 )                                                                                // Conditional expression taking into acount the factor sign(\xi) accompanying dminus.
-            // {
-            //     uVal +=  dplus + dminus;
-            //     uValM += dplus - dminus;
-            // } else
-            // {
-            //     uVal += dplus - dminus;
-            //     uValM += dplus + dminus;
-            // }    
+            uValM += RT.computeDterm( DDt0, -m_x, m_xi );   
         }
     } else                                                                                                  //! Non-vanishing momentum transfer. CHECK!!!!!!!!!!!!!!!!!!!
     {
@@ -229,46 +202,6 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
             
             uVal += dt*RT.computeDterm( DDt0, m_x, m_xi );
             uValM += dt*RT.computeDterm( DDt0, -m_x, m_xi );
-
-            // ============================================================================================
-            // Compute ERBL GPD (Analytic computation)
-            // ============================================================================================
-
-            // (Gauged) ERBL GPD t < 0
-            // uVal  = -3.75 * (pow(m_xi,2) - pow(m_x,2)) * (sqrt(c * (c + 1)) * ( -c*m_xi*(1 - pow(m_xi,2))*(1 - m_x) 
-            //     * (pow(m_xi,4) + 6*m_xi*(1-m_x)*pow(m_x,2)-6*pow(m_xi,3)*(1-m_x)+pow(m_xi,2)*(4-3*(3-m_x)*m_x)+m_x*(4-m_x*(8-5*m_x))) 
-            //     + pow(c,2)*pow(1-pow(m_xi,2),2)*(pow(m_xi,3)*(3*m_xi-2)+3*pow(m_x,4)-4*m_xi*pow(m_x,3)-6*(m_xi-1)*m_xi*pow(m_x,2)+2*m_xi*(pow(m_xi,2)-1)*m_x)
-            //     + pow(m_x-1,3)*(pow(m_xi,5)+3*pow(m_xi,4)*(m_x-1)+pow(m_xi,3)*(2-5*m_x)+2*m_xi*m_x))
-            //     + (1-2*c)*pow( c*(1-pow(m_xi,2))*(pow(m_xi,2)-pow(m_x,2))+pow(m_xi,2)*pow((m_x-1),2),2)
-            //     *(atanh(sqrt(c/(1+c)))-atanh(sqrt(c/(1+c))*(pow(m_xi,2)-m_x)/(m_xi*(1-m_x))))                )
-            //     / (pow(1+c,2.5)*pow(1-pow(m_xi,2),1.5)*pow(1-m_x,2)*sqrt(c*(1-pow(m_xi,2)))*pow(pow(m_xi,2)+c*(1-pow(m_xi,2))*(pow(m_xi,2)-pow(m_x,2))/pow(1-m_x,2),2));
-
-            // uValM = -3.75 * (pow(m_xi,2) - pow(m_x,2)) * ( sqrt(cM * (cM + 1)) * ( -cM*m_xi*(1 - pow(m_xi,2))*(1 + m_x) 
-            //     * (pow(m_xi,4) + 6*m_xi*(1+m_x)*pow(m_x,2)-6*pow(m_xi,3)*(1+m_x)+pow(m_xi,2)*(4-3*(3+m_x)*(-1)*m_x)-m_x*(4+m_x*(8+5*m_x))) 
-            //     + pow(cM,2)*pow(1-pow(m_xi,2),2)*(pow(m_xi,3)*(3*m_xi-2)+3*pow(m_x,4)-4*m_xi*pow(-m_x,3)-6*(m_xi-1)*m_xi*pow(m_x,2)+2*m_xi*(pow(m_xi,2)-1)*(-1)*m_x)
-            //     + pow(-m_x-1,3)*(pow(m_xi,5)+3*pow(m_xi,4)*(-m_x-1)+pow(m_xi,3)*(2+5*m_x)+2*m_xi*(-1)*m_x))
-            //     + (1-2*cM)*pow( cM*(1-pow(m_xi,2))*(pow(m_xi,2)-pow(m_x,2))+pow(m_xi,2)*pow((-m_x-1),2),2)
-            //     *(atanh(sqrt(cM/(1+cM)))-atanh(sqrt(cM/(1+cM))*(pow(m_xi,2)-m_x)/(-m_xi*(1+m_x)))))
-            //     / (pow(1+cM,2.5)*pow(1-pow(m_xi,2),1.5)*pow(1+m_x,2)*sqrt(cM*(1-pow(m_xi,2)))*pow(pow(m_xi,2)+cM*(1-pow(m_xi,2))*(pow(m_xi,2)-pow(m_x,2))/pow(1+m_x,2),2)); 
-
-            // // D-terms contribution (monopole parametrization)
-            // alpha = m_x/m_xi;
-
-            // dplus = 1.125*(1-pow(alpha,2))*(5*pow(alpha,2)-1)*dt;
-            // dminus = -3.75*alpha*(1-pow(alpha,2))*dt;  
-        
-            // // Add D-terms to GPD.
-            // dplus /= m_xi;                                                                                      
-        
-            // if ( m_xi >= 0 )                                                          // Conditional expression taking into acount the factor sign(\xi) accompanying dminus.
-            // {
-            //     uVal +=  dplus + dminus;
-            //     uValM += dplus - dminus;
-            // } else
-            // {
-            //     uVal += dplus - dminus;
-            //     uValM += dplus + dminus;
-            // }
         }
     }
 
