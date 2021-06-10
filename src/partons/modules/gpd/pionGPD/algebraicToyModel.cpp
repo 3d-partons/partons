@@ -298,8 +298,8 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
         
                 if ( m_xi >= 0 )                                                                            // Conditional expression taking into acount the factor sign(\xi) accompanying dminus.
                 {
-                    uVal +=  dplus1 + dminus1;
-                    uValM += dplus1 - dminus1;
+                    uVal +=  dplus + dminus;
+                    uValM += dplus - dminus;
                 } else
                 {
                     uVal += dplus - dminus;
