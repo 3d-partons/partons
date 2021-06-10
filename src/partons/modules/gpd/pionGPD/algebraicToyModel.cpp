@@ -353,36 +353,6 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
     quarkDistributionStrange.setQuarkDistribution(sVal + sSea);
     quarkDistributionStrange.setQuarkDistributionPlus(sVal + sSea - sValM - sSeaM);
     quarkDistributionStrange.setQuarkDistributionMinus(sVal + sValM);
-    
-    // c-quark
-    double cVal = 0.;
-    double cValM = 0.;
-    double cSea = 0.;
-    double cSeaM = 0.;
-
-    quarkDistributionStrange.setQuarkDistribution(cVal + cSea);
-    quarkDistributionStrange.setQuarkDistributionPlus(cVal + cSea - cValM - cSeaM);
-    quarkDistributionStrange.setQuarkDistributionMinus(cVal + cValM);
-
-    // b-quark
-    double bVal = 0.;
-    double bValM = 0.;
-    double bSea = 0.;
-    double bSeaM = 0.;
-
-    quarkDistributionStrange.setQuarkDistribution(bVal + bSea);
-    quarkDistributionStrange.setQuarkDistributionPlus(bVal + bSea - bValM - bSeaM);
-    quarkDistributionStrange.setQuarkDistributionMinus(bVal + bValM);
-
-    // t-quark
-    double tVal = 0.;
-    double tValM = 0.;
-    double tSea = 0.;
-    double tSeaM = 0.;
-
-    quarkDistributionStrange.setQuarkDistribution(tVal + tSea);
-    quarkDistributionStrange.setQuarkDistributionPlus(tVal + tSea - tValM - tSeaM);
-    quarkDistributionStrange.setQuarkDistributionMinus(tVal + tValM);
 
     // c-quark
     double cVal = 0.;

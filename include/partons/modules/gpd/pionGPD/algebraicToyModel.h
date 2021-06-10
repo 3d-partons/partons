@@ -75,7 +75,6 @@ private:
     double c;                                   // t-dependece of the GPD model.
     double c1;                                  // t-depence x=1 limit ERBL region (Analytical expressions)
     double cM;                                  // Auxilary t-dependece for the computation of the singlet distribution.
-    double c1;                                  // Auxiliary t-dependence for the \xi->1 limit.
     double m2;                                  // Squared pion mass scale.
     double ca;                                  // Auxiliary t-dependence parameter for computing the inverse Radon transform.
 
