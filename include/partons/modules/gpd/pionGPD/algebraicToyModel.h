@@ -5,7 +5,7 @@
  * @file    algebraicToyModel.h
  * @author  José Manuel Morgado Chavez (University Of Huelva)
  * @author  Cédric Mezrag (CEA Saclay)
- * @date    Friday 16th April 2021 
+ * @date    Friday 10th June 2021 
  * @version 1.0
  */
 
@@ -72,6 +72,8 @@ protected:
 
 private:
 
+    bool num = 0;                               // Boolean to choose whether to evaluate the model from its analytic expressions (num = 0) or using the covariant extension (num = 1)
+
     double c;                                   // t-dependece of the GPD model.
     double c1;                                  // t-depence x=1 limit ERBL region (Analytical expressions)
     double cM;                                  // Auxilary t-dependece for the computation of the singlet distribution.
@@ -82,10 +84,6 @@ private:
     double alpha;                               // Kinematic variable for D-terms: \alpha = m_x/m_xi
     double dplus;                               // D-term analytical computation
     double dminus;                              // D-term analytical computation
-
-    double alpha1;                              // Kinematic variable for D-terms: \alpha = m_x/m_xi (Analytical expressions)
-    double dplus1;                              // D-term analytical computation (Analytical expressions)
-    double dminus1;                             // D-term analytical computation (Analytical expressions)
 
     double m2D;                                 // D-term t-dependence (mass-scale). Fitting of Phys. Rev. D 97, 014020 (2018) gravitational FFs.
 
