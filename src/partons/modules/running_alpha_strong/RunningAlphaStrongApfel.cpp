@@ -47,7 +47,9 @@ RunningAlphaStrongApfel* RunningAlphaStrongApfel::clone() const {
 
 void RunningAlphaStrongApfel::configure(const ElemUtils::Parameters &parameters) {
 
+	std::cout << "Entering Running AlphaStrongApfel Parameters" << std::endl ;
     RunningAlphaStrongModule::configure(parameters);
+    std::cout << "RunningAlphaStrongModule::configure(parameters) called" << std::endl;
 
     //check and set
     if (parameters.isAvailable(PerturbativeQCDOrderType::PARAMETER_NAME_PERTURBATIVE_QCD_ORDER_TYPE)) {

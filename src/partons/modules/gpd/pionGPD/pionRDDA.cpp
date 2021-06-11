@@ -1,7 +1,7 @@
 /**
  * @file Simple_RDDA.cpp
  * @author Cédric Mezrag (CEA Saclay)
- * @date 17th May 2021
+ * @date 11th June 2021
  * @version 1.0
  */
 
@@ -15,7 +15,7 @@
 
 // TODO: Clean list of headers. Check which ones are necessary.
 
-#include "../../../../../include/partons/modules/gpd/pionGPD/Simple_RDDA.h"
+#include "../../../../../include/partons/modules/gpd/pionGPD/pionRDDA.h"
 
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
@@ -65,10 +65,10 @@ extern "C"
 namespace PARTONS {
 
 // With this line we "create" the name for our GPD module. This will be integrated into the factory and thus partons knows about it.
-const unsigned int simpleRDDAModel::classId =
-    PARTONS::BaseObjectRegistry::getInstance()->registerBaseObject(new simpleRDDAModel("simpleRDDAModel"));
+const unsigned int pionRDDAModel::classId =
+    PARTONS::BaseObjectRegistry::getInstance()->registerBaseObject(new pionRDDAModel("pionRDDAModel"));
 
-simpleRDDAModel::simpleRDDAModel(const std::string &className) : PARTONS::GPDModule(className)
+pionRDDAModel::pionRDDAModel(const std::string &className) : PARTONS::GPDModule(className)
 {
     // Set reference factorization scale.
     m_MuF2_ref = pow(1.,2.);
@@ -87,7 +87,7 @@ simpleRDDAModel::simpleRDDAModel(const std::string &className) : PARTONS::GPDMod
     initFunctorsForIntegrations();
 }
 
-simpleRDDAModel::simpleRDDAModel(const simpleRDDAModel& other) : PARTONS::GPDModule(other)
+pionRDDAModel::pionRDDAModel(const pionRDDAModel& other) : PARTONS::GPDModule(other)
 {
     // Set reference factorization scale.
     m_MuF2_ref = pow(1.,2.);
@@ -103,64 +103,64 @@ simpleRDDAModel::simpleRDDAModel(const simpleRDDAModel& other) : PARTONS::GPDMod
 
 }
 
-simpleRDDAModel::~simpleRDDAModel()
+pionRDDAModel::~pionRDDAModel()
 {
     if(m_pIntegralHuVal){ delete m_pIntegralHuVal; m_pIntegralHuVal = 0;}
     if(m_pIntegralHuValMx){ delete m_pIntegralHuValMx; m_pIntegralHuValMx = 0;}
 }
 
-simpleRDDAModel* simpleRDDAModel::clone() const
+pionRDDAModel* pionRDDAModel::clone() const
 {
-    return new simpleRDDAModel(*this);
+    return new pionRDDAModel(*this);
 }
-void simpleRDDAModel::resolveObjectDependencies()
+void pionRDDAModel::resolveObjectDependencies()
 {
 
 }
 
-void simpleRDDAModel::configure(const ElemUtils::Parameters &parameters)
+void pionRDDAModel::configure(const ElemUtils::Parameters &parameters)
 {
     PARTONS::GPDModule::configure(parameters);
     MathIntegratorModule::configureIntegrator(parameters);
 }
 
-void simpleRDDAModel::isModuleWellConfigured()
+void pionRDDAModel::isModuleWellConfigured()
 {
     PARTONS::GPDModule::isModuleWellConfigured();
     //std::cout << "GPD module well configured" << std::endl;
 
 }
 
-void simpleRDDAModel::initModule()
+void pionRDDAModel::initModule()
 {
     PARTONS::GPDModule::initModule();
     //std::cout << "GPD module initiated" << std::endl;
 }
 
 
-void simpleRDDAModel::initFunctorsForIntegrations() {
+void pionRDDAModel::initFunctorsForIntegrations() {
     MathIntegratorModule::setIntegrator(NumA::IntegratorType1D::DEXP);
 
 //Integrators for H
 
     m_pIntegralHuVal = NumA::Integrator1D::newIntegrationFunctor(this,
-            &simpleRDDAModel::IntegralHuVal);
+            &pionRDDAModel::IntegralHuVal);
 
     m_pIntegralHuValMx = NumA::Integrator1D::newIntegrationFunctor(this,
-            &simpleRDDAModel::IntegralHuValMx);
+            &pionRDDAModel::IntegralHuValMx);
 
     m_pIntegralHdVal = NumA::Integrator1D::newIntegrationFunctor(this,
-            &simpleRDDAModel::IntegralHdVal);
+            &pionRDDAModel::IntegralHdVal);
 
     m_pIntegralHdValMx = NumA::Integrator1D::newIntegrationFunctor(this,
-            &simpleRDDAModel::IntegralHdValMx);
+            &pionRDDAModel::IntegralHdValMx);
 
 }
 
 
 
 
-void simpleRDDAModel::throwBetaException(const std::string &funcName,
+void pionRDDAModel::throwBetaException(const std::string &funcName,
         double betaValue) {
     throw ElemUtils::CustomException(getClassName(), funcName,
             ElemUtils::Formatter()
@@ -169,19 +169,19 @@ void simpleRDDAModel::throwBetaException(const std::string &funcName,
 }
 
 //Set profile function parameter
-void simpleRDDAModel::setProfileParameter(double N){
+void pionRDDAModel::setProfileParameter(double N){
 	mRDDA_Para = N;
 	std::cout << "RDDA parameter set to n = "<< mRDDA_Para << std::endl ;
 }
 
-double simpleRDDAModel::getProfileParameter(){
+double pionRDDAModel::getProfileParameter(){
 	std::cout << "RDDA parameter set to n = "<< mRDDA_Para << std::endl ;
 	return mRDDA_Para ;
 }
 
 
 //Profile function
-double simpleRDDAModel::Profile(double beta, double alpha) {
+double pionRDDAModel::Profile(double beta, double alpha) {
     double profile = 0.;
     double ProfileShape = mRDDA_Para;
     double TwiceProfileShapePlus1 = 2. * ProfileShape + 1;
@@ -211,7 +211,7 @@ double simpleRDDAModel::Profile(double beta, double alpha) {
 }
 
 //forward limit ansatz for H
-double simpleRDDAModel::SimplePdfAnsatz(double beta) {
+double pionRDDAModel::SimplePdfAnsatz(double beta) {
 	double pdf;
     pdf = pow(beta, mPara.at(0)) * pow((1. - beta), mPara.at(1))
             * tgamma(2+mPara.at(0)+mPara.at(1))/tgamma(1.+mPara.at(0))/tgamma(1.+mPara.at(1));
@@ -229,7 +229,7 @@ double simpleRDDAModel::SimplePdfAnsatz(double beta) {
 
 
 */
-double simpleRDDAModel::IntegralHuVal(double beta, std::vector<double> Par) {
+double pionRDDAModel::IntegralHuVal(double beta, std::vector<double> Par) {
     double alpha = (m_x - beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -240,7 +240,7 @@ double simpleRDDAModel::IntegralHuVal(double beta, std::vector<double> Par) {
 
 }
 
-double simpleRDDAModel::IntegralHuValMx(double beta, std::vector<double> Par) {
+double pionRDDAModel::IntegralHuValMx(double beta, std::vector<double> Par) {
     double alpha = (m_Mx - beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -251,7 +251,7 @@ double simpleRDDAModel::IntegralHuValMx(double beta, std::vector<double> Par) {
 }
 
 
-double simpleRDDAModel::HuValDD(double beta, double alpha) {
+double pionRDDAModel::HuValDD(double beta, double alpha) {
     double absbeta = fabs(beta);
     double HuValDD;
     /*    if (beta <= 0 || beta > 1.) {
@@ -275,7 +275,7 @@ double simpleRDDAModel::HuValDD(double beta, double alpha) {
 ##################################
 */
 
-double simpleRDDAModel::IntegralHdVal(double beta, std::vector<double> Par) {
+double pionRDDAModel::IntegralHdVal(double beta, std::vector<double> Par) {
     double alpha = (m_x - beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -286,7 +286,7 @@ double simpleRDDAModel::IntegralHdVal(double beta, std::vector<double> Par) {
 
 }
 
-double simpleRDDAModel::IntegralHdValMx(double beta, std::vector<double> Par) {
+double pionRDDAModel::IntegralHdValMx(double beta, std::vector<double> Par) {
     double alpha = (m_Mx - beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -297,7 +297,7 @@ double simpleRDDAModel::IntegralHdValMx(double beta, std::vector<double> Par) {
 }
 
 
-double simpleRDDAModel::HdValDD(double beta, double alpha) {
+double pionRDDAModel::HdValDD(double beta, double alpha) {
     double absbeta = fabs(beta);
     double HdValDD;
     /*    if (beta <= 0 || beta > 1.) {
@@ -314,7 +314,7 @@ double simpleRDDAModel::HdValDD(double beta, double alpha) {
 
 
 
-PARTONS::PartonDistribution simpleRDDAModel::computeH()
+PARTONS::PartonDistribution pionRDDAModel::computeH()
 {
 
     std::vector<double> x(1), y(1), xi(1), xm(1), ym(1), xim(1);                                            // Declare kinematics in a format appropiated for RadonTransform.

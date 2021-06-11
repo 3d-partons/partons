@@ -33,17 +33,19 @@ public:
 	 *TODO: give a description of what these parameters means
 	 */
 
-    static const std::string PARAM_NAME_THRESHOLDS;
-    static const std::string PARAM_NAME_MASSES;
+    static const std::string PARAM_NAME_THRESHOLDS;             // Threshold of quarks entering the loops and modifying the running
+    static const std::string PARAM_NAME_MASSES;                 // Masses of the quarks
 
-    static const std::string PARAM_NAME_SUBGRID_NODES;
-    static const std::string PARAM_NAME_SUBGRID_LOWER_BOUNDS;
-    static const std::string PARAM_NAME_SUBGRID_INTER_DEGREES;
+    // Descritpion of the Grid in x variable
+    static const std::string PARAM_NAME_SUBGRID_NODES;          // Number of node per subgrid
+    static const std::string PARAM_NAME_SUBGRID_LOWER_BOUNDS;   // Lower value for each subgrid
+    static const std::string PARAM_NAME_SUBGRID_INTER_DEGREES;  // Interpolation degree in each subgrid
 
-    static const std::string PARAM_NAME_TAB_NODES;
-    static const std::string PARAM_NAME_TAB_LOWER_BOUND;
-    static const std::string PARAM_NAME_TAB_UPPER_BOUND;
-    static const std::string PARAM_NAME_TAB_INTER_DEGREE;
+    // Description of the Q^2 grid
+    static const std::string PARAM_NAME_TAB_NODES;              //
+    static const std::string PARAM_NAME_TAB_LOWER_BOUND;        // Lower bound which
+    static const std::string PARAM_NAME_TAB_UPPER_BOUND;        // Upper bound for which the code will be able to evolve
+    static const std::string PARAM_NAME_TAB_INTER_DEGREE;       // Interpolation degree in Q^2
 
     /**
      * Unique ID to automatically register the class in the registry.
