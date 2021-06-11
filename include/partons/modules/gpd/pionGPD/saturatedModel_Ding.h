@@ -74,13 +74,16 @@ protected:
 private:
 
     double c;                                   // t-dependece of the GPD model.
+    // double c1;                                  // t-depence x=1 limit ERBL region (Analytical expressions)
     double cM;                                  // Auxilary t-dependece for the computation of the singlet distribution.
     double m2;                                  // Squared pion mass scale.
+    double ca;                                  // Auxiliary t-dependence parameter for computing the inverse Radon transform.
 
     double dt;                                  // D-term t-dependence parametrized as a monopole: 1//(1-t/4m2)
     double alpha;                               // Kinematic variable for D-terms: \alpha = m_x/m_xi
     double dplus;                               // D-term analytical computation
     double dminus;                              // D-term analytical computation
+
     double m2D;                                 // D-term t-dependence (mass-scale). Fitting of Phys. Rev. D 97, 014020 (2018) gravitational FFs.
 
     // TODO: Explore the possibility of storing DDs into a map: ( double t-value, std::vector<double> DDt-value ). So at the level of evaluation on just needs to check that map.
