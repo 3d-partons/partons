@@ -25,8 +25,9 @@ namespace PARTONS {
 
 class saturatedModel_Ding: public PARTONS::GPDModule
 {
-
 public:
+
+    static const std::string COVARIANT_EXTENSION;
 
     /**
      * ID assigned by BaseObjectRegistry.

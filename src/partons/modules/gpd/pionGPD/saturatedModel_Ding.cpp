@@ -33,6 +33,8 @@
 
 namespace PARTONS {
 
+    const std::string saturatedModel_Ding::COVARIANT_EXTENSION = "RT";
+
 // With this line we "create" the name for our GPD module. This will be integrated into the factory and thus partons knows about it.
 const unsigned int saturatedModel_Ding::classId =
     PARTONS::BaseObjectRegistry::getInstance()->registerBaseObject(new saturatedModel_Ding("saturatedModel_Ding"));
@@ -73,12 +75,15 @@ void saturatedModel_Ding::configure(const ElemUtils::Parameters &parameters)
 {
     PARTONS::GPDModule::configure(parameters);
 
-    // Initialise NumA::RadonTransform.
-    initRT();
+    if (parameters.isAvailable(saturatedModel_Ding::COVARIANT_EXTENSION)) 
+    {
+        // Initialise NumA::RadonTransform.
+        initRT();
 
-    // Print logger message when NumA::RadonTransform is properly configured.
-    info(__func__, ElemUtils::Formatter() << saturatedModel_Ding::COVARIANT_EXTENSION
-	<< "Configured - Radon transform matrix built.");
+        // Print logger message when NumA::RadonTransform is properly configured.
+        info(__func__, ElemUtils::Formatter() << saturatedModel_Ding::COVARIANT_EXTENSION
+	    << "Configured - Radon transform matrix built.");
+    }
 }
 
 void saturatedModel_Ding::isModuleWellConfigured() 
