@@ -78,12 +78,18 @@ protected:
 
 private:
 
-    std::vector<double> mPara;                                   // PDF-parameters
+    std::vector<double> m_valPara;                                   // valence PDF-parameters {a,b,N_v}
+    std::vector<double> m_seaPara;                                   // sea PDF-parameters {a,b,N_s}
+    std::vector<double> m_gPara;                                     // gluons PDF-parameters {a,b,N_g}
+
     double mRDDA_Para;											// RDDA parameter n
     double m_Mx;                                                // -x variable
 
     double Profile(double alpha, double beta);        // Compute the Radyushkin Profile function
-    double SimplePdfAnsatz(double beta);	// Simple PDF ansatz q(x) =  x^a (1-x)^b
+    // x-fitter pdf set
+    double valencePdfAnsatz(double beta);	// Valence ansatz u(x) = bar(d) (x) = N_v * x^a (1-x)^b
+    double seaPdfAnsatz(double beta);	// Sea ansatz  2 ub + 2 d + s + sb = 6 ub = N_s * x^(a-1) (1-x)^b
+    double gluonPdfAnsatz(double beta);	// gluon ansatz  x g(x) = N_g * (1-x)^b
 
     void throwBetaException(const std::string &funcName, double betaValue);
 
@@ -94,16 +100,39 @@ private:
     NumA::FunctionType1D* m_pIntegralHdVal;
     NumA::FunctionType1D* m_pIntegralHdValMx;
 
+    NumA::FunctionType1D* m_pIntegralxLargeHsSea;
+    NumA::FunctionType1D* m_pIntegralxSmallHsSea;
+    NumA::FunctionType1D* m_pIntegralxSmall1HsSea;
+    NumA::FunctionType1D* m_pIntegralxSmall2HsSea;
+    NumA::FunctionType1D* m_pIntegralxLargeHsSeaMx;
+
+    NumA::FunctionType1D* m_pIntegralxLargeHg;
+    NumA::FunctionType1D* m_pIntegralxSmall1Hg;
+    NumA::FunctionType1D* m_pIntegralxSmall2Hg;
+    NumA::FunctionType1D* m_pIntegralxLargeHgMx;
+
 
     double IntegralHuVal(double beta, std::vector<double> Par);
     double IntegralHuValMx(double beta, std::vector<double> Par);
-
     double HuValDD(double beta, double alpha);
 
     double IntegralHdVal(double beta, std::vector<double> Par);
     double IntegralHdValMx(double beta, std::vector<double> Par);
-
     double HdValDD(double beta, double alpha);
+
+    double IntegralxSmall2Hg(double beta, std::vector<double> Par);
+    double IntegralxSmall1Hg(double beta, std::vector<double> Par);
+    double IntegralxLargeHgMx(double beta, std::vector<double> Par);
+    double IntegralxLargeHg(double beta, std::vector<double> Par) ;
+    double HsDD(double beta, double alpha);
+
+    double IntegralxLargeHsSea(double beta, std::vector<double> Par);
+    double IntegralxLargeHsSeaMx(double beta, std::vector<double> Par);
+    double IntegralxSmallHsSea(double beta, std::vector<double> Par);
+    double IntegralxSmall1HsSea(double beta, std::vector<double> Par);
+    double IntegralxSmall2HsSea(double beta, std::vector<double> Par);
+    double HgDD(double beta, double alpha);
+
 
 };
 

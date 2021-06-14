@@ -71,13 +71,15 @@ const unsigned int pionRDDAModel::classId =
 pionRDDAModel::pionRDDAModel(const std::string &className) : PARTONS::GPDModule(className)
 {
     // Set reference factorization scale.
-    m_MuF2_ref = pow(1.,2.);
+    m_MuF2_ref = 1.9 ; // ref scale at which xfitter PDFs are given
     //std::cout << "m_MuF2_ref = " << m_MuF2_ref << std::endl;
     //std::cout << "get m_MuF2_ref = " << getMuF2Ref() << std::endl;
 
     // Set default parameter for simple RDDA model
-    mPara = {-0.5,3.};
-    mRDDA_Para = 1.;
+    m_valPara = {-0.25,0.95,2.6};
+    m_seaPara = {-0.5,8., 0.21 / (std::tgamma(1.5)*std::tgamma(1.21)/ std::tgamma(1.5+1.21) )};
+    m_gPara = {-1.,3.,0.23*4};
+    mRDDA_Para = 2.;
 
 
     //Relate a specific GPD type with the appropriate function
@@ -90,13 +92,15 @@ pionRDDAModel::pionRDDAModel(const std::string &className) : PARTONS::GPDModule(
 pionRDDAModel::pionRDDAModel(const pionRDDAModel& other) : PARTONS::GPDModule(other)
 {
     // Set reference factorization scale.
-    m_MuF2_ref = pow(1.,2.);
+    m_MuF2_ref = 1.9 ;
     //std::cout << "m_MuF2_ref = " << m_MuF2_ref << std::endl;
     //std::cout << "get m_MuF2_ref = " << getMuF2Ref() << std::endl;
 
     // Set default parameter for simple RDDA model
-    mPara = {-0.5,3.};
-    mRDDA_Para = 1.;
+    m_valPara = {-0.25,0.95,2.6};
+    m_seaPara = {-0.5,8., 0.21 / (std::tgamma(1.5)*std::tgamma(1.21)/ std::tgamma(1.5+1.21) )};
+    m_gPara = {-1.,3.,0.23*4};
+    mRDDA_Para = 2.;
 
     MathIntegratorModule();
     initFunctorsForIntegrations();
@@ -107,6 +111,9 @@ pionRDDAModel::~pionRDDAModel()
 {
     if(m_pIntegralHuVal){ delete m_pIntegralHuVal; m_pIntegralHuVal = 0;}
     if(m_pIntegralHuValMx){ delete m_pIntegralHuValMx; m_pIntegralHuValMx = 0;}
+    if(m_pIntegralHdVal){ delete m_pIntegralHdVal; m_pIntegralHdVal = 0;}
+    if(m_pIntegralHdValMx){ delete m_pIntegralHdValMx; m_pIntegralHdValMx = 0;}
+
 }
 
 pionRDDAModel* pionRDDAModel::clone() const
@@ -139,7 +146,7 @@ void pionRDDAModel::initModule()
 
 
 void pionRDDAModel::initFunctorsForIntegrations() {
-    MathIntegratorModule::setIntegrator(NumA::IntegratorType1D::DEXP);
+    MathIntegratorModule::setIntegrator(NumA::IntegratorType1D::GK21_ADAPTIVE);
 
 //Integrators for H
 
@@ -154,6 +161,33 @@ void pionRDDAModel::initFunctorsForIntegrations() {
 
     m_pIntegralHdValMx = NumA::Integrator1D::newIntegrationFunctor(this,
             &pionRDDAModel::IntegralHdValMx);
+
+    m_pIntegralxLargeHsSea = NumA::Integrator1D::newIntegrationFunctor(this,
+            &pionRDDAModel::IntegralxLargeHsSea);
+
+    m_pIntegralxSmallHsSea = NumA::Integrator1D::newIntegrationFunctor(this,
+            &pionRDDAModel::IntegralxSmallHsSea);
+
+    m_pIntegralxSmall1HsSea = NumA::Integrator1D::newIntegrationFunctor(this,
+            &pionRDDAModel::IntegralxSmall1HsSea);
+
+    m_pIntegralxSmall2HsSea = NumA::Integrator1D::newIntegrationFunctor(this,
+            &pionRDDAModel::IntegralxSmall2HsSea);
+
+    m_pIntegralxLargeHsSeaMx = NumA::Integrator1D::newIntegrationFunctor(this,
+            &pionRDDAModel::IntegralxLargeHsSeaMx);
+
+    m_pIntegralxLargeHg = NumA::Integrator1D::newIntegrationFunctor(this,
+            &pionRDDAModel::IntegralxLargeHg);
+
+    m_pIntegralxSmall1Hg = NumA::Integrator1D::newIntegrationFunctor(this,
+            &pionRDDAModel::IntegralxSmall1Hg);
+
+    m_pIntegralxSmall2Hg = NumA::Integrator1D::newIntegrationFunctor(this,
+            &pionRDDAModel::IntegralxSmall2Hg);
+
+    m_pIntegralxLargeHgMx = NumA::Integrator1D::newIntegrationFunctor(this,
+            &pionRDDAModel::IntegralxLargeHgMx);
 
 }
 
@@ -211,13 +245,23 @@ double pionRDDAModel::Profile(double beta, double alpha) {
 }
 
 //forward limit ansatz for H
-double pionRDDAModel::SimplePdfAnsatz(double beta) {
+double pionRDDAModel::valencePdfAnsatz(double beta) {
 	double pdf;
-    pdf = pow(beta, mPara.at(0)) * pow((1. - beta), mPara.at(1))
-            * tgamma(2+mPara.at(0)+mPara.at(1))/tgamma(1.+mPara.at(0))/tgamma(1.+mPara.at(1));
+    pdf = pow(beta, m_valPara.at(0)) * pow((1. - beta), m_valPara.at(1)) * m_valPara.at(2) ;
     return pdf ;
 }
 
+double pionRDDAModel::seaPdfAnsatz(double beta) {
+	double pdf;
+    pdf = pow(beta, m_seaPara.at(0)) * pow((1. - beta), m_seaPara.at(1)) *  m_seaPara.at(2) ;
+    return pdf ;
+}
+
+double pionRDDAModel::gluonPdfAnsatz(double beta) {
+	double pdf;
+    pdf = pow(beta, m_gPara.at(0)) * pow((1. - beta), m_gPara.at(1)) *  m_gPara.at(2) ;
+    return pdf ;
+}
 
 //integrals for H
 /*
@@ -229,6 +273,8 @@ double pionRDDAModel::SimplePdfAnsatz(double beta) {
 
 
 */
+
+////////////////// Valence part /////////////////////
 double pionRDDAModel::IntegralHuVal(double beta, std::vector<double> Par) {
     double alpha = (m_x - beta) / m_xi;
 
@@ -258,14 +304,13 @@ double pionRDDAModel::HuValDD(double beta, double alpha) {
      throwBetaException(__func__, x);
      }*/
     if (beta > 0.) {
-        HuValDD = 2 * SimplePdfAnsatz(beta)* Profile(beta, alpha);
+        HuValDD = 0.5 * valencePdfAnsatz(beta)* Profile(beta, alpha);
     } else {
         HuValDD = 0.;
     }
 
     return HuValDD;
 }
-
 
 /*
 #################################
@@ -276,35 +321,35 @@ double pionRDDAModel::HuValDD(double beta, double alpha) {
 */
 
 double pionRDDAModel::IntegralHdVal(double beta, std::vector<double> Par) {
-    double alpha = (m_x - beta) / m_xi;
+    double alpha = (m_x + beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
         throwBetaException(__func__, beta);
     }
 
-    return HdValDD(beta, alpha) / m_xi;
+    return HdValDD(-beta, alpha) / m_xi;
 
 }
 
 double pionRDDAModel::IntegralHdValMx(double beta, std::vector<double> Par) {
-    double alpha = (m_Mx - beta) / m_xi;
+    double alpha = (m_Mx + beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
         throwBetaException(__func__, beta);
     }
 
-    return HdValDD(beta, alpha) / m_xi;
+    return HdValDD(-beta, alpha) / m_xi;
 }
 
 
-double pionRDDAModel::HdValDD(double beta, double alpha) {
-    double absbeta = fabs(beta);
+double pionRDDAModel::HdValDD(double mbeta, double alpha) {
+    double absbeta = fabs(mbeta);
     double HdValDD;
     /*    if (beta <= 0 || beta > 1.) {
      throwBetaException(__func__, x);
      }*/
-    if (beta > 0.) {
-        HdValDD = SimplePdfAnsatz(beta)* Profile(beta, alpha);
+    if (mbeta < 0.) {
+        HdValDD = - 0.5 * valencePdfAnsatz(absbeta)* Profile(absbeta, alpha);
     } else {
         HdValDD = 0.;
     }
@@ -312,6 +357,131 @@ double pionRDDAModel::HdValDD(double beta, double alpha) {
     return HdValDD;
 }
 
+/*
+#################################
+#
+# Sea contribution
+#
+##################################
+*/
+
+double pionRDDAModel::IntegralxLargeHsSea(double beta,
+        std::vector<double> Par) {
+    double alpha = (m_x - beta) / m_xi;
+
+    if (beta <= 0 || beta > 1.) {
+        throwBetaException(__func__, beta);
+    }
+
+    return HsDD(beta, alpha) / m_xi;
+}
+
+double pionRDDAModel::IntegralxLargeHsSeaMx(double beta,        std::vector<double> Par) {
+    double alpha = (m_x + beta) / m_xi;
+
+    if (beta <= 0 || beta > 1.) {
+        throwBetaException(__func__, beta);
+    }
+
+    return HsDD(beta, alpha) / m_xi;
+}
+
+double pionRDDAModel::IntegralxSmallHsSea(double beta,
+        std::vector<double> Par) {
+    return (HsDD(beta, (m_x - beta) / m_xi)
+            - HsDD(beta, (m_x + beta) / m_xi)) / m_xi;
+}
+
+double pionRDDAModel::IntegralxSmall1HsSea(double beta,
+        std::vector<double> Par) {
+    double alpha = (m_x - beta) / m_xi;
+
+    if (beta <= 0 || beta > 1.) {
+        throwBetaException(__func__, beta);
+    }
+
+    return HsDD(beta, alpha) / m_xi;
+}
+
+double pionRDDAModel::IntegralxSmall2HsSea(double beta,
+        std::vector<double> Par) {
+    double Integral;
+
+    if (beta <= 0 || beta > 1.) {
+        throwBetaException(__func__, beta);
+    }
+
+    return HsDD(beta, (m_x + beta) / m_xi) / m_xi;
+}
+
+double pionRDDAModel::HsDD(double beta, double alpha) {
+    double absbeta = fabs(beta);
+        if (beta <= 0 || beta > 1.) {
+     throwBetaException(__func__, beta);
+     }
+
+    return   1. / 6. * seaPdfAnsatz(absbeta) * Profile(beta, alpha);
+}
+
+
+/*
+#################################
+#
+# gluon contribution
+#
+##################################
+*/
+
+double pionRDDAModel::IntegralxLargeHg(double beta, std::vector<double> Par) {
+    double alpha = (m_x - beta) / m_xi;
+
+    if (beta <= 0 || beta > 1.) {
+        throwBetaException(__func__, beta);
+    }
+
+    return beta * HgDD(beta, alpha) / m_xi;
+}
+
+double pionRDDAModel::IntegralxLargeHgMx(double beta, std::vector<double> Par) {
+    double alpha = (m_x + beta) / m_xi;
+
+    if (beta <= 0 || beta > 1.) {
+        throwBetaException(__func__, beta);
+    }
+
+    return beta * HgDD(beta, alpha) / m_xi;
+}
+
+double pionRDDAModel::IntegralxSmall1Hg(double beta, std::vector<double> Par) {
+    double alpha = (m_x - beta) / m_xi;
+
+    if (beta <= 0 || beta > 1.) {
+        throwBetaException(__func__, beta);
+    }
+
+    return beta * HgDD(beta, alpha) / m_xi;
+}
+
+double pionRDDAModel::IntegralxSmall2Hg(double beta, std::vector<double> Par) {
+    double alpha = (m_x + beta) / m_xi;
+
+    if (beta <= 0 || beta > 1.) {
+        throwBetaException(__func__, beta);
+    }
+
+    return beta * HgDD(beta, alpha) / m_xi;
+}
+
+double pionRDDAModel::HgDD(double beta, double alpha) {
+    double absbeta = fabs(beta);
+        if (beta <= 0 || beta > 1.) {
+     throwBetaException(__func__, beta);
+     }
+
+    return gluonPdfAnsatz(absbeta) * Profile(beta, alpha);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
 
 
 PARTONS::PartonDistribution pionRDDAModel::computeH()
@@ -325,9 +495,9 @@ PARTONS::PartonDistribution pionRDDAModel::computeH()
     QuarkDistribution quarkDistributionUp(QuarkFlavor::UP);
     QuarkDistribution quarkDistributionDown(QuarkFlavor::DOWN);
     QuarkDistribution quarkDistributionStrange(QuarkFlavor::STRANGE);
-    QuarkDistribution quarkDistributionCharm(QuarkFlavor::CHARM);
-    QuarkDistribution quarkDistributionBottom(QuarkFlavor::BOTTOM);
-    QuarkDistribution quarkDistributionTop(QuarkFlavor::TOP);
+    //QuarkDistribution quarkDistributionCharm(QuarkFlavor::CHARM);
+    //QuarkDistribution quarkDistributionBottom(QuarkFlavor::BOTTOM);
+    //QuarkDistribution quarkDistributionTop(QuarkFlavor::TOP);
 
     // u-quark
     double uVal, uValM;
@@ -348,17 +518,70 @@ PARTONS::PartonDistribution pionRDDAModel::computeH()
     	    double Beta2Min = std::min<double>(Beta2, Beta2Mx);
     	    std::vector<double> emptyParameters;
 
-    	    // u-d quark, valence part evaluated at fx
+    	    /// gluons
+
+    	    double Hg = 0.;
+
+    	    if (m_x >= m_xi) {
+    	        // Integration
+    	        Hg = integrate(m_pIntegralxLargeHg, Beta1, Beta2, emptyParameters);
+
+    	    }
+
+    	    if (fabs(m_x) < m_xi) {
+    	        Hg = integrate(m_pIntegralxSmall1Hg, 0., Beta2, emptyParameters);
+    	        Hg += integrate(m_pIntegralxSmall2Hg, 0., Beta2Mx, emptyParameters);
+    	    }
+
+    	    if (m_x <= -m_xi) {
+    	        // Integration
+    	        Hg = integrate(m_pIntegralxLargeHgMx, Beta1Mx, Beta2Mx,
+    	                emptyParameters);
+    	    }
+
+    	    //Gluon Distribution
+    	    GluonDistribution gluonDistribution(Hg);
+
+    	    // s quark
+    	        double Hs = 0;
+
+    	        if (m_x >= m_xi) {
+    	            Hs = integrate(m_pIntegralxLargeHsSea, Beta1, Beta2, emptyParameters);
+    	        }
+
+    	        if (fabs(m_x) < m_xi) {
+    	            Hs = integrate(m_pIntegralxSmallHsSea, Eps, Beta2Min, emptyParameters);
+    	            Hs += integrate(m_pIntegralxSmall1HsSea, Beta2Min, Beta2,
+    	                    emptyParameters);
+    	            Hs -= integrate(m_pIntegralxSmall2HsSea, Beta2Min, Beta2Mx,
+    	                    emptyParameters);
+
+    	        }
+
+    	        if (m_x <= -m_xi) {
+    	            Hs = -integrate(m_pIntegralxLargeHsSeaMx, Beta1Mx, Beta2Mx,
+    	                    emptyParameters);
+    	        }
+
+    	        quarkDistributionStrange.setQuarkDistribution(Hs);
+
+
+
+
+
+    	    // u and d quark, valence part evaluated at fx
 
     	        double HuVal = 0.;
     	        double HdVal = 0.;
+    	        double HuValMx = 0.;
+    	        double HdValMx = 0.;
 
     	        if (m_x >= m_xi) {
     	            // Integration, u quark
     	            HuVal = integrate(m_pIntegralHuVal, Beta1, Beta2, emptyParameters);
 
     	            // Integration, d quark
-    	            HdVal = integrate(m_pIntegralHdVal, Beta1, Beta2, emptyParameters);
+    	            HdValMx = integrate(m_pIntegralHdValMx, Beta1, Beta2, emptyParameters);
     	        }
 
     	        if (fabs(m_x) < m_xi) {
@@ -366,15 +589,13 @@ PARTONS::PartonDistribution pionRDDAModel::computeH()
     	            HuVal = integrate(m_pIntegralHuVal, Eps, Beta2, emptyParameters);
 
     	            // Integration, d quark
-    	            HdVal = integrate(m_pIntegralHdVal, Eps, Beta2, emptyParameters);
+    	            HdValMx = integrate(m_pIntegralHdValMx, Eps, Beta2, emptyParameters);
     	        }
 
     	    ///////////////////////////////////////////////////////////////////////
     	    //   u and d quarks, valence part evaluated at fMx (instead of fx)   //
     	    ///////////////////////////////////////////////////////////////////////
 
-    	        double HuValMx = 0.;
-    	        double HdValMx = 0.;
 
     	        if (m_Mx >= m_xi) {
 
@@ -383,7 +604,7 @@ PARTONS::PartonDistribution pionRDDAModel::computeH()
     	                    emptyParameters);
 
     	            // Integration, d quark
-    	            HdValMx = integrate(m_pIntegralHdValMx, Beta1Mx, Beta2Mx,
+    	            HdVal = integrate(m_pIntegralHdVal, Beta1Mx, Beta2Mx,
     	                    emptyParameters);
     	        }
 
@@ -393,7 +614,7 @@ PARTONS::PartonDistribution pionRDDAModel::computeH()
     	            HuValMx =  MathIntegratorModule::integrate(m_pIntegralHuValMx, Eps, Beta2Mx, emptyParameters);
 
     	            // Integration, d quark
-    	            HdValMx = integrate(m_pIntegralHdValMx, Eps, Beta2Mx, emptyParameters);
+    	            HdVal = integrate(m_pIntegralHdVal, Eps, Beta2Mx, emptyParameters);
 
     	        }
 
@@ -401,8 +622,8 @@ PARTONS::PartonDistribution pionRDDAModel::computeH()
     //std::cout << "Huval = " << HuVal << " Hdval = " << HdVal << std::endl;
 
     // TODO: Check and fix definitions of the the different quark distributions (u, uM, u+, u-, d(...) and s(...)). See Cédric PhD thesis. pp. 56.
-    double HuSea  = 0.;
-    double HuSeaMx = 0.;
+    double HuSea  = Hs;
+    double HuSeaMx = -Hs ;
 
     quarkDistributionUp.setQuarkDistribution(HuVal + HuSea);
 
@@ -412,8 +633,8 @@ PARTONS::PartonDistribution pionRDDAModel::computeH()
         quarkDistributionUp.setQuarkDistributionMinus(HuVal + HuValMx);
 
     // d-quark
-    double dSea = 0.;
-    double dSeaM = 0.;
+    double dSea = Hs ;
+    double dSeaM = -Hs ;
 
     quarkDistributionDown.setQuarkDistribution(HdVal + dSea);
 
@@ -425,13 +646,14 @@ PARTONS::PartonDistribution pionRDDAModel::computeH()
     // s-quark
     double sVal = 0.;
     double sValM = 0.;
-    double sSea = 0.;
-    double sSeaM = 0.;
+    double sSea = Hs ;
+    double sSeaM = -Hs ;
 
     quarkDistributionStrange.setQuarkDistribution(sVal + sSea);
     quarkDistributionStrange.setQuarkDistributionPlus(sVal + sSea - sValM - sSeaM);
     quarkDistributionStrange.setQuarkDistributionMinus(sVal + sValM);
 
+    /*
     // c-quark
     double cVal = 0.;
     double cValM = 0.;
@@ -460,17 +682,15 @@ PARTONS::PartonDistribution pionRDDAModel::computeH()
 
     quarkDistributionStrange.setQuarkDistribution(tVal + tSea);
     quarkDistributionStrange.setQuarkDistributionPlus(tVal + tSea - tValM - tSeaM);
-    quarkDistributionStrange.setQuarkDistributionMinus(tVal + tValM);
+    quarkDistributionStrange.setQuarkDistributionMinus(tVal + tValM);*/
 
     partonDistribution.addQuarkDistribution(quarkDistributionUp);
     partonDistribution.addQuarkDistribution(quarkDistributionDown);
     partonDistribution.addQuarkDistribution(quarkDistributionStrange);
-    partonDistribution.addQuarkDistribution(quarkDistributionCharm);
-    partonDistribution.addQuarkDistribution(quarkDistributionBottom);
-    partonDistribution.addQuarkDistribution(quarkDistributionTop);
+    //partonDistribution.addQuarkDistribution(quarkDistributionCharm);
+    //partonDistribution.addQuarkDistribution(quarkDistributionBottom);
+    //partonDistribution.addQuarkDistribution(quarkDistributionTop);
 
-    // Gluon distributions
-    GluonDistribution gluonDistribution(0.);
     partonDistribution.setGluonDistribution(gluonDistribution);
 
     return partonDistribution;
