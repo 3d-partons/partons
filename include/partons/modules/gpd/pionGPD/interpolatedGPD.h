@@ -15,6 +15,7 @@
 #include <iostream>
 
 #include <NumA/interpolation/CubicSpline.h>
+#include <NumA/interpolation/Chebyshev.h>
 
 #include "../GPDModule.h"
 
@@ -61,7 +62,6 @@ protected:
 private:
 
     NumA::CubicSpline* uValInt;                                                 // Interpolator for u-GPD.
-
 };
 
 

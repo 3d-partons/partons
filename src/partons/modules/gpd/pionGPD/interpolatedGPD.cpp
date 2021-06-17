@@ -29,6 +29,7 @@
 #include <vector>
 #include <string>
 #include <NumA/interpolation/CubicSpline.h>
+#include <math.h>
 
 
 namespace PARTONS {
@@ -84,6 +85,9 @@ void interpolatedGPD::initModule()
 
 PARTONS::PartonDistribution interpolatedGPD::computeH() 
 {
+    // u-quark GPDs.
+    double uVal, uValM;
+
     // Read GPD model
     std::string path_to_inputfile;
     path_to_inputfile = "data/CovariantExtension/AlgebraicModel/DefaultMesh-t";
@@ -94,7 +98,7 @@ PARTONS::PartonDistribution interpolatedGPD::computeH()
 
     std::ifstream inputfile;
     inputfile.open( path_to_inputfile );
-
+    
     // Vector to store read values
     std::vector<double> x;
     std::vector<double> uvalvec;
@@ -104,32 +108,97 @@ PARTONS::PartonDistribution interpolatedGPD::computeH()
         // Clear vectors
         x.clear();
         uvalvec.clear();
-
+    
         std::string line;
-
+    
         double v1, v2, v3, v4, v5;
-
+    
         while( getline(inputfile, line) )
         {
             std::stringstream iss(line);
-
-            if ( !(iss >> v1 >> v2 >> v3 >> v4 >> v5) )
+    
+            if ( !(iss >> v1 >> v2 >> v3 >> v4 >> v5 ) )
             {
-                throw std::runtime_error("Input file is not appropriately formted");
+                throw std::runtime_error("Input file is not appropriately formated.");
             }else
             {
                 x.push_back(v1);                    // Value of x.
                 uvalvec.push_back(v5);              // GPD.
             }
         }
+    } else
+    {
+        throw std::runtime_error("File not found.");
     }
 
     inputfile.close();
 
     // Interpolate GPD model
     uValInt = new NumA::CubicSpline(x,uvalvec);
-
+    
     uValInt->ConstructSpline();
+
+    // std::string path_to_summary;
+    // path_to_summary = "/home/jose/PhD_thesis/PARTONS-RadonTransform/IntialisationRT/Data/Interpolated/summary/summary-t";
+    // path_to_summary.append( std::to_string(m_t) );
+    // path_to_summary.append( "-xi" );
+    // path_to_summary.append( std::to_string(m_xi) );
+    // path_to_summary.append( ".csv" );
+
+    // std::ofstream summary;
+    // summary.open( path_to_summary, std::ofstream::app);
+
+    if ( m_x > m_xi || m_x == m_xi )
+    {
+        if ( m_t == 0)
+        {
+            uVal  = 30 * pow(1 - m_x, 2.) * ( pow(m_x,2.) - pow(m_xi,2.) ) / pow( 1 - pow(m_xi,2.) , 2.);
+            uValM = 0.;
+        } else
+        {
+            // t-dependence
+            const double m2 = pow(0.318,2.);    
+            const double c  = -m_t*pow(1 - m_x, 2.)/(4*m2*(1 - pow(m_xi,2)));                                                // t-dependence algebraic toy model.
+
+            uVal  = 7.5 * pow(1 - m_x, 2.) * ( pow(m_x,2.) - pow(m_xi,2.) ) * (3 + ((1 - 2 * c) * atanh(sqrt(c/(1+c))))/((1 + c) * sqrt(c/(1 + c))) )
+                / ( pow( 1 - pow(m_xi,2.) , 2.) * pow(1 + c,2.) );
+            uValM = 0.;
+
+            if ( m_x == 1 )                                                                                 
+            {
+                uVal = 0.;
+                uValM = 0.;
+            }
+        }
+    } else if ( m_x < -m_xi || m_x == -m_xi )
+    {
+        if ( m_t == 0 )
+        {
+            uVal = 0.;
+            uValM = 30 * pow(1 + m_x, 2.) * ( pow(m_x,2.) - pow(m_xi,2.) ) / pow( 1 - pow(m_xi,2.) , 2.);
+        } else
+        {
+            // t-dependence
+            const double m2 = pow(0.318,2.);    
+            const double cM = -m_t*pow(1 + m_x, 2.)/(4*m2*(1 - pow(m_xi,2)));
+
+            uVal  = 0.;
+            uValM = 7.5 * pow(1 + m_x, 2.) * ( pow(m_x,2.) - pow(m_xi,2.) ) * (3 + ((1 - 2 * cM) * atanh(sqrt(cM/(1+cM))))/((1 + cM) * sqrt(cM/(1 + cM))) )
+                / ( pow( 1 - pow(m_xi,2.) , 2.) * pow(1 + cM,2.) );
+
+            if ( m_x == -1 )                                                                                
+            {
+                uVal = 0.;
+                uValM = 0.;
+            }
+        }
+    } else
+    {
+        uVal = uValInt->getSplineInsideValue(m_x);
+        uValM = uValInt->getSplineInsideValue(-m_x);
+    }
+
+    // summary.close();
 
     PARTONS::PartonDistribution partonDistribution;
 
@@ -142,8 +211,6 @@ PARTONS::PartonDistribution interpolatedGPD::computeH()
     QuarkDistribution quarkDistributionTop(QuarkFlavor::TOP);
 
     // u-quark
-    double uVal = uValInt->getSplineInsideValue(m_x);
-    double uValM = uValInt->getSplineInsideValue(-m_x);
     double uSea  = 0.;
     double uSeaM = 0.;
 
