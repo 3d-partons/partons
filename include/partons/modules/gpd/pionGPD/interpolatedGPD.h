@@ -59,7 +59,13 @@ protected:
 
     virtual PARTONS::PartonDistribution computeH();
 
+    void read_file();
+
 private:
+
+    std::string path_to_inputfile;
+    std::vector<double> GPD;
+    std::vector<double> x;
 
     NumA::CubicSpline* uValInt;                                                 // Interpolator for u-GPD.
 };

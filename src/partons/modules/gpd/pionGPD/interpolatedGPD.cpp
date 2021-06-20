@@ -88,65 +88,12 @@ PARTONS::PartonDistribution interpolatedGPD::computeH()
     // u-quark GPDs.
     double uVal, uValM;
 
-    // Read GPD model
-    std::string path_to_inputfile;
-    path_to_inputfile = "data/CovariantExtension/AlgebraicModel/DefaultMesh-t";
-    path_to_inputfile.append( std::to_string(m_t) );
-    path_to_inputfile.append( "-xi" );
-    path_to_inputfile.append( std::to_string(m_xi) );
-    path_to_inputfile.append( ".csv" );
-
-    std::ifstream inputfile;
-    inputfile.open( path_to_inputfile );
-    
-    // Vector to store read values
-    std::vector<double> x;
-    std::vector<double> uvalvec;
-
-    if ( inputfile )
-    {
-        // Clear vectors
-        x.clear();
-        uvalvec.clear();
-    
-        std::string line;
-    
-        double v1, v2, v3, v4, v5;
-    
-        while( getline(inputfile, line) )
-        {
-            std::stringstream iss(line);
-    
-            if ( !(iss >> v1 >> v2 >> v3 >> v4 >> v5 ) )
-            {
-                throw std::runtime_error("Input file is not appropriately formated.");
-            }else
-            {
-                x.push_back(v1);                    // Value of x.
-                uvalvec.push_back(v5);              // GPD.
-            }
-        }
-    } else
-    {
-        throw std::runtime_error("File not found.");
-    }
-
-    inputfile.close();
+    read_file();
 
     // Interpolate GPD model
-    uValInt = new NumA::CubicSpline(x,uvalvec);
+    uValInt = new NumA::CubicSpline(x,GPD);
     
     uValInt->ConstructSpline();
-
-    // std::string path_to_summary;
-    // path_to_summary = "/home/jose/PhD_thesis/PARTONS-RadonTransform/IntialisationRT/Data/Interpolated/summary/summary-t";
-    // path_to_summary.append( std::to_string(m_t) );
-    // path_to_summary.append( "-xi" );
-    // path_to_summary.append( std::to_string(m_xi) );
-    // path_to_summary.append( ".csv" );
-
-    // std::ofstream summary;
-    // summary.open( path_to_summary, std::ofstream::app);
 
     if ( m_x > m_xi || m_x == m_xi )
     {
@@ -195,8 +142,11 @@ PARTONS::PartonDistribution interpolatedGPD::computeH()
     } else
     {
         uVal = uValInt->getSplineInsideValue(m_x);
-        uValM = uValInt->getSplineInsideValue(-m_x);
+        uValM = uValInt->getSplineInsideValue(-m_x);    
     }
+
+    delete uValInt;
+    uValInt = NULL;
 
     // summary.close();
 
@@ -282,6 +232,49 @@ PARTONS::PartonDistribution interpolatedGPD::computeH()
     partonDistribution.setGluonDistribution(gluonDistribution);
 
     return partonDistribution;
+}
+
+void interpolatedGPD::read_file()
+{
+    // Read GPD model
+    path_to_inputfile = "data/CovariantExtension/AlgebraicModel/DefaultMesh-t";
+    path_to_inputfile.append( std::to_string(m_t) );
+    path_to_inputfile.append( "-xi" );
+    path_to_inputfile.append( std::to_string(m_xi) );
+    path_to_inputfile.append( ".csv" );
+
+    std::ifstream inputfile;
+    inputfile.open(path_to_inputfile);
+
+    if ( inputfile )
+    {
+        // Clear vectors
+        x.clear();
+        GPD.clear();
+    
+        std::string line;
+    
+        double v1, v2, v3, v4, v5;
+    
+        while( getline(inputfile, line) )
+        {
+            std::stringstream iss(line);
+    
+            if ( !(iss >> v1 >> v2 >> v3 >> v4 >> v5) )
+            {
+                throw std::runtime_error("Input file is not appropriately formated.");
+            }else
+            {
+                x.push_back(v1);                // Value of x.
+                GPD.push_back(v5);              // GPD.
+            }
+        }
+    } else
+    {
+        throw std::runtime_error("File not found.");
+    }
+
+    inputfile.close();
 }
 
 }
