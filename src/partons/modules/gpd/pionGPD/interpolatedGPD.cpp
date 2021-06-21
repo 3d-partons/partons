@@ -101,7 +101,6 @@ PARTONS::PartonDistribution interpolatedGPD::computeH()
         {
             if ( m_x == 1 )
             {
-                std::cout << "HELLO \n";
                 uVal = 0.;
                 uValM = 0.;
             } else
