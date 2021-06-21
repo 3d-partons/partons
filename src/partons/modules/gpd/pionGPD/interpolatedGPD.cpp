@@ -237,7 +237,7 @@ PARTONS::PartonDistribution interpolatedGPD::computeH()
 void interpolatedGPD::read_file()
 {
     // Read GPD model
-    path_to_inputfile = "data/CovariantExtension/AlgebraicModel/DefaultMesh-t";
+    path_to_inputfile = "data/CovariantExtension/AlgebraicModel/FinnerMesh-t";
     path_to_inputfile.append( std::to_string(m_t) );
     path_to_inputfile.append( "-xi" );
     path_to_inputfile.append( std::to_string(m_xi) );
