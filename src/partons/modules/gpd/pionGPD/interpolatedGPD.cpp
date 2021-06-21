@@ -254,19 +254,19 @@ void interpolatedGPD::read_file()
     
         std::string line;
     
-        double v1, v2, v3, v4, v5;
+        double v1, v2;
     
         while( getline(inputfile, line) )
         {
             std::stringstream iss(line);
     
-            if ( !(iss >> v1 >> v2 >> v3 >> v4 >> v5) )
+            if ( !(iss >> v1 >> v2) )
             {
                 throw std::runtime_error("Input file is not appropriately formated.");
             }else
             {
                 x.push_back(v1);                // Value of x.
-                GPD.push_back(v5);              // GPD.
+                GPD.push_back(v2);              // GPD.
             }
         }
     } else
