@@ -121,14 +121,26 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
     {
         if ( m_x > m_xi || m_x == m_xi )                                                                    // DGLAP>
         {
-            uVal  = 30 * pow(1 - m_x, 2.) * ( pow(m_x,2.) - pow(m_xi,2.) ) / pow( 1 - pow(m_xi,2.) , 2.);
-            uValM = 0.;
-
+            if ( m_x == 1)
+            {
+                uVal = 0.;
+                uValM = 0.;
+            } else
+            {
+                uVal  = 30 * pow(1 - m_x, 2.) * ( pow(m_x,2.) - pow(m_xi,2.) ) / pow( 1 - pow(m_xi,2.) , 2.);
+                uValM = 0.;
+            }
         } else if ( m_x < -m_xi || m_x == -m_xi )                                                           //DGLAP>
         {
-            uVal = 0.;
-            uValM = 30 * pow(1 + m_x, 2.) * ( pow(m_x,2.) - pow(m_xi,2.) ) / pow( 1 - pow(m_xi,2.) , 2.);
-
+            if ( m_x == -1 )
+            {
+                uVal = 0.;
+                uValM = 0.;
+            } else
+            {
+                uVal = 0.;
+                uValM = 30 * pow(1 + m_x, 2.) * ( pow(m_x,2.) - pow(m_xi,2.) ) / pow( 1 - pow(m_xi,2.) , 2.);
+            }
         } else                                                                                              // ERBL
         {       
             if ( num )                                                                                      // Compute ERBL GPD (Radon Transform)
