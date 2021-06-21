@@ -99,8 +99,16 @@ PARTONS::PartonDistribution interpolatedGPD::computeH()
     {
         if ( m_t == 0)
         {
-            uVal  = 30 * pow(1 - m_x, 2.) * ( pow(m_x,2.) - pow(m_xi,2.) ) / pow( 1 - pow(m_xi,2.) , 2.);
-            uValM = 0.;
+            if ( m_x == 1 )
+            {
+                std::cout << "HELLO \n";
+                uVal = 0.;
+                uValM = 0.;
+            } else
+            {
+                uVal  = 30 * pow(1 - m_x, 2.) * ( pow(m_x,2.) - pow(m_xi,2.) ) / pow( 1 - pow(m_xi,2.) , 2.);
+                uValM = 0.;
+            }
         } else
         {
             // t-dependence
@@ -121,8 +129,16 @@ PARTONS::PartonDistribution interpolatedGPD::computeH()
     {
         if ( m_t == 0 )
         {
-            uVal = 0.;
-            uValM = 30 * pow(1 + m_x, 2.) * ( pow(m_x,2.) - pow(m_xi,2.) ) / pow( 1 - pow(m_xi,2.) , 2.);
+            if ( m_x == -1 )
+            {
+                uVal = 0.;
+                uValM = 0.;
+            } else
+            {
+                uVal = 0.;
+                uValM = 30 * pow(1 + m_x, 2.) * ( pow(m_x,2.) - pow(m_xi,2.) ) / pow( 1 - pow(m_xi,2.) , 2.);
+            }
+
         } else
         {
             // t-dependence
