@@ -2,7 +2,7 @@
   * @file    saturatedModel_Ding.cpp
   * @author  José Manuel Morgado Chavez (University Of Huelva)
   * @author  Cédric Mezrag (CEA Saclay)
-  * @date    Friday 11th June 2021 
+  * @date    Tuesday 23rd June 2021 
   * @version 1.0
   */
 
@@ -221,11 +221,11 @@ PARTONS::PartonDistribution saturatedModel_Ding::computeH()
                     {
                         ca  = -m_t*pow(1 - RT.x.at(i), 2.)/(4*m2*(1 - pow(RT.xi.at(i),2)));
 
-                        GPD_DGLAP(i) = (213.32*pow(1 - m_x,2.)*(pow(m_x,2.) - pow(m_xi,2.))
-                                   *sqrt( 1 - 2.9342*sqrt( (1 - m_x)/(1 - m_xi) )*sqrt( (m_x - m_xi)/(1 - m_xi) ) + 2.2911*((1 - m_x)/(1 - m_xi))*((m_x - m_xi)/(1 - m_xi))  )
-                                   *sqrt( 1 - 2.9342*sqrt( (1 - m_x)/(1 + m_xi) )*sqrt( (m_x + m_xi)/(1 + m_xi) ) + 2.2911*((1 - m_x)/(1 + m_xi))*((m_x + m_xi)/(1 + m_xi)) ))
+                        GPD_DGLAP(i) = (213.32*pow(1 - RT.x.at(i),2.)*(pow(RT.x.at(i),2.) - pow(RT.xi.at(i),2.))
+                                   *sqrt( 1 - 2.9342*sqrt( (1 - RT.x.at(i))/(1 - RT.xi.at(i)) )*sqrt( (RT.x.at(i) - RT.xi.at(i))/(1 - RT.xi.at(i)) ) + 2.2911*((1 - RT.x.at(i))/(1 - RT.xi.at(i)))*((RT.x.at(i) - RT.xi.at(i))/(1 - RT.xi.at(i)))  )
+                                   *sqrt( 1 - 2.9342*sqrt( (1 - RT.x.at(i))/(1 + RT.xi.at(i)) )*sqrt( (RT.x.at(i) + RT.xi.at(i))/(1 + RT.xi.at(i)) ) + 2.2911*((1 - RT.x.at(i))/(1 + RT.xi.at(i)))*((RT.x.at(i) + RT.xi.at(i))/(1 + RT.xi.at(i))) ))
                                    *(3 + ((1 - 2 * ca) * atanh(sqrt(ca/(1+ca))))/((1 + c) * sqrt(ca/(1 + ca))) )
-                                   /( pow(1 - pow(m_xi,2.),2.) * pow(1 + ca,2.) );
+                                   /( pow(1 - pow(RT.xi.at(i),2.),2.) * pow(1 + ca,2.) );
                     }
                 
                     DD = RT.computeDD( GPD_DGLAP );
