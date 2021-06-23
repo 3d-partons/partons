@@ -116,19 +116,33 @@ PARTONS::PartonDistribution saturatedModel_Ding::computeH()
     {
         if ( m_x > m_xi || m_x == m_xi )                                                                    // DGLAP>
         {
-            uVal = (213.32*pow(1 - m_x,2.)*(pow(m_x,2.) - pow(m_xi,2.))
-                   *sqrt( 1 - 2.9342*sqrt( (1 - m_x)/(1 - m_xi) )*sqrt( (m_x - m_xi)/(1 - m_xi) ) + 2.2911*((1 - m_x)/(1 - m_xi))*((m_x - m_xi)/(1 - m_xi))  )
-                   *sqrt( 1 - 2.9342*sqrt( (1 - m_x)/(1 + m_xi) )*sqrt( (m_x + m_xi)/(1 + m_xi) ) + 2.2911*((1 - m_x)/(1 + m_xi))*((m_x + m_xi)/(1 + m_xi)) ))
-                   /( pow(1 - pow(m_xi,2.),2.) );
-            uValM = 0.;
+            if ( m_x == 1)
+            {
+                uVal = 0.;
+                uValM = 0.;
+            } else
+            {
+                uVal = (213.32*pow(1 - m_x,2.)*(pow(m_x,2.) - pow(m_xi,2.))
+                    *sqrt( 1 - 2.9342*sqrt( (1 - m_x)/(1 - m_xi) )*sqrt( (m_x - m_xi)/(1 - m_xi) ) + 2.2911*((1 - m_x)/(1 - m_xi))*((m_x - m_xi)/(1 - m_xi))  )
+                    *sqrt( 1 - 2.9342*sqrt( (1 - m_x)/(1 + m_xi) )*sqrt( (m_x + m_xi)/(1 + m_xi) ) + 2.2911*((1 - m_x)/(1 + m_xi))*((m_x + m_xi)/(1 + m_xi)) ))
+                    /( pow(1 - pow(m_xi,2.),2.) );
+                uValM = 0.;
+            }
 
         } else if ( m_x < -m_xi || m_x == -m_xi )                                                           //DGLAP>
         {
-            uVal = 0.;
-            uValM = (213.32*pow(1 + m_x,2.)*(pow(m_x,2.) - pow(m_xi,2.))
+            if ( m_x == -1 )
+            {
+                uVal = 0.;
+                uValM = 0.;
+            } else
+            {
+                uVal = 0.;
+                uValM = (213.32*pow(1 + m_x,2.)*(pow(m_x,2.) - pow(m_xi,2.))
                     *sqrt( 1 - 2.9342*sqrt( (1 + m_x)/(1 - m_xi) )*sqrt( (-m_x - m_xi)/(1 - m_xi) ) + 2.2911*((1 + m_x)/(1 - m_xi))*((-m_x - m_xi)/(1 - m_xi))  )
                     *sqrt( 1 - 2.9342*sqrt( (1 + m_x)/(1 + m_xi) )*sqrt( (-m_x + m_xi)/(1 + m_xi) ) + 2.2911*((1 + m_x)/(1 + m_xi))*((-m_x + m_xi)/(1 + m_xi)) ))
-                    /( pow(1 - pow(m_xi,2.),2.) );  
+                    /( pow(1 - pow(m_xi,2.),2.) ); 
+            } 
 
         } else                                                                                              // ERBL
         {       
@@ -161,39 +175,40 @@ PARTONS::PartonDistribution saturatedModel_Ding::computeH()
     {        
         c  = -m_t*pow(1 - m_x, 2.)/(4*m2*(1 - pow(m_xi,2)));                                                // t-dependence algebraic toy model.
         cM = -m_t*pow(1 + m_x, 2.)/(4*m2*(1 - pow(m_xi,2)));
-        // c1  = -m_t/(4*m2);
 
         dt = 1/(1-0.25*m_t/m2D);                                                                            // D-term t-dependence (monopole parametrization).
 
         if ( m_x > m_xi || m_x == m_xi )                                                                    // DGLAP>
         {
-            uVal = (213.32*pow(1 - m_x,2.)*(pow(m_x,2.) - pow(m_xi,2.))
-                   *sqrt( 1 - 2.9342*sqrt( (1 - m_x)/(1 - m_xi) )*sqrt( (m_x - m_xi)/(1 - m_xi) ) + 2.2911*((1 - m_x)/(1 - m_xi))*((m_x - m_xi)/(1 - m_xi))  )
-                   *sqrt( 1 - 2.9342*sqrt( (1 - m_x)/(1 + m_xi) )*sqrt( (m_x + m_xi)/(1 + m_xi) ) + 2.2911*((1 - m_x)/(1 + m_xi))*((m_x + m_xi)/(1 + m_xi)) ))
-                   *(3 + ((1 - 2 * c) * atanh(sqrt(c/(1+c))))/((1 + c) * sqrt(c/(1 + c))) )
-                   /( pow(1 - pow(m_xi,2.),2.) * pow(1 + c,2.) );
-            uValM = 0.;
-
-            // if ( m_x == 1 )                                                                                 // Actually this is the limit x->1 (with \xi<1). 
-            // {
-            //     uVal = 0.;
-            //     uValM = 0.;
-            // }
+            if ( m_x == 1 )                                                                                 // Actually this is the limit x->1 (with \xi<1). 
+            {
+                uVal = 0.;
+                uValM = 0.;
+            } else
+            {
+                uVal = (213.32*pow(1 - m_x,2.)*(pow(m_x,2.) - pow(m_xi,2.))
+                    *sqrt( 1 - 2.9342*sqrt( (1 - m_x)/(1 - m_xi) )*sqrt( (m_x - m_xi)/(1 - m_xi) ) + 2.2911*((1 - m_x)/(1 - m_xi))*((m_x - m_xi)/(1 - m_xi))  )
+                    *sqrt( 1 - 2.9342*sqrt( (1 - m_x)/(1 + m_xi) )*sqrt( (m_x + m_xi)/(1 + m_xi) ) + 2.2911*((1 - m_x)/(1 + m_xi))*((m_x + m_xi)/(1 + m_xi)) ))
+                    *(3 + ((1 - 2 * c) * atanh(sqrt(c/(1+c))))/((1 + c) * sqrt(c/(1 + c))) )
+                    /( pow(1 - pow(m_xi,2.),2.) * pow(1 + c,2.) );
+                uValM = 0.;
+            }
 
         } else if ( m_x < -m_xi || m_x == -m_xi )                                                            // DGLAP<
         {
-            uVal = 0.;
-            uValM = (213.32*pow(1 + m_x,2.)*(pow(m_x,2.) - pow(m_xi,2.))
+            if ( m_x == -1 )                                                                                // Actually this is the limit x->1 (with \xi<1). 
+            {
+                uVal = 0.;
+                uValM = 0.;
+            } else
+            {
+                uVal = 0.;
+                uValM = (213.32*pow(1 + m_x,2.)*(pow(m_x,2.) - pow(m_xi,2.))
                     *sqrt( 1 - 2.9342*sqrt( (1 + m_x)/(1 - m_xi) )*sqrt( (-m_x - m_xi)/(1 - m_xi) ) + 2.2911*((1 + m_x)/(1 - m_xi))*((-m_x - m_xi)/(1 - m_xi))  )
                     *sqrt( 1 - 2.9342*sqrt( (1 + m_x)/(1 + m_xi) )*sqrt( (-m_x + m_xi)/(1 + m_xi) ) + 2.2911*((1 + m_x)/(1 + m_xi))*((-m_x + m_xi)/(1 + m_xi)) ))
                     *(3 + ((1 - 2 * cM) * atanh(sqrt(cM/(1+cM))))/((1 + cM) * sqrt(cM/(1 + cM))) )
                     /( pow(1 - pow(m_xi,2.),2.) * pow(1 + cM,2.) ); 
-
-            // if ( m_x == -1 )                                                                                // Actually this is the limit x->1 (with \xi<1). 
-            // {
-            //     uVal = 0.;
-            //     uValM = 0.;
-            // }
+            }
 
         } else                                                                                              // ERBL
         {
