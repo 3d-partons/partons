@@ -190,7 +190,7 @@ PARTONS::PartonDistribution saturatedModel_Ding::computeH()
                     *sqrt( 1 - 2.9342*sqrt( (1 - m_x)/(1 - m_xi) )*sqrt( (m_x - m_xi)/(1 - m_xi) ) + 2.2911*((1 - m_x)/(1 - m_xi))*((m_x - m_xi)/(1 - m_xi))  )
                     *sqrt( 1 - 2.9342*sqrt( (1 - m_x)/(1 + m_xi) )*sqrt( (m_x + m_xi)/(1 + m_xi) ) + 2.2911*((1 - m_x)/(1 + m_xi))*((m_x + m_xi)/(1 + m_xi)) ))
                     *(3 + ((1 - 2 * c) * atanh(sqrt(c/(1+c))))/((1 + c) * sqrt(c/(1 + c))) )
-                    /( pow(1 - pow(m_xi,2.),2.) * pow(1 + c,2.) );
+                    /( 4*pow(1 - pow(m_xi,2.),2.) * pow(1 + c,2.) );
                 uValM = 0.;
             }
 
@@ -207,7 +207,7 @@ PARTONS::PartonDistribution saturatedModel_Ding::computeH()
                     *sqrt( 1 - 2.9342*sqrt( (1 + m_x)/(1 - m_xi) )*sqrt( (-m_x - m_xi)/(1 - m_xi) ) + 2.2911*((1 + m_x)/(1 - m_xi))*((-m_x - m_xi)/(1 - m_xi))  )
                     *sqrt( 1 - 2.9342*sqrt( (1 + m_x)/(1 + m_xi) )*sqrt( (-m_x + m_xi)/(1 + m_xi) ) + 2.2911*((1 + m_x)/(1 + m_xi))*((-m_x + m_xi)/(1 + m_xi)) ))
                     *(3 + ((1 - 2 * cM) * atanh(sqrt(cM/(1+cM))))/((1 + cM) * sqrt(cM/(1 + cM))) )
-                    /( pow(1 - pow(m_xi,2.),2.) * pow(1 + cM,2.) ); 
+                    /( 4*pow(1 - pow(m_xi,2.),2.) * pow(1 + cM,2.) ); 
             }
 
         } else                                                                                              // ERBL
@@ -225,7 +225,7 @@ PARTONS::PartonDistribution saturatedModel_Ding::computeH()
                                    *sqrt( 1 - 2.9342*sqrt( (1 - RT.x.at(i))/(1 - RT.xi.at(i)) )*sqrt( (RT.x.at(i) - RT.xi.at(i))/(1 - RT.xi.at(i)) ) + 2.2911*((1 - RT.x.at(i))/(1 - RT.xi.at(i)))*((RT.x.at(i) - RT.xi.at(i))/(1 - RT.xi.at(i)))  )
                                    *sqrt( 1 - 2.9342*sqrt( (1 - RT.x.at(i))/(1 + RT.xi.at(i)) )*sqrt( (RT.x.at(i) + RT.xi.at(i))/(1 + RT.xi.at(i)) ) + 2.2911*((1 - RT.x.at(i))/(1 + RT.xi.at(i)))*((RT.x.at(i) + RT.xi.at(i))/(1 + RT.xi.at(i))) ))
                                    *(3 + ((1 - 2 * ca) * atanh(sqrt(ca/(1+ca))))/((1 + c) * sqrt(ca/(1 + ca))) )
-                                   /( pow(1 - pow(RT.xi.at(i),2.),2.) * pow(1 + ca,2.) );
+                                   /( 4*pow(1 - pow(RT.xi.at(i),2.),2.) * pow(1 + ca,2.) );
                     }
                 
                     DD = RT.computeDD( GPD_DGLAP );
