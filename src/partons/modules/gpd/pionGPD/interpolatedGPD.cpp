@@ -105,17 +105,34 @@ PARTONS::PartonDistribution interpolatedGPD::computeH()
                 uValM = 0.;
             } else
             {
-                uVal  = 30 * pow(1 - m_x, 2.) * ( pow(m_x,2.) - pow(m_xi,2.) ) / pow( 1 - pow(m_xi,2.) , 2.);
+                // ALGEBRAIC MODEL
+                // uVal  = 30 * pow(1 - m_x, 2.) * ( pow(m_x,2.) - pow(m_xi,2.) ) / pow( 1 - pow(m_xi,2.) , 2.);
+                // uValM = 0.;
+
+                // DING'S MODEL
+                uVal = (213.32*pow(1 - m_x,2.)*(pow(m_x,2.) - pow(m_xi,2.))
+                    *sqrt( 1 - 2.9342*sqrt( (1 - m_x)/(1 - m_xi) )*sqrt( (m_x - m_xi)/(1 - m_xi) ) + 2.2911*((1 - m_x)/(1 - m_xi))*((m_x - m_xi)/(1 - m_xi))  )
+                    *sqrt( 1 - 2.9342*sqrt( (1 - m_x)/(1 + m_xi) )*sqrt( (m_x + m_xi)/(1 + m_xi) ) + 2.2911*((1 - m_x)/(1 + m_xi))*((m_x + m_xi)/(1 + m_xi)) ))
+                    /( pow(1 - pow(m_xi,2.),2.) );
                 uValM = 0.;
             }
         } else
         {
             // t-dependence
-            const double m2 = pow(0.318,2.);    
+            const double m2 = pow(0.316,2.);    
             const double c  = -m_t*pow(1 - m_x, 2.)/(4*m2*(1 - pow(m_xi,2)));                                                // t-dependence algebraic toy model.
 
-            uVal  = 7.5 * pow(1 - m_x, 2.) * ( pow(m_x,2.) - pow(m_xi,2.) ) * (3 + ((1 - 2 * c) * atanh(sqrt(c/(1+c))))/((1 + c) * sqrt(c/(1 + c))) )
-                / ( pow( 1 - pow(m_xi,2.) , 2.) * pow(1 + c,2.) );
+            // ALGEBRAIC MODEL
+            // uVal  = 7.5 * pow(1 - m_x, 2.) * ( pow(m_x,2.) - pow(m_xi,2.) ) * (3 + ((1 - 2 * c) * atanh(sqrt(c/(1+c))))/((1 + c) * sqrt(c/(1 + c))) )
+            //     / ( pow( 1 - pow(m_xi,2.) , 2.) * pow(1 + c,2.) );
+            // uValM = 0.;
+
+            // DING'S MODEL
+            uVal = (213.32*pow(1 - m_x,2.)*(pow(m_x,2.) - pow(m_xi,2.))
+                *sqrt( 1 - 2.9342*sqrt( (1 - m_x)/(1 - m_xi) )*sqrt( (m_x - m_xi)/(1 - m_xi) ) + 2.2911*((1 - m_x)/(1 - m_xi))*((m_x - m_xi)/(1 - m_xi))  )
+                *sqrt( 1 - 2.9342*sqrt( (1 - m_x)/(1 + m_xi) )*sqrt( (m_x + m_xi)/(1 + m_xi) ) + 2.2911*((1 - m_x)/(1 + m_xi))*((m_x + m_xi)/(1 + m_xi)) ))
+                *(3 + ((1 - 2 * c) * atanh(sqrt(c/(1+c))))/((1 + c) * sqrt(c/(1 + c))) )
+                /( 4*pow(1 - pow(m_xi,2.),2.) * pow(1 + c,2.) );
             uValM = 0.;
 
             if ( m_x == 1 )                                                                                 
@@ -134,19 +151,36 @@ PARTONS::PartonDistribution interpolatedGPD::computeH()
                 uValM = 0.;
             } else
             {
+                // ALGEBRAIC MODEL
+                // uVal = 0.;
+                // uValM = 30 * pow(1 + m_x, 2.) * ( pow(m_x,2.) - pow(m_xi,2.) ) / pow( 1 - pow(m_xi,2.) , 2.);
+
+                // DING'S MODEL
                 uVal = 0.;
-                uValM = 30 * pow(1 + m_x, 2.) * ( pow(m_x,2.) - pow(m_xi,2.) ) / pow( 1 - pow(m_xi,2.) , 2.);
+                uValM = (213.32*pow(1 + m_x,2.)*(pow(m_x,2.) - pow(m_xi,2.))
+                    *sqrt( 1 - 2.9342*sqrt( (1 + m_x)/(1 - m_xi) )*sqrt( (-m_x - m_xi)/(1 - m_xi) ) + 2.2911*((1 + m_x)/(1 - m_xi))*((-m_x - m_xi)/(1 - m_xi))  )
+                    *sqrt( 1 - 2.9342*sqrt( (1 + m_x)/(1 + m_xi) )*sqrt( (-m_x + m_xi)/(1 + m_xi) ) + 2.2911*((1 + m_x)/(1 + m_xi))*((-m_x + m_xi)/(1 + m_xi)) ))
+                    /( pow(1 - pow(m_xi,2.),2.) ); 
             }
 
         } else
         {
             // t-dependence
-            const double m2 = pow(0.318,2.);    
+            const double m2 = pow(0.316,2.);    
             const double cM = -m_t*pow(1 + m_x, 2.)/(4*m2*(1 - pow(m_xi,2)));
 
-            uVal  = 0.;
-            uValM = 7.5 * pow(1 + m_x, 2.) * ( pow(m_x,2.) - pow(m_xi,2.) ) * (3 + ((1 - 2 * cM) * atanh(sqrt(cM/(1+cM))))/((1 + cM) * sqrt(cM/(1 + cM))) )
-                / ( pow( 1 - pow(m_xi,2.) , 2.) * pow(1 + cM,2.) );
+            // ALGEBRAIC MODEL
+            // uVal  = 0.;
+            // uValM = 7.5 * pow(1 + m_x, 2.) * ( pow(m_x,2.) - pow(m_xi,2.) ) * (3 + ((1 - 2 * cM) * atanh(sqrt(cM/(1+cM))))/((1 + cM) * sqrt(cM/(1 + cM))) )
+            //     / ( pow( 1 - pow(m_xi,2.) , 2.) * pow(1 + cM,2.) );
+
+            // DING'S MODEL
+            uVal = 0.;
+            uValM = (213.32*pow(1 + m_x,2.)*(pow(m_x,2.) - pow(m_xi,2.))
+                *sqrt( 1 - 2.9342*sqrt( (1 + m_x)/(1 - m_xi) )*sqrt( (-m_x - m_xi)/(1 - m_xi) ) + 2.2911*((1 + m_x)/(1 - m_xi))*((-m_x - m_xi)/(1 - m_xi))  )
+                *sqrt( 1 - 2.9342*sqrt( (1 + m_x)/(1 + m_xi) )*sqrt( (-m_x + m_xi)/(1 + m_xi) ) + 2.2911*((1 + m_x)/(1 + m_xi))*((-m_x + m_xi)/(1 + m_xi)) ))
+                *(3 + ((1 - 2 * cM) * atanh(sqrt(cM/(1+cM))))/((1 + cM) * sqrt(cM/(1 + cM))) )
+                /( 4*pow(1 - pow(m_xi,2.),2.) * pow(1 + cM,2.) ); 
 
             if ( m_x == -1 )                                                                                
             {
@@ -252,7 +286,7 @@ PARTONS::PartonDistribution interpolatedGPD::computeH()
 void interpolatedGPD::read_file()
 {
     // Read GPD model
-    path_to_inputfile = "data/CovariantExtension/AlgebraicModel/FinnerMesh-t";
+    path_to_inputfile = "data/CovariantExtension/Ding-model/FinnerMesh-t";
     path_to_inputfile.append( std::to_string(m_t) );
     path_to_inputfile.append( "-xi" );
     path_to_inputfile.append( std::to_string(m_xi) );
