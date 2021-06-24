@@ -232,7 +232,7 @@ PARTONS::PartonDistribution saturatedModel_Ding::computeH()
                         GPD_DGLAP(i) = (213.32*pow(1 - RT.x.at(i),2.)*(pow(RT.x.at(i),2.) - pow(RT.xi.at(i),2.))
                                    *sqrt( 1 - 2.9342*sqrt( (1 - RT.x.at(i))/(1 - RT.xi.at(i)) )*sqrt( (RT.x.at(i) - RT.xi.at(i))/(1 - RT.xi.at(i)) ) + 2.2911*((1 - RT.x.at(i))/(1 - RT.xi.at(i)))*((RT.x.at(i) - RT.xi.at(i))/(1 - RT.xi.at(i)))  )
                                    *sqrt( 1 - 2.9342*sqrt( (1 - RT.x.at(i))/(1 + RT.xi.at(i)) )*sqrt( (RT.x.at(i) + RT.xi.at(i))/(1 + RT.xi.at(i)) ) + 2.2911*((1 - RT.x.at(i))/(1 + RT.xi.at(i)))*((RT.x.at(i) + RT.xi.at(i))/(1 + RT.xi.at(i))) ))
-                                   *(3 + ((1 - 2 * ca) * atanh(sqrt(ca/(1+ca))))/((1 + c) * sqrt(ca/(1 + ca))) )
+                                   *(3 + ((1 - 2 * ca) * atanh(sqrt(ca/(1+ca))))/((1 + ca) * sqrt(ca/(1 + ca))) )
                                    /( 4*pow(1 - pow(RT.xi.at(i),2.),2.) * pow(1 + ca,2.) );
                     }
                 
