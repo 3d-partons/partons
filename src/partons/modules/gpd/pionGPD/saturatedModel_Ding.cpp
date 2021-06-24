@@ -147,7 +147,10 @@ PARTONS::PartonDistribution saturatedModel_Ding::computeH()
         } else                                                                                              // ERBL
         {       
             // Compute double distribution.
-            if ( DDt0.isZero() )                                                                               
+
+            search = DD.find(0.);
+
+            if ( search == DD.end() )                                                                               
             {
                 Eigen::VectorXd GPD_DGLAP(RT.x.size());
 
@@ -159,16 +162,18 @@ PARTONS::PartonDistribution saturatedModel_Ding::computeH()
                                    /( pow(1 - pow(RT.xi.at(i),2.),2.) );
                 }
                 
-                DDt0 = RT.computeDD( GPD_DGLAP );
+                    DDt0 = RT.computeDD( GPD_DGLAP );
+
+                    DD.insert({0., DDt0});
             }
 
             // Compute "gauged" GPD.
-            uVal = RT.computeGPD( DDt0, m_x, m_xi );
-            uValM = RT.computeGPD( DDt0, -m_x, m_xi );
+            uVal = RT.computeGPD( DD.at(0.), m_x, m_xi );
+            uValM = RT.computeGPD( DD.at(0.), -m_x, m_xi );
 
             // Compute Dterm contribution.
-            uVal += RT.computeDterm( DDt0, m_x, m_xi );
-            uValM += RT.computeDterm( DDt0, -m_x, m_xi );
+            uVal += RT.computeDterm( DD.at(0.), m_x, m_xi );
+            uValM += RT.computeDterm( DD.at(0.), -m_x, m_xi );
         }
 
     } else                                                                                                  // Non-vanishing momentum transfer.
@@ -213,7 +218,10 @@ PARTONS::PartonDistribution saturatedModel_Ding::computeH()
         } else                                                                                              // ERBL
         {
                 // Compute double distribution.
-                if ( DD.isZero() )                                                                          // TODO: Map with DDs for different t.
+
+                search = DD.find(m_t);
+
+                if ( search == DD.end() )                                                                          
                 {            
                     Eigen::VectorXd GPD_DGLAP(RT.x.size());
 
@@ -228,15 +236,20 @@ PARTONS::PartonDistribution saturatedModel_Ding::computeH()
                                    /( 4*pow(1 - pow(RT.xi.at(i),2.),2.) * pow(1 + ca,2.) );
                     }
                 
-                    DD = RT.computeDD( GPD_DGLAP );
+                    DDt = RT.computeDD( GPD_DGLAP );
+
+                    DD.insert({m_t, DDt});
                 }
 
                 // Compute "gauged" GPD.
-                uVal = RT.computeGPD( DD, m_x, m_xi );
-                uValM = RT.computeGPD( DD, -m_x, m_xi );
+                uVal = RT.computeGPD( DD.at(m_t), m_x, m_xi );
+                uValM = RT.computeGPD( DD.at(m_t), -m_x, m_xi );
 
                 // Compute Dterm contribution.
-                if ( DDt0.isZero() )                                                                        // TODO: Overload computeDterm so that it accepts (DDt0, x, xi) and (x, xi) as arguments. In that way, we can here look for DDt0 and choose the function computeDterm to be called.                                                                     
+
+                search = DD.find(0.);
+
+                if ( search == DD.end() )                                                                        // TODO: Overload computeDterm so that it accepts (DDt0, x, xi) and (x, xi) as arguments. In that way, we can here look for DDt0 and choose the function computeDterm to be called.                                                                     
                 {
                     Eigen::VectorXd GPD_DGLAP(RT.x.size());
                 
@@ -249,10 +262,12 @@ PARTONS::PartonDistribution saturatedModel_Ding::computeH()
                     }
                 
                     DDt0 = RT.computeDD( GPD_DGLAP );
+
+                    DD.insert({0., DDt0});
                 }
             
-                uVal += dt*RT.computeDterm( DDt0, m_x, m_xi );
-                uValM += dt*RT.computeDterm( DDt0, -m_x, m_xi );
+                uVal += dt*RT.computeDterm( DD.at(0.), m_x, m_xi );
+                uValM += dt*RT.computeDterm( DD.at(0.), -m_x, m_xi );
         }
     }
 
