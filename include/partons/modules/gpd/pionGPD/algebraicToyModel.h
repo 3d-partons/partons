@@ -21,6 +21,8 @@
 #include <NumA/triangulation/mesh.h>
 #include <NumA/RadonTransform/RadonTransform.h>
 
+#include <map>
+
 namespace PARTONS {
 
 class algebraicToyModel: public PARTONS::GPDModule
@@ -87,8 +89,10 @@ private:
 
     double m2D;                                 // D-term t-dependence (mass-scale). Fitting of Phys. Rev. D 97, 014020 (2018) gravitational FFs.
 
-    // TODO: Explore the possibility of storing DDs into a map: ( double t-value, std::vector<double> DDt-value ). So at the level of evaluation on just needs to check that map.
-    Eigen::VectorXd DD = Eigen::VectorXd::Zero(1);                         // Double distribution.
+    std::map<double, Eigen::VectorXd> DD;
+    std::map<double, Eigen::VectorXd>::iterator search;
+
+    Eigen::VectorXd DDt = Eigen::VectorXd::Zero(1);                         // Double distribution.
     Eigen::VectorXd DDt0 = Eigen::VectorXd::Zero(1);                       // Double distribution at zero momentum transfer (it is necessary for the computation of D-terms.)
 };
 
