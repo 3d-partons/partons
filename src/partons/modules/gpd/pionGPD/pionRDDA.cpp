@@ -1,5 +1,5 @@
 /**
- * @file Simple_RDDA.cpp
+ * @file pionRDDA.cpp
  * @author Cédric Mezrag (CEA Saclay)
  * @date 11th June 2021
  * @version 1.0
@@ -79,6 +79,7 @@ pionRDDAModel::pionRDDAModel(const std::string &className) : PARTONS::GPDModule(
     m_valPara = {-0.25,0.95,2.6};
     m_seaPara = {-0.5,8., 0.21 / (std::tgamma(1.5)*std::tgamma(1.21)/ std::tgamma(1.5+1.21) )};
     m_gPara = {-1.,3.,0.23*4};
+    m_reggePara = {0.9,1.15,1.54} ;
     mRDDA_Para = 2.;
 
 
@@ -100,6 +101,7 @@ pionRDDAModel::pionRDDAModel(const pionRDDAModel& other) : PARTONS::GPDModule(ot
     m_valPara = {-0.25,0.95,2.6};
     m_seaPara = {-0.5,8., 0.21 / (std::tgamma(1.5)*std::tgamma(1.21)/ std::tgamma(1.5+1.21) )};
     m_gPara = {-1.,3.,0.23*4};
+    m_reggePara = {0.9,1.15,1.54} ;
     mRDDA_Para = 2.;
 
     MathIntegratorModule();
@@ -235,13 +237,15 @@ double pionRDDAModel::Profile(double beta, double alpha) {
 //                        << '\n');
 //    }
 
-    profile = pow((1. - fabs(beta)) * (1. - fabs(beta)) - alpha * alpha,
-            ProfileShape);
-    profile /= pow(1. - fabs(beta), TwiceProfileShapePlus1);
-    profile *= tgamma(TwiceProfileShapePlus1 + 1.);
-    profile /= (pow(2., TwiceProfileShapePlus1) * tgamma(ProfileShape + 1.)
-            * tgamma(ProfileShape + 1.));
-    return profile;
+    if(fabs(beta)==1){return 0; }
+    else {
+    	profile = pow((1. - fabs(beta)) * (1. - fabs(beta)) - alpha * alpha, ProfileShape);
+    	profile /= pow(1. - fabs(beta), TwiceProfileShapePlus1);
+    	profile *= tgamma(TwiceProfileShapePlus1 + 1.);
+    	profile /= (pow(2., TwiceProfileShapePlus1) * tgamma(ProfileShape + 1.)
+    			* tgamma(ProfileShape + 1.));
+    	return profile;
+    }
 }
 
 //forward limit ansatz for H
@@ -261,6 +265,14 @@ double pionRDDAModel::gluonPdfAnsatz(double beta) {
 	double pdf;
     pdf = pow(beta, m_gPara.at(0)) * pow((1. - beta), m_gPara.at(1)) *  m_gPara.at(2) ;
     return pdf ;
+}
+
+//Reggeized t behaviour
+double pionRDDAModel::tReggeizedAnsatz(double beta) {
+	double tregge;
+	double fbeta = fabs(beta) ;
+    tregge = exp(m_t * (  pow((1- fbeta ),3. ) * ( m_reggePara.at(0) * log( 1/fbeta ) + m_reggePara.at(1) ) + m_reggePara.at(2) * fbeta* pow ( (1-fbeta) , 2.)  ) ) ;
+    return tregge ;
 }
 
 //integrals for H
@@ -304,7 +316,7 @@ double pionRDDAModel::HuValDD(double beta, double alpha) {
      throwBetaException(__func__, x);
      }*/
     if (beta > 0.) {
-        HuValDD = 0.5 * valencePdfAnsatz(beta)* Profile(beta, alpha);
+        HuValDD = 0.5 * valencePdfAnsatz(beta)* Profile(beta, alpha) * tReggeizedAnsatz(absbeta) ;
     } else {
         HuValDD = 0.;
     }
@@ -349,7 +361,7 @@ double pionRDDAModel::HdValDD(double mbeta, double alpha) {
      throwBetaException(__func__, x);
      }*/
     if (mbeta < 0.) {
-        HdValDD = - 0.5 * valencePdfAnsatz(absbeta)* Profile(absbeta, alpha);
+        HdValDD = - 0.5 * valencePdfAnsatz(absbeta)* Profile(absbeta, alpha) * tReggeizedAnsatz(absbeta) ;
     } else {
         HdValDD = 0.;
     }
@@ -420,7 +432,7 @@ double pionRDDAModel::HsDD(double beta, double alpha) {
      throwBetaException(__func__, beta);
      }
 
-    return   1. / 6. * seaPdfAnsatz(absbeta) * Profile(beta, alpha);
+    return   1. / 6. * seaPdfAnsatz(absbeta) * Profile(beta, alpha)  * tReggeizedAnsatz(absbeta) ;
 }
 
 
@@ -478,7 +490,7 @@ double pionRDDAModel::HgDD(double beta, double alpha) {
      throwBetaException(__func__, beta);
      }
 
-    return gluonPdfAnsatz(absbeta) * Profile(beta, alpha);
+    return gluonPdfAnsatz(absbeta) * Profile(beta, alpha)  * tReggeizedAnsatz(absbeta) ;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -539,6 +551,9 @@ PARTONS::PartonDistribution pionRDDAModel::computeH()
     	                emptyParameters);
     	    }
 
+    	    //Looking for nan
+    	    if(std::isnan(Hg)){ std::cout << "Nan detected in gluon gpd computation   for xi = " << m_xi << " and x = " << m_x << std::endl ;}
+
     	    //Gluon Distribution
     	    GluonDistribution gluonDistribution(Hg);
 
@@ -563,6 +578,7 @@ PARTONS::PartonDistribution pionRDDAModel::computeH()
     	                    emptyParameters);
     	        }
 
+    	        if(std::isnan(Hs)){ std::cout << "Nan detected in s-quark gpd computation for xi = " << m_xi << " and x = " << m_x << std::endl ;}
     	        quarkDistributionStrange.setQuarkDistribution(Hs);
 
 
@@ -617,7 +633,10 @@ PARTONS::PartonDistribution pionRDDAModel::computeH()
     	            HdVal = integrate(m_pIntegralHdVal, Eps, Beta2Mx, emptyParameters);
 
     	        }
-
+    	        if(std::isnan(HuVal)){ std::cout << "Nan detected in HuVal computation for xi = " << m_xi << " and x = " << m_x << std::endl ;}
+    	        if(std::isnan(HuValMx)){ std::cout << "Nan detected in HuValMx computation for xi = " << m_xi << " and x = " << m_x << std::endl ;}
+    	        if(std::isnan(HdVal)){ std::cout << "Nan detected in HdVal computation for xi = " << m_xi << " and x = " << m_x << std::endl ;}
+    	        if(std::isnan(HdValMx)){ std::cout << "Nan detected in HdValMx computation  for xi = " << m_xi << " and x = " << m_x << std::endl ;}
 
     //std::cout << "Huval = " << HuVal << " Hdval = " << HdVal << std::endl;
 
