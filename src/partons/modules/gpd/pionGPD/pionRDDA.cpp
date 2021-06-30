@@ -77,7 +77,7 @@ pionRDDAModel::pionRDDAModel(const std::string &className) : PARTONS::GPDModule(
 
     // Set default parameter for simple RDDA model
     m_valPara = {-0.25,0.95,2.6};
-    m_seaPara = {-0.5,8., 0.21 / (std::tgamma(1.5)*std::tgamma(1.21)/ std::tgamma(1.5+1.21) )};
+    m_seaPara = {-0.5,8., 0.21 / (std::tgamma(1.5)*std::tgamma(9)/ std::tgamma(1.5+9) )};
     m_gPara = {-1.,3.,0.23*4};
     m_reggePara = {0.9,1.15,1.54} ;
     mRDDA_Para = 2.;
@@ -99,7 +99,7 @@ pionRDDAModel::pionRDDAModel(const pionRDDAModel& other) : PARTONS::GPDModule(ot
 
     // Set default parameter for simple RDDA model
     m_valPara = {-0.25,0.95,2.6};
-    m_seaPara = {-0.5,8., 0.21 / (std::tgamma(1.5)*std::tgamma(1.21)/ std::tgamma(1.5+1.21) )};
+    m_seaPara = {-0.5,8., 0.21 / (std::tgamma(1.5)*std::tgamma(9)/ std::tgamma(1.5+9) )};
     m_gPara = {-1.,3.,0.23*4};
     m_reggePara = {0.9,1.15,1.54} ;
     mRDDA_Para = 2.;
