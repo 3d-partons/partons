@@ -108,6 +108,11 @@ private:
     NumA::FunctionType1D* m_pIntegralHdVal;
     NumA::FunctionType1D* m_pIntegralHdValMx;
 
+    NumA::FunctionType1D* m_pIntegralDuVal;
+    NumA::FunctionType1D* m_pIntegralDuValMx;
+    NumA::FunctionType1D* m_pIntegralDdVal;
+    NumA::FunctionType1D* m_pIntegralDdValMx;
+
     NumA::FunctionType1D* m_pIntegralxLargeHsSea;
     NumA::FunctionType1D* m_pIntegralxSmallHsSea;
     NumA::FunctionType1D* m_pIntegralxSmall1HsSea;
@@ -120,26 +125,48 @@ private:
     NumA::FunctionType1D* m_pIntegralxLargeHgMx;
 
 
+    //Hu contribution
     double IntegralHuVal(double beta, std::vector<double> Par);
     double IntegralHuValMx(double beta, std::vector<double> Par);
     double HuValDD(double beta, double alpha);
 
+    //D-term uval contributions
+    double IntegralDuVal(double beta, std::vector<double> Par);
+    double IntegralDuValMx(double beta, std::vector<double> Par);
+    double DtermuValence(double z, double beta);
+
+    // Hd contribution
     double IntegralHdVal(double beta, std::vector<double> Par);
     double IntegralHdValMx(double beta, std::vector<double> Par);
     double HdValDD(double beta, double alpha);
 
+    //D-term dval contribution
+    double IntegralDdVal(double beta, std::vector<double> Par);
+    double IntegralDdValMx(double beta, std::vector<double> Par);
+    double DtermdValence(double z, double beta);
+
+
+    // H gluons contribution
     double IntegralxSmall2Hg(double beta, std::vector<double> Par);
     double IntegralxSmall1Hg(double beta, std::vector<double> Par);
     double IntegralxLargeHgMx(double beta, std::vector<double> Par);
     double IntegralxLargeHg(double beta, std::vector<double> Par) ;
-    double HsDD(double beta, double alpha);
+    double HgDD(double beta, double alpha);
 
+
+    //D-term gluon contribution
+    double DtermGluons(double z, double beta);
+
+    //Hsea (uds) contribution
     double IntegralxLargeHsSea(double beta, std::vector<double> Par);
     double IntegralxLargeHsSeaMx(double beta, std::vector<double> Par);
     double IntegralxSmallHsSea(double beta, std::vector<double> Par);
     double IntegralxSmall1HsSea(double beta, std::vector<double> Par);
     double IntegralxSmall2HsSea(double beta, std::vector<double> Par);
-    double HgDD(double beta, double alpha);
+    double HsDD(double beta, double alpha);
+
+    //Dterm sea (uds) contribution
+    double DtermSea(double z, double beta);
 
 
 };

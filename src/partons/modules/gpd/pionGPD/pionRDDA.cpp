@@ -113,10 +113,26 @@ pionRDDAModel::pionRDDAModel(const pionRDDAModel& other) : PARTONS::GPDModule(ot
 
 pionRDDAModel::~pionRDDAModel()
 {
+    if(m_pIntegralDuVal){ delete m_pIntegralDuVal; m_pIntegralDuVal = 0;}
+    if(m_pIntegralDuValMx){ delete m_pIntegralDuValMx; m_pIntegralDuValMx = 0;}
+    if(m_pIntegralDdVal){ delete m_pIntegralDdVal; m_pIntegralDdVal = 0;}
+    if(m_pIntegralDdValMx){ delete m_pIntegralDdValMx; m_pIntegralDdValMx = 0;}
+
     if(m_pIntegralHuVal){ delete m_pIntegralHuVal; m_pIntegralHuVal = 0;}
     if(m_pIntegralHuValMx){ delete m_pIntegralHuValMx; m_pIntegralHuValMx = 0;}
     if(m_pIntegralHdVal){ delete m_pIntegralHdVal; m_pIntegralHdVal = 0;}
     if(m_pIntegralHdValMx){ delete m_pIntegralHdValMx; m_pIntegralHdValMx = 0;}
+
+    if(m_pIntegralxLargeHsSea){ delete m_pIntegralxLargeHsSea; m_pIntegralxLargeHsSea = 0;}
+    if(m_pIntegralxSmallHsSea){ delete m_pIntegralxSmallHsSea; m_pIntegralxSmallHsSea = 0;}
+    if(m_pIntegralxSmall1HsSea){ delete m_pIntegralxSmall1HsSea; m_pIntegralxSmall1HsSea = 0;}
+    if(m_pIntegralxSmall2HsSea){ delete m_pIntegralxSmall2HsSea; m_pIntegralxSmall2HsSea = 0;}
+    if(m_pIntegralxLargeHsSeaMx){ delete m_pIntegralxLargeHsSeaMx; m_pIntegralxLargeHsSeaMx = 0;}
+
+    if(m_pIntegralxLargeHg){ delete m_pIntegralxLargeHg; m_pIntegralxLargeHg = 0;}
+    if(m_pIntegralxSmall1Hg){ delete m_pIntegralxSmall1Hg; m_pIntegralxSmall1Hg = 0;}
+    if(m_pIntegralxSmall2Hg){ delete m_pIntegralxSmall2Hg; m_pIntegralxSmall2Hg = 0;}
+    if(m_pIntegralxLargeHgMx){ delete m_pIntegralxLargeHgMx; m_pIntegralxLargeHgMx = 0;}
 
 }
 
@@ -192,6 +208,18 @@ void pionRDDAModel::initFunctorsForIntegrations() {
 
     m_pIntegralxLargeHgMx = NumA::Integrator1D::newIntegrationFunctor(this,
             &pionRDDAModel::IntegralxLargeHgMx);
+
+    //Integrators for the D-terms
+
+    m_pIntegralDuVal = NumA::Integrator1D::newIntegrationFunctor(this,
+    		&pionRDDAModel::IntegralDuVal);
+    m_pIntegralDuValMx = NumA::Integrator1D::newIntegrationFunctor(this,
+    		&pionRDDAModel::IntegralDuValMx);
+    m_pIntegralDdVal= NumA::Integrator1D::newIntegrationFunctor(this,
+    		&pionRDDAModel::IntegralDdVal);
+    m_pIntegralDdValMx = NumA::Integrator1D::newIntegrationFunctor(this,
+    		&pionRDDAModel::IntegralDdValMx);
+
 
 }
 
@@ -333,6 +361,46 @@ double pionRDDAModel::HuValDD(double beta, double alpha) {
     return HuValDD;
 }
 
+//D-term u valence
+
+double pionRDDAModel::IntegralDuVal(double beta, std::vector<double> Par) {
+    double z = m_x / m_xi;
+
+    if (beta <= 0 || beta > 1.) {
+        throwBetaException(__func__, beta);
+    }
+
+    return DtermuValence(z, beta) ;
+
+}
+
+double pionRDDAModel::IntegralDuValMx(double beta, std::vector<double> Par) {
+    double z = m_Mx / m_xi;
+
+    if (beta <= 0 || beta > 1.) {
+        throwBetaException(__func__, beta);
+    }
+
+    return DtermuValence(z, beta);
+}
+
+
+double pionRDDAModel::DtermuValence(double z, double beta)
+{
+    double absbeta = fabs(beta);
+    double DtermuVal;
+    /*    if (beta <= 0 || beta > 1.) {
+     throwBetaException(__func__, x);
+     }*/
+    if (beta > 0.) {
+    	DtermuVal = 0.5 * valencePdfAnsatz(beta)* Profile(beta, beta-z)  ;
+    } else {
+    	DtermuVal = 0.;
+    }
+
+    return DtermuVal;
+}
+
 /*
 #################################
 #
@@ -376,6 +444,47 @@ double pionRDDAModel::HdValDD(double mbeta, double alpha) {
     }
 
     return HdValDD;
+}
+
+//////// D-term
+
+double pionRDDAModel::IntegralDdVal(double beta, std::vector<double> Par) {
+    double z = m_x / m_xi;
+
+    if (beta <= 0 || beta > 1.) {
+        throwBetaException(__func__, beta);
+    }
+
+    return DtermdValence(z,-beta);
+
+}
+
+double pionRDDAModel::IntegralDdValMx(double beta, std::vector<double> Par) {
+    double z = (m_Mx) / m_xi;
+
+    if (beta <= 0 || beta > 1.) {
+        throwBetaException(__func__, beta);
+    }
+
+    return DtermdValence(z,-beta);
+}
+
+
+
+double pionRDDAModel::DtermdValence(double z, double mbeta)
+{
+    double absbeta = fabs(mbeta);
+    double DtermdVal;
+    /*    if (beta <= 0 || beta > 1.) {
+     throwBetaException(__func__, x);
+     }*/
+    if (mbeta < 0.) {
+    	DtermdVal = -0.5 * valencePdfAnsatz(absbeta)* Profile(absbeta, absbeta-z)  ;
+    } else {
+    	DtermdVal = 0.;
+    }
+
+    return DtermdVal;
 }
 
 /*
@@ -600,6 +709,8 @@ PARTONS::PartonDistribution pionRDDAModel::computeH()
     	        double HdVal = 0.;
     	        double HuValMx = 0.;
     	        double HdValMx = 0.;
+    	        double Dtermu = 0.;
+    	        double Dtermd = 0.;
 
     	        if (m_x >= m_xi) {
     	            // Integration, u quark
@@ -612,9 +723,12 @@ PARTONS::PartonDistribution pionRDDAModel::computeH()
     	        if (fabs(m_x) < m_xi) {
     	            // Integration, u quark
     	            HuVal = integrate(m_pIntegralHuVal, Eps, Beta2, emptyParameters);
+    	            HuVal -= 0.5 * integrate(m_pIntegralDuVal, Eps, ((1+m_x/m_xi)/2), emptyParameters);
+
 
     	            // Integration, d quark
     	            HdValMx = integrate(m_pIntegralHdValMx, Eps, Beta2, emptyParameters);
+    	            HdValMx -= 0.5 * integrate(m_pIntegralDdValMx, Eps, (1+m_x/m_xi)/2, emptyParameters);
     	        }
 
     	    ///////////////////////////////////////////////////////////////////////
@@ -637,9 +751,11 @@ PARTONS::PartonDistribution pionRDDAModel::computeH()
 
     	        	// Integration, u quark
     	            HuValMx =  MathIntegratorModule::integrate(m_pIntegralHuValMx, Eps, Beta2Mx, emptyParameters);
+    	            HuValMx -= -0.5*integrate(m_pIntegralDuValMx, Eps, ((1+m_Mx/m_xi)/2), emptyParameters);
 
     	            // Integration, d quark
     	            HdVal = integrate(m_pIntegralHdVal, Eps, Beta2Mx, emptyParameters);
+    	            HdVal -= -0.5 * integrate(m_pIntegralDdVal, Eps, (1+m_Mx/m_xi)/2, emptyParameters);
 
     	        }
     	        if(std::isnan(HuVal)){ std::cout << "Nan detected in HuVal computation for xi = " << m_xi << " and x = " << m_x << std::endl ;}
