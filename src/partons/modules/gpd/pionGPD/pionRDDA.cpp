@@ -77,9 +77,10 @@ pionRDDAModel::pionRDDAModel(const std::string &className) : PARTONS::GPDModule(
 
     // Set default parameter for simple RDDA model
     m_valPara = {-0.25,0.95,2.6};
-    m_seaPara = {-0.5,8., 0.21 / (std::tgamma(1.5)*std::tgamma(9)/ std::tgamma(1.5+9) )};
+    m_seaPara = {-0.5,8., 0.21 / (std::tgamma(1.5) * std::tgamma( 9. )/ std::tgamma(1.5 + 9. ) )};
     m_gPara = {-1.,3.,0.23*4};
-    m_reggePara = {0.9,1.15,1.54} ;
+    m_reggeParaVal = {0.9,1.15,1.54} ;
+    m_reggeParaSea = {0.9,-1.48,1.25} ;
     mRDDA_Para = 2.;
 
 
@@ -101,7 +102,8 @@ pionRDDAModel::pionRDDAModel(const pionRDDAModel& other) : PARTONS::GPDModule(ot
     m_valPara = {-0.25,0.95,2.6};
     m_seaPara = {-0.5,8., 0.21 / (std::tgamma(1.5)*std::tgamma(9)/ std::tgamma(1.5+9) )};
     m_gPara = {-1.,3.,0.23*4};
-    m_reggePara = {0.9,1.15,1.54} ;
+    m_reggeParaVal = {0.9,1.15,1.54} ;
+    m_reggeParaSea = {0.9,-1.48,1.25} ;
     mRDDA_Para = 2.;
 
     MathIntegratorModule();
@@ -261,17 +263,24 @@ double pionRDDAModel::seaPdfAnsatz(double beta) {
     return pdf ;
 }
 
-double pionRDDAModel::gluonPdfAnsatz(double beta) {
+double pionRDDAModel::gluonxPdfAnsatz(double beta) {
 	double pdf;
-    pdf = pow(beta, m_gPara.at(0)) * pow((1. - beta), m_gPara.at(1)) *  m_gPara.at(2) ;
+    pdf = pow(beta, m_gPara.at(0)+1) * pow((1. - beta), m_gPara.at(1)) *  m_gPara.at(2) ;
     return pdf ;
 }
 
 //Reggeized t behaviour
-double pionRDDAModel::tReggeizedAnsatz(double beta) {
+double pionRDDAModel::tReggeizedAnsatzVal(double beta) {
 	double tregge;
 	double fbeta = fabs(beta) ;
-    tregge = exp(m_t * (  pow((1- fbeta ),3. ) * ( m_reggePara.at(0) * log( 1/fbeta ) + m_reggePara.at(1) ) + m_reggePara.at(2) * fbeta* pow ( (1-fbeta) , 2.)  ) ) ;
+    tregge = exp(m_t * (  pow((1- fbeta ),3. ) * ( m_reggeParaVal.at(0) * log( 1/fbeta ) + m_reggeParaVal.at(1) ) + m_reggeParaVal.at(2) * fbeta* pow ( (1-fbeta) , 2.)  ) ) ;
+    return tregge ;
+}
+
+double pionRDDAModel::tReggeizedAnsatzSea(double beta) {
+	double tregge;
+	double fbeta = fabs(beta) ;
+    tregge = exp(m_t * (  pow((1- fbeta ),3. ) * ( m_reggeParaSea.at(0) * log( 1/fbeta ) + m_reggeParaSea.at(1) ) + m_reggeParaSea.at(2) * fbeta* pow ( (1-fbeta) , 2.)  ) ) ;
     return tregge ;
 }
 
@@ -316,7 +325,7 @@ double pionRDDAModel::HuValDD(double beta, double alpha) {
      throwBetaException(__func__, x);
      }*/
     if (beta > 0.) {
-        HuValDD = 0.5 * valencePdfAnsatz(beta)* Profile(beta, alpha) * tReggeizedAnsatz(absbeta) ;
+        HuValDD = 0.5 * valencePdfAnsatz(beta)* Profile(beta, alpha) * tReggeizedAnsatzVal(absbeta) ;
     } else {
         HuValDD = 0.;
     }
@@ -361,7 +370,7 @@ double pionRDDAModel::HdValDD(double mbeta, double alpha) {
      throwBetaException(__func__, x);
      }*/
     if (mbeta < 0.) {
-        HdValDD = - 0.5 * valencePdfAnsatz(absbeta)* Profile(absbeta, alpha) * tReggeizedAnsatz(absbeta) ;
+        HdValDD = - 0.5 * valencePdfAnsatz(absbeta)* Profile(absbeta, alpha) * tReggeizedAnsatzVal(absbeta) ;
     } else {
         HdValDD = 0.;
     }
@@ -432,7 +441,7 @@ double pionRDDAModel::HsDD(double beta, double alpha) {
      throwBetaException(__func__, beta);
      }
 
-    return   1. / 6. * seaPdfAnsatz(absbeta) * Profile(beta, alpha)  * tReggeizedAnsatz(absbeta) ;
+    return   1. / 6. * seaPdfAnsatz(absbeta) * Profile(beta, alpha)  * tReggeizedAnsatzSea(absbeta) ;
 }
 
 
@@ -451,7 +460,7 @@ double pionRDDAModel::IntegralxLargeHg(double beta, std::vector<double> Par) {
         throwBetaException(__func__, beta);
     }
 
-    return beta * HgDD(beta, alpha) / m_xi;
+    return  HgDD(beta, alpha) / m_xi;
 }
 
 double pionRDDAModel::IntegralxLargeHgMx(double beta, std::vector<double> Par) {
@@ -461,7 +470,7 @@ double pionRDDAModel::IntegralxLargeHgMx(double beta, std::vector<double> Par) {
         throwBetaException(__func__, beta);
     }
 
-    return beta * HgDD(beta, alpha) / m_xi;
+    return  HgDD(beta, alpha) / m_xi;
 }
 
 double pionRDDAModel::IntegralxSmall1Hg(double beta, std::vector<double> Par) {
@@ -471,7 +480,7 @@ double pionRDDAModel::IntegralxSmall1Hg(double beta, std::vector<double> Par) {
         throwBetaException(__func__, beta);
     }
 
-    return beta * HgDD(beta, alpha) / m_xi;
+    return  HgDD(beta, alpha) / m_xi;
 }
 
 double pionRDDAModel::IntegralxSmall2Hg(double beta, std::vector<double> Par) {
@@ -481,7 +490,7 @@ double pionRDDAModel::IntegralxSmall2Hg(double beta, std::vector<double> Par) {
         throwBetaException(__func__, beta);
     }
 
-    return beta * HgDD(beta, alpha) / m_xi;
+    return  HgDD(beta, alpha) / m_xi;
 }
 
 double pionRDDAModel::HgDD(double beta, double alpha) {
@@ -490,7 +499,7 @@ double pionRDDAModel::HgDD(double beta, double alpha) {
      throwBetaException(__func__, beta);
      }
 
-    return gluonPdfAnsatz(absbeta) * Profile(beta, alpha)  * tReggeizedAnsatz(absbeta) ;
+    return gluonxPdfAnsatz(absbeta) * Profile(absbeta, alpha)  * tReggeizedAnsatzSea(absbeta) ;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////

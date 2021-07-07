@@ -81,7 +81,9 @@ private:
     std::vector<double> m_valPara;                                   // valence PDF-parameters {a,b,N_v}
     std::vector<double> m_seaPara;                                   // sea PDF-parameters {a,b,N_s}
     std::vector<double> m_gPara;                                     // gluons PDF-parameters {a,b,N_g}
-    std::vector<double> m_reggePara ;                                // Regge parameters {alpha',A,B}
+    std::vector<double> m_reggeParaVal ;                                // Regge parameters {alpha',A,B}
+    std::vector<double> m_reggeParaSea ;                                // Regge parameters {alpha',A,B}
+
 
 
     double mRDDA_Para;											// RDDA parameter n
@@ -91,10 +93,11 @@ private:
     // x-fitter pdf set
     double valencePdfAnsatz(double beta);	// Valence ansatz u(x) = bar(d) (x) = N_v * x^a (1-x)^b
     double seaPdfAnsatz(double beta);	// Sea ansatz  2 ub + 2 d + s + sb = 6 ub = N_s * x^(a-1) (1-x)^b
-    double gluonPdfAnsatz(double beta);	// gluon ansatz  x g(x) = N_g * (1-x)^b
+    double gluonxPdfAnsatz(double beta);	// gluon ansatz  x g(x) = N_g * (1-x)^b
 
     //reggeized t-depedence
-    double tReggeizedAnsatz(double beta);
+    double tReggeizedAnsatzVal(double beta);
+    double tReggeizedAnsatzSea(double beta);
 
     void throwBetaException(const std::string &funcName, double betaValue);
 
