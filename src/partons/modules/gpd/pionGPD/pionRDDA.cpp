@@ -723,12 +723,15 @@ PARTONS::PartonDistribution pionRDDAModel::computeH()
     	        if (fabs(m_x) < m_xi) {
     	            // Integration, u quark
     	            HuVal = integrate(m_pIntegralHuVal, Eps, Beta2, emptyParameters);
-    	            HuVal -= 0.5 * integrate(m_pIntegralDuVal, Eps, ((1+m_x/m_xi)/2), emptyParameters);
+    	            std::cout << "Huval no Dterm = " << HuVal << std::endl ;
+    	            HuVal -= 0.5 * ( integrate(m_pIntegralDuVal, Eps, ((1+m_x/m_xi)/2), emptyParameters)
+    	            	- integrate(m_pIntegralDuValMx, Eps, ((1+m_Mx/m_xi)/2), emptyParameters));
+    	            std::cout << "Huval with Dterm = " << HuVal << std::endl ;
 
 
     	            // Integration, d quark
     	            HdValMx = integrate(m_pIntegralHdValMx, Eps, Beta2, emptyParameters);
-    	            HdValMx -= 0.5 * integrate(m_pIntegralDdValMx, Eps, (1+m_x/m_xi)/2, emptyParameters);
+    	            //HdValMx -= 0.5 * integrate(m_pIntegralDdValMx, Eps, (1+m_x/m_xi)/2, emptyParameters);
     	        }
 
     	    ///////////////////////////////////////////////////////////////////////
@@ -751,11 +754,14 @@ PARTONS::PartonDistribution pionRDDAModel::computeH()
 
     	        	// Integration, u quark
     	            HuValMx =  MathIntegratorModule::integrate(m_pIntegralHuValMx, Eps, Beta2Mx, emptyParameters);
-    	            HuValMx -= -0.5*integrate(m_pIntegralDuValMx, Eps, ((1+m_Mx/m_xi)/2), emptyParameters);
+    	            std::cout << "HuvalMX no Dterm = " << HuValMx << std::endl ;
+    	            HuValMx -= -0.5 * ( integrate(m_pIntegralDuVal, Eps, ((1+m_x/m_xi)/2), emptyParameters)
+        	            	- integrate(m_pIntegralDuValMx, Eps, ((1+m_Mx/m_xi)/2), emptyParameters));
+    	            std::cout << "HuvalMX with Dterm = " << HuValMx << std::endl ;
 
     	            // Integration, d quark
     	            HdVal = integrate(m_pIntegralHdVal, Eps, Beta2Mx, emptyParameters);
-    	            HdVal -= -0.5 * integrate(m_pIntegralDdVal, Eps, (1+m_Mx/m_xi)/2, emptyParameters);
+    	            //HdVal -= -0.5 * integrate(m_pIntegralDdVal, Eps, (1+m_Mx/m_xi)/2, emptyParameters);
 
     	        }
     	        if(std::isnan(HuVal)){ std::cout << "Nan detected in HuVal computation for xi = " << m_xi << " and x = " << m_x << std::endl ;}
@@ -766,8 +772,8 @@ PARTONS::PartonDistribution pionRDDAModel::computeH()
     //std::cout << "Huval = " << HuVal << " Hdval = " << HdVal << std::endl;
 
     // TODO: Check and fix definitions of the the different quark distributions (u, uM, u+, u-, d(...) and s(...)). See Cédric PhD thesis. pp. 56.
-    double HuSea  = Hs;
-    double HuSeaMx = -Hs ;
+    double HuSea  = 0. ;//Hs;
+    double HuSeaMx = 0. ;//-Hs ;
 
     quarkDistributionUp.setQuarkDistribution(HuVal + HuSea);
 
