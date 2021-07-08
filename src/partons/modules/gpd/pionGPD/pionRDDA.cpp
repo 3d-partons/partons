@@ -689,6 +689,8 @@ PARTONS::PartonDistribution pionRDDAModel::computeH()
     	            Hs -= integrate(m_pIntegralxSmall2HsSea, Beta2Min, Beta2Mx,
     	                    emptyParameters);
 
+
+
     	        }
 
     	        if (m_x <= -m_xi) {
@@ -726,12 +728,14 @@ PARTONS::PartonDistribution pionRDDAModel::computeH()
     	            std::cout << "Huval no Dterm = " << HuVal << std::endl ;
     	            HuVal -= 0.5 * ( integrate(m_pIntegralDuVal, Eps, ((1+m_x/m_xi)/2), emptyParameters)
     	            	- integrate(m_pIntegralDuValMx, Eps, ((1+m_Mx/m_xi)/2), emptyParameters));
-    	            std::cout << "Huval with Dterm = " << HuVal << std::endl ;
 
 
     	            // Integration, d quark
     	            HdValMx = integrate(m_pIntegralHdValMx, Eps, Beta2, emptyParameters);
-    	            //HdValMx -= 0.5 * integrate(m_pIntegralDdValMx, Eps, (1+m_x/m_xi)/2, emptyParameters);
+    	            std::cout << "HdvalMX no Dterm = " << HdValMx << std::endl ;
+    	            HdValMx -= -0.5 * ( integrate(m_pIntegralDdValMx, Eps, (1+m_Mx/m_xi)/2, emptyParameters)
+    	            		- integrate(m_pIntegralDdVal, Eps, (1+m_x/m_xi)/2, emptyParameters));
+    	            std::cout << "HdvalMX with Dterm = " << HdValMx << std::endl ;
     	        }
 
     	    ///////////////////////////////////////////////////////////////////////
@@ -754,16 +758,19 @@ PARTONS::PartonDistribution pionRDDAModel::computeH()
 
     	        	// Integration, u quark
     	            HuValMx =  MathIntegratorModule::integrate(m_pIntegralHuValMx, Eps, Beta2Mx, emptyParameters);
-    	            std::cout << "HuvalMX no Dterm = " << HuValMx << std::endl ;
     	            HuValMx -= -0.5 * ( integrate(m_pIntegralDuVal, Eps, ((1+m_x/m_xi)/2), emptyParameters)
         	            	- integrate(m_pIntegralDuValMx, Eps, ((1+m_Mx/m_xi)/2), emptyParameters));
-    	            std::cout << "HuvalMX with Dterm = " << HuValMx << std::endl ;
 
     	            // Integration, d quark
     	            HdVal = integrate(m_pIntegralHdVal, Eps, Beta2Mx, emptyParameters);
-    	            //HdVal -= -0.5 * integrate(m_pIntegralDdVal, Eps, (1+m_Mx/m_xi)/2, emptyParameters);
+    	            std::cout << "Hdval no Dterm = " << HdVal << std::endl ;
+    	            HdVal -= -0.5 * ( integrate(m_pIntegralDdVal, Eps, (1+m_x/m_xi)/2, emptyParameters)
+    	            		- integrate(m_pIntegralDdValMx, Eps, (1+m_Mx/m_xi)/2, emptyParameters));
+    	            std::cout << "HdVal with Dterm = " << HdVal << std::endl ;
 
     	        }
+
+
     	        if(std::isnan(HuVal)){ std::cout << "Nan detected in HuVal computation for xi = " << m_xi << " and x = " << m_x << std::endl ;}
     	        if(std::isnan(HuValMx)){ std::cout << "Nan detected in HuValMx computation for xi = " << m_xi << " and x = " << m_x << std::endl ;}
     	        if(std::isnan(HdVal)){ std::cout << "Nan detected in HdVal computation for xi = " << m_xi << " and x = " << m_x << std::endl ;}
@@ -783,8 +790,8 @@ PARTONS::PartonDistribution pionRDDAModel::computeH()
         quarkDistributionUp.setQuarkDistributionMinus(HuVal + HuValMx);
 
     // d-quark
-    double dSea = Hs ;
-    double dSeaM = -Hs ;
+    double dSea = 0. ; //Hs ;
+    double dSeaM = 0. ; //-Hs ;
 
     quarkDistributionDown.setQuarkDistribution(HdVal + dSea);
 
