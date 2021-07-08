@@ -119,10 +119,16 @@ private:
     NumA::FunctionType1D* m_pIntegralxSmall2HsSea;
     NumA::FunctionType1D* m_pIntegralxLargeHsSeaMx;
 
+    NumA::FunctionType1D* m_pIntegralDSea;
+    NumA::FunctionType1D* m_pIntegralDSeaMx;
+
     NumA::FunctionType1D* m_pIntegralxLargeHg;
     NumA::FunctionType1D* m_pIntegralxSmall1Hg;
     NumA::FunctionType1D* m_pIntegralxSmall2Hg;
     NumA::FunctionType1D* m_pIntegralxLargeHgMx;
+
+    NumA::FunctionType1D* m_pIntegralDGluons;
+    NumA::FunctionType1D* m_pIntegralDGluonsMx;
 
 
     //Hu contribution
@@ -155,6 +161,8 @@ private:
 
 
     //D-term gluon contribution
+    double Integralgluon(double beta, std::vector<double> Par);
+    double IntegralgluonMx(double beta, std::vector<double> Par);
     double DtermGluons(double z, double beta);
 
     //Hsea (uds) contribution
@@ -166,6 +174,8 @@ private:
     double HsDD(double beta, double alpha);
 
     //Dterm sea (uds) contribution
+    double IntegralDSea(double beta, std::vector<double> Par);
+    double IntegralDSeaMx(double beta, std::vector<double> Par);
     double DtermSea(double z, double beta);
 
 
