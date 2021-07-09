@@ -137,8 +137,8 @@ pionRDDAModel::~pionRDDAModel()
     if(m_pIntegralxSmall2Hg){ delete m_pIntegralxSmall2Hg; m_pIntegralxSmall2Hg = 0;}
     if(m_pIntegralxLargeHgMx){ delete m_pIntegralxLargeHgMx; m_pIntegralxLargeHgMx = 0;}
 
-  //  if(m_pIntegralDGluons){delete m_pIntegralDGluons; m_pIntegralDGluons = 0;};
-  //  if(m_pIntegralDGluonsMx){delete m_pIntegralDGluonsMx; m_pIntegralDGluonsMx = 0;};
+    if(m_pIntegralDGluons){delete m_pIntegralDGluons; m_pIntegralDGluons = 0;};
+    if(m_pIntegralDGluonsMx){delete m_pIntegralDGluonsMx; m_pIntegralDGluonsMx = 0;};
 
 }
 
@@ -230,6 +230,12 @@ void pionRDDAModel::initFunctorsForIntegrations() {
     		&pionRDDAModel::IntegralDSea);
     m_pIntegralDSeaMx = NumA::Integrator1D::newIntegrationFunctor(this,
     		&pionRDDAModel::IntegralDSeaMx);
+
+    m_pIntegralDGluons = NumA::Integrator1D::newIntegrationFunctor(this,
+    		&pionRDDAModel::IntegralDGluons);
+    m_pIntegralDGluonsMx = NumA::Integrator1D::newIntegrationFunctor(this,
+    		&pionRDDAModel::IntegralDGluonsMx);
+
 
 
 }
@@ -664,6 +670,50 @@ double pionRDDAModel::HgDD(double beta, double alpha) {
     return gluonxPdfAnsatz(absbeta) * Profile(absbeta, alpha)  * tReggeizedAnsatzSea(absbeta) ;
 }
 
+//D-term Gluons
+
+double pionRDDAModel::IntegralDGluons(double beta, std::vector<double> Par)
+{	    double z = m_x / m_xi;
+
+		if (beta <= 0 || beta > 1.) {
+				throwBetaException(__func__, beta);
+		}
+
+		return DtermGluons(z,beta);
+
+}
+
+double pionRDDAModel::IntegralDGluonsMx(double beta, std::vector<double> Par)
+{	    double z = m_Mx / m_xi;
+
+		if (beta <= 0 || beta > 1.) {
+			throwBetaException(__func__, beta);
+		}
+
+		return DtermGluons(z,beta);
+
+}
+
+double pionRDDAModel::DtermGluons(double z, double beta){
+
+	double absbeta = fabs(beta);
+    double Dtermgluons;
+    /*    if (beta <= 0 || beta > 1.) {
+     throwBetaException(__func__, x);
+     }*/
+    if (beta > 0.) {
+    	Dtermgluons =  gluonxPdfAnsatz(absbeta)* Profile(absbeta, absbeta-z)  ;
+    } else {
+    	Dtermgluons = 0.;
+    }
+
+    return Dtermgluons;
+}
+
+
+
+
+
 ///////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -714,6 +764,10 @@ PARTONS::PartonDistribution pionRDDAModel::computeH()
     	    if (fabs(m_x) < m_xi) {
     	        Hg = integrate(m_pIntegralxSmall1Hg, 0., Beta2, emptyParameters);
     	        Hg += integrate(m_pIntegralxSmall2Hg, 0., Beta2Mx, emptyParameters);
+    	        //Dterm part
+    	        Hg-= fabs(m_xi) * (integrate(m_pIntegralDGluons,0., (1+m_x/m_xi)/2. , emptyParameters)
+    	        		+ integrate(m_pIntegralDGluonsMx,0., (1+m_Mx/m_xi)/2. , emptyParameters) );
+
     	    }
 
     	    if (m_x <= -m_xi) {
@@ -741,12 +795,8 @@ PARTONS::PartonDistribution pionRDDAModel::computeH()
     	                    emptyParameters);
     	            Hs -= integrate(m_pIntegralxSmall2HsSea, Beta2Min, Beta2Mx,
     	                    emptyParameters);
-    	            std::cout <<"Hs no dterm = " << Hs << std::endl;
     	            //Dterm
     	            Hs-= integrate(m_pIntegralDSea,Eps, (1+m_x/m_xi)/2., emptyParameters )- integrate(m_pIntegralDSeaMx,Eps, (1+m_Mx/m_xi)/2., emptyParameters );
-    	            std::cout <<"Hs with dterm = " << Hs << std::endl;
-
-
 
     	        }
 
@@ -832,8 +882,8 @@ PARTONS::PartonDistribution pionRDDAModel::computeH()
     //std::cout << "Huval = " << HuVal << " Hdval = " << HdVal << std::endl;
 
     // TODO: Check and fix definitions of the the different quark distributions (u, uM, u+, u-, d(...) and s(...)). See Cédric PhD thesis. pp. 56.
-    double HuSea  = Hs;
-    double HuSeaMx = -Hs ;
+    double HuSea  = 0. ;//Hs;
+    double HuSeaMx = 0. ; //-Hs ;
 
     quarkDistributionUp.setQuarkDistribution(HuVal + HuSea);
 
@@ -862,8 +912,6 @@ PARTONS::PartonDistribution pionRDDAModel::computeH()
     quarkDistributionStrange.setQuarkDistribution(sVal + sSea);
     quarkDistributionStrange.setQuarkDistributionPlus(sVal + sSea - sValM - sSeaM);
     quarkDistributionStrange.setQuarkDistributionMinus(sVal + sValM);
-
-    std::cout << "computation completed for (x,xi) = " << m_x << " " << m_xi << std::endl;
 
     /*
     // c-quark

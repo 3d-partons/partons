@@ -161,8 +161,8 @@ private:
 
 
     //D-term gluon contribution
-    double Integralgluon(double beta, std::vector<double> Par);
-    double IntegralgluonMx(double beta, std::vector<double> Par);
+    double IntegralDGluons(double beta, std::vector<double> Par);
+    double IntegralDGluonsMx(double beta, std::vector<double> Par);
     double DtermGluons(double z, double beta);
 
     //Hsea (uds) contribution
