@@ -884,8 +884,8 @@ PARTONS::PartonDistribution pionRDDAModel::computeH()
     //std::cout << "Huval = " << HuVal << " Hdval = " << HdVal << std::endl;
 
     // TODO: Check and fix definitions of the the different quark distributions (u, uM, u+, u-, d(...) and s(...)). See Cédric PhD thesis. pp. 56.
-    double HuSea  = 0. ;//Hs;
-    double HuSeaMx = 0. ; //-Hs ;
+    double HuSea  = Hs;
+    double HuSeaMx = -Hs ;
 
     quarkDistributionUp.setQuarkDistribution(HuVal + HuSea);
 
