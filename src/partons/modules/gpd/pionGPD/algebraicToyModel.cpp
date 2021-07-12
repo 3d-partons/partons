@@ -285,16 +285,17 @@ PARTONS::PartonDistribution algebraicToyModel::computeH()
             {
                 if ( m_xi == 1 )
                 {
+                    if ( m_x == 1 )
+                    {
+                        uVal = 0.;
+                        uValM = 0.;                                                                         // Verify this limit.
+                    } else 
+                    {
                     uVal = -3.75*(1-pow(m_x,2))*( (((1-pow(m_x,2))+c1*(1-4*pow(m_x,3)+3*pow(m_x,4)))/pow(1+c1*(1-pow(m_x,2)),2)) - log(1+c1*(1-pow(m_x,2)))/c1 )
                         / (c1*pow(1-m_x,2));
                 
                     uValM = -3.75*(1-pow(m_x,2))*( (((1-pow(m_x,2))+c1*(1+4*pow(m_x,3)+3*pow(m_x,4)))/pow(1+c1*(1-pow(m_x,2)),2)) - log(1+c1*(1-pow(m_x,2)))/c1 )
                         / (c1*pow(1+m_x,2));
-
-                    if ( m_x == 1 )
-                    {
-                        uVal = 0.;
-                        uValM = 0.;                                                                         // Verify this limit.
                     }
                 } else                                                                                      // The following expression shows a "fake" divergence in the limit \xi->1.
                 {
