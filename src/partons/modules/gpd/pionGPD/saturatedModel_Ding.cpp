@@ -2,7 +2,7 @@
   * @file    saturatedModel_Ding.cpp
   * @author  José Manuel Morgado Chavez (University Of Huelva)
   * @author  Cédric Mezrag (CEA Saclay)
-  * @date    Friday 11th June 2021 
+  * @date    Tuesday 23rd June 2021 
   * @version 1.0
   */
 
@@ -51,8 +51,8 @@ saturatedModel_Ding::saturatedModel_Ding(const std::string &className) : PARTONS
 
 saturatedModel_Ding::saturatedModel_Ding(const saturatedModel_Ding& other) : PARTONS::GPDModule(other) 
 {    
-    m2 = pow(0.318,2.);                                                                                             // Mass parameter algebraic toy model. Eq (30) Physics Letters B 780 (2018) 287–293.
-    m2D = pow(0.318,2.);                                                                                            // D-term t-dependence: Fitting of Phys. Rev. D 97, 014020 (2018) gravitational FFs.
+    m2 = pow(0.316,2.);                                                                                             // Mass parameter algebraic toy model. Eq (30) Physics Letters B 780 (2018) 287–293.
+    m2D = pow(0.316,2.);                                                                                            // D-term t-dependence: Fitting of Phys. Rev. D 97, 014020 (2018) gravitational FFs.
     // RT.init();                                                                                                      // Initialize Radon transform
 }
 
@@ -116,24 +116,41 @@ PARTONS::PartonDistribution saturatedModel_Ding::computeH()
     {
         if ( m_x > m_xi || m_x == m_xi )                                                                    // DGLAP>
         {
-            uVal = (213.32*pow(1 - m_x,2.)*(pow(m_x,2.) - pow(m_xi,2.))
-                   *sqrt( 1 - 2.9342*sqrt( (1 - m_x)/(1 - m_xi) )*sqrt( (m_x - m_xi)/(1 - m_xi) ) + 2.2911*((1 - m_x)/(1 - m_xi))*((m_x - m_xi)/(1 - m_xi))  )
-                   *sqrt( 1 - 2.9342*sqrt( (1 - m_x)/(1 + m_xi) )*sqrt( (m_x + m_xi)/(1 + m_xi) ) + 2.2911*((1 - m_x)/(1 + m_xi))*((m_x + m_xi)/(1 + m_xi)) ))
-                   /( pow(1 - pow(m_xi,2.),2.) );
-            uValM = 0.;
+            if ( m_x == 1)
+            {
+                uVal = 0.;
+                uValM = 0.;
+            } else
+            {
+                uVal = (213.32*pow(1 - m_x,2.)*(pow(m_x,2.) - pow(m_xi,2.))
+                    *sqrt( 1 - 2.9342*sqrt( (1 - m_x)/(1 - m_xi) )*sqrt( (m_x - m_xi)/(1 - m_xi) ) + 2.2911*((1 - m_x)/(1 - m_xi))*((m_x - m_xi)/(1 - m_xi))  )
+                    *sqrt( 1 - 2.9342*sqrt( (1 - m_x)/(1 + m_xi) )*sqrt( (m_x + m_xi)/(1 + m_xi) ) + 2.2911*((1 - m_x)/(1 + m_xi))*((m_x + m_xi)/(1 + m_xi)) ))
+                    /( pow(1 - pow(m_xi,2.),2.) );
+                uValM = 0.;
+            }
 
         } else if ( m_x < -m_xi || m_x == -m_xi )                                                           //DGLAP>
         {
-            uVal = 0.;
-            uValM = (213.32*pow(1 + m_x,2.)*(pow(m_x,2.) - pow(m_xi,2.))
+            if ( m_x == -1 )
+            {
+                uVal = 0.;
+                uValM = 0.;
+            } else
+            {
+                uVal = 0.;
+                uValM = (213.32*pow(1 + m_x,2.)*(pow(m_x,2.) - pow(m_xi,2.))
                     *sqrt( 1 - 2.9342*sqrt( (1 + m_x)/(1 - m_xi) )*sqrt( (-m_x - m_xi)/(1 - m_xi) ) + 2.2911*((1 + m_x)/(1 - m_xi))*((-m_x - m_xi)/(1 - m_xi))  )
                     *sqrt( 1 - 2.9342*sqrt( (1 + m_x)/(1 + m_xi) )*sqrt( (-m_x + m_xi)/(1 + m_xi) ) + 2.2911*((1 + m_x)/(1 + m_xi))*((-m_x + m_xi)/(1 + m_xi)) ))
-                    /( pow(1 - pow(m_xi,2.),2.) );  
+                    /( pow(1 - pow(m_xi,2.),2.) ); 
+            } 
 
         } else                                                                                              // ERBL
         {       
             // Compute double distribution.
-            if ( DDt0.isZero() )                                                                               
+
+            search = DD.find(0.);
+
+            if ( search == DD.end() )                                                                               
             {
                 Eigen::VectorXd GPD_DGLAP(RT.x.size());
 
@@ -145,60 +162,66 @@ PARTONS::PartonDistribution saturatedModel_Ding::computeH()
                                    /( pow(1 - pow(RT.xi.at(i),2.),2.) );
                 }
                 
-                DDt0 = RT.computeDD( GPD_DGLAP );
+                    DDt0 = RT.computeDD( GPD_DGLAP );
+
+                    DD.insert({0., DDt0});
             }
 
             // Compute "gauged" GPD.
-            uVal = RT.computeGPD( DDt0, m_x, m_xi );
-            uValM = RT.computeGPD( DDt0, -m_x, m_xi );
+            uVal = RT.computeGPD( DD.at(0.), m_x, m_xi );
+            uValM = RT.computeGPD( DD.at(0.), -m_x, m_xi );
 
             // Compute Dterm contribution.
-            uVal += RT.computeDterm( DDt0, m_x, m_xi );
-            uValM += RT.computeDterm( DDt0, -m_x, m_xi );
+            uVal += RT.computeDterm( DD.at(0.), m_x, m_xi );
+            uValM += RT.computeDterm( DD.at(0.), -m_x, m_xi );
         }
 
     } else                                                                                                  // Non-vanishing momentum transfer.
     {        
         c  = -m_t*pow(1 - m_x, 2.)/(4*m2*(1 - pow(m_xi,2)));                                                // t-dependence algebraic toy model.
         cM = -m_t*pow(1 + m_x, 2.)/(4*m2*(1 - pow(m_xi,2)));
-        // c1  = -m_t/(4*m2);
 
         dt = 1/(1-0.25*m_t/m2D);                                                                            // D-term t-dependence (monopole parametrization).
 
         if ( m_x > m_xi || m_x == m_xi )                                                                    // DGLAP>
         {
-            uVal = (213.32*pow(1 - m_x,2.)*(pow(m_x,2.) - pow(m_xi,2.))
-                   *sqrt( 1 - 2.9342*sqrt( (1 - m_x)/(1 - m_xi) )*sqrt( (m_x - m_xi)/(1 - m_xi) ) + 2.2911*((1 - m_x)/(1 - m_xi))*((m_x - m_xi)/(1 - m_xi))  )
-                   *sqrt( 1 - 2.9342*sqrt( (1 - m_x)/(1 + m_xi) )*sqrt( (m_x + m_xi)/(1 + m_xi) ) + 2.2911*((1 - m_x)/(1 + m_xi))*((m_x + m_xi)/(1 + m_xi)) ))
-                   *(3 + ((1 - 2 * c) * atanh(sqrt(c/(1+c))))/((1 + c) * sqrt(c/(1 + c))) )
-                   /( pow(1 - pow(m_xi,2.),2.) * pow(1 + c,2.) );
-            uValM = 0.;
-
-            // if ( m_x == 1 )                                                                                 // Actually this is the limit x->1 (with \xi<1). 
-            // {
-            //     uVal = 0.;
-            //     uValM = 0.;
-            // }
+            if ( m_x == 1 )                                                                                 // Actually this is the limit x->1 (with \xi<1). 
+            {
+                uVal = 0.;
+                uValM = 0.;
+            } else
+            {
+                uVal = (213.32*pow(1 - m_x,2.)*(pow(m_x,2.) - pow(m_xi,2.))
+                    *sqrt( 1 - 2.9342*sqrt( (1 - m_x)/(1 - m_xi) )*sqrt( (m_x - m_xi)/(1 - m_xi) ) + 2.2911*((1 - m_x)/(1 - m_xi))*((m_x - m_xi)/(1 - m_xi))  )
+                    *sqrt( 1 - 2.9342*sqrt( (1 - m_x)/(1 + m_xi) )*sqrt( (m_x + m_xi)/(1 + m_xi) ) + 2.2911*((1 - m_x)/(1 + m_xi))*((m_x + m_xi)/(1 + m_xi)) ))
+                    *(3 + ((1 - 2 * c) * atanh(sqrt(c/(1+c))))/((1 + c) * sqrt(c/(1 + c))) )
+                    /( 4*pow(1 - pow(m_xi,2.),2.) * pow(1 + c,2.) );
+                uValM = 0.;
+            }
 
         } else if ( m_x < -m_xi || m_x == -m_xi )                                                            // DGLAP<
         {
-            uVal = 0.;
-            uValM = (213.32*pow(1 + m_x,2.)*(pow(m_x,2.) - pow(m_xi,2.))
+            if ( m_x == -1 )                                                                                // Actually this is the limit x->1 (with \xi<1). 
+            {
+                uVal = 0.;
+                uValM = 0.;
+            } else
+            {
+                uVal = 0.;
+                uValM = (213.32*pow(1 + m_x,2.)*(pow(m_x,2.) - pow(m_xi,2.))
                     *sqrt( 1 - 2.9342*sqrt( (1 + m_x)/(1 - m_xi) )*sqrt( (-m_x - m_xi)/(1 - m_xi) ) + 2.2911*((1 + m_x)/(1 - m_xi))*((-m_x - m_xi)/(1 - m_xi))  )
                     *sqrt( 1 - 2.9342*sqrt( (1 + m_x)/(1 + m_xi) )*sqrt( (-m_x + m_xi)/(1 + m_xi) ) + 2.2911*((1 + m_x)/(1 + m_xi))*((-m_x + m_xi)/(1 + m_xi)) ))
                     *(3 + ((1 - 2 * cM) * atanh(sqrt(cM/(1+cM))))/((1 + cM) * sqrt(cM/(1 + cM))) )
-                    /( pow(1 - pow(m_xi,2.),2.) * pow(1 + cM,2.) ); 
-
-            // if ( m_x == -1 )                                                                                // Actually this is the limit x->1 (with \xi<1). 
-            // {
-            //     uVal = 0.;
-            //     uValM = 0.;
-            // }
+                    /( 4*pow(1 - pow(m_xi,2.),2.) * pow(1 + cM,2.) ); 
+            }
 
         } else                                                                                              // ERBL
         {
                 // Compute double distribution.
-                if ( DD.isZero() )                                                                          // TODO: Map with DDs for different t.
+
+                search = DD.find(m_t);
+
+                if ( search == DD.end() )                                                                          
                 {            
                     Eigen::VectorXd GPD_DGLAP(RT.x.size());
 
@@ -206,22 +229,27 @@ PARTONS::PartonDistribution saturatedModel_Ding::computeH()
                     {
                         ca  = -m_t*pow(1 - RT.x.at(i), 2.)/(4*m2*(1 - pow(RT.xi.at(i),2)));
 
-                        GPD_DGLAP(i) = (213.32*pow(1 - m_x,2.)*(pow(m_x,2.) - pow(m_xi,2.))
-                                   *sqrt( 1 - 2.9342*sqrt( (1 - m_x)/(1 - m_xi) )*sqrt( (m_x - m_xi)/(1 - m_xi) ) + 2.2911*((1 - m_x)/(1 - m_xi))*((m_x - m_xi)/(1 - m_xi))  )
-                                   *sqrt( 1 - 2.9342*sqrt( (1 - m_x)/(1 + m_xi) )*sqrt( (m_x + m_xi)/(1 + m_xi) ) + 2.2911*((1 - m_x)/(1 + m_xi))*((m_x + m_xi)/(1 + m_xi)) ))
-                                   *(3 + ((1 - 2 * ca) * atanh(sqrt(ca/(1+ca))))/((1 + c) * sqrt(ca/(1 + ca))) )
-                                   /( pow(1 - pow(m_xi,2.),2.) * pow(1 + ca,2.) );
+                        GPD_DGLAP(i) = (213.32*pow(1 - RT.x.at(i),2.)*(pow(RT.x.at(i),2.) - pow(RT.xi.at(i),2.))
+                                   *sqrt( 1 - 2.9342*sqrt( (1 - RT.x.at(i))/(1 - RT.xi.at(i)) )*sqrt( (RT.x.at(i) - RT.xi.at(i))/(1 - RT.xi.at(i)) ) + 2.2911*((1 - RT.x.at(i))/(1 - RT.xi.at(i)))*((RT.x.at(i) - RT.xi.at(i))/(1 - RT.xi.at(i)))  )
+                                   *sqrt( 1 - 2.9342*sqrt( (1 - RT.x.at(i))/(1 + RT.xi.at(i)) )*sqrt( (RT.x.at(i) + RT.xi.at(i))/(1 + RT.xi.at(i)) ) + 2.2911*((1 - RT.x.at(i))/(1 + RT.xi.at(i)))*((RT.x.at(i) + RT.xi.at(i))/(1 + RT.xi.at(i))) ))
+                                   *(3 + ((1 - 2 * ca) * atanh(sqrt(ca/(1+ca))))/((1 + ca) * sqrt(ca/(1 + ca))) )
+                                   /( 4*pow(1 - pow(RT.xi.at(i),2.),2.) * pow(1 + ca,2.) );
                     }
                 
-                    DD = RT.computeDD( GPD_DGLAP );
+                    DDt = RT.computeDD( GPD_DGLAP );
+
+                    DD.insert({m_t, DDt});
                 }
 
                 // Compute "gauged" GPD.
-                uVal = RT.computeGPD( DD, m_x, m_xi );
-                uValM = RT.computeGPD( DD, -m_x, m_xi );
+                uVal = RT.computeGPD( DD.at(m_t), m_x, m_xi );
+                uValM = RT.computeGPD( DD.at(m_t), -m_x, m_xi );
 
                 // Compute Dterm contribution.
-                if ( DDt0.isZero() )                                                                        // TODO: Overload computeDterm so that it accepts (DDt0, x, xi) and (x, xi) as arguments. In that way, we can here look for DDt0 and choose the function computeDterm to be called.                                                                     
+
+                search = DD.find(0.);
+
+                if ( search == DD.end() )                                                                        // TODO: Overload computeDterm so that it accepts (DDt0, x, xi) and (x, xi) as arguments. In that way, we can here look for DDt0 and choose the function computeDterm to be called.                                                                     
                 {
                     Eigen::VectorXd GPD_DGLAP(RT.x.size());
                 
@@ -234,10 +262,12 @@ PARTONS::PartonDistribution saturatedModel_Ding::computeH()
                     }
                 
                     DDt0 = RT.computeDD( GPD_DGLAP );
+
+                    DD.insert({0., DDt0});
                 }
             
-                uVal += dt*RT.computeDterm( DDt0, m_x, m_xi );
-                uValM += dt*RT.computeDterm( DDt0, -m_x, m_xi );
+                uVal += dt*RT.computeDterm( DD.at(0.), m_x, m_xi );
+                uValM += dt*RT.computeDterm( DD.at(0.), -m_x, m_xi );
         }
     }
 
