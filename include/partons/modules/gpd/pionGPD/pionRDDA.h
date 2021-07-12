@@ -83,7 +83,7 @@ private:
     std::vector<double> m_gPara;                                     // gluons PDF-parameters {a,b,N_g}
     std::vector<double> m_reggeParaVal ;                                // Regge parameters {alpha',A,B}
     std::vector<double> m_reggeParaSea ;                                // Regge parameters {alpha',A,B}
-    double m_LambdaDterm = 0.53 ;                                    //GeV^2 Dterm Monopole Parameter
+    double m_LambdaDterm2 = 0.53 ;                                    //GeV^2 Dterm Monopole Parameter
 
 
 

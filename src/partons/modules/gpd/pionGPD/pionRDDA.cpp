@@ -82,7 +82,7 @@ pionRDDAModel::pionRDDAModel(const std::string &className) : PARTONS::GPDModule(
     m_reggeParaVal = {0.9,1.15,1.54} ;
     m_reggeParaSea = {0.9,-1.48,1.25} ;
     mRDDA_Para = 2.;
-    m_LambdaDterm = 0.53 ; //GeV^2
+    m_LambdaDterm2 = 0.53 ; //GeV^2
 
 
     //Relate a specific GPD type with the appropriate function
@@ -106,7 +106,7 @@ pionRDDAModel::pionRDDAModel(const pionRDDAModel& other) : PARTONS::GPDModule(ot
     m_reggeParaVal = {0.9,1.15,1.54} ;
     m_reggeParaSea = {0.9,-1.48,1.25} ;
     mRDDA_Para = 2.;
-    m_LambdaDterm = 0.53 ; //GeV^2
+    m_LambdaDterm2 = 0.53 ; //GeV^2
 
     MathIntegratorModule();
     initFunctorsForIntegrations();
@@ -412,7 +412,7 @@ double pionRDDAModel::DtermuValence(double z, double beta)
      throwBetaException(__func__, x);
      }*/
     if (beta > 0.) {
-    	DtermuVal = 0.5 * valencePdfAnsatz(beta)* Profile(beta, beta-z) * 1. / (1. - m_t/m_LambdaDterm)  ;
+    	DtermuVal = 0.5 * valencePdfAnsatz(beta)* Profile(beta, beta-z) * 1. / (1. - m_t/m_LambdaDterm2)  ;
     } else {
     	DtermuVal = 0.;
     }
@@ -498,7 +498,7 @@ double pionRDDAModel::DtermdValence(double z, double mbeta)
      throwBetaException(__func__, x);
      }*/
     if (mbeta < 0.) {
-    	DtermdVal = -0.5 * valencePdfAnsatz(absbeta)* Profile(absbeta, absbeta-z) * 1. / (1. - m_t/m_LambdaDterm)  ;
+    	DtermdVal = -0.5 * valencePdfAnsatz(absbeta)* Profile(absbeta, absbeta-z) * 1. / (1. - m_t/m_LambdaDterm2)  ;
     } else {
     	DtermdVal = 0.;
     }
@@ -605,7 +605,7 @@ double pionRDDAModel::DtermSea(double z, double beta){
      throwBetaException(__func__, x);
      }*/
     if (beta > 0.) {
-    	Dtermsea =  1. / 6. * seaPdfAnsatz(absbeta)* Profile(absbeta, absbeta-z) * 1. / (1. - m_t/m_LambdaDterm)  ;
+    	Dtermsea =  1. / 6. * seaPdfAnsatz(absbeta)* Profile(absbeta, absbeta-z) * 1. / (1. - m_t/m_LambdaDterm2)  ;
     } else {
     	Dtermsea = 0.;
     }
@@ -704,7 +704,7 @@ double pionRDDAModel::DtermGluons(double z, double beta){
      throwBetaException(__func__, x);
      }*/
     if (beta > 0.) {
-    	Dtermgluons =  gluonxPdfAnsatz(absbeta)* Profile(absbeta, absbeta-z)  * 1. / (1. - m_t/m_LambdaDterm)  ;
+    	Dtermgluons =  gluonxPdfAnsatz(absbeta)* Profile(absbeta, absbeta-z)  * 1. / (1. - m_t/m_LambdaDterm2)  ;
     } else {
     	Dtermgluons = 0.;
     }
