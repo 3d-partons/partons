@@ -6,18 +6,23 @@
 #include "../../include/partons/BaseObjectFactory.h"
 #include "../../include/partons/modules/active_flavors_thresholds/ActiveFlavorsThresholdsModule.h"
 #include "../../include/partons/modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
+#include "../../include/partons/modules/convol_coeff_function/DVMP/DVMPConvolCoeffFunctionModule.h"
 #include "../../include/partons/modules/convol_coeff_function/TCS/TCSConvolCoeffFunctionModule.h"
 #include "../../include/partons/modules/evolution/gpd/GPDEvolutionModule.h"
 #include "../../include/partons/modules/gpd/GPDModule.h"
 #include "../../include/partons/modules/gpd_subtraction_constant/GPDSubtractionConstantModule.h"
 #include "../../include/partons/modules/observable/DVCS/DVCSObservable.h"
 #include "../../include/partons/modules/observable/TCS/TCSObservable.h"
+#include "../../include/partons/modules/observable/DVMP/DVMPObservable.h"
 #include "../../include/partons/modules/process/DVCS/DVCSProcessModule.h"
 #include "../../include/partons/modules/process/TCS/TCSProcessModule.h"
+#include "../../include/partons/modules/process/DVMP/DVMPProcessModule.h"
 #include "../../include/partons/modules/running_alpha_strong/RunningAlphaStrongModule.h"
 #include "../../include/partons/modules/scales/DVCS/DVCSScalesModule.h"
+#include "../../include/partons/modules/scales/DVMP/DVMPScalesModule.h"
 #include "../../include/partons/modules/scales/TCS/TCSScalesModule.h"
 #include "../../include/partons/modules/xi_converter/DVCS/DVCSXiConverterModule.h"
+#include "../../include/partons/modules/xi_converter/DVMP/DVMPXiConverterModule.h"
 #include "../../include/partons/modules/xi_converter/TCS/TCSXiConverterModule.h"
 
 namespace PARTONS {
@@ -183,6 +188,17 @@ DVCSConvolCoeffFunctionModule* ModuleObjectFactory::newDVCSConvolCoeffFunctionMo
             className));
 }
 
+DVMPConvolCoeffFunctionModule* ModuleObjectFactory::newDVMPConvolCoeffFunctionModule(
+        unsigned int classId) {
+    return static_cast<DVMPConvolCoeffFunctionModule*>(newModuleObject(classId));
+}
+
+DVMPConvolCoeffFunctionModule* ModuleObjectFactory::newDVMPConvolCoeffFunctionModule(
+        const std::string& className) {
+    return static_cast<DVMPConvolCoeffFunctionModule*>(newModuleObject(
+            className));
+}
+
 TCSConvolCoeffFunctionModule* ModuleObjectFactory::newTCSConvolCoeffFunctionModule(
         unsigned int classId) {
     return static_cast<TCSConvolCoeffFunctionModule*>(newModuleObject(classId));
@@ -211,6 +227,16 @@ TCSProcessModule* ModuleObjectFactory::newTCSProcessModule(
 TCSProcessModule* ModuleObjectFactory::newTCSProcessModule(
         const std::string& className) {
     return static_cast<TCSProcessModule*>(newModuleObject(className));
+}
+
+DVMPProcessModule* ModuleObjectFactory::newDVMPProcessModule(
+        unsigned int classId) {
+    return static_cast<DVMPProcessModule*>(newModuleObject(classId));
+}
+
+DVMPProcessModule* ModuleObjectFactory::newDVMPProcessModule(
+        const std::string& className) {
+    return static_cast<DVMPProcessModule*>(newModuleObject(className));
 }
 
 RunningAlphaStrongModule* ModuleObjectFactory::newRunningAlphaStrongModule(
@@ -253,6 +279,16 @@ TCSScalesModule* ModuleObjectFactory::newTCSScalesModule(
     return static_cast<TCSScalesModule*>(newModuleObject(className));
 }
 
+DVMPScalesModule* ModuleObjectFactory::newDVMPScalesModule(
+        unsigned int classId) {
+    return static_cast<DVMPScalesModule*>(newModuleObject(classId));
+}
+
+DVMPScalesModule* ModuleObjectFactory::newDVMPScalesModule(
+        const std::string &className) {
+    return static_cast<DVMPScalesModule*>(newModuleObject(className));
+}
+
 DVCSXiConverterModule* ModuleObjectFactory::newDVCSXiConverterModule(
         unsigned int classId) {
     return static_cast<DVCSXiConverterModule*>(newModuleObject(classId));
@@ -273,6 +309,16 @@ TCSXiConverterModule* ModuleObjectFactory::newTCSXiConverterModule(
     return static_cast<TCSXiConverterModule*>(newModuleObject(className));
 }
 
+DVMPXiConverterModule* ModuleObjectFactory::newDVMPXiConverterModule(
+        unsigned int classId) {
+    return static_cast<DVMPXiConverterModule*>(newModuleObject(classId));
+}
+
+DVMPXiConverterModule* ModuleObjectFactory::newDVMPXiConverterModule(
+        const std::string &className) {
+    return static_cast<DVMPXiConverterModule*>(newModuleObject(className));
+}
+
 DVCSObservable* ModuleObjectFactory::newDVCSObservable(unsigned int classId) {
     return static_cast<DVCSObservable*>(newModuleObject(classId));
 }
@@ -289,6 +335,15 @@ TCSObservable* ModuleObjectFactory::newTCSObservable(unsigned int classId) {
 TCSObservable* ModuleObjectFactory::newTCSObservable(
         const std::string& className) {
     return static_cast<TCSObservable*>(newModuleObject(className));
+}
+
+DVMPObservable* ModuleObjectFactory::newDVMPObservable(unsigned int classId) {
+    return static_cast<DVMPObservable*>(newModuleObject(classId));
+}
+
+DVMPObservable* ModuleObjectFactory::newDVMPObservable(
+        const std::string& className) {
+    return static_cast<DVMPObservable*>(newModuleObject(className));
 }
 
 } /* namespace PARTONS */

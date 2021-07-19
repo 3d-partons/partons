@@ -26,9 +26,9 @@ const std::string DVCSCrossSectionTotal::DVCS_CROSSSECTION_TOTAL_RANGEQ2 =
 const std::string DVCSCrossSectionTotal::DVCS_CROSSSECTION_TOTAL_RANGEY =
         "DVCSCrossSectionTotal_rangeY";
 const std::string DVCSCrossSectionTotal::DVCS_CROSSSECTION_TOTAL_N0 =
-        "DVCSCrossSectionTotal_rangeN0";
+        "DVCSCrossSectionTotal_N0";
 const std::string DVCSCrossSectionTotal::DVCS_CROSSSECTION_TOTAL_N1 =
-        "DVCSCrossSectionTotal_rangeN1";
+        "DVCSCrossSectionTotal_N1";
 
 const unsigned int DVCSCrossSectionTotal::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(

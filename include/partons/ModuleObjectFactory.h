@@ -19,12 +19,16 @@ class ActiveFlavorsThresholdsModule;
 class BaseObjectFactory;
 class DVCSScalesModule;
 class TCSScalesModule;
+class DVMPScalesModule;
 class DVCSConvolCoeffFunctionModule;
+class DVMPConvolCoeffFunctionModule;
 class TCSConvolCoeffFunctionModule;
 class TCSObservable;
 class TCSProcessModule;
 class DVCSObservable;
 class DVCSProcessModule;
+class DVMPObservable;
+class DVMPProcessModule;
 class GPDEvolutionModule;
 class GPDModule;
 class GPDSubtractionConstantModule;
@@ -32,6 +36,7 @@ class ModuleObject;
 class RunningAlphaStrongModule;
 class DVCSXiConverterModule;
 class TCSXiConverterModule;
+class DVMPXiConverterModule;
 } /* namespace PARTONS */
 
 namespace PARTONS {
@@ -132,6 +137,21 @@ public:
             const std::string &className);
 
     /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a DVMPConvolCoeffFunctionModule.
+     * @param classId Unique identifier of last child class.
+     * @return DVMPConvolCoeffFunctionModule pointer.
+     */
+    DVMPConvolCoeffFunctionModule* newDVMPConvolCoeffFunctionModule(
+            unsigned int classId);
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a DVMPConvolCoeffFunctionModule.
+     * @param className Name of last child class.
+     * @return DVMPConvolCoeffFunctionModule pointer.
+     */
+    DVMPConvolCoeffFunctionModule* newDVMPConvolCoeffFunctionModule(
+            const std::string &className);
+
+    /**
      * Specialization of ModuleObjectFactory::newModuleObject into a TCSConvolCoeffFunctionModule.
      * @param classId Unique identifier of last child class.
      * @return TCSConvolCoeffFunctionModule pointer.
@@ -171,6 +191,19 @@ public:
      * @return TCSProcessModule pointer.
      */
     TCSProcessModule* newTCSProcessModule(const std::string & className);
+
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a DVMPProcessModule.
+     * @param classId Unique identifier of last child class.
+     * @return DVMPProcessModule pointer.
+     */
+    DVMPProcessModule* newDVMPProcessModule(unsigned int classId);
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a DVMPProcessModule.
+     * @param className Name of last child class.
+     * @return DVMPProcessModule pointer.
+     */
+    DVMPProcessModule* newDVMPProcessModule(const std::string & className);
 
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a RunningAlphaStrongModule.
@@ -228,6 +261,19 @@ public:
     TCSScalesModule* newTCSScalesModule(const std::string &className);
 
     /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a DVMPScalesModule.
+     * @param classId Unique identifier of last child class.
+     * @return DVMPScalesModule pointer.
+     */
+    DVMPScalesModule* newDVMPScalesModule(unsigned int classId);
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a DVMPScalesModule.
+     * @param className Name of last child class.
+     * @return DVMPScalesModule pointer.
+     */
+    DVMPScalesModule* newDVMPScalesModule(const std::string &className);
+
+    /**
      * Specialization of ModuleObjectFactory::newModuleObject into a DVCSXiConverterModule.
      * @param classId Unique identifier of last child class.
      * @return DVCSXiConverterModule pointer.
@@ -238,20 +284,35 @@ public:
      * @param className Name of last child class.
      * @return DVCSXiConverterModule pointer.
      */
-    DVCSXiConverterModule* newDVCSXiConverterModule(const std::string &className);
+    DVCSXiConverterModule* newDVCSXiConverterModule(
+            const std::string &className);
 
     /**
-      * Specialization of ModuleObjectFactory::newModuleObject into a TCSXiConverterModule.
-      * @param classId Unique identifier of last child class.
-      * @return TCSXiConverterModule pointer.
-      */
-     TCSXiConverterModule* newTCSXiConverterModule(unsigned int classId);
-     /**
-      * Specialization of ModuleObjectFactory::newModuleObject into a TCSXiConverterModule.
-      * @param className Name of last child class.
-      * @return TCSXiConverterModule pointer.
-      */
-     TCSXiConverterModule* newTCSXiConverterModule(const std::string &className);
+     * Specialization of ModuleObjectFactory::newModuleObject into a TCSXiConverterModule.
+     * @param classId Unique identifier of last child class.
+     * @return TCSXiConverterModule pointer.
+     */
+    TCSXiConverterModule* newTCSXiConverterModule(unsigned int classId);
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a TCSXiConverterModule.
+     * @param className Name of last child class.
+     * @return TCSXiConverterModule pointer.
+     */
+    TCSXiConverterModule* newTCSXiConverterModule(const std::string &className);
+
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a DVMPXiConverterModule.
+     * @param classId Unique identifier of last child class.
+     * @return DVMPXiConverterModule pointer.
+     */
+    DVMPXiConverterModule* newDVMPXiConverterModule(unsigned int classId);
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a DVMPXiConverterModule.
+     * @param className Name of last child class.
+     * @return DVMPXiConverterModule pointer.
+     */
+    DVMPXiConverterModule* newDVMPXiConverterModule(
+            const std::string &className);
 
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a Observable.
@@ -279,6 +340,20 @@ public:
      * @return Observable pointer.
      */
     TCSObservable* newTCSObservable(const std::string & className);
+
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a Observable.
+     * @param classId Unique identifier of last child class.
+     * @return Observable pointer.
+     */
+    DVMPObservable* newDVMPObservable(unsigned int classId);
+
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a Observable.
+     * @param className Name of last child class.
+     * @return Observable pointer.
+     */
+    DVMPObservable* newDVMPObservable(const std::string & className);
 
     /**
      * Method to update a pointer. Used to keep track of the modules and remove them when they become orphans (i.e. no pointer points to them).

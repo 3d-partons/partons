@@ -119,6 +119,110 @@ public:
      */
     virtual PartonDistribution computeEt();
 
+    /**
+     * This method can be implemented in the child class if the GPD HTrans is available to compute.
+     *
+     * @return PartonDistribution object.
+     * Contains results for each flavor of partons.
+     */
+    virtual PartonDistribution computeHTrans();
+
+    /**
+     * This method can be implemented in the child class if the GPD ETrans is available to compute.
+     *
+     * @return PartonDistribution object.
+     * Contains results for each flavor of partons.
+     */
+    virtual PartonDistribution computeETrans();
+
+    /**
+     * This method can be implemented in the child class if the GPD HtTrans is available to compute.
+     *
+     * @return PartonDistribution object.
+     * Contains results for each flavor of partons.
+     */
+    virtual PartonDistribution computeHtTrans();
+
+    /**
+     * This method can be implemented in the child class if the GPD EtTrans is available to compute.
+     *
+     * @return PartonDistribution object.
+     * Contains results for each flavor of partons.
+     */
+    virtual PartonDistribution computeEtTrans();
+
+    /**
+     * This method can be implemented in the child class if the GPD H3p is available to compute.
+     *
+     * @return PartonDistribution object.
+     * Contains results for each flavor of partons.
+     */
+    virtual PartonDistribution computeH3p();
+
+    /**
+     * This method can be implemented in the child class if the GPD E3p is available to compute.
+     *
+     * @return PartonDistribution object.
+     * Contains results for each flavor of partons.
+     */
+    virtual PartonDistribution computeE3p();
+
+    /**
+     * This method can be implemented in the child class if the GPD Ht3p is available to compute.
+     *
+     * @return PartonDistribution object.
+     * Contains results for each flavor of partons.
+     */
+    virtual PartonDistribution computeHt3p();
+
+    /**
+     * This method can be implemented in the child class if the GPD Et3p is available to compute.
+     *
+     * @return PartonDistribution object.
+     * Contains results for each flavor of partons.
+     */
+    virtual PartonDistribution computeEt3p();
+
+    /**
+     * This method can be implemented in the child class if the GPD H3m is available to compute.
+     *
+     * @return PartonDistribution object.
+     * Contains results for each flavor of partons.
+     */
+    virtual PartonDistribution computeH3m();
+
+    /**
+     * This method can be implemented in the child class if the GPD E3m is available to compute.
+     *
+     * @return PartonDistribution object.
+     * Contains results for each flavor of partons.
+     */
+    virtual PartonDistribution computeE3m();
+
+    /**
+     * This method can be implemented in the child class if the GPD Ht3m is available to compute.
+     *
+     * @return PartonDistribution object.
+     * Contains results for each flavor of partons.
+     */
+    virtual PartonDistribution computeHt3m();
+
+    /**
+     * This method can be implemented in the child class if the GPD Et3m is available to compute.
+     *
+     * @return PartonDistribution object.
+     * Contains results for each flavor of partons.
+     */
+    virtual PartonDistribution computeEt3m();
+
+    /**
+     * This method can be implemented in the child class if the GPD EbarTrans is available to compute.
+     *
+     * @return PartonDistribution object.
+     * Contains results for each flavor of partons.
+     */
+    virtual PartonDistribution computeEbarTrans();
+
     // ##### GETTERS & SETTERS #####
 
     /**

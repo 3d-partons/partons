@@ -35,8 +35,6 @@ DVCSConvolCoeffFunctionModule::DVCSConvolCoeffFunctionModule(
         ConvolCoeffFunctionModule(other), m_Q2(other.m_Q2), m_qcdOrderType(
                 other.m_qcdOrderType) {
 
-    m_Q2 = other.m_Q2;
-
     m_listOfCFFComputeFunctionAvailable =
             other.m_listOfCFFComputeFunctionAvailable;
 }
