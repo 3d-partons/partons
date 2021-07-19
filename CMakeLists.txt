@@ -7,7 +7,11 @@ cmake_minimum_required(VERSION 3.2)
 project(PARTONS CXX)
 
 # define c++ standard and issue all the warning demanded by this standard
-add_definitions(-std=c++11 -pedantic -Wno-vla-extension)
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+   add_definitions(-std=c++11 -pedantic -Wno-vla-extension)
+else()
+   add_definitions(-std=c++11 -pedantic -Wno-vla-extension -fext-numeric-literals)
+endif()
 set(CMAKE_CXX_STANDARD 11)
 
 if (NOT DEFINED CMAKE_MACOSX_RPATH)
@@ -48,24 +52,49 @@ add_definitions(${QT_DEFINITIONS})
 # find libraries: additional modules
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
-# find libraries: SFML
-find_package(SFML COMPONENTS system REQUIRED)
-
-# find libraries: CLN
-find_package(CLN REQUIRED)
-
 # find libraries: ElementaryUtils
 find_package(ElementaryUtils REQUIRED)
 
 # find libraries: NumA++
 find_package(NumA++ REQUIRED)
 
+# find libraries: SFML
+find_package(SFML COMPONENTS system REQUIRED)
+
+# find libraries: CLN
+find_package(CLN REQUIRED)
+
 # find libraries: GSL
 find_package(GSL REQUIRED)
 
+# find libraries: Apfel++
+find_package(Apfel++ REQUIRED)
+
+# find libraries: LHAPDF
+find_package(LHAPDF REQUIRED)
+
 # directories containing headers 
-include_directories(${QT_INCLUDE_DIRS} ${SFML_INCLUDE_DIR} ${CLN_INCLUDE_DIR} ${ElementaryUtils_INCLUDE_DIR} ${NumA++_INCLUDE_DIR})
+include_directories(${QT_INCLUDE_DIRS} ${SFML_INCLUDE_DIR} ${CLN_INCLUDE_DIR} ${ElementaryUtils_INCLUDE_DIR} ${NumA++_INCLUDE_DIR} ${Apfel++_INCLUDE_DIR} ${LHAPDF_INCLUDE_DIR})
 include_directories(include)
+
+# ENVIRONMENT VARIABLES ========================================================================
+
+execute_process(COMMAND bash -c "cd ../../elementary-utils/; git branch --show-current" OUTPUT_VARIABLE ELEMUTILS_BRANCH)
+execute_process(COMMAND bash -c "cd ../../elementary-utils/; git rev-parse HEAD;"             OUTPUT_VARIABLE ELEMUTILS_REVISION)
+string(REGEX REPLACE "\n$" "" ELEMUTILS_BRANCH "${ELEMUTILS_BRANCH}")
+string(REGEX REPLACE "\n$" "" ELEMUTILS_REVISION "${ELEMUTILS_REVISION}")
+
+execute_process(COMMAND bash -c "cd ../../numa/; git branch --show-current" OUTPUT_VARIABLE NUMA_BRANCH)
+execute_process(COMMAND bash -c "cd ../../numa/; git rev-parse HEAD;"             OUTPUT_VARIABLE NUMA_REVISION)
+string(REGEX REPLACE "\n$" "" NUMA_BRANCH "${NUMA_BRANCH}")
+string(REGEX REPLACE "\n$" "" NUMA_REVISION "${NUMA_REVISION}")
+
+execute_process(COMMAND bash -c "git branch --show-current" OUTPUT_VARIABLE PARTONS_BRANCH)
+execute_process(COMMAND bash -c "git rev-parse HEAD"             OUTPUT_VARIABLE PARTONS_REVISION)
+string(REGEX REPLACE "\n$" "" PARTONS_BRANCH "${PARTONS_BRANCH}")
+string(REGEX REPLACE "\n$" "" PARTONS_REVISION "${PARTONS_REVISION}")
+
+configure_file("${CMAKE_SOURCE_DIR}/data/config/environment_configuration.dat.in" "${CMAKE_SOURCE_DIR}/data/config/environment_configuration.dat")
 
 # FINALIZE ==================================================================================
 
@@ -107,6 +136,10 @@ target_link_libraries(
 		${NumA++_LIBRARIES}
 
 		${GSL_LIBRARIES}
+
+		${Apfel++_LIBRARIES}
+
+		${LHAPDF_LIBRARIES}
 
 		Qt5::Core
 

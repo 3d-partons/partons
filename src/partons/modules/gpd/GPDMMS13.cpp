@@ -2,7 +2,6 @@
 
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/parameters/GenericType.h>
-#include <ElementaryUtils/PropertiesManager.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/functor/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
@@ -10,13 +9,16 @@
 #include <cmath>
 #include <utility>
 
+#include "../../../../include/partons/beans/collinear_distribution/CollinearDistributionKinematic.h"
+#include "../../../../include/partons/beans/collinear_distribution/CollinearDistributionType.h"
 #include "../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
 #include "../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../include/partons/utils/MSTWPDF.h"
-#include "../../../../include/partons/utils/PartonContent.h"
+#include "../../../../include/partons/modules/collinear_distribution/CollinearDistributionLHAPDF.h"
+#include "../../../../include/partons/ModuleObjectFactory.h"
+#include "../../../../include/partons/Partons.h"
 
 namespace PARTONS {
 
@@ -29,7 +31,7 @@ const std::string GPDMMS13::PARAMETER_NAME_MMS13MODEL_NE = "MMS13Model_NE";
 const std::string GPDMMS13::PARAMETER_NAME_MMS13MODEL_C = "MMS13Model_C";
 
 GPDMMS13::GPDMMS13(const std::string &className) :
-        GPDModule(className), MathIntegratorModule(), m_pForward(0) {
+        GPDModule(className), MathIntegratorModule() {
 
     m_MuF2_ref = 4.;
 
@@ -53,21 +55,10 @@ GPDMMS13::GPDMMS13(const GPDMMS13& other) :
     m_NHpE = other.m_NHpE;
     m_C = other.m_C;
 
-    //TODO make a clone instance ; create MSTWPDF as a module.
-    m_pForward = new MSTWPDF();
-    m_pForward->init(
-            ElemUtils::PropertiesManager::getInstance()->getString(
-                    "grid.directory") + "mstw2008nlo.00.dat");
-
     initFunctorsForIntegrations();
 }
 
 GPDMMS13::~GPDMMS13() {
-
-    if (m_pForward) {
-        delete m_pForward;
-        m_pForward = 0;
-    }
 
     if (m_pint_IntHpEDDval) {
         delete m_pint_IntHpEDDval;
@@ -108,9 +99,28 @@ void GPDMMS13::initFunctorsForIntegrations() {
 GPDMMS13* GPDMMS13::clone() const {
     return new GPDMMS13(*this);
 }
-//TODO clone MSTWPDF instead of hardcoded new
+
 void GPDMMS13::resolveObjectDependencies() {
+
+    //set integrator type
     setIntegrator(NumA::IntegratorType1D::DEXP);
+
+    //set pdf module
+    if (m_pCollinearDistributionModule == 0) {
+
+        CollinearDistributionModule* pCollinearDistributionModule =
+                PARTONS::Partons::getInstance()->getModuleObjectFactory()->newCollinearDistributionModule(
+                        PARTONS::CollinearDistributionLHAPDF::classId);
+
+        static_cast<CollinearDistributionLHAPDF*>(pCollinearDistributionModule)->setSetName(
+                "MSTW2008nlo68cl");
+        static_cast<CollinearDistributionLHAPDF*>(pCollinearDistributionModule)->setIndexId(
+                0);
+        static_cast<CollinearDistributionLHAPDF*>(pCollinearDistributionModule)->setType(
+                CollinearDistributionType::UnpolPDF);
+
+        setPDFModule(pCollinearDistributionModule);
+    }
 }
 
 void GPDMMS13::configure(const ElemUtils::Parameters &parameters) {
@@ -136,7 +146,15 @@ std::string GPDMMS13::toString() const {
 }
 
 void GPDMMS13::isModuleWellConfigured() {
+
+    //run for mother
     GPDModule::isModuleWellConfigured();
+
+    //check if PDF module set
+    if (m_pCollinearDistributionModule == 0) {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                "CollinearDistributionModule is NULL");
+    }
 }
 
 void GPDMMS13::initModule() {
@@ -263,8 +281,10 @@ double GPDMMS13::forwardHval(double beta, QuarkFlavor::Type flavor) const {
     //parameters
     double alpha_prim;
 
-    //update pdf
-    m_pForward->update(beta, sqrt(m_MuF2));
+    //get pdf
+    PartonDistribution pdf = m_pCollinearDistributionModule->compute(
+            CollinearDistributionKinematic(beta, m_MuF2, m_MuR2),
+            CollinearDistributionType::UnpolPDF);
 
     //check flavor
     switch (flavor) {
@@ -273,8 +293,10 @@ double GPDMMS13::forwardHval(double beta, QuarkFlavor::Type flavor) const {
 
         alpha_prim = 0.9;
 
-        return pow(beta, -1 * alpha_prim * m_t)
-                * m_pForward->getPartonContent().getUpv() / beta;
+        double uVal =
+                pdf.getQuarkDistribution(QuarkFlavor::UP).getQuarkDistributionMinus();
+
+        return pow(beta, -1 * alpha_prim * m_t) * uVal / beta;
     }
         break;
 
@@ -282,8 +304,11 @@ double GPDMMS13::forwardHval(double beta, QuarkFlavor::Type flavor) const {
 
         alpha_prim = 0.9;
 
-        return pow(beta, -1 * alpha_prim * m_t)
-                * m_pForward->getPartonContent().getDnv() / beta;
+        double dVal =
+                pdf.getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistributionMinus();
+
+        return pow(beta, -1 * alpha_prim * m_t) * dVal / beta;
+
     }
         break;
 

@@ -42,7 +42,7 @@ DVCSConvolCoeffFunctionKinematic DVCSConvolCoeffFunctionService::newKinematicFro
 
     if (ElemUtils::StringUtils::equals(
             task.getKinematicsData().getModuleClassName(),
-            DVCSConvolCoeffFunctionKinematic::DVCS_CONVOL_COEFF_FUNCTION_KNEMATIC_CLASS_NAME)) {
+            DVCSConvolCoeffFunctionKinematic::DVCS_CONVOL_COEFF_FUNCTION_KINEMATIC_CLASS_NAME)) {
         kinematic.configure(task.getKinematicsData().getParameters());
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
@@ -60,7 +60,7 @@ List<DVCSConvolCoeffFunctionKinematic> DVCSConvolCoeffFunctionService::newListOf
 
     if (ElemUtils::StringUtils::equals(
             task.getKinematicsData().getModuleClassName(),
-            DVCSConvolCoeffFunctionKinematic::DVCS_CONVOL_COEFF_FUNCTION_KNEMATIC_CLASS_NAME)) {
+            DVCSConvolCoeffFunctionKinematic::DVCS_CONVOL_COEFF_FUNCTION_KINEMATIC_CLASS_NAME)) {
 
         if (task.getKinematicsData().getParameters().isAvailable("file")) {
             listOfKinematic =

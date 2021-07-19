@@ -14,11 +14,12 @@
 #include "../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../include/partons/utils/MSTWPDF.h"
 #include "../../../../include/partons/utils/PartonContent.h"
 
 namespace PARTONS {
 
+const std::string GPDVGG99::PARAM_NAME_SET_NAME = "setName";
+const std::string GPDVGG99::PARAM_NAME_MEMBER = "member";
 
 const unsigned int GPDVGG99::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
@@ -27,7 +28,8 @@ const unsigned int GPDVGG99::classId =
 GPDVGG99::GPDVGG99(const std::string &className) :
         GPDModule(className), kappa_u(1.6596), kappa_d(-2.0352), b_profile_val(
                 1.), b_profile_sea(1.), alphap_val(1.105), alphap_sea(1.105), eta_e_largex_u_s(
-                1.713), eta_e_largex_d_s(0.566), g_AXIAL(1.267), m_Forward(0), MathIntegratorModule() {
+                1.713), eta_e_largex_d_s(0.566), g_AXIAL(1.267), m_Forward(0), m_setName("UNDEFINED"),
+	        m_member(0), MathIntegratorModule() {
 
     m_MuF2_ref = 4.;
 
@@ -56,11 +58,9 @@ GPDVGG99::GPDVGG99(const GPDVGG99& other) :
                 0.566), g_AXIAL(1.267), GPDModule(other), MathIntegratorModule(
                 other) {
 
-    //TODO make a clone instance ; create MSTWPDF as a module.
-    m_Forward = new MSTWPDF();
-    m_Forward->init(
-            ElemUtils::PropertiesManager::getInstance()->getString(
-                    "grid.directory") + "mstw2008nlo.00.dat");
+    m_setName = other.m_setName;
+    m_member = other.m_member;
+    m_Forward = other.m_Forward;
 
     gpd_s5 = other.gpd_s5;
     flavour_s5 = other.flavour_s5;
@@ -152,6 +152,22 @@ void GPDVGG99::configure(const ElemUtils::Parameters &parameters) {
 
     GPDModule::configure(parameters);
     MathIntegratorModule::configureIntegrator(parameters);
+
+    // LHAPDF in silent mode
+    LHAPDF::setVerbosity(0);
+
+    //check and set
+    if (parameters.isAvailable(GPDVGG99::PARAM_NAME_SET_NAME)) {
+        setSetName(parameters.getLastAvailable().getString());
+	info(__func__, ElemUtils::Formatter() << GPDVGG99::PARAM_NAME_SET_NAME
+	     << " configured with value = " << getSetName());
+    }
+
+    if (parameters.isAvailable(GPDVGG99::PARAM_NAME_MEMBER)) {
+        setMember(parameters.getLastAvailable().toUInt());
+	info(__func__, ElemUtils::Formatter() << GPDVGG99::PARAM_NAME_MEMBER
+	     << " configured with value = " << getMember());
+    }
 }
 
 std::string GPDVGG99::toString() const {
@@ -160,10 +176,24 @@ std::string GPDVGG99::toString() const {
 
 void GPDVGG99::isModuleWellConfigured() {
     GPDModule::isModuleWellConfigured();
+
+    //check that the set name in no UNDEFINED
+    if (m_setName == "UNDEFINED") {
+        throw ElemUtils::CustomException(getClassName(), __func__, ElemUtils::Formatter() << "The set name is undefined");
+    }
+
+    //check that the member index is non-negative
+    if (m_member < 0) {
+        throw ElemUtils::CustomException(getClassName(), __func__, ElemUtils::Formatter() << "The member index is negative");
+    }
 }
 
 void GPDVGG99::initModule() {
     GPDModule::initModule();
+
+    if (m_Forward == nullptr) {
+        m_Forward = LHAPDF::mkPDF(m_setName, m_member);
+    }
 }
 
 PartonDistribution GPDVGG99::computeH() {
@@ -518,9 +548,6 @@ double GPDVGG99::symm_double_distr_reggeH(double beta, double alpha) {
                         << beta << ", argument 0 or negative");
     }
 
-    //update and get pdf
-    m_Forward->update(beta, sqrt(m_MuF2));
-
     double pdf = -1.;
     double b_profile = -1.;
     double funcbetat = -1.;
@@ -529,7 +556,7 @@ double GPDVGG99::symm_double_distr_reggeH(double beta, double alpha) {
 
     case UP_VAL: {
 
-        pdf = m_Forward->getPartonContent().getUpv() / beta;
+        pdf = ( m_Forward->xfxQ2(2, beta, m_MuF2) - m_Forward->xfxQ2(-2, beta, m_MuF2) ) / beta;
 //        pdf = test_pdf_up_val(beta);
         b_profile = b_profile_val;
         funcbetat = pow(1. / fabs(beta), (1. - beta) * alphap_val * m_t);
@@ -538,7 +565,7 @@ double GPDVGG99::symm_double_distr_reggeH(double beta, double alpha) {
 
     case DOWN_VAL: {
 
-        pdf = m_Forward->getPartonContent().getDnv() / beta;
+        pdf = ( m_Forward->xfxQ2(1, beta, m_MuF2) - m_Forward->xfxQ2(-1, beta, m_MuF2) ) / beta;
 //        pdf = test_pdf_down_val(beta);
         b_profile = b_profile_val;
         funcbetat = pow(1. / fabs(beta), (1. - beta) * alphap_val * m_t);
@@ -547,7 +574,7 @@ double GPDVGG99::symm_double_distr_reggeH(double beta, double alpha) {
 
     case UP_SEA: {
 
-        pdf = m_Forward->getPartonContent().getUsea() / beta;
+        pdf = m_Forward->xfxQ2(-2, beta, m_MuF2) / beta;
 //        pdf = test_pdf_up_bar(beta);
         b_profile = b_profile_sea;
         funcbetat = pow(1. / fabs(beta), (1. - beta) * alphap_sea * m_t);
@@ -556,7 +583,7 @@ double GPDVGG99::symm_double_distr_reggeH(double beta, double alpha) {
 
     case DOWN_SEA: {
 
-        pdf = m_Forward->getPartonContent().getDsea() / beta;
+        pdf = m_Forward->xfxQ2(-1, beta, m_MuF2) / beta;
 //        pdf = test_pdf_down_bar(beta);
         b_profile = b_profile_sea;
         funcbetat = pow(1. / fabs(beta), (1. - beta) * alphap_sea * m_t);
@@ -587,9 +614,6 @@ double GPDVGG99::symm_double_distr_reggeE(double beta, double alpha) {
                         << beta << ", argument 0 or negative");
     }
 
-    //update and get pdf
-    m_Forward->update(beta, sqrt(m_MuF2));
-
     double pdf = -1.;
     double b_profile = -1.;
     double funcbetat = -1.;
@@ -598,7 +622,7 @@ double GPDVGG99::symm_double_distr_reggeE(double beta, double alpha) {
 
     case UP_VAL: {
 
-        pdf = m_Forward->getPartonContent().getUpv() / beta;
+        pdf = ( m_Forward->xfxQ2(2, beta, m_MuF2) - m_Forward->xfxQ2(-2, beta, m_MuF2) ) / beta;
 //        pdf = test_pdf_up_val(beta);
         b_profile = b_profile_val;
         funcbetat = pow(1. - beta, eta_e_largex_u_s)
@@ -608,7 +632,7 @@ double GPDVGG99::symm_double_distr_reggeE(double beta, double alpha) {
 
     case DOWN_VAL: {
 
-        pdf = m_Forward->getPartonContent().getDnv() / beta;
+        pdf = ( m_Forward->xfxQ2(1, beta, m_MuF2) - m_Forward->xfxQ2(-1, beta, m_MuF2) ) / beta;
 //        pdf = test_pdf_down_val(beta);
         b_profile = b_profile_val;
         funcbetat = pow(1. - beta, eta_e_largex_d_s)
@@ -676,9 +700,6 @@ double GPDVGG99::int_mom2_up_valence_e(double beta, std::vector<double> par) {
                         << ", argument 0 or negative");
     }
 
-    //update and get pdf
-    m_Forward->update(beta, sqrt(m_MuF2));
-
     double pdf = -1.;
     double eta_e_largex_s = -1.;
 
@@ -686,7 +707,7 @@ double GPDVGG99::int_mom2_up_valence_e(double beta, std::vector<double> par) {
 
     case UP_VAL: {
 
-        pdf = m_Forward->getPartonContent().getUpv() / beta;
+        pdf = ( m_Forward->xfxQ2(2, beta, m_MuF2) - m_Forward->xfxQ2(-2, beta, m_MuF2) ) / beta;
 //        pdf = test_pdf_up_val(beta);
         eta_e_largex_s = eta_e_largex_u_s;
     }
@@ -694,7 +715,7 @@ double GPDVGG99::int_mom2_up_valence_e(double beta, std::vector<double> par) {
 
     case DOWN_VAL: {
 
-        pdf = m_Forward->getPartonContent().getDnv() / beta;
+        pdf = ( m_Forward->xfxQ2(1, beta, m_MuF2) - m_Forward->xfxQ2(-1, beta, m_MuF2) ) / beta;
 //        pdf = test_pdf_down_val(beta);
         eta_e_largex_s = eta_e_largex_d_s;
 
@@ -997,5 +1018,20 @@ double GPDVGG99::form_factor_G_P(double t) {
     return g_AXIAL * pow(2. * Constant::PROTON_MASS, 2) / (-t + pow(M_pion, 2));
 }
 
+void GPDVGG99::setSetName(const std::string &setname) {
+    m_setName = setname;
+}
+
+void GPDVGG99::setMember(const int &member) {
+    m_member = member;
+}
+
+std::string GPDVGG99::getSetName() const {
+    return m_setName;
+}
+
+int GPDVGG99::getMember() const {
+    return m_member;
+}
 
 } /* namespace PARTONS */

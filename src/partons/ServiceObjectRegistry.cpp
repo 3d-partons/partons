@@ -10,6 +10,7 @@
 #include "../../include/partons/services/DVMPConvolCoeffFunctionService.h"
 #include "../../include/partons/services/DVMPObservableService.h"
 #include "../../include/partons/services/GPDService.h"
+#include "../../include/partons/services/CollinearDistributionService.h"
 #include "../../include/partons/services/hash_sum/CryptographicHashService.h"
 #include "../../include/partons/services/TCSConvolCoeffFunctionService.h"
 #include "../../include/partons/services/TCSObservableService.h"
@@ -50,6 +51,10 @@ void ServiceObjectRegistry::checkBaseObjectRegistryNullPointer() const {
 
 GPDService* ServiceObjectRegistry::getGPDService() const {
     return static_cast<GPDService*>(get(GPDService::classId));
+}
+
+CollinearDistributionService* ServiceObjectRegistry::getCollinearDistributionService() const {
+    return static_cast<CollinearDistributionService*>(get(CollinearDistributionService::classId));
 }
 
 DVCSConvolCoeffFunctionService* ServiceObjectRegistry::getDVCSConvolCoeffFunctionService() const {

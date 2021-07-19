@@ -67,8 +67,12 @@ public:
      * @param Mu2Max Factorization scale squared maximum value.
      * @return If lowerBound > upperBound a single interval with the number of active flavors corresponding to lowerBound is returned. Otherwise, a vector containing intervals for the requested range of factorization scale.
      */
-    std::vector<ActiveFlavorsThresholds> getNfIntervals(double Mu2Min,
-            double Mu2Max) const;
+    std::vector<ActiveFlavorsThresholds> getNfIntervals(double Mu2Min, double Mu2Max) const;
+
+    /**
+     * Get intervals for the entire range of the factorization scale squared.
+     */
+    std::vector<ActiveFlavorsThresholds> getNfIntervals() const { return m_nfFunctionOfMu2; }
 
 protected:
 
@@ -87,8 +91,7 @@ protected:
      * @param lowerBound Lower bound of the new interval.
      * @param upperBound Upper bound of the new interval.
      */
-    void addNfInterval(unsigned short nfValue, double lowerBound,
-            double upperBound);
+    void addNfInterval(unsigned short nfValue, double lowerBound, double upperBound);
 
     /**
      * Reset vector containing defined integrals.

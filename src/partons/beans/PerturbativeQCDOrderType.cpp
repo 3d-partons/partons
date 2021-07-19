@@ -28,6 +28,9 @@ PerturbativeQCDOrderType::PerturbativeQCDOrderType(
             "NLO")) {
         m_type = PerturbativeQCDOrderType::NLO;
     } else if (ElemUtils::StringUtils::equals(perturbativeQCDOrderTypeString,
+            "NNLO")) {
+        m_type = PerturbativeQCDOrderType::NNLO;
+    } else if (ElemUtils::StringUtils::equals(perturbativeQCDOrderTypeString,
             "LL")) {
         m_type = PerturbativeQCDOrderType::LL;
     } else if (ElemUtils::StringUtils::equals(perturbativeQCDOrderTypeString,

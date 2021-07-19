@@ -19,16 +19,13 @@
 #include "../../ModuleObject.h"
 
 namespace PARTONS {
+class CollinearDistributionModule;
+class GPDEvolutionModule;
 class GPDKinematic;
-} /* namespace PARTONS */
-
-namespace PARTONS {
 class GPDResult;
 } /* namespace PARTONS */
 
 namespace PARTONS {
-
-class GPDEvolutionModule;
 
 /**
  * @class GPDModule
@@ -240,6 +237,16 @@ public:
      */
     void setEvolQcdModule(GPDEvolutionModule* pEvolQcdModule);
 
+    /**
+     * Set underlying PDF module.
+     */
+    const CollinearDistributionModule* getPDFModule() const;
+
+    /**
+     * Get  underlying PDF module.
+     */
+    void setPDFModule(CollinearDistributionModule* pPDFModule);
+
 protected:
 
     /**
@@ -288,6 +295,8 @@ protected:
     double m_MuF2_ref; ///< Reference factorization scale used by the GPD model before evolution.
 
     GPDEvolutionModule* m_pGPDEvolutionModule; ///< Pointer to the underlying GPD Evolution module.
+
+    CollinearDistributionModule* m_pCollinearDistributionModule; ///< Pointer to the underlying PDF module.
 };
 
 } /* namespace PARTONS */

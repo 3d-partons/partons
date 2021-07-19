@@ -10,6 +10,8 @@
 #include "../../include/partons/modules/convol_coeff_function/TCS/TCSConvolCoeffFunctionModule.h"
 #include "../../include/partons/modules/evolution/gpd/GPDEvolutionModule.h"
 #include "../../include/partons/modules/gpd/GPDModule.h"
+#include "../../include/partons/modules/evolution/collinear_distribution/CollinearDistributionEvolutionModule.h"
+#include "../../include/partons/modules/collinear_distribution/CollinearDistributionModule.h"
 #include "../../include/partons/modules/gpd_subtraction_constant/GPDSubtractionConstantModule.h"
 #include "../../include/partons/modules/observable/DVCS/DVCSObservable.h"
 #include "../../include/partons/modules/observable/TCS/TCSObservable.h"
@@ -165,6 +167,24 @@ GPDModule* ModuleObjectFactory::newGPDModule(unsigned int classId) {
 
 GPDModule* ModuleObjectFactory::newGPDModule(const std::string& className) {
     return static_cast<GPDModule*>(newModuleObject(className));
+}
+
+CollinearDistributionEvolutionModule* ModuleObjectFactory::newCollinearDistributionEvolutionModule(
+        unsigned int classId) {
+    return static_cast<CollinearDistributionEvolutionModule*>(newModuleObject(classId));
+}
+
+CollinearDistributionEvolutionModule* ModuleObjectFactory::newCollinearDistributionEvolutionModule(
+        const std::string& className) {
+    return static_cast<CollinearDistributionEvolutionModule*>(newModuleObject(className));
+}
+
+CollinearDistributionModule* ModuleObjectFactory::newCollinearDistributionModule(unsigned int classId) {
+    return static_cast<CollinearDistributionModule*>(newModuleObject(classId));
+}
+
+CollinearDistributionModule* ModuleObjectFactory::newCollinearDistributionModule(const std::string& className) {
+    return static_cast<CollinearDistributionModule*>(newModuleObject(className));
 }
 
 GPDSubtractionConstantModule* ModuleObjectFactory::newGPDSubtractionConstantModule(

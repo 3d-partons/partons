@@ -218,6 +218,37 @@ List<GPDType> ServiceObject::getGPDTypeListFromTask(Task& task) const {
     return gpdTypeList;
 }
 
+List<CollinearDistributionType> ServiceObject::getCollinearDistributionTypeListFromTask(Task& task) const {
+
+    debug(__func__, task.toString());
+
+    List<CollinearDistributionType> gpdTypeList;
+
+    //TODO replace by static variable
+    if (task.getTaskParameters().isAvailableSubModule("CollinearDistributionType")) {
+        try {
+            //TODO replace string CollinearDistributionType by static variable
+            gpdTypeList =
+                    CollinearDistributionType::getListOfCollinearDistributionTypeFromString(
+                            task.getTaskParameters().getLastAvailable().getParameters().get(
+                                    "value").getString());
+        } catch (const std::exception &e) {
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    ElemUtils::Formatter() << e.what() << " for <"
+                            << XMLParserI::TASK_PARAM_NODE_NAME
+                            << " type=\"CollinearDistributionType\"> element. Please check your XML file.");
+        }
+    } else {
+        debug(__func__, "No task_param XML element");
+    }
+
+    debug(__func__,
+            ElemUtils::Formatter() << "CollinearDistributionTypeList size = "
+                    << gpdTypeList.size());
+
+    return gpdTypeList;
+}
+
 void ServiceObject::errorUnknownMethod(const Task& task) const {
     throw ElemUtils::CustomException(getClassName(), __func__,
             ElemUtils::Formatter() << "Unknown method = \""

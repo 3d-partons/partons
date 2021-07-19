@@ -19,6 +19,7 @@ class DVCSConvolCoeffFunctionService;
 class DVMPConvolCoeffFunctionService;
 class TCSConvolCoeffFunctionService;
 class GPDService;
+class CollinearDistributionService;
 class DVCSObservableService;
 class DVMPObservableService;
 class TCSObservableService;
@@ -41,6 +42,7 @@ public:
     ServiceObject* get(const std::string &className) const;
 
     GPDService* getGPDService() const;
+    CollinearDistributionService* getCollinearDistributionService() const;
     DVCSConvolCoeffFunctionService* getDVCSConvolCoeffFunctionService() const;
     DVMPConvolCoeffFunctionService* getDVMPConvolCoeffFunctionService() const;
     TCSConvolCoeffFunctionService* getTCSConvolCoeffFunctionService() const;
