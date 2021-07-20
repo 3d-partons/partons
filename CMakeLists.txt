@@ -26,9 +26,17 @@ file(READ ${CMAKE_SOURCE_DIR}/data/version.txt VERSION_STR)
 # strip spaces
 string(STRIP ${VERSION_STR} VERSION_STR)
 
-# get major and minor versions
-string(REGEX REPLACE "\\.[0-9]*" "" PARTONS_VERSION_MAJOR ${VERSION_STR})
-string(REGEX REPLACE "[0-9]*\\." "" PARTONS_VERSION_MINOR ${VERSION_STR})
+# get major, minor and patch versions
+string(REGEX MATCH "^[0-9]*\\." TMP_STR ${VERSION_STR})
+string(REGEX REPLACE "\\." "" PARTONS_VERSION_MAJOR ${TMP_STR})
+
+string(REGEX MATCH "\\.[0-9]*\\." TMP_STR ${VERSION_STR})
+string(REGEX REPLACE "\\." "" PARTONS_VERSION_MINOR ${TMP_STR})
+
+string(REGEX MATCH "\\.[0-9]*$" TMP_STR ${VERSION_STR})
+string(REGEX REPLACE "\\." "" PARTONS_VERSION_PATCH ${TMP_STR})
+
+message("-- PARTONS version is: " ${PARTONS_VERSION_MAJOR} "." ${PARTONS_VERSION_MINOR} "." ${PARTONS_VERSION_PATCH})
 
 # configure
 configure_file(${CMAKE_SOURCE_DIR}/cmake/Version/PartonsVersion.h_in ${CMAKE_SOURCE_DIR}/include/partons/PartonsVersion.h)
@@ -43,14 +51,39 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # FIND LIBRARIES ===========================================================================
 
-# find libraries: Qt
-find_package(Qt5 COMPONENTS Core Sql XmlPatterns REQUIRED)
-
-# add some useful macros and variables
-add_definitions(${QT_DEFINITIONS})
-
 # find libraries: additional modules
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+
+# find libraries: Qt
+find_package(Qt5 COMPONENTS Core Sql XmlPatterns QUIET)
+
+if(${Qt5_FOUND})
+
+   find_package(Qt5Widgets)
+   message("-- Found Qt5: " ${Qt5Widgets_VERSION})
+
+   set(QT_LIBRARY_CORE "Qt5::Core")
+   set(QT_LIBRARY_SQL "Qt5::Sql")
+   set(QT_LIBRARY_XML "Qt5::XmlPatterns")
+   
+   set(QT_VERSION ${Qt5Widgets_VERSION})
+   
+else()
+
+   find_package(Qt4 COMPONENTS QtCore QtSql QtXmlPatterns)
+
+   if(${Qt4_FOUND})
+
+      set(QT_LIBRARY_CORE "Qt4::QtCore")
+      set(QT_LIBRARY_SQL "Qt4::QtSql")
+      set(QT_LIBRARY_XML "Qt4::QtXmlPatterns")
+      
+      set(QT_VERSION ${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH})
+
+   else()
+      message(FATAL_ERROR "Neither Qt5 nor Qt4 found in this system")
+   endif()
+endif()
 
 # find libraries: ElementaryUtils
 find_package(ElementaryUtils REQUIRED)
@@ -79,17 +112,17 @@ include_directories(include)
 
 # ENVIRONMENT VARIABLES ========================================================================
 
-execute_process(COMMAND bash -c "cd ../../elementary-utils/; git branch --show-current" OUTPUT_VARIABLE ELEMUTILS_BRANCH)
+execute_process(COMMAND bash -c "cd ../../elementary-utils/; git branch | grep '\*' | cut -d ' ' -f2" OUTPUT_VARIABLE ELEMUTILS_BRANCH)
 execute_process(COMMAND bash -c "cd ../../elementary-utils/; git rev-parse HEAD;"             OUTPUT_VARIABLE ELEMUTILS_REVISION)
 string(REGEX REPLACE "\n$" "" ELEMUTILS_BRANCH "${ELEMUTILS_BRANCH}")
 string(REGEX REPLACE "\n$" "" ELEMUTILS_REVISION "${ELEMUTILS_REVISION}")
 
-execute_process(COMMAND bash -c "cd ../../numa/; git branch --show-current" OUTPUT_VARIABLE NUMA_BRANCH)
+execute_process(COMMAND bash -c "cd ../../numa/; git branch | grep '\*' | cut -d ' ' -f2" OUTPUT_VARIABLE NUMA_BRANCH)
 execute_process(COMMAND bash -c "cd ../../numa/; git rev-parse HEAD;"             OUTPUT_VARIABLE NUMA_REVISION)
 string(REGEX REPLACE "\n$" "" NUMA_BRANCH "${NUMA_BRANCH}")
 string(REGEX REPLACE "\n$" "" NUMA_REVISION "${NUMA_REVISION}")
 
-execute_process(COMMAND bash -c "git branch --show-current" OUTPUT_VARIABLE PARTONS_BRANCH)
+execute_process(COMMAND bash -c "git branch | grep '\*' | cut -d ' ' -f2" OUTPUT_VARIABLE PARTONS_BRANCH)
 execute_process(COMMAND bash -c "git rev-parse HEAD"             OUTPUT_VARIABLE PARTONS_REVISION)
 string(REGEX REPLACE "\n$" "" PARTONS_BRANCH "${PARTONS_BRANCH}")
 string(REGEX REPLACE "\n$" "" PARTONS_REVISION "${PARTONS_REVISION}")
@@ -124,8 +157,6 @@ add_library(
 target_link_libraries(
 
 		PARTONS
-
-		${QT_LIBRARIES}
           
 		${SFML_LIBRARIES}
           
@@ -141,11 +172,11 @@ target_link_libraries(
 
 		${LHAPDF_LIBRARIES}
 
-		Qt5::Core
-
-		Qt5::Sql
-
-		Qt5::XmlPatterns
+		${QT_LIBRARY_CORE}
+		
+		${QT_LIBRARY_SQL}
+		
+		${QT_LIBRARY_XML}
 )
 
 # install
