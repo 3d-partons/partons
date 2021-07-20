@@ -84,7 +84,7 @@ DVMPProcessModule::DVMPProcessModule(const DVMPProcessModule& other) :
 }
 
 std::string DVMPProcessModule::toString() const {
-    ProcessModule<DVMPObservableKinematic, DVMPObservableResult>::toString();
+    return ProcessModule<DVMPObservableKinematic, DVMPObservableResult>::toString();
 }
 
 void DVMPProcessModule::resolveObjectDependencies() {
