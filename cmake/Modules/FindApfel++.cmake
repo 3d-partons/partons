@@ -1,5 +1,7 @@
 # APFEL++
+
 find_program(Apfel++_CONFIG apfelxx-config REQUIRED)
+
 if (Apfel++_CONFIG)
   exec_program(${Apfel++_CONFIG}
     ARGS --cppflags
@@ -19,4 +21,6 @@ if (Apfel++_CONFIG)
 
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(Apfel++ REQUIRED_VARS Apfel++_LIBRARIES VERSION_VAR Apfel++_VERSION)
+else(Apfel++_CONFIG)
+  message(FATAL_ERROR "Apfel++ not found")
 endif(Apfel++_CONFIG)
