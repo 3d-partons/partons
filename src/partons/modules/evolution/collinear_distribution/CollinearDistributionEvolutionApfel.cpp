@@ -23,7 +23,6 @@ CollinearDistributionEvolutionApfel::CollinearDistributionEvolutionApfel(
 				60, 50, 50 }), m_subgridLowerBounds( { 0.0001, 0.1, 0.6, 0.8 }), m_subgridInterDegrees(
 				{ 3, 3, 3, 3 }), m_setApfelTables(true) {
 
-	apfel::Banner();
 	apfel::SetVerbosityLevel(0);
 }
 

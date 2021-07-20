@@ -119,7 +119,6 @@ void GPDEvolutionApfel::configure(const ElemUtils::Parameters &parameters) {
 void GPDEvolutionApfel::prepareSubModules(const std::map<std::string, BaseObjectData>& subModulesData) {
     GPDEvolutionModule::prepareSubModules(subModulesData);
 
-    apfel::Banner();
     apfel::SetVerbosityLevel(0);
 
     // Setup APFEL++ x-space
