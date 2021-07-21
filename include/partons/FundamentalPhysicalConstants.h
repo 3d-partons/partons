@@ -79,6 +79,20 @@ const double T2_ELEC_CHARGE = 4. / 9.;                      ///< Square of elect
 //TODO more explicit name
 const double POSITRON_CHARGE = 0.30282211985966434;         ///< Positron charge \f$e\f$ in natural units (\f$e^2 = 4\pi\alpha\f$).
 
+// Mesons
+
+const double MESON_RHOMINUS_MASS = 775.26e-3;               ///< \f$\rho^-\f$ mass in \f$\mathrm{GeV}\f$ Phys. 2020, 083C01 (2020).
+const double MESON_RHO0_MASS = 775.26e-3;                   ///< \f$\rho^0\f$ mass in \f$\mathrm{GeV}\f$ Phys. 2020, 083C01 (2020).
+const double MESON_RHOPLUS_MASS = 775.26e-3;                ///< \f$\rho^+\f$ mass in \f$\mathrm{GeV}\f$ Phys. 2020, 083C01 (2020).
+const double MESON_OMEGA_MASS = 782.65e-3;                  ///< \f$\omega\f$ mass in \f$\mathrm{GeV}\f$ Phys. 2020, 083C01 (2020).
+const double MESON_PHI_MASS = 1019.461e-3;                  ///< \f$\phi\f$ mass in \f$\mathrm{GeV}\f$ Phys. 2020, 083C01 (2020).
+const double MESON_JPSI_MASS = 3096.900e-3;                 ///< \f$J/\Psi\f$ mass in \f$\mathrm{GeV}\f$ Phys. 2020, 083C01 (2020).
+const double MESON_UPSILON_MASS = 9460.30e-3;               ///< \f$\Upsilon\f$ mass in \f$\mathrm{GeV}\f$ Phys. 2020, 083C01 (2020).
+
+const double MESON_PIMINUS_MASS = 139.57039e-3;             ///< \f$\pi^-\f$ mass in \f$\mathrm{GeV}\f$ Phys. 2020, 083C01 (2020).
+const double MESON_PI0_MASS = 134.9768e-3;                  ///< \f$\pi^0\f$ mass in \f$\mathrm{GeV}\f$ Phys. 2020, 083C01 (2020).
+const double MESON_PIPLUS_MASS = 139.57039e-3;              ///< \f$\pi^+\f$ mass in \f$\mathrm{GeV}\f$ Phys. 2020, 083C01 (2020).
+
 } /* namespace Constant */
 
 } /* namespace PARTONS */

@@ -1,4 +1,4 @@
-#ifndef BASE_OBJECT_FACTORY_H_
+#ifndef BASE_OBJECT_FACTORY_H
 #define BASE_OBJECT_FACTORY_H
 
 /**

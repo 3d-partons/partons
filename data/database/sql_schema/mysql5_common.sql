@@ -10,7 +10,7 @@ scenario_hash_sum VARCHAR(40));
 CREATE TABLE environment_configuration (
 env_conf_id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
 env_conf_store_date TIMESTAMP,
-env_conf_configuration VARCHAR(255),
+env_conf_configuration VARCHAR(10000),
 env_conf_hash_sum VARCHAR(40));
 
 CREATE TABLE computation (
@@ -23,6 +23,11 @@ scenario_computation_id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
 scenario_task_index_number INTEGER,
 scenario_id INTEGER NOT NULL,
 computation_id INTEGER NOT NULL);
+
+CREATE TABLE collinear_distribution_type (
+collinear_distribution_type_id INTEGER NOT NULL PRIMARY KEY,
+collinear_distribution_type_short_name VARCHAR(10),
+collinear_distribution_type_long_name VARCHAR(255));
 
 CREATE TABLE gpd_type (
 gpd_type_id INTEGER NOT NULL PRIMARY KEY,
@@ -44,6 +49,16 @@ physical_unit_type_id INTEGER NOT NULL PRIMARY KEY,
 physical_unit_type_short_name VARCHAR(10),
 physical_unit_type_long_name VARCHAR(255));
 
+CREATE TABLE meson_type (
+meson_type_id INTEGER NOT NULL PRIMARY KEY,
+meson_type_short_name VARCHAR(10),
+meson_type_long_name VARCHAR(255));
+
+CREATE TABLE meson_polarization (
+meson_polarization_id INTEGER NOT NULL PRIMARY KEY,
+meson_polarization_short_name VARCHAR(10),
+meson_polarization_long_name VARCHAR(255));
+
 CREATE VIEW result_info_view AS
 SELECT c.computation_id, c.computation_date, sc.scenario_task_index_number, ec.env_conf_hash_sum, s.scenario_hash_sum
 FROM computation c
@@ -51,6 +66,32 @@ INNER JOIN environment_configuration ec ON ec.env_conf_id = c.environment_config
 INNER JOIN scenario_computation sc ON sc.computation_id = c.computation_id
 INNER JOIN scenario s ON sc.scenario_id = s.scenario_id
 ORDER BY c.computation_id;
+
+/* === collinear_distribution_type === */
+
+INSERT INTO collinear_distribution_type (collinear_distribution_type_id, collinear_distribution_type_short_name, collinear_distribution_type_long_name)
+VALUES ('0', 'UNDEFINED', 'UNDEFINED');
+
+INSERT INTO collinear_distribution_type (collinear_distribution_type_id, collinear_distribution_type_short_name, collinear_distribution_type_long_name)
+VALUES ('1', 'ALL', 'ALL');
+
+INSERT INTO collinear_distribution_type (collinear_distribution_type_id, collinear_distribution_type_short_name, collinear_distribution_type_long_name)
+VALUES ('2', 'UnpolPDF', 'UnpolPDF');
+
+INSERT INTO collinear_distribution_type (collinear_distribution_type_id, collinear_distribution_type_short_name, collinear_distribution_type_long_name)
+VALUES ('3', 'PolPDF', 'PolPDF');
+
+INSERT INTO collinear_distribution_type (collinear_distribution_type_id, collinear_distribution_type_short_name, collinear_distribution_type_long_name)
+VALUES ('4', 'TransPDF', 'TransPDF');
+
+INSERT INTO collinear_distribution_type (collinear_distribution_type_id, collinear_distribution_type_short_name, collinear_distribution_type_long_name)
+VALUES ('5', 'UnpolFF', 'UnpolFF');
+
+INSERT INTO collinear_distribution_type (collinear_distribution_type_id, collinear_distribution_type_short_name, collinear_distribution_type_long_name)
+VALUES ('6', 'PolFF', 'PolFF');
+
+INSERT INTO collinear_distribution_type (collinear_distribution_type_id, collinear_distribution_type_short_name, collinear_distribution_type_long_name)
+VALUES ('7', 'TransFF', 'TransFF');
 
 /* === gpd_type === */
 
@@ -71,6 +112,45 @@ VALUES ('4', 'Ht', 'Ht');
 
 INSERT INTO gpd_type (gpd_type_id, gpd_type_short_name, gpd_type_long_name)
 VALUES ('5', 'Et', 'Et');
+
+INSERT INTO gpd_type (gpd_type_id, gpd_type_short_name, gpd_type_long_name)
+VALUES ('6', 'HTrans', 'HTrans');
+
+INSERT INTO gpd_type (gpd_type_id, gpd_type_short_name, gpd_type_long_name)
+VALUES ('7', 'ETrans', 'ETrans');
+
+INSERT INTO gpd_type (gpd_type_id, gpd_type_short_name, gpd_type_long_name)
+VALUES ('8', 'HtTrans', 'HtTrans');
+
+INSERT INTO gpd_type (gpd_type_id, gpd_type_short_name, gpd_type_long_name)
+VALUES ('9', 'EtTrans', 'EtTrans');
+
+INSERT INTO gpd_type (gpd_type_id, gpd_type_short_name, gpd_type_long_name)
+VALUES ('10', 'H3p', 'H3p');
+
+INSERT INTO gpd_type (gpd_type_id, gpd_type_short_name, gpd_type_long_name)
+VALUES ('11', 'E3p', 'E3p');
+
+INSERT INTO gpd_type (gpd_type_id, gpd_type_short_name, gpd_type_long_name)
+VALUES ('12', 'Ht3p', 'Ht3p');
+
+INSERT INTO gpd_type (gpd_type_id, gpd_type_short_name, gpd_type_long_name)
+VALUES ('13', 'Et3p', 'Et3p');
+
+INSERT INTO gpd_type (gpd_type_id, gpd_type_short_name, gpd_type_long_name)
+VALUES ('14', 'H3m', 'H3m');
+
+INSERT INTO gpd_type (gpd_type_id, gpd_type_short_name, gpd_type_long_name)
+VALUES ('15', 'E3m', 'E3m');
+
+INSERT INTO gpd_type (gpd_type_id, gpd_type_short_name, gpd_type_long_name)
+VALUES ('16', 'Ht3m', 'Ht3m');
+
+INSERT INTO gpd_type (gpd_type_id, gpd_type_short_name, gpd_type_long_name)
+VALUES ('17', 'Et3m', 'Et3m');
+
+INSERT INTO gpd_type (gpd_type_id, gpd_type_short_name, gpd_type_long_name)
+VALUES ('18', 'EbarTrans', 'EbarTrans');
 
 /* === quark_flavor === */
 
@@ -240,4 +320,51 @@ VALUES ('38', 'rad', 'RAD');
 
 INSERT INTO physical_unit_type (physical_unit_type_id, physical_unit_type_short_name, physical_unit_type_long_name)
 VALUES ('39', 'mrad', 'MRAD');
+
+/* === meson_type === */
+
+INSERT INTO meson_type (meson_type_id, meson_type_short_name, meson_type_long_name)
+VALUES ('0', 'UNDEFINED', 'UNDEFINED');
+
+INSERT INTO meson_type (meson_type_id, meson_type_short_name, meson_type_long_name)
+VALUES ('1', 'rho-', 'RHOMINUS');
+
+INSERT INTO meson_type (meson_type_id, meson_type_short_name, meson_type_long_name)
+VALUES ('2', 'rho0', 'RHO0');
+
+INSERT INTO meson_type (meson_type_id, meson_type_short_name, meson_type_long_name)
+VALUES ('3', 'rho+', 'RHOPLUS');
+
+INSERT INTO meson_type (meson_type_id, meson_type_short_name, meson_type_long_name)
+VALUES ('4', 'omega', 'OMEGA');
+
+INSERT INTO meson_type (meson_type_id, meson_type_short_name, meson_type_long_name)
+VALUES ('5', 'phi', 'PHI');
+
+INSERT INTO meson_type (meson_type_id, meson_type_short_name, meson_type_long_name)
+VALUES ('6', 'J/Psi', 'JPSI');
+
+INSERT INTO meson_type (meson_type_id, meson_type_short_name, meson_type_long_name)
+VALUES ('7', 'Upsilon', 'UPSILON');
+
+INSERT INTO meson_type (meson_type_id, meson_type_short_name, meson_type_long_name)
+VALUES ('8', 'pi-', 'PIMINUS');
+
+INSERT INTO meson_type (meson_type_id, meson_type_short_name, meson_type_long_name)
+VALUES ('9', 'pi0', 'PI0');
+
+INSERT INTO meson_type (meson_type_id, meson_type_short_name, meson_type_long_name)
+VALUES ('10', 'pi+', 'PIPLUS');
+
+/* === meson_polarization === */
+
+INSERT INTO meson_polarization (meson_polarization_id, meson_polarization_short_name, meson_polarization_long_name)
+VALUES ('0', 'UNDEFINED', 'UNDEFINED');
+
+INSERT INTO meson_polarization (meson_polarization_id, meson_polarization_short_name, meson_polarization_long_name)
+VALUES ('1', 'L', 'L');
+
+
+INSERT INTO meson_polarization (meson_polarization_id, meson_polarization_short_name, meson_polarization_long_name)
+VALUES ('2', 'T', 'T');
 

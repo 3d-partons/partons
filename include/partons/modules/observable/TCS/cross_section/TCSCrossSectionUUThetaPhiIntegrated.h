@@ -79,7 +79,7 @@ protected:
     /**
      * Initialize functors.
      */
-    virtual void initFunctorsForIntegrations();
+    void initFunctorsForIntegrations();
 
 };
 

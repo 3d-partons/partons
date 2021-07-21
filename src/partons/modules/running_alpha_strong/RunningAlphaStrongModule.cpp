@@ -27,6 +27,18 @@ RunningAlphaStrongModule::RunningAlphaStrongModule(
 RunningAlphaStrongModule::~RunningAlphaStrongModule() {
 }
 
+std::string RunningAlphaStrongModule::toString() const {
+    return ModuleObject::toString();
+}
+
+void RunningAlphaStrongModule::resolveObjectDependencies() {
+    ModuleObject::resolveObjectDependencies();
+}
+
+void RunningAlphaStrongModule::configure(const ElemUtils::Parameters &parameters) {
+    ModuleObject::configure(parameters);
+}
+
 void RunningAlphaStrongModule::preCompute(const double Mu2) {
     m_Mu2 = Mu2;
     m_Mu = sqrt(m_Mu2);

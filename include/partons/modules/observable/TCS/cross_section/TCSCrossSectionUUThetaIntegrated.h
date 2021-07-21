@@ -96,7 +96,7 @@ protected:
     /**
      * Initialize functors.
      */
-    virtual void initFunctorsForIntegrations();
+    void initFunctorsForIntegrations();
 
     std::pair<double, double> m_thetaRange; ///< Range of theta angle used in the integration.
 };

@@ -19,16 +19,13 @@
 #include "../../ModuleObject.h"
 
 namespace PARTONS {
+class CollinearDistributionModule;
+class GPDEvolutionModule;
 class GPDKinematic;
-} /* namespace PARTONS */
-
-namespace PARTONS {
 class GPDResult;
 } /* namespace PARTONS */
 
 namespace PARTONS {
-
-class GPDEvolutionModule;
 
 /**
  * @class GPDModule
@@ -119,6 +116,110 @@ public:
      */
     virtual PartonDistribution computeEt();
 
+    /**
+     * This method can be implemented in the child class if the GPD HTrans is available to compute.
+     *
+     * @return PartonDistribution object.
+     * Contains results for each flavor of partons.
+     */
+    virtual PartonDistribution computeHTrans();
+
+    /**
+     * This method can be implemented in the child class if the GPD ETrans is available to compute.
+     *
+     * @return PartonDistribution object.
+     * Contains results for each flavor of partons.
+     */
+    virtual PartonDistribution computeETrans();
+
+    /**
+     * This method can be implemented in the child class if the GPD HtTrans is available to compute.
+     *
+     * @return PartonDistribution object.
+     * Contains results for each flavor of partons.
+     */
+    virtual PartonDistribution computeHtTrans();
+
+    /**
+     * This method can be implemented in the child class if the GPD EtTrans is available to compute.
+     *
+     * @return PartonDistribution object.
+     * Contains results for each flavor of partons.
+     */
+    virtual PartonDistribution computeEtTrans();
+
+    /**
+     * This method can be implemented in the child class if the GPD H3p is available to compute.
+     *
+     * @return PartonDistribution object.
+     * Contains results for each flavor of partons.
+     */
+    virtual PartonDistribution computeH3p();
+
+    /**
+     * This method can be implemented in the child class if the GPD E3p is available to compute.
+     *
+     * @return PartonDistribution object.
+     * Contains results for each flavor of partons.
+     */
+    virtual PartonDistribution computeE3p();
+
+    /**
+     * This method can be implemented in the child class if the GPD Ht3p is available to compute.
+     *
+     * @return PartonDistribution object.
+     * Contains results for each flavor of partons.
+     */
+    virtual PartonDistribution computeHt3p();
+
+    /**
+     * This method can be implemented in the child class if the GPD Et3p is available to compute.
+     *
+     * @return PartonDistribution object.
+     * Contains results for each flavor of partons.
+     */
+    virtual PartonDistribution computeEt3p();
+
+    /**
+     * This method can be implemented in the child class if the GPD H3m is available to compute.
+     *
+     * @return PartonDistribution object.
+     * Contains results for each flavor of partons.
+     */
+    virtual PartonDistribution computeH3m();
+
+    /**
+     * This method can be implemented in the child class if the GPD E3m is available to compute.
+     *
+     * @return PartonDistribution object.
+     * Contains results for each flavor of partons.
+     */
+    virtual PartonDistribution computeE3m();
+
+    /**
+     * This method can be implemented in the child class if the GPD Ht3m is available to compute.
+     *
+     * @return PartonDistribution object.
+     * Contains results for each flavor of partons.
+     */
+    virtual PartonDistribution computeHt3m();
+
+    /**
+     * This method can be implemented in the child class if the GPD Et3m is available to compute.
+     *
+     * @return PartonDistribution object.
+     * Contains results for each flavor of partons.
+     */
+    virtual PartonDistribution computeEt3m();
+
+    /**
+     * This method can be implemented in the child class if the GPD EbarTrans is available to compute.
+     *
+     * @return PartonDistribution object.
+     * Contains results for each flavor of partons.
+     */
+    virtual PartonDistribution computeEbarTrans();
+
     // ##### GETTERS & SETTERS #####
 
     /**
@@ -135,6 +236,16 @@ public:
      * Get  underlying GPD Evolution module.
      */
     void setEvolQcdModule(GPDEvolutionModule* pEvolQcdModule);
+
+    /**
+     * Set underlying PDF module.
+     */
+    const CollinearDistributionModule* getPDFModule() const;
+
+    /**
+     * Get  underlying PDF module.
+     */
+    void setPDFModule(CollinearDistributionModule* pPDFModule);
 
 protected:
 
@@ -184,6 +295,8 @@ protected:
     double m_MuF2_ref; ///< Reference factorization scale used by the GPD model before evolution.
 
     GPDEvolutionModule* m_pGPDEvolutionModule; ///< Pointer to the underlying GPD Evolution module.
+
+    CollinearDistributionModule* m_pCollinearDistributionModule; ///< Pointer to the underlying PDF module.
 };
 
 } /* namespace PARTONS */

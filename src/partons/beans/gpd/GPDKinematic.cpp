@@ -9,7 +9,7 @@
 
 namespace PARTONS {
 
-const std::string GPDKinematic::GPD_KNEMATIC_CLASS_NAME = "GPDKinematic";
+const std::string GPDKinematic::GPD_KINEMATIC_CLASS_NAME = "GPDKinematic";
 
 const std::string GPDKinematic::KINEMATIC_PARAMETER_NAME_X = "x";
 const std::string GPDKinematic::KINEMATIC_PARAMETER_NAME_XI = "xi";

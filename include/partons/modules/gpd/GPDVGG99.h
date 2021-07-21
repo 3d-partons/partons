@@ -12,6 +12,7 @@
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <string>
 #include <vector>
+#include <LHAPDF/LHAPDF.h>
 
 #include "../../beans/gpd/GPDType.h"
 #include "../MathIntegratorModule.h"
@@ -22,8 +23,6 @@ class FunctionType1D;
 } /* namespace NumA */
 
 namespace PARTONS {
-
-class MSTWPDF;
 
 /**
  * @class GPDVGG99
@@ -41,6 +40,9 @@ class MSTWPDF;
 class GPDVGG99: public GPDModule, public MathIntegratorModule {
 
 public:
+
+    static const std::string PARAM_NAME_SET_NAME;
+    static const std::string PARAM_NAME_MEMBER;
 
     static const unsigned int classId; ///< ID assigned by BaseObjectRegistry.
 
@@ -60,6 +62,12 @@ public:
     virtual void resolveObjectDependencies();
     virtual void configure(const ElemUtils::Parameters &parameters);
     virtual std::string toString() const;
+
+    std::string getSetName() const;
+    int getMember() const;
+
+    void setSetName(const std::string &setname);
+    void setMember(const int &member);
 
 protected:
 
@@ -100,7 +108,9 @@ private:
     const double eta_e_largex_d_s; ///< Shape parameter for GPD E^dVal.
     const double g_AXIAL; ///< Axial coupling constant of the nucleon.
 
-    MSTWPDF* m_Forward; ///< Pointer to MSTW PDFs.
+    std::string m_setName;
+    int m_member;
+    LHAPDF::PDF* m_Forward;
 
     GPDType gpd_s5; ///< GPD Type for the current computation (internal variables used for the integration).
     flavour flavour_s5; ///< Flavor for the current computation  (internal variables used for the integration).

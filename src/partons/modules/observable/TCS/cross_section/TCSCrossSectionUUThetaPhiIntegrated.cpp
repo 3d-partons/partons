@@ -40,8 +40,6 @@ TCSCrossSectionUUThetaPhiIntegrated::~TCSCrossSectionUUThetaPhiIntegrated() {
 
 void TCSCrossSectionUUThetaPhiIntegrated::initFunctorsForIntegrations() {
 
-    TCSCrossSectionUUThetaIntegrated::initFunctorsForIntegrations();
-
     m_pFunctionToIntegrateObservablePhi =
             NumA::Integrator1D::newIntegrationFunctor(this,
                     &TCSCrossSectionUUThetaPhiIntegrated::functionToIntegrateObservablePhi);

@@ -11,6 +11,7 @@
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <string>
 #include <vector>
+#include <LHAPDF/LHAPDF.h>
 
 #include "../MathIntegratorModule.h"
 #include "GPDModule.h"
@@ -20,8 +21,6 @@ class FunctionType1D;
 } /* namespace NumA */
 
 namespace PARTONS {
-
-class MSTWPDF;
 
 /**
  * @class GPDMPSSW13
@@ -35,6 +34,9 @@ class MSTWPDF;
 class GPDMPSSW13: public GPDModule, public MathIntegratorModule {
 
 public:
+
+    static const std::string PARAM_NAME_SET_NAME;
+    static const std::string PARAM_NAME_MEMBER;
 
     static const unsigned int classId; ///< ID assigned by BaseObjectRegistry.
 
@@ -53,6 +55,13 @@ public:
     virtual GPDMPSSW13* clone() const;
     virtual void resolveObjectDependencies();
     virtual void configure(const ElemUtils::Parameters &parameters);
+
+    std::string getSetName() const;
+    int getMember() const;
+
+    void setSetName(const std::string &setname);
+    void setMember(const int &member);
+
     //TODO no toString
     void setParameters(std::vector<double> Parameters);
 
@@ -109,7 +118,9 @@ private:
     double m_QuarkDTerm; ///< Value of D term for quarks.
     double m_GluonDTerm; ///< Value of D term for gluons.
 
-    MSTWPDF* m_Forward; ///< Pointer to MSTW PDFs.
+    std::string m_setName;
+    int m_member;
+    LHAPDF::PDF* m_Forward;
 
     /** Compute D terms.
      */
