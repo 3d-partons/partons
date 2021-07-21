@@ -151,13 +151,18 @@ void Partons::printVersion() const {
 
     m_pLoggerManager->info("Partons", __func__,
             ElemUtils::Formatter() << "PARTONS " << PARTONS_VERSION_MAJOR << "."
-                    << PARTONS_VERSION_MINOR
+                    << PARTONS_VERSION_MINOR << "." << PARTONS_VERSION_PATCH
                     << " (http://partons.cea.fr) distributed under GNU Public License");
+    m_pLoggerManager->info("Partons", __func__,
+            ElemUtils::Formatter() << "Git branch and revision is "
+                    << PARTONS_GIT_BRANCH << "/" << PARTONS_GIT_REVISION);
     m_pLoggerManager->info("Partons", __func__,
             ElemUtils::Formatter() << "Built using Elementary-Utils "
                     << ELEMENTARY_UTILS_VERSION_MAJOR << "."
-                    << ELEMENTARY_UTILS_VERSION_MINOR << " and NumA++ "
-                    << NUMA_VERSION_MAJOR << "." << NUMA_VERSION_MINOR);
+                    << ELEMENTARY_UTILS_VERSION_MINOR << "."
+                    << ELEMENTARY_UTILS_VERSION_PATCH << " and NumA++ "
+                    << NUMA_VERSION_MAJOR << "." << NUMA_VERSION_MINOR << "."
+                    << NUMA_VERSION_PATCH);
 }
 
 std::string Partons::getCurrentWorkingDirectory() {

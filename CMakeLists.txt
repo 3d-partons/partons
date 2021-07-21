@@ -38,6 +38,13 @@ string(REGEX REPLACE "\\." "" PARTONS_VERSION_PATCH ${TMP_STR})
 
 message("-- PARTONS version is: " ${PARTONS_VERSION_MAJOR} "." ${PARTONS_VERSION_MINOR} "." ${PARTONS_VERSION_PATCH})
 
+execute_process(COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}; git branch | grep '\*' | cut -d ' ' -f2 2> /dev/null" OUTPUT_VARIABLE PARTONS_GIT_BRANCH)
+execute_process(COMMAND bash -c "cd ${CMAKE_SOURCE_DIR}; git rev-parse HEAD 2> /dev/null" OUTPUT_VARIABLE PARTONS_GIT_REVISION)
+string(REGEX REPLACE "\n$" "" PARTONS_GIT_BRANCH "${PARTONS_GIT_BRANCH}")
+string(REGEX REPLACE "\n$" "" PARTONS_GIT_REVISION "${PARTONS_GIT_REVISION}")
+
+message("-- Git branch (revision): " ${PARTONS_GIT_BRANCH} " (" ${PARTONS_GIT_REVISION} ")")
+
 # configure
 configure_file(${CMAKE_SOURCE_DIR}/cmake/Version/PartonsVersion.h_in ${CMAKE_SOURCE_DIR}/include/partons/PartonsVersion.h)
 
@@ -59,26 +66,33 @@ find_package(Qt5 COMPONENTS Core Sql XmlPatterns QUIET)
 
 if(${Qt5_FOUND})
 
-   find_package(Qt5Widgets)
-   message("-- Found Qt5: " ${Qt5Widgets_VERSION})
+   find_package(Qt5Widgets QUIET)
+   
+   if (Qt5Widgets_FOUND)
+   	  set(QT_VERSION ${Qt5Widgets_VERSION})
+   else()
+      set(QT_VERSION "5.??.??")
+   endif()
 
    set(QT_LIBRARY_CORE "Qt5::Core")
    set(QT_LIBRARY_SQL "Qt5::Sql")
    set(QT_LIBRARY_XML "Qt5::XmlPatterns")
    
-   set(QT_VERSION ${Qt5Widgets_VERSION})
+   message("-- Found Qt5: " ${QT_VERSION})
    
 else()
 
-   find_package(Qt4 COMPONENTS QtCore QtSql QtXmlPatterns)
+   find_package(Qt4 COMPONENTS QtCore QtSql QtXmlPatterns QUIET)
 
    if(${Qt4_FOUND})
+   
+   	  set(QT_VERSION ${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH})
 
       set(QT_LIBRARY_CORE "Qt4::QtCore")
       set(QT_LIBRARY_SQL "Qt4::QtSql")
       set(QT_LIBRARY_XML "Qt4::QtXmlPatterns")
       
-      set(QT_VERSION ${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH})
+      message("-- Found Qt4: " ${QT_VERSION})
 
    else()
       message(FATAL_ERROR "Neither Qt5 nor Qt4 found in this system")
@@ -112,20 +126,38 @@ include_directories(include)
 
 # ENVIRONMENT VARIABLES ========================================================================
 
-execute_process(COMMAND bash -c "cd ../../elementary-utils/; git branch | grep '\*' | cut -d ' ' -f2" OUTPUT_VARIABLE ELEMUTILS_BRANCH)
-execute_process(COMMAND bash -c "cd ../../elementary-utils/; git rev-parse HEAD;"             OUTPUT_VARIABLE ELEMUTILS_REVISION)
-string(REGEX REPLACE "\n$" "" ELEMUTILS_BRANCH "${ELEMUTILS_BRANCH}")
-string(REGEX REPLACE "\n$" "" ELEMUTILS_REVISION "${ELEMUTILS_REVISION}")
+file(READ ${ElementaryUtils_INCLUDE_DIR}/ElementaryUtils/ElementaryUtilsVersion.h VERSION_STR)
 
-execute_process(COMMAND bash -c "cd ../../numa/; git branch | grep '\*' | cut -d ' ' -f2" OUTPUT_VARIABLE NUMA_BRANCH)
-execute_process(COMMAND bash -c "cd ../../numa/; git rev-parse HEAD;"             OUTPUT_VARIABLE NUMA_REVISION)
-string(REGEX REPLACE "\n$" "" NUMA_BRANCH "${NUMA_BRANCH}")
-string(REGEX REPLACE "\n$" "" NUMA_REVISION "${NUMA_REVISION}")
+string(REGEX MATCH "ELEMENTARY_UTILS_GIT_BRANCH[ \t]*[^\t\n]*\n" ELEMUTILS_BRANCH ${VERSION_STR})
+string(REGEX REPLACE "ELEMENTARY_UTILS_GIT_BRANCH[ \t]*" "" ELEMUTILS_BRANCH ${ELEMUTILS_BRANCH})
+string(REGEX REPLACE "\"" "" ELEMUTILS_BRANCH ${ELEMUTILS_BRANCH})
+string(STRIP ${ELEMUTILS_BRANCH} ELEMUTILS_BRANCH)
+string(REGEX MATCH "ELEMENTARY_UTILS_GIT_REVISION[ \t]*[^\t\n]*\n" ELEMUTILS_REVISION ${VERSION_STR})
+string(REGEX REPLACE "ELEMENTARY_UTILS_GIT_REVISION[ \t]*" "" ELEMUTILS_REVISION ${ELEMUTILS_REVISION})
+string(REGEX REPLACE "\"" "" ELEMUTILS_REVISION ${ELEMUTILS_REVISION})
+string(STRIP ${ELEMUTILS_REVISION} ELEMUTILS_REVISION)
 
-execute_process(COMMAND bash -c "git branch | grep '\*' | cut -d ' ' -f2" OUTPUT_VARIABLE PARTONS_BRANCH)
-execute_process(COMMAND bash -c "git rev-parse HEAD"             OUTPUT_VARIABLE PARTONS_REVISION)
-string(REGEX REPLACE "\n$" "" PARTONS_BRANCH "${PARTONS_BRANCH}")
-string(REGEX REPLACE "\n$" "" PARTONS_REVISION "${PARTONS_REVISION}")
+file(READ ${NumA++_INCLUDE_DIR}/NumA/NumAVersion.h VERSION_STR)
+
+string(REGEX MATCH "NUMA_GIT_BRANCH[ \t]*[^\t\n]*\n" NUMA_BRANCH ${VERSION_STR})
+string(REGEX REPLACE "NUMA_GIT_BRANCH[ \t]*" "" NUMA_BRANCH ${NUMA_BRANCH})
+string(REGEX REPLACE "\"" "" NUMA_BRANCH ${NUMA_BRANCH})
+string(STRIP ${NUMA_BRANCH} NUMA_BRANCH)
+string(REGEX MATCH "NUMA_GIT_REVISION[ \t]*[^\t\n]*\n" NUMA_REVISION ${VERSION_STR})
+string(REGEX REPLACE "NUMA_GIT_REVISION[ \t]*" "" NUMA_REVISION ${NUMA_REVISION})
+string(REGEX REPLACE "\"" "" NUMA_REVISION ${NUMA_REVISION})
+string(STRIP ${NUMA_REVISION} NUMA_REVISION)
+
+file(READ ${CMAKE_SOURCE_DIR}/include/partons/PartonsVersion.h VERSION_STR)
+
+string(REGEX MATCH "PARTONS_GIT_BRANCH[ \t]*[^\t\n]*\n" PARTONS_BRANCH ${VERSION_STR})
+string(REGEX REPLACE "PARTONS_GIT_BRANCH[ \t]*" "" PARTONS_BRANCH ${PARTONS_BRANCH})
+string(REGEX REPLACE "\"" "" PARTONS_BRANCH ${PARTONS_BRANCH})
+string(STRIP ${PARTONS_BRANCH} PARTONS_BRANCH)
+string(REGEX MATCH "PARTONS_GIT_REVISION[ \t]*[^\t\n]*\n" PARTONS_REVISION ${VERSION_STR})
+string(REGEX REPLACE "PARTONS_GIT_REVISION[ \t]*" "" PARTONS_REVISION ${PARTONS_REVISION})
+string(REGEX REPLACE "\"" "" PARTONS_REVISION ${PARTONS_REVISION})
+string(STRIP ${PARTONS_REVISION} PARTONS_REVISION)
 
 configure_file("${CMAKE_SOURCE_DIR}/data/config/environment_configuration.dat.in" "${CMAKE_SOURCE_DIR}/data/config/environment_configuration.dat")
 
