@@ -68,10 +68,32 @@ GPDMPSSW13::GPDMPSSW13(const GPDMPSSW13& other) :
 }
 
 GPDMPSSW13::~GPDMPSSW13() {
+
     if (m_Forward) {
         delete m_Forward;
         m_Forward = 0;
     }
+
+    if(m_pIntegralHuVal){delete m_pIntegralHuVal; m_pIntegralHuVal= 0;}
+    if(m_pIntegralHdVal){delete m_pIntegralHdVal; m_pIntegralHdVal= 0;}
+    if(m_pIntegralHuValMx){delete m_pIntegralHuValMx; m_pIntegralHuValMx= 0;}
+    if(m_pIntegralHdValMx){delete m_pIntegralHdValMx; m_pIntegralHdValMx= 0;}
+    if(m_pIntegralxLargeHuSea){delete m_pIntegralxLargeHuSea; m_pIntegralxLargeHuSea= 0;}
+    if(m_pIntegralxLargeHdSea){delete m_pIntegralxLargeHdSea; m_pIntegralxLargeHdSea= 0;}
+    if(m_pIntegralxSmall1HuSea){delete m_pIntegralxSmall1HuSea; m_pIntegralxSmall1HuSea= 0;}
+    if(m_pIntegralxSmall2HuSea){delete m_pIntegralxSmall2HuSea; m_pIntegralxSmall2HuSea= 0;}
+    if(m_pIntegralxSmall1HdSea){delete m_pIntegralxSmall1HdSea; m_pIntegralxSmall1HdSea= 0;}
+    if(m_pIntegralxSmall2HdSea){delete m_pIntegralxSmall2HdSea; m_pIntegralxSmall2HdSea= 0;}
+    if(m_pIntegralxLargeHuSeaMx){delete m_pIntegralxLargeHuSeaMx;m_pIntegralxLargeHuSeaMx = 0;}
+    if(m_pIntegralxLargeHdSeaMx){delete m_pIntegralxLargeHdSeaMx;m_pIntegralxLargeHdSeaMx = 0;}
+    if(m_pIntegralxLargeHsSea){delete m_pIntegralxLargeHsSea; m_pIntegralxLargeHsSea= 0;}
+    if(m_pIntegralxSmall1HsSea){delete m_pIntegralxSmall1HsSea; m_pIntegralxSmall1HsSea= 0;}
+    if(m_pIntegralxSmall2HsSea){delete m_pIntegralxSmall2HsSea; m_pIntegralxSmall2HsSea= 0;}
+    if(m_pIntegralxLargeHsSeaMx){delete m_pIntegralxLargeHsSeaMx; m_pIntegralxLargeHsSeaMx= 0;}
+    if(m_pIntegralxLargeHg){delete m_pIntegralxLargeHg; m_pIntegralxLargeHg= 0;}
+    if(m_pIntegralxSmall1Hg){delete m_pIntegralxSmall1Hg; m_pIntegralxSmall1Hg= 0;}
+    if(m_pIntegralxSmall2Hg){delete m_pIntegralxSmall2Hg; m_pIntegralxSmall2Hg= 0;}
+    if(m_pIntegralxLargeHgMx){delete m_pIntegralxLargeHgMx;m_pIntegralxLargeHgMx = 0;}
 }
 
 void GPDMPSSW13::initFunctorsForIntegrations() {
