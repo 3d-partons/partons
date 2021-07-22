@@ -10,6 +10,7 @@
 
 #include "GPDEvolutionModule.h"
 #include "../../../../../include/partons/modules/gpd/GPDModule.h"
+#include "../../active_flavors_thresholds/ActiveFlavorsThresholdsModule.h"
 
 #include <apfel/apfelxx.h>
 #include <functional>
@@ -28,9 +29,6 @@ public:
     /**
      * Settable parameters
      */
-    static const std::string PARAM_NAME_THRESHOLDS;
-    static const std::string PARAM_NAME_MASSES;
-
     static const std::string PARAM_NAME_SUBGRID_NODES;
     static const std::string PARAM_NAME_SUBGRID_LOWER_BOUNDS;
     static const std::string PARAM_NAME_SUBGRID_INTER_DEGREES;
@@ -64,9 +62,6 @@ public:
 
     // ##### GETTERS & SETTERS #####
 
-    void setThresholds(const std::vector<double>& thresholds);
-    void setMasses(const std::vector<double>& masses);
-
     void setSubgridNodes(const std::vector<int>& subgridNodes);
     void setSubgridLowerBounds(const std::vector<double>& subgridLowerBounds);
     void setSubgridInterDegrees(const std::vector<int>& subgridInterDegrees);
@@ -77,9 +72,6 @@ public:
     void setTabInterDegree(const int& tabInterDegree);
 
     void setPreviousXi(const double& xi_prev);
-
-    std::vector<double> getThresholds() const;
-    std::vector<double> getMasses() const;
 
     std::vector<int> getSubgridNodes() const;
     std::vector<double> getSubgridLowerBounds() const;
@@ -109,8 +101,6 @@ protected:
 
 private:
 
-    std::vector<double> m_thresholds;
-    std::vector<double> m_masses;
     std::vector<int> m_subgridNodes;
     std::vector<double> m_subgridLowerBounds;
     std::vector<int> m_subgridInterDegrees;

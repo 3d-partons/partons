@@ -5,9 +5,6 @@
 
 namespace PARTONS {
 
-const std::string GPDEvolutionApfel::PARAM_NAME_THRESHOLDS = "thresholds";
-const std::string GPDEvolutionApfel::PARAM_NAME_MASSES = "masses";
-
 const std::string GPDEvolutionApfel::PARAM_NAME_SUBGRID_NODES = "subgridNodes";
 const std::string GPDEvolutionApfel::PARAM_NAME_SUBGRID_LOWER_BOUNDS = "subgridLowerBounds";
 const std::string GPDEvolutionApfel::PARAM_NAME_SUBGRID_INTER_DEGREES = "subgridInterDegrees";
@@ -21,15 +18,13 @@ const unsigned int GPDEvolutionApfel::classId = BaseObjectRegistry::getInstance(
 
 GPDEvolutionApfel::GPDEvolutionApfel(const std::string &className) :
         GPDEvolutionModule(className),
-	m_thresholds({}),
-	m_masses({}),
-	m_subgridNodes({}),
-	m_subgridLowerBounds({}),
-	m_subgridInterDegrees({}),
-	m_tabNodes(0),
-	m_tabLowerBound(0),
-	m_tabUpperBound(0),
-	m_tabInterDegree(0),
+	m_subgridNodes({100, 60, 50, 50}),
+	m_subgridLowerBounds({0.0001, 0.1, 0.6, 0.8}),
+	m_subgridInterDegrees({3, 3, 3, 3}),
+	m_tabNodes(100),
+	m_tabLowerBound(1),
+	m_tabUpperBound(1000),
+	m_tabInterDegree(3),
         m_xi_prev(-1) {
 }
 
@@ -50,22 +45,6 @@ void GPDEvolutionApfel::resolveObjectDependencies() {
 
 void GPDEvolutionApfel::configure(const ElemUtils::Parameters &parameters) {
     GPDEvolutionModule::configure(parameters);
-
-    if (parameters.isAvailable(GPDEvolutionApfel::PARAM_NAME_THRESHOLDS)) {
-        setThresholds(parameters.getLastAvailable().toVectorDouble());
-	std::ostringstream oss;
-	std::copy(m_thresholds.begin(), m_thresholds.end(), std::ostream_iterator<double>(oss, " "));
-	info(__func__, ElemUtils::Formatter() << GPDEvolutionApfel::PARAM_NAME_THRESHOLDS
-	     << " configured with value = [ " << oss.str() << "] GeV");
-    }
-
-    if (parameters.isAvailable(GPDEvolutionApfel::PARAM_NAME_MASSES)) {
-        setMasses(parameters.getLastAvailable().toVectorDouble());
-	std::ostringstream oss;
-	std::copy(m_masses.begin(), m_masses.end(), std::ostream_iterator<double>(oss, " "));
-	info(__func__, ElemUtils::Formatter() << GPDEvolutionApfel::PARAM_NAME_MASSES
-	     << " configured with value = [ " << oss.str() << "] GeV");
-    }
 
     if (parameters.isAvailable(GPDEvolutionApfel::PARAM_NAME_SUBGRID_NODES)) {
         setSubgridNodes(parameters.getLastAvailable().toVectorInt());
@@ -139,8 +118,18 @@ PartonDistribution GPDEvolutionApfel::compute(GPDModule* pGPDModule, const GPDTy
     // Set current GPD type
     setGPDType(type);
 
+    // Get thresholds. Set to zero whatever is below one.
+    std::vector<double> thresholds;
+    std::vector<ActiveFlavorsThresholds> afts = m_pActiveFlavorsModule->getNfIntervals();
+    if (afts.size() == 1)
+      for (int i = 0; i < afts[0].getNf(); i++)
+	thresholds.push_back(0);
+    else
+      for (ActiveFlavorsThresholds aft : afts)
+	thresholds.push_back(aft.getLowerBound() < 1 ? 0 : sqrt(aft.getLowerBound()));
+
     // Initialize QCD evolution objects
-    const auto GpdObj = apfel::InitializeGpdObjects(*m_g, m_thresholds, m_xi);
+    const auto GpdObj = apfel::InitializeGpdObjects(*m_g, thresholds, m_xi);
 
     // Construct the DGLAP evolution operators
     const auto EvolvedGpds = apfel::BuildDglap(GpdObj, initialScaleDistributions(pGPDModule), sqrt(m_MuF2_ref), this->getPertOrder() - 1, m_as);
@@ -210,14 +199,6 @@ std::function<std::map<int, double>(double const&, double const&)> GPDEvolutionA
     };
 }
 
-void GPDEvolutionApfel::setThresholds(const std::vector<double>& thresholds) {
-  m_thresholds = thresholds;
-}
-
-void GPDEvolutionApfel::setMasses(const std::vector<double>& masses) {
-  m_masses = masses;
-}
-
 void GPDEvolutionApfel::setSubgridNodes(const std::vector<int>& subgridNodes) {
   m_subgridNodes = subgridNodes;
 }
@@ -248,14 +229,6 @@ void GPDEvolutionApfel::setTabInterDegree(const int& tabInterDegree) {
 
 void GPDEvolutionApfel::setPreviousXi(const double& xi_prev) {
   m_xi_prev = xi_prev;
-}
-
-std::vector<double> GPDEvolutionApfel::getThresholds() const {
-  return m_thresholds;
-}
-
-std::vector<double> GPDEvolutionApfel::getMasses() const {
-  return m_masses;
 }
 
 std::vector<int> GPDEvolutionApfel::getSubgridNodes() const {
@@ -292,8 +265,6 @@ double GPDEvolutionApfel::getPreviousXi() const {
 
 GPDEvolutionApfel::GPDEvolutionApfel(const GPDEvolutionApfel &other) :
     GPDEvolutionModule(other) {
-  m_thresholds          = other.getThresholds();
-  m_masses              = other.getMasses();
   m_subgridNodes        = other.getSubgridNodes();
   m_subgridLowerBounds  = other.getSubgridLowerBounds();
   m_subgridInterDegrees = other.getSubgridInterDegrees();
@@ -332,15 +303,6 @@ void GPDEvolutionApfel::isModuleWellConfigured() {
 
     if (m_MuR2 <= 0.)
       throw ElemUtils::CustomException(getClassName(), __func__, ElemUtils::Formatter() << "muR2 is out of range:" << m_MuR2);
-
-    if (m_thresholds.empty())
-        throw ElemUtils::CustomException(getClassName(), __func__, ElemUtils::Formatter() << "Vector of thresholds empty");
-
-    if (m_masses.empty())
-        throw ElemUtils::CustomException(getClassName(), __func__, ElemUtils::Formatter() << "Vector of masses empty");
-
-    if (m_thresholds.size() != m_masses.size())
-        throw ElemUtils::CustomException(getClassName(), __func__, ElemUtils::Formatter() << "Vectors of masses and thresholds different in size");
 
     if (m_subgridNodes.empty())
         throw ElemUtils::CustomException(getClassName(), __func__, ElemUtils::Formatter() << "Vector of numbers of grid nodes not correctly set (empty)");

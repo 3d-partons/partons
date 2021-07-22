@@ -69,33 +69,6 @@ void CollinearDistributionEvolutionApfel::prepareSubModules(
 PartonDistribution CollinearDistributionEvolutionApfel::compute(
 		CollinearDistributionModule* pCollinearDistributionModule) {
 
-	/*
-
-	 // Setup APFEL++ x-space
-	 std::vector<apfel::SubGrid> vsg;
-	 for (int i = 0; i < (int) m_subgridNodes.size(); i++)
-	 vsg.push_back(apfel::SubGrid { m_subgridNodes[i],
-	 m_subgridLowerBounds[i], m_subgridInterDegrees[i] });
-	 const apfel::Grid g { vsg };
-
-	 // Get thresholds. Set to zero whatever is below one.
-	 std::vector<double> thresholds;
-	 std::vector<ActiveFlavorsThresholds> afts =
-	 m_pActiveFlavorsModule->getNfIntervals();
-	 if (afts.size() == 1)
-	 for (int i = 0; i < afts[0].getNf(); i++)
-	 thresholds.push_back(0);
-	 else
-	 for (ActiveFlavorsThresholds aft : afts)
-	 thresholds.push_back(
-	 aft.getLowerBound() < 1 ?
-	 0 : sqrt(aft.getLowerBound()));
-
-	 // Initialize QCD evolution objects
-	 m_dglapobj = InitializeDglapObjectsQCD(g, thresholds);
-
-	 */
-
 	// Running coupling
 	const auto as = [=] (double const& mu) -> double {return getRunningAlphaStrongModule()->compute(mu * mu);};
 
