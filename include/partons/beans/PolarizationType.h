@@ -1,8 +1,8 @@
-#ifndef MESON_POLARIZATION_H
-#define MESON_POLARIZATION_H
+#ifndef POLARIZATION_TYPE_H
+#define POLARIZATION_TYPE_H
 
 /**
- * @file MesonPolarization.h
+ * @file PolarizationType.h
  * @author Pawel Sznajder (NCBJ)
  * @date 23 April 2019
  * @version 1.0
@@ -17,13 +17,13 @@ class Packet;
 namespace PARTONS {
 
 /**
- * @class MesonPolarization
+ * @class PolarizationType
  *
  * @brief Definition of enumeration values for meson polarization state.
  *
- * This class defines a set of enumeration values that are used to distinguish between meson polarization state. In addition, a declared object of this class is always associated to one meson type (see MesonPolarization::m_type), so member functions can act on it.
+ * This class defines a set of enumeration values that are used to distinguish between meson polarization state. In addition, a declared object of this class is always associated to one meson type (see PolarizationType::m_type), so member functions can act on it.
  */
-class MesonPolarization {
+class PolarizationType {
 
 public:
 
@@ -31,28 +31,35 @@ public:
      * Definition of enumerate values corresponding to meson polarization state.
      */
     enum Type {
+
         UNDEFINED = 0,      //!< Undefined type.
 
-        L = 1,   //!< Longitudinal.
-        T = 2    //!< Transverse.
+        LIN_LONG_PLUS = 1,   //!< Linear longitudinal (along z-axis) +.
+        LIN_LONG_MINUS = 2,   //!< Linear longitudinal (along z-axis) -.
+        LIN_TRANS_X_PLUS = 3,   //!< Linear transverse (along x-axis) +.
+        LIN_TRANS_X_MINUS = 4,   //!< Linear transverse (along x-axis) -.
+        LIN_TRANS_Y_PLUS = 5,   //!< Linear transverse (along y-axis) +.
+        LIN_TRANS_Y_MINUS = 6,   //!< Linear transverse (along y-axis)-+.
+        CIR_L = 7,   //!< Circular left.
+        CIR_R = 8,   //!< Circular right.
     };
 
     /**
      * Default constructor.
      */
-    MesonPolarization();
+    PolarizationType();
 
     /**
      * Assignment constructor.
      * @param type Type to be assigned.
      */
-    MesonPolarization(Type type);
+    PolarizationType(Type type);
 
     /**
      * Copy constructor.
      * @param other Object to be copied.
      */
-    MesonPolarization(const MesonPolarization &other);
+    PolarizationType(const PolarizationType &other);
 
     /**
      * Automatic cast to enum.
@@ -78,20 +85,20 @@ public:
     void unserialize(ElemUtils::Packet &packet);
 
     /**
-     * Relation operator that checks if the value of left operand is less than the value of right operand (based on values assigned in the definition of MesonPolarization::Type).
+     * Relation operator that checks if the value of left operand is less than the value of right operand (based on values assigned in the definition of PolarizationType::Type).
      * Used by std::sort function.
      * @param other Right hand value.
      * @return True if the value of left operand is less than the value of right operand, otherwise false.
      */
-    bool operator <(const MesonPolarization &other) const;
+    bool operator <(const PolarizationType &other) const;
 
     /**
      * Try to match meson polarization from given string.
-     * @param mesonPolarizationStr String to be matched.
-     * @return Matched type or MesonPolarization::UNDEFINED if unable to match.
+     * @param polarizationTypeStr String to be matched.
+     * @return Matched type or PolarizationType::UNDEFINED if unable to match.
      */
-    static MesonPolarization::Type fromString(
-            const std::string & mesonPolarizationStr);
+    static PolarizationType::Type fromString(
+            const std::string & polarizationTypeStr);
 
     //********************************************************
     //*** SETTERS AND GETTERS ********************************
@@ -100,7 +107,7 @@ public:
     /**
      * Get type being assigned to a declared object of this class.
      */
-    MesonPolarization::Type getType() const;
+    PolarizationType::Type getType() const;
 
     /**
      * Assign type to a declared object of this class.
@@ -112,22 +119,22 @@ private:
     /**
      * Type associated to a declared object of this class.
      */
-    MesonPolarization::Type m_type;
+    PolarizationType::Type m_type;
 };
 
 /**
- * Stream operator to serialize class into Packet. See also MesonPolarization::serialize().
+ * Stream operator to serialize class into Packet. See also PolarizationType::serialize().
  */
 ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
-        MesonPolarization& mesonPolarization);
+        PolarizationType& polarizationType);
 
 /**
- * Stream operator to retrieve class from Packet. See also MesonPolarization::unserialize().
+ * Stream operator to retrieve class from Packet. See also PolarizationType::unserialize().
  */
 ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
-        MesonPolarization& mesonPolarization);
+        PolarizationType& polarizationType);
 
 } /* namespace PARTONS */
 
-#endif /* MESON_POLARIZATION_H */
+#endif /* POLARIZATION_TYPE_H */
 

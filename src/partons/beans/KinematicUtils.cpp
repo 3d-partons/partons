@@ -6,7 +6,7 @@
 #include <ElementaryUtils/string_utils/StringUtils.h>
 #include <stddef.h>
 
-#include "../../../include/partons/beans/MesonPolarization.h"
+#include "../../../include/partons/beans/PolarizationType.h"
 #include "../../../include/partons/beans/MesonType.h"
 #include "../../../include/partons/utils/type/PhysicalType.h"
 
@@ -539,7 +539,7 @@ List<DVMPConvolCoeffFunctionKinematic> KinematicUtils::getDVMPCCFKinematicFromFi
                         PhysicalType<double>(kinematicValues[4],
                                 kinematicUnits[4]),
                         MesonType::fromString(kinematicValues[5]),
-                        MesonPolarization::fromString(kinematicValues[6]));
+                        PolarizationType::fromString(kinematicValues[6]));
 
                 kinematic.setIndexId(kinematicList.size());
 

@@ -25,12 +25,12 @@ DVMPConvolCoeffFunctionKinematic::DVMPConvolCoeffFunctionKinematic() :
                 ChannelType::DVMP), m_Q2(
                 PhysicalType<double>(PhysicalUnit::GEV2)), m_mesonType(
                 MesonType::UNDEFINED), m_mesonPolarization(
-                MesonPolarization::UNDEFINED) {
+                PolarizationType::UNDEFINED) {
 }
 
 DVMPConvolCoeffFunctionKinematic::DVMPConvolCoeffFunctionKinematic(double xi,
         double t, double Q2, double MuF2, double MuR2,
-        MesonType::Type mesonType, MesonPolarization::Type mesonPolarization) :
+        MesonType::Type mesonType, PolarizationType::Type mesonPolarization) :
         ConvolCoeffFunctionKinematic("DVMPConvolCoeffFunctionKinematic",
                 ChannelType::DVMP, xi, t, MuF2, MuR2), m_Q2(
                 PhysicalType<double>(Q2, PhysicalUnit::GEV2)), m_mesonType(
@@ -41,7 +41,7 @@ DVMPConvolCoeffFunctionKinematic::DVMPConvolCoeffFunctionKinematic(
         const PhysicalType<double> &xi, const PhysicalType<double> &t,
         const PhysicalType<double> &Q2, const PhysicalType<double> &MuF2,
         const PhysicalType<double> &MuR2, MesonType::Type mesonType,
-        MesonPolarization::Type mesonPolarization) :
+        PolarizationType::Type mesonPolarization) :
         ConvolCoeffFunctionKinematic("DVMPConvolCoeffFunctionKinematic",
                 ChannelType::DVMP, xi, t, MuF2, MuR2), m_Q2(
                 PhysicalType<double>(PhysicalUnit::GEV2)), m_mesonType(
@@ -56,7 +56,7 @@ DVMPConvolCoeffFunctionKinematic::DVMPConvolCoeffFunctionKinematic(
         const ElemUtils::GenericType &xi, const ElemUtils::GenericType &t,
         const ElemUtils::GenericType &Q2, const ElemUtils::GenericType &MuF2,
         const ElemUtils::GenericType &MuR2, MesonType::Type mesonType,
-        MesonPolarization::Type mesonPolarization) :
+        PolarizationType::Type mesonPolarization) :
         ConvolCoeffFunctionKinematic("DVMPConvolCoeffFunctionKinematic",
                 ChannelType::DVMP, xi, t, MuF2, MuR2), m_Q2(
                 PhysicalType<double>(Q2, PhysicalUnit::GEV2)), m_mesonType(
@@ -117,7 +117,7 @@ void DVMPConvolCoeffFunctionKinematic::configure(
     if (parameters.isAvailable(
             DVMPConvolCoeffFunctionKinematic::KINEMATIC_PARAMETER_NAME_MESON_POLARIZATION)) {
         setMesonPolarization(
-                MesonPolarization::fromString(
+                PolarizationType::fromString(
                         parameters.getLastAvailable().getString()));
     } else {
         errorMissingParameter(
@@ -135,7 +135,7 @@ std::string DVMPConvolCoeffFunctionKinematic::toString() const {
         formatter << "Q2: " << m_Q2.toString() << ' ';
     formatter << "meson type: " << MesonType(m_mesonType).toString() << ' ';
     formatter << "meson polarization: "
-            << MesonPolarization(m_mesonPolarization).toString() << ' ';
+            << PolarizationType(m_mesonPolarization).toString() << ' ';
 
     return formatter.str();
 }
@@ -147,7 +147,7 @@ void DVMPConvolCoeffFunctionKinematic::updateHashSum() const {
                             << m_t.toStdString() << m_Q2.toStdString()
                             << m_MuF2.toStdString() << m_MuR2.toStdString()
                             << MesonType(m_mesonType).toString()
-                            << MesonPolarization(m_mesonPolarization).toString()));
+                            << PolarizationType(m_mesonPolarization).toString()));
 }
 
 void DVMPConvolCoeffFunctionKinematic::serialize(
@@ -156,7 +156,7 @@ void DVMPConvolCoeffFunctionKinematic::serialize(
     ConvolCoeffFunctionKinematic::serialize(packet);
 
     packet << m_Q2 << MesonType(m_mesonType)
-            << MesonPolarization(m_mesonPolarization);
+            << PolarizationType(m_mesonPolarization);
 }
 
 void DVMPConvolCoeffFunctionKinematic::unserialize(ElemUtils::Packet& packet) {
@@ -169,7 +169,7 @@ void DVMPConvolCoeffFunctionKinematic::unserialize(ElemUtils::Packet& packet) {
     packet >> mesonType;
     m_mesonType = mesonType.getType();
 
-    MesonPolarization mesonPolarization;
+    PolarizationType mesonPolarization;
     packet >> mesonPolarization;
     m_mesonPolarization = mesonPolarization.getType();
 
@@ -195,7 +195,7 @@ void DVMPConvolCoeffFunctionKinematic::unserializeFromStdVector(
     m_Q2.unserializeFromStdVector(it, end);
     m_mesonType = static_cast<MesonType::Type>(*it);
     it++;
-    m_mesonPolarization = static_cast<MesonPolarization::Type>(*it);
+    m_mesonPolarization = static_cast<PolarizationType::Type>(*it);
     it++;
 
     updateHashSum();
@@ -222,7 +222,7 @@ MesonType::Type DVMPConvolCoeffFunctionKinematic::getMesonType() const {
     return m_mesonType;
 }
 
-MesonPolarization::Type DVMPConvolCoeffFunctionKinematic::getMesonPolarization() const {
+PolarizationType::Type DVMPConvolCoeffFunctionKinematic::getMesonPolarization() const {
     return m_mesonPolarization;
 }
 
@@ -245,7 +245,7 @@ void DVMPConvolCoeffFunctionKinematic::setMesonType(MesonType::Type mesonType) {
 }
 
 void DVMPConvolCoeffFunctionKinematic::setMesonPolarization(
-        MesonPolarization::Type mesonPolarization) {
+        PolarizationType::Type mesonPolarization) {
 
     m_mesonPolarization = mesonPolarization;
     updateHashSum();

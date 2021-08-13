@@ -54,10 +54,10 @@ meson_type_id INTEGER NOT NULL PRIMARY KEY,
 meson_type_short_name VARCHAR(10),
 meson_type_long_name VARCHAR(255));
 
-CREATE TABLE meson_polarization (
-meson_polarization_id INTEGER NOT NULL PRIMARY KEY,
-meson_polarization_short_name VARCHAR(10),
-meson_polarization_long_name VARCHAR(255));
+CREATE TABLE polarization_type (
+polarization_type_id INTEGER NOT NULL PRIMARY KEY,
+polarization_type_short_name VARCHAR(10),
+polarization_type_long_name VARCHAR(255));
 
 CREATE VIEW result_info_view AS
 SELECT c.computation_id, c.computation_date, sc.scenario_task_index_number, ec.env_conf_hash_sum, s.scenario_hash_sum
@@ -356,15 +356,32 @@ VALUES ('9', 'pi0', 'PI0');
 INSERT INTO meson_type (meson_type_id, meson_type_short_name, meson_type_long_name)
 VALUES ('10', 'pi+', 'PIPLUS');
 
-/* === meson_polarization === */
+/* === polarization_type === */
 
-INSERT INTO meson_polarization (meson_polarization_id, meson_polarization_short_name, meson_polarization_long_name)
+INSERT INTO polarization_type (polarization_type_id, polarization_type_short_name, polarization_type_long_name)
 VALUES ('0', 'UNDEFINED', 'UNDEFINED');
 
-INSERT INTO meson_polarization (meson_polarization_id, meson_polarization_short_name, meson_polarization_long_name)
-VALUES ('1', 'L', 'L');
+INSERT INTO polarization_type (polarization_type_id, polarization_type_short_name, polarization_type_long_name)
+VALUES ('1', 'lin_L_p', 'LIN_LONG_PLUS');
 
+INSERT INTO polarization_type (polarization_type_id, polarization_type_short_name, polarization_type_long_name)
+VALUES ('2', 'lin_L_m', 'LIN_LONG_MINUS');
 
-INSERT INTO meson_polarization (meson_polarization_id, meson_polarization_short_name, meson_polarization_long_name)
-VALUES ('2', 'T', 'T');
+INSERT INTO polarization_type (polarization_type_id, polarization_type_short_name, polarization_type_long_name)
+VALUES ('3', 'lin_Tx_p', 'LIN_TRANS_X_PLUS');
+
+INSERT INTO polarization_type (polarization_type_id, polarization_type_short_name, polarization_type_long_name)
+VALUES ('4', 'lin_Tx_m', 'LIN_TRANS_X_MINUS');
+
+INSERT INTO polarization_type (polarization_type_id, polarization_type_short_name, polarization_type_long_name)
+VALUES ('5', 'lin_Ty_p', 'LIN_TRANS_Y_PLUS');
+
+INSERT INTO polarization_type (polarization_type_id, polarization_type_short_name, polarization_type_long_name)
+VALUES ('6', 'lin_Ty_m', 'LIN_TRANS_Y_MINUS');
+
+INSERT INTO polarization_type (polarization_type_id, polarization_type_short_name, polarization_type_long_name)
+VALUES ('7', 'cir_L', 'CIR_L');
+
+INSERT INTO polarization_type (polarization_type_id, polarization_type_short_name, polarization_type_long_name)
+VALUES ('8', 'cir_R', 'CIR_R');
 

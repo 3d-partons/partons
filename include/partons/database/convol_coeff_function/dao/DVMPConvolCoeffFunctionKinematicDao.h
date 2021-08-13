@@ -13,7 +13,7 @@
 
 #include "../../../beans/convol_coeff_function/DVMP/DVMPConvolCoeffFunctionKinematic.h"
 #include "../../../beans/List.h"
-#include "../../../beans/MesonPolarization.h"
+#include "../../../beans/PolarizationType.h"
 #include "../../../beans/MesonType.h"
 #include "../../../utils/type/PhysicalType.h"
 #include "ConvolCoeffFunctionKinematicDao.h"
@@ -54,7 +54,7 @@ public:
     int insert(const PhysicalType<double>& xi, const PhysicalType<double>& t,
             const PhysicalType<double>& Q2, const PhysicalType<double>& MuF2,
             const PhysicalType<double>& MuR2, MesonType::Type mesonType,
-            MesonPolarization::Type mesonPolarization,
+            PolarizationType::Type mesonPolarization,
             const std::string& hashSum) const;
 
     /**
@@ -71,7 +71,7 @@ public:
     int select(const PhysicalType<double>& xi, const PhysicalType<double>& t,
             const PhysicalType<double>& Q2, const PhysicalType<double>& MuF2,
             const PhysicalType<double>& MuR2, MesonType::Type mesonType,
-            MesonPolarization::Type mesonPolarization) const;
+            PolarizationType::Type mesonPolarization) const;
 
     /**
      * Retrieve CFF kinematics from the database by given unique id of row.

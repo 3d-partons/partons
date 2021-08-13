@@ -24,7 +24,7 @@ DVMPConvolCoeffFunctionKinematicDao::~DVMPConvolCoeffFunctionKinematicDao() {
 int DVMPConvolCoeffFunctionKinematicDao::insert(const PhysicalType<double>& xi,
         const PhysicalType<double>& t, const PhysicalType<double>& Q2,
         const PhysicalType<double>& MuF2, const PhysicalType<double>& MuR2,
-        MesonType::Type mesonType, MesonPolarization::Type mesonPolarization,
+        MesonType::Type mesonType, PolarizationType::Type mesonPolarization,
         const std::string& hashSum) const {
 
     //check if already in db
@@ -74,7 +74,7 @@ int DVMPConvolCoeffFunctionKinematicDao::select(const PhysicalType<double>& xi,
         const PhysicalType<double>& t, const PhysicalType<double>& Q2,
         const PhysicalType<double>& MuF2, const PhysicalType<double>& MuR2,
         MesonType::Type mesonType,
-        MesonPolarization::Type mesonPolarization) const {
+        PolarizationType::Type mesonPolarization) const {
 
     //result
     int result = -1;
@@ -225,8 +225,8 @@ void DVMPConvolCoeffFunctionKinematicDao::fillKinematicFromQuery(
             field_MuR2_unit).toInt());
     MesonType::Type meson_type = static_cast<MesonType::Type>(query.value(
             field_meson_type).toInt());
-    MesonPolarization::Type meson_polarization =
-            static_cast<MesonPolarization::Type>(query.value(
+    PolarizationType::Type meson_polarization =
+            static_cast<PolarizationType::Type>(query.value(
                     field_meson_polarization).toInt());
 
     kinematic = DVMPConvolCoeffFunctionKinematic(

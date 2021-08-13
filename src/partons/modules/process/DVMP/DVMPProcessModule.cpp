@@ -30,7 +30,7 @@ DVMPProcessModule::DVMPProcessModule(const std::string &className) :
         ProcessModule(className, ChannelType::DVMP), m_xB(0.), m_t(0.), m_Q2(
                 0.), m_E(0.), m_phi(0.), m_mesonType(MesonType::UNDEFINED), m_beamHelicity(
                 0.), m_beamCharge(0.), m_mesonPolarization(
-                MesonPolarization::UNDEFINED), m_tmin(0.), m_tmax(0.), m_xBmin(
+                PolarizationType::UNDEFINED), m_tmin(0.), m_tmax(0.), m_xBmin(
                 0), m_y(0.), m_pScaleModule(0), m_pXiConverterModule(0), m_pConvolCoeffFunctionModule(
                 0) {
 }
@@ -255,7 +255,7 @@ List<GPDType> DVMPProcessModule::getListOfAvailableGPDTypeForComputation() const
 
 DVMPObservableResult DVMPProcessModule::compute(double beamHelicity,
         double beamCharge, NumA::Vector3D targetPolarization,
-        MesonPolarization::Type mesonPolarization,
+        PolarizationType::Type mesonPolarization,
         const DVMPObservableKinematic& kinematic,
         const List<GPDType>& gpdType) {
 
@@ -388,7 +388,7 @@ void DVMPProcessModule::setKinematics(
 
 void DVMPProcessModule::setExperimentalConditions(double beamHelicity,
         double beamCharge, NumA::Vector3D targetPolarization,
-        MesonPolarization::Type mesonPolarization) {
+        PolarizationType::Type mesonPolarization) {
 
     m_beamHelicity = beamHelicity;
     m_beamCharge = beamCharge;
@@ -523,7 +523,7 @@ void DVMPProcessModule::isModuleWellConfigured() {
 
 void DVMPProcessModule::computeConvolCoeffFunction(
         const DVMPObservableKinematic& kinematic,
-        MesonPolarization::Type mesonPolarization,
+        PolarizationType::Type mesonPolarization,
         const List<GPDType>& gpdType) {
 
     //compute scales
