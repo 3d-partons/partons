@@ -71,6 +71,47 @@ public:
     void setRunningAlphaStrongModule(
             RunningAlphaStrongModule* pRunningAlphaStrongModule);
 
+    double A(double, std::vector<double>, std::vector<double>, std::vector<double>); // Trace \mathcal{A}, see Eq. 25
+
+    // Eq. 49
+    std::complex <double> M3M(double, double, double,
+                              std::vector<double>, std::vector<double>, std::vector<double>);
+
+    // Trace structures in amplitudes 4.L and 5.L - Eqs. 50 and 51
+    // Tr_4/5L_Fnab stands by the function F(n, a, b, ...)
+    double Tr_4L_F210(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
+    double Tr_4L_F201(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
+    double Tr_4L_F211(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
+    double Tr_4L_F220(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
+    double Tr_4L_F221(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
+    double Tr_4L_F100(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
+    double Tr_4L_F110(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
+    double Tr_4L_G(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
+    double Tr_5L_F201(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
+    double Tr_5L_F210(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
+    double Tr_5L_F211(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
+    double Tr_5L_F220(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
+    double Tr_5L_F221(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
+    double Tr_5L_F100(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
+    double Tr_5L_F110(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
+    double Tr_5L_G(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
+
+    // Functions F(n, a, b, ...)
+
+    std::complex<double> F100(std::complex<double> a, std::complex<double> b, std::complex<double> c);
+    std::complex<double> F110(std::complex<double> a, std::complex<double> b, std::complex<double> c);
+    std::complex<double> F210(std::complex<double> a, std::complex<double> b, std::complex<double> c);
+    std::complex<double> F211(std::complex<double> a, std::complex<double> b, std::complex<double> c);
+    std::complex<double> F220(std::complex<double> a, std::complex<double> b, std::complex<double> c);
+    std::complex<double> F221(std::complex<double> a, std::complex<double> b, std::complex<double> c);
+    std::complex<double> G(std::complex<double> a, std::complex<double> b, std::complex<double> c);
+
+    // Amplitudes 4.L and 4.R, see Eqs. 50 and 51
+
+    std::complex<double> M4L(double s, double x, double xi,
+                      std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
+    std::complex<double> M5L(double s, double x, double xi,
+                      std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
 protected:
     /**
      * Copy constructor.
