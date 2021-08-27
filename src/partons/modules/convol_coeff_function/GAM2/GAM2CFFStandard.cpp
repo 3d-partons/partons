@@ -169,6 +169,29 @@ double GAM2CFFStandard::A(double s, std::vector<double> beta, std::vector<double
     return s * ( beta[0] * ( ee[0] * ek[0] - ee[1] * ek[1] ) + beta[2] * ( ee[1] * ek[1] - ee[2] * ek[2] ) ) / 8.;
 }
 
+std::complex<double> GAM2CFFStandard::M0(double s, double x, double xi,
+                      std::vector<double> beta, std::vector<double> ee, std::vector<double> ek){
+
+    std::complex<double> result;
+    result = -4. / s / s;
+    result /= std::complex<double>( (x + xi) * beta[0], epsilon) * std::complex<double>( (x - xi) * beta[2], -epsilon);
+    result *= A(s, beta, ee, ek);
+
+    return result;
+}
+
+std::complex<double> GAM2CFFStandard::M23LR(double s, double x, double xi,
+                      std::vector<double> beta, std::vector<double> ee, std::vector<double> ek){
+    std::complex<double> result;
+    result = -5.;
+    result += std::log( std::complex<double>( -(x + xi) * beta[0] / 2. / xi, -epsilon) );
+    result += std::log( std::complex<double>( (x - xi) * beta[2] / 2. / xi, -epsilon) );
+    result *= M0(s, x, xi, beta, ee, ek);
+    result *= CF * m_pRunningAlphaStrongModule->compute(m_MuF2) / 2. / Constant::PI;
+
+    return result;
+}
+
 // Eq. 49
 std::complex <double> GAM2CFFStandard::M3M(double s, double x, double xi,
                           std::vector<double> beta, std::vector<double> ee, std::vector<double> ek){
@@ -385,7 +408,7 @@ std::complex<double> Li2 (std::complex<double> z){
 
     gsl_sf_result res_re, res_im;
 
-    gsl_sf_complex_dilog_e(Re, Im, &res_re, &res_im);
+    gsl_sf_complex_dilog_e(r, theta, &res_re, &res_im);
 
     return std::complex<double> ((res_re).val, (res_im).val);
 
@@ -659,9 +682,123 @@ std::complex<double> GAM2CFFStandard::M5L(double s, double x, double xi,
        return result;
 }
 
-std::complex<double> compute_vector_permutation(double x, double xi, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek){
+std::complex<double> GAM2CFFStandard::M4R(double s, double x, double xi,
+                  std::vector<double> beta, std::vector<double> ee, std::vector<double> ek){
 
-    return 0.;
+    std::vector<double> betaPrim = beta;
+    std::vector<double> eePrim = ee;
+    std::vector<double> ekPrim = ek;
+
+    betaPrim[0] = - beta[2];
+    betaPrim[1] = - beta[1];
+    betaPrim[2] = - beta[0];
+
+    eePrim[0] = ee[2];
+    eePrim[2] = ee[0];
+
+    ekPrim[0] = ek[2];
+    ekPrim[2] = ek[0];
+
+    return M4L(s, x, -xi, betaPrim, eePrim, ekPrim);
+
+}
+
+std::complex<double> GAM2CFFStandard::M5R(double s, double x, double xi,
+                  std::vector<double> beta, std::vector<double> ee, std::vector<double> ek){
+
+    std::vector<double> betaPrim = beta;
+    std::vector<double> eePrim = ee;
+    std::vector<double> ekPrim = ek;
+
+    betaPrim[0] = - beta[2];
+    betaPrim[1] = - beta[1];
+    betaPrim[2] = - beta[0];
+
+    eePrim[0] = ee[2];
+    eePrim[2] = ee[0];
+
+    ekPrim[0] = ek[2];
+    ekPrim[2] = ek[0];
+
+    return M5L(s, x, -xi, betaPrim, eePrim, ekPrim);
+
+}
+
+    // Eq. 52
+    std::complex<double> GAM2CFFStandard::M_scale(double s, double x, double xi,
+            std::vector<double> beta, std::vector<double> ee, std::vector<double> ek){
+
+        std::complex<double> result;
+        result = (x + xi) / xi * log( std::complex<double>( (xi - x) / 2. / xi, epsilon * beta[2]));
+        result -= (x - xi) / xi * log( std::complex<double>( (xi + x) / 2. / xi, epsilon * beta[0]));
+        result *= M0(s, x, xi, beta, ee, ek);
+        result *= - CF * m_pRunningAlphaStrongModule->compute(m_MuF2) / 4. / Constant::PI * log(2. * xi);
+
+        return result;
+    }
+
+    // The collinear term
+    std::complex<double> GAM2CFFStandard::Ccoll(double s, double x, double xi,
+            std::vector<double> beta, std::vector<double> ee, std::vector<double> ek){
+
+        std::complex<double> result (3., .0);
+        result += (x + xi) * log( std::complex<double>( (xi - x) / 2. / xi, epsilon * beta[2]));
+        result -= (x - xi) * log( std::complex<double>( (xi + x) / 2. / xi, epsilon * beta[0]));
+        result *= M0(s, x, xi, beta, ee, ek);
+        result *= CF * m_pRunningAlphaStrongModule->compute(m_MuF2) / 4. / Constant::PI;
+
+        return result;
+
+    }
+
+// Vector NLO amplitude - a single permutation of photons
+std::complex<double> GAM2CFFStandard::NLO_V_permutation(double s, double x, double xi, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek){
+
+    std::complex<double> result (0., 0.);
+
+    result += M23LR(s, x, xi, beta, ee, ek);
+    result += M3M(s, x, xi, beta, ee, ek);
+    result += M4L(s, x, xi, beta, ee, ek);
+    result += M4R(s, x, xi, beta, ee, ek);
+    result += M5L(s, x, xi, beta, ee, ek);
+    result += M5R(s, x, xi, beta, ee, ek);
+    result += M_scale(s, x, xi, beta, ee, ek);
+    result += log( 2. * xi * s / m_MuF2) * Ccoll(s, x, xi, beta, ee, ek);
+
+    return result;
+}
+
+std::complex<double> GAM2CFFStandard::NLO_V(double s, double x, double xi, std::vector<double> beta0, std::vector<double> ee0, double ek0[][3]){
+
+    std::complex<double> result (0., 0.);
+
+    for(int i = 0; i < 3; i++){
+         for(int j = 0; j < 3; j++){
+             if (i==j) continue;
+             for(int k = 0; k < 3; k++){
+               if (k==i || k==j) continue;
+               std::vector<double> beta;
+               std::vector<double> ee;
+               std::vector<double> ek;
+
+               beta.push_back(beta0[i]);
+               beta.push_back(beta0[j]);
+               beta.push_back(beta0[k]);
+
+               ee.push_back(ee0[i]);
+               ee.push_back(ee0[j]);
+               ee.push_back(ee0[k]);
+
+               ek.push_back( ek0[i][j] );
+               ek.push_back( ek0[j][i] );
+               ek.push_back( ek0[k][i] );
+
+               result += NLO_V_permutation(s, x, xi, beta, ee, ek);
+             }
+         }
+     }
+
+    return result;
 }
 
 std::complex<double> GAM2CFFStandard::computeUnpolarized() {
@@ -687,7 +824,40 @@ std::complex<double> GAM2CFFStandard::computeUnpolarized() {
     double s = ( m_Mgg2 - m_t ) / tau / ( 1. + m_xi );
     double pt2 = - ( m_uPrim * tPrim ) / ( m_uPrim + tPrim );
     double alpha = m_uPrim / ( m_uPrim + tPrim );
-    double alphabar = 1 - alpha;
+    double alphabar = 1. - alpha;
+
+    // beta_i is defined by 2pk_i = beta_i * s
+    // {k_i} are the following: {q, -q_1, -q_2)
+    // All permutations of {k_i} have to be considered in the amplitude
+    std::vector<double> beta0;
+    beta0.push_back(1.);
+    beta0.push_back(-1. * alpha);
+    beta0.push_back(-1. * alphabar);
+
+    // ee[i] is defined by ee[i] = epsilon_j * epsilon_k, where all i,j,k are different
+    // A different notation is used in the paper, here ee[0] = e23, ee[1] = e13, ee[2] = e12
+    std::vector<double> ee0;
+    ee0.push_back( - double(m_polG1 == m_polG2) );
+    ee0.push_back( - double(m_polG0 == m_polG2) );
+    ee0.push_back( - double(m_polG1 == m_polG0) );
+
+    // ek0[i][j] = epsilon_i * k_j
+    // This matrix will be used to make the vector ek[i] for a given permutation
+    // See Eq. 16
+    double ek0[3][3];
+
+    ek0[0][0] = 0.;   ek0[1][1] = 0.;   ek0[2][2] = 0.;
+    ek0[0][1] = sqrt(pt2) * double(m_polG0 == 3);
+    ek0[0][2] = - sqrt(pt2) * double(m_polG0 == 3);
+    ek0[1][0] = sqrt(pt2) * double(m_polG1 == 3) / alpha;
+    ek0[1][2] = - sqrt(pt2) * double(m_polG1 == 3) / alpha;
+    ek0[2][0] = - sqrt(pt2) * double(m_polG2 == 3) / alphabar;
+    ek0[2][1] = sqrt(pt2) * double(m_polG2 == 3) / alphabar;
+
+    // TODO: function NLO_V returns the NLO vector amplitude. We need to integrate it with the appropriate GPDs.
+    // After obtaining \cal{H} and \cal{E} (see Eqs. 3.8 - 3.9 in my thesis), we are left with simple algebra.
+    // + we need to add the LO contribution, but for the we do not need to integrate.
+
 
     std::vector<double> emptyParameters;
 

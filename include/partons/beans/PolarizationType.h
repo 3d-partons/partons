@@ -114,6 +114,21 @@ public:
      */
     void setType(Type type);
 
+    double pol_vectors_product(PolarizationType::Type Pol1, PolarizationType::Type Pol2){
+        if( (Pol1 != LIN_TRANS_X_PLUS && Pol1 != LIN_TRANS_Y_PLUS) || (Pol2 != LIN_TRANS_X_PLUS && Pol2 != LIN_TRANS_Y_PLUS)) return 0.;
+        else if (Pol1 == Pol2) return -1.;
+        else return 0.;
+        // product of polarization vectors corresponding to polarizations Pol1 and Pol2
+        // for now, I consider only +x and +y polarizations
+    }
+
+    double pol_projected_on_x(PolarizationType::Type Pol){
+        if(Pol== LIN_TRANS_X_PLUS) return 1.;
+        else return 0.;
+        // projection of the polarization vector on the x axis.
+        // for now, only the +x or +y polarizations are under consideration
+    }
+
 private:
 
     /**

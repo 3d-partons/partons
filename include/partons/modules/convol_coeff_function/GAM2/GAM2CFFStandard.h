@@ -71,7 +71,39 @@ public:
     void setRunningAlphaStrongModule(
             RunningAlphaStrongModule* pRunningAlphaStrongModule);
 
-    double A(double, std::vector<double>, std::vector<double>, std::vector<double>); // Trace \mathcal{A}, see Eq. 25
+protected:
+    /**
+     * Copy constructor.
+     * @param other
+     */
+    GAM2CFFStandard(const GAM2CFFStandard &other);
+
+    virtual void initModule();
+    virtual void isModuleWellConfigured();
+
+    virtual std::complex<double> computeUnpolarized();
+    virtual std::complex<double> computePolarized();
+
+private:
+
+    RunningAlphaStrongModule *m_pRunningAlphaStrongModule; ///< Related alphaS module.
+
+    void initFunctorsForIntegrations(); ///< Initialize functors.
+
+    double exampleIntegration(double x, std::vector<double> params); ///< Exemplary integration.
+
+    NumA::FunctionType1D* m_pExampleIntegration; ///< Functor.
+
+    // Trace \mathcal{A}, see Eq. 25
+    double A(double, std::vector<double>, std::vector<double>, std::vector<double>);
+
+    // LO amplitude, see Eq. 24
+    std::complex<double> M0(double, double, double,
+            std::vector<double>, std::vector<double>, std::vector<double>);
+
+    // Sum of finite parts of amplitudes 2.L/R and 3.L/R, see Eqs. 30-33
+    std::complex<double> M23LR(double, double, double,
+            std::vector<double>, std::vector<double>, std::vector<double>);
 
     // Eq. 49
     std::complex <double> M3M(double, double, double,
@@ -106,34 +138,31 @@ public:
     std::complex<double> F221(std::complex<double> a, std::complex<double> b, std::complex<double> c);
     std::complex<double> G(std::complex<double> a, std::complex<double> b, std::complex<double> c);
 
-    // Amplitudes 4.L and 4.R, see Eqs. 50 and 51
+    // Amplitudes 4.L/R and 5.L/R, see Eqs. 50 and 51
 
     std::complex<double> M4L(double s, double x, double xi,
                       std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
     std::complex<double> M5L(double s, double x, double xi,
                       std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
-protected:
-    /**
-     * Copy constructor.
-     * @param other
-     */
-    GAM2CFFStandard(const GAM2CFFStandard &other);
+    std::complex<double> M4R(double s, double x, double xi,
+                      std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
+    std::complex<double> M5R(double s, double x, double xi,
+                      std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
 
-    virtual void initModule();
-    virtual void isModuleWellConfigured();
+    // Eq. 52
+    std::complex<double> M_scale(double s, double x, double xi,
+            std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
 
-    virtual std::complex<double> computeUnpolarized();
-    virtual std::complex<double> computePolarized();
+    // The collinear term
+    std::complex<double> Ccoll(double s, double x, double xi,
+            std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
 
-private:
+    // Vector NLO amplitude - a single permutation of photons
+    std::complex<double> NLO_V_permutation(double s, double x, double xi, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
 
-    RunningAlphaStrongModule *m_pRunningAlphaStrongModule; ///< Related alphaS module.
+    // The full NLO vector amplitude
+    std::complex<double> NLO_V(double s, double x, double xi, std::vector<double> beta, std::vector<double> ee, double ek0[][3]);
 
-    void initFunctorsForIntegrations(); ///< Initialize functors.
-
-    double exampleIntegration(double x, std::vector<double> params); ///< Exemplary integration.
-
-    NumA::FunctionType1D* m_pExampleIntegration; ///< Functor.
 };
 
 } /* namespace PARTONS */
