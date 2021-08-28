@@ -84,15 +84,19 @@ protected:
     virtual std::complex<double> computeUnpolarized();
     virtual std::complex<double> computePolarized();
 
+    double m_CF = 4. / 3.;                     ///< ( Nc^2 - 1 ) / ( 2 Nc ) (colour)
+
+
 private:
 
     RunningAlphaStrongModule *m_pRunningAlphaStrongModule; ///< Related alphaS module.
 
+    NumA::FunctionType1D* m_pConvol_NLO_V_Re;
+    NumA::FunctionType1D* m_pConvol_NLO_V_Im;
+
     void initFunctorsForIntegrations(); ///< Initialize functors.
 
     double exampleIntegration(double x, std::vector<double> params); ///< Exemplary integration.
-
-    NumA::FunctionType1D* m_pExampleIntegration; ///< Functor.
 
     // Trace \mathcal{A}, see Eq. 25
     double A(double, std::vector<double>, std::vector<double>, std::vector<double>);
@@ -160,8 +164,16 @@ private:
     // Vector NLO amplitude - a single permutation of photons
     std::complex<double> NLO_V_permutation(double s, double x, double xi, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
 
+    double computeCubedChargeAveragedGPD(
+            const PartonDistribution &partonDistribution);
+
     // The full NLO vector amplitude
-    std::complex<double> NLO_V(double s, double x, double xi, std::vector<double> beta, std::vector<double> ee, double ek0[][3]);
+    std::complex<double> Convol_NLO_V(double x, std::vector<double> params);
+
+    double Convol_NLO_V_Re(double x, std::vector<double> params);
+
+    double Convol_NLO_V_Im(double x, std::vector<double> params);
+
 
 };
 

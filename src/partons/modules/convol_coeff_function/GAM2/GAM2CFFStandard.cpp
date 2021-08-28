@@ -106,8 +106,10 @@ void GAM2CFFStandard::prepareSubModules(
 }
 
 void GAM2CFFStandard::initFunctorsForIntegrations() {
-    m_pExampleIntegration = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GAM2CFFStandard::exampleIntegration);
+    m_pConvol_NLO_V_Re = NumA::Integrator1D::newIntegrationFunctor(this,
+            &GAM2CFFStandard::Convol_NLO_V_Re);
+    m_pConvol_NLO_V_Im = NumA::Integrator1D::newIntegrationFunctor(this,
+                &GAM2CFFStandard::Convol_NLO_V_Im);
 }
 
 GAM2CFFStandard::~GAM2CFFStandard() {
@@ -117,10 +119,14 @@ GAM2CFFStandard::~GAM2CFFStandard() {
         m_pRunningAlphaStrongModule = 0;
     }
 
-    if (m_pExampleIntegration) {
-        delete m_pExampleIntegration;
-        m_pExampleIntegration = 0;
+    if (m_pConvol_NLO_V_Re) {
+        delete m_pConvol_NLO_V_Re;
+        m_pConvol_NLO_V_Re = 0;
     }
+    if (m_pConvol_NLO_V_Im) {
+            delete m_pConvol_NLO_V_Im;
+            m_pConvol_NLO_V_Im = 0;
+        }
 }
 
 void GAM2CFFStandard::initModule() {
@@ -162,7 +168,6 @@ void GAM2CFFStandard::isModuleWellConfigured() {
 }
 
 double epsilon = 10E-7; // infinitesimal part inserted 'by hand'
-double CF = 4. / 3.;
 
 // Trace \mathcal{A}, see Eq. 25
 double GAM2CFFStandard::A(double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek){
@@ -187,7 +192,7 @@ std::complex<double> GAM2CFFStandard::M23LR(double s, double x, double xi,
     result += std::log( std::complex<double>( -(x + xi) * beta[0] / 2. / xi, -epsilon) );
     result += std::log( std::complex<double>( (x - xi) * beta[2] / 2. / xi, -epsilon) );
     result *= M0(s, x, xi, beta, ee, ek);
-    result *= CF * m_pRunningAlphaStrongModule->compute(m_MuF2) / 2. / Constant::PI;
+    result *= m_CF * m_pRunningAlphaStrongModule->compute(m_MuF2) / 2. / Constant::PI;
 
     return result;
 }
@@ -227,7 +232,7 @@ std::complex <double> GAM2CFFStandard::M3M(double s, double x, double xi,
 
     result += aux;
 
-    result *= - CF * m_pRunningAlphaStrongModule->compute(m_MuF2) / 4. / Constant::PI / s / s;
+    result *= - m_CF * m_pRunningAlphaStrongModule->compute(m_MuF2) / 4. / Constant::PI / s / s;
     result /= std::complex<double>( (x + xi) * beta[0], epsilon) * std::complex<double>( (x - xi) * beta[2], -epsilon);
 
     return result;
@@ -637,7 +642,7 @@ std::complex<double> GAM2CFFStandard::M4L(double s, double x, double xi,
         result += s * F110( (x + xi) * beta[0], ( 2. * xi * beta[2] ), (x+xi) * beta[1] ) *
         Tr_4L_F110(xi, s, beta, ee, ek);
 
-        result *= - CF * m_pRunningAlphaStrongModule->compute(m_MuF2) / 4. / Constant::PI;
+        result *= - m_CF * m_pRunningAlphaStrongModule->compute(m_MuF2) / 4. / Constant::PI;
         result /= std::pow(s, 3);
         result /= std::complex<double>( beta[2], -epsilon);
 
@@ -675,7 +680,7 @@ std::complex<double> GAM2CFFStandard::M5L(double s, double x, double xi,
         result += s * F110( (x + xi) * beta[0], ( 2. * xi * beta[2] ), (x+xi) * beta[1] ) *
         Tr_5L_F110(xi, s, beta, ee, ek);
 
-        result *= - CF * m_pRunningAlphaStrongModule->compute(m_MuF2) / 4. / Constant::PI;
+        result *= - m_CF * m_pRunningAlphaStrongModule->compute(m_MuF2) / 4. / Constant::PI;
         result /= std::pow(s, 2);
         result /= xi;
 
@@ -725,27 +730,27 @@ std::complex<double> GAM2CFFStandard::M5R(double s, double x, double xi,
 }
 
     // Eq. 52
-    std::complex<double> GAM2CFFStandard::M_scale(double s, double x, double xi,
+std::complex<double> GAM2CFFStandard::M_scale(double s, double x, double xi,
             std::vector<double> beta, std::vector<double> ee, std::vector<double> ek){
 
         std::complex<double> result;
         result = (x + xi) / xi * log( std::complex<double>( (xi - x) / 2. / xi, epsilon * beta[2]));
         result -= (x - xi) / xi * log( std::complex<double>( (xi + x) / 2. / xi, epsilon * beta[0]));
         result *= M0(s, x, xi, beta, ee, ek);
-        result *= - CF * m_pRunningAlphaStrongModule->compute(m_MuF2) / 4. / Constant::PI * log(2. * xi);
+        result *= - m_CF * m_pRunningAlphaStrongModule->compute(m_MuF2) / 4. / Constant::PI * log(2. * xi);
 
         return result;
     }
 
     // The collinear term
-    std::complex<double> GAM2CFFStandard::Ccoll(double s, double x, double xi,
+std::complex<double> GAM2CFFStandard::Ccoll(double s, double x, double xi,
             std::vector<double> beta, std::vector<double> ee, std::vector<double> ek){
 
         std::complex<double> result (3., .0);
         result += (x + xi) * log( std::complex<double>( (xi - x) / 2. / xi, epsilon * beta[2]));
         result -= (x - xi) * log( std::complex<double>( (xi + x) / 2. / xi, epsilon * beta[0]));
         result *= M0(s, x, xi, beta, ee, ek);
-        result *= CF * m_pRunningAlphaStrongModule->compute(m_MuF2) / 4. / Constant::PI;
+        result *= m_CF * m_pRunningAlphaStrongModule->compute(m_MuF2) / 4. / Constant::PI;
 
         return result;
 
@@ -768,7 +773,45 @@ std::complex<double> GAM2CFFStandard::NLO_V_permutation(double s, double x, doub
     return result;
 }
 
-std::complex<double> GAM2CFFStandard::NLO_V(double s, double x, double xi, std::vector<double> beta0, std::vector<double> ee0, double ek0[][3]){
+
+double GAM2CFFStandard::computeCubedChargeAveragedGPD(
+        const PartonDistribution &partonDistribution) {
+    double result = 0.;
+
+    result +=
+            (partonDistribution.getQuarkDistribution(QuarkFlavor::UP).getQuarkDistributionMinus()) // Minus or Plus?
+                    * Constant::U2_ELEC_CHARGE * Constant::U_ELEC_CHARGE;
+
+    result +=
+            (partonDistribution.getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistributionMinus())
+                    * Constant::D2_ELEC_CHARGE * Constant::D_ELEC_CHARGE;
+    result +=
+            (partonDistribution.getQuarkDistribution(QuarkFlavor::STRANGE).getQuarkDistributionMinus())
+                    * Constant::S2_ELEC_CHARGE * Constant::S_ELEC_CHARGE;
+
+    return result;
+}
+
+std::complex<double> GAM2CFFStandard::Convol_NLO_V(double x,
+        std::vector<double> params) {
+
+    std::vector<double> beta0;
+    for(int i = 0; i < 3; i++){beta0.push_back(params[i]);}
+
+    std::vector<double> ee0;
+    for(int i = 3; i < 6; i++){ee0.push_back(params[i]);}
+
+    double ek0[3][3];
+
+    ek0[0][0] = 0.;   ek0[1][1] = 0.;   ek0[2][2] = 0.;
+    ek0[0][1] = params[6];
+    ek0[0][2] = - params[6];
+    ek0[1][0] = params[7];
+    ek0[1][2] = - params[7];
+    ek0[2][0] = params[8];
+    ek0[2][1] = - params[8];
+
+    double s = params[9];
 
     std::complex<double> result (0., 0.);
 
@@ -793,7 +836,7 @@ std::complex<double> GAM2CFFStandard::NLO_V(double s, double x, double xi, std::
                ek.push_back( ek0[j][i] );
                ek.push_back( ek0[k][i] );
 
-               result += NLO_V_permutation(s, x, xi, beta, ee, ek);
+               result += NLO_V_permutation(s, x, m_xi, beta, ee, ek);
              }
          }
      }
@@ -801,22 +844,54 @@ std::complex<double> GAM2CFFStandard::NLO_V(double s, double x, double xi, std::
     return result;
 }
 
+double GAM2CFFStandard::Convol_NLO_V_Re(double x,
+        std::vector<double> params) {
+
+    PartonDistribution partonDistribution = m_pGPDModule->compute(
+            GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
+            m_currentGPDComputeType);
+
+    // GPD evaluated at x = x[ 0 ]
+    double EvalGPD = computeCubedChargeAveragedGPD(partonDistribution);
+
+    double Convol = ( Convol_NLO_V(x, params) ).real();
+    Convol *= EvalGPD;
+
+    return Convol;
+}
+
+double GAM2CFFStandard::Convol_NLO_V_Im(double x,
+        std::vector<double> params) {
+
+    PartonDistribution partonDistribution = m_pGPDModule->compute(
+            GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
+            m_currentGPDComputeType);
+
+    // GPD evaluated at x = x[ 0 ]
+    double EvalGPD = computeCubedChargeAveragedGPD(partonDistribution);
+
+    double Convol = ( Convol_NLO_V(x, params) ).imag();
+    Convol *= EvalGPD;
+
+    return Convol;
+}
+
 std::complex<double> GAM2CFFStandard::computeUnpolarized() {
 
     //variables to use
-    m_currentGPDComputeType;
-    m_pRunningAlphaStrongModule;
-    m_pGPDModule;
-    m_qcdOrderType;
-    m_xi;
-    m_t;
-    m_uPrim;
-    m_Mgg2;
-    m_MuF2;
-    m_MuR2;
-    m_polG0;
-    m_polG1;
-    m_polG2;
+//    m_currentGPDComputeType;
+//    m_pRunningAlphaStrongModule;
+//    m_pGPDModule;
+//    m_qcdOrderType;
+//    m_xi;
+//    m_t;
+//    m_uPrim;
+//    m_Mgg2;
+//    m_MuF2;
+//    m_MuR2;
+//    m_polG0;
+//    m_polG1;
+//    m_polG2;
 
     double tPrim = m_t - m_Mgg2 + m_uPrim;
     double tau = 2. * m_xi / ( 1. + m_xi );
@@ -829,43 +904,37 @@ std::complex<double> GAM2CFFStandard::computeUnpolarized() {
     // beta_i is defined by 2pk_i = beta_i * s
     // {k_i} are the following: {q, -q_1, -q_2)
     // All permutations of {k_i} have to be considered in the amplitude
-    std::vector<double> beta0;
-    beta0.push_back(1.);
-    beta0.push_back(-1. * alpha);
-    beta0.push_back(-1. * alphabar);
+
+    std::vector<double> Parameters;
+
+    Parameters.push_back(1.);
+    Parameters.push_back(-1. * alpha);
+    Parameters.push_back(-1. * alphabar);
 
     // ee[i] is defined by ee[i] = epsilon_j * epsilon_k, where all i,j,k are different
     // A different notation is used in the paper, here ee[0] = e23, ee[1] = e13, ee[2] = e12
-    std::vector<double> ee0;
-    ee0.push_back( - double(m_polG1 == m_polG2) );
-    ee0.push_back( - double(m_polG0 == m_polG2) );
-    ee0.push_back( - double(m_polG1 == m_polG0) );
+
+    Parameters.push_back( - double(m_polG1 == m_polG2) );
+    Parameters.push_back( - double(m_polG0 == m_polG2) );
+    Parameters.push_back( - double(m_polG1 == m_polG0) );
 
     // ek0[i][j] = epsilon_i * k_j
     // This matrix will be used to make the vector ek[i] for a given permutation
     // See Eq. 16
-    double ek0[3][3];
 
-    ek0[0][0] = 0.;   ek0[1][1] = 0.;   ek0[2][2] = 0.;
-    ek0[0][1] = sqrt(pt2) * double(m_polG0 == 3);
-    ek0[0][2] = - sqrt(pt2) * double(m_polG0 == 3);
-    ek0[1][0] = sqrt(pt2) * double(m_polG1 == 3) / alpha;
-    ek0[1][2] = - sqrt(pt2) * double(m_polG1 == 3) / alpha;
-    ek0[2][0] = - sqrt(pt2) * double(m_polG2 == 3) / alphabar;
-    ek0[2][1] = sqrt(pt2) * double(m_polG2 == 3) / alphabar;
+    Parameters.push_back( sqrt(pt2) * double(m_polG0 == 3) );
+    Parameters.push_back( sqrt(pt2) * double(m_polG1 == 3) / alpha );
+    Parameters.push_back(- sqrt(pt2) * double(m_polG2 == 3) / alphabar );
 
-    // TODO: function NLO_V returns the NLO vector amplitude. We need to integrate it with the appropriate GPDs.
-    // After obtaining \cal{H} and \cal{E} (see Eqs. 3.8 - 3.9 in my thesis), we are left with simple algebra.
-    // + we need to add the LO contribution, but for the we do not need to integrate.
+    Parameters.push_back( s );
 
 
-    std::vector<double> emptyParameters;
+    double resultRe = integrate(m_pConvol_NLO_V_Re, m_xi, 1.,
+            Parameters);
+    double resultIm = integrate(m_pConvol_NLO_V_Im, m_xi, 1.,
+            Parameters);
 
-    double resultA = integrate(m_pExampleIntegration, -1, 1.,
-            emptyParameters);
-    double resultB = m_pRunningAlphaStrongModule->compute(m_MuF2);
-
-    return std::complex<double>(resultA, resultB);
+    return std::complex<double>(resultRe, resultIm);
 }
 
 std::complex<double> GAM2CFFStandard::computePolarized() {
