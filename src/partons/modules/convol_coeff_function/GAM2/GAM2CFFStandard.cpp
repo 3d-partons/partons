@@ -248,8 +248,6 @@ double GAM2CFFStandard::Tr_4L_F210(double xi, double s, std::vector<double> beta
 
      result += beta[2] * (( 2. * xi * beta[2] ) * s * ( ee[1] * ek[1] - 3. * ee[2] * ek[2] ) + 4. * ek[0] * ek[1] * ek[2] );
 
-     result *= -2. * s;
-
      return result;
 }
 
@@ -263,8 +261,6 @@ double GAM2CFFStandard::Tr_4L_F201(double xi, double s, std::vector<double> beta
 
     result += 2. * beta[1] * beta[2] * ( ee[2] * ek[2] - ee[1] * ek[1] );
 
-    result *= 2. * s * s;
-
     return result;
 }
 
@@ -277,8 +273,6 @@ double GAM2CFFStandard::Tr_4L_F211(double xi, double s, std::vector<double> beta
 
     result += beta[0] * beta[2] * ( ee[0] * ek[0] - ee[2] * ek[2] );
 
-    result *= -2. * s * s;
-
     return result;
 }
 
@@ -289,15 +283,13 @@ double GAM2CFFStandard::Tr_4L_F220(double xi, double s, std::vector<double> beta
 
     result += beta[1] * ( 2. * xi * beta[2] ) * s * ( ee[0] * ek[0] - ee[1] * ek[1] );
 
-    result *= 2. * s;
-
     return result;
 }
 
 double GAM2CFFStandard::Tr_4L_F221(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek){
 
     double result = -beta[1] * ee[1] * ek[1] + beta[1] * ee[0] * ek[0] - beta[2] * ee[2] * ek[2] + beta[2] * ee[0] * ek[0];
-    result *= 2. * beta[1] * s * s;
+    result *= beta[1];
 
     return result;
 }
@@ -308,8 +300,6 @@ double GAM2CFFStandard::Tr_4L_F100(double xi, double s, std::vector<double> beta
     result += 2. * beta[1] * ee[0] * ek[0] - 3. * beta[2] * ee[2] * ek[2];
     result += 3. * beta[2] * ee[1] * ek[1] - 2. * beta[2] * ee[0] * ek[0];
 
-    result *= 2. * s;
-
     return result;
 }
 
@@ -317,8 +307,6 @@ double GAM2CFFStandard::Tr_4L_F110(double xi, double s, std::vector<double> beta
 
     double result = 3. * beta[1] * ee[1] * ek[1] - 3. * beta[1] * ee[0] * ek[0];
     result += beta[2] * ee[2] * ek[2] - beta[2] * ee[0] * ek[0];
-
-    result *= 2. * s;
 
     return result;
 }
@@ -328,7 +316,7 @@ double GAM2CFFStandard::Tr_4L_G(double xi, double s, std::vector<double> beta, s
     double result = -beta[0] * ee[1] * ek[1] + beta[0] * ee[0] * ek[0];
     result += -beta[2] * ee[2] * ek[2] + beta[2] * ee[1] * ek[1];
 
-    result *= 2. * beta[2] * s * s;
+    result *= beta[2];
 
     return result;
 }
@@ -337,65 +325,60 @@ double GAM2CFFStandard::Tr_5L_F201(double xi, double s, std::vector<double> beta
 
     double result = 2. * beta[0] * ee[2] * ek[2] - 5. * beta[0] * ee[1] * ek[1];
     result += 3. * beta[0] * ee[0] * ek[0] + beta[1] * ee[2] * ek[2] - beta[1] * ee[1] * ek[1];
-    result *= 2. * s;
 
     return result;
 }
 
 double GAM2CFFStandard::Tr_5L_F210(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek){
 
-    double result = 2. * ek[1] * ( 2. * ek[0] * ek[2] - ee[1] * ( 2. * xi * beta[2] ) * s );
-    result += -6. * ek[2] * ( 2. * ek[0] * ek[1] - ee[2] * ( 2. * xi * beta[2] ) * s );
+    double result = ek[1] * ( 2. * ek[0] * ek[2] - ee[1] * ( 2. * xi * beta[2] ) * s );
+    result += -3. * ek[2] * ( 2. * ek[0] * ek[1] - ee[2] * ( 2. * xi * beta[2] ) * s );
 
     return result;
 }
 
 double GAM2CFFStandard::Tr_5L_F211(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek){
 
-    double result = -3. * beta[0] * ee[2] * ek[2] + 2. * beta[0] * ee[1] * ek[1];
-    result += beta[0] * ee[0] * ek[0] - 7. * beta[1] * ee[2] * ek[2] + 5. * beta[1] * ee[1] * ek[1];
-    result *= -s;
+    double result = 3. * beta[0] * ee[2] * ek[2] - 2. * beta[0] * ee[1] * ek[1];
+    result += - beta[0] * ee[0] * ek[0] + 7. * beta[1] * ee[2] * ek[2] - 5. * beta[1] * ee[1] * ek[1];
 
     return result;
 }
 
 double GAM2CFFStandard::Tr_5L_F220(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek){
 
-    double result = 2. * ek[2] * ( 2. * ek[0] * ek[1] - ee[2] * ( 2. * xi * beta[2] ) * s );
-    result += -2. * ek[0] * ( ee[0] * ( 2. * xi * beta[2] ) * s + 2. * ek[1] * ek[2] );
+    double result = ek[2] * ( 2. * ek[0] * ek[1] - ee[2] * ( 2. * xi * beta[2] ) * s );
+    result -= ek[0] * ( ee[0] * ( 2. * xi * beta[2] ) * s + 2. * ek[1] * ek[2] );
 
     return result;
 }
 
 double GAM2CFFStandard::Tr_5L_F221(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek){
 
-    double result = -2. * beta[1] * ee[2] * ek[2] * s;
-    result += 2. * beta[1] * ee[0] * ek[0] * s;
+    double result = 2. * beta[1] * ee[0] * ek[0] * s;
+    result -= beta[1] * ee[2] * ek[2] * s;
 
     return result;
 }
 
 double GAM2CFFStandard::Tr_5L_F100(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek){
 
-    double result = 3. * ee[0] * ek[1] - 3. * ee[2] * ek[2] - 2. * ee[0] * ek[0];
-    result *= 4.;
+    double result = 3. * ee[2] * ek[2] - 3. * ee[1] * ek[1] + 2. * ee[0] * ek[0];
 
     return result;
 }
 
 double GAM2CFFStandard::Tr_5L_F110(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek){
 
-    double result = ee[0] * ek[0] - ee[2] * ek[2];
-    result *= -4.;
+    double result = ee[2] * ek[2] - ee[1] * ek[1];
 
     return result;
 }
 
 double GAM2CFFStandard::Tr_5L_G(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek){
 
-    double result = -beta[0] * ee[1] * ek[1] + beta[0] * ee[0] * ek[0];
-    result += -beta[2] * ee[2] * ek[2] + beta[2] * ee[1] * ek[1];
-    result *= -2. * s;
+    double result = beta[0] * ee[1] * ek[1] - beta[0] * ee[0] * ek[0];
+    result += beta[2] * ee[2] * ek[2] - beta[2] * ee[1] * ek[1];
 
     return result;
 }
@@ -620,31 +603,34 @@ std::complex<double> GAM2CFFStandard::M4L(double s, double x, double xi,
 
         std::complex<double> result (0., 0.);
 
-        result += F210( (x + xi) * beta[0], ( 2. * xi * beta[2] ), (x+xi) * beta[1] ) *
-        Tr_4L_F210(xi, s, beta, ee, ek);
+        result -= F210( (x + xi) * beta[0], ( 2. * xi * beta[2] ), (x+xi) * beta[1] ) *
+        Tr_4L_F210(xi, s, beta, ee, ek) / s;
 
-        // I did not define F201, since it differs from F210 just in the interchange of 1st and 3rd argument
+                /// I did not define F201, since it differs from F210 just in the interchange of 1st and 3rd argument
         result += (x + xi) * F210( (x + xi) * beta[1], ( 2. * xi * beta[2] ), (x+xi) * beta[0] ) *
         Tr_4L_F201(xi, s, beta, ee, ek);
 
-        result += (x + xi) * F211( (x + xi) * beta[0], ( 2. * xi * beta[2] ), (x+xi) * beta[1] ) *
+        result -= (x + xi) * F211( (x + xi) * beta[0], ( 2. * xi * beta[2] ), (x+xi) * beta[1] ) *
         Tr_4L_F211(xi, s, beta, ee, ek);
 
         result += F220( (x + xi) * beta[0], ( 2. * xi * beta[2] ), (x+xi) * beta[1] ) *
-        Tr_4L_F220(xi, s, beta, ee, ek);
+        Tr_4L_F220(xi, s, beta, ee, ek) / s;
 
         result += (x + xi) * F221( (x + xi) * beta[0], ( 2. * xi * beta[2] ), (x+xi) * beta[1] ) *
         Tr_4L_F221(xi, s, beta, ee, ek);
 
-        result += s * F100( (x + xi) * beta[0], ( 2. * xi * beta[2] ), (x+xi) * beta[1] ) *
+        result += F100( (x + xi) * beta[0], ( 2. * xi * beta[2] ), (x+xi) * beta[1] ) *
         Tr_4L_F100(xi, s, beta, ee, ek);
 
-        result += s * F110( (x + xi) * beta[0], ( 2. * xi * beta[2] ), (x+xi) * beta[1] ) *
+        result += F110( (x + xi) * beta[0], ( 2. * xi * beta[2] ), (x+xi) * beta[1] ) *
         Tr_4L_F110(xi, s, beta, ee, ek);
 
-        result *= - m_CF * m_pRunningAlphaStrongModule->compute(m_MuF2) / 4. / Constant::PI;
-        result /= std::pow(s, 3);
-        result /= std::complex<double>( beta[2], -epsilon);
+        result -= 2. * (x + xi) * G( (x + xi) * beta[0], ( 2. * xi * beta[2] ), (x+xi) * beta[1] ) *
+        Tr_4L_G(xi, s, beta, ee, ek);
+
+        result *= - m_CF * m_pRunningAlphaStrongModule->compute(m_MuF2) / 2. / Constant::PI;
+        result /= s;
+        result /= std::complex<double>( (x - xi) * beta[2], -epsilon );
 
        return result;
 }
@@ -654,38 +640,42 @@ std::complex<double> GAM2CFFStandard::M5L(double s, double x, double xi,
 
         std::complex<double> result (0., 0.);
 
-        result = log( std::complex<double>( xi - x, epsilon * beta[2] ) / xi );
-        result *= A(s, beta, ee, ek) / beta[2];
+        result = log( std::complex<double>( (xi - x) / 2. / xi, epsilon * beta[2] ) );
+        result *= A(s, beta, ee, ek) / beta[2] / 2.;
         result /= std::complex<double>( (x + xi) * beta[0], epsilon );
 
         result += F210( (x + xi) * beta[0], ( 2. * xi * beta[2] ), (x+xi) * beta[1] ) *
         Tr_5L_F210(xi, s, beta, ee, ek);
 
-        // I did not define F201, since it differs from F210 just in the interchange of 1st and 3rd argument
-        result += (x + xi) * F210( (x + xi) * beta[1], ( 2. * xi * beta[2] ), (x+xi) * beta[0] ) *
+                /// I did not define F201, since it differs from F210 just in the interchange of 1st and 3rd argument
+        result += s * (x + xi) * F210( (x + xi) * beta[1], ( 2. * xi * beta[2] ), (x+xi) * beta[0] ) *
         Tr_5L_F201(xi, s, beta, ee, ek);
 
-        result += (x + xi) * F211( (x + xi) * beta[0], ( 2. * xi * beta[2] ), (x+xi) * beta[1] ) *
+        result += (x + xi) / 2. * F211( (x + xi) * beta[0], ( 2. * xi * beta[2] ), (x+xi) * beta[1] ) *
         Tr_5L_F211(xi, s, beta, ee, ek);
 
         result += F220( (x + xi) * beta[0], ( 2. * xi * beta[2] ), (x+xi) * beta[1] ) *
         Tr_5L_F220(xi, s, beta, ee, ek);
 
-        result += (x + xi) * F221( (x + xi) * beta[0], ( 2. * xi * beta[2] ), (x+xi) * beta[1] ) *
+        result += (x + xi) * s * F221( (x + xi) * beta[0], ( 2. * xi * beta[2] ), (x+xi) * beta[1] ) *
         Tr_5L_F221(xi, s, beta, ee, ek);
 
-        result += s * F100( (x + xi) * beta[0], ( 2. * xi * beta[2] ), (x+xi) * beta[1] ) *
+        result -= 8. * s * F100( (x + xi) * beta[0], ( 2. * xi * beta[2] ), (x+xi) * beta[1] ) *
         Tr_5L_F100(xi, s, beta, ee, ek);
 
-        result += s * F110( (x + xi) * beta[0], ( 2. * xi * beta[2] ), (x+xi) * beta[1] ) *
+        result += 8. * s * F110( (x + xi) * beta[0], ( 2. * xi * beta[2] ), (x+xi) * beta[1] ) *
         Tr_5L_F110(xi, s, beta, ee, ek);
 
-        result *= - m_CF * m_pRunningAlphaStrongModule->compute(m_MuF2) / 4. / Constant::PI;
-        result /= std::pow(s, 2);
+        result += s * G( (x + xi) * beta[0], ( 2. * xi * beta[2] ), (x+xi) * beta[1] ) *
+        Tr_5L_G(xi, s, beta, ee, ek);
+
+        result *= - m_CF * m_pRunningAlphaStrongModule->compute(m_MuF2) / 2. / Constant::PI;
+        result /= s * s;
         result /= xi;
 
        return result;
 }
+
 
 std::complex<double> GAM2CFFStandard::M4R(double s, double x, double xi,
                   std::vector<double> beta, std::vector<double> ee, std::vector<double> ek){
@@ -729,7 +719,7 @@ std::complex<double> GAM2CFFStandard::M5R(double s, double x, double xi,
 
 }
 
-    // Eq. 52
+// Eq. 52
 std::complex<double> GAM2CFFStandard::M_scale(double s, double x, double xi,
             std::vector<double> beta, std::vector<double> ee, std::vector<double> ek){
 
@@ -742,7 +732,7 @@ std::complex<double> GAM2CFFStandard::M_scale(double s, double x, double xi,
         return result;
     }
 
-    // The collinear term
+// The collinear term
 std::complex<double> GAM2CFFStandard::Ccoll(double s, double x, double xi,
             std::vector<double> beta, std::vector<double> ee, std::vector<double> ek){
 
