@@ -84,7 +84,8 @@ protected:
     virtual std::complex<double> computeUnpolarized();
     virtual std::complex<double> computePolarized();
 
-    double m_CF = 4. / 3.;                     ///< ( Nc^2 - 1 ) / ( 2 Nc ) (colour)
+    double m_CF;                     ///< ( Nc^2 - 1 ) / ( 2 Nc ) (colour)
+    double m_alphaSOver2Pi;
 
 
 private:
@@ -94,9 +95,18 @@ private:
     NumA::FunctionType1D* m_pConvol_NLO_V_Re;
     NumA::FunctionType1D* m_pConvol_NLO_V_Im;
 
+    double m_quark_diagonal_V;
+    double m_quark_diagonal_A;
+
+    double computeCubedChargeAveragedGPD(
+            const PartonDistribution &partonDistribution);
+
+    void computeDiagonalGPD_V();
+    void computeDiagonalGPD_A();
+
     void initFunctorsForIntegrations(); ///< Initialize functors.
 
-    double exampleIntegration(double x, std::vector<double> params); ///< Exemplary integration.
+   // double exampleIntegration(double x, std::vector<double> params); ///< Exemplary integration.
 
     // Trace \mathcal{A}, see Eq. 25
     double A(double, std::vector<double>, std::vector<double>, std::vector<double>);
@@ -163,9 +173,6 @@ private:
 
     // Vector NLO amplitude - a single permutation of photons
     std::complex<double> NLO_V_permutation(double s, double x, double xi, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
-
-    double computeCubedChargeAveragedGPD(
-            const PartonDistribution &partonDistribution);
 
     // The full NLO vector amplitude
     std::complex<double> Convol_NLO_V(double x, std::vector<double> params);

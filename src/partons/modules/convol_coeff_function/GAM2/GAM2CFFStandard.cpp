@@ -29,7 +29,8 @@ const unsigned int GAM2CFFStandard::classId =
                 new GAM2CFFStandard("GAM2CFFStandard"));
 
 GAM2CFFStandard::GAM2CFFStandard(const std::string &className) :
-        GAM2ConvolCoeffFunctionModule(className), m_pRunningAlphaStrongModule(0) {
+        GAM2ConvolCoeffFunctionModule(className), m_pRunningAlphaStrongModule(0), m_CF(4. / 3.), m_alphaSOver2Pi(0.),
+        m_quark_diagonal_V(0.), m_quark_diagonal_A(0.){
 
     m_listOfCFFComputeFunctionAvailable.insert(
             std::make_pair(GPDType::H,
@@ -56,6 +57,11 @@ GAM2CFFStandard::GAM2CFFStandard(const GAM2CFFStandard &other) :
     } else {
         m_pRunningAlphaStrongModule = 0;
     }
+
+    m_alphaSOver2Pi = other.m_alphaSOver2Pi;
+    m_CF = other.m_CF;
+    m_quark_diagonal_V = other.m_quark_diagonal_V;
+    m_quark_diagonal_A = other.m_quark_diagonal_A;
 
     initFunctorsForIntegrations();
 }
@@ -131,6 +137,9 @@ GAM2CFFStandard::~GAM2CFFStandard() {
 
 void GAM2CFFStandard::initModule() {
     GAM2ConvolCoeffFunctionModule::initModule();
+
+    m_alphaSOver2Pi = m_pRunningAlphaStrongModule->compute(m_MuR2)
+                / (2. * Constant::PI);
 }
 
 void GAM2CFFStandard::isModuleWellConfigured() {
@@ -169,6 +178,36 @@ void GAM2CFFStandard::isModuleWellConfigured() {
 
 double epsilon = 10E-7; // infinitesimal part inserted 'by hand'
 
+void GAM2CFFStandard::computeDiagonalGPD_V(){
+
+    PartonDistribution partonDistribution = m_pGPDModule->compute(
+                GPDKinematic(m_xi, m_xi, m_t, m_MuF2, m_MuR2),
+                m_currentGPDComputeType);
+
+    m_quark_diagonal_V = computeCubedChargeAveragedGPD(partonDistribution);
+
+    partonDistribution = m_pGPDModule->compute(
+                GPDKinematic(-m_xi, m_xi, m_t, m_MuF2, m_MuR2),
+                m_currentGPDComputeType);
+
+    m_quark_diagonal_V += computeCubedChargeAveragedGPD(partonDistribution);
+}
+
+void GAM2CFFStandard::computeDiagonalGPD_A(){
+
+    PartonDistribution partonDistribution = m_pGPDModule->compute(
+                GPDKinematic(m_xi, m_xi, m_t, m_MuF2, m_MuR2),
+                m_currentGPDComputeType);
+
+    m_quark_diagonal_A = computeCubedChargeAveragedGPD(partonDistribution);
+
+    partonDistribution = m_pGPDModule->compute(
+                    GPDKinematic(-m_xi, m_xi, m_t, m_MuF2, m_MuR2),
+                    m_currentGPDComputeType);
+
+    m_quark_diagonal_A -= computeCubedChargeAveragedGPD(partonDistribution);
+}
+
 // Trace \mathcal{A}, see Eq. 25
 double GAM2CFFStandard::A(double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek){
     return s * ( beta[0] * ( ee[0] * ek[0] - ee[1] * ek[1] ) + beta[2] * ( ee[1] * ek[1] - ee[2] * ek[2] ) ) / 8.;
@@ -192,7 +231,7 @@ std::complex<double> GAM2CFFStandard::M23LR(double s, double x, double xi,
     result += std::log( std::complex<double>( -(x + xi) * beta[0] / 2. / xi, -epsilon) );
     result += std::log( std::complex<double>( (x - xi) * beta[2] / 2. / xi, -epsilon) );
     result *= M0(s, x, xi, beta, ee, ek);
-    result *= m_CF * m_pRunningAlphaStrongModule->compute(m_MuF2) / 2. / Constant::PI;
+    result *= m_CF * m_alphaSOver2Pi;
 
     return result;
 }
@@ -232,7 +271,7 @@ std::complex <double> GAM2CFFStandard::M3M(double s, double x, double xi,
 
     result += aux;
 
-    result *= - m_CF * m_pRunningAlphaStrongModule->compute(m_MuF2) / 4. / Constant::PI / s / s;
+    result *= - m_CF * m_alphaSOver2Pi / 2. / s / s;
     result /= std::complex<double>( (x + xi) * beta[0], epsilon) * std::complex<double>( (x - xi) * beta[2], -epsilon);
 
     return result;
@@ -628,7 +667,7 @@ std::complex<double> GAM2CFFStandard::M4L(double s, double x, double xi,
         result -= 2. * (x + xi) * G( (x + xi) * beta[0], ( 2. * xi * beta[2] ), (x+xi) * beta[1] ) *
         Tr_4L_G(xi, s, beta, ee, ek);
 
-        result *= - m_CF * m_pRunningAlphaStrongModule->compute(m_MuF2) / 2. / Constant::PI;
+        result *= - m_CF * m_alphaSOver2Pi;
         result /= s;
         result /= std::complex<double>( (x - xi) * beta[2], -epsilon );
 
@@ -669,7 +708,7 @@ std::complex<double> GAM2CFFStandard::M5L(double s, double x, double xi,
         result += s * G( (x + xi) * beta[0], ( 2. * xi * beta[2] ), (x+xi) * beta[1] ) *
         Tr_5L_G(xi, s, beta, ee, ek);
 
-        result *= - m_CF * m_pRunningAlphaStrongModule->compute(m_MuF2) / 2. / Constant::PI;
+        result *= - m_CF * m_alphaSOver2Pi;
         result /= s * s;
         result /= xi;
 
@@ -727,7 +766,7 @@ std::complex<double> GAM2CFFStandard::M_scale(double s, double x, double xi,
         result = (x + xi) / xi * log( std::complex<double>( (xi - x) / 2. / xi, epsilon * beta[2]));
         result -= (x - xi) / xi * log( std::complex<double>( (xi + x) / 2. / xi, epsilon * beta[0]));
         result *= M0(s, x, xi, beta, ee, ek);
-        result *= - m_CF * m_pRunningAlphaStrongModule->compute(m_MuF2) / 4. / Constant::PI * log(2. * xi);
+        result *= - m_CF * m_alphaSOver2Pi / 2. * log(2. * xi);
 
         return result;
     }
@@ -740,7 +779,7 @@ std::complex<double> GAM2CFFStandard::Ccoll(double s, double x, double xi,
         result += (x + xi) * log( std::complex<double>( (xi - x) / 2. / xi, epsilon * beta[2]));
         result -= (x - xi) * log( std::complex<double>( (xi + x) / 2. / xi, epsilon * beta[0]));
         result *= M0(s, x, xi, beta, ee, ek);
-        result *= m_CF * m_pRunningAlphaStrongModule->compute(m_MuF2) / 4. / Constant::PI;
+        result *= m_CF * m_alphaSOver2Pi / 2.;
 
         return result;
 
@@ -883,6 +922,14 @@ std::complex<double> GAM2CFFStandard::computeUnpolarized() {
 //    m_polG1;
 //    m_polG2;
 
+    if (m_qcdOrderType != PerturbativeQCDOrderType::LO
+                && m_qcdOrderType != PerturbativeQCDOrderType::NLO) {
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    ElemUtils::Formatter()
+                            << "Erroneous input perturbative QCD order can only be LO or NLO. Here Order = "
+                            << PerturbativeQCDOrderType(m_qcdOrderType).toString());
+        }
+
     double tPrim = m_t - m_Mgg2 + m_uPrim;
     double tau = 2. * m_xi / ( 1. + m_xi );
     double M2 = Constant::PROTON_MASS * Constant::PROTON_MASS;
@@ -918,13 +965,27 @@ std::complex<double> GAM2CFFStandard::computeUnpolarized() {
 
     Parameters.push_back( s );
 
+    double result_Re = 0.;
+    double result_Im = 0.;
 
-    double resultRe = integrate(m_pConvol_NLO_V_Re, m_xi, 1.,
-            Parameters);
-    double resultIm = integrate(m_pConvol_NLO_V_Im, m_xi, 1.,
-            Parameters);
+    // LO part
+    computeDiagonalGPD_V();
+    result_Im = (alpha - alphabar) * double(m_polG1 == m_polG2) * double(m_polG0 == 3);
+    result_Im -= double(m_polG0 == m_polG2) * double(m_polG1 == 3);
+    result_Im += double(m_polG1 == m_polG0) * double(m_polG2 == 3);
+    result_Im *= sqrt(pt2);
+    result_Im *= m_quark_diagonal_V;
+    result_Im += - 2. * Constant::PI / s / alpha / alphabar / m_xi;
 
-    return std::complex<double>(resultRe, resultIm);
+    if (m_qcdOrderType == PerturbativeQCDOrderType::NLO){
+
+    result_Re += integrate(m_pConvol_NLO_V_Re, -m_xi, 1.,
+            Parameters);
+    result_Im += integrate(m_pConvol_NLO_V_Im, -m_xi, 1.,
+            Parameters);
+    }
+
+    return std::complex<double>(result_Re, result_Im);
 }
 
 std::complex<double> GAM2CFFStandard::computePolarized() {
@@ -942,10 +1003,10 @@ void GAM2CFFStandard::setRunningAlphaStrongModule(
     m_pRunningAlphaStrongModule = pRunningAlphaStrongModule;
 }
 
-double GAM2CFFStandard::exampleIntegration(double x,
-        std::vector<double> params) {
-    return m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
-            m_currentGPDComputeType).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution();
-}
+//double GAM2CFFStandard::exampleIntegration(double x,
+//        std::vector<double> params) {
+//    return m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
+//            m_currentGPDComputeType).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution();
+//}
 
 } /* namespace PARTONS */
