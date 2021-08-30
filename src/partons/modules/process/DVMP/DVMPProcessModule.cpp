@@ -405,22 +405,32 @@ void DVMPProcessModule::initModule() {
     m_y = m_Q2 / (2 * m_xB * Constant::PROTON_MASS * m_E);
     m_xBmin = 2 * m_Q2 * m_E / Constant::PROTON_MASS / (4 * m_E * m_E - m_Q2);
 
-    double s = pow(Constant::PROTON_MASS, 2) + 2. * Constant::PROTON_MASS * m_E;
+    double nu = m_Q2 / (2 * Constant::PROTON_MASS * m_xB);
+
+    double E_e_TAR = m_E;
+    double E_eS_TAR = E_e_TAR - nu;
+
+    double cosTheta_eS_TAR = 1. - m_Q2 / (2 * E_e_TAR * E_eS_TAR);
+    double sinTheta_eS_TAR = sqrt(1. - pow(cosTheta_eS_TAR, 2));
+
+    double s4 = pow(E_e_TAR - E_eS_TAR + Constant::PROTON_MASS, 2)
+            - pow(E_e_TAR - E_eS_TAR * cosTheta_eS_TAR, 2)
+            - pow(-E_eS_TAR * sinTheta_eS_TAR, 2);
 
     double m1_2 = -m_Q2;
     double m2_2 = pow(Constant::PROTON_MASS, 2);
     double m3_2 = pow(MesonType(m_mesonType).getMass(), 2);
     double m4_2 = pow(Constant::PROTON_MASS, 2);
 
-    double E1cm = (s + m1_2 - m2_2) / (2 * sqrt(s));
-    double E3cm = (s + m3_2 - m4_2) / (2 * sqrt(s));
+    double E1cm = (s4 + m1_2 - m2_2) / (2 * sqrt(s4));
+    double E3cm = (s4 + m3_2 - m4_2) / (2 * sqrt(s4));
 
     double p1cm = sqrt(pow(E1cm, 2) - m1_2);
     double p3cm = sqrt(pow(E3cm, 2) - m3_2);
 
-    m_tmin = pow((m1_2 - m3_2 - m2_2 + m4_2) / (2 * sqrt(s)), 2)
+    m_tmin = pow((m1_2 - m3_2 - m2_2 + m4_2) / (2 * sqrt(s4)), 2)
             - pow(p1cm - p3cm, 2);
-    m_tmax = pow((m1_2 - m3_2 - m2_2 + m4_2) / (2 * sqrt(s)), 2)
+    m_tmax = pow((m1_2 - m3_2 - m2_2 + m4_2) / (2 * sqrt(s4)), 2)
             - pow(p1cm + p3cm, 2);
 }
 
