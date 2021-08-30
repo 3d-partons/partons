@@ -34,7 +34,6 @@ List<GPDType> MesonType::getPossibleGPDTypes() const {
         list.add(GPDType(GPDType::Ht));
         list.add(GPDType(GPDType::Et));
         list.add(GPDType(GPDType::HTrans));
-        list.add(GPDType(GPDType::ETrans));
         list.add(GPDType(GPDType::EbarTrans));
     }
 
@@ -48,7 +47,6 @@ List<GPDType> MesonType::getPossibleGPDTypes() const {
         list.add(GPDType(GPDType::H));
         list.add(GPDType(GPDType::E));
         list.add(GPDType(GPDType::HTrans));
-        list.add(GPDType(GPDType::ETrans));
         list.add(GPDType(GPDType::EbarTrans));
     } else {
         throw ElemUtils::CustomException("MesonType", __func__,
