@@ -177,7 +177,7 @@ void GAM2CFFStandard::isModuleWellConfigured() {
     }
 }
 
-double epsilon = 10E-5; // infinitesimal part inserted 'by hand'
+std::complex<double> iepsilon (0.,  10E-5); // infinitesimal part inserted 'by hand'
 
 void GAM2CFFStandard::computeDiagonalGPD_V(){
 
@@ -219,7 +219,7 @@ std::complex<double> GAM2CFFStandard::M0(double s, double x, double xi,
 
     std::complex<double> result;
     result = -4. / s / s;
-    result /= std::complex<double>( (x + xi) * beta[0], epsilon) * std::complex<double>( (x - xi) * beta[2], -epsilon);
+    result /= ( (x + xi) * beta[0] + iepsilon) *( (x - xi) * beta[2] - iepsilon);
     result *= A(s, beta, ee, ek);
 
     return result;
@@ -229,8 +229,8 @@ std::complex<double> GAM2CFFStandard::M23LR(double s, double x, double xi,
                       std::vector<double> beta, std::vector<double> ee, std::vector<double> ek){
     std::complex<double> result;
     result = -5.;
-    result += std::log( std::complex<double>( -(x + xi) * beta[0] / 2. / xi, -epsilon) );
-    result += std::log( std::complex<double>( (x - xi) * beta[2] / 2. / xi, -epsilon) );
+    result += std::log( ( -(x + xi) * beta[0] / 2. / xi - iepsilon) );
+    result += std::log( ( (x - xi) * beta[2] / 2. / xi - iepsilon) );
     result *= M0(s, x, xi, beta, ee, ek);
     result *= m_CF * m_alphaSOver2Pi;
 
@@ -244,7 +244,7 @@ std::complex <double> GAM2CFFStandard::M3M(double s, double x, double xi,
 
     std::complex <double> aux (0., 0.);
 
-    aux += std::log( std::complex<double>( -(x - xi) * beta[2], epsilon) ) - std::log( std::complex<double>( (x + xi) * beta[0], epsilon) );
+    aux += std::log( ( -(x - xi) * beta[2] + iepsilon) ) - std::log( ( (x + xi) * beta[0] + iepsilon) );
     aux *= 2. * ( x + xi ) * beta[0] + ( x - xi ) * beta[2];
     aux += ( x + xi ) * beta[0] + ( x - xi ) * beta[2];
     aux *= 0.5 * s * ( beta[0] * ee[1] * ek[1] - beta[0] * ee[0] * ek[0] + beta[2] * ee[2] * ek[2] + beta[2] * ee[1] * ek[1] );
@@ -254,7 +254,7 @@ std::complex <double> GAM2CFFStandard::M3M(double s, double x, double xi,
 
     result += aux;
 
-    aux = - std::log( std::complex<double>( -(x - xi) * beta[2], epsilon) ) + std::log( std::complex<double>( (x + xi) * beta[0], epsilon) );
+    aux = - std::log( ( -(x - xi) * beta[2] + iepsilon) ) + std::log( ( (x + xi) * beta[0] + iepsilon) );
     aux *= ( x + xi ) * beta[0] + 2. * ( x - xi ) * beta[2];
     aux += ( x + xi ) * beta[0] + ( x - xi ) * beta[2];
     aux *= 0.5 * s * ( beta[0] * ee[1] * ek[1] + beta[0] * ee[0] * ek[0] - beta[2] * ee[2] * ek[2] + beta[2] * ee[1] * ek[1] );
@@ -264,8 +264,8 @@ std::complex <double> GAM2CFFStandard::M3M(double s, double x, double xi,
 
     result -= aux;
 
-    aux = - ( x - xi ) * beta[2] * std::log( std::complex<double>( ( x - xi ) * beta[2] / 2. / xi, -epsilon) );
-    aux -= ( x + xi ) * beta[0] * std::log( std::complex<double>( - ( x + xi ) * beta[0] / 2. / xi, -epsilon) );
+    aux = - ( x - xi ) * beta[2] * std::log( ( ( x - xi ) * beta[2] / 2. / xi - iepsilon) );
+    aux -= ( x + xi ) * beta[0] * std::log( ( - ( x + xi ) * beta[0] / 2. / xi - iepsilon) );
     aux /= ( x + xi ) * beta[0] + ( x - xi ) * beta[2];
     aux += 1.;
     aux *= A(s, beta, ee, ek);
@@ -273,7 +273,7 @@ std::complex <double> GAM2CFFStandard::M3M(double s, double x, double xi,
     result += aux;
 
     result *= - m_CF * m_alphaSOver2Pi / 2. / s / s;
-    result /= std::complex<double>( (x + xi) * beta[0], epsilon) * std::complex<double>( (x - xi) * beta[2], -epsilon);
+    result /= ( (x + xi) * beta[0] + iepsilon) * ( (x - xi) * beta[2] - iepsilon);
 
     return result;
 }
@@ -541,45 +541,45 @@ std::complex<double> GAM2CFFStandard::M4L(double s, double x, double xi,
 
         std::complex<double> result (0., 0.);
 
-        result -= F210( std::complex<double>((x + xi) * beta[0], epsilon * beta[0] ),
-                std::complex<double>(( 2. * xi * beta[2] ), epsilon * beta[2] ),
-                std::complex<double>( (x+xi) * beta[1] , epsilon * beta[1] ) ) *
+        result -= F210( ((x + xi) * beta[0] + iepsilon * beta[0] ),
+                (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
+                ( (x+xi) * beta[1] + iepsilon * beta[1] ) ) *
         Tr_4L_F210(xi, s, beta, ee, ek) / s;
 
                 /// I did not define F201, since it differs from F210 just in the interchange of 1st and 3rd argument
-        result += (x + xi) * F210( std::complex<double>((x + xi) * beta[1], epsilon * beta[1] ),
-                std::complex<double>(( 2. * xi * beta[2] ), epsilon * beta[2] ),
-                std::complex<double>( (x+xi) * beta[0] , epsilon * beta[0] ) ) *
+        result += (x + xi) * F210( ((x + xi) * beta[1] + iepsilon * beta[1] ),
+                std::complex<double>(( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
+                std::complex<double>( (x+xi) * beta[0] + iepsilon * beta[0] ) ) *
         Tr_4L_F201(xi, s, beta, ee, ek);
 
-        result -= (x + xi) * F211( std::complex<double>((x + xi) * beta[0], epsilon * beta[0] ),
-                std::complex<double>(( 2. * xi * beta[2] ), epsilon * beta[2] ),
-                std::complex<double>( (x+xi) * beta[1] , epsilon * beta[1] ) )  *
+        result -= (x + xi) * F211( ((x + xi) * beta[0] + iepsilon * beta[0] ),
+                (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
+                ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
         Tr_4L_F211(xi, s, beta, ee, ek);
 
-        result += F220( std::complex<double>((x + xi) * beta[0], epsilon * beta[0] ),
-                std::complex<double>(( 2. * xi * beta[2] ), epsilon * beta[2] ),
-                std::complex<double>( (x+xi) * beta[1] , epsilon * beta[1] ) )  *
+        result += F220( ((x + xi) * beta[0] + iepsilon * beta[0] ),
+                (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
+                ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
         Tr_4L_F220(xi, s, beta, ee, ek) / s;
 
-        result += (x + xi) * F221( std::complex<double>((x + xi) * beta[0], epsilon * beta[0] ),
-                std::complex<double>(( 2. * xi * beta[2] ), epsilon * beta[2] ),
-                std::complex<double>( (x+xi) * beta[1] , epsilon * beta[1] ) )  *
+        result += (x + xi) * F221( ((x + xi) * beta[0] + iepsilon * beta[0] ),
+                (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
+                ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
         Tr_4L_F221(xi, s, beta, ee, ek);
 
-        result += F100( std::complex<double>((x + xi) * beta[0], epsilon * beta[0] ),
-                std::complex<double>(( 2. * xi * beta[2] ), epsilon * beta[2] ),
-                std::complex<double>( (x+xi) * beta[1] , epsilon * beta[1] ) )  *
+        result += F100( ((x + xi) * beta[0] + iepsilon * beta[0] ),
+                (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
+                ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
         Tr_4L_F100(xi, s, beta, ee, ek);
 
-        result += F110( std::complex<double>((x + xi) * beta[0], epsilon * beta[0] ),
-                std::complex<double>(( 2. * xi * beta[2] ), epsilon * beta[2] ),
-                std::complex<double>( (x+xi) * beta[1] , epsilon * beta[1] ) )  *
+        result += F110( ((x + xi) * beta[0] + iepsilon * beta[0] ),
+                (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
+                ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
         Tr_4L_F110(xi, s, beta, ee, ek);
 
-        result -= 2. * (x + xi) * G( std::complex<double>((x + xi) * beta[0], epsilon * beta[0] ),
-                std::complex<double>(( 2. * xi * beta[2] ), epsilon * beta[2] ),
-                std::complex<double>( (x+xi) * beta[1] , epsilon * beta[1] ) )  *
+        result -= 2. * (x + xi) * G( ((x + xi) * beta[0] + iepsilon * beta[0] ),
+                (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
+                ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
         Tr_4L_G(xi, s, beta, ee, ek);
 
 //        int N = 100;
@@ -632,7 +632,7 @@ std::complex<double> GAM2CFFStandard::M4L(double s, double x, double xi,
 
         result *= - m_CF * m_alphaSOver2Pi;
         result /= s;
-        result /= std::complex<double>( (x - xi) * beta[2], -epsilon );
+        result /= ( (x - xi) * beta[2] - iepsilon );
 
        return result;
 }
@@ -642,49 +642,49 @@ std::complex<double> GAM2CFFStandard::M5L(double s, double x, double xi,
 
         std::complex<double> result (0., 0.);
 
-        result = log( std::complex<double>( (xi - x) / 2. / xi, epsilon * beta[2] ) );
+        result = log( ( (xi - x) / 2. / xi + iepsilon * beta[2] ) );
         result *= A(s, beta, ee, ek) / beta[2] / 2.;
-        result /= std::complex<double>( (x + xi) * beta[0], epsilon );
+        result /= ( (x + xi) * beta[0] + iepsilon );
 
-        result += F210( std::complex<double>((x + xi) * beta[0], epsilon * beta[0] ),
-                std::complex<double>(( 2. * xi * beta[2] ), epsilon * beta[2] ),
-                std::complex<double>( (x+xi) * beta[1] , epsilon * beta[1] ) )  *
+        result += F210( ((x + xi) * beta[0] + iepsilon * beta[0] ),
+                (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
+                ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
         Tr_5L_F210(xi, s, beta, ee, ek);
 
                 /// I did not define F201, since it differs from F210 just in the interchange of 1st and 3rd argument
-        result += s * (x + xi) * F210( std::complex<double>((x + xi) * beta[1], epsilon * beta[1] ),
-                std::complex<double>(( 2. * xi * beta[2] ), epsilon * beta[2] ),
-                std::complex<double>( (x+xi) * beta[0] , epsilon * beta[0] ) )  *
+        result += s * (x + xi) * F210( ((x + xi) * beta[1] + iepsilon * beta[1] ),
+                (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
+                ( (x+xi) * beta[0] + iepsilon * beta[0] ) )  *
         Tr_5L_F201(xi, s, beta, ee, ek);
 
-        result += (x + xi) / 2. * F211( std::complex<double>((x + xi) * beta[0], epsilon * beta[0] ),
-                std::complex<double>(( 2. * xi * beta[2] ), epsilon * beta[2] ),
-                std::complex<double>( (x+xi) * beta[1] , epsilon * beta[1] ) )  *
+        result += (x + xi) / 2. * F211( ((x + xi) * beta[0] + iepsilon * beta[0] ),
+                (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
+                ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
         Tr_5L_F211(xi, s, beta, ee, ek);
 
-        result += F220( std::complex<double>((x + xi) * beta[0], epsilon * beta[0] ),
-                std::complex<double>(( 2. * xi * beta[2] ), epsilon * beta[2] ),
-                std::complex<double>( (x+xi) * beta[1] , epsilon * beta[1] ) )  *
+        result += F220( ((x + xi) * beta[0] + iepsilon * beta[0] ),
+                (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
+                ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
         Tr_5L_F220(xi, s, beta, ee, ek);
 
-        result += (x + xi) * s * F221( std::complex<double>((x + xi) * beta[0], epsilon * beta[0] ),
-                std::complex<double>(( 2. * xi * beta[2] ), epsilon * beta[2] ),
-                std::complex<double>( (x+xi) * beta[1] , epsilon * beta[1] ) )  *
+        result += (x + xi) * s * F221( ((x + xi) * beta[0] + iepsilon * beta[0] ),
+                (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
+                ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
         Tr_5L_F221(xi, s, beta, ee, ek);
 
-        result -= 8. * s * F100( std::complex<double>((x + xi) * beta[0], epsilon * beta[0] ),
-                std::complex<double>(( 2. * xi * beta[2] ), epsilon * beta[2] ),
-                std::complex<double>( (x+xi) * beta[1] , epsilon * beta[1] ) )  *
+        result -= 8. * s * F100( ((x + xi) * beta[0] + iepsilon * beta[0] ),
+                (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
+                ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
         Tr_5L_F100(xi, s, beta, ee, ek);
 
-        result += 8. * s * F110( std::complex<double>((x + xi) * beta[0], epsilon * beta[0] ),
-                std::complex<double>(( 2. * xi * beta[2] ), epsilon * beta[2] ),
-                std::complex<double>( (x+xi) * beta[1] , epsilon * beta[1] ) )  *
+        result += 8. * s * F110( ((x + xi) * beta[0] + iepsilon * beta[0] ),
+                (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
+                ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
         Tr_5L_F110(xi, s, beta, ee, ek);
 
-        result += s * G( std::complex<double>((x + xi) * beta[0], epsilon * beta[0] ),
-                std::complex<double>(( 2. * xi * beta[2] ), epsilon * beta[2] ),
-                std::complex<double>( (x+xi) * beta[1] , epsilon * beta[1] ) )  *
+        result += s * G( ((x + xi) * beta[0] + iepsilon * beta[0] ),
+                (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
+                ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
         Tr_5L_G(xi, s, beta, ee, ek);
 
         result *= - m_CF * m_alphaSOver2Pi;
@@ -742,8 +742,8 @@ std::complex<double> GAM2CFFStandard::M_scale(double s, double x, double xi,
             std::vector<double> beta, std::vector<double> ee, std::vector<double> ek){
 
         std::complex<double> result;
-        result = (x + xi) / xi * log( std::complex<double>( (xi - x) / 2. / xi, epsilon * beta[2]));
-        result -= (x - xi) / xi * log( std::complex<double>( (xi + x) / 2. / xi, epsilon * beta[0]));
+        result = (x + xi) / xi * log( ( (xi - x) / 2. / xi + iepsilon * beta[2]));
+        result -= (x - xi) / xi * log( ( (xi + x) / 2. / xi + iepsilon * beta[0]));
         result *= M0(s, x, xi, beta, ee, ek);
         result *= - m_CF * m_alphaSOver2Pi / 2. * log(2. * xi);
 
@@ -755,8 +755,8 @@ std::complex<double> GAM2CFFStandard::Ccoll(double s, double x, double xi,
             std::vector<double> beta, std::vector<double> ee, std::vector<double> ek){
 
         std::complex<double> result (3., .0);
-        result += (x + xi) * log( std::complex<double>( (xi - x) / 2. / xi, epsilon * beta[2]));
-        result -= (x - xi) * log( std::complex<double>( (xi + x) / 2. / xi, epsilon * beta[0]));
+        result += (x + xi) * log( ( (xi - x) / 2. / xi + iepsilon * beta[2]));
+        result -= (x - xi) * log( ( (xi + x) / 2. / xi + iepsilon * beta[0]));
         result *= M0(s, x, xi, beta, ee, ek);
         result *= m_CF * m_alphaSOver2Pi / 2.;
 
@@ -972,8 +972,19 @@ std::complex<double> GAM2CFFStandard::computeUnpolarized() {
                         Parameters);
     }
     // do sprawdzania F-ow
-    std::cout<< std::endl<< std::endl << F221(0.1, std::complex<double>(0.2, 1.), std::complex<double>(0.3, 1.))<< std::endl << std::endl;
-    return std::complex<double>(result_Re, result_Im);
+//    std::complex<double> I(0., 1.);
+//    std::cout << " i  = " << I << std::endl;
+//    std::cout<< "F210(0.1, 0.2, 0.3)  " << F210(0.1, 0.2, 0.3) << std::endl;
+//    std::cout<< "F210(0.1+i, 0.2+i, 0.3+i)  " << F210(0.1 + I, 0.2 + I, 0.3 + I) << std::endl;
+//    std::cout<< "F211((0.1, 0.2, 0.3)  " << F211(0.1, 0.2, 0.3) << std::endl;
+//    std::cout<< "F211(0.1+i, 0.2+i, 0.3+i)  " << F211(0.1 + I, 0.2 + I, 0.3 + I) << std::endl;
+//    std::cout<< "F220(0.1, 0.2, 0.3)  " << F220(0.1, 0.2, 0.3) << std::endl;
+//    std::cout<< "F220(0.1+i, 0.2+i, 0.3+i)  " << F220(0.1 + I, 0.2 + I, 0.3 + I) << std::endl;
+//    std::cout<< "F221(0.1, 0.2, 0.3)  " << F221(0.1, 0.2, 0.3) << std::endl;
+//    std::cout<< "F221(0.1+i, 0.2+i, 0.3+i)  " << F221(0.1 + I, 0.2 + I, 0.3 + I) << std::endl;
+//    std::cout<< "G(0.1, 0.2, 0.3)  " << G(0.1, 0.2, 0.3) << std::endl;
+//    std::cout<< "G(0.1+i, 0.2+i, 0.3+i)  " << G (0.1 + I, 0.2 + I, 0.3 + I) << std::endl;
+   return std::complex<double>(result_Re, result_Im);
 
 
 }
