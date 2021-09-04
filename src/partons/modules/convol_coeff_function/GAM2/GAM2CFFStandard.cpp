@@ -491,38 +491,51 @@ std::complex<double> GAM2CFFStandard::F210(std::complex<double> a, std::complex<
 }
 
 std::complex<double> GAM2CFFStandard::F211(std::complex<double> a, std::complex<double> b, std::complex<double> c){
-    return (6.*(b + c)*std::log(b)*(-a - (a + c)*std::log((a + c)/a)) + 6.*(a + c)*std::log(a)*(c + (b + c)*(std::log(b) - std::log(b + c))) +
-            (a + c)*(b + c)*(std::pow(Constant::PI,2.) + 6.*std::log(b + c) + 6.*(-1. + std::log(c/b))*std::log((b + c)/b) - 3.*std::pow(std::log((b + c)/b),2.)) +
-            6.*(-(c*(a + b + 2.*c)) + (a + c)*(b + c)*std::log(((a + c)*(b + c))/(a*b)))*std::log(a + b + c) -
-            6.*(a + c)*(b + c)*(Li2(-(c/a)) + Li2(b/(b + c)) - Li2(-((c*(a + b + c))/(a*b)))))/(6.*std::pow(c,2.)*(a + c)*(b + c));
+//    return (6.*(b + c)*std::log(b)*(-a - (a + c)*std::log((a + c)/a)) + 6.*(a + c)*std::log(a)*(c + (b + c)*(std::log(b) - std::log(b + c))) +
+//            (a + c)*(b + c)*(std::pow(Constant::PI,2.) + 6.*std::log(b + c) + 6.*(-1. + std::log(c/b))*std::log((b + c)/b) - 3.*std::pow(std::log((b + c)/b),2.)) +
+//            6.*(-(c*(a + b + 2.*c)) + (a + c)*(b + c)*std::log(((a + c)*(b + c))/(a*b)))*std::log(a + b + c) -
+//            6.*(a + c)*(b + c)*(Li2(-(c/a)) + Li2(b/(b + c)) - Li2(-((c*(a + b + c))/(a*b)))))/(6.*std::pow(c,2.)*(a + c)*(b + c));
+
+    return ((a + c)*(std::log(a/b)*(c - (b + c)*std::log((b + c)/b)) - (b + c)*(std::log((a + c)/a)
+            + std::log((b + c)/b) - std::log(((a + c)*(b + c))/(a*b)))) + (-(c*(a + b + 2.*c))
+                    + (a + c)*(b + c)*std::log(((a + c)*(b + c))/(a*b)))*std::log((a + b + c)/b) -
+            (a + c)*(b + c)*(Li2(-(c/a)) + Li2(-(c/b)) - Li2(-((c*(a + b + c))/(a*b)))))/(std::pow(c,2.)*(a + c)*(b + c));
 }
 
 std::complex<double> GAM2CFFStandard::F220(std::complex<double> a, std::complex<double> b, std::complex<double> c){
-    std::complex<double> result (0., 0.);
+//    std::complex<double> result (0., 0.);
+//
+//    result = std::log(b) - std::log(b + c) + std::log( (b + c) / b );
+//    result *= - a * (b + c);
+//    result += c * c;
+//    result *= b + c;
+//
+//    result += a * c * c * ( std::log(a) - std::log( a + b + c ) );
+//
+//    result /= b * c * c;
+//    result /= (b + c) * (b + c);
+    return (b + c + a*std::log(a/b) - a*std::log((a + b + c)/b))/(b*std::pow(b + c,2.));
 
-    result = std::log(b) - std::log(b + c) + std::log( (b + c) / b );
-    result *= - a * (b + c);
-    result += c * c;
-    result *= b + c;
-
-    result += a * c * c * ( std::log(a) - std::log( a + b + c ) );
-
-    result /= b * c * c;
-    result /= (b + c) * (b + c);
-
-    return result;
+    //return result;
 }
 
 std::complex<double> GAM2CFFStandard::F221(std::complex<double> a, std::complex<double> b, std::complex<double> c){
 
-    return ((-((a + c)*(b + c)*(3.*std::pow(c,2.) + a*(b + c)*std::pow(Constant::PI,2.))) +
-                3.*std::pow(b + c,2.)*std::log(b)*(3.*std::pow(a,2.) + a*c - std::pow(c,2.) + 2.*a*(a + c)*std::log((a + c)/a)) +
-                3.*a*(a + c)*std::log(a)*(-(c*(2.*b + 3.*c)) - 2.*std::pow(b + c,2.)*(std::log(b) - std::log(b + c))) +
-                3.*(-3.*a*(a + c)*std::pow(b + c,2.)*std::log(b + c) - a*(a + c)*std::pow(b + c,2.)*(-3. + 2.*std::log(c/b))*std::log((b + c)/b) +
-                   a*(a + c)*std::pow(b + c,2.)*std::pow(std::log((b + c)/b),2.) +
-                   (c*(c*std::pow(b + c,2.) + std::pow(a,2.)*(2.*b + 3.*c) + a*(2.*std::pow(b,2.) + 6.*b*c + 5.*std::pow(c,2.))) -
-                      2.*a*(a + c)*std::pow(b + c,2.)*std::log(((a + c)*(b + c))/(a*b)))*std::log(a + b + c)))/((a + c)*std::pow(b + c,2.)) +
-             6.*a*(Li2(-(c/a)) + Li2(b/(b + c)) - Li2(-((c*(a + b + c))/(a*b)))))/(3.*std::pow(c,3.));
+//    return ((-((a + c)*(b + c)*(3.*std::pow(c,2.) + a*(b + c)*std::pow(Constant::PI,2.))) +
+//                3.*std::pow(b + c,2.)*std::log(b)*(3.*std::pow(a,2.) + a*c - std::pow(c,2.) + 2.*a*(a + c)*std::log((a + c)/a)) +
+//                3.*a*(a + c)*std::log(a)*(-(c*(2.*b + 3.*c)) - 2.*std::pow(b + c,2.)*(std::log(b) - std::log(b + c))) +
+//                3.*(-3.*a*(a + c)*std::pow(b + c,2.)*std::log(b + c) - a*(a + c)*std::pow(b + c,2.)*(-3. + 2.*std::log(c/b))*std::log((b + c)/b) +
+//                   a*(a + c)*std::pow(b + c,2.)*std::pow(std::log((b + c)/b),2.) +
+//                   (c*(c*std::pow(b + c,2.) + std::pow(a,2.)*(2.*b + 3.*c) + a*(2.*std::pow(b,2.) + 6.*b*c + 5.*std::pow(c,2.))) -
+//                      2.*a*(a + c)*std::pow(b + c,2.)*std::log(((a + c)*(b + c))/(a*b)))*std::log(a + b + c)))/((a + c)*std::pow(b + c,2.)) +
+//             6.*a*(Li2(-(c/a)) + Li2(b/(b + c)) - Li2(-((c*(a + b + c))/(a*b)))))/(3.*std::pow(c,3.));
+    return (-(std::pow(c,2.)/(b + c)) + (a*std::log(a/b)*(-(c*(2.*b + 3.*c))
+            + 2.*std::pow(b + c,2.)*std::log((b + c)/b)))/std::pow(b + c,2.)
+            + a*(std::log((a + c)/a) + std::log((b + c)/b) - std::log(((a + c)*(b + c))/(a*b))) +
+            ((c*(c*std::pow(b + c,2.) + std::pow(a,2.)*(2.*b + 3.*c) + a*(2.*std::pow(b,2.)
+            + 6.*b*c + 5.*std::pow(c,2.)))
+            - 2.*a*(a + c)*std::pow(b + c,2.)*std::log(((a + c)*(b + c))/(a*b)))*std::log((a + b + c)/b))/((a + c)*std::pow(b + c,2.)) +
+            2.*a*(Li2(-(c/a)) + Li2(-(c/b)) - Li2(-((c*(a + b + c))/(a*b)))))/std::pow(c,3.);
 }
 
 std::complex<double> GAM2CFFStandard::G(std::complex<double> a, std::complex<double> b, std::complex<double> c){
@@ -544,7 +557,7 @@ std::complex<double> GAM2CFFStandard::M4L(double s, double x, double xi,
         result -= F210( ((x + xi) * beta[0] + iepsilon * beta[0] ),
                 (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
                 ( (x+xi) * beta[1] + iepsilon * beta[1] ) ) *
-        Tr_4L_F210(xi, s, beta, ee, ek) / s;
+       Tr_4L_F210(xi, s, beta, ee, ek) / s;
 
                 /// I did not define F201, since it differs from F210 just in the interchange of 1st and 3rd argument
         result += (x + xi) * F210( ((x + xi) * beta[1] + iepsilon * beta[1] ),
@@ -582,51 +595,6 @@ std::complex<double> GAM2CFFStandard::M4L(double s, double x, double xi,
                 ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
         Tr_4L_G(xi, s, beta, ee, ek);
 
-//        int N = 100;
-//        std::complex<double> integrand = 0.;
-//        for( int i = 1; i < N; i++){
-//            for(int j = 1; j < N; j++){
-//                integrand = 0.;
-//                        double z = double(i) / double(N);
-//                        double r = double(j) / double(N);
-//                        integrand -= r * Tr_4L_F210(xi, s, beta, ee, ek) / s;
-//
-//                                /// I did not define F201, since it differs from F210 just in the interchange of 1st and 3rd argument
-//                        integrand += (x + xi) *  z  *
-//                        Tr_4L_F201(xi, s, beta, ee, ek);
-//
-//                        integrand -= (x + xi) * r * z  *
-//                        Tr_4L_F211(xi, s, beta, ee, ek);
-//
-//                        integrand += r * r  *
-//                        Tr_4L_F220(xi, s, beta, ee, ek) / s;
-//
-//                        integrand += (x + xi) * r * r * z  *
-//                        Tr_4L_F221(xi, s, beta, ee, ek);
-//
-//                        integrand += r * std::complex<double>(z * (x + xi) * beta[0] + r * ( 2. * xi * beta[2] )
-//                                        + z * r * (x+xi) * beta[1], epsilon) *
-//                        Tr_4L_F100(xi, s, beta, ee, ek);
-//
-//                        integrand += r * std::complex<double>(z * (x + xi) * beta[0] + r * ( 2. * xi * beta[2] )
-//                                + z * r * (x+xi) * beta[1], epsilon) *
-//                        Tr_4L_F110(xi, s, beta, ee, ek);
-//
-//
-//                        integrand -= 2. * (x + xi) * log(std::complex<double>(z * (x + xi) * beta[0] + r * ( 2. * xi * beta[2] )
-//                                + z * r * (x+xi) * beta[1], epsilon)) *
-//                        Tr_4L_G(xi, s, beta, ee, ek);
-//
-//                        integrand /= std::complex<double> (z * (x + xi) * beta[0] + r * ( 2. * xi * beta[2] )
-//                                        + z * r * (x+xi) * beta[1], epsilon);
-//                        integrand /= std::complex<double> (z * (x + xi) * beta[0] + r * ( 2. * xi * beta[2] )
-//                                + z * r * (x+xi) * beta[1], epsilon);
-//
-//                        integrand /= pow(double(N), 2);
-//
-//                        result += integrand;
-//            }
-//        }
 
 
 
@@ -672,20 +640,20 @@ std::complex<double> GAM2CFFStandard::M5L(double s, double x, double xi,
                 ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
         Tr_5L_F221(xi, s, beta, ee, ek);
 
-        result -= 8. * s * F100( ((x + xi) * beta[0] + iepsilon * beta[0] ),
+        result -= 2. * s * F100( ((x + xi) * beta[0] + iepsilon * beta[0] ),
                 (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
                 ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
-        Tr_5L_F100(xi, s, beta, ee, ek);
+        Tr_5L_F100(xi, s, beta, ee, ek); // 2 or 8
 
-        result += 8. * s * F110( ((x + xi) * beta[0] + iepsilon * beta[0] ),
+        result += 2. * s * F110( ((x + xi) * beta[0] + iepsilon * beta[0] ),
                 (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
                 ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
-        Tr_5L_F110(xi, s, beta, ee, ek);
+        Tr_5L_F110(xi, s, beta, ee, ek); // 2 or 8
 
-        result += s * G( ((x + xi) * beta[0] + iepsilon * beta[0] ),
+        result += s * ( x + xi) * G( ((x + xi) * beta[0] + iepsilon * beta[0] ),
                 (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
                 ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
-        Tr_5L_G(xi, s, beta, ee, ek);
+        Tr_5L_G(xi, s, beta, ee, ek); // there probably should be (x+xi) here; to be verified
 
         result *= - m_CF * m_alphaSOver2Pi;
         result /= s * s;
