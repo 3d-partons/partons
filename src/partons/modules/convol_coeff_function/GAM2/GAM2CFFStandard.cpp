@@ -379,8 +379,9 @@ double GAM2CFFStandard::Tr_5L_F210(double xi, double s, std::vector<double> beta
 
 double GAM2CFFStandard::Tr_5L_F211(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek){
 
-    double result = 3. * beta[0] * ee[2] * ek[2] - 2. * beta[0] * ee[1] * ek[1];
-    result += - beta[0] * ee[0] * ek[0] + 7. * beta[1] * ee[2] * ek[2] - 5. * beta[1] * ee[1] * ek[1];
+    double result = (beta[0] * ee[2] * ek[2]- beta[0] * ee[0] * ek[0]
+                    + 3. * beta[1] * ee[2] * ek[2] - 3. * beta[1] * ee[1] * ek[1] );
+    result *= 2.;
 
     return result;
 }
@@ -914,6 +915,8 @@ std::complex<double> GAM2CFFStandard::computeUnpolarized() {
 
     double result_Re = 0.;
     double result_Im = 0.;
+
+    std::cout << "s = " << s << std::endl;
 
     // LO part
     computeDiagonalGPD_V();
