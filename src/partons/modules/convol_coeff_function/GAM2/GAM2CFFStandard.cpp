@@ -179,7 +179,7 @@ void GAM2CFFStandard::isModuleWellConfigured() {
     }
 }
 
-std::complex<double> iepsilon (0.,  10E-8); // infinitesimal part inserted 'by hand'
+std::complex<double> iepsilon (0.,  10E-7); // infinitesimal part inserted 'by hand'
 
 void GAM2CFFStandard::computeDiagonalGPD_V(){
 
@@ -890,13 +890,13 @@ std::complex<double> GAM2CFFStandard::computeUnpolarized() {
 
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO){
         std::cout << "NLO" << std::endl;
-    result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, -1+0.001, 1. - 0.001,
+    result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, -1+0.0001, 1. - 0.0001,
             Parameters);
 //    result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, -m_xi, m_xi,
 //                Parameters);
 //    result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, m_xi, 1.-0.001,
 //                    Parameters);
-    result_Im += gslIntegrationWrapper(m_pConvol_NLO_V_Im, -1+0.001, 1. - 0.001,
+    result_Im += gslIntegrationWrapper(m_pConvol_NLO_V_Im, -1+0.0001, 1. - 0.0001,
                 Parameters);
 //    result_Im += gslIntegrationWrapper(m_pConvol_NLO_V_Im, -m_xi, m_xi,
 //                    Parameters);
