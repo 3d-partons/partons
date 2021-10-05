@@ -890,18 +890,27 @@ std::complex<double> GAM2CFFStandard::computeUnpolarized() {
 
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO){
         std::cout << "NLO" << std::endl;
-    result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, -1+0.0001, 1. - 0.0001,
+    result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, -1+0.0001, -m_xi - 0.001,
             Parameters);
-//    result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, -m_xi, m_xi,
-//                Parameters);
-//    result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, m_xi, 1.-0.001,
-//                    Parameters);
-    result_Im += gslIntegrationWrapper(m_pConvol_NLO_V_Im, -1+0.0001, 1. - 0.0001,
+    result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, -m_xi - 0.001, -m_xi + 0.001,
                 Parameters);
-//    result_Im += gslIntegrationWrapper(m_pConvol_NLO_V_Im, -m_xi, m_xi,
-//                    Parameters);
-//    result_Im += gslIntegrationWrapper(m_pConvol_NLO_V_Im, m_xi, 1.-0.001,
-//                        Parameters);
+    result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, -m_xi + 0.001, m_xi - 0.001,
+                    Parameters);
+    result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, m_xi - 0.001, m_xi + 0.001,
+                    Parameters);
+    result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, m_xi + 0.001, 1.-0.001,
+                    Parameters);
+
+    result_Im += gslIntegrationWrapper(m_pConvol_NLO_V_Im, -1+0.0001, -m_xi - 0.001,
+            Parameters);
+    result_Im += gslIntegrationWrapper(m_pConvol_NLO_V_Im, -m_xi - 0.001, -m_xi + 0.001,
+            Parameters);
+    result_Im += gslIntegrationWrapper(m_pConvol_NLO_V_Im, -m_xi + 0.001, m_xi - 0.001,
+            Parameters);
+    result_Im += gslIntegrationWrapper(m_pConvol_NLO_V_Im, m_xi - 0.001, m_xi + 0.001,
+            Parameters);
+    result_Im += gslIntegrationWrapper(m_pConvol_NLO_V_Im, m_xi + 0.001, 1.-0.001,
+            Parameters);
     }
 //    std::cout << "CHECK" << std::endl;
 //    std::cout <<  integrate(m_pConvol_NLO_V_Im, -m_xi, m_xi,
@@ -974,7 +983,7 @@ double GAM2CFFStandard::gslIntegrationWrapper(
     F.function = &GAM2CFFStandardIntegrationFunction;
     F.params = &integrationParameters;
 
-    gsl_integration_cquad(&F, min, max, 0, 1e-3, w, &result, &error, &nCalls);
+    gsl_integration_cquad(&F, min, max, 0, 1e-2, w, &result, &error, &nCalls);
 
     gsl_integration_cquad_workspace_free(w);
 
