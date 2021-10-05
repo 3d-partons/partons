@@ -21,6 +21,8 @@
 
 #include <gsl/gsl_sf_dilog.h>
 #include <gsl/gsl_sf_result.h>
+#include <gsl/gsl_integration.h>
+
 #include <iostream>
 
 namespace PARTONS {
@@ -901,6 +903,12 @@ std::complex<double> GAM2CFFStandard::computeUnpolarized() {
     result_Im += integrate(m_pConvol_NLO_V_Im, m_xi, 1.-0.001,
                         Parameters);
     }
+    std::cout << "CHECK" << std::endl;
+    std::cout <<  integrate(m_pConvol_NLO_V_Im, -m_xi, m_xi,
+            Parameters) << std::endl;
+    std::cout << gslIntegrationWrapper(m_pConvol_NLO_V_Im, -m_xi, m_xi, Parameters) << std::endl;
+    std::cout << "CHECK" << std::endl;
+
     // do sprawdzania F-ow
 //    std::complex<double> I(0., 1.);
 //    std::cout << " i  = " << I << std::endl;
@@ -939,5 +947,39 @@ void GAM2CFFStandard::setRunningAlphaStrongModule(
 //    return m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
 //            m_currentGPDComputeType).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution();
 //}
+
+double GAM2CFFStandardIntegrationFunction(double x, void* p) {
+
+    GAM2CFFStandardIntegrationParameters* par =
+            static_cast<GAM2CFFStandardIntegrationParameters*>(p);
+
+    return (par->m_pIntegrator)->operator()(x, par->m_parameters);
+}
+
+double GAM2CFFStandard::gslIntegrationWrapper(
+        NumA::FunctionType1D* functor, double min, double max,
+        const std::vector<double>& params) const {
+
+    GAM2CFFStandardIntegrationParameters integrationParameters;
+    integrationParameters.m_pIntegrator = functor;
+    integrationParameters.m_parameters = params;
+
+    gsl_integration_cquad_workspace * w = gsl_integration_cquad_workspace_alloc(
+            1000);
+
+    double result, error;
+    size_t nCalls;
+
+    gsl_function F;
+    F.function = &GAM2CFFStandardIntegrationFunction;
+    F.params = &integrationParameters;
+
+    gsl_integration_cquad(&F, min, max, 0, 1e-6, w, &result, &error, &nCalls);
+
+    gsl_integration_cquad_workspace_free(w);
+
+    return result;
+}
+
 
 } /* namespace PARTONS */

@@ -27,6 +27,14 @@ class PartonDistribution;
 
 namespace PARTONS {
 
+struct GAM2CFFStandardIntegrationParameters {
+
+    NumA::FunctionType1D* m_pIntegrator;
+    std::vector<double> m_parameters;
+};
+
+double GAM2CFFStandardIntegrationFunction(double x, void* p);
+
 /**
  * @class GAM2CFFStandard
  *
@@ -89,6 +97,10 @@ protected:
 
 
 private:
+
+    double gslIntegrationWrapper(
+            NumA::FunctionType1D* functor, double min, double max,
+            const std::vector<double>& params) const;
 
     RunningAlphaStrongModule *m_pRunningAlphaStrongModule; ///< Related alphaS module.
 
