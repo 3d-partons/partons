@@ -179,7 +179,7 @@ void GAM2CFFStandard::isModuleWellConfigured() {
     }
 }
 
-std::complex<double> iepsilon (0.,  10E-12); // infinitesimal part inserted 'by hand'
+std::complex<double> iepsilon (0.,  10E-8); // infinitesimal part inserted 'by hand'
 
 void GAM2CFFStandard::computeDiagonalGPD_V(){
 
@@ -360,9 +360,9 @@ double GAM2CFFStandard::Tr_5L_F211(double xi, double s, std::vector<double> beta
 
 double GAM2CFFStandard::Tr_5L_F220(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek){
 
-    return -8.*ek[1]*(ek[2]*ek[3] + beta[2]*ee[0]*s*xi)
-            + 8.*ek[3]*(ek[1]*ek[2] - beta[2]*ee[2]*s*xi);
+    return -8*ek[1]*(ek[2]*ek[3] + beta[2]*ee[0]*s*xi) - 8*ek[3]*(ek[1]*ek[2] - beta[2]*ee[2]*s*xi); // 05.10.2021 modified
 }
+
 
 double GAM2CFFStandard::Tr_5L_F221(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek){
 
@@ -552,10 +552,10 @@ std::complex<double> GAM2CFFStandard::M4L(double s, double x, double xi,
                 ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
         Tr_4L_F110(xi, s, beta, ee, ek);
 
-        result -= 2. * (x + xi) * G( ((x + xi) * beta[0] + iepsilon * beta[0] ),
+        result += 2. * (x + xi) * G( ((x + xi) * beta[0] + iepsilon * beta[0] ),
                 (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
                 ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
-        Tr_4L_G(xi, s, beta, ee, ek);
+        Tr_4L_G(xi, s, beta, ee, ek); // 05.10.2021 changed sign
 
 
 
@@ -592,10 +592,10 @@ std::complex<double> GAM2CFFStandard::M5L(double s, double x, double xi,
                 ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
         Tr_5L_F211(xi, s, beta, ee, ek);
 
-        result += F220( ((x + xi) * beta[0] + iepsilon * beta[0] ),
+        result -= F220( ((x + xi) * beta[0] + iepsilon * beta[0] ),
                 (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
                 ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
-        Tr_5L_F220(xi, s, beta, ee, ek);
+        Tr_5L_F220(xi, s, beta, ee, ek); // 05.10.2021 changed sign
 
         result -= (x + xi) * F221( ((x + xi) * beta[0] + iepsilon * beta[0] ),
                 (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
@@ -610,12 +610,12 @@ std::complex<double> GAM2CFFStandard::M5L(double s, double x, double xi,
         result -= s * F110( ((x + xi) * beta[0] + iepsilon * beta[0] ),
                 (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
                 ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
-        Tr_5L_F110(xi, s, beta, ee, ek); // 2 or 8
+        Tr_5L_F110(xi, s, beta, ee, ek);
 
         result += 2 * ( x + xi) * G( ((x + xi) * beta[0] + iepsilon * beta[0] ),
                 (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
                 ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
-        Tr_5L_G(xi, s, beta, ee, ek); // there probably should be -(x+xi) here; to be verified
+        Tr_5L_G(xi, s, beta, ee, ek);
 
         result *= - m_CF * m_alphaSOver2Pi / 4.;
         result /= s * s;
@@ -890,24 +890,24 @@ std::complex<double> GAM2CFFStandard::computeUnpolarized() {
 
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO){
         std::cout << "NLO" << std::endl;
-    result_Re += integrate(m_pConvol_NLO_V_Re, -1+0.001, -m_xi,
+    result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, -1+0.001, 1. - 0.001,
             Parameters);
-    result_Re += integrate(m_pConvol_NLO_V_Re, -m_xi, m_xi,
+//    result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, -m_xi, m_xi,
+//                Parameters);
+//    result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, m_xi, 1.-0.001,
+//                    Parameters);
+    result_Im += gslIntegrationWrapper(m_pConvol_NLO_V_Im, -1+0.001, 1. - 0.001,
                 Parameters);
-    result_Re += integrate(m_pConvol_NLO_V_Re, m_xi, 1.-0.001,
-                    Parameters);
-    result_Im += integrate(m_pConvol_NLO_V_Im, -1+0.001, -m_xi,
-                Parameters);
-    result_Im += integrate(m_pConvol_NLO_V_Im, -m_xi, m_xi,
-                    Parameters);
-    result_Im += integrate(m_pConvol_NLO_V_Im, m_xi, 1.-0.001,
-                        Parameters);
+//    result_Im += gslIntegrationWrapper(m_pConvol_NLO_V_Im, -m_xi, m_xi,
+//                    Parameters);
+//    result_Im += gslIntegrationWrapper(m_pConvol_NLO_V_Im, m_xi, 1.-0.001,
+//                        Parameters);
     }
-    std::cout << "CHECK" << std::endl;
-    std::cout <<  integrate(m_pConvol_NLO_V_Im, -m_xi, m_xi,
-            Parameters) << std::endl;
-    std::cout << gslIntegrationWrapper(m_pConvol_NLO_V_Im, -m_xi, m_xi, Parameters) << std::endl;
-    std::cout << "CHECK" << std::endl;
+//    std::cout << "CHECK" << std::endl;
+//    std::cout <<  integrate(m_pConvol_NLO_V_Im, -m_xi, m_xi,
+//            Parameters) << std::endl;
+//    std::cout << gslIntegrationWrapper(m_pConvol_NLO_V_Im, -m_xi, m_xi, Parameters) << std::endl;
+//    std::cout << "CHECK" << std::endl;
 
     // do sprawdzania F-ow
 //    std::complex<double> I(0., 1.);
@@ -974,7 +974,7 @@ double GAM2CFFStandard::gslIntegrationWrapper(
     F.function = &GAM2CFFStandardIntegrationFunction;
     F.params = &integrationParameters;
 
-    gsl_integration_cquad(&F, min, max, 0, 1e-6, w, &result, &error, &nCalls);
+    gsl_integration_cquad(&F, min, max, 0, 1e-3, w, &result, &error, &nCalls);
 
     gsl_integration_cquad_workspace_free(w);
 
