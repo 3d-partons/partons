@@ -164,6 +164,16 @@ private:
     std::complex<double> F221(std::complex<double> a, std::complex<double> b, std::complex<double> c);
     std::complex<double> G(std::complex<double> a, std::complex<double> b, std::complex<double> c);
 
+    std::complex<double> F100x(double x, double xi, double beta0, double beta1);
+
+    std::complex<double> F110x(double x, double xi, double beta0, double beta1);
+
+    std::complex<double> F210x(double x, double xi, double beta0, double beta1);
+
+    std::complex<double> F201x(double x, double xi, double beta0, double beta1);
+
+    std::complex<double> F211x(double x, double xi, double beta0, double beta1);
+
     // Amplitudes 4.L/R and 5.L/R, see Eqs. 50 and 51
 
     std::complex<double> M4L(double s, double x, double xi,
