@@ -518,43 +518,43 @@ std::complex<double> GAM2CFFStandard::M4L(double s, double x, double xi,
 
         result += F210( ((x + xi) * beta[0] + iepsilon * beta[0] ),
                 (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
-                ( (x+xi) * beta[1] + iepsilon * beta[1] ) ) *
+                ( (x+xi) * beta[1]) ) *
        Tr_4L_F210(xi, s, beta, ee, ek);
 
                 /// I did not define F201, since it differs from F210 just in the interchange of 1st and 3rd argument
         result += (x + xi) * F210( ((x + xi) * beta[1] + iepsilon * beta[1] ),
-                std::complex<double>(( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
-                std::complex<double>( (x+xi) * beta[0] + iepsilon * beta[0] ) ) *
+                 2. * xi * beta[2] + iepsilon * beta[2] ,
+                 (x+xi) * beta[0] ) *
         Tr_4L_F201(xi, s, beta, ee, ek);
 
         result += (x + xi) * F211( ((x + xi) * beta[0] + iepsilon * beta[0] ),
                 (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
-                ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
+                ( (x+xi) * beta[1] ) )  *
         Tr_4L_F211(xi, s, beta, ee, ek);
 
         result += F220( ((x + xi) * beta[0] + iepsilon * beta[0] ),
                 (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
-                ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
+                ( (x+xi) * beta[1] ) )  *
         Tr_4L_F220(xi, s, beta, ee, ek);
 
         result += (x + xi) * F221( ((x + xi) * beta[0] + iepsilon * beta[0] ),
                 (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
-                ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
+                ( (x+xi) * beta[1]  ) )  *
         Tr_4L_F221(xi, s, beta, ee, ek);
 
         result += s * F100( ((x + xi) * beta[0] + iepsilon * beta[0] ),
                 (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
-                ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
+                ( (x+xi) * beta[1]  ) )  *
         Tr_4L_F100(xi, s, beta, ee, ek);
 
         result += s * F110( ((x + xi) * beta[0] + iepsilon * beta[0] ),
                 (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
-                ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
+                ( (x+xi) * beta[1]  ) )  *
         Tr_4L_F110(xi, s, beta, ee, ek);
 
         result += 2. * (x + xi) * G( ((x + xi) * beta[0] + iepsilon * beta[0] ),
                 (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
-                ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
+                ( (x+xi) * beta[1]  ) )  *
         Tr_4L_G(xi, s, beta, ee, ek); // 05.10.2021 changed sign
 
 
@@ -578,43 +578,43 @@ std::complex<double> GAM2CFFStandard::M5L(double s, double x, double xi,
 
         result += F210( ((x + xi) * beta[0] + iepsilon * beta[0] ),
                 (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
-                ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
+                ( (x+xi) * beta[1] ) )  *
         Tr_5L_F210(xi, s, beta, ee, ek);
 
                 /// I did not define F201, since it differs from F210 just in the interchange of 1st and 3rd argument
         result += (x + xi) * F210( ((x + xi) * beta[1] + iepsilon * beta[1] ),
                 (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
-                ( (x+xi) * beta[0] + iepsilon * beta[0] ) )  *
+                ( (x+xi) * beta[0] ) )  *
         Tr_5L_F201(xi, s, beta, ee, ek);
 
         result += (x + xi) * F211( ((x + xi) * beta[0] + iepsilon * beta[0] ),
                 (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
-                ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
+                ( (x+xi) * beta[1] ) )  *
         Tr_5L_F211(xi, s, beta, ee, ek);
 
         result -= F220( ((x + xi) * beta[0] + iepsilon * beta[0] ),
                 (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
-                ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
+                ( (x+xi) * beta[1] ) )  *
         Tr_5L_F220(xi, s, beta, ee, ek); // 05.10.2021 changed sign
 
         result -= (x + xi) * F221( ((x + xi) * beta[0] + iepsilon * beta[0] ),
                 (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
-                ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
+                ( (x+xi) * beta[1] ) )  *
         Tr_5L_F221(xi, s, beta, ee, ek);
 
         result += s * F100( ((x + xi) * beta[0] + iepsilon * beta[0] ),
                 (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
-                ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
+                ( (x+xi) * beta[1] ) )  *
         Tr_5L_F100(xi, s, beta, ee, ek);
 
         result -= s * F110( ((x + xi) * beta[0] + iepsilon * beta[0] ),
                 (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
-                ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
+                ( (x+xi) * beta[1] ) )  *
         Tr_5L_F110(xi, s, beta, ee, ek);
 
         result += 2 * ( x + xi) * G( ((x + xi) * beta[0] + iepsilon * beta[0] ),
                 (( 2. * xi * beta[2] ) + iepsilon * beta[2] ),
-                ( (x+xi) * beta[1] + iepsilon * beta[1] ) )  *
+                ( (x+xi) * beta[1] ) )  *
         Tr_5L_G(xi, s, beta, ee, ek);
 
         result *= - m_CF * m_alphaSOver2Pi / 4.;
