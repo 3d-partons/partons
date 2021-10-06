@@ -179,7 +179,7 @@ void GAM2CFFStandard::isModuleWellConfigured() {
     }
 }
 
-std::complex<double> iepsilon (0.,  10E-7); // infinitesimal part inserted 'by hand'
+std::complex<double> iepsilon (0.,  1.E-5); // infinitesimal part inserted 'by hand'
 
 void GAM2CFFStandard::computeDiagonalGPD_V(){
 
@@ -888,29 +888,60 @@ std::complex<double> GAM2CFFStandard::computeUnpolarized() {
     result_Im *= m_quark_diagonal_V;
     result_Im += - 2. * Constant::PI / s / alpha / alphabar / m_xi;
 
-    if (m_qcdOrderType == PerturbativeQCDOrderType::NLO){
-        std::cout << "NLO" << std::endl;
-    result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, -1+0.0001, -m_xi - 0.001,
-            Parameters);
-    result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, -m_xi - 0.001, -m_xi + 0.001,
-                Parameters);
-    result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, -m_xi + 0.001, m_xi - 0.001,
-                    Parameters);
-    result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, m_xi - 0.001, m_xi + 0.001,
-                    Parameters);
-    result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, m_xi + 0.001, 1.-0.001,
-                    Parameters);
+    std::cout << m_polG0 << "\t" << m_polG1 << "\t" << m_polG2 << std::endl;
 
-    result_Im += gslIntegrationWrapper(m_pConvol_NLO_V_Im, -1+0.0001, -m_xi - 0.001,
-            Parameters);
-    result_Im += gslIntegrationWrapper(m_pConvol_NLO_V_Im, -m_xi - 0.001, -m_xi + 0.001,
-            Parameters);
-    result_Im += gslIntegrationWrapper(m_pConvol_NLO_V_Im, -m_xi + 0.001, m_xi - 0.001,
-            Parameters);
-    result_Im += gslIntegrationWrapper(m_pConvol_NLO_V_Im, m_xi - 0.001, m_xi + 0.001,
-            Parameters);
-    result_Im += gslIntegrationWrapper(m_pConvol_NLO_V_Im, m_xi + 0.001, 1.-0.001,
-            Parameters);
+    if (m_qcdOrderType == PerturbativeQCDOrderType::NLO){
+
+        std::cout << "NLO" << std::endl;
+
+        std::vector<double> range;
+
+        range.push_back(-1.+1.E-3);
+        range.push_back(1.-1.E-3);
+        range.push_back(-m_xi);
+        range.push_back(m_xi);
+        range.push_back(-m_xi * (1. + alpha) / (1. - alpha));
+        range.push_back(m_xi * (1. + alpha) / (1. - alpha));
+        range.push_back(-m_xi * (2. - alpha) / alpha);
+        range.push_back(m_xi * (2. - alpha) / alpha);
+        range.push_back(-m_xi * (1. - 2 * alpha));
+        range.push_back(m_xi * (1. - 2 * alpha));
+
+        std::sort(range.begin(), range.end());
+
+        std::cout << "DEBUG: epsilon:" << iepsilon << std::endl;
+        std::cout << "DEBUG: xi: " << m_xi << std::endl;
+
+        for(size_t i = 0; i < range.size(); i++){
+            std::cout << "DEBUG: range: " << range.at(i) << std::endl;
+        }
+
+        result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, range,
+                Parameters);
+//        result_Im += gslIntegrationWrapper(m_pConvol_NLO_V_Im, range,
+//                  Parameters);
+
+//    result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, -1+0.0001, -m_xi - 0.001,
+//            Parameters);
+//    result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, -m_xi - 0.001, -m_xi + 0.001,
+//                Parameters);
+//    result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, -m_xi + 0.001, m_xi - 0.001,
+//                    Parameters);
+//    result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, m_xi - 0.001, m_xi + 0.001,
+//                    Parameters);
+//    result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, m_xi + 0.001, 1.-0.001,
+//                    Parameters);
+//
+//    result_Im += gslIntegrationWrapper(m_pConvol_NLO_V_Im, -1+0.0001, -m_xi - 0.001,
+//            Parameters);
+//    result_Im += gslIntegrationWrapper(m_pConvol_NLO_V_Im, -m_xi - 0.001, -m_xi + 0.001,
+//            Parameters);
+//    result_Im += gslIntegrationWrapper(m_pConvol_NLO_V_Im, -m_xi + 0.001, m_xi - 0.001,
+//            Parameters);
+//    result_Im += gslIntegrationWrapper(m_pConvol_NLO_V_Im, m_xi - 0.001, m_xi + 0.001,
+//            Parameters);
+//    result_Im += gslIntegrationWrapper(m_pConvol_NLO_V_Im, m_xi + 0.001, 1.-0.001,
+//            Parameters);
     }
 //    std::cout << "CHECK" << std::endl;
 //    std::cout <<  integrate(m_pConvol_NLO_V_Im, -m_xi, m_xi,
@@ -966,26 +997,32 @@ double GAM2CFFStandardIntegrationFunction(double x, void* p) {
 }
 
 double GAM2CFFStandard::gslIntegrationWrapper(
-        NumA::FunctionType1D* functor, double min, double max,
+        NumA::FunctionType1D* functor, const std::vector<double>& range,
         const std::vector<double>& params) const {
 
     GAM2CFFStandardIntegrationParameters integrationParameters;
     integrationParameters.m_pIntegrator = functor;
     integrationParameters.m_parameters = params;
 
-    gsl_integration_cquad_workspace * w = gsl_integration_cquad_workspace_alloc(
-            1000);
+    gsl_integration_workspace* w = gsl_integration_workspace_alloc(1000);
 
     double result, error;
-    size_t nCalls;
 
     gsl_function F;
     F.function = &GAM2CFFStandardIntegrationFunction;
     F.params = &integrationParameters;
 
-    gsl_integration_cquad(&F, min, max, 0, 1e-2, w, &result, &error, &nCalls);
+    double* rangeTab = new double[range.size()];
 
-    gsl_integration_cquad_workspace_free(w);
+    for (size_t i = 0; i < range.size(); i++) {
+        rangeTab[i] = range.at(i);
+    }
+
+    gsl_integration_qagp(&F, rangeTab, range.size(), 0., 1.E-1, 1000, w,
+            &result, &error);
+
+    delete[] rangeTab;
+    gsl_integration_workspace_free(w);
 
     return result;
 }
