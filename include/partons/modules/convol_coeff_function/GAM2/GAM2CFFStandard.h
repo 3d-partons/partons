@@ -98,9 +98,8 @@ protected:
 
 private:
 
-    double gslIntegrationWrapper(
-            NumA::FunctionType1D* functor, const std::vector<double>& range,
-            const std::vector<double>& params) const;
+    double gslIntegrationWrapper(NumA::FunctionType1D* functor,
+            const std::vector<double>& range, std::vector<double>& params) ;
 
     RunningAlphaStrongModule *m_pRunningAlphaStrongModule; ///< Related alphaS module.
 

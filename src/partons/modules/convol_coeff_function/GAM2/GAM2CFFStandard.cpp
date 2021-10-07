@@ -948,15 +948,23 @@ std::complex<double> GAM2CFFStandard::computeUnpolarized() {
 
         std::sort(range.begin(), range.end());
 
-        std::cout << "DEBUG: epsilon:" << iepsilon << std::endl;
+
         std::cout << "DEBUG: xi: " << m_xi << std::endl;
 
         for(size_t i = 0; i < range.size(); i++){
             std::cout << "DEBUG: range: " << range.at(i) << std::endl;
         }
 
-        result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, range,
-                Parameters);
+        iepsilon = std::complex<double> (0.,  1.E-4);
+        std::cout << "DEBUG: epsilon:" << iepsilon << std::endl;
+        gslIntegrationWrapper(m_pConvol_NLO_V_Re, range,  Parameters);
+
+        iepsilon = std::complex<double> (0.,  1.E-5);
+            std::cout << "DEBUG: epsilon:" << iepsilon << std::endl;
+            gslIntegrationWrapper(m_pConvol_NLO_V_Re, range,  Parameters);
+
+//        result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, range,
+//                Parameters);
 //        result_Im += gslIntegrationWrapper(m_pConvol_NLO_V_Im, range,
 //                  Parameters);
 
@@ -1037,31 +1045,44 @@ double GAM2CFFStandardIntegrationFunction(double x, void* p) {
 
 double GAM2CFFStandard::gslIntegrationWrapper(
         NumA::FunctionType1D* functor, const std::vector<double>& range,
-        const std::vector<double>& params) const {
+          std::vector<double>& params)  {
 
-    GAM2CFFStandardIntegrationParameters integrationParameters;
-    integrationParameters.m_pIntegrator = functor;
-    integrationParameters.m_parameters = params;
+    double result = 0.;
 
-    gsl_integration_workspace* w = gsl_integration_workspace_alloc(1000);
+    for (size_t i = 0; i < range.size() - 1; i++) {
 
-    double result, error;
-
-    gsl_function F;
-    F.function = &GAM2CFFStandardIntegrationFunction;
-    F.params = &integrationParameters;
-
-    double* rangeTab = new double[range.size()];
-
-    for (size_t i = 0; i < range.size(); i++) {
-        rangeTab[i] = range.at(i);
+        double thisResult = integrate(functor, range.at(i), range.at(i + 1), params);
+        std::cout << "DEBUG: range: " << range.at(i) << " " << range.at(i+1) << " result: " << thisResult << std::endl;
+        result += thisResult;
     }
 
-    gsl_integration_qagp(&F, rangeTab, range.size(), 0., 1.E-1, 1000, w,
-            &result, &error);
+    std::cout << "DEBUG result total: " << result << std::endl;
 
-    delete[] rangeTab;
-    gsl_integration_workspace_free(w);
+    return result;
+
+//    GAM2CFFStandardIntegrationParameters integrationParameters;
+//    integrationParameters.m_pIntegrator = functor;
+//    integrationParameters.m_parameters = params;
+//
+//    gsl_integration_workspace* w = gsl_integration_workspace_alloc(1000);
+//
+//    double result, error;
+//
+//    gsl_function F;
+//    F.function = &GAM2CFFStandardIntegrationFunction;
+//    F.params = &integrationParameters;
+//
+//    double* rangeTab = new double[range.size()];
+//
+//    for (size_t i = 0; i < range.size(); i++) {
+//        rangeTab[i] = range.at(i);
+//    }
+//
+//    gsl_integration_qagp(&F, rangeTab, range.size(), 0., 1.E-1, 1000, w,
+//            &result, &error);
+//
+//    delete[] rangeTab;
+//    gsl_integration_workspace_free(w);
 
     return result;
 }
