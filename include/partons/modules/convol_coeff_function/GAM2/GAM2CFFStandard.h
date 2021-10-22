@@ -18,6 +18,9 @@
 #include "../../../beans/automation/BaseObjectData.h"
 #include "GAM2ConvolCoeffFunctionModule.h"
 
+#include "../../../../../include/algorithm/LiSK/lisk.hpp"
+
+
 namespace NumA {
 class FunctionType1D;
 } /* namespace NumA */
@@ -98,13 +101,19 @@ protected:
 
 private:
 
-    double gslIntegrationWrapper(NumA::FunctionType1D* functor,
+    LiSK::LiSK<std::complex<double> > m_lisk;
+
+    double gslIntegrationWrapper(NumA::FunctionType1D* functor, NumA::FunctionType1D* functorSym, NumA::FunctionType1D* functorSymConst,
             const std::vector<double>& range, std::vector<double>& params) ;
 
     RunningAlphaStrongModule *m_pRunningAlphaStrongModule; ///< Related alphaS module.
 
     NumA::FunctionType1D* m_pConvol_NLO_V_Re;
     NumA::FunctionType1D* m_pConvol_NLO_V_Im;
+    NumA::FunctionType1D* m_pConvol_NLO_V_Re_Sym;
+    NumA::FunctionType1D* m_pConvol_NLO_V_Im_Sym;
+    NumA::FunctionType1D* m_pConvol_NLO_V_Re_Sym_Const;
+    NumA::FunctionType1D* m_pConvol_NLO_V_Im_Sym_Const;
 
     double m_quark_diagonal_V;
     double m_quark_diagonal_A;
@@ -162,16 +171,9 @@ private:
     std::complex<double> F220(std::complex<double> a, std::complex<double> b, std::complex<double> c);
     std::complex<double> F221(std::complex<double> a, std::complex<double> b, std::complex<double> c);
     std::complex<double> G(std::complex<double> a, std::complex<double> b, std::complex<double> c);
+    std::complex<double> GNew(double x, double xi, const std::vector<double>& beta);
 
-    std::complex<double> F100x(double x, double xi, double beta0, double beta1);
 
-    std::complex<double> F110x(double x, double xi, double beta0, double beta1);
-
-    std::complex<double> F210x(double x, double xi, double beta0, double beta1);
-
-    std::complex<double> F201x(double x, double xi, double beta0, double beta1);
-
-    std::complex<double> F211x(double x, double xi, double beta0, double beta1);
 
     // Amplitudes 4.L/R and 5.L/R, see Eqs. 50 and 51
 
@@ -199,8 +201,11 @@ private:
     std::complex<double> Convol_NLO_V(double x, std::vector<double> params);
 
     double Convol_NLO_V_Re(double x, std::vector<double> params);
-
     double Convol_NLO_V_Im(double x, std::vector<double> params);
+    double Convol_NLO_V_Re_Sym(double x, std::vector<double> params);
+    double Convol_NLO_V_Im_Sym(double x, std::vector<double> params);
+    double Convol_NLO_V_Re_Sym_Const(double x, std::vector<double> params);
+    double Convol_NLO_V_Im_Sym_Const(double x, std::vector<double> params);
 
 
 };
