@@ -661,22 +661,21 @@ std::complex<double> GAM2CFFStandard::G(std::complex<double> a,
 
 std::complex<double> GAM2CFFStandard::GNew(double x, double xi, const std::vector<double>& beta) {
 
-    return
-
-        ((1. + log(-iepsilon - beta[0]*(x + xi)))*(beta[1]*(x + xi) + beta[1]*(x + xi)*log(-iepsilon - beta[0]*(x + xi)) +
-        2.*(iepsilon + 2.*beta[2]*xi)*log((iepsilon + 2.*beta[2]*xi)/(iepsilon + 2.*beta[2]*xi + beta[1]*(x + xi)))) +
-        2.*(iepsilon + 2.*beta[2]*xi)*m_lisk.Li(2.,(beta[1]*(x + xi))/(iepsilon + 2.*beta[2]*xi + beta[1]*(x + xi))))/
-        (2.*beta[1]*(iepsilon + 2.*beta[2]*xi)*(iepsilon + 2.*beta[2]*xi + beta[1]*(x + xi))) -
-        ((1. + log(2.*beta[2]*xi - beta[0]*(x + xi)))*(beta[1]*(x + xi) + beta[1]*(x + xi)*log(2.*beta[2]*xi - beta[0]*(x + xi)) +
-        2.*(iepsilon + 2.*beta[2]*xi)*log(((iepsilon + 2.*beta[2]*xi)*(iepsilon + beta[0]*(x + xi) + beta[1]*(x + xi)))/
-        ((iepsilon + beta[0]*(x + xi))*(iepsilon + 2.*beta[2]*xi + beta[1]*(x + xi))))) +
-        2.*(iepsilon + 2.*beta[2]*xi)*m_lisk.Li(2.,(beta[1]*(x + xi)*(-2.*beta[2]*xi + beta[0]*(x + xi)))/
-        ((iepsilon + beta[0]*(x + xi))*(iepsilon + 2.*beta[2]*xi + beta[1]*(x + xi)))))/
-        (2.*beta[1]*(iepsilon + 2.*beta[2]*xi)*(iepsilon + 2.*beta[2]*xi + beta[1]*(x + xi))) -
-        (-pow(M_PI,2.) + 3.*log((-iepsilon + beta[1]*(x + xi) + beta[2]*(x + xi))/(-iepsilon + beta[2]*(x + xi)))*
-        (2. + 2.*log(-iepsilon - 2.*beta[2]*xi) - 2.*log((beta[1]*(x + xi))/(-iepsilon + beta[2]*(x + xi))) +
-        log((-iepsilon + beta[1]*(x + xi) + beta[2]*(x + xi))/(-iepsilon + beta[2]*(x + xi)))) +
-        6.*m_lisk.Li(2.,(-iepsilon + beta[2]*(x + xi))/(-iepsilon + beta[1]*(x + xi) + beta[2]*(x + xi))))/(6.*beta[1]);
+    return ((1. + std::log(-iepsilon - beta[0]*(x + xi)))*(beta[1]*(x + xi) + beta[1]*(x + xi)*std::log(-iepsilon - beta[0]*(x + xi)) +
+    2.*(iepsilon + 2.*beta[2]*xi)*std::log((iepsilon + 2.*beta[2]*xi)/(iepsilon + 2.*beta[2]*xi + beta[1]*(x + xi)))) +
+    2.*(iepsilon + 2.*beta[2]*xi)*m_lisk.Li(2,(beta[1]*(x + xi))/(iepsilon + 2.*beta[2]*xi + beta[1]*(x + xi))))/
+    (2.*beta[1]*(iepsilon + 2*beta[2]*xi)*(iepsilon + 2*beta[2]*xi + beta[1]*(x + xi))) -
+    ((1. + std::log(-iepsilon + 2.*beta[2]*xi - beta[0]*(x + xi)))*
+            (beta[1]*(x + xi) + beta[1]*(x + xi)*std::log(-iepsilon + 2.*beta[2]*xi - beta[0]*(x + xi)) +
+            2.*(iepsilon + 2.*beta[2]*xi)*std::log(((iepsilon + 2.*beta[2]*xi)*(iepsilon + beta[0]*(x + xi) + beta[1]*(x + xi)))/
+            ((iepsilon + beta[0]*(x + xi))*(iepsilon + 2.*beta[2]*xi + beta[1]*(x + xi))))) +
+            2.*(iepsilon + 2.*beta[2]*xi)*m_lisk.Li(2,(beta[1]*(x + xi)*(iepsilon - 2.*beta[2]*xi + beta[0]*(x + xi)))/
+            ((iepsilon + beta[0]*(x + xi))*(iepsilon + 2.*beta[2]*xi + beta[1]*(x + xi)))))/
+            (2.*beta[1]*(iepsilon + 2.*beta[2]*xi)*(iepsilon + 2.*beta[2]*xi + beta[1]*(x + xi))) -
+            (-std::pow(Constant::PI,2.) + 3.*std::log((-iepsilon + beta[1]*(x + xi) + beta[2]*(x + xi))/(-iepsilon + beta[2]*(x + xi)))*
+            (2. + 2.*std::log(-iepsilon - 2.*beta[2]*xi) - 2.*std::log((beta[1]*(x + xi))/(-iepsilon + beta[2]*(x + xi))) +
+            std::log((-iepsilon + beta[1]*(x + xi) + beta[2]*(x + xi))/(-iepsilon + beta[2]*(x + xi)))) +
+            6.*m_lisk.Li(2,(-iepsilon + beta[2]*(x + xi))/(-iepsilon + beta[1]*(x + xi) + beta[2]*(x + xi))))/(6.*beta[1]);
 }
 
 double sgn(double x) {
@@ -725,13 +724,13 @@ std::complex<double> GAM2CFFStandard::M4L(double s, double x, double xi,
                     ((2. * xi * beta[2]) + iepsilon * sgn(beta[2])),
                     ((x + xi) * beta[1])) * Tr_4L_F110(xi, s, beta, ee, ek);
 
-    result += 2. /** (x + xi)*/
-            * G(((x + xi) * beta[0] + iepsilon * sgn(beta[0])),
-                    ((2. * xi * beta[2]) + iepsilon * sgn(beta[2])),
-                    ((x + xi) * beta[1])) * Tr_4L_G(xi, s, beta, ee, ek);
-
 //    result += 2. /** (x + xi)*/
-//            * GNew(x, xi, beta) * Tr_4L_G(xi, s, beta, ee, ek);
+//            * G(((x + xi) * beta[0] + iepsilon * sgn(beta[0])),
+//                    ((2. * xi * beta[2]) + iepsilon * sgn(beta[2])),
+//                    ((x + xi) * beta[1])) * Tr_4L_G(xi, s, beta, ee, ek);
+
+    result += 2. /** (x + xi)*/
+            * GNew(x, xi, beta) * Tr_4L_G(xi, s, beta, ee, ek);
 
     result *= -m_CF * m_alphaSOver2Pi / 2.;
     result /= std::pow(s, 3.);
@@ -784,13 +783,13 @@ std::complex<double> GAM2CFFStandard::M5L(double s, double x, double xi,
                     ((2. * xi * beta[2]) + iepsilon * sgn(beta[2])),
                     ((x + xi) * beta[1])) * Tr_5L_F110(xi, s, beta, ee, ek);
 
-    result += 2. /** (x + xi)*/
-            * G(((x + xi) * beta[0] + iepsilon * sgn(beta[0])),
-                    ((2. * xi * beta[2]) + iepsilon * sgn(beta[2])),
-                    ((x + xi) * beta[1])) * Tr_5L_G(xi, s, beta, ee, ek);
+//    result += 2. /** (x + xi)*/
+//            * G(((x + xi) * beta[0] + iepsilon * sgn(beta[0])),
+//                    ((2. * xi * beta[2]) + iepsilon * sgn(beta[2])),
+//                    ((x + xi) * beta[1])) * Tr_5L_G(xi, s, beta, ee, ek);
 
-    //    result += 2. /** (x + xi)*/
-    //            * GNew(x, xi, beta) * Tr_5L_G(xi, s, beta, ee, ek);
+        result += 2. /** (x + xi)*/
+                * GNew(x, xi, beta) * Tr_5L_G(xi, s, beta, ee, ek);
 
     result *= -m_CF * m_alphaSOver2Pi / 4.;
     result /= s * s;
@@ -1191,7 +1190,7 @@ std::complex<double> GAM2CFFStandard::computeUnpolarized() {
 //        gslIntegrationWrapper(m_pConvol_NLO_V_Re, range,  Parameters);
 
         //TODO
-        iepsilon = std::complex<double>(0., 1.E-6);
+        iepsilon = std::complex<double>(0., 1.E-4);
         result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, m_pConvol_NLO_V_Re_Sym, m_pConvol_NLO_V_Re_Sym_Const,range,
                 Parameters);
         result_Im += gslIntegrationWrapper(m_pConvol_NLO_V_Im, m_pConvol_NLO_V_Im_Sym, m_pConvol_NLO_V_Im_Sym_Const, range,
