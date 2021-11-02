@@ -172,6 +172,8 @@ private:
     std::complex<double> F221(std::complex<double> a, std::complex<double> b, std::complex<double> c);
     std::complex<double> G(std::complex<double> a, std::complex<double> b, std::complex<double> c);
     std::complex<double> GNew(double x, double xi, const std::vector<double>& beta);
+    std::complex<double> F201New(double x, double xi, const std::vector<double>& beta);
+    std::complex<double> F210New(double x, double xi, const std::vector<double>& beta);
 
 
 
