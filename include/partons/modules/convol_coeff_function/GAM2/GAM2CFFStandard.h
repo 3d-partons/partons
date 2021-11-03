@@ -174,6 +174,8 @@ private:
     std::complex<double> GNew(double x, double xi, const std::vector<double>& beta);
     std::complex<double> F201New(double x, double xi, const std::vector<double>& beta);
     std::complex<double> F210New(double x, double xi, const std::vector<double>& beta);
+    std::complex<double> F110New(double x, double xi, const std::vector<double>& beta);
+    std::complex<double> F100New(double x, double xi, const std::vector<double>& beta);
 
 
 
