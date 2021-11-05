@@ -1179,6 +1179,18 @@ std::complex<double> GAM2CFFStandard::computeUnpolarized() {
         range.push_back(m_xi * (2. - alpha) / alpha);
         range.push_back(m_xi * (1. - 2 * alpha));
 
+        for (std::vector<double>::iterator it = range.begin();
+                it != range.end(); it++) {
+
+            if ((*it) < 0.)
+                (*it) = fabs(*it);
+
+            if ((*it) > 1.) {
+                it = range.erase(it);
+                it--;
+            }
+        }
+
         std::sort(range.begin(), range.end());
 
         std::cout << "DEBUG: xi: " << m_xi << std::endl;
