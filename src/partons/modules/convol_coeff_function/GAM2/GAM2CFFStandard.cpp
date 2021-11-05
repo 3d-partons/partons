@@ -1329,7 +1329,7 @@ double GAM2CFFStandard::gslIntegrationWrapper(NumA::FunctionType1D* functor, Num
 
         double range =
                 (fabs(limits.at(i) - limits.at(i - 1))
-                        > fabs(limits.at(i) - limits.at(i + 1))) ?
+                        < fabs(limits.at(i) - limits.at(i + 1))) ?
                         (fabs(limits.at(i) - limits.at(i - 1))) :
                         (fabs(limits.at(i) - limits.at(i + 1)));
 
