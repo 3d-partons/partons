@@ -43,6 +43,9 @@ void GAM2ProcessGPSSW21::isModuleWellConfigured() {
 }
 
 PhysicalType<double> GAM2ProcessGPSSW21::CrossSection() {
+
+    std::cout << m_dvcsConvolCoeffFunctionResult.getResult(GPDType::H) << std::endl;
+
     return PhysicalType<double>(1.1234, PhysicalUnit::GEVm2);
 }
 
