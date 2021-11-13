@@ -2,6 +2,7 @@
 
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/utils/type/PhysicalUnit.h"
+#include "../../../../../include/partons/FundamentalPhysicalConstants.h"
 
 namespace PARTONS {
 
@@ -44,9 +45,19 @@ void GAM2ProcessGPSSW21::isModuleWellConfigured() {
 
 PhysicalType<double> GAM2ProcessGPSSW21::CrossSection() {
 
-    std::cout << m_dvcsConvolCoeffFunctionResult.getResult(GPDType::H) << std::endl;
+    std::complex<double> H = getConvolCoeffFunctionValue(GPDType::H);
 
-    return PhysicalType<double>(1.1234, PhysicalUnit::GEVm2);
+    double tau = 2. * m_xi / (1. + m_xi);
+    double M2 = Constant::PROTON_MASS * Constant::PROTON_MASS;
+    double SgN = (m_Mgg2 - m_t) / tau + M2;
+
+    double diff_cross_section = 0.;
+
+    diff_cross_section += (1 - m_xi * m_xi) * (H.real() *H.real() + H.imag()*H.imag());
+
+    diff_cross_section /= std::pow(16. * Constant::PI, 3) * SgN * SgN * m_Mgg2 * m_Mgg2;
+
+    return PhysicalType<double>(diff_cross_section, PhysicalUnit::GEVm2);
 }
 
 } /* namespace PARTONS */
