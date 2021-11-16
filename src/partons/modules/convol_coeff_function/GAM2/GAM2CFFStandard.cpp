@@ -1114,13 +1114,14 @@ std::complex<double> GAM2CFFStandard::computeUnpolarized() {
                         << PerturbativeQCDOrderType(m_qcdOrderType).toString());
     }
 
-    double tPrim = m_t - m_Mgg2 + m_uPrim;
+    double tPrim = m_t - m_Mgg2 - m_uPrim; // MINUS uPrim
     double tau = 2. * m_xi / (1. + m_xi);
     double M2 = Constant::PROTON_MASS * Constant::PROTON_MASS;
     double s = (m_Mgg2 - m_t) / tau / (1. + m_xi);
     double pt2 = -(m_uPrim * tPrim) / (m_uPrim + tPrim);
     double alpha = m_uPrim / (m_uPrim + tPrim);
     double alphabar = 1. - alpha;
+
 
     // beta_i is defined by 2pk_i = beta_i * s
     // {k_i} are the following: {q, -q_1, -q_2)
@@ -1152,19 +1153,19 @@ std::complex<double> GAM2CFFStandard::computeUnpolarized() {
     double result_Re = 0.;
     double result_Im = 0.;
 
-    std::cout << "s = " << s << std::endl;
+   // std::cout << "s = " << s << std::endl;
 
     // LO part
     computeDiagonalGPD_V();
     result_Im = (alpha - alphabar) * double(m_polG1 == m_polG2)
-            * double(m_polG0 == 3);
-    result_Im -= double(m_polG0 == m_polG2) * double(m_polG1 == 3);
-    result_Im += double(m_polG1 == m_polG0) * double(m_polG2 == 3);
+            * double(m_polG0 == PolarizationType::LIN_TRANS_X_PLUS);
+    result_Im -= double(m_polG0 == m_polG2) * double(m_polG1 == PolarizationType::LIN_TRANS_X_PLUS);
+    result_Im += double(m_polG1 == m_polG0) * double(m_polG2 == PolarizationType::LIN_TRANS_X_PLUS);
     result_Im *= sqrt(pt2);
     result_Im *= m_quark_diagonal_V;
-    result_Im += -2. * Constant::PI / s / alpha / alphabar / m_xi;
+    result_Im *= -2. * Constant::PI / s / alpha / alphabar / m_xi;
 
-    std::cout << m_polG0 << "\t" << m_polG1 << "\t" << m_polG2 << std::endl;
+//    std::cout << m_polG0 << "\t" << m_polG1 << "\t" << m_polG2 << std::endl;
 
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
 

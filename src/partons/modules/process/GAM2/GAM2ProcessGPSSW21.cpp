@@ -57,7 +57,9 @@ PhysicalType<double> GAM2ProcessGPSSW21::CrossSection() {
 
     diff_cross_section += (1 - m_xi * m_xi) * (H.real() *H.real() + H.imag()*H.imag());
 
-    diff_cross_section /= 2. * std::pow(16. * Constant::PI, 3) * SgN * SgN * m_Mgg2 * m_Mgg2;
+    diff_cross_section /= std::pow(16. * Constant::PI, 3) * SgN * SgN * m_Mgg2;
+
+    diff_cross_section *= 2.; // times 2
 
     return PhysicalType<double>(diff_cross_section, PhysicalUnit::GEVm2);
 }
