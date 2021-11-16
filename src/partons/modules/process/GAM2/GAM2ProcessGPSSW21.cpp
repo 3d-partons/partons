@@ -61,6 +61,8 @@ PhysicalType<double> GAM2ProcessGPSSW21::CrossSection() {
 
     diff_cross_section *= 2.; // times 2
 
+    diff_cross_section *= std::pow(Constant::POSITRON_CHARGE, 6);
+
     return PhysicalType<double>(diff_cross_section, PhysicalUnit::GEVm2);
 }
 

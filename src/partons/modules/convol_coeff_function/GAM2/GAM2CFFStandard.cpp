@@ -1144,9 +1144,9 @@ std::complex<double> GAM2CFFStandard::computeUnpolarized() {
     // This matrix will be used to make the vector ek[i] for a given permutation
     // See Eq. 16
 
-    Parameters.push_back(sqrt(pt2) * double(m_polG0 == 3));
-    Parameters.push_back(sqrt(pt2) * double(m_polG1 == 3) / alpha);
-    Parameters.push_back(-sqrt(pt2) * double(m_polG2 == 3) / alphabar);
+    Parameters.push_back(sqrt(pt2) * double(m_polG0 == PolarizationType::LIN_TRANS_X_PLUS));
+    Parameters.push_back(sqrt(pt2) * double(m_polG1 == PolarizationType::LIN_TRANS_X_PLUS) / alpha);
+    Parameters.push_back(-sqrt(pt2) * double(m_polG2 == PolarizationType::LIN_TRANS_X_PLUS) / alphabar);
 
     Parameters.push_back(s);
 
@@ -1194,11 +1194,11 @@ std::complex<double> GAM2CFFStandard::computeUnpolarized() {
 
         std::sort(range.begin(), range.end());
 
-        std::cout << "DEBUG: xi: " << m_xi << std::endl;
-
-        for (size_t i = 0; i < range.size(); i++) {
-            std::cout << "DEBUG: range: " << range.at(i) << std::endl;
-        }
+//        std::cout << "DEBUG: xi: " << m_xi << std::endl;
+//
+//        for (size_t i = 0; i < range.size(); i++) {
+//            std::cout << "DEBUG: range: " << range.at(i) << std::endl;
+//        }
 
 //        iepsilon = std::complex<double> (0.,  1.E-4);
 //        std::cout << "DEBUG: epsilon:" << iepsilon << std::endl;
