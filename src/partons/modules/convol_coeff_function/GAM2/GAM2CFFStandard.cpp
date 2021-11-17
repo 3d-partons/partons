@@ -226,7 +226,6 @@ void GAM2CFFStandard::computeDiagonalGPD_V() {
             m_currentGPDComputeType);
 
     m_quark_diagonal_V = computeCubedChargeAveragedGPD(partonDistribution);
-
 }
 
 void GAM2CFFStandard::computeDiagonalGPD_A() {
@@ -236,12 +235,6 @@ void GAM2CFFStandard::computeDiagonalGPD_A() {
             m_currentGPDComputeType);
 
     m_quark_diagonal_A = computeCubedChargeAveragedGPD(partonDistribution);
-
-    partonDistribution = m_pGPDModule->compute(
-            GPDKinematic(-m_xi, m_xi, m_t, m_MuF2, m_MuR2),
-            m_currentGPDComputeType);
-
-    m_quark_diagonal_A -= computeCubedChargeAveragedGPD(partonDistribution);
 }
 
 // Trace \mathcal{A}, see Eq. 25
@@ -1113,10 +1106,13 @@ std::complex<double> GAM2CFFStandard::computeUnpolarized() {
     double tau = 2. * m_xi / (1. + m_xi);
     double M2 = Constant::PROTON_MASS * Constant::PROTON_MASS;
     double s = (m_Mgg2 - m_t) / tau / (1. + m_xi);
-    double pt2 = -(m_uPrim * tPrim) / (m_uPrim + tPrim);
-    double alpha = m_uPrim / (m_uPrim + tPrim);
-    double alphabar = 1. - alpha;
+//    double pt2 = -(m_uPrim * tPrim) / (m_uPrim + tPrim);
+//    double alpha = m_uPrim / (m_uPrim + tPrim);
+//    double alphabar = 1. - alpha;
 
+    double alpha = -m_uPrim*(1/(2*m_xi*s) - M2/(s*s*(1 - m_xi*m_xi)));
+    double alphabar = 1 - alpha - M2/s*2. *m_xi/(1 - m_xi*m_xi);
+    double pt2 = -m_uPrim*alphabar;
 
     // beta_i is defined by 2pk_i = beta_i * s
     // {k_i} are the following: {q, -q_1, -q_2)
