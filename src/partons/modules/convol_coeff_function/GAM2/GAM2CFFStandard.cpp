@@ -227,11 +227,6 @@ void GAM2CFFStandard::computeDiagonalGPD_V() {
 
     m_quark_diagonal_V = computeCubedChargeAveragedGPD(partonDistribution);
 
-    partonDistribution = m_pGPDModule->compute(
-            GPDKinematic(-m_xi, m_xi, m_t, m_MuF2, m_MuR2),
-            m_currentGPDComputeType);
-
-    m_quark_diagonal_V += computeCubedChargeAveragedGPD(partonDistribution);
 }
 
 void GAM2CFFStandard::computeDiagonalGPD_A() {
