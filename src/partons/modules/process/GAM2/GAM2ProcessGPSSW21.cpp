@@ -48,6 +48,7 @@ PhysicalType<double> GAM2ProcessGPSSW21::CrossSection() {
 // d(sigma) / dMgg^2 d(-u') dt
 // Currently, the kinematics is set for t = t_min
     std::complex<double> H = getConvolCoeffFunctionValue(GPDType::H);
+    std::complex<double> E = getConvolCoeffFunctionValue(GPDType::E);
 
     double tau = 2. * m_xi / (1. + m_xi);
     double M2 = Constant::PROTON_MASS * Constant::PROTON_MASS;
@@ -56,6 +57,10 @@ PhysicalType<double> GAM2ProcessGPSSW21::CrossSection() {
     double diff_cross_section = 0.;
 
     diff_cross_section += (1 - m_xi * m_xi) * (H.real() *H.real() + H.imag()*H.imag());
+
+    diff_cross_section += -2. * m_xi * m_xi * (H.real() * E.real() + H.imag()*E.imag() );
+
+    diff_cross_section += std::pow(m_xi, 4) / (1 - m_xi * m_xi) * (E.real() * E.real() + E.imag()*E.imag() );
 
     diff_cross_section /= std::pow(16. * Constant::PI, 3) * SgN * SgN * m_Mgg2;
 
