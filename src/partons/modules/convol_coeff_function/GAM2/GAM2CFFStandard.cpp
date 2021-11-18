@@ -1128,14 +1128,23 @@ std::complex<double> GAM2CFFStandard::computeUnpolarized() {
     // A different notation is used in the paper, here ee[0] = e23, ee[1] = e13, ee[2] = e12
 
     Parameters.push_back(-double(m_polG1 == m_polG2));
+    //TODO to include phi-dependence comment two lines below:
     Parameters.push_back(-double(m_polG0 == m_polG2));
     Parameters.push_back(-double(m_polG1 == m_polG0));
+    //TODO ... and uncomment the four below:
+//    Parameters.push_back(-double(PolarizationType::LIN_TRANS_X_PLUS == m_polG2) * cos(m_phi)
+//                        - double(PolarizationType::LIN_TRANS_Y_PLUS == m_polG2) * sin(m_phi) );
+//    Parameters.push_back(-double(PolarizationType::LIN_TRANS_X_PLUS == m_polG1) * cos(m_phi)
+//                            - double(PolarizationType::LIN_TRANS_Y_PLUS == m_polG1) * sin(m_phi) );
 
     // ek0[i][j] = epsilon_i * k_j
     // This matrix will be used to make the vector ek[i] for a given permutation
     // See Eq. 16
 
+    //TODO to include phi-dependence comment the line below:
     Parameters.push_back(sqrt(pt2) * double(m_polG0 == PolarizationType::LIN_TRANS_X_PLUS));
+    //TODO ... and uncomment that one:
+//    Parameters.push_back(sqrt(pt2) * cos(m_phi) ); // phi - dependence included
     Parameters.push_back(sqrt(pt2) * double(m_polG1 == PolarizationType::LIN_TRANS_X_PLUS) / alpha);
     Parameters.push_back(-sqrt(pt2) * double(m_polG2 == PolarizationType::LIN_TRANS_X_PLUS) / alphabar);
 
@@ -1148,10 +1157,22 @@ std::complex<double> GAM2CFFStandard::computeUnpolarized() {
 
     // LO part
     computeDiagonalGPD_V();
+    //TODO to include phi-dependence comment the lines below:
     result_Im = (alpha - alphabar) * double(m_polG1 == m_polG2)
             * double(m_polG0 == PolarizationType::LIN_TRANS_X_PLUS);
     result_Im -= double(m_polG0 == m_polG2) * double(m_polG1 == PolarizationType::LIN_TRANS_X_PLUS);
     result_Im += double(m_polG1 == m_polG0) * double(m_polG2 == PolarizationType::LIN_TRANS_X_PLUS);
+    //TODO... and uncomment these:
+//    result_Im = (alpha - alphabar) * double(m_polG1 == m_polG2)
+//            * cos(m_phi);
+//    result_Im -= (double(PolarizationType::LIN_TRANS_X_PLUS == m_polG2) * cos(m_phi)
+//                + double(PolarizationType::LIN_TRANS_Y_PLUS == m_polG2) * sin(m_phi) )
+//                  * double(m_polG1 == PolarizationType::LIN_TRANS_X_PLUS);
+//    result_Im += (double(PolarizationType::LIN_TRANS_X_PLUS == m_polG1) * cos(m_phi)
+//                + double(PolarizationType::LIN_TRANS_Y_PLUS == m_polG1) * sin(m_phi) )
+//                    * double(m_polG2 == PolarizationType::LIN_TRANS_X_PLUS);
+//    //TODO up to this line.
+
     result_Im *= sqrt(pt2);
     result_Im *= m_quark_diagonal_V;
     result_Im *= -2. * Constant::PI / s / alpha / alphabar / m_xi;
