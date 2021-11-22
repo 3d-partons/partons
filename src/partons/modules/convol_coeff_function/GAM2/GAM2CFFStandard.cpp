@@ -997,6 +997,14 @@ double GAM2CFFStandard::Convol_NLO_V_Re(double x, std::vector<double> params) {
     double Convol = (Convol_NLO_V(x, params)).real();
     Convol *= EvalGPD;
 
+    if (std::isnan(Convol) || std::isinf(Convol)) {
+
+          warn(__func__,
+                  ElemUtils::Formatter() << "Value is either nan or inf, x = "
+                          << x);
+          return 0.;
+      }
+
     return Convol;
 }
 
@@ -1021,6 +1029,14 @@ double GAM2CFFStandard::Convol_NLO_V_Re_Sym(double x,
     double Convol = (Convol_NLO_V(x0 - x, params) * EvalGPDA
             + Convol_NLO_V(x0 + x, params) * EvalGPDB).real();
 
+    if (std::isnan(Convol) || std::isinf(Convol)) {
+
+          warn(__func__,
+                  ElemUtils::Formatter() << "Value is either nan or inf, x = "
+                          << x);
+          return 0.;
+      }
+
     return Convol;
 }
 
@@ -1036,6 +1052,14 @@ double GAM2CFFStandard::Convol_NLO_V_Re_Sym_Const(double x,
     double Convol = (Convol_NLO_V(x0 - x, params) * EvalGPDA
             + Convol_NLO_V(x0 + x, params) * EvalGPDB).real();
 
+    if (std::isnan(Convol) || std::isinf(Convol)) {
+
+          warn(__func__,
+                  ElemUtils::Formatter() << "Value is either nan or inf, x = "
+                          << x);
+          return 0.;
+      }
+
     return Convol;
 }
 
@@ -1049,6 +1073,14 @@ double GAM2CFFStandard::Convol_NLO_V_Im(double x, std::vector<double> params) {
 
     double Convol = (Convol_NLO_V(x, params)).imag();
     Convol *= EvalGPD;
+
+    if (std::isnan(Convol) || std::isinf(Convol)) {
+
+          warn(__func__,
+                  ElemUtils::Formatter() << "Value is either nan or inf, x = "
+                          << x);
+          return 0.;
+      }
 
     return Convol;
 }
@@ -1074,6 +1106,14 @@ double GAM2CFFStandard::Convol_NLO_V_Im_Sym(double x,
       double Convol = (Convol_NLO_V(x0 - x, params) * EvalGPDA
               + Convol_NLO_V(x0 + x, params) * EvalGPDB).imag();
 
+      if (std::isnan(Convol) || std::isinf(Convol)) {
+
+            warn(__func__,
+                    ElemUtils::Formatter() << "Value is either nan or inf, x = "
+                            << x);
+            return 0.;
+        }
+
       return Convol;
 }
 
@@ -1088,6 +1128,14 @@ double GAM2CFFStandard::Convol_NLO_V_Im_Sym_Const(double x,
 
     double Convol = (Convol_NLO_V(x0 - x, params) * EvalGPDA
             + Convol_NLO_V(x0 + x, params) * EvalGPDB).imag();
+
+    if (std::isnan(Convol) || std::isinf(Convol)) {
+
+          warn(__func__,
+                  ElemUtils::Formatter() << "Value is either nan or inf, x = "
+                          << x);
+          return 0.;
+      }
 
     return Convol;
 }
