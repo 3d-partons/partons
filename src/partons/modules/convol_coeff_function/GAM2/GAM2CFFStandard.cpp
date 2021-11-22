@@ -329,14 +329,14 @@ double GAM2CFFStandard::Tr_4L_F210(double xi, double s,
 
     return -4. * s
             * (-2. * (std::pow(beta[0], 2.) - std::pow(beta[1], 2.))
-                    * (ee[0] * ek[1] - ee[1] * ek[2]) * s * xi
+                    * (ee[0] * ek[0] - ee[1] * ek[1]) * s * xi
                     + std::pow(beta[2], 2.)
-                            * (ee[1] * ek[2] - 3. * ee[2] * ek[3]) * s * xi
+                            * (ee[1] * ek[1] - 3. * ee[2] * ek[2]) * s * xi
                     + beta[2]
-                            * (2. * ek[1] * ek[2] * ek[3]
-                                    - (beta[0] - 2. * beta[1]) * ee[0] * ek[1]
+                            * (2. * ek[0] * ek[1] * ek[2]
+                                    - (beta[0] - 2. * beta[1]) * ee[0] * ek[0]
                                             * s * xi
-                                    + (beta[0] - 2. * beta[1]) * ee[1] * ek[2]
+                                    + (beta[0] - 2. * beta[1]) * ee[1] * ek[1]
                                             * s * xi));
 }
 
@@ -345,15 +345,15 @@ double GAM2CFFStandard::Tr_4L_F201(double xi, double s,
         std::vector<double> ek) {
 
     return 2.
-            * (std::pow(beta[0], 2.) * (-(ee[0] * ek[1]) + ee[1] * ek[2])
+            * (std::pow(beta[0], 2.) * (-(ee[0] * ek[0]) + ee[1] * ek[1])
                     + 2. * beta[1] * beta[2]
-                            * (-(ee[1] * ek[2]) + ee[2] * ek[3])
+                            * (-(ee[1] * ek[1]) + ee[2] * ek[2])
                     + beta[0]
-                            * (-2. * beta[1] * ee[0] * ek[1]
-                                    + 4. * beta[2] * ee[0] * ek[1]
-                                    + 2. * beta[1] * ee[1] * ek[2]
-                                    - 9. * beta[2] * ee[1] * ek[2]
-                                    + 3. * beta[2] * ee[2] * ek[3]))
+                            * (-2. * beta[1] * ee[0] * ek[0]
+                                    + 4. * beta[2] * ee[0] * ek[0]
+                                    + 2. * beta[1] * ee[1] * ek[1]
+                                    - 9. * beta[2] * ee[1] * ek[1]
+                                    + 3. * beta[2] * ee[2] * ek[2]))
             * std::pow(s, 2.);
 }
 
@@ -362,11 +362,11 @@ double GAM2CFFStandard::Tr_4L_F211(double xi, double s,
         std::vector<double> ek) {
 
     return -2.
-            * (2. * std::pow(beta[1], 2.) * (ee[0] * ek[1] - ee[1] * ek[2])
+            * (2. * std::pow(beta[1], 2.) * (ee[0] * ek[0] - ee[1] * ek[1])
                     + beta[1] * beta[2]
-                            * (2. * ee[0] * ek[1] + 3. * ee[1] * ek[2]
-                                    - 3. * ee[2] * ek[3])
-                    + beta[0] * beta[2] * (ee[0] * ek[1] - ee[2] * ek[3]))
+                            * (2. * ee[0] * ek[0] + 3. * ee[1] * ek[1]
+                                    - 3. * ee[2] * ek[2])
+                    + beta[0] * beta[2] * (ee[0] * ek[0] - ee[2] * ek[2]))
             * std::pow(s, 2.);
 }
 
@@ -375,9 +375,9 @@ double GAM2CFFStandard::Tr_4L_F220(double xi, double s,
         std::vector<double> ek) {
 
     return 4. * beta[2] * s
-            * (2. * ek[1] * ek[2] * ek[3]
-                    + (beta[1] + beta[2]) * ee[0] * ek[1] * s * xi
-                    - (beta[1] * ee[1] * ek[2] + beta[2] * ee[2] * ek[3]) * s
+            * (2. * ek[0] * ek[1] * ek[2]
+                    + (beta[1] + beta[2]) * ee[0] * ek[0] * s * xi
+                    - (beta[1] * ee[1] * ek[1] + beta[2] * ee[2] * ek[2]) * s
                             * xi);
 }
 
@@ -386,8 +386,8 @@ double GAM2CFFStandard::Tr_4L_F221(double xi, double s,
         std::vector<double> ek) {
 
     return 2. * beta[1]
-            * (beta[1] * ee[0] * ek[1] + beta[2] * ee[0] * ek[1]
-                    - beta[1] * ee[1] * ek[2] - beta[2] * ee[2] * ek[3])
+            * (beta[1] * ee[0] * ek[0] + beta[2] * ee[0] * ek[0]
+                    - beta[1] * ee[1] * ek[1] - beta[2] * ee[2] * ek[2])
             * std::pow(s, 2.);
 }
 
@@ -396,11 +396,11 @@ double GAM2CFFStandard::Tr_4L_F100(double xi, double s,
         std::vector<double> ek) {
 
     return 2.
-            * (beta[0] * ee[0] * ek[1] + 2 * beta[1] * ee[0] * ek[1]
-                    - 2. * beta[2] * ee[0] * ek[1] - beta[0] * ee[1] * ek[2]
-                    - 2. * beta[1] * ee[1] * ek[2]
-                    + 3. * beta[2] * ee[1] * ek[2]
-                    - 3. * beta[2] * ee[2] * ek[3]) * s;
+            * (beta[0] * ee[0] * ek[0] + 2 * beta[1] * ee[0] * ek[0]
+                    - 2. * beta[2] * ee[0] * ek[0] - beta[0] * ee[1] * ek[1]
+                    - 2. * beta[1] * ee[1] * ek[1]
+                    + 3. * beta[2] * ee[1] * ek[1]
+                    - 3. * beta[2] * ee[2] * ek[2]) * s;
 }
 
 double GAM2CFFStandard::Tr_4L_F110(double xi, double s,
@@ -408,8 +408,8 @@ double GAM2CFFStandard::Tr_4L_F110(double xi, double s,
         std::vector<double> ek) {
 
     return 2.
-            * (-3. * beta[1] * ee[0] * ek[1] - beta[2] * ee[0] * ek[1]
-                    + 3. * beta[1] * ee[1] * ek[2] + beta[2] * ee[2] * ek[3])
+            * (-3. * beta[1] * ee[0] * ek[0] - beta[2] * ee[0] * ek[0]
+                    + 3. * beta[1] * ee[1] * ek[1] + beta[2] * ee[2] * ek[2])
             * s;
 }
 
@@ -417,8 +417,8 @@ double GAM2CFFStandard::Tr_4L_G(double xi, double s, std::vector<double> beta,
         std::vector<double> ee, std::vector<double> ek) {
 
     return 2. * beta[2]
-            * (beta[0] * ee[0] * ek[1] - beta[0] * ee[1] * ek[2]
-                    + beta[2] * ee[1] * ek[2] - beta[2] * ee[2] * ek[3])
+            * (beta[0] * ee[0] * ek[0] - beta[0] * ee[1] * ek[1]
+                    + beta[2] * ee[1] * ek[1] - beta[2] * ee[2] * ek[2])
             * std::pow(s, 2.);
 }
 
@@ -427,17 +427,17 @@ double GAM2CFFStandard::Tr_5L_F201(double xi, double s,
         std::vector<double> ek) {
 
     return 4.
-            * (3. * beta[0] * ee[0] * ek[1] - 5. * beta[0] * ee[1] * ek[2]
-                    - beta[1] * ee[1] * ek[2] + 2. * beta[0] * ee[2] * ek[3]
-                    + beta[1] * ee[2] * ek[3]) * s;
+            * (3. * beta[0] * ee[0] * ek[0] - 5. * beta[0] * ee[1] * ek[1]
+                    - beta[1] * ee[1] * ek[1] + 2. * beta[0] * ee[2] * ek[2]
+                    + beta[1] * ee[2] * ek[2]) * s;
 }
 
 double GAM2CFFStandard::Tr_5L_F210(double xi, double s,
         std::vector<double> beta, std::vector<double> ee,
         std::vector<double> ek) {
 
-    return 8. * ek[2] * (ek[1] * ek[3] - beta[2] * ee[1] * s * xi)
-            - 24. * ek[3] * (ek[1] * ek[2] - beta[2] * ee[2] * s * xi);
+    return 8. * ek[1] * (ek[0] * ek[2] - beta[2] * ee[1] * s * xi)
+            - 24. * ek[2] * (ek[0] * ek[1] - beta[2] * ee[2] * s * xi);
 }
 
 double GAM2CFFStandard::Tr_5L_F211(double xi, double s,
@@ -445,8 +445,8 @@ double GAM2CFFStandard::Tr_5L_F211(double xi, double s,
         std::vector<double> ek) {
 
     return 4.
-            * (-(beta[0] * ee[0] * ek[1]) - 3. * beta[1] * ee[1] * ek[2]
-                    + beta[0] * ee[2] * ek[3] + 3. * beta[1] * ee[2] * ek[3])
+            * (-(beta[0] * ee[0] * ek[0]) - 3. * beta[1] * ee[1] * ek[1]
+                    + beta[0] * ee[2] * ek[2] + 3. * beta[1] * ee[2] * ek[2])
             * s;
 }
 
@@ -454,37 +454,37 @@ double GAM2CFFStandard::Tr_5L_F220(double xi, double s,
         std::vector<double> beta, std::vector<double> ee,
         std::vector<double> ek) {
 
-    return -8 * ek[1] * (ek[2] * ek[3] + beta[2] * ee[0] * s * xi)
-            - 8 * ek[3] * (ek[1] * ek[2] - beta[2] * ee[2] * s * xi); // 05.10.2021 modified
+    return -8 * ek[0] * (ek[1] * ek[2] + beta[2] * ee[0] * s * xi)
+            - 8 * ek[2] * (ek[0] * ek[1] - beta[2] * ee[2] * s * xi); // 05.10.2021 modified
 }
 
 double GAM2CFFStandard::Tr_5L_F221(double xi, double s,
         std::vector<double> beta, std::vector<double> ee,
         std::vector<double> ek) {
 
-    return -4. * beta[1] * ee[0] * ek[1] * s + 4. * beta[1] * ee[2] * ek[3] * s;
+    return -4. * beta[1] * ee[0] * ek[0] * s + 4. * beta[1] * ee[2] * ek[2] * s;
 }
 
 double GAM2CFFStandard::Tr_5L_F100(double xi, double s,
         std::vector<double> beta, std::vector<double> ee,
         std::vector<double> ek) {
 
-    return -4. * (2 * ee[0] * ek[1] - 3. * ee[1] * ek[2] + 3. * ee[2] * ek[3]);
+    return -4. * (2 * ee[0] * ek[0] - 3. * ee[1] * ek[1] + 3. * ee[2] * ek[2]);
 }
 
 double GAM2CFFStandard::Tr_5L_F110(double xi, double s,
         std::vector<double> beta, std::vector<double> ee,
         std::vector<double> ek) {
 
-    return 4. * (ee[0] * ek[1] - ee[2] * ek[3]);
+    return 4. * (ee[0] * ek[0] - ee[2] * ek[2]);
 }
 
 double GAM2CFFStandard::Tr_5L_G(double xi, double s, std::vector<double> beta,
         std::vector<double> ee, std::vector<double> ek) {
 
     return -2.
-            * (beta[0] * ee[0] * ek[1] - beta[0] * ee[1] * ek[2]
-                    + beta[2] * ee[1] * ek[2] - beta[2] * ee[2] * ek[3]) * s;
+            * (beta[0] * ee[0] * ek[0] - beta[0] * ee[1] * ek[1]
+                    + beta[2] * ee[1] * ek[1] - beta[2] * ee[2] * ek[2]) * s;
 }
 
 
