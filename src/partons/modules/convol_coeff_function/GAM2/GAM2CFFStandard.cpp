@@ -488,6 +488,7 @@ double GAM2CFFStandard::Tr_5L_G(double xi, double s, std::vector<double> beta,
 }
 
 
+
 // Functions F(n, a, b, ...)
 
 std::complex<double> GAM2CFFStandard::F100(std::complex<double> a,
