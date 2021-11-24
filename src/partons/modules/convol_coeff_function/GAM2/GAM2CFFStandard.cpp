@@ -242,7 +242,7 @@ double GAM2CFFStandard::A(double s, std::vector<double> beta,
         std::vector<double> ee, std::vector<double> ek) {
     return s
             * (beta[0] * (ee[0] * ek[0] - ee[1] * ek[1])
-                    + beta[2] * (ee[1] * ek[1] - ee[2] * ek[2])) / 8.;
+                    + beta[2] * (ee[1] * ek[1] - ee[2] * ek[2])) / 2.; // 24.11.2021 found bug; was 8, should be 2
 }
 
 std::complex<double> GAM2CFFStandard::M0(double s, double x, double xi,
@@ -868,28 +868,28 @@ std::complex<double> GAM2CFFStandard::NLO_V_permutation(double s, double x,
         std::vector<double> ek) {
 
     std::complex<double> result(0., 0.);
-    result += M0(s, x, xi, beta, ee, ek); // for LO test
-//    result += M23LR(s, x, xi, beta, ee, ek);
-//    result += M23LR(s, -x, xi, beta, ee, ek);
-//
-//    result += M3M(s, x, xi, beta, ee, ek);
-//    result += M3M(s, -x, xi, beta, ee, ek);
-//
-//    result += M4L(s, x, xi, beta, ee, ek);
-//    result += M4L(s, -x, xi, beta, ee, ek);
-//    result += M4R(s, x, xi, beta, ee, ek);
-//    result += M4R(s, -x, xi, beta, ee, ek);
-//
-//    result += M5L(s, x, xi, beta, ee, ek);
-//    result += M5L(s, -x, xi, beta, ee, ek);
-//    result += M5R(s, x, xi, beta, ee, ek);
-//    result += M5R(s, -x, xi, beta, ee, ek);
-//
-//    result += M_scale(s, x, xi, beta, ee, ek);
-//    result += M_scale(s, -x, xi, beta, ee, ek);
-//
-//    result += log( 2. * xi * s / m_MuF2) * Ccoll(s, x, xi, beta, ee, ek);
-//    result += log( 2. * xi * s / m_MuF2) * Ccoll(s, -x, xi, beta, ee, ek);
+
+    result += M23LR(s, x, xi, beta, ee, ek);
+    result += M23LR(s, -x, xi, beta, ee, ek);
+
+    result += M3M(s, x, xi, beta, ee, ek);
+    result += M3M(s, -x, xi, beta, ee, ek);
+
+    result += M4L(s, x, xi, beta, ee, ek);
+    result += M4L(s, -x, xi, beta, ee, ek);
+    result += M4R(s, x, xi, beta, ee, ek);
+    result += M4R(s, -x, xi, beta, ee, ek);
+
+    result += M5L(s, x, xi, beta, ee, ek);
+    result += M5L(s, -x, xi, beta, ee, ek);
+    result += M5R(s, x, xi, beta, ee, ek);
+    result += M5R(s, -x, xi, beta, ee, ek);
+
+    result += M_scale(s, x, xi, beta, ee, ek);
+    result += M_scale(s, -x, xi, beta, ee, ek);
+
+    result += log( 2. * xi * s / m_MuF2) * Ccoll(s, x, xi, beta, ee, ek);
+    result += log( 2. * xi * s / m_MuF2) * Ccoll(s, -x, xi, beta, ee, ek);
 
     return result;
 }
@@ -1221,10 +1221,10 @@ std::complex<double> GAM2CFFStandard::computeUnpolarized() {
     // LO part
     computeDiagonalGPD_V();
     //TODO to include phi-dependence comment the lines below:
-//    result_Im = (alpha - alphabar) * double(m_polG1 == m_polG2)
-//            * double(m_polG0 == PolarizationType::LIN_TRANS_X_PLUS);
-//    result_Im -= double(m_polG0 == m_polG2) * double(m_polG1 == PolarizationType::LIN_TRANS_X_PLUS);
-//    result_Im += double(m_polG1 == m_polG0) * double(m_polG2 == PolarizationType::LIN_TRANS_X_PLUS);
+    result_Im = (alpha - alphabar) * double(m_polG1 == m_polG2)
+            * double(m_polG0 == PolarizationType::LIN_TRANS_X_PLUS);
+    result_Im -= double(m_polG0 == m_polG2) * double(m_polG1 == PolarizationType::LIN_TRANS_X_PLUS);
+    result_Im += double(m_polG1 == m_polG0) * double(m_polG2 == PolarizationType::LIN_TRANS_X_PLUS);
     //TODO... and uncomment these:
 //    result_Im = (alpha - alphabar) * double(m_polG1 == m_polG2)
 //            * cos(m_phi);
@@ -1236,16 +1236,15 @@ std::complex<double> GAM2CFFStandard::computeUnpolarized() {
 //                    * double(m_polG2 == PolarizationType::LIN_TRANS_X_PLUS);
 //    //TODO up to this line.
 
-//    result_Im *= sqrt(pt2);
-//    result_Im *= m_quark_diagonal_V;
-//    result_Im *= -2. * Constant::PI / s / alpha / alphabar / m_xi;
+    result_Im *= sqrt(pt2);
+    result_Im *= m_quark_diagonal_V;
+    result_Im *= -2. * Constant::PI / s / alpha / alphabar / m_xi;
 
 //    std::cout << m_polG0 << "\t" << m_polG1 << "\t" << m_polG2 << std::endl;
 
-    // if(m_qcdOrderType == PerturbativeQCDOrderType::NLO)
-    if (1) {
+    if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
 
-//        std::cout << "NLO" << std::endl;
+        std::cout << "NLO" << std::endl;
 
         std::vector<double> range;
 
