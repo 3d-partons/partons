@@ -868,9 +868,7 @@ std::complex<double> GAM2CFFStandard::NLO_V_permutation(double s, double x,
         std::vector<double> ek) {
 
     std::complex<double> result(0., 0.);
-
-    result += M0(s, x, xi, beta, ee, ek); // for LO testing
-
+    result += M0(s, x, xi, beta, ee, ek); // for LO test
 //    result += M23LR(s, x, xi, beta, ee, ek);
 //    result += M23LR(s, -x, xi, beta, ee, ek);
 //
@@ -1244,7 +1242,8 @@ std::complex<double> GAM2CFFStandard::computeUnpolarized() {
 
 //    std::cout << m_polG0 << "\t" << m_polG1 << "\t" << m_polG2 << std::endl;
 
-//    if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
+    // if(m_qcdOrderType == PerturbativeQCDOrderType::NLO)
+    if (1) {
 
 //        std::cout << "NLO" << std::endl;
 
@@ -1344,7 +1343,7 @@ std::complex<double> GAM2CFFStandard::computeUnpolarized() {
 //    std::cout<< "G(0.1+i, 0.2+i, 0.3+i)  " << G (0.1 + I, 0.2 + I, 0.3 + I) << std::endl;
     return std::complex<double>(result_Re, result_Im);
 
-//}
+}
 
 std::complex<double> GAM2CFFStandard::computePolarized() {
     return std::complex<double>();
