@@ -237,7 +237,7 @@ void GAM2CFFStandard::computeDiagonalGPD_A() {
     m_quark_diagonal_A = computeCubedChargeAveragedGPD(partonDistribution);
 }
 
-// Trace \mathcal{A}, see Eq. 25
+// Trace \mathcal{A}, NLO paper, Eq. (21)
 double GAM2CFFStandard::A(double s, std::vector<double> beta,
         std::vector<double> ee, std::vector<double> ek) {
     return s
@@ -245,6 +245,7 @@ double GAM2CFFStandard::A(double s, std::vector<double> beta,
                     + beta[2] * (ee[1] * ek[1] - ee[2] * ek[2])) / 2.; // 24.11.2021 found bug; was 8, should be 2
 }
 
+// LO amplitude for single photons permutation, NLO paper, Eq. (20)
 std::complex<double> GAM2CFFStandard::M0(double s, double x, double xi,
         std::vector<double> beta, std::vector<double> ee,
         std::vector<double> ek) {
@@ -257,6 +258,8 @@ std::complex<double> GAM2CFFStandard::M0(double s, double x, double xi,
     return result;
 }
 
+// Sum of finite parts of amplitudes 2.L/R and 3.L/R, NLO paper, Eqs. (26)-(29)
+// NOTE: the factorization scale dependent term is included in the collinear part!
 std::complex<double> GAM2CFFStandard::M23LR(double s, double x, double xi,
         std::vector<double> beta, std::vector<double> ee,
         std::vector<double> ek) {
@@ -270,7 +273,7 @@ std::complex<double> GAM2CFFStandard::M23LR(double s, double x, double xi,
     return result;
 }
 
-// Eq. 49
+// OG's MSc thesis, Eq. (B.8)
 std::complex<double> GAM2CFFStandard::M3M(double s, double x, double xi,
         std::vector<double> beta, std::vector<double> ee,
         std::vector<double> ek) {
@@ -320,8 +323,9 @@ std::complex<double> GAM2CFFStandard::M3M(double s, double x, double xi,
     return result;
 }
 
-// Trace structures in amplitudes 4.L and 5.L - Eqs. 50 and 51
-// Tr_4/5L_Fnab stands by the function F(n, a, b, ...)
+// Trace structures in amplitudes 4.L and 5.L,
+// NLO paper, Eqs. (43)-(44), (A2), (B1), see also the Mathematica notebook Traces.
+// Tr_4/5L_Fnab is the trace multiplying the function F_nab (see NLO paper)
 
 double GAM2CFFStandard::Tr_4L_F210(double xi, double s,
         std::vector<double> beta, std::vector<double> ee,
@@ -489,7 +493,7 @@ double GAM2CFFStandard::Tr_5L_G(double xi, double s, std::vector<double> beta,
 
 
 
-// Functions F(n, a, b, ...)
+// Functions F_nab
 
 std::complex<double> GAM2CFFStandard::F100(std::complex<double> a,
         std::complex<double> b, std::complex<double> c) {
@@ -655,20 +659,21 @@ std::complex<double> GAM2CFFStandard::F201New(double x, double xi, const std::ve
             / ( (x+xi) * beta[0] + iepsilon ) / ( -(x+xi) * beta[2] + iepsilon );
 }
 
-std::complex<double> GAM2CFFStandard::F110New(double x, double xi, const std::vector<double>& beta){
-
-    return (-(beta[0]*(x + xi)*std::log(iepsilon + beta[0]*(x + xi))) +
-            (2*beta[0]*x - 2*beta[1]*xi)*std::log((beta[0]*x - beta[1]*xi + iepsilon)/
-               (-((beta[0] + beta[1])*xi) + iepsilon)))/
-          (- 0.9 * iepsilon + beta[0]*(x + xi)*(beta[0]*x - (beta[0] + 2*beta[1])*xi)) +
-         (std::pow(Constant::PI,2)/6. - m_lisk.Li(2,(2*(beta[0] + beta[1])*xi)/
-              (iepsilon + (beta[0] + beta[1])*xi)) +
-            m_lisk.Li(2,(-(beta[0]*x) + beta[0]*xi + 2*beta[1]*xi)/
-              (iepsilon + (beta[0] + beta[1])*xi)) -
-            m_lisk.Li(2,(-(beta[0]*x) + beta[0]*xi + 2*beta[1]*xi)/
-              (iepsilon + 2*(beta[0] + beta[1])*xi)))/
-          (- 0.9 * iepsilon + beta[0]*(x + xi));
-}
+// THIS FUNCTION IS AN ABANDONED ALTERNATIVE FORM
+//std::complex<double> GAM2CFFStandard::F110New(double x, double xi, const std::vector<double>& beta){
+//
+//    return (-(beta[0]*(x + xi)*std::log(iepsilon + beta[0]*(x + xi))) +
+//            (2*beta[0]*x - 2*beta[1]*xi)*std::log((beta[0]*x - beta[1]*xi + iepsilon)/
+//               (-((beta[0] + beta[1])*xi) + iepsilon)))/
+//          (- 0.9 * iepsilon + beta[0]*(x + xi)*(beta[0]*x - (beta[0] + 2*beta[1])*xi)) +
+//         (std::pow(Constant::PI,2)/6. - m_lisk.Li(2,(2*(beta[0] + beta[1])*xi)/
+//              (iepsilon + (beta[0] + beta[1])*xi)) +
+//            m_lisk.Li(2,(-(beta[0]*x) + beta[0]*xi + 2*beta[1]*xi)/
+//              (iepsilon + (beta[0] + beta[1])*xi)) -
+//            m_lisk.Li(2,(-(beta[0]*x) + beta[0]*xi + 2*beta[1]*xi)/
+//              (iepsilon + 2*(beta[0] + beta[1])*xi)))/
+//          (- 0.9 * iepsilon + beta[0]*(x + xi));
+//}
 
 std::complex<double> GAM2CFFStandard::F100New(double x, double xi, const std::vector<double>& beta){
 
@@ -688,7 +693,9 @@ double sgn(double x) {
     return (x >= 0.) ? (1) : (-1);
 }
 
-// Amplitudes 4.L and 4.R, see Eqs. 50 and 51
+// Amplitudes 4.L/R and 5.L/R, NLO paper, Eqs. (43)-(44)
+// For .R amplitudes, see the comment below Eq. (44) in the NLO paper
+// ATTENTION! Terms from the last lines of (43)-(44) are included in M_scale
 
 std::complex<double> GAM2CFFStandard::M4L(double s, double x, double xi,
         std::vector<double> beta, std::vector<double> ee,
@@ -833,7 +840,8 @@ std::complex<double> GAM2CFFStandard::M5R(double s, double x, double xi,
 
 }
 
-// Eq. 52
+// Artefact of using a different definition of the hard scale in OG's MSc thesis,
+// see the comment after Eq. (44) in NLO paper
 std::complex<double> GAM2CFFStandard::M_scale(double s, double x, double xi,
         std::vector<double> beta, std::vector<double> ee,
         std::vector<double> ek) {
@@ -847,7 +855,11 @@ std::complex<double> GAM2CFFStandard::M_scale(double s, double x, double xi,
     return result;
 }
 
-// The collinear term
+// The collinear term.
+// For now, it implements formulas (3.105)-(3.106) from OG's MSc thesis
+// In particular, it is the contribution from the single permutation of photons!
+// Do not mistake it with Eq. (40) in NLO paper.
+// TODO re-write it so that it implements Eq. (40) from NLO paper
 std::complex<double> GAM2CFFStandard::Ccoll(double s, double x, double xi,
         std::vector<double> beta, std::vector<double> ee,
         std::vector<double> ek) {
@@ -863,6 +875,7 @@ std::complex<double> GAM2CFFStandard::Ccoll(double s, double x, double xi,
 }
 
 // Vector NLO amplitude - a single permutation of photons
+// See the description at the beginning of IV.A in NLO paper
 std::complex<double> GAM2CFFStandard::NLO_V_permutation(double s, double x,
         double xi, std::vector<double> beta, std::vector<double> ee,
         std::vector<double> ek) {
@@ -915,6 +928,14 @@ double GAM2CFFStandard::computeCubedChargeAveragedGPD(
 std::complex<double> GAM2CFFStandard::Convol_NLO_V(double x,
         std::vector<double> params) {
 
+    /*
+     * Vector params consists of:
+     * 3 parameters beta_i
+     * 3 parameters eij
+     * 3 parameters ek_i
+     * Parameter s
+     */
+
     std::vector<double> beta0;
     for (int i = 0; i < 3; i++) {
         beta0.push_back(params[i]);
@@ -926,6 +947,8 @@ std::complex<double> GAM2CFFStandard::Convol_NLO_V(double x,
     }
 
     /*
+     * See definitions in Appendix A in NLO paper
+     *
      * ek[i][j] = epsilon_i * k_j
      * where
      * 0 - incoming photon
@@ -950,7 +973,7 @@ std::complex<double> GAM2CFFStandard::Convol_NLO_V(double x,
     std::complex<double> result(0., 0.);
 
     /*
-     *
+     * Consider all 6 permutations of photons
      */
 
     for (int i = 0; i < 3; i++) {
