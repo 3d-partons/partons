@@ -1026,7 +1026,10 @@ std::complex<double> GAM2CFFStandard::Convol_NLO_V(double x,
      * Vector params consists of:
      * 3 parameters beta_i
      * 3 parameters eij
-     * 3 parameters ek_i
+     * ee[0] = epsilon2 * epsilon3
+     * ee[1] = epsilon1 * epsilon3
+     * ee[2] = epsilon1 * epsilon2
+     * 3 parameters ek_i (explained below)
      * Parameter s
      */
 
@@ -1049,6 +1052,9 @@ std::complex<double> GAM2CFFStandard::Convol_NLO_V(double x,
      * 1 - outgoing photon 1
      * 2 - outgoing photon 2
      * I use ek[i][j] = -ek[i][k] where all i,j,k are different
+     * ek[0] = e1 * k2
+     * ek[1] = e2 * k1
+     * ek[2] = e3 * k1
      */
     double ek0[3][3];
 
