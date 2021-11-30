@@ -272,54 +272,43 @@ std::complex<double> GAM2CFFStandard::M23LR(double s, double x, double xi,
     return result;
 }
 
-// OG's MSc thesis, Eq. (B.8)
+// M3M amplitude, NLO paper, Eq. (30)
 std::complex<double> GAM2CFFStandard::M3M(double s, double x, double xi,
         std::vector<double> beta, std::vector<double> ee,
         std::vector<double> ek) {
-    std::complex<double> result(0., 0.);
 
-    std::complex<double> aux(0., 0.);
+    std::complex<double> D1 = (x + xi) * beta[0];
+    std::complex<double> D3 = -(x - xi) * beta[2];
 
-    aux += std::log((-(x - xi) * beta[2] + iepsilon))
-            - std::log(((x + xi) * beta[0] + iepsilon));
-    aux *= 2. * (x + xi) * beta[0] + (x - xi) * beta[2];
-    aux += (x + xi) * beta[0] + (x - xi) * beta[2];
-    aux *= 0.5 * s
-            * (beta[0] * ee[1] * ek[1] - beta[0] * ee[0] * ek[0]
-                    + beta[2] * ee[2] * ek[2] + beta[2] * ee[1] * ek[1]);
-    aux *= (x + xi) * beta[0];
-    aux /= (x + xi) * beta[0] + (x - xi) * beta[2];
-    aux /= (x + xi) * beta[0] + (x - xi) * beta[2];
+    std::complex<double> p1 = 1.
+            - (D1 * log((-D1 - iepsilon) / (2. * xi))
+                    - D3 * log((-D3 - iepsilon) / (2. * xi))) / (D1 - D3);
 
-    result += aux;
+    std::complex<double> p2 = D1 / (D1 - D3)
+            * (1.
+                    + (-2. * D1 + D3) / (D1 - D3)
+                            * log((D1 + iepsilon) / (D3 + iepsilon)));
 
-    aux = -std::log((-(x - xi) * beta[2] + iepsilon))
-            + std::log(((x + xi) * beta[0] + iepsilon));
-    aux *= (x + xi) * beta[0] + 2. * (x - xi) * beta[2];
-    aux += (x + xi) * beta[0] + (x - xi) * beta[2];
-    aux *= 0.5 * s
-            * (beta[0] * ee[1] * ek[1] + beta[0] * ee[0] * ek[0]
-                    - beta[2] * ee[2] * ek[2] + beta[2] * ee[1] * ek[1]);
-    aux *= (x - xi) * beta[2];
-    aux /= (x + xi) * beta[0] + (x - xi) * beta[2];
-    aux /= (x + xi) * beta[0] + (x - xi) * beta[2];
+    std::complex<double> p3 = D3 / (D1 - D3)
+            * (1.
+                    + (D1 - 2. * D3) / (D1 - D3)
+                            * log((D1 + iepsilon) / (D3 + iepsilon)));
 
-    result -= aux;
+    std::complex<double> trA = ((beta[0] * ee[0] * ek[0]
+            - beta[0] * ee[1] * ek[1] + beta[2] * ee[1] * ek[1]
+            - beta[2] * ee[2] * ek[2]) * s) / 2.;
 
-    aux = -(x - xi) * beta[2]
-            * std::log(((x - xi) * beta[2] / 2. / xi - iepsilon));
-    aux -= (x + xi) * beta[0]
-            * std::log((-(x + xi) * beta[0] / 2. / xi - iepsilon));
-    aux /= (x + xi) * beta[0] + (x - xi) * beta[2];
-    aux += 1.;
-    aux *= A(s, beta, ee, ek);
+    std::complex<double> trB = -2
+            * (beta[0] * ee[0] * ek[0] - beta[0] * ee[1] * ek[1]
+                    - beta[2] * ee[1] * ek[1] - beta[2] * ee[2] * ek[2]) * s;
 
-    result += aux;
+    std::complex<double> trC = 2
+            * (beta[0] * ee[0] * ek[0] + beta[0] * ee[1] * ek[1]
+                    + beta[2] * ee[1] * ek[1] - beta[2] * ee[2] * ek[2]) * s;
 
-    result *= -m_CF * m_alphaSOver2Pi / 2. / s / s;
-    result /= ((x + xi) * beta[0] + iepsilon) * ((x - xi) * beta[2] - iepsilon);
+    return M0(s, x, xi, beta, ee, ek) * m_CF * m_alphaSOver2Pi / 2.
+            * (p1 + (trB / trA) * p2 + (trC / trA) * p3);
 
-    return result;
 }
 
 // Trace structures in amplitudes 4.L and 5.L,
@@ -856,9 +845,9 @@ std::complex<double> GAM2CFFStandard::M5L(double s, double x, double xi,
             * Tr_5L_F211(xi, s, beta, ee, ek);
 //
     result -= F220(((x + xi) * beta[0] + iepsilon),
-            ((2. * xi * beta[2]) + iepsilon), ((x + xi) * beta[1]))
+            ((2. * xi * beta[2]) + iepsilon), ((x + xi) * beta[1]) + iepsilon)
             * Tr_5L_F220(xi, s, beta, ee, ek);
-////
+//
     result -= (x + xi)
             * F221(((x + xi) * beta[0] + iepsilon),
                     ((2. * xi * beta[2]) + iepsilon),

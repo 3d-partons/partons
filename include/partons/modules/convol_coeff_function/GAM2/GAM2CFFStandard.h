@@ -146,7 +146,7 @@ private:
     std::complex<double> M23LR(double, double, double,
             std::vector<double>, std::vector<double>, std::vector<double>);
 
-    // OG's MSc thesis, Eq. (B.8)
+    // M3M amplitude, NLO paper, Eq. (30)
     std::complex <double> M3M(double, double, double,
                               std::vector<double>, std::vector<double>, std::vector<double>);
 
