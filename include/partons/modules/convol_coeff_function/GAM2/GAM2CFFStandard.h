@@ -110,16 +110,14 @@ private:
     LiSK::LiSK<std::complex<double> > m_lisk;
 
     double gslIntegrationWrapper(NumA::FunctionType1D* functor, NumA::FunctionType1D* functorSym, NumA::FunctionType1D* functorSymConst,
-            const std::vector<double>& range, std::vector<double>& params) ;
+            const std::vector<double>& range, const std::vector<double>& params) ;
 
     RunningAlphaStrongModule *m_pRunningAlphaStrongModule; ///< Related alphaS module.
 
-    NumA::FunctionType1D* m_pConvol_NLO_V_Re;
-    NumA::FunctionType1D* m_pConvol_NLO_V_Im;
-    NumA::FunctionType1D* m_pConvol_NLO_V_Re_Sym;
-    NumA::FunctionType1D* m_pConvol_NLO_V_Im_Sym;
-    NumA::FunctionType1D* m_pConvol_NLO_V_Re_Sym_Const;
-    NumA::FunctionType1D* m_pConvol_NLO_V_Im_Sym_Const;
+    NumA::FunctionType1D* m_pConvol_NLO_V;
+    NumA::FunctionType1D* m_pConvol_NLO_V_Sym;
+    NumA::FunctionType1D* m_pConvol_NLO_V_Sym_Const;
+    NumA::FunctionType1D* m_pConvol_NLO_V_Z;
 
     double m_quark_diagonal_V;
     double m_quark_diagonal_A;
@@ -130,76 +128,80 @@ private:
     void computeDiagonalGPD_V();
     void computeDiagonalGPD_A();
 
-    void initFunctorsForIntegrations(); ///< Initialize functors.
-
-   // double exampleIntegration(double x, std::vector<double> params); ///< Exemplary integration.
+    void initFunctorsForIntegrations();
 
     // Trace \mathcal{A}, NLO paper, Eq. (21)
-    double A(double, std::vector<double>, std::vector<double>, std::vector<double>);
+    double A(double s, const std::vector<double>& beta,
+            const std::vector<double>& ee, const std::vector<double>& ek) const;
 
     // LO amplitude for single photons permutation, NLO paper, Eq. (20)
-    std::complex<double> M0(double, double, double,
-            std::vector<double>, std::vector<double>, std::vector<double>);
+    std::complex<double> M0(double s, double x, double xi,
+            const std::vector<double>& beta, const std::vector<double>& ee,
+            const std::vector<double>& ek);
 
     // Sum of finite parts of amplitudes 2.L/R and 3.L/R, NLO paper, Eqs. (26)-(29)
     // NOTE: the factorization scale dependent term is included in the collinear part!
-    std::complex<double> M23LR(double, double, double,
-            std::vector<double>, std::vector<double>, std::vector<double>);
+    std::complex<double> M23LR(double s, double x, double xi,
+            const std::vector<double>& beta, const std::vector<double>& ee,
+            const std::vector<double>& ek);
 
     // M3M amplitude, NLO paper, Eq. (30)
-    std::complex <double> M3M(double, double, double,
-                              std::vector<double>, std::vector<double>, std::vector<double>);
+    std::complex<double> M3M(double s, double x, double xi,
+            const std::vector<double>& beta, const std::vector<double>& ee,
+            const std::vector<double>& ek);
 
     // Trace structures in amplitudes 4.L and 5.L,
     // NLO paper, Eqs. (43)-(44), see also the Mathematica notebook Traces
     // Tr_4/5L_Fnab is the trace multiplying the function F_nab (see NLO paper)
-
-    double Tr_4L_F210(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
-    double Tr_4L_F201(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
-    double Tr_4L_F211(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
-    double Tr_4L_F220(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
-    double Tr_4L_F221(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
-    double Tr_4L_F100(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
-    double Tr_4L_F110(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
-    double Tr_4L_G(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
-    double Tr_5L_F201(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
-    double Tr_5L_F210(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
-    double Tr_5L_F211(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
-    double Tr_5L_F220(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
-    double Tr_5L_F221(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
-    double Tr_5L_F100(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
-    double Tr_5L_F110(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
-    double Tr_5L_G(double xi, double s, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
-
-    // Functions F_nab
-
-    std::complex<double> F100(std::complex<double> a, std::complex<double> b, std::complex<double> c);
-    std::complex<double> F110(std::complex<double> a, std::complex<double> b, std::complex<double> c);
-    std::complex<double> F210(std::complex<double> a, std::complex<double> b, std::complex<double> c);
-    std::complex<double> F211(std::complex<double> a, std::complex<double> b, std::complex<double> c);
-    std::complex<double> F220(std::complex<double> a, std::complex<double> b, std::complex<double> c);
-    std::complex<double> F221(std::complex<double> a, std::complex<double> b, std::complex<double> c);
-    std::complex<double> G(std::complex<double> a, std::complex<double> b, std::complex<double> c);
-    std::complex<double> GNew(double x, double xi, const std::vector<double>& beta);
-    std::complex<double> F201New(double x, double xi, const std::vector<double>& beta);
-    std::complex<double> F210New(double x, double xi, const std::vector<double>& beta);
-    std::complex<double> F110New(double x, double xi, const std::vector<double>& beta);
-    std::complex<double> F100New(double x, double xi, const std::vector<double>& beta);
-
-
+    double Tr_4L_F210(double xi, double s, const std::vector<double>& beta,
+            const std::vector<double>& ee, const std::vector<double>& ek) const;
+    double Tr_4L_F201(double xi, double s, const std::vector<double>& beta,
+            const std::vector<double>& ee, const std::vector<double>& ek) const;
+    double Tr_4L_F211(double xi, double s, const std::vector<double>& beta,
+            const std::vector<double>& ee, const std::vector<double>& ek) const;
+    double Tr_4L_F220(double xi, double s, const std::vector<double>& beta,
+            const std::vector<double>& ee, const std::vector<double>& ek) const;
+    double Tr_4L_F221(double xi, double s, const std::vector<double>& beta,
+            const std::vector<double>& ee, const std::vector<double>& ek) const;
+    double Tr_4L_F100(double xi, double s, const std::vector<double>& beta,
+            const std::vector<double>& ee, const std::vector<double>& ek) const;
+    double Tr_4L_F110(double xi, double s, const std::vector<double>& beta,
+            const std::vector<double>& ee, const std::vector<double>& ek) const;
+    double Tr_4L_G(double xi, double s, const std::vector<double>& beta,
+            const std::vector<double>& ee, const std::vector<double>& ek) const;
+    double Tr_5L_F201(double xi, double s, const std::vector<double>& beta,
+            const std::vector<double>& ee, const std::vector<double>& ek) const;
+    double Tr_5L_F210(double xi, double s, const std::vector<double>& beta,
+            const std::vector<double>& ee, const std::vector<double>& ek) const;
+    double Tr_5L_F211(double xi, double s, const std::vector<double>& beta,
+            const std::vector<double>& ee, const std::vector<double>& ek) const;
+    double Tr_5L_F220(double xi, double s, const std::vector<double>& beta,
+            const std::vector<double>& ee, const std::vector<double>& ek) const;
+    double Tr_5L_F221(double xi, double s, const std::vector<double>& beta,
+            const std::vector<double>& ee, const std::vector<double>& ek) const;
+    double Tr_5L_F100(double xi, double s, const std::vector<double>& beta,
+            const std::vector<double>& ee, const std::vector<double>& ek) const;
+    double Tr_5L_F110(double xi, double s, const std::vector<double>& beta,
+            const std::vector<double>& ee, const std::vector<double>& ek) const;
+    double Tr_5L_G(double xi, double s, const std::vector<double>& beta,
+            const std::vector<double>& ee, const std::vector<double>& ek) const;
 
     // Amplitudes 4.L/R and 5.L/R, NLO paper, Eqs. (43)-(44)
     // For .R amplitudes, see the comment below Eq. (44) in the NLO paper
     // ATTENTION! Terms from the last lines of (43)-(44) are included in M_scale
 
     std::complex<double> M4L(double s, double x, double xi,
-                      std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
+            const std::vector<double>& beta, const std::vector<double>& ee,
+            const std::vector<double>& ek, double z);
     std::complex<double> M5L(double s, double x, double xi,
-                      std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
+            const std::vector<double>& beta, const std::vector<double>& ee,
+            const std::vector<double>& ek, double z);
     std::complex<double> M4R(double s, double x, double xi,
-                      std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
+            const std::vector<double>& beta, const std::vector<double>& ee,
+            const std::vector<double>& ek, double z);
     std::complex<double> M5R(double s, double x, double xi,
-                      std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
+            const std::vector<double>& beta, const std::vector<double>& ee,
+            const std::vector<double>& ek, double z);
 
     // Artefact of using a different definition of the hard scale in OG's MSc thesis,
     // see the comment after Eq. (44) in NLO paper
@@ -214,20 +216,58 @@ private:
     std::complex<double> Ccoll(double s, double x, double xi,
             std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
 
+
+
+
     // Vector NLO amplitude - a single permutation of photons
     // See the description at the beginning of IV.A in NLO paper
-    std::complex<double> NLO_V_permutation(double s, double x, double xi, std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
+    double NLO_V_permutation(double x,
+            const std::vector<double>& params);
+
+    // Vector NLO amplitude - a single permutation of photons
+    // See the description at the beginning of IV.A in NLO paper
+    // z-dependent part
+    double NLO_V_permutation_Z(double z,
+             const std::vector<double>& params);
 
     // The full NLO vector amplitude
-    std::complex<double> Convol_NLO_V(double x, std::vector<double> params);
+    double NLO_V(double x, const std::vector<double>& params);
 
-    double Convol_NLO_V_Re(double x, std::vector<double> params);
-    double Convol_NLO_V_Im(double x, std::vector<double> params);
-    double Convol_NLO_V_Re_Sym(double x, std::vector<double> params);
-    double Convol_NLO_V_Im_Sym(double x, std::vector<double> params);
-    double Convol_NLO_V_Re_Sym_Const(double x, std::vector<double> params);
-    double Convol_NLO_V_Im_Sym_Const(double x, std::vector<double> params);
+    // The full NLO vector amplitude
+    // z-dependent part
+     double NLO_V_Z(double z, const std::vector<double>& params);
 
+
+
+
+
+
+
+
+    double Convol_NLO_V(double x, std::vector<double>& params);
+    double Convol_NLO_V_Sym(double x, std::vector<double>& params);
+    double Convol_NLO_V_Sym_Const(double x, std::vector<double>& params);
+
+    // Functions F_nab
+    std::complex<double> F100(double x, double xi,
+            const std::vector<double>& beta, double s, double z) const;
+    std::complex<double> F110(double x, double xi,
+            const std::vector<double>& beta, double s, double z) const;
+    std::complex<double> F201(double x, double xi,
+            const std::vector<double>& beta, double s, double z) const;
+    std::complex<double> F210(double x, double xi,
+            const std::vector<double>& beta, double s, double z) const;
+    std::complex<double> F211(double x, double xi,
+            const std::vector<double>& beta, double s, double z) const;
+    std::complex<double> F220(double x, double xi,
+            const std::vector<double>& beta, double s, double z) const;
+    std::complex<double> F221(double x, double xi,
+            const std::vector<double>& beta, double s, double z) const;
+    std::complex<double> G(double x, double xi, const std::vector<double>& beta,
+            double z) const;
+
+    // Sign
+    double sgn(double x) const;
 
 };
 
