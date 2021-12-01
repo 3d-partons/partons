@@ -621,8 +621,8 @@ std::complex<double> GAM2CFFStandard::Ccoll(double s, double x, double xi,
         std::vector<double> ek) {
 
     std::complex<double> result(3., .0);
-    result += (x + xi) * log(((xi - x) / 2. / xi + iepsilon * sgn(beta[2])));
-    result -= (x - xi) * log(((xi + x) / 2. / xi + iepsilon * sgn(beta[0])));
+    result += (x + xi) / xi * log(((xi - x) / 2. / xi + iepsilon * sgn(beta[2])));
+    result -= (x - xi) / xi * log(((xi + x) / 2. / xi + iepsilon * sgn(beta[0])));
     result *= M0(s, x, xi, beta, ee, ek);
     result *= m_CF * m_alphaSOver2Pi / 2.;
 
