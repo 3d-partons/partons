@@ -23,6 +23,12 @@
 #include <gsl/gsl_sf_result.h>
 #include <gsl/gsl_integration.h>
 
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_monte.h>
+#include <gsl/gsl_monte_plain.h>
+#include <gsl/gsl_monte_miser.h>
+#include <gsl/gsl_monte_vegas.h>
+
 #include <iostream>
 
 namespace PARTONS {
@@ -49,9 +55,9 @@ GAM2CFFStandard::GAM2CFFStandard(const std::string &className) :
             std::make_pair(GPDType::Et,
                     &GAM2ConvolCoeffFunctionModule::computePolarized));
 
-    initFunctorsForIntegrations();
+    m_iepsilon = std::complex<double>(0., 1.E-4);
 
-    //  m_lisk = LiSK::LiSK<std::complex<double> >(3);
+    initFunctorsForIntegrations();
 }
 
 GAM2CFFStandard::GAM2CFFStandard(const GAM2CFFStandard &other) :
@@ -69,9 +75,9 @@ GAM2CFFStandard::GAM2CFFStandard(const GAM2CFFStandard &other) :
     m_quark_diagonal_V = other.m_quark_diagonal_V;
     m_quark_diagonal_A = other.m_quark_diagonal_A;
 
-    initFunctorsForIntegrations();
+    m_iepsilon = other.m_iepsilon;
 
-    // m_lisk = LiSK::LiSK<std::complex<double> >(3);
+    initFunctorsForIntegrations();
 }
 
 GAM2CFFStandard* GAM2CFFStandard::clone() const {
@@ -129,9 +135,6 @@ void GAM2CFFStandard::initFunctorsForIntegrations() {
 
     m_pConvol_NLO_V_Sym_Const = NumA::Integrator1D::newIntegrationFunctor(
             this, &GAM2CFFStandard::Convol_NLO_V_Sym_Const);
-
-    m_pConvol_NLO_V_Z =  NumA::Integrator1D::newIntegrationFunctor(
-            this, &GAM2CFFStandard::NLO_V_Z);
 }
 
 GAM2CFFStandard::~GAM2CFFStandard() {
@@ -154,11 +157,6 @@ GAM2CFFStandard::~GAM2CFFStandard() {
     if (m_pConvol_NLO_V_Sym_Const) {
         delete m_pConvol_NLO_V_Sym_Const;
         m_pConvol_NLO_V_Sym_Const = 0;
-    }
-
-    if (m_pConvol_NLO_V_Z) {
-        delete m_pConvol_NLO_V_Z;
-        m_pConvol_NLO_V_Z = 0;
     }
 }
 
@@ -203,8 +201,6 @@ void GAM2CFFStandard::isModuleWellConfigured() {
     }
 }
 
-std::complex<double> iepsilon(0., 1.E-5); // infinitesimal part inserted 'by hand'
-
 void GAM2CFFStandard::computeDiagonalGPD_V() {
 
     PartonDistribution partonDistribution = m_pGPDModule->compute(
@@ -238,7 +234,7 @@ std::complex<double> GAM2CFFStandard::M0(double s, double x, double xi,
 
     std::complex<double> result;
     result = -4. / s / s;
-    result /= ((x + xi) * beta[0] + iepsilon) * ((x - xi) * beta[2] - iepsilon);
+    result /= ((x + xi) * beta[0] + m_iepsilon) * ((x - xi) * beta[2] - m_iepsilon);
     result *= A(s, beta, ee, ek);
 
     return result;
@@ -251,8 +247,8 @@ std::complex<double> GAM2CFFStandard::M23LR(double s, double x, double xi,
         const std::vector<double>& ek) {
     std::complex<double> result;
     result = -5.;
-    result += std::log((-(x + xi) * beta[0] / 2. / xi - iepsilon));
-    result += std::log(((x - xi) * beta[2] / 2. / xi - iepsilon));
+    result += std::log((-(x + xi) * beta[0] / 2. / xi - m_iepsilon));
+    result += std::log(((x - xi) * beta[2] / 2. / xi - m_iepsilon));
     result *= M0(s, x, xi, beta, ee, ek);
     result *= m_CF * m_alphaSOver2Pi;
 
@@ -268,18 +264,18 @@ std::complex<double> GAM2CFFStandard::M3M(double s, double x, double xi,
     std::complex<double> D3 = -(x - xi) * beta[2];
 
     std::complex<double> p1 = 1.
-            - (D1 * log((-D1 - iepsilon) / (2. * xi))
-                    - D3 * log((-D3 - iepsilon) / (2. * xi))) / (D1 - D3);
+            - (D1 * log((-D1 - m_iepsilon) / (2. * xi))
+                    - D3 * log((-D3 - m_iepsilon) / (2. * xi))) / (D1 - D3);
 
     std::complex<double> p2 = D1 / (D1 - D3)
             * (1.
                     + (-2. * D1 + D3) / (D1 - D3)
-                            * log((D1 + iepsilon) / (D3 + iepsilon)));
+                            * log((D1 + m_iepsilon) / (D3 + m_iepsilon)));
 
     std::complex<double> p3 = D3 / (D1 - D3)
             * (1.
                     + (D1 - 2. * D3) / (D1 - D3)
-                            * log((D1 + iepsilon) / (D3 + iepsilon)));
+                            * log((D1 + m_iepsilon) / (D3 + m_iepsilon)));
 
     std::complex<double> trA = ((beta[0] * ee[0] * ek[0]
             - beta[0] * ee[1] * ek[1] + beta[2] * ee[1] * ek[1]
@@ -479,32 +475,73 @@ double GAM2CFFStandard::sgn(double x) const {
 
 std::complex<double> GAM2CFFStandard::M4L(double s, double x, double xi,
         const std::vector<double>& beta, const std::vector<double>& ee,
-        const std::vector<double>& ek, double z) {
+        const std::vector<double>& ek) {
 
     std::complex<double> result(0., 0.);
 
-    result += F210(x, xi, beta, s, z) * Tr_4L_F210(xi, s, beta, ee, ek);
+    result += F210(x, xi, beta, s) * Tr_4L_F210(xi, s, beta, ee, ek);
 
-    result += (x + xi) * F201(x, xi, beta, s, z)
-            * Tr_4L_F201(xi, s, beta, ee, ek);
+    result += (x + xi) * F201(x, xi, beta, s) * Tr_4L_F201(xi, s, beta, ee, ek);
 
-    result += (x + xi) * F211(x, xi, beta, s, z)
-            * Tr_4L_F211(xi, s, beta, ee, ek);
+    result += (x + xi) * F211(x, xi, beta, s) * Tr_4L_F211(xi, s, beta, ee, ek);
 
-    result += F220(x, xi, beta, s, z) * Tr_4L_F220(xi, s, beta, ee, ek);
+    result += F220(x, xi, beta, s) * Tr_4L_F220(xi, s, beta, ee, ek);
 
-    result += (x + xi) * F221(x, xi, beta, s, z)
-            * Tr_4L_F221(xi, s, beta, ee, ek);
+    result += (x + xi) * F221(x, xi, beta, s) * Tr_4L_F221(xi, s, beta, ee, ek);
 
-    result += s * F100(x, xi, beta, s, z) * Tr_4L_F100(xi, s, beta, ee, ek);
+    result += s * F100(x, xi, beta, s) * Tr_4L_F100(xi, s, beta, ee, ek);
 
-    result += s * F110(x, xi, beta, s, z) * Tr_4L_F110(xi, s, beta, ee, ek);
+    result += s * F110(x, xi, beta, s) * Tr_4L_F110(xi, s, beta, ee, ek);
+
+    result *= -m_CF * m_alphaSOver2Pi / 2.;
+    result /= std::pow(s, 3.);
+    result /= ((x - xi) * beta[2] - m_iepsilon);
+
+    return result;
+}
+
+std::complex<double> GAM2CFFStandard::M4L(double s, double x, double xi,
+        const std::vector<double>& beta, const std::vector<double>& ee,
+        const std::vector<double>& ek, double z) {
+
+    std::complex<double> result(0., 0.);
 
     result += 2. * (x + xi) * G(x, xi, beta, z) * Tr_4L_G(xi, s, beta, ee, ek);
 
     result *= -m_CF * m_alphaSOver2Pi / 2.;
     result /= std::pow(s, 3.);
-    result /= ((x - xi) * beta[2] - iepsilon);
+    result /= ((x - xi) * beta[2] - m_iepsilon);
+
+    return result;
+}
+
+std::complex<double> GAM2CFFStandard::M5L(double s, double x, double xi,
+        const std::vector<double>& beta, const std::vector<double>& ee,
+        const std::vector<double>& ek) {
+
+    std::complex<double> result(0., 0.);
+
+    result = log(((xi - x) / 2. / xi + m_iepsilon * sgn(beta[2])));
+    result *= 2. * A(s, beta, ee, ek) / beta[2];
+    result /= ((x + xi) * beta[0] + m_iepsilon);
+
+    result += F210(x, xi, beta, s) * Tr_5L_F210(xi, s, beta, ee, ek);
+
+    result += (x + xi) * F201(x, xi, beta, s) * Tr_5L_F201(xi, s, beta, ee, ek);
+
+    result += (x + xi) * F211(x, xi, beta, s) * Tr_5L_F211(xi, s, beta, ee, ek);
+
+    result -= F220(x, xi, beta, s) * Tr_5L_F220(xi, s, beta, ee, ek);
+
+    result -= (x + xi) * F221(x, xi, beta, s) * Tr_5L_F221(xi, s, beta, ee, ek);
+
+    result += s * F100(x, xi, beta, s) * Tr_5L_F100(xi, s, beta, ee, ek);
+
+    result -= s * F110(x, xi, beta, s) * Tr_5L_F110(xi, s, beta, ee, ek);
+
+    result *= -m_CF * m_alphaSOver2Pi / 4.;
+    result /= s * s;
+    result /= xi;
 
     return result;
 }
@@ -515,41 +552,34 @@ std::complex<double> GAM2CFFStandard::M5L(double s, double x, double xi,
 
     std::complex<double> result(0., 0.);
 
-    result = log(((xi - x) / 2. / xi + iepsilon * sgn(beta[2])));
-    result *= 2. * A(s, beta, ee, ek) / beta[2];
-    result /= ((x + xi) * beta[0] + iepsilon);
-
-    result += F210(x, xi, beta, s, z) * Tr_5L_F210(xi, s, beta, ee, ek);
-
-
-    result += (x + xi) * F201(x, xi, beta, s, z)
-            * Tr_5L_F201(xi, s, beta, ee, ek);
-
-
-
-    result += (x + xi) * F211(x, xi, beta, s, z)
-            * Tr_5L_F211(xi, s, beta, ee, ek);
-
-
-    result -= F220(x, xi, beta, s, z) * Tr_5L_F220(xi, s, beta, ee, ek);
-
-
-    result -= (x + xi) * F221(x, xi, beta, s, z)
-            * Tr_5L_F221(xi, s, beta, ee, ek);
-
-
-    result += s * F100(x, xi, beta, s, z) * Tr_5L_F100(xi, s, beta, ee, ek);
-
-    result -= s * F110(x, xi, beta, s, z) * Tr_5L_F110(xi, s, beta, ee, ek);
-
     result += 2. * (x + xi) * G(x, xi, beta, z) * Tr_5L_G(xi, s, beta, ee, ek);
-
 
     result *= -m_CF * m_alphaSOver2Pi / 4.;
     result /= s * s;
     result /= xi;
 
     return result;
+}
+
+std::complex<double> GAM2CFFStandard::M4R(double s, double x, double xi,
+        const std::vector<double>& beta, const std::vector<double>& ee,
+        const std::vector<double>& ek) {
+
+    std::vector<double> betaPrim = beta;
+    std::vector<double> eePrim = ee;
+    std::vector<double> ekPrim = ek;
+
+    betaPrim[0] = -beta[2];
+    betaPrim[1] = -beta[1];
+    betaPrim[2] = -beta[0];
+
+    eePrim[0] = ee[2];
+    eePrim[2] = ee[0];
+
+    ekPrim[0] = ek[2];
+    ekPrim[2] = ek[0];
+
+    return M4L(s, x, -xi, betaPrim, eePrim, ekPrim);
 }
 
 std::complex<double> GAM2CFFStandard::M4R(double s, double x, double xi,
@@ -571,6 +601,27 @@ std::complex<double> GAM2CFFStandard::M4R(double s, double x, double xi,
     ekPrim[2] = ek[0];
 
     return M4L(s, x, -xi, betaPrim, eePrim, ekPrim, z);
+}
+
+std::complex<double> GAM2CFFStandard::M5R(double s, double x, double xi,
+        const std::vector<double>& beta, const std::vector<double>& ee,
+        const std::vector<double>& ek) {
+
+    std::vector<double> betaPrim = beta;
+    std::vector<double> eePrim = ee;
+    std::vector<double> ekPrim = ek;
+
+    betaPrim[0] = -beta[2];
+    betaPrim[1] = -beta[1];
+    betaPrim[2] = -beta[0];
+
+    eePrim[0] = ee[2];
+    eePrim[2] = ee[0];
+
+    ekPrim[0] = ek[2];
+    ekPrim[2] = ek[0];
+
+    return M5L(s, x, -xi, betaPrim, eePrim, ekPrim);
 }
 
 std::complex<double> GAM2CFFStandard::M5R(double s, double x, double xi,
@@ -602,9 +653,9 @@ std::complex<double> GAM2CFFStandard::M_scale(double s, double x, double xi,
 
     std::complex<double> result;
     result = (x + xi) / xi
-            * log(((xi - x) / 2. / xi + iepsilon * sgn(beta[2])));
+            * log(((xi - x) / 2. / xi + m_iepsilon * sgn(beta[2])));
     result -= (x - xi) / xi
-            * log(((xi + x) / 2. / xi + iepsilon * sgn(beta[0])));
+            * log(((xi + x) / 2. / xi + m_iepsilon * sgn(beta[0])));
     result *= M0(s, x, xi, beta, ee, ek);
     result *= -m_CF * m_alphaSOver2Pi / 2. * log(2. * xi);
 
@@ -621,8 +672,8 @@ std::complex<double> GAM2CFFStandard::Ccoll(double s, double x, double xi,
         std::vector<double> ek) {
 
     std::complex<double> result(3., .0);
-    result += (x + xi) / xi * log(((xi - x) / 2. / xi + iepsilon * sgn(beta[2])));
-    result -= (x - xi) / xi * log(((xi + x) / 2. / xi + iepsilon * sgn(beta[0])));
+    result += (x + xi) / xi * log(((xi - x) / 2. / xi + m_iepsilon * sgn(beta[2])));
+    result -= (x - xi) / xi * log(((xi + x) / 2. / xi + m_iepsilon * sgn(beta[0])));
     result *= M0(s, x, xi, beta, ee, ek);
     result *= m_CF * m_alphaSOver2Pi / 2.;
 
@@ -630,7 +681,7 @@ std::complex<double> GAM2CFFStandard::Ccoll(double s, double x, double xi,
 
 }
 
-double GAM2CFFStandard::NLO_V_permutation_Z(double z,
+double GAM2CFFStandard::NLO_V_permutation(double x, double z,
         const std::vector<double>& params) {
 
     std::vector<double> beta(3);
@@ -654,8 +705,6 @@ double GAM2CFFStandard::NLO_V_permutation_Z(double z,
     double s = params[9];
 
     bool isReal = bool(params[10]);
-
-    double x = params[11];
 
     std::complex<double> resultComplex(0., 0.);
 
@@ -705,6 +754,16 @@ double GAM2CFFStandard::NLO_V_permutation(double x,
     resultComplex += M23LR(s, -x, m_xi, beta, ee, ek);
     resultComplex += M3M(s, x, m_xi, beta, ee, ek);
     resultComplex += M3M(s, -x, m_xi, beta, ee, ek);
+
+    resultComplex += M4L(s, x, m_xi, beta, ee, ek);
+    resultComplex += M4L(s, -x, m_xi, beta, ee, ek);
+    resultComplex += M4R(s, x, m_xi, beta, ee, ek);
+    resultComplex += M4R(s, -x, m_xi, beta, ee, ek);
+
+    resultComplex += M5L(s, x, m_xi, beta, ee, ek);
+    resultComplex += M5L(s, -x, m_xi, beta, ee, ek);
+    resultComplex += M5R(s, x, m_xi, beta, ee, ek);
+    resultComplex += M5R(s, -x, m_xi, beta, ee, ek);
 
     resultComplex += M_scale(s, x, m_xi, beta, ee, ek);
     resultComplex += M_scale(s, -x, m_xi, beta, ee, ek);
@@ -828,7 +887,7 @@ double GAM2CFFStandard::NLO_V(double x,
     return result;
 }
 
-double GAM2CFFStandard::NLO_V_Z(double z,
+double GAM2CFFStandard::NLO_V(double x, double z,
         const std::vector<double>& params) {
 
     /*
@@ -882,9 +941,6 @@ double GAM2CFFStandard::NLO_V_Z(double z,
     //take either real or imaginary part
     bool isReal0 = bool(params[10]);
 
-    //value of x
-    double x0 = params[11];
-
     //result
     double result = 0.;
 
@@ -918,9 +974,7 @@ double GAM2CFFStandard::NLO_V_Z(double z,
 
                 thisParams[10] = double(isReal0);
 
-                thisParams[11] = x0;
-
-                result += NLO_V_permutation_Z(z, thisParams);
+                result += NLO_V_permutation(x, z, thisParams);
             }
         }
     }
@@ -928,17 +982,13 @@ double GAM2CFFStandard::NLO_V_Z(double z,
     return result;
 }
 
-
 double GAM2CFFStandard::Convol_NLO_V(double x, std::vector<double>& params) {
 
     PartonDistribution partonDistribution = m_pGPDModule->compute(
             GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
             m_currentGPDComputeType);
 
-    params.at(11) = x;
-    double intNLO_V_Z = integrate(m_pConvol_NLO_V_Z, 0., 1., params);
-
-    double Convol = (NLO_V(x, params) + intNLO_V_Z)
+    double Convol = NLO_V(x, params)
             * computeCubedChargeAveragedGPD(partonDistribution);
 
     if (std::isnan(Convol) || std::isinf(Convol)) {
@@ -952,10 +1002,11 @@ double GAM2CFFStandard::Convol_NLO_V(double x, std::vector<double>& params) {
     return Convol;
 }
 
-double GAM2CFFStandard::Convol_NLO_V_Sym(double x, std::vector<double>& params) {
+double GAM2CFFStandard::Convol_NLO_V_Sym(double x,
+        std::vector<double>& params) {
 
-    double x0 = params.at(12);
-    double gpdXXi = params.at(13);
+    double x0 = params.at(11);
+    double gpdXXi = params.at(12);
 
     PartonDistribution partonDistributionA = m_pGPDModule->compute(
             GPDKinematic(x0 - x, m_xi, m_t, m_MuF2, m_MuR2),
@@ -969,13 +1020,8 @@ double GAM2CFFStandard::Convol_NLO_V_Sym(double x, std::vector<double>& params) 
     double EvalGPDB = computeCubedChargeAveragedGPD(partonDistributionB)
             - gpdXXi;
 
-    params.at(11) = x0 - x;
-    double intNLO_V_Z_A = integrate(m_pConvol_NLO_V_Z, 0., 1., params);
-    params.at(11) = x0 + x;
-    double intNLO_V_Z_B = integrate(m_pConvol_NLO_V_Z, 0., 1., params);
-
-    double Convol = (NLO_V(x0 - x, params)+ intNLO_V_Z_A)* EvalGPDA
-            + (NLO_V(x0 + x, params)+intNLO_V_Z_B) * EvalGPDB;
+    double Convol = NLO_V(x0 - x, params) * EvalGPDA
+            + NLO_V(x0 + x, params) * EvalGPDB;
 
     if (std::isnan(Convol) || std::isinf(Convol)) {
 
@@ -989,21 +1035,16 @@ double GAM2CFFStandard::Convol_NLO_V_Sym(double x, std::vector<double>& params) 
 }
 
 double GAM2CFFStandard::Convol_NLO_V_Sym_Const(double x,
-         std::vector<double>& params) {
+        std::vector<double>& params) {
 
-    double x0 = params.at(12);
-    double gpdXXi = params.at(13);
+    double x0 = params.at(11);
+    double gpdXXi = params.at(12);
 
     double EvalGPDA = gpdXXi;
     double EvalGPDB = gpdXXi;
 
-    params.at(11) = x0 - x;
-    double intNLO_V_Z_A = integrate(m_pConvol_NLO_V_Z, 0., 1., params);
-    params.at(11) = x0 + x;
-    double intNLO_V_Z_B = integrate(m_pConvol_NLO_V_Z, 0., 1., params);
-
-    double Convol = (NLO_V(x0 - x, params) + intNLO_V_Z_A) * EvalGPDA
-            + (NLO_V(x0 + x, params) + intNLO_V_Z_B) * EvalGPDB;
+    double Convol = NLO_V(x0 - x, params) * EvalGPDA
+            + NLO_V(x0 + x, params) * EvalGPDB;
 
     if (std::isnan(Convol) || std::isinf(Convol)) {
 
@@ -1015,8 +1056,6 @@ double GAM2CFFStandard::Convol_NLO_V_Sym_Const(double x,
 
     return Convol;
 }
-
-
 
 std::complex<double> GAM2CFFStandard::computeUnpolarized() {
 
@@ -1128,8 +1167,6 @@ std::complex<double> GAM2CFFStandard::computeUnpolarized() {
     result_Im *= m_quark_diagonal_V;
     result_Im *= -2. * Constant::PI / s / alpha / alphabar / m_xi;
 
-//    std::cout << m_polG0 << "\t" << m_polG1 << "\t" << m_polG2 << std::endl;
-
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
 
         std::cout << "NLO" << std::endl;
@@ -1157,19 +1194,6 @@ std::complex<double> GAM2CFFStandard::computeUnpolarized() {
 
         std::sort(range.begin(), range.end());
 
-//        std::cout << "DEBUG: xi: " << m_xi << std::endl;
-//
-//        for (size_t i = 0; i < range.size(); i++) {
-//            std::cout << "DEBUG: range: " << range.at(i) << std::endl;
-//        }
-
-//        iepsilon = std::complex<double> (0.,  1.E-4);
-//        std::cout << "DEBUG: epsilon:" << iepsilon << std::endl;
-//        gslIntegrationWrapper(m_pConvol_NLO_V_Re, range,  Parameters);
-
-        //TODO
-        iepsilon = std::complex<double>(0., 1.E-4);
-
         Parameters.at(10) = double(true);
         result_Re += gslIntegrationWrapper(m_pConvol_NLO_V,
                 m_pConvol_NLO_V_Sym, m_pConvol_NLO_V_Sym_Const, range,
@@ -1179,63 +1203,9 @@ std::complex<double> GAM2CFFStandard::computeUnpolarized() {
         result_Im += gslIntegrationWrapper(m_pConvol_NLO_V,
                 m_pConvol_NLO_V_Sym, m_pConvol_NLO_V_Sym_Const, range,
                 Parameters);
-
-//        iepsilon = std::complex<double>(0., 1.E-6);
-//            result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, m_pConvol_NLO_V_Re_Sym, m_pConvol_NLO_V_Re_Sym_Const, range,
-//                    Parameters);
-//
-//            iepsilon = std::complex<double>(0., 1.E-8);
-//                     result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, m_pConvol_NLO_V_Re_Sym, m_pConvol_NLO_V_Re_Sym_Const, range,
-//                             Parameters);
-
-//        result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, range,
-//                Parameters);
-//        result_Im += gslIntegrationWrapper(m_pConvol_NLO_V_Im, range,
-//                  Parameters);
-
-//    result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, -1+0.0001, -m_xi - 0.001,
-//            Parameters);
-//    result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, -m_xi - 0.001, -m_xi + 0.001,
-//                Parameters);
-//    result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, -m_xi + 0.001, m_xi - 0.001,
-//                    Parameters);
-//    result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, m_xi - 0.001, m_xi + 0.001,
-//                    Parameters);
-//    result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_Re, m_xi + 0.001, 1.-0.001,
-//                    Parameters);
-//
-//    result_Im += gslIntegrationWrapper(m_pConvol_NLO_V_Im, -1+0.0001, -m_xi - 0.001,
-//            Parameters);
-//    result_Im += gslIntegrationWrapper(m_pConvol_NLO_V_Im, -m_xi - 0.001, -m_xi + 0.001,
-//            Parameters);
-//    result_Im += gslIntegrationWrapper(m_pConvol_NLO_V_Im, -m_xi + 0.001, m_xi - 0.001,
-//            Parameters);
-//    result_Im += gslIntegrationWrapper(m_pConvol_NLO_V_Im, m_xi - 0.001, m_xi + 0.001,
-//            Parameters);
-//    result_Im += gslIntegrationWrapper(m_pConvol_NLO_V_Im, m_xi + 0.001, 1.-0.001,
-//            Parameters);
     }
-//    std::cout << "CHECK" << std::endl;
-//    std::cout <<  integrate(m_pConvol_NLO_V_Im, -m_xi, m_xi,
-//            Parameters) << std::endl;
-//    std::cout << gslIntegrationWrapper(m_pConvol_NLO_V_Im, -m_xi, m_xi, Parameters) << std::endl;
-//    std::cout << "CHECK" << std::endl;
 
-    // do sprawdzania F-ow
-//    std::complex<double> I(0., 1.);
-//    std::cout << " i  = " << I << std::endl;
-//    std::cout<< "F210(0.1, 0.2, 0.3)  " << F210(0.1, 0.2, 0.3) << std::endl;
-//    std::cout<< "F210(0.1+i, 0.2+i, 0.3+i)  " << F210(0.1 + I, 0.2 + I, 0.3 + I) << std::endl;
-//    std::cout<< "F211((0.1, 0.2, 0.3)  " << F211(0.1, 0.2, 0.3) << std::endl;
-//    std::cout<< "F211(0.1+i, 0.2+i, 0.3+i)  " << F211(0.1 + I, 0.2 + I, 0.3 + I) << std::endl;
-//    std::cout<< "F220(0.1, 0.2, 0.3)  " << F220(0.1, 0.2, 0.3) << std::endl;
-//    std::cout<< "F220(0.1+i, 0.2+i, 0.3+i)  " << F220(0.1 + I, 0.2 + I, 0.3 + I) << std::endl;
-//    std::cout<< "F221(0.1, 0.2, 0.3)  " << F221(0.1, 0.2, 0.3) << std::endl;
-//    std::cout<< "F221(0.1+i, 0.2+i, 0.3+i)  " << F221(0.1 + I, 0.2 + I, 0.3 + I) << std::endl;
-//    std::cout<< "G(0.1, 0.2, 0.3)  " << G(0.1, 0.2, 0.3) << std::endl;
-//    std::cout<< "G(0.1+i, 0.2+i, 0.3+i)  " << G (0.1 + I, 0.2 + I, 0.3 + I) << std::endl;
     return std::complex<double>(result_Re, result_Im);
-
 }
 
 std::complex<double> GAM2CFFStandard::computePolarized() {
@@ -1253,18 +1223,12 @@ void GAM2CFFStandard::setRunningAlphaStrongModule(
     m_pRunningAlphaStrongModule = pRunningAlphaStrongModule;
 }
 
-//double GAM2CFFStandard::exampleIntegration(double x,
-//        std::vector<double> params) {
-//    return m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
-//            m_currentGPDComputeType).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistribution();
-//}
-
-double GAM2CFFStandardIntegrationFunction(double x, void* p) {
+double GAM2CFFStandardIntegrationFunction(double* x, size_t dim, void* p) {
 
     GAM2CFFStandardIntegrationParameters* par =
             static_cast<GAM2CFFStandardIntegrationParameters*>(p);
 
-    return (par->m_pIntegrator)->operator()(x, par->m_parameters);
+    return par->m_GAM2CFFStandardGAM2CFFStandard->NLO_V(x[0],x[1], *(par->m_parameters));
 }
 
 double GAM2CFFStandard::gslIntegrationWrapper(NumA::FunctionType1D* functor,
@@ -1274,26 +1238,49 @@ double GAM2CFFStandard::gslIntegrationWrapper(NumA::FunctionType1D* functor,
     //result
     double result = 0.;
 
+    //G
+
+    GAM2CFFStandardIntegrationParameters gam2CFFStandardIntegrationParameters;
+
+    gam2CFFStandardIntegrationParameters.m_GAM2CFFStandardGAM2CFFStandard =
+            this;
+    gam2CFFStandardIntegrationParameters.m_parameters = &imputParams;
+
+    gsl_monte_function F;
+    F.f = &GAM2CFFStandardIntegrationFunction;
+    F.dim = 2;
+    F.params = &gam2CFFStandardIntegrationParameters;
+
+    double res, err;
+
+    double xl[] = { 0., 0. };
+    double xu[] = { 1., 1. };
+
+    gsl_rng_env_setup();
+    const gsl_rng_type* T = gsl_rng_default;
+    gsl_rng* r = gsl_rng_alloc(T);
+
+    size_t calls = 10000000;
+
+    gsl_monte_vegas_state* s = gsl_monte_vegas_alloc(2);
+
+    gsl_monte_vegas_integrate(&F, xl, xu, 2, calls, r, s, &res, &err);
+
+    gsl_monte_vegas_free(s);
+    gsl_rng_free(r);
+
+    std::cout << "DEBUG: G integral: " << res << " +/- " << err << std::endl;
+
+    result += res;
+
     //copy parameters
     std::vector<double> params = imputParams;
-
-    //prepare for x
-    params.push_back(0.);
 
     //prepare for symmetric x0
     params.push_back(0.);
 
     //prepare for symmetric gpd at x=xi
     params.push_back(0.);
-
-//    for (size_t i = 0; i < range.size() - 1; i++) {
-//
-//           double thisResult = integrate(functor, range.at(i), range.at(i + 1),
-//                   params);
-//           std::cout << "DEBUG: range: " << range.at(i) << " " << range.at(i + 1)
-//                   << " result: " << thisResult << std::endl;
-//           result += thisResult;
-//       }
 
     //limits
     std::vector<std::pair<double, double> > limitsSym;
@@ -1312,8 +1299,8 @@ double GAM2CFFStandard::gslIntegrationWrapper(NumA::FunctionType1D* functor,
         limitsSym.push_back(
                 std::make_pair(limits.at(i) - range, limits.at(i) + range));
 
-        params.at(12) = limits.at(i);
-        params.at(13) = computeCubedChargeAveragedGPD(
+        params.at(11) = limits.at(i);
+        params.at(12) = computeCubedChargeAveragedGPD(
                 m_pGPDModule->compute(
                         GPDKinematic(limits.at(i), m_xi, m_t, m_MuF2, m_MuR2),
                         m_currentGPDComputeType));
@@ -1361,275 +1348,134 @@ double GAM2CFFStandard::gslIntegrationWrapper(NumA::FunctionType1D* functor,
     std::cout << "DEBUG result total: " << result << std::endl;
 
     return result;
-
-//    GAM2CFFStandardIntegrationParameters integrationParameters;
-//    integrationParameters.m_pIntegrator = functor;
-//    integrationParameters.m_parameters = params;
-//
-//    gsl_integration_workspace* w = gsl_integration_workspace_alloc(1000);
-//
-//    double result, error;
-//
-//    gsl_function F;
-//    F.function = &GAM2CFFStandardIntegrationFunction;
-//    F.params = &integrationParameters;
-//
-//    double* rangeTab = new double[range.size()];
-//
-//    for (size_t i = 0; i < range.size(); i++) {
-//        rangeTab[i] = range.at(i);
-//    }
-//
-//    gsl_integration_qagp(&F, rangeTab, range.size(), 0., 1.E-1, 1000, w,
-//            &result, &error);
-//
-//    delete[] rangeTab;
-//    gsl_integration_workspace_free(w);
-
-    return result;
 }
 
 std::complex<double> GAM2CFFStandard::F100(double x, double xi,
-        const std::vector<double>& beta, double s, double z) const {
+        const std::vector<double>& beta, double s) {
 
-    const double eps = iepsilon.imag();
+    std::complex<double> a = ((x + xi) * beta[0] + m_iepsilon);
+    std::complex<double> b = ((2. * xi * beta[2]) + m_iepsilon);
+    std::complex<double> c = ((x + xi) * beta[1]) + m_iepsilon;
 
-    const double a = (x + xi) * beta.at(0);
-    const double b = (x + xi) * beta.at(1);
-    const double c = 2. * xi * beta.at(2);
+    std::complex<double> result(0., 0.);
 
-    const std::complex<double> c_I(0., 1.);
-
-    std::complex<double> result = log(
-            (c + c_I * eps + (a + b) * z) / (c_I * eps + a * z)) / (c + b * z);
+    result += std::log(b / a) * std::log((a + c) / a);
+    result += -std::log(((a + c) * (b + c)) / (a * b))
+            * std::log((a + b + c) / a);
+    result += m_lisk.Li(2, -(c / a)) + m_lisk.Li(2, -(c / b));
+    result += -m_lisk.Li(2, -((c * (a + b + c)) / (a * b)));
+    result /= -c;
 
     return result;
 }
 
 std::complex<double> GAM2CFFStandard::F110(double x, double xi,
-        const std::vector<double>& beta, double s, double z) const {
+        const std::vector<double>& beta, double s) {
 
-    const double eps = iepsilon.imag();
+    std::complex<double> a = ((x + xi) * beta[0] + m_iepsilon);
+    std::complex<double> b = ((2. * xi * beta[2]) + m_iepsilon);
+    std::complex<double> c = ((x + xi) * beta[1]) + m_iepsilon;
 
-    const double a = (x + xi) * beta.at(0);
-    const double b = (x + xi) * beta.at(1);
-    const double c = 2. * xi * beta.at(2);
+    std::complex<double> result(0., 0.);
+    std::complex<double> aux(0., 0.);
 
-    std::complex<double> c_I(0., 1.);
+    aux = -c + (b + c) * std::log((b + c) / b);
+    aux *= a * std::log(a / b);
 
-    std::complex<double> result = (2. * c + 2. * b * z
-            - 2. * (eps - c_I * a * z) * atan(eps / (a * z))
-            + 2. * (eps - c_I * a * z) * atan(eps / (c + (a + b) * z))
-            + c_I * eps * log(pow(eps, 2) + pow(a, 2) * pow(z, 2))
-            + a * z * log(pow(eps, 2) + pow(a, 2) * pow(z, 2))
-            - c_I * eps
-                    * log(
-                            pow(c, 2) + pow(eps, 2) + 2. * (a + b) * c * z
-                                    + pow(a + b, 2) * pow(z, 2))
-            - a * z
-                    * log(
-                            pow(c, 2) + pow(eps, 2) + 2. * (a + b) * c * z
-                                    + pow(a + b, 2) * pow(z, 2)))
-            / (2. * pow(c + b * z, 2));
+    result += aux;
+
+    aux = c * (a + b + c);
+    aux += -a * (b + c) * std::log(((a + c) * (b + c)) / (a * b));
+    aux *= std::log((a + b + c) / b);
+
+    result += aux;
+
+    aux = m_lisk.Li(2, -(c / a)) + m_lisk.Li(2, -(c / b));
+    aux += -m_lisk.Li(2, -((c * (a + b + c)) / (a * b)));
+    aux *= a * (b + c);
+
+    result += aux;
+
+    result /= c * c * (b + c);
 
     return result;
 }
 
 std::complex<double> GAM2CFFStandard::F201(double x, double xi,
-        const std::vector<double>& beta, double s, double z) const {
+        const std::vector<double>& beta, double s) {
 
-    const double eps = iepsilon.imag();
-
-    const double a = (x + xi) * beta.at(0);
-    const double b = (x + xi) * beta.at(1);
-    const double c = 2. * xi * beta.at(2);
-
-    const std::complex<double> c_I(0., 1.);
-
-    std::complex<double> result = (-1. * c_I * z)
-            / ((eps - c_I * a * z) * (c + c_I * eps + (a + b) * z));
-
-    return result;
+    return std::log((-(x - xi) * beta[2] + m_iepsilon) / (2. * xi * beta[2]))
+            / ((x + xi) * beta[0] + m_iepsilon) / (-(x + xi) * beta[2] + m_iepsilon);
 }
 
 std::complex<double> GAM2CFFStandard::F210(double x, double xi,
-        const std::vector<double>& beta, double s, double z) const {
+        const std::vector<double>& beta, double s) {
 
-    const double eps = iepsilon.imag();
-
-    const double a = (x + xi) * beta.at(0);
-    const double b = (x + xi) * beta.at(1);
-    const double c = 2. * xi * beta.at(2);
-
-    const std::complex<double> c_I(0., 1.);
-
-    std::complex<double> result =
-            -((c + b * z
-                    + (c + c_I * eps + (a + b) * z)
-                            * (log(c_I * eps + a * z)
-                                    - log(c + c_I * eps + (a + b) * z)))
-                    / (pow(c + b * z, 2) * (c + c_I * eps + (a + b) * z)));
-
-    return result;
+    return std::log(
+            (-(x - xi) * beta[2] + m_iepsilon) / ((x + xi) * beta[0] + m_iepsilon))
+            / (2. * xi * beta[2])
+            / ((x + xi) * beta[1] + 2. * xi * beta[2] + m_iepsilon);
 }
 
 std::complex<double> GAM2CFFStandard::F211(double x, double xi,
-        const std::vector<double>& beta, double s, double z) const {
+        const std::vector<double>& beta, double s) {
 
-    const double eps = iepsilon.imag();
+    std::complex<double> a = ((x + xi) * beta[0] + m_iepsilon);
+    std::complex<double> b = ((2. * xi * beta[2]) + m_iepsilon);
+    std::complex<double> c = ((x + xi) * beta[1]) + m_iepsilon;
 
-    const double a = (x + xi) * beta.at(0);
-    const double b = (x + xi) * beta.at(1);
-    const double c = 2. * xi * beta.at(2);
-
-    const std::complex<double> c_I(0., 1.);
-
-    std::complex<double> result = -((z
-            * (c + b * z
-                    + (c + c_I * eps + (a + b) * z)
-                            * (log(c_I * eps + a * z)
-                                    - log(c + c_I * eps + (a + b) * z))))
-            / (pow(c + b * z, 2) * (c + c_I * eps + (a + b) * z)));
-
-    return result;
+    return -((std::log((a + c) / a)
+            + std::log(b / a) * (-(c / (a + c)) + std::log((a + c) / a))
+            + std::log((b + c) / b)
+            + (c * (a + b + 2. * c) * std::log((a + b + c) / a))
+                    / ((a + c) * (b + c))
+            - std::log(((a + c) * (b + c)) / (a * b))
+                    * (1. + std::log((a + b + c) / a)) + m_lisk.Li(2, -(c / a))
+            + m_lisk.Li(2, -(c / b))
+            - m_lisk.Li(2, -((c * (a + b + c)) / (a * b)))) / std::pow(c, 2));
 }
 
 std::complex<double> GAM2CFFStandard::F220(double x, double xi,
-        const std::vector<double>& beta, double s, double z) const {
+        const std::vector<double>& beta, double s) {
 
-    const double eps = iepsilon.imag();
+    std::complex<double> a = ((x + xi) * beta[0] + m_iepsilon);
+    std::complex<double> b = ((2. * xi * beta[2]) + m_iepsilon);
+    std::complex<double> c = ((x + xi) * beta[1]) + m_iepsilon;
 
-    const double a = (x + xi) * beta.at(0);
-    const double b = (x + xi) * beta.at(1);
-    const double c = 2. * xi * beta.at(2);
-
-    const std::complex<double> c_I(0., 1.);
-
-    std::complex<double> result =
-
-    (pow(c, 2) + 2. * c_I * c * eps + 2. * a * c * z + 2. * b * c * z
-            + 2. * c_I * b * eps * z + 2. * a * b * pow(z, 2)
-            + pow(b, 2) * pow(z, 2)
-            - 2. * (eps - c_I * a * z) * (c + c_I * eps + (a + b) * z)
-                    * atan(eps / (a * z))
-            + 2. * (eps - c_I * a * z) * (c + c_I * eps + (a + b) * z)
-                    * atan(eps / (c + (a + b) * z))
-            + c_I * c * eps * log(pow(eps, 2) + pow(a, 2) * pow(z, 2))
-            - pow(eps, 2) * log(pow(eps, 2) + pow(a, 2) * pow(z, 2))
-            + a * c * z * log(pow(eps, 2) + pow(a, 2) * pow(z, 2))
-            + 2. * c_I * a * eps * z * log(pow(eps, 2) + pow(a, 2) * pow(z, 2))
-            + c_I * b * eps * z * log(pow(eps, 2) + pow(a, 2) * pow(z, 2))
-            + pow(a, 2) * pow(z, 2) * log(pow(eps, 2) + pow(a, 2) * pow(z, 2))
-            + a * b * pow(z, 2) * log(pow(eps, 2) + pow(a, 2) * pow(z, 2))
-            - c_I * c * eps
-                    * log(
-                            pow(c, 2) + pow(eps, 2) + 2. * (a + b) * c * z
-                                    + pow(a + b, 2) * pow(z, 2))
-            + pow(eps, 2)
-                    * log(
-                            pow(c, 2) + pow(eps, 2) + 2. * (a + b) * c * z
-                                    + pow(a + b, 2) * pow(z, 2))
-            - a * c * z
-                    * log(
-                            pow(c, 2) + pow(eps, 2) + 2. * (a + b) * c * z
-                                    + pow(a + b, 2) * pow(z, 2))
-            - 2. * c_I * a * eps * z
-                    * log(
-                            pow(c, 2) + pow(eps, 2) + 2. * (a + b) * c * z
-                                    + pow(a + b, 2) * pow(z, 2))
-            - c_I * b * eps * z
-                    * log(
-                            pow(c, 2) + pow(eps, 2) + 2. * (a + b) * c * z
-                                    + pow(a + b, 2) * pow(z, 2))
-            - pow(a, 2) * pow(z, 2)
-                    * log(
-                            pow(c, 2) + pow(eps, 2) + 2. * (a + b) * c * z
-                                    + pow(a + b, 2) * pow(z, 2))
-            - a * b * pow(z, 2)
-                    * log(
-                            pow(c, 2) + pow(eps, 2) + 2. * (a + b) * c * z
-                                    + pow(a + b, 2) * pow(z, 2)))
-            / (pow(c + b * z, 3) * (c + c_I * eps + (a + b) * z));
-
-    return result;
+    return (b + c + a * std::log(a / b) - a * std::log((a + b + c) / b))
+            / (b * std::pow(b + c, 2.));
 }
 
 std::complex<double> GAM2CFFStandard::F221(double x, double xi,
-        const std::vector<double>& beta, double s, double z) const {
+        const std::vector<double>& beta, double s) {
 
-    const double eps = iepsilon.imag();
+    std::complex<double> a = ((x + xi) * beta[0] + m_iepsilon);
+    std::complex<double> b = ((2. * xi * beta[2]) + m_iepsilon);
+    std::complex<double> c = ((x + xi) * beta[1]) + m_iepsilon;
 
-    const double a = (x + xi) * beta.at(0);
-    const double b = (x + xi) * beta.at(1);
-    const double c = 2. * xi * beta.at(2);
-
-    const std::complex<double> c_I(0., 1.);
-
-    std::complex<double> result =
-
-    (z
-            * (pow(c, 2) + 2. * c_I * c * eps + 2. * a * c * z + 2. * b * c * z
-                    + 2. * c_I * b * eps * z + 2. * a * b * pow(z, 2)
-                    + pow(b, 2) * pow(z, 2)
-                    - 2. * (eps - c_I * a * z) * (c + c_I * eps + (a + b) * z)
-                            * atan(eps / (a * z))
-                    + 2. * (eps - c_I * a * z) * (c + c_I * eps + (a + b) * z)
-                            * atan(eps / (c + (a + b) * z))
-                    + c_I * c * eps * log(pow(eps, 2) + pow(a, 2) * pow(z, 2))
-                    - pow(eps, 2) * log(pow(eps, 2) + pow(a, 2) * pow(z, 2))
-                    + a * c * z * log(pow(eps, 2) + pow(a, 2) * pow(z, 2))
-                    + 2. * c_I * a * eps * z
-                            * log(pow(eps, 2) + pow(a, 2) * pow(z, 2))
-                    + c_I * b * eps * z
-                            * log(pow(eps, 2) + pow(a, 2) * pow(z, 2))
-                    + pow(a, 2) * pow(z, 2)
-                            * log(pow(eps, 2) + pow(a, 2) * pow(z, 2))
-                    + a * b * pow(z, 2)
-                            * log(pow(eps, 2) + pow(a, 2) * pow(z, 2))
-                    - c_I * c * eps
-                            * log(
-                                    pow(c, 2) + pow(eps, 2)
-                                            + 2. * (a + b) * c * z
-                                            + pow(a + b, 2) * pow(z, 2))
-                    + pow(eps, 2)
-                            * log(
-                                    pow(c, 2) + pow(eps, 2)
-                                            + 2. * (a + b) * c * z
-                                            + pow(a + b, 2) * pow(z, 2))
-                    - a * c * z
-                            * log(
-                                    pow(c, 2) + pow(eps, 2)
-                                            + 2. * (a + b) * c * z
-                                            + pow(a + b, 2) * pow(z, 2))
-                    - 2. * c_I * a * eps * z
-                            * log(
-                                    pow(c, 2) + pow(eps, 2)
-                                            + 2. * (a + b) * c * z
-                                            + pow(a + b, 2) * pow(z, 2))
-                    - c_I * b * eps * z
-                            * log(
-                                    pow(c, 2) + pow(eps, 2)
-                                            + 2. * (a + b) * c * z
-                                            + pow(a + b, 2) * pow(z, 2))
-                    - pow(a, 2) * pow(z, 2)
-                            * log(
-                                    pow(c, 2) + pow(eps, 2)
-                                            + 2. * (a + b) * c * z
-                                            + pow(a + b, 2) * pow(z, 2))
-                    - a * b * pow(z, 2)
-                            * log(
-                                    pow(c, 2) + pow(eps, 2)
-                                            + 2. * (a + b) * c * z
-                                            + pow(a + b, 2) * pow(z, 2))))
-            / (pow(c + b * z, 3) * (c + c_I * eps + (a + b) * z));
-
-    return result;
+    return (-(std::pow(c, 2) * (b + c))
+            + a * std::log(a / b)
+                    * (-(c * (2. * b + 3. * c))
+                            + 2. * std::pow(b + c, 2) * std::log((b + c) / b))
+            + ((c
+                    * (c * std::pow(b + c, 2)
+                            + std::pow(a, 2) * (2. * b + 3. * c)
+                            + a
+                                    * (2. * std::pow(b, 2) + 6. * b * c
+                                            + 5. * std::pow(c, 2)))
+                    - 2. * a * (a + c) * std::pow(b + c, 2)
+                            * std::log(((a + c) * (b + c)) / (a * b)))
+                    * std::log((a + b + c) / b)) / (a + c)
+            + 2. * a * std::pow(b + c, 2)
+                    * (m_lisk.Li(2, -(c / a)) + m_lisk.Li(2, -(c / b))
+                            - m_lisk.Li(2, -((c * (a + b + c)) / (a * b)))))
+            / (std::pow(c, 3) * std::pow(b + c, 2));
 }
 
 std::complex<double> GAM2CFFStandard::G(double x, double xi,
-        const std::vector<double>& beta, double z) const {
+        const std::vector<double>& beta, double z) {
 
-    const double eps = iepsilon.imag();
+    const double eps = m_iepsilon.imag();
 
     const double a = (x + xi) * beta.at(0);
     const double b = (x + xi) * beta.at(1);

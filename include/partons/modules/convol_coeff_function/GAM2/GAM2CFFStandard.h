@@ -20,7 +20,6 @@
 
 #include "../../../../../include/algorithm/LiSK/lisk.hpp"
 
-
 namespace NumA {
 class FunctionType1D;
 } /* namespace NumA */
@@ -29,14 +28,6 @@ class PartonDistribution;
 } /* namespace PARTONS */
 
 namespace PARTONS {
-
-struct GAM2CFFStandardIntegrationParameters {
-
-    NumA::FunctionType1D* m_pIntegrator;
-    std::vector<double> m_parameters;
-};
-
-double GAM2CFFStandardIntegrationFunction(double x, void* p);
 
 /**
  * @class GAM2CFFStandard
@@ -88,6 +79,13 @@ public:
     void setRunningAlphaStrongModule(
             RunningAlphaStrongModule* pRunningAlphaStrongModule);
 
+    // The full NLO vector amplitude
+    double NLO_V(double x, const std::vector<double>& params);
+
+    // The full NLO vector amplitude
+    // z-dependent part
+    double NLO_V(double x, double z, const std::vector<double>& params);
+
 protected:
     /**
      * Copy constructor.
@@ -104,20 +102,21 @@ protected:
     double m_CF;                     ///< ( Nc^2 - 1 ) / ( 2 Nc ) (colour)
     double m_alphaSOver2Pi;
 
-
 private:
 
     LiSK::LiSK<std::complex<double> > m_lisk;
 
-    double gslIntegrationWrapper(NumA::FunctionType1D* functor, NumA::FunctionType1D* functorSym, NumA::FunctionType1D* functorSymConst,
-            const std::vector<double>& range, const std::vector<double>& params) ;
+    double gslIntegrationWrapper(NumA::FunctionType1D* functor,
+            NumA::FunctionType1D* functorSym,
+            NumA::FunctionType1D* functorSymConst,
+            const std::vector<double>& range,
+            const std::vector<double>& params);
 
     RunningAlphaStrongModule *m_pRunningAlphaStrongModule; ///< Related alphaS module.
 
     NumA::FunctionType1D* m_pConvol_NLO_V;
     NumA::FunctionType1D* m_pConvol_NLO_V_Sym;
     NumA::FunctionType1D* m_pConvol_NLO_V_Sym_Const;
-    NumA::FunctionType1D* m_pConvol_NLO_V_Z;
 
     double m_quark_diagonal_V;
     double m_quark_diagonal_A;
@@ -192,6 +191,19 @@ private:
 
     std::complex<double> M4L(double s, double x, double xi,
             const std::vector<double>& beta, const std::vector<double>& ee,
+            const std::vector<double>& ek);
+    std::complex<double> M5L(double s, double x, double xi,
+            const std::vector<double>& beta, const std::vector<double>& ee,
+            const std::vector<double>& ek);
+    std::complex<double> M4R(double s, double x, double xi,
+            const std::vector<double>& beta, const std::vector<double>& ee,
+            const std::vector<double>& ek);
+    std::complex<double> M5R(double s, double x, double xi,
+            const std::vector<double>& beta, const std::vector<double>& ee,
+            const std::vector<double>& ek);
+
+    std::complex<double> M4L(double s, double x, double xi,
+            const std::vector<double>& beta, const std::vector<double>& ee,
             const std::vector<double>& ek, double z);
     std::complex<double> M5L(double s, double x, double xi,
             const std::vector<double>& beta, const std::vector<double>& ee,
@@ -206,7 +218,8 @@ private:
     // Artefact of using a different definition of the hard scale in OG's MSc thesis,
     // see the comment after Eq. (44) in NLO paper
     std::complex<double> M_scale(double s, double x, double xi,
-            std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
+            std::vector<double> beta, std::vector<double> ee,
+            std::vector<double> ek);
 
     // The collinear term.
     // For now, it implements formulas (3.105)-(3.106) from OG's MSc thesis
@@ -214,35 +227,17 @@ private:
     // Do not mistake it with Eq. (40) in NLO paper.
     // TODO re-write it so that it implements Eq. (40) from NLO paper
     std::complex<double> Ccoll(double s, double x, double xi,
-            std::vector<double> beta, std::vector<double> ee, std::vector<double> ek);
-
-
-
+            std::vector<double> beta, std::vector<double> ee,
+            std::vector<double> ek);
 
     // Vector NLO amplitude - a single permutation of photons
     // See the description at the beginning of IV.A in NLO paper
-    double NLO_V_permutation(double x,
+    double NLO_V_permutation(double x, const std::vector<double>& params);
+
+    // Vector NLO amplitude - a single permutation of photons
+    // See the description at the beginning of IV.A in NLO paper
+    double NLO_V_permutation(double x, double z,
             const std::vector<double>& params);
-
-    // Vector NLO amplitude - a single permutation of photons
-    // See the description at the beginning of IV.A in NLO paper
-    // z-dependent part
-    double NLO_V_permutation_Z(double z,
-             const std::vector<double>& params);
-
-    // The full NLO vector amplitude
-    double NLO_V(double x, const std::vector<double>& params);
-
-    // The full NLO vector amplitude
-    // z-dependent part
-     double NLO_V_Z(double z, const std::vector<double>& params);
-
-
-
-
-
-
-
 
     double Convol_NLO_V(double x, std::vector<double>& params);
     double Convol_NLO_V_Sym(double x, std::vector<double>& params);
@@ -250,26 +245,38 @@ private:
 
     // Functions F_nab
     std::complex<double> F100(double x, double xi,
-            const std::vector<double>& beta, double s, double z) const;
+            const std::vector<double>& beta, double s);
     std::complex<double> F110(double x, double xi,
-            const std::vector<double>& beta, double s, double z) const;
+            const std::vector<double>& beta, double s);
     std::complex<double> F201(double x, double xi,
-            const std::vector<double>& beta, double s, double z) const;
+            const std::vector<double>& beta, double s);
     std::complex<double> F210(double x, double xi,
-            const std::vector<double>& beta, double s, double z) const;
+            const std::vector<double>& beta, double s);
     std::complex<double> F211(double x, double xi,
-            const std::vector<double>& beta, double s, double z) const;
+            const std::vector<double>& beta, double s);
     std::complex<double> F220(double x, double xi,
-            const std::vector<double>& beta, double s, double z) const;
+            const std::vector<double>& beta, double s);
     std::complex<double> F221(double x, double xi,
-            const std::vector<double>& beta, double s, double z) const;
+            const std::vector<double>& beta, double s);
+
     std::complex<double> G(double x, double xi, const std::vector<double>& beta,
-            double z) const;
+            double z);
 
     // Sign
     double sgn(double x) const;
 
+    // iEps
+    std::complex<double> m_iepsilon;
+
 };
+
+struct GAM2CFFStandardIntegrationParameters {
+
+    GAM2CFFStandard* m_GAM2CFFStandardGAM2CFFStandard;
+    std::vector<double> const* m_parameters;
+};
+
+double GAM2CFFStandardIntegrationFunction(double* x, size_t dim, void* p);
 
 } /* namespace PARTONS */
 
