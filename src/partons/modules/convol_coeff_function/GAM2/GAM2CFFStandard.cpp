@@ -56,6 +56,9 @@ GAM2CFFStandard::GAM2CFFStandard(const std::string &className) :
                     &GAM2ConvolCoeffFunctionModule::computePolarized));
 
     m_iepsilon = std::complex<double>(0., 1.E-4);
+    m_phi = 0.;
+    m_reim = 2;
+    m_phiDep = false;
 
     initFunctorsForIntegrations();
 }
@@ -76,6 +79,9 @@ GAM2CFFStandard::GAM2CFFStandard(const GAM2CFFStandard &other) :
     m_quark_diagonal_A = other.m_quark_diagonal_A;
 
     m_iepsilon = other.m_iepsilon;
+    m_phi = other.m_phi;
+    m_reim = other.m_reim;
+    m_phiDep = other.m_phiDep;
 
     initFunctorsForIntegrations();
 }
@@ -127,14 +133,14 @@ void GAM2CFFStandard::prepareSubModules(
 
 void GAM2CFFStandard::initFunctorsForIntegrations() {
 
-    m_pConvol_NLO_V = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GAM2CFFStandard::Convol_NLO_V);
+    m_pConvol_NLO_V_x = NumA::Integrator1D::newIntegrationFunctor(this,
+            &GAM2CFFStandard::Convol_NLO_V_x);
 
-    m_pConvol_NLO_V_Sym = NumA::Integrator1D::newIntegrationFunctor(this,
-            &GAM2CFFStandard::Convol_NLO_V_Sym);
+    m_pConvol_NLO_V_x_Sym = NumA::Integrator1D::newIntegrationFunctor(this,
+            &GAM2CFFStandard::Convol_NLO_V_x_Sym);
 
-    m_pConvol_NLO_V_Sym_Const = NumA::Integrator1D::newIntegrationFunctor(
-            this, &GAM2CFFStandard::Convol_NLO_V_Sym_Const);
+    m_pConvol_NLO_V_x_Sym_Const = NumA::Integrator1D::newIntegrationFunctor(
+            this, &GAM2CFFStandard::Convol_NLO_V_x_Sym_Const);
 }
 
 GAM2CFFStandard::~GAM2CFFStandard() {
@@ -144,19 +150,19 @@ GAM2CFFStandard::~GAM2CFFStandard() {
         m_pRunningAlphaStrongModule = 0;
     }
 
-    if (m_pConvol_NLO_V) {
-        delete m_pConvol_NLO_V;
-        m_pConvol_NLO_V = 0;
+    if (m_pConvol_NLO_V_x) {
+        delete m_pConvol_NLO_V_x;
+        m_pConvol_NLO_V_x = 0;
     }
 
-    if (m_pConvol_NLO_V_Sym) {
-        delete m_pConvol_NLO_V_Sym;
-        m_pConvol_NLO_V_Sym = 0;
+    if (m_pConvol_NLO_V_x_Sym) {
+        delete m_pConvol_NLO_V_x_Sym;
+        m_pConvol_NLO_V_x_Sym = 0;
     }
 
-    if (m_pConvol_NLO_V_Sym_Const) {
-        delete m_pConvol_NLO_V_Sym_Const;
-        m_pConvol_NLO_V_Sym_Const = 0;
+    if (m_pConvol_NLO_V_x_Sym_Const) {
+        delete m_pConvol_NLO_V_x_Sym_Const;
+        m_pConvol_NLO_V_x_Sym_Const = 0;
     }
 }
 
@@ -982,7 +988,7 @@ double GAM2CFFStandard::NLO_V(double x, double z,
     return result;
 }
 
-double GAM2CFFStandard::Convol_NLO_V(double x, std::vector<double>& params) {
+double GAM2CFFStandard::Convol_NLO_V_x(double x, const std::vector<double>& params) {
 
     PartonDistribution partonDistribution = m_pGPDModule->compute(
             GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
@@ -1002,8 +1008,28 @@ double GAM2CFFStandard::Convol_NLO_V(double x, std::vector<double>& params) {
     return Convol;
 }
 
-double GAM2CFFStandard::Convol_NLO_V_Sym(double x,
-        std::vector<double>& params) {
+double GAM2CFFStandard::Convol_NLO_V_xz(double x, double z, const std::vector<double>& params) {
+
+    PartonDistribution partonDistribution = m_pGPDModule->compute(
+            GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
+            m_currentGPDComputeType);
+
+    double Convol = NLO_V(x, z, params)
+            * computeCubedChargeAveragedGPD(partonDistribution);
+
+    if (std::isnan(Convol) || std::isinf(Convol)) {
+
+        warn(__func__,
+                ElemUtils::Formatter() << "Value is either nan or inf, x = "
+                        << x << ", z = " << z);
+        return 0.;
+    }
+
+    return Convol;
+}
+
+double GAM2CFFStandard::Convol_NLO_V_x_Sym(double x,
+        const std::vector<double>& params) {
 
     double x0 = params.at(11);
     double gpdXXi = params.at(12);
@@ -1034,8 +1060,8 @@ double GAM2CFFStandard::Convol_NLO_V_Sym(double x,
     return Convol;
 }
 
-double GAM2CFFStandard::Convol_NLO_V_Sym_Const(double x,
-        std::vector<double>& params) {
+double GAM2CFFStandard::Convol_NLO_V_x_Sym_Const(double x,
+        const std::vector<double>& params) {
 
     double x0 = params.at(11);
     double gpdXXi = params.at(12);
@@ -1086,14 +1112,15 @@ std::complex<double> GAM2CFFStandard::computeUnpolarized() {
     double tau = 2. * m_xi / (1. + m_xi);
     double M2 = Constant::PROTON_MASS * Constant::PROTON_MASS;
     double s = (m_Mgg2 - m_t) / tau / (1. + m_xi);
-//    double pt2 = -(m_uPrim * tPrim) / (m_uPrim + tPrim);
-//    double alpha = m_uPrim / (m_uPrim + tPrim);
-//    double alphabar = 1. - alpha;
 
-    double alpha = -m_uPrim
-            * (1 / (2 * m_xi * s) - M2 / (s * s * (1 - m_xi * m_xi)));
-    double alphabar = 1 - alpha - M2 / s * 2. * m_xi / (1 - m_xi * m_xi);
-    double pt2 = -m_uPrim * alphabar;
+    double pt2 = -(m_uPrim * tPrim) / (m_uPrim + tPrim);
+    double alpha = m_uPrim / (m_uPrim + tPrim);
+    double alphabar = 1. - alpha;
+
+//    double alpha = -m_uPrim
+//            * (1 / (2 * m_xi * s) - M2 / (s * s * (1 - m_xi * m_xi)));
+//    double alphabar = 1 - alpha - M2 / s * 2. * m_xi / (1 - m_xi * m_xi);
+//    double pt2 = -m_uPrim * alphabar;
 
     // beta_i is defined by 2pk_i = beta_i * s
     // {k_i} are the following: {q, -q_1, -q_2)
@@ -1109,24 +1136,30 @@ std::complex<double> GAM2CFFStandard::computeUnpolarized() {
     // A different notation is used in the paper, here ee[0] = e23, ee[1] = e13, ee[2] = e12
 
     Parameters.push_back(-double(m_polG1 == m_polG2));
-    //TODO to include phi-dependence comment two lines below:
-    Parameters.push_back(-double(m_polG0 == m_polG2));
-    Parameters.push_back(-double(m_polG1 == m_polG0));
-    //TODO ... and uncomment the four below:
-//    Parameters.push_back(-double(PolarizationType::LIN_TRANS_X_PLUS == m_polG2) * cos(m_phi)
-//                        - double(PolarizationType::LIN_TRANS_Y_PLUS == m_polG2) * sin(m_phi) );
-//    Parameters.push_back(-double(PolarizationType::LIN_TRANS_X_PLUS == m_polG1) * cos(m_phi)
-//                            - double(PolarizationType::LIN_TRANS_Y_PLUS == m_polG1) * sin(m_phi) );
+
+    if(m_phiDep == false){
+
+        Parameters.push_back(-double(m_polG0 == m_polG2));
+        Parameters.push_back(-double(m_polG1 == m_polG0));
+    }else{
+
+        Parameters.push_back(-double(PolarizationType::LIN_TRANS_X_PLUS == m_polG2) * cos(m_phi)
+            - double(PolarizationType::LIN_TRANS_Y_MINUS == m_polG2) * sin(m_phi) );
+        Parameters.push_back(-double(PolarizationType::LIN_TRANS_X_PLUS == m_polG1) * cos(m_phi)
+            - double(PolarizationType::LIN_TRANS_Y_MINUS == m_polG1) * sin(m_phi) );
+    }
 
     // ek0[i][j] = epsilon_i * k_j
     // This matrix will be used to make the vector ek[i] for a given permutation
     // See Eq. 16
 
-    //TODO to include phi-dependence comment the line below:
-    Parameters.push_back(
+    if(m_phiDep == false){
+        Parameters.push_back(
             sqrt(pt2) * double(m_polG0 == PolarizationType::LIN_TRANS_X_PLUS));
-    //TODO ... and uncomment that one:
-//    Parameters.push_back(sqrt(pt2) * cos(m_phi) ); // phi - dependence included
+    }else{
+        Parameters.push_back(sqrt(pt2) * cos(m_phi) ); 
+    }
+
     Parameters.push_back(
             sqrt(pt2) * double(m_polG1 == PolarizationType::LIN_TRANS_X_PLUS)
                     / alpha);
@@ -1141,35 +1174,37 @@ std::complex<double> GAM2CFFStandard::computeUnpolarized() {
     double result_Re = 0.;
     double result_Im = 0.;
 
-    // std::cout << "s = " << s << std::endl;
-
     // LO part
     computeDiagonalGPD_V();
-    //TODO to include phi-dependence comment the lines below:
-    result_Im = (alpha - alphabar) * double(m_polG1 == m_polG2)
-            * double(m_polG0 == PolarizationType::LIN_TRANS_X_PLUS);
-    result_Im -= double(m_polG0 == m_polG2)
-            * double(m_polG1 == PolarizationType::LIN_TRANS_X_PLUS);
-    result_Im += double(m_polG1 == m_polG0)
-            * double(m_polG2 == PolarizationType::LIN_TRANS_X_PLUS);
-    //TODO... and uncomment these:
-//    result_Im = (alpha - alphabar) * double(m_polG1 == m_polG2)
-//            * cos(m_phi);
-//    result_Im -= (double(PolarizationType::LIN_TRANS_X_PLUS == m_polG2) * cos(m_phi)
-//                + double(PolarizationType::LIN_TRANS_Y_PLUS == m_polG2) * sin(m_phi) )
-//                  * double(m_polG1 == PolarizationType::LIN_TRANS_X_PLUS);
-//    result_Im += (double(PolarizationType::LIN_TRANS_X_PLUS == m_polG1) * cos(m_phi)
-//                + double(PolarizationType::LIN_TRANS_Y_PLUS == m_polG1) * sin(m_phi) )
-//                    * double(m_polG2 == PolarizationType::LIN_TRANS_X_PLUS);
-//    //TODO up to this line.
 
-    result_Im *= sqrt(pt2);
-    result_Im *= m_quark_diagonal_V;
-    result_Im *= -2. * Constant::PI / s / alpha / alphabar / m_xi;
+    if(m_reim == 1 || m_reim == 2){
+
+    if(m_phiDep == false){
+
+        result_Im = (alpha - alphabar) * double(m_polG1 == m_polG2)
+            * double(m_polG0 == PolarizationType::LIN_TRANS_X_PLUS);
+        result_Im -= double(m_polG0 == m_polG2)
+            * double(m_polG1 == PolarizationType::LIN_TRANS_X_PLUS);
+        result_Im += double(m_polG1 == m_polG0)
+            * double(m_polG2 == PolarizationType::LIN_TRANS_X_PLUS);
+    }else{
+
+        result_Im = (alpha - alphabar) * double(m_polG1 == m_polG2)
+            * cos(m_phi);
+        result_Im -= (double(PolarizationType::LIN_TRANS_X_PLUS == m_polG2) * cos(m_phi)
+            + double(PolarizationType::LIN_TRANS_Y_MINUS == m_polG2) * sin(m_phi) )
+            * double(m_polG1 == PolarizationType::LIN_TRANS_X_PLUS);
+        result_Im += (double(PolarizationType::LIN_TRANS_X_PLUS == m_polG1) * cos(m_phi) 
+            + double(PolarizationType::LIN_TRANS_Y_MINUS == m_polG1) * sin(m_phi) )
+            * double(m_polG2 == PolarizationType::LIN_TRANS_X_PLUS);
+    }
+   
+        result_Im *= sqrt(pt2);
+        result_Im *= m_quark_diagonal_V;
+        result_Im *= -2. * Constant::PI / s / alpha / alphabar / m_xi;
+    }
 
     if (m_qcdOrderType == PerturbativeQCDOrderType::NLO) {
-
-        std::cout << "NLO" << std::endl;
 
         std::vector<double> range;
 
@@ -1194,15 +1229,19 @@ std::complex<double> GAM2CFFStandard::computeUnpolarized() {
 
         std::sort(range.begin(), range.end());
 
-        Parameters.at(10) = double(true);
-        result_Re += gslIntegrationWrapper(m_pConvol_NLO_V,
-                m_pConvol_NLO_V_Sym, m_pConvol_NLO_V_Sym_Const, range,
+        if(m_reim == 0 || m_reim == 2){
+            Parameters.at(10) = double(true);
+            result_Re += gslIntegrationWrapper(m_pConvol_NLO_V_x,
+                m_pConvol_NLO_V_x_Sym, m_pConvol_NLO_V_x_Sym_Const, range,
                 Parameters);
+        }
 
-        Parameters.at(10) = double(false);
-        result_Im += gslIntegrationWrapper(m_pConvol_NLO_V,
-                m_pConvol_NLO_V_Sym, m_pConvol_NLO_V_Sym_Const, range,
+        if(m_reim == 1 || m_reim == 2){
+            Parameters.at(10) = double(false);
+            result_Im += gslIntegrationWrapper(m_pConvol_NLO_V_x,
+                m_pConvol_NLO_V_x_Sym, m_pConvol_NLO_V_x_Sym_Const, range,
                 Parameters);
+        }
     }
 
     return std::complex<double>(result_Re, result_Im);
@@ -1228,7 +1267,7 @@ double GAM2CFFStandardIntegrationFunction(double* x, size_t dim, void* p) {
     GAM2CFFStandardIntegrationParameters* par =
             static_cast<GAM2CFFStandardIntegrationParameters*>(p);
 
-    return par->m_GAM2CFFStandardGAM2CFFStandard->NLO_V(x[0],x[1], *(par->m_parameters));
+    return par->m_GAM2CFFStandardGAM2CFFStandard->Convol_NLO_V_xz(x[0], x[1], *(par->m_parameters));
 }
 
 double GAM2CFFStandard::gslIntegrationWrapper(NumA::FunctionType1D* functor,
@@ -1260,11 +1299,20 @@ double GAM2CFFStandard::gslIntegrationWrapper(NumA::FunctionType1D* functor,
     const gsl_rng_type* T = gsl_rng_default;
     gsl_rng* r = gsl_rng_alloc(T);
 
-    size_t calls = 10000000;
+    size_t calls = 1000000;
 
     gsl_monte_vegas_state* s = gsl_monte_vegas_alloc(2);
 
-    gsl_monte_vegas_integrate(&F, xl, xu, 2, calls, r, s, &res, &err);
+    for(size_t i = 0; i < 2; i++){
+
+        gsl_monte_vegas_integrate(&F, xl, xu, 2, calls, r, s, &res, &err);
+
+        std::cout << "DEBUG: G integral (loop): " << i << ": chi2: " <<
+            gsl_monte_vegas_chisq(s) << " res: "<< res << " +/- " << err << std::endl;
+
+        if(fabs(gsl_monte_vegas_chisq(s)) == 0.) break; //break if 0 integral
+        if(fabs(gsl_monte_vegas_chisq(s) - 1.) < 0.5 && fabs(err/res) < 0.02) break; //accept <2% rel. precision
+    }
 
     gsl_monte_vegas_free(s);
     gsl_rng_free(r);
@@ -1490,6 +1538,38 @@ std::complex<double> GAM2CFFStandard::G(double x, double xi,
                     + (-1. * c_I * eps - a * z)
                             * log(-c - c_I * eps - (a + b) * z)))
             / ((eps - c_I * a * z) * (c + b * z) * (c + c_I * eps + (a + b) * z));
+}
+
+void GAM2CFFStandard::setIEpsilon(double iEps) {
+    m_iepsilon = std::complex<double>(0., iEps);
+}
+
+double GAM2CFFStandard::getIEpsilon() const {
+    return m_iepsilon.imag();
+}
+
+void GAM2CFFStandard::setPhi(double phi) {
+        m_phi = phi; 
+}
+
+double GAM2CFFStandard::getPhi() const {
+        return m_phi;
+}
+
+void GAM2CFFStandard::setReIm(int reim) {
+        m_reim = reim; 
+}
+
+int GAM2CFFStandard::getReIm() const {
+        return m_reim;
+}
+
+void GAM2CFFStandard::setPhiDep(bool phiDep) {
+        m_phiDep = phiDep; 
+}
+
+bool GAM2CFFStandard::getPhiDep() const {
+        return m_phiDep;
 }
 
 } /* namespace PARTONS */
