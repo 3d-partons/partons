@@ -79,14 +79,38 @@ public:
     void setRunningAlphaStrongModule(
             RunningAlphaStrongModule* pRunningAlphaStrongModule);
 
-    // The full NLO vector amplitude
-    double NLO_V(double x, const std::vector<double>& params);
+    // Set iEpsilon.
+    void setIEpsilon(double iEps);
 
-    // The full NLO vector amplitude
-    // z-dependent part
-    double NLO_V(double x, double z, const std::vector<double>& params);
+    // Get iEpsilon.
+    double getIEpsilon() const;
+
+    // Set phi.
+    void setPhi(double phi);
+
+    // Get phi.
+    double getPhi() const;
+
+    // Only evaluate Re (0), Im (1) or both (2) - set.
+    void setReIm(int reim);
+
+    // Only evaluate Re (0), Im (1) or both (2) - get.
+    int getReIm() const;
+
+    // Set if phi-dependemt.
+    void setPhiDep(bool phiDep);
+
+    // Get if phi-dependemt.
+    bool getPhiDep() const;
+
+    double Convol_NLO_V_x(double x, const std::vector<double>& params);
+    double Convol_NLO_V_x_Sym(double x, const std::vector<double>& params);
+    double Convol_NLO_V_x_Sym_Const(double x, const std::vector<double>& params);
+
+    double Convol_NLO_V_xz(double x, double z, const std::vector<double>& params);
 
 protected:
+
     /**
      * Copy constructor.
      * @param other
@@ -114,9 +138,9 @@ private:
 
     RunningAlphaStrongModule *m_pRunningAlphaStrongModule; ///< Related alphaS module.
 
-    NumA::FunctionType1D* m_pConvol_NLO_V;
-    NumA::FunctionType1D* m_pConvol_NLO_V_Sym;
-    NumA::FunctionType1D* m_pConvol_NLO_V_Sym_Const;
+    NumA::FunctionType1D* m_pConvol_NLO_V_x;
+    NumA::FunctionType1D* m_pConvol_NLO_V_x_Sym;
+    NumA::FunctionType1D* m_pConvol_NLO_V_x_Sym_Const;
 
     double m_quark_diagonal_V;
     double m_quark_diagonal_A;
@@ -239,9 +263,12 @@ private:
     double NLO_V_permutation(double x, double z,
             const std::vector<double>& params);
 
-    double Convol_NLO_V(double x, std::vector<double>& params);
-    double Convol_NLO_V_Sym(double x, std::vector<double>& params);
-    double Convol_NLO_V_Sym_Const(double x, std::vector<double>& params);
+    // The full NLO vector amplitude
+    double NLO_V(double x, const std::vector<double>& params);
+
+    // The full NLO vector amplitude
+    // z-dependent part
+    double NLO_V(double x, double z, const std::vector<double>& params);
 
     // Functions F_nab
     std::complex<double> F100(double x, double xi,
@@ -267,6 +294,15 @@ private:
 
     // iEps
     std::complex<double> m_iepsilon;
+
+    // phi
+    double m_phi;
+    
+    // only evaluate Re (0), Im (1) or both (2) - get.
+    int m_reim;
+
+    //make phi-dependent.
+    bool m_phiDep;
 
 };
 
