@@ -76,8 +76,8 @@ pionDiehlGRSModel1::pionDiehlGRSModel1(const std::string &className) : PARTONS::
     //std::cout << "get m_MuF2_ref = " << getMuF2Ref() << std::endl;
 
     // Set default parameter for simple RDDA model
-    m_valPara = {-0.496,0.349,1.129,0.153,0.}; // LO valence
-    //m_valPara = {-0.447,0.426,1.391,0.,0.}; //NLO valence
+    m_valPara = {-0.496,0.349,1.129/2.,0.153,0.}; // LO valence
+    //m_valPara = {-0.447,0.426,1.391/2.,0.,0.}; //NLO valence
     m_seaPara = {0.16-1.,5.20, 0.522,-3.243,5.206}; //Lo sea
     //m_seaPara = {-0.793,4.454, 0.417,-2.466,3.855}; //NLO Sea
     m_gPara = {0.433,1.326,7.326,-1.919,1.524}; //LO gluons
@@ -307,7 +307,7 @@ double pionDiehlGRSModel1::Profile(double beta, double alpha) {
 //forward limit ansatz for H
 double pionDiehlGRSModel1::valencePdfAnsatz(double beta) {
 	double pdf;
-    pdf = pow(beta, m_valPara.at(0)) * pow((1. - beta), m_valPara.at(1)) * m_valPara.at(2) ;
+    pdf = pow(beta, m_valPara.at(0)) * pow((1. - beta), m_valPara.at(1)) * m_valPara.at(2) * (1.+ m_valPara.at(3) * pow(beta,0.5) + m_valPara.at(4) * beta  ) ;
     return pdf ;
 }
 
@@ -576,7 +576,7 @@ double pionDiehlGRSModel1::HsDD(double beta, double alpha) {
      throwBetaException(__func__, beta);
      }
 
-    return   1. / 6. * seaPdfAnsatz(absbeta) * Profile(beta, alpha)  * tReggeizedAnsatzSea(absbeta) ;
+    return seaPdfAnsatz(absbeta) * Profile(beta, alpha)  * tReggeizedAnsatzSea(absbeta) ;
 }
 
 
