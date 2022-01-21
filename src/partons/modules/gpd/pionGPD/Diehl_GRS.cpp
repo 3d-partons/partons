@@ -612,7 +612,7 @@ double pionDiehlGRSModel1::DtermSea(double z, double beta){
      throwBetaException(__func__, x);
      }*/
     if (beta > 0.) {
-    	Dtermsea =  1. / 6. * seaPdfAnsatz(absbeta)* Profile(absbeta, absbeta-z) * 1. / (1. - m_t/m_LambdaDterm2)  ;
+    	Dtermsea =  seaPdfAnsatz(absbeta)* Profile(absbeta, absbeta-z) * 1. / (1. - m_t/m_LambdaDterm2)  ;
     } else {
     	Dtermsea = 0.;
     }
