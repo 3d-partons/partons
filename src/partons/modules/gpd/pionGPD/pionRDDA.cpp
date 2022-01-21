@@ -76,12 +76,12 @@ pionRDDAModel::pionRDDAModel(const std::string &className) : PARTONS::GPDModule(
     //std::cout << "get m_MuF2_ref = " << getMuF2Ref() << std::endl;
 
     // Set default parameter for simple RDDA model
-    m_valPara = {-0.25,0.95,2.6};
-    m_seaPara = {-0.5,8., 0.21 / (std::tgamma(1.5) * std::tgamma( 9. )/ std::tgamma(1.5 + 9. ) )};
-    m_gPara = {-1.,3.,0.23*4};
-    m_reggeParaVal = {0.9,1.15,1.54} ;
-    m_reggeParaSea = {0.9,-1.48,1.25} ;
-    mRDDA_Para = 2.;
+    m_valPara      = {-0.25,0.95,2.6};
+    m_seaPara      = {-0.5,8., 0.21 / (std::tgamma(1.5) * std::tgamma( 9. )/ std::tgamma(1.5 + 9. ) )};
+    m_gPara        = {-1.,3.,0.23*4};
+    m_reggeParaVal = {0.9,1.14,1.48} ;
+    m_reggeParaSea = {0.9,1.14,1.48} ;
+    mRDDA_Para     = 2.;
     m_LambdaDterm2 = 0.53 ; //GeV^2
 
 
@@ -100,12 +100,12 @@ pionRDDAModel::pionRDDAModel(const pionRDDAModel& other) : PARTONS::GPDModule(ot
     //std::cout << "get m_MuF2_ref = " << getMuF2Ref() << std::endl;
 
     // Set default parameter for simple RDDA model
-    m_valPara = {-0.25,0.95,2.6};
-    m_seaPara = {-0.5,8., 0.21 / (std::tgamma(1.5)*std::tgamma(9)/ std::tgamma(1.5+9) )};
-    m_gPara = {-1.,3.,0.23*4};
-    m_reggeParaVal = {0.9,1.15,1.54} ;
-    m_reggeParaSea = {0.9,-1.48,1.25} ;
-    mRDDA_Para = 2.;
+    m_valPara      = {-0.25,0.95,2.6};
+    m_seaPara      = {-0.5,8., 0.21 / (std::tgamma(1.5) * std::tgamma( 9. )/ std::tgamma(1.5 + 9. ) )};
+    m_gPara        = {-1.,3.,0.23*4};
+    m_reggeParaVal = {0.9,1.14,1.48} ;
+    m_reggeParaSea = {0.9,1.14,1.48} ;
+    mRDDA_Para     = 2.;
     m_LambdaDterm2 = 0.53 ; //GeV^2
 
     MathIntegratorModule();

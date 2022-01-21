@@ -113,39 +113,39 @@ PARTONS::PartonDistribution saturatedModel_Ding::computeH()
     double uVal, uValM;
 
     if ( m_t == 0)                                                                                          // Zero momentum transfer
-    {
-        if ( m_x > m_xi || m_x == m_xi )                                                                    // DGLAP>
-        {
-            if ( m_x == 1)
-            {
-                uVal = 0.;
-                uValM = 0.;
-            } else
-            {
-                uVal = (213.32*pow(1 - m_x,2.)*(pow(m_x,2.) - pow(m_xi,2.))
-                    *sqrt( 1 - 2.9342*sqrt( (1 - m_x)/(1 - m_xi) )*sqrt( (m_x - m_xi)/(1 - m_xi) ) + 2.2911*((1 - m_x)/(1 - m_xi))*((m_x - m_xi)/(1 - m_xi))  )
-                    *sqrt( 1 - 2.9342*sqrt( (1 - m_x)/(1 + m_xi) )*sqrt( (m_x + m_xi)/(1 + m_xi) ) + 2.2911*((1 - m_x)/(1 + m_xi))*((m_x + m_xi)/(1 + m_xi)) ))
-                    /( pow(1 - pow(m_xi,2.),2.) );
-                uValM = 0.;
-            }
+    {   
+        // if ( m_x > m_xi || m_x == m_xi )                                                                    // DGLAP>
+        // {
+        //     if ( m_x == 1)
+        //     {
+        //         uVal = 0.;
+        //         uValM = 0.;
+        //     } else
+        //     {
+        //         uVal = (213.32*pow(1 - m_x,2.)*(pow(m_x,2.) - pow(m_xi,2.))
+        //             *sqrt( 1 - 2.9342*sqrt( (1 - m_x)/(1 - m_xi) )*sqrt( (m_x - m_xi)/(1 - m_xi) ) + 2.2911*((1 - m_x)/(1 - m_xi))*((m_x - m_xi)/(1 - m_xi))  )
+        //             *sqrt( 1 - 2.9342*sqrt( (1 - m_x)/(1 + m_xi) )*sqrt( (m_x + m_xi)/(1 + m_xi) ) + 2.2911*((1 - m_x)/(1 + m_xi))*((m_x + m_xi)/(1 + m_xi)) ))
+        //             /( pow(1 - pow(m_xi,2.),2.) );
+        //         uValM = 0.;
+        //     }
 
-        } else if ( m_x < -m_xi || m_x == -m_xi )                                                           //DGLAP>
-        {
-            if ( m_x == -1 )
-            {
-                uVal = 0.;
-                uValM = 0.;
-            } else
-            {
-                uVal = 0.;
-                uValM = (213.32*pow(1 + m_x,2.)*(pow(m_x,2.) - pow(m_xi,2.))
-                    *sqrt( 1 - 2.9342*sqrt( (1 + m_x)/(1 - m_xi) )*sqrt( (-m_x - m_xi)/(1 - m_xi) ) + 2.2911*((1 + m_x)/(1 - m_xi))*((-m_x - m_xi)/(1 - m_xi))  )
-                    *sqrt( 1 - 2.9342*sqrt( (1 + m_x)/(1 + m_xi) )*sqrt( (-m_x + m_xi)/(1 + m_xi) ) + 2.2911*((1 + m_x)/(1 + m_xi))*((-m_x + m_xi)/(1 + m_xi)) ))
-                    /( pow(1 - pow(m_xi,2.),2.) ); 
-            } 
+        // } else if ( m_x < -m_xi || m_x == -m_xi )                                                           //DGLAP>
+        // {
+        //     if ( m_x == -1 )
+        //     {
+        //         uVal = 0.;
+        //         uValM = 0.;
+        //     } else
+        //     {
+        //         uVal = 0.;
+        //         uValM = (213.32*pow(1 + m_x,2.)*(pow(m_x,2.) - pow(m_xi,2.))
+        //             *sqrt( 1 - 2.9342*sqrt( (1 + m_x)/(1 - m_xi) )*sqrt( (-m_x - m_xi)/(1 - m_xi) ) + 2.2911*((1 + m_x)/(1 - m_xi))*((-m_x - m_xi)/(1 - m_xi))  )
+        //             *sqrt( 1 - 2.9342*sqrt( (1 + m_x)/(1 + m_xi) )*sqrt( (-m_x + m_xi)/(1 + m_xi) ) + 2.2911*((1 + m_x)/(1 + m_xi))*((-m_x + m_xi)/(1 + m_xi)) ))
+        //             /( pow(1 - pow(m_xi,2.),2.) ); 
+        //     } 
 
-        } else                                                                                              // ERBL
-        {       
+        // } else                                                                                              // ERBL
+        // {       
             // Compute double distribution.
 
             search = DD.find(0.);
@@ -168,13 +168,17 @@ PARTONS::PartonDistribution saturatedModel_Ding::computeH()
             }
 
             // Compute "gauged" GPD.
-            uVal = RT.computeGPD( DD.at(0.), m_x, m_xi );
-            uValM = RT.computeGPD( DD.at(0.), -m_x, m_xi );
+            // uVal = RT.computeGPD( DD.at(0.), m_x, m_xi );
+            uVal = RT.computeGPD( DD.at(0.), m_x, m_xi, "MatEval-xi05-t0-12noe-DefaultMesh" );
+            // uValM = RT.computeGPD( DD.at(0.), -m_x, m_xi );
 
-            // Compute Dterm contribution.
-            uVal += RT.computeDterm( DD.at(0.), m_x, m_xi );
-            uValM += RT.computeDterm( DD.at(0.), -m_x, m_xi );
-        }
+            if (  m_x <= m_xi && m_x >= -m_xi )
+            {
+                // Compute Dterm contribution.
+                uVal += RT.computeDterm( DD.at(0.), m_x, m_xi );
+                // uValM += RT.computeDterm( DD.at(0.), -m_x, m_xi );
+            }
+        // }
 
     } else                                                                                                  // Non-vanishing momentum transfer.
     {        
@@ -201,7 +205,7 @@ PARTONS::PartonDistribution saturatedModel_Ding::computeH()
 
         } else if ( m_x < -m_xi || m_x == -m_xi )                                                            // DGLAP<
         {
-            if ( m_x == -1 )                                                                                // Actually this is the limit x->1 (with \xi<1). 
+            if ( m_x == -1 )                                                                                 // Actually this is the limit x->1 (with \xi<1). 
             {
                 uVal = 0.;
                 uValM = 0.;
@@ -243,6 +247,7 @@ PARTONS::PartonDistribution saturatedModel_Ding::computeH()
 
                 // Compute "gauged" GPD.
                 uVal = RT.computeGPD( DD.at(m_t), m_x, m_xi );
+                // uVal = RT.computeGPD( DD.at(m_t), m_x, m_xi, "MatEval-xi05-t0-12noe" );
                 uValM = RT.computeGPD( DD.at(m_t), -m_x, m_xi );
 
                 // Compute Dterm contribution.
@@ -266,8 +271,11 @@ PARTONS::PartonDistribution saturatedModel_Ding::computeH()
                     DD.insert({0., DDt0});
                 }
             
-                uVal += dt*RT.computeDterm( DD.at(0.), m_x, m_xi );
-                uValM += dt*RT.computeDterm( DD.at(0.), -m_x, m_xi );
+                // if ( m_x <= m_xi && m_x >= -m_xi )
+                // {
+                    uVal += dt*RT.computeDterm( DD.at(0.), m_x, m_xi );
+                    uValM += dt*RT.computeDterm( DD.at(0.), -m_x, m_xi );
+                // }
         }
     }
 
