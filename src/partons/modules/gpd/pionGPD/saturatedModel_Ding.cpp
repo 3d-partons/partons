@@ -51,6 +51,7 @@ saturatedModel_Ding::saturatedModel_Ding(const std::string &className) : PARTONS
 
 saturatedModel_Ding::saturatedModel_Ding(const saturatedModel_Ding& other) : PARTONS::GPDModule(other) 
 {    
+	m_MuF2_ref = pow(0.331,2.);
     m2 = pow(0.316,2.);                                                                                             // Mass parameter algebraic toy model. Eq (30) Physics Letters B 780 (2018) 287–293.
     m2D = pow(0.316,2.);                                                                                            // D-term t-dependence: Fitting of Phys. Rev. D 97, 014020 (2018) gravitational FFs.
     // RT.init();                                                                                                      // Initialize Radon transform

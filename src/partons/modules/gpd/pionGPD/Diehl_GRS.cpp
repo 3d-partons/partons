@@ -1,5 +1,5 @@
 /**
- * @file pionRDDA.cpp
+ * @file Diehl_GRS.cpp
  * @author Cédric Mezrag (CEA Saclay)
  * @date 11th June 2021
  * @version 1.0
@@ -15,7 +15,7 @@
 
 // TODO: Clean list of headers. Check which ones are necessary.
 
-#include "../../../../../include/partons/modules/gpd/pionGPD/pionRDDA.h"
+#include "../../../../../include/partons/modules/gpd/pionGPD/Diehl_GRS.h"
 
 #include "../../../../../include/partons/beans/gpd/GPDType.h"
 #include "../../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
@@ -65,23 +65,26 @@ extern "C"
 namespace PARTONS {
 
 // With this line we "create" the name for our GPD module. This will be integrated into the factory and thus partons knows about it.
-const unsigned int pionRDDAModel::classId =
-    PARTONS::BaseObjectRegistry::getInstance()->registerBaseObject(new pionRDDAModel("pionRDDAModel"));
+const unsigned int pionDiehlGRSModel1::classId =
+    PARTONS::BaseObjectRegistry::getInstance()->registerBaseObject(new pionDiehlGRSModel1("pionDiehlGRSModel1"));
 
-pionRDDAModel::pionRDDAModel(const std::string &className) : PARTONS::GPDModule(className)
+pionDiehlGRSModel1::pionDiehlGRSModel1(const std::string &className) : PARTONS::GPDModule(className)
 {
     // Set reference factorization scale.
-    m_MuF2_ref = 1.9 ; // ref scale at which xfitter PDFs are given
+    m_MuF2_ref = 0.26 ; // ref scale at which xfitter PDFs are given
     //std::cout << "m_MuF2_ref = " << m_MuF2_ref << std::endl;
     //std::cout << "get m_MuF2_ref = " << getMuF2Ref() << std::endl;
 
     // Set default parameter for simple RDDA model
-    m_valPara      = {-0.25,0.95,2.6};
-    m_seaPara      = {-0.5,8., 0.21 / (std::tgamma(1.5) * std::tgamma( 9. )/ std::tgamma(1.5 + 9. ) )};
-    m_gPara        = {-1.,3.,0.23*4};
-    m_reggeParaVal = {0.9,1.14,1.48} ;
-    m_reggeParaSea = {0.9,1.14,1.48} ;
-    mRDDA_Para     = 2.;
+    m_valPara = {-0.496,0.349,1.129/2.,0.153,0.}; // LO valence
+    //m_valPara = {-0.447,0.426,1.391/2.,0.,0.}; //NLO valence
+    m_seaPara = {0.16-1.,5.20, 0.522,-3.243,5.206}; //Lo sea
+    //m_seaPara = {-0.793,4.454, 0.417,-2.466,3.855}; //NLO Sea
+    m_gPara = {0.433,1.326,7.326,-1.919,1.524}; //LO gluons
+    //m_gPara = {0.27,1.29,5.9,-2.074,1.824}; // NLO gluons
+    m_reggeParaVal = {0.9,2.99,0.35} ;
+    m_reggeParaSea = {0.98,1.96,-1.7} ;
+    mRDDA_Para = 2.;
     m_LambdaDterm2 = 0.53 ; //GeV^2
 
 
@@ -92,28 +95,32 @@ pionRDDAModel::pionRDDAModel(const std::string &className) : PARTONS::GPDModule(
     initFunctorsForIntegrations();
 }
 
-pionRDDAModel::pionRDDAModel(const pionRDDAModel& other) : PARTONS::GPDModule(other)
+pionDiehlGRSModel1::pionDiehlGRSModel1(const pionDiehlGRSModel1& other) : PARTONS::GPDModule(other)
 {
     // Set reference factorization scale.
-    m_MuF2_ref = 1.9 ;
+    m_MuF2_ref = 0.26 ;
     //std::cout << "m_MuF2_ref = " << m_MuF2_ref << std::endl;
     //std::cout << "get m_MuF2_ref = " << getMuF2Ref() << std::endl;
 
-    // Set default parameter for simple RDDA model
-    m_valPara      = {-0.25,0.95,2.6};
-    m_seaPara      = {-0.5,8., 0.21 / (std::tgamma(1.5) * std::tgamma( 9. )/ std::tgamma(1.5 + 9. ) )};
-    m_gPara        = {-1.,3.,0.23*4};
-    m_reggeParaVal = {0.9,1.14,1.48} ;
-    m_reggeParaSea = {0.9,1.14,1.48} ;
-    mRDDA_Para     = 2.;
+    // Set default parameter for simple RDDA model with GRS
+    m_valPara = {-0.496,0.349,1.129,0.153,0.}; // LO valence
+    //m_valPara = {-0.447,0.426,1.391,0.,0.}; //NLO valence
+    m_seaPara = {0.16-1.,5.20, 0.522,-3.243,5.206}; //Lo sea
+    //m_seaPara = {-0.793,4.454, 0.417,-2.466,3.855}; //NLO Sea
+    m_gPara = {0.433,1.326,7.326,-1.919,1.524}; //LO gluons
+    //m_gPara = {0.27,1.29,5.9,-2.074,1.824}; // NLO gluons
+    m_reggeParaVal = {0.9,2.99,0.35} ;
+    m_reggeParaSea = {0.98,1.96,-1.7} ;
+    mRDDA_Para = 2.;
     m_LambdaDterm2 = 0.53 ; //GeV^2
+
 
     MathIntegratorModule();
     initFunctorsForIntegrations();
 
 }
 
-pionRDDAModel::~pionRDDAModel()
+pionDiehlGRSModel1::~pionDiehlGRSModel1()
 {
     if(m_pIntegralDuVal){ delete m_pIntegralDuVal; m_pIntegralDuVal = 0;}
     if(m_pIntegralDuValMx){ delete m_pIntegralDuValMx; m_pIntegralDuValMx = 0;}
@@ -144,99 +151,99 @@ pionRDDAModel::~pionRDDAModel()
 
 }
 
-pionRDDAModel* pionRDDAModel::clone() const
+pionDiehlGRSModel1* pionDiehlGRSModel1::clone() const
 {
-    return new pionRDDAModel(*this);
+    return new pionDiehlGRSModel1(*this);
 }
-void pionRDDAModel::resolveObjectDependencies()
+void pionDiehlGRSModel1::resolveObjectDependencies()
 {
 
 }
 
-void pionRDDAModel::configure(const ElemUtils::Parameters &parameters)
+void pionDiehlGRSModel1::configure(const ElemUtils::Parameters &parameters)
 {
     PARTONS::GPDModule::configure(parameters);
     MathIntegratorModule::configureIntegrator(parameters);
 }
 
-void pionRDDAModel::isModuleWellConfigured()
+void pionDiehlGRSModel1::isModuleWellConfigured()
 {
     PARTONS::GPDModule::isModuleWellConfigured();
     //std::cout << "GPD module well configured" << std::endl;
 
 }
 
-void pionRDDAModel::initModule()
+void pionDiehlGRSModel1::initModule()
 {
     PARTONS::GPDModule::initModule();
     //std::cout << "GPD module initiated" << std::endl;
 }
 
 
-void pionRDDAModel::initFunctorsForIntegrations() {
+void pionDiehlGRSModel1::initFunctorsForIntegrations() {
     MathIntegratorModule::setIntegrator(NumA::IntegratorType1D::GK21_ADAPTIVE);
 
 //Integrators for H
 
     m_pIntegralHuVal = NumA::Integrator1D::newIntegrationFunctor(this,
-            &pionRDDAModel::IntegralHuVal);
+            &pionDiehlGRSModel1::IntegralHuVal);
 
     m_pIntegralHuValMx = NumA::Integrator1D::newIntegrationFunctor(this,
-            &pionRDDAModel::IntegralHuValMx);
+            &pionDiehlGRSModel1::IntegralHuValMx);
 
     m_pIntegralHdVal = NumA::Integrator1D::newIntegrationFunctor(this,
-            &pionRDDAModel::IntegralHdVal);
+            &pionDiehlGRSModel1::IntegralHdVal);
 
     m_pIntegralHdValMx = NumA::Integrator1D::newIntegrationFunctor(this,
-            &pionRDDAModel::IntegralHdValMx);
+            &pionDiehlGRSModel1::IntegralHdValMx);
 
     m_pIntegralxLargeHsSea = NumA::Integrator1D::newIntegrationFunctor(this,
-            &pionRDDAModel::IntegralxLargeHsSea);
+            &pionDiehlGRSModel1::IntegralxLargeHsSea);
 
     m_pIntegralxSmallHsSea = NumA::Integrator1D::newIntegrationFunctor(this,
-            &pionRDDAModel::IntegralxSmallHsSea);
+            &pionDiehlGRSModel1::IntegralxSmallHsSea);
 
     m_pIntegralxSmall1HsSea = NumA::Integrator1D::newIntegrationFunctor(this,
-            &pionRDDAModel::IntegralxSmall1HsSea);
+            &pionDiehlGRSModel1::IntegralxSmall1HsSea);
 
     m_pIntegralxSmall2HsSea = NumA::Integrator1D::newIntegrationFunctor(this,
-            &pionRDDAModel::IntegralxSmall2HsSea);
+            &pionDiehlGRSModel1::IntegralxSmall2HsSea);
 
     m_pIntegralxLargeHsSeaMx = NumA::Integrator1D::newIntegrationFunctor(this,
-            &pionRDDAModel::IntegralxLargeHsSeaMx);
+            &pionDiehlGRSModel1::IntegralxLargeHsSeaMx);
 
     m_pIntegralxLargeHg = NumA::Integrator1D::newIntegrationFunctor(this,
-            &pionRDDAModel::IntegralxLargeHg);
+            &pionDiehlGRSModel1::IntegralxLargeHg);
 
     m_pIntegralxSmall1Hg = NumA::Integrator1D::newIntegrationFunctor(this,
-            &pionRDDAModel::IntegralxSmall1Hg);
+            &pionDiehlGRSModel1::IntegralxSmall1Hg);
 
     m_pIntegralxSmall2Hg = NumA::Integrator1D::newIntegrationFunctor(this,
-            &pionRDDAModel::IntegralxSmall2Hg);
+            &pionDiehlGRSModel1::IntegralxSmall2Hg);
 
     m_pIntegralxLargeHgMx = NumA::Integrator1D::newIntegrationFunctor(this,
-            &pionRDDAModel::IntegralxLargeHgMx);
+            &pionDiehlGRSModel1::IntegralxLargeHgMx);
 
     //Integrators for the D-terms
 
     m_pIntegralDuVal = NumA::Integrator1D::newIntegrationFunctor(this,
-    		&pionRDDAModel::IntegralDuVal);
+    		&pionDiehlGRSModel1::IntegralDuVal);
     m_pIntegralDuValMx = NumA::Integrator1D::newIntegrationFunctor(this,
-    		&pionRDDAModel::IntegralDuValMx);
+    		&pionDiehlGRSModel1::IntegralDuValMx);
     m_pIntegralDdVal= NumA::Integrator1D::newIntegrationFunctor(this,
-    		&pionRDDAModel::IntegralDdVal);
+    		&pionDiehlGRSModel1::IntegralDdVal);
     m_pIntegralDdValMx = NumA::Integrator1D::newIntegrationFunctor(this,
-    		&pionRDDAModel::IntegralDdValMx);
+    		&pionDiehlGRSModel1::IntegralDdValMx);
 
     m_pIntegralDSea = NumA::Integrator1D::newIntegrationFunctor(this,
-    		&pionRDDAModel::IntegralDSea);
+    		&pionDiehlGRSModel1::IntegralDSea);
     m_pIntegralDSeaMx = NumA::Integrator1D::newIntegrationFunctor(this,
-    		&pionRDDAModel::IntegralDSeaMx);
+    		&pionDiehlGRSModel1::IntegralDSeaMx);
 
     m_pIntegralDGluons = NumA::Integrator1D::newIntegrationFunctor(this,
-    		&pionRDDAModel::IntegralDGluons);
+    		&pionDiehlGRSModel1::IntegralDGluons);
     m_pIntegralDGluonsMx = NumA::Integrator1D::newIntegrationFunctor(this,
-    		&pionRDDAModel::IntegralDGluonsMx);
+    		&pionDiehlGRSModel1::IntegralDGluonsMx);
 
 
 
@@ -245,7 +252,7 @@ void pionRDDAModel::initFunctorsForIntegrations() {
 
 
 
-void pionRDDAModel::throwBetaException(const std::string &funcName,
+void pionDiehlGRSModel1::throwBetaException(const std::string &funcName,
         double betaValue) {
     throw ElemUtils::CustomException(getClassName(), funcName,
             ElemUtils::Formatter()
@@ -254,19 +261,19 @@ void pionRDDAModel::throwBetaException(const std::string &funcName,
 }
 
 //Set profile function parameter
-void pionRDDAModel::setProfileParameter(double N){
+void pionDiehlGRSModel1::setProfileParameter(double N){
 	mRDDA_Para = N;
 	std::cout << "RDDA parameter set to n = "<< mRDDA_Para << std::endl ;
 }
 
-double pionRDDAModel::getProfileParameter(){
+double pionDiehlGRSModel1::getProfileParameter(){
 	std::cout << "RDDA parameter set to n = "<< mRDDA_Para << std::endl ;
 	return mRDDA_Para ;
 }
 
 
 //Profile function
-double pionRDDAModel::Profile(double beta, double alpha) {
+double pionDiehlGRSModel1::Profile(double beta, double alpha) {
     double profile = 0.;
     double ProfileShape = mRDDA_Para;
     double TwiceProfileShapePlus1 = 2. * ProfileShape + 1;
@@ -298,33 +305,33 @@ double pionRDDAModel::Profile(double beta, double alpha) {
 }
 
 //forward limit ansatz for H
-double pionRDDAModel::valencePdfAnsatz(double beta) {
+double pionDiehlGRSModel1::valencePdfAnsatz(double beta) {
 	double pdf;
-    pdf = pow(beta, m_valPara.at(0)) * pow((1. - beta), m_valPara.at(1)) * m_valPara.at(2) ;
+    pdf = pow(beta, m_valPara.at(0)) * pow((1. - beta), m_valPara.at(1)) * m_valPara.at(2) * (1.+ m_valPara.at(3) * pow(beta,0.5) + m_valPara.at(4) * beta  ) ;
     return pdf ;
 }
 
-double pionRDDAModel::seaPdfAnsatz(double beta) {
+double pionDiehlGRSModel1::seaPdfAnsatz(double beta) {
 	double pdf;
-    pdf = pow(beta, m_seaPara.at(0)) * pow((1. - beta), m_seaPara.at(1)) *  m_seaPara.at(2) ;
+    pdf = pow(beta, m_seaPara.at(0)) * pow((1. - beta), m_seaPara.at(1)) *  m_seaPara.at(2) * (1.+ m_seaPara.at(3) * pow(beta,0.5) + m_seaPara.at(4) * beta  ) ;
     return pdf ;
 }
 
-double pionRDDAModel::gluonxPdfAnsatz(double beta) {
+double pionDiehlGRSModel1::gluonxPdfAnsatz(double beta) {
 	double pdf;
-    pdf = pow(beta, m_gPara.at(0)+1) * pow((1. - beta), m_gPara.at(1)) *  m_gPara.at(2) ;
+    pdf = pow(beta, m_gPara.at(0)+1) * pow((1. - beta), m_gPara.at(1)) *  m_gPara.at(2) * (1.+ m_gPara.at(3) * pow(beta,0.5) + m_gPara.at(4) * beta  )  ;
     return pdf ;
 }
 
 //Reggeized t behaviour
-double pionRDDAModel::tReggeizedAnsatzVal(double beta) {
+double pionDiehlGRSModel1::tReggeizedAnsatzVal(double beta) {
 	double tregge;
 	double fbeta = fabs(beta) ;
     tregge = exp(m_t * (  pow((1- fbeta ),3. ) * ( m_reggeParaVal.at(0) * log( 1/fbeta ) + m_reggeParaVal.at(2) ) + m_reggeParaVal.at(1) * fbeta* pow ( (1-fbeta) , 2.)  ) ) ;
     return tregge ;
 }
 
-double pionRDDAModel::tReggeizedAnsatzSea(double beta) {
+double pionDiehlGRSModel1::tReggeizedAnsatzSea(double beta) {
 	double tregge;
 	double fbeta = fabs(beta) ;
     tregge = exp(m_t * (  pow((1- fbeta ),3. ) * ( m_reggeParaSea.at(0) * log( 1/fbeta ) + m_reggeParaSea.at(2) ) + m_reggeParaSea.at(1) * fbeta* pow ( (1-fbeta) , 2.)  ) ) ;
@@ -343,7 +350,7 @@ double pionRDDAModel::tReggeizedAnsatzSea(double beta) {
 */
 
 ////////////////// Valence part /////////////////////
-double pionRDDAModel::IntegralHuVal(double beta, std::vector<double> Par) {
+double pionDiehlGRSModel1::IntegralHuVal(double beta, std::vector<double> Par) {
     double alpha = (m_x - beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -354,7 +361,7 @@ double pionRDDAModel::IntegralHuVal(double beta, std::vector<double> Par) {
 
 }
 
-double pionRDDAModel::IntegralHuValMx(double beta, std::vector<double> Par) {
+double pionDiehlGRSModel1::IntegralHuValMx(double beta, std::vector<double> Par) {
     double alpha = (m_Mx - beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -365,7 +372,7 @@ double pionRDDAModel::IntegralHuValMx(double beta, std::vector<double> Par) {
 }
 
 
-double pionRDDAModel::HuValDD(double beta, double alpha) {
+double pionDiehlGRSModel1::HuValDD(double beta, double alpha) {
     double absbeta = fabs(beta);
     double HuValDD;
     /*    if (beta <= 0 || beta > 1.) {
@@ -382,7 +389,7 @@ double pionRDDAModel::HuValDD(double beta, double alpha) {
 
 //D-term u valence
 
-double pionRDDAModel::IntegralDuVal(double beta, std::vector<double> Par) {
+double pionDiehlGRSModel1::IntegralDuVal(double beta, std::vector<double> Par) {
     double z = m_x / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -393,7 +400,7 @@ double pionRDDAModel::IntegralDuVal(double beta, std::vector<double> Par) {
 
 }
 
-double pionRDDAModel::IntegralDuValMx(double beta, std::vector<double> Par) {
+double pionDiehlGRSModel1::IntegralDuValMx(double beta, std::vector<double> Par) {
     double z = m_Mx / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -404,7 +411,7 @@ double pionRDDAModel::IntegralDuValMx(double beta, std::vector<double> Par) {
 }
 
 
-double pionRDDAModel::DtermuValence(double z, double beta)
+double pionDiehlGRSModel1::DtermuValence(double z, double beta)
 {
     double absbeta = fabs(beta);
     double DtermuVal;
@@ -428,7 +435,7 @@ double pionRDDAModel::DtermuValence(double z, double beta)
 ##################################
 */
 
-double pionRDDAModel::IntegralHdVal(double beta, std::vector<double> Par) {
+double pionDiehlGRSModel1::IntegralHdVal(double beta, std::vector<double> Par) {
     double alpha = (m_x + beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -439,7 +446,7 @@ double pionRDDAModel::IntegralHdVal(double beta, std::vector<double> Par) {
 
 }
 
-double pionRDDAModel::IntegralHdValMx(double beta, std::vector<double> Par) {
+double pionDiehlGRSModel1::IntegralHdValMx(double beta, std::vector<double> Par) {
     double alpha = (m_Mx + beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -450,7 +457,7 @@ double pionRDDAModel::IntegralHdValMx(double beta, std::vector<double> Par) {
 }
 
 
-double pionRDDAModel::HdValDD(double mbeta, double alpha) {
+double pionDiehlGRSModel1::HdValDD(double mbeta, double alpha) {
     double absbeta = fabs(mbeta);
     double HdValDD;
     /*    if (beta <= 0 || beta > 1.) {
@@ -467,7 +474,7 @@ double pionRDDAModel::HdValDD(double mbeta, double alpha) {
 
 //////// D-term
 
-double pionRDDAModel::IntegralDdVal(double beta, std::vector<double> Par) {
+double pionDiehlGRSModel1::IntegralDdVal(double beta, std::vector<double> Par) {
     double z = m_x / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -478,7 +485,7 @@ double pionRDDAModel::IntegralDdVal(double beta, std::vector<double> Par) {
 
 }
 
-double pionRDDAModel::IntegralDdValMx(double beta, std::vector<double> Par) {
+double pionDiehlGRSModel1::IntegralDdValMx(double beta, std::vector<double> Par) {
     double z = (m_Mx) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -490,7 +497,7 @@ double pionRDDAModel::IntegralDdValMx(double beta, std::vector<double> Par) {
 
 
 
-double pionRDDAModel::DtermdValence(double z, double mbeta)
+double pionDiehlGRSModel1::DtermdValence(double z, double mbeta)
 {
     double absbeta = fabs(mbeta);
     double DtermdVal;
@@ -514,7 +521,7 @@ double pionRDDAModel::DtermdValence(double z, double mbeta)
 ##################################
 */
 
-double pionRDDAModel::IntegralxLargeHsSea(double beta,
+double pionDiehlGRSModel1::IntegralxLargeHsSea(double beta,
         std::vector<double> Par) {
     double alpha = (m_x - beta) / m_xi;
 
@@ -525,7 +532,7 @@ double pionRDDAModel::IntegralxLargeHsSea(double beta,
     return HsDD(beta, alpha) / m_xi;
 }
 
-double pionRDDAModel::IntegralxLargeHsSeaMx(double beta,        std::vector<double> Par) {
+double pionDiehlGRSModel1::IntegralxLargeHsSeaMx(double beta,        std::vector<double> Par) {
     double alpha = (m_x + beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -535,13 +542,13 @@ double pionRDDAModel::IntegralxLargeHsSeaMx(double beta,        std::vector<doub
     return HsDD(beta, alpha) / m_xi;
 }
 
-double pionRDDAModel::IntegralxSmallHsSea(double beta,
+double pionDiehlGRSModel1::IntegralxSmallHsSea(double beta,
         std::vector<double> Par) {
     return (HsDD(beta, (m_x - beta) / m_xi)
             - HsDD(beta, (m_x + beta) / m_xi)) / m_xi;
 }
 
-double pionRDDAModel::IntegralxSmall1HsSea(double beta,
+double pionDiehlGRSModel1::IntegralxSmall1HsSea(double beta,
         std::vector<double> Par) {
     double alpha = (m_x - beta) / m_xi;
 
@@ -552,7 +559,7 @@ double pionRDDAModel::IntegralxSmall1HsSea(double beta,
     return HsDD(beta, alpha) / m_xi;
 }
 
-double pionRDDAModel::IntegralxSmall2HsSea(double beta,
+double pionDiehlGRSModel1::IntegralxSmall2HsSea(double beta,
         std::vector<double> Par) {
     double Integral;
 
@@ -563,19 +570,19 @@ double pionRDDAModel::IntegralxSmall2HsSea(double beta,
     return HsDD(beta, (m_x + beta) / m_xi) / m_xi;
 }
 
-double pionRDDAModel::HsDD(double beta, double alpha) {
+double pionDiehlGRSModel1::HsDD(double beta, double alpha) {
     double absbeta = fabs(beta);
         if (beta <= 0 || beta > 1.) {
      throwBetaException(__func__, beta);
      }
 
-    return   1. / 6. * seaPdfAnsatz(absbeta) * Profile(beta, alpha)  * tReggeizedAnsatzSea(absbeta) ;
+    return seaPdfAnsatz(absbeta) * Profile(beta, alpha)  * tReggeizedAnsatzSea(absbeta) ;
 }
 
 
 // D-term part
 
-double pionRDDAModel::IntegralDSea(double beta, std::vector<double> Par)
+double pionDiehlGRSModel1::IntegralDSea(double beta, std::vector<double> Par)
 {	    double z = m_x / m_xi;
 
 		if (beta <= 0 || beta > 1.) {
@@ -586,7 +593,7 @@ double pionRDDAModel::IntegralDSea(double beta, std::vector<double> Par)
 
 }
 
-double pionRDDAModel::IntegralDSeaMx(double beta, std::vector<double> Par)
+double pionDiehlGRSModel1::IntegralDSeaMx(double beta, std::vector<double> Par)
 {	    double z = m_Mx / m_xi;
 
 		if (beta <= 0 || beta > 1.) {
@@ -597,7 +604,7 @@ double pionRDDAModel::IntegralDSeaMx(double beta, std::vector<double> Par)
 
 }
 
-double pionRDDAModel::DtermSea(double z, double beta){
+double pionDiehlGRSModel1::DtermSea(double z, double beta){
 
 	double absbeta = fabs(beta);
     double Dtermsea;
@@ -623,7 +630,7 @@ double pionRDDAModel::DtermSea(double z, double beta){
 ##################################
 */
 
-double pionRDDAModel::IntegralxLargeHg(double beta, std::vector<double> Par) {
+double pionDiehlGRSModel1::IntegralxLargeHg(double beta, std::vector<double> Par) {
     double alpha = (m_x - beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -633,7 +640,7 @@ double pionRDDAModel::IntegralxLargeHg(double beta, std::vector<double> Par) {
     return  HgDD(beta, alpha) / m_xi;
 }
 
-double pionRDDAModel::IntegralxLargeHgMx(double beta, std::vector<double> Par) {
+double pionDiehlGRSModel1::IntegralxLargeHgMx(double beta, std::vector<double> Par) {
     double alpha = (m_x + beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -643,7 +650,7 @@ double pionRDDAModel::IntegralxLargeHgMx(double beta, std::vector<double> Par) {
     return  HgDD(beta, alpha) / m_xi;
 }
 
-double pionRDDAModel::IntegralxSmall1Hg(double beta, std::vector<double> Par) {
+double pionDiehlGRSModel1::IntegralxSmall1Hg(double beta, std::vector<double> Par) {
     double alpha = (m_x - beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -653,7 +660,7 @@ double pionRDDAModel::IntegralxSmall1Hg(double beta, std::vector<double> Par) {
     return  HgDD(beta, alpha) / m_xi;
 }
 
-double pionRDDAModel::IntegralxSmall2Hg(double beta, std::vector<double> Par) {
+double pionDiehlGRSModel1::IntegralxSmall2Hg(double beta, std::vector<double> Par) {
     double alpha = (m_x + beta) / m_xi;
 
     if (beta <= 0 || beta > 1.) {
@@ -663,7 +670,7 @@ double pionRDDAModel::IntegralxSmall2Hg(double beta, std::vector<double> Par) {
     return  HgDD(beta, alpha) / m_xi;
 }
 
-double pionRDDAModel::HgDD(double beta, double alpha) {
+double pionDiehlGRSModel1::HgDD(double beta, double alpha) {
     double absbeta = fabs(beta);
         if (beta <= 0 || beta > 1.) {
      throwBetaException(__func__, beta);
@@ -674,7 +681,7 @@ double pionRDDAModel::HgDD(double beta, double alpha) {
 
 //D-term Gluons
 
-double pionRDDAModel::IntegralDGluons(double beta, std::vector<double> Par)
+double pionDiehlGRSModel1::IntegralDGluons(double beta, std::vector<double> Par)
 {	    double z = m_x / m_xi;
 
 		if (beta <= 0 || beta > 1.) {
@@ -685,7 +692,7 @@ double pionRDDAModel::IntegralDGluons(double beta, std::vector<double> Par)
 
 }
 
-double pionRDDAModel::IntegralDGluonsMx(double beta, std::vector<double> Par)
+double pionDiehlGRSModel1::IntegralDGluonsMx(double beta, std::vector<double> Par)
 {	    double z = m_Mx / m_xi;
 
 		if (beta <= 0 || beta > 1.) {
@@ -696,7 +703,7 @@ double pionRDDAModel::IntegralDGluonsMx(double beta, std::vector<double> Par)
 
 }
 
-double pionRDDAModel::DtermGluons(double z, double beta){
+double pionDiehlGRSModel1::DtermGluons(double z, double beta){
 
 	double absbeta = fabs(beta);
     double Dtermgluons;
@@ -719,7 +726,7 @@ double pionRDDAModel::DtermGluons(double z, double beta){
 ///////////////////////////////////////////////////////////////////////////////////////
 
 
-PARTONS::PartonDistribution pionRDDAModel::computeH()
+PARTONS::PartonDistribution pionDiehlGRSModel1::computeH()
 {
 
     std::vector<double> x(1), y(1), xi(1), xm(1), ym(1), xim(1);                                            // Declare kinematics in a format appropiated for RadonTransform.
@@ -784,7 +791,7 @@ PARTONS::PartonDistribution pionRDDAModel::computeH()
     	    //Gluon Distribution
     	    GluonDistribution gluonDistribution(Hg);
 
-    	    // s quark
+    	    // s quark -- kept here as a general sea quark contribution, as the strange quarks are set to 0 at initial scale
     	        double Hs = 0;
 
     	        if (m_x >= m_xi) {
@@ -905,11 +912,11 @@ PARTONS::PartonDistribution pionRDDAModel::computeH()
         // Nonsinglet distributiion
         quarkDistributionDown.setQuarkDistributionMinus(HdVal + HdValMx);
 
-    // s-quark
+    // s-quark there is no s-quark at initial scale in GRS model
     double sVal = 0.;
     double sValM = 0.;
-    double sSea = Hs ;
-    double sSeaM = -Hs ;
+    double sSea = 0. ;
+    double sSeaM = 0. ;
 
     quarkDistributionStrange.setQuarkDistribution(sVal + sSea);
     quarkDistributionStrange.setQuarkDistributionPlus(sVal + sSea - sValM - sSeaM);
