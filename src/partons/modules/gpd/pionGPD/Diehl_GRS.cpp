@@ -766,11 +766,13 @@ PARTONS::PartonDistribution pionDiehlGRSModel1::computeH()
 
     	    if (m_x >= m_xi) {
     	        // Integration
-    	        Hg = integrate(m_pIntegralxLargeHg, Beta1, Beta2, emptyParameters);
+    	        //Hg = integrate(m_pIntegralxLargeHg, Beta1, Beta2, emptyParameters);
+    	    	Hg = gluonxPdfAnsatz(m_x); // Check Forward limit
 
     	    }
 
     	    if (fabs(m_x) < m_xi) {
+	        	std::cout << "issue, model evaluated in the wrong region"<< std::endl;
     	        Hg = integrate(m_pIntegralxSmall1Hg, 0., Beta2, emptyParameters);
     	        Hg += integrate(m_pIntegralxSmall2Hg, 0., Beta2Mx, emptyParameters);
     	        //Dterm part
@@ -780,6 +782,7 @@ PARTONS::PartonDistribution pionDiehlGRSModel1::computeH()
     	    }
 
     	    if (m_x <= -m_xi) {
+	        	std::cout << "issue, model evaluated in the wrong region"<< std::endl;
     	        // Integration
     	        Hg = integrate(m_pIntegralxLargeHgMx, Beta1Mx, Beta2Mx,
     	                emptyParameters);
@@ -795,10 +798,12 @@ PARTONS::PartonDistribution pionDiehlGRSModel1::computeH()
     	        double Hs = 0;
 
     	        if (m_x >= m_xi) {
-    	            Hs = integrate(m_pIntegralxLargeHsSea, Beta1, Beta2, emptyParameters);
+    	            //Hs = integrate(m_pIntegralxLargeHsSea, Beta1, Beta2, emptyParameters);
+    	        	Hs = seaPdfAnsatz(m_x); //check forward limit
     	        }
 
     	        if (fabs(m_x) < m_xi) {
+    	        	std::cout << "issue, model evaluated in the wrong region"<< std::endl;
     	            Hs = integrate(m_pIntegralxSmallHsSea, Eps, Beta2Min, emptyParameters);
     	            Hs += integrate(m_pIntegralxSmall1HsSea, Beta2Min, Beta2,
     	                    emptyParameters);
@@ -812,6 +817,7 @@ PARTONS::PartonDistribution pionDiehlGRSModel1::computeH()
     	        if (m_x <= -m_xi) {
     	            Hs = -integrate(m_pIntegralxLargeHsSeaMx, Beta1Mx, Beta2Mx,
     	                    emptyParameters);
+    	        	std::cout << "issue, model evaluated in the wrong region"<< std::endl;
     	        }
 
     	        if(std::isnan(Hs)){ std::cout << "Nan detected in s-quark gpd computation for xi = " << m_xi << " and x = " << m_x << std::endl ;}
@@ -831,13 +837,16 @@ PARTONS::PartonDistribution pionDiehlGRSModel1::computeH()
 
     	        if (m_x >= m_xi) {
     	            // Integration, u quark
-    	            HuVal = integrate(m_pIntegralHuVal, Beta1, Beta2, emptyParameters);
+    	            //HuVal = integrate(m_pIntegralHuVal, Beta1, Beta2, emptyParameters);
+    	        	HuVal = 0.5 * valencePdfAnsatz(m_x); // Check Forward limit
 
     	            // Integration, d quark
-    	            HdValMx = integrate(m_pIntegralHdValMx, Beta1, Beta2, emptyParameters);
+    	            //HdValMx = integrate(m_pIntegralHdValMx, Beta1, Beta2, emptyParameters);
+    	        	HdValMx = 0.5 * valencePdfAnsatz(m_x);
     	        }
 
     	        if (fabs(m_x) < m_xi) {
+    	        	std::cout << "issue, model evaluated in the wrong region"<< std::endl;
     	            // Integration, u quark
     	            HuVal = integrate(m_pIntegralHuVal, Eps, Beta2, emptyParameters);
     	            //D-term
@@ -858,7 +867,7 @@ PARTONS::PartonDistribution pionDiehlGRSModel1::computeH()
 
 
     	        if (m_Mx >= m_xi) {
-
+    	        	std::cout << "issue, model evaluated in the wrong region"<< std::endl;
     	            // Integration, u quark
     	            HuValMx = MathIntegratorModule::integrate(m_pIntegralHuValMx, Beta1Mx, Beta2Mx,
     	                    emptyParameters);
@@ -869,7 +878,7 @@ PARTONS::PartonDistribution pionDiehlGRSModel1::computeH()
     	        }
 
     	        if (fabs(m_Mx) < m_xi) {
-
+    	        	std::cout << "issue, model evaluated in the wrong region"<< std::endl;
     	        	// Integration, u quark
     	            HuValMx =  MathIntegratorModule::integrate(m_pIntegralHuValMx, Eps, Beta2Mx, emptyParameters);
     	            HuValMx -= -0.5 * ( integrate(m_pIntegralDuVal, Eps, ((1+m_x/m_xi)/2), emptyParameters)
