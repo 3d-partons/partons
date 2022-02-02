@@ -97,17 +97,6 @@ void GPDEvolutionApfel::configure(const ElemUtils::Parameters &parameters) {
 
 void GPDEvolutionApfel::prepareSubModules(const std::map<std::string, BaseObjectData>& subModulesData) {
     GPDEvolutionModule::prepareSubModules(subModulesData);
-
-    apfel::SetVerbosityLevel(0);
-
-    // Setup APFEL++ x-space
-    std::vector<apfel::SubGrid> vsg;
-    for (int i = 0; i < (int) m_subgridNodes.size(); i++)
-        vsg.push_back(apfel::SubGrid{m_subgridNodes[i], m_subgridLowerBounds[i], m_subgridInterDegrees[i]});
-    m_g = std::unique_ptr<apfel::Grid> (new apfel::Grid{vsg});
-
-    // Running coupling
-    m_as = [=] (double const& mu) -> double{ return getRunningAlphaStrongModule()->compute(mu * mu); };
 }
 
 PartonDistribution GPDEvolutionApfel::compute(GPDModule* pGPDModule, const GPDType::Type &type) {
@@ -277,6 +266,17 @@ GPDEvolutionApfel::GPDEvolutionApfel(const GPDEvolutionApfel &other) :
 
 void GPDEvolutionApfel::initModule() {
     GPDEvolutionModule::initModule();
+
+    apfel::SetVerbosityLevel(0);
+
+    // Setup APFEL++ x-space
+    std::vector<apfel::SubGrid> vsg;
+    for (int i = 0; i < (int) m_subgridNodes.size(); i++)
+        vsg.push_back(apfel::SubGrid{m_subgridNodes[i], m_subgridLowerBounds[i], m_subgridInterDegrees[i]});
+    m_g = std::unique_ptr<apfel::Grid> (new apfel::Grid{vsg});
+
+    // Running coupling
+    m_as = [=] (double const& mu) -> double{ return getRunningAlphaStrongModule()->compute(mu * mu); };
 }
 
 void GPDEvolutionApfel::isModuleWellConfigured() {
