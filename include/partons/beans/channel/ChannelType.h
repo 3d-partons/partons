@@ -53,7 +53,8 @@ public:
         UNDEFINED = 0, //!< Undefined type.
         DVCS = 1, //!< Deeply Virtual Compton Scattering
         DVMP = 2, //!< Deeply Virtual Meson Production
-        TCS = 3 //!< Time-like Compton Scattering
+        TCS = 3, //!< Time-like Compton Scattering
+        DDVCS = 4 //!< Double Deeply Virtual Compton Scattering
     };
 
     /**
