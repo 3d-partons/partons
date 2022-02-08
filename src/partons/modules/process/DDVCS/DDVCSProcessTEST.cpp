@@ -37,6 +37,29 @@ void DDVCSProcessTEST::isModuleWellConfigured() {
 }
 
 PhysicalType<double> DDVCSProcessTEST::CrossSectionBH() {
+
+    //availible variables
+    m_xB;
+    m_t;
+    m_Q2;
+    m_Q2Prim;
+    m_E;
+    m_phi;
+    m_theta;
+
+    m_dvcsConvolCoeffFunctionResult;
+
+    m_beamHelicity;
+    m_beamCharge;
+    m_targetPolarization;
+
+    //additionally (if we decide to keep them)
+    m_tmin;
+    m_tmax;
+    m_xBmin;
+    m_y;
+    m_epsilon;
+
     return PhysicalType<double>(1., PhysicalUnit::GEVm2);
 }
 
