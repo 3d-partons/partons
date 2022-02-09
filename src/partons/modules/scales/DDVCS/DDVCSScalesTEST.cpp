@@ -31,7 +31,11 @@ void DDVCSScalesTEST::configure(const ElemUtils::Parameters &parameters) {
 
 Scales DDVCSScalesTEST::compute(const DDVCSObservableKinematic& kinematic) {
 
-    PhysicalType<double> scale(1., PhysicalUnit::GEV2);
+    double Q2 = kinematic.getQ2().getValue();
+    double Q2Prim = kinematic.getQ2Prim().getValue();
+    double MU = Q2 + Q2Prim;
+
+    PhysicalType<double> scale(MU, PhysicalUnit::GEV2);
 
     return Scales(scale, scale);
 }

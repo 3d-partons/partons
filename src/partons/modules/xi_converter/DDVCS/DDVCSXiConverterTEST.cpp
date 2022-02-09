@@ -1,5 +1,8 @@
 #include "../../../../../include/partons/modules/xi_converter/DDVCS/DDVCSXiConverterTEST.h"
 
+#include <iostream>
+
+#include "../../../../../include/partons/beans/observable/DDVCS/DDVCSObservableKinematic.h"
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/utils/type/PhysicalUnit.h"
 
@@ -26,7 +29,17 @@ DDVCSXiConverterTEST* DDVCSXiConverterTEST::clone() const {
 
 PhysicalType<double> DDVCSXiConverterTEST::compute(
         const DDVCSObservableKinematic& kinematic) {
-    return PhysicalType<double>(0.5, PhysicalUnit::NONE);
+
+    double xB = kinematic.getXB().getValue();
+    double t = kinematic.getT().getValue();
+    double Q2 = kinematic.getQ2().getValue();
+    double Q2Prim = kinematic.getQ2Prim().getValue();
+    double xi = (Q2 + Q2Prim)/(2.*Q2/xB - Q2 - Q2Prim + t); //this xi is in fact eta in Belitsky2003 (skewness) eq 31 with extra minus sign so skewness is positive
+    double eta = xi*(Q2 - Q2Prim + t/2.)/(Q2 + Q2Prim);     //this eta is in fact xi in Belitsky2003, eq 31 upon change of sign above
+
+    std::cout << "my_eta "<< eta << std::endl;
+
+    return PhysicalType<double>(xi, PhysicalUnit::NONE);
 }
 
 } /* namespace PARTONS */
