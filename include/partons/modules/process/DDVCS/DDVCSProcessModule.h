@@ -172,12 +172,6 @@ protected:
     double m_beamCharge; ///< Beam charge.
     NumA::Vector3D m_targetPolarization; ///< Target polarization.
 
-    double m_tmin; ///< Minimal value of t.
-    double m_tmax; ///< Maximal value of t.
-    double m_xBmin; ///< Minimal value of xB.
-    double m_y; ///< Lepton energy fraction.
-    double m_epsilon; ///< @f$ \epsilon = \frac{2 x_B M}{Q} @f$.
-
     DDVCSScalesModule* m_pScaleModule; ///< Pointer to the underlying scale module.
     DDVCSXiConverterModule* m_pXiConverterModule; ///< Pointer to the underlying xi converter module.
     DDVCSConvolCoeffFunctionModule* m_pConvolCoeffFunctionModule; ///< Pointer to the underlying CCF module.

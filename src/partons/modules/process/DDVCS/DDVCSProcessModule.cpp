@@ -30,8 +30,7 @@ const std::string DDVCSProcessModule::DDVCS_PROCESS_MODULE_CLASS_NAME =
 DDVCSProcessModule::DDVCSProcessModule(const std::string &className) :
         ProcessModule(className, ChannelType::DDVCS), m_xB(0.), m_t(0.), m_Q2(
                 0.), m_Q2Prim(0.), m_E(0.), m_phi(0.), m_theta(0.), m_beamHelicity(
-                0.), m_beamCharge(0.), m_tmin(0.), m_tmax(0.), m_xBmin(0), m_y(
-                0.), m_epsilon(0.), m_pScaleModule(0), m_pXiConverterModule(0), m_pConvolCoeffFunctionModule(
+                0.), m_beamCharge(0.), m_pScaleModule(0), m_pXiConverterModule(0), m_pConvolCoeffFunctionModule(
                 0) {
 }
 
@@ -58,9 +57,7 @@ DDVCSProcessModule::DDVCSProcessModule(const DDVCSProcessModule& other) :
                 other.m_Q2), m_Q2Prim(other.m_Q2Prim), m_E(other.m_E), m_phi(
                 other.m_phi), m_theta(other.m_theta), m_beamHelicity(
                 other.m_beamHelicity), m_beamCharge(other.m_beamCharge), m_targetPolarization(
-                other.m_targetPolarization), m_tmin(other.m_tmin), m_tmax(
-                other.m_tmax), m_xBmin(other.m_xBmin), m_y(other.m_y), m_epsilon(
-                other.m_epsilon), m_pScaleModule(0), m_pXiConverterModule(0), m_pConvolCoeffFunctionModule(
+                other.m_targetPolarization), m_pScaleModule(0), m_pXiConverterModule(0), m_pConvolCoeffFunctionModule(
                 0) {
 
     m_lastCCFKinematics = other.m_lastCCFKinematics;
@@ -430,16 +427,6 @@ void DDVCSProcessModule::initModule() {
 
     //run for mother
     ProcessModule<DDVCSObservableKinematic, DDVCSObservableResult>::initModule();
-
-    //evaluate internal variables
-    m_epsilon = 2 * m_xB * Constant::PROTON_MASS / sqrt(m_Q2);
-    m_y = m_Q2 / (2 * m_xB * Constant::PROTON_MASS * m_E);
-    double eps2 = m_epsilon * m_epsilon;
-    double epsroot = sqrt(1 + eps2);
-    double tfactor = -m_Q2 / (4 * m_xB * (1 - m_xB) + eps2);
-    m_tmin = tfactor * (2 * (1 - m_xB) * (1 - epsroot) + eps2);
-    m_tmax = tfactor * (2 * (1 - m_xB) * (1 + epsroot) + eps2);
-    m_xBmin = 2 * m_Q2 * m_E / Constant::PROTON_MASS / (4 * m_E * m_E - m_Q2);
 }
 
 void DDVCSProcessModule::isModuleWellConfigured() {
@@ -466,19 +453,18 @@ void DDVCSProcessModule::isModuleWellConfigured() {
     }
 
     //test kinematic domain of xB
-    if (m_xB < m_xBmin || m_xB > 1.) {
+    if (m_xB < 0. || m_xB > 1.) {
         ElemUtils::Formatter formatter;
         formatter << "Input value of xB = " << m_xB
-                << " does not lay between xBmin = " << m_xBmin << " and 1";
+                << " does not lay between xBmin = " << 0. << " and 1";
         warn(__func__, formatter.str());
     }
 
     //test kinematic domain of t
-    if (m_t > m_tmin || m_t < m_tmax) {
+    if (m_t > 0.) {
         ElemUtils::Formatter formatter;
-        formatter << " Input value of t = " << m_t
-                << " does not lay between t_max = " << m_tmax << " and t_min = "
-                << m_tmin << " (DDVCS kinematic limits)";
+        formatter << " Input value of t = " << m_t << " grater than zero"
+                << " (DDVCS kinematic limits)";
         warn(__func__, formatter.str());
     }
 
@@ -500,14 +486,6 @@ void DDVCSProcessModule::isModuleWellConfigured() {
     if (m_E < 0.) {
         ElemUtils::Formatter formatter;
         formatter << "Input value of E = " << m_E << " is not > 0";
-        warn(__func__, formatter.str());
-    }
-
-    //test kinematic domain of beam energy
-    if (m_y < 0. || m_y > 1.) {
-        ElemUtils::Formatter formatter;
-        formatter << "Input value of y = " << m_y
-                << " (lepton energy fraction) does not lay between 0 and 1";
         warn(__func__, formatter.str());
     }
 
@@ -550,7 +528,7 @@ void DDVCSProcessModule::computeConvolCoeffFunction(
     PhysicalType<double> xi = m_pXiConverterModule->compute(kinematic);
 
     //compute eta TODO
-    PhysicalType<double> eta = PhysicalType<double>(0., PhysicalUnit::NONE);
+    PhysicalType<double> eta = PhysicalType<double>(0.1, PhysicalUnit::NONE);
 
     //create ccf kinematics
     DDVCSConvolCoeffFunctionKinematic ccfKinematics(xi, eta, kinematic.getT(),

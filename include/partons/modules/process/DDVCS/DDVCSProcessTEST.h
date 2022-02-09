@@ -51,6 +51,59 @@ protected:
 
 private:
 
+    //TODO: description
+    double bh_squared(double Mnucleon, double t, double phi, double phil,
+            double Q2, double eta, double xi, double y, double ytilde,
+            double F1, double F2, double tmin, double tmax, double edgeFactor,
+            double P1, double P2, double P3, double P4, int beamSign,
+            double charge_e) const;
+
+    //TODO: description
+    double crossSectionBH(double ml, double Ebeam, double Mnucleon, double xB,
+            double t, double Qcal2, double Mll2, double phi, double phil,
+            double thetal, int beamSign, int polariz) const;
+
+    void computeInternalVariables(double ml, double Ebeam, double Mnucleon,
+            double xB, double t, double Qcal2, double Mll2, double phi,
+            double phil, double thetal);
+
+    double m_BM_Q2;
+    double m_BM_eta;
+    double m_BM_xi;
+    double m_BM_y;
+    double m_BM_ytilde;
+    double m_BM_ytildePlus;
+    double m_BM_F1;
+    double m_BM_F2;
+    double m_BM_charge_e;
+
+    double m_BM_tmin;
+    double m_BM_tmax;
+
+    double m_BM_edgeFactor;
+
+    double m_BM_Kcap;
+    double m_BM_Ktildecap;
+    double m_BM_KtildecapPlus;
+
+    double m_BM_kDelta;
+    double m_BM_lminusDelta;
+    double m_BM_lplusDelta;
+
+    double m_BM_P1;
+    double m_BM_P2;
+    double m_BM_P3;
+    double m_BM_P4;
+
+    //beta variable
+    double m_BM_beta;
+
+    double m_BM_xBmin;
+    double m_BM_xBmax;
+    double m_BM_Qcal2min;
+    double m_BM_Qcal2max;
+    double m_BM_Mll2min;
+    double m_BM_Mll2max;
 };
 
 } /* namespace PARTONS */
