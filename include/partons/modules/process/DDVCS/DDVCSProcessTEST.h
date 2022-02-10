@@ -1,6 +1,7 @@
 #ifndef DDVCS_PROCESS_GV08_H
 #define DDVCS_PROCESS_GV08_H
 
+#include <complex>
 #include <string>
 
 #include "../../../utils/type/PhysicalType.h"
@@ -65,9 +66,9 @@ private:
 
     double vcs_squared(double Mnucleon, double t, double phi,
     		double phil, double Q2, double eta, double xi, double y, double ytilde,
-    		double edgeFactor,  std::complex::complex<double> cffH, std::complex::complex<double> cffE,
-    		std::complex::complex<double> cffHL, std::complex::complex<double> cffEL, std::complex::complex<double> cffHtilde,
-    		std::complex::complex<double> cffEtilde, double charge_e) const;
+    		double edgeFactor,  const std::complex<double>& cffH, const std::complex<double>& cffE,
+    		const std::complex<double>& cffHL, const std::complex<double>& cffEL, const std::complex<double>& cffHtilde,
+    		const std::complex<double>& cffEtilde, double charge_e) const;
 
     double crossSectionVCS(double ml, double Ebeam, double Mnucleon, double xB,
             double t, double Qcal2, double Mll2, double phi, double phil,
@@ -115,6 +116,14 @@ private:
     double m_BM_Qcal2max;
     double m_BM_Mll2min;
     double m_BM_Mll2max;
+
+    //CFFs
+    std::complex<double> m_cffH;
+    std::complex<double> m_cffE;
+    std::complex<double> m_cffHt;
+    std::complex<double> m_cffEt;
+    std::complex<double> m_cffHL;
+    std::complex<double> m_cffEL;
 };
 
 } /* namespace PARTONS */

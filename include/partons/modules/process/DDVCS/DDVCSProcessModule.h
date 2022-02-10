@@ -166,7 +166,8 @@ protected:
     double m_Q2Prim; ///< Virtuality of the outgoing photon (in GeV2).
     double m_E; ///< Beam energy in target rest frame (in GeV).
     double m_phi; ///<  Angle between leptonic and hadronic plane (in radians, Trento convention).
-    double m_theta; ///< Angle between positively charged lepton and scattered proton in lepton CMS (in degrees).
+    double m_phiL; ///< Azimuthal angle of the lepton pair (in radians).
+    double m_thetaL; ///< Polar angle of the lepton pair (in radians).
 
     double m_beamHelicity; ///< Beam helicity.
     double m_beamCharge; ///< Beam charge.

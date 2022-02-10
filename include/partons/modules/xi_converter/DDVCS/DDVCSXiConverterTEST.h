@@ -44,6 +44,8 @@ public:
     virtual DDVCSXiConverterTEST* clone() const;
     virtual PhysicalType<double> compute(
             const DDVCSObservableKinematic& kinematic);
+    virtual PhysicalType<double> computeEta(
+               const DDVCSObservableKinematic& kinematic);
 };
 
 } /* namespace PARTONS */

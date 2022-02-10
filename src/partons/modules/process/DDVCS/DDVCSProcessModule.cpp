@@ -29,9 +29,9 @@ const std::string DDVCSProcessModule::DDVCS_PROCESS_MODULE_CLASS_NAME =
 
 DDVCSProcessModule::DDVCSProcessModule(const std::string &className) :
         ProcessModule(className, ChannelType::DDVCS), m_xB(0.), m_t(0.), m_Q2(
-                0.), m_Q2Prim(0.), m_E(0.), m_phi(0.), m_theta(0.), m_beamHelicity(
-                0.), m_beamCharge(0.), m_pScaleModule(0), m_pXiConverterModule(0), m_pConvolCoeffFunctionModule(
-                0) {
+                0.), m_Q2Prim(0.), m_E(0.), m_phi(0.), m_phiL(0.), m_thetaL(0.), m_beamHelicity(
+                0.), m_beamCharge(0.), m_pScaleModule(0), m_pXiConverterModule(
+                0), m_pConvolCoeffFunctionModule(0) {
 }
 
 DDVCSProcessModule::~DDVCSProcessModule() {
@@ -55,10 +55,10 @@ DDVCSProcessModule::~DDVCSProcessModule() {
 DDVCSProcessModule::DDVCSProcessModule(const DDVCSProcessModule& other) :
         ProcessModule(other), m_xB(other.m_xB), m_t(other.m_t), m_Q2(
                 other.m_Q2), m_Q2Prim(other.m_Q2Prim), m_E(other.m_E), m_phi(
-                other.m_phi), m_theta(other.m_theta), m_beamHelicity(
+                other.m_phi), m_phiL(other.m_phiL), m_thetaL(other.m_thetaL), m_beamHelicity(
                 other.m_beamHelicity), m_beamCharge(other.m_beamCharge), m_targetPolarization(
-                other.m_targetPolarization), m_pScaleModule(0), m_pXiConverterModule(0), m_pConvolCoeffFunctionModule(
-                0) {
+                other.m_targetPolarization), m_pScaleModule(0), m_pXiConverterModule(
+                0), m_pConvolCoeffFunctionModule(0) {
 
     m_lastCCFKinematics = other.m_lastCCFKinematics;
     m_dvcsConvolCoeffFunctionResult = other.m_dvcsConvolCoeffFunctionResult;
@@ -335,8 +335,10 @@ bool DDVCSProcessModule::isPreviousCCFKinematicDifferent(
         const DDVCSConvolCoeffFunctionKinematic& kinematic) const {
 
     return ((kinematic.getXi() != m_lastCCFKinematics.getXi())
+            || (kinematic.getEta() != m_lastCCFKinematics.getEta())
             || (kinematic.getT() != m_lastCCFKinematics.getT())
             || (kinematic.getQ2() != m_lastCCFKinematics.getQ2())
+            || (kinematic.getQ2Prim() != m_lastCCFKinematics.getQ2Prim())
             || (kinematic.getMuF2() != m_lastCCFKinematics.getMuF2())
             || (kinematic.getMuR2() != m_lastCCFKinematics.getMuR2()));
 }
@@ -413,6 +415,9 @@ void DDVCSProcessModule::setKinematics(
             kinematic.getQ2Prim().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
     m_E = kinematic.getE().makeSameUnitAs(PhysicalUnit::GEV).getValue();
     m_phi = kinematic.getPhi().makeSameUnitAs(PhysicalUnit::RAD).getValue();
+    m_phiL = kinematic.getPhiL().makeSameUnitAs(PhysicalUnit::RAD).getValue();
+    m_thetaL =
+            kinematic.getThetaL().makeSameUnitAs(PhysicalUnit::RAD).getValue();
 }
 
 void DDVCSProcessModule::setExperimentalConditions(double beamHelicity,
@@ -527,8 +532,8 @@ void DDVCSProcessModule::computeConvolCoeffFunction(
     //compute xi
     PhysicalType<double> xi = m_pXiConverterModule->compute(kinematic);
 
-    //compute eta TODO
-    PhysicalType<double> eta = PhysicalType<double>(0.1, PhysicalUnit::NONE);
+    //compute eta
+    PhysicalType<double> eta = m_pXiConverterModule->computeEta(kinematic);
 
     //create ccf kinematics
     DDVCSConvolCoeffFunctionKinematic ccfKinematics(xi, eta, kinematic.getT(),
