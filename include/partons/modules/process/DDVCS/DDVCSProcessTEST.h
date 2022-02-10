@@ -63,6 +63,17 @@ private:
             double t, double Qcal2, double Mll2, double phi, double phil,
             double thetal, int beamSign, int polariz) const;
 
+    double vcs_squared(double Mnucleon, double t, double phi,
+    		double phil, double Q2, double eta, double xi, double y, double ytilde,
+    		double edgeFactor,  std::complex::complex<double> cffH, std::complex::complex<double> cffE,
+    		std::complex::complex<double> cffHL, std::complex::complex<double> cffEL, std::complex::complex<double> cffHtilde,
+    		std::complex::complex<double> cffEtilde, double charge_e) const;
+
+    double crossSectionVCS(double ml, double Ebeam, double Mnucleon, double xB,
+            double t, double Qcal2, double Mll2, double phi, double phil,
+            double thetal, int beamSign, int polariz) const;
+
+
     void computeInternalVariables(double ml, double Ebeam, double Mnucleon,
             double xB, double t, double Qcal2, double Mll2, double phi,
             double phil, double thetal);

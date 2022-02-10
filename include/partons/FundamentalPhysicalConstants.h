@@ -9,6 +9,7 @@
  * @version 1.0
  */
 
+
 namespace PARTONS {
 
 namespace Constant {
@@ -24,6 +25,11 @@ namespace Constant {
 
 const double PI = 3.14159265358979323846;                   ///< Value of \f$\pi\f$.
 const double ZETA_3 = 1.2020569031595942;                   ///< Apéry's constant (value of Riemann zeta function \f$\zeta(3)\f$).
+//VICTOR complex units needed for vcs in DDVCS
+const std::complex<double>  _CI (0.,1.); 					///< Complex unit i
+const std::complex<double>  _0 (0.,0.);						///< Complex zero: 0 + i0
+const std::complex<double>  _1 (1.,0.);						///< Complex one: 1 + i0
+
 
 // Physical constants
 

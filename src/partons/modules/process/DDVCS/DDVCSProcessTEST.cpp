@@ -11,152 +11,152 @@
 namespace PARTONS {
 
 const unsigned int DDVCSProcessTEST::classId =
-        BaseObjectRegistry::getInstance()->registerBaseObject(
-                new DDVCSProcessTEST("DDVCSProcessTEST"));
+		BaseObjectRegistry::getInstance()->registerBaseObject(
+				new DDVCSProcessTEST("DDVCSProcessTEST"));
 
 DDVCSProcessTEST::DDVCSProcessTEST(const std::string &className) :
-        DDVCSProcessModule(className) {
+		DDVCSProcessModule(className) {
 
-    m_BM_Q2 = 0.;
-    m_BM_eta = 0.;
-    m_BM_xi = 0.;
-    m_BM_y = 0.;
-    m_BM_ytilde = 0.;
-    m_BM_ytildePlus = 0.;
-    m_BM_F1 = 0.;
-    m_BM_F2 = 0.;
-    m_BM_charge_e = 0.;
+	m_BM_Q2 = 0.;
+	m_BM_eta = 0.;
+	m_BM_xi = 0.;
+	m_BM_y = 0.;
+	m_BM_ytilde = 0.;
+	m_BM_ytildePlus = 0.;
+	m_BM_F1 = 0.;
+	m_BM_F2 = 0.;
+	m_BM_charge_e = 0.;
 
-    m_BM_tmin = 0.;
-    m_BM_tmax = 0.;
+	m_BM_tmin = 0.;
+	m_BM_tmax = 0.;
 
-    m_BM_edgeFactor = 0.;
+	m_BM_edgeFactor = 0.;
 
-    m_BM_Kcap = 0.;
-    m_BM_Ktildecap = 0.;
-    m_BM_KtildecapPlus = 0.;
+	m_BM_Kcap = 0.;
+	m_BM_Ktildecap = 0.;
+	m_BM_KtildecapPlus = 0.;
 
-    m_BM_kDelta = 0.;
-    m_BM_lminusDelta = 0.;
-    m_BM_lplusDelta = 0.;
+	m_BM_kDelta = 0.;
+	m_BM_lminusDelta = 0.;
+	m_BM_lplusDelta = 0.;
 
-    m_BM_P1 = 0.;
-    m_BM_P2 = 0.;
-    m_BM_P3 = 0.;
-    m_BM_P4 = 0.;
+	m_BM_P1 = 0.;
+	m_BM_P2 = 0.;
+	m_BM_P3 = 0.;
+	m_BM_P4 = 0.;
 
-    m_BM_beta = 0.;
+	m_BM_beta = 0.;
 
-    m_BM_xBmin = 0.;
-    m_BM_xBmax = 0.;
-    m_BM_Qcal2min = 0.;
-    m_BM_Qcal2max = 0.;
-    m_BM_Mll2min = 0.;
-    m_BM_Mll2max = 0.;
+	m_BM_xBmin = 0.;
+	m_BM_xBmax = 0.;
+	m_BM_Qcal2min = 0.;
+	m_BM_Qcal2max = 0.;
+	m_BM_Mll2min = 0.;
+	m_BM_Mll2max = 0.;
 }
 
 DDVCSProcessTEST::DDVCSProcessTEST(const DDVCSProcessTEST& other) :
-        DDVCSProcessModule(other) {
+		DDVCSProcessModule(other) {
 
-    m_BM_Q2 = other.m_BM_Q2;
-    m_BM_eta = other.m_BM_eta;
-    m_BM_xi = other.m_BM_xi;
-    m_BM_y = other.m_BM_y;
-    m_BM_ytilde = other.m_BM_ytilde;
-    m_BM_ytildePlus = other.m_BM_ytildePlus;
-    m_BM_F1 = other.m_BM_F1;
-    m_BM_F2 = other.m_BM_F2;
-    m_BM_charge_e = other.m_BM_charge_e;
+	m_BM_Q2 = other.m_BM_Q2;
+	m_BM_eta = other.m_BM_eta;
+	m_BM_xi = other.m_BM_xi;
+	m_BM_y = other.m_BM_y;
+	m_BM_ytilde = other.m_BM_ytilde;
+	m_BM_ytildePlus = other.m_BM_ytildePlus;
+	m_BM_F1 = other.m_BM_F1;
+	m_BM_F2 = other.m_BM_F2;
+	m_BM_charge_e = other.m_BM_charge_e;
 
-    m_BM_tmin = other.m_BM_tmin;
-    m_BM_tmax = other.m_BM_tmax;
+	m_BM_tmin = other.m_BM_tmin;
+	m_BM_tmax = other.m_BM_tmax;
 
-    m_BM_edgeFactor = other.m_BM_edgeFactor;
+	m_BM_edgeFactor = other.m_BM_edgeFactor;
 
-    m_BM_Kcap = other.m_BM_Kcap;
-    m_BM_Ktildecap = other.m_BM_Ktildecap;
-    m_BM_KtildecapPlus = other.m_BM_KtildecapPlus;
+	m_BM_Kcap = other.m_BM_Kcap;
+	m_BM_Ktildecap = other.m_BM_Ktildecap;
+	m_BM_KtildecapPlus = other.m_BM_KtildecapPlus;
 
-    m_BM_kDelta = other.m_BM_kDelta;
-    m_BM_lminusDelta = other.m_BM_lminusDelta;
-    m_BM_lplusDelta = other.m_BM_lplusDelta;
+	m_BM_kDelta = other.m_BM_kDelta;
+	m_BM_lminusDelta = other.m_BM_lminusDelta;
+	m_BM_lplusDelta = other.m_BM_lplusDelta;
 
-    m_BM_P1 = other.m_BM_P1;
-    m_BM_P2 = other.m_BM_P2;
-    m_BM_P3 = other.m_BM_P3;
-    m_BM_P4 = other.m_BM_P4;
+	m_BM_P1 = other.m_BM_P1;
+	m_BM_P2 = other.m_BM_P2;
+	m_BM_P3 = other.m_BM_P3;
+	m_BM_P4 = other.m_BM_P4;
 
-    m_BM_beta = other.m_BM_beta;
+	m_BM_beta = other.m_BM_beta;
 
-    m_BM_xBmin = other.m_BM_xBmin;
-    m_BM_xBmax = other.m_BM_xBmax;
-    m_BM_Qcal2min = other.m_BM_Qcal2min;
-    m_BM_Qcal2max = other.m_BM_Qcal2max;
-    m_BM_Mll2min = other.m_BM_Mll2min;
-    m_BM_Mll2max = other.m_BM_Mll2max;
+	m_BM_xBmin = other.m_BM_xBmin;
+	m_BM_xBmax = other.m_BM_xBmax;
+	m_BM_Qcal2min = other.m_BM_Qcal2min;
+	m_BM_Qcal2max = other.m_BM_Qcal2max;
+	m_BM_Mll2min = other.m_BM_Mll2min;
+	m_BM_Mll2max = other.m_BM_Mll2max;
 }
 
 DDVCSProcessTEST::~DDVCSProcessTEST() {
 }
 
 DDVCSProcessTEST* DDVCSProcessTEST::clone() const {
-    return new DDVCSProcessTEST(*this);
+	return new DDVCSProcessTEST(*this);
 }
 
 void DDVCSProcessTEST::initModule() {
 
-    //init mother class
-    DDVCSProcessModule::initModule();
+	//init mother class
+	DDVCSProcessModule::initModule();
 
-    //compute internal variables
-    computeInternalVariables(Constant::MUON_MASS, m_E, Constant::PROTON_MASS,
-            m_xB, m_t, m_Q2, m_Q2Prim, m_phi, 0.1, 0.2);
-    //TODO
+	//compute internal variables
+	computeInternalVariables(Constant::MUON_MASS, m_E, Constant::PROTON_MASS,
+			m_xB, m_t, m_Q2, m_Q2Prim, m_phi, 0.1, 0.2);
+	//TODO
 //                m_phil, m_thetal);
 }
 
 void DDVCSProcessTEST::isModuleWellConfigured() {
 
-    //check mother class
-    DDVCSProcessModule::isModuleWellConfigured();
+	//check mother class
+	DDVCSProcessModule::isModuleWellConfigured();
 
-    //check kinematic limits
-    if (m_xB < m_BM_xBmin || m_xB > m_BM_xBmax) {
+	//check kinematic limits
+	if (m_xB < m_BM_xBmin || m_xB > m_BM_xBmax) {
 
-        warn(__func__,
-                ElemUtils::Formatter() << "Invalid kinematic limits, xB: "
-                        << m_xB << " not between " << m_BM_xBmin << " and "
-                        << m_BM_xBmax);
-    }
+		warn(__func__,
+				ElemUtils::Formatter() << "Invalid kinematic limits, xB: "
+						<< m_xB << " not between " << m_BM_xBmin << " and "
+						<< m_BM_xBmax);
+	}
 
-    if (m_Q2 < m_BM_Qcal2min || m_Q2 > m_BM_Qcal2max) {
+	if (m_Q2 < m_BM_Qcal2min || m_Q2 > m_BM_Qcal2max) {
 
-        warn(__func__,
-                ElemUtils::Formatter() << "Invalid kinematic limits, Q2: "
-                        << m_Q2 << " not between " << m_BM_Qcal2min << " and "
-                        << m_BM_Qcal2max);
-    }
+		warn(__func__,
+				ElemUtils::Formatter() << "Invalid kinematic limits, Q2: "
+						<< m_Q2 << " not between " << m_BM_Qcal2min << " and "
+						<< m_BM_Qcal2max);
+	}
 
-    if (m_Q2Prim < m_BM_Mll2min || m_Q2Prim > m_BM_Mll2max) {
+	if (m_Q2Prim < m_BM_Mll2min || m_Q2Prim > m_BM_Mll2max) {
 
-        warn(__func__,
-                ElemUtils::Formatter() << "Invalid kinematic limits, Q2': "
-                        << m_Q2Prim << " not between " << m_BM_Mll2min
-                        << " and " << m_BM_Mll2max);
-    }
+		warn(__func__,
+				ElemUtils::Formatter() << "Invalid kinematic limits, Q2': "
+						<< m_Q2Prim << " not between " << m_BM_Mll2min
+						<< " and " << m_BM_Mll2max);
+	}
 
-    if (-m_t < -m_BM_tmin || -m_t > -m_BM_tmax) {
+	if (-m_t < -m_BM_tmin || -m_t > -m_BM_tmax) {
 
-        warn(__func__,
-                ElemUtils::Formatter() << "Invalid kinematic limits, -t: "
-                        << -m_t << " not between " << -m_BM_tmin << " and "
-                        << -m_BM_tmax);
-    }
+		warn(__func__,
+				ElemUtils::Formatter() << "Invalid kinematic limits, -t: "
+						<< -m_t << " not between " << -m_BM_tmin << " and "
+						<< -m_BM_tmax);
+	}
 }
 
 PhysicalType<double> DDVCSProcessTEST::CrossSectionBH() {
 
-    //availible variables
+	//availible variables
 //    m_xB;
 //    m_t;
 //    m_Q2;
@@ -172,397 +172,546 @@ PhysicalType<double> DDVCSProcessTEST::CrossSectionBH() {
 //    m_targetPolarization;
 
 //check target polarisation
-    int polariz;
+	int polariz;
 
-    if (m_targetPolarization.getX() == 0. && m_targetPolarization.getY() == 0.
-            && m_targetPolarization.getZ() == 0.) {
-        polariz = 0;
-    } else {
-        throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter() << "Not able to run for polarisation "
-                        << m_targetPolarization.toString());
-    }
+	if (m_targetPolarization.getX() == 0. && m_targetPolarization.getY() == 0.
+			&& m_targetPolarization.getZ() == 0.) {
+		polariz = 0;
+	} else {
+		throw ElemUtils::CustomException(getClassName(), __func__,
+				ElemUtils::Formatter() << "Not able to run for polarisation "
+						<< m_targetPolarization.toString());
+	}
 
-    double xscec = crossSectionBH(Constant::MUON_MASS, m_E,
-            Constant::PROTON_MASS, m_xB, m_t, m_Q2, m_Q2Prim, m_phi, 0.1, 0.2,
-            m_beamCharge, polariz);
+	//VICTOR: xsec was misspelled as xscec
+	double xsec = crossSectionBH(Constant::MUON_MASS, m_E,
+			Constant::PROTON_MASS, m_xB, m_t, m_Q2, m_Q2Prim, m_phi, 0.1, 0.2,
+			m_beamCharge, polariz);
 
-    return PhysicalType<double>(xscec, PhysicalUnit::GEVm2);
+	return PhysicalType<double>(xsec, PhysicalUnit::GEVm2);
 }
 
+//VICTOR
 PhysicalType<double> DDVCSProcessTEST::CrossSectionVCS() {
-    return PhysicalType<double>(0., PhysicalUnit::GEVm2);
+
+	//check target polarisation
+	int polariz;
+
+	if (m_targetPolarization.getX() == 0. && m_targetPolarization.getY() == 0.
+			&& m_targetPolarization.getZ() == 0.) {
+		polariz = 0;
+	} else {
+		throw ElemUtils::CustomException(getClassName(), __func__,
+				ElemUtils::Formatter() << "Not able to run for polarisation "
+						<< m_targetPolarization.toString());
+	}
+
+	double xsec = crossSectionVCS(Constant::MUON_MASS, m_E,
+			Constant::PROTON_MASS, m_xB, m_t, m_Q2, m_Q2Prim, m_phi, 0.1, 0.2,
+			m_beamCharge, polariz);
+
+	return PhysicalType<double>(xsec, PhysicalUnit::GEVm2);
 }
 
 PhysicalType<double> DDVCSProcessTEST::CrossSectionInterf() {
-    return PhysicalType<double>(0., PhysicalUnit::GEVm2);
+	return PhysicalType<double>(0., PhysicalUnit::GEVm2);
 }
 
 double DDVCSProcessTEST::bh_squared(double Mnucleon, double t, double phi,
-        double phil, double Q2, double eta, double xi, double y, double ytilde,
-        double F1, double F2, double tmin, double tmax, double edgeFactor,
-        double P1, double P2, double P3, double P4, int beamSign,
-        double charge_e) const {
+		double phil, double Q2, double eta, double xi, double y, double ytilde,
+		double F1, double F2, double tmin, double tmax, double edgeFactor,
+		double P1, double P2, double P3, double P4, int beamSign,
+		double charge_e) const {
 
-    double cc11[5][3] = { 0. }, cc12[5][3] = { 0. }, cc22[5][3] = { 0. }; //Fourier coeffs for squared BH amplitude
-    double cs11[5][3] = { 0. }, cs12[5][3] = { 0. }, cs22[5][3] = { 0. };
-    double sc11[5][3] = { 0. }, sc12[5][3] = { 0. }, sc22[5][3] = { 0. };
-    double ss11[5][3] = { 0. }, ss12[5][3] = { 0. }, ss22[5][3] = { 0. };
+	double cc11[5][3] = { 0. }, cc12[5][3] = { 0. }, cc22[5][3] = { 0. }; //Fourier coeffs for squared BH amplitude
+	double cs11[5][3] = { 0. }, cs12[5][3] = { 0. }, cs22[5][3] = { 0. };
+	double sc11[5][3] = { 0. }, sc12[5][3] = { 0. }, sc22[5][3] = { 0. };
+	double ss11[5][3] = { 0. }, ss12[5][3] = { 0. }, ss22[5][3] = { 0. };
 
-    int sigma;
+	int sigma;
 
-    //(all indices are swifted with respect to Belitsky2003: eqs 129 to 144)
+	//(all indices are swifted with respect to Belitsky2003: eqs 129 to 144)
 
-    // |BH1|^2 coeffs
+	// |BH1|^2 coeffs
 
-    sigma = 1;
+	sigma = 1;
 
-    cc11[0][0] = -2. * ((1. - eta) / (1. + eta)) * (1. + xi / eta) * (1. - y)
-            * ((2. - 2. * y + pow(y, 2.)) * (2. - 2. * ytilde + pow(ytilde, 2.))
-                    * (1. + pow(xi / eta, 2.))
-                    - 8. * (1. - y) * (1. - ytilde) * (1. - pow(xi / eta, 2.)))
-            * ((1. - tmin / t)
-                    * (pow(F1, 2.) - pow(F2, 2.) * t / (4. * pow(Mnucleon, 2.)))
-                    + 2. * pow(eta * (F1 + F2), 2.) / (1. - pow(eta, 2.)));
+	cc11[0][0] = -2. * ((1. - eta) / (1. + eta)) * (1. + xi / eta) * (1. - y)
+			* ((2. - 2. * y + pow(y, 2.)) * (2. - 2. * ytilde + pow(ytilde, 2.))
+					* (1. + pow(xi / eta, 2.))
+					- 8. * (1. - y) * (1. - ytilde) * (1. - pow(xi / eta, 2.)))
+			* ((1. - tmin / t)
+					* (pow(F1, 2.) - pow(F2, 2.) * t / (4. * pow(Mnucleon, 2.)))
+					+ 2. * pow(eta * (F1 + F2), 2.) / (1. - pow(eta, 2.)));
 
-    cc11[2][0] = 2. * ((1. - eta) / (1. + eta)) * (1. + xi / eta)
-            * (1. - pow(xi / eta, 2.)) * (1. - tmin / t) * (1. - y)
-            * ((2. - 2. * y + pow(y, 2.)) * (2. - 2. * ytilde + pow(ytilde, 2.))
-                    + 8. * (1. - y) * (1. - ytilde))
-            * (pow(F1, 2.) - pow(F2, 2.) * t / (4. * pow(Mnucleon, 2.)));
+	cc11[2][0] = 2. * ((1. - eta) / (1. + eta)) * (1. + xi / eta)
+			* (1. - pow(xi / eta, 2.)) * (1. - tmin / t) * (1. - y)
+			* ((2. - 2. * y + pow(y, 2.)) * (2. - 2. * ytilde + pow(ytilde, 2.))
+					+ 8. * (1. - y) * (1. - ytilde))
+			* (pow(F1, 2.) - pow(F2, 2.) * t / (4. * pow(Mnucleon, 2.)));
 
-    cc11[1][1] = 4. * ((1. - eta) / (1. + eta)) * (1. + xi / eta)
-            * (-sigma / eta)
-            * sqrt((1. - y) * (1. - ytilde) * (pow(xi, 2.) - pow(eta, 2.)))
-            * (1. - y) * (2. - y) * (2. - ytilde)
-            * ((1. - 3. * xi / eta) * (1. - tmin / t)
-                    * (pow(F1, 2.) - pow(F2, 2.) * t / (4. * pow(Mnucleon, 2.)))
-                    - 4. * xi * eta * pow((F1 + F2), 2.) / (1. - pow(eta, 2.)));
+	cc11[1][1] = 4. * ((1. - eta) / (1. + eta)) * (1. + xi / eta)
+			* (-sigma / eta)
+			* sqrt((1. - y) * (1. - ytilde) * (pow(xi, 2.) - pow(eta, 2.)))
+			* (1. - y) * (2. - y) * (2. - ytilde)
+			* ((1. - 3. * xi / eta) * (1. - tmin / t)
+					* (pow(F1, 2.) - pow(F2, 2.) * t / (4. * pow(Mnucleon, 2.)))
+					- 4. * xi * eta * pow((F1 + F2), 2.) / (1. - pow(eta, 2.)));
 
-    cc11[3][1] = -4. * ((1. - eta) / (1. + eta)) * pow((1. + xi / eta), 2.)
-            * (1 - tmin / t) * (-sigma / eta)
-            * sqrt((1. - y) * (1. - ytilde) * (pow(xi, 2.) - pow(eta, 2.)))
-            * (1. - y) * (2. - y) * (2. - ytilde)
-            * (pow(F1, 2.) - pow(F2, 2.) * t / (4. * pow(Mnucleon, 2.)));
+	cc11[3][1] = -4. * ((1. - eta) / (1. + eta)) * pow((1. + xi / eta), 2.)
+			* (1 - tmin / t) * (-sigma / eta)
+			* sqrt((1. - y) * (1. - ytilde) * (pow(xi, 2.) - pow(eta, 2.)))
+			* (1. - y) * (2. - y) * (2. - ytilde)
+			* (pow(F1, 2.) - pow(F2, 2.) * t / (4. * pow(Mnucleon, 2.)));
 
-    cc11[0][2] = -4. * ((1. - eta) / (1. + eta)) * (1. - xi / eta)
-            * (1. - pow(xi / eta, 2.)) * (1 - tmin / t) * pow((1. - y), 2.)
-            * (1. - ytilde)
-            * (pow(F1, 2.) - pow(F2, 2.) * t / (4. * pow(Mnucleon, 2.)));
+	cc11[0][2] = -4. * ((1. - eta) / (1. + eta)) * (1. - xi / eta)
+			* (1. - pow(xi / eta, 2.)) * (1 - tmin / t) * pow((1. - y), 2.)
+			* (1. - ytilde)
+			* (pow(F1, 2.) - pow(F2, 2.) * t / (4. * pow(Mnucleon, 2.)));
 
-    cc11[2][2] = 8. * ((1. - eta) / (1. + eta)) * (1. + xi / eta)
-            * (1. - pow(xi / eta, 2.)) * pow((1. - y), 2.) * (1. - ytilde)
-            * ((1 - tmin / t)
-                    * (pow(F1, 2.) - pow(F2, 2.) * t / (4. * pow(Mnucleon, 2.)))
-                    + 2. * pow(eta * (F1 + F2), 2.) / (1. - pow(eta, 2.)));
+	cc11[2][2] = 8. * ((1. - eta) / (1. + eta)) * (1. + xi / eta)
+			* (1. - pow(xi / eta, 2.)) * pow((1. - y), 2.) * (1. - ytilde)
+			* ((1 - tmin / t)
+					* (pow(F1, 2.) - pow(F2, 2.) * t / (4. * pow(Mnucleon, 2.)))
+					+ 2. * pow(eta * (F1 + F2), 2.) / (1. - pow(eta, 2.)));
 
-    cc11[4][2] = pow((xi + eta) / (xi - eta), 2.) * cc11[0][2];
+	cc11[4][2] = pow((xi + eta) / (xi - eta), 2.) * cc11[0][2];
 
-    ss11[1][1] = cc11[1][1] + 2. * cc11[3][1] * (eta - xi) / (eta + xi);
+	ss11[1][1] = cc11[1][1] + 2. * cc11[3][1] * (eta - xi) / (eta + xi);
 
-    ss11[3][1] = cc11[3][1];
+	ss11[3][1] = cc11[3][1];
 
-    ss11[2][2] = cc11[2][2];
+	ss11[2][2] = cc11[2][2];
 
-    ss11[4][2] = cc11[4][2];
+	ss11[4][2] = cc11[4][2];
 
-    // |BH2|^2 coeffs
+	// |BH2|^2 coeffs
 
-    //Saving original values of y, ytilde and xi, since I'll modify them below
-    double ySave, ytildeSave, xiSave;
-    ySave = y;
-    ytildeSave = ytilde;
-    xiSave = xi;
+	//Saving original values of y, ytilde and xi, since I'll modify them below
+	double ySave, ytildeSave, xiSave;
+	ySave = y;
+	ytildeSave = ytilde;
+	xiSave = xi;
 
-    //I use the property (cc, ss)22 = -(cc, ss)11 upon y <-> ytilde and xi -> -xi => sigma = -1
-    ytilde = ySave;
-    y = ytildeSave;
-    xi = -xiSave;
-    sigma = -1;
+	//I use the property (cc, ss)22 = -(cc, ss)11 upon y <-> ytilde and xi -> -xi => sigma = -1
+	ytilde = ySave;
+	y = ytildeSave;
+	xi = -xiSave;
+	sigma = -1;
 
-    // 1st: variable changes made above allows us to simply copy the expressions for (cc, ss)^11
-    cc22[0][0] = -2. * ((1. - eta) / (1. + eta)) * (1. + xi / eta) * (1. - y)
-            * ((2. - 2. * y + pow(y, 2.)) * (2. - 2. * ytilde + pow(ytilde, 2.))
-                    * (1. + pow(xi / eta, 2.))
-                    - 8. * (1. - y) * (1. - ytilde) * (1. - pow(xi / eta, 2.)))
-            * ((1. - tmin / t)
-                    * (pow(F1, 2.) - pow(F2, 2.) * t / (4. * pow(Mnucleon, 2.)))
-                    + 2. * pow(eta * (F1 + F2), 2.) / (1. - pow(eta, 2.)));
+	// 1st: variable changes made above allows us to simply copy the expressions for (cc, ss)^11
+	cc22[0][0] = -2. * ((1. - eta) / (1. + eta)) * (1. + xi / eta) * (1. - y)
+			* ((2. - 2. * y + pow(y, 2.)) * (2. - 2. * ytilde + pow(ytilde, 2.))
+					* (1. + pow(xi / eta, 2.))
+					- 8. * (1. - y) * (1. - ytilde) * (1. - pow(xi / eta, 2.)))
+			* ((1. - tmin / t)
+					* (pow(F1, 2.) - pow(F2, 2.) * t / (4. * pow(Mnucleon, 2.)))
+					+ 2. * pow(eta * (F1 + F2), 2.) / (1. - pow(eta, 2.)));
 
-    cc22[2][0] = 2. * ((1. - eta) / (1. + eta)) * (1. + xi / eta)
-            * (1. - pow(xi / eta, 2.)) * (1. - tmin / t) * (1. - y)
-            * ((2. - 2. * y + pow(y, 2.)) * (2. - 2. * ytilde + pow(ytilde, 2.))
-                    + 8. * (1. - y) * (1. - ytilde))
-            * (pow(F1, 2.) - pow(F2, 2.) * t / (4. * pow(Mnucleon, 2.)));
+	cc22[2][0] = 2. * ((1. - eta) / (1. + eta)) * (1. + xi / eta)
+			* (1. - pow(xi / eta, 2.)) * (1. - tmin / t) * (1. - y)
+			* ((2. - 2. * y + pow(y, 2.)) * (2. - 2. * ytilde + pow(ytilde, 2.))
+					+ 8. * (1. - y) * (1. - ytilde))
+			* (pow(F1, 2.) - pow(F2, 2.) * t / (4. * pow(Mnucleon, 2.)));
 
-    cc22[1][1] = 4. * ((1. - eta) / (1. + eta)) * (1. + xi / eta)
-            * (-sigma / eta)
-            * sqrt((1. - y) * (1. - ytilde) * (pow(xi, 2.) - pow(eta, 2.)))
-            * (1. - y) * (2. - y) * (2. - ytilde)
-            * ((1. - 3. * xi / eta) * (1. - tmin / t)
-                    * (pow(F1, 2.) - pow(F2, 2.) * t / (4. * pow(Mnucleon, 2.)))
-                    - 4. * xi * eta * pow((F1 + F2), 2.) / (1. - pow(eta, 2.)));
+	cc22[1][1] = 4. * ((1. - eta) / (1. + eta)) * (1. + xi / eta)
+			* (-sigma / eta)
+			* sqrt((1. - y) * (1. - ytilde) * (pow(xi, 2.) - pow(eta, 2.)))
+			* (1. - y) * (2. - y) * (2. - ytilde)
+			* ((1. - 3. * xi / eta) * (1. - tmin / t)
+					* (pow(F1, 2.) - pow(F2, 2.) * t / (4. * pow(Mnucleon, 2.)))
+					- 4. * xi * eta * pow((F1 + F2), 2.) / (1. - pow(eta, 2.)));
 
-    cc22[3][1] = -4. * ((1. - eta) / (1. + eta)) * pow((1. + xi / eta), 2.)
-            * (1 - tmin / t) * (-sigma / eta)
-            * sqrt((1. - y) * (1. - ytilde) * (pow(xi, 2.) - pow(eta, 2.)))
-            * (1. - y) * (2. - y) * (2. - ytilde)
-            * (pow(F1, 2.) - pow(F2, 2.) * t / (4. * pow(Mnucleon, 2.)));
+	cc22[3][1] = -4. * ((1. - eta) / (1. + eta)) * pow((1. + xi / eta), 2.)
+			* (1 - tmin / t) * (-sigma / eta)
+			* sqrt((1. - y) * (1. - ytilde) * (pow(xi, 2.) - pow(eta, 2.)))
+			* (1. - y) * (2. - y) * (2. - ytilde)
+			* (pow(F1, 2.) - pow(F2, 2.) * t / (4. * pow(Mnucleon, 2.)));
 
-    cc22[0][2] = -4. * ((1. - eta) / (1. + eta)) * (1. - xi / eta)
-            * (1. - pow(xi / eta, 2.)) * (1 - tmin / t) * pow((1. - y), 2.)
-            * (1. - ytilde)
-            * (pow(F1, 2.) - pow(F2, 2.) * t / (4. * pow(Mnucleon, 2.)));
+	cc22[0][2] = -4. * ((1. - eta) / (1. + eta)) * (1. - xi / eta)
+			* (1. - pow(xi / eta, 2.)) * (1 - tmin / t) * pow((1. - y), 2.)
+			* (1. - ytilde)
+			* (pow(F1, 2.) - pow(F2, 2.) * t / (4. * pow(Mnucleon, 2.)));
 
-    cc22[2][2] = 8. * ((1. - eta) / (1. + eta)) * (1. + xi / eta)
-            * (1. - pow(xi / eta, 2.)) * pow((1. - y), 2.) * (1. - ytilde)
-            * ((1 - tmin / t)
-                    * (pow(F1, 2.) - pow(F2, 2.) * t / (4. * pow(Mnucleon, 2.)))
-                    + 2. * pow(eta * (F1 + F2), 2.) / (1. - pow(eta, 2.)));
+	cc22[2][2] = 8. * ((1. - eta) / (1. + eta)) * (1. + xi / eta)
+			* (1. - pow(xi / eta, 2.)) * pow((1. - y), 2.) * (1. - ytilde)
+			* ((1 - tmin / t)
+					* (pow(F1, 2.) - pow(F2, 2.) * t / (4. * pow(Mnucleon, 2.)))
+					+ 2. * pow(eta * (F1 + F2), 2.) / (1. - pow(eta, 2.)));
 
-    cc22[4][2] = pow((xi + eta) / (xi - eta), 2.) * cc22[0][2];
+	cc22[4][2] = pow((xi + eta) / (xi - eta), 2.) * cc22[0][2];
 
-    ss22[1][1] = cc22[1][1] + 2. * cc22[3][1] * (eta - xi) / (eta + xi);
+	ss22[1][1] = cc22[1][1] + 2. * cc22[3][1] * (eta - xi) / (eta + xi);
 
-    ss22[3][1] = cc22[3][1];
+	ss22[3][1] = cc22[3][1];
 
-    ss22[2][2] = cc22[2][2];
+	ss22[2][2] = cc22[2][2];
 
-    ss22[4][2] = cc22[4][2];
+	ss22[4][2] = cc22[4][2];
 
-    // 2nd: add the global minus sign
-    int i, j;
-    for (i = 0; i < 5; i++) {
-        for (j = 0; j < 3; j++) {
-            cc22[i][j] = -cc22[i][j];
-            ss22[i][j] = -ss22[i][j];
-        }
-    }
+	// 2nd: add the global minus sign
+	int i, j;
+	for (i = 0; i < 5; i++) {
+		for (j = 0; j < 3; j++) {
+			cc22[i][j] = -cc22[i][j];
+			ss22[i][j] = -ss22[i][j];
+		}
+	}
 
-    //Let's get back original values for y, ytilde, xi and sigma
-    y = ySave;
-    ytilde = ytildeSave;
-    xi = xiSave;
-    sigma = 1;
+	//Let's get back original values for y, ytilde, xi and sigma
+	y = ySave;
+	ytilde = ytildeSave;
+	xi = xiSave;
+	sigma = 1;
 
-    // conj(BH1)*BH2 + conj(BH2)*BH1 coeffs
+	// conj(BH1)*BH2 + conj(BH2)*BH1 coeffs
 
-    cc12[0][0] = -8. * ((1. - eta) / (1. + eta)) * (-xi / eta)
-            * (1. - pow(xi / eta, 2.)) * (1. - y) * (2. - y) * (1. - ytilde)
-            * (2. - ytilde)
-            * ((1. - tmin / t)
-                    * (pow(F1, 2.) - pow(F2, 2.) * t / (4. * pow(Mnucleon, 2.)))
-                    + 2. * pow(eta * (F1 + F2), 2.) / (1. - pow(eta, 2.)));
+	cc12[0][0] = -8. * ((1. - eta) / (1. + eta)) * (-xi / eta)
+			* (1. - pow(xi / eta, 2.)) * (1. - y) * (2. - y) * (1. - ytilde)
+			* (2. - ytilde)
+			* ((1. - tmin / t)
+					* (pow(F1, 2.) - pow(F2, 2.) * t / (4. * pow(Mnucleon, 2.)))
+					+ 2. * pow(eta * (F1 + F2), 2.) / (1. - pow(eta, 2.)));
 
-    cc12[2][0] = 8. * ((1. - eta) / (1. + eta)) * (1. + xi / eta)
-            * (1. - pow(xi / eta, 2.)) * (1. - y) * (2. - y) * (1. - ytilde)
-            * (2. - ytilde) * (1. - tmin / t)
-            * (pow(F1, 2.) - pow(F2, 2.) * t / (4. * pow(Mnucleon, 2.)));
+	cc12[2][0] = 8. * ((1. - eta) / (1. + eta)) * (1. + xi / eta)
+			* (1. - pow(xi / eta, 2.)) * (1. - y) * (2. - y) * (1. - ytilde)
+			* (2. - ytilde) * (1. - tmin / t)
+			* (pow(F1, 2.) - pow(F2, 2.) * t / (4. * pow(Mnucleon, 2.)));
 
-    cc12[1][1] =
-            -8. * ((1. - eta) / (1. + eta)) * (-sigma / eta)
-                    * sqrt(
-                            (1. - y) * (1. - ytilde)
-                                    * (pow(xi, 2.) - pow(eta, 2.)))
-                    * ((2. - 2. * y + pow(y, 2.))
-                            * (2. - 2. * ytilde + pow(ytilde, 2.))
-                            * (pow(xi / eta, 2.) * (1. - tmin / t)
-                                    * (pow(F1, 2.)
-                                            - pow(F2, 2.) * t
-                                                    / (4. * pow(Mnucleon, 2.)))
-                                    + (pow(xi, 2.) + pow(eta, 2.))
-                                            * pow(F1 + F2, 2.)
-                                            / (1. - pow(eta, 2.)))
-                            - (1. - y) * (1. - ytilde)
-                                    * (1. - pow(xi / eta, 2.))
-                                    * (9. * (1. - tmin / t)
-                                            * (pow(F1, 2.)
-                                                    - pow(F2, 2.) * t
-                                                            / (4.
-                                                                    * pow(
-                                                                            Mnucleon,
-                                                                            2.)))
-                                            + 10. * pow(eta * (F1 + F2), 2.)
-                                                    / (1. - pow(eta, 2.))));
+	cc12[1][1] =
+			-8. * ((1. - eta) / (1. + eta)) * (-sigma / eta)
+					* sqrt(
+							(1. - y) * (1. - ytilde)
+									* (pow(xi, 2.) - pow(eta, 2.)))
+					* ((2. - 2. * y + pow(y, 2.))
+							* (2. - 2. * ytilde + pow(ytilde, 2.))
+							* (pow(xi / eta, 2.) * (1. - tmin / t)
+									* (pow(F1, 2.)
+											- pow(F2, 2.) * t
+													/ (4. * pow(Mnucleon, 2.)))
+									+ (pow(xi, 2.) + pow(eta, 2.))
+											* pow(F1 + F2, 2.)
+											/ (1. - pow(eta, 2.)))
+							- (1. - y) * (1. - ytilde)
+									* (1. - pow(xi / eta, 2.))
+									* (9. * (1. - tmin / t)
+											* (pow(F1, 2.)
+													- pow(F2, 2.) * t
+															/ (4.
+																	* pow(
+																			Mnucleon,
+																			2.)))
+											+ 10. * pow(eta * (F1 + F2), 2.)
+													/ (1. - pow(eta, 2.))));
 
-    cc12[0][2] = -8. * ((1. - eta) / (1. + eta)) * (1. - xi / eta)
-            * (1. - pow(xi / eta, 2.)) * (1. - tmin / t) * (1. - y) * (2. - y)
-            * (1. - ytilde) * (2. - ytilde)
-            * (pow(F1, 2.) - pow(F2, 2.) * t / (4. * pow(Mnucleon, 2.)));
+	cc12[0][2] = -8. * ((1. - eta) / (1. + eta)) * (1. - xi / eta)
+			* (1. - pow(xi / eta, 2.)) * (1. - tmin / t) * (1. - y) * (2. - y)
+			* (1. - ytilde) * (2. - ytilde)
+			* (pow(F1, 2.) - pow(F2, 2.) * t / (4. * pow(Mnucleon, 2.)));
 
-    cc12[2][2] = -8. * ((1. - eta) / (1. + eta)) * (-xi / eta)
-            * (1. - pow(xi / eta, 2.)) * (1. - y) * (2. - y) * (1. - ytilde)
-            * (2. - ytilde)
-            * ((1. - tmin / t)
-                    * (pow(F1, 2.) - pow(F2, 2.) * t / (4. * pow(Mnucleon, 2.)))
-                    + 2. * pow(eta * (F1 + F2), 2.) / (1. - pow(eta, 2.)));
+	cc12[2][2] = -8. * ((1. - eta) / (1. + eta)) * (-xi / eta)
+			* (1. - pow(xi / eta, 2.)) * (1. - y) * (2. - y) * (1. - ytilde)
+			* (2. - ytilde)
+			* ((1. - tmin / t)
+					* (pow(F1, 2.) - pow(F2, 2.) * t / (4. * pow(Mnucleon, 2.)))
+					+ 2. * pow(eta * (F1 + F2), 2.) / (1. - pow(eta, 2.)));
 
-    ss12[1][1] =
-            cc12[1][1]
-                    - 8. * ((1. - eta) / (1. + eta)) * (-sigma / eta)
-                            * sqrt(
-                                    (1. - y) * (1. - ytilde)
-                                            * (pow(xi, 2.) - pow(eta, 2.)))
-                            * (1. - pow(xi / eta, 2.))
-                            * ((2. - 2. * y + pow(y, 2.))
-                                    * (2. - 2. * ytilde + pow(ytilde, 2.))
-                                    + 8. * (1. - y) * (1. - ytilde))
-                            * (1. - tmin / t)
-                            * (pow(F1, 2.)
-                                    - pow(F2, 2.) * t / (4. * pow(Mnucleon, 2.)));
+	ss12[1][1] =
+			cc12[1][1]
+					- 8. * ((1. - eta) / (1. + eta)) * (-sigma / eta)
+							* sqrt(
+									(1. - y) * (1. - ytilde)
+											* (pow(xi, 2.) - pow(eta, 2.)))
+							* (1. - pow(xi / eta, 2.))
+							* ((2. - 2. * y + pow(y, 2.))
+									* (2. - 2. * ytilde + pow(ytilde, 2.))
+									+ 8. * (1. - y) * (1. - ytilde))
+							* (1. - tmin / t)
+							* (pow(F1, 2.)
+									- pow(F2, 2.) * t / (4. * pow(Mnucleon, 2.)));
 
-    ss12[2][2] = cc12[2][2];
+	ss12[2][2] = cc12[2][2];
 
-    double T2_bh, prefactor, series11 = 0., series12 = 0., series22 = 0.,
-            series = 0.;
+	double T2_bh, prefactor, series11 = 0., series12 = 0., series22 = 0.,
+			series = 0.;
 
-    prefactor = edgeFactor * xi * pow(charge_e, 8.)
-            / (pow(y * ytilde, 4.) * t * Q2 * eta); // eq 99 in Belitsky2003. This prefactor goes in front of the whole Fourier series
+	prefactor = edgeFactor * xi * pow(charge_e, 8.)
+			/ (pow(y * ytilde, 4.) * t * Q2 * eta); // eq 99 in Belitsky2003. This prefactor goes in front of the whole Fourier series
 
-    int n, m;
-    for (n = 0; n < 5; n++) {
-        for (m = 0; m < 3; m++) {
+	int n, m;
+	for (n = 0; n < 5; n++) {
+		for (m = 0; m < 3; m++) {
 
-            series11 +=
-                    (cc11[n][m] * cos(m * phil) + cs11[n][m] * sin(m * phil))
-                            * cos(n * phi)
-                            + (sc11[n][m] * cos(m * phil)
-                                    + ss11[n][m] * sin(m * phil))
-                                    * sin(n * phi); //series with coeffs (c, s)^11 in eq 99 of Belitsky2003
-            series22 += (cc22[n][m] * cos(m * phi) + cs22[n][m] * sin(m * phi))
-                    * cos(n * phil)
-                    + (sc22[n][m] * cos(m * phi) + ss22[n][m] * sin(m * phi))
-                            * sin(n * phil); //series with coeffs (c, s)^22 in eq 99 of Belitsky2003
-            series12 +=
-                    (cc12[n][m] * cos(m * phil) + cs12[n][m] * sin(m * phil))
-                            * cos(n * phi)
-                            + (sc12[n][m] * cos(m * phil)
-                                    + ss12[n][m] * sin(m * phil))
-                                    * sin(n * phi); //series with coeffs (c, s)^12 in eq 99 of Belitsky2003
+			series11 +=
+					(cc11[n][m] * cos(m * phil) + cs11[n][m] * sin(m * phil))
+							* cos(n * phi)
+							+ (sc11[n][m] * cos(m * phil)
+									+ ss11[n][m] * sin(m * phil))
+									* sin(n * phi); //series with coeffs (c, s)^11 in eq 99 of Belitsky2003
+			series22 += (cc22[n][m] * cos(m * phi) + cs22[n][m] * sin(m * phi))
+					* cos(n * phil)
+					+ (sc22[n][m] * cos(m * phi) + ss22[n][m] * sin(m * phi))
+							* sin(n * phil); //series with coeffs (c, s)^22 in eq 99 of Belitsky2003
+			series12 +=
+					(cc12[n][m] * cos(m * phil) + cs12[n][m] * sin(m * phil))
+							* cos(n * phi)
+							+ (sc12[n][m] * cos(m * phil)
+									+ ss12[n][m] * sin(m * phil))
+									* sin(n * phi); //series with coeffs (c, s)^12 in eq 99 of Belitsky2003
 
-        }
-    }
+		}
+	}
 
-    series = pow(ytilde / (P1 * P2), 2.) * series11
-            + pow(y / (P3 * P4), 2.) * series22
-            - beamSign * y * ytilde * series12 / (P1 * P2 * P3 * P4); //the 3 series above with their correspondent prefactors as in eq 99 in Belitsky2003
+	series = pow(ytilde / (P1 * P2), 2.) * series11
+			+ pow(y / (P3 * P4), 2.) * series22
+			- beamSign * y * ytilde * series12 / (P1 * P2 * P3 * P4); //the 3 series above with their correspondent prefactors as in eq 99 in Belitsky2003
 
-            //Final squared BH amplitude from eq 99 in Belitsky2003:
-    T2_bh = prefactor * series;
+			//Final squared BH amplitude from eq 99 in Belitsky2003:
+	T2_bh = prefactor * series;
 
-    return T2_bh;
+	return T2_bh;
 }
 
 double DDVCSProcessTEST::crossSectionBH(double ml, double Ebeam,
-        double Mnucleon, double xB, double t, double Qcal2, double Mll2,
-        double phi, double phil, double thetal, int beamSign,
-        int polariz) const {
+		double Mnucleon, double xB, double t, double Qcal2, double Mll2,
+		double phi, double phil, double thetal, int beamSign,
+		int polariz) const {
 
-    //We change to Belitsky's phi: LHS is phi in Belitsky2003 notation, RHS' phi is in Trento's that must be the input in crossSection()
-    phi = M_PI - phi;
+	//We change to Belitsky's phi: LHS is phi in Belitsky2003 notation, RHS' phi is in Trento's that must be the input in crossSection()
+	phi = M_PI - phi;
 
-    double hbarc2 = Constant::HBarC2 * pow(10., 9.); //(hbar·c)^2 value in GeV^2 · pbarn according to PDG 2019. xsec(pbarn) = xsec(1/GeV^2)*hbarc2
+	double hbarc2 = Constant::HBarC2 * pow(10., 9.); //(hbar·c)^2 value in GeV^2 · pbarn according to PDG 2019. xsec(pbarn) = xsec(1/GeV^2)*hbarc2
 
-    //phi entering these expressions is in Trento's convention already:
-    double T2_BH = bh_squared(Mnucleon, t, phi, phil, m_BM_Q2, m_BM_eta,
-            m_BM_xi, m_BM_y, m_BM_ytilde, m_BM_F1, m_BM_F2, m_BM_tmin,
-            m_BM_tmax, m_BM_edgeFactor, m_BM_P1, m_BM_P2, m_BM_P3, m_BM_P4,
-            beamSign, m_BM_charge_e);
+	//phi entering these expressions is in Belitsky's convention already:
 
-    //7-(or 8- if polarized target)fold differential cross-section in pbarn/GeV^6 (ALL ENERGY QUANTITIES IN GeV !!)
-    double xsec;
+	//VICTOR: Mnucleon -> PROTON_MASS
+	double T2_BH = bh_squared(Constant::PROTON_MASS, t, phi, phil, m_BM_Q2, m_BM_eta,
+			m_BM_xi, m_BM_y, m_BM_ytilde, m_BM_F1, m_BM_F2, m_BM_tmin,
+			m_BM_tmax, m_BM_edgeFactor, m_BM_P1, m_BM_P2, m_BM_P3, m_BM_P4,
+			beamSign, m_BM_charge_e);
 
-    if (polariz == 0) {
+	//7-(or 8- if polarized target)fold differential cross-section in pbarn/GeV^6 (ALL ENERGY QUANTITIES IN GeV !!)
+	double xsec;
 
-        xsec = hbarc2 * pow(Constant::FINE_STRUCTURE_CONSTANT, 4.) * xB
-                * pow(m_BM_y, 2.) * m_BM_beta * T2_BH
-                * (1. / pow(m_BM_charge_e, 8.)) * sin(thetal)
-                / (16 * pow(2. * M_PI, 3.) * pow(Qcal2, 2.)
-                        * sqrt(1. + pow(2. * xB * Mnucleon, 2.) / Qcal2));
+	if (polariz == 0) {
 
-    } else {
+		xsec = hbarc2 * pow(Constant::FINE_STRUCTURE_CONSTANT, 4.) * xB
+				* pow(m_BM_y, 2.) * m_BM_beta * T2_BH
+				* (1. / pow(m_BM_charge_e, 8.)) * sin(thetal)
+				/ (16 * pow(2. * M_PI, 3.) * pow(Qcal2, 2.)
+						* sqrt(1. + pow(2. * xB * Mnucleon, 2.) / Qcal2));
 
-        xsec = hbarc2 * (1. / (2. * M_PI))
-                * pow(Constant::FINE_STRUCTURE_CONSTANT, 4.) * xB
-                * pow(m_BM_y, 2.) * m_BM_beta * T2_BH
-                * (1. / pow(m_BM_charge_e, 8.)) * sin(thetal)
-                / (16 * pow(2. * M_PI, 3.) * pow(Qcal2, 2.)
-                        * sqrt(1. + pow(2. * xB * Mnucleon, 2.) / Qcal2));
-    }
+	} else {
 
-    return xsec;
+		xsec = hbarc2 * (1. / (2. * M_PI))
+				* pow(Constant::FINE_STRUCTURE_CONSTANT, 4.) * xB
+				* pow(m_BM_y, 2.) * m_BM_beta * T2_BH
+				* (1. / pow(m_BM_charge_e, 8.)) * sin(thetal)
+				/ (16 * pow(2. * M_PI, 3.) * pow(Qcal2, 2.)
+						* sqrt(1. + pow(2. * xB * Mnucleon, 2.) / Qcal2));
+	}
+
+	return xsec;
+
+}
+
+//VICTOR: vcs_squared() and crossSectionVCS() added
+double DDVCSProcessTEST::vcs_squared(double Mnucleon, double t, double phi,
+		double phil, double Q2, double eta, double xi, double y, double ytilde,
+		double edgeFactor, std::complex<double> cffH, std::complex<double> cffE,
+		std::complex<double> cffHL, std::complex<double> cffEL, std::complex<double> cffHtilde,
+		std::complex<double> cffEtilde, double charge_e) const {
+
+	std::complex<double> cc[3][3] = { Constant::_0 }, ss[3][3] = { Constant::_0 }, cs[3][3] = { Constant::_0 },
+			sc[3][3] = { Constant::_0 }; //VCS' Fourier coeffs
+
+	int sigma;
+
+	std::complex<double> CVV_FF, CVV_FLF, CVV_FFL, CVV_FLFL, CAA_FF, CVA_FF;
+
+	//Functions (107)-(109) from Belitsky2003, at LT:
+	CVV_FF = (1. - pow(eta, 2.)) * cffH * conj(cffH)
+			- pow(eta, 2.) * (cffH * conj(cffE) + cffE * conj(cffH))
+			- (t / pow(2. * Mnucleon, 2.) + pow(eta, 2.)) * cffE * conj(cffE);
+	CVV_FLF = (1. - pow(eta, 2.)) * cffHL * conj(cffH)
+			- pow(eta, 2.) * (cffHL * conj(cffE) + cffEL * conj(cffH))
+			- (t / pow(2. * Mnucleon, 2.) + pow(eta, 2.)) * cffEL * conj(cffE);
+	CVV_FFL = (1. - pow(eta, 2.)) * cffH * conj(cffHL)
+			- pow(eta, 2.) * (cffH * conj(cffEL) + cffE * conj(cffHL))
+			- (t / pow(2. * Mnucleon, 2.) + pow(eta, 2.)) * cffE * conj(cffEL);
+	CVV_FLFL = (1. - pow(eta, 2.)) * cffHL * conj(cffHL)
+			- pow(eta, 2.) * (cffHL * conj(cffEL) + cffEL * conj(cffHL))
+			- (t / pow(2. * Mnucleon, 2.) + pow(eta, 2.)) * cffEL * conj(cffEL);
+	CAA_FF =
+			(1. - pow(eta, 2.)) * cffHtilde * conj(cffHtilde)
+					- pow(eta, 2.)
+							* (cffHtilde * conj(cffEtilde)
+									+ cffEtilde * conj(cffHtilde))
+					- (pow(eta, 2.) * t / pow(2. * Mnucleon, 2.)) * cffEtilde
+							* conj(cffEtilde);
+	CVA_FF = Constant::_0;
+
+	sigma = 1; //I assume this value because in VCS there's no coeff to which we apply xi -> -xi. Thereby, kinematics fixes sigma = 1
+
+	//eqs 110-112 in Belitsky2003
+	cc[0][0] = 2. * (2. - 2. * y + pow(y, 2.))
+			* (2. - 2. * ytilde + pow(ytilde, 2.)) * (CVV_FF + CAA_FF)
+			+ (16. / pow(xi, 2.)) * (1. - y) * (1. - ytilde)
+					* (pow(xi, 2.) - pow(eta, 2.)) * CVV_FLFL;
+	cc[1][1] = (4. * sigma / xi)
+			* sqrt((1. - y) * (1. - ytilde) * (pow(xi, 2.) - pow(eta, 2.)))
+			* (2. - y) * (2. - ytilde) * (CVV_FFL + CVV_FLF);
+	cc[2][2] = 8. * (1. - y) * (1. - ytilde) * (CVV_FF - CAA_FF);
+
+	//eqs 105 in Belitsky2003
+	ss[0][0] = cc[0][0];
+	ss[1][1] = cc[1][1];
+	ss[2][2] = cc[2][2];
+
+	int i, j;
+	std::complex<double> series = Constant::_0;
+	for (i = 0; i < 3; i++) {
+		for (j = 0; j < 3; j++) {
+			series += (cc[i][j] * cos(j * phil) + cs[i][j] * sin(j * phil))
+					* cos(i * phi)
+					+ (sc[i][j] * cos(j * phil) + ss[i][j] * sin(j * phil))
+							* sin(i * phi); //series with coeffs (c, s)^VCS in eq 97 from Belitsky2003
+		};
+	};
+
+	double prefactor;
+	std::complex<double> T2_vcs;
+
+	prefactor = edgeFactor * 2. * pow(xi / (1. + eta), 2.) * pow(charge_e, 8.)
+			/ (pow(Q2 * y * ytilde, 2.)); //prefactor preceding the whole Fourier series in eq 97 from Belitsky2003
+
+	T2_vcs = prefactor * series;
+
+	return real(T2_vcs);//cffs are computed numerically in PARTONS, so imaginary part of cff*conj(cff) could be slightly different from zero. This small error is removed by taking only real part of T2_vcs
+
+}
+
+double DDVCSProcessTEST::crossSectionVCS(double ml, double Ebeam,
+		double Mnucleon, double xB, double t, double Qcal2, double Mll2,
+		double phi, double phil, double thetal, int beamSign,
+		int polariz) const {
+
+	//We change to Belitsky's phi: LHS is phi in Belitsky2003 notation, RHS' phi is in Trento's that must be the input in crossSection()
+	phi = M_PI - phi;
+
+	double hbarc2 = Constant::HBarC2 * pow(10., 9.); //(hbar·c)^2 value in GeV^2 · pbarn according to PDG 2019. xsec(pbarn) = xsec(1/GeV^2)*hbarc2
+
+	//phi entering these expressions is in Belitsky's convention already:
+	double T2_VCS = vcs_squared(Constant::PROTON_MASS, t, phi, phil, m_BM_Q2, m_BM_eta, m_BM_xi, m_BM_y, m_BM_ytilde, m_BM_edgeFactor, );
+
+
+	/*(double Mnucleon, double t, double phi,
+			double phil, double Q2, double eta, double xi, double y, double ytilde,
+			double edgeFactor, std::complex<double> cffH, std::complex<double> cffE,
+			std::complex<double> cffHL, std::complex<double> cffEL, std::complex<double> cffHtilde,
+			std::complex<double> cffEtilde, double charge_e);*/
+
+
+
+			/*bh_squared(Mnucleon, t, phi, phil, m_BM_Q2, m_BM_eta,
+			m_BM_xi, m_BM_y, m_BM_ytilde, m_BM_F1, m_BM_F2, m_BM_tmin,
+			m_BM_tmax, m_BM_edgeFactor, m_BM_P1, m_BM_P2, m_BM_P3, m_BM_P4,
+			beamSign, m_BM_charge_e);*/
+
+	//7-(or 8- if polarized target)fold differential cross-section in pbarn/GeV^6 (ALL ENERGY QUANTITIES IN GeV !!)
+	double xsec;
+
+	if (polariz == 0) {
+
+		xsec = hbarc2 * pow(Constant::FINE_STRUCTURE_CONSTANT, 4.) * xB
+				* pow(m_BM_y, 2.) * m_BM_beta * T2_VCS
+				* (1. / pow(m_BM_charge_e, 8.)) * sin(thetal)
+				/ (16 * pow(2. * M_PI, 3.) * pow(Qcal2, 2.)
+						* sqrt(1. + pow(2. * xB * Mnucleon, 2.) / Qcal2));
+
+	} else {
+
+		xsec = hbarc2 * (1. / (2. * M_PI))
+				* pow(Constant::FINE_STRUCTURE_CONSTANT, 4.) * xB
+				* pow(m_BM_y, 2.) * m_BM_beta * T2_VCS
+				* (1. / pow(m_BM_charge_e, 8.)) * sin(thetal)
+				/ (16 * pow(2. * M_PI, 3.) * pow(Qcal2, 2.)
+						* sqrt(1. + pow(2. * xB * Mnucleon, 2.) / Qcal2));
+	}
+
+	return xsec;
 
 }
 
 void DDVCSProcessTEST::computeInternalVariables(double ml, double Ebeam,
-        double Mnucleon, double xB, double t, double Qcal2, double Mll2,
-        double phi, double phil, double thetal) {
+		double Mnucleon, double xB, double t, double Qcal2, double Mll2,
+		double phi, double phil, double thetal) {
 
-    //We change to Belitsky's phi: LHS is phi in Belitsky2003 notation, RHS' phi is in Trento's that must be the input in crossSection()
-    phi = M_PI - phi;
+	//We change to Belitsky's phi: LHS is phi in Belitsky2003 notation, RHS' phi is in Trento's that must be the input in crossSection()
+	phi = M_PI - phi;
 
-    //phil, thetal are polar coord. of lminus 4-vector in the CM-frame of the (created) lepton pair
+	//phil, thetal are polar coord. of lminus 4-vector in the CM-frame of the (created) lepton pair
 
-    //-----------------------------------------------
-    //For the following, cf. eqs (2) to (5) in overleaf
-    //Basic kinematical variables:
-    m_BM_Q2 = 0.5 * (Qcal2 - Mll2 + t / 2.); //Q2 is the squared of the incoming and outgoing photon momenta's average
-    m_BM_eta = (Qcal2 + Mll2) / (2. * Qcal2 / xB - Qcal2 - Mll2 + t);
-    m_BM_xi = m_BM_eta * 2. * m_BM_Q2 / (Qcal2 + Mll2);
-    m_BM_y = Qcal2 / (Ebeam * 2. * xB * Mnucleon);
-    m_BM_ytilde = 2. / (1. + cos(thetal));
-    m_BM_ytildePlus = 2. / (1 - cos(thetal)); // ytilde under exchange thetal -> pi - thetal (polar coord. for lplus 4-vector)
-    m_BM_F1 = (4. * pow(Mnucleon, 2.) - t * 2.7928) * pow((1. - t / 0.71), -2.)
-            / (4. * pow(Mnucleon, 2.) - t); //EM form factor F1 for proton, 2.7928 = Born's magneton for proton
-    m_BM_F2 = 4. * pow(Mnucleon, 2.) * (2.7928 - 1.) * pow((1. - t / 0.71), -2.)
-            / (4. * pow(Mnucleon, 2.) - t); //EM form factor F2 for proton
-    m_BM_charge_e = sqrt(Constant::FINE_STRUCTURE_CONSTANT * 4. * M_PI);
+	//-----------------------------------------------
+	//For the following, cf. eqs (2) to (5) in overleaf
+	//Basic kinematical variables:
+	m_BM_Q2 = 0.5 * (Qcal2 - Mll2 + t / 2.); //Q2 is the squared of the incoming and outgoing photon momenta's average
+	m_BM_eta = (Qcal2 + Mll2) / (2. * Qcal2 / xB - Qcal2 - Mll2 + t);
+	m_BM_xi = m_BM_eta * 2. * m_BM_Q2 / (Qcal2 + Mll2);
+	m_BM_y = Qcal2 / (Ebeam * 2. * xB * Mnucleon);
+	m_BM_ytilde = 2. / (1. + cos(thetal));
+	m_BM_ytildePlus = 2. / (1 - cos(thetal)); // ytilde under exchange thetal -> pi - thetal (polar coord. for lplus 4-vector)
+	m_BM_F1 = (4. * pow(Mnucleon, 2.) - t * 2.7928) * pow((1. - t / 0.71), -2.)
+			/ (4. * pow(Mnucleon, 2.) - t); //EM form factor F1 for proton, 2.7928 = Born's magneton for proton
+	m_BM_F2 = 4. * pow(Mnucleon, 2.) * (2.7928 - 1.) * pow((1. - t / 0.71), -2.)
+			/ (4. * pow(Mnucleon, 2.) - t); //EM form factor F2 for proton
+	m_BM_charge_e = sqrt(Constant::FINE_STRUCTURE_CONSTANT * 4. * M_PI);
 
-    m_BM_tmin = -4. * pow(Mnucleon * m_BM_eta, 2.) / (1. - m_BM_eta * m_BM_eta);
-    m_BM_tmax = -m_BM_Q2 * (1. - m_BM_eta * m_BM_eta)
-            / (m_BM_xi * (1. - m_BM_xi));
+	m_BM_tmin = -4. * pow(Mnucleon * m_BM_eta, 2.) / (1. - m_BM_eta * m_BM_eta);
+	m_BM_tmax = -m_BM_Q2 * (1. - m_BM_eta * m_BM_eta)
+			/ (m_BM_xi * (1. - m_BM_xi));
 
-    //Prefactor in amplitude terms that must be changed when y -> 1
-    m_BM_edgeFactor = pow(1. + m_BM_eta, 2.)
-            / (m_BM_eta * m_BM_eta - m_BM_xi * m_BM_xi); //for y << 1, eq 101 in Belitsky2003
+	//Prefactor in amplitude terms that must be changed when y -> 1
+	m_BM_edgeFactor = pow(1. + m_BM_eta, 2.)
+			/ (m_BM_eta * m_BM_eta - m_BM_xi * m_BM_xi); //for y << 1, eq 101 in Belitsky2003
 
-    //Functions that appear in the scalar products
-    m_BM_Kcap = (0.5 / m_BM_eta) * sqrt(-m_BM_xi * t / m_BM_Q2)
-            * sqrt(1. - m_BM_tmin / t) * sqrt((1. - m_BM_eta) / (1. + m_BM_eta))
-            * sqrt((1. - m_BM_y) * (m_BM_xi + m_BM_eta));
-    m_BM_Ktildecap = (0.5 / m_BM_eta) * sqrt(-m_BM_xi * t / m_BM_Q2)
-            * sqrt(1. - m_BM_tmin / t) * sqrt((1. - m_BM_eta) / (1. + m_BM_eta))
-            * sqrt((1. - m_BM_ytilde) * (m_BM_xi - m_BM_eta));
-    m_BM_KtildecapPlus = (0.5 / m_BM_eta) * sqrt(-m_BM_xi * t / m_BM_Q2)
-            * sqrt(1. - m_BM_tmin / t) * sqrt((1. - m_BM_eta) / (1. + m_BM_eta))
-            * sqrt((1. - m_BM_ytildePlus) * (m_BM_xi - m_BM_eta)); //Ktildecap under exchange thetal -> pi - thetal (polar coord. for lplus 4-vector)
+	//Functions that appear in the scalar products
+	m_BM_Kcap = (0.5 / m_BM_eta) * sqrt(-m_BM_xi * t / m_BM_Q2)
+			* sqrt(1. - m_BM_tmin / t) * sqrt((1. - m_BM_eta) / (1. + m_BM_eta))
+			* sqrt((1. - m_BM_y) * (m_BM_xi + m_BM_eta));
+	m_BM_Ktildecap = (0.5 / m_BM_eta) * sqrt(-m_BM_xi * t / m_BM_Q2)
+			* sqrt(1. - m_BM_tmin / t) * sqrt((1. - m_BM_eta) / (1. + m_BM_eta))
+			* sqrt((1. - m_BM_ytilde) * (m_BM_xi - m_BM_eta));
+	m_BM_KtildecapPlus = (0.5 / m_BM_eta) * sqrt(-m_BM_xi * t / m_BM_Q2)
+			* sqrt(1. - m_BM_tmin / t) * sqrt((1. - m_BM_eta) / (1. + m_BM_eta))
+			* sqrt((1. - m_BM_ytildePlus) * (m_BM_xi - m_BM_eta)); //Ktildecap under exchange thetal -> pi - thetal (polar coord. for lplus 4-vector)
 
-            //Basic scalar products of momenta
-    m_BM_kDelta = -m_BM_Q2 * m_BM_eta * (1. - 2. * m_BM_Kcap * cos(M_PI + phi))
-            / (m_BM_y * m_BM_xi);
-    m_BM_lminusDelta = -m_BM_Q2 * m_BM_eta
-            * (1. + 2. * m_BM_Ktildecap * cos(phil)) / (m_BM_ytilde * m_BM_xi);
-    m_BM_lplusDelta = -m_BM_Q2 * m_BM_eta
-            * (1. - 2. * m_BM_KtildecapPlus * cos(phil))
-            / (m_BM_ytildePlus * m_BM_xi); // lplus is the same as lminus under thetal -> pi - thetal and phi -> phi + pi (that's why we use ytildePlus and KtildecapPlus)
+			//Basic scalar products of momenta
+	m_BM_kDelta = -m_BM_Q2 * m_BM_eta * (1. - 2. * m_BM_Kcap * cos(M_PI + phi))
+			/ (m_BM_y * m_BM_xi);
+	m_BM_lminusDelta = -m_BM_Q2 * m_BM_eta
+			* (1. + 2. * m_BM_Ktildecap * cos(phil)) / (m_BM_ytilde * m_BM_xi);
+	m_BM_lplusDelta = -m_BM_Q2 * m_BM_eta
+			* (1. - 2. * m_BM_KtildecapPlus * cos(phil))
+			/ (m_BM_ytildePlus * m_BM_xi); // lplus is the same as lminus under thetal -> pi - thetal and phi -> phi + pi (that's why we use ytildePlus and KtildecapPlus)
 
-    //BH denominators
-    m_BM_P1 = (2. * m_BM_kDelta + Qcal2 + Mll2) / (Qcal2 + Mll2);
-    m_BM_P2 = (t - 2. * m_BM_kDelta) / (Qcal2 + Mll2);
-    m_BM_P3 = -(pow(ml, 2.) + 2. * m_BM_lplusDelta + t) / (Qcal2 + Mll2);
-    m_BM_P4 = -(pow(ml, 2.) + 2. * m_BM_lminusDelta + t) / (Qcal2 + Mll2);
+	//BH denominators
+	m_BM_P1 = (2. * m_BM_kDelta + Qcal2 + Mll2) / (Qcal2 + Mll2);
+	m_BM_P2 = (t - 2. * m_BM_kDelta) / (Qcal2 + Mll2);
+	m_BM_P3 = -(pow(ml, 2.) + 2. * m_BM_lplusDelta + t) / (Qcal2 + Mll2);
+	m_BM_P4 = -(pow(ml, 2.) + 2. * m_BM_lminusDelta + t) / (Qcal2 + Mll2);
 
-    //beta variable
-    m_BM_beta = sqrt(1. - pow(2. * ml, 2.) / Mll2);
+	//beta variable
+	m_BM_beta = sqrt(1. - pow(2. * ml, 2.) / Mll2);
 
-    m_BM_xBmin = Qcal2 / (2. * Mnucleon * Ebeam);
-    m_BM_xBmax = 1.;
-    m_BM_Qcal2min = 4. * xB * ml * (ml + Mnucleon) / (1. - xB);
-    m_BM_Qcal2max = 4. * pow(Ebeam, 2.) * Mnucleon * xB
-            / (Mnucleon * xB + 2. * Ebeam);
-    m_BM_Mll2min = 4. * pow(ml, 2.);
-    m_BM_Mll2max = pow(
-            sqrt(pow(Mnucleon, 2.) + Qcal2 * (1. / xB - 1.)) - Mnucleon, 2.);
+	m_BM_xBmin = Qcal2 / (2. * Mnucleon * Ebeam);
+	m_BM_xBmax = 1.;
+	m_BM_Qcal2min = 4. * xB * ml * (ml + Mnucleon) / (1. - xB);
+	m_BM_Qcal2max = 4. * pow(Ebeam, 2.) * Mnucleon * xB
+			/ (Mnucleon * xB + 2. * Ebeam);
+	m_BM_Mll2min = 4. * pow(ml, 2.);
+	m_BM_Mll2max = pow(
+			sqrt(pow(Mnucleon, 2.) + Qcal2 * (1. / xB - 1.)) - Mnucleon, 2.);
 }
 
 } /* namespace PARTONS */

@@ -24,7 +24,7 @@ namespace PARTONS {
  *
  * @brief Class representing single observable kinematics for DDVCS process.
  *
- * This class represents a single observable kinematics for DDVCS process (x_{B}, t, \f$Q^{2}\f$, E_{b}, \f$\phi\f$).
+ * This class represents a single observable kinematics for DDVCS process (x_{B}, t, \f$Q^{2}\f$, \f$Q^{'2}\f$, E_{b}, \f$\phi\f$, \f$\theta\f$).
  */
 class DDVCSObservableKinematic: public ObservableKinematic {
 
