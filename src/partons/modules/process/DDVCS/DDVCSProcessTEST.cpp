@@ -224,8 +224,6 @@ PhysicalType<double> DDVCSProcessTEST::CrossSectionInterf() {
 
 	//check target polarisation
 	int polariz;
-	//TODO
-	double lambda = 0.;//beam polarization
 
 	if (m_targetPolarization.getX() == 0. && m_targetPolarization.getY() == 0.
 			&& m_targetPolarization.getZ() == 0.) {
@@ -238,7 +236,7 @@ PhysicalType<double> DDVCSProcessTEST::CrossSectionInterf() {
 
 	double xsec = crossSectionInterf(Constant::MUON_MASS, m_E,
 			Constant::PROTON_MASS, m_xB, m_t, m_Q2, m_Q2Prim, m_phi, m_phiL,
-			m_thetaL, m_beamCharge, polariz, lambda);
+			m_thetaL, m_beamCharge, polariz, m_beamHelicity);
 
 	return PhysicalType<double>(xsec, PhysicalUnit::GEVm2);
 
