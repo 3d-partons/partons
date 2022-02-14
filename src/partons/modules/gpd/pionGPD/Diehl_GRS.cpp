@@ -71,21 +71,16 @@ const unsigned int pionDiehlGRSModel1::classId =
 pionDiehlGRSModel1::pionDiehlGRSModel1(const std::string &className) : PARTONS::GPDModule(className)
 {
     // Set reference factorization scale.
-    m_MuF2_ref = 0.26 ; // ref scale at which xfitter PDFs are given
-    //std::cout << "m_MuF2_ref = " << m_MuF2_ref << std::endl;
-    //std::cout << "get m_MuF2_ref = " << getMuF2Ref() << std::endl;
+    m_MuF2_ref = 0.26 ;                                             // ref scale at which GRS PDFs are given
 
-    // Set default parameter for simple RDDA model
-    m_valPara = {-0.496,0.349,1.129/2.,0.153,0.}; // LO valence
-    //m_valPara = {-0.447,0.426,1.391/2.,0.,0.}; //NLO valence
-    m_seaPara = {0.16-1.,5.20, 0.522,-3.243,5.206}; //Lo sea
-    //m_seaPara = {-0.793,4.454, 0.417,-2.466,3.855}; //NLO Sea
-    m_gPara = {0.433,1.326,7.326,-1.919,1.524}; //LO gluons
-    //m_gPara = {0.27,1.29,5.9,-2.074,1.824}; // NLO gluons
-    m_reggeParaVal = {0.9,2.99,0.35} ;
-    m_reggeParaSea = {0.98,1.96,-1.7} ;
-    mRDDA_Para = 2.;
-    m_LambdaDterm2 = 0.53 ; //GeV^2
+    // Set default parameter for simple RDDA model with GRS
+    m_valPara       = {-0.496,0.349,1.129,0.153,0.};                // LO valence (alpha, beta, n, rho, gamma)  - TOTAL Valence
+    m_seaPara       = {0.16-1.,5.20, 0.522,-3.243,5.206};           // LO sea                                   - INDIVIDUAL Sea
+    m_gPara         = {0.433,1.326,7.326,-1.919,1.524};             // LO gluons
+    m_reggeParaVal  = {0.9,3.38,0.19};                              // ( kappa, A, B )
+    m_reggeParaSea  = {0.9,1.87,-1.60};
+    mRDDA_Para      = 2.;
+    m_LambdaDterm2  = 0.51 ;                                        //GeV^2
 
 
     //Relate a specific GPD type with the appropriate function
@@ -99,20 +94,15 @@ pionDiehlGRSModel1::pionDiehlGRSModel1(const pionDiehlGRSModel1& other) : PARTON
 {
     // Set reference factorization scale.
     m_MuF2_ref = 0.26 ;
-    //std::cout << "m_MuF2_ref = " << m_MuF2_ref << std::endl;
-    //std::cout << "get m_MuF2_ref = " << getMuF2Ref() << std::endl;
 
     // Set default parameter for simple RDDA model with GRS
-    m_valPara = {-0.496,0.349,1.129,0.153,0.}; // LO valence
-    //m_valPara = {-0.447,0.426,1.391,0.,0.}; //NLO valence
-    m_seaPara = {0.16-1.,5.20, 0.522,-3.243,5.206}; //Lo sea
-    //m_seaPara = {-0.793,4.454, 0.417,-2.466,3.855}; //NLO Sea
-    m_gPara = {0.433,1.326,7.326,-1.919,1.524}; //LO gluons
-    //m_gPara = {0.27,1.29,5.9,-2.074,1.824}; // NLO gluons
-    m_reggeParaVal = {0.9,2.99,0.35} ;
-    m_reggeParaSea = {0.98,1.96,-1.7} ;
-    mRDDA_Para = 2.;
-    m_LambdaDterm2 = 0.53 ; //GeV^2
+    m_valPara       = {-0.496,0.349,1.129,0.153,0.};                // LO valence (alpha, beta, n, rho, gamma)  - TOTAL Valence
+    m_seaPara       = {0.16-1.,5.20, 0.522,-3.243,5.206};           // LO sea                                   - INDIVIDUAL Sea
+    m_gPara         = {0.433,1.326,7.326,-1.919,1.524};             // LO gluons
+    m_reggeParaVal  = {0.9,3.38,0.19};                              // ( kappa, A, B )
+    m_reggeParaSea  = {0.9,1.87,-1.60};
+    mRDDA_Para      = 2.;
+    m_LambdaDterm2  = 0.51 ;                                        //GeV^2
 
 
     MathIntegratorModule();
@@ -841,14 +831,14 @@ PARTONS::PartonDistribution pionDiehlGRSModel1::computeH()
     	            // Integration, u quark
     	            HuVal = integrate(m_pIntegralHuVal, Eps, Beta2, emptyParameters);
     	            //D-term
-    	            HuVal -= 0.5 * ( integrate(m_pIntegralDuVal, Eps, ((1+m_x/m_xi)/2), emptyParameters)
+    	            HuVal -= /*0.5 */ ( integrate(m_pIntegralDuVal, Eps, ((1+m_x/m_xi)/2), emptyParameters) //! Are you sure that these factors 1/2 are not being taken into account twice?
     	            	- integrate(m_pIntegralDuValMx, Eps, ((1+m_Mx/m_xi)/2), emptyParameters));
 
 
     	            // Integration, d quark
     	            HdValMx = integrate(m_pIntegralHdValMx, Eps, Beta2, emptyParameters);
     	            //D-term
-    	            HdValMx -= -0.5 * ( integrate(m_pIntegralDdValMx, Eps, (1+m_Mx/m_xi)/2, emptyParameters)
+    	            HdValMx -= /*-0.5 */ ( integrate(m_pIntegralDdValMx, Eps, (1+m_Mx/m_xi)/2, emptyParameters)
     	            		- integrate(m_pIntegralDdVal, Eps, (1+m_x/m_xi)/2, emptyParameters));
     	        }
 
@@ -872,12 +862,12 @@ PARTONS::PartonDistribution pionDiehlGRSModel1::computeH()
 
     	        	// Integration, u quark
     	            HuValMx =  MathIntegratorModule::integrate(m_pIntegralHuValMx, Eps, Beta2Mx, emptyParameters);
-    	            HuValMx -= -0.5 * ( integrate(m_pIntegralDuVal, Eps, ((1+m_x/m_xi)/2), emptyParameters)
+    	            HuValMx -= /*-0.5 */ ( integrate(m_pIntegralDuVal, Eps, ((1+m_x/m_xi)/2), emptyParameters)
         	            	- integrate(m_pIntegralDuValMx, Eps, ((1+m_Mx/m_xi)/2), emptyParameters));
 
     	            // Integration, d quark
     	            HdVal = integrate(m_pIntegralHdVal, Eps, Beta2Mx, emptyParameters);
-    	            HdVal -= -0.5 * ( integrate(m_pIntegralDdVal, Eps, (1+m_x/m_xi)/2, emptyParameters)
+    	            HdVal -= -/*0.5 */ ( integrate(m_pIntegralDdVal, Eps, (1+m_x/m_xi)/2, emptyParameters)
     	            		- integrate(m_pIntegralDdValMx, Eps, (1+m_Mx/m_xi)/2, emptyParameters));
 
     	        }
