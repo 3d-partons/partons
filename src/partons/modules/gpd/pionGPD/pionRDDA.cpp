@@ -71,18 +71,16 @@ const unsigned int pionRDDAModel::classId =
 pionRDDAModel::pionRDDAModel(const std::string &className) : PARTONS::GPDModule(className)
 {
     // Set reference factorization scale.
-    m_MuF2_ref = 1.9 ; // ref scale at which xfitter PDFs are given
-    //std::cout << "m_MuF2_ref = " << m_MuF2_ref << std::endl;
-    //std::cout << "get m_MuF2_ref = " << getMuF2Ref() << std::endl;
+    m_MuF2_ref = 1.9 ;                                                                                              // ref scale at which xfitter PDFs are given
 
     // Set default parameter for simple RDDA model
-    m_valPara      = {-0.25,0.95,2.6};
-    m_seaPara      = {-0.5,8., 0.21 / (std::tgamma(1.5) * std::tgamma( 9. )/ std::tgamma(1.5 + 9. ) )};
+    m_valPara      = {-0.25,0.95,2.6};                                                                              // ( alpha (x),  beta (1-x), norm ) - TOTAL Valence
+    m_seaPara      = {-0.5,8., 0.21 / (std::tgamma(1.5) * std::tgamma( 9. )/ std::tgamma(1.5 + 9. ) )};             //                                  - TOTAL Sea
     m_gPara        = {-1.,3.,0.23*4};
-    m_reggeParaVal = {0.9,1.14,1.48} ;
-    m_reggeParaSea = {0.9,1.14,1.48} ;
+    m_reggeParaVal = {0.9,1.48,1.13};                                                                               // ( kappa, A, B )
+    m_reggeParaSea = {0.9,3.32,-2.10};
     mRDDA_Para     = 2.;
-    m_LambdaDterm2 = 0.53 ; //GeV^2
+    m_LambdaDterm2 = 0.51 ;   
 
 
     //Relate a specific GPD type with the appropriate function
@@ -96,17 +94,15 @@ pionRDDAModel::pionRDDAModel(const pionRDDAModel& other) : PARTONS::GPDModule(ot
 {
     // Set reference factorization scale.
     m_MuF2_ref = 1.9 ;
-    //std::cout << "m_MuF2_ref = " << m_MuF2_ref << std::endl;
-    //std::cout << "get m_MuF2_ref = " << getMuF2Ref() << std::endl;
 
     // Set default parameter for simple RDDA model
-    m_valPara      = {-0.25,0.95,2.6};
-    m_seaPara      = {-0.5,8., 0.21 / (std::tgamma(1.5) * std::tgamma( 9. )/ std::tgamma(1.5 + 9. ) )};
+    m_valPara      = {-0.25,0.95,2.6};                                                                              // ( alpha (x),  beta (1-x), norm ) - TOTAL Valence
+    m_seaPara      = {-0.5,8., 0.21 / (std::tgamma(1.5) * std::tgamma( 9. )/ std::tgamma(1.5 + 9. ) )};             //                                  - TOTAL Sea
     m_gPara        = {-1.,3.,0.23*4};
-    m_reggeParaVal = {0.9,1.14,1.48} ;
-    m_reggeParaSea = {0.9,1.14,1.48} ;
+    m_reggeParaVal = {0.9,1.48,1.13};                                                                               // ( kappa, A, B )
+    m_reggeParaSea = {0.9,3.32,-2.10};
     mRDDA_Para     = 2.;
-    m_LambdaDterm2 = 0.53 ; //GeV^2
+    m_LambdaDterm2 = 0.51 ;                                                                                         // GeV^2
 
     MathIntegratorModule();
     initFunctorsForIntegrations();
