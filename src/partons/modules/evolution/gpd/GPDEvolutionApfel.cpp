@@ -190,7 +190,7 @@ std::function<std::map<int, double>(double const&, double const&)> GPDEvolutionA
 	PartonDistribution pd = pGPDModule->compute(kin, this->getGPDType());
 
 	// Put them in a map
-	std::map<int, double> physd{{0, 0.5 * pd.getGluonDistribution().getGluonDistribution()}};
+	std::map<int, double> physd{{0, /*0.5 */ pd.getGluonDistribution().getGluonDistribution()}};
 	for (QuarkFlavor::Type const t : pd.listTypeOfQuarkFlavor()) {
 
 	    // Swap up and down according to the PDG convention
