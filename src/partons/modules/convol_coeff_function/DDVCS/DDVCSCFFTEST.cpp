@@ -30,8 +30,32 @@ DDVCSCFFTEST::DDVCSCFFTEST(const std::string &className) :
             std::make_pair(GPDType::H,
                     &DDVCSConvolCoeffFunctionModule::computeUnpolarized));
 
+    m_listOfCFFComputeFunctionAvailable.insert(
+            std::make_pair(GPDType::E,
+                    &DDVCSConvolCoeffFunctionModule::computeUnpolarized));
+
+    m_listOfCFFComputeFunctionAvailable.insert(
+            std::make_pair(GPDType::Ht,
+                    &DDVCSConvolCoeffFunctionModule::computePolarized));
+
+    m_listOfCFFComputeFunctionAvailable.insert(
+            std::make_pair(GPDType::Et,
+                    &DDVCSConvolCoeffFunctionModule::computePolarized));
+
+    m_listOfCFFComputeFunctionAvailable.insert(
+            std::make_pair(GPDType::HL,
+                    &DDVCSConvolCoeffFunctionModule::computeUnpolarized));
+
+    m_listOfCFFComputeFunctionAvailable.insert(
+            std::make_pair(GPDType::EL,
+                    &DDVCSConvolCoeffFunctionModule::computeUnpolarized));
+
     //set functors
     initFunctorsForIntegrations();
+
+    //set variables
+    m_partonDistributionEtaXiSummed = 0.;
+    m_epsilon = 1.E-7;
 }
 
 DDVCSCFFTEST::DDVCSCFFTEST(const DDVCSCFFTEST &other) :
@@ -39,6 +63,10 @@ DDVCSCFFTEST::DDVCSCFFTEST(const DDVCSCFFTEST &other) :
 
     //set functors
     initFunctorsForIntegrations();
+
+    //set variables
+    m_partonDistributionEtaXiSummed = other.m_partonDistributionEtaXiSummed;
+    m_epsilon = other.m_epsilon;
 }
 
 void DDVCSCFFTEST::resolveObjectDependencies() {
@@ -53,11 +81,20 @@ void DDVCSCFFTEST::resolveObjectDependencies() {
 DDVCSCFFTEST::~DDVCSCFFTEST() {
 
     // destroy functors
-    if (m_pConvolution) {
-        delete m_pConvolution;
-        m_pConvolution = 0;
+    if (m_pConvolutionUnpolarized) {
+        delete m_pConvolutionUnpolarized;
+        m_pConvolutionUnpolarized = 0;
     }
 
+    if (m_pConvolutionPolarized) {
+        delete m_pConvolutionPolarized;
+        m_pConvolutionPolarized = 0;
+    }
+
+    if (m_pConvolutionUnpolarizedL) {
+        delete m_pConvolutionUnpolarizedL;
+        m_pConvolutionUnpolarizedL = 0;
+    }
 }
 
 DDVCSCFFTEST* DDVCSCFFTEST::clone() const {
@@ -65,8 +102,15 @@ DDVCSCFFTEST* DDVCSCFFTEST::clone() const {
 }
 
 void DDVCSCFFTEST::initFunctorsForIntegrations() {
-    m_pConvolution = NumA::Integrator1D::newIntegrationFunctor(this,
-            &DDVCSCFFTEST::convolution);
+
+    m_pConvolutionUnpolarized = NumA::Integrator1D::newIntegrationFunctor(this,
+            &DDVCSCFFTEST::convolutionUnpolarized);
+
+    m_pConvolutionPolarized = NumA::Integrator1D::newIntegrationFunctor(this,
+            &DDVCSCFFTEST::convolutionPolarized);
+
+    m_pConvolutionUnpolarizedL = NumA::Integrator1D::newIntegrationFunctor(this,
+            &DDVCSCFFTEST::convolutionUnpolarizedL);
 }
 
 void DDVCSCFFTEST::initModule() {
@@ -103,25 +147,62 @@ void DDVCSCFFTEST::isModuleWellConfigured() {
 
 std::complex<double> DDVCSCFFTEST::computeUnpolarized() {
 
-    //internal variables to be used
-    m_xi;
-    m_eta;
-    m_t;
-    m_MuF2;
-    m_MuR2;
-    m_Q2;
-    m_Q2Prim;
+//    //internal variables to be used
+//    m_xi;
+//    m_eta;
+//    m_t;
+//    m_MuF2;
+//    m_MuR2;
+//    m_Q2;
+//    m_Q2Prim;
+//
+//    m_pGPDModule;   //pointer to GPD module
+//    m_currentGPDComputeType; //GPD type
+//    m_qcdOrderType; //pQCD order
 
-    m_pGPDModule;   //pointer to GPD module
-    m_currentGPDComputeType; //GPD type
-    m_qcdOrderType; //pQCD order
+//GPD type
+    GPDType::Type gpdType;
+
+    switch (m_currentGPDComputeType) {
+    case GPDType::HL:
+        gpdType = GPDType::H;
+        break;
+    case GPDType::EL:
+        gpdType = GPDType::E;
+        break;
+    default:
+        gpdType = m_currentGPDComputeType;
+    }
+
+    //evaluate GPD at (eta, xi)
+    m_partonDistributionEtaXiSummed = computeSquareChargeAveragedGPD(
+            m_pGPDModule->compute(
+                    GPDKinematic(m_eta, m_xi, m_t, m_MuF2, m_MuR2), gpdType));
+
+    //CFF values
+    double re = 0.;
+    double im = 0.;
 
     //parameters
-    std::vector<double> parameters;
+    std::vector<double> parameters(1, 0.);
 
-    double re = integrate(m_pConvolution, 0., 1., parameters);
+    if (m_currentGPDComputeType == GPDType::H
+            || m_currentGPDComputeType == GPDType::E) {
 
-    return std::complex<double>(re, 0.);
+        parameters.at(0) = static_cast<double>(gpdType);
+
+        re = integrate(m_pConvolutionUnpolarized, 0., 1., parameters);
+    }
+
+    if (m_currentGPDComputeType == GPDType::HL
+            || m_currentGPDComputeType == GPDType::EL) {
+
+        parameters.at(0) = static_cast<double>(gpdType);
+
+        re = integrate(m_pConvolutionUnpolarizedL, 0., 1., parameters);
+    }
+
+    return std::complex<double>(re, im);
 }
 
 std::complex<double> DDVCSCFFTEST::computePolarized() {
@@ -136,207 +217,65 @@ std::complex<double> DDVCSCFFTEST::computePolarized() {
  * 4) is there any way I can define some variable, let's call it myGDP, such that I can write myGPD.getQuarkDistribution(QuarkFlavor: UP)? Something in the lines of myGPD = m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2), GPDType::H)?
  */
 
-double DDVCSCFFTEST::convolution(double x, std::vector<double> params) {
+double DDVCSCFFTEST::computeSquareChargeAveragedGPD(
+        const PartonDistribution& partonDistribution) const {
+
+    double result = 0.;
+
+    result +=
+            (partonDistribution.getQuarkDistribution(QuarkFlavor::UP).getQuarkDistributionPlus())
+                    * Constant::U2_ELEC_CHARGE;
+    result +=
+            (partonDistribution.getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistributionPlus())
+                    * Constant::D2_ELEC_CHARGE;
+    result +=
+            (partonDistribution.getQuarkDistribution(QuarkFlavor::STRANGE).getQuarkDistributionPlus())
+                    * Constant::S2_ELEC_CHARGE;
+
+    return result;
+
+}
+
+double DDVCSCFFTEST::convolutionUnpolarized(double x,
+        std::vector<double> params) {
+
+    GPDType::Type gpdType = static_cast<GPDType::Type>(params.at(0));
 
     double PV_LO; //PV integral in CFF at LO
-    const double eps = m_eta / pow(10., 3.); //small parameter that helps with the practical realization of PV: PV(1/x) = integral[x/(x^2 + eps)], eps -> 0
     double ANALITIC_LO; // analitic term in CFF at LO
 
+    double epsilonAbsEta = m_epsilon * fabs(m_eta);
+
+    double partonDistributionXXiSummed = computeSquareChargeAveragedGPD(
+            m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
+                    gpdType));
+
     //Term that goes with +eta (adding all flavors)
-    PV_LO =
-            (x - m_eta) / (pow(x - m_eta, 2.) + eps)
-                    * (Constant::U2_ELEC_CHARGE
-                            * (m_pGPDModule->compute(
-                                    GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
-                                    GPDType::H).getQuarkDistribution(
-                                    QuarkFlavor::UP).getQuarkDistributionPlus()
-                                    - m_pGPDModule->compute(
-                                            GPDKinematic(m_eta, m_xi, m_t,
-                                                    m_MuF2, m_MuR2), GPDType::H).getQuarkDistribution(
-                                            QuarkFlavor::UP).getQuarkDistributionPlus())
-                            + Constant::D2_ELEC_CHARGE
-                                    * (m_pGPDModule->compute(
-                                            GPDKinematic(x, m_xi, m_t, m_MuF2,
-                                                    m_MuR2), GPDType::H).getQuarkDistribution(
-                                            QuarkFlavor::DOWN).getQuarkDistributionPlus()
-                                            - m_pGPDModule->compute(
-                                                    GPDKinematic(m_eta, m_xi,
-                                                            m_t, m_MuF2,
-                                                            m_MuR2), GPDType::H).getQuarkDistribution(
-                                                    QuarkFlavor::DOWN).getQuarkDistributionPlus())
-                            + Constant::S2_ELEC_CHARGE
-                                    * (m_pGPDModule->compute(
-                                            GPDKinematic(x, m_xi, m_t, m_MuF2,
-                                                    m_MuR2), GPDType::H).getQuarkDistribution(
-                                            QuarkFlavor::STRANGE).getQuarkDistributionPlus()
-                                            - m_pGPDModule->compute(
-                                                    GPDKinematic(m_eta, m_xi,
-                                                            m_t, m_MuF2,
-                                                            m_MuR2), GPDType::H).getQuarkDistribution(
-                                                    QuarkFlavor::STRANGE).getQuarkDistributionPlus())
-                            + Constant::C2_ELEC_CHARGE
-                                    * (m_pGPDModule->compute(
-                                            GPDKinematic(x, m_xi, m_t, m_MuF2,
-                                                    m_MuR2), GPDType::H).getQuarkDistribution(
-                                            QuarkFlavor::CHARM).getQuarkDistributionPlus()
-                                            - m_pGPDModule->compute(
-                                                    GPDKinematic(m_eta, m_xi,
-                                                            m_t, m_MuF2,
-                                                            m_MuR2), GPDType::H).getQuarkDistribution(
-                                                    QuarkFlavor::CHARM).getQuarkDistributionPlus())
-                            + Constant::B2_ELEC_CHARGE
-                                    * (m_pGPDModule->compute(
-                                            GPDKinematic(x, m_xi, m_t, m_MuF2,
-                                                    m_MuR2), GPDType::H).getQuarkDistribution(
-                                            QuarkFlavor::BOTTOM).getQuarkDistributionPlus()
-                                            - m_pGPDModule->compute(
-                                                    GPDKinematic(m_eta, m_xi,
-                                                            m_t, m_MuF2,
-                                                            m_MuR2), GPDType::H).getQuarkDistribution(
-                                                    QuarkFlavor::BOTTOM).getQuarkDistributionPlus())
-                            + Constant::T2_ELEC_CHARGE
-                                    * (m_pGPDModule->compute(
-                                            GPDKinematic(x, m_xi, m_t, m_MuF2,
-                                                    m_MuR2), GPDType::H).getQuarkDistribution(
-                                            QuarkFlavor::TOP).getQuarkDistributionPlus()
-                                            - m_pGPDModule->compute(
-                                                    GPDKinematic(m_eta, m_xi,
-                                                            m_t, m_MuF2,
-                                                            m_MuR2), GPDType::H).getQuarkDistribution(
-                                                    QuarkFlavor::TOP).getQuarkDistributionPlus()));
+    PV_LO = (x - m_eta) / (pow(x - m_eta, 2.) + epsilonAbsEta)
+            * (partonDistributionXXiSummed - m_partonDistributionEtaXiSummed);
 
     //Term that goes with -eta (adding all flavors)
-    m_eta = -m_eta;
-
-    PV_LO +=
-            (x - m_eta) / (pow(x - m_eta, 2.) + eps)
-                    * (Constant::U2_ELEC_CHARGE
-                            * (m_pGPDModule->compute(
-                                    GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
-                                    GPDType::H).getQuarkDistribution(
-                                    QuarkFlavor::UP).getQuarkDistributionPlus()
-                                    - m_pGPDModule->compute(
-                                            GPDKinematic(m_eta, m_xi, m_t,
-                                                    m_MuF2, m_MuR2), GPDType::H).getQuarkDistribution(
-                                            QuarkFlavor::UP).getQuarkDistributionPlus())
-                            + Constant::D2_ELEC_CHARGE
-                                    * (m_pGPDModule->compute(
-                                            GPDKinematic(x, m_xi, m_t, m_MuF2,
-                                                    m_MuR2), GPDType::H).getQuarkDistribution(
-                                            QuarkFlavor::DOWN).getQuarkDistributionPlus()
-                                            - m_pGPDModule->compute(
-                                                    GPDKinematic(m_eta, m_xi,
-                                                            m_t, m_MuF2,
-                                                            m_MuR2), GPDType::H).getQuarkDistribution(
-                                                    QuarkFlavor::DOWN).getQuarkDistributionPlus())
-                            + Constant::S2_ELEC_CHARGE
-                                    * (m_pGPDModule->compute(
-                                            GPDKinematic(x, m_xi, m_t, m_MuF2,
-                                                    m_MuR2), GPDType::H).getQuarkDistribution(
-                                            QuarkFlavor::STRANGE).getQuarkDistributionPlus()
-                                            - m_pGPDModule->compute(
-                                                    GPDKinematic(m_eta, m_xi,
-                                                            m_t, m_MuF2,
-                                                            m_MuR2), GPDType::H).getQuarkDistribution(
-                                                    QuarkFlavor::STRANGE).getQuarkDistributionPlus())
-                            + Constant::C2_ELEC_CHARGE
-                                    * (m_pGPDModule->compute(
-                                            GPDKinematic(x, m_xi, m_t, m_MuF2,
-                                                    m_MuR2), GPDType::H).getQuarkDistribution(
-                                            QuarkFlavor::CHARM).getQuarkDistributionPlus()
-                                            - m_pGPDModule->compute(
-                                                    GPDKinematic(m_eta, m_xi,
-                                                            m_t, m_MuF2,
-                                                            m_MuR2), GPDType::H).getQuarkDistribution(
-                                                    QuarkFlavor::CHARM).getQuarkDistributionPlus())
-                            + Constant::B2_ELEC_CHARGE
-                                    * (m_pGPDModule->compute(
-                                            GPDKinematic(x, m_xi, m_t, m_MuF2,
-                                                    m_MuR2), GPDType::H).getQuarkDistribution(
-                                            QuarkFlavor::BOTTOM).getQuarkDistributionPlus()
-                                            - m_pGPDModule->compute(
-                                                    GPDKinematic(m_eta, m_xi,
-                                                            m_t, m_MuF2,
-                                                            m_MuR2), GPDType::H).getQuarkDistribution(
-                                                    QuarkFlavor::BOTTOM).getQuarkDistributionPlus())
-                            + Constant::T2_ELEC_CHARGE
-                                    * (m_pGPDModule->compute(
-                                            GPDKinematic(x, m_xi, m_t, m_MuF2,
-                                                    m_MuR2), GPDType::H).getQuarkDistribution(
-                                            QuarkFlavor::TOP).getQuarkDistributionPlus()
-                                            - m_pGPDModule->compute(
-                                                    GPDKinematic(m_eta, m_xi,
-                                                            m_t, m_MuF2,
-                                                            m_MuR2), GPDType::H).getQuarkDistribution(
-                                                    QuarkFlavor::TOP).getQuarkDistributionPlus()));
-
-    //Return eta to its original value
-    m_eta = -m_eta;
+    PV_LO += (x + m_eta) / (pow(x + m_eta, 2.) + epsilonAbsEta)
+            * (partonDistributionXXiSummed + m_partonDistributionEtaXiSummed);
 
     //Analitic term to CFF for +eta (addding all flavors)
-    ANALITIC_LO =
-            (m_pGPDModule->compute(
-                    GPDKinematic(m_eta, m_xi, m_t, m_MuF2, m_MuR2), GPDType::H).getQuarkDistribution(
-                    QuarkFlavor::UP).getQuarkDistributionPlus())
-                    * log(abs(1. - 1. / m_eta))
-                    + (m_pGPDModule->compute(
-                            GPDKinematic(m_eta, m_xi, m_t, m_MuF2, m_MuR2),
-                            GPDType::H).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistributionPlus())
-                            * log(abs(1. - 1. / m_eta))
-                    + (m_pGPDModule->compute(
-                            GPDKinematic(m_eta, m_xi, m_t, m_MuF2, m_MuR2),
-                            GPDType::H).getQuarkDistribution(
-                            QuarkFlavor::STRANGE).getQuarkDistributionPlus())
-                            * log(abs(1. - 1. / m_eta))
-                    + (m_pGPDModule->compute(
-                            GPDKinematic(m_eta, m_xi, m_t, m_MuF2, m_MuR2),
-                            GPDType::H).getQuarkDistribution(QuarkFlavor::CHARM).getQuarkDistributionPlus())
-                            * log(abs(1. - 1. / m_eta))
-                    + (m_pGPDModule->compute(
-                            GPDKinematic(m_eta, m_xi, m_t, m_MuF2, m_MuR2),
-                            GPDType::H).getQuarkDistribution(
-                            QuarkFlavor::BOTTOM).getQuarkDistributionPlus())
-                            * log(abs(1. - 1. / m_eta))
-                    + (m_pGPDModule->compute(
-                            GPDKinematic(m_eta, m_xi, m_t, m_MuF2, m_MuR2),
-                            GPDType::H).getQuarkDistribution(QuarkFlavor::TOP).getQuarkDistributionPlus())
-                            * log(abs(1. - 1. / m_eta));
+    ANALITIC_LO = m_partonDistributionEtaXiSummed * log(fabs(1. - 1. / m_eta));
 
     //Analitic term to CFF for -eta (addding all flavors)
-    m_eta = -m_eta;
-    ANALITIC_LO =
-            (m_pGPDModule->compute(
-                    GPDKinematic(m_eta, m_xi, m_t, m_MuF2, m_MuR2), GPDType::H).getQuarkDistribution(
-                    QuarkFlavor::UP).getQuarkDistributionPlus())
-                    * log(abs(1. - 1. / m_eta))
-                    + (m_pGPDModule->compute(
-                            GPDKinematic(m_eta, m_xi, m_t, m_MuF2, m_MuR2),
-                            GPDType::H).getQuarkDistribution(QuarkFlavor::DOWN).getQuarkDistributionPlus())
-                            * log(abs(1. - 1. / m_eta))
-                    + (m_pGPDModule->compute(
-                            GPDKinematic(m_eta, m_xi, m_t, m_MuF2, m_MuR2),
-                            GPDType::H).getQuarkDistribution(
-                            QuarkFlavor::STRANGE).getQuarkDistributionPlus())
-                            * log(abs(1. - 1. / m_eta))
-                    + (m_pGPDModule->compute(
-                            GPDKinematic(m_eta, m_xi, m_t, m_MuF2, m_MuR2),
-                            GPDType::H).getQuarkDistribution(QuarkFlavor::CHARM).getQuarkDistributionPlus())
-                            * log(abs(1. - 1. / m_eta))
-                    + (m_pGPDModule->compute(
-                            GPDKinematic(m_eta, m_xi, m_t, m_MuF2, m_MuR2),
-                            GPDType::H).getQuarkDistribution(
-                            QuarkFlavor::BOTTOM).getQuarkDistributionPlus())
-                            * log(abs(1. - 1. / m_eta))
-                    + (m_pGPDModule->compute(
-                            GPDKinematic(m_eta, m_xi, m_t, m_MuF2, m_MuR2),
-                            GPDType::H).getQuarkDistribution(QuarkFlavor::TOP).getQuarkDistributionPlus())
-                            * log(abs(1. - 1. / m_eta));
-
-    //Return eta to its original value
-    m_eta = -m_eta;
+    ANALITIC_LO += -1 * m_partonDistributionEtaXiSummed
+            * log(fabs(1. + 1. / m_eta));
 
     return PV_LO + ANALITIC_LO;
+}
 
+double DDVCSCFFTEST::convolutionPolarized(double x,
+        std::vector<double> params) {
+    return 0.;
+}
+
+double DDVCSCFFTEST::convolutionUnpolarizedL(double x,
+        std::vector<double> params) {
+    return 0.;
 }
 
 /*
@@ -347,4 +286,13 @@ double DDVCSCFFTEST::convolution(double x, std::vector<double> params) {
  }
  */
 
+double DDVCSCFFTEST::getEpsilon() const {
+    return m_epsilon;
+}
+
+void DDVCSCFFTEST::setEpsilon(double epsilon) {
+    m_epsilon = epsilon;
+}
+
 } /* namespace PARTONS */
+
