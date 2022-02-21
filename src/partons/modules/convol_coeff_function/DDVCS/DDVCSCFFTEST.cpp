@@ -183,15 +183,26 @@ std::complex<double> DDVCSCFFTEST::computeUnpolarized() {
     double re = 0.;
     double im = 0.;
 
-    //parameters
-    std::vector<double> parameters(1, 0.);
+    /*
+     * parameters:
+     * first element is gpdType;
+     * second is 0. for computing real part of CFF and 1. for imaginary
+     * third is 0. for CFF at LO and 1. at NLO
+     */
+
+    std::vector<double> parameters(3, 0.);//parameters(length, one initialization for all positions)
 
     if (m_currentGPDComputeType == GPDType::H
             || m_currentGPDComputeType == GPDType::E) {
 
         parameters.at(0) = static_cast<double>(gpdType);
 
+        //computing real part of CFF
+        parameters.at(1) = 0.;
         re = integrate(m_pConvolutionUnpolarized, 0., 1., parameters);
+        //computing imaginary part of CFF
+        parameters.at(1) = 1.;
+        im = integrate(m_pConvolutionUnpolarized, 0., 1., parameters);
     }
 
     if (m_currentGPDComputeType == GPDType::HL
@@ -199,8 +210,32 @@ std::complex<double> DDVCSCFFTEST::computeUnpolarized() {
 
         parameters.at(0) = static_cast<double>(gpdType);
 
-        re = integrate(m_pConvolutionUnpolarizedL, 0., 1., parameters);
+        //computing real part of CFF
+        parameters.at(1) = 0.;
+        re = integrate(m_pConvolutionUnpolarized, 0., 1., parameters);
+        //computing imaginary part of CFF
+        parameters.at(1) = 1.;
+        im = integrate(m_pConvolutionUnpolarized, 0., 1., parameters);
     }
+
+    //parameters
+//    std::vector<double> parameters(1, 0.);
+//
+//    if (m_currentGPDComputeType == GPDType::H
+//            || m_currentGPDComputeType == GPDType::E) {
+//
+//        parameters.at(0) = static_cast<double>(gpdType);
+//
+//        re = integrate(m_pConvolutionUnpolarized, 0., 1., parameters);
+//    }
+//
+//    if (m_currentGPDComputeType == GPDType::HL
+//            || m_currentGPDComputeType == GPDType::EL) {
+//
+//        parameters.at(0) = static_cast<double>(gpdType);
+//
+//        re = integrate(m_pConvolutionUnpolarizedL, 0., 1., parameters);
+//    }
 
     return std::complex<double>(re, im);
 }
@@ -208,14 +243,6 @@ std::complex<double> DDVCSCFFTEST::computeUnpolarized() {
 std::complex<double> DDVCSCFFTEST::computePolarized() {
     return std::complex<double>(0., 0.);
 }
-
-/*
- * DOUBTS:
- * 1) can I use 'params' in convolution() function to pass gpd type and therefore have this function valid for any gpd? This way I can avoid defining one function per gpd type
- * 2) Can I do the same for 'eps' used to compute principal value in CFF?
- * 3) in main.cpp there's a selection of H as the gpd. If I choose 'ALL' type, then the computation done using m_currentGPDComputeType is repeated over all gpd types?
- * 4) is there any way I can define some variable, let's call it myGDP, such that I can write myGPD.getQuarkDistribution(QuarkFlavor: UP)? Something in the lines of myGPD = m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2), GPDType::H)?
- */
 
 double DDVCSCFFTEST::computeSquareChargeAveragedGPD(
         const PartonDistribution& partonDistribution) const {
@@ -241,6 +268,8 @@ double DDVCSCFFTEST::convolutionUnpolarized(double x,
 
     GPDType::Type gpdType = static_cast<GPDType::Type>(params.at(0));
 
+    double convo; //Function to be convoluted/integrated in x
+
     double PV_LO; //PV integral in CFF at LO
     double ANALITIC_LO; // analitic term in CFF at LO
 
@@ -250,29 +279,89 @@ double DDVCSCFFTEST::convolutionUnpolarized(double x,
             m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
                     gpdType));
 
-    //Term that goes with +eta (adding all flavors)
-    PV_LO = (x - m_eta) / (pow(x - m_eta, 2.) + epsilonAbsEta)
-            * (partonDistributionXXiSummed - m_partonDistributionEtaXiSummed);
+    if (params.at(1) == 0.) {
 
-    //Term that goes with -eta (adding all flavors)
-    PV_LO += (x + m_eta) / (pow(x + m_eta, 2.) + epsilonAbsEta)
-            * (partonDistributionXXiSummed + m_partonDistributionEtaXiSummed);
+        //Term that goes with +eta (adding all flavors)
+        PV_LO =
+                (x - m_eta) / (pow(x - m_eta, 2.) + epsilonAbsEta)
+                        * (partonDistributionXXiSummed
+                                - m_partonDistributionEtaXiSummed);
 
-    //Analitic term to CFF for +eta (addding all flavors)
-    ANALITIC_LO = m_partonDistributionEtaXiSummed * log(fabs(1. - 1. / m_eta));
+        //Term that goes with -eta (adding all flavors)
+        PV_LO +=
+                (x + m_eta) / (pow(x + m_eta, 2.) + epsilonAbsEta)
+                        * (partonDistributionXXiSummed
+                                + m_partonDistributionEtaXiSummed);
 
-    //Analitic term to CFF for -eta (addding all flavors)
-    ANALITIC_LO += -1 * m_partonDistributionEtaXiSummed
-            * log(fabs(1. + 1. / m_eta));
+        //Analitic term to CFF for +eta (addding all flavors)
+        ANALITIC_LO = m_partonDistributionEtaXiSummed
+                * log(fabs(1. - 1. / m_eta));
 
-    return PV_LO + ANALITIC_LO;
+        //Analitic term to CFF for -eta (addding all flavors)
+        ANALITIC_LO += -1 * m_partonDistributionEtaXiSummed
+                * log(fabs(1. + 1. / m_eta));
+
+        convo = PV_LO + ANALITIC_LO;
+
+    } else if (params.at(1) == 1.) {
+
+        convo = -M_PI * m_partonDistributionEtaXiSummed;
+
+    }
+
+    return convo;
 }
 
 double DDVCSCFFTEST::convolutionPolarized(double x,
         std::vector<double> params) {
-    return 0.;
+
+    GPDType::Type gpdType = static_cast<GPDType::Type>(params.at(0));
+
+    double convo; //Function to be convoluted/integrated in x
+
+    double PV_LO; //PV integral in CFF at LO
+    double ANALITIC_LO; // analitic term in CFF at LO
+
+    double epsilonAbsEta = m_epsilon * fabs(m_eta);
+
+    double partonDistributionXXiSummed = computeSquareChargeAveragedGPD(
+            m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
+                    gpdType));
+
+    if (params.at(1) == 0.) {
+
+        //Term that goes with +eta (adding all flavors)
+        PV_LO =
+                (x - m_eta) / (pow(x - m_eta, 2.) + epsilonAbsEta)
+                        * (partonDistributionXXiSummed
+                                - m_partonDistributionEtaXiSummed);
+
+        //Term that goes with -eta (adding all flavors)
+        PV_LO +=
+                (x + m_eta) / (pow(x + m_eta, 2.) + epsilonAbsEta)
+                        * (partonDistributionXXiSummed
+                                + m_partonDistributionEtaXiSummed);
+
+        //Analitic term to CFF for +eta (addding all flavors)
+        ANALITIC_LO = m_partonDistributionEtaXiSummed
+                * log(fabs(1. - 1. / m_eta));
+
+        //Analitic term to CFF for -eta (addding all flavors)
+        ANALITIC_LO += -1 * m_partonDistributionEtaXiSummed
+                * log(fabs(1. + 1. / m_eta));
+
+        convo = PV_LO + ANALITIC_LO;
+
+    } else if (params.at(1) == 1.) {
+
+        convo = -M_PI * m_partonDistributionEtaXiSummed;
+
+    }
+
+    return convo;
 }
 
+//CFFs for HL, EL are NLO
 double DDVCSCFFTEST::convolutionUnpolarizedL(double x,
         std::vector<double> params) {
     return 0.;
