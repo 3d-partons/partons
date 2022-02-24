@@ -39,17 +39,4 @@ PhysicalType<double> DDVCSXiConverterTEST::compute(
     return PhysicalType<double>(xi, PhysicalUnit::NONE);
 }
 
-PhysicalType<double> DDVCSXiConverterTEST::computeEta(
-        const DDVCSObservableKinematic& kinematic) {
-
-    double xB = kinematic.getXB().getValue();
-    double t = kinematic.getT().getValue();
-    double Q2 = kinematic.getQ2().getValue();
-    double Q2Prim = kinematic.getQ2Prim().getValue();
-    double eta = (Q2 + Q2Prim) / (2. * Q2 / xB - Q2 - Q2Prim + t)
-            * (Q2 - Q2Prim + t / 2.) / (Q2 + Q2Prim); //this eta is in fact xi in Belitsky2003, eq 31 upon change of sign above
-
-    return PhysicalType<double>(eta, PhysicalUnit::NONE);
-}
-
 } /* namespace PARTONS */

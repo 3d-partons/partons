@@ -243,7 +243,6 @@ void DDVCSConvolCoeffFunctionModule::setKinematics(
     m_Q2 = kinematic.getQ2().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
     m_Q2Prim =
             kinematic.getQ2Prim().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
-    m_eta = kinematic.getEta().makeSameUnitAs(PhysicalUnit::NONE).getValue();
 }
 
 PerturbativeQCDOrderType::Type DDVCSConvolCoeffFunctionModule::getQCDOrderType() const {
@@ -256,8 +255,13 @@ void DDVCSConvolCoeffFunctionModule::setQCDOrderType(
 }
 
 void DDVCSConvolCoeffFunctionModule::initModule() {
+
+    //run for mother
     ConvolCoeffFunctionModule<DDVCSConvolCoeffFunctionKinematic,
             DDVCSConvolCoeffFunctionResult>::initModule();
+
+    //evaluate eta (xi in Belitsky2003, Eq. (31) upon the change of sign)
+    m_eta = m_xi * ((m_Q2 - m_Q2Prim + m_t / 2.) / (m_Q2 + m_Q2Prim));
 }
 
 void DDVCSConvolCoeffFunctionModule::isModuleWellConfigured() {

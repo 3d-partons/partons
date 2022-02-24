@@ -24,23 +24,13 @@ namespace PARTONS {
  *
  * @brief Class representing single CCF kinematics for DDVCS process.
  *
- * This class represents a single CCF kinematics for DDVCS process (xi, t, \f$Q^{2}\f$, \f$\mu_{F}^{2}\f$, \f$\mu_{F}^{2}\f$).
+ * This class represents a single CCF kinematics for DDVCS process (xi, t, \f$Q^{2}\f$, \f$Q'^{2}\f$, \f$\mu_{F}^{2}\f$, \f$\mu_{F}^{2}\f$).
  */
 class DDVCSConvolCoeffFunctionKinematic: public ConvolCoeffFunctionKinematic {
 
 public:
 
     static const std::string DDVCS_CONVOL_COEFF_FUNCTION_KINEMATIC_CLASS_NAME; ///< Type of the kinematic in XML automation.
-
-    /**
-     * Parameter name to set variable \f$\eta\f$ via configuration methods.
-     */
-    static const std::string KINEMATIC_PARAMETER_NAME_ETA;
-
-    /**
-     * Parameter name to set unit of variable \f$\eta\f$ via configuration methods.
-     */
-    static const std::string KINEMATIC_PARAMETER_NAME_ETA_UNIT;
 
     /**
      * Default constructor.
@@ -50,20 +40,18 @@ public:
     /**
      * Assignment constructor.
      * @param xi Skewness variable.
-     * @param eta Eta.
      * @param t Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
      * @param Q2 Virtual-photon virtuality (in \f$GeV^{2}\f$).
      * @param Q2Prim Outgoing virtual-photon virtuality (in \f$GeV^{2}\f$).
      * @param MuF2 Factorization scale squared (in \f$GeV^{2}\f$).
      * @param MuR2 Renormalization scale squared (in \f$GeV^{2}\f$).
      */
-    DDVCSConvolCoeffFunctionKinematic(double xi, double eta, double t,
-            double Q2, double Q2Prim, double MuF2, double MuR2);
+    DDVCSConvolCoeffFunctionKinematic(double xi, double t, double Q2,
+            double Q2Prim, double MuF2, double MuR2);
 
     /**
      * Assignment constructor.
      * @param xi Skewness variable.
-     * @param eta Eta.
      * @param t Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
      * @param Q2 Virtual-photon virtuality (in \f$GeV^{2}\f$).
      * @param Q2Prim Outgoing virtual-photon virtuality (in \f$GeV^{2}\f$).
@@ -71,14 +59,13 @@ public:
      * @param MuR2 Renormalization scale squared (in \f$GeV^{2}\f$).
      */
     DDVCSConvolCoeffFunctionKinematic(const PhysicalType<double> &xi,
-            const PhysicalType<double> &eta, const PhysicalType<double> &t,
-            const PhysicalType<double> &Q2, const PhysicalType<double> &Q2Prim,
+            const PhysicalType<double> &t, const PhysicalType<double> &Q2,
+            const PhysicalType<double> &Q2Prim,
             const PhysicalType<double> &MuF2, const PhysicalType<double> &MuR2);
 
     /**
      * Assignment constructor.
      * @param xi Skewness variable.
-     * @param eta Eta.
      * @param t Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
      * @param Q2 Virtual-photon virtuality (in \f$GeV^{2}\f$).
      * @param Q2Prim Outgoing virtual-photon virtuality (in \f$GeV^{2}\f$).
@@ -86,8 +73,7 @@ public:
      * @param MuR2 Renormalization scale squared (in \f$GeV^{2}\f$).
      */
     DDVCSConvolCoeffFunctionKinematic(const ElemUtils::GenericType &xi,
-            const ElemUtils::GenericType &eta, const ElemUtils::GenericType &t,
-            const ElemUtils::GenericType &Q2,
+            const ElemUtils::GenericType &t, const ElemUtils::GenericType &Q2,
             const ElemUtils::GenericType &Q2Prim,
             const ElemUtils::GenericType &MuF2,
             const ElemUtils::GenericType &MuR2);
@@ -145,21 +131,6 @@ public:
     //********************************************************
 
     /**
-     * Get outgoing virtual-photon virtuality.
-     */
-    const PhysicalType<double>& getEta() const;
-
-    /**
-     * Set outgoing virtual-photon virtuality.
-     */
-    void setEta(const PhysicalType<double>& eta);
-
-    /**
-     * Set outgoing virtual-photon virtuality.
-     */
-    void setEta(double Eta, PhysicalUnit::Type unit = PhysicalUnit::NONE);
-
-    /**
      * Get virtual-photon virtuality.
      */
     const PhysicalType<double>& getQ2() const;
@@ -194,11 +165,6 @@ protected:
     virtual void updateHashSum() const;
 
 private:
-
-    /**
-     * Eta.
-     */
-    PhysicalType<double> m_eta;
 
     /**
      * Virtual-photon virtuality (in \f$GeV^{2}\f$).

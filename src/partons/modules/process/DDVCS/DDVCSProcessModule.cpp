@@ -335,7 +335,6 @@ bool DDVCSProcessModule::isPreviousCCFKinematicDifferent(
         const DDVCSConvolCoeffFunctionKinematic& kinematic) const {
 
     return ((kinematic.getXi() != m_lastCCFKinematics.getXi())
-            || (kinematic.getEta() != m_lastCCFKinematics.getEta())
             || (kinematic.getT() != m_lastCCFKinematics.getT())
             || (kinematic.getQ2() != m_lastCCFKinematics.getQ2())
             || (kinematic.getQ2Prim() != m_lastCCFKinematics.getQ2Prim())
@@ -532,11 +531,8 @@ void DDVCSProcessModule::computeConvolCoeffFunction(
     //compute xi
     PhysicalType<double> xi = m_pXiConverterModule->compute(kinematic);
 
-    //compute eta
-    PhysicalType<double> eta = m_pXiConverterModule->computeEta(kinematic);
-
     //create ccf kinematics
-    DDVCSConvolCoeffFunctionKinematic ccfKinematics(xi, eta, kinematic.getT(),
+    DDVCSConvolCoeffFunctionKinematic ccfKinematics(xi, kinematic.getT(),
             kinematic.getQ2(), kinematic.getQ2Prim(), scale.getMuF2(),
             scale.getMuR2());
 

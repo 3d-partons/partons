@@ -52,12 +52,6 @@ public:
     virtual PhysicalType<double> compute(
             const DDVCSObservableKinematic& kinematic) = 0;
 
-    /**
-     * Compute eta.
-     */
-    virtual PhysicalType<double> computeEta(
-            const DDVCSObservableKinematic& kinematic) = 0;
-
 protected:
 
     virtual void initModule();
