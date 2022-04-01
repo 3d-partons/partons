@@ -34,7 +34,7 @@ const double GPDEvolutionVinnikov::C_A = (2.0 * C_F + 1.0 / N_C);
 const double GPDEvolutionVinnikov::T_R = (N_F / 2.0);
 
 GPDEvolutionVinnikov::GPDEvolutionVinnikov(const std::string& className) :
-        GPDEvolutionModule(className), MathIntegratorModule(), m_gridSize(10), m_xiLast(
+        GPDEvolutionModule(className), MathIntegratorModule(), m_gridSize(200), m_xiLast(
                 0), m_tLast(0), m_MuR2Last(0), m_nFlavors(0), m_nFlavors_ref(0), m_pGPDModule(
                 0) {
 

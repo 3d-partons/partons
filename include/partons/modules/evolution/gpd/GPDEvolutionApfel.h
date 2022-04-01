@@ -81,8 +81,10 @@ public:
     double getTabLowerBound() const;
     double getTabUpperBound() const;
     int getTabInterDegree() const;
-
     double getPreviousXi() const;
+    std::shared_ptr<apfel::Grid> getGrid() const;
+    std::function<double(double const&)> getAlphas() const;
+    std::shared_ptr<apfel::TabulateObject<apfel::Set<apfel::Distribution>>> getTabulatedGPDs() const;
 
 protected:
 
@@ -110,9 +112,9 @@ private:
     int m_tabInterDegree;
     double m_xi_prev;
 
-    std::unique_ptr<apfel::Grid> m_g;
+    std::shared_ptr<apfel::Grid> m_g;
     std::function<double(double const&)> m_as;
-    std::unique_ptr<apfel::TabulateObject<apfel::Set<apfel::Distribution>>> m_tabulatedGpds;
+    std::shared_ptr<apfel::TabulateObject<apfel::Set<apfel::Distribution>>> m_tabulatedGpds;
 };
 
 } /* namespace PARTONS */
