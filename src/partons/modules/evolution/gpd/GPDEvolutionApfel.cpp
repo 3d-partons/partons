@@ -19,7 +19,7 @@ const unsigned int GPDEvolutionApfel::classId = BaseObjectRegistry::getInstance(
 GPDEvolutionApfel::GPDEvolutionApfel(const std::string &className) :
         GPDEvolutionModule(className),
 	m_subgridNodes({100, 60, 50, 50}),
-	m_subgridLowerBounds({0.0001, 0.1, 0.6, 0.8}),
+	m_subgridLowerBounds({0.0000001, 0.1, 0.6, 0.8}),
 	m_subgridInterDegrees({3, 3, 3, 3}),
 	m_tabNodes(100),
 	m_tabLowerBound(1),
@@ -100,32 +100,35 @@ void GPDEvolutionApfel::prepareSubModules(const std::map<std::string, BaseObject
 }
 
 PartonDistribution GPDEvolutionApfel::compute(GPDModule* pGPDModule, const GPDType::Type &type) {
+    // Set current GPD type
+    setGPDType(type);
 
     // Set initial scale
     m_MuF2_ref = pGPDModule->getMuF2Ref();
 
-    // Set current GPD type
-    setGPDType(type);
+    //if (m_xi != m_xi_prev)
+      {
+	// Get thresholds. Set to zero whatever is below one.
+	std::vector<double> thresholds;
+	std::vector<ActiveFlavorsThresholds> afts = m_pActiveFlavorsModule->getNfIntervals();
+	if (afts.size() == 1)
+	  for (int i = 0; i < afts[0].getNf(); i++)
+	    thresholds.push_back(0);
+	else
+	  for (ActiveFlavorsThresholds aft : afts)
+	    thresholds.push_back(aft.getLowerBound() < 1 ? 0 : sqrt(aft.getLowerBound()));
 
-    // Get thresholds. Set to zero whatever is below one.
-    std::vector<double> thresholds;
-    std::vector<ActiveFlavorsThresholds> afts = m_pActiveFlavorsModule->getNfIntervals();
-    if (afts.size() == 1)
-      for (int i = 0; i < afts[0].getNf(); i++)
-	thresholds.push_back(0);
-    else
-      for (ActiveFlavorsThresholds aft : afts)
-	thresholds.push_back(aft.getLowerBound() < 1 ? 0 : sqrt(aft.getLowerBound()));
+	// Initialize QCD evolution objects
+	const auto GpdObj = apfel::InitializeGpdObjects(*m_g, thresholds, m_xi);
 
-    // Initialize QCD evolution objects
-    const auto GpdObj = apfel::InitializeGpdObjects(*m_g, thresholds, m_xi);
+	// Construct the DGLAP evolution operators
+	const auto EvolvedGpds = apfel::BuildDglap(GpdObj, initialScaleDistributions(pGPDModule), sqrt(m_MuF2_ref), this->getPertOrder() - 1, m_as);
 
-    // Construct the DGLAP evolution operators
-    const auto EvolvedGpds = apfel::BuildDglap(GpdObj, initialScaleDistributions(pGPDModule), sqrt(m_MuF2_ref), this->getPertOrder() - 1, m_as);
-
-    // Tabulate evolution Operator
-    m_tabulatedGpds = std::unique_ptr<apfel::TabulateObject<apfel::Set<apfel::Distribution>>>(new apfel::TabulateObject<apfel::Set<apfel::Distribution>>
-												{*EvolvedGpds, m_tabNodes, m_tabLowerBound, m_tabUpperBound, m_tabInterDegree});
+	// Tabulate evolution Operator
+	m_tabulatedGpds = std::shared_ptr<apfel::TabulateObject<apfel::Set<apfel::Distribution>>>(new apfel::TabulateObject<apfel::Set<apfel::Distribution>>
+												  {*EvolvedGpds, m_tabNodes, m_tabLowerBound, m_tabUpperBound, m_tabInterDegree});
+	m_xi_prev = m_xi;
+      }
 
     // Get kinematics
     const GPDKinematic kin = this->getKinematics();
@@ -143,8 +146,8 @@ PartonDistribution GPDEvolutionApfel::compute(GPDModule* pGPDModule, const GPDTy
 	  else if (i == 2)
 	      j = 1;
 
-	  const double q  = gpds.at(i).Evaluate(this->m_x);
-	  const double qb = gpds.at(-i).Evaluate(this->m_x);
+	  const double q  = gpds.at(i).Evaluate(this->m_x) / this->m_x;
+	  const double qb = gpds.at(-i).Evaluate(this->m_x) / this->m_x;
 	  qd.insert({(QuarkFlavor::Type) j, QuarkDistribution{(QuarkFlavor::Type) j, q, q + qb, q - qb}});
       }
 
@@ -157,7 +160,6 @@ PartonDistribution GPDEvolutionApfel::compute(GPDModule* pGPDModule, const GPDTy
 
 std::function<std::map<int, double>(double const&, double const&)> GPDEvolutionApfel::initialScaleDistributions(GPDModule* pGPDModule) {
     return [=] (double const& x, double const& muF0) -> std::map<int, double> {
-
         // Define kinematics
         const double muF02 = pow(muF0, 2);
 	const GPDKinematic kin{x, m_xi, m_t, muF02, muF02};
@@ -176,8 +178,8 @@ std::function<std::map<int, double>(double const&, double const&)> GPDEvolutionA
 	    else if ((int) t == 2)
 	      fl = 1;
 
-	    const double q  = pd.getQuarkDistribution(t).getQuarkDistribution();
-	    const double qb = pd.getQuarkDistribution(t).getQuarkDistributionPlus() - q;
+	    const double q  = x * pd.getQuarkDistribution(t).getQuarkDistribution();
+	    const double qb = x * pd.getQuarkDistribution(t).getQuarkDistributionPlus() - q;
 	    physd.insert({fl,  q});
 	    physd.insert({-fl, qb});
 	}
@@ -252,6 +254,18 @@ double GPDEvolutionApfel::getPreviousXi() const {
   return m_xi_prev;
 }
 
+std::shared_ptr<apfel::Grid>  GPDEvolutionApfel::getGrid() const {
+  return m_g;
+}
+
+std::function<double(double const&)> GPDEvolutionApfel::getAlphas() const {
+  return m_as;
+}
+
+std::shared_ptr<apfel::TabulateObject<apfel::Set<apfel::Distribution>>> GPDEvolutionApfel::getTabulatedGPDs() const {
+  return m_tabulatedGpds;
+}
+
 GPDEvolutionApfel::GPDEvolutionApfel(const GPDEvolutionApfel &other) :
     GPDEvolutionModule(other) {
   m_subgridNodes        = other.getSubgridNodes();
@@ -262,18 +276,22 @@ GPDEvolutionApfel::GPDEvolutionApfel(const GPDEvolutionApfel &other) :
   m_tabUpperBound       = other.getTabUpperBound();
   m_tabInterDegree      = other.getTabInterDegree();
   m_xi_prev             = other.getPreviousXi();
+  m_g                   = other.getGrid();
+  m_as                  = other.getAlphas();
+  m_tabulatedGpds       = other.getTabulatedGPDs();
 }
 
 void GPDEvolutionApfel::initModule() {
     GPDEvolutionModule::initModule();
 
+    // Silence APFEL
     apfel::SetVerbosityLevel(0);
 
     // Setup APFEL++ x-space
     std::vector<apfel::SubGrid> vsg;
     for (int i = 0; i < (int) m_subgridNodes.size(); i++)
         vsg.push_back(apfel::SubGrid{m_subgridNodes[i], m_subgridLowerBounds[i], m_subgridInterDegrees[i]});
-    m_g = std::unique_ptr<apfel::Grid> (new apfel::Grid{vsg});
+    m_g = std::shared_ptr<apfel::Grid> (new apfel::Grid{vsg});
 
     // Running coupling
     m_as = [=] (double const& mu) -> double{ return getRunningAlphaStrongModule()->compute(mu * mu); };
