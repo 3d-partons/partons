@@ -12,6 +12,8 @@
 
 #include <fstream>
 #include <sstream>
+#include <stdio.h>
+#include <math.h>
 
 // TODO: Clean list of headers. Check which ones are necessary.
 
@@ -354,11 +356,17 @@ PARTONS::PartonDistribution simpleRDDAModel::computeH()
     	        double HdVal = 0.;
 
     	        if (m_x >= m_xi) {
-    	            // Integration, u quark
-    	            HuVal = integrate(m_pIntegralHuVal, Beta1, Beta2, emptyParameters);
+    	        	if(m_x ==1 ){
+    	        		HuVal = 0. ;
+    	        		HdVal = 0. ;
+    	        	}
+    	        	else {
+    	        		// Integration, u quark
+    	        		HuVal = integrate(m_pIntegralHuVal, Beta1, Beta2, emptyParameters);
 
-    	            // Integration, d quark
-    	            HdVal = integrate(m_pIntegralHdVal, Beta1, Beta2, emptyParameters);
+    	        		// Integration, d quark
+    	        		HdVal = integrate(m_pIntegralHdVal, Beta1, Beta2, emptyParameters);
+    	        	}
     	        }
 
     	        if (fabs(m_x) < m_xi) {
@@ -399,6 +407,11 @@ PARTONS::PartonDistribution simpleRDDAModel::computeH()
 
 
     //std::cout << "Huval = " << HuVal << " Hdval = " << HdVal << std::endl;
+    	        if(isnan(HuVal)){
+    	        	std::cout << "HuVal is NaN" << std::endl ;
+     	        	std::cout << "x = " << m_x << " xi = " << m_xi  << std::endl;
+
+    	        }
 
     // TODO: Check and fix definitions of the the different quark distributions (u, uM, u+, u-, d(...) and s(...)). See Cédric PhD thesis. pp. 56.
     double HuSea  = 0.;
