@@ -106,7 +106,7 @@ PartonDistribution GPDEvolutionApfel::compute(GPDModule* pGPDModule, const GPDTy
     // Set initial scale
     m_MuF2_ref = pGPDModule->getMuF2Ref();
 
-    //if (m_xi != m_xi_prev)
+    if (m_xi != m_xi_prev)
       {
 	// Get thresholds. Set to zero whatever is below one.
 	std::vector<double> thresholds;
@@ -284,17 +284,21 @@ GPDEvolutionApfel::GPDEvolutionApfel(const GPDEvolutionApfel &other) :
 void GPDEvolutionApfel::initModule() {
     GPDEvolutionModule::initModule();
 
-    // Silence APFEL
-    apfel::SetVerbosityLevel(0);
+    if (m_xi != m_xi_prev)
+      {
 
-    // Setup APFEL++ x-space
-    std::vector<apfel::SubGrid> vsg;
-    for (int i = 0; i < (int) m_subgridNodes.size(); i++)
-        vsg.push_back(apfel::SubGrid{m_subgridNodes[i], m_subgridLowerBounds[i], m_subgridInterDegrees[i]});
-    m_g = std::shared_ptr<apfel::Grid> (new apfel::Grid{vsg});
+	// Silence APFEL
+	apfel::SetVerbosityLevel(0);
 
-    // Running coupling
-    m_as = [=] (double const& mu) -> double{ return getRunningAlphaStrongModule()->compute(mu * mu); };
+	// Setup APFEL++ x-space
+	std::vector<apfel::SubGrid> vsg;
+	for (int i = 0; i < (int) m_subgridNodes.size(); i++)
+	  vsg.push_back(apfel::SubGrid{m_subgridNodes[i], m_subgridLowerBounds[i], m_subgridInterDegrees[i]});
+	m_g = std::shared_ptr<apfel::Grid> (new apfel::Grid{vsg});
+
+	// Running coupling
+	m_as = [=] (double const& mu) -> double{ return getRunningAlphaStrongModule()->compute(mu * mu); };
+      }
 }
 
 void GPDEvolutionApfel::isModuleWellConfigured() {
