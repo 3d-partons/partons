@@ -281,11 +281,8 @@ void DDVCSConvolCoeffFunctionModule::isModuleWellConfigured() {
                         << " is not > 0.");
     }
 
-    if (m_eta < 0. || m_eta > 1.) {
-        warn(__func__,
-                ElemUtils::Formatter() << "Input value of eta = " << m_eta
-                        << " do not lay between 0 and 1.");
-    }
+
+
 }
 
 } /* namespace PARTONS */

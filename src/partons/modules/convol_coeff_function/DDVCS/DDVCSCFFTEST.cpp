@@ -5,6 +5,7 @@
 #include <NumA/functor/one_dimension/Functor1D.h>
 #include <NumA/integration/one_dimension/Integrator1D.h>
 #include <NumA/integration/one_dimension/IntegratorType1D.h>
+#include <cmath>
 #include <utility>
 
 #include "../../../../../include/partons/beans/gpd/GPDKinematic.h"
@@ -13,8 +14,8 @@
 #include "../../../../../include/partons/beans/PerturbativeQCDOrderType.h"
 #include "../../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../../include/partons/BaseObjectRegistry.h"
-#include "../../../../../include/partons/modules/gpd/GPDModule.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
+#include "../../../../../include/partons/modules/gpd/GPDModule.h"
 
 namespace PARTONS {
 
@@ -301,11 +302,11 @@ double DDVCSCFFTEST::convolutionUnpolarized(double x,
         ANALITIC_LO += -1 * m_partonDistributionEtaXiSummed
                 * log(fabs(1. + 1. / m_eta));
 
-        convo = PV_LO + ANALITIC_LO;
+        convo = (-1.)*(PV_LO + ANALITIC_LO);
 
     } else if (params.at(1) == 1.) {
 
-        convo = -M_PI * m_partonDistributionEtaXiSummed;
+        convo = M_PI * m_partonDistributionEtaXiSummed;
 
     }
 
@@ -350,11 +351,11 @@ double DDVCSCFFTEST::convolutionPolarized(double x,
         ANALITIC_LO += -1 * m_partonDistributionEtaXiSummed
                 * log(fabs(1. + 1. / m_eta));
 
-        convo = PV_LO + ANALITIC_LO;
+        convo = -(PV_LO + ANALITIC_LO);
 
     } else if (params.at(1) == 1.) {
 
-        convo = -M_PI * m_partonDistributionEtaXiSummed;
+        convo = M_PI * m_partonDistributionEtaXiSummed;
 
     }
 
