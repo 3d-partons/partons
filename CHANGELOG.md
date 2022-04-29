@@ -1,3 +1,27 @@
+**3.0**
+
+*Updates:*
+
+* improve configuration with CMake 
+   * Qt is version either Qt 4 or 5 can be used
+   * printing of versions improved
+   * automatic population of environment_configuration.dat file
+* add new GPD types, namelly for transversity nad higher-twist GPDs
+* add Docker configuration file with description
+* remove MSTW files (now one can chose PDF with LHAPDF)
+
+*Physics:*
+* addition of new exclusive production channel - DVMP
+* addition of objects for collinear distributions, including services, DB connection, evolution
+* addition  of  APFEL interface
+* addition  of  LHAPDF interface
+* addition of  subtraction constant module related to Eur.Phys.J.C 81 (2021) 4, 300
+* addition of GPD module related to Phys.Rev.D 103 (2021) 11, 114019 
+* addtion of GPD model used in Phys. Lett. B 805 (2020) 135454
+* addition of few observable modules, like for the evaluation of backward-forward asymmetry for TCS, or total cross-section for DVCS 
+* addition to new runnung coupling and threshold modules, mostly related to APFEL
+
+
 **2.0**
 
 *Updates:*
