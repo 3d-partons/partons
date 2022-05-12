@@ -256,6 +256,7 @@ double DDVCSCrossSectionTotal::DDVCSCrossSectionTotalFunction(double* kin,
         res *= norm;
         err *= norm;
 
+        std::cout << params->m_xB << ' ' << params->m_t << ' ' << params->m_Q2 << ' ' << params->m_Q2Prim << std::endl;
         std::cout << res << " " << err << std::endl;
     }
 
