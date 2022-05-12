@@ -135,27 +135,50 @@ double DDVCSCrossSectionTotal::DDVCSCrossSectionTotalFunction(double* kin,
             static_cast<DDVCSCrossSectionTotalParameters*>(par);
 
     size_t i = 0;
+    double norm = 1.;
 
-    params->m_xB =
-            (params->m_pDDVCSCrossSectionTotal->getRangexB().first
-                    == params->m_pDDVCSCrossSectionTotal->getRangexB().second) ?
-                    (params->m_pDDVCSCrossSectionTotal->getRangexB().first) :
-                    (kin[i++]);
-    params->m_t =
-            (params->m_pDDVCSCrossSectionTotal->getRangeT().first
-                    == params->m_pDDVCSCrossSectionTotal->getRangeT().second) ?
-                    (params->m_pDDVCSCrossSectionTotal->getRangeT().first) :
-                    (kin[i++]);
-    params->m_Q2 =
-            (params->m_pDDVCSCrossSectionTotal->getRangeQ2().first
-                    == params->m_pDDVCSCrossSectionTotal->getRangeQ2().second) ?
-                    (params->m_pDDVCSCrossSectionTotal->getRangeQ2().first) :
-                    (kin[i++]);
-    params->m_Q2Prim =
-            (params->m_pDDVCSCrossSectionTotal->getRangeQ2Prim().first
-                    == params->m_pDDVCSCrossSectionTotal->getRangeQ2Prim().second) ?
-                    (params->m_pDDVCSCrossSectionTotal->getRangeQ2Prim().first) :
-                    (kin[i++]);
+    if (params->m_pDDVCSCrossSectionTotal->getRangexB().first
+            == params->m_pDDVCSCrossSectionTotal->getRangexB().second) {
+        params->m_xB = params->m_pDDVCSCrossSectionTotal->getRangexB().first;
+    } else {
+
+        params->m_xB = pow(10., kin[i]);
+        norm *= pow(10., kin[i]) * log(10.);
+        i++;
+    }
+
+    if (params->m_pDDVCSCrossSectionTotal->getRangeT().first
+            == params->m_pDDVCSCrossSectionTotal->getRangeT().second) {
+        params->m_t = params->m_pDDVCSCrossSectionTotal->getRangeT().first;
+    } else {
+
+        params->m_t = kin[i];
+        i++;
+    }
+
+    if (params->m_pDDVCSCrossSectionTotal->getRangeQ2().first
+            == params->m_pDDVCSCrossSectionTotal->getRangeQ2().second) {
+        params->m_Q2 = params->m_pDDVCSCrossSectionTotal->getRangeQ2().first;
+    } else {
+
+        params->m_Q2 = pow(10., kin[i]);
+        norm *= pow(10., kin[i]) * log(10.);
+        i++;
+
+    }
+
+    if (params->m_pDDVCSCrossSectionTotal->getRangeQ2Prim().first
+            == params->m_pDDVCSCrossSectionTotal->getRangeQ2Prim().second) {
+        params->m_Q2Prim =
+                params->m_pDDVCSCrossSectionTotal->getRangeQ2Prim().first;
+    } else {
+
+        params->m_Q2Prim = pow(10., kin[i]);
+        norm *= pow(10., kin[i]) * log(10.);
+        i++;
+
+    }
+
     double E = params->m_E;
 
     //check kinematic range
@@ -218,8 +241,7 @@ double DDVCSCrossSectionTotal::DDVCSCrossSectionTotalFunction(double* kin,
     max[2] = params->m_pDDVCSCrossSectionTotal->getRangeThetaL().second;
 
     //function
-    gsl_monte_function GAngle = { &DDVCSCrossSectionTotalFunctionAngle, 3,
-            par };
+    gsl_monte_function GAngle = { &DDVCSCrossSectionTotalFunctionAngle, 3, par };
 
     //run
     gsl_monte_vegas_state* sAngle = gsl_monte_vegas_alloc(3);
@@ -231,7 +253,10 @@ double DDVCSCrossSectionTotal::DDVCSCrossSectionTotalFunction(double* kin,
         gsl_monte_vegas_integrate(&GAngle, min, max, 3, 100, params->m_r,
                 sAngle, &res, &err);
 
-        std::cout << res << " "  << err << std::endl;
+        res *= norm;
+        err *= norm;
+
+        std::cout << res << " " << err << std::endl;
     }
 
     //free
@@ -274,8 +299,8 @@ PhysicalType<double> DDVCSCrossSectionTotal::computeObservable(
 
     if (m_rangexB.first != m_rangexB.second) {
 
-        min.push_back(m_rangexB.first);
-        max.push_back(m_rangexB.second);
+        min.push_back(log10(m_rangexB.first));
+        max.push_back(log10(m_rangexB.second));
     }
 
     if (m_rangeT.first != m_rangeT.second) {
@@ -286,17 +311,15 @@ PhysicalType<double> DDVCSCrossSectionTotal::computeObservable(
 
     if (m_rangeQ2.first != m_rangeQ2.second) {
 
-        min.push_back(m_rangeQ2.first);
-        max.push_back(m_rangeQ2.second);
+        min.push_back(log10(m_rangeQ2.first));
+        max.push_back(log10(m_rangeQ2.second));
     }
 
     if (m_rangeQ2Prim.first != m_rangeQ2Prim.second) {
 
-        min.push_back(m_rangeQ2Prim.first);
-        max.push_back(m_rangeQ2Prim.second);
+        min.push_back(log10(m_rangeQ2Prim.first));
+        max.push_back(log10(m_rangeQ2Prim.second));
     }
-
-
 
     //info
     info(__func__,
@@ -324,10 +347,11 @@ PhysicalType<double> DDVCSCrossSectionTotal::computeObservable(
 
     //free
     gsl_monte_vegas_free(s);
-    gsl_rng_free (params.m_r);
+    gsl_rng_free(params.m_r);
 
     //return
-    return PhysicalType<double>(res, PhysicalUnit::NB).makeSameUnitAs(PhysicalUnit::NB);
+    return PhysicalType<double>(res, PhysicalUnit::NB).makeSameUnitAs(
+            PhysicalUnit::NB);
 }
 
 void DDVCSCrossSectionTotal::printChangeOfRange(const std::string& func,
