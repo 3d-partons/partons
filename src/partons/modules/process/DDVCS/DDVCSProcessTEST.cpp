@@ -118,8 +118,8 @@ void DDVCSProcessTEST::initModule() {
     DDVCSProcessModule::initModule();
 
     //compute internal variables
-    computeInternalVariables(Constant::MUON_MASS, m_E, Constant::PROTON_MASS,
-            m_xB, m_t, m_Q2, m_Q2Prim, m_phi, m_phiL, m_thetaL);
+    computeInternalVariables(0., m_E, Constant::PROTON_MASS,
+            m_xB, m_t, m_Q2, m_Q2Prim, m_phi, m_phiL, m_thetaL); //1st parameter is muon mass
     //TODO
 //                m_phil, m_thetal);
 }
@@ -192,9 +192,8 @@ PhysicalType<double> DDVCSProcessTEST::CrossSectionBH() {
                         << m_targetPolarization.toString());
     }
 
-    double xsec = crossSectionBH(Constant::MUON_MASS, m_E,
-            Constant::PROTON_MASS, m_xB, m_t, m_Q2, m_Q2Prim, m_phi, m_phiL,
-            m_thetaL, m_beamCharge, polariz);
+    double xsec = crossSectionBH(m_E, Constant::PROTON_MASS, m_xB, m_t, m_Q2,
+            m_Q2Prim, m_phi, m_phiL, m_thetaL, m_beamCharge, polariz);
 
     return PhysicalType<double>(xsec, PhysicalUnit::GEVm2);
 }
@@ -213,9 +212,8 @@ PhysicalType<double> DDVCSProcessTEST::CrossSectionVCS() {
                         << m_targetPolarization.toString());
     }
 
-    double xsec = crossSectionVCS(Constant::MUON_MASS, m_E,
-            Constant::PROTON_MASS, m_xB, m_t, m_Q2, m_Q2Prim, m_phi, m_phiL,
-            m_thetaL, m_beamCharge, polariz);
+    double xsec = crossSectionVCS(m_E, Constant::PROTON_MASS, m_xB, m_t, m_Q2,
+            m_Q2Prim, m_phi, m_phiL, m_thetaL, m_beamCharge, polariz);
 
     return PhysicalType<double>(xsec, PhysicalUnit::GEVm2);
 }
@@ -234,9 +232,9 @@ PhysicalType<double> DDVCSProcessTEST::CrossSectionInterf() {
                         << m_targetPolarization.toString());
     }
 
-    double xsec = crossSectionInterf(Constant::MUON_MASS, m_E,
-            Constant::PROTON_MASS, m_xB, m_t, m_Q2, m_Q2Prim, m_phi, m_phiL,
-            m_thetaL, m_beamCharge, polariz, m_beamHelicity);
+    double xsec = crossSectionInterf(m_E, Constant::PROTON_MASS, m_xB, m_t,
+            m_Q2, m_Q2Prim, m_phi, m_phiL, m_thetaL, m_beamCharge, polariz,
+            m_beamHelicity);
 
     return PhysicalType<double>(xsec, PhysicalUnit::GEVm2);
 
@@ -487,6 +485,57 @@ double DDVCSProcessTEST::bh_squared(double Mnucleon, double t, double phi,
         }
     }
 
+    //Checking coefficients for BH1, BH2 and BH12
+//    int k, l;
+//
+//    for (k = 0; k < 5; k++) {
+//        for (l = 0; l < 3; l++) {
+//
+//            if (cc11[k][l] != 0.) {
+//                std::cout << "cc11_" << k << l << "= " << cc11[k][l]
+//                        << std::endl;
+//            }
+//            if (ss11[k][l] != 0.) {
+//                std::cout << "ss11_" << k << l << "= " << ss11[k][l]
+//                        << std::endl;
+//            }
+//
+//        }
+//    }
+//
+//    for (k = 0; k < 5; k++) {
+//        for (l = 0; l < 3; l++) {
+//
+//            if (cc22[k][l] != 0.) {
+//                std::cout << "cc22_" << k << l << "= " << cc22[k][l]
+//                        << std::endl;
+//            }
+//            if (ss22[k][l] != 0.) {
+//                std::cout << "ss22_" << k << l << "= " << ss22[k][l]
+//                        << std::endl;
+//            }
+//
+//        }
+//    }
+//
+//    for (k = 0; k < 5; k++) {
+//        for (l = 0; l < 3; l++) {
+//
+//            if (cc12[k][l] != 0.) {
+//                std::cout << "cc12_" << k << l << "= " << cc12[k][l]
+//                        << std::endl;
+//            }
+//            if (ss12[k][l] != 0.) {
+//                std::cout << "ss12_" << k << l << "= " << ss12[k][l]
+//                        << std::endl;
+//            }
+//
+//        }
+//    }
+
+    series11 = 0.;//DEBUG
+    series12 = 0.;//DEBUG
+
     series = pow(ytilde / (P1 * P2), 2.) * series11
             + pow(y / (P3 * P4), 2.) * series22
             - beamSign * y * ytilde * series12 / (P1 * P2 * P3 * P4); //the 3 series above with their correspondent prefactors as in eq 99 in Belitsky2003
@@ -497,10 +546,9 @@ double DDVCSProcessTEST::bh_squared(double Mnucleon, double t, double phi,
     return T2_bh;
 }
 
-double DDVCSProcessTEST::crossSectionBH(double ml, double Ebeam,
-        double Mnucleon, double xB, double t, double Qcal2, double Mll2,
-        double phi, double phil, double thetal, int beamSign,
-        int polariz) const {
+double DDVCSProcessTEST::crossSectionBH(double Ebeam, double Mnucleon,
+        double xB, double t, double Qcal2, double Mll2, double phi, double phil,
+        double thetal, int beamSign, int polariz) const {
 
     //We change to Belitsky's phi: LHS is phi in Belitsky2003 notation, RHS' phi is in Trento's that must be the input in crossSection()
     phi = M_PI - phi;
@@ -616,10 +664,9 @@ double DDVCSProcessTEST::vcs_squared(double Mnucleon, double t, double phi,
 
 }
 
-double DDVCSProcessTEST::crossSectionVCS(double ml, double Ebeam,
-        double Mnucleon, double xB, double t, double Qcal2, double Mll2,
-        double phi, double phil, double thetal, int beamSign,
-        int polariz) const {
+double DDVCSProcessTEST::crossSectionVCS(double Ebeam, double Mnucleon,
+        double xB, double t, double Qcal2, double Mll2, double phi, double phil,
+        double thetal, int beamSign, int polariz) const {
 
     //We change to Belitsky's phi: LHS is phi in Belitsky2003 notation, RHS' phi is in Trento's that must be the input in crossSection()
     phi = M_PI - phi;
@@ -812,10 +859,9 @@ double DDVCSProcessTEST::int_squared(double Mnucleon, double t, double phi,
     return T2_int;
 }
 
-double DDVCSProcessTEST::crossSectionInterf(double ml, double Ebeam,
-        double Mnucleon, double xB, double t, double Qcal2, double Mll2,
-        double phi, double phil, double thetal, int beamSign, int polariz,
-        double lambda) const {
+double DDVCSProcessTEST::crossSectionInterf(double Ebeam, double Mnucleon,
+        double xB, double t, double Qcal2, double Mll2, double phi, double phil,
+        double thetal, int beamSign, int polariz, double lambda) const {
 
     //We change to Belitsky's phi: LHS is phi in Belitsky2003 notation, RHS' phi is in Trento's that must be the input in crossSection()
     phi = M_PI - phi;
@@ -869,10 +915,14 @@ void DDVCSProcessTEST::computeInternalVariables(double ml, double Ebeam,
     m_BM_y = Qcal2 / (Ebeam * 2. * xB * Mnucleon);
     m_BM_ytilde = 2. / (1. + cos(thetal));
     m_BM_ytildePlus = 2. / (1 - cos(thetal)); // ytilde under exchange thetal -> pi - thetal (polar coord. for lplus 4-vector)
-    m_BM_F1 = (4. * pow(Mnucleon, 2.) - t * 2.7928) * pow((1. - t / 0.71), -2.)
-            / (4. * pow(Mnucleon, 2.) - t); //EM form factor F1 for proton, 2.7928 = Born's magneton for proton
+//    m_BM_F1 = (4. * pow(Mnucleon, 2.) - t * 2.7928) * pow((1. - t / 0.71), -2.)
+//            / (4. * pow(Mnucleon, 2.) - t); //EM form factor F1 for proton, 2.7928 = Born's magneton for proton
+
+    m_BM_F1 = 0.;//DEBUG
+
     m_BM_F2 = 4. * pow(Mnucleon, 2.) * (2.7928 - 1.) * pow((1. - t / 0.71), -2.)
-            / (4. * pow(Mnucleon, 2.) - t); //EM form factor F2 for proton
+     / (4. * pow(Mnucleon, 2.) - t); //EM form factor F2 for proton
+
     m_BM_charge_e = sqrt(Constant::FINE_STRUCTURE_CONSTANT * 4. * M_PI);
 
     m_BM_tmin = -4. * pow(Mnucleon * m_BM_eta, 2.) / (1. - m_BM_eta * m_BM_eta);

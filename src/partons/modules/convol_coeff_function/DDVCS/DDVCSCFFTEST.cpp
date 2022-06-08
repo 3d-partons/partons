@@ -191,7 +191,7 @@ std::complex<double> DDVCSCFFTEST::computeUnpolarized() {
      * third is 0. for CFF at LO and 1. at NLO
      */
 
-    std::vector<double> parameters(3, 0.);//parameters(length, one initialization for all positions)
+    std::vector<double> parameters(3, 0.); //parameters(length, one initialization for all positions)
 
     if (m_currentGPDComputeType == GPDType::H
             || m_currentGPDComputeType == GPDType::E) {
@@ -209,6 +209,11 @@ std::complex<double> DDVCSCFFTEST::computeUnpolarized() {
     if (m_currentGPDComputeType == GPDType::HL
             || m_currentGPDComputeType == GPDType::EL) {
 
+        if (m_qcdOrderType == PerturbativeQCDOrderType::LO) {
+
+            return std::complex<double> (0., 0.);
+        }
+
         parameters.at(0) = static_cast<double>(gpdType);
 
         //computing real part of CFF
@@ -217,6 +222,7 @@ std::complex<double> DDVCSCFFTEST::computeUnpolarized() {
         //computing imaginary part of CFF
         parameters.at(1) = 1.;
         im = integrate(m_pConvolutionUnpolarized, 0., 1., parameters);
+
     }
 
     //parameters
@@ -302,7 +308,7 @@ double DDVCSCFFTEST::convolutionUnpolarized(double x,
         ANALITIC_LO += -1 * m_partonDistributionEtaXiSummed
                 * log(fabs(1. + 1. / m_eta));
 
-        convo = (-1.)*(PV_LO + ANALITIC_LO);
+        convo = (-1.) * (PV_LO + ANALITIC_LO);
 
     } else if (params.at(1) == 1.) {
 
