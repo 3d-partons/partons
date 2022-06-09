@@ -199,7 +199,7 @@ std::complex<double> DDVCSProcessDMSW22::ampliBH1(int s2, int s1, int sl,
         r[1][i] = m_DMSW_r1[i];
     }
 
-    //Transform physical values of helicity s1, s2 = -1 and +1, to integers 0 and 1; respectively
+    //Transform physical values of helicity s1, s2 = -1 and +1, to integers 0 and 1; respectively.
     if (s2 == +1) {
         h2 = +1;
         minush2 = 0;
