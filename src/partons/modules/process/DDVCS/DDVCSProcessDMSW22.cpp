@@ -199,7 +199,7 @@ std::complex<double> DDVCSProcessDMSW22::ampliBH1(int s2, int s1, int sl,
         r[1][i] = m_DMSW_r1[i];
     }
 
-    //Transform physical values of helicity s1, s2 = -1 and +1, to integers 0 and 1; respectively.
+    //Transform physical values of helicity s1, s2 = -1 and +1, to integers 0 and 1; respectively
     if (s2 == +1) {
         h2 = +1;
         minush2 = 0;
@@ -248,6 +248,10 @@ std::complex<double> DDVCSProcessDMSW22::ampliBH1(int s2, int s1, int sl,
 
     tBH1 = pow(m_DMSW_charge_e, 4.) * (tBH1_J1 + tBH1_J2)
             / (Mll2 * t * MinkProd(kMinusDelta, kMinusDelta));
+
+    //DEBUG
+    std::cout << fFunction(+1, m_DMSW_lminus, m_DMSW_lplus, +1, m_DMSW_kPrime, m_DMSW_lminus) << " =f(+, l-, l+; +, k', l-)" << std::endl;
+    //END DEBUG
 
     return tBH1;
 
