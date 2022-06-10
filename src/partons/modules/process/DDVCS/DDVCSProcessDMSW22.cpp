@@ -250,7 +250,45 @@ std::complex<double> DDVCSProcessDMSW22::ampliBH1(int s2, int s1, int sl,
             / (Mll2 * t * MinkProd(kMinusDelta, kMinusDelta));
 
     //DEBUG
-    std::cout << fFunction(+1, m_DMSW_lminus, m_DMSW_lplus, +1, m_DMSW_kPrime, m_DMSW_lminus) << " =f(+, l-, l+; +, k', l-)" << std::endl;
+    std::cout << sKS(rPrime[1], kPrime) << " =s(r'1, k'); " << tKS(k, r[0]) << " =t(k, r2)" << std::endl;
+    std::cout << sKS(m_DMSW_rPrime1, m_DMSW_kPrime) << " =s(r'1, k'); " << tKS(m_DMSW_k, m_DMSW_r2) << " =t(k, r2)" << std::endl;
+//    for (s2 = -1; s2 < 2; s2=s2+2) {
+//        for (s1 = -1; s1 < 2; s1=s1+2) {
+//            std::cout << Yfunction(s2, s1) << " =Y(" << s2 << ", " << s1 << ")" << std::endl;
+//        }
+//    }
+//    for (s2 = -1; s2 < 2; s2=s2+2) {
+//        for (s1 = -1; s1 < 2; s1=s1+2) {
+//            std::cout << Zfunction(s2, s1) << " =Z(" << s2 << ", " << s1 << ")" << std::endl;
+//        }
+//    }
+//    std::cout << (1. / (Mll2 * t * MinkProd(kMinusDelta, kMinusDelta)))*(m_DMSW_F1 + m_DMSW_F2) << " =(F1+F2)/propagators \n\n" << std::endl;
+//    for (i = 0; i < 4; i++) {
+//        std::cout << rPrime[0][i] << " =r'2[" << i << "]= " << m_DMSW_rPrime2[i] << std::endl;
+//    }
+//    for (i = 0; i < 4; i++) {
+//        std::cout << rPrime[1][i] << " =r'1[" << i << "]= " << m_DMSW_rPrime1[i] << std::endl;
+//    }
+//    for (i = 0; i < 4; i++) {
+//        std::cout << r[0][i] << " =r2[" << i << "]= " << m_DMSW_r2[i] << std::endl;
+//    }
+//    for (i = 0; i < 4; i++) {
+//        std::cout << r[1][i] << " =r1[" << i << "]= " << m_DMSW_r1[i] << std::endl;
+//    }
+//    std::cout << "\n\n" << std::endl;
+//    for (i = 0; i < 4; i++) {
+//        std::cout << lplus[i] << " =l+[" << i << "]= " << m_DMSW_lplus[i] << std::endl;
+//    }
+//    std::cout << "\n\n" << std::endl;
+//    std::cout << fFunction(+1, lminus, lplus, +1, kPrime, kPrime)
+//            << " =f(+, l-, l+; +, k', k')" << std::endl;
+//    std::cout << fFunction(+1, kPrime, k, +1, rPrime[1], r[1])
+//            << " =f(+, k', k; +, r'1, r1)" << std::endl;
+//    std::cout << fFunction(1, kPrime, k, -1, rPrime[0], r[0])
+//            << " =f(+, k',k; -, r'2, r2)\n\n" << std::endl;
+    //std::cout << tBH1_J1 << " =tBH1_J1 F2=0; " << s2 << " " << s1 << " " << s << " " << sl << " =s2 s1 s sl" << std::endl;
+//    std::cout << tBH1/pow(m_DMSW_charge_e, 4.) << " =ampliBH1/e⁴ with F2=0; " << s2 << " " << s1 << " " << s << " " << sl << " =s2 s1 s sl" << std::endl;
+//    std::cout << "\n" << std::endl;
     //END DEBUG
 
     return tBH1;
@@ -608,9 +646,11 @@ double DDVCSProcessDMSW22::crossSectionBH(int polariz, double xB, double Qcal2,
 std::complex<double> DDVCSProcessDMSW22::sKS(double r1[4], double r2[4]) const {
 
     std::complex<double> sValue = (r1[2] + Constant::COMPLEX_UNIT * r1[3])
-            * sqrt((r2[0] - r2[1]) / (r1[0] - r1[1]))
+            * sqrt(std::complex<double>(r2[0] - r2[1]) / (r1[0] - r1[1]))
             - (r2[2] + Constant::COMPLEX_UNIT * r2[3])
-                    * sqrt((r1[0] - r1[1]) / (r2[0] - r2[1])); //KS1985, eq 3.11
+                    * sqrt(
+                            std::complex<double>(r1[0] - r1[1])
+                                    / (r2[0] - r2[1])); //KS1985, eq 3.11
 
     return sValue;
 
@@ -680,7 +720,7 @@ std::complex<double> DDVCSProcessDMSW22::Yfunction(int s2, int s1) const {
     } else if (s2 == -1 && s1 == +1) {
         Yvalue = sKS(r1, r2) / m_DMSW_Mnucleon;
     } else if (s2 == -1 && s1 == -1) {
-        Yvalue = (1., 0.);
+        Yvalue = +1.;
     }
 
     return Yvalue;
@@ -709,7 +749,7 @@ std::complex<double> DDVCSProcessDMSW22::Zfunction(int s2, int s1) const {
     } else if (s2 == +1 && s1 == -1) {
         Zvalue = tKS(r1, r2) / m_DMSW_Mnucleon;
     } else if (s2 == +1 && s1 == +1) {
-        Zvalue = (1., 0.);
+        Zvalue = +1.;
     }
 
     return Zvalue;
@@ -764,7 +804,6 @@ double DDVCSProcessDMSW22::MinkProd(double p[4], double q[4]) const {
 void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon, double Ebeam,
         double t, double xB, double Qcal2, double Mll2, double phi, double phil,
         double thetal) {
-
 
     //We change to Belitsky's phi: LHS is phi in Belitsky2003 notation, RHS' phi is in Trento's
     phi = M_PI - phi;
@@ -875,7 +914,7 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon, double Ebeam,
 
     //EM form factors for proton
     m_DMSW_F1 = (4. * pow(Mnucleon, 2.) - t * 2.7928)
-     * pow((1. - t / 0.71), -2.) / (4. * pow(Mnucleon, 2.) - t); //2.7928 = Born's magneton for proton
+            * pow((1. - t / 0.71), -2.) / (4. * pow(Mnucleon, 2.) - t); //2.7928 = Born's magneton for proton
 //    m_DMSW_F2 = 4. * pow(Mnucleon, 2.) * (2.7928 - 1.)
 //            * pow((1. - t / 0.71), -2.) / (4. * pow(Mnucleon, 2.) - t);
 
