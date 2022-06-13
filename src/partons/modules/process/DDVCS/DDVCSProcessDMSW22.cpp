@@ -250,8 +250,8 @@ std::complex<double> DDVCSProcessDMSW22::ampliBH1(int s2, int s1, int sl,
             / (Mll2 * t * MinkProd(kMinusDelta, kMinusDelta));
 
     //DEBUG
-    std::cout << sKS(rPrime[1], kPrime) << " =s(r'1, k'); " << tKS(k, r[0]) << " =t(k, r2)" << std::endl;
-    std::cout << sKS(m_DMSW_rPrime1, m_DMSW_kPrime) << " =s(r'1, k'); " << tKS(m_DMSW_k, m_DMSW_r2) << " =t(k, r2)" << std::endl;
+//    std::cout << sKS(rPrime[1], kPrime) << " =s(r'1, k'); " << tKS(k, r[0]) << " =t(k, r2)" << std::endl;
+//    std::cout << sKS(m_DMSW_rPrime1, m_DMSW_kPrime) << " =s(r'1, k'); " << tKS(m_DMSW_k, m_DMSW_r2) << " =t(k, r2)" << std::endl;
 //    for (s2 = -1; s2 < 2; s2=s2+2) {
 //        for (s1 = -1; s1 < 2; s1=s1+2) {
 //            std::cout << Yfunction(s2, s1) << " =Y(" << s2 << ", " << s1 << ")" << std::endl;
@@ -280,12 +280,20 @@ std::complex<double> DDVCSProcessDMSW22::ampliBH1(int s2, int s1, int sl,
 //        std::cout << lplus[i] << " =l+[" << i << "]= " << m_DMSW_lplus[i] << std::endl;
 //    }
 //    std::cout << "\n\n" << std::endl;
-//    std::cout << fFunction(+1, lminus, lplus, +1, kPrime, kPrime)
-//            << " =f(+, l-, l+; +, k', k')" << std::endl;
-//    std::cout << fFunction(+1, kPrime, k, +1, rPrime[1], r[1])
-//            << " =f(+, k', k; +, r'1, r1)" << std::endl;
-//    std::cout << fFunction(1, kPrime, k, -1, rPrime[0], r[0])
-//            << " =f(+, k',k; -, r'2, r2)\n\n" << std::endl;
+    std::cout << fFunction(+1, lminus, lplus, -1, kPrime, kPrime)
+            << " =f(+, l-, l+; -, k', k')" << std::endl;
+    std::cout << fFunction(-1, kPrime, k, +1, rPrime[1], r[0])
+            << " =f(-, k', k; +, r'1, r2)" << std::endl;
+//
+//    //f(-, k0, k1; +, k2, k3) = 2.*sKS(k2, k1) * tKS(k0, k3);
+//    std::complex<double> f_val = 2.*sKS(rPrime[0], k) * tKS(kPrime, r[1]);
+//    std::complex<double> s_val = sKS(rPrime[0], k);
+//    std::complex<double> t_val = tKS(kPrime, r[1]);
+//
+//    std::cout << f_val << " =f(-, k', k; +, r'2, r1)= " << fFunction(-1, kPrime, k, +1, rPrime[0], r[1]) << "; " << s_val << " =s; " << t_val << " =t" << std::endl;
+//
+    std::cout << fFunction(-1, kPrime, k, -1, rPrime[0], r[1])
+            << " =f(-, k',k; -, r'2, r1)\n\n" << std::endl;
     //std::cout << tBH1_J1 << " =tBH1_J1 F2=0; " << s2 << " " << s1 << " " << s << " " << sl << " =s2 s1 s sl" << std::endl;
 //    std::cout << tBH1/pow(m_DMSW_charge_e, 4.) << " =ampliBH1/e⁴ with F2=0; " << s2 << " " << s1 << " " << s << " " << sl << " =s2 s1 s sl" << std::endl;
 //    std::cout << "\n" << std::endl;
