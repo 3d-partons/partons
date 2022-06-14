@@ -57,17 +57,25 @@ private:
             double lplus[4], int s, double kPrime[4], double k[4], double Mll2,
             double t);
     std::complex<double> ampliBH1crossed(int s2, int s1, int sl,
-            double lminus[4], double lplus[4], int s, double kPrime[4], double k[4],
-            double Mll2, double t);
-    std::complex<double> ampliBH2(int s2, int s1, int sl,
-            double lminus[4], double lplus[4], int s, double kPrime[4], double k[4],
-            double Qcal2, double t);
+            double lminus[4], double lplus[4], int s, double kPrime[4],
+            double k[4], double Mll2, double t);
+    std::complex<double> ampliBH2(int s2, int s1, int sl, double lminus[4],
+            double lplus[4], int s, double kPrime[4], double k[4], double Qcal2,
+            double t);
     std::complex<double> ampliBH2crossed(int s2, int s1, int sl,
-            double lminus[4], double lplus[4], int s, double kPrime[4], double k[4],
-            double Qcal2, double t);
+            double lminus[4], double lplus[4], int s, double kPrime[4],
+            double k[4], double Qcal2, double t);
+    std::complex<double> ampliVCS(int s2, int s1, int sl, double lminus[4],
+            double lplus[4], int s, double kPrime[4], double k[4], double Qcal2,
+            double Mll2);
 
     //Cross-sections:
-    double crossSectionBH(int polariz, double xB, double Qcal2, double Mll2, double t, double thetal);
+    double crossSectionBH(int polariz, double xB, double Qcal2, double Mll2,
+            double t, double thetal);
+    double crossSectionVCS(int polariz, double xB, double Qcal2, double Mll2,
+            double t, double thetal);
+    double crossSectionInterf(int polariz, double xB, double Qcal2,
+            double Mll2, double t, double thetal);
 
     //Auxiliary functions:
     std::complex<double> sKS(double r1[4], double r2[4]) const;
@@ -80,6 +88,14 @@ private:
     std::complex<double> Zfunction(int s2, int s1) const;
     std::complex<double> J2function(int s2, int s1) const;
     double MinkProd(double p[4], double q[4]) const;
+    std::complex<double> Gfunction(int s, double kPrime[4], double V[4][4],
+            double R[4][4], double k[4]) const;
+    std::complex<double> jFunction(int mu, double p1[4], double p2[4],
+            int helic) const;
+    std::complex<double> J15plus(int s2, int s1) const;
+    std::complex<double> J25plus(int s2, int s1) const;
+    double LCperp(int mu, int nu); //Levi-Civita tensor for mu and nu perpendicular components
+
     void computeInternalVariables(double Mnucleon, double Ebeam, double t,
             double xB, double Qcal2, double Mll2, double phi, double phil,
             double thetal);
@@ -110,14 +126,13 @@ private:
     double m_DMSW_F1;
     double m_DMSW_F2;
 
-    //Nucleon mass and electron charge i absolute value
+    //Nucleon mass and electron charge in absolute value
     double m_DMSW_Mnucleon;
     double m_DMSW_charge_e;
 
     //eta and xi variables
 //    double m_DMSW_eta;
-//    double m_DMSW_xi;
-
+    double m_DMSW_xi;
 
     //CFFs
     std::complex<double> m_cffH;

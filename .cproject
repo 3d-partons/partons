@@ -39,6 +39,7 @@
 									<listOptionValue builtIn="false" value="&quot;${SFML_INCLUDE_DIR}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ROOT_INCLUDE_DIR}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ElementaryUtils/include}&quot;"/>
+									<listOptionValue builtIn="false" value="/usr/local/include/PARTONS"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1399569935" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
