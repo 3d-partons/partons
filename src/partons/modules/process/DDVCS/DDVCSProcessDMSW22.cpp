@@ -541,7 +541,7 @@ std::complex<double> DDVCSProcessDMSW22::ampliVCS(int s2, int s1, int sl,
 
     double V[4][4]; //array containing kPrime, k, lminus, lplus
     double R[4][4]; //array containing r1, r2, rPrime1, rPrime2
-    double sigma[4] = { -1., +1., +1., +1. };
+    double sigma[4] = { -1., +1., +1., +1. }; //array accounting for the signs of kPrime, k, lminus, lplus
     int i, j, h1, minush1, h2, minush2;
     std::complex<double> tVCS, tVCS_T1, sumRgl, sumRgk, tVCS_T2;
 
@@ -579,16 +579,19 @@ std::complex<double> DDVCSProcessDMSW22::ampliVCS(int s2, int s1, int sl,
         sumRgk += gFunction(s, kPrime, R[i], k);
     }
 
-    tVCS_T1 = (fFunction(sl, lminus, lplus, s, kPrime, k)
-            - (m_DMSW_xi / m_DMSW_Q2)
-                    * (Gfunction(s, kPrime, V, R, k) * sumRgl
-                            - Gfunction(sl, lminus, V, R, lplus) * sumRgk))
-            * ((m_cffH + m_cffE)
-                    * (Yfunction(s2, s1) * Gfunction(+1, R[h2], V, R, R[h1])
-                            + Zfunction(s2, s1)
-                                    * Gfunction(-1, R[minush2], V, R,
-                                            R[minush1]))
-                    - m_cffE * J2function(s2, s1) / m_DMSW_Mnucleon);
+    tVCS_T1 =
+            (fFunction(sl, lminus, lplus, s, kPrime, k)
+                    - (m_DMSW_xi / m_DMSW_Q2)
+                            * (Gfunction(s, kPrime, V, sigma, R, k) * sumRgl
+                                    - Gfunction(sl, lminus, V, sigma, R, lplus)
+                                            * sumRgk))
+                    * ((m_cffH + m_cffE)
+                            * (Yfunction(s2, s1)
+                                    * Gfunction(+1, R[h2], V, sigma, R, R[h1])
+                                    + Zfunction(s2, s1)
+                                            * Gfunction(-1, R[minush2], V,
+                                                    sigma, R, R[minush1]))
+                            - m_cffE * J2function(s2, s1) / m_DMSW_Mnucleon);
 
     //Adding the term in T^(2):
     int mu, nu;
@@ -609,6 +612,12 @@ std::complex<double> DDVCSProcessDMSW22::ampliVCS(int s2, int s1, int sl,
                                                     * (lplus[0] - lplus[1])));
         }
     }
+
+    //DEBUG
+    std::cout << m_cffHt << " cffHt" << std::endl;
+    std::cout << m_cffEt << " cffEt" << std::endl;
+    std::cout << tVCS_T2 << " tVCS_T2" << std::endl;
+    //END DEBUG
 
     //Complete amplitude for VCS at LO in alpha strong and LT:
     tVCS = pow(m_DMSW_charge_e, 4.) * (tVCS_T1 + tVCS_T2) / (-Qcal2 * Mll2);
@@ -821,7 +830,8 @@ double DDVCSProcessDMSW22::crossSectionInterf(int polariz, double xB,
 
 //********************************* Auxiliary functions*****************************//
 
-std::complex<double> DDVCSProcessDMSW22::sKS(double r1[4], double r2[4]) const {
+std::complex<double> DDVCSProcessDMSW22::sKS(const double r1[4],
+        const double r2[4]) const {
 
     std::complex<double> sValue = (r1[2] + Constant::COMPLEX_UNIT * r1[3])
             * sqrt(std::complex<double>(r2[0] - r2[1]) / (r1[0] - r1[1]))
@@ -834,7 +844,8 @@ std::complex<double> DDVCSProcessDMSW22::sKS(double r1[4], double r2[4]) const {
 
 }
 
-std::complex<double> DDVCSProcessDMSW22::tKS(double r1[4], double r2[4]) const {
+std::complex<double> DDVCSProcessDMSW22::tKS(const double r1[4],
+        const double r2[4]) const {
 
     std::complex<double> tValue = conj(sKS(r2, r1)); //KS1985, eq 3.8
 
@@ -878,25 +889,14 @@ std::complex<double> DDVCSProcessDMSW22::gFunction(int lambda, double L[4],
 std::complex<double> DDVCSProcessDMSW22::Yfunction(int s2, int s1) const {
 
     std::complex<double> Yvalue;
-    double rPrime1[4];
-    double rPrime2[4];
-    double r1[4];
-    double r2[4];
-    int i;
-
-    for (i = 0; i < 4; i++) {
-        rPrime1[i] = m_DMSW_rPrime1[i];
-        rPrime2[i] = m_DMSW_rPrime2[i];
-        r1[i] = m_DMSW_r1[i];
-        r2[i] = m_DMSW_r2[i];
-    }
 
     if (s2 == +1 && s1 == +1) {
-        Yvalue = tKS(rPrime2, rPrime1) * sKS(r1, r2) / pow(m_DMSW_Mnucleon, 2.);
+        Yvalue = tKS(m_DMSW_rPrime2, m_DMSW_rPrime1) * sKS(m_DMSW_r1, m_DMSW_r2)
+                / pow(m_DMSW_Mnucleon, 2.);
     } else if (s2 == +1 && s1 == -1) {
-        Yvalue = tKS(rPrime2, rPrime1) / m_DMSW_Mnucleon;
+        Yvalue = tKS(m_DMSW_rPrime2, m_DMSW_rPrime1) / m_DMSW_Mnucleon;
     } else if (s2 == -1 && s1 == +1) {
-        Yvalue = sKS(r1, r2) / m_DMSW_Mnucleon;
+        Yvalue = sKS(m_DMSW_r1, m_DMSW_r2) / m_DMSW_Mnucleon;
     } else if (s2 == -1 && s1 == -1) {
         Yvalue = +1.;
     }
@@ -907,25 +907,14 @@ std::complex<double> DDVCSProcessDMSW22::Yfunction(int s2, int s1) const {
 std::complex<double> DDVCSProcessDMSW22::Zfunction(int s2, int s1) const {
 
     std::complex<double> Zvalue;
-    double rPrime1[4];
-    double rPrime2[4];
-    double r1[4];
-    double r2[4];
-    int i;
-
-    for (i = 0; i < 4; i++) {
-        rPrime1[i] = m_DMSW_rPrime1[i];
-        rPrime2[i] = m_DMSW_rPrime2[i];
-        r1[i] = m_DMSW_r1[i];
-        r2[i] = m_DMSW_r2[i];
-    }
 
     if (s2 == -1 && s1 == -1) {
-        Zvalue = sKS(rPrime2, rPrime1) * tKS(r1, r2) / pow(m_DMSW_Mnucleon, 2.);
+        Zvalue = sKS(m_DMSW_rPrime2, m_DMSW_rPrime1) * tKS(m_DMSW_r1, m_DMSW_r2)
+                / pow(m_DMSW_Mnucleon, 2.);
     } else if (s2 == -1 && s1 == +1) {
-        Zvalue = sKS(rPrime2, rPrime1) / m_DMSW_Mnucleon;
+        Zvalue = sKS(m_DMSW_rPrime2, m_DMSW_rPrime1) / m_DMSW_Mnucleon;
     } else if (s2 == +1 && s1 == -1) {
-        Zvalue = tKS(r1, r2) / m_DMSW_Mnucleon;
+        Zvalue = tKS(m_DMSW_r1, m_DMSW_r2) / m_DMSW_Mnucleon;
     } else if (s2 == +1 && s1 == +1) {
         Zvalue = +1.;
     }
@@ -936,37 +925,32 @@ std::complex<double> DDVCSProcessDMSW22::Zfunction(int s2, int s1) const {
 std::complex<double> DDVCSProcessDMSW22::J2function(int s2, int s1) const {
 
     std::complex<double> J2value;
-    double rPrime1[4];
-    double rPrime2[4];
-    double r1[4];
-    double r2[4];
-    int i;
-
-    for (i = 0; i < 4; i++) {
-        rPrime1[i] = m_DMSW_rPrime1[i];
-        rPrime2[i] = m_DMSW_rPrime2[i];
-        r1[i] = m_DMSW_r1[i];
-        r2[i] = m_DMSW_r2[i];
-    }
 
     if (s2 == +1 && s1 == +1) {
-        J2value = (tKS(rPrime2, rPrime1) * sKS(rPrime1, r2)
-                + tKS(rPrime2, r1) * sKS(r1, r2)) / m_DMSW_Mnucleon;
+        J2value = (tKS(m_DMSW_rPrime2, m_DMSW_rPrime1)
+                * sKS(m_DMSW_rPrime1, m_DMSW_r2)
+                + tKS(m_DMSW_rPrime2, m_DMSW_r1) * sKS(m_DMSW_r1, m_DMSW_r2))
+                / m_DMSW_Mnucleon;
     } else if (s2 == +1 && s1 == -1) {
-        J2value = tKS(rPrime2, rPrime1) * tKS(r1, r2) * sKS(rPrime1, r1)
-                / pow(m_DMSW_Mnucleon, 2.) + tKS(rPrime2, r2);
+        J2value = tKS(m_DMSW_rPrime2, m_DMSW_rPrime1)
+                * tKS(m_DMSW_r1, m_DMSW_r2) * sKS(m_DMSW_rPrime1, m_DMSW_r1)
+                / pow(m_DMSW_Mnucleon, 2.) + tKS(m_DMSW_rPrime2, m_DMSW_r2);
     } else if (s2 == -1 && s1 == +1) {
-        J2value = sKS(rPrime2, rPrime1) * tKS(rPrime1, r1) * sKS(r1, r2)
-                / pow(m_DMSW_Mnucleon, 2.) + sKS(rPrime2, r2);
+        J2value = sKS(m_DMSW_rPrime2, m_DMSW_rPrime1)
+                * tKS(m_DMSW_rPrime1, m_DMSW_r1) * sKS(m_DMSW_r1, m_DMSW_r2)
+                / pow(m_DMSW_Mnucleon, 2.) + sKS(m_DMSW_rPrime2, m_DMSW_r2);
     } else if (s2 == -1 && s1 == -1) {
-        J2value = (sKS(rPrime2, rPrime1) * tKS(rPrime1, r2)
-                + tKS(r1, r2) * sKS(rPrime2, r1)) / m_DMSW_Mnucleon;
+        J2value = (sKS(m_DMSW_rPrime2, m_DMSW_rPrime1)
+                * tKS(m_DMSW_rPrime1, m_DMSW_r2)
+                + tKS(m_DMSW_r1, m_DMSW_r2) * sKS(m_DMSW_rPrime2, m_DMSW_r1))
+                / m_DMSW_Mnucleon;
     }
 
     return J2value;
 }
 
-double DDVCSProcessDMSW22::MinkProd(double p[4], double q[4]) const {
+double DDVCSProcessDMSW22::MinkProd(const double p[4],
+        const double q[4]) const {
 
     double prod;
     int i;
@@ -980,13 +964,13 @@ double DDVCSProcessDMSW22::MinkProd(double p[4], double q[4]) const {
 }
 
 std::complex<double> DDVCSProcessDMSW22::Gfunction(int s, double kPrime[4],
-        double V[4][4], double R[4][4], double k[4]) const {
+        double V[4][4], double sigma[4], double R[4][4], double k[4]) const {
 
     std::complex<double> Gvalue;
     int i;
 
     for (i = 0; i < 4; i++) {
-        Gvalue += gFunction(s, kPrime, V[i], k);
+        Gvalue += sigma[i] * gFunction(s, kPrime, V[i], k);
     }
     for (i = 0; i < 4; i++) {
         Gvalue += m_DMSW_xi * gFunction(s, kPrime, R[i], k);
@@ -1098,45 +1082,40 @@ std::complex<double> DDVCSProcessDMSW22::J15plus(int s2, int s1) const {
 std::complex<double> DDVCSProcessDMSW22::J25plus(int s2, int s1) const {
 
     std::complex<double> J25value;
-    double Delta[4], q[4], p[4];
+    double q[4], p[4];
     int i;
 
     for (i = 0; i < 4; i++) {
-        Delta[i] = m_DMSW_Delta[i];
         q[i] = (m_DMSW_q1[i] + m_DMSW_q2[i]) / 2.;
         p[i] = m_DMSW_p1[i] + m_DMSW_p2[i];
     }
 
     double DeltaPlus = (m_DMSW_xi / m_DMSW_Q2)
-            * (2. * MinkProd(q, Delta) + m_DMSW_xi * MinkProd(p, Delta)); //DeltaPlus == \Delta^{+} = n_{-}\Delta
-
-    double rPrime1[4];
-    double rPrime2[4];
-    double r1[4];
-    double r2[4];
-    for (i = 0; i < 4; i++) {
-        rPrime1[i] = m_DMSW_rPrime1[i];
-        rPrime2[i] = m_DMSW_rPrime2[i];
-        r1[i] = m_DMSW_r1[i];
-        r2[i] = m_DMSW_r2[i];
-    }
+            * (2. * MinkProd(q, m_DMSW_Delta)
+                    + m_DMSW_xi * MinkProd(p, m_DMSW_Delta)); //DeltaPlus == \Delta^{+} = n_{-}\Delta
 
     if (s2 == +1 && s1 == +1) {
         J25value = pow(m_DMSW_Mnucleon, -1.)
-                * (sKS(r1, r2) * tKS(rPrime2, r1)
-                        - tKS(rPrime2, rPrime1) * sKS(rPrime1, r2));
+                * (sKS(m_DMSW_r1, m_DMSW_r2) * tKS(m_DMSW_rPrime2, m_DMSW_r1)
+                        - tKS(m_DMSW_rPrime2, m_DMSW_rPrime1)
+                                * sKS(m_DMSW_rPrime1, m_DMSW_r2));
     } else if (s2 == -1 && s1 == -1) {
         J25value = -pow(m_DMSW_Mnucleon, -1.)
-                * (tKS(r1, r2) * sKS(rPrime2, r1)
-                        - sKS(rPrime2, rPrime1) * tKS(rPrime1, r2));
+                * (tKS(m_DMSW_r1, m_DMSW_r2) * sKS(m_DMSW_rPrime2, m_DMSW_r1)
+                        - sKS(m_DMSW_rPrime2, m_DMSW_rPrime1)
+                                * tKS(m_DMSW_rPrime1, m_DMSW_r2));
     } else if (s2 == +1 && s1 == -1) {
-        J25value = tKS(rPrime2, r2)
-                - pow(m_DMSW_Mnucleon, -2.) * tKS(rPrime2, rPrime1)
-                        * tKS(r1, r2) * sKS(rPrime1, r1);
+        J25value = tKS(m_DMSW_rPrime2, m_DMSW_r2)
+                - pow(m_DMSW_Mnucleon, -2.)
+                        * tKS(m_DMSW_rPrime2, m_DMSW_rPrime1)
+                        * tKS(m_DMSW_r1, m_DMSW_r2)
+                        * sKS(m_DMSW_rPrime1, m_DMSW_r1);
     } else if (s2 == -1 && s1 == +1) {
-        J25value = -(sKS(rPrime2, r2)
-                - pow(m_DMSW_Mnucleon, -2.) * sKS(rPrime2, rPrime1)
-                        * sKS(r1, r2) * tKS(rPrime1, r1));
+        J25value = -(sKS(m_DMSW_rPrime2, m_DMSW_r2)
+                - pow(m_DMSW_Mnucleon, -2.)
+                        * sKS(m_DMSW_rPrime2, m_DMSW_rPrime1)
+                        * sKS(m_DMSW_r1, m_DMSW_r2)
+                        * tKS(m_DMSW_rPrime1, m_DMSW_r1));
     }
 
     return DeltaPlus * J25value;
@@ -1268,11 +1247,38 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon, double Ebeam,
 //EM form factors for proton
     m_DMSW_F1 = (4. * pow(Mnucleon, 2.) - t * 2.7928)
             * pow((1. - t / 0.71), -2.) / (4. * pow(Mnucleon, 2.) - t); //2.7928 = Born's magneton for proton
+
     m_DMSW_F2 = 4. * pow(Mnucleon, 2.) * (2.7928 - 1.)
             * pow((1. - t / 0.71), -2.) / (4. * pow(Mnucleon, 2.) - t);
 
-//xi variable, first of the two eqs in BM2003's eq 31
+//xi variable, the first of the two eqs in BM2003's eq 31
     m_DMSW_xi = (Qcal2 - Mll2 + t / 2.) / (2. * Qcal2 / xB - Qcal2 - Mll2 + t);
+
+//Get CFFs
+
+    if (m_dvcsConvolCoeffFunctionResult.isAvailable(GPDType::H)) {
+        m_cffH = m_dvcsConvolCoeffFunctionResult.getLastAvailable();
+    }
+
+    if (m_dvcsConvolCoeffFunctionResult.isAvailable(GPDType::E)) {
+        m_cffE = m_dvcsConvolCoeffFunctionResult.getLastAvailable();
+    }
+
+    if (m_dvcsConvolCoeffFunctionResult.isAvailable(GPDType::Ht)) {
+        m_cffHt = m_dvcsConvolCoeffFunctionResult.getLastAvailable();
+    }
+
+    if (m_dvcsConvolCoeffFunctionResult.isAvailable(GPDType::Et)) {
+        m_cffEt = m_dvcsConvolCoeffFunctionResult.getLastAvailable();
+    }
+
+    if (m_dvcsConvolCoeffFunctionResult.isAvailable(GPDType::HL)) {
+        m_cffHL = m_dvcsConvolCoeffFunctionResult.getLastAvailable();
+    }
+
+    if (m_dvcsConvolCoeffFunctionResult.isAvailable(GPDType::EL)) {
+        m_cffEL = m_dvcsConvolCoeffFunctionResult.getLastAvailable();
+    }
 
 }
 

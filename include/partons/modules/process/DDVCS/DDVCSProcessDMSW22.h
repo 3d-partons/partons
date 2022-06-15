@@ -74,12 +74,12 @@ private:
             double t, double thetal);
     double crossSectionVCS(int polariz, double xB, double Qcal2, double Mll2,
             double t, double thetal);
-    double crossSectionInterf(int polariz, double xB, double Qcal2,
-            double Mll2, double t, double thetal);
+    double crossSectionInterf(int polariz, double xB, double Qcal2, double Mll2,
+            double t, double thetal);
 
     //Auxiliary functions:
-    std::complex<double> sKS(double r1[4], double r2[4]) const;
-    std::complex<double> tKS(double r1[4], double r2[4]) const;
+    std::complex<double> sKS(const double r1[4], const double r2[4]) const;
+    std::complex<double> tKS(const double r1[4], const double r2[4]) const;
     std::complex<double> fFunction(int lambda, double k0[4], double k1[4],
             int lambdaPrime, double k2[4], double k3[4]) const;
     std::complex<double> gFunction(int lambda, double L[4], double R[4],
@@ -87,9 +87,9 @@ private:
     std::complex<double> Yfunction(int s2, int s1) const;
     std::complex<double> Zfunction(int s2, int s1) const;
     std::complex<double> J2function(int s2, int s1) const;
-    double MinkProd(double p[4], double q[4]) const;
+    double MinkProd(const double p[4], const double q[4]) const;
     std::complex<double> Gfunction(int s, double kPrime[4], double V[4][4],
-            double R[4][4], double k[4]) const;
+            double sigma[4], double R[4][4], double k[4]) const;
     std::complex<double> jFunction(int mu, double p1[4], double p2[4],
             int helic) const;
     std::complex<double> J15plus(int s2, int s1) const;

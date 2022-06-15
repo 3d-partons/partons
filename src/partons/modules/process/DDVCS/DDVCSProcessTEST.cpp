@@ -485,55 +485,7 @@ double DDVCSProcessTEST::bh_squared(double Mnucleon, double t, double phi,
         }
     }
 
-    //Checking coefficients for BH1, BH2 and BH12
-//    int k, l;
-//
-//    for (k = 0; k < 5; k++) {
-//        for (l = 0; l < 3; l++) {
-//
-//            if (cc11[k][l] != 0.) {
-//                std::cout << "cc11_" << k << l << "= " << cc11[k][l]
-//                        << std::endl;
-//            }
-//            if (ss11[k][l] != 0.) {
-//                std::cout << "ss11_" << k << l << "= " << ss11[k][l]
-//                        << std::endl;
-//            }
-//
-//        }
-//    }
-//
-//    for (k = 0; k < 5; k++) {
-//        for (l = 0; l < 3; l++) {
-//
-//            if (cc22[k][l] != 0.) {
-//                std::cout << "cc22_" << k << l << "= " << cc22[k][l]
-//                        << std::endl;
-//            }
-//            if (ss22[k][l] != 0.) {
-//                std::cout << "ss22_" << k << l << "= " << ss22[k][l]
-//                        << std::endl;
-//            }
-//
-//        }
-//    }
-//
-//    for (k = 0; k < 5; k++) {
-//        for (l = 0; l < 3; l++) {
-//
-//            if (cc12[k][l] != 0.) {
-//                std::cout << "cc12_" << k << l << "= " << cc12[k][l]
-//                        << std::endl;
-//            }
-//            if (ss12[k][l] != 0.) {
-//                std::cout << "ss12_" << k << l << "= " << ss12[k][l]
-//                        << std::endl;
-//            }
-//
-//        }
-//    }
-
-    series11 = 0.;//DEBUG
+    series22 = 0.;//DEBUG
     series12 = 0.;//DEBUG
 
     series = pow(ytilde / (P1 * P2), 2.) * series11
