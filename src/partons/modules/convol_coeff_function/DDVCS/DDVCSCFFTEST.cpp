@@ -148,19 +148,6 @@ void DDVCSCFFTEST::isModuleWellConfigured() {
 
 std::complex<double> DDVCSCFFTEST::computeUnpolarized() {
 
-//    //internal variables to be used
-//    m_xi;
-//    m_eta;
-//    m_t;
-//    m_MuF2;
-//    m_MuR2;
-//    m_Q2;
-//    m_Q2Prim;
-//
-//    m_pGPDModule;   //pointer to GPD module
-//    m_currentGPDComputeType; //GPD type
-//    m_qcdOrderType; //pQCD order
-
 //GPD type
     GPDType::Type gpdType;
 
@@ -211,7 +198,7 @@ std::complex<double> DDVCSCFFTEST::computeUnpolarized() {
 
         if (m_qcdOrderType == PerturbativeQCDOrderType::LO) {
 
-            return std::complex<double> (0., 0.);
+            return std::complex<double>(0., 0.);
         }
 
         parameters.at(0) = static_cast<double>(gpdType);
@@ -248,7 +235,42 @@ std::complex<double> DDVCSCFFTEST::computeUnpolarized() {
 }
 
 std::complex<double> DDVCSCFFTEST::computePolarized() {
-    return std::complex<double>(0., 0.);
+
+    //GPD type
+    GPDType::Type gpdType;
+
+    //evaluate GPD at (eta, xi)
+    m_partonDistributionEtaXiSummed = computeSquareChargeAveragedGPD(
+            m_pGPDModule->compute(
+                    GPDKinematic(m_eta, m_xi, m_t, m_MuF2, m_MuR2), gpdType));
+
+    //CFF values
+    double re = 0.;
+    double im = 0.;
+
+    /*
+     * parameters:
+     * first element is gpdType;
+     * second is 0. for computing real part of CFF and 1. for imaginary
+     * third is 0. for CFF at LO and 1. at NLO
+     */
+
+    std::vector<double> parameters(3, 0.); //parameters(length, one initialization for all positions)
+
+    if (m_currentGPDComputeType == GPDType::Ht
+            || m_currentGPDComputeType == GPDType::Et) {
+
+        parameters.at(0) = static_cast<double>(gpdType);
+
+        //computing real part of CFF
+        parameters.at(1) = 0.;
+        re = integrate(m_pConvolutionPolarized, 0., 1., parameters);
+        //computing imaginary part of CFF
+        parameters.at(1) = 1.;
+        im = integrate(m_pConvolutionPolarized, 0., 1., parameters);
+    }
+
+    return std::complex<double>(re, im);
 }
 
 double DDVCSCFFTEST::computeSquareChargeAveragedGPD(
