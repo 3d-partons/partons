@@ -1,6 +1,6 @@
 # Contact and support {#contact}
 
-Use this e-mail adress: [partons@cea.fr](mailto:partons@cea.fr). You may also find us on [riot.im](https://riot.im/app/#/group/+partons:matrix.org).
+Use this e-mail adress: [partons@cea.fr](mailto:partons@cea.fr). You may also find us on [Element](https://riot.im/app/#/group/+partons:matrix.org).
 
 <hr>
 

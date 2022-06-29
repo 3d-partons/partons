@@ -253,16 +253,6 @@ This table summarizes all tasks available in computation services. The serivces 
 | [TCSObservableService](@ref PARTONS::TCSObservableService)      | computeManyKinematic         |	 Evaluate observable for many kinematic points    |
 | [TCSObservableService](@ref PARTONS::TCSObservableService)      | printResults                 | Print out result to std output                   |
 | [TCSObservableService](@ref PARTONS::TCSObservableService)      | generatePlotFile             | Generate plot file from data stored in database  |
-|                 |                                      |                                                  |
-| [DVMPConvolCoeffFunctionService](@ref PARTONS::DVMPConvolCoeffFunctionService)      | computeSingleKinematic 	| Evaluate CFF for single kinematic point          |
-| [DVMPConvolCoeffFunctionService](@ref PARTONS::DVMPConvolCoeffFunctionService)      | computeManyKinematic  	| Evaluate CFF for many kinematic points           |
-| [DVMPConvolCoeffFunctionService](@ref PARTONS::DVMPConvolCoeffFunctionService)      | printResults            | Print out result to std output                   |
-| [DVMPConvolCoeffFunctionService](@ref PARTONS::DVMPConvolCoeffFunctionService)      | generatePlotFile        | Generate plot file from data stored in database  |
-|                 |                                      |                                                  |
-| [DVMPObservableService](@ref PARTONS::DVMPObservableService)      | computeSingleKinematic       | Evaluate observable for single kinematic point   |
-| [DVMPObservableService](@ref PARTONS::DVMPObservableService)      | computeManyKinematic         | Evaluate observable for many kinematic points    |
-| [DVMPObservableService](@ref PARTONS::DVMPObservableService)      | printResults                 | Print out result to std output                   |
-| [DVMPObservableService](@ref PARTONS::DVMPObservableService)      | generatePlotFile             | Generate plot file from data stored in database  |
 
 <hr>
 
