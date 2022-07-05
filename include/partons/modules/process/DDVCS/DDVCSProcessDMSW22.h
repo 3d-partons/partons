@@ -88,13 +88,13 @@ private:
     std::complex<double> Zfunction(int s2, int s1) const;
     std::complex<double> J2function(int s2, int s1) const;
     double MinkProd(const double p[4], const double q[4]) const;
-    std::complex<double> Gfunction(int s, double kPrime[4], double V[4][4],
-            double sigma[4], double R[4][4], double k[4]) const;
+//    std::complex<double> Gfunction(int s, double kPrime[4], double V[4][4],
+//            double sigma[4], double R[4][4], double k[4]) const;
     std::complex<double> jFunction(int mu, double p1[4], double p2[4],
             int helic) const;
     std::complex<double> J15plus(int s2, int s1) const;
     std::complex<double> J25plus(int s2, int s1) const;
-    double LCperp(int mu, int nu); //Levi-Civita tensor for mu and nu perpendicular components
+    double LCperp(int mu, int nu); //Levi-Civita tensor for (mu, nu) in {1, 2}
 
     void computeInternalVariables(double Mnucleon, double Ebeam, double t,
             double xB, double Qcal2, double Mll2, double phi, double phil,
@@ -107,8 +107,6 @@ private:
     double m_DMSW_rPrime1[4];
     double m_DMSW_rPrime2[4];
     double m_DMSW_p2[4];
-    double m_DMSW_p2I[4]; //p2 in TRF-I frame, eqs 12 and 13 in BM2003
-    double m_DMSW_modp2I; //modulus of 3D component of p2 in TRF-I frame, eq 12 in BM2003
     double m_DMSW_epsilon2; //squared of the epsilon variable define in paragraph above eq 8 in BM2003
     double m_DMSW_Q2; //Q2 is the squared of the incoming and outgoing photon momenta's average
 
@@ -121,6 +119,8 @@ private:
     double m_DMSW_kPrime[4]; //outgoin-electron momentum in TRF-II frame
     double m_DMSW_lminus[4]; //4-momentum of muon, eq 23 in BM2003
     double m_DMSW_lplus[4]; //4-momentum of anti-muon
+    double m_DMSW_nminus[4]; //light-like vector such that for a vector v, we call vPlus = m_DMSW_nminus * v
+    double m_DMSW_nplus[4]; //light-like vector such that for a vector v, we call vMinus = m_DMSW_nplus * v
 
     //EM form factors for proton
     double m_DMSW_F1;
@@ -132,7 +132,7 @@ private:
 
     //eta and xi variables
 //    double m_DMSW_eta;
-    double m_DMSW_xi;
+//    double m_DMSW_xi;
 
     //CFFs
     std::complex<double> m_cffH;
