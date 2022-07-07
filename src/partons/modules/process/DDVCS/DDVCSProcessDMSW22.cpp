@@ -580,6 +580,8 @@ std::complex<double> DDVCSProcessDMSW22::ampliVCS(int s2, int s1, int sl,
                                     r[minush1]))
             - m_cffE * J2function(s2, s1) / m_DMSW_Mnucleon;
 
+    tVCS_T1 = -tVCS_T1;
+
     //Adding the term in T^(2):
     int mu, nu;
 
@@ -601,11 +603,11 @@ std::complex<double> DDVCSProcessDMSW22::ampliVCS(int s2, int s1, int sl,
     }
 
     //DEBUG
-    std::cout << m_cffH << " cffH" << std::endl;
-    std::cout << m_cffE << " cffE" << std::endl;
-    std::cout << m_cffHt << " cffHt" << std::endl;
-    std::cout << m_cffEt << " cffEt" << std::endl;
-    std::cout << tVCS_T2 << " tVCS_T2" << std::endl;
+//    std::cout << m_cffH << " cffH" << std::endl;
+//    std::cout << m_cffE << " cffE" << std::endl;
+//    std::cout << m_cffHt << " cffHt" << std::endl;
+//    std::cout << m_cffEt << " cffEt" << std::endl;
+//    std::cout << tVCS_T2 << " tVCS_T2" << std::endl;
     //END DEBUG
 
     //Complete amplitude for VCS at LO in alpha strong and LT:
