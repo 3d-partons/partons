@@ -19,7 +19,7 @@
 #include "../../../beans/convol_coeff_function/DVMP/DVMPConvolCoeffFunctionResult.h"
 #include "../../../beans/gpd/GPDType.h"
 #include "../../../beans/List.h"
-#include "../../../beans/MesonPolarization.h"
+#include "../../../beans/PolarizationType.h"
 #include "../../../beans/MesonType.h"
 #include "../../../beans/observable/DVMP/DVMPObservableKinematic.h"
 #include "../../../beans/observable/DVMP/DVMPObservableResult.h"
@@ -75,7 +75,7 @@ public:
      */
     DVMPObservableResult compute(double beamHelicity, double beamCharge,
             NumA::Vector3D targetPolarization,
-            MesonPolarization::Type mesonPolarization,
+            PolarizationType::Type mesonPolarization,
             const DVMPObservableKinematic& kinematic,
             const List<GPDType>& gpdType);
 
@@ -146,7 +146,7 @@ protected:
     virtual void setKinematics(const DVMPObservableKinematic& kinematic);
     virtual void setExperimentalConditions(double beamHelicity,
             double beamCharge, NumA::Vector3D targetPolarization,
-            MesonPolarization::Type mesonPolarization);
+            PolarizationType::Type mesonPolarization);
     virtual void initModule();
     virtual void isModuleWellConfigured();
 
@@ -160,7 +160,7 @@ protected:
     double m_beamHelicity; ///< Beam helicity.
     double m_beamCharge; ///< Beam charge.
     NumA::Vector3D m_targetPolarization; ///< Target polarization.
-    MesonPolarization::Type m_mesonPolarization; ///< Meson polarization.
+    PolarizationType::Type m_mesonPolarization; ///< Meson polarization.
 
     double m_tmin; ///< Minimal value of t.
     double m_tmax; ///< Maximal value of t.
@@ -181,7 +181,7 @@ protected:
      * @param gpdType List of GPD types to be computed.
      */
     void computeConvolCoeffFunction(const DVMPObservableKinematic& kinematic,
-            MesonPolarization::Type mesonPolarization,
+            PolarizationType::Type mesonPolarization,
             const List<GPDType> & gpdType = List<GPDType>());
 
     /**

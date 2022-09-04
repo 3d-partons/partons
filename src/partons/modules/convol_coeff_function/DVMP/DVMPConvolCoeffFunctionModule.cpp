@@ -28,7 +28,7 @@ DVMPConvolCoeffFunctionModule::DVMPConvolCoeffFunctionModule(
         const std::string &className) :
         ConvolCoeffFunctionModule(className, ChannelType::DVMP), m_Q2(0.), m_mesonType(
                 MesonType::UNDEFINED), m_mesonPolarization(
-                MesonPolarization::UNDEFINED), m_qcdOrderType(
+                PolarizationType::UNDEFINED), m_qcdOrderType(
                 PerturbativeQCDOrderType::UNDEFINED) {
 }
 

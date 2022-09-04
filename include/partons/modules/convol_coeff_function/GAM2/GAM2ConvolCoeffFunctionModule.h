@@ -1,8 +1,8 @@
-#ifndef DVMP_CONVOL_COEFF_FUNCTION_MODULE_H
-#define DVMP_CONVOL_COEFF_FUNCTION_MODULE_H
+#ifndef GAM2_CONVOL_COEFF_FUNCTION_MODULE_H
+#define GAM2_CONVOL_COEFF_FUNCTION_MODULE_H
 
 /**
- * @file DVMPConvolCoeffFunctionModule.h
+ * @file GAM2ConvolCoeffFunctionModule.h
  * @author Bryan BERTHOU (SPhN / CEA Saclay)
  * @date July 22, 2015
  * @version 1.0
@@ -14,43 +14,45 @@
 #include <string>
 
 #include "../../../beans/automation/BaseObjectData.h"
-#include "../../../beans/convol_coeff_function/DVMP/DVMPConvolCoeffFunctionKinematic.h"
-#include "../../../beans/convol_coeff_function/DVMP/DVMPConvolCoeffFunctionResult.h"
+#include "../../../beans/convol_coeff_function/GAM2/GAM2ConvolCoeffFunctionKinematic.h"
+#include "../../../beans/convol_coeff_function/GAM2/GAM2ConvolCoeffFunctionResult.h"
 #include "../../../beans/gpd/GPDType.h"
 #include "../../../beans/List.h"
 #include "../../../beans/PerturbativeQCDOrderType.h"
+#include "../../../beans/PolarizationType.h"
+#include "../../../utils/type/PhysicalType.h"
 #include "../ConvolCoeffFunctionModule.h"
 
 namespace PARTONS {
 
 /**
- * @class DVMPConvolCoeffFunctionModule
+ * @class GAM2ConvolCoeffFunctionModule
  *
  * @brief Abstract class that provides a skeleton to implement a Compton Form Factor (CFF) module.
  *
  * It is best to use this module with the corresponding service: ConvolCoeffFunctionService (see examples therein), as explained in the [general tutorial](@ref usage).
  */
-class DVMPConvolCoeffFunctionModule: public ConvolCoeffFunctionModule<
-        DVMPConvolCoeffFunctionKinematic, DVMPConvolCoeffFunctionResult> {
+class GAM2ConvolCoeffFunctionModule: public ConvolCoeffFunctionModule<
+        GAM2ConvolCoeffFunctionKinematic, GAM2ConvolCoeffFunctionResult> {
 
 public:
 
-    static const std::string DVMP_CONVOL_COEFF_FUNCTION_MODULE_CLASS_NAME; ///< Type of the module in XML automation.
+    static const std::string GAM2_CONVOL_COEFF_FUNCTION_MODULE_CLASS_NAME; ///< Type of the module in XML automation.
 
     /**
      * Destructor.
      */
-    virtual ~DVMPConvolCoeffFunctionModule();
+    virtual ~GAM2ConvolCoeffFunctionModule();
 
-    virtual DVMPConvolCoeffFunctionModule* clone() const = 0;
+    virtual GAM2ConvolCoeffFunctionModule* clone() const = 0;
     virtual std::string toString() const;
     virtual void resolveObjectDependencies();
     virtual void run();
     virtual void configure(const ElemUtils::Parameters &parameters);
     virtual void prepareSubModules(
             const std::map<std::string, BaseObjectData>& subModulesData);
-    virtual DVMPConvolCoeffFunctionResult compute(
-            const DVMPConvolCoeffFunctionKinematic& kinematic,
+    virtual GAM2ConvolCoeffFunctionResult compute(
+            const GAM2ConvolCoeffFunctionKinematic& kinematic,
             const List<GPDType>& gpdType = List<GPDType>());
     virtual List<GPDType> getListOfAvailableGPDTypeForComputation() const;
 
@@ -94,17 +96,17 @@ protected:
     /**
      * Default constructor.
      */
-    DVMPConvolCoeffFunctionModule(const std::string &className);
+    GAM2ConvolCoeffFunctionModule(const std::string &className);
 
     /**
      * Copy constructor.
      *
      * @param other Object to be copied
      */
-    DVMPConvolCoeffFunctionModule(const DVMPConvolCoeffFunctionModule &other);
+    GAM2ConvolCoeffFunctionModule(const GAM2ConvolCoeffFunctionModule &other);
 
     virtual void setKinematics(
-            const DVMPConvolCoeffFunctionKinematic& kinematic);
+            const GAM2ConvolCoeffFunctionKinematic& kinematic);
     virtual void initModule();
     virtual void isModuleWellConfigured();
 
@@ -112,21 +114,24 @@ protected:
      * List of GPD/CFF types the child class can compute.
      */
     std::map<GPDType::Type,
-            std::complex<double> (DVMPConvolCoeffFunctionModule::*)()> m_listOfCFFComputeFunctionAvailable;
+            std::complex<double> (GAM2ConvolCoeffFunctionModule::*)()> m_listOfCFFComputeFunctionAvailable;
 
     /**
      * Iterator.
      */
     std::map<GPDType::Type,
-            std::complex<double> (DVMPConvolCoeffFunctionModule::*)()>::iterator m_it;
+            std::complex<double> (GAM2ConvolCoeffFunctionModule::*)()>::iterator m_it;
 
-    double m_Q2; ///< Virtuality of the photon (in GeV^2).
-    MesonType::Type m_mesonType; ///< Meson type.
-    PolarizationType::Type m_mesonPolarization; ///< Meson polarization state.
+    double m_uPrim; ///< Four-momentum transfer squared to photon (in \f$GeV^{2}\f$).
+    double m_Mgg2; ///< Invariant mass of two photons (in \f$GeV^{2}\f$).
+
+    PolarizationType::Type m_polG0; ///< Polarization state of incoming photon.
+    PolarizationType::Type m_polG1; ///< Polarization state of first outgoing photon.
+    PolarizationType::Type m_polG2; ///< Polarization state of second outgoing photon.
 
     PerturbativeQCDOrderType::Type m_qcdOrderType; ///< Order of the perturbative QCD computation.
 };
 
 } /* namespace PARTONS */
 
-#endif /* DVMP_CONVOL_COEFF_FUNCTION_MODULE_H */
+#endif /* GAM2_CONVOL_COEFF_FUNCTION_MODULE_H */

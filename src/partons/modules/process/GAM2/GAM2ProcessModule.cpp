@@ -1,4 +1,4 @@
-#include "../../../../../include/partons/modules/process/DVMP/DVMPProcessModule.h"
+#include "../../../../../include/partons/modules/process/GAM2/GAM2ProcessModule.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
@@ -11,31 +11,28 @@
 #include "../../../../../include/partons/beans/Result.h"
 #include "../../../../../include/partons/beans/Scales.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
-#include "../../../../../include/partons/modules/convol_coeff_function/DVMP/DVMPConvolCoeffFunctionModule.h"
-#include "../../../../../include/partons/modules/scales/DVMP/DVMPScalesModule.h"
-#include "../../../../../include/partons/modules/xi_converter/DVMP/DVMPXiConverterModule.h"
+#include "../../../../../include/partons/modules/convol_coeff_function/GAM2/GAM2ConvolCoeffFunctionModule.h"
+#include "../../../../../include/partons/modules/scales/GAM2/GAM2ScalesModule.h"
+#include "../../../../../include/partons/modules/xi_converter/GAM2/GAM2XiConverterModule.h"
 #include "../../../../../include/partons/ModuleObjectFactory.h"
 #include "../../../../../include/partons/Partons.h"
-#include "../../../../../include/partons/services/DVMPConvolCoeffFunctionService.h"
-#include "../../../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../../../include/partons/utils/type/PhysicalUnit.h"
-#include "../../../../../include/partons/utils/VectorUtils.h"
 
 namespace PARTONS {
 
-const std::string DVMPProcessModule::DVMP_PROCESS_MODULE_CLASS_NAME =
-        "DVMPProcessModule";
+const std::string GAM2ProcessModule::GAM2_PROCESS_MODULE_CLASS_NAME =
+        "GAM2ProcessModule";
 
-DVMPProcessModule::DVMPProcessModule(const std::string &className) :
-        ProcessModule(className, ChannelType::DVMP), m_xB(0.), m_t(0.), m_Q2(
-                0.), m_E(0.), m_phi(0.), m_mesonType(MesonType::UNDEFINED), m_beamHelicity(
-                0.), m_beamCharge(0.), m_mesonPolarization(
-                PolarizationType::UNDEFINED), m_tmin(0.), m_tmax(0.), m_xBmin(
-                0), m_y(0.), m_pScaleModule(0), m_pXiConverterModule(0), m_pConvolCoeffFunctionModule(
-                0) {
+GAM2ProcessModule::GAM2ProcessModule(const std::string &className) :
+        ProcessModule(className, ChannelType::GAM2), m_t(0.), m_uPrim(0.), m_Mgg2(
+                0.), m_E(0.), m_phi(0.), m_theta(0.), m_polG0(
+                PolarizationType::UNDEFINED), m_polG1(
+                PolarizationType::UNDEFINED), m_polG2(
+                PolarizationType::UNDEFINED), m_tmin(0.), m_xi(0.), m_pScaleModule(
+                0), m_pXiConverterModule(0), m_pConvolCoeffFunctionModule(0) {
 }
 
-DVMPProcessModule::~DVMPProcessModule() {
+GAM2ProcessModule::~GAM2ProcessModule() {
 
     if (m_pScaleModule != 0) {
         setScaleModule(0);
@@ -53,14 +50,11 @@ DVMPProcessModule::~DVMPProcessModule() {
     }
 }
 
-DVMPProcessModule::DVMPProcessModule(const DVMPProcessModule& other) :
-        ProcessModule(other), m_xB(other.m_xB), m_t(other.m_t), m_Q2(
-                other.m_Q2), m_E(other.m_E), m_phi(other.m_phi), m_mesonType(
-                other.m_mesonType), m_beamHelicity(other.m_beamHelicity), m_beamCharge(
-                other.m_beamCharge), m_targetPolarization(
-                other.m_targetPolarization), m_mesonPolarization(
-                other.m_mesonPolarization), m_tmin(other.m_tmin), m_tmax(
-                other.m_tmax), m_xBmin(other.m_xBmin), m_y(other.m_y), m_pScaleModule(
+GAM2ProcessModule::GAM2ProcessModule(const GAM2ProcessModule& other) :
+        ProcessModule(other), m_t(other.m_t), m_uPrim(other.m_uPrim), m_Mgg2(
+                other.m_Mgg2), m_E(other.m_E), m_phi(other.m_phi), m_theta(
+                other.m_theta), m_polG0(other.m_polG0), m_polG1(other.m_polG1), m_polG2(
+                other.m_polG2), m_tmin(other.m_tmin), m_xi(other.m_xi), m_pScaleModule(
                 0), m_pXiConverterModule(0), m_pConvolCoeffFunctionModule(0) {
 
     m_lastCCFKinematics = other.m_lastCCFKinematics;
@@ -83,36 +77,37 @@ DVMPProcessModule::DVMPProcessModule(const DVMPProcessModule& other) :
     }
 }
 
-std::string DVMPProcessModule::toString() const {
-    return ProcessModule<DVMPObservableKinematic, DVMPObservableResult>::toString();
+std::string GAM2ProcessModule::toString() const {
+    ProcessModule<GAM2ObservableKinematic, GAM2ObservableResult>::toString();
+    return ProcessModule<GAM2ObservableKinematic, GAM2ObservableResult>::toString();
 }
 
-void DVMPProcessModule::resolveObjectDependencies() {
-    ProcessModule<DVMPObservableKinematic, DVMPObservableResult>::resolveObjectDependencies();
+void GAM2ProcessModule::resolveObjectDependencies() {
+    ProcessModule<GAM2ObservableKinematic, GAM2ObservableResult>::resolveObjectDependencies();
 }
 
-void DVMPProcessModule::run() {
+void GAM2ProcessModule::run() {
     throw ElemUtils::CustomException(getClassName(), __func__,
             "Users should evaluate cross-sections through respective ObservableService");
 }
 
-void DVMPProcessModule::configure(const ElemUtils::Parameters &parameters) {
-    ProcessModule<DVMPObservableKinematic, DVMPObservableResult>::configure(
+void GAM2ProcessModule::configure(const ElemUtils::Parameters &parameters) {
+    ProcessModule<GAM2ObservableKinematic, GAM2ObservableResult>::configure(
             parameters);
 }
 
-void DVMPProcessModule::prepareSubModules(
+void GAM2ProcessModule::prepareSubModules(
         const std::map<std::string, BaseObjectData>& subModulesData) {
 
     //run for mother
-    ProcessModule<DVMPObservableKinematic, DVMPObservableResult>::prepareSubModules(
+    ProcessModule<GAM2ObservableKinematic, GAM2ObservableResult>::prepareSubModules(
             subModulesData);
 
     //iterator
     std::map<std::string, BaseObjectData>::const_iterator it;
 
     //search for scales module
-    it = subModulesData.find(DVMPScalesModule::DVMP_SCALES_MODULE_CLASS_NAME);
+    it = subModulesData.find(GAM2ScalesModule::GAM2_SCALES_MODULE_CLASS_NAME);
 
     //check if there
     if (it != subModulesData.end()) {
@@ -128,7 +123,7 @@ void DVMPProcessModule::prepareSubModules(
         if (!m_pScaleModule) {
 
             m_pScaleModule =
-                    Partons::getInstance()->getModuleObjectFactory()->newDVMPScalesModule(
+                    Partons::getInstance()->getModuleObjectFactory()->newGAM2ScalesModule(
                             (it->second).getModuleClassName());
 
             info(__func__,
@@ -149,7 +144,7 @@ void DVMPProcessModule::prepareSubModules(
 
     //search for xi module
     it = subModulesData.find(
-            DVMPXiConverterModule::DVMP_XI_CONVERTER_MODULE_CLASS_NAME);
+            GAM2XiConverterModule::GAM2_XI_CONVERTER_MODULE_CLASS_NAME);
 
     //check if there
     if (it != subModulesData.end()) {
@@ -165,7 +160,7 @@ void DVMPProcessModule::prepareSubModules(
         if (!m_pXiConverterModule) {
 
             m_pXiConverterModule =
-                    Partons::getInstance()->getModuleObjectFactory()->newDVMPXiConverterModule(
+                    Partons::getInstance()->getModuleObjectFactory()->newGAM2XiConverterModule(
                             (it->second).getModuleClassName());
 
             info(__func__,
@@ -192,7 +187,7 @@ void DVMPProcessModule::prepareSubModules(
         //search for ccf module
         it =
                 subModulesData.find(
-                        DVMPConvolCoeffFunctionModule::DVMP_CONVOL_COEFF_FUNCTION_MODULE_CLASS_NAME);
+                        GAM2ConvolCoeffFunctionModule::GAM2_CONVOL_COEFF_FUNCTION_MODULE_CLASS_NAME);
 
         //check if there
         if (it != subModulesData.end()) {
@@ -208,7 +203,7 @@ void DVMPProcessModule::prepareSubModules(
             if (!m_pConvolCoeffFunctionModule) {
 
                 m_pConvolCoeffFunctionModule =
-                        Partons::getInstance()->getModuleObjectFactory()->newDVMPConvolCoeffFunctionModule(
+                        Partons::getInstance()->getModuleObjectFactory()->newGAM2ConvolCoeffFunctionModule(
                                 (it->second).getModuleClassName());
 
                 info(__func__,
@@ -232,7 +227,7 @@ void DVMPProcessModule::prepareSubModules(
     }
 }
 
-List<GPDType> DVMPProcessModule::getListOfAvailableGPDTypeForComputation() const {
+List<GPDType> GAM2ProcessModule::getListOfAvailableGPDTypeForComputation() const {
 
     //object to be returned
     List<GPDType> listOfAvailableGPDTypeForComputation;
@@ -253,22 +248,21 @@ List<GPDType> DVMPProcessModule::getListOfAvailableGPDTypeForComputation() const
     return listOfAvailableGPDTypeForComputation;
 }
 
-DVMPObservableResult DVMPProcessModule::compute(double beamHelicity,
-        double beamCharge, NumA::Vector3D targetPolarization,
-        PolarizationType::Type mesonPolarization,
-        const DVMPObservableKinematic& kinematic,
+GAM2ObservableResult GAM2ProcessModule::compute(PolarizationType::Type polG0,
+        PolarizationType::Type polG1, PolarizationType::Type polG2,
+        NumA::Vector3D targetPolarization,
+        const GAM2ObservableKinematic& kinematic,
         const List<GPDType>& gpdType) {
 
     //reset kinematics (virtuality)
     setKinematics(kinematic);
 
     //set experimental conditions
-    setExperimentalConditions(beamHelicity, beamCharge, targetPolarization,
-            mesonPolarization);
+    setExperimentalConditions(polG0, polG1, polG2, targetPolarization);
 
     //compute CCF
     if (m_isCCFModuleDependent)
-        computeConvolCoeffFunction(kinematic, mesonPolarization, gpdType);
+        computeConvolCoeffFunction(kinematic, gpdType);
 
     //execute last child function (virtuality)
     initModule();
@@ -277,7 +271,7 @@ DVMPObservableResult DVMPProcessModule::compute(double beamHelicity,
     isModuleWellConfigured();
 
     //object to be returned
-    DVMPObservableResult result(kinematic);
+    GAM2ObservableResult result(kinematic);
 
     PhysicalType<double> value = CrossSection();
 
@@ -291,33 +285,36 @@ DVMPObservableResult DVMPProcessModule::compute(double beamHelicity,
     return result;
 }
 
-void DVMPProcessModule::resetPreviousKinematic() {
-
-    m_dvcsConvolCoeffFunctionResult = DVMPConvolCoeffFunctionResult();
-    m_lastCCFKinematics = DVMPConvolCoeffFunctionKinematic();
-}
-
-bool DVMPProcessModule::isPreviousCCFKinematicDifferent(
-        const DVMPConvolCoeffFunctionKinematic& kinematic) const {
-
-    return ((kinematic.getXi() != m_lastCCFKinematics.getXi())
-            || (kinematic.getT() != m_lastCCFKinematics.getT())
-            || (kinematic.getQ2() != m_lastCCFKinematics.getQ2())
-            || (kinematic.getMuF2() != m_lastCCFKinematics.getMuF2())
-            || (kinematic.getMuR2() != m_lastCCFKinematics.getMuR2())
-            || (kinematic.getMesonType() != m_lastCCFKinematics.getMesonType()));
-}
-
-PhysicalType<double> DVMPProcessModule::CrossSection() {
+PhysicalType<double> GAM2ProcessModule::CrossSection() {
     throw ElemUtils::CustomException(getClassName(), __func__,
             "Check your child implementation : " + getClassName());
 }
 
-DVMPScalesModule* DVMPProcessModule::getScaleModule() const {
+void GAM2ProcessModule::resetPreviousKinematic() {
+
+    m_dvcsConvolCoeffFunctionResult = GAM2ConvolCoeffFunctionResult();
+    m_lastCCFKinematics = GAM2ConvolCoeffFunctionKinematic();
+}
+
+bool GAM2ProcessModule::isPreviousCCFKinematicDifferent(
+        const GAM2ConvolCoeffFunctionKinematic& kinematic) const {
+
+    return ((kinematic.getXi() != m_lastCCFKinematics.getXi())
+            || (kinematic.getT() != m_lastCCFKinematics.getT())
+            || (kinematic.getMuF2() != m_lastCCFKinematics.getMuF2())
+            || (kinematic.getMuR2() != m_lastCCFKinematics.getMuR2())
+            || (kinematic.getUPrim() != m_lastCCFKinematics.getUPrim())
+            || (kinematic.getMgg2() != m_lastCCFKinematics.getMgg2())
+            || (kinematic.getPolG0() != m_lastCCFKinematics.getPolG0())
+            || (kinematic.getPolG1() != m_lastCCFKinematics.getPolG1())
+            || (kinematic.getPolG2() != m_lastCCFKinematics.getPolG2()));
+}
+
+GAM2ScalesModule* GAM2ProcessModule::getScaleModule() const {
     return m_pScaleModule;
 }
 
-void DVMPProcessModule::setScaleModule(DVMPScalesModule* pScaleModule) {
+void GAM2ProcessModule::setScaleModule(GAM2ScalesModule* pScaleModule) {
 
     m_pModuleObjectFactory->updateModulePointerReference(m_pScaleModule,
             pScaleModule);
@@ -325,19 +322,19 @@ void DVMPProcessModule::setScaleModule(DVMPScalesModule* pScaleModule) {
 
     if (m_pScaleModule != 0) {
         info(__func__,
-                ElemUtils::Formatter() << "DVMPScalesModule is set to: "
+                ElemUtils::Formatter() << "GAM2ScalesModule is set to: "
                         << pScaleModule->getClassName());
     } else {
-        info(__func__, "DVMPScalesModule is set to: 0");
+        info(__func__, "GAM2ScalesModule is set to: 0");
     }
 }
 
-DVMPXiConverterModule* DVMPProcessModule::getXiConverterModule() const {
+GAM2XiConverterModule* GAM2ProcessModule::getXiConverterModule() const {
     return m_pXiConverterModule;
 }
 
-void DVMPProcessModule::setXiConverterModule(
-        DVMPXiConverterModule* pXiConverterModule) {
+void GAM2ProcessModule::setXiConverterModule(
+        GAM2XiConverterModule* pXiConverterModule) {
 
     m_pModuleObjectFactory->updateModulePointerReference(m_pXiConverterModule,
             pXiConverterModule);
@@ -352,12 +349,12 @@ void DVMPProcessModule::setXiConverterModule(
     }
 }
 
-DVMPConvolCoeffFunctionModule* DVMPProcessModule::getConvolCoeffFunctionModule() const {
+GAM2ConvolCoeffFunctionModule* GAM2ProcessModule::getConvolCoeffFunctionModule() const {
     return m_pConvolCoeffFunctionModule;
 }
 
-void DVMPProcessModule::setConvolCoeffFunctionModule(
-        DVMPConvolCoeffFunctionModule* pConvolCoeffFunctionModule) {
+void GAM2ProcessModule::setConvolCoeffFunctionModule(
+        GAM2ConvolCoeffFunctionModule* pConvolCoeffFunctionModule) {
 
     m_pModuleObjectFactory->updateModulePointerReference(
             m_pConvolCoeffFunctionModule, pConvolCoeffFunctionModule);
@@ -375,69 +372,52 @@ void DVMPProcessModule::setConvolCoeffFunctionModule(
     resetPreviousKinematic();
 }
 
-void DVMPProcessModule::setKinematics(
-        const DVMPObservableKinematic& kinematic) {
+void GAM2ProcessModule::setKinematics(
+        const GAM2ObservableKinematic& kinematic) {
 
-    m_xB = kinematic.getXB().makeSameUnitAs(PhysicalUnit::NONE).getValue();
     m_t = kinematic.getT().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
-    m_Q2 = kinematic.getQ2().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
+    m_uPrim =
+            kinematic.getUPrim().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
+    m_Mgg2 = kinematic.getMgg2().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
     m_E = kinematic.getE().makeSameUnitAs(PhysicalUnit::GEV).getValue();
     m_phi = kinematic.getPhi().makeSameUnitAs(PhysicalUnit::RAD).getValue();
-    m_mesonType = kinematic.getMesonType();
+    m_theta = kinematic.getTheta().makeSameUnitAs(PhysicalUnit::RAD).getValue();
 }
 
-void DVMPProcessModule::setExperimentalConditions(double beamHelicity,
-        double beamCharge, NumA::Vector3D targetPolarization,
-        PolarizationType::Type mesonPolarization) {
+void GAM2ProcessModule::setExperimentalConditions(PolarizationType::Type polG0,
+        PolarizationType::Type polG1, PolarizationType::Type polG2,
+        NumA::Vector3D targetPolarization) {
 
-    m_beamHelicity = beamHelicity;
-    m_beamCharge = beamCharge;
+    m_polG0 = polG0;
+    m_polG1 = polG1;
+    m_polG2 = polG2;
     m_targetPolarization = targetPolarization;
-    m_mesonPolarization = mesonPolarization;
 }
 
-void DVMPProcessModule::initModule() {
+void GAM2ProcessModule::initModule() {
 
     //run for mother
-    ProcessModule<DVMPObservableKinematic, DVMPObservableResult>::initModule();
+    ProcessModule<GAM2ObservableKinematic, GAM2ObservableResult>::initModule();
 
     //evaluate internal variables
-    m_y = m_Q2 / (2 * m_xB * Constant::PROTON_MASS * m_E);
-    m_xBmin = 2 * m_Q2 * m_E / Constant::PROTON_MASS / (4 * m_E * m_E - m_Q2);
 
-    double nu = m_Q2 / (2 * Constant::PROTON_MASS * m_xB);
+    if (m_pXiConverterModule == 0) {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                "m_pXiConverterModule is NULL pointer ; Use configure method to configure it");
+    }
 
-    double E_e_TAR = m_E;
-    double E_eS_TAR = E_e_TAR - nu;
-
-    double cosTheta_eS_TAR = 1. - m_Q2 / (2 * E_e_TAR * E_eS_TAR);
-    double sinTheta_eS_TAR = sqrt(1. - pow(cosTheta_eS_TAR, 2));
-
-    double s4 = pow(E_e_TAR - E_eS_TAR + Constant::PROTON_MASS, 2)
-            - pow(E_e_TAR - E_eS_TAR * cosTheta_eS_TAR, 2)
-            - pow(-E_eS_TAR * sinTheta_eS_TAR, 2);
-
-    double m1_2 = -m_Q2;
-    double m2_2 = pow(Constant::PROTON_MASS, 2);
-    double m3_2 = pow(MesonType(m_mesonType).getMass(), 2);
-    double m4_2 = pow(Constant::PROTON_MASS, 2);
-
-    double E1cm = (s4 + m1_2 - m2_2) / (2 * sqrt(s4));
-    double E3cm = (s4 + m3_2 - m4_2) / (2 * sqrt(s4));
-
-    double p1cm = sqrt(pow(E1cm, 2) - m1_2);
-    double p3cm = sqrt(pow(E3cm, 2) - m3_2);
-
-    m_tmin = pow((m1_2 - m3_2 - m2_2 + m4_2) / (2 * sqrt(s4)), 2)
-            - pow(p1cm - p3cm, 2);
-    m_tmax = pow((m1_2 - m3_2 - m2_2 + m4_2) / (2 * sqrt(s4)), 2)
-            - pow(p1cm + p3cm, 2);
+    m_xi =
+            m_pXiConverterModule->compute(
+                    GAM2ObservableKinematic(m_t, m_uPrim, m_Mgg2, m_E, m_phi,
+                            m_theta)).getValue();
+    m_tmin = -1 * pow(2 * m_xi * Constant::PROTON_MASS, 2)
+            / (1. - pow(m_xi, 2));
 }
 
-void DVMPProcessModule::isModuleWellConfigured() {
+void GAM2ProcessModule::isModuleWellConfigured() {
 
     //run for mother
-    ProcessModule<DVMPObservableKinematic, DVMPObservableResult>::isModuleWellConfigured();
+    ProcessModule<GAM2ObservableKinematic, GAM2ObservableResult>::isModuleWellConfigured();
 
     //check if pointer to scale module set
     if (m_pScaleModule == 0) {
@@ -457,27 +437,25 @@ void DVMPProcessModule::isModuleWellConfigured() {
                 "m_pConvolCoeffFunctionModule is NULL pointer ; Use configure method to configure it");
     }
 
-    //test kinematic domain of xB
-    if (m_xB < m_xBmin || m_xB > 1.) {
-        ElemUtils::Formatter formatter;
-        formatter << "Input value of xB = " << m_xB
-                << " does not lay between xBmin = " << m_xBmin << " and 1";
-        warn(__func__, formatter.str());
-    }
-
     //test kinematic domain of t
-    if (m_t > m_tmin || m_t < m_tmax) {
+    if (m_t > m_tmin) {
         ElemUtils::Formatter formatter;
-        formatter << " Input value of t = " << m_t
-                << " does not lay between t_max = " << m_tmax << " and t_min = "
-                << m_tmin << " (DVMP kinematic limits)";
+        formatter << " Input value of t = " << m_t << " greater than t_min = "
+                << m_tmin << " (GAM2 kinematic limits)";
         warn(__func__, formatter.str());
     }
 
-    //test kinematic domain of Q2
-    if (m_Q2 < 0.) {
+    //test kinematic domain of u'
+    if (m_uPrim > 0.) {
         ElemUtils::Formatter formatter;
-        formatter << "Input value of Q2 = " << m_Q2 << " is not > 0";
+        formatter << "Input value of u' = " << m_uPrim << " is not < 0";
+        warn(__func__, formatter.str());
+    }
+
+    //test kinematic domain of Mgg2
+    if (m_Mgg2 < 0.) {
+        ElemUtils::Formatter formatter;
+        formatter << "Input value of Mgg2 = " << m_Mgg2 << " is not > 0";
         warn(__func__, formatter.str());
     }
 
@@ -488,32 +466,27 @@ void DVMPProcessModule::isModuleWellConfigured() {
         warn(__func__, formatter.str());
     }
 
-    //test kmeson type
-    if (m_mesonType == MesonType::UNDEFINED) {
+    //test pol0
+    if (m_polG0 == PolarizationType::UNDEFINED) {
         ElemUtils::Formatter formatter;
-        formatter << "Meson type in undefined";
+        formatter << "Polarization of incoming photon is: "
+                << PolarizationType(m_polG0).toString();
         warn(__func__, formatter.str());
     }
 
-    //test kinematic domain of beam energy
-    if (m_y < 0. || m_y > 1.) {
+    //test pol1
+    if (m_polG1 == PolarizationType::UNDEFINED) {
         ElemUtils::Formatter formatter;
-        formatter << "Input value of y = " << m_y
-                << " (lepton energy fraction) does not lay between 0 and 1";
+        formatter << "Polarization of first outgoing photon is: "
+                << PolarizationType(m_polG1).toString();
         warn(__func__, formatter.str());
     }
 
-    //test beam helicity
-    if (fabs(m_beamHelicity) != 1.) {
+    //test pol2
+    if (m_polG2 == PolarizationType::UNDEFINED) {
         ElemUtils::Formatter formatter;
-        formatter << "Beam helicity = " << m_beamHelicity << "is not +/- 1";
-        warn(__func__, formatter.str());
-    }
-
-    //test beam charge
-    if (fabs(m_beamCharge) != 1.) {
-        ElemUtils::Formatter formatter;
-        formatter << "Beam charge = " << m_beamCharge << "is not +/- 1";
+        formatter << "Polarization of second outgoing photon is: "
+                << PolarizationType(m_polG2).toString();
         warn(__func__, formatter.str());
     }
 
@@ -531,9 +504,8 @@ void DVMPProcessModule::isModuleWellConfigured() {
     }
 }
 
-void DVMPProcessModule::computeConvolCoeffFunction(
-        const DVMPObservableKinematic& kinematic,
-        PolarizationType::Type mesonPolarization,
+void GAM2ProcessModule::computeConvolCoeffFunction(
+        const GAM2ObservableKinematic& kinematic,
         const List<GPDType>& gpdType) {
 
     //compute scales
@@ -543,29 +515,26 @@ void DVMPProcessModule::computeConvolCoeffFunction(
     PhysicalType<double> xi = m_pXiConverterModule->compute(kinematic);
 
     //create ccf kinematics
-    DVMPConvolCoeffFunctionKinematic ccfKinematics(xi, kinematic.getT(),
-            kinematic.getQ2(), scale.getMuF2(), scale.getMuR2(),
-            kinematic.getMesonType(), mesonPolarization);
+    GAM2ConvolCoeffFunctionKinematic ccfKinematics(xi, kinematic.getT(),
+            kinematic.getUPrim(), kinematic.getMgg2(), scale.getMuF2(),
+            scale.getMuR2(), m_polG0, m_polG1, m_polG2);
 
     //check if different
     if (isPreviousCCFKinematicDifferent(ccfKinematics)) {
 
-        //possible GPD types
-        List<GPDType> gpdTypePossible = VectorUtils::intersection(gpdType,
-                MesonType(kinematic.getMesonType()).getPossibleGPDTypes());
-
         //evaluate
-        m_dvcsConvolCoeffFunctionResult =
-                Partons::getInstance()->getServiceObjectRegistry()->getDVMPConvolCoeffFunctionService()->computeSingleKinematic(
-                        ccfKinematics, m_pConvolCoeffFunctionModule,
-                        gpdTypePossible);
+        m_dvcsConvolCoeffFunctionResult = m_pConvolCoeffFunctionModule->compute(
+                ccfKinematics, gpdType);
 
-        //set corresponding kinematics
+//                Partons::getInstance()->getServiceObjectRegistry()->getGAM2ConvolCoeffFunctionService()->computeSingleKinematic(
+//                        ccfKinematics, m_pConvolCoeffFunctionModule, gpdType);
+
+//set corresponding kinematics
         m_lastCCFKinematics = ccfKinematics;
     }
 }
 
-std::complex<double> DVMPProcessModule::getConvolCoeffFunctionValue(
+std::complex<double> GAM2ProcessModule::getConvolCoeffFunctionValue(
         GPDType::Type gpdType) {
 
     std::complex<double> result = std::complex<double>(0., 0.);

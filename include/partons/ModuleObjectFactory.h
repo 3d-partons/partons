@@ -20,15 +20,19 @@ class BaseObjectFactory;
 class DVCSScalesModule;
 class TCSScalesModule;
 class DVMPScalesModule;
+class GAM2ScalesModule;
 class DVCSConvolCoeffFunctionModule;
 class DVMPConvolCoeffFunctionModule;
 class TCSConvolCoeffFunctionModule;
-class TCSObservable;
-class TCSProcessModule;
+class GAM2ConvolCoeffFunctionModule;
 class DVCSObservable;
 class DVCSProcessModule;
+class TCSObservable;
+class TCSProcessModule;
 class DVMPObservable;
 class DVMPProcessModule;
+//class GAM2Observable;
+class GAM2ProcessModule;
 class GPDEvolutionModule;
 class GPDModule;
 class CollinearDistributionEvolutionModule;
@@ -39,6 +43,7 @@ class RunningAlphaStrongModule;
 class DVCSXiConverterModule;
 class TCSXiConverterModule;
 class DVMPXiConverterModule;
+class GAM2XiConverterModule;
 } /* namespace PARTONS */
 
 namespace PARTONS {
@@ -113,26 +118,30 @@ public:
      * @param classId Unique identifier of last child class.
      * @return CollinearDistributionEvolutionModule pointer.
      */
-    CollinearDistributionEvolutionModule* newCollinearDistributionEvolutionModule(unsigned int classId);
+    CollinearDistributionEvolutionModule* newCollinearDistributionEvolutionModule(
+            unsigned int classId);
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a CollinearDistributionEvolutionModule.
      * @param className Name of last child class.
      * @return CollinearDistributionEvolutionModule pointer.
      */
-    CollinearDistributionEvolutionModule* newCollinearDistributionEvolutionModule(const std::string & className);
+    CollinearDistributionEvolutionModule* newCollinearDistributionEvolutionModule(
+            const std::string & className);
 
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a CollinearDistributionModule.
      * @param classId Unique identifier of last child class.
      * @return CollinearDistributionModule pointer.
      */
-    CollinearDistributionModule* newCollinearDistributionModule(unsigned int classId);
+    CollinearDistributionModule* newCollinearDistributionModule(
+            unsigned int classId);
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a CollinearDistributionModule.
      * @param className Name of last child class.
      * @return CollinearDistributionModule pointer.
      */
-    CollinearDistributionModule* newCollinearDistributionModule(const std::string &className);
+    CollinearDistributionModule* newCollinearDistributionModule(
+            const std::string &className);
 
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a GPDSubtractionConstantModule.
@@ -192,6 +201,21 @@ public:
      * @return TCSConvolCoeffFunctionModule pointer.
      */
     TCSConvolCoeffFunctionModule* newTCSConvolCoeffFunctionModule(
+            const std::string &className);
+
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a GAM2ConvolCoeffFunctionModule.
+     * @param classId Unique identifier of last child class.
+     * @return GAM2ConvolCoeffFunctionModule pointer.
+     */
+    GAM2ConvolCoeffFunctionModule* newGAM2ConvolCoeffFunctionModule(
+            unsigned int classId);
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a GAM2ConvolCoeffFunctionModule.
+     * @param className Name of last child class.
+     * @return GAM2ConvolCoeffFunctionModule pointer.
+     */
+    GAM2ConvolCoeffFunctionModule* newGAM2ConvolCoeffFunctionModule(
             const std::string &className);
 
     /**
@@ -232,6 +256,19 @@ public:
      * @return DVMPProcessModule pointer.
      */
     DVMPProcessModule* newDVMPProcessModule(const std::string & className);
+
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a GAM2ProcessModule.
+     * @param classId Unique identifier of last child class.
+     * @return GAM2ProcessModule pointer.
+     */
+    GAM2ProcessModule* newGAM2ProcessModule(unsigned int classId);
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a GAM2ProcessModule.
+     * @param className Name of last child class.
+     * @return GAM2ProcessModule pointer.
+     */
+    GAM2ProcessModule* newGAM2ProcessModule(const std::string & className);
 
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a RunningAlphaStrongModule.
@@ -302,6 +339,19 @@ public:
     DVMPScalesModule* newDVMPScalesModule(const std::string &className);
 
     /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a GAM2ScalesModule.
+     * @param classId Unique identifier of last child class.
+     * @return GAM2ScalesModule pointer.
+     */
+    GAM2ScalesModule* newGAM2ScalesModule(unsigned int classId);
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a GAM2ScalesModule.
+     * @param className Name of last child class.
+     * @return GAM2ScalesModule pointer.
+     */
+    GAM2ScalesModule* newGAM2ScalesModule(const std::string &className);
+
+    /**
      * Specialization of ModuleObjectFactory::newModuleObject into a DVCSXiConverterModule.
      * @param classId Unique identifier of last child class.
      * @return DVCSXiConverterModule pointer.
@@ -340,6 +390,20 @@ public:
      * @return DVMPXiConverterModule pointer.
      */
     DVMPXiConverterModule* newDVMPXiConverterModule(
+            const std::string &className);
+
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a GAM2XiConverterModule.
+     * @param classId Unique identifier of last child class.
+     * @return GAM2XiConverterModule pointer.
+     */
+    GAM2XiConverterModule* newGAM2XiConverterModule(unsigned int classId);
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a GAM2XiConverterModule.
+     * @param className Name of last child class.
+     * @return GAM2XiConverterModule pointer.
+     */
+    GAM2XiConverterModule* newGAM2XiConverterModule(
             const std::string &className);
 
     /**

@@ -15,8 +15,8 @@
 
 #include "../../../utils/type/PhysicalType.h"
 #include "../../../utils/type/PhysicalUnit.h"
-#include "../../MesonPolarization.h"
 #include "../../MesonType.h"
+#include "../../PolarizationType.h"
 #include "../ConvolCoeffFunctionKinematic.h"
 
 namespace PARTONS {
@@ -61,7 +61,7 @@ public:
      */
     DVMPConvolCoeffFunctionKinematic(double xi, double t, double Q2,
             double MuF2, double MuR2, MesonType::Type mesonType,
-            MesonPolarization::Type mesonPolarization);
+            PolarizationType::Type mesonPolarization);
 
     /**
      * Assignment constructor.
@@ -77,7 +77,7 @@ public:
             const PhysicalType<double> &t, const PhysicalType<double> &Q2,
             const PhysicalType<double> &MuF2, const PhysicalType<double> &MuR2,
             MesonType::Type mesonType,
-            MesonPolarization::Type mesonPolarization);
+            PolarizationType::Type mesonPolarization);
 
     /**
      * Assignment constructor.
@@ -93,7 +93,7 @@ public:
             const ElemUtils::GenericType &t, const ElemUtils::GenericType &Q2,
             const ElemUtils::GenericType &MuF2,
             const ElemUtils::GenericType &MuR2, MesonType::Type mesonType,
-            MesonPolarization::Type mesonPolarization);
+            PolarizationType::Type mesonPolarization);
 
     /**
      * Copy constructor.
@@ -175,12 +175,12 @@ public:
     /**
      * Get meson polarization.
      */
-    MesonPolarization::Type getMesonPolarization() const;
+    PolarizationType::Type getMesonPolarization() const;
 
     /**
      * Set meson polarization.
      */
-    void setMesonPolarization(MesonPolarization::Type mesonPolarization);
+    void setMesonPolarization(PolarizationType::Type mesonPolarization);
 
 protected:
 
@@ -201,7 +201,7 @@ private:
     /**
      * Meson polarization.
      */
-    MesonPolarization::Type m_mesonPolarization;
+    PolarizationType::Type m_mesonPolarization;
 };
 
 /**
