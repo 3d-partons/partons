@@ -56,9 +56,8 @@ GAM2CFFStandard::GAM2CFFStandard(const std::string &className) :
                     &GAM2ConvolCoeffFunctionModule::computePolarized));
 
     m_iepsilon = std::complex<double>(0., 1.E-4);
-    m_phi = 0.;
     m_reim = 2;
-    m_phiDep = false;
+    m_phiDep = true;
 
     initFunctorsForIntegrations();
 }
@@ -79,7 +78,6 @@ GAM2CFFStandard::GAM2CFFStandard(const GAM2CFFStandard &other) :
     m_quark_diagonal_A = other.m_quark_diagonal_A;
 
     m_iepsilon = other.m_iepsilon;
-    m_phi = other.m_phi;
     m_reim = other.m_reim;
     m_phiDep = other.m_phiDep;
 
@@ -1546,14 +1544,6 @@ void GAM2CFFStandard::setIEpsilon(double iEps) {
 
 double GAM2CFFStandard::getIEpsilon() const {
     return m_iepsilon.imag();
-}
-
-void GAM2CFFStandard::setPhi(double phi) {
-        m_phi = phi; 
-}
-
-double GAM2CFFStandard::getPhi() const {
-        return m_phi;
 }
 
 void GAM2CFFStandard::setReIm(int reim) {

@@ -85,12 +85,6 @@ public:
     // Get iEpsilon.
     double getIEpsilon() const;
 
-    // Set phi.
-    void setPhi(double phi);
-
-    // Get phi.
-    double getPhi() const;
-
     // Only evaluate Re (0), Im (1) or both (2) - set.
     void setReIm(int reim);
 
@@ -105,9 +99,11 @@ public:
 
     double Convol_NLO_V_x(double x, const std::vector<double>& params);
     double Convol_NLO_V_x_Sym(double x, const std::vector<double>& params);
-    double Convol_NLO_V_x_Sym_Const(double x, const std::vector<double>& params);
+    double Convol_NLO_V_x_Sym_Const(double x,
+            const std::vector<double>& params);
 
-    double Convol_NLO_V_xz(double x, double z, const std::vector<double>& params);
+    double Convol_NLO_V_xz(double x, double z,
+            const std::vector<double>& params);
 
 protected:
 
@@ -295,9 +291,6 @@ private:
     // iEps
     std::complex<double> m_iepsilon;
 
-    // phi
-    double m_phi;
-    
     // only evaluate Re (0), Im (1) or both (2) - get.
     int m_reim;
 

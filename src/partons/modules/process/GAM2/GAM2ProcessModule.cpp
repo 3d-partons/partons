@@ -25,8 +25,7 @@ const std::string GAM2ProcessModule::GAM2_PROCESS_MODULE_CLASS_NAME =
 
 GAM2ProcessModule::GAM2ProcessModule(const std::string &className) :
         ProcessModule(className, ChannelType::GAM2), m_t(0.), m_uPrim(0.), m_Mgg2(
-                0.), m_E(0.), m_phi(0.), m_theta(0.), m_polG0(
-                PolarizationType::UNDEFINED), m_polG1(
+                0.), m_E(0.), m_phi(0.), m_polG0(PolarizationType::UNDEFINED), m_polG1(
                 PolarizationType::UNDEFINED), m_polG2(
                 PolarizationType::UNDEFINED), m_tmin(0.), m_xi(0.), m_pScaleModule(
                 0), m_pXiConverterModule(0), m_pConvolCoeffFunctionModule(0) {
@@ -52,10 +51,10 @@ GAM2ProcessModule::~GAM2ProcessModule() {
 
 GAM2ProcessModule::GAM2ProcessModule(const GAM2ProcessModule& other) :
         ProcessModule(other), m_t(other.m_t), m_uPrim(other.m_uPrim), m_Mgg2(
-                other.m_Mgg2), m_E(other.m_E), m_phi(other.m_phi), m_theta(
-                other.m_theta), m_polG0(other.m_polG0), m_polG1(other.m_polG1), m_polG2(
-                other.m_polG2), m_tmin(other.m_tmin), m_xi(other.m_xi), m_pScaleModule(
-                0), m_pXiConverterModule(0), m_pConvolCoeffFunctionModule(0) {
+                other.m_Mgg2), m_E(other.m_E), m_phi(other.m_phi), m_polG0(
+                other.m_polG0), m_polG1(other.m_polG1), m_polG2(other.m_polG2), m_tmin(
+                other.m_tmin), m_xi(other.m_xi), m_pScaleModule(0), m_pXiConverterModule(
+                0), m_pConvolCoeffFunctionModule(0) {
 
     m_lastCCFKinematics = other.m_lastCCFKinematics;
     m_dvcsConvolCoeffFunctionResult = other.m_dvcsConvolCoeffFunctionResult;
@@ -381,7 +380,6 @@ void GAM2ProcessModule::setKinematics(
     m_Mgg2 = kinematic.getMgg2().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
     m_E = kinematic.getE().makeSameUnitAs(PhysicalUnit::GEV).getValue();
     m_phi = kinematic.getPhi().makeSameUnitAs(PhysicalUnit::RAD).getValue();
-    m_theta = kinematic.getTheta().makeSameUnitAs(PhysicalUnit::RAD).getValue();
 }
 
 void GAM2ProcessModule::setExperimentalConditions(PolarizationType::Type polG0,
@@ -408,8 +406,7 @@ void GAM2ProcessModule::initModule() {
 
     m_xi =
             m_pXiConverterModule->compute(
-                    GAM2ObservableKinematic(m_t, m_uPrim, m_Mgg2, m_E, m_phi,
-                            m_theta)).getValue();
+                    GAM2ObservableKinematic(m_t, m_uPrim, m_Mgg2, m_E, m_phi)).getValue();
     m_tmin = -1 * pow(2 * m_xi * Constant::PROTON_MASS, 2)
             / (1. - pow(m_xi, 2));
 }
@@ -517,7 +514,7 @@ void GAM2ProcessModule::computeConvolCoeffFunction(
     //create ccf kinematics
     GAM2ConvolCoeffFunctionKinematic ccfKinematics(xi, kinematic.getT(),
             kinematic.getUPrim(), kinematic.getMgg2(), scale.getMuF2(),
-            scale.getMuR2(), m_polG0, m_polG1, m_polG2);
+            scale.getMuR2(), m_polG0, m_polG1, m_polG2, kinematic.getPhi());
 
     //check if different
     if (isPreviousCCFKinematicDifferent(ccfKinematics)) {

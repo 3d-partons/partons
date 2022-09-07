@@ -29,7 +29,7 @@ GAM2ConvolCoeffFunctionModule::GAM2ConvolCoeffFunctionModule(
         ConvolCoeffFunctionModule(className, ChannelType::GAM2), m_uPrim(0.), m_Mgg2(
                 0.), m_polG0(PolarizationType::UNDEFINED), m_polG1(
                 PolarizationType::UNDEFINED), m_polG2(
-                PolarizationType::UNDEFINED), m_qcdOrderType(
+                PolarizationType::UNDEFINED), m_phi(0.), m_qcdOrderType(
                 PerturbativeQCDOrderType::UNDEFINED) {
 }
 
@@ -37,7 +37,8 @@ GAM2ConvolCoeffFunctionModule::GAM2ConvolCoeffFunctionModule(
         const GAM2ConvolCoeffFunctionModule &other) :
         ConvolCoeffFunctionModule(other), m_uPrim(other.m_uPrim), m_Mgg2(
                 other.m_Mgg2), m_polG0(other.m_polG0), m_polG1(other.m_polG1), m_polG2(
-                other.m_polG2), m_qcdOrderType(other.m_qcdOrderType) {
+                other.m_polG2), m_phi(other.m_phi), m_qcdOrderType(
+                other.m_qcdOrderType) {
 
     m_listOfCFFComputeFunctionAvailable =
             other.m_listOfCFFComputeFunctionAvailable;
@@ -250,6 +251,7 @@ void GAM2ConvolCoeffFunctionModule::setKinematics(
     m_polG0 = kinematic.getPolG0();
     m_polG1 = kinematic.getPolG1();
     m_polG2 = kinematic.getPolG2();
+    m_phi = kinematic.getPhi().makeSameUnitAs(PhysicalUnit::RAD).getValue();
 }
 
 PerturbativeQCDOrderType::Type GAM2ConvolCoeffFunctionModule::getQCDOrderType() const {

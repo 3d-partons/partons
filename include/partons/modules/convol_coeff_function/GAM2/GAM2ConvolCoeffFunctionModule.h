@@ -129,6 +129,8 @@ protected:
     PolarizationType::Type m_polG1; ///< Polarization state of first outgoing photon.
     PolarizationType::Type m_polG2; ///< Polarization state of second outgoing photon.
 
+    double m_phi; ///< Linear polarization angle.
+
     PerturbativeQCDOrderType::Type m_qcdOrderType; ///< Order of the perturbative QCD computation.
 };
 

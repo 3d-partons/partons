@@ -24,7 +24,7 @@ namespace PARTONS {
  *
  * @brief Class representing single observable kinematics for two photon production process.
  *
- * This class represents a single observable kinematics for two photon production process (t, \f$Q^{2}\f$, E_{b}, \f$\phi\f$, \f$\theta\f$).
+ * This class represents a single observable kinematics for two photon production process (t, \f$Q^{2}\f$, E_{b}, \f$\phi\f$).
  */
 class GAM2ObservableKinematic: public ObservableKinematic {
 
@@ -53,11 +53,6 @@ public:
     static const std::string KINEMATIC_PARAMETER_NAME_PHI;
 
     /**
-     * Parameter name to set variable \f$\theta\f$ via configuration methods.
-     */
-    static const std::string KINEMATIC_PARAMETER_NAME_THETA;
-
-    /**
      * Parameter name to set unit of variable \f$u'\f$ via configuration methods.
      */
     static const std::string KINEMATIC_PARAMETER_NAME_UPRIM_UNIT;
@@ -78,11 +73,6 @@ public:
     static const std::string KINEMATIC_PARAMETER_NAME_PHI_UNIT;
 
     /**
-     * Parameter name to set unit of variable \f$\theta\f$ via configuration methods.
-     */
-    static const std::string KINEMATIC_PARAMETER_NAME_THETA_UNIT;
-
-    /**
      * Default constructor.
      */
     GAM2ObservableKinematic();
@@ -93,11 +83,10 @@ public:
      * @param uPrim Four-momentum transfer squared to photon (in \f$GeV^{2}\f$).
      * @param Mgg2 Invariant mass of two photons (in \f$GeV^{2}\f$).
      * @param E Beam energy (in GeV).
-     * @param phi Angle between leptonic and hadronic planes (in radians, Trento convention).
-     * @param theta Angle between positively charged lepton and scattered proton in lepton CMS (in radians).
+     * @param phi Linear polarization angle.
      */
     GAM2ObservableKinematic(double t, double uPrim, double Mgg2, double E,
-            double phi, double theta);
+            double phi);
 
     /**
      * Assignment constructor.
@@ -105,13 +94,11 @@ public:
      * @param uPrim Four-momentum transfer squared to photon (in \f$GeV^{2}\f$).
      * @param Mgg2 Invariant mass of two photons (in \f$GeV^{2}\f$).
      * @param E Beam energy (in GeV).
-     * @param phi Angle between leptonic and hadronic planes (in radians, Trento convention).
-     * @param theta Angle between positively charged lepton and scattered proton in lepton CMS (in radians).
+     * @param phi Linear polarization angle.
      */
     GAM2ObservableKinematic(const PhysicalType<double>& t,
             const PhysicalType<double>& uPrim, const PhysicalType<double>& Mgg2,
-            const PhysicalType<double>& E, const PhysicalType<double>& phi,
-            const PhysicalType<double>& theta);
+            const PhysicalType<double>& E, const PhysicalType<double>& phi);
 
     /**
      * Assignment constructor.
@@ -119,14 +106,12 @@ public:
      * @param uPrim Four-momentum transfer squared to photon (in \f$GeV^{2}\f$).
      * @param Mgg2 Invariant mass of two photons (in \f$GeV^{2}\f$).
      * @param E Beam energy (in GeV).
-     * @param phi Angle between leptonic and hadronic planes (in radians, Trento convention).
-     * @param theta Angle between positively charged lepton and scattered proton in lepton CMS (in radians).
+     * @param phi Linear polarization angle.
      */
     GAM2ObservableKinematic(const ElemUtils::GenericType& t,
             const ElemUtils::GenericType& uPrim,
             const ElemUtils::GenericType& Mgg2, const ElemUtils::GenericType& E,
-            const ElemUtils::GenericType& phi,
-            const ElemUtils::GenericType& theta);
+            const ElemUtils::GenericType& phi);
 
     /**
      * Copy constructor.
@@ -240,34 +225,19 @@ public:
     void setE(double E, PhysicalUnit::Type unit = PhysicalUnit::GEV);
 
     /**
-     * Get angle between leptonic and hadronic planes (in radians).
+     * Get linear polarization angle.
      */
     const PhysicalType<double>& getPhi() const;
 
     /**
-     * Set angle between leptonic and hadronic planes (in radians).
+     * Set linear polarization angle.
      */
     void setPhi(const PhysicalType<double>& phi);
 
     /**
-     * Set angle between leptonic and hadronic planes (in radians).
+     * Set linear polarization angle.
      */
     void setPhi(double phi, PhysicalUnit::Type unit = PhysicalUnit::RAD);
-
-    /**
-     * Get angle between positively charged lepton and scattered proton in lepton CMS (in radians).
-     */
-    const PhysicalType<double>& getTheta() const;
-
-    /**
-     * Set angle between positively charged lepton and scattered proton in lepton CMS (in radians).
-     */
-    void setTheta(const PhysicalType<double>& theta);
-
-    /**
-     * Set angle between positively charged lepton and scattered proton in lepton CMS (in radians).
-     */
-    void setTheta(double theta, PhysicalUnit::Type unit = PhysicalUnit::RAD);
 
 protected:
 
@@ -296,14 +266,9 @@ private:
     PhysicalType<double> m_E;
 
     /**
-     * Angle between leptonic and hadronic planes (in radians, Trento convention).
+     * Linear polarization angle..
      */
     PhysicalType<double> m_phi;
-
-    /**
-     * Angle between positively charged lepton and scattered proton in lepton CMS (in radians).
-     */
-    PhysicalType<double> m_theta;
 };
 
 /**

@@ -45,7 +45,7 @@ void GAM2ProcessGPSSW21::isModuleWellConfigured() {
 
 PhysicalType<double> GAM2ProcessGPSSW21::CrossSection() {
 // Polarized cross section (polarizations of all 3 photons specified)
-// d(sigma) / dMgg^2 d(-u') dt
+// d(sigma) / dMgg^2 d(-u') dt dphi
 // Currently, the kinematics is set for t = t_min
     std::complex<double> H = getConvolCoeffFunctionValue(GPDType::H);
     std::complex<double> E = getConvolCoeffFunctionValue(GPDType::E);
@@ -65,6 +65,8 @@ PhysicalType<double> GAM2ProcessGPSSW21::CrossSection() {
     diff_cross_section /= std::pow(16. * Constant::PI, 3) * SgN * SgN * m_Mgg2;
 
     diff_cross_section *= 2.; // times 2
+
+    diff_cross_section /= 2 * Constant::PI; // dphi
 
     diff_cross_section *= std::pow(Constant::POSITRON_CHARGE, 6);
 

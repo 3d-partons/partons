@@ -140,8 +140,7 @@ protected:
     double m_uPrim; ///<F our-momentum transfer squared to photon (in \f$GeV^{2}\f$).
     double m_Mgg2; ///< Invariant mass of two photons (in \f$GeV^{2}\f$).
     double m_E; ///<  Beam energy (in GeV).
-    double m_phi; ///< Angle between leptonic and hadronic planes (in radians, Trento convention).
-    double m_theta; ///< Angle between positively charged lepton and scattered proton in lepton CMS (in radians).
+    double m_phi; ///< Linear polarization angle.
 
     double m_tmin; ///< t min;
     double m_xi; ///< xi;

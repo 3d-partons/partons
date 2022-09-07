@@ -49,10 +49,12 @@ public:
      * @param polG0 Polarization of incoming photon.
      * @param polG1 Polarization of first outgoing photon.
      * @param polG2 Polarization of second outgoing photon.
+     * @param phi Linear polarization angle.
      */
     GAM2ConvolCoeffFunctionKinematic(double xi, double t, double uPrim,
             double Mgg2, double MuF2, double MuR2, PolarizationType::Type polG0,
-            PolarizationType::Type polG1, PolarizationType::Type polG2);
+            PolarizationType::Type polG1, PolarizationType::Type polG2,
+            double phi);
 
     /**
      * Assignment constructor.
@@ -65,12 +67,14 @@ public:
      * @param polG0 Polarization of incoming photon.
      * @param polG1 Polarization of first outgoing photon.
      * @param polG2 Polarization of second outgoing photon.
+     * @param phi Linear polarization angle.
      */
     GAM2ConvolCoeffFunctionKinematic(const PhysicalType<double> &xi,
             const PhysicalType<double> &t, const PhysicalType<double> &uPrim,
             const PhysicalType<double> &Mgg2, const PhysicalType<double> &MuF2,
             const PhysicalType<double> &MuR2, PolarizationType::Type polG0,
-            PolarizationType::Type polG1, PolarizationType::Type polG2);
+            PolarizationType::Type polG1, PolarizationType::Type polG2,
+            const PhysicalType<double> &phi);
 
     /**
      * Assignment constructor.
@@ -83,6 +87,7 @@ public:
      * @param polG0 Polarization of incoming photon.
      * @param polG1 Polarization of first outgoing photon.
      * @param polG2 Polarization of second outgoing photon.
+     * @param phi Linear polarization angle.
      */
     GAM2ConvolCoeffFunctionKinematic(const ElemUtils::GenericType &xi,
             const ElemUtils::GenericType &t,
@@ -90,7 +95,8 @@ public:
             const ElemUtils::GenericType &Mgg2,
             const ElemUtils::GenericType &MuF2,
             const ElemUtils::GenericType &MuR2, PolarizationType::Type polG0,
-            PolarizationType::Type polG1, PolarizationType::Type polG2);
+            PolarizationType::Type polG1, PolarizationType::Type polG2,
+            const ElemUtils::GenericType &phi);
 
     /**
      * Copy constructor.
@@ -204,6 +210,21 @@ public:
      */
     void setPolG2(PolarizationType::Type polG2);
 
+    /**
+     * Get linear polarization angle.
+     */
+    const PhysicalType<double>& getPhi() const;
+
+    /**
+     * Set linear polarization angle.
+     */
+    void setPhi(const PhysicalType<double>& Phi);
+
+    /**
+     * Set linear polarization angle.
+     */
+    void setPhi(double Phi, PhysicalUnit::Type unit = PhysicalUnit::RAD);
+
 protected:
 
     virtual void updateHashSum() const;
@@ -223,6 +244,11 @@ private:
     PolarizationType::Type m_polG0; ///< Polarization state of incoming photon.
     PolarizationType::Type m_polG1; ///< Polarization state of first outgoing photon.
     PolarizationType::Type m_polG2; ///< Polarization state of second outgoing photon.
+
+    /**
+     * Linear polarization angle.
+     */
+    PhysicalType<double> m_phi;
 };
 
 /**
