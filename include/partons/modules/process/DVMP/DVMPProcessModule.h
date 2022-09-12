@@ -130,6 +130,12 @@ public:
      */
     virtual PhysicalType<double> CrossSection();
 
+    /**
+     * Set manually CFFs.
+     */
+    void setConvolCoeffFunction(const DVMPConvolCoeffFunctionKinematic& kin,
+            const DVMPConvolCoeffFunctionResult& result);
+
 protected:
 
     /**

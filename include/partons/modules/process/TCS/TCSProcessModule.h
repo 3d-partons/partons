@@ -145,6 +145,12 @@ public:
      */
     virtual PhysicalType<double> CrossSectionInterf();
 
+    /**
+     * Set manually CFFs.
+     */
+    void setConvolCoeffFunction(const TCSConvolCoeffFunctionKinematic& kin,
+            const TCSConvolCoeffFunctionResult& result);
+
 protected:
 
     /**

@@ -149,6 +149,21 @@ public:
         m_errScale = errScale;
     }
 
+    /**
+     * Get data set name.
+     */
+    const std::string& getExperimentalDataSetName() const {
+        return m_experimentalDataSetName;
+    }
+
+    /**
+     * Set data set name.
+     */
+    void setExperimentalDataSetName(
+            const std::string& experimentalDataSetName) {
+        m_experimentalDataSetName = experimentalDataSetName;
+    }
+
 protected:
 
     /**
@@ -216,6 +231,11 @@ protected:
      * Systematic error.
      */
     ErrorBar<double> m_errScale;
+
+    /**
+     * Data set name.
+     */
+    std::string m_experimentalDataSetName;
 };
 
 } /* namespace PARTONS */

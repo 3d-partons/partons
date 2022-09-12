@@ -116,6 +116,11 @@ public:
      */
     virtual PhysicalType<double> CrossSection();
 
+    /**
+     * Set manually CFFs.
+     */
+    void setConvolCoeffFunction(const GAM2ConvolCoeffFunctionKinematic& kin, const GAM2ConvolCoeffFunctionResult& result);
+
 protected:
 
     /**
