@@ -21,7 +21,7 @@ stages:          # List of stages for jobs, and their order of execution
   - test
 
 before_script:
-  - apt-get install gsl cmake automake libtool
+  - apt-get install -y gsl cmake automake libtool
 
 build-job:       # This job runs in the build stage, which runs first.
   stage: build
