@@ -7,7 +7,7 @@ stages:
 image: gcc
 
 before_script:
-  - apt-get --quiet update --yes
+  - sudo apt-get --quiet update --yes
   - apt-get --quiet install --yes wget cmake
 
 # stage 
