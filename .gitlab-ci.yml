@@ -6,14 +6,17 @@ stages:
 # name of docker image to be used
 image: gcc
 
+before_script:
+  - apt-get --quiet update --yes
+  - apt-get --quiet install --yes wget cmake
+
 # stage 
 build:
     # type
     stage: build
     # definition
     script:
-    - apt update 
-    - apt-get -y install cmake
+    - cmake --version
 
 #stage
 test_format:
@@ -27,12 +30,3 @@ test_format:
     - cd test
     - bash check_clang_format.sh
 
-# stage
-test_concept:
-
-    # type
-    stage: test
-
-    # definition
-    script:
-    - test -f testFile
