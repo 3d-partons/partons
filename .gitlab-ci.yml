@@ -8,24 +8,15 @@ image: gcc
 
 # stage 
 build:
-
     # type
     stage: build
-
     # definition
     script:
-    - touch testFile
-
-    # artifacts
-    artifacts:
-
-      # paths 
-      paths:
-      - testFile
+    - apt update 
+    - apt-get -y install cmake
 
 #stage
 test_format:
-
     #type
     stage: test
 
