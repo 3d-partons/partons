@@ -23,8 +23,8 @@ stages:          # List of stages for jobs, and their order of execution
 image: gcc
 
 before_script:
-  - apt update 
-  - apt-get -y install cmake
+  - sudo apt-get update -yq
+  - sudo apt-get -y install cmake
 
 build-job:       # This job runs in the build stage, which runs first.
   stage: build
