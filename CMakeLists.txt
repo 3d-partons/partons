@@ -8,11 +8,11 @@ project(PARTONS CXX)
 
 # define c++ standard and issue all the warning demanded by this standard
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-   add_definitions(-std=c++11 -pedantic -Wno-vla-extension)
+   add_definitions(-std=c++14 -pedantic -Wno-vla-extension)
 else()
-   add_definitions(-std=c++11 -pedantic -Wno-vla-extension -fext-numeric-literals)
+   add_definitions(-std=c++14 -pedantic -Wno-vla-extension -fext-numeric-literals)
 endif()
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 
 if (NOT DEFINED CMAKE_MACOSX_RPATH)
    set(CMAKE_MACOSX_RPATH 0)
@@ -117,6 +117,9 @@ find_package(GSL REQUIRED)
 # find libraries: Apfel++
 find_package(Apfel++ REQUIRED)
 
+# pybind11
+find_package(pybind11 QUIET)
+
 # find libraries: LHAPDF
 find_package(LHAPDF REQUIRED)
 
@@ -160,18 +163,14 @@ string(REGEX REPLACE "PARTONS_GIT_REVISION[ \t]*" "" PARTONS_REVISION "${PARTONS
 string(REGEX REPLACE "\"" "" PARTONS_REVISION "${PARTONS_REVISION}")
 string(STRIP "${PARTONS_REVISION}" PARTONS_REVISION)
 
-
 configure_file("${CMAKE_SOURCE_DIR}/data/config/environment_configuration.dat.in" "${CMAKE_SOURCE_DIR}/data/config/environment_configuration.dat")
 
 # FINALIZE ==================================================================================
 
 # generate list of source files
 file(
-
         GLOB_RECURSE
-
         source_files
-
         src/*
 )
 
@@ -179,39 +178,36 @@ file(
 set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 
 add_library(
-
         PARTONS
-
         SHARED
-
         ${source_files}
 )
 
 # define libraries to be linked
 target_link_libraries(
-
 		PARTONS
-          
 		${SFML_LIBRARIES}
-          
 		${CLN_LIBRARIES}
-          
 		${ElementaryUtils_LIBRARIES}
-          
 		${NumA++_LIBRARIES}
-
 		${GSL_LIBRARIES}
-
 		${Apfel++_LIBRARIES}
-
 		${LHAPDF_LIBRARIES}
-
 		${QT_LIBRARY_CORE}
-		
 		${QT_LIBRARY_SQL}
-		
 		${QT_LIBRARY_XML}
 )
+
+# Build python interface if pybind11 was found
+if (pybind11_FOUND)
+   pybind11_add_module(pypartons pywrap/pypartons.cpp)
+   target_link_libraries(pypartons PUBLIC PARTONS)
+   find_package (Python3 REQUIRED)
+   execute_process(COMMAND "${Python3_EXECUTABLE}" -c "import distutils.sysconfig; print(distutils.sysconfig.get_python_lib(prefix='${CMAKE_INSTALL_PREFIX}', plat_specific=True), end = '')" OUTPUT_VARIABLE PYTHON_INSTALLATION_PATH)
+   install(TARGETS pypartons LIBRARY DESTINATION "${PYTHON_INSTALLATION_PATH}")
+else (pybind11_FOUND)
+   message ("-- pybind11 not found. The python wrapper will not be built.")
+endif (pybind11_FOUND)
 
 # install
 install(TARGETS PARTONS 
