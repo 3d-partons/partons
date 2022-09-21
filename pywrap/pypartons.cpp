@@ -1,5 +1,8 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl_bind.h>
+#include <pybind11/stl.h>
+#include <pybind11/operators.h>
+#include <pybind11/functional.h>
 #include <ElementaryUtils/parameters/Parameters.h>
 #include <ElementaryUtils/parameters/Parameter.h>
 #include <ElementaryUtils/parameters/GenericType.h>
@@ -145,8 +148,10 @@
 #include "../partons/include/partons/modules/active_flavors_thresholds/ActiveFlavorsThresholdsQuarkMasses.h"
 #include "../partons/include/partons/modules/MathIntegratorModule.h"
 #include "../partons/include/partons/utils/type/PhysicalType.h"
-
-
+#include "../partons/include/partons/beans/QuarkFlavor.h"
+#include "../partons/include/partons/beans/parton_distribution/QuarkDistribution.h"
+#include "../partons/include/partons/beans/parton_distribution/GluonDistribution.h"
+#include "../partons/include/partons/beans/parton_distribution/PartonDistribution.h"
 
 void init() {
     char** t;
@@ -1430,4 +1435,67 @@ PYBIND11_MODULE(pypartons, m) {
       //Wrapping of partons/partons/include/partons/utils/type/PhysicalType.h
 
     declare_PhysicalType<double>(mPARTONS, "double");
+
+      //Wrapping of include/partons/beans/QuarkFlavor.h
+
+    py::class_<PARTONS::QuarkFlavor> QuarkFlavor(mPARTONS, "QuarkFlavor");
+
+    py::enum_<PARTONS::QuarkFlavor::Type>(QuarkFlavor, "Type")
+      .value("UNDEFINED", PARTONS::QuarkFlavor::Type::UNDEFINED)
+      .value("UP",        PARTONS::QuarkFlavor::Type::UP)
+      .value("DOWN",      PARTONS::QuarkFlavor::Type::DOWN)
+      .value("STRANGE",   PARTONS::QuarkFlavor::Type::STRANGE)
+      .value("CHARM",     PARTONS::QuarkFlavor::Type::CHARM)
+      .value("BOTTOM",    PARTONS::QuarkFlavor::Type::BOTTOM)
+      .value("TOP",       PARTONS::QuarkFlavor::Type::TOP)
+      .export_values();
+
+      //Wrapping of include/partons/beans/parton_distribution/QuarkDistribution.h
+
+    py::class_<PARTONS::QuarkDistribution>(mPARTONS, "QuarkDistribution")
+      .def(py::init<PARTONS::QuarkDistribution&>(), py::arg("other"))
+      .def(py::init<PARTONS::QuarkFlavor::Type, double, double, double>(), py::arg("quarkFlavor") = PARTONS::QuarkFlavor::UNDEFINED, py::arg("quarkDistribution") = 0, py::arg("quarkDistributionPlus") = 0, py::arg("quarkDistributionMinus") = 0)
+      .def("toString",                   &PARTONS::QuarkDistribution::toString)
+      //.def("compare")
+      .def("getQuarkFlavor",             py::overload_cast<>(&PARTONS::QuarkDistribution::getQuarkFlavor, py::const_))
+      .def("getQuarkDistribution",       py::overload_cast<>(&PARTONS::QuarkDistribution::getQuarkDistribution, py::const_))
+      .def("getQuarkDistributionPlus",   py::overload_cast<>(&PARTONS::QuarkDistribution::getQuarkDistributionPlus, py::const_))
+      .def("getQuarkDistributionMinus",  py::overload_cast<>(&PARTONS::QuarkDistribution::getQuarkDistributionMinus, py::const_))
+      .def("setQuarkFlavor",             &PARTONS::QuarkDistribution::setQuarkFlavor, py::arg("quarkFlavorType"))
+      .def("setQuarkDistribution",       &PARTONS::QuarkDistribution::setQuarkDistribution, py::arg("quarkDistribution"))
+      .def("setQuarkDistributionPlus",   &PARTONS::QuarkDistribution::setQuarkDistributionPlus, py::arg("quarkDistributionPlus"))
+      .def("setQuarkDistributionMinus",  &PARTONS::QuarkDistribution::setQuarkDistributionMinus, py::arg("quarkDistributionMinus"));
+
+      //Wrapping of include/partons/beans/parton_distribution/GluonDistribution.h
+
+    py::class_<PARTONS::GluonDistribution>(mPARTONS, "GluonDistribution")
+      .def(py::init<>())
+      .def(py::init<PARTONS::GluonDistribution&>(), py::arg("other"))
+      .def(py::init<double>(), py::arg("gluonDistribution"))
+      .def("toString",             &PARTONS::GluonDistribution::toString)
+      //.def("compare")
+      .def("getGluonDistribution", py::overload_cast<>(&PARTONS::GluonDistribution::getGluonDistribution, py::const_))
+      .def("isNullObject",         py::overload_cast<>(&PARTONS::GluonDistribution::isNullObject, py::const_))
+      .def("setGluonDistribution", &PARTONS::GluonDistribution::setGluonDistribution, py::arg("double quarkDistribution"))
+      .def("setNullObject",        &PARTONS::GluonDistribution::setNullObject, py::arg("nullObject"));
+
+
+      //Wrapping of include/partons/beans/parton_distribution/PartonDistribution.h
+
+    py::class_<PARTONS::PartonDistribution>(mPARTONS, "PartonDistribution")
+      .def(py::init<>())
+      .def(py::init<PARTONS::PartonDistribution&>(), py::arg("other"))
+      .def("toString",             &PARTONS::PartonDistribution::toString)
+      //.def("compare")
+      .def("getQuarkDistribution",       py::overload_cast<PARTONS::QuarkFlavor::Type>(&PARTONS::PartonDistribution::getQuarkDistribution, py::const_), py::arg("quarkFlavorType"))
+      .def("getListOfQuarkDistribution", py::overload_cast<>(&PARTONS::PartonDistribution::getListOfQuarkDistribution, py::const_))
+      .def("getQuarkDistributions",      py::overload_cast<>(&PARTONS::PartonDistribution::getQuarkDistributions, py::const_))
+      .def("getQuarkDistributionsSize",  py::overload_cast<>(&PARTONS::PartonDistribution::getQuarkDistributionsSize, py::const_))
+      .def("GluonDistribution",          py::overload_cast<>(&PARTONS::PartonDistribution::getGluonDistribution, py::const_))
+      .def("addQuarkDistribution",       py::overload_cast<const PARTONS::QuarkDistribution&>(&PARTONS::PartonDistribution::addQuarkDistribution), py::arg("quarkDistribution"))
+      .def("addQuarkDistribution",       py::overload_cast<PARTONS::QuarkDistribution&>(&PARTONS::PartonDistribution::addQuarkDistribution), py::arg("quarkDistribution"))
+      .def("listTypeOfQuarkFlavor",      &PARTONS::PartonDistribution::listTypeOfQuarkFlavor)
+      .def("getSinglet",                 &PARTONS::PartonDistribution::getSinglet)
+      .def("setQuarkDistributions",      &PARTONS::PartonDistribution::setQuarkDistributions, py::arg("quarkDistributions"))
+      .def("setGluonDistribution",       &PARTONS::PartonDistribution::setGluonDistribution, py::arg("gluonDistribution"));
 }
