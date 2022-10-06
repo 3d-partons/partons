@@ -10,7 +10,7 @@ build_elementary-utils:
     stage: build_elementary-utils
 
     # name of docker image to be used
-    image: gcccccccccc
+    image: partons/partons:latest
 
     # definition
     script:
