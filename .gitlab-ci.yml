@@ -4,7 +4,7 @@ stages:
     - say_hi
 
 # name of docker image to be used
-image: partons/partons
+image: gcc
 
 # stage 
 build_elementary-utils:
