@@ -3,14 +3,14 @@ stages:
     - build_elementary-utils
     - say_hi
 
-# name of docker image to be used
-image: gcc
-
 # stage 
 build_elementary-utils:
 
     # stage
     stage: build_elementary-utils
+
+    # name of docker image to be used
+    image: gcc
 
     # definition
     script:
