@@ -10,12 +10,10 @@ build_elementary-utils:
     stage: build_elementary-utils
 
     # name of docker image to be used
-    image: gcc
+    image: gcccccccccc
 
     # definition
     script:
-    - apt-get update
-    - apt-get -y install cmake
     - git clone https://drf-gitlab.cea.fr/partons/core/elementary-utils.git
     - cd elementary-utils/build
     - cmake ..
