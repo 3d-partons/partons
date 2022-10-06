@@ -15,7 +15,7 @@ build_elementary-utils:
     # definition
     script:
     - git clone https://drf-gitlab.cea.fr/partons/core/elementary-utils.git
-    - cd /tmp/elementary-utils/build
+    - cd elementary-utils/build
     - cmake ..
     - make
 
