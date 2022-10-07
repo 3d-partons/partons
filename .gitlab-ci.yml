@@ -1,3 +1,7 @@
+# image
+image: partons/partons
+
+
 # list of stages
 stages:
     - build_elementary-utils
@@ -8,15 +12,10 @@ build_elementary-utils:
 
     # stage
     stage: build_elementary-utils
-    image: python:3.8-slim
+
     # definition
     script:
-    - cat /etc/gitlab/config.toml
     - cat  ~/.streamlit/config.toml
-    - ls
-    - ls /etc/
-    - ls /etc/gitlab
-    - ls ~
     - git clone https://drf-gitlab.cea.fr/partons/core/elementary-utils.git
     - cd elementary-utils/build
     - cmake ..
