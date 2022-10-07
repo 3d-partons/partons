@@ -14,6 +14,7 @@ build_elementary-utils:
 
     # definition
     script:
+    - sudo ls
     - git clone https://drf-gitlab.cea.fr/partons/core/elementary-utils.git
     - cd elementary-utils/build
     - cmake ..
