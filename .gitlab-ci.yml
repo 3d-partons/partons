@@ -1,3 +1,6 @@
+# name of docker image to be used
+image: partons/partons:latest
+
 # list of stages
 stages:
     - build_elementary-utils
@@ -9,12 +12,9 @@ build_elementary-utils:
     # stage
     stage: build_elementary-utils
 
-    # name of docker image to be used
-    image: partons/partons:latest
-
     # definition
     script:
-    - sudo ls
+    - cat /etc/gitlab/config.toml
     - git clone https://drf-gitlab.cea.fr/partons/core/elementary-utils.git
     - cd elementary-utils/build
     - cmake ..
