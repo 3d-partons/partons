@@ -1,6 +1,3 @@
-# name of docker image to be used
-image: partons/partons:latest
-
 # list of stages
 stages:
     - build_elementary-utils
@@ -11,7 +8,7 @@ build_elementary-utils:
 
     # stage
     stage: build_elementary-utils
-
+    image: python:3.8-slim
     # definition
     script:
     - cat /etc/gitlab/config.toml
