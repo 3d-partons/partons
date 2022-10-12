@@ -656,13 +656,13 @@ std::complex<double> DDVCSProcessDMSW22::ampliVCS(int s2, int s1, int sl,
     if (s0star > 0.) {
         s0star = +1.;
     } else if (s0star < 0.) {
-        s0star = +1.;
+        s0star = -1.;
     }
 
     if (s0n > 0.) {
         s0n = +1.;
     } else if (s0n < 0.) {
-        s0n = +1.;
+        s0n = -1.;
     }
 
     double snstar[4], sHATn[4];
@@ -680,7 +680,7 @@ std::complex<double> DDVCSProcessDMSW22::ampliVCS(int s2, int s1, int sl,
 
     tVCS_T1 *= -0.5;
 
-    tVCS_T1 *= (1. / m_DMSW_pq) * (m_cffH + m_cffE)
+    tVCS_T1 *= (s0n / m_DMSW_pq) * (m_cffH + m_cffE)
             * (Yfunction(s2, s1) * gFunction(+1, rPrime[h2], sHATn, r[h1])
                     + Zfunction(s2, s1)
                             * gFunction(-1, rPrime[minush2], sHATn, r[minush1]))
