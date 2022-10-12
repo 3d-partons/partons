@@ -650,19 +650,19 @@ std::complex<double> DDVCSProcessDMSW22::ampliVCS(int s2, int s1, int sl,
 
     //Checking sign of the zeroth component of m_DMSW_nstarBM and m_DMSW_HATnBM and saving it in s0star and s0n, respectively
 
-    double s0star = m_DMSW_nstarBM[0] / fabs(m_DMSW_nstarBM[0]);
-    double s0n = m_DMSW_HATnBM[0] / fabs(m_DMSW_HATnBM[0]);
+    double s0star = m_DMSW_nstarBM[0];
+    double s0n = m_DMSW_HATnBM[0];
 
     if (s0star > 0.) {
         s0star = +1.;
     } else if (s0star < 0.) {
-        s0star = +1.;
+        s0star = -1.;
     }
 
     if (s0n > 0.) {
         s0n = +1.;
     } else if (s0n < 0.) {
-        s0n = +1.;
+        s0n = -1.;
     }
 
     double snstar[4], sHATn[4];
@@ -680,7 +680,7 @@ std::complex<double> DDVCSProcessDMSW22::ampliVCS(int s2, int s1, int sl,
 
     tVCS_T1 *= -0.5;
 
-    tVCS_T1 *= (1. / m_DMSW_pq) * (m_cffH + m_cffE)
+    tVCS_T1 *= (s0n / m_DMSW_pq) * (m_cffH + m_cffE)
             * (Yfunction(s2, s1) * gFunction(+1, rPrime[h2], sHATn, r[h1])
                     + Zfunction(s2, s1)
                             * gFunction(-1, rPrime[minush2], sHATn, r[minush1]))
@@ -1318,10 +1318,10 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon, double Ebeam,
     m_DMSW_pq = m_DMSW_Q2 / m_DMSW_xi;
 
     //DEBUG
-    /*
-     *     std::cout << m_DMSW_xi << " =xi" << std::endl;
-    std::cout << m_DMSW_pq << " =pq > 0" << std::endl;
-     */
+/*
+ *     std::cout << m_DMSW_xi << " =xi" << std::endl;
+        std::cout << m_DMSW_pq << " =pq > 0" << std::endl;
+ */
     //END DEBUG
 
 // n and n^\star light-like vectors from BM2000 and BM2003. Here, n = m_DMSW_nBM and n^\star = m_DMSW_nstarBM
@@ -1340,26 +1340,26 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon, double Ebeam,
     }
 
     //DEBUG
-    /*
-     * std::cout << MinkProd(m_DMSW_nstarBM, m_DMSW_nstarBM) << " =nstar^2 = 0"
-            << std::endl;
-    std::cout << MinkProd(m_DMSW_nBM, m_DMSW_nBM) << " =n^2 = 0" << std::endl;
-    std::cout << MinkProd(m_DMSW_HATnBM, m_DMSW_HATnBM) << " =HATn^2 = 0"
-            << std::endl;
-    double testp[4], testq[4], qvec[4];
-    for (i = 0; i < 4; i++) {
-        testp[i] = delta2 * m_DMSW_nBM[i] + 2. * m_DMSW_nstarBM[i];
-        testq[i] = ((1. - root) / (2. * delta2 / m_DMSW_pq)) * m_DMSW_nstarBM[i]
-                + (m_DMSW_pq / 4.) * (1. + root) * m_DMSW_nBM[i];
-        qvec[i] = 0.5 * (m_DMSW_q1[i] + m_DMSW_q2[i]);
-    }
-    double testp2 = MinkProd(testp, testp);
-    double testq2 = MinkProd(testq, testq);
-    std::cout << testp2 << " =p^2= " << 4. * MinkProd(pbar, pbar)
-            << " == 4M^2-t == " << 4. * Mnucleon * Mnucleon - t << std::endl;
-    std::cout << testq2 << " =q^2= " << MinkProd(qvec, qvec) << " ==Q2== "
-            << -m_DMSW_Q2 << std::endl;
-     */
+/*
+ *     std::cout << MinkProd(m_DMSW_nstarBM, m_DMSW_nstarBM) << " =nstar^2 = 0"
+                << std::endl;
+        std::cout << MinkProd(m_DMSW_nBM, m_DMSW_nBM) << " =n^2 = 0" << std::endl;
+        std::cout << MinkProd(m_DMSW_HATnBM, m_DMSW_HATnBM) << " =HATn^2 = 0"
+                << std::endl;
+        double testp[4], testq[4], qvec[4];
+        for (i = 0; i < 4; i++) {
+            testp[i] = delta2 * m_DMSW_nBM[i] + 2. * m_DMSW_nstarBM[i];
+            testq[i] = ((1. - root) / (2. * delta2 / m_DMSW_pq)) * m_DMSW_nstarBM[i]
+                    + (m_DMSW_pq / 4.) * (1. + root) * m_DMSW_nBM[i];
+            qvec[i] = 0.5 * (m_DMSW_q1[i] + m_DMSW_q2[i]);
+        }
+        double testp2 = MinkProd(testp, testp);
+        double testq2 = MinkProd(testq, testq);
+        std::cout << testp2 << " =p^2= " << 4. * MinkProd(pbar, pbar)
+                << " == 4M^2-t == " << 4. * Mnucleon * Mnucleon - t << std::endl;
+        std::cout << testq2 << " =q^2= " << MinkProd(qvec, qvec) << " ==Q2== "
+                << -m_DMSW_Q2 << std::endl;
+ */
     //END DEBUG
 
 //EM form factors for proton
