@@ -30,6 +30,7 @@ const double ZETA_3 = 1.2020569031595942; ///< Apéry's constant (value of Riema
 
 const std::complex<double> COMPLEX_UNIT(0., 1.); 	///< Complex unit i.
 
+
 // Physical constants
 
 const double SPEED_OF_LIGHT = 299792458; ///< Speed of light \f$c\f$ in \f$\mathrm{m}/\mathrm{s}\f$ @cite Amsler:2008zzb.

@@ -88,10 +88,8 @@ private:
     std::complex<double> Zfunction(int s2, int s1) const;
     std::complex<double> J2function(int s2, int s1) const;
     double MinkProd(const double p[4], const double q[4]) const;
-//    std::complex<double> Gfunction(int s, double kPrime[4], double V[4][4],
-//            double sigma[4], double R[4][4], double k[4]) const;
-    std::complex<double> jFunction(int mu, double p1[4], double p2[4],
-            int helic) const;
+    std::complex<double> jFunction(int mu, int helic, double p1[4],
+            double p2[4]) const;
     std::complex<double> J15plus(int s2, int s1) const;
     std::complex<double> J25plus(int s2, int s1) const;
     double LCperp(int mu, int nu); //Levi-Civita tensor for (mu, nu) in {1, 2}
@@ -121,6 +119,16 @@ private:
     double m_DMSW_lplus[4]; //4-momentum of anti-muon
     double m_DMSW_nminus[4]; //light-like vector such that for a vector v, we call vPlus = m_DMSW_nminus * v
     double m_DMSW_nplus[4]; //light-like vector such that for a vector v, we call vMinus = m_DMSW_nplus * v
+    double m_DMSW_nBM[4]; //light-like vector n from BM2000 and BM2003 papers. Also for a 4-vector v we name vPlusBM = m_DMSW_nBM * v
+    double m_DMSW_nstarBM[4]; //light-like vector n^\star from BM2000 and BM2003 papers. Also for a 4-vector v we name vMinusBM = m_DMSW_nstarBM * v
+    double m_DMSW_HATnBM[4]; // m_DMSW_HATnBM = m_DMSW_Q2 * m_DMSW_nBM
+    double m_DMSW_k0[4]; //k0 vector defined in KS1985 (eq 3.10)
+
+    //Levi-Civita tensor in 4 dimensions with upper indices. I am choosing LCtensor[0][1][2][3] = \epsilon^{0123} = +1
+    double m_DMSW_LCtensor[4][4][4][4];
+
+    //Minkowsky metric in 4 dimensions with lower indices, metric = diag(1, -1, -1, -1)
+    double m_DMSW_metric_[4][4];
 
     //EM form factors for proton
     double m_DMSW_F1;
@@ -130,9 +138,10 @@ private:
     double m_DMSW_Mnucleon;
     double m_DMSW_charge_e;
 
-    //eta and xi variables
+    //eta, xi and pq variables
 //    double m_DMSW_eta;
-//    double m_DMSW_xi;
+    double m_DMSW_xi; //xi variable in eq 29 from BM2003
+    double m_DMSW_pq; //pq = Q2/xi as in eq 29 from BM2003
 
     //CFFs
     std::complex<double> m_cffH;
