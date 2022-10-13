@@ -111,6 +111,12 @@ DDVCSProcessDMSW22::DDVCSProcessDMSW22(const std::string &className) :
     m_DMSW_y = 0.;
     m_DMSW_pq = 0.;
 
+//Components of n and nstar
+//    m_DMSW_an = 0.;
+//    m_DMSW_bn = 0.;
+//    m_DMSW_astar = 0.;
+//    m_DMSW_bstar = 0.;
+
 }
 
 DDVCSProcessDMSW22::DDVCSProcessDMSW22(const DDVCSProcessDMSW22& other) :
@@ -183,6 +189,11 @@ DDVCSProcessDMSW22::DDVCSProcessDMSW22(const DDVCSProcessDMSW22& other) :
     m_DMSW_xi = other.m_DMSW_xi;
     m_DMSW_y = other.m_DMSW_y;
     m_DMSW_pq = other.m_DMSW_pq;
+
+//    m_DMSW_an = other.m_DMSW_an;
+//    m_DMSW_bn = other.m_DMSW_bn;
+//    m_DMSW_astar = other.m_DMSW_astar;
+//    m_DMSW_bstar = other.m_DMSW_bstar;
 
     m_cffH = other.m_cffH;
     m_cffE = other.m_cffE;
@@ -617,6 +628,7 @@ std::complex<double> DDVCSProcessDMSW22::ampliBH2crossed(int s2, int s1, int sl,
 
 }
 
+//ampliVCS() without decomposing n and nstar:
 std::complex<double> DDVCSProcessDMSW22::ampliVCS(int s2, int s1, int sl,
         double lminus[4], double lplus[4], int s, double kPrime[4], double k[4],
         double Qcal2, double Mll2) {
@@ -708,6 +720,121 @@ std::complex<double> DDVCSProcessDMSW22::ampliVCS(int s2, int s1, int sl,
 
     return tVCS;
 }
+
+//ampliVCS() decomposing n and nstar into other light-like vectors (leptons' momenta and r1, r2, r'1, r'2 - these last ones decompose hadron momenta p1 = r1 + r2 & p2 = r'1 + r'2):
+
+//std::complex<double> DDVCSProcessDMSW22::ampliVCS(int s2, int s1, int sl,
+//        double lminus[4], double lplus[4], int s, double kPrime[4], double k[4],
+//        double Qcal2, double Mll2) {
+//
+//    double r[2][4], rPrime[2][4]; //arrays containing r1, r2, rPrime1, rPrime2
+//    int i, j, h1, minush1, h2, minush2;
+//    std::complex<double> tVCS, tVCS_T1, tVCS_T2;
+//
+//    for (i = 0; i < 4; i++) {
+//        rPrime[0][i] = m_DMSW_rPrime2[i];
+//        rPrime[1][i] = m_DMSW_rPrime1[i];
+//        r[0][i] = m_DMSW_r2[i];
+//        r[1][i] = m_DMSW_r1[i];
+//    }
+//
+//    //Transform physical values of helicity s1, s2 = -1 and +1, to integers 0 and 1
+//    if (s2 == +1) {
+//        h2 = +1;
+//        minush2 = 0;
+//    } else if (s2 == -1) {
+//        h2 = 0;
+//        minush2 = 1;
+//    }
+//    if (s1 == +1) {
+//        h1 = +1;
+//        minush1 = 0;
+//    } else if (s1 == -1) {
+//        h1 = 0;
+//        minush1 = 1;
+//    }
+//
+//    double L[4][4], R[4][4], sigmaL[4] = { 1., -1., 1., 1. };
+//
+//    for (i = 0; i < 4; i++) {
+//        L[0][i] = k[i];
+//        L[1][i] = kPrime[i];
+//        L[2][i] = lplus[i];
+//        L[3][i] = lminus[i];
+//
+//        R[0][i] = m_DMSW_r1[i];
+//        R[1][i] = m_DMSW_r2[i];
+//        R[2][i] = m_DMSW_rPrime1[i];
+//        R[3][i] = m_DMSW_rPrime2[i];
+//
+//    }
+//
+//    //Term in T^(1):
+//    std::complex<double> gstarXgn, gnXgstar;
+//
+//    for (j = 0; j < 4; j++) {
+//        for (i = 0; i < 4; i++) {
+//            gstarXgn += (0.5 * m_DMSW_astar * sigmaL[j]
+//                    * gFunction(sl, lminus, L[j], lplus)
+//                    + m_DMSW_bstar * gFunction(sl, lminus, R[j], lplus))
+//                    * (0.5 * m_DMSW_an * sigmaL[i]
+//                            * gFunction(s, kPrime, L[i], k)
+//                            + m_DMSW_bn * gFunction(s, kPrime, R[i], k));
+//        }
+//    }
+//
+//    for (j = 0; j < 4; j++) {
+//        for (i = 0; i < 4; i++) {
+//            gnXgstar += (0.5 * m_DMSW_an * sigmaL[j]
+//                    * gFunction(sl, lminus, L[j], lplus)
+//                    + m_DMSW_bn * gFunction(sl, lminus, R[j], lplus))
+//                    * (0.5 * m_DMSW_astar * sigmaL[i]
+//                            * gFunction(s, kPrime, L[i], k)
+//                            + m_DMSW_bstar * gFunction(s, kPrime, R[i], k));
+//        }
+//    }
+//
+//    tVCS_T1 = fFunction(sl, lminus, lplus, s, kPrime, k) - gstarXgn - gnXgstar;
+//
+//    tVCS_T1 *= -0.5;
+//
+//    std::complex<double> gnY, gnZ;
+//
+//    for (i = 0; i < 4; i++) {
+//        gnY += 0.5 * m_DMSW_an * sigmaL[i]
+//                * gFunction(+1, rPrime[h2], L[i], r[h1])
+//                + m_DMSW_bn * gFunction(+1, rPrime[h2], R[i], r[h1]);
+//        gnZ += 0.5 * m_DMSW_an * sigmaL[i]
+//                * gFunction(-1, rPrime[minush2], L[i], r[minush1])
+//                + m_DMSW_bn * gFunction(-1, rPrime[minush2], R[i], r[minush1]);
+//    }
+//
+//    tVCS_T1 *= (m_cffH + m_cffE)
+//            * (Yfunction(s2, s1) * gnY + Zfunction(s2, s1) * gnZ)
+//            - m_cffE * J2function(s2, s1) / m_DMSW_Mnucleon;
+//
+//    //Adding the term in T^(2):
+//    int mu, nu;
+//
+//    for (mu = 0; mu < 4; mu++) {
+//        for (nu = 0; nu < 4; nu++) {
+//            tVCS_T2 +=
+//                    -0.5 * Constant::COMPLEX_UNIT * LCperp(mu, nu)
+//                            * m_DMSW_metric_[mu][mu]
+//                            * jFunction(sl, mu, lminus, lplus)
+//                            * m_DMSW_metric_[nu][nu]
+//                            * jFunction(s, nu, kPrime, k)
+//                            * (m_cffHt * J15plus(s2, s1)
+//                                    + m_cffEt * J25plus(s2, s1)
+//                                            / (2. * m_DMSW_Mnucleon));
+//        }
+//    }
+//
+//    //Complete amplitude for VCS at LO in alpha strong and LT:
+//    tVCS = pow(m_DMSW_charge_e, 4.) * (tVCS_T1 + tVCS_T2) / (-Qcal2 * Mll2);
+//
+//    return tVCS;
+//}
 
 //************ Cross-sections for BH, VCS and their interference ************//
 
@@ -1078,7 +1205,13 @@ std::complex<double> DDVCSProcessDMSW22::J15plus(int s2, int s1) const {
     std::complex<double> J15value;
 
     //Checking sign of zeroth component of m_DMSW_HATnBM and saving it in s0n
-    double s0n = m_DMSW_HATnBM[0] / fabs(m_DMSW_HATnBM[0]);
+    double s0n = m_DMSW_HATnBM[0];
+    if (s0n > 0.) {
+        s0n = +1.;
+    } else if (s0n < 0.) {
+        s0n = -1.;
+    }
+
     double sHATn[4];
     int i;
 
@@ -1167,16 +1300,11 @@ double DDVCSProcessDMSW22::LCperp(int mu, int nu) {
 
     double LCvalue = 0.;
 
-    int a, b, c, d;
+    int a, b;
     for (a = 0; a < 4; a++) {
         for (b = 0; b < 4; b++) {
-            for (c = 0; c < 4; c++) {
-                for (d = 0; d < 4; d++) {
-                    LCvalue += m_DMSW_LCtensor[mu][nu][c][d]
-                            * m_DMSW_metric_[c][a] * m_DMSW_metric_[d][b]
-                            * m_DMSW_nstarBM[a] * m_DMSW_nBM[b];
-                }
-            }
+            LCvalue += m_DMSW_LCtensor[mu][nu][a][b] * m_DMSW_metric_[a][a]
+                    * m_DMSW_metric_[b][b] * m_DMSW_nstarBM[a] * m_DMSW_nBM[b];
         }
     }
 
@@ -1317,13 +1445,6 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon, double Ebeam,
     m_DMSW_xi = 2. * m_DMSW_Q2 / (2. * Qcal2 / xB - Qcal2 - Mll2 + t); //xi variable, the first of the two eqs in BM2003's eq 31 (REMEMBER: we take positive eta)
     m_DMSW_pq = m_DMSW_Q2 / m_DMSW_xi;
 
-    //DEBUG
-/*
- *     std::cout << m_DMSW_xi << " =xi" << std::endl;
-        std::cout << m_DMSW_pq << " =pq > 0" << std::endl;
- */
-    //END DEBUG
-
 // n and n^\star light-like vectors from BM2000 and BM2003. Here, n = m_DMSW_nBM and n^\star = m_DMSW_nstarBM
 
     double delta2 = (Mnucleon * Mnucleon - t / 4.); //delta2 = \delta^2 * m_DMSW_Q2 with \delta^2 as defined in BM2003 paper (eq A1)
@@ -1339,28 +1460,11 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon, double Ebeam,
         m_DMSW_HATnBM[i] = m_DMSW_pq * m_DMSW_nBM[i];
     }
 
-    //DEBUG
-/*
- *     std::cout << MinkProd(m_DMSW_nstarBM, m_DMSW_nstarBM) << " =nstar^2 = 0"
-                << std::endl;
-        std::cout << MinkProd(m_DMSW_nBM, m_DMSW_nBM) << " =n^2 = 0" << std::endl;
-        std::cout << MinkProd(m_DMSW_HATnBM, m_DMSW_HATnBM) << " =HATn^2 = 0"
-                << std::endl;
-        double testp[4], testq[4], qvec[4];
-        for (i = 0; i < 4; i++) {
-            testp[i] = delta2 * m_DMSW_nBM[i] + 2. * m_DMSW_nstarBM[i];
-            testq[i] = ((1. - root) / (2. * delta2 / m_DMSW_pq)) * m_DMSW_nstarBM[i]
-                    + (m_DMSW_pq / 4.) * (1. + root) * m_DMSW_nBM[i];
-            qvec[i] = 0.5 * (m_DMSW_q1[i] + m_DMSW_q2[i]);
-        }
-        double testp2 = MinkProd(testp, testp);
-        double testq2 = MinkProd(testq, testq);
-        std::cout << testp2 << " =p^2= " << 4. * MinkProd(pbar, pbar)
-                << " == 4M^2-t == " << 4. * Mnucleon * Mnucleon - t << std::endl;
-        std::cout << testq2 << " =q^2= " << MinkProd(qvec, qvec) << " ==Q2== "
-                << -m_DMSW_Q2 << std::endl;
- */
-    //END DEBUG
+    // From above we read: n = an * q + bn * p   &   nstar = astar * q + bstar * p:
+//    m_DMSW_an = 2. / (m_DMSW_pq * root);
+//    m_DMSW_bn = -(1. - root) / (2. * delta2 * root);
+//    m_DMSW_astar = -(delta2 / m_DMSW_pq) * (1. / root);
+//    m_DMSW_bstar = (1. + root) / (4. * root);
 
 //EM form factors for proton
     m_DMSW_F1 = (4. * pow(Mnucleon, 2.) - t * 2.7928)
@@ -1394,6 +1498,60 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon, double Ebeam,
     if (m_dvcsConvolCoeffFunctionResult.isAvailable(GPDType::EL)) {
         m_cffEL = m_dvcsConvolCoeffFunctionResult.getLastAvailable();
     }
+
+    //DEBUG comparing tensors
+
+    for (i = 0; i < 4; i++) {
+        std::cout << m_DMSW_nBM[i] << "     " << m_DMSW_nstarBM[i]
+                << " = n, nstar" << std::endl;
+    }
+
+    for (i = 0; i < 4; i++) {
+        std::cout << m_DMSW_q1[i] << "     " << m_DMSW_q2[i] << "     "
+                << pbar[i] << " = q1, q2, pbar" << std::endl;
+    }
+
+    std::cout << sinGamma << " " << cosGamma << " " << root << " " << delta2 << " " << m_DMSW_pq << " " << t << " "
+            << Mnucleon << " = sinGamma, cosGamma, root, delta2, pq, t, M" << std::endl;
+
+    double T1tensor[4][4], gT[4][4];
+    int mu, nu;
+    for (mu = 0; mu < 4; mu++) {
+        for (nu = 0; nu < 4; nu++) {
+            T1tensor[mu][nu] = 0.5
+                    * (m_DMSW_metric_[mu][nu]
+                            - m_DMSW_q1[mu] * m_DMSW_q2[nu]
+                                    / MinkProd(m_DMSW_q1, m_DMSW_q2))
+                    - m_DMSW_xi / (2. * m_DMSW_pq)
+                            * (2. * pbar[mu]
+                                    - m_DMSW_pq * m_DMSW_q1[nu]
+                                            / MinkProd(m_DMSW_q1, m_DMSW_q2))
+                            * (2. * pbar[nu]
+                                    - m_DMSW_pq * m_DMSW_q2[nu]
+                                            / MinkProd(m_DMSW_q1, m_DMSW_q2));
+
+            gT[mu][nu] = 0.5
+                    * (m_DMSW_metric_[mu][nu]
+                            - m_DMSW_nBM[mu] * m_DMSW_nstarBM[nu]
+                            - m_DMSW_nBM[nu] * m_DMSW_nstarBM[mu]);
+
+            std::cout << "(T1 - gT)[" << mu << "][" << nu << "] = "
+                    << T1tensor[mu][nu] - gT[mu][nu] << std::endl;
+        }
+    }
+
+    std::cout << "\n\n" << std::endl;
+    for (mu = 0; mu < 4; mu++) {
+        for (nu = 0; nu < 4; nu++) {
+
+            std::cout << "T1[" << mu << "][" << nu << "] = " << T1tensor[mu][nu]
+                    << std::endl;
+            std::cout << "gT[" << mu << "][" << nu << "] = " << gT[mu][nu]
+                    << "\n\n" << std::endl;
+        }
+    }
+
+    //END DEBUG
 
 }
 
