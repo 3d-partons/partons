@@ -131,6 +131,9 @@ private:
     //Levi-Civita tensor in 4 dimensions with upper indices. I am choosing LCtensor[0][1][2][3] = \epsilon^{0123} = +1
     double m_DMSW_LCtensor[4][4][4][4];
 
+    //T1 tensor in eq 18 in BM2000
+    double m_DMSW_T1tensor[4][4];
+
     //Minkowsky metric in 4 dimensions with lower indices, metric = diag(1, -1, -1, -1)
     double m_DMSW_metric_[4][4];
 
