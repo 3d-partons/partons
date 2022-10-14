@@ -690,30 +690,36 @@ std::complex<double> DDVCSProcessDMSW22::ampliVCS(int s2, int s1, int sl,
             - (s0n * s0star / m_DMSW_pq) * gFunction(sl, lminus, sHATn, lplus)
                     * gFunction(s, kPrime, snstar, k);
 
-    tVCS_T1 *= -0.5;
+    //DEBUG
+    std::cout << Mll2 << " " << tVCS_T1/sqrt(Mll2) << " = (f-gg-gg)/Mll for: s2 s1 sl s = " << s2 << " " << s2 << " " << sl << " " << s << "     and Mll2 = " << Mll2 << std::endl;
+    //END DEBUG
 
-    tVCS_T1 *= (s0n / m_DMSW_pq) * (m_cffH + m_cffE)
-            * (Yfunction(s2, s1) * gFunction(+1, rPrime[h2], sHATn, r[h1])
-                    + Zfunction(s2, s1)
-                            * gFunction(-1, rPrime[minush2], sHATn, r[minush1]))
-            - m_cffE * J2function(s2, s1) / m_DMSW_Mnucleon;
-
-    //Adding the term in T^(2):
-    int mu, nu;
-
-    for (mu = 0; mu < 4; mu++) {
-        for (nu = 0; nu < 4; nu++) {
-            tVCS_T2 +=
-                    -0.5 * Constant::COMPLEX_UNIT * LCperp(mu, nu)
-                            * m_DMSW_metric_[mu][mu]
-                            * jFunction(sl, mu, lminus, lplus)
-                            * m_DMSW_metric_[nu][nu]
-                            * jFunction(s, nu, kPrime, k)
-                            * (m_cffHt * J15plus(s2, s1)
-                                    + m_cffEt * J25plus(s2, s1)
-                                            / (2. * m_DMSW_Mnucleon));
-        }
-    }
+    //DEBUG uncomment
+//    tVCS_T1 *= -0.5;
+//
+//    tVCS_T1 *= (s0n / m_DMSW_pq) * (m_cffH + m_cffE)
+//            * (Yfunction(s2, s1) * gFunction(+1, rPrime[h2], sHATn, r[h1])
+//                    + Zfunction(s2, s1)
+//                            * gFunction(-1, rPrime[minush2], sHATn, r[minush1]))
+//            - m_cffE * J2function(s2, s1) / m_DMSW_Mnucleon;
+//
+//    //Adding the term in T^(2):
+//    int mu, nu;
+//
+//    for (mu = 0; mu < 4; mu++) {
+//        for (nu = 0; nu < 4; nu++) {
+//            tVCS_T2 +=
+//                    -0.5 * Constant::COMPLEX_UNIT * LCperp(mu, nu)
+//                            * m_DMSW_metric_[mu][mu]
+//                            * jFunction(sl, mu, lminus, lplus)
+//                            * m_DMSW_metric_[nu][nu]
+//                            * jFunction(s, nu, kPrime, k)
+//                            * (m_cffHt * J15plus(s2, s1)
+//                                    + m_cffEt * J25plus(s2, s1)
+//                                            / (2. * m_DMSW_Mnucleon));
+//        }
+//    }
+    //END DEBUG
 
     //Complete amplitude for VCS at LO in alpha strong and LT:
     tVCS = pow(m_DMSW_charge_e, 4.) * (tVCS_T1 + tVCS_T2) / (-Qcal2 * Mll2);
@@ -1500,56 +1506,65 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon, double Ebeam,
     }
 
     //DEBUG comparing tensors
-
-    for (i = 0; i < 4; i++) {
-        std::cout << m_DMSW_nBM[i] << "     " << m_DMSW_nstarBM[i]
-                << " = n, nstar" << std::endl;
-    }
-
-    for (i = 0; i < 4; i++) {
-        std::cout << m_DMSW_q1[i] << "     " << m_DMSW_q2[i] << "     "
-                << pbar[i] << " = q1, q2, pbar" << std::endl;
-    }
-
-    std::cout << sinGamma << " " << cosGamma << " " << root << " " << delta2 << " " << m_DMSW_pq << " " << t << " "
-            << Mnucleon << " = sinGamma, cosGamma, root, delta2, pq, t, M" << std::endl;
-
-    double T1tensor[4][4], gT[4][4];
-    int mu, nu;
-    for (mu = 0; mu < 4; mu++) {
-        for (nu = 0; nu < 4; nu++) {
-            T1tensor[mu][nu] = 0.5
-                    * (m_DMSW_metric_[mu][nu]
-                            - m_DMSW_q1[mu] * m_DMSW_q2[nu]
-                                    / MinkProd(m_DMSW_q1, m_DMSW_q2))
-                    - m_DMSW_xi / (2. * m_DMSW_pq)
-                            * (2. * pbar[mu]
-                                    - m_DMSW_pq * m_DMSW_q1[nu]
-                                            / MinkProd(m_DMSW_q1, m_DMSW_q2))
-                            * (2. * pbar[nu]
-                                    - m_DMSW_pq * m_DMSW_q2[nu]
-                                            / MinkProd(m_DMSW_q1, m_DMSW_q2));
-
-            gT[mu][nu] = 0.5
-                    * (m_DMSW_metric_[mu][nu]
-                            - m_DMSW_nBM[mu] * m_DMSW_nstarBM[nu]
-                            - m_DMSW_nBM[nu] * m_DMSW_nstarBM[mu]);
-
-            std::cout << "(T1 - gT)[" << mu << "][" << nu << "] = "
-                    << T1tensor[mu][nu] - gT[mu][nu] << std::endl;
-        }
-    }
-
-    std::cout << "\n\n" << std::endl;
-    for (mu = 0; mu < 4; mu++) {
-        for (nu = 0; nu < 4; nu++) {
-
-            std::cout << "T1[" << mu << "][" << nu << "] = " << T1tensor[mu][nu]
-                    << std::endl;
-            std::cout << "gT[" << mu << "][" << nu << "] = " << gT[mu][nu]
-                    << "\n\n" << std::endl;
-        }
-    }
+//
+//    for (i = 0; i < 4; i++) {
+//        std::cout << m_DMSW_nBM[i] << "     " << m_DMSW_nstarBM[i]
+//                << " = n, nstar" << std::endl;
+//    }
+//
+//    for (i = 0; i < 4; i++) {
+//        std::cout << m_DMSW_q1[i] << "     " << m_DMSW_q2[i] << "     "
+//                << pbar[i] << " = q1, q2, pbar" << std::endl;
+//    }
+//
+//    std::cout << sinGamma << " " << cosGamma << " " << root << " " << delta2 << " " << m_DMSW_pq << " " << t << " "
+//            << Mnucleon << " = sinGamma, cosGamma, root, delta2, pq, t, M" << std::endl;
+//
+//    double T1tensor[4][4], gT[4][4], DeltaT[4];
+//    int mu, nu;
+//
+//    double ETA = (Qcal2 + Mll2)/(2.*Qcal2/xB - Qcal2 - Mll2 + t); //eq 31 in BM2003
+//
+//    for (mu = 0; mu < 4; mu++) {
+//        DeltaT[mu] = m_DMSW_p2[mu] - m_DMSW_p1[mu] - delta2*ETA*m_DMSW_nBM[mu] + 2.*ETA*m_DMSW_nstarBM[mu];
+//        std::cout << DeltaT[mu] << " =DeltaT[" << mu << "]" << std::endl;
+//        //DeltaT[mu] = 0.;
+//    }
+//
+//    for (mu = 0; mu < 4; mu++) {
+//        for (nu = 0; nu < 4; nu++) {
+//            T1tensor[mu][nu] = 0.5
+//                    * (m_DMSW_metric_[mu][nu]
+//                            - m_DMSW_q1[mu] * m_DMSW_q2[nu]
+//                                    / MinkProd(m_DMSW_q1, m_DMSW_q2))
+//                    - m_DMSW_xi / (2. * m_DMSW_pq)
+//                            * (2. * pbar[mu]
+//                                    - m_DMSW_pq * m_DMSW_q1[nu]
+//                                            / MinkProd(m_DMSW_q1, m_DMSW_q2))
+//                            * (2. * pbar[nu]
+//                                    - m_DMSW_pq * m_DMSW_q2[nu]
+//                                            / MinkProd(m_DMSW_q1, m_DMSW_q2));
+//
+//            gT[mu][nu] = 0.5
+//                    * (m_DMSW_metric_[mu][nu]
+//                            - m_DMSW_nBM[mu] * m_DMSW_nstarBM[nu]
+//                            - m_DMSW_nBM[nu] * m_DMSW_nstarBM[mu]) + (1./m_DMSW_pq)*0.5*(m_DMSW_nstarBM[mu]*DeltaT[nu] - m_DMSW_nstarBM[nu]*DeltaT[mu]);//adding term in DeltaT from eq 17 in BM2000
+//
+//            std::cout << "(T1 - gT)[" << mu << "][" << nu << "] = "
+//                    << T1tensor[mu][nu] - gT[mu][nu] << std::endl;
+//        }
+//    }
+//
+//    std::cout << "\n\n" << std::endl;
+//    for (mu = 0; mu < 4; mu++) {
+//        for (nu = 0; nu < 4; nu++) {
+//
+//            std::cout << "T1[" << mu << "][" << nu << "] = " << T1tensor[mu][nu]
+//                    << std::endl;
+//            std::cout << "gT[" << mu << "][" << nu << "] = " << gT[mu][nu]
+//                    << "\n\n" << std::endl;
+//        }
+//    }
 
     //END DEBUG
 

@@ -126,7 +126,7 @@ private:
 
     //Components of n and nstar in terms of p and q:
     //n = aminus * q + bminus * p & nstar = aplus * q + bplus * p
-    double m_DMSW_an, m_DMSW_bn, m_DMSW_astar, m_DMSW_bstar;
+//    double m_DMSW_an, m_DMSW_bn, m_DMSW_astar, m_DMSW_bstar;
 
     //Levi-Civita tensor in 4 dimensions with upper indices. I am choosing LCtensor[0][1][2][3] = \epsilon^{0123} = +1
     double m_DMSW_LCtensor[4][4][4][4];
