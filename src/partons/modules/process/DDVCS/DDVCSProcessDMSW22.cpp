@@ -690,36 +690,30 @@ std::complex<double> DDVCSProcessDMSW22::ampliVCS(int s2, int s1, int sl,
             - (s0n * s0star / m_DMSW_pq) * gFunction(sl, lminus, sHATn, lplus)
                     * gFunction(s, kPrime, snstar, k);
 
-    //DEBUG
-    std::cout << Mll2 << " " << tVCS_T1/sqrt(Mll2) << " = (f-gg-gg)/Mll for: s2 s1 sl s = " << s2 << " " << s2 << " " << sl << " " << s << "     and Mll2 = " << Mll2 << std::endl;
-    //END DEBUG
+    tVCS_T1 *= -0.5;
 
-    //DEBUG uncomment
-//    tVCS_T1 *= -0.5;
-//
-//    tVCS_T1 *= (s0n / m_DMSW_pq) * (m_cffH + m_cffE)
-//            * (Yfunction(s2, s1) * gFunction(+1, rPrime[h2], sHATn, r[h1])
-//                    + Zfunction(s2, s1)
-//                            * gFunction(-1, rPrime[minush2], sHATn, r[minush1]))
-//            - m_cffE * J2function(s2, s1) / m_DMSW_Mnucleon;
-//
-//    //Adding the term in T^(2):
-//    int mu, nu;
-//
-//    for (mu = 0; mu < 4; mu++) {
-//        for (nu = 0; nu < 4; nu++) {
-//            tVCS_T2 +=
-//                    -0.5 * Constant::COMPLEX_UNIT * LCperp(mu, nu)
-//                            * m_DMSW_metric_[mu][mu]
-//                            * jFunction(sl, mu, lminus, lplus)
-//                            * m_DMSW_metric_[nu][nu]
-//                            * jFunction(s, nu, kPrime, k)
-//                            * (m_cffHt * J15plus(s2, s1)
-//                                    + m_cffEt * J25plus(s2, s1)
-//                                            / (2. * m_DMSW_Mnucleon));
-//        }
-//    }
-    //END DEBUG
+    tVCS_T1 *= (s0n / m_DMSW_pq) * (m_cffH + m_cffE)
+            * (Yfunction(s2, s1) * gFunction(+1, rPrime[h2], sHATn, r[h1])
+                    + Zfunction(s2, s1)
+                            * gFunction(-1, rPrime[minush2], sHATn, r[minush1]))
+            - m_cffE * J2function(s2, s1) / m_DMSW_Mnucleon;
+
+    //Adding the term in T^(2):
+    int mu, nu;
+
+    for (mu = 0; mu < 4; mu++) {
+        for (nu = 0; nu < 4; nu++) {
+            tVCS_T2 +=
+                    -0.5 * Constant::COMPLEX_UNIT * LCperp(mu, nu)
+                            * m_DMSW_metric_[mu][mu]
+                            * jFunction(sl, mu, lminus, lplus)
+                            * m_DMSW_metric_[nu][nu]
+                            * jFunction(s, nu, kPrime, k)
+                            * (m_cffHt * J15plus(s2, s1)
+                                    + m_cffEt * J25plus(s2, s1)
+                                            / (2. * m_DMSW_Mnucleon));
+        }
+    }
 
     //Complete amplitude for VCS at LO in alpha strong and LT:
     tVCS = pow(m_DMSW_charge_e, 4.) * (tVCS_T1 + tVCS_T2) / (-Qcal2 * Mll2);
