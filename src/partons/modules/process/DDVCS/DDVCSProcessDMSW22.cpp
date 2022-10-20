@@ -733,21 +733,21 @@ std::complex<double> DDVCSProcessDMSW22::ampliVCS(int s2, int s1, int sl,
             - m_cffE * J2function(s2, s1) / m_DMSW_Mnucleon;
 
     //Adding the term in T^(2):
-//    int nu;
-//
-//    for (mu = 0; mu < 4; mu++) {
-//        for (nu = 0; nu < 4; nu++) {
-//            tVCS_T2 +=
-//                    -0.5 * Constant::COMPLEX_UNIT * LCperp(mu, nu)
-//                            * m_DMSW_metric_[mu][mu]
-//                            * jFunction(sl, mu, lminus, lplus)
-//                            * m_DMSW_metric_[nu][nu]
-//                            * jFunction(s, nu, kPrime, k)
-//                            * (m_cffHt * J15plus(s2, s1)
-//                                    + m_cffEt * J25plus(s2, s1)
-//                                            / (2. * m_DMSW_Mnucleon));
-//        }
-//    }
+    int nu;
+
+    for (mu = 0; mu < 4; mu++) {
+        for (nu = 0; nu < 4; nu++) {
+            tVCS_T2 +=
+                    -0.5 * Constant::COMPLEX_UNIT * LCperp(mu, nu)
+                            * m_DMSW_metric_[mu][mu]
+                            * jFunction(sl, mu, lminus, lplus)
+                            * m_DMSW_metric_[nu][nu]
+                            * jFunction(s, nu, kPrime, k)
+                            * (m_cffHt * J15plus(s2, s1)
+                                    + m_cffEt * J25plus(s2, s1)
+                                            / (2. * m_DMSW_Mnucleon));
+        }
+    }
 
     //Complete amplitude for VCS at LO in alpha strong and LT:
     tVCS = pow(m_DMSW_charge_e, 4.) * (tVCS_T1 + tVCS_T2) / (-Qcal2 * Mll2);
