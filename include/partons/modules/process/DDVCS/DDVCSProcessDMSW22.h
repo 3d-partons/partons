@@ -123,6 +123,7 @@ private:
     double m_DMSW_nstarBM[4]; //light-like vector n^\star from BM2000 and BM2003 papers. Also for a 4-vector v we name vMinusBM = m_DMSW_nstarBM * v
     double m_DMSW_HATnBM[4]; // m_DMSW_HATnBM = m_DMSW_Q2 * m_DMSW_nBM
     double m_DMSW_k0[4]; //k0 vector defined in KS1985 (eq 3.10)
+    double m_DMSW_DeltaT[4]; //transverse component of \Delta = p2 - p1
 
     //Components of n and nstar in terms of p and q:
     //n = an * q + bn * p & nstar = astar * q + bstar * p

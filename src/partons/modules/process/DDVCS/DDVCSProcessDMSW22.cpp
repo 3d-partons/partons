@@ -629,77 +629,111 @@ std::complex<double> DDVCSProcessDMSW22::ampliBH2crossed(int s2, int s1, int sl,
 }
 
 //ampliVCS() without decomposing n and nstar:
-//std::complex<double> DDVCSProcessDMSW22::ampliVCS(int s2, int s1, int sl,
-//        double lminus[4], double lplus[4], int s, double kPrime[4], double k[4],
-//        double Qcal2, double Mll2) {
-//
-//    double r[2][4], rPrime[2][4]; //arrays containing r1, r2, rPrime1, rPrime2
-//    int i, j, h1, minush1, h2, minush2;
-//    std::complex<double> tVCS, tVCS_T1, tVCS_T2;
-//
-//    for (i = 0; i < 4; i++) {
-//        rPrime[0][i] = m_DMSW_rPrime2[i];
-//        rPrime[1][i] = m_DMSW_rPrime1[i];
-//        r[0][i] = m_DMSW_r2[i];
-//        r[1][i] = m_DMSW_r1[i];
-//    }
-//
-//    //Transform physical values of helicity s1, s2 = -1 and +1, to integers 0 and 1
-//    if (s2 == +1) {
-//        h2 = +1;
-//        minush2 = 0;
-//    } else if (s2 == -1) {
-//        h2 = 0;
-//        minush2 = 1;
-//    }
-//    if (s1 == +1) {
-//        h1 = +1;
-//        minush1 = 0;
-//    } else if (s1 == -1) {
-//        h1 = 0;
-//        minush1 = 1;
-//    }
-//
-//    //Checking sign of the zeroth component of m_DMSW_nstarBM and m_DMSW_HATnBM and saving it in s0star and s0n, respectively
-//
-//    double s0star = m_DMSW_nstarBM[0];
-//    double s0n = m_DMSW_HATnBM[0];
-//
-//    if (s0star > 0.) {
-//        s0star = +1.;
-//    } else if (s0star < 0.) {
-//        s0star = -1.;
-//    }
-//
-//    if (s0n > 0.) {
-//        s0n = +1.;
-//    } else if (s0n < 0.) {
-//        s0n = -1.;
-//    }
-//
-//    double snstar[4], sHATn[4];
-//    for (i = 0; i < 4; i++) {
-//        snstar[i] = s0star * m_DMSW_nstarBM[i];
-//        sHATn[i] = s0n * m_DMSW_HATnBM[i];
-//    }
-//
-//    //Term in T^(1):
-//    tVCS_T1 = fFunction(sl, lminus, lplus, s, kPrime, k)
-//            - (s0n * s0star / m_DMSW_pq) * gFunction(sl, lminus, snstar, lplus)
-//                    * gFunction(s, kPrime, sHATn, k)
-//            - (s0n * s0star / m_DMSW_pq) * gFunction(sl, lminus, sHATn, lplus)
-//                    * gFunction(s, kPrime, snstar, k);
-//
-//    tVCS_T1 *= -0.5;
-//
-//    tVCS_T1 *= (s0n / m_DMSW_pq) * (m_cffH + m_cffE)
-//            * (Yfunction(s2, s1) * gFunction(+1, rPrime[h2], sHATn, r[h1])
-//                    + Zfunction(s2, s1)
-//                            * gFunction(-1, rPrime[minush2], sHATn, r[minush1]))
-//            - m_cffE * J2function(s2, s1) / m_DMSW_Mnucleon;
-//
-//    //Adding the term in T^(2):
-//    int mu, nu;
+std::complex<double> DDVCSProcessDMSW22::ampliVCS(int s2, int s1, int sl,
+        double lminus[4], double lplus[4], int s, double kPrime[4], double k[4],
+        double Qcal2, double Mll2) {
+
+    double r[2][4], rPrime[2][4]; //arrays containing r1, r2, rPrime1, rPrime2
+    int i, j, h1, minush1, h2, minush2;
+    std::complex<double> tVCS, tVCS_T1, tVCS_T2;
+
+    for (i = 0; i < 4; i++) {
+        rPrime[0][i] = m_DMSW_rPrime2[i];
+        rPrime[1][i] = m_DMSW_rPrime1[i];
+        r[0][i] = m_DMSW_r2[i];
+        r[1][i] = m_DMSW_r1[i];
+    }
+
+    //Transform physical values of helicity s1, s2 = -1 and +1, to integers 0 and 1
+    if (s2 == +1) {
+        h2 = +1;
+        minush2 = 0;
+    } else if (s2 == -1) {
+        h2 = 0;
+        minush2 = 1;
+    }
+    if (s1 == +1) {
+        h1 = +1;
+        minush1 = 0;
+    } else if (s1 == -1) {
+        h1 = 0;
+        minush1 = 1;
+    }
+
+    double L[4][4], R[4][4], sigmaL[4] = { 1., -1., 1., 1. };
+
+    for (i = 0; i < 4; i++) {
+//        L[0][i] = k[i];
+//        L[1][i] = kPrime[i];
+//        L[2][i] = lplus[i];
+//        L[3][i] = lminus[i];
+
+        R[0][i] = m_DMSW_r1[i];
+        R[1][i] = m_DMSW_r2[i];
+        R[2][i] = m_DMSW_rPrime1[i];
+        R[3][i] = m_DMSW_rPrime2[i];
+
+    }
+
+    //Checking sign of the zeroth component of m_DMSW_nstarBM and m_DMSW_HATnBM and saving it in s0star and s0n, respectively
+
+    double s0star = m_DMSW_nstarBM[0];
+    double s0n = m_DMSW_HATnBM[0];
+
+    if (s0star > 0.) {
+        s0star = +1.;
+    } else if (s0star < 0.) {
+        s0star = -1.;
+    }
+
+    if (s0n > 0.) {
+        s0n = +1.;
+    } else if (s0n < 0.) {
+        s0n = -1.;
+    }
+
+    double snstar[4], sHATn[4];
+    for (i = 0; i < 4; i++) {
+        snstar[i] = s0star * m_DMSW_nstarBM[i];
+        sHATn[i] = s0n * m_DMSW_HATnBM[i];
+    }
+
+    //Term in T^(1):
+    tVCS_T1 = fFunction(sl, lminus, lplus, s, kPrime, k)
+            - (s0n * s0star / m_DMSW_pq) * gFunction(sl, lminus, snstar, lplus)
+                    * gFunction(s, kPrime, sHATn, k)
+            - (s0n * s0star / m_DMSW_pq) * gFunction(sl, lminus, sHATn, lplus)
+                    * gFunction(s, kPrime, snstar, k);
+
+    //adding contribution linear in DeltaT from expansion of T^(1), eq 17 & 18 BM2000
+    std::complex<double> DeltaTerm;
+    int mu;
+
+    for (mu = 0; mu < 4; mu++) {
+        for (i = 0; i < 4; i++) {
+            DeltaTerm += m_DMSW_metric_[mu][mu] * m_DMSW_DeltaT[mu]
+                    * jFunction(mu, sl, lminus, lplus)
+                    * gFunction(s, kPrime, snstar, k)
+                    - m_DMSW_metric_[mu][mu] * m_DMSW_DeltaT[mu]
+                            * jFunction(mu, s, kPrime, k)
+                            * gFunction(sl, lminus, snstar, lplus);
+        }
+    }
+
+    DeltaTerm = DeltaTerm / m_DMSW_pq;
+
+    tVCS_T1 = tVCS_T1 - DeltaTerm;
+
+    tVCS_T1 *= -0.5;
+
+    tVCS_T1 *= (s0n / m_DMSW_pq) * (m_cffH + m_cffE)
+            * (Yfunction(s2, s1) * gFunction(+1, rPrime[h2], sHATn, r[h1])
+                    + Zfunction(s2, s1)
+                            * gFunction(-1, rPrime[minush2], sHATn, r[minush1]))
+            - m_cffE * J2function(s2, s1) / m_DMSW_Mnucleon;
+
+    //Adding the term in T^(2):
+//    int nu;
 //
 //    for (mu = 0; mu < 4; mu++) {
 //        for (nu = 0; nu < 4; nu++) {
@@ -714,12 +748,12 @@ std::complex<double> DDVCSProcessDMSW22::ampliBH2crossed(int s2, int s1, int sl,
 //                                            / (2. * m_DMSW_Mnucleon));
 //        }
 //    }
-//
-//    //Complete amplitude for VCS at LO in alpha strong and LT:
-//    tVCS = pow(m_DMSW_charge_e, 4.) * (tVCS_T1 + tVCS_T2) / (-Qcal2 * Mll2);
-//
-//    return tVCS;
-//}
+
+    //Complete amplitude for VCS at LO in alpha strong and LT:
+    tVCS = pow(m_DMSW_charge_e, 4.) * (tVCS_T1 + tVCS_T2) / (-Qcal2 * Mll2);
+
+    return tVCS;
+}
 
 //ampliVCS() decomposing LT expressions of n and nstar into other light-like vectors (leptons' momenta and r1, r2, r'1, r'2 - these last ones decompose hadron momenta p1 = r1 + r2 & p2 = r'1 + r'2):
 //std::complex<double> DDVCSProcessDMSW22::ampliVCS(int s2, int s1, int sl,
@@ -853,107 +887,123 @@ std::complex<double> DDVCSProcessDMSW22::ampliBH2crossed(int s2, int s1, int sl,
 //}
 
 //ampliVCS() decomposing LT expression of nstar ONLY into other light-like vectors (r1, r2, r'1, r'2 - these last ones decompose hadron momenta p1 = r1 + r2 & p2 = r'1 + r'2):
-std::complex<double> DDVCSProcessDMSW22::ampliVCS(int s2, int s1, int sl,
-        double lminus[4], double lplus[4], int s, double kPrime[4], double k[4],
-        double Qcal2, double Mll2) {
-
-    double r[2][4], rPrime[2][4]; //arrays containing r1, r2, rPrime1, rPrime2
-    int i, j, h1, minush1, h2, minush2;
-    std::complex<double> tVCS, tVCS_T1, tVCS_T2;
-
-    for (i = 0; i < 4; i++) {
-        rPrime[0][i] = m_DMSW_rPrime2[i];
-        rPrime[1][i] = m_DMSW_rPrime1[i];
-        r[0][i] = m_DMSW_r2[i];
-        r[1][i] = m_DMSW_r1[i];
-    }
-
-    //Transform physical values of helicity s1, s2 = -1 and +1, to integers 0 and 1
-    if (s2 == +1) {
-        h2 = +1;
-        minush2 = 0;
-    } else if (s2 == -1) {
-        h2 = 0;
-        minush2 = 1;
-    }
-    if (s1 == +1) {
-        h1 = +1;
-        minush1 = 0;
-    } else if (s1 == -1) {
-        h1 = 0;
-        minush1 = 1;
-    }
-
-    double L[4][4], R[4][4], sigmaL[4] = { 1., -1., 1., 1. };
-
-    for (i = 0; i < 4; i++) {
+//std::complex<double> DDVCSProcessDMSW22::ampliVCS(int s2, int s1, int sl,
+//        double lminus[4], double lplus[4], int s, double kPrime[4], double k[4],
+//        double Qcal2, double Mll2) {
+//
+//    double r[2][4], rPrime[2][4]; //arrays containing r1, r2, rPrime1, rPrime2
+//    int i, j, h1, minush1, h2, minush2;
+//    std::complex<double> tVCS, tVCS_T1, tVCS_T2;
+//
+//    for (i = 0; i < 4; i++) {
+//        rPrime[0][i] = m_DMSW_rPrime2[i];
+//        rPrime[1][i] = m_DMSW_rPrime1[i];
+//        r[0][i] = m_DMSW_r2[i];
+//        r[1][i] = m_DMSW_r1[i];
+//    }
+//
+//    //Transform physical values of helicity s1, s2 = -1 and +1, to integers 0 and 1
+//    if (s2 == +1) {
+//        h2 = +1;
+//        minush2 = 0;
+//    } else if (s2 == -1) {
+//        h2 = 0;
+//        minush2 = 1;
+//    }
+//    if (s1 == +1) {
+//        h1 = +1;
+//        minush1 = 0;
+//    } else if (s1 == -1) {
+//        h1 = 0;
+//        minush1 = 1;
+//    }
+//
+//    double L[4][4], R[4][4], sigmaL[4] = { 1., -1., 1., 1. };
+//
+//    for (i = 0; i < 4; i++) {
 //        L[0][i] = k[i];
 //        L[1][i] = kPrime[i];
 //        L[2][i] = lplus[i];
 //        L[3][i] = lminus[i];
-
-        R[0][i] = m_DMSW_r1[i];
-        R[1][i] = m_DMSW_r2[i];
-        R[2][i] = m_DMSW_rPrime1[i];
-        R[3][i] = m_DMSW_rPrime2[i];
-
-    }
-
-    //Term in T^(1):
-    std::complex<double> gstarXgn, gnXgstar;
-    double sHATn[4], s0n;
-
-    if (m_DMSW_HATnBM[0] > 0.) {
-        s0n = +1.;
-    } else if (m_DMSW_HATnBM[0] < 0.) {
-        s0n = -1.;
-    }
-
-    for (i = 0; i < 4; i++) {
-        sHATn[i] = s0n * m_DMSW_HATnBM[i];
-    }
-
-    for (i = 0; i < 4; i++) {
-        gstarXgn += m_DMSW_bstar * gFunction(sl, lminus, R[i], lplus)
-                * (s0n / m_DMSW_pq) * gFunction(s, kPrime, sHATn, k);
-    }
-
-    for (i = 0; i < 4; i++) {
-        gnXgstar += (s0n / m_DMSW_pq) * gFunction(sl, lminus, sHATn, lplus)
-                * m_DMSW_bstar * gFunction(s, kPrime, R[i], k);
-    }
-
-    //adding contribution linear in DeltaT from expansion of T^(1), eq 17 & 18 BM2000
-
-    tVCS_T1 = fFunction(sl, lminus, lplus, s, kPrime, k) - gstarXgn - gnXgstar;
-
-    //DEBUG
-    std::cout << tVCS_T1 << " =f-gg-gg" << std::endl;
+//
+//        R[0][i] = m_DMSW_r1[i];
+//        R[1][i] = m_DMSW_r2[i];
+//        R[2][i] = m_DMSW_rPrime1[i];
+//        R[3][i] = m_DMSW_rPrime2[i];
+//
+//    }
+//
+//    //Term in T^(1):
+//    std::complex<double> gstarXgn, gnXgstar;
+//    double sHATn[4], s0n;
+//
+//    if (m_DMSW_HATnBM[0] > 0.) {
+//        s0n = +1.;
+//    } else if (m_DMSW_HATnBM[0] < 0.) {
+//        s0n = -1.;
+//    }
+//
+//    for (i = 0; i < 4; i++) {
+//        sHATn[i] = s0n * m_DMSW_HATnBM[i];
+//    }
+//
+//    for (i = 0; i < 4; i++) {
+//        gstarXgn += m_DMSW_bstar * gFunction(sl, lminus, R[i], lplus)
+//                * (s0n / m_DMSW_pq) * gFunction(s, kPrime, sHATn, k);
+//    }
+//
+//    for (i = 0; i < 4; i++) {
+//        gnXgstar += (s0n / m_DMSW_pq) * gFunction(sl, lminus, sHATn, lplus)
+//                * m_DMSW_bstar * gFunction(s, kPrime, R[i], k);
+//    }
+//
+//    //adding contribution linear in DeltaT from expansion of T^(1), eq 17 & 18 BM2000
+//    std::complex<double> DeltaTerm;
+//    int mu;
+//
+//    for (mu = 0; mu < 4; mu++) {
+//        for (i = 0; i < 4; i++) {
+//            DeltaTerm += m_DMSW_metric_[mu][mu] * m_DMSW_DeltaT[mu]
+//                    * jFunction(mu, sl, lminus, lplus) * m_DMSW_bstar
+//                    * gFunction(s, kPrime, R[i], k)
+//                    - m_DMSW_metric_[mu][mu] * m_DMSW_DeltaT[mu]
+//                            * jFunction(mu, s, kPrime, k) * m_DMSW_bstar
+//                            * gFunction(sl, lminus, R[i], lplus);
+//        }
+//    }
+//
+//    DeltaTerm = DeltaTerm / m_DMSW_pq;
+//
+//    tVCS_T1 = fFunction(sl, lminus, lplus, s, kPrime, k) - gstarXgn - gnXgstar
+//            - DeltaTerm;
+//
+//    //DEBUG
+//    std::cout << tVCS_T1 << " =f-gg-gg-DeltaTerm" << std::endl;
 //    std::cout << fFunction(sl, lminus, lplus, s, kPrime, k) << " =f; " << gstarXgn << " =gg; " << gnXgstar << " =gg" << std::endl;
-    //END DEBUG
-
-    tVCS_T1 *= -0.5;
-
-    std::complex<double> gnY, gnZ;
-
-    gnY = (s0n / m_DMSW_pq) * gFunction(+1, rPrime[h2], sHATn, r[h1]);
-    gnZ = (s0n / m_DMSW_pq) * gFunction(-1, rPrime[minush2], sHATn, r[minush1]);
-
-    //DEBUG
+//    //END DEBUG
+//
+//    tVCS_T1 *= -0.5;
+//
+//    std::complex<double> gnY, gnZ;
+//
+//    gnY = (s0n / m_DMSW_pq) * gFunction(+1, rPrime[h2], sHATn, r[h1]);
+//    gnZ = (s0n / m_DMSW_pq) * gFunction(-1, rPrime[minush2], sHATn, r[minush1]);
+//
+//    //DEBUG
 //    std::cout << gnY << " =gnY; " << gnZ << " =gnZ" << std::endl;
-    //END DEBUG
-
-    tVCS_T1 *= (m_cffH + m_cffE)
-            * (Yfunction(s2, s1) * gnY + Zfunction(s2, s1) * gnZ)
-            - m_cffE * J2function(s2, s1) / m_DMSW_Mnucleon;
-
-    //DEBUG
-    std::cout << tVCS_T1 << " =gpdsPart" << std::endl;
-    //END DEBUG
-
-    //Adding the term in T^(2):
+//    //END DEBUG
+//
+//    tVCS_T1 *= (m_cffH + m_cffE)
+//            * (Yfunction(s2, s1) * gnY + Zfunction(s2, s1) * gnZ)
+//            - m_cffE * J2function(s2, s1) / m_DMSW_Mnucleon;
+//
+//    //DEBUG
+//    std::cout << tVCS_T1 << " =gpdsPart" << std::endl;
+//    //END DEBUG
+//
+//    //Adding the term in T^(2):
 //    int mu, nu;
-
+//
 //    for (mu = 0; mu < 4; mu++) {
 //        for (nu = 0; nu < 4; nu++) {
 //            tVCS_T2 +=
@@ -967,16 +1017,16 @@ std::complex<double> DDVCSProcessDMSW22::ampliVCS(int s2, int s1, int sl,
 //                                            / (2. * m_DMSW_Mnucleon));
 //        }
 //    }//DEBUG uncomment: for n and nstar in LT, J functions need to be rewritten
-
-    //DEBUG
+//
+//    //DEBUG
 //    std::cout << tVCS_T2 << " =tVCS_T2" << std::endl;
-    //END DEBUG
-
-    //Complete amplitude for VCS at LO in alpha strong and LT:
-    tVCS = pow(m_DMSW_charge_e, 4.) * (tVCS_T1 + tVCS_T2) / (-Qcal2 * Mll2);
-
-    return tVCS;
-}
+//    //END DEBUG
+//
+//    //Complete amplitude for VCS at LO in alpha strong and LT:
+//    tVCS = pow(m_DMSW_charge_e, 4.) * (tVCS_T1 + tVCS_T2) / (-Qcal2 * Mll2);
+//
+//    return tVCS;
+//}
 
 //************ Cross-sections for BH, VCS and their interference ************//
 
@@ -1669,15 +1719,26 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon, double Ebeam,
     double root = sqrt(1. + 4. * m_DMSW_xi * delta2 / m_DMSW_pq);
 
     //Exact forms of n and nstar
-//    for (i = 0; i < 4; i++) {
-//        m_DMSW_nstarBM[i] = -(delta2 / m_DMSW_pq) * (1. / root)
-//                * (m_DMSW_q1[i] + m_DMSW_q2[i]) / 2.
-//                + ((1. + root) / (4. * root)) * 2. * pbar[i];
-//        m_DMSW_nBM[i] = (2. / (m_DMSW_pq * root))
-//                * (m_DMSW_q1[i] + m_DMSW_q2[i]) / 2.
-//                - ((1. - root) / (2. * delta2 * root)) * 2. * pbar[i];
-//        m_DMSW_HATnBM[i] = m_DMSW_pq * m_DMSW_nBM[i];
-//    }
+    for (i = 0; i < 4; i++) {
+        m_DMSW_nstarBM[i] = -(delta2 / m_DMSW_pq) * (1. / root)
+                * (m_DMSW_q1[i] + m_DMSW_q2[i]) / 2.
+                + ((1. + root) / (4. * root)) * 2. * pbar[i];
+        m_DMSW_nBM[i] = (2. / (m_DMSW_pq * root))
+                * (m_DMSW_q1[i] + m_DMSW_q2[i]) / 2.
+                - ((1. - root) / (2. * delta2 * root)) * 2. * pbar[i];
+        m_DMSW_HATnBM[i] = m_DMSW_pq * m_DMSW_nBM[i];
+    }
+
+    int mu;
+    double ETA = (Qcal2 + Mll2) / (2. * Qcal2 / xB - Qcal2 - Mll2 + t); //eq 31 in BM2003
+    for (mu = 0; mu < 4; mu++) {
+        m_DMSW_DeltaT[mu] = m_DMSW_p2[mu] - m_DMSW_p1[mu]
+                + 2. * ETA * m_DMSW_nstarBM[mu] / root
+                - delta2 * ETA * m_DMSW_nBM[mu] / root;
+        std::cout << m_DMSW_DeltaT[mu] << " =DeltaT[_exact" << mu
+                << "]; If t = tmin it should be 0" << std::endl;
+        //DeltaT[mu] = 0.;
+    }
 
     // From exact forms of n and nstar we read: n = an * q + bn * p   &   nstar = astar * q + bstar * p:
 //    m_DMSW_an = 2. / (m_DMSW_pq * root);
@@ -1686,18 +1747,18 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon, double Ebeam,
 //    m_DMSW_bstar = (1. + root) / (4. * root);
 
     //LT expressions of n and nstar:
-    for (i = 0; i < 4; i++) {
-        m_DMSW_nstarBM[i] = pbar[i];
-        m_DMSW_nBM[i] = (2. / m_DMSW_pq) * (m_DMSW_q1[i] + m_DMSW_q2[i]) / 2.
-                + (m_DMSW_xi / m_DMSW_pq) * 2. * pbar[i];
-        m_DMSW_HATnBM[i] = m_DMSW_pq * m_DMSW_nBM[i];
-    }
+//    for (i = 0; i < 4; i++) {
+//        m_DMSW_nstarBM[i] = pbar[i];
+//        m_DMSW_nBM[i] = (2. / m_DMSW_pq) * (m_DMSW_q1[i] + m_DMSW_q2[i]) / 2.
+//                + (m_DMSW_xi / m_DMSW_pq) * 2. * pbar[i];
+//        m_DMSW_HATnBM[i] = m_DMSW_pq * m_DMSW_nBM[i];
+//    }
 
     //From LT (valid up to tw-3 - this is, I have removed tw-4 and higher) forms of n and nstar we read: n = an * q + bn * p   &   nstar = astar * q + bstar * p:
-    m_DMSW_an = 2. / m_DMSW_pq;
-    m_DMSW_bn = m_DMSW_xi / m_DMSW_pq;
-    m_DMSW_astar = 0.;
-    m_DMSW_bstar = 0.5;
+//    m_DMSW_an = 2. / m_DMSW_pq;
+//    m_DMSW_bn = m_DMSW_xi / m_DMSW_pq;
+//    m_DMSW_astar = 0.;
+//    m_DMSW_bstar = 0.5;
 
     //DEBUG
 //     for (int i = 0; i < 4; i++) {
@@ -1760,15 +1821,18 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon, double Ebeam,
 //            << Mnucleon << " = sinGamma, cosGamma, root, delta2, pq, t, M" << std::endl;
 //
 //    double T1tensor[4][4], gT[4][4], DeltaT[4];
-//    int mu, nu;
-//
-//    double ETA = (Qcal2 + Mll2)/(2.*Qcal2/xB - Qcal2 - Mll2 + t); //eq 31 in BM2003
-//
+    //int mu, nu;
+
+    //double ETA = (Qcal2 + Mll2) / (2. * Qcal2 / xB - Qcal2 - Mll2 + t); //eq 31 in BM2003
+
 //    for (mu = 0; mu < 4; mu++) {
-//        DeltaT[mu] = m_DMSW_p2[mu] - m_DMSW_p1[mu] - delta2*ETA*m_DMSW_nBM[mu] + 2.*ETA*m_DMSW_nstarBM[mu];
-//        std::cout << DeltaT[mu] << " =DeltaT[" << mu << "]" << std::endl;
+//        m_DMSW_DeltaT[mu] = m_DMSW_p2[mu] - m_DMSW_p1[mu]
+//                + 2. * ETA * m_DMSW_nstarBM[mu];
+//        std::cout << m_DMSW_DeltaT[mu] << " =DeltaT[_LT" << mu
+//                << "]; If t = tmin it should be 0" << std::endl;
 //        //DeltaT[mu] = 0.;
 //    }
+
 //
 //    for (mu = 0; mu < 4; mu++) {
 //        for (nu = 0; nu < 4; nu++) {
