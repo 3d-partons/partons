@@ -1339,6 +1339,7 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon, double Ebeam,
     m_DMSW_p1[3] = 0.;
 
     m_DMSW_epsilon2 = pow(2. * xB * Mnucleon, 2.) / Qcal2;
+
     double modp2I = sqrt(-t * (1. - t / pow(2. * Mnucleon, 2.))); //modulus of 3D component of p2 in TRF-I frame, eq 12 in BM2003
     double cosThetaN = -(m_DMSW_epsilon2 * 0.5 * (Qcal2 + Mll2 - t) - xB * t)
             / (2 * xB * Mnucleon * sqrt(1. + m_DMSW_epsilon2) * modp2I); //cosine of the angle of p2I with respect to z-axis of TRF-I frame, eq 13 in BM2003
@@ -1473,7 +1474,7 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon, double Ebeam,
     m_DMSW_F2 = 4. * pow(Mnucleon, 2.) * (2.7928 - 1.)
             * pow((1. - t / 0.71), -2.) / (4. * pow(Mnucleon, 2.) - t);
 
-//Get CFFs
+//Get CFFs (soft part is evaluated at t, not tmin. Code below should take t, not tmin, since the module for CFFs is based on kinematics that we declare with t, not tmin)
 
     if (m_dvcsConvolCoeffFunctionResult.isAvailable(GPDType::H)) {
         m_cffH = m_dvcsConvolCoeffFunctionResult.getLastAvailable();

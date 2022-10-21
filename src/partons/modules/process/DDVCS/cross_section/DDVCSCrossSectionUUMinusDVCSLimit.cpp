@@ -65,7 +65,7 @@ PhysicalType<double> DDVCSCrossSectionUUMinusDVCSLimit::computeObservable(
 
     //range
     double min[] = { 0., 0., 0. };
-    double max[] = { 2 * M_PI, M_PI,  2 * M_PI};
+    double max[] = { 2 * M_PI, M_PI, 2 * M_PI };
 
     //run
     gsl_monte_vegas_state* sAngle = gsl_monte_vegas_alloc(3);
