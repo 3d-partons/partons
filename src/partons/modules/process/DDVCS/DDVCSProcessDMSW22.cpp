@@ -619,17 +619,14 @@ std::complex<double> DDVCSProcessDMSW22::ampliBH2crossed(int s2, int s1, int sl,
 
 }
 
+//ampliVCS() with gT. n and nstar in LT forms
 std::complex<double> DDVCSProcessDMSW22::ampliVCS(int s2, int s1, int sl,
         double lminus[4], double lplus[4], int s, double kPrime[4], double k[4],
         double Qcal2, double Mll2) {
 
-    //save t value
-    double tOrig = m_t;
-
-    //Evaluation at t = tMin, update vectors
-    computeInternalVariables(Constant::PROTON_MASS, m_E, m_DMSW_tMin, m_xB,
-            m_Q2, m_Q2Prim, m_phi, m_phiL, m_thetaL);
-
+    //DEBUG r1, r2, r'1, r'2 at original t
+    //lminus, lplus, k, k' are already at original t since they are computed in such a way before calling ampliVCS()
+    //(Consequence: all incoming and outgoing momenta are evaluated at original t, not t = tMin, as happens with BH amplitudes)
     double r[2][4], rPrime[2][4]; //arrays containing r1, r2, rPrime1, rPrime2
     int i, j, h1, minush1, h2, minush2;
     std::complex<double> tVCS, tVCS_T1, tVCS_T2;
@@ -640,6 +637,37 @@ std::complex<double> DDVCSProcessDMSW22::ampliVCS(int s2, int s1, int sl,
         r[0][i] = m_DMSW_r2[i];
         r[1][i] = m_DMSW_r1[i];
     }
+
+//    double R[4][4], L[4][4], sigmaL[4] = { 1., -1., 1., 1 };
+//    for (i = 0; i < 4; i++) {
+//        R[0][i] = m_DMSW_r1[i];
+//        R[1][i] = m_DMSW_r2[i];
+//        R[2][i] = m_DMSW_rPrime1[i];
+//        R[3][i] = m_DMSW_rPrime2[i];
+//        L[0][i] = m_DMSW_k[i];
+//        L[1][i] = m_DMSW_kPrime[i];
+//        L[2][i] = m_DMSW_lplus[i];
+//        L[3][i] = m_DMSW_lminus[i];
+//    }
+    //END DEBUG
+
+    //save t value
+    double tOrig = m_t;
+
+    //Evaluation at t = tMin, update vectors n and nstar at t = tMin
+    computeInternalVariables(Constant::PROTON_MASS, m_E, m_DMSW_tMin, m_xB,
+            m_Q2, m_Q2Prim, m_phi, m_phiL, m_thetaL);
+
+//    double r[2][4], rPrime[2][4]; //arrays containing r1, r2, rPrime1, rPrime2
+//    int i, j, h1, minush1, h2, minush2;
+//    std::complex<double> tVCS, tVCS_T1, tVCS_T2;
+//
+//    for (i = 0; i < 4; i++) {
+//        rPrime[0][i] = m_DMSW_rPrime2[i];
+//        rPrime[1][i] = m_DMSW_rPrime1[i];
+//        r[0][i] = m_DMSW_r2[i];
+//        r[1][i] = m_DMSW_r1[i];
+//    }
 
     //Transform physical values of helicity s1, s2 = -1 and +1, to integers 0 and 1
     if (s2 == +1) {
@@ -662,7 +690,7 @@ std::complex<double> DDVCSProcessDMSW22::ampliVCS(int s2, int s1, int sl,
     double s0star = m_DMSW_nstarBM[0] / fabs(m_DMSW_nstarBM[0]);
     double s0n = m_DMSW_HATnBM[0] / fabs(m_DMSW_HATnBM[0]);
 
-    //Let's make sure we get only +/-1 with no decimals:
+    //Let's make sure we get +/-1 with no decimals:
     if (s0star > 0.) {
         s0star = +1.;
     } else if (s0star < 0.) {
@@ -681,48 +709,233 @@ std::complex<double> DDVCSProcessDMSW22::ampliVCS(int s2, int s1, int sl,
         sHATn[i] = s0n * m_DMSW_HATnBM[i];
     }
 
-//Term in T^(1):
-    tVCS_T1 = fFunction(sl, lminus, lplus, s, kPrime, k)
-            - (s0n * s0star / m_DMSW_pq) * gFunction(sl, lminus, snstar, lplus)
-                    * gFunction(s, kPrime, sHATn, k)
-            - (s0n * s0star / m_DMSW_pq) * gFunction(sl, lminus, sHATn, lplus)
-                    * gFunction(s, kPrime, snstar, k);
+    //Term in T^(1):
+
+    double R[4][4], L[4][4], sigmaL[4] = { 1., -1., 1., 1 };
+    /*
+     * Vectors R and L will be used to write down n and nstar at LT and t = tMin, but in and out momenta
+     * are still evaluated at original t
+     */
+    for (i = 0; i < 4; i++) {
+        R[0][i] = m_DMSW_r1[i];
+        R[1][i] = m_DMSW_r2[i];
+        R[2][i] = m_DMSW_rPrime1[i];
+        R[3][i] = m_DMSW_rPrime2[i];
+        L[0][i] = m_DMSW_k[i];
+        L[1][i] = m_DMSW_kPrime[i];
+        L[2][i] = m_DMSW_lplus[i];
+        L[3][i] = m_DMSW_lminus[i];
+    }
+
+    std::complex<double> gstarXgn, gnXgstar;
+
+    /*
+     * In gstarXgn and gnXgstar, R, L, pq and xi are at t = tMin because they come from n and nstar at LT and t = tMin.
+     * In turn, lminus, lplus, k, kPrime are taken at original t because they are in and out momenta states (as happens with BH)
+     */
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 4; j++) {
+            gstarXgn += 0.5 * gFunction(sl, lminus, R[i], lplus)
+                    * ((2. / m_DMSW_pq) * sigmaL[j]
+                            * gFunction(s, kPrime, L[j], k) * 0.5
+                            + (m_DMSW_xi / m_DMSW_pq)
+                                    * gFunction(s, kPrime, R[j], k));
+            gnXgstar += ((2. / m_DMSW_pq) * sigmaL[i]
+                    * gFunction(sl, lminus, L[i], lplus) * 0.5
+                    + (m_DMSW_xi / m_DMSW_pq)
+                            * gFunction(sl, lminus, R[i], lplus)) * 0.5
+                    * gFunction(s, kPrime, R[j], k);
+        }
+    }
+
+    tVCS_T1 = fFunction(sl, lminus, lplus, s, kPrime, k) - gstarXgn - gnXgstar;
+
+    //Adding DeltaT term:
+//    double DeltaT[4], ETA;
+//    ETA = (Qcal2 + Mll2) / (2. * Qcal2 / m_xB - Qcal2 - Mll2 + m_t);
+//    for (i = 0; i < 4; i++) {
+//        for (j = 0; j < 4; j++) {
+//            DeltaT[i] += 2. * ETA * 0.5 * R[j][i];
+//        }
+//        DeltaT[i] += m_DMSW_Delta[i];
+//    }
+//
+//    int a;
+//    for (i = 0; i < 4; i++) {
+//        for (a = 0; a < 4; a++) {
+//            tVCS_T1 += -(0.5 / m_DMSW_pq)
+//                    * (jFunction(a, sl, lminus, lplus) * m_DMSW_metric_[a][a]
+//                            * DeltaT[a] * 0.5 * gFunction(sl, kPrime, R[i], k)
+//                            - jFunction(a, s, kPrime, k)
+//                                    * m_DMSW_metric_[a][a] * DeltaT[a] * 0.5
+//                                    * gFunction(sl, lminus, R[i], lplus));
+//
+//        }
+//    }
 
     tVCS_T1 *= -0.5;
 
+//    std::complex<double> gY, gZ;
+
+//    for (i = 0; i < 4; i++) {
+//        gY += (2. / m_DMSW_pq) * sigmaL[i]
+//                * gFunction(+1, rPrime[h2], L[i], r[h1]) * 0.5
+//                + (m_DMSW_xi / m_DMSW_pq)
+//                        * gFunction(+1, rPrime[h2], R[i], r[h1]);
+//        gZ += (2. / m_DMSW_pq) * sigmaL[i]
+//                * gFunction(-1, rPrime[minush2], L[i], r[minush1]) * 0.5
+//                + (m_DMSW_xi / m_DMSW_pq)
+//                        * gFunction(-1, rPrime[minush2], R[i], r[minush1]);
+//    }
+
+//    tVCS_T1 *= (m_cffH + m_cffE)
+//            * (Yfunction(s2, s1) * gY + Zfunction(s2, s1) * gZ)
+//            - m_cffE * J2function(s2, s1) / m_DMSW_Mnucleon;
+
+    /*
+     * Here sHATn is in exact form so we pick the twist-2 (LT) contribution of the GPD. sHATn and its normalization pq must be at t = tMin
+     * because this n comes from the same place -Compton tensor expansion- as n and nstar in transverse metric (that produces gnXgstar and gstarXgn terms).
+     * r1, r2, rPrime1, rPrime2 are evaluated at original t because they form hadron momenta p1 and p2 that should be evaluated at original t (as happens in BH).
+     */
     tVCS_T1 *= (s0n / m_DMSW_pq) * (m_cffH + m_cffE)
             * (Yfunction(s2, s1) * gFunction(+1, rPrime[h2], sHATn, r[h1])
                     + Zfunction(s2, s1)
                             * gFunction(-1, rPrime[minush2], sHATn, r[minush1]))
             - m_cffE * J2function(s2, s1) / m_DMSW_Mnucleon;
 
-//Adding the term in T^(2):
-    int mu, nu;
+    //Adding the term in T^(2):
+//    int mu, nu;
+//
+//    for (mu = 0; mu < 4; mu++) {
+//        for (nu = 0; nu < 4; nu++) {
+//            tVCS_T2 +=
+//                    -0.5 * Constant::COMPLEX_UNIT * LCperp(mu, nu)
+//                            * m_DMSW_metric_[mu][mu]
+//                            * jFunction(sl, mu, lminus, lplus)
+//                            * m_DMSW_metric_[nu][nu]
+//                            * jFunction(s, nu, kPrime, k)
+//                            * (m_cffHt * J15plus(s2, s1)
+//                                    + m_cffEt * J25plus(s2, s1)
+//                                            / (2. * m_DMSW_Mnucleon));
+//        }
+//    }
 
-    for (mu = 0; mu < 4; mu++) {
-        for (nu = 0; nu < 4; nu++) {
-            tVCS_T2 +=
-                    -0.5 * Constant::COMPLEX_UNIT * LCperp(mu, nu)
-                            * m_DMSW_metric_[mu][mu]
-                            * jFunction(sl, mu, lminus, lplus)
-                            * m_DMSW_metric_[nu][nu]
-                            * jFunction(s, nu, kPrime, k)
-                            * (m_cffHt * J15plus(s2, s1)
-                                    + m_cffEt * J25plus(s2, s1)
-                                            / (2. * m_DMSW_Mnucleon));
-        }
-    }
-
-//Complete amplitude for VCS at LO in alpha strong and LT:
+    //Complete amplitude for VCS at LO in alpha strong and LT:
     tVCS = pow(m_DMSW_charge_e, 4.) * (tVCS_T1 + tVCS_T2) / (-Qcal2 * Mll2);
 
-//back to original t
+    //back to original t
     m_t = tOrig;
-//    computeInternalVariables(Constant::PROTON_MASS, m_E, m_t, m_xB, m_Q2, m_Q2Prim,
-//            m_phi, m_phiL, m_thetaL);
+    computeInternalVariables(Constant::PROTON_MASS, m_E, m_t, m_xB, m_Q2,
+            m_Q2Prim, m_phi, m_phiL, m_thetaL);
 
     return tVCS;
 }
+
+//ampliVCS() with gT. n and nstar in exact form. t = tMin everywhere but CFFs (i.e., GPDs)
+//std::complex<double> DDVCSProcessDMSW22::ampliVCS(int s2, int s1, int sl,
+//        double lminus[4], double lplus[4], int s, double kPrime[4], double k[4],
+//        double Qcal2, double Mll2) {
+//
+//    //save t value
+//    double tOrig = m_t;
+//
+//    //Evaluation at t = tMin, update vectors
+//    computeInternalVariables(Constant::PROTON_MASS, m_E, m_DMSW_tMin, m_xB,
+//            m_Q2, m_Q2Prim, m_phi, m_phiL, m_thetaL);
+//
+//    double r[2][4], rPrime[2][4]; //arrays containing r1, r2, rPrime1, rPrime2
+//    int i, j, h1, minush1, h2, minush2;
+//    std::complex<double> tVCS, tVCS_T1, tVCS_T2;
+//
+//    for (i = 0; i < 4; i++) {
+//        rPrime[0][i] = m_DMSW_rPrime2[i];
+//        rPrime[1][i] = m_DMSW_rPrime1[i];
+//        r[0][i] = m_DMSW_r2[i];
+//        r[1][i] = m_DMSW_r1[i];
+//    }
+//
+//    //Transform physical values of helicity s1, s2 = -1 and +1, to integers 0 and 1
+//    if (s2 == +1) {
+//        h2 = +1;
+//        minush2 = 0;
+//    } else if (s2 == -1) {
+//        h2 = 0;
+//        minush2 = 1;
+//    }
+//    if (s1 == +1) {
+//        h1 = +1;
+//        minush1 = 0;
+//    } else if (s1 == -1) {
+//        h1 = 0;
+//        minush1 = 1;
+//    }
+//
+//    //Checking sign of the zeroth component of m_DMSW_nstarBM and m_DMSW_HATnBM and saving it in s0star and s0n, respectively
+//
+//    double s0star = m_DMSW_nstarBM[0] / fabs(m_DMSW_nstarBM[0]);
+//    double s0n = m_DMSW_HATnBM[0] / fabs(m_DMSW_HATnBM[0]);
+//
+//    //Let's make sure we get +/-1 with no decimals:
+//    if (s0star > 0.) {
+//        s0star = +1.;
+//    } else if (s0star < 0.) {
+//        s0star = -1.;
+//    }
+//
+//    if (s0n > 0.) {
+//        s0n = +1.;
+//    } else if (s0n < 0.) {
+//        s0n = -1.;
+//    }
+//
+//    double snstar[4], sHATn[4];
+//    for (i = 0; i < 4; i++) {
+//        snstar[i] = s0star * m_DMSW_nstarBM[i];
+//        sHATn[i] = s0n * m_DMSW_HATnBM[i];
+//    }
+//
+//    //Term in T^(1):
+//    tVCS_T1 = fFunction(sl, lminus, lplus, s, kPrime, k)
+//            - (s0n * s0star / m_DMSW_pq) * gFunction(sl, lminus, snstar, lplus)
+//                    * gFunction(s, kPrime, sHATn, k)
+//            - (s0n * s0star / m_DMSW_pq) * gFunction(sl, lminus, sHATn, lplus)
+//                    * gFunction(s, kPrime, snstar, k);
+//
+//    tVCS_T1 *= -0.5;
+//
+//    tVCS_T1 *= (s0n / m_DMSW_pq) * (m_cffH + m_cffE)
+//            * (Yfunction(s2, s1) * gFunction(+1, rPrime[h2], sHATn, r[h1])
+//                    + Zfunction(s2, s1)
+//                            * gFunction(-1, rPrime[minush2], sHATn, r[minush1]))
+//            - m_cffE * J2function(s2, s1) / m_DMSW_Mnucleon;
+//
+//    //Adding the term in T^(2):
+//    int mu, nu;
+//
+//    for (mu = 0; mu < 4; mu++) {
+//        for (nu = 0; nu < 4; nu++) {
+//            tVCS_T2 +=
+//                    -0.5 * Constant::COMPLEX_UNIT * LCperp(mu, nu)
+//                            * m_DMSW_metric_[mu][mu]
+//                            * jFunction(sl, mu, lminus, lplus)
+//                            * m_DMSW_metric_[nu][nu]
+//                            * jFunction(s, nu, kPrime, k)
+//                            * (m_cffHt * J15plus(s2, s1)
+//                                    + m_cffEt * J25plus(s2, s1)
+//                                            / (2. * m_DMSW_Mnucleon));
+//        }
+//    }
+//
+//    //Complete amplitude for VCS at LO in alpha strong and LT:
+//    tVCS = pow(m_DMSW_charge_e, 4.) * (tVCS_T1 + tVCS_T2) / (-Qcal2 * Mll2);
+//
+//    //back to original t
+//    m_t = tOrig;
+//    computeInternalVariables(Constant::PROTON_MASS, m_E, m_t, m_xB, m_Q2,
+//            m_Q2Prim, m_phi, m_phiL, m_thetaL);
+//
+//    return tVCS;
+//}
 
 //************ Cross-sections for BH, VCS and their interference ************//
 
@@ -1236,9 +1449,10 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon, double Ebeam,
     double modp2I = sqrt(-t * (1. - t / pow(2. * Mnucleon, 2.))); //modulus of 3D component of p2 in TRF-I frame, eq 12 in BM2003
     double cosThetaN = -(m_DMSW_epsilon2 * 0.5 * (Qcal2 + Mll2 - t) - xB * t)
             / (2 * xB * Mnucleon * sqrt(1. + m_DMSW_epsilon2) * modp2I); //cosine of the angle of p2I with respect to z-axis of TRF-I frame, eq 13 in BM2003
-    double sinThetaN = sqrt(1. - pow(cosThetaN, 2.));;
+    double sinThetaN = sqrt(1. - pow(cosThetaN, 2.));
+    ;
 
-    //Because of eq 19 at t = tMin (sinGamma = 0), q2 = (w2, 0, 0, w2*modv) and momentum conservation:
+//Because of eq 19 at t = tMin (sinGamma = 0), q2 = (w2, 0, 0, w2*modv) and momentum conservation:
     if (t == m_DMSW_tMin) {
         sinThetaN = 0.;
     }
@@ -1253,7 +1467,7 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon, double Ebeam,
             / (sqrt(Qcal2 * (1. + m_DMSW_epsilon2)) * modv * w2); //cosine of angle between outgoing photon and z-axis in TRF-I frame, eq 18 in BM2003
     double sinGamma = sqrt(1. - pow(cosGamma, 2.)); //this expression can produce NaNs when t = tMin (probably because numerics since for t = tMin, cosGamma == -1 so sinGamma == 0)
 
-    //Because of eq 21 in BM2003:
+//Because of eq 21 in BM2003:
     if (t == m_DMSW_tMin) {
         sinGamma = 0.;
     }

@@ -13,6 +13,10 @@
 #include "../../../../../../include/partons/modules/process/DDVCS/DDVCSProcessModule.h"
 #include "../../../../../../include/partons/utils/type/PhysicalUnit.h"
 
+//DEBUG if this is not correct, remove leptonCMframe.h from this directory:
+#include "../../../../../../include/partons/modules/observable/DDVCS/leptonCMframe.h"
+//END DEBUG
+
 namespace PARTONS {
 
 const unsigned int DDVCSCrossSectionUUMinusTCSLimit::classId =
@@ -111,8 +115,18 @@ double DDVCSCrossSectionUUMinusTCSLimit::DDVCSCrossSectionUUMinusTCSLimitFunctio
                     ddvcsObservableKinematic, params->m_gpdType,
                     VCSSubProcessType::DDVCS);
 
+    //DEBUG
+    //include Jacobian for comparision with TCS
+    leptons CMframe;
+    CMframe.computeConverterVariables(params->m_xB, params->m_t, params->m_Q2,
+            params->m_Q2Prim, Constant::PROTON_MASS);
+    double Jac = CMframe.jacobianLeptonCM(params->m_phiL, params->m_thetaL);
+    //END DEBUG
+
     //combine
-    PhysicalType<double> result = (A.getValue() + B.getValue()) / 2.;
+//    PhysicalType<double> result = (A.getValue() + B.getValue()) / 2.;
+
+    PhysicalType<double> result = (A.getValue() + B.getValue()) / (2. * Jac);//DEBUG
 
     //integrate over transversely polarized target dependence to obtain 4-fold differential cross-section
     result *= 2. * Constant::PI;
