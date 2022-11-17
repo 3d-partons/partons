@@ -705,6 +705,7 @@ std::complex<double> DDVCSProcessDMSW22::ampliVCS(int s2, int s1, int sl,
                             * gFunction(-1, rPrime[minush2], sHATn, r[minush1]))
             - m_cffE * pBarPlus * J2function(s2, s1) / m_DMSW_Mnucleon;
 
+    tVCS_T1 /= pBarPlus; //from the correlator that defines GPDs (denominator in eq 15 in Diehl's review)
 //    tVCS_T1 *= (s0n / m_DMSW_pq) * (m_cffH + m_cffE)
 //            * (Yfunction(s2, s1) * gFunction(+1, rPrime[h2], sHATn, r[h1])
 //                    + Zfunction(s2, s1)
