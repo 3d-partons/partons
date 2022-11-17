@@ -237,7 +237,7 @@ std::complex<double> DDVCSCFFTEST::computeUnpolarized() {
 std::complex<double> DDVCSCFFTEST::computePolarized() {
 
     //GPD type
-    GPDType::Type gpdType;
+    GPDType::Type gpdType = m_currentGPDComputeType;
 
     //evaluate GPD at (eta, xi)
     m_partonDistributionEtaXiSummed = computeSquareChargeAveragedGPD(

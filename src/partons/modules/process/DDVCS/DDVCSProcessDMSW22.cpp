@@ -690,28 +690,44 @@ std::complex<double> DDVCSProcessDMSW22::ampliVCS(int s2, int s1, int sl,
 
     tVCS_T1 *= -0.5;
 
+    double pBar[4];
+    for (i = 0; i < 4; i++) {
+        pBar[i] = 0.5 * (r[0][i] + r[1][i] + rPrime[0][i] + rPrime[1][i]); // This way, pBar = \bar{p} is evaluated at original t
+//        std::cout << pBar[i] << " pBar[" << i << "]" << std::endl;//DEBUG
+    }
+    double pBarPlus = MinkProd(m_DMSW_nBM, pBar); // pBarPlus represents the Minkowsky product of \bar{p} with light-like vector n evaluated at t = tMin to prevent \Delta_\perp contributions
+
+    //std::cout << pBarPlus << " =pBarPlus" << std::endl;  //DEBUG
+
     tVCS_T1 *= (s0n / m_DMSW_pq) * (m_cffH + m_cffE)
             * (Yfunction(s2, s1) * gFunction(+1, rPrime[h2], sHATn, r[h1])
                     + Zfunction(s2, s1)
                             * gFunction(-1, rPrime[minush2], sHATn, r[minush1]))
-            - m_cffE * J2function(s2, s1) / m_DMSW_Mnucleon;
+            - m_cffE * pBarPlus * J2function(s2, s1) / m_DMSW_Mnucleon;
 
+//    tVCS_T1 *= (s0n / m_DMSW_pq) * (m_cffH + m_cffE)
+//            * (Yfunction(s2, s1) * gFunction(+1, rPrime[h2], sHATn, r[h1])
+//                    + Zfunction(s2, s1)
+//                            * gFunction(-1, rPrime[minush2], sHATn, r[minush1]))
+//            - m_cffE * J2function(s2, s1) / m_DMSW_Mnucleon;
+
+    //TODO: T^(2) contribution needs to be checked since it is generating nans
     //Adding the term in T^(2):
-    int mu, nu;
-
-    for (mu = 0; mu < 4; mu++) {
-        for (nu = 0; nu < 4; nu++) {
-            tVCS_T2 +=
-                    -0.5 * Constant::COMPLEX_UNIT * LCperp(mu, nu)
-                            * m_DMSW_metric_[mu][mu]
-                            * jFunction(sl, mu, lminus, lplus)
-                            * m_DMSW_metric_[nu][nu]
-                            * jFunction(s, nu, kPrime, k)
-                            * (m_cffHt * J15plus(s2, s1)
-                                    + m_cffEt * J25plus(s2, s1)
-                                            / (2. * m_DMSW_Mnucleon));
-        }
-    }
+//    int mu, nu;
+//
+//    for (mu = 0; mu < 4; mu++) {
+//        for (nu = 0; nu < 4; nu++) {
+//            tVCS_T2 +=
+//                    -0.5 * Constant::COMPLEX_UNIT * LCperp(mu, nu)
+//                            * m_DMSW_metric_[mu][mu]
+//                            * jFunction(sl, mu, lminus, lplus)
+//                            * m_DMSW_metric_[nu][nu]
+//                            * jFunction(s, nu, kPrime, k)
+//                            * (m_cffHt * J15plus(s2, s1)
+//                                    + m_cffEt * J25plus(s2, s1)
+//                                            / (2. * m_DMSW_Mnucleon));
+//        }
+//    }
 
     //Complete amplitude for VCS at LO in alpha strong and LT:
     tVCS = pow(m_DMSW_charge_e, 4.) * (tVCS_T1 + tVCS_T2) / (-Qcal2 * Mll2);
@@ -1243,7 +1259,6 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon, double Ebeam,
             / (2 * xB * Mnucleon * sqrt(1. + m_DMSW_epsilon2) * modp2I); //cosine of the angle of p2I with respect to z-axis of TRF-I frame, eq 13 in BM2003
     double sinThetaN = sqrt(1. - pow(cosThetaN, 2.));
 
-
 //Because of eq 19 at t = tMin (sinGamma = 0), q2 = (w2, 0, 0, w2*modv) and momentum conservation:
     if (t == m_DMSW_tMin) {
         sinThetaN = 0.;
@@ -1409,7 +1424,6 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon, double Ebeam,
         m_cffH = m_dvcsConvolCoeffFunctionResult.getLastAvailable();
     }
 
-
     if (m_dvcsConvolCoeffFunctionResult.isAvailable(GPDType::E)) {
         m_cffE = m_dvcsConvolCoeffFunctionResult.getLastAvailable();
     }
@@ -1430,10 +1444,14 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon, double Ebeam,
         m_cffEL = m_dvcsConvolCoeffFunctionResult.getLastAvailable();
     }
 
-    //m_cffH = (0., 0.);
+    //std::cout << m_cffH << " " << m_cffE << " " << m_cffHt << " " << m_cffEt << " cff: H E Ht Et" << std::endl; //DEBUG
+
+//    m_cffH = (0., 0.);
 //    m_cffE = (0., 0.);
 //    m_cffHt = (0., 0.);
 //    m_cffEt = (0., 0.);
+
+    //std::cout << m_cffH << " " << m_cffE << " " << m_cffHt << " " << m_cffEt << " cff: H E Ht Et" << std::endl; //DEBUG
 
 }
 
