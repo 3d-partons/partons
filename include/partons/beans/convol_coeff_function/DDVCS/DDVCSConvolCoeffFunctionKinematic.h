@@ -130,9 +130,6 @@ public:
     //*** SETTERS AND GETTERS ********************************
     //********************************************************
 
-    /**
-     * Get virtual-photon virtuality.
-     */
     const PhysicalType<double>& getQ2() const;
 
     /**

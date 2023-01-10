@@ -18,6 +18,7 @@
 #include "../../../../../include/partons/utils/type/PhysicalType.h"
 #include "../../../../../include/partons/utils/type/PhysicalUnit.h"
 #include "../../../../../include/partons/utils/VectorUtils.h"
+#include "../../../../../include/partons/FundamentalPhysicalConstants.h"
 
 namespace PARTONS {
 
@@ -261,7 +262,30 @@ void DDVCSConvolCoeffFunctionModule::initModule() {
             DDVCSConvolCoeffFunctionResult>::initModule();
 
     //evaluate eta (xi in Belitsky2003, Eq. (31) upon the change of sign)
-    m_eta = m_xi * ((m_Q2 - m_Q2Prim + m_t / 2.) / (m_Q2 + m_Q2Prim));
+//    m_eta = m_xi * ((m_Q2 - m_Q2Prim + m_t / 2.) / (m_Q2 + m_Q2Prim));//before
+
+    //Evaluation at t = tMin
+//    double xB = 0.000002;
+//
+//    double eps2 = pow(2. * xB * Constant::PROTON_MASS, 2.) / m_Q2;
+//
+//    double tMin = -1. / (4. * xB * (1. - xB) + eps2);
+//    tMin *= (2. * ((1. - xB) * m_Q2 - xB * m_Q2Prim)
+//            + eps2 * (m_Q2 - m_Q2Prim)
+//            - 2. * sqrt(1. + eps2)
+//                    * sqrt(
+//                            pow((1. - xB) * m_Q2 - xB * m_Q2Prim, 2.)
+//                                    - eps2 * m_Q2 * m_Q2Prim));
+    double tForLT = 0.;
+
+    m_eta = m_xi * ((m_Q2 - m_Q2Prim + tForLT / 2.) / (m_Q2 + m_Q2Prim)); // generalized Bjorken variable at t = 0 (which coincides with that dropping t/Q2 and similar terms). m_xi is skewness at t = 0 too
+
+//    if (m_Q2 != m_Q2Prim) {
+//        m_eta = m_xi * ((m_Q2 - m_Q2Prim + tForLT / 2.) / (m_Q2 + m_Q2Prim)); // generalized Bjorken variable at t = 0 (which coincides with that dropping t/Q2 and similar terms). m_xi is skewness at t = 0 too
+//    } else {
+//        m_eta = 0.5 * m_t / (2. * m_Q2 / m_xi); // eta's first order in t/Q2 when Q2 = Q2Prim
+//    }
+
 }
 
 void DDVCSConvolCoeffFunctionModule::isModuleWellConfigured() {
@@ -269,19 +293,17 @@ void DDVCSConvolCoeffFunctionModule::isModuleWellConfigured() {
     ConvolCoeffFunctionModule<DDVCSConvolCoeffFunctionKinematic,
             DDVCSConvolCoeffFunctionResult>::isModuleWellConfigured();
 
-    if (m_Q2 < 0) {
+    if (m_Q2 < 0.) {
         warn(__func__,
                 ElemUtils::Formatter() << "Input value of Q2 = " << m_Q2
                         << " is not > 0.");
     }
 
-    if (m_Q2Prim < 0) {
+    if (m_Q2Prim < 0.) {
         warn(__func__,
                 ElemUtils::Formatter() << "Input value of Q2' = " << m_Q2Prim
                         << " is not > 0.");
     }
-
-
 
 }
 

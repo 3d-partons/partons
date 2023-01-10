@@ -56,7 +56,7 @@ DDVCSCFFTEST::DDVCSCFFTEST(const std::string &className) :
 
     //set variables
     m_partonDistributionEtaXiSummed = 0.;
-    m_epsilon = 1.E-7;
+    m_epsilon = pow(10., -10.);
 }
 
 DDVCSCFFTEST::DDVCSCFFTEST(const DDVCSCFFTEST &other) :
@@ -149,7 +149,7 @@ void DDVCSCFFTEST::isModuleWellConfigured() {
 std::complex<double> DDVCSCFFTEST::computeUnpolarized() {
 
 //GPD type
-    GPDType::Type gpdType;
+    GPDType::Type gpdType = m_currentGPDComputeType;
 
     switch (m_currentGPDComputeType) {
     case GPDType::HL:
@@ -297,12 +297,18 @@ double DDVCSCFFTEST::convolutionUnpolarized(double x,
 
     GPDType::Type gpdType = static_cast<GPDType::Type>(params.at(0));
 
-    double convo; //Function to be convoluted/integrated in x
+    double convo = 0.; //Function to be convoluted/integrated in x
 
-    double PV_LO; //PV integral in CFF at LO
-    double ANALITIC_LO; // analitic term in CFF at LO
+    double PV_LO = 0.; //PV integral in CFF at LO
+    double ANALITIC_LO = 0.; // analitic term in CFF at LO
 
-    double epsilonAbsEta = m_epsilon * fabs(m_eta);
+    double epsilonAbsEta;
+
+    if (m_eta != 0.) {
+        epsilonAbsEta = m_epsilon * fabs(m_eta);
+    } else if (m_eta == 0.) {
+        epsilonAbsEta = m_epsilon;
+    }
 
     double partonDistributionXXiSummed = computeSquareChargeAveragedGPD(
             m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
@@ -327,8 +333,12 @@ double DDVCSCFFTEST::convolutionUnpolarized(double x,
                 * log(fabs(1. - 1. / m_eta));
 
         //Analitic term to CFF for -eta (addding all flavors)
-        ANALITIC_LO += -1 * m_partonDistributionEtaXiSummed
+        ANALITIC_LO += -1. * m_partonDistributionEtaXiSummed
                 * log(fabs(1. + 1. / m_eta));
+
+        if (m_Q2 == m_Q2Prim) {
+            ANALITIC_LO = 0.; //the term in ln cancels for Q2 = Q2Prim (this is m_eta = 0)
+        }
 
         convo = (-1.) * (PV_LO + ANALITIC_LO);
 
@@ -346,12 +356,18 @@ double DDVCSCFFTEST::convolutionPolarized(double x,
 
     GPDType::Type gpdType = static_cast<GPDType::Type>(params.at(0));
 
-    double convo; //Function to be convoluted/integrated in x
+    double convo = 0.; //Function to be convoluted/integrated in x
 
-    double PV_LO; //PV integral in CFF at LO
-    double ANALITIC_LO; // analitic term in CFF at LO
+    double PV_LO = 0.; //PV integral in CFF at LO
+    double ANALITIC_LO = 0.; // analitic term in CFF at LO
 
-    double epsilonAbsEta = m_epsilon * fabs(m_eta);
+    double epsilonAbsEta;
+
+    if (m_eta != 0.) {
+        epsilonAbsEta = m_epsilon * fabs(m_eta);
+    } else if (m_eta == 0.) {
+        epsilonAbsEta = m_epsilon;
+    }
 
     double partonDistributionXXiSummed = computeSquareChargeAveragedGPD(
             m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
@@ -360,24 +376,29 @@ double DDVCSCFFTEST::convolutionPolarized(double x,
     if (params.at(1) == 0.) {
 
         //Term that goes with +eta (adding all flavors)
+
         PV_LO =
                 (x - m_eta) / (pow(x - m_eta, 2.) + epsilonAbsEta)
                         * (partonDistributionXXiSummed
                                 - m_partonDistributionEtaXiSummed);
 
         //Term that goes with -eta (adding all flavors)
-        PV_LO +=
+        PV_LO -=
                 (x + m_eta) / (pow(x + m_eta, 2.) + epsilonAbsEta)
                         * (partonDistributionXXiSummed
-                                + m_partonDistributionEtaXiSummed);
+                                - m_partonDistributionEtaXiSummed); // contrary to the cases of H and E GPDs, for Ht and Et GPDs, plus distribution Ht(x, xi, t) and Et+(x, xi, t) are symmetric wrt x -> -x
 
         //Analitic term to CFF for +eta (addding all flavors)
         ANALITIC_LO = m_partonDistributionEtaXiSummed
                 * log(fabs(1. - 1. / m_eta));
 
         //Analitic term to CFF for -eta (addding all flavors)
-        ANALITIC_LO += -1 * m_partonDistributionEtaXiSummed
+        ANALITIC_LO -= m_partonDistributionEtaXiSummed
                 * log(fabs(1. + 1. / m_eta));
+
+        if (m_Q2 == m_Q2Prim) {
+            ANALITIC_LO = 0.; //the term in ln cancels for Q2 = Q2Prim (this is m_eta = 0)
+        }
 
         convo = -(PV_LO + ANALITIC_LO);
 
