@@ -130,7 +130,6 @@ std::complex<double> DDVCSCFFStandard::computeUnpolarized() {
     if (m_currentGPDComputeType == GPDType::HL
             || m_currentGPDComputeType == GPDType::EL) {
         return std::complex<double>(0., 0.);
-
     }
 
     //parameters
@@ -213,7 +212,6 @@ double DDVCSCFFStandard::computeSquareChargeAveragedGPD(
                     * Constant::S2_ELEC_CHARGE;
 
     return result;
-
 }
 
 double DDVCSCFFStandard::convolution(double x, std::vector<double> params) {
