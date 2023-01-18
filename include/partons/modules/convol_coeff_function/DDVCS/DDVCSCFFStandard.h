@@ -75,7 +75,7 @@ private:
      */
     void initFunctorsForIntegrations();
 
-    double m_partonDistributionEtaXiSummed; ///< GPD at (eta, xi)
+    double m_partonDistributionRhoXiSummed; ///< GPD at (rho, xi)
 };
 
 } /* namespace PARTONS */

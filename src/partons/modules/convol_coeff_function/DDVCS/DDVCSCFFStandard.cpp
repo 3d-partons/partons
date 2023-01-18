@@ -55,7 +55,7 @@ DDVCSCFFStandard::DDVCSCFFStandard(const std::string &className) :
     initFunctorsForIntegrations();
 
     //set variables
-    m_partonDistributionEtaXiSummed = 0.;
+    m_partonDistributionRhoXiSummed = 0.;
 }
 
 DDVCSCFFStandard::DDVCSCFFStandard(const DDVCSCFFStandard &other) :
@@ -65,7 +65,7 @@ DDVCSCFFStandard::DDVCSCFFStandard(const DDVCSCFFStandard &other) :
     initFunctorsForIntegrations();
 
     //set variables
-    m_partonDistributionEtaXiSummed = other.m_partonDistributionEtaXiSummed;
+    m_partonDistributionRhoXiSummed = other.m_partonDistributionRhoXiSummed;
 }
 
 void DDVCSCFFStandard::resolveObjectDependencies() {
@@ -136,30 +136,30 @@ std::complex<double> DDVCSCFFStandard::computeUnpolarized() {
     //parameters
     std::vector<double> params(1);
 
-    //absolute value of eta
-    double absEta = fabs(m_rho);
+    //absolute value of rho
+    double absRho = fabs(m_rho);
 
-    //evaluate GPD at (eta, xi)
-    m_partonDistributionEtaXiSummed = computeSquareChargeAveragedGPD(
+    //evaluate GPD at (rho, xi)
+    m_partonDistributionRhoXiSummed = computeSquareChargeAveragedGPD(
             m_pGPDModule->compute(
-                    GPDKinematic(absEta, m_xi, m_t, m_MuF2, m_MuR2),
+                    GPDKinematic(absRho, m_xi, m_t, m_MuF2, m_MuR2),
                     m_currentGPDComputeType));
 
     //CFF values
-    double im = M_PI * m_partonDistributionEtaXiSummed;
+    double im = M_PI * m_partonDistributionRhoXiSummed;
     double re = 0.;
 
     params.at(0) = -1.;
-    re += integrate(m_pConvolution, 0., absEta, params);
-    re += integrate(m_pConvolution, absEta, 1., params);
+    re += integrate(m_pConvolution, 0., absRho, params);
+    re += integrate(m_pConvolution, absRho, 1., params);
 
-    re += log(absEta / (1. - absEta)) * m_partonDistributionEtaXiSummed;
+    re += log(absRho / (1. - absRho)) * m_partonDistributionRhoXiSummed;
 
     params.at(0) = 1.;
-    re -= integrate(m_pConvolution, 0., absEta, params);
-    re -= integrate(m_pConvolution, absEta, 1., params);
+    re -= integrate(m_pConvolution, 0., absRho, params);
+    re -= integrate(m_pConvolution, absRho, 1., params);
 
-    re -= log((1. + absEta) / absEta) * m_partonDistributionEtaXiSummed;
+    re -= log((1. + absRho) / absRho) * m_partonDistributionRhoXiSummed;
 
     return std::complex<double>(re, ((m_rho > 0.) ? (1) : (-1)) * im);
 }
@@ -169,30 +169,30 @@ std::complex<double> DDVCSCFFStandard::computePolarized() {
     //parameters
     std::vector<double> params(1);
 
-    //absolute value of eta
-    double absEta = fabs(m_rho);
+    //absolute value of rho
+    double absRho = fabs(m_rho);
 
-    //evaluate GPD at (eta, xi)
-    m_partonDistributionEtaXiSummed = computeSquareChargeAveragedGPD(
+    //evaluate GPD at (rho, xi)
+    m_partonDistributionRhoXiSummed = computeSquareChargeAveragedGPD(
             m_pGPDModule->compute(
-                    GPDKinematic(absEta, m_xi, m_t, m_MuF2, m_MuR2),
+                    GPDKinematic(absRho, m_xi, m_t, m_MuF2, m_MuR2),
                     m_currentGPDComputeType));
 
     //CFF values
-    double im = M_PI * m_partonDistributionEtaXiSummed;
+    double im = M_PI * m_partonDistributionRhoXiSummed;
     double re = 0.;
 
     params.at(0) = -1.;
-    re += integrate(m_pConvolution, 0., absEta, params);
-    re += integrate(m_pConvolution, absEta, 1., params);
+    re += integrate(m_pConvolution, 0., absRho, params);
+    re += integrate(m_pConvolution, absRho, 1., params);
 
-    re += log(absEta / (1. - absEta)) * m_partonDistributionEtaXiSummed;
+    re += log(absRho / (1. - absRho)) * m_partonDistributionRhoXiSummed;
 
     params.at(0) = 1.;
-    re += integrate(m_pConvolution, 0., absEta, params);
-    re += integrate(m_pConvolution, absEta, 1., params);
+    re += integrate(m_pConvolution, 0., absRho, params);
+    re += integrate(m_pConvolution, absRho, 1., params);
 
-    re += log((1. + absEta) / absEta) * m_partonDistributionEtaXiSummed;
+    re += log((1. + absRho) / absRho) * m_partonDistributionRhoXiSummed;
 
     return std::complex<double>(((m_rho > 0.) ? (1) : (-1)) * re, im);
 }
@@ -221,7 +221,7 @@ double DDVCSCFFStandard::convolution(double x, std::vector<double> params) {
             m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
                     m_currentGPDComputeType));
 
-    return (partonDistributionXXiSummed - m_partonDistributionEtaXiSummed)
+    return (partonDistributionXXiSummed - m_partonDistributionRhoXiSummed)
             / (fabs(m_rho) + params.at(0) * x);
 }
 
