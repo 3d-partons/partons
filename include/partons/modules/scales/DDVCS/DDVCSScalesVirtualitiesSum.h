@@ -1,7 +1,6 @@
-#ifndef DDVCS_SCALES_TEST_H
-#define DDVCS_SCALES_TEST_H
+#ifndef DDVCS_SCALES_VIRTUALITIES_SUM_H
+#define DDVCS_SCALES_VIRTUALITIES_SUM_H
 
-#include <ElementaryUtils/parameters/Parameters.h>
 #include <string>
 
 #include "DDVCSScalesModule.h"
@@ -11,11 +10,11 @@ namespace PARTONS {
 /**
  * @class DDVCSScalesTEST
  *
- * @brief TODO
+ * @brief Evaluation of scales for DDVCS module as sum of virtualities.
  *
- * TODO
+ * Both scales are returned as sum of virtualities.
  */
-class DDVCSScalesTEST: public DDVCSScalesModule {
+class DDVCSScalesVirtualitiesSum: public DDVCSScalesModule {
 
 public:
 
@@ -28,27 +27,23 @@ public:
      * Constructor.
      * @param className Name of class.
      */
-    DDVCSScalesTEST(const std::string &className);
+    DDVCSScalesVirtualitiesSum(const std::string &className);
 
     /**
      * Copy constructor.
      * @param other Object to be copied.
      */
-    DDVCSScalesTEST(const DDVCSScalesTEST &other);
+    DDVCSScalesVirtualitiesSum(const DDVCSScalesVirtualitiesSum &other);
 
     /**
      * Destructor.
      */
-    virtual ~DDVCSScalesTEST();
+    virtual ~DDVCSScalesVirtualitiesSum();
 
-    virtual DDVCSScalesTEST* clone() const;
-    virtual void configure(const ElemUtils::Parameters &parameters);
+    virtual DDVCSScalesVirtualitiesSum* clone() const;
     virtual Scales compute(const DDVCSObservableKinematic& kinematic);
-
-private:
-
 };
 
 } /* namespace PARTONS */
 
-#endif /* DDVCS_SCALES_TEST_H */
+#endif /* DDVCS_SCALES_VIRTUALITIES_SUM_H */
