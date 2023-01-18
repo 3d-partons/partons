@@ -56,7 +56,6 @@ DDVCSCFFTEST::DDVCSCFFTEST(const std::string &className) :
 
     //set variables
     m_partonDistributionEtaXiSummed = 0.;
-    m_epsilon = pow(10., -10.);
 }
 
 DDVCSCFFTEST::DDVCSCFFTEST(const DDVCSCFFTEST &other) :
@@ -67,7 +66,6 @@ DDVCSCFFTEST::DDVCSCFFTEST(const DDVCSCFFTEST &other) :
 
     //set variables
     m_partonDistributionEtaXiSummed = other.m_partonDistributionEtaXiSummed;
-    m_epsilon = other.m_epsilon;
 }
 
 void DDVCSCFFTEST::resolveObjectDependencies() {
@@ -91,11 +89,6 @@ DDVCSCFFTEST::~DDVCSCFFTEST() {
         delete m_pConvolutionPolarized;
         m_pConvolutionPolarized = 0;
     }
-
-    if (m_pConvolutionUnpolarizedL) {
-        delete m_pConvolutionUnpolarizedL;
-        m_pConvolutionUnpolarizedL = 0;
-    }
 }
 
 DDVCSCFFTEST* DDVCSCFFTEST::clone() const {
@@ -109,9 +102,6 @@ void DDVCSCFFTEST::initFunctorsForIntegrations() {
 
     m_pConvolutionPolarized = NumA::Integrator1D::newIntegrationFunctor(this,
             &DDVCSCFFTEST::convolutionPolarized);
-
-    m_pConvolutionUnpolarizedL = NumA::Integrator1D::newIntegrationFunctor(this,
-            &DDVCSCFFTEST::convolutionUnpolarizedL);
 }
 
 void DDVCSCFFTEST::initModule() {
@@ -148,127 +138,83 @@ void DDVCSCFFTEST::isModuleWellConfigured() {
 
 std::complex<double> DDVCSCFFTEST::computeUnpolarized() {
 
-//GPD type
-    GPDType::Type gpdType = m_currentGPDComputeType;
-
-    switch (m_currentGPDComputeType) {
-    case GPDType::HL:
-        gpdType = GPDType::H;
-        break;
-    case GPDType::EL:
-        gpdType = GPDType::E;
-        break;
-    default:
-        gpdType = m_currentGPDComputeType;
-    }
-
-    //evaluate GPD at (eta, xi)
-    m_partonDistributionEtaXiSummed = computeSquareChargeAveragedGPD(
-            m_pGPDModule->compute(
-                    GPDKinematic(m_eta, m_xi, m_t, m_MuF2, m_MuR2), gpdType));
-
-    //CFF values
-    double re = 0.;
-    double im = 0.;
-
-    /*
-     * parameters:
-     * first element is gpdType;
-     * second is 0. for computing real part of CFF and 1. for imaginary
-     * third is 0. for CFF at LO and 1. at NLO
-     */
-
-    std::vector<double> parameters(3, 0.); //parameters(length, one initialization for all positions)
-
-    if (m_currentGPDComputeType == GPDType::H
-            || m_currentGPDComputeType == GPDType::E) {
-
-        parameters.at(0) = static_cast<double>(gpdType);
-
-        //computing real part of CFF
-        parameters.at(1) = 0.;
-        re = integrate(m_pConvolutionUnpolarized, 0., 1., parameters);
-        //computing imaginary part of CFF
-        parameters.at(1) = 1.;
-        im = integrate(m_pConvolutionUnpolarized, 0., 1., parameters);
-    }
-
+    //check for HL and EL
     if (m_currentGPDComputeType == GPDType::HL
             || m_currentGPDComputeType == GPDType::EL) {
-
-        if (m_qcdOrderType == PerturbativeQCDOrderType::LO) {
-
-            return std::complex<double>(0., 0.);
-        }
-
-        parameters.at(0) = static_cast<double>(gpdType);
-
-        //computing real part of CFF
-        parameters.at(1) = 0.;
-        re = integrate(m_pConvolutionUnpolarized, 0., 1., parameters);
-        //computing imaginary part of CFF
-        parameters.at(1) = 1.;
-        im = integrate(m_pConvolutionUnpolarized, 0., 1., parameters);
+        return std::complex<double>(0., 0.);
 
     }
 
     //parameters
-//    std::vector<double> parameters(1, 0.);
-//
-//    if (m_currentGPDComputeType == GPDType::H
-//            || m_currentGPDComputeType == GPDType::E) {
-//
-//        parameters.at(0) = static_cast<double>(gpdType);
-//
-//        re = integrate(m_pConvolutionUnpolarized, 0., 1., parameters);
-//    }
-//
-//    if (m_currentGPDComputeType == GPDType::HL
-//            || m_currentGPDComputeType == GPDType::EL) {
-//
-//        parameters.at(0) = static_cast<double>(gpdType);
-//
-//        re = integrate(m_pConvolutionUnpolarizedL, 0., 1., parameters);
-//    }
+    std::vector<double> params(1);
+
+    //absolute value of eta
+    double absEta = fabs(m_eta);
+
+    //evaluate GPD at (eta, xi)
+    m_partonDistributionEtaXiSummed = computeSquareChargeAveragedGPD(
+            m_pGPDModule->compute(
+                    GPDKinematic(absEta, m_xi, m_t, m_MuF2, m_MuR2),
+                    m_currentGPDComputeType));
+
+    //CFF values
+    double im = ((m_eta > 0.) ? (1) : (-1)) * M_PI
+            * m_partonDistributionEtaXiSummed;
+    double re = 0.;
+
+    params.at(0) = -1.;
+    re += integrate(m_pConvolutionUnpolarized, 0., absEta, params);
+    re += integrate(m_pConvolutionUnpolarized, absEta, 1., params);
+
+    re += ((m_eta > 0.) ?
+            (log(absEta / (1. - absEta))) : (-log((1. + absEta) / absEta)))
+            * m_partonDistributionEtaXiSummed;
+
+    params.at(0) = 1.;
+    re -= integrate(m_pConvolutionUnpolarized, 0., absEta, params);
+    re -= integrate(m_pConvolutionUnpolarized, absEta, 1., params);
+
+    re -= ((m_eta > 0.) ?
+            (log((1. + absEta) / absEta)) : (-log(absEta / (1. - absEta))))
+            * m_partonDistributionEtaXiSummed;
 
     return std::complex<double>(re, im);
 }
 
 std::complex<double> DDVCSCFFTEST::computePolarized() {
 
-    //GPD type
-    GPDType::Type gpdType = m_currentGPDComputeType;
+    //parameters
+    std::vector<double> params(1);
+
+    //absolute value of eta
+    double absEta = fabs(m_eta);
 
     //evaluate GPD at (eta, xi)
     m_partonDistributionEtaXiSummed = computeSquareChargeAveragedGPD(
             m_pGPDModule->compute(
-                    GPDKinematic(m_eta, m_xi, m_t, m_MuF2, m_MuR2), gpdType));
+                    GPDKinematic(absEta, m_xi, m_t, m_MuF2, m_MuR2),
+                    m_currentGPDComputeType));
 
     //CFF values
+    double im = ((m_eta > 0.) ? (1) : (-1)) * M_PI
+            * m_partonDistributionEtaXiSummed;
     double re = 0.;
-    double im = 0.;
 
-    /*
-     * parameters:
-     * first element is gpdType;
-     * second is 0. for computing real part of CFF and 1. for imaginary
-     * third is 0. for CFF at LO and 1. at NLO
-     */
+    params.at(0) = -1.;
+    re += integrate(m_pConvolutionPolarized, 0., absEta, params);
+    re += integrate(m_pConvolutionPolarized, absEta, 1., params);
 
-    std::vector<double> parameters(3, 0.); //parameters(length, one initialization for all positions)
+    re += ((m_eta > 0.) ?
+            (log(absEta / (1. - absEta))) : (-log((1. + absEta) / absEta)))
+            * m_partonDistributionEtaXiSummed;
 
-    if (m_currentGPDComputeType == GPDType::Ht
-            || m_currentGPDComputeType == GPDType::Et) {
+    params.at(0) = 1.;
+    re += integrate(m_pConvolutionPolarized, 0., absEta, params);
+    re += integrate(m_pConvolutionPolarized, absEta, 1., params);
 
-        parameters.at(0) = static_cast<double>(gpdType);
-
-        //computing real part of CFF
-        parameters.at(1) = 0.;
-        re = integrate(m_pConvolutionPolarized, 0., 1., parameters);
-        //computing imaginary part of CFF
-        parameters.at(1) = 1.;
-        im = integrate(m_pConvolutionPolarized, 0., 1., parameters);
-    }
+    re += ((m_eta > 0.) ?
+            (log((1. + absEta) / absEta)) : (-log(absEta / (1. - absEta))))
+            * m_partonDistributionEtaXiSummed;
 
     return std::complex<double>(re, im);
 }
@@ -295,142 +241,23 @@ double DDVCSCFFTEST::computeSquareChargeAveragedGPD(
 double DDVCSCFFTEST::convolutionUnpolarized(double x,
         std::vector<double> params) {
 
-    GPDType::Type gpdType = static_cast<GPDType::Type>(params.at(0));
-
-    double convo = 0.; //Function to be convoluted/integrated in x
-
-    double PV_LO = 0.; //PV integral in CFF at LO
-    double ANALITIC_LO = 0.; // analitic term in CFF at LO
-
-    double epsilonAbsEta;
-
-    if (m_eta != 0.) {
-        epsilonAbsEta = m_epsilon * fabs(m_eta);
-    } else if (m_eta == 0.) {
-        epsilonAbsEta = m_epsilon;
-    }
-
     double partonDistributionXXiSummed = computeSquareChargeAveragedGPD(
             m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
-                    gpdType));
+                    m_currentGPDComputeType));
 
-    if (params.at(1) == 0.) {
-
-        //Term that goes with +eta (adding all flavors)
-        PV_LO =
-                (x - m_eta) / (pow(x - m_eta, 2.) + epsilonAbsEta)
-                        * (partonDistributionXXiSummed
-                                - m_partonDistributionEtaXiSummed);
-
-        //Term that goes with -eta (adding all flavors)
-        PV_LO +=
-                (x + m_eta) / (pow(x + m_eta, 2.) + epsilonAbsEta)
-                        * (partonDistributionXXiSummed
-                                + m_partonDistributionEtaXiSummed);
-
-        //Analitic term to CFF for +eta (addding all flavors)
-        ANALITIC_LO = m_partonDistributionEtaXiSummed
-                * log(fabs(1. - 1. / m_eta));
-
-        //Analitic term to CFF for -eta (addding all flavors)
-        ANALITIC_LO += -1. * m_partonDistributionEtaXiSummed
-                * log(fabs(1. + 1. / m_eta));
-
-        if (m_Q2 == m_Q2Prim) {
-            ANALITIC_LO = 0.; //the term in ln cancels for Q2 = Q2Prim (this is m_eta = 0)
-        }
-
-        convo = (-1.) * (PV_LO + ANALITIC_LO);
-
-    } else if (params.at(1) == 1.) {
-
-        convo = M_PI * m_partonDistributionEtaXiSummed;
-
-    }
-
-    return convo;
+    return (partonDistributionXXiSummed - m_partonDistributionEtaXiSummed)
+            / (m_eta + params.at(0) * x);
 }
 
 double DDVCSCFFTEST::convolutionPolarized(double x,
         std::vector<double> params) {
 
-    GPDType::Type gpdType = static_cast<GPDType::Type>(params.at(0));
-
-    double convo = 0.; //Function to be convoluted/integrated in x
-
-    double PV_LO = 0.; //PV integral in CFF at LO
-    double ANALITIC_LO = 0.; // analitic term in CFF at LO
-
-    double epsilonAbsEta;
-
-    if (m_eta != 0.) {
-        epsilonAbsEta = m_epsilon * fabs(m_eta);
-    } else if (m_eta == 0.) {
-        epsilonAbsEta = m_epsilon;
-    }
-
     double partonDistributionXXiSummed = computeSquareChargeAveragedGPD(
             m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
-                    gpdType));
+                    m_currentGPDComputeType));
 
-    if (params.at(1) == 0.) {
-
-        //Term that goes with +eta (adding all flavors)
-
-        PV_LO =
-                (x - m_eta) / (pow(x - m_eta, 2.) + epsilonAbsEta)
-                        * (partonDistributionXXiSummed
-                                - m_partonDistributionEtaXiSummed);
-
-        //Term that goes with -eta (adding all flavors)
-        PV_LO -=
-                (x + m_eta) / (pow(x + m_eta, 2.) + epsilonAbsEta)
-                        * (partonDistributionXXiSummed
-                                - m_partonDistributionEtaXiSummed); // contrary to the cases of H and E GPDs, for Ht and Et GPDs, plus distribution Ht(x, xi, t) and Et+(x, xi, t) are symmetric wrt x -> -x
-
-        //Analitic term to CFF for +eta (addding all flavors)
-        ANALITIC_LO = m_partonDistributionEtaXiSummed
-                * log(fabs(1. - 1. / m_eta));
-
-        //Analitic term to CFF for -eta (addding all flavors)
-        ANALITIC_LO -= m_partonDistributionEtaXiSummed
-                * log(fabs(1. + 1. / m_eta));
-
-        if (m_Q2 == m_Q2Prim) {
-            ANALITIC_LO = 0.; //the term in ln cancels for Q2 = Q2Prim (this is m_eta = 0)
-        }
-
-        convo = -(PV_LO + ANALITIC_LO);
-
-    } else if (params.at(1) == 1.) {
-
-        convo = M_PI * m_partonDistributionEtaXiSummed;
-
-    }
-
-    return convo;
-}
-
-//CFFs for HL, EL are NLO
-double DDVCSCFFTEST::convolutionUnpolarizedL(double x,
-        std::vector<double> params) {
-    return 0.;
-}
-
-/*
- double DDVCSCFFTEST::convolution(double x, std::vector<double> params) {
- return x
- * m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
- GPDType::H).getQuarkDistribution(QuarkFlavor::UP).getQuarkDistributionPlus();
- }
- */
-
-double DDVCSCFFTEST::getEpsilon() const {
-    return m_epsilon;
-}
-
-void DDVCSCFFTEST::setEpsilon(double epsilon) {
-    m_epsilon = epsilon;
+    return (partonDistributionXXiSummed - m_partonDistributionEtaXiSummed)
+            / (m_eta + params.at(0) * x);
 }
 
 } /* namespace PARTONS */

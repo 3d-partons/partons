@@ -12,9 +12,9 @@ namespace PARTONS {
 /**
  * @class DDVCSCFFTEST
  *
- * @brief TODO
+ * @brief TODO //NEEDS TO BE UPDATED
  *
- * TODO
+ * TODO //NEEDS TO BE UPDATED
  */
 class DDVCSCFFTEST: public DDVCSConvolCoeffFunctionModule {
 
@@ -36,16 +36,6 @@ public:
 
     virtual void resolveObjectDependencies();
 
-    /**
-     * Get epsilon.
-     */
-    double getEpsilon() const;
-
-    /**
-     * Set epsilon.
-     */
-    void setEpsilon(double epsilon);
-
 protected:
 
     /**
@@ -56,8 +46,8 @@ protected:
     virtual void initModule();
     virtual void isModuleWellConfigured();
 
-     virtual std::complex<double> computeUnpolarized();
-     virtual std::complex<double> computePolarized();
+    virtual std::complex<double> computeUnpolarized();
+    virtual std::complex<double> computePolarized();
 
 private:
 
@@ -71,14 +61,8 @@ private:
      */
     double convolutionPolarized(double x, std::vector<double> params);
 
-    /**
-     * Convolution.
-     */
-    double convolutionUnpolarizedL(double x, std::vector<double> params);
-
     NumA::FunctionType1D* m_pConvolutionUnpolarized; ///< Functor to convolutionUnpolarized().
     NumA::FunctionType1D* m_pConvolutionPolarized; ///< Functor to convolutionPolarized().
-    NumA::FunctionType1D* m_pConvolutionUnpolarizedL; ///< Functor to convolutionUnpolarizedL().
 
     /**
      * Compute GPD combination over quark flavors.
@@ -92,8 +76,6 @@ private:
     void initFunctorsForIntegrations();
 
     double m_partonDistributionEtaXiSummed; ///< GPD at (eta, xi)
-
-    double m_epsilon; ///< small parameter that helps with the practical realization of PV: PV(1/x) = integral[x/(x^2 + eps)], eps -> 0
 };
 
 } /* namespace PARTONS */
