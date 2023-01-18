@@ -157,7 +157,6 @@ private:
     double m_DMSW_charge_e;
 
     //eta, xi and pq variables
-//    double m_DMSW_eta;
     double m_DMSW_xi; //xi variable in eq 29 from BM2003
     double m_DMSW_xi_tMin; // for t = tMin
     double m_DMSW_pq; //pq = Q2/xi as in eq 29 from BM2003
