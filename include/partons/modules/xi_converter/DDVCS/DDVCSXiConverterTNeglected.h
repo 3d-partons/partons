@@ -1,5 +1,5 @@
-#ifndef DDVCS_XI_CONVERTER_TEST_H
-#define DDVCS_XI_CONVERTER_TEST_H
+#ifndef DDVCS_XI_CONVERTER_T_NEGLECTED_H
+#define DDVCS_XI_CONVERTER_T_NEGLECTED_H
 
 #include <string>
 
@@ -11,11 +11,14 @@ namespace PARTONS {
 /**
  * @class DDVCSXiConverterTEST
  *
- * @brief TODO
+ * @brief Evaluation of skewness with t=0 simplification.
  *
- * TODO
+ * The module evaluates xi according to:
+ * xi = (Q2 + Q2Prim) / (2. * Q2 / xB - Q2 - Q2Prim)
+ *
+ * t-dependence is neglected here.
  */
-class DDVCSXiConverterTEST: public DDVCSXiConverterModule {
+class DDVCSXiConverterTNeglected: public DDVCSXiConverterModule {
 
 public:
 
@@ -28,24 +31,24 @@ public:
      * Constructor.
      * @param className Name of class.
      */
-    DDVCSXiConverterTEST(const std::string &className);
+    DDVCSXiConverterTNeglected(const std::string &className);
 
     /**
      * Copy constructor.
      * @param other Object to be copied.
      */
-    DDVCSXiConverterTEST(const DDVCSXiConverterTEST &other);
+    DDVCSXiConverterTNeglected(const DDVCSXiConverterTNeglected &other);
 
     /**
      * Destructor.
      */
-    virtual ~DDVCSXiConverterTEST();
+    virtual ~DDVCSXiConverterTNeglected();
 
-    virtual DDVCSXiConverterTEST* clone() const;
+    virtual DDVCSXiConverterTNeglected* clone() const;
     virtual PhysicalType<double> compute(
             const DDVCSObservableKinematic& kinematic);
 };
 
 } /* namespace PARTONS */
 
-#endif /* DDVCS_XI_CONVERTER_TEST_H */
+#endif /* DDVCS_XI_CONVERTER_T_NEGLECTED_H */
