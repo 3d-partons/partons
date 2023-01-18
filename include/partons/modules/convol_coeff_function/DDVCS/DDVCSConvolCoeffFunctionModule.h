@@ -123,7 +123,7 @@ protected:
     double m_Q2; ///< Virtuality of the photon (in GeV^2).
     double m_Q2Prim; ///< Outgoing virtual-photon virtuality (in \f$GeV^{2}\f$).
 
-    double m_eta; ///< Eta.
+    double m_rho; ///< rho.
 
     PerturbativeQCDOrderType::Type m_qcdOrderType; ///< Order of the perturbative QCD computation.
 };

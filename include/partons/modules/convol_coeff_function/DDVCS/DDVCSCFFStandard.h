@@ -1,5 +1,5 @@
-#ifndef DDVCS_CFF_TEST_H
-#define DDVCS_CFF_TEST_H
+#ifndef DDVCS_CFF_STANDARD_H
+#define DDVCS_CFF_STANDARD_H
 
 #include <complex>
 #include <string>
@@ -12,11 +12,12 @@ namespace PARTONS {
 /**
  * @class DDVCSCFFTEST
  *
- * @brief TODO //NEEDS TO BE UPDATED
+ * @brief Evaluation of DDVCS Compton form factors.
  *
- * TODO //NEEDS TO BE UPDATED
+ * The class implements standard way of evaluating DDVCS CFFs, which is limits are compatible with DVCS and TCS modules.
+ * Only LO is available.
  */
-class DDVCSCFFTEST: public DDVCSConvolCoeffFunctionModule {
+class DDVCSCFFStandard: public DDVCSConvolCoeffFunctionModule {
 
 public:
 
@@ -25,14 +26,14 @@ public:
     /**
      * Constructor.
      */
-    DDVCSCFFTEST(const std::string &className);
+    DDVCSCFFStandard(const std::string &className);
 
-    virtual DDVCSCFFTEST* clone() const;
+    virtual DDVCSCFFStandard* clone() const;
 
     /**
      * Destructor.
      */
-    virtual ~DDVCSCFFTEST();
+    virtual ~DDVCSCFFStandard();
 
     virtual void resolveObjectDependencies();
 
@@ -41,7 +42,7 @@ protected:
     /**
      * Copy constructor.
      */
-    DDVCSCFFTEST(const DDVCSCFFTEST &other);
+    DDVCSCFFStandard(const DDVCSCFFStandard &other);
 
     virtual void initModule();
     virtual void isModuleWellConfigured();
@@ -59,10 +60,9 @@ private:
     /**
      * Convolution.
      */
-    double convolutionPolarized(double x, std::vector<double> params);
+    double convolution(double x, std::vector<double> params);
 
-    NumA::FunctionType1D* m_pConvolutionUnpolarized; ///< Functor to convolutionUnpolarized().
-    NumA::FunctionType1D* m_pConvolutionPolarized; ///< Functor to convolutionPolarized().
+    NumA::FunctionType1D* m_pConvolution; ///< Functor to convolution().
 
     /**
      * Compute GPD combination over quark flavors.
@@ -80,4 +80,4 @@ private:
 
 } /* namespace PARTONS */
 
-#endif /* DDVCS_CFF_TEST_H */
+#endif /* DDVCS_CFF_STANDARD_H */

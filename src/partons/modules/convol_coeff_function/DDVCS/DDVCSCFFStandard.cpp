@@ -1,5 +1,3 @@
-#include "../../../../../include/partons/modules/convol_coeff_function/DDVCS/DDVCSCFFTEST.h"
-
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <NumA/functor/one_dimension/Functor1D.h>
@@ -15,15 +13,16 @@
 #include "../../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
+#include "../../../../../include/partons/modules/convol_coeff_function/DDVCS/DDVCSCFFStandard.h"
 #include "../../../../../include/partons/modules/gpd/GPDModule.h"
 
 namespace PARTONS {
 
-const unsigned int DDVCSCFFTEST::classId =
+const unsigned int DDVCSCFFStandard::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
-                new DDVCSCFFTEST("DDVCSCFFTEST"));
+                new DDVCSCFFStandard("DDVCSCFFTEST"));
 
-DDVCSCFFTEST::DDVCSCFFTEST(const std::string &className) :
+DDVCSCFFStandard::DDVCSCFFStandard(const std::string &className) :
         DDVCSConvolCoeffFunctionModule(className) {
 
     //relate CFF types with functions
@@ -58,7 +57,7 @@ DDVCSCFFTEST::DDVCSCFFTEST(const std::string &className) :
     m_partonDistributionEtaXiSummed = 0.;
 }
 
-DDVCSCFFTEST::DDVCSCFFTEST(const DDVCSCFFTEST &other) :
+DDVCSCFFStandard::DDVCSCFFStandard(const DDVCSCFFStandard &other) :
         DDVCSConvolCoeffFunctionModule(other) {
 
     //set functors
@@ -68,7 +67,7 @@ DDVCSCFFTEST::DDVCSCFFTEST(const DDVCSCFFTEST &other) :
     m_partonDistributionEtaXiSummed = other.m_partonDistributionEtaXiSummed;
 }
 
-void DDVCSCFFTEST::resolveObjectDependencies() {
+void DDVCSCFFStandard::resolveObjectDependencies() {
 
     //resolve for parent module
     DDVCSConvolCoeffFunctionModule::resolveObjectDependencies();
@@ -77,40 +76,29 @@ void DDVCSCFFTEST::resolveObjectDependencies() {
     setIntegrator(NumA::IntegratorType1D::DEXP);
 }
 
-DDVCSCFFTEST::~DDVCSCFFTEST() {
+DDVCSCFFStandard::~DDVCSCFFStandard() {
 
     // destroy functors
-    if (m_pConvolutionUnpolarized) {
-        delete m_pConvolutionUnpolarized;
-        m_pConvolutionUnpolarized = 0;
-    }
-
-    if (m_pConvolutionPolarized) {
-        delete m_pConvolutionPolarized;
-        m_pConvolutionPolarized = 0;
+    if (m_pConvolution) {
+        delete m_pConvolution;
+        m_pConvolution = 0;
     }
 }
 
-DDVCSCFFTEST* DDVCSCFFTEST::clone() const {
-    return new DDVCSCFFTEST(*this);
+DDVCSCFFStandard* DDVCSCFFStandard::clone() const {
+    return new DDVCSCFFStandard(*this);
 }
 
-void DDVCSCFFTEST::initFunctorsForIntegrations() {
-
-    m_pConvolutionUnpolarized = NumA::Integrator1D::newIntegrationFunctor(this,
-            &DDVCSCFFTEST::convolutionUnpolarized);
-
-    m_pConvolutionPolarized = NumA::Integrator1D::newIntegrationFunctor(this,
-            &DDVCSCFFTEST::convolutionPolarized);
+void DDVCSCFFStandard::initFunctorsForIntegrations() {
+    m_pConvolution = NumA::Integrator1D::newIntegrationFunctor(this,
+            &DDVCSCFFStandard::convolution);
 }
 
-void DDVCSCFFTEST::initModule() {
-
-    //init parent module
+void DDVCSCFFStandard::initModule() {
     DDVCSConvolCoeffFunctionModule::initModule();
 }
 
-void DDVCSCFFTEST::isModuleWellConfigured() {
+void DDVCSCFFStandard::isModuleWellConfigured() {
 
     //check parent module
     DDVCSConvolCoeffFunctionModule::isModuleWellConfigured();
@@ -136,7 +124,7 @@ void DDVCSCFFTEST::isModuleWellConfigured() {
     }
 }
 
-std::complex<double> DDVCSCFFTEST::computeUnpolarized() {
+std::complex<double> DDVCSCFFStandard::computeUnpolarized() {
 
     //check for HL and EL
     if (m_currentGPDComputeType == GPDType::HL
@@ -149,7 +137,7 @@ std::complex<double> DDVCSCFFTEST::computeUnpolarized() {
     std::vector<double> params(1);
 
     //absolute value of eta
-    double absEta = fabs(m_eta);
+    double absEta = fabs(m_rho);
 
     //evaluate GPD at (eta, xi)
     m_partonDistributionEtaXiSummed = computeSquareChargeAveragedGPD(
@@ -158,36 +146,31 @@ std::complex<double> DDVCSCFFTEST::computeUnpolarized() {
                     m_currentGPDComputeType));
 
     //CFF values
-    double im = ((m_eta > 0.) ? (1) : (-1)) * M_PI
-            * m_partonDistributionEtaXiSummed;
+    double im = M_PI * m_partonDistributionEtaXiSummed;
     double re = 0.;
 
     params.at(0) = -1.;
-    re += integrate(m_pConvolutionUnpolarized, 0., absEta, params);
-    re += integrate(m_pConvolutionUnpolarized, absEta, 1., params);
+    re += integrate(m_pConvolution, 0., absEta, params);
+    re += integrate(m_pConvolution, absEta, 1., params);
 
-    re += ((m_eta > 0.) ?
-            (log(absEta / (1. - absEta))) : (-log((1. + absEta) / absEta)))
-            * m_partonDistributionEtaXiSummed;
+    re += log(absEta / (1. - absEta)) * m_partonDistributionEtaXiSummed;
 
     params.at(0) = 1.;
-    re -= integrate(m_pConvolutionUnpolarized, 0., absEta, params);
-    re -= integrate(m_pConvolutionUnpolarized, absEta, 1., params);
+    re -= integrate(m_pConvolution, 0., absEta, params);
+    re -= integrate(m_pConvolution, absEta, 1., params);
 
-    re -= ((m_eta > 0.) ?
-            (log((1. + absEta) / absEta)) : (-log(absEta / (1. - absEta))))
-            * m_partonDistributionEtaXiSummed;
+    re -= log((1. + absEta) / absEta) * m_partonDistributionEtaXiSummed;
 
-    return std::complex<double>(re, im);
+    return std::complex<double>(re, ((m_rho > 0.) ? (1) : (-1)) * im);
 }
 
-std::complex<double> DDVCSCFFTEST::computePolarized() {
+std::complex<double> DDVCSCFFStandard::computePolarized() {
 
     //parameters
     std::vector<double> params(1);
 
     //absolute value of eta
-    double absEta = fabs(m_eta);
+    double absEta = fabs(m_rho);
 
     //evaluate GPD at (eta, xi)
     m_partonDistributionEtaXiSummed = computeSquareChargeAveragedGPD(
@@ -196,30 +179,25 @@ std::complex<double> DDVCSCFFTEST::computePolarized() {
                     m_currentGPDComputeType));
 
     //CFF values
-    double im = ((m_eta > 0.) ? (1) : (-1)) * M_PI
-            * m_partonDistributionEtaXiSummed;
+    double im = M_PI * m_partonDistributionEtaXiSummed;
     double re = 0.;
 
     params.at(0) = -1.;
-    re += integrate(m_pConvolutionPolarized, 0., absEta, params);
-    re += integrate(m_pConvolutionPolarized, absEta, 1., params);
+    re += integrate(m_pConvolution, 0., absEta, params);
+    re += integrate(m_pConvolution, absEta, 1., params);
 
-    re += ((m_eta > 0.) ?
-            (log(absEta / (1. - absEta))) : (-log((1. + absEta) / absEta)))
-            * m_partonDistributionEtaXiSummed;
+    re += log(absEta / (1. - absEta)) * m_partonDistributionEtaXiSummed;
 
     params.at(0) = 1.;
-    re += integrate(m_pConvolutionPolarized, 0., absEta, params);
-    re += integrate(m_pConvolutionPolarized, absEta, 1., params);
+    re += integrate(m_pConvolution, 0., absEta, params);
+    re += integrate(m_pConvolution, absEta, 1., params);
 
-    re += ((m_eta > 0.) ?
-            (log((1. + absEta) / absEta)) : (-log(absEta / (1. - absEta))))
-            * m_partonDistributionEtaXiSummed;
+    re += log((1. + absEta) / absEta) * m_partonDistributionEtaXiSummed;
 
-    return std::complex<double>(re, im);
+    return std::complex<double>(((m_rho > 0.) ? (1) : (-1)) * re, im);
 }
 
-double DDVCSCFFTEST::computeSquareChargeAveragedGPD(
+double DDVCSCFFStandard::computeSquareChargeAveragedGPD(
         const PartonDistribution& partonDistribution) const {
 
     double result = 0.;
@@ -238,26 +216,14 @@ double DDVCSCFFTEST::computeSquareChargeAveragedGPD(
 
 }
 
-double DDVCSCFFTEST::convolutionUnpolarized(double x,
-        std::vector<double> params) {
+double DDVCSCFFStandard::convolution(double x, std::vector<double> params) {
 
     double partonDistributionXXiSummed = computeSquareChargeAveragedGPD(
             m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
                     m_currentGPDComputeType));
 
     return (partonDistributionXXiSummed - m_partonDistributionEtaXiSummed)
-            / (m_eta + params.at(0) * x);
-}
-
-double DDVCSCFFTEST::convolutionPolarized(double x,
-        std::vector<double> params) {
-
-    double partonDistributionXXiSummed = computeSquareChargeAveragedGPD(
-            m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
-                    m_currentGPDComputeType));
-
-    return (partonDistributionXXiSummed - m_partonDistributionEtaXiSummed)
-            / (m_eta + params.at(0) * x);
+            / (fabs(m_rho) + params.at(0) * x);
 }
 
 } /* namespace PARTONS */

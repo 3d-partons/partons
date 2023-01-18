@@ -28,14 +28,14 @@ const std::string DDVCSConvolCoeffFunctionModule::DDVCS_CONVOL_COEFF_FUNCTION_MO
 DDVCSConvolCoeffFunctionModule::DDVCSConvolCoeffFunctionModule(
         const std::string &className) :
         ConvolCoeffFunctionModule(className, ChannelType::DDVCS), m_Q2(0.), m_Q2Prim(
-                0.), m_eta(0.), m_qcdOrderType(
+                0.), m_rho(0.), m_qcdOrderType(
                 PerturbativeQCDOrderType::UNDEFINED) {
 }
 
 DDVCSConvolCoeffFunctionModule::DDVCSConvolCoeffFunctionModule(
         const DDVCSConvolCoeffFunctionModule &other) :
         ConvolCoeffFunctionModule(other), m_Q2(other.m_Q2), m_Q2Prim(
-                other.m_Q2Prim), m_eta(other.m_eta), m_qcdOrderType(
+                other.m_Q2Prim), m_rho(other.m_rho), m_qcdOrderType(
                 other.m_qcdOrderType) {
 
     m_listOfCFFComputeFunctionAvailable =
@@ -278,7 +278,7 @@ void DDVCSConvolCoeffFunctionModule::initModule() {
 //                                    - eps2 * m_Q2 * m_Q2Prim));
     double tForLT = 0.;
 
-    m_eta = m_xi * ((m_Q2 - m_Q2Prim + tForLT / 2.) / (m_Q2 + m_Q2Prim)); // generalized Bjorken variable at t = 0 (which coincides with that dropping t/Q2 and similar terms). m_xi is skewness at t = 0 too
+    m_rho = m_xi * ((m_Q2 - m_Q2Prim + tForLT / 2.) / (m_Q2 + m_Q2Prim)); // generalized Bjorken variable at t = 0 (which coincides with that dropping t/Q2 and similar terms). m_xi is skewness at t = 0 too
 
 //    if (m_Q2 != m_Q2Prim) {
 //        m_eta = m_xi * ((m_Q2 - m_Q2Prim + tForLT / 2.) / (m_Q2 + m_Q2Prim)); // generalized Bjorken variable at t = 0 (which coincides with that dropping t/Q2 and similar terms). m_xi is skewness at t = 0 too
