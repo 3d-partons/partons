@@ -390,7 +390,7 @@ std::complex<double> DDVCSProcessDMSW22::ampliBH1(int s2, int s1, int sl,
     tBH1 = pow(m_DMSW_charge_e, 4.) * (tBH1_J1 + tBH1_J2)
             / (Mll2 * t * MinkProd(kMinusDelta, kMinusDelta));
 
-    tBH1 = std::complex<double>(0., 0.); //DEBUG
+//    tBH1 = std::complex<double>(0., 0.); //DEBUG
 
     return tBH1;
 
@@ -477,7 +477,7 @@ std::complex<double> DDVCSProcessDMSW22::ampliBH1crossed(int s2, int s1, int sl,
     tBH1 = pow(m_DMSW_charge_e, 4.) * (tBH1_J1 + tBH1_J2)
             / (Mll2 * t * MinkProd(kPrimePlusDelta, kPrimePlusDelta));
 
-    tBH1 = std::complex<double>(0., 0.); //DEBUG
+//    tBH1 = std::complex<double>(0., 0.); //DEBUG
 
     return tBH1;
 
@@ -651,6 +651,8 @@ std::complex<double> DDVCSProcessDMSW22::ampliBH2crossed(int s2, int s1, int sl,
     tBH2 = pow(m_DMSW_charge_e, 4.) * (tBH2_J1 + tBH2_J2)
             / (-Qcal2 * t * MinkProd(q1Minuslplus, q1Minuslplus));
 
+
+//    tBH2 = std::complex<double>(0., 0.);//DEBUG
 
     return tBH2;
 }

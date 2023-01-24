@@ -139,7 +139,7 @@ std::complex<double> DDVCSCFFStandard::computeUnpolarized() {
     //absolute value of rho
     double absRho = fabs(m_rho);
 
-    //evaluate GPD at (rho, xi)
+    //evaluate GPD at (|rho|, xi)
     m_partonDistributionRhoXiSummed = computeSquareChargeAveragedGPD(
             m_pGPDModule->compute(
                     GPDKinematic(absRho, m_xi, m_t, m_MuF2, m_MuR2),
@@ -150,16 +150,18 @@ std::complex<double> DDVCSCFFStandard::computeUnpolarized() {
     double re = 0.;
 
     params.at(0) = -1.;
-    re += integrate(m_pConvolution, 0., absRho, params);
+    if (absRho != 0.) {
+        re += log(absRho / (1. - absRho)) * m_partonDistributionRhoXiSummed;
+        re += integrate(m_pConvolution, 0., absRho, params);
+    }
     re += integrate(m_pConvolution, absRho, 1., params);
 
-    re += log(absRho / (1. - absRho)) * m_partonDistributionRhoXiSummed;
-
     params.at(0) = 1.;
-    re -= integrate(m_pConvolution, 0., absRho, params);
+    if (absRho != 0.) {
+        re -= log((1. + absRho) / absRho) * m_partonDistributionRhoXiSummed;
+        re -= integrate(m_pConvolution, 0., absRho, params);
+    }
     re -= integrate(m_pConvolution, absRho, 1., params);
-
-    re -= log((1. + absRho) / absRho) * m_partonDistributionRhoXiSummed;
 
     return std::complex<double>(re, ((m_rho > 0.) ? (1) : (-1)) * im);
 }
@@ -172,7 +174,7 @@ std::complex<double> DDVCSCFFStandard::computePolarized() {
     //absolute value of rho
     double absRho = fabs(m_rho);
 
-    //evaluate GPD at (rho, xi)
+    //evaluate GPD at (|rho|, xi)
     m_partonDistributionRhoXiSummed = computeSquareChargeAveragedGPD(
             m_pGPDModule->compute(
                     GPDKinematic(absRho, m_xi, m_t, m_MuF2, m_MuR2),
@@ -183,16 +185,18 @@ std::complex<double> DDVCSCFFStandard::computePolarized() {
     double re = 0.;
 
     params.at(0) = -1.;
-    re += integrate(m_pConvolution, 0., absRho, params);
+    if (absRho != 0.) {
+        re += log(absRho / (1. - absRho)) * m_partonDistributionRhoXiSummed;
+        re += integrate(m_pConvolution, 0., absRho, params);
+    }
     re += integrate(m_pConvolution, absRho, 1., params);
-
-    re += log(absRho / (1. - absRho)) * m_partonDistributionRhoXiSummed;
 
     params.at(0) = 1.;
-    re += integrate(m_pConvolution, 0., absRho, params);
+    if (absRho != 0.) {
+        re += log((1. + absRho) / absRho) * m_partonDistributionRhoXiSummed;
+        re += integrate(m_pConvolution, 0., absRho, params);
+    }
     re += integrate(m_pConvolution, absRho, 1., params);
-
-    re += log((1. + absRho) / absRho) * m_partonDistributionRhoXiSummed;
 
     return std::complex<double>(((m_rho > 0.) ? (1) : (-1)) * re, im);
 }
