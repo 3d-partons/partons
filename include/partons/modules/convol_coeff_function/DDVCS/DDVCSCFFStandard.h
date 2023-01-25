@@ -61,8 +61,10 @@ private:
      * Convolution.
      */
     double convolution(double x, std::vector<double> params);
+    double convolutionNoSubtraction(double x, std::vector<double> params);
 
     NumA::FunctionType1D* m_pConvolution; ///< Functor to convolution().
+    NumA::FunctionType1D* m_pConvolutionNoSubtraction; ///< Functor to
 
     /**
      * Compute GPD combination over quark flavors.

@@ -84,6 +84,11 @@ DDVCSCFFStandard::~DDVCSCFFStandard() {
         delete m_pConvolution;
         m_pConvolution = 0;
     }
+
+    if (m_pConvolutionNoSubtraction) {
+        delete m_pConvolutionNoSubtraction;
+        m_pConvolutionNoSubtraction = 0;
+    }
 }
 
 DDVCSCFFStandard* DDVCSCFFStandard::clone() const {
@@ -91,8 +96,11 @@ DDVCSCFFStandard* DDVCSCFFStandard::clone() const {
 }
 
 void DDVCSCFFStandard::initFunctorsForIntegrations() {
+
     m_pConvolution = NumA::Integrator1D::newIntegrationFunctor(this,
             &DDVCSCFFStandard::convolution);
+    m_pConvolutionNoSubtraction = NumA::Integrator1D::newIntegrationFunctor(
+            this, &DDVCSCFFStandard::convolutionNoSubtraction);
 }
 
 void DDVCSCFFStandard::initModule() {
@@ -140,10 +148,12 @@ std::complex<double> DDVCSCFFStandard::computeUnpolarized() {
     double absRho = fabs(m_rho);
 
     //evaluate GPD at (|rho|, xi)
-    m_partonDistributionRhoXiSummed = computeSquareChargeAveragedGPD(
-            m_pGPDModule->compute(
-                    GPDKinematic(absRho, m_xi, m_t, m_MuF2, m_MuR2),
-                    m_currentGPDComputeType));
+    if (absRho != 0.) {
+        m_partonDistributionRhoXiSummed = computeSquareChargeAveragedGPD(
+                m_pGPDModule->compute(
+                        GPDKinematic(absRho, m_xi, m_t, m_MuF2, m_MuR2),
+                        m_currentGPDComputeType));
+    }
 
     //CFF values
     double im = M_PI * m_partonDistributionRhoXiSummed;
@@ -151,17 +161,21 @@ std::complex<double> DDVCSCFFStandard::computeUnpolarized() {
 
     params.at(0) = -1.;
     if (absRho != 0.) {
-        re += log(absRho / (1. - absRho)) * m_partonDistributionRhoXiSummed;
         re += integrate(m_pConvolution, 0., absRho, params);
+        re += integrate(m_pConvolution, absRho, 1., params);
+        re += log(absRho / (1. - absRho)) * m_partonDistributionRhoXiSummed;
+    } else {
+        re += integrate(m_pConvolutionNoSubtraction, 0., 1., params);
     }
-    re += integrate(m_pConvolution, absRho, 1., params);
 
     params.at(0) = 1.;
     if (absRho != 0.) {
-        re -= log((1. + absRho) / absRho) * m_partonDistributionRhoXiSummed;
         re -= integrate(m_pConvolution, 0., absRho, params);
+        re -= integrate(m_pConvolution, absRho, 1., params);
+        re -= log((1. + absRho) / absRho) * m_partonDistributionRhoXiSummed;
+    } else {
+        re -= integrate(m_pConvolutionNoSubtraction, 0., 1., params);
     }
-    re -= integrate(m_pConvolution, absRho, 1., params);
 
     return std::complex<double>(re, ((m_rho > 0.) ? (1) : (-1)) * im);
 }
@@ -228,6 +242,16 @@ double DDVCSCFFStandard::convolution(double x, std::vector<double> params) {
     return (partonDistributionXXiSummed - m_partonDistributionRhoXiSummed)
             / (fabs(m_rho) + params.at(0) * x);
 }
+
+double DDVCSCFFStandard::convolutionNoSubtraction(double x, std::vector<double> params) {
+
+    double partonDistributionXXiSummed = computeSquareChargeAveragedGPD(
+            m_pGPDModule->compute(GPDKinematic(x, m_xi, m_t, m_MuF2, m_MuR2),
+                    m_currentGPDComputeType));
+
+    return partonDistributionXXiSummed
+            / (fabs(m_rho) + params.at(0) * x);
+
 
 } /* namespace PARTONS */
 
