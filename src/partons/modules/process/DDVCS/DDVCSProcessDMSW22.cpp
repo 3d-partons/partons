@@ -134,8 +134,6 @@ DDVCSProcessDMSW22::DDVCSProcessDMSW22(const std::string &className) :
 DDVCSProcessDMSW22::DDVCSProcessDMSW22(const DDVCSProcessDMSW22& other) :
         DDVCSProcessModule(other) {
 
-
-
     m_DMSW_tMin = other.m_DMSW_tMin;
     m_DMSW_Mnucleon = other.m_DMSW_Mnucleon;
     m_DMSW_charge_e = other.m_DMSW_charge_e;
@@ -253,16 +251,22 @@ void DDVCSProcessDMSW22::isModuleWellConfigured() {
 
 PhysicalType<double> DDVCSProcessDMSW22::CrossSectionBH() {
 
-    //check target polarization
+    //check target and beam polarization
     int polariz;
 
     if (m_targetPolarization.getX() == 0. && m_targetPolarization.getY() == 0.
             && m_targetPolarization.getZ() == 0.) {
-        polariz = 0;
+        if (m_beamHelicity == 0) {
+            polariz = 0;
+        } else if (m_beamHelicity == 1 || m_beamHelicity == -1) {
+            polariz = 1;
+        }
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter() << "Not able to run for polarization "
-                        << m_targetPolarization.toString());
+                ElemUtils::Formatter()
+                        << "Not able to run for target polarization "
+                        << m_targetPolarization.toString()
+                        << " and beam helicity " << m_beamHelicity);
     }
 
     double xsec = crossSectionBH(polariz, m_xB, m_Q2, m_Q2Prim, m_t, m_thetaL); //phi and phiL dependence is hidden in the momenta that are called in ampliBH1() and similar functions inside crossSectionBH(). They are managed by computeInternalVariables()
@@ -272,16 +276,22 @@ PhysicalType<double> DDVCSProcessDMSW22::CrossSectionBH() {
 
 PhysicalType<double> DDVCSProcessDMSW22::CrossSectionVCS() {
 
-    //check target polarization
+    //check target and beam polarization
     int polariz;
 
     if (m_targetPolarization.getX() == 0. && m_targetPolarization.getY() == 0.
             && m_targetPolarization.getZ() == 0.) {
-        polariz = 0;
+        if (m_beamHelicity == 0) {
+            polariz = 0;
+        } else if (m_beamHelicity == 1 || m_beamHelicity == -1) {
+            polariz = 1;
+        }
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter() << "Not able to run for polarization "
-                        << m_targetPolarization.toString());
+                ElemUtils::Formatter()
+                        << "Not able to run for target polarization "
+                        << m_targetPolarization.toString()
+                        << " and beam helicity " << m_beamHelicity);
     }
 
     double xsec = crossSectionVCS(polariz, m_xB, m_Q2, m_Q2Prim, m_t, m_thetaL);
@@ -291,16 +301,22 @@ PhysicalType<double> DDVCSProcessDMSW22::CrossSectionVCS() {
 
 PhysicalType<double> DDVCSProcessDMSW22::CrossSectionInterf() {
 
-    //check target polarization
+    //check target and beam polarization
     int polariz;
 
     if (m_targetPolarization.getX() == 0. && m_targetPolarization.getY() == 0.
             && m_targetPolarization.getZ() == 0.) {
-        polariz = 0;
+        if (m_beamHelicity == 0) {
+            polariz = 0;
+        } else if (m_beamHelicity == 1 || m_beamHelicity == -1) {
+            polariz = 1;
+        }
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter() << "Not able to run for polarization "
-                        << m_targetPolarization.toString());
+                ElemUtils::Formatter()
+                        << "Not able to run for target polarization "
+                        << m_targetPolarization.toString()
+                        << " and beam helicity " << m_beamHelicity);
     }
 
     double xsec = crossSectionInterf(polariz, m_xB, m_Q2, m_Q2Prim, m_t,
@@ -390,8 +406,6 @@ std::complex<double> DDVCSProcessDMSW22::ampliBH1(int s2, int s1, int sl,
     tBH1 = pow(m_DMSW_charge_e, 4.) * (tBH1_J1 + tBH1_J2)
             / (Mll2 * t * MinkProd(kMinusDelta, kMinusDelta));
 
-//    tBH1 = std::complex<double>(0., 0.); //DEBUG
-
     return tBH1;
 
 }
@@ -476,8 +490,6 @@ std::complex<double> DDVCSProcessDMSW22::ampliBH1crossed(int s2, int s1, int sl,
 
     tBH1 = pow(m_DMSW_charge_e, 4.) * (tBH1_J1 + tBH1_J2)
             / (Mll2 * t * MinkProd(kPrimePlusDelta, kPrimePlusDelta));
-
-//    tBH1 = std::complex<double>(0., 0.); //DEBUG
 
     return tBH1;
 
@@ -564,8 +576,6 @@ std::complex<double> DDVCSProcessDMSW22::ampliBH2(int s2, int s1, int sl,
     tBH2 = -pow(m_DMSW_charge_e, 4.) * (tBH2_J1 + tBH2_J2)
             / (-Qcal2 * t * MinkProd(q1Minuslminus, q1Minuslminus));
 
-//    tBH2 = std::complex<double>(0., 0.); //DEBUG
-
     return tBH2;
 
 }
@@ -651,13 +661,9 @@ std::complex<double> DDVCSProcessDMSW22::ampliBH2crossed(int s2, int s1, int sl,
     tBH2 = pow(m_DMSW_charge_e, 4.) * (tBH2_J1 + tBH2_J2)
             / (-Qcal2 * t * MinkProd(q1Minuslplus, q1Minuslplus));
 
-
-//    tBH2 = std::complex<double>(0., 0.);//DEBUG
-
     return tBH2;
 }
 
-//adapted old ampliVCS()
 std::complex<double> DDVCSProcessDMSW22::ampliVCS(int s2, int s1, int sl,
         int s) {
 
@@ -743,63 +749,6 @@ std::complex<double> DDVCSProcessDMSW22::ampliVCS(int s2, int s1, int sl,
                     * gFunction(s, m_DMSW_kPrime_tMin, snstar_tMin,
                             m_DMSW_k_tMin);
 
-//    //For t = tMin (it is hard part) and LT forms of n and nstar
-//
-//    std::complex<double> gstarXgn;
-//
-//    gstarXgn = gFunction(sl, m_DMSW_lminus_tMin, m_DMSW_r1, m_DMSW_lplus_tMin)
-//            + gFunction(sl, m_DMSW_lminus_tMin, m_DMSW_r2, m_DMSW_lplus_tMin)
-//            + gFunction(sl, m_DMSW_lminus_tMin, m_DMSW_rPrime1_tMin,
-//                    m_DMSW_lplus_tMin)
-//            + gFunction(sl, m_DMSW_lminus_tMin, m_DMSW_rPrime2_tMin,
-//                    m_DMSW_lplus_tMin);
-//    gstarXgn *= gFunction(s, m_DMSW_kPrime_tMin, m_DMSW_k_tMin, m_DMSW_k_tMin)
-//            - gFunction(s, m_DMSW_kPrime_tMin, m_DMSW_kPrime_tMin,
-//                    m_DMSW_k_tMin)
-//            + gFunction(s, m_DMSW_kPrime_tMin, m_DMSW_lminus_tMin,
-//                    m_DMSW_k_tMin)
-//            + gFunction(s, m_DMSW_kPrime_tMin, m_DMSW_lplus_tMin, m_DMSW_k_tMin)
-//            + m_DMSW_xi_tMin
-//                    * (gFunction(s, m_DMSW_kPrime_tMin, m_DMSW_r1,
-//                            m_DMSW_k_tMin)
-//                            + gFunction(s, m_DMSW_kPrime_tMin, m_DMSW_r2,
-//                                    m_DMSW_k_tMin)
-//                            + gFunction(s, m_DMSW_kPrime_tMin,
-//                                    m_DMSW_rPrime1_tMin, m_DMSW_k_tMin)
-//                            + gFunction(s, m_DMSW_kPrime_tMin,
-//                                    m_DMSW_rPrime2_tMin, m_DMSW_k_tMin));
-//    gstarXgn *= 0.5 / m_DMSW_pq_tMin;
-//
-//    std::complex<double> gnXgstar;
-//
-//    gnXgstar = gFunction(sl, m_DMSW_lminus_tMin, m_DMSW_k_tMin,
-//            m_DMSW_lplus_tMin)
-//            - gFunction(sl, m_DMSW_lminus_tMin, m_DMSW_kPrime_tMin,
-//                    m_DMSW_lplus_tMin)
-//            + gFunction(sl, m_DMSW_lminus_tMin, m_DMSW_lminus_tMin,
-//                    m_DMSW_lplus_tMin)
-//            + gFunction(sl, m_DMSW_lminus_tMin, m_DMSW_lplus_tMin,
-//                    m_DMSW_lplus_tMin)
-//            + m_DMSW_xi_tMin
-//                    * (gFunction(sl, m_DMSW_lminus_tMin, m_DMSW_r1,
-//                            m_DMSW_lplus_tMin)
-//                            + gFunction(sl, m_DMSW_lminus_tMin, m_DMSW_r2,
-//                                    m_DMSW_lplus_tMin)
-//                            + gFunction(sl, m_DMSW_lminus_tMin,
-//                                    m_DMSW_rPrime1_tMin, m_DMSW_lplus_tMin)
-//                            + gFunction(sl, m_DMSW_lminus_tMin,
-//                                    m_DMSW_rPrime2_tMin, m_DMSW_lplus_tMin));
-//    gnXgstar *= gFunction(s, m_DMSW_kPrime_tMin, m_DMSW_r1, m_DMSW_k_tMin)
-//            + gFunction(s, m_DMSW_kPrime_tMin, m_DMSW_r2, m_DMSW_k_tMin)
-//            + gFunction(s, m_DMSW_kPrime_tMin, m_DMSW_rPrime1_tMin,
-//                    m_DMSW_k_tMin)
-//            + gFunction(s, m_DMSW_kPrime_tMin, m_DMSW_rPrime2_tMin,
-//                    m_DMSW_k_tMin);
-//    gnXgstar *= 0.5 / m_DMSW_pq_tMin;
-//
-//    tVCS_T1 = fFunction(sl, m_DMSW_lminus_tMin, m_DMSW_lplus_tMin, s,
-//            m_DMSW_kPrime_tMin, m_DMSW_k_tMin) - gstarXgn - gnXgstar;
-
     tVCS_T1 *= -0.5;
 
     //For original t in p and p' momenta (it is soft contribution). Exact n and nstar bc twist-2 GPDs require exact n^2 = 0; but t = tMin bc they come from the hard part
@@ -811,14 +760,6 @@ std::complex<double> DDVCSProcessDMSW22::ampliVCS(int s2, int s1, int sl,
                             * gFunction(-1, rPrime[minush2], sHATn_tMin,
                                     r[minush1]))
             - m_cffE * n_tMinXpbar * J2function(s2, s1) / m_DMSW_Mnucleon;
-
-//    //For original t (it is soft contribution), and exact n and nstar bc twist-2 GPDs require exact n^2 = 0
-//
-//    tVCS_T1 *= (s0n / m_DMSW_pq) * (m_cffH + m_cffE)
-//            * (Yfunction(s2, s1) * gFunction(+1, rPrime[h2], sHATn, r[h1])
-//                    + Zfunction(s2, s1)
-//                            * gFunction(-1, rPrime[minush2], sHATn, r[minush1]))
-//            - m_cffE * J2function(s2, s1) / m_DMSW_Mnucleon;
 
     //Adding the term in T^(2):
     int mu, nu;
@@ -851,7 +792,7 @@ double DDVCSProcessDMSW22::crossSectionBH(int polariz, double xB, double Qcal2,
 
     /*
      * polariz = 0 for unpolarized target, beam and muon pair
-     * polariz = 1 for polarized target but unpolarized beam and muon pair
+     * polariz = 1 for unpolarized target but polarized beam
      */
 
     double XSEC;
@@ -923,10 +864,54 @@ double DDVCSProcessDMSW22::crossSectionBH(int polariz, double xB, double Qcal2,
         XSEC = XSEC / 4.; // 1/4 factor coming from averaging in initial spin states of proton and electron (unpolarized xsec)
 
     } else if (polariz == 1) {
-        //TODO
 
-        XSEC = 0.;
-        std::cout << "TO DO POLARIZED CASE" << std::endl;
+        s = m_beamHelicity;
+
+        for (s1 = -1; s1 < 2; s1 = s1 + 2) {
+            for (s2 = -1; s2 < 2; s2 = s2 + 2) {
+                for (sl = -1; sl < 2; sl = sl + 2) {
+
+                    Abh1 = ampliBH1(s2, s1, sl, m_DMSW_lminus, m_DMSW_lplus, s,
+                            m_DMSW_kPrime, m_DMSW_k, Mll2, t);
+
+                    Abh1crossed = ampliBH1crossed(s2, s1, sl, m_DMSW_lminus,
+                            m_DMSW_lplus, s, m_DMSW_kPrime, m_DMSW_k, Mll2, t);
+
+                    Abh2 = ampliBH2(s2, s1, sl, m_DMSW_lminus, m_DMSW_lplus, s,
+                            m_DMSW_kPrime, m_DMSW_k, Qcal2, t);
+
+                    Abh2crossed = ampliBH2crossed(s2, s1, sl, m_DMSW_lminus,
+                            m_DMSW_lplus, s, m_DMSW_kPrime, m_DMSW_k, Qcal2, t);
+
+                    // |BH1|^2
+                    T2_bh1 += (Abh1 + Abh1crossed) * conj(Abh1 + Abh1crossed);
+
+                    // |BH2|^2
+                    T2_bh2 += (Abh2 + Abh2crossed) * conj(Abh2 + Abh2crossed);
+
+                    // BH1-BH2 interference
+                    T2_bh12 += (Abh1 + Abh1crossed) * conj(Abh2 + Abh2crossed)
+                            + conj(
+                                    (Abh1 + Abh1crossed)
+                                            * conj(Abh2 + Abh2crossed));
+                }
+            }
+        }
+        //Modulus squared of the whole amplitude for BH process
+        T2_bh = T2_bh1 + T2_bh2 + T2_bh12;
+
+        //7-fold differential cross-section
+        XSEC =
+                pow(Constant::FINE_STRUCTURE_CONSTANT, 4.) * xB
+                        * pow(m_DMSW_y, 2.) * real(T2_bh)
+                        * (1. / pow(m_DMSW_charge_e, 8.)) * sin(thetal)
+                        / (16 * pow(2. * M_PI, 3.) * pow(Qcal2, 2.)
+                                * sqrt(
+                                        1.
+                                                + pow(2. * xB * m_DMSW_Mnucleon,
+                                                        2.) / Qcal2));
+
+        XSEC = XSEC / 2.; // 1/2 factor coming from averaging in initial spin states of proton
 
     }
 
@@ -970,10 +955,33 @@ double DDVCSProcessDMSW22::crossSectionVCS(int polariz, double xB, double Qcal2,
         XSEC = XSEC / 4.; // 1/4 factor coming from averaging in initial spin states of proton and electron (unpolarized xsec)
 
     } else if (polariz == 1) {
-        //TODO
 
-        XSEC = 0.;
-        std::cout << "TO DO POLARIZED CASE" << std::endl;
+        s = m_beamHelicity;
+
+        for (s1 = -1; s1 < 2; s1 = s1 + 2) {
+            for (s2 = -1; s2 < 2; s2 = s2 + 2) {
+                for (sl = -1; sl < 2; sl = sl + 2) {
+
+                    Avcs = ampliVCS(s2, s1, sl, s);
+
+                    T2_vcs += Avcs * conj(Avcs);
+
+                }
+            }
+        }
+
+        //7-fold differential cross-section
+        XSEC =
+                pow(Constant::FINE_STRUCTURE_CONSTANT, 4.) * xB
+                        * pow(m_DMSW_y, 2.) * real(T2_vcs)
+                        * (1. / pow(m_DMSW_charge_e, 8.)) * sin(thetal)
+                        / (16 * pow(2. * M_PI, 3.) * pow(Qcal2, 2.)
+                                * sqrt(
+                                        1.
+                                                + pow(2. * xB * m_DMSW_Mnucleon,
+                                                        2.) / Qcal2));
+
+        XSEC = XSEC / 2.; // 1/2 factor coming from averaging in initial spin states of proton
 
     }
 
@@ -1035,10 +1043,49 @@ double DDVCSProcessDMSW22::crossSectionInterf(int polariz, double xB,
         XSEC = XSEC / 4.; // 1/4 factor coming from averaging in initial spin states of proton and electron (unpolarized xsec)
 
     } else if (polariz == 1) {
-        //TODO
 
-        XSEC = 0.;
-        std::cout << "TO DO POLARIZED CASE" << std::endl;
+        s = m_beamHelicity;
+
+        for (s1 = -1; s1 < 2; s1 = s1 + 2) {
+            for (s2 = -1; s2 < 2; s2 = s2 + 2) {
+                for (sl = -1; sl < 2; sl = sl + 2) {
+
+                    Avcs = ampliVCS(s2, s1, sl, s);
+                    Abh1 = ampliBH1(s2, s1, sl, m_DMSW_lminus, m_DMSW_lplus, s,
+                            m_DMSW_kPrime, m_DMSW_k, Mll2, t);
+
+                    Abh1crossed = ampliBH1crossed(s2, s1, sl, m_DMSW_lminus,
+                            m_DMSW_lplus, s, m_DMSW_kPrime, m_DMSW_k, Mll2, t);
+
+                    Abh2 = ampliBH2(s2, s1, sl, m_DMSW_lminus, m_DMSW_lplus, s,
+                            m_DMSW_kPrime, m_DMSW_k, Qcal2, t);
+
+                    Abh2crossed = ampliBH2crossed(s2, s1, sl, m_DMSW_lminus,
+                            m_DMSW_lplus, s, m_DMSW_kPrime, m_DMSW_k, Qcal2, t);
+
+                    T2_interf += (Abh1 + Abh1crossed) * conj(Avcs)
+                            + (Abh2 + Abh2crossed) * conj(Avcs)
+                            + conj(
+                                    (Abh1 + Abh1crossed) * conj(Avcs)
+                                            + (Abh2 + Abh2crossed)
+                                                    * conj(Avcs));
+
+                }
+            }
+        }
+
+        //7-fold differential cross-section
+        XSEC =
+                pow(Constant::FINE_STRUCTURE_CONSTANT, 4.) * xB
+                        * pow(m_DMSW_y, 2.) * real(T2_interf)
+                        * (1. / pow(m_DMSW_charge_e, 8.)) * sin(thetal)
+                        / (16 * pow(2. * M_PI, 3.) * pow(Qcal2, 2.)
+                                * sqrt(
+                                        1.
+                                                + pow(2. * xB * m_DMSW_Mnucleon,
+                                                        2.) / Qcal2));
+
+        XSEC = XSEC / 2.; // 1/2 factor coming from averaging in initial spin states of proton
 
     }
 
@@ -1382,10 +1429,10 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon, double Ebeam,
         double t, double xB, double Qcal2, double Mll2, double phi, double phil,
         double thetal) {
 
-
     //check range
-    if(phi < 0. || phi > 2*M_PI){
-        throw ElemUtils::CustomException(getClassName(), __func__, "phi must be in 0 - 2pi range");
+    if (phi < 0. || phi > 2 * M_PI) {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                "phi must be in 0 - 2pi range");
     }
 
     //We change to Belitsky's phi: LHS is phi in BM2003 notation, RHS is phi in Trento's (also, in conditionals, phi is Trento's)
@@ -1407,7 +1454,6 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon, double Ebeam,
                     * sqrt(
                             pow((1. - xB) * Qcal2 - xB * Mll2, 2.)
                                     - m_DMSW_epsilon2 * Qcal2 * Mll2));
-
 
     //Basic numbers:
     m_DMSW_Mnucleon = Mnucleon;
@@ -1514,8 +1560,6 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon, double Ebeam,
     double cosTheta_e = -(1. + m_DMSW_y * m_DMSW_epsilon2 / 2.)
             / sqrt(1. + m_DMSW_epsilon2);
     double sinTheta_e = sqrt(1. - pow(cosTheta_e, 2.));
-
-
 
     m_DMSW_k[0] = Ebeam;
     m_DMSW_k[1] = Ebeam

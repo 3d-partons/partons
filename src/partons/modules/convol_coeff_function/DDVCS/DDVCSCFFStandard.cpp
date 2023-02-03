@@ -253,5 +253,7 @@ double DDVCSCFFStandard::convolutionNoSubtraction(double x, std::vector<double> 
             / (fabs(m_rho) + params.at(0) * x);
 
 
-} /* namespace PARTONS */
+}
+
+}/* namespace PARTONS */
 

@@ -50,7 +50,8 @@ DDVCSCrossSectionTotal::DDVCSCrossSectionTotal(const std::string &className) :
     m_rangeQ2Prim = std::pair<double, double>(1., 1.E3);
     m_rangePhi = std::pair<double, double>(0., 2 * M_PI);
     m_rangePhiL = std::pair<double, double>(0., 2 * M_PI);
-    m_rangeThetaL = std::pair<double, double>(0., 2 * M_PI);
+//    m_rangeThetaL = std::pair<double, double>(0., 2 * M_PI);
+    m_rangeThetaL = std::pair<double, double>(0., M_PI);
     m_rangeY = std::pair<double, double>(0., 1.);
 }
 
