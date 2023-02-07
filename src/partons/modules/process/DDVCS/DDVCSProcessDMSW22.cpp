@@ -1740,6 +1740,20 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon, double Ebeam,
     //
     //    m_DMSW_F2 = (G_M - G_E) / (1. - t / pow(2. * Mnucleon, 2.));
 
+    //DEBUG
+//    std::cout << m_DMSW_tMin << " tMin " << t << " t" << std::endl;
+//    std::cout << xB << " xB" << std::endl;
+//    std::cout << "orig t: " << sinThetaN << " sN " << cosThetaN << " cN "
+//            << cosGamma << " cG " << sinGamma << " sG " << sinTheta_e << " se "
+//            << cosTheta_e << " ce "
+//            << sinTheta_e * sinTheta_e + cosTheta_e * cosTheta_e
+//            << " se^2+ce^2 " << modv << " |v| " << std::endl;
+//    std::cout << "tMin: " << sinThetaN_tMin << " sN " << cosThetaN_tMin
+//            << " cN " << cosGamma_tMin << " cG " << sinGamma_tMin << " sG "
+//            << sinTheta_e << " se " << cosTheta_e << " ce " << modv << " |v| "
+//            << std::endl;
+    //END DEBUG
+
     //Get CFFs:
     if (m_dvcsConvolCoeffFunctionResult.isAvailable(GPDType::H)) {
         m_cffH = m_dvcsConvolCoeffFunctionResult.getLastAvailable();
