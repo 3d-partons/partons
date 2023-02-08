@@ -36,30 +36,32 @@ const std::string DDVCSCrossSectionTotal::DDVCS_CROSSSECTION_TOTAL_N0 =
         "DDVCSCrossSectionTotal_N0";
 const std::string DDVCSCrossSectionTotal::DDVCS_CROSSSECTION_TOTAL_N1 =
         "DDVCSCrossSectionTotal_N1";
+const std::string DDVCSCrossSectionTotal::DDVCS_CROSSSECTION_TOTAL_N2 =
+        "DDVCSCrossSectionTotal_N2";
+const std::string DDVCSCrossSectionTotal::DDVCS_CROSSSECTION_TOTAL_N3 =
+        "DDVCSCrossSectionTotal_N3";
 
 const unsigned int DDVCSCrossSectionTotal::classId =
         BaseObjectRegistry::getInstance()->registerBaseObject(
                 new DDVCSCrossSectionTotal("DDVCSCrossSectionTotal"));
 
 DDVCSCrossSectionTotal::DDVCSCrossSectionTotal(const std::string &className) :
-        DDVCSCrossSectionUUMinus(className), m_nI0(10000), m_nI1(5), m_makeDxBDy(
+        DDVCSCrossSectionUUMinus(className), m_nI0(5000), m_nI1(1), m_nI2(200), m_nI3(1), m_makeDxBDy(
                 false) {
 
-    double eps = pow(10., -1.);
-
-    m_rangexB = std::pair<double, double>(eps, 1.);
-    m_rangeT = std::pair<double, double>(-10., 0.);
-    m_rangeQ2 = std::pair<double, double>(eps, 1.E1);
+    m_rangexB = std::pair<double, double>(0.001, 1.);
+    m_rangeT = std::pair<double, double>(-1., 0.);
+    m_rangeQ2 = std::pair<double, double>(0.15, 1.E1);
     m_rangeQ2Prim = std::pair<double, double>(1., 1.E1);
     m_rangePhi = std::pair<double, double>(0., 2 * M_PI);
     m_rangePhiL = std::pair<double, double>(0., 2 * M_PI);
     m_rangeThetaL = std::pair<double, double>(0., M_PI);
-    m_rangeY = std::pair<double, double>(0., 0.1);
+    m_rangeY = std::pair<double, double>(0., 1.);
 }
 
 DDVCSCrossSectionTotal::DDVCSCrossSectionTotal(
         const DDVCSCrossSectionTotal& other) :
-        DDVCSCrossSectionUUMinus(other), m_nI0(other.m_nI0), m_nI1(other.m_nI1), m_makeDxBDy(
+        DDVCSCrossSectionUUMinus(other), m_nI0(other.m_nI0), m_nI1(other.m_nI1), m_nI2(other.m_nI2), m_nI3(other.m_nI3), m_makeDxBDy(
                 other.m_makeDxBDy) {
 
     m_rangexB = other.m_rangexB;
@@ -129,6 +131,18 @@ void DDVCSCrossSectionTotal::configure(
                 ElemUtils::GenericType(
                         parameters.getLastAvailable().getString()).toUInt());
     }
+
+    if (parameters.isAvailable(DDVCS_CROSSSECTION_TOTAL_N2)) {
+        setNI2(
+                ElemUtils::GenericType(
+                        parameters.getLastAvailable().getString()).toUInt());
+    }
+
+    if (parameters.isAvailable(DDVCS_CROSSSECTION_TOTAL_N3)) {
+        setNI3(
+                ElemUtils::GenericType(
+                        parameters.getLastAvailable().getString()).toUInt());
+    }
 }
 
 double DDVCSCrossSectionTotal::DDVCSCrossSectionTotalFunction(double* kin,
@@ -168,7 +182,6 @@ double DDVCSCrossSectionTotal::DDVCSCrossSectionTotalFunction(double* kin,
         params->m_Q2 = pow(10., kin[i]);
         norm *= pow(10., kin[i]) * log(10.);
         i++;
-
     }
 
     if (params->m_pDDVCSCrossSectionTotal->getRangeQ2Prim().first
@@ -180,7 +193,6 @@ double DDVCSCrossSectionTotal::DDVCSCrossSectionTotalFunction(double* kin,
         params->m_Q2Prim = pow(10., kin[i]);
         norm *= pow(10., kin[i]) * log(10.);
         i++;
-
     }
 
     double E = params->m_E;
@@ -208,9 +220,6 @@ double DDVCSCrossSectionTotal::DDVCSCrossSectionTotalFunction(double* kin,
                     pow(Constant::PROTON_MASS, 2.)
                             + params->m_Q2 * (1. / params->m_xB - 1.))
                     - Constant::PROTON_MASS, 2.);
-
-//    double tMin = -4. * pow(Constant::PROTON_MASS * xi, 2.) / (1. - xi * xi);
-//    double tMax = -Q2Bar * (1. - xi * xi) / (rho * (1. - rho));
 
     double epsilon2 = pow(2. * params->m_xB * Constant::PROTON_MASS, 2.)
             / params->m_Q2;
@@ -244,35 +253,24 @@ double DDVCSCrossSectionTotal::DDVCSCrossSectionTotalFunction(double* kin,
                                             * params->m_Q2Prim));
 
     if (params->m_xB < xBmin || params->m_xB > xBmax) {
-//        std::cout << xBmin << " " << params->m_xB << " " << xBmax << " min xB max" << std::endl;
-
         return 0.;
     }
 
     if (params->m_Q2 < Q2min || params->m_Q2 > Q2max) {
-//        std::cout << Q2min << " " << params->m_Q2 << " " << Q2max << " min Q2 max" << std::endl;
-
         return 0.;
     }
 
     if (params->m_Q2Prim < Q2PrimMin || params->m_Q2Prim > Q2PrimMax) {
-//        std::cout << Q2PrimMin << " " << params->m_Q2Prim << " " << Q2PrimMax << " min Q2Prim max" << std::endl;
-
         return 0.;
     }
 
     if (-params->m_t < -tMin || -params->m_t > -tMax) {
-        std::cout << tMin << " " << params->m_t << " " << tMax << " min t max" << std::endl;
-
         return 0.;
     }
 
     double yMin = Q2min / (2. * E * Constant::PROTON_MASS);
 
-
     if (y < params->m_yCut.first || y > params->m_yCut.second) {
-        std::cout << params->m_yCut.first << " " << yMin << " " << y << " " << params->m_yCut.second << " ; 0 yMin(Q2min) y max" << std::endl;
-
         return 0.;
     }
 
@@ -296,17 +294,17 @@ double DDVCSCrossSectionTotal::DDVCSCrossSectionTotalFunction(double* kin,
 
     double res, err;
 
-    for (size_t i = 0; i < 1; i++) {
+    for (size_t i = 0; i < params->m_nI3; i++) {
 
-        gsl_monte_vegas_integrate(&GAngle, min, max, 3, 100, params->m_r,
+        gsl_monte_vegas_integrate(&GAngle, min, max, 3, params->m_nI2, params->m_r,
                 sAngle, &res, &err);
 
         res *= norm;
         err *= norm;
 
         std::cout << params->m_xB << ' ' << params->m_t << ' ' << params->m_Q2
-                << ' ' << params->m_Q2Prim << std::endl;
-        std::cout << res << " " << err << std::endl;
+                << ' ' << params->m_Q2Prim << ' '; 
+        std::cout << res << ' ' << err << std::endl;
     }
 
     //free
@@ -322,12 +320,8 @@ double DDVCSCrossSectionTotal::DDVCSCrossSectionTotalFunctionAngle(double* kin,
     DDVCSCrossSectionTotalParameters* params =
             static_cast<DDVCSCrossSectionTotalParameters*>(par);
 
-    double y = params->m_Q2
-            / (2. * params->m_E * Constant::PROTON_MASS * params->m_xB);
-
     //return
-    return ((params->m_makeDxBDy) ? (params->m_xB / y) : (1.))
-            * params->m_pDDVCSCrossSectionTotal->DDVCSCrossSectionUUMinus::computeObservable(
+    return params->m_pDDVCSCrossSectionTotal->DDVCSCrossSectionUUMinus::computeObservable(
                     DDVCSObservableKinematic(params->m_xB, params->m_t,
                             params->m_Q2, params->m_Q2Prim, params->m_E, kin[0],
                             kin[1], kin[2]), params->m_gpdType).getValue();
@@ -350,8 +344,6 @@ PhysicalType<double> DDVCSCrossSectionTotal::computeObservable(
     double xBMin = m_rangeQ2.first
             / (2. * Constant::PROTON_MASS * params.m_E * m_rangeY.second);
 
-    std::cout << xBMin << " " << params.m_E << " xBMin E" << std::endl;
-
     //ranges
     std::vector<double> min;
     std::vector<double> max;
@@ -360,8 +352,6 @@ PhysicalType<double> DDVCSCrossSectionTotal::computeObservable(
 
         min.push_back(log10(xBMin));
         max.push_back(log10(m_rangexB.second));
-
-        std::cout << min[0] << " " << max[0] << " range xB min to max " << std::endl;
     }
 
     if (m_rangeT.first != m_rangeT.second) {
@@ -383,6 +373,8 @@ PhysicalType<double> DDVCSCrossSectionTotal::computeObservable(
     }
 
     params.m_makeDxBDy = m_makeDxBDy;
+    params.m_nI2 = m_nI2;
+    params.m_nI3 = m_nI3;
 
     //info
     info(__func__,
@@ -456,7 +448,7 @@ void DDVCSCrossSectionTotal::setNI0(size_t nI0) {
 
     info(__func__,
             ElemUtils::Formatter()
-                    << "Number of iteration in single cycle changed from "
+                    << "Number of iteration in single cycle (1) changed from "
                     << m_nI0 << " to " << nI0);
     m_nI0 = nI0;
 }
@@ -468,9 +460,34 @@ size_t DDVCSCrossSectionTotal::getNI1() const {
 void DDVCSCrossSectionTotal::setNI1(size_t nI1) {
 
     info(__func__,
-            ElemUtils::Formatter() << "Number of cycles changed from " << m_nI1
+            ElemUtils::Formatter() << "Number of cycles (1) changed from " << m_nI1
                     << " to " << nI1);
     m_nI1 = nI1;
+}
+
+size_t DDVCSCrossSectionTotal::getNI2() const {
+    return m_nI2;
+}
+
+void DDVCSCrossSectionTotal::setNI2(size_t nI2) {
+
+    info(__func__,
+            ElemUtils::Formatter()
+                    << "Number of iteration in single cycle (2) changed from "
+                    << m_nI2 << " to " << nI2);
+    m_nI2 = nI2;
+}
+
+size_t DDVCSCrossSectionTotal::getNI3() const {
+    return m_nI3;
+}
+
+void DDVCSCrossSectionTotal::setNI3(size_t nI3) {
+
+    info(__func__,
+            ElemUtils::Formatter() << "Number of cycles (2) changed from " << m_nI3
+                    << " to " << nI3);
+    m_nI3 = nI3;
 }
 
 const std::pair<double, double>& DDVCSCrossSectionTotal::getRangexB() const {

@@ -23,9 +23,7 @@ namespace PARTONS {
 
 /**
  * @class DDVCSCrossSectionTotal
- * @brief Unpolarized cross-section for electro-production integrated over \f$xB\f$, \f$Q^{2}\f$, \f$t\f$ and angles.
- *
- * Default ranges: \f$1E-4 < xB < 0.7\f$, \f$-1 < t < 0\f$, \f$1 < Q^{2} < 1E3\f$ and \f$0 < y < 1\f$. Full integration over angles.
+ * @brief Unpolarized cross-section for electro-production integrated over \f$xB\f$, \f$Q^{2}\f$, \f$Q'^{2}\f$, \f$t\f$ and angles.
  *
  * Unit: \f$\mathrm{nbarn}\f$.
  */
@@ -45,6 +43,8 @@ public:
 
     static const std::string DDVCS_CROSSSECTION_TOTAL_N0; ///< String used to set number of MC integration iterations per cycle via XML scenario.
     static const std::string DDVCS_CROSSSECTION_TOTAL_N1; ///< String used to set number of MC integration cycles via XML scenario.
+    static const std::string DDVCS_CROSSSECTION_TOTAL_N2; ///< String used to set number of MC integration iterations per cycle via XML scenario.
+    static const std::string DDVCS_CROSSSECTION_TOTAL_N3; ///< String used to set number of MC integration cycles via XML scenario.
 
     /**
      * Unique ID to automatically register the class in the registry.
@@ -81,6 +81,10 @@ public:
     void setNI0(size_t nI0);
     size_t getNI1() const;
     void setNI1(size_t nI1);
+    size_t getNI2() const;
+    void setNI2(size_t nI2);
+    size_t getNI3() const;
+    void setNI3(size_t nI3);
 
     const std::pair<double, double>& getRangexB() const;
     void setRangexB(const std::pair<double, double>& rangexB);
@@ -132,6 +136,8 @@ private:
 
     size_t m_nI0;   ///< Number of iteration in single cycle.
     size_t m_nI1;   ///< Number of cycles.
+    size_t m_nI2;   ///< Number of iteration in single cycle.
+    size_t m_nI3;   ///< Number of cycles.
 
     std::pair<double, double> m_rangexB; ///< xB integration range.
     std::pair<double, double> m_rangeT; ///< t integration range.
@@ -156,6 +162,7 @@ struct DDVCSCrossSectionTotalParameters {
     List<GPDType> m_gpdType; ///< GPD types.
     std::pair<double, double> m_yCut;
     bool m_makeDxBDy;
+    size_t m_nI2, m_nI3;
 };
 
 } /* namespace PARTONS */
