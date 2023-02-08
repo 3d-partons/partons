@@ -101,6 +101,9 @@ public:
     const std::pair<double, double>& getRangeY() const;
     void setRangeY(const std::pair<double, double>& rangeY);
 
+    bool isMakeDxBDy() const;
+    void setMakeDxBDy(bool makeDyDx);
+
 protected:
 
     /**
@@ -140,6 +143,8 @@ private:
     std::pair<double, double> m_rangeThetaL; ///< thetaL integration range.
 
     std::pair<double, double> m_rangeY; ///< y integration range.
+
+    bool m_makeDxBDy;
 };
 
 struct DDVCSCrossSectionTotalParameters {
@@ -150,6 +155,7 @@ struct DDVCSCrossSectionTotalParameters {
     double m_E; ///< Beam energy.
     List<GPDType> m_gpdType; ///< GPD types.
     std::pair<double, double> m_yCut;
+    bool m_makeDxBDy;
 };
 
 } /* namespace PARTONS */

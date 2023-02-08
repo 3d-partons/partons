@@ -915,7 +915,7 @@ double DDVCSProcessDMSW22::crossSectionBH(int polariz, double xB, double Qcal2,
 
     }
 
-    return XSEC;
+    return XSEC / (2. * M_PI); //2*pi factor because of transverse polarization of the incoming proton
 }
 
 double DDVCSProcessDMSW22::crossSectionVCS(int polariz, double xB, double Qcal2,
@@ -985,7 +985,7 @@ double DDVCSProcessDMSW22::crossSectionVCS(int polariz, double xB, double Qcal2,
 
     }
 
-    return XSEC;
+    return XSEC / (2. * M_PI); //2*pi factor because of transverse polarization of the incoming proton
 }
 
 double DDVCSProcessDMSW22::crossSectionInterf(int polariz, double xB,
@@ -1089,7 +1089,7 @@ double DDVCSProcessDMSW22::crossSectionInterf(int polariz, double xB,
 
     }
 
-    return XSEC;
+    return XSEC / (2. * M_PI); //2*pi factor because of transverse polarization of the incoming proton
 }
 
 //********************************* Auxiliary functions*****************************//
@@ -1739,20 +1739,6 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon, double Ebeam,
     //            / (1. - t / pow(2. * Mnucleon, 2.));
     //
     //    m_DMSW_F2 = (G_M - G_E) / (1. - t / pow(2. * Mnucleon, 2.));
-
-    //DEBUG
-//    std::cout << m_DMSW_tMin << " tMin " << t << " t" << std::endl;
-//    std::cout << xB << " xB" << std::endl;
-//    std::cout << "orig t: " << sinThetaN << " sN " << cosThetaN << " cN "
-//            << cosGamma << " cG " << sinGamma << " sG " << sinTheta_e << " se "
-//            << cosTheta_e << " ce "
-//            << sinTheta_e * sinTheta_e + cosTheta_e * cosTheta_e
-//            << " se^2+ce^2 " << modv << " |v| " << std::endl;
-//    std::cout << "tMin: " << sinThetaN_tMin << " sN " << cosThetaN_tMin
-//            << " cN " << cosGamma_tMin << " cG " << sinGamma_tMin << " sG "
-//            << sinTheta_e << " se " << cosTheta_e << " ce " << modv << " |v| "
-//            << std::endl;
-    //END DEBUG
 
     //Get CFFs:
     if (m_dvcsConvolCoeffFunctionResult.isAvailable(GPDType::H)) {

@@ -35,22 +35,17 @@ PhysicalType<double> DDVCSCrossSectionUUMinus::computeObservable(
         const List<GPDType>& gpdType) {
 
     //evaluate
-//    DDVCSObservableResult A = m_pProcessModule->compute(1., -1,
-//            NumA::Vector3D(0., 0., 0.), kinematic, gpdType);
-//
-//    DDVCSObservableResult B = m_pProcessModule->compute(-1., -1,
-//            NumA::Vector3D(0., 0., 0.), kinematic, gpdType);
-//
-//    //combine
-//    PhysicalType<double> result = (A.getValue() + B.getValue()) / 2.;
-//
-//    //integrate over transversely polarized target dependence to obtain 4-fold differential cross-section
-//    result *= 2. * Constant::PI;
+    DDVCSObservableResult A = m_pProcessModule->compute(1., -1,
+            NumA::Vector3D(0., 0., 0.), kinematic, gpdType);
 
-    DDVCSObservableResult xsecUUMinus = m_pProcessModule->compute(0., -1,
-                NumA::Vector3D(0., 0., 0.), kinematic, gpdType);
+    DDVCSObservableResult B = m_pProcessModule->compute(-1., -1,
+            NumA::Vector3D(0., 0., 0.), kinematic, gpdType);
 
-    PhysicalType<double> result = xsecUUMinus.getValue();
+    //combine
+    PhysicalType<double> result = (A.getValue() + B.getValue()) / 2.;
+
+    //integrate over transversely polarized target dependence to obtain 4-fold differential cross-section
+    result *= 2. * Constant::PI;
 
     //change to nb
     return result.makeSameUnitAs(PhysicalUnit::NB);

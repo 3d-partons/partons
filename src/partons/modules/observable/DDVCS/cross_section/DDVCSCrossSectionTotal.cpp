@@ -42,21 +42,25 @@ const unsigned int DDVCSCrossSectionTotal::classId =
                 new DDVCSCrossSectionTotal("DDVCSCrossSectionTotal"));
 
 DDVCSCrossSectionTotal::DDVCSCrossSectionTotal(const std::string &className) :
-        DDVCSCrossSectionUUMinus(className), m_nI0(1000), m_nI1(5) {
+        DDVCSCrossSectionUUMinus(className), m_nI0(10000), m_nI1(5), m_makeDxBDy(
+                false) {
 
-    m_rangexB = std::pair<double, double>(0., 1.);
-    m_rangeT = std::pair<double, double>(-1., 0.);
-    m_rangeQ2 = std::pair<double, double>(1., 1.E3);
-    m_rangeQ2Prim = std::pair<double, double>(1., 1.E3);
+    double eps = pow(10., -1.);
+
+    m_rangexB = std::pair<double, double>(eps, 1.);
+    m_rangeT = std::pair<double, double>(-10., 0.);
+    m_rangeQ2 = std::pair<double, double>(eps, 1.E1);
+    m_rangeQ2Prim = std::pair<double, double>(1., 1.E1);
     m_rangePhi = std::pair<double, double>(0., 2 * M_PI);
     m_rangePhiL = std::pair<double, double>(0., 2 * M_PI);
     m_rangeThetaL = std::pair<double, double>(0., M_PI);
-    m_rangeY = std::pair<double, double>(0., 1.);
+    m_rangeY = std::pair<double, double>(0., 0.1);
 }
 
 DDVCSCrossSectionTotal::DDVCSCrossSectionTotal(
         const DDVCSCrossSectionTotal& other) :
-        DDVCSCrossSectionUUMinus(other), m_nI0(other.m_nI0), m_nI1(other.m_nI1) {
+        DDVCSCrossSectionUUMinus(other), m_nI0(other.m_nI0), m_nI1(other.m_nI1), m_makeDxBDy(
+                other.m_makeDxBDy) {
 
     m_rangexB = other.m_rangexB;
     m_rangeT = other.m_rangeT;
@@ -180,53 +184,97 @@ double DDVCSCrossSectionTotal::DDVCSCrossSectionTotalFunction(double* kin,
     }
 
     double E = params->m_E;
+    double y = params->m_Q2 / (2. * E * Constant::PROTON_MASS * params->m_xB);
+
+    norm *= (params->m_makeDxBDy ? (params->m_xB / y) : (1.)); //accounting for dxB = norm * dy
 
     //check kinematic range
+    double xBmin = params->m_Q2 / (2. * Constant::PROTON_MASS * E);
+    double xBmax = 1.;
     double Q2Bar = 0.5 * (params->m_Q2 - params->m_Q2Prim + params->m_t / 2.);
     double xi = (params->m_Q2 + params->m_Q2Prim)
             / (2. * params->m_Q2 / params->m_xB - params->m_Q2
                     - params->m_Q2Prim + params->m_t);
-    double rho = xi * 2. * Q2Bar
-            / (params->m_Q2 + params->m_Q2Prim);
+    double rho = xi * 2. * Q2Bar / (params->m_Q2 + params->m_Q2Prim);
 
-    double xBmin = params->m_Q2 / (2. * Constant::PROTON_MASS * E);
-    double xBmax = 1.;
     double Q2min = 4. * params->m_xB * Constant::MUON_MASS
             * (Constant::MUON_MASS + Constant::PROTON_MASS)
             / (1. - params->m_xB);
-    double Q2max = 4. * pow(E, 2.) * Constant::PROTON_MASS
-            * params->m_xB / (Constant::PROTON_MASS * params->m_xB + 2. * E);
+    double Q2max = 4. * pow(E, 2.) * Constant::PROTON_MASS * params->m_xB
+            / (Constant::PROTON_MASS * params->m_xB + 2. * E);
     double Q2PrimMin = 4. * pow(Constant::MUON_MASS, 2.);
     double Q2PrimMax = pow(
             sqrt(
                     pow(Constant::PROTON_MASS, 2.)
                             + params->m_Q2 * (1. / params->m_xB - 1.))
                     - Constant::PROTON_MASS, 2.);
-    double tMin = -4. * pow(Constant::PROTON_MASS * xi, 2.)
-            / (1. - xi * xi);
-    double tMax = -Q2Bar * (1. - xi * xi)
-            / (rho * (1. - rho));
+
+//    double tMin = -4. * pow(Constant::PROTON_MASS * xi, 2.) / (1. - xi * xi);
+//    double tMax = -Q2Bar * (1. - xi * xi) / (rho * (1. - rho));
+
+    double epsilon2 = pow(2. * params->m_xB * Constant::PROTON_MASS, 2.)
+            / params->m_Q2;
+
+    double tMin = -1. / (4. * params->m_xB * (1. - params->m_xB) + epsilon2);
+    tMin *= (2.
+            * ((1. - params->m_xB) * params->m_Q2
+                    - params->m_xB * params->m_Q2Prim)
+            + epsilon2 * (params->m_Q2 - params->m_Q2Prim)
+            - 2. * sqrt(1. + epsilon2)
+                    * sqrt(
+                            pow(
+                                    (1. - params->m_xB) * params->m_Q2
+                                            - params->m_xB * params->m_Q2Prim,
+                                    2.)
+                                    - epsilon2 * params->m_Q2
+                                            * params->m_Q2Prim));
+
+    double tMax = -1. / (4. * params->m_xB * (1. - params->m_xB) + epsilon2);
+    tMax *= (2.
+            * ((1. - params->m_xB) * params->m_Q2
+                    - params->m_xB * params->m_Q2Prim)
+            + epsilon2 * (params->m_Q2 - params->m_Q2Prim)
+            + 2. * sqrt(1. + epsilon2)
+                    * sqrt(
+                            pow(
+                                    (1. - params->m_xB) * params->m_Q2
+                                            - params->m_xB * params->m_Q2Prim,
+                                    2.)
+                                    - epsilon2 * params->m_Q2
+                                            * params->m_Q2Prim));
 
     if (params->m_xB < xBmin || params->m_xB > xBmax) {
+//        std::cout << xBmin << " " << params->m_xB << " " << xBmax << " min xB max" << std::endl;
+
         return 0.;
     }
 
     if (params->m_Q2 < Q2min || params->m_Q2 > Q2max) {
+//        std::cout << Q2min << " " << params->m_Q2 << " " << Q2max << " min Q2 max" << std::endl;
+
         return 0.;
     }
 
     if (params->m_Q2Prim < Q2PrimMin || params->m_Q2Prim > Q2PrimMax) {
+//        std::cout << Q2PrimMin << " " << params->m_Q2Prim << " " << Q2PrimMax << " min Q2Prim max" << std::endl;
+
         return 0.;
     }
 
     if (-params->m_t < -tMin || -params->m_t > -tMax) {
+        std::cout << tMin << " " << params->m_t << " " << tMax << " min t max" << std::endl;
+
         return 0.;
     }
 
-    double y = params->m_Q2 / (2 * params->m_xB * Constant::PROTON_MASS * E);
+    double yMin = Q2min / (2. * E * Constant::PROTON_MASS);
 
-    if (y < params->m_yCut.first || y > params->m_yCut.second)
+
+    if (y < params->m_yCut.first || y > params->m_yCut.second) {
+        std::cout << params->m_yCut.first << " " << yMin << " " << y << " " << params->m_yCut.second << " ; 0 yMin(Q2min) y max" << std::endl;
+
         return 0.;
+    }
 
     //ranges
     double min[3];
@@ -256,7 +304,8 @@ double DDVCSCrossSectionTotal::DDVCSCrossSectionTotalFunction(double* kin,
         res *= norm;
         err *= norm;
 
-        std::cout << params->m_xB << ' ' << params->m_t << ' ' << params->m_Q2 << ' ' << params->m_Q2Prim << std::endl;
+        std::cout << params->m_xB << ' ' << params->m_t << ' ' << params->m_Q2
+                << ' ' << params->m_Q2Prim << std::endl;
         std::cout << res << " " << err << std::endl;
     }
 
@@ -273,11 +322,15 @@ double DDVCSCrossSectionTotal::DDVCSCrossSectionTotalFunctionAngle(double* kin,
     DDVCSCrossSectionTotalParameters* params =
             static_cast<DDVCSCrossSectionTotalParameters*>(par);
 
+    double y = params->m_Q2
+            / (2. * params->m_E * Constant::PROTON_MASS * params->m_xB);
+
     //return
-    return params->m_pDDVCSCrossSectionTotal->DDVCSCrossSectionUUMinus::computeObservable(
-            DDVCSObservableKinematic(params->m_xB, params->m_t, params->m_Q2,
-                    params->m_Q2Prim, params->m_E, kin[0], kin[1], kin[2]),
-            params->m_gpdType).getValue();
+    return ((params->m_makeDxBDy) ? (params->m_xB / y) : (1.))
+            * params->m_pDDVCSCrossSectionTotal->DDVCSCrossSectionUUMinus::computeObservable(
+                    DDVCSObservableKinematic(params->m_xB, params->m_t,
+                            params->m_Q2, params->m_Q2Prim, params->m_E, kin[0],
+                            kin[1], kin[2]), params->m_gpdType).getValue();
 }
 
 PhysicalType<double> DDVCSCrossSectionTotal::computeObservable(
@@ -294,14 +347,21 @@ PhysicalType<double> DDVCSCrossSectionTotal::computeObservable(
     params.m_E = kinematic.getE().getValue();
     params.m_yCut = m_rangeY;
 
+    double xBMin = m_rangeQ2.first
+            / (2. * Constant::PROTON_MASS * params.m_E * m_rangeY.second);
+
+    std::cout << xBMin << " " << params.m_E << " xBMin E" << std::endl;
+
     //ranges
     std::vector<double> min;
     std::vector<double> max;
 
     if (m_rangexB.first != m_rangexB.second) {
 
-        min.push_back(log10(m_rangexB.first));
+        min.push_back(log10(xBMin));
         max.push_back(log10(m_rangexB.second));
+
+        std::cout << min[0] << " " << max[0] << " range xB min to max " << std::endl;
     }
 
     if (m_rangeT.first != m_rangeT.second) {
@@ -321,6 +381,8 @@ PhysicalType<double> DDVCSCrossSectionTotal::computeObservable(
         min.push_back(log10(m_rangeQ2Prim.first));
         max.push_back(log10(m_rangeQ2Prim.second));
     }
+
+    params.m_makeDxBDy = m_makeDxBDy;
 
     //info
     info(__func__,
@@ -497,6 +559,14 @@ void DDVCSCrossSectionTotal::setRangeY(
 
     printChangeOfRange(__func__, "y", m_rangeY, rangeY);
     m_rangeY = rangeY;
+}
+
+bool DDVCSCrossSectionTotal::isMakeDxBDy() const {
+    return m_makeDxBDy;
+}
+
+void DDVCSCrossSectionTotal::setMakeDxBDy(bool makeDxBDy) {
+    m_makeDxBDy = makeDxBDy;
 }
 
 } /* namespace PARTONS */
