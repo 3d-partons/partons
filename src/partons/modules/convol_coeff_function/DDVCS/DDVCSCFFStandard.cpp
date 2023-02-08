@@ -200,17 +200,21 @@ std::complex<double> DDVCSCFFStandard::computePolarized() {
 
     params.at(0) = -1.;
     if (absRho != 0.) {
-        re += log(absRho / (1. - absRho)) * m_partonDistributionRhoXiSummed;
         re += integrate(m_pConvolution, 0., absRho, params);
+        re += integrate(m_pConvolution, absRho, 1., params);
+        re += log(absRho / (1. - absRho)) * m_partonDistributionRhoXiSummed;
+    }else{
+        re += integrate(m_pConvolutionNoSubtraction, 0., 1., params);
     }
-    re += integrate(m_pConvolution, absRho, 1., params);
 
     params.at(0) = 1.;
     if (absRho != 0.) {
-        re += log((1. + absRho) / absRho) * m_partonDistributionRhoXiSummed;
         re += integrate(m_pConvolution, 0., absRho, params);
+        re += integrate(m_pConvolution, absRho, 1., params);
+        re += log((1. + absRho) / absRho) * m_partonDistributionRhoXiSummed;
+    }else{
+        re += integrate(m_pConvolutionNoSubtraction, 0., 1., params);
     }
-    re += integrate(m_pConvolution, absRho, 1., params);
 
     return std::complex<double>(((m_rho > 0.) ? (1) : (-1)) * re, im);
 }
@@ -251,8 +255,6 @@ double DDVCSCFFStandard::convolutionNoSubtraction(double x, std::vector<double> 
 
     return partonDistributionXXiSummed
             / (fabs(m_rho) + params.at(0) * x);
-
-
 }
 
 }/* namespace PARTONS */
