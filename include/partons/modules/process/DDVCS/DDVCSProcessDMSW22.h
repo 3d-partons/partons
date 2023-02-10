@@ -53,27 +53,16 @@ protected:
 private:
 
     //Amplitudes:
-    std::complex<double> ampliBH1(int s2, int s1, int sl, double lminus[4],
-            double lplus[4], int s, double kPrime[4], double k[4], double Mll2,
-            double t);
-    std::complex<double> ampliBH1crossed(int s2, int s1, int sl,
-            double lminus[4], double lplus[4], int s, double kPrime[4],
-            double k[4], double Mll2, double t);
-    std::complex<double> ampliBH2(int s2, int s1, int sl, double lminus[4],
-            double lplus[4], int s, double kPrime[4], double k[4], double Qcal2,
-            double t);
-    std::complex<double> ampliBH2crossed(int s2, int s1, int sl,
-            double lminus[4], double lplus[4], int s, double kPrime[4],
-            double k[4], double Qcal2, double t);
+    std::complex<double> ampliBH1(int s2, int s1, int sl, int s);
+    std::complex<double> ampliBH1crossed(int s2, int s1, int sl, int s);
+    std::complex<double> ampliBH2(int s2, int s1, int sl, int s);
+    std::complex<double> ampliBH2crossed(int s2, int s1, int sl, int s);
     std::complex<double> ampliVCS(int s2, int s1, int sl, int s);
 
     //Cross-sections:
-    double crossSectionBH(int polariz, double xB, double Qcal2, double Mll2,
-            double t, double thetal);
-    double crossSectionVCS(int polariz, double xB, double Qcal2, double Mll2,
-            double t, double thetal);
-    double crossSectionInterf(int polariz, double xB, double Qcal2, double Mll2,
-            double t, double thetal);
+    double crossSectionBH(int targetPolariz);
+    double crossSectionVCS(int targetPolariz);
+    double crossSectionInterf(int targetPolariz);
 
     //Auxiliary functions:
     std::complex<double> sKS(const double r1[4], const double r2[4]) const;
@@ -92,33 +81,31 @@ private:
     std::complex<double> J25plus(int s2, int s1) const;
     double LCperp(int mu, int nu) const; //Levi-Civita tensor for (mu, nu) in {1, 2}
 
-    void computeInternalVariables(double Mnucleon, double Ebeam, double t,
-            double xB, double Qcal2, double Mll2, double phi, double phil,
-            double thetal);
+    void computeInternalVariables(double Mnucleon);
 
     //Everything needed to compute the light-like vectors r1, r2, rPrime1 & rPrime2 for proton momenta p1 = r1+r2 (incoming) and p2 = rPrime1+rPrime2 (outgoing)
     double m_DMSW_r1[4];
     double m_DMSW_r2[4];
-    double m_DMSW_p1[4];
+    double m_DMSW_p[4];
     double m_DMSW_rPrime1[4];
     double m_DMSW_rPrime2[4];
     double m_DMSW_rPrime1_tMin[4]; // for t = tMin
     double m_DMSW_rPrime2_tMin[4]; // for t = tMin
-    double m_DMSW_p2[4];
-    double m_DMSW_p2_tMin[4]; //for t = tMin
+    double m_DMSW_pPrim[4];
+    double m_DMSW_pPrim_tMin[4]; //for t = tMin
     double m_DMSW_epsilon2; //squared of the epsilon variable define in paragraph above eq 8 in BM2003
-    double m_DMSW_Q2; //Q2 is the squared of the incoming and outgoing photon momenta's average
-    double m_DMSW_Q2_tMin; //Q2 at t = tMin
+    double m_DMSW_Q2Bar; //Q2 is the squared of the incoming and outgoing photon momenta's average
+    double m_DMSW_Q2Bar_tMin; //Q2 at t = tMin
 
     //Other momenta
     double m_DMSW_y; //y = p1*q1/(p1*k): paragraph below eq 6 in BM2003
     double m_DMSW_k[4]; //incoming electron's momentum in TRF-II, eq 20 in BM2003
     double m_DMSW_k_tMin[4]; // for t = tMin
     double m_DMSW_Delta[4]; // p2 - p1
-    double m_DMSW_q2[4]; // outgoing-photon 4-vector in TRF-II, above eq 19 in BM2003
-    double m_DMSW_q1[4]; // incoming-photon 4-vector in TRF-II, eq 19 in BM2003
-    double m_DMSW_q2_tMin[4]; // for t = tMin
-    double m_DMSW_q1_tMin[4]; // for t = tMin
+    double m_DMSW_qPrim[4]; // outgoing-photon 4-vector in TRF-II, above eq 19 in BM2003
+    double m_DMSW_q[4]; // incoming-photon 4-vector in TRF-II, eq 19 in BM2003
+    double m_DMSW_qPrim_tMin[4]; // for t = tMin
+    double m_DMSW_q_tMin[4]; // for t = tMin
     double m_DMSW_kPrime[4]; //outgoin-electron momentum in TRF-II frame
     double m_DMSW_lminus[4]; //4-momentum of muon, eq 23 in BM2003
     double m_DMSW_lplus[4]; //4-momentum of anti-muon
@@ -136,8 +123,8 @@ private:
     double m_DMSW_nstarBM_tMin[4]; //for t = tMin
     double m_DMSW_HATnBM_tMin[4]; // for t = tMin
     double m_DMSW_k0[4]; //k0 vector defined in KS1985 (eq 3.10)
-    double m_DMSW_pbar[4];
-    double m_DMSW_pbar_tMin[4]; // for t = tMin
+    double m_DMSW_pBar[4];
+    double m_DMSW_pBar_tMin[4]; // for t = tMin
 
     //tMin value, eq 22 in BM2003
     double m_DMSW_tMin;
@@ -157,10 +144,18 @@ private:
     double m_DMSW_charge_e;
 
     //eta, xi and pq variables
-    double m_DMSW_xi; //xi variable in eq 29 from BM2003
-    double m_DMSW_xi_tMin; // for t = tMin
-    double m_DMSW_pq; //pq = Q2/xi as in eq 29 from BM2003
-    double m_DMSW_pq_tMin; // for t = tMin
+    double m_DMSW_rho; //xi variable in eq 29 from BM2003
+    double m_DMSW_rho_tMin; // for t = tMin
+    double m_DMSW_2pBarqBar; //pq = Q2/xi as in eq 29 from BM2003
+    double m_DMSW_2pBarqBar_tMin; // for t = tMin
+
+    //lepton angles in TRF-II frame (user provides them in BDP frame), and Jacobian relating them:
+    double m_DMSW_phiL;
+    double m_DMSW_thetaL;
+    double m_DMSW_jac; // d(xsec)/(... dm_DMSW_thetalBDP dm_DMSW_philBDP) = (1/jac) * d(xsec)/(... d m_DMSW_thetal d m_DMSW_phil)
+
+    //phi in TRF-I frame
+    double m_DMSW_phi;
 
     //CFFs
     std::complex<double> m_cffH;

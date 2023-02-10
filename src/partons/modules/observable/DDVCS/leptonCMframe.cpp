@@ -130,7 +130,7 @@ std::pair<double, double> leptons::leptonCMconverterToBM03(double phiBDP,
     return std::make_pair(phil, thetal);
 }
 
-double leptons::jacobianLeptonCM(double phil, double thetal) {
+double leptons::jacobianLeptonCM(double phil, double thetal) { //inputs are angles in TRF-II
 
     double jac; //the return. jac's definition: d(xsec)/(... dthetal dphil) = jac * d(xsec)/(... dthetaBDP dphiBDP)
 

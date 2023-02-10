@@ -76,7 +76,7 @@ protected:
 struct DDVCSAluPhiLParameters {
 
     DDVCSAluPhiL* m_pDDVCSAluPhiL; ///< Pointer to DDVCSAluPhiL.
-    double m_xB, m_t, m_Q2, m_Q2Prim, m_E, m_phiLBDP, signAux;
+    double m_xB, m_t, m_Q2, m_Q2Prim, m_E, m_phiL, signAux;
     List<GPDType> m_gpdType; ///< GPD types.
 };
 

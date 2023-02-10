@@ -14,7 +14,7 @@
 
 #include "../../../../../../include/partons/FundamentalPhysicalConstants.h"
 
-#include "../../../../../../include/partons/modules/observable/DDVCS/leptonCMframe.h"
+//#include "../../../../../../include/partons/modules/observable/DDVCS/leptonCMframe.h"
 
 namespace PARTONS {
 
@@ -50,7 +50,7 @@ PhysicalType<double> DDVCSAluPhiL::computeObservable(
     params.m_Q2 = kinematic.getQ2().getValue();
     params.m_Q2Prim = kinematic.getQ2Prim().getValue();
     params.m_E = kinematic.getE().getValue();
-    params.m_phiLBDP = kinematic.getPhiL().getValue();
+    params.m_phiL = kinematic.getPhiL().getValue();//BDP's phiL
 
     params.m_gpdType = gpdType;
 
@@ -126,33 +126,15 @@ PhysicalType<double> DDVCSAluPhiL::computeObservable(
 
 double DDVCSAluPhiL::DDVCSAluPhiLFunction(double* kin, size_t dim, void* par) {
 
-    double result;     //numerator or denominator of the asymmetry
+    //return will be the numerator or denominator of the asymmetry depending on signAux value
 
     //parameters
     DDVCSAluPhiLParameters* params = static_cast<DDVCSAluPhiLParameters*>(par);
 
-    //we want to integrate (following BDP2001 definition) over polar lepton angle and leave the asymmetry in terms of the azymuthal one
-    leptons cmFrame;
-    cmFrame.computeConverterVariables(params->m_xB, params->m_t, params->m_Q2,
-            params->m_Q2Prim, Constant::PROTON_MASS);
-
-    //lepton angles in BM2003 lepton-CM frame
-    std::pair<double, double> cmFrameResult = cmFrame.leptonCMconverterToBM03(
-            params->m_phiLBDP, kin[1]);
-    double phiLBM03 = cmFrameResult.first;
-    double thetaLBM03 = -1 * cmFrameResult.second;
-
-//    std::cout << phiLBM03 << ", " << thetaLBM03 << ", " << params->m_phiLBDP << ", " << kin[1] << " phiLBM03, thetaLBM03, phiLBDP, thetaLBDP" << std::endl;//DEBUG
-
-    //jacobian (jac)'s definition: d(xsec)/(... dthetaLBis dphiLBis) = (1/jac) * d(xsec)/(... dthetaLBM03 dphiLBM03)
-    double jac = cmFrame.jacobianLeptonCM(phiLBM03, thetaLBM03);
-
-//    std::cout << jac << " =jac before sin/sin" << std::endl;//DEBUG
-
     //observable uses lepton angles as in BM2003 lepton-CM frame
     DDVCSObservableKinematic ddvcsObservableKinematic(params->m_xB, params->m_t,
             params->m_Q2, params->m_Q2Prim, params->m_E, /*kin[2]*/
-            kin[0], phiLBM03, thetaLBM03);
+            kin[0], params->m_phiL, kin[1]);
 
 
     //evaluate
@@ -172,17 +154,9 @@ double DDVCSAluPhiL::DDVCSAluPhiLFunction(double* kin, size_t dim, void* par) {
     }
 
     //numerator (signAux = -1) or denominator (signAux = +1) of asymmetry
-    result = A.getValue().getValue()
+    return A.getValue().getValue()
             + (params->signAux) * B.getValue().getValue();
 
-//    std::cout << result << " =A+-B, " << A.getValue().getValue() << " =A, " << B.getValue().getValue() << " =B" << std::endl;//DEBUG
-
-    //DEBUG
-    jac *= sin(kin[1])/sin(thetaLBM03);
-//    std::cout << jac << " =jac, " << sin(kin[1]) << " =sin(thetaLBDP), " << sin(thetaLBM03) << " =sin(thetaLBM03) " << std::endl;
-    //END DEBUG
-
-    return result / jac;
 
 }
 
