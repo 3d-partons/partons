@@ -205,7 +205,7 @@ void leptons::computeConverterVariables(double xB, double t, double Qcal2,
     c2 = -p2az / modp2a; // cos(phi2)
 
     //DEBUG
-    std::cout << s2 << " =s2, " << c2 << " =c2" << std::endl;
+    //std::cout << s2 << " =s2, " << c2 << " =c2" << std::endl;
     //END DEBUG
 
 }
