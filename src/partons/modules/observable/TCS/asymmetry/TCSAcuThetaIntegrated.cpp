@@ -152,6 +152,10 @@ PhysicalType<double> TCSAcuThetaIntegrated::computeObservable(
         return PhysicalType<double>(0., PhysicalUnit::NONE);
     }
 
+    //DEBUG
+//    return PhysicalType<double>(A-B, PhysicalUnit::GEVm2);
+    //END DEBUG
+
     //return
     return PhysicalType<double>((A - B) / (A + B), PhysicalUnit::NONE);
 }

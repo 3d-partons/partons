@@ -56,7 +56,7 @@ DDVCSCrossSectionTotal::DDVCSCrossSectionTotal(const std::string &className) :
     m_rangePhi = std::pair<double, double>(0., 2 * M_PI);
     m_rangePhiL = std::pair<double, double>(0., 2 * M_PI);
     m_rangeThetaL = std::pair<double, double>(0., M_PI);
-    m_rangeY = std::pair<double, double>(0., 0.1);
+    m_rangeY = std::pair<double, double>(0., 1.);
 }
 
 DDVCSCrossSectionTotal::DDVCSCrossSectionTotal(

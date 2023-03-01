@@ -60,9 +60,9 @@ private:
     std::complex<double> ampliVCS(int s2, int s1, int sl, int s);
 
     //Cross-sections:
-    double crossSectionBH(int targetPolariz);
-    double crossSectionVCS(int targetPolariz);
-    double crossSectionInterf(int targetPolariz);
+    double crossSectionBH();
+    double crossSectionVCS();
+    double crossSectionInterf();
 
     //Auxiliary functions:
     std::complex<double> sKS(const double r1[4], const double r2[4]) const;
@@ -156,6 +156,10 @@ private:
 
     //phi in TRF-I frame
     double m_DMSW_phi;
+
+    //spin vector angles in TRF-II:
+    double m_DMSW_thetaS;
+    double m_DMSW_phiS;
 
     //CFFs
     std::complex<double> m_cffH;

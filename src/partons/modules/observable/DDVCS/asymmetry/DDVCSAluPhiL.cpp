@@ -50,7 +50,7 @@ PhysicalType<double> DDVCSAluPhiL::computeObservable(
     params.m_Q2 = kinematic.getQ2().getValue();
     params.m_Q2Prim = kinematic.getQ2Prim().getValue();
     params.m_E = kinematic.getE().getValue();
-    params.m_phiL = kinematic.getPhiL().getValue();//BDP's phiL
+    params.m_phiL = kinematic.getPhiL().getValue(); //BDP's phiL
 
     params.m_gpdType = gpdType;
 
@@ -67,27 +67,25 @@ PhysicalType<double> DDVCSAluPhiL::computeObservable(
     gsl_rng* rNum = gsl_rng_alloc(gsl_rng_default);
 
     //function
-    gsl_monte_function GAngleNum = { &DDVCSAluPhiLFunction, /*3*/
-    2, &params };
+    gsl_monte_function GAngleNum = { &DDVCSAluPhiLFunction, 2, &params };
 
     //range
-    //    double min[] = { 0., 0., 0. };
-    //    double max[] = { 2 * M_PI, M_PI,  2 * M_PI};
     double min[] = { 0., M_PI / 4. };
     double max[] = { 2 * M_PI, 3. * M_PI / 4. };
 
     //run
-    gsl_monte_vegas_state* sAngleNum = gsl_monte_vegas_alloc(/*3*/2);
+    gsl_monte_vegas_state* sAngleNum = gsl_monte_vegas_alloc(2);
 
     for (size_t i = 0; i < 1; i++) {
 
-        gsl_monte_vegas_integrate(&GAngleNum, min, max, /*3*/2, 1000, rNum,
-                sAngleNum, &num, &errNum);
+        gsl_monte_vegas_integrate(&GAngleNum, min, max, 2, 100000, rNum, sAngleNum,
+                &num, &errNum);
     }
 
     //free
     gsl_monte_vegas_free(sAngleNum);
     gsl_rng_free(rNum);
+
 
     // *******************
     // **** compute denominator of asymmetry
@@ -102,23 +100,27 @@ PhysicalType<double> DDVCSAluPhiL::computeObservable(
     gsl_rng* rDen = gsl_rng_alloc(gsl_rng_default);
 
     //function
-    gsl_monte_function GAngleDen = { &DDVCSAluPhiLFunction, /*3*/
-    2, &params };
+    gsl_monte_function GAngleDen = { &DDVCSAluPhiLFunction, 2, &params };
 
     //run
-    gsl_monte_vegas_state* sAngleDen = gsl_monte_vegas_alloc(/*3*/2);
+    gsl_monte_vegas_state* sAngleDen = gsl_monte_vegas_alloc(2);
 
     for (size_t i = 0; i < 1; i++) {
 
-        gsl_monte_vegas_integrate(&GAngleDen, min, max, /*3*/2, 1000, rDen,
-                sAngleDen, &den, &errDen);
+        gsl_monte_vegas_integrate(&GAngleDen, min, max, 2, 100000, rDen, sAngleDen,
+                &den, &errDen);
     }
 
     //free
     gsl_monte_vegas_free(sAngleDen);
     gsl_rng_free(rDen);
 
+
     //complete beam-spin asymmetry: num/den, dimensionless
+
+    //DEBUG
+//    return PhysicalType<double>(num, PhysicalUnit::GEVm2);
+    //END DEBUG
 
     return PhysicalType<double>(num / den, PhysicalUnit::NONE);
 
@@ -131,11 +133,9 @@ double DDVCSAluPhiL::DDVCSAluPhiLFunction(double* kin, size_t dim, void* par) {
     //parameters
     DDVCSAluPhiLParameters* params = static_cast<DDVCSAluPhiLParameters*>(par);
 
-    //observable uses lepton angles as in BM2003 lepton-CM frame
     DDVCSObservableKinematic ddvcsObservableKinematic(params->m_xB, params->m_t,
-            params->m_Q2, params->m_Q2Prim, params->m_E, /*kin[2]*/
-            kin[0], params->m_phiL, kin[1]);
-
+            params->m_Q2, params->m_Q2Prim, params->m_E, kin[0], params->m_phiL,
+            kin[1]);
 
     //evaluate
     DDVCSObservableResult A =
@@ -149,14 +149,29 @@ double DDVCSAluPhiL::DDVCSAluPhiLFunction(double* kin, size_t dim, void* par) {
                     params->m_gpdType, VCSSubProcessType::ALL);
 
     if ((A.getValue().getValue() + B.getValue().getValue()) == 0.) {
-        std::cout << "WARNING: Asymmetry denominator is zero" << std::endl;
+        std::cout << "WARNING: Asymmetry A_LU(phiL)'s denominator is zero"
+                << std::endl;
         return 0.;
     }
 
-    //numerator (signAux = -1) or denominator (signAux = +1) of asymmetry
-    return A.getValue().getValue()
-            + (params->signAux) * B.getValue().getValue();
+    //DEBUG
+//    double y = params->m_Q2
+//            / (2. * params->m_xB * (Constant::PROTON_MASS) * params->m_E);
+//    double Q2Min = pow(y * Constant::ELECTRON_MASS, 2.) / (1. - y);
+//    double flux = Constant::FINE_STRUCTURE_CONSTANT
+//            * ((1. + pow(1. - y, 2)) / y
+//                    - 2. * (1. - y) * Q2Min / (y * params->m_Q2));
+//
+//    flux *= params->m_Q2
+//            / (2 * params->m_E * Constant::PROTON_MASS * params->m_xB
+//                    * params->m_xB);
+//
+//    flux = flux / (2 * M_PI * params->m_Q2);
+  //  return A.getValue().getValue() / flux - B.getValue().getValue() / flux;
+    //END DEBUG
 
+    //numerator (signAux = -1) or denominator (signAux = +1) of asymmetry
+    return A.getValue().getValue() + (params->signAux) * B.getValue().getValue();
 
 }
 

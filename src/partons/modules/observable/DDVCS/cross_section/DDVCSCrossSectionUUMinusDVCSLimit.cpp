@@ -75,7 +75,7 @@ PhysicalType<double> DDVCSCrossSectionUUMinusDVCSLimit::computeObservable(
 
     for (size_t i = 0; i < 1; i++) {
 
-        gsl_monte_vegas_integrate(&GAngle, min, max, /*3*/2, 1000, r, sAngle, &res,
+        gsl_monte_vegas_integrate(&GAngle, min, max, /*3*/2, 100000, r, sAngle, &res,
                 &err);
     }
 
@@ -104,13 +104,13 @@ double DDVCSCrossSectionUUMinusDVCSLimit::DDVCSCrossSectionUUMinusDVCSLimitFunct
             params->m_pDDVCSCrossSectionUUMinusDVCSLimit->getProcessModule()->compute(
                     1., -1, NumA::Vector3D(0., 0., 0.),
                     ddvcsObservableKinematic, params->m_gpdType,
-                    VCSSubProcessType::DDVCS);
+                    VCSSubProcessType::INT);
 
     DDVCSObservableResult B =
             params->m_pDDVCSCrossSectionUUMinusDVCSLimit->getProcessModule()->compute(
                     -1., -1, NumA::Vector3D(0., 0., 0.),
                     ddvcsObservableKinematic, params->m_gpdType,
-                    VCSSubProcessType::DDVCS);
+                    VCSSubProcessType::INT);
 
     //combine
     PhysicalType<double> result = (A.getValue() + B.getValue()) / 2.;

@@ -77,7 +77,7 @@ PhysicalType<double> DDVCSAluPhi::computeObservable(
 
     for (size_t i = 0; i < 1; i++) {
 
-        gsl_monte_vegas_integrate(&GAngleNum, min, max, /*3*/2, 1000, rNum,
+        gsl_monte_vegas_integrate(&GAngleNum, min, max, /*3*/2, 100000, rNum,
                 sAngleNum, &num, &errNum);
     }
 
@@ -106,7 +106,7 @@ PhysicalType<double> DDVCSAluPhi::computeObservable(
 
     for (size_t i = 0; i < 1; i++) {
 
-        gsl_monte_vegas_integrate(&GAngleDen, min, max, /*3*/2, 1000, rDen,
+        gsl_monte_vegas_integrate(&GAngleDen, min, max, /*3*/2, 100000, rDen,
                 sAngleDen, &den, &errDen);
     }
 

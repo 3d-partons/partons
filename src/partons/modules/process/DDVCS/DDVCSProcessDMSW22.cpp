@@ -367,7 +367,7 @@ std::complex<double> DDVCSProcessDMSW22::ampliBH1(int s2, int s1, int sl,
     tBH1 = pow(m_DMSW_charge_e, 4.) * (tBH1_J1 + tBH1_J2)
             / (m_Q2Prim * m_t * MinkProd(kMinusDelta, kMinusDelta));
 
-    tBH1 = std::complex<double>(0., 0.);
+//    tBH1 = std::complex<double>(0., 0.);
 
     return tBH1;
 
@@ -403,7 +403,7 @@ std::complex<double> DDVCSProcessDMSW22::ampliBH1crossed(int s2, int s1, int sl,
     //Define 'sigma' to include appropriate signs in the sum over L
     double sigma[3] = { -1., -1., +1. };
 
-    //Transform physical values of helicity s1, s2 = -1 andr +1, to integers 0 and 1; respectively
+    //Transform physical values of helicity s1, s2 = -1 and +1, to integers 0 and 1; respectively
     if (s2 == +1) {
         h2 = +1;
         minush2 = 0;
@@ -450,7 +450,7 @@ std::complex<double> DDVCSProcessDMSW22::ampliBH1crossed(int s2, int s1, int sl,
     tBH1_J2 = -m_DMSW_F2 * J2function(s2, s1) * tBH1_J2
             / (2. * m_DMSW_Mnucleon);
 
-    double kPrimePlusDelta[4]; // kPrimePlusDelta = k' + Delta = k - q2
+    double kPrimePlusDelta[4]; // kPrimePlusDelta = k' + Delta = k - q'
     for (i = 0; i < 4; i++) {
         kPrimePlusDelta[i] = m_DMSW_k[i] - m_DMSW_qPrim[i];
     }
@@ -458,7 +458,7 @@ std::complex<double> DDVCSProcessDMSW22::ampliBH1crossed(int s2, int s1, int sl,
     tBH1 = pow(m_DMSW_charge_e, 4.) * (tBH1_J1 + tBH1_J2)
             / (m_Q2Prim * m_t * MinkProd(kPrimePlusDelta, kPrimePlusDelta));
 
-    tBH1 = std::complex<double>(0., 0.);
+//    tBH1 = std::complex<double>(0., 0.);
 
     return tBH1;
 
@@ -894,6 +894,64 @@ double DDVCSProcessDMSW22::crossSectionVCS() {
         return 0.;
     }
 
+    //DEBUG
+//    for (s = -1; s < 2; s = s + 2) {
+//        for (s1 = -1; s1 < 2; s1 = s1 + 2) {
+//            for (s2 = -1; s2 < 2; s2 = s2 + 2) {
+//                for (sl = -1; sl < 2; sl = sl + 2) {
+//                    std::complex<double> aVCS = ampliVCS(s2, s1, sl, s);
+//                    std::complex<double> aBH = ampliBH1(s2, s1, sl, s)
+//                            + ampliBH1crossed(s2, s1, sl, s);
+//
+//                    double ReaBH, ImaBH, ReaVCS, ImaVCS;
+//
+//                    ReaBH = real(aBH);
+//                    ImaBH = imag(aBH);
+//                    ReaVCS = real(aVCS);
+//                    ImaVCS = imag(aVCS);
+//
+//                    double phaseBH, phaseVCS;
+//
+//                    if (ReaBH > 0. && ImaBH > 0.) {
+//                        phaseBH = atan(ImaBH / ReaBH);
+//                    } else if (ReaBH < 0. && ImaBH > 0.) {
+//                        phaseBH = M_PI + atan(ImaBH / ReaBH);
+//                    } else if (ReaBH < 0. && ImaBH < 0.) {
+//                        phaseBH = M_PI + atan(ImaBH / ReaBH);
+//                    } else if (ReaBH > 0. && ImaBH < 0.) {
+//                        phaseBH = 2. * M_PI + atan(ImaBH / ReaBH);
+//                    } else if (ReaBH > 0. && ImaBH == 0.) {
+//                        phaseBH = 0.;
+//                    } else if (ReaBH < 0. && ImaBH == 0.) {
+//                        phaseBH = M_PI;
+//                    }
+//
+//                    if (ReaVCS > 0. && ImaVCS > 0.) {
+//                        phaseVCS = atan(ImaVCS / ReaVCS);
+//                    } else if (ReaVCS < 0. && ImaVCS > 0.) {
+//                        phaseVCS = M_PI + atan(ImaVCS / ReaVCS);
+//                    } else if (ReaVCS < 0. && ImaVCS < 0.) {
+//                        phaseVCS = M_PI + atan(ImaVCS / ReaVCS);
+//                    } else if (ReaVCS > 0. && ImaVCS < 0.) {
+//                        phaseVCS = 2. * M_PI + atan(ImaVCS / ReaVCS);
+//                    } else if (ReaVCS > 0. && ImaVCS == 0.) {
+//                        phaseVCS = 0.;
+//                    } else if (ReaVCS < 0. && ImaVCS == 0.) {
+//                        phaseVCS = M_PI;
+//                    }
+//
+//                    std::cout << aVCS << " " << phaseVCS << " " << aBH << " "
+//                            << phaseBH
+//                            << " aVCS phaseVCS aBH phaseBH for (s2, s1, sl, s) = ( "
+//                            << s2 << ", " << s1 << ", " << sl << ", " << s
+//                            << " )" << std::endl;
+//
+//                }
+//            }
+//        }
+//    }
+    //END DEBUG
+
     return XSEC / (2. * M_PI); //2*pi factor because of transverse polarization of the incoming proton
 }
 
@@ -917,6 +975,9 @@ double DDVCSProcessDMSW22::crossSectionInterf() {
                 for (sl = -1; sl < 2; sl = sl + 2) {
 
                     Avcs = ampliVCS(s2, s1, sl, s);
+
+//                    Avcs = -real(Avcs) + Constant::COMPLEX_UNIT * imag(Avcs);//DEBUG: tentative solution
+
                     Abh1 = ampliBH1(s2, s1, sl, s);
 
                     Abh1crossed = ampliBH1crossed(s2, s1, sl, s);
@@ -1140,7 +1201,7 @@ std::complex<double> DDVCSProcessDMSW22::jFunction(int mu, int helic,
 
     jValue = p1[mu] * MinkProd(p2, m_DMSW_k0) + p2[mu] * MinkProd(p1, m_DMSW_k0)
             - m_DMSW_k0[mu] * MinkProd(p1, p2)
-            - std::complex<double>(0., helic * LCp1p2k0);
+            + std::complex<double>(0., helic * LCp1p2k0); // - changed to +
 
     return jValue / Np1p2;
 }
@@ -1271,44 +1332,15 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon) {
     leptons cmFrame;
     cmFrame.computeConverterVariables(m_xB, m_t, m_Q2, m_Q2Prim, Mnucleon);
 
-    //DEBUG
-//    m_DMSW_phiL = M_PI / 7.;
-//    m_DMSW_thetaL = 1.04 * M_PI / 4.;
-//    std::pair<double, double> cmFrameResult = cmFrame.leptonCMconverterToBDP01(
-//            m_DMSW_phiL, m_DMSW_thetaL);
-//    m_phiL = cmFrameResult.first;
-//    m_thetaL = cmFrameResult.second;
-//    m_DMSW_jac = cmFrame.jacobianLeptonCM(m_DMSW_phiL, m_DMSW_thetaL);
-//    std::cout << m_DMSW_phiL << " " << m_phiL << " " << m_DMSW_thetaL << " "
-//            << m_thetaL << " " << m_DMSW_jac
-//            << " phiL phiLBDP thetaL thetaLBDP jac oldish" << std::endl;
-//
-//    cmFrameResult = cmFrame.leptonCMconverterToBM03(m_phiL, m_thetaL);
-//    double phiLBM = cmFrameResult.first;
-//    double thetaLBM = cmFrameResult.second;
-//    m_DMSW_jac = cmFrame.jacobianLeptonCM(m_DMSW_phiL, m_DMSW_thetaL);
-//    std::cout << phiLBM << " " << m_phiL << " " << thetaLBM << " " << m_thetaL
-//            << " " << m_DMSW_jac
-//            << " phiL phiLBDP thetaL thetaLBDP jac oldish INVERSE" << std::endl;
-    //END DEBUG
-
     //m_phiL and m_thetaL are the lepton angles in BDP frame
     //m_DMSW_phiL, m_DMSW_thetaL are the lepton angles in TRF-II frame
     std::pair<double, double> cmFrameResult = cmFrame.leptonCMconverterToBM03(
             m_phiL, m_thetaL);
     m_DMSW_phiL = cmFrameResult.first;
     m_DMSW_thetaL = cmFrameResult.second;
-//    m_DMSW_thetaL = -1 *cmFrameResult.second;
 
     //jacobian (jac)'s definition: d(xsec)/(... d m_thetaL d m_phiL) = (1/jac) * d(xsec)/(... d m_DMSW_thetaL d m_DMSW_phiL)
     m_DMSW_jac = cmFrame.jacobianLeptonCM(m_DMSW_phiL, m_DMSW_thetaL);
-
-    //DEBUG
-//    std::cout << m_DMSW_phiL << " " << m_DMSW_thetaL << " " << m_DMSW_jac
-//            << " = cout phiL thetaL jac \n" << std::endl;
-//    std::cout << m_phiL << " " << m_thetaL << " " << m_DMSW_jac
-//            << " = cout phiLBDP thetaLBDP jac \n" << std::endl;
-    //END DEBUG
 
     //Evaluation of tMin:
     m_DMSW_epsilon2 = pow(2. * m_xB * Mnucleon, 2.) / m_Q2;
