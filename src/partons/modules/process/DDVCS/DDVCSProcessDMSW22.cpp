@@ -276,6 +276,7 @@ PhysicalType<double> DDVCSProcessDMSW22::CrossSectionVCS() {
     double xsec = crossSectionVCS();
 
     return PhysicalType<double>(xsec, PhysicalUnit::GEVm2);
+//    return PhysicalType<double>(fabs(ampliVCS(1, 1, 1, 1)), PhysicalUnit::GEVm2);
 }
 
 PhysicalType<double> DDVCSProcessDMSW22::CrossSectionInterf() {
@@ -843,8 +844,6 @@ double DDVCSProcessDMSW22::crossSectionBH() {
             / (16 * pow(2. * M_PI, 3.) * pow(m_Q2, 2.)
                     * sqrt(1. + pow(2. * m_xB * m_DMSW_Mnucleon, 2.) / m_Q2));
 
-//    std::cout << m_DMSW_jac << " jac" << std::endl;//DEBUG
-
     XSEC = XSEC / 2.; // 1/2 factor coming from averaging in initial spin states of proton
 
     return XSEC / (2. * M_PI); //2*pi factor because of transverse polarization of the incoming proton
@@ -895,61 +894,87 @@ double DDVCSProcessDMSW22::crossSectionVCS() {
     }
 
     //DEBUG
-//    for (s = -1; s < 2; s = s + 2) {
-//        for (s1 = -1; s1 < 2; s1 = s1 + 2) {
-//            for (s2 = -1; s2 < 2; s2 = s2 + 2) {
-//                for (sl = -1; sl < 2; sl = sl + 2) {
-//                    std::complex<double> aVCS = ampliVCS(s2, s1, sl, s);
-//                    std::complex<double> aBH = ampliBH1(s2, s1, sl, s)
-//                            + ampliBH1crossed(s2, s1, sl, s);
-//
-//                    double ReaBH, ImaBH, ReaVCS, ImaVCS;
-//
-//                    ReaBH = real(aBH);
-//                    ImaBH = imag(aBH);
-//                    ReaVCS = real(aVCS);
-//                    ImaVCS = imag(aVCS);
-//
-//                    double phaseBH, phaseVCS;
-//
-//                    if (ReaBH > 0. && ImaBH > 0.) {
-//                        phaseBH = atan(ImaBH / ReaBH);
-//                    } else if (ReaBH < 0. && ImaBH > 0.) {
-//                        phaseBH = M_PI + atan(ImaBH / ReaBH);
-//                    } else if (ReaBH < 0. && ImaBH < 0.) {
-//                        phaseBH = M_PI + atan(ImaBH / ReaBH);
-//                    } else if (ReaBH > 0. && ImaBH < 0.) {
-//                        phaseBH = 2. * M_PI + atan(ImaBH / ReaBH);
-//                    } else if (ReaBH > 0. && ImaBH == 0.) {
-//                        phaseBH = 0.;
-//                    } else if (ReaBH < 0. && ImaBH == 0.) {
-//                        phaseBH = M_PI;
-//                    }
-//
-//                    if (ReaVCS > 0. && ImaVCS > 0.) {
-//                        phaseVCS = atan(ImaVCS / ReaVCS);
-//                    } else if (ReaVCS < 0. && ImaVCS > 0.) {
-//                        phaseVCS = M_PI + atan(ImaVCS / ReaVCS);
-//                    } else if (ReaVCS < 0. && ImaVCS < 0.) {
-//                        phaseVCS = M_PI + atan(ImaVCS / ReaVCS);
-//                    } else if (ReaVCS > 0. && ImaVCS < 0.) {
-//                        phaseVCS = 2. * M_PI + atan(ImaVCS / ReaVCS);
-//                    } else if (ReaVCS > 0. && ImaVCS == 0.) {
-//                        phaseVCS = 0.;
-//                    } else if (ReaVCS < 0. && ImaVCS == 0.) {
-//                        phaseVCS = M_PI;
-//                    }
-//
-//                    std::cout << aVCS << " " << phaseVCS << " " << aBH << " "
-//                            << phaseBH
-//                            << " aVCS phaseVCS aBH phaseBH for (s2, s1, sl, s) = ( "
-//                            << s2 << ", " << s1 << ", " << sl << ", " << s
-//                            << " )" << std::endl;
-//
-//                }
-//            }
-//        }
+    //*********** g-functions vs current times momentum (light-like):
+//    s = -1;
+//    std::complex<double> gval = gFunction(s, m_DMSW_kPrime, m_DMSW_lminus,
+//            m_DMSW_k);
+//    std::complex<double> jXmom = (0., 0.);
+//    for (int mu = 0; mu < 4; mu++) {
+//        jXmom += jFunction(mu, s, m_DMSW_kPrime, m_DMSW_k) * m_DMSW_lminus[mu]
+//                * m_DMSW_metric_[mu][mu];
 //    }
+//    std::cout << m_phi << " " << s << " " << real(gval) << " " << real(jXmom)
+//            << " " << fabs((real(gval) - real(jXmom)) / real(gval))
+//            << "        " << imag(gval) << " " << imag(jXmom) << " "
+//            << fabs((imag(gval) - imag(jXmom)) / imag(gval))
+//            << "            phi(rad) s real(gval) real(jXmom) rel.error.real imag(gval) imag(jXmom) rel.error.imag"
+//            << std::endl;
+    //*********** currents:
+//    int mu = 3;
+//    s = +1;
+//
+//    std::cout << m_phi << " " << mu << " " << s << " "
+//            << real(jFunction(mu, s, m_DMSW_lminus, m_DMSW_lplus)) << " "
+//            << imag(jFunction(mu, s, m_DMSW_lminus, m_DMSW_lplus))
+//            << " phi(rad) mu spin real(jMuon) imag(jMuon)" << std::endl;
+//    std::cout << m_phi << " " << mu << " " << s << " "
+//            << real(jFunction(mu, s, m_DMSW_kPrime, m_DMSW_k)) << " "
+//            << imag(jFunction(mu, s, m_DMSW_kPrime, m_DMSW_k))
+//            << " phi(rad) mu spin real(jElectron) imag(jElectron)" << std::endl;
+
+    //********** tensors:
+//    int mu = 3;
+//    int nu = 3;
+//
+//    s2 = -1;
+//    s1 = +1;
+//
+//    double rPrime[2][4], r[2][4];
+//    for (int i = 0; i < 4; i++) {
+//        rPrime[0][i] = m_DMSW_rPrime2[i];
+//        rPrime[1][i] = m_DMSW_rPrime1[i];
+//        r[0][i] = m_DMSW_r2[i];
+//        r[1][i] = m_DMSW_r1[i];
+//    }
+//
+//    double s0n = m_DMSW_HATnBM[0] / fabs(m_DMSW_HATnBM[0]);
+//    double sHATn[4];
+//    for (int i = 0; i < 4; i++) {
+//        sHATn[i] = s0n * m_DMSW_HATnBM[i];
+//    }
+//
+//    int h1, h2, minush1, minush2;
+//    if (s2 == +1) {
+//        h2 = +1;
+//        minush2 = 0;
+//    } else if (s2 == -1) {
+//        h2 = 0;
+//        minush2 = 1;
+//    }
+//    if (s1 == +1) {
+//        h1 = +1;
+//        minush1 = 0;
+//    } else if (s1 == -1) {
+//        h1 = 0;
+//        minush1 = 1;
+//    }
+//
+//    std::complex<double> T_munu = (0., 0.);
+//    T_munu = m_DMSW_metric_[mu][nu]
+//            - m_DMSW_metric_[mu][mu] * m_DMSW_nBM[mu] * m_DMSW_metric_[nu][nu]
+//                    * m_DMSW_nstarBM[nu]
+//            - m_DMSW_metric_[nu][nu] * m_DMSW_nBM[nu] * m_DMSW_metric_[mu][mu]
+//                    * m_DMSW_nstarBM[mu];
+//    T_munu *=
+//            m_cffH * (s0n / m_DMSW_2pBarqBar)
+//                    * (Yfunction(s2, s1)
+//                            * gFunction(+1, rPrime[h2], sHATn, r[h1])
+//                            + Zfunction(s2, s1)
+//                                    * gFunction(-1, rPrime[minush2], sHATn,
+//                                            r[minush1]));
+//    std::cout << m_phi << " " << mu << " " << nu << " " << s2 << " " << s1
+//            << " " << real(T_munu) << " " << imag(T_munu)
+//            << " phi(rad) mu nu s2 s1 real(T_munu) imag(T_munu)" << std::endl;
     //END DEBUG
 
     return XSEC / (2. * M_PI); //2*pi factor because of transverse polarization of the incoming proton
@@ -975,8 +1000,6 @@ double DDVCSProcessDMSW22::crossSectionInterf() {
                 for (sl = -1; sl < 2; sl = sl + 2) {
 
                     Avcs = ampliVCS(s2, s1, sl, s);
-
-//                    Avcs = -real(Avcs) + Constant::COMPLEX_UNIT * imag(Avcs);//DEBUG: tentative solution
 
                     Abh1 = ampliBH1(s2, s1, sl, s);
 
@@ -1017,13 +1040,6 @@ double DDVCSProcessDMSW22::crossSectionInterf() {
         //TODO polarized target case
         return 0.;
     }
-
-    //DEBUG
-    if (imag(T2_interf) != 0.) {
-        std::cout << T2_interf << " " << real(T2_interf) << " "
-                << imag(T2_interf) << " T2_int realPart imagPart" << std::endl;
-    }
-    //END DEBUG
 
     return XSEC / (2. * M_PI); //2*pi factor because of transverse polarization of the incoming proton
 }

@@ -77,9 +77,13 @@ PhysicalType<double> DDVCSAluPhi::computeObservable(
 
     for (size_t i = 0; i < 1; i++) {
 
-        gsl_monte_vegas_integrate(&GAngleNum, min, max, /*3*/2, 100000, rNum,
+        gsl_monte_vegas_integrate(&GAngleNum, min, max, /*3*/2, 10000, rNum,
                 sAngleNum, &num, &errNum);
     }
+
+    std::cout << PhysicalType<double>(num, PhysicalUnit::NB).toString() << " "
+                    << PhysicalType<double>(errNum, PhysicalUnit::NB).toString()
+                    << " num errNum" << std::endl;
 
     //free
     gsl_monte_vegas_free(sAngleNum);
@@ -106,9 +110,13 @@ PhysicalType<double> DDVCSAluPhi::computeObservable(
 
     for (size_t i = 0; i < 1; i++) {
 
-        gsl_monte_vegas_integrate(&GAngleDen, min, max, /*3*/2, 100000, rDen,
+        gsl_monte_vegas_integrate(&GAngleDen, min, max, /*3*/2, 4000, rDen,
                 sAngleDen, &den, &errDen);
     }
+
+    std::cout << PhysicalType<double>(den, PhysicalUnit::NB).toString() << " "
+                    << PhysicalType<double>(errDen, PhysicalUnit::NB).toString()
+                    << " den errDen" << std::endl;
 
     //free
     gsl_monte_vegas_free(sAngleDen);
@@ -129,8 +137,8 @@ double DDVCSAluPhi::DDVCSAluPhiFunction(double* kin, size_t dim, void* par) {
 
     //observable
     DDVCSObservableKinematic ddvcsObservableKinematic(params->m_xB, params->m_t,
-            params->m_Q2, params->m_Q2Prim, params->m_E, /*kin[2]*/
-            params->m_phi, kin[0], kin[1]);
+            params->m_Q2, params->m_Q2Prim, params->m_E, params->m_phi, kin[0],
+            kin[1]);
 
     //evaluate
     DDVCSObservableResult A =

@@ -61,23 +61,27 @@ PhysicalType<double> DDVCSCrossSectionUUMinusDVCSLimit::computeObservable(
     gsl_rng* r = gsl_rng_alloc(gsl_rng_default);
 
     //function
-    gsl_monte_function GAngle = { &DDVCSCrossSectionUUMinusDVCSLimitFunction, /*3*/2,
+    gsl_monte_function GAngle = { &DDVCSCrossSectionUUMinusDVCSLimitFunction, 2,
             &params };
 
     //range
 //    double min[] = { 0., 0., 0. };
 //    double max[] = { 2 * M_PI, M_PI,  2 * M_PI};
-    double min[] = { 0., 0.};
-        double max[] = { 2 * M_PI, M_PI};
+    double min[] = { 0., 0. };
+    double max[] = { 2 * M_PI, M_PI };
 
     //run
-    gsl_monte_vegas_state* sAngle = gsl_monte_vegas_alloc(/*3*/2);
+    gsl_monte_vegas_state* sAngle = gsl_monte_vegas_alloc(2);
 
     for (size_t i = 0; i < 1; i++) {
 
-        gsl_monte_vegas_integrate(&GAngle, min, max, /*3*/2, 100000, r, sAngle, &res,
+        gsl_monte_vegas_integrate(&GAngle, min, max, 2, 4000, r, sAngle, &res,
                 &err);
     }
+
+    std::cout << PhysicalType<double>(res, PhysicalUnit::NB).toString() << " "
+            << PhysicalType<double>(err, PhysicalUnit::NB).toString()
+            << " res err" << std::endl;
 
     //free
     gsl_monte_vegas_free(sAngle);
@@ -96,7 +100,7 @@ double DDVCSCrossSectionUUMinusDVCSLimit::DDVCSCrossSectionUUMinusDVCSLimitFunct
 
     //observable
     DDVCSObservableKinematic ddvcsObservableKinematic(params->m_xB, params->m_t,
-            params->m_Q2, params->m_Q2Prim, params->m_E, /*kin[2]*/params->m_phi, kin[0],
+            params->m_Q2, params->m_Q2Prim, params->m_E, params->m_phi, kin[0],
             kin[1]);
 
     //evaluate

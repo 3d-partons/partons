@@ -74,9 +74,13 @@ PhysicalType<double> DDVCSCrossSectionUUMinusTCSLimit::computeObservable(
 
     for (size_t i = 0; i < 1; i++) {
 
-        gsl_monte_vegas_integrate(&GAngle, min, max, 1, 10000, r, sAngle, &res,
+        gsl_monte_vegas_integrate(&GAngle, min, max, 1, 4000, r, sAngle, &res,
                 &err);
     }
+
+    std::cout << PhysicalType<double>(res, PhysicalUnit::NB).toString() << " "
+            << PhysicalType<double>(err, PhysicalUnit::NB).toString()
+            << " res err" << std::endl;
 
     //free
     gsl_monte_vegas_free(sAngle);
@@ -116,7 +120,7 @@ double DDVCSCrossSectionUUMinusTCSLimit::DDVCSCrossSectionUUMinusTCSLimitFunctio
 
 //    result = A.getValue();//DEBUG
 
-    //integrate over transversely polarized target dependence to obtain 4-fold differential cross-section
+//integrate over transversely polarized target dependence to obtain 4-fold differential cross-section
     result *= 2. * Constant::PI;
 
     //change to nb
