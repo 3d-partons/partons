@@ -38,8 +38,11 @@ public:
      * Definition of enumerate values corresponding to GPD types.
      */
     enum Type {
+
         UNDEFINED = 0, //!< Undefined type.
+
         ALL = 1,     //!< All-like type, useful to indicate all available types.
+
         H = 2,        //!< Twist-2 GPD \f$H\f$
         E = 3,        //!< Twist-2 GPD \f$E\f$
         Ht = 4,       //!< Twist-2 GPD \f$\tilde{H}\f$
@@ -56,7 +59,13 @@ public:
         E3m = 15,     //!< Twist-3 GPD \f$E_{3}^{-}\f$
         Ht3m = 16,    //!< Twist-3 GPD \f$\tilde{H}_{3}^{-}\f$
         Et3m = 17,    //!< Twist-3 GPD \f$\tilde{E}_{3}^{-}\f$
+
+        //Artificial types:
+
         EbarTrans = 18, //!< \f$2\tilde{H}_{T} + E_{T}\f$
+        HL = 19, //!< Used in DDVCS to mark CFF longitudinal helicity amplitudes related to GPD H
+        EL = 20, //!< Used in DDVCS to mark CFF longitudinal helicity amplitudes related to GPD E
+
         END       //!< End-like type, useful to define loops over all GPD types.
     };
 
