@@ -19,12 +19,12 @@ const unsigned int DVMPProcessGK06::classId =
                 new DVMPProcessGK06("DVMPProcessGK06"));
 
 DVMPProcessGK06::DVMPProcessGK06(const std::string &className) :
-        DVMPProcessModule(className), m_W2(0.), m_gamma(0.), m_eps(0.), m_xi(0.) {
+        DVMPProcessModule(className), m_W2(0.), m_gamma(0.), m_eps(0.), m_xi(0.), m_tminGK(0.) {
 }
 
 DVMPProcessGK06::DVMPProcessGK06(const DVMPProcessGK06& other) :
         DVMPProcessModule(other), m_W2(other.m_W2), m_gamma(other.m_gamma), m_eps(
-                other.m_eps), m_xi(other.m_xi) {
+                other.m_eps), m_xi(other.m_xi), m_tminGK(other.m_tminGK) {
 }
 
 DVMPProcessGK06* DVMPProcessGK06::clone() const {
@@ -53,8 +53,8 @@ void DVMPProcessGK06::initModule() {
                     DVMPObservableKinematic(m_xB, m_t, m_Q2, m_E, m_phi,
                             m_mesonType)).getValue();
 
-    //reevaluate t_min
-    m_tmin = -4. * pow(Constant::PROTON_MASS, 2.) * pow(m_xi, 2.)
+    //evaluate tMin a la GK
+    m_tminGK = -4. * pow(Constant::PROTON_MASS, 2.) * pow(m_xi, 2.)
             / (1. - pow(m_xi, 2.));
 }
 
@@ -69,6 +69,13 @@ PhysicalType<double> DVMPProcessGK06::CrossSection() {
         throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter() << "No implementation for meson "
                         << MesonType(m_mesonType).toString());
+    }
+
+    if(m_t > m_tminGK && m_t < m_tmin){
+
+        warn(__func__, "|t| smaller than that used by GK, return zero");
+
+        return PhysicalType<double>(0., PhysicalUnit::GEVm2);
     }
 
     //result
@@ -429,7 +436,7 @@ double DVMPProcessGK06::poleAmplitude0p0p() {
 double DVMPProcessGK06::poleAmplitude0m0p() {
 
     double poleAmplitude = Constant::POSITRON_CHARGE * sqrt(m_Q2)
-            * sqrt(-(m_t - m_tmin)) * poleResidue()
+            * sqrt(-(m_t - m_tminGK)) * poleResidue()
             / (m_t - pow(Constant::MESON_PIPLUS_MASS, 2.0));
 
     return poleAmplitude;
@@ -438,7 +445,7 @@ double DVMPProcessGK06::poleAmplitude0m0p() {
 double DVMPProcessGK06::poleAmplitude0ppp() {
 
     double poleAmplitude = Constant::POSITRON_CHARGE * 2.0 * sqrt(2.0) * m_xi
-            * Constant::PROTON_MASS * sqrt(-(m_t - m_tmin)) * poleResidue()
+            * Constant::PROTON_MASS * sqrt(-(m_t - m_tminGK)) * poleResidue()
             / (m_t - pow(Constant::MESON_PIPLUS_MASS, 2.0));
 
     return poleAmplitude;
@@ -447,7 +454,7 @@ double DVMPProcessGK06::poleAmplitude0ppp() {
 double DVMPProcessGK06::poleAmplitude0pmp() {
 
     double poleAmplitude = -Constant::POSITRON_CHARGE * 2.0 * sqrt(2.0) * m_xi
-            * Constant::PROTON_MASS * sqrt(-(m_t - m_tmin)) * poleResidue()
+            * Constant::PROTON_MASS * sqrt(-(m_t - m_tminGK)) * poleResidue()
             / (m_t - pow(Constant::MESON_PIPLUS_MASS, 2.0));
 
     return poleAmplitude;
@@ -456,7 +463,7 @@ double DVMPProcessGK06::poleAmplitude0pmp() {
 double DVMPProcessGK06::poleAmplitude0mpp() {
 
     double poleAmplitude = Constant::POSITRON_CHARGE * sqrt(2.0)
-            * (m_t - m_tmin) * sqrt(1.0 - pow(m_xi, 2.0)) * poleResidue()
+            * (m_t - m_tminGK) * sqrt(1.0 - pow(m_xi, 2.0)) * poleResidue()
             / (m_t - pow(Constant::MESON_PIPLUS_MASS, 2.0));
 
     return poleAmplitude;
@@ -465,7 +472,7 @@ double DVMPProcessGK06::poleAmplitude0mpp() {
 double DVMPProcessGK06::poleAmplitude0mmp() {
 
     double poleAmplitude = -Constant::POSITRON_CHARGE * sqrt(2.0)
-            * (m_t - m_tmin) * sqrt(1.0 - pow(m_xi, 2.0)) * poleResidue()
+            * (m_t - m_tminGK) * sqrt(1.0 - pow(m_xi, 2.0)) * poleResidue()
             / (m_t - pow(Constant::MESON_PIPLUS_MASS, 2.0));
 
     return poleAmplitude;
@@ -518,7 +525,7 @@ std::complex<double> DVMPProcessGK06::Amplitude0m0p() {
 
 //the handbag amplitude
     std::complex<double> amplitude0m0p = Constant::POSITRON_CHARGE / sqrt(m_Q2)
-            * sqrt(-(m_t - m_tmin)) * m_xi / (2. * Constant::PROTON_MASS)
+            * sqrt(-(m_t - m_tminGK)) * m_xi / (2. * Constant::PROTON_MASS)
             * getConvolCoeffFunctionValue(GPDType::Et);
 
 //switch over mesons
@@ -559,7 +566,7 @@ std::complex<double> DVMPProcessGK06::Amplitude0ppp() {
 
 //the handbag amplitude
     std::complex<double> amplitude0ppp = -1.0 * Constant::POSITRON_CHARGE
-            * sqrt(-(m_t - m_tmin)) / (4. * Constant::PROTON_MASS)
+            * sqrt(-(m_t - m_tminGK)) / (4. * Constant::PROTON_MASS)
             * getConvolCoeffFunctionValue(GPDType::EbarTrans);
 
 //switch over mesons
@@ -600,7 +607,7 @@ std::complex<double> DVMPProcessGK06::Amplitude0pmp() {
 
 //the handbag amplitude
     std::complex<double> amplitude0pmp = -1.0 * Constant::POSITRON_CHARGE
-            * sqrt(-(m_t - m_tmin)) / (4. * Constant::PROTON_MASS)
+            * sqrt(-(m_t - m_tminGK)) / (4. * Constant::PROTON_MASS)
             * getConvolCoeffFunctionValue(GPDType::EbarTrans);
 
 //switch over mesons
