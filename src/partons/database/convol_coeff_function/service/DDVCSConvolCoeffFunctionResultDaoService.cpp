@@ -110,19 +110,19 @@ int DDVCSConvolCoeffFunctionResultDaoService::insert(
 
                 //prepare query
                 m_ccfKinematicTableFile += ElemUtils::Formatter()
-                        << m_lastCCFKinematicProcessId << ","
-                        << kinematic.getXi().getValue() << ","
-                        << kinematic.getXi().getUnit() << ","
-                        << kinematic.getT().getValue() << ","
-                        << kinematic.getT().getUnit() << ","
-                        << kinematic.getQ2().getValue() << ","
-                        << kinematic.getQ2().getUnit() << ","
-                        << kinematic.getQ2Prim().getValue() << ","
-                        << kinematic.getQ2Prim().getUnit() << ","
-                        << kinematic.getMuF2().getValue() << ","
-                        << kinematic.getMuF2().getUnit() << ","
-                        << kinematic.getMuR2().getValue() << ","
-                        << kinematic.getMuR2().getUnit() << ","
+                        << std::to_string(m_lastCCFKinematicProcessId) << ","
+                        << std::to_string(kinematic.getXi().getValue()) << ","
+                        << std::to_string(kinematic.getXi().getUnit()) << ","
+                        << std::to_string(kinematic.getT().getValue()) << ","
+                        << std::to_string(kinematic.getT().getUnit()) << ","
+                        << std::to_string(kinematic.getQ2().getValue()) << ","
+                        << std::to_string(kinematic.getQ2().getUnit()) << ","
+                        << std::to_string(kinematic.getQ2Prim().getValue()) << ","
+                        << std::to_string(kinematic.getQ2Prim().getUnit()) << ","
+                        << std::to_string(kinematic.getMuF2().getValue()) << ","
+                        << std::to_string(kinematic.getMuF2().getUnit()) << ","
+                        << std::to_string(kinematic.getMuR2().getValue()) << ","
+                        << std::to_string(kinematic.getMuR2().getUnit()) << ","
                         << kinematic.getHashSum() << '\n';
             }
 
@@ -149,9 +149,9 @@ int DDVCSConvolCoeffFunctionResultDaoService::insert(
 
                 //prepare query
                 m_ccfResultComplexTableFile += ElemUtils::Formatter()
-                        << m_lastCCFResultProcessId << "," << (it->first) << ","
-                        << (it->second).real() << "," << (it->second).imag()
-                        << "," << m_lastCCFResultId << '\n';
+                        << std::to_string(m_lastCCFResultProcessId) << "," << std::to_string(it->first) << ","
+                        << std::to_string((it->second).real()) << "," << std::to_string((it->second).imag())
+                        << "," << std::to_string(m_lastCCFResultId) << '\n';
             }
         }
 
