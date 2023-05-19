@@ -12,9 +12,9 @@ namespace PARTONS {
 /**
  * @class DDVCSProcessDMSW22
  *
- * @brief TODO
+ * @brief Evaluation of differential cross-section for DDVCS process.
  *
- * TODO
+ * See 2303.13668 [hep-ph] as a reference.
  */
 class DDVCSProcessDMSW22: public DDVCSProcessModule {
 public:

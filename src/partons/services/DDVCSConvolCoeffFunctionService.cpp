@@ -10,7 +10,7 @@
 #include "../../../include/partons/beans/automation/Task.h"
 #include "../../../include/partons/beans/KinematicUtils.h"
 #include "../../../include/partons/BaseObjectRegistry.h"
-//#include "../../../include/partons/database/convol_coeff_function/service/DDVCSConvolCoeffFunctionResultDaoService.h"
+#include "../../../include/partons/database/convol_coeff_function/service/DDVCSConvolCoeffFunctionResultDaoService.h"
 #include "../../../include/partons/modules/convol_coeff_function/DDVCS/DDVCSConvolCoeffFunctionModule.h"
 #include "../../../include/partons/ModuleObjectFactory.h"
 #include "../../../include/partons/Partons.h"
@@ -57,56 +57,56 @@ DDVCSConvolCoeffFunctionKinematic DDVCSConvolCoeffFunctionService::newKinematicF
 List<DDVCSConvolCoeffFunctionKinematic> DDVCSConvolCoeffFunctionService::newListOfKinematicFromTask(
         const Task& task) const {
     List<DDVCSConvolCoeffFunctionKinematic> listOfKinematic;
-//
-//    if (ElemUtils::StringUtils::equals(
-//            task.getKinematicsData().getModuleClassName(),
-//            DDVCSConvolCoeffFunctionKinematic::DDVCS_CONVOL_COEFF_FUNCTION_KINEMATIC_CLASS_NAME)) {
-//
-//        if (task.getKinematicsData().getParameters().isAvailable("file")) {
-//            listOfKinematic =
-//                    KinematicUtils().getDDVCSCCFKinematicFromFile(
-//                            task.getKinematicsData().getParameters().getLastAvailable().getString());
-//        } else {
-//            throw ElemUtils::CustomException(getClassName(), __func__,
-//                    ElemUtils::Formatter()
-//                            << "Missing parameter file in object <DDVCSConvolCoeffFunctionKinematic> for method "
-//                            << task.getFunctionName());
-//        }
-//    } else {
-//        throw ElemUtils::CustomException(getClassName(), __func__,
-//                ElemUtils::Formatter()
-//                        << "Missing object : <DDVCSConvolCoeffFunctionKinematic> for method "
-//                        << task.getFunctionName());
-//    }
-//
+
+    if (ElemUtils::StringUtils::equals(
+            task.getKinematicsData().getModuleClassName(),
+            DDVCSConvolCoeffFunctionKinematic::DDVCS_CONVOL_COEFF_FUNCTION_KINEMATIC_CLASS_NAME)) {
+
+        if (task.getKinematicsData().getParameters().isAvailable("file")) {
+            listOfKinematic =
+                    KinematicUtils().getDDVCSCCFKinematicFromFile(
+                            task.getKinematicsData().getParameters().getLastAvailable().getString());
+        } else {
+            throw ElemUtils::CustomException(getClassName(), __func__,
+                    ElemUtils::Formatter()
+                            << "Missing parameter file in object <DDVCSConvolCoeffFunctionKinematic> for method "
+                            << task.getFunctionName());
+        }
+    } else {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter()
+                        << "Missing object : <DDVCSConvolCoeffFunctionKinematic> for method "
+                        << task.getFunctionName());
+    }
+
     return listOfKinematic;
 }
 
 void DDVCSConvolCoeffFunctionService::storeResultListInDatabase(
         const List<DDVCSConvolCoeffFunctionResult>& results) const {
 
-//    //get dao service
-//    DDVCSConvolCoeffFunctionResultDaoService dvcsConvolCoeffFunctionResultDaoService;
-//
-//    //insert
-//    int computationId = dvcsConvolCoeffFunctionResultDaoService.insert(results);
-//
-//    //check if inserted correctly
-//    if (computationId != -1) {
-//        info(__func__,
-//                ElemUtils::Formatter()
-//                        << "List of DDVCSConvolCoeffFunctionResult objects has been stored in database with computation_id = "
-//                        << computationId);
-//    } else {
-//        throw ElemUtils::CustomException(getClassName(), __func__,
-//                ElemUtils::Formatter()
-//                        << "DDVCSConvolCoeffFunctionResult object : insertion into database failed");
-//    }
+    //get dao service
+    DDVCSConvolCoeffFunctionResultDaoService ddvcsConvolCoeffFunctionResultDaoService;
+
+    //insert
+    int computationId = ddvcsConvolCoeffFunctionResultDaoService.insert(results);
+
+    //check if inserted correctly
+    if (computationId != -1) {
+        info(__func__,
+                ElemUtils::Formatter()
+                        << "List of DDVCSConvolCoeffFunctionResult objects has been stored in database with computation_id = "
+                        << computationId);
+    } else {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter()
+                        << "DDVCSConvolCoeffFunctionResult object : insertion into database failed");
+    }
 }
 
 void DDVCSConvolCoeffFunctionService::generatePlotFileTask(Task &task) {
     generatePlotFile(getOutputFilePathForPlotFileTask(task),
-            generateSQLQueryForPlotFileTask(task, "dvcs_ccf_plot_2d_view"),
+            generateSQLQueryForPlotFileTask(task, "ddvcs_ccf_plot_2d_view"),
             ' ');
 }
 
