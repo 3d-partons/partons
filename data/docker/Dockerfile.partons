@@ -1,8 +1,10 @@
 # start from debian jessie
-FROM debian:stretch
+FROM debian:bullseye
 
-# PARTONS version
-ENV PARTONSTAG="v2.0"
+# version tags
+ENV PARTONSTAG="v4.0"
+ENV APFELXXTAG="4.7.0"
+ENV LHAPDFTAG="6.5.4"
 
 # set WORKSPACE env. variable
 ENV WORKSPACE="/root/workspace"
@@ -10,14 +12,27 @@ ENV WORKSPACE="/root/workspace"
 # set working directory
 WORKDIR ${WORKSPACE}
 
-# install git
-# install cmake, build and runtime libraries
+# install 
+#RUN echo "deb http://ftp.de.debian.org/debian bullseye main" > /etc/apt/sources.list 
 RUN apt-get update && \ 
     apt-get install -y --no-install-recommends git && \
-    apt-get install -y --no-install-recommends cmake build-essential libeigen3-dev libcln-dev libsfml-dev libqt4-dev libqt4-sql-mysql libgsl-dev && \ 
+    apt-get install -y --no-install-recommends cmake build-essential libeigen3-dev libcln-dev libsfml-dev qtbase5-dev libqt5sql5-mysql libqt5xmlpatterns5-dev libgsl-dev gfortran ca-certificates wget && \ 
     apt-get clean && \
     apt-get autoclean && \
     rm -rf /var/lib/apt/lists/*
+
+# install apfel
+RUN git clone --depth 1 --branch ${APFELXXTAG} https://github.com/vbertone/apfelxx.git && \
+    cd apfelxx && mkdir build && cd build && cmake .. && make -j4 && make install && \
+    cd ../.. && rm -rf apfelxx 
+
+#install LHAPDF and PDF sets
+RUN wget https://lhapdf.hepforge.org/downloads/?f=LHAPDF-${LHAPDFTAG}.tar.gz -O LHAPDF-${LHAPDFTAG}.tar.gz && \
+    tar -zxf LHAPDF-${LHAPDFTAG}.tar.gz && cd LHAPDF-${LHAPDFTAG} && ./configure --disable-python && make -j4 && make install && \
+    cd .. && rm -fr LHAPDF-${LHAPDFTAG} LHAPDF-${LHAPDFTAG}.tar.gz
+
+RUN cd `lhapdf-config --datadir` && wget http://lhapdfsets.web.cern.ch/lhapdfsets/current/MSTW2008nlo68cl.tar.gz && tar -zxf MSTW2008nlo68cl.tar.gz && \
+    rm MSTW2008nlo68cl.tar.gz  
 
 # pull and install elem-utils
 RUN cd ${WORKSPACE} && \
@@ -25,7 +40,7 @@ RUN cd ${WORKSPACE} && \
     git clone --single-branch --depth 1 --branch ${PARTONSTAG} https://drf-gitlab.cea.fr/partons/core/elementary-utils.git && \
     cd ${WORKSPACE}/elementary-utils/build && \
     cmake -G"Unix Makefiles" ../ -DCMAKE_BUILD_TYPE=Release && \
-    make 
+    make -j4 
 
 # pull and install numa
 RUN cd ${WORKSPACE} && \
@@ -33,7 +48,7 @@ RUN cd ${WORKSPACE} && \
     git clone --single-branch --depth 1 --branch ${PARTONSTAG} https://drf-gitlab.cea.fr/partons/core/numa.git && \
     cd ${WORKSPACE}/numa/build && \
     cmake -G"Unix Makefiles" ../ -DCMAKE_BUILD_TYPE=Release && \
-    make 
+    make -j4
 
 # pull and install partons
 RUN cd ${WORKSPACE} && \
@@ -41,7 +56,7 @@ RUN cd ${WORKSPACE} && \
     git clone --single-branch --depth 1 --branch ${PARTONSTAG} https://drf-gitlab.cea.fr/partons/core/partons.git && \
     cd ${WORKSPACE}/partons/build && \
     cmake -G"Unix Makefiles" ../ -DCMAKE_BUILD_TYPE=Release && \
-    make
+    make -j4
 
 # pull and compile partons-example
 RUN cd ${WORKSPACE} && \
@@ -49,7 +64,7 @@ RUN cd ${WORKSPACE} && \
     git clone --single-branch --depth 1 --branch ${PARTONSTAG} https://drf-gitlab.cea.fr/partons/core/partons-example.git && \
     cd ${WORKSPACE}/partons-example/build && \
     cmake -G"Unix Makefiles" ../ -DCMAKE_BUILD_TYPE=Release && \
-    make 
+    make -j4 
 
 # creare directories and copy scripts
 RUN mkdir ${WORKSPACE}/.docker && \
@@ -62,16 +77,27 @@ RUN chmod u+x ${WORKSPACE}/.docker/Dockerfile.partons.mysql && \
     chmod u+x ${WORKSPACE}/.docker/Dockerfile.partons.startup
 
 # set up database
-RUN echo "mysql-server mysql-server/root_password password partons" | debconf-set-selections && \
+RUN apt-get update && \ 
+    apt-get install -y --no-install-recommends dialog && \
+    echo "mysql-server mysql-server/root_password password partons" | debconf-set-selections && \
     echo "mysql-server mysql-server/root_password_again password partons" | debconf-set-selections && \
-    apt-get update && \ 
-    apt-get install -y --no-install-recommends mysql-server && \ 
+    apt-get install -y --no-install-recommends mariadb-server-10.5 && \ 
     apt-get clean && \
     apt-get autoclean && \
     rm -rf /var/lib/apt/lists/* && \
     ${WORKSPACE}/.docker/Dockerfile.partons.mysql && \
     rm ${WORKSPACE}/.docker/Dockerfile.partons.mysql
 
+# locale
+RUN apt-get update && \ 
+    apt-get install -y --no-install-recommends locales && \
+    echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
+    locale-gen && \
+    apt-get clean && \
+    apt-get autoclean && \
+    rm -rf /var/lib/apt/lists/* 
+
 # start mysql server each time container is used
 # due to issue: https://github.com/docker/for-linux/issues/72 
 ENTRYPOINT [".docker/Dockerfile.partons.startup"] 
+

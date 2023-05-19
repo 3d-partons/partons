@@ -2,7 +2,7 @@
 
 # start 
 find /var/lib/mysql -type f -exec touch {} \;
-service mysql start &> /dev/null
+service mariadb start &> /dev/null
 
 # set env.
 __mysql_database="partons"
@@ -39,3 +39,4 @@ sql_exec "SOURCE mysql5_common.sql"
 sql_exec "SOURCE mysql5_gpd_layer.sql"
 sql_exec "SOURCE mysql5_convol_coeff_function_layer.sql"
 sql_exec "SOURCE mysql5_observable_layer.sql"
+
