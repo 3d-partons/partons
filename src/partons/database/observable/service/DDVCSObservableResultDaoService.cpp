@@ -105,23 +105,23 @@ int DDVCSObservableResultDaoService::insert(
 
                 //prepare query
                 m_observableKinematicTableFile += ElemUtils::Formatter()
-                        << std::to_string(m_lastObservableKinematicId) << ","
-                        << std::to_string(kinematic.getXB().getValue()) << ","
-                        << std::to_string(kinematic.getXB().getUnit()) << ","
-                        << std::to_string(kinematic.getT().getValue()) << ","
-                        << std::to_string(kinematic.getT().getUnit()) << ","
-                        << std::to_string(kinematic.getQ2().getValue()) << ","
-                        << std::to_string(kinematic.getQ2().getUnit()) << ","
-                        << std::to_string(kinematic.getQ2Prim().getValue()) << ","
-                        << std::to_string(kinematic.getQ2Prim().getUnit()) << ","
-                        << std::to_string(kinematic.getE().getValue()) << ","
-                        << std::to_string(kinematic.getE().getUnit()) << ","
-                        << std::to_string(kinematic.getPhi().getValue()) << ","
-                        << std::to_string(kinematic.getPhi().getUnit()) << ","
-                        << std::to_string(kinematic.getPhiL().getValue()) << ","
-                        << std::to_string(kinematic.getPhiL().getUnit()) << ","
-                        << std::to_string(kinematic.getThetaL().getValue()) << ","
-                        << std::to_string(kinematic.getThetaL().getUnit()) << ","
+                        << m_lastObservableKinematicId << ","
+                        << kinematic.getXB().getValue() << ","
+                        << kinematic.getXB().getUnit() << ","
+                        << kinematic.getT().getValue() << ","
+                        << kinematic.getT().getUnit() << ","
+                        << kinematic.getQ2().getValue() << ","
+                        << kinematic.getQ2().getUnit() << ","
+                        << kinematic.getQ2Prim().getValue() << ","
+                        << kinematic.getQ2Prim().getUnit() << ","
+                        << kinematic.getE().getValue() << ","
+                        << kinematic.getE().getUnit() << ","
+                        << kinematic.getPhi().getValue() << ","
+                        << kinematic.getPhi().getUnit() << ","
+                        << kinematic.getPhiL().getValue() << ","
+                        << kinematic.getPhiL().getUnit() << ","
+                        << kinematic.getThetaL().getValue() << ","
+                        << kinematic.getThetaL().getUnit() << ","
                         << 0 << ","
                         << kinematic.getHashSum() << '\n';
             }
@@ -130,17 +130,17 @@ int DDVCSObservableResultDaoService::insert(
             m_lastObservableResultId++;
 
             m_observableResultTableFile += ElemUtils::Formatter()
-                    << std::to_string(m_lastObservableResultId) << ","
+                    << m_lastObservableResultId << ","
                     << resultList[i].getComputationModuleName() << ","
-                    << std::to_string(resultList[i].getValue().getValue()) << ","
-                    << std::to_string(resultList[i].getErrStat().getLowerBound()) << ","
-                    << std::to_string(resultList[i].getErrStat().getUpperBound()) << ","
-                    << std::to_string(resultList[i].getErrSys().getLowerBound()) << ","
-                    << std::to_string(resultList[i].getErrSys().getUpperBound()) << ","
-                    << std::to_string(resultList[i].getErrScale().getLowerBound()) << ","
-                    << std::to_string(resultList[i].getErrScale().getUpperBound()) << ","
-                    << std::to_string(resultList[i].getValue().getUnit()) << "," << std::to_string(kinematicId)
-                    << "," << std::to_string(m_previousComputationId.second) << '\n';
+                    << resultList[i].getValue().getValue() << ","
+                    << resultList[i].getErrStat().getLowerBound() << ","
+                    << resultList[i].getErrStat().getUpperBound() << ","
+                    << resultList[i].getErrSys().getLowerBound() << ","
+                    << resultList[i].getErrSys().getUpperBound() << ","
+                    << resultList[i].getErrScale().getLowerBound() << ","
+                    << resultList[i].getErrScale().getUpperBound() << ","
+                    << resultList[i].getValue().getUnit() << "," << kinematicId
+                    << "," << m_previousComputationId.second << '\n';
         }
 
         //insert
