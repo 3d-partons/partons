@@ -9,6 +9,8 @@
  * @version 1.0
  */
 
+#include <complex>
+
 namespace PARTONS {
 
 namespace Constant {
@@ -78,6 +80,9 @@ const double T2_ELEC_CHARGE = 4. / 9.;                      ///< Square of elect
 
 //TODO more explicit name
 const double POSITRON_CHARGE = 0.30282211985966434;         ///< Positron charge \f$e\f$ in natural units (\f$e^2 = 4\pi\alpha\f$).
+
+// Complex numbers
+const std::complex<double> COMPLEX_UNIT = std::complex<double>(0., 1.); ///< Complex unit.
 
 // Mesons
 

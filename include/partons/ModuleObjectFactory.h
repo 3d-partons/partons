@@ -21,8 +21,27 @@ class DVCSScalesModule;
 class TCSScalesModule;
 class DVMPScalesModule;
 class GAM2ScalesModule;
+class CollinearDistributionEvolutionModule;
+class CollinearDistributionModule;
+class DDVCSConvolCoeffFunctionModule;
+class DDVCSObservable;
+class DDVCSProcessModule;
+class DDVCSScalesModule;
+class DDVCSXiConverterModule;
 class DVCSConvolCoeffFunctionModule;
+class DVCSObservable;
+class DVCSProcessModule;
+class DVCSScalesModule;
+class DVCSXiConverterModule;
 class DVMPConvolCoeffFunctionModule;
+class DVMPObservable;
+class DVMPProcessModule;
+class DVMPScalesModule;
+class DVMPXiConverterModule;
+class GPDEvolutionModule;
+class GPDModule;
+class GPDSubtractionConstantModule;
+class RunningAlphaStrongModule;
 class TCSConvolCoeffFunctionModule;
 class GAM2ConvolCoeffFunctionModule;
 class DVCSObservable;
@@ -41,6 +60,9 @@ class GPDSubtractionConstantModule;
 class ModuleObject;
 class RunningAlphaStrongModule;
 class DVCSXiConverterModule;
+class TCSObservable;
+class TCSProcessModule;
+class TCSScalesModule;
 class TCSXiConverterModule;
 class DVMPXiConverterModule;
 class GAM2XiConverterModule;
@@ -217,6 +239,20 @@ public:
      */
     GAM2ConvolCoeffFunctionModule* newGAM2ConvolCoeffFunctionModule(
             const std::string &className);
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a DDVCSConvolCoeffFunctionModule.
+     * @param classId Unique identifier of last child class.
+     * @return DDVCSConvolCoeffFunctionModule pointer.
+     */
+    DDVCSConvolCoeffFunctionModule* newDDVCSConvolCoeffFunctionModule(
+            unsigned int classId);
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a DDVCSConvolCoeffFunctionModule.
+     * @param className Name of last child class.
+     * @return DDVCSConvolCoeffFunctionModule pointer.
+     */
+    DDVCSConvolCoeffFunctionModule* newDDVCSConvolCoeffFunctionModule(
+            const std::string &className);
 
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a DVCSProcessModule.
@@ -269,6 +305,18 @@ public:
      * @return GAM2ProcessModule pointer.
      */
     GAM2ProcessModule* newGAM2ProcessModule(const std::string & className);
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a DDVCSProcessModule.
+     * @param classId Unique identifier of last child class.
+     * @return DDVCSProcessModule pointer.
+     */
+    DDVCSProcessModule* newDDVCSProcessModule(unsigned int classId);
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a DDVCSProcessModule.
+     * @param className Name of last child class.
+     * @return DDVCSProcessModule pointer.
+     */
+    DDVCSProcessModule* newDDVCSProcessModule(const std::string & className);
 
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a RunningAlphaStrongModule.
@@ -350,6 +398,18 @@ public:
      * @return GAM2ScalesModule pointer.
      */
     GAM2ScalesModule* newGAM2ScalesModule(const std::string &className);
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a DDVCSScalesModule.
+     * @param classId Unique identifier of last child class.
+     * @return DDVCSScalesModule pointer.
+     */
+    DDVCSScalesModule* newDDVCSScalesModule(unsigned int classId);
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a DDVCSScalesModule.
+     * @param className Name of last child class.
+     * @return DDVCSScalesModule pointer.
+     */
+    DDVCSScalesModule* newDDVCSScalesModule(const std::string &className);
 
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a DVCSXiConverterModule.
@@ -390,6 +450,20 @@ public:
      * @return DVMPXiConverterModule pointer.
      */
     DVMPXiConverterModule* newDVMPXiConverterModule(
+            const std::string &className);
+
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a DDVCSXiConverterModule.
+     * @param classId Unique identifier of last child class.
+     * @return DDVCSXiConverterModule pointer.
+     */
+    DDVCSXiConverterModule* newDDVCSXiConverterModule(unsigned int classId);
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a DDVCSXiConverterModule.
+     * @param className Name of last child class.
+     * @return DDVCSXiConverterModule pointer.
+     */
+    DDVCSXiConverterModule* newDDVCSXiConverterModule(
             const std::string &className);
 
     /**
@@ -446,6 +520,20 @@ public:
      * @return Observable pointer.
      */
     DVMPObservable* newDVMPObservable(const std::string & className);
+
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a Observable.
+     * @param classId Unique identifier of last child class.
+     * @return Observable pointer.
+     */
+    DDVCSObservable* newDDVCSObservable(unsigned int classId);
+
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a Observable.
+     * @param className Name of last child class.
+     * @return Observable pointer.
+     */
+    DDVCSObservable* newDDVCSObservable(const std::string & className);
 
     /**
      * Method to update a pointer. Used to keep track of the modules and remove them when they become orphans (i.e. no pointer points to them).

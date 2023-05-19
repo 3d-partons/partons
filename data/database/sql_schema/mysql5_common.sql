@@ -152,6 +152,12 @@ VALUES ('17', 'Et3m', 'Et3m');
 INSERT INTO gpd_type (gpd_type_id, gpd_type_short_name, gpd_type_long_name)
 VALUES ('18', 'EbarTrans', 'EbarTrans');
 
+INSERT INTO gpd_type (gpd_type_id, gpd_type_short_name, gpd_type_long_name)
+VALUES ('19', 'HL', 'HL');
+
+INSERT INTO gpd_type (gpd_type_id, gpd_type_short_name, gpd_type_long_name)
+VALUES ('20', 'EL', 'EL');
+
 /* === quark_flavor === */
 
 INSERT INTO quark_flavor (quark_flavor_id, quark_flavor_short_name, quark_flavor_long_name)

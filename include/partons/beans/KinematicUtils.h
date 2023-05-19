@@ -12,12 +12,14 @@
 #include <vector>
 
 #include "../utils/type/PhysicalUnit.h"
+#include "collinear_distribution/CollinearDistributionKinematic.h"
+#include "convol_coeff_function/DDVCS/DDVCSConvolCoeffFunctionKinematic.h"
 #include "convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "convol_coeff_function/DVMP/DVMPConvolCoeffFunctionKinematic.h"
 #include "convol_coeff_function/TCS/TCSConvolCoeffFunctionKinematic.h"
 #include "gpd/GPDKinematic.h"
-#include "collinear_distribution/CollinearDistributionKinematic.h"
 #include "List.h"
+#include "observable/DDVCS/DDVCSObservableKinematic.h"
 #include "observable/DVCS/DVCSObservableKinematic.h"
 #include "observable/DVMP/DVMPObservableKinematic.h"
 #include "observable/TCS/TCSObservableKinematic.h"
@@ -90,6 +92,15 @@ public:
             const std::string &filePath);
 
     /**
+     * Parse a text file in order to retrieve a list of DDVCSConvolCoeffFunctionKinematic objects.
+     * The parsed file should display separate lines of the form "xi | t | Q2 | Q2 | MuF2 | MuR2".
+     * @param filePath Path to file to be parsed.
+     * @return List of extracted DDVCSConvolCoeffFunctionKinematic objects.
+     */
+    List<DDVCSConvolCoeffFunctionKinematic> getDDVCSCCFKinematicFromFile(
+            const std::string &filePath);
+
+    /**
      * Parse a text file in order to retrieve a list of ObservableKinematic objects.
      * The parsed file should display separate lines of the form "xB | t | Q2 | E | phi".
      * @param filePath Path to file to be parsed.
@@ -114,6 +125,15 @@ public:
      * @return List of extracted ObservableKinematic objects.
      */
     List<DVMPObservableKinematic> getDVMPObservableKinematicFromFile(
+            const std::string &filePath);
+
+    /**
+     * Parse a text file in order to retrieve a list of ObservableKinematic objects.
+     * The parsed file should display separate lines of the form "xB | t | Q2 | Q2 | E | phi | phiL | thetaL".
+     * @param filePath Path to file to be parsed.
+     * @return List of extracted ObservableKinematic objects.
+     */
+    List<DDVCSObservableKinematic> getDDVCSObservableKinematicFromFile(
             const std::string &filePath);
 
 private:
