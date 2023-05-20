@@ -119,7 +119,18 @@ PartonDistribution GPDEvolutionApfel::compute(GPDModule* pGPDModule, const GPDTy
 	    thresholds.push_back(aft.getLowerBound() < 1 ? 0 : sqrt(aft.getLowerBound()));
 
 	// Initialize QCD evolution objects
-	const auto GpdObj = apfel::InitializeGpdObjects(*m_g, thresholds, m_xi);
+	std::map<int, apfel::DglapObjects> GpdObj;
+	if (type == GPDType::H || type == GPDType::E)
+	  GpdObj = apfel::InitializeGpdObjects(*m_g, thresholds, m_xi);
+	else if (type == GPDType::Ht || type == GPDType::Et)
+	  GpdObj = apfel::InitializeGpdObjectsPol(*m_g, thresholds, m_xi);
+	else if (type == GPDType::HTrans || type == GPDType::ETrans || type == GPDType::HtTrans || type == GPDType::EtTrans)
+	  GpdObj = apfel::InitializeGpdObjectsTrans(*m_g, thresholds, m_xi);
+	else
+	  throw ElemUtils::CustomException(getClassName(), __func__,
+					   ElemUtils::Formatter()
+					   << "This evolution module is not implemented for GPD type "
+					   << GPDType(type).toString());
 
 	// Construct the DGLAP evolution operators
 	const auto EvolvedGpds = apfel::BuildDglap(GpdObj, initialScaleDistributions(pGPDModule), sqrt(m_MuF2_ref), this->getPertOrder() - 1, m_as);
