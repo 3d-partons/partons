@@ -80,6 +80,7 @@ private:
     std::complex<double> J15plus(int s2, int s1) const;
     std::complex<double> J25plus(int s2, int s1) const;
     double LCperp(int mu, int nu) const; //Levi-Civita tensor for (mu, nu) in {1, 2}
+    std::complex<double> Flong(int h1, int s1) const;
 
     void computeInternalVariables(double Mnucleon);
 
@@ -96,6 +97,11 @@ private:
     double m_DMSW_epsilon2; //squared of the epsilon variable define in paragraph above eq 8 in BM2003
     double m_DMSW_Q2Bar; //Q2 is the squared of the incoming and outgoing photon momenta's average
     double m_DMSW_Q2Bar_tMin; //Q2 at t = tMin
+
+    double m_DMSW_cosTheta_e;
+    double m_DMSW_sinTheta_e;
+    double m_DMSW_cosGamma;
+    double m_DMSW_sinGamma;
 
     //Other momenta
     double m_DMSW_y; //y = p1*q1/(p1*k): paragraph below eq 6 in BM2003
