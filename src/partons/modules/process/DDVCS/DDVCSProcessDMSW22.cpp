@@ -26,6 +26,10 @@ DDVCSProcessDMSW22::DDVCSProcessDMSW22(const std::string &className) :
     m_DMSW_charge_e = 0.;
     m_DMSW_Q2Bar = 0.;
     m_DMSW_Q2Bar_tMin = 0.;
+    m_DMSW_cosTheta_e = 0.;
+    m_DMSW_sinTheta_e = 0.;
+    m_DMSW_cosGamma = 0.;
+    m_DMSW_sinGamma = 0.;
 
     int i;
     for (i = 0; i < 4; i++) {
@@ -136,6 +140,8 @@ DDVCSProcessDMSW22::DDVCSProcessDMSW22(const std::string &className) :
     m_DMSW_phiL = 0.;
     m_DMSW_thetaL = 0.;
     m_DMSW_phi = 0.;
+    m_DMSW_phiS = 0.;
+    m_DMSW_thetaS = 0.;
 }
 
 DDVCSProcessDMSW22::DDVCSProcessDMSW22(const DDVCSProcessDMSW22& other) :
@@ -146,6 +152,10 @@ DDVCSProcessDMSW22::DDVCSProcessDMSW22(const DDVCSProcessDMSW22& other) :
     m_DMSW_charge_e = other.m_DMSW_charge_e;
     m_DMSW_Q2Bar = other.m_DMSW_Q2Bar;
     m_DMSW_Q2Bar_tMin = other.m_DMSW_Q2Bar_tMin;
+    m_DMSW_cosTheta_e = other.m_DMSW_cosTheta_e;
+    m_DMSW_sinTheta_e = other.m_DMSW_sinTheta_e;
+    m_DMSW_cosGamma = other.m_DMSW_cosGamma;
+    m_DMSW_sinGamma = other.m_DMSW_sinGamma;
 
     int i;
     for (i = 0; i < 4; i++) {
@@ -225,6 +235,8 @@ DDVCSProcessDMSW22::DDVCSProcessDMSW22(const DDVCSProcessDMSW22& other) :
     m_DMSW_phiL = other.m_DMSW_phiL;
     m_DMSW_thetaL = other.m_DMSW_thetaL;
     m_DMSW_phi = other.m_DMSW_phi;
+    m_DMSW_phiS = other.m_DMSW_phiS;
+    m_DMSW_thetaS = other.m_DMSW_thetaS;
 
     m_cffH = other.m_cffH;
     m_cffE = other.m_cffE;
@@ -266,12 +278,17 @@ PhysicalType<double> DDVCSProcessDMSW22::CrossSectionBH() {
     int targetPolariz;
 
     if (m_targetPolarization.getX() == 0. && m_targetPolarization.getY() == 0.
-            && m_targetPolarization.getZ() == 0.) {
+            && m_targetPolarization.getZ() == 0.) { //unpolarized target
         targetPolariz = 0;
+    } else if (m_targetPolarization.getX() == 0.
+            && m_targetPolarization.getY() == 0.
+            && m_targetPolarization.getZ() != 0.) { // longitudinally polarized target: collinear (m_targetPolarization.getZ() > 0), or counter-collinear (m_targetPolarization.getZ() < 0) to the incoming electron beam)
+        targetPolariz = m_targetPolarization.getZ()
+                / fabs(m_targetPolarization.getZ());
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
-                        << "Not able to run for target polarization "
+                        << "Not able to run for TRANSVERSE target polarization "
                         << m_targetPolarization.toString()
                         << " and beam helicity " << m_beamHelicity);
     }
@@ -287,12 +304,17 @@ PhysicalType<double> DDVCSProcessDMSW22::CrossSectionVCS() {
     int targetPolariz;
 
     if (m_targetPolarization.getX() == 0. && m_targetPolarization.getY() == 0.
-            && m_targetPolarization.getZ() == 0.) {
+            && m_targetPolarization.getZ() == 0.) { //unpolarized target
         targetPolariz = 0;
+    } else if (m_targetPolarization.getX() == 0.
+            && m_targetPolarization.getY() == 0.
+            && m_targetPolarization.getZ() != 0.) { // longitudinally polarized target: collinear (m_targetPolarization.getZ() > 0), or counter-collinear (m_targetPolarization.getZ() < 0) to the incoming electron beam)
+        targetPolariz = m_targetPolarization.getZ()
+                / fabs(m_targetPolarization.getZ());
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
-                        << "Not able to run for target polarization "
+                        << "Not able to run for TRANSVERSE target polarization "
                         << m_targetPolarization.toString()
                         << " and beam helicity " << m_beamHelicity);
     }
@@ -308,12 +330,17 @@ PhysicalType<double> DDVCSProcessDMSW22::CrossSectionInterf() {
     int targetPolariz;
 
     if (m_targetPolarization.getX() == 0. && m_targetPolarization.getY() == 0.
-            && m_targetPolarization.getZ() == 0.) {
+            && m_targetPolarization.getZ() == 0.) { //unpolarized target
         targetPolariz = 0;
+    } else if (m_targetPolarization.getX() == 0.
+            && m_targetPolarization.getY() == 0.
+            && m_targetPolarization.getZ() != 0.) { // longitudinally polarized target: collinear (m_targetPolarization.getZ() > 0), or counter-collinear (m_targetPolarization.getZ() < 0) to the incoming electron beam)
+        targetPolariz = m_targetPolarization.getZ()
+                / fabs(m_targetPolarization.getZ());
     } else {
         throw ElemUtils::CustomException(getClassName(), __func__,
                 ElemUtils::Formatter()
-                        << "Not able to run for target polarization "
+                        << "Not able to run for TRANSVERSE target polarization "
                         << m_targetPolarization.toString()
                         << " and beam helicity " << m_beamHelicity);
     }
@@ -439,7 +466,7 @@ std::complex<double> DDVCSProcessDMSW22::ampliBH1crossed(int s2, int s1, int sl,
     //Define 'sigma' to include appropriate signs in the sum over L
     double sigma[3] = { -1., -1., +1. };
 
-    //Transform physical values of helicity s1, s2 = -1 andr +1, to integers 0 and 1; respectively
+    //Transform physical values of helicity s1, s2 = -1 and +1, to integers 0 and 1; respectively
     if (s2 == +1) {
         h2 = +1;
         minush2 = 0;
@@ -486,7 +513,7 @@ std::complex<double> DDVCSProcessDMSW22::ampliBH1crossed(int s2, int s1, int sl,
     tBH1_J2 = -m_DMSW_F2 * J2function(s2, s1) * tBH1_J2
             / (2. * m_DMSW_Mnucleon);
 
-    double kPrimePlusDelta[4]; // kPrimePlusDelta = k' + Delta = k - q2
+    double kPrimePlusDelta[4]; // kPrimePlusDelta = k' + Delta = k - q'
     for (i = 0; i < 4; i++) {
         kPrimePlusDelta[i] = m_DMSW_k[i] - m_DMSW_qPrim[i];
     }
@@ -575,13 +602,13 @@ std::complex<double> DDVCSProcessDMSW22::ampliBH2(int s2, int s1, int sl,
     tBH2_J2 = -m_DMSW_F2 * J2function(s2, s1) * tBH2_J2
             / (2. * m_DMSW_Mnucleon);
 
-    double q1Minuslminus[4];
+    double qMinuslminus[4];
     for (i = 0; i < 4; i++) {
-        q1Minuslminus[i] = m_DMSW_q[i] - m_DMSW_lminus[i];
+        qMinuslminus[i] = m_DMSW_q[i] - m_DMSW_lminus[i];
     }
 
     tBH2 = -pow(m_DMSW_charge_e, 4.) * (tBH2_J1 + tBH2_J2)
-            / (-m_Q2 * m_t * MinkProd(q1Minuslminus, q1Minuslminus));
+            / (-m_Q2 * m_t * MinkProd(qMinuslminus, qMinuslminus));
 
     return tBH2;
 
@@ -665,13 +692,13 @@ std::complex<double> DDVCSProcessDMSW22::ampliBH2crossed(int s2, int s1, int sl,
     tBH2_J2 = -m_DMSW_F2 * J2function(s2, s1) * tBH2_J2
             / (2. * m_DMSW_Mnucleon);
 
-    double q1Minuslplus[4];
+    double qMinuslplus[4];
     for (i = 0; i < 4; i++) {
-        q1Minuslplus[i] = m_DMSW_q[i] - m_DMSW_lplus[i];
+        qMinuslplus[i] = m_DMSW_q[i] - m_DMSW_lplus[i];
     }
 
     tBH2 = pow(m_DMSW_charge_e, 4.) * (tBH2_J1 + tBH2_J2)
-            / (-m_Q2 * m_t * MinkProd(q1Minuslplus, q1Minuslplus));
+            / (-m_Q2 * m_t * MinkProd(qMinuslplus, qMinuslplus));
 
     return tBH2;
 }
@@ -865,8 +892,60 @@ double DDVCSProcessDMSW22::crossSectionBH(int targetPolariz) {
 
         XSEC = XSEC / 2.; // 1/2 factor coming from averaging in initial spin states of proton
 
+    } else if (targetPolariz == +1 || targetPolariz == -1) {
+        s = m_beamHelicity;
+
+        for (s2 = -1; s2 < 2; s2 = s2 + 2) {
+            for (sl = -1; sl < 2; sl = sl + 2) {
+
+                Abh1 = Flong(targetPolariz, +1) * ampliBH1(s2, +1, sl, s)
+                        + Flong(targetPolariz, -1) * ampliBH1(s2, -1, sl, s);
+
+                Abh1crossed = Flong(targetPolariz, +1)
+                        * ampliBH1crossed(s2, +1, sl, s)
+                        + Flong(targetPolariz, -1)
+                                * ampliBH1crossed(s2, -1, sl, s);
+
+                Abh2 = Flong(targetPolariz, +1) * ampliBH2(s2, +1, sl, s)
+                        + Flong(targetPolariz, -1) * ampliBH2(s2, -1, sl, s);
+
+                Abh2crossed = Flong(targetPolariz, +1)
+                        * ampliBH2crossed(s2, +1, sl, s)
+                        + Flong(targetPolariz, -1)
+                                * ampliBH2crossed(s2, -1, sl, s);
+
+                // |BH1|^2
+                T2_bh1 += (Abh1 + Abh1crossed) * conj(Abh1 + Abh1crossed);
+
+                // |BH2|^2
+                T2_bh2 += (Abh2 + Abh2crossed) * conj(Abh2 + Abh2crossed);
+
+                // BH1-BH2 interference
+                T2_bh12 += (Abh1 + Abh1crossed) * conj(Abh2 + Abh2crossed)
+                        + conj((Abh1 + Abh1crossed) * conj(Abh2 + Abh2crossed));
+
+            }
+        }
+
+        //Modulus squared of the whole amplitude for BH process
+        T2_bh = T2_bh1 + T2_bh2 + T2_bh12;
+
+        //differential cross-section
+        XSEC =
+                (1. / m_DMSW_jac) * pow(Constant::FINE_STRUCTURE_CONSTANT, 4.)
+                        * m_xB * pow(m_DMSW_y, 2.) * real(T2_bh)
+                        * (1. / pow(m_DMSW_charge_e, 8.)) * sin(m_DMSW_thetaL)
+                        / (16 * pow(2. * M_PI, 3.) * pow(m_Q2, 2.)
+                                * sqrt(
+                                        1.
+                                                + pow(
+                                                        2. * m_xB
+                                                                * m_DMSW_Mnucleon,
+                                                        2.) / m_Q2));
+
     } else {
-        //TODO polarized target case
+
+        //TODO TRANSVERSELY polarized target case
         return 0.;
     }
 
@@ -911,8 +990,35 @@ double DDVCSProcessDMSW22::crossSectionVCS(int targetPolariz) {
 
         XSEC = XSEC / 2.; // 1/2 factor coming from averaging in initial spin states of proton
 
+    } else if (targetPolariz == +1 || targetPolariz == -1) {
+        s = m_beamHelicity;
+
+        for (s2 = -1; s2 < 2; s2 = s2 + 2) {
+            for (sl = -1; sl < 2; sl = sl + 2) {
+
+                Avcs = Flong(targetPolariz, +1) * ampliVCS(s2, +1, sl, s)
+                        + Flong(targetPolariz, -1) * ampliVCS(s2, -1, sl, s);
+
+                T2_vcs += Avcs * conj(Avcs);
+
+            }
+        }
+
+        //differential cross-section
+        XSEC =
+                (1. / m_DMSW_jac) * pow(Constant::FINE_STRUCTURE_CONSTANT, 4.)
+                        * m_xB * pow(m_DMSW_y, 2.) * real(T2_vcs)
+                        * (1. / pow(m_DMSW_charge_e, 8.)) * sin(m_DMSW_thetaL)
+                        / (16 * pow(2. * M_PI, 3.) * pow(m_Q2, 2.)
+                                * sqrt(
+                                        1.
+                                                + pow(
+                                                        2. * m_xB
+                                                                * m_DMSW_Mnucleon,
+                                                        2.) / m_Q2));
+
     } else {
-        //TODO target polarization case
+        //TODO TRANSVERSELY target polarization case
         return 0.;
     }
 
@@ -923,32 +1029,27 @@ double DDVCSProcessDMSW22::crossSectionInterf(int targetPolariz) {
 
     double XSEC;
     std::complex<double> T2_interf = (0., 0.);
-    std::complex<double> T2_interf2 = (0., 0.);
-    std::complex<double> Avcs, Abh1, Abh1crossed, Abh2, Abh2crossed;
+    std::complex<double> Avcs = (0., 0.);
+    std::complex<double> Abh1 = (0., 0.);
+    std::complex<double> Abh1crossed = (0., 0.);
+    std::complex<double> Abh2 = (0., 0.);
+    std::complex<double> Abh2crossed = (0., 0.);
     int s2, s1, sl, s;
 
     if (targetPolariz == 0) {
         s = m_beamHelicity;
 
         for (s1 = -1; s1 < 2; s1 = s1 + 2) {
-
             for (s2 = -1; s2 < 2; s2 = s2 + 2) {
                 for (sl = -1; sl < 2; sl = sl + 2) {
 
                     Avcs = ampliVCS(s2, s1, sl, s);
                     Abh1 = ampliBH1(s2, s1, sl, s);
-
                     Abh1crossed = ampliBH1crossed(s2, s1, sl, s);
 
-//                    Abh2 = ampliBH2(s2, s1, sl, s);
-//
-//                    Abh2crossed = ampliBH2crossed(s2, s1, sl, s);
+                    Abh2 = ampliBH2(s2, s1, sl, s);
 
-//                    std::cout << "PAWEL: " << s1 << ' ' << s2 << ' ' <<sl << ' ';
-//                    std::cout << Abh1 + Abh1crossed;
-//                    std::cout << Avcs << std::endl;
-
-                    Avcs = std::complex<double>(-1*Avcs.real(), Avcs.imag());
+                    Abh2crossed = ampliBH2crossed(s2, s1, sl, s);
 
                     T2_interf += (Abh1 + Abh1crossed) * conj(Avcs)
                             + (Abh2 + Abh2crossed) * conj(Avcs)
@@ -957,25 +1058,10 @@ double DDVCSProcessDMSW22::crossSectionInterf(int targetPolariz) {
                                             + (Abh2 + Abh2crossed)
                                                     * conj(Avcs));
 
-                    T2_interf2+=(Abh1 + Abh1crossed + Abh2 + Abh2crossed + Avcs) * conj(Abh1 + Abh1crossed + Abh2 + Abh2crossed + Avcs)
-
-
-                            -(Abh1 + Abh1crossed) * conj(Abh1 + Abh1crossed)
-
-                            -((Abh2 + Abh2crossed) * conj(Abh2 + Abh2crossed))
-
-                            -((Abh1 + Abh1crossed) * conj(Abh2 + Abh2crossed)
-                                    + conj(
-                                            (Abh1 + Abh1crossed)
-                                                    * conj(Abh2 + Abh2crossed)))
-
-                            -Avcs * conj(Avcs);
 
                 }
             }
         }
-
-        //std::cout << "PAWEL: " << T2_interf << ' ' << T2_interf2 << std::endl;
 
         //differential cross-section
         XSEC =
@@ -992,9 +1078,46 @@ double DDVCSProcessDMSW22::crossSectionInterf(int targetPolariz) {
 
         XSEC = XSEC / 2.; // 1/2 factor coming from averaging in initial spin states of proton
 
+    } else if (targetPolariz == +1 || targetPolariz == -1) {
+        s = m_beamHelicity;
+
+        for (s2 = -1; s2 < 2; s2 = s2 + 2) {
+            for (sl = -1; sl < 2; sl = sl + 2) {
+
+                Avcs = Flong(targetPolariz, +1) * ampliVCS(s2, +1, sl, s)
+                        + Flong(targetPolariz, -1) * ampliVCS(s2, -1, sl, s);
+                Abh1 = Flong(targetPolariz, +1) * ampliBH1(s2, +1, sl, s)
+                        + Flong(targetPolariz, -1) * ampliBH1(s2, -1, sl, s);
+                Abh1crossed = Flong(targetPolariz, +1)
+                        * ampliBH1crossed(s2, +1, sl, s)
+                        + Flong(targetPolariz, -1)
+                                * ampliBH1crossed(s2, -1, sl, s);
+
+                T2_interf += (Abh1 + Abh1crossed) * conj(Avcs)
+                        + (Abh2 + Abh2crossed) * conj(Avcs)
+                        + conj(
+                                (Abh1 + Abh1crossed) * conj(Avcs)
+                                        + (Abh2 + Abh2crossed) * conj(Avcs));
+
+            }
+        }
+
+        //differential cross-section
+        XSEC =
+                (1. / m_DMSW_jac) * pow(Constant::FINE_STRUCTURE_CONSTANT, 4.)
+                        * m_xB * pow(m_DMSW_y, 2.) * real(T2_interf)
+                        * (1. / pow(m_DMSW_charge_e, 8.)) * sin(m_DMSW_thetaL)
+                        / (16 * pow(2. * M_PI, 3.) * pow(m_Q2, 2.)
+                                * sqrt(
+                                        1.
+                                                + pow(
+                                                        2. * m_xB
+                                                                * m_DMSW_Mnucleon,
+                                                        2.) / m_Q2));
+
     } else {
 
-        //TODO polarized target case
+        //TODO TRANSVERSELY polarized target case
         return 0.;
     }
 
@@ -1174,7 +1297,7 @@ std::complex<double> DDVCSProcessDMSW22::jFunction(int mu, int helic,
 
     jValue = p1[mu] * MinkProd(p2, m_DMSW_k0) + p2[mu] * MinkProd(p1, m_DMSW_k0)
             - m_DMSW_k0[mu] * MinkProd(p1, p2)
-            - std::complex<double>(0., helic * LCp1p2k0);
+            + std::complex<double>(0., helic * LCp1p2k0); // - changed to +
 
     return jValue / Np1p2;
 }
@@ -1284,38 +1407,119 @@ double DDVCSProcessDMSW22::LCperp(int mu, int nu) const {
     return LCvalue;
 }
 
+//F matrix for longitudinally polarized target (collinear or counter-collinear to the incoming electron beam)
+std::complex<double> DDVCSProcessDMSW22::Flong(int h1, int s1) const {
+
+    std::complex<double> F_h1s1 = (0., 0.);
+
+    //Angles needed to build the F matrix for the case of longitudinally polarized target:
+    double cosThetaK = -m_DMSW_sinTheta_e * m_DMSW_sinGamma * cos(m_DMSW_phi)
+            + m_DMSW_cosTheta_e * m_DMSW_cosGamma;
+    double cosThetaKover2 = sqrt(0.5 * (1. + cosThetaK));
+    double sinThetaKover2 = sqrt(0.5 * (1. - cosThetaK));
+    double phiK;
+
+    if (m_DMSW_k[2] >= 0. && m_DMSW_k[1] > 0.) {
+        phiK = atan(m_DMSW_k[2] / m_DMSW_k[1]);
+    } else if (m_DMSW_k[2] >= 0. && m_DMSW_k[1] < 0.) {
+        phiK = M_PI + atan(m_DMSW_k[2] / m_DMSW_k[1]);
+    } else if (m_DMSW_k[2] < 0. && m_DMSW_k[1] < 0.) {
+        phiK = M_PI + atan(m_DMSW_k[2] / m_DMSW_k[1]);
+    } else if (m_DMSW_k[2] < 0. && m_DMSW_k[1] > 0.) {
+        phiK = 2. * M_PI + atan(m_DMSW_k[2] / m_DMSW_k[1]);
+    }
+
+    //F matrix values:
+
+    if (h1 == 1) {
+        if (s1 == 1) {
+            F_h1s1 = cosThetaKover2;
+        } else if (s1 == -1) {
+            F_h1s1 = (cos(phiK) * sinThetaKover2, sin(phiK) * sinThetaKover2);
+        }
+    } else if (h1 == -1) {
+        if (s1 == 1) {
+            F_h1s1 = -(cos(phiK) * sinThetaKover2, -sin(phiK) * sinThetaKover2);
+        } else if (s1 == -1) {
+            F_h1s1 = cosThetaKover2;
+        }
+    }
+
+    return F_h1s1;
+}
+
+//std::complex<double> DDVCSProcessDMSW22::Flong(int h1, int s1) const {
+//
+//    std::complex<double> F_h1s1 = (0., 0.);
+//
+//    //Angles needed to build the F matrix for the case of longitudinally polarized target:
+//    double cosThetaK = -m_DMSW_sinTheta_e * m_DMSW_sinGamma * cos(m_DMSW_phi)
+//            + m_DMSW_cosTheta_e * m_DMSW_cosGamma;
+//    double cosThetaKover2 = sqrt(0.5 * (1. + cosThetaK));
+//    double sinThetaKover2 = sqrt(0.5 * (1. - cosThetaK));
+//    double phiK;
+//
+//    if (m_DMSW_k[2] >= 0. && m_DMSW_k[1] > 0.) {
+//        phiK = atan(m_DMSW_k[2] / m_DMSW_k[1]);
+//    } else if (m_DMSW_k[2] >= 0. && m_DMSW_k[1] < 0.) {
+//        phiK = M_PI + atan(m_DMSW_k[2] / m_DMSW_k[1]);
+//    } else if (m_DMSW_k[2] < 0. && m_DMSW_k[1] < 0.) {
+//        phiK = M_PI + atan(m_DMSW_k[2] / m_DMSW_k[1]);
+//    } else if (m_DMSW_k[2] < 0. && m_DMSW_k[1] > 0.) {
+//        phiK = 2. * M_PI + atan(m_DMSW_k[2] / m_DMSW_k[1]);
+//    }
+//
+//    //F matrix values:
+//
+//    if (h1 == 1) {
+//        if (s1 == 1) {
+//            F_h1s1 = (cosThetaKover2, 0.);
+//        } else if (s1 == -1) {
+//            F_h1s1 = (cos(phiK), sin(phiK)) * sinThetaKover2;
+//        }
+//    } else if (h1 == -1) {
+//        if (s1 == -1) {
+//            F_h1s1 = -(cos(phiK), sin(phiK)) * cosThetaKover2;
+//        } else if (s1 == 1) {
+//            F_h1s1 = sinThetaKover2;
+//        }
+//    }
+//
+//    return F_h1s1;
+//}
+
 void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon) {
 
-    //check range
+//check range
     if (m_phi < 0. || m_phi > 2 * M_PI) {
         throw ElemUtils::CustomException(getClassName(), __func__,
                 "phi must be in 0 - 2pi range");
     }
 
-    //We change from Trento's phi (m_phi) to TRF-II's phi (m_DMSW_phi)
-    //Trento convention: DOI 10.1103/PhysRevD.70.117504
-    //if m_phi = pi + alpha (with alpha > 0), then m_DMSW_phi = 2pi - alpha = 2pi - (m_phi - pi) = 3pi - m_phi
+//We change from Trento's phi (m_phi) to TRF-II's phi (m_DMSW_phi)
+//Trento convention: DOI 10.1103/PhysRevD.70.117504
+//if m_phi = pi + alpha (with alpha > 0), then m_DMSW_phi = 2pi - alpha = 2pi - (m_phi - pi) = 3pi - m_phi
     if (m_phi >= 0. && m_phi <= M_PI) {
         m_DMSW_phi = M_PI - m_phi;
     } else {
         m_DMSW_phi = 3. * M_PI - m_phi;
     }
 
-    //Change from BDP's lepton angles to TRF-II's ones:
+//Change from BDP's lepton angles to TRF-II's ones:
     leptons cmFrame;
     cmFrame.computeConverterVariables(m_xB, m_t, m_Q2, m_Q2Prim, Mnucleon);
 
-    //m_phiL and m_thetaL are the lepton angles in BDP frame
-    //m_DMSW_phiL, m_DMSW_thetaL are the lepton angles in TRF-II frame
+//m_phiL and m_thetaL are the lepton angles in BDP frame
+//m_DMSW_phiL, m_DMSW_thetaL are the lepton angles in TRF-II frame
     std::pair<double, double> cmFrameResult = cmFrame.leptonCMconverterToBM03(
             m_phiL, m_thetaL);
     m_DMSW_phiL = cmFrameResult.first;
-    m_DMSW_thetaL = /*-1 * */cmFrameResult.second;
+    m_DMSW_thetaL = cmFrameResult.second;
 
-    //jacobian (jac)'s definition: d(xsec)/(... d m_thetaL d m_phiL) = (1/jac) * d(xsec)/(... d m_DMSW_thetaL d m_DMSW_phiL)
+//jacobian (jac)'s definition: d(xsec)/(... d m_thetaL d m_phiL) = (1/jac) * d(xsec)/(... d m_DMSW_thetaL d m_DMSW_phiL)
     m_DMSW_jac = cmFrame.jacobianLeptonCM(m_DMSW_phiL, m_DMSW_thetaL);
 
-    //Evaluation of tMin:
+//Evaluation of tMin:
     m_DMSW_epsilon2 = pow(2. * m_xB * Mnucleon, 2.) / m_Q2;
 
     m_DMSW_tMin = -1. / (4. * m_xB * (1. - m_xB) + m_DMSW_epsilon2);
@@ -1326,12 +1530,12 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon) {
                             pow((1. - m_xB) * m_Q2 - m_xB * m_Q2Prim, 2.)
                                     - m_DMSW_epsilon2 * m_Q2 * m_Q2Prim));
 
-    //Basic numbers:
+//Basic numbers:
     m_DMSW_Mnucleon = Mnucleon;
     m_DMSW_charge_e = sqrt(Constant::FINE_STRUCTURE_CONSTANT * 4. * M_PI);
     m_DMSW_Q2Bar = 0.5 * (m_Q2 - m_Q2Prim + m_t / 2.);
 
-    //Light-like vectors (r1, r2, r'1, r'2) to build proton momenta (p, pPrim):
+//Light-like vectors (r1, r2, r'1, r'2) to build proton momenta (p, pPrim):
     m_DMSW_r1[0] = 0.5 * Mnucleon;
     m_DMSW_r1[1] = 0.;
     m_DMSW_r1[2] = 0.;
@@ -1347,13 +1551,13 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon) {
     m_DMSW_p[2] = 0.;
     m_DMSW_p[3] = 0.;
 
-    double modpPrimI = sqrt(-m_t * (1. - m_t / pow(2. * Mnucleon, 2.))); //modulus of 3D component of p2 in TRF-I frame, eq 12 in BM2003
+    double modpPrimI = sqrt(-m_t * (1. - m_t / pow(2. * Mnucleon, 2.))); //modulus of 3D component of pPrim in TRF-I frame, eq 12 in BM2003
     double cosThetaN = -(m_DMSW_epsilon2 * 0.5 * (m_Q2 + m_Q2Prim - m_t)
             - m_xB * m_t)
-            / (2 * m_xB * Mnucleon * sqrt(1. + m_DMSW_epsilon2) * modpPrimI); //cosine of the angle of p2I with respect to z-axis of TRF-I frame, eq 13 in BM2003
+            / (2 * m_xB * Mnucleon * sqrt(1. + m_DMSW_epsilon2) * modpPrimI); //cosine of the angle of pPrimI with respect to z-axis of TRF-I frame, eq 13 in BM2003
     double sinThetaN = sqrt(1. - pow(cosThetaN, 2.));
 
-    //Because of eq 19 at t = tMin (sinGamma = 0), qPrim = (w2, 0, 0, w2*modv) and momentum conservation:
+//Because of eq 19 at t = tMin (m_DMSW_sinGamma = 0), qPrim = (w2, 0, 0, w2*modv) and momentum conservation:
     if (m_t == m_DMSW_tMin) {
         sinThetaN = 0.;
     }
@@ -1361,15 +1565,14 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon) {
     double w2 = sqrt(m_Q2 / m_DMSW_epsilon2) + m_t / (2. * Mnucleon); //eq 17 in BM2003
     double modv = sqrt(1. - m_Q2Prim / pow(w2, 2.)); //modulus of outgoing photon's speed in TRF-I frame, eq 17 in BM2003
 
-    double cosGamma = -(sqrt(m_DMSW_epsilon2) * 0.5 * (m_Q2 - m_Q2Prim + m_t)
+    m_DMSW_cosGamma = -(sqrt(m_DMSW_epsilon2) * 0.5 * (m_Q2 - m_Q2Prim + m_t)
             + sqrt(m_Q2) * w2)
             / (sqrt(m_Q2 * (1. + m_DMSW_epsilon2)) * modv * w2); //cosine of angle between outgoing photon and z-axis in TRF-I frame, eq 18 in BM2003
-    double sinGamma = sqrt(1. - pow(cosGamma, 2.)); //this expression can produce NaNs when t = tMin (probably because numerics since for t = tMin, cosGamma == -1 so sinGamma == 0)
+    m_DMSW_sinGamma = sqrt(1. - pow(m_DMSW_cosGamma, 2.)); //this expression can produce NaNs when t = tMin (probably because numerics since for t = tMin, m_DMSW_cosGamma == -1 so m_DMSW_sinGamma == 0)
 
-    //Because of eq 21 in BM2003, to avoid numerical effects:
+//Because of eq 21 in BM2003, to avoid numerical effects:
     if (m_t == m_DMSW_tMin) {
-        cosGamma = 1.; //TODO PS added, check if makes sense
-        sinGamma = 0.;
+        m_DMSW_sinGamma = 0.;
     }
 
     double pPrimI[4]; //pPrim in TRF-I frame, eqs 12 and 13 in BM2003
@@ -1379,19 +1582,18 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon) {
     pPrimI[2] = modpPrimI * sinThetaN * sin(m_DMSW_phi);
     pPrimI[3] = modpPrimI * cosThetaN;
 
+    //pPrime in TRF-II:
     m_DMSW_pPrim[0] = pPrimI[0];
-    m_DMSW_pPrim[1] =
-            cosGamma
-                    * (cos(M_PI + m_DMSW_phi) * pPrimI[1]
-                            + sin(M_PI + m_DMSW_phi) * pPrimI[2])
-                    - sinGamma * pPrimI[3];
+    m_DMSW_pPrim[1] = m_DMSW_cosGamma
+            * (cos(M_PI + m_DMSW_phi) * pPrimI[1]
+                    + sin(M_PI + m_DMSW_phi) * pPrimI[2])
+            - m_DMSW_sinGamma * pPrimI[3];
     m_DMSW_pPrim[2] = -sin(M_PI + m_DMSW_phi) * pPrimI[1]
             + cos(M_PI + m_DMSW_phi) * pPrimI[2];
-    m_DMSW_pPrim[3] =
-            sinGamma
-                    * (cos(M_PI + m_DMSW_phi) * pPrimI[1]
-                            + sin(M_PI + m_DMSW_phi) * pPrimI[2])
-                    + cosGamma * pPrimI[3];
+    m_DMSW_pPrim[3] = m_DMSW_sinGamma
+            * (cos(M_PI + m_DMSW_phi) * pPrimI[1]
+                    + sin(M_PI + m_DMSW_phi) * pPrimI[2])
+            + m_DMSW_cosGamma * pPrimI[3];
 
     double auxVector[4];
 
@@ -1417,6 +1619,7 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon) {
         m_DMSW_nminus[i] = (1. / (2. * N)) * auxVector[i];
     }
 
+    //Building up rPrim1, rPrim2 such that pPrim = rPrim1 + rPrim2
     double Alpha = MinkProd(m_DMSW_nminus, m_DMSW_pPrim);
     double Beta = MinkProd(m_DMSW_nplus, m_DMSW_pPrim);
     double Gamma = Alpha - 0.5 * pow(Mnucleon, 2.) / Beta;
@@ -1429,21 +1632,21 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon) {
         }
     }
 
-    //Other momenta:
+    //Other momenta and variables:
     m_DMSW_y = m_Q2 / (m_E * 2. * m_xB * Mnucleon);
 
-    double cosTheta_e = -(1. + m_DMSW_y * m_DMSW_epsilon2 / 2.)
+    m_DMSW_cosTheta_e = -(1. + m_DMSW_y * m_DMSW_epsilon2 / 2.)
             / sqrt(1. + m_DMSW_epsilon2);
-    double sinTheta_e = sqrt(1. - pow(cosTheta_e, 2.));
+    m_DMSW_sinTheta_e = sqrt(1. - pow(m_DMSW_cosTheta_e, 2.));
 
     m_DMSW_k[0] = m_E;
     m_DMSW_k[1] = m_E
-            * (sinTheta_e * cosGamma * cos(M_PI + m_DMSW_phi)
-                    - cosTheta_e * sinGamma);
-    m_DMSW_k[2] = -m_E * sinTheta_e * sin(M_PI + m_DMSW_phi);
+            * (m_DMSW_sinTheta_e * m_DMSW_cosGamma * cos(M_PI + m_DMSW_phi)
+                    - m_DMSW_cosTheta_e * m_DMSW_sinGamma);
+    m_DMSW_k[2] = -m_E * m_DMSW_sinTheta_e * sin(M_PI + m_DMSW_phi);
     m_DMSW_k[3] = m_E
-            * (sinTheta_e * sinGamma * cos(M_PI + m_DMSW_phi)
-                    + cosTheta_e * cosGamma);
+            * (m_DMSW_sinTheta_e * m_DMSW_sinGamma * cos(M_PI + m_DMSW_phi)
+                    + m_DMSW_cosTheta_e * m_DMSW_cosGamma);
 
     for (i = 0; i < 4; i++) {
         m_DMSW_Delta[i] = m_DMSW_pPrim[i] - m_DMSW_p[i];
@@ -1457,9 +1660,9 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon) {
     double w1 = sqrt(m_Q2 / m_DMSW_epsilon2);
 
     m_DMSW_q[0] = w1;
-    m_DMSW_q[1] = w1 * sqrt(1. + m_DMSW_epsilon2) * sinGamma;
+    m_DMSW_q[1] = w1 * sqrt(1. + m_DMSW_epsilon2) * m_DMSW_sinGamma;
     m_DMSW_q[2] = 0.;
-    m_DMSW_q[3] = -w1 * sqrt(1. + m_DMSW_epsilon2) * cosGamma;
+    m_DMSW_q[3] = -w1 * sqrt(1. + m_DMSW_epsilon2) * m_DMSW_cosGamma;
 
     m_DMSW_lminus[0] = 0.5 * w2 * (1. + modv * cos(m_DMSW_thetaL));
     m_DMSW_lminus[1] = 0.5 * sqrt(m_Q2Prim) * sin(m_DMSW_thetaL)
@@ -1473,11 +1676,11 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon) {
         m_DMSW_kPrime[i] = m_DMSW_k[i] - m_DMSW_q[i];
     }
 
-    // rho variable and 2pBarqBar scale:
+// rho variable and 2pBarqBar scale:
     m_DMSW_rho = 2. * m_DMSW_Q2Bar / (2. * m_Q2 / m_xB - m_Q2 - m_Q2Prim + m_t); //xi variable, the first of the two eqs in BM2003's eq 31 (REMEMBER: we take positive eta)
     m_DMSW_2pBarqBar = m_DMSW_Q2Bar / m_DMSW_rho;
 
-    // n and n^\star light-like vectors from BM2000 and BM2003. Here, n = m_DMSW_nBM and n^\star = m_DMSW_nstarBM:
+// n and n^\star light-like vectors from BM2000 and BM2003. Here, n = m_DMSW_nBM and n^\star = m_DMSW_nstarBM:
     double delta2 = (Mnucleon * Mnucleon - m_t / 4.); //delta2 = \delta^2 * m_DMSW_Q2Bar with \delta^2 as defined in BM2003 paper (eq A1)
     double root = sqrt(1. + 4. * m_DMSW_rho * delta2 / m_DMSW_2pBarqBar);
 
@@ -1491,7 +1694,7 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon) {
         m_DMSW_HATnBM[i] = m_DMSW_2pBarqBar * m_DMSW_nBM[i];
     }
 
-    // Proceeding to compute vectors and variables in hard part at t = tMin:
+// Proceeding to compute vectors and variables in hard part at t = tMin:
     double delta2_tMin = (Mnucleon * Mnucleon - m_DMSW_tMin / 4.);
     m_DMSW_Q2Bar_tMin = 0.5 * (m_Q2 - m_Q2Prim + m_DMSW_tMin / 2.);
     m_DMSW_rho_tMin = 2. * m_DMSW_Q2Bar_tMin
@@ -1503,10 +1706,10 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon) {
             + m_DMSW_tMin / (2. * Mnucleon);
     double modv_tMin = sqrt(1. - m_Q2Prim / pow(w2_tMin, 2.));
 
-    double cosGamma_tMin = -(sqrt(m_DMSW_epsilon2) * 0.5
+    double m_DMSW_cosGamma_tMin = -(sqrt(m_DMSW_epsilon2) * 0.5
             * (m_Q2 - m_Q2Prim + m_DMSW_tMin) + sqrt(m_Q2) * w2_tMin)
             / (sqrt(m_Q2 * (1. + m_DMSW_epsilon2)) * modv_tMin * w2_tMin);
-    double sinGamma_tMin = 0.;
+    double m_DMSW_sinGamma_tMin = 0.;
     double modp2I_tMin = sqrt(
             -m_DMSW_tMin * (1. - m_DMSW_tMin / pow(2. * Mnucleon, 2.)));
     double cosThetaN_tMin = -(m_DMSW_epsilon2 * 0.5
@@ -1520,27 +1723,27 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon) {
     m_DMSW_qPrim_tMin[3] = w2_tMin * modv_tMin;
 
     m_DMSW_q_tMin[0] = w1;
-    m_DMSW_q_tMin[1] = w1 * sqrt(1. + m_DMSW_epsilon2) * sinGamma_tMin;
+    m_DMSW_q_tMin[1] = w1 * sqrt(1. + m_DMSW_epsilon2) * m_DMSW_sinGamma_tMin;
     m_DMSW_q_tMin[2] = 0.;
-    m_DMSW_q_tMin[3] = -w1 * sqrt(1. + m_DMSW_epsilon2) * cosGamma_tMin;
+    m_DMSW_q_tMin[3] = -w1 * sqrt(1. + m_DMSW_epsilon2) * m_DMSW_cosGamma_tMin;
 
-    double p2I_tMin[4];
-    p2I_tMin[0] = Mnucleon - m_DMSW_tMin / (2. * Mnucleon);
-    p2I_tMin[1] = modp2I_tMin * sinThetaN_tMin * cos(m_DMSW_phi);
-    p2I_tMin[2] = modp2I_tMin * sinThetaN_tMin * sin(m_DMSW_phi);
-    p2I_tMin[3] = modp2I_tMin * cosThetaN_tMin;
+    double pPrimI_tMin[4];
+    pPrimI_tMin[0] = Mnucleon - m_DMSW_tMin / (2. * Mnucleon);
+    pPrimI_tMin[1] = modp2I_tMin * sinThetaN_tMin * cos(m_DMSW_phi);
+    pPrimI_tMin[2] = modp2I_tMin * sinThetaN_tMin * sin(m_DMSW_phi);
+    pPrimI_tMin[3] = modp2I_tMin * cosThetaN_tMin;
 
-    m_DMSW_pPrim_tMin[0] = p2I_tMin[0];
-    m_DMSW_pPrim_tMin[1] = cosGamma_tMin
-            * (cos(M_PI + m_DMSW_phi) * p2I_tMin[1]
-                    + sin(M_PI + m_DMSW_phi) * p2I_tMin[2])
-            - sinGamma_tMin * p2I_tMin[3];
-    m_DMSW_pPrim_tMin[2] = -sin(M_PI + m_DMSW_phi) * p2I_tMin[1]
-            + cos(M_PI + m_DMSW_phi) * p2I_tMin[2];
-    m_DMSW_pPrim_tMin[3] = sinGamma_tMin
-            * (cos(M_PI + m_DMSW_phi) * p2I_tMin[1]
-                    + sin(M_PI + m_DMSW_phi) * p2I_tMin[2])
-            + cosGamma_tMin * p2I_tMin[3];
+    m_DMSW_pPrim_tMin[0] = pPrimI_tMin[0];
+    m_DMSW_pPrim_tMin[1] = m_DMSW_cosGamma_tMin
+            * (cos(M_PI + m_DMSW_phi) * pPrimI_tMin[1]
+                    + sin(M_PI + m_DMSW_phi) * pPrimI_tMin[2])
+            - m_DMSW_sinGamma_tMin * pPrimI_tMin[3];
+    m_DMSW_pPrim_tMin[2] = -sin(M_PI + m_DMSW_phi) * pPrimI_tMin[1]
+            + cos(M_PI + m_DMSW_phi) * pPrimI_tMin[2];
+    m_DMSW_pPrim_tMin[3] = m_DMSW_sinGamma_tMin
+            * (cos(M_PI + m_DMSW_phi) * pPrimI_tMin[1]
+                    + sin(M_PI + m_DMSW_phi) * pPrimI_tMin[2])
+            + m_DMSW_cosGamma_tMin * pPrimI_tMin[3];
 
     for (i = 0; i < 4; i++) {
         m_DMSW_pBar_tMin[i] = 0.5 * (m_DMSW_p[i] + m_DMSW_pPrim_tMin[i]);
@@ -1559,7 +1762,7 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon) {
         m_DMSW_HATnBM_tMin[i] = m_DMSW_2pBarqBar_tMin * m_DMSW_nBM_tMin[i];
     }
 
-    //Evaluation of r'1 and r'2 at t = tMin:
+//Evaluation of r'1 and r'2 at t = tMin:
     double N_tMin = 0.5 * MinkProd(auxVector, m_DMSW_pBar_tMin); //normalization constant for nminus and nplus such that nminus * nplus = 1 and nminus * pBar = 1
 
     m_DMSW_nplus_tMin[0] = N_tMin;
@@ -1587,12 +1790,12 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon) {
 
     m_DMSW_k_tMin[0] = m_E;
     m_DMSW_k_tMin[1] = m_E
-            * (sinTheta_e * cosGamma_tMin * cos(M_PI + m_DMSW_phi)
-                    - cosTheta_e * sinGamma_tMin);
-    m_DMSW_k_tMin[2] = -m_E * sinTheta_e * sin(M_PI + m_DMSW_phi);
+            * (m_DMSW_sinTheta_e * m_DMSW_cosGamma_tMin * cos(M_PI + m_DMSW_phi)
+                    - m_DMSW_cosTheta_e * m_DMSW_sinGamma_tMin);
+    m_DMSW_k_tMin[2] = -m_E * m_DMSW_sinTheta_e * sin(M_PI + m_DMSW_phi);
     m_DMSW_k_tMin[3] = m_E
-            * (sinTheta_e * sinGamma_tMin * cos(M_PI + m_DMSW_phi)
-                    + cosTheta_e * cosGamma_tMin);
+            * (m_DMSW_sinTheta_e * m_DMSW_sinGamma_tMin * cos(M_PI + m_DMSW_phi)
+                    + m_DMSW_cosTheta_e * m_DMSW_cosGamma_tMin);
 
     m_DMSW_lminus_tMin[0] = 0.5 * w2_tMin
             * (1. + modv_tMin * cos(m_DMSW_thetaL));
@@ -1607,24 +1810,24 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon) {
         m_DMSW_kPrime_tMin[i] = m_DMSW_k_tMin[i] - m_DMSW_q_tMin[i];
     }
 
-    //EM form factors for proton:
+//EM form factors for proton:
     m_DMSW_F1 = (4. * pow(Mnucleon, 2.) - m_t * 2.7928)
             * pow((1. - m_t / 0.71), -2.) / (4. * pow(Mnucleon, 2.) - m_t); //2.7928 = Born's magneton for proton
 
     m_DMSW_F2 = 4. * pow(Mnucleon, 2.) * (2.7928 - 1.)
             * pow((1. - m_t / 0.71), -2.) / (4. * pow(Mnucleon, 2.) - m_t);
 
-    //Orsay's EM form factors for proton
-    //    double G_M = 2.792850
-    //            / (1. + 0.116 * sqrt(-t) + 2.874 * (-t) + 0.241 * pow(sqrt(-t), 3.)
-    //                    + 1.006 * pow(-t, 2.) + 0.345 * pow(sqrt(-t), 5.));
-    //    double G_E = (G_M / 2.792850) * (1. - 0.13 * (-t - 0.04));
-    //    m_DMSW_F1 = (-t / pow(2. * Mnucleon, 2.) * G_M + G_E)
-    //            / (1. - t / pow(2. * Mnucleon, 2.));
-    //
-    //    m_DMSW_F2 = (G_M - G_E) / (1. - t / pow(2. * Mnucleon, 2.));
+//Orsay's EM form factors for proton
+//    double G_M = 2.792850
+//            / (1. + 0.116 * sqrt(-t) + 2.874 * (-t) + 0.241 * pow(sqrt(-t), 3.)
+//                    + 1.006 * pow(-t, 2.) + 0.345 * pow(sqrt(-t), 5.));
+//    double G_E = (G_M / 2.792850) * (1. - 0.13 * (-t - 0.04));
+//    m_DMSW_F1 = (-t / pow(2. * Mnucleon, 2.) * G_M + G_E)
+//            / (1. - t / pow(2. * Mnucleon, 2.));
+//
+//    m_DMSW_F2 = (G_M - G_E) / (1. - t / pow(2. * Mnucleon, 2.));
 
-    //Get CFFs:
+//Get CFFs:
     if (m_dvcsConvolCoeffFunctionResult.isAvailable(GPDType::H)) {
         m_cffH = m_dvcsConvolCoeffFunctionResult.getLastAvailable();
     }
@@ -1648,6 +1851,108 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon) {
     if (m_dvcsConvolCoeffFunctionResult.isAvailable(GPDType::EL)) {
         m_cffEL = m_dvcsConvolCoeffFunctionResult.getLastAvailable();
     }
+
+    //*****************************
+    // Polarized target cases *****
+    //*****************************
+
+    //Longitudinally polarized target:
+//    if ((m_targetPolarization.getX() == 0. && m_targetPolarization.getY() == 0.
+//            && m_targetPolarization.getZ() == +1.)
+//            || (m_targetPolarization.getX() == 0.
+//                    && m_targetPolarization.getY() == 0.
+//                    && m_targetPolarization.getZ() == -1.)) {
+//
+//        m_DMSW_thetaS = acos(
+//                -sinTheta_e * sinGamma * cos(m_DMSW_phi)
+//                        + cosTheta_e * cosGamma);
+//
+//        if (m_DMSW_k[2] >= 0. && m_DMSW_k[1] > 0.) {
+//            m_DMSW_phiS = atan(m_DMSW_k[2] / m_DMSW_k[1]);
+//        } else if ((m_DMSW_k[2] >= 0. && m_DMSW_k[1] < 0.)
+//                || (m_DMSW_k[2] < 0. && m_DMSW_k[1] < 0.)) {
+//            m_DMSW_phiS = M_PI + atan(m_DMSW_k[2] / m_DMSW_k[1]);
+//        } else if (m_DMSW_k[2] <= 0. && m_DMSW_k[1] > 0.) {
+//            m_DMSW_phiS = 2. * M_PI + atan(m_DMSW_k[2] / m_DMSW_k[1]);
+//        } else if ((m_DMSW_k[2] > 0. && m_DMSW_k[1] == 0.)
+//                || (m_DMSW_k[2] < 0. && m_DMSW_k[1] == 0.)) {
+//            m_DMSW_phiS = atan(m_DMSW_k[2] / m_DMSW_k[1]);
+//        } else {
+//            throw ElemUtils::CustomException(getClassName(), __func__,
+//                    ElemUtils::Formatter()
+//                            << "Not able to compute m_DMSW_phiS. Sine is "
+//                            << m_DMSW_k[2] << " and cosine " << m_DMSW_k[1]);
+//        }
+//
+//        //Transversely polarized target:
+//    } else if (m_targetPolarization.getX() != 0.
+//            || m_targetPolarization.getY() != 0.) {
+//        //user will provide a spin vector wrt Trento axes.
+//        //Determination of varPhiS and varThetaS, angles of the spin vector wrt TRF-I's axes, given the coordinates of the vector in Trento's:
+//
+//        double varThetaS = acos(m_targetPolarization.getZ()); //wrt Trento
+//        varThetaS = M_PI - varThetaS; //wrt TRF-I
+//        double varPhiS;
+//        double cosVarPhiS = m_targetPolarization.getX() / sin(varThetaS);
+//        double sinVarPhiS = m_targetPolarization.getY() / sin(varThetaS);
+//
+//        //varPhiS wrt Trento:
+//        if (sinVarPhiS >= 0. && cosVarPhiS > 0.) {
+//            varPhiS = atan(sinVarPhiS / cosVarPhiS);
+//        } else if ((sinVarPhiS >= 0. && cosVarPhiS < 0.)
+//                || (sinVarPhiS < 0. && cosVarPhiS < 0.)) {
+//            varPhiS = M_PI + atan(sinVarPhiS / cosVarPhiS);
+//        } else if (sinVarPhiS <= 0. && cosVarPhiS > 0.) {
+//            varPhiS = 2. * M_PI + atan(sinVarPhiS / cosVarPhiS);
+//        } else if ((sinVarPhiS > 0. && cosVarPhiS == 0.)
+//                || (sinVarPhiS < 0. && cosVarPhiS == 0.)) {
+//            varPhiS = atan(sinVarPhiS / cosVarPhiS);
+//        } else {
+//            throw ElemUtils::CustomException(getClassName(), __func__,
+//                    ElemUtils::Formatter()
+//                            << "Not able to compute varPhiS. Sine is "
+//                            << sinVarPhiS << " and cosine " << cosVarPhiS);
+//        }
+//
+//        //varPhiS wrt TRF-I:
+//        if (varPhiS >= 0. && varPhiS <= M_PI) {
+//            varPhiS = M_PI - varPhiS;
+//        } else if (varPhiS > M_PI && varPhiS < 2. * M_PI) {
+//            varPhiS = 3. * M_PI - varPhiS;
+//        }
+//
+//        //Determination of m_DMSW_thetaS and m_DMSW_phiS, angles of spin vector wrt TRF-II:
+//        m_DMSW_thetaS = acos(
+//                -sinGamma * sin(varThetaS)
+//                        * (cos(m_DMSW_phi) * cosVarPhiS
+//                                + sin(m_DMSW_phi) * sinVarPhiS)
+//                        + cosGamma * cos(varThetaS));
+//
+//        double sinPhiS = (sin(varThetaS) / sin(m_DMSW_thetaS))
+//                * (sin(m_DMSW_phi) * cosVarPhiS - cos(m_DMSW_phi) * sinVarPhiS);
+//        double cosPhiS = -(cosGamma * sin(varThetaS) / sin(m_DMSW_thetaS))
+//                * (cos(m_DMSW_phi) * cosVarPhiS + sin(m_DMSW_phi) * sinVarPhiS)
+//                - sinGamma * cos(varThetaS) / sin(m_DMSW_thetaS);
+//
+//        if (sinPhiS >= 0. && cosPhiS > 0.) {
+//            m_DMSW_phiS = atan(sinPhiS / cosPhiS);
+//        } else if ((sinPhiS >= 0. && cosPhiS < 0.)
+//                || (sinPhiS < 0. && cosPhiS < 0.)) {
+//            m_DMSW_phiS = M_PI + atan(sinPhiS / cosPhiS);
+//        } else if (sinPhiS <= 0. && cosPhiS > 0.) {
+//            m_DMSW_phiS = 2. * M_PI + atan(sinPhiS / cosPhiS);
+//        } else if ((sinPhiS > 0. && cosPhiS == 0.)
+//                || (sinPhiS < 0. && cosPhiS == 0.)) {
+//            m_DMSW_phiS = atan(sinPhiS / cosPhiS);
+//        } else {
+//            throw ElemUtils::CustomException(getClassName(), __func__,
+//                    ElemUtils::Formatter()
+//                            << "Not able to compute m_DMSW_phiS. Sine is "
+//                            << sinPhiS << " and cosine " << cosPhiS);
+//        }
+//
+//    }
+
 }
 
 }
