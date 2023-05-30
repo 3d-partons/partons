@@ -30,6 +30,8 @@ DDVCSProcessDMSW22::DDVCSProcessDMSW22(const std::string &className) :
     m_DMSW_sinTheta_e = 0.;
     m_DMSW_cosGamma = 0.;
     m_DMSW_sinGamma = 0.;
+    m_DMSW_cosGamma_tMin = 0.;
+    m_DMSW_sinGamma_tMin = 0.;
 
     int i;
     for (i = 0; i < 4; i++) {
@@ -156,6 +158,8 @@ DDVCSProcessDMSW22::DDVCSProcessDMSW22(const DDVCSProcessDMSW22& other) :
     m_DMSW_sinTheta_e = other.m_DMSW_sinTheta_e;
     m_DMSW_cosGamma = other.m_DMSW_cosGamma;
     m_DMSW_sinGamma = other.m_DMSW_sinGamma;
+    m_DMSW_cosGamma_tMin = other.m_DMSW_cosGamma_tMin;
+    m_DMSW_sinGamma_tMin = other.m_DMSW_sinGamma_tMin;
 
     int i;
     for (i = 0; i < 4; i++) {
@@ -944,7 +948,6 @@ double DDVCSProcessDMSW22::crossSectionBH(int targetPolariz) {
                                                         2.) / m_Q2));
 
     } else {
-
         //TODO TRANSVERSELY polarized target case
         return 0.;
     }
@@ -1046,9 +1049,7 @@ double DDVCSProcessDMSW22::crossSectionInterf(int targetPolariz) {
                     Avcs = ampliVCS(s2, s1, sl, s);
                     Abh1 = ampliBH1(s2, s1, sl, s);
                     Abh1crossed = ampliBH1crossed(s2, s1, sl, s);
-
                     Abh2 = ampliBH2(s2, s1, sl, s);
-
                     Abh2crossed = ampliBH2crossed(s2, s1, sl, s);
 
                     T2_interf += (Abh1 + Abh1crossed) * conj(Avcs)
@@ -1057,7 +1058,6 @@ double DDVCSProcessDMSW22::crossSectionInterf(int targetPolariz) {
                                     (Abh1 + Abh1crossed) * conj(Avcs)
                                             + (Abh2 + Abh2crossed)
                                                     * conj(Avcs));
-
 
                 }
             }
@@ -1092,6 +1092,12 @@ double DDVCSProcessDMSW22::crossSectionInterf(int targetPolariz) {
                         * ampliBH1crossed(s2, +1, sl, s)
                         + Flong(targetPolariz, -1)
                                 * ampliBH1crossed(s2, -1, sl, s);
+                Abh2 = Flong(targetPolariz, +1) * ampliBH2(s2, +1, sl, s)
+                        + Flong(targetPolariz, -1) * ampliBH2(s2, -1, sl, s);
+                Abh2crossed = Flong(targetPolariz, +1)
+                        * ampliBH2crossed(s2, +1, sl, s)
+                        + Flong(targetPolariz, -1)
+                                * ampliBH2crossed(s2, -1, sl, s);
 
                 T2_interf += (Abh1 + Abh1crossed) * conj(Avcs)
                         + (Abh2 + Abh2crossed) * conj(Avcs)
@@ -1452,36 +1458,36 @@ std::complex<double> DDVCSProcessDMSW22::Flong(int h1, int s1) const {
 //
 //    std::complex<double> F_h1s1 = (0., 0.);
 //
-//    //Angles needed to build the F matrix for the case of longitudinally polarized target:
-//    double cosThetaK = -m_DMSW_sinTheta_e * m_DMSW_sinGamma * cos(m_DMSW_phi)
-//            + m_DMSW_cosTheta_e * m_DMSW_cosGamma;
+//    //Angles needed to build the F matrix for the case of longitudinally polarized target (hard part is evaluated at t = tMin):
+//    double cosThetaK = -m_DMSW_sinTheta_e * m_DMSW_sinGamma_tMin
+//            * cos(m_DMSW_phi) + m_DMSW_cosTheta_e * m_DMSW_cosGamma_tMin;
 //    double cosThetaKover2 = sqrt(0.5 * (1. + cosThetaK));
 //    double sinThetaKover2 = sqrt(0.5 * (1. - cosThetaK));
 //    double phiK;
 //
-//    if (m_DMSW_k[2] >= 0. && m_DMSW_k[1] > 0.) {
-//        phiK = atan(m_DMSW_k[2] / m_DMSW_k[1]);
-//    } else if (m_DMSW_k[2] >= 0. && m_DMSW_k[1] < 0.) {
-//        phiK = M_PI + atan(m_DMSW_k[2] / m_DMSW_k[1]);
-//    } else if (m_DMSW_k[2] < 0. && m_DMSW_k[1] < 0.) {
-//        phiK = M_PI + atan(m_DMSW_k[2] / m_DMSW_k[1]);
-//    } else if (m_DMSW_k[2] < 0. && m_DMSW_k[1] > 0.) {
-//        phiK = 2. * M_PI + atan(m_DMSW_k[2] / m_DMSW_k[1]);
+//    if (m_DMSW_k_tMin[2] >= 0. && m_DMSW_k_tMin[1] > 0.) {
+//        phiK = atan(m_DMSW_k_tMin[2] / m_DMSW_k_tMin[1]);
+//    } else if (m_DMSW_k_tMin[2] >= 0. && m_DMSW_k_tMin[1] < 0.) {
+//        phiK = M_PI + atan(m_DMSW_k_tMin[2] / m_DMSW_k_tMin[1]);
+//    } else if (m_DMSW_k_tMin[2] < 0. && m_DMSW_k_tMin[1] < 0.) {
+//        phiK = M_PI + atan(m_DMSW_k_tMin[2] / m_DMSW_k_tMin[1]);
+//    } else if (m_DMSW_k_tMin[2] < 0. && m_DMSW_k_tMin[1] > 0.) {
+//        phiK = 2. * M_PI + atan(m_DMSW_k_tMin[2] / m_DMSW_k_tMin[1]);
 //    }
 //
 //    //F matrix values:
 //
 //    if (h1 == 1) {
 //        if (s1 == 1) {
-//            F_h1s1 = (cosThetaKover2, 0.);
+//            F_h1s1 = cosThetaKover2;
 //        } else if (s1 == -1) {
-//            F_h1s1 = (cos(phiK), sin(phiK)) * sinThetaKover2;
+//            F_h1s1 = (cos(phiK) * sinThetaKover2, sin(phiK) * sinThetaKover2);
 //        }
 //    } else if (h1 == -1) {
-//        if (s1 == -1) {
-//            F_h1s1 = -(cos(phiK), sin(phiK)) * cosThetaKover2;
-//        } else if (s1 == 1) {
-//            F_h1s1 = sinThetaKover2;
+//        if (s1 == 1) {
+//            F_h1s1 = -(cos(phiK) * sinThetaKover2, -sin(phiK) * sinThetaKover2);
+//        } else if (s1 == -1) {
+//            F_h1s1 = cosThetaKover2;
 //        }
 //    }
 //
@@ -1706,10 +1712,10 @@ void DDVCSProcessDMSW22::computeInternalVariables(double Mnucleon) {
             + m_DMSW_tMin / (2. * Mnucleon);
     double modv_tMin = sqrt(1. - m_Q2Prim / pow(w2_tMin, 2.));
 
-    double m_DMSW_cosGamma_tMin = -(sqrt(m_DMSW_epsilon2) * 0.5
+    m_DMSW_cosGamma_tMin = -(sqrt(m_DMSW_epsilon2) * 0.5
             * (m_Q2 - m_Q2Prim + m_DMSW_tMin) + sqrt(m_Q2) * w2_tMin)
             / (sqrt(m_Q2 * (1. + m_DMSW_epsilon2)) * modv_tMin * w2_tMin);
-    double m_DMSW_sinGamma_tMin = 0.;
+    m_DMSW_sinGamma_tMin = 0.;
     double modp2I_tMin = sqrt(
             -m_DMSW_tMin * (1. - m_DMSW_tMin / pow(2. * Mnucleon, 2.)));
     double cosThetaN_tMin = -(m_DMSW_epsilon2 * 0.5

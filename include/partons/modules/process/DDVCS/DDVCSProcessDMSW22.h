@@ -102,6 +102,8 @@ private:
     double m_DMSW_sinTheta_e;
     double m_DMSW_cosGamma;
     double m_DMSW_sinGamma;
+    double m_DMSW_sinGamma_tMin;
+    double m_DMSW_cosGamma_tMin;
 
     //Other momenta
     double m_DMSW_y; //y = p1*q1/(p1*k): paragraph below eq 6 in BM2003
