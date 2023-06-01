@@ -69,6 +69,8 @@ protected:
 
     virtual PartonDistribution computeH();
     virtual PartonDistribution computeE();
+//    virtual PartonDistribution computeHt();
+//    virtual PartonDistribution computeEt();
 
 private:
 

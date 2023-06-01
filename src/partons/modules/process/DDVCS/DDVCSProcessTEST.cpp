@@ -10,6 +10,8 @@
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
 #include "../../../../../include/partons/utils/type/PhysicalUnit.h"
 
+#include "../../../../../include/partons/modules/observable/DDVCS/leptonCMframe.h"
+
 namespace PARTONS {
 
 const unsigned int DDVCSProcessTEST::classId =
@@ -55,6 +57,12 @@ DDVCSProcessTEST::DDVCSProcessTEST(const std::string &className) :
     m_BM_Qcal2max = 0.;
     m_BM_Mll2min = 0.;
     m_BM_Mll2max = 0.;
+
+    m_BM_thetaL = 0.;
+    m_BM_phiL = 0.;
+    m_BM_phi = 0.;
+
+    m_DMSW_jac = 0.;
 }
 
 DDVCSProcessTEST::DDVCSProcessTEST(const DDVCSProcessTEST& other) :
@@ -97,6 +105,12 @@ DDVCSProcessTEST::DDVCSProcessTEST(const DDVCSProcessTEST& other) :
     m_BM_Mll2min = other.m_BM_Mll2min;
     m_BM_Mll2max = other.m_BM_Mll2max;
 
+    m_BM_phiL = other.m_BM_phiL;
+    m_BM_thetaL = other.m_BM_thetaL;
+    m_BM_phi = other.m_BM_phi;
+
+    m_DMSW_jac = other.m_DMSW_jac;
+
     m_cffH = other.m_cffH;
     m_cffE = other.m_cffE;
     m_cffHt = other.m_cffHt;
@@ -118,10 +132,10 @@ void DDVCSProcessTEST::initModule() {
     DDVCSProcessModule::initModule();
 
     //compute internal variables
-    computeInternalVariables(0., m_E, Constant::PROTON_MASS,
-            m_xB, m_t, m_Q2, m_Q2Prim, m_phi, m_phiL, m_thetaL); //1st parameter is muon mass
+    computeInternalVariables(0., m_E, Constant::PROTON_MASS, m_xB, m_t, m_Q2,
+            m_Q2Prim); //1st parameter is muon mass
     //TODO
-//                m_phil, m_thetal);
+//                m_m_BM_phiL, m_m_BM_thetaL);
 }
 
 void DDVCSProcessTEST::isModuleWellConfigured() {
@@ -171,7 +185,7 @@ PhysicalType<double> DDVCSProcessTEST::CrossSectionBH() {
 //    m_Q2;
 //    m_Q2Prim;
 //    m_E;
-//    m_phi;
+//    m_m_BM_phi;
 //    m_theta;
 //
 //    m_dvcsConvolCoeffFunctionResult;
@@ -193,7 +207,7 @@ PhysicalType<double> DDVCSProcessTEST::CrossSectionBH() {
     }
 
     double xsec = crossSectionBH(m_E, Constant::PROTON_MASS, m_xB, m_t, m_Q2,
-            m_Q2Prim, m_phi, m_phiL, m_thetaL, m_beamCharge, polariz);
+            m_Q2Prim, m_beamCharge, polariz);
 
     return PhysicalType<double>(xsec, PhysicalUnit::GEVm2);
 }
@@ -213,7 +227,7 @@ PhysicalType<double> DDVCSProcessTEST::CrossSectionVCS() {
     }
 
     double xsec = crossSectionVCS(m_E, Constant::PROTON_MASS, m_xB, m_t, m_Q2,
-            m_Q2Prim, m_phi, m_phiL, m_thetaL, m_beamCharge, polariz);
+            m_Q2Prim, m_beamCharge, polariz);
 
     return PhysicalType<double>(xsec, PhysicalUnit::GEVm2);
 }
@@ -233,18 +247,16 @@ PhysicalType<double> DDVCSProcessTEST::CrossSectionInterf() {
     }
 
     double xsec = crossSectionInterf(m_E, Constant::PROTON_MASS, m_xB, m_t,
-            m_Q2, m_Q2Prim, m_phi, m_phiL, m_thetaL, m_beamCharge, polariz,
-            m_beamHelicity);
+            m_Q2, m_Q2Prim, m_beamCharge, polariz, m_beamHelicity);
 
     return PhysicalType<double>(xsec, PhysicalUnit::GEVm2);
 
 }
 
-double DDVCSProcessTEST::bh_squared(double Mnucleon, double t, double phi,
-        double phil, double Q2, double eta, double xi, double y, double ytilde,
-        double F1, double F2, double tmin, double tmax, double edgeFactor,
-        double P1, double P2, double P3, double P4, int beamSign,
-        double charge_e) const {
+double DDVCSProcessTEST::bh_squared(double Mnucleon, double t, double Q2,
+        double eta, double xi, double y, double ytilde, double F1, double F2,
+        double tmin, double tmax, double edgeFactor, double P1, double P2,
+        double P3, double P4, int beamSign, double charge_e) const {
 
     double cc11[5][3] = { 0. }, cc12[5][3] = { 0. }, cc22[5][3] = { 0. }; //Fourier coeffs for squared BH amplitude
     double cs11[5][3] = { 0. }, cs12[5][3] = { 0. }, cs22[5][3] = { 0. };
@@ -465,28 +477,27 @@ double DDVCSProcessTEST::bh_squared(double Mnucleon, double t, double phi,
     for (n = 0; n < 5; n++) {
         for (m = 0; m < 3; m++) {
 
-            series11 +=
-                    (cc11[n][m] * cos(m * phil) + cs11[n][m] * sin(m * phil))
-                            * cos(n * phi)
-                            + (sc11[n][m] * cos(m * phil)
-                                    + ss11[n][m] * sin(m * phil))
-                                    * sin(n * phi); //series with coeffs (c, s)^11 in eq 99 of Belitsky2003
-            series22 += (cc22[n][m] * cos(m * phi) + cs22[n][m] * sin(m * phi))
-                    * cos(n * phil)
-                    + (sc22[n][m] * cos(m * phi) + ss22[n][m] * sin(m * phi))
-                            * sin(n * phil); //series with coeffs (c, s)^22 in eq 99 of Belitsky2003
-            series12 +=
-                    (cc12[n][m] * cos(m * phil) + cs12[n][m] * sin(m * phil))
-                            * cos(n * phi)
-                            + (sc12[n][m] * cos(m * phil)
-                                    + ss12[n][m] * sin(m * phil))
-                                    * sin(n * phi); //series with coeffs (c, s)^12 in eq 99 of Belitsky2003
+            series11 += (cc11[n][m] * cos(m * m_BM_phiL)
+                    + cs11[n][m] * sin(m * m_BM_phiL)) * cos(n * m_BM_phi)
+                    + (sc11[n][m] * cos(m * m_BM_phiL)
+                            + ss11[n][m] * sin(m * m_BM_phiL))
+                            * sin(n * m_BM_phi); //series with coeffs (c, s)^11 in eq 99 of Belitsky2003
+            series22 += (cc22[n][m] * cos(m * m_BM_phi)
+                    + cs22[n][m] * sin(m * m_BM_phi)) * cos(n * m_BM_phiL)
+                    + (sc22[n][m] * cos(m * m_BM_phi)
+                            + ss22[n][m] * sin(m * m_BM_phi))
+                            * sin(n * m_BM_phiL); //series with coeffs (c, s)^22 in eq 99 of Belitsky2003
+            series12 += (cc12[n][m] * cos(m * m_BM_phiL)
+                    + cs12[n][m] * sin(m * m_BM_phiL)) * cos(n * m_BM_phi)
+                    + (sc12[n][m] * cos(m * m_BM_phiL)
+                            + ss12[n][m] * sin(m * m_BM_phiL))
+                            * sin(n * m_BM_phi); //series with coeffs (c, s)^12 in eq 99 of Belitsky2003
 
         }
     }
 
-    series22 = 0.;//DEBUG
-    series12 = 0.;//DEBUG
+//    series22 = 0.;//DEBUG
+//    series12 = 0.;//DEBUG
 
     series = pow(ytilde / (P1 * P2), 2.) * series11
             + pow(y / (P3 * P4), 2.) * series22
@@ -499,48 +510,37 @@ double DDVCSProcessTEST::bh_squared(double Mnucleon, double t, double phi,
 }
 
 double DDVCSProcessTEST::crossSectionBH(double Ebeam, double Mnucleon,
-        double xB, double t, double Qcal2, double Mll2, double phi, double phil,
-        double thetal, int beamSign, int polariz) const {
+        double xB, double t, double Qcal2, double Mll2, int beamSign,
+        int polariz) const {
 
-    //We change to Belitsky's phi: LHS is phi in Belitsky2003 notation, RHS' phi is in Trento's that must be the input in crossSection()
-    phi = M_PI - phi;
+    //We change to Belitsky's m_BM_phi: LHS is m_BM_phi in Belitsky2003 notation, RHS' m_BM_phi is in Trento's that must be the input in crossSection()
+    //m_BM_phi = M_PI - m_BM_phi;
 
-    //phi entering these expressions is in Belitsky's convention already:
+    //m_BM_phi entering these expressions is in Belitsky's convention already:
 
-    double T2_BH = bh_squared(Mnucleon, t, phi, phil, m_BM_Q2, m_BM_eta,
-            m_BM_xi, m_BM_y, m_BM_ytilde, m_BM_F1, m_BM_F2, m_BM_tmin,
-            m_BM_tmax, m_BM_edgeFactor, m_BM_P1, m_BM_P2, m_BM_P3, m_BM_P4,
-            beamSign, m_BM_charge_e);
+    double T2_BH = bh_squared(Mnucleon, t, m_BM_Q2, m_BM_eta, m_BM_xi, m_BM_y,
+            m_BM_ytilde, m_BM_F1, m_BM_F2, m_BM_tmin, m_BM_tmax,
+            m_BM_edgeFactor, m_BM_P1, m_BM_P2, m_BM_P3, m_BM_P4, beamSign,
+            m_BM_charge_e);
 
     //7-(or 8- if polarized target)fold differential cross-section in pbarn/GeV^6 (ALL ENERGY QUANTITIES IN GeV !!)
     double xsec;
 
-    if (polariz == 0) {
-
-        xsec = pow(Constant::FINE_STRUCTURE_CONSTANT, 4.) * xB * pow(m_BM_y, 2.)
-                * m_BM_beta * T2_BH * (1. / pow(m_BM_charge_e, 8.))
-                * sin(thetal)
-                / (16 * pow(2. * M_PI, 3.) * pow(Qcal2, 2.)
-                        * sqrt(1. + pow(2. * xB * Mnucleon, 2.) / Qcal2));
-
-    } else {
-
-        xsec = (1. / (2. * M_PI)) * pow(Constant::FINE_STRUCTURE_CONSTANT, 4.)
-                * xB * pow(m_BM_y, 2.) * m_BM_beta * T2_BH
-                * (1. / pow(m_BM_charge_e, 8.)) * sin(thetal)
-                / (16 * pow(2. * M_PI, 3.) * pow(Qcal2, 2.)
-                        * sqrt(1. + pow(2. * xB * Mnucleon, 2.) / Qcal2));
-    }
+    xsec = (1. / m_DMSW_jac) * (1. / (2. * M_PI))
+            * pow(Constant::FINE_STRUCTURE_CONSTANT, 4.) * xB * pow(m_BM_y, 2.)
+            * m_BM_beta * T2_BH * (1. / pow(m_BM_charge_e, 8.))
+            * sin(m_BM_thetaL)
+            / (16 * pow(2. * M_PI, 3.) * pow(Qcal2, 2.)
+                    * sqrt(1. + pow(2. * xB * Mnucleon, 2.) / Qcal2));
 
     return xsec;
 
 }
 
-double DDVCSProcessTEST::vcs_squared(double Mnucleon, double t, double phi,
-        double phil, double Q2, double eta, double xi, double y, double ytilde,
-        double edgeFactor, const std::complex<double>& cffH,
-        const std::complex<double>& cffE, const std::complex<double>& cffHL,
-        const std::complex<double>& cffEL,
+double DDVCSProcessTEST::vcs_squared(double Mnucleon, double t, double Q2,
+        double eta, double xi, double y, double ytilde, double edgeFactor,
+        const std::complex<double>& cffH, const std::complex<double>& cffE,
+        const std::complex<double>& cffHL, const std::complex<double>& cffEL,
         const std::complex<double>& cffHtilde,
         const std::complex<double>& cffEtilde, double charge_e) const {
 
@@ -597,10 +597,11 @@ double DDVCSProcessTEST::vcs_squared(double Mnucleon, double t, double phi,
     std::complex<double> series = std::complex<double>(0., 0.);
     for (i = 0; i < 3; i++) {
         for (j = 0; j < 3; j++) {
-            series += (cc[i][j] * cos(j * phil) + cs[i][j] * sin(j * phil))
-                    * cos(i * phi)
-                    + (sc[i][j] * cos(j * phil) + ss[i][j] * sin(j * phil))
-                            * sin(i * phi); //series with coeffs (c, s)^VCS in eq 97 from Belitsky2003
+            series += (cc[i][j] * cos(j * m_BM_phiL)
+                    + cs[i][j] * sin(j * m_BM_phiL)) * cos(i * m_BM_phi)
+                    + (sc[i][j] * cos(j * m_BM_phiL)
+                            + ss[i][j] * sin(j * m_BM_phiL))
+                            * sin(i * m_BM_phi); //series with coeffs (c, s)^VCS in eq 97 from Belitsky2003
         };
     };
 
@@ -617,44 +618,34 @@ double DDVCSProcessTEST::vcs_squared(double Mnucleon, double t, double phi,
 }
 
 double DDVCSProcessTEST::crossSectionVCS(double Ebeam, double Mnucleon,
-        double xB, double t, double Qcal2, double Mll2, double phi, double phil,
-        double thetal, int beamSign, int polariz) const {
+        double xB, double t, double Qcal2, double Mll2, int beamSign,
+        int polariz) const {
 
-    //We change to Belitsky's phi: LHS is phi in Belitsky2003 notation, RHS' phi is in Trento's that must be the input in crossSection()
-    phi = M_PI - phi;
+    //We change to Belitsky's m_BM_phi: LHS is m_BM_phi in Belitsky2003 notation, RHS' m_BM_phi is in Trento's that must be the input in crossSection()
+    //m_BM_phi = M_PI - m_BM_phi;
 
-    //phi entering these expressions is in Belitsky's convention already:
-    double T2_VCS = vcs_squared(Mnucleon, t, phi, phil, m_BM_Q2, m_BM_eta,
-            m_BM_xi, m_BM_y, m_BM_ytilde, m_BM_edgeFactor, m_cffH, m_cffE,
-            m_cffHL, m_cffEL, m_cffHt, m_cffEt, m_BM_charge_e);
+    //m_BM_phi entering these expressions is in Belitsky's convention already:
+    double T2_VCS = vcs_squared(Mnucleon, t, m_BM_Q2, m_BM_eta, m_BM_xi, m_BM_y,
+            m_BM_ytilde, m_BM_edgeFactor, m_cffH, m_cffE, m_cffHL, m_cffEL,
+            m_cffHt, m_cffEt, m_BM_charge_e);
 
     //7-(or 8- if polarized target)fold differential cross-section in pbarn/GeV^6 (ALL ENERGY QUANTITIES IN GeV !!)
     double xsec;
 
-    if (polariz == 0) {
-
-        xsec = pow(Constant::FINE_STRUCTURE_CONSTANT, 4.) * xB * pow(m_BM_y, 2.)
-                * m_BM_beta * T2_VCS * (1. / pow(m_BM_charge_e, 8.))
-                * sin(thetal)
-                / (16 * pow(2. * M_PI, 3.) * pow(Qcal2, 2.)
-                        * sqrt(1. + pow(2. * xB * Mnucleon, 2.) / Qcal2));
-
-    } else {
-
-        xsec = (1. / (2. * M_PI)) * pow(Constant::FINE_STRUCTURE_CONSTANT, 4.)
-                * xB * pow(m_BM_y, 2.) * m_BM_beta * T2_VCS
-                * (1. / pow(m_BM_charge_e, 8.)) * sin(thetal)
-                / (16 * pow(2. * M_PI, 3.) * pow(Qcal2, 2.)
-                        * sqrt(1. + pow(2. * xB * Mnucleon, 2.) / Qcal2));
-    }
+    xsec = (1. / m_DMSW_jac) * (1. / (2. * M_PI))
+            * pow(Constant::FINE_STRUCTURE_CONSTANT, 4.) * xB * pow(m_BM_y, 2.)
+            * m_BM_beta * T2_VCS * (1. / pow(m_BM_charge_e, 8.))
+            * sin(m_BM_thetaL)
+            / (16 * pow(2. * M_PI, 3.) * pow(Qcal2, 2.)
+                    * sqrt(1. + pow(2. * xB * Mnucleon, 2.) / Qcal2));
 
     return xsec;
 
 }
 
-double DDVCSProcessTEST::int_squared(double Mnucleon, double t, double phi,
-        double phil, double Q2, double eta, double xi, double y, double ytilde,
-        double F1, double F2, double edgeFactor, double Kcap, double Ktildecap,
+double DDVCSProcessTEST::int_squared(double Mnucleon, double t, double Q2,
+        double eta, double xi, double y, double ytilde, double F1, double F2,
+        double edgeFactor, double Kcap, double Ktildecap,
         const std::complex<double>& cffH, const std::complex<double>& cffE,
         const std::complex<double>& cffHL, const std::complex<double>& cffEL,
         const std::complex<double>& cffHtilde, double P1, double P2, double P3,
@@ -791,14 +782,16 @@ double DDVCSProcessTEST::int_squared(double Mnucleon, double t, double phi,
     for (n = 0; n < 4; n++) {
         for (m = 0; m < 3; m++) {
 
-            series1 += (cc1[n][m] * cos(m * phil) + cs1[n][m] * sin(m * phil))
-                    * cos(n * phi)
-                    + (sc1[n][m] * cos(m * phil) + ss1[n][m] * sin(m * phil))
-                            * sin(n * phi); //series with coeffs (c, s)^1 in eq 98 from Belitsky2003
-            series2 += (cc2[n][m] * cos(m * phi) + cs2[n][m] * sin(m * phi))
-                    * cos(n * phil)
-                    + (sc2[n][m] * cos(m * phi) + ss2[n][m] * sin(m * phi))
-                            * sin(n * phil); //series with (c, s)^2 in eq 98 from Belitsky2003
+            series1 += (cc1[n][m] * cos(m * m_BM_phiL)
+                    + cs1[n][m] * sin(m * m_BM_phiL)) * cos(n * m_BM_phi)
+                    + (sc1[n][m] * cos(m * m_BM_phiL)
+                            + ss1[n][m] * sin(m * m_BM_phiL))
+                            * sin(n * m_BM_phi); //series with coeffs (c, s)^1 in eq 98 from Belitsky2003
+            series2 += (cc2[n][m] * cos(m * m_BM_phi)
+                    + cs2[n][m] * sin(m * m_BM_phi)) * cos(n * m_BM_phiL)
+                    + (sc2[n][m] * cos(m * m_BM_phi)
+                            + ss2[n][m] * sin(m * m_BM_phi))
+                            * sin(n * m_BM_phiL); //series with (c, s)^2 in eq 98 from Belitsky2003
 
         };
     };
@@ -812,51 +805,69 @@ double DDVCSProcessTEST::int_squared(double Mnucleon, double t, double phi,
 }
 
 double DDVCSProcessTEST::crossSectionInterf(double Ebeam, double Mnucleon,
-        double xB, double t, double Qcal2, double Mll2, double phi, double phil,
-        double thetal, int beamSign, int polariz, double lambda) const {
+        double xB, double t, double Qcal2, double Mll2, int beamSign,
+        int polariz, double lambda) const {
 
-    //We change to Belitsky's phi: LHS is phi in Belitsky2003 notation, RHS' phi is in Trento's that must be the input in crossSection()
-    phi = M_PI - phi;
+    //We change to Belitsky's m_BM_phi: LHS is m_BM_phi in Belitsky2003 notation, RHS' m_BM_phi is in Trento's that must be the input in crossSection()
+    //m_BM_phi = M_PI - m_BM_phi;
 
-    //phi entering these expressions is in Belitsky's convention already:
-    double T2_INT = int_squared(Mnucleon, t, phi, phil, m_BM_Q2, m_BM_eta,
-            m_BM_xi, m_BM_y, m_BM_ytilde, m_BM_F1, m_BM_F2, m_BM_edgeFactor,
-            m_BM_Kcap, m_BM_Ktildecap, m_cffH, m_cffE, m_cffHL, m_cffEL,
-            m_cffHt, m_BM_P1, m_BM_P2, m_BM_P3, m_BM_P4, m_BM_charge_e,
-            beamSign, polariz, lambda);
+    //m_BM_phi entering these expressions is in Belitsky's convention already:
+    double T2_INT = int_squared(Mnucleon, t, m_BM_Q2, m_BM_eta, m_BM_xi, m_BM_y,
+            m_BM_ytilde, m_BM_F1, m_BM_F2, m_BM_edgeFactor, m_BM_Kcap,
+            m_BM_Ktildecap, m_cffH, m_cffE, m_cffHL, m_cffEL, m_cffHt, m_BM_P1,
+            m_BM_P2, m_BM_P3, m_BM_P4, m_BM_charge_e, beamSign, polariz,
+            lambda);
 
     //7-(or 8- if polarized target)fold differential cross-section in pbarn/GeV^6 (ALL ENERGY QUANTITIES IN GeV !!)
     double xsec;
 
-    if (polariz == 0) {
-
-        xsec = pow(Constant::FINE_STRUCTURE_CONSTANT, 4.) * xB * pow(m_BM_y, 2.)
-                * m_BM_beta * T2_INT * (1. / pow(m_BM_charge_e, 8.))
-                * sin(thetal)
-                / (16 * pow(2. * M_PI, 3.) * pow(Qcal2, 2.)
-                        * sqrt(1. + pow(2. * xB * Mnucleon, 2.) / Qcal2));
-
-    } else {
-
-        xsec = (1. / (2. * M_PI)) * pow(Constant::FINE_STRUCTURE_CONSTANT, 4.)
-                * xB * pow(m_BM_y, 2.) * m_BM_beta * T2_INT
-                * (1. / pow(m_BM_charge_e, 8.)) * sin(thetal)
-                / (16 * pow(2. * M_PI, 3.) * pow(Qcal2, 2.)
-                        * sqrt(1. + pow(2. * xB * Mnucleon, 2.) / Qcal2));
-    }
+    xsec = (1. / m_DMSW_jac) * (1. / (2. * M_PI))
+            * pow(Constant::FINE_STRUCTURE_CONSTANT, 4.) * xB * pow(m_BM_y, 2.)
+            * m_BM_beta * T2_INT * (1. / pow(m_BM_charge_e, 8.))
+            * sin(m_BM_thetaL)
+            / (16 * pow(2. * M_PI, 3.) * pow(Qcal2, 2.)
+                    * sqrt(1. + pow(2. * xB * Mnucleon, 2.) / Qcal2));
 
     return xsec;
 
 }
 
 void DDVCSProcessTEST::computeInternalVariables(double ml, double Ebeam,
-        double Mnucleon, double xB, double t, double Qcal2, double Mll2,
-        double phi, double phil, double thetal) {
+        double Mnucleon, double xB, double t, double Qcal2, double Mll2) {
 
-    //We change to Belitsky's phi: LHS is phi in Belitsky2003 notation, RHS' phi is in Trento's that must be the input in crossSection()
-    phi = M_PI - phi;
+//    //We change to Belitsky's m_BM_phi: LHS is m_BM_phi in Belitsky2003 notation, RHS' m_BM_phi is in Trento's that must be the input in crossSection()
+//    m_BM_phi = M_PI - m_BM_phi;
 
-    //phil, thetal are polar coord. of lminus 4-vector in the CM-frame of the (created) lepton pair
+    //check range
+    if (m_phi < 0. || m_phi > 2 * M_PI) {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                "phi must be in 0 - 2pi range");
+    }
+
+    //We change from Trento's m_BM_phi (m_m_BM_phi) to TRF-II's m_BM_phi (m_BM_m_BM_phi)
+    //Trento convention: DOI 10.1103/PhysRevD.70.117504
+    //if m_m_BM_phi = pi + alpha (with alpha > 0), then m_BM_m_BM_phi = 2pi - alpha = 2pi - (m_m_BM_phi - pi) = 3pi - m_m_BM_phi
+    if (m_phi >= 0. && m_phi <= M_PI) {
+        m_BM_phi = M_PI - m_phi;
+    } else {
+        m_BM_phi = 3. * M_PI - m_phi;
+    }
+
+    //Change from BDP's lepton angles to TRF-II's ones:
+    leptons cmFrame;
+    cmFrame.computeConverterVariables(m_xB, m_t, m_Q2, m_Q2Prim, Mnucleon);
+
+    //m_m_BM_phiL and m_thetaL are the lepton angles in BDP frame
+    //m_BM_phiL, m_BM_thetaL are the lepton angles in TRF-II frame
+    std::pair<double, double> cmFrameResult = cmFrame.leptonCMconverterToBM03(
+            m_phiL, m_thetaL);
+    m_BM_phiL = cmFrameResult.first;
+    m_BM_thetaL = cmFrameResult.second;
+
+    //jacobian (jac)'s definition: d(xsec)/(... d m_thetaL d m_m_BM_phiL) = (1/jac) * d(xsec)/(... d m_BM_thetaL d m_BM_phiL)
+    m_DMSW_jac = cmFrame.jacobianLeptonCM(m_BM_phiL, m_BM_thetaL);
+
+    //m_BM_phiL, m_BM_thetaL are polar coord. of lminus 4-vector in the CM-frame of the (created) lepton pair
 
     //-----------------------------------------------
     //For the following, cf. eqs (2) to (5) in overleaf
@@ -865,15 +876,15 @@ void DDVCSProcessTEST::computeInternalVariables(double ml, double Ebeam,
     m_BM_eta = (Qcal2 + Mll2) / (2. * Qcal2 / xB - Qcal2 - Mll2 + t);
     m_BM_xi = m_BM_eta * 2. * m_BM_Q2 / (Qcal2 + Mll2);
     m_BM_y = Qcal2 / (Ebeam * 2. * xB * Mnucleon);
-    m_BM_ytilde = 2. / (1. + cos(thetal));
-    m_BM_ytildePlus = 2. / (1 - cos(thetal)); // ytilde under exchange thetal -> pi - thetal (polar coord. for lplus 4-vector)
-//    m_BM_F1 = (4. * pow(Mnucleon, 2.) - t * 2.7928) * pow((1. - t / 0.71), -2.)
-//            / (4. * pow(Mnucleon, 2.) - t); //EM form factor F1 for proton, 2.7928 = Born's magneton for proton
+    m_BM_ytilde = 2. / (1. + cos(m_BM_thetaL));
+    m_BM_ytildePlus = 2. / (1 - cos(m_BM_thetaL)); // ytilde under exchange m_BM_thetaL -> pi - m_BM_thetaL (polar coord. for lplus 4-vector)
+    m_BM_F1 = (4. * pow(Mnucleon, 2.) - t * 2.7928) * pow((1. - t / 0.71), -2.)
+            / (4. * pow(Mnucleon, 2.) - t); //EM form factor F1 for proton, 2.7928 = Born's magneton for proton
 
-    m_BM_F1 = 0.;//DEBUG
+//    m_BM_F1 = 0.;//DEBUG
 
     m_BM_F2 = 4. * pow(Mnucleon, 2.) * (2.7928 - 1.) * pow((1. - t / 0.71), -2.)
-     / (4. * pow(Mnucleon, 2.) - t); //EM form factor F2 for proton
+            / (4. * pow(Mnucleon, 2.) - t); //EM form factor F2 for proton
 
     m_BM_charge_e = sqrt(Constant::FINE_STRUCTURE_CONSTANT * 4. * M_PI);
 
@@ -894,16 +905,17 @@ void DDVCSProcessTEST::computeInternalVariables(double ml, double Ebeam,
             * sqrt((1. - m_BM_ytilde) * (m_BM_xi - m_BM_eta));
     m_BM_KtildecapPlus = (0.5 / m_BM_eta) * sqrt(-m_BM_xi * t / m_BM_Q2)
             * sqrt(1. - m_BM_tmin / t) * sqrt((1. - m_BM_eta) / (1. + m_BM_eta))
-            * sqrt((1. - m_BM_ytildePlus) * (m_BM_xi - m_BM_eta)); //Ktildecap under exchange thetal -> pi - thetal (polar coord. for lplus 4-vector)
+            * sqrt((1. - m_BM_ytildePlus) * (m_BM_xi - m_BM_eta)); //Ktildecap under exchange m_BM_thetaL -> pi - m_BM_thetaL (polar coord. for lplus 4-vector)
 
             //Basic scalar products of momenta
-    m_BM_kDelta = -m_BM_Q2 * m_BM_eta * (1. - 2. * m_BM_Kcap * cos(M_PI + phi))
-            / (m_BM_y * m_BM_xi);
+    m_BM_kDelta = -m_BM_Q2 * m_BM_eta
+            * (1. - 2. * m_BM_Kcap * cos(M_PI + m_BM_phi)) / (m_BM_y * m_BM_xi);
     m_BM_lminusDelta = -m_BM_Q2 * m_BM_eta
-            * (1. + 2. * m_BM_Ktildecap * cos(phil)) / (m_BM_ytilde * m_BM_xi);
+            * (1. + 2. * m_BM_Ktildecap * cos(m_BM_phiL))
+            / (m_BM_ytilde * m_BM_xi);
     m_BM_lplusDelta = -m_BM_Q2 * m_BM_eta
-            * (1. - 2. * m_BM_KtildecapPlus * cos(phil))
-            / (m_BM_ytildePlus * m_BM_xi); // lplus is the same as lminus under thetal -> pi - thetal and phi -> phi + pi (that's why we use ytildePlus and KtildecapPlus)
+            * (1. - 2. * m_BM_KtildecapPlus * cos(m_BM_phiL))
+            / (m_BM_ytildePlus * m_BM_xi); // lplus is the same as lminus under m_BM_thetaL -> pi - m_BM_thetaL and m_BM_phi -> m_BM_phi + pi (that's why we use ytildePlus and KtildecapPlus)
 
     //BH denominators
     m_BM_P1 = (2. * m_BM_kDelta + Qcal2 + Mll2) / (Qcal2 + Mll2);

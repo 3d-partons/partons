@@ -82,8 +82,9 @@ PhysicalType<double> DDVCSAluPhiL::computeObservable(
                 sAngleNum, &num, &errNum);
     }
 
-    std::cout << PhysicalType<double>(num, PhysicalUnit::NB).toString() << " "
-            << PhysicalType<double>(errNum, PhysicalUnit::NB).toString()
+    std::cout << PhysicalType<double>(num, PhysicalUnit::GEVm2).toString()
+            << " "
+            << PhysicalType<double>(errNum, PhysicalUnit::GEVm2).toString()
             << " num errNum" << std::endl;
 
     //free
@@ -114,8 +115,9 @@ PhysicalType<double> DDVCSAluPhiL::computeObservable(
                 sAngleDen, &den, &errDen);
     }
 
-    std::cout << PhysicalType<double>(den, PhysicalUnit::NB).toString() << " "
-            << PhysicalType<double>(errDen, PhysicalUnit::NB).toString()
+    std::cout << PhysicalType<double>(den, PhysicalUnit::GEVm2).toString()
+            << " "
+            << PhysicalType<double>(errDen, PhysicalUnit::GEVm2).toString()
             << " den errDen" << std::endl;
 
     //free

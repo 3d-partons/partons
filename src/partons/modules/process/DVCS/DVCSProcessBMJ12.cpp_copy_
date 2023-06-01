@@ -153,7 +153,7 @@ void DVCSProcessBMJ12::initModule() {
     computeFormFactors();
 
     // Compute CFFs F+b and F0+
-    computeCFFs();
+    computeCFFs(0); //0 for BMP14 leading-twist, 1 for BMJ12
 
     // Compute Angular coeffs for Interf cross section
     computeAngularCoeffsInterf();
@@ -193,6 +193,7 @@ void DVCSProcessBMJ12::defineAngles(const NumA::Vector3D &targetPolarization) {
 
     // m_phi is considered in the Trento convention here.
     //TODO VMF: why this rotation with m_phi?
+
     double Sx = Px * cos(m_phi) - Py * sin(m_phi);
     double Sy = -(Px * sin(m_phi) + Py * cos(m_phi));
     double Sz = -Pz;
@@ -236,57 +237,77 @@ void DVCSProcessBMJ12::computeFormFactors() {
             / (pow(1 - 1.4084507042253522 * m_t, 2) * (4 * m_M[1] - m_t));
 }
 
-void DVCSProcessBMJ12::computeCFFs() {
-    // Compute coefficients in CFFs F+b and F0+ (eqs 131, 132 in BMJ12)
-    for (int j = 0; j < 2; j++) {
-        m_cF[j][0] = (1. + (1 - 2 * j) * m_epsroot[0]) / (2. * m_epsroot[0])
-                + (1 - m_xB) * m_xB2 * (4 * m_M[1] - m_t) * (1 + m_t / m_Q2)
-                        / (m_Q2 * m_epsroot[0] * m_xBtQ2[1]);
-        m_cF[j][1] = (1. - (1 - 2 * j) * m_epsroot[0]) / (2. * m_epsroot[0])
-                * 2. * m_Kt[1] / (m_M[1] * m_xBtQ2[1]);
-        m_cF[j][2] = 4 * m_xB2 * m_Kt[1] / (m_Q2 * m_epsroot[0] * m_xBtQ2[2]);
-    }
-    double A = -sqrt(2.) * m_Kt[0] / (m_epsroot[0] * m_Q[0] * m_xBtQ2[0]); // global coefficient of F0+ in eq 132
-    m_cF[2][0] = A * m_xB
-            * (1 + 2. * m_xB * (4 * m_M[1] - m_t) / (m_Q2 * m_xBtQ2[0]));
-    m_cF[2][1] = A * (4. * m_xB2 * m_M[1] - (2. * m_xB + m_epsilonBMJ[1]) * m_t)
-            / (2. * m_M[1] * m_xBtQ2[0]);
-    m_cF[2][2] = A * 2. * m_xB / m_xBtQ2[0]
-            * (1 + 2. * m_xB2 * (4 * m_M[1] - m_t) / (m_Q2 * m_xBtQ2[0]));
-	//TODO why is there no expression m_cF for FTT contribution in eqs 131 and 132 of BMJ12?
+/*
+ * in computeCFFs:
+ * ala = 0: CFFs a la BMP14 (leading twist), eqs 69a, 69b
+ * ala = 1: CFFs a la BMJ12, eqs 131 and 132
+ */
+void DVCSProcessBMJ12::computeCFFs(int ala) {
 
-    // Gets CFFs H, Ht, etc.
-    std::vector<std::complex<double> > CFF_F(4, 0.);
-    std::vector<std::complex<double> > CFF_FT(4, 0.);
-    std::vector<std::complex<double> > CFF_FLT(4, 0.);
+    if (ala == 0) {
+        // Gets CFFs H, Ht, etc.
+        std::vector<std::complex<double> > CFF_F(4, 0.);
+        CFF_F[0] = getConvolCoeffFunctionValue(GPDType::H); //convolution between T0 and H as in eqs 39, 40 and 69a from BMP14
+        CFF_F[1] = getConvolCoeffFunctionValue(GPDType::E);
+        CFF_F[2] = getConvolCoeffFunctionValue(GPDType::Ht);
+        CFF_F[3] = getConvolCoeffFunctionValue(GPDType::Et);
 
-    CFF_F[0] = getConvolCoeffFunctionValue(GPDType::H);
-    CFF_FT[0] = getConvolCoeffFunctionValue(GPDType::HTrans);
-    CFF_FLT[0] = getConvolCoeffFunctionValue(GPDType::H3p)
-            - getConvolCoeffFunctionValue(GPDType::H3m);
+    } else if (ala == 1) {
+        // Compute coefficients in CFFs F+b and F0+ (eqs 131, 132 in BMJ12)
+        for (int j = 0; j < 2; j++) {
+            m_cF[j][0] = (1. + (1 - 2 * j) * m_epsroot[0]) / (2. * m_epsroot[0])
+                    + (1 - m_xB) * m_xB2 * (4 * m_M[1] - m_t) * (1 + m_t / m_Q2)
+                            / (m_Q2 * m_epsroot[0] * m_xBtQ2[1]);
+            m_cF[j][1] = (1. - (1 - 2 * j) * m_epsroot[0]) / (2. * m_epsroot[0])
+                    * 2. * m_Kt[1] / (m_M[1] * m_xBtQ2[1]);
+            m_cF[j][2] = 4 * m_xB2 * m_Kt[1]
+                    / (m_Q2 * m_epsroot[0] * m_xBtQ2[2]);
+        }
+        double A = -sqrt(2.) * m_Kt[0] / (m_epsroot[0] * m_Q[0] * m_xBtQ2[0]); // global coefficient of F0+ in eq 132
+        m_cF[2][0] = A * m_xB
+                * (1 + 2. * m_xB * (4 * m_M[1] - m_t) / (m_Q2 * m_xBtQ2[0]));
+        m_cF[2][1] = A
+                * (4. * m_xB2 * m_M[1] - (2. * m_xB + m_epsilonBMJ[1]) * m_t)
+                / (2. * m_M[1] * m_xBtQ2[0]);
+        m_cF[2][2] = A * 2. * m_xB / m_xBtQ2[0]
+                * (1 + 2. * m_xB2 * (4 * m_M[1] - m_t) / (m_Q2 * m_xBtQ2[0]));
 
-    CFF_F[1] = getConvolCoeffFunctionValue(GPDType::E);
-    CFF_FT[1] = getConvolCoeffFunctionValue(GPDType::ETrans);
-    CFF_FLT[1] = getConvolCoeffFunctionValue(GPDType::E3p)
-            - getConvolCoeffFunctionValue(GPDType::E3m);
+        //TODO why is there no expression m_cF for FTT contribution in eqs 131 and 132 of BMJ12?
 
-    CFF_F[2] = getConvolCoeffFunctionValue(GPDType::Ht);
-    CFF_FT[2] = getConvolCoeffFunctionValue(GPDType::HtTrans);
-    CFF_FLT[2] = getConvolCoeffFunctionValue(GPDType::Ht3p)
-            - getConvolCoeffFunctionValue(GPDType::Ht3m);
+        // Gets CFFs H, Ht, etc.
+        std::vector<std::complex<double> > CFF_F(4, 0.);
+        std::vector<std::complex<double> > CFF_FT(4, 0.);
+        std::vector<std::complex<double> > CFF_FLT(4, 0.);
 
-    CFF_F[3] = getConvolCoeffFunctionValue(GPDType::Et);
-    CFF_FT[3] = getConvolCoeffFunctionValue(GPDType::EtTrans);
-    CFF_FLT[3] = getConvolCoeffFunctionValue(GPDType::Et3p)
-            - getConvolCoeffFunctionValue(GPDType::Et3m);
+        CFF_F[0] = getConvolCoeffFunctionValue(GPDType::H);
+        CFF_FT[0] = getConvolCoeffFunctionValue(GPDType::HTrans);
+        CFF_FLT[0] = getConvolCoeffFunctionValue(GPDType::H3p)
+                - getConvolCoeffFunctionValue(GPDType::H3m);
 
-    // Compute CFFs F+b and F0+
-    for (unsigned int i = 0; i < 4; i++) {
-        for (unsigned int j = 0; j < 3; j++) {
-            m_CFF[i][j] = m_cF[j][0] * CFF_F[i] + m_cF[j][1] * CFF_FT[i]
-                    + m_cF[j][2] * CFF_FLT[i];
+        CFF_F[1] = getConvolCoeffFunctionValue(GPDType::E);
+        CFF_FT[1] = getConvolCoeffFunctionValue(GPDType::ETrans);
+        CFF_FLT[1] = getConvolCoeffFunctionValue(GPDType::E3p)
+                - getConvolCoeffFunctionValue(GPDType::E3m);
+
+        CFF_F[2] = getConvolCoeffFunctionValue(GPDType::Ht);
+        CFF_FT[2] = getConvolCoeffFunctionValue(GPDType::HtTrans);
+        CFF_FLT[2] = getConvolCoeffFunctionValue(GPDType::Ht3p)
+                - getConvolCoeffFunctionValue(GPDType::Ht3m);
+
+        CFF_F[3] = getConvolCoeffFunctionValue(GPDType::Et);
+        CFF_FT[3] = getConvolCoeffFunctionValue(GPDType::EtTrans);
+        CFF_FLT[3] = getConvolCoeffFunctionValue(GPDType::Et3p)
+                - getConvolCoeffFunctionValue(GPDType::Et3m);
+
+        // Compute CFFs F+b and F0+
+        for (unsigned int i = 0; i < 4; i++) {
+            for (unsigned int j = 0; j < 3; j++) {
+                m_CFF[i][j] = m_cF[j][0] * CFF_F[i] + m_cF[j][1] * CFF_FT[i]
+                        + m_cF[j][2] * CFF_FLT[i];
+            }
         }
     }
+
 }
 
 void DVCSProcessBMJ12::computeFourierCoeffsBH() {
@@ -313,7 +334,7 @@ void DVCSProcessBMJ12::computeFourierCoeffsBH() {
     double F1PlusDeltaF2 = F1 + Delta2M2 * F2;
     double F1MinusDeltaF2 = F12 - Delta2M2 * F22;
 
-    // Unpolarized Fourier coefficients (eqs 35-37 in BMK02)
+    // Unpolarized Fourier coefficients eqs 35-37 in BMK02
     m_cBH[0][0] = 8. * m_K[1]
             * ((2. + 3. * m_epsilonBMJ[1]) * F1MinusDeltaF2 / Delta2Q2
                     + 2. * m_xB2 * F1PlusF22)
@@ -383,7 +404,7 @@ void DVCSProcessBMJ12::computeFourierCoeffsVCS() {
     C2 = 1. - m_yBMJ[0] - m_epsilonBMJ[1] * m_yBMJ[1] / 4.;
     C1 = sqrt(C2);
 
-    // Unpolarized Fourier coeffs (eqs 37-39 in BMJ12)
+    // Unpolarized Fourier coeffs eqs 37-39 in BMJ12
     m_cVCS[0][0] = (2
             * (2 - 2 * m_yBMJ[0] + m_yBMJ[1] * (1. + m_epsilonBMJ[1] / 2.))
             * C_VCS(0, 1, 1, 1, 1, -1, 1, -1, 1).real()
@@ -436,6 +457,7 @@ void DVCSProcessBMJ12::computeFourierCoeffsVCS() {
     m_sVCS[2][2] = -4 * C2 / m_epsroot[2] * m_Kt[0] / m_M[0] * cos(m_phi2BMK)
             * C_VCS(2, -1, 1, 1, 1).imag();
 }
+
 //leptonic Fourier coefficients: they come from contracting the leptonic tensor with polarization vectors as in eq 62 in BMJ12. See appendix B there
 void DVCSProcessBMJ12::computeAngularCoeffsInterf() {
     double tQ2 = m_t / m_Q2;
@@ -451,7 +473,7 @@ void DVCSProcessBMJ12::computeAngularCoeffsInterf() {
      * Angulars coeffs C and S
      */
 
-    // C++ coefficients (eqs B1 and so on in BMJ12)
+    // C++ coefficients eqs B1 and so on in BMJ12
     m_C[0][0][0] =
             -4 * (2. - m_yBMJ[0]) * (1. + m_epsroot[0]) / m_epsroot[3]
                     * (Kt2Q2 * (2. - m_yBMJ[0]) * (2. - m_yBMJ[0])
@@ -1112,7 +1134,7 @@ std::complex<double> DVCSProcessBMJ12::CFF(GPDType::Type F, int a, int b) {
 
 std::complex<double> DVCSProcessBMJ12::C_VCS(unsigned int S, int a1, int b1,
         int a2, int b2) {
-        
+
     //BMJ12's helicity-dependent CFFs:
     std::complex<double> H1(0., 0.), Ht1(0., 0.), E1(0., 0.), Et1(0., 0.);
     std::complex<double> H2(0., 0.), Ht2(0., 0.), E2(0., 0.), Et2(0., 0.);
@@ -1167,6 +1189,7 @@ std::complex<double> DVCSProcessBMJ12::C_VCS(unsigned int S, int a1, int b1,
         return 0.;
     }
 }
+
 //Eq 47 in BMJ12
 std::complex<double> DVCSProcessBMJ12::C_VCS(unsigned int S, int a1, int b1,
         int a2, int b2, int a3, int b3) {

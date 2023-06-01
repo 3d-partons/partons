@@ -53,46 +53,42 @@ protected:
 private:
 
     //TODO: description
-    double bh_squared(double Mnucleon, double t, double phi, double phil,
-            double Q2, double eta, double xi, double y, double ytilde,
-            double F1, double F2, double tmin, double tmax, double edgeFactor,
-            double P1, double P2, double P3, double P4, int beamSign,
-            double charge_e) const;
+    double bh_squared(double Mnucleon, double t, double Q2, double eta,
+            double xi, double y, double ytilde, double F1, double F2,
+            double tmin, double tmax, double edgeFactor, double P1, double P2,
+            double P3, double P4, int beamSign, double charge_e) const;
 
     //TODO: description
     double crossSectionBH(double Ebeam, double Mnucleon, double xB, double t,
-            double Qcal2, double Mll2, double phi, double phil, double thetal,
-            int beamSign, int polariz) const;
+            double Qcal2, double Mll2, int beamSign, int polariz) const;
 
-    double vcs_squared(double Mnucleon, double t, double phi, double phil,
-            double Q2, double eta, double xi, double y, double ytilde,
-            double edgeFactor, const std::complex<double>& cffH,
-            const std::complex<double>& cffE, const std::complex<double>& cffHL,
+    double vcs_squared(double Mnucleon, double t, double Q2, double eta,
+            double xi, double y, double ytilde, double edgeFactor,
+            const std::complex<double>& cffH, const std::complex<double>& cffE,
+            const std::complex<double>& cffHL,
             const std::complex<double>& cffEL,
             const std::complex<double>& cffHtilde,
             const std::complex<double>& cffEtilde, double charge_e) const;
 
     double crossSectionVCS(double Ebeam, double Mnucleon, double xB, double t,
-            double Qcal2, double Mll2, double phi, double phil, double thetal,
-            int beamSign, int polariz) const;
+            double Qcal2, double Mll2, int beamSign, int polariz) const;
 
-    double int_squared(double Mnucleon, double t, double phi, double phil,
-            double Q2, double eta, double xi, double y, double ytilde,
-            double F1, double F2, double edgeFactor, double Kcap,
-            double Ktildecap, const std::complex<double>& cffH,
-            const std::complex<double>& cffE, const std::complex<double>& cffHL,
+    double int_squared(double Mnucleon, double t, double Q2, double eta,
+            double xi, double y, double ytilde, double F1, double F2,
+            double edgeFactor, double Kcap, double Ktildecap,
+            const std::complex<double>& cffH, const std::complex<double>& cffE,
+            const std::complex<double>& cffHL,
             const std::complex<double>& cffEL,
             const std::complex<double>& cffHtilde, double P1, double P2,
             double P3, double P4, double charge_e, int beamSign, int polariz,
             double lambda) const;
 
     double crossSectionInterf(double Ebeam, double Mnucleon, double xB,
-            double t, double Qcal2, double Mll2, double phi, double phil,
-            double thetal, int beamSign, int polariz, double lambda) const;
+            double t, double Qcal2, double Mll2, int beamSign, int polariz,
+            double lambda) const;
 
     void computeInternalVariables(double ml, double Ebeam, double Mnucleon,
-            double xB, double t, double Qcal2, double Mll2, double phi,
-            double phil, double thetal);
+            double xB, double t, double Qcal2, double Mll2);
 
     double m_BM_Q2;
     double m_BM_eta;
@@ -131,6 +127,12 @@ private:
     double m_BM_Qcal2max;
     double m_BM_Mll2min;
     double m_BM_Mll2max;
+
+    double m_BM_phiL;
+    double m_BM_thetaL;
+    double m_BM_phi;
+
+    double m_DMSW_jac;
 
     //CFFs
     std::complex<double> m_cffH;

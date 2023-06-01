@@ -63,7 +63,7 @@ protected:
     virtual PhysicalType<double> CrossSectionVCS();
     virtual PhysicalType<double> CrossSectionInterf();
 
-protected:
+private:
 
     // The vectors here are actually static arrays, DO NOT PUSH BACK OR POP BACK.
     // Use them as arrays! Size fixed in the constructor.
@@ -165,7 +165,7 @@ protected:
      */
     std::complex<double> CFF(GPDType::Type F, int a, int b);
 
-    virtual void computeCFFs(); ///< Computes CFFS F+b and F0+.
+    void computeCFFs(int ala); ///< Computes CFFS F+b and F0+.
 
     //@{
     /** Method that gives the VCS coefficient bilinear in the CFFs.
