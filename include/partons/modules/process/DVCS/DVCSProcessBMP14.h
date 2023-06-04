@@ -4,8 +4,8 @@
 /**
  * @file DVCSProcessBMP14.h
  * @author Victor MARTINEZ-FERNANDEZ (NCBJ / Warsaw) & Pawel SZNAJDER (NCBJ / Warsaw)
- * @date year 2023
- * @version
+ * @date June 2023
+ * @version 1.0
  */
 
 #include <string>

@@ -3,8 +3,8 @@
 
 /**
  * @file DVCSXiConverterXBToXiBMP14.h
- * @author Bryan BERTHOU (SPhN / CEA Saclay)
- * @date 28 October 2015
+ * @author Victor MARTINEZ-FERNANDEZ (NCBJ / Warsaw)
+ * @date June 2023
  * @version 1.0
  */
 
