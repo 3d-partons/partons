@@ -185,7 +185,7 @@ double DVMPProcessGK06::AsymmetryAUUcosphi() {
 
     double sigma0 = 0.5 * (CrossSectionT() + m_eps * CrossSectionL());
 
-    return m_eps * A / sigma0;
+    return (sqrt(2 * m_eps * (1. + m_eps)) * A) / sigma0;
 
 }
 
@@ -206,7 +206,7 @@ double DVMPProcessGK06::AsymmetryAUUcos2phi() {
     double sigma0 = 0.5 * (CrossSectionT() + m_eps * CrossSectionL());
 
 
-    return (sqrt(2 * m_eps * (1. + m_eps)) * A) / sigma0;
+    return m_eps * A / sigma0;
 
 }
 

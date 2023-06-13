@@ -17,7 +17,7 @@
 #include "../../../../beans/List.h"
 #include "../../../../beans/MesonType.h"
 #include "../../../../utils/type/PhysicalType.h"
-#include "DVMPCrossSectionUUUMinusPhiIntegrated.h"
+#include "DVMPCrossSectionUUUMinus.h"
 
 namespace PARTONS {
 
@@ -29,13 +29,14 @@ namespace PARTONS {
  *
  * Unit: \f$\mathrm{nbarn}\f$.
  */
-class DVMPCrossSectionTotal: public DVMPCrossSectionUUUMinusPhiIntegrated {
+class DVMPCrossSectionTotal: public DVMPCrossSectionUUUMinus{
 
 public:
 
     static const std::string DVMP_CROSSSECTION_TOTAL_RANGEXb; ///< String used to set integration xB range via XML scenario.
     static const std::string DVMP_CROSSSECTION_TOTAL_RANGET; ///< String used to set integration t range via XML scenario.
     static const std::string DVMP_CROSSSECTION_TOTAL_RANGEQ2; ///< String used to set integration Q2 range via XML scenario.
+    static const std::string DVMP_CROSSSECTION_TOTAL_RANGEPHI; ///< String used to set integration phi range via XML scenario.
     static const std::string DVMP_CROSSSECTION_TOTAL_RANGEY; ///< String used to set integration y range via XML scenario.
     static const std::string DVMP_CROSSSECTION_TOTAL_RANGENu; ///< String used to set integration nu range via XML scenario.
     static const std::string DVMP_CROSSSECTION_TOTAL_N0; ///< String used to set number of MC integration iterations per cycle via XML scenario.
@@ -50,8 +51,13 @@ public:
     /**
      * Function for the integration.
      */
-    static double DVMPCrossSectionTotalFunction(double* kin, size_t dim,
+    static double DVMPCrossSectionTotalFunctionA(double* kin, size_t dim,
             void* par);
+
+    /**
+     * Function for the integration.
+     */
+    static double DVMPCrossSectionTotalFunctionB(double x, void* params);
 
     /**
      * Constructor.
@@ -81,6 +87,8 @@ public:
     void setRangeY(const std::pair<double, double>& rangeY);
     const std::pair<double, double>& getRangeNu() const;
     void setRangeNu(const std::pair<double, double>& rangeNu);
+    const std::pair<double, double>& getRangePhi() const;
+    void setRangePhi(const std::pair<double, double>& rangePhi);
     bool isEvaluatePhotoProduction() const;
     void setEvaluatePhotoProduction(bool evaluatePhotoProduction);
 
@@ -116,6 +124,7 @@ private:
     std::pair<double, double> m_rangexB; ///< xB integration range.
     std::pair<double, double> m_rangeT; ///< t integration range.
     std::pair<double, double> m_rangeQ2; ///< Q2 integration range.
+    std::pair<double, double> m_rangePhi; ///< phi integration range.
     std::pair<double, double> m_rangeY; ///< y integration range.
     std::pair<double, double> m_rangeNu; ///< nu integration range.
 
@@ -128,9 +137,12 @@ struct DVMPCrossSectionTotalParameters {
     double m_E; ///< Beam energy.
     MesonType::Type m_mesonType; ///< Meson type.
     List<GPDType> m_gpdType; ///< GPD types.
-    std::pair<double, double> m_yCut; ///< y cut.
+    std::pair<double, double> m_xBCut; ///< y cut.
     std::pair<double, double> m_nuCut; ///< nu cut.
+    std::pair<double, double> m_phiCut; ///< phi cut.
     bool m_evaluatePhotoProduction; ///< If true, virtual photo-production will be evaluated.
+
+    double m_y, m_t, m_Q2;
 };
 
 } /* namespace PARTONS */

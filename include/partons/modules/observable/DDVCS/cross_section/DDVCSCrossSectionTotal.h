@@ -146,10 +146,10 @@ struct DDVCSCrossSectionTotalParameters {
 
     DDVCSCrossSectionTotal* m_pDDVCSCrossSectionTotal; ///< Pointer to DDVCSCrossSectionTotal.
     gsl_rng* m_r; ///< Pointer to random number generator.
-    double m_xB, m_t, m_Q2, m_Q2Prim;
+    double m_y, m_t, m_Q2, m_Q2Prim;
     double m_E; ///< Beam energy.
     List<GPDType> m_gpdType; ///< GPD types.
-    std::pair<double, double> m_yCut;
+    std::pair<double, double> m_xBCut;
 };
 
 } /* namespace PARTONS */
