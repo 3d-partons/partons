@@ -7,6 +7,7 @@
 #include <gsl/gsl_monte.h>
 #include <gsl/gsl_monte_vegas.h>
 #include <gsl/gsl_rng.h>
+#include <gsl/gsl_integration.h>
 #include <cmath>
 #include <iostream>
 #include <vector>
@@ -26,6 +27,8 @@ const std::string DVMPCrossSectionTotal::DVMP_CROSSSECTION_TOTAL_RANGET =
         "DVMPCrossSectionTotal_rangeT";
 const std::string DVMPCrossSectionTotal::DVMP_CROSSSECTION_TOTAL_RANGEQ2 =
         "DVMPCrossSectionTotal_rangeQ2";
+const std::string DVMPCrossSectionTotal::DVMP_CROSSSECTION_TOTAL_RANGEPHI =
+         "DVMPCrossSectionTotal_rangePhi";
 const std::string DVMPCrossSectionTotal::DVMP_CROSSSECTION_TOTAL_RANGEY =
         "DVMPCrossSectionTotal_rangeY";
 const std::string DVMPCrossSectionTotal::DVMP_CROSSSECTION_TOTAL_RANGENu =
@@ -42,24 +45,26 @@ const unsigned int DVMPCrossSectionTotal::classId =
                 new DVMPCrossSectionTotal("DVMPCrossSectionTotal"));
 
 DVMPCrossSectionTotal::DVMPCrossSectionTotal(const std::string &className) :
-        DVMPCrossSectionUUUMinusPhiIntegrated(className), m_nI0(1000), m_nI1(5), m_evaluatePhotoProduction(
+        DVMPCrossSectionUUUMinus(className), m_nI0(5000), m_nI1(5), m_evaluatePhotoProduction(
                 false) {
 
     m_rangexB = std::pair<double, double>(1.E-4, 0.7);
-    m_rangeT = std::pair<double, double>(-1., 0.);
+    m_rangeT = std::pair<double, double>(-1., -0.0001);
     m_rangeQ2 = std::pair<double, double>(1., 1.E3);
-    m_rangeY = std::pair<double, double>(0., 1.);
+    m_rangePhi = std::pair<double, double>(0., 2*M_PI);
+    m_rangeY = std::pair<double, double>(1.E-4, 1.);
     m_rangeNu = std::pair<double, double>(0., 1.E3);
 }
 
 DVMPCrossSectionTotal::DVMPCrossSectionTotal(const DVMPCrossSectionTotal& other) :
-        DVMPCrossSectionUUUMinusPhiIntegrated(other), m_nI0(other.m_nI0), m_nI1(
+        DVMPCrossSectionUUUMinus(other), m_nI0(other.m_nI0), m_nI1(
                 other.m_nI1), m_evaluatePhotoProduction(
                 other.m_evaluatePhotoProduction) {
 
     m_rangexB = other.m_rangexB;
     m_rangeT = other.m_rangeT;
     m_rangeQ2 = other.m_rangeQ2;
+    m_rangePhi = other.m_rangePhi;
     m_rangeY = other.m_rangeY;
     m_rangeNu = other.m_rangeNu;
 }
@@ -74,7 +79,7 @@ DVMPCrossSectionTotal* DVMPCrossSectionTotal::clone() const {
 void DVMPCrossSectionTotal::configure(const ElemUtils::Parameters &parameters) {
 
     //run for base
-    DVMPCrossSectionUUUMinusPhiIntegrated::configure(parameters);
+    DVMPCrossSectionUUUMinus::configure(parameters);
 
     //check
     if (parameters.isAvailable(DVMP_CROSSSECTION_TOTAL_RANGEXb)) {
@@ -87,6 +92,10 @@ void DVMPCrossSectionTotal::configure(const ElemUtils::Parameters &parameters) {
 
     if (parameters.isAvailable(DVMP_CROSSSECTION_TOTAL_RANGEQ2)) {
         setRangeQ2(parseRange(parameters.getLastAvailable().getString()));
+    }
+
+    if (parameters.isAvailable(DVMP_CROSSSECTION_TOTAL_RANGEPHI)) {
+        setRangePhi(parseRange(parameters.getLastAvailable().getString()));
     }
 
     if (parameters.isAvailable(DVMP_CROSSSECTION_TOTAL_RANGEY)) {
@@ -117,21 +126,25 @@ void DVMPCrossSectionTotal::configure(const ElemUtils::Parameters &parameters) {
     }
 }
 
-double DVMPCrossSectionTotal::DVMPCrossSectionTotalFunction(double* kin,
+double DVMPCrossSectionTotal::DVMPCrossSectionTotalFunctionA(double* kin,
         size_t dim, void* par) {
 
     //parameters
     DVMPCrossSectionTotalParameters* params =
             static_cast<DVMPCrossSectionTotalParameters*>(par);
 
-    double xB = kin[0];
-    double t = kin[1];
-    double Q2 = kin[2];
+    double y = exp(kin[0]);
+    double t = -1 * exp(kin[1]);
+    double Q2 = exp(kin[2]);
+
     double E = params->m_E;
     MesonType::Type mesonType = params->m_mesonType;
 
+    //jacobian
+    double jacobian = -1 * y * t * Q2;
+
     //check kinematic range
-    double y = Q2 / (2 * xB * Constant::PROTON_MASS * E);
+    double xB = Q2 / (2 * y * Constant::PROTON_MASS * E);
     double nu = y * E;
     double xi =
             params->m_pDVMPCrossSectionTotal->getProcessModule()->getXiConverterModule()->compute(
@@ -147,7 +160,7 @@ double DVMPCrossSectionTotal::DVMPCrossSectionTotalFunction(double* kin,
     if (t > tmin || t < tmax)
         return 0.;
 
-    if (y < params->m_yCut.first || y > params->m_yCut.second)
+    if (xB < params->m_xBCut.first || xB > params->m_xBCut.second)
         return 0.;
 
     if (nu < params->m_nuCut.first || nu > params->m_nuCut.second)
@@ -167,17 +180,59 @@ double DVMPCrossSectionTotal::DVMPCrossSectionTotalFunction(double* kin,
     }
 
     //evaluate
-    double result =
-            params->m_pDVMPCrossSectionTotal->DVMPCrossSectionUUUMinusPhiIntegrated::computeObservable(
-                    DVMPObservableKinematic(xB, t, Q2, E, 0., mesonType),
-                    params->m_gpdType).getValue();
+    params->m_y = y;
+    params->m_t = t;
+    params->m_Q2 = Q2;
 
-    return result / flux;
+    gsl_integration_workspace* w
+            = gsl_integration_workspace_alloc (1000);
+
+    double result, error;
+
+    gsl_function F;
+    F.function = &DVMPCrossSectionTotalFunctionB;
+    F.params = par;
+
+    gsl_integration_qag(&F, params->m_phiCut.first, params->m_phiCut.second, 0, 1.E-1, 1000, 6, w, &result, &error);
+
+    gsl_integration_workspace_free (w);
+
+    return result * jacobian / flux;
+}
+
+double DVMPCrossSectionTotal::DVMPCrossSectionTotalFunctionB(double phi, void* par){
+
+    //parameters
+    DVMPCrossSectionTotalParameters* params =
+            static_cast<DVMPCrossSectionTotalParameters*>(par);
+
+    double y = params->m_y;
+    double t = params->m_t;
+    double Q2 = params->m_Q2;
+    double E = params->m_E;
+    MesonType::Type mesonType = params->m_mesonType;
+
+    double xB = Q2 / (2 * y * Constant::PROTON_MASS * E);
+    double jacobian = xB / y;
+
+    double result = jacobian * params->m_pDVMPCrossSectionTotal->DVMPCrossSectionUUUMinus::computeObservable(
+                    DVMPObservableKinematic(xB, t, Q2, E, phi, mesonType),
+                    params->m_gpdType).getValue();
+    
+    if(std::isfinite(result)){
+        return result;
+    }else{
+        std::cout << "Result is unfinite, return 0" << std::endl;
+        return 0;
+    }
 }
 
 PhysicalType<double> DVMPCrossSectionTotal::computeObservable(
         const DVMPObservableKinematic& kinematic,
         const List<GPDType>& gpdType) {
+
+    //disable
+    gsl_set_error_handler_off();
 
     //result and error
     double res, err;
@@ -202,14 +257,15 @@ PhysicalType<double> DVMPCrossSectionTotal::computeObservable(
     }
 
     //ranges
-    // xB, Q2, t
-    double xl[3] = { m_rangexB.first, m_rangeT.first, m_rangeQ2.first };
-    double xu[3] = { m_rangexB.second, m_rangeT.second, (
+    // y, Q2, t
+    double xl[3] = { log(m_rangeY.first), log(-1 * m_rangeT.second), log(m_rangeQ2.first) };
+    double xu[3] = { log(m_rangeY.second), log(-1 * m_rangeT.first), log(
             (m_rangeQ2.second > maxQ2) ? (maxQ2) : (m_rangeQ2.second)) };
 
-    // y and nu cut
-    params.m_yCut = m_rangeY;
+    // cuts
+    params.m_xBCut = m_rangexB;
     params.m_nuCut = m_rangeNu;
+    params.m_phiCut = m_rangePhi;
 
     // virtual photo-production
     params.m_evaluatePhotoProduction = m_evaluatePhotoProduction;
@@ -219,7 +275,7 @@ PhysicalType<double> DVMPCrossSectionTotal::computeObservable(
     gsl_rng* r = gsl_rng_alloc(T);
 
     //function
-    gsl_monte_function G = { &DVMPCrossSectionTotalFunction, 3, &params };
+    gsl_monte_function G = { &DVMPCrossSectionTotalFunctionA, 3, &params };
 
     //run
     gsl_monte_vegas_state *s = gsl_monte_vegas_alloc(3);
@@ -352,6 +408,16 @@ void DVMPCrossSectionTotal::setRangeNu(
 
 bool DVMPCrossSectionTotal::isEvaluatePhotoProduction() const {
     return m_evaluatePhotoProduction;
+}
+
+const std::pair<double, double>& DVMPCrossSectionTotal::getRangePhi() const {
+        return m_rangePhi;
+}
+
+void DVMPCrossSectionTotal::setRangePhi(const std::pair<double, double>& rangePhi) {
+
+        printChangeOfRange(__func__, "phi", m_rangePhi, rangePhi);
+            m_rangePhi = rangePhi;
 }
 
 void DVMPCrossSectionTotal::setEvaluatePhotoProduction(

@@ -104,13 +104,13 @@ double DDVCSCrossSectionUUMinusDVCSLimit::DDVCSCrossSectionUUMinusDVCSLimitFunct
             params->m_pDDVCSCrossSectionUUMinusDVCSLimit->getProcessModule()->compute(
                     1., -1, NumA::Vector3D(0., 0., 0.),
                     ddvcsObservableKinematic, params->m_gpdType,
-                    VCSSubProcessType::DDVCS);
+                    VCSSubProcessType::INT);
 
     DDVCSObservableResult B =
             params->m_pDDVCSCrossSectionUUMinusDVCSLimit->getProcessModule()->compute(
                     -1., -1, NumA::Vector3D(0., 0., 0.),
                     ddvcsObservableKinematic, params->m_gpdType,
-                    VCSSubProcessType::DDVCS);
+                    VCSSubProcessType::INT);
 
     //combine
     PhysicalType<double> result = (A.getValue() + B.getValue()) / 2.;
