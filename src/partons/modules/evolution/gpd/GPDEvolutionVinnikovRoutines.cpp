@@ -48,8 +48,9 @@ double GPDEvolutionVinnikov::conv_int_ns(int const ix, double const xi,
     double const xi2 = xi * xi;
     double const c_1_3 = 1.0 / 3.0;
     double const shift = xi2 / (1.0 - 2.0 * xi);
-    double const gamma = log(0.5 + 0.5 / xi * sqrt(9.0 * xi2 - 12.0 * xi + 4.0))
-            / ((double) n);
+    //double const gamma = log(0.5 + 0.5 / xi * sqrt(9.0 * xi2 - 12.0 * xi + 4.0))
+    //        / ((double) n);
+    double const gamma = log(( 1.0 - xi ) / xi) / ((double) n);
 
     // First, consider separately some close to boundary cases
     if (0 == ix)
@@ -701,8 +702,9 @@ double GPDEvolutionVinnikov::conv_int_qq(int const ix, double const xi,
     double const xi2 = xi * xi;
     double const c_1_3 = 1.0 / 3.0;
     double const shift = xi2 / (1.0 - 2.0 * xi);
-    double const gamma = log(0.5 + 0.5 / xi * sqrt(9.0 * xi2 - 12.0 * xi + 4.0))
-            / ((double) n);
+    //double const gamma = log(0.5 + 0.5 / xi * sqrt(9.0 * xi2 - 12.0 * xi + 4.0))
+    //        / ((double) n);
+    double const gamma = log(( 1.0 - xi ) / xi) / ((double) n);
 
     //----------------   Ok, lets start  -------------------
     // First, consider separately some close to boundary cases
@@ -1081,8 +1083,9 @@ double GPDEvolutionVinnikov::conv_int_gg(int const ix, double const xi,
     double const xi2 = xi * xi;
     double const c_1_3 = 1.0 / 3.0;
     double const shift = xi2 / (1.0 - 2.0 * xi);
-    double const gamma = log(0.5 + 0.5 / xi * sqrt(9.0 * xi2 - 12.0 * xi + 4.0))
-            / ((double) n);
+    //double const gamma = log(0.5 + 0.5 / xi * sqrt(9.0 * xi2 - 12.0 * xi + 4.0))
+    //        / ((double) n);
+    double const gamma = log(( 1.0 - xi ) / xi) / ((double) n);
 
     //----------------   Ok, lets start  -------------------
 
@@ -1530,6 +1533,7 @@ double GPDEvolutionVinnikov::conv_int_gg(int const ix, double const xi,
                             + (gpd[i] - gpd_x) / (y - x));
             convint += 2.0 * f1;
         }
+
         for (i = ix + 1; i < in; i += 2) {
             double y = yy[i];
             double y2 = y * y;
@@ -1539,6 +1543,7 @@ double GPDEvolutionVinnikov::conv_int_gg(int const ix, double const xi,
                             + (gpd[i] - gpd_x) / (y - x));
             convint += 4.0 * f1;
         }
+
         {
             double y = yy[in];
             double y2 = y * y;
@@ -1547,6 +1552,7 @@ double GPDEvolutionVinnikov::conv_int_gg(int const ix, double const xi,
                             * (y * xi2px2 + xxi2mx3 - tx * y2)
                             + (gpd[in] - gpd_x) / (y - x));
             convint += f1;
+
             if ((2 * n - 1) == in) {
                 double ya = yy[2 * n - 2];
                 double ya2 = ya * ya;
@@ -1570,7 +1576,6 @@ double GPDEvolutionVinnikov::conv_int_gg(int const ix, double const xi,
         }
 
         convint *= gamma * c_1_3;
-
         convint +=
                 gpd[ix]
                         * (2.0 * (x2 + xi2) * (1.0 - x) / (xi * xi2 - xi)
@@ -1583,7 +1588,6 @@ double GPDEvolutionVinnikov::conv_int_gg(int const ix, double const xi,
                                 + (2.0 * xi + x) * (xi - x) * (xi - x) / xi2
                                         * log((1.0 - xi) / (x - xi))
                                 + 14.0 * c_1_3 * xi) * 0.25 / xi;
-
         convint += (gpd[n] - gpd[ix])
                 * log((xi - x) * (xi + 1.0) / ((xi + x) * (xi - 1.0)))
                 * (3.0 * xi2 * x - x2 * x) / (4.0 * xi2 * xi);
@@ -1650,8 +1654,9 @@ double GPDEvolutionVinnikov::conv_int_gq(int const ix, double const xi,
     double const xi2 = xi * xi;
     double const c_1_3 = 1.0 / 3.0;
     double const shift = xi2 / (1.0 - 2.0 * xi);
-    double const gamma = log(0.5 + 0.5 / xi * sqrt(9.0 * xi2 - 12.0 * xi + 4.0))
-            / ((double) n);
+    //double const gamma = log(0.5 + 0.5 / xi * sqrt(9.0 * xi2 - 12.0 * xi + 4.0))
+    //        / ((double) n);
+    double const gamma = log(( 1.0 - xi ) / xi) / ((double) n);
 
     // First, consider separately some close to boundary cases
 
@@ -1929,8 +1934,9 @@ double GPDEvolutionVinnikov::conv_int_qg(int const ix, double const xi,
     double const two_x = 2.0 * x;
     double const c_1_3 = 1.0 / 3.0;
     double const shift = xi2 / (1.0 - 2.0 * xi);
-    double const gamma = log(0.5 + 0.5 / xi * sqrt(9.0 * xi2 - 12.0 * xi + 4.0))
-            / ((double) n);
+    //double const gamma = log(0.5 + 0.5 / xi * sqrt(9.0 * xi2 - 12.0 * xi + 4.0))
+    //        / ((double) n);
+    double const gamma = log(( 1.0 - xi ) / xi) / ((double) n);
     //  double const deriv_minus_xi = (-2.0*gpd[n-3] + 9.0*gpd[n-2]
     //                 - 18.0*gpd[n-1] + 11.0*gpd[n])/
     //    (6.0*gamma*(-xi+shift));
@@ -2240,8 +2246,9 @@ double GPDEvolutionVinnikov::conv_int_qq_pol(int const ix, double const xi,
     double const xi2 = xi * xi;
     double const c_1_3 = 1.0 / 3.0;
     double const shift = xi2 / (1.0 - 2.0 * xi);
-    double const gamma = log(0.5 + 0.5 / xi * sqrt(9.0 * xi2 - 12.0 * xi + 4.0))
-            / ((double) n);
+    //double const gamma = log(0.5 + 0.5 / xi * sqrt(9.0 * xi2 - 12.0 * xi + 4.0))
+    //        / ((double) n);
+    double const gamma = log(( 1.0 - xi ) / xi) / ((double) n);
 
     //----------------   Ok, lets start  -------------------
     // First, consider separately some close to boundary cases
@@ -2583,8 +2590,9 @@ double GPDEvolutionVinnikov::conv_int_gg_pol(int const ix, double const xi,
     double const xi2 = xi * xi;
     double const c_1_3 = 1.0 / 3.0;
     double const shift = xi2 / (1.0 - 2.0 * xi);
-    double const gamma = log(0.5 + 0.5 / xi * sqrt(9.0 * xi2 - 12.0 * xi + 4.0))
-            / ((double) n);
+    //double const gamma = log(0.5 + 0.5 / xi * sqrt(9.0 * xi2 - 12.0 * xi + 4.0))
+    //        / ((double) n);
+    double const gamma = log(( 1.0 - xi ) / xi) / ((double) n);
 
     //----------------   Ok, lets start  -------------------
     // First, consider separately some close to boundary cases
@@ -3010,8 +3018,9 @@ double GPDEvolutionVinnikov::conv_int_gq_pol(int const ix, double const xi,
     double const xi2 = xi * xi;
     double const c_1_3 = 1.0 / 3.0;
     double const shift = xi2 / (1.0 - 2.0 * xi);
-    double const gamma = log(0.5 + 0.5 / xi * sqrt(9.0 * xi2 - 12.0 * xi + 4.0))
-            / ((double) n);
+    //double const gamma = log(0.5 + 0.5 / xi * sqrt(9.0 * xi2 - 12.0 * xi + 4.0))
+    //        / ((double) n);
+    double const gamma = log(( 1.0 - xi ) / xi) / ((double) n);
 
     // First, consider separately some close to boundary cases
     if ((2 * n) == ix)
@@ -3272,8 +3281,9 @@ double GPDEvolutionVinnikov::conv_int_qg_pol(int const ix, double const xi,
     double const xi2 = xi * xi;
     double const c_1_3 = 1.0 / 3.0;
     double const shift = xi2 / (1.0 - 2.0 * xi);
-    double const gamma = log(0.5 + 0.5 / xi * sqrt(9.0 * xi2 - 12.0 * xi + 4.0))
-            / ((double) n);
+    //double const gamma = log(0.5 + 0.5 / xi * sqrt(9.0 * xi2 - 12.0 * xi + 4.0))
+    //        / ((double) n);
+    double const gamma = log(( 1.0 - xi ) / xi) / ((double) n);
 
     //----------------   Ok, lets start  -------------------
     // First, consider separately some close to boundary cases
@@ -3539,9 +3549,10 @@ int GPDEvolutionVinnikov::gpd_grid_ns(int const n, double const xi,
         std::vector<double>& x) {
     int i;
 
-    double const gamma = log(
-            0.5 + 0.5 / xi * sqrt(9.0 * xi * xi - 12.0 * xi + 4.0))
-            / ((double) n);
+    //double const gamma = log(
+    //        0.5 + 0.5 / xi * sqrt(9.0 * xi * xi - 12.0 * xi + 4.0))
+    //        / ((double) n);
+    double const gamma = log(( 1.0 - xi ) / xi) / ((double) n);
     double const shift = xi * xi / (1.0 - 2.0 * xi);
 
     for (i = 0; i <= 2 * n; i++)
@@ -3556,9 +3567,10 @@ int GPDEvolutionVinnikov::gpd_grid_s(int const n, double const xi,
         std::vector<double>& x) {
     int i;
 
-    double const gamma = log(
-            0.5 + 0.5 / xi * sqrt(9.0 * xi * xi - 12.0 * xi + 4.0))
-            / ((double) n);
+    //double const gamma = log(
+    //        0.5 + 0.5 / xi * sqrt(9.0 * xi * xi - 12.0 * xi + 4.0))
+    //        / ((double) n);
+    double const gamma = log(( 1.0 - xi ) / xi) / ((double) n);
     double const shift = xi * xi / (1.0 - 2.0 * xi);
 
     for (i = 0; i <= 2 * n; i++)
