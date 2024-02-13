@@ -293,7 +293,7 @@ PhysicalType<double> DDVCSCrossSectionTotal::computeObservable(
     DDVCSCrossSectionTotalParameters params;
 
     params.m_pDDVCSCrossSectionTotal = this;
-    params.m_E = kinematic.getE().getValue();
+    params.m_E = kinematic.getE().makeSameUnitAs(PhysicalUnit::GEV).getValue();
     params.m_xBCut = m_rangexB;
 
     //ranges

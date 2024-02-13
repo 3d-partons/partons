@@ -200,10 +200,10 @@ PhysicalType<double> DVCSCrossSectionTotal::computeObservable(
     DVCSCrossSectionTotalParameters params;
 
     params.m_pDVCSCrossSectionTotal = this;
-    params.m_E = kinematic.getE().getValue();
+    params.m_E = kinematic.getE().makeSameUnitAs(PhysicalUnit::GEV).getValue();
 
     //Q2 max
-    double maxQ2 = 2 * Constant::PROTON_MASS * kinematic.getE().getValue();
+    double maxQ2 = 2 * Constant::PROTON_MASS * kinematic.getE().makeSameUnitAs(PhysicalUnit::GEV).getValue();
 
     if (m_rangeQ2.second > maxQ2) {
         warn(__func__,

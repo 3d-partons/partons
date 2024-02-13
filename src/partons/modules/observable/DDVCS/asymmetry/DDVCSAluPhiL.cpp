@@ -45,12 +45,12 @@ PhysicalType<double> DDVCSAluPhiL::computeObservable(
     DDVCSAluPhiLParameters params;
 
     params.m_pDDVCSAluPhiL = this;
-    params.m_xB = kinematic.getXB().getValue();
-    params.m_t = kinematic.getT().getValue();
-    params.m_Q2 = kinematic.getQ2().getValue();
-    params.m_Q2Prim = kinematic.getQ2Prim().getValue();
-    params.m_E = kinematic.getE().getValue();
-    params.m_phiL = kinematic.getPhiL().getValue(); //BDP's phiL
+    params.m_xB = kinematic.getXB().makeSameUnitAs(PhysicalUnit::NONE).getValue();
+    params.m_t = kinematic.getT().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
+    params.m_Q2 = kinematic.getQ2().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
+    params.m_Q2Prim = kinematic.getQ2Prim().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
+    params.m_E = kinematic.getE().makeSameUnitAs(PhysicalUnit::GEV).getValue();
+    params.m_phiL = kinematic.getPhiL().makeSameUnitAs(PhysicalUnit::RAD).getValue(); //BDP's phiL
 
     params.m_gpdType = gpdType;
 

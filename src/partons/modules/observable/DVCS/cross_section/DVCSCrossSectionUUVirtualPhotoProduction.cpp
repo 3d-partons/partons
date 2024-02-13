@@ -64,7 +64,7 @@ PhysicalType<double> DVCSCrossSectionUUVirtualPhotoProduction::computeObservable
 double DVCSCrossSectionUUVirtualPhotoProduction::getVirtualPhotonFlux(
         const DVCSObservableKinematic& kinematic) const {
 
-    double xB = kinematic.getXB().getValue();
+    double xB = kinematic.getXB().makeSameUnitAs(PhysicalUnit::NONE).getValue();
     double Q2 = kinematic.getQ2().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
     double E = kinematic.getE().makeSameUnitAs(PhysicalUnit::GEV).getValue();
 

@@ -286,10 +286,10 @@ PhysicalType<double> TCSCrossSectionTotal::computeObservable(
     TCSCrossSectionTotalParameters params;
 
     params.m_pTCSCrossSectionTotal = this;
-    params.m_Ee = kinematic.getE().getValue();
+    params.m_Ee = kinematic.getE().makeSameUnitAs(PhysicalUnit::GEV).getValue();
 
     //Q2max
-    double maxQ2 = 2 * Constant::PROTON_MASS * kinematic.getE().getValue();
+    double maxQ2 = 2 * Constant::PROTON_MASS * kinematic.getE().makeSameUnitAs(PhysicalUnit::GEV).getValue();
 
     if (m_rangeQ2.second > maxQ2) {
         warn(__func__,
