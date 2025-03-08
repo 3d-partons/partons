@@ -13,17 +13,19 @@
 namespace PARTONS {
 class AutomationService;
 class BaseObjectRegistry;
+class CollinearDistributionService;
 class ComparisonService;
 class CryptographicHashService;
+class DDVCSConvolCoeffFunctionService;
+class DDVCSObservableService;
 class DVCSConvolCoeffFunctionService;
-class DVMPConvolCoeffFunctionService;
-class TCSConvolCoeffFunctionService;
-class GPDService;
-class CollinearDistributionService;
 class DVCSObservableService;
+class DVMPConvolCoeffFunctionService;
 class DVMPObservableService;
-class TCSObservableService;
+class GPDService;
 class ServiceObject;
+class TCSConvolCoeffFunctionService;
+class TCSObservableService;
 class VizualisationService;
 } /* namespace PARTONS */
 
@@ -44,11 +46,13 @@ public:
     GPDService* getGPDService() const;
     CollinearDistributionService* getCollinearDistributionService() const;
     DVCSConvolCoeffFunctionService* getDVCSConvolCoeffFunctionService() const;
-    DVMPConvolCoeffFunctionService* getDVMPConvolCoeffFunctionService() const;
     TCSConvolCoeffFunctionService* getTCSConvolCoeffFunctionService() const;
+    DVMPConvolCoeffFunctionService* getDVMPConvolCoeffFunctionService() const;
+    DDVCSConvolCoeffFunctionService* getDDVCSConvolCoeffFunctionService() const;
     DVCSObservableService* getDVCSObservableService() const;
-    DVMPObservableService* getDVMPObservableService() const;
     TCSObservableService* getTCSObservableService() const;
+    DVMPObservableService* getDVMPObservableService() const;
+    DDVCSObservableService* getDDVCSObservableService() const;
     VizualisationService* getVizualisationService() const;
     ComparisonService* getComparisonService() const;
     AutomationService* getAutomationService() const;

@@ -4,13 +4,15 @@
 
 #include "../../include/partons/BaseObjectRegistry.h"
 #include "../../include/partons/services/automation/AutomationService.h"
+#include "../../include/partons/services/CollinearDistributionService.h"
 #include "../../include/partons/services/ComparisonService.h"
+#include "../../include/partons/services/DDVCSConvolCoeffFunctionService.h"
+#include "../../include/partons/services/DDVCSObservableService.h"
 #include "../../include/partons/services/DVCSConvolCoeffFunctionService.h"
 #include "../../include/partons/services/DVCSObservableService.h"
 #include "../../include/partons/services/DVMPConvolCoeffFunctionService.h"
 #include "../../include/partons/services/DVMPObservableService.h"
 #include "../../include/partons/services/GPDService.h"
-#include "../../include/partons/services/CollinearDistributionService.h"
 #include "../../include/partons/services/hash_sum/CryptographicHashService.h"
 #include "../../include/partons/services/TCSConvolCoeffFunctionService.h"
 #include "../../include/partons/services/TCSObservableService.h"
@@ -54,7 +56,8 @@ GPDService* ServiceObjectRegistry::getGPDService() const {
 }
 
 CollinearDistributionService* ServiceObjectRegistry::getCollinearDistributionService() const {
-    return static_cast<CollinearDistributionService*>(get(CollinearDistributionService::classId));
+    return static_cast<CollinearDistributionService*>(get(
+            CollinearDistributionService::classId));
 }
 
 DVCSConvolCoeffFunctionService* ServiceObjectRegistry::getDVCSConvolCoeffFunctionService() const {
@@ -62,14 +65,19 @@ DVCSConvolCoeffFunctionService* ServiceObjectRegistry::getDVCSConvolCoeffFunctio
             DVCSConvolCoeffFunctionService::classId));
 }
 
+TCSConvolCoeffFunctionService* ServiceObjectRegistry::getTCSConvolCoeffFunctionService() const {
+    return static_cast<TCSConvolCoeffFunctionService*>(get(
+            TCSConvolCoeffFunctionService::classId));
+}
+
 DVMPConvolCoeffFunctionService* ServiceObjectRegistry::getDVMPConvolCoeffFunctionService() const {
     return static_cast<DVMPConvolCoeffFunctionService*>(get(
             DVMPConvolCoeffFunctionService::classId));
 }
 
-TCSConvolCoeffFunctionService* ServiceObjectRegistry::getTCSConvolCoeffFunctionService() const {
-    return static_cast<TCSConvolCoeffFunctionService*>(get(
-            TCSConvolCoeffFunctionService::classId));
+DDVCSConvolCoeffFunctionService* ServiceObjectRegistry::getDDVCSConvolCoeffFunctionService() const {
+    return static_cast<DDVCSConvolCoeffFunctionService*>(get(
+            DDVCSConvolCoeffFunctionService::classId));
 }
 
 DVCSObservableService* ServiceObjectRegistry::getDVCSObservableService() const {
@@ -77,13 +85,18 @@ DVCSObservableService* ServiceObjectRegistry::getDVCSObservableService() const {
             DVCSObservableService::classId));
 }
 
+TCSObservableService* ServiceObjectRegistry::getTCSObservableService() const {
+    return static_cast<TCSObservableService*>(get(TCSObservableService::classId));
+}
+
 DVMPObservableService* ServiceObjectRegistry::getDVMPObservableService() const {
     return static_cast<DVMPObservableService*>(get(
             DVMPObservableService::classId));
 }
 
-TCSObservableService* ServiceObjectRegistry::getTCSObservableService() const {
-    return static_cast<TCSObservableService*>(get(TCSObservableService::classId));
+DDVCSObservableService* ServiceObjectRegistry::getDDVCSObservableService() const {
+    return static_cast<DDVCSObservableService*>(get(
+            DDVCSObservableService::classId));
 }
 
 VizualisationService* ServiceObjectRegistry::getVizualisationService() const {

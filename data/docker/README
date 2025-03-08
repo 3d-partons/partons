@@ -5,6 +5,7 @@ to create new image and send it to DockerHub:
 3) push (remember to change vX.Y):
    docker push partons/partons:vX.Y
 4) also tag as latest (remember to change vX.Y):
-   docker image tag partons/partons:vX.Y partons/partons:lates
+   docker image tag partons/partons:vX.Y partons/partons:latest
 5) push:
    docker push partons/partons:latest
+

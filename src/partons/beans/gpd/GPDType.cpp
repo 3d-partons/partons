@@ -82,6 +82,13 @@ std::string GPDType::toString() const {
         return "EbarTrans";
         break;
 
+    case HL:
+         return "HL";
+         break;
+     case EL:
+         return "EL";
+         break;
+
     default:
         return "UNDEFINED";
     }
@@ -145,6 +152,13 @@ GPDType::Type GPDType::fromString(const std::string& gpdTypeStr) {
 
     else if (ElemUtils::StringUtils::equals(gpdTypeStr, "EbarTrans")) {
         gpdType = GPDType::EbarTrans;
+    }
+
+    else if (ElemUtils::StringUtils::equals(gpdTypeStr, "HL")) {
+        gpdType = GPDType::HL;
+    }
+    else if (ElemUtils::StringUtils::equals(gpdTypeStr, "EL")) {
+        gpdType = GPDType::EL;
     }
 
     return gpdType;

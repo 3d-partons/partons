@@ -1,3 +1,15 @@
+**4.0**
+
+*Updates:*
+* update Docker files
+* few minor updates
+
+*Physics:*
+* addition of GAM2 and DDVCS processes
+* new and updateded modules for the evaluation of total cross-section
+
+------
+
 **3.0**
 
 *Updates:*
@@ -21,6 +33,7 @@
 * addition of few observable modules, like for the evaluation of backward-forward asymmetry for TCS, or total cross-section for DVCS 
 * addition to new runnung coupling and threshold modules, mostly related to APFEL
 
+------
 
 **2.0**
 

@@ -1,0 +1,31 @@
+# image
+image: partons/partons
+
+
+# list of stages
+stages:
+    - build_elementary-utils
+    - say_hi
+
+# stage 
+build_elementary-utils:
+
+    # stage
+    stage: build_elementary-utils
+
+    # definition
+    script:
+    - git clone https://drf-gitlab.cea.fr/partons/core/elementary-utils.git
+    - cd elementary-utils/build
+    - cmake ..
+    - make
+
+# stage 
+say_hi:
+
+    # stage
+    stage: say_hi
+
+    # definition
+    script:
+    - echo "Hi!"

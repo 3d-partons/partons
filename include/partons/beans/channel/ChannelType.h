@@ -54,7 +54,8 @@ public:
         DVCS = 1, //!< Deeply Virtual Compton Scattering
         DVMP = 2, //!< Deeply Virtual Meson Production
         TCS = 3, //!< Time-like Compton Scattering
-        GAM2 = 4 //!< Two photons production
+        GAM2 = 4, //!< Two photons production
+        DDVCS = 5 //!< Double Deeply Virtual Compton Scattering
     };
 
     /**

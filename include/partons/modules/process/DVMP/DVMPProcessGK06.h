@@ -93,6 +93,7 @@ private:
     double m_gamma; ///< gamma variable.
     double m_eps; ///< epsilon variable.
     double m_xi; ///< xi variable.
+    double m_tminGK; ///< tMin a la GK.
 
     double lambdaFunction(double a, double b, double c) const; ///< Mandalstam function.
 };

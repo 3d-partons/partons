@@ -16,7 +16,7 @@
 #include "../../../../beans/gpd/GPDType.h"
 #include "../../../../beans/List.h"
 #include "../../../../utils/type/PhysicalType.h"
-#include "DVCSCrossSectionUUMinusPhiIntegrated.h"
+#include "DVCSCrossSectionUUMinus.h"
 
 namespace PARTONS {
 
@@ -28,13 +28,14 @@ namespace PARTONS {
  *
  * Unit: \f$\mathrm{nbarn}\f$.
  */
-class DVCSCrossSectionTotal: public DVCSCrossSectionUUMinusPhiIntegrated {
+class DVCSCrossSectionTotal: public DVCSCrossSectionUUMinus {
 
 public:
 
     static const std::string DVCS_CROSSSECTION_TOTAL_RANGEXb; ///< String used to set integration xB range via XML scenario.
     static const std::string DVCS_CROSSSECTION_TOTAL_RANGET; ///< String used to set integration t range via XML scenario.
     static const std::string DVCS_CROSSSECTION_TOTAL_RANGEQ2; ///< String used to set integration Q2 range via XML scenario.
+    static const std::string DVCS_CROSSSECTION_TOTAL_RANGEPHI; ///< String used to set integration phi range via XML scenario.
     static const std::string DVCS_CROSSSECTION_TOTAL_RANGEY; ///< String used to set integration y range via XML scenario.
     static const std::string DVCS_CROSSSECTION_TOTAL_N0; ///< String used to set number of MC integration iterations per cycle via XML scenario.
     static const std::string DVCS_CROSSSECTION_TOTAL_N1; ///< String used to set number of MC integration cycles via XML scenario.
@@ -47,8 +48,13 @@ public:
     /**
      * Function for the integration.
      */
-    static double DVCSCrossSectionTotalFunction(double* kin, size_t dim,
+    static double DVCSCrossSectionTotalFunctionA(double* kin, size_t dim,
             void* par);
+
+    /**
+     * Function for the integration.
+     */
+    static double DVCSCrossSectionTotalFunctionB(double x, void* params); 
 
     /**
      * Constructor.
@@ -76,6 +82,8 @@ public:
     void setRangexB(const std::pair<double, double>& rangexB);
     const std::pair<double, double>& getRangeY() const;
     void setRangeY(const std::pair<double, double>& rangeY);
+    const std::pair<double, double>& getRangePhi() const;
+    void setRangePhi(const std::pair<double, double>& rangePhi);
 
 protected:
 
@@ -109,6 +117,7 @@ private:
     std::pair<double, double> m_rangexB; ///< xB integration range.
     std::pair<double, double> m_rangeT; ///< t integration range.
     std::pair<double, double> m_rangeQ2; ///< Q2 integration range.
+    std::pair<double, double> m_rangePhi; ///< phi integration range.
     std::pair<double, double> m_rangeY; ///< y integration range.
 };
 
@@ -117,7 +126,10 @@ struct DVCSCrossSectionTotalParameters {
     DVCSCrossSectionTotal* m_pDVCSCrossSectionTotal; ///< Pointer to DVCSCrossSectionTotal.
     double m_E; ///< Beam energy.
     List<GPDType> m_gpdType; ///< GPD types.
-    std::pair<double, double> m_yCut;
+    std::pair<double, double> m_xBCut;
+    std::pair<double, double> m_phiCut;
+
+    double m_y, m_t, m_Q2;
 };
 
 } /* namespace PARTONS */

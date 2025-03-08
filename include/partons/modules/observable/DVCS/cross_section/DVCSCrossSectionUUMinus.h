@@ -58,6 +58,10 @@ public:
 
     virtual DVCSCrossSectionUUMinus* clone() const;
 
+    virtual PhysicalType<double> computeObservable(
+            const DVCSObservableKinematic& kinematic,
+            const List<GPDType>& gpdType);
+
 protected:
 
     /**
@@ -65,10 +69,6 @@ protected:
      * @param other Object to be copied.
      */
     DVCSCrossSectionUUMinus(const DVCSCrossSectionUUMinus &other);
-
-    virtual PhysicalType<double> computeObservable(
-            const DVCSObservableKinematic& kinematic,
-            const List<GPDType>& gpdType);
 };
 
 } /* namespace PARTONS */

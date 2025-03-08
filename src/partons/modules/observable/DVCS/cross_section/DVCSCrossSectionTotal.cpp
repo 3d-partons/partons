@@ -7,6 +7,7 @@
 #include <gsl/gsl_monte.h>
 #include <gsl/gsl_monte_vegas.h>
 #include <gsl/gsl_rng.h>
+#include <gsl/gsl_integration.h>
 #include <cmath>
 #include <vector>
 
@@ -23,6 +24,8 @@ const std::string DVCSCrossSectionTotal::DVCS_CROSSSECTION_TOTAL_RANGET =
         "DVCSCrossSectionTotal_rangeT";
 const std::string DVCSCrossSectionTotal::DVCS_CROSSSECTION_TOTAL_RANGEQ2 =
         "DVCSCrossSectionTotal_rangeQ2";
+const std::string DVCSCrossSectionTotal::DVCS_CROSSSECTION_TOTAL_RANGEPHI =
+        "DVCSCrossSectionTotal_rangePhi";
 const std::string DVCSCrossSectionTotal::DVCS_CROSSSECTION_TOTAL_RANGEY =
         "DVCSCrossSectionTotal_rangeY";
 const std::string DVCSCrossSectionTotal::DVCS_CROSSSECTION_TOTAL_N0 =
@@ -35,21 +38,23 @@ const unsigned int DVCSCrossSectionTotal::classId =
                 new DVCSCrossSectionTotal("DVCSCrossSectionTotal"));
 
 DVCSCrossSectionTotal::DVCSCrossSectionTotal(const std::string &className) :
-        DVCSCrossSectionUUMinusPhiIntegrated(className), m_nI0(1000), m_nI1(5) {
+        DVCSCrossSectionUUMinus(className), m_nI0(5000), m_nI1(5) {
 
     m_rangexB = std::pair<double, double>(1.E-4, 0.7);
-    m_rangeT = std::pair<double, double>(-1., 0.);
+    m_rangeT = std::pair<double, double>(-1., -0.0001);
     m_rangeQ2 = std::pair<double, double>(1., 1.E3);
+    m_rangePhi = std::pair<double, double>(0., 2*M_PI);
     m_rangeY = std::pair<double, double>(0., 1.);
 }
 
 DVCSCrossSectionTotal::DVCSCrossSectionTotal(const DVCSCrossSectionTotal& other) :
-        DVCSCrossSectionUUMinusPhiIntegrated(other), m_nI0(other.m_nI0), m_nI1(
+        DVCSCrossSectionUUMinus(other), m_nI0(other.m_nI0), m_nI1(
                 other.m_nI1) {
 
     m_rangexB = other.m_rangexB;
     m_rangeT = other.m_rangeT;
     m_rangeQ2 = other.m_rangeQ2;
+    m_rangePhi = other.m_rangePhi;
     m_rangeY = other.m_rangeY;
 }
 
@@ -63,7 +68,7 @@ DVCSCrossSectionTotal* DVCSCrossSectionTotal::clone() const {
 void DVCSCrossSectionTotal::configure(const ElemUtils::Parameters &parameters) {
 
     //run for base
-    DVCSCrossSectionUUMinusPhiIntegrated::configure(parameters);
+    DVCSCrossSectionUUMinus::configure(parameters);
 
     //check
     if (parameters.isAvailable(DVCS_CROSSSECTION_TOTAL_RANGEXb)) {
@@ -76,6 +81,10 @@ void DVCSCrossSectionTotal::configure(const ElemUtils::Parameters &parameters) {
 
     if (parameters.isAvailable(DVCS_CROSSSECTION_TOTAL_RANGEQ2)) {
         setRangeQ2(parseRange(parameters.getLastAvailable().getString()));
+    }
+
+    if (parameters.isAvailable(DVCS_CROSSSECTION_TOTAL_RANGEPHI)) {
+        setRangePhi(parseRange(parameters.getLastAvailable().getString()));
     }
 
     if (parameters.isAvailable(DVCS_CROSSSECTION_TOTAL_RANGEY)) {
@@ -95,19 +104,24 @@ void DVCSCrossSectionTotal::configure(const ElemUtils::Parameters &parameters) {
     }
 }
 
-double DVCSCrossSectionTotal::DVCSCrossSectionTotalFunction(double* kin,
+double DVCSCrossSectionTotal::DVCSCrossSectionTotalFunctionA(double* kin,
         size_t dim, void* par) {
 
     //parameters
     DVCSCrossSectionTotalParameters* params =
             static_cast<DVCSCrossSectionTotalParameters*>(par);
-    double xB = kin[0];
-    double t = kin[1];
-    double Q2 = kin[2];
+
+    double y = exp(kin[0]);
+    double t = -1 * exp(kin[1]);
+    double Q2 = exp(kin[2]);
+
     double E = params->m_E;
 
+    //jacobian
+    double jacobian = -1 * y * t * Q2;
+
     //check kinematic range
-    double y = Q2 / (2 * xB * Constant::PROTON_MASS * E);
+    double xB = Q2 / (2 * y * Constant::PROTON_MASS * E);
     double epsilon = 2 * xB * Constant::PROTON_MASS / sqrt(Q2);
     double eps2 = epsilon * epsilon;
     double epsroot = sqrt(1 + eps2);
@@ -122,21 +136,62 @@ double DVCSCrossSectionTotal::DVCSCrossSectionTotalFunction(double* kin,
     if (t > tmin || t < tmax)
         return 0.;
 
-    if (y < params->m_yCut.first || y > params->m_yCut.second)
+    if (xB < params->m_xBCut.first || xB > params->m_xBCut.second)
         return 0.;
 
     //evaluate
-    double result =
-            params->m_pDVCSCrossSectionTotal->DVCSCrossSectionUUMinusPhiIntegrated::computeObservable(
-                    DVCSObservableKinematic(xB, t, Q2, E, 0.),
-                    params->m_gpdType).getValue();
+    params->m_y = y;
+    params->m_t = t;
+    params->m_Q2 = Q2;
 
-    return result;
+    gsl_integration_workspace* w
+            = gsl_integration_workspace_alloc (1000);
+
+    double result, error;
+
+    gsl_function F;
+    F.function = &DVCSCrossSectionTotalFunctionB;
+    F.params = par;
+
+    gsl_integration_qag(&F, params->m_phiCut.first, params->m_phiCut.second, 0, 1.E-1, 1000, 6, w, &result, &error);
+
+    gsl_integration_workspace_free (w);
+
+    return result * jacobian;
+}
+
+double DVCSCrossSectionTotal::DVCSCrossSectionTotalFunctionB(double phi, void* par){
+
+    //parameters
+    DVCSCrossSectionTotalParameters* params =
+            static_cast<DVCSCrossSectionTotalParameters*>(par);
+
+    double y = params->m_y;
+    double t = params->m_t;
+    double Q2 = params->m_Q2;
+    double E = params->m_E;
+
+    double xB = Q2 / (2 * y * Constant::PROTON_MASS * E);
+    double jacobian = xB / y;
+
+    double result = jacobian * params->m_pDVCSCrossSectionTotal->DVCSCrossSectionUUMinus::computeObservable(
+        DVCSObservableKinematic(xB, t, Q2, E, phi),
+        params->m_gpdType).getValue();
+
+    if(std::isfinite(result)){
+        return result;
+    }else{
+        std::cout << "Result is unfinite, return 0" << std::endl;
+        return 0;
+    }
 }
 
 PhysicalType<double> DVCSCrossSectionTotal::computeObservable(
         const DVCSObservableKinematic& kinematic,
         const List<GPDType>& gpdType) {
+
+    //disable
+    gsl_set_error_handler_off();
 
     //result and error
     double res, err;
@@ -145,10 +200,10 @@ PhysicalType<double> DVCSCrossSectionTotal::computeObservable(
     DVCSCrossSectionTotalParameters params;
 
     params.m_pDVCSCrossSectionTotal = this;
-    params.m_E = kinematic.getE().getValue();
+    params.m_E = kinematic.getE().makeSameUnitAs(PhysicalUnit::GEV).getValue();
 
     //Q2 max
-    double maxQ2 = 2 * Constant::PROTON_MASS * kinematic.getE().getValue();
+    double maxQ2 = 2 * Constant::PROTON_MASS * kinematic.getE().makeSameUnitAs(PhysicalUnit::GEV).getValue();
 
     if (m_rangeQ2.second > maxQ2) {
         warn(__func__,
@@ -159,30 +214,31 @@ PhysicalType<double> DVCSCrossSectionTotal::computeObservable(
     }
 
     //ranges
-    // xB, Q2, t
-    double xl[3] = { m_rangexB.first, m_rangeT.first, m_rangeQ2.first };
-    double xu[3] = { m_rangexB.second, m_rangeT.second, (
+    //y, Q2, t
+    double xl[3] = { log(m_rangeY.first), log(-1 * m_rangeT.second), log(m_rangeQ2.first) };
+    double xu[3] = { log(m_rangeY.second), log(-1 * m_rangeT.first), log(
             (m_rangeQ2.second > maxQ2) ? (maxQ2) : (m_rangeQ2.second)) };
 
-    // y cut
-    params.m_yCut = m_rangeY;
+    //cuts
+    params.m_xBCut = m_rangexB;
+    params.m_phiCut = m_rangePhi;
 
     //random
     const gsl_rng_type* T = gsl_rng_default;
     gsl_rng* r = gsl_rng_alloc(T);
 
     //function
-    gsl_monte_function G = { &DVCSCrossSectionTotalFunction, 3, &params };
+    gsl_monte_function G = { &DVCSCrossSectionTotalFunctionA, 3, &params };
 
     //run
-    gsl_monte_vegas_state *s = gsl_monte_vegas_alloc(3);
+    gsl_monte_vegas_state* s = gsl_monte_vegas_alloc(3);
 
     for (size_t i = 0; i < m_nI1; i++) {
 
         gsl_monte_vegas_integrate(&G, xl, xu, 3, m_nI0, r, s, &res, &err);
 
         info(__func__,
-                ElemUtils::Formatter() << "Intermediate result: cycle: " << i
+                ElemUtils::Formatter() << "Intermediate result: cycle: " << i << " |chi2 - 1|: " << fabs(gsl_monte_vegas_chisq(s) - 1.)
                         << " result: " << res << " error: " << err << " [nb]");
     }
 
@@ -290,6 +346,16 @@ void DVCSCrossSectionTotal::setRangeY(const std::pair<double, double>& rangeY) {
 
     printChangeOfRange(__func__, "y", m_rangeY, rangeY);
     m_rangeY = rangeY;
+}
+
+const std::pair<double, double>& DVCSCrossSectionTotal::getRangePhi() const {
+    return m_rangePhi;
+}
+
+void DVCSCrossSectionTotal::setRangePhi(const std::pair<double, double>& rangePhi) {
+
+    printChangeOfRange(__func__, "phi", m_rangePhi, rangePhi);
+    m_rangePhi = rangePhi;
 }
 
 } /* namespace PARTONS */

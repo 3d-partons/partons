@@ -27,6 +27,9 @@ std::string ChannelType::toString() const {
     case GAM2:
         return "GAM2";
         break;
+    case DDVCS:
+        return "DDVCS";
+        break;
     default:
         return "UNDEFINED";
     }
@@ -45,6 +48,9 @@ std::string ChannelType::getShortName() {
         break;
     case GAM2:
         return "GAM2";
+        break;
+    case DDVCS:
+        return "DDVCS";
         break;
     default:
         return "UNDEFINED";

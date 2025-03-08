@@ -5,27 +5,32 @@
 
 #include "../../include/partons/BaseObjectFactory.h"
 #include "../../include/partons/modules/active_flavors_thresholds/ActiveFlavorsThresholdsModule.h"
+#include "../../include/partons/modules/collinear_distribution/CollinearDistributionModule.h"
+#include "../../include/partons/modules/convol_coeff_function/DDVCS/DDVCSConvolCoeffFunctionModule.h"
 #include "../../include/partons/modules/convol_coeff_function/DVCS/DVCSConvolCoeffFunctionModule.h"
 #include "../../include/partons/modules/convol_coeff_function/DVMP/DVMPConvolCoeffFunctionModule.h"
 #include "../../include/partons/modules/convol_coeff_function/TCS/TCSConvolCoeffFunctionModule.h"
 #include "../../include/partons/modules/convol_coeff_function/GAM2/GAM2ConvolCoeffFunctionModule.h"
+#include "../../include/partons/modules/evolution/collinear_distribution/CollinearDistributionEvolutionModule.h"
 #include "../../include/partons/modules/evolution/gpd/GPDEvolutionModule.h"
 #include "../../include/partons/modules/gpd/GPDModule.h"
-#include "../../include/partons/modules/evolution/collinear_distribution/CollinearDistributionEvolutionModule.h"
-#include "../../include/partons/modules/collinear_distribution/CollinearDistributionModule.h"
 #include "../../include/partons/modules/gpd_subtraction_constant/GPDSubtractionConstantModule.h"
+#include "../../include/partons/modules/observable/DDVCS/DDVCSObservable.h"
 #include "../../include/partons/modules/observable/DVCS/DVCSObservable.h"
-#include "../../include/partons/modules/observable/TCS/TCSObservable.h"
 #include "../../include/partons/modules/observable/DVMP/DVMPObservable.h"
+#include "../../include/partons/modules/observable/TCS/TCSObservable.h"
+#include "../../include/partons/modules/process/DDVCS/DDVCSProcessModule.h"
 #include "../../include/partons/modules/process/DVCS/DVCSProcessModule.h"
-#include "../../include/partons/modules/process/TCS/TCSProcessModule.h"
 #include "../../include/partons/modules/process/DVMP/DVMPProcessModule.h"
 #include "../../include/partons/modules/process/GAM2/GAM2ProcessModule.h"
+#include "../../include/partons/modules/process/TCS/TCSProcessModule.h"
 #include "../../include/partons/modules/running_alpha_strong/RunningAlphaStrongModule.h"
+#include "../../include/partons/modules/scales/DDVCS/DDVCSScalesModule.h"
 #include "../../include/partons/modules/scales/DVCS/DVCSScalesModule.h"
 #include "../../include/partons/modules/scales/TCS/TCSScalesModule.h"
 #include "../../include/partons/modules/scales/DVMP/DVMPScalesModule.h"
 #include "../../include/partons/modules/scales/GAM2/GAM2ScalesModule.h"
+#include "../../include/partons/modules/xi_converter/DDVCS/DDVCSXiConverterModule.h"
 #include "../../include/partons/modules/xi_converter/DVCS/DVCSXiConverterModule.h"
 #include "../../include/partons/modules/xi_converter/DVMP/DVMPXiConverterModule.h"
 #include "../../include/partons/modules/xi_converter/TCS/TCSXiConverterModule.h"
@@ -242,9 +247,20 @@ GAM2ConvolCoeffFunctionModule* ModuleObjectFactory::newGAM2ConvolCoeffFunctionMo
     return static_cast<GAM2ConvolCoeffFunctionModule*>(newModuleObject(classId));
 }
 
+DDVCSConvolCoeffFunctionModule* ModuleObjectFactory::newDDVCSConvolCoeffFunctionModule(
+        unsigned int classId) {
+    return static_cast<DDVCSConvolCoeffFunctionModule*>(newModuleObject(classId));
+}
+
 GAM2ConvolCoeffFunctionModule* ModuleObjectFactory::newGAM2ConvolCoeffFunctionModule(
         const std::string& className) {
     return static_cast<GAM2ConvolCoeffFunctionModule*>(newModuleObject(
+            className));
+}
+
+DDVCSConvolCoeffFunctionModule* ModuleObjectFactory::newDDVCSConvolCoeffFunctionModule(
+        const std::string& className) {
+    return static_cast<DDVCSConvolCoeffFunctionModule*>(newModuleObject(
             className));
 }
 
@@ -286,6 +302,16 @@ GAM2ProcessModule* ModuleObjectFactory::newGAM2ProcessModule(
 GAM2ProcessModule* ModuleObjectFactory::newGAM2ProcessModule(
         const std::string& className) {
     return static_cast<GAM2ProcessModule*>(newModuleObject(className));
+}
+
+DDVCSProcessModule* ModuleObjectFactory::newDDVCSProcessModule(
+        unsigned int classId) {
+    return static_cast<DDVCSProcessModule*>(newModuleObject(classId));
+}
+
+DDVCSProcessModule* ModuleObjectFactory::newDDVCSProcessModule(
+        const std::string& className) {
+    return static_cast<DDVCSProcessModule*>(newModuleObject(className));
 }
 
 RunningAlphaStrongModule* ModuleObjectFactory::newRunningAlphaStrongModule(
@@ -348,6 +374,17 @@ GAM2ScalesModule* ModuleObjectFactory::newGAM2ScalesModule(
     return static_cast<GAM2ScalesModule*>(newModuleObject(className));
 }
 
+DDVCSScalesModule* ModuleObjectFactory::newDDVCSScalesModule(
+        unsigned int classId) {
+    return static_cast<DDVCSScalesModule*>(newModuleObject(classId));
+}
+
+DDVCSScalesModule* ModuleObjectFactory::newDDVCSScalesModule(
+        const std::string &className) {
+    return static_cast<DDVCSScalesModule*>(newModuleObject(className));
+
+}
+
 DVCSXiConverterModule* ModuleObjectFactory::newDVCSXiConverterModule(
         unsigned int classId) {
     return static_cast<DVCSXiConverterModule*>(newModuleObject(classId));
@@ -388,6 +425,16 @@ GAM2XiConverterModule* ModuleObjectFactory::newGAM2XiConverterModule(
     return static_cast<GAM2XiConverterModule*>(newModuleObject(className));
 }
 
+DDVCSXiConverterModule* ModuleObjectFactory::newDDVCSXiConverterModule(
+        unsigned int classId) {
+    return static_cast<DDVCSXiConverterModule*>(newModuleObject(classId));
+}
+
+DDVCSXiConverterModule* ModuleObjectFactory::newDDVCSXiConverterModule(
+        const std::string &className) {
+    return static_cast<DDVCSXiConverterModule*>(newModuleObject(className));
+}
+
 DVCSObservable* ModuleObjectFactory::newDVCSObservable(unsigned int classId) {
     return static_cast<DVCSObservable*>(newModuleObject(classId));
 }
@@ -413,6 +460,15 @@ DVMPObservable* ModuleObjectFactory::newDVMPObservable(unsigned int classId) {
 DVMPObservable* ModuleObjectFactory::newDVMPObservable(
         const std::string& className) {
     return static_cast<DVMPObservable*>(newModuleObject(className));
+}
+
+DDVCSObservable* ModuleObjectFactory::newDDVCSObservable(unsigned int classId) {
+    return static_cast<DDVCSObservable*>(newModuleObject(classId));
+}
+
+DDVCSObservable* ModuleObjectFactory::newDDVCSObservable(
+        const std::string& className) {
+    return static_cast<DDVCSObservable*>(newModuleObject(className));
 }
 
 } /* namespace PARTONS */
