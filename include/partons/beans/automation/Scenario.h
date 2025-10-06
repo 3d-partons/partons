@@ -13,7 +13,7 @@
 #include <string>
 #include <vector>
 
-#include "../../database/DatabaseFileObject.h"
+#include "../system/FileObject.h"
 #include "Task.h"
 
 namespace PARTONS {
@@ -48,7 +48,7 @@ namespace PARTONS {
  </scenario>
  \endcode
  */
-class Scenario: public DatabaseFileObject {
+class Scenario: public FileObject {
 
 public:
 
@@ -65,15 +65,13 @@ public:
 
     /**
      * Assignment constructor.
-     * @param indexId Unique id used when object is created from the database, see BaseObject::m_indexId.
      * @param description Description of this scenario.
-     * @param storeDate Time of insertion into the database.
      * @param filePath Path to file.
      * @param hashSum Hash sum of file content.
      * @param file String containing file content.
      */
-    Scenario(const int indexId, const std::string &description,
-            const time_t storeDate, const std::string& filePath,
+    Scenario(const std::string &description,
+            const std::string& filePath,
             const std::string &hashSum, const std::string &file);
 
     /**
@@ -131,10 +129,6 @@ public:
      * Set vector containing tasks associated to this scenario.
      */
     void setTasks(const std::vector<Task>& tasks);
-
-protected:
-
-    virtual std::string fillFile() const;
 
 private:
 

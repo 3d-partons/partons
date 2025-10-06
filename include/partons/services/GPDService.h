@@ -35,7 +35,6 @@ public:
 
     static const std::string GPD_SERVICE_COMPUTE_SINGLE_KINEMATIC; ///< Name of the XML task used to compute a GPD at given kinematics.
     static const std::string GPD_SERVICE_COMPUTE_MANY_KINEMATIC; ///< Name of the XML task used to compute GPDs for a list of kinematics.
-    static const std::string GPD_SERVICE_GENERATE_PLOT_FILE; ///< Name of the XML task used for generating a data file ready for plotting.
 
     /**
      * Default destructor.
@@ -116,12 +115,6 @@ private:
      * @return List of GPD results.
      */
     List<GPDResult> computeManyKinematicTask(Task &task);
-
-    /**
-     * Method used in the automated interface to generate a data file ready for plotting.
-     * @param task Automated XML task.
-     */
-    void generatePlotFileTask(Task &task);
 
     /**
      * Method used to derive an intersection of available GPD types from the various underlying modules.

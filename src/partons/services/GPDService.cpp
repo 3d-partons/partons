@@ -12,7 +12,6 @@
 #include "../../../include/partons/beans/automation/Task.h"
 #include "../../../include/partons/beans/KinematicUtils.h"
 #include "../../../include/partons/BaseObjectRegistry.h"
-#include "../../../include/partons/database/gpd/service/GPDResultDaoService.h"
 #include "../../../include/partons/modules/gpd/GPDModule.h"
 #include "../../../include/partons/ModuleObjectFactory.h"
 #include "../../../include/partons/Partons.h"
@@ -24,8 +23,6 @@ const std::string GPDService::GPD_SERVICE_COMPUTE_SINGLE_KINEMATIC =
         "computeSingleKinematic";
 const std::string GPDService::GPD_SERVICE_COMPUTE_MANY_KINEMATIC =
         "computeManyKinematic";
-const std::string GPDService::GPD_SERVICE_GENERATE_PLOT_FILE =
-        "generatePlotFile";
 
 const unsigned int GPDService::classId =
         Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
@@ -67,39 +64,11 @@ void GPDService::computeTask(Task &task) {
         resultList.add(computeSingleKinematicTask(task));
     }
 
-    else if (ElemUtils::StringUtils::equals(task.getFunctionName(),
-            GPDService::GPD_SERVICE_GENERATE_PLOT_FILE)) {
-        generatePlotFileTask(task);
-    }
-
     else if (!computeGeneralTask(task)) {
         errorUnknownMethod(task);
     }
 
     updateResultInfo(resultList, m_resultInfo);
-
-    if (task.isStoreInDB()) {
-
-        if (resultList.size() == 0) {
-            warn(__func__, "No results to be inserted into database");
-        } else {
-
-            GPDResultDaoService resultService;
-
-            int computationId = resultService.insert(resultList);
-
-            if (computationId != -1) {
-                info(__func__,
-                        ElemUtils::Formatter()
-                                << "List of GPD result has been stored in database with computation_id = "
-                                << computationId);
-            } else {
-                throw ElemUtils::CustomException(getClassName(), __func__,
-                        ElemUtils::Formatter()
-                                << "Failed to insert List of GPD result into database");
-            }
-        }
-    }
 
     m_resultListBuffer = resultList;
 }
@@ -235,11 +204,6 @@ List<GPDResult> GPDService::computeManyKinematicTask(Task& task) {
 
     //return
     return result;
-}
-
-void GPDService::generatePlotFileTask(Task& task) {
-    generatePlotFile(getOutputFilePathForPlotFileTask(task),
-            generateSQLQueryForPlotFileTask(task, "gpd_plot_2d_view"), ' ');
 }
 
 List<GPDType> GPDService::getFinalGPDTypeList(GPDModule* pGPDModule,

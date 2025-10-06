@@ -47,9 +47,6 @@ public:
     virtual TCSObservableKinematic newKinematicFromTask(const Task &task) const;
     virtual List<TCSObservableKinematic> newListOfKinematicFromTask(
             const Task &task) const;
-    virtual void storeResultListInDatabase(
-            const List<TCSObservableResult>& results) const;
-    virtual void generatePlotFileTask(Task &task);
 
     /**
      * Uses an automation task (XML file) to configure a TCSProcessModule.

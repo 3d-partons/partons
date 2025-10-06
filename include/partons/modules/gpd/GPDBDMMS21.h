@@ -8,7 +8,7 @@
  */
 
 #include <ElementaryUtils/parameters/Parameters.h>
-#include <include/partons/modules/gpd/GPDModule.h>
+#include "GPDModule.h"
 #include <string>
 
 namespace PARTONS {

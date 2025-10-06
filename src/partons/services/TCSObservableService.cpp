@@ -8,7 +8,6 @@
 #include "../../../include/partons/beans/automation/Task.h"
 #include "../../../include/partons/beans/KinematicUtils.h"
 #include "../../../include/partons/BaseObjectRegistry.h"
-#include "../../../include/partons/database/observable/service/TCSObservableResultDaoService.h"
 #include "../../../include/partons/modules/observable/TCS/TCSObservable.h"
 #include "../../../include/partons/modules/process/TCS/TCSProcessModule.h"
 #include "../../../include/partons/ModuleObjectFactory.h"
@@ -78,34 +77,6 @@ List<TCSObservableKinematic> TCSObservableService::newListOfKinematicFromTask(
     }
 
     return listOfKinematic;
-}
-
-void TCSObservableService::storeResultListInDatabase(
-        const List<TCSObservableResult>& results) const {
-
-    //get dao service
-    TCSObservableResultDaoService tcsObservableResultDaoService;
-
-    //insert
-    int computationId = tcsObservableResultDaoService.insert(results);
-
-    //check if inserted correctly
-    if (computationId != -1) {
-        info(__func__,
-                ElemUtils::Formatter()
-                        << "List of TCSObservableResult objects has been stored in database with computation_id = "
-                        << computationId);
-    } else {
-        throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter()
-                        << "TCSObservableResult object : insertion into database failed");
-    }
-}
-
-void TCSObservableService::generatePlotFileTask(Task &task) {
-    generatePlotFile(getOutputFilePathForPlotFileTask(task),
-            generateSQLQueryForPlotFileTask(task,
-                    "tcs_observable_plot_2d_view"), ' ');
 }
 
 TCSProcessModule* TCSObservableService::newTCSProcessModuleFromTask(

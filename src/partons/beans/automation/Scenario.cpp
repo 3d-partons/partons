@@ -3,25 +3,22 @@
 #include <ElementaryUtils/string_utils/Formatter.h>
 #include <ElementaryUtils/string_utils/StringUtils.h>
 
-#include "../../../../include/partons/database/common/service/ScenarioDaoService.h"
-
 namespace PARTONS {
 
-
 Scenario::Scenario() :
-        DatabaseFileObject("Scenario"), m_description(
+        FileObject("Scenario", ElemUtils::StringUtils::EMPTY, ElemUtils::StringUtils::EMPTY, ElemUtils::StringUtils::EMPTY), m_description(
                 ElemUtils::StringUtils::EMPTY) {
 }
 
-Scenario::Scenario(const int indexId, const std::string &description,
-        const time_t storeDate, const std::string& filePath,
+Scenario::Scenario(const std::string &description,
+        const std::string& filePath,
         const std::string& hashSum, const std::string& file) :
-        DatabaseFileObject("Scenario", indexId, storeDate, filePath, hashSum,
+        FileObject("Scenario", filePath, hashSum,
                 file), m_description(description) {
 }
 
 Scenario::Scenario(const Scenario &other) :
-        DatabaseFileObject(other) {
+        FileObject(other) {
     m_description = other.m_description;
     m_tasks = other.m_tasks;
 }
@@ -64,7 +61,7 @@ std::string Scenario::toString() const {
     ElemUtils::Formatter formatter;
 
     formatter << "[" << getClassName() << "]\n";
-    formatter << DatabaseFileObject::toString() << "\n";
+    formatter << FileObject::toString() << "\n";
 
     formatter << "Description = " << m_description << '\n';
 
@@ -82,11 +79,5 @@ const std::vector<Task>& Scenario::getTasks() const {
 void Scenario::setTasks(const std::vector<Task>& tasks) {
     m_tasks = tasks;
 }
-
-std::string Scenario::fillFile() const {
-    ScenarioDaoService scenarioDaoService;
-    return scenarioDaoService.getXMLFileByIndexId(getIndexId());
-}
-
 
 } /* namespace PARTONS */

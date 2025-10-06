@@ -12,7 +12,6 @@
 #include <string>
 #include <vector>
 
-#include "../../utils/compare/ComparisonReport.h"
 #include "../parton_distribution/PartonDistribution.h"
 #include "../Result.h"
 #include "GPDKinematic.h"
@@ -130,16 +129,6 @@ public:
      * @see GPDResult::isAvailible()
      */
     PartonDistribution& getLastAvailable() const;
-
-    /**
-     * Compare to other GPDResult object and store comparison result in given comparison report.
-     * @param rootComparisonReport Reference to comparison report to be used to store comparison result.
-     * @param referenceObject Reference to object to be compared.
-     * @param parentObjectInfo Addition information coming from the parent object (if needed).
-     */
-    void compare(ComparisonReport &rootComparisonReport,
-            const GPDResult &referenceObject,
-            std::string parentObjectInfo = "") const;
 
     /**
      * Get list of GPD types associated to stored parton distributions.

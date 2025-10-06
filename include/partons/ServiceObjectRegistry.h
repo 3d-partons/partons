@@ -14,7 +14,6 @@ namespace PARTONS {
 class AutomationService;
 class BaseObjectRegistry;
 class CollinearDistributionService;
-class ComparisonService;
 class CryptographicHashService;
 class DDVCSConvolCoeffFunctionService;
 class DDVCSObservableService;
@@ -26,7 +25,6 @@ class GPDService;
 class ServiceObject;
 class TCSConvolCoeffFunctionService;
 class TCSObservableService;
-class VizualisationService;
 } /* namespace PARTONS */
 
 namespace PARTONS {
@@ -53,8 +51,6 @@ public:
     TCSObservableService* getTCSObservableService() const;
     DVMPObservableService* getDVMPObservableService() const;
     DDVCSObservableService* getDDVCSObservableService() const;
-    VizualisationService* getVizualisationService() const;
-    ComparisonService* getComparisonService() const;
     AutomationService* getAutomationService() const;
     CryptographicHashService* getCryptographicHashService() const;
 

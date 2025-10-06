@@ -46,9 +46,6 @@ public:
             const Task &task) const;
     virtual List<TCSConvolCoeffFunctionKinematic> newListOfKinematicFromTask(
             const Task &task) const;
-    virtual void storeResultListInDatabase(
-            const List<TCSConvolCoeffFunctionResult>& results) const;
-    virtual void generatePlotFileTask(Task &task);
 
     /**
      * Uses an automation task (XML file) to configure a TCSConvolCoeffFunctionModule.

@@ -35,7 +35,6 @@ public:
 
     static const std::string COLLINEAR_DISTRIBUTION_SERVICE_COMPUTE_SINGLE_KINEMATIC; ///< Name of the XML task used to compute a collinear-distribution at given kinematics.
     static const std::string COLLINEAR_DISTRIBUTION_SERVICE_COMPUTE_MANY_KINEMATIC; ///< Name of the XML task used to compute collinear-distributions for a list of kinematics.
-    static const std::string COLLINEAR_DISTRIBUTION_SERVICE_GENERATE_PLOT_FILE; ///< Name of the XML task used for generating a data file ready for plotting.
 
     /**
      * Default destructor.
@@ -116,12 +115,6 @@ private:
      * @return List of collinear-distribution results.
      */
     List<CollinearDistributionResult> computeManyKinematicTask(Task &task);
-
-    /**
-     * Method used in the automated interface to generate a data file ready for plotting.
-     * @param task Automated XML task.
-     */
-    void generatePlotFileTask(Task &task);
 
     /**
      * Method used to derive an intersection of available collinear-distribution types from the various underlying modules.

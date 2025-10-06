@@ -12,7 +12,6 @@
 #include <string>
 #include <vector>
 
-#include "../../utils/compare/ComparisonReport.h"
 #include "../parton_distribution/PartonDistribution.h"
 #include "../Result.h"
 #include "CollinearDistributionKinematic.h"
@@ -90,16 +89,6 @@ public:
      * @see CollinearDistributionResult::isAvailible()
      */
     PartonDistribution& getLastAvailable() const;
-
-    /**
-     * Compare to other CollinearDistributionResult object and store comparison result in given comparison report.
-     * @param rootComparisonReport Reference to comparison report to be used to store comparison result.
-     * @param referenceObject Reference to object to be compared.
-     * @param parentObjectInfo Addition information coming from the parent object (if needed).
-     */
-    void compare(ComparisonReport &rootComparisonReport,
-            const CollinearDistributionResult &referenceObject,
-            std::string parentObjectInfo = "") const;
 
     /**
      * Get list of collinear distribution types associated to stored parton distributions.

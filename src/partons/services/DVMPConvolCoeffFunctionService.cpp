@@ -10,7 +10,6 @@
 #include "../../../include/partons/beans/automation/Task.h"
 #include "../../../include/partons/beans/KinematicUtils.h"
 #include "../../../include/partons/BaseObjectRegistry.h"
-#include "../../../include/partons/database/convol_coeff_function/service/DVMPConvolCoeffFunctionResultDaoService.h"
 #include "../../../include/partons/modules/convol_coeff_function/DVMP/DVMPConvolCoeffFunctionModule.h"
 #include "../../../include/partons/ModuleObjectFactory.h"
 #include "../../../include/partons/Partons.h"
@@ -80,34 +79,6 @@ List<DVMPConvolCoeffFunctionKinematic> DVMPConvolCoeffFunctionService::newListOf
     }
 
     return listOfKinematic;
-}
-
-void DVMPConvolCoeffFunctionService::storeResultListInDatabase(
-        const List<DVMPConvolCoeffFunctionResult>& results) const {
-
-    //get dao service
-    DVMPConvolCoeffFunctionResultDaoService dvcsConvolCoeffFunctionResultDaoService;
-
-    //insert
-    int computationId = dvcsConvolCoeffFunctionResultDaoService.insert(results);
-
-    //check if inserted correctly
-    if (computationId != -1) {
-        info(__func__,
-                ElemUtils::Formatter()
-                        << "List of DVMPConvolCoeffFunctionResult objects has been stored in database with computation_id = "
-                        << computationId);
-    } else {
-        throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter()
-                        << "DVMPConvolCoeffFunctionResult object : insertion into database failed");
-    }
-}
-
-void DVMPConvolCoeffFunctionService::generatePlotFileTask(Task &task) {
-    generatePlotFile(getOutputFilePathForPlotFileTask(task),
-            generateSQLQueryForPlotFileTask(task, "dvcs_ccf_plot_2d_view"),
-            ' ');
 }
 
 DVMPConvolCoeffFunctionModule* DVMPConvolCoeffFunctionService::newDVMPConvolCoeffFunctionModuleFromTask(

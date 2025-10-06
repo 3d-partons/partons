@@ -2,9 +2,6 @@
 
 #include <ElementaryUtils/string_utils/Formatter.h>
 
-#include "../../../../include/partons/utils/compare/CompareUtils.h"
-#include "../../../../include/partons/utils/compare/ComparisonData.h"
-
 namespace PARTONS {
 
 
@@ -54,20 +51,6 @@ bool GluonDistribution::isNullObject() const {
 
 void GluonDistribution::setNullObject(bool nullObject) {
     m_nullObject = nullObject;
-}
-
-void GluonDistribution::compare(ComparisonReport &rootComparisonReport,
-        const GluonDistribution &referenceObject,
-        std::string parentObjectInfo) const {
-    ComparisonData gluon_value_comparisonData =
-            CompareUtils::compareDouble(
-                    GluonDistribution::GLUON_DISTRIBUTION_PARAMETER_NAME_GLUON_DISTRIBUTION,
-                    m_gluonDistribution, referenceObject.getGluonDistribution(),
-                    rootComparisonReport.getTolerances(),
-                    ElemUtils::Formatter() << parentObjectInfo << " "
-                            << getClassName());
-
-    rootComparisonReport.addComparisonData(gluon_value_comparisonData);
 }
 
 } /* namespace PARTONS */

@@ -10,7 +10,6 @@
 #include "../../../include/partons/beans/automation/Task.h"
 #include "../../../include/partons/beans/KinematicUtils.h"
 #include "../../../include/partons/BaseObjectRegistry.h"
-#include "../../../include/partons/database/convol_coeff_function/service/TCSConvolCoeffFunctionResultDaoService.h"
 #include "../../../include/partons/modules/convol_coeff_function/TCS/TCSConvolCoeffFunctionModule.h"
 #include "../../../include/partons/ModuleObjectFactory.h"
 #include "../../../include/partons/Partons.h"
@@ -80,33 +79,6 @@ List<TCSConvolCoeffFunctionKinematic> TCSConvolCoeffFunctionService::newListOfKi
     }
 
     return listOfKinematic;
-}
-
-void TCSConvolCoeffFunctionService::storeResultListInDatabase(
-        const List<TCSConvolCoeffFunctionResult>& results) const {
-
-    //get dao service
-    TCSConvolCoeffFunctionResultDaoService TCSConvolCoeffFunctionResultDaoService;
-
-    //insert
-    int computationId = TCSConvolCoeffFunctionResultDaoService.insert(results);
-
-    //check if inserted correctly
-    if (computationId != -1) {
-        info(__func__,
-                ElemUtils::Formatter()
-                        << "List of TCSConvolCoeffFunctionResult objects has been stored in database with computation_id = "
-                        << computationId);
-    } else {
-        throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter()
-                        << "TCSConvolCoeffFunctionResult object : insertion into database failed");
-    }
-}
-
-void TCSConvolCoeffFunctionService::generatePlotFileTask(Task &task) {
-    generatePlotFile(getOutputFilePathForPlotFileTask(task),
-            generateSQLQueryForPlotFileTask(task, "tcs_ccf_plot_2d_view"), ' ');
 }
 
 TCSConvolCoeffFunctionModule* TCSConvolCoeffFunctionService::newTCSConvolCoeffFunctionModuleFromTask(

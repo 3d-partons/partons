@@ -98,37 +98,6 @@ PartonDistribution& CollinearDistributionResult::getLastAvailable() const {
     return const_cast<PartonDistribution&>(m_it->second);
 }
 
-void CollinearDistributionResult::compare(ComparisonReport &rootComparisonReport,
-        const CollinearDistributionResult &referenceObject, std::string parentObjectInfo) const {
-
-    if (m_kinematic != referenceObject.getKinematic()) {
-        throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter()
-                        << "Cannot perform comparison because kinematics is diferent ; With CollinearDistributionResult index id = "
-                        << referenceObject.getIndexId() << '\n' << toString()
-                        << '\n' << referenceObject.toString());
-    }
-
-    if (m_partonDistributions.size()
-            != referenceObject.getPartonDistributions().size()) {
-        throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter()
-                        << "Cannot perform comparison between parton distribution map because they are not equal in size ; With CollinearDistributionResult index id = "
-                        << referenceObject.getIndexId() << '\n' << toString()
-                        << '\n' << referenceObject.toString());
-    }
-
-    for (std::map<CollinearDistributionType::Type, PartonDistribution>::const_iterator it =
-            m_partonDistributions.begin(); it != m_partonDistributions.end();
-            it++) {
-        (it->second).compare(rootComparisonReport,
-                referenceObject.getPartonDistribution((it->first)),
-                ElemUtils::Formatter() << parentObjectInfo << " collinear-distribution("
-                        << m_kinematic.toString() << ") "
-                        << CollinearDistributionType(it->first).toString());
-    }
-}
-
 std::vector<CollinearDistributionType> CollinearDistributionResult::listCollinearDistributionTypeComputed() const {
 
     //result

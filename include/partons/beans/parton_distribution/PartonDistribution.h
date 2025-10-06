@@ -12,7 +12,6 @@
 #include <string>
 #include <vector>
 
-#include "../../utils/compare/ComparisonReport.h"
 #include "../List.h"
 #include "../QuarkFlavor.h"
 #include "GluonDistribution.h"
@@ -132,16 +131,6 @@ public:
     double getSinglet();
 
     virtual std::string toString() const;
-
-    /**
-     * Compare to other PartonDistribution object and store comparison result in given comparison report.
-     * @param rootComparisonReport Reference to comparison report to be used to store comparison result.
-     * @param referenceObject Reference to object to be compared.
-     * @param parentObjectInfo Addition information coming from the parent object (if needed).
-     */
-    void compare(ComparisonReport &rootComparisonReport,
-            const PartonDistribution &referenceObject,
-            std::string parentObjectInfo = "") const;
 
     //********************************************************
     //*** SETTERS AND GETTERS ********************************

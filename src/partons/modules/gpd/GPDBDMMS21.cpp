@@ -11,7 +11,6 @@
 #include "../../../../include/partons/beans/QuarkFlavor.h"
 #include "../../../../include/partons/beans/parton_distribution/GluonDistribution.h"
 #include "../../../../include/partons/beans/parton_distribution/QuarkDistribution.h"
-#include "../../../../include/partons/utils/PartonContent.h"
 
 namespace PARTONS {
 

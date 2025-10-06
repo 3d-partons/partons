@@ -5,7 +5,6 @@
 #include "../../include/partons/BaseObjectRegistry.h"
 #include "../../include/partons/services/automation/AutomationService.h"
 #include "../../include/partons/services/CollinearDistributionService.h"
-#include "../../include/partons/services/ComparisonService.h"
 #include "../../include/partons/services/DDVCSConvolCoeffFunctionService.h"
 #include "../../include/partons/services/DDVCSObservableService.h"
 #include "../../include/partons/services/DVCSConvolCoeffFunctionService.h"
@@ -16,7 +15,6 @@
 #include "../../include/partons/services/hash_sum/CryptographicHashService.h"
 #include "../../include/partons/services/TCSConvolCoeffFunctionService.h"
 #include "../../include/partons/services/TCSObservableService.h"
-#include "../../include/partons/services/VizualisationService.h"
 
 namespace PARTONS {
 
@@ -97,14 +95,6 @@ DVMPObservableService* ServiceObjectRegistry::getDVMPObservableService() const {
 DDVCSObservableService* ServiceObjectRegistry::getDDVCSObservableService() const {
     return static_cast<DDVCSObservableService*>(get(
             DDVCSObservableService::classId));
-}
-
-VizualisationService* ServiceObjectRegistry::getVizualisationService() const {
-    return static_cast<VizualisationService*>(get(VizualisationService::classId));
-}
-
-ComparisonService* ServiceObjectRegistry::getComparisonService() const {
-    return static_cast<ComparisonService*>(get(ComparisonService::classId));
 }
 
 AutomationService* ServiceObjectRegistry::getAutomationService() const {
