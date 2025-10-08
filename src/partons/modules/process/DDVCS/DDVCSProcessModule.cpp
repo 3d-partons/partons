@@ -22,6 +22,11 @@
 #include "../../../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../../../include/partons/utils/type/PhysicalUnit.h"
 
+#include "../../../../../include/partons/modules/convol_coeff_function/DDVCS/DDVCSCFFStandard.h"
+#include "../../../../../include/partons/modules/gpd/GPDGK19.h"
+#include "../../../../../include/partons/modules/scales/DDVCS/DDVCSScalesVirtualitiesSum.h"
+#include "../../../../../include/partons/modules/xi_converter/DDVCS/DDVCSXiConverterTNeglected.h"
+
 namespace PARTONS {
 
 const std::string DDVCSProcessModule::DDVCS_PROCESS_MODULE_CLASS_NAME =
@@ -257,6 +262,60 @@ List<GPDType> DDVCSProcessModule::getListOfAvailableGPDTypeForComputation() cons
 
     //return
     return listOfAvailableGPDTypeForComputation;
+}
+
+std::vector<double> DDVCSProcessModule::test() {
+
+    std::vector<double> result;
+
+    PARTONS::DDVCSConvolCoeffFunctionModule* pDDVCSCFFModel =
+        PARTONS::Partons::getInstance()->getModuleObjectFactory()->newDDVCSConvolCoeffFunctionModule(
+                PARTONS::DDVCSCFFStandard::classId);
+
+    GPDModule *pGPDModule =
+            Partons::getInstance()->getModuleObjectFactory()->newGPDModule(
+                GPDGK16::classId);
+    pDDVCSCFFModel->setGPDModule(pGPDModule);
+
+    pDDVCSCFFModel->configure(
+            ElemUtils::Parameter(
+                    PARTONS::PerturbativeQCDOrderType::PARAMETER_NAME_PERTURBATIVE_QCD_ORDER_TYPE,
+                    PARTONS::PerturbativeQCDOrderType::LO));
+
+    setConvolCoeffFunctionModule(pDDVCSCFFModel);
+
+    PARTONS::DDVCSXiConverterModule* pXiConverterModule =
+            PARTONS::Partons::getInstance()->getModuleObjectFactory()->newDDVCSXiConverterModule(
+                    PARTONS::DDVCSXiConverterTNeglected::classId);
+    setXiConverterModule(pXiConverterModule);
+
+    PARTONS::DDVCSScalesModule* pScalesModule =
+            PARTONS::Partons::getInstance()->getModuleObjectFactory()->newDDVCSScalesModule(
+                    PARTONS::DDVCSScalesVirtualitiesSum::classId);
+    setScaleModule(pScalesModule);
+
+    result.push_back(compute(1, 1, NumA::Vector3D(0.,0.,0.), DDVCSObservableKinematic(0.1, -0.1, 2., 0.5, 12., M_PI/2., M_PI/3., M_PI/4.),
+                        pDDVCSCFFModel->getListOfAvailableGPDTypeForComputation()).getValue().getValue());
+    result.push_back(compute(1, 1, NumA::Vector3D(0.,0.,0.), DDVCSObservableKinematic(0.02, -0.5, 9., 2., 1000., M_PI/4.,M_PI/3.,M_PI/2.),
+                        pDDVCSCFFModel->getListOfAvailableGPDTypeForComputation()).getValue().getValue());
+
+    PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
+               pScalesModule, 0);
+    pScalesModule = 0;
+
+    PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
+         pXiConverterModule, 0);
+    pXiConverterModule = 0;
+
+    PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
+        pGPDModule, 0);
+    pGPDModule = 0;
+
+    PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
+            pDDVCSCFFModel, 0);
+    pDDVCSCFFModel = 0;
+
+    return result;
 }
 
 DDVCSObservableResult DDVCSProcessModule::compute(double beamHelicity,

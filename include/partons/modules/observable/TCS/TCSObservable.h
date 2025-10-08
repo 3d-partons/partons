@@ -53,6 +53,7 @@ public:
     virtual TCSObservableResult compute(const TCSObservableKinematic& kinematic,
             const List<GPDType> & gpdType = List<GPDType>());
     virtual List<GPDType> getListOfAvailableGPDTypeForComputation() const;
+    virtual std::vector<double> test();
 
     // ##### GETTERS & SETTERS #####
 

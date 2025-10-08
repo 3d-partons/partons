@@ -69,6 +69,7 @@ public:
             const TCSObservableKinematic& kinematic,
             const List<GPDType>& gpdType = List<GPDType>());
     virtual List<GPDType> getListOfAvailableGPDTypeForComputation() const;
+    virtual std::vector<double> test();
 
     /**
      * Computes the differential cross-section. Must be implemented in the child class.

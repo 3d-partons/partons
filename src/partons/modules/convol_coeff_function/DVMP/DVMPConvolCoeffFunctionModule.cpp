@@ -15,6 +15,7 @@
 #include "../../../../../include/partons/services/DVMPConvolCoeffFunctionService.h"
 #include "../../../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../../../include/partons/ServiceObjectTyped.h"
+#include "../../../../../include/partons/modules/gpd/GPDGK16.h"
 #include "../../../../../include/partons/utils/type/PhysicalType.h"
 #include "../../../../../include/partons/utils/type/PhysicalUnit.h"
 #include "../../../../../include/partons/utils/VectorUtils.h"
@@ -233,6 +234,32 @@ std::complex<double> DVMPConvolCoeffFunctionModule::computePolarized() {
 std::complex<double> DVMPConvolCoeffFunctionModule::computeCFF() {
     throw ElemUtils::CustomException(getClassName(), __func__,
             "Check your child implementation : " + getClassName());
+}
+
+std::vector<double> DVMPConvolCoeffFunctionModule::test() {
+
+    std::vector<double> result;
+
+    GPDModule *pGPDModule =
+            Partons::getInstance()->getModuleObjectFactory()->newGPDModule(
+                GPDGK16::classId);
+    setGPDModule(pGPDModule);
+
+    ElemUtils::Parameters parameters(
+        PerturbativeQCDOrderType::PARAMETER_NAME_PERTURBATIVE_QCD_ORDER_TYPE,
+        PerturbativeQCDOrderType::LO);
+    configure(parameters);
+
+    convolCoeffFunctionResultToStdVector(compute(DVMPConvolCoeffFunctionKinematic(0.2, -0.1, 4., 4., 4., MesonType::PI0, PolarizationType::UNDEFINED),
+                    getListOfAvailableGPDTypeForComputation()), result);
+    convolCoeffFunctionResultToStdVector(compute(DVMPConvolCoeffFunctionKinematic(0.02, -0.5, 16., 16., 16., MesonType::PI0, PolarizationType::UNDEFINED),
+                   getListOfAvailableGPDTypeForComputation()), result);
+
+    PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
+        pGPDModule, 0);
+    pGPDModule = 0;
+
+    return result;
 }
 
 void DVMPConvolCoeffFunctionModule::setKinematics(

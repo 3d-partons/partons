@@ -105,7 +105,7 @@ public:
      * Get list of quark flavors associated to stored quark distributions.
      * @return Vector of associated flavors.
      */
-    std::vector<QuarkFlavor::Type> listTypeOfQuarkFlavor();
+    std::vector<QuarkFlavor::Type> listTypeOfQuarkFlavor() const;
 
     /**
      * Get number of quark distributions stored in this object.

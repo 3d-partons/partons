@@ -21,6 +21,11 @@
 #include "../../../../../include/partons/utils/type/PhysicalUnit.h"
 #include "../../../../../include/partons/utils/VectorUtils.h"
 
+#include "../../../../../include/partons/modules/convol_coeff_function/DVMP/DVMPCFFGK06.h"
+#include "../../../../../include/partons/modules/gpd/GPDGK19.h"
+#include "../../../../../include/partons/modules/scales/DVMP/DVMPScalesQ2Multiplier.h"
+#include "../../../../../include/partons/modules/xi_converter/DVMP/DVMPXiConverterXBToXi.h"
+
 namespace PARTONS {
 
 const std::string DVMPProcessModule::DVMP_PROCESS_MODULE_CLASS_NAME =
@@ -251,6 +256,60 @@ List<GPDType> DVMPProcessModule::getListOfAvailableGPDTypeForComputation() const
 
     //return
     return listOfAvailableGPDTypeForComputation;
+}
+
+std::vector<double> DVMPProcessModule::test() {
+
+    std::vector<double> result;
+
+    PARTONS::DVMPConvolCoeffFunctionModule* pDVMPCFFModel =
+        PARTONS::Partons::getInstance()->getModuleObjectFactory()->newDVMPConvolCoeffFunctionModule(
+                PARTONS::DVMPCFFGK06::classId);
+
+    GPDModule *pGPDModule =
+            Partons::getInstance()->getModuleObjectFactory()->newGPDModule(
+                GPDGK16::classId);
+    pDVMPCFFModel->setGPDModule(pGPDModule);
+
+    pDVMPCFFModel->configure(
+            ElemUtils::Parameter(
+                    PARTONS::PerturbativeQCDOrderType::PARAMETER_NAME_PERTURBATIVE_QCD_ORDER_TYPE,
+                    PARTONS::PerturbativeQCDOrderType::LO));
+
+    setConvolCoeffFunctionModule(pDVMPCFFModel);
+
+    PARTONS::DVMPXiConverterModule* pXiConverterModule =
+            PARTONS::Partons::getInstance()->getModuleObjectFactory()->newDVMPXiConverterModule(
+                    PARTONS::DVMPXiConverterXBToXi::classId);
+    setXiConverterModule(pXiConverterModule);
+
+    PARTONS::DVMPScalesModule* pScalesModule =
+            PARTONS::Partons::getInstance()->getModuleObjectFactory()->newDVMPScalesModule(
+                    PARTONS::DVMPScalesQ2Multiplier::classId);
+   setScaleModule(pScalesModule);
+
+    result.push_back(compute(1, 1, NumA::Vector3D(0.,0.,0.),PolarizationType::UNDEFINED, DVMPObservableKinematic(0.2, -0.1, 2., 6., M_PI/2., MesonType::PI0),
+                        pDVMPCFFModel->getListOfAvailableGPDTypeForComputation()).getValue().getValue());
+    result.push_back(compute(1, 1, NumA::Vector3D(0.,0.,0.), PolarizationType::UNDEFINED, DVMPObservableKinematic(0.02, -0.5, 16., 1000., M_PI/4., MesonType::PI0),
+                        pDVMPCFFModel->getListOfAvailableGPDTypeForComputation()).getValue().getValue());
+
+    PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
+               pScalesModule, 0);
+    pScalesModule = 0;
+
+    PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
+         pXiConverterModule, 0);
+    pXiConverterModule = 0;
+
+    PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
+        pGPDModule, 0);
+    pGPDModule = 0;
+
+    PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
+            pDVMPCFFModel, 0);
+    pDVMPCFFModel = 0;
+
+    return result;
 }
 
 DVMPObservableResult DVMPProcessModule::compute(double beamHelicity,

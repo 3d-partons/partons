@@ -37,8 +37,6 @@ class ModuleObject: public BaseObject, public ElemUtils::Thread {
 
 public:
 
-    static const std::string CLASS_NAME; //TODO What's this?!
-
     /**
      * Constructor.
      * See BaseObject class for more info about input parameter.
@@ -59,6 +57,13 @@ public:
     virtual std::string toString() const;
     virtual void resolveObjectDependencies();
     virtual void run();
+
+    /**
+     * Test of modules.
+     *
+     * @return List of results.
+     */
+    virtual std::vector<double> test();
 
     /**
      * Provides a generic method to configure all types of modules by passing a Parameters object.

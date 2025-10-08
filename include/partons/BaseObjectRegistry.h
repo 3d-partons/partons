@@ -14,6 +14,7 @@
 #include <string>
 
 #include "BaseObject.h"
+#include "beans/List.h"
 
 namespace PARTONS {
 
@@ -88,6 +89,12 @@ public:
 
     unsigned int getObjectClassIdByClassName(
             const std::string &className);
+
+    /**
+     * Get names of modules stored.
+     * @return List of modules names.
+     */
+    List<std::string> getBaseObjectClassNames() const;
 
 private:
     /**

@@ -75,6 +75,42 @@ void GPDModule::resolveObjectDependencies() {
     ModuleObject::resolveObjectDependencies();
 }
 
+void GPDModule::gpdResultToStdVector(const GPDResult& r, std::vector<double>& v) const {
+
+    std::vector<GPDType> gpds = r.listGPDTypeComputed();
+
+    for (std::vector<GPDType>::const_iterator it1 = gpds.begin(); it1 != gpds.end(); ++it1) {
+
+        const PartonDistribution& p = r.getPartonDistribution(*it1);
+
+        v.push_back(p.getGluonDistribution().getGluonDistribution());
+
+        std::vector<QuarkFlavor::Type> quarks = p.listTypeOfQuarkFlavor();
+
+        for (std::vector<QuarkFlavor::Type>::const_iterator it2 = quarks.begin(); it2 != quarks.end(); ++it2) {
+
+            const QuarkDistribution& q = p.getQuarkDistribution(*it2);
+
+            v.push_back(q.getQuarkDistribution());
+            v.push_back(q.getQuarkDistributionPlus());
+            v.push_back(q.getQuarkDistributionMinus());
+        }
+    }
+}
+
+std::vector<double> GPDModule::test() {
+
+    std::vector<double> result;
+
+    gpdResultToStdVector(compute(GPDKinematic( 0.1, 0.2, -0.1, 4., 4.), getListOfAvailableGPDTypeForComputation()), result);
+    gpdResultToStdVector(compute(GPDKinematic( 0.3, 0.2, -0.1, 4., 4.), getListOfAvailableGPDTypeForComputation()), result);
+
+    gpdResultToStdVector(compute(GPDKinematic( 0.01, 0.02, -0.5, 16., 16.), getListOfAvailableGPDTypeForComputation()), result);
+    gpdResultToStdVector(compute(GPDKinematic( 0.03, 0.02, -0.5, 16., 16.), getListOfAvailableGPDTypeForComputation()), result);
+
+    return result;
+}
+
 void GPDModule::run() {
 
     try {

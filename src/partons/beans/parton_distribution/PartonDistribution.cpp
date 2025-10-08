@@ -42,7 +42,7 @@ const QuarkDistribution& PartonDistribution::getQuarkDistribution(
     return (it->second);
 }
 
-std::vector<QuarkFlavor::Type> PartonDistribution::listTypeOfQuarkFlavor() {
+std::vector<QuarkFlavor::Type> PartonDistribution::listTypeOfQuarkFlavor() const {
     std::vector<QuarkFlavor::Type> list;
     std::map<QuarkFlavor::Type, QuarkDistribution>::const_iterator it;
 
