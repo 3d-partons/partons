@@ -259,6 +259,22 @@ protected:
         }
     }
 
+    /**
+     * ConvolCoeffFunctionResult to std::vector<double> (used by test()).
+     */
+    void convolCoeffFunctionResultToStdVector(const ResultType& r, std::vector<double>& v) const {
+
+        std::vector<GPDType> gpds = r.listGPDTypeComputed();
+
+        for (std::vector<GPDType>::const_iterator it = gpds.begin(); it != gpds.end(); it++) {
+
+            const std::complex<double>& e = r.getResult(*it);
+
+            v.push_back(e.real());
+            v.push_back(e.imag());
+        }
+    }
+
     double m_xi; ///< Skewness.
     double m_t; ///< Mandelstam variable, momentum transfer on the hadron target (in GeV^2).
     double m_MuF2; ///< Factorization scale (in GeV^2).

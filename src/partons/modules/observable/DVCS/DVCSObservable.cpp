@@ -15,6 +15,12 @@
 #include "../../../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../../../include/partons/ServiceObjectTyped.h"
 
+#include "../../../../../include/partons/modules/convol_coeff_function/DVCS/DVCSCFFStandard.h"
+#include "../../../../../include/partons/modules/gpd/GPDGK19.h"
+#include "../../../../../include/partons/modules/process/DVCS/DVCSProcessGV08.h"
+#include "../../../../../include/partons/modules/scales/DVCS/DVCSScalesQ2Multiplier.h"
+#include "../../../../../include/partons/modules/xi_converter/DVCS/DVCSXiConverterXBToXi.h"
+
 namespace PARTONS {
 
 const std::string DVCSObservable::DVCS_OBSERVABLE_MODULE_CLASS_NAME =
@@ -173,7 +179,68 @@ List<GPDType> DVCSObservable::getListOfAvailableGPDTypeForComputation() const {
     return m_pProcessModule->getConvolCoeffFunctionModule()->getListOfAvailableGPDTypeForComputation();
 }
 
+std::vector<double> DVCSObservable::test() {
 
+    std::vector<double> result;
+
+    PARTONS::DVCSProcessModule* pProcessModule =
+            PARTONS::Partons::getInstance()->getModuleObjectFactory()->newDVCSProcessModule(
+                    PARTONS::DVCSProcessGV08::classId);
+    setProcessModule(pProcessModule);
+
+    PARTONS::DVCSConvolCoeffFunctionModule* pDVCSCFFModel =
+        PARTONS::Partons::getInstance()->getModuleObjectFactory()->newDVCSConvolCoeffFunctionModule(
+                PARTONS::DVCSCFFStandard::classId);
+
+    GPDModule *pGPDModule =
+            Partons::getInstance()->getModuleObjectFactory()->newGPDModule(
+                GPDGK16::classId);
+    pDVCSCFFModel->setGPDModule(pGPDModule);
+
+    pDVCSCFFModel->configure(
+            ElemUtils::Parameter(
+                    PARTONS::PerturbativeQCDOrderType::PARAMETER_NAME_PERTURBATIVE_QCD_ORDER_TYPE,
+                    PARTONS::PerturbativeQCDOrderType::LO));
+
+    pProcessModule->setConvolCoeffFunctionModule(pDVCSCFFModel);
+
+    PARTONS::DVCSXiConverterModule* pXiConverterModule =
+            PARTONS::Partons::getInstance()->getModuleObjectFactory()->newDVCSXiConverterModule(
+                    PARTONS::DVCSXiConverterXBToXi::classId);
+    pProcessModule->setXiConverterModule(pXiConverterModule);
+
+    PARTONS::DVCSScalesModule* pScalesModule =
+            PARTONS::Partons::getInstance()->getModuleObjectFactory()->newDVCSScalesModule(
+                    PARTONS::DVCSScalesQ2Multiplier::classId);
+    pProcessModule->setScaleModule(pScalesModule);
+
+    result.push_back(compute(DVCSObservableKinematic(0.2, -0.1, 2., 6., M_PI/2.),
+                        pDVCSCFFModel->getListOfAvailableGPDTypeForComputation()).getValue().getValue());
+    result.push_back(compute(DVCSObservableKinematic(0.02, -0.5, 16., 1000., M_PI/4.),
+                        pDVCSCFFModel->getListOfAvailableGPDTypeForComputation()).getValue().getValue());
+
+    PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
+               pScalesModule, 0);
+    pScalesModule = 0;
+
+    PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
+         pXiConverterModule, 0);
+    pXiConverterModule = 0;
+
+    PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
+        pGPDModule, 0);
+    pGPDModule = 0;
+
+    PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
+            pDVCSCFFModel, 0);
+    pDVCSCFFModel = 0;
+
+    PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
+            pProcessModule, 0);
+    pProcessModule = 0;
+
+    return result;
+}
 
 void DVCSObservable::initModule() {
     Observable<DVCSObservableKinematic, DVCSObservableResult>::initModule();

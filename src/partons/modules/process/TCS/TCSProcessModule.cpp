@@ -21,6 +21,11 @@
 #include "../../../../../include/partons/utils/type/PhysicalUnit.h"
 #include "../../../../../include/partons/FundamentalPhysicalConstants.h"
 
+#include "../../../../../include/partons/modules/convol_coeff_function/TCS/TCSCFFStandard.h"
+#include "../../../../../include/partons/modules/gpd/GPDGK19.h"
+#include "../../../../../include/partons/modules/scales/TCS/TCSScalesQ2PrimMultiplier.h"
+#include "../../../../../include/partons/modules/xi_converter/TCS/TCSXiConverterTauToXi.h"
+
 namespace PARTONS {
 
 const std::string TCSProcessModule::TCS_PROCESS_MODULE_CLASS_NAME =
@@ -256,6 +261,60 @@ List<GPDType> TCSProcessModule::getListOfAvailableGPDTypeForComputation() const 
 
     //return
     return listOfAvailableGPDTypeForComputation;
+}
+
+std::vector<double> TCSProcessModule::test() {
+
+    std::vector<double> result;
+
+    PARTONS::TCSConvolCoeffFunctionModule* pTCSCFFModel =
+        PARTONS::Partons::getInstance()->getModuleObjectFactory()->newTCSConvolCoeffFunctionModule(
+                PARTONS::TCSCFFStandard::classId);
+
+    GPDModule *pGPDModule =
+            Partons::getInstance()->getModuleObjectFactory()->newGPDModule(
+                GPDGK16::classId);
+    pTCSCFFModel->setGPDModule(pGPDModule);
+
+    pTCSCFFModel->configure(
+            ElemUtils::Parameter(
+                    PARTONS::PerturbativeQCDOrderType::PARAMETER_NAME_PERTURBATIVE_QCD_ORDER_TYPE,
+                    PARTONS::PerturbativeQCDOrderType::LO));
+
+    setConvolCoeffFunctionModule(pTCSCFFModel);
+
+    PARTONS::TCSXiConverterModule* pXiConverterModule =
+            PARTONS::Partons::getInstance()->getModuleObjectFactory()->newTCSXiConverterModule(
+                    PARTONS::TCSXiConverterTauToXi::classId);
+    setXiConverterModule(pXiConverterModule);
+
+    PARTONS::TCSScalesModule* pScalesModule =
+            PARTONS::Partons::getInstance()->getModuleObjectFactory()->newTCSScalesModule(
+                    PARTONS::TCSScalesQ2PrimMultiplier::classId);
+    setScaleModule(pScalesModule);
+
+    result.push_back(compute(1, NumA::Vector3D(0., 0., 0.), TCSObservableKinematic( -0.1, 2., 6., M_PI/2.,M_PI/4.),
+                        pTCSCFFModel->getListOfAvailableGPDTypeForComputation()).getValue().getValue());
+    result.push_back(compute(1, NumA::Vector3D(0., 0., 0.), TCSObservableKinematic(-0.5, 16., 1000., M_PI/4., M_PI/2.),
+                        pTCSCFFModel->getListOfAvailableGPDTypeForComputation()).getValue().getValue());
+
+    PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
+               pScalesModule, 0);
+    pScalesModule = 0;
+
+    PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
+         pXiConverterModule, 0);
+    pXiConverterModule = 0;
+
+    PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
+        pGPDModule, 0);
+    pGPDModule = 0;
+
+    PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
+            pTCSCFFModel, 0);
+    pTCSCFFModel = 0;
+
+    return result;
 }
 
 TCSObservableResult TCSProcessModule::compute(double beamPolarization,

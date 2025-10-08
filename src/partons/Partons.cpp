@@ -9,10 +9,8 @@
 #include <ElementaryUtils/ElementaryUtilsVersion.h>
 #include <NumA/NumAVersion.h>
 
-#include "../../include/partons/beans/system/EnvironmentConfiguration.h"
 #include "../../include/partons/BaseObjectFactory.h"
 #include "../../include/partons/BaseObjectRegistry.h"
-#include "../../include/partons/database/DatabaseManager.h"
 #include "../../include/partons/ModuleObjectFactory.h"
 #include "../../include/partons/ServiceObjectRegistry.h"
 #include "../../include/partons/PartonsVersion.h"
@@ -36,8 +34,7 @@ Partons* Partons::getInstance() {
 Partons::Partons() :
         m_pBaseObjectRegistry(BaseObjectRegistry::getInstance()), m_pServiceObjectRegistry(
                 0), m_pBaseObjectFactory(0), m_pModuleObjectFactory(0), m_pLoggerManager(
-                ElemUtils::LoggerManager::getInstance()), m_pDatabaseManager(
-                DatabaseManager::getInstance()), m_pEnvironmentConfiguration(0) {
+                ElemUtils::LoggerManager::getInstance()) {
 
     m_pBaseObjectFactory = new BaseObjectFactory(m_pBaseObjectRegistry);
     m_pModuleObjectFactory = new ModuleObjectFactory(m_pBaseObjectFactory);
@@ -59,11 +56,6 @@ Partons::~Partons() {
     if (m_pBaseObjectRegistry) {
         delete m_pBaseObjectRegistry;
         m_pBaseObjectRegistry = 0;
-    }
-
-    if (m_pEnvironmentConfiguration) {
-        delete m_pEnvironmentConfiguration;
-        m_pEnvironmentConfiguration = 0;
     }
 
     if (m_pInstance) {
@@ -104,36 +96,15 @@ void Partons::init(int argc, char** argv) {
     // 4. Init each object stored in the registry
     m_pBaseObjectRegistry->resolveBaseObjectDependencies();
 
-    // 5. Database connexion
-    DatabaseManager::getInstance()->init();
-
-    // 6. Start logger's thread
+    // 5. Start logger's thread
     //m_pLoggerManager->start();
     m_pLoggerManager->launch();
-
-    // 7. Retrieve environment configuration
-    retrieveEnvironmentConfiguration();
-}
-
-void Partons::retrieveEnvironmentConfiguration() {
-    std::string configuration = ElemUtils::FileUtils::read(
-            ElemUtils::PropertiesManager::getInstance()->getString(
-                    "environment.configuration.file.path"));
-    std::string md5 = "undefined";
-    m_pEnvironmentConfiguration = new EnvironmentConfiguration();
-    m_pEnvironmentConfiguration->setFile(configuration);
 }
 
 void Partons::close() {
-    m_pDatabaseManager->close();
-
-    //TODO Segmentation fault, why? Qt asynchronous?
-//    if (m_pDatabaseManager) {
-//        delete m_pDatabaseManager;
-//        m_pDatabaseManager = 0;
-//    }
 
     if (m_pLoggerManager) {
+
         // Send close signal to logger
         m_pLoggerManager->close();
 
@@ -190,10 +161,6 @@ ModuleObjectFactory* Partons::getModuleObjectFactory() const {
 
 ElemUtils::LoggerManager* Partons::getLoggerManager() const {
     return m_pLoggerManager;
-}
-
-EnvironmentConfiguration* Partons::getEnvironmentConfiguration() const {
-    return m_pEnvironmentConfiguration;
 }
 
 } /* namespace PARTONS */

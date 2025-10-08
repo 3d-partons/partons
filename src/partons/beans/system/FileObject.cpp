@@ -17,8 +17,18 @@ FileObject::FileObject() :
             Partons::getInstance()->getServiceObjectRegistry()->getCryptographicHashService();
 }
 
+FileObject::FileObject(const std::string& className,
+            const std::string& filePath,
+            const std::string& hashSum, const std::string& file) :
+    BaseObject(className), m_pCryptographicHashService(0), m_filePath(filePath), m_hashSum(hashSum), m_file(
+            file) {
+    m_pCryptographicHashService =
+        Partons::getInstance()->getServiceObjectRegistry()->getCryptographicHashService();
+}
+
 FileObject::FileObject(const FileObject &other) :
         BaseObject(other) {
+
     m_filePath = other.m_filePath;
     m_file = other.m_file;
     m_hashSum = other.m_hashSum;

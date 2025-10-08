@@ -10,7 +10,6 @@
 #include "../../../include/partons/beans/automation/Task.h"
 #include "../../../include/partons/beans/KinematicUtils.h"
 #include "../../../include/partons/BaseObjectRegistry.h"
-#include "../../../include/partons/database/observable/service/DVMPObservableResultDaoService.h"
 #include "../../../include/partons/modules/observable/DVMP/DVMPObservable.h"
 #include "../../../include/partons/modules/process/DVMP/DVMPProcessModule.h"
 #include "../../../include/partons/ModuleObjectFactory.h"
@@ -80,34 +79,6 @@ List<DVMPObservableKinematic> DVMPObservableService::newListOfKinematicFromTask(
     }
 
     return listOfKinematic;
-}
-
-void DVMPObservableService::storeResultListInDatabase(
-        const List<DVMPObservableResult>& results) const {
-
-    //get dao service
-    DVMPObservableResultDaoService dvcsObservableResultDaoService;
-
-    //insert
-    int computationId = dvcsObservableResultDaoService.insert(results);
-
-    //check if inserted correctly
-    if (computationId != -1) {
-        info(__func__,
-                ElemUtils::Formatter()
-                        << "List of DVMPObservableResult objects has been stored in database with computation_id = "
-                        << computationId);
-    } else {
-        throw ElemUtils::CustomException(getClassName(), __func__,
-                ElemUtils::Formatter()
-                        << "DVMPObservableResult object : insertion into database failed");
-    }
-}
-
-void DVMPObservableService::generatePlotFileTask(Task &task) {
-    generatePlotFile(getOutputFilePathForPlotFileTask(task),
-            generateSQLQueryForPlotFileTask(task,
-                    "dvcs_observable_plot_2d_view"), ' ');
 }
 
 DVMPProcessModule* DVMPObservableService::newDVMPProcessModuleFromTask(

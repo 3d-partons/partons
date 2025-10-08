@@ -18,8 +18,6 @@
 #include <vector>
 
 #include "../BaseObject.h"
-#include "../utils/compare/ComparisonMode.h"
-#include "../utils/compare/ComparisonReport.h"
 
 namespace PARTONS {
 
@@ -64,37 +62,6 @@ namespace PARTONS {
  list2.add(gpdResult);
  }
 
- //compare lists
- ComparisonReport comparisonReport1(NumA::Tolerances(0.001, 0.001));
- list1.compare(comparisonReport1, list2);
-
- //print comparison results
- Partons::getInstance()->getLoggerManager()->info("example", __func__, ElemUtils::Formatter() << "Comparison report: " << comparisonReport1.toString());
- \endcode
- which gives via Logger:
- \code
- 20-05-2017 11:37:21 [INFO] (example::main) Comparison report:
- [Environment setting]
- Linux partons 3.2.0-4-amd64 #1 SMP Debian 3.2.73-2+deb7u2 x86_64 GNU/Linux
- g++ (Debian 4.7.2-5) 4.7.2
- GSL 1.16
- ROOT 5.34.32
- CLN 1.3.4
- SFML 2.3.2
- QT 4.8.3
- PARTONS Revision: 728
- NumA++ Revision: 728
-
- [Objects compared]
- compared to
-
- [Tolerances]
- Absolute tolerance = 0.001
- Relative tolerance = 0.001
-
- Number of objects compared with test PASSED = 40
-
- Number of objects compared with test FAILED = 0
  \endcode
  */
 template<class T> class List: public BaseObject {
@@ -239,77 +206,6 @@ public:
      */
     std::vector<T> getData() const {
         return m_data;
-    }
-
-    /**
-     * Compare to other List and store comparison result in given comparison report.
-     * @param rootComparisonReport Reference to comparison report to be used to store comparison result.
-     * @param referenceObject Reference to List to be compared.
-     * @param comparisonMode Mode of comparison, see documentation of ComparisonMode class.
-     * @param parentObjectInfo Addition information coming from the parent object (if needed).
-     */
-    void compare(ComparisonReport &rootComparisonReport,
-            const List<T> &referenceObject,
-            const ComparisonMode &comparisonMode = ComparisonMode::EQUAL,
-            std::string parentObjectInfo = ElemUtils::StringUtils::EMPTY) const {
-
-        if ((this->isEmpty()) && referenceObject.isEmpty()) {
-            warn(__func__, ElemUtils::Formatter() << "Lists are empty");
-        } else {
-            // see : http://stackoverflow.com/a/9813792
-            // TODO Don't work
-            // reportList.setObjectTypeCompared(__PRETTY_FUNCTION__);
-
-            switch (comparisonMode) {
-            case ComparisonMode::INTERSECTION: {
-                //TODO implement
-                break;
-            }
-            default: {
-
-                //TODO remove hardcoded value ; use properties file
-                unsigned int batchSize = 1000;
-
-                unsigned int i = 0;
-                unsigned int j = 0;
-
-                while (i != referenceObject.size()) {
-                    j = 0;
-
-                    while ((j != batchSize) && (i != referenceObject.size())) {
-                        (this->m_data[i]).compare(rootComparisonReport,
-                                referenceObject[i]);
-                        i++;
-                        j++;
-                    }
-
-                    debug(__func__, rootComparisonReport.showComparisonStats());
-
-                    if (rootComparisonReport.sizeOfComparedDataFailed() != 0) {
-                        debug(__func__,
-                                rootComparisonReport.showComparedDataFailed());
-                    }
-//                    rootComparisonReport.clearComparedData();
-                }
-
-                debug(__func__, rootComparisonReport.showComparisonStats());
-
-//                // equal comparison by default
-//                if (this->size() == referenceObject.size()) {
-//                    for (size_t i = 0; i != this->size(); i++) {
-//                        (this->m_data[i]).compare(rootComparisonReport,
-//                                referenceObject[i]);
-//                    }
-//                } else {
-//                    warn(__func__,
-//                            ElemUtils::Formatter()
-//                                    << "Lists are not equal in size ; EQUAL comparison mode cannot be performed");
-//                }
-                break;
-            }
-            }
-
-        }
     }
 
     /**

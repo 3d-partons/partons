@@ -38,7 +38,6 @@ public:
 
     static const std::string OBSERVABLE_SERVICE_COMPUTE_SINGLE_KINEMATIC; ///< Name of the XML task used to compute an Observable at given kinematics.
     static const std::string OBSERVABLE_SERVICE_COMPUTE_MANY_KINEMATIC; ///< Name of the XML task used to compute an Observable for a list of kinematics.
-    static const std::string OBSERVABLE_SERVICE_GENERATE_PLOT_FILE; ///< Name of the XML task used for generating a data file ready for plotting.
 
     /**
      * Destructor.
@@ -79,25 +78,11 @@ public:
             resultList.add(computeSingleKinematicTask(task));
         }
 
-        else if (ElemUtils::StringUtils::equals(task.getFunctionName(),
-                ObservableService::OBSERVABLE_SERVICE_GENERATE_PLOT_FILE)) {
-            generatePlotFileTask(task);
-        }
-
         else if (!this->computeGeneralTask(task)) {
             this->errorUnknownMethod(task);
         }
 
         this->updateResultInfo(resultList, this->m_resultInfo);
-
-        if (task.isStoreInDB()) {
-
-            if (resultList.size() == 0) {
-                this->warn(__func__, "No results to be inserted into database");
-            } else {
-                storeResultListInDatabase(resultList);
-            }
-        }
 
         this->m_resultListBuffer = resultList;
     }
@@ -239,14 +224,6 @@ public:
     virtual List<KinematicType> newListOfKinematicFromTask(
             const Task &task) const = 0;
 
-    /**
-     * Store list of results in DB.
-     * @param results List of results.
-     * @return True is insertion successful.
-     */
-    virtual void storeResultListInDatabase(
-            const List<ResultType>& results) const = 0;
-
 protected:
 
     /**
@@ -318,12 +295,6 @@ private:
     }
 
     /**
-     * Method used in the automated interface to generate a data file ready for plotting.
-     * @param task Automated XML task.
-     */
-    virtual void generatePlotFileTask(Task &task) = 0;
-
-    /**
      * Method used to derive an intersection of available GPD types from the various underlying modules.
      * @param pConvolCoeffFunctionModule ConvolCoeffFunctionModule used for the computation.
      * @param gpdTypeList List of desired GPD types to compute.
@@ -363,10 +334,6 @@ const std::string ObservableService<KinematicType, ResultType>::OBSERVABLE_SERVI
 template<typename KinematicType, typename ResultType>
 const std::string ObservableService<KinematicType, ResultType>::OBSERVABLE_SERVICE_COMPUTE_MANY_KINEMATIC =
         "computeManyKinematic";
-
-template<typename KinematicType, typename ResultType>
-const std::string ObservableService<KinematicType, ResultType>::OBSERVABLE_SERVICE_GENERATE_PLOT_FILE =
-        "generatePlotFile";
 
 } /* namespace PARTONS */
 

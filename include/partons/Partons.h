@@ -16,11 +16,8 @@ class LoggerManager;
 
 namespace PARTONS {
 
-class DatabaseManager;
-
 class BaseObjectFactory;
 class BaseObjectRegistry;
-class EnvironmentConfiguration;
 class ModuleObjectFactory;
 class ServiceObjectRegistry;
 
@@ -65,7 +62,6 @@ public:
     BaseObjectFactory* getBaseObjectFactory() const;
     ModuleObjectFactory* getModuleObjectFactory() const;
     ElemUtils::LoggerManager* getLoggerManager() const;
-    EnvironmentConfiguration* getEnvironmentConfiguration() const;
 
     //TODO vérifier tous les ElemUtils::CustomException des fois il manque la directive throw.
 
@@ -85,15 +81,8 @@ private:
     BaseObjectFactory* m_pBaseObjectFactory;
     ModuleObjectFactory* m_pModuleObjectFactory;
     ElemUtils::LoggerManager* m_pLoggerManager;
-    DatabaseManager* m_pDatabaseManager;
 
     std::string m_currentWorkingDirectoryPath;
-    EnvironmentConfiguration* m_pEnvironmentConfiguration;
-
-    /**
-     * Retrieve environment configuration.
-     */
-    void retrieveEnvironmentConfiguration();
 
     /**
      * Check if "partons.properties" file path is readable. Throw exception else.

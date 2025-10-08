@@ -91,6 +91,8 @@ public:
      */
     virtual std::complex<double> computeCFF();
 
+    virtual std::vector<double> test();
+
 protected:
 
     /**

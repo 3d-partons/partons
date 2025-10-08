@@ -52,6 +52,8 @@ public:
     virtual void prepareSubModules(
             const std::map<std::string, BaseObjectData>& subModulesData);
 
+    virtual std::vector<double> test();
+
     /**
      * Virtual method, computes GPD with some input parameters.
      *
@@ -270,6 +272,11 @@ protected:
      * Set current GPD type to be computed.
      */
     void setCurrentGPDType(GPDType::Type gpdType);
+
+    /**
+     * GPDResult to std::vector<double> (used by test()).
+     */
+    void gpdResultToStdVector(const GPDResult& r, std::vector<double>& v) const;
 
     virtual void initModule();
     virtual void isModuleWellConfigured();

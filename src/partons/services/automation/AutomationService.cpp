@@ -13,12 +13,11 @@
 #include "../../../../include/partons/Partons.h"
 #include "../../../../include/partons/ResourceManager.h"
 #include "../../../../include/partons/services/automation/DefaultXMLParser.h"
-#include "../../../../include/partons/services/automation/Qt4XMLValidator.h"
+#include "../../../../include/partons/services/automation/DefaultXMLValidator.h"
 #include "../../../../include/partons/services/hash_sum/CryptographicHashService.h"
 #include "../../../../include/partons/ServiceObjectRegistry.h"
 
 namespace PARTONS {
-
 
 const std::string AutomationService::PROPERTY_NAME_XML_SCHEMA_FILE_PATH =
         "xml.schema.file.path";
@@ -33,7 +32,7 @@ AutomationService::AutomationService(const std::string &className) :
                 0), m_pXMLParserI(0), m_pCryptographicHashService(0), m_pResourceManager(
                 0) {
     // Plug Qt4 XML validator as XML validator.
-    m_pXMLValidatorI = new Qt4XMLValidator();
+    m_pXMLValidatorI = new DefaultXMLValidator();
     // Plug our own XML parser as XML parser
     m_pXMLParserI = new DefaultXMLParser();
 }
@@ -79,8 +78,8 @@ Scenario* AutomationService::parseXMLFile(
             scenarioHashSum);
 
     if (!pScenario) {
-        pScenario = m_pResourceManager->registerScenario(-1,
-                ElemUtils::StringUtils::EMPTY, time(0), xmlFilePath,
+        pScenario = m_pResourceManager->registerScenario(
+                ElemUtils::StringUtils::EMPTY, xmlFilePath,
                 scenarioHashSum, scenarioXMLDocument);
     }
 

@@ -15,6 +15,12 @@
 #include "../../../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../../../include/partons/ServiceObjectTyped.h"
 
+#include "../../../../../include/partons/modules/convol_coeff_function/TCS/TCSCFFStandard.h"
+#include "../../../../../include/partons/modules/gpd/GPDGK19.h"
+#include "../../../../../include/partons/modules/process/TCS/TCSProcessBDP01.h"
+#include "../../../../../include/partons/modules/scales/TCS/TCSScalesQ2PrimMultiplier.h"
+#include "../../../../../include/partons/modules/xi_converter/TCS/TCSXiConverterTauToXi.h"
+
 namespace PARTONS {
 
 const std::string TCSObservable::TCS_OBSERVABLE_MODULE_CLASS_NAME =
@@ -170,6 +176,69 @@ List<GPDType> TCSObservable::getListOfAvailableGPDTypeForComputation() const {
     return m_pProcessModule->getConvolCoeffFunctionModule()->getListOfAvailableGPDTypeForComputation();
 }
 
+std::vector<double> TCSObservable::test() {
+
+    std::vector<double> result;
+
+    PARTONS::TCSProcessModule* pProcessModule =
+            PARTONS::Partons::getInstance()->getModuleObjectFactory()->newTCSProcessModule(
+                    PARTONS::TCSProcessBDP01::classId);
+    setProcessModule(pProcessModule);
+
+    PARTONS::TCSConvolCoeffFunctionModule* pTCSCFFModel =
+        PARTONS::Partons::getInstance()->getModuleObjectFactory()->newTCSConvolCoeffFunctionModule(
+                PARTONS::TCSCFFStandard::classId);
+
+    GPDModule *pGPDModule =
+            Partons::getInstance()->getModuleObjectFactory()->newGPDModule(
+                GPDGK16::classId);
+    pTCSCFFModel->setGPDModule(pGPDModule);
+
+    pTCSCFFModel->configure(
+            ElemUtils::Parameter(
+                    PARTONS::PerturbativeQCDOrderType::PARAMETER_NAME_PERTURBATIVE_QCD_ORDER_TYPE,
+                    PARTONS::PerturbativeQCDOrderType::LO));
+
+    pProcessModule->setConvolCoeffFunctionModule(pTCSCFFModel);
+
+    PARTONS::TCSXiConverterModule* pXiConverterModule =
+            PARTONS::Partons::getInstance()->getModuleObjectFactory()->newTCSXiConverterModule(
+                    PARTONS::TCSXiConverterTauToXi::classId);
+    pProcessModule->setXiConverterModule(pXiConverterModule);
+
+    PARTONS::TCSScalesModule* pScalesModule =
+            PARTONS::Partons::getInstance()->getModuleObjectFactory()->newTCSScalesModule(
+                    PARTONS::TCSScalesQ2PrimMultiplier::classId);
+    pProcessModule->setScaleModule(pScalesModule);
+
+    result.push_back(compute(TCSObservableKinematic( -0.1, 2., 6., M_PI/2.,M_PI/4.),
+                        pTCSCFFModel->getListOfAvailableGPDTypeForComputation()).getValue().getValue());
+    result.push_back(compute(TCSObservableKinematic(-0.5, 16., 1000., M_PI/4., M_PI/2.),
+                        pTCSCFFModel->getListOfAvailableGPDTypeForComputation()).getValue().getValue());
+
+    PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
+               pScalesModule, 0);
+    pScalesModule = 0;
+
+    PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
+         pXiConverterModule, 0);
+    pXiConverterModule = 0;
+
+    PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
+        pGPDModule, 0);
+    pGPDModule = 0;
+
+    PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
+            pTCSCFFModel, 0);
+    pTCSCFFModel = 0;
+
+    PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
+            pProcessModule, 0);
+    pProcessModule = 0;
+
+    return result;
+}
+    
 void TCSObservable::initModule() {
     Observable<TCSObservableKinematic, TCSObservableResult>::initModule();
 }

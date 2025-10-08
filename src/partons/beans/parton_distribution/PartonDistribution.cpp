@@ -42,7 +42,7 @@ const QuarkDistribution& PartonDistribution::getQuarkDistribution(
     return (it->second);
 }
 
-std::vector<QuarkFlavor::Type> PartonDistribution::listTypeOfQuarkFlavor() {
+std::vector<QuarkFlavor::Type> PartonDistribution::listTypeOfQuarkFlavor() const {
     std::vector<QuarkFlavor::Type> list;
     std::map<QuarkFlavor::Type, QuarkDistribution>::const_iterator it;
 
@@ -133,25 +133,6 @@ void PartonDistribution::addQuarkDistribution(
     m_quarkDistributions.insert(
             std::make_pair(quarkDistribution.getQuarkFlavor().getType(),
                     quarkDistribution));
-}
-
-void PartonDistribution::compare(ComparisonReport &rootComparisonReport,
-        const PartonDistribution &referenceObject,
-        std::string parentObjectInfo) const {
-
-    // compare gluon distribution
-    this->m_gluonDistribution.compare(rootComparisonReport,
-            referenceObject.getGluonDistribution(),
-            ElemUtils::Formatter() << parentObjectInfo);
-
-    for (std::map<QuarkFlavor::Type, QuarkDistribution>::const_iterator it =
-            m_quarkDistributions.begin(); it != m_quarkDistributions.end();
-            it++) {
-        (it->second).compare(rootComparisonReport,
-                referenceObject.getQuarkDistribution((it->first)),
-                ElemUtils::Formatter() << parentObjectInfo << " "
-                        << QuarkFlavor(it->first).toString());
-    }
 }
 
 } /* namespace PARTONS */

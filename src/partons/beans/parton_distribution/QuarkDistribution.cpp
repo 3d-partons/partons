@@ -2,9 +2,6 @@
 
 #include <ElementaryUtils/string_utils/Formatter.h>
 
-#include "../../../../include/partons/utils/compare/CompareUtils.h"
-#include "../../../../include/partons/utils/compare/ComparisonData.h"
-
 namespace PARTONS {
 
 const std::string QuarkDistribution::QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DISTRIBUTION =
@@ -93,44 +90,6 @@ QuarkFlavor QuarkDistribution::getQuarkFlavor() const {
 
 void QuarkDistribution::setQuarkFlavor(QuarkFlavor quarkFlavorType) {
     m_quarkFlavor = quarkFlavorType;
-}
-
-void QuarkDistribution::compare(ComparisonReport &rootComparisonReport,
-        const QuarkDistribution &referenceObject,
-        std::string parentObjectInfo) const {
-
-    ComparisonData quark_distribution_value_comparisonData =
-            CompareUtils::compareDouble(
-                    QuarkDistribution::QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DISTRIBUTION,
-                    m_quarkDistribution, referenceObject.getQuarkDistribution(),
-                    rootComparisonReport.getTolerances(),
-                    ElemUtils::Formatter() << parentObjectInfo << " "
-                            << getClassName());
-
-    ComparisonData quark_distribution_plus_value_comparisonData =
-            CompareUtils::compareDouble(
-                    QuarkDistribution::QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DISTRIBUTION_PLUS,
-                    m_quarkDistributionPlus,
-                    referenceObject.getQuarkDistributionPlus(),
-                    rootComparisonReport.getTolerances(),
-                    ElemUtils::Formatter() << parentObjectInfo << " "
-                            << getClassName());
-
-    ComparisonData quark_distribution_minus_value_comparisonData =
-            CompareUtils::compareDouble(
-                    QuarkDistribution::QUARK_DISTRIBUTION_DB_COLUMN_NAME_QUARK_DISTRIBUTION_MINUS,
-                    m_quarkDistributionMinus,
-                    referenceObject.getQuarkDistributionMinus(),
-                    rootComparisonReport.getTolerances(),
-                    ElemUtils::Formatter() << parentObjectInfo << " "
-                            << getClassName());
-
-    rootComparisonReport.addComparisonData(
-            quark_distribution_value_comparisonData);
-    rootComparisonReport.addComparisonData(
-            quark_distribution_plus_value_comparisonData);
-    rootComparisonReport.addComparisonData(
-            quark_distribution_minus_value_comparisonData);
 }
 
 } /* namespace PARTONS */

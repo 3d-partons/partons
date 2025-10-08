@@ -6,8 +6,6 @@
 
 namespace PARTONS {
 
-const std::string ModuleObject::CLASS_NAME = "className";
-
 ModuleObject::ModuleObject(const std::string &className,
         ChannelType::Type channelType) :
         BaseObject(className), ElemUtils::Thread(), m_channelType(channelType), m_pModuleObjectFactory(
@@ -49,6 +47,10 @@ void ModuleObject::prepareSubModules(
 void ModuleObject::run() {
     throw ElemUtils::CustomException("Thread", __func__,
             "This must be implemented in daughter class");
+}
+
+std::vector<double> ModuleObject::test() {
+    return std::vector<double>(0);
 }
 
 unsigned int ModuleObject::getReferenceModuleId() const {

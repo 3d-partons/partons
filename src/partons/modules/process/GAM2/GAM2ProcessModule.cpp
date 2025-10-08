@@ -18,6 +18,11 @@
 #include "../../../../../include/partons/Partons.h"
 #include "../../../../../include/partons/utils/type/PhysicalUnit.h"
 
+#include "../../../../../include/partons/modules/convol_coeff_function/GAM2/GAM2CFFStandard.h"
+#include "../../../../../include/partons/modules/gpd/GPDGK19.h"
+#include "../../../../../include/partons/modules/scales/GAM2/GAM2ScalesMgg2Multiplier.h"
+#include "../../../../../include/partons/modules/xi_converter/GAM2/GAM2XiConverterExact.h"
+
 namespace PARTONS {
 
 const std::string GAM2ProcessModule::GAM2_PROCESS_MODULE_CLASS_NAME =
@@ -245,6 +250,62 @@ List<GPDType> GAM2ProcessModule::getListOfAvailableGPDTypeForComputation() const
 
     //return
     return listOfAvailableGPDTypeForComputation;
+}
+
+std::vector<double> GAM2ProcessModule::test() {
+
+    std::vector<double> result;
+
+    PARTONS::GAM2ConvolCoeffFunctionModule* pGAM2CFFModel =
+        PARTONS::Partons::getInstance()->getModuleObjectFactory()->newGAM2ConvolCoeffFunctionModule(
+                PARTONS::GAM2CFFStandard::classId);
+
+    GPDModule *pGPDModule =
+            Partons::getInstance()->getModuleObjectFactory()->newGPDModule(
+                GPDGK16::classId);
+    pGAM2CFFModel->setGPDModule(pGPDModule);
+
+    pGAM2CFFModel->configure(
+            ElemUtils::Parameter(
+                    PARTONS::PerturbativeQCDOrderType::PARAMETER_NAME_PERTURBATIVE_QCD_ORDER_TYPE,
+                    PARTONS::PerturbativeQCDOrderType::LO));
+
+    setConvolCoeffFunctionModule(pGAM2CFFModel);
+
+    PARTONS::GAM2XiConverterModule* pXiConverterModule =
+            PARTONS::Partons::getInstance()->getModuleObjectFactory()->newGAM2XiConverterModule(
+                    PARTONS::GAM2XiConverterExact::classId);
+    setXiConverterModule(pXiConverterModule);
+
+    PARTONS::GAM2ScalesModule* pScalesModule =
+            PARTONS::Partons::getInstance()->getModuleObjectFactory()->newGAM2ScalesModule(
+                    PARTONS::GAM2ScalesMgg2Multiplier::classId);
+   setScaleModule(pScalesModule);
+
+    result.push_back(compute(PolarizationType::LIN_TRANS_X_PLUS, PolarizationType::LIN_TRANS_X_PLUS, PolarizationType::LIN_TRANS_X_PLUS, NumA::Vector3D(0.,0.,0.),
+        GAM2ObservableKinematic(-0.1, -2., 4., 24., M_PI/3.),
+                        pGAM2CFFModel->getListOfAvailableGPDTypeForComputation()).getValue().getValue());
+    result.push_back(compute(PolarizationType::LIN_TRANS_X_PLUS, PolarizationType::LIN_TRANS_X_PLUS, PolarizationType::LIN_TRANS_X_PLUS, NumA::Vector3D(0.,0.,0.),
+        GAM2ObservableKinematic( -0.2, -4., 16., 100., M_PI/6.),
+                        pGAM2CFFModel->getListOfAvailableGPDTypeForComputation()).getValue().getValue());
+
+    PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
+               pScalesModule, 0);
+    pScalesModule = 0;
+
+    PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
+         pXiConverterModule, 0);
+    pXiConverterModule = 0;
+
+    PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
+        pGPDModule, 0);
+    pGPDModule = 0;
+
+    PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
+            pGAM2CFFModel, 0);
+    pGAM2CFFModel = 0;
+
+    return result;
 }
 
 GAM2ObservableResult GAM2ProcessModule::compute(PolarizationType::Type polG0,

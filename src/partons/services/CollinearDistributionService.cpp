@@ -12,7 +12,6 @@
 #include "../../../include/partons/beans/automation/Task.h"
 #include "../../../include/partons/beans/KinematicUtils.h"
 #include "../../../include/partons/BaseObjectRegistry.h"
-#include "../../../include/partons/database/collinear_distribution/service/CollinearDistributionResultDaoService.h"
 #include "../../../include/partons/modules/collinear_distribution/CollinearDistributionModule.h"
 #include "../../../include/partons/ModuleObjectFactory.h"
 #include "../../../include/partons/Partons.h"
@@ -24,8 +23,6 @@ const std::string CollinearDistributionService::COLLINEAR_DISTRIBUTION_SERVICE_C
         "computeSingleKinematic";
 const std::string CollinearDistributionService::COLLINEAR_DISTRIBUTION_SERVICE_COMPUTE_MANY_KINEMATIC =
         "computeManyKinematic";
-const std::string CollinearDistributionService::COLLINEAR_DISTRIBUTION_SERVICE_GENERATE_PLOT_FILE =
-        "generatePlotFile";
 
 const unsigned int CollinearDistributionService::classId =
         Partons::getInstance()->getBaseObjectRegistry()->registerBaseObject(
@@ -67,39 +64,11 @@ void CollinearDistributionService::computeTask(Task &task) {
         resultList.add(computeSingleKinematicTask(task));
     }
 
-    else if (ElemUtils::StringUtils::equals(task.getFunctionName(),
-            CollinearDistributionService::COLLINEAR_DISTRIBUTION_SERVICE_GENERATE_PLOT_FILE)) {
-        generatePlotFileTask(task);
-    }
-
     else if (!computeGeneralTask(task)) {
         errorUnknownMethod(task);
     }
 
     updateResultInfo(resultList, m_resultInfo);
-
-    if (task.isStoreInDB()) {
-
-        if (resultList.size() == 0) {
-            warn(__func__, "No results to be inserted into database");
-        } else {
-
-            CollinearDistributionResultDaoService resultService;
-
-            int computationId = resultService.insert(resultList);
-
-            if (computationId != -1) {
-                info(__func__,
-                        ElemUtils::Formatter()
-                                << "List of collinear-distribution result has been stored in database with computation_id = "
-                                << computationId);
-            } else {
-                throw ElemUtils::CustomException(getClassName(), __func__,
-                        ElemUtils::Formatter()
-                                << "Failed to insert List of collinear-distribution result into database");
-            }
-        }
-    }
 
     m_resultListBuffer = resultList;
 }
@@ -235,11 +204,6 @@ List<CollinearDistributionResult> CollinearDistributionService::computeManyKinem
 
     //return
     return result;
-}
-
-void CollinearDistributionService::generatePlotFileTask(Task& task) {
-    generatePlotFile(getOutputFilePathForPlotFileTask(task),
-            generateSQLQueryForPlotFileTask(task, "collinear_distribution_plot_2d_view"), ' ');
 }
 
 List<CollinearDistributionType> CollinearDistributionService::getFinalCollinearDistributionTypeList(CollinearDistributionModule* pCollinearDistributionModule,

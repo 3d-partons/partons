@@ -2,7 +2,7 @@
 
 #include "../../../../include/partons/BaseObjectRegistry.h"
 #include "../../../../include/partons/Partons.h"
-#include "../../../../include/partons/services/hash_sum/Qt4CryptographicHash.h"
+#include "../../../../include/partons/services/hash_sum/DefaultCryptographicHash.h"
 
 namespace PARTONS {
 
@@ -14,7 +14,7 @@ const unsigned int CryptographicHashService::classId =
 
 CryptographicHashService::CryptographicHashService(const std::string &className) :
         ServiceObject(className), m_pCryptographicHashI(0) {
-    m_pCryptographicHashI = new Qt4CryptographicHash();
+    m_pCryptographicHashI = new DefaultCryptographicHash();
 }
 
 CryptographicHashService::~CryptographicHashService() {

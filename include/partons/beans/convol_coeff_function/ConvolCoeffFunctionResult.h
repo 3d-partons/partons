@@ -17,9 +17,6 @@
 #include <utility>
 #include <vector>
 
-#include "../../utils/compare/CompareUtils.h"
-#include "../../utils/compare/ComparisonData.h"
-#include "../../utils/compare/ComparisonReport.h"
 #include "../channel/ChannelType.h"
 #include "../gpd/GPDType.h"
 #include "../Result.h"
@@ -130,49 +127,6 @@ public:
      */
     std::complex<double> getLastAvailable() const {
         return m_it->second;
-    }
-
-    /**
-     * Compare to other ConvolCoeffFunctionResult object and store comparison result in given comparison report.
-     * @param rootComparisonReport Reference to comparison report to be used to store comparison result.
-     * @param referenceObject Reference to object to be compared.
-     * @param parentObjectInfo Addition information coming from the parent object (if needed).
-     */
-    void compare(ComparisonReport &rootComparisonReport,
-            const ConvolCoeffFunctionResult &referenceObject,
-            std::string parentObjectInfo = ElemUtils::StringUtils::EMPTY) const {
-
-        if (Result<KinematicType>::m_kinematic
-                != referenceObject.getKinematic()) {
-            throw ElemUtils::CustomException(this->getClassName(), __func__,
-                    ElemUtils::Formatter()
-                            << "Cannot perform comparison because kinematics is diferent ; With ConvolCoeffFunctionResult index id = "
-                            << referenceObject.getIndexId() << '\n'
-                            << toString() << '\n'
-                            << referenceObject.toString());
-        }
-
-        if (m_resultsByGPDType.size()
-                != referenceObject.getResultsByGpdType().size()) {
-            throw ElemUtils::CustomException(this->getClassName(), __func__,
-                    ElemUtils::Formatter()
-                            << "Cannot perform comparison between parton distribution map because they are not equal in size ; With ConvolCoeffFunctionResult index id = "
-                            << referenceObject.getIndexId() << '\n'
-                            << toString() << '\n'
-                            << referenceObject.toString());
-        }
-
-        for (std::map<GPDType::Type, std::complex<double> >::const_iterator it =
-                m_resultsByGPDType.begin(); it != m_resultsByGPDType.end();
-                it++) {
-
-            ComparisonData comparisonData = CompareUtils::compareComplex("",
-                    it->second, referenceObject.getResult(it->first),
-                    rootComparisonReport.getTolerances(),
-                    ElemUtils::Formatter() << parentObjectInfo << " "
-                            << GPDType(it->first).toString());
-            rootComparisonReport.addComparisonData(comparisonData);
-        }
     }
 
     /**

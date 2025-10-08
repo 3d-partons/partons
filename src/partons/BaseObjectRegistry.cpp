@@ -170,4 +170,17 @@ unsigned int BaseObjectRegistry::getObjectClassIdByClassName(
     return (it == m_classIdByClassName.end()) ? 0 : it->second;
 }
 
+List<std::string> BaseObjectRegistry::getBaseObjectClassNames() const {
+
+    List<std::string> result;
+
+    std::map<std::string, BaseObject*>::const_iterator it;
+
+    for (it = m_translateList.begin(); it != m_translateList.end();  it++) {
+        result.add(it->first);
+    }
+
+    return result;
+}
+
 } /* namespace PARTONS */

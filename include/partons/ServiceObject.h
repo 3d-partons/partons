@@ -91,34 +91,10 @@ public:
      */
     void clearAllThread();
 
-    /**
-     * Generate SQL query to create a plot file.
-     */
-    std::string generateSQLQueryForPlotFile(const std::string &tableName,
-            const ElemUtils::Parameters& selectParams,
-            const ElemUtils::Parameters& whereParams) const;
-
-    /**
-     * Generate a plot file.
-     */
-    void generatePlotFile(const std::string& filePath,
-            const std::string &sqlQuery, const char splitChar) const;
-
 protected:
 
     ModuleObjectFactory* m_pModuleObjectFactory; ///< Pointer to ModuleObjectFactory.
     AutomationService* m_pAutomationService; ///< Pointer to AutomationService.
-
-    /**
-     * Generate SQL query from a task.
-     */
-    std::string generateSQLQueryForPlotFileTask(Task &task,
-            const std::string &tableName) const;
-
-    /**
-     * Get path to a plot file from a task.
-     */
-    std::string getOutputFilePathForPlotFileTask(Task &task) const;
 
     /**
      * Get list of GPD types to be computed from a task.

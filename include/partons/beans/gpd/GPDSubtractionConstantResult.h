@@ -10,7 +10,6 @@
 
 #include <string>
 
-#include "../../utils/compare/ComparisonReport.h"
 #include "../../utils/type/PhysicalType.h"
 #include "../Result.h"
 #include "GPDSubtractionConstantKinematic.h"
@@ -67,16 +66,6 @@ public:
     virtual ~GPDSubtractionConstantResult();
 
     virtual std::string toString() const;
-
-    /**
-     * Compare to other GPDSubtractionConstantResult object and store comparison result in given comparison report.
-     * @param rootComparisonReport Reference to comparison report to be used to store comparison result.
-     * @param referenceObject Reference to object to be compared.
-     * @param parentObjectInfo Addition information coming from the parent object (if needed).
-     */
-    void compare(ComparisonReport &rootComparisonReport,
-            const GPDSubtractionConstantResult &referenceObject,
-            std::string parentObjectInfo = "") const;
 
     //********************************************************
     //*** SETTERS AND GETTERS ********************************

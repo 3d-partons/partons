@@ -39,6 +39,17 @@ public:
     FileObject(const FileObject &other);
 
     /**
+    * Constructor.
+    * @param className Name of class.
+    * @param filePath Path to file.
+    * @param hashSum Hash sum of file content.
+    * @param file String containing file content.
+    */
+   FileObject(const std::string &className,
+           const std::string& filePath,
+           const std::string& hashSum, const std::string& file);
+
+    /**
      * Destructor.
      */
     virtual ~FileObject();

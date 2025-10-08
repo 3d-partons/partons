@@ -62,6 +62,8 @@ public:
     virtual void prepareSubModules(
             const std::map<std::string, BaseObjectData>& subModulesData);
     virtual List<GPDType> getListOfAvailableGPDTypeForComputation() const;
+    virtual std::vector<double> test();
+
 
     /**
      * Computes the differential cross-section. Must be implemented in the child class.

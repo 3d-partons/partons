@@ -2,7 +2,6 @@
 
 namespace PARTONS {
 
-
 ResourceManager* ResourceManager::m_pInstance = 0;
 
 ResourceManager* ResourceManager::getInstance() {
@@ -45,18 +44,6 @@ ResourceManager::~ResourceManager() {
 //        }
 //    }
 
-    std::map<std::string, EnvironmentConfiguration*>::iterator it_environmentConfigurationResourceList;
-
-    for (it_environmentConfigurationResourceList =
-            m_environmentConfigurationResourceList.begin();
-            it_environmentConfigurationResourceList
-                    != m_environmentConfigurationResourceList.end();
-            it_environmentConfigurationResourceList++) {
-        if (it_environmentConfigurationResourceList->second) {
-            delete (it_environmentConfigurationResourceList->second);
-            (it_environmentConfigurationResourceList->second) = 0;
-        }
-    }
 }
 
 //TODO how to handle counter when gives back pointer ?
@@ -75,15 +62,16 @@ ResourceManager::~ResourceManager() {
 //}
 
 Scenario* ResourceManager::registerScenario(Scenario* pScenario) {
-    return registerScenario(pScenario->getIndexId(),
-            pScenario->getDescription(), pScenario->getStoreDate(),
+    return registerScenario(
+            pScenario->getDescription(),
             pScenario->getFilePath(), pScenario->getHashSum(),
-            pScenario->getFile());
+            pScenario->getFile()
+    );
 }
 
 //TODO how to handle counter when gives back pointer ?
-Scenario* ResourceManager::registerScenario(const int indexId,
-        const std::string &description, const time_t storeDate,
+Scenario* ResourceManager::registerScenario(
+const std::string &description,
         const std::string &filePath, const std::string& hashSum,
         const std::string& file) {
 
@@ -92,7 +80,7 @@ Scenario* ResourceManager::registerScenario(const int indexId,
             bool> isInserted = m_scenarioResourceList.insert(
             std::make_pair(hashSum,
                     std::make_pair(
-                            (new Scenario(indexId, description, storeDate,
+                            (new Scenario(description,
                                     filePath, hashSum, file)), 1)));
 
     // If this scenario already exists in the map
@@ -103,11 +91,6 @@ Scenario* ResourceManager::registerScenario(const int indexId,
 
     // Return a pointer to the scenario in memory.
     return ((isInserted.first)->second).first;
-}
-
-EnvironmentConfiguration* ResourceManager::getEnvironmentConfiguration(
-        const std::string&) const {
-  return NULL;
 }
 
 } /* namespace PARTONS */

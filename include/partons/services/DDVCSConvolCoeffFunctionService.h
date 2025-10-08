@@ -46,9 +46,6 @@ public:
             const Task &task) const;
     virtual List<DDVCSConvolCoeffFunctionKinematic> newListOfKinematicFromTask(
             const Task &task) const;
-    virtual void storeResultListInDatabase(
-            const List<DDVCSConvolCoeffFunctionResult>& results) const;
-    virtual void generatePlotFileTask(Task &task);
 
   /**
      * Uses an automation task (XML file) to configure a DDVCSConvolCoeffFunctionModule.
