@@ -3,7 +3,6 @@ FROM debian:stable
 
 # version tags
 ENV PARTONSTAG="main"
-#ENV PARTONSTAG="v4.0"
 ENV APFELXXTAG="4.8.1"
 ENV LHAPDFTAG="6.5.5"
 
