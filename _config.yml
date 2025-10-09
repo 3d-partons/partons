@@ -22,12 +22,11 @@ title: PARTONS
 email: pawel.sznajder@ncbj.gov.pl
 description: >- 
   PARTONS&#58; PARtonic Tomography Of Nucleon Software
-baseurl: /epic
-url: http://pawelsznajder.github.io
-twitter_username: ""
+baseurl: /partons
+repository: 3d-partons/partons 
+url: https://3d-partons.github.io 
 github_username:  pawelsznajder
 show_downloads: false
-logo: /assets/img/partonslogo.jpg
 
 # Build settings
 theme: jekyll-theme-minimal 
