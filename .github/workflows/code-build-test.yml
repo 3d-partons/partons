@@ -1,0 +1,62 @@
+name: code-build-test
+
+on:
+  push:
+    branches:
+    - main
+  workflow_dispatch:
+
+env:
+  PARTONSTAG: main
+  
+jobs:
+    code-build-test:
+      runs-on: ubuntu-latest
+      container: partons/partons:latest
+      
+      steps:
+       - name: remove 
+         run: |
+           cd /root/workspace 
+           rm -rf elementary-utils
+           rm -rf numa
+           rm -rf partons
+           rm -rf partons-example
+         
+       - name: test-elementary-utils
+         run: |
+           cd /root/workspace
+           git clone --single-branch --depth 1 --branch $PARTONSTAG https://github.com/3d-partons/elementary-utils.git 
+           cd elementary-utils/build 
+           cmake -G"Unix Makefiles" ../ -DCMAKE_BUILD_TYPE=Release 
+           make -j4
+
+       - name: test-numa
+         run: |
+           cd /root/workspace
+           git clone --single-branch --depth 1 --branch $PARTONSTAG https://github.com/3d-partons/numa.git 
+           cd numa/build 
+           cmake -G"Unix Makefiles" ../ -DCMAKE_BUILD_TYPE=Release 
+           make -j4
+
+       - name: test-partons
+         run: |
+           cd /root/workspace
+           git clone --single-branch --depth 1 --branch $PARTONSTAG https://github.com/3d-partons/partons.git 
+           cd partons/build 
+           cmake -G"Unix Makefiles" ../ -DCMAKE_BUILD_TYPE=Release 
+           make -j4
+
+       - name: test-partons-example
+         run: |
+           cd /root/workspace
+           git clone --single-branch --depth 1 --branch $PARTONSTAG https://github.com/3d-partons/partons-example.git 
+           cd partons-example/build 
+           cmake -G"Unix Makefiles" ../ -DCMAKE_BUILD_TYPE=Release 
+           make -j4
+
+       - name: test-non-regression
+         run: |
+           cd /root/workspace/partons-example/test
+           sh make_test.sh     
+           
