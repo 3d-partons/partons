@@ -36,6 +36,4 @@ plugins:
 
 # Exclude from processing.
 exclude:
-  - /assets/doxygen/scripts/
-  - /assets/doxygen/layout/
-  - [vendor]
+  - /vendor
