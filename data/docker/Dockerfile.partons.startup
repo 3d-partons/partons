@@ -3,10 +3,6 @@
 echo "Welcome to PARTONS" 
 echo "See http://partons.cea.fr for description and technical documentation"
 
-#mysql
-find /var/lib/mysql -type f -exec touch {} \;
-service mariadb start &> /dev/null
-
 if [ $# -eq 0 ]; then
    /bin/bash  
 else

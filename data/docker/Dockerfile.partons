@@ -1,10 +1,11 @@
 # start from debian jessie
-FROM debian:bullseye
+FROM debian:stable
 
 # version tags
-ENV PARTONSTAG="v4.0"
-ENV APFELXXTAG="4.7.0"
-ENV LHAPDFTAG="6.5.4"
+ENV PARTONSTAG="main"
+#ENV PARTONSTAG="v4.0"
+ENV APFELXXTAG="4.8.1"
+ENV LHAPDFTAG="6.5.5"
 
 # set WORKSPACE env. variable
 ENV WORKSPACE="/root/workspace"
@@ -16,15 +17,10 @@ WORKDIR ${WORKSPACE}
 #RUN echo "deb http://ftp.de.debian.org/debian bullseye main" > /etc/apt/sources.list 
 RUN apt-get update && \ 
     apt-get install -y --no-install-recommends git && \
-    apt-get install -y --no-install-recommends cmake build-essential libeigen3-dev libcln-dev libsfml-dev qtbase5-dev libqt5sql5-mysql libqt5xmlpatterns5-dev libgsl-dev gfortran ca-certificates wget && \ 
+    apt-get install -y --no-install-recommends cmake build-essential libeigen3-dev libcln-dev libsfml-dev libgsl-dev libxml2-dev gfortran ca-certificates wget && \ 
     apt-get clean && \
     apt-get autoclean && \
     rm -rf /var/lib/apt/lists/*
-
-# install apfel
-RUN git clone --depth 1 --branch ${APFELXXTAG} https://github.com/vbertone/apfelxx.git && \
-    cd apfelxx && mkdir build && cd build && cmake .. && make -j4 && make install && \
-    cd ../.. && rm -rf apfelxx 
 
 #install LHAPDF and PDF sets
 RUN wget https://lhapdf.hepforge.org/downloads/?f=LHAPDF-${LHAPDFTAG}.tar.gz -O LHAPDF-${LHAPDFTAG}.tar.gz && \
@@ -34,10 +30,15 @@ RUN wget https://lhapdf.hepforge.org/downloads/?f=LHAPDF-${LHAPDFTAG}.tar.gz -O 
 RUN cd `lhapdf-config --datadir` && wget http://lhapdfsets.web.cern.ch/lhapdfsets/current/MSTW2008nlo68cl.tar.gz && tar -zxf MSTW2008nlo68cl.tar.gz && \
     rm MSTW2008nlo68cl.tar.gz  
 
+# install apfel
+RUN git clone --depth 1 --branch ${APFELXXTAG} https://github.com/vbertone/apfelxx.git && \
+    cd apfelxx && mkdir build && cd build && cmake .. && make -j4 && make install && \
+    cd ../.. && rm -rf apfelxx 
+
 # pull and install elem-utils
 RUN cd ${WORKSPACE} && \
     git config --global http.sslVerify false && \
-    git clone --single-branch --depth 1 --branch ${PARTONSTAG} https://drf-gitlab.cea.fr/partons/core/elementary-utils.git && \
+    git clone --single-branch --depth 1 --branch ${PARTONSTAG} https://github.com/3d-partons/elementary-utils.git && \
     cd ${WORKSPACE}/elementary-utils/build && \
     cmake -G"Unix Makefiles" ../ -DCMAKE_BUILD_TYPE=Release && \
     make -j4 
@@ -45,7 +46,7 @@ RUN cd ${WORKSPACE} && \
 # pull and install numa
 RUN cd ${WORKSPACE} && \
     git config --global http.sslVerify false && \
-    git clone --single-branch --depth 1 --branch ${PARTONSTAG} https://drf-gitlab.cea.fr/partons/core/numa.git && \
+    git clone --single-branch --depth 1 --branch ${PARTONSTAG} https://github.com/3d-partons/numa.git && \
     cd ${WORKSPACE}/numa/build && \
     cmake -G"Unix Makefiles" ../ -DCMAKE_BUILD_TYPE=Release && \
     make -j4
@@ -53,7 +54,7 @@ RUN cd ${WORKSPACE} && \
 # pull and install partons
 RUN cd ${WORKSPACE} && \
     git config --global http.sslVerify false && \
-    git clone --single-branch --depth 1 --branch ${PARTONSTAG} https://drf-gitlab.cea.fr/partons/core/partons.git && \
+    git clone --single-branch --depth 1 --branch ${PARTONSTAG} https://github.com/3d-partons/partons.git && \
     cd ${WORKSPACE}/partons/build && \
     cmake -G"Unix Makefiles" ../ -DCMAKE_BUILD_TYPE=Release && \
     make -j4
@@ -61,7 +62,7 @@ RUN cd ${WORKSPACE} && \
 # pull and compile partons-example
 RUN cd ${WORKSPACE} && \
     git config --global http.sslVerify false && \
-    git clone --single-branch --depth 1 --branch ${PARTONSTAG} https://drf-gitlab.cea.fr/partons/core/partons-example.git && \
+    git clone --single-branch --depth 1 --branch ${PARTONSTAG} https://github.com/3d-partons/partons-example.git && \
     cd ${WORKSPACE}/partons-example/build && \
     cmake -G"Unix Makefiles" ../ -DCMAKE_BUILD_TYPE=Release && \
     make -j4 
@@ -70,23 +71,9 @@ RUN cd ${WORKSPACE} && \
 RUN mkdir ${WORKSPACE}/.docker && \
     mkdir ${WORKSPACE}/partons-example/scenarios
 
-COPY ./Dockerfile.partons.mysql ${WORKSPACE}/.docker 
 COPY ./Dockerfile.partons.startup ${WORKSPACE}/.docker 
 
-RUN chmod u+x ${WORKSPACE}/.docker/Dockerfile.partons.mysql && \
-    chmod u+x ${WORKSPACE}/.docker/Dockerfile.partons.startup
-
-# set up database
-RUN apt-get update && \ 
-    apt-get install -y --no-install-recommends dialog && \
-    echo "mysql-server mysql-server/root_password password partons" | debconf-set-selections && \
-    echo "mysql-server mysql-server/root_password_again password partons" | debconf-set-selections && \
-    apt-get install -y --no-install-recommends mariadb-server-10.5 && \ 
-    apt-get clean && \
-    apt-get autoclean && \
-    rm -rf /var/lib/apt/lists/* && \
-    ${WORKSPACE}/.docker/Dockerfile.partons.mysql && \
-    rm ${WORKSPACE}/.docker/Dockerfile.partons.mysql
+RUN chmod u+x ${WORKSPACE}/.docker/Dockerfile.partons.startup 
 
 # locale
 RUN apt-get update && \ 
@@ -97,7 +84,6 @@ RUN apt-get update && \
     apt-get autoclean && \
     rm -rf /var/lib/apt/lists/* 
 
-# start mysql server each time container is used
-# due to issue: https://github.com/docker/for-linux/issues/72 
+# set entry point 
 ENTRYPOINT [".docker/Dockerfile.partons.startup"] 
 
