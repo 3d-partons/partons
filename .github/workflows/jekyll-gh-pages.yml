@@ -1,5 +1,5 @@
 # Sample workflow for building and deploying a Jekyll site to GitHub Pages
-name: hjekyll-gh-pages
+name: jekyll-gh-pages
 
 on:
   # Runs on pushes targeting the default branch
@@ -32,10 +32,12 @@ jobs:
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
         with:
-          source: ./
-          destination: ./_site
+          source: ./docs/
+          destination: ./docs/_site/
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./docs/_site/
 
   # Deployment job
   deploy:
