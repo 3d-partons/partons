@@ -9,15 +9,10 @@
 
     <link rel="stylesheet" href="{{ "/assets/css/style.css?v=" | append: site.github.build_revision | relative_url }}">
 
-    <!--[if lt IE 9]>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
-    <![endif]-->
-
     {% include head-custom.html %}
 
   </head>
   <body>
-
 
     <script type="text/javascript">
       (function(window, document, dataLayerName, id) {
@@ -33,7 +28,9 @@
     <div class="wrapper">
       <header>
          
-        <img src="{{site.logo | relative_url}}" alt="Logo" style="max-width: 40%;" />
+        <img src="{{site.logo | relative_url}}" alt="Logo" style="max-width: 50%;" />
+
+	<br>
 
         <p>{{ site.description | default: site.github.project_tagline }}</p>
 
@@ -47,21 +44,17 @@
         </p>
 
         <p class="view">View GitHub repository:<br>
-          <a href="{{ site.github.repository_url }}">link</a>
+          <a href="https://github.com/3d-partons">link</a>
         </p>
 
         <p class="view">View Docker repository:<br>
-          <a href="https://hub.docker.com/repository/docker/partons/epic/general">link</a>
-        </p>
-
-        <p class="view">View Doxygen documentation:<br>
-          <a href="assets/doxygen/html/annotated.html">link</a>
+          <a href="https://hub.docker.com/repository/docker/partons/partons/general">link</a>
         </p>
 
         <p class="view">View reference article:<br>
-          <a href="https://doi.org/10.1140/epjc/s10052-022-10651-z">doi</a>&nbsp;&nbsp;
-          <a href="https://arxiv.org/abs/2205.01762">arXiv</a>&nbsp;&nbsp; 
-          <a href="https://inspirehep.net/literature/2077191">inspire</a> 
+          <a href="https://doi.org/10.1140/epjc/s10052-018-5948-0">doi</a>&nbsp;&nbsp;
+          <a href="https://arxiv.org/abs/1512.06174">arXiv</a>&nbsp;&nbsp; 
+          <a href="https://inspirehep.net/literature/1410825">inspire</a> 
         </p>
 
       </header>

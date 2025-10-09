@@ -27,6 +27,7 @@ repository: 3d-partons/partons
 url: https://3d-partons.github.io 
 github_username:  pawelsznajder
 show_downloads: false
+logo: /assets/img/partonslogo.jpg
 
 # Build settings
 theme: jekyll-theme-minimal 
