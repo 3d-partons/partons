@@ -609,13 +609,5 @@ std::complex<double> GAM2ProcessModule::getConvolCoeffFunctionValue(
     return result;
 }
 
-void GAM2ProcessModule::setConvolCoeffFunction(
-        const GAM2ConvolCoeffFunctionKinematic& kin,
-        const GAM2ConvolCoeffFunctionResult& result) {
-
-    m_lastCCFKinematics = kin;
-    m_dvcsConvolCoeffFunctionResult = result;
-}
-
 } /* namespace PARTONS */
 

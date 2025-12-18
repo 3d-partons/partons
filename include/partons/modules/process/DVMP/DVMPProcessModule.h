@@ -133,10 +133,11 @@ public:
     virtual PhysicalType<double> CrossSection();
 
     /**
-     * Set manually CFFs.
+     * Gives back a previously computed Compton Form Factor.
+     * @param gpdType CFF type (e.g. H or E).
+     * @return CFF value for the given type.
      */
-    void setConvolCoeffFunction(const DVMPConvolCoeffFunctionKinematic& kin,
-            const DVMPConvolCoeffFunctionResult& result);
+    std::complex<double> getConvolCoeffFunctionValue(GPDType::Type gpdType);
 
 protected:
 
@@ -191,13 +192,6 @@ protected:
     void computeConvolCoeffFunction(const DVMPObservableKinematic& kinematic,
             PolarizationType::Type mesonPolarization,
             const List<GPDType> & gpdType = List<GPDType>());
-
-    /**
-     * Gives back a previously computed Compton Form Factor.
-     * @param gpdType CFF type (e.g. H or E).
-     * @return CFF value for the given type.
-     */
-    std::complex<double> getConvolCoeffFunctionValue(GPDType::Type gpdType);
 };
 
 } /* namespace PARTONS */

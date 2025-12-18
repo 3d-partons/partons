@@ -41,6 +41,20 @@ BaseObjectData& BaseObjectData::addSubModule(const std::string& moduleType,
     return isInserted.first->second;
 }
 
+void BaseObjectData::addSubModule(const BaseObjectData& baseObjectData) {
+
+    std::pair<std::map<std::string, BaseObjectData>::iterator, bool> isInserted;
+
+    isInserted = m_subModules.insert(
+            std::make_pair(baseObjectData.getModuleType(), baseObjectData));
+
+    if (!isInserted.second) {
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << "Failed to insert " << baseObjectData.getModuleType()
+                        << "[" << baseObjectData.getClassName() << "]" << '\n' << toString());
+    }
+}
+
 void BaseObjectData::addParameter(const ElemUtils::Parameter& parameter) {
     m_parameters.add(parameter);
 }
