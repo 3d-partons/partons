@@ -1,8 +1,8 @@
-#ifndef DVMP_OBSERVABLE_KINEMATIC_H
-#define DVMP_OBSERVABLE_KINEMATIC_H
+#ifndef JET_OBSERVABLE_KINEMATIC_H
+#define JET_OBSERVABLE_KINEMATIC_H
 
 /**
- * @file DVMPObservableKinematic.h
+ * @file JETObservableKinematic.h
  * @author: Bryan BERTHOU (SPhN / CEA Saclay)
  * @date 26 November 2014
  * @version 1.0
@@ -15,28 +15,38 @@
 
 #include "../../../utils/type/PhysicalType.h"
 #include "../../../utils/type/PhysicalUnit.h"
-#include "../../MesonType.h"
+#include "../../../beans/JetType.h"
 #include "../ObservableKinematic.h"
 
 namespace PARTONS {
 
 /**
- * @class DVMPObservableKinematic
+ * @class JETObservableKinematic
  *
- * @brief Class representing single observable kinematics for DVMP process.
+ * @brief Class representing single observable kinematics for JET process.
  *
- * This class represents a single observable kinematics for DVMP process (x_{B}, t, \f$Q^{2}\f$, E_{b}, \f$\phi\f$, mesonType).
+ * This class represents a single observable kinematics for JET process (x_{B}, t, z, \f$q_{\perp}^{2}\f$, \f$Q^{2}\f$, E_{b}, \f$\phi\f$).
  */
-class DVMPObservableKinematic: public ObservableKinematic {
+class JETObservableKinematic: public ObservableKinematic {
 
 public:
 
-    static const std::string DVMP_OBSERVABLE_KNEMATIC_CLASS_NAME; ///< Type of the kinematic in XML automation.
+    static const std::string JET_OBSERVABLE_KINEMATIC_CLASS_NAME; ///< Type of the kinematic in XML automation.
 
     /**
      * Parameter name to set variable \f$x_{B}\f$ via configuration methods.
      */
     static const std::string KINEMATIC_PARAMETER_NAME_XB;
+
+    /**
+     * Parameter name to set variable \f$z\f$ via configuration methods.
+     */
+    static const std::string KINEMATIC_PARAMETER_NAME_Z;
+
+    /**
+     * Parameter name to set variable \f$q_{\perp}^{2}\f$ via configuration methods.
+     */
+    static const std::string KINEMATIC_PARAMETER_NAME_QPERP2;
 
     /**
      * Parameter name to set variable \f$Q^{2}\f$ via configuration methods.
@@ -54,14 +64,19 @@ public:
     static const std::string KINEMATIC_PARAMETER_NAME_PHI;
 
     /**
-     * Parameter name to set meson type via configuration methods.
-     */
-    static const std::string KINEMATIC_PARAMETER_NAME_MESON_TYPE;
-
-    /**
      * Parameter name to set unit of variable \f$x_{B}\f$ via configuration methods.
      */
     static const std::string KINEMATIC_PARAMETER_NAME_XB_UNIT;
+
+    /**
+     * Parameter name to set unit of variable \f$z\f$ via configuration methods.
+     */
+    static const std::string KINEMATIC_PARAMETER_NAME_Z_UNIT;
+
+    /**
+     * Parameter name to set unit of variable \f$q_{\perp}^{2}\f$ via configuration methods.
+     */
+    static const std::string KINEMATIC_PARAMETER_NAME_QPERP2_UNIT;
 
     /**
      * Parameter name to set unit of variable \f$Q^{2}\f$ via configuration methods.
@@ -79,60 +94,71 @@ public:
     static const std::string KINEMATIC_PARAMETER_NAME_PHI_UNIT;
 
     /**
+     * Parameter name to set jet type.
+     */
+    static const std::string KINEMATIC_PARAMETER_NAME_JET_TYPE;
+
+    /**
      * Default constructor.
      */
-    DVMPObservableKinematic();
+    JETObservableKinematic();
 
     /**
      * Assignment constructor.
      * @param xB Bjorken variable.
      * @param t Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
+     * @param z Longitudinal "minus” momentum fraction carried by the parton forming the jet.
+     * @param qPerp2 Square of transverse momentum of parton forming the jet.
      * @param Q2 Virtual-photon virtuality (in \f$GeV^{2}\f$).
      * @param E Beam energy (in GeV).
      * @param phi Angle between leptonic and hadronic planes (in radians, Trento convention).
-     * @param mesonType Meson type.
+     * @param jetType Jet type.
      */
-    DVMPObservableKinematic(double xB, double t, double Q2, double E,
-            double phi, MesonType::Type mesonType);
+    JETObservableKinematic(double xB, double t, double z, double qPerp2, double Q2, double E,
+            double phi, JetType::Type jetType);
 
     /**
      * Assignment constructor.
      * @param xB Bjorken variable.
      * @param t Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
+     * @param z Longitudinal "minus” momentum fraction carried by the parton forming the jet.
+     * @param qPerp2 Square of transverse momentum of parton forming the jet.
      * @param Q2 Virtual-photon virtuality (in \f$GeV^{2}\f$).
      * @param E Beam energy (in GeV).
      * @param phi Angle between leptonic and hadronic planes (in radians, Trento convention).
-     * @param mesonType Meson type.
+     * @param jetType Jet type.
      */
-    DVMPObservableKinematic(const PhysicalType<double>& xB,
-            const PhysicalType<double>& t, const PhysicalType<double>& Q2,
-            const PhysicalType<double>& E, const PhysicalType<double>& phi,
-            MesonType::Type mesonType);
+    JETObservableKinematic(const PhysicalType<double>& xB,
+            const PhysicalType<double>& t, const PhysicalType<double>& z,
+            const PhysicalType<double>& qPerp2, const PhysicalType<double>& Q2,
+            const PhysicalType<double>& E, const PhysicalType<double>& phi, JetType::Type jetType);
 
     /**
      * Assignment constructor.
      * @param xB Bjorken variable.
      * @param t Four-momentum transfer squared of hadron target (in \f$GeV^{2}\f$).
+     * @param z Longitudinal "minus” momentum fraction carried by the parton forming the jet.
+     * @param qPerp2 Square of transverse momentum of parton forming the jet.
      * @param Q2 Virtual-photon virtuality (in \f$GeV^{2}\f$).
      * @param E Beam energy (in GeV).
      * @param phi Angle between leptonic and hadronic planes (in radians, Trento convention).
-     * @param mesonType Meson type.
+     * @param jetType Jet type.
      */
-    DVMPObservableKinematic(const ElemUtils::GenericType& xB,
-            const ElemUtils::GenericType& t, const ElemUtils::GenericType& Q2,
-            const ElemUtils::GenericType& E, const ElemUtils::GenericType& phi,
-            MesonType::Type mesonType);
+    JETObservableKinematic(const ElemUtils::GenericType& xB,
+            const ElemUtils::GenericType& t, const ElemUtils::GenericType& z,
+            const ElemUtils::GenericType& qPerp2, const ElemUtils::GenericType& Q2,
+            const ElemUtils::GenericType& E, const ElemUtils::GenericType& phi, JetType::Type jetType);
 
     /**
      * Copy constructor.
      * @param other Object to be copied.
      */
-    DVMPObservableKinematic(const DVMPObservableKinematic &other);
+    JETObservableKinematic(const JETObservableKinematic &other);
 
     /**
      * Destructor.
      */
-    virtual ~DVMPObservableKinematic();
+    virtual ~JETObservableKinematic();
 
     virtual void configure(const ElemUtils::Parameters &parameters);
     virtual std::string toString() const;
@@ -163,12 +189,12 @@ public:
     /**
      * Is equal operator. Checks if values of kinematic variables are the same.
      */
-    bool operator ==(const DVMPObservableKinematic& other) const;
+    bool operator ==(const JETObservableKinematic& other) const;
 
     /**
      * Is different operator. Checks of values of kinematic variables are different.
      */
-    bool operator !=(const DVMPObservableKinematic& other) const;
+    bool operator !=(const JETObservableKinematic& other) const;
 
     //********************************************************
     //*** SETTERS AND GETTERS ********************************
@@ -203,6 +229,36 @@ public:
      * Set four-momentum transfer squared of hadron target.
      */
     void setT(double t, PhysicalUnit::Type unit = PhysicalUnit::GEV2);
+
+    /**
+    * Get longitudinal "minus” momentum fraction carried by the parton forming the jet.
+    */
+    const PhysicalType<double>& getZ() const;
+
+    /**
+     * Set longitudinal "minus” momentum fraction carried by the parton forming the jet.
+     */
+    void setZ(const PhysicalType<double>& z);
+
+    /**
+     * Set longitudinal "minus” momentum fraction carried by the parton forming the jet.
+     */
+    void setZ(double z, PhysicalUnit::Type unit = PhysicalUnit::NONE);
+
+    /**
+     * Get square of transverse momentum of parton forming the jet.
+     */
+    const PhysicalType<double>& getQPerp2() const;
+
+    /**
+     * Set square of transverse momentum of parton forming the jet.
+     */
+    void setQPerp2(const PhysicalType<double>& qPerp2);
+
+    /**
+     * Set square of transverse momentum of parton forming the jet.
+     */
+    void setQPerp2(double qPerp2, PhysicalUnit::Type unit = PhysicalUnit::GEV2);
 
     /**
      * Get virtual-photon virtuality.
@@ -250,14 +306,14 @@ public:
     void setPhi(double phi, PhysicalUnit::Type unit = PhysicalUnit::RAD);
 
     /**
-     * Get meson type.
+     * Get jet type.
      */
-    MesonType::Type getMesonType() const;
+    JetType::Type getJetType() const;
 
     /**
-     * Set meson type.
+     * Set jet type.
      */
-    void setMesonType(MesonType::Type mesonType);
+    void setJetType(JetType::Type jetType);
 
 protected:
 
@@ -276,6 +332,16 @@ private:
     PhysicalType<double> m_t;
 
     /**
+     * Longitudinal "minus” momentum fraction carried by the parton forming the jet.
+     */
+    PhysicalType<double> m_z;
+
+    /**
+     * Square of transverse momentum of parton forming the jet (in \f$GeV^{2}\f$).
+     */
+    PhysicalType<double> m_qPerp2;
+
+    /**
      * Virtual-photon virtuality (in \f$GeV^{2}\f$).
      */
     PhysicalType<double> m_Q2;
@@ -291,23 +357,23 @@ private:
     PhysicalType<double> m_phi;
 
     /**
-     * Meson type.
+     * Jet type.
      */
-    MesonType::Type m_mesonType;
+    JetType::Type m_jetType;
 };
 
 /**
  * Stream operator to serialize class into Packet. See also GPDType::serialize().
  */
 ElemUtils::Packet& operator <<(ElemUtils::Packet& packet,
-        DVMPObservableKinematic& DVMPObservableKinematic);
+        JETObservableKinematic& JETObservableKinematic);
 
 /**
  * Stream operator to retrieve class from Packet. See also GPDType::unserialize().
  */
 ElemUtils::Packet& operator >>(ElemUtils::Packet& packet,
-        DVMPObservableKinematic& DVMPObservableKinematic);
+        JETObservableKinematic& JETObservableKinematic);
 
 } /* namespace PARTONS */
 
-#endif /* DVMP_OBSERVABLE_KINEMATIC_H */
+#endif /* JET_OBSERVABLE_KINEMATIC_H */

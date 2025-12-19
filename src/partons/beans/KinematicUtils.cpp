@@ -8,6 +8,7 @@
 
 #include "../../../include/partons/beans/PolarizationType.h"
 #include "../../../include/partons/beans/MesonType.h"
+#include "../../../include/partons/beans/JetType.h"
 #include "../../../include/partons/utils/type/PhysicalType.h"
 
 namespace PARTONS {
@@ -649,6 +650,121 @@ List<DVMPConvolCoeffFunctionKinematic> KinematicUtils::getDVMPCCFKinematicFromFi
                                 kinematicUnits[4]),
                         MesonType::fromString(kinematicValues[5]),
                         PolarizationType::fromString(kinematicValues[6]));
+
+                kinematic.setIndexId(kinematicList.size());
+
+                //add
+                kinematicList.add(kinematic);
+            }
+        }
+    } else {
+        errorCannotOpenFile(__func__, filePath);
+    }
+
+    return kinematicList;
+}
+
+List<JETConvolCoeffFunctionKinematic> KinematicUtils::getJETCCFKinematicFromFile(
+        const std::string& filePath) {
+
+    //result
+    List<JETConvolCoeffFunctionKinematic> kinematicList;
+
+    //check if readable
+    if (ElemUtils::FileUtils::isReadable(filePath)) {
+
+        //get file (by line)
+        std::vector<std::string> kinematicString =
+                ElemUtils::FileUtils::readByLine(filePath);
+
+        //check if not empty
+        checkEmptyInputFile(__func__, kinematicString, filePath);
+
+        //units
+        std::vector<PhysicalUnit> kinematicUnits;
+
+        //values
+        std::vector<std::string> kinematicValues;
+
+        //single result
+        JETConvolCoeffFunctionKinematic kinematic;
+
+        //loop over lines
+        for (size_t i = 0; i != kinematicString.size(); i++) {
+
+            //process if line is not empty.
+            if (!kinematicString[i].empty()) {
+
+                //trim
+                ElemUtils::StringUtils::trimAll(kinematicString[i]);
+
+                //if first check if with units
+                if (i == 0 && kinematicString[i].at(0) == '#') {
+
+                    //replace
+                    ElemUtils::StringUtils::trimAll(kinematicString[i], "#");
+
+                    //get units
+                    kinematicUnits = getUnitsFromInputFileLine(__func__,
+                            kinematicString[i]);
+
+                    //check size
+                    if (kinematicUnits.size() != 8) {
+                        error(__func__,
+                                ElemUtils::Formatter() << "Line " << i
+                                        << " (units). Missing column value in your kinematic input file : "
+                                        << filePath
+                                        << " ; You must provided 8 column : xi | t | Q2 | MuF2 | MuR2 | mesonType | mesonPolarization");
+                    }
+
+                    //continue
+                    continue;
+
+                }
+
+                //split
+                kinematicValues = ElemUtils::StringUtils::split(
+                        kinematicString[i], '|');
+
+                //check size
+                if (kinematicValues.size() != 8) {
+                    error(__func__,
+                            ElemUtils::Formatter() << "Line " << i
+                                    << ". Missing column value in your kinematic input file : "
+                                    << filePath
+                                    << " ; You must provided 8 column : xi | t | z | qPerp2 | Q2 | MuF2 | MuR2 | jetType");
+                }
+
+                //default
+                if (kinematicUnits.size() == 0) {
+
+                    kinematicUnits.push_back(PhysicalUnit::NONE);
+                    kinematicUnits.push_back(PhysicalUnit::GEV2);
+                    kinematicUnits.push_back(PhysicalUnit::NONE);
+                    kinematicUnits.push_back(PhysicalUnit::GEV2);
+                    kinematicUnits.push_back(PhysicalUnit::GEV2);
+                    kinematicUnits.push_back(PhysicalUnit::GEV2);
+                    kinematicUnits.push_back(PhysicalUnit::GEV2);
+                    kinematicUnits.push_back(PhysicalUnit::UNDEFINED);
+                }
+
+                //single
+                kinematic = JETConvolCoeffFunctionKinematic(
+                        PhysicalType<double>(kinematicValues[0],
+                                kinematicUnits[0]),
+                        PhysicalType<double>(kinematicValues[1],
+                                kinematicUnits[1]),
+                        PhysicalType<double>(kinematicValues[2],
+                                kinematicUnits[2]),
+                        PhysicalType<double>(kinematicValues[3],
+                                kinematicUnits[3]),
+                        PhysicalType<double>(kinematicValues[4],
+                                kinematicUnits[4]),
+                        PhysicalType<double>(kinematicValues[5],
+                                kinematicUnits[5]),
+                        PhysicalType<double>(kinematicValues[6],
+                                kinematicUnits[6]),
+                        JetType::fromString(kinematicValues[7]));
 
                 kinematic.setIndexId(kinematicList.size());
 

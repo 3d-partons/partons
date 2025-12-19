@@ -30,8 +30,6 @@ const std::string DVMPObservableKinematic::KINEMATIC_PARAMETER_NAME_BEAM_ENERGY_
         "E_unit";
 const std::string DVMPObservableKinematic::KINEMATIC_PARAMETER_NAME_PHI_UNIT =
         "phi_unit";
-const std::string DVMPObservableKinematic::KINEMATIC_PARAMETER_NAME_MESON_TYPE_UNIT =
-        "meson_unit";
 
 DVMPObservableKinematic::DVMPObservableKinematic() :
         ObservableKinematic("DVMPObservableKinematic", ChannelType::DVMP), m_xB(

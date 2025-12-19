@@ -11,6 +11,7 @@
 #include "../../include/partons/modules/convol_coeff_function/DVMP/DVMPConvolCoeffFunctionModule.h"
 #include "../../include/partons/modules/convol_coeff_function/TCS/TCSConvolCoeffFunctionModule.h"
 #include "../../include/partons/modules/convol_coeff_function/GAM2/GAM2ConvolCoeffFunctionModule.h"
+#include "../../include/partons/modules/convol_coeff_function/JET/JETConvolCoeffFunctionModule.h"
 #include "../../include/partons/modules/evolution/collinear_distribution/CollinearDistributionEvolutionModule.h"
 #include "../../include/partons/modules/evolution/gpd/GPDEvolutionModule.h"
 #include "../../include/partons/modules/gpd/GPDModule.h"
@@ -247,20 +248,33 @@ GAM2ConvolCoeffFunctionModule* ModuleObjectFactory::newGAM2ConvolCoeffFunctionMo
     return static_cast<GAM2ConvolCoeffFunctionModule*>(newModuleObject(classId));
 }
 
-DDVCSConvolCoeffFunctionModule* ModuleObjectFactory::newDDVCSConvolCoeffFunctionModule(
-        unsigned int classId) {
-    return static_cast<DDVCSConvolCoeffFunctionModule*>(newModuleObject(classId));
-}
-
 GAM2ConvolCoeffFunctionModule* ModuleObjectFactory::newGAM2ConvolCoeffFunctionModule(
-        const std::string& className) {
+            const std::string& className) {
     return static_cast<GAM2ConvolCoeffFunctionModule*>(newModuleObject(
             className));
 }
 
 DDVCSConvolCoeffFunctionModule* ModuleObjectFactory::newDDVCSConvolCoeffFunctionModule(
+        unsigned int classId) {
+    return static_cast<DDVCSConvolCoeffFunctionModule*>(newModuleObject(classId));
+}
+
+
+DDVCSConvolCoeffFunctionModule* ModuleObjectFactory::newDDVCSConvolCoeffFunctionModule(
         const std::string& className) {
     return static_cast<DDVCSConvolCoeffFunctionModule*>(newModuleObject(
+            className));
+}
+
+JETConvolCoeffFunctionModule* ModuleObjectFactory::newJETConvolCoeffFunctionModule(
+        unsigned int classId) {
+    return static_cast<JETConvolCoeffFunctionModule*>(newModuleObject(classId));
+}
+
+
+JETConvolCoeffFunctionModule* ModuleObjectFactory::newJETConvolCoeffFunctionModule(
+            const std::string& className) {
+    return static_cast<JETConvolCoeffFunctionModule*>(newModuleObject(
             className));
 }
 

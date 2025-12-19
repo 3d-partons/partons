@@ -11,6 +11,7 @@
 #include "../../include/partons/services/DVCSObservableService.h"
 #include "../../include/partons/services/DVMPConvolCoeffFunctionService.h"
 #include "../../include/partons/services/DVMPObservableService.h"
+#include "../../include/partons/services/JETConvolCoeffFunctionService.h"
 #include "../../include/partons/services/GPDService.h"
 #include "../../include/partons/services/hash_sum/CryptographicHashService.h"
 #include "../../include/partons/services/TCSConvolCoeffFunctionService.h"
@@ -76,6 +77,11 @@ DVMPConvolCoeffFunctionService* ServiceObjectRegistry::getDVMPConvolCoeffFunctio
 DDVCSConvolCoeffFunctionService* ServiceObjectRegistry::getDDVCSConvolCoeffFunctionService() const {
     return static_cast<DDVCSConvolCoeffFunctionService*>(get(
             DDVCSConvolCoeffFunctionService::classId));
+}
+
+JETConvolCoeffFunctionService* ServiceObjectRegistry::getJETConvolCoeffFunctionService() const {
+    return static_cast<JETConvolCoeffFunctionService*>(get(
+            JETConvolCoeffFunctionService::classId));
 }
 
 DVCSObservableService* ServiceObjectRegistry::getDVCSObservableService() const {

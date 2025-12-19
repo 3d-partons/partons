@@ -1,4 +1,4 @@
-#include "../../../../../include/partons/modules/convol_coeff_function/TCS/TCSConvolCoeffFunctionModule.h"
+#include "../../../../../include/partons/modules/convol_coeff_function/JET/JETConvolCoeffFunctionModule.h"
 
 #include <ElementaryUtils/logger/CustomException.h>
 #include <ElementaryUtils/parameters/GenericType.h>
@@ -12,9 +12,10 @@
 #include "../../../../../include/partons/beans/Result.h"
 #include "../../../../../include/partons/modules/gpd/GPDModule.h"
 #include "../../../../../include/partons/Partons.h"
-#include "../../../../../include/partons/services/TCSConvolCoeffFunctionService.h"
+#include "../../../../../include/partons/services/JETConvolCoeffFunctionService.h"
 #include "../../../../../include/partons/ServiceObjectRegistry.h"
 #include "../../../../../include/partons/ServiceObjectTyped.h"
+#include "../../../../../include/partons/beans/JetType.h"
 #include "../../../../../include/partons/modules/gpd/GPDGK16.h"
 #include "../../../../../include/partons/utils/type/PhysicalType.h"
 #include "../../../../../include/partons/utils/type/PhysicalUnit.h"
@@ -22,50 +23,50 @@
 
 namespace PARTONS {
 
-const std::string TCSConvolCoeffFunctionModule::TCS_CONVOL_COEFF_FUNCTION_MODULE_CLASS_NAME =
-        "TCSConvolCoeffFunctionModule";
+const std::string JETConvolCoeffFunctionModule::JET_CONVOL_COEFF_FUNCTION_MODULE_CLASS_NAME =
+        "JETConvolCoeffFunctionModule";
 
-TCSConvolCoeffFunctionModule::TCSConvolCoeffFunctionModule(
+JETConvolCoeffFunctionModule::JETConvolCoeffFunctionModule(
         const std::string &className) :
-        ConvolCoeffFunctionModule(className, ChannelType::TCS), m_Q2Prim(0.), m_qcdOrderType(
-                PerturbativeQCDOrderType::UNDEFINED) {
+        ConvolCoeffFunctionModule(className, ChannelType::JET), m_z(0.), m_qPerp2(0.), m_Q2(0.),
+                m_jetType(JetType::UNDEFINED), m_qcdOrderType(PerturbativeQCDOrderType::UNDEFINED) {
 }
 
-TCSConvolCoeffFunctionModule::TCSConvolCoeffFunctionModule(
-        const TCSConvolCoeffFunctionModule &other) :
-        ConvolCoeffFunctionModule(other), m_Q2Prim(other.m_Q2Prim), m_qcdOrderType(
-                other.m_qcdOrderType) {
+JETConvolCoeffFunctionModule::JETConvolCoeffFunctionModule(
+        const JETConvolCoeffFunctionModule &other) :
+        ConvolCoeffFunctionModule(other), m_z(other.m_z), m_qPerp2(other.m_qPerp2), m_Q2(other.m_Q2),
+                m_jetType(other.m_jetType), m_qcdOrderType(other.m_qcdOrderType) {
 
     m_listOfCFFComputeFunctionAvailable =
             other.m_listOfCFFComputeFunctionAvailable;
 }
 
-TCSConvolCoeffFunctionModule::~TCSConvolCoeffFunctionModule() {
+JETConvolCoeffFunctionModule::~JETConvolCoeffFunctionModule() {
 }
 
-std::string TCSConvolCoeffFunctionModule::toString() const {
-    return ConvolCoeffFunctionModule<TCSConvolCoeffFunctionKinematic,
-            TCSConvolCoeffFunctionResult>::toString();
+std::string JETConvolCoeffFunctionModule::toString() const {
+    return ConvolCoeffFunctionModule<JETConvolCoeffFunctionKinematic,
+            JETConvolCoeffFunctionResult>::toString();
 }
 
-void TCSConvolCoeffFunctionModule::resolveObjectDependencies() {
-    ConvolCoeffFunctionModule<TCSConvolCoeffFunctionKinematic,
-            TCSConvolCoeffFunctionResult>::resolveObjectDependencies();
+void JETConvolCoeffFunctionModule::resolveObjectDependencies() {
+    ConvolCoeffFunctionModule<JETConvolCoeffFunctionKinematic,
+            JETConvolCoeffFunctionResult>::resolveObjectDependencies();
 }
 
-void TCSConvolCoeffFunctionModule::run() {
+void JETConvolCoeffFunctionModule::run() {
 
     try {
 
         //get service
-        TCSConvolCoeffFunctionService* pService =
-                Partons::getInstance()->getServiceObjectRegistry()->getTCSConvolCoeffFunctionService();
+        JETConvolCoeffFunctionService* pService =
+                Partons::getInstance()->getServiceObjectRegistry()->getJETConvolCoeffFunctionService();
 
         //run until empty
         while (!(pService->isEmptyTaskQueue())) {
 
             //kinematics
-            TCSConvolCoeffFunctionKinematic kinematic;
+            JETConvolCoeffFunctionKinematic kinematic;
 
             //list of GPD types
             List<GPDType> gpdTypeList;
@@ -81,7 +82,7 @@ void TCSConvolCoeffFunctionModule::run() {
                             << " " << kinematic.toString());
 
             //object to be returned
-            TCSConvolCoeffFunctionResult result = compute(kinematic,
+            JETConvolCoeffFunctionResult result = compute(kinematic,
                     gpdTypeList);
 
             //helpful to sort later if kinematic is coming from database
@@ -99,12 +100,12 @@ void TCSConvolCoeffFunctionModule::run() {
     }
 }
 
-void TCSConvolCoeffFunctionModule::configure(
+void JETConvolCoeffFunctionModule::configure(
         const ElemUtils::Parameters &parameters) {
 
     //run for mother
-    ConvolCoeffFunctionModule<TCSConvolCoeffFunctionKinematic,
-            TCSConvolCoeffFunctionResult>::configure(parameters);
+    ConvolCoeffFunctionModule<JETConvolCoeffFunctionKinematic,
+            JETConvolCoeffFunctionResult>::configure(parameters);
 
     //check if available
     if (parameters.isAvailable(
@@ -132,14 +133,14 @@ void TCSConvolCoeffFunctionModule::configure(
     }
 }
 
-void TCSConvolCoeffFunctionModule::prepareSubModules(
+void JETConvolCoeffFunctionModule::prepareSubModules(
         const std::map<std::string, BaseObjectData>& subModulesData) {
-    ConvolCoeffFunctionModule<TCSConvolCoeffFunctionKinematic,
-            TCSConvolCoeffFunctionResult>::prepareSubModules(subModulesData);
+    ConvolCoeffFunctionModule<JETConvolCoeffFunctionKinematic,
+            JETConvolCoeffFunctionResult>::prepareSubModules(subModulesData);
 }
 
-TCSConvolCoeffFunctionResult TCSConvolCoeffFunctionModule::compute(
-        const TCSConvolCoeffFunctionKinematic& kinematic,
+JETConvolCoeffFunctionResult JETConvolCoeffFunctionModule::compute(
+        const JETConvolCoeffFunctionKinematic& kinematic,
         const List<GPDType>& gpdType) {
 
     //reset kinematics (virtuality)
@@ -152,7 +153,7 @@ TCSConvolCoeffFunctionResult TCSConvolCoeffFunctionModule::compute(
     isModuleWellConfigured();
 
     //object to be returned
-    TCSConvolCoeffFunctionResult result(kinematic);
+    JETConvolCoeffFunctionResult result(kinematic);
 
     //loop over GPD types
     for (size_t i = 0; i < gpdType.size(); i++) {
@@ -186,14 +187,14 @@ TCSConvolCoeffFunctionResult TCSConvolCoeffFunctionModule::compute(
     return result;
 }
 
-List<GPDType> TCSConvolCoeffFunctionModule::getListOfAvailableGPDTypeForComputation() const {
+List<GPDType> JETConvolCoeffFunctionModule::getListOfAvailableGPDTypeForComputation() const {
 
     //object to be returned
     List<GPDType> listOfAvailableGPDTypeForComputation;
 
     //iterator
     std::map<GPDType::Type,
-            std::complex<double> (TCSConvolCoeffFunctionModule::*)()>::const_iterator it;
+            std::complex<double> (JETConvolCoeffFunctionModule::*)()>::const_iterator it;
 
     //fill list
     for (it = m_listOfCFFComputeFunctionAvailable.begin();
@@ -218,22 +219,22 @@ List<GPDType> TCSConvolCoeffFunctionModule::getListOfAvailableGPDTypeForComputat
     return listOfAvailableGPDTypeForComputation;
 }
 
-std::complex<double> TCSConvolCoeffFunctionModule::computeUnpolarized() {
+std::complex<double> JETConvolCoeffFunctionModule::computeUnpolarized() {
     throw ElemUtils::CustomException(getClassName(), __func__,
             "Check your child implementation : " + getClassName());
 }
 
-std::complex<double> TCSConvolCoeffFunctionModule::computePolarized() {
+std::complex<double> JETConvolCoeffFunctionModule::computePolarized() {
     throw ElemUtils::CustomException(getClassName(), __func__,
             "Check your child implementation : " + getClassName());
 }
 
-std::complex<double> TCSConvolCoeffFunctionModule::computeCFF() {
+std::complex<double> JETConvolCoeffFunctionModule::computeCFF() {
     throw ElemUtils::CustomException(getClassName(), __func__,
             "Check your child implementation : " + getClassName());
 }
 
-std::vector<double> TCSConvolCoeffFunctionModule::test() {
+std::vector<double> JETConvolCoeffFunctionModule::test() {
 
     std::vector<double> result;
 
@@ -247,9 +248,9 @@ std::vector<double> TCSConvolCoeffFunctionModule::test() {
         PerturbativeQCDOrderType::LO);
     configure(parameters);
 
-    convolCoeffFunctionResultToStdVector(compute(TCSConvolCoeffFunctionKinematic(0.2, -0.1, 4., 4., 4.),
+    convolCoeffFunctionResultToStdVector(compute(JETConvolCoeffFunctionKinematic(0.2, -0.1, 0.2, 2., 4., 4., 4., JetType::UP),
                         getListOfAvailableGPDTypeForComputation()), result);
-    convolCoeffFunctionResultToStdVector(compute(TCSConvolCoeffFunctionKinematic(0.02, -0.5, 16., 16., 16.),
+    convolCoeffFunctionResultToStdVector(compute(JETConvolCoeffFunctionKinematic(0.01, -0.3, 0.6, 1., 40., 40., 40., JetType::GLUON),
                         getListOfAvailableGPDTypeForComputation()), result);
 
     PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
@@ -259,39 +260,58 @@ std::vector<double> TCSConvolCoeffFunctionModule::test() {
     return result;
 }
 
-void TCSConvolCoeffFunctionModule::setKinematics(
-        const TCSConvolCoeffFunctionKinematic& kinematic) {
+void JETConvolCoeffFunctionModule::setKinematics(
+        const JETConvolCoeffFunctionKinematic& kinematic) {
 
-    ConvolCoeffFunctionModule<TCSConvolCoeffFunctionKinematic,
-            TCSConvolCoeffFunctionResult>::setKinematics(kinematic);
+    ConvolCoeffFunctionModule<JETConvolCoeffFunctionKinematic,
+            JETConvolCoeffFunctionResult>::setKinematics(kinematic);
 
-    m_Q2Prim =
-            kinematic.getQ2Prim().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
+    m_z = kinematic.getZ().makeSameUnitAs(PhysicalUnit::NONE).getValue();
+    m_qPerp2 = kinematic.getQPerp2().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
+    m_Q2 = kinematic.getQ2().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
+    m_jetType = kinematic.getJetType();
 }
 
-PerturbativeQCDOrderType::Type TCSConvolCoeffFunctionModule::getQCDOrderType() const {
+PerturbativeQCDOrderType::Type JETConvolCoeffFunctionModule::getQCDOrderType() const {
     return m_qcdOrderType;
 }
 
-void TCSConvolCoeffFunctionModule::setQCDOrderType(
+void JETConvolCoeffFunctionModule::setQCDOrderType(
         PerturbativeQCDOrderType::Type qcdOrderType) {
     m_qcdOrderType = qcdOrderType;
 }
 
-void TCSConvolCoeffFunctionModule::initModule() {
-    ConvolCoeffFunctionModule<TCSConvolCoeffFunctionKinematic,
-            TCSConvolCoeffFunctionResult>::initModule();
+void JETConvolCoeffFunctionModule::initModule() {
+    ConvolCoeffFunctionModule<JETConvolCoeffFunctionKinematic,
+            JETConvolCoeffFunctionResult>::initModule();
 }
 
-void TCSConvolCoeffFunctionModule::isModuleWellConfigured() {
+void JETConvolCoeffFunctionModule::isModuleWellConfigured() {
 
-    ConvolCoeffFunctionModule<TCSConvolCoeffFunctionKinematic,
-            TCSConvolCoeffFunctionResult>::isModuleWellConfigured();
+    ConvolCoeffFunctionModule<JETConvolCoeffFunctionKinematic,
+            JETConvolCoeffFunctionResult>::isModuleWellConfigured();
 
-    if (m_Q2Prim < 0.) {
+    if (m_z < 0. || m_z > 1.) {
         warn(__func__,
-                ElemUtils::Formatter() << "Input value of Q2' = " << m_Q2Prim
+                ElemUtils::Formatter() << "Input value of z = " << m_z
+                        << " is not between 0. and 1.");
+    }
+
+    if (m_qPerp2 < 0.) {
+        warn(__func__,
+                ElemUtils::Formatter() << "Input value of qPerp2 = " << m_qPerp2
                         << " is not > 0.");
+    }
+
+    if (m_Q2 < 0.) {
+        warn(__func__,
+                ElemUtils::Formatter() << "Input value of Q2 = " << m_Q2
+                        << " is not > 0.");
+    }
+
+    if (m_jetType == JetType::UNDEFINED) {
+        warn(__func__,
+                ElemUtils::Formatter() << "Jet type is undefined");
     }
 }
 

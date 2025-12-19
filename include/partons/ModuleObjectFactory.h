@@ -66,6 +66,7 @@ class TCSScalesModule;
 class TCSXiConverterModule;
 class DVMPXiConverterModule;
 class GAM2XiConverterModule;
+class JETConvolCoeffFunctionModule;
 } /* namespace PARTONS */
 
 namespace PARTONS {
@@ -252,6 +253,21 @@ public:
      * @return DDVCSConvolCoeffFunctionModule pointer.
      */
     DDVCSConvolCoeffFunctionModule* newDDVCSConvolCoeffFunctionModule(
+            const std::string &className);
+
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a JETConvolCoeffFunctionModule.
+     * @param classId Unique identifier of last child class.
+     * @return JETConvolCoeffFunctionModule pointer.
+     */
+    JETConvolCoeffFunctionModule* newJETConvolCoeffFunctionModule(
+            unsigned int classId);
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a JETConvolCoeffFunctionModule.
+     * @param className Name of last child class.
+     * @return JETConvolCoeffFunctionModule pointer.
+     */
+    JETConvolCoeffFunctionModule* newJETConvolCoeffFunctionModule(
             const std::string &className);
 
     /**

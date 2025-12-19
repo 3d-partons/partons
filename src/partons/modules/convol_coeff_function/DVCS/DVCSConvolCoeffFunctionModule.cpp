@@ -287,7 +287,7 @@ void DVCSConvolCoeffFunctionModule::isModuleWellConfigured() {
     ConvolCoeffFunctionModule<DVCSConvolCoeffFunctionKinematic,
             DVCSConvolCoeffFunctionResult>::isModuleWellConfigured();
 
-    if (m_Q2 < 0) {
+    if (m_Q2 < 0.) {
         warn(__func__,
                 ElemUtils::Formatter() << "Input value of Q2 = " << m_Q2
                         << " is not > 0.");

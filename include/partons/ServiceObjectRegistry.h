@@ -25,6 +25,7 @@ class GPDService;
 class ServiceObject;
 class TCSConvolCoeffFunctionService;
 class TCSObservableService;
+class JETConvolCoeffFunctionService;
 } /* namespace PARTONS */
 
 namespace PARTONS {
@@ -47,6 +48,7 @@ public:
     TCSConvolCoeffFunctionService* getTCSConvolCoeffFunctionService() const;
     DVMPConvolCoeffFunctionService* getDVMPConvolCoeffFunctionService() const;
     DDVCSConvolCoeffFunctionService* getDDVCSConvolCoeffFunctionService() const;
+    JETConvolCoeffFunctionService* getJETConvolCoeffFunctionService() const;
     DVCSObservableService* getDVCSObservableService() const;
     TCSObservableService* getTCSObservableService() const;
     DVMPObservableService* getDVMPObservableService() const;
