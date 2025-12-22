@@ -126,6 +126,7 @@ protected:
     double m_qPerp2; ///< Square of transverse momentum of parton forming the jet (in  GeV^2$).
     double m_Q2; ///< Virtuality of the photon (in GeV^2).
     JetType::Type m_jetType; ///< Jet type.
+    JetCFFType::Type m_jetCFFType; ///< Jet CFF type.
 
     PerturbativeQCDOrderType::Type m_qcdOrderType; ///< Order of the perturbative QCD computation.
 };

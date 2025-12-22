@@ -1,5 +1,5 @@
-#ifndef JET_TYPE_H
-#define JET_TYPE_H
+#ifndef JET_CFF_TYPE_H
+#define JET_CFF_TYPE_H
 
 /**
  * @file PartonType.h
@@ -19,13 +19,13 @@ class Packet;
 namespace PARTONS {
 
 /**
- * @class JetType
+ * @class JetCFFType
  *
  * @brief Definition of enumeration values for jet types.
  *
- * This class defines a set of enumeration values that are used to distinguish between jet types. In addition, a declared object of this class is always associated to one meson type (see PartonType::m_type), so member functions can act on it.
+ * This class defines a set of enumeration values that are used to distinguish between jet CFF types. In addition, a declared object of this class is always associated to one meson type (see PartonType::m_type), so member functions can act on it.
  */
-class JetType {
+class JetCFFType {
 
 public:
 
@@ -33,31 +33,30 @@ public:
      * Definition of enumerate values corresponding to parton types.
      */
     enum Type {
-        UNDEFINED = 0,  //!< Undefined type.
+        UNDEFINED = 0,   //!< Undefined type.
 
-        GLUON = 1,      //!<  \f$g\f$
-        UP = 2,         //!<  \f$u\f$
-        DOWN = 3,       //!<  \f$d\f$
-        STRANGE = 4,    //!<  \f$s\f$
-        CHARM = 5       //!<  \f$c\f$
+        LL = 1,          //!< \f$...\f$
+        TL = 2,          //!<  \f$...\f$
+        TT1 = 3,         //!<  \f$...\f$
+        TT2 = 4          //!<  \f$...\f$
     };
 
     /**
      * Default constructor.
      */
-    JetType();
+    JetCFFType();
 
     /**
      * Assignment constructor.
      * @param type Type to be assigned.
      */
-    JetType(Type type);
+    JetCFFType(Type type);
 
     /**
      * Copy constructor.
      * @param other Object to be copied.
      */
-    JetType(const JetType &other);
+    JetCFFType(const JetCFFType &other);
 
     /**
      * Automatic cast to enum.
@@ -88,14 +87,14 @@ public:
      * @param other Right hand value.
      * @return True if the value of left operand is less than the value of right operand, otherwise false.
      */
-    bool operator <(const JetType &other) const;
+    bool operator <(const JetCFFType &other) const;
 
     /**
      * Try to match meson type from given string.
      * @param mesonTypeStr String to be matched.
      * @return Matched type or PartonType::UNDEFINED if unable to match.
      */
-    static JetType::Type fromString(const std::string & mesonTypeStr);
+    static JetCFFType::Type fromString(const std::string & mesonTypeStr);
 
     //********************************************************
     //*** SETTERS AND GETTERS ********************************
@@ -104,7 +103,7 @@ public:
     /**
      * Get type being assigned to a declared object of this class.
      */
-    JetType::Type getType() const;
+    JetCFFType::Type getType() const;
 
     /**
      * Assign type to a declared object of this class.
@@ -116,20 +115,20 @@ private:
     /**
      * Type associated to a declared object of this class.
      */
-    JetType::Type m_type;
+    JetCFFType::Type m_type;
 };
 
 /**
  * Stream operator to serialize class into Packet. See also PartonType::serialize().
  */
-ElemUtils::Packet& operator <<(ElemUtils::Packet& packet, JetType& mesonType);
+ElemUtils::Packet& operator <<(ElemUtils::Packet& packet, JetCFFType& mesonType);
 
 /**
  * Stream operator to retrieve class from Packet. See also PartonType::unserialize().
  */
-ElemUtils::Packet& operator >>(ElemUtils::Packet& packet, JetType& mesonType);
+ElemUtils::Packet& operator >>(ElemUtils::Packet& packet, JetCFFType& mesonType);
 
 } /* namespace PARTONS */
 
-#endif /* JET_TYPE_H */
+#endif /* JET_CFF_TYPE_H */
 

@@ -16,6 +16,7 @@
 #include "../../../utils/type/PhysicalType.h"
 #include "../../../utils/type/PhysicalUnit.h"
 #include "../../../beans/JetType.h"
+#include "../../../beans/JetCFFType.h"
 #include "../ConvolCoeffFunctionKinematic.h"
 
 namespace PARTONS {
@@ -34,6 +35,11 @@ public:
     static const std::string JET_CONVOL_COEFF_FUNCTION_KINEMATIC_CLASS_NAME; ///< Type of the kinematic in XML automation.
 
     /**
+     * Parameter name to set meson polarization via configuration methods.
+     */
+    static const std::string KINEMATIC_PARAMETER_NAME_JET_CFF_TYPE;
+
+    /**
      * Default constructor.
      */
     JETConvolCoeffFunctionKinematic();
@@ -48,9 +54,10 @@ public:
      * @param MuF2 Factorization scale squared (in \f$GeV^{2}\f$).
      * @param MuR2 Renormalization scale squared (in \f$GeV^{2}\f$).
      * @param jetType Jet type.
+     * @param jetCFFType CFF type.
      */
     JETConvolCoeffFunctionKinematic(double xi, double t, double z, double qPerp2, double Q2,
-            double MuF2, double MuR2, JetType::Type jetType);
+            double MuF2, double MuR2, JetType::Type jetType, JetCFFType::Type jetCFFType);
 
     /**
      * Assignment constructor.
@@ -62,11 +69,12 @@ public:
      * @param MuF2 Factorization scale squared (in \f$GeV^{2}\f$).
      * @param MuR2 Renormalization scale squared (in \f$GeV^{2}\f$).
      * @param jetType Jet type.
+     * @param jetCFFType CFF type.
      */
     JETConvolCoeffFunctionKinematic(const PhysicalType<double> &xi,
             const PhysicalType<double> &t, const PhysicalType<double> &z, const PhysicalType<double> &qPerp2,
             const PhysicalType<double> &Q2, const PhysicalType<double> &MuF2, const PhysicalType<double> &MuR2,
-            JetType::Type jetType);
+            JetType::Type jetType, JetCFFType::Type jetCFFType);
 
     /**
      * Assignment constructor.
@@ -78,6 +86,7 @@ public:
      * @param MuF2 Factorization scale squared (in \f$GeV^{2}\f$).
      * @param MuR2 Renormalization scale squared (in \f$GeV^{2}\f$).
      * @param jetType Jet type.
+     * @param jetCFFType CFF type.
      */
     JETConvolCoeffFunctionKinematic(const ElemUtils::GenericType &xi,
             const ElemUtils::GenericType &t,
@@ -86,7 +95,7 @@ public:
             const ElemUtils::GenericType &Q2,
             const ElemUtils::GenericType &MuF2,
             const ElemUtils::GenericType &MuR2,
-            JetType::Type jetType);
+            JetType::Type jetType, JetCFFType::Type jetCFFType);
 
     /**
      * Copy constructor.
@@ -195,6 +204,16 @@ public:
      */
     void setJetType(JetType::Type jetType);
 
+    /**
+     * Get jet CFF type.
+     */
+    JetCFFType::Type getJetCFFType() const;
+
+    /**
+     * Set jet CFF type.
+     */
+    void setJetCFFType(JetCFFType::Type jetCFFType);
+
 protected:
 
     virtual void updateHashSum() const;
@@ -220,6 +239,11 @@ private:
      * Jet type.
      */
     JetType::Type m_jetType;
+
+    /**
+     * Jet CFF type.
+     */
+    JetCFFType::Type m_jetCFFType;
 };
 
 /**

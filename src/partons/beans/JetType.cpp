@@ -40,6 +40,9 @@ std::string JetType::toString() const {
     case STRANGE:
         return "s";
         break;
+    case CHARM:
+        return "c";
+        break;
 
     default:
         return "UNDEFINED";
@@ -66,6 +69,8 @@ JetType::Type JetType::fromString(const std::string& partonTypeStr) {
         partonType = JetType::DOWN;
     } else if (ElemUtils::StringUtils::equals(partonTypeStr, "s")) {
         partonType = JetType::STRANGE;
+    } else if (ElemUtils::StringUtils::equals(partonTypeStr, "c")) {
+        partonType = JetType::CHARM;
     }
 
     return partonType;

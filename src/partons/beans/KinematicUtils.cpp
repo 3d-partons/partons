@@ -709,12 +709,12 @@ List<JETConvolCoeffFunctionKinematic> KinematicUtils::getJETCCFKinematicFromFile
                             kinematicString[i]);
 
                     //check size
-                    if (kinematicUnits.size() != 8) {
+                    if (kinematicUnits.size() != 9) {
                         error(__func__,
                                 ElemUtils::Formatter() << "Line " << i
                                         << " (units). Missing column value in your kinematic input file : "
                                         << filePath
-                                        << " ; You must provided 8 column : xi | t | Q2 | MuF2 | MuR2 | mesonType | mesonPolarization");
+                                        << " ; You must provided 9 column : xi | t | z | qPerp2 | Q2 | MuF2 | MuR2 | jetType | cffType");
                     }
 
                     //continue
@@ -727,12 +727,12 @@ List<JETConvolCoeffFunctionKinematic> KinematicUtils::getJETCCFKinematicFromFile
                         kinematicString[i], '|');
 
                 //check size
-                if (kinematicValues.size() != 8) {
+                if (kinematicValues.size() != 9) {
                     error(__func__,
                             ElemUtils::Formatter() << "Line " << i
                                     << ". Missing column value in your kinematic input file : "
                                     << filePath
-                                    << " ; You must provided 8 column : xi | t | z | qPerp2 | Q2 | MuF2 | MuR2 | jetType");
+                                    << " ; You must provided 8 column : xi | t | z | qPerp2 | Q2 | MuF2 | MuR2 | jetType | cffType");
                 }
 
                 //default
@@ -745,6 +745,7 @@ List<JETConvolCoeffFunctionKinematic> KinematicUtils::getJETCCFKinematicFromFile
                     kinematicUnits.push_back(PhysicalUnit::GEV2);
                     kinematicUnits.push_back(PhysicalUnit::GEV2);
                     kinematicUnits.push_back(PhysicalUnit::GEV2);
+                    kinematicUnits.push_back(PhysicalUnit::UNDEFINED);
                     kinematicUnits.push_back(PhysicalUnit::UNDEFINED);
                 }
 
@@ -764,7 +765,8 @@ List<JETConvolCoeffFunctionKinematic> KinematicUtils::getJETCCFKinematicFromFile
                                 kinematicUnits[5]),
                         PhysicalType<double>(kinematicValues[6],
                                 kinematicUnits[6]),
-                        JetType::fromString(kinematicValues[7]));
+                        JetType::fromString(kinematicValues[7]),
+                        JetCFFType::fromString(kinematicValues[8]));
 
                 kinematic.setIndexId(kinematicList.size());
 

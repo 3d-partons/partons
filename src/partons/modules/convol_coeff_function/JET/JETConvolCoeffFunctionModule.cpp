@@ -29,13 +29,13 @@ const std::string JETConvolCoeffFunctionModule::JET_CONVOL_COEFF_FUNCTION_MODULE
 JETConvolCoeffFunctionModule::JETConvolCoeffFunctionModule(
         const std::string &className) :
         ConvolCoeffFunctionModule(className, ChannelType::JET), m_z(0.), m_qPerp2(0.), m_Q2(0.),
-                m_jetType(JetType::UNDEFINED), m_qcdOrderType(PerturbativeQCDOrderType::UNDEFINED) {
+                m_jetType(JetType::UNDEFINED), m_jetCFFType(JetCFFType::UNDEFINED), m_qcdOrderType(PerturbativeQCDOrderType::UNDEFINED) {
 }
 
 JETConvolCoeffFunctionModule::JETConvolCoeffFunctionModule(
         const JETConvolCoeffFunctionModule &other) :
         ConvolCoeffFunctionModule(other), m_z(other.m_z), m_qPerp2(other.m_qPerp2), m_Q2(other.m_Q2),
-                m_jetType(other.m_jetType), m_qcdOrderType(other.m_qcdOrderType) {
+                m_jetType(other.m_jetType), m_jetCFFType(other.m_jetCFFType), m_qcdOrderType(other.m_qcdOrderType) {
 
     m_listOfCFFComputeFunctionAvailable =
             other.m_listOfCFFComputeFunctionAvailable;
@@ -248,9 +248,9 @@ std::vector<double> JETConvolCoeffFunctionModule::test() {
         PerturbativeQCDOrderType::LO);
     configure(parameters);
 
-    convolCoeffFunctionResultToStdVector(compute(JETConvolCoeffFunctionKinematic(0.2, -0.1, 0.2, 2., 4., 4., 4., JetType::UP),
+    convolCoeffFunctionResultToStdVector(compute(JETConvolCoeffFunctionKinematic(0.2, -0.1, 0.2, 2., 4., 4., 4., JetType::UP, JetCFFType::LL),
                         getListOfAvailableGPDTypeForComputation()), result);
-    convolCoeffFunctionResultToStdVector(compute(JETConvolCoeffFunctionKinematic(0.01, -0.3, 0.6, 1., 40., 40., 40., JetType::GLUON),
+    convolCoeffFunctionResultToStdVector(compute(JETConvolCoeffFunctionKinematic(0.01, -0.3, 0.6, 1., 40., 40., 40., JetType::GLUON, JetCFFType::TT1),
                         getListOfAvailableGPDTypeForComputation()), result);
 
     PARTONS::Partons::getInstance()->getModuleObjectFactory()->updateModulePointerReference(
@@ -270,6 +270,7 @@ void JETConvolCoeffFunctionModule::setKinematics(
     m_qPerp2 = kinematic.getQPerp2().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
     m_Q2 = kinematic.getQ2().makeSameUnitAs(PhysicalUnit::GEV2).getValue();
     m_jetType = kinematic.getJetType();
+    m_jetCFFType = kinematic.getJetCFFType();
 }
 
 PerturbativeQCDOrderType::Type JETConvolCoeffFunctionModule::getQCDOrderType() const {
@@ -312,6 +313,11 @@ void JETConvolCoeffFunctionModule::isModuleWellConfigured() {
     if (m_jetType == JetType::UNDEFINED) {
         warn(__func__,
                 ElemUtils::Formatter() << "Jet type is undefined");
+    }
+
+    if (m_jetCFFType == JetCFFType::UNDEFINED) {
+        warn(__func__,
+                ElemUtils::Formatter() << "Jet CFF type is undefined");
     }
 }
 
