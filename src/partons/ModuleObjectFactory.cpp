@@ -24,6 +24,7 @@
 #include "../../include/partons/modules/process/DVCS/DVCSProcessModule.h"
 #include "../../include/partons/modules/process/DVMP/DVMPProcessModule.h"
 #include "../../include/partons/modules/process/GAM2/GAM2ProcessModule.h"
+#include "../../include/partons/modules/process/JET/JETProcessModule.h"
 #include "../../include/partons/modules/process/TCS/TCSProcessModule.h"
 #include "../../include/partons/modules/running_alpha_strong/RunningAlphaStrongModule.h"
 #include "../../include/partons/modules/scales/DDVCS/DDVCSScalesModule.h"
@@ -31,11 +32,13 @@
 #include "../../include/partons/modules/scales/TCS/TCSScalesModule.h"
 #include "../../include/partons/modules/scales/DVMP/DVMPScalesModule.h"
 #include "../../include/partons/modules/scales/GAM2/GAM2ScalesModule.h"
+#include "../../include/partons/modules/scales/JET/JETScalesModule.h"
 #include "../../include/partons/modules/xi_converter/DDVCS/DDVCSXiConverterModule.h"
 #include "../../include/partons/modules/xi_converter/DVCS/DVCSXiConverterModule.h"
 #include "../../include/partons/modules/xi_converter/DVMP/DVMPXiConverterModule.h"
 #include "../../include/partons/modules/xi_converter/TCS/TCSXiConverterModule.h"
 #include "../../include/partons/modules/xi_converter/GAM2/GAM2XiConverterModule.h"
+#include "../../include/partons/modules/xi_converter/JET/JETXiConverterModule.h"
 
 namespace PARTONS {
 
@@ -328,6 +331,16 @@ DDVCSProcessModule* ModuleObjectFactory::newDDVCSProcessModule(
     return static_cast<DDVCSProcessModule*>(newModuleObject(className));
 }
 
+JETProcessModule* ModuleObjectFactory::newJETProcessModule(
+        unsigned int classId) {
+    return static_cast<JETProcessModule*>(newModuleObject(classId));
+}
+
+JETProcessModule* ModuleObjectFactory::newJETProcessModule(
+        const std::string& className) {
+    return static_cast<JETProcessModule*>(newModuleObject(className));
+}
+
 RunningAlphaStrongModule* ModuleObjectFactory::newRunningAlphaStrongModule(
         unsigned int classId) {
     return static_cast<RunningAlphaStrongModule*>(newModuleObject(classId));
@@ -396,7 +409,16 @@ DDVCSScalesModule* ModuleObjectFactory::newDDVCSScalesModule(
 DDVCSScalesModule* ModuleObjectFactory::newDDVCSScalesModule(
         const std::string &className) {
     return static_cast<DDVCSScalesModule*>(newModuleObject(className));
+}
 
+JETScalesModule* ModuleObjectFactory::newJETScalesModule(
+        unsigned int classId) {
+    return static_cast<JETScalesModule*>(newModuleObject(classId));
+}
+
+JETScalesModule* ModuleObjectFactory::newJETScalesModule(
+        const std::string &className) {
+    return static_cast<JETScalesModule*>(newModuleObject(className));
 }
 
 DVCSXiConverterModule* ModuleObjectFactory::newDVCSXiConverterModule(
@@ -447,6 +469,16 @@ DDVCSXiConverterModule* ModuleObjectFactory::newDDVCSXiConverterModule(
 DDVCSXiConverterModule* ModuleObjectFactory::newDDVCSXiConverterModule(
         const std::string &className) {
     return static_cast<DDVCSXiConverterModule*>(newModuleObject(className));
+}
+
+JETXiConverterModule* ModuleObjectFactory::newJETXiConverterModule(
+        unsigned int classId) {
+    return static_cast<JETXiConverterModule*>(newModuleObject(classId));
+}
+
+JETXiConverterModule* ModuleObjectFactory::newJETXiConverterModule(
+        const std::string &className) {
+    return static_cast<JETXiConverterModule*>(newModuleObject(className));
 }
 
 DVCSObservable* ModuleObjectFactory::newDVCSObservable(unsigned int classId) {
