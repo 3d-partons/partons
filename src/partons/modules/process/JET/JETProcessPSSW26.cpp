@@ -78,20 +78,14 @@ PhysicalType<double> JETProcessPSSW26::CrossSection() {
 
     switch(m_jetType){
 
-        case JetType::UP:{
-            eq = 2/3.; break;
-        }
-
-        case JetType::DOWN:{
-            eq = -1/3.; break;
-        }
-
-        case JetType::STRANGE:{
-            eq = -2/3.; break;
-        }
-
+        case JetType::UP:
         case JetType::CHARM:{
             eq = 2/3.; break;
+        }
+
+        case JetType::DOWN:
+        case JetType::STRANGE:{
+            eq = -1/3.; break;
         }
 
         default:{
