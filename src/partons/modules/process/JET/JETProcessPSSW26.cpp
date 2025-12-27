@@ -47,7 +47,6 @@ double JETProcessPSSW26::alphaS_2loop(double mu2) const{
 
 PhysicalType<double> JETProcessPSSW26::CrossSection() {
 
-
     //number of colors
     constexpr double Nc = 3.;
 
@@ -138,6 +137,9 @@ PhysicalType<double> JETProcessPSSW26::CrossSection() {
 
     //dsigma/dQ2dy -> dsigma/dQ2dxB
     sigma *= m_y / m_xB;
+
+    //dsigma/dphiS 
+    sigma /= 2 * M_PI; 
 
     //return
     return PhysicalType<double>(sigma, PhysicalUnit::GEVm2);
