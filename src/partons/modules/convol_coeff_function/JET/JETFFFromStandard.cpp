@@ -173,7 +173,7 @@ std::complex<double> JETCFFStandard::computeUnpolarized() {
 		m_ILg = 2 * m_xi * (1. - beta) * (cff_g2P + cff_g2M) - (1. - 2 * beta) * (cff_g1M - cff_g1P);
 
 		// ILq (Eq. 30 from https://arxiv.org/pdf/hep-ph/0505263)
-		m_ILq = 2 * m_xi * ((1. - m_z) * cff_g1P + m_z * cff_g1M);
+		m_ILq = 2 * m_xi * ((1. - m_z) * cff_q1P + m_z * cff_q1M);
 
 		// ITg (Eq. 32 from https://arxiv.org/pdf/hep-ph/0505263)
 		m_ITg = m_xi * (1. - 2 * beta) * (cff_g2P + cff_g2M) + 2 * beta * (cff_g1M - cff_g1P);
