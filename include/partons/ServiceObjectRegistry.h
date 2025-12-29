@@ -26,6 +26,7 @@ class ServiceObject;
 class TCSConvolCoeffFunctionService;
 class TCSObservableService;
 class JETConvolCoeffFunctionService;
+class JETObservableService;
 } /* namespace PARTONS */
 
 namespace PARTONS {
@@ -53,6 +54,7 @@ public:
     TCSObservableService* getTCSObservableService() const;
     DVMPObservableService* getDVMPObservableService() const;
     DDVCSObservableService* getDDVCSObservableService() const;
+    JETObservableService* getJETObservableService() const;
     AutomationService* getAutomationService() const;
     CryptographicHashService* getCryptographicHashService() const;
 

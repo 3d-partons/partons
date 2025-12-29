@@ -24,6 +24,7 @@
 #include "observable/DVCS/DVCSObservableKinematic.h"
 #include "observable/DVMP/DVMPObservableKinematic.h"
 #include "observable/TCS/TCSObservableKinematic.h"
+#include "observable/JET/JETObservableKinematic.h"
 
 namespace PARTONS {
 
@@ -144,6 +145,15 @@ public:
      * @return List of extracted ObservableKinematic objects.
      */
     List<DDVCSObservableKinematic> getDDVCSObservableKinematicFromFile(
+            const std::string &filePath);
+
+    /**
+     * Parse a text file in order to retrieve a list of ObservableKinematic objects.
+     * The parsed file should display separate lines of the form "xB | t | z | qPerp2 | Q2 | E | phi | jetType".
+     * @param filePath Path to file to be parsed.
+     * @return List of extracted ObservableKinematic objects.
+     */
+    List<JETObservableKinematic> getJETObservableKinematicFromFile(
             const std::string &filePath);
 
 private:

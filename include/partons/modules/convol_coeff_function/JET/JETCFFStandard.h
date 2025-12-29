@@ -101,7 +101,7 @@ struct JETCFFStandardIntegrationParameters{
 
 	void computeSubtractionTerms(){
 
-		constexpr double eps = 1.E-6;
+		const double eps = 1.E-2 * m_xi0;
 
     	m_valueDer0AtXi0 = computeGPD(m_xi0);
 		if (m_order == Second) m_valueDer1AtXi0 = (computeGPD(m_xi0 + eps) - m_valueDer0AtXi0) / eps;
@@ -126,6 +126,13 @@ struct JETCFFStandardIntegrationParameters{
     	return 0.;
     }
 
+	static double evaluateConvolutionIntegrandSym(double x, void* par) {
+
+    	JETCFFStandardIntegrationParameters* params = static_cast<JETCFFStandardIntegrationParameters*>(par);
+
+		return evaluateConvolutionIntegrand(params->m_xi0 - x, par) + evaluateConvolutionIntegrand(params->m_xi0 + x, par);
+    }
+
 	std::complex<double> evaluateConvolution(){
 
     	//compute
@@ -138,43 +145,77 @@ struct JETCFFStandardIntegrationParameters{
     	int status = -1;
 
     	gsl_function F;
-    	F.function = &evaluateConvolutionIntegrand;
     	F.params   = this;
 
     	const size_t workspace_size = 1000;
     	gsl_integration_workspace* workspace = gsl_integration_workspace_alloc(workspace_size);
 
-    	constexpr double eps = 1.E-2;
+    	const double eps = 1.E-2 * fabs(m_xi0);
 
-    	status = gsl_integration_qag(
-			&F,
-			-1. + eps,
-			 m_xi0,
-			1.E-3,
-			1.E-3,
-			workspace_size,
-			GSL_INTEG_GAUSS15,
-			workspace,
-			&thisRe,
-			&thisReD
-		);
+		if (m_xi0 < 0.) {
 
-    	re += thisRe;
+			F.function = &evaluateConvolutionIntegrandSym;
+			status = gsl_integration_qag(
+				&F,
+				eps,
+				1 + m_xi0,
+				1.E-3,
+				1.E-3,
+				workspace_size,
+				GSL_INTEG_GAUSS15,
+				workspace,
+				&thisRe,
+				&thisReD
+			);
+			re += thisRe;
 
-    	status = gsl_integration_qag(
-			&F,
-			 m_xi0,
-			 1. - eps,
-			1.E-3,
-			1.E-3,
-			workspace_size,
-			GSL_INTEG_GAUSS15,
-			workspace,
-			&thisRe,
-			&thisReD
-		);
+			F.function = &evaluateConvolutionIntegrand;
+			status = gsl_integration_qag(
+				&F,
+				1 + 2 * m_xi0,
+				1.,
+				1.E-3,
+				1.E-3,
+				workspace_size,
+				GSL_INTEG_GAUSS15,
+				workspace,
+				&thisRe,
+				&thisReD
+			);
+			re += thisRe;
 
-    	re += thisRe;
+		}else {
+
+			F.function = &evaluateConvolutionIntegrandSym;
+			status = gsl_integration_qag(
+				&F,
+				eps,
+				1 - m_xi0,
+				1.E-3,
+				1.E-3,
+				workspace_size,
+				GSL_INTEG_GAUSS15,
+				workspace,
+				&thisRe,
+				&thisReD
+			);
+			re += thisRe;
+
+			F.function = &evaluateConvolutionIntegrand;
+			status = gsl_integration_qag(
+				&F,
+				-1.,
+				-1 + 2 * m_xi0,
+				1.E-3,
+				1.E-3,
+				workspace_size,
+				GSL_INTEG_GAUSS15,
+				workspace,
+				&thisRe,
+				&thisReD
+			);
+			re += thisRe;
+		}
 
     	gsl_integration_workspace_free(workspace);
 

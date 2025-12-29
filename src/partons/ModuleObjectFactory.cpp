@@ -16,6 +16,7 @@
 #include "../../include/partons/modules/evolution/gpd/GPDEvolutionModule.h"
 #include "../../include/partons/modules/gpd/GPDModule.h"
 #include "../../include/partons/modules/gpd_subtraction_constant/GPDSubtractionConstantModule.h"
+#include "../../include/partons/modules/observable/JET/JETObservable.h"
 #include "../../include/partons/modules/observable/DDVCS/DDVCSObservable.h"
 #include "../../include/partons/modules/observable/DVCS/DVCSObservable.h"
 #include "../../include/partons/modules/observable/DVMP/DVMPObservable.h"
@@ -515,6 +516,15 @@ DDVCSObservable* ModuleObjectFactory::newDDVCSObservable(unsigned int classId) {
 DDVCSObservable* ModuleObjectFactory::newDDVCSObservable(
         const std::string& className) {
     return static_cast<DDVCSObservable*>(newModuleObject(className));
+}
+
+JETObservable* ModuleObjectFactory::newJETObservable(unsigned int classId) {
+    return static_cast<JETObservable*>(newModuleObject(classId));
+}
+
+JETObservable* ModuleObjectFactory::newJETObservable(
+        const std::string& className) {
+    return static_cast<JETObservable*>(newModuleObject(className));
 }
 
 } /* namespace PARTONS */

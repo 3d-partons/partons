@@ -70,6 +70,7 @@ class JETConvolCoeffFunctionModule;
 class JETXiConverterModule;
 class JETScalesModule;
 class JETProcessModule;
+class JETObservable;
 } /* namespace PARTONS */
 
 namespace PARTONS {
@@ -601,6 +602,20 @@ public:
      * @return Observable pointer.
      */
     DDVCSObservable* newDDVCSObservable(const std::string & className);
+
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a Observable.
+     * @param classId Unique identifier of last child class.
+     * @return Observable pointer.
+     */
+    JETObservable* newJETObservable(unsigned int classId);
+
+    /**
+     * Specialization of ModuleObjectFactory::newModuleObject into a Observable.
+     * @param className Name of last child class.
+     * @return Observable pointer.
+     */
+    JETObservable* newJETObservable(const std::string & className);
 
     /**
      * Method to update a pointer. Used to keep track of the modules and remove them when they become orphans (i.e. no pointer points to them).
