@@ -125,11 +125,11 @@ PhysicalType<double> JETProcessPSSW26::CrossSection() {
     double sigmaL = 4 * pow(m_z * (1. - m_z), 2) * (m_Q2 / m_qPerp2) * std::norm(CFF_L);
 
     //sigmaT (Eq. 34 from https://arxiv.org/pdf/hep-ph/0505263)
-    double sigmaLT = 2 * (m_z * (1. - m_z)) * sqrt(m_Q2 / m_qPerp2) * (CFF_L * std::conj(CFF_TT1 - CFF_TT2)).real();
+    double sigmaLT = 2 * (m_z * (1. - m_z)) * sqrt(m_Q2 / m_qPerp2) * (CFF_L * std::conj(CFF_TT1 + CFF_TT2)).real();
 
     //dsigma/dQ2dy (Eq. 33 from https://arxiv.org/pdf/hep-ph/0505263)
     double sigma = sigma0 * Constant::FINE_STRUCTURE_CONSTANT / (M_PI * m_Q2 * m_y) * (
-        (1. + pow(1. - m_y, 2)) / 2. * sigmaT -
+        (1. + pow(1. - m_y, 2)) / 2. * sigmaT +
         2 * (1. - m_y) * cos(2 * m_phi) * sigmaTT +
         (1. - m_y) * sigmaL -
         (2. - m_y) * sqrt(1. - m_y) * cos(m_phi) * sigmaLT
