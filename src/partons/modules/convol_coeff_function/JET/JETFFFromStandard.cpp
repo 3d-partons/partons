@@ -104,7 +104,16 @@ std::complex<double> JETCFFStandard::computeUnpolarized() {
 
 	JETConvolCoeffFunctionKinematic thisKin(m_xi, m_t, m_z, m_qPerp2, m_Q2, m_MuF2, m_MuR2, m_jetType, m_jetCFFType);
 
-	if (thisKin != m_lastH) {
+	if (
+		(thisKin.getXi() != m_lastH.getXi()) ||
+		(thisKin.getT() != m_lastH.getT()) ||
+		(thisKin.getZ() != m_lastH.getZ()) ||
+		(thisKin.getQPerp2() != m_lastH.getQPerp2()) ||
+		(thisKin.getQ2() != m_lastH.getQ2()) ||
+		(thisKin.getMuF2() != m_lastH.getMuF2()) ||
+		(thisKin.getMuR2() != m_lastH.getMuR2()) ||
+		(thisKin.getJetType() != m_lastH.getJetType())
+		) {
 
 		// gluon
 		params.m_partonType = JETCFFStandardIntegrationParameters::Parton::GLUON;
