@@ -202,6 +202,8 @@ double JETCrossSectionTotal::JETCrossSectionTotalFunctionB(double phi, void* par
         JETObservableKinematic(xB, t, z, qPerp2, Q2, E, phi, jetType),
         params->m_gpdType).getValue().makeSameUnitAs(PhysicalUnit::NB).getValue();
 
+    result *= 2 * M_PI;
+
     if(std::isfinite(result)){
         return result;
     }else{
