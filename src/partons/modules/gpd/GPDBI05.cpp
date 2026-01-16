@@ -113,9 +113,9 @@ double GPDBI05::getQuarkForward(double x, QuarkFlavor::Type q, bool isValence) c
             
             if(isValence){
                  if(x <= 0.) return 0.;
-                 return (m_Forward->xfxQ2(2, absX, m_MuF2) - m_Forward->xfxQ2(-2, absX, m_MuF2)) / absX;
+                 return (m_Forward->xfxQ2(2, absX, m_MuF2_ref) - m_Forward->xfxQ2(-2, absX, m_MuF2_ref)) / absX;
             }else{
-                 return sgnX * m_Forward->xfxQ2(-2, absX, m_MuF2) / absX;
+                 return sgnX * m_Forward->xfxQ2(-2, absX, m_MuF2_ref) / absX;
             } 
         }
 
@@ -123,9 +123,9 @@ double GPDBI05::getQuarkForward(double x, QuarkFlavor::Type q, bool isValence) c
             
             if(isValence){
                  if(x <= 0.) return 0.;
-                 return (m_Forward->xfxQ2(1, absX, m_MuF2) - m_Forward->xfxQ2(-1, absX, m_MuF2)) / absX;
+                 return (m_Forward->xfxQ2(1, absX, m_MuF2_ref) - m_Forward->xfxQ2(-1, absX, m_MuF2_ref)) / absX;
             }else{
-                 return sgnX * m_Forward->xfxQ2(-1, absX, m_MuF2) / absX;
+                 return sgnX * m_Forward->xfxQ2(-1, absX, m_MuF2_ref) / absX;
             } 
         }
 
@@ -134,7 +134,7 @@ double GPDBI05::getQuarkForward(double x, QuarkFlavor::Type q, bool isValence) c
             if(isValence){
                  return 0.;
             }else{
-                 return sgnX * m_Forward->xfxQ2(-3, absX, m_MuF2) / absX;
+                 return sgnX * m_Forward->xfxQ2(-3, absX, m_MuF2_ref) / absX;
             } 
         }
 
@@ -154,7 +154,7 @@ double GPDBI05::getGluonForward(double x) const {
 
     double absX = fabs(x);
 
-    return m_Forward->xfxQ2(21, absX, m_MuF2);
+    return m_Forward->xfxQ2(21, absX, m_MuF2_ref);
 } 
 
 double GPDBI05::profile(double beta, double alpha, int n) const {
