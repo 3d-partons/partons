@@ -174,7 +174,7 @@ std::pair<std::shared_ptr<NDInterpolator_5_ML>,
     std::sort(nodesQ2.begin(), nodesQ2.end());
 
     //range
-    std::pair<double, double> rangeXb = std::make_pair(exp(nodesXi.at(0)),
+    std::pair<double, double> rangeXi = std::make_pair(exp(nodesXi.at(0)),
         exp(nodesXi.at(nodesXi.size() - 1)));
     std::pair<double, double> rangeT = std::make_pair(nodesT.at(0),
         nodesT.at(nodesT.size() - 1));
@@ -185,7 +185,7 @@ std::pair<std::shared_ptr<NDInterpolator_5_ML>,
     std::pair<double, double> rangeQ2 = std::make_pair(exp(nodesQ2.at(0)),
         exp(nodesQ2.at(nodesQ2.size() - 1)));
 
-    checkAndSetRange(m_ranges.at(0), rangeXb);
+    checkAndSetRange(m_ranges.at(0), rangeXi);
     checkAndSetRange(m_ranges.at(1), rangeT);
     checkAndSetRange(m_ranges.at(2), rangeZ);
     checkAndSetRange(m_ranges.at(3), rangeQPerp2);
@@ -232,15 +232,15 @@ std::pair<std::shared_ptr<NDInterpolator_5_ML>,
                             << ", z: " << it->at(2) << ", qPerp2: " << log(it->at(3)) << ", Q2: " << log(it->at(4)));
         }
 
-        f_values_re(index) = it->at(4);
-        f_values_im(index) = it->at(5);
+        f_values_re(index) = it->at(5);
+        f_values_im(index) = it->at(6);
     }
 
     //status
     info(__func__,
             ElemUtils::Formatter() << "CFF " << type
                     << " processed successfully:" << " xi (min, max, nNodes): ("
-                    << rangeXb.first << ", " << rangeXb.second << ", "
+                    << rangeXi.first << ", " << rangeXi.second << ", "
                     << nodesXi.size() << ")," << " t (min, max, nNodes): ("
                     << rangeT.first << ", " << rangeT.second << ", "
                     << nodesT.size() << ")," << " z (min, max, nNodes): ("
@@ -338,20 +338,28 @@ std::vector<std::vector<double> > JETCFFTables::readGrid(
     Float_t xi, t, z, qPerp2, Q2, Re, Im;
 
     //get
-    TNtuple* tree = (TNtuple*) rootFile.Get(id.c_str());
+    TNtuple* treeK = (TNtuple*) rootFile.Get("kinematics");
+    TNtuple* treeV = (TNtuple*) rootFile.Get(id.c_str());
 
-    tree->SetBranchAddress("xi", &xi);
-    tree->SetBranchAddress("t", &t);
-    tree->SetBranchAddress("z", &z);
-    tree->SetBranchAddress("qPerp2", &qPerp2);
-    tree->SetBranchAddress("Q2", &Q2);
-    tree->SetBranchAddress("Re", &Re);
-    tree->SetBranchAddress("Im", &Im);
+    if(treeK->GetEntries() != treeV->GetEntries()){
+        throw ElemUtils::CustomException(getClassName(), __func__,
+                ElemUtils::Formatter() << "Inconsistent file: "
+                        << m_cffSetFile);
+    }
+
+    treeK->SetBranchAddress("xi", &xi);
+    treeK->SetBranchAddress("t", &t);
+    treeK->SetBranchAddress("z", &z);
+    treeK->SetBranchAddress("qPerp2", &qPerp2);
+    treeK->SetBranchAddress("Q2", &Q2);
+    treeV->SetBranchAddress("Re", &Re);
+    treeV->SetBranchAddress("Im", &Im);
 
     //loop
-    for (Int_t i = 0; i < (Int_t) tree->GetEntries(); i++) {
+    for (Int_t i = 0; i < (Int_t) treeV->GetEntries(); i++) {
 
-        tree->GetEntry(i);
+        treeK->GetEntry(i);
+        treeV->GetEntry(i);
 
         std::vector<double> resultThis(7);
 
