@@ -98,7 +98,7 @@ void GPDFit26::loadPDFs() {
     }
 
     info(__func__, ElemUtils::Formatter() << "loading unpolarized (polarized) pdf set/member: " << m_unpolPDFSetName << "/" << m_unpolPDFReplica <<
-        "(" << m_polPDFSetName << "/" << m_polPDFReplica << ")");
+        " (" << m_polPDFSetName << "/" << m_polPDFReplica << ")");
 
     m_pUnpolPDF = LHAPDF::mkPDF(m_unpolPDFSetName, m_unpolPDFReplica);
     m_pPolPDF = LHAPDF::mkPDF(m_polPDFSetName, m_polPDFReplica);
