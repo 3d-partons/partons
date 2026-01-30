@@ -46,6 +46,7 @@ const double CONV_GEVm2_TO_PBARN = 0.389379304e+9;          ///< Conversion cons
 // Particle masses
 
 const double PROTON_MASS = 0.938272013;                     ///< Proton mass \f$m_{p}\f$ in \f$\mathrm{GeV}\f$ @cite Nakamura:2010zzi
+const double NEUTRON_MASS = 0.9395654205;                   ///< Neutron mass \f$m_{n}\f$ in \f$\mathrm{GeV}\f$ PDG'25 
 
 const double ELECTRON_MASS = 0.510998910e-3;                ///< Electron mass \f$m_{e}\f$ in \f$\mathrm{GeV}\f$ @cite Amsler:2008zzb
 const double MUON_MASS = 105.658367e-3;                     ///< Muon mass \f$m_{\mu}\f$ in \f$\mathrm{GeV}\f$ @cite Amsler:2008zzb
