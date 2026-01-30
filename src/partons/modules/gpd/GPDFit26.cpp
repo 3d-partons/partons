@@ -295,14 +295,14 @@ PartonDistribution GPDFit26::computeE() {
     //get PDFs
     double absX = fabs(m_x);
 
-    double pdf_u_val = pdf(m_x,  1.67, m_par_E_uvaldval_alpha, 4.65, 4.);
-    double pdf_d_val = pdf(m_x, -2.03, m_par_E_uvaldval_alpha, 5.25, 0.);
+    double pdf_u_val = pdf(absX,  1.67, m_par_E_uvaldval_alpha, 4.65, 4.);
+    double pdf_d_val = pdf(absX, -2.03, m_par_E_uvaldval_alpha, 5.25, 0.);
 
     //xi = 0 case
     if (m_xi == 0.) {
 
         uVal = pdf_u_val * exp(m_t * slope(m_x, m_par_H_uval_AmC_E_uval_A, m_par_E_uval_B, m_par_E_uval_C));
-        dVal = pdf_d_val * exp(m_t * slope(m_x, m_par_H_uval_AmC_E_uval_A, m_par_E_dval_B, m_par_E_dval_C));
+        dVal = pdf_d_val * exp(m_t * slope(m_x, m_par_H_dval_AmC_E_dval_A, m_par_E_dval_B, m_par_E_dval_C));
         uValMx = 0.;
         dValMx = 0.;
 
