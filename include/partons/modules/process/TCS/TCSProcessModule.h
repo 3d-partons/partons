@@ -147,11 +147,10 @@ public:
     virtual PhysicalType<double> CrossSectionInterf();
 
     /**
-     * Gives back a previously computed Compton Form Factor.
-     * @param gpdType CFF type (e.g. H or E).
-     * @return CFF value for the given type.
+     * Set manually CFFs.
      */
-    std::complex<double> getConvolCoeffFunctionValue(GPDType::Type gpdType);
+    void setConvolCoeffFunction(const TCSConvolCoeffFunctionKinematic& kin,
+            const TCSConvolCoeffFunctionResult& result);
 
 protected:
 
@@ -198,6 +197,13 @@ protected:
      */
     void computeConvolCoeffFunction(const TCSObservableKinematic& kinematic,
             const List<GPDType> & gpdType = List<GPDType>());
+
+    /**
+     * Gives back a previously computed Compton Form Factor.
+     * @param gpdType CFF type (e.g. H or E).
+     * @return CFF value for the given type.
+     */
+    std::complex<double> getConvolCoeffFunctionValue(GPDType::Type gpdType);
 };
 
 } /* namespace PARTONS */

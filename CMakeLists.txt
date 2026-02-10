@@ -77,11 +77,8 @@ find_package(LHAPDF REQUIRED)
 # find libxml2
 find_package(LibXml2 REQUIRED)
 
-# find libraries: Root
-find_package(ROOT COMPONENTS Core REQUIRED)
-
 # directories containing headers 
-include_directories(${QT_INCLUDE_DIRS} ${ElementaryUtils_INCLUDE_DIR} ${NumA++_INCLUDE_DIR} ${SFML_INCLUDE_DIR} ${CLN_INCLUDE_DIR} ${GSL_INCLUDE_DIRS} ${Apfel++_INCLUDE_DIR} ${LHAPDF_INCLUDE_DIR} ${LIBXML2_INCLUDE_DIRS} ${ROOT_INCLUDE_DIRS})
+include_directories(${ElementaryUtils_INCLUDE_DIR} ${NumA++_INCLUDE_DIR} ${SFML_INCLUDE_DIR} ${CLN_INCLUDE_DIR} ${GSL_INCLUDE_DIRS} ${Apfel++_INCLUDE_DIR} ${LHAPDF_INCLUDE_DIR} ${LIBXML2_INCLUDE_DIRS})
 
 # FINALIZE ==================================================================================
 
@@ -127,8 +124,6 @@ target_link_libraries(
 	${LHAPDF_LIBRARIES}
 
 	${LIBXML2_LIBRARIES}
-
-	${ROOT_LIBRARIES}
 )
 
 # install

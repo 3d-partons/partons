@@ -17,14 +17,12 @@
 #include "convol_coeff_function/DVCS/DVCSConvolCoeffFunctionKinematic.h"
 #include "convol_coeff_function/DVMP/DVMPConvolCoeffFunctionKinematic.h"
 #include "convol_coeff_function/TCS/TCSConvolCoeffFunctionKinematic.h"
-#include "convol_coeff_function/JET/JETConvolCoeffFunctionKinematic.h"
 #include "gpd/GPDKinematic.h"
 #include "List.h"
 #include "observable/DDVCS/DDVCSObservableKinematic.h"
 #include "observable/DVCS/DVCSObservableKinematic.h"
 #include "observable/DVMP/DVMPObservableKinematic.h"
 #include "observable/TCS/TCSObservableKinematic.h"
-#include "observable/JET/JETObservableKinematic.h"
 
 namespace PARTONS {
 
@@ -103,15 +101,6 @@ public:
             const std::string &filePath);
 
     /**
-     * Parse a text file in order to retrieve a list of JETConvolCoeffFunctionKinematic objects.
-     * The parsed file should display separate lines of the form "xi | t | z | qPerp2 | Q2 | MuF2 | MuR2 | jetType".
-     * @param filePath Path to file to be parsed.
-     * @return List of extracted JETConvolCoeffFunctionKinematic objects.
-     */
-    List<JETConvolCoeffFunctionKinematic> getJETCCFKinematicFromFile(
-            const std::string &filePath);
-
-    /**
      * Parse a text file in order to retrieve a list of ObservableKinematic objects.
      * The parsed file should display separate lines of the form "xB | t | Q2 | E | phi".
      * @param filePath Path to file to be parsed.
@@ -145,15 +134,6 @@ public:
      * @return List of extracted ObservableKinematic objects.
      */
     List<DDVCSObservableKinematic> getDDVCSObservableKinematicFromFile(
-            const std::string &filePath);
-
-    /**
-     * Parse a text file in order to retrieve a list of ObservableKinematic objects.
-     * The parsed file should display separate lines of the form "xB | t | z | qPerp2 | Q2 | E | phi | jetType".
-     * @param filePath Path to file to be parsed.
-     * @return List of extracted ObservableKinematic objects.
-     */
-    List<JETObservableKinematic> getJETObservableKinematicFromFile(
             const std::string &filePath);
 
 private:

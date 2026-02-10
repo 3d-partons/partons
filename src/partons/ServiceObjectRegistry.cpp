@@ -15,8 +15,6 @@
 #include "../../include/partons/services/hash_sum/CryptographicHashService.h"
 #include "../../include/partons/services/TCSConvolCoeffFunctionService.h"
 #include "../../include/partons/services/TCSObservableService.h"
-#include "../../include/partons/services/JETConvolCoeffFunctionService.h"
-#include "../../include/partons/services/JETObservableService.h"
 
 namespace PARTONS {
 
@@ -80,11 +78,6 @@ DDVCSConvolCoeffFunctionService* ServiceObjectRegistry::getDDVCSConvolCoeffFunct
             DDVCSConvolCoeffFunctionService::classId));
 }
 
-JETConvolCoeffFunctionService* ServiceObjectRegistry::getJETConvolCoeffFunctionService() const {
-    return static_cast<JETConvolCoeffFunctionService*>(get(
-            JETConvolCoeffFunctionService::classId));
-}
-
 DVCSObservableService* ServiceObjectRegistry::getDVCSObservableService() const {
     return static_cast<DVCSObservableService*>(get(
             DVCSObservableService::classId));
@@ -102,11 +95,6 @@ DVMPObservableService* ServiceObjectRegistry::getDVMPObservableService() const {
 DDVCSObservableService* ServiceObjectRegistry::getDDVCSObservableService() const {
     return static_cast<DDVCSObservableService*>(get(
             DDVCSObservableService::classId));
-}
-
-JETObservableService* ServiceObjectRegistry::getJETObservableService() const {
-    return static_cast<JETObservableService*>(get(
-            JETObservableService::classId));
 }
 
 AutomationService* ServiceObjectRegistry::getAutomationService() const {

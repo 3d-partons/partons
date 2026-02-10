@@ -641,5 +641,13 @@ std::complex<double> DVMPProcessModule::getConvolCoeffFunctionValue(
     return result;
 }
 
+void DVMPProcessModule::setConvolCoeffFunction(
+        const DVMPConvolCoeffFunctionKinematic& kin,
+        const DVMPConvolCoeffFunctionResult& result) {
+
+    m_lastCCFKinematics = kin;
+    m_dvcsConvolCoeffFunctionResult = result;
+}
+
 } /* namespace PARTONS */
 

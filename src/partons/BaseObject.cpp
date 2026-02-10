@@ -33,8 +33,8 @@ BaseObject::~BaseObject() {
     // Nothing to destroy
 
     //Self removing from factory store if previously created by it
-//    Partons::getInstance()->getBaseObjectFactory()->removeFromStore(
-//            getObjectId());
+    Partons::getInstance()->getBaseObjectFactory()->removeFromStore(
+            getObjectId());
 }
 
 void BaseObject::resolveObjectDependencies() {

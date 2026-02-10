@@ -66,11 +66,6 @@ class TCSScalesModule;
 class TCSXiConverterModule;
 class DVMPXiConverterModule;
 class GAM2XiConverterModule;
-class JETConvolCoeffFunctionModule;
-class JETXiConverterModule;
-class JETScalesModule;
-class JETProcessModule;
-class JETObservable;
 } /* namespace PARTONS */
 
 namespace PARTONS {
@@ -260,21 +255,6 @@ public:
             const std::string &className);
 
     /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a JETConvolCoeffFunctionModule.
-     * @param classId Unique identifier of last child class.
-     * @return JETConvolCoeffFunctionModule pointer.
-     */
-    JETConvolCoeffFunctionModule* newJETConvolCoeffFunctionModule(
-            unsigned int classId);
-    /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a JETConvolCoeffFunctionModule.
-     * @param className Name of last child class.
-     * @return JETConvolCoeffFunctionModule pointer.
-     */
-    JETConvolCoeffFunctionModule* newJETConvolCoeffFunctionModule(
-            const std::string &className);
-
-    /**
      * Specialization of ModuleObjectFactory::newModuleObject into a DVCSProcessModule.
      * @param classId Unique identifier of last child class.
      * @return DVCSProcessModule pointer.
@@ -293,7 +273,6 @@ public:
      * @return TCSProcessModule pointer.
      */
     TCSProcessModule* newTCSProcessModule(unsigned int classId);
-
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a TCSProcessModule.
      * @param className Name of last child class.
@@ -307,7 +286,6 @@ public:
      * @return DVMPProcessModule pointer.
      */
     DVMPProcessModule* newDVMPProcessModule(unsigned int classId);
-
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a DVMPProcessModule.
      * @param className Name of last child class.
@@ -321,41 +299,24 @@ public:
      * @return GAM2ProcessModule pointer.
      */
     GAM2ProcessModule* newGAM2ProcessModule(unsigned int classId);
-
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a GAM2ProcessModule.
      * @param className Name of last child class.
      * @return GAM2ProcessModule pointer.
      */
     GAM2ProcessModule* newGAM2ProcessModule(const std::string & className);
-
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a DDVCSProcessModule.
      * @param classId Unique identifier of last child class.
      * @return DDVCSProcessModule pointer.
      */
     DDVCSProcessModule* newDDVCSProcessModule(unsigned int classId);
-
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a DDVCSProcessModule.
      * @param className Name of last child class.
      * @return DDVCSProcessModule pointer.
      */
     DDVCSProcessModule* newDDVCSProcessModule(const std::string & className);
-
-    /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a JETProcessModule.
-     * @param classId Unique identifier of last child class.
-     * @return JETProcessModule pointer.
-     */
-    JETProcessModule* newJETProcessModule(unsigned int classId);
-
-    /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a JETProcessModule.
-     * @param className Name of last child class.
-     * @return JETProcessModule pointer.
-     */
-    JETProcessModule* newJETProcessModule(const std::string & className);
 
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a RunningAlphaStrongModule.
@@ -437,33 +398,18 @@ public:
      * @return GAM2ScalesModule pointer.
      */
     GAM2ScalesModule* newGAM2ScalesModule(const std::string &className);
-
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a DDVCSScalesModule.
      * @param classId Unique identifier of last child class.
      * @return DDVCSScalesModule pointer.
      */
     DDVCSScalesModule* newDDVCSScalesModule(unsigned int classId);
-
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a DDVCSScalesModule.
      * @param className Name of last child class.
      * @return DDVCSScalesModule pointer.
      */
     DDVCSScalesModule* newDDVCSScalesModule(const std::string &className);
-
-    /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a JETScalesModule.
-     * @param classId Unique identifier of last child class.
-     * @return JETScalesModule pointer.
-     */
-    JETScalesModule* newJETScalesModule(unsigned int classId);
-    /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a JETScalesModule.
-     * @param className Name of last child class.
-     * @return JETScalesModule pointer.
-     */
-    JETScalesModule* newJETScalesModule(const std::string &className);
 
     /**
      * Specialization of ModuleObjectFactory::newModuleObject into a DVCSXiConverterModule.
@@ -535,20 +481,6 @@ public:
             const std::string &className);
 
     /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a JETXiConverterModule.
-     * @param classId Unique identifier of last child class.
-     * @return JETXiConverterModule pointer.
-     */
-    JETXiConverterModule* newJETXiConverterModule(unsigned int classId);
-    /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a JETXiConverterModule.
-     * @param className Name of last child class.
-     * @return JETXiConverterModule pointer.
-     */
-    JETXiConverterModule* newJETXiConverterModule(
-            const std::string &className);
-
-    /**
      * Specialization of ModuleObjectFactory::newModuleObject into a Observable.
      * @param classId Unique identifier of last child class.
      * @return Observable pointer.
@@ -602,20 +534,6 @@ public:
      * @return Observable pointer.
      */
     DDVCSObservable* newDDVCSObservable(const std::string & className);
-
-    /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a Observable.
-     * @param classId Unique identifier of last child class.
-     * @return Observable pointer.
-     */
-    JETObservable* newJETObservable(unsigned int classId);
-
-    /**
-     * Specialization of ModuleObjectFactory::newModuleObject into a Observable.
-     * @param className Name of last child class.
-     * @return Observable pointer.
-     */
-    JETObservable* newJETObservable(const std::string & className);
 
     /**
      * Method to update a pointer. Used to keep track of the modules and remove them when they become orphans (i.e. no pointer points to them).
