@@ -2,8 +2,6 @@
 layout: default 
 ---
 
-<span style="color:red">THIS PAGE IS UNDER CONSTRUCTION</span>
-
 # What is PARTONS? 
 
 ---
@@ -28,4 +26,5 @@ The virtual access infrastructure 3DPartons has received funding from the Europe
 PARTONS,  NangaParbat, MontBlanc and xFitter share the common feature of being interfaced to [APFEL++](https://github.com/vbertone/apfelxx) which solves QCD evolution equations for various parton distributions, and to [LHAPDF](https://lhapdf.hepforge.org) which provides access to modern PDF sets.
 
 [EpIC](https://github.com/pawelsznajder/epic) is a generic Monte Carlo event generator for exclusive processes. It is fully compatible with PARTONS: it can be used to generate events for all exclusive processes and all models provided by PARTONS. 
+
 
