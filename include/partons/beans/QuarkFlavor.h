@@ -45,12 +45,8 @@ namespace PARTONS {
  \endcode
  */
 class QuarkFlavor {
-public:
 
-    /**
-     * Name of table in the database corresponding to this class.
-     */
-    static const std::string QUARK_FLAVOR_TYPE_DB_COLUMN_NAME;
+public:
 
     /**
      * Definition of enumerate values corresponding to quark flavors.

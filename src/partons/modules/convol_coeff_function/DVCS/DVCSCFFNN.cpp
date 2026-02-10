@@ -258,6 +258,23 @@ void DVCSCFFNN::loadParameters(size_t replica, bool printInfo) {
                 ElemUtils::Formatter() << "Illegal replica " << replica);
     }
 
+    std::vector<double> params(c_nDVCSCFFNNParameters);
+
+    for (size_t i = 0; i < c_nDVCSCFFNNParameters; i++) {
+        params[i] = c_DVCSCFFNNReplicas[replica][i];
+    }
+
+    setParameters(params);
+
+    if (printInfo) {
+        info(__func__,
+                ElemUtils::Formatter() << "Parameters set for replica "
+                        << replica);
+    }
+}
+
+void DVCSCFFNN::setParameters(const std::vector<double>& params) {
+
     std::vector<NumA::NeuralNetworkCell*> cells;
     std::vector<NumA::NeuralNetworkNeuron*> neurons;
 
@@ -301,11 +318,11 @@ void DVCSCFFNN::loadParameters(size_t replica, bool printInfo) {
     for (cell = cells.begin(); cell != cells.end(); cell++) {
 
         (static_cast<NumA::Perceptron*>(*cell))->setBias(
-                c_DVCSCFFNNReplicas[replica][parameter]);
+                params.at(parameter));
 
         parameter++;
 
-        if (parameter > c_nDVCSCFFNNParameters) {
+        if (parameter > params.size()) {
             throw ElemUtils::CustomException(getClassName(), __func__,
                     ElemUtils::Formatter() << "Illegal parameter index "
                             << parameter);
@@ -314,21 +331,15 @@ void DVCSCFFNN::loadParameters(size_t replica, bool printInfo) {
 
     for (neuron = neurons.begin(); neuron != neurons.end(); neuron++) {
 
-        (*neuron)->setWeight(c_DVCSCFFNNReplicas[replica][parameter]);
+        (*neuron)->setWeight(params.at(parameter));
 
         parameter++;
 
-        if (parameter > c_nDVCSCFFNNParameters) {
+        if (parameter > params.size()) {
             throw ElemUtils::CustomException(getClassName(), __func__,
                     ElemUtils::Formatter() << "Illegal parameter index "
                             << parameter);
         }
-    }
-
-    if (printInfo) {
-        info(__func__,
-                ElemUtils::Formatter() << "Parameters set for replica "
-                        << replica);
     }
 }
 

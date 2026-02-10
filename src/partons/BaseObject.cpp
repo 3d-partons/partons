@@ -21,9 +21,9 @@ BaseObject::BaseObject(const BaseObject& other) {
     m_className = other.m_className;
     m_indexId = other.m_indexId;
 
-    debug(__func__,
-            ElemUtils::Formatter() << "Object(" << getClassName()
-                    << ") cloned with objectId(" << getObjectId() << ")");
+//    debug(__func__,
+//            ElemUtils::Formatter() << "Object(" << getClassName()
+//                    << ") cloned with objectId(" << getObjectId() << ")");
 }
 BaseObject* BaseObject::clone() const {
     return new BaseObject(*this);

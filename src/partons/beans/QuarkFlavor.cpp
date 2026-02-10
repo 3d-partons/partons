@@ -4,9 +4,6 @@
 
 namespace PARTONS {
 
-const std::string QuarkFlavor::QUARK_FLAVOR_TYPE_DB_COLUMN_NAME =
-        "quark_flavor_type";
-
 QuarkFlavor::QuarkFlavor() :
         m_type(QuarkFlavor::UNDEFINED) {
 }

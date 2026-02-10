@@ -79,11 +79,6 @@ public:
     static const std::string KINEMATIC_PARAMETER_NAME_PHI_UNIT;
 
     /**
-     * Parameter name to set unit of meson type via configuration methods.
-     */
-    static const std::string KINEMATIC_PARAMETER_NAME_MESON_TYPE_UNIT;
-
-    /**
      * Default constructor.
      */
     DVMPObservableKinematic();

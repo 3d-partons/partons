@@ -288,7 +288,7 @@ void TCSConvolCoeffFunctionModule::isModuleWellConfigured() {
     ConvolCoeffFunctionModule<TCSConvolCoeffFunctionKinematic,
             TCSConvolCoeffFunctionResult>::isModuleWellConfigured();
 
-    if (m_Q2Prim < 0) {
+    if (m_Q2Prim < 0.) {
         warn(__func__,
                 ElemUtils::Formatter() << "Input value of Q2' = " << m_Q2Prim
                         << " is not > 0.");

@@ -70,6 +70,12 @@ public:
             const std::string &moduleClassName);
 
     /**
+     * Add submodule, i.e. indicate that this BaseObjectData object has a tree-like structure.
+     * @param baseObjectData BaseObjectData object.
+     */
+    void addSubModule(const BaseObjectData& baseObjectData);
+
+    /**
      * Add a single parameter.
      * @param parameter Parameter to be added.
      */

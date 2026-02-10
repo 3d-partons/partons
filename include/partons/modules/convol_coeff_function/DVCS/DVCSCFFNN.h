@@ -66,6 +66,11 @@ public:
     void loadParameters(size_t replica, bool printInfo = true);
 
     /**
+    * Set parameters.
+    */
+    void setParameters(const std::vector<double>& params);
+
+    /**
      * Get neural networks.
      */
     const std::map<PARTONS::GPDType::Type,
