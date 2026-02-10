@@ -71,16 +71,16 @@ RUN mkdir ${WORKSPACE}/.docker && \
     mkdir ${WORKSPACE}/partons-example/scenarios
 
 RUN echo '#!/bin/bash' > ${WORKSPACE}/.docker/Dockerfile.partons.startup && \
-    echo 'echo "Welcome to PARTONS"' > ${WORKSPACE}/.docker/Dockerfile.partons.startup && \ 
-    echo 'echo "See http://partons.cea.fr for description and technical documentation"' > ${WORKSPACE}/.docker/Dockerfile.partons.startup && \
-    echo 'if [ $# -eq 0 ]; then' > ${WORKSPACE}/.docker/Dockerfile.partons.startup && \
-    echo '/bin/bash' > ${WORKSPACE}/.docker/Dockerfile.partons.startup && \
-    echo 'else' > ${WORKSPACE}/.docker/Dockerfile.partons.startup && \
-    echo 'cd /root/workspace/partons-example' > ${WORKSPACE}/.docker/Dockerfile.partons.startup && \
-    echo 'for i in $@; do' > ${WORKSPACE}/.docker/Dockerfile.partons.startup && \
-    echo './bin/PARTONS_example scenarios/$i' > ${WORKSPACE}/.docker/Dockerfile.partons.startup && \
-    echo 'done' > ${WORKSPACE}/.docker/Dockerfile.partons.startup && \
-    echo 'fi' > ${WORKSPACE}/.docker/Dockerfile.partons.startup
+    echo 'echo "Welcome to PARTONS"' >> ${WORKSPACE}/.docker/Dockerfile.partons.startup && \
+    echo 'echo "See http://partons.cea.fr for description and technical documentation"' >> ${WORKSPACE}/.docker/Dockerfile.partons.startup && \
+    echo 'if [ $# -eq 0 ]; then' >> ${WORKSPACE}/.docker/Dockerfile.partons.startup && \
+    echo '/bin/bash' >> ${WORKSPACE}/.docker/Dockerfile.partons.startup && \
+    echo 'else' >> ${WORKSPACE}/.docker/Dockerfile.partons.startup && \
+    echo 'cd /root/workspace/partons-example' >> ${WORKSPACE}/.docker/Dockerfile.partons.startup && \
+    echo 'for i in $@; do' >> ${WORKSPACE}/.docker/Dockerfile.partons.startup && \
+    echo './bin/PARTONS_example scenarios/$i' >> ${WORKSPACE}/.docker/Dockerfile.partons.startup && \
+    echo 'done' >> ${WORKSPACE}/.docker/Dockerfile.partons.startup && \
+    echo 'fi' >> ${WORKSPACE}/.docker/Dockerfile.partons.startup
 
 RUN chmod u+x ${WORKSPACE}/.docker/Dockerfile.partons.startup 
 
