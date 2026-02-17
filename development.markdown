@@ -8,7 +8,7 @@ This tutorial provides guidance on creating these new modules and includes templ
 
 ## General remarks
 
-* **Prerequisites**: Before attempting to write any code, carefully read [this tutorial](@ref usage) explaining the general usage of PARTONS.
+* **Prerequisites**: Before attempting to write any code, carefully read [this tutorial](usage.html) explaining the general usage of PARTONS.
 * **External Development**: A child class representing your module can be written in an external program. You do not need to modify the PARTONS library directly, even though your class inherits from library members.
 * **Registry/Factory Mechanism**: PARTONS uses a registry/factory pattern, which imposes the following requirements on new modules:
   * It must have a static const unsigned int classId member initialized by `BaseObjectRegistry::registerBaseObject()`.
@@ -16,83 +16,83 @@ This tutorial provides guidance on creating these new modules and includes templ
   * It must implement a copy constructor and a `clone()` function so the Factory can issue instances.
   * If the module calls other registered modules, they must be initialized in `resolveObjectDependencies()` rather than the constructor.
 * **Virtual Functions**: You are required to implement all pure virtual functions (distinguished by `= 0` in the abstract class definition):
-```cpp
-virtual void f() = 0;
-```
-You do not need to implement other virtual functions unless you wish to override the default behavior defined in the parent class.
+  ```cpp
+  virtual void f() = 0;
+  ```
+  You do not need to implement other virtual functions unless you wish to override the default behavior defined in the parent class.
 * **Execution Chain**: Be mindful of the execution chain when using inheritance. When necessary, follow the scheme below to ensure all parent class implementations are called:
-```cpp
-C++
-#include <iostream>
-
-class A {
-public:
-    virtual void f() {
-        std::cout << "Base definition in A" << std::endl;
-    }
-};
-
-class B : public A {
-public:
-    virtual void f() {
-        A::f(); // Call parent implementation
-    }
-};
-
-class C : public B {
-public:
-    virtual void f() {
-        B::f(); // Call parent implementation
-        std::cout << "Something new in C" << std::endl;
-    }
-};
-
-int main() {
-    A* pA = new C();
-    pA->f();
-    delete pA;
-}
-```
-Output:
-```Bash
-Base definition in A
-Something new in C
-```
-While the implementation of `B::f()` isn't strictly necessary here (as it only calls `A::f()`), you should ensure `C::f()` calls its parent to avoid losing functionality, unless you specifically intend to override the entire chain.
+  ```cpp
+  C++
+  #include <iostream>
+  
+  class A {
+  public:
+      virtual void f() {
+          std::cout << "Base definition in A" << std::endl;
+      }
+  };
+  
+  class B : public A {
+  public:
+      virtual void f() {
+          A::f(); // Call parent implementation
+      }
+  };
+  
+  class C : public B {
+  public:
+      virtual void f() {
+          B::f(); // Call parent implementation
+          std::cout << "Something new in C" << std::endl;
+      }
+  };
+  
+  int main() {
+      A* pA = new C();
+      pA->f();
+      delete pA;
+  }
+  ```
+  Output:
+  ```Bash
+  Base definition in A
+  Something new in C
+  ```
+  While the implementation of `B::f()` isn't strictly necessary here (as it only calls `A::f()`), you should ensure `C::f()` calls its parent to avoid losing functionality, unless you specifically intend to override the entire chain.
 * **Integration**: If your module requires numerical integration, utilize the MathIntegratorModule class. Inherit from this class and add as many functors as needed (functors represent the functions to be integrated):
-```cpp
-class MyGPDModel: public GPDModule, public MathIntegratorModule { 
-   // ...
-   NumA::FunctionType1D* m_pFunctorForIntegrationFunction;
-};
-```
-Initialize these functors in the constructor and set the default integration method in resolveObjectDependencies():
-```cpp
-MyGPDModel::MyGPDModel(const std::string &className) 
-    : GPDModule(className), MathIntegratorModule() {
-   m_pFunctorForIntegrationFunction = NumA::Integrator1D::newIntegrationFunctor(this, &MyGPDModel::integrationFunction);
-}
-
-void MyGPDModel::resolveObjectDependencies() {
-   setIntegrator(NumA::IntegratorType1D::DEXP);
-}
-```
-The function to be integrated must follow this specific signature:
-```cpp
-double MyGPDModel::integrationFunction(double x, std::vector<double> par) {
-   // Implementation...
-}
-```
-To perform the integration:
-```cpp
-// Additional parameters passed to the function 
-std::vector<double> parameters; 
-double min = 0.;
-double max = 1.;
-
-// Do the integration
-double integrationResult = integrate(m_pFunctorForIntegrationFunction, min, max, parameters);
-```
+  ```cpp
+  class MyGPDModel: public GPDModule, public MathIntegratorModule { 
+     // ...
+     NumA::FunctionType1D* m_pFunctorForIntegrationFunction;
+  };
+  ```
+  Initialize these functors in the constructor and set the default integration method in resolveObjectDependencies():
+  ```cpp
+  MyGPDModel::MyGPDModel(const std::string &className) 
+      : GPDModule(className), MathIntegratorModule() {
+     m_pFunctorForIntegrationFunction = NumA::Integrator1D::newIntegrationFunctor(this, &MyGPDModel::integrationFunction);
+  }
+  
+  void MyGPDModel::resolveObjectDependencies() {
+     setIntegrator(NumA::IntegratorType1D::DEXP);
+  }
+  ```
+  The function to be integrated must follow this specific signature:
+  ```cpp
+  double MyGPDModel::integrationFunction(double x, std::vector<double> par) {
+     // Implementation...
+  }
+  ```
+  To perform the integration:
+  ```cpp
+  // Additional parameters passed to the function 
+  std::vector<double> parameters; 
+  double min = 0.;
+  double max = 1.;
+  
+  // Do the integration
+  double integrationResult = integrate(m_pFunctorForIntegrationFunction, min, max, parameters);
+  ```
 * **Naming Conventions**: Module names should be unambiguous, straightforward, and informative.
   * Standard Modules: Use ModuleType + UniqueName (e.g., `DVCSProcessBMJ12`, `GPDVinnikov06`).
   * Observables: Use ProcessType + ObservableName + BeamCharge + (FourierModulation), (e.g., `DVCSAULMinus`, `DVCSAULMinusSin2Phi`).
@@ -100,7 +100,7 @@ double integrationResult = integrate(m_pFunctorForIntegrationFunction, min, max,
 * **Documentation**: Always comment your code. If you are working directly on the PARTONS library, thorough documentation is an obligation.
 
 ## How to use a new module
-Once your project is compiled, you can use your new module just like any other in PARTONS. For more details, see [this tutorial](@ref usage). To instantiate a clone of your new GPD module, use the following:
+Once your project is compiled, you can use your new module just like any other in PARTONS. For more details, see [this tutorial](usage.html). To instantiate a clone of your new GPD module, use the following:
 ```cpp
 // Clone GPD module using the ModuleObjectFactory with your custom module's classId
 PARTONS::GPDModule* pGPDModel = PARTONS::Partons::getInstance()->getModuleObjectFactory()->newGPDModule(MyGPDModel::classId);
@@ -208,10 +208,10 @@ PARTONS::PartonDistribution MyGPDModel::computeE() {
 ### Useful Variables
 The following variables are defined in the parent abstract classes and are essential for implementing your GPD calculations. They store the current kinematic state for the evaluation:
 * Kinematics:
-  * double m_x
-  * double m_xi
-  * double m_t
-  * double m_MuF2 (factorization scale squared)
-  * double m_MuR2 (renormalization scale squared)
+  * `double m_x;` (x)
+  * `double m_xi;`(xi)
+  * `double m_t;` (t)
+  * `double m_MuF2;` (factorization scale squared)
+  * `double m_MuR2;` (renormalization scale squared)
 * Type Context:
-  * GPDType::Type m_gpdType (indicates the specific GPD type currently being evaluated)
+  * `GPDType::Type m_gpdType;` (indicates the specific GPD type currently being evaluated)
