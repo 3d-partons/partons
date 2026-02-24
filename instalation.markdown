@@ -25,6 +25,7 @@ The project is written in C++ using the C++11 standard. It requires the followin
 * [CLN](https://www.ginac.de/CLN) (class library for numbers, used for high-precision representation of floats)
 * [GSL](https://www.gnu.org/software/gsl/) (GNU scientific library, used for special functions and numerical methods)
 * [Libxml2](https://gitlab.gnome.org/GNOME/libxml2) (XML parser)
+* [Eigen3](https://libeigen.gitlab.io) (template library for linear algebra)
 
 In addition, the project requires the following libraries used in particle physics, which you may need to install from source:
 * [LHAPDF](https://www.lhapdf.org) (tool for evaluating parton distribution functions)
@@ -51,5 +52,6 @@ make install
 ```
 
 The last step is optional. If you do not want to install the library in your system, make sure to download each subproject into the same directory (so they are at the same level). This will allow for straightforward detection of dependencies.
+
 
 After compiling [elementary-utils](https://github.com/3d-partons/elementary-utils), [numa](https://github.com/3d-partons/numa) and [partons](https://github.com/3d-partons/partons) subprojects, as well as the [partons-example](https://github.com/3d-partons/partons-example) executable, you can check if it works by running a minumum working example [described here](usage.html).
